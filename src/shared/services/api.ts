@@ -1,15 +1,23 @@
 import axios from 'axios';
 
-const API_BASE_URL = (import.meta as any).env?.VITE_API_URL || 'http://127.0.0.1:8000';
+const AUTH_BASE_URL = (import.meta as any).env?.VITE_API_URL_AUTH || 'http://localhost:8001';
+const LLM_BASE_URL = (import.meta as any).env?.VITE_API_URL_LLM || 'http://localhost:8002';
 
+// Instância base padrão
 const api = axios.create({
-    baseURL: API_BASE_URL,
     headers: {
         'Content-Type': 'application/json',
     },
 });
 
+// Interceptor para rotear a requisição para o microsserviço correto baseado no path
 api.interceptors.request.use((config) => {
+    if (config.url?.startsWith('/api/auth') || config.url?.startsWith('/api/user')) {
+        config.baseURL = AUTH_BASE_URL;
+    } else {
+        config.baseURL = LLM_BASE_URL;
+    }
+    
     const token = localStorage.getItem('auth_token') || sessionStorage.getItem('auth_token');
     if (token) {
         config.headers.Authorization = `Bearer ${token}`;
