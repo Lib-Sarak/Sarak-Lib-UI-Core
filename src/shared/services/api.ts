@@ -10,8 +10,7 @@ const api = axios.create({
     },
 });
 
-// Interceptor para rotear a requisição para o microsserviço correto baseado no path
-api.interceptors.request.use((config) => {
+api.interceptors.request.use((config: any) => {
     if (config.url?.startsWith('/api/auth') || config.url?.startsWith('/api/user')) {
         config.baseURL = AUTH_BASE_URL;
     } else {
@@ -26,8 +25,8 @@ api.interceptors.request.use((config) => {
 });
 
 api.interceptors.response.use(
-    (response) => response,
-    (error) => {
+    (response: any) => response,
+    (error: any) => {
         if (error.response?.status === 401) {
             console.error(">>> [API] 401 Unauthorized detected. Wiping token.");
             localStorage.removeItem('auth_token');
