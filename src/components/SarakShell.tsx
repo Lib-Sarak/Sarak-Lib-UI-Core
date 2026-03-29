@@ -1,12 +1,12 @@
 import React, { useState, useEffect } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
 import { ChevronRight, ChevronDown, ChevronLeft, ChevronUp, Keyboard, X } from 'lucide-react';
-import { useTheme } from '@sarak/shared/contexts/ThemeContext';
-import { useShortcut } from '@sarak/shared/hooks/useShortcut';
+import { useTheme } from '@sarak/lib-shared/contexts/ThemeContext';
+import { useShortcut } from '@sarak/lib-shared/hooks/useShortcut';
 import ShortcutsModal from './ShortcutsModal';
 import { ThemeToggle, UserMenu } from './Controls';
 import LanguageSettingsModal from './LanguageSettingsModal';
-import { ANIMATION_VARIANTS, EMOJI_SETS } from '@sarak/shared/theme-library';
+import { ANIMATION_VARIANTS, EMOJI_SETS } from '@sarak/lib-shared/theme-library';
 
 
 interface NavItem {

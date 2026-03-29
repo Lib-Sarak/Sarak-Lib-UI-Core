@@ -1,4 +1,4 @@
-# Sarak-UI-Core
+# Sarak-Lib-UI-Core
 
 O Sistema de Design da Biblioteca Sarak. Define a identidade visual única e fornece componentes atômicos premium.
 
@@ -11,11 +11,11 @@ O Sistema de Design da Biblioteca Sarak. Define a identidade visual única e for
 
 ### Frontend (React)
 ```bash
-npm install @sarak/ui-core
+npm install @sarak/lib-ui-core
 ```
 
 ```tsx
-import { Button, Card } from '@sarak/ui-core';
+import { Button, Card } from '@sarak/lib-ui-core';
 
 function MyPage() {
   return (

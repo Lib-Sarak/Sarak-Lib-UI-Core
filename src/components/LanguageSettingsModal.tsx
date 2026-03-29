@@ -1,9 +1,9 @@
 import React, { useState } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
 import { X, Globe, Plus, Trash2, ChevronDown, Check } from 'lucide-react';
-import { useTheme } from '@sarak/shared/contexts/ThemeContext';
+import { useTheme } from '@sarak/lib-shared/contexts/ThemeContext';
 
-import { ALL_LANGUAGES } from '@sarak/shared/constants/engine';
+import { ALL_LANGUAGES } from '@sarak/lib-shared/constants/engine';
 
 const LanguageSettingsModal = ({ isOpen, onClose }: { isOpen: boolean, onClose: () => void }) => {
     const { enabledLanguages, setEnabledLanguages } = useTheme();

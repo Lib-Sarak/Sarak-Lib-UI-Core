@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import { useTheme } from '@sarak/shared';
+import { useTheme } from '@sarak/lib-shared';
 import { motion, AnimatePresence } from 'framer-motion';
 import {
     Palette, Plus, Check, Zap, Edit3, ChevronLeft,

@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
 import { ChevronRight, ChevronDown, ChevronLeft, ChevronUp, Keyboard, X } from 'lucide-react';
-import { useTheme, useShortcut, ANIMATION_VARIANTS, EMOJI_SETS } from '@sarak/shared';
+import { useTheme, useShortcut, ANIMATION_VARIANTS, EMOJI_SETS } from '@sarak/lib-shared';
 import ShortcutsModal from './ShortcutsModal';
 import { ThemeToggle, UserMenu } from './Controls';
 import LanguageSettingsModal from './LanguageSettingsModal';

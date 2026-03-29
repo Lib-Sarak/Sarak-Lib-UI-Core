@@ -1,7 +1,7 @@
 import React, { useState, useEffect, useCallback } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
 import { Keyboard, X, ArrowLeftRight, Monitor, Edit3, Check, RotateCcw, Database, Plus, Trash2 } from 'lucide-react';
-import { useTheme } from '@sarak/shared/contexts/ThemeContext';
+import { useTheme } from '@sarak/lib-shared/contexts/ThemeContext';
 
 const Kbd = ({ children, isEditing = false }: { children: React.ReactNode, isEditing?: boolean }) => (
     <kbd className={`px-2 py-1 bg-theme-body text-[10px] font-black font-mono rounded border shadow-sm uppercase tracking-widest inline-flex items-center justify-center min-w-[24px] ${isEditing ? 'border-theme-primary text-theme-primary animate-pulse' : 'border-theme-border/50 text-theme-title'}`}>

@@ -1,7 +1,7 @@
 import React, { useState } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
 import { X, Globe, Plus, Trash2, ChevronDown, Check } from 'lucide-react';
-import { useTheme, ALL_LANGUAGES } from '@sarak/shared';
+import { useTheme, ALL_LANGUAGES } from '@sarak/lib-shared';
 
 const LanguageSettingsModal = ({ isOpen, onClose }) => {
     const { enabledLanguages, setEnabledLanguages } = useTheme();

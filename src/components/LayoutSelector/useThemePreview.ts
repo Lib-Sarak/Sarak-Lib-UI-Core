@@ -1,5 +1,5 @@
 import { useState, useEffect } from 'react';
-import { BASE_PRESETS } from '@sarak/shared/theme-library';
+import { BASE_PRESETS } from '@sarak/lib-shared/theme-library';
 
 export const useThemePreview = (
     currentLayout: string,

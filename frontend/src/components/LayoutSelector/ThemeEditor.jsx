@@ -3,7 +3,7 @@ import { motion, AnimatePresence } from 'framer-motion';
 import {
     ChevronUp, ChevronDown, Check, Palette, Grid, Type, Layers, Box, Film, Smile
 } from 'lucide-react';
-import { THEME_FONTS, TEXTURE_LIBRARY, ICON_PACKS, EMOJI_SETS, THEME_EFFECTS } from '@sarak/shared';
+import { THEME_FONTS, TEXTURE_LIBRARY, ICON_PACKS, EMOJI_SETS, THEME_EFFECTS } from '@sarak/lib-shared';
 
 export const ConfigSection = ({ id, icon: Icon, title, isOpen, onToggle, children }) => {
     return (

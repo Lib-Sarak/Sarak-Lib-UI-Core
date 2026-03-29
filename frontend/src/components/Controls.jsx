@@ -1,7 +1,7 @@
 import React from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
 import { Sun, Moon, User, ChevronDown, KeyRound, LogOut } from 'lucide-react';
-import { useTheme, ALL_LANGUAGES } from '@sarak/shared';
+import { useTheme, ALL_LANGUAGES } from '@sarak/lib-shared';
 
 export const LanguageSelector = () => {
     const { enabledLanguages } = useTheme();

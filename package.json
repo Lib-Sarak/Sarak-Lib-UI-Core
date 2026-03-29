@@ -1,5 +1,5 @@
 {
-  "name": "@sarak/ui-core",
+  "name": "@sarak/lib-ui-core",
   "version": "1.0.0",
   "description": "Sarak Design System and UI Engine",
   "type": "module",

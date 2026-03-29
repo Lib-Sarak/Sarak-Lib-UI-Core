@@ -3,7 +3,7 @@ import { motion } from 'framer-motion';
 import {
     Zap, Sparkles, BarChart3, MessageSquare, History, Users, Shield, Database, Box
 } from 'lucide-react';
-import { EMOJI_SETS } from '@sarak/shared';
+import { EMOJI_SETS } from '@sarak/lib-shared';
 
 export const MockDashboard = ({ config, animationVariants, animationStyle }) => {
     return (

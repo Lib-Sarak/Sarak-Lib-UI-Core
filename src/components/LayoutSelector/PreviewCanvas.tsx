@@ -5,9 +5,9 @@ import {
     BarChart3, MessageSquare, History, Settings2,
     Zap, Shield, Database, Box
 } from 'lucide-react';
-import { EMOJI_SETS, THEME_EFFECTS } from '@sarak/shared/theme-library';
+import { EMOJI_SETS, THEME_EFFECTS } from '@sarak/lib-shared/theme-library';
 import { MockDashboard, MockChat, MockLogs, MockSettings } from './MockApps';
-import { useTheme } from '@sarak/shared/contexts/ThemeContext';
+import { useTheme } from '@sarak/lib-shared/contexts/ThemeContext';
 
 const ANIMATION_VARIANTS = THEME_EFFECTS.page;
 
