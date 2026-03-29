@@ -117,12 +117,22 @@ const SarakShell = ({
 
                         <div className="px-5 py-5 border-b border-theme-border flex items-center justify-between">
                             <div className="flex items-center gap-2.5">
-                                <div className="w-8 h-8 bg-theme-primary rounded-lg flex items-center justify-center shadow-lg">
-                                    {navItems[0]?.icon}
+                                <div className="w-10 h-10 flex items-center justify-center relative overflow-hidden">
+                                    {config.branding.logoPath ? (
+                                        <img 
+                                            src={config.branding.logoPath} 
+                                            alt={config.branding.name} 
+                                            className="w-full h-full object-contain filter drop-shadow-sm" 
+                                        />
+                                    ) : (
+                                        <div className="w-8 h-8 bg-theme-primary rounded-lg flex items-center justify-center shadow-lg">
+                                            {navItems[0]?.icon}
+                                        </div>
+                                    )}
                                 </div>
                                 <div>
-                                    <div className="text-[11px] font-black text-theme-title uppercase tracking-widest">{config.branding.title || config.branding.name}</div>
-                                    <div className="text-[9px] text-theme-primary font-mono uppercase tracking-widest">{config.branding.subtitle || ""}</div>
+                                    <div className="text-[11px] font-black text-theme-title uppercase tracking-widest leading-tight">{config.branding.title || config.branding.name}</div>
+                                    <div className="text-[9px] text-theme-primary font-bold uppercase tracking-[0.2em]">{config.branding.subtitle || ""}</div>
                                 </div>
                             </div>
                             <button onClick={toggleNav} className="p-1.5 rounded-lg text-theme-muted hover:bg-theme-primary/10 hover:text-theme-primary transition-all">
