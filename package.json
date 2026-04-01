@@ -6,7 +6,8 @@
   "main": "./src/index.ts",
   "exports": {
     ".": "./src/index.ts",
-    "./style.css": "./src/styles/sarak-base.css"
+    "./style.css": "./src/styles/sarak-base.css",
+    "./sarak-base.css": "./src/styles/sarak-base.css"
   },
   "dependencies": {
     "tailwindcss": "^4.0.0",
