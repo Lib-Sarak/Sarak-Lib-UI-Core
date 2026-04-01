@@ -1,17 +1,76 @@
 @theme {
-  /* Sarak OS v4 Design Tokens */
-  --color-theme-primary: var(--primary-color, #3b82f6);
-  --color-theme-secondary: var(--secondary-color, #10b981);
-  --color-theme-bg: var(--bg-body-color, #0f172a);
-  --color-theme-surface: var(--bg-card-color, rgba(255, 255, 255, 0.05));
+  /* Sarak OS v8 Design Tokens */
+  --color-theme-primary: var(--theme-primary, #3b82f6);
+  --color-theme-secondary: var(--theme-secondary, #10b981);
+  --color-theme-body: var(--theme-body, #0f172a);
+  --color-theme-card: var(--theme-card, rgba(255, 255, 255, 0.05));
+  --color-theme-sidebar: var(--theme-sidebar, #0f172a);
+  --color-theme-border: var(--theme-border, rgba(255, 255, 255, 0.1));
+  --color-theme-text: var(--theme-text, #ffffff);
+  --color-theme-muted: var(--theme-muted, #94a3b8);
   
   /* Glassmorphism Presets */
-  --glass-blur: 12px;
-  --glass-bg: rgba(255, 255, 255, 0.03);
-  --glass-border: rgba(255, 255, 255, 0.1);
+  --glass-blur: var(--theme-glass-blur, 12px);
+  --glass-opacity: var(--theme-glass-opacity, 0.1);
+  --glass-border: var(--theme-border, rgba(255, 255, 255, 0.1));
   
   /* Layout Tokens */
-  --radius-theme: 12px;
+  --radius-theme: var(--theme-radius, 12px);
+  --theme-padding: var(--theme-padding, 1.5rem);
+  --theme-gap: var(--theme-gap, 1.5rem);
+}
+
+/* Master Layouts */
+.layout-glass {
+  --theme-glass-blur: 25px;
+  --theme-glass-opacity: 0.1;
+  --card-style: glass;
+}
+
+.layout-corporate {
+  --theme-radius: 4px;
+  --theme-glass-blur: 0px;
+  --card-style: solid;
+}
+
+.layout-minimal {
+  --theme-radius: 0px;
+  --theme-padding: 2rem;
+  --card-style: solid;
+}
+
+.layout-technical {
+  --theme-radius: 0px;
+  --bg-texture: grid;
+  --card-style: solid;
+}
+
+.layout-prestige {
+  --theme-radius: 24px;
+  --theme-glass-blur: 20px;
+  --card-style: glass;
+}
+
+.layout-atmospheric {
+  --theme-radius: 32px;
+  --theme-glass-blur: 40px;
+  --card-style: glass;
+}
+
+/* Sarak Cards & Glass */
+.sarak-card {
+  padding: var(--theme-padding);
+  gap: var(--theme-gap);
+  border-radius: var(--radius-theme);
+  transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+.sarak-glass {
+  background: rgba(var(--theme-card-rgb, 255, 255, 255), var(--glass-opacity));
+  backdrop-filter: blur(var(--glass-blur)) saturate(180%);
+  -webkit-backdrop-filter: blur(var(--glass-blur)) saturate(180%);
+  border: 1px solid var(--glass-border);
+  border-radius: var(--radius-theme);
 }
 
 .sarak-glass {

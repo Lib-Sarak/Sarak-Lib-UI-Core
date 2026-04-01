@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
 import { ChevronRight, ChevronDown, ChevronLeft, ChevronUp, Keyboard, X } from 'lucide-react';
-import { useTheme, useShortcut, ANIMATION_VARIANTS, EMOJI_SETS } from '@sarak/lib-shared';
+import { useTheme, useShortcut, ANIMATION_VARIANTS, EMOJI_SETS, useSarak } from '@sarak/lib-shared';
 import ShortcutsModal from './ShortcutsModal';
 import { ThemeToggle, UserMenu } from './Controls';
 import LanguageSettingsModal from './LanguageSettingsModal';
@@ -31,12 +31,22 @@ const SarakShell = ({
         emojiSet
     } = useTheme();
 
+    const { registeredModules } = useSarak();
+
     const variants = ANIMATION_VARIANTS[animationStyle] || ANIMATION_VARIANTS.standard;
     const currentEmojiSet = EMOJI_SETS[emojiSet] || {};
 
     const [isResizing, setIsResizing] = useState(false);
 
-    const navItems = config.navigation || config.tabs || [];
+    // Dynamic Navigation Logic
+    const navItems = (config?.navigation || config?.tabs || []).length > 0
+        ? (config?.navigation || config?.tabs)
+        : registeredModules.map(m => ({
+            id: m.id,
+            label: m.label,
+            icon: m.icon,
+            component: m.component
+        }));
 
     useShortcut({ id: 'ui:focusMode', name: "Hide/Show Navigation Bar", category: "View" }, () => toggleNav());
     useShortcut({ id: 'ui:openShortcuts', name: "Open Shortcut Center", category: "View" }, () => setIsShortcutsOpen(prev => !prev));
@@ -214,7 +224,14 @@ const SarakShell = ({
                         transition={variants.page.transition}
                         className="absolute inset-0 overflow-y-auto custom-scrollbar p-6 lg:p-10"
                     >
-                        {renderContent(activeTab)}
+                        {(() => {
+                            const activeModule = navItems.find(item => item.id === activeTab);
+                            if (activeModule?.component) {
+                                const Component = activeModule.component;
+                                return <Component />;
+                            }
+                            return renderContent ? renderContent(activeTab) : null;
+                        })()}
                     </motion.div>
                 </AnimatePresence>
             </main>
