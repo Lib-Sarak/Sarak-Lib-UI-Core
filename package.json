@@ -5,7 +5,8 @@
   "type": "module",
   "main": "frontend/src/index.js",
   "exports": {
-    ".": "./frontend/src/index.js"
+    ".": "./frontend/src/index.js",
+    "./sarak-base.css": "./src/styles/sarak-base.css"
   },
   "dependencies": {
     "tailwindcss": "^4.0.0",
