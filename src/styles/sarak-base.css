@@ -20,6 +20,14 @@
   --theme-gap: var(--theme-gap, 1.5rem);
 }
 
+/* Aplicação Global dos Tokens ao Body */
+body {
+  /* Fallback inteligente para garantir que nunca fique branco */
+  background-color: var(--bg-body, var(--theme-body, #0f172a)) !important;
+  color: var(--theme-text, #ffffff) !important;
+  transition: background-color 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+}
+
 /* Master Layouts */
 .layout-glass {
   --theme-glass-blur: 25px;
