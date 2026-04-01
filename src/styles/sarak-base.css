@@ -18,6 +18,60 @@
   --radius-theme: var(--theme-radius, 12px);
   --theme-padding: var(--theme-padding, 1.5rem);
   --theme-gap: var(--theme-gap, 1.5rem);
+
+  /* Texture Tokens */
+  --texture-opacity: var(--theme-texture-opacity, 0.03);
+  --texture-size: var(--theme-texture-size, 32px);
+  --texture-color: var(--theme-texture-color, currentColor);
+}
+
+/* Aplicação Global de Tipografia e Reset */
+html, body {
+  font-family: var(--font-main, 'Inter', sans-serif);
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+}
+
+h1, h2, h3, h4, h5, h6 {
+  font-family: var(--font-heading, 'Outfit', sans-serif);
+  letter-spacing: -0.02em;
+}
+
+/* Texture Engine: O Coração Visual do Sarak OS */
+body::before {
+  content: "";
+  position: fixed;
+  inset: 0;
+  z-index: -1;
+  pointer-events: none;
+  opacity: var(--texture-opacity);
+  transition: opacity 0.5s ease;
+}
+
+/* Grids & Patterns */
+.texture-grid body::before {
+  background-image: 
+    linear-gradient(var(--texture-color) 1px, transparent 1px),
+    linear-gradient(90deg, var(--texture-color) 1px, transparent 1px);
+  background-size: var(--texture-size) var(--texture-size);
+}
+
+.texture-dots body::before {
+  background-image: radial-gradient(var(--texture-color) 1px, transparent 1px);
+  background-size: calc(var(--texture-size) / 2) calc(var(--texture-size) / 2);
+}
+
+.texture-scanlines body::before {
+  background: linear-gradient(
+    rgba(18, 16, 16, 0) 50%, 
+    rgba(0, 0, 0, 0.1) 50%
+  );
+  background-size: 100% 4px;
+}
+
+.texture-circuit body::before {
+  background-image: url("data:image/svg+xml,%3Csvg width='100' height='100' viewBox='0 0 100 100' xmlns='http://www.w3.org/2000/svg'%3E%3Cpath d='M10 10h80v80h-80z' fill='none' stroke='%23fff' stroke-width='0.5'/%3E%3C/svg%3E");
+  background-size: 100px 100px;
 }
 
 /* Aplicação Global dos Tokens ao Body */
