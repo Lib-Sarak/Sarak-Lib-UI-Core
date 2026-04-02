@@ -1,6 +1,6 @@
 {
   "name": "@sarak/lib-ui-core",
-  "version": "1.0.1",
+  "version": "1.0.2",
   "description": "Sarak Design System and UI Engine",
   "type": "module",
   "main": "./src/index.ts",
