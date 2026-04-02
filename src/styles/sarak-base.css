@@ -1,9 +1,12 @@
+@import "tailwindcss";
+@import "tailwindcss/theme";
+
 @theme {
-  /* Sarak OS v8 Design Tokens */
+  /* Sarak OS v9 Design Tokens */
   --color-theme-primary: var(--theme-primary, #3b82f6);
   --color-theme-secondary: var(--theme-secondary, #10b981);
   --color-theme-body: var(--theme-body, #0f172a);
-  --color-theme-card: var(--theme-card, rgba(255, 255, 255, 0.05));
+  --color-theme-card: var(--theme-card, rgba(23, 23, 23, 0.5));
   --color-theme-sidebar: var(--theme-sidebar, #0f172a);
   --color-theme-border: var(--theme-border, rgba(255, 255, 255, 0.1));
   --color-theme-text: var(--theme-text, #ffffff);
