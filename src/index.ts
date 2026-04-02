@@ -9,6 +9,7 @@
  *   import '@sarak/lib-ui-core/style.css';
  */
 export * from './themes';
+import { registerSarakModule } from '@sarak/lib-shared';
 
 import React, { useEffect, ReactNode } from 'react';
 
@@ -46,3 +47,15 @@ export const SarakUIProvider: React.FC<{ children: ReactNode, theme?: string }> 
 
     return children as any;
 };
+
+// Registro Matrix: Aba de Customização
+registerSarakModule({
+    id: 'customization',
+    label: 'Customização',
+    icon: 'Palette',
+    category: 'Sistema',
+    subItems: [
+        { id: 'themes', label: 'Temas', icon: 'Paintbrush' },
+        { id: 'branding', label: 'Branding', icon: 'Image' }
+    ]
+});
