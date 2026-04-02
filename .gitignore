@@ -15,4 +15,4 @@ node_modules/
 
 # Gerados no packaging
 build/
-dist/
+# dist/ <-- Removido para permitir o push do CSS pré-compilado (v2.0+)
