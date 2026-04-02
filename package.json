@@ -1,6 +1,6 @@
 {
   "name": "@sarak/lib-ui-core",
-  "version": "1.0.0",
+  "version": "1.0.1",
   "description": "Sarak Design System and UI Engine",
   "type": "module",
   "main": "./src/index.ts",
@@ -13,6 +13,8 @@
     "tailwindcss": "^4.0.0",
     "framer-motion": "^11.0.0",
     "lucide-react": "^0.284.0",
-    "axios": "^1.6.0"
+    "axios": "^1.6.0",
+    "react": "^18.0.0",
+    "react-dom": "^18.0.0"
   }
 }
