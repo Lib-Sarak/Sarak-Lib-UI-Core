@@ -10,6 +10,8 @@
  */
 export * from './themes';
 
+import React, { useEffect, ReactNode } from 'react';
+
 /**
  * Injeta o tema Sarak no documento.
  *
@@ -28,3 +30,19 @@ export function initSarakTheme(preset: string = 'glass'): void {
     const root = document.documentElement;
     root.setAttribute('data-sarak-theme', preset);
 }
+
+/**
+ * SarakProvider — Provedor Visual Core
+ *
+ * Gerencia a inicialização do Design System e disponibiliza
+ * o wrapper de interface necessário para o Sarak OS.
+ *
+ * @param preset - Tema inicial. Padrão: 'glass'
+ */
+export const SarakProvider: React.FC<{ children: ReactNode, theme?: string }> = ({ children, theme = 'glass' }) => {
+    useEffect(() => {
+        initSarakTheme(theme);
+    }, [theme]);
+
+    return children as any;
+};
