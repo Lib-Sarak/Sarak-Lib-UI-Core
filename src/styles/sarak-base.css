@@ -1,6 +1,11 @@
 @import "tailwindcss";
 @import "tailwindcss/theme";
 
+/* Master Scan: Incluindo todos os componentes do ecossistema Sarak no Motor Gráfico */
+@source "../../../Sarak-Lib-Auth-Identity/frontend/src/**/*.tsx";
+@source "../../../Sarak-Lib-Shared/frontend/src/**/*.tsx";
+@source "../../**/*.{ts,tsx}";
+
 @theme {
   /* Sarak OS v9 Design Tokens */
   --color-theme-primary: var(--theme-primary, #3b82f6);
