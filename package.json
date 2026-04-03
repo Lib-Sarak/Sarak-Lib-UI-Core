@@ -12,9 +12,9 @@
                 },
     "exports":  {
                     ".":  {
-                              "import":  "./dist/index.js",
-                              "require":  "./dist/index.cjs",
-                              "types":  "./dist/index.d.ts"
+                              "require":  "./src/index.ts",
+                              "types":  "./src/index.ts",
+                              "import":  "./src/index.ts"
                           },
                     "./style.css":  "./dist/style.css",
                     "./sarak-base.css":  "./src/styles/sarak-base.css"
