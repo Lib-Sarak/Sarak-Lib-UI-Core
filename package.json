@@ -5,21 +5,41 @@
   "type": "module",
   "main": "./src/index.ts",
   "scripts": {
-    "build:css": "tailwindcss -i ./src/styles/sarak-base.css -o ./dist/style.css --minify",
-    "prepublishOnly": "npm run build:css"
+    "build:css": "npx @tailwindcss/cli -i ./src/styles/sarak-base.css -o ./dist/style.css --minify",
+    "build:js": "tsup src/index.ts --format esm,cjs --dts --clean --minify --external react,react-dom,framer-motion,lucide-react,@sarak/lib-shared",
+    "build": "npm run build:css && npm run build:js",
+    "prepublishOnly": "npm run build"
   },
   "exports": {
-    ".": "./src/index.ts",
+    ".": {
+      "import": "./dist/index.js",
+      "require": "./dist/index.cjs",
+      "types": "./dist/index.d.ts"
+    },
     "./style.css": "./dist/style.css",
-    "./sarak-base.css": "./dist/style.css"
+    "./sarak-base.css": "./src/styles/sarak-base.css"
   },
   "dependencies": {
-    "@tailwindcss/cli": "^4.2.2",
     "axios": "^1.6.0",
-    "framer-motion": "^11.0.0",
-    "lucide-react": "^0.284.0",
+    "@sarak/lib-shared": "github:Lib-Sarak/Sarak-Lib-Shared"
+  },
+  "peerDependencies": {
+    "react": ">=18.0.0",
+    "react-dom": ">=18.0.0",
+    "framer-motion": ">=11.0.0",
+    "lucide-react": ">=0.284.0",
+    "tailwindcss": ">=4.0.0"
+  },
+  "devDependencies": {
     "react": "^18.0.0",
     "react-dom": "^18.0.0",
-    "tailwindcss": "^4.0.0"
+    "framer-motion": "^11.0.0",
+    "lucide-react": "^0.284.0",
+    "tsup": "^8.0.0",
+    "typescript": "^5.0.0",
+    "@types/react": "^18.0.0",
+    "@types/react-dom": "^18.0.0",
+    "tailwindcss": "^4.0.0",
+    "@tailwindcss/cli": "^4.2.2"
   }
 }
