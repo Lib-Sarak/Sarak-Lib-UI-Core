@@ -13,7 +13,7 @@ interface ExpandableCardProps {
     baseHeight?: number;
 }
 
-const ExpandableCard: React.FC<ExpandableCardProps> = ({
+export const ExpandableCard: React.FC<ExpandableCardProps> = ({
     title,
     iconContent,
     helpButton,
@@ -114,5 +114,3 @@ const ExpandableCard: React.FC<ExpandableCardProps> = ({
         </>
     );
 };
-
-export default ExpandableCard;
