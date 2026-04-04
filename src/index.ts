@@ -48,6 +48,11 @@ export const SarakUIProvider: React.FC<{ children: ReactNode, theme?: string }> 
     return children as any;
 };
 
+// Componentes Reutilizáveis
+export * from './components/ExpandableCard';
+export * from './components/Controls';
+export * from './components/SarakShell';
+
 // Registro Matrix: Aba de Customização
 registerSarakModule({
     id: 'customization',
