@@ -172,7 +172,10 @@ export const SarakShell: React.FC<SarakShellProps> = ({
                     
                     <div className="max-w-[1600px] min-h-full mx-auto p-8 animate-in fade-in slide-in-from-bottom-4 duration-1000 relative z-10 w-full">
                         {activeModule && activeModule.component ? (
-                            <activeModule.component />
+                            (() => {
+                                const DynamicComponent = activeModule.component;
+                                return <DynamicComponent />;
+                            })()
                         ) : (
                             <div className="flex flex-col items-center justify-center min-h-[60vh] text-white/20 border-2 border-dashed border-white/5 rounded-3xl">
                                 <LayoutDashboard size={48} className="mb-4 opacity-10" />

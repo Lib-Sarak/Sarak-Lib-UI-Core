@@ -9,6 +9,7 @@ export * from '@sarak/lib-shared';
 
 // Componentes de Controle de Engine
 export { default as ThemeToggle } from './components/ThemeToggle';
+export { default as SarakUIProvider } from './components/SarakUIProvider';
 
 // Componentes de Layout e UI
 export * from './components/ExpandableCard';

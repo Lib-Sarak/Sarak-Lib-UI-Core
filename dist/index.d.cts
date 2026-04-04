@@ -4,6 +4,17 @@ import * as react_jsx_runtime from 'react/jsx-runtime';
 
 declare const ThemeToggle: React.FC;
 
+interface SarakUIProviderProps {
+    children: ReactNode;
+    theme?: string;
+}
+/**
+ * SarakUIProvider (Elite v5.2)
+ * Injetor de tokens de design e motor de renderização de temas.
+ * Sincroniza o estado global da Lib-Shared com as classes de CSS da UI-Core.
+ */
+declare const SarakUIProvider: React.FC<SarakUIProviderProps>;
+
 interface ExpandableCardProps {
     title: string;
     iconContent?: React.ReactNode;
@@ -46,4 +57,4 @@ declare const SarakShell: React.FC<SarakShellProps>;
  */
 declare const CustomizationPanel: React.FC;
 
-export { CustomizationPanel, ExpandableCard, LanguageSelector, ModuleSelector, SarakShell, ThemeToggle, UserMenu };
+export { CustomizationPanel, ExpandableCard, LanguageSelector, ModuleSelector, SarakShell, SarakUIProvider, ThemeToggle, UserMenu };
