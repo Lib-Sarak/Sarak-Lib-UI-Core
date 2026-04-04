@@ -4,10 +4,6 @@ import * as react_jsx_runtime from 'react/jsx-runtime';
 
 declare const ThemeToggle: React.FC;
 
-declare const LanguageSelector: React.FC;
-
-declare const GoogleTranslateWidget: () => react_jsx_runtime.JSX.Element;
-
 interface ExpandableCardProps {
     title: string;
     iconContent?: React.ReactNode;
@@ -19,6 +15,7 @@ interface ExpandableCardProps {
 }
 declare const ExpandableCard: React.FC<ExpandableCardProps>;
 
+declare const LanguageSelector: () => react_jsx_runtime.JSX.Element;
 declare const UserMenu: ({ user, onPasswordModal, onLogout }: {
     user: any;
     onPasswordModal: () => void;
@@ -49,4 +46,4 @@ declare const SarakShell: React.FC<SarakShellProps>;
  */
 declare const CustomizationPanel: React.FC;
 
-export { CustomizationPanel, ExpandableCard, GoogleTranslateWidget, LanguageSelector, ModuleSelector, SarakShell, ThemeToggle, UserMenu };
+export { CustomizationPanel, ExpandableCard, LanguageSelector, ModuleSelector, SarakShell, ThemeToggle, UserMenu };
