@@ -76,7 +76,14 @@ export const SarakShell: React.FC<SarakShellProps> = ({
                 {/* Content Area */}
                 <main className="flex-1 overflow-y-auto p-8 relative bg-gradient-to-tr from-[#0a0a0b] via-[#0a0a0b] to-[#111116]">
                     <div className="max-w-[1400px] mx-auto animate-in fade-in slide-in-from-bottom-4 duration-700">
-                        {activeModule ? <activeModule.component /> : children}
+                        {activeModule && activeModule.component ? (
+                            <activeModule.component />
+                        ) : (
+                            <div className="flex flex-col items-center justify-center h-64 text-white/30 border-2 border-dashed border-white/5 rounded-2xl">
+                                <p className="text-sm font-light italic">Módulo selecionado mas sem interface implementada.</p>
+                                {children}
+                            </div>
+                        )}
                     </div>
                 </main>
             </div>

@@ -53,12 +53,15 @@ export * from './components/ExpandableCard';
 export * from './components/Controls';
 export * from './components/SarakShell';
 
+import { CustomizationPanel } from './components/CustomizationPanel';
+
 // Registro Matrix: Aba de Customização
 registerSarakModule({
     id: 'customization',
     label: 'Customização',
     icon: 'Palette',
     category: 'Sistema',
+    component: CustomizationPanel, // Fix: Properly linked component
     subItems: [
         { id: 'themes', label: 'Temas', icon: 'Paintbrush' },
         { id: 'branding', label: 'Branding', icon: 'Image' }
