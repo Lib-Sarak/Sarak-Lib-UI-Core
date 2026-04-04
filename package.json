@@ -17,7 +17,11 @@
                               "import":  "./src/index.ts"
                           },
                     "./style.css":  "./dist/style.css",
-                    "./sarak-base.css":  "./src/styles/sarak-base.css"
+                    "./sarak-base.css":  {
+                               "style":  "./src/styles/sarak-base.css",
+                               "import":  "./src/styles/sarak-base.css",
+                               "default":  "./src/styles/sarak-base.css"
+                           }
                 },
     "dependencies":  {
                          "axios":  "^1.6.0",
