@@ -3,7 +3,9 @@
     "version": "2.1.2",
     "description": "Sarak Design System and UI Engine [Pre-compiled]",
     "type": "module",
-    "main": "./src/index.ts",
+    "main": "./dist/index.js",
+    "module": "./dist/index.js",
+    "types": "./dist/index.d.ts",
     "scripts": {
         "build:css": "npx @tailwindcss/cli -i ./src/styles/sarak-base.css -o ./dist/style.css --minify",
         "build:js": "tsup src/index.ts --format esm,cjs --dts --clean --minify --external react,react-dom,framer-motion,lucide-react",
@@ -12,9 +14,9 @@
     },
     "exports": {
         ".": {
-            "require": "./src/index.ts",
-            "types": "./src/index.ts",
-            "import": "./src/index.ts"
+            "require": "./dist/index.cjs",
+            "import": "./dist/index.js",
+            "types": "./dist/index.d.ts"
         },
         "./style.css": "./dist/style.css",
         "./sarak-base.css": {
@@ -24,7 +26,7 @@
         }
     },
     "dependencies": {
-        "@sarak/lib-shared": "file:../Sarak-Lib-Shared",
+        "@sarak/lib-shared": "github:Lib-Sarak/Sarak-Lib-Shared",
         "axios": "^1.6.0"
     },
     "peerDependencies": {
