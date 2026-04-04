@@ -8,6 +8,10 @@
     "declaration": true,
     "emitDeclarationOnly": true,
     "outDir": "./dist",
+    "baseUrl": ".",
+    "paths": {
+      "@sarak/lib-shared": ["../Sarak-Lib-Shared/src/index"]
+    },
     "esModuleInterop": true,
     "strict": true
   },

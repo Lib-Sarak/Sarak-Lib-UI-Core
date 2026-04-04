@@ -1,49 +1,49 @@
 {
-    "name":  "@sarak/lib-ui-core",
-    "version":  "2.1.2",
-    "description":  "Sarak Design System and UI Engine [Pre-compiled]",
-    "type":  "module",
-    "main":  "./src/index.ts",
-    "scripts":  {
-                    "build:css":  "npx @tailwindcss/cli -i ./src/styles/sarak-base.css -o ./dist/style.css --minify",
-                    "build:js":  "tsup src/index.ts --format esm,cjs --dts --clean --minify --external react,react-dom,framer-motion,lucide-react,@sarak/lib-shared",
-                    "build":  "npm run build:css \u0026\u0026 npm run build:js",
-                    "prepublishOnly":  "npm run build"
-                },
-    "exports":  {
-                    ".":  {
-                              "require":  "./src/index.ts",
-                              "types":  "./src/index.ts",
-                              "import":  "./src/index.ts"
-                          },
-                    "./style.css":  "./dist/style.css",
-                    "./sarak-base.css":  {
-                               "style":  "./src/styles/sarak-base.css",
-                               "import":  "./src/styles/sarak-base.css",
-                               "default":  "./src/styles/sarak-base.css"
-                           }
-                },
-    "dependencies":  {
-                         "axios":  "^1.6.0",
-                         "@sarak/lib-shared":  "github:Lib-Sarak/Sarak-Lib-Shared"
-                     },
-    "peerDependencies":  {
-                             "react":  "\u003e=18.0.0",
-                             "react-dom":  "\u003e=18.0.0",
-                             "framer-motion":  "\u003e=11.0.0",
-                             "lucide-react":  "\u003e=0.284.0",
-                             "tailwindcss":  "\u003e=4.0.0"
-                         },
-    "devDependencies":  {
-                            "react":  "^18.0.0",
-                            "react-dom":  "^18.0.0",
-                            "framer-motion":  "^11.0.0",
-                            "lucide-react":  "^0.284.0",
-                            "tsup":  "^8.0.0",
-                            "typescript":  "^5.0.0",
-                            "@types/react":  "^18.0.0",
-                            "@types/react-dom":  "^18.0.0",
-                            "tailwindcss":  "^4.0.0",
-                            "@tailwindcss/cli":  "^4.2.2"
-                        }
+    "name": "@sarak/lib-ui-core",
+    "version": "2.1.2",
+    "description": "Sarak Design System and UI Engine [Pre-compiled]",
+    "type": "module",
+    "main": "./src/index.ts",
+    "scripts": {
+        "build:css": "npx @tailwindcss/cli -i ./src/styles/sarak-base.css -o ./dist/style.css --minify",
+        "build:js": "tsup src/index.ts --format esm,cjs --dts --clean --minify --external react,react-dom,framer-motion,lucide-react",
+        "build": "npm run build:css && npm run build:js",
+        "prepublishOnly": "npm run build"
+    },
+    "exports": {
+        ".": {
+            "require": "./src/index.ts",
+            "types": "./src/index.ts",
+            "import": "./src/index.ts"
+        },
+        "./style.css": "./dist/style.css",
+        "./sarak-base.css": {
+            "style": "./src/styles/sarak-base.css",
+            "import": "./src/styles/sarak-base.css",
+            "default": "./src/styles/sarak-base.css"
+        }
+    },
+    "dependencies": {
+        "@sarak/lib-shared": "file:../Sarak-Lib-Shared",
+        "axios": "^1.6.0"
+    },
+    "peerDependencies": {
+        "framer-motion": ">=11.0.0",
+        "lucide-react": ">=0.284.0",
+        "react": ">=18.0.0",
+        "react-dom": ">=18.0.0",
+        "tailwindcss": ">=4.0.0"
+    },
+    "devDependencies": {
+        "@tailwindcss/cli": "^4.2.2",
+        "@types/react": "^18.0.0",
+        "@types/react-dom": "^18.0.0",
+        "framer-motion": "^11.0.0",
+        "lucide-react": "^0.284.0",
+        "react": "^18.0.0",
+        "react-dom": "^18.0.0",
+        "tailwindcss": "^4.0.0",
+        "tsup": "^8.0.0",
+        "typescript": "^5.0.0"
+    }
 }

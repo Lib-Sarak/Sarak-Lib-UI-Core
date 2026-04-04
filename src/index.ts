@@ -1,69 +1,36 @@
 /**
- * Sarak UI Core — Entry Point Unificado
- *
- * Exporta o Design System completo: presets de tema, tokens de tipografia,
- * efeitos visuais, texturas e o Theme Engine de inicialização.
- *
- * Uso:
- *   import { BASE_PRESETS, initSarakTheme } from '@sarak/lib-ui-core';
- *   import '@sarak/lib-ui-core/style.css';
+ * Sarak UI Core — Entry Point Elite v5.2
+ * 
+ * Portal de Componentes e Motor de Interface do Ecossistema Sarak.
  */
-export * from './themes';
-import { registerSarakModule } from '@sarak/lib-shared';
 
-import React, { useEffect, ReactNode } from 'react';
+// Re-exporta o motor central do Shared (Single Source of Truth)
+export * from '@sarak/lib-shared';
 
-/**
- * Injeta o tema Sarak no documento.
- *
- * Aplica o atributo data-sarak-theme no <html> para ativação de variáveis CSS
- * e garante que o link de estilo base não seja duplicado em re-renders.
- *
- * Deve ser chamada uma única vez no bootstrap da aplicação,
- * após importar o CSS via: `import '@sarak/lib-ui-core/style.css'`
- *
- * @param preset - Chave do preset de tema (key do BASE_PRESETS). Padrão: 'glass'
- */
-export function initSarakTheme(preset: string = 'glass'): void {
-    // Guard para SSR — não executa fora do browser
-    if (typeof document === 'undefined') return;
+// Componentes de Controle de Engine
+export { default as ThemeToggle } from './components/ThemeToggle';
+export { default as LanguageSelector } from './components/LanguageSelector';
+export { default as GoogleTranslateWidget } from './components/GoogleTranslateWidget';
 
-    const root = document.documentElement;
-    root.setAttribute('data-sarak-theme', preset);
-}
-
-/**
- * SarakUIProvider — Provedor Visual Core
- *
- * Gerencia a inicialização do Design System e disponibiliza
- * o wrapper de interface necessário para o Sarak OS.
- *
- * @param preset - Tema inicial. Padrão: 'glass'
- */
-export const SarakUIProvider: React.FC<{ children: ReactNode, theme?: string }> = ({ children, theme = 'glass' }) => {
-    useEffect(() => {
-        initSarakTheme(theme);
-    }, [theme]);
-
-    return children as any;
-};
-
-// Componentes Reutilizáveis
+// Componentes de Layout e UI
 export * from './components/ExpandableCard';
 export * from './components/Controls';
 export * from './components/SarakShell';
+export * from './components/CustomizationPanel';
 
+import { registerSarakModule } from '@sarak/lib-shared';
 import { CustomizationPanel } from './components/CustomizationPanel';
 
-// Registro Matrix: Aba de Customização
+// Auto-Registro Matrix (Plug & Play): Aba de Customização do Sistema
 registerSarakModule({
-    id: 'customization',
+    id: 'mx-customization',
     label: 'Customização',
     icon: 'Palette',
     category: 'Sistema',
-    component: CustomizationPanel, // Fix: Properly linked component
+    priority: 99, // Alta prioridade no menu de sistema
+    component: CustomizationPanel,
     subItems: [
-        { id: 'themes', label: 'Temas', icon: 'Paintbrush' },
-        { id: 'branding', label: 'Branding', icon: 'Image' }
+        { id: 'themes', label: 'Temas Ativos', icon: 'Paintbrush' },
+        { id: 'branding', label: 'Identidade Visual', icon: 'Fingerprint' }
     ]
 });
