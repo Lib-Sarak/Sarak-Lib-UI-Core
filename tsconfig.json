@@ -10,7 +10,8 @@
     "outDir": "./dist",
     "baseUrl": ".",
     "paths": {
-      "@sarak/lib-shared": ["../Sarak-Lib-Shared/src/index"]
+      "@sarak/lib-shared": ["../Sarak-Lib-Shared/src/index"],
+      "@sarak/lib-translator-google": ["../Sarak-Lib-Translator-Google/src/index"]
     },
     "esModuleInterop": true,
     "strict": true

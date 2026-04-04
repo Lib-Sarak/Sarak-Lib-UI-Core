@@ -3,8 +3,7 @@ import { useSarak, getRegisteredModules, SarakModule, LAYOUTS } from '@sarak/lib
 import * as LucideIcons from 'lucide-react';
 import { LogOut, User, Menu, X, ChevronRight, LayoutDashboard } from 'lucide-react';
 import ThemeToggle from './ThemeToggle';
-import LanguageSelector from './LanguageSelector';
-import GoogleTranslateWidget from './GoogleTranslateWidget';
+import { GoogleTranslateWidget, LanguagePicker } from '@sarak/lib-translator-google';
 
 // Helper para renderizar ícone Lucide dinamicamente
 const IconRenderer = ({ name, className }: { name?: string, className?: string }) => {
@@ -89,7 +88,7 @@ export const SarakShell: React.FC<SarakShellProps> = ({
                     {/* Controles de Engine */}
                     <div className="flex items-center gap-2 pr-4 border-r border-white/5 mr-2">
                         <ThemeToggle />
-                        <LanguageSelector />
+                        <LanguagePicker />
                     </div>
 
                     {/* Perfil do Usuário */}
