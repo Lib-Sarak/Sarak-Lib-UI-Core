@@ -159,7 +159,7 @@ export const ThemeCustomizationTab: React.FC = () => {
                                 initial={{ opacity: 0, x: -20 }}
                                 animate={{ opacity: 1, x: 0 }}
                                 exit={{ opacity: 0, x: -20 }}
-                                className="flex-1 flex flex-col min-h-0 overflow-y-auto custom-scrollbar"
+                                className="flex-1 flex flex-col min-h-0 overflow-y-auto custom-scrollbar max-h-[calc(100vh-280px)]"
                             >
                                 <div className="p-6">
                                     <button

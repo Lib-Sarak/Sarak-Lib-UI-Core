@@ -27,14 +27,17 @@ html, body {
   -webkit-font-smoothing: antialiased;
 }
 
-body {
-  top: 0 !important;
+/* Custom Scrollbar Elite */
+.custom-scrollbar {
+  overflow-y: auto !important;
+  scrollbar-width: thin;
+  scrollbar-color: var(--theme-primary, #3b82f6) transparent;
 }
 
-/* Custom Scrollbar Elite */
 .custom-scrollbar::-webkit-scrollbar {
   width: 6px !important;
   height: 6px !important;
+  display: block !important;
 }
 
 .custom-scrollbar::-webkit-scrollbar-track {
@@ -81,15 +84,30 @@ iframe[id*="google_translate"] {
 
 /* 1. MODERN GLASS */
 .layout-glass, [class*="theme-glass"] {
+  --theme-body: #020617;
+  --theme-sidebar: #0f172a;
+  --theme-card: rgba(30, 41, 59, 0.7);
+  --theme-border: rgba(255, 255, 255, 0.05);
   --radius-theme: 32px;
   --glass-blur: 24px;
   --glass-opacity: 0.75;
 }
 
-/* 2. SOLID CORPORATE */
-.layout-corporate, [class*="theme-corporate"] {
-  --radius-theme: 8px;
+/* 2. SOLID CORPORATE (Includes Neumorphic Base) */
+.layout-corporate, .layout-neumorphic, [class*="theme-corporate"], [class*="theme-neumorphic"] {
+  --theme-body: #0f172a;
+  --theme-sidebar: #0f172a;
+  --theme-card: #1e293b;
+  --theme-border: #334155;
+  --radius-theme: 12px;
   --theme-gap: 1.25rem;
+}
+
+.light.layout-corporate, .light.layout-neumorphic {
+  --theme-body: #f8fafc;
+  --theme-card: #ffffff;
+  --theme-border: #cbd5e1;
+  --theme-text: #334155;
 }
 
 /* 3. MINIMALIST CLEAN */
@@ -101,6 +119,10 @@ iframe[id*="google_translate"] {
 
 /* 4. TECHNICAL ANALYTICS */
 .layout-technical, [class*="theme-technical"] {
+  --theme-body: #000000;
+  --theme-sidebar: #050505;
+  --theme-card: #080808;
+  --theme-border: var(--theme-primary);
   --radius-theme: 0px;
   --font-main: 'JetBrains Mono', monospace;
   --theme-padding: 0.75rem;
@@ -123,12 +145,20 @@ iframe[id*="google_translate"] {
 
 /* 7. CYBERPUNK / NEON */
 .layout-cyberpunk, [class*="theme-cyberpunk"] {
+  --theme-body: #000000;
+  --theme-sidebar: #050505;
+  --theme-card: #000000;
+  --theme-border: var(--theme-primary);
   --radius-theme: 0px;
   --border-width: 2px;
 }
 
 /* 8. TERMINAL / MAINFRAME */
 .layout-terminal, .layout-mainframe, [class*="theme-terminal"], [class*="theme-mainframe"] {
+  --theme-body: #000000;
+  --theme-sidebar: #020402;
+  --theme-card: #040804;
+  --theme-border: rgba(0, 255, 65, 0.2);
   --radius-theme: 0px;
   --font-main: 'Fira Code', monospace;
 }
