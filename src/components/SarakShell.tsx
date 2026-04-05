@@ -250,7 +250,7 @@ export const SarakShell: React.FC<SarakShellProps> = ({
                 {/* MAIN CONTENT CANVAS */}
                 <main className="flex-1 overflow-hidden relative flex flex-col">
                     <div className="absolute inset-0 pointer-events-none opacity-[0.02] texture-grid"></div>
-                    <div className="max-w-[1700px] mx-auto p-12 min-h-full flex flex-col">
+                    <div className="flex-1 flex flex-col min-h-0 relative">
                         <AnimatePresence mode="wait">
                             {activeModule ? (
                                 <motion.div
@@ -261,7 +261,7 @@ export const SarakShell: React.FC<SarakShellProps> = ({
                                     transition={{ duration: 0.4, ease: "easeOut" }}
                                     className="flex-1"
                                 >
-                                    <header className="mb-10 flex items-end justify-between border-b border-white/5 pb-8">
+                                    <header className="mb-10 flex items-end justify-between border-b border-white/5 pb-8 px-12 pt-12">
                                         <div>
                                             <div className="flex items-center gap-3 text-[var(--theme-primary)] mb-2">
                                                 <div className="p-2 rounded-lg bg-[var(--theme-primary)]/10 border border-[var(--theme-primary)]/20">
@@ -281,7 +281,7 @@ export const SarakShell: React.FC<SarakShellProps> = ({
                                         </div>
                                     </header>
 
-                                    <div className="animate-in fade-in zoom-in-95 duration-700">
+                                    <div className="flex-1 min-h-0 px-12 pb-12 animate-in fade-in zoom-in-95 duration-700">
                                         <activeModule.component />
                                     </div>
                                 </motion.div>
