@@ -1,12 +1,10 @@
 import React, { useState } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
 import { X, Globe, Plus, Trash2, ChevronDown, Check } from 'lucide-react';
-import { useTheme } from '@sarak/lib-shared/contexts/ThemeContext';
-
-import { ALL_LANGUAGES } from '@sarak/lib-shared/constants/engine';
+import { useSarak, ALL_LANGUAGES } from '@sarak/lib-shared';
 
 const LanguageSettingsModal = ({ isOpen, onClose }: { isOpen: boolean, onClose: () => void }) => {
-    const { enabledLanguages, setEnabledLanguages } = useTheme();
+    const { enabledLanguages, setEnabledLanguages } = useSarak();
     const [localLangs, setLocalLangs] = useState(enabledLanguages);
     const [expandedSlot, setExpandedSlot] = useState<number | null>(null);
 
