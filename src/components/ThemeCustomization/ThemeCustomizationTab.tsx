@@ -140,7 +140,7 @@ export const ThemeCustomizationTab: React.FC = () => {
     ];
 
     return (
-        <div className="flex grow overflow-hidden bg-[var(--theme-body)] text-[var(--theme-main)] selection:bg-[var(--theme-primary)] selection:text-white rounded-[var(--radius-theme)] border border-[var(--theme-border)]/50 h-full min-h-[600px]">
+        <div className="flex grow overflow-hidden bg-[var(--theme-body)] text-[var(--theme-main)] selection:bg-[var(--theme-primary)] selection:text-white rounded-[var(--radius-theme)] border border-[var(--theme-border)]/50 h-[calc(100vh-160px)] min-h-0">
 
             {/* Toast Notification */}
             <AnimatePresence>

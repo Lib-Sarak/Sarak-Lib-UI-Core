@@ -25,10 +25,10 @@
         }
     },
     "dependencies": {
-        "@sarak/lib-shared": "github:Lib-Sarak/Sarak-Lib-Shared",
         "axios": "^1.6.0"
     },
     "peerDependencies": {
+        "@sarak/lib-shared": "github:Lib-Sarak/Sarak-Lib-Shared",
         "framer-motion": ">=11.0.0",
         "lucide-react": ">=0.284.0",
         "react": ">=18.0.0",
@@ -36,6 +36,7 @@
         "tailwindcss": ">=4.0.0"
     },
     "devDependencies": {
+        "@sarak/lib-shared": "github:Lib-Sarak/Sarak-Lib-Shared",
         "@tailwindcss/cli": "^4.2.2",
         "@types/react": "^18.0.0",
         "@types/react-dom": "^18.0.0",

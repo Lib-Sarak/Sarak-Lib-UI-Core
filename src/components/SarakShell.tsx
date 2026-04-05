@@ -248,7 +248,7 @@ export const SarakShell: React.FC<SarakShellProps> = ({
                 )}
 
                 {/* MAIN CONTENT CANVAS */}
-                <main className="flex-1 overflow-y-auto custom-scrollbar relative">
+                <main className="flex-1 overflow-hidden relative flex flex-col">
                     <div className="absolute inset-0 pointer-events-none opacity-[0.02] texture-grid"></div>
                     <div className="max-w-[1700px] mx-auto p-12 min-h-full flex flex-col">
                         <AnimatePresence mode="wait">
