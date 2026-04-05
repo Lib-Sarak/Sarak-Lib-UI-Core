@@ -163,6 +163,70 @@ iframe[id*="google_translate"] {
   --font-main: 'Fira Code', monospace;
 }
 
+/* 9. RAW MAIN / BRUTALIST */
+.layout-main, [class*="theme-main"], [class*="theme-brutalist"] {
+  --theme-body: #0a0a0a;
+  --theme-card: #111111;
+  --theme-border: #222222;
+  --radius-theme: 0px;
+  --border-width: 2px;
+}
+
+/* 10. EDITORIAL LUXURY */
+.layout-editorial, [class*="theme-editorial"] {
+  --theme-body: #ffffff;
+  --theme-card: #ffffff;
+  --theme-border: #eeeeee;
+  --theme-text: #1a1a1a;
+  --radius-theme: 0px;
+}
+
+.dark .layout-editorial {
+  --theme-body: #050505;
+  --theme-card: #0a0a0a;
+  --theme-border: #1a1a1a;
+  --theme-text: #ffffff;
+}
+
+/* 11. ETHEREAL MIST */
+.layout-ethereal, [class*="theme-ethereal"] {
+  --radius-theme: 100px;
+  --glass-blur: 60px;
+  --glass-opacity: 0.15;
+}
+
+/* 12. ZEN PARCHMENT */
+.layout-zen_parchment, [class*="theme-zen_parchment"] {
+  --theme-body: #f4f1ea;
+  --theme-card: #f9f7f2;
+  --theme-border: #e2dfd5;
+  --theme-text: #3c3c3c;
+  --radius-theme: 8px;
+}
+
+/* 13. FINANCE PRO */
+.layout-finance_pro, [class*="theme-finance_pro"] {
+  --theme-body: #f1f5f9;
+  --theme-card: #ffffff;
+  --theme-border: #e2e8f0;
+  --radius-theme: 4px;
+}
+
+.dark .layout-finance_pro {
+  --theme-body: #020617;
+  --theme-card: #0f172a;
+  --theme-border: #1e293b;
+}
+
+/* 14. GAMER ELITE */
+.layout-gamer_elite, [class*="theme-gamer_elite"] {
+  --theme-body: #050505;
+  --theme-card: #0a0a0a;
+  --theme-border: var(--theme-primary);
+  --radius-theme: 12px;
+  --border-width: 2px;
+}
+
 /* Apply Glass Effect to Cards based on state */
 .bg-theme-card {
   background: var(--theme-card, #1e293b);
