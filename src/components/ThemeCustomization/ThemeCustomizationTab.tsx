@@ -77,19 +77,30 @@ export const ThemeCustomizationTab: React.FC = () => {
         setViewMode('list');
     };
 
-    const handleApplyGlobally = () => {
-        setLayout(previewLayoutId);
+    const handleApplyGlobally = (forcedId?: string) => {
+        const targetId = forcedId || previewLayoutId;
+        
+        // Se for um ID forçado (vencendo o clique do card), atualiza o preview primeiro
+        if (forcedId && forcedId !== previewLayoutId) {
+            setPreviewLayoutId(forcedId);
+        }
+
+        // Aplicação no Estado Global (Dispara o Effect no SarakProvider)
+        setLayout(targetId);
         setGlobalAnimationStyle(previewAnimationStyle);
         setGlobalEmojiSet(previewEmojiSet);
         setPrimaryColor(previewPrimaryColor);
         setFontScale(previewFontScale);
         setNavigationStyle(previewNavigationStyle);
 
-        Object.entries(config).forEach(([k, v]) => {
-            document.documentElement.style.setProperty(k, v as string);
-        });
+        // Aplicação Forçada de Tokens Custom (se houver config)
+        if (config && Object.keys(config).length > 0) {
+            Object.entries(config).forEach(([k, v]) => {
+                document.documentElement.style.setProperty(k, v as string);
+            });
+        }
 
-        showToast('success', 'Theme applied system-wide!');
+        showToast('success', `Applying Elite Layout "${targetId}" system-wide...`);
     };
 
     const handleEdit = (id: string) => {
@@ -129,7 +140,7 @@ export const ThemeCustomizationTab: React.FC = () => {
     ];
 
     return (
-        <div className="flex grow overflow-hidden bg-[var(--theme-body)] text-[var(--theme-main)] selection:bg-[var(--theme-primary)] selection:text-white rounded-[var(--radius-theme)] border border-[var(--theme-border)]/50">
+        <div className="flex grow overflow-hidden bg-[var(--theme-body)] text-[var(--theme-main)] selection:bg-[var(--theme-primary)] selection:text-white rounded-[var(--radius-theme)] border border-[var(--theme-border)]/50 h-full min-h-[600px]">
 
             {/* Toast Notification */}
             <AnimatePresence>
@@ -159,7 +170,7 @@ export const ThemeCustomizationTab: React.FC = () => {
                                 initial={{ opacity: 0, x: -20 }}
                                 animate={{ opacity: 1, x: 0 }}
                                 exit={{ opacity: 0, x: -20 }}
-                                className="flex-1 flex flex-col min-h-0 overflow-y-auto custom-scrollbar max-h-[calc(100vh-280px)]"
+                                className="flex-1 flex flex-col min-h-0 overflow-y-auto custom-scrollbar"
                             >
                                 <div className="p-6">
                                     <button
@@ -188,7 +199,7 @@ export const ThemeCustomizationTab: React.FC = () => {
                                             previewLayoutId={previewLayoutId}
                                             viewMode={viewMode}
                                             onPreview={setPreviewLayoutId}
-                                            onApply={handleApplyGlobally}
+                                            onApply={(id) => handleApplyGlobally(id)}
                                             onEdit={handleEdit}
                                             onDelete={deleteCustomTheme}
                                         />
