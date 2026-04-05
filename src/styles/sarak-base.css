@@ -1,4 +1,4 @@
-/* Sarak OS v9 Design Tokens */
+/* Sarak OS v9 Design Tokens (Tailwind v4 Compatibility) */
 @theme {
   --color-theme-primary: var(--theme-primary, #3b82f6);
   --color-theme-secondary: var(--theme-secondary, #10b981);
@@ -11,11 +11,50 @@
   --color-theme-title: var(--theme-title, #f8fafc);
 }
 
-/* --- GOOGLE TRANSLATE SUPPRESSION --- */
-body {
-  top: 0px !important;
+/* =========================================
+   SCROLLBAR & GLOBAL RESET
+   ========================================= */
+html, body {
+  margin: 0;
+  padding: 0;
+  width: 100%;
+  height: 100vh;
+  overflow: hidden;
+  background-color: var(--theme-body, #020617);
+  color: var(--theme-main, #ffffff);
+  font-family: var(--font-main, 'Inter', sans-serif);
+  transition: background-color 0.3s ease, color 0.3s ease;
+  -webkit-font-smoothing: antialiased;
 }
 
+body {
+  top: 0 !important;
+}
+
+/* Custom Scrollbar Elite */
+.custom-scrollbar::-webkit-scrollbar {
+  width: 6px !important;
+  height: 6px !important;
+}
+
+.custom-scrollbar::-webkit-scrollbar-track {
+  background: rgba(0, 0, 0, 0.05) !important;
+  border-radius: 10px;
+}
+
+.custom-scrollbar::-webkit-scrollbar-thumb {
+  background: var(--theme-primary, #3b82f6) !important;
+  border-radius: 10px;
+  border: 1px solid rgba(255, 255, 255, 0.05);
+}
+
+.custom-scrollbar::-webkit-scrollbar-thumb:hover {
+  background: var(--theme-primary) !important;
+}
+
+/* =========================================
+   GOOGLE TRANSLATE SUPPRESSION (SILENT)
+   ========================================= */
 .goog-te-banner-frame,
 .goog-te-balloon-frame,
 #google_translate_element,
@@ -23,131 +62,135 @@ body {
 .goog-te-spinner-pos,
 .goog-tooltip,
 #goog-gt-tt,
-.skiptranslate {
+.skiptranslate,
+iframe[id*="google_translate"] {
   display: none !important;
   visibility: hidden !important;
+  opacity: 0 !important;
+  pointer-events: none !important;
 }
 
-/* Aplicação Global de Tipografia e Reset */
-html, body {
-  font-family: var(--font-main, 'Inter', sans-serif);
-  -webkit-font-smoothing: antialiased;
-  -moz-osx-font-smoothing: grayscale;
+.goog-text-highlight {
+  background: transparent !important;
+  box-shadow: none !important;
 }
 
-h1, h2, h3, h4, h5, h6 {
-  font-family: var(--font-heading, 'Outfit', sans-serif);
-  letter-spacing: -0.02em;
+/* =========================================
+   VISUAL PERSONALITIES (MATRIX V5.2 ELITE)
+   ========================================= */
+
+/* 1. MODERN GLASS */
+.layout-glass, [class*="theme-glass"] {
+  --radius-theme: 32px;
+  --glass-blur: 24px;
+  --glass-opacity: 0.75;
 }
 
-/* Texture Engine: O Coração Visual do Sarak OS */
+/* 2. SOLID CORPORATE */
+.layout-corporate, [class*="theme-corporate"] {
+  --radius-theme: 8px;
+  --theme-gap: 1.25rem;
+}
+
+/* 3. MINIMALIST CLEAN */
+.layout-minimal, [class*="theme-minimal"] {
+  --radius-theme: 0px;
+  --theme-gap: 2.5rem;
+  --border-color: #333;
+}
+
+/* 4. TECHNICAL ANALYTICS */
+.layout-technical, [class*="theme-technical"] {
+  --radius-theme: 0px;
+  --font-main: 'JetBrains Mono', monospace;
+  --theme-padding: 0.75rem;
+  --theme-gap: 1px;
+}
+
+/* 5. PRESTIGE EDITORIAL */
+.layout-prestige, [class*="theme-prestige"] {
+  --radius-theme: 24px;
+  --glass-blur: 20px;
+  --glass-opacity: 0.4;
+}
+
+/* 6. DEEP ATMOSPHERIC */
+.layout-atmospheric, [class*="theme-atmospheric"] {
+  --radius-theme: 32px;
+  --glass-blur: 40px;
+  --glass-opacity: 0.25;
+}
+
+/* 7. CYBERPUNK / NEON */
+.layout-cyberpunk, [class*="theme-cyberpunk"] {
+  --radius-theme: 0px;
+  --border-width: 2px;
+}
+
+/* 8. TERMINAL / MAINFRAME */
+.layout-terminal, .layout-mainframe, [class*="theme-terminal"], [class*="theme-mainframe"] {
+  --radius-theme: 0px;
+  --font-main: 'Fira Code', monospace;
+}
+
+/* Apply Glass Effect to Cards based on state */
+.bg-theme-card {
+  background: var(--theme-card, #1e293b);
+  border-radius: var(--radius-theme, 12px);
+  padding: var(--theme-padding, 1.5rem);
+  border: 1px solid var(--theme-border, rgba(255, 255, 255, 0.1));
+  transition: all 0.3s ease;
+}
+
+.layout-glass .bg-theme-card,
+.layout-prestige .bg-theme-card,
+.layout-atmospheric .bg-theme-card,
+.layout-ethereal .bg-theme-card {
+  background: color-mix(in srgb, var(--theme-card), transparent calc(100% * (1 - var(--glass-opacity, 0.7))));
+  backdrop-filter: blur(var(--glass-blur, 12px)) saturate(180%);
+  -webkit-backdrop-filter: blur(var(--glass-blur, 12px)) saturate(180%);
+}
+
+.layout-cyberpunk .bg-theme-card {
+  background: #000 !important;
+  border: 2px solid var(--theme-primary);
+  box-shadow: 0 0 15px var(--theme-primary), inset 0 0 5px var(--theme-primary);
+}
+
+/* =========================================
+   TEXTURE ENGINE
+   ========================================= */
 body::before {
   content: "";
   position: fixed;
   inset: 0;
   z-index: -1;
   pointer-events: none;
-  opacity: var(--texture-opacity);
+  opacity: var(--texture-opacity, 0.05);
   transition: opacity 0.5s ease;
 }
 
-/* Grids & Patterns */
 body.texture-grid::before {
-  background-image: 
-    linear-gradient(var(--texture-color) 1px, transparent 1px),
-    linear-gradient(90deg, var(--texture-color) 1px, transparent 1px);
-  background-size: var(--texture-size) var(--texture-size);
+  background-image: linear-gradient(var(--texture-color, rgba(255,255,255,0.1)) 1px, transparent 1px), linear-gradient(90deg, var(--texture-color, rgba(255,255,255,0.1)) 1px, transparent 1px);
+  background-size: var(--texture-size, 32px) var(--texture-size, 32px);
 }
 
 body.texture-dots::before {
-  background-image: radial-gradient(var(--texture-color) 1px, transparent 1px);
-  background-size: calc(var(--texture-size) / 2) calc(var(--texture-size) / 2);
+  background-image: radial-gradient(var(--texture-color, rgba(255,255,255,0.1)) 1px, transparent 1px);
+  background-size: 16px 16px;
 }
 
 body.texture-scanlines::before {
-  background: linear-gradient(
-    rgba(18, 16, 16, 0) 50%, 
-    rgba(0, 0, 0, 0.1) 50%
-  );
+  background: linear-gradient(rgba(18, 16, 16, 0) 50%, rgba(0, 0, 0, 0.1) 50%);
   background-size: 100% 4px;
 }
 
-body.texture-circuit::before {
-  background-image: url("data:image/svg+xml,%3Csvg width='100' height='100' viewBox='0 0 100 100' xmlns='http://www.w3.org/2000/svg'%3E%3Cpath d='M10 10h80v80h-80z' fill='none' stroke='%23fff' stroke-width='0.5'/%3E%3C/svg%3E");
-  background-size: 100px 100px;
-}
-
-/* Aplicação Global dos Tokens ao Body */
-body {
-  /* Fallback inteligente para garantir que nunca fique branco */
-  background-color: var(--bg-body, var(--theme-body, #0f172a)) !important;
-  color: var(--theme-text, #ffffff) !important;
-  transition: background-color 0.4s cubic-bezier(0.4, 0, 0.2, 1);
-}
-
-/* Master Layouts */
-.layout-glass {
-  --theme-glass-blur: 25px;
-  --theme-glass-opacity: 0.1;
-  --card-style: glass;
-}
-
-.layout-corporate {
-  --theme-radius: 4px;
-  --theme-glass-blur: 0px;
-  --card-style: solid;
-}
-
-.layout-minimal {
-  --theme-radius: 0px;
-  --theme-padding: 2rem;
-  --card-style: solid;
-}
-
-.layout-technical {
-  --theme-radius: 0px;
-  --bg-texture: grid;
-  --card-style: solid;
-}
-
-.layout-prestige {
-  --theme-radius: 24px;
-  --theme-glass-blur: 20px;
-  --card-style: glass;
-}
-
-.layout-atmospheric {
-  --theme-radius: 32px;
-  --theme-glass-blur: 40px;
-  --card-style: glass;
-}
-
-/* Sarak Cards & Glass */
-.sarak-card {
-  padding: var(--theme-padding);
-  gap: var(--theme-gap);
-  border-radius: var(--radius-theme);
-  transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
-}
-
-.sarak-glass {
-  background: rgba(var(--theme-card-rgb, 255, 255, 255), var(--glass-opacity));
-  backdrop-filter: blur(var(--glass-blur)) saturate(180%);
-  -webkit-backdrop-filter: blur(var(--glass-blur)) saturate(180%);
-  border: 1px solid var(--glass-border);
-  border-radius: var(--radius-theme);
-}
-
-.sarak-glass {
-  background: var(--glass-bg);
-  backdrop-filter: blur(var(--glass-blur)) saturate(180%);
-  -webkit-backdrop-filter: blur(var(--glass-blur)) saturate(180%);
-  border: 1px solid var(--glass-border);
-  border-radius: var(--radius-theme);
-  transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
-}
-
-.sarak-glass:hover {
-  background: rgba(255, 255, 255, 0.06);
-  border-color: rgba(255, 255, 255, 0.2);
+/* Mapping Legacy names to modern theme names for compatibility */
+:root {
+  --bg-body: var(--theme-body);
+  --bg-card: var(--theme-card);
+  --bg-sidebar: var(--theme-sidebar);
+  --text-main: var(--theme-main);
+  --text-title: var(--theme-title);
+  --border-color: var(--theme-border);
 }
