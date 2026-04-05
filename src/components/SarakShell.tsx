@@ -110,7 +110,7 @@ export const SarakShell: React.FC<SarakShellProps> = ({
     const isTopbar = navigationStyle === 'topbar';
 
     return (
-        <div className={`sarak-shell min-h-screen text-white font-sans selection:bg-blue-500/30 overflow-hidden flex ${isTopbar ? 'flex-col' : 'flex-row'} ${currentLayoutClass} ${isNavHidden ? 'nav-hidden' : ''}`}>
+        <div className={`sarak-shell min-h-screen text-[var(--theme-main)] font-sans selection:bg-[var(--theme-primary)]/30 overflow-hidden flex ${isTopbar ? 'flex-col' : 'flex-row'} ${currentLayoutClass} ${isNavHidden ? 'nav-hidden' : ''}`}>
             <GoogleTranslateWidget />
 
             {/* Recovery Nav Button (Chevron flutuante quando oculto) */}
@@ -133,13 +133,13 @@ export const SarakShell: React.FC<SarakShellProps> = ({
             {!isNavHidden && isSidebar && (
                 <aside 
                     style={{ width: sidebarWidth }}
-                    className="h-screen border-r border-white/5 bg-black/60 backdrop-blur-2xl flex flex-col relative z-50 group/sidebar transition-[width] duration-300 ease-in-out"
+                    className="h-screen border-r border-[var(--theme-border)] bg-[var(--theme-sidebar)] backdrop-blur-2xl flex flex-col relative z-50 group/sidebar transition-[width] duration-300 ease-in-out"
                 >
                     {/* Header da Sidebar */}
-                    <div className="h-16 px-6 flex items-center justify-between border-b border-white/5 bg-white/[0.02]">
+                    <div className="h-16 px-6 flex items-center justify-between border-b border-[var(--theme-border)] bg-[var(--theme-title)]/5">
                         <div className="flex items-center gap-3">
-                            <div className="w-8 h-8 rounded-lg bg-gradient-to-br from-blue-600 to-indigo-600 flex items-center justify-center font-black text-xs">S</div>
-                            <span className="text-sm font-bold tracking-tighter opacity-80">{brand.name}</span>
+                            <div className="w-8 h-8 rounded-lg bg-gradient-to-br from-[var(--theme-primary)] to-indigo-600 flex items-center justify-center font-black text-xs text-white">S</div>
+                            <span className="text-sm font-bold tracking-tighter opacity-80 text-[var(--theme-title)]">{brand.name}</span>
                         </div>
                         <button onClick={toggleNav} className="p-1.5 hover:bg-white/5 rounded-md text-white/20 hover:text-white transition-colors">
                             <ChevronLeft size={16} />
@@ -162,9 +162,9 @@ export const SarakShell: React.FC<SarakShellProps> = ({
                                                 : 'text-white/40 hover:bg-white/5 hover:text-white'
                                             }`}
                                         >
-                                            <IconRenderer name={mod.icon} className={activeModuleId === mod.id ? 'text-blue-400' : 'text-white/20'} />
+                                            <IconRenderer name={mod.icon} className={activeModuleId === mod.id ? 'text-[var(--theme-primary)]' : 'text-[var(--theme-muted)]'} />
                                             <span className="text-sm truncate">{mod.label}</span>
-                                            {activeModuleId === mod.id && <motion.div layoutId="active-pill" className="absolute left-0 w-1 h-4 bg-blue-500 rounded-full shadow-[0_0_10px_rgba(59,130,246,0.5)]" />}
+                                            {activeModuleId === mod.id && <motion.div layoutId="active-pill" className="absolute left-0 w-1 h-4 bg-[var(--theme-primary)] rounded-full shadow-[0_0_10px_var(--theme-primary)]" />}
                                         </button>
                                     ))}
                                 </div>
@@ -199,11 +199,11 @@ export const SarakShell: React.FC<SarakShellProps> = ({
             )}
 
             {/* CONTENT AREA */}
-            <div className="flex-1 flex flex-col min-h-screen overflow-hidden relative">
-                
-                {/* TOPBAR MODE OR TOP HEADER (if Sidebar) */}
-                {(isTopbar || !isNavHidden) && (
-                    <header className={`h-16 border-b border-white/5 bg-black/40 backdrop-blur-2xl px-6 flex items-center justify-between z-[45] ${isTopbar && isNavHidden ? 'hidden' : ''}`}>
+                <div className="flex-1 flex flex-col min-h-screen overflow-hidden relative bg-[var(--theme-body)]">
+                    
+                    {/* TOPBAR MODE OR TOP HEADER (if Sidebar) */}
+                    {(isTopbar || !isNavHidden) && (
+                        <header className={`h-16 border-b border-[var(--theme-border)] bg-[var(--theme-card)] backdrop-blur-2xl px-6 flex items-center justify-between z-[45] ${isTopbar && isNavHidden ? 'hidden' : ''}`}>
                         <div className="flex items-center gap-6">
                             {isTopbar && (
                                 <div className="flex items-center gap-3 pr-6 border-r border-white/5">
@@ -248,7 +248,7 @@ export const SarakShell: React.FC<SarakShellProps> = ({
                 )}
 
                 {/* MAIN CONTENT CANVAS */}
-                <main className="flex-1 overflow-y-auto custom-scrollbar relative bg-[#050505]">
+                <main className="flex-1 overflow-y-auto custom-scrollbar relative">
                     <div className="absolute inset-0 pointer-events-none opacity-[0.02] texture-grid"></div>
                     <div className="max-w-[1700px] mx-auto p-12 min-h-full flex flex-col">
                         <AnimatePresence mode="wait">
@@ -263,13 +263,13 @@ export const SarakShell: React.FC<SarakShellProps> = ({
                                 >
                                     <header className="mb-10 flex items-end justify-between border-b border-white/5 pb-8">
                                         <div>
-                                            <div className="flex items-center gap-3 text-blue-400 mb-2">
-                                                <div className="p-2 rounded-lg bg-blue-600/10 border border-blue-500/20">
+                                            <div className="flex items-center gap-3 text-[var(--theme-primary)] mb-2">
+                                                <div className="p-2 rounded-lg bg-[var(--theme-primary)]/10 border border-[var(--theme-primary)]/20">
                                                     <IconRenderer name={activeModule.icon} size={20} />
                                                 </div>
                                                 <span className="text-[10px] font-black uppercase tracking-[0.3em]">{activeModule.category || 'Módulo'}</span>
                                             </div>
-                                            <h1 className="text-4xl font-black tracking-tighter text-white">{activeModule.label}</h1>
+                                            <h1 className="text-4xl font-black tracking-tighter text-[var(--theme-title)]">{activeModule.label}</h1>
                                         </div>
                                         <div className="flex items-center gap-2">
                                             <button className="p-2.5 rounded-xl bg-white/5 border border-white/10 hover:border-white/30 transition-all">
