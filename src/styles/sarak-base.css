@@ -1,7 +1,5 @@
-/* Sarak OS v9 Design Tokens - Escaneamento movido para o projeto consumidor para evitar EISDIR */
-
+/* Sarak OS v9 Design Tokens */
 @theme {
-  /* Sarak OS v9 Design Tokens */
   --color-theme-primary: var(--theme-primary, #3b82f6);
   --color-theme-secondary: var(--theme-secondary, #10b981);
   --color-theme-body: var(--theme-body, #0f172a);
@@ -10,21 +8,24 @@
   --color-theme-border: var(--theme-border, rgba(255, 255, 255, 0.1));
   --color-theme-text: var(--theme-text, #ffffff);
   --color-theme-muted: var(--theme-muted, #94a3b8);
-  
-  /* Glassmorphism Presets */
-  --glass-blur: var(--theme-glass-blur, 12px);
-  --glass-opacity: var(--theme-glass-opacity, 0.1);
-  --glass-border: var(--theme-border, rgba(255, 255, 255, 0.1));
-  
-  /* Layout Tokens */
-  --radius-theme: var(--theme-radius, 12px);
-  --theme-padding: var(--theme-padding, 1.5rem);
-  --theme-gap: var(--theme-gap, 1.5rem);
+  --color-theme-title: var(--theme-title, #f8fafc);
+}
 
-  /* Texture Tokens */
-  --texture-opacity: var(--theme-texture-opacity, 0.03);
-  --texture-size: var(--theme-texture-size, 32px);
-  --texture-color: var(--theme-texture-color, currentColor);
+/* --- GOOGLE TRANSLATE SUPPRESSION --- */
+body {
+  top: 0px !important;
+}
+
+.goog-te-banner-frame,
+.goog-te-balloon-frame,
+#google_translate_element,
+.goog-te-gadget-icon,
+.goog-te-spinner-pos,
+.goog-tooltip,
+#goog-gt-tt,
+.skiptranslate {
+  display: none !important;
+  visibility: hidden !important;
 }
 
 /* Aplicação Global de Tipografia e Reset */

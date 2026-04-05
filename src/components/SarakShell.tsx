@@ -1,15 +1,19 @@
-import React, { ReactNode, useState, useEffect, useMemo } from 'react';
+import React, { ReactNode, useState, useEffect, useMemo, useCallback } from 'react';
 import { useSarak, getRegisteredModules, SarakModule, LAYOUTS } from '@sarak/lib-shared';
 import * as LucideIcons from 'lucide-react';
-import { LogOut, User, Menu, X, ChevronRight, LayoutDashboard } from 'lucide-react';
+import { 
+    LogOut, User, Menu, X, ChevronRight, LayoutDashboard, 
+    ChevronLeft, Settings, Search, Bell, Monitor, Zap
+} from 'lucide-react';
 import ThemeToggle from './ThemeToggle';
 import { GoogleTranslateWidget, LanguagePicker } from '@sarak/lib-translator-google';
+import { motion, AnimatePresence } from 'framer-motion';
 
 // Helper para renderizar ícone Lucide dinamicamente
-const IconRenderer = ({ name, className }: { name?: string, className?: string }) => {
-    if (!name) return <LayoutDashboard className={className} />;
+const IconRenderer = ({ name, className, size = 16 }: { name?: string, className?: string, size?: number }) => {
+    if (!name) return <LayoutDashboard size={size} className={className} />;
     const IconComponent = (LucideIcons as any)[name];
-    return IconComponent ? <IconComponent className={className} /> : <LayoutDashboard className={className} />;
+    return IconComponent ? <IconComponent size={size} className={className} /> : <LayoutDashboard size={size} className={className} />;
 };
 
 interface SarakShellProps {
@@ -21,26 +25,72 @@ interface SarakShellProps {
 }
 
 /**
- * Elite SarakShell (v5.2) — Motor de Interface Modular
- * Responsável por renderizar a navegação categorizada e injetar os tokens de design.
+ * Elite SarakShell (v5.2) — Motor de Interface Modular Premium
+ * Suporta Sidebar (Resizable), Topbar, Nav Hiding e Recovery System.
  */
 export const SarakShell: React.FC<SarakShellProps> = ({ 
     children, 
     brand = { name: "Sarak Matrix" }
 }) => {
-    const { user, logout, theme, language, setLanguage, setTheme } = useSarak();
+    const { 
+        user, logout, theme, navigationStyle, isNavHidden, toggleNav,
+        sidebarWidth, setSidebarWidth 
+    } = useSarak();
+    
     const [modules, setModules] = useState<SarakModule[]>([]);
     const [activeModuleId, setActiveModuleId] = useState<string | null>(null);
-    const [isSidebarOpen, setSidebarOpen] = useState(true);
+    const [isResizing, setIsResizing] = useState(false);
 
-    // Carrega módulos registrados no momento do boot
+    // Carrega módulos registrados no boot
     useEffect(() => {
         const discovered = getRegisteredModules();
         setModules(discovered);
-        if (discovered.length > 0) setActiveModuleId(discovered[0].id);
+        if (discovered.length > 0 && !activeModuleId) setActiveModuleId(discovered[0].id);
     }, []);
 
-    // Agrupa módulos por categoria para navegação organizada (Elite Standard)
+    // Atalhos Globais (Alt+N para toggle nav)
+    useEffect(() => {
+        const handleKeyDown = (e: KeyboardEvent) => {
+            if (e.altKey && e.key === 'n') {
+                e.preventDefault();
+                toggleNav();
+            }
+        };
+        window.addEventListener('keydown', handleKeyDown);
+        return () => window.removeEventListener('keydown', handleKeyDown);
+    }, [toggleNav]);
+
+    // Resizing Logic
+    const startResizing = useCallback((e: React.MouseEvent) => {
+        e.preventDefault();
+        setIsResizing(true);
+    }, []);
+
+    const stopResizing = useCallback(() => {
+        setIsResizing(false);
+    }, []);
+
+    const resize = useCallback((e: MouseEvent) => {
+        if (isResizing) {
+            const newWidth = e.clientX;
+            if (newWidth > 180 && newWidth < 450) {
+                setSidebarWidth(newWidth);
+            }
+        }
+    }, [isResizing, setSidebarWidth]);
+
+    useEffect(() => {
+        if (isResizing) {
+            window.addEventListener('mousemove', resize);
+            window.addEventListener('mouseup', stopResizing);
+        }
+        return () => {
+            window.removeEventListener('mousemove', resize);
+            window.removeEventListener('mouseup', stopResizing);
+        };
+    }, [isResizing, resize, stopResizing]);
+
+    // Grupos de Módulos
     const groupedModules = useMemo(() => {
         const groups: Record<string, SarakModule[]> = {};
         modules.forEach(mod => {
@@ -52,140 +102,202 @@ export const SarakShell: React.FC<SarakShellProps> = ({
     }, [modules]);
 
     const activeModule = modules.find(m => m.id === activeModuleId);
-    
-    // Obtém a classe de layout atual (ex: layout-glass, layout-cyberpunk)
     const currentLayoutClass = useMemo(() => {
         return Object.values(LAYOUTS).find(l => l.id === theme)?.class || 'layout-glass';
     }, [theme]);
 
+    const isSidebar = navigationStyle === 'sidebar';
+    const isTopbar = navigationStyle === 'topbar';
+
     return (
-        <div className={`sarak-shell min-h-screen text-white font-sans selection:bg-blue-500/30 overflow-hidden flex flex-col ${currentLayoutClass}`}>
+        <div className={`sarak-shell min-h-screen text-white font-sans selection:bg-blue-500/30 overflow-hidden flex ${isTopbar ? 'flex-col' : 'flex-row'} ${currentLayoutClass} ${isNavHidden ? 'nav-hidden' : ''}`}>
             <GoogleTranslateWidget />
-            
-            {/* Topbar Elite */}
-            <header className="h-16 border-b border-white/5 bg-black/40 backdrop-blur-2xl px-6 flex items-center justify-between z-50">
-                <div className="flex items-center gap-6">
-                    <button 
-                        onClick={() => setSidebarOpen(!isSidebarOpen)}
-                        className="p-2 hover:bg-white/5 rounded-lg transition-colors text-white/50 hover:text-white"
+
+            {/* Recovery Nav Button (Chevron flutuante quando oculto) */}
+            <AnimatePresence>
+                {isNavHidden && (
+                    <motion.button
+                        initial={{ opacity: 0, x: -20 }}
+                        animate={{ opacity: 1, x: 0 }}
+                        exit={{ opacity: 0, x: -20 }}
+                        onClick={toggleNav}
+                        className="fixed top-20 left-4 z-[100] w-10 h-10 rounded-full bg-blue-600/20 backdrop-blur-xl border border-blue-500/30 flex items-center justify-center text-blue-400 hover:bg-blue-600/40 transition-all shadow-xl shadow-blue-900/20 group"
+                        title="Restaurar Navegação (Alt+N)"
                     >
-                        {isSidebarOpen ? <X size={18} /> : <Menu size={18} />}
-                    </button>
-                    
-                    <div className="flex items-center gap-3">
-                        {brand.logo ? (
-                            <img src={brand.logo} alt="Logo" className="h-8 w-8" />
-                        ) : (
-                            <div className="w-8 h-8 rounded-lg bg-gradient-to-br from-blue-600 to-indigo-600 flex items-center justify-center font-bold text-xs shadow-lg shadow-blue-600/20">S</div>
-                        )}
-                        <span className="text-lg font-bold tracking-tight bg-gradient-to-r from-blue-400 via-indigo-400 to-emerald-400 bg-clip-text text-transparent">
-                            {brand.name}
-                        </span>
-                    </div>
-                </div>
+                        <ChevronRight size={20} className="group-hover:translate-x-0.5 transition-transform" />
+                    </motion.button>
+                )}
+            </AnimatePresence>
 
-                <div className="flex items-center gap-3">
-                    {/* Controles de Engine */}
-                    <div className="flex items-center gap-2 pr-4 border-r border-white/5 mr-2">
-                        <ThemeToggle />
-                        <LanguagePicker />
-                    </div>
-
-                    {/* Perfil do Usuário */}
-                    {user ? (
-                        <div className="flex items-center gap-3 pl-2 group cursor-pointer">
-                            <div className="text-right hidden sm:block">
-                                <p className="text-xs font-bold text-white/90 leading-tight">{user.email.split('@')[0]}</p>
-                                <p className="text-[10px] text-blue-400 font-medium uppercase tracking-tighter leading-none">{user.role}</p>
-                            </div>
-                            <div className="w-9 h-9 rounded-full bg-white/5 border border-white/10 flex items-center justify-center group-hover:border-blue-500/50 transition-colors relative">
-                                <User size={18} className="text-white/60" />
-                                <div className="absolute -bottom-0.5 -right-0.5 w-2.5 h-2.5 bg-emerald-500 border-2 border-[#0a0a0b] rounded-full"></div>
-                            </div>
-                            <button 
-                                onClick={logout} 
-                                className="p-2 text-white/30 hover:text-red-400 transition-colors"
-                                title="Sair do Sistema"
-                            >
-                                <LogOut size={16} />
-                            </button>
+            {/* SIDEBAR MODE */}
+            {!isNavHidden && isSidebar && (
+                <aside 
+                    style={{ width: sidebarWidth }}
+                    className="h-screen border-r border-white/5 bg-black/60 backdrop-blur-2xl flex flex-col relative z-50 group/sidebar transition-[width] duration-300 ease-in-out"
+                >
+                    {/* Header da Sidebar */}
+                    <div className="h-16 px-6 flex items-center justify-between border-b border-white/5 bg-white/[0.02]">
+                        <div className="flex items-center gap-3">
+                            <div className="w-8 h-8 rounded-lg bg-gradient-to-br from-blue-600 to-indigo-600 flex items-center justify-center font-black text-xs">S</div>
+                            <span className="text-sm font-bold tracking-tighter opacity-80">{brand.name}</span>
                         </div>
-                    ) : (
-                        <button className="px-4 py-1.5 rounded-full bg-blue-600 hover:bg-blue-500 text-xs font-bold transition-all shadow-lg shadow-blue-600/20">
-                            Entrar
+                        <button onClick={toggleNav} className="p-1.5 hover:bg-white/5 rounded-md text-white/20 hover:text-white transition-colors">
+                            <ChevronLeft size={16} />
                         </button>
-                    )}
-                </div>
-            </header>
+                    </div>
 
-            <div className="flex flex-1 overflow-hidden relative">
-                {/* Sidebar Categorizada (Auto-Generated Elite) */}
-                <aside className={`${isSidebarOpen ? 'w-64' : 'w-0'} border-r border-white/5 bg-black/60 backdrop-blur-xl flex flex-col transition-all duration-300 overflow-hidden`}>
-                    <div className="flex-1 overflow-y-auto p-4 custom-scrollbar">
+                    {/* Módulos */}
+                    <div className="flex-1 overflow-y-auto p-4 space-y-6 custom-scrollbar">
                         {Object.entries(groupedModules).map(([category, mods]) => (
-                            <div key={category} className="mb-6">
-                                <div className="text-[10px] font-bold text-white/20 uppercase tracking-[0.2em] mb-3 px-3 flex items-center justify-between">
-                                    <span>{category}</span>
-                                    <ChevronRight size={10} className="opacity-50" />
-                                </div>
+                            <div key={category}>
+                                <h4 className="text-[10px] font-bold text-white/20 uppercase tracking-[0.2em] mb-3 px-3">{category}</h4>
                                 <div className="space-y-1">
                                     {mods.map(mod => (
                                         <button
                                             key={mod.id}
                                             onClick={() => setActiveModuleId(mod.id)}
-                                            className={`w-full flex items-center justify-between px-3 py-2.5 rounded-xl transition-all duration-200 group relative ${
+                                            className={`w-full flex items-center gap-3 px-3 py-2.5 rounded-xl transition-all relative group ${
                                                 activeModuleId === mod.id 
-                                                ? 'bg-blue-600/10 text-blue-400' 
-                                                : 'text-white/50 hover:bg-white/5 hover:text-white'
+                                                ? 'bg-blue-600/10 text-blue-400 font-bold' 
+                                                : 'text-white/40 hover:bg-white/5 hover:text-white'
                                             }`}
                                         >
-                                            <div className="flex items-center gap-3">
-                                                <IconRenderer 
-                                                    name={mod.icon} 
-                                                    className={`w-4 h-4 transition-transform group-hover:scale-110 ${activeModuleId === mod.id ? 'text-blue-400' : 'text-white/30'}`} 
-                                                />
-                                                <span className="text-sm font-medium">{mod.label}</span>
-                                            </div>
-                                            {activeModuleId === mod.id && (
-                                                <div className="w-1 h-4 bg-blue-500 rounded-full absolute left-0 shadow-[0_0_10px_rgba(59,130,246,0.5)]"></div>
-                                            )}
+                                            <IconRenderer name={mod.icon} className={activeModuleId === mod.id ? 'text-blue-400' : 'text-white/20'} />
+                                            <span className="text-sm truncate">{mod.label}</span>
+                                            {activeModuleId === mod.id && <motion.div layoutId="active-pill" className="absolute left-0 w-1 h-4 bg-blue-500 rounded-full shadow-[0_0_10px_rgba(59,130,246,0.5)]" />}
                                         </button>
                                     ))}
                                 </div>
                             </div>
                         ))}
                     </div>
-                    
-                    {/* Botão de Suporte/Config Global */}
-                    <div className="p-4 border-t border-white/5 bg-black/20">
-                        <button className="w-full flex items-center gap-3 px-3 py-2 text-xs text-white/40 hover:text-white transition-colors">
-                            <div className="w-2 h-2 rounded-full bg-blue-500 animate-pulse"></div>
-                            <span>System Status: Online</span>
-                        </button>
-                    </div>
-                </aside>
 
-                {/* Área de Conteúdo Proporcional */}
-                <main className="flex-1 overflow-y-auto relative bg-[#0a0a0b] flex flex-col">
-                    {/* Background Texture Overlay (Elite CSS Engine) */}
-                    <div className="absolute inset-0 pointer-events-none opacity-[0.03] texture-noise"></div>
-                    
-                    <div className="max-w-[1600px] min-h-full mx-auto p-8 animate-in fade-in slide-in-from-bottom-4 duration-1000 relative z-10 w-full">
-                        {activeModule && activeModule.component ? (
-                            (() => {
-                                const DynamicComponent = activeModule.component;
-                                return <DynamicComponent />;
-                            })()
-                        ) : (
-                            <div className="flex flex-col items-center justify-center min-h-[60vh] text-white/20 border-2 border-dashed border-white/5 rounded-3xl">
-                                <LayoutDashboard size={48} className="mb-4 opacity-10" />
-                                <p className="text-sm font-light italic">Selecione um módulo para começar</p>
-                                {children}
+                    {/* Perfil Simplificado na Base */}
+                    <div className="p-4 border-t border-white/5 bg-white/[0.01]">
+                        <div className="flex items-center justify-between">
+                            <div className="flex items-center gap-3">
+                                <div className="w-8 h-8 rounded-full bg-blue-500/20 border border-blue-500/30 flex items-center justify-center">
+                                    <User size={14} className="text-blue-400" />
+                                </div>
+                                <div className="flex flex-col">
+                                    <span className="text-[10px] font-bold text-white/80">{user?.email?.split('@')[0] || 'Sarak User'}</span>
+                                    <span className="text-[9px] text-white/30 uppercase tracking-widest">{user?.role || 'Guest'}</span>
+                                </div>
                             </div>
-                        )}
+                            <button onClick={logout} className="p-2 text-white/20 hover:text-red-400 transition-colors">
+                                <LogOut size={14} />
+                            </button>
+                        </div>
+                    </div>
+
+                    {/* Resize Handle */}
+                    <div 
+                        onMouseDown={startResizing}
+                        className="absolute top-0 right-0 w-1 h-full cursor-col-resize hover:bg-blue-500/50 transition-colors z-[60]"
+                    />
+                </aside>
+            )}
+
+            {/* CONTENT AREA */}
+            <div className="flex-1 flex flex-col min-h-screen overflow-hidden relative">
+                
+                {/* TOPBAR MODE OR TOP HEADER (if Sidebar) */}
+                {(isTopbar || !isNavHidden) && (
+                    <header className={`h-16 border-b border-white/5 bg-black/40 backdrop-blur-2xl px-6 flex items-center justify-between z-[45] ${isTopbar && isNavHidden ? 'hidden' : ''}`}>
+                        <div className="flex items-center gap-6">
+                            {isTopbar && (
+                                <div className="flex items-center gap-3 pr-6 border-r border-white/5">
+                                    <div className="w-8 h-8 rounded-lg bg-blue-600 flex items-center justify-center font-bold text-xs">S</div>
+                                    <span className="font-black tracking-tighter">{brand.name}</span>
+                                </div>
+                            )}
+                            
+                            {/* Horizontal Modules (Topbar Style) */}
+                            {isTopbar && (
+                                <nav className="hidden lg:flex items-center gap-1">
+                                    {modules.slice(0, 6).map(mod => (
+                                        <button
+                                            key={mod.id}
+                                            onClick={() => setActiveModuleId(mod.id)}
+                                            className={`px-4 py-1.5 rounded-full text-xs font-medium transition-all ${
+                                                activeModuleId === mod.id ? 'bg-blue-600 text-white shadow-lg shadow-blue-600/30' : 'text-white/40 hover:text-white'
+                                            }`}
+                                        >
+                                            {mod.label}
+                                        </button>
+                                    ))}
+                                </nav>
+                            )}
+                        </div>
+
+                        <div className="flex items-center gap-4">
+                            <div className="flex items-center gap-1 px-3 py-1 bg-white/5 rounded-full border border-white/10">
+                                <ThemeToggle />
+                                <LanguagePicker />
+                            </div>
+                            <div className="w-8 h-8 rounded-full border border-white/10 bg-white/5 flex items-center justify-center text-white/40 hover:text-white transition-colors cursor-pointer">
+                                <Bell size={14} />
+                            </div>
+                            {isTopbar && (
+                                <button onClick={logout} className="p-2 hover:bg-red-500/20 rounded-lg text-white/20 hover:text-red-400 transition-colors">
+                                    <LogOut size={18} />
+                                </button>
+                            )}
+                        </div>
+                    </header>
+                )}
+
+                {/* MAIN CONTENT CANVAS */}
+                <main className="flex-1 overflow-y-auto relative bg-[#050505]">
+                    <div className="absolute inset-0 pointer-events-none opacity-[0.02] texture-grid"></div>
+                    <div className="max-w-[1700px] mx-auto p-12 min-h-full flex flex-col">
+                        <AnimatePresence mode="wait">
+                            {activeModule ? (
+                                <motion.div
+                                    key={activeModule.id}
+                                    initial={{ opacity: 0, y: 10 }}
+                                    animate={{ opacity: 1, y: 0 }}
+                                    exit={{ opacity: 0, y: -10 }}
+                                    transition={{ duration: 0.4, ease: "easeOut" }}
+                                    className="flex-1"
+                                >
+                                    <header className="mb-10 flex items-end justify-between border-b border-white/5 pb-8">
+                                        <div>
+                                            <div className="flex items-center gap-3 text-blue-400 mb-2">
+                                                <div className="p-2 rounded-lg bg-blue-600/10 border border-blue-500/20">
+                                                    <IconRenderer name={activeModule.icon} size={20} />
+                                                </div>
+                                                <span className="text-[10px] font-black uppercase tracking-[0.3em]">{activeModule.category || 'Módulo'}</span>
+                                            </div>
+                                            <h1 className="text-4xl font-black tracking-tighter text-white">{activeModule.label}</h1>
+                                        </div>
+                                        <div className="flex items-center gap-2">
+                                            <button className="p-2.5 rounded-xl bg-white/5 border border-white/10 hover:border-white/30 transition-all">
+                                                <Search size={16} className="text-white/40" />
+                                            </button>
+                                            <button className="px-5 py-2.5 rounded-xl bg-blue-600 hover:bg-blue-500 text-xs font-bold transition-all shadow-lg shadow-blue-600/30">
+                                                Novo Registro
+                                            </button>
+                                        </div>
+                                    </header>
+
+                                    <div className="animate-in fade-in zoom-in-95 duration-700">
+                                        <activeModule.component />
+                                    </div>
+                                </motion.div>
+                            ) : (
+                                <div className="flex-1 flex flex-col items-center justify-center text-white/5">
+                                    <LayoutDashboard size={80} strokeWidth={1} />
+                                    <p className="mt-4 text-xs font-bold tracking-widest uppercase">Selecione um terminal para iniciar</p>
+                                </div>
+                            )}
+                        </AnimatePresence>
                     </div>
                 </main>
             </div>
+
+            {/* Global Overlay Resizing Feedback */}
+            {isResizing && <div className="fixed inset-0 z-[9999] cursor-col-resize" />}
         </div>
     );
 };
