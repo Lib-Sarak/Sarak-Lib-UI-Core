@@ -1,18 +1,13 @@
 
 *.egg-info/
 __pycache__/
-
 .env
-
 node_modules/
-
 .venv/
-
 *.sqlite
-
 *.log
-
-
 # Gerados no packaging
 build/
-# dist/ <-- Removido para permitir o push do CSS pré-compilado (v2.0+)
+dist/ <-- Removido para permitir o push do CSS pré-compilado (v2.0+)
+dist/
+.vite/
