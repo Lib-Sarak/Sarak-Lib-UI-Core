@@ -27,64 +27,83 @@ export const SarakUIProvider: React.FC<SarakUIProviderProps> = ({
         }
     }, [initialTheme, setTheme, theme]);
 
-    // Aplica a classe do layout ao body (Sincronização Elite)
+    // --- Motor de Viewport Scaling (Auto-ajuste Sarak Matrix) ---
+    useEffect(() => {
+        const handleResize = () => {
+            const root = document.documentElement;
+            // Largura base para o design Sarak Elite é 1920px
+            const targetWidth = 1920;
+            const currentWidth = window.innerWidth;
+            const scale = Math.min(Math.max(currentWidth / targetWidth, 0.85), 1.1);
+            
+            root.style.setProperty('--sarak-viewport-scale', scale.toString());
+            
+            // Opcional: Aplicar escala via transform no root se o usuário preferir zoom real
+            // document.body.style.transform = `scale(${scale})`;
+            // document.body.style.transformOrigin = 'top left';
+            // document.body.style.width = `${100 / scale}%`;
+        };
+
+        window.addEventListener('resize', handleResize);
+        handleResize();
+        return () => window.removeEventListener('resize', handleResize);
+    }, []);
+
+    // Aplica a classe do layout ao body (Limpando classes legadas)
     useEffect(() => {
         const layoutConfig = Object.values(LAYOUTS).find(l => l.id === theme) || LAYOUTS.GLASS;
         const layoutClass = layoutConfig.class || 'layout-glass';
         
-        document.body.classList.add(layoutClass);
-
-        // Setup base styles
+        // SarakProvider já cuida da limpeza no Body no v5.4, 
+        // mantemos aqui apenas garantias de estilo base.
         document.body.style.margin = '0';
+        document.body.style.overflowX = 'hidden';
         document.body.style.transition = 'background-color 0.3s ease, color 0.3s ease';
     }, [theme]);
 
-    // --- Motor de Atalhos (Shortcuts Engine v5.2) ---
+    // --- Motor de Atalhos (Shortcuts Engine v5.4) ---
     const handleKeyDown = useCallback((e: KeyboardEvent) => {
-        // Ignorar se estiver em campos de texto
         if (['INPUT', 'TEXTAREA', 'SELECT'].includes((e.target as HTMLElement).tagName)) return;
         if ((e.target as HTMLElement).isContentEditable) return;
 
         const shortcutsArray = Array.isArray(shortcuts) ? shortcuts : Object.values(shortcuts || {});
 
         shortcutsArray.forEach((shortcut: any) => {
-            const keys = shortcut.keys || [];
+            const keys = (shortcut.keys || []).map((k: string) => k.toLowerCase());
             if (!keys.length) return;
 
-            // Mapeamento de modificadores
-            const ctrlReq = keys.some((k: string) => k.toLowerCase() === 'control' || k.toLowerCase() === 'ctrl' || k.toLowerCase() === 'meta');
-            const shiftReq = keys.some((k: string) => k.toLowerCase() === 'shift');
-            const altReq = keys.some((k: string) => k.toLowerCase() === 'alt');
-            const mainKey = keys.find((k: string) => !['control', 'ctrl', 'shift', 'alt', 'meta'].includes(k.toLowerCase()));
 
-            const ctrlMatch = ctrlReq ? (e.ctrlKey || e.metaKey) : !(e.ctrlKey || e.metaKey);
-            const shiftMatch = shiftReq ? e.shiftKey : !e.shiftKey;
-            const altMatch = altReq ? e.altKey : !e.altKey;
-            const mainKeyMatch = mainKey?.toLowerCase() === e.key.toLowerCase();
+            const isCtrl = keys.includes('control') || keys.includes('ctrl') || keys.includes('meta');
+            const isShift = keys.includes('shift');
+            const isAlt = keys.includes('alt');
+            
+            const reqKey = keys.find((k: string) => !['control', 'ctrl', 'shift', 'alt', 'meta'].includes(k));
+            if (!reqKey) return;
 
-            if (ctrlMatch && shiftMatch && altMatch && mainKeyMatch) {
+            const ctrlMatch = isCtrl ? (e.ctrlKey || e.metaKey) : !(e.ctrlKey || e.metaKey);
+            const shiftMatch = isShift ? e.shiftKey : !e.shiftKey;
+            const altMatch = isAlt ? e.altKey : !e.altKey;
+            const keyMatch = e.key.toLowerCase() === reqKey.toLowerCase();
+
+            if (ctrlMatch && shiftMatch && altMatch && keyMatch) {
                 e.preventDefault();
                 e.stopPropagation();
                 
-                console.info(`[Sarak OS] Shortcut Triggered: ${shortcut.id}`);
+                console.info(`[Sarak OS] Executing Action: ${shortcut.id}`);
 
-                // Ações Core
                 if (shortcut.id === 'ui:toggleTheme') toggleMode();
                 if (shortcut.id === 'ui:focusMode') toggleNav();
                 
-                // Ações Registradas (Dynamic Event Bus)
                 if (registeredActions && registeredActions[shortcut.id]) {
                     registeredActions[shortcut.id]();
                 }
                 
-                // Fallback para window (legado)
                 const legacyActions = (window as any).SARAK_REGISTERED_ACTIONS || {};
-                if (legacyActions[shortcut.id]) {
-                    legacyActions[shortcut.id]();
-                }
+                if (legacyActions[shortcut.id]) legacyActions[shortcut.id]();
             }
         });
     }, [shortcuts, toggleMode, toggleNav, registeredActions]);
+
 
     useEffect(() => {
         window.addEventListener('keydown', handleKeyDown, { capture: true });

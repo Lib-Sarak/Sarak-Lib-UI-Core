@@ -5,13 +5,12 @@ import { LayoutTab } from './ThemeCustomization/LayoutTab';
 import { LanguageTab } from './ThemeCustomization/LanguageTab';
 import { ShortcutsTab } from './ThemeCustomization/ShortcutsTab';
 import { AdvancedTab } from './ThemeCustomization/AdvancedTab';
-import { useSarak } from '@sarak/lib-shared';
 
 type TabId = 'themes' | 'layout' | 'language' | 'shortcuts' | 'advanced';
 
 /**
- * CustomizationPanel (Elite v5.2)
- * Central única de configuração do ecossistema Sarak Matrix.
+ * CustomizationPanel (Elite v5.4)
+ * Central única de configuração resiliênte e auto-ajustável.
  */
 export const CustomizationPanel: React.FC = () => {
     const [activeTab, setActiveTab] = useState<TabId>('themes');
@@ -25,7 +24,7 @@ export const CustomizationPanel: React.FC = () => {
     ];
 
     return (
-        <div className="flex flex-col h-full max-h-[85vh] animate-in fade-in zoom-in duration-500 overflow-hidden">
+        <div className="flex flex-col h-full animate-in fade-in zoom-in duration-500 overflow-hidden">
             {/* Header & Tabs Navigation */}
             <div className="p-8 pb-4 shrink-0">
                 <h2 className="text-2xl font-bold bg-clip-text text-transparent bg-gradient-to-r from-blue-400 to-indigo-400 mb-6 uppercase tracking-tighter">
@@ -52,9 +51,9 @@ export const CustomizationPanel: React.FC = () => {
                 </div>
             </div>
 
-            {/* Sub-Components Viewport */}
-            <div className="flex-grow overflow-hidden p-8 pt-0">
-                <div className="h-full bg-black/20 rounded-3xl border border-white/5 overflow-hidden flex flex-col backdrop-blur-sm shadow-2xl">
+            {/* Sub-Components Viewport (Com Scroll Resiliente) */}
+            <div className="flex-grow overflow-y-auto custom-scrollbar p-8 pt-0">
+                <div className="min-h-full bg-black/20 rounded-3xl border border-white/5 flex flex-col backdrop-blur-sm shadow-2xl overflow-hidden">
                     {activeTab === 'themes' && <ThemeCustomizationTab />}
                     {activeTab === 'layout' && <LayoutTab />}
                     {activeTab === 'language' && <LanguageTab />}
