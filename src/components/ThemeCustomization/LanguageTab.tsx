@@ -12,11 +12,11 @@ export const LanguageTab: React.FC = () => {
 
     const [searchQuery, setSearchQuery] = useState("");
 
-    const filteredLanguages = availableLanguages.filter(lang => {
-        const name = lang.name || lang.label || lang.id || '';
-        const id = lang.id || '';
-        return name.toLowerCase().includes(searchQuery.toLowerCase()) ||
-               id.toLowerCase().includes(searchQuery.toLowerCase());
+    const filteredLanguages = (availableLanguages || []).filter(lang => {
+        if (!lang) return false;
+        const name = (lang?.name || lang?.label || lang?.id || '').toString().toLowerCase();
+        const query = (searchQuery || '').toLowerCase();
+        return name.includes(query);
     });
 
 

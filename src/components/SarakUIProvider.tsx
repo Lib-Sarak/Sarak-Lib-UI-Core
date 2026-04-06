@@ -27,21 +27,16 @@ export const SarakUIProvider: React.FC<SarakUIProviderProps> = ({
         }
     }, [initialTheme, setTheme, theme]);
 
-    // --- Motor de Viewport Scaling (Auto-ajuste Sarak Matrix) ---
+    // --- Motor de Viewport Scaling (Auto-ajuste Sarak Matrix v5.6) ---
     useEffect(() => {
         const handleResize = () => {
             const root = document.documentElement;
-            // Largura base para o design Sarak Elite é 1920px
             const targetWidth = 1920;
             const currentWidth = window.innerWidth;
-            const scale = Math.min(Math.max(currentWidth / targetWidth, 0.85), 1.1);
+            const scale = Math.min(Math.max(currentWidth / targetWidth, 0.7), 1.3);
             
             root.style.setProperty('--sarak-viewport-scale', scale.toString());
-            
-            // Opcional: Aplicar escala via transform no root se o usuário preferir zoom real
-            // document.body.style.transform = `scale(${scale})`;
-            // document.body.style.transformOrigin = 'top left';
-            // document.body.style.width = `${100 / scale}%`;
+            console.log(`[Sarak UI] Viewport Scoped Scale: ${scale}`);
         };
 
         window.addEventListener('resize', handleResize);
@@ -49,10 +44,12 @@ export const SarakUIProvider: React.FC<SarakUIProviderProps> = ({
         return () => window.removeEventListener('resize', handleResize);
     }, []);
 
-    // Aplica a classe do layout ao body (Limpando classes legadas)
+    // Aplica a classe do layout ao body (Garantia de Paridade v5.6)
     useEffect(() => {
-        const layoutConfig = Object.values(LAYOUTS).find(l => l.id === theme) || LAYOUTS.GLASS;
+        const lowerTheme = theme?.toLowerCase() || 'glass';
+        const layoutConfig = Object.values(LAYOUTS).find((l: any) => l.id.toLowerCase() === lowerTheme) || LAYOUTS.GLASS;
         const layoutClass = layoutConfig.class || 'layout-glass';
+
         
         // SarakProvider já cuida da limpeza no Body no v5.4, 
         // mantemos aqui apenas garantias de estilo base.
