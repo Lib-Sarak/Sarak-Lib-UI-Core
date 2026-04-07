@@ -1,13 +1,15 @@
 import React from 'react';
-import { useSarak, DENSITY, SCALES, NAVIGATION_STYLES } from '@sarak/lib-shared';
-import { Maximize2, Minimize2, Type, Layout as LayoutIcon, Sidebar as SidebarIcon, ArrowRightLeft } from 'lucide-react';
+import { useSarak, DENSITY, SCALES, NAVIGATION_STYLES, THEME_FONTS } from '@sarak/lib-shared';
+import { Maximize2, Minimize2, Type, Layout as LayoutIcon, Sidebar as SidebarIcon, ArrowRightLeft, CaseSensitive } from 'lucide-react';
 
 export const LayoutTab: React.FC = () => {
     const { 
         layoutDensity, setLayoutDensity,
         fontScale, setFontScale,
         navigationStyle, setNavigationStyle,
-        sidebarWidth, setSidebarWidth
+        sidebarWidth, setSidebarWidth,
+        headingFont, setHeadingFont,
+        bodyFont, setBodyFont
     } = useSarak();
 
     const densities = [
@@ -101,6 +103,42 @@ export const LayoutTab: React.FC = () => {
                             onChange={(e) => setSidebarWidth(parseInt(e.target.value))}
                             className="w-full h-1.5 bg-black/40 rounded-full appearance-none cursor-pointer accent-blue-500"
                         />
+                    </div>
+
+                    {/* FONTES INDEPENDENTES (PARIDADE 100%) */}
+                    <div className="space-y-6 pt-8 border-t border-white/5">
+                        <div className="flex items-center gap-3">
+                            <div className="p-2 bg-amber-500/10 rounded-lg text-amber-400">
+                                <CaseSensitive className="w-4 h-4" />
+                            </div>
+                            <h3 className="text-sm font-black uppercase tracking-widest italic text-white/90">Tipografia Independente</h3>
+                        </div>
+
+                        <div className="grid grid-cols-1 gap-4">
+                            <div className="space-y-2">
+                                <label className="text-[9px] font-black uppercase tracking-[0.2em] text-white/30 ml-2">Heading Font</label>
+                                <select 
+                                    value={headingFont} 
+                                    onChange={(e) => setHeadingFont(e.target.value)}
+                                    className="w-full bg-white/5 border border-white/10 rounded-xl px-4 py-3 text-xs font-bold text-white/80 focus:border-amber-500/50 outline-none transition-all"
+                                >
+                                    <option value="">(Usar Padrão do Tema)</option>
+                                    {THEME_FONTS.map(f => <option key={f.id} value={f.value}>{f.name}</option>)}
+                                </select>
+                            </div>
+
+                            <div className="space-y-2">
+                                <label className="text-[9px] font-black uppercase tracking-[0.2em] text-white/30 ml-2">Body Font</label>
+                                <select 
+                                    value={bodyFont} 
+                                    onChange={(e) => setBodyFont(e.target.value)}
+                                    className="w-full bg-white/5 border border-white/10 rounded-xl px-4 py-3 text-xs font-bold text-white/80 focus:border-amber-500/50 outline-none transition-all"
+                                >
+                                    <option value="">(Usar Padrão do Tema)</option>
+                                    {THEME_FONTS.map(f => <option key={f.id} value={f.value}>{f.name}</option>)}
+                                </select>
+                            </div>
+                        </div>
                     </div>
                 </div>
 

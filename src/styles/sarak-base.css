@@ -1,10 +1,13 @@
-/* Sarak Elite v5.4 - Design System Engine */
+/* Sarak v5.4.2 - Design System Engine (Performance Optimized) */
 :root {
   --sarak-font-size: 16px;
   --font-size-factor: 1;
   --theme-gap: 1.5rem;
   --theme-padding: 1.5rem;
   --radius-theme: 12px;
+  --theme-border-width: 1px;
+  
+  /* Color Palette Base */
   --theme-primary: #3b82f6;
   --theme-body: #020617;
   --theme-card: rgba(23, 23, 23, 0.5);
@@ -13,6 +16,17 @@
   --theme-text: #ffffff;
   --theme-muted: #94a3b8;
   --theme-title: #f8fafc;
+  
+  /* Typography Tokens */
+  --font-main: 'Inter', system-ui, -apple-system, sans-serif;
+  --font-heading: 'Outfit', 'Inter', system-ui, sans-serif;
+  --font-weight-heading: 700;
+  --letter-spacing-heading: -0.02em;
+
+  /* Texture Tokens */
+  --texture-opacity: 0.03;
+  --texture-size: 32px;
+  --texture-color: currentColor;
   
   /* Legacy mapping (100% Back-compat) */
   --bg-body: var(--theme-body);
@@ -46,12 +60,86 @@ html, body {
   overflow: hidden;
   background-color: var(--theme-body);
   color: var(--theme-text);
-  font-family: 'Inter', system-ui, -apple-system, sans-serif;
-  transition: background-color 0.3s ease, color 0.3s ease;
+  font-family: var(--font-main);
+  transition: background-color 0.4s cubic-bezier(0.4, 0, 0.2, 1), color 0.3s ease;
   -webkit-font-smoothing: antialiased;
 }
 
-/* Custom Scrollbar Elite */
+h1, h2, h3, h4, h5, h6 {
+  font-family: var(--font-heading);
+  font-weight: var(--font-weight-heading);
+  letter-spacing: var(--letter-spacing-heading);
+  color: var(--theme-title);
+}
+
+/* =========================================
+   TEXTURE ENGINE (Hybrid CSS + Local Assets)
+   ========================================= */
+
+body::before {
+  content: "";
+  position: fixed;
+  inset: 0;
+  z-index: -1;
+  pointer-events: none;
+  opacity: var(--texture-opacity);
+  transition: opacity 0.5s ease;
+}
+
+/* Pure CSS Textures (Zero Delay) */
+body.texture-grid::before {
+  background-image: 
+    linear-gradient(var(--texture-color) 1px, transparent 1px),
+    linear-gradient(90deg, var(--texture-color) 1px, transparent 1px);
+  background-size: var(--texture-size) var(--texture-size);
+}
+
+body.texture-dots::before {
+  background-image: radial-gradient(var(--texture-color) 1px, transparent 1px);
+  background-size: calc(var(--texture-size) / 2) calc(var(--texture-size) / 2);
+}
+
+body.texture-scanlines::before {
+  background: linear-gradient(rgba(18, 16, 16, 0) 50%, rgba(0, 0, 0, 0.1) 50%);
+  background-size: 100% 4px;
+}
+
+body.texture-noise::before {
+  background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 200 200' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='noiseFilter'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.65' numOctaves='3' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23noiseFilter)'/%3E%3C/svg%3E");
+  opacity: calc(var(--texture-opacity) * 1.5);
+}
+
+body.texture-stripes::before {
+  background: repeating-linear-gradient(45deg, var(--texture-color), var(--texture-color) 1px, transparent 1px, transparent 10px);
+}
+
+body.texture-squares::before {
+  background-image: linear-gradient(45deg, var(--texture-color) 25%, transparent 25%, transparent 75%, var(--texture-color) 75%, var(--texture-color)), 
+                    linear-gradient(45deg, var(--texture-color) 25%, transparent 25%, transparent 75%, var(--texture-color) 75%, var(--texture-color));
+  background-size: var(--texture-size) var(--texture-size);
+  background-position: 0 0, calc(var(--texture-size) / 2) calc(var(--texture-size) / 2);
+}
+
+body.texture-diamond::before {
+  background: conic-gradient(from 135deg at top, var(--texture-color) 90deg, transparent 0) 0 0 / var(--texture-size) var(--texture-size),
+              conic-gradient(from -45deg at bottom, var(--texture-color) 90deg, transparent 0) 0 0 / var(--texture-size) var(--texture-size),
+              conic-gradient(from 45deg at left, var(--texture-color) 90deg, transparent 0) 0 0 / var(--texture-size) var(--texture-size),
+              conic-gradient(from -135deg at right, var(--texture-color) 90deg, transparent 0) 0 0 / var(--texture-size) var(--texture-size);
+}
+
+/* Image-based or Complex Patterns */
+body.texture-carbon::before { background-image: url('../assets/textures/carbon.webp'); background-repeat: repeat; }
+body.texture-paper::before { background-image: url('../assets/textures/paper.webp'); background-repeat: repeat; }
+body.texture-topo::before { background-image: url('../assets/textures/topo.webp'); background-repeat: repeat; }
+body.texture-mesh::before { background-image: url('../assets/textures/mesh.webp'); background-size: cover; background-attachment: fixed; --texture-opacity: 0.1; }
+body.texture-waves::before { background-image: url('../assets/textures/waves.webp'); background-repeat: repeat-x; background-position: bottom; }
+body.texture-prestige::before { background-image: url('../assets/textures/prestige.webp'); background-repeat: repeat; }
+body.texture-brushed::before { background-image: url('../assets/textures/brushed.webp'); background-repeat: repeat; }
+body.texture-frosted::before { backdrop-filter: blur(20px); background: rgba(255,255,255,0.02); }
+body.texture-circuit::before { background-image: url('../assets/textures/circuit.webp'); background-repeat: repeat; }
+body.texture-hexagon::before { background-image: url('../assets/textures/hexagon.webp'); background-repeat: repeat; }
+
+/* Custom Scrollbar */
 .custom-scrollbar {
   overflow-y: auto !important;
   scrollbar-width: thin;
@@ -75,67 +163,72 @@ html, body {
 }
 
 /* =========================================
-   VISUAL PERSONALITIES (MATRIX V5.4 ELITE)
+   DENSITY & SCALE MODES
    ========================================= */
 
-/* 1. MODERN GLASS */
-.layout-glass {
+body.density-compact {
+  --theme-padding: 0.75rem;
+  --theme-gap: 0.75rem;
+  --radius-theme: 4px;
+}
+
+body.density-standard {
+  --theme-padding: 1.5rem;
+  --theme-gap: 1.5rem;
+  --radius-theme: 12px;
+}
+
+body.density-comfortable {
+  --theme-padding: 2.5rem;
+  --theme-gap: 2rem;
+  --radius-theme: 24px;
+}
+
+/* =========================================
+   VISUAL PERSONALITIES (v5.4.2)
+   ========================================= */
+
+/* Dark Mode Overrides (Default) */
+body.dark {
   --theme-body: #020617;
-  --theme-sidebar: #0f172a;
-  --theme-card: rgba(30, 41, 59, 0.7);
-  --theme-border: rgba(255, 255, 255, 0.05);
+  --theme-text: #ffffff;
+}
+
+/* Light Mode Core Overrides */
+body.light {
+  --theme-body: #f8fafc;
+  --theme-card: rgba(255, 255, 255, 0.8);
+  --theme-sidebar: #f1f5f9;
+  --theme-border: rgba(0, 0, 0, 0.08);
+  --theme-text: #1e293b;
+  --theme-title: #0f172a;
+  --theme-muted: #64748b;
+  --texture-color: rgba(0, 0, 0, 0.1);
+}
+
+/* Apply Classes to Layouts */
+.layout-glass {
   --radius-theme: 32px;
   --glass-blur: 24px;
   --glass-opacity: 0.75;
 }
 
-/* 2. SOLID CORPORATE (Includes Neumorphic Base) */
 .layout-corporate {
-  --theme-body: #0f172a;
-  --theme-sidebar: #0f172a;
-  --theme-card: #1e293b;
-  --theme-border: #334155;
   --radius-theme: 12px;
 }
 
-.light.layout-corporate {
-  --theme-body: #f8fafc;
-  --theme-card: #ffffff;
-  --theme-border: #cbd5e1;
-  --theme-text: #334155;
-}
-
-/* 3. MINIMALIST CLEAN */
 .layout-minimal {
   --radius-theme: 0px;
   --theme-gap: 2.5rem;
 }
 
-/* 4. TECHNICAL ANALYTICS */
 .layout-technical {
   --theme-body: #000000;
   --theme-sidebar: #050505;
   --theme-card: #080808;
-  --theme-border: var(--theme-primary);
   --radius-theme: 0px;
   --theme-padding: 0.75rem;
   --theme-gap: 1px;
-}
-
-/* 5. PRESTIGE EDITORIAL */
-.layout-prestige {
-  --radius-theme: 24px;
-  --glass-blur: 20px;
-  --glass-opacity: 0.4;
-}
-
-/* 6. CYBERPUNK / NEON */
-.layout-cyberpunk {
-  --theme-body: #000000;
-  --theme-sidebar: #050505;
-  --theme-card: #000000;
-  --theme-border: var(--theme-primary);
-  --radius-theme: 0px;
 }
 
 /* Base Card Style */
@@ -143,18 +236,14 @@ html, body {
   background: var(--theme-card);
   border-radius: var(--radius-theme);
   padding: var(--theme-padding);
-  border: 1px solid var(--theme-border);
+  border: var(--theme-border-width) solid var(--theme-border);
   transition: all 0.3s ease;
   gap: var(--theme-gap);
 }
 
-.layout-glass .bg-theme-card,
-.layout-prestige .bg-theme-card {
+.layout-glass .bg-theme-card {
   background: color-mix(in srgb, var(--theme-card), transparent calc(100% * (1 - var(--glass-opacity, 0.7))));
   backdrop-filter: blur(var(--glass-blur, 12px)) saturate(180%);
 }
 
-/* Utilities for Layout */
-.contents {
-  display: contents;
-}
+.contents { display: contents; }

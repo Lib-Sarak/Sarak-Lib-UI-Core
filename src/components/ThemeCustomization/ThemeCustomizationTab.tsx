@@ -24,8 +24,30 @@ export const ThemeCustomizationTab: React.FC = () => {
         fontScale, setFontScale,
         layoutDensity, setLayoutDensity,
         animationStyle: globalAnimationStyle, setAnimationStyle: setGlobalAnimationStyle,
-        emojiSet: globalEmojiSet, setEmojiSet: setGlobalEmojiSet
+        emojiSet: globalEmojiSet, setEmojiSet: setGlobalEmojiSet,
+        texture, setTexture // Adicionado para paridade
     } = useSarak();
+
+    const textures = [
+        { id: 'none', label: 'Nenhum' },
+        { id: 'grid', label: 'Grid' },
+        { id: 'dots', label: 'Dots' },
+        { id: 'scanlines', label: 'Scan' },
+        { id: 'noise', label: 'Noise' },
+        { id: 'carbon', label: 'Carbon' },
+        { id: 'paper', label: 'Paper' },
+        { id: 'topo', label: 'Topo' },
+        { id: 'mesh', label: 'Mesh' },
+        { id: 'waves', label: 'Waves' },
+        { id: 'squares', label: 'Squares' },
+        { id: 'stripes', label: 'Stripes' },
+        { id: 'diamond', label: 'Diamond' },
+        { id: 'prestige', label: 'Prestige' },
+        { id: 'brushed', label: 'Brushed' },
+        { id: 'frosted', label: 'Frosted' },
+        { id: 'circuit', label: 'Circuit' },
+        { id: 'hexagon', label: 'Hexagon' },
+    ];
 
     const [viewMode, setViewMode] = useState<'list' | 'editor' | 'grid'>('list');
     const [previewDevice, setPreviewDevice] = useState<'desktop' | 'tablet' | 'smartphone'>('desktop');
@@ -198,7 +220,23 @@ export const ThemeCustomizationTab: React.FC = () => {
                             </div>
                         </div>
 
-                        {/* 5. PREVIEW CLONE (OPTIONAL) */}
+                        {/* 5. BACKGROUND TEXTURE (NEW PARA PARIDADE 100%) */}
+                        <div>
+                            <SectionHeader icon={Grid} title="Background Engine" />
+                            <div className="flex flex-wrap gap-2">
+                                {textures.map(tex => (
+                                    <button
+                                        key={tex.id}
+                                        onClick={() => setTexture(tex.id)}
+                                        className={`px-3 py-1.5 rounded-full border text-[9px] font-black uppercase tracking-widest transition-all ${texture === tex.id ? 'bg-[var(--theme-primary)] border-[var(--theme-primary)] text-white shadow-lg' : 'bg-white/5 border-transparent text-white/40 hover:text-white hover:bg-white/10'}`}
+                                    >
+                                        {tex.label}
+                                    </button>
+                                ))}
+                            </div>
+                        </div>
+
+                        {/* 6. PERSISTENCE */}
                         <div className="space-y-4 pt-4 border-t border-white/5">
                             <button 
                                 onClick={() => handleApplyGlobally()}
@@ -228,7 +266,7 @@ export const ThemeCustomizationTab: React.FC = () => {
                         <div className="flex items-center gap-4">
                              <div className="flex items-center gap-2 px-3 py-1.5 rounded-lg bg-[var(--theme-primary)]/10 border border-[var(--theme-primary)]/20 text-[var(--theme-primary)]">
                                 <Zap size={12} className="fill-current" />
-                                <span className="text-[9px] font-black uppercase tracking-widest">v5.4.1 Matrix Stable</span>
+                                <span className="text-[9px] font-black uppercase tracking-widest">v5.4.2 Matrix Stable</span>
                              </div>
                         </div>
                     </div>
@@ -248,10 +286,8 @@ export const ThemeCustomizationTab: React.FC = () => {
                                     customThemes={customThemes}
                                     currentLayout={currentLayout}
                                     previewLayoutId={previewLayoutId}
-                                    viewMode="list"
                                     onPreview={setPreviewLayoutId}
                                     onApply={(id) => handleApplyGlobally(id)}
-                                    // Adicionando suporte ao design de cards Elite
                                 />
                             </div>
                         </div>
