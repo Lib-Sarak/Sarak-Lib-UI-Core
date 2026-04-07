@@ -25,8 +25,9 @@ interface SarakShellProps {
 }
 
 /**
- * Elite SarakShell (v5.2) — Motor de Interface Modular Premium
+ * Elite SarakShell (v5.4 Restoration) — Motor de Interface Modular Premium
  * Suporta Sidebar (Resizable), Topbar, Nav Hiding e Recovery System.
+ * Corrigido para evitar clipping e permitir scroll de conteúdos longos.
  */
 export const SarakShell: React.FC<SarakShellProps> = ({ 
     children, 
@@ -45,8 +46,12 @@ export const SarakShell: React.FC<SarakShellProps> = ({
     useEffect(() => {
         const discovered = getRegisteredModules();
         setModules(discovered);
-        if (discovered.length > 0 && !activeModuleId) setActiveModuleId(discovered[0].id);
-    }, []);
+        if (discovered.length > 0 && !activeModuleId) {
+            // Prioridade para o módulo "customization" se existir
+            const customMod = discovered.find(m => m.id === 'mx-customization');
+            setActiveModuleId(customMod ? customMod.id : discovered[0].id);
+        }
+    }, [activeModuleId]);
 
     // Atalhos Globais (Alt+N para toggle nav)
     useEffect(() => {
@@ -60,22 +65,13 @@ export const SarakShell: React.FC<SarakShellProps> = ({
         return () => window.removeEventListener('keydown', handleKeyDown);
     }, [toggleNav]);
 
-    // Resizing Logic
-    const startResizing = useCallback((e: React.MouseEvent) => {
-        e.preventDefault();
-        setIsResizing(true);
-    }, []);
-
-    const stopResizing = useCallback(() => {
-        setIsResizing(false);
-    }, []);
-
+    // Resizing Logic para Sidebar
+    const startResizing = useCallback(() => setIsResizing(true), []);
+    const stopResizing = useCallback(() => setIsResizing(false), []);
     const resize = useCallback((e: MouseEvent) => {
         if (isResizing) {
             const newWidth = e.clientX;
-            if (newWidth > 180 && newWidth < 450) {
-                setSidebarWidth(newWidth);
-            }
+            if (newWidth > 200 && newWidth < 450) setSidebarWidth(newWidth);
         }
     }, [isResizing, setSidebarWidth]);
 
@@ -90,63 +86,31 @@ export const SarakShell: React.FC<SarakShellProps> = ({
         };
     }, [isResizing, resize, stopResizing]);
 
-    // Grupos de Módulos
+    const activeModule = useMemo(() => modules.find(m => m.id === activeModuleId), [modules, activeModuleId]);
+    
+    // Grupar módulos por categoria
     const groupedModules = useMemo(() => {
-        const groups: Record<string, SarakModule[]> = {};
-        modules.forEach(mod => {
-            const cat = mod.category || 'Módulos';
-            if (!groups[cat]) groups[cat] = [];
-            groups[cat].push(mod);
-        });
-        return groups;
+        return modules.reduce((acc, mod) => {
+            const cat = mod.category || 'Módulos de Sistema';
+            if (!acc[cat]) acc[cat] = [];
+            acc[cat].push(mod);
+            return acc;
+        }, {} as Record<string, SarakModule[]>);
     }, [modules]);
 
-    const activeModule = modules.find(m => m.id === activeModuleId);
-    const currentLayoutClass = useMemo(() => {
-        const lowerTheme = theme?.toLowerCase() || 'glass';
-        return Object.values(LAYOUTS).find((l: any) => l.id.toLowerCase() === lowerTheme)?.class || 'layout-glass';
-    }, [theme]);
-
-    const isSidebar = navigationStyle === 'sidebar';
     const isTopbar = navigationStyle === 'topbar';
+    const isSidebar = !isTopbar;
 
     return (
-        <div 
-            id="sarak-app-viewport"
-            style={{ 
-                transform: `scale(var(--sarak-viewport-scale, 1))`,
-                transformOrigin: 'top left',
-                width: '100%',
-                height: '100%',
-                transition: 'transform 0.4s cubic-bezier(0.4, 0, 0.2, 1)'
-            }}
-            className={`sarak-shell min-h-screen text-[var(--theme-main)] font-sans selection:bg-[var(--theme-primary)]/30 overflow-hidden flex ${isTopbar ? 'flex-col' : 'flex-row'} ${currentLayoutClass} ${isNavHidden ? 'nav-hidden' : ''}`}
-        >
-            <GoogleTranslateWidget />
-
-            {/* Recovery Nav Button (Chevron flutuante quando oculto) */}
-            <AnimatePresence>
-                {isNavHidden && (
-                    <motion.button
-                        initial={{ opacity: 0, x: -20 }}
-                        animate={{ opacity: 1, x: 0 }}
-                        exit={{ opacity: 0, x: -20 }}
-                        onClick={toggleNav}
-                        className="fixed top-20 left-4 z-[100] w-10 h-10 rounded-full bg-blue-600/20 backdrop-blur-xl border border-blue-500/30 flex items-center justify-center text-blue-400 hover:bg-blue-600/40 transition-all shadow-xl shadow-blue-900/20 group"
-                        title="Restaurar Navegação (Alt+N)"
-                    >
-                        <ChevronRight size={20} className="group-hover:translate-x-0.5 transition-transform" />
-                    </motion.button>
-                )}
-            </AnimatePresence>
-
-            {/* SIDEBAR MODE */}
-            {!isNavHidden && isSidebar && (
+        <div className="flex w-full h-screen overflow-hidden bg-[var(--theme-body)] text-white font-sans selection:bg-[var(--theme-primary)] selection:text-white">
+            
+            {/* SIDEBAR NAVIGATION (Desktop) */}
+            {isSidebar && !isNavHidden && (
                 <aside 
-                    style={{ width: sidebarWidth }}
-                    className="h-screen border-r border-[var(--theme-border)] bg-[var(--theme-sidebar)] backdrop-blur-2xl flex flex-col relative z-50 group/sidebar transition-[width] duration-300 ease-in-out"
+                    style={{ width: `${sidebarWidth}px` }}
+                    className="h-screen bg-[var(--theme-sidebar)] border-r border-[var(--theme-border)] flex flex-col shrink-0 relative z-50 transition-all duration-300 shadow-2xl"
                 >
-                    {/* Header da Sidebar */}
+                    {/* Header Sidebar */}
                     <div className="h-16 px-6 flex items-center justify-between border-b border-[var(--theme-border)] bg-[var(--theme-title)]/5">
                         <div className="flex items-center gap-3">
                             <div className="w-8 h-8 rounded-lg bg-gradient-to-br from-[var(--theme-primary)] to-indigo-600 flex items-center justify-center font-black text-xs text-white">S</div>
@@ -169,13 +133,18 @@ export const SarakShell: React.FC<SarakShellProps> = ({
                                             onClick={() => setActiveModuleId(mod.id)}
                                             className={`w-full flex items-center gap-3 px-3 py-2.5 rounded-xl transition-all relative group ${
                                                 activeModuleId === mod.id 
-                                                ? 'bg-blue-600/10 text-blue-400 font-bold' 
+                                                ? 'bg-[var(--theme-primary)]/10 text-[var(--theme-primary)] font-bold shadow-[inset_0_0_20px_rgba(59,130,246,0.05)]' 
                                                 : 'text-white/40 hover:bg-white/5 hover:text-white'
                                             }`}
                                         >
                                             <IconRenderer name={mod.icon} className={activeModuleId === mod.id ? 'text-[var(--theme-primary)]' : 'text-[var(--theme-muted)]'} />
                                             <span className="text-sm truncate">{mod.label}</span>
-                                            {activeModuleId === mod.id && <motion.div layoutId="active-pill" className="absolute left-0 w-1 h-4 bg-[var(--theme-primary)] rounded-full shadow-[0_0_10px_var(--theme-primary)]" />}
+                                            {activeModuleId === mod.id && (
+                                                <motion.div 
+                                                    layoutId="active-pill" 
+                                                    className="absolute left-0 w-1 h-4 bg-[var(--theme-primary)] rounded-full shadow-[0_0_15px_var(--theme-primary)]" 
+                                                />
+                                            )}
                                         </button>
                                     ))}
                                 </div>
@@ -204,34 +173,41 @@ export const SarakShell: React.FC<SarakShellProps> = ({
                     {/* Resize Handle */}
                     <div 
                         onMouseDown={startResizing}
-                        className="absolute top-0 right-0 w-1 h-full cursor-col-resize hover:bg-blue-500/50 transition-colors z-[60]"
+                        className="absolute top-0 right-0 w-1 h-full cursor-col-resize hover:bg-[var(--theme-primary)]/50 transition-colors z-[60]"
                     />
                 </aside>
             )}
 
             {/* CONTENT AREA */}
-                <div className="flex-1 flex flex-col min-h-screen overflow-hidden relative bg-[var(--theme-body)]">
-                    
-                    {/* TOPBAR MODE OR TOP HEADER (if Sidebar) */}
-                    {(isTopbar || !isNavHidden) && (
-                        <header className={`h-16 border-b border-[var(--theme-border)] bg-[var(--theme-card)] backdrop-blur-2xl px-6 flex items-center justify-between z-[45] ${isTopbar && isNavHidden ? 'hidden' : ''}`}>
+            <div className="flex-1 flex flex-col h-screen overflow-hidden relative bg-[var(--theme-body)]">
+                
+                {/* HEADER (Topbar Style or Sidebar Header) */}
+                {(isTopbar || (!isNavHidden && isSidebar) || (isNavHidden && isSidebar)) && (
+                    <header className={`h-16 border-b border-[var(--theme-border)] bg-[var(--theme-card)] backdrop-blur-2xl px-6 flex items-center justify-between z-[45] shrink-0`}>
                         <div className="flex items-center gap-6">
-                            {isTopbar && (
-                                <div className="flex items-center gap-3 pr-6 border-r border-white/5">
-                                    <div className="w-8 h-8 rounded-lg bg-blue-600 flex items-center justify-center font-bold text-xs">S</div>
-                                    <span className="font-black tracking-tighter">{brand.name}</span>
+                            {(isTopbar || isNavHidden) && (
+                                <div className="flex items-center gap-4">
+                                    {isNavHidden && isSidebar && (
+                                        <button onClick={toggleNav} className="p-2 bg-white/5 rounded-lg text-white/40 hover:text-white transition-all mr-2">
+                                            <Menu size={18} />
+                                        </button>
+                                    )}
+                                    <div className="flex items-center gap-3 pr-6 border-r border-white/5">
+                                        <div className="w-8 h-8 rounded-lg bg-[var(--theme-primary)] flex items-center justify-center font-bold text-xs">S</div>
+                                        <span className="font-black tracking-tighter text-sm uppercase italic">{brand.name}</span>
+                                    </div>
                                 </div>
                             )}
                             
                             {/* Horizontal Modules (Topbar Style) */}
                             {isTopbar && (
                                 <nav className="hidden lg:flex items-center gap-1">
-                                    {modules.slice(0, 6).map(mod => (
+                                    {modules.slice(0, 8).map(mod => (
                                         <button
                                             key={mod.id}
                                             onClick={() => setActiveModuleId(mod.id)}
-                                            className={`px-4 py-1.5 rounded-full text-xs font-medium transition-all ${
-                                                activeModuleId === mod.id ? 'bg-blue-600 text-white shadow-lg shadow-blue-600/30' : 'text-white/40 hover:text-white'
+                                            className={`px-4 py-1.5 rounded-full text-xs font-black uppercase tracking-widest transition-all ${
+                                                activeModuleId === mod.id ? 'bg-[var(--theme-primary)] text-white shadow-lg shadow-[var(--theme-primary)]/30' : 'text-white/40 hover:text-white'
                                             }`}
                                         >
                                             {mod.label}
@@ -258,10 +234,11 @@ export const SarakShell: React.FC<SarakShellProps> = ({
                     </header>
                 )}
 
-                {/* MAIN CONTENT CANVAS */}
-                <main className="flex-1 overflow-hidden relative flex flex-col">
+                {/* MAIN CONTENT CANVAS - FIXED SCROLL ENGINE */}
+                <main className="flex-1 overflow-y-auto custom-scrollbar relative flex flex-col w-full min-h-0 bg-[var(--theme-body)]">
                     <div className="absolute inset-0 pointer-events-none opacity-[0.02] texture-grid"></div>
-                    <div className="flex-1 flex flex-col min-h-0 relative">
+                    
+                    <div className="flex-1 flex flex-col relative w-full pt-8 lg:pt-12">
                         <AnimatePresence mode="wait">
                             {activeModule ? (
                                 <motion.div
@@ -269,37 +246,48 @@ export const SarakShell: React.FC<SarakShellProps> = ({
                                     initial={{ opacity: 0, y: 10 }}
                                     animate={{ opacity: 1, y: 0 }}
                                     exit={{ opacity: 0, y: -10 }}
-                                    transition={{ duration: 0.4, ease: "easeOut" }}
-                                    className="flex-1"
+                                    transition={{ duration: 0.3 }}
+                                    className="px-8 lg:px-12 pb-12 flex flex-col min-h-full"
                                 >
-                                    <header className="mb-10 flex items-end justify-between border-b border-white/5 pb-8 px-12 pt-12">
+                                    <header className="mb-10 flex items-end justify-between border-b border-white/5 pb-8 shrink-0">
                                         <div>
                                             <div className="flex items-center gap-3 text-[var(--theme-primary)] mb-2">
-                                                <div className="p-2 rounded-lg bg-[var(--theme-primary)]/10 border border-[var(--theme-primary)]/20">
+                                                <div className="p-2 rounded-lg bg-[var(--theme-primary)]/10 border border-[var(--theme-primary)]/20 shadow-[0_0_15px_rgba(59,130,246,0.1)]">
                                                     <IconRenderer name={activeModule.icon} size={20} />
                                                 </div>
-                                                <span className="text-[10px] font-black uppercase tracking-[0.3em]">{activeModule.category || 'Módulo'}</span>
+                                                <span className="text-[10px] font-black uppercase tracking-[0.4em] italic">{activeModule.category || 'Módulo'}</span>
                                             </div>
-                                            <h1 className="text-4xl font-black tracking-tighter text-[var(--theme-title)]">{activeModule.label}</h1>
+                                            <h1 className="text-4xl lg:text-5xl font-black tracking-tighter text-[var(--theme-title)] uppercase">{activeModule.label}</h1>
                                         </div>
                                         <div className="flex items-center gap-2">
-                                            <button className="p-2.5 rounded-xl bg-white/5 border border-white/10 hover:border-white/30 transition-all">
-                                                <Search size={16} className="text-white/40" />
+                                            <button className="p-3 rounded-xl bg-white/5 border border-white/10 hover:border-[var(--theme-primary)]/50 transition-all text-white/40 hover:text-[var(--theme-primary)]">
+                                                <Search size={18} />
                                             </button>
-                                            <button className="px-5 py-2.5 rounded-xl bg-blue-600 hover:bg-blue-500 text-xs font-bold transition-all shadow-lg shadow-blue-600/30">
+                                            <button className="hidden sm:flex items-center gap-2 px-6 py-3 rounded-xl bg-[var(--theme-primary)] hover:opacity-90 text-white text-[10px] font-black uppercase tracking-[0.2em] transition-all shadow-xl shadow-[var(--theme-primary)]/20">
+                                                <Zap size={14} className="fill-current" />
                                                 Novo Registro
                                             </button>
                                         </div>
                                     </header>
 
-                                    <div className="flex-1 min-h-0 px-12 pb-12 animate-in fade-in zoom-in-95 duration-700">
+                                    <div className="flex-1 animate-in fade-in zoom-in-95 duration-700">
                                         <activeModule.component />
                                     </div>
                                 </motion.div>
                             ) : (
-                                <div className="flex-1 flex flex-col items-center justify-center text-white/5">
-                                    <LayoutDashboard size={80} strokeWidth={1} />
-                                    <p className="mt-4 text-xs font-bold tracking-widest uppercase">Selecione um terminal para iniciar</p>
+                                <div className="flex-1 flex flex-col items-center justify-center text-white/5 gap-10">
+                                    <div className="relative">
+                                        <div className="w-48 h-48 border-2 border-dashed border-white/5 rounded-full flex items-center justify-center animate-spin-slow">
+                                            <div className="w-32 h-32 border-2 border-dashed border-white/5 rounded-full" />
+                                        </div>
+                                        <div className="absolute inset-0 flex items-center justify-center">
+                                            <div className="w-4 h-4 bg-[var(--theme-primary)] rounded-full animate-pulse shadow-[0_0_20px_var(--theme-primary)]" />
+                                        </div>
+                                    </div>
+                                    <div className="text-center space-y-2">
+                                        <span className="block text-[10px] font-black uppercase tracking-[1em] opacity-40">Sarak Matrix Engine</span>
+                                        <span className="block text-[8px] font-black uppercase tracking-[0.5em] opacity-10 italic">Initializing sovereign core v5.4.1</span>
+                                    </div>
                                 </div>
                             )}
                         </AnimatePresence>
@@ -307,8 +295,15 @@ export const SarakShell: React.FC<SarakShellProps> = ({
                 </main>
             </div>
 
-            {/* Global Overlay Resizing Feedback */}
-            {isResizing && <div className="fixed inset-0 z-[9999] cursor-col-resize" />}
+            <style>{`
+                .animate-spin-slow { animation: spin 12s linear infinite; }
+                @keyframes spin { from { transform: rotate(0deg); } to { transform: rotate(360deg); } }
+                .texture-grid {
+                    background-image: linear-gradient(var(--theme-border) 1px, transparent 1px),
+                                      linear-gradient(90deg, var(--theme-border) 1px, transparent 1px);
+                    background-size: 40px 40px;
+                }
+            `}</style>
         </div>
     );
 };

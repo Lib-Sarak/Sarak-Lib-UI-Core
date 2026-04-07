@@ -1,42 +1,113 @@
-import React, { ReactNode, useEffect, useCallback } from 'react';
-import { useSarak, LAYOUTS } from '@sarak/lib-shared';
+import React, { ReactNode, useEffect, useState, useCallback, useMemo } from 'react';
+import { LAYOUTS, SCALES, DENSITY } from '../constants/theme';
+
+/**
+ * Tenta obter o contexto da Shared se disponível, 
+ * caso contrário falha silenciosamente para o estado local.
+ */
+let sharedContext: any = null;
+try {
+    sharedContext = require('@sarak/lib-shared');
+} catch (e) {
+    // Shared não disponível - operando em modo autônomo
+}
 
 interface SarakUIProviderProps {
     children: ReactNode;
     theme?: string;
+    mode?: 'light' | 'dark' | 'system';
+    primaryColor?: string;
 }
 
 /**
- * SarakUIProvider (Elite v5.2)
- * Injetor de tokens de design e motor de renderização de temas.
- * Sincroniza o estado global da Lib-Shared com as classes de CSS da UI-Core.
+ * SarakUIProvider (Elite v5.4 - Autonomous Engine)
+ * O "Cérebro" de UI da Sarak Matrix. 
+ * Responsável por injetar 100% dos tokens de design e gerenciar o estado estético.
  */
 export const SarakUIProvider: React.FC<SarakUIProviderProps> = ({ 
     children, 
-    theme: initialTheme 
+    theme: initialTheme,
+    mode: initialMode,
+    primaryColor: initialPrimaryColor
 }) => {
-    const { 
-        theme, setTheme, mode, toggleMode, 
-        shortcuts, toggleNav, registeredActions
-    } = useSarak();
+    // --- ESTADO INTERNO (FALLBACK AUTÔNOMO) ---
+    const [localTheme, setLocalTheme] = useState(() => localStorage.getItem('sarak_layout') || initialTheme || 'glass');
+    const [localMode, setLocalMode] = useState<'light' | 'dark' | 'system'>(() => (localStorage.getItem('sarak_mode') as any) || initialMode || 'dark');
+    const [localPrimaryColor, setLocalPrimaryColor] = useState(() => localStorage.getItem('sarak_primary_color') || initialPrimaryColor || '#3b82f6');
+    const [localFontScale, setLocalFontScale] = useState(() => localStorage.getItem('sarak_font_scale') || 'm');
+    const [localDensity, setLocalDensity] = useState(() => localStorage.getItem('sarak_layout_density') || 'standard');
+    const [localNavStyle, setLocalNavStyle] = useState<'sidebar' | 'topbar'>(() => (localStorage.getItem('sarak_nav_style') as any) || 'sidebar');
+    const [localSidebarWidth, setLocalSidebarWidth] = useState(() => parseInt(localStorage.getItem('sarak_sidebar_width') || '260'));
 
-    // Sincroniza tema inicial se fornecido
-    useEffect(() => {
-        if (initialTheme && !theme) {
-            setTheme(initialTheme);
+    // --- Tenta conectar com o useSarak da Shared ---
+    let sarak: any = {};
+    try {
+        if (sharedContext?.useSarak) {
+            sarak = sharedContext.useSarak();
         }
-    }, [initialTheme, setTheme, theme]);
+    } catch (e) {
+        // useSarak chamando fora do provider ou não disponível
+    }
 
-    // --- Motor de Viewport Scaling (Auto-ajuste Sarak Matrix v5.6) ---
+    // Resolvendo valores finais (Prioridade: Shared > Local)
+    const theme = sarak.theme || sarak.layout || localTheme;
+    const mode = sarak.mode || localMode;
+    const primaryColor = sarak.primaryColor || localPrimaryColor;
+    const fontScale = sarak.fontScale || localFontScale;
+    const layoutDensity = sarak.layoutDensity || localDensity;
+    const navigationStyle = sarak.navigationStyle || localNavStyle;
+    const sidebarWidth = sarak.sidebarWidth || localSidebarWidth;
+
+    // --- MOTOR DE DOM PATCHING (RESTORE v5.4) ---
+    useEffect(() => {
+        const root = document.documentElement;
+        
+        // 1. Variáveis de Cores e Dimensões
+        root.style.setProperty('--primary-color', primaryColor);
+        root.style.setProperty('--theme-primary', primaryColor);
+        root.style.setProperty('--sidebar-width', `${sidebarWidth}px`);
+        
+        // 2. Escala de Fonte
+        const scale = (SCALES as any)[fontScale.toUpperCase()] || SCALES.M;
+        root.style.setProperty('--font-size-factor', scale.factor);
+        root.style.setProperty('--sarak-font-size', `${16 * parseFloat(scale.factor)}px`);
+
+        // 3. Densidade
+        const density = (DENSITY as any)[layoutDensity.toUpperCase()] || DENSITY.STANDARD;
+        root.style.setProperty('--theme-gap', density.gap);
+        root.style.setProperty('--theme-padding', density.pad);
+        root.style.setProperty('--radius-theme', density.radius);
+
+        // 4. Classes do Body (Paridade de Layout)
+        const lowerTheme = theme?.toLowerCase() || 'glass';
+        const layoutConfig = Object.values(LAYOUTS).find((l: any) => l.id.toLowerCase() === lowerTheme) || LAYOUTS.GLASS;
+        
+        // Limpeza de classes legadas para evitar colisão
+        const allLayoutClasses = Object.values(LAYOUTS).map((l: any) => l.class).filter(Boolean);
+        document.body.classList.remove(...allLayoutClasses, 'light', 'dark', 'nav-sidebar', 'nav-topbar');
+        
+        document.body.classList.add(layoutConfig.class || 'layout-glass');
+        document.body.classList.add(mode === 'dark' ? 'dark' : 'light');
+        document.body.classList.add(`nav-${navigationStyle}`);
+
+        // Persistência local (Garantia de Autonomia)
+        localStorage.setItem('sarak_layout', theme);
+        localStorage.setItem('sarak_mode', mode);
+        localStorage.setItem('sarak_primary_color', primaryColor);
+        localStorage.setItem('sarak_font_scale', fontScale);
+        localStorage.setItem('sarak_layout_density', layoutDensity);
+        localStorage.setItem('sarak_nav_style', navigationStyle);
+        localStorage.setItem('sarak_sidebar_width', sidebarWidth.toString());
+
+    }, [theme, mode, primaryColor, fontScale, layoutDensity, navigationStyle, sidebarWidth]);
+
+    // --- MOTOR DE VIEWPORT SCALING (RESTORATION v5.7.1) ---
     useEffect(() => {
         const handleResize = () => {
             const root = document.documentElement;
-            const targetWidth = 1920;
-            const currentWidth = window.innerWidth;
-            const scale = Math.min(Math.max(currentWidth / targetWidth, 0.65), 1.35);
-            
-            root.style.setProperty('--sarak-viewport-scale', scale.toString());
-            console.log(`[Sarak UI] Viewport Scoped Scale: ${scale}`);
+            // Cálculo Premium: Baseado em 1920px (Full HD)
+            const vScale = Math.min(Math.max(window.innerWidth / 1920, 0.7), 1.25);
+            root.style.setProperty('--sarak-viewport-scale', vScale.toString());
         };
 
         window.addEventListener('resize', handleResize);
@@ -44,76 +115,26 @@ export const SarakUIProvider: React.FC<SarakUIProviderProps> = ({
         return () => window.removeEventListener('resize', handleResize);
     }, []);
 
-    // Aplica a classe do layout ao body (Garantia de Paridade v5.6)
-    useEffect(() => {
-        const lowerTheme = theme?.toLowerCase() || 'glass';
-        const layoutConfig = Object.values(LAYOUTS).find((l: any) => l.id.toLowerCase() === lowerTheme) || LAYOUTS.GLASS;
-        const layoutClass = layoutConfig.class || 'layout-glass';
-
-        
-        // SarakProvider já cuida da limpeza no Body no v5.4, 
-        // mantemos aqui apenas garantias de estilo base.
-        document.body.style.margin = '0';
-        document.body.style.overflowX = 'hidden';
-        document.body.style.transition = 'background-color 0.3s ease, color 0.3s ease';
-    }, [theme]);
-
-    // --- Motor de Atalhos (Shortcuts Engine v5.4) ---
+    // --- SHORTCUTS ENGINE (PASS-THROUGH) ---
     const handleKeyDown = useCallback((e: KeyboardEvent) => {
-        if (['INPUT', 'TEXTAREA', 'SELECT'].includes((e.target as HTMLElement).tagName)) return;
-        if ((e.target as HTMLElement).isContentEditable) return;
+        if (['INPUT', 'TEXTAREA'].includes((e.target as HTMLElement).tagName)) return;
 
-        const shortcutsArray = Array.isArray(shortcuts) ? shortcuts : Object.values(shortcuts || {});
-
-        shortcutsArray.forEach((shortcut: any) => {
-            const keys = (shortcut.keys || []).map((k: string) => k.toLowerCase());
-            if (!keys.length) return;
-
-
-            const isCtrl = keys.includes('control') || keys.includes('ctrl') || keys.includes('meta');
-            const isShift = keys.includes('shift');
-            const isAlt = keys.includes('alt');
-            
-            const reqKey = keys.find((k: string) => !['control', 'ctrl', 'shift', 'alt', 'meta'].includes(k));
-            if (!reqKey) return;
-
-            const ctrlMatch = isCtrl ? (e.ctrlKey || e.metaKey) : !(e.ctrlKey || e.metaKey);
-            const shiftMatch = isShift ? e.shiftKey : !e.shiftKey;
-            const altMatch = isAlt ? e.altKey : !e.altKey;
-            const keyMatch = e.key.toLowerCase() === reqKey.toLowerCase();
-
-            if (ctrlMatch && shiftMatch && altMatch && keyMatch) {
-                e.preventDefault();
-                e.stopPropagation();
-                
-                console.info(`[Sarak OS] Executing Action: ${shortcut.id}`);
-
-                if (shortcut.id === 'ui:toggleTheme') toggleMode();
-                if (shortcut.id === 'ui:focusMode') toggleNav();
-                
-                if (registeredActions && registeredActions[shortcut.id]) {
-                    registeredActions[shortcut.id]();
-                }
-                
-                const legacyActions = (window as any).SARAK_REGISTERED_ACTIONS || {};
-                if (legacyActions[shortcut.id]) legacyActions[shortcut.id]();
-            }
-        });
-    }, [shortcuts, toggleMode, toggleNav, registeredActions]);
-
+        // Atalhos de Sistema Rápidos
+        if (e.ctrlKey && e.key.toLowerCase() === 'q') {
+            sarak.toggleMode ? sarak.toggleMode() : setLocalMode(prev => prev === 'dark' ? 'light' : 'dark');
+        }
+    }, [sarak]);
 
     useEffect(() => {
-        window.addEventListener('keydown', handleKeyDown, { capture: true });
-        return () => window.removeEventListener('keydown', handleKeyDown, { capture: true });
+        window.addEventListener('keydown', handleKeyDown);
+        return () => window.removeEventListener('keydown', handleKeyDown);
     }, [handleKeyDown]);
 
     return (
-        <div className={`sarak-ui-root contents ${mode}`}>
+        <div className={`sarak-ui-root contents ${mode} ${theme}`}>
             {children}
         </div>
     );
 };
 
 export default SarakUIProvider;
-
-

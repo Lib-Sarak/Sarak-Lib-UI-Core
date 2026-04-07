@@ -1,28 +1,52 @@
-/* Sarak OS v9 Design Tokens (Tailwind v4 Compatibility) */
-@theme {
-  --color-theme-primary: var(--theme-primary, #3b82f6);
-  --color-theme-secondary: var(--theme-secondary, #10b981);
-  --color-theme-body: var(--theme-body, #0f172a);
-  --color-theme-card: var(--theme-card, rgba(23, 23, 23, 0.5));
-  --color-theme-sidebar: var(--theme-sidebar, #0f172a);
-  --color-theme-border: var(--theme-border, rgba(255, 255, 255, 0.1));
-  --color-theme-text: var(--theme-text, #ffffff);
-  --color-theme-muted: var(--theme-muted, #94a3b8);
-  --color-theme-title: var(--theme-title, #f8fafc);
+/* Sarak Elite v5.4 - Design System Engine */
+:root {
+  --sarak-font-size: 16px;
+  --font-size-factor: 1;
+  --theme-gap: 1.5rem;
+  --theme-padding: 1.5rem;
+  --radius-theme: 12px;
+  --theme-primary: #3b82f6;
+  --theme-body: #020617;
+  --theme-card: rgba(23, 23, 23, 0.5);
+  --theme-sidebar: #0f172a;
+  --theme-border: rgba(255, 255, 255, 0.1);
+  --theme-text: #ffffff;
+  --theme-muted: #94a3b8;
+  --theme-title: #f8fafc;
+  
+  /* Legacy mapping (100% Back-compat) */
+  --bg-body: var(--theme-body);
+  --bg-card: var(--theme-card);
+  --bg-sidebar: var(--theme-sidebar);
+  --text-main: var(--theme-text);
+  --text-title: var(--theme-title);
+  --border-color: var(--theme-border);
 }
 
-/* =========================================
-   SCROLLBAR & GLOBAL RESET
-   ========================================= */
+@theme {
+  --color-theme-primary: var(--theme-primary);
+  --color-theme-body: var(--theme-body);
+  --color-theme-card: var(--theme-card);
+  --color-theme-sidebar: var(--theme-sidebar);
+  --color-theme-border: var(--theme-border);
+  --color-theme-text: var(--theme-text);
+  --color-theme-muted: var(--theme-muted);
+  --color-theme-title: var(--theme-title);
+}
+
+html {
+  font-size: var(--sarak-font-size);
+}
+
 html, body {
   margin: 0;
   padding: 0;
   width: 100%;
-  height: 100vh;
+  height: 100%;
   overflow: hidden;
-  background-color: var(--theme-body, #020617);
-  color: var(--theme-main, #ffffff);
-  font-family: var(--font-main, 'Inter', sans-serif);
+  background-color: var(--theme-body);
+  color: var(--theme-text);
+  font-family: 'Inter', system-ui, -apple-system, sans-serif;
   transition: background-color 0.3s ease, color 0.3s ease;
   -webkit-font-smoothing: antialiased;
 }
@@ -31,7 +55,7 @@ html, body {
 .custom-scrollbar {
   overflow-y: auto !important;
   scrollbar-width: thin;
-  scrollbar-color: var(--theme-primary, #3b82f6) transparent;
+  scrollbar-color: var(--theme-primary) transparent;
 }
 
 .custom-scrollbar::-webkit-scrollbar {
@@ -42,48 +66,20 @@ html, body {
 
 .custom-scrollbar::-webkit-scrollbar-track {
   background: rgba(0, 0, 0, 0.05) !important;
-  border-radius: 10px;
 }
 
 .custom-scrollbar::-webkit-scrollbar-thumb {
-  background: var(--theme-primary, #3b82f6) !important;
+  background: var(--theme-primary) !important;
   border-radius: 10px;
   border: 1px solid rgba(255, 255, 255, 0.05);
 }
 
-.custom-scrollbar::-webkit-scrollbar-thumb:hover {
-  background: var(--theme-primary) !important;
-}
-
 /* =========================================
-   GOOGLE TRANSLATE SUPPRESSION (SILENT)
-   ========================================= */
-.goog-te-banner-frame,
-.goog-te-balloon-frame,
-#google_translate_element,
-.goog-te-gadget-icon,
-.goog-te-spinner-pos,
-.goog-tooltip,
-#goog-gt-tt,
-.skiptranslate,
-iframe[id*="google_translate"] {
-  display: none !important;
-  visibility: hidden !important;
-  opacity: 0 !important;
-  pointer-events: none !important;
-}
-
-.goog-text-highlight {
-  background: transparent !important;
-  box-shadow: none !important;
-}
-
-/* =========================================
-   VISUAL PERSONALITIES (MATRIX V5.2 ELITE)
+   VISUAL PERSONALITIES (MATRIX V5.4 ELITE)
    ========================================= */
 
 /* 1. MODERN GLASS */
-.layout-glass, [class*="theme-glass"] {
+.layout-glass {
   --theme-body: #020617;
   --theme-sidebar: #0f172a;
   --theme-card: rgba(30, 41, 59, 0.7);
@@ -94,16 +90,15 @@ iframe[id*="google_translate"] {
 }
 
 /* 2. SOLID CORPORATE (Includes Neumorphic Base) */
-.layout-corporate, .layout-neumorphic, [class*="theme-corporate"], [class*="theme-neumorphic"] {
+.layout-corporate {
   --theme-body: #0f172a;
   --theme-sidebar: #0f172a;
   --theme-card: #1e293b;
   --theme-border: #334155;
   --radius-theme: 12px;
-  --theme-gap: 1.25rem;
 }
 
-.light.layout-corporate, .light.layout-neumorphic {
+.light.layout-corporate {
   --theme-body: #f8fafc;
   --theme-card: #ffffff;
   --theme-border: #cbd5e1;
@@ -111,180 +106,55 @@ iframe[id*="google_translate"] {
 }
 
 /* 3. MINIMALIST CLEAN */
-.layout-minimal, [class*="theme-minimal"] {
+.layout-minimal {
   --radius-theme: 0px;
   --theme-gap: 2.5rem;
-  --border-color: #333;
 }
 
 /* 4. TECHNICAL ANALYTICS */
-.layout-technical, [class*="theme-technical"] {
+.layout-technical {
   --theme-body: #000000;
   --theme-sidebar: #050505;
   --theme-card: #080808;
   --theme-border: var(--theme-primary);
   --radius-theme: 0px;
-  --font-main: 'JetBrains Mono', monospace;
   --theme-padding: 0.75rem;
   --theme-gap: 1px;
 }
 
 /* 5. PRESTIGE EDITORIAL */
-.layout-prestige, [class*="theme-prestige"] {
+.layout-prestige {
   --radius-theme: 24px;
   --glass-blur: 20px;
   --glass-opacity: 0.4;
 }
 
-/* 6. DEEP ATMOSPHERIC */
-.layout-atmospheric, [class*="theme-atmospheric"] {
-  --radius-theme: 32px;
-  --glass-blur: 40px;
-  --glass-opacity: 0.25;
-}
-
-/* 7. CYBERPUNK / NEON */
-.layout-cyberpunk, [class*="theme-cyberpunk"] {
+/* 6. CYBERPUNK / NEON */
+.layout-cyberpunk {
   --theme-body: #000000;
   --theme-sidebar: #050505;
   --theme-card: #000000;
   --theme-border: var(--theme-primary);
   --radius-theme: 0px;
-  --border-width: 2px;
 }
 
-/* 8. TERMINAL / MAINFRAME */
-.layout-terminal, .layout-mainframe, [class*="theme-terminal"], [class*="theme-mainframe"] {
-  --theme-body: #000000;
-  --theme-sidebar: #020402;
-  --theme-card: #040804;
-  --theme-border: rgba(0, 255, 65, 0.2);
-  --radius-theme: 0px;
-  --font-main: 'Fira Code', monospace;
-}
-
-/* 9. RAW MAIN / BRUTALIST */
-.layout-main, [class*="theme-main"], [class*="theme-brutalist"] {
-  --theme-body: #0a0a0a;
-  --theme-card: #111111;
-  --theme-border: #222222;
-  --radius-theme: 0px;
-  --border-width: 2px;
-}
-
-/* 10. EDITORIAL LUXURY */
-.layout-editorial, [class*="theme-editorial"] {
-  --theme-body: #ffffff;
-  --theme-card: #ffffff;
-  --theme-border: #eeeeee;
-  --theme-text: #1a1a1a;
-  --radius-theme: 0px;
-}
-
-.dark .layout-editorial {
-  --theme-body: #050505;
-  --theme-card: #0a0a0a;
-  --theme-border: #1a1a1a;
-  --theme-text: #ffffff;
-}
-
-/* 11. ETHEREAL MIST */
-.layout-ethereal, [class*="theme-ethereal"] {
-  --radius-theme: 100px;
-  --glass-blur: 60px;
-  --glass-opacity: 0.15;
-}
-
-/* 12. ZEN PARCHMENT */
-.layout-zen_parchment, [class*="theme-zen_parchment"] {
-  --theme-body: #f4f1ea;
-  --theme-card: #f9f7f2;
-  --theme-border: #e2dfd5;
-  --theme-text: #3c3c3c;
-  --radius-theme: 8px;
-}
-
-/* 13. FINANCE PRO */
-.layout-finance_pro, [class*="theme-finance_pro"] {
-  --theme-body: #f1f5f9;
-  --theme-card: #ffffff;
-  --theme-border: #e2e8f0;
-  --radius-theme: 4px;
-}
-
-.dark .layout-finance_pro {
-  --theme-body: #020617;
-  --theme-card: #0f172a;
-  --theme-border: #1e293b;
-}
-
-/* 14. GAMER ELITE */
-.layout-gamer_elite, [class*="theme-gamer_elite"] {
-  --theme-body: #050505;
-  --theme-card: #0a0a0a;
-  --theme-border: var(--theme-primary);
-  --radius-theme: 12px;
-  --border-width: 2px;
-}
-
-/* Apply Glass Effect to Cards based on state */
+/* Base Card Style */
 .bg-theme-card {
-  background: var(--theme-card, #1e293b);
-  border-radius: var(--radius-theme, 12px);
-  padding: var(--theme-padding, 1.5rem);
-  border: 1px solid var(--theme-border, rgba(255, 255, 255, 0.1));
+  background: var(--theme-card);
+  border-radius: var(--radius-theme);
+  padding: var(--theme-padding);
+  border: 1px solid var(--theme-border);
   transition: all 0.3s ease;
+  gap: var(--theme-gap);
 }
 
 .layout-glass .bg-theme-card,
-.layout-prestige .bg-theme-card,
-.layout-atmospheric .bg-theme-card,
-.layout-ethereal .bg-theme-card {
+.layout-prestige .bg-theme-card {
   background: color-mix(in srgb, var(--theme-card), transparent calc(100% * (1 - var(--glass-opacity, 0.7))));
   backdrop-filter: blur(var(--glass-blur, 12px)) saturate(180%);
-  -webkit-backdrop-filter: blur(var(--glass-blur, 12px)) saturate(180%);
 }
 
-.layout-cyberpunk .bg-theme-card {
-  background: #000 !important;
-  border: 2px solid var(--theme-primary);
-  box-shadow: 0 0 15px var(--theme-primary), inset 0 0 5px var(--theme-primary);
-}
-
-/* =========================================
-   TEXTURE ENGINE
-   ========================================= */
-body::before {
-  content: "";
-  position: fixed;
-  inset: 0;
-  z-index: -1;
-  pointer-events: none;
-  opacity: var(--texture-opacity, 0.05);
-  transition: opacity 0.5s ease;
-}
-
-body.texture-grid::before {
-  background-image: linear-gradient(var(--texture-color, rgba(255,255,255,0.1)) 1px, transparent 1px), linear-gradient(90deg, var(--texture-color, rgba(255,255,255,0.1)) 1px, transparent 1px);
-  background-size: var(--texture-size, 32px) var(--texture-size, 32px);
-}
-
-body.texture-dots::before {
-  background-image: radial-gradient(var(--texture-color, rgba(255,255,255,0.1)) 1px, transparent 1px);
-  background-size: 16px 16px;
-}
-
-body.texture-scanlines::before {
-  background: linear-gradient(rgba(18, 16, 16, 0) 50%, rgba(0, 0, 0, 0.1) 50%);
-  background-size: 100% 4px;
-}
-
-/* Mapping Legacy names to modern theme names for compatibility */
-:root {
-  --bg-body: var(--theme-body);
-  --bg-card: var(--theme-card);
-  --bg-sidebar: var(--theme-sidebar);
-  --text-main: var(--theme-main);
-  --text-title: var(--theme-title);
-  --border-color: var(--theme-border);
+/* Utilities for Layout */
+.contents {
+  display: contents;
 }
