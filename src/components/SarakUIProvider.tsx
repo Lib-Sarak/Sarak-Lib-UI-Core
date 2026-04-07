@@ -1,4 +1,5 @@
 import React, { ReactNode, useEffect, useState, useMemo } from 'react';
+import '../styles/sarak-base.css';
 import { LAYOUTS, SCALES, DENSITY } from '../constants/theme';
 import { useSarak as useGlobalSarak } from '@sarak/lib-shared';
 

@@ -1,4 +1,8 @@
-/* Sarak v5.4.2 - Design System Engine (Performance Optimized) */
+/* Sarak v5.4.2 - Master Design System Engine (Mirrored from Base) */
+
+/* 1. TIPOGRAFIA GLOBAL (29 Famílias do Modelo Original) */
+@import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;600;800&family=Space+Grotesk:wght@300;500;700&family=Playfair+Display:ital,wght@0,400;0,700;1,400&family=Fira+Code:wght@400;500&family=Outfit:wght@300;400;600&family=JetBrains+Mono:wght@400;700&family=Cabinet+Grotesk:wght@400;700;900&family=Satoshi:wght@300;400;700;900&family=Sentient:ital,wght@0,400;0,700;1,400&family=Fraunces:ital,wght@0,400;0,700;1,400&family=Syne:wght@400;700;800&family=Space+Mono:wght@400;700&family=Bricolage+Grotesque:wght@400;700;800&family=Public+Sans:wght@400;500;700&family=Anton&family=Lora:ital,wght@0,400;0,600;1,400&family=Cormorant+Garamond:ital,wght@0,400;0,600;1,400&family=Rajdhani:wght@500;700&family=Orbitron:wght@700;900&family=Quicksand:wght@400;700&family=Fredoka+One&family=Nunito:wght@400;700&family=Cinzel:wght@400;700&family=Oswald:wght@400;700&family=Plus+Jakarta+Sans:wght@400;700&family=Archivo+Black&family=Syncopate:wght@700&family=Figtree:wght@400;700&family=Urbanist:wght@400;800&family=Barlow+Condensed:wght@600&family=Share+Tech+Mono&display=swap');
+
 :root {
   --sarak-font-size: 16px;
   --font-size-factor: 1;
@@ -23,29 +27,11 @@
   --font-weight-heading: 700;
   --letter-spacing-heading: -0.02em;
 
-  /* Texture Tokens */
-  --texture-opacity: 0.03;
-  --texture-size: 32px;
-  --texture-color: currentColor;
-  
-  /* Legacy mapping (100% Back-compat) */
+  /* Backup Compat Tokens */
   --bg-body: var(--theme-body);
-  --bg-card: var(--theme-card);
-  --bg-sidebar: var(--theme-sidebar);
   --text-main: var(--theme-text);
-  --text-title: var(--theme-title);
   --border-color: var(--theme-border);
-}
-
-@theme {
-  --color-theme-primary: var(--theme-primary);
-  --color-theme-body: var(--theme-body);
-  --color-theme-card: var(--theme-card);
-  --color-theme-sidebar: var(--theme-sidebar);
-  --color-theme-border: var(--theme-border);
-  --color-theme-text: var(--theme-text);
-  --color-theme-muted: var(--theme-muted);
-  --color-theme-title: var(--theme-title);
+  --primary-color: var(--theme-primary);
 }
 
 html {
@@ -61,7 +47,7 @@ html, body {
   background-color: var(--theme-body);
   color: var(--theme-text);
   font-family: var(--font-main);
-  transition: background-color 0.4s cubic-bezier(0.4, 0, 0.2, 1), color 0.3s ease;
+  transition: background-color 0.4s ease, color 0.3s ease;
   -webkit-font-smoothing: antialiased;
 }
 
@@ -73,7 +59,7 @@ h1, h2, h3, h4, h5, h6 {
 }
 
 /* =========================================
-   TEXTURE ENGINE (Hybrid CSS + Local Assets)
+   SISTEMA UNIVERSAL DE TEXTURAS (PROCEDURAL)
    ========================================= */
 
 body::before {
@@ -82,119 +68,108 @@ body::before {
   inset: 0;
   z-index: -1;
   pointer-events: none;
-  opacity: var(--texture-opacity);
+  opacity: 0.03;
   transition: opacity 0.5s ease;
 }
 
-/* Pure CSS Textures (Zero Delay) */
 body.texture-grid::before {
-  background-image: 
-    linear-gradient(var(--texture-color) 1px, transparent 1px),
-    linear-gradient(90deg, var(--texture-color) 1px, transparent 1px);
-  background-size: var(--texture-size) var(--texture-size);
+  background-image:
+    linear-gradient(rgba(255, 255, 255, 0.05) 1px, transparent 1px),
+    linear-gradient(90deg, rgba(255, 255, 255, 0.05) 1px, transparent 1px) !important;
+  background-size: 40px 40px !important;
 }
 
 body.texture-dots::before {
-  background-image: radial-gradient(var(--texture-color) 1px, transparent 1px);
-  background-size: calc(var(--texture-size) / 2) calc(var(--texture-size) / 2);
-}
-
-body.texture-scanlines::before {
-  background: linear-gradient(rgba(18, 16, 16, 0) 50%, rgba(0, 0, 0, 0.1) 50%);
-  background-size: 100% 4px;
+  background-image: radial-gradient(var(--theme-border) 1px, transparent 1px) !important;
+  background-size: 24px 24px !important;
 }
 
 body.texture-noise::before {
-  background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 200 200' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='noiseFilter'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.65' numOctaves='3' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23noiseFilter)'/%3E%3C/svg%3E");
-  opacity: calc(var(--texture-opacity) * 1.5);
+  background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 200 200' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='noiseFilter'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.15' numOctaves='3' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23noiseFilter)'/%3E%3C/svg%3E") !important;
+  opacity: 0.015 !important;
 }
 
-body.texture-stripes::before {
-  background: repeating-linear-gradient(45deg, var(--texture-color), var(--texture-color) 1px, transparent 1px, transparent 10px);
+body.texture-mesh::before {
+  background-image:
+    radial-gradient(at 0% 0%, color-mix(in srgb, var(--theme-primary), transparent 85%) 0%, transparent 60%),
+    radial-gradient(at 100% 0%, color-mix(in srgb, var(--theme-primary), transparent 85%) 0%, transparent 60%),
+    radial-gradient(at 50% 100%, rgba(139, 92, 246, 0.1) 0%, transparent 70%) !important;
+  background-size: 100% 100% !important;
 }
 
-body.texture-squares::before {
-  background-image: linear-gradient(45deg, var(--texture-color) 25%, transparent 25%, transparent 75%, var(--texture-color) 75%, var(--texture-color)), 
-                    linear-gradient(45deg, var(--texture-color) 25%, transparent 25%, transparent 75%, var(--texture-color) 75%, var(--texture-color));
-  background-size: var(--texture-size) var(--texture-size);
-  background-position: 0 0, calc(var(--texture-size) / 2) calc(var(--texture-size) / 2);
+body.texture-waves::before {
+  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='100' height='20' viewBox='0 0 100 20'%3E%3Cpath d='M21.1,5.7c0,5.9-4.8,10.6-10.6,10.6S0,11.5,0,5.7c0-5.9,4.8-10.6,10.6-10.6S21.1-0.2,21.1,5.7z' fill='white' fill-opacity='0.05'/%3E%3C/svg%3E") !important;
+  background-size: 100px 20px !important;
 }
 
-body.texture-diamond::before {
-  background: conic-gradient(from 135deg at top, var(--texture-color) 90deg, transparent 0) 0 0 / var(--texture-size) var(--texture-size),
-              conic-gradient(from -45deg at bottom, var(--texture-color) 90deg, transparent 0) 0 0 / var(--texture-size) var(--texture-size),
-              conic-gradient(from 45deg at left, var(--texture-color) 90deg, transparent 0) 0 0 / var(--texture-size) var(--texture-size),
-              conic-gradient(from -135deg at right, var(--texture-color) 90deg, transparent 0) 0 0 / var(--texture-size) var(--texture-size);
+body.texture-carbon::before {
+  background:
+    linear-gradient(27deg, #151515 5px, transparent 5px) 0 5px,
+    linear-gradient(207deg, #151515 5px, transparent 5px) 10px 0px,
+    linear-gradient(27deg, #222 5px, transparent 5px) 0px 10px,
+    linear-gradient(207deg, #222 5px, transparent 5px) 10px 5px,
+    linear-gradient(90deg, #1b1b1b 10px, transparent 10px),
+    linear-gradient(#1d1d1d 25%, #1a1a1a 25%, #1a1a1a 50%, transparent 50%, transparent 75%, #242424 75%, #242424) !important;
+  background-size: 20px 20px !important;
+  opacity: 1 !important;
 }
 
-/* Image-based or Complex Patterns */
-body.texture-carbon::before { background-image: url('../assets/textures/carbon.webp'); background-repeat: repeat; }
-body.texture-paper::before { background-image: url('../assets/textures/paper.webp'); background-repeat: repeat; }
-body.texture-topo::before { background-image: url('../assets/textures/topo.webp'); background-repeat: repeat; }
-body.texture-mesh::before { background-image: url('../assets/textures/mesh.webp'); background-size: cover; background-attachment: fixed; --texture-opacity: 0.1; }
-body.texture-waves::before { background-image: url('../assets/textures/waves.webp'); background-repeat: repeat-x; background-position: bottom; }
-body.texture-prestige::before { background-image: url('../assets/textures/prestige.webp'); background-repeat: repeat; }
-body.texture-brushed::before { background-image: url('../assets/textures/brushed.webp'); background-repeat: repeat; }
-body.texture-frosted::before { backdrop-filter: blur(20px); background: rgba(255,255,255,0.02); }
-body.texture-circuit::before { background-image: url('../assets/textures/circuit.webp'); background-repeat: repeat; }
-body.texture-hexagon::before { background-image: url('../assets/textures/hexagon.webp'); background-repeat: repeat; }
-
-/* Custom Scrollbar */
-.custom-scrollbar {
-  overflow-y: auto !important;
-  scrollbar-width: thin;
-  scrollbar-color: var(--theme-primary) transparent;
+body.texture-topo::before {
+  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='100' height='100' viewBox='0 0 100 100'%3E%3Cpath d='M0 10 Q 25 35 50 10 T 100 10 M0 30 Q 25 55 50 30 T 100 30 M0 50 Q 25 75 50 50 T 100 50 M0 70 Q 25 95 50 70 T 100 70 M0 90 Q 25 115 50 90 T 100 90' fill='none' stroke='white' stroke-width='0.5' opacity='0.05'/%3E%3C/svg%3E") !important;
+  background-size: 200px 200px !important;
 }
 
-.custom-scrollbar::-webkit-scrollbar {
-  width: 6px !important;
-  height: 6px !important;
-  display: block !important;
+body.texture-circuit::before {
+  background-image:
+    radial-gradient(circle at 2px 2px, rgba(59, 130, 246, 0.15) 1px, transparent 0),
+    linear-gradient(rgba(59, 130, 246, 0.05) 1px, transparent 0),
+    linear-gradient(90deg, rgba(59, 130, 246, 0.05) 1px, transparent 0) !important;
+  background-size: 20px 20px, 20px 20px, 20px 20px !important;
+  opacity: 1 !important;
 }
 
-.custom-scrollbar::-webkit-scrollbar-track {
-  background: rgba(0, 0, 0, 0.05) !important;
+body.texture-scanlines::before {
+  background: linear-gradient(rgba(18, 16, 16, 0) 50%, rgba(0, 0, 0, 0.08) 50%), linear-gradient(90deg, rgba(255, 0, 0, 0.03), rgba(0, 255, 0, 0.01), rgba(0, 0, 255, 0.03)) !important;
+  background-size: 100% 4px, 3px 100% !important;
 }
 
-.custom-scrollbar::-webkit-scrollbar-thumb {
-  background: var(--theme-primary) !important;
-  border-radius: 10px;
-  border: 1px solid rgba(255, 255, 255, 0.05);
+body.texture-paper::before {
+  background-image: url("https://www.transparenttextures.com/patterns/parchment.png") !important;
+  opacity: 0.1 !important;
+}
+
+body.texture-hexagon::before {
+  background-image: url("https://www.transparenttextures.com/patterns/hexellence.png") !important;
+  opacity: 0.05 !important;
+}
+
+body.texture-aurora::before {
+  background: 
+    radial-gradient(at 0% 0%, hsla(253,16%,7%,1) 0, transparent 50%), 
+    radial-gradient(at 50% 0%, hsla(225,39%,30%,1) 0, transparent 50%), 
+    radial-gradient(at 100% 0%, hsla(339,49%,30%,1) 0, transparent 50%), 
+    radial-gradient(at 0% 50%, hsla(225,39%,30%,1) 0, transparent 50%), 
+    radial-gradient(at 50% 50%, hsla(225,39%,30%,1) 0, transparent 50%), 
+    radial-gradient(at 100% 50%, hsla(339,49%,30%,1) 0, transparent 50%), 
+    radial-gradient(at 0% 100%, hsla(253,16%,7%,1) 0, transparent 50%), 
+    radial-gradient(at 50% 100%, hsla(225,39%,30%,1) 0, transparent 50%), 
+    radial-gradient(at 100% 100%, hsla(339,49%,30%,1) 0, transparent 50%) !important;
+  background-size: 100% 100% !important;
+  opacity: 0.25 !important;
 }
 
 /* =========================================
    DENSITY & SCALE MODES
    ========================================= */
 
-body.density-compact {
-  --theme-padding: 0.75rem;
-  --theme-gap: 0.75rem;
-  --radius-theme: 4px;
-}
-
-body.density-standard {
-  --theme-padding: 1.5rem;
-  --theme-gap: 1.5rem;
-  --radius-theme: 12px;
-}
-
-body.density-comfortable {
-  --theme-padding: 2.5rem;
-  --theme-gap: 2rem;
-  --radius-theme: 24px;
-}
+body.density-compact { --theme-padding: 0.75rem; --theme-gap: 0.75rem; --radius-theme: 4px; }
+body.density-standard { --theme-padding: 1.5rem; --theme-gap: 1.5rem; --radius-theme: 12px; }
+body.density-comfortable { --theme-padding: 2.5rem; --theme-gap: 2rem; --radius-theme: 24px; }
 
 /* =========================================
-   VISUAL PERSONALITIES (v5.4.2)
+   VISUAL PERSONALITIES
    ========================================= */
 
-/* Dark Mode Overrides (Default) */
-body.dark {
-  --theme-body: #020617;
-  --theme-text: #ffffff;
-}
-
-/* Light Mode Core Overrides */
 body.light {
   --theme-body: #f8fafc;
   --theme-card: rgba(255, 255, 255, 0.8);
@@ -202,48 +177,20 @@ body.light {
   --theme-border: rgba(0, 0, 0, 0.08);
   --theme-text: #1e293b;
   --theme-title: #0f172a;
-  --theme-muted: #64748b;
-  --texture-color: rgba(0, 0, 0, 0.1);
 }
 
-/* Apply Classes to Layouts */
-.layout-glass {
-  --radius-theme: 32px;
-  --glass-blur: 24px;
-  --glass-opacity: 0.75;
+.layout-glass { --radius-theme: 32px; --glass-blur: 24px; --glass-opacity: 0.75; }
+.layout-corporate { --radius-theme: 6px; }
+.layout-minimal { --radius-theme: 0px; --theme-gap: 2.5rem; }
+.layout-technical { --theme-body: #000000; --theme-sidebar: #050505; --radius-theme: 0px; }
+
+/* Custom Scrollbar (Mirror) */
+.custom-scrollbar {
+  overflow-y: auto !important;
+  scrollbar-width: thin;
+  scrollbar-color: var(--theme-primary) transparent;
 }
 
-.layout-corporate {
-  --radius-theme: 12px;
-}
-
-.layout-minimal {
-  --radius-theme: 0px;
-  --theme-gap: 2.5rem;
-}
-
-.layout-technical {
-  --theme-body: #000000;
-  --theme-sidebar: #050505;
-  --theme-card: #080808;
-  --radius-theme: 0px;
-  --theme-padding: 0.75rem;
-  --theme-gap: 1px;
-}
-
-/* Base Card Style */
-.bg-theme-card {
-  background: var(--theme-card);
-  border-radius: var(--radius-theme);
-  padding: var(--theme-padding);
-  border: var(--theme-border-width) solid var(--theme-border);
-  transition: all 0.3s ease;
-  gap: var(--theme-gap);
-}
-
-.layout-glass .bg-theme-card {
-  background: color-mix(in srgb, var(--theme-card), transparent calc(100% * (1 - var(--glass-opacity, 0.7))));
-  backdrop-filter: blur(var(--glass-blur, 12px)) saturate(180%);
-}
-
-.contents { display: contents; }
+.custom-scrollbar::-webkit-scrollbar { width: 6px !important; height: 6px !important; }
+.custom-scrollbar::-webkit-scrollbar-track { background: transparent !important; }
+.custom-scrollbar::-webkit-scrollbar-thumb { background: var(--theme-primary) !important; border-radius: 10px; }
