@@ -39,6 +39,20 @@ export const SarakUIProvider: React.FC<SarakUIProviderProps> = ({
     const [localTexture, setLocalTexture] = useState(() => localStorage.getItem('sarak_local_texture') || 'none');
     const [isHydrated, setIsHydrated] = useState(false);
 
+    // Injeção de Fontes (Elite v5.4.1 - Mirror Global)
+    // Injeta o @import original no topo absoluto do <head> para garantir validade CSS
+    useEffect(() => {
+        if (typeof document === 'undefined') return;
+        const FONT_ID = 'sarak-core-fonts';
+        if (document.getElementById(FONT_ID)) return;
+
+        const style = document.createElement('style');
+        style.id = FONT_ID;
+        style.textContent = `@import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;600;800&family=Space+Grotesk:wght@300;500;700&family=Playfair+Display:ital,wght@0,400;0,700;1,400&family=Fira+Code:wght@400;500&family=Outfit:wght@300;400;600&family=JetBrains+Mono:wght@400;700&family=Cabinet+Grotesk:wght@400;700;900&family=Satoshi:wght@300;400;700;900&family=Sentient:ital,wght@0,400;0,700;1,400&family=Fraunces:ital,wght@0,400;0,700;1,400&family=Syne:wght@400;700;800&family=Space+Mono:wght@400;700&family=Bricolage+Grotesque:wght@400;700;800&family=Public+Sans:wght@400;500;700&family=Anton&family=Lora:ital,wght@0,400;0,600;1,400&family=Cormorant+Garamond:ital,wght@0,400;0,600;1,400&family=Rajdhani:wght@500;700&family=Orbitron:wght@700;900&family=Quicksand:wght@400;700&family=Fredoka+One&family=Nunito:wght@400;700&family=Cinzel:wght@400;700&family=Oswald:wght@400;700&family=Plus+Jakarta+Sans:wght@400;700&family=Archivo+Black&family=Syncopate:wght@700&family=Figtree:wght@400;700&family=Urbanist:wght@400;800&family=Barlow+Condensed:wght@600&family=Share+Tech+Mono&display=swap');`;
+        
+        document.head.prepend(style);
+    }, []);
+
     // Motor de Injeção de Design Elite v5.4.2 (Full Parity)
     // Só é executado se NÃO houver um contexto global (Evita Split Brain)
     useEffect(() => {
