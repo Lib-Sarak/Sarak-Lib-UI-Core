@@ -1,16 +1,6 @@
-import React, { ReactNode, useEffect, useState, useCallback, useMemo } from 'react';
+import React, { ReactNode, useEffect, useState, useMemo } from 'react';
 import { LAYOUTS, SCALES, DENSITY } from '../constants/theme';
-
-/**
- * Tenta obter o contexto da Shared se disponível, 
- * caso contrário falha silenciosamente para o estado local.
- */
-let sharedContext: any = null;
-try {
-    sharedContext = require('@sarak/lib-shared');
-} catch (e) {
-    // Shared não disponível - operando em modo autônomo
-}
+import { useSarak as useGlobalSarak } from '@sarak/lib-shared';
 
 interface SarakUIProviderProps {
     children: ReactNode;
@@ -20,121 +10,76 @@ interface SarakUIProviderProps {
 }
 
 /**
- * SarakUIProvider (Elite v5.4 - Autonomous Engine)
- * O "Cérebro" de UI da Sarak Matrix. 
- * Responsável por injetar 100% dos tokens de design e gerenciar o estado estético.
+ * SarakUIProvider (Elite v5.4.1)
+ * 
+ * Motor de UI Federado: 
+ * 1. Se estiver dentro de um SarakProvider (Shared), atua apenas como ponte.
+ * 2. Se estiver isolado, assume o controle total do estado estético.
  */
 export const SarakUIProvider: React.FC<SarakUIProviderProps> = ({ 
     children, 
-    theme: initialTheme,
-    mode: initialMode,
-    primaryColor: initialPrimaryColor
+    theme: propTheme, 
+    mode: propMode, 
+    primaryColor: propPrimary 
 }) => {
-    // --- ESTADO INTERNO (FALLBACK AUTÔNOMO) ---
-    const [localTheme, setLocalTheme] = useState(() => localStorage.getItem('sarak_layout') || initialTheme || 'glass');
-    const [localMode, setLocalMode] = useState<'light' | 'dark' | 'system'>(() => (localStorage.getItem('sarak_mode') as any) || initialMode || 'dark');
-    const [localPrimaryColor, setLocalPrimaryColor] = useState(() => localStorage.getItem('sarak_primary_color') || initialPrimaryColor || '#3b82f6');
-    const [localFontScale, setLocalFontScale] = useState(() => localStorage.getItem('sarak_font_scale') || 'm');
-    const [localDensity, setLocalDensity] = useState(() => localStorage.getItem('sarak_layout_density') || 'standard');
-    const [localNavStyle, setLocalNavStyle] = useState<'sidebar' | 'topbar'>(() => (localStorage.getItem('sarak_nav_style') as any) || 'sidebar');
-    const [localSidebarWidth, setLocalSidebarWidth] = useState(() => parseInt(localStorage.getItem('sarak_sidebar_width') || '260'));
-
-    // --- Tenta conectar com o useSarak da Shared ---
-    let sarak: any = {};
+    // Tenta obter o contexto global da Shared
+    let globalSarak: any = null;
     try {
-        if (sharedContext?.useSarak) {
-            sarak = sharedContext.useSarak();
-        }
+        globalSarak = useGlobalSarak();
     } catch (e) {
-        // useSarak chamando fora do provider ou não disponível
+        // Shared não presente ou Provider ausente na árvore
     }
 
-    // Resolvendo valores finais (Prioridade: Shared > Local)
-    const theme = sarak.theme || sarak.layout || localTheme;
-    const mode = sarak.mode || localMode;
-    const primaryColor = sarak.primaryColor || localPrimaryColor;
-    const fontScale = sarak.fontScale || localFontScale;
-    const layoutDensity = sarak.layoutDensity || localDensity;
-    const navigationStyle = sarak.navigationStyle || localNavStyle;
-    const sidebarWidth = sarak.sidebarWidth || localSidebarWidth;
+    // Estado Local (Fallback Autônomo)
+    const [localLayout, setLocalLayout] = useState(() => localStorage.getItem('sarak_local_layout') || propTheme || 'glass');
+    const [localMode, setLocalMode] = useState<'light' | 'dark' | 'system'>(() => (localStorage.getItem('sarak_local_mode') as any) || propMode || 'dark');
+    const [localPrimary, setLocalPrimary] = useState(() => localStorage.getItem('sarak_local_primary') || propPrimary || '#3b82f6');
+    const [isHydrated, setIsHydrated] = useState(false);
 
-    // --- MOTOR DE DOM PATCHING (RESTORE v5.4) ---
+    // Motor de Injeção de Design Elite v5.4.1
+    // Só é executado se NÃO houver um contexto global (Evita Split Brain)
     useEffect(() => {
+        if (globalSarak) {
+            setIsHydrated(true);
+            return;
+        }
+
         const root = document.documentElement;
+        root.style.setProperty('--primary-color', localPrimary);
+        root.style.setProperty('--theme-primary', localPrimary);
         
-        // 1. Variáveis de Cores e Dimensões
-        root.style.setProperty('--primary-color', primaryColor);
-        root.style.setProperty('--theme-primary', primaryColor);
-        root.style.setProperty('--sidebar-width', `${sidebarWidth}px`);
-        
-        // 2. Escala de Fonte
-        const scale = (SCALES as any)[fontScale.toUpperCase()] || SCALES.M;
+        // Fontes e Escala
+        const scaleId = localStorage.getItem('sarak_font_scale') || 'm';
+        const scale = (SCALES as any)[scaleId.toUpperCase()] || SCALES.M;
         root.style.setProperty('--font-size-factor', scale.factor);
         root.style.setProperty('--sarak-font-size', `${16 * parseFloat(scale.factor)}px`);
 
-        // 3. Densidade
-        const density = (DENSITY as any)[layoutDensity.toUpperCase()] || DENSITY.STANDARD;
-        root.style.setProperty('--theme-gap', density.gap);
-        root.style.setProperty('--theme-padding', density.pad);
-        root.style.setProperty('--radius-theme', density.radius);
+        // Densidade
+        const densityId = localStorage.getItem('sarak_layout_density') || 'standard';
+        const d = (DENSITY as any)[densityId.toUpperCase()] || DENSITY.STANDARD;
+        root.style.setProperty('--theme-gap', d.gap);
+        root.style.setProperty('--theme-padding', d.pad);
+        root.style.setProperty('--radius-theme', d.radius);
 
-        // 4. Classes do Body (Paridade de Layout)
-        const lowerTheme = theme?.toLowerCase() || 'glass';
-        const layoutConfig = Object.values(LAYOUTS).find((l: any) => l.id.toLowerCase() === lowerTheme) || LAYOUTS.GLASS;
+        const lowerLayout = localLayout?.toLowerCase() || 'glass';
+        const layoutConfig = Object.values(LAYOUTS).find((l: any) => l.id.toLowerCase() === lowerLayout) || LAYOUTS.GLASS;
         
-        // Limpeza de classes legadas para evitar colisão
-        const allLayoutClasses = Object.values(LAYOUTS).map((l: any) => l.class).filter(Boolean);
-        document.body.classList.remove(...allLayoutClasses, 'light', 'dark', 'nav-sidebar', 'nav-topbar');
+        const sarakClasses = Object.values(LAYOUTS).map((l: any) => l.class).filter(Boolean);
+        document.body.classList.remove(...sarakClasses, 'light', 'dark');
         
-        document.body.classList.add(layoutConfig.class || 'layout-glass');
-        document.body.classList.add(mode === 'dark' ? 'dark' : 'light');
-        document.body.classList.add(`nav-${navigationStyle}`);
+        document.body.classList.add(layoutConfig.class || 'layout-glass', localMode === 'dark' ? 'dark' : 'light');
 
-        // Persistência local (Garantia de Autonomia)
-        localStorage.setItem('sarak_layout', theme);
-        localStorage.setItem('sarak_mode', mode);
-        localStorage.setItem('sarak_primary_color', primaryColor);
-        localStorage.setItem('sarak_font_scale', fontScale);
-        localStorage.setItem('sarak_layout_density', layoutDensity);
-        localStorage.setItem('sarak_nav_style', navigationStyle);
-        localStorage.setItem('sarak_sidebar_width', sidebarWidth.toString());
+        // Persistência em Modo Autônomo
+        localStorage.setItem('sarak_local_layout', localLayout);
+        localStorage.setItem('sarak_local_mode', localMode);
+        localStorage.setItem('sarak_local_primary', localPrimary);
+        
+        setIsHydrated(true);
+    }, [globalSarak, localLayout, localMode, localPrimary]);
 
-    }, [theme, mode, primaryColor, fontScale, layoutDensity, navigationStyle, sidebarWidth]);
+    if (!isHydrated) return null;
 
-    // --- MOTOR DE VIEWPORT SCALING (RESTORATION v5.7.1) ---
-    useEffect(() => {
-        const handleResize = () => {
-            const root = document.documentElement;
-            // Cálculo Premium: Baseado em 1920px (Full HD)
-            const vScale = Math.min(Math.max(window.innerWidth / 1920, 0.7), 1.25);
-            root.style.setProperty('--sarak-viewport-scale', vScale.toString());
-        };
-
-        window.addEventListener('resize', handleResize);
-        handleResize();
-        return () => window.removeEventListener('resize', handleResize);
-    }, []);
-
-    // --- SHORTCUTS ENGINE (PASS-THROUGH) ---
-    const handleKeyDown = useCallback((e: KeyboardEvent) => {
-        if (['INPUT', 'TEXTAREA'].includes((e.target as HTMLElement).tagName)) return;
-
-        // Atalhos de Sistema Rápidos
-        if (e.ctrlKey && e.key.toLowerCase() === 'q') {
-            sarak.toggleMode ? sarak.toggleMode() : setLocalMode(prev => prev === 'dark' ? 'light' : 'dark');
-        }
-    }, [sarak]);
-
-    useEffect(() => {
-        window.addEventListener('keydown', handleKeyDown);
-        return () => window.removeEventListener('keydown', handleKeyDown);
-    }, [handleKeyDown]);
-
-    return (
-        <div className={`sarak-ui-root contents ${mode} ${theme}`}>
-            {children}
-        </div>
-    );
+    return <>{children}</>;
 };
 
 export default SarakUIProvider;
