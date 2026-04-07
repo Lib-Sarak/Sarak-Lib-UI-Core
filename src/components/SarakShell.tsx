@@ -103,14 +103,25 @@ export const SarakShell: React.FC<SarakShellProps> = ({
 
     const activeModule = modules.find(m => m.id === activeModuleId);
     const currentLayoutClass = useMemo(() => {
-        return Object.values(LAYOUTS).find(l => l.id === theme)?.class || 'layout-glass';
+        const lowerTheme = theme?.toLowerCase() || 'glass';
+        return Object.values(LAYOUTS).find((l: any) => l.id.toLowerCase() === lowerTheme)?.class || 'layout-glass';
     }, [theme]);
 
     const isSidebar = navigationStyle === 'sidebar';
     const isTopbar = navigationStyle === 'topbar';
 
     return (
-        <div className={`sarak-shell min-h-screen text-[var(--theme-main)] font-sans selection:bg-[var(--theme-primary)]/30 overflow-hidden flex ${isTopbar ? 'flex-col' : 'flex-row'} ${currentLayoutClass} ${isNavHidden ? 'nav-hidden' : ''}`}>
+        <div 
+            id="sarak-app-viewport"
+            style={{ 
+                transform: `scale(var(--sarak-viewport-scale, 1))`,
+                transformOrigin: 'top left',
+                width: '100%',
+                height: '100%',
+                transition: 'transform 0.4s cubic-bezier(0.4, 0, 0.2, 1)'
+            }}
+            className={`sarak-shell min-h-screen text-[var(--theme-main)] font-sans selection:bg-[var(--theme-primary)]/30 overflow-hidden flex ${isTopbar ? 'flex-col' : 'flex-row'} ${currentLayoutClass} ${isNavHidden ? 'nav-hidden' : ''}`}
+        >
             <GoogleTranslateWidget />
 
             {/* Recovery Nav Button (Chevron flutuante quando oculto) */}

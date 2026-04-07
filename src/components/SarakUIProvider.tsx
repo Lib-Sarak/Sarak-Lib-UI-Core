@@ -33,7 +33,7 @@ export const SarakUIProvider: React.FC<SarakUIProviderProps> = ({
             const root = document.documentElement;
             const targetWidth = 1920;
             const currentWidth = window.innerWidth;
-            const scale = Math.min(Math.max(currentWidth / targetWidth, 0.7), 1.3);
+            const scale = Math.min(Math.max(currentWidth / targetWidth, 0.65), 1.35);
             
             root.style.setProperty('--sarak-viewport-scale', scale.toString());
             console.log(`[Sarak UI] Viewport Scoped Scale: ${scale}`);
