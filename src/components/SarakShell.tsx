@@ -52,6 +52,22 @@ export const SarakShell: React.FC<SarakShellProps> = ({
     const [activeModuleId, setActiveModuleId] = useState<string | null>(null);
     const [isResizing, setIsResizing] = useState(false);
 
+    // MOUSE TRACKING MOTOR (v6.2 Premium Effects)
+    useEffect(() => {
+        const handleMouseMove = (e: MouseEvent) => {
+            const cards = document.querySelectorAll('.bg-theme-card');
+            cards.forEach(card => {
+                const rect = (card as HTMLElement).getBoundingClientRect();
+                const x = ((e.clientX - rect.left) / rect.width) * 100;
+                const y = ((e.clientY - rect.top) / rect.height) * 100;
+                (card as HTMLElement).style.setProperty('--mouse-x', `${x}%`);
+                (card as HTMLElement).style.setProperty('--mouse-y', `${y}%`);
+            });
+        };
+        window.addEventListener('mousemove', handleMouseMove);
+        return () => window.removeEventListener('mousemove', handleMouseMove);
+    }, []);
+
     // Carrega módulos registrados no boot
     useEffect(() => {
         const discovered = getRegisteredModules();
