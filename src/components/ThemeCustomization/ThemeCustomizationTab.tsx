@@ -69,28 +69,63 @@ export const ThemeCustomizationTab: React.FC = () => {
 
     // --- LOGIC: APPLY THEME PRESET TO DRAFT ---
     const handleThemePreview = (id: string) => {
-        const preset = (BASE_PRESETS as any)[id.toLowerCase()];
-        if (!preset) return;
+        // Busca do preset com suporte a fallbacks de ID
+        const presetKey = Object.keys(BASE_PRESETS).find(k => k.toLowerCase() === id.toLowerCase());
+        const preset = presetKey ? (BASE_PRESETS as any)[presetKey] : null;
+
+        if (!preset) {
+            console.warn(`⚠️ [Matrix Design] Archetype not found: ${id}`);
+            return;
+        }
 
         // Mapeia tokens CSS do preset para o estado atômico do Draft
         const newDraft = { ...draft, layout: id };
         
-        if (preset['--radius-theme']) newDraft.borderRadius = parseInt(preset['--radius-theme']);
-        if (preset['--glass-blur']) newDraft.glassBlur = parseInt(preset['--glass-blur']);
-        if (preset['--glass-opacity']) newDraft.glassOpacity = parseFloat(preset['--glass-opacity']);
-        if (preset['--border-width']) newDraft.borderWidth = parseInt(preset['--border-width']);
-        if (preset['--shadow-intensity']) newDraft.shadowIntensity = parseFloat(preset['--shadow-intensity']);
-        if (preset['--bg-texture']) newDraft.texture = preset['--bg-texture'];
-        if (preset['--theme-primary']) newDraft.primaryColor = preset['--theme-primary'];
-        
-        // Fontes
-        if (preset['--font-heading']) newDraft.headingFont = preset['--font-heading'];
-        if (preset['--font-subtitle']) newDraft.subtitleFont = preset['--font-subtitle'];
-        if (preset['--font-main']) newDraft.bodyFont = preset['--font-main'];
-        if (preset['--font-weight-heading']) newDraft.headingWeight = preset['--font-weight-heading'];
+        // Mapeamento Direto Dinâmico
+        const tokenMap: Record<string, string> = {
+            '--radius-theme': 'borderRadius',
+            '--glass-blur': 'glassBlur',
+            '--glass-opacity': 'glassOpacity',
+            '--border-width': 'borderWidth',
+            '--shadow-intensity': 'shadowIntensity',
+            '--bg-texture': 'texture',
+            '--theme-primary': 'primaryColor',
+            '--font-heading': 'headingFont',
+            '--font-subtitle': 'subtitleFont',
+            '--font-main': 'bodyFont',
+            '--font-weight-heading': 'headingWeight',
+            '--letter-spacing-heading': 'headingLetterSpacing',
+            '--border-style': 'borderStyle',
+            '--texture-opacity': 'textureOpacity',
+            '--theme-texture-opacity': 'textureOpacity',
+            '--bg-texture-opacity': 'textureOpacity',
+            '--animation-speed': 'animationSpeed',
+            '--is-geometric': 'isGeometricCut'
+        };
+
+        Object.entries(preset).forEach(([cssVar, value]) => {
+            const draftKey = tokenMap[cssVar];
+            if (draftKey) {
+                // Conversão de tipos se necessário
+                let finalValue: any = value;
+                if (typeof value === 'string' && value.endsWith('px')) {
+                    finalValue = parseInt(value);
+                } else if (draftKey === 'glassOpacity' || draftKey === 'shadowIntensity' || draftKey === 'textureOpacity') {
+                    finalValue = parseFloat(value as string);
+                } else if (draftKey === 'isGeometricCut') {
+                    finalValue = value === 'true' || value === true;
+                }
+                (newDraft as any)[draftKey] = finalValue;
+            }
+        });
+
+        // Caso especial: alguns temas definem o modo via background
+        if (preset['--bg-body'] === '#000000' || preset['--bg-body'] === '#050505') {
+            newDraft.mode = 'dark';
+        }
 
         setDraft(newDraft);
-        console.log(`%c🎨 [Matrix Design] Preview Archetype: ${id}`, 'color: #a855f7; font-weight: bold;');
+        console.log(`%c🎨 [Matrix Design] Preview Archetype: ${id}`, 'color: #3b82f6; font-weight: bold;', newDraft);
     };
 
     // --- LOGIC: COMMIT DRAFT TO SYSTEM ---

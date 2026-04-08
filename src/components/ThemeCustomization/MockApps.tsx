@@ -33,10 +33,8 @@ export const MockDashboard: React.FC<any> = ({ config, animationVariants, animat
                     initial={animationVariants[animationStyle]?.card?.initial || animationVariants.none.card.initial}
                     animate={animationVariants[animationStyle]?.card?.animate || animationVariants.none.card.animate}
                     transition={animationVariants[animationStyle]?.card?.transition || animationVariants.none.card.transition}
-                    className="col-span-12 lg:col-span-4 bg-[var(--theme-card)] rounded-[var(--radius-theme)] border-[var(--border-width)] border-[var(--theme-border)] p-5 shadow-soft relative overflow-hidden flex flex-col items-center text-center"
-                    style={{ boxShadow: `0 4px 20px var(--shadow-color)` }}
+                    className="col-span-12 lg:col-span-4 bg-theme-card p-5 relative overflow-hidden flex flex-col items-center text-center"
                 >
-                    <div className="absolute inset-0 glass-effect opacity-[var(--glass-opacity)]"></div>
                     <div className="relative z-10 w-full">
                         <div className="w-16 h-16 rounded-full bg-[var(--theme-primary)]/10 border-2 border-[var(--theme-primary)]/30 mx-auto mb-4 flex items-center justify-center">
                             <Zap className="w-8 h-8 text-[var(--theme-primary)]" />
@@ -44,12 +42,12 @@ export const MockDashboard: React.FC<any> = ({ config, animationVariants, animat
                         <div className="text-sm font-bold text-[var(--theme-title)] mb-1">Sarak AI Elite</div>
                         <div className="text-[10px] text-[var(--theme-muted)] uppercase font-black tracking-widest mb-1">Layout</div>
                         <div className="grid grid-cols-2 gap-2 w-full">
-                            <div className="p-2 rounded-lg bg-[var(--theme-body)]/30 border border-[var(--theme-border)]/50">
-                                <div className="text-[10px] text-[var(--theme-muted)] mb-1">Status</div>
+                            <div className="p-2 bg-theme-card !rounded-lg flex flex-col items-center justify-center">
+                                <div className="text-[8px] text-[var(--theme-muted)] mb-1 uppercase">Status</div>
                                 <div className="text-[10px] font-bold text-emerald-500">Active</div>
                             </div>
-                            <div className="p-2 rounded-lg bg-[var(--theme-body)]/30 border border-[var(--theme-border)]/50">
-                                <div className="text-[10px] text-[var(--theme-muted)] mb-1">Uptime</div>
+                            <div className="p-2 bg-theme-card !rounded-lg flex flex-col items-center justify-center">
+                                <div className="text-[8px] text-[var(--theme-muted)] mb-1 uppercase">Uptime</div>
                                 <div className="text-[10px] font-bold text-[var(--theme-title)]">99.9%</div>
                             </div>
                         </div>
@@ -61,10 +59,8 @@ export const MockDashboard: React.FC<any> = ({ config, animationVariants, animat
                     initial={animationVariants[animationStyle]?.card?.initial || animationVariants.none.card.initial}
                     animate={animationVariants[animationStyle]?.card?.animate || animationVariants.none.card.animate}
                     transition={{ ...(animationVariants[animationStyle]?.card?.transition || animationVariants.none.card.transition), delay: 0.1 }}
-                    className="col-span-12 lg:col-span-8 bg-[var(--theme-card)] rounded-[var(--radius-theme)] border-[var(--border-width)] border-[var(--theme-border)] p-6 shadow-soft relative overflow-hidden"
-                    style={{ boxShadow: `0 4px 20px var(--shadow-color)` }}
+                    className="col-span-12 lg:col-span-8 bg-theme-card p-6 relative overflow-hidden"
                 >
-                    <div className="absolute inset-0 glass-effect opacity-[var(--glass-opacity)]"></div>
                     <div className="relative z-10 h-full flex flex-col">
                         <div className="flex justify-between items-center mb-6">
                             <div className="text-[11px] font-black uppercase tracking-widest text-[var(--theme-muted)]">Collection Performance</div>
@@ -91,8 +87,7 @@ export const MockDashboard: React.FC<any> = ({ config, animationVariants, animat
                     initial={animationVariants[animationStyle]?.card?.initial || animationVariants.none.card.initial}
                     animate={animationVariants[animationStyle]?.card?.animate || animationVariants.none.card.animate}
                     transition={{ ...(animationVariants[animationStyle]?.card?.transition || animationVariants.none.card.transition), delay: 0.3 }}
-                    className="col-span-12 bg-[var(--theme-card)] rounded-[var(--radius-theme)] border-[var(--border-width)] border-[var(--theme-border)] p-6 shadow-soft"
-                    style={{ boxShadow: `0 4px 20px var(--shadow-color)` }}
+                    className="col-span-12 bg-theme-card p-6"
                 >
                     <div className="flex items-center justify-between mb-6">
                         <div className="text-[11px] font-black uppercase tracking-widest text-[var(--theme-muted)]">Featured Components</div>
@@ -159,10 +154,9 @@ export const MockChat: React.FC<any> = ({ config, animationVariants, animationSt
                     className="flex justify-start"
                 >
                     <div
-                        className="bg-[var(--theme-card)] p-4 rounded-t-[var(--radius-theme)] rounded-br-[var(--radius-theme)] border-[var(--border-width)] border-[var(--theme-border)] shadow-soft max-w-[80%] relative overflow-hidden"
-                        style={{ boxShadow: `0 2px 10px var(--shadow-color)` }}
+                        className="bg-theme-card p-4 shadow-soft max-w-[80%] relative overflow-hidden"
+                        style={{ borderBottomLeftRadius: 0 }}
                     >
-                        <div className="absolute inset-0 glass-effect opacity-[var(--glass-opacity)]"></div>
                         <div className="relative z-10 text-[11px] text-[var(--theme-title)] leading-relaxed">
                             Hello! I am Sarak assistant. How can I help with your data analysis today?
                         </div>
@@ -195,10 +189,9 @@ export const MockLogs: React.FC<any> = ({ config, animationVariants, animationSt
                 initial={animationVariants[animationStyle]?.card?.initial || animationVariants.none.card.initial}
                 animate={animationVariants[animationStyle]?.card?.animate || animationVariants.none.card.animate}
                 transition={animationVariants[animationStyle]?.card?.transition || animationVariants.none.card.transition}
-                className="bg-[var(--theme-card)] rounded-[var(--radius-theme)] border-[var(--border-width)] border-[var(--theme-border)] overflow-hidden relative"
-                style={{ boxShadow: `0 4px 20px var(--shadow-color)` }}
+                className="bg-theme-card overflow-hidden relative"
             >
-                <div className="absolute inset-0 glass-effect opacity-[var(--glass-opacity)]"></div>
+                <div className="absolute inset-0 bg-white/[0.02] pointer-events-none"></div>
                 <table className="w-full text-left text-[10px] relative z-10">
                     <thead className="bg-[var(--theme-card)] border-b border-[var(--theme-border)]">
                         <tr>
@@ -237,10 +230,8 @@ export const MockSettings: React.FC<any> = ({ config, animationVariants, animati
                         initial={animationVariants[animationStyle]?.card?.initial || animationVariants.none.card.initial}
                         animate={animationVariants[animationStyle]?.card?.animate || animationVariants.none.card.animate}
                         transition={{ ...(animationVariants[animationStyle]?.card?.transition || animationVariants.none.card.transition), delay: i * 0.1 }}
-                        className="bg-[var(--theme-card)] p-4 rounded-[var(--radius-theme)] border-[var(--border-width)] border-[var(--theme-border)] flex items-center justify-between shadow-soft group relative overflow-hidden"
-                        style={{ boxShadow: `0 2px 10px var(--shadow-color)` }}
+                        className="bg-theme-card p-4 flex items-center justify-between group relative overflow-hidden"
                     >
-                        <div className="absolute inset-0 glass-effect opacity-[var(--glass-opacity)]"></div>
                         <div className="flex items-center gap-3 relative z-10">
                             <div className="p-2 rounded-lg bg-[var(--theme-primary)]/10 text-[var(--theme-primary)]">
                                 {React.cloneElement(item.icon as React.ReactElement, { className: "w-4 h-4" })}

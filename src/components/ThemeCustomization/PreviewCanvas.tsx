@@ -75,12 +75,21 @@ export const PreviewCanvas: React.FC<PreviewCanvasProps> = ({
                         '--shadow-intensity': (tokens.shadowIntensity ?? 0.5).toString(),
                         '--texture-opacity': (tokens.textureOpacity ?? 0.05).toString(),
                         '--animation-speed': `${tokens.animationSpeed ?? 0.4}s`,
-                        // Cores de fundo baseadas no modo
+                        // Cores de fundo baseadas no modo (Essencial para texturas)
                         '--bg-body': tokens.mode === 'light' ? '#f8fafc' : '#020617',
                         '--bg-card': tokens.mode === 'light' ? '#ffffff' : '#1e293b',
                         '--bg-sidebar': tokens.mode === 'light' ? '#f1f5f9' : '#0f172a',
                         '--text-main': tokens.mode === 'light' ? '#334155' : '#94a3b8',
                         '--text-title': tokens.mode === 'light' ? '#0f172a' : '#f8fafc',
+                        '--border-color': tokens.mode === 'light' ? 'rgba(0,0,0,0.1)' : 'rgba(255,255,255,0.1)',
+                        // ALIASES PARA COMPATIBILIDADE (Sarak Legacy + Atomic)
+                        '--theme-primary': tokens.primaryColor || previewPrimaryColor,
+                        '--theme-body': tokens.mode === 'light' ? '#f8fafc' : '#020617',
+                        '--theme-card': tokens.mode === 'light' ? '#ffffff' : '#1e293b',
+                        '--theme-border': tokens.mode === 'light' ? 'rgba(0,0,0,0.1)' : 'rgba(255,255,255,0.1)',
+                        '--theme-title': tokens.mode === 'light' ? '#0f172a' : '#f8fafc',
+                        '--theme-muted': tokens.mode === 'light' ? '#64748b' : '#475569',
+                        '--shadow-color': tokens.mode === 'light' ? 'rgba(0,0,0,0.05)' : 'rgba(0,0,0,0.4)',
                     } as React.CSSProperties}
                     className={`preview-container ${tokens.mode || mode} layout-${(tokens.layout || previewLayoutId).replace('custom-', '')} ${tokens.isGeometricCut ? 'is-geometric' : ''} bg-[var(--bg-body)] text-[var(--text-main)] rounded-[32px] shadow-[0_50px_100px_rgba(0,0,0,0.5)] overflow-hidden flex flex-col relative transition-all duration-500 ${tokens.texture && tokens.texture !== 'none' ? `texture-${tokens.texture}` : ''}`}
                 >
