@@ -11,15 +11,12 @@ interface SarakUIProviderProps {
 }
 
 /**
- * SarakUIProvider (Sovereign Motor v6.0 - Matrix Trace Engine)
+ * SarakUIProvider (Sovereign Motor v6.1 - Matrix Trace Engine)
  * 
  * Este é o motor visual soberano do ecossistema Sarak.
  * Seguindo a Skill Sarak-Lib v5.4.1:
  * - Lib-Shared: SSoT de Estado (Dados/Persistência).
  * - Lib-UI-Core: Motor Visual (Injeção CSS/DOM/Atributos).
- * 
- * Agora, o SarakUIProvider é responsável por injetar os tokens visuais mesmo quando 
- * consome dados do SarakProvider global.
  */
 export const SarakUIProvider: React.FC<SarakUIProviderProps> = ({ 
     children, 
@@ -92,8 +89,9 @@ export const SarakUIProvider: React.FC<SarakUIProviderProps> = ({
         document.head.prepend(style);
     }, []);
 
-    // SSSoT Consumidor: Resolve qual valor usar (Global ou Local)
     const s = globalSarak || {};
+    
+    // SSSoT Consumidor SOBERANO (Sem Guards)
     const effective = {
         layout: s.layout || localLayout,
         mode: s.mode || localMode,
@@ -101,33 +99,33 @@ export const SarakUIProvider: React.FC<SarakUIProviderProps> = ({
         density: s.layoutDensity || localDensity,
         texture: s.texture || localTexture,
         navStyle: s.navigationStyle || localNavStyle,
-        sidebarWidth: s.sidebarWidth || localSidebarWidth,
+        sidebarWidth: s.sidebarWidth !== undefined ? s.sidebarWidth : localSidebarWidth,
         headingFont: s.headingFont || headingFont,
         subtitleFont: s.subtitleFont || subtitleFont,
         tabFont: s.tabFont || tabFont,
         bodyFont: s.bodyFont || bodyFont,
         headingWeight: s.headingWeight || headingWeight,
         headingSpacing: s.headingLetterSpacing || headingLetterSpacing,
-        borderRadius: s.borderRadius || borderRadius,
-        borderWidth: s.borderWidth || borderWidth,
+        borderRadius: s.borderRadius !== undefined ? s.borderRadius : borderRadius,
+        borderWidth: s.borderWidth !== undefined ? s.borderWidth : borderWidth,
         borderStyle: s.borderStyle || borderStyle,
-        glassOpacity: s.glassOpacity || glassOpacity,
-        glassBlur: s.glassBlur || glassBlur,
-        shadowIntensity: s.shadowIntensity || shadowIntensity,
-        isGeometric: s.isGeometricCut || isGeometricCut,
-        textureOpacity: s.textureOpacity || textureOpacity,
-        animSpeed: s.animationSpeed || animationSpeed,
-        gap: s.layoutGap || layoutGap,
+        glassOpacity: s.glassOpacity !== undefined ? s.glassOpacity : glassOpacity,
+        glassBlur: s.glassBlur !== undefined ? s.glassBlur : glassBlur,
+        shadowIntensity: s.shadowIntensity !== undefined ? s.shadowIntensity : shadowIntensity,
+        isGeometric: s.isGeometricCut !== undefined ? s.isGeometricCut : isGeometricCut,
+        textureOpacity: s.textureOpacity !== undefined ? s.textureOpacity : textureOpacity,
+        animSpeed: s.animationSpeed !== undefined ? s.animationSpeed : animationSpeed,
+        gap: s.layoutGap !== undefined ? s.layoutGap : layoutGap,
         sysName: s.systemName || systemName,
         logoUrl: s.logoUrl || logoUrl,
         logoDarkUrl: s.logoDarkUrl || logoDarkUrl,
-        logoScale: s.logoScale || logoScale,
+        logoScale: s.logoScale !== undefined ? s.logoScale : logoScale,
         logoPos: s.logoPosition || logoPosition,
         sysTone: s.systemTone || systemTone,
         surface: s.surfaceMaterial || surfaceMaterial,
         borderType: s.borderType || borderType,
-        elasticity: s.interfaceElasticity || interfaceElasticity,
-        isSplit: s.isSplitViewEnabled || isSplitViewEnabled,
+        elasticity: s.interfaceElasticity !== undefined ? s.interfaceElasticity : interfaceElasticity,
+        isSplit: s.isSplitViewEnabled !== undefined ? s.isSplitViewEnabled : isSplitViewEnabled,
         chartS: s.chartStyle || chartStyle,
         chartP: s.chartPalette || chartPalette,
         shOrient: s.shadowOrientation || shadowOrientation,
@@ -135,7 +133,7 @@ export const SarakUIProvider: React.FC<SarakUIProviderProps> = ({
         isAutoHide: s.isAutoHideEnabled || false
     };
 
-    // Motor de Design Sovereign (Matrix Trace Engine v6.0)
+    // Motor de Design Sovereign (Matrix Trace Engine v6.1)
     useEffect(() => {
         const root = document.documentElement;
         const body = document.body;
@@ -174,15 +172,15 @@ export const SarakUIProvider: React.FC<SarakUIProviderProps> = ({
                 '--is-split-view': effective.isSplit ? '1' : '0'
             };
 
-            // Atomic Matrix Sync Logs
-            console.group('%c🚀 [Matrix Trace] UI-Core Sovereign Engine', 'background: #0f172a; color: #38bdf8; padding: 4px;');
-            console.log('Source:', globalSarak ? 'GLOBAL (Shared)' : 'LOCAL (Solo)');
-            console.log('Archetype:', effective.layout.toUpperCase());
-            console.log('Mode:', effective.mode);
-            console.log('Injected Tokens:', tokens);
+            // Atomic Matrix Sync Logs (Soberano)
+            console.group('%c🚀 [Matrix Trace] UI-Core Sovereign Engine v6.1', 'background: #0f172a; color: #38bdf8; padding: 4px; font-weight: bold;');
+            console.log('📡 Origem dos Dados:', globalSarak ? 'GLOBAL (SSoT Shared)' : 'LOCAL (Autônomo)');
+            console.log('💎 Archetype:', effective.layout.toUpperCase());
+            console.log('🎨 Mode:', effective.mode);
+            console.log('📦 Injeção de Tokens:', tokens);
             
             Object.entries(tokens).forEach(([k, v]) => {
-                if (v !== undefined) root.style.setProperty(k, v);
+                root.style.setProperty(k, v);
             });
             console.groupEnd();
 
@@ -202,7 +200,7 @@ export const SarakUIProvider: React.FC<SarakUIProviderProps> = ({
             if (!globalSarak) {
                 const map: Record<string, string> = {
                     sarak_local_layout: localLayout, sarak_local_mode: localMode, sarak_local_primary: localPrimary,
-                    sarak_local_radius: borderRadius.toString(), sarak_local_sys_name: systemName
+                    sarak_local_radius: effective.borderRadius.toString(), sarak_local_sys_name: effective.sysName
                 };
                 Object.entries(map).forEach(([k, v]) => localStorage.setItem(k, v));
             }
@@ -256,8 +254,6 @@ export const SarakUIProvider: React.FC<SarakUIProviderProps> = ({
 
     if (!isHydrated) return null;
 
-    // Sovereignty: Se houver contexto global, usamos o motor local mas passamos os dados adiante.
-    // O SarakContext do Shared DEVE ser respeitado como SSoT de dados.
     return (
         <SarakContext.Provider value={(globalSarak || fallbackContextValue) as any}>
             {children}

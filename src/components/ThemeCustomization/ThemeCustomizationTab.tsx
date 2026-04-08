@@ -148,88 +148,77 @@ export const ThemeCustomizationTab: React.FC = () => {
         const newDraft = { ...draft, layout: id };
         
         // Mapeamento Direto Dinâmico (v6.0 Full Engine)
-        const tokenMap: Record<string, string> = {
-            // 1. Arquitetura
-            '--nav-style': 'navigationStyle',
-            '--sidebar-width': 'sidebarWidth',
-            '--layout-density': 'layoutDensity',
-            '--auto-hide': 'isAutoHideEnabled',
-            // 2. Estruturas
-            '--split-view': 'isSplitViewEnabled',
-            '--secondary-module': 'secondaryModuleId',
-            '--search-style': 'searchStyle',
-            // 3. Tipografia
-            '--font-heading': 'headingFont',
-            '--font-subtitle': 'subtitleFont',
-            '--font-tab': 'tabFont',
-            '--font-main': 'bodyFont',
-            '--font-weight-heading': 'headingWeight',
-            '--letter-spacing-heading': 'headingLetterSpacing',
-            '--font-scale': 'fontScale',
-            // 4. Geometria & Materiais
-            '--radius-theme': 'borderRadius',
-            '--border-width': 'borderWidth',
-            '--border-style': 'borderStyle',
-            '--surface-material': 'surfaceMaterial',
-            '--border-type': 'borderType',
-            '--theme-gap': 'layoutGap',
-            '--glass-opacity': 'glassOpacity',
-            '--glass-blur': 'glassBlur',
-            '--is-geometric': 'isGeometricCut',
-            '--cursor-physics': 'cursorPhysics',
-            '--interface-elasticity': 'interfaceElasticity',
-            // 5. Atmosfera
-            '--bg-texture': 'texture',
-            '--texture-opacity': 'textureOpacity',
-            // 6. Cores & Identidade
-            '--theme-primary': 'primaryColor',
-            '--system-name': 'systemName',
-            '--logo-url': 'logoUrl',
-            '--logo-dark-url': 'logoDarkUrl',
-            '--logo-scale': 'logoScale',
-            '--logo-position': 'logoPosition',
-            '--system-tone': 'systemTone',
-            '--empty-state-id': 'emptyStateId',
-            // 7. Dados
-            '--chart-style': 'chartStyle',
-            '--chart-palette': 'chartPalette',
-            // 8. Sombras
-            '--shadow-intensity': 'shadowIntensity',
-            '--shadow-orientation': 'shadowOrientation',
-            '--shadow-color-mode': 'shadowColorMode',
-            // 9. Efeitos
-            '--animation-speed': 'animationSpeed',
-            '--mode': 'mode'
+        // --- SCHEMA DE TIPAGEM SOBERANA v6.1 ---
+        // Define o tipo exato de cada token para evitar falhas de conversão (Ex: texture ser confundido com número)
+        const TOKEN_SCHEMA: Record<string, 'number' | 'boolean' | 'string' | 'array'> = {
+            navigationStyle: 'string', sidebarWidth: 'number', layoutDensity: 'string', isAutoHideEnabled: 'boolean',
+            isSplitViewEnabled: 'boolean', secondaryModuleId: 'string', searchStyle: 'string',
+            headingFont: 'string', subtitleFont: 'string', tabFont: 'string', bodyFont: 'string',
+            headingWeight: 'string', headingLetterSpacing: 'string', fontScale: 'string',
+            borderRadius: 'number', borderWidth: 'number', borderStyle: 'string',
+            surfaceMaterial: 'string', borderType: 'string', layoutGap: 'number',
+            glassOpacity: 'number', glassBlur: 'number', isGeometricCut: 'boolean',
+            cursorPhysics: 'boolean', interfaceElasticity: 'number',
+            texture: 'string', textureOpacity: 'number', primaryColor: 'string',
+            systemName: 'string', logoUrl: 'string', logoDarkUrl: 'string', logoScale: 'number',
+            logoPosition: 'string', systemTone: 'string', emptyStateId: 'string',
+            chartStyle: 'string', chartPalette: 'array',
+            shadowIntensity: 'number', shadowOrientation: 'string', shadowColorMode: 'string',
+            animationSpeed: 'number', mode: 'string'
         };
 
+        const tokenMap: Record<string, string> = {
+            '--nav-style': 'navigationStyle', '--sidebar-width': 'sidebarWidth', '--layout-density': 'layoutDensity', '--auto-hide': 'isAutoHideEnabled',
+            '--split-view': 'isSplitViewEnabled', '--secondary-module': 'secondaryModuleId', '--search-style': 'searchStyle',
+            '--font-heading': 'headingFont', '--font-subtitle': 'subtitleFont', '--font-tab': 'tabFont', '--font-main': 'bodyFont',
+            '--font-weight-heading': 'headingWeight', '--letter-spacing-heading': 'headingLetterSpacing', '--font-scale': 'fontScale',
+            '--radius-theme': 'borderRadius', '--border-width': 'borderWidth', '--border-style': 'borderStyle',
+            '--surface-material': 'surfaceMaterial', '--border-type': 'borderType', '--theme-gap': 'layoutGap',
+            '--glass-opacity': 'glassOpacity', '--glass-blur': 'glassBlur', '--is-geometric': 'isGeometricCut',
+            '--cursor-physics': 'cursorPhysics', '--interface-elasticity': 'interfaceElasticity',
+            '--bg-texture': 'texture', '--texture-opacity': 'textureOpacity', '--theme-primary': 'primaryColor',
+            '--system-name': 'systemName', '--logo-url': 'logoUrl', '--logo-dark-url': 'logoDarkUrl', '--logo-scale': 'logoScale',
+            '--logo-position': 'logoPosition', '--system-tone': 'systemTone', '--empty-state-id': 'emptyStateId',
+            '--chart-style': 'chartStyle', '--chart-palette': 'chartPalette',
+            '--shadow-intensity': 'shadowIntensity', '--shadow-orientation': 'shadowOrientation', '--shadow-color-mode': 'shadowColorMode',
+            '--animation-speed': 'animationSpeed', '--mode': 'mode'
+        };
+
+        const conversionLogs: string[] = [];
         Object.entries(preset).forEach(([cssVar, value]) => {
             const draftKey = tokenMap[cssVar];
             if (draftKey) {
-                // Conversão Inteligente de Tipos
+                const targetType = TOKEN_SCHEMA[draftKey];
                 let finalValue: any = value;
-                
-                // 1. Números com Unidade (px, s, etc)
-                if (typeof value === 'string' && (value.endsWith('px') || value.endsWith('s'))) {
-                    finalValue = parseFloat(value);
-                } 
-                // 2. Números Decimais (Opacidade, Intensidade)
-                else if (typeof value === 'string' && !isNaN(parseFloat(value)) && !value.startsWith('#')) {
-                    finalValue = parseFloat(value);
-                }
-                // 3. Booleans (Injetados como 0/1 ou 'true'/'false')
-                else if (value === 'true' || value === '1' || value === 1 || value === true) {
-                    finalValue = true;
-                } else if (value === 'false' || value === '0' || value === 0 || value === false) {
-                    finalValue = false;
-                }
-                // 4. Arrays (Paletas de cores separadas por vírgula)
-                else if (draftKey === 'chartPalette' && typeof value === 'string' && value.includes(',')) {
-                    finalValue = value.split(',');
-                }
 
+                // MOTOR DE CONVERSÃO BASEADO EM SCHEMA (SOBERANO)
+                switch(targetType) {
+                    case 'number':
+                        // Remove unidades 'px', 's', '%' se existirem
+                        const rawStr = typeof value === 'string' ? value.replace(/px|s|%/g, '') : value;
+                        finalValue = parseFloat(rawStr as string);
+                        break;
+                        
+                    case 'boolean':
+                        finalValue = (value === 'true' || value === '1' || value === 1 || value === true);
+                        break;
+                        
+                    case 'array':
+                        if (typeof value === 'string') finalValue = value.split(',').map(s => s.trim());
+                        break;
+                        
+                    case 'string':
+                    default:
+                        finalValue = String(value);
+                        break;
+                }
+                
                 (newDraft as any)[draftKey] = finalValue;
+                conversionLogs.push(`${draftKey}: ${value} -> ${finalValue} (${typeof finalValue})`);
             }
         });
+
+        console.log('🔄 [Matrix Trace] Conversão de Tipos via Schema:', conversionLogs);
 
         // Caso especial: alguns temas definem o modo via background (Retrocompatibilidade)
         if (!preset['--mode'] && (preset['--bg-body'] === '#000000' || preset['--bg-body'] === '#050505')) {
@@ -243,8 +232,11 @@ export const ThemeCustomizationTab: React.FC = () => {
 
     // --- LOGIC: COMMIT DRAFT TO SYSTEM ---
     const handleApplyToSystem = () => {
-        console.log('%c⚡ [Matrix Trace] Solicitando Aplicação Global...', 'color: #f59e0b; font-weight: bold;');
-        // Envia o rascunho completo para o sistema
+        console.group('%c⚡ [Matrix Trace] Aplicar ao Sistema (Draft -> SSoT)', 'background: #f59e0b; color: #000; padding: 4px; font-weight: bold;');
+        console.log('📦 Configuração Final (DRAFT):', draft);
+        console.log('📡 SSoT Destino:', sarak);
+        console.groupEnd();
+
         sarak.applyFullConfig(draft);
         showToast('success', 'Design aplicado com sucesso a todo o sistema.');
     };
@@ -300,12 +292,12 @@ export const ThemeCustomizationTab: React.FC = () => {
         <div className="mb-4">
             <span className="text-[9px] font-black uppercase tracking-widest text-white/40 block mb-2">{label}</span>
             <select 
-                value={value} 
+                value={value || ''} 
                 onChange={(e) => onChange(e.target.value)}
                 className="w-full bg-white/5 border border-white/10 rounded-lg py-2 px-3 text-[11px] font-bold focus:border-[var(--theme-primary)] focus:outline-none transition-all text-white/80"
                 style={isFont ? { fontFamily: value } : {}}
             >
-                {options.map((opt: any) => (
+                {(options || []).map((opt: any) => (
                     <option key={opt.id || opt} value={opt.id || opt} className="bg-[#0a0a0b]">{opt.label || opt}</option>
                 ))}
             </select>

@@ -97,8 +97,8 @@ export const PreviewCanvas: React.FC<PreviewCanvasProps> = ({
                         '--shadow-color': tokens.mode === 'light' ? 'rgba(0,0,0,0.1)' : 'rgba(0,0,0,0.4)',
                     } as React.CSSProperties}
                     className={`preview-container ${tokens.mode || mode} layout-${(tokens.layout || previewLayoutId).replace('custom-', '')} ${tokens.isGeometricCut ? 'is-geometric' : ''} bg-[var(--bg-body)] text-[var(--text-main)] rounded-[32px] shadow-[0_50px_100px_rgba(0,0,0,0.5)] overflow-hidden flex flex-col relative transition-all duration-500 ${tokens.texture && tokens.texture !== 'none' ? `texture-${tokens.texture}` : ''}`}
-                    data-surface={tokens.surfaceMaterial}
-                    data-border={tokens.borderType}
+                    data-surface={tokens.surfaceMaterial || 'glass'}
+                    data-border={tokens.borderType || 'default'}
                 >
                     {/* Mock Browser/App Header */}
                     <div className="h-10 bg-black/20 border-b border-white/5 px-6 flex items-center gap-2 shrink-0">
