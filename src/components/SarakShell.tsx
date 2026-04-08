@@ -42,7 +42,7 @@ export const SarakShell: React.FC<SarakShellProps> = ({
         sidebarWidth, setSidebarWidth, mode,
         systemName, logoUrl, logoDarkUrl, logoScale, logoPosition,
         cursorPhysics, isSplitViewEnabled, secondaryModuleId, navigationStyle, setNavigationStyle,
-        emptyStateId, isAutoHideEnabled, animationSpeed
+        emptyStateId, isAutoHideEnabled, animationSpeed, searchStyle
     } = useSarak();
     
     const [isSearchOpen, setIsSearchOpen] = useState(false);
@@ -362,7 +362,27 @@ export const SarakShell: React.FC<SarakShellProps> = ({
                                             </div>
                                             <h1 className="text-4xl lg:text-5xl font-black tracking-tighter text-[var(--theme-title)] uppercase">{activeModule.label}</h1>
                                         </div>
-                                        <div className="flex items-center gap-2">
+                                        {/* GLOBAL SEARCH INLINE (v6.2) */}
+                            {searchStyle === 'minimal' && (
+                                <div className="hidden lg:flex items-center flex-1 max-w-md ml-4 mr-auto group">
+                                    <div className="relative w-full">
+                                        <Search size={14} className="absolute left-3 top-1/2 -translate-y-1/2 text-white/20 group-focus-within:text-[var(--theme-primary)] transition-colors" />
+                                        <input 
+                                            type="text" 
+                                            placeholder="Busca global..." 
+                                            onClick={() => setIsSearchOpen(true)}
+                                            readOnly
+                                            className="w-full h-10 bg-white/5 border border-white/10 rounded-xl pl-10 pr-4 text-[11px] font-bold text-white/60 hover:bg-white/[0.08] hover:border-white/20 transition-all cursor-pointer"
+                                        />
+                                        <div className="absolute right-3 top-1/2 -translate-y-1/2 flex items-center gap-1 px-1.5 py-0.5 rounded bg-white/5 border border-white/10 text-[8px] text-white/20 font-black">
+                                            <span>CTRL</span>
+                                            <span>K</span>
+                                        </div>
+                                    </div>
+                                </div>
+                            )}
+
+                            <div className="flex items-center gap-2">
                                             <button className="p-3 rounded-xl bg-white/5 border border-white/10 hover:border-[var(--theme-primary)]/50 transition-all text-white/40 hover:text-[var(--theme-primary)]">
                                                 <Search size={18} />
                                             </button>
@@ -403,6 +423,26 @@ export const SarakShell: React.FC<SarakShellProps> = ({
                     </div>
                 </main>
             </div>
+
+            {/* REVEAL SENSORS (v6.1 Auto-Hide) */}
+            {isAutoHideEnabled && (
+                <>
+                    {/* Sidebar Sensor (Left Edge) */}
+                    {isSidebar && !isNavVisible && (
+                        <div 
+                            className="fixed left-0 top-0 w-2 h-full z-[1000] cursor-pointer"
+                            onMouseEnter={() => setIsNavVisible(true)}
+                        />
+                    )}
+                    {/* Navigation Dock Sensor (Bottom Edge) */}
+                    {isDock && !isNavVisible && (
+                        <div 
+                            className="fixed bottom-0 left-0 w-full h-8 z-[1000] cursor-pointer"
+                            onMouseEnter={() => setIsNavVisible(true)}
+                        />
+                    )}
+                </>
+            )}
 
             <style>{`
                 .animate-spin-slow { animation: spin 12s linear infinite; }

@@ -138,7 +138,26 @@ body {
     background-position: 0 0, 20px 20px;
 }
 
-/* 3. ATOMIC CARD ENGINE */
+/* 3. PREMIUM SCROLLBAR MOTOR */
+.custom-scrollbar::-webkit-scrollbar {
+    width: 5px;
+    height: 5px;
+}
+
+.custom-scrollbar::-webkit-scrollbar-track {
+    background: transparent;
+}
+
+.custom-scrollbar::-webkit-scrollbar-thumb {
+    background: rgba(255, 255, 255, 0.05);
+    border-radius: 10px;
+}
+
+.custom-scrollbar::-webkit-scrollbar-thumb:hover {
+    background: var(--theme-primary);
+}
+
+/* 4. ATOMIC CARD ENGINE */
 .bg-theme-card {
     position: relative;
     border-radius: var(--radius-theme, 12px);
@@ -146,8 +165,29 @@ body {
     background: color-mix(in srgb, var(--bg-card), transparent calc(100% * (1 - var(--glass-opacity, 0.7))));
     backdrop-filter: blur(var(--glass-blur, 10px)) saturate(180%);
     box-shadow: var(--dynamic-shadow);
-    transition: all var(--animation-speed, 0.4s) cubic-bezier(0.4, 0, 0.2, 1);
+    transition: all var(--animation-speed, 0.4s) cubic-bezier(0.16, 1, 0.3, 1);
     overflow: hidden;
+}
+
+.bg-theme-card:hover {
+    transform: scale(1.005) translateY(-2px);
+    border-color: var(--theme-primary);
+    box-shadow: 0 15px 35px -10px rgba(var(--theme-primary-rgb, 0,0,0), 0.2),
+                0 0 15px rgba(var(--theme-primary-rgb, 59, 130, 246), 0.1);
+}
+
+.bg-theme-card::before {
+    content: '';
+    position: absolute;
+    inset: 0;
+    background: radial-gradient(circle at var(--mouse-x, 50%) var(--mouse-y, 50%), rgba(var(--theme-primary-rgb, 255,255,255), 0.05) 0%, transparent 70%);
+    opacity: 0;
+    transition: opacity 0.3s ease;
+    pointer-events: none;
+}
+
+.bg-theme-card:hover::before {
+    opacity: 1;
 }
 
 /* 4. SOVEREIGNTY & DEPTH MOTOR (v6.0) */

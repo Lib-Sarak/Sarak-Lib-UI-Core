@@ -194,11 +194,11 @@ export const PreviewCanvas: React.FC<PreviewCanvasProps> = ({
                                         transition={{ duration: parseFloat(tokens.animationSpeed || '0.4') }}
                                         className={`h-full ${tokens.isSplitViewEnabled ? 'grid grid-cols-2 gap-4' : 'flex flex-col'}`}
                                     >
-                                        <div className="flex flex-col h-full bg-white/[0.02] border border-white/5 rounded-2xl overflow-hidden p-4">
+                                        <div className="flex flex-col h-full bg-theme-card p-4">
                                             {renderApp(tokens)}
                                         </div>
                                         {tokens.isSplitViewEnabled && (
-                                            <div className="flex flex-col h-full bg-white/[0.02] border border-white/5 rounded-2xl overflow-hidden p-4">
+                                            <div className="flex flex-col h-full bg-theme-card p-4">
                                                 <MockLogs config={config} animationVariants={(THEME_EFFECTS as any).page} animationStyle={previewAnimationStyle} />
                                             </div>
                                         )}
