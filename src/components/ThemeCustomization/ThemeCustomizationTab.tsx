@@ -132,36 +132,8 @@ export const ThemeCustomizationTab: React.FC = () => {
 
     // --- LOGIC: COMMIT DRAFT TO SYSTEM ---
     const handleApplyToSystem = () => {
-        console.group('%c🚀 [Matrix Trace] Committing Design Engine v5.6', 'background: #0f172a; color: #38bdf8; padding: 4px;');
-        
-        sarak.setLayout(draft.layout);
-        sarak.setMode(draft.mode);
-        sarak.setPrimaryColor(draft.primaryColor);
-        sarak.setNavigationStyle(draft.navigationStyle);
-        sarak.setSidebarWidth(draft.sidebarWidth);
-        sarak.setFontScale(draft.fontScale);
-        sarak.setLayoutDensity(draft.layoutDensity);
-        sarak.setTexture(draft.texture);
-        sarak.setHeadingFont(draft.headingFont);
-        sarak.setSubtitleFont(draft.subtitleFont);
-        sarak.setTabFont(draft.tabFont);
-        sarak.setBodyFont(draft.bodyFont);
-        sarak.setHeadingWeight(draft.headingWeight);
-        sarak.setHeadingLetterSpacing(draft.headingLetterSpacing);
-        sarak.setBorderRadius(draft.borderRadius);
-        sarak.setBorderWidth(draft.borderWidth);
-        sarak.setBorderStyle(draft.borderStyle);
-        sarak.setGlassOpacity(draft.glassOpacity);
-        sarak.setGlassBlur(draft.glassBlur);
-        sarak.setShadowIntensity(draft.shadowIntensity);
-        sarak.setIsGeometricCut(draft.isGeometricCut);
-        sarak.setTextureOpacity(draft.textureOpacity);
-        sarak.setAnimationSpeed(draft.animationSpeed);
-        sarak.setLayoutGap(draft.layoutGap);
-
-        console.log('✅ Final System Commit executed successfully.');
-        console.groupEnd();
-
+        // Envia o rascunho completo para o sistema
+        sarak.applyFullConfig(draft);
         showToast('success', 'Design aplicado com sucesso a todo o sistema.');
     };
 

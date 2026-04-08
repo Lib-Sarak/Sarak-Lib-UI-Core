@@ -35,6 +35,15 @@ body.light,
 }
 
 body {
+  /* ALIASES DE COMPATIBILIDADE - Sincroniza Sarak Legacy com Design Engine v5.6 */
+  --theme-body: var(--bg-body);
+  --theme-sidebar: var(--bg-sidebar);
+  --theme-card: var(--bg-card);
+  --theme-border: var(--border-color);
+  --theme-title: var(--text-title);
+  --theme-muted: var(--text-muted);
+  --theme-primary: var(--primary-color);
+  
   background-color: var(--bg-body) !important;
   color: var(--text-main);
   transition: background-color var(--animation-speed, 0.4s) ease, color 0.3s ease;

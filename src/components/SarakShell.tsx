@@ -132,7 +132,7 @@ export const SarakShell: React.FC<SarakShellProps> = ({
                                         <button
                                             key={mod.id}
                                             onClick={() => setActiveModuleId(mod.id)}
-                                            className={`w-full flex items-center gap-3 px-3 py-2.5 rounded-xl transition-all relative group ${
+                                            className={`w-full flex items-center gap-3 px-3 py-2.5 rounded-xl transition-all relative group font-tab ${
                                                 activeModuleId === mod.id 
                                                 ? 'bg-[var(--theme-primary)]/10 text-[var(--theme-primary)] font-bold shadow-[inset_0_0_20px_rgba(59,130,246,0.05)]' 
                                                 : 'text-white/40 hover:bg-white/5 hover:text-white'
@@ -207,7 +207,7 @@ export const SarakShell: React.FC<SarakShellProps> = ({
                                         <button
                                             key={mod.id}
                                             onClick={() => setActiveModuleId(mod.id)}
-                                            className={`px-4 py-1.5 rounded-full text-xs font-black uppercase tracking-widest transition-all ${
+                                            className={`px-4 py-1.5 rounded-full text-xs font-black uppercase tracking-widest transition-all font-tab ${
                                                 activeModuleId === mod.id ? 'bg-[var(--theme-primary)] text-white shadow-lg shadow-[var(--theme-primary)]/30' : 'text-white/40 hover:text-white'
                                             }`}
                                         >
@@ -248,7 +248,8 @@ export const SarakShell: React.FC<SarakShellProps> = ({
                                     animate={{ opacity: 1, y: 0 }}
                                     exit={{ opacity: 0, y: -10 }}
                                     transition={{ duration: 0.3 }}
-                                    className="px-8 lg:px-12 pb-12 flex flex-col min-h-full"
+                                    className="pb-12 flex flex-col min-h-full"
+                                    style={{ paddingLeft: 'var(--theme-pad)', paddingRight: 'var(--theme-pad)' }}
                                 >
                                     <header className="mb-10 flex items-end justify-between border-b border-white/5 pb-8 shrink-0">
                                         <div>
@@ -299,11 +300,6 @@ export const SarakShell: React.FC<SarakShellProps> = ({
             <style>{`
                 .animate-spin-slow { animation: spin 12s linear infinite; }
                 @keyframes spin { from { transform: rotate(0deg); } to { transform: rotate(360deg); } }
-                .texture-grid {
-                    background-image: linear-gradient(var(--theme-border) 1px, transparent 1px),
-                                      linear-gradient(90deg, var(--theme-border) 1px, transparent 1px);
-                    background-size: 40px 40px;
-                }
             `}</style>
         </div>
     );
