@@ -28,9 +28,7 @@ interface SarakShellProps {
 }
 
 /**
- * Elite SarakShell (v5.4 Restoration) — Motor de Interface Modular Premium
- * Suporta Sidebar (Resizable), Topbar, Nav Hiding e Recovery System.
- * Corrigido para evitar clipping e permitir scroll de conteúdos longos.
+ * Elite SarakShell (v6.2 Final) — Motor de Interface Modular Premium
  */
 export const SarakShell: React.FC<SarakShellProps> = ({ 
     children, 
@@ -52,20 +50,28 @@ export const SarakShell: React.FC<SarakShellProps> = ({
     const [activeModuleId, setActiveModuleId] = useState<string | null>(null);
     const [isResizing, setIsResizing] = useState(false);
 
-    // MOUSE TRACKING MOTOR (v6.2 Premium Effects)
+    // MOUSE TRACKING MOTOR (v6.2 Premium Effects) - Propaga coordenadas globais para cards
     useEffect(() => {
+        let rafId: number;
         const handleMouseMove = (e: MouseEvent) => {
-            const cards = document.querySelectorAll('.bg-theme-card');
-            cards.forEach(card => {
-                const rect = (card as HTMLElement).getBoundingClientRect();
-                const x = ((e.clientX - rect.left) / rect.width) * 100;
-                const y = ((e.clientY - rect.top) / rect.height) * 100;
-                (card as HTMLElement).style.setProperty('--mouse-x', `${x}%`);
-                (card as HTMLElement).style.setProperty('--mouse-y', `${y}%`);
+            rafId = requestAnimationFrame(() => {
+                const cards = document.querySelectorAll('.bg-theme-card');
+                if (cards.length === 0) return;
+                
+                cards.forEach(card => {
+                    const rect = (card as HTMLElement).getBoundingClientRect();
+                    const x = ((e.clientX - rect.left) / rect.width) * 100;
+                    const y = ((e.clientY - rect.top) / rect.height) * 100;
+                    (card as HTMLElement).style.setProperty('--mouse-x', `${x}%`);
+                    (card as HTMLElement).style.setProperty('--mouse-y', `${y}%`);
+                });
             });
         };
         window.addEventListener('mousemove', handleMouseMove);
-        return () => window.removeEventListener('mousemove', handleMouseMove);
+        return () => {
+            window.removeEventListener('mousemove', handleMouseMove);
+            cancelAnimationFrame(rafId);
+        };
     }, []);
 
     // Carrega módulos registrados no boot
@@ -73,13 +79,12 @@ export const SarakShell: React.FC<SarakShellProps> = ({
         const discovered = getRegisteredModules();
         setModules(discovered);
         if (discovered.length > 0 && !activeModuleId) {
-            // Prioridade para o módulo "customization" se existir
             const customMod = discovered.find(m => m.id === 'mx-customization');
             setActiveModuleId(customMod ? customMod.id : discovered[0].id);
         }
     }, [activeModuleId]);
 
-    // Atalhos Globais (Alt+N para toggle nav)
+    // Atalhos Globais
     useEffect(() => {
         const handleKeyDown = (e: KeyboardEvent) => {
             if (e.altKey && e.key === 'n') {
@@ -118,7 +123,6 @@ export const SarakShell: React.FC<SarakShellProps> = ({
 
     const activeModule = useMemo(() => modules.find(m => m.id === activeModuleId), [modules, activeModuleId]);
     
-    // Grupar módulos por categoria
     const groupedModules = useMemo(() => {
         return modules.reduce((acc, mod) => {
             const cat = mod.category || 'Módulos de Sistema';
@@ -134,13 +138,14 @@ export const SarakShell: React.FC<SarakShellProps> = ({
 
     return (
         <div className="flex w-full h-screen overflow-hidden bg-[var(--theme-body)] text-white font-sans selection:bg-[var(--theme-primary)] selection:text-white">
-            {/* HOVER SENSORS (v6.1) */}
-            {isAutoHideEnabled && (
+            
+            {/* HOVER SENSORS (v6.2) - Ativadores de borda para barras ocultas */}
+            {isAutoHideEnabled && !isNavVisible && (
                 <>
                     {isSidebar && (
                         <div 
                             onMouseEnter={() => setIsNavVisible(true)}
-                            className="fixed left-0 top-0 w-2 h-full z-[1000] cursor-pointer"
+                            className="fixed left-0 top-0 w-4 h-full z-[1000] cursor-pointer"
                         />
                     )}
                     {isDock && (
@@ -152,9 +157,10 @@ export const SarakShell: React.FC<SarakShellProps> = ({
                 </>
             )}
 
-            {/* SIDEBAR NAVIGATION (Desktop) */}
+            {/* SIDEBAR NAVIGATION */}
             {isSidebar && (
                 <aside 
+                    onMouseEnter={() => setIsNavVisible(true)}
                     onMouseLeave={() => isAutoHideEnabled && setIsNavVisible(false)}
                     style={{ 
                         width: isNavHidden || (isAutoHideEnabled && !isNavVisible) ? '0px' : `${sidebarWidth}px`,
@@ -162,18 +168,12 @@ export const SarakShell: React.FC<SarakShellProps> = ({
                         visibility: isNavHidden || (isAutoHideEnabled && !isNavVisible) ? 'hidden' : 'visible',
                         transition: `all ${animationSpeed}s cubic-bezier(0.16, 1, 0.3, 1)`
                     }}
-                    className="h-screen bg-[var(--theme-sidebar)] border-r border-[var(--theme-border)] flex flex-col shrink-0 relative z-50 shadow-2xl overflow-hidden"
+                    className="h-screen bg-[var(--theme-sidebar)] border-r border-[var(--theme-border)] flex flex-col shrink-0 relative z-[100] shadow-2xl overflow-hidden"
                 >
-                    {/* Header Sidebar */}
                     <div className="h-16 px-6 flex items-center justify-between border-b border-[var(--theme-border)] bg-[var(--theme-title)]/5">
                         <div className={`flex items-center gap-3 w-full ${logoPosition === 'center' ? 'justify-center' : ''}`}>
                             {logoUrl ? (
-                                <img 
-                                    src={mode === 'dark' && logoDarkUrl ? logoDarkUrl : logoUrl} 
-                                    alt={systemName} 
-                                    style={{ transform: `scale(${logoScale})`, transformOrigin: logoPosition === 'center' ? 'center' : 'left' }}
-                                    className="max-h-8 object-contain transition-transform"
-                                />
+                                <img src={mode === 'dark' && logoDarkUrl ? logoDarkUrl : logoUrl} alt={systemName} style={{ transform: `scale(${logoScale})`, transformOrigin: logoPosition === 'center' ? 'center' : 'left' }} className="max-h-8 object-contain transition-transform" />
                             ) : (
                                 <div className="w-8 h-8 rounded-lg bg-gradient-to-br from-[var(--theme-primary)] to-indigo-600 flex items-center justify-center font-black text-xs text-white shrink-0">S</div>
                             )}
@@ -186,30 +186,16 @@ export const SarakShell: React.FC<SarakShellProps> = ({
                         )}
                     </div>
 
-                    {/* Módulos */}
                     <div className="flex-1 overflow-y-auto p-4 space-y-6 custom-scrollbar">
                         {Object.entries(groupedModules).map(([category, mods]) => (
                             <div key={category}>
                                 <h4 className="text-[10px] font-bold text-white/20 uppercase tracking-[0.2em] mb-3 px-3">{category}</h4>
                                 <div className="space-y-1">
                                     {mods.map(mod => (
-                                        <button
-                                            key={mod.id}
-                                            onClick={() => setActiveModuleId(mod.id)}
-                                            className={`w-full flex items-center gap-3 px-3 py-2.5 rounded-xl transition-all relative group font-tab ${
-                                                activeModuleId === mod.id 
-                                                ? 'bg-[var(--theme-primary)]/10 text-[var(--theme-primary)] font-bold shadow-[inset_0_0_20px_rgba(59,130,246,0.05)]' 
-                                                : 'text-white/40 hover:bg-white/5 hover:text-white'
-                                            }`}
-                                        >
+                                        <button key={mod.id} onClick={() => setActiveModuleId(mod.id)} className={`w-full flex items-center gap-3 px-3 py-2.5 rounded-xl transition-all relative group font-tab ${activeModuleId === mod.id ? 'bg-[var(--theme-primary)]/10 text-[var(--theme-primary)] font-bold shadow-[inset_0_0_20px_rgba(59,130,246,0.05)]' : 'text-white/40 hover:bg-white/5 hover:text-white'}`}>
                                             <IconRenderer name={mod.icon} className={activeModuleId === mod.id ? 'text-[var(--theme-primary)]' : 'text-[var(--theme-muted)]'} />
                                             <span className="text-sm truncate">{mod.label}</span>
-                                            {activeModuleId === mod.id && (
-                                                <motion.div 
-                                                    layoutId="active-pill" 
-                                                    className="absolute left-0 w-1 h-4 bg-[var(--theme-primary)] rounded-full shadow-[0_0_15px_var(--theme-primary)]" 
-                                                />
-                                            )}
+                                            {activeModuleId === mod.id && <motion.div layoutId="active-pill" className="absolute left-0 w-1 h-4 bg-[var(--theme-primary)] rounded-full shadow-[0_0_15px_var(--theme-primary)]" />}
                                         </button>
                                     ))}
                                 </div>
@@ -217,68 +203,34 @@ export const SarakShell: React.FC<SarakShellProps> = ({
                         ))}
                     </div>
 
-                    {/* Perfil Simplificado na Base */}
                     <div className="p-4 border-t border-white/5 bg-white/[0.01]">
                         <div className="flex items-center justify-between">
                             <div className="flex items-center gap-3">
-                                <div className="w-8 h-8 rounded-full bg-blue-500/20 border border-blue-500/30 flex items-center justify-center">
-                                    <User size={14} className="text-blue-400" />
-                                </div>
+                                <div className="w-8 h-8 rounded-full bg-blue-500/20 border border-blue-500/30 flex items-center justify-center text-blue-400"><User size={14} /></div>
                                 <div className="flex flex-col">
                                     <span className="text-[10px] font-bold text-white/80">{user?.email?.split('@')[0] || 'Sarak User'}</span>
                                     <span className="text-[9px] text-white/30 uppercase tracking-widest">{user?.role || 'Guest'}</span>
                                 </div>
                             </div>
-                            <button onClick={logout} className="p-2 text-white/20 hover:text-red-400 transition-colors">
-                                <LogOut size={14} />
-                            </button>
+                            <button onClick={logout} className="p-2 text-white/20 hover:text-red-400 transition-colors"><LogOut size={14} /></button>
                         </div>
                     </div>
-
-                    <div 
-                        onMouseDown={startResizing}
-                        className="absolute top-0 right-0 w-1 h-full cursor-col-resize hover:bg-[var(--theme-primary)]/50 transition-colors z-[60]"
-                    />
+                    <div onMouseDown={startResizing} className="absolute top-0 right-0 w-1 h-full cursor-col-resize hover:bg-[var(--theme-primary)]/50 transition-colors z-[60]" />
                 </aside>
             )}
 
-            {/* FLOATING NAVIGATION DOCK (v6.0/6.1 Premium) */}
+            {/* DOCK NAVIGATION */}
             {isDock && (
                 <AnimatePresence>
                     {(isNavVisible || !isAutoHideEnabled) && (
-                        <motion.div 
-                            initial={{ y: 100, opacity: 0, scale: 0.9 }}
-                            animate={{ y: 0, opacity: 1, scale: 1 }}
-                            exit={{ y: 100, opacity: 0, scale: 0.9 }}
-                            transition={{ duration: animationSpeed, ease: "circOut" }}
-                            onMouseLeave={() => isAutoHideEnabled && setIsNavVisible(false)}
-                            className="fixed bottom-6 left-1/2 -translate-x-1/2 z-[500] flex items-center gap-2 p-2 rounded-2xl bg-black/40 backdrop-blur-2xl border border-white/10 shadow-[0_20px_40px_rgba(0,0,0,0.5)] group/dock"
-                        >
-                            <div className="absolute -inset-0.5 bg-gradient-to-b from-white/10 to-transparent rounded-2xl opacity-0 group-hover/dock:opacity-100 transition-opacity -z-10" />
+                        <motion.div initial={{ y: 100, opacity: 0, scale: 0.9 }} animate={{ y: 0, opacity: 1, scale: 1 }} exit={{ y: 100, opacity: 0, scale: 0.9 }} transition={{ duration: animationSpeed, ease: "circOut" }} onMouseEnter={() => setIsNavVisible(true)} onMouseLeave={() => isAutoHideEnabled && setIsNavVisible(false)} className="fixed bottom-6 left-1/2 -translate-x-1/2 z-[500] flex items-center gap-2 p-2 rounded-2xl bg-black/40 backdrop-blur-2xl border border-white/10 shadow-[0_20px_40px_rgba(0,0,0,0.5)] group/dock">
                             {modules.slice(0, 7).map((mod, i) => (
-                                <motion.button
-                                    key={mod.id}
-                                    whileHover={{ 
-                                        scale: 1.25, 
-                                        y: -12,
-                                        boxShadow: "0 10px 20px rgba(0,0,0,0.3)" 
-                                    }}
-                                    transition={{ type: "spring", stiffness: 400, damping: 17 }}
-                                    onClick={() => setActiveModuleId(mod.id)}
-                                    className={`w-12 h-12 rounded-xl flex items-center justify-center transition-all ${activeModuleId === mod.id ? 'bg-[var(--theme-primary)] text-white shadow-[0_0_20px_rgba(var(--theme-primary-rgb),0.3)]' : 'text-white/40 hover:text-white hover:bg-white/5'}`}
-                                >
+                                <motion.button key={mod.id} whileHover={{ scale: 1.25, y: -12 }} transition={{ type: "spring", stiffness: 400, damping: 17 }} onClick={() => setActiveModuleId(mod.id)} className={`w-12 h-12 rounded-xl flex items-center justify-center transition-all ${activeModuleId === mod.id ? 'bg-[var(--theme-primary)] text-white shadow-[0_0_20px_rgba(var(--theme-primary-rgb),0.3)]' : 'text-white/40 hover:text-white hover:bg-white/5'}`}>
                                     <IconRenderer name={mod.icon} size={22} />
                                 </motion.button>
                             ))}
                             <div className="w-px h-8 bg-white/10 mx-1" />
-                            <motion.button 
-                                whileHover={{ scale: 1.25, y: -12 }}
-                                transition={{ type: "spring", stiffness: 400, damping: 17 }}
-                                onClick={() => setIsSearchOpen(true)}
-                                className="w-12 h-12 rounded-xl flex items-center justify-center text-white/40 hover:text-white hover:bg-white/5"
-                            >
-                                <Search size={22} />
-                            </motion.button>
+                            <motion.button whileHover={{ scale: 1.25, y: -12 }} transition={{ type: "spring", stiffness: 400, damping: 17 }} onClick={() => setIsSearchOpen(true)} className="w-12 h-12 rounded-xl flex items-center justify-center text-white/40 hover:text-white hover:bg-white/5"><Search size={22} /></motion.button>
                         </motion.div>
                     )}
                 </AnimatePresence>
@@ -287,25 +239,18 @@ export const SarakShell: React.FC<SarakShellProps> = ({
             {/* CONTENT AREA */}
             <div className="flex-1 flex flex-col h-screen overflow-hidden relative bg-[var(--theme-body)]">
                 
-                {/* HEADER (Topbar Style or Sidebar Header) */}
-                {(isTopbar || (!isNavHidden && isSidebar) || (isNavHidden && isSidebar)) && (
+                {/* SHELL HEADER */}
+                {(isTopbar || isSidebar) && (
                     <header className={`h-16 border-b border-[var(--theme-border)] bg-[var(--theme-card)] backdrop-blur-2xl px-6 flex items-center justify-between z-[45] shrink-0`}>
                         <div className="flex items-center gap-6">
-                            {(isTopbar || isNavHidden) && (
+                            {(isTopbar || (isSidebar && isNavHidden)) && (
                                 <div className="flex items-center gap-4">
                                     {isNavHidden && isSidebar && (
-                                        <button onClick={toggleNav} className="p-2 bg-white/5 rounded-lg text-white/40 hover:text-white transition-all mr-2">
-                                            <Menu size={18} />
-                                        </button>
+                                        <button onClick={toggleNav} className="p-2 bg-white/5 rounded-lg text-white/40 hover:text-white transition-all mr-2"><Menu size={18} /></button>
                                     )}
                                     <div className={`flex items-center gap-3 pr-6 border-r border-white/5 ${logoPosition === 'center' ? 'mx-auto' : ''}`}>
                                         {logoUrl ? (
-                                            <img 
-                                                src={mode === 'dark' && logoDarkUrl ? logoDarkUrl : logoUrl} 
-                                                alt={systemName} 
-                                                style={{ transform: `scale(${logoScale})` }}
-                                                className="max-h-8 object-contain transition-transform"
-                                            />
+                                            <img src={mode === 'dark' && logoDarkUrl ? logoDarkUrl : logoUrl} alt={systemName} style={{ transform: `scale(${logoScale})` }} className="max-h-8 object-contain transition-transform" />
                                         ) : (
                                             <div className="w-8 h-8 rounded-lg bg-[var(--theme-primary)] flex items-center justify-center font-bold text-xs shrink-0">S</div>
                                         )}
@@ -314,108 +259,63 @@ export const SarakShell: React.FC<SarakShellProps> = ({
                                 </div>
                             )}
                             
-                            {/* Horizontal Modules (Topbar Style) */}
                             {isTopbar && (
                                 <nav className="hidden lg:flex items-center gap-1">
                                     {modules.slice(0, 8).map(mod => (
-                                        <button
-                                            key={mod.id}
-                                            onClick={() => setActiveModuleId(mod.id)}
-                                            className={`px-4 py-1.5 rounded-full text-xs font-black uppercase tracking-widest transition-all font-tab ${
-                                                activeModuleId === mod.id ? 'bg-[var(--theme-primary)] text-white shadow-lg shadow-[var(--theme-primary)]/30' : 'text-white/40 hover:text-white'
-                                            }`}
-                                        >
-                                            {mod.label}
-                                        </button>
+                                        <button key={mod.id} onClick={() => setActiveModuleId(mod.id)} className={`px-4 py-1.5 rounded-full text-xs font-black uppercase tracking-widest transition-all font-tab ${activeModuleId === mod.id ? 'bg-[var(--theme-primary)] text-white shadow-lg shadow-[var(--theme-primary)]/30' : 'text-white/40 hover:text-white'}`}>{mod.label}</button>
                                     ))}
                                 </nav>
                             )}
                         </div>
 
                         <div className="flex items-center gap-4">
+                            {/* SEARCH INLINE HEAD (v6.2) */}
+                            {searchStyle === 'minimal' && (
+                                <div className="hidden md:flex items-center w-64 group relative">
+                                    <Search size={14} className="absolute left-3 top-1/2 -translate-y-1/2 text-white/20 group-focus-within:text-[var(--theme-primary)] transition-colors" />
+                                    <input type="text" placeholder="Busca Smart..." onClick={() => setIsSearchOpen(true)} readOnly className="w-full h-9 bg-white/5 border border-white/10 rounded-xl pl-10 pr-4 text-[11px] font-bold text-white/60 hover:bg-white/[0.08] hover:border-white/20 transition-all cursor-pointer" />
+                                    <div className="absolute right-3 top-1/2 -translate-y-1/2 flex items-center gap-1 px-1.5 py-0.5 rounded bg-white/5 border border-white/10 text-[8px] text-white/20 font-black opacity-0 group-hover:opacity-100"><span>CTRL</span><span>K</span></div>
+                                </div>
+                            )}
+                            
                             <div className="flex items-center gap-1 px-3 py-1 bg-white/5 rounded-full border border-white/10">
                                 <ThemeToggle />
-                                <button onClick={() => setIsSearchOpen(true)} className="p-2 text-white/20 hover:text-white transition-colors">
-                                    <Search size={16} />
-                                </button>
+                                {searchStyle !== 'minimal' && (
+                                    <button onClick={() => setIsSearchOpen(true)} className="p-2 text-white/20 hover:text-white transition-colors"><Search size={16} /></button>
+                                )}
                                 {extraToolbarItems}
                             </div>
-                            <div className="w-8 h-8 rounded-full border border-white/10 bg-white/5 flex items-center justify-center text-white/40 hover:text-white transition-colors cursor-pointer">
-                                <Bell size={14} />
-                            </div>
-                            {isTopbar && (
-                                <button onClick={logout} className="p-2 hover:bg-red-500/20 rounded-lg text-white/20 hover:text-red-400 transition-colors">
-                                    <LogOut size={18} />
-                                </button>
-                            )}
+                            <div className="w-8 h-8 rounded-full border border-white/10 bg-white/5 flex items-center justify-center text-white/40 hover:text-white transition-colors cursor-pointer"><Bell size={14} /></div>
                         </div>
                     </header>
                 )}
 
-                {/* MAIN CONTENT CANVAS - FIXED SCROLL ENGINE */}
+                {/* MAIN CONTENT CANVAS */}
                 <main className="flex-1 overflow-y-auto custom-scrollbar relative flex flex-col w-full min-h-0 bg-[var(--theme-body)]">
-                    <div className="absolute inset-0 pointer-events-none opacity-[0.02] texture-grid"></div>
-                    
+                    <div className="absolute inset-0 pointer-events-none opacity-[0.02] texture-grid" />
                     <div className="flex-1 flex flex-col relative w-full pt-8 lg:pt-12">
                         <AnimatePresence mode="wait">
                             {activeModule ? (
-                                <motion.div
-                                    key={activeModule.id}
-                                    initial={{ opacity: 0, y: 10 }}
-                                    animate={{ opacity: 1, y: 0 }}
-                                    exit={{ opacity: 0, y: -10 }}
-                                    transition={{ duration: 0.3 }}
-                                    className="pb-12 flex flex-col min-h-full"
-                                    style={{ paddingLeft: 'var(--theme-pad)', paddingRight: 'var(--theme-pad)' }}
-                                >
+                                <motion.div key={activeModule.id} initial={{ opacity: 0, y: 10 }} animate={{ opacity: 1, y: 0 }} exit={{ opacity: 0, y: -10 }} transition={{ duration: 0.3 }} className="pb-12 flex flex-col min-h-full" style={{ paddingLeft: 'var(--theme-pad)', paddingRight: 'var(--theme-pad)' }}>
+                                    
                                     <header className="mb-10 flex items-end justify-between border-b border-white/5 pb-8 shrink-0">
                                         <div>
                                             <div className="flex items-center gap-3 text-[var(--theme-primary)] mb-2">
-                                                <div className="p-2 rounded-lg bg-[var(--theme-primary)]/10 border border-[var(--theme-primary)]/20 shadow-[0_0_15px_rgba(59,130,246,0.1)]">
-                                                    <IconRenderer name={activeModule.icon} size={20} />
-                                                </div>
+                                                <div className="p-2 rounded-lg bg-[var(--theme-primary)]/10 border border-[var(--theme-primary)]/20 shadow-[0_0_15px_rgba(59,130,246,0.1)]"><IconRenderer name={activeModule.icon} size={20} /></div>
                                                 <span className="text-[10px] font-black uppercase tracking-[0.4em] italic">{activeModule.category || 'Módulo'}</span>
                                             </div>
                                             <h1 className="text-4xl lg:text-5xl font-black tracking-tighter text-[var(--theme-title)] uppercase">{activeModule.label}</h1>
                                         </div>
-                                        {/* GLOBAL SEARCH INLINE (v6.2) */}
-                            {searchStyle === 'minimal' && (
-                                <div className="hidden lg:flex items-center flex-1 max-w-md ml-4 mr-auto group">
-                                    <div className="relative w-full">
-                                        <Search size={14} className="absolute left-3 top-1/2 -translate-y-1/2 text-white/20 group-focus-within:text-[var(--theme-primary)] transition-colors" />
-                                        <input 
-                                            type="text" 
-                                            placeholder="Busca global..." 
-                                            onClick={() => setIsSearchOpen(true)}
-                                            readOnly
-                                            className="w-full h-10 bg-white/5 border border-white/10 rounded-xl pl-10 pr-4 text-[11px] font-bold text-white/60 hover:bg-white/[0.08] hover:border-white/20 transition-all cursor-pointer"
-                                        />
-                                        <div className="absolute right-3 top-1/2 -translate-y-1/2 flex items-center gap-1 px-1.5 py-0.5 rounded bg-white/5 border border-white/10 text-[8px] text-white/20 font-black">
-                                            <span>CTRL</span>
-                                            <span>K</span>
-                                        </div>
-                                    </div>
-                                </div>
-                            )}
-
-                            <div className="flex items-center gap-2">
-                                            <button className="p-3 rounded-xl bg-white/5 border border-white/10 hover:border-[var(--theme-primary)]/50 transition-all text-white/40 hover:text-[var(--theme-primary)]">
-                                                <Search size={18} />
-                                            </button>
-                                            <button className="hidden sm:flex items-center gap-2 px-6 py-3 rounded-xl bg-[var(--theme-primary)] hover:opacity-90 text-white text-[10px] font-black uppercase tracking-[0.2em] transition-all shadow-xl shadow-[var(--theme-primary)]/20">
-                                                <Zap size={14} className="fill-current" />
-                                                Novo Registro
-                                            </button>
+                                        <div className="flex items-center gap-2">
+                                            <button onClick={() => setIsSearchOpen(true)} className="p-3 rounded-xl bg-white/5 border border-white/10 hover:border-[var(--theme-primary)]/50 transition-all text-white/40 hover:text-[var(--theme-primary)]"><Search size={18} /></button>
+                                            <button className="hidden sm:flex items-center gap-2 px-6 py-3 rounded-xl bg-[var(--theme-primary)] hover:opacity-90 text-white text-[10px] font-black uppercase tracking-[0.2em] transition-all shadow-xl shadow-[var(--theme-primary)]/20 text-center"><Zap size={14} className="fill-current" /> Novo Registro</button>
                                         </div>
                                     </header>
 
                                     <div className={`flex-1 ${isSplitViewEnabled ? 'grid grid-cols-2 gap-[var(--theme-gap)]' : 'flex flex-col'} animate-in fade-in zoom-in-95 duration-700`}>
-                                        <div className="flex flex-col min-h-full">
-                                            <activeModule.component />
-                                        </div>
+                                        <div className="flex flex-col min-h-full"><activeModule.component /></div>
                                         {isSplitViewEnabled && secondaryModuleId && (
                                             <div className="flex flex-col min-h-full border-l border-white/5 pl-[var(--theme-gap)]">
-                                                {/* Render Second Module (Simplified lookup) */}
                                                 {(() => {
                                                     const SecMod = modules.find(m => m.id === secondaryModuleId)?.component;
                                                     return SecMod ? <SecMod /> : <div className="opacity-20 flex items-center justify-center h-full">Selecione um módulo secundário</div>;
@@ -425,46 +325,12 @@ export const SarakShell: React.FC<SarakShellProps> = ({
                                     </div>
                                 </motion.div>
                             ) : (
-                                <motion.div
-                                    key="empty-state"
-                                    initial={{ opacity: 0 }}
-                                    animate={{ opacity: 1 }}
-                                    exit={{ opacity: 0 }}
-                                    className="flex-grow flex flex-col items-center justify-center p-12"
-                                >
-                                    <SarakEmptyState type={emptyStateId as any} />
-                                </motion.div>
+                                <motion.div key="empty-state" initial={{ opacity: 0 }} animate={{ opacity: 1 }} exit={{ opacity: 0 }} className="flex-grow flex flex-col items-center justify-center p-12"><SarakEmptyState type={emptyStateId as any} /></motion.div>
                             )}
                         </AnimatePresence>
                     </div>
                 </main>
             </div>
-
-            {/* REVEAL SENSORS (v6.1 Auto-Hide) */}
-            {isAutoHideEnabled && (
-                <>
-                    {/* Sidebar Sensor (Left Edge) */}
-                    {isSidebar && !isNavVisible && (
-                        <div 
-                            className="fixed left-0 top-0 w-2 h-full z-[1000] cursor-pointer"
-                            onMouseEnter={() => setIsNavVisible(true)}
-                        />
-                    )}
-                    {/* Navigation Dock Sensor (Bottom Edge) */}
-                    {isDock && !isNavVisible && (
-                        <div 
-                            className="fixed bottom-0 left-0 w-full h-8 z-[1000] cursor-pointer"
-                            onMouseEnter={() => setIsNavVisible(true)}
-                        />
-                    )}
-                </>
-            )}
-
-            <style>{`
-                .animate-spin-slow { animation: spin 12s linear infinite; }
-                @keyframes spin { from { transform: rotate(0deg); } to { transform: rotate(360deg); } }
-            `}</style>
-
             {cursorPhysics && <SarakCursor />}
             <SarakSearch isOpen={isSearchOpen} onClose={() => setIsSearchOpen(false)} />
         </div>

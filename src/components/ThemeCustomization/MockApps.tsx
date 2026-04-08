@@ -8,7 +8,7 @@ import { EMOJI_SETS } from '@sarak/lib-shared';
 export const MockDashboard: React.FC<any> = ({ config, animationVariants, animationStyle, tokens }) => {
     return (
         <>
-            <div className="mb-8" style={{ marginBottom: 'var(--theme-gap)' }}>
+            <header className="mb-8" style={{ marginBottom: 'var(--theme-gap)' }}>
                 <h3
                     style={{
                         fontFamily: "var(--font-heading)",
@@ -18,12 +18,12 @@ export const MockDashboard: React.FC<any> = ({ config, animationVariants, animat
                     }}
                     className="text-[var(--theme-title)] mb-2"
                 >
-                    Dashboard
+                    Elite Dashboard
                 </h3>
                 <p className="text-[var(--theme-main)] opacity-60" style={{ fontFamily: "var(--font-main)", fontSize: 'calc(var(--theme-font-size-base) * 0.9)' }}>
-                    System overview and real-time metrics.
+                    Sistema unificado de telemetria em tempo real.
                 </p>
-            </div>
+            </header>
 
             <div
                 className="grid grid-cols-12 auto-rows-fr flex-grow"
@@ -72,16 +72,24 @@ export const MockDashboard: React.FC<any> = ({ config, animationVariants, animat
                         <div className="flex-grow flex items-end gap-3 px-2 pb-2">
                             {[40, 75, 45, 95, 65, 85, 55, 90, 70, 80].map((h, i) => {
                                 const style = (tokens?.chartStyle || 'bar');
+                                const palette = tokens?.chartPalette || ['#3b82f6', '#10b981', '#f59e0b', '#ef4444', '#8b5cf6'];
+                                const barColor = palette[i % palette.length];
+                                
                                 return (
                                     <div
                                         key={i}
                                         className={`flex-grow transition-all duration-500 hover:brightness-125 cursor-pointer 
-                                            ${style === 'bar' ? 'bg-gradient-to-t from-[var(--theme-primary)]/40 to-[var(--theme-primary)] rounded-t-md' : ''}
-                                            ${style === 'glass' ? 'bg-[var(--theme-primary)]/20 border border-[var(--theme-primary)]/30 backdrop-blur-sm rounded-t-md' : ''}
-                                            ${style === 'solid' ? 'bg-[var(--theme-primary)] rounded-t-sm' : ''}
-                                            ${style === 'line' ? 'bg-transparent border-t-2 border-x border-[var(--theme-primary)] rounded-t-full' : ''}
+                                            ${style === 'bar' ? 'rounded-t-md opacity-90' : ''}
+                                            ${style === 'glass' ? 'border backdrop-blur-sm rounded-t-md opacity-60' : ''}
+                                            ${style === 'solid' ? 'rounded-t-sm' : ''}
+                                            ${style === 'line' ? 'bg-transparent border-t-2 border-x rounded-t-full' : ''}
                                         `}
-                                        style={{ height: `${h}%` }}
+                                        style={{ 
+                                            height: `${h}%`,
+                                            backgroundColor: style !== 'line' ? barColor : 'transparent',
+                                            borderColor: style === 'line' || style === 'glass' ? barColor : 'transparent',
+                                            boxShadow: style === 'solid' ? `0 4px 12px ${barColor}20` : 'none'
+                                        }}
                                     ></div>
                                 );
                             })}
@@ -153,11 +161,12 @@ export const MockChat: React.FC<any> = ({ config, animationVariants, animationSt
                     className="flex justify-start"
                 >
                     <div
-                        className="bg-theme-card p-4 shadow-soft max-w-[80%] relative overflow-hidden"
+                        className="bg-theme-card p-6 border border-white/5 shadow-2xl max-w-[85%] relative overflow-hidden"
                         style={{ borderBottomLeftRadius: 0 }}
                     >
-                        <div className="relative z-10 text-[11px] text-[var(--theme-title)] leading-relaxed">
-                            Hello! I am Sarak assistant. How can I help with your data analysis today?
+                        <div className="relative z-10 text-[11px] text-[var(--theme-title)] font-medium leading-relaxed">
+                            <span className="text-[var(--theme-primary)] font-black mr-2 opacity-60">Sarak Assistant:</span>
+                            Olá! Eu sou o Sarak AI. Como posso otimizar seus fluxos de trabalho hoje?
                         </div>
                     </div>
                 </motion.div>

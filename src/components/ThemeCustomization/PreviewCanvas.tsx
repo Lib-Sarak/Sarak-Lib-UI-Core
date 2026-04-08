@@ -188,18 +188,21 @@ export const PreviewCanvas: React.FC<PreviewCanvasProps> = ({
                                 <AnimatePresence mode="wait">
                                     <motion.div
                                         key={activePreviewApp}
-                                        initial={{ opacity: 0, y: 10 }}
-                                        animate={{ opacity: 1, y: 0 }}
-                                        exit={{ opacity: 0, y: -10 }}
-                                        transition={{ duration: parseFloat(tokens.animationSpeed || '0.4') }}
-                                        className={`h-full ${tokens.isSplitViewEnabled ? 'grid grid-cols-2 gap-4' : 'flex flex-col'}`}
+                                        initial={{ opacity: 0, scale: 0.98, x: -10 }}
+                                        animate={{ opacity: 1, scale: 1, x: 0 }}
+                                        exit={{ opacity: 0, scale: 0.98, x: 10 }}
+                                        transition={{ 
+                                            duration: parseFloat(tokens.animationSpeed || '0.4'),
+                                            ease: [0.16, 1, 0.3, 1]
+                                        }}
+                                        className={`h-full ${tokens.isSplitViewEnabled ? 'grid grid-cols-2 gap-[var(--theme-gap)]' : 'flex flex-col'}`}
                                     >
-                                        <div className="flex flex-col h-full bg-theme-card p-4">
+                                        <div className="flex flex-col min-h-full">
                                             {renderApp(tokens)}
                                         </div>
                                         {tokens.isSplitViewEnabled && (
-                                            <div className="flex flex-col h-full bg-theme-card p-4">
-                                                <MockLogs config={config} animationVariants={(THEME_EFFECTS as any).page} animationStyle={previewAnimationStyle} />
+                                            <div className="flex flex-col min-h-full">
+                                                <MockLogs config={config} animationVariants={(THEME_EFFECTS as any).page} animationStyle={previewAnimationStyle} tokens={tokens} />
                                             </div>
                                         )}
                                     </motion.div>

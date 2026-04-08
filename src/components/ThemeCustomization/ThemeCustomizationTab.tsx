@@ -144,46 +144,90 @@ export const ThemeCustomizationTab: React.FC = () => {
         // Mapeia tokens CSS do preset para o estado atômico do Draft
         const newDraft = { ...draft, layout: id };
         
-        // Mapeamento Direto Dinâmico
+        // Mapeamento Direto Dinâmico (v6.0 Full Engine)
         const tokenMap: Record<string, string> = {
-            '--radius-theme': 'borderRadius',
-            '--glass-blur': 'glassBlur',
-            '--glass-opacity': 'glassOpacity',
-            '--border-width': 'borderWidth',
-            '--shadow-intensity': 'shadowIntensity',
-            '--bg-texture': 'texture',
-            '--theme-primary': 'primaryColor',
+            // 1. Arquitetura
+            '--nav-style': 'navigationStyle',
+            '--sidebar-width': 'sidebarWidth',
+            '--layout-density': 'layoutDensity',
+            '--auto-hide': 'isAutoHideEnabled',
+            // 2. Estruturas
+            '--split-view': 'isSplitViewEnabled',
+            '--secondary-module': 'secondaryModuleId',
+            '--search-style': 'searchStyle',
+            // 3. Tipografia
             '--font-heading': 'headingFont',
             '--font-subtitle': 'subtitleFont',
+            '--font-tab': 'tabFont',
             '--font-main': 'bodyFont',
             '--font-weight-heading': 'headingWeight',
             '--letter-spacing-heading': 'headingLetterSpacing',
+            '--font-scale': 'fontScale',
+            // 4. Geometria & Materiais
+            '--radius-theme': 'borderRadius',
+            '--border-width': 'borderWidth',
             '--border-style': 'borderStyle',
+            '--surface-material': 'surfaceMaterial',
+            '--border-type': 'borderType',
+            '--theme-gap': 'layoutGap',
+            '--glass-opacity': 'glassOpacity',
+            '--glass-blur': 'glassBlur',
+            '--is-geometric': 'isGeometricCut',
+            '--cursor-physics': 'cursorPhysics',
+            // 5. Atmosfera
+            '--bg-texture': 'texture',
             '--texture-opacity': 'textureOpacity',
-            '--theme-texture-opacity': 'textureOpacity',
-            '--bg-texture-opacity': 'textureOpacity',
+            // 6. Cores & Identidade
+            '--theme-primary': 'primaryColor',
+            '--system-name': 'systemName',
+            '--logo-url': 'logoUrl',
+            '--logo-dark-url': 'logoDarkUrl',
+            '--logo-scale': 'logoScale',
+            '--logo-position': 'logoPosition',
+            '--system-tone': 'systemTone',
+            // 7. Dados
+            '--chart-style': 'chartStyle',
+            '--chart-palette': 'chartPalette',
+            // 8. Sombras
+            '--shadow-intensity': 'shadowIntensity',
+            '--shadow-orientation': 'shadowOrientation',
+            '--shadow-color-mode': 'shadowColorMode',
+            // 9. Efeitos
             '--animation-speed': 'animationSpeed',
-            '--is-geometric': 'isGeometricCut'
+            '--mode': 'mode'
         };
 
         Object.entries(preset).forEach(([cssVar, value]) => {
             const draftKey = tokenMap[cssVar];
             if (draftKey) {
-                // Conversão de tipos se necessário
+                // Conversão Inteligente de Tipos
                 let finalValue: any = value;
-                if (typeof value === 'string' && value.endsWith('px')) {
-                    finalValue = parseInt(value);
-                } else if (draftKey === 'glassOpacity' || draftKey === 'shadowIntensity' || draftKey === 'textureOpacity') {
-                    finalValue = parseFloat(value as string);
-                } else if (draftKey === 'isGeometricCut') {
-                    finalValue = value === 'true' || value === true;
+                
+                // 1. Números com Unidade (px, s, etc)
+                if (typeof value === 'string' && (value.endsWith('px') || value.endsWith('s'))) {
+                    finalValue = parseFloat(value);
+                } 
+                // 2. Números Decimais (Opacidade, Intensidade)
+                else if (typeof value === 'string' && !isNaN(parseFloat(value)) && !value.startsWith('#')) {
+                    finalValue = parseFloat(value);
                 }
+                // 3. Booleans (Injetados como 0/1 ou 'true'/'false')
+                else if (value === 'true' || value === '1' || value === 1 || value === true) {
+                    finalValue = true;
+                } else if (value === 'false' || value === '0' || value === 0 || value === false) {
+                    finalValue = false;
+                }
+                // 4. Arrays (Paletas de cores separadas por vírgula)
+                else if (draftKey === 'chartPalette' && typeof value === 'string' && value.includes(',')) {
+                    finalValue = value.split(',');
+                }
+
                 (newDraft as any)[draftKey] = finalValue;
             }
         });
 
-        // Caso especial: alguns temas definem o modo via background
-        if (preset['--bg-body'] === '#000000' || preset['--bg-body'] === '#050505') {
+        // Caso especial: alguns temas definem o modo via background (Retrocompatibilidade)
+        if (!preset['--mode'] && (preset['--bg-body'] === '#000000' || preset['--bg-body'] === '#050505')) {
             newDraft.mode = 'dark';
         }
 
@@ -268,7 +312,7 @@ export const ThemeCustomizationTab: React.FC = () => {
             </button>
             <AnimatePresence>
                 {activeSection === id && (
-                    <motion.div initial={{ height: 0, opacity: 0 }} animate={{ height: 'auto', opacity: 1 }} exit={{ height: 0, opacity: 0 }} className="overflow-hidden bg-black/20">
+                    <motion.div initial={{ height: 0, opacity: 0 }} animate={{ height: 'auto', opacity: 1 }} exit={{ height: 0, opacity: 0 }} transition={{ duration: 0.3, ease: "circOut" }} className="overflow-hidden bg-black/20">
                         <div className="p-6 pt-2">{children}</div>
                     </motion.div>
                 )}
@@ -308,7 +352,13 @@ export const ThemeCustomizationTab: React.FC = () => {
                         </div>
                     </div>
 
-                    <div className="flex-1 overflow-y-auto custom-scrollbar">
+                    <div className="p-4 bg-white/[0.03] border-b border-white/5">
+                        <button onClick={handleApplyToSystem} className="w-full py-4 rounded-xl bg-gradient-to-r from-[var(--theme-primary)] to-indigo-600 text-white font-black text-[10px] uppercase tracking-[0.3em] shadow-xl hover:scale-[1.02] active:scale-[0.98] transition-all flex items-center justify-center gap-2">
+                            <Sparkles size={14} /> Aplicar ao Sistema
+                        </button>
+                    </div>
+
+                    <div className="flex-1 overflow-y-auto custom-scrollbar self-scrollable">
                         <Section id="arch" icon={SidebarIcon} title="Arquitetura">
                             <div className="grid grid-cols-2 gap-2 mb-6">
                                 <button onClick={() => updateDraft('navigationStyle', 'sidebar')} className={`p-3 rounded-xl border transition-all ${draft.navigationStyle === 'sidebar' ? 'bg-[var(--theme-primary)]/10 border-[var(--theme-primary)] text-[var(--theme-primary)]' : 'bg-white/5 border-transparent text-white/20 hover:text-white'}`}>
@@ -461,12 +511,37 @@ export const ThemeCustomizationTab: React.FC = () => {
                         </Section>
 
                         <Section id="color" icon={Palette} title="Cores & Identidade">
-                            <div className="grid grid-cols-7 gap-2 mb-6">
+                            <div className="grid grid-cols-7 gap-2 mb-4">
                                 {PRIMARY_COLORS.map((color, i) => (
                                     <button key={i} onClick={() => updateDraft('primaryColor', color.value)} className={`w-full aspect-square rounded-full transition-all hover:scale-125 relative ${draft.primaryColor === color.value ? 'ring-2 ring-white ring-offset-2 ring-offset-[#0c0c0d] scale-110' : 'opacity-80'}`} style={{ backgroundColor: color.value }}>
                                         {draft.primaryColor === color.value && <Check size={10} className="text-white absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2" />}
                                     </button>
                                 ))}
+                            </div>
+
+                            <div className="mb-6">
+                                <span className="text-[9px] font-black uppercase tracking-widest text-white/40 block mb-3">Paletas de Identidade</span>
+                                <div className="grid grid-cols-1 gap-2">
+                                    {[
+                                        { id: 'warm', label: 'Cores Quentes', colors: ['#f87171', '#fb923c', '#fbbf24'] },
+                                        { id: 'cold', label: 'Cores Frias', colors: ['#60a5fa', '#34d399', '#818cf8'] },
+                                        { id: 'sunset', label: 'Sarak Sunset', colors: ['#ec4899', '#f43f5e', '#fb923c'] },
+                                        { id: 'matrix', label: 'Matrix Deep', colors: ['#0ea5e9', '#6366f1', '#a855f7'] }
+                                    ].map(pal => (
+                                        <button 
+                                            key={pal.id}
+                                            onClick={() => updateDraft('primaryColor', pal.colors[0])} // Aplica a primeira cor como primária
+                                            className="p-2.5 rounded-xl bg-white/5 border border-white/10 flex items-center justify-between hover:bg-white/[0.08] transition-all"
+                                        >
+                                            <span className="text-[8px] font-black uppercase tracking-[0.2em] text-white/60">{pal.label}</span>
+                                            <div className="flex -space-x-1.5">
+                                                {pal.colors.map((c, i) => (
+                                                    <div key={i} className="w-4 h-4 rounded-full border border-[#0c0c0d]" style={{ backgroundColor: c }} />
+                                                ))}
+                                            </div>
+                                        </button>
+                                    ))}
+                                </div>
                             </div>
 
                             <div className="pt-4 border-t border-white/5">
@@ -612,11 +687,7 @@ export const ThemeCustomizationTab: React.FC = () => {
                         </Section>
                     </div>
 
-                    <div className="p-6 bg-black/40 border-t border-white/5">
-                         <button onClick={handleApplyToSystem} className="w-full py-4 rounded-xl bg-gradient-to-r from-[var(--theme-primary)] to-indigo-600 text-white font-black text-[10px] uppercase tracking-[0.3em] shadow-xl hover:scale-[1.02] active:scale-[0.98] transition-all flex items-center justify-center gap-2">
-                            <Sparkles size={14} /> Aplicar ao Sistema
-                        </button>
-                    </div>
+
                 </aside>
 
                 {/* RIGHT SIDE: PREVIEW */}
