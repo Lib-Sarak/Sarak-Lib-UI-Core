@@ -65,7 +65,8 @@ export const ThemeCustomizationTab: React.FC = () => {
         chartStyle: sarak.chartStyle,
         // Sovereignty & Privacy v6.0
         shadowOrientation: sarak.shadowOrientation,
-        shadowColorMode: sarak.shadowColorMode
+        shadowColorMode: sarak.shadowColorMode,
+        isAutoHideEnabled: sarak.isAutoHideEnabled
     });
 
     const [activeSection, setActiveSection] = useState<string | null>('arch');
@@ -98,7 +99,8 @@ export const ThemeCustomizationTab: React.FC = () => {
             // Data Visualization v6.0
             chartPalette: sarak.chartPalette, chartStyle: sarak.chartStyle,
             // Sovereignty & Privacy v6.0
-            shadowOrientation: sarak.shadowOrientation, shadowColorMode: sarak.shadowColorMode
+            shadowOrientation: sarak.shadowOrientation, shadowColorMode: sarak.shadowColorMode,
+            isAutoHideEnabled: sarak.isAutoHideEnabled
         });
     }, [sarak.isHydrated]);
 
@@ -296,6 +298,16 @@ export const ThemeCustomizationTab: React.FC = () => {
                                 </button>
                                 <button onClick={() => updateDraft('navigationStyle', 'dock')} className={`p-3 rounded-xl border transition-all ${draft.navigationStyle === 'dock' ? 'bg-[var(--theme-primary)]/10 border-[var(--theme-primary)] text-[var(--theme-primary)]' : 'bg-white/5 border-transparent text-white/20 hover:text-white'} col-span-2`}>
                                     <Monitor size={16} className="mx-auto mb-2" /><span className="text-[8px] font-black uppercase block">Navigation Dock (Premium)</span>
+                                </button>
+                            </div>
+
+                            <div className="flex items-center justify-between p-4 rounded-xl bg-[var(--theme-primary)]/5 border border-[var(--theme-primary)]/20 mt-2 group">
+                                <div className="flex flex-col gap-0.5">
+                                    <span className="text-[9px] font-black uppercase tracking-widest text-[var(--theme-primary)]">Auto-ocultar Barra</span>
+                                    <span className="text-[8px] text-white/30 uppercase tracking-tighter">Revelar ao passar o mouse na extremidade</span>
+                                </div>
+                                <button onClick={() => updateDraft('isAutoHideEnabled', !draft.isAutoHideEnabled)} className={`w-10 h-5 rounded-full relative transition-all ${draft.isAutoHideEnabled ? 'bg-[var(--theme-primary)]' : 'bg-white/10'}`}>
+                                    <div className={`absolute top-1 w-3 h-3 rounded-full bg-white transition-all ${draft.isAutoHideEnabled ? 'left-6' : 'left-1'}`} />
                                 </button>
                             </div>
                             <SliderControl label="Largura Sidebar" value={draft.sidebarWidth} min={60} max={400} onChange={(v: any) => updateDraft('sidebarWidth', v)} suffix="px" />

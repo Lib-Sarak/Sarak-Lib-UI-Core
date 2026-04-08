@@ -42,10 +42,11 @@ export const SarakShell: React.FC<SarakShellProps> = ({
         sidebarWidth, setSidebarWidth, mode,
         systemName, logoUrl, logoDarkUrl, logoScale, logoPosition,
         cursorPhysics, isSplitViewEnabled, secondaryModuleId, navigationStyle, setNavigationStyle,
-        emptyStateId
+        emptyStateId, isAutoHideEnabled, animationSpeed
     } = useSarak();
     
     const [isSearchOpen, setIsSearchOpen] = useState(false);
+    const [isNavVisible, setIsNavVisible] = useState(true);
     
     const [modules, setModules] = useState<SarakModule[]>([]);
     const [activeModuleId, setActiveModuleId] = useState<string | null>(null);
@@ -117,12 +118,35 @@ export const SarakShell: React.FC<SarakShellProps> = ({
 
     return (
         <div className="flex w-full h-screen overflow-hidden bg-[var(--theme-body)] text-white font-sans selection:bg-[var(--theme-primary)] selection:text-white">
-            
+            {/* HOVER SENSORS (v6.1) */}
+            {isAutoHideEnabled && (
+                <>
+                    {isSidebar && (
+                        <div 
+                            onMouseEnter={() => setIsNavVisible(true)}
+                            className="fixed left-0 top-0 w-2 h-full z-[1000] cursor-pointer"
+                        />
+                    )}
+                    {isDock && (
+                        <div 
+                            onMouseEnter={() => setIsNavVisible(true)}
+                            className="fixed bottom-0 left-0 w-full h-8 z-[1000] cursor-pointer"
+                        />
+                    )}
+                </>
+            )}
+
             {/* SIDEBAR NAVIGATION (Desktop) */}
-            {isSidebar && !isNavHidden && (
+            {isSidebar && (
                 <aside 
-                    style={{ width: `${sidebarWidth}px` }}
-                    className="h-screen bg-[var(--theme-sidebar)] border-r border-[var(--theme-border)] flex flex-col shrink-0 relative z-50 transition-all duration-300 shadow-2xl"
+                    onMouseLeave={() => isAutoHideEnabled && setIsNavVisible(false)}
+                    style={{ 
+                        width: isNavHidden || (isAutoHideEnabled && !isNavVisible) ? '0px' : `${sidebarWidth}px`,
+                        opacity: isNavHidden || (isAutoHideEnabled && !isNavVisible) ? 0 : 1,
+                        visibility: isNavHidden || (isAutoHideEnabled && !isNavVisible) ? 'hidden' : 'visible',
+                        transition: `all ${animationSpeed}s cubic-bezier(0.16, 1, 0.3, 1)`
+                    }}
+                    className="h-screen bg-[var(--theme-sidebar)] border-r border-[var(--theme-border)] flex flex-col shrink-0 relative z-50 shadow-2xl overflow-hidden"
                 >
                     {/* Header Sidebar */}
                     <div className="h-16 px-6 flex items-center justify-between border-b border-[var(--theme-border)] bg-[var(--theme-title)]/5">
@@ -202,28 +226,46 @@ export const SarakShell: React.FC<SarakShellProps> = ({
                 </aside>
             )}
 
-            {/* FLOATING NAVIGATION DOCK (v6.0) */}
+            {/* FLOATING NAVIGATION DOCK (v6.0/6.1 Premium) */}
             {isDock && (
-                <div className="fixed bottom-6 left-1/2 -translate-x-1/2 z-[500] flex items-center gap-2 p-2 rounded-2xl bg-black/40 backdrop-blur-2xl border border-white/10 shadow-[0_20px_40px_rgba(0,0,0,0.5)]">
-                    {modules.slice(0, 7).map((mod, i) => (
-                        <motion.button
-                            key={mod.id}
-                            whileHover={{ scale: 1.2, y: -10 }}
-                            onClick={() => setActiveModuleId(mod.id)}
-                            className={`w-12 h-12 rounded-xl flex items-center justify-center transition-all ${activeModuleId === mod.id ? 'bg-[var(--theme-primary)] text-white shadow-lg' : 'text-white/40 hover:text-white hover:bg-white/5'}`}
+                <AnimatePresence>
+                    {(isNavVisible || !isAutoHideEnabled) && (
+                        <motion.div 
+                            initial={{ y: 100, opacity: 0, scale: 0.9 }}
+                            animate={{ y: 0, opacity: 1, scale: 1 }}
+                            exit={{ y: 100, opacity: 0, scale: 0.9 }}
+                            transition={{ duration: animationSpeed, ease: "circOut" }}
+                            onMouseLeave={() => isAutoHideEnabled && setIsNavVisible(false)}
+                            className="fixed bottom-6 left-1/2 -translate-x-1/2 z-[500] flex items-center gap-2 p-2 rounded-2xl bg-black/40 backdrop-blur-2xl border border-white/10 shadow-[0_20px_40px_rgba(0,0,0,0.5)] group/dock"
                         >
-                            <IconRenderer name={mod.icon} size={20} />
-                        </motion.button>
-                    ))}
-                    <div className="w-px h-8 bg-white/10 mx-1" />
-                    <motion.button 
-                        whileHover={{ scale: 1.2, y: -10 }}
-                        onClick={() => setIsSearchOpen(true)}
-                        className="w-12 h-12 rounded-xl flex items-center justify-center text-white/40 hover:text-white hover:bg-white/5"
-                    >
-                        <Search size={20} />
-                    </motion.button>
-                </div>
+                            <div className="absolute -inset-0.5 bg-gradient-to-b from-white/10 to-transparent rounded-2xl opacity-0 group-hover/dock:opacity-100 transition-opacity -z-10" />
+                            {modules.slice(0, 7).map((mod, i) => (
+                                <motion.button
+                                    key={mod.id}
+                                    whileHover={{ 
+                                        scale: 1.25, 
+                                        y: -12,
+                                        boxShadow: "0 10px 20px rgba(0,0,0,0.3)" 
+                                    }}
+                                    transition={{ type: "spring", stiffness: 400, damping: 17 }}
+                                    onClick={() => setActiveModuleId(mod.id)}
+                                    className={`w-12 h-12 rounded-xl flex items-center justify-center transition-all ${activeModuleId === mod.id ? 'bg-[var(--theme-primary)] text-white shadow-[0_0_20px_rgba(var(--theme-primary-rgb),0.3)]' : 'text-white/40 hover:text-white hover:bg-white/5'}`}
+                                >
+                                    <IconRenderer name={mod.icon} size={22} />
+                                </motion.button>
+                            ))}
+                            <div className="w-px h-8 bg-white/10 mx-1" />
+                            <motion.button 
+                                whileHover={{ scale: 1.25, y: -12 }}
+                                transition={{ type: "spring", stiffness: 400, damping: 17 }}
+                                onClick={() => setIsSearchOpen(true)}
+                                className="w-12 h-12 rounded-xl flex items-center justify-center text-white/40 hover:text-white hover:bg-white/5"
+                            >
+                                <Search size={22} />
+                            </motion.button>
+                        </motion.div>
+                    )}
+                </AnimatePresence>
             )}
 
             {/* CONTENT AREA */}
