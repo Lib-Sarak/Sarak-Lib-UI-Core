@@ -135,49 +135,59 @@ export const SarakUIProvider: React.FC<SarakUIProviderProps> = ({
 
     // Motor de Design Sovereign (Matrix Trace Engine v6.1)
     useEffect(() => {
+        if (typeof document === 'undefined') return;
         const root = document.documentElement;
         const body = document.body;
 
         try {
-            const tokens: Record<string, string> = {
-                '--primary-color': effective.primary,
-                '--theme-primary': effective.primary,
-                '--sidebar-width': `${effective.sidebarWidth}px`,
-                '--font-heading': effective.headingFont || "'Satoshi', sans-serif",
-                '--font-subtitle': effective.subtitleFont || effective.headingFont || "'Satoshi', sans-serif",
-                '--font-tab': effective.tabFont || effective.headingFont || "'Satoshi', sans-serif",
-                '--font-main': effective.bodyFont || "'Inter', sans-serif",
-                '--heading-weight': effective.headingWeight,
-                '--heading-spacing': effective.headingSpacing,
-                '--radius-theme': `${effective.borderRadius}px`,
-                '--border-width': `${effective.borderWidth}px`,
-                '--border-style': effective.borderStyle,
-                '--theme-gap': `${effective.gap}px`,
-                '--glass-blur': `${effective.glassBlur}px`,
-                '--glass-opacity': effective.glassOpacity.toString(),
-                '--shadow-intensity': effective.shadowIntensity.toString(),
-                '--texture-opacity': effective.textureOpacity.toString(),
-                '--animation-speed': `${effective.animSpeed}s`,
-                '--chart-style': effective.chartS,
-                '--chart-palette': Array.isArray(effective.chartP) ? effective.chartP.join(',') : effective.chartP,
-                '--shadow-orientation': effective.shOrient,
-                '--shadow-color-mode': effective.shMode,
-                '--system-name': effective.sysName,
-                '--logo-url': effective.logoUrl,
-                '--logo-dark-url': effective.logoDarkUrl,
-                '--logo-scale': effective.logoScale.toString(),
-                '--logo-position': effective.logoPos,
-                '--system-tone': effective.sysTone,
-                '--interface-elasticity': effective.elasticity.toString(),
-                '--is-split-view': effective.isSplit ? '1' : '0'
-            };
+            // --- DESIGN ENGINE SOVEREIGN MOTOR v6.1 (DYNAMIC) ---
+            const tokens: Record<string, string> = {};
 
-            // Atomic Matrix Sync Logs (Soberano)
-            console.group('%c🚀 [Matrix Trace] UI-Core Sovereign Engine v6.1', 'background: #0f172a; color: #38bdf8; padding: 4px; font-weight: bold;');
-            console.log('📡 Origem dos Dados:', globalSarak ? 'GLOBAL (SSoT Shared)' : 'LOCAL (Autônomo)');
-            console.log('💎 Archetype:', effective.layout.toUpperCase());
-            console.log('🎨 Mode:', effective.mode);
-            console.log('📦 Injeção de Tokens:', tokens);
+            // 1. Mapeamento Dinâmico Inteligente
+            // Transforma camelCase do estado para --kebab-case no CSS automaticamente
+            Object.entries(effective).forEach(([key, value]: [string, any]) => {
+                if (value === undefined || value === null) return;
+
+                // Converte camelCase para kebab-case (Ex: sidebarWidth -> sidebar-width)
+                const cssKey = `--sarak-${key.replace(/([a-z0-9]|(?=[A-Z]))([A-Z])/g, '$1-$2').toLowerCase()}`;
+                
+                let finalValue = value.toString();
+
+                // Tratamento de Unidades e Tipos
+                if (typeof value === 'number') {
+                    if (['sidebarWidth', 'borderRadius', 'borderWidth', 'gap', 'layoutGap', 'glassBlur'].includes(key)) {
+                        finalValue = `${value}px`;
+                    } else if (['animSpeed', 'animationSpeed'].includes(key)) {
+                        finalValue = `${value}s`;
+                    }
+                } else if (typeof value === 'boolean') {
+                    finalValue = value ? '1' : '0';
+                } else if (Array.isArray(value)) {
+                    finalValue = value.join(',');
+                }
+
+                tokens[cssKey] = finalValue;
+                
+                // 2. Ponte de Compatibilidade (Tokens Legados / Core)
+                const legacyMap: Record<string, string> = {
+                    primary: '--theme-primary',
+                    sidebarWidth: '--sidebar-width',
+                    headingFont: '--font-heading',
+                    bodyFont: '--font-main',
+                    borderRadius: '--radius-theme',
+                    gap: '--theme-gap',
+                    mode: '--sarak-mode'
+                };
+                if (legacyMap[key]) tokens[legacyMap[key]] = finalValue;
+            });
+
+            // Alias extras de marca
+            tokens['--primary-color'] = effective.primary;
+
+            // Atomic Matrix Sync Logs
+            console.group('%c🚀 [Matrix Trace] UI-Core Sovereign Dynamic Engine v6.1', 'background: #0f172a; color: #38bdf8; padding: 4px; font-weight: bold;');
+            console.log('📡 Origem:', globalSarak ? 'SHARED (SSoT)' : 'LOCAL');
+            console.log('📦 Tokens Dinâmicos Generativos:', tokens);
             
             Object.entries(tokens).forEach(([k, v]) => {
                 root.style.setProperty(k, v);
@@ -200,7 +210,7 @@ export const SarakUIProvider: React.FC<SarakUIProviderProps> = ({
             if (!globalSarak) {
                 const map: Record<string, string> = {
                     sarak_local_layout: localLayout, sarak_local_mode: localMode, sarak_local_primary: localPrimary,
-                    sarak_local_radius: effective.borderRadius.toString(), sarak_local_sys_name: effective.sysName
+                    sarak_local_radius: (effective.borderRadius || 12).toString(), sarak_local_sys_name: (effective.sysName || 'Sarak Matrix')
                 };
                 Object.entries(map).forEach(([k, v]) => localStorage.setItem(k, v));
             }
@@ -209,7 +219,9 @@ export const SarakUIProvider: React.FC<SarakUIProviderProps> = ({
         } catch (error) {
             console.error('❌ [Matrix Trace Engine Failure]', error);
         }
-    }, [effective, globalSarak]);
+    }, [
+        effective, globalSarak, localLayout, localMode, localPrimary
+    ]);
 
     const fallbackContextValue = useMemo(() => ({
         layout: localLayout, setLayout: setLocalLayout,
