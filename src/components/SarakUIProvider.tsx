@@ -11,11 +11,11 @@ interface SarakUIProviderProps {
 }
 
 /**
- * SarakUIProvider (Elite v5.4.1)
+ * SarakUIProvider (Elite v5.5.0 - Design Engine compatible)
  * 
  * Motor de UI Federado: 
  * 1. Se estiver dentro de um SarakProvider (Shared), atua apenas como ponte.
- * 2. Se estiver isolado, assume o controle total do estado estético.
+ * 2. Se estiver isolado, assume o controle total do estado estético com paridade Design Engine 5.5.
  */
 export const SarakUIProvider: React.FC<SarakUIProviderProps> = ({ 
     children, 
@@ -31,131 +31,176 @@ export const SarakUIProvider: React.FC<SarakUIProviderProps> = ({
         // Shared não presente ou Provider ausente na árvore
     }
 
-    // Estado Local (Fallback Autônomo Elite v5.4.2)
+    // --- ESTADO LOCAL (FALLBACK DESIGN ENGINE 5.5) ---
+    // Bases
     const [localLayout, setLocalLayout] = useState(() => localStorage.getItem('sarak_local_layout') || propTheme || 'glass');
     const [localMode, setLocalMode] = useState<'light' | 'dark' | 'system'>(() => (localStorage.getItem('sarak_local_mode') as any) || propMode || 'dark');
     const [localPrimary, setLocalPrimary] = useState(() => localStorage.getItem('sarak_local_primary') || propPrimary || '#3b82f6');
     const [localDensity, setLocalDensity] = useState(() => localStorage.getItem('sarak_local_density') || 'standard');
     const [localTexture, setLocalTexture] = useState(() => localStorage.getItem('sarak_local_texture') || 'none');
+    const [localSidebarWidth, setLocalSidebarWidth] = useState(() => Number(localStorage.getItem('sarak_local_sidebar_width')) || 260);
+    const [localNavStyle, setLocalNavStyle] = useState<'sidebar' | 'topbar'>(() => (localStorage.getItem('sarak_local_nav_style') as any) || 'sidebar');
+    
+    // Tipografia 5.5
+    const [headingFont, setHeadingFont] = useState(() => localStorage.getItem('sarak_font_heading') || "'Inter', sans-serif");
+    const [subtitleFont, setSubtitleFont] = useState(() => localStorage.getItem('sarak_font_subtitle') || "'Inter', sans-serif");
+    const [bodyFont, setBodyFont] = useState(() => localStorage.getItem('sarak_font_body') || "'Inter', sans-serif");
+    const [headingWeight, setHeadingWeight] = useState(() => localStorage.getItem('sarak_weight_heading') || '700');
+    const [headingLetterSpacing, setHeadingLetterSpacing] = useState(() => localStorage.getItem('sarak_spacing_heading') || '0px');
+    const [fontScale, setFontScale] = useState(() => localStorage.getItem('sarak_font_scale') || 'm');
+
+    // Geometria 5.5
+    const [borderRadius, setBorderRadius] = useState(() => Number(localStorage.getItem('sarak_radius')) || 16);
+    const [borderWidth, setBorderWidth] = useState(() => Number(localStorage.getItem('sarak_border_width')) || 1);
+    const [borderStyle, setBorderStyle] = useState(() => localStorage.getItem('sarak_border_style') || 'solid');
+    const [isGeometricCut, setIsGeometricCut] = useState(() => localStorage.getItem('sarak_is_geometric') === 'true');
+    const [shadowIntensity, setShadowIntensity] = useState(() => Number(localStorage.getItem('sarak_shadow_intensity')) || 0.4);
+
+    // Atmosfera 5.5
+    const [glassOpacity, setGlassOpacity] = useState(() => Number(localStorage.getItem('sarak_glass_opacity')) || 0.1);
+    const [glassBlur, setGlassBlur] = useState(() => Number(localStorage.getItem('sarak_glass_blur')) || 10);
+    const [textureOpacity, setTextureOpacity] = useState(() => Number(localStorage.getItem('sarak_texture_opacity')) || 0.05);
+    
+    // Movimento 5.5
+    const [animationSpeed, setAnimationSpeed] = useState(() => Number(localStorage.getItem('sarak_anim_speed')) || 0.4);
+    const [animationStyle, setAnimationStyle] = useState(() => localStorage.getItem('sarak_anim_style') || 'slide');
+
     const [isHydrated, setIsHydrated] = useState(false);
 
-    // Injeção de Fontes (Elite v5.4.1 - Mirror Global)
-    // Injeta o @import original no topo absoluto do <head> para garantir validade CSS
+    // Injeção de Fontes
     useEffect(() => {
         if (typeof document === 'undefined') return;
         const FONT_ID = 'sarak-core-fonts';
-        
-        // DEBUG_LOG_MARKER: Rastreio de Ativos
-        if (document.getElementById(FONT_ID)) {
-            console.log('ℹ️ [FontEngine] Fontes já presentes no DOM. Ignorando reinjeção.');
-            return;
-        }
+        if (document.getElementById(FONT_ID)) return;
 
-        console.log('🖋️ [FontEngine] Iniciando injeção dinâmica no Head. Preparando Google Fonts CDN...');
         const style = document.createElement('style');
         style.id = FONT_ID;
-        style.textContent = `@import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;600;800&family=Space+Grotesk:wght@300;500;700&family=Playfair+Display:ital,wght@0,400;0,700;1,400&family=Fira+Code:wght@400;500&family=Outfit:wght@300;400;600&family=JetBrains+Mono:wght@400;700&family=Cabinet+Grotesk:wght@400;700;900&family=Satoshi:wght@300;400;700;900&family=Sentient:ital,wght@0,400;0,700;1,400&family=Fraunces:ital,wght@0,400;0,700;1,400&family=Syne:wght@400;700;800&family=Space+Mono:wght@400;700&family=Bricolage+Grotesque:wght@400;700;800&family=Public+Sans:wght@400;500;700&family=Anton&family=Lora:ital,wght@0,400;0,600;1,400&family=Cormorant+Garamond:ital,wght@0,400;0,600;1,400&family=Rajdhani:wght@500;700&family=Orbitron:wght@700;900&family=Quicksand:wght@400;700&family=Fredoka+One&family=Nunito:wght@400;700&family=Cinzel:wght@400;700&family=Oswald:wght@400;700&family=Plus+Jakarta+Sans:wght@400;700&family=Archivo+Black&family=Syncopate:wght@700&family=Figtree:wght@400;700&family=Urbanist:wght@400;800&family=Barlow+Condensed:wght@600&family=Share+Tech+Mono&display=swap');`;
-        
-        try {
-            document.head.prepend(style);
-            console.log('✅ [FontEngine] Injeção concluída com sucesso no topo do Head.');
-        } catch (e) {
-            console.error('❌ [FontEngine Error] Falha crítica ao injetar fontes:', e);
-        }
+        style.textContent = `@import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;600;700;800;900&family=Space+Grotesk:wght@300;500;700&family=Fira+Code:wght@400;500&family=Outfit:wght@300;400;600;700&family=JetBrains+Mono:wght@400;700&family=Satoshi:wght@300;400;700;900&family=Syncopate:wght@700&family=Tenor+Sans&family=Crimson+Pro:wght@400;700&display=swap');`;
+        document.head.prepend(style);
     }, []);
 
-    // Motor de Injeção de Design Elite v5.4.2 (Full Parity)
-    // Só é executado se NÃO houver um contexto global (Evita Split Brain)
+    // Motor de Injeção de Design 5.5 (Autonomous Mode)
     useEffect(() => {
-        // DEBUG_LOG_MARKER: Verificação de Federação
         if (globalSarak) {
-            console.log('🔗 [SarakUIProvider] Bridge Mode: Contexto Global detectado. Delegando controle ao SharedProvider.');
             setIsHydrated(true);
             return;
         }
 
-        console.group('%c🛰️ [SarakUIProvider] Autonomous Mode Trace', 'color: #a855f7; font-weight: bold;');
         const root = document.documentElement;
         const body = document.body;
 
         try {
-            console.log('   -> Aplicando estado local (Isolated View)...');
+            // Sincronização Base
             root.style.setProperty('--primary-color', localPrimary);
             root.style.setProperty('--theme-primary', localPrimary);
             
-            // Fontes e Escala
-            const scaleId = localStorage.getItem('sarak_font_scale') || 'm';
-            const scale = (SCALES as any)[scaleId.toUpperCase()] || SCALES.M;
+            // Design Engine 5.5 Tokens
+            root.style.setProperty('--font-main', bodyFont);
+            root.style.setProperty('--font-heading', headingFont);
+            root.style.setProperty('--font-subtitle', subtitleFont);
+            root.style.setProperty('--heading-weight', headingWeight);
+            root.style.setProperty('--heading-spacing', headingLetterSpacing);
+            
+            root.style.setProperty('--radius-theme', `${borderRadius}px`);
+            root.style.setProperty('--border-width', `${borderWidth}px`);
+            root.style.setProperty('--border-style', borderStyle);
+            root.style.setProperty('--glass-blur', `${glassBlur}px`);
+            root.style.setProperty('--glass-opacity', glassOpacity.toString());
+            root.style.setProperty('--shadow-intensity', shadowIntensity.toString());
+            root.style.setProperty('--texture-opacity', textureOpacity.toString());
+            root.style.setProperty('--animation-speed', `${animationSpeed}s`);
+            root.style.setProperty('--sidebar-width', `${localSidebarWidth}px`);
+
+            // Escala Global
+            const scale = (SCALES as any)[fontScale.toUpperCase()] || SCALES.M;
             root.style.setProperty('--font-size-factor', scale.factor);
             root.style.setProperty('--sarak-font-size', `${16 * parseFloat(scale.factor)}px`);
 
-            // Densidade e Textura
+            // Classes de Contexto
             const lowerLayout = localLayout?.toLowerCase() || 'glass';
             const layoutConfig = Object.values(LAYOUTS).find((l: any) => l.id.toLowerCase() === lowerLayout) || LAYOUTS.GLASS;
             
             const sarakClasses = Object.values(LAYOUTS).map((l: any) => l.class).filter(Boolean);
-            const textureClasses = ['texture-none', 'texture-grid', 'texture-dots', 'texture-scanlines', 'texture-carbon', 'texture-paper', 'texture-topo'];
+            const textureClasses = ['texture-none', 'texture-grid', 'texture-dots', 'texture-carbon', 'texture-topo'];
             const densityClasses = ['density-compact', 'density-standard', 'density-comfortable'];
             
-            body.classList.remove(...sarakClasses, 'light', 'dark', ...textureClasses, ...densityClasses);
-            
+            body.classList.remove(...sarakClasses, 'light', 'dark', ...textureClasses, ...densityClasses, 'is-geometric');
             body.classList.add(
                 layoutConfig.class || 'layout-glass', 
                 localMode === 'dark' ? 'dark' : 'light',
                 `density-${localDensity}`,
                 `texture-${localTexture}`
             );
+            if (isGeometricCut) body.classList.add('is-geometric');
 
-            // Persistência em Modo Autônomo
+            // Persistência design-engine specific
             localStorage.setItem('sarak_local_layout', localLayout);
             localStorage.setItem('sarak_local_mode', localMode);
             localStorage.setItem('sarak_local_primary', localPrimary);
             localStorage.setItem('sarak_local_density', localDensity);
             localStorage.setItem('sarak_local_texture', localTexture);
+            localStorage.setItem('sarak_radius', borderRadius.toString());
+            localStorage.setItem('sarak_border_width', borderWidth.toString());
+            localStorage.setItem('sarak_glass_opacity', glassOpacity.toString());
+            localStorage.setItem('sarak_is_geometric', isGeometricCut.toString());
+            localStorage.setItem('sarak_font_heading', headingFont);
             
             setIsHydrated(true);
-            console.log('✅ [SarakUIProvider] Injeção autônoma finalizada.');
         } catch (error) {
-            console.error('❌ [SarakUIProvider Error] Falha no motor autônomo:', error);
-        } finally {
-            console.groupEnd();
+            console.error('❌ [SarakUIProvider Error] Design Engine Fallback failed:', error);
         }
-    }, [globalSarak, localLayout, localMode, localPrimary, localDensity, localTexture]);
+    }, [
+        globalSarak, localLayout, localMode, localPrimary, localDensity, localTexture,
+        headingFont, subtitleFont, bodyFont, headingWeight, headingLetterSpacing,
+        borderRadius, borderWidth, borderStyle, isGeometricCut, shadowIntensity,
+        glassOpacity, glassBlur, textureOpacity, animationSpeed, localSidebarWidth
+    ]);
 
-    // Valor do Contexto para Modo Autônomo (Elite v5.4.3)
     const fallbackContextValue = useMemo(() => ({
-        layout: localLayout,
-        setLayout: setLocalLayout,
-        theme: localLayout,
-        setTheme: setLocalLayout,
-        mode: localMode,
-        setMode: setLocalMode,
+        layout: localLayout, setLayout: setLocalLayout,
+        theme: localLayout, setTheme: setLocalLayout,
+        mode: localMode, setMode: setLocalMode,
         toggleMode: () => setLocalMode(prev => prev === 'dark' ? 'light' : 'dark'),
-        primaryColor: localPrimary,
-        setPrimaryColor: setLocalPrimary,
-        sidebarWidth: 260,
-        setSidebarWidth: () => {},
-        isNavHidden: false,
-        setIsNavHidden: () => {},
-        toggleNav: () => {},
-        navigationStyle: 'sidebar' as const,
-        user: { email: 'Sarak Isolated', role: 'System' },
-        logout: () => console.log('Sarak UI-Core: Logout ignored in Isolated Mode'),
-        registeredModules: [],
-        enabledLanguages: ['pt', 'en'],
-        language: 'pt',
-        setLanguage: () => {},
+        primaryColor: localPrimary, setPrimaryColor: setLocalPrimary,
+        sidebarWidth: localSidebarWidth, setSidebarWidth: setLocalSidebarWidth,
+        navigationStyle: localNavStyle, setNavigationStyle: setLocalNavStyle,
+        layoutDensity: localDensity, setLayoutDensity: setLocalDensity,
+        texture: localTexture, setTexture: setLocalTexture,
+        
+        // Granular Design Engine
+        headingFont, setHeadingFont,
+        subtitleFont, setSubtitleFont,
+        bodyFont, setBodyFont,
+        headingWeight, setHeadingWeight,
+        headingLetterSpacing, setHeadingLetterSpacing,
+        fontScale, setFontScale,
+        borderRadius, setBorderRadius,
+        borderWidth, setBorderWidth,
+        borderStyle, setBorderStyle,
+        isGeometricCut, setIsGeometricCut,
+        shadowIntensity, setShadowIntensity,
+        glassOpacity, setGlassOpacity,
+        glassBlur, setGlassBlur,
+        textureOpacity, setTextureOpacity,
+        animationSpeed, setAnimationSpeed,
+        animationStyle, setAnimationStyle,
+
+        layouts: LAYOUTS,
+        customThemes: [],
+        emojiSet: 'default',
+        setEmojiSet: () => {},
         isHydrated: true,
         loading: false
-    }), [localLayout, localMode, localPrimary, localDensity, localTexture]);
+    }), [
+        localLayout, localMode, localPrimary, localDensity, localTexture,
+        headingFont, subtitleFont, bodyFont, headingWeight, headingLetterSpacing,
+        borderRadius, borderWidth, borderStyle, isGeometricCut, shadowIntensity,
+        glassOpacity, glassBlur, textureOpacity, animationSpeed, localSidebarWidth, localNavStyle
+    ]);
 
     if (!isHydrated) return null;
 
-    // Se estiver em modo orquestrado, apenas renderiza os filhos.
-    // Se estiver em modo autônomo, provê o contexto necessário para os componentes internos.
-    if (globalSarak) {
-        return <>{children}</>;
-    }
+    if (globalSarak) return <>{children}</>;
 
     return (
         <SarakContext.Provider value={fallbackContextValue as any}>
