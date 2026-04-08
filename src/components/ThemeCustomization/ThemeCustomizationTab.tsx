@@ -141,6 +141,9 @@ export const ThemeCustomizationTab: React.FC = () => {
             return;
         }
 
+        console.group('%c🎨 [Matrix Trace] Preview de Tema: ' + id, 'background: #1e3a8a; color: #93c5fd; padding: 4px; font-weight: bold;');
+        console.log('📄 Preset Bruto:', preset);
+
         // Mapeia tokens CSS do preset para o estado atômico do Draft
         const newDraft = { ...draft, layout: id };
         
@@ -174,6 +177,7 @@ export const ThemeCustomizationTab: React.FC = () => {
             '--glass-blur': 'glassBlur',
             '--is-geometric': 'isGeometricCut',
             '--cursor-physics': 'cursorPhysics',
+            '--interface-elasticity': 'interfaceElasticity',
             // 5. Atmosfera
             '--bg-texture': 'texture',
             '--texture-opacity': 'textureOpacity',
@@ -185,6 +189,7 @@ export const ThemeCustomizationTab: React.FC = () => {
             '--logo-scale': 'logoScale',
             '--logo-position': 'logoPosition',
             '--system-tone': 'systemTone',
+            '--empty-state-id': 'emptyStateId',
             // 7. Dados
             '--chart-style': 'chartStyle',
             '--chart-palette': 'chartPalette',
@@ -231,11 +236,14 @@ export const ThemeCustomizationTab: React.FC = () => {
             newDraft.mode = 'dark';
         }
 
+        console.log('✨ Draft Resultante:', newDraft);
+        console.groupEnd();
         setDraft(newDraft);
     };
 
     // --- LOGIC: COMMIT DRAFT TO SYSTEM ---
     const handleApplyToSystem = () => {
+        console.log('%c⚡ [Matrix Trace] Solicitando Aplicação Global...', 'color: #f59e0b; font-weight: bold;');
         // Envia o rascunho completo para o sistema
         sarak.applyFullConfig(draft);
         showToast('success', 'Design aplicado com sucesso a todo o sistema.');
@@ -269,7 +277,10 @@ export const ThemeCustomizationTab: React.FC = () => {
         { id: 'bubbles', label: 'Bubbles' }
     ];
 
-    const updateDraft = (key: string, value: any) => setDraft(prev => ({ ...prev, [key]: value }));
+    const updateDraft = (key: string, value: any) => {
+        console.log(`%c📝 [Matrix Trace] Update Draft: ${key} ->`, 'color: #34d399;', value);
+        setDraft(prev => ({ ...prev, [key]: value }));
+    };
 
     const SliderControl = ({ label, value, min, max, step = 1, onChange, suffix = '' }: any) => (
         <div className="mb-4">
