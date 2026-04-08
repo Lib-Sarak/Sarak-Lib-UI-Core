@@ -44,60 +44,82 @@ export const SarakUIProvider: React.FC<SarakUIProviderProps> = ({
     useEffect(() => {
         if (typeof document === 'undefined') return;
         const FONT_ID = 'sarak-core-fonts';
-        if (document.getElementById(FONT_ID)) return;
+        
+        // DEBUG_LOG_MARKER: Rastreio de Ativos
+        if (document.getElementById(FONT_ID)) {
+            console.log('ℹ️ [FontEngine] Fontes já presentes no DOM. Ignorando reinjeção.');
+            return;
+        }
 
+        console.log('🖋️ [FontEngine] Iniciando injeção dinâmica no Head. Preparando Google Fonts CDN...');
         const style = document.createElement('style');
         style.id = FONT_ID;
         style.textContent = `@import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;600;800&family=Space+Grotesk:wght@300;500;700&family=Playfair+Display:ital,wght@0,400;0,700;1,400&family=Fira+Code:wght@400;500&family=Outfit:wght@300;400;600&family=JetBrains+Mono:wght@400;700&family=Cabinet+Grotesk:wght@400;700;900&family=Satoshi:wght@300;400;700;900&family=Sentient:ital,wght@0,400;0,700;1,400&family=Fraunces:ital,wght@0,400;0,700;1,400&family=Syne:wght@400;700;800&family=Space+Mono:wght@400;700&family=Bricolage+Grotesque:wght@400;700;800&family=Public+Sans:wght@400;500;700&family=Anton&family=Lora:ital,wght@0,400;0,600;1,400&family=Cormorant+Garamond:ital,wght@0,400;0,600;1,400&family=Rajdhani:wght@500;700&family=Orbitron:wght@700;900&family=Quicksand:wght@400;700&family=Fredoka+One&family=Nunito:wght@400;700&family=Cinzel:wght@400;700&family=Oswald:wght@400;700&family=Plus+Jakarta+Sans:wght@400;700&family=Archivo+Black&family=Syncopate:wght@700&family=Figtree:wght@400;700&family=Urbanist:wght@400;800&family=Barlow+Condensed:wght@600&family=Share+Tech+Mono&display=swap');`;
         
-        document.head.prepend(style);
+        try {
+            document.head.prepend(style);
+            console.log('✅ [FontEngine] Injeção concluída com sucesso no topo do Head.');
+        } catch (e) {
+            console.error('❌ [FontEngine Error] Falha crítica ao injetar fontes:', e);
+        }
     }, []);
 
     // Motor de Injeção de Design Elite v5.4.2 (Full Parity)
     // Só é executado se NÃO houver um contexto global (Evita Split Brain)
     useEffect(() => {
+        // DEBUG_LOG_MARKER: Verificação de Federação
         if (globalSarak) {
+            console.log('🔗 [SarakUIProvider] Bridge Mode: Contexto Global detectado. Delegando controle ao SharedProvider.');
             setIsHydrated(true);
             return;
         }
 
+        console.group('%c🛰️ [SarakUIProvider] Autonomous Mode Trace', 'color: #a855f7; font-weight: bold;');
         const root = document.documentElement;
         const body = document.body;
 
-        root.style.setProperty('--primary-color', localPrimary);
-        root.style.setProperty('--theme-primary', localPrimary);
-        
-        // Fontes e Escala
-        const scaleId = localStorage.getItem('sarak_font_scale') || 'm';
-        const scale = (SCALES as any)[scaleId.toUpperCase()] || SCALES.M;
-        root.style.setProperty('--font-size-factor', scale.factor);
-        root.style.setProperty('--sarak-font-size', `${16 * parseFloat(scale.factor)}px`);
+        try {
+            console.log('   -> Aplicando estado local (Isolated View)...');
+            root.style.setProperty('--primary-color', localPrimary);
+            root.style.setProperty('--theme-primary', localPrimary);
+            
+            // Fontes e Escala
+            const scaleId = localStorage.getItem('sarak_font_scale') || 'm';
+            const scale = (SCALES as any)[scaleId.toUpperCase()] || SCALES.M;
+            root.style.setProperty('--font-size-factor', scale.factor);
+            root.style.setProperty('--sarak-font-size', `${16 * parseFloat(scale.factor)}px`);
 
-        // Densidade e Textura
-        const lowerLayout = localLayout?.toLowerCase() || 'glass';
-        const layoutConfig = Object.values(LAYOUTS).find((l: any) => l.id.toLowerCase() === lowerLayout) || LAYOUTS.GLASS;
-        
-        const sarakClasses = Object.values(LAYOUTS).map((l: any) => l.class).filter(Boolean);
-        const textureClasses = ['texture-none', 'texture-grid', 'texture-dots', 'texture-scanlines', 'texture-carbon', 'texture-paper', 'texture-topo'];
-        const densityClasses = ['density-compact', 'density-standard', 'density-comfortable'];
-        
-        body.classList.remove(...sarakClasses, 'light', 'dark', ...textureClasses, ...densityClasses);
-        
-        body.classList.add(
-            layoutConfig.class || 'layout-glass', 
-            localMode === 'dark' ? 'dark' : 'light',
-            `density-${localDensity}`,
-            `texture-${localTexture}`
-        );
+            // Densidade e Textura
+            const lowerLayout = localLayout?.toLowerCase() || 'glass';
+            const layoutConfig = Object.values(LAYOUTS).find((l: any) => l.id.toLowerCase() === lowerLayout) || LAYOUTS.GLASS;
+            
+            const sarakClasses = Object.values(LAYOUTS).map((l: any) => l.class).filter(Boolean);
+            const textureClasses = ['texture-none', 'texture-grid', 'texture-dots', 'texture-scanlines', 'texture-carbon', 'texture-paper', 'texture-topo'];
+            const densityClasses = ['density-compact', 'density-standard', 'density-comfortable'];
+            
+            body.classList.remove(...sarakClasses, 'light', 'dark', ...textureClasses, ...densityClasses);
+            
+            body.classList.add(
+                layoutConfig.class || 'layout-glass', 
+                localMode === 'dark' ? 'dark' : 'light',
+                `density-${localDensity}`,
+                `texture-${localTexture}`
+            );
 
-        // Persistência em Modo Autônomo
-        localStorage.setItem('sarak_local_layout', localLayout);
-        localStorage.setItem('sarak_local_mode', localMode);
-        localStorage.setItem('sarak_local_primary', localPrimary);
-        localStorage.setItem('sarak_local_density', localDensity);
-        localStorage.setItem('sarak_local_texture', localTexture);
-        
-        setIsHydrated(true);
+            // Persistência em Modo Autônomo
+            localStorage.setItem('sarak_local_layout', localLayout);
+            localStorage.setItem('sarak_local_mode', localMode);
+            localStorage.setItem('sarak_local_primary', localPrimary);
+            localStorage.setItem('sarak_local_density', localDensity);
+            localStorage.setItem('sarak_local_texture', localTexture);
+            
+            setIsHydrated(true);
+            console.log('✅ [SarakUIProvider] Injeção autônoma finalizada.');
+        } catch (error) {
+            console.error('❌ [SarakUIProvider Error] Falha no motor autônomo:', error);
+        } finally {
+            console.groupEnd();
+        }
     }, [globalSarak, localLayout, localMode, localPrimary, localDensity, localTexture]);
 
     if (!isHydrated) return null;
