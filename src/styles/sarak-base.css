@@ -232,6 +232,31 @@ body.dark.layout-atmospheric {
   --bg-card: rgba(20, 25, 45, 0.4);
 }
 
+/* 3.1 DENSITY AND SPACING ENGINE */
+body.density-compact {
+  --theme-gap: 0.75rem;
+  --theme-padding: 0.75rem;
+}
+
+body.density-standard {
+  --theme-gap: 1.5rem;
+  --theme-padding: 1.5rem;
+}
+
+body.density-comfortable {
+  --theme-gap: 2rem;
+  --theme-padding: 2rem;
+}
+
+/* Ensure padding is applied to containers that use it */
+.p-theme {
+    padding: var(--theme-padding);
+}
+
+.gap-theme {
+    gap: var(--theme-gap);
+}
+
 /* 4. GLOBAL BASE AND TRANSITIONS */
 body {
   background-color: var(--bg-body) !important;
