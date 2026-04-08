@@ -7,6 +7,9 @@ import {
 } from 'lucide-react';
 import ThemeToggle from './ThemeToggle';
 import { motion, AnimatePresence } from 'framer-motion';
+import SarakCursor from './SarakCursor';
+import SarakSearch from './SarakSearch';
+import { SarakEmptyState } from './SarakEmptyState';
 
 // Helper para renderizar ícone Lucide dinamicamente
 const IconRenderer = ({ name, className, size = 16 }: { name?: string, className?: string, size?: number }) => {
@@ -35,9 +38,14 @@ export const SarakShell: React.FC<SarakShellProps> = ({
     extraToolbarItems
 }) => {
     const { 
-        user, logout, theme, navigationStyle, isNavHidden, toggleNav,
-        sidebarWidth, setSidebarWidth 
+        user, logout, theme, isNavHidden, toggleNav,
+        sidebarWidth, setSidebarWidth, mode,
+        systemName, logoUrl, logoDarkUrl, logoScale, logoPosition,
+        cursorPhysics, isSplitViewEnabled, secondaryModuleId, navigationStyle, setNavigationStyle,
+        emptyStateId
     } = useSarak();
+    
+    const [isSearchOpen, setIsSearchOpen] = useState(false);
     
     const [modules, setModules] = useState<SarakModule[]>([]);
     const [activeModuleId, setActiveModuleId] = useState<string | null>(null);
@@ -60,6 +68,10 @@ export const SarakShell: React.FC<SarakShellProps> = ({
             if (e.altKey && e.key === 'n') {
                 e.preventDefault();
                 toggleNav();
+            }
+            if ((e.ctrlKey || e.metaKey) && e.key === 'k') {
+                e.preventDefault();
+                setIsSearchOpen(true);
             }
         };
         window.addEventListener('keydown', handleKeyDown);
@@ -100,7 +112,8 @@ export const SarakShell: React.FC<SarakShellProps> = ({
     }, [modules]);
 
     const isTopbar = navigationStyle === 'topbar';
-    const isSidebar = !isTopbar;
+    const isSidebar = navigationStyle === 'sidebar';
+    const isDock = navigationStyle === 'dock';
 
     return (
         <div className="flex w-full h-screen overflow-hidden bg-[var(--theme-body)] text-white font-sans selection:bg-[var(--theme-primary)] selection:text-white">
@@ -113,13 +126,24 @@ export const SarakShell: React.FC<SarakShellProps> = ({
                 >
                     {/* Header Sidebar */}
                     <div className="h-16 px-6 flex items-center justify-between border-b border-[var(--theme-border)] bg-[var(--theme-title)]/5">
-                        <div className="flex items-center gap-3">
-                            <div className="w-8 h-8 rounded-lg bg-gradient-to-br from-[var(--theme-primary)] to-indigo-600 flex items-center justify-center font-black text-xs text-white">S</div>
-                            <span className="text-sm font-bold tracking-tighter opacity-80 text-[var(--theme-title)]">{brand.name}</span>
+                        <div className={`flex items-center gap-3 w-full ${logoPosition === 'center' ? 'justify-center' : ''}`}>
+                            {logoUrl ? (
+                                <img 
+                                    src={mode === 'dark' && logoDarkUrl ? logoDarkUrl : logoUrl} 
+                                    alt={systemName} 
+                                    style={{ transform: `scale(${logoScale})`, transformOrigin: logoPosition === 'center' ? 'center' : 'left' }}
+                                    className="max-h-8 object-contain transition-transform"
+                                />
+                            ) : (
+                                <div className="w-8 h-8 rounded-lg bg-gradient-to-br from-[var(--theme-primary)] to-indigo-600 flex items-center justify-center font-black text-xs text-white shrink-0">S</div>
+                            )}
+                            <span className="text-sm font-bold tracking-tighter opacity-80 text-[var(--theme-title)] truncate">{systemName || brand.name}</span>
                         </div>
-                        <button onClick={toggleNav} className="p-1.5 hover:bg-white/5 rounded-md text-white/20 hover:text-white transition-colors">
-                            <ChevronLeft size={16} />
-                        </button>
+                        {logoPosition !== 'center' && (
+                            <button onClick={toggleNav} className="p-1.5 hover:bg-white/5 rounded-md text-white/20 hover:text-white transition-colors">
+                                <ChevronLeft size={16} />
+                            </button>
+                        )}
                     </div>
 
                     {/* Módulos */}
@@ -171,12 +195,35 @@ export const SarakShell: React.FC<SarakShellProps> = ({
                         </div>
                     </div>
 
-                    {/* Resize Handle */}
                     <div 
                         onMouseDown={startResizing}
                         className="absolute top-0 right-0 w-1 h-full cursor-col-resize hover:bg-[var(--theme-primary)]/50 transition-colors z-[60]"
                     />
                 </aside>
+            )}
+
+            {/* FLOATING NAVIGATION DOCK (v6.0) */}
+            {isDock && (
+                <div className="fixed bottom-6 left-1/2 -translate-x-1/2 z-[500] flex items-center gap-2 p-2 rounded-2xl bg-black/40 backdrop-blur-2xl border border-white/10 shadow-[0_20px_40px_rgba(0,0,0,0.5)]">
+                    {modules.slice(0, 7).map((mod, i) => (
+                        <motion.button
+                            key={mod.id}
+                            whileHover={{ scale: 1.2, y: -10 }}
+                            onClick={() => setActiveModuleId(mod.id)}
+                            className={`w-12 h-12 rounded-xl flex items-center justify-center transition-all ${activeModuleId === mod.id ? 'bg-[var(--theme-primary)] text-white shadow-lg' : 'text-white/40 hover:text-white hover:bg-white/5'}`}
+                        >
+                            <IconRenderer name={mod.icon} size={20} />
+                        </motion.button>
+                    ))}
+                    <div className="w-px h-8 bg-white/10 mx-1" />
+                    <motion.button 
+                        whileHover={{ scale: 1.2, y: -10 }}
+                        onClick={() => setIsSearchOpen(true)}
+                        className="w-12 h-12 rounded-xl flex items-center justify-center text-white/40 hover:text-white hover:bg-white/5"
+                    >
+                        <Search size={20} />
+                    </motion.button>
+                </div>
             )}
 
             {/* CONTENT AREA */}
@@ -193,9 +240,18 @@ export const SarakShell: React.FC<SarakShellProps> = ({
                                             <Menu size={18} />
                                         </button>
                                     )}
-                                    <div className="flex items-center gap-3 pr-6 border-r border-white/5">
-                                        <div className="w-8 h-8 rounded-lg bg-[var(--theme-primary)] flex items-center justify-center font-bold text-xs">S</div>
-                                        <span className="font-black tracking-tighter text-sm uppercase italic">{brand.name}</span>
+                                    <div className={`flex items-center gap-3 pr-6 border-r border-white/5 ${logoPosition === 'center' ? 'mx-auto' : ''}`}>
+                                        {logoUrl ? (
+                                            <img 
+                                                src={mode === 'dark' && logoDarkUrl ? logoDarkUrl : logoUrl} 
+                                                alt={systemName} 
+                                                style={{ transform: `scale(${logoScale})` }}
+                                                className="max-h-8 object-contain transition-transform"
+                                            />
+                                        ) : (
+                                            <div className="w-8 h-8 rounded-lg bg-[var(--theme-primary)] flex items-center justify-center font-bold text-xs shrink-0">S</div>
+                                        )}
+                                        <span className="font-black tracking-tighter text-sm uppercase italic truncate">{systemName || brand.name}</span>
                                     </div>
                                 </div>
                             )}
@@ -221,6 +277,9 @@ export const SarakShell: React.FC<SarakShellProps> = ({
                         <div className="flex items-center gap-4">
                             <div className="flex items-center gap-1 px-3 py-1 bg-white/5 rounded-full border border-white/10">
                                 <ThemeToggle />
+                                <button onClick={() => setIsSearchOpen(true)} className="p-2 text-white/20 hover:text-white transition-colors">
+                                    <Search size={16} />
+                                </button>
                                 {extraToolbarItems}
                             </div>
                             <div className="w-8 h-8 rounded-full border border-white/10 bg-white/5 flex items-center justify-center text-white/40 hover:text-white transition-colors cursor-pointer">
@@ -272,25 +331,31 @@ export const SarakShell: React.FC<SarakShellProps> = ({
                                         </div>
                                     </header>
 
-                                    <div className="flex-1 animate-in fade-in zoom-in-95 duration-700">
-                                        <activeModule.component />
+                                    <div className={`flex-1 ${isSplitViewEnabled ? 'grid grid-cols-2 gap-[var(--theme-gap)]' : 'flex flex-col'} animate-in fade-in zoom-in-95 duration-700`}>
+                                        <div className="flex flex-col min-h-full">
+                                            <activeModule.component />
+                                        </div>
+                                        {isSplitViewEnabled && secondaryModuleId && (
+                                            <div className="flex flex-col min-h-full border-l border-white/5 pl-[var(--theme-gap)]">
+                                                {/* Render Second Module (Simplified lookup) */}
+                                                {(() => {
+                                                    const SecMod = modules.find(m => m.id === secondaryModuleId)?.component;
+                                                    return SecMod ? <SecMod /> : <div className="opacity-20 flex items-center justify-center h-full">Selecione um módulo secundário</div>;
+                                                })()}
+                                            </div>
+                                        )}
                                     </div>
                                 </motion.div>
                             ) : (
-                                <div className="flex-1 flex flex-col items-center justify-center text-white/5 gap-10">
-                                    <div className="relative">
-                                        <div className="w-48 h-48 border-2 border-dashed border-white/5 rounded-full flex items-center justify-center animate-spin-slow">
-                                            <div className="w-32 h-32 border-2 border-dashed border-white/5 rounded-full" />
-                                        </div>
-                                        <div className="absolute inset-0 flex items-center justify-center">
-                                            <div className="w-4 h-4 bg-[var(--theme-primary)] rounded-full animate-pulse shadow-[0_0_20px_var(--theme-primary)]" />
-                                        </div>
-                                    </div>
-                                    <div className="text-center space-y-2">
-                                        <span className="block text-[10px] font-black uppercase tracking-[1em] opacity-40">Sarak Matrix Engine</span>
-                                        <span className="block text-[8px] font-black uppercase tracking-[0.5em] opacity-10 italic">Initializing sovereign core v5.4.1</span>
-                                    </div>
-                                </div>
+                                <motion.div
+                                    key="empty-state"
+                                    initial={{ opacity: 0 }}
+                                    animate={{ opacity: 1 }}
+                                    exit={{ opacity: 0 }}
+                                    className="flex-grow flex flex-col items-center justify-center p-12"
+                                >
+                                    <SarakEmptyState type={emptyStateId as any} />
+                                </motion.div>
                             )}
                         </AnimatePresence>
                     </div>
@@ -301,6 +366,9 @@ export const SarakShell: React.FC<SarakShellProps> = ({
                 .animate-spin-slow { animation: spin 12s linear infinite; }
                 @keyframes spin { from { transform: rotate(0deg); } to { transform: rotate(360deg); } }
             `}</style>
+
+            {cursorPhysics && <SarakCursor />}
+            <SarakSearch isOpen={isSearchOpen} onClose={() => setIsSearchOpen(false)} />
         </div>
     );
 };

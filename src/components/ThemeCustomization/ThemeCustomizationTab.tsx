@@ -4,7 +4,7 @@ import {
     Plus, Check, Zap, Edit3, ChevronLeft, ChevronDown,
     Monitor, Tablet, Smartphone, Grid, List, Keyboard, Globe, Moon, Sun, 
     Type, Maximize, Layout as LayoutIcon, Sidebar as SidebarIcon,
-    Layers, MousePointer2, Palette, Box, Wind, Sparkles, AlertCircle
+    Layers, MousePointer2, Palette, Box, Wind, Sparkles, AlertCircle, BarChart3
 } from 'lucide-react';
 
 import { useSarak, PRIMARY_COLORS, SCALES, DENSITY, BASE_PRESETS } from '@sarak/lib-shared';
@@ -42,7 +42,30 @@ export const ThemeCustomizationTab: React.FC = () => {
         textureOpacity: sarak.textureOpacity,
         animationSpeed: sarak.animationSpeed,
         tabFont: sarak.tabFont,
-        layoutGap: sarak.layoutGap
+        layoutGap: sarak.layoutGap,
+        // Identity & Branding v6.0
+        systemName: sarak.systemName,
+        logoUrl: sarak.logoUrl,
+        logoDarkUrl: sarak.logoDarkUrl,
+        logoScale: sarak.logoScale,
+        logoPosition: sarak.logoPosition,
+        systemTone: sarak.systemTone,
+        emptyStateId: sarak.emptyStateId,
+        // Materials & Borders v6.0
+        surfaceMaterial: sarak.surfaceMaterial,
+        borderType: sarak.borderType,
+        cursorPhysics: sarak.cursorPhysics,
+        interfaceElasticity: sarak.interfaceElasticity,
+        // Navigation & Structures v6.0
+        isSplitViewEnabled: sarak.isSplitViewEnabled,
+        secondaryModuleId: sarak.secondaryModuleId,
+        searchStyle: sarak.searchStyle,
+        // Data Visualization v6.0
+        chartPalette: sarak.chartPalette,
+        chartStyle: sarak.chartStyle,
+        // Sovereignty & Privacy v6.0
+        shadowOrientation: sarak.shadowOrientation,
+        shadowColorMode: sarak.shadowColorMode
     });
 
     const [activeSection, setActiveSection] = useState<string | null>('arch');
@@ -61,7 +84,21 @@ export const ThemeCustomizationTab: React.FC = () => {
             borderRadius: sarak.borderRadius, borderWidth: sarak.borderWidth, borderStyle: sarak.borderStyle,
             glassOpacity: sarak.glassOpacity, glassBlur: sarak.glassBlur, shadowIntensity: sarak.shadowIntensity,
             isGeometricCut: sarak.isGeometricCut, textureOpacity: sarak.textureOpacity, animationSpeed: sarak.animationSpeed,
-            tabFont: sarak.tabFont, layoutGap: sarak.layoutGap
+            tabFont: sarak.tabFont, layoutGap: sarak.layoutGap,
+            // Identity & Branding v6.0
+            systemName: sarak.systemName, logoUrl: sarak.logoUrl, logoDarkUrl: sarak.logoDarkUrl,
+            logoScale: sarak.logoScale, logoPosition: sarak.logoPosition, systemTone: sarak.systemTone,
+            emptyStateId: sarak.emptyStateId,
+            // Materials & Borders v6.0
+            surfaceMaterial: sarak.surfaceMaterial, borderType: sarak.borderType,
+            cursorPhysics: sarak.cursorPhysics, interfaceElasticity: sarak.interfaceElasticity,
+            // Navigation & Structures v6.0
+            isSplitViewEnabled: sarak.isSplitViewEnabled, secondaryModuleId: sarak.secondaryModuleId,
+            searchStyle: sarak.searchStyle,
+            // Data Visualization v6.0
+            chartPalette: sarak.chartPalette, chartStyle: sarak.chartStyle,
+            // Sovereignty & Privacy v6.0
+            shadowOrientation: sarak.shadowOrientation, shadowColorMode: sarak.shadowColorMode
         });
     }, [sarak.isHydrated]);
 
@@ -257,12 +294,48 @@ export const ThemeCustomizationTab: React.FC = () => {
                                 <button onClick={() => updateDraft('navigationStyle', 'topbar')} className={`p-3 rounded-xl border transition-all ${draft.navigationStyle === 'topbar' ? 'bg-[var(--theme-primary)]/10 border-[var(--theme-primary)] text-[var(--theme-primary)]' : 'bg-white/5 border-transparent text-white/20 hover:text-white'}`}>
                                     <Maximize size={16} className="mx-auto mb-2" /><span className="text-[8px] font-black uppercase block">Topbar</span>
                                 </button>
+                                <button onClick={() => updateDraft('navigationStyle', 'dock')} className={`p-3 rounded-xl border transition-all ${draft.navigationStyle === 'dock' ? 'bg-[var(--theme-primary)]/10 border-[var(--theme-primary)] text-[var(--theme-primary)]' : 'bg-white/5 border-transparent text-white/20 hover:text-white'} col-span-2`}>
+                                    <Monitor size={16} className="mx-auto mb-2" /><span className="text-[8px] font-black uppercase block">Navigation Dock (Premium)</span>
+                                </button>
                             </div>
                             <SliderControl label="Largura Sidebar" value={draft.sidebarWidth} min={60} max={400} onChange={(v: any) => updateDraft('sidebarWidth', v)} suffix="px" />
                             <div className="grid grid-cols-3 gap-1 p-1 bg-black/20 rounded-xl border border-white/5 mt-4">
                                 {Object.values(DENSITY).map(d => (
                                     <button key={d.id} onClick={() => updateDraft('layoutDensity', d.id)} className={`py-2 rounded-lg text-[8px] font-black uppercase transition-all ${draft.layoutDensity === d.id ? 'bg-[var(--theme-primary)] text-white shadow-lg' : 'text-white/20'}`}>{d.label}</button>
                                 ))}
+                            </div>
+                        </Section>
+
+                        <Section id="struct" icon={Grid} title="Estruturas & Busca">
+                            <div className="flex items-center justify-between p-4 rounded-xl bg-white/5 group mb-4">
+                                <div className="flex flex-col gap-0.5">
+                                    <span className="text-[9px] font-black uppercase tracking-widest text-white/60">Split-View Mode</span>
+                                    <span className="text-[8px] text-white/20 uppercase tracking-tighter">Dois módulos em paralelo</span>
+                                </div>
+                                <button onClick={() => updateDraft('isSplitViewEnabled', !draft.isSplitViewEnabled)} className={`w-10 h-5 rounded-full relative transition-all ${draft.isSplitViewEnabled ? 'bg-[var(--theme-primary)]' : 'bg-white/10'}`}>
+                                    <div className={`absolute top-1 w-3 h-3 rounded-full bg-white transition-all ${draft.isSplitViewEnabled ? 'left-6' : 'left-1'}`} />
+                                </button>
+                            </div>
+
+                            {draft.isSplitViewEnabled && (
+                                <SelectControl 
+                                    label="Módulo Secundário" 
+                                    options={sarak.registeredModules.map(m => ({ id: m.id, label: m.label }))}
+                                    value={draft.secondaryModuleId}
+                                    onChange={(v: any) => updateDraft('secondaryModuleId', v)}
+                                />
+                            )}
+
+                            <div className="pt-4 border-t border-white/5 mt-2">
+                                <SelectControl 
+                                    label="Estilo de Busca Global" 
+                                    options={[
+                                        {id: 'command-palette', label: 'Command Palette (Premium)'},
+                                        {id: 'minimal', label: 'Minimal Input'}
+                                    ]} 
+                                    value={draft.searchStyle} 
+                                    onChange={(v: any) => updateDraft('searchStyle', v)} 
+                                />
                             </div>
                         </Section>
 
@@ -286,12 +359,42 @@ export const ThemeCustomizationTab: React.FC = () => {
                             </div>
                         </Section>
 
-                        <Section id="geom" icon={Box} title="Geometria">
+                        <Section id="geom" icon={Box} title="Geometria & Materiais">
                             <SliderControl label="Radius" value={draft.borderRadius} min={0} max={60} onChange={(v: any) => updateDraft('borderRadius', v)} suffix="px" />
                             <div className="grid grid-cols-2 gap-4">
                                 <SliderControl label="Borda" value={draft.borderWidth} min={0} max={8} onChange={(v: any) => updateDraft('borderWidth', v)} suffix="px" />
                                 <SelectControl label="Estilo" options={['solid', 'dashed', 'dotted', 'double']} value={draft.borderStyle} onChange={(v: any) => updateDraft('borderStyle', v)} />
                             </div>
+                            
+                            <div className="pt-4 border-t border-white/5 mt-2">
+                                <span className="text-[9px] font-black uppercase tracking-widest text-white/40 block mb-4">Surface Master v6.0</span>
+                                <div className="grid grid-cols-1 gap-4">
+                                    <SelectControl 
+                                        label="Material de Superfície" 
+                                        options={[
+                                            {id: 'glass', label: 'Frosted Glass'},
+                                            {id: 'metallic', label: 'Reflective Metallic'},
+                                            {id: 'brushed', label: 'Brushed Aluminum'},
+                                            {id: 'acrylic', label: 'Acrylic Deep'},
+                                            {id: 'matte', label: 'Matte Velvet'}
+                                        ]} 
+                                        value={draft.surfaceMaterial} 
+                                        onChange={(v: any) => updateDraft('surfaceMaterial', v)} 
+                                    />
+                                    <SelectControl 
+                                        label="Tipo de Borda (Neo)" 
+                                        options={[
+                                            {id: 'default', label: 'Flat / Standard'},
+                                            {id: 'inlet', label: 'Inlet Deep'},
+                                            {id: 'neon', label: 'Neon Glow'},
+                                            {id: 'beveled', label: 'Beveled 3D'}
+                                        ]} 
+                                        value={draft.borderType} 
+                                        onChange={(v: any) => updateDraft('borderType', v)} 
+                                    />
+                                </div>
+                            </div>
+
                             <SliderControl label="Espaçamento Cards (Gap)" value={draft.layoutGap} min={0} max={80} onChange={(v: any) => updateDraft('layoutGap', v)} suffix="px" />
                             <SliderControl label="Glass Opacity" value={draft.glassOpacity} min={0} max={1} step={0.05} onChange={(v: any) => updateDraft('glassOpacity', v)} />
                             <div className="flex items-center justify-between p-4 rounded-xl bg-white/5 mt-4 group">
@@ -300,6 +403,14 @@ export const ThemeCustomizationTab: React.FC = () => {
                                     <div className={`absolute top-1 w-3 h-3 rounded-full bg-white transition-all ${draft.isGeometricCut ? 'left-6' : 'left-1'}`} />
                                 </button>
                             </div>
+
+                            <div className="flex items-center justify-between p-4 rounded-xl bg-white/5 mt-2 group">
+                                <span className="text-[9px] font-black uppercase tracking-widest text-white/60">Física do Cursor</span>
+                                <button onClick={() => updateDraft('cursorPhysics', !draft.cursorPhysics)} className={`w-10 h-5 rounded-full relative transition-all ${draft.cursorPhysics ? 'bg-[var(--theme-primary)]' : 'bg-white/10'}`}>
+                                    <div className={`absolute top-1 w-3 h-3 rounded-full bg-white transition-all ${draft.cursorPhysics ? 'left-6' : 'left-1'}`} />
+                                </button>
+                            </div>
+
                             <SliderControl label="Sombra" value={draft.shadowIntensity} min={0} max={1} step={0.1} onChange={(v: any) => updateDraft('shadowIntensity', v)} />
                         </Section>
 
@@ -317,12 +428,118 @@ export const ThemeCustomizationTab: React.FC = () => {
                         </Section>
 
                         <Section id="color" icon={Palette} title="Cores & Identidade">
-                            <div className="grid grid-cols-7 gap-2">
+                            <div className="grid grid-cols-7 gap-2 mb-6">
                                 {PRIMARY_COLORS.map((color, i) => (
                                     <button key={i} onClick={() => updateDraft('primaryColor', color.value)} className={`w-full aspect-square rounded-full transition-all hover:scale-125 relative ${draft.primaryColor === color.value ? 'ring-2 ring-white ring-offset-2 ring-offset-[#0c0c0d] scale-110' : 'opacity-80'}`} style={{ backgroundColor: color.value }}>
                                         {draft.primaryColor === color.value && <Check size={10} className="text-white absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2" />}
                                     </button>
                                 ))}
+                            </div>
+
+                            <div className="pt-4 border-t border-white/5">
+                                <span className="text-[9px] font-black uppercase tracking-widest text-white/40 block mb-4">Branding v6.0</span>
+                                
+                                <div className="mb-4">
+                                    <span className="text-[9px] font-black uppercase tracking-widest text-white/20 block mb-2">Nome do Sistema</span>
+                                    <input 
+                                        type="text" value={draft.systemName} 
+                                        onChange={(e) => updateDraft('systemName', e.target.value)}
+                                        placeholder="Ex: Sarak Matrix"
+                                        className="w-full bg-white/5 border border-white/10 rounded-lg py-2 px-3 text-[11px] font-bold focus:border-[var(--theme-primary)] focus:outline-none transition-all text-white/80"
+                                    />
+                                </div>
+
+                                <div className="mb-4">
+                                    <span className="text-[9px] font-black uppercase tracking-widest text-white/20 block mb-2">Logo URL (Light Mode)</span>
+                                    <input 
+                                        type="text" value={draft.logoUrl} 
+                                        onChange={(e) => updateDraft('logoUrl', e.target.value)}
+                                        placeholder="https://..."
+                                        className="w-full bg-white/5 border border-white/10 rounded-lg py-2 px-3 text-[11px] font-bold focus:border-[var(--theme-primary)] focus:outline-none transition-all text-white/80"
+                                    />
+                                </div>
+
+                                <div className="mb-4">
+                                    <span className="text-[9px] font-black uppercase tracking-widest text-white/20 block mb-2">Logo URL (Dark Mode)</span>
+                                    <input 
+                                        type="text" value={draft.logoDarkUrl} 
+                                        onChange={(e) => updateDraft('logoDarkUrl', e.target.value)}
+                                        placeholder="Se vazio, usa logo padrão"
+                                        className="w-full bg-white/5 border border-white/10 rounded-lg py-2 px-3 text-[11px] font-bold focus:border-[var(--theme-primary)] focus:outline-none transition-all text-white/80"
+                                    />
+                                </div>
+
+                                <div className="grid grid-cols-2 gap-4">
+                                    <SelectControl label="Posição Logo" options={[{id: 'left', label: 'Esquerda'}, {id: 'center', label: 'Centro'}]} value={draft.logoPosition} onChange={(v: any) => updateDraft('logoPosition', v)} />
+                                    <SliderControl label="Escala Logo" value={draft.logoScale} min={0.5} max={2.5} step={0.1} onChange={(v: any) => updateDraft('logoScale', v)} />
+                                </div>
+
+                                <div className="mt-4">
+                                    <span className="text-[9px] font-black uppercase tracking-widest text-white/20 block mb-2">Tom de Voz (Personality)</span>
+                                    <div className="grid grid-cols-3 gap-1 p-1 bg-black/20 rounded-xl border border-white/5">
+                                        {['formal', 'friendly', 'cyber'].map(tone => (
+                                            <button 
+                                                key={tone} 
+                                                onClick={() => updateDraft('systemTone', tone)} 
+                                                className={`py-2 rounded-lg text-[8px] font-black uppercase transition-all ${draft.systemTone === tone ? 'bg-[var(--theme-primary)] text-white shadow-lg' : 'text-white/20 hover:text-white/40'}`}
+                                            >
+                                                {tone}
+                                            </button>
+                                        ))}
+                                    </div>
+                                </div>
+                            </div>
+                        </Section>
+
+                        <Section id="data" icon={BarChart3} title="Dados & Gráficos">
+                            <div className="space-y-4">
+                                <SelectControl 
+                                    label="Estilo de Visualização" 
+                                    options={[
+                                        {id: 'glass', label: 'Glass Morphic (Translucido)'},
+                                        {id: 'line', label: 'Vector Line (Minimal)'},
+                                        {id: 'bar', label: 'Neumorphic Bar'},
+                                        {id: 'solid', label: 'Solid Corporate'}
+                                    ]} 
+                                    value={draft.chartStyle} 
+                                    onChange={(v: any) => updateDraft('chartStyle', v)} 
+                                />
+
+                                <div>
+                                    <span className="text-[9px] font-black uppercase tracking-widest text-white/20 block mb-3">Paleta de Referência</span>
+                                    <div className="grid grid-cols-5 gap-2">
+                                        {['#3b82f6', '#10b981', '#f59e0b', '#ef4444', '#8b5cf6'].map((color, i) => (
+                                            <div key={i} className="w-full aspect-square rounded-lg border border-white/10" style={{ backgroundColor: color }} />
+                                        ))}
+                                    </div>
+                                    <p className="text-[8px] text-white/20 mt-2 uppercase tracking-tighter">As cores dos gráficos seguem a harmonia primária por padrão.</p>
+                                </div>
+                            </div>
+                        </Section>
+
+                        <Section id="depth" icon={Layers} title="Sombras & Profundidade">
+                            <div className="space-y-4">
+                                <SelectControl 
+                                    label="Orientação da Luz" 
+                                    options={[
+                                        {id: 'top-down', label: 'Top-Down (Standard)'},
+                                        {id: 'isometric', label: 'Isometric (45°)'},
+                                        {id: 'inner', label: 'Inlet (Inner Shadow)'}
+                                    ]} 
+                                    value={draft.shadowOrientation} 
+                                    onChange={(v: any) => updateDraft('shadowOrientation', v)} 
+                                />
+
+                                <SelectControl 
+                                    label="Modo de Cor da Sombra" 
+                                    options={[
+                                        {id: 'neutral', label: 'Neutral (Black/Gray)'},
+                                        {id: 'adaptive', label: 'Adaptive (Muted Tint)'},
+                                        {id: 'match', label: 'Primary Match (Glow)'}
+                                    ]} 
+                                    value={draft.shadowColorMode} 
+                                    onChange={(v: any) => updateDraft('shadowColorMode', v)} 
+                                />
                             </div>
                         </Section>
 
@@ -358,11 +575,13 @@ export const ThemeCustomizationTab: React.FC = () => {
                     </div>
 
                     <div className="flex-1 flex overflow-hidden">
-                        <div className="w-[360px] border-r border-white/5 flex flex-col bg-white/[0.01] overflow-y-auto custom-scrollbar">
-                            <div className="p-6">
+                        <div className="w-[360px] border-r border-white/5 flex flex-col bg-white/[0.01] h-full">
+                            <div className="p-6 pb-0 flex flex-col">
                                 <h2 className="text-[10px] font-black uppercase tracking-[0.4em] text-white/30 mb-6 flex items-center gap-2">
                                     <div className="w-8 h-[1px] bg-white/10" /> Archetypes
                                 </h2>
+                            </div>
+                            <div className="flex-1 overflow-y-auto custom-scrollbar px-6 pb-8">
                                 <ThemeList
                                     layouts={sarak.layouts}
                                     customThemes={[]}

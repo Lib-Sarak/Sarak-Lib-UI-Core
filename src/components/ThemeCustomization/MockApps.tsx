@@ -5,7 +5,7 @@ import {
 } from 'lucide-react';
 import { EMOJI_SETS } from '@sarak/lib-shared';
 
-export const MockDashboard: React.FC<any> = ({ config, animationVariants, animationStyle }) => {
+export const MockDashboard: React.FC<any> = ({ config, animationVariants, animationStyle, tokens }) => {
     return (
         <>
             <div className="mb-8" style={{ marginBottom: 'var(--theme-gap)' }}>
@@ -70,13 +70,21 @@ export const MockDashboard: React.FC<any> = ({ config, animationVariants, animat
                             <Sparkles className="w-4 h-4 text-[var(--theme-primary)]" />
                         </div>
                         <div className="flex-grow flex items-end gap-3 px-2 pb-2">
-                            {[40, 75, 45, 95, 65, 85, 55, 90, 70, 80].map((h, i) => (
-                                <div
-                                    key={i}
-                                    className="flex-grow bg-gradient-to-t from-[var(--theme-primary)]/40 to-[var(--theme-primary)] rounded-t-md transition-all duration-500 hover:brightness-125 cursor-pointer"
-                                    style={{ height: `${h}%` }}
-                                ></div>
-                            ))}
+                            {[40, 75, 45, 95, 65, 85, 55, 90, 70, 80].map((h, i) => {
+                                const style = (tokens?.chartStyle || 'bar');
+                                return (
+                                    <div
+                                        key={i}
+                                        className={`flex-grow transition-all duration-500 hover:brightness-125 cursor-pointer 
+                                            ${style === 'bar' ? 'bg-gradient-to-t from-[var(--theme-primary)]/40 to-[var(--theme-primary)] rounded-t-md' : ''}
+                                            ${style === 'glass' ? 'bg-[var(--theme-primary)]/20 border border-[var(--theme-primary)]/30 backdrop-blur-sm rounded-t-md' : ''}
+                                            ${style === 'solid' ? 'bg-[var(--theme-primary)] rounded-t-sm' : ''}
+                                            ${style === 'line' ? 'bg-transparent border-t-2 border-x border-[var(--theme-primary)] rounded-t-full' : ''}
+                                        `}
+                                        style={{ height: `${h}%` }}
+                                    ></div>
+                                );
+                            })}
                         </div>
                         <div className="mt-4 pt-4 border-t border-[var(--theme-border)]/30 flex justify-between">
                             <div className="text-[10px] text-[var(--theme-muted)]">Avg Latency: <span className="text-[var(--theme-title)] font-bold">24ms</span></div>

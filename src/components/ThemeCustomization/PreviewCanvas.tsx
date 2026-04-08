@@ -37,8 +37,8 @@ export const PreviewCanvas: React.FC<PreviewCanvasProps> = ({
         smartphone: { width: '450px', height: '100%', maxWidth: '450px', aspectRatio: '9/19.5' }
     };
 
-    const renderApp = () => {
-        const props = { config, animationVariants: (THEME_EFFECTS as any).page, animationStyle: previewAnimationStyle };
+    const renderApp = (tokens: any) => {
+        const props = { config, animationVariants: (THEME_EFFECTS as any).page, animationStyle: previewAnimationStyle, tokens };
         switch (activePreviewApp) {
             case 'dashboard': return <MockDashboard {...props} />;
             case 'chat': return <MockChat {...props} />;
@@ -97,6 +97,8 @@ export const PreviewCanvas: React.FC<PreviewCanvasProps> = ({
                         '--shadow-color': tokens.mode === 'light' ? 'rgba(0,0,0,0.1)' : 'rgba(0,0,0,0.4)',
                     } as React.CSSProperties}
                     className={`preview-container ${tokens.mode || mode} layout-${(tokens.layout || previewLayoutId).replace('custom-', '')} ${tokens.isGeometricCut ? 'is-geometric' : ''} bg-[var(--bg-body)] text-[var(--text-main)] rounded-[32px] shadow-[0_50px_100px_rgba(0,0,0,0.5)] overflow-hidden flex flex-col relative transition-all duration-500 ${tokens.texture && tokens.texture !== 'none' ? `texture-${tokens.texture}` : ''}`}
+                    data-surface={tokens.surfaceMaterial}
+                    data-border={tokens.borderType}
                 >
                     {/* Mock Browser/App Header */}
                     <div className="h-10 bg-black/20 border-b border-white/5 px-6 flex items-center gap-2 shrink-0">
@@ -107,7 +109,7 @@ export const PreviewCanvas: React.FC<PreviewCanvasProps> = ({
                         </div>
                         <div className="mx-auto bg-black/40 px-4 py-1 rounded-full border border-white/5 flex items-center gap-2">
                             <div className="w-1.5 h-1.5 rounded-full bg-[var(--primary-color)] animate-pulse"></div>
-                            <span className="text-[7px] font-black uppercase tracking-[0.3em] text-white/20">sarak.forge / preview_v5.6</span>
+                            <span className="text-[7px] font-black uppercase tracking-[0.3em] text-white/40">{tokens.systemName || "Sarak Matrix"}</span>
                         </div>
                     </div>
 
@@ -115,8 +117,12 @@ export const PreviewCanvas: React.FC<PreviewCanvasProps> = ({
                         {/* Mock Navigation Header (for Topbar) */}
                         {tokens.navigationStyle === 'topbar' && (
                             <div className="h-12 bg-black/10 border-b border-white/5 flex items-center px-6 gap-6 shrink-0 relative z-20">
-                                <div className="w-8 h-8 rounded-lg bg-[var(--primary-color)] flex items-center justify-center text-white shadow-lg">
-                                    <Zap className="w-4 h-4 fill-current" />
+                                <div className="w-8 h-8 rounded-lg bg-[var(--primary-color)] flex items-center justify-center text-white shadow-lg overflow-hidden">
+                                    {tokens.logoUrl ? (
+                                        <img src={tokens.mode === 'dark' && tokens.logoDarkUrl ? tokens.logoDarkUrl : tokens.logoUrl} className="w-full h-full object-contain" style={{ transform: `scale(${tokens.logoScale || 1})` }} />
+                                    ) : (
+                                        <Zap className="w-4 h-4 fill-current" />
+                                    )}
                                 </div>
                                 <div className="flex gap-4">
                                     {[BarChart3, MessageSquare, History, Users].map((Icon, i) => (
@@ -135,8 +141,12 @@ export const PreviewCanvas: React.FC<PreviewCanvasProps> = ({
                         {/* Mock Navigation Sidebar (only if not Topbar) */}
                         {tokens.navigationStyle !== 'topbar' && (
                             <div className="w-16 sm:w-20 bg-black/10 border-r border-white/5 shrink-0 flex flex-col items-center py-8 gap-6 relative z-20">
-                                <div className="w-10 h-10 rounded-xl bg-[var(--primary-color)] flex items-center justify-center text-white shadow-lg shadow-[var(--primary-color)]/20 mb-4 cursor-pointer hover:scale-110 transition-transform">
-                                    <Zap className="w-5 h-5 fill-current" />
+                                <div className="w-10 h-10 rounded-xl bg-[var(--primary-color)] flex items-center justify-center text-white shadow-lg shadow-[var(--primary-color)]/20 mb-4 cursor-pointer hover:scale-110 transition-transform overflow-hidden">
+                                    {tokens.logoUrl ? (
+                                        <img src={tokens.mode === 'dark' && tokens.logoDarkUrl ? tokens.logoDarkUrl : tokens.logoUrl} className="w-full h-full object-contain" style={{ transform: `scale(${tokens.logoScale || 1})` }} />
+                                    ) : (
+                                        <Zap className="w-5 h-5 fill-current" />
+                                    )}
                                 </div>
                                 {[BarChart3, MessageSquare, History, Users, Shield, Database].map((Icon, i) => (
                                     <div key={i} className={`w-9 h-9 rounded-xl flex items-center justify-center transition-all cursor-pointer ${i === 0 ? 'bg-[var(--primary-color)]/10 text-[var(--primary-color)] shadow-sm' : 'text-white/20 hover:text-white hover:bg-white/5'}`}>
@@ -182,9 +192,16 @@ export const PreviewCanvas: React.FC<PreviewCanvasProps> = ({
                                         animate={{ opacity: 1, y: 0 }}
                                         exit={{ opacity: 0, y: -10 }}
                                         transition={{ duration: parseFloat(tokens.animationSpeed || '0.4') }}
-                                        className="flex flex-col h-full"
+                                        className={`h-full ${tokens.isSplitViewEnabled ? 'grid grid-cols-2 gap-4' : 'flex flex-col'}`}
                                     >
-                                        {renderApp()}
+                                        <div className="flex flex-col h-full bg-white/[0.02] border border-white/5 rounded-2xl overflow-hidden p-4">
+                                            {renderApp(tokens)}
+                                        </div>
+                                        {tokens.isSplitViewEnabled && (
+                                            <div className="flex flex-col h-full bg-white/[0.02] border border-white/5 rounded-2xl overflow-hidden p-4">
+                                                <MockLogs config={config} animationVariants={(THEME_EFFECTS as any).page} animationStyle={previewAnimationStyle} />
+                                            </div>
+                                        )}
                                     </motion.div>
                                 </AnimatePresence>
                             </div>
