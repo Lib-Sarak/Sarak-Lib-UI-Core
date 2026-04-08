@@ -5,7 +5,9 @@
  * de estado e estética em todo o ecossistema Sarak.
  */
 
-export * from '@sarak/lib-shared';
+// As constantes de tema agora devem ser importadas diretamente de @sarak/lib-shared
+// para garantir a soberania do estado global.
+export {};
 
 // Extensões Visuais Locais (Se houverem deltas específicos da UI-Core no futuro)
 // export const LOCAL_VISUAL_EXTENSIONS = { ... };

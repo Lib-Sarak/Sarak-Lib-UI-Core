@@ -5,9 +5,6 @@
  * 100% Restaurado para paridade visual e funcional original.
  */
 
-// Re-exporta o motor central do Shared (se disponível para back-compat)
-export * from '@sarak/lib-shared';
-
 // Motor de Temas e Constantes Elite
 export { default as SarakUIProvider } from './components/SarakUIProvider';
 export { default as ThemeToggle } from './components/ThemeToggle';

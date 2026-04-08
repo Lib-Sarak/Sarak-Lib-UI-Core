@@ -1,6 +1,6 @@
 import React, { ReactNode, useEffect, useState, useMemo } from 'react';
 import '../styles/sarak-base.css';
-import { LAYOUTS, SCALES, DENSITY } from '../constants/theme';
+import { LAYOUTS, SCALES, DENSITY, SarakContext } from '@sarak/lib-shared';
 import { useSarak as useGlobalSarak } from '@sarak/lib-shared';
 
 interface SarakUIProviderProps {
@@ -122,9 +122,46 @@ export const SarakUIProvider: React.FC<SarakUIProviderProps> = ({
         }
     }, [globalSarak, localLayout, localMode, localPrimary, localDensity, localTexture]);
 
+    // Valor do Contexto para Modo Autônomo (Elite v5.4.3)
+    const fallbackContextValue = useMemo(() => ({
+        layout: localLayout,
+        setLayout: setLocalLayout,
+        theme: localLayout,
+        setTheme: setLocalLayout,
+        mode: localMode,
+        setMode: setLocalMode,
+        toggleMode: () => setLocalMode(prev => prev === 'dark' ? 'light' : 'dark'),
+        primaryColor: localPrimary,
+        setPrimaryColor: setLocalPrimary,
+        sidebarWidth: 260,
+        setSidebarWidth: () => {},
+        isNavHidden: false,
+        setIsNavHidden: () => {},
+        toggleNav: () => {},
+        navigationStyle: 'sidebar' as const,
+        user: { email: 'Sarak Isolated', role: 'System' },
+        logout: () => console.log('Sarak UI-Core: Logout ignored in Isolated Mode'),
+        registeredModules: [],
+        enabledLanguages: ['pt', 'en'],
+        language: 'pt',
+        setLanguage: () => {},
+        isHydrated: true,
+        loading: false
+    }), [localLayout, localMode, localPrimary, localDensity, localTexture]);
+
     if (!isHydrated) return null;
 
-    return <>{children}</>;
+    // Se estiver em modo orquestrado, apenas renderiza os filhos.
+    // Se estiver em modo autônomo, provê o contexto necessário para os componentes internos.
+    if (globalSarak) {
+        return <>{children}</>;
+    }
+
+    return (
+        <SarakContext.Provider value={fallbackContextValue as any}>
+            {children}
+        </SarakContext.Provider>
+    );
 };
 
 export default SarakUIProvider;

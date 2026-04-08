@@ -6,7 +6,6 @@ import {
     ChevronLeft, Settings, Search, Bell, Monitor, Zap
 } from 'lucide-react';
 import ThemeToggle from './ThemeToggle';
-import { GoogleTranslateWidget, LanguagePicker } from '@sarak/lib-translator-google';
 import { motion, AnimatePresence } from 'framer-motion';
 
 // Helper para renderizar ícone Lucide dinamicamente
@@ -22,6 +21,7 @@ interface SarakShellProps {
         name?: string;
         logo?: string;
     };
+    extraToolbarItems?: ReactNode;
 }
 
 /**
@@ -31,7 +31,8 @@ interface SarakShellProps {
  */
 export const SarakShell: React.FC<SarakShellProps> = ({ 
     children, 
-    brand = { name: "Sarak Matrix" }
+    brand = { name: "Sarak Matrix" },
+    extraToolbarItems
 }) => {
     const { 
         user, logout, theme, navigationStyle, isNavHidden, toggleNav,
@@ -220,7 +221,7 @@ export const SarakShell: React.FC<SarakShellProps> = ({
                         <div className="flex items-center gap-4">
                             <div className="flex items-center gap-1 px-3 py-1 bg-white/5 rounded-full border border-white/10">
                                 <ThemeToggle />
-                                <LanguagePicker />
+                                {extraToolbarItems}
                             </div>
                             <div className="w-8 h-8 rounded-full border border-white/10 bg-white/5 flex items-center justify-center text-white/40 hover:text-white transition-colors cursor-pointer">
                                 <Bell size={14} />
