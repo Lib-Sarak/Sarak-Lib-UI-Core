@@ -40,7 +40,9 @@ export const ThemeCustomizationTab: React.FC = () => {
         shadowIntensity: sarak.shadowIntensity,
         isGeometricCut: sarak.isGeometricCut,
         textureOpacity: sarak.textureOpacity,
-        animationSpeed: sarak.animationSpeed
+        animationSpeed: sarak.animationSpeed,
+        tabFont: sarak.tabFont,
+        layoutGap: sarak.layoutGap
     });
 
     const [activeSection, setActiveSection] = useState<string | null>('arch');
@@ -58,7 +60,8 @@ export const ThemeCustomizationTab: React.FC = () => {
             headingWeight: sarak.headingWeight, headingLetterSpacing: sarak.headingLetterSpacing,
             borderRadius: sarak.borderRadius, borderWidth: sarak.borderWidth, borderStyle: sarak.borderStyle,
             glassOpacity: sarak.glassOpacity, glassBlur: sarak.glassBlur, shadowIntensity: sarak.shadowIntensity,
-            isGeometricCut: sarak.isGeometricCut, textureOpacity: sarak.textureOpacity, animationSpeed: sarak.animationSpeed
+            isGeometricCut: sarak.isGeometricCut, textureOpacity: sarak.textureOpacity, animationSpeed: sarak.animationSpeed,
+            tabFont: sarak.tabFont, layoutGap: sarak.layoutGap
         });
     }, [sarak.isHydrated]);
 
@@ -141,6 +144,7 @@ export const ThemeCustomizationTab: React.FC = () => {
         sarak.setTexture(draft.texture);
         sarak.setHeadingFont(draft.headingFont);
         sarak.setSubtitleFont(draft.subtitleFont);
+        sarak.setTabFont(draft.tabFont);
         sarak.setBodyFont(draft.bodyFont);
         sarak.setHeadingWeight(draft.headingWeight);
         sarak.setHeadingLetterSpacing(draft.headingLetterSpacing);
@@ -153,6 +157,7 @@ export const ThemeCustomizationTab: React.FC = () => {
         sarak.setIsGeometricCut(draft.isGeometricCut);
         sarak.setTextureOpacity(draft.textureOpacity);
         sarak.setAnimationSpeed(draft.animationSpeed);
+        sarak.setLayoutGap(draft.layoutGap);
 
         console.log('✅ Final System Commit executed successfully.');
         console.groupEnd();
@@ -292,16 +297,28 @@ export const ThemeCustomizationTab: React.FC = () => {
                         <Section id="type" icon={Type} title="Tipografia">
                             <SelectControl label="Fonte Título" options={fonts} value={draft.headingFont} onChange={(v: any) => updateDraft('headingFont', v)} isFont />
                             <SelectControl label="Fonte Subtítulo" options={fonts} value={draft.subtitleFont} onChange={(v: any) => updateDraft('subtitleFont', v)} isFont />
+                            <SelectControl label="Fonte Abas/Menus" options={fonts} value={draft.tabFont} onChange={(v: any) => updateDraft('tabFont', v)} isFont />
                             <SelectControl label="Fonte Texto" options={fonts} value={draft.bodyFont} onChange={(v: any) => updateDraft('bodyFont', v)} isFont />
                             <div className="grid grid-cols-2 gap-4">
                                 <SelectControl label="Peso" options={['300', '400', '600', '800', '900']} value={draft.headingWeight} onChange={(v: any) => updateDraft('headingWeight', v)} />
                                 <SelectControl label="Espaçamento" options={['tight', 'normal', 'wide', 'widest']} value={draft.headingLetterSpacing} onChange={(v: any) => updateDraft('headingLetterSpacing', v)} />
+                            </div>
+                            
+                            <div className="mt-6">
+                                <span className="text-[9px] font-black uppercase tracking-widest text-white/40 block mb-3">Escala de Fonte</span>
+                                <div className="grid grid-cols-5 gap-1 p-1 bg-black/20 rounded-xl border border-white/5">
+                                    {Object.values(SCALES).map(s => (
+                                        <button key={s.id} onClick={() => updateDraft('fontScale', s.id)} className={`py-2 rounded-lg text-[8px] font-black uppercase transition-all ${draft.fontScale === s.id ? 'bg-[var(--theme-primary)] text-white shadow-lg' : 'text-white/20'}`}>{s.label}</button>
+                                    ))}
+                                </div>
                             </div>
                         </Section>
 
                         <Section id="geom" icon={Box} title="Geometria">
                             <SliderControl label="Radius" value={draft.borderRadius} min={0} max={60} onChange={(v: any) => updateDraft('borderRadius', v)} suffix="px" />
                             <SliderControl label="Borda" value={draft.borderWidth} min={0} max={8} onChange={(v: any) => updateDraft('borderWidth', v)} suffix="px" />
+                            <SliderControl label="Espaçamento Cards (Gap)" value={draft.layoutGap} min={0} max={80} onChange={(v: any) => updateDraft('layoutGap', v)} suffix="px" />
+                            <SliderControl label="Glass Opacity" value={draft.glassOpacity} min={0} max={1} step={0.05} onChange={(v: any) => updateDraft('glassOpacity', v)} />
                             <div className="flex items-center justify-between p-4 rounded-xl bg-white/5 mt-4 group">
                                 <span className="text-[9px] font-black uppercase tracking-widest text-white/60">Cortes Geométricos</span>
                                 <button onClick={() => updateDraft('isGeometricCut', !draft.isGeometricCut)} className={`w-10 h-5 rounded-full relative transition-all ${draft.isGeometricCut ? 'bg-[var(--theme-primary)]' : 'bg-white/10'}`}>
@@ -312,7 +329,6 @@ export const ThemeCustomizationTab: React.FC = () => {
                         </Section>
 
                         <Section id="atmos" icon={Wind} title="Atmosfera">
-                            <SliderControl label="Opacity Glass" value={draft.glassOpacity} min={0} max={1} step={0.05} onChange={(v: any) => updateDraft('glassOpacity', v)} />
                             <SliderControl label="Blur Glass" value={draft.glassBlur} min={0} max={60} onChange={(v: any) => updateDraft('glassBlur', v)} suffix="px" />
                             <div className="mb-6">
                                 <span className="text-[9px] font-black uppercase tracking-widest text-white/40 block mb-3">Texturas</span>

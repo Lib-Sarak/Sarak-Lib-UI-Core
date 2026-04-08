@@ -43,6 +43,8 @@ body {
   padding: 0;
   overflow-x: hidden;
   font-family: var(--font-main, 'Inter', sans-serif);
+  font-size: var(--theme-font-size-base, 13px);
+  line-height: 1.5;
 }
 
 /* 2. UNIVERSAL TEXTURE MOTOR (V5.6 - 15+ PREMIUM TYPES) */
@@ -176,5 +178,10 @@ h3, h4 {
     font-family: var(--font-subtitle, var(--font-heading));
 }
 
-.p-theme { padding: var(--theme-padding, 1.5rem); }
-.gap-theme { gap: var(--theme-gap, 1rem); }
+/* Specific Tab Font Class */
+.font-tab {
+    font-family: var(--font-tab, var(--font-heading));
+}
+
+.p-theme { padding: var(--theme-pad, 1.5rem); }
+.gap-theme { gap: var(--theme-gap, 20px); }

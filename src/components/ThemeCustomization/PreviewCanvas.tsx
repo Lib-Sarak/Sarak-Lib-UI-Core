@@ -3,7 +3,7 @@ import { motion, AnimatePresence } from 'framer-motion';
 import {
     Zap, Shield, Database, BarChart3, MessageSquare, History, Users, Settings2
 } from 'lucide-react';
-import { EMOJI_SETS, THEME_EFFECTS, DENSITY } from '@sarak/lib-shared';
+import { EMOJI_SETS, THEME_EFFECTS, DENSITY, SCALES } from '@sarak/lib-shared';
 import { MockDashboard, MockChat, MockLogs, MockSettings } from './MockApps';
 
 interface PreviewCanvasProps {
@@ -76,8 +76,10 @@ export const PreviewCanvas: React.FC<PreviewCanvasProps> = ({
                         '--shadow-intensity': (tokens.shadowIntensity ?? 0.5).toString(),
                         '--texture-opacity': (tokens.textureOpacity ?? 0.05).toString(),
                         '--animation-speed': `${tokens.animationSpeed ?? 0.4}s`,
-                        '--theme-gap': densityConfig.gap || '1.5rem',
+                        '--theme-gap': `${tokens.layoutGap ?? (densityConfig.gap === '0.5rem' ? 8 : densityConfig.gap === '1.25rem' ? 20 : 32)}px`,
                         '--theme-pad': densityConfig.pad || '1.5rem',
+                        '--font-tab': tokens.tabFont || tokens.headingFont || "'Inter', sans-serif",
+                        '--theme-font-size-base': `calc(${densityConfig.fontSizeBase || '13px'} * ${(SCALES as any)[(tokens.fontScale || 'm').toUpperCase()]?.factor || '1.0'})`,
                         // Cores de fundo baseadas no modo (Essencial para texturas e CONTRASTE)
                         '--bg-body': tokens.mode === 'light' ? '#f1f5f9' : '#020617',
                         '--bg-card': tokens.mode === 'light' ? '#ffffff' : '#1e293b',
@@ -143,26 +145,28 @@ export const PreviewCanvas: React.FC<PreviewCanvasProps> = ({
 
                         {/* App Content Area */}
                         <div className="flex-grow flex flex-col overflow-hidden relative z-10">
-                            <div className="h-16 border-b border-white/5 bg-black/5 px-8 flex items-center justify-between shrink-0">
-                                <div className="flex gap-6">
-                                    {[
-                                        { id: 'dashboard', icon: <BarChart3 className="w-4 h-4" />, label: 'Dashboard' },
-                                        { id: 'chat', icon: <MessageSquare className="w-4 h-4" />, label: 'Nexus Chat' },
-                                        { id: 'logs', icon: <History className="w-4 h-4" />, label: 'Matrix Logs' },
-                                        { id: 'settings', icon: <Settings2 className="w-4 h-4" />, label: 'Engine' }
-                                    ].map(app => (
-                                        <button
-                                            key={app.id}
-                                            onClick={() => setActivePreviewApp(app.id)}
-                                            className={`flex items-center gap-2 px-4 py-2 rounded-xl transition-all text-[10px] font-black uppercase tracking-widest ${activePreviewApp === app.id ? 'bg-[var(--primary-color)] text-white shadow-lg shadow-[var(--primary-color)]/20' : 'text-white/20 hover:text-white hover:bg-white/5'}`}
-                                            style={{ transitionDuration: 'var(--animation-speed)' }}
-                                        >
-                                            <span className="shrink-0">{app.icon}</span>
-                                            <span className="hidden lg:inline">{app.label}</span>
-                                        </button>
-                                    ))}
+                            {tokens.navigationStyle !== 'topbar' && (
+                                <div className="h-16 border-b border-white/5 bg-black/5 px-8 flex items-center justify-between shrink-0">
+                                    <div className="flex gap-6">
+                                        {[
+                                            { id: 'dashboard', icon: <BarChart3 className="w-4 h-4" />, label: 'Dashboard' },
+                                            { id: 'chat', icon: <MessageSquare className="w-4 h-4" />, label: 'Nexus Chat' },
+                                            { id: 'logs', icon: <History className="w-4 h-4" />, label: 'Matrix Logs' },
+                                            { id: 'settings', icon: <Settings2 className="w-4 h-4" />, label: 'Engine' }
+                                        ].map(app => (
+                                            <button
+                                                key={app.id}
+                                                onClick={() => setActivePreviewApp(app.id)}
+                                                className={`flex items-center gap-2 px-4 py-2 rounded-xl transition-all text-[10px] font-black uppercase tracking-widest ${activePreviewApp === app.id ? 'bg-[var(--primary-color)] text-white shadow-lg shadow-[var(--primary-color)]/20' : 'text-white/20 hover:text-white hover:bg-white/5'}`}
+                                                style={{ transitionDuration: 'var(--animation-speed)' }}
+                                            >
+                                                <span className="shrink-0">{app.icon}</span>
+                                                <span className="hidden lg:inline">{app.label}</span>
+                                            </button>
+                                        ))}
+                                    </div>
                                 </div>
-                            </div>
+                            )}
 
                             <div className="flex-grow overflow-auto relative p-8 custom-scrollbar">
                                 <AnimatePresence mode="wait">
