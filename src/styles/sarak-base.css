@@ -1,6 +1,6 @@
 /* =========================================
-   SARAK CORE ENGINE - VISUAL MOTOR (v5.5)
-   Consolidated for Full Parity
+   SARAK CORE ENGINE - VISUAL MOTOR (v5.6)
+   Atomic Sovereignty & Matrix Trace Compatible
    ========================================= */
 
 /* 1. REAL DYNAMIC CONTRAST (LIGHT / DARK) */
@@ -19,10 +19,6 @@ body.dark,
   color-scheme: dark;
 }
 
-body.dark {
-  background-color: var(--bg-body) !important;
-}
-
 body.light,
 .preview-container.light {
   --bg-body: #f8fafc;
@@ -38,275 +34,131 @@ body.light,
   color-scheme: light;
 }
 
-/* 2. PREMIUM LAYOUT PERSONALITIES */
-
-/* 2.1 MODERN GLASS */
-body.layout-glass,
-.preview-container.layout-glass {
-  --radius-theme: 32px;
-  --font-main: 'Outfit', sans-serif;
-  --font-heading: 'Space Grotesk', sans-serif;
-  --glass-blur: 24px;
-  --glass-opacity: 0.75;
-  --shadow-theme: 0 8px 32px 0 rgba(0, 0, 0, 0.4), 0 0 20px -5px var(--primary-color);
-  --theme-padding: 1.75rem;
-}
-
-body.layout-glass .bg-theme-card,
-.preview-container.layout-glass .bg-theme-card {
-  background: color-mix(in srgb, var(--bg-card), transparent calc(100% * (1 - var(--glass-opacity, 0.75))));
-  backdrop-filter: blur(var(--glass-blur, 12px)) saturate(180%);
-  -webkit-backdrop-filter: blur(var(--glass-blur, 12px)) saturate(180%);
-  border: var(--border-width, 1px) var(--border-style, solid) rgba(255, 255, 255, 0.05);
-}
-
-/* 2.2 SOLID CORPORATE */
-body.layout-corporate,
-.preview-container.layout-corporate {
-  --radius-theme: 8px;
-  --font-main: 'Inter', sans-serif;
-  --font-heading: 'Inter', sans-serif;
-  --shadow-theme: 0 4px 6px -1px rgba(0, 0, 0, 0.1), 0 2px 4px -1px rgba(0, 0, 0, 0.06);
-  --theme-gap: 1.25rem;
-  --theme-padding: 2rem;
-}
-
-/* 2.3 TECHNICAL / MAIN / BRUTALIST (The "Brushed/Raw" Core) */
-body.layout-main,
-body.layout-technical,
-body.layout-brutalist,
-.preview-container.layout-main,
-.preview-container.layout-technical {
-  --radius-theme: 0px;
-  --font-main: 'JetBrains Mono', monospace;
-  --font-heading: 'JetBrains Mono', monospace;
-  --theme-padding: 1rem;
-  --theme-gap: 1.5rem;
-}
-
-body.dark.layout-main,
-body.dark.layout-technical {
-  --bg-body: #000000;
-  --bg-sidebar: #050505;
-  --bg-card: #080808;
-  --border-color: var(--primary-color);
-}
-
-body.layout-main .bg-theme-card,
-body.layout-technical .bg-theme-card {
-  border: var(--border-width, 1px) var(--border-style, solid) var(--border-color);
-  background: var(--bg-card);
-  position: relative;
-  overflow: hidden;
-}
-
-/* 2.4 MAINFRAME CLI */
-body.layout-mainframe,
-.preview-container.layout-mainframe {
-  --radius-theme: 0px;
-  --font-main: 'Fira Code', monospace;
-  --font-heading: 'Fira Code', monospace;
-  --glass-blur: 0px;
-  --glass-opacity: 1;
-}
-
-body.dark.layout-mainframe {
-  --bg-body: #000000;
-  --bg-sidebar: #02040a;
-  --bg-card: #050814;
-  --text-title: #00ff41;
-  --text-main: #00ff41;
-  --border-color: rgba(0, 255, 65, 0.4);
-}
-
-/* 3. UNIVERSAL TEXTURE MOTOR (17 TYPES) */
-
-.texture-grid {
-  background-image: linear-gradient(rgba(255, 255, 255, 0.03) 1px, transparent 1px), linear-gradient(90deg, rgba(255, 255, 255, 0.03) 1px, transparent 1px) !important;
-  background-size: 40px 40px !important;
-  background-attachment: fixed !important;
-}
-
-.texture-dots {
-  background-image: radial-gradient(var(--border-color) 1px, transparent 1px) !important;
-  background-size: 24px 24px !important;
-}
-
-.texture-noise::before {
-  content: "" !important; position: fixed !important; top: 0; left: 0; width: 100vw; height: 100vh; z-index: -1; pointer-events: none;
-  background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 200 200' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='noiseFilter'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.15' numOctaves='3'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23noiseFilter)'/%3E%3C/svg%3E") !important;
-  opacity: var(--texture-opacity, 0.02) !important;
-}
-
-.texture-brushed {
-  background: linear-gradient(to right, rgba(255, 255, 255, 0.05) 1px, transparent 1px), linear-gradient(to bottom, rgba(255, 255, 255, 0.05) 1px, transparent 1px), linear-gradient(45deg, rgba(0, 0, 0, 0.1) 25%, transparent 25%, transparent 50%, rgba(0, 0, 0, 0.1) 50%, rgba(0, 0, 0, 0.1) 75%, transparent 75%, transparent) !important;
-  background-size: 4px 4px !important;
-  position: relative;
-}
-
-.texture-brushed::after {
-  content: ""; position: absolute; inset: 0; pointer-events: none;
-  background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.03), transparent);
-}
-
-.texture-carbon {
-  background: linear-gradient(27deg, #151515 5px, transparent 5px) 0 5px, linear-gradient(207deg, #151515 5px, transparent 5px) 10px 0px, linear-gradient(27deg, #222 5px, transparent 5px) 0px 10px, linear-gradient(207deg, #222 5px, transparent 5px) 10px 5px, linear-gradient(90deg, #1b1b1b 10px, transparent 10px), linear-gradient(#1d1d1d 25%, #1a1a1a 25%, #1a1a1a 50%, transparent 50%, transparent 75%, #242424 75%, #242424) !important;
-  background-size: 20px 20px !important;
-  background-color: #131313 !important;
-}
-
-.texture-scanlines {
-  background: linear-gradient(rgba(18, 16, 16, 0) 50%, rgba(0, 0, 0, 0.08) 50%), linear-gradient(90deg, rgba(255, 0, 0, 0.03), rgba(0, 255, 0, 0.01), rgba(0, 0, 255, 0.03)) !important;
-  background-size: 100% 4px, 3px 100% !important;
-}
-
-.texture-hexagon {
-  background-color: #0a0a0a !important;
-  background-image: url("https://www.transparenttextures.com/patterns/hexellence.png"), radial-gradient(circle at center, var(--primary-color) 0%, transparent 70%) !important;
-  background-size: 40px 40px, 100% 100% !important;
-}
-
-.texture-topo {
-  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='100' height='100' viewBox='0 0 100 100'%3E%3Cpath d='M0 10 Q 25 35 50 10 T 100 10 M0 30 Q 25 55 50 30 T 100 30' fill='none' stroke='var(--primary-color)' stroke-width='0.5' opacity='0.2'/%3E%3C/svg%3E") !important;
-  background-size: 200px 200px !important;
-  opacity: var(--texture-opacity, 1);
-}
-
-/* 2.5 PRESTIGE / EDITORIAL LUXURY */
-body.layout-prestige,
-body.layout-editorial,
-.preview-container.layout-prestige {
-  --radius-theme: 4px;
-  --font-main: 'Crimson Pro', serif;
-  --font-heading: 'Tenor Sans', sans-serif;
-  --theme-padding: 3rem;
-  --theme-gap: 2.5rem;
-  --shadow-theme: 0 20px 50px rgba(0,0,0,0.2);
-}
-
-body.dark.layout-prestige,
-body.dark.layout-editorial {
-  --bg-body: #0a0a0a;
-  --bg-sidebar: #0f0f0f;
-  --bg-card: #141414;
-  --border-color: rgba(255,255,255,0.05);
-}
-
-/* 2.6 CYBERPUNK NEON */
-body.layout-cyberpunk,
-.preview-container.layout-cyberpunk {
-  --radius-theme: 0px;
-  --font-main: 'Space Mono', monospace;
-  --font-heading: 'Syncopate', sans-serif;
-  --theme-padding: 1.5rem;
-  --border-color: var(--primary-color);
-  --shadow-theme: 0 0 15px var(--primary-color);
-}
-
-body.dark.layout-cyberpunk {
-  --bg-body: #050505;
-  --bg-sidebar: #000000;
-  --bg-card: #0a0a0a;
-}
-
-body.layout-cyberpunk .bg-theme-card {
-  border: var(--border-width, 1px) var(--border-style, solid) var(--primary-color);
-  box-shadow: 0 0 calc(15px * var(--shadow-intensity, 1)) var(--primary-color);
-  background: color-mix(in srgb, var(--bg-card), transparent calc(100% * (1 - var(--glass-opacity, 1))));
-}
-
-body.is-geometric .bg-theme-card {
-  clip-path: polygon(0 0, 100% 0, 100% calc(100% - 15px), calc(100% - 15px) 100%, 0 100%);
-}
-
-/* 2.7 ATMOSPHERIC / ETHEREAL */
-body.layout-atmospheric,
-body.layout-ethereal,
-.preview-container.layout-atmospheric {
-  --radius-theme: 40px;
-  --font-main: 'Inter', sans-serif;
-  --font-heading: 'Outfit', sans-serif;
-  --glass-blur: 40px;
-  --glass-opacity: 0.6;
-  --theme-padding: 2.5rem;
-}
-
-body.dark.layout-atmospheric {
-  --bg-body: #020408;
-  --bg-sidebar: rgba(10, 15, 30, 0.5);
-  --bg-card: rgba(20, 25, 45, 0.4);
-}
-
-/* 3.1 DENSITY AND SPACING ENGINE */
-body.density-compact {
-  --theme-gap: 0.75rem;
-  --theme-padding: 0.75rem;
-}
-
-body.density-standard {
-  --theme-gap: 1.5rem;
-  --theme-padding: 1.5rem;
-}
-
-body.density-comfortable {
-  --theme-gap: 2rem;
-  --theme-padding: 2rem;
-}
-
-/* Ensure padding is applied to containers that use it */
-.p-theme {
-    padding: var(--theme-padding);
-}
-
-.gap-theme {
-    gap: var(--theme-gap);
-}
-
-/* 4. GLOBAL BASE AND TRANSITIONS */
 body {
   background-color: var(--bg-body) !important;
   color: var(--text-main);
-  transition: background-color 0.45s cubic-bezier(0.4, 0, 0.2, 1), color 0.3s ease;
+  transition: background-color var(--animation-speed, 0.4s) ease, color 0.3s ease;
   min-height: 100vh;
   margin: 0;
   padding: 0;
   overflow-x: hidden;
-}
-
-/* Base fonts fallback if Google Fonts fail */
-body, button, input, select, textarea {
   font-family: var(--font-main, 'Inter', sans-serif);
 }
 
-h1, h2, h3, h4, h5, h6 {
-  font-family: var(--font-heading, var(--font-main, 'Inter', sans-serif));
-  color: var(--text-title);
-  letter-spacing: var(--letter-spacing-heading, normal);
+/* 2. UNIVERSAL TEXTURE MOTOR (V5.6 - 15+ PREMIUM TYPES) */
+[class*="texture-"]::before {
+    content: ""; position: fixed; inset: 0; z-index: -1; pointer-events: none;
+    opacity: var(--texture-opacity, 0.05);
 }
 
-/* Support for standard card behavior across components */
+.texture-grid::before {
+    background-image: linear-gradient(var(--border-color) 1px, transparent 1px), 
+                      linear-gradient(90deg, var(--border-color) 1px, transparent 1px);
+    background-size: 40px 40px;
+}
+
+.texture-dots::before {
+    background-image: radial-gradient(var(--border-color) 1px, transparent 1px);
+    background-size: 24px 24px;
+}
+
+.texture-noise::before {
+    background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 200 200' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.65' numOctaves='3'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)'/%3E%3C/svg%3E");
+}
+
+.texture-scanlines::before {
+    background: linear-gradient(rgba(0,0,0,0) 50%, rgba(0,0,0,0.2) 50%);
+    background-size: 100% 4px;
+}
+
+.texture-carbon::before {
+    background: linear-gradient(45deg, #111 25%, transparent 25%), 
+                linear-gradient(-45deg, #111 25%, transparent 25%),
+                linear-gradient(45deg, transparent 75%, #111 75%),
+                linear-gradient(-45deg, transparent 75%, #111 75%);
+    background-size: 10px 10px;
+    background-color: transparent;
+}
+
+.texture-hexagon::before {
+    background-image: url("https://www.transparenttextures.com/patterns/hexellence.png");
+    background-size: 40px 40px;
+}
+
+.texture-topo::before {
+    background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='100' height='100' viewBox='0 0 100 100'%3E%3Cpath d='M0 10 Q 25 35 50 10 T 100 10 M0 30 Q 25 55 50 30 T 100 30' fill='none' stroke='var(--primary-color)' stroke-width='0.5'/%3E%3C/svg%3E");
+    background-size: 200px 200px;
+}
+
+.texture-circuit::before {
+    background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='80' height='80' viewBox='0 0 80 80'%3E%3Cg fill='none' stroke='var(--primary-color)' stroke-width='0.5'%3E%3Cpath d='M10 10h10v10H10zM30 10h10v10H30zM50 10h10v10H50zM70 10h10v10H70z'/%3E%3Cpath d='M15 20v10M35 20v10M55 20v10M75 20v10'/%3E%3C/g%3E%3C/svg%3E");
+}
+
+.texture-silk::before {
+    background: linear-gradient(135deg, rgba(255,255,255,0.1) 0%, transparent 50%, rgba(0,0,0,0.1) 100%);
+}
+
+.texture-blueprint::before {
+    background-image: linear-gradient(rgba(59, 130, 246, 0.1) 1px, transparent 1px), 
+                      linear-gradient(90deg, rgba(59, 130, 246, 0.1) 1px, transparent 1px);
+    background-size: 20px 20px;
+    background-color: rgba(59, 130, 246, 0.02);
+}
+
+.texture-aurora::before {
+    background: radial-gradient(circle at 20% 30%, var(--primary-color) 0%, transparent 40%),
+                radial-gradient(circle at 80% 70%, #8b5cf6 0%, transparent 40%);
+    filter: blur(80px);
+    opacity: calc(var(--texture-opacity) * 4);
+}
+
+.texture-bubbles::before {
+    background-image: radial-gradient(circle, var(--border-color) 1px, transparent 1px);
+    background-size: 40px 40px;
+    background-position: 0 0, 20px 20px;
+}
+
+/* 3. ATOMIC CARD ENGINE */
 .bg-theme-card {
-  transition: all var(--animation-speed, 0.4s) cubic-bezier(0.4, 0, 0.2, 1);
-  border-radius: var(--radius-theme);
-  border: var(--border-width, 0px) var(--border-style, solid) var(--border-color);
-  box-shadow: 0 4px 12px rgba(0, 0, 0, calc(0.1 * var(--shadow-intensity, 1)));
-}
-
-h3, h4 {
-    font-family: var(--font-subtitle, var(--font-heading, var(--font-main)));
-}
-
-h1, h2, h3, h4, h5, h6 {
-    font-weight: var(--heading-weight, 600);
-    letter-spacing: var(--heading-spacing, normal);
+    position: relative;
+    border-radius: var(--radius-theme, 12px);
+    border: var(--border-width, 1px) var(--border-style, solid) var(--border-color);
+    background: color-mix(in srgb, var(--bg-card), transparent calc(100% * (1 - var(--glass-opacity, 0.7))));
+    backdrop-filter: blur(var(--glass-blur, 10px)) saturate(180%);
+    box-shadow: 0 10px 30px -10px rgba(0, 0, 0, calc(0.5 * var(--shadow-intensity, 1)));
+    transition: all var(--animation-speed, 0.4s) cubic-bezier(0.4, 0, 0.2, 1);
+    overflow: hidden;
 }
 
 /* Light Rim Effect */
-.bg-theme-card::before {
-    content: '';
-    position: absolute;
-    top: 0; left: 0; right: 0; height: 1px;
-    background: linear-gradient(90deg, transparent, rgba(255,255,255, 0.1), transparent);
+.bg-theme-card::after {
+    content: ''; position: absolute; top: 0; left: 0; right: 0; height: 1px;
+    background: linear-gradient(90deg, transparent, rgba(255,255,255, 0.15), transparent);
     pointer-events: none;
-    z-index: 10;
 }
+
+/* Geometric Modifier */
+body.is-geometric .bg-theme-card,
+.preview-container.is-geometric .bg-theme-card {
+    clip-path: polygon(0 0, 100% 0, 100% calc(100% - 15px), calc(100% - 15px) 100%, 0 100%);
+}
+
+/* 4. LAYOUT PERSONALITIES (MODULAR) */
+body.layout-glass { --glass-blur: var(--glass-blur, 24px); }
+body.layout-cyberpunk { --shadow-intensity: var(--shadow-intensity, 0.8); }
+body.layout-technical { --radius-theme: var(--radius-theme, 0px); }
+
+/* Typography */
+h1, h2, h3, h4, h5, h6 {
+    font-family: var(--font-heading, 'Inter', sans-serif);
+    color: var(--text-title);
+    font-weight: var(--heading-weight, 700);
+    letter-spacing: var(--heading-spacing, normal);
+}
+
+h3, h4 {
+    font-family: var(--font-subtitle, var(--font-heading));
+}
+
+.p-theme { padding: var(--theme-padding, 1.5rem); }
+.gap-theme { gap: var(--theme-gap, 1rem); }
