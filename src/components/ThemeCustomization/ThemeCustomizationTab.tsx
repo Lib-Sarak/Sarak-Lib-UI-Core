@@ -12,7 +12,7 @@ import { useThemePreview } from './useThemePreview';
 import { ThemeList } from './ThemeList';
 import { ThemeEditor } from './ThemeEditor';
 import { PreviewCanvas } from './PreviewCanvas';
-import { PRIMARY_COLORS, SCALES, DENSITY } from '../../constants/theme';
+import { PRIMARY_COLORS, SCALES, DENSITY } from '@sarak/lib-shared';
 
 export const ThemeCustomizationTab: React.FC = () => {
     const {
