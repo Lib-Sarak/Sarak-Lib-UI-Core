@@ -125,7 +125,6 @@ export const ThemeCustomizationTab: React.FC = () => {
         }
 
         setDraft(newDraft);
-        console.log(`%c🎨 [Matrix Design] Preview Archetype: ${id}`, 'color: #3b82f6; font-weight: bold;', newDraft);
     };
 
     // --- LOGIC: COMMIT DRAFT TO SYSTEM ---
@@ -326,16 +325,21 @@ export const ThemeCustomizationTab: React.FC = () => {
                             <SliderControl label="Opacidade Textura" value={draft.textureOpacity} min={0} max={0.3} step={0.01} onChange={(v: any) => updateDraft('textureOpacity', v)} />
                         </Section>
 
-                        <Section id="motion" icon={Zap} title="Movimento & Cor">
+                        <Section id="color" icon={Palette} title="Cores & Identidade">
+                            <div className="grid grid-cols-7 gap-2">
+                                {PRIMARY_COLORS.map((color, i) => (
+                                    <button key={i} onClick={() => updateDraft('primaryColor', color.value)} className={`w-full aspect-square rounded-full transition-all hover:scale-125 relative ${draft.primaryColor === color.value ? 'ring-2 ring-white ring-offset-2 ring-offset-[#0c0c0d] scale-110' : 'opacity-80'}`} style={{ backgroundColor: color.value }}>
+                                        {draft.primaryColor === color.value && <Check size={10} className="text-white absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2" />}
+                                    </button>
+                                ))}
+                            </div>
+                        </Section>
+
+                        <Section id="effects" icon={Wind} title="Efeitos">
                             <SliderControl label="Velocidade" value={draft.animationSpeed} min={0} max={1} step={0.05} onChange={(v: any) => updateDraft('animationSpeed', v)} suffix="s" />
-                            <div className="mt-4">
-                                <div className="grid grid-cols-7 gap-2">
-                                    {PRIMARY_COLORS.map((color, i) => (
-                                        <button key={i} onClick={() => updateDraft('primaryColor', color.value)} className={`w-full aspect-square rounded-full transition-all hover:scale-125 relative ${draft.primaryColor === color.value ? 'ring-2 ring-white ring-offset-2 ring-offset-[#0c0c0d] scale-110' : 'opacity-80'}`} style={{ backgroundColor: color.value }}>
-                                            {draft.primaryColor === color.value && <Check size={10} className="text-white absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2" />}
-                                        </button>
-                                    ))}
-                                </div>
+                            <div className="flex items-center justify-between p-4 rounded-xl bg-white/5 mt-4 group">
+                                <span className="text-[9px] font-black uppercase tracking-widest text-white/40">Micro-interações</span>
+                                <div className="text-[10px] font-bold text-[var(--theme-primary)]">Ativo</div>
                             </div>
                         </Section>
                     </div>

@@ -134,9 +134,15 @@ body {
     border: var(--border-width, 1px) var(--border-style, solid) var(--border-color);
     background: color-mix(in srgb, var(--bg-card), transparent calc(100% * (1 - var(--glass-opacity, 0.7))));
     backdrop-filter: blur(var(--glass-blur, 10px)) saturate(180%);
-    box-shadow: 0 10px 30px -10px rgba(0, 0, 0, calc(0.5 * var(--shadow-intensity, 1)));
+    box-shadow: 0 10px 30px -10px rgba(0, 0, 0, calc(0.3 * var(--shadow-intensity, 1)));
     transition: all var(--animation-speed, 0.4s) cubic-bezier(0.4, 0, 0.2, 1);
     overflow: hidden;
+}
+
+/* Light Mode Enhancement (Contrast) */
+.light .bg-theme-card {
+    background: color-mix(in srgb, var(--bg-card), transparent calc(100% * (1 - (var(--glass-opacity) * 0.4))));
+    box-shadow: 0 4px 20px -5px rgba(0, 0, 0, 0.05);
 }
 
 /* Light Rim Effect */
@@ -163,6 +169,7 @@ h1, h2, h3, h4, h5, h6 {
     color: var(--text-title);
     font-weight: var(--heading-weight, 700);
     letter-spacing: var(--heading-spacing, normal);
+    transition: color var(--animation-speed);
 }
 
 h3, h4 {

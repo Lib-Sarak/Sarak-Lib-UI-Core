@@ -3,7 +3,7 @@ import { motion, AnimatePresence } from 'framer-motion';
 import {
     Zap, Shield, Database, BarChart3, MessageSquare, History, Users, Settings2
 } from 'lucide-react';
-import { EMOJI_SETS, THEME_EFFECTS } from '@sarak/lib-shared';
+import { EMOJI_SETS, THEME_EFFECTS, DENSITY } from '@sarak/lib-shared';
 import { MockDashboard, MockChat, MockLogs, MockSettings } from './MockApps';
 
 interface PreviewCanvasProps {
@@ -50,6 +50,7 @@ export const PreviewCanvas: React.FC<PreviewCanvasProps> = ({
 
     // Usamos os tokens do Draft ou fallbacks do sistema
     const tokens = draftTokens || {};
+    const densityConfig = (DENSITY as any)[(tokens.layoutDensity || 'standard').toUpperCase()] || DENSITY.STANDARD;
 
     return (
         <div className="flex-grow flex flex-col relative overflow-hidden bg-black/20">
@@ -75,21 +76,23 @@ export const PreviewCanvas: React.FC<PreviewCanvasProps> = ({
                         '--shadow-intensity': (tokens.shadowIntensity ?? 0.5).toString(),
                         '--texture-opacity': (tokens.textureOpacity ?? 0.05).toString(),
                         '--animation-speed': `${tokens.animationSpeed ?? 0.4}s`,
-                        // Cores de fundo baseadas no modo (Essencial para texturas)
-                        '--bg-body': tokens.mode === 'light' ? '#f8fafc' : '#020617',
+                        '--theme-gap': densityConfig.gap || '1.5rem',
+                        '--theme-pad': densityConfig.pad || '1.5rem',
+                        // Cores de fundo baseadas no modo (Essencial para texturas e CONTRASTE)
+                        '--bg-body': tokens.mode === 'light' ? '#f1f5f9' : '#020617',
                         '--bg-card': tokens.mode === 'light' ? '#ffffff' : '#1e293b',
-                        '--bg-sidebar': tokens.mode === 'light' ? '#f1f5f9' : '#0f172a',
-                        '--text-main': tokens.mode === 'light' ? '#334155' : '#94a3b8',
+                        '--bg-sidebar': tokens.mode === 'light' ? '#e2e8f0' : '#0f172a',
+                        '--text-main': tokens.mode === 'light' ? '#1e293b' : '#94a3b8',
                         '--text-title': tokens.mode === 'light' ? '#0f172a' : '#f8fafc',
-                        '--border-color': tokens.mode === 'light' ? 'rgba(0,0,0,0.1)' : 'rgba(255,255,255,0.1)',
+                        '--border-color': tokens.mode === 'light' ? 'rgba(0,0,0,0.15)' : 'rgba(255,255,255,0.1)',
                         // ALIASES PARA COMPATIBILIDADE (Sarak Legacy + Atomic)
                         '--theme-primary': tokens.primaryColor || previewPrimaryColor,
-                        '--theme-body': tokens.mode === 'light' ? '#f8fafc' : '#020617',
+                        '--theme-body': tokens.mode === 'light' ? '#f1f5f9' : '#020617',
                         '--theme-card': tokens.mode === 'light' ? '#ffffff' : '#1e293b',
-                        '--theme-border': tokens.mode === 'light' ? 'rgba(0,0,0,0.1)' : 'rgba(255,255,255,0.1)',
+                        '--theme-border': tokens.mode === 'light' ? 'rgba(0,0,0,0.15)' : 'rgba(255,255,255,0.1)',
                         '--theme-title': tokens.mode === 'light' ? '#0f172a' : '#f8fafc',
-                        '--theme-muted': tokens.mode === 'light' ? '#64748b' : '#475569',
-                        '--shadow-color': tokens.mode === 'light' ? 'rgba(0,0,0,0.05)' : 'rgba(0,0,0,0.4)',
+                        '--theme-muted': tokens.mode === 'light' ? '#475569' : '#64748b',
+                        '--shadow-color': tokens.mode === 'light' ? 'rgba(0,0,0,0.1)' : 'rgba(0,0,0,0.4)',
                     } as React.CSSProperties}
                     className={`preview-container ${tokens.mode || mode} layout-${(tokens.layout || previewLayoutId).replace('custom-', '')} ${tokens.isGeometricCut ? 'is-geometric' : ''} bg-[var(--bg-body)] text-[var(--text-main)] rounded-[32px] shadow-[0_50px_100px_rgba(0,0,0,0.5)] overflow-hidden flex flex-col relative transition-all duration-500 ${tokens.texture && tokens.texture !== 'none' ? `texture-${tokens.texture}` : ''}`}
                 >
@@ -106,21 +109,40 @@ export const PreviewCanvas: React.FC<PreviewCanvasProps> = ({
                         </div>
                     </div>
 
-                    <div className="flex flex-grow overflow-hidden">
-                        {/* Mock Navigation Sidebar */}
-                        <div className="w-16 sm:w-20 bg-black/10 border-r border-white/5 shrink-0 flex flex-col items-center py-8 gap-6">
-                            <div className="w-10 h-10 rounded-xl bg-[var(--primary-color)] flex items-center justify-center text-white shadow-lg shadow-[var(--primary-color)]/20 mb-4 cursor-pointer hover:scale-110 transition-transform">
-                                <Zap className="w-5 h-5 fill-current" />
-                            </div>
-                            {[BarChart3, MessageSquare, History, Users, Shield, Database].map((Icon, i) => (
-                                <div key={i} className={`w-9 h-9 rounded-xl flex items-center justify-center transition-all cursor-pointer ${i === 0 ? 'bg-[var(--primary-color)]/10 text-[var(--primary-color)] shadow-sm' : 'text-white/20 hover:text-white hover:bg-white/5'}`}>
-                                    <Icon className="w-4 h-4" />
+                    <div className={`flex flex-grow overflow-hidden ${tokens.navigationStyle === 'topbar' ? 'flex-col' : 'flex-row'}`} style={{ transitionDuration: 'var(--animation-speed)' }}>
+                        {/* Mock Navigation Header (for Topbar) */}
+                        {tokens.navigationStyle === 'topbar' && (
+                            <div className="h-12 bg-black/10 border-b border-white/5 flex items-center px-6 gap-6 shrink-0 relative z-20">
+                                <div className="w-8 h-8 rounded-lg bg-[var(--primary-color)] flex items-center justify-center text-white shadow-lg">
+                                    <Zap className="w-4 h-4 fill-current" />
                                 </div>
-                            ))}
-                        </div>
+                                <div className="flex gap-4">
+                                    {[BarChart3, MessageSquare, History, Users].map((Icon, i) => (
+                                        <div key={i} className={`px-3 py-1.5 rounded-lg text-[9px] font-black uppercase tracking-widest flex items-center gap-2 ${activePreviewApp === ['dashboard', 'chat', 'logs', 'settings'][i] ? 'bg-[var(--primary-color)]/10 text-[var(--primary-color)]' : 'text-white/20'}`}>
+                                            <Icon className="w-3 h-3" />
+                                            {['Dash', 'Chat', 'Logs', 'Users'][i]}
+                                        </div>
+                                    ))}
+                                </div>
+                            </div>
+                        )}
+
+                        {/* Mock Navigation Sidebar (only if not Topbar) */}
+                        {tokens.navigationStyle !== 'topbar' && (
+                            <div className="w-16 sm:w-20 bg-black/10 border-r border-white/5 shrink-0 flex flex-col items-center py-8 gap-6 relative z-20">
+                                <div className="w-10 h-10 rounded-xl bg-[var(--primary-color)] flex items-center justify-center text-white shadow-lg shadow-[var(--primary-color)]/20 mb-4 cursor-pointer hover:scale-110 transition-transform">
+                                    <Zap className="w-5 h-5 fill-current" />
+                                </div>
+                                {[BarChart3, MessageSquare, History, Users, Shield, Database].map((Icon, i) => (
+                                    <div key={i} className={`w-9 h-9 rounded-xl flex items-center justify-center transition-all cursor-pointer ${i === 0 ? 'bg-[var(--primary-color)]/10 text-[var(--primary-color)] shadow-sm' : 'text-white/20 hover:text-white hover:bg-white/5'}`}>
+                                        <Icon className="w-4 h-4" />
+                                    </div>
+                                ))}
+                            </div>
+                        )}
 
                         {/* App Content Area */}
-                        <div className="flex-grow flex flex-col overflow-hidden">
+                        <div className="flex-grow flex flex-col overflow-hidden relative z-10">
                             <div className="h-16 border-b border-white/5 bg-black/5 px-8 flex items-center justify-between shrink-0">
                                 <div className="flex gap-6">
                                     {[
@@ -133,6 +155,7 @@ export const PreviewCanvas: React.FC<PreviewCanvasProps> = ({
                                             key={app.id}
                                             onClick={() => setActivePreviewApp(app.id)}
                                             className={`flex items-center gap-2 px-4 py-2 rounded-xl transition-all text-[10px] font-black uppercase tracking-widest ${activePreviewApp === app.id ? 'bg-[var(--primary-color)] text-white shadow-lg shadow-[var(--primary-color)]/20' : 'text-white/20 hover:text-white hover:bg-white/5'}`}
+                                            style={{ transitionDuration: 'var(--animation-speed)' }}
                                         >
                                             <span className="shrink-0">{app.icon}</span>
                                             <span className="hidden lg:inline">{app.label}</span>
@@ -141,13 +164,14 @@ export const PreviewCanvas: React.FC<PreviewCanvasProps> = ({
                                 </div>
                             </div>
 
-                            <div className="flex-grow overflow-auto relative p-8">
+                            <div className="flex-grow overflow-auto relative p-8 custom-scrollbar">
                                 <AnimatePresence mode="wait">
                                     <motion.div
                                         key={activePreviewApp}
                                         initial={{ opacity: 0, y: 10 }}
                                         animate={{ opacity: 1, y: 0 }}
                                         exit={{ opacity: 0, y: -10 }}
+                                        transition={{ duration: parseFloat(tokens.animationSpeed || '0.4') }}
                                         className="flex flex-col h-full"
                                     >
                                         {renderApp()}

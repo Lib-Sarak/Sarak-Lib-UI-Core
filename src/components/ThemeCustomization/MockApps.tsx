@@ -11,22 +11,22 @@ export const MockDashboard: React.FC<any> = ({ config, animationVariants, animat
             <div className="mb-8">
                 <h3
                     style={{
-                        fontFamily: config['--font-heading'],
-                        fontWeight: config['--font-weight-heading'],
-                        letterSpacing: config['--letter-spacing-heading']
+                        fontFamily: "var(--font-heading)",
+                        fontWeight: "var(--heading-weight)",
+                        letterSpacing: "var(--heading-spacing)"
                     }}
                     className="text-2xl text-[var(--theme-title)] mb-2"
                 >
                     Dashboard
                 </h3>
-                <p className="text-[var(--theme-muted)] text-xs opacity-60" style={{ fontFamily: config['--font-main'] }}>
+                <p className="text-[var(--theme-main)] text-xs opacity-60" style={{ fontFamily: "var(--font-main)" }}>
                     System overview and real-time metrics.
                 </p>
             </div>
 
             <div
                 className="grid grid-cols-12 auto-rows-fr flex-grow"
-                style={{ gap: config['--theme-gap'] }}
+                style={{ gap: "var(--theme-gap, 1.5rem)" }}
             >
                 {/* Agent Profile Widget */}
                 <motion.div
