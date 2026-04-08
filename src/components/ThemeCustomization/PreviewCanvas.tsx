@@ -120,7 +120,10 @@ export const PreviewCanvas: React.FC<PreviewCanvasProps> = ({
                                 </div>
                                 <div className="flex gap-4">
                                     {[BarChart3, MessageSquare, History, Users].map((Icon, i) => (
-                                        <div key={i} className={`px-3 py-1.5 rounded-lg text-[9px] font-black uppercase tracking-widest flex items-center gap-2 ${activePreviewApp === ['dashboard', 'chat', 'logs', 'settings'][i] ? 'bg-[var(--primary-color)]/10 text-[var(--primary-color)]' : 'text-white/20'}`}>
+                                        <div key={i} 
+                                            className={`px-3 py-1.5 rounded-lg text-[9px] font-black uppercase tracking-widest flex items-center gap-2 ${activePreviewApp === ['dashboard', 'chat', 'logs', 'settings'][i] ? 'bg-[var(--primary-color)]/10 text-[var(--primary-color)]' : 'text-white/20'}`}
+                                            style={{ fontFamily: 'var(--font-tab, var(--font-heading))' }}
+                                        >
                                             <Icon className="w-3 h-3" />
                                             {['Dash', 'Chat', 'Logs', 'Users'][i]}
                                         </div>
@@ -157,8 +160,11 @@ export const PreviewCanvas: React.FC<PreviewCanvasProps> = ({
                                             <button
                                                 key={app.id}
                                                 onClick={() => setActivePreviewApp(app.id)}
-                                                className={`flex items-center gap-2 px-4 py-2 rounded-xl transition-all text-[10px] font-black uppercase tracking-widest ${activePreviewApp === app.id ? 'bg-[var(--primary-color)] text-white shadow-lg shadow-[var(--primary-color)]/20' : 'text-white/20 hover:text-white hover:bg-white/5'}`}
-                                                style={{ transitionDuration: 'var(--animation-speed)' }}
+                                                className={`flex items-center gap-2 px-4 py-2 rounded-xl transition-all text-[10px] font-black uppercase tracking-widest ${activePreviewApp === app.id ? 'bg-[var(--primary-color)] text-white shadow-lg shadow-[var(--theme-primary)]/20' : 'text-white/20 hover:text-white hover:bg-white/5'}`}
+                                                style={{ 
+                                                    transitionDuration: 'var(--animation-speed)',
+                                                    fontFamily: 'var(--font-tab, var(--font-heading))'
+                                                }}
                                             >
                                                 <span className="shrink-0">{app.icon}</span>
                                                 <span className="hidden lg:inline">{app.label}</span>

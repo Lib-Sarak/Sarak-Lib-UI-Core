@@ -102,7 +102,7 @@ export const MockDashboard: React.FC<any> = ({ config, animationVariants, animat
                         {/* Buttons section */}
                         <div className="space-y-3">
                             <div className="uppercase font-bold text-[var(--theme-muted)] mb-2" style={{ fontSize: 'calc(var(--theme-font-size-base) * 0.7)' }}>Button Styles</div>
-                            <button className="w-full py-2 px-4 bg-[var(--theme-primary)] text-white font-bold rounded-[var(--radius-theme)] shadow-lg shadow-[var(--theme-primary)]/20 hover:brightness-110 transition-all" style={{ fontSize: 'calc(var(--theme-font-size-base) * 0.8)' }}>
+                            <button className="w-full py-2 px-4 bg-[var(--theme-primary)] text-white font-bold rounded-[var(--radius-theme)] shadow-lg shadow-[var(--theme-primary)]/20 hover:brightness-110 transition-all" style={{ fontSize: 'calc(var(--theme-font-size-base) * 0.8)', fontFamily: 'var(--font-tab, var(--font-heading))' }}>
                                 Primary Action
                             </button>
                             {/* ... (simplificado para manter foco na densidade) ... */}
@@ -185,7 +185,7 @@ export const MockLogs: React.FC<any> = ({ config, animationVariants, animationSt
                 <div className="absolute inset-0 bg-white/[0.02] pointer-events-none"></div>
                 <table className="w-full text-left text-[10px] relative z-10">
                     <thead className="bg-[var(--theme-card)] border-b border-[var(--theme-border)]">
-                        <tr>
+                        <tr style={{ fontFamily: 'var(--font-tab, var(--font-heading))' }}>
                             <th className="p-3 font-bold text-[var(--theme-muted)] uppercase tracking-wider">Payload</th>
                             <th className="p-3 font-bold text-[var(--theme-muted)] uppercase tracking-wider">Status</th>
                         </tr>
