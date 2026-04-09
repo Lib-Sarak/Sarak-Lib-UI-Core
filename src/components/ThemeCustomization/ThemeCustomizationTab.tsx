@@ -141,102 +141,12 @@ export const ThemeCustomizationTab: React.FC = () => {
             return;
         }
 
-        console.group('%c🎨 [Matrix Trace] Preview de Tema: ' + id, 'background: #1e3a8a; color: #93c5fd; padding: 4px; font-weight: bold;');
-        console.log('📄 Preset Bruto:', preset);
-
-        // Mapeia tokens CSS do preset para o estado atômico do Draft
-        const newDraft = { ...draft, layout: id };
-        
-        // Mapeamento Direto Dinâmico (v6.0 Full Engine)
-        // --- SCHEMA DE TIPAGEM SOBERANA v6.1 ---
-        // Define o tipo exato de cada token para evitar falhas de conversão (Ex: texture ser confundido com número)
-        const TOKEN_SCHEMA: Record<string, 'number' | 'boolean' | 'string' | 'array'> = {
-            navigationStyle: 'string', sidebarWidth: 'number', layoutDensity: 'string', isAutoHideEnabled: 'boolean',
-            isSplitViewEnabled: 'boolean', secondaryModuleId: 'string', searchStyle: 'string',
-            headingFont: 'string', subtitleFont: 'string', tabFont: 'string', bodyFont: 'string',
-            headingWeight: 'string', headingLetterSpacing: 'string', fontScale: 'string',
-            borderRadius: 'number', borderWidth: 'number', borderStyle: 'string',
-            surfaceMaterial: 'string', borderType: 'string', layoutGap: 'number',
-            glassOpacity: 'number', glassBlur: 'number', isGeometricCut: 'boolean',
-            cursorPhysics: 'boolean', interfaceElasticity: 'number',
-            texture: 'string', textureOpacity: 'number', primaryColor: 'string',
-            systemName: 'string', logoUrl: 'string', logoDarkUrl: 'string', logoScale: 'number',
-            logoPosition: 'string', systemTone: 'string', emptyStateId: 'string',
-            chartStyle: 'string', chartPalette: 'array',
-            shadowIntensity: 'number', shadowOrientation: 'string', shadowColorMode: 'string',
-            animationSpeed: 'number', mode: 'string'
-        };
-
-        const tokenMap: Record<string, string> = {
-            '--nav-style': 'navigationStyle', '--sidebar-width': 'sidebarWidth', '--layout-density': 'layoutDensity', '--auto-hide': 'isAutoHideEnabled',
-            '--split-view': 'isSplitViewEnabled', '--secondary-module': 'secondaryModuleId', '--search-style': 'searchStyle',
-            '--font-heading': 'headingFont', '--font-subtitle': 'subtitleFont', '--font-tab': 'tabFont', '--font-main': 'bodyFont',
-            '--font-weight-heading': 'headingWeight', '--letter-spacing-heading': 'headingLetterSpacing', '--font-scale': 'fontScale',
-            '--radius-theme': 'borderRadius', '--border-width': 'borderWidth', '--border-style': 'borderStyle',
-            '--surface-material': 'surfaceMaterial', '--border-type': 'borderType', '--theme-gap': 'layoutGap',
-            '--glass-opacity': 'glassOpacity', '--glass-blur': 'glassBlur', '--is-geometric': 'isGeometricCut',
-            '--cursor-physics': 'cursorPhysics', '--interface-elasticity': 'interfaceElasticity',
-            '--bg-texture': 'texture', '--texture-opacity': 'textureOpacity', '--theme-primary': 'primaryColor',
-            '--system-name': 'systemName', '--logo-url': 'logoUrl', '--logo-dark-url': 'logoDarkUrl', '--logo-scale': 'logoScale',
-            '--logo-position': 'logoPosition', '--system-tone': 'systemTone', '--empty-state-id': 'emptyStateId',
-            '--chart-style': 'chartStyle', '--chart-palette': 'chartPalette',
-            '--shadow-intensity': 'shadowIntensity', '--shadow-orientation': 'shadowOrientation', '--shadow-color-mode': 'shadowColorMode',
-            '--animation-speed': 'animationSpeed', '--mode': 'mode'
-        };
-
-        const conversionLogs: string[] = [];
-        Object.entries(preset).forEach(([cssVar, value]) => {
-            const draftKey = tokenMap[cssVar];
-            if (draftKey) {
-                const targetType = TOKEN_SCHEMA[draftKey];
-                let finalValue: any = value;
-
-                // MOTOR DE CONVERSÃO BASEADO EM SCHEMA (SOBERANO)
-                switch(targetType) {
-                    case 'number':
-                        // Remove unidades 'px', 's', '%' se existirem
-                        const rawStr = typeof value === 'string' ? value.replace(/px|s|%/g, '') : value;
-                        finalValue = parseFloat(rawStr as string);
-                        break;
-                        
-                    case 'boolean':
-                        finalValue = (value === 'true' || value === '1' || value === 1 || value === true);
-                        break;
-                        
-                    case 'array':
-                        if (typeof value === 'string') finalValue = value.split(',').map(s => s.trim());
-                        break;
-                        
-                    case 'string':
-                    default:
-                        finalValue = String(value);
-                        break;
-                }
-                
-                (newDraft as any)[draftKey] = finalValue;
-                conversionLogs.push(`${draftKey}: ${value} -> ${finalValue} (${typeof finalValue})`);
-            }
-        });
-
-        console.log('🔄 [Matrix Trace] Conversão de Tipos via Schema:', conversionLogs);
-
-        // Caso especial: alguns temas definem o modo via background (Retrocompatibilidade)
-        if (!preset['--mode'] && (preset['--bg-body'] === '#000000' || preset['--bg-body'] === '#050505')) {
-            newDraft.mode = 'dark';
-        }
-
-        console.log('✨ Draft Resultante:', newDraft);
-        console.groupEnd();
+        console.log('%c🎨 [Matrix Trace] PREVIEW (Draft Mode)', 'background: #1e3a8a; color: #93c5fd; padding: 4px; font-weight: bold;', newDraft);
         setDraft(newDraft);
     };
 
     // --- LOGIC: COMMIT DRAFT TO SYSTEM ---
     const handleApplyToSystem = () => {
-        console.group('%c⚡ [Matrix Trace] Aplicar ao Sistema (Draft -> SSoT)', 'background: #f59e0b; color: #000; padding: 4px; font-weight: bold;');
-        console.log('📦 Configuração Final (DRAFT):', draft);
-        console.log('📡 SSoT Destino:', sarak);
-        console.groupEnd();
-
         sarak.applyFullConfig(draft);
         showToast('success', 'Design aplicado com sucesso a todo o sistema.');
     };
@@ -270,7 +180,6 @@ export const ThemeCustomizationTab: React.FC = () => {
     ];
 
     const updateDraft = (key: string, value: any) => {
-        console.log(`%c📝 [Matrix Trace] Update Draft: ${key} ->`, 'color: #34d399;', value);
         setDraft(prev => ({ ...prev, [key]: value }));
     };
 

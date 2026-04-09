@@ -220,7 +220,15 @@ export const SarakUIProvider: React.FC<SarakUIProviderProps> = ({
             console.error('❌ [Matrix Trace Engine Failure]', error);
         }
     }, [
-        effective, globalSarak, localLayout, localMode, localPrimary
+        effective.layout, effective.mode, effective.primary, effective.density, effective.texture,
+        effective.navStyle, effective.sidebarWidth, effective.headingFont, effective.subtitleFont,
+        effective.tabFont, effective.bodyFont, effective.headingWeight, effective.headingSpacing,
+        effective.borderRadius, effective.borderWidth, effective.borderStyle, effective.glassOpacity,
+        effective.glassBlur, effective.shadowIntensity, effective.isGeometric, effective.textureOpacity,
+        effective.animSpeed, effective.gap, effective.sysName, effective.logoUrl, effective.logoDarkUrl,
+        effective.logoScale, effective.logoPos, effective.sysTone, effective.surface, effective.borderType,
+        effective.elasticity, effective.isSplit, effective.chartS, effective.chartP, effective.shOrient,
+        effective.shMode, effective.isAutoHide, globalSarak
     ]);
 
     const fallbackContextValue = useMemo(() => ({
