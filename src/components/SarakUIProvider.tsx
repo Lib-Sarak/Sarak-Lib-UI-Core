@@ -1,4 +1,4 @@
-import React, { ReactNode, useEffect, useState, useMemo } from 'react';
+import React, { ReactNode, useEffect, useState, useMemo, useCallback, useContext } from 'react';
 import '../styles/sarak-base.css';
 import { LAYOUTS, SCALES, DENSITY, SarakContext } from '@sarak/lib-shared';
 import { useSarak as useGlobalSarak } from '@sarak/lib-shared';
@@ -13,7 +13,7 @@ export interface SarakUIContextType {
 const UIContext = React.createContext<SarakUIContextType | undefined>(undefined);
 
 export const useSarakUI = () => {
-    const context = React.useContext(UIContext);
+    const context = useContext(UIContext);
     if (!context) {
         // Fallback para componentes que podem ser usados fora do Provider (não recomendado)
         return { effective: {}, applyFullConfig: () => {}, isStandalone: true };
@@ -85,6 +85,8 @@ export const SarakUIProvider: React.FC<SarakUIProviderProps> = ({
     const [isSplitViewEnabled, setIsSplitViewEnabled] = useState(() => localStorage.getItem('sarak_local_split') === 'true');
     const [searchStyle, setSearchStyle] = useState<'minimal' | 'command-palette'>(() => (localStorage.getItem('sarak_local_search') as any) || 'command-palette');
     const [interfaceElasticity, setInterfaceElasticity] = useState(() => Number(localStorage.getItem('sarak_local_elasticity')) || 1.0);
+    const [cursorPhysics, setCursorPhysics] = useState(() => localStorage.getItem('sarak_local_cursor') === 'true' || true);
+    const [localIsNavHidden, setLocalIsNavHidden] = useState(() => localStorage.getItem('sarak_local_nav_hidden') === 'true' || false);
 
     const [isHydrated, setIsHydrated] = useState(false);
 
@@ -140,7 +142,9 @@ export const SarakUIProvider: React.FC<SarakUIProviderProps> = ({
         chartP: s.chartPalette || chartPalette,
         shOrient: s.shadowOrientation || shadowOrientation,
         shMode: s.shadowColorMode || shadowColorMode,
-        isAutoHide: s.isAutoHideEnabled || false
+        isAutoHide: s.isAutoHideEnabled || false,
+        cursorPhysics: s.cursorPhysics !== undefined ? s.cursorPhysics : cursorPhysics,
+        isNavHidden: s.isNavHidden !== undefined ? s.isNavHidden : localIsNavHidden
     };
 
     // Motor de Design Sovereign (Matrix Trace Engine v6.1)

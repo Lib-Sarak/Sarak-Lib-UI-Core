@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useCallback, useMemo, ReactNode } from 'react';
 import { getRegisteredModules, SarakModule, LAYOUTS } from '@sarak/lib-shared';
 import * as LucideIcons from 'lucide-react';
 import { 
@@ -48,7 +48,8 @@ export const SarakShell: React.FC<SarakShellProps> = ({
         sysName: systemName, logoUrl, logoDarkUrl, logoScale, logoPos: logoPosition,
         sysTone: systemTone, surface: surfaceMaterial, borderType, elasticity: interfaceElasticity,
         isSplit: isSplitViewEnabled, chartS: chartStyle, chartP: chartPalette, shOrient: shadowOrientation,
-        shMode: shadowColorMode, isAutoHide: isAutoHideEnabled, searchStyle
+        shMode: shadowColorMode, isAutoHide: isAutoHideEnabled, searchStyle,
+        cursorPhysics, isNavHidden
     } = sarak;
 
     // Fallbacks para funções de estado/shared
