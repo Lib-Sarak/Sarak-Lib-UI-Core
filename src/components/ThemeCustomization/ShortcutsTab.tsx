@@ -1,5 +1,4 @@
-import React, { useState, useEffect, useCallback } from 'react';
-import { useSarak } from '@sarak/lib-shared';
+import { useSarakUI } from '../SarakUIProvider';
 import { Keyboard, Edit3, X, RotateCcw, Plus, Trash2, Command, Search, Filter } from 'lucide-react';
 import { motion, AnimatePresence } from 'framer-motion';
 
@@ -16,10 +15,16 @@ const formatKeyName = (key: string) => {
 };
 
 export const ShortcutsTab: React.FC = () => {
-    const { 
-        shortcuts, updateShortcut, defaultShortcuts, 
-        registeredActions, createShortcut, deleteShortcut 
-    } = useSarak();
+    const { effective: sarak, applyFullConfig } = useSarakUI();
+    
+    // Extração segura de propriedades de atalhos
+    const shortcuts = (sarak as any).shortcuts || [];
+    const registeredActions = (sarak as any).registeredActions || {};
+    const updateShortcut = (sarak as any).updateShortcut || ((id: string, keys: string[]) => {
+        console.warn('UpdateShortcut não disponível em modo Standalone');
+        // Fallback: tentar atualizar via config genérica se houver suporte futuro
+        applyFullConfig({ _shortcutUpdate: { id, keys } });
+    });
 
     const [editingId, setEditingId] = useState<string | null>(null);
     const [tempKeys, setTempKeys] = useState<string[]>([]);

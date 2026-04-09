@@ -1,11 +1,11 @@
-import React, { ReactNode, useState, useEffect, useMemo, useCallback } from 'react';
-import { useSarak, getRegisteredModules, SarakModule, LAYOUTS } from '@sarak/lib-shared';
+import { getRegisteredModules, SarakModule, LAYOUTS } from '@sarak/lib-shared';
 import * as LucideIcons from 'lucide-react';
 import { 
     LogOut, User, Menu, X, ChevronRight, LayoutDashboard, 
     ChevronLeft, Settings, Search, Bell, Monitor, Zap
 } from 'lucide-react';
 import ThemeToggle from './ThemeToggle';
+import { useSarakUI } from './SarakUIProvider';
 import { motion, AnimatePresence } from 'framer-motion';
 import SarakCursor from './SarakCursor';
 import SarakSearch from './SarakSearch';
@@ -35,13 +35,29 @@ export const SarakShell: React.FC<SarakShellProps> = ({
     brand = { name: "Sarak Matrix" },
     extraToolbarItems
 }) => {
+    const { effective: sarak, applyFullConfig } = useSarakUI();
+    
+    // Destruturação segura das propriedades do motor visual
     const { 
-        user, logout, theme, isNavHidden, toggleNav,
-        sidebarWidth, setSidebarWidth, mode,
-        systemName, logoUrl, logoDarkUrl, logoScale, logoPosition,
-        cursorPhysics, isSplitViewEnabled, secondaryModuleId, navigationStyle, setNavigationStyle,
-        emptyStateId, isAutoHideEnabled, animationSpeed, searchStyle
-    } = useSarak();
+        layout: theme, mode, primary: primaryColor, density: layoutDensity, 
+        texture, navStyle: navigationStyle, sidebarWidth, headingFont, 
+        subtitleFont, tabFont, bodyFont, headingWeight, headingSpacing: headingLetterSpacing,
+        borderRadius, borderWidth, borderStyle, glassOpacity, glassBlur, shadowIntensity,
+        isGeometric: isGeometricCut, textureOpacity, animSpeed: animationSpeed, gap: layoutGap,
+        sysName: systemName, logoUrl, logoDarkUrl, logoScale, logoPos: logoPosition,
+        sysTone: systemTone, surface: surfaceMaterial, borderType, elasticity: interfaceElasticity,
+        isSplit: isSplitViewEnabled, chartS: chartStyle, chartP: chartPalette, shOrient: shadowOrientation,
+        shMode: shadowColorMode, isAutoHide: isAutoHideEnabled, searchStyle
+    } = sarak;
+
+    // Fallbacks para funções de estado/shared
+    const user = (sarak as any).user || { email: 'Sarak User', role: 'Guest' };
+    const logout = (sarak as any).logout || (() => console.warn('Logout não disponível em modo Standalone'));
+    const isNavHidden = (sarak as any).isNavHidden || false;
+    const toggleNav = (sarak as any).toggleNav || (() => console.warn('ToggleNav não disponível em modo Standalone'));
+    const setSidebarWidth = (sarak as any).setSidebarWidth || ((w: number) => applyFullConfig({ sidebarWidth: w }));
+    const secondaryModuleId = (sarak as any).secondaryModuleId;
+    const emptyStateId = (sarak as any).emptyStateId || 'default';
     
     const [isSearchOpen, setIsSearchOpen] = useState(false);
     const [isNavVisible, setIsNavVisible] = useState(true);

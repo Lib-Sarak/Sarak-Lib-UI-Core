@@ -1,7 +1,25 @@
 import React, { ReactNode, useEffect, useState, useMemo } from 'react';
 import '../styles/sarak-base.css';
-import { LAYOUTS, SCALES, DENSITY, SarakContext } from '@sarak/lib-shared';
+import { LAYOUTS, SCALES, DENSITY } from '@sarak/lib-shared';
 import { useSarak as useGlobalSarak } from '@sarak/lib-shared';
+
+// --- SARAK UI BRIDGE CONTEXT (Independência 100%) ---
+export interface SarakUIContextType {
+    effective: any;
+    applyFullConfig: (config: any) => void;
+    isStandalone: boolean;
+}
+
+const UIContext = React.createContext<SarakUIContextType | undefined>(undefined);
+
+export const useSarakUI = () => {
+    const context = React.useContext(UIContext);
+    if (!context) {
+        // Fallback para componentes que podem ser usados fora do Provider (não recomendado)
+        return { effective: {}, applyFullConfig: () => {}, isStandalone: true };
+    }
+    return context;
+};
 
 interface SarakUIProviderProps {
     children: ReactNode;
@@ -10,14 +28,6 @@ interface SarakUIProviderProps {
     primaryColor?: string;
 }
 
-/**
- * SarakUIProvider (Sovereign Motor v6.1 - Matrix Trace Engine)
- * 
- * Este é o motor visual soberano do ecossistema Sarak.
- * Seguindo a Skill Sarak-Lib v5.4.1:
- * - Lib-Shared: SSoT de Estado (Dados/Persistência).
- * - Lib-UI-Core: Motor Visual (Injeção CSS/DOM/Atributos).
- */
 export const SarakUIProvider: React.FC<SarakUIProviderProps> = ({ 
     children, 
     theme: propTheme, 
@@ -171,14 +181,26 @@ export const SarakUIProvider: React.FC<SarakUIProviderProps> = ({
                 tokens[cssKey] = finalValue;
                 
                 // 2. Ponte de Compatibilidade (Tokens Legados / Core)
+                // Essencial para manter a sincronização com sarak-base.css e módulos v5.x
                 const legacyMap: Record<string, string> = {
                     primary: '--theme-primary',
                     sidebarWidth: '--sidebar-width',
                     headingFont: '--font-heading',
+                    subtitleFont: '--font-subtitle',
+                    tabFont: '--font-tab',
                     bodyFont: '--font-main',
+                    headingWeight: '--heading-weight',
+                    headingSpacing: '--heading-spacing',
                     borderRadius: '--radius-theme',
+                    borderWidth: '--border-width',
+                    borderStyle: '--border-style',
                     gap: '--theme-gap',
-                    mode: '--sarak-mode'
+                    glassOpacity: '--glass-opacity',
+                    glassBlur: '--glass-blur',
+                    shadowIntensity: '--shadow-intensity',
+                    mode: '--sarak-mode',
+                    textureOpacity: '--texture-opacity',
+                    animSpeed: '--animation-speed'
                 };
                 if (legacyMap[key]) tokens[legacyMap[key]] = finalValue;
             });
@@ -246,6 +268,42 @@ export const SarakUIProvider: React.FC<SarakUIProviderProps> = ({
         effective.shMode, effective.isAutoHide, globalSarak
     ]);
 
+    const applyFullLocalConfig = (c: any) => {
+        if (c.layout || c.theme) setLocalLayout(c.layout || c.theme);
+        if (c.mode) setLocalMode(c.mode);
+        if (c.primaryColor) setLocalPrimary(c.primaryColor);
+        if (c.sidebarWidth) setLocalSidebarWidth(Number(c.sidebarWidth));
+        if (c.navigationStyle) setLocalNavStyle(c.navigationStyle);
+        if (c.layoutDensity) setLocalDensity(c.layoutDensity);
+        if (c.texture) setLocalTexture(c.texture);
+        if (c.headingFont) setHeadingFont(c.headingFont);
+        if (c.subtitleFont) setSubtitleFont(c.subtitleFont);
+        if (c.tabFont) setTabFont(c.tabFont);
+        if (c.bodyFont) setBodyFont(c.bodyFont);
+        if (c.headingWeight) setHeadingWeight(c.headingWeight);
+        if (c.headingLetterSpacing) setHeadingLetterSpacing(c.headingLetterSpacing);
+        if (c.fontScale) setFontScale(c.fontScale);
+        if (c.borderRadius) setBorderRadius(Number(c.borderRadius));
+        if (c.borderWidth) setBorderWidth(Number(c.borderWidth));
+        if (c.borderStyle) setBorderStyle(c.borderStyle);
+        if (c.layoutGap) setLayoutGap(Number(c.layoutGap));
+        if (c.glassOpacity !== undefined) setGlassOpacity(Number(c.glassOpacity));
+        if (c.glassBlur !== undefined) setGlassBlur(Number(c.glassBlur));
+        if (c.textureOpacity !== undefined) setTextureOpacity(Number(c.textureOpacity));
+        if (c.animationSpeed !== undefined) setAnimationSpeed(Number(c.animationSpeed));
+        if (c.isGeometricCut !== undefined) setIsGeometricCut(!!c.isGeometricCut);
+        if (c.shadowIntensity !== undefined) setShadowIntensity(Number(c.shadowIntensity));
+        if (c.surfaceMaterial) setSurfaceMaterial(c.surfaceMaterial);
+        if (c.borderType) setBorderType(c.borderType);
+        if (c.systemName) setSystemName(c.systemName);
+        if (c.logoUrl) setLogoUrl(c.logoUrl);
+        if (c.logoDarkUrl) setLogoDarkUrl(c.logoDarkUrl);
+        if (c.logoScale) setLogoScale(Number(c.logoScale));
+        if (c.logoPosition) setLogoPosition(c.logoPosition);
+        if (c.systemTone) setSystemTone(c.systemTone);
+        if (c.chartStyle) setChartStyle(c.chartStyle);
+    };
+
     const fallbackContextValue = useMemo(() => ({
         layout: localLayout, setLayout: setLocalLayout,
         theme: localLayout, setTheme: setLocalLayout,
@@ -269,14 +327,7 @@ export const SarakUIProvider: React.FC<SarakUIProviderProps> = ({
         shadowOrientation, setShadowOrientation, shadowColorMode, setShadowColorMode,
         isSplitViewEnabled, setIsSplitViewEnabled, searchStyle, setSearchStyle,
         interfaceElasticity, setInterfaceElasticity,
-        applyFullConfig: (c: any) => {
-            if (c.layout) setLocalLayout(c.layout);
-            if (c.mode) setLocalMode(c.mode);
-            if (c.primaryColor) setLocalPrimary(c.primaryColor);
-            if (c.borderRadius) setBorderRadius(c.borderRadius);
-            if (c.surfaceMaterial) setSurfaceMaterial(c.surfaceMaterial);
-            if (c.systemName) setSystemName(c.systemName);
-        },
+        applyFullConfig: applyFullLocalConfig,
         layouts: LAYOUTS, isHydrated: true, loading: false
     }), [
         localLayout, localMode, localPrimary, localDensity, localTexture,
@@ -287,12 +338,20 @@ export const SarakUIProvider: React.FC<SarakUIProviderProps> = ({
         shadowColorMode, isSplitViewEnabled, searchStyle, layoutGap, interfaceElasticity
     ]);
 
+    const uiBridgeValue = useMemo(() => ({
+        effective,
+        applyFullConfig: globalSarak ? globalSarak.applyFullConfig : applyFullLocalConfig,
+        isStandalone: !globalSarak
+    }), [effective, globalSarak]);
+
     if (!isHydrated) return null;
 
     return (
-        <SarakContext.Provider value={(globalSarak || fallbackContextValue) as any}>
-            {children}
-        </SarakContext.Provider>
+        <UIContext.Provider value={uiBridgeValue}>
+            <SarakContext.Provider value={(globalSarak || fallbackContextValue) as any}>
+                {children}
+            </SarakContext.Provider>
+        </UIContext.Provider>
     );
 };
 

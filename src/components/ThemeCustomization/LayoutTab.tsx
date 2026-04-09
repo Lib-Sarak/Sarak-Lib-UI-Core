@@ -1,16 +1,23 @@
 import React from 'react';
-import { useSarak, DENSITY, SCALES, NAVIGATION_STYLES, THEME_FONTS } from '@sarak/lib-shared';
+import { DENSITY, SCALES, NAVIGATION_STYLES, THEME_FONTS } from '@sarak/lib-shared';
+import { useSarakUI } from '../SarakUIProvider';
 import { Maximize2, Minimize2, Type, Layout as LayoutIcon, Sidebar as SidebarIcon, ArrowRightLeft, CaseSensitive } from 'lucide-react';
 
 export const LayoutTab: React.FC = () => {
+    const { effective: sarak, applyFullConfig } = useSarakUI();
+    
+    // Mapeamento de setters para o bridge unificado
     const { 
-        layoutDensity, setLayoutDensity,
-        fontScale, setFontScale,
-        navigationStyle, setNavigationStyle,
-        sidebarWidth, setSidebarWidth,
-        headingFont, setHeadingFont,
-        bodyFont, setBodyFont
-    } = useSarak();
+        layoutDensity, fontScale, navigationStyle, 
+        sidebarWidth, headingFont, bodyFont 
+    } = sarak;
+
+    const setLayoutDensity = (val: string) => applyFullConfig({ layoutDensity: val });
+    const setFontScale = (val: string) => applyFullConfig({ fontScale: val });
+    const setNavigationStyle = (val: string) => applyFullConfig({ navigationStyle: val });
+    const setSidebarWidth = (val: number) => applyFullConfig({ sidebarWidth: val });
+    const setHeadingFont = (val: string) => applyFullConfig({ headingFont: val });
+    const setBodyFont = (val: string) => applyFullConfig({ bodyFont: val });
 
     const densities = [
         { id: 'compact', label: 'Compacto', icon: Minimize2, desc: 'Ideal para dashboards densos' },
