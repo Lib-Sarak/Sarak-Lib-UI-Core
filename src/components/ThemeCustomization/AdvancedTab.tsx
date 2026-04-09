@@ -1,3 +1,4 @@
+import React from 'react';
 import { useSarakUI } from '../SarakUIProvider';
 import { getRegisteredModules } from '@sarak/lib-shared';
 import { Settings, Cpu, HardDrive, RefreshCw, Zap, Shield, HelpCircle, Activity } from 'lucide-react';

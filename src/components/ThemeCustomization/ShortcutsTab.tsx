@@ -1,3 +1,4 @@
+import React, { useState } from 'react';
 import { useSarakUI } from '../SarakUIProvider';
 import { Keyboard, Edit3, X, RotateCcw, Plus, Trash2, Command, Search, Filter } from 'lucide-react';
 import { motion, AnimatePresence } from 'framer-motion';

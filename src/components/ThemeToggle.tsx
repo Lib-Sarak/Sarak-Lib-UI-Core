@@ -1,3 +1,4 @@
+import React from 'react';
 import { LAYOUTS } from '@sarak/lib-shared';
 import { useSarakUI } from './SarakUIProvider';
 import { Palette, ChevronRight, Check } from 'lucide-react';
