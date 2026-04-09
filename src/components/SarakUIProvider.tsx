@@ -1,6 +1,6 @@
 import React, { ReactNode, useEffect, useState, useMemo } from 'react';
 import '../styles/sarak-base.css';
-import { LAYOUTS, SCALES, DENSITY } from '@sarak/lib-shared';
+import { LAYOUTS, SCALES, DENSITY, SarakContext } from '@sarak/lib-shared';
 import { useSarak as useGlobalSarak } from '@sarak/lib-shared';
 
 // --- SARAK UI BRIDGE CONTEXT (Independência 100%) ---
