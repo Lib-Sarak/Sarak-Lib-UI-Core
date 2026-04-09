@@ -28,126 +28,6 @@ interface SarakUIProviderProps {
     primaryColor?: string;
 }
 
-export const SarakUIProvider: React.FC<SarakUIProviderProps> = ({ 
-    children, 
-    theme: propTheme, 
-    mode: propMode, 
-    primaryColor: propPrimary 
-}) => {
-    let globalSarak: any = null;
-    try { globalSarak = useGlobalSarak(); } catch (e) { }
-
-    // --- ESTADO LOCAL (FALLBACK DESIGN ENGINE 6.0) ---
-    const [localLayout, setLocalLayout] = useState(() => localStorage.getItem('sarak_local_layout') || propTheme || 'glass');
-    const [localMode, setLocalMode] = useState<'light' | 'dark' | 'system'>(() => (localStorage.getItem('sarak_local_mode') as any) || propMode || 'dark');
-    const [localPrimary, setLocalPrimary] = useState(() => localStorage.getItem('sarak_local_primary') || propPrimary || '#3b82f6');
-    const [localSidebarWidth, setLocalSidebarWidth] = useState(() => Number(localStorage.getItem('sarak_local_sidebar_width')) || 260);
-    const [localNavStyle, setLocalNavStyle] = useState<'sidebar' | 'topbar' | 'dock'>(() => (localStorage.getItem('sarak_local_nav_style') as any) || 'sidebar');
-    const [localDensity, setLocalDensity] = useState(() => localStorage.getItem('sarak_local_density') || 'standard');
-    const [localTexture, setLocalTexture] = useState(() => localStorage.getItem('sarak_local_texture') || 'none');
-    
-    // Tokens de Tipografia & Geometria
-    const [headingFont, setHeadingFont] = useState(() => localStorage.getItem('sarak_local_font_h') || "");
-    const [subtitleFont, setSubtitleFont] = useState(() => localStorage.getItem('sarak_local_font_s') || "");
-    const [tabFont, setTabFont] = useState(() => localStorage.getItem('sarak_local_font_tab') || "");
-    const [bodyFont, setBodyFont] = useState(() => localStorage.getItem('sarak_local_font_b') || "");
-    const [headingWeight, setHeadingWeight] = useState(() => localStorage.getItem('sarak_local_weight_h') || '600');
-    const [headingLetterSpacing, setHeadingLetterSpacing] = useState(() => localStorage.getItem('sarak_local_spacing_h') || 'normal');
-    const [fontScale, setFontScale] = useState(() => localStorage.getItem('sarak_local_font_scale') || 'm');
-    const [borderRadius, setBorderRadius] = useState(() => Number(localStorage.getItem('sarak_local_radius')) || 12);
-    const [borderWidth, setBorderWidth] = useState(() => Number(localStorage.getItem('sarak_local_border_w')) || 1);
-    const [borderStyle, setBorderStyle] = useState(() => localStorage.getItem('sarak_local_border_s') || 'solid');
-    const [layoutGap, setLayoutGap] = useState(() => Number(localStorage.getItem('sarak_local_gap')) || 20);
-    
-    // Tokens de Materiais & Efeitos
-    const [surfaceMaterial, setSurfaceMaterial] = useState<'glass' | 'metallic' | 'brushed' | 'acrylic' | 'matte'>(() => (localStorage.getItem('sarak_local_material') as any) || 'glass');
-    const [borderType, setBorderType] = useState<'default' | 'inlet' | 'neon' | 'beveled'>(() => (localStorage.getItem('sarak_local_border_type') as any) || 'default');
-    const [glassOpacity, setGlassOpacity] = useState(() => Number(localStorage.getItem('sarak_local_glass_o')) || 0.7);
-    const [glassBlur, setGlassBlur] = useState(() => Number(localStorage.getItem('sarak_local_glass_b')) || 15);
-    const [shadowIntensity, setShadowIntensity] = useState(() => Number(localStorage.getItem('sarak_local_shadow')) || 0.5);
-    const [isGeometricCut, setIsGeometricCut] = useState(() => localStorage.getItem('sarak_local_is_geom') === 'true');
-    const [textureOpacity, setTextureOpacity] = useState(() => Number(localStorage.getItem('sarak_local_texture_o')) || 0.05);
-    const [animationSpeed, setAnimationSpeed] = useState(() => Number(localStorage.getItem('sarak_local_anim_v')) || 0.4);
-    
-    // Tokens de Branding & Identidade v6.0
-    const [systemName, setSystemName] = useState(() => localStorage.getItem('sarak_local_sys_name') || 'Sarak Standalone');
-    const [logoUrl, setLogoUrl] = useState(() => localStorage.getItem('sarak_local_logo_url') || '');
-    const [logoDarkUrl, setLogoDarkUrl] = useState(() => localStorage.getItem('sarak_local_logo_dark') || '');
-    const [logoScale, setLogoScale] = useState(() => Number(localStorage.getItem('sarak_local_logo_scale')) || 1.0);
-    const [logoPosition, setLogoPosition] = useState<'left' | 'center'>(() => (localStorage.getItem('sarak_local_logo_pos') as any) || 'left');
-    const [systemTone, setSystemTone] = useState<'formal' | 'friendly' | 'cyber'>(() => (localStorage.getItem('sarak_local_tone') as any) || 'formal');
-    
-    // Tokens de Dados & Navegação v6.0
-    const [chartStyle, setChartStyle] = useState<'line' | 'bar' | 'solid' | 'glass'>(() => (localStorage.getItem('sarak_local_chart_s') as any) || 'glass');
-    const [chartPalette, setChartPalette] = useState<string[]>(() => JSON.parse(localStorage.getItem('sarak_local_chart_p') || '["#3b82f6", "#10b981"]'));
-    const [shadowOrientation, setShadowOrientation] = useState<'top-down' | 'isometric' | 'inner'>(() => (localStorage.getItem('sarak_local_sh_orient') as any) || 'top-down');
-    const [shadowColorMode, setShadowColorMode] = useState<'neutral' | 'adaptive' | 'match'>(() => (localStorage.getItem('sarak_local_sh_mode') as any) || 'adaptive');
-    const [isSplitViewEnabled, setIsSplitViewEnabled] = useState(() => localStorage.getItem('sarak_local_split') === 'true');
-    const [searchStyle, setSearchStyle] = useState<'minimal' | 'command-palette'>(() => (localStorage.getItem('sarak_local_search') as any) || 'command-palette');
-    const [interfaceElasticity, setInterfaceElasticity] = useState(() => Number(localStorage.getItem('sarak_local_elasticity')) || 1.0);
-    const [cursorPhysics, setCursorPhysics] = useState(() => localStorage.getItem('sarak_local_cursor') === 'true' || true);
-    const [localIsNavHidden, setLocalIsNavHidden] = useState(() => localStorage.getItem('sarak_local_nav_hidden') === 'true' || false);
-
-    const [isHydrated, setIsHydrated] = useState(false);
-
-    // Injeção de Fontes Premium
-    useEffect(() => {
-        if (typeof document === 'undefined') return;
-        const ID = 'sarak-core-fonts-v6.0';
-        if (document.getElementById(ID)) return;
-        const style = document.createElement('style');
-        style.id = ID;
-        style.textContent = `@import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;600;700;800;900&family=Space+Grotesk:wght@300;500;700&family=Fira+Code:wght@400;500&family=Outfit:wght@300;400;600;700&family=JetBrains+Mono:wght@400;700&family=Satoshi:wght@300;400;700;900&family=Syncopate:wght@700&family=Tenor+Sans&family=Crimson+Pro:wght@400;700&family=Plus+Jakarta+Sans:wght@400;700&display=swap');`;
-        document.head.prepend(style);
-    }, []);
-
-    const s = globalSarak || {};
-    
-    // SSSoT Consumidor SOBERANO (Sem Guards)
-    const effective = {
-        layout: s.layout || localLayout,
-        mode: s.mode || localMode,
-        primaryColor: s.primaryColor || localPrimary,
-        layoutDensity: s.layoutDensity || localDensity,
-        texture: s.texture || localTexture,
-        navigationStyle: s.navigationStyle || localNavStyle,
-        sidebarWidth: s.sidebarWidth !== undefined ? s.sidebarWidth : localSidebarWidth,
-        headingFont: s.headingFont || headingFont,
-        subtitleFont: s.subtitleFont || subtitleFont,
-        tabFont: s.tabFont || tabFont,
-        bodyFont: s.bodyFont || bodyFont,
-        headingWeight: s.headingWeight || headingWeight,
-        headingLetterSpacing: s.headingLetterSpacing || headingLetterSpacing,
-        borderRadius: s.borderRadius !== undefined ? s.borderRadius : borderRadius,
-        borderWidth: s.borderWidth !== undefined ? s.borderWidth : borderWidth,
-        borderStyle: s.borderStyle || borderStyle,
-        glassOpacity: s.glassOpacity !== undefined ? s.glassOpacity : glassOpacity,
-        glassBlur: s.glassBlur !== undefined ? s.glassBlur : glassBlur,
-        shadowIntensity: s.shadowIntensity !== undefined ? s.shadowIntensity : shadowIntensity,
-        isGeometricCut: s.isGeometricCut !== undefined ? s.isGeometricCut : isGeometricCut,
-        textureOpacity: s.textureOpacity !== undefined ? s.textureOpacity : textureOpacity,
-        animationSpeed: s.animationSpeed !== undefined ? s.animationSpeed : animationSpeed,
-        layoutGap: s.layoutGap !== undefined ? s.layoutGap : layoutGap,
-        systemName: s.systemName || systemName,
-        logoUrl: s.logoUrl || logoUrl,
-        logoDarkUrl: s.logoDarkUrl || logoDarkUrl,
-        logoScale: s.logoScale !== undefined ? s.logoScale : logoScale,
-        logoPosition: s.logoPosition || logoPosition,
-        systemTone: s.systemTone || systemTone,
-        surfaceMaterial: s.surfaceMaterial || surfaceMaterial,
-        borderType: s.borderType || borderType,
-        interfaceElasticity: s.interfaceElasticity !== undefined ? s.interfaceElasticity : interfaceElasticity,
-        isSplitViewEnabled: s.isSplitViewEnabled !== undefined ? s.isSplitViewEnabled : isSplitViewEnabled,
-        chartStyle: s.chartStyle || chartStyle,
-        chartPalette: s.chartPalette || chartPalette,
-        shadowOrientation: s.shadowOrientation || shadowOrientation,
-        shadowColorMode: s.shadowColorMode || shadowColorMode,
-        isAutoHideEnabled: s.isAutoHideEnabled || false,
-        cursorPhysics: s.cursorPhysics !== undefined ? s.cursorPhysics : cursorPhysics,
-        isNavHidden: s.isNavHidden !== undefined ? s.isNavHidden : localIsNavHidden,
-        registeredModules: s.registeredModules || []
-    };
-
 // --- MANIFESTO DE DESIGN SOBERANO (SSoT v6.5) ---
 // Centraliza a tradução de estados lógicos para variáveis CSS e atributos do DOM.
 const DESIGN_MANIFEST: Record<string, { 
@@ -158,7 +38,7 @@ const DESIGN_MANIFEST: Record<string, {
     classPrefix?: string 
 }> = {
     layout: { vars: ['--sarak-layout'], classPrefix: 'layout-' },
-    mode: { vars: ['--sarak-mode'], varsTransform: (v: any) => v === 'dark' ? 'dark' : 'light' },
+    mode: { vars: ['--sarak-mode'], transform: (v: any) => v === 'dark' ? 'dark' : 'light' },
     primaryColor: { vars: ['--primary-color', '--theme-primary', '--sarak-primary-color'] },
     layoutDensity: { vars: ['--sarak-layout-density'], classPrefix: 'density-' },
     texture: { vars: ['--sarak-texture'], classPrefix: 'texture-' },
@@ -320,7 +200,8 @@ export const SarakUIProvider: React.FC<SarakUIProviderProps> = ({
         isAutoHideEnabled: s.isAutoHideEnabled || false,
         cursorPhysics: s.cursorPhysics !== undefined ? s.cursorPhysics : cursorPhysics,
         isNavHidden: s.isNavHidden !== undefined ? s.isNavHidden : localIsNavHidden,
-        fontScale: s.fontScale || fontScale
+        fontScale: s.fontScale || fontScale,
+        registeredModules: s.registeredModules || []
     };
 
     // --- SARAK MANIFEST-DRIVEN DESIGN ENGINE (v6.5) ---
@@ -333,15 +214,8 @@ export const SarakUIProvider: React.FC<SarakUIProviderProps> = ({
             console.group('%c🚀 [Matrix Trace] Motor de Design Baseado em Manifesto v6.5', 'background: #0f172a; color: #10b981; padding: 4px; font-weight: bold;');
             
             const appliedTokens: Record<string, string> = {};
-            const cleanClasses: string[] = [];
             const attributesToSet: Record<string, string> = {};
 
-            // Classes básicas para limpeza
-            const atomicClasses = [
-                'light', 'dark', 'is-geometric',
-                ...Object.keys(DESIGN_MANIFEST).map(k => DESIGN_MANIFEST[k].classPrefix).filter(Boolean).map(p => `${p}*`)
-            ];
-            
             // Processamento do Manifesto
             Object.entries(effective).forEach(([key, value]) => {
                 const config = DESIGN_MANIFEST[key];
@@ -360,7 +234,7 @@ export const SarakUIProvider: React.FC<SarakUIProviderProps> = ({
                         root.style.setProperty(v, finalValue);
                     });
                 } else {
-                    // Fallback automático para kebab-case (Ex: interfaceElasticity -> --sarak-interface-elasticity)
+                    // Fallback automático para kebab-case
                     const fallbackKey = `--sarak-${key.replace(/([a-z0-9]|(?=[A-Z]))([A-Z])/g, '$1-$2').toLowerCase()}`;
                     appliedTokens[fallbackKey] = finalValue;
                     root.style.setProperty(fallbackKey, finalValue);
