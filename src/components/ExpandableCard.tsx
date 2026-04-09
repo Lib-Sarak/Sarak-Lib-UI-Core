@@ -74,7 +74,7 @@ export const ExpandableCard: React.FC<ExpandableCardProps> = ({
                     {isExpanded && (
                         <motion.div
                             initial={{ opacity: 0, backdropFilter: 'blur(0px)' }}
-                            animate={{ opacity: 1, backdropFilter: 'blur(20px)' }}
+                            animate={{ opacity: 1, backdropFilter: 'blur(var(--glass-blur))' }}
                             exit={{ opacity: 0, backdropFilter: 'blur(0px)' }}
                             transition={{ duration: 0.3 }}
                             className="fixed inset-0 z-[99999] bg-theme-body flex flex-col"
@@ -95,14 +95,14 @@ export const ExpandableCard: React.FC<ExpandableCardProps> = ({
                                         {helpButton && <div className="flex items-center">{helpButton}</div>}
                                         <button
                                             onClick={() => setIsExpanded(false)}
-                                            className="p-3 bg-theme-card hover:bg-theme-primary/20 text-theme-primary border border-theme-border rounded-full transition-all shadow-lg cursor-pointer shrink-0 ml-2"
+                                            className="p-3 bg-theme-card hover:bg-theme-primary/20 text-theme-primary border border-theme-border rounded-[calc(var(--radius-theme)*2)] transition-all shadow-lg cursor-pointer shrink-0 ml-2"
                                             title="Fechar"
                                         >
                                             <X className="w-5 h-5 sm:w-6 sm:h-6" />
                                         </button>
                                     </div>
                                 </div>
-                                <div className={`flex-1 w-full relative flex flex-col min-h-0 bg-theme-card rounded-2xl border border-theme-border shadow-theme ${contentClassName}`}>
+                                <div className={`flex-1 w-full relative flex flex-col min-h-0 bg-theme-card rounded-[var(--radius-theme)] border border-theme-border shadow-theme ${contentClassName}`}>
                                     {children}
                                 </div>
                             </motion.div>

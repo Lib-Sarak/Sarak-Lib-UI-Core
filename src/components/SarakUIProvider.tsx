@@ -28,7 +28,7 @@ interface SarakUIProviderProps {
     primaryColor?: string;
 }
 
-// --- MANIFESTO DE DESIGN SOBERANO (SSoT v6.6) ---
+// --- MANIFESTO DE DESIGN SOBERANO (SSoT v6.7) ---
 // Centraliza a tradução de estados lógicos para variáveis CSS e atributos do DOM.
 const DESIGN_MANIFEST: Record<string, { 
     vars?: string[], 
@@ -41,16 +41,12 @@ const DESIGN_MANIFEST: Record<string, {
     mode: { vars: ['--sarak-mode'], transform: (v: any) => v === 'dark' ? 'dark' : 'light' },
     primaryColor: { 
         vars: ['--primary-color', '--theme-primary', '--sarak-primary-color'],
-        // Injeta automaticamente os componentes RGB para suportar as opacidades do CSS legado
         transform: (v: string) => {
             const hex = v.replace('#', '');
             const r = parseInt(hex.substring(0, 2), 16);
             const g = parseInt(hex.substring(2, 4), 16);
             const b = parseInt(hex.substring(4, 6), 16);
-            return {
-                main: v,
-                rgb: `${r}, ${g}, ${b}`
-            };
+            return { main: v, rgb: `${r}, ${g}, ${b}` };
         }
     },
     layoutDensity: { vars: ['--sarak-layout-density'], classPrefix: 'density-' },
@@ -82,14 +78,33 @@ const DESIGN_MANIFEST: Record<string, {
     glassBlur: { vars: ['--glass-blur', '--sarak-glass-blur'], unit: 'px' },
     shadowIntensity: { vars: ['--shadow-intensity', '--sarak-shadow-intensity'] },
     isGeometricCut: { classPrefix: 'is-geometric' },
-    textureOpacity: { vars: ['--texture-opacity', '--sarak-texture-opacity'] },
+    textureOpacity: { vars: ['--texture-opacity', '--sarak-texture-opacity', '--theme-texture-opacity'] },
     animationSpeed: { vars: ['--animation-speed', '--sarak-animation-speed', '--transition-speed'], unit: 's' },
-    surfaceMaterial: { attr: 'data-surface' },
-    borderType: { attr: 'data-border' },
+    surfaceMaterial: { attr: 'data-surface', vars: ['--sarak-surface'] },
+    borderType: { attr: 'data-border', vars: ['--sarak-border-type'] },
     systemTone: { vars: ['--sarak-system-tone'], attr: 'data-tone' },
     isAutoHideEnabled: { attr: 'data-auto-hide' },
-    shadowOrientation: { vars: ['--shadow-orientation'] }, // Injeta como valor literal para seletores [style*="..."]
-    shadowColorMode: { vars: ['--shadow-color-mode'] }
+    shadowOrientation: { vars: ['--shadow-orientation'], attr: 'data-shadow-orientation' },
+    shadowColorMode: { vars: ['--shadow-color-mode'], attr: 'data-shadow-color-mode' },
+    
+    // Branding & Identity
+    systemName: { attr: 'data-system-name' },
+    logoUrl: { attr: 'data-logo-url' },
+    logoDarkUrl: { attr: 'data-logo-dark' },
+    logoScale: { vars: ['--logo-scale'], transform: (v) => v || 1.0 },
+    logoPosition: { attr: 'data-logo-position' },
+    
+    // Physics & Interface
+    interfaceElasticity: { vars: ['--sarak-elasticity'] },
+    cursorPhysics: { attr: 'data-cursor-physics' },
+    isSplitViewEnabled: { attr: 'data-split-view' },
+    
+    // Data & Content
+    chartStyle: { attr: 'data-chart-style' },
+    chartPalette: { vars: ['--chart-palette'], transform: (v) => Array.isArray(v) ? v.join(',') : v },
+    searchStyle: { attr: 'data-search-style' },
+    emptyStateId: { attr: 'data-empty-state' },
+    secondaryModuleId: { attr: 'data-sec-module' }
 };
 
 export const SarakUIProvider: React.FC<SarakUIProviderProps> = ({ 
@@ -181,7 +196,7 @@ export const SarakUIProvider: React.FC<SarakUIProviderProps> = ({
         return localFallback;
     }, [s]);
 
-    // SSSoT Consumidor SOBERANO (Ponte Resiliente v6.6)
+    // SSSoT Consumidor SOBERANO (Ponte Resiliente v6.7)
     const effective = useMemo(() => ({
         layout: pickup('layout', localLayout),
         mode: pickup('mode', localMode),
@@ -224,6 +239,9 @@ export const SarakUIProvider: React.FC<SarakUIProviderProps> = ({
         cursorPhysics: pickup('cursorPhysics', cursorPhysics),
         isNavHidden: pickup('isNavHidden', localIsNavHidden),
         fontScale: pickup('fontScale', fontScale),
+        emptyStateId: pickup('emptyStateId', 'default'),
+        secondaryModuleId: pickup('secondaryModuleId', ''),
+        searchStyle: pickup('searchStyle', 'command-palette'),
         registeredModules: pickup('registeredModules', [])
     }), [
         pickup, localLayout, localMode, localPrimary, localDensity, localTexture, 
@@ -233,7 +251,7 @@ export const SarakUIProvider: React.FC<SarakUIProviderProps> = ({
         animationSpeed, layoutGap, systemName, logoUrl, logoDarkUrl, logoScale, 
         logoPosition, systemTone, surfaceMaterial, borderType, interfaceElasticity, 
         isSplitViewEnabled, chartStyle, chartPalette, shadowOrientation, shadowColorMode, 
-        cursorPhysics, localIsNavHidden, fontScale
+        cursorPhysics, localIsNavHidden, fontScale, systemName, searchStyle
     ]);
 
     // --- SARAK MANIFEST-DRIVEN DESIGN ENGINE (v6.5) ---
@@ -341,37 +359,44 @@ export const SarakUIProvider: React.FC<SarakUIProviderProps> = ({
     const applyFullLocalConfig = (c: any) => {
         if (c.layout || c.theme) setLocalLayout(c.layout || c.theme);
         if (c.mode) setLocalMode(c.mode);
-        if (c.primaryColor) setLocalPrimary(c.primaryColor);
-        if (c.sidebarWidth) setLocalSidebarWidth(Number(c.sidebarWidth));
-        if (c.navigationStyle) setLocalNavStyle(c.navigationStyle);
-        if (c.layoutDensity) setLocalDensity(c.layoutDensity);
+        if (c.primaryColor || c.primarycolor) setLocalPrimary(c.primaryColor || c.primarycolor);
+        if (c.sidebarWidth || c.sidebarwidth) setLocalSidebarWidth(Number(c.sidebarWidth || c.sidebarwidth));
+        if (c.navigationStyle || c.navigationstyle) setLocalNavStyle(c.navigationStyle || c.navigationstyle);
+        if (c.layoutDensity || c.layoutdensity) setLocalDensity(c.layoutDensity || c.layoutdensity);
         if (c.texture) setLocalTexture(c.texture);
-        if (c.headingFont) setHeadingFont(c.headingFont);
-        if (c.subtitleFont) setSubtitleFont(c.subtitleFont);
-        if (c.tabFont) setTabFont(c.tabFont);
-        if (c.bodyFont) setBodyFont(c.bodyFont);
-        if (c.headingWeight) setHeadingWeight(c.headingWeight);
-        if (c.headingLetterSpacing) setHeadingLetterSpacing(c.headingLetterSpacing);
-        if (c.fontScale) setFontScale(c.fontScale);
-        if (c.borderRadius) setBorderRadius(Number(c.borderRadius));
-        if (c.borderWidth) setBorderWidth(Number(c.borderWidth));
-        if (c.borderStyle) setBorderStyle(c.borderStyle);
-        if (c.layoutGap) setLayoutGap(Number(c.layoutGap));
-        if (c.glassOpacity !== undefined) setGlassOpacity(Number(c.glassOpacity));
-        if (c.glassBlur !== undefined) setGlassBlur(Number(c.glassBlur));
-        if (c.textureOpacity !== undefined) setTextureOpacity(Number(c.textureOpacity));
-        if (c.animationSpeed !== undefined) setAnimationSpeed(Number(c.animationSpeed));
-        if (c.isGeometricCut !== undefined) setIsGeometricCut(!!c.isGeometricCut);
-        if (c.shadowIntensity !== undefined) setShadowIntensity(Number(c.shadowIntensity));
-        if (c.surfaceMaterial) setSurfaceMaterial(c.surfaceMaterial);
-        if (c.borderType) setBorderType(c.borderType);
-        if (c.systemName) setSystemName(c.systemName);
-        if (c.logoUrl) setLogoUrl(c.logoUrl);
-        if (c.logoDarkUrl) setLogoDarkUrl(c.logoDarkUrl);
-        if (c.logoScale) setLogoScale(Number(c.logoScale));
-        if (c.logoPosition) setLogoPosition(c.logoPosition);
-        if (c.systemTone) setSystemTone(c.systemTone);
-        if (c.chartStyle) setChartStyle(c.chartStyle);
+        if (c.headingFont || c.headingfont) setHeadingFont(c.headingFont || c.headingfont);
+        if (c.subtitleFont || c.subtitlefont) setSubtitleFont(c.subtitleFont || c.subtitlefont);
+        if (c.tabFont || c.tabfont) setTabFont(c.tabFont || c.tabfont);
+        if (c.bodyFont || c.bodyfont) setBodyFont(c.bodyFont || c.bodyfont);
+        if (c.headingWeight || c.headingweight) setHeadingWeight(c.headingWeight || c.headingweight);
+        if (c.headingLetterSpacing || c.headingletterspacing) setHeadingLetterSpacing(c.headingLetterSpacing || c.headingletterspacing);
+        if (c.fontScale || c.fontscale) setFontScale(c.fontScale || c.fontscale);
+        if (c.borderRadius || c.borderradius) setBorderRadius(Number(c.borderRadius || c.borderradius));
+        if (c.borderWidth || c.borderwidth) setBorderWidth(Number(c.borderWidth || c.borderwidth));
+        if (c.borderStyle || c.borderstyle) setBorderStyle(c.borderStyle || c.borderstyle);
+        if (c.layoutGap || c.layoutgap) setLayoutGap(Number(c.layoutGap || c.layoutgap));
+        if (c.glassOpacity !== undefined || c.glassopacity !== undefined) setGlassOpacity(Number(c.glassOpacity ?? c.glassopacity));
+        if (c.glassBlur !== undefined || c.glassblur !== undefined) setGlassBlur(Number(c.glassBlur ?? c.glassblur));
+        if (c.textureOpacity !== undefined || c.textureopacity !== undefined) setTextureOpacity(Number(c.textureOpacity ?? c.textureopacity));
+        if (c.animationSpeed !== undefined || c.animationspeed !== undefined) setAnimationSpeed(Number(c.animationSpeed ?? c.animationspeed));
+        if (c.isGeometricCut !== undefined || c.isgeometriccut !== undefined) setIsGeometricCut(!!(c.isGeometricCut ?? c.isgeometriccut));
+        if (c.shadowIntensity !== undefined || c.shadowintensity !== undefined) setShadowIntensity(Number(c.shadowIntensity ?? c.shadowintensity));
+        if (c.surfaceMaterial || c.surfacematerial) setSurfaceMaterial(c.surfaceMaterial || c.surfacematerial);
+        if (c.borderType || c.bordertype) setBorderType(c.borderType || c.bordertype);
+        if (c.systemName || c.systemname) setSystemName(c.systemName || c.systemname);
+        if (c.logoUrl || c.logourl) setLogoUrl(c.logoUrl || c.logourl);
+        if (c.logoDarkUrl || c.logodarkurl) setLogoDarkUrl(c.logoDarkUrl || c.logodarkurl);
+        if (c.logoScale || c.logoscale) setLogoScale(Number(c.logoScale || c.logoscale));
+        if (c.logoPosition || c.logoposition) setLogoPosition(c.logoPosition || c.logoposition);
+        if (c.systemTone || c.systemtone) setSystemTone(c.systemTone || c.systemtone);
+        if (c.chartStyle || c.chartstyle) setChartStyle(c.chartStyle || c.chartstyle);
+        if (c.chartPalette || c.chartpalette) setChartPalette(c.chartPalette || c.chartpalette);
+        if (c.shadowOrientation || c.shadoworientation) setShadowOrientation(c.shadowOrientation || c.shadoworientation);
+        if (c.shadowColorMode || c.shadowcolormode) setShadowColorMode(c.shadowColorMode || c.shadowcolormode);
+        if (c.interfaceElasticity !== undefined || c.interfaceelasticity !== undefined) setInterfaceElasticity(Number(c.interfaceElasticity ?? c.interfaceelasticity));
+        if (c.cursorPhysics || c.cursorphysics) setCursorPhysics(c.cursorPhysics || c.cursorphysics);
+        if (c.isSplitViewEnabled !== undefined || c.issplitviewenabled !== undefined) setIsSplitViewEnabled(!!(c.isSplitViewEnabled ?? c.issplitviewenabled));
+        if (c.searchStyle || c.searchstyle) setSearchStyle(c.searchStyle || c.searchstyle);
     };
 
     const fallbackContextValue = useMemo(() => ({

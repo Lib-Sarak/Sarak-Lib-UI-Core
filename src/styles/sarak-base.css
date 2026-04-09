@@ -62,7 +62,9 @@ body {
     z-index: 0;
 }
 
-[class*="texture-"]::before {
+/* Camada dedicada ou Pseudo-elemento */
+[class*="texture-"]::before,
+.SarakAtmosphereLayer {
     content: "";
     position: absolute;
     inset: 0;
@@ -72,13 +74,13 @@ body {
 }
 
 .texture-grid::before {
-    background-image: linear-gradient(var(--border-color) 1px, transparent 1px), 
-                      linear-gradient(90deg, var(--border-color) 1px, transparent 1px);
+    background-image: linear-gradient(var(--theme-border) 1px, transparent 1px), 
+                      linear-gradient(90deg, var(--theme-border) 1px, transparent 1px);
     background-size: 40px 40px;
 }
 
 .texture-dots::before {
-    background-image: radial-gradient(var(--border-color) 1px, transparent 1px);
+    background-image: radial-gradient(var(--theme-border) 1px, transparent 1px);
     background-size: 24px 24px;
 }
 
@@ -346,4 +348,30 @@ h3, h4 {
 
 .glow-reveal {
     animation: sarak-glow-reveal 2s infinite ease-in-out;
+}
+
+/* 6. NUCLEAR SOVEREIGNTY RESET (v6.7) */
+/* Garante que sub-módulos respeitem o motor de design global */
+[data-theme] main, 
+[data-theme] section, 
+[data-theme] .sarak-module-container {
+    transition: background-color 0.4s ease, border-color 0.4s ease;
+}
+
+/* Impede que fundos sólidos de módulos cubram a textura da atmosfera */
+.layout-glass [data-theme] main {
+    background-color: transparent !important;
+}
+
+/* Força arredondamento global em elementos que usem a classe de card sarak */
+.bg-theme-card {
+    border-radius: var(--radius-theme) !important;
+}
+
+/* Sincronização de Geometria em Botões e Inputs de Módulos */
+button:not(.p-0), 
+input, 
+select, 
+textarea {
+    border-radius: calc(var(--radius-theme) * 0.7);
 }
