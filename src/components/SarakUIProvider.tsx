@@ -107,44 +107,45 @@ export const SarakUIProvider: React.FC<SarakUIProviderProps> = ({
     const effective = {
         layout: s.layout || localLayout,
         mode: s.mode || localMode,
-        primary: s.primaryColor || localPrimary,
-        density: s.layoutDensity || localDensity,
+        primaryColor: s.primaryColor || localPrimary,
+        layoutDensity: s.layoutDensity || localDensity,
         texture: s.texture || localTexture,
-        navStyle: s.navigationStyle || localNavStyle,
+        navigationStyle: s.navigationStyle || localNavStyle,
         sidebarWidth: s.sidebarWidth !== undefined ? s.sidebarWidth : localSidebarWidth,
         headingFont: s.headingFont || headingFont,
         subtitleFont: s.subtitleFont || subtitleFont,
         tabFont: s.tabFont || tabFont,
         bodyFont: s.bodyFont || bodyFont,
         headingWeight: s.headingWeight || headingWeight,
-        headingSpacing: s.headingLetterSpacing || headingLetterSpacing,
+        headingLetterSpacing: s.headingLetterSpacing || headingLetterSpacing,
         borderRadius: s.borderRadius !== undefined ? s.borderRadius : borderRadius,
         borderWidth: s.borderWidth !== undefined ? s.borderWidth : borderWidth,
         borderStyle: s.borderStyle || borderStyle,
         glassOpacity: s.glassOpacity !== undefined ? s.glassOpacity : glassOpacity,
         glassBlur: s.glassBlur !== undefined ? s.glassBlur : glassBlur,
         shadowIntensity: s.shadowIntensity !== undefined ? s.shadowIntensity : shadowIntensity,
-        isGeometric: s.isGeometricCut !== undefined ? s.isGeometricCut : isGeometricCut,
+        isGeometricCut: s.isGeometricCut !== undefined ? s.isGeometricCut : isGeometricCut,
         textureOpacity: s.textureOpacity !== undefined ? s.textureOpacity : textureOpacity,
-        animSpeed: s.animationSpeed !== undefined ? s.animationSpeed : animationSpeed,
-        gap: s.layoutGap !== undefined ? s.layoutGap : layoutGap,
-        sysName: s.systemName || systemName,
+        animationSpeed: s.animationSpeed !== undefined ? s.animationSpeed : animationSpeed,
+        layoutGap: s.layoutGap !== undefined ? s.layoutGap : layoutGap,
+        systemName: s.systemName || systemName,
         logoUrl: s.logoUrl || logoUrl,
         logoDarkUrl: s.logoDarkUrl || logoDarkUrl,
         logoScale: s.logoScale !== undefined ? s.logoScale : logoScale,
-        logoPos: s.logoPosition || logoPosition,
-        sysTone: s.systemTone || systemTone,
-        surface: s.surfaceMaterial || surfaceMaterial,
+        logoPosition: s.logoPosition || logoPosition,
+        systemTone: s.systemTone || systemTone,
+        surfaceMaterial: s.surfaceMaterial || surfaceMaterial,
         borderType: s.borderType || borderType,
-        elasticity: s.interfaceElasticity !== undefined ? s.interfaceElasticity : interfaceElasticity,
-        isSplit: s.isSplitViewEnabled !== undefined ? s.isSplitViewEnabled : isSplitViewEnabled,
-        chartS: s.chartStyle || chartStyle,
-        chartP: s.chartPalette || chartPalette,
-        shOrient: s.shadowOrientation || shadowOrientation,
-        shMode: s.shadowColorMode || shadowColorMode,
-        isAutoHide: s.isAutoHideEnabled || false,
+        interfaceElasticity: s.interfaceElasticity !== undefined ? s.interfaceElasticity : interfaceElasticity,
+        isSplitViewEnabled: s.isSplitViewEnabled !== undefined ? s.isSplitViewEnabled : isSplitViewEnabled,
+        chartStyle: s.chartStyle || chartStyle,
+        chartPalette: s.chartPalette || chartPalette,
+        shadowOrientation: s.shadowOrientation || shadowOrientation,
+        shadowColorMode: s.shadowColorMode || shadowColorMode,
+        isAutoHideEnabled: s.isAutoHideEnabled || false,
         cursorPhysics: s.cursorPhysics !== undefined ? s.cursorPhysics : cursorPhysics,
-        isNavHidden: s.isNavHidden !== undefined ? s.isNavHidden : localIsNavHidden
+        isNavHidden: s.isNavHidden !== undefined ? s.isNavHidden : localIsNavHidden,
+        registeredModules: s.registeredModules || []
     };
 
     // Motor de Design Sovereign (Matrix Trace Engine v6.1)
@@ -169,9 +170,9 @@ export const SarakUIProvider: React.FC<SarakUIProviderProps> = ({
 
                 // Tratamento de Unidades e Tipos (Proteção Soberana v6.1)
                 if (typeof value === 'number') {
-                    if (['sidebarWidth', 'borderRadius', 'borderWidth', 'gap', 'layoutGap', 'glassBlur'].includes(key)) {
+                    if (['sidebarWidth', 'borderRadius', 'borderWidth', 'layoutGap', 'glassBlur'].includes(key)) {
                         finalValue = `${value}px`;
-                    } else if (['animSpeed', 'animationSpeed'].includes(key)) {
+                    } else if (['animationSpeed'].includes(key)) {
                         finalValue = `${value}s`;
                     }
                 } else if (typeof value === 'boolean') {
@@ -187,30 +188,30 @@ export const SarakUIProvider: React.FC<SarakUIProviderProps> = ({
                 // 2. Ponte de Compatibilidade (Tokens Legados / Core)
                 // Essencial para manter a sincronização com sarak-base.css e módulos v5.x
                 const legacyMap: Record<string, string> = {
-                    primary: '--theme-primary',
+                    primaryColor: '--theme-primary',
                     sidebarWidth: '--sidebar-width',
                     headingFont: '--font-heading',
                     subtitleFont: '--font-subtitle',
                     tabFont: '--font-tab',
                     bodyFont: '--font-main',
                     headingWeight: '--heading-weight',
-                    headingSpacing: '--heading-spacing',
+                    headingLetterSpacing: '--heading-spacing',
                     borderRadius: '--radius-theme',
                     borderWidth: '--border-width',
                     borderStyle: '--border-style',
-                    gap: '--theme-gap',
+                    layoutGap: '--theme-gap',
                     glassOpacity: '--glass-opacity',
                     glassBlur: '--glass-blur',
                     shadowIntensity: '--shadow-intensity',
                     mode: '--sarak-mode',
                     textureOpacity: '--texture-opacity',
-                    animSpeed: '--animation-speed'
+                    animationSpeed: '--animation-speed'
                 };
                 if (legacyMap[key]) tokens[legacyMap[key]] = finalValue;
             });
 
             // Alias extras de marca
-            tokens['--primary-color'] = effective.primary;
+            tokens['--primary-color'] = effective.primaryColor;
 
             // Atomic Matrix Sync Logs
             console.group('%c🚀 [Matrix Trace] UI-Core Sovereign Dynamic Engine v6.1', 'background: #0f172a; color: #38bdf8; padding: 4px; font-weight: bold;');
@@ -241,10 +242,10 @@ export const SarakUIProvider: React.FC<SarakUIProviderProps> = ({
             const densityClasses = ['density-compact', 'density-standard', 'density-comfortable'];
             
             body.classList.remove(...sarakClasses, 'light', 'dark', ...textureClasses, ...densityClasses, 'is-geometric', 'nav-sidebar', 'nav-topbar');
-            body.classList.add(`layout-${effective.layout}`, effective.mode === 'dark' ? 'dark' : 'light', `density-${effective.density}`, `texture-${effective.texture}`, `nav-${effective.navStyle}`);
-            if (effective.isGeometric) body.classList.add('is-geometric');
+            body.classList.add(`layout-${effective.layout}`, effective.mode === 'dark' ? 'dark' : 'light', `density-${effective.layoutDensity}`, `texture-${effective.texture}`, `nav-${effective.navigationStyle}`);
+            if (effective.isGeometricCut) body.classList.add('is-geometric');
 
-            body.setAttribute('data-surface', effective.surface);
+            body.setAttribute('data-surface', effective.surfaceMaterial);
             body.setAttribute('data-border', effective.borderType);
 
             // Persistência Fallback (apenas se for modo Solo)
@@ -261,15 +262,15 @@ export const SarakUIProvider: React.FC<SarakUIProviderProps> = ({
             console.error('❌ [Matrix Trace Engine Failure]', error);
         }
     }, [
-        effective.layout, effective.mode, effective.primary, effective.density, effective.texture,
-        effective.navStyle, effective.sidebarWidth, effective.headingFont, effective.subtitleFont,
-        effective.tabFont, effective.bodyFont, effective.headingWeight, effective.headingSpacing,
+        effective.layout, effective.mode, effective.primaryColor, effective.layoutDensity, effective.texture,
+        effective.navigationStyle, effective.sidebarWidth, effective.headingFont, effective.subtitleFont,
+        effective.tabFont, effective.bodyFont, effective.headingWeight, effective.headingLetterSpacing,
         effective.borderRadius, effective.borderWidth, effective.borderStyle, effective.glassOpacity,
-        effective.glassBlur, effective.shadowIntensity, effective.isGeometric, effective.textureOpacity,
-        effective.animSpeed, effective.gap, effective.sysName, effective.logoUrl, effective.logoDarkUrl,
-        effective.logoScale, effective.logoPos, effective.sysTone, effective.surface, effective.borderType,
-        effective.elasticity, effective.isSplit, effective.chartS, effective.chartP, effective.shOrient,
-        effective.shMode, effective.isAutoHide, globalSarak
+        effective.glassBlur, effective.shadowIntensity, effective.isGeometricCut, effective.textureOpacity,
+        effective.animationSpeed, effective.layoutGap, effective.systemName, effective.logoUrl, effective.logoDarkUrl,
+        effective.logoScale, effective.logoPosition, effective.systemTone, effective.surfaceMaterial, effective.borderType,
+        effective.interfaceElasticity, effective.isSplitViewEnabled, effective.chartStyle, effective.chartPalette, effective.shadowOrientation,
+        effective.shadowColorMode, effective.isAutoHideEnabled, globalSarak
     ]);
 
     const applyFullLocalConfig = (c: any) => {

@@ -38,17 +38,17 @@ export const SarakShell: React.FC<SarakShellProps> = ({
 }) => {
     const { effective: sarak, applyFullConfig } = useSarakUI();
     
-    // Destruturação segura das propriedades do motor visual
+    // Destruturação direta do motor visual (Nomes oficiais v6.1)
     const { 
-        layout: theme, mode, primary: primaryColor, density: layoutDensity, 
-        texture, navStyle: navigationStyle, sidebarWidth, headingFont, 
-        subtitleFont, tabFont, bodyFont, headingWeight, headingSpacing: headingLetterSpacing,
+        layout: theme, mode, primaryColor, layoutDensity, 
+        texture, navigationStyle, sidebarWidth, headingFont, 
+        subtitleFont, tabFont, bodyFont, headingWeight, headingLetterSpacing,
         borderRadius, borderWidth, borderStyle, glassOpacity, glassBlur, shadowIntensity,
-        isGeometric: isGeometricCut, textureOpacity, animSpeed: animationSpeed, gap: layoutGap,
-        sysName: systemName, logoUrl, logoDarkUrl, logoScale, logoPos: logoPosition,
-        sysTone: systemTone, surface: surfaceMaterial, borderType, elasticity: interfaceElasticity,
-        isSplit: isSplitViewEnabled, chartS: chartStyle, chartP: chartPalette, shOrient: shadowOrientation,
-        shMode: shadowColorMode, isAutoHide: isAutoHideEnabled, searchStyle,
+        isGeometricCut, textureOpacity, animationSpeed, layoutGap,
+        systemName, logoUrl, logoDarkUrl, logoScale, logoPosition,
+        systemTone, surfaceMaterial, borderType, interfaceElasticity,
+        isSplitViewEnabled, chartStyle, chartPalette, shadowOrientation,
+        shadowColorMode, isAutoHideEnabled, searchStyle,
         cursorPhysics, isNavHidden
     } = sarak;
 
