@@ -153,7 +153,7 @@ export const SarakUIProvider: React.FC<SarakUIProviderProps> = ({
                 
                 let finalValue = value.toString();
 
-                // Tratamento de Unidades e Tipos
+                // Tratamento de Unidades e Tipos (Proteção Soberana v6.1)
                 if (typeof value === 'number') {
                     if (['sidebarWidth', 'borderRadius', 'borderWidth', 'gap', 'layoutGap', 'glassBlur'].includes(key)) {
                         finalValue = `${value}px`;
@@ -164,6 +164,8 @@ export const SarakUIProvider: React.FC<SarakUIProviderProps> = ({
                     finalValue = value ? '1' : '0';
                 } else if (Array.isArray(value)) {
                     finalValue = value.join(',');
+                } else if (!value) {
+                    finalValue = '';
                 }
 
                 tokens[cssKey] = finalValue;
@@ -191,6 +193,19 @@ export const SarakUIProvider: React.FC<SarakUIProviderProps> = ({
             
             Object.entries(tokens).forEach(([k, v]) => {
                 root.style.setProperty(k, v);
+                
+                // AUDITORIA DE DISCREPÂNCIA EM TEMPO REAL
+                // Verifica se o navegador aceitou o valor ou se algo sobrescreveu
+                setTimeout(() => {
+                    const computed = getComputedStyle(root).getPropertyValue(k);
+                    if (computed.trim() !== v.toString().trim() && v !== '') {
+                        console.warn(`%c⚠️ [Matrix Trace] DIVERGÊNCIA DETECTADA: ${k}`, 'color: #ef4444; font-weight: bold;', {
+                            injetado: v,
+                            computado: computed,
+                            motivo: 'O valor foi ignorado pelo navegador (unidade inválida) ou sobrescrito por CSS global (!important).'
+                        });
+                    }
+                }, 100);
             });
             console.groupEnd();
 
