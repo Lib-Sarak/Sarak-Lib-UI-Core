@@ -28,18 +28,31 @@ interface SarakUIProviderProps {
     primaryColor?: string;
 }
 
-// --- MANIFESTO DE DESIGN SOBERANO (SSoT v6.5) ---
+// --- MANIFESTO DE DESIGN SOBERANO (SSoT v6.6) ---
 // Centraliza a tradução de estados lógicos para variáveis CSS e atributos do DOM.
 const DESIGN_MANIFEST: Record<string, { 
     vars?: string[], 
     unit?: string, 
-    transform?: (v: any) => string, 
+    transform?: (v: any) => any, 
     attr?: string, 
     classPrefix?: string 
 }> = {
     layout: { vars: ['--sarak-layout'], classPrefix: 'layout-' },
     mode: { vars: ['--sarak-mode'], transform: (v: any) => v === 'dark' ? 'dark' : 'light' },
-    primaryColor: { vars: ['--primary-color', '--theme-primary', '--sarak-primary-color'] },
+    primaryColor: { 
+        vars: ['--primary-color', '--theme-primary', '--sarak-primary-color'],
+        // Injeta automaticamente os componentes RGB para suportar as opacidades do CSS legado
+        transform: (v: string) => {
+            const hex = v.replace('#', '');
+            const r = parseInt(hex.substring(0, 2), 16);
+            const g = parseInt(hex.substring(2, 4), 16);
+            const b = parseInt(hex.substring(4, 6), 16);
+            return {
+                main: v,
+                rgb: `${r}, ${g}, ${b}`
+            };
+        }
+    },
     layoutDensity: { vars: ['--sarak-layout-density'], classPrefix: 'density-' },
     texture: { vars: ['--sarak-texture'], classPrefix: 'texture-' },
     navigationStyle: { vars: ['--sarak-navigation-style', '--sarak-nav-style'], classPrefix: 'nav-' },
@@ -54,33 +67,29 @@ const DESIGN_MANIFEST: Record<string, {
         transform: (v) => ({ tight: '-0.05em', normal: '0', wide: '0.1em', widest: '0.25em' }[v] || v) 
     },
     fontScale: { 
-        vars: ['--sarak-font-size', '--sarak-font-scale'],
-        transform: (v) => ({ p1: '12px', p: '14px', m: '16px', g: '18px', g1: '22px' }[v] || '16px')
+        vars: ['--sarak-font-size', '--sarak-font-scale', '--font-size-factor', '--theme-font-size-base'],
+        transform: (v) => {
+            const factor = { p1: '0.8', p: '0.9', m: '1.0', g: '1.2', g1: '1.4' }[v] || '1.0';
+            const px = { p1: '11px', p: '12px', m: '13px', g: '16px', g1: '18px' }[v] || '13px';
+            return { factor, px };
+        }
     },
     borderRadius: { vars: ['--radius-theme', '--sarak-border-radius'], unit: 'px' },
-    borderWidth: { vars: ['--border-width', '--sarak-border-width'], unit: 'px' },
+    borderWidth: { vars: ['--theme-border-width', '--border-width', '--sarak-border-width'], unit: 'px' },
     borderStyle: { vars: ['--border-style', '--sarak-border-style'] },
     layoutGap: { vars: ['--theme-gap', '--sarak-layout-gap'], unit: 'px' },
     glassOpacity: { vars: ['--glass-opacity', '--sarak-glass-opacity', '--sarak-bg-opacity'] },
     glassBlur: { vars: ['--glass-blur', '--sarak-glass-blur'], unit: 'px' },
     shadowIntensity: { vars: ['--shadow-intensity', '--sarak-shadow-intensity'] },
-    isGeometricCut: { classPrefix: 'is-geometric' }, // Ativado se true
+    isGeometricCut: { classPrefix: 'is-geometric' },
     textureOpacity: { vars: ['--texture-opacity', '--sarak-texture-opacity'] },
-    animationSpeed: { vars: ['--animation-speed', '--sarak-animation-speed'], unit: 's' },
+    animationSpeed: { vars: ['--animation-speed', '--sarak-animation-speed', '--transition-speed'], unit: 's' },
     surfaceMaterial: { attr: 'data-surface' },
     borderType: { attr: 'data-border' },
-    systemName: { vars: ['--sarak-system-name'] },
-    logoScale: { vars: ['--sarak-logo-scale'] },
-    logoPosition: { vars: ['--sarak-logo-position'] },
     systemTone: { vars: ['--sarak-system-tone'], attr: 'data-tone' },
-    interfaceElasticity: { vars: ['--sarak-interface-elasticity'] },
-    isSplitViewEnabled: { vars: ['--sarak-is-split-view'], attr: 'data-split' },
-    chartStyle: { vars: ['--sarak-chart-style'] },
-    chartPalette: { vars: ['--sarak-chart-palette'] },
-    shadowOrientation: { vars: ['--sarak-shadow-orientation'] },
-    shadowColorMode: { vars: ['--sarak-shadow-color-mode'] },
-    isAutoHideEnabled: { vars: ['--sarak-is-auto-hide'], attr: 'data-auto-hide' },
-    cursorPhysics: { vars: ['--sarak-cursor-physics'], attr: 'data-cursor' }
+    isAutoHideEnabled: { attr: 'data-auto-hide' },
+    shadowOrientation: { vars: ['--shadow-orientation'] }, // Injeta como valor literal para seletores [style*="..."]
+    shadowColorMode: { vars: ['--shadow-color-mode'] }
 };
 
 export const SarakUIProvider: React.FC<SarakUIProviderProps> = ({ 
@@ -158,51 +167,74 @@ export const SarakUIProvider: React.FC<SarakUIProviderProps> = ({
 
     const s = globalSarak || {};
     
-    // SSSoT Consumidor SOBERANO (Sem Guards)
-    const effective = {
-        layout: s.layout || localLayout,
-        mode: s.mode || localMode,
-        primaryColor: s.primaryColor || localPrimary,
-        layoutDensity: s.layoutDensity || localDensity,
-        texture: s.texture || localTexture,
-        navigationStyle: s.navigationStyle || localNavStyle,
-        sidebarWidth: s.sidebarWidth !== undefined ? s.sidebarWidth : localSidebarWidth,
-        headingFont: s.headingFont || headingFont,
-        subtitleFont: s.subtitleFont || subtitleFont,
-        tabFont: s.tabFont || tabFont,
-        bodyFont: s.bodyFont || bodyFont,
-        headingWeight: s.headingWeight || headingWeight,
-        headingLetterSpacing: s.headingLetterSpacing || headingLetterSpacing,
-        borderRadius: s.borderRadius !== undefined ? s.borderRadius : borderRadius,
-        borderWidth: s.borderWidth !== undefined ? s.borderWidth : borderWidth,
-        borderStyle: s.borderStyle || borderStyle,
-        glassOpacity: s.glassOpacity !== undefined ? s.glassOpacity : glassOpacity,
-        glassBlur: s.glassBlur !== undefined ? s.glassBlur : glassBlur,
-        shadowIntensity: s.shadowIntensity !== undefined ? s.shadowIntensity : shadowIntensity,
-        isGeometricCut: s.isGeometricCut !== undefined ? s.isGeometricCut : isGeometricCut,
-        textureOpacity: s.textureOpacity !== undefined ? s.textureOpacity : textureOpacity,
-        animationSpeed: s.animationSpeed !== undefined ? s.animationSpeed : animationSpeed,
-        layoutGap: s.layoutGap !== undefined ? s.layoutGap : layoutGap,
-        systemName: s.systemName || systemName,
-        logoUrl: s.logoUrl || logoUrl,
-        logoDarkUrl: s.logoDarkUrl || logoDarkUrl,
-        logoScale: s.logoScale !== undefined ? s.logoScale : logoScale,
-        logoPosition: s.logoPosition || logoPosition,
-        systemTone: s.systemTone || systemTone,
-        surfaceMaterial: s.surfaceMaterial || surfaceMaterial,
-        borderType: s.borderType || borderType,
-        interfaceElasticity: s.interfaceElasticity !== undefined ? s.interfaceElasticity : interfaceElasticity,
-        isSplitViewEnabled: s.isSplitViewEnabled !== undefined ? s.isSplitViewEnabled : isSplitViewEnabled,
-        chartStyle: s.chartStyle || chartStyle,
-        chartPalette: s.chartPalette || chartPalette,
-        shadowOrientation: s.shadowOrientation || shadowOrientation,
-        shadowColorMode: s.shadowColorMode || shadowColorMode,
-        isAutoHideEnabled: s.isAutoHideEnabled || false,
-        cursorPhysics: s.cursorPhysics !== undefined ? s.cursorPhysics : cursorPhysics,
-        isNavHidden: s.isNavHidden !== undefined ? s.isNavHidden : localIsNavHidden,
-        fontScale: s.fontScale || fontScale,
-        registeredModules: s.registeredModules || []
-    };
+    // --- HELPER DE NORMALIZAÇÃO (Escudo contra Case-Sensitivity) ---
+    // Busca o valor no objeto global ignorando maiúsculas/minúsculas.
+    const pickup = useCallback((key: string, localFallback: any) => {
+        if (!s) return localFallback;
+        // 1. Busca Exata (Prioridade 1)
+        if (s[key] !== undefined) return s[key];
+        // 2. Busca Case-Insensitive (Prioridade 2)
+        const normalizedKey = key.toLowerCase();
+        const actualKey = Object.keys(s).find(k => k.toLowerCase() === normalizedKey);
+        if (actualKey !== undefined && s[actualKey] !== undefined) return s[actualKey];
+        // 3. Fallback Local
+        return localFallback;
+    }, [s]);
+
+    // SSSoT Consumidor SOBERANO (Ponte Resiliente v6.6)
+    const effective = useMemo(() => ({
+        layout: pickup('layout', localLayout),
+        mode: pickup('mode', localMode),
+        primaryColor: pickup('primaryColor', localPrimary),
+        layoutDensity: pickup('layoutDensity', localDensity),
+        texture: pickup('texture', localTexture),
+        navigationStyle: pickup('navigationStyle', localNavStyle),
+        sidebarWidth: pickup('sidebarWidth', localSidebarWidth),
+        headingFont: pickup('headingFont', headingFont),
+        subtitleFont: pickup('subtitleFont', subtitleFont),
+        tabFont: pickup('tabFont', tabFont),
+        bodyFont: pickup('bodyFont', bodyFont),
+        headingWeight: pickup('headingWeight', headingWeight),
+        headingLetterSpacing: pickup('headingLetterSpacing', headingLetterSpacing),
+        borderRadius: pickup('borderRadius', borderRadius),
+        borderWidth: pickup('borderWidth', borderWidth),
+        borderStyle: pickup('borderStyle', borderStyle),
+        glassOpacity: pickup('glassOpacity', glassOpacity),
+        glassBlur: pickup('glassBlur', glassBlur),
+        shadowIntensity: pickup('shadowIntensity', shadowIntensity),
+        isGeometricCut: pickup('isGeometricCut', isGeometricCut),
+        textureOpacity: pickup('textureOpacity', textureOpacity),
+        animationSpeed: pickup('animationSpeed', animationSpeed),
+        layoutGap: pickup('layoutGap', layoutGap),
+        systemName: pickup('systemName', systemName),
+        logoUrl: pickup('logoUrl', logoUrl),
+        logoDarkUrl: pickup('logoDarkUrl', logoDarkUrl),
+        logoScale: pickup('logoScale', logoScale),
+        logoPosition: pickup('logoPosition', logoPosition),
+        systemTone: pickup('systemTone', systemTone),
+        surfaceMaterial: pickup('surfaceMaterial', surfaceMaterial),
+        borderType: pickup('borderType', borderType),
+        interfaceElasticity: pickup('interfaceElasticity', interfaceElasticity),
+        isSplitViewEnabled: pickup('isSplitViewEnabled', isSplitViewEnabled),
+        chartStyle: pickup('chartStyle', chartStyle),
+        chartPalette: pickup('chartPalette', chartPalette),
+        shadowOrientation: pickup('shadowOrientation', shadowOrientation),
+        shadowColorMode: pickup('shadowColorMode', shadowColorMode),
+        isAutoHideEnabled: pickup('isAutoHideEnabled', false),
+        cursorPhysics: pickup('cursorPhysics', cursorPhysics),
+        isNavHidden: pickup('isNavHidden', localIsNavHidden),
+        fontScale: pickup('fontScale', fontScale),
+        registeredModules: pickup('registeredModules', [])
+    }), [
+        pickup, localLayout, localMode, localPrimary, localDensity, localTexture, 
+        localNavStyle, localSidebarWidth, headingFont, subtitleFont, tabFont, bodyFont, 
+        headingWeight, headingLetterSpacing, borderRadius, borderWidth, borderStyle, 
+        glassOpacity, glassBlur, shadowIntensity, isGeometricCut, textureOpacity, 
+        animationSpeed, layoutGap, systemName, logoUrl, logoDarkUrl, logoScale, 
+        logoPosition, systemTone, surfaceMaterial, borderType, interfaceElasticity, 
+        isSplitViewEnabled, chartStyle, chartPalette, shadowOrientation, shadowColorMode, 
+        cursorPhysics, localIsNavHidden, fontScale
+    ]);
 
     // --- SARAK MANIFEST-DRIVEN DESIGN ENGINE (v6.5) ---
     useEffect(() => {
@@ -216,25 +248,49 @@ export const SarakUIProvider: React.FC<SarakUIProviderProps> = ({
             const appliedTokens: Record<string, string> = {};
             const attributesToSet: Record<string, string> = {};
 
-            // Processamento do Manifesto
+            // Processamento do Manifesto v6.6
             Object.entries(effective).forEach(([key, value]) => {
                 const config = DESIGN_MANIFEST[key];
                 
                 // Normalização de Valor
                 let finalValue = value?.toString() || '';
-                if (config?.transform) finalValue = config.transform(value);
+                let extraVars: Record<string, string> = {};
+
+                if (config?.transform) {
+                    const t = config.transform(value);
+                    if (typeof t === 'object') {
+                        // Casos Especiais: RGB e Escalas Híbridas
+                        if (key === 'primaryColor') {
+                            finalValue = t.main;
+                            extraVars['--theme-primary-rgb'] = t.rgb;
+                            extraVars['--primary-color-rgb'] = t.rgb;
+                        } else if (key === 'fontScale') {
+                            finalValue = t.px; 
+                            extraVars['--font-size-factor'] = t.factor;
+                            extraVars['--sarak-font-scale'] = t.factor;
+                        }
+                    } else {
+                        finalValue = t;
+                    }
+                }
+
                 if (config?.unit && typeof value === 'number') finalValue = `${value}${config.unit}`;
                 if (typeof value === 'boolean') finalValue = value ? '1' : '0';
                 if (Array.isArray(value)) finalValue = value.join(',');
 
-                // 1. Injeção de Variáveis CSS (Multicast)
+                // 1. Injeção de Variáveis CSS (Multicast + Extras)
                 if (config?.vars) {
                     config.vars.forEach(v => {
                         appliedTokens[v] = finalValue;
                         root.style.setProperty(v, finalValue);
                     });
+                    // Injeta variáveis extras calculadas (ex: RGB)
+                    Object.entries(extraVars).forEach(([ev, evVal]) => {
+                        appliedTokens[ev] = evVal;
+                        root.style.setProperty(ev, evVal);
+                    });
                 } else {
-                    // Fallback automático para kebab-case
+                    // Fallback automático para kebab-case com proteção de redundância
                     const fallbackKey = `--sarak-${key.replace(/([a-z0-9]|(?=[A-Z]))([A-Z])/g, '$1-$2').toLowerCase()}`;
                     appliedTokens[fallbackKey] = finalValue;
                     root.style.setProperty(fallbackKey, finalValue);
