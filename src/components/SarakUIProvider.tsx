@@ -148,130 +148,265 @@ export const SarakUIProvider: React.FC<SarakUIProviderProps> = ({
         registeredModules: s.registeredModules || []
     };
 
-    // Motor de Design Sovereign (Matrix Trace Engine v6.1)
+// --- MANIFESTO DE DESIGN SOBERANO (SSoT v6.5) ---
+// Centraliza a tradução de estados lógicos para variáveis CSS e atributos do DOM.
+const DESIGN_MANIFEST: Record<string, { 
+    vars?: string[], 
+    unit?: string, 
+    transform?: (v: any) => string, 
+    attr?: string, 
+    classPrefix?: string 
+}> = {
+    layout: { vars: ['--sarak-layout'], classPrefix: 'layout-' },
+    mode: { vars: ['--sarak-mode'], varsTransform: (v: any) => v === 'dark' ? 'dark' : 'light' },
+    primaryColor: { vars: ['--primary-color', '--theme-primary', '--sarak-primary-color'] },
+    layoutDensity: { vars: ['--sarak-layout-density'], classPrefix: 'density-' },
+    texture: { vars: ['--sarak-texture'], classPrefix: 'texture-' },
+    navigationStyle: { vars: ['--sarak-navigation-style', '--sarak-nav-style'], classPrefix: 'nav-' },
+    sidebarWidth: { vars: ['--sidebar-width', '--sarak-sidebar-width'], unit: 'px' },
+    headingFont: { vars: ['--font-heading', '--sarak-heading-font'] },
+    subtitleFont: { vars: ['--font-subtitle', '--sarak-subtitle-font'] },
+    tabFont: { vars: ['--font-tab', '--sarak-tab-font'] },
+    bodyFont: { vars: ['--font-main', '--sarak-body-font'] },
+    headingWeight: { vars: ['--heading-weight', '--sarak-heading-weight'] },
+    headingLetterSpacing: { 
+        vars: ['--heading-spacing', '--sarak-heading-spacing'],
+        transform: (v) => ({ tight: '-0.05em', normal: '0', wide: '0.1em', widest: '0.25em' }[v] || v) 
+    },
+    fontScale: { 
+        vars: ['--sarak-font-size', '--sarak-font-scale'],
+        transform: (v) => ({ p1: '12px', p: '14px', m: '16px', g: '18px', g1: '22px' }[v] || '16px')
+    },
+    borderRadius: { vars: ['--radius-theme', '--sarak-border-radius'], unit: 'px' },
+    borderWidth: { vars: ['--border-width', '--sarak-border-width'], unit: 'px' },
+    borderStyle: { vars: ['--border-style', '--sarak-border-style'] },
+    layoutGap: { vars: ['--theme-gap', '--sarak-layout-gap'], unit: 'px' },
+    glassOpacity: { vars: ['--glass-opacity', '--sarak-glass-opacity', '--sarak-bg-opacity'] },
+    glassBlur: { vars: ['--glass-blur', '--sarak-glass-blur'], unit: 'px' },
+    shadowIntensity: { vars: ['--shadow-intensity', '--sarak-shadow-intensity'] },
+    isGeometricCut: { classPrefix: 'is-geometric' }, // Ativado se true
+    textureOpacity: { vars: ['--texture-opacity', '--sarak-texture-opacity'] },
+    animationSpeed: { vars: ['--animation-speed', '--sarak-animation-speed'], unit: 's' },
+    surfaceMaterial: { attr: 'data-surface' },
+    borderType: { attr: 'data-border' },
+    systemName: { vars: ['--sarak-system-name'] },
+    logoScale: { vars: ['--sarak-logo-scale'] },
+    logoPosition: { vars: ['--sarak-logo-position'] },
+    systemTone: { vars: ['--sarak-system-tone'], attr: 'data-tone' },
+    interfaceElasticity: { vars: ['--sarak-interface-elasticity'] },
+    isSplitViewEnabled: { vars: ['--sarak-is-split-view'], attr: 'data-split' },
+    chartStyle: { vars: ['--sarak-chart-style'] },
+    chartPalette: { vars: ['--sarak-chart-palette'] },
+    shadowOrientation: { vars: ['--sarak-shadow-orientation'] },
+    shadowColorMode: { vars: ['--sarak-shadow-color-mode'] },
+    isAutoHideEnabled: { vars: ['--sarak-is-auto-hide'], attr: 'data-auto-hide' },
+    cursorPhysics: { vars: ['--sarak-cursor-physics'], attr: 'data-cursor' }
+};
+
+export const SarakUIProvider: React.FC<SarakUIProviderProps> = ({ 
+    children, 
+    theme: propTheme, 
+    mode: propMode, 
+    primaryColor: propPrimary 
+}) => {
+    let globalSarak: any = null;
+    try { globalSarak = useGlobalSarak(); } catch (e) { }
+
+    // --- ESTADO LOCAL (FALLBACK DESIGN ENGINE 6.0) ---
+    const [localLayout, setLocalLayout] = useState(() => localStorage.getItem('sarak_local_layout') || propTheme || 'glass');
+    const [localMode, setLocalMode] = useState<'light' | 'dark' | 'system'>(() => (localStorage.getItem('sarak_local_mode') as any) || propMode || 'dark');
+    const [localPrimary, setLocalPrimary] = useState(() => localStorage.getItem('sarak_local_primary') || propPrimary || '#3b82f6');
+    const [localSidebarWidth, setLocalSidebarWidth] = useState(() => Number(localStorage.getItem('sarak_local_sidebar_width')) || 260);
+    const [localNavStyle, setLocalNavStyle] = useState<'sidebar' | 'topbar' | 'dock'>(() => (localStorage.getItem('sarak_local_nav_style') as any) || 'sidebar');
+    const [localDensity, setLocalDensity] = useState(() => localStorage.getItem('sarak_local_density') || 'standard');
+    const [localTexture, setLocalTexture] = useState(() => localStorage.getItem('sarak_local_texture') || 'none');
+    
+    // Tokens de Tipografia & Geometria
+    const [headingFont, setHeadingFont] = useState(() => localStorage.getItem('sarak_local_font_h') || "");
+    const [subtitleFont, setSubtitleFont] = useState(() => localStorage.getItem('sarak_local_font_s') || "");
+    const [tabFont, setTabFont] = useState(() => localStorage.getItem('sarak_local_font_tab') || "");
+    const [bodyFont, setBodyFont] = useState(() => localStorage.getItem('sarak_local_font_b') || "");
+    const [headingWeight, setHeadingWeight] = useState(() => localStorage.getItem('sarak_local_weight_h') || '600');
+    const [headingLetterSpacing, setHeadingLetterSpacing] = useState(() => localStorage.getItem('sarak_local_spacing_h') || 'normal');
+    const [fontScale, setFontScale] = useState(() => localStorage.getItem('sarak_local_font_scale') || 'm');
+    const [borderRadius, setBorderRadius] = useState(() => Number(localStorage.getItem('sarak_local_radius')) || 12);
+    const [borderWidth, setBorderWidth] = useState(() => Number(localStorage.getItem('sarak_local_border_w')) || 1);
+    const [borderStyle, setBorderStyle] = useState(() => localStorage.getItem('sarak_local_border_s') || 'solid');
+    const [layoutGap, setLayoutGap] = useState(() => Number(localStorage.getItem('sarak_local_gap')) || 20);
+    
+    // Tokens de Materiais & Efeitos
+    const [surfaceMaterial, setSurfaceMaterial] = useState<'glass' | 'metallic' | 'brushed' | 'acrylic' | 'matte'>(() => (localStorage.getItem('sarak_local_material') as any) || 'glass');
+    const [borderType, setBorderType] = useState<'default' | 'inlet' | 'neon' | 'beveled'>(() => (localStorage.getItem('sarak_local_border_type') as any) || 'default');
+    const [glassOpacity, setGlassOpacity] = useState(() => Number(localStorage.getItem('sarak_local_glass_o')) || 0.7);
+    const [glassBlur, setGlassBlur] = useState(() => Number(localStorage.getItem('sarak_local_glass_b')) || 15);
+    const [shadowIntensity, setShadowIntensity] = useState(() => Number(localStorage.getItem('sarak_local_shadow')) || 0.5);
+    const [isGeometricCut, setIsGeometricCut] = useState(() => localStorage.getItem('sarak_local_is_geom') === 'true');
+    const [textureOpacity, setTextureOpacity] = useState(() => Number(localStorage.getItem('sarak_local_texture_o')) || 0.05);
+    const [animationSpeed, setAnimationSpeed] = useState(() => Number(localStorage.getItem('sarak_local_anim_v')) || 0.4);
+    
+    // Tokens de Branding & Identidade v6.0
+    const [systemName, setSystemName] = useState(() => localStorage.getItem('sarak_local_sys_name') || 'Sarak Standalone');
+    const [logoUrl, setLogoUrl] = useState(() => localStorage.getItem('sarak_local_logo_url') || '');
+    const [logoDarkUrl, setLogoDarkUrl] = useState(() => localStorage.getItem('sarak_local_logo_dark') || '');
+    const [logoScale, setLogoScale] = useState(() => Number(localStorage.getItem('sarak_local_logo_scale')) || 1.0);
+    const [logoPosition, setLogoPosition] = useState<'left' | 'center'>(() => (localStorage.getItem('sarak_local_logo_pos') as any) || 'left');
+    const [systemTone, setSystemTone] = useState<'formal' | 'friendly' | 'cyber'>(() => (localStorage.getItem('sarak_local_tone') as any) || 'formal');
+    
+    // Tokens de Dados & Navegação v6.0
+    const [chartStyle, setChartStyle] = useState<'line' | 'bar' | 'solid' | 'glass'>(() => (localStorage.getItem('sarak_local_chart_s') as any) || 'glass');
+    const [chartPalette, setChartPalette] = useState<string[]>(() => JSON.parse(localStorage.getItem('sarak_local_chart_p') || '["#3b82f6", "#10b981"]'));
+    const [shadowOrientation, setShadowOrientation] = useState<'top-down' | 'isometric' | 'inner'>(() => (localStorage.getItem('sarak_local_sh_orient') as any) || 'top-down');
+    const [shadowColorMode, setShadowColorMode] = useState<'neutral' | 'adaptive' | 'match'>(() => (localStorage.getItem('sarak_local_sh_mode') as any) || 'adaptive');
+    const [isSplitViewEnabled, setIsSplitViewEnabled] = useState(() => localStorage.getItem('sarak_local_split') === 'true');
+    const [searchStyle, setSearchStyle] = useState<'minimal' | 'command-palette'>(() => (localStorage.getItem('sarak_local_search') as any) || 'command-palette');
+    const [interfaceElasticity, setInterfaceElasticity] = useState(() => Number(localStorage.getItem('sarak_local_elasticity')) || 1.0);
+    const [cursorPhysics, setCursorPhysics] = useState(() => localStorage.getItem('sarak_local_cursor') === 'true' || true);
+    const [localIsNavHidden, setLocalIsNavHidden] = useState(() => localStorage.getItem('sarak_local_nav_hidden') === 'true' || false);
+
+    const [isHydrated, setIsHydrated] = useState(false);
+
+    // Injeção de Fontes Premium
+    useEffect(() => {
+        if (typeof document === 'undefined') return;
+        const ID = 'sarak-core-fonts-v6.0';
+        if (document.getElementById(ID)) return;
+        const style = document.createElement('style');
+        style.id = ID;
+        style.textContent = `@import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;600;700;800;900&family=Space+Grotesk:wght@300;500;700&family=Fira+Code:wght@400;500&family=Outfit:wght@300;400;600;700&family=JetBrains+Mono:wght@400;700&family=Satoshi:wght@300;400;700;900&family=Syncopate:wght@700&family=Tenor+Sans&family=Crimson+Pro:wght@400;700&family=Plus+Jakarta+Sans:wght@400;700&display=swap');`;
+        document.head.prepend(style);
+    }, []);
+
+    const s = globalSarak || {};
+    
+    // SSSoT Consumidor SOBERANO (Sem Guards)
+    const effective = {
+        layout: s.layout || localLayout,
+        mode: s.mode || localMode,
+        primaryColor: s.primaryColor || localPrimary,
+        layoutDensity: s.layoutDensity || localDensity,
+        texture: s.texture || localTexture,
+        navigationStyle: s.navigationStyle || localNavStyle,
+        sidebarWidth: s.sidebarWidth !== undefined ? s.sidebarWidth : localSidebarWidth,
+        headingFont: s.headingFont || headingFont,
+        subtitleFont: s.subtitleFont || subtitleFont,
+        tabFont: s.tabFont || tabFont,
+        bodyFont: s.bodyFont || bodyFont,
+        headingWeight: s.headingWeight || headingWeight,
+        headingLetterSpacing: s.headingLetterSpacing || headingLetterSpacing,
+        borderRadius: s.borderRadius !== undefined ? s.borderRadius : borderRadius,
+        borderWidth: s.borderWidth !== undefined ? s.borderWidth : borderWidth,
+        borderStyle: s.borderStyle || borderStyle,
+        glassOpacity: s.glassOpacity !== undefined ? s.glassOpacity : glassOpacity,
+        glassBlur: s.glassBlur !== undefined ? s.glassBlur : glassBlur,
+        shadowIntensity: s.shadowIntensity !== undefined ? s.shadowIntensity : shadowIntensity,
+        isGeometricCut: s.isGeometricCut !== undefined ? s.isGeometricCut : isGeometricCut,
+        textureOpacity: s.textureOpacity !== undefined ? s.textureOpacity : textureOpacity,
+        animationSpeed: s.animationSpeed !== undefined ? s.animationSpeed : animationSpeed,
+        layoutGap: s.layoutGap !== undefined ? s.layoutGap : layoutGap,
+        systemName: s.systemName || systemName,
+        logoUrl: s.logoUrl || logoUrl,
+        logoDarkUrl: s.logoDarkUrl || logoDarkUrl,
+        logoScale: s.logoScale !== undefined ? s.logoScale : logoScale,
+        logoPosition: s.logoPosition || logoPosition,
+        systemTone: s.systemTone || systemTone,
+        surfaceMaterial: s.surfaceMaterial || surfaceMaterial,
+        borderType: s.borderType || borderType,
+        interfaceElasticity: s.interfaceElasticity !== undefined ? s.interfaceElasticity : interfaceElasticity,
+        isSplitViewEnabled: s.isSplitViewEnabled !== undefined ? s.isSplitViewEnabled : isSplitViewEnabled,
+        chartStyle: s.chartStyle || chartStyle,
+        chartPalette: s.chartPalette || chartPalette,
+        shadowOrientation: s.shadowOrientation || shadowOrientation,
+        shadowColorMode: s.shadowColorMode || shadowColorMode,
+        isAutoHideEnabled: s.isAutoHideEnabled || false,
+        cursorPhysics: s.cursorPhysics !== undefined ? s.cursorPhysics : cursorPhysics,
+        isNavHidden: s.isNavHidden !== undefined ? s.isNavHidden : localIsNavHidden,
+        fontScale: s.fontScale || fontScale
+    };
+
+    // --- SARAK MANIFEST-DRIVEN DESIGN ENGINE (v6.5) ---
     useEffect(() => {
         if (typeof document === 'undefined') return;
         const root = document.documentElement;
         const body = document.body;
 
         try {
-            // --- DESIGN ENGINE SOVEREIGN MOTOR v6.1 (DYNAMIC) ---
-            const tokens: Record<string, string> = {};
+            console.group('%c🚀 [Matrix Trace] Motor de Design Baseado em Manifesto v6.5', 'background: #0f172a; color: #10b981; padding: 4px; font-weight: bold;');
+            
+            const appliedTokens: Record<string, string> = {};
+            const cleanClasses: string[] = [];
+            const attributesToSet: Record<string, string> = {};
 
-            // 1. Mapeamento Dinâmico Inteligente
-            // Transforma camelCase do estado para --kebab-case no CSS automaticamente
-            Object.entries(effective).forEach(([key, value]: [string, any]) => {
-                if (value === undefined || value === null) return;
-
-                // Converte camelCase para kebab-case (Ex: sidebarWidth -> sidebar-width)
-                const cssKey = `--sarak-${key.replace(/([a-z0-9]|(?=[A-Z]))([A-Z])/g, '$1-$2').toLowerCase()}`;
+            // Classes básicas para limpeza
+            const atomicClasses = [
+                'light', 'dark', 'is-geometric',
+                ...Object.keys(DESIGN_MANIFEST).map(k => DESIGN_MANIFEST[k].classPrefix).filter(Boolean).map(p => `${p}*`)
+            ];
+            
+            // Processamento do Manifesto
+            Object.entries(effective).forEach(([key, value]) => {
+                const config = DESIGN_MANIFEST[key];
                 
-                let finalValue = value.toString();
+                // Normalização de Valor
+                let finalValue = value?.toString() || '';
+                if (config?.transform) finalValue = config.transform(value);
+                if (config?.unit && typeof value === 'number') finalValue = `${value}${config.unit}`;
+                if (typeof value === 'boolean') finalValue = value ? '1' : '0';
+                if (Array.isArray(value)) finalValue = value.join(',');
 
-                // Tratamento de Unidades e Tipos (Proteção Soberana v6.1)
-                if (typeof value === 'number') {
-                    if (['sidebarWidth', 'borderRadius', 'borderWidth', 'layoutGap', 'glassBlur'].includes(key)) {
-                        finalValue = `${value}px`;
-                    } else if (['animationSpeed'].includes(key)) {
-                        finalValue = `${value}s`;
-                    }
-                } else if (typeof value === 'boolean') {
-                    finalValue = value ? '1' : '0';
-                } else if (Array.isArray(value)) {
-                    finalValue = value.join(',');
-                } else if (!value) {
-                    finalValue = '';
+                // 1. Injeção de Variáveis CSS (Multicast)
+                if (config?.vars) {
+                    config.vars.forEach(v => {
+                        appliedTokens[v] = finalValue;
+                        root.style.setProperty(v, finalValue);
+                    });
+                } else {
+                    // Fallback automático para kebab-case (Ex: interfaceElasticity -> --sarak-interface-elasticity)
+                    const fallbackKey = `--sarak-${key.replace(/([a-z0-9]|(?=[A-Z]))([A-Z])/g, '$1-$2').toLowerCase()}`;
+                    appliedTokens[fallbackKey] = finalValue;
+                    root.style.setProperty(fallbackKey, finalValue);
                 }
 
-                tokens[cssKey] = finalValue;
-                
-                // 2. Ponte de Compatibilidade (Tokens Legados / Core)
-                // Essencial para manter a sincronização com sarak-base.css e módulos v5.x
-                const legacyMap: Record<string, string> = {
-                    primaryColor: '--theme-primary',
-                    sidebarWidth: '--sidebar-width',
-                    headingFont: '--font-heading',
-                    subtitleFont: '--font-subtitle',
-                    tabFont: '--font-tab',
-                    bodyFont: '--font-main',
-                    headingWeight: '--heading-weight',
-                    headingLetterSpacing: '--heading-spacing',
-                    borderRadius: '--radius-theme',
-                    borderWidth: '--border-width',
-                    borderStyle: '--border-style',
-                    layoutGap: '--theme-gap',
-                    glassOpacity: '--glass-opacity',
-                    glassBlur: '--glass-blur',
-                    shadowIntensity: '--shadow-intensity',
-                    mode: '--sarak-mode',
-                    textureOpacity: '--texture-opacity',
-                    animationSpeed: '--animation-speed'
-                };
-                if (legacyMap[key]) tokens[legacyMap[key]] = finalValue;
-            });
+                // 2. Injeção de Atributos HTML5
+                if (config?.attr) {
+                    attributesToSet[config.attr] = finalValue;
+                    body.setAttribute(config.attr, finalValue);
+                }
 
-            // Alias extras de marca
-            tokens['--primary-color'] = effective.primaryColor;
-
-            // Atomic Matrix Sync Logs
-            console.group('%c🚀 [Matrix Trace] UI-Core Sovereign Dynamic Engine v6.1', 'background: #0f172a; color: #38bdf8; padding: 4px; font-weight: bold;');
-            console.log('📡 Origem:', globalSarak ? 'SHARED (SSoT)' : 'LOCAL');
-            console.log('📦 Tokens Dinâmicos Generativos:', tokens);
-            
-            Object.entries(tokens).forEach(([k, v]) => {
-                root.style.setProperty(k, v);
-                
-                // AUDITORIA DE DISCREPÂNCIA EM TEMPO REAL
-                // Verifica se o navegador aceitou o valor ou se algo sobrescreveu
-                setTimeout(() => {
-                    const computed = getComputedStyle(root).getPropertyValue(k);
-                    if (computed.trim() !== v.toString().trim() && v !== '') {
-                        console.warn(`%c⚠️ [Matrix Trace] DIVERGÊNCIA DETECTADA: ${k}`, 'color: #ef4444; font-weight: bold;', {
-                            injetado: v,
-                            computado: computed,
-                            motivo: 'O valor foi ignorado pelo navegador (unidade inválida) ou sobrescrito por CSS global (!important).'
+                // 3. Gerenciamento de Classes
+                if (config?.classPrefix) {
+                    if (typeof value === 'boolean') {
+                        if (value) body.classList.add(config.classPrefix);
+                        else body.classList.remove(config.classPrefix);
+                    } else {
+                        // Remove classes antigas do mesmo prefixo
+                        Array.from(body.classList).forEach(c => {
+                            if (c.startsWith(config.classPrefix!)) body.classList.remove(c);
                         });
+                        body.classList.add(`${config.classPrefix}${value}`);
                     }
-                }, 100);
+                }
             });
+
+            // Classes Fixas de Suporte
+            body.classList.remove('light', 'dark');
+            body.classList.add(effective.mode === 'dark' ? 'dark' : 'light');
+
+            console.log('📦 Tokens Aplicados (Manifesto):', appliedTokens);
+            console.log('🏷️ Atributos Sincronizados:', attributesToSet);
             console.groupEnd();
 
-            // Classes & Attributes Sovereign Control
-            const sarakClasses = Object.values(LAYOUTS).map((l: any) => l.class).filter(Boolean);
-            const textureClasses = ['texture-none', 'texture-grid', 'texture-dots', 'texture-scanlines', 'texture-carbon', 'texture-topo', 'texture-brushed', 'texture-noise', 'texture-hexagon', 'texture-circuit', 'texture-silk', 'texture-blueprint', 'texture-aurora', 'texture-bubbles'];
-            const densityClasses = ['density-compact', 'density-standard', 'density-comfortable'];
-            
-            body.classList.remove(...sarakClasses, 'light', 'dark', ...textureClasses, ...densityClasses, 'is-geometric', 'nav-sidebar', 'nav-topbar');
-            body.classList.add(`layout-${effective.layout}`, effective.mode === 'dark' ? 'dark' : 'light', `density-${effective.layoutDensity}`, `texture-${effective.texture}`, `nav-${effective.navigationStyle}`);
-            if (effective.isGeometricCut) body.classList.add('is-geometric');
-
-            body.setAttribute('data-surface', effective.surfaceMaterial);
-            body.setAttribute('data-border', effective.borderType);
-
-            // Persistência Fallback (apenas se for modo Solo)
+            // Persistência Fallback (Standalone)
             if (!globalSarak) {
-                const map: Record<string, string> = {
-                    sarak_local_layout: localLayout, sarak_local_mode: localMode, sarak_local_primary: localPrimary,
-                    sarak_local_radius: (effective.borderRadius || 12).toString(), sarak_local_sys_name: (effective.sysName || 'Sarak Matrix')
-                };
-                Object.entries(map).forEach(([k, v]) => localStorage.setItem(k, v));
+                localStorage.setItem('sarak_local_layout', effective.layout);
+                localStorage.setItem('sarak_local_mode', effective.mode);
+                localStorage.setItem('sarak_local_primary', effective.primaryColor);
             }
 
             setIsHydrated(true);
         } catch (error) {
             console.error('❌ [Matrix Trace Engine Failure]', error);
         }
-    }, [
-        effective.layout, effective.mode, effective.primaryColor, effective.layoutDensity, effective.texture,
-        effective.navigationStyle, effective.sidebarWidth, effective.headingFont, effective.subtitleFont,
-        effective.tabFont, effective.bodyFont, effective.headingWeight, effective.headingLetterSpacing,
-        effective.borderRadius, effective.borderWidth, effective.borderStyle, effective.glassOpacity,
-        effective.glassBlur, effective.shadowIntensity, effective.isGeometricCut, effective.textureOpacity,
-        effective.animationSpeed, effective.layoutGap, effective.systemName, effective.logoUrl, effective.logoDarkUrl,
-        effective.logoScale, effective.logoPosition, effective.systemTone, effective.surfaceMaterial, effective.borderType,
-        effective.interfaceElasticity, effective.isSplitViewEnabled, effective.chartStyle, effective.chartPalette, effective.shadowOrientation,
-        effective.shadowColorMode, effective.isAutoHideEnabled, globalSarak
-    ]);
+    }, [effective, globalSarak]);
 
     const applyFullLocalConfig = (c: any) => {
         if (c.layout || c.theme) setLocalLayout(c.layout || c.theme);
