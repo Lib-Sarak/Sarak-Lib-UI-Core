@@ -141,6 +141,74 @@ export const ThemeCustomizationTab: React.FC = () => {
             return;
         }
 
+        // DEFINIÇÃO DO SCHEMA DE TIPAGEM SOBERANA v6.1
+        const TOKEN_SCHEMA: Record<string, 'number' | 'boolean' | 'string' | 'array'> = {
+            navigationStyle: 'string', sidebarWidth: 'number', layoutDensity: 'string', isAutoHideEnabled: 'boolean',
+            isSplitViewEnabled: 'boolean', secondaryModuleId: 'string', searchStyle: 'string',
+            headingFont: 'string', subtitleFont: 'string', tabFont: 'string', bodyFont: 'string',
+            headingWeight: 'string', headingLetterSpacing: 'string', fontScale: 'string',
+            borderRadius: 'number', borderWidth: 'number', borderStyle: 'string',
+            surfaceMaterial: 'string', borderType: 'string', layoutGap: 'number',
+            glassOpacity: 'number', glassBlur: 'number', isGeometricCut: 'boolean',
+            cursorPhysics: 'boolean', interfaceElasticity: 'number',
+            texture: 'string', textureOpacity: 'number', primaryColor: 'string',
+            systemName: 'string', logoUrl: 'string', logoDarkUrl: 'string', logoScale: 'number',
+            logoPosition: 'string', systemTone: 'string', emptyStateId: 'string',
+            chartStyle: 'string', chartPalette: 'array',
+            shadowIntensity: 'number', shadowOrientation: 'string', shadowColorMode: 'string',
+            animationSpeed: 'number', mode: 'string'
+        };
+
+        const tokenMap: Record<string, string> = {
+            '--nav-style': 'navigationStyle', '--sidebar-width': 'sidebarWidth', '--layout-density': 'layoutDensity', '--auto-hide': 'isAutoHideEnabled',
+            '--split-view': 'isSplitViewEnabled', '--secondary-module': 'secondaryModuleId', '--search-style': 'searchStyle',
+            '--font-heading': 'headingFont', '--font-subtitle': 'subtitleFont', '--font-tab': 'tabFont', '--font-main': 'bodyFont',
+            '--font-weight-heading': 'headingWeight', '--letter-spacing-heading': 'headingLetterSpacing', '--font-scale': 'fontScale',
+            '--radius-theme': 'borderRadius', '--border-width': 'borderWidth', '--border-style': 'borderStyle',
+            '--surface-material': 'surfaceMaterial', '--border-type': 'borderType', '--theme-gap': 'layoutGap',
+            '--glass-opacity': 'glassOpacity', '--glass-blur': 'glassBlur', '--is-geometric': 'isGeometricCut',
+            '--cursor-physics': 'cursorPhysics', '--interface-elasticity': 'interfaceElasticity',
+            '--bg-texture': 'texture', '--texture-opacity': 'textureOpacity', '--theme-primary': 'primaryColor',
+            '--system-name': 'systemName', '--logo-url': 'logoUrl', '--logo-dark-url': 'logoDarkUrl', '--logo-scale': 'logoScale',
+            '--logo-position': 'logoPosition', '--system-tone': 'systemTone', '--empty-state-id': 'emptyStateId',
+            '--chart-style': 'chartStyle', '--chart-palette': 'chartPalette',
+            '--shadow-intensity': 'shadowIntensity', '--shadow-orientation': 'shadowOrientation', '--shadow-color-mode': 'shadowColorMode',
+            '--animation-speed': 'animationSpeed', '--mode': 'mode'
+        };
+
+        const newDraft = { ...draft, layout: id };
+
+        Object.entries(preset).forEach(([cssVar, value]) => {
+            const draftKey = tokenMap[cssVar];
+            if (draftKey) {
+                const targetType = TOKEN_SCHEMA[draftKey];
+                let finalValue: any = value;
+
+                switch(targetType) {
+                    case 'number':
+                        const rawStr = typeof value === 'string' ? value.replace(/px|s|%/g, '') : value;
+                        finalValue = parseFloat(rawStr as string);
+                        if (isNaN(finalValue)) finalValue = 0;
+                        break;
+                    case 'boolean':
+                        finalValue = (value === 'true' || value === '1' || value === 1 || value === true);
+                        break;
+                    case 'array':
+                        if (typeof value === 'string') finalValue = value.split(',').map(s => s.trim());
+                        break;
+                    default:
+                        finalValue = String(value);
+                        break;
+                }
+                (newDraft as any)[draftKey] = finalValue;
+            }
+        });
+
+        // Retrocompatibilidade de modo
+        if (!preset['--mode'] && (preset['--bg-body'] === '#000000' || preset['--bg-body'] === '#050505')) {
+            newDraft.mode = 'dark';
+        }
+
         console.log('%c🎨 [Matrix Trace] PREVIEW (Draft Mode)', 'background: #1e3a8a; color: #93c5fd; padding: 4px; font-weight: bold;', newDraft);
         setDraft(newDraft);
     };
