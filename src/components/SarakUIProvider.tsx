@@ -180,7 +180,7 @@ export const SarakUIProvider: React.FC<SarakUIProviderProps> = ({
         document.head.prepend(style);
     }, []);
 
-    const s = globalSarak || {};
+    const s = globalSarak;
     
     // --- HELPER DE NORMALIZAÇÃO (Escudo contra Case-Sensitivity) ---
     // Busca o valor no objeto global ignorando maiúsculas/minúsculas.
@@ -251,7 +251,7 @@ export const SarakUIProvider: React.FC<SarakUIProviderProps> = ({
         animationSpeed, layoutGap, systemName, logoUrl, logoDarkUrl, logoScale, 
         logoPosition, systemTone, surfaceMaterial, borderType, interfaceElasticity, 
         isSplitViewEnabled, chartStyle, chartPalette, shadowOrientation, shadowColorMode, 
-        cursorPhysics, localIsNavHidden, fontScale, systemName, searchStyle
+        cursorPhysics, localIsNavHidden, fontScale, searchStyle, s
     ]);
 
     // --- SARAK MANIFEST-DRIVEN DESIGN ENGINE (v6.5) ---
@@ -438,6 +438,15 @@ export const SarakUIProvider: React.FC<SarakUIProviderProps> = ({
         applyFullConfig: globalSarak ? globalSarak.applyFullConfig : applyFullLocalConfig,
         isStandalone: !globalSarak
     }), [effective, globalSarak]);
+
+    // --- SINCRO-PULSE v7.5 (SSoT Bridge) ---
+    // Monitora alterações no Cérebro (Shared) e força a injeção nas Mãos (UI)
+    useEffect(() => {
+        if (globalSarak) {
+            console.log('🔗 [Interface Bridge] Sincronizando com SSoT (Shared)...');
+            // A injeção de CSS já ocorre via effective + no motor de design abaixo.
+        }
+    }, [globalSarak]);
 
     if (!isHydrated) return null;
 
