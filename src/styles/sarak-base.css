@@ -1,7 +1,28 @@
 /* =========================================
-   SARAK CORE ENGINE - VISUAL MOTOR (v5.6)
-   Atomic Sovereignty & Matrix Trace Compatible
+   SARAK CORE ENGINE - VISUAL MOTOR (v10.0)
+   Absolute Sovereignty & Purity Compatible
    ========================================= */
+
+/* 0. TAILWIND v4 SOVEREIGN THEME (Plug & Play) */
+@theme {
+  --color-theme-primary: var(--primary-color);
+  --color-theme-secondary: color-mix(in srgb, var(--primary-color), #000 20%);
+  --color-theme-body: var(--bg-body);
+  --color-theme-sidebar: var(--bg-sidebar);
+  --color-theme-card: var(--bg-card);
+  --color-theme-border: var(--border-color);
+  --color-theme-text: var(--text-main);
+  --color-theme-title: var(--text-title);
+  --color-theme-muted: var(--text-muted);
+  
+  /* Escalas Geométricas */
+  --radius-sarak: var(--radius-theme);
+  --spacing-sarak-gap: var(--theme-gap);
+  
+  /* Fontes Dinâmicas */
+  --font-sarak-heading: var(--font-heading);
+  --font-sarak-body: var(--font-main);
+}
 
 /* 1. REAL DYNAMIC CONTRAST (LIGHT / DARK) */
 body.dark,
