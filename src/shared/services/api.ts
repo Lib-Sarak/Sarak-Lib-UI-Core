@@ -28,8 +28,8 @@ api.interceptors.response.use(
     (response: any) => response,
     (error: any) => {
         if (error.response?.status === 401) {
-            console.error(">>> [API] 401 Unauthorized detected. Wiping token.");
-            localStorage.removeItem('auth_token');
+            // 401 Unauthorized detected. Wiping token.
+            localStorage.removeItem('sarak_token');
             sessionStorage.removeItem('auth_token');
         }
         return Promise.reject(error);
@@ -179,8 +179,8 @@ export const modelCatalogApi = {
     },
 
     sync: async (): Promise<any> => {
-        const response = await api.post('/api/model-catalog/sync');
-        return response.data;
+        // Silent skip in standalone mode
+        return;
     },
 
     listModels: async (): Promise<{ total: number; models: any[] }> => {

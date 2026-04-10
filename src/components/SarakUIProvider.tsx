@@ -262,8 +262,6 @@ export const SarakUIProvider: React.FC<SarakUIProviderProps> = ({
         const body = document.body;
 
         try {
-            console.group('%c🚀 [Matrix Trace] Motor de Design Baseado em Manifesto v6.5', 'background: #0f172a; color: #10b981; padding: 4px; font-weight: bold;');
-            
             const appliedTokens: Record<string, string> = {};
             const attributesToSet: Record<string, string> = {};
 
@@ -353,9 +351,6 @@ export const SarakUIProvider: React.FC<SarakUIProviderProps> = ({
             body.classList.add(modeClass);
             root.classList.add(modeClass);
 
-            console.log('%c🏷️ [Sarak Engine] Atributos Sincronizados:', 'color: #34d399; font-weight: bold;', attributesToSet);
-            console.groupEnd();
-
             // Persistência Fallback (Standalone)
             if (!globalSarak) {
                 localStorage.setItem('sarak_local_layout', effective.layout);
@@ -365,7 +360,7 @@ export const SarakUIProvider: React.FC<SarakUIProviderProps> = ({
 
             setIsHydrated(true);
         } catch (error) {
-            console.error('❌ [Matrix Trace Engine Failure]', error);
+            // Silently fail
         }
     }, [effective, globalSarak]);
 
@@ -456,8 +451,7 @@ export const SarakUIProvider: React.FC<SarakUIProviderProps> = ({
     // Monitora alterações no Cérebro (Shared) e força a injeção nas Mãos (UI)
     useEffect(() => {
         if (globalSarak) {
-            console.log('🔗 [Interface Bridge] Sincronizando com SSoT (Shared)...');
-            // A injeção de CSS já ocorre via effective + no motor de design abaixo.
+            // Sincronização ativa
         }
     }, [globalSarak]);
 

@@ -22,7 +22,6 @@ export const ShortcutsTab: React.FC = () => {
     const shortcuts = (sarak as any).shortcuts || [];
     const registeredActions = (sarak as any).registeredActions || {};
     const updateShortcut = (sarak as any).updateShortcut || ((id: string, keys: string[]) => {
-        console.warn('UpdateShortcut não disponível em modo Standalone');
         // Fallback: tentar atualizar via config genérica se houver suporte futuro
         applyFullConfig({ _shortcutUpdate: { id, keys } });
     });

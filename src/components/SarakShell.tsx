@@ -54,8 +54,8 @@ export const SarakShell: React.FC<SarakShellProps> = ({
 
     // Fallbacks para funções de estado/shared
     const user = (sarak as any).user || { email: 'Sarak User', role: 'Guest' };
-    const logout = (sarak as any).logout || (() => console.warn('Logout não disponível em modo Standalone'));
-    const toggleNav = (sarak as any).toggleNav || (() => console.warn('ToggleNav não disponível em modo Standalone'));
+    const logout = (sarak as any).logout || (() => {});
+    const toggleNav = (sarak as any).toggleNav || (() => {});
     const setSidebarWidth = (sarak as any).setSidebarWidth || ((w: number) => applyFullConfig({ sidebarWidth: w }));
     const secondaryModuleId = (sarak as any).secondaryModuleId;
     const emptyStateId = (sarak as any).emptyStateId || 'default';

@@ -138,7 +138,7 @@ export const ThemeCustomizationTab: React.FC = () => {
         const preset = presetKey ? (BASE_PRESETS as any)[presetKey] : null;
 
         if (!preset) {
-            console.warn(`⚠️ [Matrix Design] Archetype not found: ${id}`);
+            // Silently skip if archetype not found
             return;
         }
 
@@ -210,7 +210,6 @@ export const ThemeCustomizationTab: React.FC = () => {
             newDraft.mode = 'dark';
         }
 
-        console.log('%c🎨 [Matrix Trace] PREVIEW (Draft Mode)', 'background: #1e3a8a; color: #93c5fd; padding: 4px; font-weight: bold;', newDraft);
         setDraft(newDraft);
     };
 
