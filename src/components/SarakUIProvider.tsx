@@ -51,7 +51,7 @@ const DESIGN_MANIFEST: Record<string, {
         }
     },
     layoutDensity: { vars: ['--sarak-layout-density', '--density-theme'], classPrefix: 'density-' },
-    texture: { vars: ['--sarak-texture', '--texture-theme'], classPrefix: 'texture-' },
+    texture: { vars: ['--sarak-texture', '--texture-theme'], classPrefix: 'texture-', attr: 'data-texture' },
     navigationStyle: { vars: ['--sarak-navigation-style', '--nav-style'], classPrefix: 'nav-' },
     sidebarWidth: { vars: ['--sidebar-width', '--sarak-sidebar-width'], unit: 'px' },
     headingFont: { vars: ['--font-heading', '--sarak-heading-font'] },

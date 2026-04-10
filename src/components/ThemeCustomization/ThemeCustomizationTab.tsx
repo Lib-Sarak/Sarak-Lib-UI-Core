@@ -187,7 +187,8 @@ export const ThemeCustomizationTab: React.FC = () => {
 
                 switch(targetType) {
                     case 'number':
-                        const rawStr = typeof value === 'string' ? value.replace(/px|s|%/g, '') : value;
+                        // Parsing numérico robusto ignorando px, s, %, etc.
+                        const rawStr = typeof value === 'string' ? value.replace(/[^\d.-]/g, '') : value;
                         finalValue = parseFloat(rawStr as string);
                         if (isNaN(finalValue)) finalValue = 0;
                         break;
@@ -198,7 +199,12 @@ export const ThemeCustomizationTab: React.FC = () => {
                         if (typeof value === 'string') finalValue = value.split(',').map(s => s.trim());
                         break;
                     default:
-                        finalValue = String(value);
+                        // Proteção contra injeção de objetos complexos (ex: fontes) que geram [object Object]
+                        if (typeof value === 'object' && value !== null) {
+                            finalValue = value.id || value.family || value.name || value.value || String(value);
+                        } else {
+                            finalValue = String(value);
+                        }
                         break;
                 }
                 (newDraft as any)[draftKey] = finalValue;
