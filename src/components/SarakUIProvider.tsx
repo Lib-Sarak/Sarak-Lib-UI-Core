@@ -37,21 +37,22 @@ const DESIGN_MANIFEST: Record<string, {
     attr?: string, 
     classPrefix?: string 
 }> = {
-    layout: { vars: ['--sarak-layout'], classPrefix: 'layout-' },
-    mode: { vars: ['--sarak-mode'], transform: (v: any) => v === 'dark' ? 'dark' : 'light' },
+    layout: { vars: ['--sarak-layout', '--layout-theme'], classPrefix: 'layout-' },
+    mode: { vars: ['--sarak-mode', '--mode-theme'], transform: (v: any) => v === 'dark' ? 'dark' : 'light' },
     primaryColor: { 
         vars: ['--primary-color', '--theme-primary', '--sarak-primary-color'],
         transform: (v: string) => {
+            if (!v || typeof v !== 'string') return { main: '#3b82f6', rgb: '59, 130, 246' };
             const hex = v.replace('#', '');
-            const r = parseInt(hex.substring(0, 2), 16);
-            const g = parseInt(hex.substring(2, 4), 16);
-            const b = parseInt(hex.substring(4, 6), 16);
+            const r = parseInt(hex.substring(0, 2), 16) || 0;
+            const g = parseInt(hex.substring(2, 4), 16) || 0;
+            const b = parseInt(hex.substring(4, 6), 16) || 0;
             return { main: v, rgb: `${r}, ${g}, ${b}` };
         }
     },
-    layoutDensity: { vars: ['--sarak-layout-density'], classPrefix: 'density-' },
-    texture: { vars: ['--sarak-texture'], classPrefix: 'texture-' },
-    navigationStyle: { vars: ['--sarak-navigation-style', '--sarak-nav-style'], classPrefix: 'nav-' },
+    layoutDensity: { vars: ['--sarak-layout-density', '--density-theme'], classPrefix: 'density-' },
+    texture: { vars: ['--sarak-texture', '--texture-theme'], classPrefix: 'texture-' },
+    navigationStyle: { vars: ['--sarak-navigation-style', '--nav-style'], classPrefix: 'nav-' },
     sidebarWidth: { vars: ['--sidebar-width', '--sarak-sidebar-width'], unit: 'px' },
     headingFont: { vars: ['--font-heading', '--sarak-heading-font'] },
     subtitleFont: { vars: ['--font-subtitle', '--sarak-subtitle-font'] },
@@ -63,25 +64,25 @@ const DESIGN_MANIFEST: Record<string, {
         transform: (v) => ({ tight: '-0.05em', normal: '0', wide: '0.1em', widest: '0.25em' }[v] || v) 
     },
     fontScale: { 
-        vars: ['--sarak-font-size', '--sarak-font-scale', '--font-size-factor', '--theme-font-size-base'],
+        vars: ['--sarak-font-size', '--font-size-factor', '--theme-font-size-base'],
         transform: (v) => {
             const factor = { p1: '0.8', p: '0.9', m: '1.0', g: '1.2', g1: '1.4' }[v] || '1.0';
             const px = { p1: '11px', p: '12px', m: '13px', g: '16px', g1: '18px' }[v] || '13px';
             return { factor, px };
         }
     },
-    borderRadius: { vars: ['--radius-theme', '--sarak-border-radius'], unit: 'px' },
+    borderRadius: { vars: ['--radius-theme', '--sarak-border-radius', '--border-radius'], unit: 'px' },
     borderWidth: { vars: ['--theme-border-width', '--border-width', '--sarak-border-width'], unit: 'px' },
     borderStyle: { vars: ['--border-style', '--sarak-border-style'] },
     layoutGap: { vars: ['--theme-gap', '--sarak-layout-gap'], unit: 'px' },
     glassOpacity: { vars: ['--glass-opacity', '--sarak-glass-opacity', '--sarak-bg-opacity'] },
     glassBlur: { vars: ['--glass-blur', '--sarak-glass-blur'], unit: 'px' },
     shadowIntensity: { vars: ['--shadow-intensity', '--sarak-shadow-intensity'] },
-    isGeometricCut: { classPrefix: 'is-geometric' },
+    isGeometricCut: { classPrefix: 'is-geometric', attr: 'data-geometric' },
     textureOpacity: { vars: ['--texture-opacity', '--sarak-texture-opacity', '--theme-texture-opacity'] },
     animationSpeed: { vars: ['--animation-speed', '--sarak-animation-speed', '--transition-speed'], unit: 's' },
-    surfaceMaterial: { attr: 'data-surface', vars: ['--sarak-surface'] },
-    borderType: { attr: 'data-border', vars: ['--sarak-border-type'] },
+    surfaceMaterial: { attr: 'data-surface', vars: ['--sarak-surface', '--surface-material'] },
+    borderType: { attr: 'data-border', vars: ['--sarak-border-type', '--border-type'] },
     systemTone: { vars: ['--sarak-system-tone'], attr: 'data-tone' },
     isAutoHideEnabled: { attr: 'data-auto-hide' },
     shadowOrientation: { vars: ['--shadow-orientation'], attr: 'data-shadow-orientation' },
@@ -266,7 +267,7 @@ export const SarakUIProvider: React.FC<SarakUIProviderProps> = ({
             const appliedTokens: Record<string, string> = {};
             const attributesToSet: Record<string, string> = {};
 
-            // Processamento do Manifesto v6.6
+            // Processamento do Manifesto v6.7
             Object.entries(effective).forEach(([key, value]) => {
                 const config = DESIGN_MANIFEST[key];
                 
@@ -276,7 +277,7 @@ export const SarakUIProvider: React.FC<SarakUIProviderProps> = ({
 
                 if (config?.transform) {
                     const t = config.transform(value);
-                    if (typeof t === 'object') {
+                    if (typeof t === 'object' && t !== null) {
                         // Casos Especiais: RGB e Escalas Híbridas
                         if (key === 'primaryColor') {
                             finalValue = t.main;
@@ -286,9 +287,12 @@ export const SarakUIProvider: React.FC<SarakUIProviderProps> = ({
                             finalValue = t.px; 
                             extraVars['--font-size-factor'] = t.factor;
                             extraVars['--sarak-font-scale'] = t.factor;
+                        } else {
+                           // Fallback preventivo contra [object Object]
+                           finalValue = String(t.main || t.value || JSON.stringify(t));
                         }
                     } else {
-                        finalValue = t;
+                        finalValue = String(t);
                     }
                 }
 
@@ -302,45 +306,54 @@ export const SarakUIProvider: React.FC<SarakUIProviderProps> = ({
                         appliedTokens[v] = finalValue;
                         root.style.setProperty(v, finalValue);
                     });
-                    // Injeta variáveis extras calculadas (ex: RGB)
+                    
                     Object.entries(extraVars).forEach(([ev, evVal]) => {
                         appliedTokens[ev] = evVal;
                         root.style.setProperty(ev, evVal);
                     });
                 } else {
-                    // Fallback automático para kebab-case com proteção de redundância
                     const fallbackKey = `--sarak-${key.replace(/([a-z0-9]|(?=[A-Z]))([A-Z])/g, '$1-$2').toLowerCase()}`;
                     appliedTokens[fallbackKey] = finalValue;
                     root.style.setProperty(fallbackKey, finalValue);
                 }
 
-                // 2. Injeção de Atributos HTML5
+                // 2. Injeção de Atributos HTML5 (Duplo Bind para Soberania)
                 if (config?.attr) {
                     attributesToSet[config.attr] = finalValue;
                     body.setAttribute(config.attr, finalValue);
+                    root.setAttribute(config.attr, finalValue);
                 }
 
-                // 3. Gerenciamento de Classes
+                // 3. Gerenciamento de Classes (Body + Root)
                 if (config?.classPrefix) {
-                    if (typeof value === 'boolean') {
-                        if (value) body.classList.add(config.classPrefix);
-                        else body.classList.remove(config.classPrefix);
-                    } else {
-                        // Remove classes antigas do mesmo prefixo
+                    const isBool = typeof value === 'boolean';
+                    const activeClass = isBool ? (value ? config.classPrefix : null) : `${config.classPrefix}${value}`;
+                    
+                    // Limpeza
+                    if (!isBool) {
                         Array.from(body.classList).forEach(c => {
-                            if (c.startsWith(config.classPrefix!)) body.classList.remove(c);
+                           if (c.startsWith(config.classPrefix!)) body.classList.remove(c);
                         });
-                        body.classList.add(`${config.classPrefix}${value}`);
+                        Array.from(root.classList).forEach(c => {
+                           if (c.startsWith(config.classPrefix!)) root.classList.remove(c);
+                        });
+                    }
+
+                    if (activeClass) {
+                        body.classList.add(activeClass);
+                        root.classList.add(activeClass);
                     }
                 }
             });
 
             // Classes Fixas de Suporte
             body.classList.remove('light', 'dark');
-            body.classList.add(effective.mode === 'dark' ? 'dark' : 'light');
+            root.classList.remove('light', 'dark');
+            const modeClass = effective.mode === 'dark' ? 'dark' : 'light';
+            body.classList.add(modeClass);
+            root.classList.add(modeClass);
 
-            console.log('📦 Tokens Aplicados (Manifesto):', appliedTokens);
-            console.log('🏷️ Atributos Sincronizados:', attributesToSet);
+            console.log('%c🏷️ [Sarak Engine] Atributos Sincronizados:', 'color: #34d399; font-weight: bold;', attributesToSet);
             console.groupEnd();
 
             // Persistência Fallback (Standalone)
