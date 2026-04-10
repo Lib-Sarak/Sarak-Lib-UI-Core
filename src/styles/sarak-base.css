@@ -381,10 +381,13 @@ h3, h4 {
     transition: background-color 0.4s ease, border-color 0.4s ease;
 }
 
-/* Impede que fundos sólidos de módulos cubram a textura da atmosfera */
-.layout-glass [data-theme] main,
-.layout-glass [data-surface] main,
-[data-surface="acrylic"] main {
+/* Impede que fundos sólidos de módulos cubram a textura da atmosfera (v6.8 Nuclear Reset) */
+[class*="texture-"] main,
+[class*="texture-"] section,
+[class*="texture-"] .sarak-module-container,
+[data-surface="acrylic"] main,
+.layout-glass main,
+body:not(.texture-none) main {
     background-color: transparent !important;
 }
 

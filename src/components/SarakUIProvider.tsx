@@ -256,12 +256,14 @@ export const SarakUIProvider: React.FC<SarakUIProviderProps> = ({
     ]);
 
     // --- SARAK MANIFEST-DRIVEN DESIGN ENGINE (v6.5) ---
+    // --- SARAK MANIFEST-DRIVEN DESIGN ENGINE (v6.8 Trace) ---
     useEffect(() => {
         if (typeof document === 'undefined') return;
         const root = document.documentElement;
         const body = document.body;
 
         try {
+            console.log(' [Sarak:UI-Pulse] Starting Dynamic Design Injection...', effective);
             const appliedTokens: Record<string, string> = {};
             const attributesToSet: Record<string, string> = {};
 
@@ -286,7 +288,6 @@ export const SarakUIProvider: React.FC<SarakUIProviderProps> = ({
                             extraVars['--font-size-factor'] = t.factor;
                             extraVars['--sarak-font-scale'] = t.factor;
                         } else {
-                           // Fallback preventivo contra [object Object]
                            finalValue = String(t.main || t.value || JSON.stringify(t));
                         }
                     } else {
@@ -344,6 +345,8 @@ export const SarakUIProvider: React.FC<SarakUIProviderProps> = ({
                 }
             });
 
+            console.log(' [Sarak:UI-Pulse] Injection Complete. Root Attributes:', attributesToSet);
+            
             // Classes Fixas de Suporte
             body.classList.remove('light', 'dark');
             root.classList.remove('light', 'dark');
@@ -360,11 +363,12 @@ export const SarakUIProvider: React.FC<SarakUIProviderProps> = ({
 
             setIsHydrated(true);
         } catch (error) {
-            // Silently fail
+            console.error(' [Sarak:UI-Pulse] Crash during design injection:', error);
         }
     }, [effective, globalSarak]);
 
     const applyFullLocalConfig = (c: any) => {
+        // ... (resto da função permanece igual)
         if (c.layout || c.theme) setLocalLayout(c.layout || c.theme);
         if (c.mode) setLocalMode(c.mode);
         if (c.primaryColor || c.primarycolor) setLocalPrimary(c.primaryColor || c.primarycolor);
@@ -408,6 +412,7 @@ export const SarakUIProvider: React.FC<SarakUIProviderProps> = ({
     };
 
     const fallbackContextValue = useMemo(() => ({
+        // ... (removido para brevidade na edição, mantendo a lógica original)
         layout: localLayout, setLayout: setLocalLayout,
         theme: localLayout, setTheme: setLocalLayout,
         mode: localMode, setMode: setLocalMode,
@@ -451,7 +456,7 @@ export const SarakUIProvider: React.FC<SarakUIProviderProps> = ({
     // Monitora alterações no Cérebro (Shared) e força a injeção nas Mãos (UI)
     useEffect(() => {
         if (globalSarak) {
-            // Sincronização ativa
+            console.log(' [Sarak:SincroPulse] Global State Sync Detected.', globalSarak.effective || globalSarak);
         }
     }, [globalSarak]);
 
