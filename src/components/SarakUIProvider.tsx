@@ -183,18 +183,37 @@ export const SarakUIProvider: React.FC<SarakUIProviderProps> = ({
 
     const s = globalSarak;
     
-    // --- HELPER DE NORMALIZAÇÃO (Escudo contra Case-Sensitivity) ---
-    // Busca o valor no objeto global ignorando maiúsculas/minúsculas.
+    // --- HELPER DE NORMALIZAÇÃO (Escudo Atômico v6.8.6) ---
+    // Busca o valor no objeto global protegendo contra desidratação e objetos complexos.
     const pickup = useCallback((key: string, localFallback: any) => {
-        if (!s) return localFallback;
+        // Hydration Guard: Se o cérebro não estiver pronto, use os reflexos locais.
+        if (!s || !s.isHydrated) return localFallback;
+
+        let rawValue: any = undefined;
+
         // 1. Busca Exata (Prioridade 1)
-        if (s[key] !== undefined) return s[key];
-        // 2. Busca Case-Insensitive (Prioridade 2)
-        const normalizedKey = key.toLowerCase();
-        const actualKey = Object.keys(s).find(k => k.toLowerCase() === normalizedKey);
-        if (actualKey !== undefined && s[actualKey] !== undefined) return s[actualKey];
-        // 3. Fallback Local
-        return localFallback;
+        if (s[key] !== undefined) {
+            rawValue = s[key];
+        } else {
+            // 2. Busca Case-Insensitive (Prioridade 2)
+            const normalizedKey = key.toLowerCase();
+            const actualKey = Object.keys(s).find(k => k.toLowerCase() === normalizedKey);
+            if (actualKey !== undefined) rawValue = s[actualKey];
+        }
+
+        if (rawValue === undefined) return localFallback;
+
+        // --- NORMALIZAÇÃO DE SAÍDA ---
+        // Se vazou um objeto (como metadados de fonte), extrai a string pura.
+        if (typeof rawValue === 'object' && rawValue !== null && !Array.isArray(rawValue)) {
+            console.log(` [Sarak:UI-Bridge] Atomic extraction for ${key}:`, rawValue);
+            return rawValue.id || rawValue.family || rawValue.name || rawValue.value || String(rawValue);
+        }
+
+        // Se for uma string de erro típica, usa o fallback local.
+        if (typeof rawValue === 'string' && rawValue.includes('[object Object]')) return localFallback;
+
+        return rawValue;
     }, [s]);
 
     // SSSoT Consumidor SOBERANO (Ponte Resiliente v6.7)

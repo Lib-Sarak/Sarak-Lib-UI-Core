@@ -371,25 +371,46 @@ h3, h4 {
     animation: sarak-glow-reveal 2s infinite ease-in-out;
 }
 
-/* 6. NUCLEAR SOVEREIGNTY RESET (v6.7) */
-/* Garante que sub-módulos respeitem o motor de design global */
+/* 6. NUCLEAR SOVEREIGNTY RESET (v6.8.6 - TRANSPARENCY BREACH) */
+/* Garante que sub-módulos respeitem o motor de design global e permitam a visibilidade da textura */
 [data-theme] main, 
 [data-theme] section, 
+[data-theme] article,
+[data-theme] .sarak-module-container,
 [data-surface] main,
 [data-surface] section,
-[data-theme] .sarak-module-container {
+[data-surface] .sarak-module-container,
+[data-texture] main,
+[data-texture] section,
+[data-texture] .sarak-module-container,
+[data-texture] .module-wrapper {
     transition: background-color 0.4s ease, border-color 0.4s ease;
 }
 
-/* Impede que fundos sólidos de módulos cubram a textura da atmosfera (v6.8 Nuclear Reset) */
-[class*="texture-"] main,
-[class*="texture-"] section,
-[class*="texture-"] .sarak-module-container,
-[data-surface="acrylic"] main,
+/* Impede que fundos sólidos de módulos cubram a textura da atmosfera em qualquer estado não opaco */
+body:not(.texture-none) main,
+body:not(.texture-none) section,
+body:not(.texture-none) .sarak-module-container,
+body:not(.texture-none) article,
+body:not(.texture-none) .module-content,
+[data-texture] main,
+[data-texture] section,
+[data-texture] article,
+[data-texture] .sarak-module-container,
 .layout-glass main,
-body:not(.texture-none) main {
+.layout-glass section {
     background-color: transparent !important;
+    background-image: none !important;
 }
+
+/* Força cores de cards a usarem a opacidade do motor Sarak */
+[data-texture] .card, 
+[data-texture] .sarak-card,
+[data-texture] [class*="card"] {
+    background: color-mix(in srgb, var(--bg-card), transparent calc(100% * (1 - var(--glass-opacity, 0.7)))) !important;
+    backdrop-filter: blur(var(--glass-blur, 10px)) !important;
+}
+
 
 /* 7. UTILITY ENGINE (v6.7.1 - TRACE COMPATIBLE) */
 /* Classes usadas pelos componentes para herdar o DNA do motor */
