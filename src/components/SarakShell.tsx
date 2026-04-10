@@ -311,7 +311,6 @@ export const SarakShell: React.FC<SarakShellProps> = ({
                 <main className="flex-1 overflow-y-auto custom-scrollbar relative flex flex-col w-full min-h-0 bg-[var(--theme-body)]">
                     {/* SarakAtmosphereLayer (Soberania de Textura v6.7) */}
                     <div className={`absolute inset-0 pointer-events-none z-0 texture-${texture}`} style={{ 
-                        opacity: 'var(--texture-opacity)',
                         backgroundColor: 'transparent'
                     }} />
                     

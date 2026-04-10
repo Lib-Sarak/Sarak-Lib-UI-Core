@@ -354,18 +354,40 @@ h3, h4 {
 /* Garante que sub-módulos respeitem o motor de design global */
 [data-theme] main, 
 [data-theme] section, 
+[data-surface] main,
+[data-surface] section,
 [data-theme] .sarak-module-container {
     transition: background-color 0.4s ease, border-color 0.4s ease;
 }
 
 /* Impede que fundos sólidos de módulos cubram a textura da atmosfera */
-.layout-glass [data-theme] main {
+.layout-glass [data-theme] main,
+.layout-glass [data-surface] main,
+[data-surface="acrylic"] main {
     background-color: transparent !important;
+}
+
+/* 7. UTILITY ENGINE (v6.7.1 - TRACE COMPATIBLE) */
+/* Classes usadas pelos componentes para herdar o DNA do motor */
+
+.rounded-theme {
+    border-radius: var(--radius-theme, 12px) !important;
+}
+
+.border-theme {
+    border-width: var(--theme-border-width, 1px) !important;
+    border-style: var(--border-style, solid) !important;
+    border-color: var(--theme-border) !important;
+}
+
+.shadow-theme {
+    box-shadow: var(--dynamic-shadow) !important;
+    opacity: calc(0.5 + (var(--shadow-intensity, 0.5) * 0.5));
 }
 
 /* Força arredondamento global em elementos que usem a classe de card sarak */
 .bg-theme-card {
-    border-radius: var(--radius-theme) !important;
+    border-radius: var(--radius-theme, 12px) !important;
 }
 
 /* Sincronização de Geometria em Botões e Inputs de Módulos */
@@ -373,5 +395,10 @@ button:not(.p-0),
 input, 
 select, 
 textarea {
-    border-radius: calc(var(--radius-theme) * 0.7);
+    border-radius: calc(var(--radius-theme, 12px) * 0.7);
 }
+
+/* Sincronização de Tipografia Dinâmica */
+h1, h2, h3 { font-family: var(--font-heading) !important; }
+body, span, p, div { font-family: var(--font-main); }
+
