@@ -61,13 +61,13 @@ const DESIGN_MANIFEST: Record<string, {
     headingWeight: { vars: ['--heading-weight', '--sarak-heading-weight'] },
     headingLetterSpacing: { 
         vars: ['--heading-spacing', '--sarak-heading-spacing'],
-        transform: (v) => ({ tight: '-0.05em', normal: '0', wide: '0.1em', widest: '0.25em' }[v] || v) 
+        transform: (v) => (({ tight: '-0.05em', normal: '0', wide: '0.1em', widest: '0.25em' } as any)[v] || v) 
     },
     fontScale: { 
         vars: ['--sarak-font-size', '--font-size-factor', '--theme-font-size-base'],
         transform: (v) => {
-            const factor = { p1: '0.8', p: '0.9', m: '1.0', g: '1.2', g1: '1.4' }[v] || '1.0';
-            const px = { p1: '11px', p: '12px', m: '13px', g: '16px', g1: '18px' }[v] || '13px';
+            const factor = ({ p1: '0.8', p: '0.9', m: '1.0', g: '1.2', g1: '1.4' } as any)[v] || '1.0';
+            const px = ({ p1: '11px', p: '12px', m: '13px', g: '16px', g1: '18px' } as any)[v] || '13px';
             return { factor, px };
         }
     },
