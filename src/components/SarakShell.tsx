@@ -1,5 +1,5 @@
 import React, { useState, useEffect, useCallback, useMemo, ReactNode } from 'react';
-import { getRegisteredModules, SarakModule, LAYOUTS } from '@sarak/lib-shared';
+import { getRegisteredModules, SarakModule, LAYOUTS, useSarak } from '@sarak/lib-shared';
 import * as LucideIcons from 'lucide-react';
 import { 
     LogOut, User, Menu, X, ChevronRight, LayoutDashboard, 
@@ -37,6 +37,7 @@ export const SarakShell: React.FC<SarakShellProps> = ({
     extraToolbarItems
 }) => {
     const { effective: sarak, applyFullConfig } = useSarakUI();
+    const { user, logout, loggedIn } = useSarak();
     
     // Destruturação direta do motor visual (Nomes oficiais v6.1)
     const { 
@@ -53,8 +54,6 @@ export const SarakShell: React.FC<SarakShellProps> = ({
     } = sarak;
 
     // Fallbacks para funções de estado/shared
-    const user = (sarak as any).user || { email: 'Sarak User', role: 'Guest' };
-    const logout = (sarak as any).logout || (() => {});
     const toggleNav = (sarak as any).toggleNav || (() => {});
     const setSidebarWidth = (sarak as any).setSidebarWidth || ((w: number) => applyFullConfig({ sidebarWidth: w }));
     const secondaryModuleId = (sarak as any).secondaryModuleId;

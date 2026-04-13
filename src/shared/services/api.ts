@@ -11,13 +11,12 @@ const api = axios.create({
 });
 
 api.interceptors.request.use((config: any) => {
-    if (config.url?.startsWith('/api/auth') || config.url?.startsWith('/api/user')) {
-        config.baseURL = AUTH_BASE_URL;
-    } else {
-        config.baseURL = LLM_BASE_URL;
-    }
+    // Mantemos a baseURL unificada '/api' para que o Vite Proxy gerencie.
+    // Se o sistema estiver em modo legado multiserviço, as variáveis env cuidariam disso,
+    // mas no Sarak Matrix Full, tudo flui pelo Gateway.
+    config.baseURL = '/api';
     
-    const token = localStorage.getItem('auth_token') || sessionStorage.getItem('auth_token');
+    const token = localStorage.getItem('sarak_token') || localStorage.getItem('auth_token');
     if (token) {
         config.headers.Authorization = `Bearer ${token}`;
     }
@@ -82,22 +81,22 @@ export interface ApiKeyCreate {
 
 export const apiKeysApi = {
     list: async (): Promise<{ api_keys: ApiKeyResponse[]; total: number }> => {
-        const response = await api.get('/api/keys/list');
+        const response = await api.get('/keys/list');
         return response.data;
     },
 
     create: async (keyData: ApiKeyCreate): Promise<ApiKeyResponse> => {
-        const response = await api.post<ApiKeyResponse>('/api/keys/', keyData);
+        const response = await api.post<ApiKeyResponse>('/keys/', keyData);
         return response.data;
     },
 
     delete: async (id: string): Promise<any> => {
-        const response = await api.delete(`/api/keys/${id}`);
+        const response = await api.delete(`/keys/${id}`);
         return response.data;
     },
 
     checkSavedStatus: async (service: string): Promise<ApiKeyStatus> => {
-        const response = await api.post<ApiKeyStatus>(`/api/keys/check/${service}/saved`);
+        const response = await api.post<ApiKeyStatus>(`/keys/check/${service}/saved`);
         return response.data;
     },
 };
@@ -116,7 +115,7 @@ export const usageApi = {
     getStats: async (service?: string, days: number = 30): Promise<UsageStatsResponse> => {
         const params: any = { days };
         if (service) params.service = service;
-        const response = await api.get<UsageStatsResponse>('/api/usage/stats', { params });
+        const response = await api.get<UsageStatsResponse>('/usage/stats', { params });
         return response.data;
     },
 };
@@ -142,22 +141,22 @@ export interface TokenResponse {
 
 export const authApi = {
     login: async (data: LoginRequest): Promise<TokenResponse> => {
-        const response = await api.post<TokenResponse>('/api/auth/login', data);
+        const response = await api.post<TokenResponse>('/auth/login', data);
         return response.data;
     },
 
     getProfile: async (): Promise<UserProfile> => {
-        const response = await api.get<UserProfile>('/api/auth/me');
+        const response = await api.get<UserProfile>('/auth/me');
         return response.data;
     },
 
     updatePreferences: async (preferences: any): Promise<any> => {
-        const response = await api.put('/api/auth/user/preferences/', preferences);
+        const response = await api.put('/auth/user/preferences/', preferences);
         return response.data;
     },
 
     changePassword: async (new_password: string): Promise<any> => {
-        const response = await api.post('/api/auth/change-password', null, { params: { new_password } });
+        const response = await api.post('/auth/change-password', null, { params: { new_password } });
         return response.data;
     },
 };
@@ -174,7 +173,7 @@ export interface CatalogStatusResponse {
 
 export const modelCatalogApi = {
     getStatus: async (): Promise<CatalogStatusResponse> => {
-        const response = await api.get<CatalogStatusResponse>('/api/model-catalog/status');
+        const response = await api.get<CatalogStatusResponse>('/model-catalog/status');
         return response.data;
     },
 
@@ -184,7 +183,7 @@ export const modelCatalogApi = {
     },
 
     listModels: async (): Promise<{ total: number; models: any[] }> => {
-        const response = await api.get<{ total: number; models: any[] }>('/api/model-catalog/models');
+        const response = await api.get<{ total: number; models: any[] }>('/model-catalog/models');
         return response.data;
     },
 };
