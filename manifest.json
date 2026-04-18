@@ -1,0 +1,14 @@
+{
+  "id": "ui-core",
+  "label": "Portal Sarak",
+  "icon": "Layout",
+  "category": "Sistema",
+  "version": "1.0.0",
+  "priority": 0,
+  "endpoints": {
+    "manifest": "/api/v1/module/manifest",
+    "discovery": "/api/v1/discovery",
+    "health": "/api/v1/health"
+  },
+  "visualContracts": {}
+}

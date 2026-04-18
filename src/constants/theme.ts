@@ -1,13 +1,9 @@
 /**
- * Sarak Elite v5.4.1 - Theme Engine Constants
+ * Sarak Elite v5.5.0 - Legacy Bridge Alias
  * 
- * Este arquivo re-exporta as constantes da Shared para garantir a sincronização total
- * de estado e estética em todo o ecossistema Sarak.
+ * Este arquivo atua como uma ponte para garantir que importações antigas do @sarak/lib-shared
+ * portadas para a UI-Core continuem funcionando, apontando para os novos tokens soberanos.
  */
 
-// As constantes de tema agora devem ser importadas diretamente de @sarak/lib-shared
-// para garantir a soberania do estado global.
-export {};
+export * from './design-tokens';
 
-// Extensões Visuais Locais (Se houverem deltas específicos da UI-Core no futuro)
-// export const LOCAL_VISUAL_EXTENSIONS = { ... };

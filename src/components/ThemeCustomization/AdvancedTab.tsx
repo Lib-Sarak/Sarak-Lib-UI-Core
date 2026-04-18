@@ -1,15 +1,16 @@
 import React, { useState } from 'react';
-import { useSarakUI } from '../SarakUIProvider';
-import { getRegisteredModules } from '@sarak/lib-shared';
+import { useSarak } from '../../shared/contexts/SarakContext';
+import { getRegisteredModules } from '../../shared/registry';
 import { Settings, Cpu, HardDrive, RefreshCw, Zap, Shield, HelpCircle, Activity } from 'lucide-react';
 
 export const AdvancedTab: React.FC = () => {
-    const { effective: sarak } = useSarakUI();
+    const sarak = useSarak();
     
     // Destruturação com fallbacks para modo standalone
     const systemId = (sarak as any).systemId || 'STANDALONE-MODE';
     const isHydrated = (sarak as any).isHydrated ?? true;
     const registeredModules = (sarak as any).registeredModules || getRegisteredModules();
+
 
     const [isResetting, setIsResetting] = useState(false);
 

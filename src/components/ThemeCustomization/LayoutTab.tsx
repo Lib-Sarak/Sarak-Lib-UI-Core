@@ -1,16 +1,18 @@
 import React from 'react';
-import { DENSITY, SCALES, NAVIGATION_STYLES, THEME_FONTS } from '@sarak/lib-shared';
-import { useSarakUI } from '../SarakUIProvider';
+import { useSarak } from '../../shared/contexts/SarakContext';
+import { DENSITY, SCALES, NAVIGATION_STYLES, THEME_FONTS } from '../../constants/design-tokens';
 import { Maximize2, Minimize2, Type, Layout as LayoutIcon, Sidebar as SidebarIcon, ArrowRightLeft, CaseSensitive } from 'lucide-react';
 
 export const LayoutTab: React.FC = () => {
-    const { effective: sarak, applyFullConfig } = useSarakUI();
+    const sarak = useSarak();
+    const { applyFullConfig } = sarak;
     
     // Mapeamento de setters para o bridge unificado
     const { 
         layoutDensity, fontScale, navigationStyle, 
         sidebarWidth, headingFont, bodyFont 
     } = sarak;
+
 
     const setLayoutDensity = (val: string) => applyFullConfig({ layoutDensity: val });
     const setFontScale = (val: string) => applyFullConfig({ fontScale: val });

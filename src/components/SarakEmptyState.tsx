@@ -1,7 +1,7 @@
 import React from 'react';
 import { motion } from 'framer-motion';
 import { Sparkles, Zap, Box, Compass } from 'lucide-react';
-import { useSarak } from '@sarak/lib-shared';
+import { useSarak } from '../shared/contexts/SarakContext';
 
 interface SarakEmptyStateProps {
     type?: 'minimal' | 'abstract' | 'geometric';

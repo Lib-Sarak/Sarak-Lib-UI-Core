@@ -3,7 +3,7 @@ import { motion, AnimatePresence } from 'framer-motion';
 import {
     ChevronUp, ChevronDown, Palette, Grid, Type, Layers, Film, Smile, LucideIcon
 } from 'lucide-react';
-import { THEME_FONTS, TEXTURE_LIBRARY, EMOJI_SETS, THEME_EFFECTS } from '@sarak/lib-shared';
+import { THEME_FONTS, TEXTURE_LIBRARY, EMOJI_SETS, THEME_EFFECTS } from '../../constants/design-tokens';
 
 interface ConfigSectionProps {
     id: string;

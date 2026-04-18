@@ -3,7 +3,7 @@ import { motion, AnimatePresence } from 'framer-motion';
 import {
     Zap, Shield, Database, BarChart3, MessageSquare, History, Users, Settings2
 } from 'lucide-react';
-import { EMOJI_SETS, THEME_EFFECTS, DENSITY, SCALES } from '@sarak/lib-shared';
+import { EMOJI_SETS, THEME_EFFECTS, DENSITY, SCALES } from '../../constants/design-tokens';
 import { MockDashboard, MockChat, MockLogs, MockSettings } from './MockApps';
 
 interface PreviewCanvasProps {

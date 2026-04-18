@@ -7,14 +7,15 @@ import {
     Layers, MousePointer2, Palette, Box, Wind, Sparkles, AlertCircle, BarChart3
 } from 'lucide-react';
 
-import { PRIMARY_COLORS, SCALES, DENSITY, BASE_PRESETS } from '@sarak/lib-shared';
-import { useSarakUI } from '../SarakUIProvider';
+import { PRIMARY_COLORS, SCALES, DENSITY, BASE_PRESETS } from '../../constants/design-tokens';
+import { useSarak } from '../../shared/contexts/SarakContext';
 import { useThemePreview } from './useThemePreview';
 import { ThemeList } from './ThemeList';
 import { PreviewCanvas } from './PreviewCanvas';
 
 export const ThemeCustomizationTab: React.FC = () => {
-    const { effective: sarak, applyFullConfig } = useSarakUI();
+    const sarak = useSarak();
+    const { applyFullConfig } = sarak;
     
     // --- ESTADO DE RASCUNHO (DESIGN DRAFT v5.6) ---
     // Este estado controla apenas o que aparece no Preview. 

@@ -1,8 +1,8 @@
 import React, { useState, useEffect, useRef } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
 import { Search, Command, X, ArrowRight } from 'lucide-react';
-import { useSarakUI } from './SarakUIProvider';
-import { getRegisteredModules } from '@sarak/lib-shared';
+import { useSarak } from '../shared/contexts/SarakContext';
+import { getRegisteredModules } from '../shared/registry';
 
 interface SarakSearchProps {
     isOpen: boolean;
@@ -15,9 +15,9 @@ interface SarakSearchProps {
  * Componente de busca global com estética Matrix.
  */
 export const SarakSearch: React.FC<SarakSearchProps> = ({ isOpen, onClose }) => {
-    const { effective } = useSarakUI();
-    const { searchStyle } = effective;
+    const { searchStyle } = useSarak();
     const registeredModules = getRegisteredModules();
+
     const [query, setQuery] = useState('');
     const inputRef = useRef<HTMLInputElement>(null);
 

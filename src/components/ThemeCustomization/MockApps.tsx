@@ -3,7 +3,7 @@ import { motion } from 'framer-motion';
 import {
     Zap, Sparkles, BarChart3, MessageSquare, History, Users, Shield, Database, Box
 } from 'lucide-react';
-import { EMOJI_SETS } from '@sarak/lib-shared';
+import { EMOJI_SETS } from '../../constants/design-tokens';
 
 export const MockDashboard: React.FC<any> = ({ config, animationVariants, animationStyle, tokens }) => {
     return (
@@ -31,9 +31,9 @@ export const MockDashboard: React.FC<any> = ({ config, animationVariants, animat
             >
                 {/* Agent Profile Widget */}
                 <motion.div
-                    initial={animationVariants[animationStyle]?.card?.initial || animationVariants.none.card.initial}
-                    animate={animationVariants[animationStyle]?.card?.animate || animationVariants.none.card.animate}
-                    transition={animationVariants[animationStyle]?.card?.transition || animationVariants.none.card.transition}
+                    initial={animationVariants[animationStyle]?.page?.initial || animationVariants.none?.page?.initial}
+                    animate={animationVariants[animationStyle]?.page?.animate || animationVariants.none?.page?.animate}
+                    transition={animationVariants[animationStyle]?.page?.transition || animationVariants.none?.page?.transition}
                     className="col-span-12 lg:col-span-4 bg-theme-card relative overflow-hidden flex flex-col items-center text-center"
                     style={{ padding: 'var(--theme-pad)' }}
                 >
@@ -58,9 +58,9 @@ export const MockDashboard: React.FC<any> = ({ config, animationVariants, animat
 
                 {/* Large Performance Widget */}
                 <motion.div
-                    initial={animationVariants[animationStyle]?.card?.initial || animationVariants.none.card.initial}
-                    animate={animationVariants[animationStyle]?.card?.animate || animationVariants.none.card.animate}
-                    transition={{ ...(animationVariants[animationStyle]?.card?.transition || animationVariants.none.card.transition), delay: 0.1 }}
+                    initial={animationVariants[animationStyle]?.page?.initial || animationVariants.none?.page?.initial}
+                    animate={animationVariants[animationStyle]?.page?.animate || animationVariants.none?.page?.animate}
+                    transition={{ ...(animationVariants[animationStyle]?.page?.transition || animationVariants.none?.page?.transition), delay: 0.1 }}
                     className="col-span-12 lg:col-span-8 bg-theme-card relative overflow-hidden"
                     style={{ padding: 'var(--theme-pad)' }}
                 >
@@ -103,9 +103,9 @@ export const MockDashboard: React.FC<any> = ({ config, animationVariants, animat
 
                 {/* Featured Components Widget */}
                 <motion.div
-                    initial={animationVariants[animationStyle]?.card?.initial || animationVariants.none.card.initial}
-                    animate={animationVariants[animationStyle]?.card?.animate || animationVariants.none.card.animate}
-                    transition={{ ...(animationVariants[animationStyle]?.card?.transition || animationVariants.none.card.transition), delay: 0.3 }}
+                    initial={animationVariants[animationStyle]?.page?.initial || animationVariants.none?.page?.initial}
+                    animate={animationVariants[animationStyle]?.page?.animate || animationVariants.none?.page?.animate}
+                    transition={{ ...(animationVariants[animationStyle]?.page?.transition || animationVariants.none?.page?.transition), delay: 0.3 }}
                     className="col-span-12 bg-theme-card"
                     style={{ padding: 'var(--theme-pad)' }}
                 >
@@ -155,9 +155,9 @@ export const MockChat: React.FC<any> = ({ config, animationVariants, animationSt
         <div className="flex flex-col h-full">
             <div className="flex-grow flex flex-col gap-4 mb-4">
                 <motion.div
-                    initial={animationVariants[animationStyle]?.card?.initial || animationVariants.none.card.initial}
-                    animate={animationVariants[animationStyle]?.card?.animate || animationVariants.none.card.animate}
-                    transition={animationVariants[animationStyle]?.card?.transition || animationVariants.none.card.transition}
+                    initial={animationVariants[animationStyle]?.page?.initial || animationVariants.none?.page?.initial}
+                    animate={animationVariants[animationStyle]?.page?.animate || animationVariants.none?.page?.animate}
+                    transition={animationVariants[animationStyle]?.page?.transition || animationVariants.none?.page?.transition}
                     className="flex justify-start"
                 >
                     <div
@@ -171,9 +171,9 @@ export const MockChat: React.FC<any> = ({ config, animationVariants, animationSt
                     </div>
                 </motion.div>
                 <motion.div
-                    initial={animationVariants[animationStyle]?.card?.initial || animationVariants.none.card.initial}
-                    animate={animationVariants[animationStyle]?.card?.animate || animationVariants.none.card.animate}
-                    transition={{ ...(animationVariants[animationStyle]?.card?.transition || animationVariants.none.card.transition), delay: 0.1 }}
+                    initial={animationVariants[animationStyle]?.page?.initial || animationVariants.none?.page?.initial}
+                    animate={animationVariants[animationStyle]?.page?.animate || animationVariants.none?.page?.animate}
+                    transition={{ ...(animationVariants[animationStyle]?.page?.transition || animationVariants.none?.page?.transition), delay: 0.1 }}
                     className="flex justify-end"
                 >
                     <div className="bg-[var(--theme-primary)] p-4 rounded-t-[var(--radius-theme)] rounded-bl-[var(--radius-theme)] shadow-soft max-w-[80%]">
@@ -194,9 +194,9 @@ export const MockLogs: React.FC<any> = ({ config, animationVariants, animationSt
                 <h3 className="text-sm font-bold text-[var(--theme-title)]">Execution History</h3>
             </div>
             <motion.div
-                initial={animationVariants[animationStyle]?.card?.initial || animationVariants.none.card.initial}
-                animate={animationVariants[animationStyle]?.card?.animate || animationVariants.none.card.animate}
-                transition={animationVariants[animationStyle]?.card?.transition || animationVariants.none.card.transition}
+                initial={animationVariants[animationStyle]?.page?.initial || animationVariants.none?.page?.initial}
+                animate={animationVariants[animationStyle]?.page?.animate || animationVariants.none?.page?.animate}
+                transition={animationVariants[animationStyle]?.page?.transition || animationVariants.none?.page?.transition}
                 className="bg-theme-card overflow-hidden relative"
             >
                 <div className="absolute inset-0 bg-white/[0.02] pointer-events-none"></div>
@@ -235,9 +235,9 @@ export const MockSettings: React.FC<any> = ({ config, animationVariants, animati
                 ].map((item, i) => (
                     <motion.div
                         key={i}
-                        initial={animationVariants[animationStyle]?.card?.initial || animationVariants.none.card.initial}
-                        animate={animationVariants[animationStyle]?.card?.animate || animationVariants.none.card.animate}
-                        transition={{ ...(animationVariants[animationStyle]?.card?.transition || animationVariants.none.card.transition), delay: i * 0.1 }}
+                        initial={animationVariants[animationStyle]?.page?.initial || animationVariants.none?.page?.initial}
+                        animate={animationVariants[animationStyle]?.page?.animate || animationVariants.none?.page?.animate}
+                        transition={{ ...(animationVariants[animationStyle]?.page?.transition || animationVariants.none?.page?.transition), delay: i * 0.1 }}
                         className="bg-theme-card p-4 flex items-center justify-between group relative overflow-hidden"
                     >
                         <div className="flex items-center gap-3 relative z-10">

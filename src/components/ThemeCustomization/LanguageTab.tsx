@@ -1,16 +1,18 @@
 import React, { useState } from 'react';
-import { useSarakUI } from '../SarakUIProvider';
-import { LANGUAGES } from '@sarak/lib-shared';
+import { useSarak } from '../../shared/contexts/SarakContext';
+import { LANGUAGES } from '../../constants/design-tokens';
 import { Globe, Languages, Check, X, Search, Info, Plus } from 'lucide-react';
 import { motion, AnimatePresence } from 'framer-motion';
 
 export const LanguageTab: React.FC = () => {
-    const { effective: sarak, applyFullConfig } = useSarakUI();
+    const sarak = useSarak();
+    const { applyFullConfig } = sarak;
     
     // Extração segura com fallbacks para modo standalone
     const language = (sarak as any).language || 'pt-BR';
     const enabledLanguages = (sarak as any).enabledLanguages || ['pt-BR'];
     const availableLanguages = (sarak as any).availableLanguages || LANGUAGES;
+
 
     const setLanguage = (val: string) => applyFullConfig({ language: val });
     const setEnabledLanguages = (val: string[]) => applyFullConfig({ enabledLanguages: val });

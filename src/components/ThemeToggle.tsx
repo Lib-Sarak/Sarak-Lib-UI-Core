@@ -1,15 +1,14 @@
 import React from 'react';
-import { LAYOUTS } from '@sarak/lib-shared';
-import { useSarakUI } from './SarakUIProvider';
+import { useSarak } from '../shared/contexts/SarakContext';
+import { LAYOUTS } from '../constants/design-tokens';
 import { Palette, ChevronRight, Check } from 'lucide-react';
 
 export const ThemeToggle: React.FC = () => {
-    const { effective, applyFullConfig } = useSarakUI();
-    const theme = effective.layout;
-    const setTheme = (id: string) => applyFullConfig({ layout: id });
+    const { layout: theme, setLayout: setTheme } = useSarak();
     
     // Converte o objeto LAYOUTS em array para o seletor
     const layoutOptions = Object.values(LAYOUTS);
+
     
     const currentLayoutName = layoutOptions.find(l => l.id === theme)?.name || 'Default';
 

@@ -8,7 +8,9 @@
 // Motor de Temas e Constantes Elite
 export { default as SarakUIProvider } from './components/SarakUIProvider';
 export { default as ThemeToggle } from './components/ThemeToggle';
+export * from './constants/design-tokens';
 export * from './constants/theme';
+
 
 // Componentes de Layout e UI Plug & Play
 export * from './components/SarakShell';
@@ -16,23 +18,18 @@ export * from './components/CustomizationPanel';
 export * from './components/ExpandableCard';
 export * from './components/Controls';
 
-import { registerSarakModule } from '@sarak/lib-shared';
-import { CustomizationPanel } from './components/CustomizationPanel';
+export { useModuleDiscovery } from './shared/hooks/useModuleDiscovery';
+export * from './constants/discovery';
 
-/**
- * Auto-Registro Matrix (Plug & Play): Aba de Customização do Sistema
- * Garante que o painel de design apareça automaticamente no ecossistema Sarak.
- */
+// --- REGISTRO DE MÓDULOS INTERNOS (v6.0) ---
+import { registerSarakModule } from '@sarak/lib-shared';
+import ThemeCustomizationTab from './components/ThemeCustomization/ThemeCustomizationTab';
+
 registerSarakModule({
     id: 'mx-customization',
-    label: 'Customização',
+    label: 'Personalização',
     icon: 'Palette',
-    category: 'Sistema',
-    priority: 99, 
-    component: CustomizationPanel,
-    subItems: [
-        { id: 'themes', label: 'Temas & Estética', icon: 'Paintbrush' },
-        { id: 'layout', label: 'Estrutura & Layout', icon: 'Layers' },
-        { id: 'branding', label: 'Identidade Visual', icon: 'Fingerprint' }
-    ]
+    category: 'Design & UX',
+    component: ThemeCustomizationTab,
+    priority: 1000
 });
