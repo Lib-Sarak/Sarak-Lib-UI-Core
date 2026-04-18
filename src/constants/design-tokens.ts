@@ -129,9 +129,10 @@ export const THEME_EFFECTS = {
 };
 
 export const BASE_PRESETS: any = {
-    glass: { '--nav-style': 'sidebar', '--sidebar-width': '260px', '--layout-density': 'standard', '--font-heading': "'Outfit', sans-serif", '--font-main': "'Inter', sans-serif", '--radius-theme': '12px', '--surface-material': 'glass', '--bg-texture': 'dots', '--theme-primary': '#3b82f6', '--mode': 'dark' },
-    cyberpunk: { '--nav-style': 'sidebar', '--sidebar-width': '240px', '--layout-density': 'compact', '--font-heading': "'Syncopate', sans-serif", '--font-main': "'Space Mono', monospace", '--radius-theme': '0px', '--surface-material': 'acrylic', '--bg-texture': 'circuit', '--theme-primary': '#00ff41', '--mode': 'dark' },
-    prestige: { '--nav-style': 'topbar', '--sidebar-width': '280px', '--layout-density': 'comfortable', '--font-heading': "'Sentient', serif", '--font-main': "'Inter', sans-serif", '--radius-theme': '24px', '--surface-material': 'brushed', '--bg-texture': 'silk', '--theme-primary': '#a855f7', '--mode': 'dark' },
-    organic: { '--nav-style': 'sidebar', '--sidebar-width': '260px', '--layout-density': 'standard', '--font-heading': "'Cormorant Garamond', serif", '--font-main': "'Plus Jakarta Sans', sans-serif", '--radius-theme': '40px', '--surface-material': 'matte', '--bg-texture': 'dots', '--theme-primary': '#10b981', '--mode': 'light' },
-    atmospheric: { '--nav-style': 'sidebar', '--sidebar-width': '300px', '--layout-density': 'comfortable', '--font-heading': "'Satoshi', sans-serif", '--font-main': "'Inter', sans-serif", '--radius-theme': '32px', '--surface-material': 'acrylic', '--bg-texture': 'aurora', '--theme-primary': '#f472b6', '--mode': 'dark' }
+    glass: { navigationStyle: 'sidebar', sidebarWidth: 260, layoutDensity: 'standard', headingFont: "'Outfit', sans-serif", bodyFont: "'Inter', sans-serif", borderRadius: 12, surfaceMaterial: 'glass', texture: 'dots', primaryColor: '#3b82f6', mode: 'dark' },
+    cyberpunk: { navigationStyle: 'sidebar', sidebarWidth: 240, layoutDensity: 'compact', headingFont: "'Syncopate', sans-serif", bodyFont: "'Space Mono', monospace", borderRadius: 0, surfaceMaterial: 'acrylic', texture: 'circuit', primaryColor: '#00ff41', mode: 'dark' },
+    prestige: { navigationStyle: 'topbar', sidebarWidth: 280, layoutDensity: 'comfortable', headingFont: "'Sentient', serif", bodyFont: "'Inter', sans-serif", borderRadius: 24, surfaceMaterial: 'brushed', texture: 'silk', primaryColor: '#a855f7', mode: 'dark' },
+    organic: { navigationStyle: 'sidebar', sidebarWidth: 260, layoutDensity: 'standard', headingFont: "'Cormorant Garamond', serif", bodyFont: "'Plus Jakarta Sans', sans-serif", borderRadius: 40, surfaceMaterial: 'matte', texture: 'dots', primaryColor: '#10b981', mode: 'light' },
+    atmospheric: { navigationStyle: 'sidebar', sidebarWidth: 300, layoutDensity: 'comfortable', headingFont: "'Satoshi', sans-serif", bodyFont: "'Inter', sans-serif", borderRadius: 32, surfaceMaterial: 'acrylic', texture: 'aurora', primaryColor: '#f472b6', mode: 'dark' }
 };
+

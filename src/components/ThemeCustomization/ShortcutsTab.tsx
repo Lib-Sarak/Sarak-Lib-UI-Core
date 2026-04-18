@@ -1,5 +1,5 @@
 import React, { useState, useEffect, useCallback } from 'react';
-import { useSarak } from '../../shared/contexts/SarakContext';
+import { useSarak } from '@sarak/lib-shared';
 import { Keyboard, Edit3, X, RotateCcw, Plus, Trash2, Command, Search, Filter } from 'lucide-react';
 import { motion, AnimatePresence } from 'framer-motion';
 

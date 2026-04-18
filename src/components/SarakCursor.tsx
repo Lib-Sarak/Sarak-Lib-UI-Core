@@ -11,7 +11,13 @@ export const SarakCursor: React.FC = () => {
     const mouseX = useMotionValue(0);
     const mouseY = useMotionValue(0);
 
-    const springConfig = { damping: 25, stiffness: 200 };
+    const { cursorPhysics, interfaceElasticity } = useSarak();
+    
+    const springConfig = { 
+        damping: 25 / (interfaceElasticity || 1), 
+        stiffness: 200 * (interfaceElasticity || 1) 
+    };
+    
     const trailX = useSpring(mouseX, springConfig);
     const trailY = useSpring(mouseY, springConfig);
 
@@ -52,32 +58,36 @@ export const SarakCursor: React.FC = () => {
             />
 
             {/* Light Trail / Elastic Ring */}
-            <motion.div
-                style={{
-                    x: trailX,
-                    y: trailY,
-                    translateX: '-50%',
-                    translateY: '-50%',
-                }}
-                animate={{
-                    scale: isPointer ? 2.5 : 1,
-                    borderColor: 'var(--theme-primary)',
-                    borderWidth: isPointer ? '1px' : '2px',
-                    opacity: isPointer ? 0.6 : 0.3
-                }}
-                className="w-8 h-8 rounded-full border border-[var(--theme-primary)] absolute blur-[1px]"
-            />
-            
-            {/* Specular Glow */}
-            <motion.div
-                style={{
-                    x: trailX,
-                    y: trailY,
-                    translateX: '-50%',
-                    translateY: '-50%',
-                }}
-                className="w-24 h-24 rounded-full bg-[var(--theme-primary)] opacity-5 blur-[40px] absolute"
-            />
+            {cursorPhysics && (
+                <>
+                    <motion.div
+                        style={{
+                            x: trailX,
+                            y: trailY,
+                            translateX: '-50%',
+                            translateY: '-50%',
+                        }}
+                        animate={{
+                            scale: isPointer ? 2.5 : 1,
+                            borderColor: 'var(--theme-primary)',
+                            borderWidth: isPointer ? '1px' : '2px',
+                            opacity: isPointer ? 0.6 : 0.3
+                        }}
+                        className="w-8 h-8 rounded-full border border-[var(--theme-primary)] absolute blur-[1px]"
+                    />
+                    
+                    {/* Specular Glow */}
+                    <motion.div
+                        style={{
+                            x: trailX,
+                            y: trailY,
+                            translateX: '-50%',
+                            translateY: '-50%',
+                        }}
+                        className="w-24 h-24 rounded-full bg-[var(--theme-primary)] opacity-5 blur-[40px] absolute"
+                    />
+                </>
+            )}
         </div>
     );
 };

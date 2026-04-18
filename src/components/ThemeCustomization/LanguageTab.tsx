@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import { useSarak } from '../../shared/contexts/SarakContext';
+import { useSarak } from '@sarak/lib-shared';
 import { LANGUAGES } from '../../constants/design-tokens';
 import { Globe, Languages, Check, X, Search, Info, Plus } from 'lucide-react';
 import { motion, AnimatePresence } from 'framer-motion';

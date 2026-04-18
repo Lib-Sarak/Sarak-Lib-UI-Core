@@ -1,7 +1,7 @@
 import React, { useState, useEffect, useRef } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
 import { Search, Command, X, ArrowRight } from 'lucide-react';
-import { useSarak } from '../shared/contexts/SarakContext';
+import { useSarak } from '@sarak/lib-shared';
 import { getRegisteredModules } from '../shared/registry';
 
 interface SarakSearchProps {
@@ -48,7 +48,7 @@ export const SarakSearch: React.FC<SarakSearchProps> = ({ isOpen, onClose }) => 
                     animate={{ opacity: 1 }}
                     exit={{ opacity: 0 }}
                     onClick={onClose}
-                    className="absolute inset-0 bg-[var(--theme-body)]/60 backdrop-blur-[var(--glass-blur)]"
+                    className={`absolute inset-0 bg-[var(--theme-body)]/${searchStyle === 'minimal' ? '20' : '60'} backdrop-blur-[var(--glass-blur)]`}
                 />
 
                 {/* Palette Container */}
@@ -56,7 +56,7 @@ export const SarakSearch: React.FC<SarakSearchProps> = ({ isOpen, onClose }) => 
                     initial={{ opacity: 0, scale: 0.95, y: -20 }}
                     animate={{ opacity: 1, scale: 1, y: 0 }}
                     exit={{ opacity: 0, scale: 0.95, y: -20 }}
-                    className="relative w-full max-w-2xl bg-[var(--theme-card)] border border-[var(--theme-border)] rounded-[var(--radius-theme)] shadow-[var(--dynamic-shadow)] overflow-hidden"
+                    className={`relative w-full ${searchStyle === 'minimal' ? 'max-w-lg mt-[5vh]' : 'max-w-2xl mt-[10vh]'} bg-[var(--theme-card)] border border-[var(--theme-border)] rounded-[var(--radius-theme)] shadow-[var(--dynamic-shadow)] overflow-hidden`}
                 >
                     {/* Input Area */}
                     <div className="flex items-center gap-4 px-6 py-5 border-b border-[var(--theme-border)] bg-[var(--theme-title)]/[0.02]">

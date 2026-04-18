@@ -1,5 +1,5 @@
 import React, { useState, useEffect, useCallback, useMemo, ReactNode } from 'react';
-import { useSarak } from '../shared/contexts/SarakContext';
+import { useSarak } from '@sarak/lib-shared';
 import { LAYOUTS } from '../constants/design-tokens';
 import { useModuleDiscovery } from '../shared/hooks/useModuleDiscovery';
 import { DiscoveredModule } from '../constants/discovery';
@@ -187,9 +187,9 @@ export const SarakShell: React.FC<SarakShellProps> = ({
                         visibility: isNavHidden || (isAutoHideEnabled && !isNavVisible) ? 'hidden' : 'visible',
                         transition: `all ${animationSpeed}s cubic-bezier(0.16, 1, 0.3, 1)`
                     }}
-                    className="h-screen bg-[var(--theme-sidebar)] border-r border-[var(--theme-border)] flex flex-col shrink-0 relative z-[100] shadow-2xl overflow-hidden"
+                    className="h-screen sarak-shell-sidebar bg-[var(--theme-sidebar)] border-r border-[var(--theme-border)] flex flex-col shrink-0 relative z-[100] shadow-2xl overflow-hidden"
                 >
-                    <div className="h-16 px-6 flex items-center justify-between border-b border-[var(--theme-border)] bg-[var(--theme-title)]/5">
+                    <div className="h-16 sarak-shell-header px-6 flex items-center justify-between border-b border-[var(--theme-border)] bg-[var(--theme-title)]/5">
                         <div className={`flex items-center gap-3 w-full ${logoPosition === 'center' ? 'justify-center' : ''}`}>
                             {logoUrl ? (
                                 <img src={mode === 'dark' && logoDarkUrl ? logoDarkUrl : logoUrl} alt={systemName} style={{ transform: `scale(${logoScale})`, transformOrigin: logoPosition === 'center' ? 'center' : 'left' }} className="max-h-8 object-contain transition-transform" />
@@ -326,13 +326,12 @@ export const SarakShell: React.FC<SarakShellProps> = ({
                 )}
 
                 {/* MAIN CONTENT CANVAS */}
-                <main className="flex-1 overflow-y-auto custom-scrollbar relative flex flex-col w-full min-h-0 bg-[var(--theme-body)]">
+                <main className="flex-1 overflow-y-auto custom-scrollbar relative flex flex-col w-full min-h-0 bg-[var(--theme-body)] isolate">
                     {/* SarakAtmosphereLayer (Soberania de Textura v6.7) */}
-                    <div className={`absolute inset-0 pointer-events-none z-0 texture-${texture}`} style={{ 
-                        backgroundColor: 'transparent'
-                    }} />
+                    <div className={`absolute inset-0 pointer-events-none z-0 texture-${texture} SarakAtmosphereLayer`} />
+
                     
-                    <div className="flex-1 flex flex-col relative w-full pt-8 lg:pt-12 z-10">
+                    <div className="flex-1 flex flex-col relative w-full pt-8 lg:pt-12 z-10" style={{ gap: `var(--theme-gap, ${layoutGap}px)` }}>
                         <AnimatePresence mode="wait">
                             {activeModule ? (
                                 <motion.div key={activeModule.id} initial={{ opacity: 0, y: 10 }} animate={{ opacity: 1, y: 0 }} exit={{ opacity: 0, y: -10 }} transition={{ duration: 0.3 }} className="pb-12 flex flex-col min-h-full" style={{ paddingLeft: 'var(--theme-pad)', paddingRight: 'var(--theme-pad)' }}>

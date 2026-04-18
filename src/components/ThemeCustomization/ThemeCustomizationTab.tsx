@@ -8,7 +8,7 @@ import {
 } from 'lucide-react';
 
 import { PRIMARY_COLORS, SCALES, DENSITY, BASE_PRESETS } from '../../constants/design-tokens';
-import { useSarak } from '../../shared/contexts/SarakContext';
+import { useSarak } from '@sarak/lib-shared';
 import { useThemePreview } from './useThemePreview';
 import { ThemeList } from './ThemeList';
 import { PreviewCanvas } from './PreviewCanvas';
@@ -180,15 +180,17 @@ export const ThemeCustomizationTab: React.FC = () => {
 
         const newDraft = { ...draft, layout: id };
 
-        Object.entries(preset).forEach(([cssVar, value]) => {
-            const draftKey = tokenMap[cssVar];
+        Object.entries(preset).forEach(([key, value]) => {
+            // Se a chave já for sintonizada no novo padrão (ex: navigationStyle), usar diretamente.
+            // Caso contrário, tenta mapear do padrão antigo (--nav-style).
+            const draftKey = TOKEN_SCHEMA[key] ? key : tokenMap[key];
+            
             if (draftKey) {
                 const targetType = TOKEN_SCHEMA[draftKey];
                 let finalValue: any = value;
 
                 switch(targetType) {
                     case 'number':
-                        // Parsing numérico robusto ignorando px, s, %, etc.
                         const rawStr = typeof value === 'string' ? value.replace(/[^\d.-]/g, '') : value;
                         finalValue = parseFloat(rawStr as string);
                         if (isNaN(finalValue)) finalValue = 0;
@@ -200,9 +202,8 @@ export const ThemeCustomizationTab: React.FC = () => {
                         if (typeof value === 'string') finalValue = value.split(',').map(s => s.trim());
                         break;
                     default:
-                        // Proteção contra injeção de objetos complexos (ex: fontes) que geram [object Object]
                         if (typeof value === 'object' && value !== null) {
-                            finalValue = value.id || value.family || value.name || value.value || String(value);
+                            finalValue = (value as any).id || (value as any).family || (value as any).name || (value as any).value || String(value);
                         } else {
                             finalValue = String(value);
                         }
@@ -212,13 +213,14 @@ export const ThemeCustomizationTab: React.FC = () => {
             }
         });
 
-        // Retrocompatibilidade de modo
-        if (!preset['--mode'] && (preset['--bg-body'] === '#000000' || preset['--bg-body'] === '#050505')) {
+        // Retrocompatibilidade e refinamentos de modo
+        if (newDraft.mode === 'dark' || preset.mode === 'dark' || preset['--mode'] === 'dark') {
             newDraft.mode = 'dark';
         }
 
         setDraft(newDraft);
     };
+
 
     // --- LOGIC: COMMIT DRAFT TO SYSTEM ---
     const handleApplyToSystem = () => {

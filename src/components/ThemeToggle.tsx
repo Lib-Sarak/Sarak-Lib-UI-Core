@@ -1,5 +1,5 @@
 import React from 'react';
-import { useSarak } from '../shared/contexts/SarakContext';
+import { useSarak } from '@sarak/lib-shared';
 import { LAYOUTS } from '../constants/design-tokens';
 import { Palette, ChevronRight, Check } from 'lucide-react';
 

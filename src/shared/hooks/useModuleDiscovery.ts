@@ -1,9 +1,8 @@
 import { useState, useEffect, useCallback } from 'react';
-import { useSarak } from '../contexts/SarakContext';
+import { useSarak, getRegisteredModules } from '@sarak/lib-shared';
 import api from '../services/api';
 import { DiscoveredModule, ModuleManifest } from '../../constants/discovery';
 import { useSarakUI } from '../../components/SarakUIProvider';
-import { getRegisteredModules } from '@sarak/lib-shared';
 
 
 /**

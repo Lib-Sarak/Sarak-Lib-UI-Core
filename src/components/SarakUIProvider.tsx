@@ -1,6 +1,6 @@
 import React, { ReactNode, useEffect, useState, useMemo, useCallback, useContext } from 'react';
 import '../styles/sarak-base.css';
-import { SarakProvider, useSarak } from '../shared/contexts/SarakContext';
+import { useSarak } from '@sarak/lib-shared';
 
 // --- SARAK UI BRIDGE CONTEXT (Independência 100%) ---
 export interface SarakUIContextType {
@@ -97,7 +97,7 @@ const DESIGN_MANIFEST: Record<string, {
 };
 
 // Componente interno para gerenciar a injeção de design sem causar loops
-const DesignInjector: React.FC<{ children: ReactNode }> = ({ children }) => {
+const DesignInjector: React.FC = () => {
     const s = useSarak();
 
     useEffect(() => {
@@ -144,13 +144,16 @@ const DesignInjector: React.FC<{ children: ReactNode }> = ({ children }) => {
                 const isBool = typeof value === 'boolean';
                 const activeClass = isBool ? (value ? config.classPrefix : null) : `${config.classPrefix}${value}`;
 
-                if (!isBool) {
-                    Array.from(body.classList).forEach(c => {
-                        if (c.startsWith(config.classPrefix!)) body.classList.remove(c);
-                    });
-                }
+                // Remoção de classes antigas do mesmo prefixo
+                Array.from(body.classList).forEach(c => {
+                    if (c.startsWith(config.classPrefix!) || (isBool && c === config.classPrefix)) {
+                        body.classList.remove(c);
+                    }
+                });
+
                 if (activeClass) body.classList.add(activeClass);
             }
+
         });
 
         // Mode cleanup
@@ -158,7 +161,7 @@ const DesignInjector: React.FC<{ children: ReactNode }> = ({ children }) => {
         body.classList.add(s.mode === 'dark' ? 'dark' : 'light');
     }, [s]);
 
-    return <>{children}</>;
+    return null;
 };
 
 export const SarakUIProvider: React.FC<SarakUIProviderProps> = ({
@@ -177,17 +180,16 @@ export const SarakUIProvider: React.FC<SarakUIProviderProps> = ({
         document.head.prepend(style);
     }, []);
 
+    const { discoveryEndpoints: globalEndpoints } = useSarak();
+    
     const uiContextValue = useMemo(() => ({
-        discoveryEndpoints
-    }), [discoveryEndpoints]);
+        discoveryEndpoints: (discoveryEndpoints && discoveryEndpoints.length > 0) ? discoveryEndpoints : globalEndpoints
+    }), [discoveryEndpoints, globalEndpoints]);
 
     return (
         <UIContext.Provider value={uiContextValue}>
-            <SarakProvider discoveryEndpoints={discoveryEndpoints} config={config}>
-                <DesignInjector>
-                    {children}
-                </DesignInjector>
-            </SarakProvider>
+            <DesignInjector />
+            {children}
         </UIContext.Provider>
     );
 };
