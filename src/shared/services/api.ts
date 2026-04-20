@@ -81,24 +81,30 @@ export interface ApiKeyCreate {
 
 export const apiKeysApi = {
     list: async (): Promise<{ api_keys: ApiKeyResponse[]; total: number }> => {
-        const response = await api.get('/keys/list');
-        return response.data;
+        const response = await api.get('/orchestrator/keys');
+        const data = response.data || [];
+        return { api_keys: data, total: data.length };
     },
 
     create: async (keyData: ApiKeyCreate): Promise<ApiKeyResponse> => {
-        const response = await api.post<ApiKeyResponse>('/keys/', keyData);
+        const response = await api.post<ApiKeyResponse>('/orchestrator/keys', {
+            service: keyData.service,
+            key: keyData.api_key,
+            name: "Principal"
+        });
         return response.data;
     },
 
     delete: async (id: string): Promise<any> => {
-        const response = await api.delete(`/keys/${id}`);
+        const response = await api.delete(`/orchestrator/keys/${id}`);
         return response.data;
     },
 
     checkSavedStatus: async (service: string): Promise<ApiKeyStatus> => {
-        const response = await api.post<ApiKeyStatus>(`/keys/check/${service}/saved`);
+        const response = await api.post<ApiKeyStatus>(`/orchestrator/keys/check/${service}/saved`);
         return response.data;
     },
+
 };
 
 export interface UsageStatsResponse {
@@ -173,7 +179,7 @@ export interface CatalogStatusResponse {
 
 export const modelCatalogApi = {
     getStatus: async (): Promise<CatalogStatusResponse> => {
-        const response = await api.get<CatalogStatusResponse>('/model-catalog/status');
+        const response = await api.get<CatalogStatusResponse>('/catalog/status');
         return response.data;
     },
 
@@ -183,9 +189,11 @@ export const modelCatalogApi = {
     },
 
     listModels: async (): Promise<{ total: number; models: any[] }> => {
-        const response = await api.get<{ total: number; models: any[] }>('/model-catalog/models');
-        return response.data;
+        const response = await api.get<any[]>('/catalog/models');
+        const data = response.data || [];
+        return { total: data.length, models: data };
     },
+
 };
 
 export default api;
