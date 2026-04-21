@@ -8,13 +8,14 @@ import {
 } from 'lucide-react';
 
 import { PRIMARY_COLORS, SCALES, DENSITY, BASE_PRESETS } from '../../constants/design-tokens';
-import { useSarak } from '@sarak/lib-shared';
+import { useSarakUI } from '../SarakUIProvider';
 import { useThemePreview } from './useThemePreview';
 import { ThemeList } from './ThemeList';
 import { PreviewCanvas } from './PreviewCanvas';
 
 export const ThemeCustomizationTab: React.FC = () => {
-    const sarak = useSarak();
+    const { design, ...rest } = useSarakUI();
+    const sarak = { ...design, ...rest };
     const { applyFullConfig } = sarak;
     
     // --- ESTADO DE RASCUNHO (DESIGN DRAFT v5.6) ---

@@ -1,5 +1,4 @@
 import React, { useState, useEffect, useCallback, useMemo, ReactNode } from 'react';
-import { useSarak } from '@sarak/lib-shared';
 import { LAYOUTS } from '../constants/design-tokens';
 import { useModuleDiscovery } from '../shared/hooks/useModuleDiscovery';
 import { DiscoveredModule } from '../constants/discovery';
@@ -29,6 +28,11 @@ interface SarakShellProps {
         logo?: string;
     };
     extraToolbarItems?: ReactNode;
+    // Injected Auth Props (v5.6)
+    user?: any;
+    logout?: () => void;
+    token?: string;
+    authApi?: any;
 }
 
 /**
@@ -37,12 +41,14 @@ interface SarakShellProps {
 export const SarakShell: React.FC<SarakShellProps> = ({ 
     children, 
     brand = { name: "Sarak Matrix" },
-    extraToolbarItems
+    extraToolbarItems,
+    user,
+    logout,
+    token,
+    authApi
 }) => {
-    const sarak = useSarak();
-    const { user, logout, token } = sarak;
+    const { design, applyConfig, discoveryEndpoints } = useSarakUI();
     const loggedIn = !!token;
-    const { applyFullConfig } = sarak;
     
     // Destruturação direta do motor visual (Nomes oficiais v6.1)
     const { 
@@ -56,18 +62,18 @@ export const SarakShell: React.FC<SarakShellProps> = ({
         isSplitViewEnabled, chartStyle, chartPalette, shadowOrientation,
         shadowColorMode, isAutoHideEnabled, searchStyle,
         cursorPhysics, isNavHidden
-    } = sarak;
+    } = design || {};
 
     // Fallbacks para funções de estado/shared
-    const toggleNav = (sarak as any).toggleNav || (() => {});
-    const setSidebarWidth = (sarak as any).setSidebarWidth || ((w: number) => applyFullConfig({ sidebarWidth: w }));
-    const secondaryModuleId = (sarak as any).secondaryModuleId;
-    const emptyStateId = (sarak as any).emptyStateId || 'default';
+    const toggleNav = () => applyConfig({ isNavHidden: !isNavHidden });
+    const setSidebarWidth = (w: number) => applyConfig({ sidebarWidth: w });
+    const secondaryModuleId = design?.secondaryModuleId;
+    const emptyStateId = design?.emptyStateId || 'default';
     
     const [isSearchOpen, setIsSearchOpen] = useState(false);
     const [isNavVisible, setIsNavVisible] = useState(true);
     
-    const { modules: discoveredModules, isLoading: isDiscovering } = useModuleDiscovery();
+    const { modules: discoveredModules, isLoading: isDiscovering } = useModuleDiscovery(loggedIn);
     const [activeModuleId, setActiveModuleId] = useState<string | null>(null);
     const [isResizing, setIsResizing] = useState(false);
 
@@ -354,8 +360,15 @@ export const SarakShell: React.FC<SarakShellProps> = ({
                                         <div className="flex flex-col min-h-full">
                                             {(() => {
                                                 const ModComponent = (activeModule as any)?.component;
-                                                return ModComponent ? <ModComponent /> : <div className="opacity-20 flex items-center justify-center h-full text-[var(--theme-muted)] uppercase font-black text-xs tracking-widest">Módulo em Modo API (Sem Interface Local)</div>;
+                                                return ModComponent ? (
+                                                    <ModComponent 
+                                                        modules={discoveredModules} 
+                                                        user={user}
+                                                        authApi={authApi}
+                                                    />
+                                                ) : <div className="opacity-20 flex items-center justify-center h-full text-[var(--theme-muted)] uppercase font-black text-xs tracking-widest">Módulo em Modo API (Sem Interface Local)</div>;
                                             })()}
+
                                         </div>
                                         {isSplitViewEnabled && secondaryModuleId && (
                                             <div className="flex flex-col min-h-full border-l border-[var(--theme-border)]/30 pl-[var(--theme-gap)]">

@@ -6,7 +6,7 @@
  */
 
 // Motor de Temas e Constantes Elite
-export { default as SarakUIProvider } from './components/SarakUIProvider';
+export { default as SarakUIProvider, useSarakUI } from './components/SarakUIProvider';
 export { default as ThemeToggle } from './components/ThemeToggle';
 export * from './constants/design-tokens';
 export * from './constants/theme';
@@ -21,8 +21,9 @@ export * from './components/Controls';
 export { useModuleDiscovery } from './shared/hooks/useModuleDiscovery';
 export * from './constants/discovery';
 
-// --- REGISTRO DE MÓDULOS INTERNOS (v6.0) ---
-import { registerSarakModule } from '@sarak/lib-shared';
+// --- REGISTRO DE MÓDULOS INTERNOS (v5.5) ---
+export * from './shared/registry';
+import { registerSarakModule } from './shared/registry';
 import ThemeCustomizationTab from './components/ThemeCustomization/ThemeCustomizationTab';
 
 registerSarakModule({

@@ -22,8 +22,8 @@ export const useThemePreview = (
 
     // Initialize with current layout config
     const [config, setConfig] = useState(
-        (BASE_PRESETS as any)[currentLayout.toLowerCase()] ||
-        (currentLayout.startsWith('custom-') ? customThemes.find(t => t.id === currentLayout.replace('custom-', ''))?.config : null) ||
+        (BASE_PRESETS as any)[(currentLayout || '').toLowerCase()] ||
+        ((currentLayout || '').startsWith('custom-') ? customThemes.find(t => t.id === currentLayout.replace('custom-', ''))?.config : null) ||
         (BASE_PRESETS as any).glass
     );
 
@@ -31,10 +31,10 @@ export const useThemePreview = (
 
     // Sync local preview with the selected theme from list
     useEffect(() => {
-        const isCustom = previewLayoutId.startsWith('custom-');
+        const isCustom = (previewLayoutId || '').startsWith('custom-');
 
         if (isCustom) {
-            const cleanId = previewLayoutId.replace('custom-', '');
+            const cleanId = (previewLayoutId || '').replace('custom-', '');
             const theme = customThemes.find(t => t.id === cleanId);
             if (theme) {
                 if (theme.config) setConfig(theme.config);

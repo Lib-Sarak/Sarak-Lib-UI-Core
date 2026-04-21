@@ -96,7 +96,7 @@ export const PreviewCanvas: React.FC<PreviewCanvasProps> = ({
                         '--theme-muted': tokens.mode === 'light' ? '#475569' : '#64748b',
                         '--shadow-color': tokens.mode === 'light' ? 'rgba(0,0,0,0.1)' : 'rgba(0,0,0,0.4)',
                     } as React.CSSProperties}
-                    className={`preview-container ${tokens.mode || mode} layout-${(tokens.layout || previewLayoutId).replace('custom-', '')} ${tokens.isGeometricCut ? 'is-geometric' : ''} bg-[var(--bg-body)] text-[var(--text-main)] rounded-[32px] shadow-[0_50px_100px_rgba(0,0,0,0.5)] overflow-hidden flex flex-col relative transition-all duration-500 ${tokens.texture && tokens.texture !== 'none' ? `texture-${tokens.texture}` : ''}`}
+                    className={`preview-container ${tokens.mode || mode} layout-${(tokens.layout || previewLayoutId || '').replace('custom-', '')} ${tokens.isGeometricCut ? 'is-geometric' : ''} bg-[var(--bg-body)] text-[var(--text-main)] rounded-[32px] shadow-[0_50px_100px_rgba(0,0,0,0.5)] overflow-hidden flex flex-col relative transition-all duration-500 ${tokens.texture && tokens.texture !== 'none' ? `texture-${tokens.texture}` : ''}`}
                     data-surface={tokens.surfaceMaterial || 'glass'}
                     data-border={tokens.borderType || 'default'}
                 >

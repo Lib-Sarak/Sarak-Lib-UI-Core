@@ -1,10 +1,10 @@
 import React from 'react';
-import { useSarak } from '@sarak/lib-shared';
+import { useSarakUI } from '../SarakUIProvider';
 import { DENSITY, SCALES, NAVIGATION_STYLES, THEME_FONTS } from '../../constants/design-tokens';
 import { Maximize2, Minimize2, Type, Layout as LayoutIcon, Sidebar as SidebarIcon, ArrowRightLeft, CaseSensitive } from 'lucide-react';
 
 export const LayoutTab: React.FC = () => {
-    const sarak = useSarak();
+    const sarak = useSarakUI();
     const { applyFullConfig } = sarak;
     
     // Mapeamento de setters para o bridge unificado

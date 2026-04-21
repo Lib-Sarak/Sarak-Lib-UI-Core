@@ -1,11 +1,12 @@
 import React from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
 import { Sun, Moon, User, ChevronDown, KeyRound, LogOut } from 'lucide-react';
-import { useSarak as useTheme } from '@sarak/lib-shared';
+import { useSarakUI } from './SarakUIProvider';
 import { LANGUAGES as ALL_LANGUAGES } from '../constants/design-tokens';
 
 export const LanguageSelector = () => {
-    const { enabledLanguages } = useTheme();
+    const { design } = useSarakUI();
+    const enabledLanguages = design?.enabledLanguages;
     const [current, setCurrent] = React.useState(localStorage.getItem('sarak_lang') || 'pt');
 
     const handleLangChange = (lang: string) => {
@@ -46,7 +47,9 @@ export const LanguageSelector = () => {
 };
 
 export const ThemeToggle = () => {
-    const { mode, toggleMode } = useTheme();
+    const { design, applyConfig } = useSarakUI();
+    const mode = design?.mode || 'dark';
+    const toggleMode = () => applyConfig({ mode: mode === 'dark' ? 'light' : 'dark' });
     return (
         <div className="flex items-center gap-2">
             <LanguageSelector />

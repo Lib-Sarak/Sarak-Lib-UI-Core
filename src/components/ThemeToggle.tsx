@@ -1,10 +1,12 @@
 import React from 'react';
-import { useSarak } from '@sarak/lib-shared';
+import { useSarakUI } from './SarakUIProvider';
 import { LAYOUTS } from '../constants/design-tokens';
 import { Palette, ChevronRight, Check } from 'lucide-react';
 
 export const ThemeToggle: React.FC = () => {
-    const { layout: theme, setLayout: setTheme } = useSarak();
+    const { design, applyConfig } = useSarakUI();
+    const theme = design?.layout;
+    const setTheme = (layoutId: string) => applyConfig({ layout: layoutId });
     
     // Converte o objeto LAYOUTS em array para o seletor
     const layoutOptions = Object.values(LAYOUTS);
@@ -37,7 +39,7 @@ export const ThemeToggle: React.FC = () => {
                     >
                         <div className="flex flex-col items-start">
                             <span>{layout.name}</span>
-                            <span className="text-[10px] opacity-40 capitalize">{layout.class.replace('layout-', '')} • {layout.animation}</span>
+                            <span className="text-[10px] opacity-40 capitalize">{(layout.class || '').replace('layout-', '')} • {layout.animation}</span>
                         </div>
                         {theme === layout.id && <Check className="w-4 h-4" />}
                     </button>

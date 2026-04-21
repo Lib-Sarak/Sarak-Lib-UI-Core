@@ -1,10 +1,18 @@
 import React, { ReactNode, useEffect, useState, useMemo, useCallback, useContext } from 'react';
 import '../styles/sarak-base.css';
-import { useSarak } from '@sarak/lib-shared';
+import { LAYOUTS } from '../constants/design-tokens';
+import { getRegisteredModules } from '../shared/registry';
 
 // --- SARAK UI BRIDGE CONTEXT (Independência 100%) ---
 export interface SarakUIContextType {
     discoveryEndpoints: string[];
+    design: any;
+    setDesign: (design: any) => void;
+    applyConfig: (partial: any) => void;
+    applyFullConfig: (config: any) => void;
+    registeredModules: any[];
+    layouts: any[];
+    isHydrated: boolean;
 }
 
 const UIContext = React.createContext<SarakUIContextType | undefined>(undefined);
@@ -12,15 +20,33 @@ const UIContext = React.createContext<SarakUIContextType | undefined>(undefined)
 export const useSarakUI = () => {
     const context = useContext(UIContext);
     if (!context) {
-        return { discoveryEndpoints: [] };
+        return { 
+            discoveryEndpoints: [], 
+            design: {}, 
+            registeredModules: [], 
+            layouts: [], 
+            isHydrated: false,
+            // Fallback para evitar crashes em SSR ou contextos sem provider
+            applyConfig: () => {},
+            applyFullConfig: () => {}
+        } as any;
     }
-    return context;
+    // Retorna o contexto mesclado com o design para compatibilidade de API (v5.6)
+    return {
+        ...context,
+        ...context.design
+    };
 };
+
+// --- CHAVE DE PERSISTÊNCIA SARAK (v6.7) ---
+const STORAGE_KEY = 'sarak-ui-design-v6.7';
 
 interface SarakUIProviderProps {
     children: ReactNode;
     discoveryEndpoints?: string[];
     config?: any;
+    token?: string | null;
+    userId?: string | null;
 }
 
 // --- MANIFESTO DE DESIGN SOBERANO (SSoT v6.7) ---
@@ -97,13 +123,14 @@ const DESIGN_MANIFEST: Record<string, {
 };
 
 // Componente interno para gerenciar a injeção de design sem causar loops
-const DesignInjector: React.FC = () => {
-    const s = useSarak();
+const DesignInjector: React.FC<{ design: any }> = ({ design: s }) => {
 
     useEffect(() => {
         if (typeof document === 'undefined') return;
         const root = document.documentElement;
         const body = document.body;
+
+        if (!s) return;
 
         Object.entries(s).forEach(([key, value]) => {
             const config = DESIGN_MANIFEST[key];
@@ -167,8 +194,100 @@ const DesignInjector: React.FC = () => {
 export const SarakUIProvider: React.FC<SarakUIProviderProps> = ({
     children,
     discoveryEndpoints = [],
-    config = {}
+    config: initialPropsConfig = {}
 }) => {
+    // Inicialização Inteligente com Persistência
+    const [design, setDesign] = useState(() => {
+        if (typeof window === 'undefined') return initialPropsConfig;
+        try {
+            const saved = localStorage.getItem(STORAGE_KEY);
+            if (saved) {
+                const parsed = JSON.parse(saved);
+                // Mescla com props iniciais para garantir que novos campos do sistema existam
+                return { ...initialPropsConfig, ...parsed };
+            }
+        } catch (e) {
+            console.error("Erro ao carregar design do localStorage:", e);
+        }
+        return initialPropsConfig;
+    });
+
+    const [isHydrated, setIsHydrated] = useState(false);
+    const [registeredModules, setRegisteredModules] = useState<any[]>([]);
+    const [isBackendLoaded, setIsBackendLoaded] = useState(false);
+
+    // Prioriza tokens/ids passados via props ou no objeto de config
+    const activeToken = initialPropsConfig.token || initialPropsConfig.authApi?.token;
+    const activeUserId = initialPropsConfig.userId || initialPropsConfig.user?.id;
+
+    // Encontra o endpoint correto para o UI Core
+    const uiBaseUrl = useMemo(() => {
+        // Assume /api/ui como padrão se não descoberto
+        return "http://localhost:8000/api/ui";
+    }, []);
+
+    // 1. Carregamento do Backend (Cross-Browser Persistence)
+    useEffect(() => {
+        if (activeToken && !isBackendLoaded && isHydrated) {
+            const fetchDesign = async () => {
+                try {
+                    const resp = await fetch(`${uiBaseUrl}/design`, {
+                        headers: { 'Authorization': `Bearer ${activeToken}` }
+                    });
+                    if (resp.ok) {
+                        const data = await resp.json();
+                        if (data.design && Object.keys(data.design).length > 0) {
+                            setDesign(prev => ({ ...prev, ...data.design }));
+                        }
+                        setIsBackendLoaded(true);
+                    }
+                } catch (e) {
+                    console.warn("[UI-Core] Falha ao sincronizar com backend soberano:", e);
+                }
+            };
+            fetchDesign();
+        }
+    }, [activeToken, isBackendLoaded, isHydrated, uiBaseUrl]);
+
+    // 2. Persistência Automática (Debounced)
+    useEffect(() => {
+        if (!activeToken || !isHydrated) return;
+
+        const timer = setTimeout(async () => {
+            try {
+                // Sincroniza localmente primeiro
+                localStorage.setItem(STORAGE_KEY, JSON.stringify(design));
+                
+                // Sincroniza com a nuvem
+                await fetch(`${uiBaseUrl}/design`, {
+                    method: 'POST',
+                    headers: { 
+                        'Authorization': `Bearer ${activeToken}`,
+                        'Content-Type': 'application/json'
+                    },
+                    body: JSON.stringify({ design })
+                });
+            } catch (e) {
+                console.error("[UI-Core] Erro ao persistir design na nuvem:", e);
+            }
+        }, 1500); // 1.5s de debounce para evitar salvar em cada clique de slider
+
+        return () => clearTimeout(timer);
+    }, [design, activeToken, isHydrated, uiBaseUrl]);
+
+    // 3. Sincronização Local (Fallback Imediato)
+    useEffect(() => {
+        if (typeof window !== 'undefined' && isHydrated && !isBackendLoaded) {
+            localStorage.setItem(STORAGE_KEY, JSON.stringify(design));
+        }
+    }, [design, isHydrated, isBackendLoaded]);
+
+    // Carregamento de módulos e estado inicial
+    useEffect(() => {
+        setRegisteredModules(getRegisteredModules());
+        setIsHydrated(true);
+    }, []);
+
     // Injeção de Fontes Premium
     useEffect(() => {
         if (typeof document === 'undefined') return;
@@ -180,15 +299,28 @@ export const SarakUIProvider: React.FC<SarakUIProviderProps> = ({
         document.head.prepend(style);
     }, []);
 
-    const { discoveryEndpoints: globalEndpoints } = useSarak();
-    
+    const applyConfig = useCallback((partial: any) => {
+        setDesign((prev: any) => ({ ...prev, ...partial }));
+    }, []);
+
+    const applyFullConfig = useCallback((config: any) => {
+        setDesign(config);
+    }, []);
+
     const uiContextValue = useMemo(() => ({
-        discoveryEndpoints: (discoveryEndpoints && discoveryEndpoints.length > 0) ? discoveryEndpoints : globalEndpoints
-    }), [discoveryEndpoints, globalEndpoints]);
+        discoveryEndpoints: discoveryEndpoints || [],
+        design,
+        setDesign,
+        applyConfig,
+        applyFullConfig,
+        registeredModules,
+        layouts: Object.values(LAYOUTS),
+        isHydrated
+    }), [discoveryEndpoints, design, applyConfig, applyFullConfig, registeredModules, isHydrated]);
 
     return (
         <UIContext.Provider value={uiContextValue}>
-            <DesignInjector />
+            <DesignInjector design={design} />
             {children}
         </UIContext.Provider>
     );

@@ -1,5 +1,5 @@
 import React, { useState, useEffect, useCallback } from 'react';
-import { useSarak } from '@sarak/lib-shared';
+import { useSarakUI } from '../SarakUIProvider';
 import { Keyboard, Edit3, X, RotateCcw, Plus, Trash2, Command, Search, Filter } from 'lucide-react';
 import { motion, AnimatePresence } from 'framer-motion';
 
@@ -16,7 +16,7 @@ const formatKeyName = (key: string) => {
 };
 
 export const ShortcutsTab: React.FC = () => {
-    const sarak = useSarak();
+    const sarak = useSarakUI();
     const { applyFullConfig } = sarak;
     
     // Extração segura de propriedades de atalhos

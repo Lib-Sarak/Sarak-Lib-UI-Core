@@ -1,14 +1,14 @@
 import React from 'react';
 import { motion } from 'framer-motion';
 import { Sparkles, Zap, Box, Compass } from 'lucide-react';
-import { useSarak } from '@sarak/lib-shared';
+import { useSarakUI } from './SarakUIProvider';
 
 interface SarakEmptyStateProps {
     type?: 'minimal' | 'abstract' | 'geometric';
 }
 
 export const SarakEmptyState: React.FC<SarakEmptyStateProps> = ({ type = 'abstract' }) => {
-    const { primaryColor, systemName } = useSarak();
+    const { primaryColor, systemName } = useSarakUI();
 
     const containerVariants = {
         initial: { opacity: 0 },

@@ -1,11 +1,11 @@
 import React, { useState } from 'react';
-import { useSarak } from '@sarak/lib-shared';
+import { useSarakUI } from '../SarakUIProvider';
 import { LANGUAGES } from '../../constants/design-tokens';
 import { Globe, Languages, Check, X, Search, Info, Plus } from 'lucide-react';
 import { motion, AnimatePresence } from 'framer-motion';
 
 export const LanguageTab: React.FC = () => {
-    const sarak = useSarak();
+    const sarak = useSarakUI();
     const { applyFullConfig } = sarak;
     
     // Extração segura com fallbacks para modo standalone

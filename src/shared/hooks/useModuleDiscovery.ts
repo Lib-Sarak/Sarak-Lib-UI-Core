@@ -1,5 +1,5 @@
 import { useState, useEffect, useCallback } from 'react';
-import { useSarak, getRegisteredModules } from '@sarak/lib-shared';
+import { getRegisteredModules } from '../registry';
 import api from '../services/api';
 import { DiscoveredModule, ModuleManifest } from '../../constants/discovery';
 import { useSarakUI } from '../../components/SarakUIProvider';
@@ -10,15 +10,14 @@ import { useSarakUI } from '../../components/SarakUIProvider';
  * 
  * Escaneia os microserviços em busca de manifestos e gerencia o estado de disponibilidade.
  */
-export const useModuleDiscovery = () => {
-    const { loggedIn } = useSarak();
+export const useModuleDiscovery = (isEnabled: boolean = true) => {
     const { discoveryEndpoints } = useSarakUI();
     const [modules, setModules] = useState<DiscoveredModule[]>([]);
     const [isLoading, setIsLoading] = useState(true);
     const [lastScan, setLastScan] = useState<Date | null>(null);
 
     const scanModules = useCallback(async () => {
-        if (!loggedIn) {
+        if (!isEnabled) {
             setModules([]);
             setIsLoading(false);
             return;
@@ -91,15 +90,15 @@ export const useModuleDiscovery = () => {
         setModules(sorted);
         setIsLoading(false);
         setLastScan(new Date());
-    }, [loggedIn, discoveryEndpoints]);
+    }, [isEnabled, discoveryEndpoints]);
 
     useEffect(() => {
         scanModules();
-        if (loggedIn) {
+        if (isEnabled) {
             const timer = setInterval(scanModules, 60000);
             return () => clearInterval(timer);
         }
-    }, [scanModules, loggedIn]);
+    }, [scanModules, isEnabled]);
 
     return {
         modules,
