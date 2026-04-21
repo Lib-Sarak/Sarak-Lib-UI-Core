@@ -70,7 +70,7 @@ export const LANGUAGES = [
 export const ALL_LANGUAGES = LANGUAGES;
 
 export const THEME_FONTS = [
-    { id: 'satoshi', name: 'Satoshi Premium', value: "'Satoshi', sans-serif", category: 'sans', weights: [300, 400, 500, 700, 900] },
+    { id: 'satoshi', name: 'Satoshi Pro', value: "'Satoshi', sans-serif", category: 'sans', weights: [300, 400, 500, 700, 900] },
     { id: 'cabinet', name: 'Cabinet Grotesk', value: "'Cabinet Grotesk', sans-serif", category: 'sans', weights: [400, 700, 800, 900] },
     { id: 'inter', name: 'Inter Dynamic', value: "'Inter', sans-serif", category: 'sans', weights: [300, 400, 500, 600, 700] },
     { id: 'outfit', name: 'Outfit Tech', value: "'Outfit', sans-serif", category: 'sans', weights: [300, 400, 600, 800] },

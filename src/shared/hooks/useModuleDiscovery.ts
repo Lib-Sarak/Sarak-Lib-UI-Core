@@ -1,5 +1,5 @@
 import { useState, useEffect, useCallback } from 'react';
-import { getRegisteredModules } from '../registry';
+import { getRegisteredModules, getLocalComponent } from '../registry';
 import api from '../services/api';
 import { DiscoveredModule, ModuleManifest } from '../../constants/discovery';
 import { useSarakUI } from '../../components/SarakUIProvider';
@@ -28,8 +28,8 @@ export const useModuleDiscovery = (isEnabled: boolean = true) => {
         setIsLoading(true);
         const results: DiscoveredModule[] = [];
 
-        // Escaneamento Paralelo (v5.5 Performance Tier)
-        const scanPromises = (discoveryEndpoints || []).map(async (baseUrl) => {
+        // Escaneamento Paralelo (v5.5)
+        const scanPromises = (discoveryEndpoints || []).map(async (baseUrl: string) => {
             try {
                 // Tenta buscar o manifesto protegido
                 const response = await api.get<ModuleManifest>(`${baseUrl}/module/manifest`, {
@@ -64,10 +64,29 @@ export const useModuleDiscovery = (isEnabled: boolean = true) => {
 
         await Promise.all(scanPromises);
 
-        // Adicionando Módulos Internos (Self-Manifest) via Sarak Atomic Registry
+        // 2. Busca de Módulos de Sistema (v6.5 Elite - Orientado a Seeds)
+        try {
+            const systemRes = await api.get<DiscoveredModule[]>('/ui/modules');
+            if (systemRes.data && Array.isArray(systemRes.data)) {
+                systemRes.data.forEach(sysMod => {
+                    const localComp = getLocalComponent(sysMod.id);
+                    results.push({
+                        ...sysMod,
+                        status: 'online',
+                        baseUrl: 'core',
+                        endpoints: {},
+                        component: localComp,
+                        version: '1.0.0-core'
+                    });
+                });
+            }
+        } catch (err) {
+            console.error("[Sarak:Discovery] Erro ao carregar módulos de sistema:", err);
+        }
+
         const localModules = getRegisteredModules();
         localModules.forEach(mod => {
-            // Se o módulo local ainda não foi descoberto via API (para evitar duplicatas)
+            // Compatibilidade Legada para módulos registrados via registerSarakModule completo
             if (!results.find(m => m.id === mod.id)) {
                 results.push({
                     id: mod.id,
@@ -88,14 +107,6 @@ export const useModuleDiscovery = (isEnabled: boolean = true) => {
             }
         });
 
-        // 3. Fallback Dinâmico (v6.0): Módulos sem componente local usam o DynamicRenderer
-        results.forEach(m => {
-            if (!m.component && m.visualContracts && m.visualContracts.length > 0) {
-                console.log(`[Sarak:Discovery] Atribuindo Renderizador Dinâmico ao módulo: ${m.id}`);
-                // @ts-ignore - Injetando componente dinâmico
-                m.component = () => React.createElement(DynamicRenderer, { contracts: m.visualContracts });
-            }
-        });
 
         const sorted = results.sort((a, b) => (b.priority || 0) - (a.priority || 0));
         setModules(sorted);

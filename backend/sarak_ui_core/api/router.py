@@ -4,9 +4,11 @@ import uuid as uuid_pkg
 from typing import Dict, Any
 
 from sarak_ui_core.database import get_db, engine, setup_ui_db
-from sarak_ui_core.models import UserDesignConfig
+from sarak_ui_core.models import UserDesignConfig, SystemModule
+from sarak_ui_core.seed import seed_ui_core
 from sarak_ui_core.security import get_current_identity, IdentityContext
 from pydantic import BaseModel
+from typing import List
 
 router = APIRouter(tags=["UI Core Settings"])
 
@@ -19,6 +21,9 @@ def sovereign_boot():
     
     # Setup DB (Schema + Tables)
     setup_ui_db(engine)
+    
+    # Injetar Seeds de Sistema (v6.5)
+    seed_ui_core(engine)
     
     logger.info(" [Sarak OS] Módulo UI-Core pronto.")
 
@@ -33,6 +38,20 @@ def get_module_manifest():
             return json.load(f)
     except FileNotFoundError:
         raise HTTPException(status_code=404, detail="Manifesto não encontrado na raiz do módulo")
+
+@router.get("/modules")
+def get_system_modules(db: Session = Depends(get_db)):
+    """Retorna os mÃ³dulos e abas nativas registradas via Seed (v6.5)."""
+    modules = db.query(SystemModule).filter(SystemModule.is_active == True).order_by(SystemModule.priority.desc()).all()
+    return [
+        {
+            "id": m.id, 
+            "label": m.label, 
+            "icon": m.icon, 
+            "category": m.category, 
+            "priority": m.priority
+        } for m in modules
+    ]
 
 class DesignUpdate(BaseModel):
     design: Dict[str, Any]

@@ -1,4 +1,4 @@
-from sqlalchemy import Column, String, JSON, DateTime
+from sqlalchemy import Column, String, JSON, DateTime, Integer, Boolean
 from sqlalchemy.dialects.postgresql import UUID
 from sqlalchemy.sql import func
 from sqlalchemy.ext.mutable import MutableDict
@@ -32,3 +32,19 @@ class UserDesignConfig(Base):
             "design": self.design,
             "updated_at": self.updated_at.isoformat() if self.updated_at else None
         }
+
+class SystemModule(Base):
+    """
+    Registro de módulos built-in do sistema (v6.5 Elite).
+    Controla abas como 'Personalização' de forma dinâmica.
+    """
+    __tablename__ = "system_modules"
+    __table_args__ = {"schema": "ui_core"}
+
+    id = Column(String(50), primary_key=True) # Slug: 'mx-customization'
+    label = Column(String(100), nullable=False)
+    icon = Column(String(50), nullable=True) # Nome do ícone Lucide
+    category = Column(String(100), nullable=True)
+    priority = Column(Integer, default=100)
+    is_active = Column(Boolean, default=True)
+    created_at = Column(DateTime(timezone=True), server_default=func.now())

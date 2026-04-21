@@ -41,7 +41,7 @@ interface SarakCardGridProps {
 }
 
 /**
- * SarakCardGrid Elite (v6.4)
+ * SarakCardGrid Core (v6.4)
  * 
  * Renderiza um grid de cartões de alta fidelidade com suporte a metadados
  * técnicos complexos e FILTROS DINÂMICOS declarados via manifesto.
@@ -121,7 +121,7 @@ export const SarakCardGrid: React.FC<SarakCardGridProps> = ({ endpoint, label, m
 
     return (
         <div className="flex flex-col" style={{ gap: 'calc(var(--theme-gap) * 1.25)' }}>
-            {/* Header & Filter Section Elite */}
+            {/* Header & Filter Section Core */}
             <div className="flex flex-col" style={{ gap: 'var(--theme-gap)' }}>
                 <div className="flex flex-col md:flex-row md:items-center justify-between" style={{ gap: 'var(--theme-gap)' }}>
                     <div>
@@ -188,7 +188,7 @@ export const SarakCardGrid: React.FC<SarakCardGridProps> = ({ endpoint, label, m
             )}
             </div>
 
-            {/* Grid de Cards Pro Elite (v6.5) */}
+            {/* Grid de Cards Pro Core (v6.5) */}
             <div className="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-3" style={{ gap: 'var(--theme-gap, 2rem)' }}>
                 {loading ? (
                     [...Array(6)].map((_, i) => (
@@ -208,7 +208,7 @@ export const SarakCardGrid: React.FC<SarakCardGridProps> = ({ endpoint, label, m
                     </div>
                 ) : (
                     filteredData.map((item, idx) => (
-                        <SarakEliteCard key={idx} item={item} mapping={mapping} />
+                        <SarakCoreCard key={idx} item={item} mapping={mapping} />
                     ))
                 )}
             </div>
@@ -216,7 +216,7 @@ export const SarakCardGrid: React.FC<SarakCardGridProps> = ({ endpoint, label, m
     );
 };
 
-const SarakEliteCard = ({ item, mapping }: { item: any; mapping: any }) => {
+const SarakCoreCard = ({ item, mapping }: { item: any; mapping: any }) => {
     const [isExpanded, setIsExpanded] = useState(false);
 
     const getVal = (obj: any, path: string | undefined) => {

@@ -23,7 +23,7 @@ export const ThemeCard: React.FC<ThemeCardProps> = ({
     onEdit,
     onDelete
 }) => {
-    const isPremium = id.toLowerCase().includes('premium') || id.toLowerCase().includes('_v');
+    const isAdvanced = id.toLowerCase().includes('premium') || id.toLowerCase().includes('_v') || id.toLowerCase().includes('advanced');
     const isCustom = id.startsWith('custom-');
 
     return (
@@ -46,10 +46,10 @@ export const ThemeCard: React.FC<ThemeCardProps> = ({
                         <span className={`text-xs font-black uppercase tracking-tighter ${isPreviewed || isActive ? 'text-[var(--theme-primary)]' : 'text-white'}`}>
                             {theme.name || id}
                         </span>
-                        {isPremium && (
+                        {isAdvanced && (
                             <div className="px-2 py-0.5 rounded-full bg-amber-500/10 border border-amber-500/20 flex items-center gap-1">
                                 <Award size={8} className="text-amber-500" />
-                                <span className="text-[7px] font-black text-amber-500 uppercase tracking-widest">Premium</span>
+                                <span className="text-[7px] font-black text-amber-500 uppercase tracking-widest">Advanced</span>
                             </div>
                         )}
                     </div>
@@ -140,21 +140,21 @@ export const ThemeList: React.FC<ThemeListProps> = ({
     const allThemes = { ...layouts, ...customThemesObj };
     
     // Categorização para visual Premium
-    const premiumThemes = Object.entries(allThemes).filter(([id]) => id.toLowerCase().includes('premium') || id.toLowerCase().includes('_v'));
-    const baseThemes = Object.entries(allThemes).filter(([id]) => !id.toLowerCase().includes('premium') && !id.toLowerCase().includes('_v'));
+    const advancedThemes = Object.entries(allThemes).filter(([id]) => id.toLowerCase().includes('premium') || id.toLowerCase().includes('_v') || id.toLowerCase().includes('advanced'));
+    const baseThemes = Object.entries(allThemes).filter(([id]) => !id.toLowerCase().includes('premium') && !id.toLowerCase().includes('_v') && !id.toLowerCase().includes('advanced'));
 
     return (
         <div className="space-y-10">
-            {/* Secção Premium */}
-            {premiumThemes.length > 0 && (
+            {/* Secção Advanced */}
+            {advancedThemes.length > 0 && (
                 <div className="space-y-4">
                     <div className="flex items-center gap-3 mb-6">
                         <div className="flex-1 h-[1px] bg-gradient-to-r from-transparent to-white/10" />
-                        <span className="text-[9px] font-black uppercase tracking-[0.4em] text-white/40 italic">Elite Collection</span>
+                        <span className="text-[9px] font-black uppercase tracking-[0.4em] text-white/40 italic">Advanced Collection</span>
                         <div className="flex-1 h-[1px] bg-gradient-to-l from-transparent to-white/10" />
                     </div>
                     <div className="space-y-4">
-                        {premiumThemes.map(([id, theme]: [string, any]) => (
+                        {advancedThemes.map(([id, theme]: [string, any]) => (
                             <ThemeCard
                                 key={id}
                                 id={id}

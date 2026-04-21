@@ -21,16 +21,12 @@ export * from './components/Controls';
 export { useModuleDiscovery } from './shared/hooks/useModuleDiscovery';
 export * from './constants/discovery';
 
-// --- REGISTRO DE MÓDULOS INTERNOS (v5.5) ---
+// --- REGISTRO DE MÓDULOS INTERNOS (v6.5 Elite) ---
 export * from './shared/registry';
-import { registerSarakModule } from './shared/registry';
+import { registerLocalComponent } from './shared/registry';
 import ThemeCustomizationTab from './components/ThemeCustomization/ThemeCustomizationTab';
 
-registerSarakModule({
-    id: 'mx-customization',
-    label: 'Personalização',
-    icon: 'Palette',
-    category: 'Design & UX',
-    component: ThemeCustomizationTab,
-    priority: 1000
-});
+// Registramos apenas o componente vinculado ao ID.
+// Os metadados (Label, Ícone, Categoria) virão das Seeds via API.
+registerLocalComponent('mx-customization', ThemeCustomizationTab);
+

@@ -12,7 +12,7 @@ interface SarakSearchProps {
 /**
  * SarakSearch (v6.0 Command Palette)
  * 
- * Componente de busca global com estética Matrix.
+ * Componente de busca global integrado ao ecossistema Sarak.
  */
 export const SarakSearch: React.FC<SarakSearchProps> = ({ isOpen, onClose }) => {
     const { searchStyle } = useSarakUI();
@@ -117,7 +117,7 @@ export const SarakSearch: React.FC<SarakSearchProps> = ({ isOpen, onClose }) => 
                                 <span>Navegar</span>
                             </div>
                         </div>
-                        <span className="text-[9px] font-black uppercase tracking-widest text-[var(--theme-muted)] italic">Sarak Matrix Search v6.7</span>
+                        <span className="text-[9px] font-black uppercase tracking-widest text-[var(--theme-muted)] italic">Sarak Lib Search Engine</span>
                     </div>
                 </motion.div>
             </div>

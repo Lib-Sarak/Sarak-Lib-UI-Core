@@ -13,6 +13,7 @@ import { motion, AnimatePresence } from 'framer-motion';
 import SarakCursor from './SarakCursor';
 import SarakSearch from './SarakSearch';
 import { SarakEmptyState } from './SarakEmptyState';
+import { DynamicRenderer } from './DynamicRenderer';
 
 // Helper para renderizar ícone Lucide dinamicamente
 const IconRenderer = ({ name, className, size = 16 }: { name?: string, className?: string, size?: number }) => {
@@ -28,7 +29,7 @@ interface SarakShellProps {
         logo?: string;
     };
     extraToolbarItems?: ReactNode;
-    // Injected Auth Props (v5.6)
+    // Injected Auth Props
     user?: any;
     logout?: () => void;
     token?: string;
@@ -36,11 +37,11 @@ interface SarakShellProps {
 }
 
 /**
- * Elite SarakShell (v6.2 Final) — Motor de Interface Modular Premium
+ * Sarak Shell Core — Motor de Interface Modular Advanced
  */
 export const SarakShell: React.FC<SarakShellProps> = ({ 
     children, 
-    brand = { name: "Sarak Matrix" },
+    brand = { name: "Sarak Lib" },
     extraToolbarItems,
     user,
     logout,
@@ -50,7 +51,7 @@ export const SarakShell: React.FC<SarakShellProps> = ({
     const { design, applyConfig, discoveryEndpoints } = useSarakUI();
     const loggedIn = !!token;
     
-    // Destruturação direta do motor visual (Nomes oficiais v6.1)
+    // Destruturação direta do motor visual
     const { 
         layout: theme, mode, primaryColor, layoutDensity, 
         texture, navigationStyle, sidebarWidth, headingFont, 
@@ -77,7 +78,7 @@ export const SarakShell: React.FC<SarakShellProps> = ({
     const [activeModuleId, setActiveModuleId] = useState<string | null>(null);
     const [isResizing, setIsResizing] = useState(false);
 
-    // MOUSE TRACKING MOTOR (v6.2 Premium Effects) - Propaga coordenadas globais para cards
+    // MOUSE TRACKING MOTOR - Propaga coordenadas globais para cards
     useEffect(() => {
         let rafId: number;
         const handleMouseMove = (e: MouseEvent) => {
@@ -310,7 +311,7 @@ export const SarakShell: React.FC<SarakShellProps> = ({
                         </div>
 
                         <div className="flex items-center gap-4">
-                            {/* SEARCH INLINE HEAD (v6.2) */}
+                            {/* SEARCH INLINE HEAD */}
                             {searchStyle === 'minimal' && (
                                 <div className="hidden md:flex items-center w-64 group relative">
                                     <Search size={14} className="absolute left-3 top-1/2 -translate-y-1/2 text-[var(--theme-muted)] group-focus-within:text-[var(--theme-primary)] transition-colors" />
@@ -357,19 +358,26 @@ export const SarakShell: React.FC<SarakShellProps> = ({
                                     </header>
 
                                     <div className={`flex-1 ${isSplitViewEnabled ? 'grid grid-cols-2 gap-[var(--theme-gap)]' : 'flex flex-col'} animate-in fade-in zoom-in-95 duration-700`}>
-                                        <div className="flex flex-col min-h-full">
                                             {(() => {
                                                 const ModComponent = (activeModule as any)?.component;
-                                                return ModComponent ? (
-                                                    <ModComponent 
-                                                        modules={discoveredModules} 
-                                                        user={user}
-                                                        authApi={authApi}
-                                                    />
-                                                ) : <div className="opacity-20 flex items-center justify-center h-full text-[var(--theme-muted)] uppercase font-black text-xs tracking-widest">Módulo em Modo API (Sem Interface Local)</div>;
-                                            })()}
+                                                const contracts = activeModule.visualContracts;
 
-                                        </div>
+                                                if (ModComponent) {
+                                                    return (
+                                                        <ModComponent 
+                                                            modules={discoveredModules} 
+                                                            user={user}
+                                                            authApi={authApi}
+                                                        />
+                                                    );
+                                                }
+
+                                                if (contracts && contracts.length > 0) {
+                                                    return <DynamicRenderer contracts={contracts} />;
+                                                }
+
+                                                return <div className="opacity-20 flex items-center justify-center h-full text-[var(--theme-muted)] uppercase font-black text-xs tracking-widest">Módulo em Modo API (Sem Interface Local)</div>;
+                                            })()}
                                         {isSplitViewEnabled && secondaryModuleId && (
                                             <div className="flex flex-col min-h-full border-l border-[var(--theme-border)]/30 pl-[var(--theme-gap)]">
                                                 {(() => {

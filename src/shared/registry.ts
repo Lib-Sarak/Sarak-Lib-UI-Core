@@ -15,17 +15,31 @@ export interface SarakModule {
 }
 
 const registeredModules: Map<string, SarakModule> = new Map();
+const localComponents: Map<string, React.ComponentType<any>> = new Map();
 
 /**
- * Registra um módulo no ecossistema local.
+ * Registra um componente local vinculado a um ID de sistema (v6.5).
  */
-export const registerSarakModule = (module: SarakModule) => {
-    registeredModules.set(module.id, module);
-    console.log(`[Sarak:Registry] Módulo registrado localmente: ${module.id}`);
+export const registerLocalComponent = (id: string, component: React.ComponentType<any>) => {
+    localComponents.set(id, component);
 };
 
 /**
- * Retorna a lista de módulos registrados.
+ * Retorna o componente associado a um ID, se existir.
+ */
+export const getLocalComponent = (id: string): React.ComponentType<any> | undefined => {
+    return localComponents.get(id);
+};
+
+/**
+ * Registra um módulo completo (módulos externos legados).
+ */
+export const registerSarakModule = (module: SarakModule) => {
+    registeredModules.set(module.id, module);
+};
+
+/**
+ * Retorna a lista de módulos registrados legado.
  */
 export const getRegisteredModules = (): SarakModule[] => {
     return Array.from(registeredModules.values());
@@ -37,3 +51,4 @@ export const getRegisteredModules = (): SarakModule[] => {
 export const getSarakModule = (id: string): SarakModule | undefined => {
     return registeredModules.get(id);
 };
+

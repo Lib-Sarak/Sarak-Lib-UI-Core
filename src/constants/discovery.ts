@@ -34,6 +34,7 @@ export interface VisualContract {
     ghostGroups?: string[]; // Sarak v6.5
     headerActions?: { label: string; action: string }[]; // Sarak v6.5
     groupActions?: { label: string; icon: string; action: string }[]; // Sarak v6.5
+    formMapping?: Record<string, string>; // Mapeamento de campos para formulários de ação (v6.5)
 }
 
 export interface ModuleManifest {

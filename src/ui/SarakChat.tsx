@@ -204,7 +204,7 @@ export const SarakChat: React.FC<SarakChatProps> = ({
                    throw new Error(payload.error);
                 }
               } catch (e) {
-                console.warn("Erro ao processar chunk SSE:", e);
+                // Silenciando erro de chunk parcial SSE (comportamento esperado em streams rápidas)
               }
             }
           }
@@ -243,7 +243,7 @@ export const SarakChat: React.FC<SarakChatProps> = ({
           </div>
           <div>
             <h2 className="text-sm font-bold tracking-tight text-white uppercase" style={{ fontWeight: 'var(--heading-weight)' }}>{label}</h2>
-            <p className="text-[10px] text-slate-400 font-medium tracking-widest">Agnostic Interface • Sarak Matrix v6.5</p>
+            <p className="text-[10px] text-slate-400 font-medium tracking-widest">Agnostic Interface • Sarak Lib Engine</p>
           </div>
         </div>
 
@@ -279,7 +279,7 @@ export const SarakChat: React.FC<SarakChatProps> = ({
                <div className="absolute inset-0 bg-indigo-500/20 rounded-3xl blur-2xl opacity-0 group-hover/terminal:opacity-100 transition-opacity"></div>
               <Terminal size={36} className="text-indigo-400 relative z-10" />
             </div>
-            <h3 className="text-lg font-medium text-slate-200">Visão da Matrix Inicializada</h3>
+            <h3 className="text-lg font-medium text-slate-200">Interface de Sistema Inicializada</h3>
             <p className="text-sm text-slate-500 max-w-sm">
               Inicie um teste agora. Envie textos ou imagens para processamento via contrato universal.
             </p>
@@ -300,7 +300,7 @@ export const SarakChat: React.FC<SarakChatProps> = ({
                     <div className="w-5 h-5 rounded-full bg-indigo-500 flex items-center justify-center">
                        <Bot size={12} className="text-white" />
                     </div>
-                    <span className="text-[10px] font-bold text-slate-400 uppercase tracking-widest">Sarak Matrix Agent</span>
+                    <span className="text-[10px] font-bold text-slate-400 uppercase tracking-widest">Sarak Assistant</span>
                   </div>
                 ) : (
                   <span className="text-[10px] font-bold text-indigo-400 uppercase tracking-widest">Requisitante</span>
@@ -482,7 +482,7 @@ export const SarakChat: React.FC<SarakChatProps> = ({
         </div>
         
         <p className="text-center text-[9px] text-slate-600 mt-4 uppercase tracking-[0.3em] font-medium">
-          Sarak Matrix Orchestrator • Hybrid Model Router
+          Sarak Orchestrator • Hybrid Model Router
         </p>
       </footer>
 

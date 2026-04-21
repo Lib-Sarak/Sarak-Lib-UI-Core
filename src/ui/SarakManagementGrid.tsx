@@ -36,6 +36,7 @@ interface SarakManagementGridProps {
         icon?: 'plus' | 'settings';
         action: string;
     }[];
+    formMapping?: Record<string, string>;
 }
 
 export const SarakManagementGrid: React.FC<SarakManagementGridProps> = ({ 
@@ -44,7 +45,8 @@ export const SarakManagementGrid: React.FC<SarakManagementGridProps> = ({
     ghostGroups = [],
     mapping,
     headerActions = [],
-    groupActions = []
+    groupActions = [],
+    formMapping
 }) => {
     const [data, setData] = useState<any[]>([]);
     const [loading, setLoading] = useState(true);
@@ -125,7 +127,9 @@ export const SarakManagementGrid: React.FC<SarakManagementGridProps> = ({
                             <SarakForm 
                                 endpoint={endpoint} 
                                 label={activeModal.group ? `Conectar ${activeModal.group}` : "Identidade Universal"}
-                                mapping={{}} 
+                                mapping={formMapping || {}} 
+                                mode="create"
+                                initialData={activeModal.group ? { service: activeModal.group } : {}}
                                 onSuccess={() => {
                                     setActiveModal(null);
                                     load();

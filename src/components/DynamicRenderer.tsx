@@ -64,6 +64,7 @@ export const DynamicRenderer: React.FC<DynamicRendererProps> = ({ contracts }) =
                                 ghostGroups={contract.ghostGroups}
                                 headerActions={contract.headerActions as any}
                                 groupActions={contract.groupActions as any}
+                                formMapping={contract.formMapping}
                             />
                         );
 

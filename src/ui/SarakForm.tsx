@@ -7,22 +7,33 @@ interface SarakFormProps {
     endpoint: string;
     label?: string;
     mapping?: Record<string, string>; // { field_name: "Label do Input" }
+    mode?: 'create' | 'edit';
+    initialData?: Record<string, any>;
     actions?: Array<{
         label: string;
         endpoint: string;
         method: 'POST' | 'PATCH' | 'DELETE';
     }>;
+    onSuccess?: () => void;
 }
 
 /**
  * SarakForm Genérico (v6.2)
  * 
  * Gera formulários de configuração dinamicamente baseados no manifesto.
- * Ideal para abas de "Preferências" e "Configurações" de módulos.
+ * Idela para abas de "Preferências" e "Configurações" de módulos.
  */
-export const SarakForm: React.FC<SarakFormProps> = ({ endpoint, label, mapping, actions }) => {
-    const [formData, setFormData] = useState<Record<string, any>>({});
-    const [loading, setLoading] = useState(true);
+export const SarakForm: React.FC<SarakFormProps> = ({ 
+    endpoint, 
+    label, 
+    mapping, 
+    actions, 
+    mode = 'edit', 
+    initialData = {}, 
+    onSuccess 
+}) => {
+    const [formData, setFormData] = useState<Record<string, any>>(initialData);
+    const [loading, setLoading] = useState(mode === 'edit');
     const [saving, setSaving] = useState(false);
     const [status, setStatus] = useState<{ type: 'success' | 'error', message: string } | null>(null);
 
@@ -39,15 +50,25 @@ export const SarakForm: React.FC<SarakFormProps> = ({ endpoint, label, mapping, 
     };
 
     useEffect(() => {
-        fetchData();
-    }, [endpoint]);
+        if (mode === 'edit') {
+            fetchData();
+        } else {
+            // Em modo create, garantir que campos definidos no mapping existam no formData
+            if (mapping) {
+                const base: any = { ...initialData };
+                Object.keys(mapping).forEach(k => { if (base[k] === undefined) base[k] = ''; });
+                setFormData(base);
+            }
+        }
+    }, [endpoint, mode]);
 
     const handleChange = (key: string, value: any) => {
         setFormData(prev => ({ ...prev, [key]: value }));
     };
 
     const handleSave = async () => {
-        const action = actions?.[0] || { endpoint: endpoint, method: 'PATCH' };
+        const defaultMethod = mode === 'create' ? 'POST' : 'PATCH';
+        const action = actions?.[0] || { endpoint: endpoint, method: defaultMethod };
         try {
             setSaving(true);
             setStatus(null);
@@ -56,6 +77,7 @@ export const SarakForm: React.FC<SarakFormProps> = ({ endpoint, label, mapping, 
             const response = await (api as any)[method](action.endpoint, formData);
             
             setStatus({ type: 'success', message: 'Configurações sincronizadas com sucesso.' });
+            if (onSuccess) onSuccess();
             setTimeout(() => setStatus(null), 3000);
         } catch (err: any) {
             setStatus({ type: 'error', message: err.message || 'Falha ao salvar.' });

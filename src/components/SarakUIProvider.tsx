@@ -3,7 +3,7 @@ import '../styles/sarak-base.css';
 import { LAYOUTS } from '../constants/design-tokens';
 import { getRegisteredModules } from '../shared/registry';
 
-// --- SARAK UI BRIDGE CONTEXT (Independência 100%) ---
+// --- SARAK UI BRIDGE CONTEXT ---
 export interface SarakUIContextType {
     discoveryEndpoints: string[];
     design: any;
@@ -31,14 +31,14 @@ export const useSarakUI = () => {
             applyFullConfig: () => {}
         } as any;
     }
-    // Retorna o contexto mesclado com o design para compatibilidade de API (v5.6)
+    // Retorna o contexto mesclado com o design para compatibilidade de API
     return {
         ...context,
         ...context.design
     };
 };
 
-// --- CHAVE DE PERSISTÊNCIA SARAK (v6.7) ---
+// --- CHAVE DE PERSISTÊNCIA SARAK ---
 const STORAGE_KEY = 'sarak-ui-design-v6.7';
 
 interface SarakUIProviderProps {
@@ -49,7 +49,7 @@ interface SarakUIProviderProps {
     userId?: string | null;
 }
 
-// --- MANIFESTO DE DESIGN SOBERANO (SSoT v6.7) ---
+// --- MANIFESTO DE DESIGN SOBERANO ---
 const DESIGN_MANIFEST: Record<string, {
     vars?: string[],
     unit?: string,
@@ -237,12 +237,12 @@ export const SarakUIProvider: React.FC<SarakUIProviderProps> = ({
                     if (resp.ok) {
                         const data = await resp.json();
                         if (data.design && Object.keys(data.design).length > 0) {
-                            setDesign(prev => ({ ...prev, ...data.design }));
+                            setDesign((prev: any) => ({ ...prev, ...data.design }));
                         }
                         setIsBackendLoaded(true);
                     }
                 } catch (e) {
-                    console.warn("[UI-Core] Falha ao sincronizar com backend soberano:", e);
+                    // Silenciando falha de sincronização inicial (fallback para localStorage ativo)
                 }
             };
             fetchDesign();
@@ -288,10 +288,10 @@ export const SarakUIProvider: React.FC<SarakUIProviderProps> = ({
         setIsHydrated(true);
     }, []);
 
-    // Injeção de Fontes Premium
+    // Injeção de Fontes Advanced
     useEffect(() => {
         if (typeof document === 'undefined') return;
-        const ID = 'sarak-core-fonts-v6.0';
+        const ID = 'sarak-core-fonts';
         if (document.getElementById(ID)) return;
         const style = document.createElement('style');
         style.id = ID;
