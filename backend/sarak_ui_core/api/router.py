@@ -3,12 +3,36 @@ from sqlalchemy.orm import Session
 import uuid as uuid_pkg
 from typing import Dict, Any
 
-from sarak_ui_core.database import get_db
+from sarak_ui_core.database import get_db, engine, setup_ui_db
 from sarak_ui_core.models import UserDesignConfig
 from sarak_ui_core.security import get_current_identity, IdentityContext
 from pydantic import BaseModel
 
 router = APIRouter(tags=["UI Core Settings"])
+
+@router.on_event("startup")
+def sovereign_boot():
+    """Inicialização soberana do módulo UI-Core (v5.5)"""
+    import logging
+    logger = logging.getLogger(__name__)
+    logger.info(" [Sarak OS] Inicializando módulo: UI-Core (Soberano)")
+    
+    # Setup DB (Schema + Tables)
+    setup_ui_db(engine)
+    
+    logger.info(" [Sarak OS] Módulo UI-Core pronto.")
+
+@router.get("/module/manifest")
+def get_module_manifest():
+    """Expondo o manifesto para o motor de descoberta do UI-Core (v5.5)."""
+    import os
+    import json
+    manifest_path = os.path.abspath(os.path.join(os.path.dirname(__file__), "../../../manifest.json"))
+    try:
+        with open(manifest_path, "r", encoding="utf-8") as f:
+            return json.load(f)
+    except FileNotFoundError:
+        raise HTTPException(status_code=404, detail="Manifesto não encontrado na raiz do módulo")
 
 class DesignUpdate(BaseModel):
     design: Dict[str, Any]
