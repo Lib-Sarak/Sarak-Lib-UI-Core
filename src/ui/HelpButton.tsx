@@ -8,41 +8,45 @@ const HelpButton = ({ text }: { text: string }) => {
         <>
             <button
                 onClick={(e) => { e.preventDefault(); e.stopPropagation(); setIsOpen(true); }}
-                className="w-5 h-5 rounded-full border border-theme-border flex items-center justify-center text-[10px] text-theme-muted hover:border-theme-primary hover:text-theme-primary transition-colors z-20 relative outline-none"
+                className="w-5 h-5 rounded-full border border-theme flex items-center justify-center text-[10px] text-slate-400 hover:border-indigo-500 hover:text-indigo-400 transition-colors z-20 relative outline-none"
+                style={{ transitionDuration: 'var(--animation-speed, 0.3s)' }}
             >
                 ?
             </button>
 
             {isOpen && (
                 <div
-                    className="fixed inset-0 z-[99999] flex items-center justify-center p-4 bg-theme-body/80 backdrop-blur-sm"
+                    className="fixed inset-0 z-[99999] flex items-center justify-center bg-black/80 backdrop-blur-sm"
                     onClick={() => setIsOpen(false)}
+                    style={{ padding: 'var(--theme-pad)' }}
                 >
                     <div
-                        className="bg-theme-card border border-theme-border rounded-theme shadow-theme w-full max-w-md overflow-hidden animate-in fade-in zoom-in-95 duration-200"
+                        className="bg-theme-card border border-theme rounded-theme shadow-theme w-full max-w-md overflow-hidden animate-in fade-in zoom-in-95"
                         onClick={(e) => e.stopPropagation()}
+                        style={{ animationDuration: 'var(--animation-speed, 0.2s)' }}
                     >
-                        <div className="flex items-center justify-between p-4 border-b border-theme-border bg-theme-primary/5">
-                            <h3 className="text-sm font-bold text-theme-title flex items-center gap-2">
-                                <div className="w-6 h-6 rounded-full bg-theme-primary/20 flex items-center justify-center text-theme-primary font-black">?</div>
+                        <div className="flex items-center justify-between border-b border-theme bg-white/5" style={{ padding: 'var(--theme-pad)', gap: 'calc(var(--theme-gap) / 2)' }}>
+                            <h3 className="text-sm font-bold text-white flex items-center" style={{ gap: 'calc(var(--theme-gap) / 3)' }}>
+                                <div className="w-6 h-6 rounded-full bg-indigo-500/20 flex items-center justify-center text-indigo-400 font-black">?</div>
                                 Indicator Information
                             </h3>
                             <button
                                 onClick={() => setIsOpen(false)}
-                                className="text-theme-muted hover:text-theme-title transition-colors"
+                                className="text-slate-400 hover:text-white transition-colors"
                             >
                                 <X className="w-5 h-5" />
                             </button>
                         </div>
-                        <div className="p-6">
-                            <p className="text-sm text-theme-main leading-relaxed font-medium">
+                        <div style={{ padding: 'calc(var(--theme-pad) * 1.5)' }}>
+                            <p className="text-sm text-slate-300 leading-relaxed font-medium">
                                 {text}
                             </p>
                         </div>
-                        <div className="p-4 border-t border-theme-border flex justify-end">
+                        <div className="border-t border-theme flex justify-end" style={{ padding: 'var(--theme-pad)' }}>
                             <button
                                 onClick={() => setIsOpen(false)}
-                                className="px-5 py-2 bg-theme-primary text-white text-xs font-bold uppercase rounded-lg transition-colors shadow-theme hover:opacity-90"
+                                className="bg-indigo-600 text-white text-xs font-bold uppercase rounded-theme transition-colors shadow-theme hover:opacity-90"
+                                style={{ padding: 'calc(var(--theme-pad) / 2) var(--theme-pad)', transitionDuration: 'var(--animation-speed, 0.3s)' }}
                             >
                                 Got it
                             </button>

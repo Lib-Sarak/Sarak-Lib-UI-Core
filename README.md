@@ -1,33 +1,12 @@
-# Sarak-Lib-UI-Core
+# 📚 Sarak Matrix Framework v6.5
 
-O Sistema de Design da Biblioteca Sarak. Define a identidade visual única e fornece componentes atômicos premium.
+A documentação completa da biblioteca **Sarak-Lib-UI-Core** foi reconstruída para refletir os padrões de Soberania Visual e Arquitetura Agnóstica.
 
-## 🚀 Funcionalidades
-- **Tokens de Design:** Cores harmônicas, tipografia moderna (Inter/Outfit) e espaçamentos.
-- **Componentes Base:** Buttons, Inputs, Cards e Modais com animações suaves (Framer Motion).
-- **Tematização:** Suporte nativo a Dark Mode e Glassmorphism.
+## 🏁 Primeiros Passos
+1. [Arquitetura Matrix v6.5](./docs/0-arquitetura-matrix-v6.md)
+2. [Design Engine v10 (Tokens)](./docs/1-design-engine-v10.md)
+3. [Contratos Visuais e Mapeamento de Dados](./docs/2-contratos-visuais-e-mapeamento.md)
 
-## 🛠️ Como Implementar
-
-### Frontend (React)
-```bash
-npm install @sarak/lib-ui-core
-```
-
-```tsx
-import { Button, Card } from '@sarak/lib-ui-core';
-
-function MyPage() {
-  return (
-    <Card>
-      <Button variant="premium">Clique Aqui</Button>
-    </Card>
-  );
-}
-```
-
-## 🔗 Conexões
-- **Todos os Módulos:** Todos os componentes de Frontend da biblioteca Sarak (Auth, LLM, Translator) consomem os estilos definidos aqui para manter a consistência.
-
----
-**Desenvolvido por Igor Sarak**
+## 🛠️ Guia do Desenvolvedor
+- [Como criar um Novo Módulo Soberano](./docs/3-guia-do-modulo-soberano.md)
+- [Integração e Deploy em Produção](./docs/4-integracao-e-deploy.md)

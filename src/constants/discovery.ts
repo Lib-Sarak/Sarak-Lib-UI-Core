@@ -14,6 +14,28 @@ export const DISCOVERY_ENDPOINTS = [
     '/api/auth'
 ];
 
+export type VisualContractType = 'TABLE' | 'STATS' | 'CARD_GRID' | 'MANAGEMENT_GRID' | 'FORM' | 'CHAT_INTERFACE' | 'CHART';
+
+export interface VisualContract {
+    id: string;
+    type: VisualContractType;
+    label: string;
+    endpoint: string;
+    tab?: string; // Propriedade para agrupar contratos em abas (v6.1)
+    mapping?: Record<string, string>;
+    filters?: any[]; // Configurações de filtro (v6.4)
+    actions?: Array<{
+        label: string;
+        endpoint: string;
+        method: 'POST' | 'PATCH' | 'DELETE';
+        icon?: string;
+    }>;
+    groupBy?: string; // Campo para agrupamento no MANAGEMENT_GRID (v6.4)
+    ghostGroups?: string[]; // Sarak v6.5
+    headerActions?: { label: string; action: string }[]; // Sarak v6.5
+    groupActions?: { label: string; icon: string; action: string }[]; // Sarak v6.5
+}
+
 export interface ModuleManifest {
     id: string;
     label: string;
@@ -22,7 +44,7 @@ export interface ModuleManifest {
     version: string;
     priority: number;
     endpoints: Record<string, string>;
-    visualContracts?: Record<string, string>;
+    visualContracts?: VisualContract[];
 }
 
 export interface DiscoveredModule extends ModuleManifest {

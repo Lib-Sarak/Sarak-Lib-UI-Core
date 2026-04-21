@@ -3,6 +3,8 @@ import { getRegisteredModules } from '../registry';
 import api from '../services/api';
 import { DiscoveredModule, ModuleManifest } from '../../constants/discovery';
 import { useSarakUI } from '../../components/SarakUIProvider';
+import { DynamicRenderer } from '../../components/DynamicRenderer';
+import React from 'react';
 
 
 /**
@@ -83,6 +85,15 @@ export const useModuleDiscovery = (isEnabled: boolean = true) => {
                 // Se já foi descoberto, apenas injeta o componente local (Hydration)
                 const existing = results.find(m => m.id === mod.id);
                 if (existing) existing.component = mod.component;
+            }
+        });
+
+        // 3. Fallback Dinâmico (v6.0): Módulos sem componente local usam o DynamicRenderer
+        results.forEach(m => {
+            if (!m.component && m.visualContracts && m.visualContracts.length > 0) {
+                console.log(`[Sarak:Discovery] Atribuindo Renderizador Dinâmico ao módulo: ${m.id}`);
+                // @ts-ignore - Injetando componente dinâmico
+                m.component = () => React.createElement(DynamicRenderer, { contracts: m.visualContracts });
             }
         });
 

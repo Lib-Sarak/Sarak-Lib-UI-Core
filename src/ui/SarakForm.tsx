@@ -1,0 +1,159 @@
+import React, { useState, useEffect } from 'react';
+import { motion } from 'framer-motion';
+import { Save, Settings, ShieldCheck, AlertCircle } from 'lucide-react';
+import api from '../shared/services/api';
+
+interface SarakFormProps {
+    endpoint: string;
+    label?: string;
+    mapping?: Record<string, string>; // { field_name: "Label do Input" }
+    actions?: Array<{
+        label: string;
+        endpoint: string;
+        method: 'POST' | 'PATCH' | 'DELETE';
+    }>;
+}
+
+/**
+ * SarakForm Genérico (v6.2)
+ * 
+ * Gera formulários de configuração dinamicamente baseados no manifesto.
+ * Ideal para abas de "Preferências" e "Configurações" de módulos.
+ */
+export const SarakForm: React.FC<SarakFormProps> = ({ endpoint, label, mapping, actions }) => {
+    const [formData, setFormData] = useState<Record<string, any>>({});
+    const [loading, setLoading] = useState(true);
+    const [saving, setSaving] = useState(false);
+    const [status, setStatus] = useState<{ type: 'success' | 'error', message: string } | null>(null);
+
+    const fetchData = async () => {
+        try {
+            setLoading(true);
+            const response = await api.get(endpoint);
+            setFormData(response.data);
+        } catch (err) {
+            console.error('[SarakForm] Erro ao carregar dados:', err);
+        } finally {
+            setLoading(false);
+        }
+    };
+
+    useEffect(() => {
+        fetchData();
+    }, [endpoint]);
+
+    const handleChange = (key: string, value: any) => {
+        setFormData(prev => ({ ...prev, [key]: value }));
+    };
+
+    const handleSave = async () => {
+        const action = actions?.[0] || { endpoint: endpoint, method: 'PATCH' };
+        try {
+            setSaving(true);
+            setStatus(null);
+            
+            const method = action.method.toLowerCase();
+            const response = await (api as any)[method](action.endpoint, formData);
+            
+            setStatus({ type: 'success', message: 'Configurações sincronizadas com sucesso.' });
+            setTimeout(() => setStatus(null), 3000);
+        } catch (err: any) {
+            setStatus({ type: 'error', message: err.message || 'Falha ao salvar.' });
+        } finally {
+            setSaving(false);
+        }
+    };
+
+    if (loading) return (
+        <div className="bg-theme-card border-theme flex flex-col items-center justify-center animate-pulse rounded-theme" style={{ padding: 'calc(var(--theme-pad) * 3)', gap: 'calc(var(--theme-gap) / 2)' }}>
+            <div className="w-12 h-12 bg-white/10 rounded-full" />
+            <div className="h-4 w-48 bg-white/5 rounded" />
+        </div>
+    );
+
+    const fields = mapping ? Object.keys(mapping) : Object.keys(formData);
+
+    return (
+        <div className="bg-theme-card border-theme relative overflow-hidden group rounded-theme" style={{ padding: 'calc(var(--theme-pad) * 2)' }}>
+            {/* Header Area */}
+            <div className="flex items-center justify-between relative z-10" style={{ marginBottom: 'calc(var(--theme-gap) * 1.5)' }}>
+                <div className="flex items-center" style={{ gap: 'calc(var(--theme-gap) / 2)' }}>
+                    <div className="p-3 bg-indigo-500/10 rounded-2xl border border-indigo-500/20" style={{ padding: 'calc(var(--theme-pad) / 2)' }}>
+                        <Settings size={20} className="text-indigo-400" />
+                    </div>
+                    <div>
+                        <h3 className="text-2xl font-black text-white tracking-tight" style={{ fontWeight: 'var(--heading-weight)' }}>{label}</h3>
+                        <p className="text-[10px] font-bold text-white/20 uppercase tracking-[0.2em]">Painel de Controle Atômico</p>
+                    </div>
+                </div>
+                <div className="flex items-center bg-emerald-500/5 rounded-xl border border-emerald-500/10 text-emerald-400 text-[9px] font-black uppercase tracking-widest" style={{ gap: 'calc(var(--theme-gap) / 4)', padding: 'calc(var(--theme-pad) / 3) calc(var(--theme-pad) / 1.5)' }}>
+                    <ShieldCheck size={12} /> Sincronização Segura
+                </div>
+            </div>
+
+            {/* Form Fields Grid */}
+            <div className="grid grid-cols-1 md:grid-cols-2 relative z-10" style={{ gap: 'var(--theme-gap, 1.5rem)', marginBottom: 'calc(var(--theme-gap) * 1.5)' }}>
+                {fields.map((key) => (
+                    <div key={key} className="flex flex-col" style={{ gap: 'calc(var(--theme-gap) / 4)' }}>
+                        <label className="text-[10px] font-black text-white/30 uppercase tracking-widest pl-1 block">
+                            {mapping ? mapping[key] : key.replace(/_/g, ' ')}
+                        </label>
+                        <input
+                            type="text"
+                            value={formData[key] || ''}
+                            onChange={(e) => handleChange(key, e.target.value)}
+                            className="w-full bg-theme-card border-theme text-white text-sm font-medium focus:border-indigo-500/40 outline-none transition-all placeholder:text-white/10 rounded-theme"
+                            style={{ padding: 'calc(var(--theme-pad) / 1.5) var(--theme-pad)', transitionDuration: 'var(--animation-speed, 0.3s)' }}
+                            placeholder={`Digite o ${mapping ? mapping[key] : key}...`}
+                        />
+                    </div>
+                ))}
+            </div>
+
+            {/* Status Message */}
+            {status && (
+                <motion.div 
+                    initial={{ opacity: 0, y: 10 }}
+                    animate={{ opacity: 1, y: 0 }}
+                    className={`flex items-center border rounded-theme`}
+                    style={{ 
+                        marginBottom: 'var(--theme-gap)', 
+                        padding: 'var(--theme-pad)', 
+                        gap: 'calc(var(--theme-gap) / 3)',
+                        backgroundColor: status.type === 'success' ? 'rgba(16, 185, 129, 0.1)' : 'rgba(239, 68, 68, 0.1)',
+                        borderColor: status.type === 'success' ? 'rgba(16, 185, 129, 0.2)' : 'rgba(239, 68, 68, 0.2)',
+                        color: status.type === 'success' ? 'rgb(52, 211, 153)' : 'rgb(248, 113, 113)'
+                    }}
+                >
+                    {status.type === 'success' ? <ShieldCheck size={16} /> : <AlertCircle size={16} />}
+                    <span className="text-xs font-bold">{status.message}</span>
+                </motion.div>
+            )}
+
+            {/* Actions Area */}
+            <div className="flex justify-end border-t border-theme" style={{ paddingTop: 'var(--theme-gap)' }}>
+                <motion.button
+                    whileHover={{ scale: 1.02 }}
+                    whileTap={{ scale: 0.98 }}
+                    onClick={handleSave}
+                    disabled={saving}
+                    className="flex items-center bg-indigo-600 hover:bg-indigo-500 text-white rounded-theme text-xs font-black uppercase tracking-widest shadow-xl shadow-indigo-500/20 transition-all disabled:opacity-50"
+                    style={{ 
+                        gap: 'calc(var(--theme-gap) / 3)', 
+                        padding: 'calc(var(--theme-pad) / 1.5) var(--theme-pad)',
+                        transitionDuration: 'var(--animation-speed, 0.3s)'
+                    }}
+                >
+                    {saving ? (
+                        <div className="w-4 h-4 border-2 border-white/30 border-t-white rounded-full animate-spin" />
+                    ) : (
+                        <Save size={16} />
+                    )}
+                    {saving ? 'Sincronizando...' : 'Salvar Alterações'}
+                </motion.button>
+            </div>
+        </div>
+    );
+};
+
+export default SarakForm;
