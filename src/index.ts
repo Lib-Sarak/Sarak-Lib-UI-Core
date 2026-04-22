@@ -1,18 +1,18 @@
 /**
- * Sarak UI Core — Entry Point Elite v5.4
+ * Sarak UI Core — Entry Point v5.4
  * 
- * Portal de Componentes e Motor de Interface do Ecossistema Sarak.
- * 100% Restaurado para paridade visual e funcional original.
+ * Component Portal and Interface Engine for the Sarak Ecosystem.
+ * 100% Restored for original visual and functional parity.
  */
 
-// Motor de Temas e Constantes Elite
+// Theme Engine and Constants
 export { default as SarakUIProvider, useSarakUI } from './components/SarakUIProvider';
 export { default as ThemeToggle } from './components/ThemeToggle';
 export * from './constants/design-tokens';
 export * from './constants/theme';
 
 
-// Componentes de Layout e UI Plug & Play
+// Layout Components and Plug & Play UI
 export * from './components/SarakShell';
 export * from './components/CustomizationPanel';
 export * from './components/ExpandableCard';
@@ -21,12 +21,12 @@ export * from './components/Controls';
 export { useModuleDiscovery } from './shared/hooks/useModuleDiscovery';
 export * from './constants/discovery';
 
-// --- REGISTRO DE MÓDULOS INTERNOS (v6.5 Elite) ---
+// --- INTERNAL MODULE REGISTRATION (v6.5) ---
 export * from './shared/registry';
 import { registerLocalComponent } from './shared/registry';
 import ThemeCustomizationTab from './components/ThemeCustomization/ThemeCustomizationTab';
 
-// Registramos apenas o componente vinculado ao ID.
-// Os metadados (Label, Ícone, Categoria) virão das Seeds via API.
+// registering the component linked to the ID.
+// Metadata (Label, Icon, Category) will come from Seeds via API.
 registerLocalComponent('mx-customization', ThemeCustomizationTab);
 

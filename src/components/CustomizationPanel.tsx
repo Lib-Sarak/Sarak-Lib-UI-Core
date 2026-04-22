@@ -9,18 +9,18 @@ import { AdvancedTab } from './ThemeCustomization/AdvancedTab';
 type TabId = 'themes' | 'layout' | 'language' | 'shortcuts' | 'advanced';
 
 /**
- * CustomizationPanel (Elite v5.4)
- * Central única de configuração resiliênte e auto-ajustável.
+ * CustomizationPanel (v5.4)
+ * Single resilient and self-adjusting configuration center.
  */
 export const CustomizationPanel: React.FC = () => {
     const [activeTab, setActiveTab] = useState<TabId>('themes');
 
     const tabs = [
-        { id: 'themes', label: 'Temas & Estética', icon: Palette },
-        { id: 'layout', label: 'Estrutura & Layout', icon: Layout },
-        { id: 'language', label: 'Idioma & Tradução', icon: Globe },
-        { id: 'shortcuts', label: 'Atalhos de Sistema', icon: Keyboard },
-        { id: 'advanced', label: 'Engine & SDT', icon: Settings },
+        { id: 'themes', label: 'Themes & Aesthetics', icon: Palette },
+        { id: 'layout', label: 'Structure & Layout', icon: Layout },
+        { id: 'language', label: 'Language & Translation', icon: Globe },
+        { id: 'shortcuts', label: 'System Shortcuts', icon: Keyboard },
+        { id: 'advanced', label: 'Engine & Discovery', icon: Settings },
     ];
 
     return (
@@ -28,7 +28,7 @@ export const CustomizationPanel: React.FC = () => {
             {/* Header & Tabs Navigation */}
             <div className="p-8 pb-4 shrink-0">
                 <h2 className="text-2xl font-bold bg-clip-text text-transparent bg-gradient-to-r from-blue-400 to-indigo-400 mb-6 uppercase tracking-tighter">
-                    Central de Customização
+                    Customization Center
                 </h2>
                 
                 <div className="flex gap-2 border-b border-white/5 pb-px overflow-x-auto no-scrollbar scroll-smooth">
@@ -51,7 +51,7 @@ export const CustomizationPanel: React.FC = () => {
                 </div>
             </div>
 
-            {/* Sub-Components Viewport (Com Scroll Resiliente) */}
+            {/* Sub-Components Viewport (With Resilient Scroll) */}
             <div className="flex-grow overflow-y-auto custom-scrollbar p-8 pt-0">
                 <div className="min-h-full bg-black/20 rounded-3xl border border-white/5 flex flex-col backdrop-blur-sm shadow-2xl overflow-hidden">
                     {activeTab === 'themes' && <ThemeCustomizationTab />}

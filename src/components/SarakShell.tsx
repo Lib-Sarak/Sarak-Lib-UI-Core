@@ -15,7 +15,7 @@ import SarakSearch from './SarakSearch';
 import { SarakEmptyState } from './SarakEmptyState';
 import { DynamicRenderer } from './DynamicRenderer';
 
-// Helper para renderizar ícone Lucide dinamicamente
+// Helper to render Lucide icons dynamically
 const IconRenderer = ({ name, className, size = 16 }: { name?: string, className?: string, size?: number }) => {
     if (!name) return <LayoutDashboard size={size} className={className} />;
     const IconComponent = (LucideIcons as any)[name];
@@ -37,7 +37,7 @@ interface SarakShellProps {
 }
 
 /**
- * Sarak Shell Core — Motor de Interface Modular Advanced
+ * Sarak Shell Core — Interface Engine
  */
 export const SarakShell: React.FC<SarakShellProps> = ({ 
     children, 
@@ -51,7 +51,7 @@ export const SarakShell: React.FC<SarakShellProps> = ({
     const { design, applyConfig, discoveryEndpoints } = useSarakUI();
     const loggedIn = !!token;
     
-    // Destruturação direta do motor visual
+    // Direct destructuring of the visual engine
     const { 
         layout: theme, mode, primaryColor, layoutDensity, 
         texture, navigationStyle, sidebarWidth, headingFont, 
@@ -65,7 +65,7 @@ export const SarakShell: React.FC<SarakShellProps> = ({
         cursorPhysics, isNavHidden
     } = design || {};
 
-    // Fallbacks para funções de estado/shared
+    // Fallbacks for state/shared functions
     const toggleNav = () => applyConfig({ isNavHidden: !isNavHidden });
     const setSidebarWidth = (w: number) => applyConfig({ sidebarWidth: w });
     const secondaryModuleId = design?.secondaryModuleId;
@@ -78,7 +78,7 @@ export const SarakShell: React.FC<SarakShellProps> = ({
     const [activeModuleId, setActiveModuleId] = useState<string | null>(null);
     const [isResizing, setIsResizing] = useState(false);
 
-    // MOUSE TRACKING MOTOR - Propaga coordenadas globais para cards
+    // MOUSE TRACKING ENGINE - Propagates global coordinates to cards
     useEffect(() => {
         let rafId: number;
         const handleMouseMove = (e: MouseEvent) => {
@@ -102,7 +102,7 @@ export const SarakShell: React.FC<SarakShellProps> = ({
         };
     }, []);
 
-    // Gerencia o módulo ativo com base na descoberta
+    // Manages active module based on discovery
     useEffect(() => {
         if (discoveredModules.length > 0 && !activeModuleId) {
             const customMod = discoveredModules.find(m => m.id === 'mx-customization');
@@ -110,7 +110,7 @@ export const SarakShell: React.FC<SarakShellProps> = ({
         }
     }, [discoveredModules, activeModuleId]);
 
-    // Atalhos Globais
+    // Global Shortcuts
     useEffect(() => {
         const handleKeyDown = (e: KeyboardEvent) => {
             if (e.altKey && e.key === 'n') {
@@ -126,7 +126,7 @@ export const SarakShell: React.FC<SarakShellProps> = ({
         return () => window.removeEventListener('keydown', handleKeyDown);
     }, [toggleNav]);
 
-    // Resizing Logic para Sidebar
+    // Sidebar Resizing Logic
     const startResizing = useCallback(() => setIsResizing(true), []);
     const stopResizing = useCallback(() => setIsResizing(false), []);
     const resize = useCallback((e: MouseEvent) => {
@@ -151,7 +151,7 @@ export const SarakShell: React.FC<SarakShellProps> = ({
     
     const groupedModules = useMemo(() => {
         return discoveredModules.reduce((acc, mod) => {
-            const cat = mod.category || 'Módulos de Sistema';
+            const cat = mod.category || 'System Modules';
             if (!acc[cat]) acc[cat] = [];
             acc[cat].push(mod);
             return acc;
@@ -165,7 +165,7 @@ export const SarakShell: React.FC<SarakShellProps> = ({
     return (
         <div className="flex w-full h-screen overflow-hidden bg-[var(--theme-body)] text-white font-sans selection:bg-[var(--theme-primary)] selection:text-white">
             
-            {/* HOVER SENSORS (v6.2) - Ativadores de borda para barras ocultas */}
+            {/* HOVER SENSORS (v6.2) - Edge activators for hidden bars */}
             {isAutoHideEnabled && !isNavVisible && (
                 <>
                     {isSidebar && (
@@ -224,7 +224,7 @@ export const SarakShell: React.FC<SarakShellProps> = ({
                                                 key={mod.id} 
                                                 onClick={() => !isOffline && setActiveModuleId(mod.id)} 
                                                 disabled={isOffline}
-                                                title={isOffline ? `Módulo Offline: ${mod.error || 'Erro de conexão'}` : mod.label}
+                                                title={isOffline ? `Offline Module: ${mod.error || 'Connection error'}` : mod.label}
                                                 className={`w-full flex items-center gap-3 px-3 py-2.5 rounded-xl transition-all relative group font-tab 
                                                     ${activeModuleId === mod.id ? 'bg-[var(--theme-primary)]/10 text-[var(--theme-primary)] font-bold shadow-[inset_0_0_20px_rgba(59,130,246,0.05)]' : 'text-white/40 hover:bg-white/5 hover:text-white'}
                                                     ${isOffline ? 'opacity-30 grayscale cursor-not-allowed border border-dashed border-white/5' : ''}
@@ -233,7 +233,7 @@ export const SarakShell: React.FC<SarakShellProps> = ({
                                                 <IconRenderer name={mod.icon} className={activeModuleId === mod.id ? 'text-[var(--theme-primary)]' : 'text-[var(--theme-muted)]'} />
                                                 <div className="flex flex-col items-start overflow-hidden">
                                                     <span className="text-sm truncate">{mod.label}</span>
-                                                    {isOffline && <span className="text-[8px] text-red-500 font-bold uppercase tracking-wider">Serviço Offline</span>}
+                                                    {isOffline && <span className="text-[8px] text-red-500 font-bold uppercase tracking-wider">Service Offline</span>}
                                                 </div>
                                                 {activeModuleId === mod.id && <motion.div layoutId="active-pill" className="absolute left-0 w-1 h-4 bg-[var(--theme-primary)] rounded-full shadow-[0_0_15px_var(--theme-primary)]" />}
                                                 {isOffline && <div className="absolute right-2 top-1/2 -translate-y-1/2 w-1.5 h-1.5 rounded-full bg-red-500 animate-pulse shadow-[0_0_5px_red]" />}
@@ -315,7 +315,7 @@ export const SarakShell: React.FC<SarakShellProps> = ({
                             {searchStyle === 'minimal' && (
                                 <div className="hidden md:flex items-center w-64 group relative">
                                     <Search size={14} className="absolute left-3 top-1/2 -translate-y-1/2 text-[var(--theme-muted)] group-focus-within:text-[var(--theme-primary)] transition-colors" />
-                                    <input type="text" placeholder="Busca Smart..." onClick={() => setIsSearchOpen(true)} readOnly className="w-full h-9 bg-[var(--theme-card)] border border-[var(--theme-border)] rounded-[var(--radius-theme)] pl-10 pr-4 text-[11px] font-bold text-[var(--theme-title)]/60 hover:bg-white/[0.08] hover:border-[var(--theme-primary)]/50 transition-all cursor-pointer" />
+                                    <input type="text" placeholder="Smart Search..." onClick={() => setIsSearchOpen(true)} readOnly className="w-full h-9 bg-[var(--theme-card)] border border-[var(--theme-border)] rounded-[var(--radius-theme)] pl-10 pr-4 text-[11px] font-bold text-[var(--theme-title)]/60 hover:bg-white/[0.08] hover:border-[var(--theme-primary)]/50 transition-all cursor-pointer" />
                                     <div className="absolute right-3 top-1/2 -translate-y-1/2 flex items-center gap-1 px-1.5 py-0.5 rounded bg-white/5 border border-white/10 text-[8px] text-white/20 font-black opacity-0 group-hover:opacity-100"><span>CTRL</span><span>K</span></div>
                                 </div>
                             )}
@@ -334,7 +334,7 @@ export const SarakShell: React.FC<SarakShellProps> = ({
 
                 {/* MAIN CONTENT CANVAS */}
                 <main className="flex-1 overflow-y-auto custom-scrollbar relative flex flex-col w-full min-h-0 bg-[var(--theme-body)] isolate">
-                    {/* SarakAtmosphereLayer (Soberania de Textura v6.7) */}
+                    {/* SarakAtmosphereLayer (Texture Sovereignty v6.7) */}
                     <div className={`absolute inset-0 pointer-events-none z-0 texture-${texture} SarakAtmosphereLayer`} />
 
                     
@@ -347,13 +347,13 @@ export const SarakShell: React.FC<SarakShellProps> = ({
                                         <div>
                                             <div className="flex items-center gap-3 text-[var(--theme-primary)] mb-2">
                                                 <div className="p-2 rounded-[var(--radius-theme)] bg-[var(--theme-primary)]/10 border border-[var(--theme-primary)]/20 shadow-[0_0_15px_rgba(var(--theme-primary-rgb),0.1)]"><IconRenderer name={activeModule.icon} size={20} /></div>
-                                                <span className="text-[10px] font-black uppercase tracking-[0.4em] italic opacity-60 text-[var(--theme-muted)]">{activeModule.category || 'Módulo'}</span>
+                                                <span className="text-[10px] font-black uppercase tracking-[0.4em] italic opacity-60 text-[var(--theme-muted)]">{activeModule.category || 'Module'}</span>
                                             </div>
                                             <h1 className="text-4xl lg:text-5xl font-black tracking-tighter text-[var(--theme-title)] uppercase">{activeModule.label}</h1>
                                         </div>
                                         <div className="flex items-center gap-2">
                                             <button onClick={() => setIsSearchOpen(true)} className="p-3 rounded-[var(--radius-theme)] bg-[var(--theme-card)] border border-[var(--theme-border)] hover:border-[var(--theme-primary)]/50 transition-all text-[var(--theme-muted)] hover:text-[var(--theme-primary)]"><Search size={18} /></button>
-                                            <button className="hidden sm:flex items-center gap-2 px-6 py-3 rounded-[var(--radius-theme)] bg-[var(--theme-primary)] hover:opacity-90 text-white text-[10px] font-black uppercase tracking-[0.2em] transition-all shadow-xl shadow-[var(--theme-primary)]/20 text-center"><Zap size={14} className="fill-current" /> Novo Registro</button>
+                                            <button className="hidden sm:flex items-center gap-2 px-6 py-3 rounded-[var(--radius-theme)] bg-[var(--theme-primary)] hover:opacity-90 text-white text-[10px] font-black uppercase tracking-[0.2em] transition-all shadow-xl shadow-[var(--theme-primary)]/20 text-center"><Zap size={14} className="fill-current" /> New Record</button>
                                         </div>
                                     </header>
 
@@ -376,13 +376,13 @@ export const SarakShell: React.FC<SarakShellProps> = ({
                                                     return <DynamicRenderer contracts={contracts} module={activeModule} />;
                                                 }
 
-                                                return <div className="opacity-20 flex items-center justify-center h-full text-[var(--theme-muted)] uppercase font-black text-xs tracking-widest">Módulo em Modo API (Sem Interface Local)</div>;
+                                                return <div className="opacity-20 flex items-center justify-center h-full text-[var(--theme-muted)] uppercase font-black text-xs tracking-widest">Module in API Mode (No Local Interface)</div>;
                                             })()}
                                         {isSplitViewEnabled && secondaryModuleId && (
                                             <div className="flex flex-col min-h-full border-l border-[var(--theme-border)]/30 pl-[var(--theme-gap)]">
                                                 {(() => {
                                                     const SecMod = (discoveredModules.find(m => m.id === secondaryModuleId) as any)?.component;
-                                                    return SecMod ? <SecMod /> : <div className="opacity-20 flex items-center justify-center h-full text-[var(--theme-muted)]">Selecione um módulo secundário</div>;
+                                                    return SecMod ? <SecMod /> : <div className="opacity-20 flex items-center justify-center h-full text-[var(--theme-muted)]">Select a secondary module</div>;
                                                 })()}
                                             </div>
                                         )}

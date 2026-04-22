@@ -78,7 +78,7 @@ export const ThemeToggle = () => {
 
 export const UserMenu = ({ user, onPasswordModal, onLogout }: { user: any, onPasswordModal: () => void, onLogout: () => void }) => {
     const [isOpen, setIsOpen] = React.useState(false);
-    const userName = user?.email?.split('@')[0] || 'Usuário';
+    const userName = user?.email?.split('@')[0] || 'User';
 
     return (
         <div className="relative">
@@ -108,12 +108,12 @@ export const UserMenu = ({ user, onPasswordModal, onLogout }: { user: any, onPas
                             <div className="p-1">
                                 <button onClick={() => { setIsOpen(false); onPasswordModal(); }} className="w-full flex items-center gap-3 px-3 py-2.5 text-sm text-theme-main hover:bg-theme-primary/10 rounded-lg transition-colors text-left">
                                     <KeyRound className="w-4 h-4 opacity-50" />
-                                    <span>Alterar Senha</span>
+                                    <span>Change Password</span>
                                 </button>
                                 <div className="h-px bg-theme-border my-1"></div>
                                 <button onClick={() => { setIsOpen(false); onLogout(); }} className="w-full flex items-center gap-3 px-3 py-2.5 text-sm text-rose-500 hover:bg-rose-500/10 rounded-lg transition-colors text-left font-bold">
                                     <LogOut className="w-4 h-4" />
-                                    <span>Sair do Sistema</span>
+                                    <span>Log Out</span>
                                 </button>
                             </div>
                         </motion.div>

@@ -1,7 +1,7 @@
 /**
- * Sarak Atomic Registry (v5.5)
+ * Sarak Registry (v5.5)
  * 
- * Gerenciador local de módulos registrados para evitar dependência da lib-shared.
+ * Local manager for registered modules to avoid dependency on lib-shared.
  */
 
 export interface SarakModule {
@@ -18,35 +18,35 @@ const registeredModules: Map<string, SarakModule> = new Map();
 const localComponents: Map<string, React.ComponentType<any>> = new Map();
 
 /**
- * Registra um componente local vinculado a um ID de sistema (v6.5).
+ * Registers a local component linked to a system ID (v6.5).
  */
 export const registerLocalComponent = (id: string, component: React.ComponentType<any>) => {
     localComponents.set(id, component);
 };
 
 /**
- * Retorna o componente associado a um ID, se existir.
+ * Returns the component associated with an ID, if it exists.
  */
 export const getLocalComponent = (id: string): React.ComponentType<any> | undefined => {
     return localComponents.get(id);
 };
 
 /**
- * Registra um módulo completo (módulos externos legados).
+ * Registers a complete module (legacy external modules).
  */
 export const registerSarakModule = (module: SarakModule) => {
     registeredModules.set(module.id, module);
 };
 
 /**
- * Retorna a lista de módulos registrados legado.
+ * Returns the list of legacy registered modules.
  */
 export const getRegisteredModules = (): SarakModule[] => {
     return Array.from(registeredModules.values());
 };
 
 /**
- * Busca um módulo específico por ID.
+ * Retrieves a specific module by ID.
  */
 export const getSarakModule = (id: string): SarakModule | undefined => {
     return registeredModules.get(id);

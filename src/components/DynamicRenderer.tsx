@@ -1,28 +1,34 @@
-import React from 'react';
+import React, { lazy } from 'react';
 import { motion } from 'framer-motion';
 import { SarakTable, SarakCardGrid, SarakStats, SarakChart, SarakForm, SarakManagementGrid, SarakChat } from '../ui';
-import { VisualContract } from '../constants/discovery';
+import { VisualContract, DiscoveredModule } from '../constants/discovery';
 import { AlertCircle } from 'lucide-react';
+import LazyEngineWrapper from './engines/LazyEngineWrapper';
+
+// --- SARAK PRIME V7.0 ENGINES (LAZY) ---
+const SarakChartEngine = lazy(() => import('./engines/charts/SarakChartEngine'));
+const SarakFlowEngine = lazy(() => import('./engines/flows/SarakFlowEngine'));
+const SarakChatEngine = lazy(() => import('./engines/chat/SarakChatEngine'));
 
 interface DynamicRendererProps {
     contracts: VisualContract[];
-    module?: DiscoveredModule; // Injeção opcional do contexto do módulo (v6.8)
+    module?: DiscoveredModule; // Optional module context injection (v6.8)
 }
 
 /**
  * DynamicRenderer (v6.0-6.8 Smart Router)
  * 
- * O "Motor" de renderizaÃ§Ã£o do UI-Core. Ele recebe uma lista de contratos
- * visuais e constrÃ³i a interface dinamicamente sem conhecimento prÃ©vio
- * do mÃ³dulo.
+ * The UI-Core rendering engine. It receives a list of visual contracts
+ * and builds the interface dynamically without prior knowledge
+ * of the module's specifics.
  */
 export const DynamicRenderer: React.FC<DynamicRendererProps> = ({ contracts, module }) => {
     
-    // Função auxiliar para resolver endpoints (v6.8)
+    // Helper function to resolve endpoints (v6.8)
     const resolveEndpoint = React.useCallback((endpointKey: string) => {
         if (!module) return endpointKey;
         
-        // 1. Resolver via dot-notation (v1.models)
+        // 1. Resolve via dot-notation (v1.models)
         if (endpointKey.includes('.')) {
             const [version, key] = endpointKey.split('.');
             const versionMap = (module.endpoints as any)?.[version];
@@ -31,14 +37,14 @@ export const DynamicRenderer: React.FC<DynamicRendererProps> = ({ contracts, mod
                 return `${module.baseUrl}${path.startsWith('/') ? path : '/' + path}`;
             }
         }
-
-        // 2. Resolver via chave direta no endpoints
+(module.endpoints as any)?.[endpointKey];
+        // 2. Resolve via direct key in endpoints
         const directPath = (module.endpoints as any)?.[endpointKey];
         if (directPath) {
             return `${module.baseUrl}${directPath.startsWith('/') ? directPath : '/' + directPath}`;
         }
 
-        // 3. Fallback: Se começar com /, usar baseUrl + path
+        // 3. Fallback: If starts with /, use baseUrl + path
         if (endpointKey.startsWith('/')) {
             return `${module.baseUrl}${endpointKey}`;
         }
@@ -46,13 +52,13 @@ export const DynamicRenderer: React.FC<DynamicRendererProps> = ({ contracts, mod
         return endpointKey;
     }, [module]);
 
-    // Agrupar contratos por abas (v6.1)
+    // Group contracts by tabs (v6.1)
     const tabs = React.useMemo(() => {
         const groups: Record<string, VisualContract[]> = {};
         let hasTabs = false;
 
         contracts.forEach(c => {
-            const tabName = c.tab || 'Geral';
+            const tabName = c.tab || 'General';
             if (c.tab) hasTabs = true;
             if (!groups[tabName]) groups[tabName] = [];
             groups[tabName].push(c);
@@ -67,7 +73,7 @@ export const DynamicRenderer: React.FC<DynamicRendererProps> = ({ contracts, mod
         return (
             <div className="flex flex-col items-center justify-center p-20 text-white/20 border border-white/5 border-dashed rounded-[3rem]">
                 <AlertCircle size={48} className="mb-4 opacity-50" />
-                <p className="text-sm font-black uppercase tracking-widest">Nenhum Contrato Visual Definido</p>
+                <p className="text-sm font-black uppercase tracking-widest">No Visual Contracts Defined</p>
             </div>
         );
     }
@@ -118,10 +124,42 @@ export const DynamicRenderer: React.FC<DynamicRendererProps> = ({ contracts, mod
                             />
                         );
 
+                    case 'ADVANCED_CHAT':
+                        return (
+                            <LazyEngineWrapper key={id}>
+                                <SarakChatEngine 
+                                    messages={[]} 
+                                    onSendMessage={() => {}} 
+                                    isLoading={false}
+                                />
+                            </LazyEngineWrapper>
+                        );
+
+                    case 'ELITE_CHART':
+                        return (
+                            <LazyEngineWrapper key={id}>
+                                <SarakChartEngine 
+                                    type={contract.mapping?.type as any || 'line'} 
+                                    data={[]} 
+                                    config={contract.mapping} 
+                                />
+                            </LazyEngineWrapper>
+                        );
+
+                    case 'FLOW_DIAGRAM':
+                        return (
+                            <LazyEngineWrapper key={id}>
+                                <SarakFlowEngine 
+                                    nodes={[]} 
+                                    edges={[]} 
+                                />
+                            </LazyEngineWrapper>
+                        );
+
                     default:
                         return (
                             <div key={id} className="p-6 bg-amber-500/5 border border-amber-500/10 rounded-2xl text-amber-500 text-xs">
-                                Template "{type}" não reconhecido pelo UI-Core.
+                                Template "{type}" not recognized by UI-Core.
                             </div>
                         );
                 }
@@ -135,7 +173,7 @@ export const DynamicRenderer: React.FC<DynamicRendererProps> = ({ contracts, mod
             animate={{ opacity: 1, y: 0 }}
             className="space-y-8"
         >
-            {/* Navegação de Abas Premium (v6.1) */}
+            {/* Tab Navigation (v6.1) */}
             {tabs.hasTabs && (
                 <div className="flex justify-center mb-12">
                     <nav className="flex p-1.5 bg-white/[0.02] border border-white/5 rounded-[2rem] backdrop-blur-3xl shadow-2xl">

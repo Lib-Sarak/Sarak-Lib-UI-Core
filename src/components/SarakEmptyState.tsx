@@ -35,7 +35,7 @@ export const SarakEmptyState: React.FC<SarakEmptyStateProps> = ({ type = 'abstra
                     <Compass size={64} strokeWidth={1} />
                 </motion.div>
                 <motion.h2 variants={itemVariants} className="text-xl font-bold uppercase tracking-[0.5em]">{systemName || 'Sarak Lib'}</motion.h2>
-                <motion.p variants={itemVariants} className="text-[10px] mt-2 uppercase tracking-widest italic">Aguardando Interação do Sistema...</motion.p>
+                <motion.p variants={itemVariants} className="text-[10px] mt-2 uppercase tracking-widest italic">Waiting for System Interaction...</motion.p>
             </motion.div>
         );
     }
@@ -69,7 +69,7 @@ export const SarakEmptyState: React.FC<SarakEmptyStateProps> = ({ type = 'abstra
                         <Box size={40} strokeWidth={1} />
                     </motion.div>
                     <motion.h2 variants={itemVariants} className="text-2xl font-black uppercase tracking-[0.8em] text-white/10 ml-[0.8em]">VOID</motion.h2>
-                    <motion.p variants={itemVariants} className="text-[9px] mt-4 uppercase tracking-[0.2em] text-[var(--theme-primary)]/40 font-bold">Inicie um módulo na barra de ferramentas</motion.p>
+                    <motion.p variants={itemVariants} className="text-[9px] mt-4 uppercase tracking-[0.2em] text-[var(--theme-primary)]/40 font-bold">Start a module in the toolbar</motion.p>
                 </div>
             </motion.div>
         );
@@ -107,8 +107,8 @@ export const SarakEmptyState: React.FC<SarakEmptyStateProps> = ({ type = 'abstra
                 <h2 className="text-sm font-black uppercase tracking-[0.4em] text-white/40 mb-2">Sarak Lib Core Engine</h2>
                 <div className="h-px w-12 bg-[var(--theme-primary)]/40 mx-auto mb-4" />
                 <p className="text-[10px] text-white/20 uppercase tracking-widest max-w-[280px] leading-loose">
-                    O ecossistema está em harmonia. <br/>
-                    Nenhum sinal detectado na viewport principal.
+                    The ecosystem is in harmony. <br/>
+                    No signal detected in the main viewport.
                 </p>
             </motion.div>
         </motion.div>
