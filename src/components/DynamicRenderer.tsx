@@ -6,16 +6,46 @@ import { AlertCircle } from 'lucide-react';
 
 interface DynamicRendererProps {
     contracts: VisualContract[];
+    module?: DiscoveredModule; // Injeção opcional do contexto do módulo (v6.8)
 }
 
 /**
- * DynamicRenderer (v6.0)
+ * DynamicRenderer (v6.0-6.8 Smart Router)
  * 
- * O "Motor" de renderização do UI-Core. Ele recebe uma lista de contratos
- * visuais e constrói a interface dinamicamente sem conhecimento prévio
- * do módulo.
+ * O "Motor" de renderizaÃ§Ã£o do UI-Core. Ele recebe uma lista de contratos
+ * visuais e constrÃ³i a interface dinamicamente sem conhecimento prÃ©vio
+ * do mÃ³dulo.
  */
-export const DynamicRenderer: React.FC<DynamicRendererProps> = ({ contracts }) => {
+export const DynamicRenderer: React.FC<DynamicRendererProps> = ({ contracts, module }) => {
+    
+    // Função auxiliar para resolver endpoints (v6.8)
+    const resolveEndpoint = React.useCallback((endpointKey: string) => {
+        if (!module) return endpointKey;
+        
+        // 1. Resolver via dot-notation (v1.models)
+        if (endpointKey.includes('.')) {
+            const [version, key] = endpointKey.split('.');
+            const versionMap = (module.endpoints as any)?.[version];
+            if (versionMap && versionMap[key]) {
+                const path = versionMap[key];
+                return `${module.baseUrl}${path.startsWith('/') ? path : '/' + path}`;
+            }
+        }
+
+        // 2. Resolver via chave direta no endpoints
+        const directPath = (module.endpoints as any)?.[endpointKey];
+        if (directPath) {
+            return `${module.baseUrl}${directPath.startsWith('/') ? directPath : '/' + directPath}`;
+        }
+
+        // 3. Fallback: Se começar com /, usar baseUrl + path
+        if (endpointKey.startsWith('/')) {
+            return `${module.baseUrl}${endpointKey}`;
+        }
+
+        return endpointKey;
+    }, [module]);
+
     // Agrupar contratos por abas (v6.1)
     const tabs = React.useMemo(() => {
         const groups: Record<string, VisualContract[]> = {};
@@ -46,19 +76,20 @@ export const DynamicRenderer: React.FC<DynamicRendererProps> = ({ contracts }) =
         <div className="space-y-12">
             {contractsToRender.map((contract) => {
                 const { type, endpoint, label, mapping, id } = contract;
+                const resolvedEndpoint = resolveEndpoint(endpoint);
 
                 switch (type) {
                     case 'TABLE':
-                        return <SarakTable key={id} endpoint={endpoint} label={label} mapping={mapping} />;
+                        return <SarakTable key={id} endpoint={resolvedEndpoint} label={label} mapping={mapping} />;
                     
                     case 'CARD_GRID':
-                        return <SarakCardGrid key={id} endpoint={endpoint} label={label} mapping={mapping as any} filters={contract.filters} />;
+                        return <SarakCardGrid key={id} endpoint={resolvedEndpoint} label={label} mapping={mapping as any} filters={contract.filters} />;
                     
                     case 'MANAGEMENT_GRID':
                         return (
                             <SarakManagementGrid 
                                 key={id} 
-                                endpoint={endpoint} 
+                                endpoint={resolvedEndpoint} 
                                 groupBy={contract.groupBy || ''} 
                                 mapping={mapping as any}
                                 ghostGroups={contract.ghostGroups}
@@ -69,19 +100,20 @@ export const DynamicRenderer: React.FC<DynamicRendererProps> = ({ contracts }) =
                         );
 
                     case 'STATS':
-                        return <SarakStats key={id} endpoint={endpoint} label={label} mapping={mapping} />;
+                        return <SarakStats key={id} endpoint={resolvedEndpoint} label={label} mapping={mapping} />;
 
                     case 'CHART':
-                        return <SarakChart key={id} endpoint={endpoint} label={label} mapping={mapping} />;
+                        return <SarakChart key={id} endpoint={resolvedEndpoint} label={label} mapping={mapping} />;
 
                     case 'FORM':
-                        return <SarakForm key={id} endpoint={endpoint} label={label} mapping={mapping} />;
+                        return <SarakForm key={id} endpoint={resolvedEndpoint} label={label} mapping={mapping as any} actions={contract.actions as any} />;
+
                     
                     case 'CHAT_INTERFACE':
                         return (
                             <SarakChat 
                                 key={id} 
-                                endpoint={endpoint || ''} 
+                                endpoint={resolvedEndpoint || ''} 
                                 label={label}
                             />
                         );

@@ -373,7 +373,7 @@ export const SarakShell: React.FC<SarakShellProps> = ({
                                                 }
 
                                                 if (contracts && contracts.length > 0) {
-                                                    return <DynamicRenderer contracts={contracts} />;
+                                                    return <DynamicRenderer contracts={contracts} module={activeModule} />;
                                                 }
 
                                                 return <div className="opacity-20 flex items-center justify-center h-full text-[var(--theme-muted)] uppercase font-black text-xs tracking-widest">Módulo em Modo API (Sem Interface Local)</div>;

@@ -3,10 +3,10 @@ from sqlalchemy.orm import Session
 import uuid as uuid_pkg
 from typing import Dict, Any
 
-from sarak_ui_core.database import get_db, engine, setup_ui_db
-from sarak_ui_core.models import UserDesignConfig, SystemModule
-from sarak_ui_core.seed import seed_ui_core
-from sarak_ui_core.security import get_current_identity, IdentityContext
+from ..core.database import get_db, engine, setup_ui_db
+from ..core.models import UserDesignConfig, SystemModule
+from ..core.seed import seed_ui_core
+from ..core.security import get_current_identity, IdentityContext
 from pydantic import BaseModel
 from typing import List
 
