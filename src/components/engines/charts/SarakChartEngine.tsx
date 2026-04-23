@@ -17,7 +17,7 @@ interface SarakChartEngineProps {
  * High-end data visualization powered by Recharts (and soon ECharts).
  */
 const SarakChartEngine: React.FC<SarakChartEngineProps> = ({ type, data, config }) => {
-    const { primaryColor } = useSarakUI();
+    const { primaryColor, chartShowGrid } = useSarakUI();
 
     const renderChart = () => {
         switch (type) {
@@ -30,7 +30,7 @@ const SarakChartEngine: React.FC<SarakChartEngineProps> = ({ type, data, config 
                                 <stop offset="95%" stopColor={primaryColor} stopOpacity={0}/>
                             </linearGradient>
                         </defs>
-                        <CartesianGrid strokeDasharray="3 3" stroke="rgba(255,255,255,0.05)" vertical={false} />
+                        {chartShowGrid && <CartesianGrid strokeDasharray="3 3" stroke="rgba(255,255,255,0.05)" vertical={false} />}
                         <XAxis 
                             dataKey={config?.xAxisKey || 'name'} 
                             axisLine={false} 
@@ -62,7 +62,7 @@ const SarakChartEngine: React.FC<SarakChartEngineProps> = ({ type, data, config 
             case 'bar':
                 return (
                     <BarChart data={data}>
-                        <CartesianGrid strokeDasharray="3 3" stroke="rgba(255,255,255,0.05)" vertical={false} />
+                        {chartShowGrid && <CartesianGrid strokeDasharray="3 3" stroke="rgba(255,255,255,0.05)" vertical={false} />}
                         <XAxis dataKey={config?.xAxisKey || 'name'} axisLine={false} tickLine={false} tick={{fill: 'rgba(255,255,255,0.3)', fontSize: 10}}/>
                         <YAxis axisLine={false} tickLine={false} tick={{fill: 'rgba(255,255,255,0.3)', fontSize: 10}}/>
                         <Tooltip />
@@ -72,7 +72,7 @@ const SarakChartEngine: React.FC<SarakChartEngineProps> = ({ type, data, config 
             default:
                 return (
                     <LineChart data={data}>
-                        <CartesianGrid strokeDasharray="3 3" stroke="rgba(255,255,255,0.05)" vertical={false} />
+                        {chartShowGrid && <CartesianGrid strokeDasharray="3 3" stroke="rgba(255,255,255,0.05)" vertical={false} />}
                         <XAxis dataKey={config?.xAxisKey || 'name'} axisLine={false} tickLine={false} tick={{fill: 'rgba(255,255,255,0.3)', fontSize: 10}}/>
                         <YAxis axisLine={false} tickLine={false} tick={{fill: 'rgba(255,255,255,0.3)', fontSize: 10}}/>
                         <Tooltip />

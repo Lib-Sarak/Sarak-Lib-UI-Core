@@ -4,6 +4,7 @@ import { Prism as SyntaxHighlighter } from 'react-syntax-highlighter';
 import { atomDark } from 'react-syntax-highlighter/dist/esm/styles/prism';
 import { Send, Paperclip, User, Bot, Sparkles } from 'lucide-react';
 import { motion, AnimatePresence } from 'framer-motion';
+import { useSarakUI } from '../../SarakUIProvider';
 
 interface Message {
     id: string;
@@ -31,6 +32,7 @@ const SarakChatEngine: React.FC<SarakChatEngineProps> = ({
 }) => {
     const [input, setInput] = useState('');
     const scrollRef = useRef<HTMLDivElement>(null);
+    const { chatBubbleStyle, chatAnimationSpeed } = useSarakUI();
 
     useEffect(() => {
         if (scrollRef.current) {
@@ -75,7 +77,15 @@ const SarakChatEngine: React.FC<SarakChatEngineProps> = ({
                                 <div className={`w-8 h-8 rounded-full shrink-0 flex items-center justify-center border border-white/10 ${msg.role === 'user' ? 'bg-white/5' : 'bg-[var(--theme-primary)]/20'}`}>
                                     {msg.role === 'user' ? <User size={14} className="text-white/40" /> : <Sparkles size={14} className="text-[var(--theme-primary)]" />}
                                 </div>
-                                <div className={`p-4 rounded-2xl border ${msg.role === 'user' ? 'bg-white/5 border-white/10 text-white/80' : 'bg-black/40 border-[var(--theme-primary)]/10 text-white/90 shadow-xl'}`}>
+                                <div className={`p-4 border transition-all duration-500 ${
+                                    msg.role === 'user' 
+                                        ? 'bg-white/5 border-white/10 text-white/80 rounded-2xl rounded-tr-none' 
+                                        : chatBubbleStyle === 'minimal' 
+                                            ? 'bg-transparent border-none text-white/90 p-0'
+                                            : chatBubbleStyle === 'solid'
+                                                ? 'bg-[var(--theme-primary)] border-transparent text-white shadow-xl rounded-2xl rounded-tl-none'
+                                                : 'bg-black/40 border-[var(--theme-primary)]/10 text-white/90 shadow-xl backdrop-blur-md rounded-2xl rounded-tl-none'
+                                }`}>
                                     <ReactMarkdown 
                                         className="prose prose-invert prose-sm max-w-none text-[11px] leading-relaxed"
                                         components={{

@@ -1,12 +1,13 @@
 import React, { useState } from 'react';
-import { Palette, Layout, Globe, Settings, Keyboard } from 'lucide-react';
+import { Palette, Layout, Globe, Settings, Keyboard, Zap } from 'lucide-react';
 import { ThemeCustomizationTab } from './ThemeCustomization/ThemeCustomizationTab';
 import { LayoutTab } from './ThemeCustomization/LayoutTab';
 import { LanguageTab } from './ThemeCustomization/LanguageTab';
 import { ShortcutsTab } from './ThemeCustomization/ShortcutsTab';
 import { AdvancedTab } from './ThemeCustomization/AdvancedTab';
+import { EngineCustomizationTab } from './ThemeCustomization/EngineCustomizationTab';
 
-type TabId = 'themes' | 'layout' | 'language' | 'shortcuts' | 'advanced';
+type TabId = 'themes' | 'layout' | 'engines' | 'language' | 'shortcuts' | 'advanced';
 
 /**
  * CustomizationPanel (v5.4)
@@ -18,6 +19,7 @@ export const CustomizationPanel: React.FC = () => {
     const tabs = [
         { id: 'themes', label: 'Themes & Aesthetics', icon: Palette },
         { id: 'layout', label: 'Structure & Layout', icon: Layout },
+        { id: 'engines', label: 'Advanced Engines', icon: Zap },
         { id: 'language', label: 'Language & Translation', icon: Globe },
         { id: 'shortcuts', label: 'System Shortcuts', icon: Keyboard },
         { id: 'advanced', label: 'Engine & Discovery', icon: Settings },
@@ -56,6 +58,7 @@ export const CustomizationPanel: React.FC = () => {
                 <div className="min-h-full bg-black/20 rounded-3xl border border-white/5 flex flex-col backdrop-blur-sm shadow-2xl overflow-hidden">
                     {activeTab === 'themes' && <ThemeCustomizationTab />}
                     {activeTab === 'layout' && <LayoutTab />}
+                    {activeTab === 'engines' && <EngineCustomizationTab />}
                     {activeTab === 'language' && <LanguageTab />}
                     {activeTab === 'shortcuts' && <ShortcutsTab />}
                     {activeTab === 'advanced' && <AdvancedTab />}

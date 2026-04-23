@@ -4,7 +4,8 @@ import {
     Plus, Check, Zap, Edit3, ChevronLeft, ChevronDown,
     Monitor, Tablet, Smartphone, Grid, List, Keyboard, Globe, Moon, Sun, 
     Type, Maximize, Layout as LayoutIcon, Sidebar as SidebarIcon,
-    Layers, MousePointer2, Palette, Box, Wind, Sparkles, AlertCircle, BarChart3
+    Layers, MousePointer2, Palette, Box, Wind, Sparkles, AlertCircle, BarChart3,
+    MessageSquare, Network, BarChart
 } from 'lucide-react';
 
 import { PRIMARY_COLORS, SCALES, DENSITY, BASE_PRESETS } from '../../constants/design-tokens';
@@ -69,10 +70,17 @@ export const ThemeCustomizationTab: React.FC = () => {
         // Sovereignty & Privacy v6.0
         shadowOrientation: sarak.shadowOrientation,
         shadowColorMode: sarak.shadowColorMode,
-        isAutoHideEnabled: sarak.isAutoHideEnabled
+        isAutoHideEnabled: sarak.isAutoHideEnabled,
+        // Advanced Engines v7.0
+        chatBubbleStyle: sarak.chatBubbleStyle || 'glass',
+        chatAnimationSpeed: sarak.chatAnimationSpeed || 0.05,
+        flowGridStyle: sarak.flowGridStyle || 'dots',
+        flowNodeRadius: sarak.flowNodeRadius || 12,
+        chartShowGrid: sarak.chartShowGrid ?? true
     });
 
-    const [activeSection, setActiveSection] = useState<string | null>('arch');
+    const [activeSection, setActiveSection] = useState<string | null>('color-core');
+    const [activeCategory, setActiveCategory] = useState<number | null>(1);
     const [previewDevice, setPreviewDevice] = useState<'desktop' | 'tablet' | 'smartphone'>('desktop');
     const [activePreviewApp, setActivePreviewApp] = useState('dashboard');
     const [toast, setToast] = useState<{ type: 'success' | 'warning', message: string } | null>(null);
@@ -103,7 +111,16 @@ export const ThemeCustomizationTab: React.FC = () => {
             chartPalette: sarak.chartPalette, chartStyle: sarak.chartStyle,
             // Sovereignty & Privacy v6.0
             shadowOrientation: sarak.shadowOrientation, shadowColorMode: sarak.shadowColorMode,
-            isAutoHideEnabled: sarak.isAutoHideEnabled
+            isAutoHideEnabled: sarak.isAutoHideEnabled,
+            // Advanced Engines v7.0
+            chatBubbleStyle: sarak.chatBubbleStyle || 'glass',
+            chatAnimationSpeed: sarak.chatAnimationSpeed || 0.05,
+            flowGridStyle: sarak.flowGridStyle || 'dots',
+            flowNodeRadius: sarak.flowNodeRadius || 12,
+            chartShowGrid: sarak.chartShowGrid ?? true,
+            chartType: sarak.chartType || 'bar',
+            chartThickness: sarak.chartThickness || 2,
+            chartSmoothing: sarak.chartSmoothing ?? true
         });
     }, [sarak.isHydrated]);
 
@@ -111,6 +128,25 @@ export const ThemeCustomizationTab: React.FC = () => {
         setToast({ type, message });
         setTimeout(() => setToast(null), 3000);
     };
+
+    // --- LOGIC: AUTO-SYNC PREVIEW WITH SIDEBAR SECTION ---
+    useEffect(() => {
+        if (!activeSection) return;
+        
+        const sectionToAppMap: Record<string, string> = {
+            'arch': 'dashboard',
+            'struct': 'logs',
+            'type': 'typography',
+            'geom': 'components',
+            'atmos': 'dashboard',
+            'color': 'dashboard',
+            'engines': 'chat'
+        };
+        
+        if (sectionToAppMap[activeSection]) {
+            setActivePreviewApp(sectionToAppMap[activeSection]);
+        }
+    }, [activeSection]);
 
     const lightLogoInputRef = useRef<HTMLInputElement>(null);
     const darkLogoInputRef = useRef<HTMLInputElement>(null);
@@ -291,6 +327,24 @@ export const ThemeCustomizationTab: React.FC = () => {
         </div>
     );
 
+    const CategoryLabel: React.FC<{ icon: any, title: string, index: number, isOpen: boolean, onToggle: () => void }> = ({ icon: Icon, title, index, isOpen, onToggle }) => (
+        <button 
+            onClick={onToggle}
+            className={`w-full px-6 py-4 mt-6 first:mt-0 flex items-center justify-between border-y border-white/5 transition-all ${isOpen ? 'bg-white/[0.03]' : 'bg-white/[0.01] hover:bg-white/[0.02]'}`}
+        >
+            <div className="flex items-center gap-3">
+                <div className={`w-6 h-6 rounded-lg flex items-center justify-center font-black text-[10px] transition-all ${isOpen ? 'bg-[var(--theme-primary)] text-white shadow-[0_0_15px_rgba(var(--theme-primary-rgb),0.3)]' : 'bg-white/5 text-white/40'}`}>
+                    {index}
+                </div>
+                <div className="flex items-center gap-2">
+                    <Icon size={12} className={`transition-all ${isOpen ? 'text-[var(--theme-primary)]' : 'text-white/20'}`} />
+                    <h3 className={`text-[10px] font-black uppercase tracking-[0.2em] transition-all ${isOpen ? 'text-white' : 'text-white/40'}`}>{title}</h3>
+                </div>
+            </div>
+            <ChevronDown size={14} className={`transition-transform duration-300 ${isOpen ? 'rotate-180 text-[var(--theme-primary)]' : 'text-white/20'}`} />
+        </button>
+    );
+
     const Section = ({ id, icon: Icon, title, children }: any) => (
         <div className="border-b border-white/5 last:border-0">
             <button onClick={() => setActiveSection(activeSection === id ? null : id)} className="w-full py-4 flex items-center justify-between hover:bg-white/[0.02] transition-all px-6 group">
@@ -348,159 +402,17 @@ export const ThemeCustomizationTab: React.FC = () => {
                         </button>
                     </div>
 
-                    <div className="flex-1 overflow-y-auto custom-scrollbar self-scrollable">
-                        <Section id="arch" icon={SidebarIcon} title="Arquitetura">
-                            <div className="grid grid-cols-2 gap-2 mb-6">
-                                <button onClick={() => updateDraft('navigationStyle', 'sidebar')} className={`p-3 rounded-xl border transition-all ${draft.navigationStyle === 'sidebar' ? 'bg-[var(--theme-primary)]/10 border-[var(--theme-primary)] text-[var(--theme-primary)]' : 'bg-white/5 border-transparent text-white/20 hover:text-white'}`}>
-                                    <SidebarIcon size={16} className="mx-auto mb-2" /><span className="text-[8px] font-black uppercase block">Sidebar</span>
-                                </button>
-                                <button onClick={() => updateDraft('navigationStyle', 'topbar')} className={`p-3 rounded-xl border transition-all ${draft.navigationStyle === 'topbar' ? 'bg-[var(--theme-primary)]/10 border-[var(--theme-primary)] text-[var(--theme-primary)]' : 'bg-white/5 border-transparent text-white/20 hover:text-white'}`}>
-                                    <Maximize size={16} className="mx-auto mb-2" /><span className="text-[8px] font-black uppercase block">Topbar</span>
-                                </button>
-                                <button onClick={() => updateDraft('navigationStyle', 'dock')} className={`p-3 rounded-xl border transition-all ${draft.navigationStyle === 'dock' ? 'bg-[var(--theme-primary)]/10 border-[var(--theme-primary)] text-[var(--theme-primary)]' : 'bg-white/5 border-transparent text-white/20 hover:text-white'} col-span-2`}>
-                                    <Monitor size={16} className="mx-auto mb-2" /><span className="text-[8px] font-black uppercase block">Navigation Dock (Premium)</span>
-                                </button>
-                            </div>
-
-                            <div className="flex items-center justify-between p-4 rounded-xl bg-[var(--theme-primary)]/5 border border-[var(--theme-primary)]/20 mt-2 group">
-                                <div className="flex flex-col gap-0.5">
-                                    <span className="text-[9px] font-black uppercase tracking-widest text-[var(--theme-primary)]">Auto-ocultar Barra</span>
-                                    <span className="text-[8px] text-white/30 uppercase tracking-tighter">Revelar ao passar o mouse na extremidade</span>
-                                </div>
-                                <button onClick={() => updateDraft('isAutoHideEnabled', !draft.isAutoHideEnabled)} className={`w-10 h-5 rounded-full relative transition-all ${draft.isAutoHideEnabled ? 'bg-[var(--theme-primary)]' : 'bg-white/10'}`}>
-                                    <div className={`absolute top-1 w-3 h-3 rounded-full bg-white transition-all ${draft.isAutoHideEnabled ? 'left-6' : 'left-1'}`} />
-                                </button>
-                            </div>
-                            <SliderControl label="Largura Sidebar" value={draft.sidebarWidth} min={60} max={400} onChange={(v: any) => updateDraft('sidebarWidth', v)} suffix="px" />
-                            <div className="grid grid-cols-3 gap-1 p-1 bg-black/20 rounded-xl border border-white/5 mt-4">
-                                {Object.values(DENSITY).map(d => (
-                                    <button key={d.id} onClick={() => updateDraft('layoutDensity', d.id)} className={`py-2 rounded-lg text-[8px] font-black uppercase transition-all ${draft.layoutDensity === d.id ? 'bg-[var(--theme-primary)] text-white shadow-lg' : 'text-white/20'}`}>{d.label}</button>
-                                ))}
-                            </div>
-                        </Section>
-
-                        <Section id="struct" icon={Grid} title="Estruturas & Busca">
-                            <div className="flex items-center justify-between p-4 rounded-xl bg-white/5 group mb-4">
-                                <div className="flex flex-col gap-0.5">
-                                    <span className="text-[9px] font-black uppercase tracking-widest text-white/60">Split-View Mode</span>
-                                    <span className="text-[8px] text-white/20 uppercase tracking-tighter">Dois módulos em paralelo</span>
-                                </div>
-                                <button onClick={() => updateDraft('isSplitViewEnabled', !draft.isSplitViewEnabled)} className={`w-10 h-5 rounded-full relative transition-all ${draft.isSplitViewEnabled ? 'bg-[var(--theme-primary)]' : 'bg-white/10'}`}>
-                                    <div className={`absolute top-1 w-3 h-3 rounded-full bg-white transition-all ${draft.isSplitViewEnabled ? 'left-6' : 'left-1'}`} />
-                                </button>
-                            </div>
-
-                            {draft.isSplitViewEnabled && (
-                                <SelectControl 
-                                    label="Módulo Secundário" 
-                                    options={sarak.registeredModules.map(m => ({ id: m.id, label: m.label }))}
-                                    value={draft.secondaryModuleId}
-                                    onChange={(v: any) => updateDraft('secondaryModuleId', v)}
-                                />
-                            )}
-
-                            <div className="pt-4 border-t border-white/5 mt-2">
-                                <SelectControl 
-                                    label="Estilo de Busca Global" 
-                                    options={[
-                                        {id: 'command-palette', label: 'Command Palette (Premium)'},
-                                        {id: 'minimal', label: 'Minimal Input'}
-                                    ]} 
-                                    value={draft.searchStyle} 
-                                    onChange={(v: any) => updateDraft('searchStyle', v)} 
-                                />
-                            </div>
-                        </Section>
-
-                        <Section id="type" icon={Type} title="Tipografia">
-                            <SelectControl label="Fonte Título" options={fonts} value={draft.headingFont} onChange={(v: any) => updateDraft('headingFont', v)} isFont />
-                            <SelectControl label="Fonte Subtítulo" options={fonts} value={draft.subtitleFont} onChange={(v: any) => updateDraft('subtitleFont', v)} isFont />
-                            <SelectControl label="Fonte Abas/Menus" options={fonts} value={draft.tabFont} onChange={(v: any) => updateDraft('tabFont', v)} isFont />
-                            <SelectControl label="Fonte Texto" options={fonts} value={draft.bodyFont} onChange={(v: any) => updateDraft('bodyFont', v)} isFont />
-                            <div className="grid grid-cols-2 gap-4">
-                                <SelectControl label="Peso" options={['300', '400', '600', '800', '900']} value={draft.headingWeight} onChange={(v: any) => updateDraft('headingWeight', v)} />
-                                <SelectControl label="Espaçamento" options={['tight', 'normal', 'wide', 'widest']} value={draft.headingLetterSpacing} onChange={(v: any) => updateDraft('headingLetterSpacing', v)} />
-                            </div>
-                            
-                            <div className="mt-6">
-                                <span className="text-[9px] font-black uppercase tracking-widest text-white/40 block mb-3">Escala de Fonte</span>
-                                <div className="grid grid-cols-5 gap-1 p-1 bg-black/20 rounded-xl border border-white/5">
-                                    {Object.values(SCALES).map(s => (
-                                        <button key={s.id} onClick={() => updateDraft('fontScale', s.id)} className={`py-2 rounded-lg text-[8px] font-black uppercase transition-all ${draft.fontScale === s.id ? 'bg-[var(--theme-primary)] text-white shadow-lg' : 'text-white/20'}`}>{s.label}</button>
-                                    ))}
-                                </div>
-                            </div>
-                        </Section>
-
-                        <Section id="geom" icon={Box} title="Geometria & Materiais">
-                            <SliderControl label="Radius" value={draft.borderRadius} min={0} max={60} onChange={(v: any) => updateDraft('borderRadius', v)} suffix="px" />
-                            <div className="grid grid-cols-2 gap-4">
-                                <SliderControl label="Borda" value={draft.borderWidth} min={0} max={8} onChange={(v: any) => updateDraft('borderWidth', v)} suffix="px" />
-                                <SelectControl label="Estilo" options={['solid', 'dashed', 'dotted', 'double']} value={draft.borderStyle} onChange={(v: any) => updateDraft('borderStyle', v)} />
-                            </div>
-                            
-                            <div className="pt-4 border-t border-white/5 mt-2">
-                                <span className="text-[9px] font-black uppercase tracking-widest text-white/40 block mb-4">Surface Master v6.0</span>
-                                <div className="grid grid-cols-1 gap-4">
-                                    <SelectControl 
-                                        label="Material de Superfície" 
-                                        options={[
-                                            {id: 'glass', label: 'Frosted Glass'},
-                                            {id: 'metallic', label: 'Reflective Metallic'},
-                                            {id: 'brushed', label: 'Brushed Aluminum'},
-                                            {id: 'acrylic', label: 'Acrylic Deep'},
-                                            {id: 'matte', label: 'Matte Velvet'}
-                                        ]} 
-                                        value={draft.surfaceMaterial} 
-                                        onChange={(v: any) => updateDraft('surfaceMaterial', v)} 
-                                    />
-                                    <SelectControl 
-                                        label="Tipo de Borda (Neo)" 
-                                        options={[
-                                            {id: 'default', label: 'Flat / Standard'},
-                                            {id: 'inlet', label: 'Inlet Deep'},
-                                            {id: 'neon', label: 'Neon Glow'},
-                                            {id: 'beveled', label: 'Beveled 3D'}
-                                        ]} 
-                                        value={draft.borderType} 
-                                        onChange={(v: any) => updateDraft('borderType', v)} 
-                                    />
-                                </div>
-                            </div>
-
-                            <SliderControl label="Espaçamento Cards (Gap)" value={draft.layoutGap} min={0} max={80} onChange={(v: any) => updateDraft('layoutGap', v)} suffix="px" />
-                            <SliderControl label="Glass Opacity" value={draft.glassOpacity} min={0} max={1} step={0.05} onChange={(v: any) => updateDraft('glassOpacity', v)} />
-                            <div className="flex items-center justify-between p-4 rounded-xl bg-white/5 mt-4 group">
-                                <span className="text-[9px] font-black uppercase tracking-widest text-white/60">Cortes Geométricos</span>
-                                <button onClick={() => updateDraft('isGeometricCut', !draft.isGeometricCut)} className={`w-10 h-5 rounded-full relative transition-all ${draft.isGeometricCut ? 'bg-[var(--theme-primary)]' : 'bg-white/10'}`}>
-                                    <div className={`absolute top-1 w-3 h-3 rounded-full bg-white transition-all ${draft.isGeometricCut ? 'left-6' : 'left-1'}`} />
-                                </button>
-                            </div>
-
-                            <div className="flex items-center justify-between p-4 rounded-xl bg-white/5 mt-2 group">
-                                <span className="text-[9px] font-black uppercase tracking-widest text-white/60">Física do Cursor</span>
-                                <button onClick={() => updateDraft('cursorPhysics', !draft.cursorPhysics)} className={`w-10 h-5 rounded-full relative transition-all ${draft.cursorPhysics ? 'bg-[var(--theme-primary)]' : 'bg-white/10'}`}>
-                                    <div className={`absolute top-1 w-3 h-3 rounded-full bg-white transition-all ${draft.cursorPhysics ? 'left-6' : 'left-1'}`} />
-                                </button>
-                            </div>
-
-                            <SliderControl label="Sombra" value={draft.shadowIntensity} min={0} max={1} step={0.1} onChange={(v: any) => updateDraft('shadowIntensity', v)} />
-                        </Section>
-
-                        <Section id="atmos" icon={Wind} title="Atmosfera">
-                            <SliderControl label="Blur Glass" value={draft.glassBlur} min={0} max={60} onChange={(v: any) => updateDraft('glassBlur', v)} suffix="px" />
-                            <div className="mb-6">
-                                <span className="text-[9px] font-black uppercase tracking-widest text-white/40 block mb-3">Texturas</span>
-                                <div className="flex flex-wrap gap-2">
-                                    {textures.map(tex => (
-                                        <button key={tex.id} onClick={() => updateDraft('texture', tex.id)} className={`px-3 py-1 rounded-full border text-[8px] font-black uppercase transition-all ${draft.texture === tex.id ? 'bg-[var(--theme-primary)] border-transparent text-white shadow-lg' : 'bg-white/5 border-white/10 text-white/40 hover:text-white'}`}>{tex.label}</button>
-                                    ))}
-                                </div>
-                            </div>
-                            <SliderControl label="Opacidade Textura" value={draft.textureOpacity} min={0} max={0.3} step={0.01} onChange={(v: any) => updateDraft('textureOpacity', v)} />
-                        </Section>
-
-                        <Section id="color" icon={Palette} title="Cores & Identidade">
+                    <div className="flex-1 overflow-y-auto custom-scrollbar">
+                        <CategoryLabel 
+                            index={1} icon={Sparkles} title="Identidade & Presença" 
+                            isOpen={activeCategory === 1} 
+                            onToggle={() => setActiveCategory(activeCategory === 1 ? null : 1)} 
+                        />
+                        <AnimatePresence>
+                            {activeCategory === 1 && (
+                                <motion.div initial={{ height: 0, opacity: 0 }} animate={{ height: 'auto', opacity: 1 }} exit={{ height: 0, opacity: 0 }} transition={{ duration: 0.3, ease: "circOut" }} className="overflow-hidden">
+                        
+                        <Section id="color-core" icon={Palette} title="Cores & Tons">
                             <div className="grid grid-cols-7 gap-2 mb-4">
                                 {PRIMARY_COLORS.map((color, i) => (
                                     <button key={i} onClick={() => updateDraft('primaryColor', color.value)} className={`w-full aspect-square rounded-full transition-all hover:scale-125 relative ${draft.primaryColor === color.value ? 'ring-2 ring-white ring-offset-2 ring-offset-[#0c0c0d] scale-110' : 'opacity-80'}`} style={{ backgroundColor: color.value }}>
@@ -509,7 +421,7 @@ export const ThemeCustomizationTab: React.FC = () => {
                                 ))}
                             </div>
 
-                            <div className="mb-6">
+                            <div className="mb-2">
                                 <span className="text-[9px] font-black uppercase tracking-widest text-white/40 block mb-3">Paletas de Identidade</span>
                                 <div className="grid grid-cols-1 gap-2">
                                     {[
@@ -520,7 +432,7 @@ export const ThemeCustomizationTab: React.FC = () => {
                                     ].map(pal => (
                                         <button 
                                             key={pal.id}
-                                            onClick={() => updateDraft('primaryColor', pal.colors[0])} // Aplica a primeira cor como primária
+                                            onClick={() => updateDraft('primaryColor', pal.colors[0])}
                                             className="p-2.5 rounded-xl bg-white/5 border border-white/10 flex items-center justify-between hover:bg-white/[0.08] transition-all"
                                         >
                                             <span className="text-[8px] font-black uppercase tracking-[0.2em] text-white/60">{pal.label}</span>
@@ -533,151 +445,255 @@ export const ThemeCustomizationTab: React.FC = () => {
                                     ))}
                                 </div>
                             </div>
+                        </Section>
 
-                            <div className="pt-4 border-t border-white/5">
-                                <span className="text-[9px] font-black uppercase tracking-widest text-white/40 block mb-4">Branding v6.0</span>
-                                
-                                <div className="mb-4">
-                                    <span className="text-[9px] font-black uppercase tracking-widest text-white/20 block mb-2">Nome do Sistema</span>
+                        <Section id="branding" icon={Globe} title="Branding">
+                            <div className="mb-4">
+                                <span className="text-[9px] font-black uppercase tracking-widest text-white/20 block mb-2">Nome do Sistema</span>
+                                <input 
+                                    type="text" value={draft.systemName} 
+                                    onChange={(e) => updateDraft('systemName', e.target.value)}
+                                    placeholder="Ex: Sarak Matrix"
+                                    className="w-full bg-white/5 border border-white/10 rounded-lg py-2 px-3 text-[11px] font-bold focus:border-[var(--theme-primary)] focus:outline-none transition-all text-white/80"
+                                />
+                            </div>
+
+                            <div className="mb-4">
+                                <div className="flex items-center justify-between mb-2">
+                                    <span className="text-[9px] font-black uppercase tracking-widest text-white/20">Logo (Light Mode)</span>
+                                    <button onClick={() => lightLogoInputRef.current?.click()} className="text-[8px] font-black uppercase text-[var(--theme-primary)] hover:underline">Importar Arquivo</button>
+                                </div>
+                                <div className="flex gap-2">
                                     <input 
-                                        type="text" value={draft.systemName} 
-                                        onChange={(e) => updateDraft('systemName', e.target.value)}
-                                        placeholder="Ex: Sarak Matrix"
-                                        className="w-full bg-white/5 border border-white/10 rounded-lg py-2 px-3 text-[11px] font-bold focus:border-[var(--theme-primary)] focus:outline-none transition-all text-white/80"
+                                        type="text" value={draft.logoUrl} 
+                                        onChange={(e) => updateDraft('logoUrl', e.target.value)}
+                                        placeholder="URL ou Base64..."
+                                        className="flex-1 bg-white/5 border border-white/10 rounded-lg py-2 px-3 text-[11px] font-bold focus:border-[var(--theme-primary)] focus:outline-none transition-all text-white/80"
                                     />
+                                    <input type="file" ref={lightLogoInputRef} onChange={(e) => handleFileImport(e, 'logoUrl')} className="hidden" accept=".webp,.svg,.png" />
                                 </div>
+                            </div>
 
-                                <div className="mb-4">
-                                    <div className="flex items-center justify-between mb-2">
-                                        <span className="text-[9px] font-black uppercase tracking-widest text-white/20">Logo (Light Mode)</span>
-                                        <button onClick={() => lightLogoInputRef.current?.click()} className="text-[8px] font-black uppercase text-[var(--theme-primary)] hover:underline">Importar Arquivo</button>
-                                    </div>
-                                    <div className="flex gap-2">
-                                        <input 
-                                            type="text" value={draft.logoUrl} 
-                                            onChange={(e) => updateDraft('logoUrl', e.target.value)}
-                                            placeholder="URL ou Base64..."
-                                            className="flex-1 bg-white/5 border border-white/10 rounded-lg py-2 px-3 text-[11px] font-bold focus:border-[var(--theme-primary)] focus:outline-none transition-all text-white/80"
-                                        />
-                                        <input type="file" ref={lightLogoInputRef} onChange={(e) => handleFileImport(e, 'logoUrl')} className="hidden" accept=".webp,.svg,.png" />
-                                    </div>
+                            <div className="mb-4">
+                                <div className="flex items-center justify-between mb-2">
+                                    <span className="text-[9px] font-black uppercase tracking-widest text-white/20">Logo (Dark Mode)</span>
+                                    <button onClick={() => darkLogoInputRef.current?.click()} className="text-[8px] font-black uppercase text-[var(--theme-primary)] hover:underline">Importar Arquivo</button>
                                 </div>
-
-                                <div className="mb-4">
-                                    <div className="flex items-center justify-between mb-2">
-                                        <span className="text-[9px] font-black uppercase tracking-widest text-white/20">Logo (Dark Mode)</span>
-                                        <button onClick={() => darkLogoInputRef.current?.click()} className="text-[8px] font-black uppercase text-[var(--theme-primary)] hover:underline">Importar Arquivo</button>
-                                    </div>
-                                    <div className="flex gap-2">
-                                        <input 
-                                            type="text" value={draft.logoDarkUrl} 
-                                            onChange={(e) => updateDraft('logoDarkUrl', e.target.value)}
-                                            placeholder="URL ou Base64..."
-                                            className="flex-1 bg-white/5 border border-white/10 rounded-lg py-2 px-3 text-[11px] font-bold focus:border-[var(--theme-primary)] focus:outline-none transition-all text-white/80"
-                                        />
-                                        <input type="file" ref={darkLogoInputRef} onChange={(e) => handleFileImport(e, 'logoDarkUrl')} className="hidden" accept=".webp,.svg,.png" />
-                                    </div>
+                                <div className="flex gap-2">
+                                    <input 
+                                        type="text" value={draft.logoDarkUrl} 
+                                        onChange={(e) => updateDraft('logoDarkUrl', e.target.value)}
+                                        placeholder="URL ou Base64..."
+                                        className="flex-1 bg-white/5 border border-white/10 rounded-lg py-2 px-3 text-[11px] font-bold focus:border-[var(--theme-primary)] focus:outline-none transition-all text-white/80"
+                                    />
+                                    <input type="file" ref={darkLogoInputRef} onChange={(e) => handleFileImport(e, 'logoDarkUrl')} className="hidden" accept=".webp,.svg,.png" />
                                 </div>
+                            </div>
 
-                                <div className="grid grid-cols-2 gap-4">
-                                    <SelectControl label="Posição Logo" options={[{id: 'left', label: 'Esquerda'}, {id: 'center', label: 'Centro'}]} value={draft.logoPosition} onChange={(v: any) => updateDraft('logoPosition', v)} />
-                                    <SliderControl label="Escala Logo" value={draft.logoScale} min={0.5} max={2.5} step={0.1} onChange={(v: any) => updateDraft('logoScale', v)} />
+                            <div className="grid grid-cols-2 gap-4">
+                                <SelectControl label="Posição Logo" options={[{id: 'left', label: 'Esquerda'}, {id: 'center', label: 'Centro'}]} value={draft.logoPosition} onChange={(v: any) => updateDraft('logoPosition', v)} />
+                                <SliderControl label="Escala Logo" value={draft.logoScale} min={0.5} max={2.5} step={0.1} onChange={(v: any) => updateDraft('logoScale', v)} />
+                            </div>
+                        </Section>
+
+                        <Section id="appearance" icon={Moon} title="Aparência">
+                            <div className="grid grid-cols-2 gap-2 mb-6">
+                                <button onClick={() => updateDraft('mode', 'dark')} className={`p-4 rounded-xl border transition-all flex flex-col items-center gap-2 ${draft.mode === 'dark' ? 'bg-[var(--theme-primary)]/10 border-[var(--theme-primary)] text-[var(--theme-primary)]' : 'bg-white/5 border-transparent text-white/20 hover:text-white'}`}>
+                                    <Moon size={16} /><span className="text-[8px] font-black uppercase">Dark Mode</span>
+                                </button>
+                                <button onClick={() => updateDraft('mode', 'light')} className={`p-4 rounded-xl border transition-all flex flex-col items-center gap-2 ${draft.mode === 'light' ? 'bg-[var(--theme-primary)]/10 border-[var(--theme-primary)] text-[var(--theme-primary)]' : 'bg-white/5 border-transparent text-white/20 hover:text-white'}`}>
+                                    <Sun size={16} /><span className="text-[8px] font-black uppercase">Light Mode</span>
+                                </button>
+                            </div>
+                            <div className="mb-4">
+                                <span className="text-[9px] font-black uppercase tracking-widest text-white/20 block mb-2">Tom de Voz (System Tone)</span>
+                                <div className="grid grid-cols-3 gap-1 p-1 bg-black/20 rounded-xl border border-white/5">
+                                    {['formal', 'friendly', 'cyber'].map(tone => (
+                                        <button key={tone} onClick={() => updateDraft('systemTone', tone)} className={`py-2 rounded-lg text-[8px] font-black uppercase transition-all ${draft.systemTone === tone ? 'bg-[var(--theme-primary)] text-white shadow-lg' : 'text-white/20 hover:text-white/40'}`}>{tone}</button>
+                                    ))}
                                 </div>
+                            </div>
+                        </Section>
+                                </motion.div>
+                            )}
+                        </AnimatePresence>
 
-                                <div className="mt-4">
-                                    <span className="text-[9px] font-black uppercase tracking-widest text-white/20 block mb-2">Tom de Voz (Personality)</span>
-                                    <div className="grid grid-cols-3 gap-1 p-1 bg-black/20 rounded-xl border border-white/5">
-                                        {['formal', 'friendly', 'cyber'].map(tone => (
-                                            <button 
-                                                key={tone} 
-                                                onClick={() => updateDraft('systemTone', tone)} 
-                                                className={`py-2 rounded-lg text-[8px] font-black uppercase transition-all ${draft.systemTone === tone ? 'bg-[var(--theme-primary)] text-white shadow-lg' : 'text-white/20 hover:text-white/40'}`}
-                                            >
-                                                {tone}
-                                            </button>
-                                        ))}
-                                    </div>
+                        {/* 2. DNA ESTRUTURAL */}
+                        <CategoryLabel 
+                            index={2} icon={LayoutIcon} title="DNA Estrutural" 
+                            isOpen={activeCategory === 2} 
+                            onToggle={() => setActiveCategory(activeCategory === 2 ? null : 2)} 
+                        />
+                        <AnimatePresence>
+                            {activeCategory === 2 && (
+                                <motion.div initial={{ height: 0, opacity: 0 }} animate={{ height: 'auto', opacity: 1 }} exit={{ height: 0, opacity: 0 }} transition={{ duration: 0.3, ease: "circOut" }} className="overflow-hidden">
+
+                        <Section id="geom" icon={Box} title="Geometria">
+                            <SliderControl label="Raio de Curvatura (Border Radius)" value={draft.borderRadius} min={0} max={60} onChange={(v: any) => updateDraft('borderRadius', v)} suffix="px" />
+                            <div className="grid grid-cols-2 gap-4">
+                                <SliderControl label="Espessura Borda" value={draft.borderWidth} min={0} max={8} onChange={(v: any) => updateDraft('borderWidth', v)} suffix="px" />
+                                <SelectControl label="Estilo Linha" options={['solid', 'dashed', 'dotted', 'double']} value={draft.borderStyle} onChange={(v: any) => updateDraft('borderStyle', v)} />
+                            </div>
+                            <SelectControl 
+                                label="Tipo de Borda (Effect)" 
+                                options={[
+                                    {id: 'default', label: 'Flat / Standard'},
+                                    {id: 'inlet', label: 'Inlet Deep'},
+                                    {id: 'neon', label: 'Neon Glow'},
+                                    {id: 'beveled', label: 'Beveled 3D'}
+                                ]} 
+                                value={draft.borderType} 
+                                onChange={(v: any) => updateDraft('borderType', v)} 
+                            />
+                        </Section>
+
+                        <Section id="arch" icon={SidebarIcon} title="Escala & Espaçamento">
+                            <div className="grid grid-cols-2 gap-2 mb-6">
+                                <button onClick={() => updateDraft('navigationStyle', 'sidebar')} className={`p-3 rounded-xl border transition-all ${draft.navigationStyle === 'sidebar' ? 'bg-[var(--theme-primary)]/10 border-[var(--theme-primary)] text-[var(--theme-primary)]' : 'bg-white/5 border-transparent text-white/20 hover:text-white'}`}>
+                                    <SidebarIcon size={16} className="mx-auto mb-2" /><span className="text-[8px] font-black uppercase block">Sidebar</span>
+                                </button>
+                                <button onClick={() => updateDraft('navigationStyle', 'topbar')} className={`p-3 rounded-xl border transition-all ${draft.navigationStyle === 'topbar' ? 'bg-[var(--theme-primary)]/10 border-[var(--theme-primary)] text-[var(--theme-primary)]' : 'bg-white/5 border-transparent text-white/20 hover:text-white'}`}>
+                                    <Maximize size={16} className="mx-auto mb-2" /><span className="text-[8px] font-black uppercase block">Topbar</span>
+                                </button>
+                            </div>
+                            <SliderControl label="Espaçamento Global (Gap)" value={draft.layoutGap} min={0} max={80} onChange={(v: any) => updateDraft('layoutGap', v)} suffix="px" />
+                            <div className="mt-4">
+                                <span className="text-[9px] font-black uppercase tracking-widest text-white/40 block mb-3">Densidade de Layout</span>
+                                <div className="grid grid-cols-3 gap-1 p-1 bg-black/20 rounded-xl border border-white/5">
+                                    {Object.values(DENSITY).map(d => (
+                                        <button key={d.id} onClick={() => updateDraft('layoutDensity', d.id)} className={`py-2 rounded-lg text-[8px] font-black uppercase transition-all ${draft.layoutDensity === d.id ? 'bg-[var(--theme-primary)] text-white shadow-lg' : 'text-white/20'}`}>{d.label}</button>
+                                    ))}
                                 </div>
                             </div>
                         </Section>
 
-                        <Section id="data" icon={BarChart3} title="Dados & Gráficos">
-                            <div className="space-y-4">
-                                <SelectControl 
-                                    label="Estilo de Visualização" 
-                                    options={[
-                                        {id: 'glass', label: 'Glass Morphic (Translucido)'},
-                                        {id: 'line', label: 'Vector Line (Minimal)'},
-                                        {id: 'bar', label: 'Neumorphic Bar'},
-                                        {id: 'solid', label: 'Solid Corporate'}
-                                    ]} 
-                                    value={draft.chartStyle} 
-                                    onChange={(v: any) => updateDraft('chartStyle', v)} 
-                                />
-
-                                <div>
-                                    <span className="text-[9px] font-black uppercase tracking-widest text-white/20 block mb-3">Paleta de Referência</span>
-                                    <div className="flex flex-col gap-2">
-                                        {[
-                                            { id: 'matrix', label: 'Sarak Matrix (Core)', colors: ['#3b82f6', '#10b981', '#f59e0b', '#ef4444', '#8b5cf6'] },
-                                            { id: 'neon', label: 'Vivid Neon', colors: ['#06b6d4', '#ec4899', '#8b5cf6', '#10b981', '#fbbf24'] },
-                                            { id: 'monochrome', label: 'Midnight Mono', colors: ['#94a3b8', '#64748b', '#475569', '#334155', '#1e293b'] }
-                                        ].map((pal) => (
-                                            <button 
-                                                key={pal.id} 
-                                                onClick={() => updateDraft('chartPalette', pal.colors)}
-                                                className={`p-2 rounded-xl border transition-all flex items-center justify-between ${JSON.stringify(draft.chartPalette) === JSON.stringify(pal.colors) ? 'bg-[var(--theme-primary)]/10 border-[var(--theme-primary)]' : 'bg-white/5 border-white/10'}`}
-                                            >
-                                                <span className="text-[8px] font-black uppercase tracking-tighter text-white/60">{pal.label}</span>
-                                                <div className="flex -space-x-1">
-                                                    {pal.colors.map((c, i) => (
-                                                        <div key={i} className="w-4 h-4 rounded-full border border-black/20" style={{ backgroundColor: c }} />
-                                                    ))}
-                                                </div>
-                                            </button>
-                                        ))}
-                                    </div>
-                                    <p className="text-[8px] text-white/20 mt-3 uppercase tracking-tighter italic">Selecione uma paleta para harmonizar os gráficos do sistema.</p>
+                        <Section id="type" icon={Type} title="Tipografia">
+                            <SelectControl label="Fonte Título" options={fonts} value={draft.headingFont} onChange={(v: any) => updateDraft('headingFont', v)} isFont />
+                            <SelectControl label="Fonte Texto" options={fonts} value={draft.bodyFont} onChange={(v: any) => updateDraft('bodyFont', v)} isFont />
+                            <div className="grid grid-cols-2 gap-4">
+                                <SelectControl label="Peso Títulos" options={['300', '400', '600', '800', '900']} value={draft.headingWeight} onChange={(v: any) => updateDraft('headingWeight', v)} />
+                                <SelectControl label="Espaçamento" options={['tight', 'normal', 'wide', 'widest']} value={draft.headingLetterSpacing} onChange={(v: any) => updateDraft('headingLetterSpacing', v)} />
+                            </div>
+                            <div className="mt-6">
+                                <span className="text-[9px] font-black uppercase tracking-widest text-white/40 block mb-3">Escala de Fonte</span>
+                                <div className="grid grid-cols-5 gap-1 p-1 bg-black/20 rounded-xl border border-white/5">
+                                    {Object.values(SCALES).map(s => (
+                                        <button key={s.id} onClick={() => updateDraft('fontScale', s.id)} className={`py-2 rounded-lg text-[8px] font-black uppercase transition-all ${draft.fontScale === s.id ? 'bg-[var(--theme-primary)] text-white shadow-lg' : 'text-white/20'}`}>{s.label}</button>
+                                    ))}
                                 </div>
                             </div>
                         </Section>
+                                </motion.div>
+                            )}
+                        </AnimatePresence>
 
-                        <Section id="depth" icon={Layers} title="Sombras & Profundidade">
-                            <div className="space-y-4">
-                                <SelectControl 
-                                    label="Orientação da Luz" 
-                                    options={[
-                                        {id: 'top-down', label: 'Top-Down (Standard)'},
-                                        {id: 'isometric', label: 'Isometric (45°)'},
-                                        {id: 'inner', label: 'Inlet (Inner Shadow)'}
-                                    ]} 
-                                    value={draft.shadowOrientation} 
-                                    onChange={(v: any) => updateDraft('shadowOrientation', v)} 
-                                />
+                        {/* 3. ATMOSFERA & PROFUNDIDADE */}
+                        <CategoryLabel 
+                            index={3} icon={Wind} title="Atmosfera & Profundidade" 
+                            isOpen={activeCategory === 3} 
+                            onToggle={() => setActiveCategory(activeCategory === 3 ? null : 3)} 
+                        />
+                        <AnimatePresence>
+                            {activeCategory === 3 && (
+                                <motion.div initial={{ height: 0, opacity: 0 }} animate={{ height: 'auto', opacity: 1 }} exit={{ height: 0, opacity: 0 }} transition={{ duration: 0.3, ease: "circOut" }} className="overflow-hidden">
 
-                                <SelectControl 
-                                    label="Modo de Cor da Sombra" 
-                                    options={[
-                                        {id: 'neutral', label: 'Neutral (Black/Gray)'},
-                                        {id: 'adaptive', label: 'Adaptive (Muted Tint)'},
-                                        {id: 'match', label: 'Primary Match (Glow)'}
-                                    ]} 
-                                    value={draft.shadowColorMode} 
-                                    onChange={(v: any) => updateDraft('shadowColorMode', v)} 
-                                />
-                            </div>
+                        <Section id="depth" icon={Layers} title="Elevação">
+                            <SelectControl label="Orientação da Luz" options={[{id: 'top-down', label: 'Top-Down'}, {id: 'isometric', label: 'Isometric'}, {id: 'inner', label: 'Inlet'}]} value={draft.shadowOrientation} onChange={(v: any) => updateDraft('shadowOrientation', v)} />
+                            <SliderControl label="Intensidade das Sombras" value={draft.shadowIntensity} min={0} max={1} step={0.1} onChange={(v: any) => updateDraft('shadowIntensity', v)} />
                         </Section>
 
-                        <Section id="effects" icon={Wind} title="Efeitos">
-                            <SliderControl label="Velocidade" value={draft.animationSpeed} min={0} max={1} step={0.05} onChange={(v: any) => updateDraft('animationSpeed', v)} suffix="s" />
+                        <Section id="atmos" icon={Wind} title="Materiais (Glass)">
+                            <SliderControl label="Blur Glass" value={draft.glassBlur} min={0} max={60} onChange={(v: any) => updateDraft('glassBlur', v)} suffix="px" />
+                            <SliderControl label="Opacidade de Superfície" value={draft.glassOpacity} min={0} max={1} step={0.05} onChange={(v: any) => updateDraft('glassOpacity', v)} />
+                            <SelectControl 
+                                label="Material de Base" 
+                                options={[
+                                    {id: 'glass', label: 'Frosted Glass'},
+                                    {id: 'metallic', label: 'Metallic'},
+                                    {id: 'acrylic', label: 'Acrylic Deep'},
+                                    {id: 'matte', label: 'Matte Velvet'}
+                                ]} 
+                                value={draft.surfaceMaterial} 
+                                onChange={(v: any) => updateDraft('surfaceMaterial', v)} 
+                            />
+                        </Section>
+
+                        <Section id="effects" icon={Wind} title="Cinética">
+                            <SliderControl label="Duração das Transições" value={draft.animationSpeed} min={0} max={1} step={0.05} onChange={(v: any) => updateDraft('animationSpeed', v)} suffix="s" />
                             <div className="flex items-center justify-between p-4 rounded-xl bg-white/5 mt-4 group">
-                                <span className="text-[9px] font-black uppercase tracking-widest text-white/40">Micro-interações</span>
-                                <div className="text-[10px] font-bold text-[var(--theme-primary)]">Ativo</div>
+                                <span className="text-[9px] font-black uppercase tracking-widest text-white/40">Micro-interações (SFX)</span>
+                                <button onClick={() => updateDraft('cursorPhysics', !draft.cursorPhysics)} className={`w-10 h-5 rounded-full relative transition-all ${draft.cursorPhysics ? 'bg-[var(--theme-primary)]' : 'bg-white/10'}`}>
+                                    <div className={`absolute top-1 w-3 h-3 rounded-full bg-white transition-all ${draft.cursorPhysics ? 'left-6' : 'left-1'}`} />
+                                </button>
                             </div>
                         </Section>
+                                </motion.div>
+                            )}
+                        </AnimatePresence>
+
+                        {/* 4. MOTORES DE EXPERIÊNCIA */}
+                        <CategoryLabel 
+                            index={4} icon={Zap} title="Motores de Experiência" 
+                            isOpen={activeCategory === 4} 
+                            onToggle={() => setActiveCategory(activeCategory === 4 ? null : 4)} 
+                        />
+                        <AnimatePresence>
+                            {activeCategory === 4 && (
+                                <motion.div initial={{ height: 0, opacity: 0 }} animate={{ height: 'auto', opacity: 1 }} exit={{ height: 0, opacity: 0 }} transition={{ duration: 0.3, ease: "circOut" }} className="overflow-hidden">
+
+                        <Section id="engines" icon={Zap} title="Sarak Engines">
+                            <div className="space-y-8">
+                                {/* CHAT */}
+                                <div>
+                                    <div className="flex items-center gap-2 mb-4">
+                                        <MessageSquare size={12} className="text-[var(--theme-primary)]" />
+                                        <span className="text-[9px] font-black uppercase tracking-widest text-white/60">Motor de Chat (Chat Engine)</span>
+                                    </div>
+                                    <div className="grid grid-cols-3 gap-1 p-1 bg-black/20 rounded-xl border border-white/5 mb-4">
+                                        {['glass', 'solid', 'minimal'].map(style => (
+                                            <button key={style} onClick={() => updateDraft('chatBubbleStyle', style)} className={`py-2 rounded-lg text-[8px] font-black uppercase transition-all ${draft.chatBubbleStyle === style ? 'bg-[var(--theme-primary)] text-white shadow-lg' : 'text-white/20'}`}>{style}</button>
+                                        ))}
+                                    </div>
+                                    <SliderControl label="Velocidade Digitação" value={draft.chatAnimationSpeed} min={0} max={0.5} step={0.01} onChange={(v: any) => updateDraft('chatAnimationSpeed', v)} suffix="s" />
+                                </div>
+
+                                {/* FLOW */}
+                                <div className="pt-4 border-t border-white/5">
+                                    <div className="flex items-center gap-2 mb-4">
+                                        <Network size={12} className="text-[var(--theme-primary)]" />
+                                        <span className="text-[9px] font-black uppercase tracking-widest text-white/60">Motor de Fluxos (Flow Engine)</span>
+                                    </div>
+                                    <div className="grid grid-cols-2 gap-1 p-1 bg-black/20 rounded-xl border border-white/5 mb-4">
+                                        {['dots', 'lines'].map(style => (
+                                            <button key={style} onClick={() => updateDraft('flowGridStyle', style)} className={`py-2 rounded-lg text-[8px] font-black uppercase transition-all ${draft.flowGridStyle === style ? 'bg-[var(--theme-primary)] text-white shadow-lg' : 'text-white/20'}`}>{style}</button>
+                                        ))}
+                                    </div>
+                                    <SliderControl label="Raio das Nodes" value={draft.flowNodeRadius} min={0} max={40} onChange={(v: any) => updateDraft('flowNodeRadius', v)} suffix="px" />
+                                </div>
+
+                                {/* CHARTS */}
+                                <div className="pt-4 border-t border-white/5">
+                                    <div className="flex items-center gap-2 mb-4">
+                                        <BarChart size={12} className="text-[var(--theme-primary)]" />
+                                        <span className="text-[9px] font-black uppercase tracking-widest text-white/60">Motor de Gráficos (Chart Engine)</span>
+                                    </div>
+                                    <div className="grid grid-cols-2 gap-4 mb-4">
+                                        <SelectControl label="Tipo" options={['bar', 'area', 'line', 'donut']} value={draft.chartType} onChange={(v: any) => updateDraft('chartType', v)} />
+                                        <SliderControl label="Espessura" value={draft.chartThickness} min={1} max={10} onChange={(v: any) => updateDraft('chartThickness', v)} suffix="px" />
+                                    </div>
+                                    <div className="flex items-center justify-between p-4 rounded-xl bg-white/5">
+                                        <span className="text-[9px] font-black uppercase tracking-widest text-white/60">Suavização</span>
+                                        <button onClick={() => updateDraft('chartSmoothing', !draft.chartSmoothing)} className={`w-10 h-5 rounded-full relative transition-all ${draft.chartSmoothing ? 'bg-[var(--theme-primary)]' : 'bg-white/10'}`}>
+                                            <div className={`absolute top-1 w-3 h-3 rounded-full bg-white transition-all ${draft.chartSmoothing ? 'left-6' : 'left-1'}`} />
+                                        </button>
+                                    </div>
+                                </div>
+                            </div>
+                        </Section>
+                                </motion.div>
+                            )}
+                        </AnimatePresence>
                     </div>
-
-
                 </aside>
 
                 {/* RIGHT SIDE: PREVIEW */}
@@ -695,40 +711,19 @@ export const ThemeCustomizationTab: React.FC = () => {
                         </div>
                     </div>
 
-                    <div className="flex-1 flex overflow-hidden">
-                        <div className="w-[360px] border-r border-white/5 flex flex-col bg-white/[0.01] h-full">
-                            <div className="p-6 pb-0 flex flex-col">
-                                <h2 className="text-[10px] font-black uppercase tracking-[0.4em] text-white/30 mb-6 flex items-center gap-2">
-                                    <div className="w-8 h-[1px] bg-white/10" /> Archetypes
-                                </h2>
-                            </div>
-                            <div className="flex-1 overflow-y-auto custom-scrollbar px-6 pb-8">
-                                <ThemeList
-                                    layouts={sarak.layouts}
-                                    customThemes={[]}
-                                    currentLayout={sarak.layout}
-                                    previewLayoutId={draft.layout}
-                                    onPreview={handleThemePreview}
-                                    onApply={handleThemePreview}
-                                />
-                            </div>
-                        </div>
-
-                        <div className="flex-1 relative overflow-hidden bg-[#050505]">
-                            <PreviewCanvas
-                                previewDevice={previewDevice}
-                                previewLayoutId={draft.layout}
-                                activePreviewApp={activePreviewApp}
-                                setActivePreviewApp={setActivePreviewApp}
-                                previewAnimationStyle={sarak.animationStyle}
-                                previewEmojiSet={sarak.emojiSet}
-                                config={{}}
-                                previewPrimaryColor={draft.primaryColor}
-                                mode={draft.mode}
-                                // Passando Tokens de Rascunho para o Canvas
-                                draftTokens={draft}
-                            />
-                        </div>
+                    <div className="flex-1 relative overflow-hidden bg-[#050505]">
+                        <PreviewCanvas
+                            previewDevice={previewDevice}
+                            previewLayoutId={draft.layout}
+                            activePreviewApp={activePreviewApp}
+                            setActivePreviewApp={setActivePreviewApp}
+                            previewAnimationStyle={sarak.animationStyle}
+                            previewEmojiSet={sarak.emojiSet}
+                            config={{}}
+                            previewPrimaryColor={draft.primaryColor}
+                            mode={draft.mode}
+                            draftTokens={draft}
+                        />
                     </div>
                 </main>
             </div>

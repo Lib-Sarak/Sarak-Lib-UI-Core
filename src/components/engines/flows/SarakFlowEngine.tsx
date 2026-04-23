@@ -17,7 +17,7 @@ interface SarakFlowEngineProps {
  * Interactive node-based logic engine powered by ReactFlow.
  */
 const SarakFlowEngine: React.FC<SarakFlowEngineProps> = ({ nodes, edges, onConnect }) => {
-    const { primaryColor, mode } = useSarakUI();
+    const { primaryColor, mode, flowGridStyle, flowNodeRadius } = useSarakUI();
 
     return (
         <div className="w-full h-full min-h-[500px] bg-[var(--theme-card)]/10 rounded-[var(--radius-theme)] border border-white/5 overflow-hidden relative">
@@ -29,8 +29,8 @@ const SarakFlowEngine: React.FC<SarakFlowEngineProps> = ({ nodes, edges, onConne
                 className="sarak-flow-instance"
             >
                 <Background 
-                    variant={BackgroundVariant.Dots} 
-                    gap={20} 
+                    variant={flowGridStyle === 'lines' ? BackgroundVariant.Lines : BackgroundVariant.Dots} 
+                    gap={24} 
                     size={1} 
                     color={mode === 'dark' ? 'rgba(255,255,255,0.05)' : 'rgba(0,0,0,0.05)'} 
                 />
@@ -47,7 +47,7 @@ const SarakFlowEngine: React.FC<SarakFlowEngineProps> = ({ nodes, edges, onConne
 
             <style>{`
                 .react-flow__node {
-                    border-radius: 12px;
+                    border-radius: ${flowNodeRadius || 12}px;
                     background: rgba(15, 15, 20, 0.8);
                     border: 1px solid rgba(255, 255, 255, 0.1);
                     color: white;

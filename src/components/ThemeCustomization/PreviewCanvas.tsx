@@ -1,10 +1,10 @@
 import React from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
 import {
-    Zap, Shield, Database, BarChart3, MessageSquare, History, Users, Settings2
+    Zap, Shield, Database, BarChart3, MessageSquare, History, Box, Network, Type
 } from 'lucide-react';
 import { EMOJI_SETS, THEME_EFFECTS, DENSITY, SCALES } from '../../constants/design-tokens';
-import { MockDashboard, MockChat, MockLogs, MockSettings } from './MockApps';
+import { MockDashboard, MockChat, MockLogs, MockSettings, MockComponents, MockTypography } from './MockApps';
 
 interface PreviewCanvasProps {
     previewDevice: 'desktop' | 'tablet' | 'smartphone';
@@ -44,6 +44,8 @@ export const PreviewCanvas: React.FC<PreviewCanvasProps> = ({
             case 'chat': return <MockChat {...props} />;
             case 'logs': return <MockLogs {...props} />;
             case 'settings': return <MockSettings {...props} />;
+            case 'components': return <MockComponents {...props} />;
+            case 'typography': return <MockTypography {...props} />;
             default: return <MockDashboard {...props} />;
         }
     };
@@ -95,10 +97,15 @@ export const PreviewCanvas: React.FC<PreviewCanvasProps> = ({
                         '--theme-title': tokens.mode === 'light' ? '#0f172a' : '#f8fafc',
                         '--theme-muted': tokens.mode === 'light' ? '#475569' : '#64748b',
                         '--shadow-color': tokens.mode === 'light' ? 'rgba(0,0,0,0.1)' : 'rgba(0,0,0,0.4)',
+                        '--shadow-orientation': tokens.shadowOrientation || 'top-down',
+                        '--shadow-color-mode': tokens.shadowColorMode || 'neutral',
                     } as React.CSSProperties}
                     className={`preview-container ${tokens.mode || mode} layout-${(tokens.layout || previewLayoutId || '').replace('custom-', '')} ${tokens.isGeometricCut ? 'is-geometric' : ''} bg-[var(--bg-body)] text-[var(--text-main)] rounded-[32px] shadow-[0_50px_100px_rgba(0,0,0,0.5)] overflow-hidden flex flex-col relative transition-all duration-500 ${tokens.texture && tokens.texture !== 'none' ? `texture-${tokens.texture}` : ''}`}
                     data-surface={tokens.surfaceMaterial || 'glass'}
                     data-border={tokens.borderType || 'default'}
+                    data-shadow-orientation={tokens.shadowOrientation || 'top-down'}
+                    data-shadow-color-mode={tokens.shadowColorMode || 'neutral'}
+                    data-auto-hide={tokens.isAutoHideEnabled ? 'true' : 'false'}
                 >
                     {/* Mock Browser/App Header */}
                     <div className="h-10 bg-black/20 border-b border-white/5 px-6 flex items-center gap-2 shrink-0">
@@ -125,13 +132,13 @@ export const PreviewCanvas: React.FC<PreviewCanvasProps> = ({
                                     )}
                                 </div>
                                 <div className="flex gap-4">
-                                    {[BarChart3, MessageSquare, History, Users].map((Icon, i) => (
+                                    {[BarChart3, MessageSquare, Network, Type, Box, History].map((Icon, i) => (
                                         <div key={i} 
-                                            className={`px-3 py-1.5 rounded-lg text-[9px] font-black uppercase tracking-widest flex items-center gap-2 ${activePreviewApp === ['dashboard', 'chat', 'logs', 'settings'][i] ? 'bg-[var(--primary-color)]/10 text-[var(--primary-color)]' : 'text-white/20'}`}
+                                            className={`px-3 py-1.5 rounded-lg text-[9px] font-black uppercase tracking-widest flex items-center gap-2 ${activePreviewApp === ['dashboard', 'chat', 'settings', 'typography', 'components', 'logs'][i] ? 'bg-[var(--primary-color)]/10 text-[var(--primary-color)]' : 'text-white/20'}`}
                                             style={{ fontFamily: 'var(--font-tab, var(--font-heading))' }}
                                         >
                                             <Icon className="w-3 h-3" />
-                                            {['Dash', 'Chat', 'Logs', 'Users'][i]}
+                                            {['Dash', 'Chat', 'Flow', 'Font', 'Comp', 'Logs'][i]}
                                         </div>
                                     ))}
                                 </div>
@@ -148,8 +155,8 @@ export const PreviewCanvas: React.FC<PreviewCanvasProps> = ({
                                         <Zap className="w-5 h-5 fill-current" />
                                     )}
                                 </div>
-                                {[BarChart3, MessageSquare, History, Users, Shield, Database].map((Icon, i) => (
-                                    <div key={i} className={`w-9 h-9 rounded-xl flex items-center justify-center transition-all cursor-pointer ${i === 0 ? 'bg-[var(--primary-color)]/10 text-[var(--primary-color)] shadow-sm' : 'text-white/20 hover:text-white hover:bg-white/5'}`}>
+                                {[BarChart3, MessageSquare, Network, Type, Box, History].map((Icon, i) => (
+                                    <div key={i} className={`w-9 h-9 rounded-xl flex items-center justify-center transition-all cursor-pointer ${activePreviewApp === ['dashboard', 'chat', 'settings', 'typography', 'components', 'logs'][i] ? 'bg-[var(--primary-color)]/10 text-[var(--primary-color)] shadow-sm' : 'text-white/20 hover:text-white hover:bg-white/5'}`}>
                                         <Icon className="w-4 h-4" />
                                     </div>
                                 ))}
@@ -159,25 +166,27 @@ export const PreviewCanvas: React.FC<PreviewCanvasProps> = ({
                         {/* App Content Area */}
                         <div className="flex-grow flex flex-col overflow-hidden relative z-10">
                             {tokens.navigationStyle !== 'topbar' && (
-                                <div className="h-16 border-b border-white/5 bg-black/5 px-8 flex items-center justify-between shrink-0">
-                                    <div className="flex gap-6">
+                                <div className="h-16 border-b border-white/5 bg-black/5 px-8 flex items-center justify-between shrink-0 overflow-x-auto no-scrollbar">
+                                    <div className="flex gap-3">
                                         {[
-                                            { id: 'dashboard', icon: <BarChart3 className="w-4 h-4" />, label: 'Dashboard' },
-                                            { id: 'chat', icon: <MessageSquare className="w-4 h-4" />, label: 'Nexus Chat' },
-                                            { id: 'logs', icon: <History className="w-4 h-4" />, label: 'Matrix Logs' },
-                                            { id: 'settings', icon: <Settings2 className="w-4 h-4" />, label: 'Engine' }
+                                            { id: 'dashboard', icon: <BarChart3 className="w-4 h-4" />, label: 'Visão Geral' },
+                                            { id: 'chat', icon: <MessageSquare className="w-4 h-4" />, label: 'Motor de Chat' },
+                                            { id: 'settings', icon: <Network className="w-4 h-4" />, label: 'Motor de Fluxos' },
+                                            { id: 'typography', icon: <Type className="w-4 h-4" />, label: 'Escala Visual' },
+                                            { id: 'components', icon: <Box className="w-4 h-4" />, label: 'Livraria UI' },
+                                            { id: 'logs', icon: <History className="w-4 h-4" />, label: 'Histórico Matrix' }
                                         ].map(app => (
                                             <button
                                                 key={app.id}
                                                 onClick={() => setActivePreviewApp(app.id)}
-                                                className={`flex items-center gap-2 px-4 py-2 rounded-xl transition-all text-[10px] font-black uppercase tracking-widest ${activePreviewApp === app.id ? 'bg-[var(--primary-color)] text-white shadow-lg shadow-[var(--theme-primary)]/20' : 'text-white/20 hover:text-white hover:bg-white/5'}`}
+                                                className={`flex items-center gap-2 px-3 py-2 rounded-xl transition-all text-[9px] font-black uppercase tracking-widest ${activePreviewApp === app.id ? 'bg-[var(--primary-color)] text-white shadow-lg shadow-[var(--theme-primary)]/20' : 'text-white/20 hover:text-white hover:bg-white/5'}`}
                                                 style={{ 
                                                     transitionDuration: 'var(--animation-speed)',
                                                     fontFamily: 'var(--font-tab, var(--font-heading))'
                                                 }}
                                             >
                                                 <span className="shrink-0">{app.icon}</span>
-                                                <span className="hidden lg:inline">{app.label}</span>
+                                                <span className="hidden xl:inline">{app.label}</span>
                                             </button>
                                         ))}
                                     </div>

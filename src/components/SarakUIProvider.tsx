@@ -119,7 +119,16 @@ const DESIGN_MANIFEST: Record<string, {
     chartPalette: { vars: ['--chart-palette'], transform: (v) => Array.isArray(v) ? v.join(',') : v },
     searchStyle: { attr: 'data-search-style' },
     emptyStateId: { attr: 'data-empty-state' },
-    secondaryModuleId: { attr: 'data-sec-module' }
+    secondaryModuleId: { attr: 'data-sec-module' },
+    // Engine Specialized Tokens v7.0
+    chatBubbleStyle: { attr: 'data-chat-bubble', vars: ['--sarak-chat-bubble'] },
+    chatAnimationSpeed: { vars: ['--sarak-chat-anim-speed'] },
+    flowGridStyle: { attr: 'data-flow-grid', vars: ['--sarak-flow-grid'] },
+    flowNodeRadius: { vars: ['--sarak-flow-radius'], unit: 'px' },
+    chartShowGrid: { attr: 'data-chart-grid' },
+    chartType: { attr: 'data-chart-type' },
+    chartThickness: { vars: ['--sarak-chart-thickness'], unit: 'px' },
+    chartSmoothing: { attr: 'data-chart-smoothing' }
 };
 
 // Componente interno para gerenciar a injeção de design sem causar loops
