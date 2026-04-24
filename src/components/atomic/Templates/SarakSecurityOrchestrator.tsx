@@ -25,7 +25,7 @@ interface SarakSecurityOrchestratorProps {
  * Gerencia o ciclo de vida do MFA: Status, Setup e Ativação.
  */
 export const SarakSecurityOrchestrator: React.FC<SarakSecurityOrchestratorProps> = ({ endpoint, label }) => {
-    const [step, setStep] = useState<'LOADING' | 'STATUS' | 'SETUP' | 'SUCCESS' | 'ERROR'>('LOADING');
+    const [step, setStep] = useState<'LOADING' | 'STATUS' | 'SETUP' | 'SUCCESS' | 'ERROR' | 'DISABLE_CHALLENGE'>('LOADING');
     const [mfaStatus, setMfaStatus] = useState<any>(null);
     const [setupData, setSetupData] = useState<any>(null);
     const [code, setCode] = useState('');
@@ -38,6 +38,7 @@ export const SarakSecurityOrchestrator: React.FC<SarakSecurityOrchestratorProps>
             const response = await api.get(`${endpoint}/mfa/status`);
             setMfaStatus(response.data);
             setStep('STATUS');
+            setCode('');
         } catch (err: any) {
             console.error('[SecurityOrchestrator] Status Error:', err);
             setError('Falha ao verificar status de segurança');
@@ -65,10 +66,24 @@ export const SarakSecurityOrchestrator: React.FC<SarakSecurityOrchestratorProps>
             setError(null);
             await api.post(`${endpoint}/mfa/enable`, { code });
             setStep('SUCCESS');
-            // Refresh status after a short delay
             setTimeout(fetchStatus, 2000);
         } catch (err: any) {
             setError(err.response?.data?.detail || 'Código inválido ou expirado');
+        } finally {
+            setIsValidating(false);
+        }
+    };
+
+    const handleDisable = async () => {
+        if (code.length !== 6) return;
+        try {
+            setIsValidating(true);
+            setError(null);
+            await api.post(`${endpoint}/mfa/disable`, { code });
+            setStep('SUCCESS');
+            setTimeout(fetchStatus, 2000);
+        } catch (err: any) {
+            setError(err.response?.data?.detail || 'Falha ao desativar MFA');
         } finally {
             setIsValidating(false);
         }
@@ -136,7 +151,14 @@ export const SarakSecurityOrchestrator: React.FC<SarakSecurityOrchestratorProps>
                                 </div>
                             </div>
                             
-                            {!mfaStatus?.enabled && (
+                            {mfaStatus?.enabled ? (
+                                <button 
+                                    onClick={() => setStep('DISABLE_CHALLENGE')}
+                                    className="px-6 py-2 border border-red-500/30 text-red-500 text-2xs font-black uppercase tracking-widest rounded-lg hover:bg-red-500/5 transition-all"
+                                >
+                                    Desativar
+                                </button>
+                            ) : (
                                 <button 
                                     onClick={startSetup}
                                     className="px-6 py-2 bg-[var(--theme-primary)] text-white text-2xs font-black uppercase tracking-widest rounded-lg shadow-lg shadow-[var(--theme-primary)]/20 hover:brightness-110 transition-all"
@@ -215,6 +237,57 @@ export const SarakSecurityOrchestrator: React.FC<SarakSecurityOrchestratorProps>
                     </motion.div>
                 )}
 
+                {step === 'DISABLE_CHALLENGE' && (
+                    <motion.div 
+                        key="disable"
+                        variants={containerVariants}
+                        initial="hidden" animate="visible" exit="exit"
+                        className="flex flex-col items-center text-center gap-6"
+                    >
+                        <ShieldAlert className="text-red-500" size={48} />
+                        <div>
+                            <div className="text-xs font-black uppercase tracking-widest text-[var(--theme-title)] mb-2">Confirmar Desativação</div>
+                            <p className="text-[10px] uppercase tracking-wider text-[var(--theme-muted)] max-w-xs">
+                                Por segurança, insira o código de 6 dígitos do seu app para remover a proteção de segundo fator.
+                            </p>
+                        </div>
+
+                        <div className="w-full max-w-xs space-y-4">
+                            <div className="relative">
+                                <Key className="absolute left-4 top-1/2 -translate-y-1/2 text-[var(--theme-muted)]" size={16} />
+                                <input 
+                                    type="text" 
+                                    maxLength={6}
+                                    value={code}
+                                    onChange={(e) => setCode(e.target.value.replace(/\D/g, ''))}
+                                    placeholder="000000"
+                                    className="w-full bg-white/[0.03] border border-[var(--theme-border)] rounded-xl py-4 px-12 text-center text-xl font-black tracking-[0.5em] text-[var(--theme-title)] focus:outline-none focus:border-red-500 transition-all"
+                                />
+                            </div>
+
+                            {error && (
+                                <div className="text-[10px] uppercase font-black text-red-500 tracking-widest">{error}</div>
+                            )}
+
+                            <div className="grid grid-cols-2 gap-4">
+                                <button 
+                                    onClick={() => setStep('STATUS')}
+                                    className="py-4 border border-[var(--theme-border)] text-[var(--theme-title)] text-xs font-black uppercase tracking-widest rounded-xl hover:bg-white/5 transition-all"
+                                >
+                                    Cancelar
+                                </button>
+                                <button 
+                                    onClick={handleDisable}
+                                    disabled={code.length !== 6 || isValidating}
+                                    className="py-4 bg-red-500 text-white text-xs font-black uppercase tracking-widest rounded-xl shadow-xl shadow-red-500/20 hover:brightness-110 disabled:opacity-50 transition-all"
+                                >
+                                    {isValidating ? 'Processando...' : 'Confirmar'}
+                                </button>
+                            </div>
+                        </div>
+                    </motion.div>
+                )}
+
                 {step === 'SUCCESS' && (
                     <motion.div 
                         key="success"
@@ -226,9 +299,9 @@ export const SarakSecurityOrchestrator: React.FC<SarakSecurityOrchestratorProps>
                             <CheckCircle2 className="text-emerald-500" size={40} />
                         </div>
                         <div>
-                            <div className="text-lg font-black uppercase tracking-[0.2em] text-[var(--theme-title)] mb-2">Sucesso na Ativação</div>
+                            <div className="text-lg font-black uppercase tracking-[0.2em] text-[var(--theme-title)] mb-2">Operação Concluída</div>
                             <p className="text-2xs uppercase tracking-widest text-[var(--theme-muted)] font-bold">
-                                Sua conta agora possui uma camada adicional de soberania.
+                                O cofre de segurança foi atualizado com sucesso.
                             </p>
                         </div>
                     </motion.div>

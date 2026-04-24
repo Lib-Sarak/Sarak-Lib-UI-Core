@@ -39,7 +39,7 @@ export const CARD_VARIANTS: CardPreset[] = [
             cardPadding: 24,
             cardSpotlight: '0.15',
             borderBeamEnabled: '0',
-            texture: 'dots'
+            cardTexture: 'dots'
         }
     },
     {
@@ -74,7 +74,7 @@ export const CARD_VARIANTS: CardPreset[] = [
             cardSpotlight: '0.3',
             borderBeamEnabled: '1',
             isGeometricCut: '1',
-            texture: 'circuit'
+            cardTexture: 'circuit'
         }
     },
     {
@@ -91,7 +91,7 @@ export const CARD_VARIANTS: CardPreset[] = [
             cardPadding: 32,
             cardSpotlight: '0.1',
             borderBeamEnabled: '0',
-            texture: 'silk'
+            cardTexture: 'silk'
         }
     },
     {
@@ -125,7 +125,7 @@ export const CARD_VARIANTS: CardPreset[] = [
             cardPadding: 24,
             cardSpotlight: '0.8',
             borderBeamEnabled: '0',
-            texture: 'diamond'
+            cardTexture: 'diamond'
         }
     },
     {

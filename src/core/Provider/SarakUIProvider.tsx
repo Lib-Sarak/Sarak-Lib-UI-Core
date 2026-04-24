@@ -127,6 +127,7 @@ export const DESIGN_MANIFEST: Record<string, {
     glassBlur: { vars: ['--glass-blur', '--sarak-glass-blur'], unit: 'px' },
     shadowIntensity: { vars: ['--shadow-intensity', '--sarak-shadow-intensity'] },
     cardPadding: { vars: ['--card-padding', '--sarak-card-padding', '--theme-card-padding'], unit: 'px' },
+    cardTexture: { vars: ['--sarak-card-texture'], attr: 'data-card-texture' },
     tabGap: { vars: ['--tab-gap', '--sarak-tab-gap', '--theme-tab-gap'], unit: 'px' },
     tabSectionMargin: { vars: ['--tab-section-margin', '--sarak-tab-section-margin', '--theme-tab-section-margin'], unit: 'px' },
     isGeometricCut: { classPrefix: 'is-geometric', attr: 'data-geometric' },

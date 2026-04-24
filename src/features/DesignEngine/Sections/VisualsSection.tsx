@@ -76,7 +76,17 @@ export const VisualsSection: React.FC<VisualsSectionProps> = ({ draft, updateDra
                     <SliderControl label="Opacidade Textura" value={draft.textureOpacity} min={0} max={0.3} step={0.01} onChange={(v: any) => updateDraft('textureOpacity', v)} />
                     <SliderControl label="Noise Overlay" value={draft.atmosphereNoiseOpacity} min={0} max={0.1} step={0.005} onChange={(v: any) => updateDraft('atmosphereNoiseOpacity', v)} />
                 </div>
-                <SelectControl label="Material de Superfície" options={[{id: 'glass', label: 'Glassmorphism'}, {id: 'solid', label: 'Sólido'}, {id: 'gradient', label: 'Gradiente Dinâmico'}]} value={draft.surfaceMaterial} onChange={(v: any) => updateDraft('surfaceMaterial', v)} />
+                <SelectControl 
+                    label="Material de Superfície" 
+                    options={[
+                        {id: 'glass', label: 'Glass Standard'}, 
+                        {id: 'acrylic', label: 'Acrylic Deep'}, 
+                        {id: 'matte', label: 'Solid Matte'}, 
+                        {id: 'brushed', label: 'Brushed Metal'}
+                    ]} 
+                    value={draft.surfaceMaterial} 
+                    onChange={(v: any) => updateDraft('surfaceMaterial', v)} 
+                />
             </Section>
         </>
     );

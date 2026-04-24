@@ -1,66 +1,115 @@
 import React from 'react';
 import { motion } from 'framer-motion';
-import { GalleryItem } from './GalleryItem';
-import { VISUALIZATION_PRESETS } from './presets';
+import { VISUALIZATION_PRESETS, VisualizationPreset } from '../../../../constants/visualization-presets';
+import { Check, Globe, Grid3X3, Box, Cpu, Activity } from 'lucide-react';
 
 interface VisualizationGalleryProps {
-    tokens: any;
     onUpdateDraft: (key: string, value: any) => void;
+    tokens: any;
 }
 
-export const VisualizationGallery: React.FC<VisualizationGalleryProps> = ({ tokens, onUpdateDraft }) => {
-    const handleSelect = (v: any) => {
-        Object.entries(v.tokens).forEach(([key, val]) => onUpdateDraft(key, val));
-    };
-
+export const VisualizationGallery: React.FC<VisualizationGalleryProps> = ({ onUpdateDraft, tokens }) => {
     return (
-        <div className="grid grid-cols-1 lg:grid-cols-2 gap-6 p-6 overflow-y-auto custom-scrollbar h-full bg-black/40">
-            {VISUALIZATION_PRESETS.map((v) => {
-                const isActive = tokens.engineQuality === v.tokens.engineQuality || tokens.mapStyle === v.tokens.mapStyle;
-                return (
-                    <GalleryItem 
-                        key={v.id}
-                        title={v.title}
-                        description={v.description}
-                        isActive={isActive}
-                        onClick={() => handleSelect(v)}
-                    >
-                        <div className="w-full h-full min-h-[140px] flex items-center justify-center relative perspective-1000">
-                             {/* 3D Specimen Simulation */}
-                             <motion.div 
-                                animate={{ 
-                                    rotateY: [0, 360],
-                                    rotateX: [15, 25, 15]
-                                }}
-                                transition={{ 
-                                    duration: 10, 
-                                    repeat: Infinity, 
-                                    ease: "linear" 
-                                }}
-                                className="w-20 h-20 relative transform-gpu"
-                             >
-                                {/* Wireframe Cube/Core */}
-                                <div className="absolute inset-0 border-2 border-[var(--theme-primary)]/40 rounded-lg" style={{ transform: 'translateZ(20px)' }} />
-                                <div className="absolute inset-0 border-2 border-[var(--theme-primary)]/20 rounded-lg" style={{ transform: 'translateZ(-20px)' }} />
-                                <div className="absolute inset-0 bg-[var(--theme-primary)]/10 rounded-lg blur-xl animate-pulse" />
-                                
-                                {v.id === 'map-cyber-dark' && (
-                                     <div className="absolute inset-[-10px] border border-white/5 rounded-full animate-spin-slow" />
-                                )}
-                                
-                                {v.id === 'voxel-viz' && (
-                                     <div className="grid grid-cols-3 gap-1 absolute inset-0 opacity-40">
-                                         {[1,2,3,4,5,6,7,8,9].map(i => <div key={i} className="w-full h-full bg-[var(--theme-primary)]" />)}
-                                     </div>
-                                )}
-                             </motion.div>
-
-                             {/* Grid Floor */}
-                             <div className="absolute bottom-0 inset-x-0 h-10 bg-gradient-to-t from-[var(--theme-primary)]/10 to-transparent opacity-20" />
-                        </div>
-                    </GalleryItem>
-                );
-            })}
+        <div className="p-8 grid grid-cols-1 md:grid-cols-2 gap-8">
+            {VISUALIZATION_PRESETS.map((preset) => (
+                <VisualizationSpecimen 
+                    key={preset.id}
+                    preset={preset}
+                    onSelect={() => {
+                        Object.entries(preset.tokens).forEach(([key, val]) => onUpdateDraft(key, val));
+                    }}
+                    isActive={tokens.vizMode === preset.tokens.vizMode && tokens.wireframeIntensity === preset.tokens.wireframeIntensity}
+                />
+            ))}
         </div>
+    );
+};
+
+const VisualizationSpecimen: React.FC<{ preset: VisualizationPreset; onSelect: () => void; isActive: boolean }> = ({ 
+    preset, onSelect, isActive 
+}) => {
+    return (
+        <motion.div 
+            whileHover={{ y: -4 }}
+            onClick={onSelect}
+            className={`group relative bg-white/[0.02] border rounded-[2.5rem] overflow-hidden cursor-pointer transition-all duration-500 ${
+                isActive ? 'border-[var(--theme-primary)] shadow-2xl shadow-primary-500/10' : 'border-white/5 hover:border-white/20'
+            }`}
+        >
+            <div className="p-6 space-y-6">
+                
+                {/* 1. Abstract Mesh Preview */}
+                <div className="h-32 bg-black/40 rounded-2xl border border-white/5 relative overflow-hidden flex items-center justify-center">
+                    <div className="absolute top-3 left-4 text-[7px] font-black text-white/10 uppercase tracking-[0.3em]">Mesh Architecture</div>
+                    
+                    {/* Simulated 3D Mesh Grid */}
+                    <motion.div 
+                        animate={{ rotate: 360 }}
+                        transition={{ duration: 20 / preset.tokens.rotateSpeed, repeat: Infinity, ease: "linear" }}
+                        className="relative w-24 h-24"
+                    >
+                        {/* Grid Layers */}
+                        {[1, 2, 3].map(i => (
+                            <div 
+                                key={i}
+                                className="absolute inset-0 border rounded-lg transition-all duration-700"
+                                style={{ 
+                                    transform: `rotateX(45deg) rotateZ(${i * 30}deg) translateZ(${i * 10}px)`,
+                                    borderColor: preset.tokens.colorMapping === 'monochrome' ? 'rgba(255,255,255,0.1)' : 
+                                               preset.tokens.colorMapping === 'spectrum' ? 'rgba(var(--theme-primary-rgb), 0.3)' : 'rgba(var(--theme-primary-rgb), 0.1)',
+                                    borderWidth: preset.tokens.vizMode === 'mesh' ? '1px' : '0px',
+                                    backgroundColor: preset.tokens.vizMode === 'solid' ? 'rgba(var(--theme-primary-rgb), 0.05)' : 'transparent'
+                                }}
+                            />
+                        ))}
+                        <div className="absolute inset-0 flex items-center justify-center">
+                            <Cpu size={24} className="text-[var(--theme-primary)] opacity-40 blur-[1px]" />
+                        </div>
+                    </motion.div>
+
+                    {/* Point Cloud simulation overlay */}
+                    <div className="absolute inset-0 grid grid-cols-8 grid-rows-8 gap-2 p-4 pointer-events-none opacity-20">
+                        {Array.from({ length: Math.round(preset.tokens.pointDensity * 64) }).map((_, i) => (
+                            <div key={i} className="w-0.5 h-0.5 rounded-full bg-white" />
+                        ))}
+                    </div>
+                </div>
+
+                {/* 2. Metadata & Specs */}
+                <div className="flex items-center justify-between">
+                    <div>
+                        <h3 className="text-xs font-black uppercase tracking-tight text-white">{preset.title}</h3>
+                        <p className="text-[9px] font-bold text-white/30 uppercase tracking-widest">{preset.description}</p>
+                    </div>
+                    <div className="flex gap-1">
+                        <Grid3X3 size={12} className="text-white/10" />
+                        <Activity size={12} className="text-white/10" />
+                    </div>
+                </div>
+
+                {/* 3. Tech Badge */}
+                <div className="pt-4 border-t border-white/5 grid grid-cols-2 gap-4">
+                    <div className="flex items-center gap-2">
+                        <div className="w-1.5 h-1.5 rounded-full bg-[var(--theme-primary)]" />
+                        <span className="text-[8px] font-black text-white/40 uppercase tracking-widest">{preset.tokens.vizMode} Mode</span>
+                    </div>
+                    <div className="flex items-center gap-2">
+                        <span className="text-[8px] font-black text-white/20 uppercase">Wireframe</span>
+                        <div className="flex-1 h-1 bg-white/5 rounded-full overflow-hidden">
+                            <div className="h-full bg-[var(--theme-primary)]" style={{ width: `${preset.tokens.wireframeIntensity * 100}%` }} />
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            {/* Active Indicator */}
+            {isActive && (
+                <div className="absolute top-6 right-6">
+                    <div className="w-6 h-6 bg-[var(--theme-primary)] rounded-full flex items-center justify-center shadow-lg">
+                        <Check className="text-white" size={12} />
+                    </div>
+                </div>
+            )}
+        </motion.div>
     );
 };

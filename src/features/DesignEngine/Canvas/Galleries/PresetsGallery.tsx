@@ -102,6 +102,11 @@ const PresetSpecimen: React.FC<{
         <div 
             className={`w-full h-full relative overflow-hidden bg-[var(--theme-bg)] transition-all duration-500 ${preset.mode === 'dark' ? 'dark' : 'light'}`}
             style={vars as any}
+            data-surface={preset.surfaceMaterial || 'glass'}
+            data-geometric={preset.isGeometricCut || '0'}
+            data-border={preset.borderType || 'standard'}
+            data-shadow-orientation={preset.shadowOrientation || 'top-down'}
+            data-shadow-color-mode={preset.shadowColorMode || 'black'}
         >
             {/* Texture Layer - Forced Visibility for Preview */}
             {preset.texture && preset.texture !== 'none' && (

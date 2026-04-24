@@ -45,7 +45,9 @@ const getCardVariables = (cardTokens: any, globalTokens: any) => {
     });
 
     vars['--bg-card'] = globalTokens.mode === 'light' ? 'rgba(255,255,255,0.8)' : 'rgba(15,23,42,0.8)';
-    vars['--texture-opacity'] = '0.4'; // Higher opacity for preview visibility
+    vars['--texture-opacity'] = mergedTokens.textureOpacity || '0.4';
+    vars['--glass-saturation'] = `${mergedTokens.glassSaturation || 100}%`;
+    vars['--sarak-contrast-curve'] = mergedTokens.contrastCurve || 1.0;
     
     return vars;
 };
@@ -137,6 +139,9 @@ const CardSpecimen: React.FC<{ preset: CardPreset, contentType: string }> = ({ p
             data-surface={preset.tokens.surfaceMaterial}
             data-geometric={preset.tokens.isGeometricCut || '0'}
             data-border={preset.tokens.borderType || 'standard'}
+            data-shadow-orientation={globalTokens.shadowOrientation || 'top-down'}
+            data-shadow-color-mode={globalTokens.shadowColorMode || 'black'}
+            data-card-texture={preset.tokens.cardTexture || 'none'}
         >
             {/* Checkerboard Stress Background for Transparency Visibility */}
             <div className="absolute inset-4 rounded-xl overflow-hidden pointer-events-none opacity-20 z-0">
@@ -149,9 +154,9 @@ const CardSpecimen: React.FC<{ preset: CardPreset, contentType: string }> = ({ p
 
             <div className="bg-theme-card border-theme w-full h-full p-6 relative overflow-hidden group z-10">
                 {/* Local Atmosphere Texture Layer - Forced Visibility */}
-                {preset.tokens.texture && (
+                {(preset.tokens.cardTexture || globalTokens.cardTexture) && (
                     <div 
-                        className={`absolute inset-0 pointer-events-none SarakAtmosphereLayer texture-${preset.tokens.texture}`} 
+                        className={`absolute inset-0 pointer-events-none SarakAtmosphereLayer texture-${preset.tokens.cardTexture || globalTokens.cardTexture}`} 
                         style={{ zIndex: 1 }}
                     />
                 )}

@@ -1,67 +1,108 @@
 import React from 'react';
 import { motion } from 'framer-motion';
-import { GalleryItem } from './GalleryItem';
-import { BRANDING_PRESETS } from './presets';
-import { Zap, Hexagon, Circle } from 'lucide-react';
+import { useSarakUI, UIContext } from '../../../../core/Provider/SarakUIProvider';
+import { BRANDING_PRESETS, BrandingPreset } from '../../../../constants/branding-presets';
+import { Check, Globe, Maximize, Layout as LayoutIcon, Zap, Shield } from 'lucide-react';
 
 interface BrandingGalleryProps {
-    tokens: any;
     onUpdateDraft: (key: string, value: any) => void;
+    tokens: any;
 }
 
-const ICON_MAP: Record<string, any> = {
-    corporate: <Hexagon size={18} />,
-    modern: <Circle size={18} />,
-    cyber: <Zap size={18} />
+export const BrandingGallery: React.FC<BrandingGalleryProps> = ({ onUpdateDraft, tokens }) => {
+    return (
+        <div className="p-8 grid grid-cols-1 md:grid-cols-2 gap-6">
+            {BRANDING_PRESETS.map((preset) => (
+                <BrandingSpecimen 
+                    key={preset.id}
+                    preset={preset}
+                    onSelect={() => {
+                        Object.entries(preset.tokens).forEach(([key, val]) => onUpdateDraft(key, val));
+                    }}
+                    isActive={tokens.systemName === preset.tokens.systemName && tokens.logoPosition === preset.tokens.logoPosition}
+                />
+            ))}
+        </div>
+    );
 };
 
-export const BrandingGallery: React.FC<BrandingGalleryProps> = ({ tokens, onUpdateDraft }) => {
-    const handleSelect = (v: any) => {
-        Object.entries(v.tokens).forEach(([key, val]) => onUpdateDraft(key, val));
-    };
-
+const BrandingSpecimen: React.FC<{ preset: BrandingPreset; onSelect: () => void; isActive: boolean }> = ({ 
+    preset, onSelect, isActive 
+}) => {
     return (
-        <div className="grid grid-cols-1 gap-6 p-6 overflow-y-auto custom-scrollbar h-full bg-black/40">
-            {BRANDING_PRESETS.map((v) => {
-                const isActive = tokens.systemTone === v.tokens.systemTone;
-                return (
-                    <GalleryItem 
-                        key={v.id}
-                        title={v.title}
-                        description={v.description}
-                        isActive={isActive}
-                        onClick={() => handleSelect(v)}
-                    >
-                        <div className={`w-full max-w-[320px] h-16 border border-white/5 rounded-xl bg-black/20 flex items-center px-6 relative overflow-hidden group/branding ${v.tokens.logoPosition === 'center' ? 'justify-center' : 'justify-start gap-4'}`}>
-                            {/* Decorative Glow */}
-                            <div className="absolute inset-0 bg-gradient-to-r from-[var(--theme-primary)]/5 to-transparent opacity-0 group-hover/branding:opacity-100 transition-opacity" />
-                            
-                            <motion.div 
-                                animate={{ scale: v.tokens.logoScale }}
-                                className="w-10 h-10 rounded-lg bg-[var(--theme-primary)] flex items-center justify-center text-white shadow-xl shadow-[var(--theme-primary)]/20 relative z-10"
-                            >
-                                {ICON_MAP[v.id]}
-                            </motion.div>
-                            
-                            <motion.span 
-                                initial={false}
-                                animate={{ opacity: 1, x: 0 }}
-                                className={`text-sm font-black uppercase tracking-[0.2em] text-white relative z-10 ${v.tokens.systemTone === 'cyber' ? 'font-mono' : ''}`}
-                            >
-                                {v.tokens.systemName}
-                            </motion.span>
-
-                            {/* Accent Detail */}
-                            {v.tokens.systemTone === 'cyber' && (
-                                <div className="absolute right-4 top-1/2 -translate-y-1/2 flex gap-1 opacity-20">
-                                    <div className="w-1 h-4 bg-[var(--theme-primary)]" />
-                                    <div className="w-1 h-2 bg-[var(--theme-primary)]" />
-                                </div>
-                            )}
+        <motion.div 
+            whileHover={{ scale: 1.02 }}
+            onClick={onSelect}
+            className={`group relative bg-white/[0.02] border rounded-[2rem] overflow-hidden cursor-pointer transition-all duration-500 ${
+                isActive ? 'border-[var(--theme-primary)] shadow-2xl shadow-primary-500/10' : 'border-white/5 hover:border-white/20'
+            }`}
+        >
+            <div className="p-6 space-y-6">
+                
+                {/* 1. Header Placement Preview */}
+                <div className="h-16 bg-black/40 rounded-xl border border-white/5 flex items-center px-4 relative overflow-hidden">
+                    <div className="absolute inset-0 bg-gradient-to-r from-transparent via-white/[0.02] to-transparent opacity-50" />
+                    
+                    <div className={`flex items-center gap-3 w-full ${preset.tokens.logoPosition === 'center' ? 'justify-center' : 'justify-start'}`}>
+                        <div 
+                            className="w-8 h-8 rounded-lg bg-[var(--theme-primary)] flex items-center justify-center shadow-lg"
+                            style={{ transform: `scale(${preset.tokens.logoScale * 0.6})` }}
+                        >
+                            <Zap className="text-white" size={14} />
                         </div>
-                    </GalleryItem>
-                );
-            })}
-        </div>
+                        <span className="text-[10px] font-black uppercase tracking-widest text-white/80">
+                            {preset.tokens.systemName}
+                        </span>
+                    </div>
+
+                    {/* Fake UI elements */}
+                    <div className="absolute right-4 flex gap-2">
+                        <div className="w-4 h-4 rounded-full bg-white/5" />
+                        <div className="w-4 h-4 rounded-full bg-white/5" />
+                    </div>
+                </div>
+
+                {/* 2. Info Section */}
+                <div className="space-y-4">
+                    <div className="flex items-center justify-between">
+                        <div>
+                            <h3 className="text-xs font-black uppercase tracking-tight text-white">{preset.title}</h3>
+                            <p className="text-[9px] font-bold text-white/20 uppercase tracking-widest">{preset.description}</p>
+                        </div>
+                        <div className={`px-2 py-1 rounded-md text-[8px] font-black uppercase border ${
+                            preset.tokens.systemTone === 'cyber' ? 'border-purple-500/30 text-purple-400 bg-purple-500/5' :
+                            preset.tokens.systemTone === 'modern' ? 'border-emerald-500/30 text-emerald-400 bg-emerald-500/5' :
+                            'border-blue-500/30 text-blue-400 bg-blue-500/5'
+                        }`}>
+                            {preset.tokens.systemTone}
+                        </div>
+                    </div>
+
+                    {/* 3. Contrast Test (Light/Dark) */}
+                    <div className="grid grid-cols-2 gap-2 h-12">
+                        <div className="bg-white rounded-lg flex items-center justify-center">
+                             <span className="text-[8px] font-black text-black uppercase opacity-20">Logo Light Test</span>
+                        </div>
+                        <div className="bg-black/60 rounded-lg flex items-center justify-center border border-white/5">
+                             <span className="text-[8px] font-black text-white uppercase opacity-20">Logo Dark Test</span>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            {/* Active Indicator */}
+            {isActive && (
+                <div className="absolute top-4 right-4">
+                    <div className="w-5 h-5 bg-[var(--theme-primary)] rounded-full flex items-center justify-center shadow-lg">
+                        <Check className="text-white" size={10} />
+                    </div>
+                </div>
+            )}
+
+            {/* Layout Decoration */}
+            <div className="absolute -bottom-2 -right-2 opacity-5 pointer-events-none">
+                <Globe size={80} />
+            </div>
+        </motion.div>
     );
 };

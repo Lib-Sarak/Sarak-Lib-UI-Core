@@ -25,6 +25,21 @@ export const CardsSection: React.FC<CardsSectionProps> = ({ draft, updateDraft, 
                         </button>
                     </div>
                 </div>
+                <div className="mt-4">
+                     <SelectControl 
+                        label="Textura Interna do Card" 
+                        options={[
+                            {id: 'none', label: 'Nenhuma'},
+                            {id: 'grid', label: 'Grid Tech'},
+                            {id: 'dots', label: 'Dots Clean'},
+                            {id: 'circuit', label: 'Circuit'},
+                            {id: 'carbon', label: 'Carbon Fiber'},
+                            {id: 'silk', label: 'Silk Flow'}
+                        ]} 
+                        value={draft.cardTexture} 
+                        onChange={(v: any) => updateDraft('cardTexture', v)} 
+                    />
+                </div>
                 <div className="grid grid-cols-2 gap-4 mt-4">
                     <SliderControl label="Espessura Borda" value={draft.borderWidth} min={0} max={4} step={1} onChange={(v: any) => updateDraft('borderWidth', v)} suffix="px" />
                     <SelectControl label="Estilo Borda" options={['solid', 'dashed', 'dotted']} value={draft.borderStyle} onChange={(v: any) => updateDraft('borderStyle', v)} />
