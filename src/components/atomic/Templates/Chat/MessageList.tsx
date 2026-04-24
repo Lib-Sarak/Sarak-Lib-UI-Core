@@ -42,9 +42,10 @@ export const MessageList: React.FC<MessageListProps> = ({ messages, isLoading, i
             <motion.div animate={{ y: [0, -5, 0] }} transition={{ repeat: Infinity, duration: 0.6, delay: 0.2 }} className="w-1.5 h-1.5 bg-indigo-400 rounded-full" />
             <motion.div animate={{ y: [0, -5, 0] }} transition={{ repeat: Infinity, duration: 0.6, delay: 0.4 }} className="w-1.5 h-1.5 bg-indigo-400 rounded-full" />
           </div>
-          {isProcessingFiles && <p className="text-[8px] mt-2 font-mono text-slate-500 uppercase tracking-widest animate-pulse">Codificando Imagens...</p>}
+          {isProcessingFiles && <p className="text-3xs mt-2 font-mono text-slate-500 uppercase tracking-widest animate-pulse">Codificando Imagens...</p>}
         </div>
       </div>
     )}
   </div>
 );
+

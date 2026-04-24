@@ -90,21 +90,21 @@ export const ThemeCustomizationTab: React.FC = () => {
                     {/* Quick Global Settings */}
                     <div className="grid grid-cols-2 gap-3 mb-4">
                         <div className="flex flex-col gap-1.5">
-                            <span className="text-[8px] font-black uppercase tracking-widest text-white/20">Modo de Exibição</span>
+                            <span className="text-3xs font-black uppercase tracking-widest text-white/20">Modo de Exibição</span>
                             <div className="flex p-1 bg-white/5 rounded-xl border border-white/5">
                                 <button onClick={() => updateDraft('mode', 'dark')} className={`flex-1 flex items-center justify-center gap-2 py-2 rounded-lg transition-all ${draft.mode === 'dark' ? 'bg-white/10 text-white' : 'text-white/20 hover:text-white/40'}`}>
-                                    <Moon size={10} /> <span className="text-[8px] font-black uppercase">Dark</span>
+                                    <Moon size={10} /> <span className="text-3xs font-black uppercase">Dark</span>
                                 </button>
                                 <button onClick={() => updateDraft('mode', 'light')} className={`flex-1 flex items-center justify-center gap-2 py-2 rounded-lg transition-all ${draft.mode === 'light' ? 'bg-white text-black' : 'text-white/20 hover:text-white/40'}`}>
-                                    <Sun size={10} /> <span className="text-[8px] font-black uppercase">Light</span>
+                                    <Sun size={10} /> <span className="text-3xs font-black uppercase">Light</span>
                                 </button>
                             </div>
                         </div>
                         <div className="flex flex-col gap-1.5">
-                            <span className="text-[8px] font-black uppercase tracking-widest text-white/20">Escala Tipográfica</span>
+                            <span className="text-3xs font-black uppercase tracking-widest text-white/20">Escala Tipográfica</span>
                             <div className="flex p-1 bg-white/5 rounded-xl border border-white/5">
                                 {['pp', 'p', 'm', 'g', 'gg'].map(s => (
-                                    <button key={s} onClick={() => updateDraft('fontScale', s)} className={`flex-1 py-2 rounded-lg text-[8px] font-black uppercase transition-all ${draft.fontScale === s ? 'bg-[var(--theme-primary)] text-white' : 'text-white/20 hover:text-white/40'}`}>
+                                    <button key={s} onClick={() => updateDraft('fontScale', s)} className={`flex-1 py-2 rounded-lg text-3xs font-black uppercase transition-all ${draft.fontScale === s ? 'bg-[var(--theme-primary)] text-white' : 'text-white/20 hover:text-white/40'}`}>
                                         {s}
                                     </button>
                                 ))}
@@ -112,7 +112,7 @@ export const ThemeCustomizationTab: React.FC = () => {
                         </div>
                     </div>
 
-                    <button onClick={handleApplyToSystem} className="w-full group relative overflow-hidden bg-[var(--theme-primary)] hover:bg-[var(--theme-primary)]/90 text-white py-3.5 rounded-xl font-black text-[10px] uppercase tracking-[0.2em] transition-all active:scale-[0.98] shadow-[0_15px_30px_-10px_rgba(var(--theme-primary-rgb),0.4)]">
+                    <button onClick={handleApplyToSystem} className="w-full group relative overflow-hidden bg-[var(--theme-primary)] hover:bg-[var(--theme-primary)]/90 text-white py-3.5 rounded-xl font-black text-2xs uppercase tracking-[0.2em] transition-all active:scale-[0.98] shadow-[0_15px_30px_-10px_rgba(var(--theme-primary-rgb),0.4)]">
                         <div className="flex items-center justify-center gap-3 relative z-10">
                             <Check size={12} className="group-hover:scale-125 transition-transform" />
                             <span>Aplicar ao Sistema</span>
@@ -257,7 +257,7 @@ export const ThemeCustomizationTab: React.FC = () => {
                         <motion.div initial={{ y: 20, opacity: 0 }} animate={{ y: 0, opacity: 1 }} exit={{ y: 20, opacity: 0 }} className="absolute bottom-8 left-1/2 -translate-x-1/2 z-[100]">
                             <div className={`px-6 py-3 rounded-2xl flex items-center gap-3 backdrop-blur-xl border shadow-2xl ${toast.type === 'success' ? 'bg-emerald-500/10 border-emerald-500/20 text-emerald-400' : 'bg-amber-500/10 border-amber-500/20 text-amber-400'}`}>
                                 {toast.type === 'success' ? <Check size={14} /> : <AlertCircle size={14} />}
-                                <span className="text-[10px] font-black uppercase tracking-widest">{toast.message}</span>
+                                <span className="text-2xs font-black uppercase tracking-widest">{toast.message}</span>
                             </div>
                         </motion.div>
                     )}
@@ -268,3 +268,4 @@ export const ThemeCustomizationTab: React.FC = () => {
 };
 
 export default ThemeCustomizationTab;
+

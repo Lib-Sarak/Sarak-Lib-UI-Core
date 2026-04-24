@@ -26,7 +26,7 @@ export const LazyEngineWrapper: React.FC<LazyEngineWrapperProps> = ({ children, 
                 className="flex flex-col items-center"
             >
                 <div className="w-12 h-12 rounded-full border-2 border-t-[var(--theme-primary)] border-white/5 animate-spin mb-4" />
-                <span className="text-[10px] font-black uppercase tracking-[0.3em] text-white/20 animate-pulse">Initializing Engine...</span>
+                <span className="text-2xs font-black uppercase tracking-[0.3em] text-white/20 animate-pulse">Initializing Engine...</span>
             </motion.div>
             
             {/* Background Glow */}
@@ -47,3 +47,4 @@ export const LazyEngineWrapper: React.FC<LazyEngineWrapperProps> = ({ children, 
 };
 
 export default LazyEngineWrapper;
+

@@ -20,7 +20,7 @@ export const MockLogs: React.FC<any> = ({ animationVariants, animationStyle, tok
                 }}
             >
                 <div className="absolute inset-0 bg-white/[0.02] pointer-events-none"></div>
-                <table className="w-full text-left text-[10px] relative z-10">
+                <table className="w-full text-left text-2xs relative z-10">
                     <thead className="bg-[var(--theme-card)] border-b border-[var(--theme-border)]">
                         <tr style={{ fontFamily: 'var(--font-tab, var(--font-heading))' }}>
                             <th className="p-3 font-bold text-[var(--theme-muted)] uppercase tracking-wider">Payload</th>
@@ -43,3 +43,4 @@ export const MockLogs: React.FC<any> = ({ animationVariants, animationStyle, tok
         </div>
     );
 };
+

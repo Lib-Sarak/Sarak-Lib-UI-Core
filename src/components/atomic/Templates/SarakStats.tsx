@@ -85,7 +85,7 @@ export const SarakStats: React.FC<SarakStatsProps> = ({ endpoint, label, mapping
                         className="bg-theme-card border-theme hover:bg-white/[0.04] transition-all group rounded-theme"
                         style={{ padding: 'var(--theme-pad, 1.5rem)', transitionDuration: 'var(--animation-speed, 0.5s)' }}
                     >
-                        <span className="text-[9px] text-white/30 font-black uppercase tracking-widest block group-hover:text-blue-400 transition-colors" style={{ marginBottom: 'calc(var(--theme-gap) / 6)' }}>
+                        <span className="text-2xs text-white/30 font-black uppercase tracking-widest block group-hover:text-blue-400 transition-colors" style={{ marginBottom: 'calc(var(--theme-gap) / 6)' }}>
                             {mapping ? mapping[key] : key.replace(/_/g, ' ')}
                         </span>
                         <div className="flex items-center justify-between">
@@ -102,3 +102,4 @@ export const SarakStats: React.FC<SarakStatsProps> = ({ endpoint, label, mapping
         </div>
     );
 };
+

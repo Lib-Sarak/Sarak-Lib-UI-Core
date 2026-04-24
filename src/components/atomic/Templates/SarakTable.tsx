@@ -72,7 +72,7 @@ export const SarakTable: React.FC<SarakTableProps> = ({ endpoint, label, mapping
                 <div>
                     <h4 className="font-bold">Erro ao carregar dados</h4>
                     <p className="text-xs opacity-60">{error}</p>
-                    <button onClick={fetchData} className="mt-2 text-[10px] font-black uppercase tracking-widest hover:underline">Tentar novamente</button>
+                    <button onClick={fetchData} className="mt-2 text-2xs font-black uppercase tracking-widest hover:underline">Tentar novamente</button>
                 </div>
             </div>
         );
@@ -111,7 +111,7 @@ export const SarakTable: React.FC<SarakTableProps> = ({ endpoint, label, mapping
                         <thead>
                             <tr className="bg-white/5 border-b border-theme">
                                 {columns.map(col => (
-                                    <th key={col} className="text-[10px] font-black text-white/30 uppercase tracking-[0.2em]" style={{ padding: 'calc(var(--theme-pad) / 1.5) var(--theme-pad)' }}>
+                                    <th key={col} className="text-2xs font-black text-white/30 uppercase tracking-[0.2em]" style={{ padding: 'calc(var(--theme-pad) / 1.5) var(--theme-pad)' }}>
                                         <div className="flex items-center gap-2 cursor-pointer hover:text-white transition-colors">
                                             {columnLabels[col]}
                                             <ArrowUpDown size={10} />
@@ -146,7 +146,7 @@ export const SarakTable: React.FC<SarakTableProps> = ({ endpoint, label, mapping
                                             {columns.map(col => (
                                                 <td key={col} className="text-sm text-white/70 font-medium" style={{ padding: 'calc(var(--theme-pad) / 2) var(--theme-pad)' }}>
                                                     {typeof row[col] === 'boolean' ? (
-                                                        <span className={`px-2 py-0.5 rounded-theme text-[9px] font-black uppercase ${row[col] ? 'bg-emerald-500/10 text-emerald-400' : 'bg-red-500/10 text-red-400'}`}>
+                                                        <span className={`px-2 py-0.5 rounded-theme text-2xs font-black uppercase ${row[col] ? 'bg-emerald-500/10 text-emerald-400' : 'bg-red-500/10 text-red-400'}`}>
                                                             {row[col] ? 'Ativo' : 'Inativo'}
                                                         </span>
                                                     ) : (
@@ -179,3 +179,4 @@ export const SarakTable: React.FC<SarakTableProps> = ({ endpoint, label, mapping
         </div>
     );
 };
+

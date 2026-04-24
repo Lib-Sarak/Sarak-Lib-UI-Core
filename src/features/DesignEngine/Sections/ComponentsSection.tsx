@@ -14,7 +14,7 @@ export const ComponentsSection: React.FC<ComponentsSectionProps> = ({ draft, upd
         <>
             <Section id="button-styles" icon={MousePointer2} title="Botões & Interação" activeSection={activeSection} onToggle={setActiveSection}>
                 <div className="flex flex-col gap-4">
-                    <button onClick={() => updateDraft('isGeometricCut', !draft.isGeometricCut)} className={`w-full py-4 rounded-xl text-[10px] font-black uppercase transition-all flex items-center justify-center gap-3 ${draft.isGeometricCut ? 'bg-[var(--theme-primary)] text-white shadow-[0_0_20px_rgba(var(--theme-primary-rgb),0.4)]' : 'bg-white/5 text-white/40 hover:bg-white/10'}`}>
+                    <button onClick={() => updateDraft('isGeometricCut', !draft.isGeometricCut)} className={`w-full py-4 rounded-xl text-2xs font-black uppercase transition-all flex items-center justify-center gap-3 ${draft.isGeometricCut ? 'bg-[var(--theme-primary)] text-white shadow-[0_0_20px_rgba(var(--theme-primary-rgb),0.4)]' : 'bg-white/5 text-white/40 hover:bg-white/10'}`}>
                         <Box size={14} /> Geometric Cut (Corte Angular)
                     </button>
                     <div className="grid grid-cols-2 gap-4">
@@ -37,3 +37,4 @@ export const ComponentsSection: React.FC<ComponentsSectionProps> = ({ draft, upd
         </>
     );
 };
+

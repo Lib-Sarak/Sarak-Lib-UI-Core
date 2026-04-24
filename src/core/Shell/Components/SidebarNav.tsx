@@ -62,7 +62,7 @@ export const SidebarNav: React.FC<SidebarNavProps> = ({
             <div className="flex-1 overflow-y-auto p-4 custom-scrollbar flex flex-col" style={{ gap: `var(--theme-tab-gap, ${tabGap}px)` }}>
                 {Object.entries(groupedModules).map(([category, mods]) => (
                     <div key={category} style={{ marginBottom: `var(--theme-tab-gap, ${tabGap}px)` }}>
-                        <h4 className="text-[10px] font-bold text-white/20 uppercase tracking-[0.2em] mb-3 px-3">{category}</h4>
+                        <h4 className="text-2xs font-bold text-white/20 uppercase tracking-[0.2em] mb-3 px-3">{category}</h4>
                         <div className="space-y-1" style={{ gap: `var(--theme-tab-gap, ${tabGap}px)` }}>
                             {mods.map(mod => {
                                 const isOffline = mod.status === 'offline';
@@ -80,7 +80,7 @@ export const SidebarNav: React.FC<SidebarNavProps> = ({
                                         <IconRenderer name={mod.icon} className={activeModuleId === mod.id ? 'text-[var(--theme-primary)]' : 'text-[var(--theme-muted)]'} />
                                         <div className="flex flex-col items-start overflow-hidden">
                                             <span className="text-sm truncate">{mod.label}</span>
-                                            {isOffline && <span className="text-[8px] text-red-500 font-bold uppercase tracking-wider">Service Offline</span>}
+                                            {isOffline && <span className="text-3xs text-red-500 font-bold uppercase tracking-wider">Service Offline</span>}
                                         </div>
                                         {activeModuleId === mod.id && <motion.div layoutId="active-pill" className="absolute left-0 w-1 h-4 bg-[var(--theme-primary)] rounded-full shadow-[0_0_15px_var(--theme-primary)]" />}
                                         {isOffline && <div className="absolute right-2 top-1/2 -translate-y-1/2 w-1.5 h-1.5 rounded-full bg-red-500 animate-pulse shadow-[0_0_5px_red]" />}
@@ -97,8 +97,8 @@ export const SidebarNav: React.FC<SidebarNavProps> = ({
                     <div className="flex items-center gap-3">
                         <div className="w-8 h-8 rounded-full bg-[var(--theme-primary)]/20 border border-[var(--theme-primary)]/30 flex items-center justify-center text-[var(--theme-primary)]"><User size={14} /></div>
                         <div className="flex flex-col">
-                            <span className="text-[10px] font-bold text-[var(--theme-title)]/80">{user?.email?.split('@')[0] || 'Sarak User'}</span>
-                            <span className="text-[9px] text-[var(--theme-muted)] uppercase tracking-widest">{user?.role || 'Guest'}</span>
+                            <span className="text-2xs font-bold text-[var(--theme-title)]/80">{user?.email?.split('@')[0] || 'Sarak User'}</span>
+                            <span className="text-2xs text-[var(--theme-muted)] uppercase tracking-widest">{user?.role || 'Guest'}</span>
                         </div>
                     </div>
                     <button onClick={logout} className="p-2 text-[var(--theme-muted)] hover:text-red-400 transition-colors"><LogOut size={14} /></button>
@@ -108,3 +108,4 @@ export const SidebarNav: React.FC<SidebarNavProps> = ({
         </aside>
     );
 };
+

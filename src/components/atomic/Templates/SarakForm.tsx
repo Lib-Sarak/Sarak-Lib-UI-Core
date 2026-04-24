@@ -105,10 +105,10 @@ export const SarakForm: React.FC<SarakFormProps> = ({
                     </div>
                     <div>
                         <h3 className="text-2xl font-black text-white tracking-tight" style={{ fontWeight: 'var(--heading-weight)' }}>{label}</h3>
-                        <p className="text-[10px] font-bold text-white/20 uppercase tracking-[0.2em]">Painel de Controle Atômico</p>
+                        <p className="text-2xs font-bold text-white/20 uppercase tracking-[0.2em]">Painel de Controle Atômico</p>
                     </div>
                 </div>
-                <div className="flex items-center bg-emerald-500/5 rounded-xl border border-emerald-500/10 text-emerald-400 text-[9px] font-black uppercase tracking-widest" style={{ gap: 'calc(var(--theme-gap) / 4)', padding: 'calc(var(--theme-pad) / 3) calc(var(--theme-pad) / 1.5)' }}>
+                <div className="flex items-center bg-emerald-500/5 rounded-xl border border-emerald-500/10 text-emerald-400 text-2xs font-black uppercase tracking-widest" style={{ gap: 'calc(var(--theme-gap) / 4)', padding: 'calc(var(--theme-pad) / 3) calc(var(--theme-pad) / 1.5)' }}>
                     <ShieldCheck size={12} /> Sincronização Segura
                 </div>
             </div>
@@ -117,7 +117,7 @@ export const SarakForm: React.FC<SarakFormProps> = ({
             <div className="grid grid-cols-1 md:grid-cols-2 relative z-10" style={{ gap: 'var(--theme-gap, 1.5rem)', marginBottom: 'calc(var(--theme-gap) * 1.5)' }}>
                 {fields.map((key) => (
                     <div key={key} className="flex flex-col" style={{ gap: 'calc(var(--theme-gap) / 4)' }}>
-                        <label className="text-[10px] font-black text-white/30 uppercase tracking-widest pl-1 block">
+                        <label className="text-2xs font-black text-white/30 uppercase tracking-widest pl-1 block">
                             {mapping ? mapping[key] : key.replace(/_/g, ' ')}
                         </label>
                         <input
@@ -179,3 +179,4 @@ export const SarakForm: React.FC<SarakFormProps> = ({
 };
 
 export default SarakForm;
+

@@ -20,8 +20,8 @@ export const AnimationSection: React.FC<AnimationSectionProps> = ({ draft, updat
             <Section id="effects-refinement" icon={Sparkles} title="Refinamento Visual" activeSection={activeSection} onToggle={setActiveSection}>
                 <SliderControl label="Curva de Contraste" value={draft.contrastCurve} min={0.5} max={1.5} step={0.05} onChange={(v: any) => updateDraft('contrastCurve', v)} />
                 <div className="mb-4">
-                    <span className="text-[9px] font-black uppercase tracking-widest text-white/40 block mb-2">Sombras em Camadas (Layered)</span>
-                    <button onClick={() => updateDraft('layeredShadows', !draft.layeredShadows)} className={`w-full py-2.5 rounded-lg text-[9px] font-black uppercase transition-all flex items-center justify-center gap-2 ${draft.layeredShadows ? 'bg-[var(--theme-primary)] text-white' : 'bg-white/5 text-white/40 hover:bg-white/10'}`}>
+                    <span className="text-2xs font-black uppercase tracking-widest text-white/40 block mb-2">Sombras em Camadas (Layered)</span>
+                    <button onClick={() => updateDraft('layeredShadows', !draft.layeredShadows)} className={`w-full py-2.5 rounded-lg text-2xs font-black uppercase transition-all flex items-center justify-center gap-2 ${draft.layeredShadows ? 'bg-[var(--theme-primary)] text-white' : 'bg-white/5 text-white/40 hover:bg-white/10'}`}>
                         {draft.layeredShadows ? 'Ativado' : 'Desativado'}
                     </button>
                 </div>
@@ -29,3 +29,4 @@ export const AnimationSection: React.FC<AnimationSectionProps> = ({ draft, updat
         </>
     );
 };
+

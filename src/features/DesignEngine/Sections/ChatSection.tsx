@@ -22,3 +22,4 @@ export const ChatSection: React.FC<ChatSectionProps> = ({ draft, updateDraft, ac
         </>
     );
 };
+

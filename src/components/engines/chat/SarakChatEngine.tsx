@@ -59,7 +59,7 @@ const SarakChatEngine: React.FC<SarakChatEngineProps> = ({
                     </div>
                     <div>
                         <h3 className="text-xs font-black uppercase tracking-widest text-white/80">Sarak Assistant</h3>
-                        <p className="text-[9px] text-[var(--theme-primary)] font-bold animate-pulse">Online & Ready</p>
+                        <p className="text-2xs text-[var(--theme-primary)] font-bold animate-pulse">Online & Ready</p>
                     </div>
                 </div>
             </div>
@@ -88,7 +88,7 @@ const SarakChatEngine: React.FC<SarakChatEngineProps> = ({
                                                 : 'bg-black/40 border-[var(--theme-primary)]/10 text-white/90 shadow-xl backdrop-blur-md rounded-2xl rounded-tl-none'
                                 }`}>
                                     <ReactMarkdown 
-                                        className="prose prose-invert prose-sm max-w-none text-[11px] leading-relaxed"
+                                        className="prose prose-invert prose-sm max-w-none text-xs leading-relaxed"
                                         components={{
                                             code({node, inline, className, children, ...props}: any) {
                                                 const match = /language-(\w+)/.exec(className || '');
@@ -157,3 +157,4 @@ const SarakChatEngine: React.FC<SarakChatEngineProps> = ({
 };
 
 export default SarakChatEngine;
+

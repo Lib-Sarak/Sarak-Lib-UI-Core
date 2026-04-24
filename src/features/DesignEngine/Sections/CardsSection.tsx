@@ -16,10 +16,10 @@ export const CardsSection: React.FC<CardsSectionProps> = ({ draft, updateDraft, 
                 <div className="grid grid-cols-2 gap-4">
                     <SliderControl label="Raio da Borda" value={draft.borderRadius} min={0} max={32} onChange={(v: any) => updateDraft('borderRadius', v)} suffix="px" />
                     <div className="flex flex-col gap-1">
-                        <span className="text-[8px] font-black uppercase tracking-widest text-white/40">Corte Angular</span>
+                        <span className="text-3xs font-black uppercase tracking-widest text-white/40">Corte Angular</span>
                         <button 
                             onClick={() => updateDraft('isGeometricCut', !draft.isGeometricCut)}
-                            className={`py-2 rounded-lg text-[8px] font-black uppercase transition-all ${draft.isGeometricCut ? 'bg-[var(--theme-primary)] text-white' : 'bg-white/5 text-white/40'}`}
+                            className={`py-2 rounded-lg text-3xs font-black uppercase transition-all ${draft.isGeometricCut ? 'bg-[var(--theme-primary)] text-white' : 'bg-white/5 text-white/40'}`}
                         >
                             {draft.isGeometricCut ? 'Ativado' : 'Desativado'}
                         </button>
@@ -47,10 +47,10 @@ export const CardsSection: React.FC<CardsSectionProps> = ({ draft, updateDraft, 
                 <div className="grid grid-cols-2 gap-4 mt-4">
                     <SliderControl label="Curva de Contraste" value={draft.contrastCurve || 1.0} min={0.5} max={2.0} step={0.1} onChange={(v: any) => updateDraft('contrastCurve', v)} />
                     <div className="flex flex-col gap-1">
-                        <span className="text-[8px] font-black uppercase tracking-widest text-white/40">Efeito Border Beam</span>
+                        <span className="text-3xs font-black uppercase tracking-widest text-white/40">Efeito Border Beam</span>
                         <button 
                             onClick={() => updateDraft('borderBeamEnabled', draft.borderBeamEnabled === '1' ? '0' : '1')}
-                            className={`py-2 px-3 rounded-lg text-[9px] font-black uppercase transition-all border ${draft.borderBeamEnabled === '1' ? 'bg-[var(--theme-primary)] border-transparent text-white' : 'bg-white/5 border-white/10 text-white/40'}`}
+                            className={`py-2 px-3 rounded-lg text-2xs font-black uppercase transition-all border ${draft.borderBeamEnabled === '1' ? 'bg-[var(--theme-primary)] border-transparent text-white' : 'bg-white/5 border-white/10 text-white/40'}`}
                         >
                             {draft.borderBeamEnabled === '1' ? 'Ativado' : 'Desativado'}
                         </button>
@@ -71,3 +71,4 @@ export const CardsSection: React.FC<CardsSectionProps> = ({ draft, updateDraft, 
         </>
     );
 };
+

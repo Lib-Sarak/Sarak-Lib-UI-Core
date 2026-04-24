@@ -46,7 +46,7 @@ export const CustomizationPanel: React.FC = () => {
                                     : 'border-transparent text-white/40 hover:text-white/60 hover:bg-white/5'}`}
                             >
                                 <Icon className={`w-4 h-4 ${isActive ? 'animate-pulse' : ''}`} />
-                                <span className="text-[10px] font-black uppercase tracking-widest">{tab.label}</span>
+                                <span className="text-2xs font-black uppercase tracking-widest">{tab.label}</span>
                             </button>
                         );
                     })}
@@ -69,3 +69,4 @@ export const CustomizationPanel: React.FC = () => {
 };
 
 export default CustomizationPanel;
+

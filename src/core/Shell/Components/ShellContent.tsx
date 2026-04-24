@@ -35,13 +35,13 @@ export const ShellContent: React.FC<ShellContentProps> = ({
                                 <div>
                                     <div className="flex items-center gap-3 text-[var(--theme-primary)] mb-2">
                                         <div className="p-2 rounded-[var(--radius-theme)] bg-[var(--theme-primary)]/10 border border-[var(--theme-primary)]/20 shadow-[0_0_15px_rgba(var(--theme-primary-rgb),0.1)]"><IconRenderer name={activeModule.icon} size={20} /></div>
-                                        <span className="text-[10px] font-black uppercase tracking-[0.4em] italic opacity-60 text-[var(--theme-muted)]">{activeModule.category || 'Module'}</span>
+                                        <span className="text-2xs font-black uppercase tracking-[0.4em] italic opacity-60 text-[var(--theme-muted)]">{activeModule.category || 'Module'}</span>
                                     </div>
                                     <h1 className="text-4xl lg:text-5xl font-black tracking-tighter text-[var(--theme-title)] uppercase">{activeModule.label}</h1>
                                 </div>
                                 <div className="flex items-center gap-2">
                                     <button onClick={() => setIsSearchOpen(true)} className="p-3 rounded-[var(--radius-theme)] bg-[var(--theme-card)] border border-[var(--theme-border)] hover:border-[var(--theme-primary)]/50 transition-all text-[var(--theme-muted)] hover:text-[var(--theme-primary)]"><Search size={18} /></button>
-                                    <button className="hidden sm:flex items-center gap-2 px-6 py-3 rounded-[var(--radius-theme)] bg-[var(--theme-primary)] hover:opacity-90 text-white text-[10px] font-black uppercase tracking-[0.2em] transition-all shadow-xl shadow-[var(--theme-primary)]/20 text-center"><Zap size={14} className="fill-current" /> New Record</button>
+                                    <button className="hidden sm:flex items-center gap-2 px-6 py-3 rounded-[var(--radius-theme)] bg-[var(--theme-primary)] hover:opacity-90 text-white text-2xs font-black uppercase tracking-[0.2em] transition-all shadow-xl shadow-[var(--theme-primary)]/20 text-center"><Zap size={14} className="fill-current" /> New Record</button>
                                 </div>
                             </header>
 
@@ -84,3 +84,4 @@ export const ShellContent: React.FC<ShellContentProps> = ({
         </main>
     );
 };
+

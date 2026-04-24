@@ -49,7 +49,7 @@ export const AdvancedTab: React.FC = () => {
                             <div key={i} className="flex flex-col gap-2 p-4 rounded-2xl bg-white/5 border border-white/5">
                                 <div className="flex items-center gap-2 text-white/20">
                                     <stat.icon className="w-3.5 h-3.5" />
-                                    <span className="text-[9px] font-black uppercase tracking-widest">{stat.label}</span>
+                                    <span className="text-2xs font-black uppercase tracking-widest">{stat.label}</span>
                                 </div>
                                 <span className={`text-xs font-mono font-bold tracking-tight ${stat.color || 'text-white/70'}`}>{stat.value}</span>
                             </div>
@@ -59,8 +59,8 @@ export const AdvancedTab: React.FC = () => {
                     <div className="p-4 rounded-2xl bg-indigo-500/5 border border-indigo-500/10 flex items-start gap-4">
                         <HelpCircle className="w-5 h-5 text-indigo-400 shrink-0 mt-1" />
                         <div className="space-y-2">
-                            <h4 className="text-[10px] font-bold text-white/80 uppercase">Sobre a Sarak Matrix v5.0</h4>
-                            <p className="text-[9px] text-white/40 leading-relaxed uppercase font-medium">
+                            <h4 className="text-2xs font-bold text-white/80 uppercase">Sobre a Sarak Matrix v5.0</h4>
+                            <p className="text-2xs text-white/40 leading-relaxed uppercase font-medium">
                                 O Motor Elite SDT gerencia 100% da visualidade através de tokens source-driven. 
                                 Qualquer alteração aqui reflete em todos os módulos registrados instantaneamente via Context Bridge.
                             </p>
@@ -84,7 +84,7 @@ export const AdvancedTab: React.FC = () => {
                             </div>
                             <div>
                                 <h4 className="text-xs font-black uppercase tracking-widest text-white/90">Factory Hard Reset</h4>
-                                <p className="text-[9px] text-white/30 uppercase font-medium">Limpar cache local e configurações de tema</p>
+                                <p className="text-2xs text-white/30 uppercase font-medium">Limpar cache local e configurações de tema</p>
                             </div>
                         </div>
 
@@ -98,17 +98,17 @@ export const AdvancedTab: React.FC = () => {
                             ) : (
                                 <RefreshCw className="w-4 h-4 group-hover:rotate-180 transition-transform duration-500" />
                             )}
-                            <span className="text-[10px] font-black uppercase tracking-[0.2em]">Restaurar Padrões</span>
+                            <span className="text-2xs font-black uppercase tracking-[0.2em]">Restaurar Padrões</span>
                         </button>
 
                         <div className="text-center">
-                            <span className="text-[8px] text-white/10 uppercase font-black tracking-widest">Ação Irreversível • Sincronize com a Nuvem Antes</span>
+                            <span className="text-3xs text-white/10 uppercase font-black tracking-widest">Ação Irreversível • Sincronize com a Nuvem Antes</span>
                         </div>
                     </div>
 
                     {/* API SYNC */}
                     <div className="space-y-4 pt-4">
-                        <div className="flex items-center justify-between text-[10px] font-black uppercase tracking-widest text-white/40">
+                        <div className="flex items-center justify-between text-2xs font-black uppercase tracking-widest text-white/40">
                             <span>Sincronização Cloud</span>
                             <span className="text-emerald-400">Ativa (v2)</span>
                         </div>
@@ -123,3 +123,4 @@ export const AdvancedTab: React.FC = () => {
 };
 
 export default AdvancedTab;
+

@@ -69,7 +69,7 @@ export const SarakSearch: React.FC<SarakSearchProps> = ({ isOpen, onClose }) => 
                             placeholder="Search tool, record or configuration..."
                             className="flex-1 bg-transparent border-none outline-none text-[var(--theme-title)] text-lg placeholder:text-[var(--theme-muted)] font-medium"
                         />
-                        <div className="flex items-center gap-1.5 px-2 py-1 rounded-[calc(var(--radius-theme)*0.5)] bg-[var(--theme-primary)]/10 border border-[var(--theme-primary)]/20 text-[10px] text-[var(--theme-primary)] font-bold uppercase tracking-widest">
+                        <div className="flex items-center gap-1.5 px-2 py-1 rounded-[calc(var(--radius-theme)*0.5)] bg-[var(--theme-primary)]/10 border border-[var(--theme-primary)]/20 text-2xs text-[var(--theme-primary)] font-bold uppercase tracking-widest">
                             <span className="text-[12px]"><Command size={10} /></span>
                             <span>K</span>
                         </div>
@@ -79,7 +79,7 @@ export const SarakSearch: React.FC<SarakSearchProps> = ({ isOpen, onClose }) => 
                     <div className="max-h-[60vh] overflow-y-auto custom-scrollbar p-2">
                         {filteredModules.length > 0 ? (
                             <div className="py-2">
-                                <h4 className="text-[9px] font-black uppercase tracking-[0.2em] text-[var(--theme-muted)] px-4 mb-2">Available Tools</h4>
+                                <h4 className="text-2xs font-black uppercase tracking-[0.2em] text-[var(--theme-muted)] px-4 mb-2">Available Tools</h4>
                                 {filteredModules.map(mod => (
                                     <div 
                                         key={mod.id}
@@ -91,7 +91,7 @@ export const SarakSearch: React.FC<SarakSearchProps> = ({ isOpen, onClose }) => 
                                             </div>
                                             <div className="flex flex-col">
                                                 <span className="text-sm font-bold text-[var(--theme-title)]/80 group-hover:text-[var(--theme-primary)]">{mod.label}</span>
-                                                <span className="text-[10px] text-[var(--theme-muted)] uppercase tracking-widest">{mod.category || 'Module'}</span>
+                                                <span className="text-2xs text-[var(--theme-muted)] uppercase tracking-widest">{mod.category || 'Module'}</span>
                                             </div>
                                         </div>
                                         <ArrowRight className="w-4 h-4 text-[var(--theme-muted)] opacity-0 group-hover:opacity-100 transition-all -translate-x-2 group-hover:translate-x-0" />
@@ -109,16 +109,16 @@ export const SarakSearch: React.FC<SarakSearchProps> = ({ isOpen, onClose }) => 
                     {/* Footer Area */}
                     <div className="bg-[var(--theme-sidebar)]/40 border-t border-[var(--theme-border)] px-6 py-3 flex items-center justify-between">
                         <div className="flex gap-4">
-                            <div className="flex items-center gap-1.5 text-[9px] font-bold text-[var(--theme-muted)] uppercase tracking-widest">
+                            <div className="flex items-center gap-1.5 text-2xs font-bold text-[var(--theme-muted)] uppercase tracking-widest">
                                 <span className="px-1.5 py-0.5 rounded bg-[var(--theme-card)] border border-[var(--theme-border)]">ESC</span>
                                 <span>Close</span>
                             </div>
-                            <div className="flex items-center gap-1.5 text-[9px] font-bold text-[var(--theme-muted)] uppercase tracking-widest">
+                            <div className="flex items-center gap-1.5 text-2xs font-bold text-[var(--theme-muted)] uppercase tracking-widest">
                                 <span className="px-1.5 py-0.5 rounded bg-[var(--theme-card)] border border-[var(--theme-border)]">↑↓</span>
                                 <span>Navigate</span>
                             </div>
                         </div>
-                        <span className="text-[9px] font-black uppercase tracking-widest text-[var(--theme-muted)] italic">Sarak Lib Search Engine</span>
+                        <span className="text-2xs font-black uppercase tracking-widest text-[var(--theme-muted)] italic">Sarak Lib Search Engine</span>
                     </div>
                 </motion.div>
             </div>
@@ -127,3 +127,4 @@ export const SarakSearch: React.FC<SarakSearchProps> = ({ isOpen, onClose }) => 
 };
 
 export default SarakSearch;
+

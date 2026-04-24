@@ -36,7 +36,7 @@ export const LanguageSelector = () => {
                 <button
                     key={l.id}
                     onClick={() => handleLangChange(l.id)}
-                    className={`px-1.5 py-1 text-[10px] font-bold transition-all hover:text-theme-primary ${current === l.id ? 'text-theme-primary' : 'text-theme-muted'
+                    className={`px-1.5 py-1 text-2xs font-bold transition-all hover:text-theme-primary ${current === l.id ? 'text-theme-primary' : 'text-theme-muted'
                         }`}
                 >
                     {l.label}
@@ -130,7 +130,7 @@ export const ModuleSelector = ({ currentModule, setCurrentModule, modules = [] }
             <button
                 key={mod.id}
                 onClick={() => setCurrentModule(mod.id)}
-                className={`flex-grow px-3 py-1.5 rounded-lg text-[9px] font-black transition-all duration-300 uppercase tracking-widest ${currentModule === mod.id
+                className={`flex-grow px-3 py-1.5 rounded-lg text-2xs font-black transition-all duration-300 uppercase tracking-widest ${currentModule === mod.id
                     ? "bg-theme-primary text-white shadow-lg"
                     : "text-theme-muted hover:text-theme-title hover:bg-theme-primary/5"
                     }`}
@@ -140,5 +140,6 @@ export const ModuleSelector = ({ currentModule, setCurrentModule, modules = [] }
         ))}
     </div>
 );
+
 
 

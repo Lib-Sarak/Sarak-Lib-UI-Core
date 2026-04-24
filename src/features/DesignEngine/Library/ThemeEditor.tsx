@@ -25,7 +25,7 @@ export const ConfigSection: React.FC<ConfigSectionProps> = ({ id, icon: Icon, ti
                     <div className={`p-1.5 rounded-lg transition-colors ${isOpen ? 'bg-[var(--theme-primary)] text-white' : 'bg-[var(--theme-card)] text-[var(--theme-muted)] group-hover:text-[var(--theme-primary)] border border-[var(--theme-border)]'}`}>
                         <Icon className="w-4 h-4" />
                     </div>
-                    <span className={`text-[10px] font-black uppercase tracking-widest ${isOpen ? 'text-[var(--theme-title)]' : 'text-[var(--theme-muted)] group-hover:text-[var(--theme-title)]'}`}>
+                    <span className={`text-2xs font-black uppercase tracking-widest ${isOpen ? 'text-[var(--theme-title)]' : 'text-[var(--theme-muted)] group-hover:text-[var(--theme-title)]'}`}>
                         {title}
                     </span>
                 </div>
@@ -93,7 +93,7 @@ export const ThemeEditor: React.FC<ThemeEditorProps> = ({
             >
                 <div className="space-y-4">
                     <div className="flex items-center justify-between mb-2">
-                        <span className="text-[10px] font-bold text-[var(--theme-muted)] uppercase tracking-wider">Accent Color</span>
+                        <span className="text-2xs font-bold text-[var(--theme-muted)] uppercase tracking-wider">Accent Color</span>
                         <div className="relative">
                             <input
                                 type="color"
@@ -129,7 +129,7 @@ export const ThemeEditor: React.FC<ThemeEditorProps> = ({
                 <div className="space-y-6">
                     {/* Radius Slider */}
                     <div className="space-y-3">
-                        <div className="flex justify-between text-[11px] font-bold">
+                        <div className="flex justify-between text-xs font-bold">
                             <span className="text-[var(--theme-muted)]">Corner Radius</span>
                             <span className="text-[var(--theme-primary)] font-mono">{config['--radius-theme']}</span>
                         </div>
@@ -142,7 +142,7 @@ export const ThemeEditor: React.FC<ThemeEditorProps> = ({
                     </div>
                     {/* Gap Slider */}
                     <div className="space-y-3">
-                        <div className="flex justify-between text-[11px] font-bold">
+                        <div className="flex justify-between text-xs font-bold">
                             <span className="text-[var(--theme-muted)]">Spacing (Gap)</span>
                             <span className="text-[var(--theme-primary)] font-mono">{config['--theme-gap']}</span>
                         </div>
@@ -167,7 +167,7 @@ export const ThemeEditor: React.FC<ThemeEditorProps> = ({
                 <div className="space-y-6">
                     {/* Controle de Escala da Fonte */}
                     <div>
-                        <span className="text-[10px] font-bold text-[var(--theme-muted)] uppercase tracking-wider block mb-3">Font Size (Global)</span>
+                        <span className="text-2xs font-bold text-[var(--theme-muted)] uppercase tracking-wider block mb-3">Font Size (Global)</span>
                         <div className="flex bg-[var(--theme-body)]/50 p-1 rounded-xl border border-[var(--theme-border)]/50">
                             {['p1', 'p', 'm', 'g', 'g1'].map((size) => (
                                 <button
@@ -185,7 +185,7 @@ export const ThemeEditor: React.FC<ThemeEditorProps> = ({
                     </div>
 
                     <div>
-                        <span className="text-[10px] font-bold text-[var(--theme-muted)] uppercase tracking-wider block mb-3">Heading Font</span>
+                        <span className="text-2xs font-bold text-[var(--theme-muted)] uppercase tracking-wider block mb-3">Heading Font</span>
                         <div className="grid grid-cols-1 gap-2">
                             {THEME_FONTS.filter(f => f.category === 'display' || f.category === 'serif' || f.category === 'sans').slice(0, 8).map(font => (
                                 <button
@@ -194,7 +194,7 @@ export const ThemeEditor: React.FC<ThemeEditorProps> = ({
                                     className={`p-3 rounded-xl border text-left transition-all ${config['--font-heading'] === font.value ? 'border-[var(--theme-primary)] bg-[var(--theme-primary)]/10' : 'border-[var(--theme-border)]/50 hover:bg-[var(--theme-card)]'}`}
                                 >
                                     <div style={{ fontFamily: font.value }} className="text-sm font-bold text-[var(--theme-title)]">{font.name}</div>
-                                    <div className="text-[9px] text-[var(--theme-muted)] opacity-60 uppercase mt-1">{font.category}</div>
+                                    <div className="text-2xs text-[var(--theme-muted)] opacity-60 uppercase mt-1">{font.category}</div>
                                 </button>
                             ))}
                         </div>
@@ -217,8 +217,8 @@ export const ThemeEditor: React.FC<ThemeEditorProps> = ({
                             onClick={() => onConfigChange('--bg-texture', tex.id)}
                             className={`p-3 rounded-xl border flex flex-col gap-2 transition-all ${config['--bg-texture'] === tex.id ? 'border-[var(--theme-primary)] bg-[var(--theme-primary)]/10' : 'border-[var(--theme-border)]/50 hover:bg-[var(--theme-card)]'}`}
                         >
-                            <span className="text-[10px] font-bold text-[var(--theme-title)] uppercase">{tex.name}</span>
-                            <span className="text-[8px] text-[var(--theme-muted)] leading-tight">{tex.description}</span>
+                            <span className="text-2xs font-bold text-[var(--theme-title)] uppercase">{tex.name}</span>
+                            <span className="text-3xs text-[var(--theme-muted)] leading-tight">{tex.description}</span>
                         </button>
                     ))}
                 </div>
@@ -240,9 +240,9 @@ export const ThemeEditor: React.FC<ThemeEditorProps> = ({
                             className={`w-full p-4 rounded-xl border text-left transition-all ${previewAnimationStyle === id ? 'border-[var(--theme-primary)] bg-[var(--theme-primary)]/10' : 'border-[var(--theme-border)]/50 hover:bg-[var(--theme-card)]'}`}
                         >
                             <div className="flex items-center justify-between mb-1">
-                                <span className="text-[10px] font-black uppercase tracking-widest text-[var(--theme-title)]">{effect.name || id}</span>
+                                <span className="text-2xs font-black uppercase tracking-widest text-[var(--theme-title)]">{effect.name || id}</span>
                             </div>
-                            <p className="text-[9px] text-[var(--theme-muted)] leading-relaxed">{effect.description || 'Page transition effect'}</p>
+                            <p className="text-2xs text-[var(--theme-muted)] leading-relaxed">{effect.description || 'Page transition effect'}</p>
                         </button>
                     ))}
                 </div>
@@ -264,7 +264,7 @@ export const ThemeEditor: React.FC<ThemeEditorProps> = ({
                             className={`p-4 rounded-xl border text-center transition-all ${previewEmojiSet === id ? 'border-[var(--theme-primary)] bg-[var(--theme-primary)]/10' : 'border-[var(--theme-border)]/50 hover:bg-[var(--theme-card)]'}`}
                         >
                             <div className="text-xl mb-2">{pack.dashboard}</div>
-                            <div className="text-[9px] font-black uppercase tracking-widest text-[var(--theme-title)]">{id}</div>
+                            <div className="text-2xs font-black uppercase tracking-widest text-[var(--theme-title)]">{id}</div>
                         </button>
                     ))}
                 </div>
@@ -272,3 +272,4 @@ export const ThemeEditor: React.FC<ThemeEditorProps> = ({
         </div>
     );
 };
+

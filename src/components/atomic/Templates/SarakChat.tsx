@@ -66,3 +66,4 @@ export const SarakChat: React.FC<SarakChatProps> = ({
     </div>
   );
 };
+

@@ -23,7 +23,7 @@ export const LayoutSection: React.FC<LayoutSectionProps> = ({ draft, updateDraft
                         <div className="grid grid-cols-2 gap-4">
                             <button 
                                 onClick={() => updateDraft('isAutoHideEnabled', !draft.isAutoHideEnabled)}
-                                className={`py-2 rounded-lg text-[8px] font-black uppercase transition-all ${draft.isAutoHideEnabled ? 'bg-[var(--theme-primary)] text-white' : 'bg-white/5 text-white/20'}`}
+                                className={`py-2 rounded-lg text-3xs font-black uppercase transition-all ${draft.isAutoHideEnabled ? 'bg-[var(--theme-primary)] text-white' : 'bg-white/5 text-white/20'}`}
                             >
                                 {draft.isAutoHideEnabled ? 'Auto-Hide On' : 'Auto-Hide Off'}
                             </button>
@@ -56,10 +56,10 @@ export const LayoutSection: React.FC<LayoutSectionProps> = ({ draft, updateDraft
                         onChange={(v: any) => updateDraft('maxContentWidth', v)} 
                     />
                     <div className="flex flex-col gap-1">
-                        <span className="text-[8px] font-black uppercase tracking-widest text-white/40">Modo Split View</span>
+                        <span className="text-3xs font-black uppercase tracking-widest text-white/40">Modo Split View</span>
                         <button 
                             onClick={() => updateDraft('isSplitViewEnabled', !draft.isSplitViewEnabled)}
-                            className={`py-2 rounded-lg text-[8px] font-black uppercase transition-all ${draft.isSplitViewEnabled ? 'bg-[var(--theme-primary)] text-white' : 'bg-white/5 text-white/20'}`}
+                            className={`py-2 rounded-lg text-3xs font-black uppercase transition-all ${draft.isSplitViewEnabled ? 'bg-[var(--theme-primary)] text-white' : 'bg-white/5 text-white/20'}`}
                         >
                             {draft.isSplitViewEnabled ? 'Ativado' : 'Desativado'}
                         </button>
@@ -73,3 +73,4 @@ export const LayoutSection: React.FC<LayoutSectionProps> = ({ draft, updateDraft
         </>
     );
 };
+

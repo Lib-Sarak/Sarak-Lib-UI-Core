@@ -7,3 +7,4 @@ export const IconRenderer = ({ name, className, size = 16 }: { name?: string, cl
     const IconComponent = (LucideIcons as any)[name];
     return IconComponent ? <IconComponent size={size} className={className} /> : <LayoutDashboard size={size} className={className} />;
 };
+

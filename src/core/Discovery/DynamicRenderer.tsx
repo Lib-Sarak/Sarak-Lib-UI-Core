@@ -202,7 +202,7 @@ export const DynamicRenderer: React.FC<DynamicRendererProps> = ({ contracts, mod
                             <button
                                 key={name}
                                 onClick={() => setActiveTab(name)}
-                                className={`relative px-8 py-3.5 rounded-[1.5rem] text-[10px] font-black uppercase tracking-[0.2em] transition-all duration-500 ${
+                                className={`relative px-8 py-3.5 rounded-[1.5rem] text-2xs font-black uppercase tracking-[0.2em] transition-all duration-500 ${
                                     activeTab === name ? 'text-white' : 'text-white/30 hover:text-white/60'
                                 }`}
                             >
@@ -231,3 +231,4 @@ export const DynamicRenderer: React.FC<DynamicRendererProps> = ({ contracts, mod
 };
 
 export default DynamicRenderer;
+

@@ -24,7 +24,7 @@ export const ThemeToggle: React.FC = () => {
             
             {/* Dropdown de Temas */}
             <div className="absolute right-0 top-full mt-2 w-64 max-h-[400px] overflow-y-auto bg-[#0f0f11] border border-white/10 rounded-xl shadow-2xl opacity-0 translate-y-2 pointer-events-none group-hover:opacity-100 group-hover:translate-y-0 group-hover:pointer-events-auto transition-all z-[100] p-2 custom-scrollbar">
-                <div className="text-[10px] font-bold text-white/30 uppercase tracking-widest px-3 py-2 border-b border-white/5 mb-1">
+                <div className="text-2xs font-bold text-white/30 uppercase tracking-widest px-3 py-2 border-b border-white/5 mb-1">
                     Layouts Premium Matrix
                 </div>
                 {layoutOptions.map((layout) => (
@@ -39,7 +39,7 @@ export const ThemeToggle: React.FC = () => {
                     >
                         <div className="flex flex-col items-start">
                             <span>{layout.name}</span>
-                            <span className="text-[10px] opacity-40 capitalize">{(layout.class || '').replace('layout-', '')} • {layout.animation}</span>
+                            <span className="text-2xs opacity-40 capitalize">{(layout.class || '').replace('layout-', '')} • {layout.animation}</span>
                         </div>
                         {theme === layout.id && <Check className="w-4 h-4" />}
                     </button>
@@ -50,3 +50,4 @@ export const ThemeToggle: React.FC = () => {
 };
 
 export default ThemeToggle;
+

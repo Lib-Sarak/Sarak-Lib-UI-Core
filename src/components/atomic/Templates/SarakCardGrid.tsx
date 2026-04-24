@@ -126,7 +126,7 @@ export const SarakCardGrid: React.FC<SarakCardGridProps> = ({ endpoint, label, m
                 <div className="flex flex-col md:flex-row md:items-center justify-between" style={{ gap: 'var(--theme-gap)' }}>
                     <div>
                         <h3 className="text-3xl font-black text-white tracking-tighter" style={{ fontWeight: 'var(--heading-weight)' }}>{label || 'Explorar'}</h3>
-                        <p className="text-white/20 text-[10px] font-bold uppercase tracking-[0.3em] mt-1">Sintonizando {filteredData.length} unidades disponíveis</p>
+                        <p className="text-white/20 text-2xs font-bold uppercase tracking-[0.3em] mt-1">Sintonizando {filteredData.length} unidades disponíveis</p>
                     </div>
                     <div className="flex items-center" style={{ gap: 'calc(var(--theme-gap) / 2)' }}>
                         <div className="relative group">
@@ -151,7 +151,7 @@ export const SarakCardGrid: React.FC<SarakCardGridProps> = ({ endpoint, label, m
                                 <button
                                     key={opt}
                                     onClick={() => setActiveFilters(prev => ({ ...prev, [mainFilter.id]: opt }))}
-                                    className={`px-6 py-3 rounded-theme text-[10px] font-black uppercase tracking-widest transition-all border ${
+                                    className={`px-6 py-3 rounded-theme text-2xs font-black uppercase tracking-widest transition-all border ${
                                         (activeFilters[mainFilter.id] || 'all') === opt
                                             ? 'bg-blue-600 border-blue-500 text-white shadow-lg shadow-blue-900/40'
                                             : 'bg-theme-card border-theme text-white/30 hover:text-white'
@@ -170,7 +170,7 @@ export const SarakCardGrid: React.FC<SarakCardGridProps> = ({ endpoint, label, m
                                     <select
                                         value={activeFilters[filter.id] || 'all'}
                                         onChange={(e) => setActiveFilters(prev => ({ ...prev, [filter.id]: e.target.value }))}
-                                        className="w-full appearance-none bg-theme-card border-theme px-4 py-3 pr-10 rounded-theme text-[10px] font-black text-white/40 uppercase tracking-widest outline-none focus:border-blue-500/40 transition-all cursor-pointer"
+                                        className="w-full appearance-none bg-theme-card border-theme px-4 py-3 pr-10 rounded-theme text-2xs font-black text-white/40 uppercase tracking-widest outline-none focus:border-blue-500/40 transition-all cursor-pointer"
                                     >
                                         <option value="all">{filter.label}: Todos</option>
                                         {(filter.options || (filter.dynamic ? getDynamicOptions(filter.field) : [])).map(opt => {
@@ -247,13 +247,17 @@ const SarakCoreCard = ({ item, mapping }: { item: any; mapping: any }) => {
         <motion.div 
             initial={{ opacity: 0, y: 20 }}
             animate={{ opacity: 1, y: 0 }}
-            className="flex flex-col bg-theme-card border-theme group transition-all h-fit"
+            className="flex flex-col bg-theme-card border-theme group transition-all h-fit relative overflow-hidden"
             style={{ transitionDuration: 'var(--animation-speed, 0.5s)' }}
         >
-            <div className="p-theme" style={{ padding: 'var(--theme-pad, 2rem)' }}>
+            {/* Spotlight Effect (Sovereignty v8.5) */}
+            <div className="absolute inset-0 z-0 spotlight-effect pointer-events-none opacity-0 group-hover:opacity-100 transition-opacity duration-500" />
+            
+            <div className="p-theme relative z-10" style={{ padding: 'var(--theme-pad, 2rem)' }}>
+
                 <div className="flex justify-between items-start mb-6" style={{ marginBottom: 'calc(var(--theme-gap) / 1.5)' }}>
                     <div className="flex flex-col">
-                        <span className="text-[10px] font-black text-blue-400 uppercase tracking-[0.2em] mb-1">
+                        <span className="text-2xs font-black text-blue-400 uppercase tracking-[0.2em] mb-1">
                             {getVal(item, mapping?.subtitle) || 'Modelo'}
                         </span>
                         <h4 className="text-xl font-black text-white tracking-tight group-hover:text-blue-400 transition-colors">
@@ -269,18 +273,18 @@ const SarakCoreCard = ({ item, mapping }: { item: any; mapping: any }) => {
 
                 <div className="flex flex-col gap-4 mb-8">
                     <div className="flex flex-wrap gap-2">
-                        <span className="text-[8px] font-black text-white/20 uppercase w-full mb-1">Input Capacities</span>
+                        <span className="text-3xs font-black text-white/20 uppercase w-full mb-1">Input Capacities</span>
                         {inputCaps.map((cap: string) => (
-                            <div key={cap} className="flex items-center gap-1.5 px-3 py-1 bg-blue-500/10 text-blue-400 border border-blue-500/20 rounded-full text-[9px] font-black uppercase">
+                            <div key={cap} className="flex items-center gap-1.5 px-3 py-1 bg-blue-500/10 text-blue-400 border border-blue-500/20 rounded-full text-2xs font-black uppercase">
                                 {getCapIcon(cap)} {cap}
                             </div>
                         ))}
                     </div>
                     {outputCaps.length > 0 && (
                         <div className="flex flex-wrap gap-2">
-                            <span className="text-[8px] font-black text-white/20 uppercase w-full mb-1">Output Capacities</span>
+                            <span className="text-3xs font-black text-white/20 uppercase w-full mb-1">Output Capacities</span>
                             {outputCaps.map((cap: string) => (
-                                <div key={cap} className="flex items-center gap-1.5 px-3 py-1 bg-purple-500/10 text-purple-400 border border-purple-500/20 rounded-full text-[9px] font-black uppercase">
+                                <div key={cap} className="flex items-center gap-1.5 px-3 py-1 bg-purple-500/10 text-purple-400 border border-purple-500/20 rounded-full text-2xs font-black uppercase">
                                     {getCapIcon(cap)} {cap}
                                 </div>
                             ))}
@@ -290,20 +294,20 @@ const SarakCoreCard = ({ item, mapping }: { item: any; mapping: any }) => {
 
                 <div className="grid grid-cols-2 mb-8 pt-6 border-t border-theme" style={{ gap: 'var(--theme-gap, 1rem)', marginBottom: 'var(--theme-gap)', marginTop: 'var(--theme-gap)' }}>
                     <div className="flex flex-col">
-                        <span className="text-[8px] font-black text-white/30 uppercase tracking-widest mb-1">Custo In (1M)</span>
+                        <span className="text-3xs font-black text-white/30 uppercase tracking-widest mb-1">Custo In (1M)</span>
                         <span className="text-sm font-mono text-emerald-400 font-bold">
                             {priceIn !== undefined ? `$${Number(priceIn).toFixed(4)}` : 'N/A'}
                         </span>
                     </div>
                     <div className="flex flex-col">
-                        <span className="text-[8px] font-black text-white/30 uppercase tracking-widest mb-1">Custo Out (1M)</span>
+                        <span className="text-3xs font-black text-white/30 uppercase tracking-widest mb-1">Custo Out (1M)</span>
                         <span className="text-sm font-mono text-purple-400 font-bold">
                             {priceOut !== undefined ? `$${Number(priceOut).toFixed(4)}` : 'N/A'}
                         </span>
                     </div>
                     <div className="flex flex-col col-span-2">
-                        <span className="text-[8px] font-black text-white/30 uppercase tracking-widest mb-1">Janela de Contexto</span>
-                        <span className="text-[10px] font-black text-white/80 uppercase">
+                        <span className="text-3xs font-black text-white/30 uppercase tracking-widest mb-1">Janela de Contexto</span>
+                        <span className="text-2xs font-black text-white/80 uppercase">
                             {context ? `${(Number(context) / 1000)}k tokens` : 'Desconhecida'}
                         </span>
                     </div>
@@ -312,7 +316,7 @@ const SarakCoreCard = ({ item, mapping }: { item: any; mapping: any }) => {
                 <div className="flex" style={{ gap: 'calc(var(--theme-gap) / 2.5)' }}>
                     <button 
                         onClick={() => setIsExpanded(!isExpanded)}
-                        className="flex-1 flex items-center justify-center gap-2 py-4 bg-theme-card border-theme text-white/60 hover:text-white rounded-theme text-[10px] font-black uppercase tracking-widest transition-all"
+                        className="flex-1 flex items-center justify-center gap-2 py-4 bg-theme-card border-theme text-white/60 hover:text-white rounded-theme text-2xs font-black uppercase tracking-widest transition-all"
                         style={{ transitionDuration: 'var(--animation-speed, 0.3s)' }}
                     >
                         <LucideIcons.ChevronDown className={`w-3 h-3 transition-transform ${isExpanded ? 'rotate-180' : ''}`} />
@@ -334,14 +338,14 @@ const SarakCoreCard = ({ item, mapping }: { item: any; mapping: any }) => {
                             <div className="flex flex-col pt-8" style={{ gap: 'calc(var(--theme-gap) / 1.5)', paddingTop: 'var(--theme-gap)' }}>
                                 {description && (
                                     <div className="p-6 bg-theme-card border-theme rounded-theme">
-                                        <span className="text-[8px] font-black text-blue-400 uppercase mb-2 block">Descrição Técnica</span>
-                                        <p className="text-[11px] text-white/50 leading-relaxed font-medium">{description}</p>
+                                        <span className="text-3xs font-black text-blue-400 uppercase mb-2 block">Descrição Técnica</span>
+                                        <p className="text-xs text-white/50 leading-relaxed font-medium">{description}</p>
                                     </div>
                                 )}
                                 {tokenizer && (
                                     <div className="flex items-center justify-between px-6 py-4 bg-theme-card border-theme rounded-theme">
-                                        <span className="text-[8px] font-black text-white/30 uppercase">Tokenizer</span>
-                                        <span className="text-[10px] font-mono text-blue-400/80">{tokenizer}</span>
+                                        <span className="text-3xs font-black text-white/30 uppercase">Tokenizer</span>
+                                        <span className="text-2xs font-mono text-blue-400/80">{tokenizer}</span>
                                     </div>
                                 )}
                             </div>
@@ -352,3 +356,4 @@ const SarakCoreCard = ({ item, mapping }: { item: any; mapping: any }) => {
         </motion.div>
     );
 };
+

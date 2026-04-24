@@ -44,7 +44,7 @@ export const ModelPicker: React.FC<ModelPickerProps> = ({
           >
             <div className="flex flex-col items-start overflow-hidden">
               <span className="text-xs font-bold truncate w-full">{m.display_name}</span>
-              <span className="text-[9px] opacity-60 uppercase tracking-tighter">{m.provider}</span>
+              <span className="text-2xs opacity-60 uppercase tracking-tighter">{m.provider}</span>
             </div>
             {selectedRoute?.model === m.model && <Check size={14} />}
           </button>
@@ -53,3 +53,4 @@ export const ModelPicker: React.FC<ModelPickerProps> = ({
     </div>
   </div>
 );
+

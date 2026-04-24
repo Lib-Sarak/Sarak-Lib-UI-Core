@@ -49,7 +49,7 @@ export const ExpandableCard: React.FC<ExpandableCardProps> = ({
         <>
             <div className={`bg-theme-card border border-theme-border p-6 rounded-theme shadow-theme flex flex-col relative group transition-all duration-300 ${isExpanded ? 'opacity-0 pointer-events-none' : ''} ${className}`}>
                 <div className="w-full flex justify-between items-start mb-6">
-                    <h3 className="text-[11px] font-black text-theme-main uppercase tracking-widest flex items-center gap-2">
+                    <h3 className="text-xs font-black text-theme-main uppercase tracking-widest flex items-center gap-2">
                         {iconContent}
                         <span className="truncate">{title}</span>
                     </h3>
@@ -114,3 +114,4 @@ export const ExpandableCard: React.FC<ExpandableCardProps> = ({
         </>
     );
 };
+

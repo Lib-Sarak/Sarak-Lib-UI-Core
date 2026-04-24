@@ -59,7 +59,7 @@ export const TopbarNav: React.FC<TopbarNavProps> = ({
                             <button 
                                 key={mod.id} 
                                 onClick={() => setActiveModuleId(mod.id)} 
-                                className={`px-4 py-1.5 rounded-full text-[10px] font-black uppercase tracking-widest transition-all whitespace-nowrap font-tab ${activeModuleId === mod.id ? 'bg-[var(--theme-primary)] text-white shadow-lg shadow-[var(--theme-primary)]/30' : 'text-white/40 hover:text-white'}`}
+                                className={`px-4 py-1.5 rounded-full text-2xs font-black uppercase tracking-widest transition-all whitespace-nowrap font-tab ${activeModuleId === mod.id ? 'bg-[var(--theme-primary)] text-white shadow-lg shadow-[var(--theme-primary)]/30' : 'text-white/40 hover:text-white'}`}
                             >
                                 {mod.label}
                             </button>
@@ -72,8 +72,8 @@ export const TopbarNav: React.FC<TopbarNavProps> = ({
                 {searchStyle === 'minimal' && (
                     <div className="hidden md:flex items-center w-64 group relative">
                         <Search size={14} className="absolute left-3 top-1/2 -translate-y-1/2 text-[var(--theme-muted)] group-focus-within:text-[var(--theme-primary)] transition-colors" />
-                        <input type="text" placeholder="Smart Search..." onClick={() => setIsSearchOpen(true)} readOnly className="w-full h-9 bg-[var(--theme-card)] border border-[var(--theme-border)] rounded-[var(--radius-theme)] pl-10 pr-4 text-[11px] font-bold text-[var(--theme-title)]/60 hover:bg-white/[0.08] hover:border-[var(--theme-primary)]/50 transition-all cursor-pointer" />
-                        <div className="absolute right-3 top-1/2 -translate-y-1/2 flex items-center gap-1 px-1.5 py-0.5 rounded bg-white/5 border border-white/10 text-[8px] text-white/20 font-black opacity-0 group-hover:opacity-100"><span>CTRL</span><span>K</span></div>
+                        <input type="text" placeholder="Smart Search..." onClick={() => setIsSearchOpen(true)} readOnly className="w-full h-9 bg-[var(--theme-card)] border border-[var(--theme-border)] rounded-[var(--radius-theme)] pl-10 pr-4 text-xs font-bold text-[var(--theme-title)]/60 hover:bg-white/[0.08] hover:border-[var(--theme-primary)]/50 transition-all cursor-pointer" />
+                        <div className="absolute right-3 top-1/2 -translate-y-1/2 flex items-center gap-1 px-1.5 py-0.5 rounded bg-white/5 border border-white/10 text-3xs text-white/20 font-black opacity-0 group-hover:opacity-100"><span>CTRL</span><span>K</span></div>
                     </div>
                 )}
                 
@@ -89,3 +89,4 @@ export const TopbarNav: React.FC<TopbarNavProps> = ({
         </header>
     );
 };
+

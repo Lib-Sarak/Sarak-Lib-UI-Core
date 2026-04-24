@@ -16,7 +16,7 @@ export const ChatHeader: React.FC<ChatHeaderProps> = ({ label, mode, setMode, cl
       </div>
       <div>
         <h2 className="text-sm font-bold tracking-tight text-white uppercase" style={{ fontWeight: 'var(--heading-weight)' }}>{label}</h2>
-        <p className="text-[10px] text-slate-400 font-medium tracking-widest">Agnostic Interface • Sarak Lib Engine</p>
+        <p className="text-2xs text-slate-400 font-medium tracking-widest">Agnostic Interface • Sarak Lib Engine</p>
       </div>
     </div>
 
@@ -40,3 +40,4 @@ export const ChatHeader: React.FC<ChatHeaderProps> = ({ label, mode, setMode, cl
     </div>
   </header>
 );
+

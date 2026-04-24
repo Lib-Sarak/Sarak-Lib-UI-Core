@@ -5,8 +5,8 @@ import { motion, AnimatePresence } from 'framer-motion';
 export const SliderControl: React.FC<any> = ({ label, value, min, max, step = 1, onChange, suffix = '' }) => (
     <div className="mb-4">
         <div className="flex justify-between items-center mb-2">
-            <span className="text-[9px] font-black uppercase tracking-widest text-white/40">{label}</span>
-            <span className="text-[10px] font-mono text-[var(--theme-primary)]">{value}{suffix}</span>
+            <span className="text-2xs font-black uppercase tracking-widest text-white/40">{label}</span>
+            <span className="text-2xs font-mono text-[var(--theme-primary)]">{value}{suffix}</span>
         </div>
         <input 
             type="range" min={min} max={max} step={step} value={value} 
@@ -18,11 +18,11 @@ export const SliderControl: React.FC<any> = ({ label, value, min, max, step = 1,
 
 export const SelectControl: React.FC<any> = ({ label, options, value, onChange, isFont = false }) => (
     <div className="mb-4">
-        <span className="text-[9px] font-black uppercase tracking-widest text-white/40 block mb-2">{label}</span>
+        <span className="text-2xs font-black uppercase tracking-widest text-white/40 block mb-2">{label}</span>
         <select 
             value={value || ''} 
             onChange={(e) => onChange(e.target.value)}
-            className="w-full bg-white/5 border border-white/10 rounded-lg py-2 px-3 text-[11px] font-bold focus:border-[var(--theme-primary)] focus:outline-none transition-all text-white/80"
+            className="w-full bg-white/5 border border-white/10 rounded-lg py-2 px-3 text-xs font-bold focus:border-[var(--theme-primary)] focus:outline-none transition-all text-white/80"
             style={isFont ? { fontFamily: value } : {}}
         >
             {(options || []).map((opt: any) => (
@@ -40,12 +40,12 @@ export const CategoryLabel: React.FC<{ icon: any, title: string, index: number, 
         className={`w-full px-6 py-4 mt-6 first:mt-0 flex items-center justify-between border-y border-white/5 transition-all ${isOpen ? 'bg-white/[0.03]' : 'bg-white/[0.01] hover:bg-white/[0.02]'}`}
     >
         <div className="flex items-center gap-3">
-            <div className={`w-6 h-6 rounded-lg flex items-center justify-center font-black text-[10px] transition-all ${isOpen ? 'bg-[var(--theme-primary)] text-white shadow-[0_0_15px_rgba(var(--theme-primary-rgb),0.3)]' : 'bg-white/5 text-white/40'}`}>
+            <div className={`w-6 h-6 rounded-lg flex items-center justify-center font-black text-2xs transition-all ${isOpen ? 'bg-[var(--theme-primary)] text-white shadow-[0_0_15px_rgba(var(--theme-primary-rgb),0.3)]' : 'bg-white/5 text-white/40'}`}>
                 {index}
             </div>
             <div className="flex items-center gap-2">
                 <Icon size={12} className={`transition-all ${isOpen ? 'text-[var(--theme-primary)]' : 'text-white/20'}`} />
-                <h3 className={`text-[10px] font-black uppercase tracking-[0.2em] transition-all ${isOpen ? 'text-white' : 'text-white/40'}`}>{title}</h3>
+                <h3 className={`text-2xs font-black uppercase tracking-[0.2em] transition-all ${isOpen ? 'text-white' : 'text-white/40'}`}>{title}</h3>
             </div>
         </div>
         <ChevronDown size={14} className={`transition-transform duration-300 ${isOpen ? 'rotate-180 text-[var(--theme-primary)]' : 'text-white/20'}`} />
@@ -57,7 +57,7 @@ export const Section: React.FC<{ id: string, icon: any, title: string, activeSec
         <button onClick={() => onToggle(activeSection === id ? null : id)} className="w-full py-4 flex items-center justify-between hover:bg-white/[0.02] transition-all px-6 group">
             <div className="flex items-center gap-3">
                 <div className={`p-1.5 rounded-lg transition-all ${activeSection === id ? 'bg-[var(--theme-primary)] text-white' : 'bg-white/5 text-white/30 group-hover:text-white/60'}`}><Icon size={14} /></div>
-                <span className={`text-[10px] font-black uppercase tracking-[0.2em] transition-all ${activeSection === id ? 'text-white' : 'text-white/30 group-hover:text-white/60'}`}>{title}</span>
+                <span className={`text-2xs font-black uppercase tracking-[0.2em] transition-all ${activeSection === id ? 'text-white' : 'text-white/30 group-hover:text-white/60'}`}>{title}</span>
             </div>
             <ChevronDown size={14} className={`transition-transform duration-300 ${activeSection === id ? 'rotate-180 text-[var(--theme-primary)]' : 'text-white/20'}`} />
         </button>
@@ -70,3 +70,4 @@ export const Section: React.FC<{ id: string, icon: any, title: string, activeSec
         </AnimatePresence>
     </div>
 );
+

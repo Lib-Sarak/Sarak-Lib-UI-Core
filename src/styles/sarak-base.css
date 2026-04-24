@@ -28,7 +28,41 @@
   --ease-sarak-expo: cubic-bezier(0.19, 1, 0.22, 1);
   --ease-sarak-fluid: cubic-bezier(0.4, 0, 0.2, 1);
   --ease-sarak-elastic: cubic-bezier(0.175, 0.885, 0.32, 1.275);
+
+  /* Escalas de Tipografia Reativas (v10.0) */
+  --font-size-3xs: calc(0.5rem * var(--font-size-factor, 1));
+  --font-size-2xs: calc(0.625rem * var(--font-size-factor, 1));
+  --font-size-xs: calc(0.75rem * var(--font-size-factor, 1));
+  --font-size-sm: calc(0.875rem * var(--font-size-factor, 1));
+  --font-size-base: calc(1rem * var(--font-size-factor, 1));
+  --font-size-lg: calc(1.125rem * var(--font-size-factor, 1));
+  --font-size-xl: calc(1.25rem * var(--font-size-factor, 1));
+  --font-size-2xl: calc(1.5rem * var(--font-size-factor, 1));
+
+  /* Motor de Geometria Reativa (v10.0) */
+  --border-width: var(--theme-border-width, 1px);
+  --default-border-color: var(--theme-border);
+  --default-ring-color: var(--theme-primary);
+
+  /* Ponte de Arredondamento (Sincroniza Tailwind com Slider de Radius) */
+  --radius-xs:  calc(0.125rem * (var(--radius-theme, 12px) / 12px));
+  --radius-sm:  calc(0.25rem  * (var(--radius-theme, 12px) / 12px));
+  --radius-md:  calc(0.375rem * (var(--radius-theme, 12px) / 12px));
+  --radius-lg:  calc(0.5rem   * (var(--radius-theme, 12px) / 12px));
+  --radius-xl:  calc(0.75rem  * (var(--radius-theme, 12px) / 12px));
+  --radius-2xl: calc(1rem     * (var(--radius-theme, 12px) / 12px));
+  --radius-3xl: calc(1.5rem   * (var(--radius-theme, 12px) / 12px));
+  
+  /* Motor de Profundidade Reativa */
+  --shadow-sm: var(--theme-shadow);
+  --shadow-base: var(--theme-shadow);
+  --shadow-md: var(--theme-shadow);
+  --shadow-lg: var(--theme-shadow);
+  --shadow-xl: var(--theme-shadow);
 }
+
+
+
 
 /* 1. REAL DYNAMIC CONTRAST (LIGHT / DARK) */
 body.dark,
@@ -61,6 +95,10 @@ body.light,
   color-scheme: light;
 }
 
+html {
+  font-size: var(--theme-font-size-base, 14px);
+}
+
 body {
   /* ALIASES DE COMPATIBILIDADE - Sincroniza Sarak Legacy com Design Engine v5.6 */
   --theme-body: var(--bg-body);
@@ -89,19 +127,40 @@ body {
   padding: 0;
   overflow-x: hidden;
   font-family: var(--font-main, 'Inter', sans-serif);
-  font-size: var(--theme-font-size-base, 13px);
   line-height: 1.5;
+
   
   /* Motor de Elasticidade v6.0 */
   --elastic-curve: cubic-bezier(0.175, 0.885, 0.32, calc(1 + var(--sarak-elasticity, 0.2)));
   --elastic-scale: calc(1 + (var(--sarak-elasticity, 0.2) * 0.05));
 }
 
+/* 2. GLOBAL REACITIVITY BRIDGE (Sovereignty v10.0) */
+/* Garante que utilitários padrão do Tailwind herdem o estado do Motor Sarak */
+[class*="border"] {
+  border-style: var(--border-style, solid);
+}
+
+
 .bg-theme-card {
     transition: transform var(--animation-speed, 0.4s) var(--elastic-curve), 
                 box-shadow var(--animation-speed, 0.4s) ease,
                 background-color 0.3s ease !important;
 }
+
+/* --- CONTRACT UTILITIES (v8.5) --- */
+.rounded-theme { border-radius: var(--radius-theme, 12px) !important; }
+.border-theme { 
+    border-width: var(--theme-border-width, 1px) !important;
+    border-style: var(--border-style, solid) !important;
+    border-color: var(--theme-border) !important; 
+}
+.shadow-theme { box-shadow: var(--theme-shadow) !important; }
+.bg-theme-card { background-color: var(--theme-card) !important; }
+.divide-theme > * + * { border-color: var(--theme-border) !important; }
+.border-t-theme { border-top: var(--theme-border-width, 1px) var(--border-style, solid) var(--theme-border) !important; }
+.border-b-theme { border-bottom: var(--theme-border-width, 1px) var(--border-style, solid) var(--theme-border) !important; }
+
 
 .bg-theme-card:hover {
     transform: scale(var(--elastic-scale)) translateY(-8px) !important;
@@ -807,3 +866,31 @@ body, span, p, div { font-family: var(--font-main); }
 [data-tabular-nums="tabular-nums"] {
     font-variant-numeric: tabular-nums;
 }
+
+/* -----------------------------------------
+   CARD SPECIALIZED EFFECTS (v10.0)
+   ----------------------------------------- */
+   
+/* Spotlight Engine */
+[data-spotlight="1"] .spotlight-effect {
+    background: radial-gradient(
+        600px circle at var(--mouse-px-x, 0) var(--mouse-px-y, 0),
+        rgba(var(--theme-primary-rgb, 255, 255, 255), var(--spotlight-opacity, 0.15)),
+        transparent 80%
+    );
+}
+
+/* Border Beam Engine */
+[data-border-beam="1"] .border-beam-effect {
+    position: absolute;
+    inset: -1px;
+    border: 1px solid transparent;
+    border-radius: inherit;
+    background: linear-gradient(var(--mouse-px-x, 0) var(--mouse-px-y, 0), var(--theme-primary), transparent);
+    mask: linear-gradient(#fff, #fff) content-box, linear-gradient(#fff, #fff);
+    mask-composite: xor;
+    mask-composite: exclude;
+    pointer-events: none;
+    z-index: 5;
+}
+

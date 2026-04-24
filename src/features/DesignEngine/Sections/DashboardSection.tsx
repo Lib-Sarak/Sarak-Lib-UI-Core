@@ -23,10 +23,10 @@ export const DashboardSection: React.FC<DashboardSectionProps> = ({ draft, updat
                     <SliderControl label="Espessura" value={draft.chartThickness || 2} min={1} max={10} onChange={(v: any) => updateDraft('chartThickness', v)} suffix="px" />
                 </div>
                 <div className="grid grid-cols-2 gap-4">
-                    <button onClick={() => updateDraft('chartShowGrid', !draft.chartShowGrid)} className={`py-2 rounded-lg text-[8px] font-black uppercase transition-all ${draft.chartShowGrid ? 'bg-[var(--theme-primary)] text-white' : 'bg-white/5 text-white/20'}`}>
+                    <button onClick={() => updateDraft('chartShowGrid', !draft.chartShowGrid)} className={`py-2 rounded-lg text-3xs font-black uppercase transition-all ${draft.chartShowGrid ? 'bg-[var(--theme-primary)] text-white' : 'bg-white/5 text-white/20'}`}>
                         {draft.chartShowGrid ? 'Grid Visível' : 'Ocultar Grid'}
                     </button>
-                    <button onClick={() => updateDraft('chartSmoothing', !draft.chartSmoothing)} className={`py-2 rounded-lg text-[8px] font-black uppercase transition-all ${draft.chartSmoothing ? 'bg-[var(--theme-primary)] text-white' : 'bg-white/5 text-white/20'}`}>
+                    <button onClick={() => updateDraft('chartSmoothing', !draft.chartSmoothing)} className={`py-2 rounded-lg text-3xs font-black uppercase transition-all ${draft.chartSmoothing ? 'bg-[var(--theme-primary)] text-white' : 'bg-white/5 text-white/20'}`}>
                         {draft.chartSmoothing ? 'Suavizado' : 'Angular'}
                     </button>
                 </div>
@@ -39,3 +39,4 @@ export const DashboardSection: React.FC<DashboardSectionProps> = ({ draft, updat
         </>
     );
 };
+

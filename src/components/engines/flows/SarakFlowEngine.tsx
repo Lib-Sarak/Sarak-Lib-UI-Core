@@ -42,7 +42,7 @@ const SarakFlowEngine: React.FC<SarakFlowEngineProps> = ({ nodes, edges, onConne
                     maskColor="rgba(255,255,255,0.05)"
                 />
                 <Panel position="top-right" className="bg-[var(--theme-card)] p-2 rounded-lg border border-white/5 backdrop-blur-md">
-                    <span className="text-[10px] font-bold uppercase tracking-widest text-white/40">Flow Optimizer Active</span>
+                    <span className="text-2xs font-bold uppercase tracking-widest text-white/40">Flow Optimizer Active</span>
                 </Panel>
             </ReactFlow>
 
@@ -72,3 +72,4 @@ const SarakFlowEngine: React.FC<SarakFlowEngineProps> = ({ nodes, edges, onConne
 };
 
 export default SarakFlowEngine;
+

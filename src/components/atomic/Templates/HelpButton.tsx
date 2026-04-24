@@ -8,7 +8,7 @@ const HelpButton = ({ text }: { text: string }) => {
         <>
             <button
                 onClick={(e) => { e.preventDefault(); e.stopPropagation(); setIsOpen(true); }}
-                className="w-5 h-5 rounded-full border border-theme flex items-center justify-center text-[10px] text-slate-400 hover:border-indigo-500 hover:text-indigo-400 transition-colors z-20 relative outline-none"
+                className="w-5 h-5 rounded-full border border-theme flex items-center justify-center text-2xs text-slate-400 hover:border-indigo-500 hover:text-indigo-400 transition-colors z-20 relative outline-none"
                 style={{ transitionDuration: 'var(--animation-speed, 0.3s)' }}
             >
                 ?
@@ -59,3 +59,4 @@ const HelpButton = ({ text }: { text: string }) => {
 };
 
 export default HelpButton;
+

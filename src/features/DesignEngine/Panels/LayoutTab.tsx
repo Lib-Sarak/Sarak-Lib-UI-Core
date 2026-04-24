@@ -61,8 +61,8 @@ export const LayoutTab: React.FC = () => {
                                     <d.icon className="w-5 h-5" />
                                 </div>
                                 <div>
-                                    <div className="text-[10px] font-black uppercase tracking-widest mb-1">{d.label}</div>
-                                    <div className="text-[9px] text-white/40 font-medium">{d.desc}</div>
+                                    <div className="text-2xs font-black uppercase tracking-widest mb-1">{d.label}</div>
+                                    <div className="text-2xs text-white/40 font-medium">{d.desc}</div>
                                 </div>
                             </button>
                         ))}
@@ -87,11 +87,11 @@ export const LayoutTab: React.FC = () => {
                                     className="flex flex-col items-center gap-2 group"
                                 >
                                     <div className={`w-1 bg-gradient-to-t from-indigo-500 to-blue-400 transition-all duration-500 rounded-full ${fontScale === s.id ? 'h-12 opacity-100 shadow-[0_0_15px_rgba(99,102,241,0.5)]' : 'h-4 opacity-20'}`} />
-                                    <span className={`text-[10px] font-black transition-all ${fontScale === s.id ? 'text-white' : 'text-white/20'}`}>{s.label}</span>
+                                    <span className={`text-2xs font-black transition-all ${fontScale === s.id ? 'text-white' : 'text-white/20'}`}>{s.label}</span>
                                 </button>
                             ))}
                         </div>
-                        <p className="text-[9px] text-center text-white/30 uppercase font-black tracking-widest italic">Ajuste o multiplicador de escala do OS</p>
+                        <p className="text-2xs text-center text-white/30 uppercase font-black tracking-widest italic">Ajuste o multiplicador de escala do OS</p>
                     </div>
 
                     {/* Dimensões da Sidebar */}
@@ -99,7 +99,7 @@ export const LayoutTab: React.FC = () => {
                         <div className="flex items-center justify-between">
                             <div className="flex items-center gap-2">
                                 <SidebarIcon className="w-4 h-4 text-white/40" />
-                                <span className="text-[10px] font-black uppercase tracking-widest text-white/60">Largura Lateral</span>
+                                <span className="text-2xs font-black uppercase tracking-widest text-white/60">Largura Lateral</span>
                             </div>
                             <span className="text-xs font-mono text-blue-400">{sidebarWidth}px</span>
                         </div>
@@ -125,7 +125,7 @@ export const LayoutTab: React.FC = () => {
 
                         <div className="grid grid-cols-1 gap-4">
                             <div className="space-y-2">
-                                <label className="text-[9px] font-black uppercase tracking-[0.2em] text-white/30 ml-2">Heading Font</label>
+                                <label className="text-2xs font-black uppercase tracking-[0.2em] text-white/30 ml-2">Heading Font</label>
                                 <select 
                                     value={headingFont} 
                                     onChange={(e) => setHeadingFont(e.target.value)}
@@ -137,7 +137,7 @@ export const LayoutTab: React.FC = () => {
                             </div>
 
                             <div className="space-y-2">
-                                <label className="text-[9px] font-black uppercase tracking-[0.2em] text-white/30 ml-2">Body Font</label>
+                                <label className="text-2xs font-black uppercase tracking-[0.2em] text-white/30 ml-2">Body Font</label>
                                 <select 
                                     value={bodyFont} 
                                     onChange={(e) => setBodyFont(e.target.value)}
@@ -171,7 +171,7 @@ export const LayoutTab: React.FC = () => {
                                 <SidebarIcon className={`w-8 h-8 ${navigationStyle === 'sidebar' ? 'text-emerald-400' : 'text-white/20'}`} />
                                 <div className="text-left">
                                     <div className="text-xs font-black uppercase tracking-widest">Painel Lateral</div>
-                                    <div className="text-[9px] text-white/40 uppercase">Padrão Sarak OS (Fixo/Expandível)</div>
+                                    <div className="text-2xs text-white/40 uppercase">Padrão Sarak OS (Fixo/Expandível)</div>
                                 </div>
                             </div>
                             {navigationStyle === 'sidebar' && <div className="w-2 h-2 rounded-full bg-emerald-500 shadow-[0_0_10px_#10b981]" />}
@@ -189,7 +189,7 @@ export const LayoutTab: React.FC = () => {
                                 </div>
                                 <div className="text-left">
                                     <div className="text-xs font-black uppercase tracking-widest">Barra Superior</div>
-                                    <div className="text-[9px] text-white/40 uppercase">Foco no Conteúdo (Minimalista)</div>
+                                    <div className="text-2xs text-white/40 uppercase">Foco no Conteúdo (Minimalista)</div>
                                 </div>
                             </div>
                             {navigationStyle === 'topbar' && <div className="w-2 h-2 rounded-full bg-emerald-500 shadow-[0_0_10px_#10b981]" />}
@@ -202,3 +202,4 @@ export const LayoutTab: React.FC = () => {
 };
 
 export default LayoutTab;
+

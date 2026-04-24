@@ -46,15 +46,15 @@ export const MockDashboard: React.FC<any> = ({ animationVariants, animationStyle
                             <Zap className="w-8 h-8 text-[var(--theme-primary)]" />
                         </div>
                         <div className="text-sm font-bold text-[var(--theme-title)] mb-1">Sarak AI Elite</div>
-                        <div className="text-[10px] text-[var(--theme-muted)] uppercase font-black tracking-widest mb-1">Layout</div>
+                        <div className="text-2xs text-[var(--theme-muted)] uppercase font-black tracking-widest mb-1">Layout</div>
                         <div className="grid grid-cols-2 gap-2 w-full">
                             <div className="p-2 bg-[var(--theme-card)] border border-[var(--theme-border)] !rounded-lg flex flex-col items-center justify-center">
-                                <div className="text-[8px] text-[var(--theme-muted)] mb-1 uppercase">Status</div>
-                                <div className="text-[10px] font-bold text-emerald-500">Active</div>
+                                <div className="text-3xs text-[var(--theme-muted)] mb-1 uppercase">Status</div>
+                                <div className="text-2xs font-bold text-emerald-500">Active</div>
                             </div>
                             <div className="p-2 bg-[var(--theme-card)] border border-[var(--theme-border)] !rounded-lg flex flex-col items-center justify-center">
-                                <div className="text-[8px] text-[var(--theme-muted)] mb-1 uppercase">Uptime</div>
-                                <div className="text-[10px] font-bold text-[var(--theme-title)]">99.9%</div>
+                                <div className="text-3xs text-[var(--theme-muted)] mb-1 uppercase">Uptime</div>
+                                <div className="text-2xs font-bold text-[var(--theme-title)]">99.9%</div>
                             </div>
                         </div>
                     </div>
@@ -76,10 +76,10 @@ export const MockDashboard: React.FC<any> = ({ animationVariants, animationStyle
                 >
                     <div className="relative z-10 h-full flex flex-col">
                         <div className="flex justify-between items-center mb-6">
-                            <div className="text-[11px] font-black uppercase tracking-widest text-[var(--theme-muted)]">Performance Telemetry</div>
+                            <div className="text-xs font-black uppercase tracking-widest text-[var(--theme-muted)]">Performance Telemetry</div>
                             <div className="flex gap-2">
                                 <div className="w-2 h-2 rounded-full bg-emerald-500 animate-pulse"></div>
-                                <span className="text-[9px] font-bold text-[var(--theme-primary)] uppercase">Live</span>
+                                <span className="text-2xs font-bold text-[var(--theme-primary)] uppercase">Live</span>
                             </div>
                         </div>
                         <div className="flex-grow min-h-[160px] relative">
@@ -123,7 +123,7 @@ export const MockDashboard: React.FC<any> = ({ animationVariants, animationStyle
                 >
                     <div className="relative z-10 h-full flex flex-col items-center justify-center">
                         <div className="w-full text-left mb-4">
-                            <div className="text-[11px] font-black uppercase tracking-widest text-[var(--theme-muted)]">Core Temperature</div>
+                            <div className="text-xs font-black uppercase tracking-widest text-[var(--theme-muted)]">Core Temperature</div>
                         </div>
                         <div className="w-full h-[140px]">
                             <SarakChartEngine 
@@ -132,7 +132,7 @@ export const MockDashboard: React.FC<any> = ({ animationVariants, animationStyle
                                 config={{ engine: 'echarts', dataKey: 'value' }}
                             />
                         </div>
-                        <div className="text-[10px] text-[var(--theme-muted)] mt-2 uppercase font-bold tracking-tighter">Thermal Status: <span className="text-emerald-500">Optimal</span></div>
+                        <div className="text-2xs text-[var(--theme-muted)] mt-2 uppercase font-bold tracking-tighter">Thermal Status: <span className="text-emerald-500">Optimal</span></div>
                     </div>
                 </motion.div>
 
@@ -151,7 +151,7 @@ export const MockDashboard: React.FC<any> = ({ animationVariants, animationStyle
                     }}
                 >
                     <div className="flex items-center justify-between mb-6">
-                        <div className="text-[11px] font-black uppercase tracking-widest text-[var(--theme-muted)]">Featured Components</div>
+                        <div className="text-xs font-black uppercase tracking-widest text-[var(--theme-muted)]">Featured Components</div>
                         <div className="text-xl">✨</div>
                     </div>
 
@@ -189,3 +189,4 @@ export const MockDashboard: React.FC<any> = ({ animationVariants, animationStyle
         </>
     );
 };
+

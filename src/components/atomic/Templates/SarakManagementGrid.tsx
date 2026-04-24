@@ -151,7 +151,7 @@ export const SarakManagementGrid: React.FC<SarakManagementGridProps> = ({
                             <button
                                 key={action.label}
                                 onClick={() => handleAction(action.action)}
-                                className="flex items-center bg-blue-600 text-white rounded-theme font-black text-[11px] uppercase tracking-widest hover:bg-blue-500 transition-all shadow-lg shadow-blue-900/20"
+                                className="flex items-center bg-blue-600 text-white rounded-theme font-black text-xs uppercase tracking-widest hover:bg-blue-500 transition-all shadow-lg shadow-blue-900/20"
                                 style={{ gap: 'calc(var(--theme-gap) / 3)', padding: 'calc(var(--theme-pad) / 2) var(--theme-pad)', transitionDuration: 'var(--animation-speed, 0.3s)' }}
                             >
                                 <Plus size={16} />
@@ -218,8 +218,8 @@ export const SarakManagementGrid: React.FC<SarakManagementGridProps> = ({
                                                 >
                                                     <div className="flex justify-between items-start" style={{ marginBottom: 'calc(var(--theme-gap) / 3)' }}>
                                                         <div className="flex flex-col truncate">
-                                                            <span className="text-[9px] font-black text-blue-400 uppercase tracking-widest">{getVal(item, mapping.title)}</span>
-                                                            <span className="text-[10px] font-mono text-white/30 truncate max-w-[140px]">
+                                                            <span className="text-2xs font-black text-blue-400 uppercase tracking-widest">{getVal(item, mapping.title)}</span>
+                                                            <span className="text-2xs font-mono text-white/30 truncate max-w-[140px]">
                                                                 {getVal(item, mapping.description) || '************'}
                                                             </span>
                                                         </div>
@@ -237,7 +237,7 @@ export const SarakManagementGrid: React.FC<SarakManagementGridProps> = ({
                                                                 status === 'active' ? 'bg-emerald-500 shadow-[0_0_8px_rgba(16,185,129,0.4)]' : 
                                                                 status === 'error' ? 'bg-rose-500' : 'bg-gray-600 animate-pulse'
                                                             }`} />
-                                                            <span className="text-[8px] font-black text-white/40 uppercase tracking-tighter">
+                                                            <span className="text-3xs font-black text-white/40 uppercase tracking-tighter">
                                                                 {status === 'active' ? 'Conectado' : status === 'error' ? 'Falha' : 'Validando...'}
                                                             </span>
                                                         </div>
@@ -250,7 +250,7 @@ export const SarakManagementGrid: React.FC<SarakManagementGridProps> = ({
                                                     </div>
                                                     {errorMsg && (
                                                         <div className="rounded-theme border border-rose-500/10" style={{ marginTop: 'calc(var(--theme-gap) / 3)', padding: 'calc(var(--theme-pad) / 2)', backgroundColor: 'rgba(244, 63, 94, 0.05)' }}>
-                                                            <p className="text-[8px] text-rose-400 font-bold leading-tight">{errorMsg}</p>
+                                                            <p className="text-3xs text-rose-400 font-bold leading-tight">{errorMsg}</p>
                                                         </div>
                                                     )}
                                                 </div>
@@ -259,7 +259,7 @@ export const SarakManagementGrid: React.FC<SarakManagementGridProps> = ({
                                     ) : (
                                         <div className="py-12 flex flex-col items-center justify-center text-center opacity-20" style={{ gap: 'calc(var(--theme-gap) / 2)' }}>
                                             <Settings2 className="w-10 h-10" />
-                                            <p className="text-[10px] font-black uppercase tracking-[0.2em]">Offline</p>
+                                            <p className="text-2xs font-black uppercase tracking-[0.2em]">Offline</p>
                                         </div>
                                     )}
                                 </div>
@@ -271,3 +271,4 @@ export const SarakManagementGrid: React.FC<SarakManagementGridProps> = ({
         </div>
     );
 };
+

@@ -20,10 +20,10 @@ export const MessageBubble: React.FC<MessageBubbleProps> = ({ msg }) => (
             <div className="w-5 h-5 rounded-full bg-indigo-500 flex items-center justify-center">
                <Bot size={12} className="text-white" />
             </div>
-            <span className="text-[10px] font-bold text-slate-400 uppercase tracking-widest">Sarak Assistant</span>
+            <span className="text-2xs font-bold text-slate-400 uppercase tracking-widest">Sarak Assistant</span>
           </div>
         ) : (
-          <span className="text-[10px] font-bold text-indigo-400 uppercase tracking-widest">Requisitante</span>
+          <span className="text-2xs font-bold text-indigo-400 uppercase tracking-widest">Requisitante</span>
         )}
       </div>
 
@@ -38,13 +38,13 @@ export const MessageBubble: React.FC<MessageBubbleProps> = ({ msg }) => (
       {msg.metadata && (
         <div className="flex flex-wrap gap-2 mt-1">
           {msg.metadata.model && (
-            <div className="flex items-center gap-1.5 px-2 py-0.5 bg-white/5 border border-white/5 rounded-md text-[10px] font-mono text-slate-400">
+            <div className="flex items-center gap-1.5 px-2 py-0.5 bg-white/5 border border-white/5 rounded-md text-2xs font-mono text-slate-400">
               <Cpu size={10} className="text-indigo-400" />
               {msg.metadata.model}
             </div>
           )}
           {msg.metadata.reasoning && (
-            <div className="flex items-center gap-1.5 px-2 py-0.5 bg-white/5 border border-white/5 rounded-md text-[10px] font-medium text-slate-500 italic">
+            <div className="flex items-center gap-1.5 px-2 py-0.5 bg-white/5 border border-white/5 rounded-md text-2xs font-medium text-slate-500 italic">
               <Search size={10} />
               {msg.metadata.reasoning}
             </div>
@@ -54,3 +54,4 @@ export const MessageBubble: React.FC<MessageBubbleProps> = ({ msg }) => (
     </div>
   </motion.div>
 );
+

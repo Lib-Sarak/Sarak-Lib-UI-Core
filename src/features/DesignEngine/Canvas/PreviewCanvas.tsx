@@ -4,7 +4,7 @@ import {
     Zap, Shield, Database, BarChart3, MessageSquare, History, Box, Network, Type, Grid, Maximize
 } from 'lucide-react';
 import { EMOJI_SETS, THEME_EFFECTS, DENSITY, SCALES } from '../../../constants/design-tokens';
-import { DESIGN_MANIFEST } from '../../../core/Provider/SarakUIProvider';
+import { DESIGN_MANIFEST, UIContext } from '../../../core/Provider/SarakUIProvider';
 import { MockDashboard, MockChat, MockLogs, MockSettings, MockComponents, MockTypography } from './MockApps';
 import { KitchenSinkPreview } from './KitchenSinkPreview';
 
@@ -50,29 +50,59 @@ export const PreviewCanvas: React.FC<PreviewCanvasProps> = ({
         }
     }, []);
 
-    const cssVariables = React.useMemo(() => {
+    const { cssVariables, dataAttributes } = React.useMemo(() => {
         const vars: any = {};
+        const attrs: any = {};
         
-        // 1. Injetar variáveis do manifesto dinamicamente (Soberania v7.5)
+        // 1. Injetar configurações do manifesto dinamicamente (Soberania v7.5)
         Object.entries(tokens).forEach(([key, value]) => {
             const config = (DESIGN_MANIFEST as any)[key];
             if (config) {
                 const transformedValue = config.transform ? config.transform(value) : value;
+                const isObject = typeof transformedValue === 'object' && transformedValue !== null;
                 
+                // Variáveis CSS (Normalização v8.5)
                 if (config.vars) {
                     config.vars.forEach((varName: string) => {
-                        if (typeof transformedValue === 'object' && transformedValue !== null) {
+                        if (isObject) {
                             Object.entries(transformedValue).forEach(([subKey, subVal]) => {
-                                vars[`${varName}-${subKey}`] = subVal;
+                                // Mapeamento Direto para evitar prefixos redundantes
                                 if (subKey === 'main') vars[varName] = subVal;
+                                else if (subKey === 'factor') vars['--font-size-factor'] = subVal;
+                                else if (subKey === 'rgb') vars['--theme-primary-rgb'] = subVal;
+                                else if (subKey === 'hover') vars['--theme-primary-hover'] = subVal;
+                                else if (subKey === 'active') vars['--theme-primary-active'] = subVal;
+                                else if (subKey === 'focus') vars['--theme-primary-focus'] = subVal;
+                                else if (subKey === 'gap') vars['--theme-gap-scaled'] = subVal;
+                                else if (subKey === 'pad') vars['--theme-pad-scaled'] = subVal;
+                                else if (subKey === 'margin') vars['--theme-margin-scaled'] = subVal;
+                                else if (subKey === 'radius') vars['--theme-radius-scaled'] = subVal;
+                                else if (subKey === 'base' && key === 'fluidScaling') vars['--theme-font-size-base'] = subVal;
+                                else if (subKey === 'px' && key === 'fontScale') vars[varName] = subVal;
+                                else if (subKey === 'main') vars[varName] = subVal;
+                                else if (subKey === 'attr') { /* Ignorar aqui, tratado no config.attr */ }
+                                else vars[`${varName}-${subKey}`] = subVal;
+
                             });
                         } else {
                             vars[varName] = `${transformedValue}${config.unit || ''}`;
                         }
                     });
                 }
+
+                // Atributos de Dados (Extração de ID v8.5)
+                if (config.attr) {
+                    let finalAttrValue = isObject 
+                        ? (transformedValue.attr !== undefined ? transformedValue.attr : value) 
+                        : transformedValue;
+                    
+                    if (typeof value === 'boolean') finalAttrValue = value ? '1' : '0';
+                    attrs[config.attr] = String(finalAttrValue);
+                }
+
             }
         });
+
 
         // 2. Variáveis de Tema Derivadas (Fallback & Logic)
         const isLight = tokens.mode === 'light';
@@ -96,7 +126,10 @@ export const PreviewCanvas: React.FC<PreviewCanvasProps> = ({
         if (!vars['--radius-theme']) vars['--radius-theme'] = '12px';
         if (!vars['--theme-gap']) vars['--theme-gap'] = '20px';
 
-        return vars as React.CSSProperties;
+        return { 
+            cssVariables: vars as React.CSSProperties, 
+            dataAttributes: attrs 
+        };
     }, [tokens, getShadowStyle]);
 
     const deviceStyles: any = {
@@ -139,7 +172,7 @@ export const PreviewCanvas: React.FC<PreviewCanvasProps> = ({
                         <Zap size={16} />
                     </div>
                 )}
-                <span className="font-bold text-[var(--theme-title)] text-[10px] tracking-widest uppercase">{tokens.systemName || 'SARAK'}</span>
+                <span className="font-bold text-[var(--theme-title)] text-2xs tracking-widest uppercase">{tokens.systemName || 'SARAK'}</span>
             </div>
         );
     };
@@ -149,11 +182,11 @@ export const PreviewCanvas: React.FC<PreviewCanvasProps> = ({
             <div className="flex items-center gap-3 p-4 border-t border-[var(--theme-border)] mt-auto relative z-20">
                 <div className="w-8 h-8 rounded-full bg-white/5 border border-white/10 flex items-center justify-center overflow-hidden relative">
                     <div className="w-full h-full bg-gradient-to-br from-[var(--theme-primary)] to-purple-600 opacity-20 absolute inset-0" />
-                    <span className="text-[10px] font-bold text-[var(--theme-title)] relative z-10">U</span>
+                    <span className="text-2xs font-bold text-[var(--theme-title)] relative z-10">U</span>
                 </div>
                 <div className="flex flex-col">
-                    <span className="text-[10px] font-bold text-[var(--theme-title)] uppercase tracking-wider">Sarak User</span>
-                    <span className="text-[8px] text-[var(--theme-muted)] uppercase tracking-widest">Administrator</span>
+                    <span className="text-2xs font-bold text-[var(--theme-title)] uppercase tracking-wider">Sarak User</span>
+                    <span className="text-3xs text-[var(--theme-muted)] uppercase tracking-widest">Administrator</span>
                 </div>
                 <div className="ml-auto opacity-40 hover:opacity-100 transition-opacity cursor-pointer">
                     <Shield size={14} className="text-[var(--theme-muted)]" />
@@ -166,7 +199,7 @@ export const PreviewCanvas: React.FC<PreviewCanvasProps> = ({
         return (
             <div className="flex items-center gap-4 ml-auto border-l border-[var(--theme-border)] pl-6">
                 <div className="flex flex-col items-end">
-                    <span className="text-[9px] font-black text-[var(--theme-title)] uppercase tracking-widest">Sarak User</span>
+                    <span className="text-2xs font-black text-[var(--theme-title)] uppercase tracking-widest">Sarak User</span>
                     <span className="text-[7px] text-[var(--theme-primary)] font-bold uppercase tracking-widest">Admin</span>
                 </div>
                 <div className="w-8 h-8 rounded-lg bg-white/5 border border-white/10 flex items-center justify-center">
@@ -176,112 +209,126 @@ export const PreviewCanvas: React.FC<PreviewCanvasProps> = ({
         );
     };
 
+    const draftContextValue = React.useMemo(() => ({
+        design: tokens,
+        ...tokens,
+        isHydrated: true,
+        applyConfig: () => {},
+        applyFullConfig: () => {},
+        registeredModules: [],
+        layouts: []
+    }), [tokens]);
+
     return (
         <div className="flex-grow flex flex-col relative overflow-hidden bg-[#050505] p-2 items-center justify-center">
-            <motion.div
-                layout
-                initial={false}
-                animate={deviceStyles[previewDevice]}
-                className={`rounded-[var(--radius-theme)] shadow-[var(--theme-shadow)] overflow-hidden flex transition-all duration-500 relative z-10 ${tokens.texture !== 'none' ? 'texture-active' : 'bg-[var(--theme-bg)]'}`}
-                style={{
-                    ...cssVariables,
-                    borderWidth: 'var(--theme-border-width)',
-                    borderStyle: 'var(--theme-border-style)',
-                    borderColor: 'var(--theme-border)'
-                }}
-            >
-                {/* TEXTURE OVERLAY INSIDE APP (Sovereignty v6.8.6) */}
-                {tokens.texture && tokens.texture !== 'none' && (
-                    <div className={`absolute inset-0 pointer-events-none z-0 texture-${tokens.texture} SarakAtmosphereLayer`} />
-                )}
+            <UIContext.Provider value={draftContextValue as any}>
+                <motion.div
+                    layout
+                    initial={false}
+                    animate={deviceStyles[previewDevice]}
+                    className={`preview-container rounded-theme border-theme shadow-theme overflow-hidden flex transition-all duration-500 relative z-10 ${tokens.texture !== 'none' ? 'texture-active' : 'bg-[var(--theme-bg)]'} ${tokens.mode === 'dark' ? 'dark' : 'light'} ${tokens.isGeometricCut ? 'is-geometric' : ''}`}
+                    {...dataAttributes}
+                    style={{
+                        ...cssVariables,
+                        borderWidth: 'var(--theme-border-width)',
+                        borderStyle: 'var(--theme-border-style)',
+                        borderColor: 'var(--theme-border)'
+                    }}
+                >
+                    {/* TEXTURE OVERLAY INSIDE APP (Sovereignty v6.8.6) */}
+                    {tokens.texture && tokens.texture !== 'none' && (
+                        <div className={`absolute inset-0 pointer-events-none z-0 texture-${tokens.texture} SarakAtmosphereLayer`} />
+                    )}
 
-                {tokens.navigationStyle === 'topbar' ? (
-                    <div className="flex flex-col w-full h-full relative z-10">
-                        <header 
-                            className="h-14 border border-[var(--theme-border)] flex items-center justify-between px-6 bg-[var(--theme-card)] backdrop-blur-md relative z-20 transition-all"
-                            style={{ 
-                                margin: 'var(--theme-tab-section-margin)',
-                                borderRadius: 'calc(var(--radius-theme) * 0.8)',
-                                boxShadow: 'var(--theme-shadow)'
-                            }}
-                        >
-                            <LogoComponent />
-                            <nav className="flex h-full items-center">
-                                {appIds.map((id) => (
-                                    <button
-                                        key={id}
-                                        onClick={() => setActivePreviewApp(id)}
-                                        className={`px-4 flex items-center gap-2 h-8 rounded-lg transition-all text-[9px] font-black uppercase tracking-widest ${activePreviewApp === id ? 'bg-[var(--theme-primary)] text-white shadow-lg shadow-[var(--theme-primary)]/20' : 'text-[var(--theme-muted)] hover:text-[var(--theme-title)] hover:bg-white/5'}`}
-                                        style={{ marginLeft: 'var(--theme-tab-gap)', marginRight: 'var(--theme-tab-gap)' }}
-                                    >
-                                        {appIcons[id]}
-                                        <span className="hidden lg:inline">{id}</span>
-                                    </button>
-                                ))}
-                            </nav>
-                            <TopbarUserProfile />
-                        </header>
-                        <main className="flex-1 overflow-y-auto p-8 custom-scrollbar relative">
-                            <AnimatePresence mode="wait">
-                                <motion.div
-                                    key={activePreviewApp}
-                                    initial={{ opacity: 0, y: 10 }}
-                                    animate={{ opacity: 1, y: 0 }}
-                                    exit={{ opacity: 0, y: -10 }}
-                                    transition={{ duration: parseFloat(tokens.animationSpeed ?? '0.4') }}
-                                    className="h-full"
-                                >
-                                    {apps[activePreviewApp]}
-                                </motion.div>
-                            </AnimatePresence>
-                        </main>
-                    </div>
-                ) : (
-                    <>
-                        <aside 
-                            className="border border-[var(--theme-border)] flex flex-col bg-[var(--theme-card)] backdrop-blur-md relative z-20 transition-all" 
-                            style={{ 
-                                width: `${tokens.sidebarWidth || 180}px`,
-                                margin: 'var(--theme-tab-section-margin)',
-                                borderRadius: 'calc(var(--radius-theme) * 0.8)',
-                                boxShadow: 'var(--theme-shadow)'
-                            }}
-                        >
-                            <div className="p-6 border-b border-[var(--theme-border)] flex items-center justify-center">
+                    {tokens.navigationStyle === 'topbar' ? (
+                        <div className="flex flex-col w-full h-full relative z-10">
+                            <header 
+                                className="h-14 border border-[var(--theme-border)] flex items-center justify-between px-6 bg-[var(--theme-card)] backdrop-blur-md relative z-20 transition-all"
+                                style={{ 
+                                    margin: 'var(--theme-tab-section-margin)',
+                                    borderRadius: 'calc(var(--radius-theme) * 0.8)',
+                                    boxShadow: 'var(--theme-shadow)'
+                                }}
+                            >
                                 <LogoComponent />
-                            </div>
-                            <nav className="flex-1 p-4 space-y-1">
-                                {appIds.map((id) => (
-                                    <button
-                                        key={id}
-                                        onClick={() => setActivePreviewApp(id)}
-                                        className={`w-full flex items-center gap-3 px-4 py-3 rounded-lg transition-all text-[9px] font-black uppercase tracking-widest ${activePreviewApp === id ? 'bg-[var(--theme-primary)] text-white shadow-lg shadow-[var(--theme-primary)]/20' : 'text-[var(--theme-muted)] hover:bg-white/5 hover:text-[var(--theme-title)]'}`}
-                                        style={{ marginTop: 'var(--theme-tab-gap)', marginBottom: 'var(--theme-tab-gap)' }}
+                                <nav className="flex h-full items-center">
+                                    {appIds.map((id) => (
+                                        <button
+                                            key={id}
+                                            onClick={() => setActivePreviewApp(id)}
+                                            className={`px-4 flex items-center gap-2 h-8 rounded-lg transition-all text-2xs font-black uppercase tracking-widest ${activePreviewApp === id ? 'bg-[var(--theme-primary)] text-white shadow-lg shadow-[var(--theme-primary)]/20' : 'text-[var(--theme-muted)] hover:text-[var(--theme-title)] hover:bg-white/5'}`}
+                                            style={{ marginLeft: 'var(--theme-tab-gap)', marginRight: 'var(--theme-tab-gap)' }}
+                                        >
+                                            {appIcons[id]}
+                                            <span className="hidden lg:inline">{id}</span>
+                                        </button>
+                                    ))}
+                                </nav>
+                                <TopbarUserProfile />
+                            </header>
+                            <main className="flex-1 overflow-y-auto p-8 custom-scrollbar relative">
+                                <AnimatePresence mode="wait">
+                                    <motion.div
+                                        key={activePreviewApp}
+                                        initial={{ opacity: 0, y: 10 }}
+                                        animate={{ opacity: 1, y: 0 }}
+                                        exit={{ opacity: 0, y: -10 }}
+                                        transition={{ duration: parseFloat(tokens.animationSpeed ?? '0.4') }}
+                                        className="h-full"
                                     >
-                                        {appIcons[id]}
-                                        {id}
-                                    </button>
-                                ))}
-                            </nav>
-                            <UserProfileComponent />
-                        </aside>
-                        <main className="flex-1 overflow-y-auto p-8 custom-scrollbar relative z-10 sarak-safe-container">
-                            <AnimatePresence mode="wait">
-                                <motion.div
-                                    key={activePreviewApp}
-                                    initial={{ opacity: 0, x: 20 }}
-                                    animate={{ opacity: 1, x: 0 }}
-                                    exit={{ opacity: 0, x: -20 }}
-                                    transition={{ duration: parseFloat(tokens.animationSpeed ?? '0.4') }}
-                                    className="h-full"
-                                >
-                                    {apps[activePreviewApp]}
-                                </motion.div>
-                            </AnimatePresence>
-                        </main>
-                    </>
-                )}
-            </motion.div>
+                                        {apps[activePreviewApp]}
+                                    </motion.div>
+                                </AnimatePresence>
+                            </main>
+                        </div>
+                    ) : (
+                        <>
+                            <aside 
+                                className="border border-[var(--theme-border)] flex flex-col bg-[var(--theme-card)] backdrop-blur-md relative z-20 transition-all" 
+                                style={{ 
+                                    width: `${tokens.sidebarWidth || 180}px`,
+                                    margin: 'var(--theme-tab-section-margin)',
+                                    borderRadius: 'calc(var(--radius-theme) * 0.8)',
+                                    boxShadow: 'var(--theme-shadow)'
+                                }}
+                            >
+                                <div className="p-6 border-b border-[var(--theme-border)] flex items-center justify-center">
+                                    <LogoComponent />
+                                </div>
+                                <nav className="flex-1 p-4 space-y-1">
+                                    {appIds.map((id) => (
+                                        <button
+                                            key={id}
+                                            onClick={() => setActivePreviewApp(id)}
+                                            className={`w-full flex items-center gap-3 px-4 py-3 rounded-lg transition-all text-2xs font-black uppercase tracking-widest ${activePreviewApp === id ? 'bg-[var(--theme-primary)] text-white shadow-lg shadow-[var(--theme-primary)]/20' : 'text-[var(--theme-muted)] hover:bg-white/5 hover:text-[var(--theme-title)]'}`}
+                                            style={{ marginTop: 'var(--theme-tab-gap)', marginBottom: 'var(--theme-tab-gap)' }}
+                                        >
+                                            {appIcons[id]}
+                                            {id}
+                                        </button>
+                                    ))}
+                                </nav>
+                                <UserProfileComponent />
+                            </aside>
+                            <main className="flex-1 overflow-y-auto p-8 custom-scrollbar relative z-10 sarak-safe-container">
+                                <AnimatePresence mode="wait">
+                                    <motion.div
+                                        key={activePreviewApp}
+                                        initial={{ opacity: 0, x: 20 }}
+                                        animate={{ opacity: 1, x: 0 }}
+                                        exit={{ opacity: 0, x: -20 }}
+                                        transition={{ duration: parseFloat(tokens.animationSpeed ?? '0.4') }}
+                                        className="h-full"
+                                    >
+                                        {apps[activePreviewApp]}
+                                    </motion.div>
+                                </AnimatePresence>
+                            </main>
+                        </>
+                    )}
+                </motion.div>
+            </UIContext.Provider>
         </div>
     );
 };
+

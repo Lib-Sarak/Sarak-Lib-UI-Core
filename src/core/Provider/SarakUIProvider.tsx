@@ -16,7 +16,7 @@ export interface SarakUIContextType {
     isHydrated: boolean;
 }
 
-const UIContext = React.createContext<SarakUIContextType | undefined>(undefined);
+export const UIContext = React.createContext<SarakUIContextType | undefined>(undefined);
 
 export const useSarakUI = () => {
     const context = useContext(UIContext);
@@ -126,9 +126,15 @@ export const DESIGN_MANIFEST: Record<string, {
     isSplitViewEnabled: { attr: 'data-split-view' },
     chartStyle: { attr: 'data-chart-style' },
     chartPalette: { vars: ['--chart-palette'], transform: (v) => Array.isArray(v) ? v.join(',') : v },
-    searchStyle: { attr: 'data-search-style' },
-    emptyStateId: { attr: 'data-empty-state' },
+    cardSpotlight: { 
+        vars: ['--spotlight-opacity'], 
+        attr: 'data-spotlight',
+        transform: (v: any) => ({ main: v, attr: (parseFloat(v) > 0 ? '1' : '0') })
+    },
+
+    borderBeamEnabled: { attr: 'data-border-beam' },
     secondaryModuleId: { attr: 'data-sec-module' },
+
     // Engine Specialized Tokens v7.5
     fontScale: { 
         vars: ['--sarak-font-scale', '--sarak-font-size', '--font-size-factor', '--theme-font-size-base'], 
@@ -189,9 +195,8 @@ export const DESIGN_MANIFEST: Record<string, {
     useTabularNums: { attr: 'data-tabular-nums', vars: ['--sarak-tabular-nums'], transform: (v) => v ? 'tabular-nums' : 'normal' },
     hapticIntensity: { vars: ['--sarak-haptic-scale'], transform: (v) => 1 - (parseFloat(v) || 0.02) },
     scrollbarStyle: { attr: 'data-scrollbar-style', vars: ['--sarak-scrollbar-width'], unit: 'px' },
-    borderBeamEnabled: { attr: 'data-border-beam' },
-    cardSpotlight: { vars: ['--sarak-spotlight-intensity'], transform: (v) => parseFloat(v) || 0 },
     fluidScaling: { 
+
         vars: ['--sarak-fluid-scale'], 
         transform: (v) => {
             const factor = parseFloat(v) || 1.0;
@@ -261,6 +266,7 @@ const DesignInjector: React.FC<{ design: any }> = ({ design: s }) => {
             if (!config) return;
 
             let finalValue = value?.toString() || '';
+            let finalAttrValue = value?.toString() || '';
             const extraVars: Record<string, string> = {};
 
             if (config.transform) {
@@ -268,29 +274,39 @@ const DesignInjector: React.FC<{ design: any }> = ({ design: s }) => {
                 if (typeof t === 'object' && t !== null) {
                     if (key === 'primaryColor') {
                         finalValue = t.main;
+                        finalAttrValue = value;
                         extraVars['--theme-primary-rgb'] = t.rgb;
                         extraVars['--theme-primary-hover'] = t.hover;
                         extraVars['--theme-primary-active'] = t.active;
                         extraVars['--theme-primary-focus'] = t.focus;
                     } else if (key === 'fontScale') {
                         finalValue = t.px;
+                        finalAttrValue = value; // Injeta o ID (p, m, g) no atributo
                         extraVars['--font-size-factor'] = t.factor;
                     } else if (key === 'scaleRatio') {
                         finalValue = String(t.ratio);
+                        finalAttrValue = value;
                         extraVars['--theme-gap-scaled'] = t.gap;
                         extraVars['--theme-pad-scaled'] = t.pad;
                         extraVars['--theme-margin-scaled'] = t.margin;
                         extraVars['--theme-radius-scaled'] = t.radius;
                     } else if (key === 'fluidScaling') {
                         finalValue = '1';
+                        finalAttrValue = '1';
                         extraVars['--theme-font-size-base'] = t.base;
                         extraVars['--theme-gap-scaled'] = t.gap;
                         extraVars['--theme-pad-scaled'] = t.padding;
+                    } else if (t.main !== undefined) {
+                        finalValue = t.main;
+                        finalAttrValue = t.attr !== undefined ? t.attr : value;
                     }
+
                 } else {
                     finalValue = String(t);
+                    finalAttrValue = String(t);
                 }
             }
+
 
             if (config.unit && typeof value === 'number') finalValue = `${value}${config.unit}`;
             if (typeof value === 'boolean') finalValue = value ? '1' : '0';
@@ -301,9 +317,10 @@ const DesignInjector: React.FC<{ design: any }> = ({ design: s }) => {
             }
 
             if (config.attr) {
-                body.setAttribute(config.attr, finalValue);
-                root.setAttribute(config.attr, finalValue);
+                body.setAttribute(config.attr, finalAttrValue);
+                root.setAttribute(config.attr, finalAttrValue);
             }
+
 
             if (config.classPrefix) {
                 const isBool = typeof value === 'boolean';
@@ -467,3 +484,4 @@ export const SarakUIProvider: React.FC<SarakUIProviderProps> = ({
 };
 
 export default SarakUIProvider;
+

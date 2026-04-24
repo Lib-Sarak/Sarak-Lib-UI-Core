@@ -31,7 +31,7 @@ export const EngineCustomizationTab: React.FC = () => {
 
     const Control = ({ label, children }: any) => (
         <div className="space-y-2">
-            <label className="text-[9px] font-black uppercase tracking-widest text-white/30 ml-1">{label}</label>
+            <label className="text-2xs font-black uppercase tracking-widest text-white/30 ml-1">{label}</label>
             {children}
         </div>
     );
@@ -51,7 +51,7 @@ export const EngineCustomizationTab: React.FC = () => {
                             <button 
                                 key={opt.id}
                                 onClick={() => update('chatBubbleStyle', opt.id)}
-                                className={`py-3 rounded-xl border text-[9px] font-black uppercase transition-all ${design.chatBubbleStyle === opt.id ? 'bg-[var(--theme-primary)] border-transparent text-white shadow-lg' : 'bg-white/5 border-white/10 text-white/40 hover:text-white/60'}`}
+                                className={`py-3 rounded-xl border text-2xs font-black uppercase transition-all ${design.chatBubbleStyle === opt.id ? 'bg-[var(--theme-primary)] border-transparent text-white shadow-lg' : 'bg-white/5 border-white/10 text-white/40 hover:text-white/60'}`}
                             >
                                 {opt.label}
                             </button>
@@ -60,7 +60,7 @@ export const EngineCustomizationTab: React.FC = () => {
                 </Control>
                 <div className="grid grid-cols-1 gap-4">
                     <div className="space-y-3">
-                        <div className="flex justify-between items-center text-[9px] font-black uppercase text-white/30">
+                        <div className="flex justify-between items-center text-2xs font-black uppercase text-white/30">
                             <span>Velocidade de Digitação</span>
                             <span className="text-[var(--theme-primary)]">{design.chatAnimationSpeed || 0.05}s</span>
                         </div>
@@ -85,7 +85,7 @@ export const EngineCustomizationTab: React.FC = () => {
                             <button 
                                 key={opt.id}
                                 onClick={() => update('flowGridStyle', opt.id)}
-                                className={`py-3 rounded-xl border text-[9px] font-black uppercase transition-all ${design.flowGridStyle === opt.id ? 'bg-[var(--theme-primary)] border-transparent text-white shadow-lg' : 'bg-white/5 border-white/10 text-white/40 hover:text-white/60'}`}
+                                className={`py-3 rounded-xl border text-2xs font-black uppercase transition-all ${design.flowGridStyle === opt.id ? 'bg-[var(--theme-primary)] border-transparent text-white shadow-lg' : 'bg-white/5 border-white/10 text-white/40 hover:text-white/60'}`}
                             >
                                 {opt.label}
                             </button>
@@ -93,7 +93,7 @@ export const EngineCustomizationTab: React.FC = () => {
                     </div>
                 </Control>
                 <div className="space-y-3">
-                    <div className="flex justify-between items-center text-[9px] font-black uppercase text-white/30">
+                    <div className="flex justify-between items-center text-2xs font-black uppercase text-white/30">
                         <span>Raio das Nodes</span>
                         <span className="text-[var(--theme-primary)]">{design.flowNodeRadius || 12}px</span>
                     </div>
@@ -122,7 +122,7 @@ export const EngineCustomizationTab: React.FC = () => {
                             <button 
                                 key={opt.id}
                                 onClick={() => update('chartType', opt.id)}
-                                className={`py-3 rounded-xl border text-[9px] font-black uppercase transition-all ${design.chartType === opt.id ? 'bg-[var(--theme-primary)] border-transparent text-white shadow-lg' : 'bg-white/5 border-white/10 text-white/40 hover:text-white/60'}`}
+                                className={`py-3 rounded-xl border text-2xs font-black uppercase transition-all ${design.chartType === opt.id ? 'bg-[var(--theme-primary)] border-transparent text-white shadow-lg' : 'bg-white/5 border-white/10 text-white/40 hover:text-white/60'}`}
                             >
                                 {opt.label}
                             </button>
@@ -132,8 +132,8 @@ export const EngineCustomizationTab: React.FC = () => {
 
                 <div className="flex items-center justify-between p-4 rounded-2xl bg-white/5 border border-white/10 group">
                     <div className="flex flex-col gap-0.5">
-                        <span className="text-[9px] font-black uppercase tracking-widest text-white/60">Mostrar Grid de Fundo</span>
-                        <span className="text-[8px] text-white/20 uppercase tracking-tighter italic">Visibilidade das linhas de referência</span>
+                        <span className="text-2xs font-black uppercase tracking-widest text-white/60">Mostrar Grid de Fundo</span>
+                        <span className="text-3xs text-white/20 uppercase tracking-tighter italic">Visibilidade das linhas de referência</span>
                     </div>
                     <button 
                         onClick={() => update('chartShowGrid', !design.chartShowGrid)}
@@ -145,7 +145,7 @@ export const EngineCustomizationTab: React.FC = () => {
                 
                 <div className="p-4 rounded-2xl bg-[var(--theme-primary)]/5 border border-[var(--theme-primary)]/10 flex items-start gap-4">
                     <Sparkles className="w-5 h-5 text-[var(--theme-primary)] shrink-0 mt-1" />
-                    <p className="text-[9px] text-white/40 leading-relaxed uppercase font-medium">
+                    <p className="text-2xs text-white/40 leading-relaxed uppercase font-medium">
                         As cores e estilos são sincronizados dinamicamente com o Sarak Design Engine v7.5.
                     </p>
                 </div>
@@ -153,7 +153,7 @@ export const EngineCustomizationTab: React.FC = () => {
 
             <div className="p-8 mt-auto">
                 <div className="p-4 rounded-2xl bg-indigo-500/10 border border-indigo-500/20 text-center">
-                    <span className="text-[8px] font-black uppercase tracking-[0.4em] text-indigo-400/60">Sovereign Engine v7.0</span>
+                    <span className="text-3xs font-black uppercase tracking-[0.4em] text-indigo-400/60">Sovereign Engine v7.0</span>
                 </div>
             </div>
         </div>
@@ -161,3 +161,4 @@ export const EngineCustomizationTab: React.FC = () => {
 };
 
 export default EngineCustomizationTab;
+

@@ -53,7 +53,7 @@ export const ThemeCard: React.FC<ThemeCardProps> = ({
                             </div>
                         )}
                     </div>
-                    <span className="text-[8px] font-bold uppercase tracking-[0.2em] opacity-30 italic">
+                    <span className="text-3xs font-bold uppercase tracking-[0.2em] opacity-30 italic">
                         {isCustom ? 'Custom Preset' : 'Sarak Core Model'}
                     </span>
                 </div>
@@ -68,7 +68,7 @@ export const ThemeCard: React.FC<ThemeCardProps> = ({
             <div className="flex items-center gap-2">
                 <button
                     onClick={(e) => { e.stopPropagation(); onApply(id); }}
-                    className={`flex-1 flex items-center justify-center gap-2 py-2.5 rounded-xl text-[9px] font-black uppercase tracking-[0.2em] transition-all ${
+                    className={`flex-1 flex items-center justify-center gap-2 py-2.5 rounded-xl text-2xs font-black uppercase tracking-[0.2em] transition-all ${
                         isActive
                         ? 'bg-[var(--theme-primary)] text-white shadow-lg shadow-[var(--theme-primary)]/20'
                         : isPreviewed
@@ -147,7 +147,7 @@ export const ThemeList: React.FC<ThemeListProps> = ({
         return (
             <div className="p-8 flex flex-col items-center justify-center border-2 border-dashed border-white/5 rounded-2xl bg-black/20">
                 <LayoutIcon size={24} className="text-white/10 mb-3" />
-                <span className="text-[10px] font-black uppercase tracking-widest text-white/20 text-center">Nenhum modelo disponível</span>
+                <span className="text-2xs font-black uppercase tracking-widest text-white/20 text-center">Nenhum modelo disponível</span>
             </div>
         );
     }
@@ -159,7 +159,7 @@ export const ThemeList: React.FC<ThemeListProps> = ({
                 <div className="space-y-4">
                     <div className="flex items-center gap-3 mb-6">
                         <div className="flex-1 h-[1px] bg-gradient-to-r from-transparent to-white/10" />
-                        <span className="text-[9px] font-black uppercase tracking-[0.4em] text-white/40 italic">Advanced Collection</span>
+                        <span className="text-2xs font-black uppercase tracking-[0.4em] text-white/40 italic">Advanced Collection</span>
                         <div className="flex-1 h-[1px] bg-gradient-to-l from-transparent to-white/10" />
                     </div>
                     <div className="space-y-4">
@@ -185,7 +185,7 @@ export const ThemeList: React.FC<ThemeListProps> = ({
                 <div className="space-y-4">
                     <div className="flex items-center gap-3 mb-6">
                         <div className="flex-1 h-[1px] bg-gradient-to-r from-transparent to-white/5" />
-                        <span className="text-[9px] font-black uppercase tracking-[0.4em] text-white/20 italic">Essential Models</span>
+                        <span className="text-2xs font-black uppercase tracking-[0.4em] text-white/20 italic">Essential Models</span>
                         <div className="flex-1 h-[1px] bg-gradient-to-l from-transparent to-white/5" />
                     </div>
                     <div className="space-y-4">
@@ -208,3 +208,4 @@ export const ThemeList: React.FC<ThemeListProps> = ({
         </div>
     );
 };
+

@@ -36,26 +36,26 @@ export const BrandingSection: React.FC<BrandingSectionProps> = ({ draft, updateD
         <>
             <Section id="brand-identity" icon={Globe} title="Identidade da Marca" activeSection={activeSection} onToggle={setActiveSection}>
                 <div className="mb-4">
-                    <span className="text-[9px] font-black uppercase tracking-widest text-white/20 block mb-2">Nome do Sistema</span>
+                    <span className="text-2xs font-black uppercase tracking-widest text-white/20 block mb-2">Nome do Sistema</span>
                     <input 
                         type="text" value={draft.systemName} 
                         onChange={(e) => updateDraft('systemName', e.target.value)}
                         placeholder="Ex: Sarak Matrix"
-                        className="w-full bg-white/5 border border-white/10 rounded-lg py-2 px-3 text-[11px] font-bold focus:border-[var(--theme-primary)] focus:outline-none transition-all text-white/80"
+                        className="w-full bg-white/5 border border-white/10 rounded-lg py-2 px-3 text-xs font-bold focus:border-[var(--theme-primary)] focus:outline-none transition-all text-white/80"
                     />
                 </div>
 
                 <div className="mb-4">
                     <div className="flex items-center justify-between mb-2">
-                        <span className="text-[9px] font-black uppercase tracking-widest text-white/20">Logo (Light Mode)</span>
-                        <button onClick={() => lightLogoInputRef.current?.click()} className="text-[8px] font-black uppercase text-[var(--theme-primary)] hover:underline">Importar Arquivo</button>
+                        <span className="text-2xs font-black uppercase tracking-widest text-white/20">Logo (Light Mode)</span>
+                        <button onClick={() => lightLogoInputRef.current?.click()} className="text-3xs font-black uppercase text-[var(--theme-primary)] hover:underline">Importar Arquivo</button>
                     </div>
                     <div className="flex gap-2">
                         <input 
                             type="text" value={draft.logoUrl} 
                             onChange={(e) => updateDraft('logoUrl', e.target.value)}
                             placeholder="URL ou Base64..."
-                            className="flex-1 bg-white/5 border border-white/10 rounded-lg py-2 px-3 text-[11px] font-bold focus:border-[var(--theme-primary)] focus:outline-none transition-all text-white/80"
+                            className="flex-1 bg-white/5 border border-white/10 rounded-lg py-2 px-3 text-xs font-bold focus:border-[var(--theme-primary)] focus:outline-none transition-all text-white/80"
                         />
                         <input type="file" ref={lightLogoInputRef} onChange={(e) => handleFileImport(e, 'logoUrl')} className="hidden" accept=".webp,.svg,.png" />
                     </div>
@@ -63,15 +63,15 @@ export const BrandingSection: React.FC<BrandingSectionProps> = ({ draft, updateD
 
                 <div className="mb-4">
                     <div className="flex items-center justify-between mb-2">
-                        <span className="text-[9px] font-black uppercase tracking-widest text-white/20">Logo (Dark Mode)</span>
-                        <button onClick={() => darkLogoInputRef.current?.click()} className="text-[8px] font-black uppercase text-[var(--theme-primary)] hover:underline">Importar Arquivo</button>
+                        <span className="text-2xs font-black uppercase tracking-widest text-white/20">Logo (Dark Mode)</span>
+                        <button onClick={() => darkLogoInputRef.current?.click()} className="text-3xs font-black uppercase text-[var(--theme-primary)] hover:underline">Importar Arquivo</button>
                     </div>
                     <div className="flex gap-2">
                         <input 
                             type="text" value={draft.logoDarkUrl} 
                             onChange={(e) => updateDraft('logoDarkUrl', e.target.value)}
                             placeholder="URL ou Base64..."
-                            className="flex-1 bg-white/5 border border-white/10 rounded-lg py-2 px-3 text-[11px] font-bold focus:border-[var(--theme-primary)] focus:outline-none transition-all text-white/80"
+                            className="flex-1 bg-white/5 border border-white/10 rounded-lg py-2 px-3 text-xs font-bold focus:border-[var(--theme-primary)] focus:outline-none transition-all text-white/80"
                         />
                         <input type="file" ref={darkLogoInputRef} onChange={(e) => handleFileImport(e, 'logoDarkUrl')} className="hidden" accept=".webp,.svg,.png" />
                     </div>
@@ -87,3 +87,4 @@ export const BrandingSection: React.FC<BrandingSectionProps> = ({ draft, updateD
         </>
     );
 };
+

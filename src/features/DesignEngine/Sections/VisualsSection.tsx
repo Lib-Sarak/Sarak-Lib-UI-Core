@@ -34,10 +34,10 @@ export const VisualsSection: React.FC<VisualsSectionProps> = ({ draft, updateDra
                 </div>
 
                 <div className="mb-4">
-                    <span className="text-[9px] font-black uppercase tracking-widest text-white/40 block mb-2">Tom de Voz (System Tone)</span>
+                    <span className="text-2xs font-black uppercase tracking-widest text-white/40 block mb-2">Tom de Voz (System Tone)</span>
                     <div className="grid grid-cols-3 gap-1 p-1 bg-black/20 rounded-xl border border-white/5">
                         {['formal', 'friendly', 'cyber'].map(tone => (
-                            <button key={tone} onClick={() => updateDraft('systemTone', tone)} className={`py-2 rounded-lg text-[8px] font-black uppercase transition-all ${draft.systemTone === tone ? 'bg-[var(--theme-primary)] text-white shadow-lg' : 'text-white/20 hover:text-white/40'}`}>{tone}</button>
+                            <button key={tone} onClick={() => updateDraft('systemTone', tone)} className={`py-2 rounded-lg text-3xs font-black uppercase transition-all ${draft.systemTone === tone ? 'bg-[var(--theme-primary)] text-white shadow-lg' : 'text-white/20 hover:text-white/40'}`}>{tone}</button>
                         ))}
                     </div>
                 </div>
@@ -63,3 +63,4 @@ export const VisualsSection: React.FC<VisualsSectionProps> = ({ draft, updateDra
         </>
     );
 };
+

@@ -69,7 +69,7 @@ export const ChatInput: React.FC<ChatInputProps> = ({
             >
                <Cpu size={18} className="text-indigo-400" />
                <div className="flex flex-col">
-                  <span className="text-[10px] text-slate-500 uppercase font-bold tracking-tight leading-none mb-1">Modelo Manual Ativo</span>
+                  <span className="text-2xs text-slate-500 uppercase font-bold tracking-tight leading-none mb-1">Modelo Manual Ativo</span>
                   <span className="text-xs font-semibold text-slate-200">{selectedRoute?.display_name || "Selecionar..."}</span>
                </div>
                <ChevronDown size={14} className={`text-slate-500 transition-transform ${showModelPicker ? 'rotate-180' : ''}`} />
@@ -88,7 +88,7 @@ export const ChatInput: React.FC<ChatInputProps> = ({
           </div>
 
           <div className="flex-1 min-w-[120px] bg-theme-card border-theme px-4 py-2 flex flex-col justify-center">
-             <div className="flex items-center justify-between text-[10px] text-slate-500 font-bold uppercase mb-1">
+             <div className="flex items-center justify-between text-2xs text-slate-500 font-bold uppercase mb-1">
                 <span>Limit</span>
                 <span className="text-indigo-400 font-mono">{maxTokens}</span>
              </div>
@@ -133,8 +133,9 @@ export const ChatInput: React.FC<ChatInputProps> = ({
       </div>
     </div>
     
-    <p className="text-center text-[9px] text-slate-600 mt-4 uppercase tracking-[0.3em] font-medium">
+    <p className="text-center text-2xs text-slate-600 mt-4 uppercase tracking-[0.3em] font-medium">
       Sarak Orchestrator • Hybrid Model Router
     </p>
   </footer>
 );
+

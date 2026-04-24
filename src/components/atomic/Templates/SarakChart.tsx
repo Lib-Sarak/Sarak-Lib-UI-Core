@@ -56,19 +56,19 @@ export const SarakChart: React.FC<SarakChartProps> = ({ endpoint, label, mapping
                     </div>
                     <div>
                         <h3 className="text-xl font-black text-white tracking-tight" style={{ fontWeight: 'var(--heading-weight)' }}>{label}</h3>
-                        <p className="text-[9px] font-bold text-white/20 uppercase tracking-widest">Análise de Tendência em Tempo Real</p>
+                        <p className="text-2xs font-bold text-white/20 uppercase tracking-widest">Análise de Tendência em Tempo Real</p>
                     </div>
                 </div>
                 <div className="flex items-center bg-white/5 rounded-theme border border-theme" style={{ gap: 'calc(var(--theme-gap) / 3)', padding: 'calc(var(--theme-pad) / 3) calc(var(--theme-pad) / 1.5)' }}>
                     <Activity size={12} className="text-emerald-400 animate-pulse" />
-                    <span className="text-[10px] font-black text-white/40 uppercase tracking-tighter">Live Monitor</span>
+                    <span className="text-2xs font-black text-white/40 uppercase tracking-tighter">Live Monitor</span>
                 </div>
             </div>
 
             <div className="h-48 flex items-end justify-between relative z-10" style={{ gap: 'calc(var(--theme-gap) / 4)' }}>
                 {loading ? (
                     <div className="w-full h-full flex items-center justify-center border border-dashed border-white/5 rounded-3xl opacity-20">
-                        <span className="text-[10px] font-black uppercase tracking-[0.3em] animate-pulse">Sincronizando Datastream...</span>
+                        <span className="text-2xs font-black uppercase tracking-[0.3em] animate-pulse">Sincronizando Datastream...</span>
                     </div>
                 ) : data.length > 0 ? (
                     data.map((item, idx) => {
@@ -87,7 +87,7 @@ export const SarakChart: React.FC<SarakChartProps> = ({ endpoint, label, mapping
                                     className="w-full bg-gradient-to-t from-blue-600/20 to-blue-400/60 rounded-t-lg group-hover/item:from-blue-500 group-hover/item:to-blue-300 transition-all relative"
                                     style={{ transitionDuration: 'var(--animation-speed, 0.3s)' }}
                                 >
-                                    <div className="absolute -top-10 left-1/2 -translate-x-1/2 bg-white text-blue-900 text-[10px] font-black px-2 py-1 rounded shadow-2xl opacity-0 group-hover/item:opacity-100 pointer-events-none transition-opacity whitespace-nowrap z-30">
+                                    <div className="absolute -top-10 left-1/2 -translate-x-1/2 bg-white text-blue-900 text-2xs font-black px-2 py-1 rounded shadow-2xl opacity-0 group-hover/item:opacity-100 pointer-events-none transition-opacity whitespace-nowrap z-30">
                                         {val.toLocaleString()}
                                     </div>
                                 </motion.div>
@@ -99,17 +99,18 @@ export const SarakChart: React.FC<SarakChartProps> = ({ endpoint, label, mapping
                     })
                 ) : (
                     <div className="w-full h-full flex items-center justify-center border border-dashed border-white/5 rounded-3xl opacity-20">
-                        <span className="text-[10px] font-black uppercase tracking-[0.3em]">Aguardando Dados Históricos</span>
+                        <span className="text-2xs font-black uppercase tracking-[0.3em]">Aguardando Dados Históricos</span>
                     </div>
                 )}
             </div>
 
             <div className="border-t border-theme flex justify-between items-center opacity-40" style={{ paddingTop: 'calc(var(--theme-gap) / 2)' }}>
-                <span className="text-[8px] font-black text-white uppercase tracking-widest">Sarak Visual Metrics engine v1.0</span>
-                <span className="text-[8px] font-bold text-white/40 uppercase">Performance Agnostic Layer</span>
+                <span className="text-3xs font-black text-white uppercase tracking-widest">Sarak Visual Metrics engine v1.0</span>
+                <span className="text-3xs font-bold text-white/40 uppercase">Performance Agnostic Layer</span>
             </div>
         </div>
     );
 };
 
 export default SarakChart;
+

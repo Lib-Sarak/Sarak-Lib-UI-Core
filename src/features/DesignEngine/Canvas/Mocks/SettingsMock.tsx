@@ -26,7 +26,7 @@ export const MockSettings: React.FC<any> = ({ animationVariants, animationStyle,
                         style={{ borderRadius: `${tokens?.flowNodeRadius ?? 12}px` }}
                     >
                         <Zap className="w-4 h-4 text-[var(--theme-primary)]" />
-                        <span className="text-[9px] font-black uppercase tracking-widest text-white">Source Engine</span>
+                        <span className="text-2xs font-black uppercase tracking-widest text-white">Source Engine</span>
                     </div>
                     
                     <div className="w-px h-8 bg-gradient-to-b from-[var(--theme-primary)] to-transparent" />
@@ -36,7 +36,7 @@ export const MockSettings: React.FC<any> = ({ animationVariants, animationStyle,
                         style={{ borderRadius: `${tokens?.flowNodeRadius ?? 12}px` }}
                     >
                         <Box className="w-4 h-4 text-white/40" />
-                        <span className="text-[9px] font-black uppercase tracking-widest text-white/40">Data Processor</span>
+                        <span className="text-2xs font-black uppercase tracking-widest text-white/40">Data Processor</span>
                     </div>
                 </div>
             </div>
@@ -58,7 +58,7 @@ export const MockSettings: React.FC<any> = ({ animationVariants, animationStyle,
                             <div className="p-2 rounded-lg bg-[var(--theme-primary)]/10 text-[var(--theme-primary)]">
                                 {React.cloneElement(item.icon as React.ReactElement, { className: "w-4 h-4" })}
                             </div>
-                            <span className="text-[11px] font-medium text-[var(--theme-title)]">{item.label}</span>
+                            <span className="text-xs font-medium text-[var(--theme-title)]">{item.label}</span>
                         </div>
                         <div className={`w-8 h-4 rounded-full relative z-10 transition-colors ${item.active ? 'bg-[var(--theme-primary)]' : 'bg-[var(--theme-muted)]/20'}`}>
                             <div className={`absolute top-0.5 w-3 h-3 rounded-full bg-white transition-all ${item.active ? 'left-[18px]' : 'left-0.5'}`}></div>
@@ -69,3 +69,4 @@ export const MockSettings: React.FC<any> = ({ animationVariants, animationStyle,
         </div>
     );
 };
+

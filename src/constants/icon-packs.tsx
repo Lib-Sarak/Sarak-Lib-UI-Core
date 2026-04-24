@@ -111,3 +111,4 @@ export const EMOJI_SETS: any = Object.keys(ICON_PACKS).reduce((acc: any, key: st
     acc[key] = ICON_PACKS[key].icons;
     return acc;
 }, {});
+

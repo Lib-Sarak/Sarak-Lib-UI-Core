@@ -46,7 +46,7 @@ export const LanguageTab: React.FC = () => {
                 <div className="flex items-center justify-between">
                     <div className="space-y-1">
                         <h3 className="text-sm font-black uppercase tracking-widest text-white/90 italic">Motor de Localização</h3>
-                        <p className="text-[10px] text-white/30 uppercase font-black tracking-tighter">Gerencie idiomas ativos e slots de tradução</p>
+                        <p className="text-2xs text-white/30 uppercase font-black tracking-tighter">Gerencie idiomas ativos e slots de tradução</p>
                     </div>
                 </div>
 
@@ -55,7 +55,7 @@ export const LanguageTab: React.FC = () => {
                     <div className="p-6 rounded-3xl bg-blue-500/5 border border-blue-500/10 space-y-4">
                         <div className="flex items-center gap-3">
                             <Globe className="w-4 h-4 text-blue-400" />
-                            <span className="text-[10px] font-black uppercase tracking-widest text-blue-400">Idioma do Sistema</span>
+                            <span className="text-2xs font-black uppercase tracking-widest text-blue-400">Idioma do Sistema</span>
                         </div>
                         
                         <div className="flex items-center justify-between p-3 rounded-2xl bg-black/40 border border-white/5">
@@ -64,7 +64,7 @@ export const LanguageTab: React.FC = () => {
                             </span>
                             <div className="flex items-center gap-1.5 px-2 py-1 bg-emerald-500/10 border border-emerald-500/20 rounded-lg">
                                 <div className="w-1.5 h-1.5 bg-emerald-500 rounded-full animate-pulse" />
-                                <span className="text-[8px] font-black text-emerald-400 uppercase">Ativo</span>
+                                <span className="text-3xs font-black text-emerald-400 uppercase">Ativo</span>
                             </div>
                         </div>
                     </div>
@@ -73,12 +73,12 @@ export const LanguageTab: React.FC = () => {
                     <div className="p-6 rounded-3xl bg-white/5 border border-white/5 space-y-4">
                         <div className="flex items-center gap-3">
                             <Languages className="w-4 h-4 text-white/40" />
-                            <span className="text-[10px] font-black uppercase tracking-widest text-white/40">Slots de Tradução ({enabledLanguages.length}/8)</span>
+                            <span className="text-2xs font-black uppercase tracking-widest text-white/40">Slots de Tradução ({enabledLanguages.length}/8)</span>
                         </div>
                         
                         <div className="flex flex-wrap gap-2">
                             {enabledLanguages.map((id: string) => (
-                                <div key={id} className="px-3 py-1.5 rounded-xl bg-white/5 border border-white/10 text-[9px] font-black uppercase tracking-widest text-white/60 flex items-center gap-2">
+                                <div key={id} className="px-3 py-1.5 rounded-xl bg-white/5 border border-white/10 text-2xs font-black uppercase tracking-widest text-white/60 flex items-center gap-2">
                                     {id}
                                 </div>
                             ))}
@@ -110,7 +110,7 @@ export const LanguageTab: React.FC = () => {
                                 <div className="flex items-center justify-between">
                                     <div className="flex flex-col">
                                         <span className="text-xs font-bold uppercase tracking-widest text-white/80">{lang.name}</span>
-                                        <span className="text-[9px] text-white/20 font-black uppercase italic">{lang.id}</span>
+                                        <span className="text-2xs text-white/20 font-black uppercase italic">{lang.id}</span>
                                     </div>
                                     {isActive && <Check className="w-4 h-4 text-blue-400" />}
                                 </div>
@@ -119,7 +119,7 @@ export const LanguageTab: React.FC = () => {
                                     <button
                                         onClick={() => setLanguage(lang.id)}
                                         disabled={isActive}
-                                        className={`flex-grow py-2 rounded-xl text-[9px] font-black uppercase tracking-widest transition-all ${isActive ? 'bg-blue-500/20 text-blue-400 border border-blue-500/30' : 'bg-white/5 text-white/20 hover:bg-blue-500 hover:text-white border border-transparent'}`}
+                                        className={`flex-grow py-2 rounded-xl text-2xs font-black uppercase tracking-widest transition-all ${isActive ? 'bg-blue-500/20 text-blue-400 border border-blue-500/30' : 'bg-white/5 text-white/20 hover:bg-blue-500 hover:text-white border border-transparent'}`}
                                     >
                                         Selecionar
                                     </button>
@@ -139,7 +139,7 @@ export const LanguageTab: React.FC = () => {
 
             <div className="p-6 border-t border-white/5 bg-black/40 flex items-center justify-center gap-4">
                 <Info className="w-3.5 h-3.5 text-white/20" />
-                <p className="text-[9px] text-white/20 uppercase font-black tracking-widest">
+                <p className="text-2xs text-white/20 uppercase font-black tracking-widest">
                     O Sarak OS sincroniza as traduções em tempo real entre todos os módulos ativos.
                 </p>
             </div>
@@ -148,3 +148,4 @@ export const LanguageTab: React.FC = () => {
 };
 
 export default LanguageTab;
+
