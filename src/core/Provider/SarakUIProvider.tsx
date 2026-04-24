@@ -176,7 +176,9 @@ export const DESIGN_MANIFEST: Record<string, {
     chartShowGrid: { attr: 'data-chart-grid' },
     chartType: { attr: 'data-chart-type' },
     chartThickness: { vars: ['--sarak-chart-thickness'], unit: 'px' },
-    chartSmoothing: { attr: 'data-chart-smoothing' }
+    chartSmoothing: { attr: 'data-chart-smoothing' },
+    buttonHoverEffect: { attr: 'data-button-hover', vars: ['--sarak-button-hover'] },
+    inputStyle: { attr: 'data-input-style', vars: ['--sarak-input-style'] }
 };
 
 const BEZIER_CURVES = {

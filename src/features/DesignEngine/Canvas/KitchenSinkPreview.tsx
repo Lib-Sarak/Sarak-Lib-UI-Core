@@ -8,7 +8,7 @@ import {
 
 export const KitchenSinkPreview: React.FC = () => {
     return (
-        <div className="p-8 space-y-12 max-w-5xl mx-auto">
+        <div className="p-8 space-y-12 mx-auto">
             {/* Header Section */}
             <header className="flex items-center justify-between p-6 bg-theme-card rounded-theme border-theme shadow-theme">
                 <div className="flex items-center gap-4">

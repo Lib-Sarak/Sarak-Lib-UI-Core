@@ -100,7 +100,7 @@ export const PreviewCanvas: React.FC<PreviewCanvasProps> = ({
     }, [tokens, getShadowStyle]);
 
     const deviceStyles: any = {
-        desktop: { width: '100%', height: '100%', maxWidth: '1200px', aspectRatio: '16/9' },
+        desktop: { width: '95%', height: 'auto', maxWidth: '1600px', maxHeight: '92%', aspectRatio: '16/9' },
         tablet: { width: '768px', height: '1024px', scale: 0.6 },
         smartphone: { width: '375px', height: '667px', scale: 0.8 }
     };
@@ -177,7 +177,7 @@ export const PreviewCanvas: React.FC<PreviewCanvasProps> = ({
     };
 
     return (
-        <div className="flex-grow flex flex-col relative overflow-hidden bg-[#050505] p-8 items-center justify-center">
+        <div className="flex-grow flex flex-col relative overflow-hidden bg-[#050505] p-2 items-center justify-center">
             <motion.div
                 layout
                 initial={false}
@@ -241,7 +241,7 @@ export const PreviewCanvas: React.FC<PreviewCanvasProps> = ({
                         <aside 
                             className="border border-[var(--theme-border)] flex flex-col bg-[var(--theme-card)] backdrop-blur-md relative z-20 transition-all" 
                             style={{ 
-                                width: `${tokens.sidebarWidth || 260}px`,
+                                width: `${tokens.sidebarWidth || 180}px`,
                                 margin: 'var(--theme-tab-section-margin)',
                                 borderRadius: 'calc(var(--radius-theme) * 0.8)',
                                 boxShadow: 'var(--theme-shadow)'

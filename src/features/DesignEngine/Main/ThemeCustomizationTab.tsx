@@ -2,7 +2,8 @@ import React, { useState, useEffect } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
 import {
     Plus, Check, Zap, Edit3, Monitor, Tablet, Smartphone, 
-    Palette, Box, Wind, Sparkles, AlertCircle
+    Palette, Box, Wind, Sparkles, AlertCircle, Moon, Sun, Type, Layout as LayoutIcon,
+    Globe, MousePointer2, MessageSquare
 } from 'lucide-react';
 
 import { useSarakUI } from '../../../core/Provider/SarakUIProvider';
@@ -13,23 +14,24 @@ import { LAYOUTS } from '../../../constants/design-tokens';
 // Modular Hooks & Components
 import { useDesignDraft } from '../hooks/useDesignDraft';
 import { CategoryLabel } from '../components/DesignControls';
-import { IdentitySection } from '../Sections/IdentitySection';
-import { StructureSection } from '../Sections/StructureSection';
-import { AtmosphereSection } from '../Sections/AtmosphereSection';
-import { EnginesSection } from '../Sections/EnginesSection';
+import { BrandingSection } from '../Sections/BrandingSection';
+import { TypographySection } from '../Sections/TypographySection';
+import { VisualsSection } from '../Sections/VisualsSection';
+import { CardsSection } from '../Sections/CardsSection';
+import { AnimationSection } from '../Sections/AnimationSection';
+import { ComponentsSection } from '../Sections/ComponentsSection';
+import { DashboardSection } from '../Sections/DashboardSection';
+import { ChatSection } from '../Sections/ChatSection';
+import { LayoutSection } from '../Sections/LayoutSection';
 
 /**
- * ThemeCustomizationTab (v7.2 - Modular Refactor)
+ * ThemeCustomizationTab (v8.0 - Sovereign Reorganization)
  * Main design orchestrator for the Sarak ecosystem.
  */
 export const ThemeCustomizationTab: React.FC = () => {
     const { design, ...rest } = useSarakUI();
     const sarak = { ...design, ...rest };
-    // useThemePreview is partially redundant now that we use useDesignDraft for live updates,
-    // but we can still use it for managing preview-only states if needed.
-    // However, to fix the "not applying to preview" issue, we MUST use 'draft' in PreviewCanvas.
     
-    // Logic extracted to custom hook
     const { 
         draft, 
         updateDraft, 
@@ -42,19 +44,18 @@ export const ThemeCustomizationTab: React.FC = () => {
     const [activePreviewApp, setActivePreviewApp] = useState('dashboard');
     const [previewDevice, setPreviewDevice] = useState<'desktop' | 'tablet' | 'smartphone'>('desktop');
 
-    const [activeCategory, setActiveCategory] = useState<string | null>('id');
-    const [activeSection, setActiveSection] = useState<string | null>('color-core');
+    const [activeCategory, setActiveCategory] = useState<string | null>('presets');
+    const [activeSection, setActiveSection] = useState<string | null>(null);
 
     // Auto-switch preview app based on section
     useEffect(() => {
-        if (activeSection === 'chat-engine') setActivePreviewApp('chat');
-        else if (activeSection === 'flow-engine') setActivePreviewApp('settings');
-        else if (activeSection === 'chart-engine') setActivePreviewApp('dashboard');
-        else if (activeSection === 'typography') setActivePreviewApp('typography');
+        if (activeSection === 'chat-bubbles' || activeSection === 'chat-dynamics') setActivePreviewApp('chat');
+        else if (activeSection === 'chart-visuals' || activeSection === 'chart-geometry') setActivePreviewApp('dashboard');
+        else if (activeSection === 'font-families' || activeSection === 'font-refinement') setActivePreviewApp('typography');
         else if (activeSection && [
-            'color-core', 'branding', 'appearance', 
-            'layout-dna', 'geometry', 
-            'glassmorphism', 'textures', 'kinetics'
+            'color-core', 'brand-identity', 'brand-metrics',
+            'layout-dna', 'card-geometry', 'card-atmosphere', 'card-shadows',
+            'textures-core', 'kinetics', 'effects-refinement', 'button-styles'
         ].includes(activeSection)) {
             setActivePreviewApp('kitchen-sink');
         }
@@ -63,23 +64,22 @@ export const ThemeCustomizationTab: React.FC = () => {
     return (
         <div className="flex flex-1 h-[800px] bg-[#0c0c0d] overflow-hidden">
             {/* Sidebar de Configuração */}
-            <div className="w-[420px] flex flex-col border-r border-white/5 bg-[#0a0a0b] relative z-10">
-                <div className="p-8 pb-4 shrink-0 bg-gradient-to-b from-black/40 to-transparent">
-                    <div className="flex items-center justify-between mb-6">
+            <div className="w-[440px] flex flex-col border-r border-white/5 bg-[#0a0a0b] relative z-10">
+                
+                {/* 1. Global Controls Header */}
+                <div className="p-6 pb-2 shrink-0 border-b border-white/5 bg-black/20">
+                    <div className="flex items-center justify-between mb-4">
                         <div className="flex items-center gap-3">
-                            <div className="w-10 h-10 rounded-2xl bg-[var(--theme-primary)] flex items-center justify-center shadow-[0_0_30px_rgba(var(--theme-primary-rgb),0.3)]">
-                                <Palette className="text-white w-5 h-5" />
+                            <div className="w-8 h-8 rounded-xl bg-[var(--theme-primary)] flex items-center justify-center shadow-[0_0_20px_rgba(var(--theme-primary-rgb),0.3)]">
+                                <Zap className="text-white w-4 h-4" />
                             </div>
-                            <div>
-                                <h2 className="text-lg font-black text-white tracking-tight uppercase">Design Engine</h2>
-                                <p className="text-[9px] font-bold text-white/30 uppercase tracking-widest">Sovereignty v7.2.4</p>
-                            </div>
+                            <h2 className="text-sm font-black text-white tracking-tight uppercase">Design Engine</h2>
                         </div>
-                        <div className="flex gap-2">
+                        <div className="flex gap-1.5 p-1 bg-white/5 rounded-xl border border-white/5">
                             {['desktop', 'tablet', 'smartphone'].map((t) => {
                                 const Icon = t === 'desktop' ? Monitor : t === 'tablet' ? Tablet : Smartphone;
                                 return (
-                                    <button key={t} onClick={() => setPreviewDevice(t as any)} className={`p-2 rounded-lg transition-all ${previewDevice === t ? 'bg-[var(--theme-primary)]/20 text-[var(--theme-primary)]' : 'bg-white/5 text-white/20 hover:text-white/40'}`}>
+                                    <button key={t} onClick={() => setPreviewDevice(t as any)} className={`p-2 rounded-lg transition-all ${previewDevice === t ? 'bg-[var(--theme-primary)] text-white shadow-lg' : 'text-white/20 hover:text-white/40'}`}>
                                         <Icon size={12} />
                                     </button>
                                 );
@@ -87,9 +87,34 @@ export const ThemeCustomizationTab: React.FC = () => {
                         </div>
                     </div>
 
-                    <button onClick={handleApplyToSystem} className="w-full group relative overflow-hidden bg-[var(--theme-primary)] hover:bg-[var(--theme-primary)]/90 text-white py-4 rounded-2xl font-black text-[11px] uppercase tracking-[0.2em] transition-all active:scale-[0.98] shadow-[0_20px_40px_-10px_rgba(var(--theme-primary-rgb),0.4)]">
+                    {/* Quick Global Settings */}
+                    <div className="grid grid-cols-2 gap-3 mb-4">
+                        <div className="flex flex-col gap-1.5">
+                            <span className="text-[8px] font-black uppercase tracking-widest text-white/20">Modo de Exibição</span>
+                            <div className="flex p-1 bg-white/5 rounded-xl border border-white/5">
+                                <button onClick={() => updateDraft('mode', 'dark')} className={`flex-1 flex items-center justify-center gap-2 py-2 rounded-lg transition-all ${draft.mode === 'dark' ? 'bg-white/10 text-white' : 'text-white/20 hover:text-white/40'}`}>
+                                    <Moon size={10} /> <span className="text-[8px] font-black uppercase">Dark</span>
+                                </button>
+                                <button onClick={() => updateDraft('mode', 'light')} className={`flex-1 flex items-center justify-center gap-2 py-2 rounded-lg transition-all ${draft.mode === 'light' ? 'bg-white text-black' : 'text-white/20 hover:text-white/40'}`}>
+                                    <Sun size={10} /> <span className="text-[8px] font-black uppercase">Light</span>
+                                </button>
+                            </div>
+                        </div>
+                        <div className="flex flex-col gap-1.5">
+                            <span className="text-[8px] font-black uppercase tracking-widest text-white/20">Escala Tipográfica</span>
+                            <div className="flex p-1 bg-white/5 rounded-xl border border-white/5">
+                                {['pp', 'p', 'm', 'g', 'gg'].map(s => (
+                                    <button key={s} onClick={() => updateDraft('fontScale', s)} className={`flex-1 py-2 rounded-lg text-[8px] font-black uppercase transition-all ${draft.fontScale === s ? 'bg-[var(--theme-primary)] text-white' : 'text-white/20 hover:text-white/40'}`}>
+                                        {s}
+                                    </button>
+                                ))}
+                            </div>
+                        </div>
+                    </div>
+
+                    <button onClick={handleApplyToSystem} className="w-full group relative overflow-hidden bg-[var(--theme-primary)] hover:bg-[var(--theme-primary)]/90 text-white py-3.5 rounded-xl font-black text-[10px] uppercase tracking-[0.2em] transition-all active:scale-[0.98] shadow-[0_15px_30px_-10px_rgba(var(--theme-primary-rgb),0.4)]">
                         <div className="flex items-center justify-center gap-3 relative z-10">
-                            <Zap size={14} className="group-hover:animate-pulse" />
+                            <Check size={12} className="group-hover:scale-125 transition-transform" />
                             <span>Aplicar ao Sistema</span>
                         </div>
                         <div className="absolute inset-0 bg-gradient-to-r from-white/0 via-white/20 to-white/0 -translate-x-full group-hover:translate-x-full transition-transform duration-1000" />
@@ -98,9 +123,9 @@ export const ThemeCustomizationTab: React.FC = () => {
 
                 {/* Scrollable Configuration Areas */}
                 <div className="flex-1 overflow-y-auto custom-scrollbar">
-                    <div className="py-2">
+                    <div className="pb-8">
                         {/* 0. BIBLIOTECA DE TEMAS */}
-                        <CategoryLabel icon={Edit3} title="Modelos & Presets" index={0} isOpen={activeCategory === 'presets'} onToggle={() => setActiveCategory(activeCategory === 'presets' ? null : 'presets')} />
+                        <CategoryLabel icon={Edit3} title="Modelos & Projetos" index={0} isOpen={activeCategory === 'presets'} onToggle={() => setActiveCategory(activeCategory === 'presets' ? null : 'presets')} />
                         <AnimatePresence>
                             {activeCategory === 'presets' && (
                                 <motion.div initial={{ height: 0, opacity: 0 }} animate={{ height: 'auto', opacity: 1 }} exit={{ height: 0, opacity: 0 }} className="overflow-hidden bg-black/40">
@@ -118,42 +143,92 @@ export const ThemeCustomizationTab: React.FC = () => {
                             )}
                         </AnimatePresence>
 
-                        {/* 1. IDENTIDADE */}
-                        <CategoryLabel icon={Palette} title="Identidade & Presença" index={1} isOpen={activeCategory === 'id'} onToggle={() => setActiveCategory(activeCategory === 'id' ? null : 'id')} />
+                        {/* 1. CARDS */}
+                        <CategoryLabel icon={Box} title="Cards & Containers" index={1} isOpen={activeCategory === 'cards'} onToggle={() => setActiveCategory(activeCategory === 'cards' ? null : 'cards')} />
                         <AnimatePresence>
-                            {activeCategory === 'id' && (
+                            {activeCategory === 'cards' && (
                                 <motion.div initial={{ height: 0, opacity: 0 }} animate={{ height: 'auto', opacity: 1 }} exit={{ height: 0, opacity: 0 }} className="overflow-hidden">
-                                    <IdentitySection draft={draft} updateDraft={updateDraft} activeSection={activeSection} setActiveSection={setActiveSection} showToast={showToast} />
+                                    <CardsSection draft={draft} updateDraft={updateDraft} activeSection={activeSection} setActiveSection={setActiveSection} />
                                 </motion.div>
                             )}
                         </AnimatePresence>
 
-                        {/* 2. DNA ESTRUTURAL */}
-                        <CategoryLabel icon={Box} title="DNA Estrutural" index={2} isOpen={activeCategory === 'dna'} onToggle={() => setActiveCategory(activeCategory === 'dna' ? null : 'dna')} />
+                        {/* 2. FONTES */}
+                        <CategoryLabel icon={Type} title="Fontes & Tipografia" index={2} isOpen={activeCategory === 'fonts'} onToggle={() => setActiveCategory(activeCategory === 'fonts' ? null : 'fonts')} />
                         <AnimatePresence>
-                            {activeCategory === 'dna' && (
+                            {activeCategory === 'fonts' && (
                                 <motion.div initial={{ height: 0, opacity: 0 }} animate={{ height: 'auto', opacity: 1 }} exit={{ height: 0, opacity: 0 }} className="overflow-hidden">
-                                    <StructureSection draft={draft} updateDraft={updateDraft} activeSection={activeSection} setActiveSection={setActiveSection} />
+                                    <TypographySection draft={draft} updateDraft={updateDraft} activeSection={activeSection} setActiveSection={setActiveSection} />
                                 </motion.div>
                             )}
                         </AnimatePresence>
 
-                        {/* 3. ATMOSFERA */}
-                        <CategoryLabel icon={Wind} title="Atmosfera & Profundidade" index={3} isOpen={activeCategory === 'env'} onToggle={() => setActiveCategory(activeCategory === 'env' ? null : 'env')} />
+                        {/* 3. ANIMAÇÕES */}
+                        <CategoryLabel icon={Sparkles} title="Efeitos & Animações" index={3} isOpen={activeCategory === 'animations'} onToggle={() => setActiveCategory(activeCategory === 'animations' ? null : 'animations')} />
                         <AnimatePresence>
-                            {activeCategory === 'env' && (
+                            {activeCategory === 'animations' && (
                                 <motion.div initial={{ height: 0, opacity: 0 }} animate={{ height: 'auto', opacity: 1 }} exit={{ height: 0, opacity: 0 }} className="overflow-hidden">
-                                    <AtmosphereSection draft={draft} updateDraft={updateDraft} activeSection={activeSection} setActiveSection={setActiveSection} />
+                                    <AnimationSection draft={draft} updateDraft={updateDraft} activeSection={activeSection} setActiveSection={setActiveSection} />
                                 </motion.div>
                             )}
                         </AnimatePresence>
 
-                        {/* 4. MOTORES ATÔMICOS */}
-                        <CategoryLabel icon={Zap} title="Motores de Experiência" index={4} isOpen={activeCategory === 'engines'} onToggle={() => setActiveCategory(activeCategory === 'engines' ? null : 'engines')} />
+                        {/* 4. BRANDING */}
+                        <CategoryLabel icon={Globe} title="Branding & Identidade" index={4} isOpen={activeCategory === 'branding'} onToggle={() => setActiveCategory(activeCategory === 'branding' ? null : 'branding')} />
                         <AnimatePresence>
-                            {activeCategory === 'engines' && (
+                            {activeCategory === 'branding' && (
                                 <motion.div initial={{ height: 0, opacity: 0 }} animate={{ height: 'auto', opacity: 1 }} exit={{ height: 0, opacity: 0 }} className="overflow-hidden">
-                                    <EnginesSection draft={draft} updateDraft={updateDraft} activeSection={activeSection} setActiveSection={setActiveSection} />
+                                    <BrandingSection draft={draft} updateDraft={updateDraft} activeSection={activeSection} setActiveSection={setActiveSection} showToast={showToast} />
+                                </motion.div>
+                            )}
+                        </AnimatePresence>
+
+                        {/* 5. CORES E TEXTURAS */}
+                        <CategoryLabel icon={Palette} title="Cores & Texturas" index={5} isOpen={activeCategory === 'visuals'} onToggle={() => setActiveCategory(activeCategory === 'visuals' ? null : 'visuals')} />
+                        <AnimatePresence>
+                            {activeCategory === 'visuals' && (
+                                <motion.div initial={{ height: 0, opacity: 0 }} animate={{ height: 'auto', opacity: 1 }} exit={{ height: 0, opacity: 0 }} className="overflow-hidden">
+                                    <VisualsSection draft={draft} updateDraft={updateDraft} activeSection={activeSection} setActiveSection={setActiveSection} />
+                                </motion.div>
+                            )}
+                        </AnimatePresence>
+
+                        {/* 6. COMPONENTES */}
+                        <CategoryLabel icon={MousePointer2} title="Botões & Componentes" index={6} isOpen={activeCategory === 'components'} onToggle={() => setActiveCategory(activeCategory === 'components' ? null : 'components')} />
+                        <AnimatePresence>
+                            {activeCategory === 'components' && (
+                                <motion.div initial={{ height: 0, opacity: 0 }} animate={{ height: 'auto', opacity: 1 }} exit={{ height: 0, opacity: 0 }} className="overflow-hidden">
+                                    <ComponentsSection draft={draft} updateDraft={updateDraft} activeSection={activeSection} setActiveSection={setActiveSection} />
+                                </motion.div>
+                            )}
+                        </AnimatePresence>
+
+                        {/* 7. DASHBOARD */}
+                        <CategoryLabel icon={Monitor} title="Dashboard & Gráficos" index={7} isOpen={activeCategory === 'dashboard'} onToggle={() => setActiveCategory(activeCategory === 'dashboard' ? null : 'dashboard')} />
+                        <AnimatePresence>
+                            {activeCategory === 'dashboard' && (
+                                <motion.div initial={{ height: 0, opacity: 0 }} animate={{ height: 'auto', opacity: 1 }} exit={{ height: 0, opacity: 0 }} className="overflow-hidden">
+                                    <DashboardSection draft={draft} updateDraft={updateDraft} activeSection={activeSection} setActiveSection={setActiveSection} />
+                                </motion.div>
+                            )}
+                        </AnimatePresence>
+
+                        {/* 8. CHATS */}
+                        <CategoryLabel icon={MessageSquare} title="Chats & Conversas" index={8} isOpen={activeCategory === 'chats'} onToggle={() => setActiveCategory(activeCategory === 'chats' ? null : 'chats')} />
+                        <AnimatePresence>
+                            {activeCategory === 'chats' && (
+                                <motion.div initial={{ height: 0, opacity: 0 }} animate={{ height: 'auto', opacity: 1 }} exit={{ height: 0, opacity: 0 }} className="overflow-hidden">
+                                    <ChatSection draft={draft} updateDraft={updateDraft} activeSection={activeSection} setActiveSection={setActiveSection} />
+                                </motion.div>
+                            )}
+                        </AnimatePresence>
+
+                        {/* 9. LAYOUT */}
+                        <CategoryLabel icon={LayoutIcon} title="Layout & Estrutura" index={9} isOpen={activeCategory === 'layout'} onToggle={() => setActiveCategory(activeCategory === 'layout' ? null : 'layout')} />
+                        <AnimatePresence>
+                            {activeCategory === 'layout' && (
+                                <motion.div initial={{ height: 0, opacity: 0 }} animate={{ height: 'auto', opacity: 1 }} exit={{ height: 0, opacity: 0 }} className="overflow-hidden">
+                                    <LayoutSection draft={draft} updateDraft={updateDraft} activeSection={activeSection} setActiveSection={setActiveSection} />
                                 </motion.div>
                             )}
                         </AnimatePresence>
