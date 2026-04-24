@@ -4,7 +4,9 @@ import {
     Zap, Shield, Database, BarChart3, MessageSquare, History, Box, Network, Type, Grid, Maximize
 } from 'lucide-react';
 import { EMOJI_SETS, THEME_EFFECTS, DENSITY, SCALES } from '../../../constants/design-tokens';
+import { DESIGN_MANIFEST } from '../../../core/Provider/SarakUIProvider';
 import { MockDashboard, MockChat, MockLogs, MockSettings, MockComponents, MockTypography } from './MockApps';
+import { KitchenSinkPreview } from './KitchenSinkPreview';
 
 interface PreviewCanvasProps {
     previewDevice: 'desktop' | 'tablet' | 'smartphone';
@@ -31,16 +33,10 @@ export const PreviewCanvas: React.FC<PreviewCanvasProps> = ({
     mode,
     draftTokens
 }) => {
-    const tokens = draftTokens || {};
-    const densityConfig = (DENSITY as any)[(tokens.layoutDensity || 'standard').toUpperCase()] || DENSITY.STANDARD;
-
+    const tokens = React.useMemo(() => draftTokens || {}, [draftTokens]);
+    
     // --- HELPERS ---
-    const hexToRgb = (hex: string): string => {
-        const result = /^#?([a-f\d]{2})([a-f\d]{2})([a-f\d]{2})$/i.exec(hex);
-        return result ? `${parseInt(result[1], 16)}, ${parseInt(result[2], 16)}, ${parseInt(result[3], 16)}` : '59, 130, 246';
-    };
-
-    const getShadowStyle = (orientation: string, intensity: number, color: string): string => {
+    const getShadowStyle = React.useCallback((orientation: string, intensity: number, color: string): string => {
         const opacity = intensity * 0.3;
         switch (orientation) {
             case 'top-down':
@@ -52,41 +48,56 @@ export const PreviewCanvas: React.FC<PreviewCanvasProps> = ({
             default:
                 return `0 4px 20px rgba(0,0,0,${opacity})`;
         }
-    };
+    }, []);
 
-    const cssVariables = {
-        '--theme-primary': tokens.primaryColor || previewPrimaryColor,
-        '--theme-primary-rgb': hexToRgb(tokens.primaryColor || previewPrimaryColor),
-        '--radius-theme': `${tokens.borderRadius ?? 12}px`,
-        '--theme-border-width': `${tokens.borderWidth ?? 1}px`,
-        '--theme-border-style': tokens.borderStyle || 'solid',
-        '--theme-gap': `${tokens.layoutGap ?? 20}px`,
-        '--theme-pad': densityConfig.pad || '1.5rem',
-        '--theme-card-pad': `${tokens.cardPadding ?? 24}px`,
-        '--theme-tab-gap': `${tokens.tabGap ?? 12}px`,
-        '--theme-tab-section-margin': `${tokens.tabSectionMargin ?? 0}px`,
-        '--font-heading': tokens.headingFont || "'Inter', sans-serif",
-        '--font-main': tokens.bodyFont || "'Inter', sans-serif",
-        '--font-tab': tokens.tabFont || tokens.headingFont || "'Inter', sans-serif",
-        '--heading-weight': tokens.headingWeight || '700',
-        '--heading-spacing': tokens.headingLetterSpacing === 'tight' ? '-0.05em' : tokens.headingLetterSpacing === 'wide' ? '0.05em' : tokens.headingLetterSpacing === 'widest' ? '0.1em' : 'normal',
-        '--theme-font-size-base': `calc(${densityConfig.fontSizeBase || '13px'} * ${(SCALES as any)[(tokens.fontScale || 'm').toUpperCase()]?.factor || '1.0'})`,
-        '--animation-speed': `${tokens.animationSpeed ?? 0.4}s`,
-        '--sarak-elasticity': (tokens.interfaceElasticity ?? 0.4).toString(),
-        '--shadow-intensity': (tokens.shadowIntensity ?? 0.5).toString(),
-        '--glass-blur': `${tokens.glassBlur ?? 10}px`,
-        '--glass-opacity': (tokens.glassOpacity ?? 0.7).toString(),
-        '--texture-opacity': (tokens.textureOpacity ?? 0.05).toString(),
-        '--theme-bg': tokens.mode === 'light' ? '#f1f5f9' : '#020617',
-        '--theme-card': tokens.mode === 'light' ? 'rgba(255,255,255,0.8)' : 'rgba(30,41,59,0.5)',
-        '--theme-border': tokens.mode === 'light' ? 'rgba(0,0,0,0.1)' : 'rgba(255,255,255,0.08)',
-        '--theme-title': tokens.mode === 'light' ? '#0f172a' : '#f8fafc',
-        '--theme-main': tokens.mode === 'light' ? '#475569' : '#94a3b8',
-        '--theme-muted': tokens.mode === 'light' ? '#94a3b8' : '#64748b',
-        '--theme-shadow': getShadowStyle(tokens.shadowOrientation || 'top-down', tokens.shadowIntensity ?? 0.5, tokens.primaryColor || previewPrimaryColor),
-        '--primary-color': tokens.primaryColor || previewPrimaryColor,
-        '--border-color': tokens.mode === 'light' ? 'rgba(0,0,0,0.1)' : 'rgba(255,255,255,0.08)',
-    } as React.CSSProperties;
+    const cssVariables = React.useMemo(() => {
+        const vars: any = {};
+        
+        // 1. Injetar variáveis do manifesto dinamicamente (Soberania v7.5)
+        Object.entries(tokens).forEach(([key, value]) => {
+            const config = (DESIGN_MANIFEST as any)[key];
+            if (config) {
+                const transformedValue = config.transform ? config.transform(value) : value;
+                
+                if (config.vars) {
+                    config.vars.forEach((varName: string) => {
+                        if (typeof transformedValue === 'object' && transformedValue !== null) {
+                            Object.entries(transformedValue).forEach(([subKey, subVal]) => {
+                                vars[`${varName}-${subKey}`] = subVal;
+                                if (subKey === 'main') vars[varName] = subVal;
+                            });
+                        } else {
+                            vars[varName] = `${transformedValue}${config.unit || ''}`;
+                        }
+                    });
+                }
+            }
+        });
+
+        // 2. Variáveis de Tema Derivadas (Fallback & Logic)
+        const isLight = tokens.mode === 'light';
+        vars['--theme-bg'] = isLight ? '#f1f5f9' : '#020617';
+        vars['--theme-card'] = isLight 
+            ? `color-mix(in srgb, #ffffff, transparent ${Math.round((1 - (tokens.glassOpacity ?? 0.7)) * 100)}%)` 
+            : `color-mix(in srgb, #1e293b, transparent ${Math.round((1 - (tokens.glassOpacity ?? 0.7)) * 100)}%)`;
+        vars['--theme-border'] = isLight ? 'rgba(0,0,0,0.1)' : 'rgba(255,255,255,0.08)';
+        vars['--theme-title'] = isLight ? '#0f172a' : '#f8fafc';
+        vars['--theme-main'] = isLight ? '#475569' : '#94a3b8';
+        vars['--theme-muted'] = isLight ? '#94a3b8' : '#64748b';
+        
+        // 3. Sombras Especiais
+        if (!vars['--theme-shadow']) {
+            vars['--theme-shadow'] = tokens.layeredShadows 
+                ? vars['--sarak-layered-shadows'] 
+                : getShadowStyle(tokens.shadowOrientation || 'top-down', tokens.shadowIntensity ?? 0.5, tokens.primaryColor);
+        }
+
+        // 4. Fallbacks Críticos
+        if (!vars['--radius-theme']) vars['--radius-theme'] = '12px';
+        if (!vars['--theme-gap']) vars['--theme-gap'] = '20px';
+
+        return vars as React.CSSProperties;
+    }, [tokens, getShadowStyle]);
 
     const deviceStyles: any = {
         desktop: { width: '100%', height: '100%', maxWidth: '1200px', aspectRatio: '16/9' },
@@ -100,17 +111,19 @@ export const PreviewCanvas: React.FC<PreviewCanvasProps> = ({
         logs: <MockLogs tokens={tokens} config={config} animationVariants={THEME_EFFECTS.page} animationStyle={previewAnimationStyle} />,
         settings: <MockSettings tokens={tokens} config={config} animationVariants={THEME_EFFECTS.page} animationStyle={previewAnimationStyle} />,
         components: <MockComponents tokens={tokens} />,
-        typography: <MockTypography tokens={tokens} />
+        typography: <MockTypography tokens={tokens} />,
+        'kitchen-sink': <KitchenSinkPreview />
     };
 
-    const appIds = ['dashboard', 'chat', 'logs', 'settings', 'components', 'typography'];
+    const appIds = ['dashboard', 'chat', 'logs', 'settings', 'components', 'typography', 'kitchen-sink'];
     const appIcons: any = {
         dashboard: <BarChart3 size={14} />,
         chat: <MessageSquare size={14} />,
         logs: <History size={14} />,
         settings: <Network size={14} />,
         components: <Box size={14} />,
-        typography: <Type size={14} />
+        typography: <Type size={14} />,
+        'kitchen-sink': <Grid size={14} />
     };
 
     const LogoComponent = () => {

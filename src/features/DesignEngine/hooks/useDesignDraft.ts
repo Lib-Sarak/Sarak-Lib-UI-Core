@@ -55,7 +55,10 @@ export const useDesignDraft = (sarak: any) => {
         tabGap: sarak.tabGap || 12,
         tabSectionMargin: sarak.tabSectionMargin || 0,
         texture: sarak.texture || 'none',
-        textureOpacity: sarak.textureOpacity || 0.05
+        textureOpacity: sarak.textureOpacity || 0.05,
+        scaleRatio: sarak.scaleRatio || 1.0,
+        contrastCurve: sarak.contrastCurve || 1.0,
+        layeredShadows: sarak.layeredShadows || 1.0
     });
 
     const [toast, setToast] = useState<{ type: 'success' | 'warning', message: string } | null>(null);
@@ -77,7 +80,10 @@ export const useDesignDraft = (sarak: any) => {
                 tabGap: sarak.tabGap || 12,
                 tabSectionMargin: sarak.tabSectionMargin || 0,
                 texture: sarak.texture || 'none',
-                textureOpacity: sarak.textureOpacity || 0.05
+                textureOpacity: sarak.textureOpacity || 0.05,
+                scaleRatio: sarak.scaleRatio || 1.0,
+                contrastCurve: sarak.contrastCurve || 1.0,
+                layeredShadows: sarak.layeredShadows || 1.0
             });
         }
     }, [sarak.isHydrated]);
@@ -111,7 +117,8 @@ export const useDesignDraft = (sarak: any) => {
             logoPosition: 'string', systemTone: 'string', emptyStateId: 'string',
             chartStyle: 'string', chartPalette: 'array',
             shadowIntensity: 'number', shadowOrientation: 'string', shadowColorMode: 'string',
-            animationSpeed: 'number', mode: 'string'
+            animationSpeed: 'number', mode: 'string',
+            scaleRatio: 'number', contrastCurve: 'number', layeredShadows: 'number'
         };
 
         const tokenMap: Record<string, string> = {
@@ -128,7 +135,8 @@ export const useDesignDraft = (sarak: any) => {
             '--logo-position': 'logoPosition', '--system-tone': 'systemTone', '--empty-state-id': 'emptyStateId',
             '--chart-style': 'chartStyle', '--chart-palette': 'chartPalette',
             '--shadow-intensity': 'shadowIntensity', '--shadow-orientation': 'shadowOrientation', '--shadow-color-mode': 'shadowColorMode',
-            '--animation-speed': 'animationSpeed', '--mode': 'mode'
+            '--animation-speed': 'animationSpeed', '--mode': 'mode',
+            '--scale-ratio': 'scaleRatio', '--contrast-curve': 'contrastCurve', '--layered-shadows': 'layeredShadows'
         };
 
         const newDraft = { ...draft, layout: id };

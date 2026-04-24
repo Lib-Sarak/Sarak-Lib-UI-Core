@@ -29,12 +29,18 @@ export const AtmosphereSection: React.FC<AtmosphereSectionProps> = ({ draft, upd
             </Section>
 
             <Section id="kinetics" icon={Sparkles} title="Cinética & Profundidade" activeSection={activeSection} onToggle={setActiveSection}>
-                <SliderControl label="Intensidade Sombras" value={draft.shadowIntensity} min={0} max={2} step={0.1} onChange={(v: any) => updateDraft('shadowIntensity', v)} />
+                <div className="grid grid-cols-2 gap-4">
+                    <SliderControl label="Intensidade Sombras" value={draft.shadowIntensity} min={0} max={2} step={0.1} onChange={(v: any) => updateDraft('shadowIntensity', v)} />
+                    <SliderControl label="Layered Shadows" value={draft.layeredShadows || 1.0} min={0} max={2} step={0.1} onChange={(v: any) => updateDraft('layeredShadows', v)} />
+                </div>
                 <div className="grid grid-cols-2 gap-4">
                     <SelectControl label="Orientação Sombra" options={[{id: 'top-down', label: 'Top-Down'}, {id: 'isometric', label: 'Isométrica'}, {id: 'inner', label: 'Interna'}]} value={draft.shadowOrientation} onChange={(v: any) => updateDraft('shadowOrientation', v)} />
                     <SelectControl label="Cor Sombra" options={[{id: 'neutral', label: 'Neutro'}, {id: 'match', label: 'Match Primary'}, {id: 'adaptive', label: 'Adaptativo'}]} value={draft.shadowColorMode} onChange={(v: any) => updateDraft('shadowColorMode', v)} />
                 </div>
-                <SliderControl label="Velocidade Animação" value={draft.animationSpeed} min={0.1} max={1} step={0.1} onChange={(v: any) => updateDraft('animationSpeed', v)} suffix="s" />
+                <div className="grid grid-cols-2 gap-4">
+                    <SliderControl label="Curva de Contraste" value={draft.contrastCurve || 1.0} min={0.5} max={1.5} step={0.05} onChange={(v: any) => updateDraft('contrastCurve', v)} />
+                    <SliderControl label="Velocidade Animação" value={draft.animationSpeed} min={0.1} max={1} step={0.1} onChange={(v: any) => updateDraft('animationSpeed', v)} suffix="s" />
+                </div>
                 <SliderControl label="Elasticidade (Bounce)" value={draft.interfaceElasticity} min={0} max={1} step={0.1} onChange={(v: any) => updateDraft('interfaceElasticity', v)} />
             </Section>
         </>

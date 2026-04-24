@@ -26,7 +26,9 @@ export const SelectControl: React.FC<any> = ({ label, options, value, onChange, 
             style={isFont ? { fontFamily: value } : {}}
         >
             {(options || []).map((opt: any) => (
-                <option key={opt.id || opt} value={opt.id || opt} className="bg-[#0a0a0b]">{opt.label || opt}</option>
+                <option key={opt.id || opt} value={opt.id || opt} className="bg-[#0a0a0b]">
+                    {typeof opt === 'object' ? (opt.label || opt.name || opt.id) : opt}
+                </option>
             ))}
         </select>
     </div>

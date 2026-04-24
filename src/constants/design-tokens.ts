@@ -14,11 +14,11 @@ export const LAYOUTS = {
 };
 
 export const SCALES = {
-    P1: { id: 'p1', factor: '0.8', label: 'XS' },
-    P: { id: 'p', factor: '0.9', label: 'S' },
+    PP: { id: 'pp', factor: '0.7', label: 'PP' },
+    P: { id: 'p', factor: '0.85', label: 'P' },
     M: { id: 'm', factor: '1.0', label: 'M' },
-    G: { id: 'g', factor: '1.2', label: 'L' },
-    G1: { id: 'g1', factor: '1.4', label: 'XL' },
+    G: { id: 'g', factor: '1.25', label: 'G' },
+    GG: { id: 'gg', factor: '1.5', label: 'GG' },
 };
 
 export const DENSITY = {

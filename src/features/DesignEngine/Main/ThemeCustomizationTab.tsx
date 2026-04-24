@@ -6,9 +6,9 @@ import {
 } from 'lucide-react';
 
 import { useSarakUI } from '../../../core/Provider/SarakUIProvider';
-import { useThemePreview } from '../Context/useThemePreview';
 import { ThemeList } from '../Library/ThemeList';
 import { PreviewCanvas } from '../Canvas/PreviewCanvas';
+import { LAYOUTS } from '../../../constants/design-tokens';
 
 // Modular Hooks & Components
 import { useDesignDraft } from '../hooks/useDesignDraft';
@@ -25,28 +25,9 @@ import { EnginesSection } from '../Sections/EnginesSection';
 export const ThemeCustomizationTab: React.FC = () => {
     const { design, ...rest } = useSarakUI();
     const sarak = { ...design, ...rest };
-    const { 
-        previewLayoutId, setPreviewLayoutId,
-        previewAnimationStyle, setPreviewAnimationStyle,
-        previewEmojiSet, setPreviewEmojiSet,
-        previewPrimaryColor, setPreviewPrimaryColor,
-        previewFontScale, setPreviewFontScale,
-        previewNavigationStyle, setPreviewNavigationStyle,
-        previewSidebarWidth, setPreviewSidebarWidth,
-        config: previewConfig, setConfig: setPreviewConfig,
-        themeName,
-        handleConfigChange
-    } = useThemePreview(
-        sarak.layout || 'glass',
-        sarak.animationStyle || 'standard',
-        sarak.emojiSet || 'none',
-        sarak.primaryColor || '#3b82f6',
-        sarak.fontScale || 'medium',
-        sarak.navigationStyle || 'sidebar',
-        sarak.sidebarWidth || 280,
-        [], // customThemes (expandir depois se necessário)
-        {}  // layouts (expandir depois se necessário)
-    );
+    // useThemePreview is partially redundant now that we use useDesignDraft for live updates,
+    // but we can still use it for managing preview-only states if needed.
+    // However, to fix the "not applying to preview" issue, we MUST use 'draft' in PreviewCanvas.
     
     // Logic extracted to custom hook
     const { 
@@ -69,7 +50,14 @@ export const ThemeCustomizationTab: React.FC = () => {
         if (activeSection === 'chat-engine') setActivePreviewApp('chat');
         else if (activeSection === 'flow-engine') setActivePreviewApp('settings');
         else if (activeSection === 'chart-engine') setActivePreviewApp('dashboard');
-        else if (activeSection === 'typography') setActivePreviewApp('chat');
+        else if (activeSection === 'typography') setActivePreviewApp('typography');
+        else if (activeSection && [
+            'color-core', 'branding', 'appearance', 
+            'layout-dna', 'geometry', 
+            'glassmorphism', 'textures', 'kinetics'
+        ].includes(activeSection)) {
+            setActivePreviewApp('kitchen-sink');
+        }
     }, [activeSection]);
 
     return (
@@ -116,7 +104,16 @@ export const ThemeCustomizationTab: React.FC = () => {
                         <AnimatePresence>
                             {activeCategory === 'presets' && (
                                 <motion.div initial={{ height: 0, opacity: 0 }} animate={{ height: 'auto', opacity: 1 }} exit={{ height: 0, opacity: 0 }} className="overflow-hidden bg-black/40">
-                                    <div className="p-4"><ThemeList activeTheme={draft.layout} onSelect={handleThemePreview} /></div>
+                                    <div className="p-4">
+                                        <ThemeList 
+                                            layouts={LAYOUTS} 
+                                            customThemes={[]} 
+                                            currentLayout={sarak.layout} 
+                                            previewLayoutId={draft.layout} 
+                                            onPreview={handleThemePreview} 
+                                            onApply={(id) => { handleThemePreview(id); handleApplyToSystem(); }} 
+                                        />
+                                    </div>
                                 </motion.div>
                             )}
                         </AnimatePresence>
@@ -168,14 +165,14 @@ export const ThemeCustomizationTab: React.FC = () => {
             <div className="flex-1 relative bg-[#060607]">
                 <PreviewCanvas 
                     previewDevice={previewDevice}
-                    previewLayoutId={previewLayoutId}
+                    previewLayoutId={draft.layout || sarak.layout || 'glass'}
                     activePreviewApp={activePreviewApp}
                     setActivePreviewApp={setActivePreviewApp}
-                    previewAnimationStyle={previewAnimationStyle}
-                    previewEmojiSet={previewEmojiSet}
-                    config={previewConfig}
-                    previewPrimaryColor={previewPrimaryColor}
-                    mode={draft.mode}
+                    previewAnimationStyle={draft.animationStyle || sarak.animationStyle || 'standard'}
+                    previewEmojiSet={draft.emojiSet || sarak.emojiSet || 'none'}
+                    config={draft}
+                    previewPrimaryColor={draft.primaryColor || sarak.primaryColor || '#3b82f6'}
+                    mode={draft.mode || sarak.mode || 'dark'}
                     draftTokens={draft}
                 />
                 
