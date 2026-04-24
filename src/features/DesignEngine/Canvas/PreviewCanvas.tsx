@@ -100,7 +100,7 @@ export const PreviewCanvas: React.FC<PreviewCanvasProps> = ({
     }, [tokens, getShadowStyle]);
 
     const deviceStyles: any = {
-        desktop: { width: '95%', height: 'auto', maxWidth: '1600px', maxHeight: '92%', aspectRatio: '16/9' },
+        desktop: { width: '100%', height: 'auto', maxWidth: '1800px', maxHeight: '95%', aspectRatio: '16/9' },
         tablet: { width: '768px', height: '1024px', scale: 0.6 },
         smartphone: { width: '375px', height: '667px', scale: 0.8 }
     };
@@ -265,7 +265,7 @@ export const PreviewCanvas: React.FC<PreviewCanvasProps> = ({
                             </nav>
                             <UserProfileComponent />
                         </aside>
-                        <main className="flex-1 overflow-y-auto p-8 custom-scrollbar relative z-10">
+                        <main className="flex-1 overflow-y-auto p-8 custom-scrollbar relative z-10 sarak-safe-container">
                             <AnimatePresence mode="wait">
                                 <motion.div
                                     key={activePreviewApp}

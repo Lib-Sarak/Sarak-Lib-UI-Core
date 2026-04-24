@@ -45,7 +45,19 @@ export const VisualsSection: React.FC<VisualsSectionProps> = ({ draft, updateDra
 
             <Section id="textures-core" icon={Grid} title="Texturas & Superfícies" activeSection={activeSection} onToggle={setActiveSection}>
                 <SelectControl label="Biblioteca de Texturas" options={TEXTURE_LIBRARY} value={draft.texture} onChange={(v: any) => updateDraft('texture', v)} />
-                <SliderControl label="Opacidade da Textura" value={draft.textureOpacity} min={0} max={0.3} step={0.01} onChange={(v: any) => updateDraft('textureOpacity', v)} />
+                
+                {/* Visual Texture Preview */}
+                <div className="mt-2 mb-4 h-16 rounded-xl border border-white/5 bg-black/40 relative overflow-hidden group">
+                    <div className={`absolute inset-0 opacity-40 transition-all group-hover:scale-110 sarak-atmosphere-layer ${TEXTURE_LIBRARY.find(t => t.id === draft.texture)?.className || 'texture-none'}`} />
+                    <div className="absolute inset-0 flex items-center justify-center">
+                        <span className="text-[7px] font-black uppercase tracking-[0.2em] text-white/20">Preview da Textura</span>
+                    </div>
+                </div>
+
+                <div className="grid grid-cols-2 gap-4">
+                    <SliderControl label="Opacidade Textura" value={draft.textureOpacity} min={0} max={0.3} step={0.01} onChange={(v: any) => updateDraft('textureOpacity', v)} />
+                    <SliderControl label="Noise Overlay" value={draft.atmosphereNoiseOpacity} min={0} max={0.1} step={0.005} onChange={(v: any) => updateDraft('atmosphereNoiseOpacity', v)} />
+                </div>
                 <SelectControl label="Material de Superfície" options={[{id: 'glass', label: 'Glassmorphism'}, {id: 'solid', label: 'Sólido'}, {id: 'gradient', label: 'Gradiente Dinâmico'}]} value={draft.surfaceMaterial} onChange={(v: any) => updateDraft('surfaceMaterial', v)} />
             </Section>
         </>

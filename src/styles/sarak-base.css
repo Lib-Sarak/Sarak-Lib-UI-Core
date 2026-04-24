@@ -303,10 +303,36 @@ body {
     100% { transform: rotate(360deg) scale(1); }
 }
 
+/* 2.1 INDUSTRIAL DATA PRECISION */
+[data-tabular-nums="true"],
+.tabular-nums {
+    font-variant-numeric: tabular-nums !important;
+    font-feature-settings: "tnum" 1 !important;
+}
+
+/* 2.2 FLUID SCALING ENGINE (clamp-based) */
+:root {
+    --font-size-base: var(--theme-font-size-base, 14px);
+    --sarak-gap: var(--theme-gap, 20px);
+    --sarak-pad: var(--theme-pad, 1.5rem);
+}
+
+body {
+    font-size: var(--font-size-base);
+}
+
+/* 2.3 SAFE AREA MANAGEMENT */
+.sarak-safe-container {
+    width: 100%;
+    max-width: var(--sarak-max-width, none);
+    margin-left: auto;
+    margin-right: auto;
+}
+
 /* 3. PREMIUM SCROLLBAR MOTOR */
 .custom-scrollbar::-webkit-scrollbar {
-    width: 6px;
-    height: 6px;
+    width: var(--sarak-scrollbar-width, 6px);
+    height: var(--sarak-scrollbar-width, 6px);
 }
 
 .custom-scrollbar::-webkit-scrollbar-track {
@@ -314,10 +340,11 @@ body {
 }
 
 .custom-scrollbar::-webkit-scrollbar-thumb {
-    background: rgba(var(--theme-primary-rgb, 255, 255, 255), 0.1);
-    border-radius: 10px;
-    border: 1px solid transparent;
+    background: rgba(var(--theme-primary-rgb, 255, 255, 255), 0.15);
+    border-radius: 100px;
+    border: 2px solid transparent;
     background-clip: padding-box;
+    transition: background 0.3s ease;
 }
 
 .custom-scrollbar::-webkit-scrollbar-thumb:hover {
@@ -330,7 +357,7 @@ body {
     border-radius: var(--radius-theme, 12px);
     border: var(--border-width, 1px) var(--border-style, solid) var(--border-color);
     background: color-mix(in srgb, var(--bg-card), transparent calc(100% * (1 - var(--glass-opacity, 0.7))));
-    backdrop-filter: blur(var(--glass-blur, 10px)) saturate(180%);
+    backdrop-filter: blur(var(--glass-blur, 10px)) saturate(var(--sarak-glass-saturation, 180%));
     box-shadow: var(--sarak-layered-shadows, var(--dynamic-shadow));
     padding: var(--theme-card-padding, 24px);
     transition: all var(--animation-speed, 0.4s) var(--ease-sarak-cubic), border-color 0.2s ease, background 0.3s ease;
@@ -352,7 +379,7 @@ body {
     z-index: -1;
     background: radial-gradient(
         800px circle at var(--mouse-x, 50%) var(--mouse-y, 50%), 
-        rgba(var(--theme-primary-rgb, 255,255,255), 0.08), 
+        rgba(var(--theme-primary-rgb, 255,255,255), var(--sarak-spotlight-intensity, 0.08)), 
         transparent 40%
     );
     opacity: 0;
@@ -362,6 +389,37 @@ body {
 
 .bg-theme-card:hover::before {
     opacity: 1;
+}
+
+/* BORDER BEAM EFFECT (v8.0) */
+[data-border-beam="1"] .bg-theme-card::after {
+    content: '';
+    position: absolute;
+    inset: -1px;
+    background: conic-gradient(from var(--beam-angle, 0deg), transparent, var(--theme-primary), transparent 30%);
+    mask: linear-gradient(#fff 0 0) content-box, linear-gradient(#fff 0 0);
+    mask-composite: exclude;
+    padding: var(--border-width, 1px);
+    border-radius: inherit;
+    pointer-events: none;
+    opacity: 0;
+    transition: opacity 0.5s ease;
+    animation: beam-rotate 4s linear infinite;
+}
+
+[data-border-beam="1"] .bg-theme-card:hover::after {
+    opacity: 1;
+}
+
+@keyframes beam-rotate {
+    from { --beam-angle: 0deg; }
+    to { --beam-angle: 360deg; }
+}
+
+@property --beam-angle {
+    syntax: '<angle>';
+    initial-value: 0deg;
+    inherits: false;
 }
 
 /* 4. SOVEREIGNTY & DEPTH MOTOR (v6.0) */
@@ -690,9 +748,11 @@ button:hover:not(.p-0) {
     transform: translateY(-1px);
 }
 
-button:active:not(.p-0) {
+button:active:not(.p-0),
+.bg-theme-card:active {
     background-color: var(--theme-primary-active);
-    transform: translateY(0) scale(0.98);
+    transform: translateY(0) scale(var(--sarak-haptic-scale, 0.98)) !important;
+    transition: transform 0.1s var(--ease-sarak-fluid);
 }
 
 button:focus-visible {
@@ -705,3 +765,45 @@ button:focus-visible {
 h1, h2, h3 { font-family: var(--font-heading) !important; }
 body, span, p, div { font-family: var(--font-main); }
 
+
+/* Industrial Safe Area Motor */
+.sarak-safe-container {
+    width: 100%;
+    max-width: var(--sarak-max-width, none);
+    margin-left: auto;
+    margin-right: auto;
+}
+
+/* Premium Scrollbar Engine */
+.custom-scrollbar::-webkit-scrollbar {
+    width: var(--sarak-scrollbar-width, 6px);
+    height: var(--sarak-scrollbar-width, 6px);
+}
+
+.custom-scrollbar::-webkit-scrollbar-track {
+    background: transparent;
+}
+
+.custom-scrollbar::-webkit-scrollbar-thumb {
+    background: rgba(var(--theme-primary-rgb, 255,255,255), 0.2);
+    border-radius: 10px;
+    border: 2px solid transparent;
+    background-clip: content-box;
+}
+
+.custom-scrollbar::-webkit-scrollbar-thumb:hover {
+    background: rgba(var(--theme-primary-rgb, 255,255,255), 0.4);
+    background-clip: content-box;
+}
+
+/* Atomic Font Scaling Integration */
+[data-font-scale="pp"] { --sarak-font-size: 10px; --font-size-factor: 0.7; }
+[data-font-scale="p"]  { --sarak-font-size: 12px; --font-size-factor: 0.85; }
+[data-font-scale="m"]  { --sarak-font-size: 14px; --font-size-factor: 1.0; }
+[data-font-scale="g"]  { --sarak-font-size: 16px; --font-size-factor: 1.25; }
+[data-font-scale="gg"] { --sarak-font-size: 20px; --font-size-factor: 1.5; }
+
+/* Tabular Numbers Enforcement */
+[data-tabular-nums="tabular-nums"] {
+    font-variant-numeric: tabular-nums;
+}

@@ -2,6 +2,7 @@ import React, { ReactNode, useEffect, useState, useMemo, useCallback, useContext
 import '../../styles/sarak-base.css';
 import { LAYOUTS } from '../../constants/design-tokens';
 import { getRegisteredModules } from '../Discovery/registry';
+import { NoiseOverlay } from '../../effects/NoiseOverlay';
 
 // --- SARAK UI BRIDGE CONTEXT ---
 export interface SarakUIContextType {
@@ -131,6 +132,7 @@ export const DESIGN_MANIFEST: Record<string, {
     // Engine Specialized Tokens v7.5
     fontScale: { 
         vars: ['--sarak-font-scale', '--sarak-font-size', '--font-size-factor', '--theme-font-size-base'], 
+        attr: 'data-font-scale',
         transform: (v: string) => {
             const scales: any = {
                 'pp': { px: '10px', factor: '0.7' },
@@ -178,7 +180,28 @@ export const DESIGN_MANIFEST: Record<string, {
     chartThickness: { vars: ['--sarak-chart-thickness'], unit: 'px' },
     chartSmoothing: { attr: 'data-chart-smoothing' },
     buttonHoverEffect: { attr: 'data-button-hover', vars: ['--sarak-button-hover'] },
-    inputStyle: { attr: 'data-input-style', vars: ['--sarak-input-style'] }
+    inputStyle: { attr: 'data-input-style', vars: ['--sarak-input-style'] },
+    // Industrial Excellence Phase (v8.0)
+    atmosphereNoiseOpacity: { vars: ['--sarak-noise-opacity', '--theme-noise-opacity'] },
+    glassSaturation: { vars: ['--sarak-glass-saturation', '--theme-glass-saturation'], unit: '%' },
+    iconStrokeWidth: { vars: ['--sarak-icon-stroke', '--theme-icon-stroke'], unit: 'px' },
+    maxContentWidth: { vars: ['--sarak-max-width', '--theme-max-width'] },
+    useTabularNums: { attr: 'data-tabular-nums', vars: ['--sarak-tabular-nums'], transform: (v) => v ? 'tabular-nums' : 'normal' },
+    hapticIntensity: { vars: ['--sarak-haptic-scale'], transform: (v) => 1 - (parseFloat(v) || 0.02) },
+    scrollbarStyle: { attr: 'data-scrollbar-style', vars: ['--sarak-scrollbar-width'], unit: 'px' },
+    borderBeamEnabled: { attr: 'data-border-beam' },
+    cardSpotlight: { vars: ['--sarak-spotlight-intensity'], transform: (v) => parseFloat(v) || 0 },
+    fluidScaling: { 
+        vars: ['--sarak-fluid-scale'], 
+        transform: (v) => {
+            const factor = parseFloat(v) || 1.0;
+            return {
+                base: `clamp(12px, ${0.8 * factor}vw + 8px, ${20 * factor}px)`,
+                gap: `clamp(10px, ${1 * factor}vw + 4px, ${32 * factor}px)`,
+                padding: `clamp(16px, ${1.5 * factor}vw + 8px, ${48 * factor}px)`
+            };
+        }
+    }
 };
 
 const BEZIER_CURVES = {
@@ -211,6 +234,19 @@ const validateDesign = (design: any) => {
 const DesignInjector: React.FC<{ design: any }> = ({ design: s }) => {
 
     useEffect(() => {
+        const handleMouseMove = (e: MouseEvent) => {
+            const x = (e.clientX / window.innerWidth) * 100;
+            const y = (e.clientY / window.innerHeight) * 100;
+            document.documentElement.style.setProperty('--mouse-x', `${x}%`);
+            document.documentElement.style.setProperty('--mouse-y', `${y}%`);
+            document.documentElement.style.setProperty('--mouse-px-x', `${e.clientX}px`);
+            document.documentElement.style.setProperty('--mouse-px-y', `${e.clientY}px`);
+        };
+        window.addEventListener('mousemove', handleMouseMove);
+        return () => window.removeEventListener('mousemove', handleMouseMove);
+    }, []);
+
+    useEffect(() => {
         if (typeof document === 'undefined') return;
         const root = document.documentElement;
         const body = document.body;
@@ -225,7 +261,7 @@ const DesignInjector: React.FC<{ design: any }> = ({ design: s }) => {
             if (!config) return;
 
             let finalValue = value?.toString() || '';
-            let extraVars: Record<string, string> = {};
+            const extraVars: Record<string, string> = {};
 
             if (config.transform) {
                 const t = config.transform(value);
@@ -245,6 +281,11 @@ const DesignInjector: React.FC<{ design: any }> = ({ design: s }) => {
                         extraVars['--theme-pad-scaled'] = t.pad;
                         extraVars['--theme-margin-scaled'] = t.margin;
                         extraVars['--theme-radius-scaled'] = t.radius;
+                    } else if (key === 'fluidScaling') {
+                        finalValue = '1';
+                        extraVars['--theme-font-size-base'] = t.base;
+                        extraVars['--theme-gap-scaled'] = t.gap;
+                        extraVars['--theme-pad-scaled'] = t.padding;
                     }
                 } else {
                     finalValue = String(t);
@@ -419,6 +460,7 @@ export const SarakUIProvider: React.FC<SarakUIProviderProps> = ({
     return (
         <UIContext.Provider value={uiContextValue}>
             <DesignInjector design={design} />
+            <NoiseOverlay />
             {children}
         </UIContext.Provider>
     );

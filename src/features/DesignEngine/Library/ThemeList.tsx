@@ -143,6 +143,15 @@ export const ThemeList: React.FC<ThemeListProps> = ({
     const advancedThemes = Object.entries(allThemes).filter(([id]) => id.toLowerCase().includes('premium') || id.toLowerCase().includes('_v') || id.toLowerCase().includes('advanced'));
     const baseThemes = Object.entries(allThemes).filter(([id]) => !id.toLowerCase().includes('premium') && !id.toLowerCase().includes('_v') && !id.toLowerCase().includes('advanced'));
 
+    if (Object.keys(allThemes).length === 0) {
+        return (
+            <div className="p-8 flex flex-col items-center justify-center border-2 border-dashed border-white/5 rounded-2xl bg-black/20">
+                <LayoutIcon size={24} className="text-white/10 mb-3" />
+                <span className="text-[10px] font-black uppercase tracking-widest text-white/20 text-center">Nenhum modelo disponível</span>
+            </div>
+        );
+    }
+
     return (
         <div className="space-y-10">
             {/* Secção Advanced */}
@@ -159,8 +168,8 @@ export const ThemeList: React.FC<ThemeListProps> = ({
                                 key={id}
                                 id={id}
                                 theme={theme}
-                                isActive={currentLayout === id}
-                                isPreviewed={previewLayoutId === id}
+                                isActive={currentLayout?.toLowerCase() === id.toLowerCase()}
+                                isPreviewed={previewLayoutId?.toLowerCase() === id.toLowerCase()}
                                 onPreview={onPreview}
                                 onApply={onApply}
                                 onEdit={onEdit}
@@ -172,28 +181,30 @@ export const ThemeList: React.FC<ThemeListProps> = ({
             )}
 
             {/* Secção Base */}
-            <div className="space-y-4">
-                <div className="flex items-center gap-3 mb-6">
-                    <div className="flex-1 h-[1px] bg-gradient-to-r from-transparent to-white/5" />
-                    <span className="text-[9px] font-black uppercase tracking-[0.4em] text-white/20 italic">Essential Models</span>
-                    <div className="flex-1 h-[1px] bg-gradient-to-l from-transparent to-white/5" />
-                </div>
+            {baseThemes.length > 0 && (
                 <div className="space-y-4">
-                    {baseThemes.map(([id, theme]: [string, any]) => (
-                        <ThemeCard
-                            key={id}
-                            id={id}
-                            theme={theme}
-                            isActive={currentLayout === id}
-                            isPreviewed={previewLayoutId === id}
-                            onPreview={onPreview}
-                            onApply={onApply}
-                            onEdit={onEdit}
-                            onDelete={onDelete}
-                        />
-                    ))}
+                    <div className="flex items-center gap-3 mb-6">
+                        <div className="flex-1 h-[1px] bg-gradient-to-r from-transparent to-white/5" />
+                        <span className="text-[9px] font-black uppercase tracking-[0.4em] text-white/20 italic">Essential Models</span>
+                        <div className="flex-1 h-[1px] bg-gradient-to-l from-transparent to-white/5" />
+                    </div>
+                    <div className="space-y-4">
+                        {baseThemes.map(([id, theme]: [string, any]) => (
+                            <ThemeCard
+                                key={id}
+                                id={id}
+                                theme={theme}
+                                isActive={currentLayout?.toLowerCase() === id.toLowerCase()}
+                                isPreviewed={previewLayoutId?.toLowerCase() === id.toLowerCase()}
+                                onPreview={onPreview}
+                                onApply={onApply}
+                                onEdit={onEdit}
+                                onDelete={onDelete}
+                            />
+                        ))}
+                    </div>
                 </div>
-            </div>
+            )}
         </div>
     );
 };

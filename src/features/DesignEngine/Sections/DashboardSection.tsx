@@ -31,6 +31,11 @@ export const DashboardSection: React.FC<DashboardSectionProps> = ({ draft, updat
                     </button>
                 </div>
             </Section>
+
+            <Section id="flow-dynamics" icon={Grid} title="Motores de Fluxo (Flow)" activeSection={activeSection} onToggle={setActiveSection}>
+                <SelectControl label="Estilo do Grid" options={[{id: 'dots', label: 'Pontos (Industrial)'}, {id: 'lines', label: 'Linhas (Matrix)'}, {id: 'none', label: 'Limpo'}]} value={draft.flowGridStyle || 'dots'} onChange={(v: any) => updateDraft('flowGridStyle', v)} />
+                <SliderControl label="Raio do Nó" value={draft.flowNodeRadius || 12} min={4} max={32} onChange={(v: any) => updateDraft('flowNodeRadius', v)} suffix="px" />
+            </Section>
         </>
     );
 };
