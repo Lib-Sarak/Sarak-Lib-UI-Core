@@ -72,10 +72,10 @@ const KineticSpecimen: React.FC<{
                 isActive ? 'border-[var(--theme-primary)] shadow-2xl shadow-primary-500/10' : 'border-white/5 hover:border-white/20'
             }`}
         >
-            <div className="p-6 grid grid-cols-1 lg:grid-cols-12 gap-8">
+            <div className="p-8 grid grid-cols-1 lg:grid-cols-2 gap-8">
                 
                 {/* 1. Header & Metadata (col-4) */}
-                <div className="lg:col-span-4 space-y-4">
+                <div className="space-y-4">
                     <div className="flex items-center gap-3">
                         <div className={`w-10 h-10 rounded-xl flex items-center justify-center transition-colors ${isActive ? 'bg-[var(--theme-primary)]' : 'bg-white/5'}`}>
                             <Zap className={isActive ? 'text-white' : 'text-white/40'} size={18} />

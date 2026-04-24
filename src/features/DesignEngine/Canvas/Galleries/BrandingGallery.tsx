@@ -11,7 +11,7 @@ interface BrandingGalleryProps {
 
 export const BrandingGallery: React.FC<BrandingGalleryProps> = ({ onUpdateDraft, tokens }) => {
     return (
-        <div className="p-8 grid grid-cols-1 md:grid-cols-2 gap-6">
+        <div className="p-8 grid grid-cols-1 lg:grid-cols-2 gap-8">
             {BRANDING_PRESETS.map((preset) => (
                 <BrandingSpecimen 
                     key={preset.id}

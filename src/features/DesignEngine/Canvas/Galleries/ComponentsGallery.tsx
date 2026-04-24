@@ -1,7 +1,8 @@
 import React from 'react';
 import { motion } from 'framer-motion';
 import { COMPONENT_PRESETS, ComponentPreset } from '../../../../constants/component-presets';
-import { Check, Layout as LayoutIcon, Maximize, Grid as GridIcon, Square, Layers } from 'lucide-react';
+import { Check, Layout as LayoutIcon, Maximize, Square } from 'lucide-react';
+import { SocialButton } from '../../../../components/atomic/Atoms';
 
 interface ComponentsGalleryProps {
     onUpdateDraft: (key: string, value: any) => void;
@@ -10,7 +11,7 @@ interface ComponentsGalleryProps {
 
 export const ComponentsGallery: React.FC<ComponentsGalleryProps> = ({ onUpdateDraft, tokens }) => {
     return (
-        <div className="p-8 grid grid-cols-1 md:grid-cols-2 gap-8">
+        <div className="p-8 grid grid-cols-1 lg:grid-cols-2 gap-10">
             {COMPONENT_PRESETS.map((preset) => (
                 <ComponentSpecimen 
                     key={preset.id}
@@ -69,7 +70,38 @@ const ComponentSpecimen: React.FC<{ preset: ComponentPreset; onSelect: () => voi
                     </div>
                 </div>
 
-                {/* 3. Metadata */}
+                {/* 3. Sovereign Identity Specimens (Social Login) */}
+                <div className="pt-4 border-t border-white/5 space-y-4">
+                    <div className="flex items-center justify-between">
+                        <span className="text-[7px] font-black text-white/20 uppercase tracking-[0.3em]">Sovereign Identity</span>
+                        <div className="flex gap-1">
+                            <div className="w-1 h-1 rounded-full bg-blue-500/40" />
+                            <div className="w-1 h-1 rounded-full bg-[var(--theme-primary)]/40" />
+                        </div>
+                    </div>
+                    
+                    <div className="grid grid-cols-1 gap-3">
+                        <div className="space-y-2">
+                            <span className="text-[6px] font-black text-white/10 uppercase tracking-widest block">Layout: Full Width</span>
+                            <div className="grid grid-cols-1 gap-2">
+                                <SocialButton provider="google" variant="sovereign" />
+                                <SocialButton provider="github" variant="glass" />
+                            </div>
+                        </div>
+
+                        <div className="space-y-2">
+                            <span className="text-[6px] font-black text-white/10 uppercase tracking-widest block">Layout: Compact Icons</span>
+                            <div className="flex gap-3">
+                                <SocialButton provider="google" variant="sovereign" hideLabel />
+                                <SocialButton provider="github" variant="sovereign" hideLabel />
+                                <SocialButton provider="google" variant="glass" hideLabel />
+                                <SocialButton provider="github" variant="glass" hideLabel />
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                {/* 4. Metadata */}
                 <div className="pt-4 border-t border-white/5 flex items-center justify-between">
                     <div>
                         <h3 className="text-xs font-black uppercase tracking-tight text-white">{preset.title}</h3>

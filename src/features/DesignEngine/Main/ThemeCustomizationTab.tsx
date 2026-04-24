@@ -47,6 +47,7 @@ export const ThemeCustomizationTab: React.FC = () => {
 
     const [activeCategory, setActiveCategory] = useState<string | null>('presets');
     const [activeSection, setActiveSection] = useState<string | null>(null);
+    const [isDualView, setIsDualView] = useState(true); // Default as true for better UX
 
     // Auto-switch preview app based on section
     useEffect(() => {
@@ -63,7 +64,7 @@ export const ThemeCustomizationTab: React.FC = () => {
     }, [activeSection]);
 
     return (
-        <div className="flex flex-1 h-[800px] bg-[#0c0c0d] overflow-hidden">
+        <div className="flex flex-1 min-h-[900px] bg-[#0c0c0d] overflow-hidden">
             {/* Sidebar de Configuração */}
             <div className="w-[440px] flex flex-col border-r border-white/5 bg-[#0a0a0b] relative z-10">
                 
@@ -126,7 +127,15 @@ export const ThemeCustomizationTab: React.FC = () => {
                 <div className="flex-1 overflow-y-auto custom-scrollbar">
                     <div className="pb-8">
                         {/* 0. BIBLIOTECA DE TEMAS */}
-                        <CategoryLabel icon={Edit3} title="Modelos & Projetos" index={0} isOpen={activeCategory === 'presets'} onToggle={() => setActiveCategory(activeCategory === 'presets' ? null : 'presets')} />
+                        <CategoryLabel 
+                            icon={Edit3} 
+                            title="Modelos & Projetos" 
+                            index={0} 
+                            isOpen={activeCategory === 'presets'} 
+                            onToggle={() => setActiveCategory(activeCategory === 'presets' ? null : 'presets')}
+                            isDualView={isDualView}
+                            onToggleDual={() => setIsDualView(!isDualView)}
+                        />
                         <AnimatePresence>
                             {activeCategory === 'presets' && (
                                 <motion.div initial={{ height: 0, opacity: 0 }} animate={{ height: 'auto', opacity: 1 }} exit={{ height: 0, opacity: 0 }} className="overflow-hidden bg-black/40">
@@ -145,7 +154,15 @@ export const ThemeCustomizationTab: React.FC = () => {
                         </AnimatePresence>
 
                         {/* 1. CARDS */}
-                        <CategoryLabel icon={Box} title="Cards & Containers" index={1} isOpen={activeCategory === 'cards'} onToggle={() => setActiveCategory(activeCategory === 'cards' ? null : 'cards')} />
+                        <CategoryLabel 
+                            icon={Box} 
+                            title="Cards & Containers" 
+                            index={1} 
+                            isOpen={activeCategory === 'cards'} 
+                            onToggle={() => setActiveCategory(activeCategory === 'cards' ? null : 'cards')}
+                            isDualView={isDualView}
+                            onToggleDual={() => setIsDualView(!isDualView)}
+                        />
                         <AnimatePresence>
                             {activeCategory === 'cards' && (
                                 <motion.div initial={{ height: 0, opacity: 0 }} animate={{ height: 'auto', opacity: 1 }} exit={{ height: 0, opacity: 0 }} className="overflow-hidden">
@@ -155,7 +172,15 @@ export const ThemeCustomizationTab: React.FC = () => {
                         </AnimatePresence>
 
                         {/* 2. FONTES */}
-                        <CategoryLabel icon={Type} title="Fontes & Tipografia" index={2} isOpen={activeCategory === 'fonts'} onToggle={() => setActiveCategory(activeCategory === 'fonts' ? null : 'fonts')} />
+                        <CategoryLabel 
+                            icon={Type} 
+                            title="Fontes & Tipografia" 
+                            index={2} 
+                            isOpen={activeCategory === 'fonts'} 
+                            onToggle={() => setActiveCategory(activeCategory === 'fonts' ? null : 'fonts')}
+                            isDualView={isDualView}
+                            onToggleDual={() => setIsDualView(!isDualView)}
+                        />
                         <AnimatePresence>
                             {activeCategory === 'fonts' && (
                                 <motion.div initial={{ height: 0, opacity: 0 }} animate={{ height: 'auto', opacity: 1 }} exit={{ height: 0, opacity: 0 }} className="overflow-hidden">
@@ -165,7 +190,15 @@ export const ThemeCustomizationTab: React.FC = () => {
                         </AnimatePresence>
 
                         {/* 3. ANIMAÇÕES */}
-                        <CategoryLabel icon={Sparkles} title="Efeitos & Animações" index={3} isOpen={activeCategory === 'animations'} onToggle={() => setActiveCategory(activeCategory === 'animations' ? null : 'animations')} />
+                        <CategoryLabel 
+                            icon={Sparkles} 
+                            title="Efeitos & Animações" 
+                            index={3} 
+                            isOpen={activeCategory === 'animations'} 
+                            onToggle={() => setActiveCategory(activeCategory === 'animations' ? null : 'animations')}
+                            isDualView={isDualView}
+                            onToggleDual={() => setIsDualView(!isDualView)}
+                        />
                         <AnimatePresence>
                             {activeCategory === 'animations' && (
                                 <motion.div initial={{ height: 0, opacity: 0 }} animate={{ height: 'auto', opacity: 1 }} exit={{ height: 0, opacity: 0 }} className="overflow-hidden">
@@ -175,7 +208,15 @@ export const ThemeCustomizationTab: React.FC = () => {
                         </AnimatePresence>
 
                         {/* 4. BRANDING */}
-                        <CategoryLabel icon={Globe} title="Branding & Identidade" index={4} isOpen={activeCategory === 'branding'} onToggle={() => setActiveCategory(activeCategory === 'branding' ? null : 'branding')} />
+                        <CategoryLabel 
+                            icon={Globe} 
+                            title="Branding & Identidade" 
+                            index={4} 
+                            isOpen={activeCategory === 'branding'} 
+                            onToggle={() => setActiveCategory(activeCategory === 'branding' ? null : 'branding')}
+                            isDualView={isDualView}
+                            onToggleDual={() => setIsDualView(!isDualView)}
+                        />
                         <AnimatePresence>
                             {activeCategory === 'branding' && (
                                 <motion.div initial={{ height: 0, opacity: 0 }} animate={{ height: 'auto', opacity: 1 }} exit={{ height: 0, opacity: 0 }} className="overflow-hidden">
@@ -185,7 +226,15 @@ export const ThemeCustomizationTab: React.FC = () => {
                         </AnimatePresence>
 
                         {/* 5. CORES E TEXTURAS */}
-                        <CategoryLabel icon={Palette} title="Cores & Texturas" index={5} isOpen={activeCategory === 'visuals'} onToggle={() => setActiveCategory(activeCategory === 'visuals' ? null : 'visuals')} />
+                        <CategoryLabel 
+                            icon={Palette} 
+                            title="Cores & Texturas" 
+                            index={5} 
+                            isOpen={activeCategory === 'visuals'} 
+                            onToggle={() => setActiveCategory(activeCategory === 'visuals' ? null : 'visuals')}
+                            isDualView={isDualView}
+                            onToggleDual={() => setIsDualView(!isDualView)}
+                        />
                         <AnimatePresence>
                             {activeCategory === 'visuals' && (
                                 <motion.div initial={{ height: 0, opacity: 0 }} animate={{ height: 'auto', opacity: 1 }} exit={{ height: 0, opacity: 0 }} className="overflow-hidden">
@@ -195,7 +244,15 @@ export const ThemeCustomizationTab: React.FC = () => {
                         </AnimatePresence>
 
                         {/* 6. COMPONENTES */}
-                        <CategoryLabel icon={MousePointer2} title="Botões & Componentes" index={6} isOpen={activeCategory === 'components'} onToggle={() => setActiveCategory(activeCategory === 'components' ? null : 'components')} />
+                        <CategoryLabel 
+                            icon={MousePointer2} 
+                            title="Botões & Componentes" 
+                            index={6} 
+                            isOpen={activeCategory === 'components'} 
+                            onToggle={() => setActiveCategory(activeCategory === 'components' ? null : 'components')}
+                            isDualView={isDualView}
+                            onToggleDual={() => setIsDualView(!isDualView)}
+                        />
                         <AnimatePresence>
                             {activeCategory === 'components' && (
                                 <motion.div initial={{ height: 0, opacity: 0 }} animate={{ height: 'auto', opacity: 1 }} exit={{ height: 0, opacity: 0 }} className="overflow-hidden">
@@ -205,7 +262,15 @@ export const ThemeCustomizationTab: React.FC = () => {
                         </AnimatePresence>
 
                         {/* 7. DASHBOARD */}
-                        <CategoryLabel icon={Monitor} title="Dashboard & Gráficos" index={7} isOpen={activeCategory === 'dashboard'} onToggle={() => setActiveCategory(activeCategory === 'dashboard' ? null : 'dashboard')} />
+                        <CategoryLabel 
+                            icon={Monitor} 
+                            title="Dashboard & Gráficos" 
+                            index={7} 
+                            isOpen={activeCategory === 'dashboard'} 
+                            onToggle={() => setActiveCategory(activeCategory === 'dashboard' ? null : 'dashboard')}
+                            isDualView={isDualView}
+                            onToggleDual={() => setIsDualView(!isDualView)}
+                        />
                         <AnimatePresence>
                             {activeCategory === 'dashboard' && (
                                 <motion.div initial={{ height: 0, opacity: 0 }} animate={{ height: 'auto', opacity: 1 }} exit={{ height: 0, opacity: 0 }} className="overflow-hidden">
@@ -215,7 +280,15 @@ export const ThemeCustomizationTab: React.FC = () => {
                         </AnimatePresence>
 
                         {/* 8. CHATS */}
-                        <CategoryLabel icon={MessageSquare} title="Chats & Conversas" index={8} isOpen={activeCategory === 'chats'} onToggle={() => setActiveCategory(activeCategory === 'chats' ? null : 'chats')} />
+                        <CategoryLabel 
+                            icon={MessageSquare} 
+                            title="Chats & Conversas" 
+                            index={8} 
+                            isOpen={activeCategory === 'chats'} 
+                            onToggle={() => setActiveCategory(activeCategory === 'chats' ? null : 'chats')}
+                            isDualView={isDualView}
+                            onToggleDual={() => setIsDualView(!isDualView)}
+                        />
                         <AnimatePresence>
                             {activeCategory === 'chats' && (
                                 <motion.div initial={{ height: 0, opacity: 0 }} animate={{ height: 'auto', opacity: 1 }} exit={{ height: 0, opacity: 0 }} className="overflow-hidden">
@@ -225,7 +298,15 @@ export const ThemeCustomizationTab: React.FC = () => {
                         </AnimatePresence>
 
                         {/* 9. VISUALIZAÇÃO 3D & MAPAS */}
-                        <CategoryLabel icon={Globe} title="Visualização 3D & Mapas" index={9} isOpen={activeCategory === 'visuals-3d'} onToggle={() => setActiveCategory(activeCategory === 'visuals-3d' ? null : 'visuals-3d')} />
+                        <CategoryLabel 
+                            icon={Globe} 
+                            title="Visualização 3D & Mapas" 
+                            index={9} 
+                            isOpen={activeCategory === 'visuals-3d'} 
+                            onToggle={() => setActiveCategory(activeCategory === 'visuals-3d' ? null : 'visuals-3d')}
+                            isDualView={isDualView}
+                            onToggleDual={() => setIsDualView(!isDualView)}
+                        />
                         <AnimatePresence>
                             {activeCategory === 'visuals-3d' && (
                                 <motion.div initial={{ height: 0, opacity: 0 }} animate={{ height: 'auto', opacity: 1 }} exit={{ height: 0, opacity: 0 }} className="overflow-hidden">
@@ -235,7 +316,15 @@ export const ThemeCustomizationTab: React.FC = () => {
                         </AnimatePresence>
 
                         {/* 10. LAYOUT */}
-                        <CategoryLabel icon={LayoutIcon} title="Layout & Estrutura" index={10} isOpen={activeCategory === 'layout'} onToggle={() => setActiveCategory(activeCategory === 'layout' ? null : 'layout')} />
+                        <CategoryLabel 
+                            icon={LayoutIcon} 
+                            title="Layout & Estrutura" 
+                            index={10} 
+                            isOpen={activeCategory === 'layout'} 
+                            onToggle={() => setActiveCategory(activeCategory === 'layout' ? null : 'layout')}
+                            isDualView={isDualView}
+                            onToggleDual={() => setIsDualView(!isDualView)}
+                        />
                         <AnimatePresence>
                             {activeCategory === 'layout' && (
                                 <motion.div initial={{ height: 0, opacity: 0 }} animate={{ height: 'auto', opacity: 1 }} exit={{ height: 0, opacity: 0 }} className="overflow-hidden">
@@ -262,6 +351,7 @@ export const ThemeCustomizationTab: React.FC = () => {
                     draftTokens={draft}
                     activeCategory={activeCategory}
                     onUpdateDraft={updateDraft}
+                    isDualView={isDualView}
                 />
                 
                 {/* Toast de Confirmação */}

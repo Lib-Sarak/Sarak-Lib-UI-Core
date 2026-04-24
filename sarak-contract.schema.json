@@ -1,0 +1,91 @@
+{
+  "$schema": "http://json-schema.org/draft-07/schema#",
+  "title": "Sarak Visual Contract Schema",
+  "description": "Master schema for Sarak Visual Contracts (v7.0). Defines how modules request UI rendering from UI-Core.",
+  "type": "object",
+  "definitions": {
+    "visualContract": {
+      "type": "object",
+      "required": ["id", "type", "label"],
+      "properties": {
+        "id": {
+          "type": "string",
+          "description": "Unique identifier for the contract."
+        },
+        "type": {
+          "type": "string",
+          "enum": [
+            "TABLE",
+            "CARD_GRID",
+            "MANAGEMENT_GRID",
+            "STATS",
+            "CHART",
+            "FORM",
+            "CHAT_INTERFACE",
+            "ADVANCED_CHAT",
+            "ELITE_CHART",
+            "FLOW_DIAGRAM",
+            "SECURITY_ORCHESTRATOR",
+            "CUSTOM"
+          ],
+          "description": "The UI template to be used for rendering."
+        },
+        "label": {
+          "type": "string",
+          "description": "Human-readable label for the component."
+        },
+        "tab": {
+          "type": "string",
+          "description": "Optional tab grouping for the navigation menu."
+        },
+        "endpoint": {
+          "type": "string",
+          "description": "Data source endpoint key (e.g., v1.users)."
+        },
+        "mapping": {
+          "type": "object",
+          "description": "Key-value mapping for data fields (Label: Field)."
+        },
+        "config": {
+          "type": "object",
+          "description": "Specific configuration for the template (e.g., charts color, table actions)."
+        },
+        "actions": {
+          "type": "array",
+          "items": {
+            "type": "object",
+            "required": ["label", "endpoint"],
+            "properties": {
+              "label": { "type": "string" },
+              "endpoint": { "type": "string" },
+              "method": { "type": "string", "enum": ["GET", "POST", "PUT", "PATCH", "DELETE"] }
+            }
+          }
+        },
+        "component": {
+          "type": "string",
+          "description": "Only for CUSTOM type: The name of the registered component."
+        }
+      }
+    }
+  },
+  "properties": {
+    "contract": { "type": "string", "const": "v6.8" },
+    "id": { "type": "string" },
+    "label": { "type": "string" },
+    "icon": { "type": "string" },
+    "category": { "type": "string" },
+    "version": { "type": "string" },
+    "endpoints": {
+      "type": "object",
+      "additionalProperties": {
+        "type": "object",
+        "additionalProperties": { "type": "string" }
+      }
+    },
+    "visualContracts": {
+      "type": "array",
+      "items": { "$ref": "#/definitions/visualContract" }
+    }
+  }
+}

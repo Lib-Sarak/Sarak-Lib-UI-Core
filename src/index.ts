@@ -14,19 +14,20 @@ export * from './constants/theme';
 // Layout Components and Plug & Play UI
 export * from './core/Shell/SarakShell';
 export * from './features/DesignEngine/Library/CustomizationPanel';
+export * from './components/atomic/Atoms';
 export * from './components/atomic/Cards/ExpandableCard';
 export * from './components/atomic/Inputs/Controls';
 export { default as SarakChartEngine } from './components/engines/charts/SarakChartEngine';
 
-export { useModuleDiscovery } from './shared/hooks/useModuleDiscovery';
-export * from './constants/discovery';
-
-// --- INTERNAL MODULE REGISTRATION (v6.5) ---
+// Discovery and Dynamic Rendering (Universal Bridge)
+export { default as DynamicRenderer } from './core/Discovery/DynamicRenderer';
 export * from './core/Discovery/registry';
+export * from './constants/discovery';
+export { useModuleDiscovery } from './shared/hooks/useModuleDiscovery';
+
 import { registerLocalComponent } from './core/Discovery/registry';
 import { ThemeCustomizationTab } from './features/DesignEngine/Main/ThemeCustomizationTab';
 
-// registering the component linked to the ID.
 // Metadata (Label, Icon, Category) will come from Seeds via API.
 registerLocalComponent('mx-customization', ThemeCustomizationTab);
 

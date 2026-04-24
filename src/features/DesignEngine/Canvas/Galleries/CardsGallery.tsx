@@ -188,7 +188,7 @@ export const CardsGallery: React.FC<CardsGalleryProps> = ({ tokens, onUpdateDraf
     };
 
     return (
-        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-10 p-10 overflow-y-auto custom-scrollbar h-full bg-[#020202]">
+        <div className="p-8 grid grid-cols-1 lg:grid-cols-2 gap-8 overflow-y-auto custom-scrollbar h-full bg-[#020202]">
             {CARD_VARIANTS.map((preset, idx) => {
                 const isActive = tokens.surfaceMaterial === preset.tokens.surfaceMaterial && 
                                tokens.borderRadius === preset.tokens.borderRadius &&

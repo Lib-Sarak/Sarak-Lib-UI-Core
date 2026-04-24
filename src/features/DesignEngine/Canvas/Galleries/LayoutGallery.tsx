@@ -10,7 +10,7 @@ interface LayoutGalleryProps {
 
 export const LayoutGallery: React.FC<LayoutGalleryProps> = ({ onUpdateDraft, tokens }) => {
     return (
-        <div className="p-8 grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
+        <div className="p-8 grid grid-cols-1 lg:grid-cols-2 gap-8">
             {LAYOUT_PRESETS.map((preset) => (
                 <LayoutSpecimen 
                     key={preset.id}

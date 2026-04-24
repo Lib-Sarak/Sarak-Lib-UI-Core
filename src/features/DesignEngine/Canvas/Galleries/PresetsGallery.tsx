@@ -155,7 +155,7 @@ export const PresetsGallery: React.FC<PresetsGalleryProps> = ({ tokens, onUpdate
     };
 
     return (
-        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-10 p-10 overflow-y-auto custom-scrollbar h-full bg-[#050505]">
+        <div className="grid grid-cols-1 lg:grid-cols-2 gap-10 p-10 overflow-y-auto custom-scrollbar h-full bg-[#050505]">
             {Object.values(LAYOUTS).map((layout: any) => {
                 const presetKey = Object.keys(BASE_PRESETS).find(k => k.toLowerCase() === layout.id.toLowerCase());
                 const preset = (BASE_PRESETS as any)[presetKey!];

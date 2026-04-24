@@ -97,8 +97,12 @@ export const SidebarNav: React.FC<SidebarNavProps> = ({
                     <div className="flex items-center gap-3">
                         <div className="w-8 h-8 rounded-full bg-[var(--theme-primary)]/20 border border-[var(--theme-primary)]/30 flex items-center justify-center text-[var(--theme-primary)]"><User size={14} /></div>
                         <div className="flex flex-col">
-                            <span className="text-2xs font-bold text-[var(--theme-title)]/80">{user?.email?.split('@')[0] || 'Sarak User'}</span>
-                            <span className="text-2xs text-[var(--theme-muted)] uppercase tracking-widest">{user?.role || 'Guest'}</span>
+                            <span className="text-[10px] font-bold text-[var(--theme-title)]/80 leading-tight">
+                                {user?.username || user?.email?.split('@')[0] || 'Sarak User'}
+                            </span>
+                            <span className="text-[9px] text-[var(--theme-muted)] uppercase tracking-widest font-bold">
+                                {user?.level === 100 ? 'Master' : user?.level >= 50 ? 'Admin' : 'User'}
+                            </span>
                         </div>
                     </div>
                     <button onClick={logout} className="p-2 text-[var(--theme-muted)] hover:text-red-400 transition-colors"><LogOut size={14} /></button>

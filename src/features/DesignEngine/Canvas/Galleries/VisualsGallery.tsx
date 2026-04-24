@@ -10,7 +10,7 @@ interface VisualsGalleryProps {
 
 export const VisualsGallery: React.FC<VisualsGalleryProps> = ({ onUpdateDraft, tokens }) => {
     return (
-        <div className="p-8 grid grid-cols-1 md:grid-cols-2 gap-8">
+        <div className="p-8 grid grid-cols-1 lg:grid-cols-2 gap-8">
             {VISUALS_PRESETS.map((preset) => (
                 <VisualsSpecimen 
                     key={preset.id}
