@@ -1,8 +1,8 @@
 import { useState, useEffect, useCallback, useRef } from 'react';
-import { getRegisteredModules, getLocalComponent } from '../registry';
+import { getRegisteredModules, getLocalComponent } from '../../core/Discovery/registry';
 import api from '../services/api';
 import { DiscoveredModule, ModuleManifest } from '../../constants/discovery';
-import { useSarakUI } from '../../components/SarakUIProvider';
+import { useSarakUI } from '../../core/Provider/SarakUIProvider';
 import { getAxiosErrorMessage } from '../utils/error-handler';
 
 /**

@@ -6,26 +6,25 @@
  */
 
 // Theme Engine and Constants
-export { default as SarakUIProvider, useSarakUI } from './components/SarakUIProvider';
-export { default as ThemeToggle } from './components/ThemeToggle';
+export { default as SarakUIProvider, useSarakUI } from './core/Provider/SarakUIProvider';
+export { default as ThemeToggle } from './components/atomic/Buttons/ThemeToggle';
 export * from './constants/design-tokens';
 export * from './constants/theme';
 
-
 // Layout Components and Plug & Play UI
-export * from './components/SarakShell';
-export * from './components/CustomizationPanel';
-export * from './components/ExpandableCard';
-export * from './components/Controls';
+export * from './core/Shell/SarakShell';
+export * from './features/DesignEngine/Library/CustomizationPanel';
+export * from './components/atomic/Cards/ExpandableCard';
+export * from './components/atomic/Inputs/Controls';
 export { default as SarakChartEngine } from './components/engines/charts/SarakChartEngine';
 
 export { useModuleDiscovery } from './shared/hooks/useModuleDiscovery';
 export * from './constants/discovery';
 
 // --- INTERNAL MODULE REGISTRATION (v6.5) ---
-export * from './shared/registry';
-import { registerLocalComponent } from './shared/registry';
-import ThemeCustomizationTab from './components/ThemeCustomization/ThemeCustomizationTab';
+export * from './core/Discovery/registry';
+import { registerLocalComponent } from './core/Discovery/registry';
+import { ThemeCustomizationTab } from './features/DesignEngine/Main/ThemeCustomizationTab';
 
 // registering the component linked to the ID.
 // Metadata (Label, Icon, Category) will come from Seeds via API.

@@ -4,7 +4,7 @@ import ReactFlow, {
     BackgroundVariant, Panel 
 } from 'reactflow';
 import 'reactflow/dist/style.css';
-import { useSarakUI } from '../../SarakUIProvider';
+import { useSarakUI } from '../../../core/Provider/SarakUIProvider';
 
 interface SarakFlowEngineProps {
     nodes: any[];
@@ -17,7 +17,8 @@ interface SarakFlowEngineProps {
  * Interactive node-based logic engine powered by ReactFlow.
  */
 const SarakFlowEngine: React.FC<SarakFlowEngineProps> = ({ nodes, edges, onConnect }) => {
-    const { primaryColor, mode, flowGridStyle, flowNodeRadius } = useSarakUI();
+    const { design } = useSarakUI();
+    const { primaryColor, mode, flowGridStyle, flowNodeRadius } = design || {};
 
     return (
         <div className="w-full h-full min-h-[500px] bg-[var(--theme-card)]/10 rounded-[var(--radius-theme)] border border-white/5 overflow-hidden relative">

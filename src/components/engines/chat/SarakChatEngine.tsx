@@ -4,7 +4,7 @@ import { Prism as SyntaxHighlighter } from 'react-syntax-highlighter';
 import { atomDark } from 'react-syntax-highlighter/dist/esm/styles/prism';
 import { Send, Paperclip, User, Bot, Sparkles } from 'lucide-react';
 import { motion, AnimatePresence } from 'framer-motion';
-import { useSarakUI } from '../../SarakUIProvider';
+import { useSarakUI } from '../../../core/Provider/SarakUIProvider';
 
 interface Message {
     id: string;
@@ -32,7 +32,8 @@ const SarakChatEngine: React.FC<SarakChatEngineProps> = ({
 }) => {
     const [input, setInput] = useState('');
     const scrollRef = useRef<HTMLDivElement>(null);
-    const { chatBubbleStyle, chatAnimationSpeed } = useSarakUI();
+    const { design } = useSarakUI();
+    const { chatBubbleStyle, chatAnimationSpeed } = design || {};
 
     useEffect(() => {
         if (scrollRef.current) {

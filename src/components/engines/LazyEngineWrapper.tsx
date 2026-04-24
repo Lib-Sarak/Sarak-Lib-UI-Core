@@ -1,6 +1,6 @@
 import React, { Suspense, ReactNode } from 'react';
 import { motion } from 'framer-motion';
-import { useSarakUI } from '../SarakUIProvider';
+import { useSarakUI } from '../../core/Provider/SarakUIProvider';
 
 interface LazyEngineWrapperProps {
     children: ReactNode;
@@ -12,7 +12,8 @@ interface LazyEngineWrapperProps {
  * Handles graceful loading states with premium aesthetics.
  */
 export const LazyEngineWrapper: React.FC<LazyEngineWrapperProps> = ({ children, fallback }) => {
-    const { primaryColor } = useSarakUI();
+    const { design } = useSarakUI();
+    const { primaryColor } = design || {};
 
     const DefaultFallback = (
         <div className="w-full h-full min-h-[300px] flex flex-col items-center justify-center bg-[var(--theme-card)]/20 rounded-[var(--radius-theme)] border border-white/5 relative overflow-hidden">
