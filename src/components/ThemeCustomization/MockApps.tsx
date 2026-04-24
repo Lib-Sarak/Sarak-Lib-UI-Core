@@ -4,6 +4,7 @@ import {
     Zap, Sparkles, BarChart3, MessageSquare, History, Users, Shield, Database, Box
 } from 'lucide-react';
 import { EMOJI_SETS } from '../../constants/design-tokens';
+import SarakChartEngine from '../engines/charts/SarakChartEngine';
 
 export const MockDashboard: React.FC<any> = ({ config, animationVariants, animationStyle, tokens }) => {
     return (
@@ -33,9 +34,15 @@ export const MockDashboard: React.FC<any> = ({ config, animationVariants, animat
                 <motion.div
                     initial={animationVariants[animationStyle]?.page?.initial || animationVariants.none?.page?.initial}
                     animate={animationVariants[animationStyle]?.page?.animate || animationVariants.none?.page?.animate}
-                    transition={animationVariants[animationStyle]?.page?.transition || animationVariants.none?.page?.transition}
-                    className="col-span-12 lg:col-span-4 bg-theme-card relative overflow-hidden flex flex-col items-center text-center"
-                    style={{ padding: 'var(--theme-pad)' }}
+                    transition={{ ...(animationVariants[animationStyle]?.page?.transition || animationVariants.none?.page?.transition), duration: parseFloat(tokens.animationSpeed || '0.4') }}
+                    className="col-span-12 lg:col-span-4 bg-theme-card relative overflow-hidden flex flex-col items-center text-center shadow-[var(--theme-shadow)]"
+                    style={{ 
+                        padding: 'var(--theme-card-pad)', 
+                        borderRadius: 'var(--radius-theme)',
+                        borderWidth: 'var(--theme-border-width)',
+                        borderStyle: 'var(--theme-border-style)',
+                        borderColor: 'var(--theme-border)'
+                    }}
                 >
                     <div className="relative z-10 w-full">
                         <div className="w-16 h-16 rounded-full bg-[var(--theme-primary)]/10 border-2 border-[var(--theme-primary)]/30 mx-auto mb-4 flex items-center justify-center">
@@ -44,11 +51,11 @@ export const MockDashboard: React.FC<any> = ({ config, animationVariants, animat
                         <div className="text-sm font-bold text-[var(--theme-title)] mb-1">Sarak AI Elite</div>
                         <div className="text-[10px] text-[var(--theme-muted)] uppercase font-black tracking-widest mb-1">Layout</div>
                         <div className="grid grid-cols-2 gap-2 w-full">
-                            <div className="p-2 bg-theme-card !rounded-lg flex flex-col items-center justify-center">
+                            <div className="p-2 bg-[var(--theme-card)] border border-[var(--theme-border)] !rounded-lg flex flex-col items-center justify-center">
                                 <div className="text-[8px] text-[var(--theme-muted)] mb-1 uppercase">Status</div>
                                 <div className="text-[10px] font-bold text-emerald-500">Active</div>
                             </div>
-                            <div className="p-2 bg-theme-card !rounded-lg flex flex-col items-center justify-center">
+                            <div className="p-2 bg-[var(--theme-card)] border border-[var(--theme-border)] !rounded-lg flex flex-col items-center justify-center">
                                 <div className="text-[8px] text-[var(--theme-muted)] mb-1 uppercase">Uptime</div>
                                 <div className="text-[10px] font-bold text-[var(--theme-title)]">99.9%</div>
                             </div>
@@ -60,105 +67,91 @@ export const MockDashboard: React.FC<any> = ({ config, animationVariants, animat
                 <motion.div
                     initial={animationVariants[animationStyle]?.page?.initial || animationVariants.none?.page?.initial}
                     animate={animationVariants[animationStyle]?.page?.animate || animationVariants.none?.page?.animate}
-                    transition={{ ...(animationVariants[animationStyle]?.page?.transition || animationVariants.none?.page?.transition), delay: 0.1 }}
-                    className="col-span-12 lg:col-span-8 bg-theme-card relative overflow-hidden"
-                    style={{ padding: 'var(--theme-pad)' }}
+                    transition={{ ...(animationVariants[animationStyle]?.page?.transition || animationVariants.none?.page?.transition), delay: 0.1, duration: parseFloat(tokens.animationSpeed || '0.4') }}
+                    className="col-span-12 lg:col-span-8 bg-theme-card relative overflow-hidden shadow-[var(--theme-shadow)]"
+                    style={{ 
+                        padding: 'var(--theme-card-pad)', 
+                        borderRadius: 'var(--radius-theme)',
+                        borderWidth: 'var(--theme-border-width)',
+                        borderStyle: 'var(--theme-border-style)',
+                        borderColor: 'var(--theme-border)'
+                    }}
                 >
                     <div className="relative z-10 h-full flex flex-col">
                         <div className="flex justify-between items-center mb-6">
-                            <div className="text-[11px] font-black uppercase tracking-widest text-[var(--theme-muted)]">Collection Performance</div>
-                            <Sparkles className="w-4 h-4 text-[var(--theme-primary)]" />
+                            <div className="text-[11px] font-black uppercase tracking-widest text-[var(--theme-muted)]">Performance Telemetry</div>
+                            <div className="flex gap-2">
+                                <div className="w-2 h-2 rounded-full bg-emerald-500 animate-pulse"></div>
+                                <span className="text-[9px] font-bold text-[var(--theme-primary)] uppercase">Live</span>
+                            </div>
                         </div>
-                        <div className="flex-grow flex items-end gap-1 px-2 pb-2 relative min-h-[120px]">
-                            {/* Chart Grid Background */}
-                            {(tokens?.chartShowGrid ?? true) && (
-                                <div className="absolute inset-0 flex flex-col justify-between opacity-10 pointer-events-none mb-2">
-                                    {[1, 2, 3, 4].map(i => <div key={i} className="border-b border-white w-full h-0"></div>)}
-                                </div>
-                            )}
-                            
-                            {/* Rendering based on chartType */}
-                            {tokens?.chartType === 'donut' ? (
-                                <div className="flex-grow flex items-center justify-center relative">
-                                    <svg viewBox="0 0 100 100" className="w-32 h-32 transform -rotate-90">
-                                        <circle cx="50" cy="50" r="40" fill="transparent" stroke="currentColor" strokeWidth={tokens?.chartThickness || 8} className="text-white/5" />
-                                        <circle 
-                                            cx="50" cy="50" r="40" fill="transparent" 
-                                            stroke="var(--theme-primary)" 
-                                            strokeWidth={tokens?.chartThickness || 8} 
-                                            strokeDasharray="251.2" 
-                                            strokeDashoffset="60"
-                                            strokeLinecap={tokens?.chartSmoothing ? "round" : "butt"}
-                                            className="transition-all duration-1000"
-                                        />
-                                    </svg>
-                                    <div className="absolute inset-0 flex flex-col items-center justify-center">
-                                        <span className="text-[14px] font-black text-[var(--theme-title)]">76%</span>
-                                        <span className="text-[8px] uppercase tracking-widest text-[var(--theme-muted)]">Global</span>
-                                    </div>
-                                </div>
-                            ) : (
-                                <div className="absolute inset-0 flex items-end gap-1 px-2 pb-2">
-                                    {/* Area/Line Path */}
-                                    {(tokens?.chartType === 'area' || tokens?.chartType === 'line') && (
-                                        <svg className="absolute inset-0 w-full h-full overflow-visible" preserveAspectRatio="none">
-                                            <path 
-                                                d={`M 0 100 ${[40, 75, 45, 95, 65, 85, 55, 90, 70, 80].map((h, i) => `${tokens?.chartSmoothing ? 'C' : 'L'} ${i * 11}% ${100 - h} ${i * 11 + 5}% ${100 - h} ${i * 11 + 10}% ${100 - h}`).join(' ')} V 100 H 0 Z`}
-                                                fill={tokens?.chartType === 'area' ? 'url(#chartGradient)' : 'transparent'}
-                                                stroke="var(--theme-primary)"
-                                                strokeWidth={tokens?.chartThickness || 2}
-                                                strokeLinecap="round"
-                                                strokeLinejoin="round"
-                                                className="transition-all duration-1000"
-                                            />
-                                            <defs>
-                                                <linearGradient id="chartGradient" x1="0" y1="0" x2="0" y2="1">
-                                                    <stop offset="0%" stopColor="var(--theme-primary)" stopOpacity="0.4" />
-                                                    <stop offset="100%" stopColor="var(--theme-primary)" stopOpacity="0" />
-                                                </linearGradient>
-                                            </defs>
-                                        </svg>
-                                    )}
-
-                                    {/* Bar rendering (if not area/line) */}
-                                    {(!tokens?.chartType || tokens?.chartType === 'bar') && [40, 75, 45, 95, 65, 85, 55, 90, 70, 80].map((h, i) => {
-                                        const style = (tokens?.chartStyle || 'bar');
-                                        const palette = tokens?.chartPalette || ['#3b82f6', '#10b981', '#f59e0b', '#ef4444', '#8b5cf6'];
-                                        const barColor = palette[i % palette.length];
-                                        
-                                        return (
-                                            <div
-                                                key={i}
-                                                className={`flex-grow transition-all duration-500 hover:brightness-125 cursor-pointer relative z-10
-                                                    ${style === 'bar' ? 'opacity-90' : ''}
-                                                    ${style === 'glass' ? 'border backdrop-blur-sm opacity-60' : ''}
-                                                `}
-                                                style={{ 
-                                                    height: `${h}%`,
-                                                    backgroundColor: style !== 'line' ? barColor : 'transparent',
-                                                    borderColor: style === 'line' || style === 'glass' ? barColor : 'transparent',
-                                                    borderRadius: tokens?.chartSmoothing ? '4px 4px 0 0' : '0'
-                                                }}
-                                            />
-                                        );
-                                    })}
-                                </div>
-                            )}
-                        </div>
-                        <div className="mt-4 pt-4 border-t border-[var(--theme-border)]/30 flex justify-between">
-                            <div className="text-[10px] text-[var(--theme-muted)]">Avg Latency: <span className="text-[var(--theme-title)] font-bold">24ms</span></div>
-                            <div className="text-[10px] text-[var(--theme-muted)]">Tokens/s: <span className="text-[var(--theme-title)] font-bold">1.4k</span></div>
+                        <div className="flex-grow min-h-[160px] relative">
+                            <SarakChartEngine 
+                                type={(tokens?.chartType || 'bar') as any}
+                                data={[
+                                    { name: 'Jan', value: 400 },
+                                    { name: 'Feb', value: 750 },
+                                    { name: 'Mar', value: 450 },
+                                    { name: 'Apr', value: 950 },
+                                    { name: 'May', value: 650 },
+                                    { name: 'Jun', value: 850 },
+                                    { name: 'Jul', value: 550 },
+                                    { name: 'Aug', value: 900 },
+                                    { name: 'Sep', value: 700 },
+                                    { name: 'Oct', value: 800 }
+                                ]}
+                                config={{
+                                    engine: 'echarts',
+                                    xAxisKey: 'name',
+                                    dataKey: 'value'
+                                }}
+                            />
                         </div>
                     </div>
                 </motion.div>
 
-                {/* Featured Components Widget */}
+                {/* Temperature / Health Widget */}
                 <motion.div
                     initial={animationVariants[animationStyle]?.page?.initial || animationVariants.none?.page?.initial}
                     animate={animationVariants[animationStyle]?.page?.animate || animationVariants.none?.page?.animate}
-                    transition={{ ...(animationVariants[animationStyle]?.page?.transition || animationVariants.none?.page?.transition), delay: 0.3 }}
-                    className="col-span-12 bg-theme-card"
-                    style={{ padding: 'var(--theme-pad)' }}
+                    transition={{ ...(animationVariants[animationStyle]?.page?.transition || animationVariants.none?.page?.transition), delay: 0.2, duration: parseFloat(tokens.animationSpeed || '0.4') }}
+                    className="col-span-12 lg:col-span-4 bg-theme-card relative overflow-hidden shadow-[var(--theme-shadow)]"
+                    style={{ 
+                        padding: 'var(--theme-card-pad)', 
+                        borderRadius: 'var(--radius-theme)',
+                        borderWidth: 'var(--theme-border-width)',
+                        borderStyle: 'var(--theme-border-style)',
+                        borderColor: 'var(--theme-border)'
+                    }}
+                >
+                    <div className="relative z-10 h-full flex flex-col items-center justify-center">
+                        <div className="w-full text-left mb-4">
+                            <div className="text-[11px] font-black uppercase tracking-widest text-[var(--theme-muted)]">Core Temperature</div>
+                        </div>
+                        <div className="w-full h-[140px]">
+                            <SarakChartEngine 
+                                type="gauge"
+                                data={[{ name: 'Temp', value: 68 }]}
+                                config={{ engine: 'echarts', dataKey: 'value' }}
+                            />
+                        </div>
+                        <div className="text-[10px] text-[var(--theme-muted)] mt-2 uppercase font-bold tracking-tighter">Thermal Status: <span className="text-emerald-500">Optimal</span></div>
+                    </div>
+                </motion.div>
+
+                {/* Featured Components Widget */}
+                    <motion.div
+                    initial={animationVariants[animationStyle]?.page?.initial || animationVariants.none?.page?.initial}
+                    animate={animationVariants[animationStyle]?.page?.animate || animationVariants.none?.page?.animate}
+                    transition={{ ...(animationVariants[animationStyle]?.page?.transition || animationVariants.none?.page?.transition), delay: 0.3, duration: parseFloat(tokens.animationSpeed || '0.4') }}
+                    className="col-span-12 bg-theme-card shadow-[var(--theme-shadow)]"
+                    style={{ 
+                        padding: 'var(--theme-card-pad)', 
+                        borderRadius: 'var(--radius-theme)',
+                        borderWidth: 'var(--theme-border-width)',
+                        borderStyle: 'var(--theme-border-style)',
+                        borderColor: 'var(--theme-border)'
+                    }}
                 >
                     <div className="flex items-center justify-between mb-6">
                         <div className="text-[11px] font-black uppercase tracking-widest text-[var(--theme-muted)]">Featured Components</div>
@@ -256,8 +249,14 @@ export const MockLogs: React.FC<any> = ({ config, animationVariants, animationSt
             <motion.div
                 initial={animationVariants[animationStyle]?.page?.initial || animationVariants.none?.page?.initial}
                 animate={animationVariants[animationStyle]?.page?.animate || animationVariants.none?.page?.animate}
-                transition={animationVariants[animationStyle]?.page?.transition || animationVariants.none?.page?.transition}
-                className="bg-theme-card overflow-hidden relative"
+                transition={{ ...(animationVariants[animationStyle]?.page?.transition || animationVariants.none?.page?.transition), duration: parseFloat(tokens.animationSpeed || '0.4') }}
+                className="bg-theme-card shadow-[var(--theme-shadow)] overflow-hidden relative"
+                style={{ 
+                    borderRadius: 'var(--radius-theme)',
+                    borderWidth: 'var(--theme-border-width)',
+                    borderStyle: 'var(--theme-border-style)',
+                    borderColor: 'var(--theme-border)'
+                }}
             >
                 <div className="absolute inset-0 bg-white/[0.02] pointer-events-none"></div>
                 <table className="w-full text-left text-[10px] relative z-10">
@@ -332,8 +331,9 @@ export const MockSettings: React.FC<any> = ({ config, animationVariants, animati
                         key={i}
                         initial={animationVariants[animationStyle]?.page?.initial || animationVariants.none?.page?.initial}
                         animate={animationVariants[animationStyle]?.page?.animate || animationVariants.none?.page?.animate}
-                        transition={{ ...(animationVariants[animationStyle]?.page?.transition || animationVariants.none?.page?.transition), delay: i * 0.1 }}
-                        className="bg-theme-card p-4 flex items-center justify-between group relative overflow-hidden"
+                        transition={{ ...(animationVariants[animationStyle]?.page?.transition || animationVariants.none?.page?.transition), delay: i * 0.1, duration: parseFloat(tokens.animationSpeed || '0.4') }}
+                        className="bg-theme-card border-[var(--theme-border-width)] border-[var(--theme-border-style)] border-[var(--theme-border)] p-4 flex items-center justify-between group relative overflow-hidden"
+                        style={{ borderRadius: 'var(--radius-theme)' }}
                     >
                         <div className="flex items-center gap-3 relative z-10">
                             <div className="p-2 rounded-lg bg-[var(--theme-primary)]/10 text-[var(--theme-primary)]">

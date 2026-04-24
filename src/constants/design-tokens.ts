@@ -89,6 +89,7 @@ export const TEXTURE_LIBRARY = [
     { id: 'none', name: 'None', className: 'texture-none' },
     { id: 'grid', name: 'Grid Tech', className: 'texture-grid' },
     { id: 'dots', name: 'Dots Clean', className: 'texture-dots' },
+    { id: 'stars', name: 'Star Field', className: 'texture-stars' },
     { id: 'noise', name: 'Grain Noise', className: 'texture-noise' },
     { id: 'mesh', name: 'Mesh Gradient', className: 'texture-mesh' },
     { id: 'waves', name: 'Waves Soft', className: 'texture-waves' },
@@ -103,7 +104,12 @@ export const TEXTURE_LIBRARY = [
     { id: 'circuit', name: 'Circuit Tech', className: 'texture-circuit' },
     { id: 'paper', name: 'Vintage Paper', className: 'texture-paper' },
     { id: 'scanlines', name: 'CRT Scanlines', className: 'texture-scanlines' },
-    { id: 'hexagon', name: 'Hex Shield', className: 'texture-hexagon' }
+    { id: 'hexagon', name: 'Hex Shield', className: 'texture-hexagon' },
+    { id: 'silk', name: 'Silk Flow', className: 'texture-silk' },
+    { id: 'blueprint', name: 'Engineering', className: 'texture-blueprint' },
+    { id: 'aurora', name: 'Aurora Deep', className: 'texture-aurora' },
+    { id: 'aurora-classic', name: 'Aurora Classic', className: 'texture-aurora-classic' },
+    { id: 'bubbles', name: 'Organic Bubbles', className: 'texture-bubbles' }
 ];
 
 export const THEME_EFFECTS = {

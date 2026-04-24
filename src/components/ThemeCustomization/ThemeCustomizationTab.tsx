@@ -8,7 +8,7 @@ import {
     MessageSquare, Network, BarChart
 } from 'lucide-react';
 
-import { PRIMARY_COLORS, SCALES, DENSITY, BASE_PRESETS } from '../../constants/design-tokens';
+import { PRIMARY_COLORS, SCALES, DENSITY, BASE_PRESETS, TEXTURE_LIBRARY } from '../../constants/design-tokens';
 import { useSarakUI } from '../SarakUIProvider';
 import { useThemePreview } from './useThemePreview';
 import { ThemeList } from './ThemeList';
@@ -30,7 +30,6 @@ export const ThemeCustomizationTab: React.FC = () => {
         sidebarWidth: sarak.sidebarWidth,
         fontScale: sarak.fontScale,
         layoutDensity: sarak.layoutDensity,
-        texture: sarak.texture,
         headingFont: sarak.headingFont,
         subtitleFont: sarak.subtitleFont,
         bodyFont: sarak.bodyFont,
@@ -43,7 +42,6 @@ export const ThemeCustomizationTab: React.FC = () => {
         glassBlur: sarak.glassBlur,
         shadowIntensity: sarak.shadowIntensity,
         isGeometricCut: sarak.isGeometricCut,
-        textureOpacity: sarak.textureOpacity,
         animationSpeed: sarak.animationSpeed,
         tabFont: sarak.tabFont,
         layoutGap: sarak.layoutGap,
@@ -58,7 +56,6 @@ export const ThemeCustomizationTab: React.FC = () => {
         // Materials & Borders v6.0
         surfaceMaterial: sarak.surfaceMaterial,
         borderType: sarak.borderType,
-        cursorPhysics: sarak.cursorPhysics,
         interfaceElasticity: sarak.interfaceElasticity,
         // Navigation & Structures v6.0
         isSplitViewEnabled: sarak.isSplitViewEnabled,
@@ -76,7 +73,12 @@ export const ThemeCustomizationTab: React.FC = () => {
         chatAnimationSpeed: sarak.chatAnimationSpeed || 0.05,
         flowGridStyle: sarak.flowGridStyle || 'dots',
         flowNodeRadius: sarak.flowNodeRadius || 12,
-        chartShowGrid: sarak.chartShowGrid ?? true
+        chartShowGrid: sarak.chartShowGrid ?? true,
+        cardPadding: sarak.cardPadding || 24,
+        tabGap: sarak.tabGap || 12,
+        tabSectionMargin: sarak.tabSectionMargin || 0,
+        texture: sarak.texture || 'none',
+        textureOpacity: sarak.textureOpacity || 0.05
     });
 
     const [activeSection, setActiveSection] = useState<string | null>('color-core');
@@ -90,12 +92,12 @@ export const ThemeCustomizationTab: React.FC = () => {
         setDraft({
             layout: sarak.layout, mode: sarak.mode, primaryColor: sarak.primaryColor,
             navigationStyle: sarak.navigationStyle, sidebarWidth: sarak.sidebarWidth,
-            fontScale: sarak.fontScale, layoutDensity: sarak.layoutDensity, texture: sarak.texture,
+            fontScale: sarak.fontScale, layoutDensity: sarak.layoutDensity,
             headingFont: sarak.headingFont, subtitleFont: sarak.subtitleFont, bodyFont: sarak.bodyFont,
             headingWeight: sarak.headingWeight, headingLetterSpacing: sarak.headingLetterSpacing,
             borderRadius: sarak.borderRadius, borderWidth: sarak.borderWidth, borderStyle: sarak.borderStyle,
             glassOpacity: sarak.glassOpacity, glassBlur: sarak.glassBlur, shadowIntensity: sarak.shadowIntensity,
-            isGeometricCut: sarak.isGeometricCut, textureOpacity: sarak.textureOpacity, animationSpeed: sarak.animationSpeed,
+            isGeometricCut: sarak.isGeometricCut, animationSpeed: sarak.animationSpeed,
             tabFont: sarak.tabFont, layoutGap: sarak.layoutGap,
             // Identity & Branding v6.0
             systemName: sarak.systemName, logoUrl: sarak.logoUrl, logoDarkUrl: sarak.logoDarkUrl,
@@ -103,7 +105,7 @@ export const ThemeCustomizationTab: React.FC = () => {
             emptyStateId: sarak.emptyStateId,
             // Materials & Borders v6.0
             surfaceMaterial: sarak.surfaceMaterial, borderType: sarak.borderType,
-            cursorPhysics: sarak.cursorPhysics, interfaceElasticity: sarak.interfaceElasticity,
+            interfaceElasticity: sarak.interfaceElasticity,
             // Navigation & Structures v6.0
             isSplitViewEnabled: sarak.isSplitViewEnabled, secondaryModuleId: sarak.secondaryModuleId,
             searchStyle: sarak.searchStyle,
@@ -120,7 +122,12 @@ export const ThemeCustomizationTab: React.FC = () => {
             chartShowGrid: sarak.chartShowGrid ?? true,
             chartType: sarak.chartType || 'bar',
             chartThickness: sarak.chartThickness || 2,
-            chartSmoothing: sarak.chartSmoothing ?? true
+            chartSmoothing: sarak.chartSmoothing ?? true,
+            cardPadding: sarak.cardPadding || 24,
+            tabGap: sarak.tabGap || 12,
+            tabSectionMargin: sarak.tabSectionMargin || 0,
+            texture: sarak.texture || 'none',
+            textureOpacity: sarak.textureOpacity || 0.05
         });
     }, [sarak.isHydrated]);
 
@@ -189,7 +196,8 @@ export const ThemeCustomizationTab: React.FC = () => {
             borderRadius: 'number', borderWidth: 'number', borderStyle: 'string',
             surfaceMaterial: 'string', borderType: 'string', layoutGap: 'number',
             glassOpacity: 'number', glassBlur: 'number', isGeometricCut: 'boolean',
-            cursorPhysics: 'boolean', interfaceElasticity: 'number',
+            interfaceElasticity: 'number',
+            tabGap: 'number', tabSectionMargin: 'number',
             texture: 'string', textureOpacity: 'number', primaryColor: 'string',
             systemName: 'string', logoUrl: 'string', logoDarkUrl: 'string', logoScale: 'number',
             logoPosition: 'string', systemTone: 'string', emptyStateId: 'string',
@@ -206,8 +214,9 @@ export const ThemeCustomizationTab: React.FC = () => {
             '--radius-theme': 'borderRadius', '--border-width': 'borderWidth', '--border-style': 'borderStyle',
             '--surface-material': 'surfaceMaterial', '--border-type': 'borderType', '--theme-gap': 'layoutGap',
             '--glass-opacity': 'glassOpacity', '--glass-blur': 'glassBlur', '--is-geometric': 'isGeometricCut',
-            '--cursor-physics': 'cursorPhysics', '--interface-elasticity': 'interfaceElasticity',
+            '--interface-elasticity': 'interfaceElasticity',
             '--bg-texture': 'texture', '--texture-opacity': 'textureOpacity', '--theme-primary': 'primaryColor',
+            '--tab-gap': 'tabGap', '--tab-section-margin': 'tabSectionMargin',
             '--system-name': 'systemName', '--logo-url': 'logoUrl', '--logo-dark-url': 'logoDarkUrl', '--logo-scale': 'logoScale',
             '--logo-position': 'logoPosition', '--system-tone': 'systemTone', '--empty-state-id': 'emptyStateId',
             '--chart-style': 'chartStyle', '--chart-palette': 'chartPalette',
@@ -419,32 +428,45 @@ export const ThemeCustomizationTab: React.FC = () => {
                                         {draft.primaryColor === color.value && <Check size={10} className="text-white absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2" />}
                                     </button>
                                 ))}
-                            </div>
-
-                            <div className="mb-2">
-                                <span className="text-[9px] font-black uppercase tracking-widest text-white/40 block mb-3">Paletas de Identidade</span>
-                                <div className="grid grid-cols-1 gap-2">
-                                    {[
-                                        { id: 'warm', label: 'Cores Quentes', colors: ['#f87171', '#fb923c', '#fbbf24'] },
-                                        { id: 'cold', label: 'Cores Frias', colors: ['#60a5fa', '#34d399', '#818cf8'] },
-                                        { id: 'sunset', label: 'Sarak Sunset', colors: ['#ec4899', '#f43f5e', '#fb923c'] },
-                                        { id: 'matrix', label: 'Matrix Deep', colors: ['#0ea5e9', '#6366f1', '#a855f7'] }
-                                    ].map(pal => (
-                                        <button 
-                                            key={pal.id}
-                                            onClick={() => updateDraft('primaryColor', pal.colors[0])}
-                                            className="p-2.5 rounded-xl bg-white/5 border border-white/10 flex items-center justify-between hover:bg-white/[0.08] transition-all"
-                                        >
-                                            <span className="text-[8px] font-black uppercase tracking-[0.2em] text-white/60">{pal.label}</span>
-                                            <div className="flex -space-x-1.5">
-                                                {pal.colors.map((c, i) => (
-                                                    <div key={i} className="w-4 h-4 rounded-full border border-[#0c0c0d]" style={{ backgroundColor: c }} />
-                                                ))}
-                                            </div>
-                                        </button>
-                                    ))}
+                                <div className="relative w-full aspect-square">
+                                    <input 
+                                        type="color" 
+                                        value={draft.primaryColor} 
+                                        onChange={(e) => updateDraft('primaryColor', e.target.value)}
+                                        className="absolute inset-0 w-full h-full opacity-0 cursor-pointer z-10"
+                                    />
+                                    <div className="absolute inset-0 rounded-full border border-white/20 flex items-center justify-center bg-white/5 hover:bg-white/10 transition-all">
+                                        <Plus size={10} className="text-white/40" />
+                                    </div>
                                 </div>
                             </div>
+
+                            <div className="mb-6">
+                                <span className="text-[9px] font-black uppercase tracking-widest text-white/40 block mb-3">Cor Primária (Sovereignty Color)</span>
+                                <div className="flex flex-wrap gap-2.5">
+                                    {[
+                                        '#3b82f6', '#10b981', '#f59e0b', '#ef4444', '#8b5cf6', '#ec4899', 
+                                        '#0ea5e9', '#f97316', '#22c55e', '#6366f1', '#141414', '#ffffff'
+                                    ].map(color => (
+                                        <button 
+                                            key={color}
+                                            onClick={() => updateDraft('primaryColor', color)}
+                                            className={`w-7 h-7 rounded-full border-2 transition-all transform hover:scale-110 active:scale-95 ${draft.primaryColor === color ? 'border-white scale-110 shadow-lg shadow-white/20' : 'border-transparent'}`}
+                                            style={{ backgroundColor: color }}
+                                        />
+                                    ))}
+                                    <div className="relative group">
+                                        <input 
+                                            type="color" 
+                                            value={draft.primaryColor} 
+                                            onChange={(e) => updateDraft('primaryColor', e.target.value)}
+                                            className="w-7 h-7 rounded-full bg-transparent border-none cursor-pointer appearance-none p-0 overflow-hidden"
+                                        />
+                                        <Plus size={10} className="absolute inset-0 m-auto pointer-events-none text-white/40" />
+                                    </div>
+                                </div>
+                            </div>
+
                         </Section>
 
                         <Section id="branding" icon={Globe} title="Branding">
@@ -506,13 +528,37 @@ export const ThemeCustomizationTab: React.FC = () => {
                                 </button>
                             </div>
                             <div className="mb-4">
-                                <span className="text-[9px] font-black uppercase tracking-widest text-white/20 block mb-2">Tom de Voz (System Tone)</span>
-                                <div className="grid grid-cols-3 gap-1 p-1 bg-black/20 rounded-xl border border-white/5">
+                                <div className="flex items-center gap-2 mb-2">
+                                    <span className="text-[9px] font-black uppercase tracking-widest text-white/20 block">Tom de Voz (System Tone)</span>
+                                    <div className="group relative">
+                                        <AlertCircle size={10} className="text-white/40 cursor-help" />
+                                        <div className="absolute left-0 bottom-full mb-2 w-48 p-3 bg-[#1a1a1b] border border-white/10 rounded-xl shadow-2xl opacity-0 group-hover:opacity-100 pointer-events-none transition-all z-50">
+                                            <p className="text-[9px] leading-relaxed text-white/60">
+                                                Define a personalidade da IA na interface. 
+                                                <br/><br/>
+                                                <span className="text-[var(--theme-primary)] font-bold">Formal:</span> Respostas precisas e sérias.
+                                                <br/>
+                                                <span className="text-[var(--theme-primary)] font-bold">Friendly:</span> Tom acolhedor e casual.
+                                                <br/>
+                                                <span className="text-[var(--theme-primary)] font-bold">Cyber:</span> Estilo hacker/tecnológico.
+                                            </p>
+                                        </div>
+                                    </div>
+                                </div>
+                                <div className="grid grid-cols-3 gap-1 p-1 bg-black/20 rounded-xl border border-white/5 mb-3">
                                     {['formal', 'friendly', 'cyber'].map(tone => (
                                         <button key={tone} onClick={() => updateDraft('systemTone', tone)} className={`py-2 rounded-lg text-[8px] font-black uppercase transition-all ${draft.systemTone === tone ? 'bg-[var(--theme-primary)] text-white shadow-lg' : 'text-white/20 hover:text-white/40'}`}>{tone}</button>
                                     ))}
                                 </div>
+                                <div className="p-3 bg-white/5 rounded-xl border border-white/10">
+                                    <p className="text-[9px] leading-relaxed text-white/40">
+                                        {draft.systemTone === 'formal' && "TONALIDADE FORMAL: Respostas precisas, objetivas e tom institucional. Ideal para ambientes corporativos e fluxos críticos."}
+                                        {draft.systemTone === 'friendly' && "TONALIDADE FRIENDLY: Linguagem acolhedora, casual e empática. Melhora a experiência de suporte e onboarding."}
+                                        {draft.systemTone === 'cyber' && "TONALIDADE CYBER: Estilo hacker, tecnicista e direto. Utiliza terminologias de sistema e estética terminal."}
+                                    </p>
+                                </div>
                             </div>
+
                         </Section>
                                 </motion.div>
                             )}
@@ -556,7 +602,13 @@ export const ThemeCustomizationTab: React.FC = () => {
                                     <Maximize size={16} className="mx-auto mb-2" /><span className="text-[8px] font-black uppercase block">Topbar</span>
                                 </button>
                             </div>
-                            <SliderControl label="Espaçamento Global (Gap)" value={draft.layoutGap} min={0} max={80} onChange={(v: any) => updateDraft('layoutGap', v)} suffix="px" />
+                            
+                            <div className="space-y-6">
+                                <SliderControl label="Espaçamento Global (Gap)" value={draft.layoutGap} min={0} max={80} onChange={(v: any) => updateDraft('layoutGap', v)} suffix="px" />
+                                <SliderControl label="Espaçamento entre Abas" value={draft.tabGap} min={0} max={40} onChange={(v: any) => updateDraft('tabGap', v)} suffix="px" />
+                                <SliderControl label="Margem da Seção de Navegação" value={draft.tabSectionMargin} min={0} max={60} onChange={(v: any) => updateDraft('tabSectionMargin', v)} suffix="px" />
+                                <SliderControl label="Padding Interno (Cards)" value={draft.cardPadding} min={8} max={64} onChange={(v: any) => updateDraft('cardPadding', v)} suffix="px" />
+                            </div>
                             <div className="mt-4">
                                 <span className="text-[9px] font-black uppercase tracking-widest text-white/40 block mb-3">Densidade de Layout</span>
                                 <div className="grid grid-cols-3 gap-1 p-1 bg-black/20 rounded-xl border border-white/5">
@@ -618,14 +670,24 @@ export const ThemeCustomizationTab: React.FC = () => {
                             />
                         </Section>
 
+                        <Section id="textures" icon={Sparkles} title="Texturas & Atmosfera">
+                            <SelectControl 
+                                label="Padrão de Textura" 
+                                options={TEXTURE_LIBRARY.map(t => ({ id: t.id, label: t.name }))} 
+                                value={draft.texture} 
+                                onChange={(v: any) => updateDraft('texture', v)} 
+                            />
+                            <SliderControl 
+                                label="Intensidade da Textura" 
+                                value={draft.textureOpacity} 
+                                min={0} max={0.5} step={0.01} 
+                                onChange={(v: any) => updateDraft('textureOpacity', v)} 
+                            />
+                        </Section>
+
                         <Section id="effects" icon={Wind} title="Cinética">
                             <SliderControl label="Duração das Transições" value={draft.animationSpeed} min={0} max={1} step={0.05} onChange={(v: any) => updateDraft('animationSpeed', v)} suffix="s" />
-                            <div className="flex items-center justify-between p-4 rounded-xl bg-white/5 mt-4 group">
-                                <span className="text-[9px] font-black uppercase tracking-widest text-white/40">Micro-interações (SFX)</span>
-                                <button onClick={() => updateDraft('cursorPhysics', !draft.cursorPhysics)} className={`w-10 h-5 rounded-full relative transition-all ${draft.cursorPhysics ? 'bg-[var(--theme-primary)]' : 'bg-white/10'}`}>
-                                    <div className={`absolute top-1 w-3 h-3 rounded-full bg-white transition-all ${draft.cursorPhysics ? 'left-6' : 'left-1'}`} />
-                                </button>
-                            </div>
+                            <SliderControl label="Elasticidade (Bounciness)" value={draft.interfaceElasticity} min={0} max={1} step={0.05} onChange={(v: any) => updateDraft('interfaceElasticity', v)} />
                         </Section>
                                 </motion.div>
                             )}

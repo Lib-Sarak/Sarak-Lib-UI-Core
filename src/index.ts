@@ -17,6 +17,7 @@ export * from './components/SarakShell';
 export * from './components/CustomizationPanel';
 export * from './components/ExpandableCard';
 export * from './components/Controls';
+export { default as SarakChartEngine } from './components/engines/charts/SarakChartEngine';
 
 export { useModuleDiscovery } from './shared/hooks/useModuleDiscovery';
 export * from './constants/discovery';

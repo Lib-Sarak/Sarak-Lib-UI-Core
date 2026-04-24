@@ -1,7 +1,7 @@
 import React from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
 import {
-    Zap, Shield, Database, BarChart3, MessageSquare, History, Box, Network, Type
+    Zap, Shield, Database, BarChart3, MessageSquare, History, Box, Network, Type, Grid, Maximize
 } from 'lucide-react';
 import { EMOJI_SETS, THEME_EFFECTS, DENSITY, SCALES } from '../../constants/design-tokens';
 import { MockDashboard, MockChat, MockLogs, MockSettings, MockComponents, MockTypography } from './MockApps';
@@ -16,7 +16,7 @@ interface PreviewCanvasProps {
     config: any;
     previewPrimaryColor: string;
     mode: string;
-    draftTokens: any; // Novos tokens do rascunho v5.6
+    draftTokens: any;
 }
 
 export const PreviewCanvas: React.FC<PreviewCanvasProps> = ({
@@ -31,207 +31,244 @@ export const PreviewCanvas: React.FC<PreviewCanvasProps> = ({
     mode,
     draftTokens
 }) => {
-    const previewStyles: any = {
-        desktop: { width: '100%', height: '100%', maxWidth: '1320px', aspectRatio: '16/9.5' },
-        tablet: { width: '922px', height: '100%', maxWidth: '922px', aspectRatio: '3/4' },
-        smartphone: { width: '450px', height: '100%', maxWidth: '450px', aspectRatio: '9/19.5' }
-    };
-
-    const renderApp = (tokens: any) => {
-        const props = { config, animationVariants: (THEME_EFFECTS as any).page, animationStyle: previewAnimationStyle, tokens };
-        switch (activePreviewApp) {
-            case 'dashboard': return <MockDashboard {...props} />;
-            case 'chat': return <MockChat {...props} />;
-            case 'logs': return <MockLogs {...props} />;
-            case 'settings': return <MockSettings {...props} />;
-            case 'components': return <MockComponents {...props} />;
-            case 'typography': return <MockTypography {...props} />;
-            default: return <MockDashboard {...props} />;
-        }
-    };
-
-    // Usamos os tokens do Draft ou fallbacks do sistema
     const tokens = draftTokens || {};
     const densityConfig = (DENSITY as any)[(tokens.layoutDensity || 'standard').toUpperCase()] || DENSITY.STANDARD;
 
+    // --- HELPERS ---
+    const hexToRgb = (hex: string): string => {
+        const result = /^#?([a-f\d]{2})([a-f\d]{2})([a-f\d]{2})$/i.exec(hex);
+        return result ? `${parseInt(result[1], 16)}, ${parseInt(result[2], 16)}, ${parseInt(result[3], 16)}` : '59, 130, 246';
+    };
+
+    const getShadowStyle = (orientation: string, intensity: number, color: string): string => {
+        const opacity = intensity * 0.3;
+        switch (orientation) {
+            case 'top-down':
+                return `0 ${intensity * 20}px ${intensity * 40}px rgba(0,0,0,${opacity})`;
+            case 'isometric':
+                return `${intensity * 10}px ${intensity * 10}px ${intensity * 30}px rgba(0,0,0,${opacity})`;
+            case 'inner':
+                return `inset 0 2px 10px rgba(0,0,0,${opacity})`;
+            default:
+                return `0 4px 20px rgba(0,0,0,${opacity})`;
+        }
+    };
+
+    const cssVariables = {
+        '--theme-primary': tokens.primaryColor || previewPrimaryColor,
+        '--theme-primary-rgb': hexToRgb(tokens.primaryColor || previewPrimaryColor),
+        '--radius-theme': `${tokens.borderRadius ?? 12}px`,
+        '--theme-border-width': `${tokens.borderWidth ?? 1}px`,
+        '--theme-border-style': tokens.borderStyle || 'solid',
+        '--theme-gap': `${tokens.layoutGap ?? 20}px`,
+        '--theme-pad': densityConfig.pad || '1.5rem',
+        '--theme-card-pad': `${tokens.cardPadding ?? 24}px`,
+        '--theme-tab-gap': `${tokens.tabGap ?? 12}px`,
+        '--theme-tab-section-margin': `${tokens.tabSectionMargin ?? 0}px`,
+        '--font-heading': tokens.headingFont || "'Inter', sans-serif",
+        '--font-main': tokens.bodyFont || "'Inter', sans-serif",
+        '--font-tab': tokens.tabFont || tokens.headingFont || "'Inter', sans-serif",
+        '--heading-weight': tokens.headingWeight || '700',
+        '--heading-spacing': tokens.headingLetterSpacing === 'tight' ? '-0.05em' : tokens.headingLetterSpacing === 'wide' ? '0.05em' : tokens.headingLetterSpacing === 'widest' ? '0.1em' : 'normal',
+        '--theme-font-size-base': `calc(${densityConfig.fontSizeBase || '13px'} * ${(SCALES as any)[(tokens.fontScale || 'm').toUpperCase()]?.factor || '1.0'})`,
+        '--animation-speed': `${tokens.animationSpeed ?? 0.4}s`,
+        '--sarak-elasticity': (tokens.interfaceElasticity ?? 0.4).toString(),
+        '--shadow-intensity': (tokens.shadowIntensity ?? 0.5).toString(),
+        '--glass-blur': `${tokens.glassBlur ?? 10}px`,
+        '--glass-opacity': (tokens.glassOpacity ?? 0.7).toString(),
+        '--texture-opacity': (tokens.textureOpacity ?? 0.05).toString(),
+        '--theme-bg': tokens.mode === 'light' ? '#f1f5f9' : '#020617',
+        '--theme-card': tokens.mode === 'light' ? 'rgba(255,255,255,0.8)' : 'rgba(30,41,59,0.5)',
+        '--theme-border': tokens.mode === 'light' ? 'rgba(0,0,0,0.1)' : 'rgba(255,255,255,0.08)',
+        '--theme-title': tokens.mode === 'light' ? '#0f172a' : '#f8fafc',
+        '--theme-main': tokens.mode === 'light' ? '#475569' : '#94a3b8',
+        '--theme-muted': tokens.mode === 'light' ? '#94a3b8' : '#64748b',
+        '--theme-shadow': getShadowStyle(tokens.shadowOrientation || 'top-down', tokens.shadowIntensity ?? 0.5, tokens.primaryColor || previewPrimaryColor),
+        '--primary-color': tokens.primaryColor || previewPrimaryColor,
+        '--border-color': tokens.mode === 'light' ? 'rgba(0,0,0,0.1)' : 'rgba(255,255,255,0.08)',
+    } as React.CSSProperties;
+
+    const deviceStyles: any = {
+        desktop: { width: '100%', height: '100%', maxWidth: '1200px', aspectRatio: '16/9' },
+        tablet: { width: '768px', height: '1024px', scale: 0.6 },
+        smartphone: { width: '375px', height: '667px', scale: 0.8 }
+    };
+
+    const apps: any = {
+        dashboard: <MockDashboard tokens={tokens} config={config} animationVariants={THEME_EFFECTS.page} animationStyle={previewAnimationStyle} />,
+        chat: <MockChat tokens={tokens} config={config} animationVariants={THEME_EFFECTS.page} animationStyle={previewAnimationStyle} />,
+        logs: <MockLogs tokens={tokens} config={config} animationVariants={THEME_EFFECTS.page} animationStyle={previewAnimationStyle} />,
+        settings: <MockSettings tokens={tokens} config={config} animationVariants={THEME_EFFECTS.page} animationStyle={previewAnimationStyle} />,
+        components: <MockComponents tokens={tokens} />,
+        typography: <MockTypography tokens={tokens} />
+    };
+
+    const appIds = ['dashboard', 'chat', 'logs', 'settings', 'components', 'typography'];
+    const appIcons: any = {
+        dashboard: <BarChart3 size={14} />,
+        chat: <MessageSquare size={14} />,
+        logs: <History size={14} />,
+        settings: <Network size={14} />,
+        components: <Box size={14} />,
+        typography: <Type size={14} />
+    };
+
+    const LogoComponent = () => {
+        const logoSrc = tokens.mode === 'light' ? (tokens.logoUrl || tokens.logoDarkUrl) : (tokens.logoDarkUrl || tokens.logoUrl);
+        const scale = tokens.logoScale || 1.0;
+        
+        return (
+            <div className={`flex items-center gap-3 ${tokens.logoPosition === 'center' ? 'flex-col text-center' : 'flex-row'}`} style={{ transform: `scale(${scale})`, transformOrigin: tokens.logoPosition === 'center' ? 'center' : 'left center' }}>
+                {logoSrc ? (
+                    <img src={logoSrc} alt="Logo" className="w-8 h-8 object-contain" />
+                ) : (
+                    <div className="w-8 h-8 rounded-lg bg-[var(--theme-primary)] flex items-center justify-center text-white shadow-lg shadow-[var(--theme-primary)]/20">
+                        <Zap size={16} />
+                    </div>
+                )}
+                <span className="font-bold text-[var(--theme-title)] text-[10px] tracking-widest uppercase">{tokens.systemName || 'SARAK'}</span>
+            </div>
+        );
+    };
+
+    const UserProfileComponent = () => {
+        return (
+            <div className="flex items-center gap-3 p-4 border-t border-[var(--theme-border)] mt-auto relative z-20">
+                <div className="w-8 h-8 rounded-full bg-white/5 border border-white/10 flex items-center justify-center overflow-hidden relative">
+                    <div className="w-full h-full bg-gradient-to-br from-[var(--theme-primary)] to-purple-600 opacity-20 absolute inset-0" />
+                    <span className="text-[10px] font-bold text-[var(--theme-title)] relative z-10">U</span>
+                </div>
+                <div className="flex flex-col">
+                    <span className="text-[10px] font-bold text-[var(--theme-title)] uppercase tracking-wider">Sarak User</span>
+                    <span className="text-[8px] text-[var(--theme-muted)] uppercase tracking-widest">Administrator</span>
+                </div>
+                <div className="ml-auto opacity-40 hover:opacity-100 transition-opacity cursor-pointer">
+                    <Shield size={14} className="text-[var(--theme-muted)]" />
+                </div>
+            </div>
+        );
+    };
+
+    const TopbarUserProfile = () => {
+        return (
+            <div className="flex items-center gap-4 ml-auto border-l border-[var(--theme-border)] pl-6">
+                <div className="flex flex-col items-end">
+                    <span className="text-[9px] font-black text-[var(--theme-title)] uppercase tracking-widest">Sarak User</span>
+                    <span className="text-[7px] text-[var(--theme-primary)] font-bold uppercase tracking-widest">Admin</span>
+                </div>
+                <div className="w-8 h-8 rounded-lg bg-white/5 border border-white/10 flex items-center justify-center">
+                    <Zap size={14} className="text-[var(--theme-primary)]" />
+                </div>
+            </div>
+        );
+    };
+
     return (
-        <div className="flex-grow flex flex-col relative overflow-hidden bg-black/20">
-            {/* PREVIEW CANVAS CONTAINER */}
-            <div className="flex-grow flex items-center justify-center p-8 relative z-10 overflow-auto custom-scrollbar">
-                <motion.div
-                    layout
-                    initial={false}
-                    animate={previewStyles[previewDevice]}
-                    transition={{ type: "spring", stiffness: 300, damping: 30 }}
-                    style={{
-                        '--primary-color': tokens.primaryColor || previewPrimaryColor,
-                        '--font-main': tokens.bodyFont || "'Inter', sans-serif",
-                        '--font-heading': tokens.headingFont || "'Inter', sans-serif",
-                        '--font-subtitle': tokens.subtitleFont || tokens.headingFont || "'Inter', sans-serif",
-                        '--heading-weight': tokens.headingWeight || '700',
-                        '--heading-spacing': tokens.headingLetterSpacing === 'tight' ? '-0.05em' : tokens.headingLetterSpacing === 'wide' ? '0.05em' : tokens.headingLetterSpacing === 'widest' ? '0.1em' : 'normal',
-                        '--radius-theme': `${tokens.borderRadius ?? 12}px`,
-                        '--border-width': `${tokens.borderWidth ?? 1}px`,
-                        '--border-style': tokens.borderStyle || 'solid',
-                        '--glass-blur': `${tokens.glassBlur ?? 10}px`,
-                        '--glass-opacity': (tokens.glassOpacity ?? 0.7).toString(),
-                        '--shadow-intensity': (tokens.shadowIntensity ?? 0.5).toString(),
-                        '--texture-opacity': (tokens.textureOpacity ?? 0.05).toString(),
-                        '--animation-speed': `${tokens.animationSpeed ?? 0.4}s`,
-                        '--theme-gap': `${tokens.layoutGap ?? (densityConfig.gap === '0.5rem' ? 8 : densityConfig.gap === '1.25rem' ? 20 : 32)}px`,
-                        '--theme-pad': densityConfig.pad || '1.5rem',
-                        '--font-tab': tokens.tabFont || tokens.headingFont || "'Inter', sans-serif",
-                        '--theme-font-size-base': `calc(${densityConfig.fontSizeBase || '13px'} * ${(SCALES as any)[(tokens.fontScale || 'm').toUpperCase()]?.factor || '1.0'})`,
-                        // Cores de fundo baseadas no modo (Essencial para texturas e CONTRASTE)
-                        '--bg-body': tokens.mode === 'light' ? '#f1f5f9' : '#020617',
-                        '--bg-card': tokens.mode === 'light' ? '#ffffff' : '#1e293b',
-                        '--bg-sidebar': tokens.mode === 'light' ? '#e2e8f0' : '#0f172a',
-                        '--text-main': tokens.mode === 'light' ? '#1e293b' : '#94a3b8',
-                        '--text-title': tokens.mode === 'light' ? '#0f172a' : '#f8fafc',
-                        '--border-color': tokens.mode === 'light' ? 'rgba(0,0,0,0.15)' : 'rgba(255,255,255,0.1)',
-                        // ALIASES PARA COMPATIBILIDADE (Sarak Legacy + Atomic)
-                        '--theme-primary': tokens.primaryColor || previewPrimaryColor,
-                        '--theme-body': tokens.mode === 'light' ? '#f1f5f9' : '#020617',
-                        '--theme-card': tokens.mode === 'light' ? '#ffffff' : '#1e293b',
-                        '--theme-border': tokens.mode === 'light' ? 'rgba(0,0,0,0.15)' : 'rgba(255,255,255,0.1)',
-                        '--theme-title': tokens.mode === 'light' ? '#0f172a' : '#f8fafc',
-                        '--theme-muted': tokens.mode === 'light' ? '#475569' : '#64748b',
-                        '--shadow-color': tokens.mode === 'light' ? 'rgba(0,0,0,0.1)' : 'rgba(0,0,0,0.4)',
-                        '--shadow-orientation': tokens.shadowOrientation || 'top-down',
-                        '--shadow-color-mode': tokens.shadowColorMode || 'neutral',
-                    } as React.CSSProperties}
-                    className={`preview-container ${tokens.mode || mode} layout-${(tokens.layout || previewLayoutId || '').replace('custom-', '')} ${tokens.isGeometricCut ? 'is-geometric' : ''} bg-[var(--bg-body)] text-[var(--text-main)] rounded-[32px] shadow-[0_50px_100px_rgba(0,0,0,0.5)] overflow-hidden flex flex-col relative transition-all duration-500 ${tokens.texture && tokens.texture !== 'none' ? `texture-${tokens.texture}` : ''}`}
-                    data-surface={tokens.surfaceMaterial || 'glass'}
-                    data-border={tokens.borderType || 'default'}
-                    data-shadow-orientation={tokens.shadowOrientation || 'top-down'}
-                    data-shadow-color-mode={tokens.shadowColorMode || 'neutral'}
-                    data-auto-hide={tokens.isAutoHideEnabled ? 'true' : 'false'}
-                >
-                    {/* Mock Browser/App Header */}
-                    <div className="h-10 bg-black/20 border-b border-white/5 px-6 flex items-center gap-2 shrink-0">
-                        <div className="flex gap-1.5">
-                            <div className="w-2.5 h-2.5 rounded-full bg-rose-500/30"></div>
-                            <div className="w-2.5 h-2.5 rounded-full bg-amber-500/30"></div>
-                            <div className="w-2.5 h-2.5 rounded-full bg-emerald-500/30"></div>
-                        </div>
-                        <div className="mx-auto bg-black/40 px-4 py-1 rounded-full border border-white/5 flex items-center gap-2">
-                            <div className="w-1.5 h-1.5 rounded-full bg-[var(--primary-color)] animate-pulse"></div>
-                            <span className="text-[7px] font-black uppercase tracking-[0.3em] text-white/40">{tokens.systemName || "Sarak Matrix"}</span>
-                        </div>
-                    </div>
+        <div className="flex-grow flex flex-col relative overflow-hidden bg-[#050505] p-8 items-center justify-center">
+            <motion.div
+                layout
+                initial={false}
+                animate={deviceStyles[previewDevice]}
+                className={`rounded-[var(--radius-theme)] shadow-[var(--theme-shadow)] overflow-hidden flex transition-all duration-500 relative z-10 ${tokens.texture !== 'none' ? 'texture-active' : 'bg-[var(--theme-bg)]'}`}
+                style={{
+                    ...cssVariables,
+                    borderWidth: 'var(--theme-border-width)',
+                    borderStyle: 'var(--theme-border-style)',
+                    borderColor: 'var(--theme-border)'
+                }}
+            >
+                {/* TEXTURE OVERLAY INSIDE APP (Sovereignty v6.8.6) */}
+                {tokens.texture && tokens.texture !== 'none' && (
+                    <div className={`absolute inset-0 pointer-events-none z-0 texture-${tokens.texture} SarakAtmosphereLayer`} />
+                )}
 
-                    <div className={`flex flex-grow overflow-hidden ${tokens.navigationStyle === 'topbar' ? 'flex-col' : 'flex-row'}`} style={{ transitionDuration: 'var(--animation-speed)' }}>
-                        {/* Mock Navigation Header (for Topbar) */}
-                        {tokens.navigationStyle === 'topbar' && (
-                            <div className="h-12 bg-black/10 border-b border-white/5 flex items-center px-6 gap-6 shrink-0 relative z-20">
-                                <div className="w-8 h-8 rounded-lg bg-[var(--primary-color)] flex items-center justify-center text-white shadow-lg overflow-hidden">
-                                    {tokens.logoUrl ? (
-                                        <img src={tokens.mode === 'dark' && tokens.logoDarkUrl ? tokens.logoDarkUrl : tokens.logoUrl} className="w-full h-full object-contain" style={{ transform: `scale(${tokens.logoScale || 1})` }} />
-                                    ) : (
-                                        <Zap className="w-4 h-4 fill-current" />
-                                    )}
-                                </div>
-                                <div className="flex gap-4">
-                                    {[BarChart3, MessageSquare, Network, Type, Box, History].map((Icon, i) => (
-                                        <div key={i} 
-                                            className={`px-3 py-1.5 rounded-lg text-[9px] font-black uppercase tracking-widest flex items-center gap-2 ${activePreviewApp === ['dashboard', 'chat', 'settings', 'typography', 'components', 'logs'][i] ? 'bg-[var(--primary-color)]/10 text-[var(--primary-color)]' : 'text-white/20'}`}
-                                            style={{ fontFamily: 'var(--font-tab, var(--font-heading))' }}
-                                        >
-                                            <Icon className="w-3 h-3" />
-                                            {['Dash', 'Chat', 'Flow', 'Font', 'Comp', 'Logs'][i]}
-                                        </div>
-                                    ))}
-                                </div>
-                            </div>
-                        )}
-
-                        {/* Mock Navigation Sidebar (only if not Topbar) */}
-                        {tokens.navigationStyle !== 'topbar' && (
-                            <div className="w-16 sm:w-20 bg-black/10 border-r border-white/5 shrink-0 flex flex-col items-center py-8 gap-6 relative z-20">
-                                <div className="w-10 h-10 rounded-xl bg-[var(--primary-color)] flex items-center justify-center text-white shadow-lg shadow-[var(--primary-color)]/20 mb-4 cursor-pointer hover:scale-110 transition-transform overflow-hidden">
-                                    {tokens.logoUrl ? (
-                                        <img src={tokens.mode === 'dark' && tokens.logoDarkUrl ? tokens.logoDarkUrl : tokens.logoUrl} className="w-full h-full object-contain" style={{ transform: `scale(${tokens.logoScale || 1})` }} />
-                                    ) : (
-                                        <Zap className="w-5 h-5 fill-current" />
-                                    )}
-                                </div>
-                                {[BarChart3, MessageSquare, Network, Type, Box, History].map((Icon, i) => (
-                                    <div key={i} className={`w-9 h-9 rounded-xl flex items-center justify-center transition-all cursor-pointer ${activePreviewApp === ['dashboard', 'chat', 'settings', 'typography', 'components', 'logs'][i] ? 'bg-[var(--primary-color)]/10 text-[var(--primary-color)] shadow-sm' : 'text-white/20 hover:text-white hover:bg-white/5'}`}>
-                                        <Icon className="w-4 h-4" />
-                                    </div>
-                                ))}
-                            </div>
-                        )}
-
-                        {/* App Content Area */}
-                        <div className="flex-grow flex flex-col overflow-hidden relative z-10">
-                            {tokens.navigationStyle !== 'topbar' && (
-                                <div className="h-16 border-b border-white/5 bg-black/5 px-8 flex items-center justify-between shrink-0 overflow-x-auto no-scrollbar">
-                                    <div className="flex gap-3">
-                                        {[
-                                            { id: 'dashboard', icon: <BarChart3 className="w-4 h-4" />, label: 'Visão Geral' },
-                                            { id: 'chat', icon: <MessageSquare className="w-4 h-4" />, label: 'Motor de Chat' },
-                                            { id: 'settings', icon: <Network className="w-4 h-4" />, label: 'Motor de Fluxos' },
-                                            { id: 'typography', icon: <Type className="w-4 h-4" />, label: 'Escala Visual' },
-                                            { id: 'components', icon: <Box className="w-4 h-4" />, label: 'Livraria UI' },
-                                            { id: 'logs', icon: <History className="w-4 h-4" />, label: 'Histórico Matrix' }
-                                        ].map(app => (
-                                            <button
-                                                key={app.id}
-                                                onClick={() => setActivePreviewApp(app.id)}
-                                                className={`flex items-center gap-2 px-3 py-2 rounded-xl transition-all text-[9px] font-black uppercase tracking-widest ${activePreviewApp === app.id ? 'bg-[var(--primary-color)] text-white shadow-lg shadow-[var(--theme-primary)]/20' : 'text-white/20 hover:text-white hover:bg-white/5'}`}
-                                                style={{ 
-                                                    transitionDuration: 'var(--animation-speed)',
-                                                    fontFamily: 'var(--font-tab, var(--font-heading))'
-                                                }}
-                                            >
-                                                <span className="shrink-0">{app.icon}</span>
-                                                <span className="hidden xl:inline">{app.label}</span>
-                                            </button>
-                                        ))}
-                                    </div>
-                                </div>
-                            )}
-
-                            <div className="flex-grow overflow-auto relative p-8 custom-scrollbar">
-                                <AnimatePresence mode="wait">
-                                    <motion.div
-                                        key={activePreviewApp}
-                                        initial={{ opacity: 0, scale: 0.98, x: -10 }}
-                                        animate={{ opacity: 1, scale: 1, x: 0 }}
-                                        exit={{ opacity: 0, scale: 0.98, x: 10 }}
-                                        transition={{ 
-                                            duration: parseFloat(tokens.animationSpeed || '0.4'),
-                                            ease: [0.16, 1, 0.3, 1]
-                                        }}
-                                        className={`h-full ${tokens.isSplitViewEnabled ? 'grid grid-cols-2 gap-[var(--theme-gap)]' : 'flex flex-col'}`}
+                {tokens.navigationStyle === 'topbar' ? (
+                    <div className="flex flex-col w-full h-full relative z-10">
+                        <header 
+                            className="h-14 border border-[var(--theme-border)] flex items-center justify-between px-6 bg-[var(--theme-card)] backdrop-blur-md relative z-20 transition-all"
+                            style={{ 
+                                margin: 'var(--theme-tab-section-margin)',
+                                borderRadius: 'calc(var(--radius-theme) * 0.8)',
+                                boxShadow: 'var(--theme-shadow)'
+                            }}
+                        >
+                            <LogoComponent />
+                            <nav className="flex h-full items-center">
+                                {appIds.map((id) => (
+                                    <button
+                                        key={id}
+                                        onClick={() => setActivePreviewApp(id)}
+                                        className={`px-4 flex items-center gap-2 h-8 rounded-lg transition-all text-[9px] font-black uppercase tracking-widest ${activePreviewApp === id ? 'bg-[var(--theme-primary)] text-white shadow-lg shadow-[var(--theme-primary)]/20' : 'text-[var(--theme-muted)] hover:text-[var(--theme-title)] hover:bg-white/5'}`}
+                                        style={{ marginLeft: 'var(--theme-tab-gap)', marginRight: 'var(--theme-tab-gap)' }}
                                     >
-                                        <div className="flex flex-col min-h-full">
-                                            {renderApp(tokens)}
-                                        </div>
-                                        {tokens.isSplitViewEnabled && (
-                                            <div className="flex flex-col min-h-full">
-                                                <MockLogs config={config} animationVariants={(THEME_EFFECTS as any).page} animationStyle={previewAnimationStyle} tokens={tokens} />
-                                            </div>
-                                        )}
-                                    </motion.div>
-                                </AnimatePresence>
-                            </div>
-                        </div>
+                                        {appIcons[id]}
+                                        <span className="hidden lg:inline">{id}</span>
+                                    </button>
+                                ))}
+                            </nav>
+                            <TopbarUserProfile />
+                        </header>
+                        <main className="flex-1 overflow-y-auto p-8 custom-scrollbar relative">
+                            <AnimatePresence mode="wait">
+                                <motion.div
+                                    key={activePreviewApp}
+                                    initial={{ opacity: 0, y: 10 }}
+                                    animate={{ opacity: 1, y: 0 }}
+                                    exit={{ opacity: 0, y: -10 }}
+                                    transition={{ duration: parseFloat(tokens.animationSpeed ?? '0.4') }}
+                                    className="h-full"
+                                >
+                                    {apps[activePreviewApp]}
+                                </motion.div>
+                            </AnimatePresence>
+                        </main>
                     </div>
-                </motion.div>
-            </div>
-
-            <div className="flex justify-between items-center px-8 pb-6 relative z-10 shrink-0">
-                <div className="flex items-center gap-3">
-                    <div className="w-2 h-2 rounded-full bg-emerald-500 animate-pulse"></div>
-                    <span className="text-[9px] font-black uppercase tracking-widest text-white/30">Live Engine Connection: Stable</span>
-                </div>
-                <div className="flex items-center gap-6 text-[9px] font-black uppercase tracking-[0.2em] text-white/20 italic">
-                    <span>ARCHETYPE: {tokens.layout || previewLayoutId}</span>
-                    <span>RESOLUTION: {previewDevice.toUpperCase()}</span>
-                </div>
-            </div>
-        </div >
+                ) : (
+                    <>
+                        <aside 
+                            className="border border-[var(--theme-border)] flex flex-col bg-[var(--theme-card)] backdrop-blur-md relative z-20 transition-all" 
+                            style={{ 
+                                width: `${tokens.sidebarWidth || 260}px`,
+                                margin: 'var(--theme-tab-section-margin)',
+                                borderRadius: 'calc(var(--radius-theme) * 0.8)',
+                                boxShadow: 'var(--theme-shadow)'
+                            }}
+                        >
+                            <div className="p-6 border-b border-[var(--theme-border)] flex items-center justify-center">
+                                <LogoComponent />
+                            </div>
+                            <nav className="flex-1 p-4 space-y-1">
+                                {appIds.map((id) => (
+                                    <button
+                                        key={id}
+                                        onClick={() => setActivePreviewApp(id)}
+                                        className={`w-full flex items-center gap-3 px-4 py-3 rounded-lg transition-all text-[9px] font-black uppercase tracking-widest ${activePreviewApp === id ? 'bg-[var(--theme-primary)] text-white shadow-lg shadow-[var(--theme-primary)]/20' : 'text-[var(--theme-muted)] hover:bg-white/5 hover:text-[var(--theme-title)]'}`}
+                                        style={{ marginTop: 'var(--theme-tab-gap)', marginBottom: 'var(--theme-tab-gap)' }}
+                                    >
+                                        {appIcons[id]}
+                                        {id}
+                                    </button>
+                                ))}
+                            </nav>
+                            <UserProfileComponent />
+                        </aside>
+                        <main className="flex-1 overflow-y-auto p-8 custom-scrollbar relative z-10">
+                            <AnimatePresence mode="wait">
+                                <motion.div
+                                    key={activePreviewApp}
+                                    initial={{ opacity: 0, x: 20 }}
+                                    animate={{ opacity: 1, x: 0 }}
+                                    exit={{ opacity: 0, x: -20 }}
+                                    transition={{ duration: parseFloat(tokens.animationSpeed ?? '0.4') }}
+                                    className="h-full"
+                                >
+                                    {apps[activePreviewApp]}
+                                </motion.div>
+                            </AnimatePresence>
+                        </main>
+                    </>
+                )}
+            </motion.div>
+        </div>
     );
 };

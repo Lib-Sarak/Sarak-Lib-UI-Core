@@ -2,6 +2,7 @@ import React, { lazy } from 'react';
 import { motion } from 'framer-motion';
 import { SarakTable, SarakCardGrid, SarakStats, SarakChart, SarakForm, SarakManagementGrid, SarakChat } from '../ui';
 import { VisualContract, DiscoveredModule } from '../constants/discovery';
+import { getSarakModule } from '../shared/registry';
 import { AlertCircle } from 'lucide-react';
 import LazyEngineWrapper from './engines/LazyEngineWrapper';
 
@@ -29,7 +30,7 @@ export const DynamicRenderer: React.FC<DynamicRendererProps> = ({ contracts, mod
         if (!module) return endpointKey;
         
         // 1. Resolve via dot-notation (v1.models)
-        if (endpointKey.includes('.')) {
+        if (endpointKey && endpointKey.includes('.')) {
             const [version, key] = endpointKey.split('.');
             const versionMap = (module.endpoints as any)?.[version];
             if (versionMap && versionMap[key]) {
@@ -45,7 +46,7 @@ export const DynamicRenderer: React.FC<DynamicRendererProps> = ({ contracts, mod
         }
 
         // 3. Fallback: If starts with /, use baseUrl + path
-        if (endpointKey.startsWith('/')) {
+        if (endpointKey && endpointKey.startsWith('/')) {
             return `${module.baseUrl}${endpointKey}`;
         }
 
@@ -154,6 +155,26 @@ export const DynamicRenderer: React.FC<DynamicRendererProps> = ({ contracts, mod
                                     edges={[]} 
                                 />
                             </LazyEngineWrapper>
+                        );
+
+                    case 'CUSTOM':
+                        const componentName = contract.component || '';
+                        // 1. Tentar pegar do contexto do módulo (se injetado)
+                        let CustomComponent = (module as any)?.components?.[componentName];
+                        
+                        // 2. Fallback: Tentar pegar do Registro Global pelo ID do módulo
+                        if (!CustomComponent && module?.id) {
+                            const registered = getSarakModule(module.id);
+                            CustomComponent = registered?.components?.[componentName];
+                        }
+
+                        if (CustomComponent) {
+                            return <CustomComponent key={id} {...contract.config} />;
+                        }
+                        return (
+                            <div key={id} className="p-6 bg-red-500/5 border border-red-500/10 rounded-2xl text-red-500 text-xs">
+                                Component "{componentName}" not found in module registration (ID: {module?.id || 'unknown'}).
+                            </div>
                         );
 
                     default:

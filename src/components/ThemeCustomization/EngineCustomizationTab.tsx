@@ -108,6 +108,28 @@ export const EngineCustomizationTab: React.FC = () => {
 
             {/* CHART ENGINE CONFIG */}
             <Section title="Chart Engine" icon={BarChart}>
+                <Control label="Tipo de Visualização">
+                    <div className="grid grid-cols-2 gap-2">
+                        {[
+                            { id: 'line', label: 'Lines' },
+                            { id: 'bar', label: 'Bars' },
+                            { id: 'pie', label: 'Pie/Donut' },
+                            { id: 'radar', label: 'Radar' },
+                            { id: 'scatter', label: 'Scatter' },
+                            { id: 'heatmap', label: 'Heatmap' },
+                            { id: 'gauge', label: 'Gauge' }
+                        ].map(opt => (
+                            <button 
+                                key={opt.id}
+                                onClick={() => update('chartType', opt.id)}
+                                className={`py-3 rounded-xl border text-[9px] font-black uppercase transition-all ${design.chartType === opt.id ? 'bg-[var(--theme-primary)] border-transparent text-white shadow-lg' : 'bg-white/5 border-white/10 text-white/40 hover:text-white/60'}`}
+                            >
+                                {opt.label}
+                            </button>
+                        ))}
+                    </div>
+                </Control>
+
                 <div className="flex items-center justify-between p-4 rounded-2xl bg-white/5 border border-white/10 group">
                     <div className="flex flex-col gap-0.5">
                         <span className="text-[9px] font-black uppercase tracking-widest text-white/60">Mostrar Grid de Fundo</span>
@@ -124,7 +146,7 @@ export const EngineCustomizationTab: React.FC = () => {
                 <div className="p-4 rounded-2xl bg-[var(--theme-primary)]/5 border border-[var(--theme-primary)]/10 flex items-start gap-4">
                     <Sparkles className="w-5 h-5 text-[var(--theme-primary)] shrink-0 mt-1" />
                     <p className="text-[9px] text-white/40 leading-relaxed uppercase font-medium">
-                        As cores dos gráficos são herdadas automaticamente da paleta de cores primária e de identidade do sistema.
+                        As cores e estilos são sincronizados dinamicamente com o Sarak Design Engine v7.5.
                     </p>
                 </div>
             </Section>

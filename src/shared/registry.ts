@@ -9,7 +9,8 @@ export interface SarakModule {
     label: string;
     icon?: string;
     category?: string;
-    component: React.ComponentType<any>;
+    component?: React.ComponentType<any>;
+    components?: Record<string, React.ComponentType<any>>;
     priority?: number;
     description?: string;
 }

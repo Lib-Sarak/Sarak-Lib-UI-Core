@@ -62,7 +62,7 @@ export const SarakShell: React.FC<SarakShellProps> = ({
         systemTone, surfaceMaterial, borderType, interfaceElasticity,
         isSplitViewEnabled, chartStyle, chartPalette, shadowOrientation,
         shadowColorMode, isAutoHideEnabled, searchStyle,
-        cursorPhysics, isNavHidden
+        cursorPhysics, isNavHidden, tabSectionMargin, tabGap, cardPadding
     } = design || {};
 
     // Fallbacks for state/shared functions
@@ -192,9 +192,14 @@ export const SarakShell: React.FC<SarakShellProps> = ({
                         width: isNavHidden || (isAutoHideEnabled && !isNavVisible) ? '0px' : `${sidebarWidth}px`,
                         opacity: isNavHidden || (isAutoHideEnabled && !isNavVisible) ? 0 : 1,
                         visibility: isNavHidden || (isAutoHideEnabled && !isNavVisible) ? 'hidden' : 'visible',
-                        transition: `all ${animationSpeed}s cubic-bezier(0.16, 1, 0.3, 1)`
+                        transition: `all ${animationSpeed}s cubic-bezier(0.16, 1, 0.3, 1)`,
+                        margin: `var(--theme-tab-section-margin, ${tabSectionMargin}px)`,
+                        borderRadius: `var(--radius-theme, ${borderRadius}px)`,
+                        height: `calc(100vh - (var(--theme-tab-section-margin, ${tabSectionMargin}px) * 2))`,
+                        borderWidth: `${borderWidth}px`,
+                        borderStyle: borderStyle
                     }}
-                    className="h-screen sarak-shell-sidebar bg-[var(--theme-sidebar)] border-r border-[var(--theme-border)] flex flex-col shrink-0 relative z-[100] shadow-2xl overflow-hidden"
+                    className="sarak-shell-sidebar bg-[var(--theme-sidebar)] border border-[var(--theme-border)] flex flex-col shrink-0 relative z-[100] shadow-2xl overflow-hidden"
                 >
                     <div className="h-16 sarak-shell-header px-6 flex items-center justify-between border-b border-[var(--theme-border)] bg-[var(--theme-title)]/5">
                         <div className={`flex items-center gap-3 w-full ${logoPosition === 'center' ? 'justify-center' : ''}`}>
@@ -212,11 +217,11 @@ export const SarakShell: React.FC<SarakShellProps> = ({
                         )}
                     </div>
 
-                    <div className="flex-1 overflow-y-auto p-4 space-y-6 custom-scrollbar">
+                    <div className="flex-1 overflow-y-auto p-4 custom-scrollbar flex flex-col" style={{ gap: `var(--theme-tab-gap, ${tabGap}px)` }}>
                         {Object.entries(groupedModules).map(([category, mods]) => (
-                            <div key={category}>
+                            <div key={category} style={{ marginBottom: `var(--theme-tab-gap, ${tabGap}px)` }}>
                                 <h4 className="text-[10px] font-bold text-white/20 uppercase tracking-[0.2em] mb-3 px-3">{category}</h4>
-                                <div className="space-y-1">
+                                <div className="space-y-1" style={{ gap: `var(--theme-tab-gap, ${tabGap}px)` }}>
                                     {mods.map(mod => {
                                         const isOffline = mod.status === 'offline';
                                         return (
@@ -283,7 +288,15 @@ export const SarakShell: React.FC<SarakShellProps> = ({
                 
                 {/* SHELL HEADER */}
                 {(isTopbar || isSidebar) && (
-                    <header className={`h-16 border-b border-[var(--theme-border)] bg-[var(--theme-card)] backdrop-blur-2xl px-6 flex items-center justify-between z-[45] shrink-0`}>
+                    <header 
+                        className={`h-16 border border-[var(--theme-border)] bg-[var(--theme-card)] backdrop-blur-2xl px-6 flex items-center justify-between z-[45] shrink-0`}
+                        style={{ 
+                            margin: `var(--theme-tab-section-margin, ${tabSectionMargin}px)`,
+                            borderRadius: `var(--radius-theme, ${borderRadius}px)`,
+                            borderWidth: `${borderWidth}px`,
+                            borderStyle: borderStyle
+                        }}
+                    >
                         <div className="flex items-center gap-6">
                             {(isTopbar || (isSidebar && isNavHidden)) && (
                                 <div className="flex items-center gap-4">
@@ -302,9 +315,15 @@ export const SarakShell: React.FC<SarakShellProps> = ({
                             )}
                             
                             {isTopbar && (
-                                <nav className="hidden lg:flex items-center gap-1">
-                                    {discoveredModules.filter(m => m.status === 'online').slice(0, 8).map(mod => (
-                                        <button key={mod.id} onClick={() => setActiveModuleId(mod.id)} className={`px-4 py-1.5 rounded-full text-xs font-black uppercase tracking-widest transition-all font-tab ${activeModuleId === mod.id ? 'bg-[var(--theme-primary)] text-white shadow-lg shadow-[var(--theme-primary)]/30' : 'text-white/40 hover:text-white'}`}>{mod.label}</button>
+                                <nav className="hidden lg:flex items-center gap-1 overflow-x-auto no-scrollbar max-w-[60vw]">
+                                    {discoveredModules.filter(m => m.status === 'online').map(mod => (
+                                        <button 
+                                            key={mod.id} 
+                                            onClick={() => setActiveModuleId(mod.id)} 
+                                            className={`px-4 py-1.5 rounded-full text-[10px] font-black uppercase tracking-widest transition-all whitespace-nowrap font-tab ${activeModuleId === mod.id ? 'bg-[var(--theme-primary)] text-white shadow-lg shadow-[var(--theme-primary)]/30' : 'text-white/40 hover:text-white'}`}
+                                        >
+                                            {mod.label}
+                                        </button>
                                     ))}
                                 </nav>
                             )}
@@ -333,9 +352,11 @@ export const SarakShell: React.FC<SarakShellProps> = ({
                 )}
 
                 {/* MAIN CONTENT CANVAS */}
-                <main className="flex-1 overflow-y-auto custom-scrollbar relative flex flex-col w-full min-h-0 bg-[var(--theme-body)] isolate">
-                    {/* SarakAtmosphereLayer (Texture Sovereignty v6.7) */}
-                    <div className={`absolute inset-0 pointer-events-none z-0 texture-${texture} SarakAtmosphereLayer`} />
+                <main className={`flex-1 overflow-y-auto custom-scrollbar relative flex flex-col w-full min-h-0 isolate ${texture !== 'none' ? 'texture-active' : 'bg-[var(--theme-body)]'}`}>
+                    {/* SarakAtmosphereLayer (Sovereignty v6.8.6) */}
+                    {texture !== 'none' && (
+                        <div className={`absolute inset-0 pointer-events-none z-0 texture-${texture} SarakAtmosphereLayer`} />
+                    )}
 
                     
                     <div className="flex-1 flex flex-col relative w-full pt-8 lg:pt-12 z-10" style={{ gap: `var(--theme-gap, ${layoutGap}px)` }}>
