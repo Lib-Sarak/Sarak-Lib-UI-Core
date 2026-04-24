@@ -32,6 +32,32 @@ export const DashboardSection: React.FC<DashboardSectionProps> = ({ draft, updat
                 </div>
             </Section>
 
+            <Section id="dashboard-tables" icon={Grid} title="Motores de Tabela" activeSection={activeSection} onToggle={setActiveSection}>
+                <div className="grid grid-cols-2 gap-4">
+                    <SelectControl 
+                        label="Estilo de Zebra" 
+                        options={[{id: 'none', label: 'Nenhum'}, {id: 'subtle', label: 'Sutil'}, {id: 'glass', label: 'Vidro'}]} 
+                        value={draft.tableZebraStyle || 'none'} 
+                        onChange={(v: any) => updateDraft('tableZebraStyle', v)} 
+                    />
+                    <SliderControl label="Densidade Linha" value={draft.tableRowDensity || 1.0} min={0.5} max={1.5} step={0.1} onChange={(v: any) => updateDraft('tableRowDensity', v)} />
+                </div>
+                <div className="grid grid-cols-2 gap-4 mt-4">
+                    <button 
+                        onClick={() => updateDraft('tableStickyHeader', !draft.tableStickyHeader)}
+                        className={`py-2 rounded-lg text-3xs font-black uppercase transition-all ${draft.tableStickyHeader ? 'bg-[var(--theme-primary)] text-white' : 'bg-white/5 text-white/40'}`}
+                    >
+                        Header Fixo {draft.tableStickyHeader ? 'On' : 'Off'}
+                    </button>
+                    <button 
+                        onClick={() => updateDraft('tableShowGrid', !draft.tableShowGrid)}
+                        className={`py-2 rounded-lg text-3xs font-black uppercase transition-all ${draft.tableShowGrid ? 'bg-[var(--theme-primary)] text-white' : 'bg-white/5 text-white/40'}`}
+                    >
+                        Grid Lines {draft.tableShowGrid ? 'On' : 'Off'}
+                    </button>
+                </div>
+            </Section>
+
             <Section id="flow-dynamics" icon={Grid} title="Motores de Fluxo (Flow)" activeSection={activeSection} onToggle={setActiveSection}>
                 <SelectControl label="Estilo do Grid" options={[{id: 'dots', label: 'Pontos (Industrial)'}, {id: 'lines', label: 'Linhas (Matrix)'}, {id: 'none', label: 'Limpo'}]} value={draft.flowGridStyle || 'dots'} onChange={(v: any) => updateDraft('flowGridStyle', v)} />
                 <SliderControl label="Raio do Nó" value={draft.flowNodeRadius || 12} min={4} max={32} onChange={(v: any) => updateDraft('flowNodeRadius', v)} suffix="px" />

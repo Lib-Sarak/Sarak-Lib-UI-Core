@@ -47,12 +47,12 @@ export const SarakChart: React.FC<SarakChartProps> = ({ endpoint, label, mapping
     return (
         <div className="bg-theme-card border-theme gap-theme flex flex-col relative overflow-hidden group rounded-theme" style={{ padding: 'var(--theme-pad, 1.5rem)', gap: 'var(--theme-gap, 1.5rem)' }}>
             {/* Contextual Glow Header */}
-            <div className="absolute top-0 right-0 w-64 h-64 bg-blue-500/5 blur-[100px] pointer-events-none" />
+            <div className="absolute top-0 right-0 w-64 h-64 bg-[var(--theme-primary-bg)] blur-[100px] pointer-events-none" />
 
             <div className="flex items-center justify-between relative z-10">
                 <div className="flex items-center" style={{ gap: 'calc(var(--theme-gap) / 2)' }}>
-                    <div className="bg-blue-500/10 rounded-2xl border border-blue-500/20" style={{ padding: 'calc(var(--theme-pad) / 3)' }}>
-                        <TrendingUp size={16} className="text-blue-400" />
+                    <div className="bg-[var(--theme-primary-bg)] rounded-2xl border border-[var(--theme-primary-border)]" style={{ padding: 'calc(var(--theme-pad) / 3)' }}>
+                        <TrendingUp size={16} className="text-[var(--theme-primary)]" />
                     </div>
                     <div>
                         <h3 className="text-xl font-black text-white tracking-tight" style={{ fontWeight: 'var(--heading-weight)' }}>{label}</h3>
@@ -60,7 +60,7 @@ export const SarakChart: React.FC<SarakChartProps> = ({ endpoint, label, mapping
                     </div>
                 </div>
                 <div className="flex items-center bg-white/5 rounded-theme border border-theme" style={{ gap: 'calc(var(--theme-gap) / 3)', padding: 'calc(var(--theme-pad) / 3) calc(var(--theme-pad) / 1.5)' }}>
-                    <Activity size={12} className="text-emerald-400 animate-pulse" />
+                    <Activity size={12} className="text-[var(--theme-success)] animate-pulse" />
                     <span className="text-2xs font-black text-white/40 uppercase tracking-tighter">Live Monitor</span>
                 </div>
             </div>
@@ -76,21 +76,21 @@ export const SarakChart: React.FC<SarakChartProps> = ({ endpoint, label, mapping
                         const height = (val / maxValue) * 100;
                         return (
                             <div key={idx} className="flex-1 flex flex-col items-center group/item h-full justify-end">
-                                <motion.div 
-                                    initial={{ height: 0 }}
-                                    animate={{ height: `${Math.max(height, 5)}%` }}
-                                    transition={{ 
-                                        delay: idx * 0.05, 
-                                        duration: (parseFloat(getComputedStyle(document.documentElement).getPropertyValue('--animation-speed')) || 0.5) * 1.5, 
-                                        ease: "circOut" 
-                                    }}
-                                    className="w-full bg-gradient-to-t from-blue-600/20 to-blue-400/60 rounded-t-lg group-hover/item:from-blue-500 group-hover/item:to-blue-300 transition-all relative"
-                                    style={{ transitionDuration: 'var(--animation-speed, 0.3s)' }}
-                                >
-                                    <div className="absolute -top-10 left-1/2 -translate-x-1/2 bg-white text-blue-900 text-2xs font-black px-2 py-1 rounded shadow-2xl opacity-0 group-hover/item:opacity-100 pointer-events-none transition-opacity whitespace-nowrap z-30">
-                                        {val.toLocaleString()}
-                                    </div>
-                                </motion.div>
+                                    <motion.div 
+                                        initial={{ height: 0 }}
+                                        animate={{ height: `${Math.max(height, 5)}%` }}
+                                        transition={{ 
+                                            delay: idx * 0.05, 
+                                            duration: (parseFloat(getComputedStyle(document.documentElement).getPropertyValue('--animation-speed')) || 0.5) * 1.5, 
+                                            ease: "circOut" 
+                                        }}
+                                        className="w-full bg-gradient-to-t from-[var(--theme-primary-focus)] to-[var(--theme-primary)] rounded-t-lg group-hover/item:brightness-125 transition-all relative"
+                                        style={{ transitionDuration: 'var(--animation-speed, 0.3s)' }}
+                                    >
+                                        <div className="absolute -top-10 left-1/2 -translate-x-1/2 bg-white text-black text-2xs font-black px-2 py-1 rounded shadow-2xl opacity-0 group-hover/item:opacity-100 pointer-events-none transition-opacity whitespace-nowrap z-30">
+                                            {val.toLocaleString()}
+                                        </div>
+                                    </motion.div>
                                 <div className="text-[7px] font-bold text-white/10 uppercase mt-3 rotate-45 origin-left hidden lg:block">
                                    {item.date?.split('-').slice(1).join('/') || ''}
                                 </div>

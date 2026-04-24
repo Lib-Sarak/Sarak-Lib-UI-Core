@@ -42,8 +42,8 @@ export const ChatInput: React.FC<ChatInputProps> = ({
         >
           <div className="flex gap-2 py-1">
             {attachments.map((att, i) => (
-              <div key={i} className="flex items-center gap-2 px-3 py-2 bg-indigo-500/10 border border-indigo-500/20 rounded-xl relative group/att">
-                <FileIcon size={14} className="text-indigo-400" />
+              <div key={i} className="flex items-center gap-2 px-3 py-2 bg-[var(--theme-primary-bg)] border border-[var(--theme-primary-border)] rounded-xl relative group/att">
+                <FileIcon size={14} className="text-[var(--theme-primary)]" />
                 <span className="text-xs font-medium text-slate-300 max-w-[150px] truncate">{att.name}</span>
                 <button 
                   onClick={() => removeAttachment(i)}
@@ -67,7 +67,7 @@ export const ChatInput: React.FC<ChatInputProps> = ({
               className="flex items-center px-4 py-2.5 rounded-theme bg-theme-card border-theme hover:bg-white/10 transition-all text-left shadow-lg"
               style={{ gap: 'calc(var(--theme-gap) / 1.5)' }}
             >
-               <Cpu size={18} className="text-indigo-400" />
+               <Cpu size={18} className="text-[var(--theme-primary)]" />
                <div className="flex flex-col">
                   <span className="text-2xs text-slate-500 uppercase font-bold tracking-tight leading-none mb-1">Modelo Manual Ativo</span>
                   <span className="text-xs font-semibold text-slate-200">{selectedRoute?.display_name || "Selecionar..."}</span>
@@ -90,12 +90,12 @@ export const ChatInput: React.FC<ChatInputProps> = ({
           <div className="flex-1 min-w-[120px] bg-theme-card border-theme px-4 py-2 flex flex-col justify-center">
              <div className="flex items-center justify-between text-2xs text-slate-500 font-bold uppercase mb-1">
                 <span>Limit</span>
-                <span className="text-indigo-400 font-mono">{maxTokens}</span>
+                <span className="text-[var(--theme-primary)] font-mono">{maxTokens}</span>
              </div>
              <input 
                type="range" min="128" max="16384" step="128" value={maxTokens} 
                onChange={(e) => setMaxTokens(parseInt(e.target.value))}
-               className="w-full h-1 bg-white/10 rounded-lg appearance-none cursor-pointer accent-indigo-500"
+               className="w-full h-1 bg-white/10 rounded-lg appearance-none cursor-pointer accent-[var(--theme-primary)]"
              />
           </div>
         </motion.div>
@@ -108,7 +108,7 @@ export const ChatInput: React.FC<ChatInputProps> = ({
           
           <button 
             onClick={() => fileInputRef.current?.click()}
-            className="ml-2 p-3.5 text-slate-500 hover:text-indigo-400 hover:bg-white/5 rounded-xl transition-all"
+            className="ml-2 p-3.5 text-slate-500 hover:text-[var(--theme-primary)] hover:bg-white/5 rounded-xl transition-all"
           >
             <Paperclip size={20} />
           </button>
@@ -125,7 +125,7 @@ export const ChatInput: React.FC<ChatInputProps> = ({
           <button 
             onClick={handleSend}
             disabled={(!input.trim() && attachments.length === 0) || isLoading}
-            className="p-2.5 bg-indigo-600 hover:bg-indigo-500 text-white rounded-xl transition-all disabled:opacity-30 disabled:cursor-not-allowed group/btn shadow-lg shadow-indigo-500/20"
+            className="p-2.5 bg-[var(--theme-primary)] hover:opacity-90 text-white rounded-xl transition-all disabled:opacity-30 disabled:cursor-not-allowed group/btn shadow-lg shadow-[var(--theme-primary-focus)]"
           >
             <Send size={20} className="group-hover/btn:translate-x-0.5 group-hover/btn:-translate-y-0.5 transition-transform" />
           </button>

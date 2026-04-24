@@ -8,7 +8,7 @@ const HelpButton = ({ text }: { text: string }) => {
         <>
             <button
                 onClick={(e) => { e.preventDefault(); e.stopPropagation(); setIsOpen(true); }}
-                className="w-5 h-5 rounded-full border border-theme flex items-center justify-center text-2xs text-slate-400 hover:border-indigo-500 hover:text-indigo-400 transition-colors z-20 relative outline-none"
+                className="w-5 h-5 rounded-full border border-theme flex items-center justify-center text-2xs text-slate-400 hover:border-[var(--theme-primary-border)] hover:text-[var(--theme-primary)] transition-colors z-20 relative outline-none"
                 style={{ transitionDuration: 'var(--animation-speed, 0.3s)' }}
             >
                 ?
@@ -27,7 +27,7 @@ const HelpButton = ({ text }: { text: string }) => {
                     >
                         <div className="flex items-center justify-between border-b border-theme bg-white/5" style={{ padding: 'var(--theme-pad)', gap: 'calc(var(--theme-gap) / 2)' }}>
                             <h3 className="text-sm font-bold text-white flex items-center" style={{ gap: 'calc(var(--theme-gap) / 3)' }}>
-                                <div className="w-6 h-6 rounded-full bg-indigo-500/20 flex items-center justify-center text-indigo-400 font-black">?</div>
+                                <div className="w-6 h-6 rounded-full bg-[var(--theme-primary-bg)] flex items-center justify-center text-[var(--theme-primary)] font-black">?</div>
                                 Indicator Information
                             </h3>
                             <button
@@ -45,7 +45,7 @@ const HelpButton = ({ text }: { text: string }) => {
                         <div className="border-t border-theme flex justify-end" style={{ padding: 'var(--theme-pad)' }}>
                             <button
                                 onClick={() => setIsOpen(false)}
-                                className="bg-indigo-600 text-white text-xs font-bold uppercase rounded-theme transition-colors shadow-theme hover:opacity-90"
+                                className="bg-[var(--theme-primary)] text-white text-xs font-bold uppercase rounded-theme transition-colors shadow-theme hover:opacity-90"
                                 style={{ padding: 'calc(var(--theme-pad) / 2) var(--theme-pad)', transitionDuration: 'var(--animation-speed, 0.3s)' }}
                             >
                                 Got it

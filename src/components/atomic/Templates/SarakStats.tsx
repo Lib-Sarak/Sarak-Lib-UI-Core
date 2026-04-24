@@ -85,15 +85,15 @@ export const SarakStats: React.FC<SarakStatsProps> = ({ endpoint, label, mapping
                         className="bg-theme-card border-theme hover:bg-white/[0.04] transition-all group rounded-theme"
                         style={{ padding: 'var(--theme-pad, 1.5rem)', transitionDuration: 'var(--animation-speed, 0.5s)' }}
                     >
-                        <span className="text-2xs text-white/30 font-black uppercase tracking-widest block group-hover:text-blue-400 transition-colors" style={{ marginBottom: 'calc(var(--theme-gap) / 6)' }}>
+                        <span className="text-2xs text-white/30 font-black uppercase tracking-widest block transition-colors group-hover:text-[var(--theme-primary)]" style={{ marginBottom: 'calc(var(--theme-gap) / 6)' }}>
                             {mapping ? mapping[key] : key.replace(/_/g, ' ')}
                         </span>
                         <div className="flex items-center justify-between">
                             <span className="text-2xl font-black text-white tracking-tighter" style={{ fontWeight: 'var(--heading-weight)' }}>
                                 {renderValue(key)}
                             </span>
-                            <div className="p-2 bg-blue-500/5 rounded-theme group-hover:bg-blue-500/10 transition-colors" style={{ padding: 'calc(var(--theme-pad) / 3)', transitionDuration: 'var(--animation-speed, 0.3s)' }}>
-                                <Activity size={16} className="text-blue-500/40 group-hover:text-blue-500 transition-colors" style={{ transitionDuration: 'var(--animation-speed, 0.3s)' }} />
+                            <div className="rounded-theme transition-colors" style={{ padding: 'calc(var(--theme-pad) / 3)', backgroundColor: 'var(--theme-primary-focus)', transitionDuration: 'var(--animation-speed, 0.3s)' }}>
+                                <Activity size={16} className="transition-colors" style={{ color: 'var(--theme-primary)', transitionDuration: 'var(--animation-speed, 0.3s)' }} />
                             </div>
                         </div>
                     </motion.div>

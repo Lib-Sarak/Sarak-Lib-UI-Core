@@ -151,8 +151,14 @@ export const SarakManagementGrid: React.FC<SarakManagementGridProps> = ({
                             <button
                                 key={action.label}
                                 onClick={() => handleAction(action.action)}
-                                className="flex items-center bg-blue-600 text-white rounded-theme font-black text-xs uppercase tracking-widest hover:bg-blue-500 transition-all shadow-lg shadow-blue-900/20"
-                                style={{ gap: 'calc(var(--theme-gap) / 3)', padding: 'calc(var(--theme-pad) / 2) var(--theme-pad)', transitionDuration: 'var(--animation-speed, 0.3s)' }}
+                                className="flex items-center text-white rounded-theme font-black text-xs uppercase tracking-widest transition-all shadow-lg"
+                                style={{ 
+                                    gap: 'calc(var(--theme-gap) / 3)', 
+                                    padding: 'calc(var(--theme-pad) / 2) var(--theme-pad)', 
+                                    transitionDuration: 'var(--animation-speed, 0.3s)',
+                                    backgroundColor: 'var(--theme-primary)',
+                                    boxShadow: '0 10px 20px -10px var(--theme-primary-focus)'
+                                }}
                             >
                                 <Plus size={16} />
                                 {action.label}
@@ -182,7 +188,7 @@ export const SarakManagementGrid: React.FC<SarakManagementGridProps> = ({
                             >
                                 <div className="border-b border-theme flex justify-between items-center bg-white/[0.02]" style={{ padding: 'var(--theme-pad)' }}>
                                     <div className="flex items-center" style={{ gap: 'calc(var(--theme-gap) / 2)' }}>
-                                        <div className={`rounded-xl ${isConfigured ? 'bg-blue-500/10 text-blue-400' : 'bg-white/5 text-white/20'}`} style={{ padding: 'calc(var(--theme-pad) / 2.5)' }}>
+                                        <div className="rounded-xl" style={{ padding: 'calc(var(--theme-pad) / 2.5)', backgroundColor: isConfigured ? 'var(--theme-primary-focus)' : 'rgba(255,255,255,0.05)', color: isConfigured ? 'var(--theme-primary)' : 'rgba(255,255,255,0.2)' }}>
                                             <Cloud className="w-4 h-4" />
                                         </div>
                                         <h3 className="font-black text-white uppercase text-xs tracking-[0.2em]">{groupName}</h3>
@@ -192,7 +198,8 @@ export const SarakManagementGrid: React.FC<SarakManagementGridProps> = ({
                                             <button
                                                 key={action.label}
                                                 onClick={() => handleAction(action.action, groupName)}
-                                                className="p-2 hover:bg-white/10 rounded-xl text-blue-400/60 hover:text-blue-400 transition-all"
+                                                className="p-2 hover:bg-white/10 rounded-xl transition-all"
+                                                style={{ color: 'var(--theme-primary)' }}
                                                 title={action.label}
                                             >
                                                 {action.icon === 'plus' ? <Plus size={18} /> : <Settings2 size={16} />}
@@ -218,39 +225,42 @@ export const SarakManagementGrid: React.FC<SarakManagementGridProps> = ({
                                                 >
                                                     <div className="flex justify-between items-start" style={{ marginBottom: 'calc(var(--theme-gap) / 3)' }}>
                                                         <div className="flex flex-col truncate">
-                                                            <span className="text-2xs font-black text-blue-400 uppercase tracking-widest">{getVal(item, mapping.title)}</span>
+                                                            <span className="text-2xs font-black uppercase tracking-widest" style={{ color: 'var(--theme-primary)' }}>{getVal(item, mapping.title)}</span>
                                                             <span className="text-2xs font-mono text-white/30 truncate max-w-[140px]">
                                                                 {getVal(item, mapping.description) || '************'}
                                                             </span>
                                                         </div>
                                                         <button 
                                                             onClick={() => handleToggle(itemId)}
-                                                            className={`transition-all hover:scale-110 ${isActive ? 'text-emerald-500' : 'text-white/20'}`}
-                                                            style={{ transitionDuration: 'var(--animation-speed, 0.2s)' }}
+                                                            className="transition-all hover:scale-110"
+                                                            style={{ transitionDuration: 'var(--animation-speed, 0.2s)', color: isActive ? 'var(--theme-success)' : 'rgba(255,255,255,0.2)' }}
                                                         >
                                                             {isActive ? <ToggleRight size={28} /> : <ToggleLeft size={28} />}
                                                         </button>
                                                     </div>
                                                     <div className="flex items-center justify-between" style={{ marginTop: 'calc(var(--theme-gap) / 1.5)' }}>
                                                         <div className="flex items-center" style={{ gap: 'calc(var(--theme-gap) / 2)' }}>
-                                                            <div className={`w-1.5 h-1.5 rounded-full ${
-                                                                status === 'active' ? 'bg-emerald-500 shadow-[0_0_8px_rgba(16,185,129,0.4)]' : 
-                                                                status === 'error' ? 'bg-rose-500' : 'bg-gray-600 animate-pulse'
-                                                            }`} />
+                                                            <div 
+                                                                className="w-1.5 h-1.5 rounded-full" 
+                                                                style={{ 
+                                                                    backgroundColor: status === 'active' ? 'var(--theme-success)' : status === 'error' ? 'var(--theme-error)' : 'rgba(156, 163, 175, 0.5)',
+                                                                    boxShadow: status === 'active' ? '0 0 8px var(--theme-success)' : 'none'
+                                                                }} 
+                                                            />
                                                             <span className="text-3xs font-black text-white/40 uppercase tracking-tighter">
                                                                 {status === 'active' ? 'Conectado' : status === 'error' ? 'Falha' : 'Validando...'}
                                                             </span>
                                                         </div>
                                                         <button 
                                                             onClick={() => handleDelete(itemId)}
-                                                            className="p-1.5 text-white/10 hover:text-rose-500 transition-colors"
+                                                            className="p-1.5 text-white/10 hover:text-[var(--theme-error)] transition-colors"
                                                         >
                                                             <Trash2 size={14} />
                                                         </button>
                                                     </div>
                                                     {errorMsg && (
-                                                        <div className="rounded-theme border border-rose-500/10" style={{ marginTop: 'calc(var(--theme-gap) / 3)', padding: 'calc(var(--theme-pad) / 2)', backgroundColor: 'rgba(244, 63, 94, 0.05)' }}>
-                                                            <p className="text-3xs text-rose-400 font-bold leading-tight">{errorMsg}</p>
+                                                        <div className="rounded-theme border" style={{ marginTop: 'calc(var(--theme-gap) / 3)', padding: 'calc(var(--theme-pad) / 2)', backgroundColor: 'var(--theme-error-bg)', borderColor: 'var(--theme-error-border)' }}>
+                                                            <p className="text-3xs font-bold leading-tight" style={{ color: 'var(--theme-error)' }}>{errorMsg}</p>
                                                         </div>
                                                     )}
                                                 </div>

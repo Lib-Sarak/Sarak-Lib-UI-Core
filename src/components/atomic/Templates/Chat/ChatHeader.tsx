@@ -11,7 +11,7 @@ interface ChatHeaderProps {
 export const ChatHeader: React.FC<ChatHeaderProps> = ({ label, mode, setMode, clearChat }) => (
   <header className="flex items-center justify-between px-6 py-4 border-b border-theme bg-white/5" style={{ padding: 'calc(var(--theme-pad) / 1.5) var(--theme-pad)' }}>
     <div className="flex items-center" style={{ gap: 'calc(var(--theme-gap) / 2)' }}>
-      <div className="p-2 bg-gradient-to-br from-indigo-500 to-purple-600 rounded-lg shadow-lg shadow-indigo-500/20">
+      <div className="p-2 bg-gradient-to-br from-[var(--theme-primary-focus)] to-[var(--theme-primary)] rounded-lg shadow-lg shadow-[var(--theme-primary-focus)]">
         <Bot size={20} className="text-white" />
       </div>
       <div>
@@ -25,8 +25,8 @@ export const ChatHeader: React.FC<ChatHeaderProps> = ({ label, mode, setMode, cl
         onClick={() => setMode(mode === 'auto' ? 'manual' : 'auto')}
         className={`flex items-center gap-2 px-3 py-1.5 rounded-full text-xs font-semibold transition-all border ${
           mode === 'auto' 
-            ? 'bg-emerald-500/10 text-emerald-400 border-emerald-500/20 shadow-[0_0_15px_rgba(16,185,129,0.1)]' 
-            : 'bg-indigo-500/10 text-indigo-400 border-indigo-500/20 shadow-[0_0_15px_rgba(99,102,241,0.1)]'
+            ? 'bg-[var(--theme-success-bg)] text-[var(--theme-success)] border-[var(--theme-success-border)] shadow-[var(--theme-success-focus)]' 
+            : 'bg-[var(--theme-primary-bg)] text-[var(--theme-primary)] border-[var(--theme-primary-border)] shadow-[var(--theme-primary-focus)]'
         }`}
         style={{ transitionDuration: 'var(--animation-speed, 0.3s)' }}
       >

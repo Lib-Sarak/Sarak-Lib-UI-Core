@@ -7,3 +7,4 @@ export * from './SarakChart';
 export * from './SarakForm';
 export * from './SarakManagementGrid';
 export * from './SarakChat';
+export * from './SarakSecurityOrchestrator';

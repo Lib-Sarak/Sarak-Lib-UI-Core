@@ -16,7 +16,13 @@ api.interceptors.request.use((config: any) => {
     // mas no Sarak Matrix Full, tudo flui pelo Gateway.
     config.baseURL = '/api';
     
-    const token = localStorage.getItem('sarak_token') || localStorage.getItem('auth_token');
+    // Suporte a Multi-Tenancy (Sovereignty v6.0)
+    // Busca o token baseado no identificador do sistema atual para evitar colisão entre microsserviços
+    const system = (window as any).__SARAK_SYSTEM__ || 'global';
+    const token = localStorage.getItem(`${system}_token`) || 
+                  localStorage.getItem('sarak_token') || 
+                  localStorage.getItem('auth_token');
+
     if (token) {
         config.headers.Authorization = `Bearer ${token}`;
     }
@@ -27,7 +33,9 @@ api.interceptors.response.use(
     (response: any) => response,
     (error: any) => {
         if (error.response?.status === 401) {
-            // 401 Unauthorized detected. Wiping token.
+            // 401 Unauthorized detected. Wiping tokens.
+            const system = (window as any).__SARAK_SYSTEM__ || 'global';
+            localStorage.removeItem(`${system}_token`);
             localStorage.removeItem('sarak_token');
             sessionStorage.removeItem('auth_token');
         }

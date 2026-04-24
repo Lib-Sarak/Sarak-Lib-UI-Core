@@ -28,7 +28,7 @@ export const ModelPicker: React.FC<ModelPickerProps> = ({
           placeholder="Pesquisar modelos..."
           value={modelSearch}
           onChange={(e) => setModelSearch(e.target.value)}
-          className="w-full bg-white/5 border border-white/5 rounded-xl py-2 pl-9 pr-3 text-xs focus:outline-none focus:border-indigo-500/50 text-slate-200"
+          className="w-full bg-white/5 border border-white/5 rounded-xl py-2 pl-9 pr-3 text-xs focus:outline-none focus:border-[var(--theme-primary-border)] text-slate-200"
         />
       </div>
       <div className="max-h-60 overflow-y-auto custom-scrollbar pr-1">
@@ -39,7 +39,7 @@ export const ModelPicker: React.FC<ModelPickerProps> = ({
             key={idx}
             onClick={() => { setSelectedRoute(m); setShowModelPicker(false); }}
             className={`w-full flex items-center justify-between p-3 rounded-xl transition-all mb-1 ${
-              selectedRoute?.model === m.model ? 'bg-indigo-600/20 text-indigo-400' : 'hover:bg-white/5 text-slate-400'
+              selectedRoute?.model === m.model ? 'bg-[var(--theme-primary-bg)] text-[var(--theme-primary)]' : 'hover:bg-white/5 text-slate-400'
             }`}
           >
             <div className="flex flex-col items-start overflow-hidden">

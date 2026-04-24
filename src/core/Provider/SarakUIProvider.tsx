@@ -85,6 +85,27 @@ export const DESIGN_MANIFEST: Record<string, {
             };
         }
     },
+    errorColor: {
+        vars: ['--theme-error', '--sarak-error-color'],
+        transform: (v: string) => {
+            const val = v || '#ef4444';
+            return { main: val, bg: `rgba(239, 68, 68, 0.1)`, border: `rgba(239, 68, 68, 0.2)` };
+        }
+    },
+    successColor: {
+        vars: ['--theme-success', '--sarak-success-color'],
+        transform: (v: string) => {
+            const val = v || '#10b981';
+            return { main: val, bg: `rgba(16, 185, 129, 0.1)`, border: `rgba(16, 185, 129, 0.2)` };
+        }
+    },
+    warningColor: {
+        vars: ['--theme-warning', '--sarak-warning-color'],
+        transform: (v: string) => {
+            const val = v || '#f59e0b';
+            return { main: val, bg: `rgba(245, 158, 11, 0.1)`, border: `rgba(245, 158, 11, 0.2)` };
+        }
+    },
     layoutDensity: { vars: ['--sarak-layout-density', '--density-theme'], classPrefix: 'density-' },
     texture: { vars: ['--sarak-texture', '--texture-theme'], classPrefix: 'texture-', attr: 'data-texture' },
     navigationStyle: { vars: ['--sarak-navigation-style', '--sarak-nav-style', '--nav-style'], classPrefix: 'nav-' },
@@ -118,6 +139,7 @@ export const DESIGN_MANIFEST: Record<string, {
     shadowOrientation: { vars: ['--shadow-orientation'], attr: 'data-shadow-orientation' },
     shadowColorMode: { vars: ['--shadow-color-mode'], attr: 'data-shadow-color-mode' },
     systemName: { attr: 'data-system-name' },
+    cursorPhysics: { vars: ['--sarak-cursor-physics'], attr: 'data-cursor-physics', transform: (v) => v ? '1' : '0' },
     logoUrl: { attr: 'data-logo-url' },
     logoDarkUrl: { attr: 'data-logo-dark' },
     logoScale: { vars: ['--logo-scale'], transform: (v) => v || 1.0 },
@@ -218,19 +240,31 @@ const BEZIER_CURVES = {
 };
 
 const validateDesign = (design: any) => {
-    const s = { ...design };
+    if (!design) return {};
+    const s: any = {};
+    
+    // 1. Sanitização de Integridade (Remove lixo do Manifesto)
+    Object.entries(design).forEach(([k, v]) => {
+        if (v !== null && v !== undefined && v !== '' && typeof v !== 'object') {
+            s[k] = v;
+        } else if (typeof v === 'object' && v !== null) {
+            s[k] = v; // Mantém objetos (como arrays de cores ou tokens complexos)
+        }
+    });
+
     const clamp = (val: any, min: number, max: number, fallback: number) => {
         const n = parseFloat(val);
         if (isNaN(n)) return fallback;
         return Math.min(Math.max(n, min), max);
     };
 
+    // 2. Clamping de Segurança
     s.scaleRatio = clamp(s.scaleRatio, 0.5, 2, 1);
     s.contrastCurve = clamp(s.contrastCurve, 0.5, 2, 1);
     s.glassBlur = clamp(s.glassBlur, 0, 60, 10);
     s.glassOpacity = clamp(s.glassOpacity, 0, 1, 0.7);
     s.borderRadius = clamp(s.borderRadius, 0, 60, 12);
-    s.schema_version = "7.5";
+    s.schema_version = "8.0"; // Upgrade para v8.0 (Sovereign)
 
     return s;
 };
@@ -296,6 +330,12 @@ const DesignInjector: React.FC<{ design: any }> = ({ design: s }) => {
                         extraVars['--theme-font-size-base'] = t.base;
                         extraVars['--theme-gap-scaled'] = t.gap;
                         extraVars['--theme-pad-scaled'] = t.padding;
+                    } else if (key === 'errorColor' || key === 'successColor' || key === 'warningColor') {
+                        finalValue = t.main;
+                        finalAttrValue = t.main;
+                        const prefix = key === 'errorColor' ? '--theme-error' : key === 'successColor' ? '--theme-success' : '--theme-warning';
+                        extraVars[`${prefix}-bg`] = t.bg;
+                        extraVars[`${prefix}-border`] = t.border;
                     } else if (t.main !== undefined) {
                         finalValue = t.main;
                         finalAttrValue = t.attr !== undefined ? t.attr : value;

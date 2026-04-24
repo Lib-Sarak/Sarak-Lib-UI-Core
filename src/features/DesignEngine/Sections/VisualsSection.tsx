@@ -41,6 +41,24 @@ export const VisualsSection: React.FC<VisualsSectionProps> = ({ draft, updateDra
                         ))}
                     </div>
                 </div>
+
+                <div className="space-y-4 pt-4 border-t border-white/5">
+                    <span className="text-2xs font-black uppercase tracking-widest text-white/20 block">Cores Semânticas</span>
+                    <div className="grid grid-cols-3 gap-4">
+                        <div className="flex flex-col gap-2">
+                            <span className="text-[10px] font-bold text-white/40 uppercase">Sucesso</span>
+                            <input type="color" value={draft.successColor || '#10b981'} onChange={(e) => updateDraft('successColor', e.target.value)} className="w-full h-8 rounded-lg bg-transparent cursor-pointer" />
+                        </div>
+                        <div className="flex flex-col gap-2">
+                            <span className="text-[10px] font-bold text-white/40 uppercase">Aviso</span>
+                            <input type="color" value={draft.warningColor || '#f59e0b'} onChange={(e) => updateDraft('warningColor', e.target.value)} className="w-full h-8 rounded-lg bg-transparent cursor-pointer" />
+                        </div>
+                        <div className="flex flex-col gap-2">
+                            <span className="text-[10px] font-bold text-white/40 uppercase">Erro</span>
+                            <input type="color" value={draft.errorColor || '#ef4444'} onChange={(e) => updateDraft('errorColor', e.target.value)} className="w-full h-8 rounded-lg bg-transparent cursor-pointer" />
+                        </div>
+                    </div>
+                </div>
             </Section>
 
             <Section id="textures-core" icon={Grid} title="Texturas & Superfícies" activeSection={activeSection} onToggle={setActiveSection}>

@@ -23,6 +23,7 @@ import { ComponentsSection } from '../Sections/ComponentsSection';
 import { DashboardSection } from '../Sections/DashboardSection';
 import { ChatSection } from '../Sections/ChatSection';
 import { LayoutSection } from '../Sections/LayoutSection';
+import { VisualizationSection } from '../Sections/VisualizationSection';
 
 /**
  * ThemeCustomizationTab (v8.0 - Sovereign Reorganization)
@@ -223,8 +224,18 @@ export const ThemeCustomizationTab: React.FC = () => {
                             )}
                         </AnimatePresence>
 
-                        {/* 9. LAYOUT */}
-                        <CategoryLabel icon={LayoutIcon} title="Layout & Estrutura" index={9} isOpen={activeCategory === 'layout'} onToggle={() => setActiveCategory(activeCategory === 'layout' ? null : 'layout')} />
+                        {/* 9. VISUALIZAÇÃO 3D & MAPAS */}
+                        <CategoryLabel icon={Globe} title="Visualização 3D & Mapas" index={9} isOpen={activeCategory === 'visuals-3d'} onToggle={() => setActiveCategory(activeCategory === 'visuals-3d' ? null : 'visuals-3d')} />
+                        <AnimatePresence>
+                            {activeCategory === 'visuals-3d' && (
+                                <motion.div initial={{ height: 0, opacity: 0 }} animate={{ height: 'auto', opacity: 1 }} exit={{ height: 0, opacity: 0 }} className="overflow-hidden">
+                                    <VisualizationSection draft={draft} updateDraft={updateDraft} activeSection={activeSection} setActiveSection={setActiveSection} />
+                                </motion.div>
+                            )}
+                        </AnimatePresence>
+
+                        {/* 10. LAYOUT */}
+                        <CategoryLabel icon={LayoutIcon} title="Layout & Estrutura" index={10} isOpen={activeCategory === 'layout'} onToggle={() => setActiveCategory(activeCategory === 'layout' ? null : 'layout')} />
                         <AnimatePresence>
                             {activeCategory === 'layout' && (
                                 <motion.div initial={{ height: 0, opacity: 0 }} animate={{ height: 'auto', opacity: 1 }} exit={{ height: 0, opacity: 0 }} className="overflow-hidden">
@@ -249,6 +260,8 @@ export const ThemeCustomizationTab: React.FC = () => {
                     previewPrimaryColor={draft.primaryColor || sarak.primaryColor || '#3b82f6'}
                     mode={draft.mode || sarak.mode || 'dark'}
                     draftTokens={draft}
+                    activeCategory={activeCategory}
+                    onUpdateDraft={updateDraft}
                 />
                 
                 {/* Toast de Confirmação */}

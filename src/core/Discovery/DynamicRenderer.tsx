@@ -1,6 +1,6 @@
 import React, { lazy } from 'react';
 import { motion } from 'framer-motion';
-import { SarakTable, SarakCardGrid, SarakStats, SarakChart, SarakForm, SarakManagementGrid, SarakChat } from '../../components/atomic/Templates';
+import { SarakTable, SarakCardGrid, SarakStats, SarakChart, SarakForm, SarakManagementGrid, SarakChat, SarakSecurityOrchestrator } from '../../components/atomic/Templates';
 import { VisualContract, DiscoveredModule } from '../../constants/discovery';
 import { getSarakModule } from './registry';
 import { AlertCircle } from 'lucide-react';
@@ -155,6 +155,16 @@ export const DynamicRenderer: React.FC<DynamicRendererProps> = ({ contracts, mod
                                     edges={[]} 
                                 />
                             </LazyEngineWrapper>
+                        );
+
+                    case 'SECURITY_ORCHESTRATOR':
+                        return (
+                            <SarakSecurityOrchestrator 
+                                key={id} 
+                                endpoint={resolvedEndpoint} 
+                                label={label} 
+                                config={(contract as any).config} 
+                            />
                         );
 
                     case 'CUSTOM':

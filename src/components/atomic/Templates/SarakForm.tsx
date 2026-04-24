@@ -100,15 +100,15 @@ export const SarakForm: React.FC<SarakFormProps> = ({
             {/* Header Area */}
             <div className="flex items-center justify-between relative z-10" style={{ marginBottom: 'calc(var(--theme-gap) * 1.5)' }}>
                 <div className="flex items-center" style={{ gap: 'calc(var(--theme-gap) / 2)' }}>
-                    <div className="p-3 bg-indigo-500/10 rounded-2xl border border-indigo-500/20" style={{ padding: 'calc(var(--theme-pad) / 2)' }}>
-                        <Settings size={20} className="text-indigo-400" />
+                    <div className="p-3 bg-[var(--theme-primary-bg)] rounded-2xl border border-[var(--theme-primary-border)]" style={{ padding: 'calc(var(--theme-pad) / 2)' }}>
+                        <Settings size={20} className="text-[var(--theme-primary)]" />
                     </div>
                     <div>
                         <h3 className="text-2xl font-black text-white tracking-tight" style={{ fontWeight: 'var(--heading-weight)' }}>{label}</h3>
                         <p className="text-2xs font-bold text-white/20 uppercase tracking-[0.2em]">Painel de Controle Atômico</p>
                     </div>
                 </div>
-                <div className="flex items-center bg-emerald-500/5 rounded-xl border border-emerald-500/10 text-emerald-400 text-2xs font-black uppercase tracking-widest" style={{ gap: 'calc(var(--theme-gap) / 4)', padding: 'calc(var(--theme-pad) / 3) calc(var(--theme-pad) / 1.5)' }}>
+                <div className="flex items-center bg-[var(--theme-success-bg)] rounded-xl border border-[var(--theme-success-border)] text-[var(--theme-success)] text-2xs font-black uppercase tracking-widest" style={{ gap: 'calc(var(--theme-gap) / 4)', padding: 'calc(var(--theme-pad) / 3) calc(var(--theme-pad) / 1.5)' }}>
                     <ShieldCheck size={12} /> Sincronização Segura
                 </div>
             </div>
@@ -124,7 +124,7 @@ export const SarakForm: React.FC<SarakFormProps> = ({
                             type="text"
                             value={formData[key] || ''}
                             onChange={(e) => handleChange(key, e.target.value)}
-                            className="w-full bg-theme-card border-theme text-white text-sm font-medium focus:border-indigo-500/40 outline-none transition-all placeholder:text-white/10 rounded-theme"
+                            className="w-full bg-theme-card border-theme text-white text-sm font-medium focus:border-[var(--theme-primary-border)] outline-none transition-all placeholder:text-white/10 rounded-theme"
                             style={{ padding: 'calc(var(--theme-pad) / 1.5) var(--theme-pad)', transitionDuration: 'var(--animation-speed, 0.3s)' }}
                             placeholder={`Digite o ${mapping ? mapping[key] : key}...`}
                         />
@@ -142,9 +142,9 @@ export const SarakForm: React.FC<SarakFormProps> = ({
                         marginBottom: 'var(--theme-gap)', 
                         padding: 'var(--theme-pad)', 
                         gap: 'calc(var(--theme-gap) / 3)',
-                        backgroundColor: status.type === 'success' ? 'rgba(16, 185, 129, 0.1)' : 'rgba(239, 68, 68, 0.1)',
-                        borderColor: status.type === 'success' ? 'rgba(16, 185, 129, 0.2)' : 'rgba(239, 68, 68, 0.2)',
-                        color: status.type === 'success' ? 'rgb(52, 211, 153)' : 'rgb(248, 113, 113)'
+                        backgroundColor: status.type === 'success' ? 'var(--theme-success-bg)' : 'var(--theme-error-bg)',
+                        borderColor: status.type === 'success' ? 'var(--theme-success-border)' : 'var(--theme-error-border)',
+                        color: status.type === 'success' ? 'var(--theme-success)' : 'var(--theme-error)'
                     }}
                 >
                     {status.type === 'success' ? <ShieldCheck size={16} /> : <AlertCircle size={16} />}
@@ -159,7 +159,7 @@ export const SarakForm: React.FC<SarakFormProps> = ({
                     whileTap={{ scale: 0.98 }}
                     onClick={handleSave}
                     disabled={saving}
-                    className="flex items-center bg-indigo-600 hover:bg-indigo-500 text-white rounded-theme text-xs font-black uppercase tracking-widest shadow-xl shadow-indigo-500/20 transition-all disabled:opacity-50"
+                    className="flex items-center bg-[var(--theme-primary)] hover:opacity-90 text-white rounded-theme text-xs font-black uppercase tracking-widest shadow-xl shadow-[var(--theme-primary-focus)] transition-all disabled:opacity-50"
                     style={{ 
                         gap: 'calc(var(--theme-gap) / 3)', 
                         padding: 'calc(var(--theme-pad) / 1.5) var(--theme-pad)',

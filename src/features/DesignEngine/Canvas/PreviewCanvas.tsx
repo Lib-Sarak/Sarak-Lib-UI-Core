@@ -7,6 +7,7 @@ import { EMOJI_SETS, THEME_EFFECTS, DENSITY, SCALES } from '../../../constants/d
 import { DESIGN_MANIFEST, UIContext } from '../../../core/Provider/SarakUIProvider';
 import { MockDashboard, MockChat, MockLogs, MockSettings, MockComponents, MockTypography } from './MockApps';
 import { KitchenSinkPreview } from './KitchenSinkPreview';
+import { GalleryRouter } from './Galleries/GalleryRouter';
 
 interface PreviewCanvasProps {
     previewDevice: 'desktop' | 'tablet' | 'smartphone';
@@ -19,6 +20,8 @@ interface PreviewCanvasProps {
     previewPrimaryColor: string;
     mode: string;
     draftTokens: any;
+    activeCategory: string | null;
+    onUpdateDraft: (key: string, value: any) => void;
 }
 
 export const PreviewCanvas: React.FC<PreviewCanvasProps> = ({
@@ -31,7 +34,9 @@ export const PreviewCanvas: React.FC<PreviewCanvasProps> = ({
     config,
     previewPrimaryColor,
     mode,
-    draftTokens
+    draftTokens,
+    activeCategory,
+    onUpdateDraft
 }) => {
     const tokens = React.useMemo(() => draftTokens || {}, [draftTokens]);
     
@@ -269,14 +274,23 @@ export const PreviewCanvas: React.FC<PreviewCanvasProps> = ({
                             <main className="flex-1 overflow-y-auto p-8 custom-scrollbar relative">
                                 <AnimatePresence mode="wait">
                                     <motion.div
-                                        key={activePreviewApp}
+                                        key={activeCategory || activePreviewApp}
                                         initial={{ opacity: 0, y: 10 }}
                                         animate={{ opacity: 1, y: 0 }}
                                         exit={{ opacity: 0, y: -10 }}
                                         transition={{ duration: parseFloat(tokens.animationSpeed ?? '0.4') }}
                                         className="h-full"
                                     >
-                                        {apps[activePreviewApp]}
+                                        {activeCategory ? (
+                                            <GalleryRouter 
+                                                activeCategory={activeCategory} 
+                                                tokens={tokens} 
+                                                onUpdateDraft={onUpdateDraft} 
+                                                activePreviewApp={activePreviewApp}
+                                            />
+                                        ) : (
+                                            apps[activePreviewApp]
+                                        )}
                                     </motion.div>
                                 </AnimatePresence>
                             </main>
@@ -313,14 +327,23 @@ export const PreviewCanvas: React.FC<PreviewCanvasProps> = ({
                             <main className="flex-1 overflow-y-auto p-8 custom-scrollbar relative z-10 sarak-safe-container">
                                 <AnimatePresence mode="wait">
                                     <motion.div
-                                        key={activePreviewApp}
+                                        key={activeCategory || activePreviewApp}
                                         initial={{ opacity: 0, x: 20 }}
                                         animate={{ opacity: 1, x: 0 }}
                                         exit={{ opacity: 0, x: -20 }}
                                         transition={{ duration: parseFloat(tokens.animationSpeed ?? '0.4') }}
                                         className="h-full"
                                     >
-                                        {apps[activePreviewApp]}
+                                        {activeCategory ? (
+                                            <GalleryRouter 
+                                                activeCategory={activeCategory} 
+                                                tokens={tokens} 
+                                                onUpdateDraft={onUpdateDraft} 
+                                                activePreviewApp={activePreviewApp}
+                                            />
+                                        ) : (
+                                            apps[activePreviewApp]
+                                        )}
                                     </motion.div>
                                 </AnimatePresence>
                             </main>

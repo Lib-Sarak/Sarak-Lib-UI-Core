@@ -108,10 +108,16 @@ export const KitchenSinkPreview: React.FC = () => {
                         <button className="w-full py-3 border border-[var(--theme-primary)] text-[var(--theme-primary)] rounded-theme font-bold text-xs uppercase tracking-widest hover:bg-[var(--theme-primary)]/5 transition-all col-span-2">
                             Outline Button
                         </button>
-                        <button className="w-full py-3 bg-emerald-500/10 text-emerald-400 border border-emerald-500/20 rounded-theme font-bold text-xs uppercase tracking-widest flex items-center justify-center gap-2">
+                        <button 
+                            className="w-full py-3 rounded-theme font-bold text-xs uppercase tracking-widest flex items-center justify-center gap-2 border"
+                            style={{ backgroundColor: 'var(--theme-success-bg)', borderColor: 'var(--theme-success-border)', color: 'var(--theme-success)' }}
+                        >
                             <Check size={14} /> Sucesso
                         </button>
-                        <button className="w-full py-3 bg-rose-500/10 text-rose-400 border border-rose-500/20 rounded-theme font-bold text-xs uppercase tracking-widest flex items-center justify-center gap-2">
+                        <button 
+                            className="w-full py-3 rounded-theme font-bold text-xs uppercase tracking-widest flex items-center justify-center gap-2 border"
+                            style={{ backgroundColor: 'var(--theme-error-bg)', borderColor: 'var(--theme-error-border)', color: 'var(--theme-error)' }}
+                        >
                             <AlertCircle size={14} /> Erro
                         </button>
                     </div>
@@ -149,7 +155,12 @@ export const KitchenSinkPreview: React.FC = () => {
                                             </div>
                                         </td>
                                         <td className="px-6 py-4">
-                                            <span className="px-2 py-1 rounded-full bg-emerald-500/10 text-emerald-400 text-2xs font-black uppercase">Ativo</span>
+                                            <span 
+                                                className="px-2 py-1 rounded-full text-2xs font-black uppercase"
+                                                style={{ backgroundColor: 'var(--theme-success-bg)', color: 'var(--theme-success)' }}
+                                            >
+                                                Ativo
+                                            </span>
                                         </td>
                                         <td className="px-6 py-4">
                                             <div className="w-full max-w-[100px] h-1.5 bg-white/5 rounded-full overflow-hidden">

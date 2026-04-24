@@ -67,7 +67,7 @@ export const SarakTable: React.FC<SarakTableProps> = ({ endpoint, label, mapping
 
     if (error) {
         return (
-            <div className="p-10 bg-red-500/5 border border-red-500/20 rounded-3xl flex items-center gap-4 text-red-400">
+            <div className="p-10 rounded-3xl flex items-center gap-4 border" style={{ backgroundColor: 'var(--theme-error-bg)', borderColor: 'var(--theme-error-border)', color: 'var(--theme-error)' }}>
                 <AlertCircle size={24} />
                 <div>
                     <h4 className="font-bold">Erro ao carregar dados</h4>
@@ -89,13 +89,13 @@ export const SarakTable: React.FC<SarakTableProps> = ({ endpoint, label, mapping
                 
                 <div className="flex items-center" style={{ gap: 'calc(var(--theme-gap) / 3)' }}>
                     <div className="relative group">
-                        <Search className="absolute left-4 top-1/2 -translate-y-1/2 text-white/20 group-focus-within:text-blue-400 transition-colors" size={14} />
+                        <Search className="absolute left-4 top-1/2 -translate-y-1/2 text-white/20 transition-colors" size={14} style={{ color: 'group-focus-within:var(--theme-primary)' }} />
                         <input 
                             type="text" 
                             placeholder="Pesquisar..." 
                             value={search}
                             onChange={(e) => setSearch(e.target.value)}
-                            className="bg-theme-card border-theme py-2 pl-12 pr-4 text-xs text-white outline-none focus:border-blue-500/40 focus:ring-4 focus:ring-blue-500/5 transition-all w-full md:w-64 rounded-theme"
+                            className="bg-theme-card border-theme py-2 pl-12 pr-4 text-xs text-white outline-none transition-all w-full md:w-64 rounded-theme focus:border-[var(--theme-primary-focus)]"
                         />
                     </div>
                     <button onClick={fetchData} className="p-2 bg-theme-card border-theme text-white/40 hover:text-white hover:bg-white/10 transition-all rounded-theme" style={{ transitionDuration: 'var(--animation-speed, 0.3s)' }}>
@@ -146,7 +146,13 @@ export const SarakTable: React.FC<SarakTableProps> = ({ endpoint, label, mapping
                                             {columns.map(col => (
                                                 <td key={col} className="text-sm text-white/70 font-medium" style={{ padding: 'calc(var(--theme-pad) / 2) var(--theme-pad)' }}>
                                                     {typeof row[col] === 'boolean' ? (
-                                                        <span className={`px-2 py-0.5 rounded-theme text-2xs font-black uppercase ${row[col] ? 'bg-emerald-500/10 text-emerald-400' : 'bg-red-500/10 text-red-400'}`}>
+                                                        <span 
+                                                            className="px-2 py-0.5 rounded-theme text-2xs font-black uppercase"
+                                                            style={{ 
+                                                                backgroundColor: row[col] ? 'var(--theme-success-bg)' : 'var(--theme-error-bg)',
+                                                                color: row[col] ? 'var(--theme-success)' : 'var(--theme-error)'
+                                                            }}
+                                                        >
                                                             {row[col] ? 'Ativo' : 'Inativo'}
                                                         </span>
                                                     ) : (

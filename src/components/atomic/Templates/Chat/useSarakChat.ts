@@ -21,7 +21,11 @@ export const useSarakChat = (endpoint: string, modelsEndpoint?: string) => {
     const fetchModels = async () => {
       if (!modelsEndpoint) return;
       try {
-        const token = localStorage.getItem('sarak_token') || localStorage.getItem('auth_token');
+        const system = (window as any).__SARAK_SYSTEM__ || 'global';
+        const token = localStorage.getItem(`${system}_token`) || 
+                      localStorage.getItem('sarak_token') || 
+                      localStorage.getItem('auth_token');
+
         const res = await fetch(`/api${modelsEndpoint}`, {
           headers: {
             'Authorization': token ? `Bearer ${token}` : ''
@@ -101,7 +105,11 @@ export const useSarakChat = (endpoint: string, modelsEndpoint?: string) => {
       setIsProcessingFiles(false);
       setAttachments([]);
 
-      const token = localStorage.getItem('sarak_token') || localStorage.getItem('auth_token');
+      const system = (window as any).__SARAK_SYSTEM__ || 'global';
+      const token = localStorage.getItem(`${system}_token`) || 
+                    localStorage.getItem('sarak_token') || 
+                    localStorage.getItem('auth_token');
+
       const response = await fetch(`/api${endpoint}`, {
         method: 'POST',
         headers: {
