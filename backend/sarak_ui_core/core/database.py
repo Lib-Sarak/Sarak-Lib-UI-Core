@@ -31,9 +31,38 @@ def setup_ui_db(ext_engine=None):
     """Garante que o schema 'ui_core' exista e as tabelas sejam criadas."""
     target_engine = ext_engine or engine
     
-    with target_engine.connect() as conn:
+    with target_engine.begin() as conn:
         conn.execute(text("CREATE SCHEMA IF NOT EXISTS ui_core"))
-        conn.commit()
+        
+    with target_engine.connect() as conn:
+        # Migração Self-Healing (v7.6)
+        tables_pk = {
+            "user_design": "user_id",
+            "system_modules": "id"
+        }
+        for table, pk_col in tables_pk.items():
+            try:
+                # 1. Garantir que a coluna 'system' existe
+                conn.execute(text(f"ALTER TABLE ui_core.{table} ADD COLUMN IF NOT EXISTS system VARCHAR(50) DEFAULT 'global'"))
+                
+                # 2. Verificar se a PK atual já inclui 'system'
+                # Se não incluir, precisamos recriar a PK para ser composta
+                pk_check = f"""
+                    SELECT count(*) FROM information_schema.key_column_usage 
+                    WHERE table_schema = 'ui_core' AND table_name = '{table}' AND column_name = 'system'
+                """
+                is_composite = conn.execute(text(pk_check)).scalar()
+                
+                if is_composite == 0:
+                    print(f" [Migration] Convertendo PK de {table} para composta (Soberania v7.6)...")
+                    # Remove PK antiga (geralmente nomeada como {table}_pkey no PG)
+                    conn.execute(text(f"ALTER TABLE ui_core.{table} DROP CONSTRAINT IF EXISTS {table}_pkey CASCADE"))
+                    # Adiciona nova PK composta
+                    conn.execute(text(f"ALTER TABLE ui_core.{table} ADD PRIMARY KEY ({pk_col}, system)"))
+                
+                conn.commit()
+            except Exception as e:
+                print(f" [!] UI-DB Migration info (Table {table}): {e}")
     
     # Importação local para evitar referências circulares
     from .models import UserDesignConfig

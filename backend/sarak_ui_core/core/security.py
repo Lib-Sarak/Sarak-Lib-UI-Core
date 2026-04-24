@@ -15,6 +15,7 @@ ALGORITHM = "HS256"
 @dataclass
 class IdentityContext:
     user_id: str
+    system: str
     email: Optional[str] = None
     role: Optional[str] = None
     is_system: bool = False
@@ -22,12 +23,12 @@ class IdentityContext:
 def get_current_identity(authorization: Optional[str] = Header(None)) -> IdentityContext:
     """
     Validador de Identidade Soberano (v5.5).
-    Decodifica o JWT localmente sem depender do mÃ³dulo de Auth-Identity em runtime.
+    Decodifica o JWT localmente sem depender do módulo de Auth-Identity em runtime.
     """
     if not authorization:
         raise HTTPException(
             status_code=status.HTTP_401_UNAUTHORIZED,
-            detail="Token de autorizaÃ§Ã£o nÃ£o fornecido."
+            detail="Token de autorização não fornecido."
         )
 
     try:
@@ -35,18 +36,41 @@ def get_current_identity(authorization: Optional[str] = Header(None)) -> Identit
         payload = jwt.decode(token, JWT_SECRET_KEY, algorithms=[ALGORITHM])
         
         user_id = payload.get("sub")
+        system = payload.get("system")
+        
         if not user_id:
-            raise HTTPException(status_code=401, detail="Token invÃ¡lido: ID de usuÃ¡rio ausente.")
+            raise HTTPException(status_code=401, detail="Token inválido: ID de usuário ausente.")
+        if not system:
+            raise HTTPException(status_code=401, detail="Token inválido: Contexto de sistema ausente.")
 
         return IdentityContext(
             user_id=user_id,
+            system=system,
             email=payload.get("email"),
             role=payload.get("role", "user")
         )
     except jwt.ExpiredSignatureError:
         raise HTTPException(status_code=401, detail="Token expirado.")
     except JWTError as e:
-        raise HTTPException(status_code=401, detail=f"Token invÃ¡lido: {str(e)}")
-    except Exception as e:
-        logger.error(f"[UI-Core Security] Erro inesperado: {e}")
-        raise HTTPException(status_code=500, detail="Erro interno na validaÃ§Ã£o de identidade.")
+        raise HTTPException(status_code=401, detail=f"Token inválido: {str(e)}")
+
+def get_optional_identity(
+    authorization: Optional[str] = Header(None),
+    x_system_context: Optional[str] = Header(None, alias="X-System-Context")
+) -> IdentityContext:
+    """
+    Versão opcional da identidade (v7.6).
+    Se não houver token, retorna um contexto 'Anonymous' baseado no Header de sistema ou 'global'.
+    Utilizado para descoberta de módulos e temas públicos.
+    """
+    if authorization:
+        try:
+            return get_current_identity(authorization)
+        except HTTPException:
+            pass # Ignora erro e cai no fallback anônimo
+            
+    return IdentityContext(
+        user_id="anonymous",
+        system=x_system_context or "global",
+        is_system=True
+    )

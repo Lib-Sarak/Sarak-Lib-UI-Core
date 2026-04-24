@@ -6,7 +6,7 @@ from typing import Dict, Any
 from ..core.database import get_db, engine, setup_ui_db
 from ..core.models import UserDesignConfig, SystemModule
 from ..core.seed import seed_ui_core
-from ..core.security import get_current_identity, IdentityContext
+from ..core.security import get_current_identity, get_optional_identity, IdentityContext
 from pydantic import BaseModel
 from typing import List
 
@@ -40,9 +40,17 @@ def get_module_manifest():
         raise HTTPException(status_code=404, detail="Manifesto não encontrado na raiz do módulo")
 
 @router.get("/modules")
-def get_system_modules(db: Session = Depends(get_db)):
-    """Retorna os mÃ³dulos e abas nativas registradas via Seed (v6.5)."""
-    modules = db.query(SystemModule).filter(SystemModule.is_active == True).order_by(SystemModule.priority.desc()).all()
+def get_system_modules(
+    db: Session = Depends(get_db),
+    identity: IdentityContext = Depends(get_optional_identity)
+):
+    """Retorna os módulos e abas nativas registrados para o sistema atual (v6.5)."""
+    # Filtra por global ou pelo sistema específico do usuário
+    modules = db.query(SystemModule).filter(
+        SystemModule.is_active == True,
+        SystemModule.system.in_(["global", identity.system])
+    ).order_by(SystemModule.priority.desc()).all()
+    
     return [
         {
             "id": m.id, 
@@ -59,14 +67,31 @@ class DesignUpdate(BaseModel):
 @router.get("/design")
 def get_user_design(
     db: Session = Depends(get_db),
-    identity: IdentityContext = Depends(get_current_identity)
+    identity: IdentityContext = Depends(get_optional_identity)
 ):
-    """Recupera a configuraÃ§Ã£o de design (tema, layout) do usuÃ¡rio logado."""
-    user_id_uuid = uuid_pkg.UUID(identity.user_id) if isinstance(identity.user_id, str) else identity.user_id
+    """Recupera a configuraÃ§Ã£o de design (tema, layout) do usuÃ¡rio logado ou fallback para anÃ´nimo."""
+    user_id = identity.user_id
     
-    config = db.query(UserDesignConfig).filter(UserDesignConfig.user_id == user_id_uuid).first()
+    if user_id == "anonymous":
+        # Para anônimo, tentamos pegar o design do 'global' para esse sistema
+        config = db.query(UserDesignConfig).filter(
+            UserDesignConfig.system == identity.system
+        ).first()
+        if config:
+            return config.to_dict()
+        return {"design": {}}
+
+    try:
+        user_id_uuid = uuid_pkg.UUID(user_id) if isinstance(user_id, str) else user_id
+    except ValueError:
+        return {"design": {}}
+    
+    config = db.query(UserDesignConfig).filter(
+        UserDesignConfig.user_id == user_id_uuid,
+        UserDesignConfig.system == identity.system
+    ).first()
+    
     if not config:
-        # Se nÃ£o existir, nÃ£o criamos ainda, apenas retornamos vazio para o frontend usar defaults
         return {"design": {}}
         
     return config.to_dict()
@@ -80,13 +105,19 @@ def update_user_design(
     """Salva ou atualiza a configuraÃ§Ã£o de design do usuÃ¡rio."""
     user_id_uuid = uuid_pkg.UUID(identity.user_id) if isinstance(identity.user_id, str) else identity.user_id
     
-    config = db.query(UserDesignConfig).filter(UserDesignConfig.user_id == user_id_uuid).first()
+    config = db.query(UserDesignConfig).filter(
+        UserDesignConfig.user_id == user_id_uuid,
+        UserDesignConfig.system == identity.system
+    ).first()
     
     if not config:
-        config = UserDesignConfig(user_id=user_id_uuid, design=update.design)
+        config = UserDesignConfig(
+            user_id=user_id_uuid, 
+            system=identity.system,
+            design=update.design
+        )
         db.add(config)
     else:
-        # Atualiza o dicionÃ¡rio existente (MutableDict detecta a mudanÃ§a)
         config.design = update.design
         
     db.commit()
