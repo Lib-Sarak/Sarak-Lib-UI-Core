@@ -16,14 +16,14 @@ export const ThemeToggle: React.FC = () => {
 
     return (
         <div className="relative group">
-            <button className="flex items-center gap-2 px-3 py-1.5 rounded-full bg-white/5 border border-white/10 hover:bg-white/10 transition-all">
+            <button className="flex items-center gap-2 px-3 py-1.5 rounded-full bg-white/5 border border-white/10 hover:bg-white/10 transition-sarak">
                 <Palette className="w-4 h-4 text-[var(--theme-primary)]" />
                 <span className="text-xs font-medium text-white/70">{currentLayoutName}</span>
-                <ChevronRight className="w-3 h-3 text-white/30 group-hover:rotate-90 transition-transform" />
+                <ChevronRight className="w-3 h-3 text-white/30 group-hover:rotate-90 transition-sarak" />
             </button>
             
             {/* Dropdown de Temas */}
-            <div className="absolute right-0 top-full mt-2 w-64 max-h-[400px] overflow-y-auto bg-[#0f0f11] border border-white/10 rounded-xl shadow-2xl opacity-0 translate-y-2 pointer-events-none group-hover:opacity-100 group-hover:translate-y-0 group-hover:pointer-events-auto transition-all z-[100] p-2 custom-scrollbar">
+            <div className="absolute right-0 top-full mt-2 w-64 max-h-[400px] overflow-y-auto bg-[#0f0f11] border border-white/10 rounded-xl shadow-2xl opacity-0 translate-y-2 pointer-events-none group-hover:opacity-100 group-hover:translate-y-0 group-hover:pointer-events-auto transition-sarak z-[100] p-2 custom-scrollbar">
                 <div className="text-2xs font-bold text-white/30 uppercase tracking-widest px-3 py-2 border-b border-white/5 mb-1">
                     Layouts Premium Matrix
                 </div>

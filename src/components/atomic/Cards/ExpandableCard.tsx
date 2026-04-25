@@ -47,7 +47,7 @@ export const ExpandableCard: React.FC<ExpandableCardProps> = ({
 
     return (
         <>
-            <div className={`bg-theme-card border border-theme-border p-6 rounded-theme shadow-theme flex flex-col relative group transition-all duration-300 ${isExpanded ? 'opacity-0 pointer-events-none' : ''} ${className}`}>
+            <div className={`bg-theme-card border border-theme-border p-6 rounded-theme shadow-theme flex flex-col relative group transition-sarak ${isExpanded ? 'opacity-0 pointer-events-none' : ''} ${className}`}>
                 <div className="w-full flex justify-between items-start mb-6">
                     <h3 className="text-xs font-black text-theme-main uppercase tracking-widest flex items-center gap-2">
                         {iconContent}
@@ -57,7 +57,7 @@ export const ExpandableCard: React.FC<ExpandableCardProps> = ({
                         {helpButton}
                         <button
                             onClick={() => setIsExpanded(true)}
-                            className="p-1.5 text-theme-muted hover:text-theme-primary hover:bg-theme-primary/10 rounded-lg transition-colors cursor-pointer"
+                            className="p-1.5 text-theme-muted hover:text-theme-primary hover:bg-theme-primary/10 rounded-lg transition-sarak cursor-pointer"
                             title="Expandir Tela Cheia"
                         >
                             <Maximize2 className="w-4 h-4" />
@@ -95,7 +95,7 @@ export const ExpandableCard: React.FC<ExpandableCardProps> = ({
                                         {helpButton && <div className="flex items-center">{helpButton}</div>}
                                         <button
                                             onClick={() => setIsExpanded(false)}
-                                            className="p-3 bg-theme-card hover:bg-theme-primary/20 text-theme-primary border border-theme-border rounded-[calc(var(--radius-theme)*2)] transition-all shadow-lg cursor-pointer shrink-0 ml-2"
+                                            className="p-3 bg-theme-card hover:bg-theme-primary/20 text-theme-primary border border-theme-border rounded-[calc(var(--radius-theme)*2)] transition-sarak shadow-lg cursor-pointer shrink-0 ml-2"
                                             title="Fechar"
                                         >
                                             <X className="w-5 h-5 sm:w-6 sm:h-6" />

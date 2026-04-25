@@ -49,7 +49,7 @@ export const SocialButton: React.FC<SocialButtonProps> = ({
             onClick={() => onClick?.(provider)}
             title={label || defaultLabel}
             className={cn(
-                "flex items-center transition-all duration-300 group/soc active:scale-[0.97]",
+                "flex items-center transition-sarak group/soc active:scale-[0.97]",
                 hideLabel 
                     ? "w-12 h-12 justify-center rounded-2xl" 
                     : "w-full gap-4 py-3.5 px-6 rounded-2xl",
@@ -60,7 +60,7 @@ export const SocialButton: React.FC<SocialButtonProps> = ({
             )}
         >
             <div className={cn(
-                "rounded-xl flex items-center justify-center transition-all duration-500",
+                "rounded-xl flex items-center justify-center transition-sarak",
                 hideLabel ? "w-full h-full" : "w-8 h-8",
                 variant === 'sovereign' ? "bg-white/20 group-hover/soc:rotate-[10deg]" : "bg-white/5 group-hover/soc:bg-white/10"
             )}>

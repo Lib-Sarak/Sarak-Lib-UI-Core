@@ -40,7 +40,7 @@ export const useSarakUI = () => {
 };
 
 // --- CHAVE DE PERSISTÊNCIA SARAK ---
-const STORAGE_KEY = 'sarak-ui-design-v6.7';
+const STORAGE_KEY = 'sarak-ui-design-v8.5';
 
 interface SarakUIProviderProps {
     children: ReactNode;
@@ -140,7 +140,6 @@ export const DESIGN_MANIFEST: Record<string, {
     shadowOrientation: { vars: ['--shadow-orientation'], attr: 'data-shadow-orientation' },
     shadowColorMode: { vars: ['--shadow-color-mode'], attr: 'data-shadow-color-mode' },
     systemName: { attr: 'data-system-name' },
-    cursorPhysics: { vars: ['--sarak-cursor-physics'], attr: 'data-cursor-physics', transform: (v) => v ? '1' : '0' },
     logoUrl: { attr: 'data-logo-url' },
     logoDarkUrl: { attr: 'data-logo-dark' },
     logoScale: { vars: ['--logo-scale'], transform: (v) => v || 1.0 },
@@ -265,7 +264,7 @@ const validateDesign = (design: any) => {
     s.glassBlur = clamp(s.glassBlur, 0, 60, 10);
     s.glassOpacity = clamp(s.glassOpacity, 0, 1, 0.7);
     s.borderRadius = clamp(s.borderRadius, 0, 60, 12);
-    s.schema_version = "8.0"; // Upgrade para v8.0 (Sovereign)
+    s.schema_version = "8.5"; // Upgrade para v8.5 (Sovereign)
 
     return s;
 };
@@ -274,17 +273,27 @@ const validateDesign = (design: any) => {
 const DesignInjector: React.FC<{ design: any }> = ({ design: s }) => {
 
     useEffect(() => {
+        let rafId: number;
         const handleMouseMove = (e: MouseEvent) => {
-            const x = (e.clientX / window.innerWidth) * 100;
-            const y = (e.clientY / window.innerHeight) * 100;
-            document.documentElement.style.setProperty('--mouse-x', `${x}%`);
-            document.documentElement.style.setProperty('--mouse-y', `${y}%`);
-            document.documentElement.style.setProperty('--mouse-px-x', `${e.clientX}px`);
-            document.documentElement.style.setProperty('--mouse-px-y', `${e.clientY}px`);
+            if (rafId) cancelAnimationFrame(rafId);
+            
+            rafId = requestAnimationFrame(() => {
+                const x = (e.clientX / window.innerWidth) * 100;
+                const y = (e.clientY / window.innerHeight) * 100;
+                document.documentElement.style.setProperty('--mouse-x', `${x}%`);
+                document.documentElement.style.setProperty('--mouse-y', `${y}%`);
+                document.documentElement.style.setProperty('--mouse-px-x', `${e.clientX}px`);
+                document.documentElement.style.setProperty('--mouse-px-y', `${e.clientY}px`);
+            });
         };
-        window.addEventListener('mousemove', handleMouseMove);
-        return () => window.removeEventListener('mousemove', handleMouseMove);
+        window.addEventListener('mousemove', handleMouseMove, { passive: true });
+        return () => {
+            window.removeEventListener('mousemove', handleMouseMove);
+            if (rafId) cancelAnimationFrame(rafId);
+        };
     }, []);
+
+    const prevDesignRef = React.useRef<any>(null);
 
     useEffect(() => {
         if (typeof document === 'undefined') return;
@@ -293,10 +302,15 @@ const DesignInjector: React.FC<{ design: any }> = ({ design: s }) => {
 
         if (!s) return;
 
-        // Injeção de Curvas de Bezier Sarak
-        Object.entries(BEZIER_CURVES).forEach(([k, v]) => root.style.setProperty(k, v));
+        // Injeção única de Curvas de Bezier Sarak
+        if (!prevDesignRef.current) {
+            Object.entries(BEZIER_CURVES).forEach(([k, v]) => root.style.setProperty(k, v));
+        }
 
         Object.entries(s).forEach(([key, value]) => {
+            // Pula injeção se o valor não mudou (Selective Injection)
+            if (prevDesignRef.current && prevDesignRef.current[key] === value) return;
+
             const config = DESIGN_MANIFEST[key];
             if (!config) return;
 
@@ -316,7 +330,7 @@ const DesignInjector: React.FC<{ design: any }> = ({ design: s }) => {
                         extraVars['--theme-primary-focus'] = t.focus;
                     } else if (key === 'fontScale') {
                         finalValue = t.px;
-                        finalAttrValue = value; // Injeta o ID (p, m, g) no atributo
+                        finalAttrValue = value;
                         extraVars['--font-size-factor'] = t.factor;
                     } else if (key === 'scaleRatio') {
                         finalValue = String(t.ratio);
@@ -367,7 +381,6 @@ const DesignInjector: React.FC<{ design: any }> = ({ design: s }) => {
                 const isBool = typeof value === 'boolean';
                 const activeClass = isBool ? (value ? config.classPrefix : null) : `${config.classPrefix}${value}`;
 
-                // Remoção de classes antigas do mesmo prefixo
                 Array.from(body.classList).forEach(c => {
                     if (c.startsWith(config.classPrefix!) || (isBool && c === config.classPrefix)) {
                         body.classList.remove(c);
@@ -380,8 +393,12 @@ const DesignInjector: React.FC<{ design: any }> = ({ design: s }) => {
         });
 
         // Mode cleanup
-        body.classList.remove('light', 'dark');
-        body.classList.add(s.mode === 'dark' ? 'dark' : 'light');
+        if (!prevDesignRef.current || prevDesignRef.current.mode !== s.mode) {
+            body.classList.remove('light', 'dark');
+            body.classList.add(s.mode === 'dark' ? 'dark' : 'light');
+        }
+
+        prevDesignRef.current = { ...s };
     }, [s]);
 
     return null;
@@ -487,6 +504,16 @@ export const SarakUIProvider: React.FC<SarakUIProviderProps> = ({
     // Injeção de Fontes Advanced
     useEffect(() => {
         if (typeof document === 'undefined') return;
+        
+        // Font Preconnect & DNS Prefetch (CLS Optimization)
+        const domains = ['https://fonts.googleapis.com', 'https://fonts.gstatic.com'];
+        domains.forEach(domain => {
+            const preconnect = document.createElement('link');
+            preconnect.rel = 'preconnect';
+            preconnect.href = domain;
+            document.head.appendChild(preconnect);
+        });
+
         const ID = 'sarak-core-fonts';
         if (document.getElementById(ID)) return;
         const style = document.createElement('style');

@@ -11,7 +11,6 @@ export interface KineticPreset {
     tokens: {
         animationSpeed: number;
         interfaceElasticity: number;
-        cursorPhysics: boolean;
         layeredShadows: boolean;
         contrastCurve: number;
     };
@@ -25,7 +24,6 @@ export const KINETIC_PRESETS: KineticPreset[] = [
         tokens: {
             animationSpeed: 0.1,
             interfaceElasticity: 0,
-            cursorPhysics: false,
             layeredShadows: false,
             contrastCurve: 1.0
         }
@@ -37,7 +35,6 @@ export const KINETIC_PRESETS: KineticPreset[] = [
         tokens: {
             animationSpeed: 0.4,
             interfaceElasticity: 0.3,
-            cursorPhysics: true,
             layeredShadows: true,
             contrastCurve: 1.1
         }
@@ -49,7 +46,6 @@ export const KINETIC_PRESETS: KineticPreset[] = [
         tokens: {
             animationSpeed: 0.7,
             interfaceElasticity: 0.8,
-            cursorPhysics: true,
             layeredShadows: true,
             contrastCurve: 1.2
         }
@@ -61,7 +57,6 @@ export const KINETIC_PRESETS: KineticPreset[] = [
         tokens: {
             animationSpeed: 1.2,
             interfaceElasticity: 0.2,
-            cursorPhysics: true,
             layeredShadows: true,
             contrastCurve: 1.4
         }
@@ -73,7 +68,6 @@ export const KINETIC_PRESETS: KineticPreset[] = [
         tokens: {
             animationSpeed: 0.25,
             interfaceElasticity: 0.9,
-            cursorPhysics: true,
             layeredShadows: false,
             contrastCurve: 0.9
         }

@@ -4,7 +4,6 @@ import { SidebarNav } from './Components/SidebarNav';
 import { TopbarNav } from './Components/TopbarNav';
 import { DockNav } from './Components/DockNav';
 import { ShellContent } from './Components/ShellContent';
-import SarakCursor from '../../components/atomic/UX/SarakCursor';
 import SarakSearch from '../../components/atomic/Inputs/SarakSearch';
 import { SarakShellProps } from './Components/types';
 
@@ -100,7 +99,6 @@ export const SarakShell: React.FC<SarakShellProps> = (props) => {
                 />
             </div>
 
-            {design.cursorPhysics && <SarakCursor />}
             <SarakSearch isOpen={shell.isSearchOpen} onClose={() => shell.setIsSearchOpen(false)} />
         </div>
     );

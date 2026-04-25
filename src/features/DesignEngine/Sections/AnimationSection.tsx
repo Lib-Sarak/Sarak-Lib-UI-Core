@@ -15,12 +15,6 @@ export const AnimationSection: React.FC<AnimationSectionProps> = ({ draft, updat
             <Section id="kinetics" icon={Zap} title="Cinética Global" activeSection={activeSection} onToggle={setActiveSection}>
                 <SliderControl label="Velocidade das Transições" value={draft.animationSpeed} min={0.1} max={2.0} step={0.1} onChange={(v: any) => updateDraft('animationSpeed', v)} suffix="s" />
                 <SliderControl label="Elasticidade (Bounce)" value={draft.interfaceElasticity} min={0} max={1} step={0.05} onChange={(v: any) => updateDraft('interfaceElasticity', v)} />
-                <div className="mt-4 pt-4 border-t border-white/5">
-                    <span className="text-2xs font-black uppercase tracking-widest text-white/40 block mb-2">Física do Cursor (Magnetic)</span>
-                    <button onClick={() => updateDraft('cursorPhysics', !draft.cursorPhysics)} className={`w-full py-2.5 rounded-lg text-2xs font-black uppercase transition-all flex items-center justify-center gap-2 ${draft.cursorPhysics ? 'bg-[var(--theme-primary)] text-white shadow-lg' : 'bg-white/5 text-white/40 hover:bg-white/10'}`}>
-                        {draft.cursorPhysics ? 'Física Ativa' : 'Física Inativa'}
-                    </button>
-                </div>
             </Section>
 
             <Section id="effects-refinement" icon={Sparkles} title="Refinamento Visual" activeSection={activeSection} onToggle={setActiveSection}>
