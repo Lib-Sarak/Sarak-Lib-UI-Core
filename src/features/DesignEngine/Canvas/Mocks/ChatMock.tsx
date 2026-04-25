@@ -1,47 +1,83 @@
 import React from 'react';
 import { motion } from 'framer-motion';
+import { User, Bot, Zap } from 'lucide-react';
 
 export const MockChat: React.FC<any> = ({ tokens }) => {
+    const bubbleStyle = tokens?.chatBubbleStyle || 'glass';
+    const radius = tokens?.chatBubbleRadius || 12;
+    const speed = tokens?.chatAnimationSpeed || 0.4;
+    const showAvatars = tokens?.showAvatars !== false;
+
     return (
-        <div className="flex flex-col h-full">
-            <div className="flex-grow flex flex-col gap-4 mb-4">
+        <div className="flex flex-col h-full bg-transparent p-4">
+            <div className="flex-grow flex flex-col gap-6 mb-4 overflow-y-auto custom-scrollbar">
+                
+                {/* Bot Message */}
                 <motion.div
-                    initial={{ opacity: 0, y: 10, scale: 0.95 }}
-                    animate={{ opacity: 1, y: 0, scale: 1 }}
-                    transition={{ duration: (tokens?.chatAnimationSpeed || 0.05) * 10 }}
-                    className="flex justify-start"
+                    initial={{ opacity: 0, x: -20 }}
+                    animate={{ opacity: 1, x: 0 }}
+                    transition={{ duration: speed }}
+                    className="flex justify-start gap-3"
                 >
+                    {showAvatars && (
+                        <div className="w-8 h-8 rounded-full bg-[var(--theme-primary)]/10 border border-[var(--theme-primary)]/20 flex items-center justify-center shrink-0">
+                            <Bot size={14} className="text-[var(--theme-primary)]" />
+                        </div>
+                    )}
                     <div
-                        className={`p-6 border border-white/5 shadow-2xl max-w-[85%] relative overflow-hidden transition-all duration-500
-                            ${tokens?.chatBubbleStyle === 'glass' ? 'bg-white/10 backdrop-blur-md rounded-2xl rounded-bl-none' : ''}
-                            ${tokens?.chatBubbleStyle === 'solid' ? 'bg-[var(--theme-card)] rounded-2xl rounded-bl-none shadow-xl' : ''}
-                            ${tokens?.chatBubbleStyle === 'minimal' ? 'bg-transparent border-l-4 border-l-[var(--theme-primary)] rounded-none p-4' : ''}
+                        className={`p-4 border border-[var(--theme-border)] shadow-xl max-w-[80%] relative overflow-hidden transition-all duration-500
+                            ${bubbleStyle === 'glass' ? 'bg-[var(--theme-card)] backdrop-blur-md' : ''}
+                            ${bubbleStyle === 'solid' ? 'bg-[var(--theme-card)]' : ''}
+                            ${bubbleStyle === 'outline' ? 'bg-transparent border-2' : ''}
+                            ${bubbleStyle === 'minimal' ? 'bg-transparent border-l-4 border-l-[var(--theme-primary)] rounded-none' : ''}
                         `}
+                        style={{ 
+                            borderRadius: bubbleStyle === 'minimal' ? '0' : `${radius}px ${radius}px ${radius}px 0px`,
+                            borderLeftWidth: bubbleStyle === 'minimal' ? '4px' : '1px'
+                        }}
                     >
                         <div className="relative z-10 text-xs text-[var(--theme-title)] font-medium leading-relaxed">
                             <span className="text-[var(--theme-primary)] font-black mr-2 opacity-60 uppercase text-3xs tracking-widest">Sarak AI:</span>
-                            Olá! Eu sou o Sarak AI. Como posso otimizar seus fluxos de trabalho hoje?
+                            Olá! Analisei seus fluxos de trabalho e identifiquei 3 pontos de otimização na camada de persistência. Deseja aplicar as melhorias?
                         </div>
                     </div>
                 </motion.div>
                 
+                {/* User Message */}
                 <motion.div
-                    initial={{ opacity: 0, y: 10, scale: 0.95 }}
-                    animate={{ opacity: 1, y: 0, scale: 1 }}
-                    transition={{ 
-                        duration: (tokens?.chatAnimationSpeed || 0.05) * 10, 
-                        delay: (tokens?.chatAnimationSpeed || 0.05) * 5 
-                    }}
-                    className="flex justify-end"
+                    initial={{ opacity: 0, x: 20 }}
+                    animate={{ opacity: 1, x: 0 }}
+                    transition={{ duration: speed, delay: speed * 0.5 }}
+                    className="flex justify-end gap-3"
                 >
-                    <div className={`p-4 shadow-soft max-w-[80%] transition-all duration-500
-                        ${tokens?.chatBubbleStyle === 'minimal' ? 'bg-white/5 border border-white/10 rounded-lg' : 'bg-[var(--theme-primary)] rounded-2xl rounded-br-none'}
-                    `}>
-                        <div className={`text-xs leading-relaxed font-medium ${tokens?.chatBubbleStyle === 'minimal' ? 'text-[var(--theme-title)]/80' : 'text-white'}`}>
-                            Pode me mostrar os logs de erro das últimas 2 horas?
+                    <div className={`p-4 shadow-xl max-w-[80%] transition-all duration-500
+                        ${bubbleStyle === 'glass' ? 'bg-[var(--theme-primary)]/20 backdrop-blur-md border border-[var(--theme-primary)]/30' : ''}
+                        ${bubbleStyle === 'solid' ? 'bg-[var(--theme-primary)] text-white' : ''}
+                        ${bubbleStyle === 'outline' ? 'border-2 border-[var(--theme-primary)] bg-transparent' : ''}
+                        ${bubbleStyle === 'minimal' ? 'bg-white/5 border border-white/10 rounded-lg' : ''}
+                    `}
+                    style={{ 
+                        borderRadius: bubbleStyle === 'minimal' ? '4px' : `${radius}px ${radius}px 0px ${radius}px`,
+                        color: (bubbleStyle === 'solid') ? 'white' : 'var(--theme-title)'
+                    }}>
+                        <div className="text-xs leading-relaxed font-medium">
+                            Sim, prossiga com a otimização. Quais serão os ganhos estimados em TBT?
                         </div>
                     </div>
+                    {showAvatars && (
+                        <div className="w-8 h-8 rounded-full bg-white/5 border border-white/10 flex items-center justify-center shrink-0">
+                            <User size={14} className="text-[var(--theme-title)]/60" />
+                        </div>
+                    )}
                 </motion.div>
+            </div>
+
+            {/* Mock Input Area */}
+            <div className="mt-auto p-2 bg-white/5 rounded-2xl border border-white/5 flex items-center gap-3">
+                <div className="flex-1 px-4 py-2 text-xs text-white/20 font-bold uppercase tracking-widest">Mensagem...</div>
+                <div className="w-8 h-8 rounded-xl bg-[var(--theme-primary)] flex items-center justify-center">
+                    <Zap size={14} className="text-white" />
+                </div>
             </div>
         </div>
     );

@@ -258,12 +258,16 @@ export const PreviewCanvas: React.FC<PreviewCanvasProps> = ({
                     {isDualView ? (
                         <>
                             {renderPreviewItem("active-system", "System Mirror (Reactive)", renderSystemContent())}
-                            {activeCategory && renderPreviewItem("preview-catalog", `${activeCategory} Catalog`, (
+                            {activeCategory && renderPreviewItem("preview-catalog", `${activeCategory.toUpperCase()} Specimens`, (
                                 <div className="w-full h-full bg-[#050505] flex flex-col">
                                     <div className="px-6 py-4 border-b border-white/5 flex items-center justify-between bg-black/40">
                                         <div className="flex items-center gap-2">
                                             <Sparkles size={12} className="text-[var(--theme-primary)]" />
-                                            <span className="text-xs font-black uppercase text-white/60 tracking-[0.2em]">{activeCategory}</span>
+                                            <span className="text-[10px] font-black uppercase text-white/60 tracking-[0.3em]">{activeCategory} Catalog v8.5</span>
+                                        </div>
+                                        <div className="flex gap-1">
+                                            <div className="w-1 h-1 rounded-full bg-[var(--theme-primary)] animate-pulse" />
+                                            <div className="w-1 h-1 rounded-full bg-[var(--theme-primary)] opacity-40" />
                                         </div>
                                     </div>
                                     <div className="flex-1 overflow-y-auto custom-scrollbar">

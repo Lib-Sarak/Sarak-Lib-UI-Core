@@ -19,15 +19,22 @@ export const VisualizationGallery: React.FC<VisualizationGalleryProps> = ({ onUp
                         Object.entries(preset.tokens).forEach(([key, val]) => onUpdateDraft(key, val));
                     }}
                     isActive={tokens.vizMode === preset.tokens.vizMode && tokens.wireframeIntensity === preset.tokens.wireframeIntensity}
+                    globalTokens={tokens}
                 />
             ))}
         </div>
     );
 };
 
-const VisualizationSpecimen: React.FC<{ preset: VisualizationPreset; onSelect: () => void; isActive: boolean }> = ({ 
-    preset, onSelect, isActive 
+const VisualizationSpecimen: React.FC<{ preset: VisualizationPreset; onSelect: () => void; isActive: boolean; globalTokens: any }> = ({ 
+    preset, onSelect, isActive, globalTokens 
 }) => {
+    const mergedTokens = { ...globalTokens, ...preset.tokens };
+    const vizMode = mergedTokens.vizMode;
+    const rotateSpeed = mergedTokens.rotateSpeed || 1;
+    const pointDensity = mergedTokens.pointDensity || 0.5;
+    const wireframeIntensity = mergedTokens.wireframeIntensity || 0.5;
+
     return (
         <motion.div 
             whileHover={{ y: -4 }}
@@ -45,7 +52,7 @@ const VisualizationSpecimen: React.FC<{ preset: VisualizationPreset; onSelect: (
                     {/* Simulated 3D Mesh Grid */}
                     <motion.div 
                         animate={{ rotate: 360 }}
-                        transition={{ duration: 20 / preset.tokens.rotateSpeed, repeat: Infinity, ease: "linear" }}
+                        transition={{ duration: 20 / rotateSpeed, repeat: Infinity, ease: "linear" }}
                         className="relative w-24 h-24"
                     >
                         {/* Grid Layers */}
@@ -55,10 +62,10 @@ const VisualizationSpecimen: React.FC<{ preset: VisualizationPreset; onSelect: (
                                 className="absolute inset-0 border rounded-lg transition-all duration-700"
                                 style={{ 
                                     transform: `rotateX(45deg) rotateZ(${i * 30}deg) translateZ(${i * 10}px)`,
-                                    borderColor: preset.tokens.colorMapping === 'monochrome' ? 'rgba(255,255,255,0.1)' : 
-                                               preset.tokens.colorMapping === 'spectrum' ? 'rgba(var(--theme-primary-rgb), 0.3)' : 'rgba(var(--theme-primary-rgb), 0.1)',
-                                    borderWidth: preset.tokens.vizMode === 'mesh' ? '1px' : '0px',
-                                    backgroundColor: preset.tokens.vizMode === 'solid' ? 'rgba(var(--theme-primary-rgb), 0.05)' : 'transparent'
+                                    borderColor: mergedTokens.colorMapping === 'monochrome' ? 'rgba(255,255,255,0.1)' : 
+                                               mergedTokens.colorMapping === 'spectrum' ? 'rgba(var(--theme-primary-rgb), 0.3)' : 'rgba(var(--theme-primary-rgb), 0.1)',
+                                    borderWidth: vizMode === 'mesh' ? '1px' : '0px',
+                                    backgroundColor: vizMode === 'solid' ? 'rgba(var(--theme-primary-rgb), 0.05)' : 'transparent'
                                 }}
                             />
                         ))}
@@ -69,7 +76,7 @@ const VisualizationSpecimen: React.FC<{ preset: VisualizationPreset; onSelect: (
 
                     {/* Point Cloud simulation overlay */}
                     <div className="absolute inset-0 grid grid-cols-8 grid-rows-8 gap-2 p-4 pointer-events-none opacity-20">
-                        {Array.from({ length: Math.round(preset.tokens.pointDensity * 64) }).map((_, i) => (
+                        {Array.from({ length: Math.round(pointDensity * 64) }).map((_, i) => (
                             <div key={i} className="w-0.5 h-0.5 rounded-full bg-white" />
                         ))}
                     </div>
@@ -91,12 +98,12 @@ const VisualizationSpecimen: React.FC<{ preset: VisualizationPreset; onSelect: (
                 <div className="pt-4 border-t border-white/5 grid grid-cols-2 gap-4">
                     <div className="flex items-center gap-2">
                         <div className="w-1.5 h-1.5 rounded-full bg-[var(--theme-primary)]" />
-                        <span className="text-[8px] font-black text-white/40 uppercase tracking-widest">{preset.tokens.vizMode} Mode</span>
+                        <span className="text-[8px] font-black text-white/40 uppercase tracking-widest">{vizMode} Mode</span>
                     </div>
                     <div className="flex items-center gap-2">
                         <span className="text-[8px] font-black text-white/20 uppercase">Wireframe</span>
                         <div className="flex-1 h-1 bg-white/5 rounded-full overflow-hidden">
-                            <div className="h-full bg-[var(--theme-primary)]" style={{ width: `${preset.tokens.wireframeIntensity * 100}%` }} />
+                            <div className="h-full bg-[var(--theme-primary)] transition-all duration-500" style={{ width: `${wireframeIntensity * 100}%` }} />
                         </div>
                     </div>
                 </div>

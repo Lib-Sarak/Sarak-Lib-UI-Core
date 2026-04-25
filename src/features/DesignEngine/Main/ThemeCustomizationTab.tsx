@@ -49,19 +49,32 @@ export const ThemeCustomizationTab: React.FC = () => {
     const [activeSection, setActiveSection] = useState<string | null>(null);
     const [isDualView, setIsDualView] = useState(true); // Default as true for better UX
 
-    // Auto-switch preview app based on section
+    // Auto-switch preview app based on category or section
     useEffect(() => {
-        if (activeSection === 'chat-bubbles' || activeSection === 'chat-dynamics') setActivePreviewApp('chat');
-        else if (activeSection === 'chart-visuals' || activeSection === 'chart-geometry') setActivePreviewApp('dashboard');
-        else if (activeSection === 'font-families' || activeSection === 'font-refinement') setActivePreviewApp('typography');
-        else if (activeSection && [
-            'color-core', 'brand-identity', 'brand-metrics',
-            'layout-dna', 'card-geometry', 'card-atmosphere', 'card-shadows',
-            'textures-core', 'kinetics', 'effects-refinement', 'button-styles'
-        ].includes(activeSection)) {
+        // 1. Prioridade para Seções Específicas (Deep Linking)
+        if (activeSection === 'chat-bubbles' || activeSection === 'chat-dynamics') {
+            setActivePreviewApp('chat');
+            return;
+        }
+        if (activeSection === 'chart-visuals' || activeSection === 'chart-geometry') {
+            setActivePreviewApp('dashboard');
+            return;
+        }
+        if (activeSection === 'font-families' || activeSection === 'font-refinement') {
+            setActivePreviewApp('typography');
+            return;
+        }
+
+        // 2. Fallback para Categorias Principais
+        if (activeCategory === 'chats') setActivePreviewApp('chat');
+        else if (activeCategory === 'dashboard') setActivePreviewApp('dashboard');
+        else if (activeCategory === 'fonts') setActivePreviewApp('typography');
+        else if (activeCategory === 'components' || activeCategory === 'cards') setActivePreviewApp('components');
+        else if (activeCategory === 'visuals-3d') setActivePreviewApp('logs');
+        else if (activeCategory && ['layout', 'branding', 'visuals', 'animations', 'presets'].includes(activeCategory)) {
             setActivePreviewApp('kitchen-sink');
         }
-    }, [activeSection]);
+    }, [activeSection, activeCategory]);
 
     return (
         <div className="flex flex-1 min-h-[900px] bg-[#0c0c0d] overflow-hidden">

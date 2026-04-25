@@ -19,15 +19,22 @@ export const LayoutGallery: React.FC<LayoutGalleryProps> = ({ onUpdateDraft, tok
                         Object.entries(preset.tokens).forEach(([key, val]) => onUpdateDraft(key, val));
                     }}
                     isActive={tokens.navigationStyle === preset.tokens.navigationStyle && tokens.maxContentWidth === preset.tokens.maxContentWidth}
+                    globalTokens={tokens}
                 />
             ))}
         </div>
     );
 };
 
-const LayoutSpecimen: React.FC<{ preset: LayoutPreset; onSelect: () => void; isActive: boolean }> = ({ 
-    preset, onSelect, isActive 
+const LayoutSpecimen: React.FC<{ preset: LayoutPreset; onSelect: () => void; isActive: boolean; globalTokens: any }> = ({ 
+    preset, onSelect, isActive, globalTokens 
 }) => {
+    const mergedTokens = { ...globalTokens, ...preset.tokens };
+    const navStyle = mergedTokens.navigationStyle;
+    const sidebarWidth = mergedTokens.sidebarWidth || 200;
+    const maxWidth = mergedTokens.maxContentWidth;
+    const isSplit = mergedTokens.isSplitViewEnabled;
+
     return (
         <motion.div 
             whileHover={{ y: -4 }}
@@ -43,7 +50,7 @@ const LayoutSpecimen: React.FC<{ preset: LayoutPreset; onSelect: () => void; isA
                     <div className="absolute top-2 left-4 text-[6px] font-black text-white/5 uppercase tracking-[0.4em]">Architecture Blueprint</div>
                     
                     {/* Topbar Simulation */}
-                    {preset.tokens.navigationStyle === 'topbar' && (
+                    {navStyle === 'topbar' && (
                         <div className="h-4 w-full bg-[var(--theme-primary)]/20 border border-[var(--theme-primary)]/30 rounded-md mb-2 flex items-center px-2">
                              <div className="w-1.5 h-1.5 rounded-full bg-white/20" />
                         </div>
@@ -51,10 +58,10 @@ const LayoutSpecimen: React.FC<{ preset: LayoutPreset; onSelect: () => void; isA
 
                     <div className="flex-1 flex gap-2 overflow-hidden">
                         {/* Sidebar Simulation */}
-                        {preset.tokens.navigationStyle === 'sidebar' && (
+                        {navStyle === 'sidebar' && (
                             <div 
-                                className={`h-full bg-white/5 border border-white/10 rounded-lg transition-all duration-700 flex flex-col p-2 gap-1 ${preset.tokens.isAutoHideEnabled ? 'opacity-40' : ''}`}
-                                style={{ width: `${preset.tokens.sidebarWidth / 6}px` }}
+                                className={`h-full bg-white/5 border border-white/10 rounded-lg transition-all duration-700 flex flex-col p-2 gap-1 ${mergedTokens.isAutoHideEnabled ? 'opacity-40' : ''}`}
+                                style={{ width: `${sidebarWidth / 6}px` }}
                             >
                                 <div className="h-2 w-full bg-white/10 rounded" />
                                 <div className="h-2 w-full bg-white/5 rounded" />
@@ -68,10 +75,10 @@ const LayoutSpecimen: React.FC<{ preset: LayoutPreset; onSelect: () => void; isA
                                 {/* Safe Area Visualization */}
                                 <div 
                                     className="h-full border-x border-dashed border-[var(--theme-primary)]/20 transition-all duration-700"
-                                    style={{ width: preset.tokens.maxContentWidth === 'none' ? '100%' : '70%' }}
+                                    style={{ width: maxWidth === 'none' ? '100%' : '70%' }}
                                 />
                                 
-                                {preset.tokens.isSplitViewEnabled && (
+                                {isSplit && (
                                     <div className="absolute inset-0 flex">
                                         <div className="w-1/2 border-r border-dashed border-white/10" />
                                     </div>
@@ -94,11 +101,11 @@ const LayoutSpecimen: React.FC<{ preset: LayoutPreset; onSelect: () => void; isA
                     <div className="grid grid-cols-2 gap-2">
                         <div className="flex items-center gap-2 px-2 py-1.5 bg-white/5 rounded-lg border border-white/5">
                             <Monitor size={10} className="text-white/20" />
-                            <span className="text-[8px] font-black text-white/40 uppercase">{preset.tokens.maxContentWidth === 'none' ? 'Fluid' : preset.tokens.maxContentWidth}</span>
+                            <span className="text-[8px] font-black text-white/40 uppercase">{maxWidth === 'none' ? 'Fluid' : maxWidth}</span>
                         </div>
                         <div className="flex items-center gap-2 px-2 py-1.5 bg-white/5 rounded-lg border border-white/5">
-                            {preset.tokens.isSplitViewEnabled ? <Split size={10} className="text-[var(--theme-primary)]" /> : <Maximize2 size={10} className="text-white/20" />}
-                            <span className="text-[8px] font-black text-white/40 uppercase">{preset.tokens.isSplitViewEnabled ? 'Split On' : 'Standard'}</span>
+                            {isSplit ? <Split size={10} className="text-[var(--theme-primary)]" /> : <Maximize2 size={10} className="text-white/20" />}
+                            <span className="text-[8px] font-black text-white/40 uppercase">{isSplit ? 'Split On' : 'Standard'}</span>
                         </div>
                     </div>
                 </div>

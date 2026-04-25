@@ -19,15 +19,22 @@ export const ChatGallery: React.FC<ChatGalleryProps> = ({ onUpdateDraft, tokens 
                         Object.entries(preset.tokens).forEach(([key, val]) => onUpdateDraft(key, val));
                     }}
                     isActive={tokens.chatBubbleStyle === preset.tokens.chatBubbleStyle && tokens.chatBubbleRadius === preset.tokens.chatBubbleRadius}
+                    globalTokens={tokens}
                 />
             ))}
         </div>
     );
 };
 
-const ChatSpecimen: React.FC<{ preset: ChatPreset; onSelect: () => void; isActive: boolean }> = ({ 
-    preset, onSelect, isActive 
+const ChatSpecimen: React.FC<{ preset: ChatPreset; onSelect: () => void; isActive: boolean; globalTokens: any }> = ({ 
+    preset, onSelect, isActive, globalTokens 
 }) => {
+    // Merge preset tokens with draft tokens for high-fidelity preview
+    const mergedTokens = { ...globalTokens, ...preset.tokens };
+    const bubbleStyle = mergedTokens.chatBubbleStyle;
+    const bubbleRadius = mergedTokens.chatBubbleRadius;
+    const spacing = mergedTokens.chatMessageSpacing;
+
     return (
         <motion.div 
             whileHover={{ y: -4 }}
@@ -42,17 +49,17 @@ const ChatSpecimen: React.FC<{ preset: ChatPreset; onSelect: () => void; isActiv
                 <div className="bg-black/40 rounded-2xl border border-white/5 p-6 min-h-[160px] flex flex-col justify-end relative overflow-hidden">
                     <div className="absolute top-3 left-4 text-[7px] font-black text-white/10 uppercase tracking-[0.3em]">Flow Dynamics</div>
                     
-                    <div className="space-y-3" style={{ gap: `${preset.tokens.chatMessageSpacing / 4}px` }}>
+                    <div className="space-y-3" style={{ gap: `${spacing / 4}px` }}>
                         {/* Bot Message */}
                         <div className="flex items-end gap-2">
-                            {preset.tokens.showAvatars && <div className="w-6 h-6 rounded-lg bg-white/5 border border-white/10 flex items-center justify-center"><Bot size={12} className="text-[var(--theme-primary)]" /></div>}
+                            {mergedTokens.showAvatars && <div className="w-6 h-6 rounded-lg bg-white/5 border border-white/10 flex items-center justify-center"><Bot size={12} className="text-[var(--theme-primary)]" /></div>}
                             <div 
-                                className={`max-w-[70%] p-3 text-[10px] text-white/60 ${
-                                    preset.tokens.chatBubbleStyle === 'glass' ? 'bg-white/5 backdrop-blur-md border border-white/10' :
-                                    preset.tokens.chatBubbleStyle === 'outline' ? 'border border-white/20 bg-transparent' :
+                                className={`max-w-[70%] p-3 text-[10px] text-white/60 transition-all duration-500 ${
+                                    bubbleStyle === 'glass' ? 'bg-white/5 backdrop-blur-md border border-white/10' :
+                                    bubbleStyle === 'outline' ? 'border border-white/20 bg-transparent' :
                                     'bg-white/10 border-transparent'
                                 }`}
-                                style={{ borderRadius: `${preset.tokens.chatBubbleRadius}px ${preset.tokens.chatBubbleRadius}px ${preset.tokens.chatBubbleRadius}px 0px` }}
+                                style={{ borderRadius: `${bubbleRadius}px ${bubbleRadius}px ${bubbleRadius}px 0px` }}
                             >
                                 How can I assist you with the Sarak Design Engine?
                             </div>
@@ -61,16 +68,16 @@ const ChatSpecimen: React.FC<{ preset: ChatPreset; onSelect: () => void; isActiv
                         {/* User Message */}
                         <div className="flex items-end gap-2 justify-end">
                             <div 
-                                className={`max-w-[70%] p-3 text-[10px] text-white ${
-                                    preset.tokens.chatBubbleStyle === 'glass' ? 'bg-[var(--theme-primary)]/20 backdrop-blur-md border border-[var(--theme-primary)]/30' :
-                                    preset.tokens.chatBubbleStyle === 'outline' ? 'border border-[var(--theme-primary)] bg-transparent text-[var(--theme-primary)]' :
+                                className={`max-w-[70%] p-3 text-[10px] text-white transition-all duration-500 ${
+                                    bubbleStyle === 'glass' ? 'bg-[var(--theme-primary)]/20 backdrop-blur-md border border-[var(--theme-primary)]/30' :
+                                    bubbleStyle === 'outline' ? 'border border-[var(--theme-primary)] bg-transparent text-[var(--theme-primary)]' :
                                     'bg-[var(--theme-primary)] border-transparent'
                                 }`}
-                                style={{ borderRadius: `${preset.tokens.chatBubbleRadius}px ${preset.tokens.chatBubbleRadius}px 0px ${preset.tokens.chatBubbleRadius}px` }}
+                                style={{ borderRadius: `${bubbleRadius}px ${bubbleRadius}px 0px ${bubbleRadius}px` }}
                             >
                                 Optimize my interface physics.
                             </div>
-                            {preset.tokens.showAvatars && <div className="w-6 h-6 rounded-lg bg-[var(--theme-primary)]/20 border border-[var(--theme-primary)]/30 flex items-center justify-center"><User size={12} className="text-white" /></div>}
+                            {mergedTokens.showAvatars && <div className="w-6 h-6 rounded-lg bg-[var(--theme-primary)]/20 border border-[var(--theme-primary)]/30 flex items-center justify-center"><User size={12} className="text-white" /></div>}
                         </div>
                     </div>
                 </div>

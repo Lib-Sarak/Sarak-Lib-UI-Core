@@ -52,8 +52,7 @@ const getCardVariables = (cardTokens: any, globalTokens: any) => {
     return vars;
 };
 
-const CardSpecimen: React.FC<{ preset: CardPreset, contentType: string }> = ({ preset, contentType }) => {
-    const { design: globalTokens } = useSarakUI();
+const CardSpecimen: React.FC<{ preset: CardPreset, contentType: string, globalTokens: any }> = ({ preset, contentType, globalTokens }) => {
     const vars = React.useMemo(() => getCardVariables(preset.tokens, globalTokens), [preset, globalTokens]);
 
     const renderContent = () => {
@@ -162,7 +161,7 @@ const CardSpecimen: React.FC<{ preset: CardPreset, contentType: string }> = ({ p
                 )}
 
                 {/* Spotlight Effect Simulation */}
-                {parseFloat(preset.tokens.cardSpotlight) > 0 && (
+                {parseFloat(preset.tokens.cardSpotlight || globalTokens.cardSpotlight) > 0 && (
                     <div className="absolute inset-0 bg-gradient-to-br from-white/[0.08] to-transparent pointer-events-none opacity-50" />
                 )}
                 
@@ -191,8 +190,8 @@ export const CardsGallery: React.FC<CardsGalleryProps> = ({ tokens, onUpdateDraf
         <div className="p-8 grid grid-cols-1 lg:grid-cols-2 gap-8 overflow-y-auto custom-scrollbar h-full bg-[#020202]">
             {CARD_VARIANTS.map((preset, idx) => {
                 const isActive = tokens.surfaceMaterial === preset.tokens.surfaceMaterial && 
-                               tokens.borderRadius === preset.tokens.borderRadius &&
-                               tokens.borderType === preset.tokens.borderType;
+                                tokens.borderRadius === preset.tokens.borderRadius &&
+                                tokens.borderType === preset.tokens.borderType;
 
                 const contentTypes = ['profile', 'chart', 'control'];
                 const contentType = contentTypes[idx % 3];
@@ -209,6 +208,7 @@ export const CardsGallery: React.FC<CardsGalleryProps> = ({ tokens, onUpdateDraf
                             <CardSpecimen 
                                 preset={preset} 
                                 contentType={contentType}
+                                globalTokens={tokens}
                             />
                             
                             {/* Hover Overlay */}

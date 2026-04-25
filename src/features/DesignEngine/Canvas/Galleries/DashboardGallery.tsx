@@ -19,15 +19,21 @@ export const DashboardGallery: React.FC<DashboardGalleryProps> = ({ onUpdateDraf
                         Object.entries(preset.tokens).forEach(([key, val]) => onUpdateDraft(key, val));
                     }}
                     isActive={tokens.chartStyle === preset.tokens.chartStyle && tokens.widgetSpacing === preset.tokens.widgetSpacing}
+                    globalTokens={tokens}
                 />
             ))}
         </div>
     );
 };
 
-const DashboardSpecimen: React.FC<{ preset: DashboardPreset; onSelect: () => void; isActive: boolean }> = ({ 
-    preset, onSelect, isActive 
+const DashboardSpecimen: React.FC<{ preset: DashboardPreset; onSelect: () => void; isActive: boolean; globalTokens: any }> = ({ 
+    preset, onSelect, isActive, globalTokens 
 }) => {
+    const mergedTokens = { ...globalTokens, ...preset.tokens };
+    const chartStyle = mergedTokens.chartStyle;
+    const spacing = mergedTokens.widgetSpacing;
+    const fillOpacity = mergedTokens.chartFillOpacity;
+
     return (
         <motion.div 
             whileHover={{ y: -4 }}
@@ -53,11 +59,11 @@ const DashboardSpecimen: React.FC<{ preset: DashboardPreset; onSelect: () => voi
                     <div className="grid grid-cols-2 gap-3 pt-4">
                         <div className="p-3 bg-black/40 rounded-xl border border-white/5">
                             <span className="text-[8px] font-black text-white/20 uppercase block mb-1">Style</span>
-                            <span className="text-[10px] font-black text-white uppercase">{preset.tokens.chartStyle}</span>
+                            <span className="text-[10px] font-black text-white uppercase">{chartStyle}</span>
                         </div>
                         <div className="p-3 bg-black/40 rounded-xl border border-white/5">
                             <span className="text-[8px] font-black text-white/20 uppercase block mb-1">Spacing</span>
-                            <span className="text-[10px] font-black text-white uppercase">{preset.tokens.widgetSpacing}px</span>
+                            <span className="text-[10px] font-black text-white uppercase">{spacing}px</span>
                         </div>
                     </div>
                 </div>
@@ -71,7 +77,7 @@ const DashboardSpecimen: React.FC<{ preset: DashboardPreset; onSelect: () => voi
 
                     {/* Simple SVG Chart Simulator */}
                     <div className="w-full h-full pt-8 flex items-end relative">
-                        {preset.tokens.showGridLines && (
+                        {mergedTokens.showGridLines && (
                             <div className="absolute inset-0 flex flex-col justify-between opacity-10 py-8">
                                 <div className="border-t border-white" />
                                 <div className="border-t border-white" />
@@ -83,31 +89,31 @@ const DashboardSpecimen: React.FC<{ preset: DashboardPreset; onSelect: () => voi
                             <motion.path 
                                 initial={{ pathLength: 0 }}
                                 animate={{ pathLength: 1 }}
-                                d={preset.tokens.chartStyle === 'curved' 
+                                d={chartStyle === 'curved' 
                                     ? "M0,60 C20,20 40,80 60,40 S80,10 100,50 L100,100 L0,100 Z"
-                                    : preset.tokens.chartStyle === 'stepped'
+                                    : chartStyle === 'stepped'
                                     ? "M0,80 L20,80 L20,40 L40,40 L40,20 L60,20 L60,60 L80,60 L80,10 L100,10 L100,100 L0,100 Z"
                                     : "M0,80 L20,40 L40,60 L60,20 L80,50 L100,10 L100,100 L0,100 Z"
                                 }
                                 fill="currentColor"
-                                className="text-[var(--theme-primary)]"
-                                style={{ opacity: preset.tokens.chartFillOpacity + 0.1 }}
+                                className="text-[var(--theme-primary)] transition-all duration-500"
+                                style={{ opacity: fillOpacity + 0.1 }}
                                 preserveAspectRatio="none"
                                 viewBox="0 0 100 100"
                             />
                             <motion.path 
                                 initial={{ pathLength: 0 }}
                                 animate={{ pathLength: 1 }}
-                                d={preset.tokens.chartStyle === 'curved' 
+                                d={chartStyle === 'curved' 
                                     ? "M0,60 C20,20 40,80 60,40 S80,10 100,50"
-                                    : preset.tokens.chartStyle === 'stepped'
+                                    : chartStyle === 'stepped'
                                     ? "M0,80 L20,80 L20,40 L40,40 L40,20 L60,20 L60,60 L80,60 L80,10 L100,10"
                                     : "M0,80 L20,40 L40,60 L60,20 L80,50 L100,10"
                                 }
                                 fill="none"
                                 stroke="currentColor"
                                 strokeWidth="2"
-                                className="text-[var(--theme-primary)]"
+                                className="text-[var(--theme-primary)] transition-all duration-500"
                                 preserveAspectRatio="none"
                                 viewBox="0 0 100 100"
                             />
@@ -115,7 +121,7 @@ const DashboardSpecimen: React.FC<{ preset: DashboardPreset; onSelect: () => voi
                     </div>
 
                     {/* Widget Spacing Preview */}
-                    <div className="absolute top-4 right-6 flex gap-1" style={{ gap: `${preset.tokens.widgetSpacing / 4}px` }}>
+                    <div className="absolute top-4 right-6 flex gap-1 transition-all duration-500" style={{ gap: `${spacing / 4}px` }}>
                         <div className="w-6 h-6 rounded bg-white/5 border border-white/5" />
                         <div className="w-6 h-6 rounded bg-white/5 border border-white/5" />
                         <div className="w-6 h-6 rounded bg-white/5 border border-white/5" />
