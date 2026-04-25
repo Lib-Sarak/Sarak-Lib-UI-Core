@@ -33,8 +33,8 @@ export const MockDashboard: React.FC<any> = ({ animationVariants, animationStyle
                     animate={animationVariants[animationStyle]?.page?.animate || animationVariants.none?.page?.animate}
                     transition={{ ...(animationVariants[animationStyle]?.page?.transition || animationVariants.none?.page?.transition), duration: parseFloat(tokens.animationSpeed || '0.4') }}
                     className="col-span-12 lg:col-span-4 bg-theme-card relative overflow-hidden flex flex-col items-center text-center shadow-[var(--theme-shadow)]"
-                    style={{ 
-                        padding: 'var(--theme-card-pad)', 
+                    style={{
+                        padding: 'var(--theme-card-pad)',
                         borderRadius: 'var(--radius-theme)',
                         borderWidth: 'var(--theme-border-width)',
                         borderStyle: 'var(--theme-border-style)',
@@ -66,8 +66,8 @@ export const MockDashboard: React.FC<any> = ({ animationVariants, animationStyle
                     animate={animationVariants[animationStyle]?.page?.animate || animationVariants.none?.page?.animate}
                     transition={{ ...(animationVariants[animationStyle]?.page?.transition || animationVariants.none?.page?.transition), delay: 0.1, duration: parseFloat(tokens.animationSpeed || '0.4') }}
                     className="col-span-12 lg:col-span-8 bg-theme-card relative overflow-hidden shadow-[var(--theme-shadow)]"
-                    style={{ 
-                        padding: 'var(--theme-card-pad)', 
+                    style={{
+                        padding: 'var(--theme-card-pad)',
                         borderRadius: 'var(--radius-theme)',
                         borderWidth: 'var(--theme-border-width)',
                         borderStyle: 'var(--theme-border-style)',
@@ -83,7 +83,7 @@ export const MockDashboard: React.FC<any> = ({ animationVariants, animationStyle
                             </div>
                         </div>
                         <div className="flex-grow min-h-[160px] relative">
-                            <SarakChartEngine 
+                            <SarakChartEngine
                                 type={(tokens?.chartType || 'bar') as any}
                                 data={[
                                     { name: 'Jan', value: 400 },
@@ -113,8 +113,8 @@ export const MockDashboard: React.FC<any> = ({ animationVariants, animationStyle
                     animate={animationVariants[animationStyle]?.page?.animate || animationVariants.none?.page?.animate}
                     transition={{ ...(animationVariants[animationStyle]?.page?.transition || animationVariants.none?.page?.transition), delay: 0.2, duration: parseFloat(tokens.animationSpeed || '0.4') }}
                     className="col-span-12 lg:col-span-4 bg-theme-card relative overflow-hidden shadow-[var(--theme-shadow)]"
-                    style={{ 
-                        padding: 'var(--theme-card-pad)', 
+                    style={{
+                        padding: 'var(--theme-card-pad)',
                         borderRadius: 'var(--radius-theme)',
                         borderWidth: 'var(--theme-border-width)',
                         borderStyle: 'var(--theme-border-style)',
@@ -126,7 +126,7 @@ export const MockDashboard: React.FC<any> = ({ animationVariants, animationStyle
                             <div className="text-xs font-black uppercase tracking-widest text-[var(--theme-muted)]">Core Temperature</div>
                         </div>
                         <div className="w-full h-[140px]">
-                            <SarakChartEngine 
+                            <SarakChartEngine
                                 type="gauge"
                                 data={[{ name: 'Temp', value: 68 }]}
                                 config={{ engine: 'echarts', dataKey: 'value' }}
@@ -137,13 +137,13 @@ export const MockDashboard: React.FC<any> = ({ animationVariants, animationStyle
                 </motion.div>
 
                 {/* Featured Components Widget */}
-                    <motion.div
+                <motion.div
                     initial={animationVariants[animationStyle]?.page?.initial || animationVariants.none?.page?.initial}
                     animate={animationVariants[animationStyle]?.page?.animate || animationVariants.none?.page?.animate}
                     transition={{ ...(animationVariants[animationStyle]?.page?.transition || animationVariants.none?.page?.transition), delay: 0.3, duration: parseFloat(tokens.animationSpeed || '0.4') }}
                     className="col-span-12 bg-theme-card shadow-[var(--theme-shadow)]"
-                    style={{ 
-                        padding: 'var(--theme-card-pad)', 
+                    style={{
+                        padding: 'var(--theme-card-pad)',
                         borderRadius: 'var(--radius-theme)',
                         borderWidth: 'var(--theme-border-width)',
                         borderStyle: 'var(--theme-border-style)',

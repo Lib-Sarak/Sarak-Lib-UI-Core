@@ -34,6 +34,10 @@ def setup_ui_db(ext_engine=None):
     with target_engine.begin() as conn:
         conn.execute(text("CREATE SCHEMA IF NOT EXISTS ui_core"))
         
+    # Importação local para evitar referências circulares
+    from .models import UserDesignConfig
+    Base.metadata.create_all(bind=target_engine)
+
     with target_engine.connect() as conn:
         # Migração Self-Healing (v7.6)
         tables_pk = {
@@ -46,7 +50,6 @@ def setup_ui_db(ext_engine=None):
                 conn.execute(text(f"ALTER TABLE ui_core.{table} ADD COLUMN IF NOT EXISTS system VARCHAR(50) DEFAULT 'global'"))
                 
                 # 2. Verificar se a PK atual já inclui 'system'
-                # Se não incluir, precisamos recriar a PK para ser composta
                 pk_check = f"""
                     SELECT count(*) FROM information_schema.key_column_usage 
                     WHERE table_schema = 'ui_core' AND table_name = '{table}' AND column_name = 'system'
@@ -55,16 +58,12 @@ def setup_ui_db(ext_engine=None):
                 
                 if is_composite == 0:
                     print(f" [Migration] Convertendo PK de {table} para composta (Soberania v7.6)...")
-                    # Remove PK antiga (geralmente nomeada como {table}_pkey no PG)
                     conn.execute(text(f"ALTER TABLE ui_core.{table} DROP CONSTRAINT IF EXISTS {table}_pkey CASCADE"))
-                    # Adiciona nova PK composta
                     conn.execute(text(f"ALTER TABLE ui_core.{table} ADD PRIMARY KEY ({pk_col}, system)"))
                 
                 conn.commit()
             except Exception as e:
+                conn.rollback()
                 print(f" [!] UI-DB Migration info (Table {table}): {e}")
     
-    # Importação local para evitar referências circulares
-    from .models import UserDesignConfig
-    Base.metadata.create_all(bind=target_engine)
     print(">>> [UI-Core DB] Soberania: Schema 'ui_core' verificado com sucesso.")
