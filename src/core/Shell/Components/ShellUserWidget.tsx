@@ -5,7 +5,7 @@ import { motion } from 'framer-motion';
 interface ShellUserWidgetProps {
     user: any;
     logout?: () => void;
-    variant?: 'horizontal' | 'vertical';
+    variant?: 'horizontal' | 'vertical' | 'mini';
     design?: any;
 }
 
@@ -17,6 +17,7 @@ export const ShellUserWidget: React.FC<ShellUserWidgetProps> = ({
     user, logout, variant = 'vertical' 
 }) => {
     const isHorizontal = variant === 'horizontal';
+    const isMini = variant === 'mini';
 
     if (isHorizontal) {
         return (
@@ -50,31 +51,35 @@ export const ShellUserWidget: React.FC<ShellUserWidgetProps> = ({
 
     // Vertical / Sidebar Variant
     return (
-        <div className="p-4 border-t border-[var(--theme-border)] bg-[var(--theme-card)]/50 relative z-20">
-            <div className="flex items-center justify-between group">
-                <div className="flex items-center gap-3">
+        <div className={`p-4 border-t border-[var(--theme-border)] bg-[var(--theme-card)]/50 relative z-20 ${isMini ? 'flex justify-center' : ''}`}>
+            <div className={`flex items-center group ${isMini ? 'flex-col gap-3' : 'justify-between w-full'}`}>
+                <div className={`flex items-center gap-3 ${isMini ? 'flex-col' : ''}`}>
                     <div className="relative w-9 h-9 rounded-xl bg-[var(--theme-primary)]/10 border border-[var(--theme-primary)]/20 flex items-center justify-center text-[var(--theme-primary)] overflow-hidden">
                          <div className="absolute inset-0 bg-gradient-to-tr from-[var(--theme-primary)] to-transparent opacity-10" />
                         <User size={16} />
                     </div>
-                    <div className="flex flex-col overflow-hidden">
-                        <span className="text-xs font-bold text-[var(--theme-title)]/90 leading-tight truncate">
-                            {user?.username || user?.email?.split('@')[0] || 'Sarak User'}
-                        </span>
-                        <div className="flex items-center gap-1.5">
-                            <Shield size={8} className="text-[var(--theme-primary)]" />
-                            <span className="text-[8px] text-[var(--theme-muted)] uppercase tracking-widest font-black">
-                                {user?.level === 100 ? 'Master' : user?.level >= 50 ? 'Admin' : 'User'}
+                    
+                    {!isMini && (
+                        <div className="flex flex-col overflow-hidden">
+                            <span className="text-xs font-bold text-[var(--theme-title)]/90 leading-tight truncate">
+                                {user?.username || user?.email?.split('@')[0] || 'Sarak User'}
                             </span>
+                            <div className="flex items-center gap-1.5">
+                                <Shield size={8} className="text-[var(--theme-primary)]" />
+                                <span className="text-[8px] text-[var(--theme-muted)] uppercase tracking-widest font-black">
+                                    {user?.level === 100 ? 'Master' : user?.level >= 50 ? 'Admin' : 'User'}
+                                </span>
+                            </div>
                         </div>
-                    </div>
+                    )}
                 </div>
+                
                 <button 
                     onClick={logout} 
-                    className="p-2 text-[var(--theme-muted)] hover:text-red-400 hover:bg-red-400/5 rounded-lg transition-all"
+                    className={`p-2 text-[var(--theme-muted)] hover:text-red-400 hover:bg-red-400/5 rounded-lg transition-all ${isMini ? 'bg-red-500/5 text-red-500' : ''}`}
                     title="Logout"
                 >
-                    <LogOut size={14} />
+                    <LogOut size={isMini ? 12 : 14} />
                 </button>
             </div>
         </div>

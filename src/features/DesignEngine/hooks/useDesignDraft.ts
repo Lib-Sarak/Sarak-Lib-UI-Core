@@ -58,7 +58,8 @@ export const useDesignDraft = (sarak: any) => {
         textureOpacity: sarak.textureOpacity || 0.05,
         scaleRatio: sarak.scaleRatio || 1.0,
         contrastCurve: sarak.contrastCurve || 1.0,
-        layeredShadows: sarak.layeredShadows || 1.0
+        layeredShadows: sarak.layeredShadows || 1.0,
+        isNavHidden: sarak.isNavHidden ?? false
     });
 
     const [toast, setToast] = useState<{ type: 'success' | 'warning', message: string } | null>(null);
@@ -83,7 +84,8 @@ export const useDesignDraft = (sarak: any) => {
                 textureOpacity: sarak.textureOpacity || 0.05,
                 scaleRatio: sarak.scaleRatio || 1.0,
                 contrastCurve: sarak.contrastCurve || 1.0,
-                layeredShadows: sarak.layeredShadows || 1.0
+                layeredShadows: sarak.layeredShadows || 1.0,
+                isNavHidden: sarak.isNavHidden ?? false
             });
         }
     }, [sarak.isHydrated]);
@@ -94,12 +96,20 @@ export const useDesignDraft = (sarak: any) => {
     };
 
     const updateDraft = (key: string, value: any) => {
-        setDraft(prev => ({ ...prev, [key]: value }));
+        setDraft(prev => ({ 
+            ...prev, 
+            [key]: value,
+            // Detach from preset theme if any visual property is changed
+            layout: key === 'layout' ? value : 'custom'
+        }));
     };
 
     const handleThemePreview = (id: string) => {
         const presetKey = Object.keys(BASE_PRESETS).find(k => k.toLowerCase() === id.toLowerCase());
-        const preset = presetKey ? (BASE_PRESETS as any)[presetKey] : null;
+        const originalPreset = presetKey ? (BASE_PRESETS as any)[presetKey] : null;
+        
+        // Deep clone the preset to prevent mutation of the original constants
+        const preset = originalPreset ? JSON.parse(JSON.stringify(originalPreset)) : null;
 
         if (!preset) return;
 

@@ -105,6 +105,17 @@ export const PreviewCanvas: React.FC<PreviewCanvasProps> = ({
             }
         });
 
+        // Additional Category 10 Calculations
+        const densityMap: any = { compact: 0.8, comfortable: 1, spacious: 1.25 };
+        const densityFactor = densityMap[tokens.layoutDensity || 'comfortable'] || 1;
+        vars['--ui-density'] = densityFactor;
+        vars['--theme-gap'] = `${(tokens.layoutGap || 20) * densityFactor}px`;
+        vars['--theme-tab-gap'] = `${(tokens.tabGap || 12) * densityFactor}px`;
+        vars['--safe-area-padding'] = `${tokens.tabSectionMargin || 0}px`;
+        vars['--max-content-width'] = tokens.maxContentWidth === 'none' ? '100%' : tokens.maxContentWidth;
+        vars['--sarak-scrollbar-width'] = `${tokens.scrollbarStyle || 6}px`;
+        vars['--haptic-bounce'] = 1 - ((tokens.hapticIntensity || 0.02) * 2); // Amplifying for visual preview
+
         const isLight = tokens.mode === 'light';
         vars['--theme-bg'] = isLight ? '#f1f5f9' : '#020617';
         vars['--theme-card'] = isLight 
@@ -122,7 +133,6 @@ export const PreviewCanvas: React.FC<PreviewCanvasProps> = ({
         }
 
         if (!vars['--radius-theme']) vars['--radius-theme'] = '12px';
-        if (!vars['--theme-gap']) vars['--theme-gap'] = '20px';
 
         return { 
             cssVariables: vars as React.CSSProperties, 
@@ -179,10 +189,36 @@ export const PreviewCanvas: React.FC<PreviewCanvasProps> = ({
     const LogoComponent = () => {
         const logoSrc = tokens.mode === 'light' ? (tokens.logoUrl || tokens.logoDarkUrl) : (tokens.logoDarkUrl || tokens.logoUrl);
         const scale = tokens.logoScale || 1.0;
+        const logoSize = 32 * scale;
+        
         return (
-            <div className={`flex items-center gap-3 ${tokens.logoPosition === 'center' ? 'flex-col text-center' : 'flex-row'}`} style={{ transform: `scale(${scale})`, transformOrigin: tokens.logoPosition === 'center' ? 'center' : 'left center' }}>
-                {logoSrc ? <img src={logoSrc} alt="Logo" className="w-8 h-8 object-contain" /> : <div className="w-8 h-8 rounded-lg bg-[var(--theme-primary)] flex items-center justify-center text-white shadow-lg"><Zap size={16} /></div>}
-                <span className="font-bold text-[var(--theme-title)] text-2xs tracking-widest uppercase">{tokens.systemName || 'SARAK'}</span>
+            <div className={`flex items-center gap-3 ${tokens.logoPosition === 'center' ? 'flex-col text-center' : 'flex-row'}`}>
+                {logoSrc ? (
+                    <div style={{ 
+                        height: `${Math.max(32, logoSize)}px`, 
+                        minWidth: `${Math.max(32, logoSize)}px`, 
+                        display: 'flex', 
+                        alignItems: 'center', 
+                        justifyContent: 'center',
+                        transition: 'all 0.5s ease'
+                    }}>
+                        <img 
+                            src={logoSrc} 
+                            alt="Logo" 
+                            style={{ height: `${logoSize}px`, width: 'auto' }} 
+                            className="object-contain" 
+                        />
+                    </div>
+                ) : (
+                    <div className="w-8 h-8 rounded-lg bg-[var(--theme-primary)] flex items-center justify-center text-white shadow-lg shrink-0">
+                        <Zap size={16 * scale} />
+                    </div>
+                )}
+                {!tokens.isNavHidden && (
+                    <span className="font-bold text-[var(--theme-title)] text-2xs tracking-widest uppercase truncate max-w-[120px]">
+                        {tokens.systemName || 'SARAK'}
+                    </span>
+                )}
             </div>
         );
     };
@@ -250,59 +286,152 @@ export const PreviewCanvas: React.FC<PreviewCanvasProps> = ({
     };
 
     const renderSystemContent = () => (
-        <div className="flex flex-col w-full h-full relative z-10 bg-[var(--theme-bg)]" style={cssVariables} {...dataAttributes}>
+        <div 
+            className="flex flex-col w-full h-full relative z-10 bg-[var(--theme-bg)] transition-all duration-500 overflow-hidden" 
+            style={{ 
+                ...cssVariables, 
+                padding: 'var(--safe-area-padding)',
+            }} 
+            {...dataAttributes}
+        >
+            <style>{`
+                .sarak-preview-btn { transition: transform 0.1s cubic-bezier(0.175, 0.885, 0.32, 1.275); }
+                .sarak-preview-btn:active { transform: scale(var(--haptic-bounce, 0.95)); }
+                
+                /* Preview Scrollbar Parity */
+                .SarakPreviewCanvas *::-webkit-scrollbar {
+                    width: var(--sarak-scrollbar-width) !important;
+                    height: var(--sarak-scrollbar-width) !important;
+                }
+                .SarakPreviewCanvas *::-webkit-scrollbar-track {
+                    background: transparent;
+                }
+                .SarakPreviewCanvas *::-webkit-scrollbar-thumb {
+                    background: var(--theme-border);
+                    border-radius: 10px;
+                }
+                .SarakPreviewCanvas *::-webkit-scrollbar-thumb:hover {
+                    background: var(--theme-primary);
+                }
+            `}</style>
+
             {tokens.texture && tokens.texture !== 'none' && <div className={`absolute inset-0 pointer-events-none z-0 texture-${tokens.texture} SarakAtmosphereLayer`} />}
             
             {tokens.navigationStyle === 'topbar' ? (
-                <div className="flex flex-col w-full h-full relative z-10">
-                    <header className="sarak-shell-header h-14 border border-[var(--theme-border)] flex items-center justify-between px-6 bg-[var(--theme-card)] backdrop-blur-md relative z-20" style={{ margin: 'var(--theme-tab-section-margin)', borderRadius: 'calc(var(--radius-theme) * 0.8)', boxShadow: 'var(--theme-shadow)' }}>
-                        <LogoComponent />
-                        <nav className="flex h-full items-center">
-                            {appIds.map((id) => (
-                                <button key={id} onClick={() => setActivePreviewApp(id)} className={`px-4 flex items-center gap-2 h-8 rounded-lg transition-all text-2xs font-black uppercase tracking-widest ${activePreviewApp === id ? 'bg-[var(--theme-primary)] text-white shadow-lg' : 'text-[var(--theme-muted)] hover:text-[var(--theme-title)]'}`}>
-                                    {appIcons[id]}
-                                </button>
-                            ))}
-                        </nav>
-                        <div className="flex items-center gap-4">
-                            <div className="hidden md:flex items-center w-32 h-8 bg-white/5 border border-white/10 rounded-lg px-3 gap-2">
-                                <Search size={12} className="text-white/20" />
-                                <span className="text-[10px] text-white/20 font-bold uppercase tracking-wider">Search...</span>
-                            </div>
-                            <LanguageSelector />
-                            <Bell size={14} className="text-white/20" />
-                            <UserWidget variant="horizontal" />
-                        </div>
-                    </header>
-                    <main className="flex-1 overflow-y-auto p-8 custom-scrollbar">{apps[activePreviewApp]}</main>
+                <div className="flex flex-col w-full h-full relative z-10 overflow-hidden">
+                    <AnimatePresence>
+                        {!tokens.isNavHidden && (
+                            <motion.header 
+                                initial={{ y: -100, opacity: 0 }}
+                                animate={{ y: 0, opacity: 1 }}
+                                exit={{ y: -100, opacity: 0 }}
+                                className="sarak-shell-header h-14 border border-[var(--theme-border)] flex items-center justify-between px-6 bg-[var(--theme-card)] backdrop-blur-md relative z-20" 
+                                style={{ margin: 'var(--safe-area-padding)', borderRadius: 'calc(var(--radius-theme) * 0.8)', boxShadow: 'var(--theme-shadow)' }}
+                            >
+                                <LogoComponent />
+                                <nav 
+                                    className="flex h-full items-center overflow-x-auto custom-scrollbar-hide px-4" 
+                                    style={{ 
+                                        gap: 'var(--theme-tab-gap)', 
+                                        justifyContent: appIds.length > 5 ? 'flex-start' : 'center',
+                                        maskImage: 'linear-gradient(to right, transparent, black 20px, black calc(100% - 20px), transparent)',
+                                        WebkitMaskImage: 'linear-gradient(to right, transparent, black 20px, black calc(100% - 20px), transparent)'
+                                    }}
+                                >
+                                    {appIds.map((id) => (
+                                        <button key={id} onClick={() => setActivePreviewApp(id)} className={`sarak-preview-btn px-4 flex items-center gap-2 h-8 rounded-lg transition-all text-2xs font-black uppercase tracking-widest shrink-0 ${activePreviewApp === id ? 'bg-[var(--theme-primary)] text-white shadow-lg' : 'text-[var(--theme-muted)] hover:text-[var(--theme-title)]'}`}>
+                                            {appIcons[id]}
+                                        </button>
+                                    ))}
+                                </nav>
+                                <div className="flex items-center gap-4">
+                                    <div className="hidden md:flex items-center w-32 h-8 bg-white/5 border border-white/10 rounded-lg px-3 gap-2">
+                                        <Search size={12} className="text-white/20" />
+                                        <span className="text-[10px] text-white/20 font-bold uppercase tracking-wider">Search...</span>
+                                    </div>
+                                    <LanguageSelector />
+                                    <Bell size={14} className="text-white/20" />
+                                    <UserWidget variant="horizontal" />
+                                </div>
+                            </motion.header>
+                        )}
+                    </AnimatePresence>
+                    <main 
+                        className="flex-1 overflow-y-auto p-8 custom-scrollbar" 
+                        style={{ 
+                            padding: `calc(32px * var(--ui-density))`,
+                            maxWidth: 'var(--max-content-width)',
+                            margin: '0 auto',
+                            width: '100%'
+                        }}
+                    >
+                        {apps[activePreviewApp]}
+                    </main>
                 </div>
             ) : (
                 <div className="flex w-full h-full relative z-10">
-                    <aside className="sarak-shell-sidebar border border-[var(--theme-border)] flex flex-col bg-[var(--theme-card)] backdrop-blur-md relative z-20" style={{ width: `${tokens.sidebarWidth || 180}px`, margin: 'var(--theme-tab-section-margin)', borderRadius: 'calc(var(--radius-theme) * 0.8)', boxShadow: 'var(--theme-shadow)' }}>
-                        <div className="p-6 border-b border-[var(--theme-border)] flex items-center justify-center">
+                    <aside 
+                        className="sarak-shell-sidebar border border-[var(--theme-border)] flex flex-col bg-[var(--theme-card)] backdrop-blur-md relative z-20 transition-all duration-500 overflow-hidden" 
+                        style={{ 
+                            width: tokens.isNavHidden ? '74px' : `${(tokens.sidebarWidth || 240) * (tokens.layoutDensity === 'compact' ? 0.9 : 1)}px`, 
+                            margin: 'var(--safe-area-padding)', 
+                            borderRadius: 'calc(var(--radius-theme) * 0.8)', 
+                            boxShadow: 'var(--theme-shadow)' 
+                        }}
+                    >
+                        <div className={`p-6 border-b border-[var(--theme-border)] flex items-center ${tokens.isNavHidden ? 'justify-center' : 'justify-between'}`}>
                             <LogoComponent />
                         </div>
-                        <nav className="flex-1 p-4 space-y-1">
-                            <div className="mb-4 px-2 py-2 bg-white/5 border border-white/10 rounded-lg flex items-center gap-3">
-                                <Search size={14} className="text-white/20" />
-                                <span className="text-[10px] text-white/20 font-bold uppercase tracking-wider">Search</span>
-                            </div>
+                        <nav className="flex-1 p-4 overflow-x-hidden" style={{ display: 'flex', flexDirection: 'column', gap: 'var(--theme-tab-gap)' }}>
+                            {!tokens.isNavHidden && (
+                                <div className="mb-4 px-2 py-2 bg-white/5 border border-white/10 rounded-lg flex items-center gap-3">
+                                    <Search size={14} className="text-white/20" />
+                                    <span className="text-[10px] text-white/20 font-bold uppercase tracking-wider">Search</span>
+                                </div>
+                            )}
                             {appIds.map((id) => (
-                                <button key={id} onClick={() => setActivePreviewApp(id)} className={`w-full flex items-center gap-3 px-4 py-3 rounded-lg transition-all text-2xs font-black uppercase tracking-widest ${activePreviewApp === id ? 'bg-[var(--theme-primary)] text-white shadow-lg' : 'text-[var(--theme-muted)] hover:bg-white/5 hover:text-[var(--theme-title)]'}`}>
-                                    {appIcons[id]}{id}
+                                <button key={id} onClick={() => setActivePreviewApp(id)} className={`sarak-preview-btn w-full flex items-center gap-3 px-4 py-3 rounded-lg transition-all text-2xs font-black uppercase tracking-widest ${tokens.isNavHidden ? 'justify-center' : ''} ${activePreviewApp === id ? 'bg-[var(--theme-primary)] text-white shadow-lg' : 'text-[var(--theme-muted)] hover:bg-white/5 hover:text-[var(--theme-title)]'}`}>
+                                    <div className="shrink-0">{appIcons[id]}</div>
+                                    {!tokens.isNavHidden && id}
                                 </button>
                             ))}
                         </nav>
                         <div className="p-2 space-y-1">
-                            <LanguageSelector variant="vertical" />
-                            <div className="flex items-center gap-3 px-4 py-2 rounded-lg text-white/20">
+                            <LanguageSelector variant={tokens.isNavHidden ? 'horizontal' : 'vertical'} />
+                            <div className={`flex items-center gap-3 px-4 py-2 rounded-lg text-white/20 ${tokens.isNavHidden ? 'justify-center' : ''}`}>
                                 <Bell size={14} />
-                                <span className="text-[10px] font-bold uppercase tracking-wider">Alerts</span>
+                                {!tokens.isNavHidden && <span className="text-[10px] font-bold uppercase tracking-wider">Alerts</span>}
                             </div>
                         </div>
-                        <UserWidget variant="vertical" />
+                        <UserWidget variant={tokens.isNavHidden ? 'horizontal' : 'vertical'} />
                     </aside>
-                    <main className="flex-1 overflow-y-auto p-8 custom-scrollbar relative z-10">{apps[activePreviewApp]}</main>
+
+                    {/* SECONDARY MODULE (Split View) */}
+                    <AnimatePresence>
+                        {tokens.isSplitViewEnabled && (
+                            <motion.aside 
+                                initial={{ x: -20, opacity: 0 }}
+                                animate={{ x: 0, opacity: 1 }}
+                                exit={{ x: -20, opacity: 0 }}
+                                className="w-48 border-r border-[var(--theme-border)] bg-[var(--theme-card)]/30 backdrop-blur-sm flex flex-col p-4 relative z-10"
+                                style={{ margin: 'var(--theme-tab-section-margin) 0' }}
+                            >
+                                <div className="text-[10px] font-black text-[var(--theme-primary)] uppercase tracking-widest mb-4 px-2 flex items-center gap-2">
+                                    <Grid size={10} />
+                                    Sub-Module
+                                </div>
+                                <div className="space-y-2">
+                                    {[1, 2, 3].map(i => (
+                                        <div key={i} className={`p-2 rounded-lg text-[9px] font-bold uppercase tracking-wider transition-colors cursor-pointer ${i === 1 ? 'bg-white/10 text-white' : 'text-white/20 hover:bg-white/5'}`}>
+                                            Section {i}
+                                        </div>
+                                    ))}
+                                </div>
+                            </motion.aside>
+                        )}
+                    </AnimatePresence>
+
+                    <main className="flex-1 overflow-y-auto p-8 custom-scrollbar relative z-10 transition-all duration-500 ease-in-out" style={{ padding: `calc(32px * var(--ui-density))` }}>{apps[activePreviewApp]}</main>
                 </div>
             )}
         </div>
@@ -359,6 +488,24 @@ export const PreviewCanvas: React.FC<PreviewCanvasProps> = ({
                     )}
                 </div>
             </UIContext.Provider>
+            <style dangerouslySetInnerHTML={{ __html: `
+                .custom-scrollbar::-webkit-scrollbar {
+                    width: var(--scrollbar-width, 6px);
+                    height: var(--scrollbar-width, 6px);
+                }
+                .custom-scrollbar::-webkit-scrollbar-track {
+                    background: transparent;
+                }
+                .custom-scrollbar::-webkit-scrollbar-thumb {
+                    background: var(--theme-primary);
+                    border-radius: 10px;
+                    opacity: 0.5;
+                }
+                .sarak-preview-btn:active {
+                    transform: scale(var(--haptic-bounce, 0.98)) !important;
+                    transition: transform 0.1s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+                }
+            `}} />
         </div>
     );
 };

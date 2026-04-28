@@ -19,11 +19,19 @@ export const LayoutSection: React.FC<LayoutSectionProps> = ({ draft, updateDraft
                 </div>
                 <div className="grid grid-cols-2 gap-4 mt-4">
                     <button 
+                        onClick={() => updateDraft('isNavHidden', !draft.isNavHidden)}
+                        className={`py-2 rounded-lg text-3xs font-black uppercase transition-all ${draft.isNavHidden ? 'bg-amber-500 text-white' : 'bg-white/5 text-white/20'}`}
+                    >
+                        {draft.isNavHidden ? 'Nav: Recolhida' : 'Nav: Expandida'}
+                    </button>
+                    <button 
                         onClick={() => updateDraft('isAutoHideEnabled', !draft.isAutoHideEnabled)}
                         className={`py-2 rounded-lg text-3xs font-black uppercase transition-all ${draft.isAutoHideEnabled ? 'bg-[var(--theme-primary)] text-white' : 'bg-white/5 text-white/20'}`}
                     >
                         {draft.isAutoHideEnabled ? 'Auto-Hide On' : 'Auto-Hide Off'}
                     </button>
+                </div>
+                <div className="mt-4">
                     <SelectControl 
                         label="Módulo Secundário" 
                         options={[{id: 'none', label: 'Nenhum'}, {id: 'help', label: 'Ajuda'}, {id: 'notifs', label: 'Notificações'}]} 

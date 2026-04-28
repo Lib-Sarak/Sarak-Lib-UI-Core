@@ -5,14 +5,14 @@ export const MockComponents: React.FC<any> = ({ tokens }) => {
         <div className="space-y-8">
             <h3 className="text-sm font-bold text-[var(--theme-title)] mb-6">Component Showcase</h3>
             
-            <div className="grid grid-cols-2 gap-6">
+            <div className="grid grid-cols-2" style={{ gap: 'var(--theme-gap)' }}>
                 {/* Buttons */}
                 <div className="space-y-4">
                     <div className="text-2xs font-black uppercase tracking-widest text-[var(--theme-muted)]">Button States</div>
                     <div className="flex flex-col gap-3">
-                        <button className="bg-[var(--theme-primary)] text-white px-4 py-2 rounded-theme shadow-theme font-bold text-xs">Primary Action</button>
-                        <button className="border border-[var(--theme-primary)] text-[var(--theme-primary)] px-4 py-2 rounded-theme font-bold text-xs">Secondary Outline</button>
-                        <button className="text-[var(--theme-title)] px-4 py-2 rounded-theme bg-white/5 font-bold text-xs">Ghost Neutral</button>
+                        <button className="sarak-preview-btn bg-[var(--theme-primary)] text-white px-4 py-2 rounded-theme shadow-theme font-bold text-xs">Primary Action</button>
+                        <button className="sarak-preview-btn border border-[var(--theme-primary)] text-[var(--theme-primary)] px-4 py-2 rounded-theme font-bold text-xs">Secondary Outline</button>
+                        <button className="sarak-preview-btn text-[var(--theme-title)] px-4 py-2 rounded-theme bg-white/5 font-bold text-xs">Ghost Neutral</button>
                     </div>
                 </div>
 

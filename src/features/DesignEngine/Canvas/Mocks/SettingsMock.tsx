@@ -20,7 +20,7 @@ export const MockSettings: React.FC<any> = ({ animationVariants, animationStyle,
                     }}
                 />
                 
-                <div className="relative z-10 flex flex-col items-center justify-center h-full gap-8">
+                <div className="relative z-10 flex flex-col items-center justify-center h-full" style={{ gap: 'var(--theme-gap)' }}>
                     <div 
                         className="p-4 bg-[var(--theme-primary)]/20 border border-[var(--theme-primary)]/40 flex items-center gap-3 shadow-[0_0_20px_rgba(var(--theme-primary-rgb),0.2)]"
                         style={{ borderRadius: `${tokens?.flowNodeRadius ?? 12}px` }}

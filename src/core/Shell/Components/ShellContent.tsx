@@ -26,7 +26,7 @@ export const ShellContent: React.FC<ShellContentProps> = ({
                 <div className={`absolute inset-0 pointer-events-none z-0 texture-${texture} SarakAtmosphereLayer`} />
             )}
 
-            <div className="flex-1 flex flex-col relative w-full pt-8 lg:pt-12 z-10" style={{ gap: `var(--theme-gap, ${layoutGap}px)` }}>
+            <div className="flex-1 flex flex-col relative w-full pt-8 lg:pt-12 z-10 transition-all duration-500" style={{ gap: `var(--theme-gap, ${layoutGap}px)`, padding: `var(--safe-area-padding, 0)` }}>
                 <AnimatePresence mode="wait">
                     {activeModule ? (
                         <motion.div key={activeModule.id} initial={{ opacity: 0, y: 10 }} animate={{ opacity: 1, y: 0 }} exit={{ opacity: 0, y: -10 }} transition={{ duration: 0.3 }} className="pb-12 flex flex-col min-h-full" style={{ paddingLeft: 'var(--theme-pad)', paddingRight: 'var(--theme-pad)' }}>

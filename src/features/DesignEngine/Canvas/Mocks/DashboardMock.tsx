@@ -42,7 +42,7 @@ export const MockDashboard: React.FC<any> = ({ animationVariants, animationStyle
     );
 
     const renderExecutiveLayout = () => (
-        <div className="grid grid-cols-12 auto-rows-fr gap-8">
+        <div className="grid grid-cols-12 auto-rows-fr" style={{ gap: 'var(--theme-gap)' }}>
              {/* Card de Receita */}
              <motion.div {...getAnim(0)} className="col-span-12 lg:col-span-4 bg-theme-card sarak-card flex flex-col justify-between shadow-2xl relative overflow-hidden" style={cardStyle}>
                 <div className="absolute -top-4 -right-4 p-8 opacity-5">
@@ -58,7 +58,7 @@ export const MockDashboard: React.FC<any> = ({ animationVariants, animationStyle
                         <span className="text-sm font-bold text-emerald-500">+24.5% <span className="opacity-40 text-[10px] uppercase ml-1">vs Quarter 3</span></span>
                     </div>
                 </div>
-                <button className="w-full py-4 bg-[var(--theme-primary)] text-white text-[11px] font-black uppercase tracking-[0.2em] rounded-2xl hover:brightness-110 transition-all flex items-center justify-center gap-3 shadow-xl shadow-[var(--theme-primary)]/20 relative z-10">
+                <button className="sarak-preview-btn w-full py-4 bg-[var(--theme-primary)] text-white text-[11px] font-black uppercase tracking-[0.2em] rounded-2xl hover:brightness-110 transition-all flex items-center justify-center gap-3 shadow-xl shadow-[var(--theme-primary)]/20 relative z-10">
                     <Download size={16} />
                     Download Report
                 </button>
@@ -88,7 +88,7 @@ export const MockDashboard: React.FC<any> = ({ animationVariants, animationStyle
              </motion.div>
 
              {/* Cards de KPI Inferiores */}
-             <div className="col-span-12 grid grid-cols-3 gap-8">
+             <div className="col-span-12 grid grid-cols-3" style={{ gap: 'var(--theme-gap)' }}>
                 {[
                     { label: 'Conversion Rate', val: '3.2%', icon: Zap, color: 'text-amber-500' },
                     { label: 'Active Users', val: '44.5k', icon: Globe, color: 'text-blue-500' },

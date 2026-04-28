@@ -209,16 +209,14 @@ export const DESIGN_MANIFEST: Record<string, {
     chartSmoothing: { attr: 'data-chart-smoothing' },
     buttonHoverEffect: { attr: 'data-button-hover', vars: ['--sarak-button-hover'] },
     inputStyle: { attr: 'data-input-style', vars: ['--sarak-input-style'] },
-    // Industrial Excellence Phase (v8.0)
     atmosphereNoiseOpacity: { vars: ['--sarak-noise-opacity', '--theme-noise-opacity'] },
     glassSaturation: { vars: ['--sarak-glass-saturation', '--theme-glass-saturation'], unit: '%' },
     iconStrokeWidth: { vars: ['--sarak-icon-stroke', '--theme-icon-stroke'], unit: 'px' },
     maxContentWidth: { vars: ['--sarak-max-width', '--theme-max-width'] },
     useTabularNums: { attr: 'data-tabular-nums', vars: ['--sarak-tabular-nums'], transform: (v) => v ? 'tabular-nums' : 'normal' },
-    hapticIntensity: { vars: ['--sarak-haptic-scale'], transform: (v) => 1 - (parseFloat(v) || 0.02) },
-    scrollbarStyle: { attr: 'data-scrollbar-style', vars: ['--sarak-scrollbar-width'], unit: 'px' },
+    hapticIntensity: { vars: ['--haptic-intensity', '--sarak-haptic-scale'], transform: (v) => 1 - (parseFloat(v) || 0.02) },
+    scrollbarStyle: { vars: ['--sarak-scrollbar-width'], unit: 'px', attr: 'data-scrollbar-style' },
     fluidScaling: { 
-
         vars: ['--sarak-fluid-scale'], 
         transform: (v) => {
             const factor = parseFloat(v) || 1.0;
@@ -228,7 +226,10 @@ export const DESIGN_MANIFEST: Record<string, {
                 padding: `clamp(16px, ${1.5 * factor}vw + 8px, ${48 * factor}px)`
             };
         }
-    }
+    },
+    isNavHidden: { vars: ['--is-nav-hidden'], attr: 'data-nav-hidden' },
+    tabSectionMargin: { vars: ['--safe-area-padding'], unit: 'px' },
+    layoutGap: { vars: ['--theme-gap', '--sarak-layout-gap'], unit: 'px' }
 };
 
 const BEZIER_CURVES = {

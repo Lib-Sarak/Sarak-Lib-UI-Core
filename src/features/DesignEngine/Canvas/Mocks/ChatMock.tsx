@@ -16,7 +16,7 @@ export const MockChat: React.FC<any> = ({ tokens }) => {
 
     return (
         <div className="flex flex-col h-full bg-transparent p-4">
-            <div className="flex-grow flex flex-col gap-6 mb-4 overflow-y-auto custom-scrollbar">
+            <div className="flex-grow flex flex-col mb-4 overflow-y-auto custom-scrollbar" style={{ gap: 'var(--theme-gap)' }}>
                 
                 {/* Bot Message */}
                 <motion.div
@@ -93,7 +93,7 @@ export const MockChat: React.FC<any> = ({ tokens }) => {
                 <div className="flex-1 px-4 py-2 text-xs text-white/20 font-bold uppercase tracking-widest">
                     {t({ formal: 'Digite sua mensagem...', friendly: 'Fala comigo...', cyber: 'INPUT_BUFFER...' })}
                 </div>
-                <div className="w-8 h-8 rounded-xl bg-[var(--theme-primary)] flex items-center justify-center">
+                <div className="sarak-preview-btn w-8 h-8 rounded-xl bg-[var(--theme-primary)] flex items-center justify-center cursor-pointer">
                     <Zap size={14} className="text-white" />
                 </div>
             </div>
