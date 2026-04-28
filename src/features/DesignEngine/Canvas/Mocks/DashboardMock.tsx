@@ -1,192 +1,148 @@
 import React from 'react';
 import { motion } from 'framer-motion';
-import { Zap } from 'lucide-react';
+import { Zap, Activity, Cpu, Shield, Globe, Terminal, ArrowUpRight, TrendingUp, AlertTriangle, Server, Database, Network, HardDrive, BarChart, Clock, Settings, Download } from 'lucide-react';
 import SarakChartEngine from '../../../../components/engines/charts/SarakChartEngine';
 
 export const MockDashboard: React.FC<any> = ({ animationVariants, animationStyle, tokens }) => {
+    const tone = tokens?.systemTone || 'formal';
+    const layout = tokens?.dashboardTemplate || 'executive';
+
+    const t = (texts: { formal: string; friendly: string; cyber: string }) => {
+        return texts[tone as keyof typeof texts] || texts.formal;
+    };
+
+    // Estilo de Card Reativo (Deixa o CSS gerenciar Materiais e Texturas)
+    const cardStyle = {
+        padding: `${tokens.cardPadding || 24}px`,
+    };
+
+    const getAnim = (index: number) => ({
+        initial: animationVariants[animationStyle]?.page?.initial || animationVariants.none?.page?.initial,
+        animate: animationVariants[animationStyle]?.page?.animate || animationVariants.none?.page?.animate,
+        transition: { 
+            ...(animationVariants[animationStyle]?.page?.transition || animationVariants.none?.page?.transition), 
+            delay: index * 0.05, 
+            duration: parseFloat(tokens.animationSpeed || '0.4') 
+        }
+    });
+
+    const MiniSpark = ({ color = 'text-[var(--theme-primary)]', opacity = 0.2 }) => (
+        <div className={`h-10 w-full mt-auto`} style={{ opacity }}>
+            <svg viewBox="0 0 100 30" className="w-full h-full" preserveAspectRatio="none">
+                <polyline 
+                    points="0,15 10,25 20,5 30,20 40,10 50,28 60,12 70,25 80,8 90,20 100,10" 
+                    fill="none" 
+                    stroke="currentColor" 
+                    strokeWidth="2" 
+                    className={color}
+                    vectorEffect="non-scaling-stroke"
+                />
+            </svg>
+        </div>
+    );
+
+    const renderExecutiveLayout = () => (
+        <div className="grid grid-cols-12 auto-rows-fr gap-8">
+             {/* Card de Receita */}
+             <motion.div {...getAnim(0)} className="col-span-12 lg:col-span-4 bg-theme-card sarak-card flex flex-col justify-between shadow-2xl relative overflow-hidden" style={cardStyle}>
+                <div className="absolute -top-4 -right-4 p-8 opacity-5">
+                    <TrendingUp size={160} />
+                </div>
+                <div className="relative z-10">
+                    <h4 className="text-5xl font-black text-[var(--theme-title)] mb-2 tracking-tighter">$2.4M</h4>
+                    <div className="text-[11px] font-black text-[var(--theme-muted)] uppercase tracking-[0.3em] mb-6">Projected Revenue</div>
+                    <div className="flex items-center gap-3 mb-8">
+                        <div className="p-1.5 bg-emerald-500/10 rounded-lg">
+                            <TrendingUp className="text-emerald-500 w-4 h-4" />
+                        </div>
+                        <span className="text-sm font-bold text-emerald-500">+24.5% <span className="opacity-40 text-[10px] uppercase ml-1">vs Quarter 3</span></span>
+                    </div>
+                </div>
+                <button className="w-full py-4 bg-[var(--theme-primary)] text-white text-[11px] font-black uppercase tracking-[0.2em] rounded-2xl hover:brightness-110 transition-all flex items-center justify-center gap-3 shadow-xl shadow-[var(--theme-primary)]/20 relative z-10">
+                    <Download size={16} />
+                    Download Report
+                </button>
+             </motion.div>
+
+             {/* Card de Gráfico Principal */}
+             <motion.div {...getAnim(1)} className="col-span-12 lg:col-span-8 bg-theme-card sarak-card" style={cardStyle}>
+                <div className="flex justify-between items-start mb-10">
+                    <div>
+                        <div className="text-[12px] font-black uppercase tracking-[0.25em] text-[var(--theme-muted)]">Market Share Growth</div>
+                        <div className="text-[10px] font-bold opacity-30 uppercase tracking-widest mt-2">Sarak Intelligence Engine v8.5.2</div>
+                    </div>
+                    <div className="px-4 py-1.5 bg-[var(--theme-primary)]/5 border border-[var(--theme-primary)]/10 rounded-full text-[9px] text-[var(--theme-primary)] font-black uppercase tracking-[0.2em]">
+                        2024 GLOBAL DATA
+                    </div>
+                </div>
+                <div className="h-[280px]">
+                    <SarakChartEngine
+                        type="bar"
+                        data={[
+                            { n: 'Jan', v: 400 }, { n: 'Feb', v: 800 }, { n: 'Mar', v: 600 },
+                            { n: 'Apr', v: 950 }, { n: 'May', v: 700 }, { n: 'Jun', v: 1200 }
+                        ]}
+                        config={{ engine: 'echarts', dataKey: 'v', xAxisKey: 'n' }}
+                    />
+                </div>
+             </motion.div>
+
+             {/* Cards de KPI Inferiores */}
+             <div className="col-span-12 grid grid-cols-3 gap-8">
+                {[
+                    { label: 'Conversion Rate', val: '3.2%', icon: Zap, color: 'text-amber-500' },
+                    { label: 'Active Users', val: '44.5k', icon: Globe, color: 'text-blue-500' },
+                    { label: 'Bounce Rate', val: '12.4%', icon: Shield, color: 'text-emerald-500' }
+                ].map((stat, i) => (
+                    <motion.div key={i} {...getAnim(i+2)} className="bg-theme-card sarak-card flex flex-col gap-6 relative overflow-hidden" style={cardStyle}>
+                        <div className="flex items-center gap-5 relative z-10">
+                            <div className={`w-12 h-12 rounded-2xl bg-white/5 flex items-center justify-center ${stat.color} shadow-inner`}>
+                                <stat.icon size={24} />
+                            </div>
+                            <div>
+                                <div className="text-[10px] font-black text-[var(--theme-muted)] uppercase tracking-[0.2em] mb-1">{stat.label}</div>
+                                <div className="text-2xl font-black text-[var(--theme-title)] tracking-tight">{stat.val}</div>
+                            </div>
+                        </div>
+                        <MiniSpark color={stat.color} />
+                    </motion.div>
+                ))}
+             </div>
+        </div>
+    );
+
     return (
-        <>
-            <header className="mb-8" style={{ marginBottom: 'var(--theme-gap)' }}>
-                <h3
-                    style={{
-                        fontFamily: "var(--font-heading)",
-                        fontWeight: "var(--heading-weight)",
-                        letterSpacing: "var(--heading-spacing)",
-                        fontSize: 'calc(var(--theme-font-size-base) * 1.8)'
-                    }}
-                    className="text-[var(--theme-title)] mb-2"
-                >
-                    Elite Dashboard
-                </h3>
-                <p className="text-[var(--theme-main)] opacity-60" style={{ fontFamily: "var(--font-main)", fontSize: 'calc(var(--theme-font-size-base) * 0.9)' }}>
-                    Sistema unificado de telemetria em tempo real.
-                </p>
+        <div className="h-full flex flex-col bg-black/10 overflow-y-auto" style={{ padding: `${(tokens.cardPadding || 24) * 1.5}px` }}>
+            <header className="mb-16 flex justify-between items-start">
+                <div>
+                    <h3 className="text-4xl font-black text-[var(--theme-title)] tracking-tighter mb-2">
+                        {layout === 'monitoring' ? 'Infrastructure Overseer' : 'Executive Business Core'}
+                    </h3>
+                    <div className="flex items-center gap-3">
+                        <div className="w-2.5 h-2.5 rounded-full bg-emerald-500 animate-pulse shadow-[0_0_10px_rgba(16,185,129,0.4)]" />
+                        <p className="text-[12px] font-black text-[var(--theme-muted)] uppercase tracking-[0.4em] opacity-40">
+                            {t({ formal: 'Operational Parity: Optimal', friendly: 'Everything looks great!', cyber: 'SYS_OVERVIEW_CHANNEL_SYNCED' })}
+                        </p>
+                    </div>
+                </div>
+                <div className="flex gap-3">
+                    <div className="px-5 py-2 bg-white/5 border border-white/10 rounded-2xl text-[10px] font-black text-white/30 uppercase tracking-widest shadow-inner">v8.5.2_Quant</div>
+                    <div className="px-5 py-2 bg-emerald-500/10 border border-emerald-500/20 rounded-2xl text-[10px] font-black text-emerald-500 uppercase tracking-widest shadow-lg shadow-emerald-500/5">Production</div>
+                </div>
             </header>
 
-            <div
-                className="grid grid-cols-12 auto-rows-fr flex-grow"
-                style={{ gap: "var(--theme-gap, 1.5rem)" }}
-            >
-                {/* Agent Profile Widget */}
-                <motion.div
-                    initial={animationVariants[animationStyle]?.page?.initial || animationVariants.none?.page?.initial}
-                    animate={animationVariants[animationStyle]?.page?.animate || animationVariants.none?.page?.animate}
-                    transition={{ ...(animationVariants[animationStyle]?.page?.transition || animationVariants.none?.page?.transition), duration: parseFloat(tokens.animationSpeed || '0.4') }}
-                    className="col-span-12 lg:col-span-4 bg-theme-card relative overflow-hidden flex flex-col items-center text-center shadow-[var(--theme-shadow)]"
-                    style={{
-                        padding: 'var(--theme-card-pad)',
-                        borderRadius: 'var(--radius-theme)',
-                        borderWidth: 'var(--theme-border-width)',
-                        borderStyle: 'var(--theme-border-style)',
-                        borderColor: 'var(--theme-border)'
-                    }}
-                >
-                    <div className="relative z-10 w-full">
-                        <div className="w-16 h-16 rounded-full bg-[var(--theme-primary)]/10 border-2 border-[var(--theme-primary)]/30 mx-auto mb-4 flex items-center justify-center">
-                            <Zap className="w-8 h-8 text-[var(--theme-primary)]" />
-                        </div>
-                        <div className="text-sm font-bold text-[var(--theme-title)] mb-1">Sarak AI Elite</div>
-                        <div className="text-2xs text-[var(--theme-muted)] uppercase font-black tracking-widest mb-1">Layout</div>
-                        <div className="grid grid-cols-2 gap-2 w-full">
-                            <div className="p-2 bg-[var(--theme-card)] border border-[var(--theme-border)] !rounded-lg flex flex-col items-center justify-center">
-                                <div className="text-3xs text-[var(--theme-muted)] mb-1 uppercase">Status</div>
-                                <div className="text-2xs font-bold text-emerald-500">Active</div>
-                            </div>
-                            <div className="p-2 bg-[var(--theme-card)] border border-[var(--theme-border)] !rounded-lg flex flex-col items-center justify-center">
-                                <div className="text-3xs text-[var(--theme-muted)] mb-1 uppercase">Uptime</div>
-                                <div className="text-2xs font-bold text-[var(--theme-title)]">99.9%</div>
-                            </div>
-                        </div>
-                    </div>
-                </motion.div>
-
-                {/* Large Performance Widget */}
-                <motion.div
-                    initial={animationVariants[animationStyle]?.page?.initial || animationVariants.none?.page?.initial}
-                    animate={animationVariants[animationStyle]?.page?.animate || animationVariants.none?.page?.animate}
-                    transition={{ ...(animationVariants[animationStyle]?.page?.transition || animationVariants.none?.page?.transition), delay: 0.1, duration: parseFloat(tokens.animationSpeed || '0.4') }}
-                    className="col-span-12 lg:col-span-8 bg-theme-card relative overflow-hidden shadow-[var(--theme-shadow)]"
-                    style={{
-                        padding: 'var(--theme-card-pad)',
-                        borderRadius: 'var(--radius-theme)',
-                        borderWidth: 'var(--theme-border-width)',
-                        borderStyle: 'var(--theme-border-style)',
-                        borderColor: 'var(--theme-border)'
-                    }}
-                >
-                    <div className="relative z-10 h-full flex flex-col">
-                        <div className="flex justify-between items-center mb-6">
-                            <div className="text-xs font-black uppercase tracking-widest text-[var(--theme-muted)]">Performance Telemetry</div>
-                            <div className="flex gap-2">
-                                <div className="w-2 h-2 rounded-full bg-emerald-500 animate-pulse"></div>
-                                <span className="text-2xs font-bold text-[var(--theme-primary)] uppercase">Live</span>
-                            </div>
-                        </div>
-                        <div className="flex-grow min-h-[160px] relative">
-                            <SarakChartEngine
-                                type={(tokens?.chartType || 'bar') as any}
-                                data={[
-                                    { name: 'Jan', value: 400 },
-                                    { name: 'Feb', value: 750 },
-                                    { name: 'Mar', value: 450 },
-                                    { name: 'Apr', value: 950 },
-                                    { name: 'May', value: 650 },
-                                    { name: 'Jun', value: 850 },
-                                    { name: 'Jul', value: 550 },
-                                    { name: 'Aug', value: 900 },
-                                    { name: 'Sep', value: 700 },
-                                    { name: 'Oct', value: 800 }
-                                ]}
-                                config={{
-                                    engine: 'echarts',
-                                    xAxisKey: 'name',
-                                    dataKey: 'value'
-                                }}
-                            />
-                        </div>
-                    </div>
-                </motion.div>
-
-                {/* Temperature / Health Widget */}
-                <motion.div
-                    initial={animationVariants[animationStyle]?.page?.initial || animationVariants.none?.page?.initial}
-                    animate={animationVariants[animationStyle]?.page?.animate || animationVariants.none?.page?.animate}
-                    transition={{ ...(animationVariants[animationStyle]?.page?.transition || animationVariants.none?.page?.transition), delay: 0.2, duration: parseFloat(tokens.animationSpeed || '0.4') }}
-                    className="col-span-12 lg:col-span-4 bg-theme-card relative overflow-hidden shadow-[var(--theme-shadow)]"
-                    style={{
-                        padding: 'var(--theme-card-pad)',
-                        borderRadius: 'var(--radius-theme)',
-                        borderWidth: 'var(--theme-border-width)',
-                        borderStyle: 'var(--theme-border-style)',
-                        borderColor: 'var(--theme-border)'
-                    }}
-                >
-                    <div className="relative z-10 h-full flex flex-col items-center justify-center">
-                        <div className="w-full text-left mb-4">
-                            <div className="text-xs font-black uppercase tracking-widest text-[var(--theme-muted)]">Core Temperature</div>
-                        </div>
-                        <div className="w-full h-[140px]">
-                            <SarakChartEngine
-                                type="gauge"
-                                data={[{ name: 'Temp', value: 68 }]}
-                                config={{ engine: 'echarts', dataKey: 'value' }}
-                            />
-                        </div>
-                        <div className="text-2xs text-[var(--theme-muted)] mt-2 uppercase font-bold tracking-tighter">Thermal Status: <span className="text-emerald-500">Optimal</span></div>
-                    </div>
-                </motion.div>
-
-                {/* Featured Components Widget */}
-                <motion.div
-                    initial={animationVariants[animationStyle]?.page?.initial || animationVariants.none?.page?.initial}
-                    animate={animationVariants[animationStyle]?.page?.animate || animationVariants.none?.page?.animate}
-                    transition={{ ...(animationVariants[animationStyle]?.page?.transition || animationVariants.none?.page?.transition), delay: 0.3, duration: parseFloat(tokens.animationSpeed || '0.4') }}
-                    className="col-span-12 bg-theme-card shadow-[var(--theme-shadow)]"
-                    style={{
-                        padding: 'var(--theme-card-pad)',
-                        borderRadius: 'var(--radius-theme)',
-                        borderWidth: 'var(--theme-border-width)',
-                        borderStyle: 'var(--theme-border-style)',
-                        borderColor: 'var(--theme-border)'
-                    }}
-                >
-                    <div className="flex items-center justify-between mb-6">
-                        <div className="text-xs font-black uppercase tracking-widest text-[var(--theme-muted)]">Featured Components</div>
-                        <div className="text-xl">✨</div>
-                    </div>
-
-                    <div className="grid grid-cols-1 md:grid-cols-3" style={{ gap: 'var(--theme-gap)' }}>
-                        {/* Buttons section */}
-                        <div className="space-y-3">
-                            <div className="uppercase font-bold text-[var(--theme-muted)] mb-2" style={{ fontSize: 'calc(var(--theme-font-size-base) * 0.7)' }}>Button Styles</div>
-                            <button className="w-full py-2 px-4 bg-[var(--theme-primary)] text-white font-bold rounded-[var(--radius-theme)] shadow-lg shadow-[var(--theme-primary)]/20 hover:brightness-110 transition-all" style={{ fontSize: 'calc(var(--theme-font-size-base) * 0.8)', fontFamily: 'var(--font-tab, var(--font-heading))' }}>
-                                Primary Action
-                            </button>
-                        </div>
-
-                        {/* Badges & Tags */}
-                        <div className="space-y-3">
-                            <div className="uppercase font-bold text-[var(--theme-muted)] mb-2" style={{ fontSize: 'calc(var(--theme-font-size-base) * 0.7)' }}>Identity & Status</div>
-                            <div className="flex flex-wrap gap-2">
-                                <span className="px-2 py-1 rounded-full bg-[var(--theme-primary)]/10 border border-[var(--theme-primary)]/30 font-bold text-[var(--theme-primary)]" style={{ fontSize: 'calc(var(--theme-font-size-base) * 0.7)' }}>Featured</span>
-                            </div>
-                        </div>
-
-                        {/* Interactive */}
-                        <div className="space-y-3">
-                            <div className="uppercase font-bold text-[var(--theme-muted)] mb-2" style={{ fontSize: 'calc(var(--theme-font-size-base) * 0.7)' }}>Interactive Elements</div>
-                            <input
-                                type="text"
-                                placeholder="Input style..."
-                                readOnly
-                                className="w-full bg-[var(--theme-body)]/50 border border-[var(--theme-border)] rounded-[var(--radius-theme)] px-3 py-2 text-[var(--theme-title)] focus:outline-none focus:border-[var(--theme-primary)] transition-all"
-                                style={{ fontSize: 'calc(var(--theme-font-size-base) * 0.8)' }}
-                            />
-                        </div>
-                    </div>
-                </motion.div>
+            <div className="flex-grow">
+                {renderExecutiveLayout()}
             </div>
-        </>
+            
+            {/* Footer Decor */}
+            <div className="mt-16 pt-8 border-t border-white/5 flex justify-between items-center opacity-20">
+                <span className="text-[9px] font-black uppercase tracking-[0.5em]">Sarak Dash Engine // Operational Intelligence</span>
+                <div className="flex gap-8">
+                    <span className="text-[9px] font-black uppercase tracking-widest">Lat: 0.24ms</span>
+                    <span className="text-[9px] font-black uppercase tracking-widest">Nodes: 124</span>
+                </div>
+            </div>
+        </div>
     );
 };
-

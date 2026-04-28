@@ -1,7 +1,7 @@
 import React from 'react';
 import { Palette, Box, Grid, AlertCircle, Check, Plus } from 'lucide-react';
 import { Section, SelectControl, SliderControl } from '../components/DesignControls';
-import { PRIMARY_COLORS, TEXTURE_LIBRARY } from '../../../constants/design-tokens';
+import { PRIMARY_COLORS, TEXTURE_LIBRARY, COLOR_PALETTES } from '../../../constants/design-tokens';
 
 interface VisualsSectionProps {
     draft: any;
@@ -42,6 +42,28 @@ export const VisualsSection: React.FC<VisualsSectionProps> = ({ draft, updateDra
                     </div>
                 </div>
 
+                <div className="mb-6 space-y-4 pt-4 border-t border-white/5">
+                    <span className="text-2xs font-black uppercase tracking-widest text-white/20 block">Paletas Harmonizadas</span>
+                    <div className="grid grid-cols-2 gap-2">
+                        {COLOR_PALETTES.map(palette => (
+                            <button key={palette.id} onClick={() => {
+                                updateDraft('primaryColor', palette.colors.primaryColor);
+                                updateDraft('successColor', palette.colors.successColor);
+                                updateDraft('warningColor', palette.colors.warningColor);
+                                updateDraft('errorColor', palette.colors.errorColor);
+                            }} className="flex flex-col gap-2 p-3 bg-black/20 rounded-xl border border-white/5 hover:border-white/20 transition-all text-left">
+                                <span className="text-[10px] font-bold text-white/60 uppercase">{palette.name}</span>
+                                <div className="flex w-full h-2 rounded-full overflow-hidden">
+                                    <div className="flex-1" style={{ backgroundColor: palette.colors.primaryColor }} />
+                                    <div className="w-4" style={{ backgroundColor: palette.colors.successColor }} />
+                                    <div className="w-4" style={{ backgroundColor: palette.colors.warningColor }} />
+                                    <div className="w-4" style={{ backgroundColor: palette.colors.errorColor }} />
+                                </div>
+                            </button>
+                        ))}
+                    </div>
+                </div>
+
                 <div className="space-y-4 pt-4 border-t border-white/5">
                     <span className="text-2xs font-black uppercase tracking-widest text-white/20 block">Cores Semânticas</span>
                     <div className="grid grid-cols-3 gap-4">
@@ -73,20 +95,9 @@ export const VisualsSection: React.FC<VisualsSectionProps> = ({ draft, updateDra
                 </div>
 
                 <div className="grid grid-cols-2 gap-4">
-                    <SliderControl label="Opacidade Textura" value={draft.textureOpacity} min={0} max={0.3} step={0.01} onChange={(v: any) => updateDraft('textureOpacity', v)} />
+                    <SliderControl label="Opacidade Textura" value={draft.textureOpacity} min={0} max={0.5} step={0.01} onChange={(v: any) => updateDraft('textureOpacity', v)} />
                     <SliderControl label="Noise Overlay" value={draft.atmosphereNoiseOpacity} min={0} max={0.1} step={0.005} onChange={(v: any) => updateDraft('atmosphereNoiseOpacity', v)} />
                 </div>
-                <SelectControl 
-                    label="Material de Superfície" 
-                    options={[
-                        {id: 'glass', label: 'Glass Standard'}, 
-                        {id: 'acrylic', label: 'Acrylic Deep'}, 
-                        {id: 'matte', label: 'Solid Matte'}, 
-                        {id: 'brushed', label: 'Brushed Metal'}
-                    ]} 
-                    value={draft.surfaceMaterial} 
-                    onChange={(v: any) => updateDraft('surfaceMaterial', v)} 
-                />
             </Section>
         </>
     );

@@ -39,7 +39,7 @@ export const GalleryRouter: React.FC<GalleryRouterProps> = ({ activeCategory, to
         case 'chats':
             return <ChatGallery tokens={tokens} onUpdateDraft={onUpdateDraft} />;
         case 'visuals-3d':
-            return <VisualizationGallery tokens={tokens} onUpdateDraft={onUpdateDraft} />;
+            return <VisualizationGallery tokens={tokens} />;
         case 'layout':
             return <LayoutGallery tokens={tokens} onUpdateDraft={onUpdateDraft} />;
         default:

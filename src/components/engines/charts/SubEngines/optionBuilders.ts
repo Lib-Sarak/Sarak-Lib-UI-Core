@@ -190,3 +190,93 @@ export const buildHeatmapSeries = (data: any[], config: any, theme: any) => ({
         }
     }]
 });
+
+export const buildFunnelSeries = (data: any[], config: any, theme: any) => ({
+    series: [{
+        name: 'Funnel',
+        type: 'funnel',
+        left: '10%',
+        top: 60,
+        bottom: 60,
+        width: '80%',
+        min: 0,
+        max: 1000,
+        minSize: '0%',
+        maxSize: '100%',
+        sort: 'descending',
+        gap: 2,
+        label: { show: true, position: 'inside', fontSize: 10, fontFamily: theme.bodyFont },
+        itemStyle: { borderColor: '#fff', borderWidth: 1, opacity: 0.7 },
+        emphasis: { label: { fontSize: 20 } },
+        data: data.map(item => ({ value: item[config?.dataKey || 'v'], name: item[config?.xAxisKey || 'name'] }))
+    }]
+});
+
+export const buildTreeMapSeries = (data: any[], config: any, theme: any) => ({
+    series: [{
+        name: 'TreeMap',
+        type: 'treemap',
+        visibleMin: 300,
+        label: { show: true, formatter: '{b}', fontSize: 10, fontFamily: theme.bodyFont },
+        itemStyle: { borderColor: '#fff', borderWidth: 1, gapWidth: 1 },
+        upperLabel: { show: true, height: 20 },
+        data: data.map(item => ({ value: item[config?.dataKey || 'v'], name: item[config?.xAxisKey || 'name'] }))
+    }]
+});
+
+export const buildCandlestickSeries = (data: any[], config: any, theme: any) => ({
+    xAxis: { data: data.map(item => item.name) },
+    series: [{
+        type: 'candlestick',
+        data: data.map(item => [item.v - 10, item.v + 10, item.v - 20, item.v + 20]),
+        itemStyle: {
+            color: theme.primaryColor,
+            color0: '#ef4444',
+            borderColor: theme.primaryColor,
+            borderColor0: '#ef4444'
+        }
+    }]
+});
+
+export const buildSunburstSeries = (data: any[], config: any, theme: any) => ({
+    series: [{
+        type: 'sunburst',
+        data: [
+            { name: 'Node A', children: [{ name: 'A1', value: 10 }, { name: 'A2', value: 20 }] },
+            { name: 'Node B', children: [{ name: 'B1', value: 15 }, { name: 'B2', value: 25 }] }
+        ],
+        radius: [0, '90%'],
+        label: { rotate: 'radial', fontSize: 8, fontFamily: theme.bodyFont }
+    }]
+});
+
+export const buildBoxPlotSeries = (data: any[], config: any, theme: any) => ({
+    series: [{
+        name: 'BoxPlot',
+        type: 'boxplot',
+        data: [
+            [200, 300, 400, 500, 700],
+            [300, 450, 550, 650, 850],
+            [150, 250, 350, 450, 650]
+        ],
+        itemStyle: {
+            borderColor: theme.primaryColor,
+            borderWidth: 2,
+            color: `rgba(${theme.primaryRGB}, 0.2)`
+        }
+    }]
+});
+
+export const buildHistogramSeries = (data: any[], config: any, theme: any) => ({
+    series: [{
+        name: 'Histogram',
+        type: 'bar',
+        barWidth: '99%',
+        data: data.map(item => item[config?.dataKey || 'v']),
+        itemStyle: {
+            color: `rgba(${theme.primaryRGB}, 0.6)`,
+            borderColor: theme.primaryColor,
+            borderWidth: 1
+        }
+    }]
+});

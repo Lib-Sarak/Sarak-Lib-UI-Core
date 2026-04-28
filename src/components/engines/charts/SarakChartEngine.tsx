@@ -8,7 +8,7 @@ import { useEChartsTheme } from './SubEngines/useEChartsTheme';
 import * as builders from './SubEngines/optionBuilders';
 
 interface SarakChartEngineProps {
-    type: 'line' | 'area' | 'bar' | 'pie' | 'radar' | 'gauge' | 'scatter' | 'heatmap';
+    type: 'line' | 'area' | 'bar' | 'pie' | 'radar' | 'gauge' | 'scatter' | 'heatmap' | 'funnel' | 'treemap' | 'candlestick' | 'sunburst' | 'histogram' | 'boxplot';
     data: any[];
     config?: {
         xAxisKey?: string;
@@ -35,19 +35,19 @@ const SarakChartEngine: React.FC<SarakChartEngineProps> = ({ type, data, config 
         
         const base = {
             ...theme.baseOption,
-            xAxis: type === 'pie' || type === 'radar' || type === 'gauge' ? undefined : {
+            xAxis: ['pie', 'radar', 'gauge', 'funnel', 'treemap', 'sunburst', 'boxplot'].includes(type) ? undefined : {
                 type: 'category',
                 data: xAxisData,
                 axisLine: { show: false },
                 axisTick: { show: false },
                 axisLabel: { 
                     color: theme.isDark ? 'rgba(255,255,255,0.3)' : 'rgba(0,0,0,0.4)',
-                    fontSize: 10,
+                    fontSize: 11,
                     fontFamily: theme.bodyFont || 'Inter',
-                    margin: 15
+                    margin: 20
                 }
             },
-            yAxis: type === 'pie' || type === 'radar' || type === 'gauge' ? undefined : {
+            yAxis: ['pie', 'radar', 'gauge', 'funnel', 'treemap', 'sunburst'].includes(type) ? undefined : {
                 type: 'value',
                 splitLine: { 
                     lineStyle: { 
@@ -58,13 +58,14 @@ const SarakChartEngine: React.FC<SarakChartEngineProps> = ({ type, data, config 
                 axisLine: { show: false },
                 axisLabel: { 
                     color: theme.isDark ? 'rgba(255,255,255,0.3)' : 'rgba(0,0,0,0.4)',
-                    fontSize: 10,
-                    fontFamily: theme.bodyFont || 'Inter'
+                    fontSize: 11,
+                    fontFamily: theme.bodyFont || 'Inter',
+                    margin: 10
                 }
             },
             tooltip: {
                 ...theme.baseOption.tooltip,
-                trigger: type === 'pie' ? 'item' : 'axis',
+                trigger: ['pie', 'funnel', 'treemap', 'sunburst', 'boxplot'].includes(type) ? 'item' : 'axis',
             }
         };
 
@@ -78,6 +79,12 @@ const SarakChartEngine: React.FC<SarakChartEngineProps> = ({ type, data, config 
             case 'gauge': typeSpecificConfig = builders.buildGaugeSeries(data, config, theme); break;
             case 'scatter': typeSpecificConfig = builders.buildScatterSeries(data, config, theme); break;
             case 'heatmap': typeSpecificConfig = builders.buildHeatmapSeries(data, config, theme); break;
+            case 'funnel': typeSpecificConfig = builders.buildFunnelSeries(data, config, theme); break;
+            case 'treemap': typeSpecificConfig = builders.buildTreeMapSeries(data, config, theme); break;
+            case 'candlestick': typeSpecificConfig = builders.buildCandlestickSeries(data, config, theme); break;
+            case 'sunburst': typeSpecificConfig = builders.buildSunburstSeries(data, config, theme); break;
+            case 'boxplot': typeSpecificConfig = builders.buildBoxPlotSeries(data, config, theme); break;
+            case 'histogram': typeSpecificConfig = builders.buildHistogramSeries(data, config, theme); break;
         }
 
         return { ...base, ...typeSpecificConfig };
@@ -85,7 +92,7 @@ const SarakChartEngine: React.FC<SarakChartEngineProps> = ({ type, data, config 
 
     if (engine === 'echarts') {
         return (
-            <div className="w-full h-full min-h-[180px] p-2">
+            <div className="w-full h-full p-6">
                 <ReactECharts 
                     option={getEChartsOption} 
                     style={{ height: '100%', width: '100%' }}

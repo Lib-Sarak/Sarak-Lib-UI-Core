@@ -1,122 +1,92 @@
 import React from 'react';
 import { motion } from 'framer-motion';
-import { VISUALIZATION_PRESETS, VisualizationPreset } from '../../../../constants/visualization-presets';
-import { Check, Globe, Grid3X3, Box, Cpu, Activity } from 'lucide-react';
+import { Globe, Box, Network, Map as MapIcon, Database, Cpu, Activity, Layout } from 'lucide-react';
+import SarakVisualEngine from '../../../../components/engines/visuals/SarakVisualEngine';
 
 interface VisualizationGalleryProps {
-    onUpdateDraft: (key: string, value: any) => void;
     tokens: any;
 }
 
-export const VisualizationGallery: React.FC<VisualizationGalleryProps> = ({ onUpdateDraft, tokens }) => {
-    return (
-        <div className="p-8 grid grid-cols-1 lg:grid-cols-2 gap-8">
-            {VISUALIZATION_PRESETS.map((preset) => (
-                <VisualizationSpecimen 
-                    key={preset.id}
-                    preset={preset}
-                    onSelect={() => {
-                        Object.entries(preset.tokens).forEach(([key, val]) => onUpdateDraft(key, val));
-                    }}
-                    isActive={tokens.vizMode === preset.tokens.vizMode && tokens.wireframeIntensity === preset.tokens.wireframeIntensity}
-                    globalTokens={tokens}
-                />
-            ))}
-        </div>
-    );
-};
-
-const VisualizationSpecimen: React.FC<{ preset: VisualizationPreset; onSelect: () => void; isActive: boolean; globalTokens: any }> = ({ 
-    preset, onSelect, isActive, globalTokens 
-}) => {
-    const mergedTokens = { ...globalTokens, ...preset.tokens };
-    const vizMode = mergedTokens.vizMode;
-    const rotateSpeed = mergedTokens.rotateSpeed || 1;
-    const pointDensity = mergedTokens.pointDensity || 0.5;
-    const wireframeIntensity = mergedTokens.wireframeIntensity || 0.5;
+export const VisualizationGallery: React.FC<VisualizationGalleryProps> = ({ tokens }) => {
+    const visualTypes = [
+        { id: 'factory-floor', name: 'Plantas Técnicas (Floor Plans)', icon: Layout, description: 'Visualização isométrica de áreas e posicionamento de componentes' },
+        { id: 'motor-twin', name: 'Visualização de Componentes', icon: Activity, description: 'Renderização 3D de peças técnicas com mapeamento de sensores' },
+        { id: 'globe', name: 'Sincronização Geográfica', icon: Globe, description: 'Monitoramento transcontinental de nós e latência global' },
+        { id: 'map-density', name: 'Análise de Densidade Regional', icon: MapIcon, description: 'Mapas de calor e distribuição de carga em grids espaciais' },
+        { id: 'topology', name: 'Topologia de Redes (3D)', icon: Network, description: 'Visualização tridimensional de barramentos e conexões lógicas' },
+        { id: 'point-cloud', name: 'Nuvem de Pontos (Precision)', icon: Database, description: 'Representação de alta densidade para análise volumétrica bruta' },
+        { id: 'hologram', name: 'Projeção Holográfica', icon: Cpu, description: 'Interface técnica para inspeção de hardware e wireframes' },
+        { id: 'mesh', name: 'Renderização de Malhas', icon: Box, description: 'Estudo de superfícies complexas e geometria técnica' }
+    ];
 
     return (
-        <motion.div 
-            whileHover={{ y: -4 }}
-            onClick={onSelect}
-            className={`group relative bg-white/[0.02] border rounded-[2.5rem] overflow-hidden cursor-pointer transition-all duration-500 ${
-                isActive ? 'border-[var(--theme-primary)] shadow-2xl shadow-primary-500/10' : 'border-white/5 hover:border-white/20'
-            }`}
-        >
-            <div className="p-6 space-y-6">
-                
-                {/* 1. Abstract Mesh Preview */}
-                <div className="h-32 bg-black/40 rounded-2xl border border-white/5 relative overflow-hidden flex items-center justify-center">
-                    <div className="absolute top-3 left-4 text-[7px] font-black text-white/10 uppercase tracking-[0.3em]">Mesh Architecture</div>
-                    
-                    {/* Simulated 3D Mesh Grid */}
+        <div className="p-8 space-y-12">
+            <header>
+                <h2 className="text-xl font-black uppercase text-white tracking-widest mb-2">Visualização de Projetos & Ativos</h2>
+                <p className="text-xs font-bold text-white/30 uppercase tracking-[0.3em]">Showcase de Capacidades de Renderização Técnica</p>
+            </header>
+
+            <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
+                {visualTypes.map((visual, i) => (
                     <motion.div 
-                        animate={{ rotate: 360 }}
-                        transition={{ duration: 20 / rotateSpeed, repeat: Infinity, ease: "linear" }}
-                        className="relative w-24 h-24"
+                        key={visual.id}
+                        initial={{ opacity: 0, scale: 0.95 }}
+                        animate={{ opacity: 1, scale: 1 }}
+                        transition={{ delay: i * 0.05 }}
+                        className="bg-black/40 border-2 border-white/5 rounded-[2.5rem] p-8 space-y-6 hover:border-[var(--theme-primary)]/30 transition-all group overflow-hidden relative"
                     >
-                        {/* Grid Layers */}
-                        {[1, 2, 3].map(i => (
-                            <div 
-                                key={i}
-                                className="absolute inset-0 border rounded-lg transition-all duration-700"
-                                style={{ 
-                                    transform: `rotateX(45deg) rotateZ(${i * 30}deg) translateZ(${i * 10}px)`,
-                                    borderColor: mergedTokens.colorMapping === 'monochrome' ? 'rgba(255,255,255,0.1)' : 
-                                               mergedTokens.colorMapping === 'spectrum' ? 'rgba(var(--theme-primary-rgb), 0.3)' : 'rgba(var(--theme-primary-rgb), 0.1)',
-                                    borderWidth: vizMode === 'mesh' ? '1px' : '0px',
-                                    backgroundColor: vizMode === 'solid' ? 'rgba(var(--theme-primary-rgb), 0.05)' : 'transparent'
-                                }}
+                        {/* Background Decor */}
+                        <div className="absolute top-0 right-0 p-4 opacity-5 group-hover:opacity-10 transition-opacity">
+                            <visual.icon size={120} />
+                        </div>
+
+                        <div className="flex items-center justify-between relative z-10">
+                            <div className="flex items-center gap-4">
+                                <div className="w-12 h-12 rounded-2xl bg-[var(--theme-primary)]/10 flex items-center justify-center text-[var(--theme-primary)]">
+                                    <visual.icon size={24} />
+                                </div>
+                                <div>
+                                    <h3 className="text-lg font-black uppercase text-white tracking-tighter">{visual.name}</h3>
+                                    <p className="text-[10px] font-bold text-white/30 uppercase tracking-widest leading-relaxed max-w-[200px]">{visual.description}</p>
+                                </div>
+                            </div>
+                            <div className="flex flex-col items-end">
+                                <span className="text-[8px] font-black text-emerald-500 uppercase tracking-widest">Active_Render</span>
+                                <span className="text-[10px] font-black text-white/20 uppercase">Sarak_Engine_v8</span>
+                            </div>
+                        </div>
+
+                        <div className="h-64 bg-black/60 rounded-3xl border border-white/5 overflow-hidden relative shadow-inner">
+                            <SarakVisualEngine 
+                                type={visual.id as any} 
+                                tokens={tokens} 
                             />
-                        ))}
-                        <div className="absolute inset-0 flex items-center justify-center">
-                            <Cpu size={24} className="text-[var(--theme-primary)] opacity-40 blur-[1px]" />
+                            
+                            {/* Scanning Overlay Effect */}
+                            <div className="absolute inset-0 pointer-events-none">
+                                <div className="w-full h-1 bg-[var(--theme-primary)]/10 blur-sm absolute top-0 animate-[scan_3s_linear_infinite]" />
+                                <div className="w-full h-full border border-[var(--theme-primary)]/5 rounded-3xl" />
+                            </div>
+                        </div>
+
+                        <div className="flex items-center justify-between pt-4 border-t border-white/5">
+                            <div className="flex gap-4">
+                                <div className="flex flex-col">
+                                    <span className="text-[8px] font-black text-white/20 uppercase tracking-widest mb-1">Pipeline</span>
+                                    <span className="text-[10px] font-black text-white uppercase">Reactive_Sync</span>
+                                </div>
+                                <div className="flex flex-col">
+                                    <span className="text-[8px] font-black text-white/20 uppercase tracking-widest mb-1">Fidelity</span>
+                                    <span className="text-[10px] font-black text-white uppercase">Industrial_HD</span>
+                                </div>
+                            </div>
+                            <button className="px-6 py-2 bg-white/5 hover:bg-[var(--theme-primary)] hover:text-white rounded-xl text-[10px] font-black uppercase transition-all">
+                                Expand Viewport
+                            </button>
                         </div>
                     </motion.div>
-
-                    {/* Point Cloud simulation overlay */}
-                    <div className="absolute inset-0 grid grid-cols-8 grid-rows-8 gap-2 p-4 pointer-events-none opacity-20">
-                        {Array.from({ length: Math.round(pointDensity * 64) }).map((_, i) => (
-                            <div key={i} className="w-0.5 h-0.5 rounded-full bg-white" />
-                        ))}
-                    </div>
-                </div>
-
-                {/* 2. Metadata & Specs */}
-                <div className="flex items-center justify-between">
-                    <div>
-                        <h3 className="text-xs font-black uppercase tracking-tight text-white">{preset.title}</h3>
-                        <p className="text-[9px] font-bold text-white/30 uppercase tracking-widest">{preset.description}</p>
-                    </div>
-                    <div className="flex gap-1">
-                        <Grid3X3 size={12} className="text-white/10" />
-                        <Activity size={12} className="text-white/10" />
-                    </div>
-                </div>
-
-                {/* 3. Tech Badge */}
-                <div className="pt-4 border-t border-white/5 grid grid-cols-2 gap-4">
-                    <div className="flex items-center gap-2">
-                        <div className="w-1.5 h-1.5 rounded-full bg-[var(--theme-primary)]" />
-                        <span className="text-[8px] font-black text-white/40 uppercase tracking-widest">{vizMode} Mode</span>
-                    </div>
-                    <div className="flex items-center gap-2">
-                        <span className="text-[8px] font-black text-white/20 uppercase">Wireframe</span>
-                        <div className="flex-1 h-1 bg-white/5 rounded-full overflow-hidden">
-                            <div className="h-full bg-[var(--theme-primary)] transition-all duration-500" style={{ width: `${wireframeIntensity * 100}%` }} />
-                        </div>
-                    </div>
-                </div>
+                ))}
             </div>
-
-            {/* Active Indicator */}
-            {isActive && (
-                <div className="absolute top-6 right-6">
-                    <div className="w-6 h-6 bg-[var(--theme-primary)] rounded-full flex items-center justify-center shadow-lg">
-                        <Check className="text-white" size={12} />
-                    </div>
-                </div>
-            )}
-        </motion.div>
+        </div>
     );
 };

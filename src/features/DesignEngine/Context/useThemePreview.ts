@@ -1,5 +1,5 @@
 import { useState, useEffect } from 'react';
-import { BASE_PRESETS } from '../../../constants/design-tokens';
+import { BASE_PRESETS } from '../../../constants/theme-models';
 
 export const useThemePreview = (
     currentLayout: string,

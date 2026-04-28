@@ -1,20 +1,47 @@
-import React from 'react';
-import { BarChart3, Palette, Grid } from 'lucide-react';
+import { BarChart3, Palette, Grid, Activity } from 'lucide-react';
 import { Section, SelectControl, SliderControl } from '../components/DesignControls';
 
 interface DashboardSectionProps {
     draft: any;
     updateDraft: (key: string, value: any) => void;
-    activeSection: string | null;
-    setActiveSection: (id: string | null) => void;
+    activeSection: string;
+    setActiveSection: (id: string) => void;
 }
 
 export const DashboardSection: React.FC<DashboardSectionProps> = ({ draft, updateDraft, activeSection, setActiveSection }) => {
     return (
         <>
-            <Section id="chart-visuals" icon={BarChart3} title="Motores de Gráficos" activeSection={activeSection} onToggle={setActiveSection}>
-                <SelectControl label="Estilo Visual" options={[{id: 'echarts', label: 'ECharts Pro'}, {id: 'glass', label: 'Glassmorphism'}, {id: 'minimal', label: 'Minimalista'}]} value={draft.chartStyle} onChange={(v: any) => updateDraft('chartStyle', v)} />
-                <SelectControl label="Paleta de Cores" options={[{id: 'standard', label: 'Padrão Sarak'}, {id: 'vibrant', label: 'Vibrante'}, {id: 'monochrome', label: 'Monocromático'}]} value={draft.chartPalette} onChange={(v: any) => updateDraft('chartPalette', v)} />
+            <Section id="chart-showcase-info" icon={BarChart3} title="Showcase de Visualização" activeSection={activeSection} onToggle={setActiveSection}>
+                <div className="p-4 bg-[var(--theme-primary)]/5 rounded-2xl border border-[var(--theme-primary)]/20 mb-4">
+                    <p className="text-[10px] font-bold text-[var(--theme-primary)] uppercase leading-relaxed">
+                        Esta seção exibe todos os motores de renderização da Sarak. As cores, bordas e atmosfera são herdadas automaticamente das configurações globais do Design Engine.
+                    </p>
+                </div>
+                <SelectControl 
+                    label="Paleta de Gráficos" 
+                    options={[
+                        {id: 'standard', name: 'Sarak Standard'}, 
+                        {id: 'vibrant', name: 'Vibrant Data'}, 
+                        {id: 'monochrome', name: 'Monochrome Tech'}
+                    ]} 
+                    value={draft.chartPalette || 'standard'} 
+                    onChange={(v: any) => updateDraft('chartPalette', v)} 
+                />
+            </Section>
+
+            <Section id="dashboard-global" icon={Grid} title="Configurações Globais" activeSection={activeSection} onToggle={setActiveSection}>
+                <div className="grid grid-cols-2 gap-4">
+                    <SliderControl label="Opacidade Grid" value={draft.chartFillOpacity || 0.1} min={0} max={1} step={0.05} onChange={(v: any) => updateDraft('chartFillOpacity', v)} />
+                    <div className="flex flex-col gap-1">
+                        <span className="text-3xs font-black uppercase tracking-widest text-white/40">Grids Técnicos</span>
+                        <button 
+                            onClick={() => updateDraft('showGridLines', !draft.showGridLines)}
+                            className={`py-2 rounded-lg text-3xs font-black uppercase transition-all ${draft.showGridLines ? 'bg-[var(--theme-primary)] text-white' : 'bg-white/5 text-white/40'}`}
+                        >
+                            {draft.showGridLines ? 'Visíveis' : 'Ocultos'}
+                        </button>
+                    </div>
+                </div>
             </Section>
 
             <Section id="chart-geometry" icon={Grid} title="Geometria & Grid" activeSection={activeSection} onToggle={setActiveSection}>

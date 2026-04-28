@@ -1,7 +1,7 @@
 import React from 'react';
 import { motion } from 'framer-motion';
-import { VISUALS_PRESETS, VisualsPreset } from '../../../../constants/visuals-presets';
-import { Check, Palette, Grid, Box, Droplets } from 'lucide-react';
+import { TEXTURE_LIBRARY } from '../../../../constants/design-tokens';
+import { Check, Grid } from 'lucide-react';
 
 interface VisualsGalleryProps {
     onUpdateDraft: (key: string, value: any) => void;
@@ -9,99 +9,95 @@ interface VisualsGalleryProps {
 }
 
 export const VisualsGallery: React.FC<VisualsGalleryProps> = ({ onUpdateDraft, tokens }) => {
+    // Filtrar o "none" se quiser, ou deixar. Vou deixar para permitir "remover" textura.
+    const textures = TEXTURE_LIBRARY.filter(t => t.id !== 'none');
+
     return (
-        <div className="p-8 grid grid-cols-1 lg:grid-cols-2 gap-8">
-            {VISUALS_PRESETS.map((preset) => (
+        <div className="p-8 grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6">
+            {textures.map((texture) => (
                 <VisualsSpecimen 
-                    key={preset.id}
-                    preset={preset}
+                    key={texture.id}
+                    texture={texture}
                     onSelect={() => {
-                        Object.entries(preset.tokens).forEach(([key, val]) => onUpdateDraft(key, val));
+                        onUpdateDraft('texture', texture.id);
                     }}
-                    isActive={tokens.primaryColor === preset.tokens.primaryColor && tokens.texture === preset.tokens.texture}
+                    isActive={tokens.texture === texture.id}
+                    globalTokens={tokens}
                 />
             ))}
         </div>
     );
 };
 
-const VisualsSpecimen: React.FC<{ preset: VisualsPreset; onSelect: () => void; isActive: boolean }> = ({ 
-    preset, onSelect, isActive 
+const hexToRgb = (hex: string) => {
+    const result = /^#?([a-f\d]{2})([a-f\d]{2})([a-f\d]{2})$/i.exec(hex);
+    return result ? `${parseInt(result[1], 16)}, ${parseInt(result[2], 16)}, ${parseInt(result[3], 16)}` : '255, 255, 255';
+};
+
+const VisualsSpecimen: React.FC<{ texture: any; onSelect: () => void; isActive: boolean; globalTokens: any }> = ({ 
+    texture, onSelect, isActive, globalTokens
 }) => {
+    // Usamos a cor primária global ATUAL do draft para a preview da textura não modificar a cor
+    const primaryColor = globalTokens.primaryColor || '#3b82f6';
+    const primaryRgb = hexToRgb(primaryColor);
+    
+    const localStyle = {
+        '--theme-primary': primaryColor,
+        '--theme-primary-rgb': primaryRgb,
+        '--theme-border': 'rgba(255,255,255,0.4)' // Boosted border visibility for Grid
+    } as React.CSSProperties;
+
     return (
         <motion.div 
             whileHover={{ y: -4 }}
             onClick={onSelect}
-            className={`group relative bg-white/[0.02] border rounded-[2.5rem] overflow-hidden cursor-pointer transition-all duration-500 ${
+            style={localStyle}
+            className={`group relative bg-white/[0.02] border rounded-[2rem] overflow-hidden cursor-pointer transition-all duration-500 ${
                 isActive ? 'border-[var(--theme-primary)] shadow-2xl shadow-primary-500/10' : 'border-white/5 hover:border-white/20'
             }`}
         >
-            <div className="p-6 space-y-6">
-                
-                {/* 1. Atmosphere & Texture Preview */}
-                <div className="h-24 bg-black/40 rounded-2xl border border-white/5 relative overflow-hidden flex items-center justify-center">
-                    {/* The Actual Texture Layer (Simulated) */}
+            <div className="p-5 space-y-4">
+                {/* Texture Display Area */}
+                <div 
+                    className="h-32 rounded-xl border border-white/10 relative overflow-hidden bg-slate-900"
+                    style={{ backgroundColor: globalTokens.mode === 'light' ? '#f1f5f9' : '#020617' }}
+                >
                     <div 
-                        className="absolute inset-0 opacity-40 sarak-atmosphere-layer"
-                        data-texture={preset.tokens.texture}
+                        className={`SarakAtmosphereLayer texture-${texture.id}`} 
                         style={{ 
-                            opacity: preset.tokens.textureOpacity * 2,
-                            backgroundImage: `url('/textures/${preset.tokens.texture}.svg')` // Simulated path
-                        }}
+                            opacity: 0.8, /* Forçado para alta visibilidade na preview apenas */
+                            position: 'absolute',
+                            inset: 0,
+                            zIndex: 1
+                        }} 
                     />
-                    <div className="absolute inset-0 bg-gradient-to-t from-black/40 to-transparent" />
                     
-                    <div className="relative z-10 flex items-center gap-4">
-                        <div 
-                            className="w-12 h-12 rounded-full shadow-2xl border border-white/20 flex items-center justify-center"
-                            style={{ 
-                                backgroundColor: preset.tokens.primaryColor,
-                                boxShadow: `0 0 30px ${preset.tokens.primaryColor}40`
-                            }}
-                        >
-                            <Droplets className="text-white" size={20} />
-                        </div>
-                        <div className="flex flex-col">
-                            <span className="text-[10px] font-black text-white uppercase tracking-tighter">{preset.tokens.texture} Texture</span>
-                            <span className="text-[8px] font-bold text-white/30 uppercase tracking-widest">{Math.round(preset.tokens.textureOpacity * 100)}% Intensity</span>
-                        </div>
+                    {/* Contrast Gradient */}
+                    <div className="absolute inset-0 bg-gradient-to-t from-black/60 to-transparent z-10" />
+                    
+                    <div className="absolute inset-0 flex items-center justify-center z-20">
+                         <div className="px-3 py-1 bg-black/60 backdrop-blur-md rounded-full border border-white/10 text-[9px] font-black text-white/40 uppercase tracking-widest">
+                             {texture.name}
+                         </div>
                     </div>
                 </div>
 
-                {/* 2. Material & Color Specs */}
-                <div className="grid grid-cols-2 gap-4">
-                    <div className="space-y-2">
-                        <span className="text-3xs font-black uppercase tracking-widest text-white/20 block">Surface Material</span>
-                        <div className="flex items-center gap-2 px-3 py-2 bg-white/5 rounded-xl border border-white/5">
-                            <Box size={12} className="text-[var(--theme-primary)]" />
-                            <span className="text-[10px] font-black text-white/60 uppercase">{preset.tokens.surfaceMaterial}</span>
-                        </div>
+                <div className="flex items-center justify-between">
+                    <div className="flex flex-col">
+                        <span className="text-xs font-black uppercase tracking-tight text-white">{texture.name}</span>
+                        <span className="text-[9px] font-bold text-white/30 uppercase tracking-widest">Aplicar Padrão</span>
                     </div>
-                    <div className="space-y-2">
-                        <span className="text-3xs font-black uppercase tracking-widest text-white/20 block">Primary Hex</span>
-                        <div className="flex items-center gap-2 px-3 py-2 bg-white/5 rounded-xl border border-white/5">
-                            <Palette size={12} className="text-white/40" />
-                            <span className="text-[10px] font-black text-white/60 uppercase">{preset.tokens.primaryColor}</span>
-                        </div>
-                    </div>
-                </div>
-
-                {/* 3. Semantic Balance */}
-                <div className="pt-4 border-t border-white/5 flex items-center justify-between">
                     <div className="flex gap-2">
-                        <div className="w-2 h-2 rounded-full bg-emerald-500 shadow-lg shadow-emerald-500/40" />
-                        <div className="w-2 h-2 rounded-full bg-amber-500 shadow-lg shadow-amber-500/40" />
-                        <div className="w-2 h-2 rounded-full bg-red-500 shadow-lg shadow-red-500/40" />
-                    </div>
-                    <div className="text-[9px] font-black text-white/20 uppercase tracking-widest">
-                        {preset.title}
+                         <div className="w-8 h-8 rounded-lg bg-[var(--theme-primary)]/10 flex items-center justify-center">
+                            <Grid size={14} className="text-[var(--theme-primary)]" />
+                         </div>
                     </div>
                 </div>
             </div>
 
             {/* Active Indicator */}
             {isActive && (
-                <div className="absolute top-6 right-6">
+                <div className="absolute top-4 right-4 z-30">
                     <div className="w-6 h-6 bg-[var(--theme-primary)] rounded-full flex items-center justify-center shadow-lg">
                         <Check className="text-white" size={12} />
                     </div>

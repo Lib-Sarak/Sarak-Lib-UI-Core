@@ -71,6 +71,19 @@ export const CardsSection: React.FC<CardsSectionProps> = ({ draft, updateDraft, 
                         </button>
                     </div>
                 </div>
+                <div className="mt-4">
+                    <SelectControl 
+                        label="Material de Superfície" 
+                        options={[
+                            {id: 'glass', label: 'Glass Standard'}, 
+                            {id: 'acrylic', label: 'Acrylic Deep'}, 
+                            {id: 'matte', label: 'Solid Matte'}, 
+                            {id: 'brushed', label: 'Brushed Metal'}
+                        ]} 
+                        value={draft.surfaceMaterial} 
+                        onChange={(v: any) => updateDraft('surfaceMaterial', v)} 
+                    />
+                </div>
             </Section>
 
             <Section id="card-shadows" icon={Layers} title="Sombras & Profundidade" activeSection={activeSection} onToggle={setActiveSection}>

@@ -9,7 +9,7 @@ import {
 import { useSarakUI } from '../../../core/Provider/SarakUIProvider';
 import { ThemeList } from '../Library/ThemeList';
 import { PreviewCanvas } from '../Canvas/PreviewCanvas';
-import { LAYOUTS } from '../../../constants/design-tokens';
+import { LAYOUTS } from '../../../constants/theme-models';
 
 // Modular Hooks & Components
 import { useDesignDraft } from '../hooks/useDesignDraft';
@@ -45,9 +45,9 @@ export const ThemeCustomizationTab: React.FC = () => {
     const [activePreviewApp, setActivePreviewApp] = useState('dashboard');
     const [previewDevice, setPreviewDevice] = useState<'desktop' | 'tablet' | 'smartphone'>('desktop');
 
-    const [activeCategory, setActiveCategory] = useState<string | null>('presets');
+    const [activeCategory, setActiveCategory] = useState<string | null>(null);
     const [activeSection, setActiveSection] = useState<string | null>(null);
-    const [isDualView, setIsDualView] = useState(true); // Default as true for better UX
+    const [isDualView, setIsDualView] = useState(false); // Default as true for better UX
 
     // Auto-switch preview app based on category or section
     useEffect(() => {

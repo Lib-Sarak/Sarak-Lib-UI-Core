@@ -54,12 +54,18 @@ export const TopbarNav: React.FC<TopbarNavProps> = ({
                 )}
                 
                 {isTopbar && (
-                    <nav className="hidden lg:flex items-center gap-1 overflow-x-auto no-scrollbar max-w-[60vw]">
+                    <nav 
+                        className="hidden lg:flex flex-1 items-center gap-1 overflow-x-auto no-scrollbar mx-8 justify-center"
+                        style={{
+                            maskImage: 'linear-gradient(to right, transparent, black 40px, black calc(100% - 40px), transparent)',
+                            WebkitMaskImage: 'linear-gradient(to right, transparent, black 40px, black calc(100% - 40px), transparent)'
+                        }}
+                    >
                         {discoveredModules.filter(m => m.status === 'online').map(mod => (
                             <button 
                                 key={mod.id} 
                                 onClick={() => setActiveModuleId(mod.id)} 
-                                className={`px-4 py-1.5 rounded-full text-2xs font-black uppercase tracking-widest transition-all whitespace-nowrap font-tab ${activeModuleId === mod.id ? 'bg-[var(--theme-primary)] text-white shadow-lg shadow-[var(--theme-primary)]/30' : 'text-white/40 hover:text-white'}`}
+                                className={`px-4 py-1.5 rounded-full text-2xs font-black uppercase tracking-widest transition-all whitespace-nowrap font-tab shrink-0 ${activeModuleId === mod.id ? 'bg-[var(--theme-primary)] text-white shadow-lg shadow-[var(--theme-primary)]/30' : 'text-white/40 hover:text-white'}`}
                             >
                                 {mod.label}
                             </button>

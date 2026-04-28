@@ -1,7 +1,8 @@
 import React from 'react';
 import { motion } from 'framer-motion';
 import { GalleryItem } from './GalleryItem';
-import { LAYOUTS, BASE_PRESETS, THEME_EFFECTS } from '../../../../constants/design-tokens';
+import { THEME_EFFECTS } from '../../../../constants/design-tokens';
+import { LAYOUTS, BASE_PRESETS } from '../../../../constants/theme-models';
 import { DESIGN_MANIFEST, UIContext } from '../../../../core/Provider/SarakUIProvider';
 import { MockDashboard, MockChat, MockLogs, MockSettings, MockComponents, MockTypography } from '../MockApps';
 

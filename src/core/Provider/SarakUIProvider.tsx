@@ -1,6 +1,6 @@
 import React, { ReactNode, useEffect, useState, useMemo, useCallback, useContext } from 'react';
 import '../../styles/sarak-base.css';
-import { LAYOUTS } from '../../constants/design-tokens';
+import { LAYOUTS } from '../../constants/theme-models';
 import { getRegisteredModules } from '../Discovery/registry';
 import { NoiseOverlay } from '../../effects/NoiseOverlay';
 

@@ -31,10 +31,10 @@ export const useEChartsTheme = () => {
             extraCssText: 'box-shadow: 0 0 20px rgba(0,0,0,0.1); border: 1px solid rgba(255,255,255,0.05);'
         },
         grid: {
-            top: 40,
-            bottom: 30,
-            left: 20,
-            right: 20,
+            top: 50,
+            bottom: 40,
+            left: 30,
+            right: 30,
             containLabel: true
         },
         animationDuration: 2500,

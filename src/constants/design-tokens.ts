@@ -5,13 +5,7 @@
  * Migrado para garantir autonomia total da UI.
  */
 
-export const LAYOUTS = {
-    GLASS: { id: 'glass', name: 'Glass Master', class: 'layout-glass', animation: 'perspective', emoji: 'none' },
-    CYBERPUNK: { id: 'cyberpunk', name: 'Cyberpunk Neon', class: 'layout-cyberpunk', animation: 'standard', emoji: 'cyber' },
-    PRESTIGE: { id: 'prestige', name: 'Prestige Lux', class: 'layout-prestige', animation: 'blur', emoji: 'minimal' },
-    ORGANIC: { id: 'organic', name: 'Organic Essence', class: 'layout-organic', animation: 'blur', emoji: 'minimal' },
-    ATMOSPHERIC: { id: 'atmospheric', name: 'Atmospheric Deep', class: 'layout-atmospheric', animation: 'perspective', emoji: 'cosmic' },
-};
+
 
 export const SCALES = {
     PP: { id: 'pp', factor: '0.7', label: 'PP' },
@@ -51,6 +45,39 @@ export const PRIMARY_COLORS = [
     { name: 'Magenta', value: '#ec4899' }
 ];
 
+export const COLOR_PALETTES = [
+    {
+        id: 'cyberpunk',
+        name: 'Cyber Neon',
+        colors: { primaryColor: '#f43f5e', successColor: '#06b6d4', warningColor: '#facc15', errorColor: '#ef4444' }
+    },
+    {
+        id: 'nature',
+        name: 'Bio Nature',
+        colors: { primaryColor: '#10b981', successColor: '#34d399', warningColor: '#fbbf24', errorColor: '#ef4444' }
+    },
+    {
+        id: 'ocean',
+        name: 'Deep Ocean',
+        colors: { primaryColor: '#0ea5e9', successColor: '#10b981', warningColor: '#f59e0b', errorColor: '#f43f5e' }
+    },
+    {
+        id: 'royal',
+        name: 'Royal Majesty',
+        colors: { primaryColor: '#8b5cf6', successColor: '#14b8a6', warningColor: '#eab308', errorColor: '#be123c' }
+    },
+    {
+        id: 'sunset',
+        name: 'Warm Sunset',
+        colors: { primaryColor: '#f97316', successColor: '#84cc16', warningColor: '#f59e0b', errorColor: '#e11d48' }
+    },
+    {
+        id: 'monochrome',
+        name: 'Dark Matter',
+        colors: { primaryColor: '#64748b', successColor: '#10b981', warningColor: '#eab308', errorColor: '#ef4444' }
+    }
+];
+
 export const NAVIGATION_STYLES = {
     SIDEBAR: 'sidebar',
     TOPBAR: 'topbar',
@@ -86,30 +113,41 @@ export const THEME_FONTS = [
 ];
 
 export const TEXTURE_LIBRARY = [
+    // 1. Base / Vazio
     { id: 'none', name: 'None', className: 'texture-none' },
+
+    // 2. Geometria & Linhas
     { id: 'grid', name: 'Grid Tech', className: 'texture-grid' },
+    { id: 'squares', name: 'Geometry Squares', className: 'texture-squares' },
+    { id: 'honeycomb', name: 'Hex Honeycomb', className: 'texture-honeycomb' },
+    { id: 'isometric', name: '3D Isometric', className: 'texture-isometric' },
+    { id: 'stripes', name: 'Diagonal Stripes', className: 'texture-stripes' },
+    { id: 'pinstripes', name: 'Vertical Pinstripes', className: 'texture-pinstripes' },
+    { id: 'crosshatch', name: 'Diagonal Crosshatch', className: 'texture-crosshatch' },
+    { id: 'blueprint', name: 'Engineering', className: 'texture-blueprint' },
+
+    // 3. Pontilhados & Partículas
     { id: 'dots', name: 'Dots Clean', className: 'texture-dots' },
+    { id: 'micro-dots', name: 'Micro Dots', className: 'texture-micro-dots' },
     { id: 'stars', name: 'Star Field', className: 'texture-stars' },
     { id: 'noise', name: 'Grain Noise', className: 'texture-noise' },
-    { id: 'mesh', name: 'Mesh Gradient', className: 'texture-mesh' },
-    { id: 'waves', name: 'Waves Soft', className: 'texture-waves' },
-    { id: 'squares', name: 'Geometry Squares', className: 'texture-squares' },
-    { id: 'stripes', name: 'Diagonal Stripes', className: 'texture-stripes' },
-    { id: 'topo', name: 'Topography', className: 'texture-topo' },
-    { id: 'diamond', name: 'Diamond Pattern', className: 'texture-diamond' },
-    { id: 'prestige', name: 'Prestige Pattern', className: 'texture-prestige' },
+
+    // 4. Industrial & Tech
+    { id: 'circuit', name: 'Circuit Tech', className: 'texture-circuit' },
+    { id: 'radar', name: 'Sonar / Radar', className: 'texture-radar' },
     { id: 'carbon', name: 'Carbon Fiber', className: 'texture-carbon' },
     { id: 'brushed', name: 'Brushed Metal', className: 'texture-brushed' },
-    { id: 'frosted', name: 'Frosted Glass', className: 'texture-frosted' },
-    { id: 'circuit', name: 'Circuit Tech', className: 'texture-circuit' },
-    { id: 'paper', name: 'Vintage Paper', className: 'texture-paper' },
-    { id: 'scanlines', name: 'CRT Scanlines', className: 'texture-scanlines' },
-    { id: 'hexagon', name: 'Hex Shield', className: 'texture-hexagon' },
+
+    // 5. Materiais Orgânicos & Clássicos
     { id: 'silk', name: 'Silk Flow', className: 'texture-silk' },
-    { id: 'blueprint', name: 'Engineering', className: 'texture-blueprint' },
+    { id: 'frosted', name: 'Frosted Glass', className: 'texture-frosted' },
+    { id: 'prestige', name: 'Prestige Pattern', className: 'texture-prestige' },
+    { id: 'paper', name: 'Vintage Paper', className: 'texture-paper' },
+
+    // 6. Gradientes & Atmosferas (Aurora)
+    { id: 'mesh', name: 'Mesh Gradient', className: 'texture-mesh' },
     { id: 'aurora', name: 'Aurora Deep', className: 'texture-aurora' },
-    { id: 'aurora-classic', name: 'Aurora Classic', className: 'texture-aurora-classic' },
-    { id: 'bubbles', name: 'Organic Bubbles', className: 'texture-bubbles' }
+    { id: 'aurora-classic', name: 'Aurora Classic', className: 'texture-aurora-classic' }
 ];
 
 export const THEME_EFFECTS = {
@@ -134,11 +172,20 @@ export const THEME_EFFECTS = {
     }
 };
 
-export const BASE_PRESETS: any = {
-    glass: { navigationStyle: 'sidebar', sidebarWidth: 260, layoutDensity: 'standard', headingFont: "'Outfit', sans-serif", bodyFont: "'Inter', sans-serif", borderRadius: 12, surfaceMaterial: 'glass', texture: 'dots', primaryColor: '#3b82f6', mode: 'dark' },
-    cyberpunk: { navigationStyle: 'sidebar', sidebarWidth: 240, layoutDensity: 'compact', headingFont: "'Syncopate', sans-serif", bodyFont: "'Space Mono', monospace", borderRadius: 0, surfaceMaterial: 'acrylic', texture: 'circuit', primaryColor: '#00ff41', mode: 'dark' },
-    prestige: { navigationStyle: 'topbar', sidebarWidth: 280, layoutDensity: 'comfortable', headingFont: "'Sentient', serif", bodyFont: "'Inter', sans-serif", borderRadius: 24, surfaceMaterial: 'brushed', texture: 'silk', primaryColor: '#a855f7', mode: 'dark' },
-    organic: { navigationStyle: 'sidebar', sidebarWidth: 260, layoutDensity: 'standard', headingFont: "'Cormorant Garamond', serif", bodyFont: "'Plus Jakarta Sans', sans-serif", borderRadius: 40, surfaceMaterial: 'matte', texture: 'dots', primaryColor: '#10b981', mode: 'light' },
-    atmospheric: { navigationStyle: 'sidebar', sidebarWidth: 300, layoutDensity: 'comfortable', headingFont: "'Satoshi', sans-serif", bodyFont: "'Inter', sans-serif", borderRadius: 32, surfaceMaterial: 'acrylic', texture: 'aurora', primaryColor: '#f472b6', mode: 'dark' }
-};
+export const DASHBOARD_TEMPLATES = [
+    { id: 'executive', name: 'Executive Summary', description: 'Visão limpa e estratégica' },
+    { id: 'monitoring', name: 'Real-time Monitoring', description: 'Alta densidade de telemetria' },
+    { id: 'analytics', name: 'Deep Analytics', description: 'Análise massiva de dados' },
+    { id: 'technical', name: 'System Telemetry', description: 'Estilo Industrial / OS' },
+    { id: 'minimal', name: 'Minimalist View', description: 'Foco total no dado bruto' }
+];
+
+export const CHART_PRESETS = [
+    { id: 'standard', name: 'Standard Sarak', description: 'Equilibrado e limpo' },
+    { id: 'glow', name: 'Neon Glow', description: 'Efeito vibrante e moderno' },
+    { id: 'tech', name: 'Industrial Tech', description: 'Angular e denso' },
+    { id: 'minimal', name: 'Ultra Minimal', description: 'Sem adornos' }
+];
+
+
 

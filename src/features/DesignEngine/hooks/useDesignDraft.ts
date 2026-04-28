@@ -1,5 +1,5 @@
 import { useState, useEffect } from 'react';
-import { BASE_PRESETS } from '../../../constants/design-tokens';
+import { BASE_PRESETS } from '../../../constants/theme-models';
 
 export const useDesignDraft = (sarak: any) => {
     const [draft, setDraft] = useState({
@@ -118,7 +118,9 @@ export const useDesignDraft = (sarak: any) => {
             chartStyle: 'string', chartPalette: 'array',
             shadowIntensity: 'number', shadowOrientation: 'string', shadowColorMode: 'string',
             animationSpeed: 'number', mode: 'string',
-            scaleRatio: 'number', contrastCurve: 'number', layeredShadows: 'number'
+            scaleRatio: 'number', contrastCurve: 'number', layeredShadows: 'number',
+            cardPadding: 'number', layoutGap: 'number', dashboardTemplate: 'string',
+            cardTexture: 'string', borderType: 'string'
         };
 
         const tokenMap: Record<string, string> = {
@@ -136,7 +138,9 @@ export const useDesignDraft = (sarak: any) => {
             '--chart-style': 'chartStyle', '--chart-palette': 'chartPalette',
             '--shadow-intensity': 'shadowIntensity', '--shadow-orientation': 'shadowOrientation', '--shadow-color-mode': 'shadowColorMode',
             '--animation-speed': 'animationSpeed', '--mode': 'mode',
-            '--scale-ratio': 'scaleRatio', '--contrast-curve': 'contrastCurve', '--layered-shadows': 'layeredShadows'
+            '--scale-ratio': 'scaleRatio', '--contrast-curve': 'contrastCurve', '--layered-shadows': 'layeredShadows',
+            '--card-padding': 'cardPadding', '--layout-gap': 'layoutGap', '--dashboard-template': 'dashboardTemplate',
+            '--card-texture': 'cardTexture', '--border-type': 'borderType'
         };
 
         const newDraft = { ...draft, layout: id };

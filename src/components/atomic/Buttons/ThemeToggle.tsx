@@ -1,6 +1,6 @@
 import React from 'react';
 import { useSarakUI } from '../../../core/Provider/SarakUIProvider';
-import { LAYOUTS } from '../../../constants/design-tokens';
+import { LAYOUTS } from '../../../constants/theme-models';
 import { Palette, ChevronRight, Check } from 'lucide-react';
 
 export const ThemeToggle: React.FC = () => {
