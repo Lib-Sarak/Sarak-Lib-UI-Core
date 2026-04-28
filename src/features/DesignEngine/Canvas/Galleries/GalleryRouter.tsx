@@ -16,12 +16,16 @@ interface GalleryRouterProps {
     tokens: any;
     onUpdateDraft: (key: string, value: any) => void;
     activePreviewApp?: string;
+    customThemes?: any[];
 }
 
-export const GalleryRouter: React.FC<GalleryRouterProps> = ({ activeCategory, tokens, onUpdateDraft, activePreviewApp }) => {
+
+export const GalleryRouter: React.FC<GalleryRouterProps> = ({ activeCategory, tokens, onUpdateDraft, activePreviewApp, customThemes }) => {
+
     switch (activeCategory) {
         case 'presets':
-            return <PresetsGallery tokens={tokens} onUpdateDraft={onUpdateDraft} activePreviewApp={activePreviewApp} />;
+            return <PresetsGallery tokens={tokens} onUpdateDraft={onUpdateDraft} activePreviewApp={activePreviewApp} customThemes={customThemes} />;
+
         case 'cards':
             return <CardsGallery tokens={tokens} onUpdateDraft={onUpdateDraft} />;
         case 'fonts':

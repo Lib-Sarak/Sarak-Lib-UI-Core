@@ -1,8 +1,8 @@
 import React from 'react';
-import { Menu, Search, Bell } from 'lucide-react';
-import ThemeToggle from '../../../components/atomic/Buttons/ThemeToggle';
+import { Menu, Bell } from 'lucide-react';
 import { DiscoveredModule } from '../../../constants/discovery';
-import { IconRenderer } from './IconRenderer';
+import { ShellSearchWidget } from './ShellSearchWidget';
+import { ShellUserWidget } from './ShellUserWidget';
 
 interface TopbarNavProps {
     design: any;
@@ -13,14 +13,16 @@ interface TopbarNavProps {
     setActiveModuleId: (id: string) => void;
     discoveredModules: DiscoveredModule[];
     extraToolbarItems?: React.ReactNode;
+    user?: any;
+    logout?: () => void;
 }
 
 export const TopbarNav: React.FC<TopbarNavProps> = ({
-    design, brand, toggleNav, setIsSearchOpen, activeModuleId, setActiveModuleId, discoveredModules, extraToolbarItems
+    design, brand, toggleNav, setIsSearchOpen, activeModuleId, setActiveModuleId, discoveredModules, extraToolbarItems, user, logout
 }) => {
     const { 
         mode, navigationStyle, isNavHidden, systemName, logoUrl, logoDarkUrl, logoScale, 
-        logoPosition, searchStyle, tabSectionMargin, borderRadius, borderWidth, borderStyle
+        logoPosition, tabSectionMargin, borderRadius, borderWidth, borderStyle
     } = design || {};
 
     const isSidebar = navigationStyle === 'sidebar';
@@ -75,24 +77,24 @@ export const TopbarNav: React.FC<TopbarNavProps> = ({
             </div>
 
             <div className="flex items-center gap-4">
-                {searchStyle === 'minimal' && (
-                    <div className="hidden md:flex items-center w-64 group relative">
-                        <Search size={14} className="absolute left-3 top-1/2 -translate-y-1/2 text-[var(--theme-muted)] group-focus-within:text-[var(--theme-primary)] transition-colors" />
-                        <input type="text" placeholder="Smart Search..." onClick={() => setIsSearchOpen(true)} readOnly className="w-full h-9 bg-[var(--theme-card)] border border-[var(--theme-border)] rounded-[var(--radius-theme)] pl-10 pr-4 text-xs font-bold text-[var(--theme-title)]/60 hover:bg-white/[0.08] hover:border-[var(--theme-primary)]/50 transition-all cursor-pointer" />
-                        <div className="absolute right-3 top-1/2 -translate-y-1/2 flex items-center gap-1 px-1.5 py-0.5 rounded bg-white/5 border border-white/10 text-3xs text-white/20 font-black opacity-0 group-hover:opacity-100"><span>CTRL</span><span>K</span></div>
-                    </div>
-                )}
+                {/* 1. Search Widget */}
+                <ShellSearchWidget variant="bar" onClick={() => setIsSearchOpen(true)} />
                 
-                <div className="flex items-center gap-1 px-3 py-1 bg-white/5 rounded-full border border-white/10">
-                    <ThemeToggle />
-                    {searchStyle !== 'minimal' && (
-                        <button onClick={() => setIsSearchOpen(true)} className="p-2 text-white/20 hover:text-white transition-colors"><Search size={16} /></button>
-                    )}
+                <div className="flex items-center gap-2 px-1 py-1 bg-white/5 rounded-2xl border border-white/10">
+                    {/* 1. Notifications */}
+                    <button className="p-2 text-white/20 hover:text-white transition-colors relative">
+                        <Bell size={16} />
+                        <div className="absolute top-2 right-2 w-1.5 h-1.5 bg-[var(--theme-primary)] rounded-full border border-black shadow-[0_0_10px_var(--theme-primary)]" />
+                    </button>
+                    
                     {extraToolbarItems}
                 </div>
-                <div className="w-8 h-8 rounded-full border border-white/10 bg-white/5 flex items-center justify-center text-white/40 hover:text-white transition-colors cursor-pointer"><Bell size={14} /></div>
+
+                {/* 4. User Widget */}
+                <ShellUserWidget user={user} logout={logout} variant="horizontal" />
             </div>
         </header>
     );
 };
+;
 

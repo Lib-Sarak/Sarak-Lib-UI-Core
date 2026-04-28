@@ -10,7 +10,9 @@ interface PresetsGalleryProps {
     tokens: any;
     onUpdateDraft: (key: string, value: any) => void;
     activePreviewApp?: string;
+    customThemes?: any[];
 }
+
 
 // --- CSS SANDBOX HELPER ---
 const getPresetVariables = (presetTokens: any) => {
@@ -141,7 +143,7 @@ const PresetSpecimen: React.FC<{
     );
 };
 
-export const PresetsGallery: React.FC<PresetsGalleryProps> = ({ tokens, onUpdateDraft, activePreviewApp = 'dashboard' }) => {
+export const PresetsGallery: React.FC<PresetsGalleryProps> = ({ tokens, onUpdateDraft, activePreviewApp = 'dashboard', customThemes = [] }) => {
     
     const handleSelect = (id: string) => {
         const presetKey = Object.keys(BASE_PRESETS).find(k => k.toLowerCase() === id.toLowerCase());
@@ -155,23 +157,28 @@ export const PresetsGallery: React.FC<PresetsGalleryProps> = ({ tokens, onUpdate
         onUpdateDraft('layout', id);
     };
 
-    return (
-        <div className="grid grid-cols-1 lg:grid-cols-2 gap-10 p-10 overflow-y-auto custom-scrollbar h-full bg-[#050505]">
-            {Object.values(LAYOUTS).map((layout: any) => {
-                const presetKey = Object.keys(BASE_PRESETS).find(k => k.toLowerCase() === layout.id.toLowerCase());
+    const allThemes = { ...LAYOUTS };
+    // TODO: Adicionar custom themes se necessário no futuro
+    
+    const advancedThemes = Object.entries(allThemes).filter(([id]) => id.toLowerCase().includes('premium') || id.toLowerCase().includes('_v') || id.toLowerCase().includes('advanced') || id === 'hazard' || id === 'futurist');
+    const baseThemes = Object.entries(allThemes).filter(([id]) => !advancedThemes.some(at => at[0] === id));
+
+    const renderGrid = (themes: [string, any][]) => (
+        <div className="grid grid-cols-1 lg:grid-cols-2 gap-10">
+            {themes.map(([id, layout]) => {
+                const presetKey = Object.keys(BASE_PRESETS).find(k => k.toLowerCase() === id.toLowerCase());
                 const preset = (BASE_PRESETS as any)[presetKey!];
                 
                 if (!preset) return null;
 
                 return (
                     <GalleryItem 
-                        key={layout.id}
+                        key={id}
                         title={layout.name}
                         description={layout.description}
-                        isActive={tokens.layout === layout.id}
-                        onClick={() => handleSelect(layout.id)}
+                        isActive={tokens.layout === id}
+                        onClick={() => handleSelect(id)}
                     >
-                        {/* 16:9 Aspect Ratio Container */}
                         <div className="w-full aspect-video rounded-xl overflow-hidden shadow-2xl border border-white/5 bg-[#0a0a0a]">
                             <PresetSpecimen 
                                 preset={preset} 
@@ -183,4 +190,31 @@ export const PresetsGallery: React.FC<PresetsGalleryProps> = ({ tokens, onUpdate
             })}
         </div>
     );
+
+    return (
+        <div className="flex flex-col gap-20 p-10 overflow-y-auto custom-scrollbar h-full bg-[#050505]">
+            {/* Advanced Section */}
+            {advancedThemes.length > 0 && (
+                <div className="space-y-8">
+                    <div className="flex items-center gap-4 px-2">
+                        <span className="text-xs font-black uppercase tracking-[0.4em] text-white/20 italic">High Performance & Premium Models</span>
+                        <div className="flex-1 h-[1px] bg-white/5" />
+                    </div>
+                    {renderGrid(advancedThemes)}
+                </div>
+            )}
+
+            {/* Base Section */}
+            {baseThemes.length > 0 && (
+                <div className="space-y-8">
+                    <div className="flex items-center gap-4 px-2">
+                        <span className="text-xs font-black uppercase tracking-[0.4em] text-white/20 italic">Sovereign Essential Models</span>
+                        <div className="flex-1 h-[1px] bg-white/5" />
+                    </div>
+                    {renderGrid(baseThemes)}
+                </div>
+            )}
+        </div>
+    );
 };
+

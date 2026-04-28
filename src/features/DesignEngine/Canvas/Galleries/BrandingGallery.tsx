@@ -12,7 +12,7 @@ export const BrandingGallery: React.FC<BrandingGalleryProps> = ({ onUpdateDraft,
     return (
         <div className="p-8 grid grid-cols-1 lg:grid-cols-2 gap-8">
             {BRANDING_PRESETS.map((preset) => (
-                <BrandingSpecimen 
+                <BrandingSpecimen
                     key={preset.id}
                     preset={preset}
                     onSelect={() => {
@@ -26,30 +26,29 @@ export const BrandingGallery: React.FC<BrandingGalleryProps> = ({ onUpdateDraft,
     );
 };
 
-const BrandingSpecimen: React.FC<{ preset: BrandingPreset; onSelect: () => void; isActive: boolean; globalTokens: any }> = ({ 
-    preset, onSelect, isActive, globalTokens 
+const BrandingSpecimen: React.FC<{ preset: BrandingPreset; onSelect: () => void; isActive: boolean; globalTokens: any }> = ({
+    preset, onSelect, isActive, globalTokens
 }) => {
     // Merge for logic, but override name to keep it consistent as requested
     const mergedTokens = { ...globalTokens, ...preset.tokens, systemName: globalTokens.systemName || 'SARAK' };
 
     return (
-        <motion.div 
+        <motion.div
             whileHover={{ scale: 1.01 }}
             onClick={onSelect}
-            className={`group relative bg-white/[0.02] border rounded-[2.5rem] overflow-hidden cursor-pointer transition-all duration-500 ${
-                isActive ? 'border-[var(--theme-primary)] shadow-2xl shadow-primary-500/10' : 'border-white/5 hover:border-white/20'
-            }`}
+            className={`group relative bg-white/[0.02] border rounded-[2.5rem] overflow-hidden cursor-pointer transition-all duration-500 ${isActive ? 'border-[var(--theme-primary)] shadow-2xl shadow-primary-500/10' : 'border-white/5 hover:border-white/20'
+                }`}
         >
             <div className="p-6 space-y-6">
-                
+
                 {/* 1. Shell Context Preview (Sidebar or Topbar) */}
                 <div className="bg-black/40 rounded-2xl border border-white/5 min-h-[140px] relative overflow-hidden flex items-center p-4">
                     <div className="absolute inset-0 bg-gradient-to-br from-white/[0.02] to-transparent" />
-                    
+
                     {mergedTokens.navigationStyle === 'topbar' ? (
                         <div className="w-full flex flex-col gap-2">
                             <div className="h-10 w-full bg-white/5 border border-white/10 rounded-lg flex items-center px-4 gap-3">
-                                <div 
+                                <div
                                     className="w-6 h-6 rounded bg-[var(--theme-primary)] flex items-center justify-center shadow-lg"
                                     style={{ transform: `scale(${mergedTokens.logoScale})` }}
                                 >
@@ -64,7 +63,7 @@ const BrandingSpecimen: React.FC<{ preset: BrandingPreset; onSelect: () => void;
                     ) : (
                         <div className="w-full flex gap-3 h-24">
                             <div className="w-16 bg-white/5 border border-white/10 rounded-lg flex flex-col items-center py-4 gap-4">
-                                <div 
+                                <div
                                     className="w-8 h-8 rounded-lg bg-[var(--theme-primary)] flex items-center justify-center shadow-lg"
                                     style={{ transform: `scale(${mergedTokens.logoScale})` }}
                                 >
@@ -116,11 +115,10 @@ const BrandingSpecimen: React.FC<{ preset: BrandingPreset; onSelect: () => void;
                         <h3 className="text-xs font-black uppercase tracking-tight text-white">{preset.title}</h3>
                         <p className="text-[9px] font-bold text-white/30 uppercase tracking-widest">{preset.description}</p>
                     </div>
-                    <div className={`px-2 py-1 rounded-md text-[8px] font-black uppercase border ${
-                        mergedTokens.systemTone === 'cyber' ? 'border-purple-500/30 text-purple-400 bg-purple-500/5' :
-                        mergedTokens.systemTone === 'modern' ? 'border-emerald-500/30 text-emerald-400 bg-emerald-500/5' :
-                        'border-blue-500/30 text-blue-400 bg-blue-500/5'
-                    }`}>
+                    <div className={`px-2 py-1 rounded-md text-[8px] font-black uppercase border ${mergedTokens.systemTone === 'cyber' ? 'border-purple-500/30 text-purple-400 bg-purple-500/5' :
+                            mergedTokens.systemTone === 'modern' ? 'border-emerald-500/30 text-emerald-400 bg-emerald-500/5' :
+                                'border-blue-500/30 text-blue-400 bg-blue-500/5'
+                        }`}>
                         {mergedTokens.systemTone}
                     </div>
                 </div>

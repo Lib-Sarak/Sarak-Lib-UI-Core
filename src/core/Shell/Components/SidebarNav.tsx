@@ -1,8 +1,11 @@
 import React from 'react';
 import { motion } from 'framer-motion';
-import { ChevronLeft, User, LogOut } from 'lucide-react';
+import { ChevronLeft, Bell } from 'lucide-react';
 import { IconRenderer } from './IconRenderer';
 import { DiscoveredModule } from '../../../constants/discovery';
+import { ShellUserWidget } from './ShellUserWidget';
+import { ShellSearchWidget } from './ShellSearchWidget';
+import { ShellLanguageSelector } from './ShellLanguageSelector';
 
 interface SidebarNavProps {
     design: any;
@@ -10,6 +13,7 @@ interface SidebarNavProps {
     user: any;
     logout?: () => void;
     toggleNav: () => void;
+    setIsSearchOpen: (open: boolean) => void;
     activeModuleId: string | null;
     setActiveModuleId: (id: string) => void;
     groupedModules: Record<string, DiscoveredModule[]>;
@@ -18,7 +22,7 @@ interface SidebarNavProps {
 }
 
 export const SidebarNav: React.FC<SidebarNavProps> = ({
-    design, brand, user, logout, toggleNav, activeModuleId, setActiveModuleId, groupedModules, setIsNavVisible, startResizing
+    design, brand, user, logout, toggleNav, setIsSearchOpen, activeModuleId, setActiveModuleId, groupedModules, setIsNavVisible, startResizing
 }) => {
     const { 
         mode, animationSpeed, sidebarWidth, isNavHidden, isAutoHideEnabled,
@@ -60,6 +64,11 @@ export const SidebarNav: React.FC<SidebarNavProps> = ({
             </div>
 
             <div className="flex-1 overflow-y-auto p-4 custom-scrollbar flex flex-col" style={{ gap: `var(--theme-tab-gap, ${tabGap}px)` }}>
+                {/* 1. Search (Icon Variant) */}
+                <div className="px-1 mb-2">
+                    <ShellSearchWidget variant="icon" onClick={() => setIsSearchOpen(true)} />
+                </div>
+
                 {Object.entries(groupedModules).map(([category, mods]) => (
                     <div key={category} style={{ marginBottom: `var(--theme-tab-gap, ${tabGap}px)` }}>
                         <h4 className="text-2xs font-bold text-white/20 uppercase tracking-[0.2em] mb-3 px-3">{category}</h4>
@@ -92,24 +101,24 @@ export const SidebarNav: React.FC<SidebarNavProps> = ({
                 ))}
             </div>
 
-            <div className="p-4 border-t border-[var(--theme-border)] bg-[var(--theme-card)]/50">
-                <div className="flex items-center justify-between">
-                    <div className="flex items-center gap-3">
-                        <div className="w-8 h-8 rounded-full bg-[var(--theme-primary)]/20 border border-[var(--theme-primary)]/30 flex items-center justify-center text-[var(--theme-primary)]"><User size={14} /></div>
-                        <div className="flex flex-col">
-                            <span className="text-[10px] font-bold text-[var(--theme-title)]/80 leading-tight">
-                                {user?.username || user?.email?.split('@')[0] || 'Sarak User'}
-                            </span>
-                            <span className="text-[9px] text-[var(--theme-muted)] uppercase tracking-widest font-bold">
-                                {user?.level === 100 ? 'Master' : user?.level >= 50 ? 'Admin' : 'User'}
-                            </span>
-                        </div>
-                    </div>
-                    <button onClick={logout} className="p-2 text-[var(--theme-muted)] hover:text-red-400 transition-colors"><LogOut size={14} /></button>
-                </div>
+            <div className="mt-auto space-y-1 p-2">
+                {/* 2. Language Selector */}
+                <ShellLanguageSelector variant="vertical" />
+                
+                {/* 3. Notifications */}
+                <button className="w-full flex items-center gap-3 px-3 py-2.5 rounded-xl text-white/40 hover:bg-white/5 hover:text-white transition-all group">
+                    <Bell size={18} className="text-[var(--theme-muted)] group-hover:text-[var(--theme-primary)]" />
+                    <span className="text-sm font-tab flex-1 text-left">Notifications</span>
+                    <div className="w-1.5 h-1.5 bg-[var(--theme-primary)] rounded-full shadow-[0_0_5px_var(--theme-primary)]" />
+                </button>
             </div>
+
+            {/* 4. User Profile & Logout */}
+            <ShellUserWidget user={user} logout={logout} variant="vertical" />
+            
             <div onMouseDown={startResizing} className="absolute top-0 right-0 w-1 h-full cursor-col-resize hover:bg-[var(--theme-primary)]/50 transition-colors z-[60]" />
         </aside>
     );
 };
+;
 

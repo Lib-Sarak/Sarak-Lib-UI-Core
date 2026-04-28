@@ -1,7 +1,7 @@
 import React from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
 import {
-    Zap, Shield, BarChart3, MessageSquare, History, Box, Network, Type, Grid, Sparkles
+    Zap, Shield, BarChart3, MessageSquare, History, Box, Network, Type, Grid, Sparkles, Search, Bell
 } from 'lucide-react';
 import { THEME_EFFECTS } from '../../../constants/design-tokens';
 import { DESIGN_MANIFEST, UIContext } from '../../../core/Provider/SarakUIProvider';
@@ -23,7 +23,9 @@ interface PreviewCanvasProps {
     activeCategory: string | null;
     onUpdateDraft: (key: string, value: any) => void;
     isDualView?: boolean;
+    customThemes?: any[];
 }
+
 
 export const PreviewCanvas: React.FC<PreviewCanvasProps> = ({
     previewDevice,
@@ -38,8 +40,10 @@ export const PreviewCanvas: React.FC<PreviewCanvasProps> = ({
     draftTokens,
     activeCategory,
     onUpdateDraft,
-    isDualView
+    isDualView,
+    customThemes = []
 }) => {
+
     const tokens = React.useMemo(() => draftTokens || {}, [draftTokens]);
     
     // --- HELPERS ---
@@ -183,21 +187,32 @@ export const PreviewCanvas: React.FC<PreviewCanvasProps> = ({
         );
     };
 
-    const UserProfileComponent = () => (
-        <div className="flex items-center gap-3 p-4 border-t border-[var(--theme-border)] mt-auto relative z-20">
-            <div className="w-8 h-8 rounded-full bg-white/5 border border-white/10 flex items-center justify-center overflow-hidden relative">
-                <div className="w-full h-full bg-gradient-to-br from-[var(--theme-primary)] to-purple-600 opacity-20 absolute inset-0" />
-                <span className="text-2xs font-bold text-[var(--theme-title)] relative z-10">U</span>
+    const UserWidget = ({ variant = 'vertical' }: { variant?: 'horizontal' | 'vertical' }) => {
+        const isHorizontal = variant === 'horizontal';
+        if (isHorizontal) {
+            return (
+                <div className="flex items-center gap-4 ml-auto border-l border-[var(--theme-border)] pl-6">
+                    <div className="flex flex-col items-end"><span className="text-2xs font-black text-[var(--theme-title)] uppercase tracking-widest">Sarak User</span><span className="text-[7px] text-[var(--theme-primary)] font-bold uppercase tracking-widest">Admin</span></div>
+                    <div className="w-8 h-8 rounded-lg bg-white/5 border border-white/10 flex items-center justify-center"><Zap size={14} className="text-[var(--theme-primary)]" /></div>
+                </div>
+            );
+        }
+        return (
+            <div className="flex items-center gap-3 p-4 border-t border-[var(--theme-border)] mt-auto relative z-20">
+                <div className="w-8 h-8 rounded-full bg-white/5 border border-white/10 flex items-center justify-center overflow-hidden relative">
+                    <div className="w-full h-full bg-gradient-to-br from-[var(--theme-primary)] to-purple-600 opacity-20 absolute inset-0" />
+                    <Zap size={14} className="text-[var(--theme-primary)] relative z-10" />
+                </div>
+                <div className="flex flex-col"><span className="text-2xs font-bold text-[var(--theme-title)] uppercase tracking-wider">Sarak User</span><span className="text-3xs text-[var(--theme-muted)] uppercase tracking-widest">Administrator</span></div>
+                <div className="ml-auto opacity-40 hover:opacity-100 transition-opacity cursor-pointer"><Shield size={14} className="text-[var(--theme-muted)]" /></div>
             </div>
-            <div className="flex flex-col"><span className="text-2xs font-bold text-[var(--theme-title)] uppercase tracking-wider">Sarak User</span><span className="text-3xs text-[var(--theme-muted)] uppercase tracking-widest">Administrator</span></div>
-            <div className="ml-auto opacity-40 hover:opacity-100 transition-opacity cursor-pointer"><Shield size={14} className="text-[var(--theme-muted)]" /></div>
-        </div>
-    );
+        );
+    };
 
-    const TopbarUserProfile = () => (
-        <div className="flex items-center gap-4 ml-auto border-l border-[var(--theme-border)] pl-6">
-            <div className="flex flex-col items-end"><span className="text-2xs font-black text-[var(--theme-title)] uppercase tracking-widest">Sarak User</span><span className="text-[7px] text-[var(--theme-primary)] font-bold uppercase tracking-widest">Admin</span></div>
-            <div className="w-8 h-8 rounded-lg bg-white/5 border border-white/10 flex items-center justify-center"><Zap size={14} className="text-[var(--theme-primary)]" /></div>
+    const LanguageSelector = ({ variant = 'horizontal' }: { variant?: 'horizontal' | 'vertical' }) => (
+        <div className={`flex items-center gap-2 px-3 py-1.5 rounded-lg bg-white/5 border border-white/10 ${variant === 'vertical' ? 'w-full mb-1' : ''}`}>
+            <span className="text-[10px]">🇧🇷</span>
+            <span className="text-[8px] font-black uppercase tracking-widest text-white/40">PT</span>
         </div>
     );
 
@@ -221,7 +236,7 @@ export const PreviewCanvas: React.FC<PreviewCanvasProps> = ({
                     <div className="flex items-center gap-3">
                         <div className="flex gap-1.5">
                             <div className="w-2.5 h-2.5 rounded-full bg-red-500/40 border border-red-500/20" />
-                            <div className="w-2.5 h-2.5 rounded-full bg-amber-500/40 border border-amber-500/20" />
+                            <div className="w-2.5 h-2.5 rounded-full bg-amber-500/40 border border-red-500/20" />
                             <div className="w-2.5 h-2.5 rounded-full bg-emerald-500/40 border border-emerald-500/20" />
                         </div>
                         <span className="text-[10px] font-black text-white/40 uppercase tracking-widest">{title}</span>
@@ -237,14 +252,56 @@ export const PreviewCanvas: React.FC<PreviewCanvasProps> = ({
     const renderSystemContent = () => (
         <div className="flex flex-col w-full h-full relative z-10 bg-[var(--theme-bg)]" style={cssVariables} {...dataAttributes}>
             {tokens.texture && tokens.texture !== 'none' && <div className={`absolute inset-0 pointer-events-none z-0 texture-${tokens.texture} SarakAtmosphereLayer`} />}
+            
             {tokens.navigationStyle === 'topbar' ? (
                 <div className="flex flex-col w-full h-full relative z-10">
-                    <header className="sarak-shell-header h-14 border border-[var(--theme-border)] flex items-center justify-between px-6 bg-[var(--theme-card)] backdrop-blur-md relative z-20" style={{ margin: 'var(--theme-tab-section-margin)', borderRadius: 'calc(var(--radius-theme) * 0.8)', boxShadow: 'var(--theme-shadow)' }}><LogoComponent /><nav className="flex h-full items-center">{appIds.map((id) => (<button key={id} onClick={() => setActivePreviewApp(id)} className={`px-4 flex items-center gap-2 h-8 rounded-lg transition-all text-2xs font-black uppercase tracking-widest ${activePreviewApp === id ? 'bg-[var(--theme-primary)] text-white shadow-lg' : 'text-[var(--theme-muted)] hover:text-[var(--theme-title)]'}`}>{appIcons[id]}</button>))}</nav><TopbarUserProfile /></header>
+                    <header className="sarak-shell-header h-14 border border-[var(--theme-border)] flex items-center justify-between px-6 bg-[var(--theme-card)] backdrop-blur-md relative z-20" style={{ margin: 'var(--theme-tab-section-margin)', borderRadius: 'calc(var(--radius-theme) * 0.8)', boxShadow: 'var(--theme-shadow)' }}>
+                        <LogoComponent />
+                        <nav className="flex h-full items-center">
+                            {appIds.map((id) => (
+                                <button key={id} onClick={() => setActivePreviewApp(id)} className={`px-4 flex items-center gap-2 h-8 rounded-lg transition-all text-2xs font-black uppercase tracking-widest ${activePreviewApp === id ? 'bg-[var(--theme-primary)] text-white shadow-lg' : 'text-[var(--theme-muted)] hover:text-[var(--theme-title)]'}`}>
+                                    {appIcons[id]}
+                                </button>
+                            ))}
+                        </nav>
+                        <div className="flex items-center gap-4">
+                            <div className="hidden md:flex items-center w-32 h-8 bg-white/5 border border-white/10 rounded-lg px-3 gap-2">
+                                <Search size={12} className="text-white/20" />
+                                <span className="text-[10px] text-white/20 font-bold uppercase tracking-wider">Search...</span>
+                            </div>
+                            <LanguageSelector />
+                            <Bell size={14} className="text-white/20" />
+                            <UserWidget variant="horizontal" />
+                        </div>
+                    </header>
                     <main className="flex-1 overflow-y-auto p-8 custom-scrollbar">{apps[activePreviewApp]}</main>
                 </div>
             ) : (
                 <div className="flex w-full h-full relative z-10">
-                    <aside className="sarak-shell-sidebar border border-[var(--theme-border)] flex flex-col bg-[var(--theme-card)] backdrop-blur-md relative z-20" style={{ width: `${tokens.sidebarWidth || 180}px`, margin: 'var(--theme-tab-section-margin)', borderRadius: 'calc(var(--radius-theme) * 0.8)', boxShadow: 'var(--theme-shadow)' }}><div className="p-6 border-b border-[var(--theme-border)] flex items-center justify-center"><LogoComponent /></div><nav className="flex-1 p-4 space-y-1">{appIds.map((id) => (<button key={id} onClick={() => setActivePreviewApp(id)} className={`w-full flex items-center gap-3 px-4 py-3 rounded-lg transition-all text-2xs font-black uppercase tracking-widest ${activePreviewApp === id ? 'bg-[var(--theme-primary)] text-white shadow-lg' : 'text-[var(--theme-muted)] hover:bg-white/5 hover:text-[var(--theme-title)]'}`}>{appIcons[id]}{id}</button>))}</nav><UserProfileComponent /></aside>
+                    <aside className="sarak-shell-sidebar border border-[var(--theme-border)] flex flex-col bg-[var(--theme-card)] backdrop-blur-md relative z-20" style={{ width: `${tokens.sidebarWidth || 180}px`, margin: 'var(--theme-tab-section-margin)', borderRadius: 'calc(var(--radius-theme) * 0.8)', boxShadow: 'var(--theme-shadow)' }}>
+                        <div className="p-6 border-b border-[var(--theme-border)] flex items-center justify-center">
+                            <LogoComponent />
+                        </div>
+                        <nav className="flex-1 p-4 space-y-1">
+                            <div className="mb-4 px-2 py-2 bg-white/5 border border-white/10 rounded-lg flex items-center gap-3">
+                                <Search size={14} className="text-white/20" />
+                                <span className="text-[10px] text-white/20 font-bold uppercase tracking-wider">Search</span>
+                            </div>
+                            {appIds.map((id) => (
+                                <button key={id} onClick={() => setActivePreviewApp(id)} className={`w-full flex items-center gap-3 px-4 py-3 rounded-lg transition-all text-2xs font-black uppercase tracking-widest ${activePreviewApp === id ? 'bg-[var(--theme-primary)] text-white shadow-lg' : 'text-[var(--theme-muted)] hover:bg-white/5 hover:text-[var(--theme-title)]'}`}>
+                                    {appIcons[id]}{id}
+                                </button>
+                            ))}
+                        </nav>
+                        <div className="p-2 space-y-1">
+                            <LanguageSelector variant="vertical" />
+                            <div className="flex items-center gap-3 px-4 py-2 rounded-lg text-white/20">
+                                <Bell size={14} />
+                                <span className="text-[10px] font-bold uppercase tracking-wider">Alerts</span>
+                            </div>
+                        </div>
+                        <UserWidget variant="vertical" />
+                    </aside>
                     <main className="flex-1 overflow-y-auto p-8 custom-scrollbar relative z-10">{apps[activePreviewApp]}</main>
                 </div>
             )}
@@ -276,7 +333,9 @@ export const PreviewCanvas: React.FC<PreviewCanvasProps> = ({
                                             tokens={tokens} 
                                             onUpdateDraft={onUpdateDraft} 
                                             activePreviewApp={activePreviewApp}
+                                            customThemes={customThemes}
                                         />
+
                                     </div>
                                 </div>
                             ))}

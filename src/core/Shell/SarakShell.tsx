@@ -74,8 +74,8 @@ export const SarakShell: React.FC<SarakShellProps> = (props) => {
             {/* CONTENT AREA */}
             <div className="flex-1 flex flex-col h-screen overflow-hidden relative bg-[var(--theme-body)]">
                 
-                {/* SHELL HEADER (TOPBAR / SIDEBAR-HIDDEN) */}
-                {(isTopbar || isSidebar) && (
+                {/* SHELL HEADER (TOPBAR ONLY) */}
+                {isTopbar && (
                     <TopbarNav 
                         design={design}
                         brand={brand}
@@ -85,6 +85,8 @@ export const SarakShell: React.FC<SarakShellProps> = (props) => {
                         setActiveModuleId={shell.setActiveModuleId}
                         discoveredModules={shell.discoveredModules}
                         extraToolbarItems={extraToolbarItems}
+                        user={user}
+                        logout={logout}
                     />
                 )}
 

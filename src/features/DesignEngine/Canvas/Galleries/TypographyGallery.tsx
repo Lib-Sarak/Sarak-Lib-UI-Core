@@ -3,7 +3,9 @@ import { motion } from 'framer-motion';
 import { useSarakUI, UIContext } from '../../../../core/Provider/SarakUIProvider';
 import { TYPO_PRESETS, TypoPreset } from '../../../../constants/typo-presets';
 import { DESIGN_MANIFEST } from '../../../../core/Provider/SarakUIProvider';
-import { Check, Type, Hash } from 'lucide-react';
+import { Check, Type, Hash, ArrowRight } from 'lucide-react';
+import { THEME_FONTS } from '../../../../constants/design-tokens';
+
 
 interface TypographyGalleryProps {
     onUpdateDraft: (key: string, value: any) => void;
@@ -12,21 +14,94 @@ interface TypographyGalleryProps {
 
 export const TypographyGallery: React.FC<TypographyGalleryProps> = ({ onUpdateDraft, tokens }) => {
     return (
-        <div className="grid grid-cols-1 gap-8 p-8">
-            {TYPO_PRESETS.map((preset) => (
-                <TypoSpecimen 
-                    key={preset.id} 
-                    preset={preset} 
-                    onSelect={() => {
-                        Object.entries(preset.tokens).forEach(([key, val]) => onUpdateDraft(key, val));
-                    }}
-                    isActive={tokens.headingFont === preset.tokens.headingFont && tokens.scaleRatio === preset.tokens.scaleRatio}
-                    globalTokens={tokens}
-                />
-            ))}
+        <div className="space-y-16 p-8 overflow-y-auto custom-scrollbar h-full">
+            {/* Section 1: Curation Presets */}
+            <div className="space-y-6">
+                <div className="flex items-center gap-4 px-2">
+                    <span className="text-xs font-black uppercase tracking-[0.4em] text-white/20 italic">Curated Typography Presets</span>
+                    <div className="flex-1 h-[1px] bg-white/5" />
+                </div>
+                <div className="grid grid-cols-1 gap-8">
+                    {TYPO_PRESETS.map((preset) => (
+                        <TypoSpecimen 
+                            key={preset.id} 
+                            preset={preset} 
+                            onSelect={() => {
+                                Object.entries(preset.tokens).forEach(([key, val]) => onUpdateDraft(key, val));
+                            }}
+                            isActive={tokens.headingFont === preset.tokens.headingFont && tokens.scaleRatio === preset.tokens.scaleRatio}
+                            globalTokens={tokens}
+                        />
+                    ))}
+                </div>
+            </div>
+
+            {/* Section 2: All Available Fonts (Individual) */}
+            <div className="space-y-6">
+                <div className="flex items-center gap-4 px-2">
+                    <span className="text-xs font-black uppercase tracking-[0.4em] text-white/20 italic">All Sovereign Typefaces</span>
+                    <div className="flex-1 h-[1px] bg-white/5" />
+                </div>
+                <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+                    {THEME_FONTS.map((font) => (
+                        <FontFamilySpecimen 
+                            key={font.id}
+                            font={font}
+                            onSelect={() => {
+                                onUpdateDraft('headingFont', font.value);
+                                onUpdateDraft('bodyFont', font.value);
+                                onUpdateDraft('subtitleFont', font.value);
+                                onUpdateDraft('tabFont', font.value);
+                            }}
+                            isActive={tokens.headingFont === font.value}
+                        />
+                    ))}
+                </div>
+            </div>
         </div>
     );
 };
+
+const FontFamilySpecimen: React.FC<{ font: any; onSelect: () => void; isActive: boolean }> = ({ font, onSelect, isActive }) => {
+    return (
+        <motion.div
+            whileHover={{ scale: 1.02 }}
+            whileTap={{ scale: 0.98 }}
+            onClick={onSelect}
+            className={`group relative p-6 rounded-2xl border transition-all duration-300 cursor-pointer ${
+                isActive ? 'bg-[var(--theme-primary)] border-transparent shadow-xl shadow-primary-500/20' : 'bg-white/[0.02] border-white/5 hover:bg-white/[0.05] hover:border-white/10'
+            }`}
+        >
+            <div className="flex flex-col gap-4">
+                <div className="flex items-center justify-between">
+                    <span className={`text-[10px] font-black uppercase tracking-widest ${isActive ? 'text-white/60' : 'text-white/20'}`}>
+                        {font.category}
+                    </span>
+                    {isActive && <Check size={12} className="text-white" />}
+                </div>
+                
+                <div 
+                    className={`text-2xl font-bold truncate ${isActive ? 'text-white' : 'text-white/80'}`}
+                    style={{ fontFamily: font.value }}
+                >
+                    {font.name}
+                </div>
+
+                <div className="flex items-center justify-between mt-2">
+                    <div className="flex gap-1">
+                        {font.weights.slice(0, 3).map((w: number) => (
+                            <span key={w} className={`text-[8px] px-1.5 py-0.5 rounded ${isActive ? 'bg-white/20 text-white' : 'bg-white/5 text-white/30'}`}>
+                                {w}
+                            </span>
+                        ))}
+                    </div>
+                    <ArrowRight size={14} className={`transition-transform group-hover:translate-x-1 ${isActive ? 'text-white/40' : 'text-white/10'}`} />
+                </div>
+            </div>
+        </motion.div>
+    );
+};
+
 
 const getTypoVariables = (mergedTokens: any) => {
     const vars: any = {};

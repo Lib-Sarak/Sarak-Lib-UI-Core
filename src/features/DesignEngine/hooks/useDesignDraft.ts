@@ -119,8 +119,7 @@ export const useDesignDraft = (sarak: any) => {
             shadowIntensity: 'number', shadowOrientation: 'string', shadowColorMode: 'string',
             animationSpeed: 'number', mode: 'string',
             scaleRatio: 'number', contrastCurve: 'number', layeredShadows: 'number',
-            cardPadding: 'number', layoutGap: 'number', dashboardTemplate: 'string',
-            cardTexture: 'string', borderType: 'string'
+            cardPadding: 'number', dashboardTemplate: 'string', cardTexture: 'string'
         };
 
         const tokenMap: Record<string, string> = {
@@ -140,7 +139,7 @@ export const useDesignDraft = (sarak: any) => {
             '--animation-speed': 'animationSpeed', '--mode': 'mode',
             '--scale-ratio': 'scaleRatio', '--contrast-curve': 'contrastCurve', '--layered-shadows': 'layeredShadows',
             '--card-padding': 'cardPadding', '--layout-gap': 'layoutGap', '--dashboard-template': 'dashboardTemplate',
-            '--card-texture': 'cardTexture', '--border-type': 'borderType'
+            '--card-texture': 'cardTexture'
         };
 
         const newDraft = { ...draft, layout: id };

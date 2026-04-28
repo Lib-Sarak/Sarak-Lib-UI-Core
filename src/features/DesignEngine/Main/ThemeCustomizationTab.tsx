@@ -365,7 +365,9 @@ export const ThemeCustomizationTab: React.FC = () => {
                     activeCategory={activeCategory}
                     onUpdateDraft={updateDraft}
                     isDualView={isDualView}
+                    customThemes={[]}
                 />
+
                 
                 {/* Toast de Confirmação */}
                 <AnimatePresence>
