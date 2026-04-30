@@ -1,0 +1,35 @@
+{
+  "id": "project-dashboard",
+  "label": "Dashboard do Projeto",
+  "icon": "LayoutDashboard",
+  "category": "Monitoramento",
+  "version": "1.0.0",
+  "priority": 10,
+  "endpoints": {
+    "v1.stats": "/api/v1/stats",
+    "v1.projects": "/api/v1/projects"
+  },
+  "visualContracts": [
+    {
+      "id": "hero-stats",
+      "type": "STATS",
+      "label": "Métricas Globais",
+      "endpoint": "v1.stats",
+      "importance": "hero",
+      "role": "primary"
+    },
+    {
+      "id": "project-list",
+      "type": "TABLE",
+      "label": "Projetos Ativos",
+      "endpoint": "v1.projects",
+      "density": "standard",
+      "role": "neutral",
+      "mapping": {
+        "name": "Nome do Projeto",
+        "status": "Status",
+        "progress": "Progresso (%)"
+      }
+    }
+  ]
+}

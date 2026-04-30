@@ -15,19 +15,11 @@ export const CardsSection: React.FC<CardsSectionProps> = ({ draft, updateDraft, 
             <Section id="card-geometry" icon={Box} title="Geometria do Card" activeSection={activeSection} onToggle={setActiveSection}>
                 <div className="grid grid-cols-2 gap-4">
                     <SliderControl label="Raio da Borda" value={draft.borderRadius} min={0} max={32} onChange={(v: any) => updateDraft('borderRadius', v)} suffix="px" />
-                    <div className="flex flex-col gap-1">
-                        <span className="text-3xs font-black uppercase tracking-widest text-white/40">Corte Angular</span>
-                        <button 
-                            onClick={() => updateDraft('isGeometricCut', !draft.isGeometricCut)}
-                            className={`py-2 rounded-lg text-3xs font-black uppercase transition-all ${draft.isGeometricCut ? 'bg-[var(--theme-primary)] text-white' : 'bg-white/5 text-white/40'}`}
-                        >
-                            {draft.isGeometricCut ? 'Ativado' : 'Desativado'}
-                        </button>
-                    </div>
                 </div>
                 <div className="mt-4">
-                     <SelectControl 
-                        label="Textura Interna do Card" 
+                 <div className="grid grid-cols-2 gap-4 mt-4">
+                    <SelectControl 
+                        label="Textura do Card" 
                         options={[
                             {id: 'none', label: 'Nenhuma'},
                             {id: 'grid', label: 'Grid Tech'},
@@ -39,6 +31,15 @@ export const CardsSection: React.FC<CardsSectionProps> = ({ draft, updateDraft, 
                         value={draft.cardTexture} 
                         onChange={(v: any) => updateDraft('cardTexture', v)} 
                     />
+                    <SliderControl 
+                        label="Opacidade Textura" 
+                        value={draft.textureOpacity || 0.1} 
+                        min={0} 
+                        max={0.5} 
+                        step={0.01} 
+                        onChange={(v: any) => updateDraft('textureOpacity', v)} 
+                    />
+                </div>
                 </div>
                 <div className="grid grid-cols-2 gap-4 mt-4">
                     <SliderControl label="Espessura Borda" value={draft.borderWidth} min={0} max={4} step={1} onChange={(v: any) => updateDraft('borderWidth', v)} suffix="px" />
@@ -55,33 +56,34 @@ export const CardsSection: React.FC<CardsSectionProps> = ({ draft, updateDraft, 
                     <SliderControl label="Opacidade Vidro" value={draft.glassOpacity} min={0} max={1} step={0.05} onChange={(v: any) => updateDraft('glassOpacity', v)} />
                     <SliderControl label="Blur (Desfoque)" value={draft.glassBlur} min={0} max={40} onChange={(v: any) => updateDraft('glassBlur', v)} suffix="px" />
                 </div>
-                <div className="grid grid-cols-2 gap-4 mt-4">
+                <div className="grid grid-cols-1 gap-4 mt-4">
                     <SliderControl label="Saturação Vidro" value={draft.glassSaturation} min={100} max={300} step={10} onChange={(v: any) => updateDraft('glassSaturation', v)} suffix="%" />
-                    <SliderControl label="Holofote (Spotlight)" value={draft.cardSpotlight} min={0} max={0.5} step={0.01} onChange={(v: any) => updateDraft('cardSpotlight', v)} />
                 </div>
-                <div className="grid grid-cols-2 gap-4 mt-4">
+                <div className="grid grid-cols-1 gap-4 mt-4">
                     <SliderControl label="Curva de Contraste" value={draft.contrastCurve || 1.0} min={0.5} max={2.0} step={0.1} onChange={(v: any) => updateDraft('contrastCurve', v)} />
-                    <div className="flex flex-col gap-1">
-                        <span className="text-3xs font-black uppercase tracking-widest text-white/40">Efeito Border Beam</span>
-                        <button 
-                            onClick={() => updateDraft('borderBeamEnabled', draft.borderBeamEnabled === '1' ? '0' : '1')}
-                            className={`py-2 px-3 rounded-lg text-2xs font-black uppercase transition-all border ${draft.borderBeamEnabled === '1' ? 'bg-[var(--theme-primary)] border-transparent text-white' : 'bg-white/5 border-white/10 text-white/40'}`}
-                        >
-                            {draft.borderBeamEnabled === '1' ? 'Ativado' : 'Desativado'}
-                        </button>
-                    </div>
                 </div>
                 <div className="mt-4">
                     <SelectControl 
                         label="Material de Superfície" 
                         options={[
-                            {id: 'glass', label: 'Glass Standard'}, 
+                            {id: 'none', label: 'Nenhum (Glass)'}, 
+                            {id: 'metallic', label: 'Metallic / Industrial'}, 
                             {id: 'acrylic', label: 'Acrylic Deep'}, 
                             {id: 'matte', label: 'Solid Matte'}, 
                             {id: 'brushed', label: 'Brushed Metal'}
                         ]} 
                         value={draft.surfaceMaterial} 
                         onChange={(v: any) => updateDraft('surfaceMaterial', v)} 
+                    />
+                </div>
+                <div className="mt-4">
+                    <SliderControl 
+                        label="Intensidade do Material" 
+                        value={draft.surfaceIntensity ?? 0.05} 
+                        min={0} 
+                        max={0.2} 
+                        step={0.005} 
+                        onChange={(v: any) => updateDraft('surfaceIntensity', v)} 
                     />
                 </div>
             </Section>

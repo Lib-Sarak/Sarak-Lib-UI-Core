@@ -67,9 +67,14 @@
 /* 1. REAL DYNAMIC CONTRAST (LIGHT / DARK) */
 body.dark,
 .preview-container.dark {
-  --bg-body: #020617;
-  --bg-sidebar: #0f172a;
-  --bg-card: #1e293b;
+  --bg-body-rgb: 2, 6, 23;
+  --bg-sidebar-rgb: 15, 23, 42;
+  --bg-card-rgb: 30, 41, 59;
+  
+  --bg-body: rgb(var(--bg-body-rgb));
+  --bg-sidebar: rgb(var(--bg-sidebar-rgb));
+  --bg-card: rgba(var(--bg-card-rgb), var(--glass-opacity, 0.8));
+  
   --text-main: #94a3b8;
   --text-title: #f8fafc;
   --text-muted: #cbd5e1;
@@ -82,9 +87,14 @@ body.dark,
 
 body.light,
 .preview-container.light {
-  --bg-body: #f8fafc;
-  --bg-sidebar: #f1f5f9;
-  --bg-card: #ffffff;
+  --bg-body-rgb: 248, 250, 252;
+  --bg-sidebar-rgb: 241, 245, 249;
+  --bg-card-rgb: 255, 255, 255;
+
+  --bg-body: rgb(var(--bg-body-rgb));
+  --bg-sidebar: rgb(var(--bg-sidebar-rgb));
+  --bg-card: rgba(var(--bg-card-rgb), var(--glass-opacity, 0.9));
+
   --text-main: #334155;
   --text-title: #0f172a;
   --text-muted: #334155;
@@ -142,11 +152,7 @@ body {
 }
 
 
-.bg-theme-card {
-    transition: transform var(--animation-speed, 0.4s) var(--elastic-curve), 
-                box-shadow var(--animation-speed, 0.4s) ease,
-                background-color 0.3s ease !important;
-}
+/* .bg-theme-card definitions moved to Atomic Card Engine section (line 511) */
 
 /* --- CONTRACT UTILITIES (v8.5) --- */
 .rounded-theme { border-radius: var(--radius-theme, 12px) !important; }
@@ -156,19 +162,15 @@ body {
     border-color: var(--theme-border) !important; 
 }
 .shadow-theme { box-shadow: var(--theme-shadow) !important; }
-.bg-theme-card { background-color: var(--theme-card) !important; }
+/* bg-theme-card backdrop moved to main engine */
 .divide-theme > * + * { border-color: var(--theme-border) !important; }
 .border-t-theme { border-top: var(--theme-border-width, 1px) var(--border-style, solid) var(--theme-border) !important; }
 .border-b-theme { border-bottom: var(--theme-border-width, 1px) var(--border-style, solid) var(--theme-border) !important; }
 
 
-.bg-theme-card {
-    will-change: transform, opacity, box-shadow;
-}
+/* will-change moved to main engine */
 
-.bg-theme-card:hover {
-    transform: scale(var(--elastic-scale)) translateY(-8px) !important;
-}
+/* hover transform moved to main engine */
 
 /* 1.1 TRANSITION UTILITIES (v8.5) */
 .transition-sarak {
@@ -494,63 +496,148 @@ body {
 }
 
 /* 4. ATOMIC CARD ENGINE */
+/* 4. ATOMIC CARD ENGINE - INDUSTRIAL RENDERER (v8.5) */
 .bg-theme-card {
     position: relative;
-    border-radius: var(--radius-theme, 12px);
-    border: var(--border-width, 1px) var(--border-style, solid) var(--border-color);
-    background: color-mix(in srgb, var(--bg-card), transparent calc(100% * (1 - var(--glass-opacity, 0.7))));
-    backdrop-filter: blur(var(--glass-blur, 10px)) saturate(var(--sarak-glass-saturation, 180%));
-    box-shadow: var(--sarak-layered-shadows, var(--dynamic-shadow));
-    padding: var(--theme-card-padding, 24px);
-    transition: all var(--animation-speed, 0.4s) var(--ease-sarak-cubic), border-color 0.2s ease, background 0.3s ease;
-    overflow: hidden;
     isolation: isolate;
+    overflow: hidden;
+    
+    /* Geometria Básica */
+    border-radius: var(--radius-theme, 12px);
+    border: var(--theme-border-width, 1px) var(--border-style, solid) var(--theme-border);
+    padding: var(--theme-card-padding, 24px);
+    
+    /* Fundo Base (Sovereign Glass) */
+    background-color: color-mix(in srgb, var(--bg-card), transparent calc(100% * (1 - var(--glass-opacity, 0.7)))) !important;
+    
+    /* Motor de Filtros (Fidelidade Total) */
+    backdrop-filter: 
+        blur(var(--glass-blur, 10px)) 
+        saturate(var(--sarak-glass-saturation, 180%)) 
+        contrast(var(--contrast-curve, 100%));
+    -webkit-backdrop-filter: 
+        blur(var(--glass-blur, 10px)) 
+        saturate(var(--sarak-glass-saturation, 180%)) 
+        contrast(var(--contrast-curve, 100%));
+
+    /* Eco Mode Optimization */
+    [data-perf-mode="eco"] & {
+        backdrop-filter: none !important;
+        -webkit-backdrop-filter: none !important;
+        transition-duration: 0.1s !important;
+    }
+
+    
+    /* Camada 0: Composição de Background (Spotlight + Texture) */
+    background-image: 
+        var(--card-spotlight-image, none),
+        var(--card-texture-image, none);
+    background-repeat: no-repeat, repeat;
+    background-position: center, center;
+    background-size: cover, auto;
+    
+    /* Sombras Reativas */
+    box-shadow: var(--sarak-layered-shadows, var(--dynamic-shadow));
+    
+    /* Transição Fluida */
+    transition: 
+        transform var(--animation-speed, 0.4s) var(--ease-sarak-cubic), 
+        box-shadow var(--animation-speed, 0.4s) ease,
+        border-color 0.2s ease,
+        background-color 0.3s ease,
+        backdrop-filter 0.3s ease;
+    
+    /* Setup de Variáveis Internas */
+    --card-spotlight-image: radial-gradient(
+        600px circle at var(--mouse-px-x, 50%) var(--mouse-px-y, 50%), 
+        rgba(var(--theme-primary-rgb, 255,255,255), var(--spotlight-opacity, 0.15)), 
+        transparent 80%
+    );
 }
 
-.bg-theme-card:hover {
+/* 4.1 INTERACTIVE STATES (v8.5) */
+
+/* Spotlight Control */
+.bg-theme-card {
+    background-image: var(--card-texture-image, none);
+}
+
+[data-spotlight="1"] .bg-theme-card,
+.bg-theme-card[data-spotlight="1"] {
+    background-image: var(--card-spotlight-image), var(--card-texture-image, none);
+}
+
+/* Hover Lift Control */
+[data-hover-lift="1"] .bg-theme-card:hover,
+.bg-theme-card[data-hover-lift="1"]:hover {
     transform: scale(1.01) translateY(-6px);
     border-color: rgba(var(--theme-primary-rgb, 59, 130, 246), 0.5);
-    box-shadow: 0 32px 64px -16px rgba(0, 0, 0, 0.6),
-                0 0 30px rgba(var(--theme-primary-rgb, 59, 130, 246), 0.2);
+    box-shadow: 0 32px 64px -16px rgba(0, 0, 0, 0.5),
+                0 0 30px rgba(var(--theme-primary-rgb, 59, 130, 246), 0.15);
 }
 
+/* Magnetic Pull Hint (For JS Components) */
+[data-magnetic="1"] .bg-theme-card {
+    cursor: grab;
+}
+[data-magnetic="1"] .bg-theme-card:active {
+    cursor: grabbing;
+}
+
+/* Camada 2: Materiais Industriais (Metallic, Brushed, Acrylic) */
 .bg-theme-card::before {
     content: '';
     position: absolute;
     inset: 0;
-    z-index: -1;
-    background: radial-gradient(
-        800px circle at var(--mouse-x, 50%) var(--mouse-y, 50%), 
-        rgba(var(--theme-primary-rgb, 255,255,255), var(--sarak-spotlight-intensity, 0.08)), 
-        transparent 40%
-    );
-    opacity: 0;
-    transition: opacity 0.5s cubic-bezier(0.4, 0, 0.2, 1);
+    z-index: -1; /* Atrás do conteúdo, à frente do background */
     pointer-events: none;
+    opacity: 0;
+    transition: opacity 0.5s ease;
 }
 
-.bg-theme-card:hover::before {
-    opacity: 1;
+/* Camada 3: Efeitos Dinâmicos de Borda (Border Beam) */
+.bg-theme-card::after {
+    content: '';
+    position: absolute;
+    inset: 0;
+    z-index: 1; /* Mantido acima para o efeito de borda brilhar sobre o conteúdo nas extremidades */
+    pointer-events: none;
+    transition: opacity 0.5s ease;
 }
 
-/* BORDER BEAM EFFECT (v8.0) */
-[data-border-beam="1"] .bg-theme-card::after {
+/* BORDER BEAM EFFECT (v8.5) */
+[data-border-beam="1"] .bg-theme-card::after,
+.bg-theme-card[data-border-beam="1"]::after {
     content: '';
     position: absolute;
     inset: -1px;
+    z-index: 1;
+    pointer-events: none;
     background: conic-gradient(from var(--beam-angle, 0deg), transparent, var(--theme-primary), transparent 30%);
     mask: linear-gradient(#fff 0 0) content-box, linear-gradient(#fff 0 0);
     mask-composite: exclude;
-    padding: var(--border-width, 1px);
+    padding: var(--theme-border-width, 1px);
     border-radius: inherit;
-    pointer-events: none;
     opacity: 0;
     transition: opacity 0.5s ease;
     animation: beam-rotate 4s linear infinite;
 }
 
-[data-border-beam="1"] .bg-theme-card:hover::after {
+[data-border-beam="1"] .bg-theme-card:hover::after,
+.bg-theme-card[data-border-beam="1"]:hover::after {
     opacity: 1;
+}
+
+/* KINETICS & PERFORMANCE GLOBAL OVERRIDES */
+[data-perf-mode="eco"] * {
+    animation-duration: 0.01s !important;
+    transition-duration: 0.01s !important;
+    animation-iteration-count: 1 !important;
+}
+
+[data-perf-mode="eco"] .SarakAtmosphereLayer,
+[data-perf-mode="eco"] .SarakNoiseLayer {
+    display: none !important;
 }
 
 @keyframes beam-rotate {
@@ -590,67 +677,91 @@ body {
                       0 1px 2px rgba(255,255,255,0.05);
 }
 
-/* 3.1 SURFACE MASTER (v6.0 MATERIALS) */
-[data-surface="metallic"] .bg-theme-card,
-[data-surface="metallic"] .sarak-card,
-[data-surface="metallic"] .sarak-shell-sidebar,
-[data-surface="metallic"] .sarak-shell-header {
+/* 3.1 SURFACE MASTER (v8.5 INDUSTRIAL MATERIALS) */
+:root {
+    /* Fallback para quando o motor não injeta a variável */
+    --surface-intensity: var(--sarak-surface-intensity, 0.05);
+}
+
+.bg-theme-card {
+    position: relative;
+    z-index: 0;
+    overflow: hidden; /* Garante que os pseudo-elementos não transbordem */
+}
+
+/* Metallic: Refinamento para sutileza industrial */
+[data-surface="metallic"]::before {
+    opacity: 1 !important;
     background: linear-gradient(135deg, 
-        rgba(255,255,255,0.05) 0%, 
-        rgba(255,255,255,0.2) 25%, 
-        rgba(255,255,255,0.05) 50%, 
-        rgba(255,255,255,0.15) 75%,
-        rgba(255,255,255,0.05) 100%
-    ) !important;
-    background-size: 400% 400% !important;
-    border-color: rgba(255,255,255,0.4) !important;
-    box-shadow: 
-        0 20px 40px -10px rgba(0,0,0,0.5),
-        inset 0 1px 0 0 rgba(255,255,255,0.3),
-        inset 0 -1px 0 0 rgba(0,0,0,0.3) !important;
-    backdrop-filter: blur(10px);
+        rgba(255,255,255,calc(var(--surface-intensity) * 0.05)) 0%, 
+        rgba(255,255,255,calc(var(--surface-intensity) * 0.2)) 25%, 
+        rgba(255,255,255,calc(var(--surface-intensity) * 0.05)) 50%, 
+        rgba(255,255,255,calc(var(--surface-intensity) * 0.15)) 75%,
+        rgba(255,255,255,calc(var(--surface-intensity) * 0.05)) 100%
+    );
+    background-size: 400% 400%;
+    mix-blend-mode: soft-light;
 }
 
-[data-surface="acrylic"] .bg-theme-card,
-[data-surface="acrylic"] .sarak-card,
-[data-surface="acrylic"] .sarak-shell-sidebar,
-[data-surface="acrylic"] .sarak-shell-header {
-    backdrop-filter: blur(30px) saturate(180%) !important;
-    background: color-mix(in srgb, var(--theme-card), transparent 40%) !important;
-    border-color: rgba(255,255,255,0.2) !important;
-    box-shadow: 
-        0 8px 32px 0 rgba(0, 0, 0, 0.37),
-        inset 0 0 0 1px rgba(255,255,255,0.1) !important;
-}
-
-[data-surface="matte"] .bg-theme-card,
-[data-surface="matte"] .sarak-card,
-[data-surface="matte"] .sarak-shell-sidebar,
-[data-surface="matte"] .sarak-shell-header {
-    background: var(--theme-card) !important;
-    backdrop-filter: none !important;
-    border-color: var(--theme-border) !important;
-    box-shadow: 0 4px 20px rgba(0,0,0,0.2) !important;
-}
-
-[data-surface="brushed"] .bg-theme-card,
-[data-surface="brushed"] .sarak-card,
-[data-surface="brushed"] .sarak-shell-sidebar,
-[data-surface="brushed"] .sarak-shell-header {
+/* Brushed: Micro-linhas de precisão */
+[data-surface="brushed"]::before {
+    opacity: 1 !important;
     background: 
         repeating-linear-gradient(90deg, 
-            rgba(255,255,255,0.01) 0px, 
-            rgba(255,255,255,0.01) 1px, 
+            rgba(255,255,255,calc(var(--surface-intensity) * 0.1)) 0px, 
+            rgba(255,255,255,calc(var(--surface-intensity) * 0.1)) 1px, 
             transparent 1px, 
-            transparent 2px
+            transparent 3px
         ),
-        linear-gradient(180deg, 
-            rgba(255,255,255,0.05) 0%, 
-            rgba(255,255,255,0.02) 100%
-        ) !important;
-    background-size: 4px 100%, 100% 100% !important;
-    border-color: rgba(255,255,255,0.15) !important;
-    box-shadow: 0 10px 30px rgba(0,0,0,0.4) !important;
+        linear-gradient(to bottom, rgba(255,255,255,0.02), transparent);
+    mix-blend-mode: overlay;
+}
+
+/* Acrylic Deep: Fusão de profundidade */
+[data-surface="acrylic"] {
+    backdrop-filter: blur(40px) saturate(220%) contrast(110%) !important;
+}
+[data-surface="acrylic"]::before {
+    opacity: 1 !important;
+    background: radial-gradient(at top left, rgba(255,255,255,calc(var(--surface-intensity) * 1.5)), transparent 70%);
+}
+
+/* Matte: Pureza industrial */
+[data-surface="matte"] {
+    background-color: var(--bg-card) !important;
+    backdrop-filter: none !important;
+}
+[data-surface="matte"]::before { display: none; }
+
+/* --- ENGINE DE TEXTURAS (v8.5 INDUSTRIAL) --- */
+/* Injeção direta no Background Layer (Camada 0) */
+
+[data-card-texture="grid"] { 
+    --card-texture-image: linear-gradient(rgba(var(--theme-primary-rgb), calc(var(--surface-intensity) * 0.5)) 1px, transparent 1px), 
+                          linear-gradient(90deg, rgba(var(--theme-primary-rgb), calc(var(--surface-intensity) * 0.5)) 1px, transparent 1px); 
+    background-size: 40px 40px; 
+}
+
+[data-card-texture="dots"] { 
+    --card-texture-image: radial-gradient(var(--theme-primary) 1.5px, transparent 1.5px); 
+    background-size: 24px 24px; 
+}
+
+[data-card-texture="circuit"] { 
+    --card-texture-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='80' height='80' viewBox='0 0 100 100'%3E%3Cpath d='M10 10 H 90 V 90 H 10 Z M20 20 V 40 M40 20 V 60 M60 40 V 80' fill='none' stroke='rgba(255,255,255,0.1)' stroke-width='0.5'/%3E%3C/svg%3E"); 
+    background-size: 100px 100px;
+}
+
+[data-card-texture="carbon"] { 
+    --card-texture-image: linear-gradient(45deg, rgba(0,0,0,0.2) 25%, transparent 25%), 
+                linear-gradient(-45deg, rgba(0,0,0,0.2) 25%, transparent 25%), 
+                linear-gradient(45deg, transparent 75%, rgba(0,0,0,0.2) 75%), 
+                linear-gradient(-45deg, transparent 75%, rgba(0,0,0,0.2) 75%); 
+    background-size: 8px 8px;
+}
+
+[data-card-texture="silk"] {
+    --card-texture-image: linear-gradient(135deg, rgba(var(--theme-primary-rgb), 0.15) 0%, transparent 50%, rgba(0,0,0,0.2) 100%);
 }
 
 
@@ -680,9 +791,8 @@ body {
 }
 
 
-/* Light Mode Enhancement (Contrast) */
+/* Light Mode Enhancement (Contrast) - Refined for v8.5 */
 .light .bg-theme-card {
-    background: color-mix(in srgb, var(--bg-card), transparent calc(100% * (1 - (var(--glass-opacity) * 0.4))));
     box-shadow: 0 4px 20px -5px rgba(0, 0, 0, 0.05);
 }
 
@@ -693,33 +803,15 @@ body {
     pointer-events: none;
 }
 
-/* Card Texture System (v8.5) */
-.bg-theme-card {
-    position: relative;
-}
-
-.bg-theme-card::before {
-    content: '';
-    position: absolute;
-    inset: 0;
-    pointer-events: none;
-    z-index: 0;
-    opacity: var(--texture-opacity, 0.08);
-    background-repeat: repeat;
-}
-
-[data-card-texture="grid"] .bg-theme-card::before { background-image: linear-gradient(var(--theme-border) 1px, transparent 1px), linear-gradient(90deg, var(--theme-border) 1px, transparent 1px); background-size: 40px 40px; }
-[data-card-texture="dots"] .bg-theme-card::before { background-image: radial-gradient(var(--theme-primary) 1px, transparent 1px); background-size: 16px 16px; }
-[data-card-texture="circuit"] .bg-theme-card::before { background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='100' height='100' viewBox='0 0 100 100'%3E%3Cpath d='M10 10 H 90 V 90 H 10 Z M20 20 V 40 M40 20 V 60 M60 40 V 80' fill='none' stroke='rgba(255,255,255,0.1)' stroke-width='0.5'/%3E%3C/svg%3E"); }
-[data-card-texture="carbon"] .bg-theme-card::before { background: linear-gradient(45deg, #000 25%, transparent 25%), linear-gradient(-45deg, #000 25%, transparent 25%), linear-gradient(45deg, transparent 75%, #000 75%), linear-gradient(-45deg, transparent 75%, #000 75%); background-size: 4px 4px; opacity: 0.05; }
-[data-card-texture="silk"] .bg-theme-card::before { background: radial-gradient(at 0% 0%, rgba(var(--theme-primary-rgb), 0.1) 0px, transparent 50%); }
+/* --- FINALIZAÇÃO DO MOTOR DE CARDS INDUSTRIAL --- */
 
 /* Geometric Modifier */
 body.is-geometric .bg-theme-card,
 body.is-geometric .sarak-shell-sidebar,
 body.is-geometric .sarak-shell-header,
 .preview-container[data-geometric="1"] .bg-theme-card,
-[data-geometric="1"] .bg-theme-card {
+[data-geometric="1"] .bg-theme-card,
+.bg-theme-card[data-geometric="1"] {
     clip-path: polygon(0 0, 100% 0, 100% calc(100% - 15px), calc(100% - 15px) 100%, 0 100%) !important;
 }
 

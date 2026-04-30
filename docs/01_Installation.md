@@ -9,42 +9,30 @@ Before installing, ensure your environment meets the following criteria:
 - **TailwindCSS**: v4.0.0 or higher (required for the industrial design engine).
 - **React**: v18.0.0 or higher.
 
-## 📦 Installation
+## 📦 Instalação
 
-The library is hosted on GitHub. You can install it directly using your package manager:
+A biblioteca é hospedada via GitHub. Instale diretamente usando seu gerenciador:
 
 ```bash
-# Using NPM
 npm install github:Lib-Sarak/Sarak-Lib-UI-Core
-
-# Using Yarn
-yarn add github:Lib-Sarak/Sarak-Lib-UI-Core
-
-# Using PNPM
-pnpm add github:Lib-Sarak/Sarak-Lib-UI-Core
 ```
 
-### Peer Dependencies
-Ensure you have the following dependencies installed in your project:
+### Dependências de Peer
+Para o funcionamento pleno das animações e gráficos:
 ```bash
-npm install framer-motion lucide-react recharts echarts echarts-for-react reactflow react-grid-layout
+npm install framer-motion lucide-react recharts echarts-for-react
 ```
 
-## 🎨 Global Styling
+## 🎨 Estilização Global
 
-To activate the Sarak Design System, you must import the compiled CSS in your application's entry point (e.g., `main.tsx` or `app.tsx`):
+Importe o CSS base no ponto de entrada da sua aplicação (`main.tsx`):
 
 ```typescript
-import '@sarak/lib-ui-core/style.css';
+import '@sarak/lib-ui-core/sarak-base.css';
 ```
 
-## 🛠️ Tailwind Integration (v4)
+A biblioteca agora utiliza um sistema de **Design Soberano**. Isso significa que ela injeta variáveis CSS dinâmicas que controlam o visual sem que você precise configurar o Tailwind no projeto host.
 
-If you are using TailwindCSS v4, you can import the Sarak base styles directly in your CSS entry file to inherit the core design tokens:
-
-```css
-@import "tailwindcss";
-@import "@sarak/lib-ui-core/sarak-base.css";
-```
+Próximo: [Integração de Sistema](./03_System_Integration.md)
 
 Next: [02 - Manifest Contracts](./02_Manifest_Contracts.md)

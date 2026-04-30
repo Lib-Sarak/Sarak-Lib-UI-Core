@@ -2,78 +2,61 @@
 
 To integrate the library into your application, you need to set up the Rendering Pipeline.
 
-## 🧱 The Provider
+## 🐚 Sarak Shell & Provider
 
-Wrap your application in the `SarakUIProvider`. This context manages the design engine state, themes, and global tokens.
+A integração agora é feita centralizando a descoberta de módulos no `SarakUIProvider`.
 
 ```tsx
-import { SarakUIProvider } from '@sarak/lib-ui-core';
+import { SarakUIProvider, SarakShell } from '@sarak/lib-ui-core';
 
-export function App() {
+export function Layout() {
   return (
-    <SarakUIProvider>
-      <YourContent />
+    <SarakUIProvider 
+      options={{
+        endpoints: { 
+          discovery: [
+            'http://auth-service/api', 
+            'http://estoque-service/api'
+          ] 
+        }
+      }}
+    >
+      <SarakShell 
+        brand={{ name: "Sarak Industrial" }} 
+        user={currentUser}
+        logout={doLogout}
+      />
     </SarakUIProvider>
   );
 }
 ```
 
-## 🐚 The Shell
+### ⚡ Como a Mágica acontece?
+1. O `SarakUIProvider` faz o scan de todos os URLs na lista `discovery`.
+2. Ele busca o `/module/manifest` em cada um.
+3. O `SarakShell` monta a barra lateral automaticamente com as abas descobertas.
+4. Ao clicar em uma aba, o motor de renderização dinâmica desenha a tela baseada no contrato visual do manifesto.
 
-The `SarakShell` is the master layout component. It handles navigation (Sidebar/Topbar), user widgets, and the search interface.
+## 🎨 Registro de Componentes Locais
 
-```tsx
-import { SarakShell } from '@sarak/lib-ui-core';
-
-function Layout({ children }) {
-  return (
-    <SarakShell 
-      systemName="Forze Industrial"
-      logoUrl="/logo.png"
-    >
-      {children}
-    </SarakShell>
-  );
-}
-```
-
-## ⚡ Dynamic Rendering
-
-The `DynamicRenderer` consumes the `visualContracts` from your manifest and projects the UI automatically.
-
-```tsx
-import { DynamicRenderer } from '@sarak/lib-ui-core';
-import manifest from './manifest.json';
-
-function ModulePage() {
-  return (
-    <DynamicRenderer 
-      contracts={manifest.visualContracts} 
-    />
-  );
-}
-```
-
-## 🎨 Custom Components
-
-If you need a specialized component that is not part of the standard templates, use the `CUSTOM` type and register your component in the discovery registry:
+Se o seu sistema tem uma tela ultra-customizada que não pode ser descrita apenas por manifesto, você pode registrar um componente React local:
 
 ```tsx
 import { registerLocalComponent } from '@sarak/lib-ui-core';
 
-const MySpecialWidget = () => <div>Special Content</div>;
+const MinhaTelaEspecial = () => <div>Design Customizado</div>;
 
-// Register before rendering the DynamicRenderer
-registerLocalComponent('my-custom-id', MySpecialWidget);
+// Registre ANTES do Shell carregar
+registerLocalComponent('meu-id-especial', MinhaTelaEspecial);
 ```
 
-In your manifest:
+No manifesto do Backend, você apenas aponta para o ID:
 ```json
 {
-  "type": "CUSTOM",
-  "component": "my-custom-id",
-  "label": "My Widget"
+  "id": "aba-vendas",
+  "label": "Vendas",
+  "component": "meu-id-especial"
 }
 ```
 
-Next: [04 - Design Tokens](./04_Design_Tokens.md)
+Próximo: [Design Tokens](./04_Design_Tokens.md)

@@ -35,6 +35,11 @@ export interface VisualContract {
     headerActions?: { label: string; action: string }[]; // Sarak v6.5
     groupActions?: { label: string; icon: string; action: string }[]; // Sarak v6.5
     formMapping?: Record<string, string>; // Mapeamento de campos para formulários de ação (v6.5)
+    
+    // Propriedades Abstratas (v9.0 - Plug & Play)
+    role?: 'primary' | 'secondary' | 'neutral' | 'accent';
+    density?: 'compact' | 'standard' | 'spacious';
+    importance?: 'hero' | 'base' | 'subtle';
 }
 
 export interface ModuleManifest {

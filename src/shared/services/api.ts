@@ -1,8 +1,5 @@
 import axios from 'axios';
 
-const AUTH_BASE_URL = (import.meta as any).env?.VITE_API_URL_AUTH || 'http://localhost:8001';
-const LLM_BASE_URL = (import.meta as any).env?.VITE_API_URL_LLM || 'http://localhost:8002';
-
 // Instância base padrão
 const api = axios.create({
     headers: {

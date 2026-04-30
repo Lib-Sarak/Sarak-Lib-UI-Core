@@ -22,24 +22,17 @@ The surface properties that define the aesthetic era (Cyber, Formal, Minimal).
 - `texture`: `grid`, `dots`, `noise`, `carbon`, `circuit`.
 - `glassBlur`: Strength of the background blur.
 
-## 🎨 Theme Injection
+## 🎨 Controle Soberano (Aba Personalização)
 
-You can inject a complete `Preset` into the `SarakUIProvider` to transform the entire system instantly.
+Diferente de bibliotecas tradicionais onde você configura o tema via código, na Sarak UI-Core v9.0, o design é controlado em **tempo real** através da aba de **Personalização**.
 
-```tsx
-const industrialTheme = {
-  primaryColor: "#3b82f6",
-  borderRadius: 8,
-  surfaceMaterial: "metallic",
-  headingFont: "'Satoshi', sans-serif"
-};
+- **Feedback Instantâneo**: Altere cores, fontes e materiais e veja o sistema inteiro se transformar na hora.
+- **Persistência Automática**: As mudanças são salvas via API no seu backend de preferência.
+- **Sincronização Total**: Os microsserviços que você integra via `discovery` herdam esses tokens automaticamente, sem precisar de configuração extra.
 
-<SarakUIProvider initialTheme={industrialTheme}>
-  <App />
-</SarakUIProvider>
-```
+---
 
-## 🚫 The "Zero Hardcoded" Mandate
+## 🚫 Mandato "Zero Hardcoded"
 
 To maintain 1:1 parity between the **Design Engine Preview** and the **Production System**, developers must use CSS variables injected by the provider:
 

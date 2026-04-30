@@ -105,26 +105,31 @@ export const PreviewCanvas: React.FC<PreviewCanvasProps> = ({
             }
         });
 
-        // Additional Category 10 Calculations
+        // --- Industrial Parity Overrides (Calculated after loop to ensure precision) ---
         const densityMap: any = { compact: 0.8, comfortable: 1, spacious: 1.25 };
         const densityFactor = densityMap[tokens.layoutDensity || 'comfortable'] || 1;
+        
         vars['--ui-density'] = densityFactor;
         vars['--theme-gap'] = `${(tokens.layoutGap || 20) * densityFactor}px`;
         vars['--theme-tab-gap'] = `${(tokens.tabGap || 12) * densityFactor}px`;
         vars['--safe-area-padding'] = `${tokens.tabSectionMargin || 0}px`;
         vars['--max-content-width'] = tokens.maxContentWidth === 'none' ? '100%' : tokens.maxContentWidth;
         vars['--sarak-scrollbar-width'] = `${tokens.scrollbarStyle || 6}px`;
-        vars['--haptic-bounce'] = 1 - ((tokens.hapticIntensity || 0.02) * 2); // Amplifying for visual preview
+        
+        // Haptic Logic Parity (v8.5)
+        vars['--haptic-bounce'] = 1 - ((tokens.hapticIntensity || 0.02) * 2);
+
+        // Glass & Card Parity (Ensures CSS variables win over JS calculations)
+        vars['--glass-opacity'] = tokens.glassOpacity ?? 0.1;
+        vars['--texture-opacity'] = tokens.textureOpacity ?? 0.08;
+        vars['--surface-intensity'] = tokens.surfaceIntensity ?? 0.05;
+        vars['--theme-noise-opacity'] = tokens.atmosphereNoiseOpacity ?? 0.05;
+        vars['--sarak-glass-saturation'] = `${tokens.glassSaturation ?? 180}%`;
+        vars['--contrast-curve'] = tokens.contrastCurve ?? 1.0;
+        vars['--spotlight-opacity'] = tokens.cardSpotlight ?? 0;
 
         const isLight = tokens.mode === 'light';
         vars['--theme-bg'] = isLight ? '#f1f5f9' : '#020617';
-        vars['--theme-card'] = isLight 
-            ? `color-mix(in srgb, #ffffff, transparent ${Math.round((1 - (tokens.glassOpacity ?? 0.7)) * 100)}%)` 
-            : `color-mix(in srgb, #1e293b, transparent ${Math.round((1 - (tokens.glassOpacity ?? 0.7)) * 100)}%)`;
-        vars['--theme-border'] = isLight ? 'rgba(0,0,0,0.1)' : 'rgba(255,255,255,0.08)';
-        vars['--theme-title'] = isLight ? '#0f172a' : '#f8fafc';
-        vars['--theme-main'] = isLight ? '#475569' : '#94a3b8';
-        vars['--theme-muted'] = isLight ? '#94a3b8' : '#64748b';
         
         if (!vars['--theme-shadow']) {
             vars['--theme-shadow'] = tokens.layeredShadows 

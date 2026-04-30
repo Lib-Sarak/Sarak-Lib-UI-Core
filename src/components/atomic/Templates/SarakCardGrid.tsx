@@ -12,6 +12,7 @@ import {
 } from 'lucide-react';
 import * as LucideIcons from 'lucide-react';
 import api from '../../../shared/services/api';
+import { useSarakUI } from '../../../core/Provider/SarakUIProvider';
 
 interface FilterConfig {
     id: string;
@@ -217,6 +218,7 @@ export const SarakCardGrid: React.FC<SarakCardGridProps> = ({ endpoint, label, m
 };
 
 const SarakCoreCard = ({ item, mapping }: { item: any; mapping: any }) => {
+    const { design } = useSarakUI();
     const [isExpanded, setIsExpanded] = useState(false);
 
     const getVal = (obj: any, path: string | undefined) => {
@@ -248,10 +250,19 @@ const SarakCoreCard = ({ item, mapping }: { item: any; mapping: any }) => {
             initial={{ opacity: 0, y: 20 }}
             animate={{ opacity: 1, y: 0 }}
             className="flex flex-col bg-theme-card border-theme group transition-all h-fit relative overflow-hidden"
-            style={{ transitionDuration: 'var(--animation-speed, 0.5s)' }}
+            style={{ 
+                transitionDuration: 'var(--animation-speed, 0.5s)',
+                padding: design.cardPadding ? `${design.cardPadding}px` : undefined
+            }}
+            data-card-texture={design.cardTexture}
+            data-spotlight={design.cardSpotlight > 0 ? '1' : '0'}
+            data-border-beam={design.borderBeamEnabled ? '1' : '0'}
+            data-geometric={design.isGeometricCut ? '1' : '0'}
         >
-            {/* Spotlight Effect (Sovereignty v8.5) */}
+            {/* Atmosphere Layers (Sovereignty v8.5) */}
             <div className="absolute inset-0 z-0 spotlight-effect pointer-events-none opacity-0 group-hover:opacity-100 transition-opacity duration-500" />
+            <div className="border-beam-effect" />
+
             
             <div className="p-theme relative z-10" style={{ padding: 'var(--theme-pad, 2rem)' }}>
 

@@ -97,3 +97,19 @@ export const Section: React.FC<{ id: string, icon: any, title: string, activeSec
     </div>
 );
 
+export const ToggleControl: React.FC<{ label: string, active: boolean, onClick: () => void }> = ({ label, active, onClick }) => (
+    <button 
+        onClick={onClick}
+        className={`flex items-center justify-between p-3 rounded-lg border transition-all ${
+            active 
+                ? 'bg-[var(--theme-primary)]/10 border-[var(--theme-primary)]/30 text-white' 
+                : 'bg-white/5 border-white/5 text-white/40 hover:bg-white/[0.08]'
+        }`}
+    >
+        <span className="text-[10px] font-black uppercase tracking-wider">{label}</span>
+        <div className={`w-8 h-4 rounded-full relative transition-all ${active ? 'bg-[var(--theme-primary)]' : 'bg-white/10'}`}>
+            <div className={`absolute top-0.5 w-3 h-3 bg-white rounded-full transition-all ${active ? 'left-4.5' : 'left-0.5'}`} />
+        </div>
+    </button>
+);
+

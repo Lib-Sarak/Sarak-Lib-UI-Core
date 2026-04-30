@@ -4,13 +4,16 @@ import { useModuleDiscovery } from '../../shared/hooks/useModuleDiscovery';
 import { DiscoveredModule } from '../../constants/discovery';
 
 export const useSarakShell = (loggedIn: boolean) => {
-    const { design, applyConfig } = useSarakUI();
+    const { design, applyConfig, options } = useSarakUI();
     const { modules: discoveredModules, isLoading: isDiscovering } = useModuleDiscovery(loggedIn);
     
     const [activeModuleId, setActiveModuleId] = useState<string | null>(null);
     const [isSearchOpen, setIsSearchOpen] = useState(false);
     const [isNavVisible, setIsNavVisible] = useState(true);
     const [isResizing, setIsResizing] = useState(false);
+
+    const sidebarMinWidth = useMemo(() => design?.sidebarMinWidth || 200, [design?.sidebarMinWidth]);
+    const sidebarMaxWidth = useMemo(() => design?.sidebarMaxWidth || 450, [design?.sidebarMaxWidth]);
 
     const toggleNav = useCallback(() => {
         applyConfig({ isNavHidden: !design?.isNavHidden });
@@ -20,37 +23,25 @@ export const useSarakShell = (loggedIn: boolean) => {
         applyConfig({ sidebarWidth: w });
     }, [applyConfig]);
 
-    // Mouse Tracking Engine
-    useEffect(() => {
-        let rafId: number;
-        const handleMouseMove = (e: MouseEvent) => {
-            rafId = requestAnimationFrame(() => {
-                const cards = document.querySelectorAll('.bg-theme-card');
-                if (cards.length === 0) return;
-                
-                cards.forEach(card => {
-                    const rect = (card as HTMLElement).getBoundingClientRect();
-                    const x = ((e.clientX - rect.left) / rect.width) * 100;
-                    const y = ((e.clientY - rect.top) / rect.height) * 100;
-                    (card as HTMLElement).style.setProperty('--mouse-x', `${x}%`);
-                    (card as HTMLElement).style.setProperty('--mouse-y', `${y}%`);
-                });
-            });
-        };
-        window.addEventListener('mousemove', handleMouseMove);
-        return () => {
-            window.removeEventListener('mousemove', handleMouseMove);
-            cancelAnimationFrame(rafId);
-        };
-    }, []);
+    // O "Mouse Tracking Engine" global foi movido para o SarakUIProvider
+    // para usar coordenadas globais (--mouse-px-x, --mouse-px-y)
+    // evitando loops caros de querySelector em cada movimento.
 
-    // Module activation
+    // Module activation (Agnostic v9.0) - Prioritizes mx-customization for parity
     useEffect(() => {
         if (discoveredModules.length > 0 && !activeModuleId) {
-            const customMod = discoveredModules.find(m => m.id === 'mx-customization');
-            setActiveModuleId(customMod ? customMod.id : discoveredModules[0].id);
+            const defaultId = options?.theme?.defaultModuleId;
+            const targetMod = defaultId ? discoveredModules.find(m => m.id === defaultId) : null;
+            
+            if (targetMod) {
+                setActiveModuleId(targetMod.id);
+            } else {
+                // Fallback: Tenta encontrar mx-customization primeiro, senão pega o primeiro da lista
+                const customMod = discoveredModules.find(m => m.id === 'mx-customization');
+                setActiveModuleId(customMod ? customMod.id : discoveredModules[0].id);
+            }
         }
-    }, [discoveredModules, activeModuleId]);
+    }, [discoveredModules, activeModuleId, options?.theme?.defaultModuleId]);
 
     // Shortcuts
     useEffect(() => {
@@ -74,9 +65,9 @@ export const useSarakShell = (loggedIn: boolean) => {
     const resize = useCallback((e: MouseEvent) => {
         if (isResizing) {
             const newWidth = e.clientX;
-            if (newWidth > 200 && newWidth < 450) setSidebarWidth(newWidth);
+            if (newWidth > sidebarMinWidth && newWidth < sidebarMaxWidth) setSidebarWidth(newWidth);
         }
-    }, [isResizing, setSidebarWidth]);
+    }, [isResizing, setSidebarWidth, sidebarMinWidth, sidebarMaxWidth]);
 
     useEffect(() => {
         if (isResizing) {

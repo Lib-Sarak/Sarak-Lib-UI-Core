@@ -17,6 +17,8 @@ interface SarakTableProps {
     endpoint: string;
     label?: string;
     mapping?: Record<string, string>; // { key_in_json: "Label na Coluna" }
+    role?: 'primary' | 'secondary' | 'neutral' | 'accent';
+    density?: 'compact' | 'standard' | 'spacious';
 }
 
 /**
@@ -25,7 +27,7 @@ interface SarakTableProps {
  * Um componente agnóstico que renderiza qualquer conjunto de dados tabular
  * baseado em um contrato visual enviado pelo manifesto do módulo.
  */
-export const SarakTable: React.FC<SarakTableProps> = ({ endpoint, label, mapping }) => {
+export const SarakTable: React.FC<SarakTableProps> = ({ endpoint, label, mapping, role = 'neutral', density = 'standard' }) => {
     const [data, setData] = useState<any[]>([]);
     const [loading, setLoading] = useState(true);
     const [error, setError] = useState<string | null>(null);
@@ -83,7 +85,15 @@ export const SarakTable: React.FC<SarakTableProps> = ({ endpoint, label, mapping
             {/* Header da Tabela */}
             <div className="flex flex-col md:flex-row md:items-center justify-between" style={{ gap: 'calc(var(--theme-gap) / 1.5)' }}>
                 <div>
-                    <h3 className="text-xl font-black text-white tracking-tight" style={{ fontWeight: 'var(--heading-weight)' }}>{label || 'Listagem de Dados'}</h3>
+                    <h3 
+                        className={`font-black text-white tracking-tight ${density === 'spacious' ? 'text-2xl' : 'text-xl'}`} 
+                        style={{ 
+                            fontWeight: 'var(--heading-weight)',
+                            color: role === 'primary' ? 'var(--theme-primary)' : 'white'
+                        }}
+                    >
+                        {label || 'Listagem de Dados'}
+                    </h3>
                     <p className="text-white/30 text-xs">{filteredData.length} registros encontrados</p>
                 </div>
                 
@@ -111,14 +121,20 @@ export const SarakTable: React.FC<SarakTableProps> = ({ endpoint, label, mapping
                         <thead>
                             <tr className="bg-white/5 border-b border-theme">
                                 {columns.map(col => (
-                                    <th key={col} className="text-2xs font-black text-white/30 uppercase tracking-[0.2em]" style={{ padding: 'calc(var(--theme-pad) / 1.5) var(--theme-pad)' }}>
+                                    <th 
+                                        key={col} 
+                                        className="text-2xs font-black text-white/30 uppercase tracking-[0.2em]" 
+                                        style={{ 
+                                            padding: density === 'compact' ? '0.5rem 1rem' : 'calc(var(--theme-pad) / 1.5) var(--theme-pad)' 
+                                        }}
+                                    >
                                         <div className="flex items-center gap-2 cursor-pointer hover:text-white transition-colors">
                                             {columnLabels[col]}
                                             <ArrowUpDown size={10} />
                                         </div>
                                     </th>
                                 ))}
-                                <th style={{ padding: 'calc(var(--theme-pad) / 1.5) var(--theme-pad)' }}></th>
+                                <th style={{ padding: density === 'compact' ? '0.5rem 1rem' : 'calc(var(--theme-pad) / 1.5) var(--theme-pad)' }}></th>
                             </tr>
                         </thead>
                         <tbody>
@@ -144,7 +160,13 @@ export const SarakTable: React.FC<SarakTableProps> = ({ endpoint, label, mapping
                                             className="border-b border-white/[0.02] hover:bg-white/[0.02] transition-colors group"
                                         >
                                             {columns.map(col => (
-                                                <td key={col} className="text-sm text-white/70 font-medium" style={{ padding: 'calc(var(--theme-pad) / 2) var(--theme-pad)' }}>
+                                                <td 
+                                                    key={col} 
+                                                    className={`text-white/70 font-medium ${density === 'compact' ? 'text-xs' : 'text-sm'}`} 
+                                                    style={{ 
+                                                        padding: density === 'compact' ? '0.5rem 1rem' : 'calc(var(--theme-pad) / 2) var(--theme-pad)' 
+                                                    }}
+                                                >
                                                     {typeof row[col] === 'boolean' ? (
                                                         <span 
                                                             className="px-2 py-0.5 rounded-theme text-2xs font-black uppercase"
@@ -160,7 +182,7 @@ export const SarakTable: React.FC<SarakTableProps> = ({ endpoint, label, mapping
                                                     )}
                                                 </td>
                                             ))}
-                                            <td className="text-right" style={{ padding: 'calc(var(--theme-pad) / 2) var(--theme-pad)' }}>
+                                            <td className="text-right" style={{ padding: density === 'compact' ? '0.5rem 1rem' : 'calc(var(--theme-pad) / 2) var(--theme-pad)' }}>
                                                 <button className="p-2 text-white/10 hover:text-white/60 transition-colors" style={{ transitionDuration: 'var(--animation-speed, 0.3s)' }}>
                                                     <MoreHorizontal size={16} />
                                                 </button>

@@ -12,7 +12,7 @@ import { getAxiosErrorMessage } from '../utils/error-handler';
  * Implementa trava anti-loop (Scanning Lock) e estabilização de dependências.
  */
 export const useModuleDiscovery = (isEnabled: boolean = true) => {
-    const { discoveryEndpoints } = useSarakUI();
+    const { discoveryEndpoints, options } = useSarakUI();
     const [modules, setModules] = useState<DiscoveredModule[]>([]);
     const [isLoading, setIsLoading] = useState(true);
     const [lastScan, setLastScan] = useState<Date | null>(null);
@@ -41,10 +41,16 @@ export const useModuleDiscovery = (isEnabled: boolean = true) => {
 
             // 1. Escaneamento Paralelo de Microserviços
             const currentEndpoints = discoveryEndpoints || [];
+            const manifestSuffix = options?.endpoints?.discoveryPath || '/module/manifest';
+            
             const scanPromises = currentEndpoints.map(async (baseUrl: string) => {
                 try {
-                    const response = await api.get<ModuleManifest>(`${baseUrl}/module/manifest`, {
-                        timeout: 3000 // Timeout reduzido para maior agilidade no boot
+                    const manifestUrl = baseUrl.startsWith('http') 
+                        ? `${baseUrl}${manifestSuffix}`
+                        : `${baseUrl}${manifestSuffix}`; // api.get might already have a baseURL if using relative paths
+                    
+                    const response = await api.get<ModuleManifest>(manifestUrl, {
+                        timeout: 3000
                     });
                     
                     if (response.status === 200 && response.data.id) {
@@ -75,48 +81,31 @@ export const useModuleDiscovery = (isEnabled: boolean = true) => {
             const discoveredResults = await Promise.all(scanPromises);
             discoveredResults.forEach(r => { if (r) results.push(r); });
 
-            // 2. Busca de Módulos de Sistema (Sovereign Seeds)
-            try {
-                const systemRes = await api.get<DiscoveredModule[]>('/ui/modules');
-                if (systemRes.data && Array.isArray(systemRes.data)) {
-                    systemRes.data.forEach(sysMod => {
-                        // Evita duplicatas de sistema se já descobertas por manifesto
-                        if (!results.find(r => r.id === sysMod.id)) {
-                            const localComp = getLocalComponent(sysMod.id);
-                            results.push({
-                                ...sysMod,
-                                status: 'online',
-                                baseUrl: 'core',
-                                endpoints: {},
-                                component: localComp,
-                                version: '1.0.0-core'
-                            });
-                        }
-                    });
-                }
-            } catch (err) {
-                console.warn("[Sarak:Discovery] Sistema de módulos offline (Aguardando boot do backend)");
-            }
-
-            // 3. Hidratação com Componentes Locais Registrados
+            // 3. Hidratação com Componentes Locais Registrados (Sovereign v9.0)
             const localModules = getRegisteredModules();
+            console.log("[useModuleDiscovery] localModules found:", localModules.length);
+            
             localModules.forEach(mod => {
-                const existing = results.find(m => m.id === mod.id);
-                if (existing) {
-                    existing.component = mod.component;
+                const existingIndex = results.findIndex(m => m.id === mod.id);
+                const component = mod.component || getLocalComponent(mod.id);
+                
+                const localData = {
+                    id: mod.id,
+                    label: mod.label,
+                    icon: mod.icon || 'Box',
+                    category: mod.category || 'Sistema',
+                    version: '1.0.0-local',
+                    priority: mod.priority || 500,
+                    status: 'online' as const,
+                    baseUrl: 'local',
+                    endpoints: {},
+                    component: component
+                };
+
+                if (existingIndex >= 0) {
+                    results[existingIndex] = { ...results[existingIndex], ...localData };
                 } else {
-                    results.push({
-                        id: mod.id,
-                        label: mod.label,
-                        icon: mod.icon || 'Box',
-                        category: mod.category || 'Sistema',
-                        version: '1.0.0-local',
-                        priority: mod.priority || 0,
-                        status: 'online',
-                        baseUrl: 'local',
-                        endpoints: {},
-                        component: mod.component
-                    });
+                    results.push(localData);
                 }
             });
 

@@ -59,7 +59,12 @@ export const useDesignDraft = (sarak: any) => {
         scaleRatio: sarak.scaleRatio || 1.0,
         contrastCurve: sarak.contrastCurve || 1.0,
         layeredShadows: sarak.layeredShadows || 1.0,
-        isNavHidden: sarak.isNavHidden ?? false
+        isNavHidden: sarak.isNavHidden ?? false,
+        hoverLiftEnabled: sarak.hoverLiftEnabled ?? true,
+        spotlightEnabled: sarak.spotlightEnabled ?? true,
+        magneticPullEnabled: sarak.magneticPullEnabled ?? false,
+        borderBeamEnabled: sarak.borderBeamEnabled ?? false,
+        performanceMode: sarak.performanceMode || 'high'
     });
 
     const [toast, setToast] = useState<{ type: 'success' | 'warning', message: string } | null>(null);
@@ -85,7 +90,12 @@ export const useDesignDraft = (sarak: any) => {
                 scaleRatio: sarak.scaleRatio || 1.0,
                 contrastCurve: sarak.contrastCurve || 1.0,
                 layeredShadows: sarak.layeredShadows || 1.0,
-                isNavHidden: sarak.isNavHidden ?? false
+                isNavHidden: sarak.isNavHidden ?? false,
+                hoverLiftEnabled: sarak.hoverLiftEnabled ?? true,
+                spotlightEnabled: sarak.spotlightEnabled ?? true,
+                magneticPullEnabled: sarak.magneticPullEnabled ?? false,
+                borderBeamEnabled: sarak.borderBeamEnabled ?? false,
+                performanceMode: sarak.performanceMode || 'high'
             });
         }
     }, [sarak.isHydrated]);
@@ -129,7 +139,9 @@ export const useDesignDraft = (sarak: any) => {
             shadowIntensity: 'number', shadowOrientation: 'string', shadowColorMode: 'string',
             animationSpeed: 'number', mode: 'string',
             scaleRatio: 'number', contrastCurve: 'number', layeredShadows: 'number',
-            cardPadding: 'number', dashboardTemplate: 'string', cardTexture: 'string'
+            cardPadding: 'number', dashboardTemplate: 'string', cardTexture: 'string',
+            hoverLiftEnabled: 'boolean', spotlightEnabled: 'boolean', magneticPullEnabled: 'boolean',
+            borderBeamEnabled: 'boolean', performanceMode: 'string'
         };
 
         const tokenMap: Record<string, string> = {
@@ -149,7 +161,10 @@ export const useDesignDraft = (sarak: any) => {
             '--animation-speed': 'animationSpeed', '--mode': 'mode',
             '--scale-ratio': 'scaleRatio', '--contrast-curve': 'contrastCurve', '--layered-shadows': 'layeredShadows',
             '--card-padding': 'cardPadding', '--layout-gap': 'layoutGap', '--dashboard-template': 'dashboardTemplate',
-            '--card-texture': 'cardTexture'
+            '--card-texture': 'cardTexture',
+            '--hover-lift': 'hoverLiftEnabled', '--spotlight-enabled': 'spotlightEnabled',
+            '--magnetic-pull': 'magneticPullEnabled', '--border-beam': 'borderBeamEnabled',
+            '--perf-mode': 'performanceMode'
         };
 
         const newDraft = { ...draft, layout: id };

@@ -1,6 +1,6 @@
 import React, { ReactNode, useEffect, useState, useMemo, useCallback, useContext } from 'react';
 import '../../styles/sarak-base.css';
-import { LAYOUTS } from '../../constants/theme-models';
+import { LAYOUTS, BASE_PRESETS } from '../../constants/theme-models';
 import { getRegisteredModules } from '../Discovery/registry';
 import { NoiseOverlay } from '../../effects/NoiseOverlay';
 
@@ -14,6 +14,7 @@ export interface SarakUIContextType {
     registeredModules: any[];
     layouts: any[];
     isHydrated: boolean;
+    options: SarakUIOptions;
 }
 
 export const UIContext = React.createContext<SarakUIContextType | undefined>(undefined);
@@ -39,8 +40,28 @@ export const useSarakUI = () => {
     };
 };
 
-// --- CHAVE DE PERSISTÊNCIA SARAK ---
-const STORAGE_KEY = 'sarak-ui-design-v8.5';
+// --- SARAK UI OPTIONS ---
+export interface SarakUIOptions {
+    endpoints?: {
+        baseUrl?: string;
+        designPath?: string;
+        discoveryPath?: string;
+        discovery?: string[];
+    };
+    persistence?: {
+        strategy?: 'local' | 'remote' | 'hybrid';
+        storageKey?: string;
+        onSave?: (design: any) => Promise<void> | void;
+        onLoad?: () => Promise<any> | any;
+    };
+    theme?: {
+        defaultTheme?: string;
+        extraTokens?: any;
+    };
+}
+
+const DEFAULT_STORAGE_KEY = 'sarak-ui-design-v9.0';
+const DEFAULT_UI_BASE_URL = '/api/ui';
 
 interface SarakUIProviderProps {
     children: ReactNode;
@@ -48,6 +69,7 @@ interface SarakUIProviderProps {
     config?: any;
     token?: string | null;
     userId?: string | null;
+    options?: SarakUIOptions;
 }
 
 // --- MANIFESTO DE DESIGN SOBERANO ---
@@ -125,15 +147,18 @@ export const DESIGN_MANIFEST: Record<string, {
     layoutGap: { vars: ['--theme-gap', '--sarak-layout-gap'], unit: 'px' },
     glassOpacity: { vars: ['--glass-opacity', '--sarak-glass-opacity', '--sarak-bg-opacity'] },
     glassBlur: { vars: ['--glass-blur', '--sarak-glass-blur'], unit: 'px' },
+    glassSaturation: { vars: ['--sarak-glass-saturation', '--theme-glass-saturation'], unit: '%' },
+    contrastCurve: { vars: ['--contrast-curve', '--sarak-contrast-curve'], transform: (v) => parseFloat(v) || 1.0 },
     shadowIntensity: { vars: ['--shadow-intensity', '--sarak-shadow-intensity'] },
     cardPadding: { vars: ['--card-padding', '--sarak-card-padding', '--theme-card-padding'], unit: 'px' },
     cardTexture: { vars: ['--sarak-card-texture'], attr: 'data-card-texture' },
     tabGap: { vars: ['--tab-gap', '--sarak-tab-gap', '--theme-tab-gap'], unit: 'px' },
-    tabSectionMargin: { vars: ['--tab-section-margin', '--sarak-tab-section-margin', '--theme-tab-section-margin'], unit: 'px' },
+    tabSectionMargin: { vars: ['--tab-section-margin', '--sarak-tab-section-margin', '--theme-tab-section-margin', '--safe-area-padding'], unit: 'px' },
     isGeometricCut: { classPrefix: 'is-geometric', attr: 'data-geometric' },
     textureOpacity: { vars: ['--texture-opacity', '--sarak-texture-opacity', '--theme-texture-opacity'] },
     animationSpeed: { vars: ['--animation-speed', '--sarak-animation-speed', '--transition-speed'], unit: 's' },
     surfaceMaterial: { attr: 'data-surface', vars: ['--sarak-surface', '--surface-material'] },
+    surfaceIntensity: { vars: ['--surface-intensity', '--sarak-surface-intensity'] },
     borderType: { attr: 'data-border', vars: ['--sarak-border-type', '--border-type'] },
     systemTone: { vars: ['--sarak-system-tone'], attr: 'data-tone' },
     isAutoHideEnabled: { attr: 'data-auto-hide' },
@@ -149,13 +174,16 @@ export const DESIGN_MANIFEST: Record<string, {
     chartStyle: { attr: 'data-chart-style' },
     chartPalette: { vars: ['--chart-palette'], transform: (v) => Array.isArray(v) ? v.join(',') : v },
     cardSpotlight: { 
-        vars: ['--spotlight-opacity'], 
-        attr: 'data-spotlight',
-        transform: (v: any) => ({ main: v, attr: (parseFloat(v) > 0 ? '1' : '0') })
+        vars: ['--spotlight-opacity'],
+        transform: (v: any) => parseFloat(v) || 0
     },
 
     borderBeamEnabled: { attr: 'data-border-beam' },
     secondaryModuleId: { attr: 'data-sec-module' },
+    hoverLiftEnabled: { attr: 'data-hover-lift' },
+    spotlightEnabled: { attr: 'data-spotlight' },
+    magneticPullEnabled: { attr: 'data-magnetic' },
+    performanceMode: { attr: 'data-perf-mode' },
 
     // Engine Specialized Tokens v7.5
     fontScale: { 
@@ -185,10 +213,7 @@ export const DESIGN_MANIFEST: Record<string, {
             };
         }
     },
-    contrastCurve: {
-        vars: ['--sarak-contrast-curve'],
-        transform: (v) => parseFloat(v) || 1.0
-    },
+
     layeredShadows: {
         vars: ['--sarak-layered-shadows'],
         transform: (v) => {
@@ -210,7 +235,7 @@ export const DESIGN_MANIFEST: Record<string, {
     buttonHoverEffect: { attr: 'data-button-hover', vars: ['--sarak-button-hover'] },
     inputStyle: { attr: 'data-input-style', vars: ['--sarak-input-style'] },
     atmosphereNoiseOpacity: { vars: ['--sarak-noise-opacity', '--theme-noise-opacity'] },
-    glassSaturation: { vars: ['--sarak-glass-saturation', '--theme-glass-saturation'], unit: '%' },
+
     iconStrokeWidth: { vars: ['--sarak-icon-stroke', '--theme-icon-stroke'], unit: 'px' },
     maxContentWidth: { vars: ['--sarak-max-width', '--theme-max-width'] },
     useTabularNums: { attr: 'data-tabular-nums', vars: ['--sarak-tabular-nums'], transform: (v) => v ? 'tabular-nums' : 'normal' },
@@ -228,8 +253,8 @@ export const DESIGN_MANIFEST: Record<string, {
         }
     },
     isNavHidden: { vars: ['--is-nav-hidden'], attr: 'data-nav-hidden' },
-    tabSectionMargin: { vars: ['--safe-area-padding'], unit: 'px' },
-    layoutGap: { vars: ['--theme-gap', '--sarak-layout-gap'], unit: 'px' }
+    sidebarMinWidth: { vars: ['--sidebar-min-width'], transform: (v) => parseFloat(v) || 200 },
+    sidebarMaxWidth: { vars: ['--sidebar-max-width'], transform: (v) => parseFloat(v) || 450 }
 };
 
 const BEZIER_CURVES = {
@@ -265,6 +290,11 @@ const validateDesign = (design: any) => {
     s.glassBlur = clamp(s.glassBlur, 0, 60, 10);
     s.glassOpacity = clamp(s.glassOpacity, 0, 1, 0.7);
     s.borderRadius = clamp(s.borderRadius, 0, 60, 12);
+    
+    // 3. Fallbacks de Estrutura (v9.0 Resilience)
+    if (!s.navigationStyle) s.navigationStyle = 'sidebar';
+    if (!s.sidebarWidth) s.sidebarWidth = 240;
+    
     s.schema_version = "8.5"; // Upgrade para v8.5 (Sovereign)
 
     return s;
@@ -355,6 +385,11 @@ const DesignInjector: React.FC<{ design: any }> = ({ design: s }) => {
                     } else if (t.main !== undefined) {
                         finalValue = t.main;
                         finalAttrValue = t.attr !== undefined ? t.attr : value;
+                        
+                        // Industrial Injection: Permite que transformações retornem variáveis CSS arbitrárias
+                        Object.entries(t).forEach(([k, v]) => {
+                            if (k.startsWith('--')) extraVars[k] = String(v);
+                        });
                     }
 
                 } else {
@@ -365,7 +400,10 @@ const DesignInjector: React.FC<{ design: any }> = ({ design: s }) => {
 
 
             if (config.unit && typeof value === 'number') finalValue = `${value}${config.unit}`;
-            if (typeof value === 'boolean') finalValue = value ? '1' : '0';
+            if (typeof value === 'boolean') {
+                finalValue = value ? '1' : '0';
+                finalAttrValue = value ? '1' : '0';
+            }
 
             if (config.vars) {
                 config.vars.forEach(v => root.style.setProperty(v, finalValue));
@@ -408,22 +446,27 @@ const DesignInjector: React.FC<{ design: any }> = ({ design: s }) => {
 export const SarakUIProvider: React.FC<SarakUIProviderProps> = ({
     children,
     discoveryEndpoints = [],
-    config: initialPropsConfig = {}
+    config: initialPropsConfig = {},
+    options = {}
 }) => {
     // Inicialização Inteligente com Persistência
     const [design, setDesign] = useState(() => {
-        if (typeof window === 'undefined') return initialPropsConfig;
+        const defaultThemeId = options?.theme?.defaultTheme || 'futurist';
+        const defaultTheme = (BASE_PRESETS as any)[defaultThemeId] || BASE_PRESETS.futurist;
+        const baseConfig = { ...defaultTheme, ...initialPropsConfig };
+
+        if (typeof window === 'undefined') return baseConfig;
         try {
-            const saved = localStorage.getItem(STORAGE_KEY);
+            const key = options?.persistence?.storageKey || DEFAULT_STORAGE_KEY;
+            const saved = localStorage.getItem(key);
             if (saved) {
                 const parsed = JSON.parse(saved);
-                // Mescla com props iniciais para garantir que novos campos do sistema existam
-                return { ...initialPropsConfig, ...parsed };
+                return { ...baseConfig, ...parsed };
             }
         } catch (e) {
             console.error("Erro ao carregar design do localStorage:", e);
         }
-        return initialPropsConfig;
+        return baseConfig;
     });
 
     const [isHydrated, setIsHydrated] = useState(false);
@@ -434,18 +477,38 @@ export const SarakUIProvider: React.FC<SarakUIProviderProps> = ({
     const activeToken = initialPropsConfig.token || initialPropsConfig.authApi?.token;
     const activeUserId = initialPropsConfig.userId || initialPropsConfig.user?.id;
 
-    // Encontra o endpoint correto para o UI Core
     const uiBaseUrl = useMemo(() => {
-        // Assume /api/ui como padrão se não descoberto
-        return "http://localhost:8000/api/ui";
-    }, []);
+        return options?.endpoints?.baseUrl || DEFAULT_UI_BASE_URL;
+    }, [options?.endpoints?.baseUrl]);
 
-    // 1. Carregamento do Backend (Cross-Browser Persistence)
+    const storageKey = useMemo(() => {
+        return options?.persistence?.storageKey || DEFAULT_STORAGE_KEY;
+    }, [options?.persistence?.storageKey]);
+
+    // 1. Carregamento do Backend (Sovereign Persistence v9.0)
     useEffect(() => {
-        if (activeToken && !isBackendLoaded && isHydrated) {
-            const fetchDesign = async () => {
+        if (!isHydrated) return;
+
+        const loadInitialDesign = async () => {
+            // Priority 1: Custom onLoad callback
+            if (options?.persistence?.onLoad) {
                 try {
-                    const resp = await fetch(`${uiBaseUrl}/design`, {
+                    const customDesign = await options.persistence.onLoad();
+                    if (customDesign) {
+                        setDesign((prev: any) => ({ ...prev, ...customDesign }));
+                        setIsBackendLoaded(true);
+                        return;
+                    }
+                } catch (e) {
+                    console.error("[Sarak:UI] Error in custom onLoad:", e);
+                }
+            }
+
+            // Priority 2: Remote Persistence (Legacy bridge)
+            if (activeToken && !isBackendLoaded) {
+                try {
+                    const designPath = options?.endpoints?.designPath || '/design';
+                    const resp = await fetch(`${uiBaseUrl}${designPath}`, {
                         headers: { 'Authorization': `Bearer ${activeToken}` }
                     });
                     if (resp.ok) {
@@ -456,45 +519,53 @@ export const SarakUIProvider: React.FC<SarakUIProviderProps> = ({
                         setIsBackendLoaded(true);
                     }
                 } catch (e) {
-                    // Silenciando falha de sincronização inicial (fallback para localStorage ativo)
+                    // Fallback silenciado
                 }
-            };
-            fetchDesign();
-        }
-    }, [activeToken, isBackendLoaded, isHydrated, uiBaseUrl]);
+            }
+        };
 
-    // 2. Persistência Automática (Debounced)
+        loadInitialDesign();
+    }, [activeToken, isBackendLoaded, isHydrated, uiBaseUrl, options]);
+
+    // 2. Persistência Automática (Sovereign Persistence v9.0)
     useEffect(() => {
-        if (!activeToken || !isHydrated) return;
+        if (!isHydrated) return;
 
         const timer = setTimeout(async () => {
             try {
-                // Sincroniza localmente primeiro
-                localStorage.setItem(STORAGE_KEY, JSON.stringify(design));
+                // Local sync
+                localStorage.setItem(storageKey, JSON.stringify(design));
                 
-                // Sincroniza com a nuvem
-                await fetch(`${uiBaseUrl}/design`, {
-                    method: 'POST',
-                    headers: { 
-                        'Authorization': `Bearer ${activeToken}`,
-                        'Content-Type': 'application/json'
-                    },
-                    body: JSON.stringify({ design })
-                });
+                // Priority 1: Custom onSave callback
+                if (options?.persistence?.onSave) {
+                    await options.persistence.onSave(design);
+                } 
+                // Priority 2: Remote Persistence (Legacy bridge)
+                else if (activeToken) {
+                    const designPath = options?.endpoints?.designPath || '/design';
+                    await fetch(`${uiBaseUrl}${designPath}`, {
+                        method: 'POST',
+                        headers: { 
+                            'Authorization': `Bearer ${activeToken}`,
+                            'Content-Type': 'application/json'
+                        },
+                        body: JSON.stringify({ design })
+                    });
+                }
             } catch (e) {
-                console.error("[UI-Core] Erro ao persistir design na nuvem:", e);
+                console.error("[UI-Core] Error persisting design:", e);
             }
-        }, 1500); // 1.5s de debounce para evitar salvar em cada clique de slider
+        }, 1500);
 
         return () => clearTimeout(timer);
-    }, [design, activeToken, isHydrated, uiBaseUrl]);
+    }, [design, activeToken, isHydrated, uiBaseUrl, options, storageKey]);
 
     // 3. Sincronização Local (Fallback Imediato)
     useEffect(() => {
         if (typeof window !== 'undefined' && isHydrated && !isBackendLoaded) {
-            localStorage.setItem(STORAGE_KEY, JSON.stringify(design));
+            localStorage.setItem(storageKey, JSON.stringify(design));
         }
-    }, [design, isHydrated, isBackendLoaded]);
+    }, [design, isHydrated, isBackendLoaded, storageKey]);
 
     // Carregamento de módulos e estado inicial
     useEffect(() => {
@@ -533,15 +604,16 @@ export const SarakUIProvider: React.FC<SarakUIProviderProps> = ({
 
     const uiContextValue = useMemo(() => ({
         ...design, // Spread design tokens for direct access (v7.1 Compatibility)
-        discoveryEndpoints: discoveryEndpoints || [],
+        discoveryEndpoints: options?.endpoints?.discovery || discoveryEndpoints || [],
         design,
         setDesign,
         applyConfig,
         applyFullConfig,
         registeredModules,
         layouts: Object.values(LAYOUTS),
-        isHydrated
-    }), [discoveryEndpoints, design, applyConfig, applyFullConfig, registeredModules, isHydrated]);
+        isHydrated,
+        options
+    }), [discoveryEndpoints, design, applyConfig, applyFullConfig, registeredModules, isHydrated, options]);
 
     return (
         <UIContext.Provider value={uiContextValue}>

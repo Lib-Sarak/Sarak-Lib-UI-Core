@@ -22,6 +22,7 @@ const localComponents: Map<string, React.ComponentType<any>> = new Map();
  * Registers a local component linked to a system ID (v6.5).
  */
 export const registerLocalComponent = (id: string, component: React.ComponentType<any>) => {
+    console.log(`[Registry] Registering Component: ${id}`);
     localComponents.set(id, component);
 };
 
@@ -36,6 +37,7 @@ export const getLocalComponent = (id: string): React.ComponentType<any> | undefi
  * Registers a complete module (legacy external modules).
  */
 export const registerSarakModule = (module: SarakModule) => {
+    console.log(`[Registry] Registering Module: ${module.id}`);
     registeredModules.set(module.id, module);
 };
 
@@ -43,7 +45,10 @@ export const registerSarakModule = (module: SarakModule) => {
  * Returns the list of legacy registered modules.
  */
 export const getRegisteredModules = (): SarakModule[] => {
-    return Array.from(registeredModules.values());
+    return Array.from(registeredModules.values()).map(mod => ({
+        ...mod,
+        component: mod.component || localComponents.get(mod.id)
+    }));
 };
 
 /**

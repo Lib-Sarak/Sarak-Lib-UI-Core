@@ -1,61 +1,61 @@
-# 02 - Manifest Contracts (Sarak v7.0)
+# 📜 Manifestos e Contratos (v9.0)
 
-The Sarak ecosystem is **Manifest-Driven**. This means the UI is not hardcoded; it is projected based on a JSON contract provided by the module.
+Na arquitetura **Sarak Sovereign**, o manifesto não é mais um arquivo estático no seu frontend. Ele é uma **Resposta de API** entregue pelo seu microsserviço.
 
-## 📄 Manifest Structure
+## 📡 O Endpoint `/module/manifest`
 
-The `manifest.json` file must follow the `Sarak Visual Contract Schema`. Below are the root properties:
+Cada módulo deve expor uma rota GET que retorna o contrato de interface. Isso permite que a UI mude dinamicamente baseada em permissões, status do sistema ou contexto do usuário.
 
-- `contract`: Schema version (use `"v6.8"`).
-- `id`: Unique identifier for the module.
-- `label`: Display name of the module.
-- `icon`: Lucide icon name.
-- `endpoints`: A map of data sources.
-- `visualContracts`: An array of UI components to be rendered.
+### Estrutura Base
+```json
+{
+  "id": "relatorios-financeiros",
+  "label": "Relatórios",
+  "icon": "BarChart3",
+  "category": "Financeiro",
+  "priority": 100,
+  "visualContracts": [
+    {
+      "role": "primary",
+      "type": "STATS",
+      "label": "Resumo de Vendas",
+      "endpoint": "/api/v1/stats"
+    }
+  ]
+}
+```
 
-## 🧩 Visual Contract Types
+## 🏗️ Contratos Visuais (Agnósticos)
 
-The `type` field in a visual contract determines which UI template `UI-Core` will use.
+Os contratos visuais permitem que o seu backend solicite componentes sem se preocupar com o design final. A UI-Core interpreta as propriedades e aplica o tema atual.
 
-| Type | Description |
-| :--- | :--- |
-| `TABLE` | Industrial data table with search and filters. |
-| `CARD_GRID` | Responsive grid of cards for item lists. |
-| `STATS` | Dashboard-style metric cards. |
-| `CHART` | Data visualization using the Sarak Chart Engine. |
-| `FORM` | Dynamic input forms with validation. |
-| `CHAT_INTERFACE` | Advanced AI communication interface. |
-| `CUSTOM` | Renders a locally registered component. |
+| Propriedade | Descrição | Exemplo |
+| :--- | :--- | :--- |
+| `role` | O papel semântico do componente | `primary`, `neutral`, `danger` |
+| `type` | O tipo atômico de renderização | `TABLE`, `STATS`, `FORM`, `CHART` |
+| `endpoint` | Onde buscar os dados reais para este componente | `/api/venda/list` |
+| `density` | A densidade visual desejada | `compact`, `standard` |
 
-## 🔗 Field Mapping
+---
 
-The `mapping` object links your backend data fields to UI labels.
+## 🔗 Mapeamento de Campos (Mapping)
+
+O objeto `mapping` vincula as chaves do seu JSON de dados aos nomes que aparecerão na interface:
 
 ```json
 {
   "id": "contract-01",
   "type": "TABLE",
-  "label": "Active Devices",
-  "endpoint": "v1.devices",
+  "label": "Dispositivos Ativos",
+  "endpoint": "/api/v1/devices",
   "mapping": {
-    "Serial Number": "sn",
-    "Operating Temp": "telemetry.temp",
+    "Número Serial": "sn",
+    "Temperatura": "telemetry.temp",
     "Status": "status"
   }
 }
 ```
 
-## ⚙️ Component Config
+> **Regra de Ouro**: O manifesto descreve **O QUE** exibir. O motor de design da Sarak decide **COMO** exibir baseado na aba de Personalização.
 
-The `config` object allows for fine-tuning the template without breaking architectural sovereignty.
-
-```json
-"config": {
-  "isSearchable": true,
-  "defaultSort": "Serial Number",
-  "chartType": "line",
-  "refreshInterval": 5000
-}
-```
-
-Next: [03 - System Integration](./03_System_Integration.md)
+Próximo: [Integração de Sistema](./03_System_Integration.md)

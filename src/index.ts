@@ -17,6 +17,7 @@ export * from './features/DesignEngine/Library/CustomizationPanel';
 export * from './components/atomic/Atoms';
 export * from './components/atomic/Cards/ExpandableCard';
 export * from './components/atomic/Inputs/Controls';
+export * from './components/atomic/Templates';
 export { default as SarakChartEngine } from './components/engines/charts/SarakChartEngine';
 
 // Discovery and Dynamic Rendering (Universal Bridge)
@@ -25,9 +26,16 @@ export * from './core/Discovery/registry';
 export * from './constants/discovery';
 export { useModuleDiscovery } from './shared/hooks/useModuleDiscovery';
 
-import { registerLocalComponent } from './core/Discovery/registry';
+import { registerLocalComponent, registerSarakModule } from './core/Discovery/registry';
 import { ThemeCustomizationTab } from './features/DesignEngine/Main/ThemeCustomizationTab';
 
 // Metadata (Label, Icon, Category) will come from Seeds via API.
 registerLocalComponent('mx-customization', ThemeCustomizationTab);
+registerSarakModule({
+    id: 'mx-customization',
+    label: 'Personalização',
+    icon: 'Palette',
+    category: 'Sarak Core',
+    priority: 1000
+});
 

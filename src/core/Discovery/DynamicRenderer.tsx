@@ -1,6 +1,6 @@
 import React, { lazy } from 'react';
 import { motion } from 'framer-motion';
-import { SarakTable, SarakCardGrid, SarakStats, SarakChart, SarakForm, SarakManagementGrid, SarakChat, SarakSecurityOrchestrator } from '../../components/atomic/Templates';
+import { SarakTable, SarakCardGrid, SarakStats, SarakChart, SarakForm, SarakManagementGrid, SarakChat, SarakSecurityOrchestrator, SarakAuthScreen, SarakCatalogGrid } from '../../components/atomic/Templates';
 import { VisualContract, DiscoveredModule } from '../../constants/discovery';
 import { getSarakModule } from './registry';
 import { AlertCircle } from 'lucide-react';
@@ -87,10 +87,10 @@ export const DynamicRenderer: React.FC<DynamicRendererProps> = ({ contracts, mod
 
                 switch (type) {
                     case 'TABLE':
-                        return <SarakTable key={id} endpoint={resolvedEndpoint} label={label} mapping={mapping} />;
+                        return <SarakTable key={id} endpoint={resolvedEndpoint} label={label} mapping={mapping} role={contract.role} density={contract.density} />;
                     
                     case 'CARD_GRID':
-                        return <SarakCardGrid key={id} endpoint={resolvedEndpoint} label={label} mapping={mapping as any} filters={contract.filters} />;
+                        return <SarakCardGrid key={id} endpoint={resolvedEndpoint} label={label} mapping={mapping as any} filters={contract.filters} importance={contract.importance} role={contract.role} />;
                     
                     case 'MANAGEMENT_GRID':
                         return (
@@ -103,17 +103,18 @@ export const DynamicRenderer: React.FC<DynamicRendererProps> = ({ contracts, mod
                                 headerActions={contract.headerActions as any}
                                 groupActions={contract.groupActions as any}
                                 formMapping={contract.formMapping}
+                                role={contract.role}
                             />
                         );
 
                     case 'STATS':
-                        return <SarakStats key={id} endpoint={resolvedEndpoint} label={label} mapping={mapping} />;
+                        return <SarakStats key={id} endpoint={resolvedEndpoint} label={label} mapping={mapping} importance={contract.importance} />;
 
                     case 'CHART':
-                        return <SarakChart key={id} endpoint={resolvedEndpoint} label={label} mapping={mapping} />;
+                        return <SarakChart key={id} endpoint={resolvedEndpoint} label={label} mapping={mapping} role={contract.role} />;
 
                     case 'FORM':
-                        return <SarakForm key={id} endpoint={resolvedEndpoint} label={label} mapping={mapping as any} actions={contract.actions as any} />;
+                        return <SarakForm key={id} endpoint={resolvedEndpoint} label={label} mapping={mapping as any} actions={contract.actions as any} density={contract.density} />;
 
                     
                     case 'CHAT_INTERFACE':
@@ -164,6 +165,48 @@ export const DynamicRenderer: React.FC<DynamicRendererProps> = ({ contracts, mod
                                 endpoint={resolvedEndpoint} 
                                 label={label} 
                                 config={(contract as any).config} 
+                            />
+                        );
+
+                    case 'AUTH_FLOW':
+                        return (
+                            <SarakAuthScreen 
+                                key={id} 
+                                branding={(contract as any).branding}
+                                isRegistering={(contract as any).isRegistering}
+                                setIsRegistering={(contract as any).setIsRegistering}
+                                mfaStep={(contract as any).mfaStep}
+                                setMfaStep={(contract as any).setMfaStep}
+                                username={(contract as any).username}
+                                setUsername={(contract as any).setUsername}
+                                password={(contract as any).password}
+                                setPassword={(contract as any).setPassword}
+                                mfaCode={(contract as any).mfaCode}
+                                setMfaCode={(contract as any).setMfaCode}
+                                showPassword={(contract as any).showPassword}
+                                setShowPassword={(contract as any).setShowPassword}
+                                error={(contract as any).error}
+                                isPending={(contract as any).isPending}
+                                onSubmit={(contract as any).onSubmit}
+                                onSocialLogin={(contract as any).onSocialLogin}
+                                socialConfig={(contract as any).socialConfig}
+                                onForgot={(contract as any).onForgot}
+                                onMasterLogin={(contract as any).onMasterLogin}
+                            />
+                        );
+
+                    case 'CATALOG_GRID':
+                        return (
+                            <SarakCatalogGrid 
+                                key={id} 
+                                items={(contract as any).items || []}
+                                loading={(contract as any).loading}
+                                title={label}
+                                subtitle={(contract as any).subtitle}
+                                categories={(contract as any).categories}
+                                onSync={(contract as any).onSync}
+                                renderCard={(contract as any).renderCard}
+                                emptyMessage={(contract as any).emptyMessage}
                             />
                         );
 

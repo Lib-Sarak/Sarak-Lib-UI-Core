@@ -1,0 +1,22 @@
+{
+  "id": "minimal-service",
+  "label": "Gestão de Ativos",
+  "icon": "Box",
+  "category": "Operações",
+  "version": "1.0.0",
+  "priority": 5,
+  "endpoints": {
+    "assets": "/api/assets"
+  },
+  "visualContracts": [
+    {
+      "id": "assets-grid",
+      "type": "CARD_GRID",
+      "label": "Galeria de Ativos",
+      "endpoint": "assets",
+      "density": "compact",
+      "importance": "subtle",
+      "role": "accent"
+    }
+  ]
+}
