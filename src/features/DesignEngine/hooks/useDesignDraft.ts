@@ -2,7 +2,9 @@ import { useState, useEffect } from 'react';
 import { BASE_PRESETS } from '../../../constants/theme-models';
 
 export const useDesignDraft = (sarak: any) => {
-    const [draft, setDraft] = useState({
+    // Sincronização Unidirecional (v9.5)
+    // Inicializamos o rascunho com o estado atual, mas evitamos resets reativos.
+    const [draft, setDraft] = useState(() => ({
         layout: sarak.layout,
         mode: sarak.mode,
         primaryColor: sarak.primaryColor,
@@ -65,7 +67,7 @@ export const useDesignDraft = (sarak: any) => {
         magneticPullEnabled: sarak.magneticPullEnabled ?? false,
         borderBeamEnabled: sarak.borderBeamEnabled ?? false,
         performanceMode: sarak.performanceMode || 'high'
-    });
+    }));
 
     const [toast, setToast] = useState<{ type: 'success' | 'warning', message: string } | null>(null);
 

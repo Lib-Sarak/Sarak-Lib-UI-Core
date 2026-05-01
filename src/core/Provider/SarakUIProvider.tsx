@@ -362,21 +362,24 @@ const DesignInjector: React.FC<{ design: any }> = ({ design: s }) => {
 
         if (!s) return;
 
-        // --- CSS CLEANUP ENGINE (v9.2) ---
-        // Limpamos variáveis residuais de estados anteriores para evitar "fantasmas visuais"
-        const cleanOldVariables = () => {
+        // --- CSS CLEANUP ENGINE (v9.5) ---
+        // Limpamos TODAS as variáveis sarak residuais para evitar conflitos de temas anteriores.
+        const cleanAllSarakVariables = () => {
+            const rootStyle = root.style;
+            for (let i = 0; i < rootStyle.length; i++) {
+                const prop = rootStyle[i];
+                if (prop.startsWith('--sarak-') || prop.startsWith('--sx-') || prop.startsWith('--theme-')) {
+                    rootStyle.removeProperty(prop);
+                }
+            }
+            // Limpeza específica de cores legadas que podem não ser iteráveis
             const levels = ['primary', 'secondary', 'accent', 'surface', 'success', 'warning', 'error', 'body'];
-            const suffixes = ['-rgb', '-bg', '-border', '-hover', '-active', '-focus', '-light'];
-            
             levels.forEach(level => {
-                suffixes.forEach(suffix => {
-                    root.style.removeProperty(`--theme-${level}${suffix}`);
-                });
-                root.style.removeProperty(`--theme-${level}`);
-                root.style.removeProperty(`--${level}-color`);
+                rootStyle.removeProperty(`--${level}-color`);
+                rootStyle.removeProperty(`--theme-${level}`);
             });
         };
-        cleanOldVariables();
+        cleanAllSarakVariables();
 
         // One-time injection of Sarak Bezier Curves
         if (!prevDesignRef.current) {
@@ -391,11 +394,14 @@ const DesignInjector: React.FC<{ design: any }> = ({ design: s }) => {
             const config = DESIGN_MANIFEST[key];
             if (!config) return;
 
-            // --- PALETTE HARMONIZATION (Sovereignty v9.1) ---
-            // Se uma paleta está ativa, as cores base vêm dela, a menos que o valor individual
-            // seja explicitamente diferente (sobrescrita manual).
+            // --- PALETTE HARMONIZATION (Sovereignty v9.5) ---
+            // SOBERANIA: Se o usuário definiu uma cor primária manualmente (não nula),
+            // ela DEVE ignorar a paleta para evitar o bug de "Azul vs Vermelho".
             let finalValueForInjection = value;
-            if (key.endsWith('Color') || key === 'primaryColor') {
+            if (key === 'primaryColor' && value) {
+                // Se temos uma cor primária explícita, usamos ela.
+                finalValueForInjection = value;
+            } else if (key.endsWith('Color') || key === 'primaryColor') {
                 const level = key.replace('Color', '');
                 const paletteHex = paletteColors[level === 'primary' ? 'primary' : level];
                 if (paletteHex) {
@@ -461,6 +467,10 @@ const DesignInjector: React.FC<{ design: any }> = ({ design: s }) => {
                     const levelKey = level === 'primary' ? 'primaryColor' : `${level}Color`;
                     const levelConfig = DESIGN_MANIFEST[levelKey];
                     
+                    // SOBERANIA DE COR (v9.5): Se o usuário definiu uma cor primária manual,
+                    // a paleta NÃO pode sobrescrevê-la.
+                    if (level === 'primary' && s.primaryColor) return;
+
                     if (levelConfig && levelConfig.vars) {
                         const t = computeColorVariants(hex, '#000');
                         const prefix = `--theme-${level}`;
@@ -530,6 +540,20 @@ const DesignInjector: React.FC<{ design: any }> = ({ design: s }) => {
 
         });
 
+        // REFORÇO DE SOBERANIA (v9.5 Patch Final)
+        // Garantimos que a cor primária e o modo (light/dark) sejam aplicados por último
+        // para vencer qualquer conflito de loop.
+        if (s.primaryColor) {
+            const t = computeColorVariants(s.primaryColor, s.mode === 'dark' ? '#000' : '#fff');
+            root.style.setProperty('--theme-primary', t.main);
+            root.style.setProperty('--theme-primary-rgb', t.rgb);
+            root.style.setProperty('--theme-accent', t.main);
+            root.style.setProperty('--theme-primary-hover', t.hover);
+            
+            // Variáveis de compatibilidade legada
+            root.style.setProperty('--primary-color', t.main);
+        }
+
         // Mode cleanup
         if (!prevDesignRef.current || prevDesignRef.current.mode !== s.mode) {
             body.classList.remove('light', 'dark');
@@ -546,54 +570,84 @@ export const SarakUIProvider: React.FC<SarakUIProviderProps> = ({
     children,
     discoveryEndpoints = [],
     config: initialPropsConfig = {},
+    token,
+    userId,
     options = {}
 }) => {
-    // Intelligent Initialization with Persistence
-    const [design, setDesign] = useState(() => {
-        const defaultThemeId = options?.theme?.defaultTheme || 'futurist';
-        const defaultTheme = (BASE_PRESETS as any)[defaultThemeId] || BASE_PRESETS.futurist;
-        const baseConfig = { ...defaultTheme, ...initialPropsConfig };
-
-        if (typeof window === 'undefined') return baseConfig;
-        try {
-            const key = options?.persistence?.storageKey || DEFAULT_STORAGE_KEY;
-            const saved = localStorage.getItem(key);
-            if (saved) {
-                const parsed = JSON.parse(saved);
-                // No v9.2, o salvo tem precedência total sobre o inicial do código
-                return { ...baseConfig, ...parsed };
-            }
-        } catch (e) {
-            console.error("[Sarak:UI] Erro ao carregar design do localStorage:", e);
-        }
-        return baseConfig;
-    });
-
     const [isHydrated, setIsHydrated] = useState(false);
     const [registeredModules, setRegisteredModules] = useState<any[]>(() => getRegisteredModules());
     const [isBackendLoaded, setIsBackendLoaded] = useState(false);
 
-    // Prioritize tokens/ids passed via props or config object
-    const activeToken = initialPropsConfig.token || initialPropsConfig.authApi?.token;
-    const activeUserId = initialPropsConfig.userId || initialPropsConfig.user?.id;
+    // --- STABILITY ANCHORS (v9.3) ---
+    // Capturamos os valores iniciais para evitar que instabilidades do Host (falta de useMemo)
+    // disparem re-renders ou resets de estado dentro da Lib.
+    const optionsRef = React.useRef(options);
+    const configRef = React.useRef(initialPropsConfig);
+    
+    // Sincronizamos os refs APENAS se houver uma mudança real (opcional, por enquanto fixamos no mount)
+    useEffect(() => {
+        optionsRef.current = options;
+        configRef.current = initialPropsConfig;
+    }, [options, initialPropsConfig]);
+
+    // Intelligent Initialization with Absolute Sovereignty (v9.5)
+    const [design, setDesign] = useState(() => {
+        const opt = optionsRef.current;
+        const defaultThemeId = opt?.theme?.defaultTheme || 'futurist';
+        const defaultTheme = (BASE_PRESETS as any)[defaultThemeId] || BASE_PRESETS.futurist;
+        
+        // Semente inicial
+        const seedConfig = { ...defaultTheme, ...configRef.current };
+
+        if (typeof window === 'undefined') return seedConfig;
+        
+        try {
+            const key = opt?.persistence?.storageKey || DEFAULT_STORAGE_KEY;
+            const saved = localStorage.getItem(key);
+            if (saved) {
+                const parsed = JSON.parse(saved);
+                // SOBERANIA ABSOLUTA: O salvo pelo usuário ganha de TUDO.
+                // Filtramos campos nulos para evitar corrupção.
+                const validParsed = Object.fromEntries(
+                    Object.entries(parsed).filter(([_, v]) => v !== null && v !== undefined)
+                );
+                
+                console.log("[Sarak:UI] Design carregado do localStorage com sucesso.");
+                return { ...seedConfig, ...validParsed };
+            } else {
+                console.log("[Sarak:UI] Nenhum design salvo encontrado. Usando semente inicial.");
+            }
+        } catch (e) {
+            console.error("[Sarak:UI] Erro ao carregar design do localStorage:", e);
+        }
+        return seedConfig;
+    });
+
+
+    // Prioritize tokens/ids passed via props or config object (Static refs for stability)
+    const activeToken = token || initialPropsConfig.token || initialPropsConfig.authApi?.token;
+    const activeUserId = userId || initialPropsConfig.userId || initialPropsConfig.user?.id;
 
     const uiBaseUrl = useMemo(() => {
-        return options?.endpoints?.baseUrl || DEFAULT_UI_BASE_URL;
-    }, [options?.endpoints?.baseUrl]);
+        return optionsRef.current?.endpoints?.baseUrl || DEFAULT_UI_BASE_URL;
+    }, []);
 
     const storageKey = useMemo(() => {
-        return options?.persistence?.storageKey || DEFAULT_STORAGE_KEY;
-    }, [options?.persistence?.storageKey]);
+        return optionsRef.current?.persistence?.storageKey || DEFAULT_STORAGE_KEY;
+    }, []);
 
-    // 1. Backend Loading (Sovereign Persistence v9.0)
+
+    // 1. Backend Loading (Sovereign Persistence v9.3)
     useEffect(() => {
         if (!isHydrated) return;
 
         const loadInitialDesign = async () => {
+            const opt = optionsRef.current;
+            
             // Priority 1: Custom onLoad callback
-            if (options?.persistence?.onLoad) {
+            if (opt?.persistence?.onLoad) {
                 try {
-                    const customDesign = await options.persistence.onLoad();
+                    const customDesign = await opt.persistence.onLoad();
                     if (customDesign) {
                         setDesign((prev: any) => ({ ...prev, ...customDesign }));
                         setIsBackendLoaded(true);
@@ -604,10 +658,10 @@ export const SarakUIProvider: React.FC<SarakUIProviderProps> = ({
                 }
             }
 
-            // Priority 2: Remote Persistence (Legacy bridge)
-            if (activeToken && !isBackendLoaded) {
+            // Priority 2: Remote Persistence (Only if explicitly enabled via designPath)
+            if (activeToken && !isBackendLoaded && opt?.endpoints?.designPath) {
                 try {
-                    const designPath = options?.endpoints?.designPath || '/design';
+                    const designPath = opt.endpoints.designPath;
                     const resp = await fetch(`${uiBaseUrl}${designPath}`, {
                         headers: { 'Authorization': `Bearer ${activeToken}` }
                     });
@@ -625,24 +679,27 @@ export const SarakUIProvider: React.FC<SarakUIProviderProps> = ({
         };
 
         loadInitialDesign();
-    }, [activeToken, isBackendLoaded, isHydrated, uiBaseUrl, options]);
+        // REMOVED 'options' from dependency to stop reactivity-leak from Host
+    }, [activeToken, isBackendLoaded, isHydrated, uiBaseUrl]);
 
-    // 2. Automatic Persistence (Sovereign Persistence v9.0)
+
+    // 2. Automatic Persistence (Sovereign Persistence v9.3)
     useEffect(() => {
         if (!isHydrated) return;
 
         const timer = setTimeout(async () => {
+            const opt = optionsRef.current;
             try {
-                // Local sync
+                // Local sync (Sovereign)
                 localStorage.setItem(storageKey, JSON.stringify(design));
                 
                 // Priority 1: Custom onSave callback
-                if (options?.persistence?.onSave) {
-                    await options.persistence.onSave(design);
+                if (opt?.persistence?.onSave) {
+                    await opt.persistence.onSave(design);
                 } 
-                // Priority 2: Remote Persistence (Legacy bridge)
-                else if (activeToken) {
-                    const designPath = options?.endpoints?.designPath || '/design';
+                // Priority 2: Remote Persistence (Only if explicitly enabled via designPath)
+                else if (activeToken && opt?.endpoints?.designPath) {
+                    const designPath = opt.endpoints.designPath;
                     await fetch(`${uiBaseUrl}${designPath}`, {
                         method: 'POST',
                         headers: { 
@@ -652,13 +709,16 @@ export const SarakUIProvider: React.FC<SarakUIProviderProps> = ({
                         body: JSON.stringify({ design })
                     });
                 }
+                // No fallback to default /design to avoid 404 spam in terminal
             } catch (e) {
                 console.error("[UI-Core] Error persisting design:", e);
             }
         }, 1500);
 
         return () => clearTimeout(timer);
-    }, [design, activeToken, isHydrated, uiBaseUrl, options, storageKey]);
+        // REMOVED 'options' from dependency to stop reactivity-leak from Host
+    }, [design, activeToken, isHydrated, uiBaseUrl, storageKey]);
+
 
     // 3. Local Synchronization (Immediate Fallback)
     useEffect(() => {
@@ -726,12 +786,28 @@ export const SarakUIProvider: React.FC<SarakUIProviderProps> = ({
     }, []);
 
     const applyConfig = useCallback((partial: any) => {
-        setDesign((prev: any) => validateDesign({ ...prev, ...partial }));
-    }, []);
+        setDesign((prev: any) => {
+            const next = validateDesign({ ...prev, ...partial });
+            // Persistência Imediata (v9.5 Patch)
+            if (typeof window !== 'undefined') {
+                localStorage.setItem(storageKey, JSON.stringify(next));
+            }
+            return next;
+        });
+    }, [storageKey]);
 
     const applyFullConfig = useCallback((config: any) => {
-        setDesign(validateDesign(config));
-    }, []);
+        const next = validateDesign(config);
+        console.log("[Sarak:UI] Aplicando configuração completa ao sistema:", next);
+        
+        // Persistência Imediata e Atômica (v9.5 Patch)
+        if (typeof window !== 'undefined') {
+            localStorage.setItem(storageKey, JSON.stringify(next));
+            console.log("[Sarak:UI] Persistência síncrona concluída no localStorage.");
+        }
+        
+        setDesign(next);
+    }, [storageKey]);
 
     const uiContextValue = useMemo(() => ({
         ...design, // Spread design tokens for direct access (v7.1 Compatibility)
