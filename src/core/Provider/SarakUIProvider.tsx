@@ -802,6 +802,52 @@ export const SarakUIProvider: React.FC<SarakUIProviderProps> = ({
         document.head.prepend(style);
     }, []);
 
+    // --- SOVEREIGN INDUSTRIAL INJECTION (v10.0) ---
+    // Automates DOM attributes and core dimensions to prevent flattened layouts in Host systems.
+    useEffect(() => {
+        if (typeof document === 'undefined') return;
+        
+        const body = document.body;
+        const root = document.getElementById('root') || document.documentElement;
+        
+        // 1. Core Attributes
+        body.setAttribute('data-sarak-layout', 'sovereign');
+        body.setAttribute('data-sarak-engine', 'industrial');
+        root.setAttribute('data-sarak-layout', 'sovereign');
+        
+        // 2. Emergency Layout Fix (Prevents DOM width 0)
+        const styleId = 'sarak-industrial-vaccine';
+        if (!document.getElementById(styleId)) {
+            const style = document.createElement('style');
+            style.id = styleId;
+            style.textContent = `
+                html, body, #root { 
+                    height: 100% !important; 
+                    width: 100% !important; 
+                    margin: 0; 
+                    padding: 0; 
+                    overflow: hidden;
+                    display: flex;
+                    flex-direction: column;
+                }
+                [data-sarak-layout="sovereign"] {
+                    background-color: #0f172a; /* Slate 900 */
+                }
+            `;
+            document.head.appendChild(style);
+        }
+
+        // 3. Emergency CSS Variables (Bridge for slow CSS loads)
+        const rootStyle = document.documentElement.style;
+        if (!rootStyle.getPropertyValue('--theme-primary')) {
+            rootStyle.setProperty('--theme-primary', '#00f2ff');
+            rootStyle.setProperty('--theme-body', '#0f172a');
+            rootStyle.setProperty('--theme-surface', '#1e293b');
+        }
+        
+        console.log("[Sarak:UI] Industrial DNA Injected into DOM.");
+    }, []);
+
     const applyConfig = useCallback((partial: any) => {
         setDesign((prev: any) => {
             const next = validateDesign({ ...prev, ...partial });

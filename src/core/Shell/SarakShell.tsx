@@ -7,12 +7,23 @@ import { ShellContent } from './Components/ShellContent';
 import SarakSearch from '../../components/atomic/Inputs/SarakSearch';
 import { SarakShellProps } from './Components/types';
 
+import { useSarakUI } from '../Provider/SarakUIProvider';
+
 /**
  * Sarak Shell Core — Interface Engine (Refactored v7.2.5)
  */
 export const SarakShell: React.FC<SarakShellProps> = (props) => {
-    const { brand = { name: "Sarak Lib" }, user, logout, token, authApi, extraToolbarItems } = props;
-    const shell = useSarakShell(!!token);
+    const ui = useSarakUI();
+    const { 
+        brand = ui.options?.manifest?.brand || { name: "Sarak Lib" }, 
+        user, 
+        logout, 
+        token, 
+        authApi, 
+        extraToolbarItems 
+    } = props;
+    
+    const shell = useSarakShell(!!(token || ui.options?.token));
     const { design } = shell;
 
     // --- VISUAL SAFETY GATE (v9.5 Industrial) ---
