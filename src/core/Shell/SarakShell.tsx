@@ -47,11 +47,16 @@ export const SarakShell: React.FC<SarakShellProps> = (props) => {
         return () => clearTimeout(timer);
     }, []);
 
-    if (!design) return null;
+    // --- DESIGN HYDRATION LOG (v10.1) ---
+    React.useEffect(() => {
+        if (ui.options?.debug) {
+            console.log("[Sarak:Shell] Active Design:", design);
+        }
+    }, [design, ui.options?.debug]);
 
-    const isTopbar = design.navigationStyle === 'topbar';
-    const isSidebar = design.navigationStyle === 'sidebar';
-    const isDock = design.navigationStyle === 'dock';
+    const isTopbar = design?.navigationStyle === 'topbar';
+    const isSidebar = design?.navigationStyle === 'sidebar' || !design; // Default to sidebar
+    const isDock = design?.navigationStyle === 'dock';
 
     return (
         <div className="flex w-full h-screen overflow-hidden bg-[var(--theme-body)] text-white font-sans selection:bg-[var(--theme-primary)] selection:text-white">

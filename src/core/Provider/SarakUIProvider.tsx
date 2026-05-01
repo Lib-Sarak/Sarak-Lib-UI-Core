@@ -623,15 +623,24 @@ export const SarakUIProvider: React.FC<SarakUIProviderProps> = ({
             const saved = localStorage.getItem(key);
             if (saved) {
                 const parsed = JSON.parse(saved);
+                
+                // Validação rigorosa: Precisamos de pelo menos o modo e o estilo de navegação
+                if (!parsed.mode || !parsed.navigationStyle) {
+                    console.warn("[Sarak:UI] Design corrompido detectado no storage. Resetando para Industrial.");
+                    localStorage.removeItem(key); // Limpa o lixo
+                    return seedConfig;
+                }
+
+                // Filtramos campos nulos ou indefinidos
                 const validParsed = Object.fromEntries(
-                    Object.entries(parsed).filter(([_, v]) => v !== null && v !== undefined)
+                    Object.entries(parsed).filter(([_, v]) => v !== null && v !== undefined && v !== "")
                 );
                 
-                console.log("[Sarak:UI] Design carregado do localStorage.");
+                console.log("[Sarak:UI] Design industrial hidratado com sucesso.");
                 return { ...seedConfig, ...validParsed };
             }
         } catch (e) {
-            console.error("[Sarak:UI] Erro ao carregar design:", e);
+            console.error("[Sarak:UI] Falha catastrófica na hidratação do design:", e);
         }
         return seedConfig;
     });
