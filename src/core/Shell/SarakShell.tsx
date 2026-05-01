@@ -15,6 +15,27 @@ export const SarakShell: React.FC<SarakShellProps> = (props) => {
     const shell = useSarakShell(!!token);
     const { design } = shell;
 
+    // --- VISUAL SAFETY GATE (v9.5 Industrial) ---
+    React.useEffect(() => {
+        const checkCSS = () => {
+            const testElement = document.documentElement;
+            const primaryColor = getComputedStyle(testElement).getPropertyValue('--theme-primary').trim();
+            
+            if (!primaryColor || primaryColor === '') {
+                console.warn("[Sarak:Shell] Visual Safety Gate Triggered: CSS variables not detected. Injecting emergency fallbacks.");
+                testElement.style.setProperty('--theme-primary', '#3b82f6'); // Blue 500
+                testElement.style.setProperty('--theme-body', '#0f172a');    // Slate 900
+                testElement.style.setProperty('--theme-card', '#1e293b');    // Slate 800
+                testElement.style.setProperty('--theme-text', '#f8fafc');    // Slate 50
+                testElement.style.setProperty('--theme-border', '#334155');  // Slate 700
+            }
+        };
+
+        // Pequeno atraso para garantir que o navegador processou os estilos iniciais
+        const timer = setTimeout(checkCSS, 1500);
+        return () => clearTimeout(timer);
+    }, []);
+
     if (!design) return null;
 
     const isTopbar = design.navigationStyle === 'topbar';

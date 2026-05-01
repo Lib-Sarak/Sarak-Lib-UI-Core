@@ -3,65 +3,70 @@
    Absolute Sovereignty & Purity Compatible
    ========================================= */
 
-/* 0. TAILWIND v4 SOVEREIGN THEME (Plug & Play) */
-@theme {
-  --color-theme-primary: var(--primary-color);
-  --color-theme-secondary: var(--secondary-color);
-  --color-theme-accent: var(--accent-color);
-  --color-theme-surface: var(--surface-color);
-  --color-theme-body: var(--bg-body);
-  --color-theme-sidebar: var(--bg-sidebar);
-  --color-theme-card: var(--bg-card);
-  --color-theme-border: var(--border-color);
-  --color-theme-text: var(--text-main);
-  --color-theme-title: var(--text-title);
-  --color-theme-muted: var(--text-muted);
-  
-  /* Escalas Geométricas */
-  --radius-sarak: var(--radius-theme);
-  --spacing-sarak-gap: var(--theme-gap);
-  
-  /* Fontes Dinâmicas */
-  --font-sarak-heading: var(--font-heading);
-  --font-sarak-body: var(--font-main);
+@layer sarak-lib {
+  /* 0. TAILWIND v4 SOVEREIGN THEME (Plug & Play) */
+  @theme {
+    --color-theme-primary: var(--primary-color);
+    --color-theme-secondary: var(--secondary-color);
+    --color-theme-accent: var(--accent-color);
+    --color-theme-surface: var(--surface-color);
+    --color-theme-body: var(--bg-body);
+    --color-theme-sidebar: var(--bg-sidebar);
+    --color-theme-card: var(--bg-card);
+    --color-theme-border: var(--border-color);
+    --color-theme-text: var(--text-main);
+    --color-theme-title: var(--text-title);
+    --color-theme-muted: var(--text-muted);
+    
+    /* Escalas Geométricas */
+    --radius-sarak: var(--radius-theme);
+    --spacing-sarak-gap: var(--theme-gap);
+    
+    /* Fontes Dinâmicas */
+    --font-sarak-heading: var(--font-heading);
+    --font-sarak-body: var(--font-main);
 
-  /* Transições de Experiência (v8.5) */
-  --ease-sarak-cubic: cubic-bezier(0.65, 0, 0.35, 1);
-  --ease-sarak-expo: cubic-bezier(0.19, 1, 0.22, 1);
-  --ease-sarak-fluid: cubic-bezier(0.4, 0, 0.2, 1);
-  --ease-sarak-elastic: cubic-bezier(0.175, 0.885, 0.32, 1.275);
+    /* Transições de Experiência (v8.5) */
+    --ease-sarak-cubic: cubic-bezier(0.65, 0, 0.35, 1);
+    --ease-sarak-expo: cubic-bezier(0.19, 1, 0.22, 1);
+    --ease-sarak-fluid: cubic-bezier(0.4, 0, 0.2, 1);
+    --ease-sarak-elastic: cubic-bezier(0.175, 0.885, 0.32, 1.275);
 
-  /* Escalas de Tipografia Reativas (v8.5) */
-  --font-size-3xs: calc(0.5rem * var(--font-size-factor, 1));
-  --font-size-2xs: calc(0.625rem * var(--font-size-factor, 1));
-  --font-size-xs: calc(0.75rem * var(--font-size-factor, 1));
-  --font-size-sm: calc(0.875rem * var(--font-size-factor, 1));
-  --font-size-base: calc(1rem * var(--font-size-factor, 1));
-  --font-size-lg: calc(1.125rem * var(--font-size-factor, 1));
-  --font-size-xl: calc(1.25rem * var(--font-size-factor, 1));
-  --font-size-2xl: calc(1.5rem * var(--font-size-factor, 1));
+    /* Escalas de Tipografia Reativas (v8.5) */
+    --font-size-3xs: calc(0.5rem * var(--font-size-factor, 1));
+    --font-size-2xs: calc(0.625rem * var(--font-size-factor, 1));
+    --font-size-xs: calc(0.75rem * var(--font-size-factor, 1));
+    --font-size-sm: calc(0.875rem * var(--font-size-factor, 1));
+    --font-size-base: calc(1rem * var(--font-size-factor, 1));
+    --font-size-lg: calc(1.125rem * var(--font-size-factor, 1));
+    --font-size-xl: calc(1.25rem * var(--font-size-factor, 1));
+    --font-size-2xl: calc(1.5rem * var(--font-size-factor, 1));
 
-  /* Motor de Geometria Reativa (v8.5) */
-  --border-width: var(--theme-border-width, 1px);
-  --default-border-color: var(--theme-border);
-  --default-ring-color: var(--theme-primary);
+    /* Motor de Geometria Reativa (v8.5) */
+    --border-width: var(--theme-border-width, 1px);
+    --default-border-color: var(--theme-border);
+    --default-ring-color: var(--theme-primary);
 
-  /* Ponte de Arredondamento (Sincroniza Tailwind com Slider de Radius) */
-  --radius-xs:  calc(0.125rem * (var(--radius-theme, 12px) / 12px));
-  --radius-sm:  calc(0.25rem  * (var(--radius-theme, 12px) / 12px));
-  --radius-md:  calc(0.375rem * (var(--radius-theme, 12px) / 12px));
-  --radius-lg:  calc(0.5rem   * (var(--radius-theme, 12px) / 12px));
-  --radius-xl:  calc(0.75rem  * (var(--radius-theme, 12px) / 12px));
-  --radius-2xl: calc(1rem     * (var(--radius-theme, 12px) / 12px));
-  --radius-3xl: calc(1.5rem   * (var(--radius-theme, 12px) / 12px));
-  
-  /* Motor de Profundidade Reativa */
-  --shadow-sm: var(--theme-shadow);
-  --shadow-base: var(--theme-shadow);
-  --shadow-md: var(--theme-shadow);
-  --shadow-lg: var(--theme-shadow);
-  --shadow-xl: var(--theme-shadow);
+    /* Ponte de Arredondamento (Sincroniza Tailwind com Slider de Radius) */
+    --radius-xs:  calc(0.125rem * (var(--radius-theme, 12px) / 12px));
+    --radius-sm:  calc(0.25rem  * (var(--radius-theme, 12px) / 12px));
+    --radius-md:  calc(0.375rem * (var(--radius-theme, 12px) / 12px));
+    --radius-lg:  calc(0.5rem   * (var(--radius-theme, 12px) / 12px));
+    --radius-xl:  calc(0.75rem  * (var(--radius-theme, 12px) / 12px));
+    --radius-2xl: calc(1rem     * (var(--radius-theme, 12px) / 12px));
+    --radius-3xl: calc(1.5rem   * (var(--radius-theme, 12px) / 12px));
+    
+    /* Motor de Profundidade Reativa */
+    --shadow-sm: var(--theme-shadow);
+    --shadow-base: var(--theme-shadow);
+    --shadow-md: var(--theme-shadow);
+    --shadow-lg: var(--theme-shadow);
+    --shadow-xl: var(--theme-shadow);
+  }
+
+  /* ... restante do conteúdo do arquivo ... */
 }
+
 
 
 

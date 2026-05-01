@@ -58,14 +58,43 @@ export const getLocalComponent = (id: string): React.ComponentType<any> | undefi
 };
 
 /**
+ * Validates a Sarak module manifest for industrial standards (v9.5).
+ */
+const validateSarakModule = (manifest: SarakModule) => {
+    const warnings: string[] = [];
+    
+    if (!manifest.id) {
+        console.error("[Sarak:Registry] CRITICAL: Module registration failed. Missing 'id'.");
+        return false;
+    }
+    
+    if (!manifest.label) warnings.push("Missing 'label' (The display name in the menu).");
+    if (!manifest.icon) warnings.push("Missing 'icon' (Used for visual identification).");
+    
+    // Verificação de Componente (v9.5 Industrial)
+    const hasComponent = !!manifest.component || !!localComponents.get(manifest.id);
+    if (!hasComponent) {
+        warnings.push(`No component found for module '${manifest.id}'. Ensure you call registerLocalComponent('${manifest.id}', ...) before or alongside.`);
+    }
+
+    if (warnings.length > 0) {
+        console.warn(`[Sarak:Registry] Warning for module '${manifest.id}':\n- ${warnings.join('\n- ')}`);
+    }
+
+    return true;
+};
+
+/**
  * Registers or updates a Sarak module in the system (v9.1 - Merging Support).
  */
 export const registerSarakModule = (manifest: SarakModule) => {
+    if (!validateSarakModule(manifest)) return;
+
     const existing = _global.__SARAK_REGISTRY_MODS__.get(manifest.id);
     const mod = { ...existing, ...manifest, isLocal: true };
     _global.__SARAK_REGISTRY_MODS__.set(manifest.id, mod);
     
-    console.log(`[Registry] Registered/Updated module: ${manifest.id}. Total: ${_global.__SARAK_REGISTRY_MODS__.size}`);
+    console.log(`[Sarak:Registry] Registered/Updated module: ${manifest.id}. Total: ${_global.__SARAK_REGISTRY_MODS__.size}`);
     
     // Notificar assinantes
     notifyListeners();
