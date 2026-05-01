@@ -24,21 +24,24 @@ export const BASE_PRESETS: any = {
         borderRadius: 0, borderWidth: 1, borderStyle: 'solid', borderType: 'solid',
         surfaceMaterial: 'matte', cardTexture: 'grid', textureOpacity: 0.15,
         primaryColor: '#475569', cardPadding: 32, layoutGap: 24,
-        systemTone: 'formal', shadowIntensity: 0.1, isGeometricCut: false
+        systemTone: 'formal', shadowIntensity: 0.1, isGeometricCut: false,
+        colorPalette: 'ocean'
     },
     formal: { 
         headingFont: "'Outfit', sans-serif", bodyFont: "'Inter', sans-serif", 
         borderRadius: 16, borderWidth: 1, borderStyle: 'solid', borderType: 'beveled',
         surfaceMaterial: 'brushed', cardTexture: 'silk', textureOpacity: 0.1,
         primaryColor: '#fbbf24', cardPadding: 40, layoutGap: 32,
-        systemTone: 'formal', shadowIntensity: 0.6, layeredShadows: 1.5
+        systemTone: 'formal', shadowIntensity: 0.6, layeredShadows: 1.5,
+        colorPalette: 'royal'
     },
     futurist: { 
         headingFont: "'Syncopate', sans-serif", bodyFont: "'Space Mono', monospace", 
         borderRadius: 30, borderWidth: 1, borderStyle: 'solid', borderType: 'neon',
         surfaceMaterial: 'glass', cardTexture: 'circuit', textureOpacity: 0.3,
         primaryColor: '#06b6d4', cardPadding: 24, layoutGap: 16,
-        systemTone: 'cyber', glassmorphism: 0.9, glassBlur: 24, glassOpacity: 0.1
+        systemTone: 'cyber', glassmorphism: 0.9, glassBlur: 24, glassOpacity: 0.1,
+        colorPalette: 'cyberpunk'
     },
     brutalist: { 
         headingFont: "'Archivo Black', sans-serif", bodyFont: "'Inter', sans-serif", 
@@ -59,14 +62,16 @@ export const BASE_PRESETS: any = {
         borderRadius: 80, borderWidth: 0, borderType: 'none',
         surfaceMaterial: 'soft', cardTexture: 'grain', textureOpacity: 0.2,
         primaryColor: '#10b981', cardPadding: 48, layoutGap: 40,
-        systemTone: 'friendly', shadowIntensity: 0.3, interfaceElasticity: 0.1
+        systemTone: 'friendly', shadowIntensity: 0.3, interfaceElasticity: 0.1,
+        colorPalette: 'nature'
     },
     retro: { 
         headingFont: "'Righteous', cursive", bodyFont: "'Inter', sans-serif", 
         borderRadius: 12, borderWidth: 2, borderStyle: 'solid', borderType: 'neon',
         surfaceMaterial: 'acrylic', cardTexture: 'aurora', textureOpacity: 0.5,
         primaryColor: '#ec4899', cardPadding: 28, layoutGap: 24,
-        systemTone: 'cyber', shadowIntensity: 1.0, animationSpeed: 1.2
+        systemTone: 'cyber', shadowIntensity: 1.0, animationSpeed: 1.2,
+        colorPalette: 'sunset'
     },
     minimal: { 
         headingFont: "'Inter', sans-serif", bodyFont: "'Inter', sans-serif", 
@@ -80,7 +85,8 @@ export const BASE_PRESETS: any = {
         borderRadius: 32, borderWidth: 1, borderStyle: 'solid', borderType: 'beveled',
         surfaceMaterial: 'brushed', cardTexture: 'silk', textureOpacity: 0.2,
         primaryColor: '#9f1239', cardPadding: 48, layoutGap: 32,
-        systemTone: 'formal', shadowIntensity: 0.9, layeredShadows: 2.5
+        systemTone: 'formal', shadowIntensity: 0.9, layeredShadows: 2.5,
+        colorPalette: 'royal'
     },
     hazard: { 
         headingFont: "'Barlow Condensed', sans-serif", bodyFont: "'Barlow Condensed', sans-serif", 

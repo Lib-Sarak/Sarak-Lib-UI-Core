@@ -92,9 +92,15 @@ export const SarakStats: React.FC<SarakStatsProps> = ({ endpoint, label, mapping
                             <span className="text-2xl font-black text-white tracking-tighter" style={{ fontWeight: 'var(--heading-weight)' }}>
                                 {renderValue(key)}
                             </span>
-                            <div className="rounded-theme transition-colors" style={{ padding: 'calc(var(--theme-pad) / 3)', backgroundColor: 'var(--theme-primary-focus)', transitionDuration: 'var(--animation-speed, 0.3s)' }}>
-                                <Activity size={16} className="transition-colors" style={{ color: 'var(--theme-primary)', transitionDuration: 'var(--animation-speed, 0.3s)' }} />
-                            </div>
+                            {(() => {
+                                const levels = ['primary', 'secondary', 'accent'];
+                                const level = levels[idx % levels.length];
+                                return (
+                                    <div className="rounded-theme transition-colors" style={{ padding: 'calc(var(--theme-pad) / 3)', backgroundColor: `var(--theme-${level}-bg)`, transitionDuration: 'var(--animation-speed, 0.3s)' }}>
+                                        <Activity size={16} className="transition-colors" style={{ color: `var(--theme-${level})`, transitionDuration: 'var(--animation-speed, 0.3s)' }} />
+                                    </div>
+                                );
+                            })()}
                         </div>
                     </motion.div>
                 ))

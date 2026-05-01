@@ -49,32 +49,80 @@ export const COLOR_PALETTES = [
     {
         id: 'cyberpunk',
         name: 'Cyber Neon',
-        colors: { primaryColor: '#f43f5e', successColor: '#06b6d4', warningColor: '#facc15', errorColor: '#ef4444' }
+        colors: { 
+            primary: '#f43f5e',   // Rose Neon
+            secondary: '#7000ff', // Deep Purple
+            accent: '#06b6d4',    // Cyan Spark
+            surface: '#0f172a',   // Slate Dark
+            success: '#10b981',
+            warning: '#facc15',
+            error: '#ef4444'
+        }
     },
     {
         id: 'nature',
         name: 'Bio Nature',
-        colors: { primaryColor: '#10b981', successColor: '#34d399', warningColor: '#fbbf24', errorColor: '#ef4444' }
+        colors: { 
+            primary: '#10b981',   // Emerald
+            secondary: '#365314', // Moss Green
+            accent: '#fde047',    // Sun Yellow
+            surface: '#064e3b',   // Deep Forest
+            success: '#34d399',
+            warning: '#fbbf24',
+            error: '#ef4444'
+        }
     },
     {
         id: 'ocean',
         name: 'Deep Ocean',
-        colors: { primaryColor: '#0ea5e9', successColor: '#10b981', warningColor: '#f59e0b', errorColor: '#f43f5e' }
+        colors: { 
+            primary: '#0ea5e9',   // Ocean Blue
+            secondary: '#1e3a8a', // Midnight Blue
+            accent: '#2dd4bf',    // Turquoise
+            surface: '#081431',   // Abyssal
+            success: '#10b981',
+            warning: '#f59e0b',
+            error: '#f43f5e'
+        }
     },
     {
         id: 'royal',
         name: 'Royal Majesty',
-        colors: { primaryColor: '#8b5cf6', successColor: '#14b8a6', warningColor: '#eab308', errorColor: '#be123c' }
+        colors: { 
+            primary: '#8b5cf6',   // Purple
+            secondary: '#4c1d95', // Indigo Dark
+            accent: '#fbbf24',    // Gold
+            surface: '#1e1b4b',   // Royal Night
+            success: '#14b8a6',
+            warning: '#eab308',
+            error: '#be123c'
+        }
     },
     {
         id: 'sunset',
         name: 'Warm Sunset',
-        colors: { primaryColor: '#f97316', successColor: '#84cc16', warningColor: '#f59e0b', errorColor: '#e11d48' }
+        colors: { 
+            primary: '#f97316',   // Orange
+            secondary: '#7c2d12', // Burnt Sienna
+            accent: '#fcd34d',    // Amber
+            surface: '#2d0a05',   // Twilight
+            success: '#84cc16',
+            warning: '#f59e0b',
+            error: '#e11d48'
+        }
     },
     {
         id: 'monochrome',
         name: 'Dark Matter',
-        colors: { primaryColor: '#64748b', successColor: '#10b981', warningColor: '#eab308', errorColor: '#ef4444' }
+        colors: { 
+            primary: '#94a3b8',   // Slate
+            secondary: '#1e293b', // Deep Slate
+            accent: '#f1f5f9',    // Ghost White
+            surface: '#020617',   // Void
+            success: '#10b981',
+            warning: '#eab308',
+            error: '#ef4444'
+        }
     }
 ];
 

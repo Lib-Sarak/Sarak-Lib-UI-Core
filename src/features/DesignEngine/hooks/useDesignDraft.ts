@@ -69,36 +69,8 @@ export const useDesignDraft = (sarak: any) => {
 
     const [toast, setToast] = useState<{ type: 'success' | 'warning', message: string } | null>(null);
 
-    useEffect(() => {
-        if (sarak.isHydrated) {
-            setDraft({
-                ...draft,
-                ...sarak,
-                chatBubbleStyle: sarak.chatBubbleStyle || 'glass',
-                chatAnimationSpeed: sarak.chatAnimationSpeed || 0.05,
-                flowGridStyle: sarak.flowGridStyle || 'dots',
-                flowNodeRadius: sarak.flowNodeRadius || 12,
-                chartShowGrid: sarak.chartShowGrid ?? true,
-                chartType: sarak.chartType || 'bar',
-                chartThickness: sarak.chartThickness || 2,
-                chartSmoothing: sarak.chartSmoothing ?? true,
-                cardPadding: sarak.cardPadding || 24,
-                tabGap: sarak.tabGap || 12,
-                tabSectionMargin: sarak.tabSectionMargin || 0,
-                texture: sarak.texture || 'none',
-                textureOpacity: sarak.textureOpacity || 0.05,
-                scaleRatio: sarak.scaleRatio || 1.0,
-                contrastCurve: sarak.contrastCurve || 1.0,
-                layeredShadows: sarak.layeredShadows || 1.0,
-                isNavHidden: sarak.isNavHidden ?? false,
-                hoverLiftEnabled: sarak.hoverLiftEnabled ?? true,
-                spotlightEnabled: sarak.spotlightEnabled ?? true,
-                magneticPullEnabled: sarak.magneticPullEnabled ?? false,
-                borderBeamEnabled: sarak.borderBeamEnabled ?? false,
-                performanceMode: sarak.performanceMode || 'high'
-            });
-        }
-    }, [sarak.isHydrated]);
+    // No v9.2, o rascunho é independente e não deve ser resetado automaticamente 
+    // quando o sistema terminar de carregar, para não perder edições do usuário.
 
     const showToast = (type: 'success' | 'warning', message: string) => {
         setToast({ type, message });

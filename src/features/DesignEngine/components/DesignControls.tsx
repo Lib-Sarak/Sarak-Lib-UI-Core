@@ -6,10 +6,10 @@ export const SliderControl: React.FC<any> = ({ label, value, min, max, step = 1,
     <div className="mb-4">
         <div className="flex justify-between items-center mb-2">
             <span className="text-2xs font-black uppercase tracking-widest text-white/40">{label}</span>
-            <span className="text-2xs font-mono text-[var(--theme-primary)]">{value}{suffix}</span>
+            <span className="text-2xs font-mono text-[var(--theme-primary)]">{value ?? 0}{suffix}</span>
         </div>
         <input 
-            type="range" min={min} max={max} step={step} value={value} 
+            type="range" min={min} max={max} step={step} value={value ?? 0} 
             onChange={(e) => onChange(parseFloat(e.target.value))}
             className="w-full h-1 bg-white/5 rounded-lg appearance-none cursor-pointer accent-[var(--theme-primary)]"
         />
@@ -20,7 +20,7 @@ export const SelectControl: React.FC<any> = ({ label, options, value, onChange, 
     <div className="mb-4">
         <span className="text-2xs font-black uppercase tracking-widest text-white/40 block mb-2">{label}</span>
         <select 
-            value={value || ''} 
+            value={value ?? ''} 
             onChange={(e) => onChange(e.target.value)}
             className="w-full bg-white/5 border border-white/10 rounded-lg py-2 px-3 text-xs font-bold focus:border-[var(--theme-primary)] focus:outline-none transition-all text-white/80"
             style={isFont ? { fontFamily: value } : {}}

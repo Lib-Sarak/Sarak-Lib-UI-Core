@@ -1,18 +1,11 @@
 /**
- * Sarak Atomic Discovery (v5.5)
+ * Sarak Discovery Tokens (v9.0 Industrial)
  * 
- * Lista de endpoints base para escaneamento de manifestos.
- * Em produção, isso pode ser alimentado por um Service Registry ou Config Map.
+ * Endpoints are now injected dynamically via the consumer application.
+ * Hardcoded polling has been decommissioned.
  */
-export const DISCOVERY_ENDPOINTS = [
-    '/api/catalog',
-    '/api/orchestrator',
-    '/api/selector',
-    '/api/usage',
-    '/api/translator',
-    '/api/worker',
-    '/api/auth'
-];
+export const DISCOVERY_ENDPOINTS: string[] = [];
+
 
 export type VisualContractType = 'TABLE' | 'STATS' | 'CARD_GRID' | 'MANAGEMENT_GRID' | 'FORM' | 'CHAT_INTERFACE' | 'CHART' | 'FLOW_DIAGRAM' | 'ELITE_CHART' | 'ADVANCED_CHAT' | 'SECURITY_ORCHESTRATOR';
 

@@ -295,7 +295,7 @@ const SarakCoreCard = ({ item, mapping }: { item: any; mapping: any }) => {
                         <div className="flex flex-wrap gap-2">
                             <span className="text-3xs font-black text-white/20 uppercase w-full mb-1">Output Capacities</span>
                             {outputCaps.map((cap: string) => (
-                                <div key={cap} className="flex items-center gap-1.5 px-3 py-1 bg-[var(--theme-warning-bg)] text-[var(--theme-warning)] border border-[var(--theme-warning-border)] rounded-full text-2xs font-black uppercase">
+                                <div key={cap} className="flex items-center gap-1.5 px-3 py-1 bg-[var(--theme-accent-bg)] text-[var(--theme-accent)] border border-[var(--theme-accent-border)] rounded-full text-2xs font-black uppercase">
                                     {getCapIcon(cap)} {cap}
                                 </div>
                             ))}
@@ -327,7 +327,7 @@ const SarakCoreCard = ({ item, mapping }: { item: any; mapping: any }) => {
                 <div className="flex" style={{ gap: 'calc(var(--theme-gap) / 2.5)' }}>
                     <button 
                         onClick={() => setIsExpanded(!isExpanded)}
-                        className="flex-1 flex items-center justify-center gap-2 py-4 bg-theme-card border-theme text-white/60 hover:text-white rounded-theme text-2xs font-black uppercase tracking-widest transition-all"
+                        className="flex-1 flex items-center justify-center gap-2 py-4 bg-theme-card border-theme text-white/60 hover:text-[var(--theme-secondary)] hover:border-[var(--theme-secondary-border)] rounded-theme text-2xs font-black uppercase tracking-widest transition-all"
                         style={{ transitionDuration: 'var(--animation-speed, 0.3s)' }}
                     >
                         <LucideIcons.ChevronDown className={`w-3 h-3 transition-transform ${isExpanded ? 'rotate-180' : ''}`} />

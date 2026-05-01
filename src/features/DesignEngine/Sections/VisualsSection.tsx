@@ -23,7 +23,7 @@ export const VisualsSection: React.FC<VisualsSectionProps> = ({ draft, updateDra
                     <div className="relative w-full aspect-square">
                         <input 
                             type="color" 
-                            value={draft.primaryColor} 
+                            value={draft.primaryColor || '#10b981'} 
                             onChange={(e) => updateDraft('primaryColor', e.target.value)}
                             className="absolute inset-0 w-full h-full opacity-0 cursor-pointer z-10"
                         />
@@ -47,17 +47,17 @@ export const VisualsSection: React.FC<VisualsSectionProps> = ({ draft, updateDra
                     <div className="grid grid-cols-2 gap-2">
                         {COLOR_PALETTES.map(palette => (
                             <button key={palette.id} onClick={() => {
-                                updateDraft('primaryColor', palette.colors.primaryColor);
-                                updateDraft('successColor', palette.colors.successColor);
-                                updateDraft('warningColor', palette.colors.warningColor);
-                                updateDraft('errorColor', palette.colors.errorColor);
+                                updateDraft('primaryColor', palette.colors.primary);
+                                updateDraft('successColor', palette.colors.success);
+                                updateDraft('warningColor', palette.colors.warning);
+                                updateDraft('errorColor', palette.colors.error);
                             }} className="flex flex-col gap-2 p-3 bg-black/20 rounded-xl border border-white/5 hover:border-white/20 transition-all text-left">
                                 <span className="text-[10px] font-bold text-white/60 uppercase">{palette.name}</span>
                                 <div className="flex w-full h-2 rounded-full overflow-hidden">
-                                    <div className="flex-1" style={{ backgroundColor: palette.colors.primaryColor }} />
-                                    <div className="w-4" style={{ backgroundColor: palette.colors.successColor }} />
-                                    <div className="w-4" style={{ backgroundColor: palette.colors.warningColor }} />
-                                    <div className="w-4" style={{ backgroundColor: palette.colors.errorColor }} />
+                                    <div className="flex-1" style={{ backgroundColor: palette.colors.primary }} />
+                                    <div className="w-4" style={{ backgroundColor: palette.colors.success }} />
+                                    <div className="w-4" style={{ backgroundColor: palette.colors.warning }} />
+                                    <div className="w-4" style={{ backgroundColor: palette.colors.error }} />
                                 </div>
                             </button>
                         ))}

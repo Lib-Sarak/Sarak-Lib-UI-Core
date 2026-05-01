@@ -1,7 +1,9 @@
 import React, { ReactNode, useEffect, useState, useMemo, useCallback, useContext } from 'react';
 import '../../styles/sarak-base.css';
 import { LAYOUTS, BASE_PRESETS } from '../../constants/theme-models';
-import { getRegisteredModules } from '../Discovery/registry';
+import { COLOR_PALETTES } from '../../constants/design-tokens';
+import { registerLocalComponent, registerSarakModule, getRegisteredModules, subscribeToRegistry } from '../Discovery/registry';
+import { ThemeCustomizationTab } from '../../features/DesignEngine/Main/ThemeCustomizationTab';
 import { NoiseOverlay } from '../../effects/NoiseOverlay';
 
 // --- SARAK UI BRIDGE CONTEXT ---
@@ -28,12 +30,12 @@ export const useSarakUI = () => {
             registeredModules: [], 
             layouts: [], 
             isHydrated: false,
-            // Fallback para evitar crashes em SSR ou contextos sem provider
+            // Fallback to avoid crashes in SSR or contexts without provider
             applyConfig: () => {},
             applyFullConfig: () => {}
         } as any;
     }
-    // Retorna o contexto mesclado com o design para compatibilidade de API
+    // Returns context merged with design for API compatibility
     return {
         ...context,
         ...context.design
@@ -48,6 +50,7 @@ export interface SarakUIOptions {
         discoveryPath?: string;
         discovery?: string[];
     };
+    manifest?: any; // Novo: Permite injetar manifest.json diretamente (v9.0)
     persistence?: {
         strategy?: 'local' | 'remote' | 'hybrid';
         storageKey?: string;
@@ -72,7 +75,43 @@ interface SarakUIProviderProps {
     options?: SarakUIOptions;
 }
 
-// --- MANIFESTO DE DESIGN SOBERANO ---
+// --- INDUSTRIAL COLOR ENGINE (v9.0) ---
+const computeColorVariants = (v: string, fallback: string) => {
+    const val = v || fallback;
+    if (!val || typeof val !== 'string' || val.length < 4) {
+        return { 
+            main: fallback, 
+            rgb: '0,0,0', 
+            bg: 'rgba(0,0,0,0.1)', 
+            border: 'rgba(0,0,0,0.2)',
+            hover: fallback,
+            active: fallback,
+            focus: 'rgba(0,0,0,0.4)',
+            light: fallback
+        };
+    }
+    
+    const hex = val.replace('#', '');
+    const r = parseInt(hex.substring(0, 2), 16) || 0;
+    const g = parseInt(hex.substring(2, 4), 16) || 0;
+    const b = parseInt(hex.substring(4, 6), 16) || 0;
+    
+    const adjust = (c: number, f: number) => Math.round(Math.min(255, Math.max(0, c * f)));
+    const toH = (n: number) => n.toString(16).padStart(2, '0');
+    
+    return {
+        main: val,
+        rgb: `${r}, ${g}, ${b}`,
+        bg: `rgba(${r}, ${g}, ${b}, 0.15)`,
+        border: `rgba(${r}, ${g}, ${b}, 0.25)`,
+        hover: `#${toH(adjust(r, 1.1))}${toH(adjust(g, 1.1))}${toH(adjust(b, 1.1))}`,
+        active: `#${toH(adjust(r, 0.9))}${toH(adjust(g, 0.9))}${toH(adjust(b, 0.9))}`,
+        focus: `rgba(${r}, ${g}, ${b}, 0.4)`,
+        light: `rgba(${r}, ${g}, ${b}, 0.05)`
+    };
+};
+
+// --- SOVEREIGN DESIGN MANIFEST ---
 export const DESIGN_MANIFEST: Record<string, {
     vars?: string[],
     unit?: string,
@@ -82,51 +121,41 @@ export const DESIGN_MANIFEST: Record<string, {
 }> = {
     layout: { vars: ['--sarak-layout', '--layout-theme'], classPrefix: 'layout-' },
     mode: { vars: ['--sarak-mode', '--mode-theme'], transform: (v: any) => v === 'dark' ? 'dark' : 'light' },
+    colorPalette: {
+        vars: ['--sarak-palette'],
+        attr: 'data-palette',
+        transform: (v: string) => {
+            // Se v for um ID de preset, retornamos o objeto de cores completo para o injetor
+            return v; 
+        }
+    },
     primaryColor: {
         vars: ['--primary-color', '--theme-primary', '--sarak-primary-color'],
-        transform: (v: string) => {
-            if (!v || typeof v !== 'string') return { main: '#3b82f6', rgb: '59, 130, 246', hover: '#2563eb', active: '#1d4ed8', focus: 'rgba(59, 130, 246, 0.4)' };
-            const hex = v.replace('#', '');
-            const r = parseInt(hex.substring(0, 2), 16) || 0;
-            const g = parseInt(hex.substring(2, 4), 16) || 0;
-            const b = parseInt(hex.substring(4, 6), 16) || 0;
-            
-            // Calculador de Estados v7.5
-            const adjust = (c: number, f: number) => Math.round(Math.min(255, Math.max(0, c * f)));
-            const toH = (n: number) => n.toString(16).padStart(2, '0');
-            
-            const hover = `#${toH(adjust(r, 0.9))}${toH(adjust(g, 0.9))}${toH(adjust(b, 0.9))}`;
-            const active = `#${toH(adjust(r, 0.8))}${toH(adjust(g, 0.8))}${toH(adjust(b, 0.8))}`;
-
-            return { 
-                main: v, 
-                rgb: `${r}, ${g}, ${b}`,
-                hover,
-                active,
-                focus: `rgba(${r}, ${g}, ${b}, 0.4)`
-            };
-        }
+        transform: (v: string) => computeColorVariants(v, '#3b82f6')
+    },
+    secondaryColor: { 
+        vars: ['--theme-secondary', '--sarak-secondary-color'],
+        transform: (v: string) => computeColorVariants(v, '#6366f1')
+    },
+    accentColor: { 
+        vars: ['--theme-accent', '--sarak-accent-color'],
+        transform: (v: string) => computeColorVariants(v, '#f43f5e')
+    },
+    surfaceColor: { 
+        vars: ['--theme-surface', '--sarak-surface-color'],
+        transform: (v: string) => computeColorVariants(v, '#1e293b')
     },
     errorColor: {
         vars: ['--theme-error', '--sarak-error-color'],
-        transform: (v: string) => {
-            const val = v || '#ef4444';
-            return { main: val, bg: `rgba(239, 68, 68, 0.1)`, border: `rgba(239, 68, 68, 0.2)` };
-        }
+        transform: (v: string) => computeColorVariants(v, '#ef4444')
     },
     successColor: {
         vars: ['--theme-success', '--sarak-success-color'],
-        transform: (v: string) => {
-            const val = v || '#10b981';
-            return { main: val, bg: `rgba(16, 185, 129, 0.1)`, border: `rgba(16, 185, 129, 0.2)` };
-        }
+        transform: (v: string) => computeColorVariants(v, '#10b981')
     },
     warningColor: {
         vars: ['--theme-warning', '--sarak-warning-color'],
-        transform: (v: string) => {
-            const val = v || '#f59e0b';
-            return { main: val, bg: `rgba(245, 158, 11, 0.1)`, border: `rgba(245, 158, 11, 0.2)` };
-        }
+        transform: (v: string) => computeColorVariants(v, '#f59e0b')
     },
     layoutDensity: { vars: ['--sarak-layout-density', '--density-theme'], classPrefix: 'density-' },
     texture: { vars: ['--sarak-texture', '--texture-theme'], classPrefix: 'texture-', attr: 'data-texture' },
@@ -269,7 +298,7 @@ const validateDesign = (design: any) => {
     if (!design) return {};
     const s: any = {};
     
-    // 1. Sanitização de Integridade (Remove lixo do Manifesto)
+    // 1. Integrity Sanitization (Removes Manifest garbage)
     Object.entries(design).forEach(([k, v]) => {
         if (v !== null && v !== undefined && v !== '' && typeof v !== 'object') {
             s[k] = v;
@@ -284,23 +313,23 @@ const validateDesign = (design: any) => {
         return Math.min(Math.max(n, min), max);
     };
 
-    // 2. Clamping de Segurança
+    // 2. Security Clamping
     s.scaleRatio = clamp(s.scaleRatio, 0.5, 2, 1);
     s.contrastCurve = clamp(s.contrastCurve, 0.5, 2, 1);
     s.glassBlur = clamp(s.glassBlur, 0, 60, 10);
     s.glassOpacity = clamp(s.glassOpacity, 0, 1, 0.7);
     s.borderRadius = clamp(s.borderRadius, 0, 60, 12);
     
-    // 3. Fallbacks de Estrutura (v9.0 Resilience)
+    // 3. Structural Fallbacks (v9.0 Resilience)
     if (!s.navigationStyle) s.navigationStyle = 'sidebar';
     if (!s.sidebarWidth) s.sidebarWidth = 240;
     
-    s.schema_version = "8.5"; // Upgrade para v8.5 (Sovereign)
+    s.schema_version = "8.5"; // Upgrade to v8.5 (Sovereign)
 
     return s;
 };
 
-// Componente interno para gerenciar a injeção de design sem causar loops
+// Internal component to manage design injection without loops
 const DesignInjector: React.FC<{ design: any }> = ({ design: s }) => {
 
     useEffect(() => {
@@ -333,39 +362,75 @@ const DesignInjector: React.FC<{ design: any }> = ({ design: s }) => {
 
         if (!s) return;
 
-        // Injeção única de Curvas de Bezier Sarak
+        // --- CSS CLEANUP ENGINE (v9.2) ---
+        // Limpamos variáveis residuais de estados anteriores para evitar "fantasmas visuais"
+        const cleanOldVariables = () => {
+            const levels = ['primary', 'secondary', 'accent', 'surface', 'success', 'warning', 'error', 'body'];
+            const suffixes = ['-rgb', '-bg', '-border', '-hover', '-active', '-focus', '-light'];
+            
+            levels.forEach(level => {
+                suffixes.forEach(suffix => {
+                    root.style.removeProperty(`--theme-${level}${suffix}`);
+                });
+                root.style.removeProperty(`--theme-${level}`);
+                root.style.removeProperty(`--${level}-color`);
+            });
+        };
+        cleanOldVariables();
+
+        // One-time injection of Sarak Bezier Curves
         if (!prevDesignRef.current) {
             Object.entries(BEZIER_CURVES).forEach(([k, v]) => root.style.setProperty(k, v));
         }
 
-        Object.entries(s).forEach(([key, value]) => {
-            // Pula injeção se o valor não mudou (Selective Injection)
-            if (prevDesignRef.current && prevDesignRef.current[key] === value) return;
+        // --- COMPREHENSIVE COLOR INJECTION ENGINE (v9.1) ---
+        const activePalette = COLOR_PALETTES.find((p: any) => p.id === s.colorPalette);
+        const paletteColors = activePalette?.colors || {};
 
+        Object.entries(s).forEach(([key, value]) => {
             const config = DESIGN_MANIFEST[key];
             if (!config) return;
 
-            let finalValue = value?.toString() || '';
-            let finalAttrValue = value?.toString() || '';
+            // --- PALETTE HARMONIZATION (Sovereignty v9.1) ---
+            // Se uma paleta está ativa, as cores base vêm dela, a menos que o valor individual
+            // seja explicitamente diferente (sobrescrita manual).
+            let finalValueForInjection = value;
+            if (key.endsWith('Color') || key === 'primaryColor') {
+                const level = key.replace('Color', '');
+                const paletteHex = paletteColors[level === 'primary' ? 'primary' : level];
+                if (paletteHex) {
+                    finalValueForInjection = paletteHex;
+                }
+            }
+
+            let finalValue = finalValueForInjection?.toString() || '';
+            let finalAttrValue = finalValue; 
             const extraVars: Record<string, string> = {};
 
             if (config.transform) {
-                const t = config.transform(value);
+                const t = config.transform(finalValueForInjection);
                 if (typeof t === 'object' && t !== null) {
-                    if (key === 'primaryColor') {
+                    if (key.endsWith('Color') || key === 'primaryColor') {
+                        const level = key.replace('Color', '');
+                        const prefix = `--theme-${level === 'primary' ? 'primary' : level}`;
+                        
                         finalValue = t.main;
-                        finalAttrValue = value;
-                        extraVars['--theme-primary-rgb'] = t.rgb;
-                        extraVars['--theme-primary-hover'] = t.hover;
-                        extraVars['--theme-primary-active'] = t.active;
-                        extraVars['--theme-primary-focus'] = t.focus;
+                        finalAttrValue = t.main;
+                        extraVars[`${prefix}-rgb`] = t.rgb;
+                        extraVars[`${prefix}-bg`] = t.bg;
+                        extraVars[`${prefix}-border`] = t.border;
+                        extraVars[`${prefix}-hover`] = t.hover;
+                        extraVars[`${prefix}-active`] = t.active;
+                        extraVars[`${prefix}-focus`] = t.focus;
+                        extraVars[`${prefix}-light`] = t.light;
+                        extraVars[`--${level === 'primary' ? 'primary' : level}-color`] = t.main;
                     } else if (key === 'fontScale') {
                         finalValue = t.px;
-                        finalAttrValue = value;
+                        finalAttrValue = t.px;
                         extraVars['--font-size-factor'] = t.factor;
                     } else if (key === 'scaleRatio') {
                         finalValue = String(t.ratio);
-                        finalAttrValue = value;
+                        finalAttrValue = String(t.ratio);
                         extraVars['--theme-gap-scaled'] = t.gap;
                         extraVars['--theme-pad-scaled'] = t.pad;
                         extraVars['--theme-margin-scaled'] = t.margin;
@@ -376,28 +441,62 @@ const DesignInjector: React.FC<{ design: any }> = ({ design: s }) => {
                         extraVars['--theme-font-size-base'] = t.base;
                         extraVars['--theme-gap-scaled'] = t.gap;
                         extraVars['--theme-pad-scaled'] = t.padding;
-                    } else if (key === 'errorColor' || key === 'successColor' || key === 'warningColor') {
-                        finalValue = t.main;
-                        finalAttrValue = t.main;
-                        const prefix = key === 'errorColor' ? '--theme-error' : key === 'successColor' ? '--theme-success' : '--theme-warning';
-                        extraVars[`${prefix}-bg`] = t.bg;
-                        extraVars[`${prefix}-border`] = t.border;
                     } else if (t.main !== undefined) {
                         finalValue = t.main;
-                        finalAttrValue = t.attr !== undefined ? t.attr : value;
-                        
-                        // Industrial Injection: Permite que transformações retornem variáveis CSS arbitrárias
+                        finalAttrValue = t.main;
                         Object.entries(t).forEach(([k, v]) => {
                             if (k.startsWith('--')) extraVars[k] = String(v);
                         });
                     }
-
                 } else {
                     finalValue = String(t);
                     finalAttrValue = String(t);
                 }
             }
 
+            // --- Multi-Palette Engine (v9.1) ---
+            if (key === 'colorPalette' && activePalette) {
+                // When colorPalette changes, we force inject ALL colors from it
+                Object.entries(activePalette.colors).forEach(([level, hex]: [string, any]) => {
+                    const levelKey = level === 'primary' ? 'primaryColor' : `${level}Color`;
+                    const levelConfig = DESIGN_MANIFEST[levelKey];
+                    
+                    if (levelConfig && levelConfig.vars) {
+                        const t = computeColorVariants(hex, '#000');
+                        const prefix = `--theme-${level}`;
+                        
+                        // Inject main variable
+                        levelConfig.vars.forEach(v => root.style.setProperty(v, t.main));
+                        
+                        // Inject all state variables
+                        root.style.setProperty(`${prefix}-rgb`, t.rgb);
+                        root.style.setProperty(`${prefix}-bg`, t.bg);
+                        root.style.setProperty(`${prefix}-border`, t.border);
+                        root.style.setProperty(`${prefix}-hover`, t.hover);
+                        root.style.setProperty(`${prefix}-active`, t.active);
+                        root.style.setProperty(`${prefix}-focus`, t.focus);
+                        root.style.setProperty(`${prefix}-light`, t.light);
+
+                        // Se for primary, injetamos também como --theme-primary-rgb etc para compatibilidade
+                        if (level === 'primary') {
+                            root.style.setProperty('--theme-primary-rgb', t.rgb);
+                        }
+                    }
+                });
+
+                // Injeção especial de Fundo e Superfície (Sovereignty v9.1)
+                // Se a paleta definir tons específicos para o corpo ou superfície, aplicamos aqui.
+                if (activePalette.colors.body) {
+                    const t = computeColorVariants(activePalette.colors.body, '#0f172a');
+                    root.style.setProperty('--theme-body', t.main);
+                    root.style.setProperty('--theme-body-rgb', t.rgb);
+                }
+                if (activePalette.colors.surface) {
+                    const t = computeColorVariants(activePalette.colors.surface, '#1e293b');
+                    root.style.setProperty('--theme-surface', t.main);
+                    root.style.setProperty('--theme-surface-rgb', t.rgb);
+                }
+            }
 
             if (config.unit && typeof value === 'number') finalValue = `${value}${config.unit}`;
             if (typeof value === 'boolean') {
@@ -449,7 +548,7 @@ export const SarakUIProvider: React.FC<SarakUIProviderProps> = ({
     config: initialPropsConfig = {},
     options = {}
 }) => {
-    // Inicialização Inteligente com Persistência
+    // Intelligent Initialization with Persistence
     const [design, setDesign] = useState(() => {
         const defaultThemeId = options?.theme?.defaultTheme || 'futurist';
         const defaultTheme = (BASE_PRESETS as any)[defaultThemeId] || BASE_PRESETS.futurist;
@@ -461,19 +560,20 @@ export const SarakUIProvider: React.FC<SarakUIProviderProps> = ({
             const saved = localStorage.getItem(key);
             if (saved) {
                 const parsed = JSON.parse(saved);
+                // No v9.2, o salvo tem precedência total sobre o inicial do código
                 return { ...baseConfig, ...parsed };
             }
         } catch (e) {
-            console.error("Erro ao carregar design do localStorage:", e);
+            console.error("[Sarak:UI] Erro ao carregar design do localStorage:", e);
         }
         return baseConfig;
     });
 
     const [isHydrated, setIsHydrated] = useState(false);
-    const [registeredModules, setRegisteredModules] = useState<any[]>([]);
+    const [registeredModules, setRegisteredModules] = useState<any[]>(() => getRegisteredModules());
     const [isBackendLoaded, setIsBackendLoaded] = useState(false);
 
-    // Prioriza tokens/ids passados via props ou no objeto de config
+    // Prioritize tokens/ids passed via props or config object
     const activeToken = initialPropsConfig.token || initialPropsConfig.authApi?.token;
     const activeUserId = initialPropsConfig.userId || initialPropsConfig.user?.id;
 
@@ -485,7 +585,7 @@ export const SarakUIProvider: React.FC<SarakUIProviderProps> = ({
         return options?.persistence?.storageKey || DEFAULT_STORAGE_KEY;
     }, [options?.persistence?.storageKey]);
 
-    // 1. Carregamento do Backend (Sovereign Persistence v9.0)
+    // 1. Backend Loading (Sovereign Persistence v9.0)
     useEffect(() => {
         if (!isHydrated) return;
 
@@ -527,7 +627,7 @@ export const SarakUIProvider: React.FC<SarakUIProviderProps> = ({
         loadInitialDesign();
     }, [activeToken, isBackendLoaded, isHydrated, uiBaseUrl, options]);
 
-    // 2. Persistência Automática (Sovereign Persistence v9.0)
+    // 2. Automatic Persistence (Sovereign Persistence v9.0)
     useEffect(() => {
         if (!isHydrated) return;
 
@@ -560,20 +660,51 @@ export const SarakUIProvider: React.FC<SarakUIProviderProps> = ({
         return () => clearTimeout(timer);
     }, [design, activeToken, isHydrated, uiBaseUrl, options, storageKey]);
 
-    // 3. Sincronização Local (Fallback Imediato)
+    // 3. Local Synchronization (Immediate Fallback)
     useEffect(() => {
         if (typeof window !== 'undefined' && isHydrated && !isBackendLoaded) {
             localStorage.setItem(storageKey, JSON.stringify(design));
         }
     }, [design, isHydrated, isBackendLoaded, storageKey]);
 
-    // Carregamento de módulos e estado inicial
+    // Module loading and initial state (Reactive Discovery v9.0)
     useEffect(() => {
-        setRegisteredModules(getRegisteredModules());
-        setIsHydrated(true);
-    }, []);
+        console.log("[SarakUIProvider] Mounting Provider. Manifest present:", !!options?.manifest);
 
-    // Injeção de Fontes Advanced
+        // 1. Garantir que o componente de personalização está registrado globalmente
+        registerLocalComponent('mx-customization', ThemeCustomizationTab);
+
+        // 2. Registrar módulos do manifesto (se houver)
+        if (options?.manifest?.modules) {
+            options.manifest.modules.forEach((mod: any) => {
+                registerSarakModule(mod);
+            });
+        }
+
+        // 3. Garantir que o módulo de personalização existe no registro com prioridade máxima
+        registerSarakModule({
+            id: 'mx-customization',
+            label: 'Personalização',
+            icon: 'Palette',
+            category: 'Sarak Core',
+            priority: 1000,
+            component: ThemeCustomizationTab // Injeção direta para evitar falha de resolução
+        });
+
+        const updateModules = () => {
+            const current = getRegisteredModules();
+            console.log("[SarakUIProvider] Registry updated. Count:", current.length, current.map(m => m.id));
+            setRegisteredModules([...current]); // Spread to force reference change
+        };
+
+        updateModules();
+        setIsHydrated(true);
+
+        // Subscribe to future registrations (Passive Discovery)
+        return subscribeToRegistry(updateModules);
+    }, [options?.manifest]);
+
+    // Advanced Fonts Injection
     useEffect(() => {
         if (typeof document === 'undefined') return;
         

@@ -6,7 +6,9 @@
 /* 0. TAILWIND v4 SOVEREIGN THEME (Plug & Play) */
 @theme {
   --color-theme-primary: var(--primary-color);
-  --color-theme-secondary: color-mix(in srgb, var(--primary-color), #000 20%);
+  --color-theme-secondary: var(--secondary-color);
+  --color-theme-accent: var(--accent-color);
+  --color-theme-surface: var(--surface-color);
   --color-theme-body: var(--bg-body);
   --color-theme-sidebar: var(--bg-sidebar);
   --color-theme-card: var(--bg-card);
@@ -110,18 +112,28 @@ html {
 }
 
 body {
-  /* ALIASES DE COMPATIBILIDADE - Sincroniza Sarak Legacy com Design Engine v5.6 */
+  /* ALIASES DE COMPATIBILIDADE - Sincroniza Sarak Legacy com Design Engine v9.1 */
   --theme-body: var(--bg-body);
   --theme-sidebar: var(--bg-sidebar);
-  --theme-card: var(--bg-card);
-  --theme-border: var(--border-color);
+  --theme-card: var(--theme-surface-main, var(--bg-card));
+  --theme-border: var(--theme-surface-border, var(--border-color));
   --theme-muted: var(--text-muted);
-  --theme-primary: var(--primary-color);
   
-  /* Engine de Estados Dinâmicos (v8.5) */
+  --theme-primary: var(--primary-color);
+  --theme-secondary: var(--secondary-color);
+  --theme-accent: var(--accent-color);
+  --theme-surface: var(--surface-color);
+  
+  /* Engine de Estados Dinâmicos (v9.0 Industrial) */
   --theme-primary-hover: var(--theme-primary-hover, color-mix(in srgb, var(--primary-color), #000 10%));
   --theme-primary-active: var(--theme-primary-active, color-mix(in srgb, var(--primary-color), #000 20%));
   --theme-primary-focus: var(--theme-primary-focus, rgba(var(--theme-primary-rgb), 0.4));
+
+  --theme-secondary-hover: var(--theme-secondary-hover, color-mix(in srgb, var(--secondary-color), #000 10%));
+  --theme-secondary-active: var(--theme-secondary-active, color-mix(in srgb, var(--secondary-color), #000 20%));
+
+  --theme-accent-hover: var(--theme-accent-hover, color-mix(in srgb, var(--accent-color), #000 10%));
+  --theme-accent-active: var(--theme-accent-active, color-mix(in srgb, var(--accent-color), #000 20%));
 
   /* Engine de Geometria Escalonada (v8.5) */
   --theme-gap: var(--theme-gap-scaled, 20px);
@@ -508,7 +520,7 @@ body {
     padding: var(--theme-card-padding, 24px);
     
     /* Fundo Base (Sovereign Glass) */
-    background-color: color-mix(in srgb, var(--bg-card), transparent calc(100% * (1 - var(--glass-opacity, 0.7)))) !important;
+    background-color: color-mix(in srgb, var(--theme-card), transparent calc(100% * (1 - var(--glass-opacity, 0.7)))) !important;
     
     /* Motor de Filtros (Fidelidade Total) */
     backdrop-filter: 

@@ -25,6 +25,11 @@ interface DynamicRendererProps {
  */
 export const DynamicRenderer: React.FC<DynamicRendererProps> = ({ contracts, module }) => {
     
+    // 1. Root Component Sovereignty (v9.3)
+    // Buscamos o componente físico pelo ID do módulo se ele não estiver no objeto.
+    const registryMod = module?.id ? getSarakModule(module.id) : undefined;
+    const RootComponent = module?.component || registryMod?.component;
+    
     // Helper function to resolve endpoints (v6.8)
     const resolveEndpoint = React.useCallback((endpointKey: string) => {
         if (!module) return endpointKey;
@@ -38,7 +43,7 @@ export const DynamicRenderer: React.FC<DynamicRendererProps> = ({ contracts, mod
                 return `${module.baseUrl}${path.startsWith('/') ? path : '/' + path}`;
             }
         }
-(module.endpoints as any)?.[endpointKey];
+
         // 2. Resolve via direct key in endpoints
         const directPath = (module.endpoints as any)?.[endpointKey];
         if (directPath) {
@@ -58,7 +63,7 @@ export const DynamicRenderer: React.FC<DynamicRendererProps> = ({ contracts, mod
         const groups: Record<string, VisualContract[]> = {};
         let hasTabs = false;
 
-        contracts.forEach(c => {
+        contracts?.forEach(c => {
             const tabName = c.tab || 'General';
             if (c.tab) hasTabs = true;
             if (!groups[tabName]) groups[tabName] = [];
@@ -68,13 +73,28 @@ export const DynamicRenderer: React.FC<DynamicRendererProps> = ({ contracts, mod
         return { groups, hasTabs, names: Object.keys(groups) };
     }, [contracts]);
 
-    const [activeTab, setActiveTab] = React.useState(tabs.names[0]);
+    const [activeTab, setActiveTab] = React.useState(tabs.names[0] || 'General');
+
+    // Se tivermos um componente raiz, ele assume o controle total da tela
+    if (RootComponent) {
+        console.log(`[DynamicRenderer] Rendering RootComponent for module: ${module?.id}`);
+        return (
+            <motion.div 
+                initial={{ opacity: 0, scale: 0.98 }}
+                animate={{ opacity: 1, scale: 1 }}
+                className="w-full h-full"
+            >
+                <RootComponent module={module} />
+            </motion.div>
+        );
+    }
 
     if (!contracts || contracts.length === 0) {
         return (
             <div className="flex flex-col items-center justify-center p-20 text-white/20 border border-white/5 border-dashed rounded-[3rem]">
                 <AlertCircle size={48} className="mb-4 opacity-50" />
                 <p className="text-sm font-black uppercase tracking-widest">No Visual Contracts Defined</p>
+                {module && <p className="text-[10px] mt-2 opacity-30">Module ID: {module.id}</p>}
             </div>
         );
     }
