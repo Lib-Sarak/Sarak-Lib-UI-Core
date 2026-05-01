@@ -7,6 +7,9 @@ interface SarakChartProps {
     endpoint: string;
     label?: string;
     mapping?: Record<string, string>; // { value_key: "Label", date_key: "Label" }
+    role?: 'primary' | 'secondary' | 'neutral' | 'accent';
+    density?: 'compact' | 'standard' | 'spacious';
+    importance?: 'hero' | 'base' | 'subtle';
 }
 
 /**

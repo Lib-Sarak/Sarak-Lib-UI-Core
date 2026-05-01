@@ -75,6 +75,7 @@ export const SarakShell: React.FC<SarakShellProps> = (props) => {
                     setActiveModuleId={shell.setActiveModuleId}
                     groupedModules={shell.groupedModules}
                     setIsNavVisible={shell.setIsNavVisible}
+                    setIsSearchOpen={shell.setIsSearchOpen}
                     startResizing={shell.startResizing}
                 />
             )}

@@ -1,0 +1,10 @@
+declare module 'recharts';
+declare module 'echarts-for-react';
+declare module 'reactflow';
+declare module 'react-grid-layout';
+declare module 'react-syntax-highlighter';
+declare module 'react-dropzone';
+declare module 'react-markdown';
+declare module 'date-fns';
+declare module 'clsx';
+declare module 'tailwind-merge';

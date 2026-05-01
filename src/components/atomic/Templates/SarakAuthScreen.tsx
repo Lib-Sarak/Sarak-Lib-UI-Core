@@ -41,6 +41,9 @@ interface SarakAuthScreenProps {
     };
     onForgot?: () => void;
     onMasterLogin?: () => void;
+    role?: 'primary' | 'secondary' | 'neutral' | 'accent';
+    density?: 'compact' | 'standard' | 'spacious';
+    importance?: 'hero' | 'base' | 'subtle';
 }
 
 /**
@@ -296,7 +299,7 @@ export const SarakAuthScreen: React.FC<SarakAuthScreenProps> = ({
                                 {socialConfig.providers.map((p) => (
                                     <SocialButton 
                                         key={p.id} 
-                                        provider={p.id} 
+                                        provider={p.id as any} 
                                         variant={p.variant} 
                                         hideLabel={socialConfig.display === 'compact'}
                                         onClick={() => onSocialLogin?.(p.id)} 

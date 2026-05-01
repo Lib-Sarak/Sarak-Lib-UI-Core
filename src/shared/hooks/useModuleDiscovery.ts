@@ -23,14 +23,21 @@ export const useModuleDiscovery = (isEnabled: boolean = true) => {
         
         console.log(`[useModuleDiscovery] Sovereign Scan: ${all.length} modules found in Registry.`);
 
+        // PURIFICAÇÃO INDUSTRIAL (v10.0)
+        // Removemos módulos de demonstração/blueprint para evitar poluição visual
+        // O sistema deve ser focado em módulos de produção.
+        const DEMO_BLACKLIST = ['grid-system', 'blueprint-test', 'demo-ui', 'debug-module'];
+
         return all
-            .sort((a, b) => (b.priority || 0) - (a.priority || 0))
-            .map(mod => {
+            .filter((mod: any) => !DEMO_BLACKLIST.includes(mod.id))
+            .sort((a: any, b: any) => (b.priority || 0) - (a.priority || 0))
+            .map((mod: any) => {
                 // Mapeamento de Labels Amigáveis para módulos conhecidos
                 let label = mod.label;
                 let icon = mod.icon || 'Box';
-                let category = mod.category || 'Sistema';
+                let category = mod.category || (mod.id === 'mx-customization' ? 'Personalização' : 'Sistema');
 
+                if (mod.id === 'mx-customization') { icon = 'Palette'; }
                 if (mod.id === 'translator-google') { label = 'Tradutor'; icon = 'Languages'; category = 'Utilidades'; }
                 if (mod.id === 'llm-test-chat' || mod.id === 'chat') { label = 'Chat IA'; icon = 'MessageSquare'; category = 'IA'; }
                 if (mod.id === 'usage') { label = 'Uso & Métricas'; icon = 'Activity'; category = 'Sistema'; }

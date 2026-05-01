@@ -403,7 +403,7 @@ const DesignInjector: React.FC<{ design: any }> = ({ design: s }) => {
                 finalValueForInjection = value;
             } else if (key.endsWith('Color') || key === 'primaryColor') {
                 const level = key.replace('Color', '');
-                const paletteHex = paletteColors[level === 'primary' ? 'primary' : level];
+                const paletteHex = (paletteColors as any)[level === 'primary' ? 'primary' : level];
                 if (paletteHex) {
                     finalValueForInjection = paletteHex;
                 }
@@ -463,7 +463,7 @@ const DesignInjector: React.FC<{ design: any }> = ({ design: s }) => {
             // --- Multi-Palette Engine (v9.1) ---
             if (key === 'colorPalette' && activePalette) {
                 // When colorPalette changes, we force inject ALL colors from it
-                Object.entries(activePalette.colors).forEach(([level, hex]: [string, any]) => {
+                Object.entries(activePalette.colors as Record<string, string>).forEach(([level, hex]) => {
                     const levelKey = level === 'primary' ? 'primaryColor' : `${level}Color`;
                     const levelConfig = DESIGN_MANIFEST[levelKey];
                     
@@ -496,13 +496,14 @@ const DesignInjector: React.FC<{ design: any }> = ({ design: s }) => {
 
                 // Injeção especial de Fundo e Superfície (Sovereignty v9.1)
                 // Se a paleta definir tons específicos para o corpo ou superfície, aplicamos aqui.
-                if (activePalette.colors.body) {
-                    const t = computeColorVariants(activePalette.colors.body, '#0f172a');
+                const paletteColorsAny = activePalette.colors as any;
+                if (paletteColorsAny.body) {
+                    const t = computeColorVariants(paletteColorsAny.body, '#0f172a');
                     root.style.setProperty('--theme-body', t.main);
                     root.style.setProperty('--theme-body-rgb', t.rgb);
                 }
-                if (activePalette.colors.surface) {
-                    const t = computeColorVariants(activePalette.colors.surface, '#1e293b');
+                if (paletteColorsAny.surface) {
+                    const t = computeColorVariants(paletteColorsAny.surface, '#1e293b');
                     root.style.setProperty('--theme-surface', t.main);
                     root.style.setProperty('--theme-surface-rgb', t.rgb);
                 }
@@ -590,14 +591,30 @@ export const SarakUIProvider: React.FC<SarakUIProviderProps> = ({
         configRef.current = initialPropsConfig;
     }, [options, initialPropsConfig]);
 
-    // Intelligent Initialization with Absolute Sovereignty (v9.5)
+    // Intelligent Initialization with Absolute Sovereignty (v10.0)
     const [design, setDesign] = useState(() => {
         const opt = optionsRef.current;
+        
+        // SOBERANIA INDUSTRIAL: O padrão agora é o Industrial Dark (Sarak Sovereign)
+        // Isso elimina o modo "Blueprint/Grid" no primeiro acesso.
+        const DEFAULT_INDUSTRIAL_SEED = {
+            mode: 'dark',
+            colorPalette: 'industrial-night',
+            primaryColor: '#00f2ff', // Neon Sarak
+            layout: 'sidebar',
+            navigationStyle: 'sidebar',
+            borderRadius: 12,
+            glassOpacity: 0.4,
+            glassBlur: 10,
+            texture: 'dots',
+            fontScale: 'm'
+        };
+
         const defaultThemeId = opt?.theme?.defaultTheme || 'futurist';
         const defaultTheme = (BASE_PRESETS as any)[defaultThemeId] || BASE_PRESETS.futurist;
         
-        // Semente inicial
-        const seedConfig = { ...defaultTheme, ...configRef.current };
+        // Semente inicial: Merge entre o hardcoded industrial e o que vier via props
+        const seedConfig = { ...DEFAULT_INDUSTRIAL_SEED, ...defaultTheme, ...configRef.current };
 
         if (typeof window === 'undefined') return seedConfig;
         
@@ -606,19 +623,15 @@ export const SarakUIProvider: React.FC<SarakUIProviderProps> = ({
             const saved = localStorage.getItem(key);
             if (saved) {
                 const parsed = JSON.parse(saved);
-                // SOBERANIA ABSOLUTA: O salvo pelo usuário ganha de TUDO.
-                // Filtramos campos nulos para evitar corrupção.
                 const validParsed = Object.fromEntries(
                     Object.entries(parsed).filter(([_, v]) => v !== null && v !== undefined)
                 );
                 
-                console.log("[Sarak:UI] Design carregado do localStorage com sucesso.");
+                console.log("[Sarak:UI] Design carregado do localStorage.");
                 return { ...seedConfig, ...validParsed };
-            } else {
-                console.log("[Sarak:UI] Nenhum design salvo encontrado. Usando semente inicial.");
             }
         } catch (e) {
-            console.error("[Sarak:UI] Erro ao carregar design do localStorage:", e);
+            console.error("[Sarak:UI] Erro ao carregar design:", e);
         }
         return seedConfig;
     });
@@ -742,13 +755,14 @@ export const SarakUIProvider: React.FC<SarakUIProviderProps> = ({
         }
 
         // 3. Garantir que o módulo de personalização existe no registro com prioridade máxima
+        // Isso garante que ele apareça na aba correta e seja acessível nativamente.
         registerSarakModule({
             id: 'mx-customization',
-            label: 'Personalização',
+            label: 'Design Engine',
             icon: 'Palette',
-            category: 'Sarak Core',
-            priority: 1000,
-            component: ThemeCustomizationTab // Injeção direta para evitar falha de resolução
+            category: 'Personalização',
+            priority: 9999, // Absolute priority
+            component: ThemeCustomizationTab 
         });
 
         const updateModules = () => {
@@ -761,7 +775,10 @@ export const SarakUIProvider: React.FC<SarakUIProviderProps> = ({
         setIsHydrated(true);
 
         // Subscribe to future registrations (Passive Discovery)
-        return subscribeToRegistry(updateModules);
+        const unsubscribe = subscribeToRegistry(updateModules);
+        return () => {
+            unsubscribe();
+        };
     }, [options?.manifest]);
 
     // Advanced Fonts Injection

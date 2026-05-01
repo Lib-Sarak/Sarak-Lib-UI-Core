@@ -19,6 +19,7 @@ interface SarakTableProps {
     mapping?: Record<string, string>; // { key_in_json: "Label na Coluna" }
     role?: 'primary' | 'secondary' | 'neutral' | 'accent';
     density?: 'compact' | 'standard' | 'spacious';
+    importance?: 'hero' | 'base' | 'subtle';
 }
 
 /**
@@ -59,7 +60,7 @@ export const SarakTable: React.FC<SarakTableProps> = ({ endpoint, label, mapping
 
     // Gerar colunas dinamicamente caso não exista um mapping
     const columns = mapping ? Object.keys(mapping) : (data.length > 0 ? Object.keys(data[0]).filter(k => !k.startsWith('_')) : []);
-    const columnLabels = mapping || columns.reduce((acc, col) => ({ ...acc, [col]: col.charAt(0).toUpperCase() + col.slice(1).replace(/_/g, ' ') }), {});
+    const columnLabels = mapping || columns.reduce((acc: Record<string, string>, col) => ({ ...acc, [col]: col.charAt(0).toUpperCase() + col.slice(1).replace(/_/g, ' ') }), {} as Record<string, string>);
 
     const filteredData = data.filter(item => 
         Object.values(item).some(val => 

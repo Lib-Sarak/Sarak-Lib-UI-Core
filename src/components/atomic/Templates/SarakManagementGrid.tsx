@@ -37,6 +37,9 @@ interface SarakManagementGridProps {
         action: string;
     }[];
     formMapping?: Record<string, string>;
+    role?: 'primary' | 'secondary' | 'neutral' | 'accent';
+    density?: 'compact' | 'standard' | 'spacious';
+    importance?: 'hero' | 'base' | 'subtle';
 }
 
 export const SarakManagementGrid: React.FC<SarakManagementGridProps> = ({ 
@@ -71,7 +74,7 @@ export const SarakManagementGrid: React.FC<SarakManagementGridProps> = ({
         return path.split('.').reduce((acc, part) => acc && acc[part], obj);
     };
 
-    const groups = data.reduce((acc, item) => {
+    const groups = data.reduce((acc, item: any) => {
         const key = getVal(item, groupBy) || 'outros';
         if (!acc[key]) acc[key] = [];
         acc[key].push(item);
@@ -174,7 +177,7 @@ export const SarakManagementGrid: React.FC<SarakManagementGridProps> = ({
                         <div key={i} className="bg-theme-card border-theme animate-pulse rounded-theme" style={{ height: 'calc(var(--theme-pad) * 16)' }} />
                     ))
                 ) : (
-                    Object.entries(groups).map(([groupName, items]) => {
+                    (Object.entries(groups) as [string, any[]][]).map(([groupName, items]) => {
                         const isConfigured = items.length > 0;
                         return (
                             <motion.div
@@ -210,11 +213,11 @@ export const SarakManagementGrid: React.FC<SarakManagementGridProps> = ({
 
                                 <div className="flex-1 max-h-[340px] overflow-y-auto custom-scrollbar flex flex-col" style={{ padding: 'var(--theme-pad)', gap: 'calc(var(--theme-gap) / 2)' }}>
                                     {isConfigured ? (
-                                        items.map(item => {
+                                        items.map((item: any) => {
                                             const itemId = getVal(item, mapping.id);
                                             const isActive = getVal(item, mapping.isActive);
                                             const status = getVal(item, mapping.status);
-                                            const errorMsg = getVal(item, mapping.error);
+                                            const errorMsg = getVal(item, mapping.error || '');
                                             return (
                                                 <div 
                                                     key={itemId} 
@@ -227,7 +230,7 @@ export const SarakManagementGrid: React.FC<SarakManagementGridProps> = ({
                                                         <div className="flex flex-col truncate">
                                                             <span className="text-2xs font-black uppercase tracking-widest" style={{ color: 'var(--theme-primary)' }}>{getVal(item, mapping.title)}</span>
                                                             <span className="text-2xs font-mono text-white/30 truncate max-w-[140px]">
-                                                                {getVal(item, mapping.description) || '************'}
+                                                                {getVal(item, mapping.description || '') || '************'}
                                                             </span>
                                                         </div>
                                                         <button 

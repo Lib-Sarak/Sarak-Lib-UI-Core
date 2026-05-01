@@ -28,6 +28,9 @@ interface SarakCatalogGridProps {
     onSync?: () => void;
     renderCard?: (item: CatalogItem) => React.ReactNode;
     emptyMessage?: string;
+    role?: 'primary' | 'secondary' | 'neutral' | 'accent';
+    density?: 'compact' | 'standard' | 'spacious';
+    importance?: 'hero' | 'base' | 'subtle';
 }
 
 /**

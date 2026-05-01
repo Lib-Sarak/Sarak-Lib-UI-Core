@@ -13,6 +13,9 @@ interface SarakStatsProps {
     endpoint: string;
     label?: string;
     mapping?: Record<string, string>; // { key_in_json: "Label do Contador" }
+    role?: 'primary' | 'secondary' | 'neutral' | 'accent';
+    density?: 'compact' | 'standard' | 'spacious';
+    importance?: 'hero' | 'base' | 'subtle';
 }
 
 /**

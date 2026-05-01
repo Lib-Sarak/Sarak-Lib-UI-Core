@@ -123,6 +123,20 @@ export const COLOR_PALETTES = [
             warning: '#eab308',
             error: '#ef4444'
         }
+    },
+    {
+        id: 'industrial-night',
+        name: 'Industrial Night (v10)',
+        colors: { 
+            primary: '#00f2ff',   // Sarak Neon
+            secondary: '#7000ff', // Purple Tech
+            accent: '#ff0055',    // Red Alert
+            surface: '#0a0a0c',   // Deep Carbon
+            body: '#020203',      // Absolute Void
+            success: '#00ff88',
+            warning: '#ffcc00',
+            error: '#ff3344'
+        }
     }
 ];
 

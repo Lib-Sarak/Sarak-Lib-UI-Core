@@ -107,7 +107,7 @@ export const DynamicRenderer: React.FC<DynamicRendererProps> = ({ contracts, mod
 
                 switch (type) {
                     case 'TABLE':
-                        return <SarakTable key={id} endpoint={resolvedEndpoint} label={label} mapping={mapping} role={contract.role} density={contract.density} />;
+                        return <SarakTable key={id} endpoint={resolvedEndpoint} label={label} mapping={mapping} role={contract.role} density={contract.density} /> as any;
                     
                     case 'CARD_GRID':
                         return <SarakCardGrid key={id} endpoint={resolvedEndpoint} label={label} mapping={mapping as any} filters={contract.filters} importance={contract.importance} role={contract.role} />;
@@ -131,10 +131,10 @@ export const DynamicRenderer: React.FC<DynamicRendererProps> = ({ contracts, mod
                         return <SarakStats key={id} endpoint={resolvedEndpoint} label={label} mapping={mapping} importance={contract.importance} />;
 
                     case 'CHART':
-                        return <SarakChart key={id} endpoint={resolvedEndpoint} label={label} mapping={mapping} role={contract.role} />;
+                        return <SarakChart key={id} endpoint={resolvedEndpoint} label={label} mapping={mapping} role={contract.role} /> as any;
 
                     case 'FORM':
-                        return <SarakForm key={id} endpoint={resolvedEndpoint} label={label} mapping={mapping as any} actions={contract.actions as any} density={contract.density} />;
+                        return <SarakForm key={id} endpoint={resolvedEndpoint} label={label} mapping={mapping as any} actions={contract.actions as any} density={contract.density} /> as any;
 
                     
                     case 'CHAT_INTERFACE':

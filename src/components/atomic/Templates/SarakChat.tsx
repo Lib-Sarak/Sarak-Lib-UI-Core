@@ -8,6 +8,9 @@ interface SarakChatProps {
   endpoint: string;
   modelsEndpoint?: string;
   label?: string;
+  role?: 'primary' | 'secondary' | 'neutral' | 'accent';
+  density?: 'compact' | 'standard' | 'spacious';
+  importance?: 'hero' | 'base' | 'subtle';
 }
 
 export const SarakChat: React.FC<SarakChatProps> = ({ 

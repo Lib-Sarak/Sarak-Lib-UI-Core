@@ -15,6 +15,9 @@ interface SarakFormProps {
         method: 'POST' | 'PATCH' | 'DELETE';
     }>;
     onSuccess?: () => void;
+    role?: 'primary' | 'secondary' | 'neutral' | 'accent';
+    density?: 'compact' | 'standard' | 'spacious';
+    importance?: 'hero' | 'base' | 'subtle';
 }
 
 /**

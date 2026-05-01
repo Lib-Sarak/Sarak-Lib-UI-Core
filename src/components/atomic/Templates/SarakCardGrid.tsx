@@ -39,6 +39,9 @@ interface SarakCardGridProps {
         context?: string; // v6.3
     };
     filters?: FilterConfig[]; // v6.4
+    role?: 'primary' | 'secondary' | 'neutral' | 'accent';
+    density?: 'compact' | 'standard' | 'spacious';
+    importance?: 'hero' | 'base' | 'subtle';
 }
 
 /**
