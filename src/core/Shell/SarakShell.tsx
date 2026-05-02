@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { Component, ErrorInfo, ReactNode } from 'react';
 import { useSarakShell } from './useSarakShell';
 import { SidebarNav } from './Components/SidebarNav';
 import { TopbarNav } from './Components/TopbarNav';
@@ -8,6 +8,42 @@ import SarakSearch from '../../components/atomic/Inputs/SarakSearch';
 import { SarakShellProps } from './Components/types';
 
 import { useSarakUI } from '../Provider/SarakUIProvider';
+
+interface Props {
+  children?: ReactNode;
+  fallback?: ReactNode;
+}
+
+interface State {
+  hasError: boolean;
+}
+
+class ErrorBoundary extends Component<Props, State> {
+  public state: State = {
+    hasError: false
+  };
+
+  public static getDerivedStateFromError(_: Error): State {
+    return { hasError: true };
+  }
+
+  public componentDidCatch(error: Error, errorInfo: ErrorInfo) {
+    console.error("[Sarak:Critical] Falha no Módulo:", error, errorInfo);
+  }
+
+  public render() {
+    if (this.state.hasError) {
+      return this.props.fallback || (
+        <div className="p-8 text-red-500 bg-red-900/20 border border-red-500/50 rounded-lg">
+          <h2 className="text-xl font-bold mb-2">Falha Industrial de Renderização</h2>
+          <p>O módulo encontrou um erro crítico. Tente recarregar a página.</p>
+        </div>
+      );
+    }
+
+    return this.props.children;
+  }
+}
 
 /**
  * Sarak Shell Core — Interface Engine (Refactored v7.2.5)
