@@ -1,3 +1,7 @@
+@import "tailwindcss";
+
+@source "../**/*.{ts,tsx}";
+
 /* =========================================
    SARAK CORE ENGINE - VISUAL MOTOR (v8.5)
    Absolute Sovereignty & Purity Compatible

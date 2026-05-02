@@ -1,5 +1,3 @@
-console.log("%c [Sarak:Core] Engine v10.1.10 (DIAGNOSTIC FALLBACK) Carregada com Sucesso! ", "background: #06b6d4; color: #fff; font-weight: bold; padding: 4px; border-radius: 4px;");
-
 import React, { ReactNode, useEffect, useState, useMemo, useCallback, useContext } from 'react';
 import '../../styles/sarak-base.css';
 import { LAYOUTS, BASE_PRESETS } from '../../constants/theme-models';
@@ -26,15 +24,15 @@ export const UIContext = React.createContext<SarakUIContextType | undefined>(und
 export const useSarakUI = () => {
     const context = useContext(UIContext);
     if (!context) {
-        return { 
-            discoveryEndpoints: [], 
-            design: {}, 
-            registeredModules: [], 
-            layouts: [], 
+        return {
+            discoveryEndpoints: [],
+            design: {},
+            registeredModules: [],
+            layouts: [],
             isHydrated: false,
             // Fallback to avoid crashes in SSR or contexts without provider
-            applyConfig: () => {},
-            applyFullConfig: () => {}
+            applyConfig: () => { },
+            applyFullConfig: () => { }
         } as any;
     }
     // Returns context merged with design for API compatibility
@@ -81,10 +79,10 @@ interface SarakUIProviderProps {
 const computeColorVariants = (v: string, fallback: string) => {
     const val = v || fallback;
     if (!val || typeof val !== 'string' || val.length < 4) {
-        return { 
-            main: fallback, 
-            rgb: '0,0,0', 
-            bg: 'rgba(0,0,0,0.1)', 
+        return {
+            main: fallback,
+            rgb: '0,0,0',
+            bg: 'rgba(0,0,0,0.1)',
             border: 'rgba(0,0,0,0.2)',
             hover: fallback,
             active: fallback,
@@ -92,15 +90,15 @@ const computeColorVariants = (v: string, fallback: string) => {
             light: fallback
         };
     }
-    
+
     const hex = val.replace('#', '');
     const r = parseInt(hex.substring(0, 2), 16) || 0;
     const g = parseInt(hex.substring(2, 4), 16) || 0;
     const b = parseInt(hex.substring(4, 6), 16) || 0;
-    
+
     const adjust = (c: number, f: number) => Math.round(Math.min(255, Math.max(0, c * f)));
     const toH = (n: number) => n.toString(16).padStart(2, '0');
-    
+
     return {
         main: val,
         rgb: `${r}, ${g}, ${b}`,
@@ -128,22 +126,22 @@ export const DESIGN_MANIFEST: Record<string, {
         attr: 'data-palette',
         transform: (v: string) => {
             // Se v for um ID de preset, retornamos o objeto de cores completo para o injetor
-            return v; 
+            return v;
         }
     },
     primaryColor: {
         vars: ['--primary-color', '--theme-primary', '--sarak-primary-color'],
         transform: (v: string) => computeColorVariants(v, '#3b82f6')
     },
-    secondaryColor: { 
+    secondaryColor: {
         vars: ['--theme-secondary', '--sarak-secondary-color'],
         transform: (v: string) => computeColorVariants(v, '#6366f1')
     },
-    accentColor: { 
+    accentColor: {
         vars: ['--theme-accent', '--sarak-accent-color'],
         transform: (v: string) => computeColorVariants(v, '#f43f5e')
     },
-    surfaceColor: { 
+    surfaceColor: {
         vars: ['--theme-surface', '--sarak-surface-color'],
         transform: (v: string) => computeColorVariants(v, '#1e293b')
     },
@@ -204,7 +202,7 @@ export const DESIGN_MANIFEST: Record<string, {
     isSplitViewEnabled: { attr: 'data-split-view' },
     chartStyle: { attr: 'data-chart-style' },
     chartPalette: { vars: ['--chart-palette'], transform: (v) => Array.isArray(v) ? v.join(',') : v },
-    cardSpotlight: { 
+    cardSpotlight: {
         vars: ['--spotlight-opacity'],
         transform: (v: any) => parseFloat(v) || 0
     },
@@ -217,8 +215,8 @@ export const DESIGN_MANIFEST: Record<string, {
     performanceMode: { attr: 'data-perf-mode' },
 
     // Engine Specialized Tokens v7.5
-    fontScale: { 
-        vars: ['--sarak-font-scale', '--sarak-font-size', '--font-size-factor', '--theme-font-size-base'], 
+    fontScale: {
+        vars: ['--sarak-font-scale', '--sarak-font-size', '--font-size-factor', '--theme-font-size-base'],
         attr: 'data-font-scale',
         transform: (v: string) => {
             const scales: any = {
@@ -272,8 +270,8 @@ export const DESIGN_MANIFEST: Record<string, {
     useTabularNums: { attr: 'data-tabular-nums', vars: ['--sarak-tabular-nums'], transform: (v) => v ? 'tabular-nums' : 'normal' },
     hapticIntensity: { vars: ['--haptic-intensity', '--sarak-haptic-scale'], transform: (v) => 1 - (parseFloat(v) || 0.02) },
     scrollbarStyle: { vars: ['--sarak-scrollbar-width'], unit: 'px', attr: 'data-scrollbar-style' },
-    fluidScaling: { 
-        vars: ['--sarak-fluid-scale'], 
+    fluidScaling: {
+        vars: ['--sarak-fluid-scale'],
         transform: (v) => {
             const factor = parseFloat(v) || 1.0;
             return {
@@ -299,7 +297,7 @@ const BEZIER_CURVES = {
 const validateDesign = (design: any) => {
     if (!design) return {};
     const s: any = {};
-    
+
     // 1. Integrity Sanitization (Removes Manifest garbage)
     Object.entries(design).forEach(([k, v]) => {
         if (v !== null && v !== undefined && v !== '' && typeof v !== 'object') {
@@ -321,11 +319,11 @@ const validateDesign = (design: any) => {
     s.glassBlur = clamp(s.glassBlur, 0, 60, 10);
     s.glassOpacity = clamp(s.glassOpacity, 0, 1, 0.7);
     s.borderRadius = clamp(s.borderRadius, 0, 60, 12);
-    
+
     // 3. Structural Fallbacks (v9.0 Resilience)
     if (!s.navigationStyle) s.navigationStyle = 'sidebar';
     if (!s.sidebarWidth) s.sidebarWidth = 240;
-    
+
     s.schema_version = "8.5"; // Upgrade to v8.5 (Sovereign)
 
     return s;
@@ -338,7 +336,7 @@ const DesignInjector: React.FC<{ design: any }> = ({ design: s }) => {
         let rafId: number;
         const handleMouseMove = (e: MouseEvent) => {
             if (rafId) cancelAnimationFrame(rafId);
-            
+
             rafId = requestAnimationFrame(() => {
                 const x = (e.clientX / window.innerWidth) * 100;
                 const y = (e.clientY / window.innerHeight) * 100;
@@ -412,7 +410,7 @@ const DesignInjector: React.FC<{ design: any }> = ({ design: s }) => {
             }
 
             let finalValue = finalValueForInjection?.toString() || '';
-            let finalAttrValue = finalValue; 
+            let finalAttrValue = finalValue;
             const extraVars: Record<string, string> = {};
 
             if (config.transform) {
@@ -421,7 +419,7 @@ const DesignInjector: React.FC<{ design: any }> = ({ design: s }) => {
                     if (key.endsWith('Color') || key === 'primaryColor') {
                         const level = key.replace('Color', '');
                         const prefix = `--theme-${level === 'primary' ? 'primary' : level}`;
-                        
+
                         finalValue = t.main;
                         finalAttrValue = t.main;
                         extraVars[`${prefix}-rgb`] = t.rgb;
@@ -468,7 +466,7 @@ const DesignInjector: React.FC<{ design: any }> = ({ design: s }) => {
                 Object.entries(activePalette.colors as Record<string, string>).forEach(([level, hex]) => {
                     const levelKey = level === 'primary' ? 'primaryColor' : `${level}Color`;
                     const levelConfig = DESIGN_MANIFEST[levelKey];
-                    
+
                     // SOBERANIA DE COR (v9.5): Se o usuário definiu uma cor primária manual,
                     // a paleta NÃO pode sobrescrevê-la.
                     if (level === 'primary' && s.primaryColor) return;
@@ -476,10 +474,10 @@ const DesignInjector: React.FC<{ design: any }> = ({ design: s }) => {
                     if (levelConfig && levelConfig.vars) {
                         const t = computeColorVariants(hex, '#000');
                         const prefix = `--theme-${level}`;
-                        
+
                         // Inject main variable
                         levelConfig.vars.forEach(v => root.style.setProperty(v, t.main));
-                        
+
                         // Inject all state variables
                         root.style.setProperty(`${prefix}-rgb`, t.rgb);
                         root.style.setProperty(`${prefix}-bg`, t.bg);
@@ -552,7 +550,7 @@ const DesignInjector: React.FC<{ design: any }> = ({ design: s }) => {
             root.style.setProperty('--theme-primary-rgb', t.rgb);
             root.style.setProperty('--theme-accent', t.main);
             root.style.setProperty('--theme-primary-hover', t.hover);
-            
+
             // Variáveis de compatibilidade legada
             root.style.setProperty('--primary-color', t.main);
         }
@@ -586,7 +584,7 @@ export const SarakUIProvider: React.FC<SarakUIProviderProps> = ({
     // disparem re-renders ou resets de estado dentro da Lib.
     const optionsRef = React.useRef(options);
     const configRef = React.useRef(initialPropsConfig);
-    
+
     // Sincronizamos os refs APENAS se houver uma mudança real (opcional, por enquanto fixamos no mount)
     useEffect(() => {
         optionsRef.current = options;
@@ -596,7 +594,7 @@ export const SarakUIProvider: React.FC<SarakUIProviderProps> = ({
     // Intelligent Initialization with Absolute Sovereignty (v10.0)
     const [design, setDesign] = useState(() => {
         const opt = optionsRef.current;
-        
+
         // SOBERANIA INDUSTRIAL: O padrão agora é o Industrial Dark (Sarak Sovereign)
         // Isso elimina o modo "Blueprint/Grid" no primeiro acesso.
         const DEFAULT_INDUSTRIAL_SEED = {
@@ -614,35 +612,26 @@ export const SarakUIProvider: React.FC<SarakUIProviderProps> = ({
 
         const defaultThemeId = opt?.theme?.defaultTheme || 'futurist';
         const defaultTheme = (BASE_PRESETS as any)[defaultThemeId] || BASE_PRESETS.futurist;
-        
+
         // Semente inicial: Merge entre o hardcoded industrial e o que vier via props
         const seedConfig = { ...DEFAULT_INDUSTRIAL_SEED, ...defaultTheme, ...configRef.current };
 
         if (typeof window === 'undefined') return seedConfig;
-        
+
         try {
             const key = opt?.persistence?.storageKey || DEFAULT_STORAGE_KEY;
             const saved = localStorage.getItem(key);
             if (saved) {
                 const parsed = JSON.parse(saved);
-                
-                // Validação rigorosa: Precisamos de pelo menos o modo e o estilo de navegação
-                if (!parsed.mode || !parsed.navigationStyle) {
-                    console.warn("[Sarak:UI] Design corrompido detectado no storage. Resetando para Industrial.");
-                    localStorage.removeItem(key); // Limpa o lixo
-                    return seedConfig;
-                }
-
-                // Filtramos campos nulos ou indefinidos
                 const validParsed = Object.fromEntries(
-                    Object.entries(parsed).filter(([_, v]) => v !== null && v !== undefined && v !== "")
+                    Object.entries(parsed).filter(([_, v]) => v !== null && v !== undefined)
                 );
-                
-                console.log("[Sarak:UI] Design industrial hidratado com sucesso.");
+
+                console.log("[Sarak:UI] Design carregado do localStorage.");
                 return { ...seedConfig, ...validParsed };
             }
         } catch (e) {
-            console.error("[Sarak:UI] Falha catastrófica na hidratação do design:", e);
+            console.error("[Sarak:UI] Erro ao carregar design:", e);
         }
         return seedConfig;
     });
@@ -667,7 +656,7 @@ export const SarakUIProvider: React.FC<SarakUIProviderProps> = ({
 
         const loadInitialDesign = async () => {
             const opt = optionsRef.current;
-            
+
             // Priority 1: Custom onLoad callback
             if (opt?.persistence?.onLoad) {
                 try {
@@ -716,17 +705,17 @@ export const SarakUIProvider: React.FC<SarakUIProviderProps> = ({
             try {
                 // Local sync (Sovereign)
                 localStorage.setItem(storageKey, JSON.stringify(design));
-                
+
                 // Priority 1: Custom onSave callback
                 if (opt?.persistence?.onSave) {
                     await opt.persistence.onSave(design);
-                } 
+                }
                 // Priority 2: Remote Persistence (Only if explicitly enabled via designPath)
                 else if (activeToken && opt?.endpoints?.designPath) {
                     const designPath = opt.endpoints.designPath;
                     await fetch(`${uiBaseUrl}${designPath}`, {
                         method: 'POST',
-                        headers: { 
+                        headers: {
                             'Authorization': `Bearer ${activeToken}`,
                             'Content-Type': 'application/json'
                         },
@@ -773,7 +762,7 @@ export const SarakUIProvider: React.FC<SarakUIProviderProps> = ({
             icon: 'Palette',
             category: 'Personalização',
             priority: 9999, // Absolute priority
-            component: ThemeCustomizationTab 
+            component: ThemeCustomizationTab
         });
 
         const updateModules = () => {
@@ -795,7 +784,7 @@ export const SarakUIProvider: React.FC<SarakUIProviderProps> = ({
     // Advanced Fonts Injection
     useEffect(() => {
         if (typeof document === 'undefined') return;
-        
+
         // Font Preconnect & DNS Prefetch (CLS Optimization)
         const domains = ['https://fonts.googleapis.com', 'https://fonts.gstatic.com'];
         domains.forEach(domain => {
@@ -813,52 +802,6 @@ export const SarakUIProvider: React.FC<SarakUIProviderProps> = ({
         document.head.prepend(style);
     }, []);
 
-    // --- SOVEREIGN INDUSTRIAL INJECTION (v10.0) ---
-    // Automates DOM attributes and core dimensions to prevent flattened layouts in Host systems.
-    useEffect(() => {
-        if (typeof document === 'undefined') return;
-        
-        const body = document.body;
-        const root = document.getElementById('root') || document.documentElement;
-        
-        // 1. Core Attributes
-        body.setAttribute('data-sarak-layout', 'sovereign');
-        body.setAttribute('data-sarak-engine', 'industrial');
-        root.setAttribute('data-sarak-layout', 'sovereign');
-        
-        // 2. Emergency Layout Fix (Prevents DOM width 0)
-        const styleId = 'sarak-industrial-vaccine';
-        if (!document.getElementById(styleId)) {
-            const style = document.createElement('style');
-            style.id = styleId;
-            style.textContent = `
-                html, body, #root { 
-                    height: 100% !important; 
-                    width: 100% !important; 
-                    margin: 0; 
-                    padding: 0; 
-                    overflow: hidden;
-                    display: flex;
-                    flex-direction: column;
-                }
-                [data-sarak-layout="sovereign"] {
-                    background-color: #0f172a; /* Slate 900 */
-                }
-            `;
-            document.head.appendChild(style);
-        }
-
-        // 3. Emergency CSS Variables (Bridge for slow CSS loads)
-        const rootStyle = document.documentElement.style;
-        if (!rootStyle.getPropertyValue('--theme-primary')) {
-            rootStyle.setProperty('--theme-primary', '#00f2ff');
-            rootStyle.setProperty('--theme-body', '#0f172a');
-            rootStyle.setProperty('--theme-surface', '#1e293b');
-        }
-        
-        console.log("[Sarak:UI] Industrial DNA Injected into DOM.");
-    }, []);
-
     const applyConfig = useCallback((partial: any) => {
         setDesign((prev: any) => {
             const next = validateDesign({ ...prev, ...partial });
@@ -873,13 +816,13 @@ export const SarakUIProvider: React.FC<SarakUIProviderProps> = ({
     const applyFullConfig = useCallback((config: any) => {
         const next = validateDesign(config);
         console.log("[Sarak:UI] Aplicando configuração completa ao sistema:", next);
-        
+
         // Persistência Imediata e Atômica (v9.5 Patch)
         if (typeof window !== 'undefined') {
             localStorage.setItem(storageKey, JSON.stringify(next));
             console.log("[Sarak:UI] Persistência síncrona concluída no localStorage.");
         }
-        
+
         setDesign(next);
     }, [storageKey]);
 

@@ -1,50 +1,48 @@
 {
     "name": "@sarak/lib-ui-core",
-    "version": "2.1.10",
+    "version": "2.1.5",
     "description": "Sarak Design System and UI Engine [Pre-compiled]",
     "type": "module",
-    "main": "./dist/index.cjs",
-    "module": "./dist/index.js",
-    "types": "./dist/index.d.ts",
+    "main": "./src/index.ts",
+    "module": "./src/index.ts",
+    "types": "./src/index.ts",
     "scripts": {
         "build:css": "npx @tailwindcss/cli -i ./src/styles/sarak-base.css -o ./dist/sarak.css --minify",
-        "build:js": "tsup src/index.ts --format esm,cjs --dts --clean --minify --external react,react-dom",
+        "build:js": "tsup src/index.ts --format esm,cjs --dts --clean --minify --external react,react-dom,framer-motion,lucide-react,recharts,echarts-for-react,echarts,reactflow,react-grid-layout,react-markdown,react-syntax-highlighter,react-dropzone,clsx,tailwind-merge,date-fns",
         "build": "npm run build:css && npm run build:js",
         "prepublishOnly": "npm run build"
     },
     "exports": {
         ".": {
-            "import": "./dist/index.js",
-            "require": "./dist/index.cjs",
-            "types": "./dist/index.d.ts"
+            "import": "./src/index.ts",
+            "types": "./src/index.ts"
         },
-        "./sarak.css": "./dist/index.css",
+        "./sarak.css": "./dist/sarak.css",
         "./sarak-base.css": {
             "style": "./src/styles/sarak-base.css",
             "import": "./src/styles/sarak-base.css",
             "default": "./src/styles/sarak-base.css"
         }
     },
-    "dependencies": {
-        "axios": "^1.6.0",
-        "clsx": "^2.1.0",
-        "date-fns": "^3.3.0",
-        "echarts": "^5.5.0",
-        "echarts-for-react": "^3.0.2",
-        "framer-motion": "^11.0.0",
-        "lucide-react": "^0.284.0",
-        "react-dropzone": "^14.2.3",
-        "react-grid-layout": "^1.4.4",
-        "react-markdown": "^9.0.1",
-        "react-syntax-highlighter": "^15.5.0",
-        "reactflow": "^11.10.1",
-        "recharts": "^2.12.2",
-        "tailwind-merge": "^2.2.1",
-        "tailwindcss": "^4.0.0"
-    },
+    "dependencies": {},
     "peerDependencies": {
+        "axios": "^1.6.0",
+        "framer-motion": ">=11.0.0",
+        "lucide-react": ">=0.284.0",
         "react": ">=18.0.0",
-        "react-dom": ">=18.0.0"
+        "react-dom": ">=18.0.0",
+        "tailwindcss": ">=4.0.0",
+        "recharts": ">=2.12.0",
+        "echarts-for-react": ">=3.0.0",
+        "echarts": ">=5.5.0",
+        "reactflow": ">=11.10.0",
+        "react-grid-layout": ">=1.4.0",
+        "react-markdown": ">=9.0.0",
+        "react-syntax-highlighter": ">=15.5.0",
+        "react-dropzone": ">=14.2.0",
+        "clsx": ">=2.1.0",
+        "tailwind-merge": ">=2.2.0",
+        "date-fns": ">=3.3.0"
     },
     "devDependencies": {
         "@tailwindcss/cli": "^4.2.2",
@@ -72,4 +70,3 @@
         "typescript": "^5.0.0"
     }
 }
-
