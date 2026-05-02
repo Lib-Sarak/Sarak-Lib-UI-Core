@@ -18,7 +18,7 @@
             "require": "./dist/index.cjs",
             "types": "./dist/index.d.ts"
         },
-        "./sarak.css": "./dist/sarak.css",
+        "./sarak.css": "./dist/index.css",
         "./sarak-base.css": {
             "style": "./src/styles/sarak-base.css",
             "import": "./src/styles/sarak-base.css",
