@@ -353,6 +353,13 @@ const DesignInjector: React.FC<{ design: any }> = ({ design: s }) => {
         };
     }, []);
 
+    // Sincronização do Título da Aba (Branding & Identidade)
+    useEffect(() => {
+        if (s?.systemName && typeof document !== 'undefined') {
+            document.title = s.systemName;
+        }
+    }, [s?.systemName]);
+
     const prevDesignRef = React.useRef<any>(null);
 
     useEffect(() => {

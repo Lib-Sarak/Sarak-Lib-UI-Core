@@ -9,7 +9,7 @@
     "scripts": {
         "build:css": "npx @tailwindcss/cli -i ./src/styles/sarak-base.css -o ./dist/sarak.css --minify",
         "build:js": "tsup src/index.ts --format esm,cjs --dts --clean --minify --external react,react-dom,framer-motion,lucide-react,recharts,echarts-for-react,echarts,reactflow,react-grid-layout,react-markdown,react-syntax-highlighter,react-dropzone,clsx,tailwind-merge,date-fns",
-        "build": "npm run build:css && npm run build:js",
+        "build": "npm run build:js && npm run build:css",
         "prepublishOnly": "npm run build"
     },
     "exports": {
