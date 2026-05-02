@@ -42,6 +42,59 @@ export const VisualsSection: React.FC<VisualsSectionProps> = ({ draft, updateDra
                     </div>
                 </div>
 
+                {/* --- MULTI-TONE STRATEGY (v10.0) --- */}
+                <div className="mb-6 space-y-4 pt-4 border-t border-white/5">
+                    <span className="text-2xs font-black uppercase tracking-widest text-white/40 block mb-2">Profundidade Cromática</span>
+                    <div className="grid grid-cols-3 gap-1 p-1 bg-black/20 rounded-xl border border-white/5">
+                        {[1, 2, 3].map(level => (
+                            <button key={level} onClick={() => updateDraft('colorDepth', level)} className={`py-2 rounded-lg text-3xs font-black uppercase transition-all ${draft.colorDepth === level ? 'bg-[var(--theme-primary)] text-white shadow-lg' : 'text-white/20 hover:text-white/40'}`}>
+                                {level === 1 ? 'Mono' : level === 2 ? 'Dual' : 'Tri'} Tone
+                            </button>
+                        ))}
+                    </div>
+                </div>
+
+                <div className="mb-6 space-y-4">
+                    <span className="text-2xs font-black uppercase tracking-widest text-white/40 block mb-2">Variação de Mapeamento</span>
+                    <div className="grid grid-cols-3 gap-2">
+                        {[1, 2, 3].map(v => (
+                            <button key={v} onClick={() => updateDraft('colorVariation', v)} className={`p-2 rounded-xl border transition-all text-center flex flex-col items-center justify-center min-h-[50px] ${draft.colorVariation === v ? 'border-[var(--theme-primary)] bg-[var(--theme-primary)]/10 text-white shadow-[0_0_15px_rgba(var(--theme-primary-rgb),0.2)]' : 'border-white/5 bg-black/20 text-white/20 hover:text-white/40'}`}>
+                                <span className="text-[8px] font-black uppercase">Var {v}</span>
+                                <p className="text-[7px] font-bold opacity-60 leading-tight mt-1">
+                                    {draft.colorDepth === 1 ? (v === 1 ? 'Branding' : v === 2 ? 'Industrial' : 'Glass') :
+                                     draft.colorDepth === 2 ? (v === 1 ? 'Action' : v === 2 ? 'Atmos' : 'Content') :
+                                     (v === 1 ? 'Soberana' : v === 2 ? 'Abstract' : 'Hyper')}
+                                </p>
+                            </button>
+                        ))}
+                    </div>
+                </div>
+
+                {(draft.colorDepth >= 2) && (
+                    <div className="grid grid-cols-2 gap-4 pb-6 mb-6 border-b border-white/5">
+                        <div className="flex flex-col gap-2">
+                            <span className="text-[10px] font-bold text-white/40 uppercase">Cor Secundária</span>
+                            <div className="relative group">
+                                <input type="color" value={draft.secondaryColor || '#6366f1'} onChange={(e) => updateDraft('secondaryColor', e.target.value)} className="w-full h-10 rounded-xl bg-black/40 border border-white/5 cursor-pointer appearance-none p-1" />
+                                <div className="absolute top-1/2 left-3 -translate-y-1/2 pointer-events-none">
+                                    <div className="w-3 h-3 rounded-full shadow-sm" style={{ backgroundColor: draft.secondaryColor }} />
+                                </div>
+                            </div>
+                        </div>
+                        {draft.colorDepth === 3 && (
+                            <div className="flex flex-col gap-2">
+                                <span className="text-[10px] font-bold text-white/40 uppercase">Cor Terciária</span>
+                                <div className="relative group">
+                                    <input type="color" value={draft.tertiaryColor || '#10b981'} onChange={(e) => updateDraft('tertiaryColor', e.target.value)} className="w-full h-10 rounded-xl bg-black/40 border border-white/5 cursor-pointer appearance-none p-1" />
+                                    <div className="absolute top-1/2 left-3 -translate-y-1/2 pointer-events-none">
+                                        <div className="w-3 h-3 rounded-full shadow-sm" style={{ backgroundColor: draft.tertiaryColor }} />
+                                    </div>
+                                </div>
+                            </div>
+                        )}
+                    </div>
+                )}
+
                 <div className="mb-6 space-y-4 pt-4 border-t border-white/5">
                     <span className="text-2xs font-black uppercase tracking-widest text-white/20 block">Paletas Harmonizadas</span>
                     <div className="grid grid-cols-2 gap-2">

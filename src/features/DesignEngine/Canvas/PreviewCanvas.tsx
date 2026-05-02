@@ -4,7 +4,7 @@ import {
     Zap, Shield, BarChart3, MessageSquare, History, Box, Network, Type, Grid, Sparkles, Search, Bell
 } from 'lucide-react';
 import { THEME_EFFECTS } from '../../../constants/design-tokens';
-import { DESIGN_MANIFEST, UIContext } from '../../../core/Provider/SarakUIProvider';
+import { DESIGN_MANIFEST, UIContext, computeColorVariants } from '../../../core/Provider/SarakUIProvider';
 import { MockDashboard, MockChat, MockLogs, MockSettings, MockComponents, MockTypography } from './MockApps';
 import { KitchenSinkPreview } from './KitchenSinkPreview';
 import { GalleryRouter } from './Galleries/GalleryRouter';
@@ -138,6 +138,96 @@ export const PreviewCanvas: React.FC<PreviewCanvasProps> = ({
         }
 
         if (!vars['--radius-theme']) vars['--radius-theme'] = '12px';
+
+        // --- DYNAMIC COLOR ROUTER (Multi-Tone Engine v10.0 Parity) ---
+        const depth = parseInt(tokens.colorDepth) || 1;
+        const variation = parseInt(tokens.colorVariation) || 1;
+
+        const p = computeColorVariants(tokens.primaryColor || '#3b82f6', '#3b82f6');
+        const sc = computeColorVariants(tokens.secondaryColor || '#6366f1', '#6366f1');
+        const t = computeColorVariants(tokens.tertiaryColor || '#10b981', '#10b981');
+        const neutral = computeColorVariants('#1e293b', '#1e293b');
+
+        const injectPreviewLayer = (slot: string, color: any) => {
+            const prefix = `--theme-${slot}`;
+            vars[prefix] = color.main;
+            vars[`${prefix}-rgb`] = color.rgb;
+            vars[`${prefix}-bg`] = color.bg;
+            vars[`${prefix}-border`] = color.border;
+            vars[`${prefix}-hover`] = color.hover;
+            vars[`${prefix}-active`] = color.active;
+            vars[`${prefix}-focus`] = color.focus;
+            vars[`${prefix}-light`] = color.light;
+            
+            if (slot === 'button') {
+                vars['--theme-primary'] = color.main;
+                vars['--theme-primary-rgb'] = color.rgb;
+            }
+        };
+
+        if (depth === 1) {
+            if (variation === 2) {
+                injectPreviewLayer('primary', p);
+                injectPreviewLayer('card', neutral);
+                injectPreviewLayer('sidebar', p);
+                injectPreviewLayer('button', p);
+                injectPreviewLayer('border', p);
+            } else if (variation === 3) {
+                injectPreviewLayer('primary', p);
+                injectPreviewLayer('card', { ...p, main: `rgba(${p.rgb}, 0.1)` });
+                injectPreviewLayer('sidebar', p);
+                injectPreviewLayer('button', p);
+                injectPreviewLayer('border', p);
+            } else {
+                injectPreviewLayer('primary', p);
+                injectPreviewLayer('card', p);
+                injectPreviewLayer('sidebar', p);
+                injectPreviewLayer('button', p);
+                injectPreviewLayer('border', p);
+            }
+        } else if (depth === 2) {
+            if (variation === 2) {
+                injectPreviewLayer('primary', p);
+                injectPreviewLayer('sidebar', p);
+                injectPreviewLayer('texture', p);
+                injectPreviewLayer('card', sc);
+                injectPreviewLayer('border', sc);
+                injectPreviewLayer('button', p);
+            } else if (variation === 3) {
+                injectPreviewLayer('primary', p);
+                injectPreviewLayer('sidebar', p);
+                injectPreviewLayer('card', sc);
+                injectPreviewLayer('button', sc);
+                injectPreviewLayer('border', sc);
+            } else {
+                injectPreviewLayer('primary', p);
+                injectPreviewLayer('sidebar', p);
+                injectPreviewLayer('button', p);
+                injectPreviewLayer('card', sc);
+                injectPreviewLayer('border', sc);
+            }
+        } else if (depth === 3) {
+            if (variation === 2) {
+                injectPreviewLayer('primary', p);
+                injectPreviewLayer('sidebar', p);
+                injectPreviewLayer('card', sc);
+                injectPreviewLayer('border', sc);
+                injectPreviewLayer('button', t);
+            } else if (variation === 3) {
+                injectPreviewLayer('primary', p);
+                injectPreviewLayer('sidebar', p);
+                injectPreviewLayer('card', sc);
+                injectPreviewLayer('button', t);
+                injectPreviewLayer('border', t);
+            } else {
+                injectPreviewLayer('primary', p);
+                injectPreviewLayer('sidebar', p);
+                injectPreviewLayer('header', p);
+                injectPreviewLayer('card', sc);
+                injectPreviewLayer('border', t);
+                injectPreviewLayer('button', p);
+            }
+        }
 
         return { 
             cssVariables: vars as React.CSSProperties, 

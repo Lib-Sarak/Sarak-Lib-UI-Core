@@ -1,7 +1,6 @@
 import React$1, { ReactNode } from 'react';
 import * as react_jsx_runtime from 'react/jsx-runtime';
 
-declare const useSarakUI: () => any;
 interface SarakUIOptions {
     endpoints?: {
         baseUrl?: string;
@@ -29,6 +28,14 @@ interface SarakUIProviderProps {
     userId?: string | null;
     options?: SarakUIOptions;
 }
+
+declare const useSarakUI: () => any;
+/**
+ * SarakUIProvider Orchestrator (v10.1)
+ *
+ * Este é o ponto de entrada principal da biblioteca Sarak UI.
+ * Ele orquestra o estado do design, a descoberta de módulos e a injeção de estilos.
+ */
 declare const SarakUIProvider: React$1.FC<SarakUIProviderProps>;
 
 declare const ThemeToggle: React$1.FC;
@@ -515,7 +522,8 @@ interface SarakCardGridProps {
 declare const SarakCardGrid: React$1.FC<SarakCardGridProps>;
 
 interface SarakStatsProps {
-    endpoint: string;
+    endpoint?: string;
+    data?: Record<string, any>;
     label?: string;
     mapping?: Record<string, string>;
     role?: 'primary' | 'secondary' | 'neutral' | 'accent';

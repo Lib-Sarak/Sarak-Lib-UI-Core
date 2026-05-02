@@ -36,7 +36,7 @@ export const TopbarNav: React.FC<TopbarNavProps> = ({
         <header 
             onMouseEnter={() => isNavHidden && setIsHovered(true)}
             onMouseLeave={() => setIsHovered(false)}
-            className={`border border-[var(--theme-border)] bg-[var(--theme-card)] backdrop-blur-2xl px-6 flex items-center justify-between z-[45] shrink-0 overflow-hidden group`}
+            className={`border border-[var(--theme-border)] bg-[var(--theme-sidebar)] backdrop-blur-2xl px-6 flex items-center justify-between z-[45] shrink-0 overflow-hidden group`}
             style={{ 
                 margin: `var(--theme-tab-section-margin, ${tabSectionMargin ?? 12}px)`,
                 borderRadius: `var(--radius-theme, ${borderRadius ?? 12}px)`,

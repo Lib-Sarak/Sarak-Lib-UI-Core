@@ -10,7 +10,8 @@ import {
 import api from '../../../shared/services/api';
 
 interface SarakStatsProps {
-    endpoint: string;
+    endpoint?: string;
+    data?: Record<string, any>;
     label?: string;
     mapping?: Record<string, string>; // { key_in_json: "Label do Contador" }
     role?: 'primary' | 'secondary' | 'neutral' | 'accent';
@@ -24,14 +25,14 @@ interface SarakStatsProps {
  * Exibe contadores e métricas-chave de forma elegante, servindo como
  * um mini-dashboard dinâmico para qualquer módulo.
  */
-export const SarakStats: React.FC<SarakStatsProps> = ({ endpoint, label, mapping }) => {
-    const [stats, setStats] = useState<Record<string, any>>({});
-    const [loading, setLoading] = useState(true);
+export const SarakStats: React.FC<SarakStatsProps> = ({ endpoint, data, label, mapping }) => {
+    const [stats, setStats] = useState<Record<string, any>>(data || {});
+    const [loading, setLoading] = useState(!data);
     const [error, setError] = useState<string | null>(null);
 
     const fetchData = async () => {
+        if (!endpoint) return;
         try {
-            setLoading(true);
             setError(null);
             const response = await api.get(endpoint);
             setStats(response.data);
@@ -44,24 +45,33 @@ export const SarakStats: React.FC<SarakStatsProps> = ({ endpoint, label, mapping
     };
 
     useEffect(() => {
-        fetchData();
-    }, [endpoint]);
+        if (data) {
+            // Se recebemos novos dados via props, atualizamos apenas o estado de dados
+            // O loading permanece false se já tivermos dados
+            setStats(prev => {
+                // Só atualiza se for realmente diferente (referência ou conteúdo)
+                if (JSON.stringify(prev) === JSON.stringify(data)) return prev;
+                return data;
+            });
+            setLoading(false);
+        } else if (endpoint) {
+            fetchData();
+        }
+    }, [endpoint, data]);
 
     // Lógica de Agregação Sarak v6.5 (Se for array, resumimos)
     const renderValue = (key: string) => {
         if (Array.isArray(stats)) {
             if (key === 'total' || key === 'count') return stats.length;
-            
-            // Suporte a contagem condicional (ex: "active" conta itens onde isActive=true)
             if (key === 'active') return stats.filter(i => i.isActive === true || i.status === 'active').length;
             if (key === 'errors' || key === 'error') return stats.filter(i => i.status === 'error' || i.error_details).length;
-            
-            return stats.length; // Fallback
+            return stats.length;
         }
         
         const val = stats[key];
+        if (val === undefined || val === null) return '0';
         if (typeof val === 'number' && val > 1000) return `${(val / 1000).toFixed(1)}k`;
-        return val ?? '0';
+        return val;
     };
 
     const keys = mapping 
@@ -74,17 +84,14 @@ export const SarakStats: React.FC<SarakStatsProps> = ({ endpoint, label, mapping
 
     return (
         <div className="grid grid-cols-2 lg:grid-cols-4" style={{ gap: 'var(--theme-gap, 1.5rem)' }}>
-            {loading ? (
+            {loading && !Object.keys(stats).length ? (
                 [...Array(4)].map((_, i) => (
                     <div key={`skel-${i}`} className="bg-theme-card border-theme animate-pulse rounded-theme" style={{ height: 'calc(var(--theme-pad) * 6)' }} />
                 ))
             ) : (
                 keys.map((key, idx) => (
-                    <motion.div
+                    <div
                         key={key}
-                        initial={{ opacity: 0, scale: 0.95 }}
-                        animate={{ opacity: 1, scale: 1 }}
-                        transition={{ duration: parseFloat(getComputedStyle(document.documentElement).getPropertyValue('--animation-speed')) || 0.5, delay: idx * 0.05 }}
                         className="bg-theme-card border-theme hover:bg-white/[0.04] transition-all group rounded-theme"
                         style={{ padding: 'var(--theme-pad, 1.5rem)', transitionDuration: 'var(--animation-speed, 0.5s)' }}
                     >
@@ -92,9 +99,15 @@ export const SarakStats: React.FC<SarakStatsProps> = ({ endpoint, label, mapping
                             {mapping ? mapping[key] : key.replace(/_/g, ' ')}
                         </span>
                         <div className="flex items-center justify-between">
-                            <span className="text-2xl font-black text-white tracking-tighter" style={{ fontWeight: 'var(--heading-weight)' }}>
+                            <motion.span 
+                                key={`${key}-${renderValue(key)}`}
+                                initial={{ opacity: 0.5, y: -5 }}
+                                animate={{ opacity: 1, y: 0 }}
+                                className="text-2xl font-black text-white tracking-tighter" 
+                                style={{ fontWeight: 'var(--heading-weight)' }}
+                            >
                                 {renderValue(key)}
-                            </span>
+                            </motion.span>
                             {(() => {
                                 const levels = ['primary', 'secondary', 'accent'];
                                 const level = levels[idx % levels.length];
@@ -105,7 +118,7 @@ export const SarakStats: React.FC<SarakStatsProps> = ({ endpoint, label, mapping
                                 );
                             })()}
                         </div>
-                    </motion.div>
+                    </div>
                 ))
             )}
         </div>
