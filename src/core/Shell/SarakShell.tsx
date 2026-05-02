@@ -62,11 +62,12 @@ export const SarakShell: React.FC<SarakShellProps> = (props) => {
     const shell = useSarakShell(!!(token || ui.options?.token));
     const { design } = shell;
 
-    // --- DIMENSION GUARD (v10.1.9 Industrial Stability + Debounce) ---
+    // --- DIMENSION GUARD (v10.1.10 Industrial Diagnostic) ---
     const [isReady, setIsReady] = React.useState(false);
     const contentRef = React.useRef<HTMLDivElement>(null);
     const [dimensions, setDimensions] = React.useState({ w: 0, h: 0 });
     const stabilityTimer = React.useRef<NodeJS.Timeout | null>(null);
+    const fallbackTimer = React.useRef<NodeJS.Timeout | null>(null);
 
     React.useEffect(() => {
         if (!contentRef.current) return;
@@ -76,30 +77,35 @@ export const SarakShell: React.FC<SarakShellProps> = (props) => {
                 const { width, height } = entry.contentRect;
                 setDimensions({ w: width, h: height });
                 
-                // Cancelar timer anterior se houver nova mudança
                 if (stabilityTimer.current) clearTimeout(stabilityTimer.current);
 
-                // Requisitos Industriais: Largura total e Altura mínima de renderização
-                if (width > 300 && height > 200) {
+                // Requisitos Industriais (v10.1.10: Reduzido para maior compatibilidade)
+                if (width > 100 && height > 100) {
                     stabilityTimer.current = setTimeout(() => {
                         if (!isReady) {
                             console.log(`%c[Sarak:Shell] Dimension Guard: Layout Estabilizado (${Math.round(width)}x${Math.round(height)})`, "color: #00f2ff; font-weight: bold;");
                             setIsReady(true);
+                            if (fallbackTimer.current) clearTimeout(fallbackTimer.current);
                         }
-                    }, 150); // Debounce de 150ms para evitar quebra em reflows rápidos (ex: 48px -> 138px)
-                } else {
-                    if (isReady) {
-                        console.warn(`[Sarak:Shell] Dimension Guard: Layout Instável (${Math.round(width)}x${Math.round(height)}). Suspendendo.`);
-                        setIsReady(false);
-                    }
+                    }, 100);
                 }
             }
         });
 
         observer.observe(contentRef.current);
+
+        // FALLBACK DE SEGURANÇA: Se em 3s não estabilizar, força a renderização para não travar a UI
+        fallbackTimer.current = setTimeout(() => {
+            if (!isReady) {
+                console.warn("[Sarak:Shell] Dimension Guard: Tempo limite de estabilização excedido. Forçando montagem.");
+                setIsReady(true);
+            }
+        }, 3000);
+
         return () => {
             observer.disconnect();
             if (stabilityTimer.current) clearTimeout(stabilityTimer.current);
+            if (fallbackTimer.current) clearTimeout(fallbackTimer.current);
         };
     }, [isReady]);
 
@@ -224,9 +230,10 @@ export const SarakShell: React.FC<SarakShellProps> = (props) => {
                                     setIsSearchOpen={shell.setIsSearchOpen}
                                 />
                             ) : (
-                                <div className="flex flex-col items-center justify-center h-full text-[var(--theme-primary)] opacity-50 animate-pulse">
+                                <div className="flex flex-col items-center justify-center h-full text-[var(--theme-primary)] opacity-50 animate-pulse border-2 border-dashed border-[var(--theme-primary)] m-4 rounded-xl">
                                     <div className="text-xl font-bold mb-2">Estabilizando Ambiente Industrial...</div>
-                                    <div className="text-xs font-mono">Aguardando Dimensões: {Math.round(dimensions.w)}x{Math.round(dimensions.h)}</div>
+                                    <div className="text-xs font-mono">Monitorando Layout: {Math.round(dimensions.w)}x{Math.round(dimensions.h)}</div>
+                                    <div className="text-[10px] mt-4 opacity-30 italic">v10.1.10 Diagnostic Active</div>
                                 </div>
                             )}
                         </React.Suspense>

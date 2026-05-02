@@ -1,4 +1,4 @@
-console.log("%c [Sarak:Core] Engine v10.1.9 (STABLE LAYOUT DEBOUNCE) Carregada com Sucesso! ", "background: #06b6d4; color: #fff; font-weight: bold; padding: 4px; border-radius: 4px;");
+console.log("%c [Sarak:Core] Engine v10.1.10 (DIAGNOSTIC FALLBACK) Carregada com Sucesso! ", "background: #06b6d4; color: #fff; font-weight: bold; padding: 4px; border-radius: 4px;");
 
 import React, { ReactNode, useEffect, useState, useMemo, useCallback, useContext } from 'react';
 import '../../styles/sarak-base.css';
