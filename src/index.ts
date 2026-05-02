@@ -25,6 +25,8 @@ export { default as DynamicRenderer } from './core/Discovery/DynamicRenderer';
 export * from './core/Discovery/registry';
 export * from './constants/discovery';
 export { useModuleDiscovery } from './shared/hooks/useModuleDiscovery';
+export { useSarakRouter } from './shared/hooks/useSarakRouter';
+export type { SarakRouterState } from './shared/hooks/useSarakRouter';
 
 import { registerLocalComponent, registerSarakModule } from './core/Discovery/registry';
 import { ThemeCustomizationTab } from './features/DesignEngine/Main/ThemeCustomizationTab';

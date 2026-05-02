@@ -838,4 +838,19 @@ declare const useModuleDiscovery: (isEnabled?: boolean) => {
     refresh: () => void;
 };
 
-export { ALL_LANGUAGES, CHART_PRESETS, COLOR_PALETTES, CustomizationPanel, DASHBOARD_TEMPLATES, DENSITY, DISCOVERY_ENDPOINTS, type DiscoveredModule, DynamicRenderer, ExpandableCard, LANGUAGES, LanguageSelector, type ModuleManifest, ModuleSelector, NAVIGATION_STYLES, PRIMARY_COLORS, SCALES, SarakAuthScreen, SarakCardGrid, SarakCatalogGrid, SarakChart, SarakChartEngine, SarakChat, SarakForm, SarakManagementGrid, type SarakModule, SarakSecurityOrchestrator, SarakShell, SarakStats, SarakTable, SarakUIProvider, SocialButton, TEXTURE_LIBRARY, THEME_EFFECTS, THEME_FONTS, ThemeToggle, UserMenu, type VisualContract, type VisualContractType, getLocalComponent, getRegisteredModules, getSarakModule, registerLocalComponent, registerSarakModule, subscribeToRegistry, useModuleDiscovery, useSarakUI };
+/**
+ * Interface that defines the return of the routing hook
+ */
+interface SarakRouterState {
+    currentPath: string;
+    segments: string[];
+    navigate: (path: string, replace?: boolean) => void;
+    getParam: (index: number) => string | undefined;
+}
+/**
+ * Hook for native routing based on the browser's History API.
+ * Designed to replace memory-based activeModuleId state and allow deep linking.
+ */
+declare function useSarakRouter(basePath?: string): SarakRouterState;
+
+export { ALL_LANGUAGES, CHART_PRESETS, COLOR_PALETTES, CustomizationPanel, DASHBOARD_TEMPLATES, DENSITY, DISCOVERY_ENDPOINTS, type DiscoveredModule, DynamicRenderer, ExpandableCard, LANGUAGES, LanguageSelector, type ModuleManifest, ModuleSelector, NAVIGATION_STYLES, PRIMARY_COLORS, SCALES, SarakAuthScreen, SarakCardGrid, SarakCatalogGrid, SarakChart, SarakChartEngine, SarakChat, SarakForm, SarakManagementGrid, type SarakModule, type SarakRouterState, SarakSecurityOrchestrator, SarakShell, SarakStats, SarakTable, SarakUIProvider, SocialButton, TEXTURE_LIBRARY, THEME_EFFECTS, THEME_FONTS, ThemeToggle, UserMenu, type VisualContract, type VisualContractType, getLocalComponent, getRegisteredModules, getSarakModule, registerLocalComponent, registerSarakModule, subscribeToRegistry, useModuleDiscovery, useSarakRouter, useSarakUI };

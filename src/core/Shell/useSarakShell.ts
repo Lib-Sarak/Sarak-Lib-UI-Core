@@ -1,13 +1,21 @@
 import { useState, useEffect, useCallback, useMemo } from 'react';
 import { useSarakUI } from '../Provider/SarakUIProvider';
 import { useModuleDiscovery } from '../../shared/hooks/useModuleDiscovery';
+import { useSarakRouter } from '../../shared/hooks/useSarakRouter';
 import { DiscoveredModule } from '../../constants/discovery';
 
 export const useSarakShell = (loggedIn: boolean) => {
     const { design, applyConfig, options } = useSarakUI();
     const { modules: discoveredModules, isLoading: isDiscovering } = useModuleDiscovery(loggedIn);
+    const { segments, navigate } = useSarakRouter();
     
-    const [activeModuleId, setActiveModuleId] = useState<string | null>(null);
+    // O módulo ativo é derivado do primeiro segmento da URL
+    const activeModuleId = segments[0] || null;
+    
+    const setActiveModuleId = useCallback((id: string) => {
+        navigate(`/${id}`);
+    }, [navigate]);
+
     const [isSearchOpen, setIsSearchOpen] = useState(false);
     const [isNavVisible, setIsNavVisible] = useState(true);
     const [isResizing, setIsResizing] = useState(false);
@@ -27,21 +35,21 @@ export const useSarakShell = (loggedIn: boolean) => {
     // para usar coordenadas globais (--mouse-px-x, --mouse-px-y)
     // evitando loops caros de querySelector em cada movimento.
 
-    // Module activation (Agnostic v9.0) - Prioritizes mx-customization for parity
+    // Module activation (Native Routing v10.2) - Prioritizes default or mx-customization
     useEffect(() => {
         if (discoveredModules.length > 0 && !activeModuleId) {
             const defaultId = options?.theme?.defaultModuleId;
             const targetMod = defaultId ? discoveredModules.find(m => m.id === defaultId) : null;
             
             if (targetMod) {
-                setActiveModuleId(targetMod.id);
+                navigate(`/${targetMod.id}`, true);
             } else {
                 // Fallback: Tenta encontrar mx-customization primeiro, senão pega o primeiro da lista
                 const customMod = discoveredModules.find(m => m.id === 'mx-customization');
-                setActiveModuleId(customMod ? customMod.id : discoveredModules[0].id);
+                navigate(`/${customMod ? customMod.id : discoveredModules[0].id}`, true);
             }
         }
-    }, [discoveredModules, activeModuleId, options?.theme?.defaultModuleId]);
+    }, [discoveredModules, activeModuleId, navigate, options?.theme?.defaultModuleId]);
 
     // Shortcuts
     useEffect(() => {
