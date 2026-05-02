@@ -48,12 +48,12 @@ export const SidebarNav: React.FC<SidebarNavProps> = ({
                 width: effectiveIsNavHidden ? '74px' : `${sidebarWidth || 240}px`,
                 opacity: 1,
                 visibility: 'visible',
-                transition: `width ${animationSpeed}s cubic-bezier(0.16, 1, 0.3, 1), transform ${animationSpeed}s ease`,
-                margin: `var(--theme-tab-section-margin, ${tabSectionMargin}px)`,
-                borderRadius: `var(--radius-theme, ${borderRadius}px)`,
-                height: `calc(100vh - (var(--theme-tab-section-margin, ${tabSectionMargin}px) * 2))`,
-                borderWidth: `${borderWidth}px`,
-                borderStyle: borderStyle
+                transition: `width ${animationSpeed || 0.4}s cubic-bezier(0.16, 1, 0.3, 1), transform ${animationSpeed || 0.4}s ease`,
+                margin: `var(--theme-tab-section-margin, ${tabSectionMargin ?? 12}px)`,
+                borderRadius: `var(--radius-theme, ${borderRadius ?? 12}px)`,
+                height: `calc(100vh - (var(--theme-tab-section-margin, ${tabSectionMargin ?? 12}px) * 2))`,
+                borderWidth: `${borderWidth ?? 1}px`,
+                borderStyle: borderStyle || 'solid'
             }}
             className="sarak-shell-sidebar bg-[var(--theme-sidebar)] border border-[var(--theme-border)] flex flex-col shrink-0 relative z-[100] shadow-2xl overflow-hidden"
         >

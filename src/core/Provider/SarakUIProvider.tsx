@@ -329,6 +329,8 @@ const validateDesign = (design: any) => {
     return s;
 };
 
+const useIsomorphicLayoutEffect = typeof window !== 'undefined' ? React.useLayoutEffect : React.useEffect;
+
 // Internal component to manage design injection without loops
 const DesignInjector: React.FC<{ design: any }> = ({ design: s }) => {
 
@@ -362,7 +364,7 @@ const DesignInjector: React.FC<{ design: any }> = ({ design: s }) => {
 
     const prevDesignRef = React.useRef<any>(null);
 
-    useEffect(() => {
+    useIsomorphicLayoutEffect(() => {
         if (typeof document === 'undefined') return;
         const root = document.documentElement;
         const body = document.body;
@@ -373,9 +375,10 @@ const DesignInjector: React.FC<{ design: any }> = ({ design: s }) => {
         // Limpamos TODAS as variáveis sarak residuais para evitar conflitos de temas anteriores.
         const cleanAllSarakVariables = () => {
             const rootStyle = root.style;
-            for (let i = 0; i < rootStyle.length; i++) {
+            // Iteração reversa para evitar pular propriedades ao remover da lista mutável do navegador
+            for (let i = rootStyle.length - 1; i >= 0; i--) {
                 const prop = rootStyle[i];
-                if (prop.startsWith('--sarak-') || prop.startsWith('--sx-') || prop.startsWith('--theme-')) {
+                if (prop && (prop.startsWith('--sarak-') || prop.startsWith('--sx-') || prop.startsWith('--theme-'))) {
                     rootStyle.removeProperty(prop);
                 }
             }
@@ -614,7 +617,13 @@ export const SarakUIProvider: React.FC<SarakUIProviderProps> = ({
             glassOpacity: 0.4,
             glassBlur: 10,
             texture: 'dots',
-            fontScale: 'm'
+            fontScale: 'm',
+            isNavHidden: false,
+            tabSectionMargin: 12,
+            borderWidth: 1,
+            borderStyle: 'solid',
+            animationSpeed: 0.4,
+            sidebarWidth: 240
         };
 
         const defaultThemeId = opt?.theme?.defaultTheme || 'futurist';
@@ -635,12 +644,12 @@ export const SarakUIProvider: React.FC<SarakUIProviderProps> = ({
                 );
 
                 console.log("[Sarak:UI] Design carregado do localStorage.");
-                return { ...seedConfig, ...validParsed };
+                return validateDesign({ ...seedConfig, ...validParsed });
             }
         } catch (e) {
             console.error("[Sarak:UI] Erro ao carregar design:", e);
         }
-        return seedConfig;
+        return validateDesign(seedConfig);
     });
 
 
@@ -669,7 +678,7 @@ export const SarakUIProvider: React.FC<SarakUIProviderProps> = ({
                 try {
                     const customDesign = await opt.persistence.onLoad();
                     if (customDesign) {
-                        setDesign((prev: any) => ({ ...prev, ...customDesign }));
+                        setDesign((prev: any) => validateDesign({ ...prev, ...customDesign }));
                         setIsBackendLoaded(true);
                         return;
                     }
@@ -688,7 +697,7 @@ export const SarakUIProvider: React.FC<SarakUIProviderProps> = ({
                     if (resp.ok) {
                         const data = await resp.json();
                         if (data.design && Object.keys(data.design).length > 0) {
-                            setDesign((prev: any) => ({ ...prev, ...data.design }));
+                            setDesign((prev: any) => validateDesign({ ...prev, ...data.design }));
                         }
                         setIsBackendLoaded(true);
                     }
@@ -809,45 +818,62 @@ export const SarakUIProvider: React.FC<SarakUIProviderProps> = ({
         document.head.prepend(style);
     }, []);
 
-    const applyConfig = useCallback((partial: any) => {
+    // --- SAFE STATE MANAGEMENT (v10.1.5) ---
+    const safeSetDesign = useCallback((next: any) => {
         setDesign((prev: any) => {
-            const next = validateDesign({ ...prev, ...partial });
-            // Persistência Imediata (v9.5 Patch)
-            if (typeof window !== 'undefined') {
-                localStorage.setItem(storageKey, JSON.stringify(next));
-            }
-            return next;
+            const updated = typeof next === 'function' ? next(prev) : next;
+            return validateDesign(updated);
         });
-    }, [storageKey]);
+    }, []);
+
+    const applyConfig = useCallback((partial: any) => {
+        safeSetDesign((prev: any) => ({ ...prev, ...partial }));
+    }, [safeSetDesign]);
 
     const applyFullConfig = useCallback((config: any) => {
-        const next = validateDesign(config);
-        console.log("[Sarak:UI] Aplicando configuração completa ao sistema:", next);
+        safeSetDesign(config);
+    }, [safeSetDesign]);
 
-        // Persistência Imediata e Atômica (v9.5 Patch)
-        if (typeof window !== 'undefined') {
-            localStorage.setItem(storageKey, JSON.stringify(next));
-            console.log("[Sarak:UI] Persistência síncrona concluída no localStorage.");
-        }
-
-        setDesign(next);
-    }, [storageKey]);
+    // --- SYNCHRONOUS STYLE INJECTION (v10.1.6) ---
+    // Injeta variáveis críticas antes da pintura para garantir dimensões e visibilidade
+    const criticalStyles = useMemo(() => {
+        const sidebarW = design.sidebarWidth || 240;
+        const primaryHex = design.primaryColor || '#00f2ff';
+        const isDark = design.mode === 'dark';
+        
+        return `
+            :root {
+                --sarak-sidebar-width: ${sidebarW}px;
+                --sidebar-width: ${sidebarW}px;
+                --theme-primary: ${primaryHex};
+                --theme-body: ${isDark ? '#0f172a' : '#f8fafc'};
+                --theme-surface: ${isDark ? '#1e293b' : '#ffffff'};
+                --theme-sidebar: ${isDark ? '#1e293b' : '#ffffff'};
+                --theme-title: ${isDark ? '#ffffff' : '#0f172a'};
+                --theme-border: ${isDark ? 'rgba(255,255,255,0.1)' : 'rgba(0,0,0,0.1)'};
+                --radius-theme: 12px;
+                --sarak-navigation-style: ${design.navigationStyle || 'sidebar'};
+            }
+            .sarak-shell-sidebar, .sarak-shell-topbar { opacity: 1 !important; visibility: visible !important; }
+        `;
+    }, [design.sidebarWidth, design.primaryColor, design.mode, design.navigationStyle]);
 
     const uiContextValue = useMemo(() => ({
         ...design, // Spread design tokens for direct access (v7.1 Compatibility)
         discoveryEndpoints: options?.endpoints?.discovery || discoveryEndpoints || [],
         design,
-        setDesign,
+        setDesign: safeSetDesign,
         applyConfig,
         applyFullConfig,
         registeredModules,
         layouts: Object.values(LAYOUTS),
         isHydrated,
         options
-    }), [discoveryEndpoints, design, applyConfig, applyFullConfig, registeredModules, isHydrated, options]);
+    }), [discoveryEndpoints, design, safeSetDesign, applyConfig, applyFullConfig, registeredModules, isHydrated, options]);
 
     return (
         <UIContext.Provider value={uiContextValue}>
+            <style dangerouslySetInnerHTML={{ __html: criticalStyles }} />
             <DesignInjector design={design} />
             <NoiseOverlay />
             {children}

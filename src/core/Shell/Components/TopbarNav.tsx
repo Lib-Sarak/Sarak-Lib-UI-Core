@@ -38,10 +38,10 @@ export const TopbarNav: React.FC<TopbarNavProps> = ({
             onMouseLeave={() => setIsHovered(false)}
             className={`border border-[var(--theme-border)] bg-[var(--theme-card)] backdrop-blur-2xl px-6 flex items-center justify-between z-[45] shrink-0 overflow-hidden group`}
             style={{ 
-                margin: `var(--theme-tab-section-margin, ${tabSectionMargin}px)`,
-                borderRadius: `var(--radius-theme, ${borderRadius}px)`,
-                borderWidth: `${borderWidth}px`,
-                borderStyle: borderStyle,
+                margin: `var(--theme-tab-section-margin, ${tabSectionMargin ?? 12}px)`,
+                borderRadius: `var(--radius-theme, ${borderRadius ?? 12}px)`,
+                borderWidth: `${borderWidth ?? 1}px`,
+                borderStyle: borderStyle || 'solid',
                 height: effectiveIsNavHidden ? '40px' : '64px',
                 transition: `all ${animationSpeed || 0.4}s cubic-bezier(0.16, 1, 0.3, 1)`,
             }}

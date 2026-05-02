@@ -143,7 +143,7 @@ export const SarakShell: React.FC<SarakShellProps> = (props) => {
     }, [design, ui.options?.debug]);
 
     const isTopbar = design?.navigationStyle === 'topbar';
-    const isSidebar = design?.navigationStyle === 'sidebar' || !design; // Default to sidebar
+    const isSidebar = design?.navigationStyle === 'sidebar' || !design?.navigationStyle; // Default to sidebar if missing
     const isDock = design?.navigationStyle === 'dock';
 
     return (
