@@ -62,6 +62,17 @@ export const SarakShell: React.FC<SarakShellProps> = (props) => {
     const shell = useSarakShell(!!(token || ui.options?.token));
     const { design } = shell;
 
+    // --- PROTEÇÃO CONTRA RACE CONDITION DE DIMENSÃO (v10.1.7) ---
+    const [isReady, setIsReady] = React.useState(false);
+
+    React.useEffect(() => {
+        setIsReady(false);
+        const timer = setTimeout(() => {
+            setIsReady(true);
+        }, 300);
+        return () => clearTimeout(timer);
+    }, [shell.activeModuleId]);
+
     // --- VISUAL SAFETY GATE (v9.5 Industrial) ---
     React.useEffect(() => {
         const checkCSS = () => {
@@ -167,14 +178,20 @@ export const SarakShell: React.FC<SarakShellProps> = (props) => {
                 {/* MAIN CONTENT CANVAS */}
                 <ErrorBoundary fallback={<div className="sarak-critical-error">Falha Industrial detectada no Módulo. Reiniciando Engine...</div>}>
                     <React.Suspense fallback={<div className="sarak-loader">Sincronizando DNA Industrial...</div>}>
-                        <ShellContent 
-                            activeModule={shell.activeModule}
-                            discoveredModules={shell.discoveredModules}
-                            design={design}
-                            user={user}
-                            authApi={authApi}
-                            setIsSearchOpen={shell.setIsSearchOpen}
-                        />
+                        {isReady ? (
+                            <ShellContent 
+                                activeModule={shell.activeModule}
+                                discoveredModules={shell.discoveredModules}
+                                design={design}
+                                user={user}
+                                authApi={authApi}
+                                setIsSearchOpen={shell.setIsSearchOpen}
+                            />
+                        ) : (
+                            <div className="flex items-center justify-center h-full text-[var(--theme-primary)] opacity-50 animate-pulse">
+                                Estabilizando Ambiente Industrial...
+                            </div>
+                        )}
                     </React.Suspense>
                 </ErrorBoundary>
             </div>
