@@ -1,6 +1,6 @@
 {
     "name": "@sarak/lib-ui-core",
-    "version": "2.1.8",
+    "version": "2.1.9",
     "description": "Sarak Design System and UI Engine [Pre-compiled]",
     "type": "module",
     "main": "./dist/index.cjs",

@@ -62,10 +62,11 @@ export const SarakShell: React.FC<SarakShellProps> = (props) => {
     const shell = useSarakShell(!!(token || ui.options?.token));
     const { design } = shell;
 
-    // --- DIMENSION GUARD (v10.1.8 Industrial Stability) ---
+    // --- DIMENSION GUARD (v10.1.9 Industrial Stability + Debounce) ---
     const [isReady, setIsReady] = React.useState(false);
     const contentRef = React.useRef<HTMLDivElement>(null);
     const [dimensions, setDimensions] = React.useState({ w: 0, h: 0 });
+    const stabilityTimer = React.useRef<NodeJS.Timeout | null>(null);
 
     React.useEffect(() => {
         if (!contentRef.current) return;
@@ -75,14 +76,20 @@ export const SarakShell: React.FC<SarakShellProps> = (props) => {
                 const { width, height } = entry.contentRect;
                 setDimensions({ w: width, h: height });
                 
-                if (width > 0 && height > 0) {
-                    if (!isReady) {
-                        console.log(`%c[Sarak:Shell] Dimension Guard: Layout Estabilizado (${Math.round(width)}x${Math.round(height)})`, "color: #00f2ff; font-weight: bold;");
-                        setIsReady(true);
-                    }
+                // Cancelar timer anterior se houver nova mudança
+                if (stabilityTimer.current) clearTimeout(stabilityTimer.current);
+
+                // Requisitos Industriais: Largura total e Altura mínima de renderização
+                if (width > 300 && height > 200) {
+                    stabilityTimer.current = setTimeout(() => {
+                        if (!isReady) {
+                            console.log(`%c[Sarak:Shell] Dimension Guard: Layout Estabilizado (${Math.round(width)}x${Math.round(height)})`, "color: #00f2ff; font-weight: bold;");
+                            setIsReady(true);
+                        }
+                    }, 150); // Debounce de 150ms para evitar quebra em reflows rápidos (ex: 48px -> 138px)
                 } else {
                     if (isReady) {
-                        console.warn("[Sarak:Shell] Dimension Guard: Container perdeu dimensões. Suspendendo renderização de módulos.");
+                        console.warn(`[Sarak:Shell] Dimension Guard: Layout Instável (${Math.round(width)}x${Math.round(height)}). Suspendendo.`);
                         setIsReady(false);
                     }
                 }
@@ -90,7 +97,10 @@ export const SarakShell: React.FC<SarakShellProps> = (props) => {
         });
 
         observer.observe(contentRef.current);
-        return () => observer.disconnect();
+        return () => {
+            observer.disconnect();
+            if (stabilityTimer.current) clearTimeout(stabilityTimer.current);
+        };
     }, [isReady]);
 
     // Reset ao trocar de módulo para garantir nova verificação
