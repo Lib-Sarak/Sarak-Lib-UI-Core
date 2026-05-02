@@ -129,14 +129,16 @@ export const SarakShell: React.FC<SarakShellProps> = (props) => {
                 )}
 
                 {/* MAIN CONTENT CANVAS */}
-                <ShellContent 
-                    activeModule={shell.activeModule}
-                    discoveredModules={shell.discoveredModules}
-                    design={design}
-                    user={user}
-                    authApi={authApi}
-                    setIsSearchOpen={shell.setIsSearchOpen}
-                />
+                <React.Suspense fallback={<div className="p-10">Carregando Módulo Industrial...</div>}>
+                    <ShellContent 
+                        activeModule={shell.activeModule}
+                        discoveredModules={shell.discoveredModules}
+                        design={design}
+                        user={user}
+                        authApi={authApi}
+                        setIsSearchOpen={shell.setIsSearchOpen}
+                    />
+                </React.Suspense>
             </div>
 
             <SarakSearch isOpen={shell.isSearchOpen} onClose={() => shell.setIsSearchOpen(false)} />
@@ -145,4 +147,3 @@ export const SarakShell: React.FC<SarakShellProps> = (props) => {
 };
 
 export default SarakShell;
-
