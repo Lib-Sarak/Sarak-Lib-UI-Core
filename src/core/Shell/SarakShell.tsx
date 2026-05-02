@@ -62,15 +62,40 @@ export const SarakShell: React.FC<SarakShellProps> = (props) => {
     const shell = useSarakShell(!!(token || ui.options?.token));
     const { design } = shell;
 
-    // --- PROTEÇÃO CONTRA RACE CONDITION DE DIMENSÃO (v10.1.7) ---
+    // --- DIMENSION GUARD (v10.1.8 Industrial Stability) ---
     const [isReady, setIsReady] = React.useState(false);
+    const contentRef = React.useRef<HTMLDivElement>(null);
+    const [dimensions, setDimensions] = React.useState({ w: 0, h: 0 });
 
     React.useEffect(() => {
+        if (!contentRef.current) return;
+
+        const observer = new ResizeObserver((entries) => {
+            for (let entry of entries) {
+                const { width, height } = entry.contentRect;
+                setDimensions({ w: width, h: height });
+                
+                if (width > 0 && height > 0) {
+                    if (!isReady) {
+                        console.log(`%c[Sarak:Shell] Dimension Guard: Layout Estabilizado (${Math.round(width)}x${Math.round(height)})`, "color: #00f2ff; font-weight: bold;");
+                        setIsReady(true);
+                    }
+                } else {
+                    if (isReady) {
+                        console.warn("[Sarak:Shell] Dimension Guard: Container perdeu dimensões. Suspendendo renderização de módulos.");
+                        setIsReady(false);
+                    }
+                }
+            }
+        });
+
+        observer.observe(contentRef.current);
+        return () => observer.disconnect();
+    }, [isReady]);
+
+    // Reset ao trocar de módulo para garantir nova verificação
+    React.useEffect(() => {
         setIsReady(false);
-        const timer = setTimeout(() => {
-            setIsReady(true);
-        }, 300);
-        return () => clearTimeout(timer);
     }, [shell.activeModuleId]);
 
     // --- VISUAL SAFETY GATE (v9.5 Industrial) ---
@@ -176,24 +201,27 @@ export const SarakShell: React.FC<SarakShellProps> = (props) => {
                 )}
 
                 {/* MAIN CONTENT CANVAS */}
-                <ErrorBoundary fallback={<div className="sarak-critical-error">Falha Industrial detectada no Módulo. Reiniciando Engine...</div>}>
-                    <React.Suspense fallback={<div className="sarak-loader">Sincronizando DNA Industrial...</div>}>
-                        {isReady ? (
-                            <ShellContent 
-                                activeModule={shell.activeModule}
-                                discoveredModules={shell.discoveredModules}
-                                design={design}
-                                user={user}
-                                authApi={authApi}
-                                setIsSearchOpen={shell.setIsSearchOpen}
-                            />
-                        ) : (
-                            <div className="flex items-center justify-center h-full text-[var(--theme-primary)] opacity-50 animate-pulse">
-                                Estabilizando Ambiente Industrial...
-                            </div>
-                        )}
-                    </React.Suspense>
-                </ErrorBoundary>
+                <div ref={contentRef} className="flex-1 relative min-h-0 min-w-0">
+                    <ErrorBoundary fallback={<div className="sarak-critical-error">Falha Industrial detectada no Módulo. Reiniciando Engine...</div>}>
+                        <React.Suspense fallback={<div className="sarak-loader">Sincronizando DNA Industrial...</div>}>
+                            {isReady ? (
+                                <ShellContent 
+                                    activeModule={shell.activeModule}
+                                    discoveredModules={shell.discoveredModules}
+                                    design={design}
+                                    user={user}
+                                    authApi={authApi}
+                                    setIsSearchOpen={shell.setIsSearchOpen}
+                                />
+                            ) : (
+                                <div className="flex flex-col items-center justify-center h-full text-[var(--theme-primary)] opacity-50 animate-pulse">
+                                    <div className="text-xl font-bold mb-2">Estabilizando Ambiente Industrial...</div>
+                                    <div className="text-xs font-mono">Aguardando Dimensões: {Math.round(dimensions.w)}x{Math.round(dimensions.h)}</div>
+                                </div>
+                            )}
+                        </React.Suspense>
+                    </ErrorBoundary>
+                </div>
             </div>
 
             <SarakSearch isOpen={shell.isSearchOpen} onClose={() => shell.setIsSearchOpen(false)} />
