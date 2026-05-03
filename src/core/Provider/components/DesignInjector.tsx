@@ -51,19 +51,25 @@ export const DesignInjector: React.FC<{ design: any }> = ({ design: s }) => {
 
         if (!s) return;
 
-        // --- CSS CLEANUP ENGINE (v9.5) ---
+        // --- CSS CLEANUP ENGINE (v10.2) ---
         const cleanAllSarakVariables = () => {
-            const rootStyle = root.style;
-            for (let i = rootStyle.length - 1; i >= 0; i--) {
-                const prop = rootStyle[i];
-                if (prop && (prop.startsWith('--sarak-') || prop.startsWith('--sx-') || prop.startsWith('--theme-'))) {
-                    rootStyle.removeProperty(prop);
+            const targets = [root, body];
+            targets.forEach(target => {
+                const targetStyle = target.style;
+                for (let i = targetStyle.length - 1; i >= 0; i--) {
+                    const prop = targetStyle[i];
+                    if (prop && (prop.startsWith('--sarak-') || prop.startsWith('--sx-') || prop.startsWith('--theme-') || prop.startsWith('--bg-') || prop.startsWith('--border-color'))) {
+                        targetStyle.removeProperty(prop);
+                    }
                 }
-            }
-            const levels = ['primary', 'secondary', 'accent', 'surface', 'success', 'warning', 'error', 'body'];
+            });
+            
+            const levels = ['primary', 'secondary', 'accent', 'surface', 'success', 'warning', 'error', 'body', 'card', 'sidebar', 'button', 'border', 'texture', 'header'];
             levels.forEach(level => {
-                rootStyle.removeProperty(`--${level}-color`);
-                rootStyle.removeProperty(`--theme-${level}`);
+                root.style.removeProperty(`--${level}-color`);
+                body.style.setProperty(`--${level}-color`, '');
+                root.style.removeProperty(`--theme-${level}`);
+                body.style.setProperty(`--theme-${level}`, '');
             });
         };
         cleanAllSarakVariables();
@@ -73,7 +79,7 @@ export const DesignInjector: React.FC<{ design: any }> = ({ design: s }) => {
             Object.entries(BEZIER_CURVES).forEach(([k, v]) => root.style.setProperty(k, v));
         }
 
-        // --- COMPREHENSIVE COLOR INJECTION ENGINE (v9.1) ---
+        // --- COMPREHENSIVE COLOR INJECTION ENGINE (v10.2) ---
         const activePalette = COLOR_PALETTES.find((p: any) => p.id === s.colorPalette);
         const paletteColors = activePalette?.colors || {};
 
@@ -93,7 +99,6 @@ export const DesignInjector: React.FC<{ design: any }> = ({ design: s }) => {
             }
 
             let finalValue = finalValueForInjection?.toString() || '';
-            let finalAttrValue = finalValue;
             const extraVars: Record<string, string> = {};
 
             if (config.transform) {
@@ -104,209 +109,168 @@ export const DesignInjector: React.FC<{ design: any }> = ({ design: s }) => {
                         const prefix = `--theme-${level === 'primary' ? 'primary' : level}`;
 
                         finalValue = t.main;
-                        finalAttrValue = t.main;
                         extraVars[`${prefix}-rgb`] = t.rgb;
                         extraVars[`${prefix}-bg`] = t.bg;
                         extraVars[`${prefix}-border`] = t.border;
                         extraVars[`${prefix}-hover`] = t.hover;
                         extraVars[`${prefix}-active`] = t.active;
-                        extraVars[`${prefix}-focus`] = t.focus;
-                        extraVars[`${prefix}-light`] = t.light;
                         extraVars[`--${level === 'primary' ? 'primary' : level}-color`] = t.main;
+                        extraVars[`--${level === 'primary' ? 'primary' : level}-color-rgb`] = t.rgb;
                     } else if (key === 'fontScale') {
                         finalValue = t.px;
-                        finalAttrValue = t.px;
                         extraVars['--font-size-factor'] = t.factor;
                     } else if (key === 'scaleRatio') {
                         finalValue = String(t.ratio);
-                        finalAttrValue = String(t.ratio);
                         extraVars['--theme-gap-scaled'] = t.gap;
                         extraVars['--theme-pad-scaled'] = t.pad;
-                        extraVars['--theme-margin-scaled'] = t.margin;
                         extraVars['--theme-radius-scaled'] = t.radius;
                     } else if (key === 'fluidScaling') {
                         finalValue = '1';
-                        finalAttrValue = '1';
                         extraVars['--theme-font-size-base'] = t.base;
                         extraVars['--theme-gap-scaled'] = t.gap;
                         extraVars['--theme-pad-scaled'] = t.padding;
                     } else if (t.main !== undefined) {
                         finalValue = t.main;
-                        finalAttrValue = t.main;
                         Object.entries(t).forEach(([k, v]) => {
                             if (k.startsWith('--')) extraVars[k] = String(v);
                         });
                     }
                 } else {
                     finalValue = String(t);
-                    finalAttrValue = String(t);
-                }
-            }
-
-            // --- Multi-Palette Engine (v9.1) ---
-            if (key === 'colorPalette' && activePalette) {
-                Object.entries(activePalette.colors as Record<string, string>).forEach(([level, hex]) => {
-                    const levelKey = level === 'primary' ? 'primaryColor' : `${level}Color`;
-                    const levelConfig = DESIGN_MANIFEST[levelKey];
-
-                    if (level === 'primary' && s.primaryColor) return;
-
-                    if (levelConfig && levelConfig.vars) {
-                        const t = computeColorVariants(hex, '#000');
-                        const prefix = `--theme-${level}`;
-
-                        levelConfig.vars.forEach(v => root.style.setProperty(v, t.main));
-                        root.style.setProperty(`${prefix}-rgb`, t.rgb);
-                        root.style.setProperty(`${prefix}-bg`, t.bg);
-                        root.style.setProperty(`${prefix}-border`, t.border);
-                        root.style.setProperty(`${prefix}-hover`, t.hover);
-                        root.style.setProperty(`${prefix}-active`, t.active);
-                        root.style.setProperty(`${prefix}-focus`, t.focus);
-                        root.style.setProperty(`${prefix}-light`, t.light);
-
-                        if (level === 'primary') {
-                            root.style.setProperty('--theme-primary-rgb', t.rgb);
-                        }
-                    }
-                });
-
-                const paletteColorsAny = activePalette.colors as any;
-                if (paletteColorsAny.body) {
-                    const t = computeColorVariants(paletteColorsAny.body, '#0f172a');
-                    root.style.setProperty('--theme-body', t.main);
-                    root.style.setProperty('--theme-body-rgb', t.rgb);
-                }
-                if (paletteColorsAny.surface) {
-                    const t = computeColorVariants(paletteColorsAny.surface, '#1e293b');
-                    root.style.setProperty('--theme-surface', t.main);
-                    root.style.setProperty('--theme-surface-rgb', t.rgb);
                 }
             }
 
             if (config.unit && typeof value === 'number') finalValue = `${value}${config.unit}`;
-            if (typeof value === 'boolean') {
-                finalValue = value ? '1' : '0';
-                finalAttrValue = value ? '1' : '0';
-            }
-
+            
             if (config.vars) {
-                config.vars.forEach(v => root.style.setProperty(v, finalValue));
-                Object.entries(extraVars).forEach(([ev, evVal]) => root.style.setProperty(ev, evVal));
+                config.vars.forEach(v => {
+                    root.style.setProperty(v, finalValue);
+                    body.style.setProperty(v, finalValue);
+                });
+                Object.entries(extraVars).forEach(([ev, evVal]) => {
+                    root.style.setProperty(ev, evVal);
+                    body.style.setProperty(ev, evVal);
+                });
             }
 
             if (config.attr) {
-                body.setAttribute(config.attr, finalAttrValue);
-                root.setAttribute(config.attr, finalAttrValue);
+                body.setAttribute(config.attr, finalValue);
+                root.setAttribute(config.attr, finalValue);
             }
 
             if (config.classPrefix) {
                 const isBool = typeof value === 'boolean';
                 const activeClass = isBool ? (value ? config.classPrefix : null) : `${config.classPrefix}${value}`;
-
                 Array.from(body.classList).forEach(c => {
                     if (c.startsWith(config.classPrefix!) || (isBool && c === config.classPrefix)) {
                         body.classList.remove(c);
                     }
                 });
-
                 if (activeClass) body.classList.add(activeClass);
             }
         });
 
-        // REFORÇO DE SOBERANIA
-        if (s.primaryColor) {
-            const t = computeColorVariants(s.primaryColor, s.mode === 'dark' ? '#000' : '#fff');
-            root.style.setProperty('--theme-primary', t.main);
-            root.style.setProperty('--theme-primary-rgb', t.rgb);
-            root.style.setProperty('--theme-accent', t.main);
-        }
-
-        // --- DYNAMIC COLOR ROUTER (Multi-Tone Engine v10.0) ---
+        // --- DYNAMIC COLOR ROUTER (Multi-Tone Engine v10.2) ---
         const depth = parseInt(s.colorDepth) || 1;
         const variation = parseInt(s.colorVariation) || 1;
+        const mode = s.mode || 'dark';
 
-        console.log(`[SarakUI] Applying Multi-Tone Engine: Depth ${depth}, Variation ${variation}`);
-
-        const p = computeColorVariants(s.primaryColor || '#3b82f6', '#3b82f6');
-        const sc = computeColorVariants(s.secondaryColor || '#6366f1', '#6366f1');
-        const t_tri = computeColorVariants(s.tertiaryColor || '#10b981', '#10b981');
-        const neutral = computeColorVariants('#1e293b', '#1e293b');
+        const p = computeColorVariants(s.primaryColor || '#3b82f6', mode === 'dark' ? '#000' : '#fff');
+        const sc = computeColorVariants(s.secondaryColor || '#6366f1', mode === 'dark' ? '#000' : '#fff');
+        const t_tri = computeColorVariants(s.tertiaryColor || '#10b981', mode === 'dark' ? '#000' : '#fff');
+        const neutral = computeColorVariants(mode === 'dark' ? '#1e293b' : '#f1f5f9', mode === 'dark' ? '#000' : '#fff');
 
         const injectLayer = (slot: string, color: any) => {
+            const target = body; // ABSOLUTE SOVEREIGNTY
             const prefix = `--theme-${slot}`;
-            root.style.setProperty(prefix, color.main);
-            root.style.setProperty(`${prefix}-rgb`, color.rgb);
-            root.style.setProperty(`${prefix}-bg`, color.bg);
-            root.style.setProperty(`${prefix}-border`, color.border);
-            root.style.setProperty(`${prefix}-hover`, color.hover);
-            root.style.setProperty(`${prefix}-active`, color.active);
-            root.style.setProperty(`${prefix}-focus`, color.focus);
-            root.style.setProperty(`${prefix}-light`, color.light);
             
-            if (slot === 'button') {
-                root.style.setProperty('--theme-primary', color.main);
-                root.style.setProperty('--theme-primary-rgb', color.rgb);
+            // Core Variables
+            target.style.setProperty(prefix, color.main);
+            target.style.setProperty(`${prefix}-rgb`, color.rgb);
+            target.style.setProperty(`${prefix}-bg`, color.bg);
+            target.style.setProperty(`${prefix}-border`, color.border);
+            target.style.setProperty(`${prefix}-hover`, color.hover);
+            target.style.setProperty(`${prefix}-active`, color.active);
+            target.style.setProperty(`${prefix}-focus`, color.focus);
+            target.style.setProperty(`${prefix}-light`, color.light);
+            
+            // Bridge Variables (Sincroniza com sarak-base.css Aliases)
+            if (slot === 'sidebar') {
+                target.style.setProperty('--bg-sidebar', color.main);
+                target.style.setProperty('--bg-sidebar-rgb', color.rgb);
+            }
+            if (slot === 'card') {
+                target.style.setProperty('--bg-card', color.main);
+                target.style.setProperty('--bg-card-rgb', color.rgb);
+                target.style.setProperty('--theme-surface-main', color.main);
+            }
+            if (slot === 'border') {
+                target.style.setProperty('--border-color', color.main);
+                target.style.setProperty('--theme-surface-border', color.main);
+            }
+            if (slot === 'primary' || slot === 'button') {
+                target.style.setProperty('--primary-color', color.main);
+                target.style.setProperty('--primary-color-rgb', color.rgb);
             }
         };
 
+        console.log(`[SarakUI] Multi-Tone Router Active: L${depth}V${variation}`);
+
+        // 1. Mapeamento de Tons Base (Sempre injeta para garantir que SarakStats e outros funcionem)
+        injectLayer('primary', p);
+        injectLayer('secondary', sc);
+        injectLayer('accent', t_tri);
+
+        // 2. Mapeamento Estrutural Dinâmico
         if (depth === 1) {
+            // NÍVEL 1: MONO-TONE
             if (variation === 2) {
-                injectLayer('primary', p);
+                // Mono + Neutro (Evita aspecto chapado)
+                injectLayer('sidebar', p);
                 injectLayer('card', neutral);
-                injectLayer('sidebar', p);
-                injectLayer('button', p);
-                injectLayer('border', p);
-            } else if (variation === 3) {
-                injectLayer('primary', p);
-                injectLayer('card', { ...p, main: `rgba(${p.rgb}, 0.1)` });
-                injectLayer('sidebar', p);
                 injectLayer('button', p);
                 injectLayer('border', p);
             } else {
-                injectLayer('primary', p);
-                injectLayer('card', p);
+                // Pure Branding
                 injectLayer('sidebar', p);
+                injectLayer('card', p);
                 injectLayer('button', p);
                 injectLayer('border', p);
             }
         } else if (depth === 2) {
+            // NÍVEL 2: DUAL-TONE (Estrutura vs Ação)
             if (variation === 2) {
-                injectLayer('primary', p);
+                // Mapeamento 2: Sidebar (Primary) + Cards/Bordas (Secondary)
                 injectLayer('sidebar', p);
-                injectLayer('texture', p);
                 injectLayer('card', sc);
                 injectLayer('border', sc);
-                injectLayer('button', p);
-            } else if (variation === 3) {
-                injectLayer('primary', p);
-                injectLayer('sidebar', p);
-                injectLayer('card', sc);
                 injectLayer('button', sc);
-                injectLayer('border', sc);
             } else {
-                injectLayer('primary', p);
+                // Mapeamento 1: Sidebar/Botões (Primary) + Cards/Bordas (Secondary)
                 injectLayer('sidebar', p);
                 injectLayer('button', p);
                 injectLayer('card', sc);
                 injectLayer('border', sc);
             }
         } else if (depth === 3) {
+            // NÍVEL 3: TRI-TONE (O ápice industrial)
             if (variation === 2) {
-                injectLayer('primary', p);
+                // Mapeamento 2: Sidebar (Primary) + Cards (Secondary) + Micro-detalhes (Tertiary)
                 injectLayer('sidebar', p);
                 injectLayer('card', sc);
-                injectLayer('border', sc);
-                injectLayer('button', t_tri);
+                injectLayer('border', t_tri);
+                injectLayer('button', sc);
             } else if (variation === 3) {
-                injectLayer('primary', p);
-                injectLayer('sidebar', p);
+                // Mapeamento 3: Corpo (Primary) + Sidebar (Secondary) + Ação/Botões (Tertiary)
+                body.style.setProperty('--bg-body', p.main);
+                body.style.setProperty('--bg-body-rgb', p.rgb);
+                injectLayer('sidebar', sc);
                 injectLayer('card', sc);
                 injectLayer('button', t_tri);
                 injectLayer('border', t_tri);
             } else {
-                injectLayer('primary', p);
+                // Mapeamento 1: Estrutura/Sidebar (Primary) + Cards (Secondary) + Bordas (Tertiary)
                 injectLayer('sidebar', p);
-                injectLayer('header', p);
                 injectLayer('card', sc);
                 injectLayer('border', t_tri);
                 injectLayer('button', p);
