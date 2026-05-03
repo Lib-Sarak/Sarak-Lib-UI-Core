@@ -14,62 +14,12 @@ interface PresetsGalleryProps {
 }
 
 
-// --- CSS SANDBOX HELPER ---
-const getPresetVariables = (presetTokens: any) => {
-    const vars: any = {};
-    
-    Object.entries(presetTokens).forEach(([key, value]) => {
-        const config = (DESIGN_MANIFEST as any)[key];
-        if (config) {
-            const transformedValue = config.transform ? config.transform(value) : value;
-            const isObject = typeof transformedValue === 'object' && transformedValue !== null;
-            
-            if (config.vars) {
-                config.vars.forEach((varName: string) => {
-                    if (isObject) {
-                        Object.entries(transformedValue).forEach(([subKey, subVal]) => {
-                            if (subKey === 'main') vars[varName] = subVal;
-                            else if (subKey === 'factor') vars['--font-size-factor'] = subVal;
-                            else if (subKey === 'rgb') vars['--theme-primary-rgb'] = subVal;
-                            else if (subKey === 'hover') vars['--theme-primary-hover'] = subVal;
-                            else if (subKey === 'active') vars['--theme-primary-active'] = subVal;
-                            else if (subKey === 'focus') vars['--theme-primary-focus'] = subVal;
-                            else if (subKey === 'gap') vars['--theme-gap-scaled'] = subVal;
-                            else if (subKey === 'pad') vars['--theme-pad-scaled'] = subVal;
-                            else if (subKey === 'margin') vars['--theme-margin-scaled'] = subVal;
-                            else if (subKey === 'radius') vars['--theme-radius-scaled'] = subVal;
-                            else if (subKey === 'base' && key === 'fluidScaling') vars['--theme-font-size-base'] = subVal;
-                            else if (subKey === 'px' && key === 'fontScale') vars[varName] = subVal;
-                            else vars[`${varName}-${subKey}`] = subVal;
-                        });
-                    } else {
-                        vars[varName] = `${transformedValue}${config.unit || ''}`;
-                    }
-                });
-            }
-        }
-    });
-
-    // Theme Derived Fallbacks
-    const isLight = presetTokens.mode === 'light';
-    vars['--theme-bg'] = isLight ? '#f1f5f9' : '#020617';
-    vars['--theme-card'] = isLight ? 'rgba(255,255,255,0.7)' : 'rgba(30,41,59,0.7)';
-    vars['--theme-border'] = isLight ? 'rgba(0,0,0,0.1)' : 'rgba(255,255,255,0.08)';
-    vars['--theme-title'] = isLight ? '#0f172a' : '#f8fafc';
-    vars['--theme-main'] = isLight ? '#475569' : '#94a3b8';
-    vars['--theme-muted'] = isLight ? '#94a3b8' : '#64748b';
-    vars['--radius-theme'] = `${presetTokens.borderRadius || 12}px`;
-    vars['--theme-gap'] = `${presetTokens.layoutGap || 20}px`;
-    vars['--texture-opacity'] = presetTokens.atmosphereNoiseOpacity || '0.15';
-
-    return vars;
-};
+import { DesignScope } from '../../../../core/Design/components/DesignScope';
 
 const PresetSpecimen: React.FC<{ 
     preset: any, 
     activeApp: string 
 }> = ({ preset, activeApp }) => {
-    const vars = React.useMemo(() => getPresetVariables(preset), [preset]);
     
     // Create an isolated context value for the preset preview
     const presetContextValue = React.useMemo(() => ({
@@ -102,25 +52,9 @@ const PresetSpecimen: React.FC<{
     };
 
     return (
-        <div 
-            className={`w-full h-full relative overflow-hidden bg-[var(--theme-bg)] transition-all duration-500 ${preset.mode === 'dark' ? 'dark' : 'light'}`}
-            style={vars as any}
-            data-surface={preset.surfaceMaterial || 'glass'}
-            data-geometric={preset.isGeometricCut || '0'}
-            data-border={preset.borderType || 'standard'}
-            data-shadow-orientation={preset.shadowOrientation || 'top-down'}
-            data-shadow-color-mode={preset.shadowColorMode || 'black'}
-        >
-            {/* Texture Layer - Forced Visibility for Preview */}
-            {preset.texture && preset.texture !== 'none' && (
-                <div 
-                    className={`absolute inset-0 pointer-events-none SarakAtmosphereLayer texture-${preset.texture}`} 
-                    style={{ zIndex: 1, opacity: vars['--texture-opacity'] || 0.15 }}
-                />
-            )}
-
+        <DesignScope design={preset} className="w-full aspect-video relative overflow-hidden bg-[var(--theme-bg)] transition-all duration-500">
             {/* Content Area Scaled Down - Optimized Aspect Ratio */}
-            <div className="absolute inset-0 origin-top-left overflow-hidden z-10" style={{ transform: 'scale(0.333)', width: '300.3%', height: '300.3%' }}>
+            <div className="absolute inset-0 origin-top-left overflow-hidden z-10" style={{ transform: 'scale(0.3335)', width: '300%', height: '300%' }}>
                 {/* Isolated Context for correct token propagation */}
                 <UIContext.Provider value={presetContextValue as any}>
                     {/* Shell Simulation */}
@@ -139,7 +73,7 @@ const PresetSpecimen: React.FC<{
                     </div>
                 </UIContext.Provider>
             </div>
-        </div>
+        </DesignScope>
     );
 };
 

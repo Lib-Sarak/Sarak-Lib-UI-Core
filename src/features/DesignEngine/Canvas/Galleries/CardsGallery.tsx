@@ -20,45 +20,10 @@ interface CardsGalleryProps {
     onUpdateDraft: (key: string, value: any) => void;
 }
 
-// --- CSS SANDBOX HELPER ---
-const getCardVariables = (cardTokens: any, globalTokens: any) => {
-    const vars: any = {};
-    const mergedTokens = { ...globalTokens, ...cardTokens };
-
-    Object.entries(mergedTokens).forEach(([key, value]) => {
-        const config = (DESIGN_MANIFEST as any)[key];
-        if (config && config.vars) {
-            const transformedValue = config.transform ? config.transform(value) : value;
-            const isObject = typeof transformedValue === 'object' && transformedValue !== null;
-            
-            config.vars.forEach((varName: string) => {
-                if (isObject) {
-                    Object.entries(transformedValue).forEach(([subKey, subVal]) => {
-                        if (subKey === 'main') vars[varName] = subVal;
-                        else vars[`${varName}-${subKey}`] = subVal;
-                    });
-                } else {
-                    vars[varName] = `${transformedValue}${config.unit || ''}`;
-                }
-            });
-        }
-    });
-
-    // Vars específicas para o Specimen (Override local para visualização de presets)
-    vars['--texture-opacity'] = mergedTokens.textureOpacity || '0.4';
-    vars['--sarak-contrast-curve'] = mergedTokens.contrastCurve || 1.0;
-    
-    // Injeta opacidade se presente no preset para garantir que a preview de materiais funcione
-    if (mergedTokens.glassOpacity) vars['--glass-opacity'] = mergedTokens.glassOpacity;
-    if (mergedTokens.glassBlur) vars['--glass-blur'] = `${mergedTokens.glassBlur}px`;
-    if (mergedTokens.glassSaturation) vars['--glass-saturation'] = `${mergedTokens.glassSaturation}%`;
-    
-    return vars;
-};
+import { DesignScope } from '../../../../core/Design/components/DesignScope';
 
 const CardSpecimen: React.FC<{ preset: CardPreset, contentType: string, globalTokens: any }> = ({ preset, contentType, globalTokens }) => {
     const mergedTokens = React.useMemo(() => ({ ...globalTokens, ...preset.tokens }), [preset, globalTokens]);
-    const vars = React.useMemo(() => getCardVariables(preset.tokens, globalTokens), [preset, globalTokens]);
 
     const renderContent = () => {
         switch (contentType) {
@@ -137,18 +102,7 @@ const CardSpecimen: React.FC<{ preset: CardPreset, contentType: string, globalTo
     };
 
     return (
-        <div 
-            className="w-full h-full p-4 relative transition-all duration-500"
-            style={vars as any}
-            data-surface={preset.tokens.surfaceMaterial}
-            data-geometric={preset.tokens.isGeometricCut || '0'}
-            data-border={preset.tokens.borderType || 'standard'}
-            data-shadow-orientation={mergedTokens.shadowOrientation || 'top-down'}
-            data-shadow-color-mode={mergedTokens.shadowColorMode || 'black'}
-            data-card-texture={mergedTokens.cardTexture || 'none'}
-            data-spotlight={parseFloat(mergedTokens.cardSpotlight || '0') > 0 ? '1' : '0'}
-            data-border-beam={mergedTokens.borderBeamEnabled || '0'}
-        >
+        <DesignScope design={mergedTokens} className="w-full h-full p-6 relative overflow-hidden group z-10 transition-all duration-300">
             {/* Checkerboard Stress Background for Transparency Visibility */}
             <div className="absolute inset-4 rounded-xl overflow-hidden pointer-events-none opacity-20 z-0">
                 <div className="absolute inset-0" style={{ 
@@ -159,23 +113,11 @@ const CardSpecimen: React.FC<{ preset: CardPreset, contentType: string, globalTo
             </div>
 
             <div className="bg-theme-card border-theme w-full h-full p-6 relative overflow-hidden group z-10 transition-all duration-300">
-                {/* O Motor CSS ::before agora gerencia a textura via [data-card-texture] */}
-
-                {/* Spotlight Effect Simulation */}
-                {parseFloat(preset.tokens.cardSpotlight || globalTokens.cardSpotlight) > 0 && (
-                    <div className="absolute inset-0 bg-gradient-to-br from-white/[0.08] to-transparent pointer-events-none opacity-50" />
-                )}
-                
-                {/* Border Beam Simulation (CSS handles the animation) */}
-                {mergedTokens.borderBeamEnabled === '1' && (
-                    <div className="absolute inset-0 border border-[var(--theme-primary)] opacity-20 pointer-events-none" />
-                )}
-
                 <div className="relative z-10 h-full">
                     {renderContent()}
                 </div>
             </div>
-        </div>
+        </DesignScope>
     );
 };
 
