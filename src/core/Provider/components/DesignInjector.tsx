@@ -98,6 +98,22 @@ export const DesignInjector: React.FC<{ design: any }> = ({ design: s }) => {
                 }
             }
 
+            // --- HIERARCHICAL OBJECT SUPPORT (Item 1) ---
+            if (typeof value === 'object' && value !== null && !Array.isArray(value) && !key.endsWith('Color') && key !== 'primaryColor' && key !== 'scaleRatio' && key !== 'fluidScaling' && key !== 'fontScale') {
+                Object.entries(value).forEach(([subKey, subVal]) => {
+                    if (config.vars) {
+                        config.vars.forEach(v => {
+                            const nestedVar = `${v}-${subKey}`;
+                            let finalSubVal = String(subVal);
+                            if (config.unit && typeof subVal === 'number') finalSubVal = `${subVal}${config.unit}`;
+                            root.style.setProperty(nestedVar, finalSubVal);
+                            body.style.setProperty(nestedVar, finalSubVal);
+                        });
+                    }
+                });
+                return; // Nested objects handled specially
+            }
+
             let finalValue = finalValueForInjection?.toString() || '';
             const extraVars: Record<string, string> = {};
 
@@ -184,97 +200,162 @@ export const DesignInjector: React.FC<{ design: any }> = ({ design: s }) => {
             const target = body; // ABSOLUTE SOVEREIGNTY
             const prefix = `--theme-${slot}`;
             
+            // --- INTERACTION STATE OVERRIDES (Item 3) ---
+            const hoverOverride = s[`${slot}HoverColor`];
+            const activeOverride = s[`${slot}ActiveColor`];
+            const noiseOverride = s[`${slot}NoiseOpacity`];
+
+            const finalColor = { ...color };
+            if (hoverOverride) finalColor.hover = hoverOverride;
+            if (activeOverride) finalColor.active = activeOverride;
+
             // Core Variables
-            target.style.setProperty(prefix, color.main);
-            target.style.setProperty(`${prefix}-rgb`, color.rgb);
-            target.style.setProperty(`${prefix}-bg`, color.bg);
-            target.style.setProperty(`${prefix}-border`, color.border);
-            target.style.setProperty(`${prefix}-hover`, color.hover);
-            target.style.setProperty(`${prefix}-active`, color.active);
-            target.style.setProperty(`${prefix}-focus`, color.focus);
-            target.style.setProperty(`${prefix}-light`, color.light);
+            target.style.setProperty(prefix, finalColor.main);
+            target.style.setProperty(`${prefix}-rgb`, finalColor.rgb);
+            target.style.setProperty(`${prefix}-bg`, finalColor.bg);
+            target.style.setProperty(`${prefix}-border`, finalColor.border);
+            target.style.setProperty(`${prefix}-hover`, finalColor.hover);
+            target.style.setProperty(`${prefix}-active`, finalColor.active);
+            target.style.setProperty(`${prefix}-focus`, finalColor.focus);
+            target.style.setProperty(`${prefix}-light`, finalColor.light);
+
+            // --- LAYER-SPECIFIC TEXTURE (Item 4) ---
+            if (noiseOverride !== undefined) {
+                target.style.setProperty(`${prefix}-noise-opacity`, String(noiseOverride));
+            }
             
             // Bridge Variables (Sincroniza com sarak-base.css Aliases)
             if (slot === 'sidebar') {
-                target.style.setProperty('--bg-sidebar', color.main);
-                target.style.setProperty('--bg-sidebar-rgb', color.rgb);
+                target.style.setProperty('--bg-sidebar', finalColor.main);
+                target.style.setProperty('--bg-sidebar-rgb', finalColor.rgb);
+                target.style.setProperty('--theme-sidebar-bg', finalColor.main);
+                target.style.setProperty('--theme-sidebar-bg-rgb', finalColor.rgb);
+                target.style.setProperty('--theme-side-bg', finalColor.main);
+                target.style.setProperty('--theme-side-bg-rgb', finalColor.rgb);
+            }
+            if (slot === 'topbar') {
+                target.style.setProperty('--theme-topbar-bg', finalColor.main);
+                target.style.setProperty('--theme-topbar-bg-rgb', finalColor.rgb);
+                target.style.setProperty('--bg-topbar', finalColor.main);
+                target.style.setProperty('--bg-topbar-rgb', finalColor.rgb);
             }
             if (slot === 'card') {
-                target.style.setProperty('--bg-card', color.main);
-                target.style.setProperty('--bg-card-rgb', color.rgb);
-                target.style.setProperty('--theme-surface-main', color.main);
+                target.style.setProperty('--bg-card', finalColor.main);
+                target.style.setProperty('--bg-card-rgb', finalColor.rgb);
+                target.style.setProperty('--theme-surface-main', finalColor.main);
+                target.style.setProperty('--theme-card-bg', finalColor.main);
+                target.style.setProperty('--theme-card-bg-rgb', finalColor.rgb);
             }
             if (slot === 'border') {
-                target.style.setProperty('--border-color', color.main);
-                target.style.setProperty('--theme-surface-border', color.main);
+                target.style.setProperty('--border-color', finalColor.main);
+                target.style.setProperty('--theme-surface-border', finalColor.main);
+                target.style.setProperty('--theme-card-border', finalColor.main);
+                target.style.setProperty('--theme-card-border-rgb', finalColor.rgb);
             }
             if (slot === 'primary' || slot === 'button') {
-                target.style.setProperty('--primary-color', color.main);
-                target.style.setProperty('--primary-color-rgb', color.rgb);
+                target.style.setProperty('--primary-color', finalColor.main);
+                target.style.setProperty('--primary-color-rgb', finalColor.rgb);
+                target.style.setProperty('--theme-button-bg', finalColor.main);
+                target.style.setProperty('--theme-button-bg-rgb', finalColor.rgb);
+                target.style.setProperty('--theme-button-text', mode === 'dark' ? '#fff' : '#000');
+            }
+            if (slot === 'texture') {
+                target.style.setProperty('--theme-texture-color', finalColor.main);
+                target.style.setProperty('--theme-texture-color-rgb', finalColor.rgb);
             }
         };
 
         console.log(`[SarakUI] Multi-Tone Router Active: L${depth}V${variation}`);
 
-        // 1. Mapeamento de Tons Base (Sempre injeta para garantir que SarakStats e outros funcionem)
+        // 1. Mapeamento de Tons Base
         injectLayer('primary', p);
         injectLayer('secondary', sc);
         injectLayer('accent', t_tri);
 
-        // 2. Mapeamento Estrutural Dinâmico
+        // 2. Mapeamento Estrutural Dinâmico (Presets de Elegância)
         if (depth === 1) {
             // NÍVEL 1: MONO-TONE
             if (variation === 2) {
-                // Mono + Neutro (Evita aspecto chapado)
-                injectLayer('sidebar', p);
+                injectLayer('sidebar', { ...p, main: p.bg });
+                injectLayer('topbar', { ...p, main: p.bg });
                 injectLayer('card', neutral);
                 injectLayer('button', p);
                 injectLayer('border', p);
-            } else {
-                // Pure Branding
+            } else if (variation === 3) {
                 injectLayer('sidebar', p);
+                injectLayer('topbar', p);
                 injectLayer('card', p);
                 injectLayer('button', p);
                 injectLayer('border', p);
+            } else {
+                injectLayer('sidebar', neutral);
+                injectLayer('topbar', neutral);
+                injectLayer('card', neutral);
+                injectLayer('button', p);
+                injectLayer('border', p);
+                body.style.setProperty('--theme-body', mode === 'dark' ? '#0f172a' : '#f8fafc');
+                body.style.setProperty('--bg-body', mode === 'dark' ? '#0f172a' : '#f8fafc');
             }
         } else if (depth === 2) {
-            // NÍVEL 2: DUAL-TONE (Estrutura vs Ação)
+            // NÍVEL 2: DUAL-TONE
             if (variation === 2) {
-                // Mapeamento 2: Sidebar (Primary) + Cards/Bordas (Secondary)
                 injectLayer('sidebar', p);
+                injectLayer('topbar', p);
                 injectLayer('card', sc);
                 injectLayer('border', sc);
                 injectLayer('button', sc);
             } else {
-                // Mapeamento 1: Sidebar/Botões (Primary) + Cards/Bordas (Secondary)
                 injectLayer('sidebar', p);
+                injectLayer('topbar', p);
                 injectLayer('button', p);
                 injectLayer('card', sc);
                 injectLayer('border', sc);
             }
         } else if (depth === 3) {
-            // NÍVEL 3: TRI-TONE (O ápice industrial)
+            // NÍVEL 3: TRI-TONE
             if (variation === 2) {
-                // Mapeamento 2: Sidebar (Primary) + Cards (Secondary) + Micro-detalhes (Tertiary)
                 injectLayer('sidebar', p);
+                injectLayer('topbar', p);
                 injectLayer('card', sc);
                 injectLayer('border', t_tri);
                 injectLayer('button', sc);
             } else if (variation === 3) {
-                // Mapeamento 3: Corpo (Primary) + Sidebar (Secondary) + Ação/Botões (Tertiary)
                 body.style.setProperty('--bg-body', p.main);
                 body.style.setProperty('--bg-body-rgb', p.rgb);
                 injectLayer('sidebar', sc);
+                injectLayer('topbar', sc);
                 injectLayer('card', sc);
                 injectLayer('button', t_tri);
                 injectLayer('border', t_tri);
             } else {
-                // Mapeamento 1: Estrutura/Sidebar (Primary) + Cards (Secondary) + Bordas (Tertiary)
                 injectLayer('sidebar', p);
+                injectLayer('topbar', p);
                 injectLayer('card', sc);
                 injectLayer('border', t_tri);
                 injectLayer('button', p);
             }
+        }
+
+        // 3. Granular Overrides (Sovereign Authority)
+        const isSet = (val: string) => val && val.length > 0 && val !== 'transparent';
+
+        if (isSet(s.sidebarColor)) {
+            injectLayer('sidebar', computeColorVariants(s.sidebarColor, mode === 'dark' ? '#000' : '#fff'));
+        }
+        if (isSet(s.topbarColor)) {
+            injectLayer('topbar', computeColorVariants(s.topbarColor, mode === 'dark' ? '#000' : '#fff'));
+        }
+        if (isSet(s.cardBackgroundColor)) {
+            injectLayer('card', computeColorVariants(s.cardBackgroundColor, mode === 'dark' ? '#000' : '#fff'));
+        }
+        if (isSet(s.cardBorderColor)) {
+            injectLayer('border', computeColorVariants(s.cardBorderColor, mode === 'dark' ? '#000' : '#fff'));
+        }
+        if (isSet(s.buttonColor)) {
+            injectLayer('button', computeColorVariants(s.buttonColor, mode === 'dark' ? '#000' : '#fff'));
+        }
+        if (isSet(s.textureColor)) {
+            injectLayer('texture', computeColorVariants(s.textureColor, mode === 'dark' ? '#000' : '#fff'));
         }
 
         if (!prevDesignRef.current || prevDesignRef.current.mode !== s.mode) {

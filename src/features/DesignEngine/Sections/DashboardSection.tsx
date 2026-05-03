@@ -4,8 +4,8 @@ import { Section, SelectControl, SliderControl } from '../components/DesignContr
 interface DashboardSectionProps {
     draft: any;
     updateDraft: (key: string, value: any) => void;
-    activeSection: string;
-    setActiveSection: (id: string) => void;
+    activeSection: string | null;
+    setActiveSection: (id: string | null) => void;
 }
 
 export const DashboardSection: React.FC<DashboardSectionProps> = ({ draft, updateDraft, activeSection, setActiveSection }) => {

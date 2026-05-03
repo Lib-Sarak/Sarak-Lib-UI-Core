@@ -1,24 +1,25 @@
 ---
 name: sarak-ui-core-specialist
-description: Definitive authority in Sarak UI-Core Engineering. Governs the Industrial Design Engine, High-Fidelity Mirroring, and Agnostic Security Orchestration (v8.5).
+description: Definitive authority in Sarak UI-Core Engineering. Governs the Industrial Design Engine, Plug & Play Agnostic Integration, and Sovereign Visual Orchestration (v10.2).
 ---
 
-# Skill: Sarak UI-Core Specialist (Industrial Excellence v8.5)
+# Skill: Sarak UI-Core Specialist (Plug & Play Sovereignty v10.2)
 
-This skill is the **sovereign authority** for maintaining and evolving the `Sarak-Lib-UI-Core` module. It ensures that every line of code adheres to the "Zero Hardcoded" mandate and the multi-layered rendering pipeline.
+This skill is the **sovereign authority** for maintaining and evolving the `Sarak-Lib-UI-Core` module. Its mission is to ensure the library remains a high-performance, agnostic, and "Plug & Play" engine that can be seamlessly integrated into any React ecosystem (Forzy, Identity, Library, etc.).
 
-## Core Pillars of Sovereignty
-1. **Industrial Design Engine**: Absolute governance of tokens via `DESIGN_MANIFEST`. No visual property exists outside the schema.
-2. **High-Fidelity Digital Twins**: Every preview (Galleries & Canvas) must be a 1:1 functional representation of the live system using the "Sub-Provider" isolation pattern.
-3. **Agnostic Discovery & Security**: Expansion of visual contracts to support complex flows like `SECURITY_ORCHESTRATOR` without local UI dependencies in external modules.
-4. **Kinetic Consistency**: All animations and transitions must be driven by the Kinetic Engine tokens (`--animation-speed`, `--sarak-elasticity`).
+## Pillars of Agnostic Sovereignty (v10.2)
+1. **Plug & Play Architecture**: The module must be entirely self-contained. It provides its own state management, persistence logic, and design injection, requiring only a `SarakUIProvider` at the root.
+2. **Agnostic Persistence Engine**: Support for host-defined `storageKey`, `endpoints`, and custom `onSave`/`onLoad` handlers. The library adapts to the host's storage strategy without hardcoded paths.
+3. **Industrial Design Engine (v10.2)**: Absolute governance of tokens via `DESIGN_MANIFEST` with **Granular Sovereignty**. Supports Multi-Tone strategies (Mono, Dual, Tri) and individual component overrides (Sidebar, Topbar, Texture) without "style bleeding".
+4. **Manifest-Driven Discovery**: Host applications register local modules and components via the `manifest` prop, allowing the core `SarakShell` to discover and render external UI dynamically.
+5. **High-Fidelity Mirroring**: Every preview in the Design Engine must be a 1:1 functional representation, utilizing the `DesignInjector` to reflect real-time changes before persistence.
 
 ## Technical Documentation Stack
-1. [Design Engine & Token Injection](./1_design_engine.md) - The CSS Variable backbone.
-2. [High-Fidelity Previews & Sandboxing](./2_preview_fidelity.md) - Gallery and Specimen architecture.
-3. [Agnostic Orchestration & Security](./3_visual_contracts.md) - Manifest-driven UI rendering.
-4. [Sovereign Validation Checklist](./4_validacao.md) - Rules for PR approval and compliance.
+1. [Design Engine & Token Injection](./1_design_engine.md) - Multi-Tone & Granular Injection (v10.2).
+2. [Agnostic Integration & Persistence](./2_agnostic_integration.md) - How to "Plug & Play" (v10.2).
+3. [Manifest-Driven Registration](./3_visual_contracts.md) - Component and Module discovery.
+4. [Sovereign Validation Checklist](./4_validacao.md) - Rules for Industrial Quality.
 
 ---
-**Sarak Engineering v8.5**  
-*Sovereignty, Identity, and Industrial Precision.*
+**Sarak Engineering v10.2**  
+*Sovereignty, Agnostic Precision, and Plug & Play Excellence.*

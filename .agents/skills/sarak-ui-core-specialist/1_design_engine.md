@@ -1,35 +1,32 @@
-# Design Engine & Token Injection (v8.5)
+# Design Engine & Token Injection (v10.2)
 
-The Design Engine is the sovereign core of Sarak UI. It enforces a strict "Manifest-First" approach where code logic and visual styling are 100% decoupled.
+O Design Engine é o núcleo soberano do Sarak UI. Ele impõe uma abordagem "Manifest-First" onde a lógica de código e o estilo visual são 100% desacoplados e controlados via variáveis CSS dinâmicas.
 
-## 1. The Zero Hardcoded Mandate
-- **NEVER** use literal values like `color: "#3b82f6"` or `borderRadius: "12px"`.
-- **ALWAYS** consume CSS variables: `text-[var(--theme-primary)]` or `rounded-[var(--radius-theme)]`.
-- Any new visual property MUST be registered in the `DESIGN_MANIFEST` within `SarakUIProvider.tsx`.
+## 1. O Mandato "Zero Hardcoded"
+- **NUNCA** use valores literais como `color: "#3b82f6"`.
+- **SEMPRE** consuma variáveis CSS: `text-[var(--theme-primary)]` ou `bg-[var(--theme-sidebar-bg)]`.
+- Qualquer nova propriedade visual DEVE ser registrada no `DESIGN_MANIFEST`.
 
-## 2. Token Pipeline Architecture
-1. **Schema Definition**: Add the token key to `DesignTokens` interface.
-2. **Manifest Mapping**: Define how the token translates to CSS Variables in `DESIGN_MANIFEST`.
-   - Use `transform` for complex mappings (e.g., converting HEX to RGB components).
-   - Use `unit` to automatically append `px`, `rem`, or `s`.
-3. **Draft Context**: All edits in the Design Engine must go through the `draft` state in `PreviewCanvas`.
-4. **Final Application**: Tokens only persist to the system-wide `:root` after the user triggers the "Apply to System" action.
+## 2. Multi-Tone Engine (v10.2)
+O sistema suporta três níveis de profundidade cromática, configurados via `colorDepth`:
+1. **Mono-Tone**: Foco em uma única cor de branding com tons neutros.
+2. **Dual-Tone**: Harmonização entre cores Primária e Secundária.
+3. **Tri-Tone**: Esquema completo com cores Primária, Secundária e Terciária.
 
-## 3. Surface Materials & Layering
-The system uses specialized attributes for material rendering:
-- `data-surface`: Controls the material base (`glass`, `acrylic`, `matte`, `brushed`).
-- `data-geometric`: Toggles the architectural `clip-path`.
-- `data-border`: Defines the border morphology (`neon`, `inlet`, `beveled`).
+## 3. Soberania Granular e Injeção
+A injeção ocorre no `DesignInjector.tsx` seguindo uma hierarquia de autoridade:
+1. **Presets de Tema**: Configurações base (ex: `futurist`, `industrial`).
+2. **Estratégia Multi-Tone**: Mapeamento dinâmico baseado em `colorDepth` e `colorVariation`.
+3. **Overrides Granulares (Soberania Máxima)**: Cores explícitas definidas pelo usuário para componentes específicos (`sidebarColor`, `topbarColor`, `textureColor`). 
+   - Overrides SEMPRE têm a palavra final e devem injetar variantes `-rgb` para transparências.
 
-### Hierarquia de Camadas (Fidelidade Visual):
-- **Camada 0**: Fundo do Card/Container (`bg-theme-card`).
-- **Camada 1**: Textura de Atmosfera (`SarakAtmosphereLayer`) - Deve ter `z-index: 1` local em previews para garantir visibilidade.
-- **Camada 2**: Efeitos de Luz (`Spotlight`, `BorderBeam`).
-- **Camada 3**: Conteúdo do Componente.
+## 4. Camadas Atmosféricas (Texturas)
+- **Isolamento Crítico**: A cor da textura (`--theme-texture-color`) deve ser tratada como uma camada independente.
+- **NÃO SOBRESCREVER**: A injeção de textura nunca deve sobrescrever o background global (`--bg-body`), exceto se explicitamente configurado no rascunho de design.
 
-## 4. Internationalization & Documentation
-- All code comments and technical documentation within the module MUST be in **English**.
-- Variable names must be intention-revealing (e.g., `isGeometricCut` instead of `geo`).
+## 5. Sincronização e Hidratação
+- **Reactive Hydration**: O motor de injeção aguarda `isHydrated` para re-sincronizar o estado persistente do `localStorage`.
+- **Draft Sync**: O rascunho (`useDesignDraft`) deve ser espelhado reativamente quando o estado global é carregado no boot para evitar perdas de configuração.
 
 ---
-**Sarak Engineering v8.5**
+**Sarak Engineering v10.2**

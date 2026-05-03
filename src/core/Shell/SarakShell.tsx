@@ -217,7 +217,7 @@ export const SarakShell: React.FC<SarakShellProps> = (props) => {
                 )}
 
                 {/* MAIN CONTENT CANVAS */}
-                <div ref={contentRef} className="flex-1 relative min-h-0 min-w-0">
+                <div ref={contentRef} className="flex-1 relative min-h-0 min-w-0 flex flex-col">
                     <ErrorBoundary fallback={<div className="sarak-critical-error">Falha Industrial detectada no Módulo. Reiniciando Engine...</div>}>
                         <React.Suspense fallback={<div className="sarak-loader">Sincronizando DNA Industrial...</div>}>
                             {isReady ? (

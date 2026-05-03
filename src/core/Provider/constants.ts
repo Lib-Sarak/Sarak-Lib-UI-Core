@@ -28,5 +28,13 @@ export const DEFAULT_INDUSTRIAL_SEED = {
     colorDepth: 1,
     colorVariation: 1,
     secondaryColor: '#6366f1',
-    tertiaryColor: '#10b981'
+    tertiaryColor: '#10b981',
+    textureColor: '#00f2ff', // Defaulting texture to neon
+    sidebarColor: 'rgba(0, 0, 0, 0.4)',
+    topbarColor: 'rgba(0, 0, 0, 0.4)',
+    cardBackgroundColor: 'rgba(30, 41, 59, 0.4)',
+    cardBorderColor: 'rgba(255, 255, 255, 0.1)',
+    buttonColor: '#00f2ff',
+    buttonHoverColor: '#60a5fa',
+    titleColor: '#ffffff'
 };

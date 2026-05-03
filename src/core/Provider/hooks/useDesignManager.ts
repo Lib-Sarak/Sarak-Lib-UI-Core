@@ -17,9 +17,9 @@ export const useDesignManager = (props: {
 }) => {
     const { initialConfig, options, token, isHydrated } = props;
     
-    // Refs para evitar loops de efeito com objetos passados via props
     const optionsRef = useRef(options);
     const configRef = useRef(initialConfig);
+    const hasHydratedRef = useRef(false);
 
     useEffect(() => {
         optionsRef.current = options;
@@ -28,35 +28,48 @@ export const useDesignManager = (props: {
 
     const [isBackendLoaded, setIsBackendLoaded] = useState(false);
 
-    const [design, setDesign] = useState(() => {
+    // Initial seed logic (memoized to avoid re-calculation)
+    const getSeedConfig = useCallback(() => {
         const opt = optionsRef.current;
         const defaultThemeId = opt?.theme?.defaultTheme || 'futurist';
         const defaultTheme = (BASE_PRESETS as any)[defaultThemeId] || BASE_PRESETS.futurist;
+        return { ...DEFAULT_INDUSTRIAL_SEED, ...defaultTheme, ...configRef.current };
+    }, []);
 
-        const seedConfig = { ...DEFAULT_INDUSTRIAL_SEED, ...defaultTheme, ...configRef.current };
-
-        if (typeof window === 'undefined') return seedConfig;
-
+    const [design, setDesign] = useState(() => {
+        if (typeof window === 'undefined') return getSeedConfig();
+        
         try {
-            const key = opt?.persistence?.storageKey || DEFAULT_STORAGE_KEY;
+            const key = optionsRef.current?.persistence?.storageKey || DEFAULT_STORAGE_KEY;
             const saved = localStorage.getItem(key);
             if (saved) {
                 const parsed = JSON.parse(saved);
-                const validParsed = Object.fromEntries(
-                    Object.entries(parsed).filter(([_, v]) => v !== null && v !== undefined)
-                );
-                return validateDesign({ ...seedConfig, ...validParsed });
+                return validateDesign({ ...getSeedConfig(), ...parsed });
             }
-        } catch (e) {
-            console.error("[Sarak:Design] Load error:", e);
-        }
-        return validateDesign(seedConfig);
+        } catch (e) {}
+        return validateDesign(getSeedConfig());
     });
 
-    const uiBaseUrl = useMemo(() => optionsRef.current?.endpoints?.baseUrl || DEFAULT_UI_BASE_URL, []);
-    const storageKey = useMemo(() => optionsRef.current?.persistence?.storageKey || DEFAULT_STORAGE_KEY, []);
+    const storageKey = useMemo(() => options?.persistence?.storageKey || DEFAULT_STORAGE_KEY, [options?.persistence?.storageKey]);
+    const uiBaseUrl = useMemo(() => options?.endpoints?.baseUrl || DEFAULT_UI_BASE_URL, [options?.endpoints?.baseUrl]);
 
-    // 1. Carregamento Remoto
+    // 1. RE-HYDRATION SYNC (v10.2)
+    // Se o isHydrated mudar de false para true, tentamos ler novamente o localStorage
+    // Isso resolve o problema de race condition com a storageKey customizada.
+    useEffect(() => {
+        if (isHydrated && !hasHydratedRef.current) {
+            try {
+                const saved = localStorage.getItem(storageKey);
+                if (saved) {
+                    const parsed = JSON.parse(saved);
+                    setDesign(prev => validateDesign({ ...prev, ...parsed }));
+                }
+            } catch (e) {}
+            hasHydratedRef.current = true;
+        }
+    }, [isHydrated, storageKey]);
+
+    // 2. Carregamento Remoto
     useEffect(() => {
         if (!isHydrated) return;
 
@@ -90,7 +103,7 @@ export const useDesignManager = (props: {
         loadRemote();
     }, [token, isBackendLoaded, isHydrated, uiBaseUrl]);
 
-    // 2. Persistência Automática (Debounced)
+    // 3. Persistência Automática (Debounced)
     useEffect(() => {
         if (!isHydrated) return;
 
@@ -136,3 +149,4 @@ export const useDesignManager = (props: {
         isBackendLoaded
     };
 };
+

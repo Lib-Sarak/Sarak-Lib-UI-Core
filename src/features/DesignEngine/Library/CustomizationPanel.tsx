@@ -1,13 +1,14 @@
 import React, { useState } from 'react';
-import { Palette, Layout, Globe, Settings, Keyboard, Zap } from 'lucide-react';
+import { Palette, Layout, Globe, Settings, Keyboard, Zap, Box } from 'lucide-react';
 import { ThemeCustomizationTab } from '../Main/ThemeCustomizationTab';
 import { LayoutTab } from '../Panels/LayoutTab';
 import { LanguageTab } from '../Panels/LanguageTab';
 import { ShortcutsTab } from '../Panels/ShortcutsTab';
 import { AdvancedTab } from '../Panels/AdvancedTab';
 import { EngineCustomizationTab } from '../Panels/EngineCustomizationTab';
+import { HyperGranularityTab } from '../Panels/HyperGranularityTab';
 
-type TabId = 'themes' | 'layout' | 'engines' | 'language' | 'shortcuts' | 'advanced';
+type TabId = 'themes' | 'layout' | 'granular' | 'engines' | 'language' | 'shortcuts' | 'advanced';
 
 /**
  * CustomizationPanel (v5.4)
@@ -19,6 +20,7 @@ export const CustomizationPanel: React.FC = () => {
     const tabs = [
         { id: 'themes', label: 'Themes & Aesthetics', icon: Palette },
         { id: 'layout', label: 'Structure & Layout', icon: Layout },
+        { id: 'granular', label: 'Hyper-Granularity', icon: Box },
         { id: 'engines', label: 'Advanced Engines', icon: Zap },
         { id: 'language', label: 'Language & Translation', icon: Globe },
         { id: 'shortcuts', label: 'System Shortcuts', icon: Keyboard },
@@ -58,6 +60,7 @@ export const CustomizationPanel: React.FC = () => {
                 <div className="min-h-full bg-black/20 rounded-3xl border border-white/5 flex flex-col backdrop-blur-sm shadow-2xl overflow-hidden">
                     {activeTab === 'themes' && <ThemeCustomizationTab />}
                     {activeTab === 'layout' && <LayoutTab />}
+                    {activeTab === 'granular' && <HyperGranularityTab />}
                     {activeTab === 'engines' && <EngineCustomizationTab />}
                     {activeTab === 'language' && <LanguageTab />}
                     {activeTab === 'shortcuts' && <ShortcutsTab />}

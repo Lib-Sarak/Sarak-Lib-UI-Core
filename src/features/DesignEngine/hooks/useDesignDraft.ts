@@ -8,6 +8,8 @@ export const useDesignDraft = (sarak: any) => {
         layout: sarak.layout,
         mode: sarak.mode,
         primaryColor: sarak.primaryColor,
+        secondaryColor: sarak.secondaryColor,
+        tertiaryColor: sarak.tertiaryColor,
         navigationStyle: sarak.navigationStyle,
         sidebarWidth: sarak.sidebarWidth,
         fontScale: sarak.fontScale,
@@ -17,16 +19,16 @@ export const useDesignDraft = (sarak: any) => {
         bodyFont: sarak.bodyFont,
         headingWeight: sarak.headingWeight,
         headingLetterSpacing: sarak.headingLetterSpacing,
-        borderRadius: sarak.borderRadius,
-        borderWidth: sarak.borderWidth,
-        borderStyle: sarak.borderStyle,
+        borderRadius: sarak.borderRadius || { sm: 4, md: 8, lg: 12 },
+        layoutGap: sarak.layoutGap || { sm: 8, md: 16, lg: 24 },
+        cardPadding: sarak.cardPadding || { sm: 12, md: 24, lg: 32 },
+
         glassOpacity: sarak.glassOpacity,
         glassBlur: sarak.glassBlur,
         shadowIntensity: sarak.shadowIntensity,
         isGeometricCut: sarak.isGeometricCut,
         animationSpeed: sarak.animationSpeed,
         tabFont: sarak.tabFont,
-        layoutGap: sarak.layoutGap,
         systemName: sarak.systemName,
         logoUrl: sarak.logoUrl,
         logoDarkUrl: sarak.logoDarkUrl,
@@ -53,11 +55,12 @@ export const useDesignDraft = (sarak: any) => {
         chartType: sarak.chartType || 'bar',
         chartThickness: sarak.chartThickness || 2,
         chartSmoothing: sarak.chartSmoothing ?? true,
-        cardPadding: sarak.cardPadding || 24,
+
         tabGap: sarak.tabGap || 12,
         tabSectionMargin: sarak.tabSectionMargin || 0,
         texture: sarak.texture || 'none',
         textureOpacity: sarak.textureOpacity || 0.05,
+        textureColor: sarak.textureColor,
         scaleRatio: sarak.scaleRatio || 1.0,
         contrastCurve: sarak.contrastCurve || 1.0,
         layeredShadows: sarak.layeredShadows || 1.0,
@@ -66,13 +69,55 @@ export const useDesignDraft = (sarak: any) => {
         spotlightEnabled: sarak.spotlightEnabled ?? true,
         magneticPullEnabled: sarak.magneticPullEnabled ?? false,
         borderBeamEnabled: sarak.borderBeamEnabled ?? false,
-        performanceMode: sarak.performanceMode || 'high'
+        performanceMode: sarak.performanceMode || 'high',
+        // --- Novos Campos de Soberania Industrial (v10.3) ---
+        sidebarNoiseOpacity: sarak.sidebarNoiseOpacity ?? 0.08,
+        topbarNoiseOpacity: sarak.topbarNoiseOpacity ?? 0.08,
+        cardNoiseOpacity: sarak.cardNoiseOpacity ?? 0.08,
+        sidebarHoverColor: sarak.sidebarHoverColor,
+        sidebarActiveColor: sarak.sidebarActiveColor,
+        topbarHoverColor: sarak.topbarHoverColor,
+        topbarActiveColor: sarak.topbarActiveColor,
+        cardHoverColor: sarak.cardHoverColor,
+        cardActiveColor: sarak.cardActiveColor,
+        // --- Campos Legados/Base ---
+        colorDepth: sarak.colorDepth || 1,
+        colorVariation: sarak.colorVariation || 1,
+        sidebarColor: sarak.sidebarColor,
+        topbarColor: sarak.topbarColor,
+        cardBackgroundColor: sarak.cardBackgroundColor,
+        cardBorderColor: sarak.cardBorderColor,
+        buttonColor: sarak.buttonColor,
+        buttonHoverColor: sarak.buttonHoverColor,
+        titleColor: sarak.titleColor,
+        successColor: sarak.successColor,
+        warningColor: sarak.warningColor,
+        errorColor: sarak.errorColor,
+        atmosphereNoiseOpacity: sarak.atmosphereNoiseOpacity || 0.05
     }));
 
     const [toast, setToast] = useState<{ type: 'success' | 'warning', message: string } | null>(null);
 
-    // No v9.2, o rascunho é independente e não deve ser resetado automaticamente 
-    // quando o sistema terminar de carregar, para não perder edições do usuário.
+    // --- RE-HYDRATION SYNC (v10.2) ---
+    // Quando o objeto 'sarak' (manager) carregar dados reais (localStorage/Backend),
+    // precisamos atualizar o rascunho para refletir esses dados, caso o rascunho ainda
+    // esteja com os valores padrão de inicialização.
+    useEffect(() => {
+        if (!sarak || !sarak.primaryColor) return;
+
+        setDraft(prev => {
+            // Só atualizamos se as cores principais forem diferentes das que iniciamos 
+            // ou se o sistema mudou o layout (indicando carregamento de preset)
+            // Isso evita sobrescrever edições que o usuário começou a fazer logo no boot.
+            if (prev.primaryColor !== sarak.primaryColor || 
+                prev.mode !== sarak.mode || 
+                prev.sidebarColor !== sarak.sidebarColor ||
+                prev.textureColor !== sarak.textureColor) {
+                return { ...prev, ...sarak };
+            }
+            return prev;
+        });
+    }, [sarak?.primaryColor, sarak?.mode, sarak?.sidebarColor, sarak?.textureColor]);
 
     const showToast = (type: 'success' | 'warning', message: string) => {
         setToast({ type, message });

@@ -21,7 +21,7 @@ export const SarakChat: React.FC<SarakChatProps> = ({
   const chat = useSarakChat(endpoint, modelsEndpoint);
 
   return (
-    <div className="flex flex-col h-[600px] bg-theme-card border-theme group/chat transition-all rounded-theme" style={{ transitionDuration: 'var(--animation-speed, 0.5s)' }}>
+    <div className="flex flex-col h-full min-h-0 bg-theme-card border-theme group/chat transition-all rounded-theme" style={{ transitionDuration: 'var(--animation-speed, 0.5s)' }}>
       <ChatHeader 
         label={label} 
         mode={chat.mode} 
@@ -56,16 +56,6 @@ export const SarakChat: React.FC<SarakChatProps> = ({
         fileInputRef={chat.fileInputRef}
         handleFileSelect={chat.handleFileSelect}
       />
-
-      <style>{`
-        .custom-scrollbar::-webkit-scrollbar { width: 4px; }
-        .custom-scrollbar::-webkit-scrollbar-track { background: transparent; }
-        .custom-scrollbar::-webkit-scrollbar-thumb { background: rgba(255,255,255,0.05); border-radius: 10px; }
-        .custom-scrollbar::-webkit-scrollbar-thumb:hover { background: rgba(255,255,255,0.1); }
-        .custom-scrollbar-h::-webkit-scrollbar { height: 4px; }
-        .custom-scrollbar-h::-webkit-scrollbar-track { background: transparent; }
-        .custom-scrollbar-h::-webkit-scrollbar-thumb { background: rgba(255,255,255,0.05); border-radius: 10px; }
-      `}</style>
     </div>
   );
 };

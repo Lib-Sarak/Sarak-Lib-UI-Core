@@ -13,6 +13,8 @@ export * from './constants/theme';
 
 // Layout Components and Plug & Play UI
 export * from './core/Shell/SarakShell';
+export { useDesignDraft } from './features/DesignEngine/hooks/useDesignDraft';
+export { DESIGN_MANIFEST } from './core/Provider/manifest';
 export * from './features/DesignEngine/Library/CustomizationPanel';
 export * from './components/atomic/Atoms';
 export * from './components/atomic/Cards/ExpandableCard';

@@ -1,26 +1,27 @@
-# Sovereign Validation Checklist (v8.5)
+# Sovereign Validation Checklist (v10.2)
 
-Before considering any task complete in `Sarak-Lib-UI-Core`, verify the following points:
+Antes de considerar qualquer tarefa concluída no `Sarak-Lib-UI-Core`, verifique os seguintes pontos de soberania e qualidade industrial:
 
-## 1. Architectural Integrity
-- [ ] **Zero Hardcoded**: Is there any literal color, size, or font in the TSX? (Must use `--theme-*` or `--sarak-*`).
-- [ ] **Manifest Driven**: If a new property was added, is it registered in `DESIGN_MANIFEST`?
-- [ ] **Modular Presets**: Are new category presets stored in a separate constants file?
+## 1. Integridade Plug & Play e Persistência
+- [ ] **Reactive Hydration**: O componente/hook aguarda o estado `isHydrated` antes de ler do `localStorage`?
+- [ ] **Agnostic Storage**: A chave de armazenamento é derivada do `storageKey` do Provider (sem hardcode)?
+- [ ] **Draft Sync**: O rascunho de design é sincronizado automaticamente no boot com o estado persistido?
 
-## 2. Preview Fidelity
-- [ ] **Digital Twin**: Does the `PreviewCanvas` show EXACTLY what the system will look like after "Apply"?
-- [ ] **CSS Sandboxing**: If it's a gallery card, does it use an isolated `UIContext` and local variables?
-- [ ] **Texture Layering**: Are textures visible? Is the `z-index` of `SarakAtmosphereLayer` correctly handled (Z:1 for specimens)?
-- [ ] **Stress Test**: For materials, was the transparency validated against a technical background?
+## 2. Soberania Granular (v10.2)
+- [ ] **Authority Hierarchy**: O `DesignInjector` respeita a ordem: Presets -> Multi-Tone -> Overrides Granulares?
+- [ ] **Bridge Variables**: Foram injetadas variantes `-rgb` (ex: `--theme-primary-rgb`) para suportar transparências dinâmicas?
+- [ ] **Texture Isolation**: A textura está operando em sua própria camada cromática sem "vazar" para o background global?
+- [ ] **Granular Coverage**: Sidebar, Topbar e Textura possuem controles independentes e funcionais?
 
-## 3. Orchestration & Discovery
-- [ ] **Contract Mapping**: Is the `VisualContractType` updated in `discovery.ts`?
-- [ ] **Dynamic Rendering**: Does `DynamicRenderer` have a case for the new template?
-- [ ] **API Resilience**: Does the new component use the centralized `api` service and handle loading/error states?
+## 3. Descoberta e Registro de Módulos
+- [ ] **Local Component Registry**: Novos componentes de página foram registrados via `registerLocalComponent`?
+- [ ] **Manifest Parity**: O manifesto da aplicação hospedeira reflete corretamente os `componentId` registrados?
+- [ ] **Visual Contracts**: O `SarakShell` consegue navegar e renderizar o módulo sem erros de "Component not found"?
 
-## 4. Kinetic & Identity
-- [ ] **Kinetic Engine**: Are all animations using `--animation-speed` and `--sarak-elasticity`?
-- [ ] **Aesthetics**: Does the UI feel premium? (Google Fonts,uppercase tracking, harmonious palettes).
+## 4. Estética e Performance Industrial
+- [ ] **Zero Hardcoded**: Não existem cores ou medidas literais no código?
+- [ ] **Kinetic Excellence**: Todas as transições utilizam os tokens do Kinetic Engine?
+- [ ] **Premium UI**: A interface utiliza tipografia Google Fonts, uppercase tracking em labels e paletas harmoniosas?
 
 ---
-**Sarak Engineering v8.5**
+**Sarak Engineering v10.2**

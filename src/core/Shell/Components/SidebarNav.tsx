@@ -53,9 +53,11 @@ export const SidebarNav: React.FC<SidebarNavProps> = ({
                 borderRadius: `var(--radius-theme, ${borderRadius ?? 12}px)`,
                 height: `calc(100vh - (var(--theme-tab-section-margin, ${tabSectionMargin ?? 12}px) * 2))`,
                 borderWidth: `${borderWidth ?? 1}px`,
-                borderStyle: borderStyle || 'solid'
+                borderStyle: borderStyle || 'solid',
+                backgroundColor: 'var(--theme-sidebar-bg, var(--theme-sidebar))',
+                borderColor: 'var(--theme-border)'
             }}
-            className="sarak-shell-sidebar bg-[var(--theme-sidebar)] border border-[var(--theme-border)] flex flex-col shrink-0 relative z-[100] shadow-2xl overflow-hidden"
+            className="sarak-shell-sidebar flex flex-col shrink-0 relative z-[100] shadow-2xl overflow-hidden"
         >
             <div className={`h-16 sarak-shell-header px-6 flex items-center border-b border-[var(--theme-border)] bg-[var(--theme-title)]/5 ${effectiveIsNavHidden ? 'justify-center' : 'justify-between'}`}>
                 {!effectiveIsNavHidden && (

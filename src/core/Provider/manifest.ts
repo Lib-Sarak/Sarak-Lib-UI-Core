@@ -54,6 +54,38 @@ export const DESIGN_MANIFEST: Record<string, {
         vars: ['--theme-warning', '--sarak-warning-color'],
         transform: (v: string) => computeColorVariants(v, '#f59e0b')
     },
+    textureColor: {
+        vars: ['--theme-texture-color', '--sarak-texture-color'],
+        transform: (v: string) => computeColorVariants(v, '#ffffff')
+    },
+    sidebarColor: {
+        vars: ['--theme-sidebar-bg', '--sarak-sidebar-bg'],
+        transform: (v: string) => computeColorVariants(v, '#000000')
+    },
+    topbarColor: {
+        vars: ['--theme-topbar-bg', '--sarak-topbar-bg'],
+        transform: (v: string) => computeColorVariants(v, '#000000')
+    },
+    cardBackgroundColor: {
+        vars: ['--theme-card-bg', '--sarak-card-bg'],
+        transform: (v: string) => computeColorVariants(v, 'rgba(30, 41, 59, 0.4)')
+    },
+    cardBorderColor: {
+        vars: ['--theme-card-border', '--sarak-card-border'],
+        transform: (v: string) => computeColorVariants(v, 'rgba(255, 255, 255, 0.1)')
+    },
+    buttonColor: {
+        vars: ['--theme-button-bg', '--sarak-button-bg'],
+        transform: (v: string) => computeColorVariants(v, '#3b82f6')
+    },
+    buttonHoverColor: {
+        vars: ['--theme-button-hover', '--sarak-button-hover'],
+        transform: (v: string) => computeColorVariants(v, '#60a5fa')
+    },
+    titleColor: {
+        vars: ['--theme-title-color', '--sarak-title-color'],
+        transform: (v: string) => computeColorVariants(v, '#ffffff')
+    },
     layoutDensity: { vars: ['--sarak-layout-density', '--density-theme'], classPrefix: 'density-' },
     texture: { vars: ['--sarak-texture', '--texture-theme'], classPrefix: 'texture-', attr: 'data-texture' },
     navigationStyle: { vars: ['--sarak-navigation-style', '--sarak-nav-style', '--nav-style'], classPrefix: 'nav-' },
@@ -68,15 +100,29 @@ export const DESIGN_MANIFEST: Record<string, {
         transform: (v) => (({ tight: '-0.05em', normal: '0', wide: '0.1em', widest: '0.25em' } as any)[v] || v)
     },
     borderRadius: { vars: ['--radius-theme', '--sarak-border-radius', '--border-radius'], unit: 'px' },
+    borderRadiusSm: { vars: ['--sarak-border-radius-sm'], unit: 'px' },
+    borderRadiusMd: { vars: ['--sarak-border-radius-md'], unit: 'px' },
+    borderRadiusLg: { vars: ['--sarak-border-radius-lg'], unit: 'px' },
+
     borderWidth: { vars: ['--theme-border-width', '--border-width', '--sarak-border-width'], unit: 'px' },
     borderStyle: { vars: ['--border-style', '--sarak-border-style'] },
+    
     layoutGap: { vars: ['--theme-gap', '--sarak-layout-gap'], unit: 'px' },
+    layoutGapSm: { vars: ['--sarak-layout-gap-sm'], unit: 'px' },
+    layoutGapMd: { vars: ['--sarak-layout-gap-md'], unit: 'px' },
+    layoutGapLg: { vars: ['--sarak-layout-gap-lg'], unit: 'px' },
+
     glassOpacity: { vars: ['--glass-opacity', '--sarak-glass-opacity', '--sarak-bg-opacity'] },
     glassBlur: { vars: ['--glass-blur', '--sarak-glass-blur'], unit: 'px' },
     glassSaturation: { vars: ['--sarak-glass-saturation', '--theme-glass-saturation'], unit: '%' },
     contrastCurve: { vars: ['--contrast-curve', '--sarak-contrast-curve'], transform: (v) => parseFloat(v) || 1.0 },
     shadowIntensity: { vars: ['--shadow-intensity', '--sarak-shadow-intensity'] },
+    
     cardPadding: { vars: ['--card-padding', '--sarak-card-padding', '--theme-card-padding'], unit: 'px' },
+    cardPaddingSm: { vars: ['--sarak-card-padding-sm'], unit: 'px' },
+    cardPaddingMd: { vars: ['--sarak-card-padding-md'], unit: 'px' },
+    cardPaddingLg: { vars: ['--sarak-card-padding-lg'], unit: 'px' },
+
     cardTexture: { vars: ['--sarak-card-texture'], attr: 'data-card-texture' },
     tabGap: { vars: ['--tab-gap', '--sarak-tab-gap', '--theme-tab-gap'], unit: 'px' },
     tabSectionMargin: { vars: ['--tab-section-margin', '--sarak-tab-section-margin', '--theme-tab-section-margin', '--safe-area-padding'], unit: 'px' },
@@ -159,6 +205,20 @@ export const DESIGN_MANIFEST: Record<string, {
     chartSmoothing: { attr: 'data-chart-smoothing' },
     buttonHoverEffect: { attr: 'data-button-hover', vars: ['--sarak-button-hover'] },
     inputStyle: { attr: 'data-input-style', vars: ['--sarak-input-style'] },
+    
+    // Hyper-Granular Interaction Tokens
+    sidebarHoverColor: { vars: ['--sarak-sidebar-hover-color'], transform: (v: string) => computeColorVariants(v, 'transparent') },
+    sidebarActiveColor: { vars: ['--sarak-sidebar-active-color'], transform: (v: string) => computeColorVariants(v, 'transparent') },
+    topbarHoverColor: { vars: ['--sarak-topbar-hover-color'], transform: (v: string) => computeColorVariants(v, 'transparent') },
+    topbarActiveColor: { vars: ['--sarak-topbar-active-color'], transform: (v: string) => computeColorVariants(v, 'transparent') },
+    cardHoverColor: { vars: ['--sarak-card-hover-color'], transform: (v: string) => computeColorVariants(v, 'transparent') },
+    cardActiveColor: { vars: ['--sarak-card-active-color'], transform: (v: string) => computeColorVariants(v, 'transparent') },
+
+    // Hyper-Granular Layer Textures
+    sidebarNoiseOpacity: { vars: ['--sarak-sidebar-noise-opacity'] },
+    topbarNoiseOpacity: { vars: ['--sarak-topbar-noise-opacity'] },
+    cardNoiseOpacity: { vars: ['--sarak-card-noise-opacity'] },
+
     atmosphereNoiseOpacity: { vars: ['--sarak-noise-opacity', '--theme-noise-opacity'] },
 
     iconStrokeWidth: { vars: ['--sarak-icon-stroke', '--theme-icon-stroke'], unit: 'px' },

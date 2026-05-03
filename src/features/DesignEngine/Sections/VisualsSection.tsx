@@ -134,10 +134,37 @@ export const VisualsSection: React.FC<VisualsSectionProps> = ({ draft, updateDra
                         </div>
                     </div>
                 </div>
+
+                <div className="space-y-4 pt-4 border-t border-white/5">
+                    <span className="text-2xs font-black uppercase tracking-widest text-white/20 block">Cores Estruturais (Granularidade)</span>
+                    <div className="grid grid-cols-2 lg:grid-cols-4 gap-4">
+                        <div className="flex flex-col gap-2">
+                            <span className="text-[10px] font-bold text-white/40 uppercase">Sidebar</span>
+                            <input type="color" value={draft.sidebarColor || '#000000'} onChange={(e) => updateDraft('sidebarColor', e.target.value)} className="w-full h-8 rounded-lg bg-transparent cursor-pointer" />
+                        </div>
+                        <div className="flex flex-col gap-2">
+                            <span className="text-[10px] font-bold text-white/40 uppercase">Topbar</span>
+                            <input type="color" value={draft.topbarColor || '#000000'} onChange={(e) => updateDraft('topbarColor', e.target.value)} className="w-full h-8 rounded-lg bg-transparent cursor-pointer" />
+                        </div>
+                        <div className="flex flex-col gap-2">
+                            <span className="text-[10px] font-bold text-white/40 uppercase">Card BG</span>
+                            <input type="color" value={draft.cardBackgroundColor || '#1e293b'} onChange={(e) => updateDraft('cardBackgroundColor', e.target.value)} className="w-full h-8 rounded-lg bg-transparent cursor-pointer" />
+                        </div>
+                        <div className="flex flex-col gap-2">
+                            <span className="text-[10px] font-bold text-white/40 uppercase">Botões</span>
+                            <input type="color" value={draft.buttonColor || '#3b82f6'} onChange={(e) => updateDraft('buttonColor', e.target.value)} className="w-full h-8 rounded-lg bg-transparent cursor-pointer" />
+                        </div>
+                    </div>
+                </div>
             </Section>
 
             <Section id="textures-core" icon={Grid} title="Texturas & Superfícies" activeSection={activeSection} onToggle={setActiveSection}>
                 <SelectControl label="Biblioteca de Texturas" options={TEXTURE_LIBRARY} value={draft.texture} onChange={(v: any) => updateDraft('texture', v)} />
+                
+                <div className="mt-4 flex flex-col gap-2">
+                    <span className="text-[10px] font-bold text-white/40 uppercase">Cor da Textura</span>
+                    <input type="color" value={draft.textureColor || '#ffffff'} onChange={(e) => updateDraft('textureColor', e.target.value)} className="w-full h-10 rounded-xl bg-black/40 border border-white/5 cursor-pointer appearance-none p-1" />
+                </div>
                 
                 {/* Visual Texture Preview */}
                 <div className="mt-2 mb-4 h-16 rounded-xl border border-white/5 bg-black/40 relative overflow-hidden group">
