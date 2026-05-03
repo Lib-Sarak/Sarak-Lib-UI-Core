@@ -110,7 +110,9 @@ export const SidebarNav: React.FC<SidebarNavProps> = ({
                                         disabled={isOffline}
                                         title={isOffline ? `Offline Module: ${mod.error || 'Connection error'}` : mod.label}
                                         className={`w-full flex items-center gap-3 px-3 py-2.5 rounded-xl transition-all relative group font-tab 
-                                            ${activeModuleId === mod.id ? 'bg-[var(--theme-primary)]/10 text-[var(--theme-primary)] font-bold shadow-[inset_0_0_20px_rgba(59,130,246,0.05)]' : 'text-white/40 hover:bg-white/5 hover:text-white'}
+                                            ${activeModuleId === mod.id 
+                                                ? 'bg-[var(--sarak-sidebar-active,var(--theme-primary-rgb,59,130,246)/10)] text-[var(--theme-primary)] font-bold shadow-[inset_0_0_20px_rgba(var(--theme-primary-rgb),0.05)]' 
+                                                : 'text-white/40 hover:bg-[var(--sarak-sidebar-hover,white/5)] hover:text-white'}
                                             ${isOffline ? 'opacity-30 grayscale cursor-not-allowed border border-dashed border-white/5' : ''}
                                         `}
                                     >
@@ -148,7 +150,12 @@ export const SidebarNav: React.FC<SidebarNavProps> = ({
             {/* 4. User Profile & Logout */}
             <ShellUserWidget user={user} logout={logout} variant={effectiveIsNavHidden ? 'mini' : 'vertical'} />
             
-            <div onMouseDown={startResizing} className="absolute top-0 right-0 w-1 h-full cursor-col-resize hover:bg-[var(--theme-primary)]/50 transition-colors z-[60]" />
+            {/* RESIZE HANDLE (X-AXIS) */}
+            <div 
+                onMouseDown={startResizing} 
+                className="absolute top-0 right-0 w-1.5 h-full cursor-col-resize hover:bg-[var(--theme-primary)]/40 active:bg-[var(--theme-primary)] transition-all z-[1000]" 
+                title="Arraste para redimensionar"
+            />
         </aside>
     );
 };

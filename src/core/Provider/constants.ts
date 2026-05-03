@@ -25,6 +25,7 @@ export const DEFAULT_INDUSTRIAL_SEED = {
     borderStyle: 'solid',
     animationSpeed: 0.4,
     sidebarWidth: 240,
+    topbarHeight: 64,
     colorDepth: 1,
     colorVariation: 1,
     secondaryColor: '#6366f1',

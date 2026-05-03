@@ -5,13 +5,16 @@ export const useDesignDraft = (sarak: any) => {
     // Sincronização Unidirecional (v9.5)
     // Inicializamos o rascunho com o estado atual, mas evitamos resets reativos.
     const [draft, setDraft] = useState(() => ({
-        layout: sarak.layout,
-        mode: sarak.mode,
+        layout: sarak.layout || 'glass',
+        mode: sarak.mode || 'dark',
         primaryColor: sarak.primaryColor,
         secondaryColor: sarak.secondaryColor,
         tertiaryColor: sarak.tertiaryColor,
         navigationStyle: sarak.navigationStyle,
         sidebarWidth: sarak.sidebarWidth,
+        topbarHeight: sarak.topbarHeight || 64,
+        colorPalette: sarak.colorPalette,
+        dashboardTemplate: sarak.dashboardTemplate || 'industrial',
         fontScale: sarak.fontScale,
         layoutDensity: sarak.layoutDensity,
         headingFont: sarak.headingFont,
@@ -19,9 +22,11 @@ export const useDesignDraft = (sarak: any) => {
         bodyFont: sarak.bodyFont,
         headingWeight: sarak.headingWeight,
         headingLetterSpacing: sarak.headingLetterSpacing,
-        borderRadius: sarak.borderRadius || { sm: 4, md: 8, lg: 12 },
-        layoutGap: sarak.layoutGap || { sm: 8, md: 16, lg: 24 },
-        cardPadding: sarak.cardPadding || { sm: 12, md: 24, lg: 32 },
+        borderRadius: sarak.borderRadius || { sm: 12, md: 24, lg: 40 },
+        layoutGap: sarak.layoutGap || { sm: 12, md: 24, lg: 40 },
+        cardPadding: sarak.cardPadding || { sm: 16, md: 32, lg: 48 },
+        borderWidth: sarak.borderWidth || 1,
+        borderStyle: sarak.borderStyle || 'solid',
 
         glassOpacity: sarak.glassOpacity,
         glassBlur: sarak.glassBlur,
@@ -93,31 +98,40 @@ export const useDesignDraft = (sarak: any) => {
         successColor: sarak.successColor,
         warningColor: sarak.warningColor,
         errorColor: sarak.errorColor,
-        atmosphereNoiseOpacity: sarak.atmosphereNoiseOpacity || 0.05
+        atmosphereNoiseOpacity: sarak.atmosphereNoiseOpacity || 0.05,
+        // --- Geometria Adicional ---
+        borderRadiusSm: sarak.borderRadiusSm || 8,
+        borderRadiusMd: sarak.borderRadiusMd || 16,
+        borderRadiusLg: sarak.borderRadiusLg || 32,
+        layoutGapSm: sarak.layoutGapSm || 8,
+        layoutGapMd: sarak.layoutGapMd || 16,
+        layoutGapLg: sarak.layoutGapLg || 24,
+        cardPaddingSm: sarak.cardPaddingSm || 12,
+        cardPaddingMd: sarak.cardPaddingMd || 24,
+        cardPaddingLg: sarak.cardPaddingLg || 32,
     }));
 
     const [toast, setToast] = useState<{ type: 'success' | 'warning', message: string } | null>(null);
+    const [isDirty, setIsDirty] = useState(false);
 
-    // --- RE-HYDRATION SYNC (v10.2) ---
-    // Quando o objeto 'sarak' (manager) carregar dados reais (localStorage/Backend),
-    // precisamos atualizar o rascunho para refletir esses dados, caso o rascunho ainda
-    // esteja com os valores padrão de inicialização.
+    // 2. Sincronização de Re-hidratação Inteligente (v10.3)
+    // Se o estado mestre mudar e o usuário ainda não tiver editado nada (isDirty === false),
+    // atualizamos o rascunho. Isso resolve o problema de o rascunho carregar antes da hidratação do localStorage.
     useEffect(() => {
-        if (!sarak || !sarak.primaryColor) return;
-
-        setDraft(prev => {
-            // Só atualizamos se as cores principais forem diferentes das que iniciamos 
-            // ou se o sistema mudou o layout (indicando carregamento de preset)
-            // Isso evita sobrescrever edições que o usuário começou a fazer logo no boot.
-            if (prev.primaryColor !== sarak.primaryColor || 
-                prev.mode !== sarak.mode || 
-                prev.sidebarColor !== sarak.sidebarColor ||
-                prev.textureColor !== sarak.textureColor) {
-                return { ...prev, ...sarak };
-            }
-            return prev;
-        });
-    }, [sarak?.primaryColor, sarak?.mode, sarak?.sidebarColor, sarak?.textureColor]);
+        if (!isDirty && sarak) {
+            setDraft(prev => ({
+                ...prev,
+                systemName: sarak.systemName || prev.systemName,
+                logoUrl: sarak.logoUrl || prev.logoUrl,
+                logoDarkUrl: sarak.logoDarkUrl || prev.logoDarkUrl,
+                primaryColor: sarak.primaryColor || prev.primaryColor,
+                mode: sarak.mode || prev.mode,
+                layout: sarak.layout || prev.layout,
+                sidebarWidth: sarak.sidebarWidth || prev.sidebarWidth,
+                topbarHeight: sarak.topbarHeight || prev.topbarHeight
+            }));
+        }
+    }, [sarak.systemName, sarak.logoUrl, sarak.primaryColor, sarak.mode, sarak.layout, sarak.sidebarWidth, sarak.topbarHeight, isDirty]);
 
     const showToast = (type: 'success' | 'warning', message: string) => {
         setToast({ type, message });
@@ -125,12 +139,36 @@ export const useDesignDraft = (sarak: any) => {
     };
 
     const updateDraft = (key: string, value: any) => {
-        setDraft(prev => ({ 
-            ...prev, 
-            [key]: value,
-            // Detach from preset theme if any visual property is changed
-            layout: key === 'layout' ? value : 'custom'
-        }));
+        setIsDirty(true);
+        setDraft(prev => {
+            // Se o valor for idêntico, ignoramos para evitar re-renders desnecessários
+            if (prev[key as keyof typeof prev] === value) return prev;
+
+            const newDraft = { 
+                ...prev, 
+                [key]: value
+            };
+
+            // Proteção Estratégica (v10.3):
+            // Garantir que o modo (dark/light) NUNCA seja alterado a menos que a chave seja explicitamente 'mode'
+            if (key !== 'mode') {
+                newDraft.mode = prev.mode || sarak.mode || 'dark';
+            }
+
+            // Garantir que valores nulos não corrompam o rascunho para chaves críticas
+            if (value === undefined || value === null) {
+                if (key === 'fontScale') newDraft.fontScale = prev.fontScale || 'm';
+                if (key === 'colorPalette') newDraft.colorPalette = prev.colorPalette;
+            }
+
+            // Somente marcamos como custom se a mudança for visual e não for o próprio layout ou metadados
+            const structuralKeys = ['layout', 'mode', 'systemName', 'logoUrl', 'logoDarkUrl', 'logoScale', 'logoPosition'];
+            if (!structuralKeys.includes(key)) {
+                newDraft.layout = 'custom';
+            }
+
+            return newDraft;
+        });
     };
 
     const handleThemePreview = (id: string) => {
@@ -143,7 +181,7 @@ export const useDesignDraft = (sarak: any) => {
         if (!preset) return;
 
         const TOKEN_SCHEMA: Record<string, 'number' | 'boolean' | 'string' | 'array'> = {
-            navigationStyle: 'string', sidebarWidth: 'number', layoutDensity: 'string', isAutoHideEnabled: 'boolean',
+            navigationStyle: 'string', sidebarWidth: 'number', topbarHeight: 'number', layoutDensity: 'string', isAutoHideEnabled: 'boolean',
             isSplitViewEnabled: 'boolean', secondaryModuleId: 'string', searchStyle: 'string',
             headingFont: 'string', subtitleFont: 'string', tabFont: 'string', bodyFont: 'string',
             headingWeight: 'string', headingLetterSpacing: 'string', fontScale: 'string',
@@ -160,11 +198,18 @@ export const useDesignDraft = (sarak: any) => {
             scaleRatio: 'number', contrastCurve: 'number', layeredShadows: 'number',
             cardPadding: 'number', dashboardTemplate: 'string', cardTexture: 'string',
             hoverLiftEnabled: 'boolean', spotlightEnabled: 'boolean', magneticPullEnabled: 'boolean',
-            borderBeamEnabled: 'boolean', performanceMode: 'string'
+            borderBeamEnabled: 'boolean', performanceMode: 'string',
+            sidebarColor: 'string', topbarColor: 'string', cardBackgroundColor: 'string',
+            buttonColor: 'string', sidebarHoverColor: 'string', topbarHoverColor: 'string',
+            cardHoverColor: 'string', buttonHoverColor: 'string',
+            sidebarActiveColor: 'string', topbarActiveColor: 'string',
+            cardActiveColor: 'string', buttonActiveColor: 'string',
+            sidebarNoiseOpacity: 'number', topbarNoiseOpacity: 'number',
+            cardNoiseOpacity: 'number', atmosphereNoiseOpacity: 'number'
         };
 
         const tokenMap: Record<string, string> = {
-            '--nav-style': 'navigationStyle', '--sidebar-width': 'sidebarWidth', '--layout-density': 'layoutDensity', '--auto-hide': 'isAutoHideEnabled',
+            '--nav-style': 'navigationStyle', '--sidebar-width': 'sidebarWidth', '--topbar-height': 'topbarHeight', '--layout-density': 'layoutDensity', '--auto-hide': 'isAutoHideEnabled',
             '--split-view': 'isSplitViewEnabled', '--secondary-module': 'secondaryModuleId', '--search-style': 'searchStyle',
             '--font-heading': 'headingFont', '--font-subtitle': 'subtitleFont', '--font-tab': 'tabFont', '--font-main': 'bodyFont',
             '--font-weight-heading': 'headingWeight', '--letter-spacing-heading': 'headingLetterSpacing', '--font-scale': 'fontScale',

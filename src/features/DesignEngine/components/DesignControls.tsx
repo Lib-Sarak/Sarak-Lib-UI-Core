@@ -2,17 +2,56 @@ import React from 'react';
 import { ChevronDown } from 'lucide-react';
 import { motion, AnimatePresence } from 'framer-motion';
 
-export const SliderControl: React.FC<any> = ({ label, value, min, max, step = 1, onChange, suffix = '' }) => (
+export const SliderControl: React.FC<any> = ({ label, value, min = 0, max = 100, step = 1, onChange, suffix = '', unit = 'px' }) => (
     <div className="mb-4">
         <div className="flex justify-between items-center mb-2">
             <span className="text-2xs font-black uppercase tracking-widest text-white/40">{label}</span>
-            <span className="text-2xs font-mono text-[var(--theme-primary)]">{value ?? 0}{suffix}</span>
+            <span className="text-2xs font-mono text-[var(--theme-primary)]">{value ?? 0}{suffix || unit}</span>
         </div>
         <input 
             type="range" min={min} max={max} step={step} value={value ?? 0} 
             onChange={(e) => onChange(parseFloat(e.target.value))}
             className="w-full h-1 bg-white/5 rounded-lg appearance-none cursor-pointer accent-[var(--theme-primary)]"
         />
+    </div>
+);
+
+export const ColorControl: React.FC<any> = ({ label, value, onChange }) => (
+    <div className="flex items-center justify-between p-4 rounded-xl bg-white/5 border border-white/10 group transition-all hover:bg-white/10 hover:border-white/20">
+        <span className="text-2xs font-black uppercase tracking-widest text-white/60">{label}</span>
+        <div className="flex items-center gap-3">
+            {value && value !== 'transparent' && (
+                <button 
+                    onClick={() => onChange(undefined)}
+                    className="text-[10px] font-black uppercase text-white/20 hover:text-red-500 transition-colors"
+                >
+                    Reset
+                </button>
+            )}
+            <div className="relative w-8 h-8 rounded-lg overflow-hidden border border-white/10">
+                <input 
+                    type="color" 
+                    value={value || '#000000'} 
+                    onChange={(e) => onChange(e.target.value)}
+                    className="absolute inset-0 w-[150%] h-[150%] -top-[25%] -left-[25%] cursor-pointer border-none bg-transparent"
+                />
+            </div>
+        </div>
+    </div>
+);
+
+export const SwitchControl: React.FC<any> = ({ label, value, onChange, description }) => (
+    <div className="flex items-center justify-between p-4 rounded-xl bg-white/5 border border-white/10 group hover:bg-white/10 transition-all">
+        <div className="flex flex-col gap-0.5">
+            <span className="text-2xs font-black uppercase tracking-widest text-white/60">{label}</span>
+            {description && <span className="text-[10px] text-white/20 uppercase tracking-tighter italic">{description}</span>}
+        </div>
+        <button 
+            onClick={() => onChange(!value)}
+            className={`w-10 h-5 rounded-full relative transition-all ${value ? 'bg-[var(--theme-primary)]' : 'bg-white/10'}`}
+        >
+            <div className={`absolute top-1 w-3 h-3 rounded-full bg-white shadow-sm transition-all ${value ? 'left-6' : 'left-1'}`} />
+        </button>
     </div>
 );
 

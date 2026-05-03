@@ -44,7 +44,14 @@ export const PreviewCanvas: React.FC<PreviewCanvasProps> = ({
     customThemes = []
 }) => {
 
-    const tokens = React.useMemo(() => draftTokens || {}, [draftTokens]);
+    const tokens = React.useMemo(() => {
+        const t = { ...draftTokens };
+        if (!t.mode) t.mode = mode || 'dark';
+        if (!t.layout) t.layout = previewLayoutId || 'glass';
+        if (!t.primaryColor) t.primaryColor = previewPrimaryColor;
+        if (!t.fontScale) t.fontScale = 'm';
+        return t;
+    }, [draftTokens, mode, previewLayoutId, previewPrimaryColor]);
     
     // --- HELPERS ---
     const getShadowStyle = React.useCallback((orientation: string, intensity: number, color: string): string => {
@@ -65,6 +72,7 @@ export const PreviewCanvas: React.FC<PreviewCanvasProps> = ({
         const vars: any = {};
         const attrs: any = {};
         
+        // 1. Processamento do Manifest Base
         Object.entries(tokens).forEach(([key, value]) => {
             const config = (DESIGN_MANIFEST as any)[key];
             if (config) {
@@ -76,7 +84,11 @@ export const PreviewCanvas: React.FC<PreviewCanvasProps> = ({
                         if (isObject) {
                             Object.entries(transformedValue).forEach(([subKey, subVal]) => {
                                 if (subKey === 'main') vars[varName] = subVal;
-                                else if (subKey === 'factor') vars['--font-size-factor'] = subVal;
+                                else if (subKey === 'factor' && key === 'fontScale') {
+                                    vars['--font-size-factor'] = subVal;
+                                    if (varName === '--font-size-factor') return;
+                                }
+                                else if (subKey === 'px' && key === 'fontScale') vars[varName] = subVal;
                                 else if (subKey === 'rgb') vars['--theme-primary-rgb'] = subVal;
                                 else if (subKey === 'hover') vars['--theme-primary-hover'] = subVal;
                                 else if (subKey === 'active') vars['--theme-primary-active'] = subVal;
@@ -86,7 +98,6 @@ export const PreviewCanvas: React.FC<PreviewCanvasProps> = ({
                                 else if (subKey === 'margin') vars['--theme-margin-scaled'] = subVal;
                                 else if (subKey === 'radius') vars['--theme-radius-scaled'] = subVal;
                                 else if (subKey === 'base' && key === 'fluidScaling') vars['--theme-font-size-base'] = subVal;
-                                else if (subKey === 'px' && key === 'fontScale') vars[varName] = subVal;
                                 else vars[`${varName}-${subKey}`] = subVal;
                             });
                         } else {
@@ -105,7 +116,7 @@ export const PreviewCanvas: React.FC<PreviewCanvasProps> = ({
             }
         });
 
-        // --- Industrial Parity Overrides (Calculated after loop to ensure precision) ---
+        // 2. Paridade Industrial & Haptics
         const densityMap: any = { compact: 0.8, comfortable: 1, spacious: 1.25 };
         const densityFactor = densityMap[tokens.layoutDensity || 'comfortable'] || 1;
         
@@ -115,118 +126,59 @@ export const PreviewCanvas: React.FC<PreviewCanvasProps> = ({
         vars['--safe-area-padding'] = `${tokens.tabSectionMargin || 0}px`;
         vars['--max-content-width'] = tokens.maxContentWidth === 'none' ? '100%' : tokens.maxContentWidth;
         vars['--sarak-scrollbar-width'] = `${tokens.scrollbarStyle || 6}px`;
-        
-        // Haptic Logic Parity (v8.5)
         vars['--haptic-bounce'] = 1 - ((tokens.hapticIntensity || 0.02) * 2);
 
-        // Glass & Card Parity (Ensures CSS variables win over JS calculations)
+        // Glass & Atmosphere
         vars['--glass-opacity'] = tokens.glassOpacity ?? 0.1;
-        vars['--texture-opacity'] = tokens.textureOpacity ?? 0.08;
-        vars['--surface-intensity'] = tokens.surfaceIntensity ?? 0.05;
-        vars['--theme-noise-opacity'] = tokens.atmosphereNoiseOpacity ?? 0.05;
+        vars['--sarak-glass-blur'] = `${tokens.glassBlur ?? 20}px`;
         vars['--sarak-glass-saturation'] = `${tokens.glassSaturation ?? 180}%`;
-        vars['--contrast-curve'] = tokens.contrastCurve ?? 1.0;
-        vars['--spotlight-opacity'] = tokens.cardSpotlight ?? 0;
+        vars['--theme-noise-opacity'] = tokens.atmosphereNoiseOpacity ?? 0.05;
 
-        const isLight = tokens.mode === 'light';
-        vars['--theme-bg'] = isLight ? '#f1f5f9' : '#020617';
-        
+        // 3. Âncora de Modo (Luz/Sombra)
+        const mode = tokens.mode || 'dark';
+        const isDark = mode === 'dark';
+        vars['--theme-bg'] = isDark ? '#020617' : '#f1f5f9';
+        vars['--theme-title'] = isDark ? '#ffffff' : '#0f172a';
+        vars['--theme-muted'] = isDark ? '#94a3b8' : '#64748b';
+        vars['--theme-border'] = isDark ? 'rgba(255,255,255,0.08)' : 'rgba(0,0,0,0.08)';
+
+        // 4. Injeção de Cores Granulares (Soberania)
+        const anchorColor = tokens.primaryColor || '#0ea5e9';
+        const variants = computeColorVariants(anchorColor, isDark ? '#1e293b' : '#f8fafc');
+
+        // Sidebar
+        if (tokens.sidebarColor) {
+            vars['--sarak-sidebar-bg'] = tokens.sidebarColor;
+            vars['--sarak-sidebar-hover'] = tokens.sidebarHoverColor || computeColorVariants(tokens.sidebarColor, isDark ? '#1e293b' : '#f8fafc').hover;
+            vars['--sarak-sidebar-active'] = tokens.sidebarActiveColor || computeColorVariants(tokens.sidebarColor, isDark ? '#1e293b' : '#f8fafc').active;
+        }
+
+        // Topbar
+        if (tokens.topbarColor) {
+            vars['--sarak-topbar-bg'] = tokens.topbarColor;
+            vars['--sarak-topbar-hover'] = tokens.topbarHoverColor || computeColorVariants(tokens.topbarColor, isDark ? '#1e293b' : '#f8fafc').hover;
+            vars['--sarak-topbar-active'] = tokens.topbarActiveColor || computeColorVariants(tokens.topbarColor, isDark ? '#1e293b' : '#f8fafc').active;
+        }
+
+        // Cards
+        if (tokens.cardBackgroundColor) {
+            vars['--sarak-card-bg'] = tokens.cardBackgroundColor;
+            vars['--sarak-card-hover'] = tokens.cardHoverColor || computeColorVariants(tokens.cardBackgroundColor, isDark ? '#1e293b' : '#f8fafc').hover;
+            vars['--sarak-card-active'] = tokens.cardActiveColor || computeColorVariants(tokens.cardBackgroundColor, isDark ? '#1e293b' : '#f8fafc').active;
+        }
+
+        // Buttons
+        if (tokens.buttonColor) {
+            const btnVariants = computeColorVariants(tokens.buttonColor, isDark ? '#1e293b' : '#f8fafc');
+            vars['--theme-primary'] = tokens.buttonColor;
+            vars['--theme-primary-hover'] = tokens.buttonHoverColor || btnVariants.hover;
+            vars['--theme-primary-active'] = tokens.buttonActiveColor || btnVariants.active;
+        }
+
         if (!vars['--theme-shadow']) {
             vars['--theme-shadow'] = tokens.layeredShadows 
                 ? vars['--sarak-layered-shadows'] 
                 : getShadowStyle(tokens.shadowOrientation || 'top-down', tokens.shadowIntensity ?? 0.5, tokens.primaryColor);
-        }
-
-        if (!vars['--radius-theme']) vars['--radius-theme'] = '12px';
-
-        // --- DYNAMIC COLOR ROUTER (Multi-Tone Engine v10.0 Parity) ---
-        const depth = parseInt(tokens.colorDepth) || 1;
-        const variation = parseInt(tokens.colorVariation) || 1;
-
-        const p = computeColorVariants(tokens.primaryColor || '#3b82f6', '#3b82f6');
-        const sc = computeColorVariants(tokens.secondaryColor || '#6366f1', '#6366f1');
-        const t = computeColorVariants(tokens.tertiaryColor || '#10b981', '#10b981');
-        const neutral = computeColorVariants('#1e293b', '#1e293b');
-
-        const injectPreviewLayer = (slot: string, color: any) => {
-            const prefix = `--theme-${slot}`;
-            vars[prefix] = color.main;
-            vars[`${prefix}-rgb`] = color.rgb;
-            vars[`${prefix}-bg`] = color.bg;
-            vars[`${prefix}-border`] = color.border;
-            vars[`${prefix}-hover`] = color.hover;
-            vars[`${prefix}-active`] = color.active;
-            vars[`${prefix}-focus`] = color.focus;
-            vars[`${prefix}-light`] = color.light;
-            
-            if (slot === 'button') {
-                vars['--theme-primary'] = color.main;
-                vars['--theme-primary-rgb'] = color.rgb;
-            }
-        };
-
-        if (depth === 1) {
-            if (variation === 2) {
-                injectPreviewLayer('primary', p);
-                injectPreviewLayer('card', neutral);
-                injectPreviewLayer('sidebar', p);
-                injectPreviewLayer('button', p);
-                injectPreviewLayer('border', p);
-            } else if (variation === 3) {
-                injectPreviewLayer('primary', p);
-                injectPreviewLayer('card', { ...p, main: `rgba(${p.rgb}, 0.1)` });
-                injectPreviewLayer('sidebar', p);
-                injectPreviewLayer('button', p);
-                injectPreviewLayer('border', p);
-            } else {
-                injectPreviewLayer('primary', p);
-                injectPreviewLayer('card', p);
-                injectPreviewLayer('sidebar', p);
-                injectPreviewLayer('button', p);
-                injectPreviewLayer('border', p);
-            }
-        } else if (depth === 2) {
-            if (variation === 2) {
-                injectPreviewLayer('primary', p);
-                injectPreviewLayer('sidebar', p);
-                injectPreviewLayer('texture', p);
-                injectPreviewLayer('card', sc);
-                injectPreviewLayer('border', sc);
-                injectPreviewLayer('button', p);
-            } else if (variation === 3) {
-                injectPreviewLayer('primary', p);
-                injectPreviewLayer('sidebar', p);
-                injectPreviewLayer('card', sc);
-                injectPreviewLayer('button', sc);
-                injectPreviewLayer('border', sc);
-            } else {
-                injectPreviewLayer('primary', p);
-                injectPreviewLayer('sidebar', p);
-                injectPreviewLayer('button', p);
-                injectPreviewLayer('card', sc);
-                injectPreviewLayer('border', sc);
-            }
-        } else if (depth === 3) {
-            if (variation === 2) {
-                injectPreviewLayer('primary', p);
-                injectPreviewLayer('sidebar', p);
-                injectPreviewLayer('card', sc);
-                injectPreviewLayer('border', sc);
-                injectPreviewLayer('button', t);
-            } else if (variation === 3) {
-                injectPreviewLayer('primary', p);
-                injectPreviewLayer('sidebar', p);
-                injectPreviewLayer('card', sc);
-                injectPreviewLayer('button', t);
-                injectPreviewLayer('border', t);
-            } else {
-                injectPreviewLayer('primary', p);
-                injectPreviewLayer('sidebar', p);
-                injectPreviewLayer('header', p);
-                injectPreviewLayer('card', sc);
-                injectPreviewLayer('border', t);
-                injectPreviewLayer('button', p);
-            }
         }
 
         return { 
@@ -382,33 +334,13 @@ export const PreviewCanvas: React.FC<PreviewCanvasProps> = ({
 
     const renderSystemContent = () => (
         <div 
-            className="flex flex-col w-full h-full relative z-10 bg-[var(--theme-bg)] transition-all duration-500 overflow-hidden" 
+            className={`flex flex-col w-full h-full relative z-10 bg-[var(--theme-bg)] transition-all duration-500 overflow-hidden ${tokens.mode === 'dark' ? 'dark' : 'light'}`} 
             style={{ 
                 ...cssVariables, 
                 padding: 'var(--safe-area-padding)',
             }} 
             {...dataAttributes}
         >
-            <style>{`
-                .sarak-preview-btn { transition: transform 0.1s cubic-bezier(0.175, 0.885, 0.32, 1.275); }
-                .sarak-preview-btn:active { transform: scale(var(--haptic-bounce, 0.95)); }
-                
-                /* Preview Scrollbar Parity */
-                .SarakPreviewCanvas *::-webkit-scrollbar {
-                    width: var(--sarak-scrollbar-width) !important;
-                    height: var(--sarak-scrollbar-width) !important;
-                }
-                .SarakPreviewCanvas *::-webkit-scrollbar-track {
-                    background: transparent;
-                }
-                .SarakPreviewCanvas *::-webkit-scrollbar-thumb {
-                    background: var(--theme-border);
-                    border-radius: 10px;
-                }
-                .SarakPreviewCanvas *::-webkit-scrollbar-thumb:hover {
-                    background: var(--theme-primary);
-                }
-            `}</style>
 
             {tokens.texture && tokens.texture !== 'none' && <div className={`absolute inset-0 pointer-events-none z-0 texture-${tokens.texture} SarakAtmosphereLayer`} />}
             
@@ -533,7 +465,7 @@ export const PreviewCanvas: React.FC<PreviewCanvasProps> = ({
     );
 
     return (
-        <div className="flex-grow flex flex-col relative overflow-hidden bg-[#050505] p-2 items-center justify-center">
+        <div className="flex-grow flex flex-col relative overflow-hidden bg-[#050505] p-2 items-center justify-center SarakPreviewCanvas">
             <UIContext.Provider value={draftContextValue as any}>
                 <div style={containerStyles} className="custom-scrollbar">
                     {isDualView ? (
@@ -584,17 +516,27 @@ export const PreviewCanvas: React.FC<PreviewCanvasProps> = ({
                 </div>
             </UIContext.Provider>
             <style dangerouslySetInnerHTML={{ __html: `
-                .custom-scrollbar::-webkit-scrollbar {
-                    width: var(--scrollbar-width, 6px);
-                    height: var(--scrollbar-width, 6px);
+                .SarakPreviewCanvas * {
+                    ${Object.entries(cssVariables).map(([k, v]) => `${k}: ${v} !important;`).join('\n')}
                 }
-                .custom-scrollbar::-webkit-scrollbar-track {
+
+                .SarakPreviewCanvas .custom-scrollbar {
+                    overflow-y: auto !important;
+                }
+
+                .SarakPreviewCanvas .custom-scrollbar::-webkit-scrollbar {
+                    width: var(--sarak-scrollbar-width, 6px) !important;
+                    height: var(--sarak-scrollbar-width, 6px) !important;
+                }
+                .SarakPreviewCanvas .custom-scrollbar::-webkit-scrollbar-track {
                     background: transparent;
                 }
-                .custom-scrollbar::-webkit-scrollbar-thumb {
-                    background: var(--theme-primary);
+                .SarakPreviewCanvas .custom-scrollbar::-webkit-scrollbar-thumb {
+                    background: var(--theme-border, rgba(255,255,255,0.1));
                     border-radius: 10px;
-                    opacity: 0.5;
+                }
+                .SarakPreviewCanvas .custom-scrollbar::-webkit-scrollbar-thumb:hover {
+                    background: var(--theme-primary);
                 }
                 .sarak-preview-btn:active {
                     transform: scale(var(--haptic-bounce, 0.98)) !important;

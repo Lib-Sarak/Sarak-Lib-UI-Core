@@ -16,15 +16,17 @@ interface TopbarNavProps {
     extraToolbarItems?: React.ReactNode;
     user?: any;
     logout?: () => void;
+    startResizing: () => void;
 }
 
 export const TopbarNav: React.FC<TopbarNavProps> = ({
-    design, brand, toggleNav, setIsSearchOpen, activeModuleId, setActiveModuleId, discoveredModules, extraToolbarItems, user, logout
+    design, brand, toggleNav, setIsSearchOpen, activeModuleId, setActiveModuleId, discoveredModules, extraToolbarItems, user, logout, startResizing
 }) => {
     const [isHovered, setIsHovered] = React.useState(false);
     const { 
         mode, navigationStyle, isNavHidden, systemName, logoUrl, logoDarkUrl, logoScale, 
-        logoPosition, tabSectionMargin, borderRadius, borderWidth, borderStyle, animationSpeed
+        logoPosition, tabSectionMargin, borderRadius, borderWidth, borderStyle, animationSpeed,
+        topbarHeight
     } = design || {};
 
     const isTopbar = navigationStyle === 'topbar';
@@ -36,13 +38,13 @@ export const TopbarNav: React.FC<TopbarNavProps> = ({
         <header 
             onMouseEnter={() => isNavHidden && setIsHovered(true)}
             onMouseLeave={() => setIsHovered(false)}
-            className={`backdrop-blur-2xl px-6 flex items-center justify-between z-[45] shrink-0 overflow-hidden group`}
+            className={`backdrop-blur-2xl px-6 flex items-center justify-between z-[45] shrink-0 overflow-hidden group relative`}
             style={{ 
                 margin: `var(--theme-tab-section-margin, ${tabSectionMargin ?? 12}px)`,
                 borderRadius: `var(--radius-theme, ${borderRadius ?? 12}px)`,
                 borderWidth: `${borderWidth ?? 1}px`,
                 borderStyle: borderStyle || 'solid',
-                height: effectiveIsNavHidden ? '40px' : '64px',
+                height: effectiveIsNavHidden ? '40px' : `${topbarHeight || 64}px`,
                 transition: `all ${animationSpeed || 0.4}s cubic-bezier(0.16, 1, 0.3, 1)`,
                 backgroundColor: 'var(--theme-topbar-bg, var(--theme-sidebar-bg))',
                 borderColor: 'var(--theme-border)'
@@ -89,8 +91,8 @@ export const TopbarNav: React.FC<TopbarNavProps> = ({
                                     title={mod.label}
                                     className={`flex items-center justify-center transition-all whitespace-nowrap font-tab shrink-0 
                                         ${effectiveIsNavHidden 
-                                            ? `w-8 h-8 rounded-lg ${activeModuleId === mod.id ? 'bg-[var(--theme-primary)]/20 text-[var(--theme-primary)]' : 'text-white/20 hover:text-white'}`
-                                            : `px-4 py-1.5 rounded-full text-[10px] font-black uppercase tracking-widest ${activeModuleId === mod.id ? 'bg-[var(--theme-primary)] text-white shadow-lg shadow-[var(--theme-primary)]/30 scale-105' : 'text-white/40 hover:text-white hover:bg-white/5'}`
+                                            ? `w-8 h-8 rounded-lg ${activeModuleId === mod.id ? 'bg-[var(--sarak-topbar-active,rgba(var(--theme-primary-rgb),0.2))] text-[var(--theme-primary)]' : 'text-white/20 hover:text-white hover:bg-[var(--sarak-topbar-hover,white/5)]'}`
+                                            : `px-4 py-1.5 rounded-full text-[10px] font-black uppercase tracking-widest ${activeModuleId === mod.id ? 'bg-[var(--sarak-topbar-active,var(--theme-primary))] text-white shadow-lg shadow-[var(--theme-primary)]/30 scale-105' : 'text-white/40 hover:text-white hover:bg-[var(--sarak-topbar-hover,white/5)]'}`
                                         }
                                     `}
                                 >
@@ -119,8 +121,15 @@ export const TopbarNav: React.FC<TopbarNavProps> = ({
                     <ShellUserWidget user={user} logout={logout} variant={effectiveIsNavHidden ? 'mini' : 'horizontal'} />
                 </div>
             </div>
+
+            {/* RESIZE HANDLE (Y-AXIS) */}
+            {!effectiveIsNavHidden && (
+                <div 
+                    onMouseDown={startResizing} 
+                    className="absolute bottom-0 left-0 w-full h-1.5 cursor-row-resize hover:bg-[var(--theme-primary)]/40 active:bg-[var(--theme-primary)] transition-all z-[1000]"
+                    title="Arraste para ajustar a altura"
+                />
+            )}
         </header>
     );
 };
-;
-

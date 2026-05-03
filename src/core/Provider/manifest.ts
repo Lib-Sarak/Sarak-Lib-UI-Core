@@ -162,11 +162,11 @@ export const DESIGN_MANIFEST: Record<string, {
         attr: 'data-font-scale',
         transform: (v: string) => {
             const scales: any = {
-                'pp': { px: '10px', factor: '0.7' },
-                'p': { px: '12px', factor: '0.85' },
-                'm': { px: '14px', factor: '1.0' },
-                'g': { px: '16px', factor: '1.25' },
-                'gg': { px: '20px', factor: '1.5' }
+                'pp': { px: '12px', factor: '0.75' },
+                'p': { px: '14px', factor: '0.85' },
+                'm': { px: '16px', factor: '1.0' },
+                'g': { px: '20px', factor: '1.25' },
+                'gg': { px: '24px', factor: '1.5' }
             };
             return scales[v] || scales['m'];
         }
@@ -213,6 +213,7 @@ export const DESIGN_MANIFEST: Record<string, {
     topbarActiveColor: { vars: ['--sarak-topbar-active-color'], transform: (v: string) => computeColorVariants(v, 'transparent') },
     cardHoverColor: { vars: ['--sarak-card-hover-color'], transform: (v: string) => computeColorVariants(v, 'transparent') },
     cardActiveColor: { vars: ['--sarak-card-active-color'], transform: (v: string) => computeColorVariants(v, 'transparent') },
+    buttonActiveColor: { vars: ['--sarak-button-active-color'], transform: (v: string) => computeColorVariants(v, 'transparent') },
 
     // Hyper-Granular Layer Textures
     sidebarNoiseOpacity: { vars: ['--sarak-sidebar-noise-opacity'] },
@@ -237,6 +238,7 @@ export const DESIGN_MANIFEST: Record<string, {
             };
         }
     },
+    topbarHeight: { vars: ['--topbar-height', '--sarak-topbar-height', '--theme-topbar-height'], unit: 'px' },
     isNavHidden: { vars: ['--is-nav-hidden'], attr: 'data-nav-hidden' },
     sidebarMinWidth: { vars: ['--sidebar-min-width'], transform: (v) => parseFloat(v) || 200 },
     sidebarMaxWidth: { vars: ['--sidebar-max-width'], transform: (v) => parseFloat(v) || 450 }

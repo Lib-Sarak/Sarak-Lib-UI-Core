@@ -24,6 +24,7 @@ import { DashboardSection } from '../Sections/DashboardSection';
 import { ChatSection } from '../Sections/ChatSection';
 import { LayoutSection } from '../Sections/LayoutSection';
 import { VisualizationSection } from '../Sections/VisualizationSection';
+import { GranularitySection } from '../Sections/GranularitySection';
 
 /**
  * ThemeCustomizationTab (v8.0 - Sovereign Reorganization)
@@ -69,7 +70,7 @@ export const ThemeCustomizationTab: React.FC = () => {
         if (activeCategory === 'chats') setActivePreviewApp('chat');
         else if (activeCategory === 'dashboard') setActivePreviewApp('dashboard');
         else if (activeCategory === 'fonts') setActivePreviewApp('typography');
-        else if (activeCategory === 'components' || activeCategory === 'cards') setActivePreviewApp('components');
+        else if (activeCategory === 'components' || activeCategory === 'cards' || activeCategory === 'granularity') setActivePreviewApp('components');
         else if (activeCategory === 'visuals-3d') setActivePreviewApp('logs');
         else if (activeCategory && ['layout', 'branding', 'visuals', 'animations', 'presets'].includes(activeCategory)) {
             setActivePreviewApp('kitchen-sink');
@@ -342,6 +343,24 @@ export const ThemeCustomizationTab: React.FC = () => {
                             {activeCategory === 'layout' && (
                                 <motion.div initial={{ height: 0, opacity: 0 }} animate={{ height: 'auto', opacity: 1 }} exit={{ height: 0, opacity: 0 }} className="overflow-hidden">
                                     <LayoutSection draft={draft} updateDraft={updateDraft} activeSection={activeSection} setActiveSection={setActiveSection} />
+                                </motion.div>
+                            )}
+                        </AnimatePresence>
+
+                        {/* 11. HIPER-GRANULARIDADE */}
+                        <CategoryLabel 
+                            icon={Zap} 
+                            title="Hiper-Granularidade" 
+                            index={11} 
+                            isOpen={activeCategory === 'granularity'} 
+                            onToggle={() => setActiveCategory(activeCategory === 'granularity' ? null : 'granularity')}
+                            isDualView={isDualView}
+                            onToggleDual={() => setIsDualView(!isDualView)}
+                        />
+                        <AnimatePresence>
+                            {activeCategory === 'granularity' && (
+                                <motion.div initial={{ height: 0, opacity: 0 }} animate={{ height: 'auto', opacity: 1 }} exit={{ height: 0, opacity: 0 }} className="overflow-hidden">
+                                    <GranularitySection draft={draft} updateDraft={updateDraft} activeSection={activeSection} setActiveSection={setActiveSection} />
                                 </motion.div>
                             )}
                         </AnimatePresence>

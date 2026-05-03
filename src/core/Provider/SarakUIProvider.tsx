@@ -84,6 +84,7 @@ export const SarakUIProvider: React.FC<SarakUIProviderProps> = ({
     // 4. Injeção de Estilos Críticos (Pre-paint Sync)
     const criticalStyles = useMemo(() => {
         const sidebarW = design.sidebarWidth || 240;
+        const topbarH = design.topbarHeight || 64;
         const primaryHex = design.primaryColor || '#00f2ff';
         const isDark = design.mode === 'dark';
         
@@ -91,6 +92,9 @@ export const SarakUIProvider: React.FC<SarakUIProviderProps> = ({
             :root {
                 --sarak-sidebar-width: ${sidebarW}px;
                 --sidebar-width: ${sidebarW}px;
+                --sarak-topbar-height: ${topbarH}px;
+                --topbar-height: ${topbarH}px;
+                --theme-topbar-height: ${topbarH}px;
                 --theme-primary: ${primaryHex};
                 --theme-body: ${isDark ? '#0f172a' : '#f8fafc'};
                 --theme-surface: ${isDark ? '#1e293b' : '#ffffff'};

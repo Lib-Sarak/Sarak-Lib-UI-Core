@@ -5,7 +5,7 @@ import {
     registerLocalComponent, 
     registerSarakModule 
 } from '../../Discovery/registry';
-import { ThemeCustomizationTab } from '../../../features/DesignEngine/Main/ThemeCustomizationTab';
+import { CustomizationPanel } from '../../../features/DesignEngine/Library/CustomizationPanel';
 
 /**
  * useRegistryManager (v10.1)
@@ -21,7 +21,7 @@ export const useRegistryManager = (options: any) => {
         console.log("[Sarak:Registry] Initing Discovery. Manifest present:", !!options?.manifest);
 
         // 1. Garantir que o componente de personalização está registrado globalmente
-        registerLocalComponent('mx-customization', ThemeCustomizationTab);
+        registerLocalComponent('mx-customization', CustomizationPanel);
 
         // 2. Registrar módulos do manifesto (se houver)
         if (options?.manifest?.modules) {
@@ -37,7 +37,7 @@ export const useRegistryManager = (options: any) => {
             icon: 'Palette',
             category: 'Personalização',
             priority: 9999,
-            component: ThemeCustomizationTab
+            component: CustomizationPanel
         });
 
         const updateModules = () => {

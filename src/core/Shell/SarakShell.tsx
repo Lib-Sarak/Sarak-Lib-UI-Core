@@ -180,7 +180,7 @@ export const SarakShell: React.FC<SarakShellProps> = (props) => {
                     groupedModules={shell.groupedModules}
                     setIsNavVisible={shell.setIsNavVisible}
                     setIsSearchOpen={shell.setIsSearchOpen}
-                    startResizing={shell.startResizing}
+                    startResizing={shell.startResizingSidebar}
                 />
             )}
 
@@ -213,6 +213,7 @@ export const SarakShell: React.FC<SarakShellProps> = (props) => {
                         extraToolbarItems={extraToolbarItems}
                         user={user}
                         logout={logout}
+                        startResizing={shell.startResizingTopbar}
                     />
                 )}
 

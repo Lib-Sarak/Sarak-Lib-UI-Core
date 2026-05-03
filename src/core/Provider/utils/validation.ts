@@ -15,6 +15,11 @@ export const validateDesign = (design: any) => {
         }
     });
 
+    // 1.1 Branding Preservation (Garante que nomes não sejam perdidos)
+    if (design.systemName) s.systemName = design.systemName;
+    if (design.logoUrl) s.logoUrl = design.logoUrl;
+    if (design.logoDarkUrl) s.logoDarkUrl = design.logoDarkUrl;
+
     const clamp = (val: any, min: number, max: number, fallback: number) => {
         const n = parseFloat(val);
         if (isNaN(n)) return fallback;
@@ -30,13 +35,15 @@ export const validateDesign = (design: any) => {
 
     // 3. Structural Fallbacks (v9.0 Resilience)
     if (!s.navigationStyle) s.navigationStyle = 'sidebar';
-    if (!s.sidebarWidth) s.sidebarWidth = 240;
+    s.sidebarWidth = clamp(s.sidebarWidth, 200, 450, 240);
+    s.topbarHeight = clamp(s.topbarHeight, 40, 120, 64);
+    if (!s.fontScale) s.fontScale = 'm';
 
     // 4. Multi-Tone Fallbacks
     if (s.colorDepth === undefined) s.colorDepth = 1;
     if (s.colorVariation === undefined) s.colorVariation = 1;
 
-    s.schema_version = "10.1"; // Upgrade to v10.1 (Modular)
+    s.schema_version = "10.3"; // Upgrade to v10.3 (Resizable Nav)
 
     return s;
 };

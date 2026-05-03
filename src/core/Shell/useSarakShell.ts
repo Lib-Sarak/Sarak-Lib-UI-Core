@@ -18,10 +18,12 @@ export const useSarakShell = (loggedIn: boolean) => {
 
     const [isSearchOpen, setIsSearchOpen] = useState(false);
     const [isNavVisible, setIsNavVisible] = useState(true);
-    const [isResizing, setIsResizing] = useState(false);
+    const [resizeType, setResizeType] = useState<'sidebar' | 'topbar' | null>(null);
 
     const sidebarMinWidth = useMemo(() => design?.sidebarMinWidth || 200, [design?.sidebarMinWidth]);
     const sidebarMaxWidth = useMemo(() => design?.sidebarMaxWidth || 450, [design?.sidebarMaxWidth]);
+    const topbarMinHeight = 40;
+    const topbarMaxHeight = 120;
 
     const toggleNav = useCallback(() => {
         applyConfig({ isNavHidden: !design?.isNavHidden });
@@ -31,9 +33,9 @@ export const useSarakShell = (loggedIn: boolean) => {
         applyConfig({ sidebarWidth: w });
     }, [applyConfig]);
 
-    // O "Mouse Tracking Engine" global foi movido para o SarakUIProvider
-    // para usar coordenadas globais (--mouse-px-x, --mouse-px-y)
-    // evitando loops caros de querySelector em cada movimento.
+    const setTopbarHeight = useCallback((h: number) => {
+        applyConfig({ topbarHeight: h });
+    }, [applyConfig]);
 
     // Module activation (Native Routing v10.2) - Prioritizes default or mx-customization
     useEffect(() => {
@@ -67,26 +69,39 @@ export const useSarakShell = (loggedIn: boolean) => {
         return () => window.removeEventListener('keydown', handleKeyDown);
     }, [toggleNav]);
 
-    // Resize logic
-    const startResizing = useCallback(() => setIsResizing(true), []);
-    const stopResizing = useCallback(() => setIsResizing(false), []);
+    // --- Unified Resize Engine (v10.3) ---
+    const startResizingSidebar = useCallback(() => setResizeType('sidebar'), []);
+    const startResizingTopbar = useCallback(() => setResizeType('topbar'), []);
+    const stopResizing = useCallback(() => setResizeType(null), []);
+
     const resize = useCallback((e: MouseEvent) => {
-        if (isResizing) {
+        if (resizeType === 'sidebar') {
             const newWidth = e.clientX;
-            if (newWidth > sidebarMinWidth && newWidth < sidebarMaxWidth) setSidebarWidth(newWidth);
+            if (newWidth >= sidebarMinWidth && newWidth <= sidebarMaxWidth) setSidebarWidth(newWidth);
+        } else if (resizeType === 'topbar') {
+            const newHeight = e.clientY;
+            if (newHeight >= topbarMinHeight && newHeight <= topbarMaxHeight) setTopbarHeight(newHeight);
         }
-    }, [isResizing, setSidebarWidth, sidebarMinWidth, sidebarMaxWidth]);
+    }, [resizeType, setSidebarWidth, setTopbarHeight, sidebarMinWidth, sidebarMaxWidth]);
 
     useEffect(() => {
-        if (isResizing) {
+        if (typeof document === 'undefined') return;
+        
+        if (resizeType) {
             window.addEventListener('mousemove', resize);
             window.addEventListener('mouseup', stopResizing);
+            document.body.style.cursor = resizeType === 'sidebar' ? 'col-resize' : 'row-resize';
+            document.body.style.userSelect = 'none';
         }
         return () => {
             window.removeEventListener('mousemove', resize);
             window.removeEventListener('mouseup', stopResizing);
+            if (typeof document !== 'undefined' && document.body) {
+                document.body.style.cursor = 'default';
+                document.body.style.userSelect = 'auto';
+            }
         };
-    }, [isResizing, resize, stopResizing]);
+    }, [resizeType, resize, stopResizing]);
 
     const activeModule = useMemo(() => discoveredModules.find(m => m.id === activeModuleId), [discoveredModules, activeModuleId]);
     
@@ -112,6 +127,8 @@ export const useSarakShell = (loggedIn: boolean) => {
         isNavVisible,
         setIsNavVisible,
         toggleNav,
-        startResizing
+        startResizingSidebar,
+        startResizingTopbar,
+        startResizing: startResizingSidebar // Alias para compatibilidade v10.2
     };
 };
