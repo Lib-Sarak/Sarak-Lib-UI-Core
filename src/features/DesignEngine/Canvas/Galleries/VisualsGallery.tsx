@@ -1,6 +1,5 @@
-import React from 'react';
 import { motion } from 'framer-motion';
-import { TEXTURE_LIBRARY } from '../../../../constants/design-tokens';
+import { ATMOSPHERE_PRESETS, AtmospherePreset } from '../../../../core/Design/presets';
 import { Check, Grid } from 'lucide-react';
 
 interface VisualsGalleryProps {
@@ -9,19 +8,19 @@ interface VisualsGalleryProps {
 }
 
 export const VisualsGallery: React.FC<VisualsGalleryProps> = ({ onUpdateDraft, tokens }) => {
-    // Filtrar o "none" se quiser, ou deixar. Vou deixar para permitir "remover" textura.
-    const textures = TEXTURE_LIBRARY.filter(t => t.id !== 'none');
+    // Usar os presets atômicos em vez da constante bruta
+    const textures = ATMOSPHERE_PRESETS.filter(p => p.id !== 'none');
 
     return (
         <div className="p-8 grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6">
-            {textures.map((texture) => (
+            {textures.map((preset: AtmospherePreset) => (
                 <VisualsSpecimen 
-                    key={texture.id}
-                    texture={texture}
+                    key={preset.id}
+                    preset={preset}
                     onSelect={() => {
-                        onUpdateDraft('texture', texture.id);
+                        Object.entries(preset.design).forEach(([key, val]) => onUpdateDraft(key, val));
                     }}
-                    isActive={tokens.texture === texture.id}
+                    isActive={tokens.texture === preset.id}
                     globalTokens={tokens}
                 />
             ))}
@@ -34,10 +33,10 @@ const hexToRgb = (hex: string) => {
     return result ? `${parseInt(result[1], 16)}, ${parseInt(result[2], 16)}, ${parseInt(result[3], 16)}` : '255, 255, 255';
 };
 
-const VisualsSpecimen: React.FC<{ texture: any; onSelect: () => void; isActive: boolean; globalTokens: any }> = ({ 
-    texture, onSelect, isActive, globalTokens
+const VisualsSpecimen: React.FC<{ preset: AtmospherePreset; onSelect: () => void; isActive: boolean; globalTokens: any }> = ({ 
+    preset, onSelect, isActive, globalTokens
 }) => {
-    // Usamos a cor primária global ATUAL do draft para a preview da textura não modificar a cor
+    const textureId = preset.design.texture;
     const primaryColor = globalTokens.primaryColor || '#3b82f6';
     const primaryRgb = hexToRgb(primaryColor);
     
@@ -63,7 +62,7 @@ const VisualsSpecimen: React.FC<{ texture: any; onSelect: () => void; isActive: 
                     style={{ backgroundColor: globalTokens.mode === 'light' ? '#f1f5f9' : '#020617' }}
                 >
                     <div 
-                        className={`SarakAtmosphereLayer texture-${texture.id}`} 
+                        className={`SarakAtmosphereLayer texture-${textureId}`} 
                         style={{ 
                             opacity: 0.8, /* Forçado para alta visibilidade na preview apenas */
                             position: 'absolute',
@@ -77,14 +76,14 @@ const VisualsSpecimen: React.FC<{ texture: any; onSelect: () => void; isActive: 
                     
                     <div className="absolute inset-0 flex items-center justify-center z-20">
                          <div className="px-3 py-1 bg-black/60 backdrop-blur-md rounded-full border border-white/10 text-[9px] font-black text-white/40 uppercase tracking-widest">
-                             {texture.name}
+                             {preset.name}
                          </div>
                     </div>
                 </div>
 
                 <div className="flex items-center justify-between">
                     <div className="flex flex-col">
-                        <span className="text-xs font-black uppercase tracking-tight text-white">{texture.name}</span>
+                        <span className="text-xs font-black uppercase tracking-tight text-white">{preset.name}</span>
                         <span className="text-[9px] font-bold text-white/30 uppercase tracking-widest">Aplicar Padrão</span>
                     </div>
                     <div className="flex gap-2">

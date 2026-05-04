@@ -1,6 +1,6 @@
 import React from 'react';
 import { motion } from 'framer-motion';
-import { BarChart3, LineChart, PieChart, Activity, Gauge, Grid3X3, ScatterChart } from 'lucide-react';
+import { CHART_TYPES_PRESETS, ChartPreset } from '../../../../core/Design/presets';
 import SarakChartEngine from '../../../../components/engines/charts/SarakChartEngine';
 
 interface DashboardGalleryProps {
@@ -8,23 +8,6 @@ interface DashboardGalleryProps {
 }
 
 export const DashboardGallery: React.FC<DashboardGalleryProps> = ({ tokens }) => {
-    const chartTypes: any[] = [
-        { id: 'area', name: 'Area Chart', icon: Activity, description: 'Fluxo contínuo e tendências de volume' },
-        { id: 'bar', name: 'Bar Chart', icon: BarChart3, description: 'Comparativos categóricos e rankings' },
-        { id: 'pie', name: 'Pie / Donut', icon: PieChart, description: 'Distribuição e composição de partes' },
-        { id: 'line', name: 'Line Chart', icon: LineChart, description: 'Séries temporais e flutuações' },
-        { id: 'gauge', name: 'Performance Gauge', icon: Gauge, description: 'Telemetria de KPIs e status crítico' },
-        { id: 'radar', name: 'Radar / Spider', icon: Grid3X3, description: 'Análise de múltiplos atributos' },
-        { id: 'heatmap', name: 'Activity Heatmap', icon: Grid3X3, description: 'Densidade de eventos e calor' },
-        { id: 'scatter', name: 'Scatter Plot', icon: ScatterChart, description: 'Correlação e dispersão de pontos' },
-        { id: 'funnel', name: 'Sales Funnel', icon: Activity, description: 'Conversão de etapas e afunilamento' },
-        { id: 'treemap', name: 'TreeMap Engine', icon: Grid3X3, description: 'Hierarquia de dados e proporções' },
-        { id: 'candlestick', name: 'Technical Chart', icon: BarChart3, description: 'Variação de intervalos e amplitude' },
-        { id: 'sunburst', name: 'Sunburst Radial', icon: PieChart, description: 'Níveis hierárquicos concêntricos' },
-        { id: 'histogram', name: 'Histogram', icon: BarChart3, description: 'Distribuição de frequência contínua' },
-        { id: 'boxplot', name: 'BoxPlot / Whisker', icon: Grid3X3, description: 'Resumo estatístico e quartis' }
-    ];
-
     // Dados mockados genéricos para os gráficos
     const mockData = [
         { name: 'A', v: 400 }, { name: 'B', v: 700 }, { name: 'C', v: 500 },
@@ -39,7 +22,7 @@ export const DashboardGallery: React.FC<DashboardGalleryProps> = ({ tokens }) =>
             </header>
 
             <div className="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-3 gap-8">
-                {chartTypes.map((chart, i) => (
+                {CHART_TYPES_PRESETS.map((chart: ChartPreset, i) => (
                     <motion.div 
                         key={chart.id}
                         initial={{ opacity: 0, y: 20 }}

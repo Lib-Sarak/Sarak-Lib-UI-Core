@@ -1,24 +1,25 @@
 import React from 'react';
 import { motion } from 'framer-motion';
 import { Globe, Box, Network, Map as MapIcon, Database, Cpu, Activity, Layout } from 'lucide-react';
+import { DATA_PRESETS, DataPreset } from '../../../../core/Design/presets';
 import SarakVisualEngine from '../../../../components/engines/visuals/SarakVisualEngine';
 
 interface VisualizationGalleryProps {
     tokens: any;
 }
 
-export const VisualizationGallery: React.FC<VisualizationGalleryProps> = ({ tokens }) => {
-    const visualTypes = [
-        { id: 'factory-floor', name: 'Plantas Técnicas (Floor Plans)', icon: Layout, description: 'Visualização isométrica de áreas e posicionamento de componentes' },
-        { id: 'motor-twin', name: 'Visualização de Componentes', icon: Activity, description: 'Renderização 3D de peças técnicas com mapeamento de sensores' },
-        { id: 'globe', name: 'Sincronização Geográfica', icon: Globe, description: 'Monitoramento transcontinental de nós e latência global' },
-        { id: 'map-density', name: 'Análise de Densidade Regional', icon: MapIcon, description: 'Mapas de calor e distribuição de carga em grids espaciais' },
-        { id: 'topology', name: 'Topologia de Redes (3D)', icon: Network, description: 'Visualização tridimensional de barramentos e conexões lógicas' },
-        { id: 'point-cloud', name: 'Nuvem de Pontos (Precision)', icon: Database, description: 'Representação de alta densidade para análise volumétrica bruta' },
-        { id: 'hologram', name: 'Projeção Holográfica', icon: Cpu, description: 'Interface técnica para inspeção de hardware e wireframes' },
-        { id: 'mesh', name: 'Renderização de Malhas', icon: Box, description: 'Estudo de superfícies complexas e geometria técnica' }
-    ];
+const VISUAL_TYPES = [
+    { id: 'factory-floor', name: 'Plantas Técnicas (Floor Plans)', icon: Layout, description: 'Visualização isométrica de áreas e posicionamento de componentes' },
+    { id: 'motor-twin', name: 'Visualização de Componentes', icon: Activity, description: 'Renderização 3D de peças técnicas com mapeamento de sensores' },
+    { id: 'globe', name: 'Sincronização Geográfica', icon: Globe, description: 'Monitoramento transcontinental de nós e latência global' },
+    { id: 'map-density', name: 'Análise de Densidade Regional', icon: MapIcon, description: 'Mapas de calor e distribuição de carga em grids espaciais' },
+    { id: 'topology', name: 'Topologia de Redes (3D)', icon: Network, description: 'Visualização tridimensional de barramentos e conexões lógicas' },
+    { id: 'point-cloud', name: 'Nuvem de Pontos (Precision)', icon: Database, description: 'Representação de alta densidade para análise volumétrica bruta' },
+    { id: 'hologram', name: 'Projeção Holográfica', icon: Cpu, description: 'Interface técnica para inspeção de hardware e wireframes' },
+    { id: 'mesh', name: 'Renderização de Malhas', icon: Box, description: 'Estudo de superfícies complexas e geometria técnica' }
+];
 
+export const VisualizationGallery: React.FC<VisualizationGalleryProps> = ({ tokens }) => {
     return (
         <div className="p-8 space-y-12">
             <header>
@@ -27,7 +28,7 @@ export const VisualizationGallery: React.FC<VisualizationGalleryProps> = ({ toke
             </header>
 
             <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
-                {visualTypes.map((visual, i) => (
+                {VISUAL_TYPES.map((visual, i) => (
                     <motion.div 
                         key={visual.id}
                         initial={{ opacity: 0, scale: 0.95 }}
@@ -59,7 +60,7 @@ export const VisualizationGallery: React.FC<VisualizationGalleryProps> = ({ toke
                         <div className="h-64 bg-black/60 rounded-3xl border border-white/5 overflow-hidden relative shadow-inner">
                             <SarakVisualEngine 
                                 type={visual.id as any} 
-                                tokens={tokens} 
+                                design={tokens} 
                             />
                             
                             {/* Scanning Overlay Effect */}

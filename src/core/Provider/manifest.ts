@@ -99,6 +99,9 @@ export const DESIGN_MANIFEST: Record<string, {
         vars: ['--heading-spacing', '--sarak-heading-spacing'],
         transform: (v) => (({ tight: '-0.05em', normal: '0', wide: '0.1em', widest: '0.25em' } as any)[v] || v)
     },
+    fontLineHeight: { vars: ['--line-height', '--sarak-line-height'] },
+    fontBaseSize: { vars: ['--font-size-base', '--sarak-font-size-base'], unit: 'px' },
+
     borderRadius: { vars: ['--radius-theme', '--sarak-border-radius', '--border-radius'], unit: 'px' },
     borderRadiusSm: { vars: ['--sarak-border-radius-sm'], unit: 'px' },
     borderRadiusMd: { vars: ['--sarak-border-radius-md'], unit: 'px' },
@@ -149,6 +152,9 @@ export const DESIGN_MANIFEST: Record<string, {
         vars: ['--spotlight-opacity'],
         transform: (v: any) => parseFloat(v) || 0
     },
+    cardBorderRadius: { vars: ['--card-radius', '--sarak-card-radius'], unit: 'px' },
+    cardShadowIntensity: { vars: ['--card-shadow-intensity', '--sarak-card-shadow-intensity'] },
+
 
     borderBeamEnabled: { attr: 'data-border-beam' },
     secondaryModuleId: { attr: 'data-sec-module' },
@@ -205,6 +211,10 @@ export const DESIGN_MANIFEST: Record<string, {
     chartSmoothing: { attr: 'data-chart-smoothing' },
     buttonHoverEffect: { attr: 'data-button-hover', vars: ['--sarak-button-hover'] },
     inputStyle: { attr: 'data-input-style', vars: ['--sarak-input-style'] },
+    buttonRadius: { vars: ['--button-radius', '--sarak-button-radius'], unit: 'px' },
+    buttonPadding: { vars: ['--button-padding', '--sarak-button-padding'], unit: 'px' },
+    inputBorderWidth: { vars: ['--input-border-width', '--sarak-input-border-width'], unit: 'px' },
+
     
     // Hyper-Granular Interaction Tokens
     sidebarHoverColor: { vars: ['--sarak-sidebar-hover-color'], transform: (v: string) => computeColorVariants(v, 'transparent') },

@@ -1,6 +1,6 @@
 import React from 'react';
 import { motion } from 'framer-motion';
-import { BRANDING_PRESETS, BrandingPreset } from '../../../../constants/branding-presets';
+import { BRANDING_PRESETS, BrandingPreset } from '../../../../core/Design/presets';
 import { Check, Globe, Zap } from 'lucide-react';
 
 interface BrandingGalleryProps {
@@ -16,9 +16,9 @@ export const BrandingGallery: React.FC<BrandingGalleryProps> = ({ onUpdateDraft,
                     key={preset.id}
                     preset={preset}
                     onSelect={() => {
-                        Object.entries(preset.tokens).forEach(([key, val]) => onUpdateDraft(key, val));
+                        Object.entries(preset.design).forEach(([key, val]) => onUpdateDraft(key, val));
                     }}
-                    isActive={tokens.systemName === preset.tokens.systemName && tokens.logoPosition === preset.tokens.logoPosition}
+                    isActive={tokens.systemName === preset.design.systemName && tokens.logoScale === preset.design.logoScale}
                     globalTokens={tokens}
                 />
             ))}
@@ -30,7 +30,7 @@ const BrandingSpecimen: React.FC<{ preset: BrandingPreset; onSelect: () => void;
     preset, onSelect, isActive, globalTokens
 }) => {
     // Merge for logic, but override name to keep it consistent as requested
-    const mergedTokens = { ...globalTokens, ...preset.tokens, systemName: globalTokens.systemName || 'SARAK' };
+    const mergedTokens = { ...globalTokens, ...preset.design, systemName: globalTokens.systemName || 'SARAK' };
 
     return (
         <motion.div
@@ -112,7 +112,7 @@ const BrandingSpecimen: React.FC<{ preset: BrandingPreset; onSelect: () => void;
                 {/* 3. Metadata */}
                 <div className="pt-4 border-t border-white/5 flex items-center justify-between">
                     <div>
-                        <h3 className="text-xs font-black uppercase tracking-tight text-white">{preset.title}</h3>
+                        <h3 className="text-xs font-black uppercase tracking-tight text-white">{preset.name}</h3>
                         <p className="text-[9px] font-bold text-white/30 uppercase tracking-widest">{preset.description}</p>
                     </div>
                     <div className={`px-2 py-1 rounded-md text-[8px] font-black uppercase border ${mergedTokens.systemTone === 'cyber' ? 'border-purple-500/30 text-purple-400 bg-purple-500/5' :

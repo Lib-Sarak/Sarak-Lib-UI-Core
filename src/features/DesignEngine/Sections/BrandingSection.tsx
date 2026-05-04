@@ -77,28 +77,6 @@ export const BrandingSection: React.FC<BrandingSectionProps> = ({ draft, updateD
                     </div>
                 </div>
 
-                <div className="mt-6 pt-4 border-t border-white/5">
-                    <span className="text-2xs font-black uppercase tracking-widest text-white/40 block mb-3">Tom de Voz do Sistema (Tone)</span>
-                    <div className="grid grid-cols-3 gap-2">
-                        {[
-                            { id: 'corporate', label: 'Corporativo' },
-                            { id: 'modern', label: 'Moderno' },
-                            { id: 'cyber', label: 'Cyberpunk' }
-                        ].map((t) => (
-                            <button
-                                key={t.id}
-                                onClick={() => updateDraft('systemTone', t.id)}
-                                className={`py-2 rounded-lg text-[10px] font-black uppercase transition-all border ${
-                                    draft.systemTone === t.id 
-                                        ? 'bg-[var(--theme-primary)] border-[var(--theme-primary-border)] text-white shadow-lg' 
-                                        : 'bg-white/5 border-white/5 text-white/30 hover:bg-white/10'
-                                }`}
-                            >
-                                {t.label}
-                            </button>
-                        ))}
-                    </div>
-                </div>
             </Section>
 
             <Section id="brand-metrics" icon={Maximize} title="Posicionamento & Escala" activeSection={activeSection} onToggle={setActiveSection}>

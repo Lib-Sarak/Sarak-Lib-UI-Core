@@ -9,7 +9,7 @@ import {
 import { useSarakUI } from '../../../core/Provider/SarakUIProvider';
 import { ThemeList } from '../Library/ThemeList';
 import { PreviewCanvas } from '../Canvas/PreviewCanvas';
-import { LAYOUTS } from '../../../constants/theme-models';
+import { PRESETS } from '../../../core/Design/presets';
 
 // Modular Hooks & Components
 import { useDesignDraft } from '../hooks/useDesignDraft';
@@ -20,11 +20,9 @@ import { VisualsSection } from '../Sections/VisualsSection';
 import { CardsSection } from '../Sections/CardsSection';
 import { AnimationSection } from '../Sections/AnimationSection';
 import { ComponentsSection } from '../Sections/ComponentsSection';
-import { DashboardSection } from '../Sections/DashboardSection';
+import { DataSection } from '../Sections/DataSection';
 import { ChatSection } from '../Sections/ChatSection';
 import { LayoutSection } from '../Sections/LayoutSection';
-import { VisualizationSection } from '../Sections/VisualizationSection';
-import { GranularitySection } from '../Sections/GranularitySection';
 
 /**
  * ThemeCustomizationTab (v8.0 - Sovereign Reorganization)
@@ -68,10 +66,9 @@ export const ThemeCustomizationTab: React.FC = () => {
 
         // 2. Fallback para Categorias Principais
         if (activeCategory === 'chats') setActivePreviewApp('chat');
-        else if (activeCategory === 'dashboard') setActivePreviewApp('dashboard');
+        else if (activeCategory === 'data') setActivePreviewApp('dashboard');
         else if (activeCategory === 'fonts') setActivePreviewApp('typography');
-        else if (activeCategory === 'components' || activeCategory === 'cards' || activeCategory === 'granularity') setActivePreviewApp('components');
-        else if (activeCategory === 'visuals-3d') setActivePreviewApp('logs');
+        else if (activeCategory === 'components' || activeCategory === 'cards') setActivePreviewApp('components');
         else if (activeCategory && ['layout', 'branding', 'visuals', 'animations', 'presets'].includes(activeCategory)) {
             setActivePreviewApp('kitchen-sink');
         }
@@ -155,7 +152,7 @@ export const ThemeCustomizationTab: React.FC = () => {
                                 <motion.div initial={{ height: 0, opacity: 0 }} animate={{ height: 'auto', opacity: 1 }} exit={{ height: 0, opacity: 0 }} className="overflow-hidden bg-black/40">
                                     <div className="p-4">
                                         <ThemeList 
-                                            layouts={LAYOUTS} 
+                                            layouts={PRESETS.layouts} 
                                             customThemes={[]} 
                                             currentLayout={sarak.layout} 
                                             previewLayoutId={draft.layout} 
@@ -275,20 +272,20 @@ export const ThemeCustomizationTab: React.FC = () => {
                             )}
                         </AnimatePresence>
 
-                        {/* 7. DASHBOARD */}
+                        {/* 7. DADOS & VISUALIZAÇÃO */}
                         <CategoryLabel 
                             icon={Monitor} 
-                            title="Dashboard & Gráficos" 
+                            title="Dados & Visualização" 
                             index={7} 
-                            isOpen={activeCategory === 'dashboard'} 
-                            onToggle={() => setActiveCategory(activeCategory === 'dashboard' ? null : 'dashboard')}
+                            isOpen={activeCategory === 'data'} 
+                            onToggle={() => setActiveCategory(activeCategory === 'data' ? null : 'data')}
                             isDualView={isDualView}
                             onToggleDual={() => setIsDualView(!isDualView)}
                         />
                         <AnimatePresence>
-                            {activeCategory === 'dashboard' && (
+                            {activeCategory === 'data' && (
                                 <motion.div initial={{ height: 0, opacity: 0 }} animate={{ height: 'auto', opacity: 1 }} exit={{ height: 0, opacity: 0 }} className="overflow-hidden">
-                                    <DashboardSection draft={draft} updateDraft={updateDraft} activeSection={activeSection} setActiveSection={setActiveSection} />
+                                    <DataSection draft={draft} updateDraft={updateDraft} activeSection={activeSection} setActiveSection={setActiveSection} />
                                 </motion.div>
                             )}
                         </AnimatePresence>
@@ -311,23 +308,6 @@ export const ThemeCustomizationTab: React.FC = () => {
                             )}
                         </AnimatePresence>
 
-                        {/* 9. VISUALIZAÇÃO 3D & MAPAS */}
-                        <CategoryLabel 
-                            icon={Globe} 
-                            title="Visualização 3D & Mapas" 
-                            index={9} 
-                            isOpen={activeCategory === 'visuals-3d'} 
-                            onToggle={() => setActiveCategory(activeCategory === 'visuals-3d' ? null : 'visuals-3d')}
-                            isDualView={isDualView}
-                            onToggleDual={() => setIsDualView(!isDualView)}
-                        />
-                        <AnimatePresence>
-                            {activeCategory === 'visuals-3d' && (
-                                <motion.div initial={{ height: 0, opacity: 0 }} animate={{ height: 'auto', opacity: 1 }} exit={{ height: 0, opacity: 0 }} className="overflow-hidden">
-                                    <VisualizationSection draft={draft} updateDraft={updateDraft} activeSection={activeSection} setActiveSection={setActiveSection} />
-                                </motion.div>
-                            )}
-                        </AnimatePresence>
 
                         {/* 10. LAYOUT */}
                         <CategoryLabel 
@@ -347,23 +327,7 @@ export const ThemeCustomizationTab: React.FC = () => {
                             )}
                         </AnimatePresence>
 
-                        {/* 11. HIPER-GRANULARIDADE */}
-                        <CategoryLabel 
-                            icon={Zap} 
-                            title="Hiper-Granularidade" 
-                            index={11} 
-                            isOpen={activeCategory === 'granularity'} 
-                            onToggle={() => setActiveCategory(activeCategory === 'granularity' ? null : 'granularity')}
-                            isDualView={isDualView}
-                            onToggleDual={() => setIsDualView(!isDualView)}
-                        />
-                        <AnimatePresence>
-                            {activeCategory === 'granularity' && (
-                                <motion.div initial={{ height: 0, opacity: 0 }} animate={{ height: 'auto', opacity: 1 }} exit={{ height: 0, opacity: 0 }} className="overflow-hidden">
-                                    <GranularitySection draft={draft} updateDraft={updateDraft} activeSection={activeSection} setActiveSection={setActiveSection} />
-                                </motion.div>
-                            )}
-                        </AnimatePresence>
+
                     </div>
                 </div>
             </div>

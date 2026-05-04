@@ -1,8 +1,8 @@
 import React from 'react';
-import { motion } from 'framer-motion';
 import { GalleryItem } from './GalleryItem';
-import { CARD_VARIANTS, CardPreset } from '../../../../constants/cards-presets';
-import { DESIGN_MANIFEST, UIContext, useSarakUI } from '../../../../core/Provider/SarakUIProvider';
+import { DESIGN_MANIFEST, UIContext } from '../../../../core/Provider/SarakUIProvider';
+import { CARD_PRESETS, CardPreset } from '../../../../core/Design/presets';
+import { DesignScope } from '../../../../core/Design/components/DesignScope';
 import { 
     User, 
     MoreHorizontal,
@@ -20,10 +20,8 @@ interface CardsGalleryProps {
     onUpdateDraft: (key: string, value: any) => void;
 }
 
-import { DesignScope } from '../../../../core/Design/components/DesignScope';
-
 const CardSpecimen: React.FC<{ preset: CardPreset, contentType: string, globalTokens: any }> = ({ preset, contentType, globalTokens }) => {
-    const mergedTokens = React.useMemo(() => ({ ...globalTokens, ...preset.tokens }), [preset, globalTokens]);
+    const mergedTokens = React.useMemo(() => ({ ...globalTokens, ...preset.design }), [preset, globalTokens]);
 
     const renderContent = () => {
         switch (contentType) {
@@ -124,17 +122,19 @@ const CardSpecimen: React.FC<{ preset: CardPreset, contentType: string, globalTo
 export const CardsGallery: React.FC<CardsGalleryProps> = ({ tokens, onUpdateDraft }) => {
     
     const handleSelect = (preset: CardPreset) => {
-        Object.entries(preset.tokens).forEach(([key, val]) => {
+        Object.entries(preset.design).forEach(([key, val]) => {
              onUpdateDraft(key, val);
         });
     };
 
+    const cardEntries = CARD_PRESETS;
+
     return (
         <div className="p-8 grid grid-cols-1 lg:grid-cols-2 gap-8 overflow-y-auto custom-scrollbar h-full bg-[#020202]">
-            {CARD_VARIANTS.map((preset, idx) => {
-                const isActive = tokens.surfaceMaterial === preset.tokens.surfaceMaterial && 
-                                tokens.borderRadius === preset.tokens.borderRadius &&
-                                tokens.borderType === preset.tokens.borderType;
+            {cardEntries.map((preset: CardPreset, idx) => {
+                const isActive = tokens.surfaceMaterial === preset.design.surfaceMaterial && 
+                                tokens.cardBorderRadius === preset.design.cardBorderRadius &&
+                                tokens.borderType === preset.design.borderType;
 
                 const contentTypes = ['profile', 'chart', 'control'];
                 const contentType = contentTypes[idx % 3];
@@ -168,3 +168,4 @@ export const CardsGallery: React.FC<CardsGalleryProps> = ({ tokens, onUpdateDraf
         </div>
     );
 };
+

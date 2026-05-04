@@ -1,17 +1,17 @@
 /**
- * Sarak Branding Presets (v1.0)
+ * Sarak Branding Presets (v12.0)
  * 
  * Define modelos de identidade e posicionamento de marca.
  */
 
 export interface BrandingPreset {
     id: string;
-    title: string;
+    name: string;
     description: string;
-    tokens: {
+    design: {
         systemName: string;
         systemTone: 'corporate' | 'modern' | 'cyber';
-        logoPosition: 'left' | 'center';
+        navigationStyle?: 'sidebar' | 'topbar';
         logoScale: number;
         logoUrl?: string;
         logoDarkUrl?: string;
@@ -21,34 +21,31 @@ export interface BrandingPreset {
 export const BRANDING_PRESETS: BrandingPreset[] = [
     {
         id: 'sarak-original',
-        title: 'Sarak Original',
-        description: 'A identidade nativa: agressiva, centralizada e com tom cyberpunk.',
-        tokens: {
+        name: 'Sarak Original',
+        description: 'A identidade nativa: agressiva e com tom cyberpunk.',
+        design: {
             systemName: 'Sarak Matrix',
             systemTone: 'cyber',
-            logoPosition: 'center',
             logoScale: 1.2
         }
     },
     {
         id: 'minimal-enterprise',
-        title: 'Minimal Enterprise',
-        description: 'Foco em seriedade e discrição. Layout clássico corporativo à esquerda.',
-        tokens: {
+        name: 'Minimal Enterprise',
+        description: 'Foco em seriedade e discrição. Layout clássico corporativo.',
+        design: {
             systemName: 'Sarak Enterprise',
             systemTone: 'corporate',
-            logoPosition: 'left',
             logoScale: 0.8
         }
     },
     {
         id: 'future-lab',
-        title: 'Future Lab',
-        description: 'Identidade moderna e espaçosa com foco em inovação e geometria.',
-        tokens: {
+        name: 'Future Lab',
+        description: 'Identidade moderna e espaçosa com foco em inovação.',
+        design: {
             systemName: 'Future Lab',
             systemTone: 'modern',
-            logoPosition: 'center',
             logoScale: 1.5
         }
     }

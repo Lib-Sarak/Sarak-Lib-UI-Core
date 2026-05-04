@@ -104,7 +104,9 @@ export const PreviewCanvas: React.FC<PreviewCanvasProps> = ({
 
     const renderSystemContent = () => (
         <DesignScope design={tokens} className="w-full h-full flex flex-col bg-[var(--theme-bg)] transition-all duration-500 overflow-hidden relative">
-            {tokens.texture && tokens.texture !== 'none' && <div className={`absolute inset-0 pointer-events-none z-0 texture-${tokens.texture} opacity-[var(--theme-noise-opacity)]`} />}
+            {tokens.texture && tokens.texture !== 'none' && (
+                <div className={`absolute inset-0 pointer-events-none z-0 texture-${tokens.texture} opacity-[var(--theme-noise-opacity)]`} />
+            )}
             
             {/* Escala para simular tela cheia em miniatura */}
             <div className="absolute inset-0 origin-top-left overflow-hidden z-10" style={{ transform: 'scale(0.5)', width: '200%', height: '200%' }}>

@@ -13,8 +13,10 @@ export const ShellSchema: ComponentSchema = {
             category: 'Sidebar',
             type: 'slider',
             unit: 'px',
-            min: 200,
-            max: 450,
+            constraints: {
+                min: 200,
+                max: 450,
+            },
             defaultValue: 240,
             cssVars: ['--sidebar-width', '--sarak-sidebar-width']
         },
@@ -24,8 +26,10 @@ export const ShellSchema: ComponentSchema = {
             category: 'Topbar',
             type: 'slider',
             unit: 'px',
-            min: 40,
-            max: 120,
+            constraints: {
+                min: 40,
+                max: 120,
+            },
             defaultValue: 64,
             cssVars: ['--topbar-height', '--sarak-topbar-height']
         },
@@ -34,11 +38,14 @@ export const ShellSchema: ComponentSchema = {
             label: 'Estilo de Navegação',
             category: 'Global',
             type: 'select',
-            options: [
-                { id: 'sidebar', label: 'Sidebar Lateral' },
-                { id: 'topbar', label: 'Topbar Superior' },
-                { id: 'dock', label: 'Dock Inferior' }
-            ],
+            constraints: {
+                options: [
+                    { id: 'sidebar', label: 'Sidebar Lateral' },
+                    { id: 'topbar', label: 'Topbar Superior' },
+                    { id: 'floating', label: 'Menu Flutuante' },
+                    { id: 'minimal', label: 'Minimalista' }
+                ],
+            },
             defaultValue: 'sidebar',
             cssVars: ['--sarak-navigation-style']
         },
@@ -62,11 +69,13 @@ export const ShellSchema: ComponentSchema = {
             label: 'Densidade da Interface',
             category: 'Global',
             type: 'select',
-            options: [
-                { id: 'compact', label: 'Compacta' },
-                { id: 'standard', label: 'Padrão' },
-                { id: 'spacious', label: 'Espaçosa' }
-            ],
+            constraints: {
+                options: [
+                    { id: 'compact', label: 'Compacta (Tech)' },
+                    { id: 'standard', label: 'Padrão (Equilibrada)' },
+                    { id: 'comfortable', label: 'Confortável (Focada)' }
+                ],
+            },
             defaultValue: 'standard',
             cssVars: ['--layout-density']
         },
@@ -76,8 +85,10 @@ export const ShellSchema: ComponentSchema = {
             category: 'Navegação',
             type: 'slider',
             unit: 'px',
-            min: 0,
-            max: 40,
+            constraints: {
+                min: 0,
+                max: 40,
+            },
             defaultValue: 12,
             cssVars: ['--tab-gap']
         },
@@ -102,7 +113,73 @@ export const ShellSchema: ComponentSchema = {
             category: 'Sidebar Interação',
             type: 'color',
             defaultValue: 'rgba(0, 242, 255, 0.15)',
-            cssVars: ['--sidebar-active']
+            cssVars: ['--sidebar-active', '--sarak-sidebar-active-color']
+        },
+        {
+            id: 'topbarColor',
+            label: 'Cor da Topbar',
+            category: 'Topbar',
+            type: 'color',
+            defaultValue: '#000000',
+            cssVars: ['--theme-topbar-bg', '--sarak-topbar-bg']
+        },
+        {
+            id: 'topbarHoverColor',
+            label: 'Cor Hover (Topbar)',
+            category: 'Topbar Interação',
+            type: 'color',
+            defaultValue: 'transparent',
+            cssVars: ['--sarak-topbar-hover-color']
+        },
+        {
+            id: 'topbarActiveColor',
+            label: 'Cor Ativa (Topbar)',
+            category: 'Topbar Interação',
+            type: 'color',
+            defaultValue: 'transparent',
+            cssVars: ['--sarak-topbar-active-color']
+        },
+        {
+            id: 'sidebarNoiseOpacity',
+            label: 'Ruído (Sidebar)',
+            category: 'Sidebar Estilo',
+            type: 'slider',
+            constraints: {
+                min: 0,
+                max: 1,
+                step: 0.01,
+            },
+            defaultValue: 0.05,
+            cssVars: ['--sarak-sidebar-noise-opacity']
+        },
+        {
+            id: 'topbarNoiseOpacity',
+            label: 'Ruído (Topbar)',
+            category: 'Topbar Estilo',
+            type: 'slider',
+            constraints: {
+                min: 0,
+                max: 1,
+                step: 0.01,
+            },
+            defaultValue: 0.05,
+            cssVars: ['--sarak-topbar-noise-opacity']
+        },
+        {
+            id: 'maxContentWidth',
+            label: 'Largura Máxima Conteúdo',
+            category: 'Global',
+            type: 'select',
+            constraints: {
+                options: [
+                    { id: '1200px', label: 'Estreito (1200px)' },
+                    { id: '1440px', label: 'Padrão (1440px)' },
+                    { id: '1600px', label: 'Largo (1600px)' },
+                    { id: '100%', label: 'Full Width' }
+                ],
+            },
+            defaultValue: '1440px',
+            cssVars: ['--sarak-max-width']
         }
     ]
 };

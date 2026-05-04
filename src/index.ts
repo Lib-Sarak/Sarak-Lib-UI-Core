@@ -10,6 +10,7 @@ export { default as SarakUIProvider, useSarakUI } from './core/Provider/SarakUIP
 export { default as ThemeToggle } from './components/atomic/Buttons/ThemeToggle';
 export * from './constants/design-tokens';
 export * from './constants/theme';
+export { PRESETS_LIBRARY } from './core/Design/presets';
 
 // Layout Components and Plug & Play UI
 export * from './core/Shell/SarakShell';

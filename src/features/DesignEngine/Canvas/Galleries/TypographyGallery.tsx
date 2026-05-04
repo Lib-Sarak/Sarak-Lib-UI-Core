@@ -1,11 +1,10 @@
 import React from 'react';
 import { motion } from 'framer-motion';
-import { useSarakUI, UIContext } from '../../../../core/Provider/SarakUIProvider';
-import { TYPO_PRESETS, TypoPreset } from '../../../../constants/typo-presets';
-import { DESIGN_MANIFEST } from '../../../../core/Provider/SarakUIProvider';
+import { UIContext } from '../../../../core/Provider/SarakUIProvider';
+import { TYPOGRAPHY_PRESETS, TypographyPreset } from '../../../../core/Design/presets';
+import { DesignScope } from '../../../../core/Design/components/DesignScope';
 import { Check, Type, Hash, ArrowRight } from 'lucide-react';
 import { THEME_FONTS } from '../../../../constants/design-tokens';
-
 
 interface TypographyGalleryProps {
     onUpdateDraft: (key: string, value: any) => void;
@@ -13,6 +12,8 @@ interface TypographyGalleryProps {
 }
 
 export const TypographyGallery: React.FC<TypographyGalleryProps> = ({ onUpdateDraft, tokens }) => {
+    const typoEntries = TYPOGRAPHY_PRESETS;
+
     return (
         <div className="space-y-16 p-8 overflow-y-auto custom-scrollbar h-full">
             {/* Section 1: Curation Presets */}
@@ -22,14 +23,14 @@ export const TypographyGallery: React.FC<TypographyGalleryProps> = ({ onUpdateDr
                     <div className="flex-1 h-[1px] bg-white/5" />
                 </div>
                 <div className="grid grid-cols-1 gap-8">
-                    {TYPO_PRESETS.map((preset) => (
+                    {typoEntries.map((preset: TypographyPreset) => (
                         <TypoSpecimen 
                             key={preset.id} 
                             preset={preset} 
                             onSelect={() => {
-                                Object.entries(preset.tokens).forEach(([key, val]) => onUpdateDraft(key, val));
+                                Object.entries(preset.design).forEach(([key, val]) => onUpdateDraft(key, val));
                             }}
-                            isActive={tokens.headingFont === preset.tokens.headingFont && tokens.scaleRatio === preset.tokens.scaleRatio}
+                            isActive={tokens.headingFont === preset.design.headingFont && tokens.headingWeight === preset.design.headingWeight}
                             globalTokens={tokens}
                         />
                     ))}
@@ -50,8 +51,6 @@ export const TypographyGallery: React.FC<TypographyGalleryProps> = ({ onUpdateDr
                             onSelect={() => {
                                 onUpdateDraft('headingFont', font.value);
                                 onUpdateDraft('bodyFont', font.value);
-                                onUpdateDraft('subtitleFont', font.value);
-                                onUpdateDraft('tabFont', font.value);
                             }}
                             isActive={tokens.headingFont === font.value}
                         />
@@ -102,28 +101,10 @@ const FontFamilySpecimen: React.FC<{ font: any; onSelect: () => void; isActive: 
     );
 };
 
-
-const getTypoVariables = (mergedTokens: any) => {
-    const vars: any = {};
-    
-    Object.entries(mergedTokens).forEach(([key, value]) => {
-        const config = (DESIGN_MANIFEST as any)[key];
-        if (config && config.vars) {
-            const transformedValue = config.transform ? config.transform(value) : value;
-            config.vars.forEach((varName: string) => {
-                vars[varName] = `${transformedValue}${config.unit || ''}`;
-            });
-        }
-    });
-
-    return vars;
-};
-
-const TypoSpecimen: React.FC<{ preset: TypoPreset; onSelect: () => void; isActive: boolean; globalTokens: any }> = ({ 
+const TypoSpecimen: React.FC<{ preset: TypographyPreset; onSelect: () => void; isActive: boolean; globalTokens: any }> = ({ 
     preset, onSelect, isActive, globalTokens 
 }) => {
-    const mergedTokens = { ...globalTokens, ...preset.tokens };
-    const vars = getTypoVariables(mergedTokens);
+    const mergedTokens = React.useMemo(() => ({ ...globalTokens, ...preset.design }), [preset, globalTokens]);
 
     return (
         <motion.div 
@@ -133,9 +114,7 @@ const TypoSpecimen: React.FC<{ preset: TypoPreset; onSelect: () => void; isActiv
                 isActive ? 'border-[var(--theme-primary)] shadow-2xl shadow-primary-500/10' : 'border-white/5 hover:border-white/20'
             }`}
         >
-            {/* Sandboxed Provider for Token Isolation */}
-            <div style={vars as any} className="p-8 grid grid-cols-1 lg:grid-cols-2 gap-12">
-                
+            <DesignScope design={mergedTokens} className="p-8 grid grid-cols-1 lg:grid-cols-2 gap-12">
                 {/* Left Side: Large Visual Specimen */}
                 <div className="space-y-6">
                     <div className="flex items-center gap-3 mb-8">
@@ -150,7 +129,7 @@ const TypoSpecimen: React.FC<{ preset: TypoPreset; onSelect: () => void; isActiv
 
                     <div className="space-y-2">
                         <div className="text-3xs font-black uppercase tracking-[0.2em] text-[var(--theme-primary)] opacity-60">Heading 1</div>
-                        <h1 className="text-5xl font-black leading-tight text-white transition-all duration-700" style={{ fontFamily: mergedTokens.headingFont, fontWeight: mergedTokens.headingWeight, letterSpacing: `${mergedTokens.headingLetterSpacing}em` }}>
+                        <h1 className="text-5xl font-black leading-tight text-white transition-all duration-700" style={{ fontFamily: mergedTokens.headingFont, fontWeight: mergedTokens.headingWeight, letterSpacing: `${mergedTokens.headingLetterSpacing}px` }}>
                             Sovereign <br /> Intelligence
                         </h1>
                     </div>
@@ -169,14 +148,14 @@ const TypoSpecimen: React.FC<{ preset: TypoPreset; onSelect: () => void; isActiv
                     <div className="grid grid-cols-2 gap-8">
                         <div className="space-y-2">
                             <span className="text-3xs font-black uppercase tracking-widest text-white/20 block">Tabular Data</span>
-                            <div className="text-2xl font-black text-white" style={{ fontFamily: mergedTokens.headingFont, fontVariantNumeric: mergedTokens.useTabularNums ? 'tabular-nums' : 'normal' }}>
+                            <div className="text-2xl font-black text-white" style={{ fontFamily: mergedTokens.headingFont }}>
                                 0123456789
                             </div>
                         </div>
                         <div className="space-y-2">
                             <span className="text-3xs font-black uppercase tracking-widest text-white/20 block">Scale Ratio</span>
                             <div className="text-2xl font-black text-[var(--theme-primary)]">
-                                {mergedTokens.scaleRatio}x
+                                {mergedTokens.scaleRatio || 1.0}x
                             </div>
                         </div>
                     </div>
@@ -190,7 +169,6 @@ const TypoSpecimen: React.FC<{ preset: TypoPreset; onSelect: () => void; isActiv
                                     className={`px-4 py-2 rounded-lg text-2xs font-black uppercase tracking-widest border transition-all ${
                                         i === 0 ? 'bg-[var(--theme-primary)] border-transparent text-white' : 'bg-white/5 border-white/10 text-white/40'
                                     }`}
-                                    style={{ fontFamily: mergedTokens.tabFont }}
                                 >
                                     {tab}
                                 </div>
@@ -206,11 +184,11 @@ const TypoSpecimen: React.FC<{ preset: TypoPreset; onSelect: () => void; isActiv
                         </div>
                         <div className="flex items-center gap-2 px-3 py-1 bg-white/5 rounded-full">
                             <Type size={10} className="text-white/20" />
-                            <span className="text-[10px] font-bold text-white/40 uppercase">{mergedTokens.headingFont}</span>
+                            <span className="text-[10px] font-bold text-white/40 uppercase truncate max-w-[100px]">{mergedTokens.headingFont}</span>
                         </div>
                     </div>
                 </div>
-            </div>
+            </DesignScope>
 
             {/* Active Marker */}
             {isActive && (
@@ -223,3 +201,4 @@ const TypoSpecimen: React.FC<{ preset: TypoPreset; onSelect: () => void; isActiv
         </motion.div>
     );
 };
+

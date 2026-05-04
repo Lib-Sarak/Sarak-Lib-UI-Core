@@ -39,7 +39,7 @@ const CompactThemeCard: React.FC<CompactThemeCardProps> = ({ id, theme, isActive
 };
 
 interface ThemeListProps {
-    layouts: any;
+    layouts: any[];
     customThemes: any[];
     currentLayout: string;
     previewLayoutId: string;
@@ -48,22 +48,19 @@ interface ThemeListProps {
 }
 
 export const ThemeList: React.FC<ThemeListProps> = ({
-    layouts,
-    customThemes,
+    layouts = [],
+    customThemes = [],
     currentLayout,
     previewLayoutId,
+    onPreview,
     onApply
 }) => {
-    // Portar custom themes
-    const customThemesObj = customThemes.reduce((acc, theme) => {
-        acc[`custom-${theme.id}`] = theme;
-        return acc;
-    }, {} as any);
-
-    const allThemes = { ...layouts, ...customThemesObj };
+    // Portar custom themes (se houver)
+    const allThemes = [...layouts, ...customThemes];
     
-    const advancedThemes = Object.entries(allThemes).filter(([id]) => id.toLowerCase().includes('premium') || id.toLowerCase().includes('_v') || id.toLowerCase().includes('advanced'));
-    const baseThemes = Object.entries(allThemes).filter(([id]) => !id.toLowerCase().includes('premium') && !id.toLowerCase().includes('_v') && !id.toLowerCase().includes('advanced'));
+    // Filtro simples para demonstração (pode ser expandido conforme novas categorias de presets)
+    const advancedThemes = allThemes.filter((t) => t.id.toLowerCase().includes('premium') || t.id.toLowerCase().includes('_v'));
+    const baseThemes = allThemes.filter((t) => !t.id.toLowerCase().includes('premium') && !t.id.toLowerCase().includes('_v'));
 
     return (
         <div className="space-y-8">
@@ -75,13 +72,13 @@ export const ThemeList: React.FC<ThemeListProps> = ({
                         <div className="flex-1 h-[1px] bg-white/5" />
                     </div>
                     <div className="grid grid-cols-1 gap-2">
-                        {advancedThemes.map(([id, theme]: [string, any]) => (
+                        {advancedThemes.map((theme: any) => (
                             <CompactThemeCard
-                                key={id}
-                                id={id}
+                                key={theme.id}
+                                id={theme.id}
                                 theme={theme}
-                                isActive={currentLayout?.toLowerCase() === id.toLowerCase()}
-                                isPreviewed={previewLayoutId?.toLowerCase() === id.toLowerCase()}
+                                isActive={currentLayout?.toLowerCase() === theme.id.toLowerCase()}
+                                isPreviewed={previewLayoutId?.toLowerCase() === theme.id.toLowerCase()}
                                 onApply={onApply}
                             />
                         ))}
@@ -97,13 +94,13 @@ export const ThemeList: React.FC<ThemeListProps> = ({
                         <div className="flex-1 h-[1px] bg-white/5" />
                     </div>
                     <div className="grid grid-cols-1 gap-2">
-                        {baseThemes.map(([id, theme]: [string, any]) => (
+                        {baseThemes.map((theme: any) => (
                             <CompactThemeCard
-                                key={id}
-                                id={id}
+                                key={theme.id}
+                                id={theme.id}
                                 theme={theme}
-                                isActive={currentLayout?.toLowerCase() === id.toLowerCase()}
-                                isPreviewed={previewLayoutId?.toLowerCase() === id.toLowerCase()}
+                                isActive={currentLayout?.toLowerCase() === theme.id.toLowerCase()}
+                                isPreviewed={previewLayoutId?.toLowerCase() === theme.id.toLowerCase()}
                                 onApply={onApply}
                             />
                         ))}

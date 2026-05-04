@@ -1,6 +1,6 @@
 import React from 'react';
 import { motion } from 'framer-motion';
-import { LAYOUT_PRESETS, LayoutPreset } from '../../../../constants/layout-presets';
+import { LAYOUT_PRESETS, LayoutPreset } from '../../../../core/Design/presets';
 import { Check, Layout as LayoutIcon, Maximize2, Monitor, Split, EyeOff } from 'lucide-react';
 
 interface LayoutGalleryProps {
@@ -16,9 +16,9 @@ export const LayoutGallery: React.FC<LayoutGalleryProps> = ({ onUpdateDraft, tok
                     key={preset.id}
                     preset={preset}
                     onSelect={() => {
-                        Object.entries(preset.tokens).forEach(([key, val]) => onUpdateDraft(key, val));
+                        Object.entries(preset.design).forEach(([key, val]) => onUpdateDraft(key, val));
                     }}
-                    isActive={tokens.navigationStyle === preset.tokens.navigationStyle && tokens.maxContentWidth === preset.tokens.maxContentWidth}
+                    isActive={tokens.navigationStyle === preset.design.navigationStyle && tokens.maxContentWidth === preset.design.maxContentWidth}
                     globalTokens={tokens}
                 />
             ))}
@@ -29,7 +29,7 @@ export const LayoutGallery: React.FC<LayoutGalleryProps> = ({ onUpdateDraft, tok
 const LayoutSpecimen: React.FC<{ preset: LayoutPreset; onSelect: () => void; isActive: boolean; globalTokens: any }> = ({ 
     preset, onSelect, isActive, globalTokens 
 }) => {
-    const mergedTokens = { ...globalTokens, ...preset.tokens };
+    const mergedTokens = { ...globalTokens, ...preset.design };
     const navStyle = mergedTokens.navigationStyle;
     const sidebarWidth = mergedTokens.sidebarWidth || 200;
     const maxWidth = mergedTokens.maxContentWidth;
@@ -92,7 +92,7 @@ const LayoutSpecimen: React.FC<{ preset: LayoutPreset; onSelect: () => void; isA
                 <div className="space-y-4">
                     <div className="flex items-center justify-between">
                         <div>
-                            <h3 className="text-xs font-black uppercase tracking-tight text-white">{preset.title}</h3>
+                            <h3 className="text-xs font-black uppercase tracking-tight text-white">{preset.name}</h3>
                             <p className="text-[9px] font-bold text-white/30 uppercase tracking-widest">{preset.description}</p>
                         </div>
                     </div>

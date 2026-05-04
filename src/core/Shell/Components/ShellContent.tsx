@@ -5,6 +5,7 @@ import { IconRenderer } from './IconRenderer';
 import { DiscoveredModule } from '../../../constants/discovery';
 import { DynamicRenderer } from '../../Discovery/DynamicRenderer';
 import { SarakEmptyState } from '../../../components/atomic/Feedback/SarakEmptyState';
+import { THEME_EFFECTS } from '../../../constants/design-tokens';
 
 interface ShellContentProps {
     activeModule: DiscoveredModule | undefined;
@@ -18,7 +19,10 @@ interface ShellContentProps {
 export const ShellContent: React.FC<ShellContentProps> = ({
     activeModule, discoveredModules, design, user, authApi, setIsSearchOpen
 }) => {
-    const { texture, layoutGap, isSplitViewEnabled, secondaryModuleId, emptyStateId } = design || {};
+    const { texture, layoutGap, isSplitViewEnabled, secondaryModuleId, emptyStateId, pageTransition = 'fade' } = design || {};
+
+    // Obter configuração de animação baseada no token
+    const transitionEffect = (THEME_EFFECTS.page as any)[pageTransition]?.page || THEME_EFFECTS.page.fade.page;
 
     return (
         <main className={`flex-1 overflow-y-auto custom-scrollbar relative flex flex-col w-full min-h-0 isolate ${texture !== 'none' ? 'texture-active' : 'bg-[var(--theme-body)]'}`}>
@@ -29,7 +33,12 @@ export const ShellContent: React.FC<ShellContentProps> = ({
             <div className="flex-1 flex flex-col relative w-full pt-8 lg:pt-12 z-10 transition-all duration-500 min-h-0" style={{ gap: `var(--theme-gap, ${layoutGap}px)`, padding: `var(--safe-area-padding, 0)` }}>
                 <AnimatePresence mode="wait">
                     {activeModule ? (
-                        <motion.div key={activeModule.id} initial={{ opacity: 0, y: 10 }} animate={{ opacity: 1, y: 0 }} exit={{ opacity: 0, y: -10 }} transition={{ duration: 0.3 }} className="pb-12 flex flex-col min-h-full" style={{ paddingLeft: 'var(--theme-pad)', paddingRight: 'var(--theme-pad)' }}>
+                        <motion.div 
+                            key={activeModule.id} 
+                            {...transitionEffect}
+                            className="pb-12 flex flex-col min-h-full" 
+                            style={{ paddingLeft: 'var(--theme-pad)', paddingRight: 'var(--theme-pad)' }}
+                        >
                             
                             <header className="mb-10 flex items-end justify-between border-b border-[var(--theme-border)]/50 pb-8 shrink-0">
                                 <div>

@@ -1,14 +1,14 @@
 /**
- * Sarak Layout & Structure Presets (v1.0)
+ * Sarak Layout & Structure Presets (v12.0)
  * 
  * Define a espinha dorsal da navegação e o comportamento da Safe Area.
  */
 
 export interface LayoutPreset {
     id: string;
-    title: string;
+    name: string;
     description: string;
-    tokens: {
+    design: {
         navigationStyle: 'sidebar' | 'topbar';
         maxContentWidth: string;
         isAutoHideEnabled: boolean;
@@ -21,9 +21,9 @@ export interface LayoutPreset {
 export const LAYOUT_PRESETS: LayoutPreset[] = [
     {
         id: 'sovereign-sidebar',
-        title: 'Sovereign Sidebar',
+        name: 'Sovereign Sidebar',
         description: 'Navegação lateral persistente com foco em fluxos de trabalho complexos.',
-        tokens: {
+        design: {
             navigationStyle: 'sidebar',
             maxContentWidth: '1600px',
             isAutoHideEnabled: false,
@@ -34,9 +34,9 @@ export const LAYOUT_PRESETS: LayoutPreset[] = [
     },
     {
         id: 'global-topbar',
-        title: 'Global Topbar',
+        name: 'Global Topbar',
         description: 'Navegação superior limpa, ideal para dashboards de leitura e visão geral.',
-        tokens: {
+        design: {
             navigationStyle: 'topbar',
             maxContentWidth: '1200px',
             isAutoHideEnabled: false,
@@ -47,9 +47,9 @@ export const LAYOUT_PRESETS: LayoutPreset[] = [
     },
     {
         id: 'immersive-full',
-        title: 'Immersive Full',
+        name: 'Immersive Full',
         description: 'Máximo aproveitamento de tela com sidebar retrátil e conteúdo fluido.',
-        tokens: {
+        design: {
             navigationStyle: 'sidebar',
             maxContentWidth: 'none',
             isAutoHideEnabled: true,

@@ -33,9 +33,11 @@ export const IdentitySchema: ComponentSchema = {
             label: 'Escala do Logo',
             category: 'Logo',
             type: 'slider',
-            min: 0.5,
-            max: 2,
-            step: 0.1,
+            constraints: {
+                min: 0.5,
+                max: 2,
+                step: 0.1,
+            },
             defaultValue: 1,
             cssVars: ['--logo-scale']
         },
@@ -44,11 +46,13 @@ export const IdentitySchema: ComponentSchema = {
             label: 'Posição do Logo',
             category: 'Logo',
             type: 'select',
-            options: [
-                { id: 'left', label: 'Esquerda' },
-                { id: 'center', label: 'Centro' },
-                { id: 'right', label: 'Direita' }
-            ],
+            constraints: {
+                options: [
+                    { id: 'left', label: 'Esquerda' },
+                    { id: 'center', label: 'Centro' },
+                    { id: 'right', label: 'Direita' }
+                ],
+            },
             defaultValue: 'left'
         }
     ]

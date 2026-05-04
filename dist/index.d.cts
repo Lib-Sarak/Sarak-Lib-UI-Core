@@ -423,6 +423,17 @@ declare const CHART_PRESETS: {
     description: string;
 }[];
 
+/**
+ * Sarak Design Engine - Presets Library (v12.0)
+ * Central Hub para todos os átomos de design.
+ */
+
+/**
+ * Biblioteca Mestra de Presets
+ * Este objeto é consumido pelo CustomizationTab e galerias dinâmicas.
+ */
+declare const PRESETS_LIBRARY: any;
+
 interface SarakShellProps {
     children?: React$1.ReactNode;
     brand?: {
@@ -442,108 +453,9 @@ interface SarakShellProps {
 declare const SarakShell: React$1.FC<SarakShellProps>;
 
 declare const useDesignDraft: (sarak: any) => {
-    draft: {
-        layout: any;
-        mode: any;
-        primaryColor: any;
-        secondaryColor: any;
-        tertiaryColor: any;
-        navigationStyle: any;
-        sidebarWidth: any;
-        topbarHeight: any;
-        colorPalette: any;
-        dashboardTemplate: any;
-        fontScale: any;
-        layoutDensity: any;
-        headingFont: any;
-        subtitleFont: any;
-        bodyFont: any;
-        headingWeight: any;
-        headingLetterSpacing: any;
-        borderRadius: any;
-        layoutGap: any;
-        cardPadding: any;
-        borderWidth: any;
-        borderStyle: any;
-        glassOpacity: any;
-        glassBlur: any;
-        shadowIntensity: any;
-        isGeometricCut: any;
-        animationSpeed: any;
-        tabFont: any;
-        systemName: any;
-        logoUrl: any;
-        logoDarkUrl: any;
-        logoScale: any;
-        logoPosition: any;
-        systemTone: any;
-        emptyStateId: any;
-        surfaceMaterial: any;
-        borderType: any;
-        interfaceElasticity: any;
-        isSplitViewEnabled: any;
-        secondaryModuleId: any;
-        searchStyle: any;
-        chartPalette: any;
-        chartStyle: any;
-        shadowOrientation: any;
-        shadowColorMode: any;
-        isAutoHideEnabled: any;
-        chatBubbleStyle: any;
-        chatAnimationSpeed: any;
-        flowGridStyle: any;
-        flowNodeRadius: any;
-        chartShowGrid: any;
-        chartType: any;
-        chartThickness: any;
-        chartSmoothing: any;
-        tabGap: any;
-        tabSectionMargin: any;
-        texture: any;
-        textureOpacity: any;
-        textureColor: any;
-        scaleRatio: any;
-        contrastCurve: any;
-        layeredShadows: any;
-        isNavHidden: any;
-        hoverLiftEnabled: any;
-        spotlightEnabled: any;
-        magneticPullEnabled: any;
-        borderBeamEnabled: any;
-        performanceMode: any;
-        sidebarNoiseOpacity: any;
-        topbarNoiseOpacity: any;
-        cardNoiseOpacity: any;
-        sidebarHoverColor: any;
-        sidebarActiveColor: any;
-        topbarHoverColor: any;
-        topbarActiveColor: any;
-        cardHoverColor: any;
-        cardActiveColor: any;
-        colorDepth: any;
-        colorVariation: any;
-        sidebarColor: any;
-        topbarColor: any;
-        cardBackgroundColor: any;
-        cardBorderColor: any;
-        buttonColor: any;
-        buttonHoverColor: any;
-        titleColor: any;
-        successColor: any;
-        warningColor: any;
-        errorColor: any;
-        atmosphereNoiseOpacity: any;
-        borderRadiusSm: any;
-        borderRadiusMd: any;
-        borderRadiusLg: any;
-        layoutGapSm: any;
-        layoutGapMd: any;
-        layoutGapLg: any;
-        cardPaddingSm: any;
-        cardPaddingMd: any;
-        cardPaddingLg: any;
-    };
+    draft: any;
     updateDraft: (key: string, value: any) => void;
+    applyPatch: (patch: Record<string, any>, sourceId?: string) => void;
     handleThemePreview: (id: string) => void;
     handleApplyToSystem: () => void;
     toast: {
@@ -987,4 +899,4 @@ interface SarakRouterState {
  */
 declare function useSarakRouter(basePath?: string): SarakRouterState;
 
-export { ALL_LANGUAGES, CHART_PRESETS, COLOR_PALETTES, CustomizationPanel, DASHBOARD_TEMPLATES, DENSITY, DESIGN_MANIFEST, DISCOVERY_ENDPOINTS, type DiscoveredModule, DynamicRenderer, ExpandableCard, LANGUAGES, LanguageSelector, type ModuleManifest, ModuleSelector, NAVIGATION_STYLES, PRIMARY_COLORS, SCALES, SarakAuthScreen, SarakCardGrid, SarakCatalogGrid, SarakChart, SarakChartEngine, SarakChat, SarakForm, SarakManagementGrid, type SarakModule, type SarakRouterState, SarakSecurityOrchestrator, SarakShell, SarakStats, SarakTable, SarakUIProvider, SocialButton, TEXTURE_LIBRARY, THEME_EFFECTS, THEME_FONTS, ThemeToggle, UserMenu, type VisualContract, type VisualContractType, getLocalComponent, getRegisteredModules, getSarakModule, registerLocalComponent, registerSarakModule, subscribeToRegistry, useDesignDraft, useModuleDiscovery, useSarakRouter, useSarakUI };
+export { ALL_LANGUAGES, CHART_PRESETS, COLOR_PALETTES, CustomizationPanel, DASHBOARD_TEMPLATES, DENSITY, DESIGN_MANIFEST, DISCOVERY_ENDPOINTS, type DiscoveredModule, DynamicRenderer, ExpandableCard, LANGUAGES, LanguageSelector, type ModuleManifest, ModuleSelector, NAVIGATION_STYLES, PRESETS_LIBRARY, PRIMARY_COLORS, SCALES, SarakAuthScreen, SarakCardGrid, SarakCatalogGrid, SarakChart, SarakChartEngine, SarakChat, SarakForm, SarakManagementGrid, type SarakModule, type SarakRouterState, SarakSecurityOrchestrator, SarakShell, SarakStats, SarakTable, SarakUIProvider, SocialButton, TEXTURE_LIBRARY, THEME_EFFECTS, THEME_FONTS, ThemeToggle, UserMenu, type VisualContract, type VisualContractType, getLocalComponent, getRegisteredModules, getSarakModule, registerLocalComponent, registerSarakModule, subscribeToRegistry, useDesignDraft, useModuleDiscovery, useSarakRouter, useSarakUI };

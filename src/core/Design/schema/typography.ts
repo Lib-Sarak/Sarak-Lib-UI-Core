@@ -12,13 +12,15 @@ export const TypographySchema: ComponentSchema = {
             label: 'Escala de Fonte',
             category: 'Global',
             type: 'select',
-            options: [
-                { id: 'xs', label: 'Extra Pequena' },
-                { id: 's', label: 'Pequena' },
-                { id: 'm', label: 'Média (Padrão)' },
-                { id: 'l', label: 'Grande' },
-                { id: 'xl', label: 'Extra Grande' }
-            ],
+            constraints: {
+                options: [
+                    { id: 'pp', label: 'Extra Pequena (PP)' },
+                    { id: 'p', label: 'Pequena (P)' },
+                    { id: 'm', label: 'Média (M)' },
+                    { id: 'g', label: 'Grande (G)' },
+                    { id: 'gg', label: 'Extra Grande (GG)' }
+                ],
+            },
             defaultValue: 'm',
             cssVars: ['--font-scale']
         },
@@ -43,12 +45,14 @@ export const TypographySchema: ComponentSchema = {
             label: 'Peso dos Títulos',
             category: 'Estilo',
             type: 'select',
-            options: [
-                { id: '400', label: 'Regular' },
-                { id: '600', label: 'Semi-Bold' },
-                { id: '700', label: 'Bold' },
-                { id: '900', label: 'Black' }
-            ],
+            constraints: {
+                options: [
+                    { id: '400', label: 'Regular' },
+                    { id: '600', label: 'Semi-Bold' },
+                    { id: '700', label: 'Bold' },
+                    { id: '900', label: 'Black' }
+                ],
+            },
             defaultValue: '700',
             cssVars: ['--font-weight-heading']
         },
@@ -58,9 +62,11 @@ export const TypographySchema: ComponentSchema = {
             category: 'Estilo',
             type: 'slider',
             unit: 'px',
-            min: -5,
-            max: 10,
-            step: 0.5,
+            constraints: {
+                min: -5,
+                max: 10,
+                step: 0.5,
+            },
             defaultValue: 0,
             cssVars: ['--letter-spacing-heading']
         }

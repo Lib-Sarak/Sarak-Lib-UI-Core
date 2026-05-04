@@ -9,14 +9,16 @@ export const CardSchema: ComponentSchema = {
     tokens: [
         {
             id: 'cardBorderRadius',
-            label: 'Raio da Borda (Geral)',
+            label: 'Raio da Borda (Master)',
             category: 'Geometria',
             type: 'slider',
             unit: 'px',
-            min: 0,
-            max: 60,
-            defaultValue: 24,
-            cssVars: ['--card-radius']
+            constraints: {
+                min: 0,
+                max: 60,
+            },
+            defaultValue: 12,
+            cssVars: ['--radius-theme']
         },
         {
             id: 'borderRadiusSm',
@@ -24,10 +26,12 @@ export const CardSchema: ComponentSchema = {
             category: 'Geometria Escala',
             type: 'slider',
             unit: 'px',
-            min: 0,
-            max: 30,
-            defaultValue: 12,
-            cssVars: ['--radius-sm']
+            constraints: {
+                min: 0,
+                max: 30,
+            },
+            defaultValue: 4,
+            cssVars: ['--sarak-border-radius-sm']
         },
         {
             id: 'borderRadiusMd',
@@ -35,10 +39,12 @@ export const CardSchema: ComponentSchema = {
             category: 'Geometria Escala',
             type: 'slider',
             unit: 'px',
-            min: 0,
-            max: 60,
-            defaultValue: 24,
-            cssVars: ['--radius-md']
+            constraints: {
+                min: 0,
+                max: 60,
+            },
+            defaultValue: 8,
+            cssVars: ['--sarak-border-radius-md']
         },
         {
             id: 'borderRadiusLg',
@@ -46,68 +52,93 @@ export const CardSchema: ComponentSchema = {
             category: 'Geometria Escala',
             type: 'slider',
             unit: 'px',
-            min: 0,
-            max: 100,
-            defaultValue: 40,
-            cssVars: ['--radius-lg']
+            constraints: {
+                min: 0,
+                max: 100,
+            },
+            defaultValue: 12,
+            cssVars: ['--sarak-border-radius-lg']
         },
         {
             id: 'cardPadding',
-            label: 'Padding (Geral)',
+            label: 'Gap Layout (Geral)',
             category: 'Espaçamento',
             type: 'slider',
             unit: 'px',
-            min: 0,
-            max: 80,
-            defaultValue: 32,
-            cssVars: ['--card-padding']
+            constraints: {
+                min: 0,
+                max: 80,
+            },
+            defaultValue: 16,
+            cssVars: ['--theme-gap']
         },
         {
             id: 'cardPaddingSm',
-            label: 'Padding - Pequeno (SM)',
+            label: 'Padding Card (SM)',
             category: 'Espaçamento Escala',
             type: 'slider',
             unit: 'px',
-            min: 0,
-            max: 40,
-            defaultValue: 16,
-            cssVars: ['--padding-sm']
+            constraints: {
+                min: 0,
+                max: 40,
+            },
+            defaultValue: 12,
+            cssVars: ['--sarak-card-padding-sm']
         },
         {
             id: 'cardPaddingMd',
-            label: 'Padding - Médio (MD)',
+            label: 'Padding Card (MD)',
             category: 'Espaçamento Escala',
             type: 'slider',
             unit: 'px',
-            min: 0,
-            max: 80,
-            defaultValue: 32,
-            cssVars: ['--padding-md']
+            constraints: {
+                min: 0,
+                max: 80,
+            },
+            defaultValue: 20,
+            cssVars: ['--sarak-card-padding-md']
         },
         {
             id: 'cardPaddingLg',
-            label: 'Padding - Grande (LG)',
+            label: 'Padding Card (LG)',
             category: 'Espaçamento Escala',
             type: 'slider',
             unit: 'px',
-            min: 0,
-            max: 120,
-            defaultValue: 48,
-            cssVars: ['--padding-lg']
+            constraints: {
+                min: 0,
+                max: 120,
+            },
+            defaultValue: 32,
+            cssVars: ['--sarak-card-padding-lg']
         },
         {
             id: 'cardBorderStyle',
             label: 'Estilo da Borda',
             category: 'Bordas',
             type: 'select',
-            options: [
-                { id: 'solid', label: 'Sólida' },
-                { id: 'dashed', label: 'Tracejada' },
-                { id: 'dotted', label: 'Pontilhada' },
-                { id: 'double', label: 'Dupla' }
-            ],
+            constraints: {
+                options: [
+                    { id: 'solid', label: 'Sólida' },
+                    { id: 'dashed', label: 'Tracejada' },
+                    { id: 'dotted', label: 'Pontilhada' },
+                    { id: 'double', label: 'Dupla' }
+                ],
+            },
             defaultValue: 'solid',
             cssVars: ['--card-border-style', '--border-style']
+        },
+        {
+            id: 'cardBorderWidth',
+            label: 'Espessura da Borda',
+            category: 'Bordas',
+            type: 'slider',
+            unit: 'px',
+            constraints: {
+                min: 0,
+                max: 10,
+            },
+            defaultValue: 1,
+            cssVars: ['--card-border-width', '--theme-border-width']
         },
         {
             id: 'cardBorderColor',
@@ -130,13 +161,15 @@ export const CardSchema: ComponentSchema = {
             label: 'Textura de Fundo',
             category: 'Superfície',
             type: 'select',
-            options: [
-                { id: 'none', label: 'Nenhuma' },
-                { id: 'dots', label: 'Pontos' },
-                { id: 'grid', label: 'Grelha' },
-                { id: 'circuit', label: 'Circuito' },
-                { id: 'noise', label: 'Ruído Industrial' }
-            ],
+            constraints: {
+                options: [
+                    { id: 'none', label: 'Nenhuma' },
+                    { id: 'dots', label: 'Pontos' },
+                    { id: 'grid', label: 'Grelha' },
+                    { id: 'circuit', label: 'Circuito' },
+                    { id: 'noise', label: 'Ruído Industrial' }
+                ],
+            },
             defaultValue: 'none',
             cssVars: ['--card-texture']
         },
@@ -145,33 +178,83 @@ export const CardSchema: ComponentSchema = {
             label: 'Opacidade da Textura',
             category: 'Superfície',
             type: 'slider',
-            min: 0,
-            max: 1,
-            step: 0.01,
+            constraints: {
+                min: 0,
+                max: 1,
+                step: 0.01,
+            },
             defaultValue: 0.08,
             cssVars: ['--card-noise-opacity']
-        },
-        {
-            id: 'cardPadding',
-            label: 'Padding Interno',
-            category: 'Espaçamento',
-            type: 'slider',
-            unit: 'px',
-            min: 0,
-            max: 80,
-            defaultValue: 24,
-            cssVars: ['--card-padding']
         },
         {
             id: 'cardShadowIntensity',
             label: 'Intensidade da Sombra',
             category: 'Efeitos',
             type: 'slider',
-            min: 0,
-            max: 1,
-            step: 0.05,
+            constraints: {
+                min: 0,
+                max: 1,
+                step: 0.05,
+            },
             defaultValue: 0.3,
             cssVars: ['--card-shadow-intensity']
+        },
+        {
+            id: 'cardHoverColor',
+            label: 'Cor Hover',
+            category: 'Interação',
+            type: 'color',
+            defaultValue: 'transparent',
+            cssVars: ['--sarak-card-hover-color']
+        },
+        {
+            id: 'cardActiveColor',
+            label: 'Cor Ativa',
+            category: 'Interação',
+            type: 'color',
+            defaultValue: 'transparent',
+            cssVars: ['--sarak-card-active-color']
+        },
+        {
+            id: 'cardSpotlight',
+            label: 'Opacidade do Spotlight',
+            category: 'Interação',
+            type: 'slider',
+            constraints: {
+                min: 0,
+                max: 1,
+                step: 0.05,
+            },
+            defaultValue: 0,
+            cssVars: ['--spotlight-opacity']
+        },
+        {
+            id: 'hoverLiftEnabled',
+            label: 'Habilitar Elevação (Lift)',
+            category: 'Efeitos de Mouse',
+            type: 'boolean',
+            defaultValue: true
+        },
+        {
+            id: 'spotlightEnabled',
+            label: 'Habilitar Spotlight',
+            category: 'Efeitos de Mouse',
+            type: 'boolean',
+            defaultValue: true
+        },
+        {
+            id: 'magneticPullEnabled',
+            label: 'Tração Magnética',
+            category: 'Efeitos de Mouse',
+            type: 'boolean',
+            defaultValue: false
+        },
+        {
+            id: 'isGeometricCut',
+            label: 'Corte Geométrico',
+            category: 'Geometria',
+            type: 'boolean',
+            defaultValue: false
         }
     ]
 };

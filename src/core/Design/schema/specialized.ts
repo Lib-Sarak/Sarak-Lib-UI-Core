@@ -12,11 +12,13 @@ export const SpecializedSchema: ComponentSchema = {
             label: 'Estilo do Chat',
             category: 'Chat',
             type: 'select',
-            options: [
-                { id: 'glass', label: 'Glass' },
-                { id: 'flat', label: 'Flat' },
-                { id: 'industrial', label: 'Industrial' }
-            ],
+            constraints: {
+                options: [
+                    { id: 'glass', label: 'Glass' },
+                    { id: 'flat', label: 'Flat' },
+                    { id: 'industrial', label: 'Industrial' }
+                ],
+            },
             defaultValue: 'glass',
             cssVars: ['--chat-bubble-style']
         },
@@ -25,11 +27,13 @@ export const SpecializedSchema: ComponentSchema = {
             label: 'Grid do Fluxograma',
             category: 'Diagramas',
             type: 'select',
-            options: [
-                { id: 'dots', label: 'Pontos' },
-                { id: 'lines', label: 'Linhas' },
-                { id: 'cross', label: 'Cruzes' }
-            ],
+            constraints: {
+                options: [
+                    { id: 'dots', label: 'Pontos' },
+                    { id: 'lines', label: 'Linhas' },
+                    { id: 'cross', label: 'Cruzes' }
+                ],
+            },
             defaultValue: 'dots',
             cssVars: ['--flow-grid-style']
         },
@@ -38,10 +42,12 @@ export const SpecializedSchema: ComponentSchema = {
             label: 'Modo de Performance',
             category: 'Sistema',
             type: 'select',
-            options: [
-                { id: 'high', label: 'Alta Fidelidade (Animações ON)' },
-                { id: 'eco', label: 'Economia (Animações OFF)' }
-            ],
+            constraints: {
+                options: [
+                    { id: 'high', label: 'Alta Fidelidade (Animações ON)' },
+                    { id: 'eco', label: 'Economia (Animações OFF)' }
+                ],
+            },
             defaultValue: 'high'
         }
     ]

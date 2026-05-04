@@ -70,6 +70,14 @@ export const AnimationSection: React.FC<AnimationSectionProps> = ({ draft, updat
                         onClick={() => updateDraft('isGeometricCut', !draft.isGeometricCut)} 
                     />
                 </div>
+                <div className="mt-4 pt-4 border-t border-white/5">
+                    <SliderControl 
+                        label="Intensidade de Sombra" 
+                        value={draft.shadowIntensity} 
+                        min={0} max={2} step={0.1} 
+                        onChange={(v: any) => updateDraft('shadowIntensity', v)} 
+                    />
+                </div>
                 <div className="mt-4 p-3 rounded-lg bg-white/5 border border-white/10">
                     <p className="text-4xs text-white/40 uppercase font-black leading-tight">
                         Nota: Efeitos de superfície dependem do material selecionado na Categoria 1 (Cards).

@@ -3,14 +3,14 @@ import { getAllDesignTokens } from '../master-map';
 import { computeColorVariants } from '../../../core/Provider/utils/color-engine';
 
 /**
- * Hook Universal de Tradução de Design (v11.1)
+ * Hook Universal de Tradução de Design (v12.0)
  * 
  * Transforma um objeto de estado de design (draft ou master) 
  * em um conjunto de variáveis CSS e atributos baseados no MASTER_DESIGN_MAP.
  */
 export const useDesignVariables = (design: any) => {
     return useMemo(() => {
-        if (!design) return {};
+        if (!design) return { variables: {}, attributes: {} };
 
         const variables: Record<string, string> = {};
         const attributes: Record<string, string> = {};
@@ -57,7 +57,7 @@ export const useDesignVariables = (design: any) => {
             const baseColor = design[slot.key];
             if (baseColor && baseColor !== 'transparent') {
                 const variants = computeColorVariants(baseColor, anchorColor);
-                const prefix = `--theme-${slot}`;
+                const prefix = `--theme-${slot.id}`;
                 
                 variables[prefix] = variants.main;
                 variables[`${prefix}-rgb`] = variants.rgb;
@@ -68,9 +68,30 @@ export const useDesignVariables = (design: any) => {
             }
         });
 
-        // 3. Efeitos Específicos (Glassmorphism & Blur)
+        // 3. Fallbacks de Cores Semânticas Globais (v12.0 - Menos agressivo)
+        const isDark = mode === 'dark';
+        
+        // Só define se não foram injetados por tokens específicos (Soberania do Design)
+        if (!variables['--theme-body']) {
+            variables['--theme-body'] = isDark ? '#020617' : '#f8fafc';
+        }
+        if (!variables['--theme-bg']) {
+            variables['--theme-bg'] = variables['--theme-body'];
+        }
+        if (!variables['--theme-title']) {
+            variables['--theme-title'] = isDark ? '#f8fafc' : '#0f172a';
+        }
+        if (!variables['--theme-muted']) {
+            variables['--theme-muted'] = isDark ? '#cbd5e1' : '#334155';
+        }
+        if (!variables['--theme-border']) {
+            variables['--theme-border'] = isDark ? '#334155' : '#cbd5e1';
+        }
+
+        // 4. Efeitos Específicos (Glassmorphism & Blur)
         variables['--glass-opacity'] = String(design.glassOpacity ?? 0.4);
         variables['--glass-blur'] = `${design.glassBlur ?? 10}px`;
+        variables['--texture-opacity'] = String(design.textureOpacity ?? 0.08);
 
         return { variables, attributes };
     }, [design]);

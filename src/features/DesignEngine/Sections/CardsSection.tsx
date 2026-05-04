@@ -1,5 +1,5 @@
 import React from 'react';
-import { Box, Maximize, Wind, Layers } from 'lucide-react';
+import { Box, Layers } from 'lucide-react';
 import { Section, SelectControl, SliderControl } from '../components/DesignControls';
 
 interface CardsSectionProps {
@@ -12,93 +12,122 @@ interface CardsSectionProps {
 export const CardsSection: React.FC<CardsSectionProps> = ({ draft, updateDraft, activeSection, setActiveSection }) => {
     return (
         <>
-            <Section id="card-geometry" icon={Box} title="Geometria do Card" activeSection={activeSection} onToggle={setActiveSection}>
+            <Section id="card-geometry" icon={Box} title="Geometria & Espaçamento" activeSection={activeSection} onToggle={setActiveSection}>
                 <div className="grid grid-cols-2 gap-4">
-                    <SliderControl label="Raio da Borda" value={draft.borderRadius} min={0} max={32} onChange={(v: any) => updateDraft('borderRadius', v)} suffix="px" />
+                    <SliderControl 
+                        label="Raio da Borda" 
+                        value={draft.cardBorderRadius || 12} 
+                        min={0} 
+                        max={60} 
+                        onChange={(v: any) => updateDraft('cardBorderRadius', v)} 
+                        suffix="px" 
+                    />
+                    <SliderControl 
+                        label="Padding Interno" 
+                        value={draft.cardPadding || 24} 
+                        min={0} 
+                        max={80} 
+                        onChange={(v: any) => updateDraft('cardPadding', v)} 
+                        suffix="px" 
+                    />
+                </div>
+                <div className="grid grid-cols-2 gap-4 mt-4">
+                    <SelectControl 
+                        label="Estilo da Borda" 
+                        options={[
+                            { id: 'solid', label: 'Sólida' },
+                            { id: 'dashed', label: 'Tracejada' },
+                            { id: 'dotted', label: 'Pontilhada' },
+                            { id: 'double', label: 'Dupla' }
+                        ]} 
+                        value={draft.cardBorderStyle || 'solid'} 
+                        onChange={(v: any) => updateDraft('cardBorderStyle', v)} 
+                    />
+                    <SliderControl 
+                        label="Espessura Borda" 
+                        value={draft.cardBorderWidth || 1} 
+                        min={0} 
+                        max={10} 
+                        onChange={(v: any) => updateDraft('cardBorderWidth', v)} 
+                        suffix="px" 
+                    />
                 </div>
                 <div className="mt-4">
-                 <div className="grid grid-cols-2 gap-4 mt-4">
+                    <button 
+                        onClick={() => updateDraft('isGeometricCut', !draft.isGeometricCut)}
+                        className={`w-full py-2 rounded-lg text-3xs font-black uppercase transition-all ${draft.isGeometricCut ? 'bg-[var(--theme-primary)] text-white' : 'bg-white/5 text-white/20'}`}
+                    >
+                        Corte Geométrico (Chanfro) {draft.isGeometricCut ? 'Ativo' : 'Inativo'}
+                    </button>
+                </div>
+            </Section>
+
+            <Section id="card-surface" icon={Layers} title="Superfície & Textura" activeSection={activeSection} onToggle={setActiveSection}>
+                <div className="grid grid-cols-2 gap-4">
                     <SelectControl 
-                        label="Textura do Card" 
+                        label="Textura Interna" 
                         options={[
-                            {id: 'none', label: 'Nenhuma'},
-                            {id: 'grid', label: 'Grid Tech'},
-                            {id: 'dots', label: 'Dots Clean'},
-                            {id: 'circuit', label: 'Circuit'},
-                            {id: 'carbon', label: 'Carbon Fiber'},
-                            {id: 'silk', label: 'Silk Flow'}
+                            { id: 'none', label: 'Nenhuma' },
+                            { id: 'dots', label: 'Pontos' },
+                            { id: 'grid', label: 'Grelha' },
+                            { id: 'noise', label: 'Ruído' }
                         ]} 
-                        value={draft.cardTexture} 
+                        value={draft.cardTexture || 'none'} 
                         onChange={(v: any) => updateDraft('cardTexture', v)} 
                     />
                     <SliderControl 
                         label="Opacidade Textura" 
-                        value={draft.textureOpacity || 0.1} 
-                        min={0} 
-                        max={0.5} 
-                        step={0.01} 
-                        onChange={(v: any) => updateDraft('textureOpacity', v)} 
-                    />
-                </div>
-                </div>
-                <div className="grid grid-cols-2 gap-4 mt-4">
-                    <SliderControl label="Espessura Borda" value={draft.borderWidth} min={0} max={4} step={1} onChange={(v: any) => updateDraft('borderWidth', v)} suffix="px" />
-                    <SelectControl label="Estilo Borda" options={['solid', 'dashed', 'dotted']} value={draft.borderStyle} onChange={(v: any) => updateDraft('borderStyle', v)} />
-                </div>
-                <div className="grid grid-cols-2 gap-4 mt-4">
-                    <SelectControl label="Tipo Borda" options={[{id: 'default', label: 'Padrão'}, {id: 'neon', label: 'Neon Glow'}, {id: 'beveled', label: 'Chanfrado'}, {id: 'inlet', label: 'Interna'}]} value={draft.borderType} onChange={(v: any) => updateDraft('borderType', v)} />
-                    <SliderControl label="Padding Interno" value={draft.cardPadding} min={8} max={64} onChange={(v: any) => updateDraft('cardPadding', v)} suffix="px" />
-                </div>
-            </Section>
-
-            <Section id="card-atmosphere" icon={Wind} title="Atmosfera (Glassmorphism)" activeSection={activeSection} onToggle={setActiveSection}>
-                <div className="grid grid-cols-2 gap-4">
-                    <SliderControl label="Opacidade Vidro" value={draft.glassOpacity} min={0} max={1} step={0.05} onChange={(v: any) => updateDraft('glassOpacity', v)} />
-                    <SliderControl label="Blur (Desfoque)" value={draft.glassBlur} min={0} max={40} onChange={(v: any) => updateDraft('glassBlur', v)} suffix="px" />
-                </div>
-                <div className="grid grid-cols-1 gap-4 mt-4">
-                    <SliderControl label="Saturação Vidro" value={draft.glassSaturation} min={100} max={300} step={10} onChange={(v: any) => updateDraft('glassSaturation', v)} suffix="%" />
-                </div>
-                <div className="grid grid-cols-1 gap-4 mt-4">
-                    <SliderControl label="Curva de Contraste" value={draft.contrastCurve || 1.0} min={0.5} max={2.0} step={0.1} onChange={(v: any) => updateDraft('contrastCurve', v)} />
-                </div>
-                <div className="mt-4">
-                    <SelectControl 
-                        label="Material de Superfície" 
-                        options={[
-                            {id: 'none', label: 'Nenhum (Glass)'}, 
-                            {id: 'metallic', label: 'Metallic / Industrial'}, 
-                            {id: 'acrylic', label: 'Acrylic Deep'}, 
-                            {id: 'matte', label: 'Solid Matte'}, 
-                            {id: 'brushed', label: 'Brushed Metal'}
-                        ]} 
-                        value={draft.surfaceMaterial} 
-                        onChange={(v: any) => updateDraft('surfaceMaterial', v)} 
-                    />
-                </div>
-                <div className="mt-4">
-                    <SliderControl 
-                        label="Intensidade do Material" 
-                        value={draft.surfaceIntensity ?? 0.05} 
+                        value={draft.cardNoiseOpacity || 0.05} 
                         min={0} 
                         max={0.2} 
-                        step={0.005} 
-                        onChange={(v: any) => updateDraft('surfaceIntensity', v)} 
+                        step={0.01} 
+                        onChange={(v: any) => updateDraft('cardNoiseOpacity', v)} 
+                    />
+                </div>
+                <div className="grid grid-cols-1 gap-4 mt-4">
+                    <SliderControl 
+                        label="Intensidade da Sombra" 
+                        value={draft.cardShadowIntensity || 0.1} 
+                        min={0} 
+                        max={1} 
+                        step={0.05} 
+                        onChange={(v: any) => updateDraft('cardShadowIntensity', v)} 
                     />
                 </div>
             </Section>
 
-            <Section id="card-shadows" icon={Layers} title="Sombras & Profundidade" activeSection={activeSection} onToggle={setActiveSection}>
-                <div className="grid grid-cols-2 gap-4">
-                    <SliderControl label="Intensidade" value={draft.shadowIntensity} min={0} max={1} step={0.05} onChange={(v: any) => updateDraft('shadowIntensity', v)} />
-                    <SelectControl label="Orientação" options={[{id: 'top-down', label: 'Superior'}, {id: 'isometric', label: 'Isométrica'}, {id: 'inner', label: 'Interna'}]} value={draft.shadowOrientation} onChange={(v: any) => updateDraft('shadowOrientation', v)} />
+            <Section id="card-interaction" icon={Box} title="Interatividade & Feedback" activeSection={activeSection} onToggle={setActiveSection}>
+                <div className="grid grid-cols-3 gap-2 mb-4">
+                    <button 
+                        onClick={() => updateDraft('hoverLiftEnabled', !draft.hoverLiftEnabled)}
+                        className={`py-3 rounded-lg text-[8px] font-black uppercase transition-all ${draft.hoverLiftEnabled ? 'bg-[var(--theme-primary)] text-white' : 'bg-white/5 text-white/20'}`}
+                    >
+                        Hover Lift
+                    </button>
+                    <button 
+                        onClick={() => updateDraft('spotlightEnabled', !draft.spotlightEnabled)}
+                        className={`py-3 rounded-lg text-[8px] font-black uppercase transition-all ${draft.spotlightEnabled ? 'bg-[var(--theme-primary)] text-white' : 'bg-white/5 text-white/20'}`}
+                    >
+                        Spotlight
+                    </button>
+                    <button 
+                        onClick={() => updateDraft('magneticPullEnabled', !draft.magneticPullEnabled)}
+                        className={`py-3 rounded-lg text-[8px] font-black uppercase transition-all ${draft.magneticPullEnabled ? 'bg-[var(--theme-primary)] text-white' : 'bg-white/5 text-white/20'}`}
+                    >
+                        Magnetic
+                    </button>
                 </div>
-                <div className="grid grid-cols-2 gap-4 mt-4">
-                    <SliderControl label="Sombras em Camadas" value={draft.layeredShadows || 1.0} min={0} max={2.0} step={0.1} onChange={(v: any) => updateDraft('layeredShadows', v)} />
-                    <SelectControl label="Modo de Cor" options={[{id: 'black', label: 'Preto Absoluto'}, {id: 'colored', label: 'Baseado na Cor Primária'}]} value={draft.shadowColorMode} onChange={(v: any) => updateDraft('shadowColorMode', v)} />
+                <div className="grid grid-cols-2 gap-4">
+                    <div className="flex flex-col gap-2">
+                        <span className="text-[10px] font-bold text-white/40 uppercase">Hover Color</span>
+                        <input type="color" value={draft.cardHoverColor || '#ffffff05'} onChange={(e) => updateDraft('cardHoverColor', e.target.value)} className="w-full h-8 rounded-lg bg-black/40 border border-white/5 cursor-pointer p-1" />
+                    </div>
+                    <div className="flex flex-col gap-2">
+                        <span className="text-[10px] font-bold text-white/40 uppercase">Spotlight Color</span>
+                        <input type="color" value={draft.cardSpotlight || '#ffffff10'} onChange={(e) => updateDraft('cardSpotlight', e.target.value)} className="w-full h-8 rounded-lg bg-black/40 border border-white/5 cursor-pointer p-1" />
+                    </div>
                 </div>
             </Section>
         </>
     );
 };
-

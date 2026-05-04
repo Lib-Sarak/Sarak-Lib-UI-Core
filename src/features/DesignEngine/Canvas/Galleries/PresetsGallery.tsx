@@ -2,9 +2,10 @@ import React from 'react';
 import { motion } from 'framer-motion';
 import { GalleryItem } from './GalleryItem';
 import { THEME_EFFECTS } from '../../../../constants/design-tokens';
-import { LAYOUTS, BASE_PRESETS } from '../../../../constants/theme-models';
-import { DESIGN_MANIFEST, UIContext } from '../../../../core/Provider/SarakUIProvider';
+import { UIContext } from '../../../../core/Provider/SarakUIProvider';
 import { MockDashboard, MockChat, MockLogs, MockSettings, MockComponents, MockTypography } from '../MockApps';
+import { DesignScope } from '../../../../core/Design/components/DesignScope';
+import { PRESETS_LIBRARY, GLOBAL_THEMES } from '../../../../core/Design/presets';
 
 interface PresetsGalleryProps {
     tokens: any;
@@ -12,9 +13,6 @@ interface PresetsGalleryProps {
     activePreviewApp?: string;
     customThemes?: any[];
 }
-
-
-import { DesignScope } from '../../../../core/Design/components/DesignScope';
 
 const PresetSpecimen: React.FC<{ 
     preset: any, 
@@ -77,78 +75,71 @@ const PresetSpecimen: React.FC<{
     );
 };
 
-export const PresetsGallery: React.FC<PresetsGalleryProps> = ({ tokens, onUpdateDraft, activePreviewApp = 'dashboard', customThemes = [] }) => {
+export const PresetsGallery: React.FC<PresetsGalleryProps> = ({ tokens, onUpdateDraft, activePreviewApp = 'dashboard' }) => {
     
     const handleSelect = (id: string) => {
-        const presetKey = Object.keys(BASE_PRESETS).find(k => k.toLowerCase() === id.toLowerCase());
-        const preset = presetKey ? (BASE_PRESETS as any)[presetKey] : null;
+        const theme = GLOBAL_THEMES.find((t: any) => t.id === id);
+        if (!theme) return;
 
-        if (!preset) return;
-        
-        Object.entries(preset).forEach(([key, val]) => {
+        // Apply all tokens from the theme
+        Object.entries(theme.tokens).forEach(([key, val]) => {
              onUpdateDraft(key, val);
         });
+        
+        // Mark the current layout ID
         onUpdateDraft('layout', id);
     };
 
-    const allThemes = { ...LAYOUTS };
-    // TODO: Adicionar custom themes se necessário no futuro
+    const themeEntries = GLOBAL_THEMES;
     
-    const advancedThemes = Object.entries(allThemes).filter(([id]) => id.toLowerCase().includes('premium') || id.toLowerCase().includes('_v') || id.toLowerCase().includes('advanced') || id === 'hazard' || id === 'futurist');
-    const baseThemes = Object.entries(allThemes).filter(([id]) => !advancedThemes.some(at => at[0] === id));
+    // Split themes into categories if needed, for now all together
+    const premiumThemes = themeEntries.filter((t: any) => t.id === 'quantum');
+    const essentialThemes = themeEntries.filter((t: any) => t.id !== 'quantum');
 
-    const renderGrid = (themes: [string, any][]) => (
+    const renderGrid = (themes: any[]) => (
         <div className="grid grid-cols-1 lg:grid-cols-2 gap-10">
-            {themes.map(([id, layout]) => {
-                const presetKey = Object.keys(BASE_PRESETS).find(k => k.toLowerCase() === id.toLowerCase());
-                const preset = (BASE_PRESETS as any)[presetKey!];
-                
-                if (!preset) return null;
-
-                return (
-                    <GalleryItem 
-                        key={id}
-                        title={layout.name}
-                        description={layout.description}
-                        isActive={tokens.layout === id}
-                        onClick={() => handleSelect(id)}
-                    >
-                        <div className="w-full aspect-video rounded-xl overflow-hidden shadow-2xl border border-white/5 bg-[#0a0a0a]">
-                            <PresetSpecimen 
-                                preset={preset} 
-                                activeApp={activePreviewApp} 
-                            />
-                        </div>
-                    </GalleryItem>
-                );
-            })}
+            {themes.map((theme) => (
+                <GalleryItem 
+                    key={theme.id}
+                    title={theme.name}
+                    description={theme.description}
+                    isActive={tokens.layout === theme.id}
+                    onClick={() => handleSelect(theme.id)}
+                >
+                    <div className="w-full aspect-video rounded-xl overflow-hidden shadow-2xl border border-white/5 bg-[#0a0a0a]">
+                        <PresetSpecimen 
+                            preset={theme.tokens} 
+                            activeApp={activePreviewApp} 
+                        />
+                    </div>
+                </GalleryItem>
+            ))}
         </div>
     );
 
     return (
         <div className="flex flex-col gap-20 p-10 overflow-y-auto custom-scrollbar h-full bg-[#050505]">
-            {/* Advanced Section */}
-            {advancedThemes.length > 0 && (
+            {/* Premium Section */}
+            {premiumThemes.length > 0 && (
                 <div className="space-y-8">
                     <div className="flex items-center gap-4 px-2">
-                        <span className="text-xs font-black uppercase tracking-[0.4em] text-white/20 italic">High Performance & Premium Models</span>
+                        <span className="text-xs font-black uppercase tracking-[0.4em] text-white/20 italic">Quantum & High Performance Models</span>
                         <div className="flex-1 h-[1px] bg-white/5" />
                     </div>
-                    {renderGrid(advancedThemes)}
+                    {renderGrid(premiumThemes)}
                 </div>
             )}
 
-            {/* Base Section */}
-            {baseThemes.length > 0 && (
+            {/* Essential Section */}
+            {essentialThemes.length > 0 && (
                 <div className="space-y-8">
                     <div className="flex items-center gap-4 px-2">
-                        <span className="text-xs font-black uppercase tracking-[0.4em] text-white/20 italic">Sovereign Essential Models</span>
+                        <span className="text-xs font-black uppercase tracking-[0.4em] text-white/20 italic">Sovereign Industrial Models</span>
                         <div className="flex-1 h-[1px] bg-white/5" />
                     </div>
-                    {renderGrid(baseThemes)}
+                    {renderGrid(essentialThemes)}
                 </div>
             )}
         </div>
     );
 };
-
