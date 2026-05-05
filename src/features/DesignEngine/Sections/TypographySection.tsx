@@ -1,6 +1,7 @@
 import React from 'react';
 import { Type, AlignLeft, Bold, MoveHorizontal } from 'lucide-react';
 import { Section, SelectControl, SliderControl } from '../components/DesignControls';
+import { THEME_FONTS } from '../../../core/Design/presets/typography';
 
 interface TypographySectionProps {
     draft: any;
@@ -10,23 +11,43 @@ interface TypographySectionProps {
 }
 
 export const TypographySection: React.FC<TypographySectionProps> = ({ draft, updateDraft, activeSection, setActiveSection }) => {
+    // Mapear catálogo completo para o formato do SelectControl
+    const fontOptions = THEME_FONTS.map(f => ({
+        id: f.value,
+        label: f.name
+    }));
+
     return (
         <>
             <Section id="font-families" icon={Type} title="Famílias Tipográficas" activeSection={activeSection} onToggle={setActiveSection}>
                 <div className="grid grid-cols-2 gap-4">
                     <SelectControl 
                         label="Título (Heading)" 
-                        options={['Inter', 'Poppins', 'Outfit', 'Montserrat', 'Roboto Mono', 'Syne']} 
-                        value={draft.headingFont || 'Outfit'} 
+                        options={fontOptions} 
+                        value={draft.headingFont || "'Outfit', sans-serif"} 
                         onChange={(v: any) => updateDraft('headingFont', v)} 
                         isFont 
                     />
                     <SelectControl 
                         label="Corpo (Body)" 
-                        options={['Inter', 'Poppins', 'Roboto', 'Outfit']} 
-                        value={draft.bodyFont || 'Inter'} 
+                        options={fontOptions} 
+                        value={draft.bodyFont || "'Inter', sans-serif"} 
                         onChange={(v: any) => updateDraft('bodyFont', v)} 
                         isFont 
+                    />
+                </div>
+                
+                <div className="mt-4">
+                    <SelectControl 
+                        label="Escala Global" 
+                        options={[
+                            { id: 's', label: 'Compacta (S)' },
+                            { id: 'm', label: 'Padrão (M)' },
+                            { id: 'l', label: 'Ampla (L)' },
+                            { id: 'xl', label: 'Monumental (XL)' }
+                        ]} 
+                        value={draft.fontScale || 'm'} 
+                        onChange={(v: any) => updateDraft('fontScale', v)} 
                     />
                 </div>
             </Section>
@@ -37,7 +58,7 @@ export const TypographySection: React.FC<TypographySectionProps> = ({ draft, upd
                         label="Tamanho Base" 
                         value={draft.fontBaseSize || 16} 
                         min={12} 
-                        max={20} 
+                        max={24} 
                         onChange={(v: any) => updateDraft('fontBaseSize', v)} 
                         suffix="px" 
                     />
@@ -45,7 +66,7 @@ export const TypographySection: React.FC<TypographySectionProps> = ({ draft, upd
                         label="Altura da Linha" 
                         value={draft.fontLineHeight || 1.5} 
                         min={1} 
-                        max={2} 
+                        max={2.5} 
                         step={0.1} 
                         onChange={(v: any) => updateDraft('fontLineHeight', v)} 
                     />
@@ -55,9 +76,12 @@ export const TypographySection: React.FC<TypographySectionProps> = ({ draft, upd
                     <SelectControl 
                         label="Peso Título" 
                         options={[
+                            {id: '300', label: 'Light'},
                             {id: '400', label: 'Regular'}, 
+                            {id: '500', label: 'Medium'},
                             {id: '600', label: 'Semi-Bold'}, 
                             {id: '700', label: 'Bold'}, 
+                            {id: '800', label: 'Extra-Bold'},
                             {id: '900', label: 'Black'}
                         ]} 
                         value={draft.headingWeight || '700'} 
@@ -66,8 +90,8 @@ export const TypographySection: React.FC<TypographySectionProps> = ({ draft, upd
                     <SliderControl 
                         label="Espaçamento (Letters)" 
                         value={draft.headingLetterSpacing || 0} 
-                        min={-0.05} 
-                        max={0.25} 
+                        min={-0.1} 
+                        max={0.5} 
                         step={0.01} 
                         onChange={(v: any) => updateDraft('headingLetterSpacing', v)} 
                     />
@@ -76,4 +100,5 @@ export const TypographySection: React.FC<TypographySectionProps> = ({ draft, upd
         </>
     );
 };
+
 

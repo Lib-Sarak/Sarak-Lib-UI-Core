@@ -3,9 +3,9 @@
     "version": "2.1.5",
     "description": "Sarak Design System and UI Engine [Pre-compiled]",
     "type": "module",
-    "main": "./src/index.ts",
-    "module": "./src/index.ts",
-    "types": "./src/index.ts",
+    "main": "./dist/index.cjs",
+    "module": "./dist/index.js",
+    "types": "./dist/index.d.ts",
     "scripts": {
         "build:css": "npx @tailwindcss/cli -i ./src/styles/sarak-base.css -o ./dist/sarak.css --minify",
         "build:js": "tsup src/index.ts --format esm,cjs --dts --clean --minify --external react,react-dom,framer-motion,lucide-react,recharts,echarts-for-react,echarts,reactflow,react-grid-layout,react-markdown,react-syntax-highlighter,react-dropzone,clsx,tailwind-merge,date-fns",
@@ -14,8 +14,9 @@
     },
     "exports": {
         ".": {
-            "import": "./src/index.ts",
-            "types": "./src/index.ts"
+            "types": "./dist/index.d.ts",
+            "import": "./dist/index.js",
+            "require": "./dist/index.cjs"
         },
         "./sarak.css": "./dist/sarak.css",
         "./sarak-base.css": {

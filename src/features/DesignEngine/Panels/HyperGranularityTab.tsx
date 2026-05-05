@@ -5,7 +5,7 @@ import {
     Sidebar, Layout, CreditCard, Type, Zap, Move, 
     Droplets, Grid3X3, CornerUpRight, Square, 
     CircleDashed, Sliders, Activity, Shield, Wind, 
-    Monitor, Hash, Brush, Sparkles, Fingerprint
+    Monitor, Hash, Brush, Sparkles, Fingerprint, Shield as ShieldIcon
 } from 'lucide-react';
 
 import { Section, SliderControl, SelectControl, ColorControl, SwitchControl } from '../components/DesignControls';
@@ -101,7 +101,7 @@ export const HyperGranularityTab: React.FC = () => {
             </Section>
 
             {/* GEOMETRIA INDUSTRIAL */}
-            <Section title="Geometria Industrial" icon={Box}>
+            <Section id="geometry" title="Geometria Industrial" icon={Box} activeSection={activeSection} onToggle={setActiveSection}>
                 <div className="space-y-6">
                     <div className="grid grid-cols-1 gap-4">
                         <SliderControl label="Border Radius (Global)" value={design.borderRadius} onChange={(val: any) => update('borderRadius', val)} max={60} />
@@ -154,7 +154,7 @@ export const HyperGranularityTab: React.FC = () => {
             </Section>
 
             {/* ESPAÇAMENTO ATÔMICO */}
-            <Section title="Espaçamento Atômico" icon={Maximize}>
+            <Section id="spacing" title="Espaçamento Atômico" icon={Maximize} activeSection={activeSection} onToggle={setActiveSection}>
                 <div className="space-y-8">
                     <div className="space-y-4">
                         <label className="text-2xs font-black uppercase text-white/20">Layout Gaps</label>
@@ -182,7 +182,7 @@ export const HyperGranularityTab: React.FC = () => {
             </Section>
 
             {/* ATMOSFERA & TEXTURA */}
-            <Section title="Atmosfera & Textura" icon={Waves}>
+            <Section id="atmosphere" title="Atmosfera & Textura" icon={Waves} activeSection={activeSection} onToggle={setActiveSection}>
                 <div className="space-y-6">
                     <div className="space-y-4">
                         <label className="text-2xs font-black uppercase text-white/20">Efeito Glassmorphism</label>
@@ -220,6 +220,32 @@ export const HyperGranularityTab: React.FC = () => {
 
                     <div className="space-y-4">
                         <label className="text-2xs font-black uppercase text-white/20">Textura de Fundo</label>
+                        <SelectControl 
+                            label="Textura de Atmosfera" 
+                            value={design.texture || 'none'} 
+                            onChange={(val: any) => update('texture', val)}
+                            options={[
+                                { id: 'none', label: 'Nenhuma' },
+                                { id: 'grid', label: 'Grid Tech' },
+                                { id: 'squares', label: 'Geometry Squares' },
+                                { id: 'honeycomb', label: 'Hex Honeycomb' },
+                                { id: 'isometric', label: '3D Isometric' },
+                                { id: 'stripes', label: 'Diagonal Stripes' },
+                                { id: 'pinstripes', label: 'Vertical Pinstripes' },
+                                { id: 'crosshatch', label: 'Diagonal Crosshatch' },
+                                { id: 'blueprint', label: 'Engineering' },
+                                { id: 'dots', label: 'Dots Clean' },
+                                { id: 'stars', label: 'Star Field' },
+                                { id: 'noise', label: 'Grain Noise' },
+                                { id: 'circuit', label: 'Circuit Tech' },
+                                { id: 'radar', label: 'Sonar / Radar' },
+                                { id: 'carbon', label: 'Carbon Fiber' },
+                                { id: 'brushed', label: 'Brushed Metal' },
+                                { id: 'wood', label: 'Timber / Wood Grain' },
+                                { id: 'aurora', label: 'Aurora Deep' },
+                                { id: 'nebula', label: 'Cosmic Nebula' }
+                            ]}
+                        />
                         <SliderControl label="Atmosphere Noise" value={design.atmosphereNoiseOpacity} onChange={(val: any) => update('atmosphereNoiseOpacity', val)} min={0} max={1} step={0.01} unit="" />
                         <SliderControl label="Global Texture Opacity" value={design.textureOpacity} onChange={(val: any) => update('textureOpacity', val)} min={0} max={1} step={0.01} unit="" />
                     </div>
@@ -237,8 +263,47 @@ export const HyperGranularityTab: React.FC = () => {
                 </div>
             </Section>
 
+            {/* SEGURANÇA E PROTOCOLOS */}
+            <Section id="security" title="Segurança e Protocolos" icon={ShieldIcon} activeSection={activeSection} onToggle={setActiveSection}>
+                <div className="space-y-6">
+                    <div className="p-4 rounded-xl bg-orange-500/5 border border-orange-500/10 mb-4">
+                        <p className="text-3xs text-orange-500/60 leading-relaxed font-medium">
+                            Configurações de soberania para componentes de autenticação, MFA e escudos de proteção industrial.
+                        </p>
+                    </div>
+
+                    <div className="space-y-4">
+                        <label className="text-2xs font-black uppercase text-white/20">Proteção Visual</label>
+                        <SliderControl label="Brilho do Escudo" value={design.securityShieldGlow} onChange={(val: any) => update('securityShieldGlow', val)} max={50} unit="px" />
+                        <SliderControl label="Velocidade do Pulso" value={design.securityPulseSpeed} onChange={(val: any) => update('securityPulseSpeed', val)} min={0.5} max={5} step={0.1} unit="s" />
+                        <SliderControl label="Arredondamento (Shield)" value={design.securityBorderRadius} onChange={(val: any) => update('securityBorderRadius', val)} max={40} unit="px" />
+                    </div>
+
+                    <div className="space-y-4">
+                        <label className="text-2xs font-black uppercase text-white/20">Infraestrutura de Auth</label>
+                        <SelectControl 
+                            label="Densidade de Tela" 
+                            value={design.authDensity || 'standard'} 
+                            onChange={(val: any) => update('authDensity', val)}
+                            options={[
+                                { id: 'compact', label: 'Compacto' },
+                                { id: 'standard', label: 'Padrão (Balanced)' },
+                                { id: 'spacious', label: 'Espaçoso (Airy)' }
+                            ]}
+                        />
+                        <SliderControl label="QR Code Size (MFA)" value={design.qrSize} onChange={(val: any) => update('qrSize', val)} min={100} max={300} step={10} unit="px" />
+                        <SwitchControl 
+                            label="Efeito de Ruído (Auth)" 
+                            description="Textura de grão nas telas de login" 
+                            value={design.authNoiseEnabled} 
+                            onChange={(val: any) => update('authNoiseEnabled', val)} 
+                        />
+                    </div>
+                </div>
+            </Section>
+
             {/* TIPOGRAFIA */}
-            <Section title="Tipografia Industrial" icon={Type}>
+            <Section id="typography" title="Tipografia Industrial" icon={Type} activeSection={activeSection} onToggle={setActiveSection}>
                 <div className="space-y-6">
                     <div className="grid grid-cols-1 gap-4">
                         <SelectControl 
@@ -250,7 +315,10 @@ export const HyperGranularityTab: React.FC = () => {
                                 { label: 'Outfit', value: 'Outfit' },
                                 { label: 'Roboto', value: 'Roboto' },
                                 { label: 'Space Grotesk', value: 'Space Grotesk' },
-                                { label: 'JetBrains Mono', value: 'JetBrains Mono' }
+                                { label: 'JetBrains Mono', value: 'JetBrains Mono' },
+                                { label: 'Lexend', value: 'Lexend' },
+                                { label: 'Unbounded', value: 'Unbounded' },
+                                { label: 'Plus Jakarta Sans', value: 'Plus Jakarta Sans' }
                             ]}
                         />
                         <div className="grid grid-cols-2 gap-4">
@@ -288,7 +356,9 @@ export const HyperGranularityTab: React.FC = () => {
                             { label: 'Inter', value: 'Inter' },
                             { label: 'Outfit', value: 'Outfit' },
                             { label: 'Roboto', value: 'Roboto' },
-                            { label: 'Space Grotesk', value: 'Space Grotesk' }
+                            { label: 'Space Grotesk', value: 'Space Grotesk' },
+                            { label: 'Lexend', value: 'Lexend' },
+                            { label: 'Plus Jakarta Sans', value: 'Plus Jakarta Sans' }
                         ]}
                     />
 
@@ -317,7 +387,7 @@ export const HyperGranularityTab: React.FC = () => {
             </Section>
 
             {/* DINÂMICA */}
-            <Section title="Dinâmica & Resposta" icon={Zap}>
+            <Section id="dynamics" title="Dinâmica & Resposta" icon={Zap} activeSection={activeSection} onToggle={setActiveSection}>
                 <div className="space-y-6">
                     <SliderControl label="Animation Speed" value={design.animationSpeed} onChange={(val: any) => update('animationSpeed', val)} min={0} max={2} step={0.05} unit="s" />
                     <SliderControl label="Interface Elasticity" value={design.interfaceElasticity} onChange={(val: any) => update('interfaceElasticity', val)} min={0} max={1} step={0.01} unit="" />
@@ -344,7 +414,7 @@ export const HyperGranularityTab: React.FC = () => {
                         onChange={(val: any) => update('performanceMode', val)}
                         options={[
                             { label: 'Standard', value: 'standard' },
-                            { label: 'High Quality', value: 'high' },
+                            { label: 'High Quality (60fps+)', value: 'high' },
                             { label: 'Battery Saver', value: 'low' },
                             { label: 'Static (No Anim)', value: 'static' }
                         ]}
@@ -352,8 +422,9 @@ export const HyperGranularityTab: React.FC = () => {
                 </div>
             </Section>
 
+
             {/* CONFIGURAÇÕES DE LAYOUT */}
-            <Section title="Arquitetura de Layout" icon={Monitor}>
+            <Section id="layout-config" title="Arquitetura de Layout" icon={Monitor} activeSection={activeSection} onToggle={setActiveSection}>
                 <div className="space-y-6">
                     <div className="grid grid-cols-1 gap-4">
                         <SliderControl label="Sidebar Width" value={design.sidebarWidth} onChange={(val: any) => update('sidebarWidth', val)} min={180} max={500} unit="px" />
@@ -373,6 +444,143 @@ export const HyperGranularityTab: React.FC = () => {
                         value={design.isAutoHideEnabled} 
                         onChange={(val: any) => update('isAutoHideEnabled', val)} 
                     />
+                </div>
+            </Section>
+
+            {/* DADOS & GRÁFICOS */}
+            <Section id="data-viz" title="Dados & Gráficos" icon={Activity} activeSection={activeSection} onToggle={setActiveSection}>
+                <div className="space-y-6">
+                    <div className="grid grid-cols-1 gap-4">
+                        <SelectControl 
+                            label="Estilo do Gráfico" 
+                            value={design.chartStyle || 'glow'} 
+                            onChange={(val: any) => update('chartStyle', val)}
+                            options={[
+                                { id: 'standard', label: 'Sarak Standard' },
+                                { id: 'glow', label: 'Neon Glow' },
+                                { id: 'tech', label: 'Industrial Tech' },
+                                { id: 'minimal', label: 'Ultra Minimal' }
+                            ]}
+                        />
+                        <div className="grid grid-cols-2 gap-4">
+                            <SelectControl 
+                                label="Paleta" 
+                                value={design.chartPalette || 'standard'} 
+                                onChange={(val: any) => update('chartPalette', val)}
+                                options={[
+                                    { id: 'standard', label: 'Sarak Standard' },
+                                    { id: 'vibrant', label: 'Vibrant Data' },
+                                    { id: 'monochrome', label: 'Monochrome Tech' }
+                                ]}
+                            />
+                            <SelectControl 
+                                label="Tipo Padrão" 
+                                value={design.chartType || 'bar'} 
+                                onChange={(val: any) => update('chartType', val)}
+                                options={[
+                                    { id: 'bar', label: 'Barras' },
+                                    { id: 'line', label: 'Linhas' },
+                                    { id: 'area', label: 'Área' },
+                                    { id: 'pie', label: 'Pizza' },
+                                    { id: 'gauge', label: 'Gauge' }
+                                ]}
+                            />
+                        </div>
+                    </div>
+
+                    <div className="space-y-4">
+                        <SliderControl label="Espessura da Linha" value={design.chartThickness} onChange={(val: any) => update('chartThickness', val)} min={1} max={10} unit="px" />
+                        <div className="grid grid-cols-2 gap-4">
+                            <SwitchControl label="Suavização" value={design.chartSmoothing} onChange={(val: any) => update('chartSmoothing', val)} />
+                            <SwitchControl label="Exibir Grid" value={design.chartShowGrid} onChange={(val: any) => update('chartShowGrid', val)} />
+                        </div>
+                    </div>
+
+                    <div className="space-y-4">
+                        <label className="text-2xs font-black uppercase text-white/20">Layout de Tabelas e Grids</label>
+                        <SelectControl 
+                            label="Densidade da Tabela" 
+                            value={design.tableDensity || 'standard'} 
+                            onChange={(val: any) => update('tableDensity', val)}
+                            options={[
+                                { id: 'compact', label: 'Compacta' },
+                                { id: 'standard', label: 'Padrão' },
+                                { id: 'comfortable', label: 'Confortável' }
+                            ]}
+                        />
+                        <div className="grid grid-cols-2 gap-4">
+                            <SliderControl label="Grid Gap" value={design.gridGap} onChange={(val: any) => update('gridGap', val)} max={60} unit="px" />
+                            <SliderControl label="Grid Radius" value={design.gridRadius} onChange={(val: any) => update('gridRadius', val)} max={30} unit="px" />
+                        </div>
+                    </div>
+                </div>
+            </Section>
+
+            {/* INTERAÇÃO & CONTROLES */}
+            <Section id="controls-interaction" title="Interação & Controles" icon={MousePointer2} activeSection={activeSection} onToggle={setActiveSection}>
+                <div className="space-y-6">
+                    <div className="space-y-4">
+                        <label className="text-2xs font-black uppercase text-white/20">Botões e Ações</label>
+                        <div className="grid grid-cols-2 gap-4">
+                            <SliderControl label="Raio" value={design.buttonRadius} onChange={(val: any) => update('buttonRadius', val)} max={40} unit="px" />
+                            <SliderControl label="Padding" value={design.buttonPadding} onChange={(val: any) => update('buttonPadding', val)} min={4} max={32} unit="px" />
+                        </div>
+                        <SelectControl 
+                            label="Efeito Hover" 
+                            value={design.buttonHoverEffect || 'glow'} 
+                            onChange={(val: any) => update('buttonHoverEffect', val)}
+                            options={[
+                                { id: 'none', label: 'Nenhum' },
+                                { id: 'lift', label: 'Elevação (Lift)' },
+                                { id: 'glow', label: 'Brilho (Glow)' },
+                                { id: 'glass', label: 'Vidro (Glass)' },
+                                { id: 'outline', label: 'Borda (Outline)' }
+                            ]}
+                        />
+                    </div>
+
+                    <div className="space-y-4">
+                        <label className="text-2xs font-black uppercase text-white/20">Inputs e Filtros</label>
+                        <div className="grid grid-cols-2 gap-4">
+                            <SelectControl 
+                                label="Estilo Input" 
+                                value={design.inputStyle || 'glass'} 
+                                onChange={(val: any) => update('inputStyle', val)}
+                                options={[
+                                    { id: 'flat', label: 'Flat' },
+                                    { id: 'glass', label: 'Glass' },
+                                    { id: 'bordered', label: 'Bordado' }
+                                ]}
+                            />
+                            <SliderControl label="Borda Input" value={design.inputBorderWidth} onChange={(val: any) => update('inputBorderWidth', val)} max={4} unit="px" />
+                        </div>
+                        <ColorControl label="Background Input" value={design.inputBackgroundColor} onChange={(val: any) => update('inputBackgroundColor', val)} />
+                        
+                        <div className="p-3 rounded-lg bg-white/5 space-y-3">
+                            <span className="text-[10px] font-bold uppercase text-white/40 block">Motores de Filtro</span>
+                            <div className="grid grid-cols-3 gap-3">
+                                <SliderControl label="Padding" value={design.filterPadding} onChange={(val: any) => update('filterPadding', val)} max={24} />
+                                <SliderControl label="Gap" value={design.filterGap} onChange={(val: any) => update('filterGap', val)} max={16} />
+                                <SliderControl label="Radius" value={design.filterRadius} onChange={(val: any) => update('filterRadius', val)} max={30} />
+                            </div>
+                        </div>
+                    </div>
+
+                    <div className="space-y-4">
+                        <label className="text-2xs font-black uppercase text-white/20">Componentes Sociais</label>
+                        <div className="grid grid-cols-2 gap-4">
+                            <SelectControl 
+                                label="Estilo Social" 
+                                value={design.socialButtonStyle || 'glass'} 
+                                onChange={(val: any) => update('socialButtonStyle', val)}
+                                options={[
+                                    { id: 'glass', label: 'Glass' },
+                                    { id: 'sovereign', label: 'Sovereign' }
+                                ]}
+                            />
+                            <SliderControl label="Raio Social" value={design.socialButtonRadius} onChange={(val: any) => update('socialButtonRadius', val)} max={40} unit="px" />
+                        </div>
+                    </div>
                 </div>
             </Section>
 

@@ -31,21 +31,39 @@ export const ComponentsSection: React.FC<ComponentsSectionProps> = ({ draft, upd
                         suffix="px" 
                     />
                 </div>
-                <div className="mt-4 grid grid-cols-2 gap-4">
-                    <SelectControl 
-                        label="Efeito Hover" 
-                        options={[
-                            {id: 'glow', label: 'Neon Glow'}, 
-                            {id: 'lift', label: 'Lift Up'}, 
-                            {id: 'none', label: 'Nenhum'}
-                        ]} 
-                        value={draft.buttonHoverEffect || 'glow'} 
-                        onChange={(v: any) => updateDraft('buttonHoverEffect', v)} 
-                    />
+                
+                <div className="mt-4 grid grid-cols-3 gap-4">
                     <div className="flex flex-col gap-2">
-                        <span className="text-[10px] font-bold text-white/40 uppercase">Cor do Botão</span>
+                        <span className="text-[10px] font-bold text-white/40 uppercase">Base</span>
                         <input type="color" value={draft.buttonColor || '#10b981'} onChange={(e) => updateDraft('buttonColor', e.target.value)} className="w-full h-8 rounded-lg bg-black/40 border border-white/5 cursor-pointer p-1" />
                     </div>
+                    <div className="flex flex-col gap-2">
+                        <span className="text-[10px] font-bold text-white/40 uppercase">Hover</span>
+                        <input type="color" value={draft.buttonHoverColor || draft.primaryColor} onChange={(e) => updateDraft('buttonHoverColor', e.target.value)} className="w-full h-8 rounded-lg bg-black/40 border border-white/5 cursor-pointer p-1" />
+                    </div>
+                    <div className="flex flex-col gap-2">
+                        <span className="text-[10px] font-bold text-white/40 uppercase">Active</span>
+                        <input type="color" value={draft.buttonActiveColor || draft.primaryColor} onChange={(e) => updateDraft('buttonActiveColor', e.target.value)} className="w-full h-8 rounded-lg bg-black/40 border border-white/5 cursor-pointer p-1" />
+                    </div>
+                </div>
+
+                <div className="mt-6 flex gap-4">
+                    <button 
+                        onClick={() => updateDraft('buttonHoverLift', !draft.buttonHoverLift)}
+                        className={`flex-1 py-2 rounded-lg text-3xs font-black uppercase transition-all border ${draft.buttonHoverLift ? 'bg-[var(--theme-primary)] border-transparent text-white' : 'bg-white/5 border-white/10 text-white/40'}`}
+                    >
+                        Hover Lift
+                    </button>
+                    <SelectControl 
+                        label="Social Radius" 
+                        options={[
+                            {id: '0', label: 'Square'}, 
+                            {id: '8', label: 'Soft'}, 
+                            {id: '50', label: 'Circle'}
+                        ]} 
+                        value={draft.socialButtonRadius?.toString() || '8'} 
+                        onChange={(v: any) => updateDraft('socialButtonRadius', parseInt(v))} 
+                    />
                 </div>
             </Section>
 
@@ -61,18 +79,14 @@ export const ComponentsSection: React.FC<ComponentsSectionProps> = ({ draft, upd
                         value={draft.inputStyle || 'glass'} 
                         onChange={(v: any) => updateDraft('inputStyle', v)} 
                     />
-                    <SliderControl 
-                        label="Espessura Borda" 
-                        value={draft.inputBorderWidth || 1} 
-                        min={1} 
-                        max={3} 
-                        onChange={(v: any) => updateDraft('inputBorderWidth', v)} 
-                        suffix="px" 
-                    />
+                    <div className="flex flex-col gap-2">
+                        <span className="text-[10px] font-bold text-white/40 uppercase">Fundo Input</span>
+                        <input type="color" value={draft.inputBackgroundColor || '#ffffff05'} onChange={(e) => updateDraft('inputBackgroundColor', e.target.value)} className="w-full h-10 rounded-lg bg-black/40 border border-white/5 cursor-pointer p-1" />
+                    </div>
                 </div>
                 <div className="mt-4 space-y-4">
                     <SliderControl 
-                        label="Elasticidade da Interface" 
+                        label="Elasticidade" 
                         value={draft.interfaceElasticity || 0.5} 
                         min={0} 
                         max={1} 
@@ -86,6 +100,37 @@ export const ComponentsSection: React.FC<ComponentsSectionProps> = ({ draft, upd
                         max={1} 
                         step={0.05} 
                         onChange={(v: any) => updateDraft('hapticIntensity', v)} 
+                    />
+                </div>
+            </Section>
+
+            <Section id="filter-engines" icon={Box} title="Motores de Filtro" activeSection={activeSection} onToggle={setActiveSection}>
+                <div className="grid grid-cols-2 gap-4">
+                    <SliderControl 
+                        label="Raio do Filtro" 
+                        value={draft.filterRadius || 12} 
+                        min={0} 
+                        max={32} 
+                        onChange={(v: any) => updateDraft('filterRadius', v)} 
+                        suffix="px" 
+                    />
+                    <SliderControl 
+                        label="Espaçamento (Gap)" 
+                        value={draft.filterGap || 12} 
+                        min={4} 
+                        max={24} 
+                        onChange={(v: any) => updateDraft('filterGap', v)} 
+                        suffix="px" 
+                    />
+                </div>
+                <div className="mt-4">
+                    <SliderControl 
+                        label="Padding Interno" 
+                        value={draft.filterPadding || 16} 
+                        min={4} 
+                        max={32} 
+                        onChange={(v: any) => updateDraft('filterPadding', v)} 
+                        suffix="px" 
                     />
                 </div>
             </Section>

@@ -3,7 +3,7 @@ import { motion, AnimatePresence } from 'framer-motion';
 import {
     Plus, Check, Zap, Edit3, Monitor, Tablet, Smartphone, 
     Palette, Box, Wind, Sparkles, AlertCircle, Moon, Sun, Type, Layout as LayoutIcon,
-    Globe, MousePointer2, MessageSquare
+    Globe, MousePointer2, MessageSquare, Shield
 } from 'lucide-react';
 
 import { useSarakUI } from '../../../core/Provider/SarakUIProvider';
@@ -23,6 +23,8 @@ import { ComponentsSection } from '../Sections/ComponentsSection';
 import { DataSection } from '../Sections/DataSection';
 import { ChatSection } from '../Sections/ChatSection';
 import { LayoutSection } from '../Sections/LayoutSection';
+import { SpecializedSection } from '../Sections/SpecializedSection';
+
 
 /**
  * ThemeCustomizationTab (v8.0 - Sovereign Reorganization)
@@ -59,7 +61,12 @@ export const ThemeCustomizationTab: React.FC = () => {
             setActivePreviewApp('dashboard');
             return;
         }
+        if (activeSection === 'security-system' || activeSection === 'auth-experience' || activeSection === 'qr-core') {
+            setActivePreviewApp('auth');
+            return;
+        }
         if (activeSection === 'font-families' || activeSection === 'font-refinement') {
+
             setActivePreviewApp('typography');
             return;
         }
@@ -69,7 +76,9 @@ export const ThemeCustomizationTab: React.FC = () => {
         else if (activeCategory === 'data') setActivePreviewApp('dashboard');
         else if (activeCategory === 'fonts') setActivePreviewApp('typography');
         else if (activeCategory === 'components' || activeCategory === 'cards') setActivePreviewApp('components');
+        else if (activeCategory === 'sovereignty') setActivePreviewApp('settings');
         else if (activeCategory && ['layout', 'branding', 'visuals', 'animations', 'presets'].includes(activeCategory)) {
+
             setActivePreviewApp('kitchen-sink');
         }
     }, [activeSection, activeCategory]);
@@ -323,6 +332,24 @@ export const ThemeCustomizationTab: React.FC = () => {
                             {activeCategory === 'layout' && (
                                 <motion.div initial={{ height: 0, opacity: 0 }} animate={{ height: 'auto', opacity: 1 }} exit={{ height: 0, opacity: 0 }} className="overflow-hidden">
                                     <LayoutSection draft={draft} updateDraft={updateDraft} activeSection={activeSection} setActiveSection={setActiveSection} />
+                                </motion.div>
+                            )}
+                        </AnimatePresence>
+
+                        {/* 11. SOBERANIA & SEGURANÇA */}
+                        <CategoryLabel 
+                            icon={Shield} 
+                            title="Soberania & Segurança" 
+                            index={11} 
+                            isOpen={activeCategory === 'sovereignty'} 
+                            onToggle={() => setActiveCategory(activeCategory === 'sovereignty' ? null : 'sovereignty')}
+                            isDualView={isDualView}
+                            onToggleDual={() => setIsDualView(!isDualView)}
+                        />
+                        <AnimatePresence>
+                            {activeCategory === 'sovereignty' && (
+                                <motion.div initial={{ height: 0, opacity: 0 }} animate={{ height: 'auto', opacity: 1 }} exit={{ height: 0, opacity: 0 }} className="overflow-hidden">
+                                    <SpecializedSection draft={draft} updateDraft={updateDraft} activeSection={activeSection} setActiveSection={setActiveSection} />
                                 </motion.div>
                             )}
                         </AnimatePresence>

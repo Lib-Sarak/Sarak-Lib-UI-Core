@@ -12,6 +12,12 @@ interface VisualsSectionProps {
 }
 
 export const VisualsSection: React.FC<VisualsSectionProps> = ({ draft, updateDraft, activeSection, setActiveSection }) => {
+    // Mapear biblioteca de texturas
+    const textureOptions = TEXTURE_LIBRARY.map(t => ({
+        id: t.id,
+        label: t.name
+    }));
+
     return (
         <>
             <Section id="color-core" icon={Palette} title="Cores Mestras" activeSection={activeSection} onToggle={setActiveSection}>
@@ -59,6 +65,20 @@ export const VisualsSection: React.FC<VisualsSectionProps> = ({ draft, updateDra
                         </div>
                     </div>
                 </div>
+
+                <div className="space-y-4 pt-4 border-t border-white/5 mt-4">
+                    <span className="text-2xs font-black uppercase tracking-widest text-white/20 block">Cores de Ambiente</span>
+                    <div className="grid grid-cols-2 gap-4">
+                        <div className="flex flex-col gap-2">
+                            <span className="text-[10px] font-bold text-white/40 uppercase">Fundo (Body)</span>
+                            <input type="color" value={draft.bodyColor || '#0c0c0d'} onChange={(e) => updateDraft('bodyColor', e.target.value)} className="w-full h-8 rounded-lg bg-transparent cursor-pointer" />
+                        </div>
+                        <div className="flex flex-col gap-2">
+                            <span className="text-[10px] font-bold text-white/40 uppercase">Títulos (Title)</span>
+                            <input type="color" value={draft.titleColor || '#ffffff'} onChange={(e) => updateDraft('titleColor', e.target.value)} className="w-full h-8 rounded-lg bg-transparent cursor-pointer" />
+                        </div>
+                    </div>
+                </div>
             </Section>
 
             <Section id="glass-effects" icon={Box} title="Efeitos de Vidro (Glass)" activeSection={activeSection} onToggle={setActiveSection}>
@@ -86,19 +106,14 @@ export const VisualsSection: React.FC<VisualsSectionProps> = ({ draft, updateDra
             <Section id="textures-core" icon={Grid} title="Texturas & Ruído" activeSection={activeSection} onToggle={setActiveSection}>
                 <SelectControl 
                     label="Textura Base" 
-                    options={[
-                        { id: 'none', label: 'Nenhuma' },
-                        { id: 'dots', label: 'Pontos' },
-                        { id: 'grid', label: 'Grade' },
-                        { id: 'noise', label: 'Ruído' }
-                    ]} 
-                    value={draft.texture} 
+                    options={textureOptions} 
+                    value={draft.texture || 'none'} 
                     onChange={(v: any) => updateDraft('texture', v)} 
                 />
                 
                 <div className="mt-4 grid grid-cols-2 gap-4">
-                    <SliderControl label="Opacidade Ruído" value={draft.atmosphereNoiseOpacity} min={0} max={0.1} step={0.005} onChange={(v: any) => updateDraft('atmosphereNoiseOpacity', v)} />
-                    <SliderControl label="Zoom Sistema" value={draft.scaleRatio} min={0.8} max={1.2} step={0.01} onChange={(v: any) => updateDraft('scaleRatio', v)} />
+                    <SliderControl label="Opacidade Ruído" value={draft.atmosphereNoiseOpacity || 0.02} min={0} max={0.2} step={0.005} onChange={(v: any) => updateDraft('atmosphereNoiseOpacity', v)} />
+                    <SliderControl label="Zoom Sistema" value={draft.scaleRatio || 1} min={0.5} max={1.5} step={0.01} onChange={(v: any) => updateDraft('scaleRatio', v)} />
                 </div>
             </Section>
         </>

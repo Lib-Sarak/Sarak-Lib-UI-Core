@@ -1,11 +1,11 @@
 import React from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
 import {
-    Zap, Shield, BarChart3, MessageSquare, History, Box, Network, Type, Grid, Sparkles, Search, Bell
+    Zap, Shield, BarChart3, MessageSquare, History, Box, Network, Type, Grid, Sparkles, Search, Bell, Lock
 } from 'lucide-react';
 import { THEME_EFFECTS } from '../../../core/Design/presets/animations';
 import { UIContext } from '../../../core/Provider/SarakUIProvider';
-import { MockDashboard, MockChat, MockLogs, MockSettings, MockComponents, MockTypography } from './MockApps';
+import { MockDashboard, MockChat, MockLogs, MockSettings, MockComponents, MockTypography, MockAuth } from './MockApps';
 import { KitchenSinkPreview } from './KitchenSinkPreview';
 import { GalleryRouter } from './Galleries/GalleryRouter';
 import { DesignScope } from '../../../core/Design/components/DesignScope';
@@ -51,10 +51,13 @@ export const PreviewCanvas: React.FC<PreviewCanvasProps> = ({
         settings: <MockSettings tokens={tokens} config={config} animationVariants={THEME_EFFECTS.page} animationStyle={previewAnimationStyle} />,
         components: <MockComponents tokens={tokens} />,
         typography: <MockTypography tokens={tokens} />,
+        auth: <MockAuth tokens={tokens} />,
         'kitchen-sink': <KitchenSinkPreview />
+
     };
 
-    const appIds = ['dashboard', 'chat', 'logs', 'settings', 'components', 'typography', 'kitchen-sink'];
+    const appIds = ['dashboard', 'chat', 'logs', 'settings', 'components', 'typography', 'auth', 'kitchen-sink'];
+
     const appIcons: any = {
         dashboard: <BarChart3 size={14} />,
         chat: <MessageSquare size={14} />,
@@ -62,7 +65,9 @@ export const PreviewCanvas: React.FC<PreviewCanvasProps> = ({
         settings: <Network size={14} />,
         components: <Box size={14} />,
         typography: <Type size={14} />,
+        auth: <Lock size={14} />,
         'kitchen-sink': <Grid size={14} />
+
     };
 
     const LogoComponent = () => {
