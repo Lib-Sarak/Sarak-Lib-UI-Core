@@ -1,7 +1,7 @@
 import React, { lazy } from 'react';
 import { motion } from 'framer-motion';
 import { SarakTable, SarakCardGrid, SarakStats, SarakChart, SarakForm, SarakManagementGrid, SarakChat, SarakSecurityOrchestrator, SarakAuthScreen, SarakCatalogGrid } from '../../components/atomic/Templates';
-import { VisualContract, DiscoveredModule } from '../../constants/discovery';
+import { VisualContract, DiscoveredModule } from '../../core/Discovery/types';
 import { getSarakModule } from './registry';
 import { AlertCircle } from 'lucide-react';
 import LazyEngineWrapper from '../../components/engines/LazyEngineWrapper';
@@ -77,7 +77,6 @@ export const DynamicRenderer: React.FC<DynamicRendererProps> = ({ contracts, mod
 
     // Se tivermos um componente raiz, ele assume o controle total da tela
     if (RootComponent) {
-        console.log(`[DynamicRenderer] Rendering RootComponent for module: ${module?.id}`);
         return (
             <motion.div 
                 initial={{ opacity: 0, scale: 0.98 }}

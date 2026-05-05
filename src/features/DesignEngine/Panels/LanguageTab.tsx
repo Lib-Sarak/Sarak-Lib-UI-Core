@@ -1,6 +1,6 @@
 import React, { useState } from 'react';
 import { useSarakUI } from '../../../core/Provider/SarakUIProvider';
-import { LANGUAGES } from '../../../constants/design-tokens';
+import { LANGUAGES } from '../../../core/Discovery/constants';
 import { Globe, Languages, Check, X, Search, Info, Plus } from 'lucide-react';
 import { motion, AnimatePresence } from 'framer-motion';
 

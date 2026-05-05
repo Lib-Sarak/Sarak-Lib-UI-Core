@@ -1,76 +1,76 @@
 /**
  * Sarak Theme Preset: Cyber-Void (v12.0)
  * 
- * DNA: High-Tech, Neon, Espaço Profundo e Interfaces de Comando.
+ * DNA: Imersão, Negros Absolutos, Neon Industrial e Scanlines.
  */
 
 export const CyberVoid = {
     // Branding
-    systemName: 'VOID_PROTOCOL',
+    systemName: 'SARAK VOID',
     logoPosition: 'center',
-    logoScale: 1.3,
+    logoScale: 1.1,
     
     // Atmosphere
     mode: 'dark',
-    primaryColor: '#00f2ff', // Cyan Neon
+    primaryColor: '#00ff41', // Matrix Green
     bodyColor: '#000000',
-    titleColor: '#00f2ff',
-    secondaryColor: '#bc13fe', // Purple Neon
-    successColor: '#39ff14', // Matrix Green
-    warningColor: '#ff9900',
-    errorColor: '#ff003c',
+    titleColor: '#00ff41',
+    secondaryColor: '#0ea5e9',
+    successColor: '#10b981',
+    warningColor: '#f59e0b',
+    errorColor: '#ef4444',
     glassOpacity: 0.1,
-    glassBlur: 10,
-    texture: 'circuit',
-    textureOpacity: 0.2,
+    glassBlur: 12,
+    texture: 'scanline',
+    textureOpacity: 0.15,
     scaleRatio: 0.95,
     contrastCurve: 1.3,
     spotlightEnabled: true,
     borderBeamEnabled: true,
     
     // Shell
-    navigationStyle: 'dock',
-    sidebarWidth: 80,
-    topbarHeight: 0,
+    navigationStyle: 'sidebar',
+    sidebarWidth: 80, // Slim Dock Style
+    topbarHeight: 64,
     layoutDensity: 'compact',
-    tabGap: 24,
+    tabGap: 4,
     isNavHidden: false,
-    sidebarColor: 'rgba(0, 0, 0, 0.8)',
-    sidebarHoverColor: 'rgba(0, 242, 255, 0.2)',
-    sidebarActiveColor: 'rgba(0, 242, 255, 0.3)',
+    sidebarColor: '#050505',
+    sidebarHoverColor: '#111111',
+    sidebarActiveColor: '#00ff41',
     
     // Cards
     cardBorderRadius: 2,
     borderRadiusSm: 0,
     borderRadiusMd: 2,
     borderRadiusLg: 4,
-    cardPadding: 20,
-    cardPaddingSm: 10,
-    cardPaddingMd: 20,
-    cardPaddingLg: 32,
+    cardPadding: 24,
+    cardPaddingSm: 12,
+    cardPaddingMd: 24,
+    cardPaddingLg: 48,
     cardBorderStyle: 'dashed',
     cardBorderWidth: 1,
-    cardBorderColor: 'rgba(0, 242, 255, 0.4)',
-    cardBackgroundColor: 'rgba(0, 10, 20, 0.8)',
-    cardTexture: 'none',
-    cardNoiseOpacity: 0.2,
-    cardShadowIntensity: 0.8,
+    cardBorderColor: '#00ff4133',
+    cardBackgroundColor: '#050505',
+    cardTexture: 'noise',
+    cardNoiseOpacity: 0.05,
+    cardShadowIntensity: 0,
     
     // Typography
     fontScale: 's',
-    headingFont: "'Orbitron', sans-serif",
+    headingFont: "'JetBrains Mono', monospace",
     bodyFont: "'JetBrains Mono', monospace",
-    headingWeight: '900',
-    headingLetterSpacing: 5,
+    headingWeight: '800',
+    headingLetterSpacing: 2,
     
     // Controls
-    controlSize: 'sm',
+    controlSize: 'xs',
     controlRadius: 0,
-    controlBorderWidth: 1,
+    controlBorderWidth: 2,
     accentBrightness: 'vibrant',
     
     // Animations
     animationSpeed: 'fast',
     animationStyle: 'glitch',
-    pageTransition: 'perspective'
+    pageTransition: 'slide'
 };

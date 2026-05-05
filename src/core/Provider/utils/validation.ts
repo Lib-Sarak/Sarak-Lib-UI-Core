@@ -38,12 +38,16 @@ export const validateDesign = (design: any) => {
     s.sidebarWidth = clamp(s.sidebarWidth, 200, 450, 240);
     s.topbarHeight = clamp(s.topbarHeight, 40, 120, 64);
     if (!s.fontScale) s.fontScale = 'm';
+    s.animationSpeed = clamp(s.animationSpeed, 0.01, 2, 0.4);
+    s.hapticIntensity = clamp(s.hapticIntensity, 0, 1, 0);
 
-    // 4. Multi-Tone Fallbacks
-    if (s.colorDepth === undefined) s.colorDepth = 1;
-    if (s.colorVariation === undefined) s.colorVariation = 1;
 
-    s.schema_version = "10.3"; // Upgrade to v10.3 (Resizable Nav)
+    // 5. Structural Objects Fallbacks (v11.0 Safety)
+    if (!s.atmosphere) s.atmosphere = { texture: 'dots', noise: 0.05, opacity: 0.1, spotlight: true };
+    if (!s.specialized) s.specialized = { chatBubbleStyle: 'glass', flowGridStyle: 'dots', chartType: 'line' };
+
+    s.schema_version = "11.0"; // Upgrade to v11.0 (Structured Design Engine)
 
     return s;
 };
+

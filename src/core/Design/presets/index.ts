@@ -9,6 +9,7 @@ import type { CardPreset } from './cards';
 import { TYPOGRAPHY_PRESETS } from './typography';
 import type { TypographyPreset } from './typography';
 import { BRANDING_PRESETS } from './branding';
+import { ICON_PRESETS } from './branding/icons';
 import type { BrandingPreset } from './branding';
 import { ATMOSPHERE_PRESETS } from './atmosphere';
 import type { AtmospherePreset } from './atmosphere';
@@ -53,10 +54,11 @@ export type {
  * Este objeto é consumido pelo CustomizationTab e galerias dinâmicas.
  */
 export const PRESETS_LIBRARY: any = {
-    layouts: GLOBAL_THEMES,
+    themes: GLOBAL_THEMES,
     cards: CARD_PRESETS,
     typography: TYPOGRAPHY_PRESETS,
     branding: BRANDING_PRESETS,
+    icons: ICON_PRESETS,
     atmosphere: ATMOSPHERE_PRESETS,
     animations: ANIMATION_PRESETS,
     colors: COLOR_PRESETS,

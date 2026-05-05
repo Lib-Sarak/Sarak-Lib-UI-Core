@@ -1,0 +1,40 @@
+/* 1. REAL DYNAMIC CONTRAST (LIGHT / DARK) */
+body.dark,
+.preview-container.dark {
+  --bg-body-rgb: 2, 6, 23;
+  --bg-sidebar-rgb: 15, 23, 42;
+  --bg-card-rgb: 30, 41, 59;
+  
+  --bg-body: rgb(var(--bg-body-rgb));
+  --bg-sidebar: rgb(var(--bg-sidebar-rgb));
+  --bg-card: rgba(var(--bg-card-rgb), var(--glass-opacity, 0.8));
+  
+  --text-main: #94a3b8;
+  --text-title: #f8fafc;
+  --text-muted: #cbd5e1;
+  --border-color: #334155;
+  --bg-tooltip: #0f172a;
+  --text-tooltip: #f8fafc;
+  --border-tooltip: #1e293b;
+  color-scheme: dark;
+}
+
+body.light,
+.preview-container.light {
+  --bg-body-rgb: 248, 250, 252;
+  --bg-sidebar-rgb: 241, 245, 249;
+  --bg-card-rgb: 255, 255, 255;
+
+  --bg-body: rgb(var(--bg-body-rgb));
+  --bg-sidebar: rgb(var(--bg-sidebar-rgb));
+  --bg-card: rgba(var(--bg-card-rgb), var(--glass-opacity, 0.9));
+
+  --text-main: #334155;
+  --text-title: #0f172a;
+  --text-muted: #334155;
+  --border-color: #cbd5e1;
+  --bg-tooltip: #ffffff;
+  --text-tooltip: #0f172a;
+  --border-tooltip: #cbd5e1;
+  color-scheme: light;
+}

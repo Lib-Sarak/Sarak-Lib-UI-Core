@@ -2,7 +2,7 @@ import { useState, useEffect, useCallback, useMemo } from 'react';
 import { useSarakUI } from '../Provider/SarakUIProvider';
 import { useModuleDiscovery } from '../../shared/hooks/useModuleDiscovery';
 import { useSarakRouter } from '../../shared/hooks/useSarakRouter';
-import { DiscoveredModule } from '../../constants/discovery';
+import { DiscoveredModule } from '../Discovery/types';
 
 export const useSarakShell = (loggedIn: boolean) => {
     const { design, applyConfig, options } = useSarakUI();

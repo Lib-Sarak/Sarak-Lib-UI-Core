@@ -83,7 +83,6 @@ export const SarakShell: React.FC<SarakShellProps> = (props) => {
                 if (width > 100 && height > 100) {
                     stabilityTimer.current = setTimeout(() => {
                         if (!isReady) {
-                            console.log(`%c[Sarak:Shell] Dimension Guard: Layout Estabilizado (${Math.round(width)}x${Math.round(height)})`, "color: #00f2ff; font-weight: bold;");
                             setIsReady(true);
                             if (fallbackTimer.current) clearTimeout(fallbackTimer.current);
                         }
@@ -147,7 +146,7 @@ export const SarakShell: React.FC<SarakShellProps> = (props) => {
     const isDock = design?.navigationStyle === 'dock';
 
     return (
-        <div className="flex w-full h-screen overflow-hidden bg-[var(--theme-body)] text-white font-sans selection:bg-[var(--theme-primary)] selection:text-white">
+        <div className="flex w-full h-screen overflow-hidden bg-[var(--theme-body)] text-[var(--theme-text)] font-sans selection:bg-[var(--theme-primary)] selection:text-white">
             
             {/* HOVER SENSORS (v6.2) */}
             {design.isAutoHideEnabled && !shell.isNavVisible && (

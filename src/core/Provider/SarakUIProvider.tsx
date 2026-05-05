@@ -1,6 +1,6 @@
 import React, { ReactNode, useEffect, useMemo, useContext } from 'react';
 import '../../styles/sarak-base.css';
-import { LAYOUTS } from '../../constants/theme-models';
+import { LAYOUTS } from '../Design/presets/layout';
 import { NoiseOverlay } from '../../effects/NoiseOverlay';
 
 // Novos Módulos Refatorados
@@ -33,9 +33,10 @@ export const useSarakUI = () => {
     }
     return {
         ...context,
-        ...context.design
+        ...context.design,
     };
 };
+
 
 /**
  * SarakUIProvider Orchestrator (v10.1)
@@ -81,12 +82,11 @@ export const SarakUIProvider: React.FC<SarakUIProviderProps> = ({
         document.head.prepend(style);
     }, []);
 
-    // 4. Injeção de Estilos Críticos (Pre-paint Sync)
+    // 4. Injeção de Estilos Críticos (Shell Foundation)
     const criticalStyles = useMemo(() => {
         const sidebarW = design.sidebarWidth || 240;
         const topbarH = design.topbarHeight || 64;
         const primaryHex = design.primaryColor || '#00f2ff';
-        const isDark = design.mode === 'dark';
         
         return `
             :root {
@@ -94,19 +94,14 @@ export const SarakUIProvider: React.FC<SarakUIProviderProps> = ({
                 --sidebar-width: ${sidebarW}px;
                 --sarak-topbar-height: ${topbarH}px;
                 --topbar-height: ${topbarH}px;
-                --theme-topbar-height: ${topbarH}px;
                 --theme-primary: ${primaryHex};
-                --theme-body: ${isDark ? '#0f172a' : '#f8fafc'};
-                --theme-surface: ${isDark ? '#1e293b' : '#ffffff'};
-                --theme-sidebar: ${isDark ? '#1e293b' : '#ffffff'};
-                --theme-title: ${isDark ? '#ffffff' : '#0f172a'};
-                --theme-border: ${isDark ? 'rgba(255,255,255,0.1)' : 'rgba(0,0,0,0.1)'};
                 --radius-theme: 12px;
                 --sarak-navigation-style: ${design.navigationStyle || 'sidebar'};
             }
+            /* Garante visibilidade imediata dos componentes estruturais */
             .sarak-shell-sidebar, .sarak-shell-topbar { opacity: 1 !important; visibility: visible !important; }
         `;
-    }, [design.sidebarWidth, design.primaryColor, design.mode, design.navigationStyle]);
+    }, [design.sidebarWidth, design.topbarHeight, design.primaryColor, design.navigationStyle]);
 
     // 5. Valor do Contexto (Memorizado)
     const uiContextValue = useMemo(() => ({

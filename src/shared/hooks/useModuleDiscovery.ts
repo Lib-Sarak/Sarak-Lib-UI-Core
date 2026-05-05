@@ -1,5 +1,5 @@
 import { useMemo } from 'react';
-import { DiscoveredModule } from '../../constants/discovery';
+import { DiscoveredModule } from '../../core/Discovery/types';
 import { useSarakUI } from '../../core/Provider/SarakUIProvider';
 import { getRegisteredModules } from '../../core/Discovery/registry';
 
@@ -17,53 +17,37 @@ export const useModuleDiscovery = (isEnabled: boolean = true) => {
     const formattedModules = useMemo(() => {
         if (!isHydrated) return [];
 
-        // Soberania Total: Se o Registry global tem módulos, usamos eles diretamente 
-        // para contornar atrasos de estado no Provider.
-        const all = getRegisteredModules().length > 0 ? getRegisteredModules() : registeredModules;
-        
-        console.log(`[useModuleDiscovery] Sovereign Scan: ${all.length} modules found in Registry.`);
+        // Soberania Total: Prioriza o Registry global para evitar race conditions
+        const all = getRegisteredModules();
+        const displayModules = all.length > 0 ? all : registeredModules;
 
-        // PURIFICAÇÃO INDUSTRIAL (v10.0)
-        // Removemos módulos de demonstração/blueprint para evitar poluição visual
-        // O sistema deve ser focado em módulos de produção.
-        const DEMO_BLACKLIST = ['grid-system', 'blueprint-test', 'demo-ui', 'debug-module'];
+        // O filtro de Blacklist agora deve vir do estado do Design (SystemSchema)
+        // Por padrão, filtramos apenas se o modo for 'standard'
+        const isStandardMode = token?.moduleBlacklist !== 'none';
+        const DEMO_BLACKLIST = isStandardMode ? ['grid-system', 'blueprint-test', 'demo-ui', 'debug-module'] : [];
 
-        return all
+        return displayModules
             .filter((mod: any) => !DEMO_BLACKLIST.includes(mod.id))
             .sort((a: any, b: any) => (b.priority || 0) - (a.priority || 0))
-            .map((mod: any) => {
-                // Mapeamento de Labels Amigáveis para módulos conhecidos
-                let label = mod.label;
-                let icon = mod.icon || 'Box';
-                let category = mod.category || (mod.id === 'mx-customization' ? 'Personalização' : 'Sistema');
-
-                if (mod.id === 'mx-customization') { icon = 'Palette'; }
-                if (mod.id === 'translator-google') { label = 'Tradutor'; icon = 'Languages'; category = 'Utilidades'; }
-                if (mod.id === 'llm-test-chat' || mod.id === 'chat') { label = 'Chat IA'; icon = 'MessageSquare'; category = 'IA'; }
-                if (mod.id === 'usage') { label = 'Uso & Métricas'; icon = 'Activity'; category = 'Sistema'; }
-
-                return {
-                    id: mod.id,
-                    label,
-                    icon,
-                    category,
-                    version: mod.version || '1.0.0-local',
-                    priority: mod.priority || 500,
-                    status: 'online' as const,
-                    baseUrl: mod.baseUrl || 'local',
-                    endpoints: mod.endpoints || {},
-                    component: mod.component
-                } as DiscoveredModule;
-            });
-    }, [registeredModules, isHydrated]);
+            .map((mod: any) => ({
+                id: mod.id,
+                label: mod.label || mod.id,
+                icon: mod.icon || 'Box',
+                category: mod.category || 'Sistema',
+                version: mod.version || '1.0.0-local',
+                priority: mod.priority || 500,
+                status: 'online' as const,
+                baseUrl: mod.baseUrl || 'local',
+                endpoints: mod.endpoints || {},
+                component: mod.component
+            } as DiscoveredModule));
+    }, [registeredModules, isHydrated, token?.moduleBlacklist]);
 
     return {
         modules: formattedModules,
         isLoading: !isHydrated,
-        lastScan: new Date(), // Simulado para compatibilidade
-        refresh: () => {
-            console.log("[useModuleDiscovery] Manual refresh ignored in Passive Mode.");
-        }
+        lastScan: new Date(),
+        refresh: () => { /* Passive Discovery: refresh handled by registry listeners */ }
     };
 };
 

@@ -1,73 +1,73 @@
 /**
  * Sarak Theme Preset: Aurora Ethereal (v12.0)
  * 
- * DNA: Fluidez, Gradientes Orgânicos e Profundidade Onírica.
+ * DNA: Fluidez Orgânica, Mesh Gradients, Leveza e Desfoque Onírico.
  */
 
 export const AuroraEthereal = {
     // Branding
-    systemName: 'AURORA SOVEREIGN',
+    systemName: 'SARAK AURORA',
     logoPosition: 'center',
-    logoScale: 1.1,
+    logoScale: 1.0,
     
     // Atmosphere
-    mode: 'dark',
-    primaryColor: '#a855f7', // Purple
-    bodyColor: '#0f172a',
-    titleColor: '#f8fafc',
-    secondaryColor: '#ec4899', // Pink
+    mode: 'light',
+    primaryColor: '#f472b6', // Pink Aurora
+    bodyColor: '#ffffff',
+    titleColor: '#1e293b',
+    secondaryColor: '#818cf8',
     successColor: '#34d399',
     warningColor: '#fbbf24',
     errorColor: '#f87171',
-    glassOpacity: 0.15,
-    glassBlur: 40,
+    glassOpacity: 0.3,
+    glassBlur: 24,
     texture: 'aurora',
-    textureOpacity: 0.6,
-    scaleRatio: 0.96,
+    textureOpacity: 0.25,
+    scaleRatio: 1.0,
     contrastCurve: 0.9,
     spotlightEnabled: true,
-    borderBeamEnabled: true,
+    borderBeamEnabled: false,
     
     // Shell
     navigationStyle: 'topbar',
     sidebarWidth: 240,
-    topbarHeight: 100,
+    topbarHeight: 80,
     layoutDensity: 'standard',
-    tabGap: 32,
+    tabGap: 20,
     isNavHidden: false,
-    sidebarColor: 'rgba(15, 23, 42, 0.2)',
-    sidebarHoverColor: 'rgba(168, 85, 247, 0.1)',
-    sidebarActiveColor: 'rgba(168, 85, 247, 0.2)',
+    sidebarColor: 'rgba(255, 255, 255, 0.7)',
+    sidebarHoverColor: 'rgba(244, 114, 182, 0.1)',
+    sidebarActiveColor: 'rgba(244, 114, 182, 0.2)',
     
     // Cards
     cardBorderRadius: 40,
-    borderRadiusSm: 16,
+    borderRadiusSm: 20,
     borderRadiusMd: 40,
     borderRadiusLg: 80,
     cardPadding: 40,
     cardPaddingSm: 20,
     cardPaddingMd: 40,
-    cardPaddingLg: 64,
-    cardBorderStyle: 'solid',
-    cardBorderWidth: 1,
-    cardBorderColor: 'rgba(255, 255, 255, 0.05)',
-    cardBackgroundColor: 'rgba(255, 255, 255, 0.02)',
+    cardPaddingLg: 80,
+    cardBorderStyle: 'none',
+    cardBorderWidth: 0,
+    cardBorderColor: 'transparent',
+    cardBackgroundColor: 'rgba(255, 255, 255, 0.6)',
     cardTexture: 'mesh',
-    cardNoiseOpacity: 0.1,
-    cardShadowIntensity: 0.4,
+    cardNoiseOpacity: 0.02,
+    cardShadowIntensity: 0.3,
     
     // Typography
-    fontScale: 'l',
+    fontScale: 'm',
     headingFont: "'Plus Jakarta Sans', sans-serif",
-    bodyFont: "'Plus Jakarta Sans', sans-serif",
-    headingWeight: '300',
-    headingLetterSpacing: 2,
+    bodyFont: "'Inter', sans-serif",
+    headingWeight: '800',
+    headingLetterSpacing: -1,
     
     // Controls
     controlSize: 'md',
-    controlRadius: 100, // Capsule buttons
-    controlBorderWidth: 1,
-    accentBrightness: 'vibrant',
+    controlRadius: 100,
+    controlBorderWidth: 0,
+    accentBrightness: 'normal',
     
     // Animations
     animationSpeed: 'slow',

@@ -109,7 +109,7 @@ export const SarakManagementGrid: React.FC<SarakManagementGridProps> = ({
     };
 
     return (
-        <div className="flex flex-col" style={{ gap: 'var(--theme-gap, 1.5rem)' }}>
+        <div className="flex flex-col" style={{ gap: 'var(--sarak-grid-gap, 1.5rem)' }}>
             <AnimatePresence>
                 {activeModal && (
                     <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/80 backdrop-blur-md" style={{ padding: 'var(--theme-pad)' }}>
@@ -171,7 +171,7 @@ export const SarakManagementGrid: React.FC<SarakManagementGridProps> = ({
                 </div>
             )}
 
-            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3" style={{ gap: 'var(--theme-gap, 1.5rem)' }}>
+            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3" style={{ gap: 'var(--sarak-grid-gap, 1.5rem)' }}>
                 {loading ? (
                     [...Array(6)].map((_, i) => (
                         <div key={i} className="bg-theme-card border-theme animate-pulse rounded-theme" style={{ height: 'calc(var(--theme-pad) * 16)' }} />
@@ -191,7 +191,7 @@ export const SarakManagementGrid: React.FC<SarakManagementGridProps> = ({
                             >
                                 <div className="border-b border-theme flex justify-between items-center bg-white/[0.02]" style={{ padding: 'var(--theme-pad)' }}>
                                     <div className="flex items-center" style={{ gap: 'calc(var(--theme-gap) / 2)' }}>
-                                        <div className="rounded-xl" style={{ padding: 'calc(var(--theme-pad) / 2.5)', backgroundColor: isConfigured ? 'var(--theme-primary-focus)' : 'rgba(255,255,255,0.05)', color: isConfigured ? 'var(--theme-primary)' : 'rgba(255,255,255,0.2)' }}>
+                                        <div className="rounded-theme" style={{ padding: 'calc(var(--theme-pad) / 2.5)', borderRadius: 'var(--sarak-grid-radius)', backgroundColor: isConfigured ? 'var(--theme-primary-focus)' : 'rgba(255,255,255,0.05)', color: isConfigured ? 'var(--theme-primary)' : 'rgba(255,255,255,0.2)' }}>
                                             <Cloud className="w-4 h-4" />
                                         </div>
                                         <h3 className="font-black text-white uppercase text-xs tracking-[0.2em]">{groupName}</h3>
@@ -201,8 +201,8 @@ export const SarakManagementGrid: React.FC<SarakManagementGridProps> = ({
                                             <button
                                                 key={action.label}
                                                 onClick={() => handleAction(action.action, groupName)}
-                                                className="p-2 hover:bg-white/10 rounded-xl transition-all"
-                                                style={{ color: 'var(--theme-primary)' }}
+                                                className="p-2 hover:bg-white/10 transition-all"
+                                                style={{ color: 'var(--theme-primary)', borderRadius: 'var(--sarak-grid-radius)' }}
                                                 title={action.label}
                                             >
                                                 {action.icon === 'plus' ? <Plus size={18} /> : <Settings2 size={16} />}

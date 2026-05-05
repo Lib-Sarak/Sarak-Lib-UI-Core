@@ -18,7 +18,6 @@ export const useRegistryManager = (options: any) => {
     const [isHydrated, setIsHydrated] = useState(false);
 
     useEffect(() => {
-        console.log("[Sarak:Registry] Initing Discovery. Manifest present:", !!options?.manifest);
 
         // 1. Garantir que o componente de personalização está registrado globalmente
         registerLocalComponent('mx-customization', CustomizationPanel);

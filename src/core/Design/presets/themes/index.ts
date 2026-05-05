@@ -5,6 +5,9 @@ import { AuroraEthereal } from './aurora-ethereal';
 import { MonolithicExecutive } from './monolithic-executive';
 import { CyberVoid } from './cyber-void';
 import { SteelHorizon } from './steel-horizon';
+import { VelvetNight } from './velvet-night';
+import { BlueprintIndustrial } from './blueprint-industrial';
+import { SwissMinimalist } from './swiss-minimalist';
 
 export const GLOBAL_THEMES: any[] = [
     {
@@ -48,6 +51,24 @@ export const GLOBAL_THEMES: any[] = [
         name: 'Steel Horizon',
         description: 'Alta densidade de informação e texturas de engenharia',
         tokens: SteelHorizon
+    },
+    {
+        id: 'velvet',
+        name: 'Velvet Night',
+        description: 'Luxo e suavidade com tons de vinho e tipografia serifada',
+        tokens: VelvetNight
+    },
+    {
+        id: 'blueprint',
+        name: 'Blueprint Industrial',
+        description: 'Estilo técnico de engenharia com grade e azul profundo',
+        tokens: BlueprintIndustrial
+    },
+    {
+        id: 'swiss',
+        name: 'Swiss Minimalist',
+        description: 'Bauhaus moderno, alto contraste e tipografia poster',
+        tokens: SwissMinimalist
     }
 ];
 
@@ -58,5 +79,8 @@ export {
     AuroraEthereal, 
     MonolithicExecutive, 
     CyberVoid, 
-    SteelHorizon 
+    SteelHorizon,
+    VelvetNight,
+    BlueprintIndustrial,
+    SwissMinimalist
 };

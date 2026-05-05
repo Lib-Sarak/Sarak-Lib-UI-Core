@@ -2,7 +2,7 @@ import React from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
 import { Sun, Moon, User, ChevronDown, KeyRound, LogOut } from 'lucide-react';
 import { useSarakUI } from '../../../core/Provider/SarakUIProvider';
-import { LANGUAGES as ALL_LANGUAGES } from '../../../constants/design-tokens';
+import { LANGUAGES as ALL_LANGUAGES } from '../../../core/Discovery/constants';
 
 export const LanguageSelector = () => {
     const { design } = useSarakUI();

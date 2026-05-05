@@ -15,8 +15,17 @@ interface DesignScopeProps {
  * Essencial para Previews (Gêmeo Digital, Preset Cards) para garantir fidelidade total
  * sem afetar o estilo global da aplicação.
  */
-export const DesignScope: React.FC<DesignScopeProps> = ({ design, children, className = '', style = {} }) => {
+export const DesignScope: React.FC<DesignScopeProps & Record<string, any>> = ({ 
+    design, 
+    children, 
+    className = '', 
+    style = {},
+    ...rest 
+}) => {
     const { variables, attributes } = useDesignVariables(design);
+
+    // Higienização de propriedades para evitar erros de "isDesignScope" ou similares no DOM
+    const { isDesignScope, ...domSafeProps } = rest as any;
 
     return (
         <div 
@@ -29,8 +38,10 @@ export const DesignScope: React.FC<DesignScopeProps> = ({ design, children, clas
                 height: '100%'
             }}
             {...attributes}
+            {...domSafeProps}
         >
             {children}
         </div>
     );
 };
+

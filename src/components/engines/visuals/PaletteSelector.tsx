@@ -1,6 +1,6 @@
 import React from 'react';
 import { useSarakUI } from '../../../core/Provider/SarakUIProvider';
-import { COLOR_PALETTES } from '../../../constants/design-tokens';
+import { COLOR_PALETTES } from '../../../core/Design/presets/colors';
 
 /**
  * PaletteSelector - Componente Industrial para Seleção de Paletas Hierárquicas

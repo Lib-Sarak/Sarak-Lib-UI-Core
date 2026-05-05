@@ -2,10 +2,10 @@ import React from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
 import { Search, Zap } from 'lucide-react';
 import { IconRenderer } from './IconRenderer';
-import { DiscoveredModule } from '../../../constants/discovery';
+import { DiscoveredModule } from '../../../core/Discovery/types';
 import { DynamicRenderer } from '../../Discovery/DynamicRenderer';
 import { SarakEmptyState } from '../../../components/atomic/Feedback/SarakEmptyState';
-import { THEME_EFFECTS } from '../../../constants/design-tokens';
+import { THEME_EFFECTS } from '../../../core/Design/presets/animations';
 
 interface ShellContentProps {
     activeModule: DiscoveredModule | undefined;

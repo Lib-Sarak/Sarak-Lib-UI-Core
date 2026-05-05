@@ -1,7 +1,8 @@
 import { useState, useEffect, useCallback, useMemo, useRef } from 'react';
 import { validateDesign } from '../utils/validation';
-import { DEFAULT_STORAGE_KEY, DEFAULT_UI_BASE_URL, DEFAULT_INDUSTRIAL_SEED } from '../constants';
-import { BASE_PRESETS } from '../../../constants/theme-models';
+import { DEFAULT_STORAGE_KEY, DEFAULT_UI_BASE_URL } from '../constants';
+import { GLOBAL_THEMES } from '../../Design/presets/themes';
+import { getDefaultDesignState } from '../../Design/master-map';
 
 /**
  * useDesignManager (v10.1)
@@ -28,12 +29,17 @@ export const useDesignManager = (props: {
 
     const [isBackendLoaded, setIsBackendLoaded] = useState(false);
 
-    // Initial seed logic (memoized to avoid re-calculation)
+    // Initial seed logic (Sovereign Map v11.0)
     const getSeedConfig = useCallback(() => {
         const opt = optionsRef.current;
-        const defaultThemeId = opt?.theme?.defaultTheme || 'futurist';
-        const defaultTheme = (BASE_PRESETS as any)[defaultThemeId] || BASE_PRESETS.futurist;
-        return { ...DEFAULT_INDUSTRIAL_SEED, ...defaultTheme, ...configRef.current };
+        const masterDefaults = getDefaultDesignState();
+        
+        // Aplica o Preset base apenas se necessário, mas a fundação vem do Master Map
+        const defaultThemeId = opt?.theme?.defaultTheme || 'classic';
+        const themeEntry = GLOBAL_THEMES.find(t => t.id === defaultThemeId) || GLOBAL_THEMES[0];
+        const defaultThemeTokens = themeEntry?.tokens || {};
+        
+        return { ...masterDefaults, ...defaultThemeTokens, ...configRef.current };
     }, []);
 
     const [design, setDesign] = useState(() => {

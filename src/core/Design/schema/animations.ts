@@ -23,16 +23,16 @@ export const AnimationSchema: ComponentSchema = {
             id: 'animationSpeed',
             label: 'Velocidade Global',
             category: 'Animações',
-            type: 'select',
+            type: 'slider',
             constraints: {
-                options: [
-                    { id: 'fast', label: 'Explosiva (Fast)' },
-                    { id: 'normal', label: 'Suave (Normal)' },
-                    { id: 'slow', label: 'Cinemática (Slow)' }
-                ],
+                min: 0.01,
+                max: 2,
+                step: 0.05,
             },
-            defaultValue: 'normal'
+            defaultValue: 0.4,
+            cssVars: ['--animation-speed']
         },
+
         {
             id: 'animationStyle',
             label: 'Estilo de Movimento',

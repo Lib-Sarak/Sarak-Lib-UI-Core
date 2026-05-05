@@ -1,7 +1,8 @@
 import React from 'react';
 import { Palette, Box, Grid, AlertCircle, Check, Plus } from 'lucide-react';
 import { Section, SelectControl, SliderControl } from '../components/DesignControls';
-import { PRIMARY_COLORS, TEXTURE_LIBRARY, COLOR_PALETTES } from '../../../constants/design-tokens';
+import { PRIMARY_COLORS } from '../../../core/Design/presets/colors';
+import { TEXTURE_LIBRARY } from '../../../core/Design/presets/atmosphere';
 
 interface VisualsSectionProps {
     draft: any;

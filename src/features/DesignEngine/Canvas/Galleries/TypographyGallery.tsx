@@ -4,7 +4,7 @@ import { UIContext } from '../../../../core/Provider/SarakUIProvider';
 import { TYPOGRAPHY_PRESETS, TypographyPreset } from '../../../../core/Design/presets';
 import { DesignScope } from '../../../../core/Design/components/DesignScope';
 import { Check, Type, Hash, ArrowRight } from 'lucide-react';
-import { THEME_FONTS } from '../../../../constants/design-tokens';
+import { THEME_FONTS } from '../../../../core/Design/presets/typography';
 
 interface TypographyGalleryProps {
     onUpdateDraft: (key: string, value: any) => void;

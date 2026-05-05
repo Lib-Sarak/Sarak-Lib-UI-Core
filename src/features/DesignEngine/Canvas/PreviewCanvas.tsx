@@ -3,7 +3,7 @@ import { motion, AnimatePresence } from 'framer-motion';
 import {
     Zap, Shield, BarChart3, MessageSquare, History, Box, Network, Type, Grid, Sparkles, Search, Bell
 } from 'lucide-react';
-import { THEME_EFFECTS } from '../../../constants/design-tokens';
+import { THEME_EFFECTS } from '../../../core/Design/presets/animations';
 import { UIContext } from '../../../core/Provider/SarakUIProvider';
 import { MockDashboard, MockChat, MockLogs, MockSettings, MockComponents, MockTypography } from './MockApps';
 import { KitchenSinkPreview } from './KitchenSinkPreview';
@@ -104,15 +104,15 @@ export const PreviewCanvas: React.FC<PreviewCanvasProps> = ({
 
     const renderSystemContent = () => (
         <DesignScope design={tokens} className="w-full h-full flex flex-col bg-[var(--theme-bg)] transition-all duration-500 overflow-hidden relative">
-            {tokens.texture && tokens.texture !== 'none' && (
-                <div className={`absolute inset-0 pointer-events-none z-0 texture-${tokens.texture} opacity-[var(--theme-noise-opacity)]`} />
-            )}
-            
             {/* Escala para simular tela cheia em miniatura */}
             <div className="absolute inset-0 origin-top-left overflow-hidden z-10" style={{ transform: 'scale(0.5)', width: '200%', height: '200%' }}>
                 {tokens.navigationStyle === 'topbar' ? (
-                    <div className="flex flex-col w-full h-full relative z-10">
-                        <header className="h-28 border-b border-[var(--theme-border)] flex items-center justify-between px-12 bg-[var(--theme-card)]/40 backdrop-blur-md">
+                    <div className="flex flex-col w-full h-full relative">
+                        {/* Texture layer inside the scaled context — renders at 200% size, shrinks correctly */}
+                        {tokens.texture && tokens.texture !== 'none' && (
+                            <div className={`absolute inset-0 pointer-events-none z-0 texture-${tokens.texture} SarakAtmosphereLayer`} style={{ opacity: 'var(--theme-texture-opacity)' }} />
+                        )}
+                        <header className="h-28 border-b border-[var(--theme-border)] flex items-center justify-between px-12 bg-[var(--theme-card)]/40 backdrop-blur-md relative z-10">
                             <div className="scale-150 origin-left"><LogoComponent /></div>
                             <nav className="flex gap-8">
                                 {appIds.map(id => (
@@ -123,11 +123,15 @@ export const PreviewCanvas: React.FC<PreviewCanvasProps> = ({
                             </nav>
                             <div className="scale-150 origin-right"><UserWidget variant="horizontal" /></div>
                         </header>
-                        <main className="flex-1 overflow-y-auto p-16">{apps[activePreviewApp]}</main>
+                        <main className="flex-1 overflow-y-auto p-16 relative z-10">{apps[activePreviewApp]}</main>
                     </div>
                 ) : (
-                    <div className="flex w-full h-full relative z-10">
-                        <aside className="w-[400px] border-r border-[var(--theme-border)] flex flex-col bg-[var(--theme-card)]/40 backdrop-blur-md">
+                    <div className="flex w-full h-full relative">
+                        {/* Texture layer inside the scaled context — renders at 200% size, shrinks correctly */}
+                        {tokens.texture && tokens.texture !== 'none' && (
+                            <div className={`absolute inset-0 pointer-events-none z-0 texture-${tokens.texture} SarakAtmosphereLayer`} style={{ opacity: 'var(--theme-texture-opacity)' }} />
+                        )}
+                        <aside className="w-[400px] border-r border-[var(--theme-border)] flex flex-col bg-[var(--theme-card)]/40 backdrop-blur-md relative z-10">
                             <div className="p-12 scale-150 origin-top-left"><LogoComponent /></div>
                             <nav className="flex-1 p-8 space-y-4">
                                 {appIds.map(id => (
@@ -138,7 +142,7 @@ export const PreviewCanvas: React.FC<PreviewCanvasProps> = ({
                             </nav>
                             <div className="scale-150 origin-bottom-left"><UserWidget /></div>
                         </aside>
-                        <main className="flex-1 overflow-y-auto p-16">{apps[activePreviewApp]}</main>
+                        <main className="flex-1 overflow-y-auto p-16 relative z-10">{apps[activePreviewApp]}</main>
                     </div>
                 )}
             </div>

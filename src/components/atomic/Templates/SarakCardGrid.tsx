@@ -124,23 +124,23 @@ export const SarakCardGrid: React.FC<SarakCardGridProps> = ({ endpoint, label, m
     const sideFilters = filters.filter(f => f.type === 'SELECT');
 
     return (
-        <div className="flex flex-col" style={{ gap: 'calc(var(--theme-gap) * 1.25)' }}>
+        <div className="flex flex-col" style={{ gap: 'calc(var(--sarak-grid-gap) * 1.25)' }}>
             {/* Header & Filter Section Core */}
             <div className="flex flex-col" style={{ gap: 'var(--theme-gap)' }}>
                 <div className="flex flex-col md:flex-row md:items-center justify-between" style={{ gap: 'var(--theme-gap)' }}>
                     <div>
-                        <h3 className="text-3xl font-black text-white tracking-tighter" style={{ fontWeight: 'var(--heading-weight)' }}>{label || 'Explorar'}</h3>
-                        <p className="text-white/20 text-2xs font-bold uppercase tracking-[0.3em] mt-1">Sintonizando {filteredData.length} unidades disponíveis</p>
+                        <h3 className="text-3xl font-black text-[var(--theme-title)] tracking-tighter" style={{ fontWeight: 'var(--heading-weight)' }}>{label || 'Explorar'}</h3>
+                        <p className="text-[var(--theme-muted)] opacity-40 text-2xs font-bold uppercase tracking-[0.3em] mt-1">Sintonizando {filteredData.length} unidades disponíveis</p>
                     </div>
                     <div className="flex items-center" style={{ gap: 'calc(var(--theme-gap) / 2)' }}>
                         <div className="relative group">
-                            <Search className="absolute left-4 top-1/2 -translate-y-1/2 text-white/10 group-focus-within:text-[var(--theme-primary)] transition-colors" size={16} />
+                            <Search className="absolute left-4 top-1/2 -translate-y-1/2 text-[var(--theme-muted)] opacity-30 group-focus-within:text-[var(--theme-primary)] transition-colors" size={16} />
                             <input 
                                 type="text" 
                                 placeholder="Pesquisar..." 
                                 value={search}
                                 onChange={(e) => setSearch(e.target.value)}
-                                className="bg-theme-card border-theme py-4 pl-12 pr-6 text-sm text-white outline-none focus:border-[var(--theme-primary-border)] transition-all w-full md:w-80 rounded-theme"
+                                className="bg-theme-card border-theme py-4 pl-12 pr-6 text-sm text-[var(--theme-text)] outline-none focus:border-[var(--theme-primary-border)] transition-all w-full md:w-80 rounded-theme"
                             />
                         </div>
                     </div>
@@ -158,7 +158,7 @@ export const SarakCardGrid: React.FC<SarakCardGridProps> = ({ endpoint, label, m
                                     className={`px-6 py-3 rounded-theme text-2xs font-black uppercase tracking-widest transition-all border ${
                                         (activeFilters[mainFilter.id] || 'all') === opt
                                             ? 'bg-[var(--theme-primary)] border-[var(--theme-primary-border)] text-white shadow-lg shadow-[var(--theme-primary-focus)]'
-                                            : 'bg-theme-card border-theme text-white/30 hover:text-white'
+                                            : 'bg-theme-card border-theme text-[var(--theme-muted)] hover:text-[var(--theme-title)]'
                                     }`}
                                 >
                                     {opt === 'all' ? `Todos (${mainFilter.label})` : opt}
@@ -174,7 +174,7 @@ export const SarakCardGrid: React.FC<SarakCardGridProps> = ({ endpoint, label, m
                                     <select
                                         value={activeFilters[filter.id] || 'all'}
                                         onChange={(e) => setActiveFilters(prev => ({ ...prev, [filter.id]: e.target.value }))}
-                                        className="w-full appearance-none bg-theme-card border-theme px-4 py-3 pr-10 rounded-theme text-2xs font-black text-white/40 uppercase tracking-widest outline-none focus:border-[var(--theme-primary-border)] transition-all cursor-pointer"
+                                        className="w-full appearance-none bg-theme-card border-theme px-4 py-3 pr-10 rounded-theme text-2xs font-black text-[var(--theme-muted)] opacity-60 uppercase tracking-widest outline-none focus:border-[var(--theme-primary-border)] transition-all cursor-pointer"
                                     >
                                         <option value="all">{filter.label}: Todos</option>
                                         {(filter.options || (filter.dynamic ? getDynamicOptions(filter.field) : [])).map(opt => {
@@ -183,7 +183,7 @@ export const SarakCardGrid: React.FC<SarakCardGridProps> = ({ endpoint, label, m
                                             return <option key={val} value={val}>{lab}</option>;
                                         })}
                                     </select>
-                                    <Filter className="absolute right-3 top-1/2 -translate-y-1/2 w-3 h-3 text-white/10 pointer-events-none group-focus-within:text-[var(--theme-primary)]" />
+                                    <Filter className="absolute right-3 top-1/2 -translate-y-1/2 w-3 h-3 text-[var(--theme-muted)] opacity-30 pointer-events-none group-focus-within:text-[var(--theme-primary)]" />
                                 </div>
                             ))}
                         </div>
@@ -193,7 +193,7 @@ export const SarakCardGrid: React.FC<SarakCardGridProps> = ({ endpoint, label, m
             </div>
 
             {/* Grid de Cards Pro Core (v6.5) */}
-            <div className="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-3" style={{ gap: 'var(--theme-gap, 2rem)' }}>
+            <div className="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-3" style={{ gap: 'var(--sarak-grid-gap, 2rem)' }}>
                 {loading ? (
                     [...Array(6)].map((_, i) => (
                         <div key={i} className="h-80 bg-theme-card border-theme animate-pulse" />
@@ -274,14 +274,14 @@ const SarakCoreCard = ({ item, mapping }: { item: any; mapping: any }) => {
                         <span className="text-2xs font-black text-[var(--theme-primary)] uppercase tracking-[0.2em] mb-1">
                             {getVal(item, mapping?.subtitle) || 'Modelo'}
                         </span>
-                        <h4 className="text-xl font-black text-white tracking-tight group-hover:text-[var(--theme-primary)] transition-colors">
+                        <h4 className="text-xl font-black text-[var(--theme-title)] tracking-tight group-hover:text-[var(--theme-primary)] transition-colors">
                             {getVal(item, mapping?.title)}
                         </h4>
                     </div>
-                    <div className="bg-theme-card border-theme p-3">
+                    <div className="bg-theme-card border-theme" style={{ padding: 'calc(var(--theme-pad) / 2)', borderRadius: 'var(--sarak-grid-radius)' }}>
                         {mapping?.icon && LucideIcons[mapping.icon as keyof typeof LucideIcons] ? (
-                            React.createElement(LucideIcons[mapping.icon as keyof typeof LucideIcons] as any, { size: 20, className: "text-white/60" })
-                        ) : <Box size={20} className="text-white/60" />}
+                            React.createElement(LucideIcons[mapping.icon as keyof typeof LucideIcons] as any, { size: 20, className: "text-[var(--theme-muted)]" })
+                        ) : <Box size={20} className="text-[var(--theme-muted)]" />}
                     </div>
                 </div>
 
@@ -289,7 +289,7 @@ const SarakCoreCard = ({ item, mapping }: { item: any; mapping: any }) => {
                     <div className="flex flex-wrap gap-2">
                         <span className="text-3xs font-black text-white/20 uppercase w-full mb-1">Input Capacities</span>
                         {inputCaps.map((cap: string) => (
-                            <div key={cap} className="flex items-center gap-1.5 px-3 py-1 bg-[var(--theme-primary-bg)] text-[var(--theme-primary)] border border-[var(--theme-primary-border)] rounded-full text-2xs font-black uppercase">
+                            <div key={cap} className="flex items-center gap-1.5 bg-[var(--theme-primary-bg)] text-[var(--theme-primary)] border border-[var(--theme-primary-border)] text-2xs font-black uppercase" style={{ padding: 'calc(var(--theme-pad) / 4) calc(var(--theme-pad) / 1.5)', borderRadius: 'var(--sarak-grid-radius)' }}>
                                 {getCapIcon(cap)} {cap}
                             </div>
                         ))}
@@ -298,7 +298,7 @@ const SarakCoreCard = ({ item, mapping }: { item: any; mapping: any }) => {
                         <div className="flex flex-wrap gap-2">
                             <span className="text-3xs font-black text-white/20 uppercase w-full mb-1">Output Capacities</span>
                             {outputCaps.map((cap: string) => (
-                                <div key={cap} className="flex items-center gap-1.5 px-3 py-1 bg-[var(--theme-accent-bg)] text-[var(--theme-accent)] border border-[var(--theme-accent-border)] rounded-full text-2xs font-black uppercase">
+                                <div key={cap} className="flex items-center gap-1.5 bg-[var(--theme-accent-bg)] text-[var(--theme-accent)] border border-[var(--theme-accent-border)] text-2xs font-black uppercase" style={{ padding: 'calc(var(--theme-pad) / 4) calc(var(--theme-pad) / 1.5)', borderRadius: 'var(--sarak-grid-radius)' }}>
                                     {getCapIcon(cap)} {cap}
                                 </div>
                             ))}
@@ -308,20 +308,20 @@ const SarakCoreCard = ({ item, mapping }: { item: any; mapping: any }) => {
 
                 <div className="grid grid-cols-2 mb-8 pt-6 border-t border-theme" style={{ gap: 'var(--theme-gap, 1rem)', marginBottom: 'var(--theme-gap)', marginTop: 'var(--theme-gap)' }}>
                     <div className="flex flex-col">
-                        <span className="text-3xs font-black text-white/30 uppercase tracking-widest mb-1">Custo In (1M)</span>
+                        <span className="text-3xs font-black text-[var(--theme-muted)] opacity-50 uppercase tracking-widest mb-1">Custo In (1M)</span>
                         <span className="text-sm font-mono text-[var(--theme-success)] font-bold">
                             {priceIn !== undefined ? `$${Number(priceIn).toFixed(4)}` : 'N/A'}
                         </span>
                     </div>
                     <div className="flex flex-col">
-                        <span className="text-3xs font-black text-white/30 uppercase tracking-widest mb-1">Custo Out (1M)</span>
+                        <span className="text-3xs font-black text-[var(--theme-muted)] opacity-50 uppercase tracking-widest mb-1">Custo Out (1M)</span>
                         <span className="text-sm font-mono text-[var(--theme-warning)] font-bold">
                             {priceOut !== undefined ? `$${Number(priceOut).toFixed(4)}` : 'N/A'}
                         </span>
                     </div>
                     <div className="flex flex-col col-span-2">
-                        <span className="text-3xs font-black text-white/30 uppercase tracking-widest mb-1">Janela de Contexto</span>
-                        <span className="text-2xs font-black text-white/80 uppercase">
+                        <span className="text-3xs font-black text-[var(--theme-muted)] opacity-50 uppercase tracking-widest mb-1">Janela de Contexto</span>
+                        <span className="text-2xs font-black text-[var(--theme-text)] uppercase">
                             {context ? `${(Number(context) / 1000)}k tokens` : 'Desconhecida'}
                         </span>
                     </div>
@@ -330,7 +330,7 @@ const SarakCoreCard = ({ item, mapping }: { item: any; mapping: any }) => {
                 <div className="flex" style={{ gap: 'calc(var(--theme-gap) / 2.5)' }}>
                     <button 
                         onClick={() => setIsExpanded(!isExpanded)}
-                        className="flex-1 flex items-center justify-center gap-2 py-4 bg-theme-card border-theme text-white/60 hover:text-[var(--theme-secondary)] hover:border-[var(--theme-secondary-border)] rounded-theme text-2xs font-black uppercase tracking-widest transition-all"
+                        className="flex-1 flex items-center justify-center gap-2 py-4 bg-theme-card border-theme text-[var(--theme-muted)] hover:text-[var(--theme-secondary)] hover:border-[var(--theme-secondary-border)] rounded-theme text-2xs font-black uppercase tracking-widest transition-all"
                         style={{ transitionDuration: 'var(--animation-speed, 0.3s)' }}
                     >
                         <LucideIcons.ChevronDown className={`w-3 h-3 transition-transform ${isExpanded ? 'rotate-180' : ''}`} />
@@ -353,7 +353,7 @@ const SarakCoreCard = ({ item, mapping }: { item: any; mapping: any }) => {
                                 {description && (
                                     <div className="p-6 bg-theme-card border-theme rounded-theme">
                                         <span className="text-3xs font-black text-[var(--theme-primary)] uppercase mb-2 block">Descrição Técnica</span>
-                                        <p className="text-xs text-white/50 leading-relaxed font-medium">{description}</p>
+                                        <p className="text-xs text-[var(--theme-text)] opacity-70 leading-relaxed font-medium">{description}</p>
                                     </div>
                                 )}
                                 {tokenizer && (

@@ -1,6 +1,6 @@
 import React from 'react';
 import { Menu, Bell } from 'lucide-react';
-import { DiscoveredModule } from '../../../constants/discovery';
+import { DiscoveredModule } from '../../../core/Discovery/types';
 import { ShellSearchWidget } from './ShellSearchWidget';
 import { ShellUserWidget } from './ShellUserWidget';
 import { IconRenderer } from './IconRenderer';

@@ -142,6 +142,72 @@ export const ControlsSchema: ComponentSchema = {
             },
             defaultValue: 0.1,
             cssVars: ['--haptic-intensity']
+        },
+        {
+            id: 'socialButtonRadius',
+            label: 'Raio dos Botões Sociais',
+            category: 'Botões',
+            type: 'slider',
+            unit: 'px',
+            constraints: {
+                min: 0,
+                max: 40,
+            },
+            defaultValue: 12,
+            cssVars: ['--social-button-radius']
+        },
+        {
+            id: 'socialButtonStyle',
+            label: 'Variante Global Social',
+            category: 'Botões',
+            type: 'select',
+            constraints: {
+                options: [
+                    { id: 'glass', label: 'Glass' },
+                    { id: 'sovereign', label: 'Sovereign' }
+                ],
+            },
+            defaultValue: 'glass',
+            cssVars: ['--sarak-social-variant']
+        },
+        {
+            id: 'filterPadding',
+            label: 'Padding do Filtro',
+            category: 'Inputs',
+            type: 'slider',
+            unit: 'px',
+            constraints: {
+                min: 0,
+                max: 24,
+            },
+            defaultValue: 8,
+            cssVars: ['--sarak-filter-padding']
+        },
+        {
+            id: 'filterGap',
+            label: 'Espaçamento do Filtro (Gap)',
+            category: 'Inputs',
+            type: 'slider',
+            unit: 'px',
+            constraints: {
+                min: 0,
+                max: 16,
+            },
+            defaultValue: 8,
+            cssVars: ['--sarak-filter-gap']
+        },
+        {
+            id: 'filterRadius',
+            label: 'Raio do Filtro',
+            category: 'Inputs',
+            type: 'slider',
+            unit: 'px',
+            constraints: {
+                min: 0,
+                max: 30,
+            },
+            defaultValue: 6,
+            cssVars: ['--sarak-filter-radius']
         }
     ]
 };

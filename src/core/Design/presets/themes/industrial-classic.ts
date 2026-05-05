@@ -1,30 +1,30 @@
 /**
  * Sarak Theme Preset: Industrial Classic (v12.0)
  * 
- * Um DNA focado em sobriedade, precisão e elegância industrial.
+ * DNA: Equilíbrio, Sóbrio, Profissional e Industrial.
  */
 
 export const IndustrialClassic = {
     // Branding
-    systemName: 'SARAK INDUSTRIAL',
+    systemName: 'SARAK UI',
     logoPosition: 'left',
     logoScale: 1.0,
     
     // Atmosphere
     mode: 'dark',
-    primaryColor: '#00f2ff', // Sarak Cyan
-    bodyColor: '#0f172a',
-    titleColor: '#ffffff',
-    secondaryColor: '#94a3b8',
+    primaryColor: '#3b82f6', // Sarak Blue
+    bodyColor: '#020617',
+    titleColor: '#f8fafc',
+    secondaryColor: '#64748b',
     successColor: '#10b981',
     warningColor: '#f59e0b',
     errorColor: '#ef4444',
     glassOpacity: 0.1,
-    glassBlur: 12,
-    texture: 'grid',
-    textureOpacity: 0.1,
+    glassBlur: 10,
+    texture: 'noise',
+    textureOpacity: 0.08,
     scaleRatio: 1.0,
-    contrastCurve: 1.05,
+    contrastCurve: 1.0,
     spotlightEnabled: true,
     borderBeamEnabled: false,
     
@@ -33,28 +33,28 @@ export const IndustrialClassic = {
     sidebarWidth: 260,
     topbarHeight: 64,
     layoutDensity: 'standard',
-    tabGap: 12,
+    tabGap: 8,
     isNavHidden: false,
-    sidebarColor: '#1e293b',
-    sidebarHoverColor: 'rgba(0, 242, 255, 0.05)',
-    sidebarActiveColor: 'rgba(0, 242, 255, 0.1)',
+    sidebarColor: '#0f172a',
+    sidebarHoverColor: '#1e293b',
+    sidebarActiveColor: '#3b82f6',
     
     // Cards
     cardBorderRadius: 12,
-    borderRadiusSm: 4,
+    borderRadiusSm: 8,
     borderRadiusMd: 12,
     borderRadiusLg: 24,
     cardPadding: 32,
     cardPaddingSm: 16,
     cardPaddingMd: 32,
-    cardPaddingLg: 48,
+    cardPaddingLg: 56,
     cardBorderStyle: 'solid',
     cardBorderWidth: 1,
-    cardBorderColor: 'rgba(255, 255, 255, 0.1)',
-    cardBackgroundColor: 'rgba(30, 41, 59, 0.5)',
+    cardBorderColor: '#1e293b',
+    cardBackgroundColor: '#0f172a',
     cardTexture: 'none',
-    cardNoiseOpacity: 0.05,
-    cardShadowIntensity: 0.2,
+    cardNoiseOpacity: 0.02,
+    cardShadowIntensity: 0.4,
     
     // Typography
     fontScale: 'm',

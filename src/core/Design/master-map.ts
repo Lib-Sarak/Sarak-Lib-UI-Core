@@ -8,9 +8,10 @@ import { DataSchema } from './schema/data';
 import { IdentitySchema } from './schema/identity';
 import { AnimationSchema } from './schema/animations';
 import { SpecializedSchema } from './schema/specialized';
+import { SystemSchema } from './schema/system';
 
 /**
- * MASTER DESIGN MAP (v11.0)
+ * MASTER DESIGN MAP (v12.0)
  * 
  * O ponto central de verdade para 100% das configurações do Sarak UI.
  * Este objeto é usado para:
@@ -20,7 +21,7 @@ import { SpecializedSchema } from './schema/specialized';
  * 4. Definir a estrutura de Presets.
  */
 export const MASTER_DESIGN_MAP: MasterDesignSchema = {
-    version: '11.0.0',
+    version: '12.0.0',
     components: [
         ShellSchema,
         IdentitySchema,
@@ -30,7 +31,8 @@ export const MASTER_DESIGN_MAP: MasterDesignSchema = {
         ControlsSchema,
         DataSchema,
         AnimationSchema,
-        SpecializedSchema
+        SpecializedSchema,
+        SystemSchema
     ]
 };
 

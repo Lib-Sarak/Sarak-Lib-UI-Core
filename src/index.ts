@@ -8,8 +8,6 @@
 // Theme Engine and Constants
 export { default as SarakUIProvider, useSarakUI } from './core/Provider/SarakUIProvider';
 export { default as ThemeToggle } from './components/atomic/Buttons/ThemeToggle';
-export * from './constants/design-tokens';
-export * from './constants/theme';
 export { PRESETS_LIBRARY } from './core/Design/presets';
 
 // Layout Components and Plug & Play UI
@@ -26,7 +24,7 @@ export { default as SarakChartEngine } from './components/engines/charts/SarakCh
 // Discovery and Dynamic Rendering (Universal Bridge)
 export { default as DynamicRenderer } from './core/Discovery/DynamicRenderer';
 export * from './core/Discovery/registry';
-export * from './constants/discovery';
+export * from './core/Discovery/types';
 export { useModuleDiscovery } from './shared/hooks/useModuleDiscovery';
 export { useSarakRouter } from './shared/hooks/useSarakRouter';
 export type { SarakRouterState } from './shared/hooks/useSarakRouter';

@@ -45,7 +45,6 @@ export const subscribeToRegistry = (listener: () => void) => {
  * Registers a local component linked to a system ID (v6.5).
  */
 export const registerLocalComponent = (id: string, component: React.ComponentType<any>) => {
-    console.log(`[Registry] Registering Component: ${id}`);
     localComponents.set(id, component);
     notifyListeners();
 };
@@ -94,8 +93,6 @@ export const registerSarakModule = (manifest: SarakModule) => {
     const mod = { ...existing, ...manifest, isLocal: true };
     _global.__SARAK_REGISTRY_MODS__.set(manifest.id, mod);
     
-    console.log(`[Sarak:Registry] Registered/Updated module: ${manifest.id}. Total: ${_global.__SARAK_REGISTRY_MODS__.size}`);
-    
     // Notificar assinantes
     notifyListeners();
 };
@@ -104,7 +101,7 @@ export const registerSarakModule = (manifest: SarakModule) => {
  * Returns the list of registered modules with resolved components (v9.1).
  */
 export const getRegisteredModules = (): SarakModule[] => {
-    const modules = Array.from(registeredModules.values()).map(mod => {
+    return Array.from(registeredModules.values()).map(mod => {
         // Resolução Estrita (v9.2): ID do Módulo === Chave do Componente
         const resolvedComponent = mod.component || localComponents.get(mod.id);
         
@@ -113,9 +110,6 @@ export const getRegisteredModules = (): SarakModule[] => {
             component: resolvedComponent
         };
     });
-    
-    console.log(`[Registry] Returning ${modules.length} modules:`, modules.map(m => `${m.id} (${m.component ? 'READY' : 'JSON-ONLY'})`));
-    return modules;
 };
 
 /**

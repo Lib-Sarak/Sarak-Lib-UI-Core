@@ -43,7 +43,10 @@ const VisualsSpecimen: React.FC<{ preset: AtmospherePreset; onSelect: () => void
     const localStyle = {
         '--theme-primary': primaryColor,
         '--theme-primary-rgb': primaryRgb,
-        '--theme-border': 'rgba(255,255,255,0.4)' // Boosted border visibility for Grid
+        '--theme-texture-color': primaryColor,
+        '--theme-texture-color-rgb': primaryRgb,
+        '--texture-opacity': '0.8', // Forçado alto para o preview
+        '--theme-border': globalTokens.mode === 'light' ? 'rgba(0,0,0,0.1)' : 'rgba(255,255,255,0.1)'
     } as React.CSSProperties;
 
     return (
@@ -71,8 +74,7 @@ const VisualsSpecimen: React.FC<{ preset: AtmospherePreset; onSelect: () => void
                         }} 
                     />
                     
-                    {/* Contrast Gradient */}
-                    <div className="absolute inset-0 bg-gradient-to-t from-black/60 to-transparent z-10" />
+                    {/* Contrast Gradient Removido para fidelidade da textura */}
                     
                     <div className="absolute inset-0 flex items-center justify-center z-20">
                          <div className="px-3 py-1 bg-black/60 backdrop-blur-md rounded-full border border-white/10 text-[9px] font-black text-white/40 uppercase tracking-widest">

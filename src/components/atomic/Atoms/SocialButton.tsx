@@ -15,6 +15,8 @@ interface SocialButtonProps {
     className?: string;
 }
 
+import { useSarakUI } from '../../../core/Provider/SarakUIProvider';
+
 export const SocialButton: React.FC<SocialButtonProps> = ({ 
     provider, 
     variant, 
@@ -23,6 +25,8 @@ export const SocialButton: React.FC<SocialButtonProps> = ({
     hideLabel,
     className 
 }) => {
+    const { design } = useSarakUI();
+    const designVariant = design?.socialButtonStyle || 'glass';
     const isGoogle = provider === 'google';
     
     const icons: Record<'google' | 'github', React.ReactNode> = {
@@ -48,22 +52,29 @@ export const SocialButton: React.FC<SocialButtonProps> = ({
             type="button"
             onClick={() => onClick?.(provider)}
             title={label || defaultLabel}
+            style={{ borderRadius: 'var(--social-button-radius, var(--button-radius, 12px))' }}
             className={cn(
                 "flex items-center transition-sarak group/soc active:scale-[0.97]",
+                "bg-[var(--sarak-social-bg,var(--input-bg,rgba(255,255,255,0.03)))]",
+                "text-[var(--sarak-social-text,rgba(255,255,255,0.5))]",
+                "border border-white/5 hover:border-white/10",
                 hideLabel 
-                    ? "w-12 h-12 justify-center rounded-2xl" 
-                    : "w-full gap-4 py-3.5 px-6 rounded-2xl",
-                variant === 'sovereign' 
-                    ? "bg-[var(--theme-primary)] text-white shadow-xl shadow-[var(--theme-primary)]/20 hover:shadow-[var(--theme-primary)]/40 hover:-translate-y-0.5" 
-                    : "bg-white/[0.03] border border-white/5 text-white/50 hover:bg-white/[0.08] hover:text-white hover:border-white/10",
+                    ? "w-12 h-12 justify-center" 
+                    : "w-full gap-4 py-3.5 px-6",
+                variant === 'sovereign' || designVariant === 'sovereign'
+                    ? "shadow-xl shadow-[var(--theme-primary)]/20 hover:shadow-[var(--theme-primary)]/40 hover:-translate-y-0.5" 
+                    : "hover:bg-white/[0.08] hover:text-white",
                 className
             )}
         >
-            <div className={cn(
-                "rounded-xl flex items-center justify-center transition-sarak",
-                hideLabel ? "w-full h-full" : "w-8 h-8",
-                variant === 'sovereign' ? "bg-white/20 group-hover/soc:rotate-[10deg]" : "bg-white/5 group-hover/soc:bg-white/10"
-            )}>
+            <div 
+                className={cn(
+                    "flex items-center justify-center transition-sarak",
+                    hideLabel ? "w-full h-full" : "w-8 h-8",
+                    variant === 'sovereign' ? "bg-white/20 group-hover/soc:rotate-[10deg]" : "bg-white/5 group-hover/soc:bg-white/10"
+                )}
+                style={{ borderRadius: 'calc(var(--social-button-radius, 12px) * 0.8)' }}
+            >
                 {icons[provider]}
             </div>
             

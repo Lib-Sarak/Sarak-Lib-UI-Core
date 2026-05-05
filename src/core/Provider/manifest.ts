@@ -251,5 +251,14 @@ export const DESIGN_MANIFEST: Record<string, {
     topbarHeight: { vars: ['--topbar-height', '--sarak-topbar-height', '--theme-topbar-height'], unit: 'px' },
     isNavHidden: { vars: ['--is-nav-hidden'], attr: 'data-nav-hidden' },
     sidebarMinWidth: { vars: ['--sidebar-min-width'], transform: (v) => parseFloat(v) || 200 },
-    sidebarMaxWidth: { vars: ['--sidebar-max-width'], transform: (v) => parseFloat(v) || 450 }
+    sidebarMaxWidth: { vars: ['--sidebar-max-width'], transform: (v) => parseFloat(v) || 450 },
+
+    // Novas Integrações v11.0 (Security & Atmosphere)
+    securityShieldGlow: { vars: ['--sarak-security-glow'], unit: 'px' },
+    securityPulseSpeed: { vars: ['--sarak-security-pulse'], unit: 's' },
+    noiseIntensity: { vars: ['--sarak-noise-opacity', '--theme-noise-opacity'], transform: (v) => (parseFloat(v) || 0) / 100 },
+    
+    // Configurações de Sistema
+    moduleBlacklist: { attr: 'data-module-blacklist' },
+    industrialRegistry: { attr: 'data-industrial-registry' }
 };

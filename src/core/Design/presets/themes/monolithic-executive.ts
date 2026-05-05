@@ -12,65 +12,65 @@ export const MonolithicExecutive = {
     
     // Atmosphere
     mode: 'light',
-    primaryColor: '#0f172a', // Deep Slate
-    bodyColor: '#ffffff',
-    titleColor: '#0f172a',
-    secondaryColor: '#64748b',
+    primaryColor: '#4c0519', // Deep Wine
+    bodyColor: '#fafaf9', // Stone White
+    titleColor: '#1c1917',
+    secondaryColor: '#78716c',
     successColor: '#065f46',
     warningColor: '#92400e',
     errorColor: '#991b1b',
-    glassOpacity: 0.02,
+    glassOpacity: 0.05,
     glassBlur: 4,
-    texture: 'prestige',
-    textureOpacity: 0.05,
-    scaleRatio: 1.0,
-    contrastCurve: 1.1,
+    texture: 'paper',
+    textureOpacity: 0.12,
+    scaleRatio: 1.05,
+    contrastCurve: 1.0,
     spotlightEnabled: false,
     borderBeamEnabled: false,
     
     // Shell
-    navigationStyle: 'sidebar',
-    sidebarWidth: 240,
-    topbarHeight: 60,
-    layoutDensity: 'standard',
-    tabGap: 8,
+    navigationStyle: 'topbar', // Navigation on top for executive look
+    sidebarWidth: 260,
+    topbarHeight: 80,
+    layoutDensity: 'relaxed',
+    tabGap: 12,
     isNavHidden: false,
-    sidebarColor: '#f8fafc',
-    sidebarHoverColor: '#f1f5f9',
-    sidebarActiveColor: '#e2e8f0',
+    sidebarColor: '#ffffff',
+    sidebarHoverColor: '#fafaf9',
+    sidebarActiveColor: '#f5f5f4',
     
     // Cards
-    cardBorderRadius: 4,
-    borderRadiusSm: 2,
-    borderRadiusMd: 4,
-    borderRadiusLg: 8,
-    cardPadding: 48,
-    cardPaddingSm: 24,
-    cardPaddingMd: 48,
-    cardPaddingLg: 72,
+    cardBorderRadius: 0, // Sharp edges for authority
+    borderRadiusSm: 0,
+    borderRadiusMd: 0,
+    borderRadiusLg: 0,
+    cardPadding: 64,
+    cardPaddingSm: 32,
+    cardPaddingMd: 64,
+    cardPaddingLg: 96,
     cardBorderStyle: 'solid',
     cardBorderWidth: 1,
-    cardBorderColor: '#e2e8f0',
+    cardBorderColor: '#e7e5e4',
     cardBackgroundColor: '#ffffff',
-    cardTexture: 'paper',
+    cardTexture: 'none',
     cardNoiseOpacity: 0.02,
-    cardShadowIntensity: 0.05,
+    cardShadowIntensity: 0.1,
     
     // Typography
-    fontScale: 'm',
-    headingFont: "'Cormorant Garamond', serif",
+    fontScale: 'l',
+    headingFont: "'Playfair Display', serif",
     bodyFont: "'Inter', sans-serif",
-    headingWeight: '600',
-    headingLetterSpacing: 1,
+    headingWeight: '700',
+    headingLetterSpacing: -1,
     
     // Controls
-    controlSize: 'sm',
-    controlRadius: 2,
+    controlSize: 'lg',
+    controlRadius: 0,
     controlBorderWidth: 1,
     accentBrightness: 'normal',
     
     // Animations
-    animationSpeed: 'normal',
-    animationStyle: 'standard',
+    animationSpeed: 'slow',
+    animationStyle: 'elegant',
     pageTransition: 'fade'
 };

@@ -87,15 +87,25 @@ export const SarakAuthScreen: React.FC<SarakAuthScreenProps> = ({
                 </div>
 
                 {/* Visual Grid */}
-                <div className="absolute inset-0 bg-[url('https://grainy-gradients.vercel.app/noise.svg')] opacity-20 mix-blend-overlay"></div>
+                <div 
+                    className="absolute inset-0 opacity-[var(--sarak-noise-opacity,0.2)] mix-blend-overlay pointer-events-none"
+                    style={{ 
+                        backgroundImage: 'var(--sarak-auth-noise-url)',
+                        display: 'var(--sarak-auth-noise-enabled, block)'
+                    }}
+                ></div>
                 <div className="absolute inset-0" style={{ backgroundImage: 'radial-gradient(circle at 2px 2px, var(--theme-border) 1px, transparent 0)', backgroundSize: '40px 40px' }}></div>
 
-                <div className="relative z-10 max-w-xl text-center flex flex-col items-center">
+                <div 
+                    className="relative z-10 max-w-xl text-center flex flex-col items-center"
+                    style={{ gap: 'var(--sarak-auth-gap, 2rem)' }}
+                >
                     <motion.div
                         initial={{ opacity: 0, scale: 0.8, rotate: -10 }}
                         animate={{ opacity: 1, scale: 1, rotate: 0 }}
                         transition={{ duration: 0.8, type: "spring" }}
-                        className="w-24 h-24 bg-gradient-to-tr from-theme-primary to-theme-primary/60 rounded-sarak flex items-center justify-center shadow-2xl shadow-theme-primary/20 mb-8 border border-theme-border"
+                        className="w-24 h-24 bg-gradient-to-tr from-theme-primary to-theme-primary/60 flex items-center justify-center shadow-2xl shadow-theme-primary/20 border border-theme-border"
+                        style={{ borderRadius: 'var(--button-radius, 12px)' }}
                     >
                         {branding?.logo ? (
                             <img src={branding.logo} alt="Logo" className="w-12 h-12 object-contain" />
@@ -108,7 +118,7 @@ export const SarakAuthScreen: React.FC<SarakAuthScreenProps> = ({
                         initial={{ opacity: 0, y: 20 }}
                         animate={{ opacity: 1, y: 0 }}
                         transition={{ delay: 0.2, duration: 0.8 }}
-                        className="text-6xl font-black tracking-tighter mb-6 bg-gradient-to-r from-theme-primary via-white to-theme-primary bg-[length:200%_auto] animate-gradient-text bg-clip-text text-transparent uppercase"
+                        className="text-6xl font-black tracking-tighter bg-gradient-to-r from-theme-primary via-white to-theme-primary bg-[length:200%_auto] animate-gradient-text bg-clip-text text-transparent uppercase"
                     >
                         {branding?.name}
                     </motion.h1>

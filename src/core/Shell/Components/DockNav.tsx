@@ -2,7 +2,7 @@ import React from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
 import { Search } from 'lucide-react';
 import { IconRenderer } from './IconRenderer';
-import { DiscoveredModule } from '../../../constants/discovery';
+import { DiscoveredModule } from '../../../core/Discovery/types';
 
 interface DockNavProps {
     design: any;

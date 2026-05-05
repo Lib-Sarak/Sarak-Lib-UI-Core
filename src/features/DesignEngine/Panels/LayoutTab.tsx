@@ -1,6 +1,8 @@
 import React from 'react';
 import { useSarakUI } from '../../../core/Provider/SarakUIProvider';
-import { DENSITY, SCALES, NAVIGATION_STYLES, THEME_FONTS } from '../../../constants/design-tokens';
+import { DENSITY, NAVIGATION_STYLES } from '../../../core/Design/presets/layout';
+import { THEME_FONTS } from '../../../core/Design/presets/typography';
+import { SCALES } from '../../../core/Design/presets/animations';
 import { Maximize2, Minimize2, Type, Layout as LayoutIcon, Sidebar as SidebarIcon, ArrowRightLeft, CaseSensitive } from 'lucide-react';
 
 export const LayoutTab: React.FC = () => {

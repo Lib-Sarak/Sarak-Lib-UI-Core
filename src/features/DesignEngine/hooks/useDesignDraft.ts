@@ -19,13 +19,15 @@ export const useDesignDraft = (sarak: any) => {
 
     // 2. Sincronização de Re-hidratação Inteligente (v10.3)
     useEffect(() => {
-        if (!isDirty && sarak) {
+        // Só sincroniza se o sarak global mudar e não tivermos alterações locais pendentes
+        // Evitamos o loop comparando se as propriedades principais realmente mudaram
+        if (!isDirty && sarak && sarak.layout !== draft.layout) {
             setDraft((prev: any) => ({
                 ...prev,
                 ...sarak
             }));
         }
-    }, [sarak, isDirty]);
+    }, [sarak?.layout, isDirty]); // Depender apenas do layout ID ou versão ajuda a estabilizar
 
     const showToast = (type: 'success' | 'warning', message: string) => {
         setToast({ type, message });
@@ -72,7 +74,7 @@ export const useDesignDraft = (sarak: any) => {
     };
 
     const handleThemePreview = (id: string) => {
-        const theme = PRESETS_LIBRARY.layouts?.find((t: any) => t.id === id);
+        const theme = PRESETS_LIBRARY.themes?.find((t: any) => t.id === id);
         if (theme && theme.tokens) {
             applyPatch(theme.tokens, id);
         }

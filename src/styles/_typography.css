@@ -1,0 +1,31 @@
+/* Typography Personalities */
+h1, h2, h3, h4, h5, h6 {
+    font-family: var(--font-heading, 'Inter', sans-serif);
+    color: var(--text-title);
+    font-weight: var(--heading-weight, 700);
+    letter-spacing: var(--heading-spacing, normal);
+    transition: color var(--animation-speed);
+}
+
+h3, h4 { font-family: var(--font-subtitle, var(--font-heading)); }
+
+.font-tab { font-family: var(--font-tab, var(--font-heading)); }
+
+/* Sincronização de Tipografia Dinâmica */
+h1, h2, h3 { font-family: var(--font-heading) !important; }
+body, span, p, div { font-family: var(--font-main); }
+
+/* Atomic Font Scaling Integration */
+[data-font-scale="pp"] { --sarak-font-size: 10px; --font-size-factor: 0.7; }
+[data-font-scale="p"]  { --sarak-font-size: 12px; --font-size-factor: 0.85; }
+[data-font-scale="m"]  { --sarak-font-size: 14px; --font-size-factor: 1.0; }
+[data-font-scale="g"]  { --sarak-font-size: 16px; --font-size-factor: 1.25; }
+[data-font-scale="gg"] { --sarak-font-size: 20px; --font-size-factor: 1.5; }
+
+/* Tabular Numbers Enforcement */
+[data-tabular-nums="tabular-nums"],
+[data-tabular-nums="true"],
+.tabular-nums {
+    font-variant-numeric: tabular-nums !important;
+    font-feature-settings: "tnum" 1 !important;
+}

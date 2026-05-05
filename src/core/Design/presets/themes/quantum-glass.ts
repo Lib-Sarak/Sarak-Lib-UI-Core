@@ -1,76 +1,76 @@
 /**
  * Sarak Theme Preset: Quantum Glass (v12.0)
  * 
- * DNA: Transparência Extrema, Neon e Estética Futurista.
+ * DNA: Futurismo, Translucidez, Profundidade e Fluidez.
  */
 
 export const QuantumGlass = {
     // Branding
     systemName: 'SARAK QUANTUM',
     logoPosition: 'center',
-    logoScale: 1.2,
+    logoScale: 1.0,
     
     // Atmosphere
     mode: 'dark',
-    primaryColor: '#00f2ff', // Quantum Cyan
-    bodyColor: '#000a14',
+    primaryColor: '#38bdf8', // Sky Blue
+    bodyColor: '#030712', // Deep Space
     titleColor: '#ffffff',
-    secondaryColor: '#ff00e5',
-    successColor: '#00ff95',
-    warningColor: '#ffcc00',
-    errorColor: '#ff0055',
-    glassOpacity: 0.05,
-    glassBlur: 30,
+    secondaryColor: '#818cf8',
+    successColor: '#34d399',
+    warningColor: '#fbbf24',
+    errorColor: '#f87171',
+    glassOpacity: 0.2,
+    glassBlur: 20,
     texture: 'dots',
     textureOpacity: 0.15,
-    scaleRatio: 0.98,
+    scaleRatio: 1.0,
     contrastCurve: 1.1,
     spotlightEnabled: true,
     borderBeamEnabled: true,
     
     // Shell
-    navigationStyle: 'topbar',
+    navigationStyle: 'sidebar',
     sidebarWidth: 240,
-    topbarHeight: 80,
-    layoutDensity: 'compact',
-    tabGap: 20,
+    topbarHeight: 64,
+    layoutDensity: 'standard',
+    tabGap: 16,
     isNavHidden: false,
-    sidebarColor: 'rgba(0, 10, 20, 0.3)',
-    sidebarHoverColor: 'rgba(0, 242, 255, 0.1)',
-    sidebarActiveColor: 'rgba(0, 242, 255, 0.2)',
+    sidebarColor: 'rgba(3, 7, 18, 0.5)',
+    sidebarHoverColor: 'rgba(56, 189, 248, 0.1)',
+    sidebarActiveColor: 'rgba(56, 189, 248, 0.2)',
     
     // Cards
-    cardBorderRadius: 32,
-    borderRadiusSm: 12,
-    borderRadiusMd: 32,
-    borderRadiusLg: 60,
-    cardPadding: 24,
-    cardPaddingSm: 12,
-    cardPaddingMd: 24,
-    cardPaddingLg: 40,
+    cardBorderRadius: 40, // Ultra High roundness
+    borderRadiusSm: 16,
+    borderRadiusMd: 40,
+    borderRadiusLg: 64,
+    cardPadding: 32,
+    cardPaddingSm: 16,
+    cardPaddingMd: 32,
+    cardPaddingLg: 56,
     cardBorderStyle: 'solid',
     cardBorderWidth: 1,
-    cardBorderColor: 'rgba(0, 242, 255, 0.2)',
-    cardBackgroundColor: 'rgba(0, 20, 40, 0.1)',
-    cardTexture: 'circuit',
-    cardNoiseOpacity: 0.15,
-    cardShadowIntensity: 0.6,
+    cardBorderColor: 'rgba(255, 255, 255, 0.1)',
+    cardBackgroundColor: 'rgba(255, 255, 255, 0.03)',
+    cardTexture: 'none',
+    cardNoiseOpacity: 0.01,
+    cardShadowIntensity: 0.5,
     
     // Typography
-    fontScale: 'l',
-    headingFont: "'Syncopate', sans-serif",
-    bodyFont: "'Space Mono', monospace",
-    headingWeight: '900',
-    headingLetterSpacing: 4,
+    fontScale: 'm',
+    headingFont: "'Plus Jakarta Sans', sans-serif",
+    bodyFont: "'Inter', sans-serif",
+    headingWeight: '700',
+    headingLetterSpacing: -0.5,
     
     // Controls
-    controlSize: 'sm',
-    controlRadius: 20,
-    controlBorderWidth: 2,
+    controlSize: 'md',
+    controlRadius: 12,
+    controlBorderWidth: 1,
     accentBrightness: 'vibrant',
     
     // Animations
-    animationSpeed: 'fast',
-    animationStyle: 'perspective',
-    pageTransition: 'perspective'
+    animationSpeed: 'normal',
+    animationStyle: 'fluid',
+    pageTransition: 'fade'
 };

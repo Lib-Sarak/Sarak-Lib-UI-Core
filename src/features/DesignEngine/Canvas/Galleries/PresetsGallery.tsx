@@ -1,7 +1,7 @@
 import React from 'react';
 import { motion } from 'framer-motion';
 import { GalleryItem } from './GalleryItem';
-import { THEME_EFFECTS } from '../../../../constants/design-tokens';
+import { THEME_EFFECTS } from '../../../../core/Design/presets/animations';
 import { UIContext } from '../../../../core/Provider/SarakUIProvider';
 import { MockDashboard, MockChat, MockLogs, MockSettings, MockComponents, MockTypography } from '../MockApps';
 import { DesignScope } from '../../../../core/Design/components/DesignScope';
@@ -56,16 +56,23 @@ const PresetSpecimen: React.FC<{
                 {/* Isolated Context for correct token propagation */}
                 <UIContext.Provider value={presetContextValue as any}>
                     {/* Shell Simulation */}
-                    <div className="flex h-full w-full">
+                    <div className="flex h-full w-full bg-[var(--theme-body)] relative">
+                        {/* Texture layer rendered inside the scaled context so the pattern scales correctly */}
+                        {preset.texture && preset.texture !== 'none' && (
+                            <div
+                                className={`absolute inset-0 pointer-events-none z-0 texture-${preset.texture} SarakAtmosphereLayer`}
+                                style={{ opacity: preset.textureOpacity ?? 0.1 }}
+                            />
+                        )}
                         {preset.navigationStyle === 'sidebar' && (
-                            <aside className="w-[180px] bg-[var(--theme-card)] border-r border-[var(--theme-border)] p-8 flex flex-col gap-6 shrink-0 backdrop-blur-md">
+                            <aside className="w-[180px] bg-[var(--theme-card)] border-r border-[var(--theme-border)] p-8 flex flex-col gap-6 shrink-0 backdrop-blur-md relative z-10">
                                 <div className="w-10 h-10 rounded-xl bg-[var(--theme-primary)] shadow-lg shadow-[var(--theme-primary)]/20 mb-8" />
                                 {[1, 2, 3, 4, 5].map(i => (
                                     <div key={i} className="w-full h-4 rounded-lg bg-[var(--theme-muted)]/10" />
                                 ))}
                             </aside>
                         )}
-                        <main className="flex-1 p-12 overflow-hidden">
+                        <main className="flex-1 p-12 overflow-hidden relative z-10">
                             {renderMock()}
                         </main>
                     </div>

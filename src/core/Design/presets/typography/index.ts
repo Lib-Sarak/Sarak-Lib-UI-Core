@@ -1,7 +1,6 @@
 /**
- * Sarak Atomic Presets: Typography (v12.0)
- * 
- * Biblioteca industrial de personalidades tipográficas.
+ * Sarak Typography Presets (v12.0)
+ * Contém presets curados de personalidade tipográfica E o catálogo de fontes disponíveis.
  */
 
 export interface TypographyPreset {
@@ -66,4 +65,21 @@ export const TYPOGRAPHY_PRESETS: TypographyPreset[] = [
             fontScale: 'l'
         }
     }
+];
+
+// Catálogo completo de famílias de fontes disponíveis
+export const THEME_FONTS = [
+    { id: 'satoshi', name: 'Satoshi Pro', value: "'Satoshi', sans-serif", category: 'sans', weights: [300, 400, 500, 700, 900] },
+    { id: 'cabinet', name: 'Cabinet Grotesk', value: "'Cabinet Grotesk', sans-serif", category: 'sans', weights: [400, 700, 800, 900] },
+    { id: 'inter', name: 'Inter Dynamic', value: "'Inter', sans-serif", category: 'sans', weights: [300, 400, 500, 600, 700] },
+    { id: 'outfit', name: 'Outfit Tech', value: "'Outfit', sans-serif", category: 'sans', weights: [300, 400, 600, 800] },
+    { id: 'sentient', name: 'Sentient Serif', value: "'Sentient', serif", category: 'serif', weights: [400, 500, 700] },
+    { id: 'clash', name: 'Clash Display', value: "'Clash Display', sans-serif", category: 'display', weights: [500, 600, 700] },
+    { id: 'jetbrains', name: 'JetBrains Mono', value: "'JetBrains Mono', monospace", category: 'mono', weights: [400, 500, 700] },
+    { id: 'space-mono', name: 'Space Mono', value: "'Space Mono', monospace", category: 'mono', weights: [400, 700] },
+    { id: 'playfair', name: 'Playfair Classic', value: "'Playfair Display', serif", category: 'serif', weights: [400, 700, 900] },
+    { id: 'fraunces', name: 'Fraunces Vintage', value: "'Fraunces', serif", category: 'serif', weights: [400, 700, 900] },
+    { id: 'bricolage', name: 'Bricolage Grotesque', value: "'Bricolage Grotesque', sans-serif", category: 'display', weights: [400, 700, 800] },
+    { id: 'public-sans', name: 'Public Corporate', value: "'Public Sans', sans-serif", category: 'sans', weights: [400, 500, 700] },
+    { id: 'space-grotesk', name: 'Space Tech', value: "'Space Grotesk', sans-serif", category: 'display', weights: [300, 500, 700] }
 ];

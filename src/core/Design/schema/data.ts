@@ -97,32 +97,30 @@ export const DataSchema: ComponentSchema = {
             cssVars: ['--table-density', '--sarak-table-density']
         },
         {
-            id: 'flowGridStyle',
-            label: 'Estilo do Grid (Flow)',
-            category: 'Motores de Fluxo',
-            type: 'select',
-            constraints: {
-                options: [
-                    { id: 'dots', label: 'Pontos' },
-                    { id: 'lines', label: 'Linhas' },
-                    { id: 'none', label: 'Nenhum' }
-                ],
-            },
-            defaultValue: 'dots',
-            cssVars: ['--sarak-flow-grid']
-        },
-        {
-            id: 'flowNodeRadius',
-            label: 'Raio do Nó (Flow)',
-            category: 'Motores de Fluxo',
+            id: 'gridGap',
+            label: 'Espaçamento do Grid',
+            category: 'Layout de Dados',
             type: 'slider',
             unit: 'px',
             constraints: {
-                min: 4,
-                max: 32,
+                min: 0,
+                max: 60,
+            },
+            defaultValue: 24,
+            cssVars: ['--sarak-grid-gap']
+        },
+        {
+            id: 'gridRadius',
+            label: 'Raio de Borda (Elementos Internos)',
+            category: 'Layout de Dados',
+            type: 'slider',
+            unit: 'px',
+            constraints: {
+                min: 0,
+                max: 30,
             },
             defaultValue: 12,
-            cssVars: ['--sarak-flow-radius']
+            cssVars: ['--sarak-grid-radius']
         }
     ]
 };

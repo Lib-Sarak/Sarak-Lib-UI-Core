@@ -1,61 +1,31 @@
 /**
- * Sarak Layout & Structure Presets (v12.0)
- * 
- * Define a espinha dorsal da navegação e o comportamento da Safe Area.
+ * Sarak Layout Presets (v12.0)
  */
 
 export interface LayoutPreset {
     id: string;
     name: string;
     description: string;
-    design: {
-        navigationStyle: 'sidebar' | 'topbar';
-        maxContentWidth: string;
-        isAutoHideEnabled: boolean;
-        isSplitViewEnabled: boolean;
-        sidebarWidth: number;
-        layoutDensity: 'compact' | 'standard' | 'comfortable';
-    };
 }
 
-export const LAYOUT_PRESETS: LayoutPreset[] = [
-    {
-        id: 'sovereign-sidebar',
-        name: 'Sovereign Sidebar',
-        description: 'Navegação lateral persistente com foco em fluxos de trabalho complexos.',
-        design: {
-            navigationStyle: 'sidebar',
-            maxContentWidth: '1600px',
-            isAutoHideEnabled: false,
-            isSplitViewEnabled: false,
-            sidebarWidth: 260,
-            layoutDensity: 'standard'
-        }
-    },
-    {
-        id: 'global-topbar',
-        name: 'Global Topbar',
-        description: 'Navegação superior limpa, ideal para dashboards de leitura e visão geral.',
-        design: {
-            navigationStyle: 'topbar',
-            maxContentWidth: '1200px',
-            isAutoHideEnabled: false,
-            isSplitViewEnabled: false,
-            sidebarWidth: 60,
-            layoutDensity: 'comfortable'
-        }
-    },
-    {
-        id: 'immersive-full',
-        name: 'Immersive Full',
-        description: 'Máximo aproveitamento de tela com sidebar retrátil e conteúdo fluido.',
-        design: {
-            navigationStyle: 'sidebar',
-            maxContentWidth: 'none',
-            isAutoHideEnabled: true,
-            isSplitViewEnabled: true,
-            sidebarWidth: 280,
-            layoutDensity: 'compact'
-        }
-    }
+export const DENSITY = {
+    COMPACT: { id: 'compact', gap: '0.5rem', pad: '0.75rem', fontSizeBase: '11px', radius: '8px', label: 'Compact' },
+    STANDARD: { id: 'standard', gap: '1.25rem', pad: '1.5rem', fontSizeBase: '13px', radius: '12px', label: 'Standard' },
+    COMFORTABLE: { id: 'comfortable', gap: '2rem', pad: '2rem', fontSizeBase: '15px', radius: '20px', label: 'Comfortable' }
+};
+
+export const NAVIGATION_STYLES = {
+    SIDEBAR: 'sidebar',
+    TOPBAR: 'topbar',
+    FLOATING: 'floating',
+    MINIMAL: 'minimal'
+};
+
+export const LAYOUTS: LayoutPreset[] = [
+    { id: 'modern', name: 'Modern Sovereign', description: 'Layout padrão v10+' },
+    { id: 'classic', name: 'Classic Sarak', description: 'Layout legado v5.0' },
+    { id: 'minimal', name: 'Minimalist', description: 'Foco total no conteúdo' }
 ];
+
+// Alias para o hub de presets
+export const LAYOUT_PRESETS: LayoutPreset[] = LAYOUTS;

@@ -10,6 +10,7 @@ import {
     CheckCircle2,
     AlertTriangle
 } from 'lucide-react';
+import { useSarakUI } from '../../../core/Provider/SarakUIProvider';
 import api from '../../../shared/services/api';
 
 interface SarakSecurityOrchestratorProps {
@@ -28,6 +29,7 @@ interface SarakSecurityOrchestratorProps {
  * Gerencia o ciclo de vida do MFA: Status, Setup e Ativação.
  */
 export const SarakSecurityOrchestrator: React.FC<SarakSecurityOrchestratorProps> = ({ endpoint, label }) => {
+    const { qrSize = 200 } = useSarakUI();
     const [step, setStep] = useState<'LOADING' | 'STATUS' | 'SETUP' | 'SUCCESS' | 'ERROR' | 'DISABLE_CHALLENGE'>('LOADING');
     const [mfaStatus, setMfaStatus] = useState<any>(null);
     const [setupData, setSetupData] = useState<any>(null);
@@ -103,10 +105,10 @@ export const SarakSecurityOrchestrator: React.FC<SarakSecurityOrchestratorProps>
     };
 
     return (
-        <div className="w-full max-w-2xl mx-auto bg-theme-card border-theme rounded-theme overflow-hidden shadow-2xl" style={{ padding: 'var(--theme-pad)' }}>
+        <div className="w-full max-w-2xl mx-auto bg-theme-card border-theme overflow-hidden shadow-2xl" style={{ padding: 'var(--theme-pad)', borderRadius: 'var(--sarak-security-radius, 16px)' }}>
             {/* Header */}
             <div className="flex items-center gap-4 mb-8 border-b border-[var(--theme-border)] pb-6">
-                <div className="p-3 bg-[var(--theme-primary)]/10 rounded-xl">
+                <div className="p-3 bg-[var(--theme-primary)]/10" style={{ borderRadius: 'calc(var(--sarak-security-radius, 16px) * 0.75)' }}>
                     <Shield className="text-[var(--theme-primary)]" size={24} />
                 </div>
                 <div>
@@ -193,12 +195,15 @@ export const SarakSecurityOrchestrator: React.FC<SarakSecurityOrchestratorProps>
                         <div className="p-4 bg-white rounded-2xl shadow-xl border-4 border-[var(--theme-primary)]/20">
                             {setupData?.provisioning_uri ? (
                                 <img 
-                                    src={`https://api.qrserver.com/v1/create-qr-code/?size=200x200&data=${encodeURIComponent(setupData.provisioning_uri)}`}
+                                    src={`https://api.qrserver.com/v1/create-qr-code/?size=${qrSize}x${qrSize}&data=${encodeURIComponent(setupData.provisioning_uri)}`}
                                     alt="MFA QR Code"
-                                    className="w-48 h-48"
+                                    style={{ width: 'var(--sarak-qr-size, 200px)', height: 'var(--sarak-qr-size, 200px)' }}
                                 />
                             ) : (
-                                <div className="w-48 h-48 flex items-center justify-center bg-gray-100">
+                                <div 
+                                    style={{ width: 'var(--sarak-qr-size, 200px)', height: 'var(--sarak-qr-size, 200px)' }}
+                                    className="flex items-center justify-center bg-gray-100"
+                                >
                                     <QrCode className="text-gray-300" size={48} />
                                 </div>
                             )}

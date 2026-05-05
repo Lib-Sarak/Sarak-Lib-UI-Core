@@ -2,7 +2,7 @@ import React from 'react';
 import { motion } from 'framer-motion';
 import { ChevronLeft, Bell } from 'lucide-react';
 import { IconRenderer } from './IconRenderer';
-import { DiscoveredModule } from '../../../constants/discovery';
+import { DiscoveredModule } from '../../../core/Discovery/types';
 import { ShellUserWidget } from './ShellUserWidget';
 import { ShellSearchWidget } from './ShellSearchWidget';
 import { ShellLanguageSelector } from './ShellLanguageSelector';
