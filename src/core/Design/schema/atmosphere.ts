@@ -146,6 +146,67 @@ export const AtmosphereSchema: ComponentSchema = {
             constraints: { min: 0, max: 1, step: 0.01 },
             defaultValue: 0.3,
             cssVars: ['--sarak-ao-intensity']
+        },
+
+        // --- GLOW & NEON ---
+        {
+            id: 'glowIntensity',
+            label: 'Intensidade de Brilho (Glow)',
+            category: 'Efeitos de Luz',
+            type: 'slider',
+            constraints: { min: 0, max: 2, step: 0.1 },
+            defaultValue: 1,
+            cssVars: ['--sarak-glow-intensity']
+        },
+        {
+            id: 'glowSpread',
+            label: 'Difusão do Brilho (Spread)',
+            category: 'Efeitos de Luz',
+            type: 'slider',
+            unit: 'px',
+            constraints: { min: 0, max: 100 },
+            defaultValue: 20,
+            cssVars: ['--sarak-glow-spread']
+        },
+
+        // --- CAMERA & VIEWPORT ---
+        {
+            id: 'vignetteOpacity',
+            label: 'Opacidade do Vignette',
+            category: 'Efeitos de Câmera',
+            type: 'slider',
+            constraints: { min: 0, max: 1, step: 0.05 },
+            defaultValue: 0.3,
+            cssVars: ['--sarak-vignette-opacity']
+        },
+        {
+            id: 'vignetteSoftness',
+            label: 'Suavidade do Vignette',
+            category: 'Efeitos de Câmera',
+            type: 'slider',
+            constraints: { min: 0, max: 100 },
+            defaultValue: 50,
+            cssVars: ['--sarak-vignette-softness']
+        },
+
+        // --- PÓS-PROCESSAMENTO ---
+        {
+            id: 'globalSaturation',
+            label: 'Saturação Global',
+            category: 'Pós-Processamento',
+            type: 'slider',
+            constraints: { min: 0, max: 2, step: 0.1 },
+            defaultValue: 1,
+            cssVars: ['--sarak-saturation']
+        },
+        {
+            id: 'globalContrast',
+            label: 'Contraste Global',
+            category: 'Pós-Processamento',
+            type: 'slider',
+            constraints: { min: 0.5, max: 1.5, step: 0.05 },
+            defaultValue: 1,
+            cssVars: ['--sarak-contrast']
         }
     ]
 };

@@ -82,6 +82,46 @@ export const TypographySchema: ComponentSchema = {
             cssVars: ['--sarak-h2-size']
         },
         {
+            id: 'h3Size',
+            label: 'Tamanho H3',
+            category: 'Escala: Títulos',
+            type: 'slider',
+            unit: 'px',
+            constraints: { min: 16, max: 48 },
+            defaultValue: 20,
+            cssVars: ['--sarak-h3-size']
+        },
+        {
+            id: 'h4Size',
+            label: 'Tamanho H4',
+            category: 'Escala: Títulos',
+            type: 'slider',
+            unit: 'px',
+            constraints: { min: 14, max: 32 },
+            defaultValue: 18,
+            cssVars: ['--sarak-h4-size']
+        },
+        {
+            id: 'h5Size',
+            label: 'Tamanho H5',
+            category: 'Escala: Títulos',
+            type: 'slider',
+            unit: 'px',
+            constraints: { min: 12, max: 24 },
+            defaultValue: 16,
+            cssVars: ['--sarak-h5-size']
+        },
+        {
+            id: 'h6Size',
+            label: 'Tamanho H6',
+            category: 'Escala: Títulos',
+            type: 'slider',
+            unit: 'px',
+            constraints: { min: 10, max: 20 },
+            defaultValue: 14,
+            cssVars: ['--sarak-h6-size']
+        },
+        {
             id: 'bodySize',
             label: 'Tamanho Corpo (Padrão)',
             category: 'Escala: Corpo',
@@ -90,6 +130,16 @@ export const TypographySchema: ComponentSchema = {
             constraints: { min: 10, max: 24 },
             defaultValue: 14,
             cssVars: ['--sarak-body-size']
+        },
+        {
+            id: 'letterSpacingBody',
+            label: 'Espaçamento (Corpo)',
+            category: 'Legibilidade',
+            type: 'slider',
+            unit: 'px',
+            constraints: { min: -1, max: 4, step: 0.1 },
+            defaultValue: 0,
+            cssVars: ['--sarak-b-spacing']
         },
 
         // --- LEGIBILIDADE & ESTILO ---

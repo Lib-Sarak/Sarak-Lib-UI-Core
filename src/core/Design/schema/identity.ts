@@ -154,6 +154,69 @@ export const IdentitySchema: ComponentSchema = {
             defaultValue: '#ff3366',
             generateVariants: true,
             cssVars: ['--theme-error', '--sarak-color-error']
+        },
+
+        // --- SUPERFÍCIES (Backdrops) ---
+        {
+            id: 'bgMain',
+            label: 'Fundo Principal (App)',
+            category: 'Superfícies & Fundos',
+            type: 'color',
+            defaultValue: '#020617',
+            cssVars: ['--sarak-bg-main']
+        },
+        {
+            id: 'bgSurface',
+            label: 'Fundo de Superfície',
+            category: 'Superfícies & Fundos',
+            type: 'color',
+            defaultValue: '#0f172a',
+            cssVars: ['--sarak-bg-surface']
+        },
+        {
+            id: 'bgOverlay',
+            label: 'Fundo de Overlay / Modal',
+            category: 'Superfícies & Fundos',
+            type: 'color',
+            defaultValue: '#1e293b',
+            cssVars: ['--sarak-bg-overlay']
+        },
+
+        // --- BORDAS & LINHAS ---
+        {
+            id: 'borderSubtle',
+            label: 'Borda Sutil',
+            category: 'Linhas & Divisores',
+            type: 'color',
+            defaultValue: 'rgba(255, 255, 255, 0.05)',
+            cssVars: ['--sarak-border-subtle']
+        },
+        {
+            id: 'borderDefault',
+            label: 'Borda Padrão',
+            category: 'Linhas & Divisores',
+            type: 'color',
+            defaultValue: 'rgba(255, 255, 255, 0.1)',
+            cssVars: ['--sarak-border-default']
+        },
+        {
+            id: 'borderStrong',
+            label: 'Borda Forte',
+            category: 'Linhas & Divisores',
+            type: 'color',
+            defaultValue: 'rgba(255, 255, 255, 0.2)',
+            cssVars: ['--sarak-border-strong']
+        },
+
+        // --- PALETA NEUTRA (Grays) ---
+        {
+            id: 'neutralGray',
+            label: 'Base Neutra (Grayscale)',
+            category: 'Paleta Neutra',
+            type: 'color',
+            defaultValue: '#64748b',
+            generateVariants: true,
+            cssVars: ['--sarak-neutral-base']
         }
     ]
 };

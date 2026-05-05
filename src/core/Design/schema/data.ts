@@ -123,6 +123,41 @@ export const DataSchema: ComponentSchema = {
             constraints: { min: 0, max: 8 },
             defaultValue: 4,
             cssVars: ['--sarak-chart-point-radius']
+        },
+        {
+            id: 'chartLineSmoothing',
+            label: 'Suavização da Curva (Smooth)',
+            category: 'Gráficos: Desenho',
+            type: 'slider',
+            constraints: { min: 0, max: 1, step: 0.1 },
+            defaultValue: 0.3,
+            cssVars: ['--sarak-chart-smooth']
+        },
+
+        // --- CORES DE SÉRIES (Paleta Industrial) ---
+        {
+            id: 'chartSeriesA',
+            label: 'Série A (Primária)',
+            category: 'Gráficos: Cores',
+            type: 'color',
+            defaultValue: '#00f2ff',
+            cssVars: ['--sarak-chart-series-a']
+        },
+        {
+            id: 'chartSeriesB',
+            label: 'Série B (Secundária)',
+            category: 'Gráficos: Cores',
+            type: 'color',
+            defaultValue: '#3b82f6',
+            cssVars: ['--sarak-chart-series-b']
+        },
+        {
+            id: 'chartSeriesC',
+            label: 'Série C (Terciária)',
+            category: 'Gráficos: Cores',
+            type: 'color',
+            defaultValue: '#8b5cf6',
+            cssVars: ['--sarak-chart-series-c']
         }
     ]
 };

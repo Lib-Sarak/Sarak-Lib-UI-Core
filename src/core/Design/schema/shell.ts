@@ -195,6 +195,44 @@ export const ShellSchema: ComponentSchema = {
             type: 'color',
             defaultValue: '#050505',
             cssVars: ['--sarak-layout-bg']
+        },
+
+        // --- SCROLLBARS ---
+        {
+            id: 'scrollbarWidth',
+            label: 'Largura da Scrollbar',
+            category: 'Scrollbars',
+            type: 'slider',
+            unit: 'px',
+            constraints: { min: 2, max: 12 },
+            defaultValue: 6,
+            cssVars: ['--sarak-scrollbar-width']
+        },
+        {
+            id: 'scrollbarThumbColor',
+            label: 'Cor do Trilho (Thumb)',
+            category: 'Scrollbars',
+            type: 'color',
+            defaultValue: 'rgba(255, 255, 255, 0.1)',
+            cssVars: ['--sarak-scrollbar-thumb']
+        },
+        {
+            id: 'scrollbarThumbHover',
+            label: 'Cor Hover (Thumb)',
+            category: 'Scrollbars',
+            type: 'color',
+            defaultValue: 'rgba(0, 242, 255, 0.3)',
+            cssVars: ['--sarak-scrollbar-hover']
+        },
+        {
+            id: 'scrollbarRadius',
+            label: 'Arredondamento',
+            category: 'Scrollbars',
+            type: 'slider',
+            unit: 'px',
+            constraints: { min: 0, max: 10 },
+            defaultValue: 10,
+            cssVars: ['--sarak-scrollbar-radius']
         }
     ]
 };

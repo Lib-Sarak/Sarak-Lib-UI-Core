@@ -8,7 +8,7 @@ export const SpecializedSchema: ComponentSchema = {
     id: 'specialized',
     label: 'Componentes Avançados',
     tokens: [
-        // --- KPI & STATS: INDICADORES ---
+        // --- KPI & STATS: ANATOMIA INDUSTRIAL ---
         {
             id: 'statsValueSize',
             label: 'Tamanho do Valor',
@@ -20,29 +20,30 @@ export const SpecializedSchema: ComponentSchema = {
             cssVars: ['--sarak-stats-value-size']
         },
         {
-            id: 'statsLabelOpacity',
-            label: 'Opacidade do Rótulo',
+            id: 'statsBgOpacity',
+            label: 'Opacidade do Fundo (KPI)',
             category: 'KPI & Stats',
             type: 'slider',
-            constraints: { min: 0, max: 1, step: 0.05 },
-            defaultValue: 0.6,
-            cssVars: ['--sarak-stats-label-opacity']
+            constraints: { min: 0, max: 0.5, step: 0.01 },
+            defaultValue: 0.03,
+            cssVars: ['--sarak-stats-bg-opacity']
         },
         {
-            id: 'statsTrendGlow',
-            label: 'Brilho de Tendência',
+            id: 'gaugeStrokeWidth',
+            label: 'Espessura do Gauge',
             category: 'KPI & Stats',
             type: 'slider',
-            constraints: { min: 0, max: 1, step: 0.05 },
-            defaultValue: 0.3,
-            cssVars: ['--sarak-stats-trend-glow']
+            unit: 'px',
+            constraints: { min: 2, max: 20 },
+            defaultValue: 8,
+            cssVars: ['--sarak-gauge-stroke']
         },
 
-        // --- MODAIS & DIALOGS ---
+        // --- MODAIS & OVERLAYS ---
         {
             id: 'modalOverlayColor',
-            label: 'Cor do Overlay (Fundo)',
-            category: 'Modais',
+            label: 'Cor do Overlay',
+            category: 'Modais & Overlays',
             type: 'color',
             defaultValue: 'rgba(0, 0, 0, 0.4)',
             cssVars: ['--sarak-modal-overlay']
@@ -50,55 +51,83 @@ export const SpecializedSchema: ComponentSchema = {
         {
             id: 'modalOverlayBlur',
             label: 'Blur do Overlay',
-            category: 'Modais',
+            category: 'Modais & Overlays',
             type: 'slider',
             unit: 'px',
             constraints: { min: 0, max: 40 },
             defaultValue: 8,
             cssVars: ['--sarak-modal-blur']
         },
-        {
-            id: 'modalEntryAnimation',
-            label: 'Animação de Entrada',
-            category: 'Modais',
-            type: 'select',
-            constraints: {
-                options: [
-                    { id: 'fade', label: 'Fade' },
-                    { id: 'slide-up', label: 'Slide Up' },
-                    { id: 'zoom', label: 'Zoom Industrial' },
-                    { id: 'none', label: 'Sem Animação' }
-                ],
-            },
-            defaultValue: 'zoom',
-            cssVars: ['--sarak-modal-anim']
-        },
 
-        // --- SCROLLBARS ---
+        // --- CHAT & COLABORAÇÃO ---
         {
-            id: 'scrollWidth',
-            label: 'Largura do Scroll',
-            category: 'Scrollbars',
+            id: 'chatBubbleUserBg',
+            label: 'Fundo: Bolha Usuário',
+            category: 'Chat: Anatomia',
+            type: 'color',
+            defaultValue: 'rgba(255, 255, 255, 0.05)',
+            cssVars: ['--sarak-chat-user-bg']
+        },
+        {
+            id: 'chatBubbleSystemBg',
+            label: 'Fundo: Bolha Sistema',
+            category: 'Chat: Anatomia',
+            type: 'color',
+            defaultValue: 'rgba(0, 242, 255, 0.05)',
+            cssVars: ['--sarak-chat-system-bg']
+        },
+        {
+            id: 'chatBubbleRadius',
+            label: 'Raio da Bolha',
+            category: 'Chat: Anatomia',
             type: 'slider',
             unit: 'px',
-            constraints: { min: 2, max: 12 },
-            defaultValue: 6,
-            cssVars: ['--sarak-scroll-width']
-        },
-        {
-            id: 'scrollThumbColor',
-            label: 'Cor do Atuador (Thumb)',
-            category: 'Scrollbars',
-            type: 'color',
-            defaultValue: 'rgba(255, 255, 255, 0.2)',
-            cssVars: ['--sarak-scroll-thumb']
+            constraints: { min: 0, max: 24 },
+            defaultValue: 12,
+            cssVars: ['--sarak-chat-radius']
         },
 
-        // --- TOOLTIPS ---
+        // --- NAVEGAÇÃO & MENU ---
+        {
+            id: 'navItemHoverBg',
+            label: 'Fundo Hover (Item)',
+            category: 'Navegação & Menu',
+            type: 'color',
+            defaultValue: 'rgba(255, 255, 255, 0.05)',
+            cssVars: ['--sarak-nav-item-hover']
+        },
+        {
+            id: 'navItemActiveColor',
+            label: 'Cor de Texto Ativo',
+            category: 'Navegação & Menu',
+            type: 'color',
+            defaultValue: '#00f2ff',
+            cssVars: ['--sarak-nav-item-active']
+        },
+
+        // --- ABAS (TABS) ---
+        {
+            id: 'tabActiveLineColor',
+            label: 'Cor da Linha Ativa',
+            category: 'Abas (Tabs)',
+            type: 'color',
+            defaultValue: '#00f2ff',
+            cssVars: ['--sarak-tab-active-line']
+        },
+        {
+            id: 'tabTextInactiveColor',
+            label: 'Cor do Texto Inativo',
+            category: 'Abas (Tabs)',
+            type: 'color',
+            defaultValue: 'rgba(255, 255, 255, 0.4)',
+            cssVars: ['--sarak-tab-text-inactive']
+        },
+
+        // --- TOOLTIPS & INDICADORES ---
         {
             id: 'tooltipBg',
             label: 'Fundo do Tooltip',
-            category: 'Tooltips',
+            category: 'Tooltips & Popovers',
             type: 'color',
             defaultValue: '#0f172a',
             cssVars: ['--sarak-tooltip-bg']
@@ -106,31 +135,12 @@ export const SpecializedSchema: ComponentSchema = {
         {
             id: 'tooltipRadius',
             label: 'Raio do Tooltip',
-            category: 'Tooltips',
+            category: 'Tooltips & Popovers',
             type: 'slider',
             unit: 'px',
             constraints: { min: 0, max: 12 },
             defaultValue: 4,
             cssVars: ['--sarak-tooltip-radius']
-        },
-
-        // --- CHAT & BOLHAS ---
-        {
-            id: 'chatBubbleRadius',
-            label: 'Raio da Bolha',
-            category: 'Chat',
-            type: 'slider',
-            unit: 'px',
-            constraints: { min: 0, max: 24 },
-            defaultValue: 12,
-            cssVars: ['--sarak-chat-radius']
-        },
-        {
-            id: 'chatEntryAnim',
-            label: 'Animação de Mensagem',
-            category: 'Chat',
-            type: 'boolean',
-            defaultValue: true
         }
     ]
 };

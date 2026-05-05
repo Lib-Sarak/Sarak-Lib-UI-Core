@@ -68,6 +68,24 @@ export const SystemSchema: ComponentSchema = {
             type: 'number',
             defaultValue: 500,
             cssVars: ['--sarak-z-dropdown']
+        },
+        {
+            id: 'zIndexToast',
+            label: 'Profundidade: Notificações',
+            category: 'Camadas (Z-Index)',
+            type: 'number',
+            defaultValue: 2000,
+            cssVars: ['--sarak-z-toast']
+        },
+
+        // --- ACESSIBILIDADE & PERFORMANCE ---
+        {
+            id: 'reducedMotion',
+            label: 'Reduzir Movimento',
+            category: 'Performance',
+            type: 'boolean',
+            defaultValue: false,
+            cssVars: ['--sarak-reduced-motion']
         }
     ]
 };
