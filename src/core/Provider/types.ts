@@ -23,7 +23,9 @@ export interface SarakUIOptions {
 export interface SarakUIContextType {
     discoveryEndpoints: string[];
     design: any;
+    draftDesign: any | null; // Rascunho ativo (para Live Preview)
     setDesign: (design: any) => void;
+    setDraftDesign: (design: any | null) => void;
     applyConfig: (partial: any) => void;
     applyFullConfig: (config: any) => void;
     registeredModules: any[];

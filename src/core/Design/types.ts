@@ -13,6 +13,7 @@ export interface DesignToken {
     type: TokenValueType;
     unit?: 'px' | '%' | 'rem' | 'ms' | 'deg' | 's';
     cssVars?: string[];         // Variáveis CSS que este token controla
+    generateVariants?: boolean; // Se verdadeiro, gera variantes de cor automáticas
     constraints?: {
         min?: number;
         max?: number;

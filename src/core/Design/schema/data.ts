@@ -1,126 +1,129 @@
 import { ComponentSchema } from '../types';
 
 /**
- * Mapeamento 100% Granular: Visualização de Dados
+ * Mapeamento 100% Atômico: Dados & Status (v12.0)
+ * Governa a exibição de informações complexas e indicadores de estado.
  */
 export const DataSchema: ComponentSchema = {
     id: 'data',
     label: 'Dados & Gráficos',
     tokens: [
+        // --- TABELAS: ANATOMIA ---
         {
-            id: 'chartStyle',
-            label: 'Estilo do Gráfico',
-            category: 'Gráficos',
-            type: 'select',
-            constraints: {
-                options: [
-                    { id: 'standard', label: 'Sarak Standard' },
-                    { id: 'glow', label: 'Neon Glow' },
-                    { id: 'tech', label: 'Industrial Tech' },
-                    { id: 'minimal', label: 'Ultra Minimal' }
-                ],
-            },
-            defaultValue: 'glow',
-            cssVars: ['--chart-style']
+            id: 'tableHeaderBg',
+            label: 'Fundo do Cabeçalho',
+            category: 'Tabelas: Anatomia',
+            type: 'color',
+            defaultValue: 'rgba(255, 255, 255, 0.03)',
+            cssVars: ['--sarak-table-header-bg']
         },
         {
-            id: 'chartPalette',
-            label: 'Paleta de Cores',
-            category: 'Gráficos',
-            type: 'select',
-            constraints: {
-                options: [
-                    { id: 'standard', label: 'Sarak Standard' },
-                    { id: 'vibrant', label: 'Vibrant Data' },
-                    { id: 'monochrome', label: 'Monochrome Tech' }
-                ],
-            },
-            defaultValue: 'standard',
-            cssVars: ['--chart-palette']
+            id: 'tableRowHover',
+            label: 'Cor Hover da Linha',
+            category: 'Tabelas: Anatomia',
+            type: 'color',
+            defaultValue: 'rgba(255, 255, 255, 0.05)',
+            cssVars: ['--sarak-table-row-hover']
         },
         {
-            id: 'chartType',
-            label: 'Tipo de Gráfico Padrão',
-            category: 'Gráficos',
-            type: 'select',
-            constraints: {
-                options: [
-                    { id: 'bar', label: 'Barras' },
-                    { id: 'line', label: 'Linhas' },
-                    { id: 'area', label: 'Área' },
-                    { id: 'pie', label: 'Pizza' },
-                    { id: 'gauge', label: 'Gauge' }
-                ],
-            },
-            defaultValue: 'bar',
-            cssVars: ['--chart-type']
+            id: 'tableZebraBg',
+            label: 'Fundo Zebra (Linhas Pares)',
+            category: 'Tabelas: Anatomia',
+            type: 'color',
+            defaultValue: 'rgba(255, 255, 255, 0.01)',
+            cssVars: ['--sarak-table-zebra-bg']
         },
         {
-            id: 'chartThickness',
+            id: 'tableBorderColor',
+            label: 'Cor das Divisórias',
+            category: 'Tabelas: Anatomia',
+            type: 'color',
+            defaultValue: 'rgba(255, 255, 255, 0.05)',
+            cssVars: ['--sarak-table-border']
+        },
+
+        // --- STATUS & INDICADORES (Soberania) ---
+        {
+            id: 'statusSuccess',
+            label: 'Cor: Sucesso / Normal',
+            category: 'Status: Cores',
+            type: 'color',
+            defaultValue: '#10b981',
+            cssVars: ['--sarak-status-success']
+        },
+        {
+            id: 'statusWarning',
+            label: 'Cor: Alerta / Atenção',
+            category: 'Status: Cores',
+            type: 'color',
+            defaultValue: '#f59e0b',
+            cssVars: ['--sarak-status-warning']
+        },
+        {
+            id: 'statusDanger',
+            label: 'Cor: Perigo / Crítico',
+            category: 'Status: Cores',
+            type: 'color',
+            defaultValue: '#ef4444',
+            cssVars: ['--sarak-status-danger']
+        },
+        {
+            id: 'statusInfo',
+            label: 'Cor: Informação / Neutro',
+            category: 'Status: Cores',
+            type: 'color',
+            defaultValue: '#3b82f6',
+            cssVars: ['--sarak-status-info']
+        },
+        {
+            id: 'statusGlowIntensity',
+            label: 'Intensidade do Brilho (Status)',
+            category: 'Status: Efeitos',
+            type: 'slider',
+            constraints: { min: 0, max: 1, step: 0.05 },
+            defaultValue: 0.4,
+            cssVars: ['--sarak-status-glow']
+        },
+
+        // --- GRÁFICOS: ESTILO INDUSTRIAL ---
+        {
+            id: 'chartLineWidth',
             label: 'Espessura da Linha',
-            category: 'Gráficos',
+            category: 'Gráficos: Desenho',
             type: 'slider',
-            constraints: {
-                min: 1,
-                max: 10,
-            },
+            unit: 'px',
+            constraints: { min: 1, max: 6 },
             defaultValue: 2,
-            cssVars: ['--chart-thickness', '--sarak-chart-thickness']
+            cssVars: ['--sarak-chart-width']
         },
         {
-            id: 'chartSmoothing',
-            label: 'Suavização (Smoothing)',
-            category: 'Gráficos',
-            type: 'boolean',
-            defaultValue: true
+            id: 'chartAreaOpacity',
+            label: 'Opacidade da Área (Fill)',
+            category: 'Gráficos: Desenho',
+            type: 'slider',
+            constraints: { min: 0, max: 1, step: 0.05 },
+            defaultValue: 0.15,
+            cssVars: ['--sarak-chart-area-opacity']
         },
         {
-            id: 'chartShowGrid',
-            label: 'Exibir Grid no Gráfico',
-            category: 'Gráficos',
-            type: 'boolean',
-            defaultValue: true
+            id: 'chartGridOpacity',
+            label: 'Opacidade do Grid',
+            category: 'Gráficos: Desenho',
+            type: 'slider',
+            constraints: { min: 0, max: 0.5, step: 0.01 },
+            defaultValue: 0.05,
+            cssVars: ['--sarak-chart-grid-opacity']
         },
         {
-            id: 'tableDensity',
-            label: 'Densidade da Tabela',
-            category: 'Tabelas',
-            type: 'select',
-            constraints: {
-                options: [
-                    { id: 'compact', label: 'Compacta' },
-                    { id: 'standard', label: 'Padrão' },
-                    { id: 'comfortable', label: 'Confortável' }
-                ],
-            },
-            defaultValue: 'standard',
-            cssVars: ['--table-density', '--sarak-table-density']
-        },
-        {
-            id: 'gridGap',
-            label: 'Espaçamento do Grid',
-            category: 'Layout de Dados',
+            id: 'chartPointRadius',
+            label: 'Raio dos Pontos (Nodes)',
+            category: 'Gráficos: Desenho',
             type: 'slider',
             unit: 'px',
-            constraints: {
-                min: 0,
-                max: 60,
-            },
-            defaultValue: 24,
-            cssVars: ['--sarak-grid-gap']
-        },
-        {
-            id: 'gridRadius',
-            label: 'Raio de Borda (Elementos Internos)',
-            category: 'Layout de Dados',
-            type: 'slider',
-            unit: 'px',
-            constraints: {
-                min: 0,
-                max: 30,
-            },
-            defaultValue: 12,
-            cssVars: ['--sarak-grid-radius']
+            constraints: { min: 0, max: 8 },
+            defaultValue: 4,
+            cssVars: ['--sarak-chart-point-radius']
         }
     ]
 };
+

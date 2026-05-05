@@ -1,213 +1,94 @@
 import { ComponentSchema } from '../types';
 
 /**
- * Mapeamento 100% Granular: Controles de Interação
+ * SCHEMA: CONTROLS
+ * Define a anatomia de elementos interativos (Buttons, Inputs, Selects).
  */
 export const ControlsSchema: ComponentSchema = {
     id: 'controls',
-    label: 'Botões & Inputs',
+    label: 'Controles & Interação',
     tokens: [
+        // --- ANATOMIA GERAL ---
         {
-            id: 'buttonRadius',
-            label: 'Raio do Botão',
-            category: 'Botões',
+            id: 'controlHeightMd',
+            label: 'Altura (Médio)',
+            category: 'Anatomia: Geral',
             type: 'slider',
             unit: 'px',
-            constraints: {
-                min: 0,
-                max: 40,
-            },
-            defaultValue: 8,
-            cssVars: ['--button-radius']
+            constraints: { min: 24, max: 64 },
+            defaultValue: 40,
+            cssVars: ['--sarak-control-h-md']
         },
         {
-            id: 'buttonPadding',
-            label: 'Padding do Botão',
-            category: 'Botões',
+            id: 'controlPaddingX',
+            label: 'Padding Horizontal',
+            category: 'Anatomia: Geral',
             type: 'slider',
             unit: 'px',
-            constraints: {
-                min: 4,
-                max: 32,
-            },
-            defaultValue: 12,
-            cssVars: ['--button-padding']
+            constraints: { min: 4, max: 32 },
+            defaultValue: 16,
+            cssVars: ['--sarak-control-px']
         },
         {
-            id: 'inputBackgroundColor',
-            label: 'Cor de Fundo do Input',
-            category: 'Inputs',
-            type: 'color',
-            defaultValue: 'rgba(255, 255, 255, 0.05)',
-            cssVars: ['--input-bg']
-        },
-        {
-            id: 'inputBorderWidth',
-            label: 'Borda do Input',
-            category: 'Inputs',
+            id: 'controlBorderWidth',
+            label: 'Espessura da Borda',
+            category: 'Anatomia: Geral',
             type: 'slider',
             unit: 'px',
-            constraints: {
-                min: 0,
-                max: 4,
-            },
+            constraints: { min: 0, max: 4 },
             defaultValue: 1,
-            cssVars: ['--input-border-width']
+            cssVars: ['--sarak-control-bw']
+        },
+
+        // --- FOCUS RING ---
+        {
+            id: 'focusRingWidth',
+            label: 'Largura do Anel',
+            category: 'Estado: Foco',
+            type: 'slider',
+            unit: 'px',
+            constraints: { min: 0, max: 6 },
+            defaultValue: 2,
+            cssVars: ['--sarak-focus-width']
         },
         {
-            id: 'buttonHoverLift',
-            label: 'Efeito de Elevação',
-            category: 'Feedback',
-            type: 'boolean',
-            defaultValue: true
+            id: 'focusRingOffset',
+            label: 'Afastamento (Offset)',
+            category: 'Estado: Foco',
+            type: 'slider',
+            unit: 'px',
+            constraints: { min: 0, max: 8 },
+            defaultValue: 2,
+            cssVars: ['--sarak-focus-offset']
         },
         {
-            id: 'buttonColor',
-            label: 'Cor Base do Botão',
-            category: 'Botões',
+            id: 'focusRingColor',
+            label: 'Cor do Foco',
+            category: 'Estado: Foco',
             type: 'color',
             defaultValue: '#3b82f6',
-            cssVars: ['--theme-button-bg', '--sarak-button-bg']
+            cssVars: ['--sarak-focus-color']
         },
+
+        // --- INPUTS & CAMPOS ---
         {
-            id: 'buttonHoverColor',
-            label: 'Cor Hover do Botão',
-            category: 'Botões',
-            type: 'color',
-            defaultValue: '#60a5fa',
-            cssVars: ['--theme-button-hover', '--sarak-button-hover']
-        },
-        {
-            id: 'buttonActiveColor',
-            label: 'Cor Ativa do Botão',
-            category: 'Botões',
-            type: 'color',
-            defaultValue: 'transparent',
-            cssVars: ['--sarak-button-active-color']
-        },
-        {
-            id: 'buttonHoverEffect',
-            label: 'Efeito Hover',
-            category: 'Feedback',
-            type: 'select',
-            constraints: {
-                options: [
-                    { id: 'none', label: 'Nenhum' },
-                    { id: 'lift', label: 'Elevação (Lift)' },
-                    { id: 'glow', label: 'Brilho (Glow)' },
-                    { id: 'glass', label: 'Vidro (Glass)' },
-                    { id: 'outline', label: 'Borda (Outline)' }
-                ],
-            },
-            defaultValue: 'glow',
-            cssVars: ['--sarak-button-hover']
-        },
-        {
-            id: 'inputStyle',
-            label: 'Estilo do Campo',
-            category: 'Inputs',
-            type: 'select',
-            constraints: {
-                options: [
-                    { id: 'flat', label: 'Flat' },
-                    { id: 'glass', label: 'Glass' },
-                    { id: 'bordered', label: 'Bordado' }
-                ],
-            },
-            defaultValue: 'glass',
-            cssVars: ['--sarak-input-style']
-        },
-        {
-            id: 'interfaceElasticity',
-            label: 'Elasticidade da Interface',
-            category: 'Feedback',
+            id: 'inputBgOpacity',
+            label: 'Opacidade do Fundo',
+            category: 'Inputs: Estilo',
             type: 'slider',
-            constraints: {
-                min: 0,
-                max: 1,
-                step: 0.1,
-            },
-            defaultValue: 0.5,
-            cssVars: ['--sarak-elasticity']
+            constraints: { min: 0, max: 0.5, step: 0.01 },
+            defaultValue: 0.05,
+            cssVars: ['--sarak-input-bg-opacity']
         },
         {
-            id: 'hapticIntensity',
-            label: 'Intensidade Háptica (Simulada)',
-            category: 'Feedback',
-            type: 'slider',
-            constraints: {
-                min: 0,
-                max: 1,
-                step: 0.1,
-            },
-            defaultValue: 0.1,
-            cssVars: ['--haptic-intensity']
-        },
-        {
-            id: 'socialButtonRadius',
-            label: 'Raio dos Botões Sociais',
-            category: 'Botões',
+            id: 'inputTextSize',
+            label: 'Tamanho da Fonte',
+            category: 'Inputs: Estilo',
             type: 'slider',
             unit: 'px',
-            constraints: {
-                min: 0,
-                max: 40,
-            },
-            defaultValue: 12,
-            cssVars: ['--social-button-radius']
-        },
-        {
-            id: 'socialButtonStyle',
-            label: 'Variante Global Social',
-            category: 'Botões',
-            type: 'select',
-            constraints: {
-                options: [
-                    { id: 'glass', label: 'Glass' },
-                    { id: 'sovereign', label: 'Sovereign' }
-                ],
-            },
-            defaultValue: 'glass',
-            cssVars: ['--sarak-social-variant']
-        },
-        {
-            id: 'filterPadding',
-            label: 'Padding do Filtro',
-            category: 'Inputs',
-            type: 'slider',
-            unit: 'px',
-            constraints: {
-                min: 0,
-                max: 24,
-            },
-            defaultValue: 8,
-            cssVars: ['--sarak-filter-padding']
-        },
-        {
-            id: 'filterGap',
-            label: 'Espaçamento do Filtro (Gap)',
-            category: 'Inputs',
-            type: 'slider',
-            unit: 'px',
-            constraints: {
-                min: 0,
-                max: 16,
-            },
-            defaultValue: 8,
-            cssVars: ['--sarak-filter-gap']
-        },
-        {
-            id: 'filterRadius',
-            label: 'Raio do Filtro',
-            category: 'Inputs',
-            type: 'slider',
-            unit: 'px',
-            constraints: {
-                min: 0,
-                max: 30,
-            },
-            defaultValue: 6,
-            cssVars: ['--sarak-filter-radius']
+            constraints: { min: 10, max: 24 },
+            defaultValue: 14,
+            cssVars: ['--sarak-input-fz']
         }
     ]
 };

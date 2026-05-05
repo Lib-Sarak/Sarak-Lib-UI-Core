@@ -1,235 +1,151 @@
 import { ComponentSchema } from '../types';
 
 /**
- * Interface de Valores: Atmosfera Global
- */
-export interface AtmosphereDesign {
-    primaryColor?: string;
-    secondaryColor?: string;
-    successColor?: string;
-    warningColor?: string;
-    errorColor?: string;
-    glassOpacity?: number;
-    glassBlur?: number;
-    texture?: string;
-    textureOpacity?: number;
-    scaleRatio?: number;
-    contrastCurve?: number;
-    spotlightEnabled?: boolean;
-    borderBeamEnabled?: boolean;
-    mode?: 'light' | 'dark';
-    bodyColor?: string; // Cor do fundo da página
-    titleColor?: string; // Cor dos títulos principais
-    primary?: string; // Alias para compatibilidade com presets de cores
-}
-
-/**
- * Interface de Valores: Cores (Subset de Atmosfera)
- */
-export type ColorDesign = AtmosphereDesign;
-
-/**
- * Mapeamento 100% Granular: Atmosfera Global
+ * Mapeamento 100% Granular: Atmosfera & Ambiente
  */
 export const AtmosphereSchema: ComponentSchema = {
     id: 'atmosphere',
-    label: 'Atmosfera & Efeitos',
+    label: 'Atmosfera & Ambiente',
     tokens: [
+        // --- BACKGROUND GLOBAL ---
         {
-            id: 'primaryColor',
-            label: 'Cor Primária',
-            category: 'Cores',
+            id: 'bgBaseColor',
+            label: 'Cor de Fundo Base',
+            category: 'Superfície',
             type: 'color',
-            defaultValue: '#00f2ff',
-            cssVars: ['--theme-primary']
+            defaultValue: '#0a0a0c',
+            cssVars: ['--sarak-bg-base']
         },
         {
-            id: 'bodyColor',
-            label: 'Cor do Fundo (Body)',
-            category: 'Cores',
-            type: 'color',
-            defaultValue: '#0f172a',
-            cssVars: ['--theme-body']
-        },
-        {
-            id: 'titleColor',
-            label: 'Cor do Texto/Títulos',
-            category: 'Cores',
-            type: 'color',
-            defaultValue: '#ffffff',
-            cssVars: ['--theme-title']
-        },
-        {
-            id: 'glassOpacity',
-            label: 'Opacidade do Vidro',
-            category: 'Efeitos',
-            type: 'slider',
+            id: 'bgGradientMode',
+            label: 'Modo de Gradiente',
+            category: 'Superfície',
+            type: 'select',
             constraints: {
-                min: 0,
-                max: 1,
-                step: 0.05,
+                options: [
+                    { id: 'none', label: 'Sólido' },
+                    { id: 'linear', label: 'Linear' },
+                    { id: 'radial', label: 'Radial' },
+                    { id: 'mesh', label: 'Mesh (Orgânico)' }
+                ]
             },
-            defaultValue: 0.4,
-            cssVars: ['--glass-opacity']
+            defaultValue: 'linear',
+            cssVars: ['--sarak-bg-gradient-mode']
         },
         {
-            id: 'glassBlur',
-            label: 'Desfoque (Blur)',
-            category: 'Efeitos',
+            id: 'bgGradientAngle',
+            label: 'Direção do Gradiente',
+            category: 'Superfície',
             type: 'slider',
-            unit: 'px',
-            constraints: {
-                min: 0,
-                max: 60,
-            },
-            defaultValue: 10,
-            cssVars: ['--glass-blur']
+            unit: 'deg',
+            constraints: { min: 0, max: 360, step: 1 },
+            defaultValue: 135,
+            cssVars: ['--sarak-bg-gradient-angle']
         },
+
+        // --- TEXTURA & RUÍDO ---
         {
-            id: 'texture',
-            label: 'Textura de Atmosfera',
-            category: 'Texturas',
+            id: 'bgPatternId',
+            label: 'ID da Textura (Pattern)',
+            category: 'Textura Industrial',
             type: 'select',
             constraints: {
                 options: [
                     { id: 'none', label: 'Nenhuma' },
-                    { id: 'grid', label: 'Grid Tech' },
-                    { id: 'squares', label: 'Geometry Squares' },
-                    { id: 'honeycomb', label: 'Hex Honeycomb' },
-                    { id: 'isometric', label: '3D Isometric' },
-                    { id: 'stripes', label: 'Diagonal Stripes' },
-                    { id: 'pinstripes', label: 'Vertical Pinstripes' },
-                    { id: 'crosshatch', label: 'Diagonal Crosshatch' },
-                    { id: 'blueprint', label: 'Engineering' },
-                    { id: 'dots', label: 'Dots Clean' },
-                    { id: 'micro-dots', label: 'Micro Dots' },
-                    { id: 'stars', label: 'Star Field' },
-                    { id: 'constellation', label: 'Constellation' },
-                    { id: 'noise', label: 'Grain Noise' },
-                    { id: 'circuit', label: 'Circuit Tech' },
-                    { id: 'circuit-pro', label: 'Circuit Pro' },
-                    { id: 'radar', label: 'Sonar / Radar' },
-                    { id: 'carbon', label: 'Carbon Fiber' },
-                    { id: 'carbon-tech', label: 'Carbon Tech' },
-                    { id: 'brushed', label: 'Brushed Metal' },
-                    { id: 'silk', label: 'Silk Flow' },
-                    { id: 'frosted', label: 'Frosted Glass' },
-                    { id: 'prestige', label: 'Prestige Pattern' },
-                    { id: 'paper', label: 'Vintage Paper' },
-                    { id: 'mesh', label: 'Mesh Gradient' },
-                    { id: 'aurora', label: 'Aurora Deep' },
-                    { id: 'aurora-classic', label: 'Aurora Classic' },
-                    { id: 'topo-deep', label: 'Topo Deep' },
-                    { id: 'prism-mesh', label: 'Prism Mesh' },
-                    { id: 'cyber-binary', label: 'Cyber Binary' },
-                    { id: 'blueprint-pro', label: 'Blueprint Pro' },
-                    { id: 'wave-pulse', label: 'Wave Pulse' },
-                    { id: 'wood', label: 'Timber / Wood Grain' },
-                    { id: 'stucco', label: 'Stucco Relief' },
-                    { id: 'fluid', label: 'Fluid / Liquid' },
-                    { id: 'nebula', label: 'Nebula / Cosmic' }
-                ],
+                    { id: 'circuit', label: 'Circuitos' },
+                    { id: 'grid', label: 'Grid Técnico' },
+                    { id: 'stars', label: 'Estelar' },
+                    { id: 'hex', label: 'Hexagonais' }
+                ]
             },
-            defaultValue: 'none',
-            cssVars: ['--bg-texture']
+            defaultValue: 'grid',
+            cssVars: ['--sarak-bg-pattern-id']
         },
         {
-            id: 'textureOpacity',
-            label: 'Visibilidade da Textura',
-            category: 'Texturas',
+            id: 'bgPatternOpacity',
+            label: 'Opacidade da Textura',
+            category: 'Textura Industrial',
             type: 'slider',
-            constraints: {
-                min: 0,
-                max: 1,
-                step: 0.01,
-            },
-            defaultValue: 0.08,
-            cssVars: ['--texture-opacity']
+            constraints: { min: 0, max: 1, step: 0.01 },
+            defaultValue: 0.1,
+            cssVars: ['--sarak-bg-pattern-opacity']
         },
         {
-            id: 'secondaryColor',
-            label: 'Cor Secundária',
-            category: 'Cores',
-            type: 'color',
-            defaultValue: '#ff00e5',
-            cssVars: ['--theme-secondary']
-        },
-        {
-            id: 'successColor',
-            label: 'Cor de Sucesso',
-            category: 'Cores Semânticas',
-            type: 'color',
-            defaultValue: '#10b981',
-            cssVars: ['--theme-success']
-        },
-        {
-            id: 'warningColor',
-            label: 'Cor de Alerta',
-            category: 'Cores Semânticas',
-            type: 'color',
-            defaultValue: '#f59e0b',
-            cssVars: ['--theme-warning']
-        },
-        {
-            id: 'errorColor',
-            label: 'Cor de Erro',
-            category: 'Cores Semânticas',
-            type: 'color',
-            defaultValue: '#ef4444',
-            cssVars: ['--theme-error']
-        },
-        {
-            id: 'scaleRatio',
-            label: 'Razão de Escala (Zoom)',
-            category: 'Percepção',
+            id: 'bgNoiseDensity',
+            label: 'Densidade de Ruído',
+            category: 'Ruído Industrial',
             type: 'slider',
-            constraints: {
-                min: 0.8,
-                max: 1.2,
-                step: 0.01,
-            },
-            defaultValue: 1.0,
-            cssVars: ['--theme-scale-ratio']
+            constraints: { min: 0, max: 1, step: 0.01 },
+            defaultValue: 0.05,
+            cssVars: ['--sarak-noise-density']
         },
         {
-            id: 'contrastCurve',
-            label: 'Curva de Contraste',
-            category: 'Percepção',
+            id: 'bgNoiseAnimation',
+            label: 'Velocidade do Ruído',
+            category: 'Ruído Industrial',
             type: 'slider',
-            constraints: {
-                min: 0.5,
-                max: 1.5,
-                step: 0.05,
-            },
-            defaultValue: 1.0,
-            cssVars: ['--theme-contrast-curve']
+            unit: 's',
+            constraints: { min: 0, max: 10, step: 0.1 },
+            defaultValue: 1,
+            cssVars: ['--sarak-noise-speed']
+        },
+
+        // --- GLASSMORPHISM ---
+        {
+            id: 'glassBlur',
+            label: 'Backdrop Blur',
+            category: 'Efeitos de Vidro',
+            type: 'slider',
+            unit: 'px',
+            constraints: { min: 0, max: 100, step: 1 },
+            defaultValue: 16,
+            cssVars: ['--sarak-glass-blur']
         },
         {
-            id: 'spotlightEnabled',
-            label: 'Efeito Spotlight',
-            category: 'Interação Avançada',
-            type: 'boolean',
-            defaultValue: true
+            id: 'glassSaturation',
+            label: 'Multiplicador de Saturação',
+            category: 'Efeitos de Vidro',
+            type: 'slider',
+            constraints: { min: 0.5, max: 3, step: 0.1 },
+            defaultValue: 1.2,
+            cssVars: ['--sarak-glass-saturation']
         },
         {
-            id: 'borderBeamEnabled',
-            label: 'Borda com Feixe Laser',
-            category: 'Interação Avançada',
-            type: 'boolean',
-            defaultValue: false
+            id: 'glassEdgeColor',
+            label: 'Cor da Iluminação de Borda',
+            category: 'Efeitos de Vidro',
+            type: 'color',
+            defaultValue: 'rgba(255, 255, 255, 0.1)',
+            cssVars: ['--sarak-glass-edge-color']
         },
         {
-            id: 'mode',
-            label: 'Modo de Aparência',
-            category: 'Global',
-            type: 'select',
-            constraints: {
-                options: [
-                    { id: 'dark', label: 'Dark Mode (Escuro)' },
-                    { id: 'light', label: 'Light Mode (Claro)' }
-                ],
-            },
-            defaultValue: 'dark'
+            id: 'glassEdgeWidth',
+            label: 'Largura da Borda de Vidro',
+            category: 'Efeitos de Vidro',
+            type: 'slider',
+            unit: 'px',
+            constraints: { min: 0, max: 5, step: 0.5 },
+            defaultValue: 1,
+            cssVars: ['--sarak-glass-edge-width']
+        },
+
+        // --- ELEVAÇÃO ---
+        {
+            id: 'shadowGlobalColor',
+            label: 'Cor da Sombra Global',
+            category: 'Elevação',
+            type: 'color',
+            defaultValue: 'rgba(0, 0, 0, 0.8)',
+            cssVars: ['--sarak-shadow-color']
+        },
+        {
+            id: 'elevationIntensity',
+            label: 'Intensidade de Oclusão Ambiente',
+            category: 'Elevação',
+            type: 'slider',
+            constraints: { min: 0, max: 1, step: 0.01 },
+            defaultValue: 0.3,
+            cssVars: ['--sarak-ao-intensity']
         }
     ]
 };

@@ -1,105 +1,92 @@
 import { ComponentSchema } from '../types';
 
 /**
- * Interface de Valores: Efeitos & Animações
- */
-export interface AnimationDesign {
-    animationSpeed?: 'fast' | 'normal' | 'slow';
-    animationStyle?: 'standard' | 'fluid' | 'minimal' | 'perspective';
-    shadowIntensity?: number;
-    isGeometricCut?: boolean;
-    interfaceElasticity?: number;
-    pageTransition?: string;
-}
-
-/**
- * Mapeamento 100% Granular: Efeitos & Animações
+ * SCHEMA: ANIMATIONS (MOTION)
+ * Define o ritmo, curvas de easing e durações de toda a interface.
  */
 export const AnimationSchema: ComponentSchema = {
     id: 'animations',
-    label: 'Efeitos & Animações',
+    label: 'Animações & Ritmo',
     tokens: [
+        // --- TIMING ---
         {
-            id: 'animationSpeed',
-            label: 'Velocidade Global',
-            category: 'Animações',
+            id: 'animInstant',
+            label: 'Duração: Instante',
+            category: 'Timing (ms)',
             type: 'slider',
-            constraints: {
-                min: 0.01,
-                max: 2,
-                step: 0.05,
-            },
-            defaultValue: 0.4,
-            cssVars: ['--animation-speed']
+            unit: 'ms',
+            constraints: { min: 0, max: 200, step: 10 },
+            defaultValue: 100,
+            cssVars: ['--sarak-anim-instant']
+        },
+        {
+            id: 'animFast',
+            label: 'Duração: Rápida',
+            category: 'Timing (ms)',
+            type: 'slider',
+            unit: 'ms',
+            constraints: { min: 50, max: 400, step: 10 },
+            defaultValue: 200,
+            cssVars: ['--sarak-anim-fast']
+        },
+        {
+            id: 'animNormal',
+            label: 'Duração: Normal',
+            category: 'Timing (ms)',
+            type: 'slider',
+            unit: 'ms',
+            constraints: { min: 100, max: 800, step: 10 },
+            defaultValue: 300,
+            cssVars: ['--sarak-anim-normal']
+        },
+        {
+            id: 'animSlow',
+            label: 'Duração: Lenta',
+            category: 'Timing (ms)',
+            type: 'slider',
+            unit: 'ms',
+            constraints: { min: 200, max: 2000, step: 50 },
+            defaultValue: 500,
+            cssVars: ['--sarak-anim-slow']
         },
 
+        // --- EASING ---
         {
-            id: 'animationStyle',
-            label: 'Estilo de Movimento',
-            category: 'Animações',
+            id: 'easeMain',
+            label: 'Curva: Padrão (Main)',
+            category: 'Curvas de Easing',
             type: 'select',
-            constraints: {
-                options: [
-                    { id: 'standard', label: 'Linear / Padrão' },
-                    { id: 'fluid', label: 'Orgânico / Elástico' },
-                    { id: 'minimal', label: 'Discreto / Minimal' },
-                    { id: 'perspective', label: '3D Perspective' }
-                ],
-            },
-            defaultValue: 'standard'
+            options: [
+                { label: 'Standard', value: 'cubic-bezier(0.4, 0, 0.2, 1)' },
+                { label: 'Smooth Industrial', value: 'cubic-bezier(0.6, 0.05, 0.01, 0.9)' },
+                { label: 'Accelerated', value: 'cubic-bezier(0.4, 0, 1, 1)' },
+                { label: 'Decelerated', value: 'cubic-bezier(0, 0, 0.2, 1)' }
+            ],
+            defaultValue: 'cubic-bezier(0.4, 0, 0.2, 1)',
+            cssVars: ['--sarak-ease-main']
         },
         {
-            id: 'shadowIntensity',
-            label: 'Intensidade de Sombra',
-            category: 'Efeitos',
-            type: 'slider',
-            constraints: {
-                min: 0,
-                max: 1,
-                step: 0.05,
-            },
-            defaultValue: 0.3,
-            cssVars: ['--shadow-intensity']
+            id: 'easeOut',
+            label: 'Curva: Saída Suave',
+            category: 'Curvas de Easing',
+            type: 'select',
+            options: [
+                { label: 'Standard', value: 'cubic-bezier(0.4, 0, 0.2, 1)' },
+                { label: 'Quintic', value: 'cubic-bezier(0.23, 1, 0.32, 1)' },
+                { label: 'Expo', value: 'cubic-bezier(0.19, 1, 0.22, 1)' }
+            ],
+            defaultValue: 'cubic-bezier(0, 0, 0.2, 1)',
+            cssVars: ['--sarak-ease-out']
         },
+
+        // --- BEHAVIOR ---
         {
-            id: 'isGeometricCut',
-            label: 'Corte Geométrico (Bevel)',
-            category: 'Efeitos',
+            id: 'animEnabled',
+            label: 'Ativar Movimentos',
+            category: 'Comportamento',
             type: 'boolean',
-            defaultValue: false
-        },
-        {
-            id: 'interfaceElasticity',
-            label: 'Elasticidade da Interface',
-            category: 'Física',
-            type: 'slider',
-            constraints: {
-                min: 0,
-                max: 1,
-                step: 0.1,
-            },
-            defaultValue: 0.5
-        },
-        {
-            id: 'pageTransition',
-            label: 'Transição de Página',
-            category: 'Animações',
-            type: 'select',
-            constraints: {
-                options: [
-                    { id: 'none', label: 'Nenhuma' },
-                    { id: 'fade', label: 'Smooth Fade' },
-                    { id: 'slideUp', label: 'Slide Up' },
-                    { id: 'slideLeft', label: 'Slide Left' },
-                    { id: 'slideDown', label: 'Slide Down' },
-                    { id: 'scale', label: 'Zoom Bounce' },
-                    { id: 'blur', label: 'Atmospheric' },
-                    { id: 'perspective', label: '3D Perspective' },
-                    { id: 'flip', label: '3D Flip' },
-                    { id: 'elastic', label: 'Elastic Tech' }
-                ],
-            },
-            defaultValue: 'fade'
+            defaultValue: true,
+            cssVars: ['--sarak-anim-enabled']
         }
     ]
 };

@@ -17,7 +17,20 @@ export const useDesignDraft = (sarak: any) => {
     const [toast, setToast] = useState<{ type: 'success' | 'warning', message: string } | null>(null);
     const [isDirty, setIsDirty] = useState(false);
 
-    // 2. Sincronização de Re-hidratação Inteligente (v10.3)
+    // 2. Ponte de Live Preview (v12.0)
+    // Sincroniza o rascunho local com o injetor global do Provider
+    useEffect(() => {
+        if (sarak.setDraftDesign) {
+            sarak.setDraftDesign(draft);
+        }
+        return () => {
+            if (sarak.setDraftDesign) {
+                sarak.setDraftDesign(null);
+            }
+        };
+    }, [draft, sarak.setDraftDesign]);
+
+    // 3. Sincronização de Re-hidratação Inteligente (v10.3)
     useEffect(() => {
         // Só sincroniza se o sarak global mudar e não tivermos alterações locais pendentes
         // Evitamos o loop comparando se as propriedades principais realmente mudaram

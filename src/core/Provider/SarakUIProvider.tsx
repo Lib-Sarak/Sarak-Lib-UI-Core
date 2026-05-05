@@ -63,7 +63,10 @@ export const SarakUIProvider: React.FC<SarakUIProviderProps> = ({
         isHydrated
     });
 
-    // 3. Injeção de Fontes Avançadas (Core Optimization)
+    // 3. Gerenciamento de Rascunho (Live Preview)
+    const [draftDesign, setDraftDesign] = React.useState<any | null>(null);
+
+    // 4. Injeção de Fontes Avançadas (Core Optimization)
     useEffect(() => {
         if (typeof document === 'undefined') return;
         const domains = ['https://fonts.googleapis.com', 'https://fonts.gstatic.com'];
@@ -82,45 +85,27 @@ export const SarakUIProvider: React.FC<SarakUIProviderProps> = ({
         document.head.prepend(style);
     }, []);
 
-    // 4. Injeção de Estilos Críticos (Shell Foundation)
-    const criticalStyles = useMemo(() => {
-        const sidebarW = design.sidebarWidth || 240;
-        const topbarH = design.topbarHeight || 64;
-        const primaryHex = design.primaryColor || '#00f2ff';
-        
-        return `
-            :root {
-                --sarak-sidebar-width: ${sidebarW}px;
-                --sidebar-width: ${sidebarW}px;
-                --sarak-topbar-height: ${topbarH}px;
-                --topbar-height: ${topbarH}px;
-                --theme-primary: ${primaryHex};
-                --radius-theme: 12px;
-                --sarak-navigation-style: ${design.navigationStyle || 'sidebar'};
-            }
-            /* Garante visibilidade imediata dos componentes estruturais */
-            .sarak-shell-sidebar, .sarak-shell-topbar { opacity: 1 !important; visibility: visible !important; }
-        `;
-    }, [design.sidebarWidth, design.topbarHeight, design.primaryColor, design.navigationStyle]);
-
     // 5. Valor do Contexto (Memorizado)
+    const activeDesign = useMemo(() => draftDesign || design, [draftDesign, design]);
+
     const uiContextValue = useMemo(() => ({
-        ...design,
+        ...activeDesign,
         discoveryEndpoints: options?.endpoints?.discovery || discoveryEndpoints || [],
         design,
+        draftDesign,
         setDesign,
+        setDraftDesign,
         applyConfig,
         applyFullConfig,
         registeredModules,
         layouts: Object.values(LAYOUTS),
         isHydrated,
         options
-    }), [discoveryEndpoints, design, setDesign, applyConfig, applyFullConfig, registeredModules, isHydrated, options]);
+    }), [discoveryEndpoints, design, draftDesign, setDesign, setDraftDesign, applyConfig, applyFullConfig, registeredModules, isHydrated, options, activeDesign]);
 
     return (
         <UIContext.Provider value={uiContextValue}>
-            <style dangerouslySetInnerHTML={{ __html: criticalStyles }} />
-            <DesignInjector design={design} />
+            <DesignInjector design={activeDesign} />
             <NoiseOverlay />
             {children}
         </UIContext.Provider>

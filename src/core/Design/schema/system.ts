@@ -28,6 +28,46 @@ export const SystemSchema: ComponentSchema = {
             category: 'Core',
             type: 'boolean',
             defaultValue: true // Se false, desativa injeção passiva global
+        },
+
+        // --- GRID & SPACING ---
+        {
+            id: 'gridUnit',
+            label: 'Unidade de Grade (Base)',
+            category: 'Grade & Espaçamento',
+            type: 'slider',
+            unit: 'px',
+            constraints: { min: 2, max: 12 },
+            defaultValue: 4,
+            cssVars: ['--sarak-grid-unit']
+        },
+        {
+            id: 'containerMaxWidth',
+            label: 'Largura Máxima do Container',
+            category: 'Grade & Espaçamento',
+            type: 'slider',
+            unit: 'px',
+            constraints: { min: 800, max: 2000, step: 20 },
+            defaultValue: 1440,
+            cssVars: ['--sarak-container-max']
+        },
+
+        // --- DEPTH (Z-INDEX) ---
+        {
+            id: 'zIndexModal',
+            label: 'Profundidade: Modais',
+            category: 'Camadas (Z-Index)',
+            type: 'number',
+            defaultValue: 1000,
+            cssVars: ['--sarak-z-modal']
+        },
+        {
+            id: 'zIndexDropdown',
+            label: 'Profundidade: Dropdowns',
+            category: 'Camadas (Z-Index)',
+            type: 'number',
+            defaultValue: 500,
+            cssVars: ['--sarak-z-dropdown']
         }
     ]
 };

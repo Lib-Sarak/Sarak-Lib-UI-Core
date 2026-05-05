@@ -1,260 +1,250 @@
 import { ComponentSchema } from '../types';
 
 /**
- * Mapeamento 100% Granular: Cards
+ * Mapeamento 100% Atômico: Cards & Superfícies (v12.0)
+ * Governa a anatomia de todos os containers do sistema.
  */
 export const CardSchema: ComponentSchema = {
     id: 'cards',
     label: 'Cards & Superfícies',
     tokens: [
+        // --- GEOMETRIA ---
         {
             id: 'cardBorderRadius',
             label: 'Raio da Borda (Master)',
             category: 'Geometria',
             type: 'slider',
             unit: 'px',
-            constraints: {
-                min: 0,
-                max: 60,
-            },
+            constraints: { min: 0, max: 60 },
             defaultValue: 12,
-            cssVars: ['--radius-theme']
+            cssVars: ['--radius-theme', '--sarak-card-radius', '--sarak-card-radius-tl', '--sarak-card-radius-tr', '--sarak-card-radius-bl', '--sarak-card-radius-br']
         },
         {
-            id: 'borderRadiusSm',
-            label: 'Raio - Pequeno (SM)',
-            category: 'Geometria Escala',
+            id: 'cardRadiusTL',
+            label: 'Quina Superior Esquerda',
+            category: 'Geometria: Avançado',
             type: 'slider',
             unit: 'px',
-            constraints: {
-                min: 0,
-                max: 30,
-            },
-            defaultValue: 4,
-            cssVars: ['--sarak-border-radius-sm']
-        },
-        {
-            id: 'borderRadiusMd',
-            label: 'Raio - Médio (MD)',
-            category: 'Geometria Escala',
-            type: 'slider',
-            unit: 'px',
-            constraints: {
-                min: 0,
-                max: 60,
-            },
-            defaultValue: 8,
-            cssVars: ['--sarak-border-radius-md']
-        },
-        {
-            id: 'borderRadiusLg',
-            label: 'Raio - Grande (LG)',
-            category: 'Geometria Escala',
-            type: 'slider',
-            unit: 'px',
-            constraints: {
-                min: 0,
-                max: 100,
-            },
+            constraints: { min: 0, max: 120 },
             defaultValue: 12,
-            cssVars: ['--sarak-border-radius-lg']
+            cssVars: ['--sarak-card-radius-tl']
         },
         {
-            id: 'cardPadding',
-            label: 'Gap Layout (Geral)',
-            category: 'Espaçamento',
+            id: 'cardRadiusTR',
+            label: 'Quina Superior Direita',
+            category: 'Geometria: Avançado',
             type: 'slider',
             unit: 'px',
-            constraints: {
-                min: 0,
-                max: 80,
-            },
-            defaultValue: 16,
-            cssVars: ['--theme-gap']
-        },
-        {
-            id: 'cardPaddingSm',
-            label: 'Padding Card (SM)',
-            category: 'Espaçamento Escala',
-            type: 'slider',
-            unit: 'px',
-            constraints: {
-                min: 0,
-                max: 40,
-            },
+            constraints: { min: 0, max: 120 },
             defaultValue: 12,
-            cssVars: ['--sarak-card-padding-sm']
+            cssVars: ['--sarak-card-radius-tr']
         },
         {
-            id: 'cardPaddingMd',
-            label: 'Padding Card (MD)',
-            category: 'Espaçamento Escala',
+            id: 'cardRadiusBL',
+            label: 'Quina Inferior Esquerda',
+            category: 'Geometria: Avançado',
             type: 'slider',
             unit: 'px',
-            constraints: {
-                min: 0,
-                max: 80,
-            },
-            defaultValue: 20,
-            cssVars: ['--sarak-card-padding-md']
+            constraints: { min: 0, max: 120 },
+            defaultValue: 12,
+            cssVars: ['--sarak-card-radius-bl']
         },
         {
-            id: 'cardPaddingLg',
-            label: 'Padding Card (LG)',
-            category: 'Espaçamento Escala',
+            id: 'cardRadiusBR',
+            label: 'Quina Inferior Direita',
+            category: 'Geometria: Avançado',
             type: 'slider',
             unit: 'px',
-            constraints: {
-                min: 0,
-                max: 120,
-            },
-            defaultValue: 32,
-            cssVars: ['--sarak-card-padding-lg']
+            constraints: { min: 0, max: 120 },
+            defaultValue: 12,
+            cssVars: ['--sarak-card-radius-br']
         },
         {
-            id: 'cardBorderStyle',
-            label: 'Estilo da Borda',
-            category: 'Bordas',
-            type: 'select',
-            constraints: {
-                options: [
-                    { id: 'solid', label: 'Sólida' },
-                    { id: 'dashed', label: 'Tracejada' },
-                    { id: 'dotted', label: 'Pontilhada' },
-                    { id: 'double', label: 'Dupla' }
-                ],
-            },
-            defaultValue: 'solid',
-            cssVars: ['--card-border-style', '--border-style']
+            id: 'cardGeometricCut',
+            label: 'Corte Geométrico (Chanfro)',
+            category: 'Geometria',
+            type: 'slider',
+            unit: 'px',
+            constraints: { min: 0, max: 40 },
+            defaultValue: 0,
+            cssVars: ['--sarak-card-cut']
         },
+
+        // --- SUPERFÍCIE ---
+        {
+            id: 'cardBackgroundColor',
+            label: 'Cor de Fundo (Base)',
+            category: 'Superfície',
+            type: 'color',
+            defaultValue: 'rgba(15, 23, 42, 0.6)',
+            generateVariants: true,
+            cssVars: ['--card-bg', '--theme-surface', '--sarak-card-bg']
+        },
+        {
+            id: 'cardBackdropBlur',
+            label: 'Backdrop Blur (Glass)',
+            category: 'Superfície',
+            type: 'slider',
+            unit: 'px',
+            constraints: { min: 0, max: 40 },
+            defaultValue: 12,
+            cssVars: ['--sarak-card-blur']
+        },
+        {
+            id: 'cardSurfaceOpacity',
+            label: 'Opacidade da Superfície',
+            category: 'Superfície',
+            type: 'slider',
+            constraints: { min: 0, max: 1, step: 0.05 },
+            defaultValue: 0.8,
+            cssVars: ['--sarak-card-opacity']
+        },
+
+        // --- BORDAS & LINHAS ---
         {
             id: 'cardBorderWidth',
             label: 'Espessura da Borda',
             category: 'Bordas',
             type: 'slider',
             unit: 'px',
-            constraints: {
-                min: 0,
-                max: 10,
-            },
+            constraints: { min: 0, max: 8 },
             defaultValue: 1,
             cssVars: ['--card-border-width', '--theme-border-width']
         },
         {
             id: 'cardBorderColor',
-            label: 'Cor da Linha',
+            label: 'Cor da Borda',
             category: 'Bordas',
             type: 'color',
             defaultValue: 'rgba(255, 255, 255, 0.1)',
             cssVars: ['--card-border-color', '--theme-border']
         },
         {
-            id: 'cardBackgroundColor',
-            label: 'Cor de Fundo',
-            category: 'Superfície',
+            id: 'cardBorderOpacity',
+            label: 'Opacidade da Borda',
+            category: 'Bordas',
+            type: 'slider',
+            constraints: { min: 0, max: 1, step: 0.05 },
+            defaultValue: 1,
+            cssVars: ['--sarak-card-border-opacity']
+        },
+
+        // --- HEADER ---
+        {
+            id: 'cardHeaderBg',
+            label: 'Fundo do Header',
+            category: 'Anatomia: Header',
             type: 'color',
-            defaultValue: 'rgba(30, 41, 59, 0.4)',
-            cssVars: ['--card-bg', '--theme-surface']
+            defaultValue: 'rgba(255, 255, 255, 0.03)',
+            cssVars: ['--sarak-card-header-bg']
         },
         {
-            id: 'cardTexture',
-            label: 'Textura de Fundo',
-            category: 'Superfície',
-            type: 'select',
-            constraints: {
-                options: [
-                    { id: 'none', label: 'Nenhuma' },
-                    { id: 'dots', label: 'Pontos' },
-                    { id: 'grid', label: 'Grelha' },
-                    { id: 'circuit', label: 'Circuito' },
-                    { id: 'noise', label: 'Ruído Industrial' }
-                ],
-            },
-            defaultValue: 'none',
-            cssVars: ['--card-texture']
+            id: 'cardHeaderBorder',
+            label: 'Linha Divisora (Bottom)',
+            category: 'Anatomia: Header',
+            type: 'color',
+            defaultValue: 'rgba(255, 255, 255, 0.05)',
+            cssVars: ['--sarak-card-header-border']
         },
         {
-            id: 'cardNoiseOpacity',
-            label: 'Opacidade da Textura',
-            category: 'Superfície',
+            id: 'cardHeaderPadding',
+            label: 'Padding Vertical',
+            category: 'Anatomia: Header',
             type: 'slider',
-            constraints: {
-                min: 0,
-                max: 1,
-                step: 0.01,
-            },
-            defaultValue: 0.08,
-            cssVars: ['--card-noise-opacity']
+            unit: 'px',
+            constraints: { min: 0, max: 60 },
+            defaultValue: 16,
+            cssVars: ['--sarak-card-header-padding']
         },
+
+        // --- FOOTER ---
         {
-            id: 'cardShadowIntensity',
-            label: 'Intensidade da Sombra',
-            category: 'Efeitos',
-            type: 'slider',
-            constraints: {
-                min: 0,
-                max: 1,
-                step: 0.05,
-            },
-            defaultValue: 0.3,
-            cssVars: ['--card-shadow-intensity']
-        },
-        {
-            id: 'cardHoverColor',
-            label: 'Cor Hover',
-            category: 'Interação',
+            id: 'cardFooterBg',
+            label: 'Fundo do Footer',
+            category: 'Anatomia: Footer',
             type: 'color',
             defaultValue: 'transparent',
-            cssVars: ['--sarak-card-hover-color']
+            cssVars: ['--sarak-card-footer-bg']
         },
         {
-            id: 'cardActiveColor',
-            label: 'Cor Ativa',
-            category: 'Interação',
+            id: 'cardFooterBorder',
+            label: 'Linha Divisora (Top)',
+            category: 'Anatomia: Footer',
             type: 'color',
-            defaultValue: 'transparent',
-            cssVars: ['--sarak-card-active-color']
+            defaultValue: 'rgba(255, 255, 255, 0.05)',
+            cssVars: ['--sarak-card-footer-border']
+        },
+
+        // --- EFEITOS & GLOW ---
+        {
+            id: 'cardShadowSpread',
+            label: 'Espalhamento da Sombra',
+            category: 'Efeitos: Glow',
+            type: 'slider',
+            unit: 'px',
+            constraints: { min: 0, max: 100 },
+            defaultValue: 20,
+            cssVars: ['--sarak-card-shadow-spread']
         },
         {
-            id: 'cardSpotlight',
+            id: 'cardGlowColor',
+            label: 'Cor do Brilho (Neon)',
+            category: 'Efeitos: Glow',
+            type: 'color',
+            defaultValue: 'rgba(0, 242, 255, 0.05)',
+            cssVars: ['--sarak-card-glow-color']
+        },
+        {
+            id: 'cardGlowIntensity',
+            label: 'Intensidade do Brilho',
+            category: 'Efeitos: Glow',
+            type: 'slider',
+            constraints: { min: 0, max: 1, step: 0.05 },
+            defaultValue: 0,
+            cssVars: ['--sarak-card-glow-intensity']
+        },
+
+        // --- INTERAÇÃO (HOVER) ---
+        {
+            id: 'cardHoverTranslate',
+            label: 'Elevação no Hover (Y)',
+            category: 'Interação',
+            type: 'slider',
+            unit: 'px',
+            constraints: { min: -20, max: 0 },
+            defaultValue: -4,
+            cssVars: ['--sarak-card-hover-y']
+        },
+        {
+            id: 'cardHoverGlowIncrease',
+            label: 'Aumento de Brilho',
+            category: 'Interação',
+            type: 'slider',
+            constraints: { min: 0, max: 1, step: 0.05 },
+            defaultValue: 0.2,
+            cssVars: ['--sarak-card-hover-glow']
+        },
+        {
+            id: 'cardSpotlightOpacity',
             label: 'Opacidade do Spotlight',
             category: 'Interação',
             type: 'slider',
-            constraints: {
-                min: 0,
-                max: 1,
-                step: 0.05,
-            },
-            defaultValue: 0,
+            constraints: { min: 0, max: 1, step: 0.05 },
+            defaultValue: 0.1,
             cssVars: ['--spotlight-opacity']
         },
+
+        // --- ESCALA DE ESPAÇAMENTO ---
         {
-            id: 'hoverLiftEnabled',
-            label: 'Habilitar Elevação (Lift)',
-            category: 'Efeitos de Mouse',
-            type: 'boolean',
-            defaultValue: true
-        },
-        {
-            id: 'spotlightEnabled',
-            label: 'Habilitar Spotlight',
-            category: 'Efeitos de Mouse',
-            type: 'boolean',
-            defaultValue: true
-        },
-        {
-            id: 'magneticPullEnabled',
-            label: 'Tração Magnética',
-            category: 'Efeitos de Mouse',
-            type: 'boolean',
-            defaultValue: false
-        },
-        {
-            id: 'isGeometricCut',
-            label: 'Corte Geométrico',
-            category: 'Geometria',
-            type: 'boolean',
-            defaultValue: false
+            id: 'cardPaddingMd',
+            label: 'Padding Interno (MD)',
+            category: 'Espaçamento',
+            type: 'slider',
+            unit: 'px',
+            constraints: { min: 0, max: 80 },
+            defaultValue: 24,
+            cssVars: ['--sarak-card-padding-md', '--theme-gap']
         }
     ]
 };
+
