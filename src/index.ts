@@ -34,6 +34,8 @@ import { ThemeCustomizationTab } from './features/DesignEngine/Main/ThemeCustomi
 
 // Metadata (Label, Icon, Category) will come from Seeds via API.
 registerLocalComponent('mx-customization', ThemeCustomizationTab);
+registerLocalComponent('personalization', ThemeCustomizationTab); // Compatibilidade com versões que buscam por este ID
+
 registerSarakModule({
     id: 'mx-customization',
     label: 'Personalização',

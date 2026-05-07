@@ -4,8 +4,9 @@ import { useSarakUI } from '../../../core/Provider/SarakUIProvider';
 import { 
     MessageSquare, Network, BarChart, 
     Zap, MousePointer2, Grid3X3, 
-    Layers, Sliders, Sparkles 
+    Layers, Sliders, Sparkles, HelpCircle
 } from 'lucide-react';
+import { HelpTooltip } from '../components/DesignControls';
 
 /**
  * EngineCustomizationTab v7.0
@@ -31,13 +32,16 @@ export const EngineCustomizationTab: React.FC = () => {
 
     const Control = ({ label, children }: any) => (
         <div className="space-y-2">
-            <label className="text-2xs font-black uppercase tracking-widest text-white/30 ml-1">{label}</label>
+            <label className="text-2xs font-black uppercase tracking-widest text-white/30 ml-1 flex items-center gap-2">
+                {label}
+                <HelpTooltip label={label} />
+            </label>
             {children}
         </div>
     );
 
     return (
-        <div className="flex flex-col h-full animate-in fade-in slide-in-from-right-4 duration-500 overflow-y-auto custom-scrollbar">
+        <div className="flex flex-col h-full animate-in fade-in slide-in-from-right-4 duration-500 overflow-y-auto custom-scrollbar-sidebar">
             
             {/* CHAT ENGINE CONFIG */}
             <Section title="Chat Engine" icon={MessageSquare}>
@@ -132,7 +136,10 @@ export const EngineCustomizationTab: React.FC = () => {
 
                 <div className="flex items-center justify-between p-4 rounded-2xl bg-white/5 border border-white/10 group">
                     <div className="flex flex-col gap-0.5">
-                        <span className="text-2xs font-black uppercase tracking-widest text-white/60">Mostrar Grid de Fundo</span>
+                        <span className="text-[10px] font-black uppercase tracking-widest text-white/50 flex items-center gap-1.5">
+                            Mostrar Grid de Fundo
+                            <HelpTooltip label="Mostrar Grid de Fundo" description="Ativa ou desativa a visualização das linhas de referência nos gráficos (Chart Engine)." />
+                        </span>
                         <span className="text-3xs text-white/20 uppercase tracking-tighter italic">Visibilidade das linhas de referência</span>
                     </div>
                     <button 

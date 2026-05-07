@@ -83,10 +83,17 @@ interface SarakShellProps {
  */
 declare const SarakShell: React$1.FC<SarakShellProps>;
 
+/**
+ * useDesignDraft (v12.1)
+ * Orquestrador de rascunhos com isolamento de sandbox.
+ */
 declare const useDesignDraft: (sarak: any) => {
     draft: any;
+    isDirty: boolean;
+    isPillarDirty: (pillarId: string) => boolean;
     updateDraft: (key: string, value: any) => void;
-    applyPatch: (patch: Record<string, any>, sourceId?: string) => void;
+    resetPillar: (pillarId: string) => void;
+    resetToken: (tokenId: string) => void;
     handleThemePreview: (id: string) => void;
     handleApplyToSystem: () => void;
     toast: {
@@ -97,8 +104,8 @@ declare const useDesignDraft: (sarak: any) => {
 };
 
 /**
- * CustomizationPanel (v5.4)
- * Single resilient and self-adjusting configuration center.
+ * CustomizationPanel (v6.0)
+ * Central de Comando Unificada - Foco 100% em Soberania e Gêmeo Digital.
  */
 declare const CustomizationPanel: React$1.FC;
 

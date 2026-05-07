@@ -7,6 +7,7 @@ import { ComponentSchema } from '../types';
 export const DataSchema: ComponentSchema = {
     id: 'data',
     label: 'Dados & Gráficos',
+    pilar: 'visual',
     tokens: [
         // --- TABELAS: ANATOMIA ---
         {

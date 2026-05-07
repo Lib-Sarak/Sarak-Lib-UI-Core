@@ -7,6 +7,7 @@ import { ComponentSchema } from '../types';
 export const TypographySchema: ComponentSchema = {
     id: 'typography',
     label: 'Tipografia & Escrita',
+    pilar: 'visual',
     tokens: [
         // --- FAMÍLIAS DE FONTES ---
         {
@@ -14,6 +15,18 @@ export const TypographySchema: ComponentSchema = {
             label: 'Fonte de Títulos',
             category: 'Famílias',
             type: 'font',
+            constraints: {
+                options: [
+                    { id: "'Inter', sans-serif", label: 'Inter (Industrial)' },
+                    { id: "'Outfit', sans-serif", label: 'Outfit (Modern)' },
+                    { id: "'Syne', sans-serif", label: 'Syne (Avant-Garde)' },
+                    { id: "'JetBrains Mono', monospace", label: 'JetBrains Mono (Tech)' },
+                    { id: "'Montserrat', sans-serif", label: 'Montserrat (Classic)' },
+                    { id: "'Space Grotesk', sans-serif", label: 'Space Grotesk (Sci-Fi)' },
+                    { id: "'Archivo', sans-serif", label: 'Archivo (Neutral)' },
+                    { id: "'Bebas Neue', sans-serif", label: 'Bebas Neue (Impact)' }
+                ]
+            },
             defaultValue: "'Outfit', sans-serif",
             cssVars: ['--font-heading', '--sarak-font-h']
         },
@@ -22,6 +35,18 @@ export const TypographySchema: ComponentSchema = {
             label: 'Fonte de Corpo',
             category: 'Famílias',
             type: 'font',
+            constraints: {
+                options: [
+                    { id: "'Inter', sans-serif", label: 'Inter (Industrial)' },
+                    { id: "'Outfit', sans-serif", label: 'Outfit (Modern)' },
+                    { id: "'Syne', sans-serif", label: 'Syne (Avant-Garde)' },
+                    { id: "'JetBrains Mono', monospace", label: 'JetBrains Mono (Tech)' },
+                    { id: "'Montserrat', sans-serif", label: 'Montserrat (Classic)' },
+                    { id: "'Space Grotesk', sans-serif", label: 'Space Grotesk (Sci-Fi)' },
+                    { id: "'Archivo', sans-serif", label: 'Archivo (Neutral)' },
+                    { id: "'Bebas Neue', sans-serif", label: 'Bebas Neue (Impact)' }
+                ]
+            },
             defaultValue: "'Inter', sans-serif",
             cssVars: ['--font-main', '--sarak-font-b']
         },
@@ -30,6 +55,18 @@ export const TypographySchema: ComponentSchema = {
             label: 'Fonte Mono (Dados)',
             category: 'Famílias',
             type: 'font',
+            constraints: {
+                options: [
+                    { id: "'Inter', sans-serif", label: 'Inter (Industrial)' },
+                    { id: "'Outfit', sans-serif", label: 'Outfit (Modern)' },
+                    { id: "'Syne', sans-serif", label: 'Syne (Avant-Garde)' },
+                    { id: "'JetBrains Mono', monospace", label: 'JetBrains Mono (Tech)' },
+                    { id: "'Montserrat', sans-serif", label: 'Montserrat (Classic)' },
+                    { id: "'Space Grotesk', sans-serif", label: 'Space Grotesk (Sci-Fi)' },
+                    { id: "'Archivo', sans-serif", label: 'Archivo (Neutral)' },
+                    { id: "'Bebas Neue', sans-serif", label: 'Bebas Neue (Impact)' }
+                ]
+            },
             defaultValue: "'JetBrains Mono', monospace",
             cssVars: ['--font-mono', '--sarak-font-m']
         },
@@ -41,7 +78,7 @@ export const TypographySchema: ComponentSchema = {
             category: 'Cores de Texto',
             type: 'color',
             defaultValue: '#ffffff',
-            cssVars: ['--sarak-text-main']
+            cssVars: ['--sarak-text-main', '--theme-title', '--theme-text-primary']
         },
         {
             id: 'textColorSecondary',
@@ -57,7 +94,7 @@ export const TypographySchema: ComponentSchema = {
             category: 'Cores de Texto',
             type: 'color',
             defaultValue: 'rgba(255, 255, 255, 0.4)',
-            cssVars: ['--sarak-text-muted']
+            cssVars: ['--sarak-text-muted', '--theme-muted', '--theme-text-muted']
         },
 
         // --- ESCALA DE TAMANHOS ---

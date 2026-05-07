@@ -7,6 +7,7 @@ import { ComponentSchema } from '../types';
 export const AnimationSchema: ComponentSchema = {
     id: 'animations',
     label: 'Animações & Ritmo',
+    pilar: 'estetica',
     tokens: [
         // --- TIMING ---
         {
@@ -56,12 +57,14 @@ export const AnimationSchema: ComponentSchema = {
             label: 'Curva: Padrão (Main)',
             category: 'Curvas de Easing',
             type: 'select',
-            options: [
-                { label: 'Standard', value: 'cubic-bezier(0.4, 0, 0.2, 1)' },
-                { label: 'Smooth Industrial', value: 'cubic-bezier(0.6, 0.05, 0.01, 0.9)' },
-                { label: 'Accelerated', value: 'cubic-bezier(0.4, 0, 1, 1)' },
-                { label: 'Decelerated', value: 'cubic-bezier(0, 0, 0.2, 1)' }
-            ],
+            constraints: {
+                options: [
+                    { id: 'cubic-bezier(0.4, 0, 0.2, 1)', label: 'Standard' },
+                    { id: 'cubic-bezier(0.6, 0.05, 0.01, 0.9)', label: 'Smooth Industrial' },
+                    { id: 'cubic-bezier(0.4, 0, 1, 1)', label: 'Accelerated' },
+                    { id: 'cubic-bezier(0, 0, 0.2, 1)', label: 'Decelerated' }
+                ]
+            },
             defaultValue: 'cubic-bezier(0.4, 0, 0.2, 1)',
             cssVars: ['--sarak-ease-main']
         },
@@ -70,11 +73,13 @@ export const AnimationSchema: ComponentSchema = {
             label: 'Curva: Saída Suave',
             category: 'Curvas de Easing',
             type: 'select',
-            options: [
-                { label: 'Standard', value: 'cubic-bezier(0.4, 0, 0.2, 1)' },
-                { label: 'Quintic', value: 'cubic-bezier(0.23, 1, 0.32, 1)' },
-                { label: 'Expo', value: 'cubic-bezier(0.19, 1, 0.22, 1)' }
-            ],
+            constraints: {
+                options: [
+                    { id: 'cubic-bezier(0.4, 0, 0.2, 1)', label: 'Standard' },
+                    { id: 'cubic-bezier(0.23, 1, 0.32, 1)', label: 'Quintic' },
+                    { id: 'cubic-bezier(0.19, 1, 0.22, 1)', label: 'Expo' }
+                ]
+            },
             defaultValue: 'cubic-bezier(0, 0, 0.2, 1)',
             cssVars: ['--sarak-ease-out']
         },

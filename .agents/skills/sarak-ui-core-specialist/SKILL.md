@@ -1,73 +1,55 @@
----
-name: sarak-ui-core-specialist
-description: Definitive authority in Sarak UI-Core Engineering. Governs the Industrial Design Engine, Plug & Play Agnostic Integration, and Sovereign Visual Orchestration (v12.0).
----
-
 # Skill: Sarak UI-Core Specialist (Atomic Modular Sovereignty v12.0)
 
-This skill is the **sovereign authority** for maintaining and evolving the `Sarak-Lib-UI-Core` module. Its mission is to ensure the library remains a high-performance, agnostic, and "Plug & Play" engine that can be seamlessly integrated into any React ecosystem (Forzy, Identity, Library, etc.).
+This skill is the **sovereign authority** for maintaining and evolving the `Sarak-Lib-UI-Core` module. Its mission is to ensure the library remains a high-performance, agnostic, and "Plug & Play" engine that can be seamlessly integrated into any React ecosystem.
 
-## Critical Architecture Rules (v12.0 — MANDATORY)
+## 🏛️ Core Architecture (v12.0 — The 3 Pillars)
 
-> **NEVER reintroduce monolithic constant files.** The old `src/constants/design-tokens.ts` is **deleted**. All design constants live in `src/core/Design/presets/`.
+The Design Engine is strictly organized into 3 Pillars of Sovereignty. **ALL** new tokens, sections, or UI controls MUST be assigned to one of these pillars:
 
-> **NEVER import from `src/constants/discovery.ts`** for type usage. All types (`DiscoveredModule`, `VisualContract`) must come from `src/core/Discovery/types.ts`.
+1.  **Identidade (Identity)**: The "DNA" and Structure.
+    *   *Includes*: Branding, Typography, Layout, Density, and Sovereignty/Security rules.
+2.  **Estética (Aesthetic)**: The "Atmosphere" and Surface.
+    *   *Includes*: Colors, Textures, Glassmorphism, Animations, and Card/Container styles.
+3.  **Visual (Visual)**: The "Interface" and Interaction.
+    *   *Includes*: Buttons, Form Controls, Data Visualization (Charts/Grids), and Chat Dynamics.
 
-## Source of Truth — Directory Map
+## ⚙️ The Draft & Apply Workflow (MANDATORY)
+
+The system operates on an **Industrial Commit Flow** to prevent accidental global changes:
+
+1.  **Draft State**: All changes made in the UI are kept in a local `draft` object via the `useDesignDraft` hook.
+2.  **Dirty-State Tracking**: Each pillar monitors its own delta. If a token in "Aesthetic" changes, the pillar is marked as `isDirty`.
+3.  **Preview Isolation**: The `PreviewCanvas` renders the `draft` state (Digital Twin), while the rest of the application remains unchanged.
+4.  **Granular Reset**: Users can reset a specific pillar to its original system state without affecting changes in other pillars.
+5.  **Global Commit**: Changes only affect the actual system state when the **"Apply to System"** action is triggered.
+
+## 🗺️ Source of Truth — Directory Map
 
 | Concern | Canonical Path |
 |---|---|
-| Design tokens (atomic presets) | `src/core/Design/presets/` |
-| Color palettes & primaries | `src/core/Design/presets/colors/index.ts` |
-| Typography & font catalog | `src/core/Design/presets/typography/index.ts` |
-| Animations & effects | `src/core/Design/presets/animations/index.ts` |
-| Layout & density | `src/core/Design/presets/layout/index.ts` |
-| Atmosphere presets | `src/core/Design/presets/atmosphere/index.ts` |
-| Data presets | `src/core/Design/presets/data/index.ts` |
-| Presets hub (aggregator) | `src/core/Design/presets/index.ts` |
-| Design Map (100% schema) | `src/core/Design/master-map.ts` (v12.0.0) |
-| All 10 component schemas | `src/core/Design/schema/*.ts` |
-| Discovery types | `src/core/Discovery/types.ts` |
-| Discovery registry | `src/core/Discovery/registry.ts` |
-| Dynamic renderer | `src/core/Discovery/DynamicRenderer.tsx` |
-| Shell entry | `src/core/Shell/SarakShell.tsx` |
-| Provider | `src/core/Provider/SarakUIProvider.tsx` |
+| Master Design Map (Schema) | `src/core/Design/master-map.ts` |
+| Atomic Presets Library | `src/core/Design/presets/` |
+| UI Orchestrator | `src/features/DesignEngine/Main/ThemeCustomizationTab.tsx` |
+| Draft Logic & Resets | `src/features/DesignEngine/hooks/useDesignDraft.ts` |
+| Design Controls & Labels | `src/features/DesignEngine/components/DesignControls.tsx` |
 
-## Pillars of Agnostic Sovereignty (v12.0)
-1. **Atomic Preset Architecture**: Design constants are strictly modular. Each domain (colors, typography, animations, layout, data, atmosphere) lives in its own `presets/` sub-module. The `presets/index.ts` aggregates all via the `PRESETS_LIBRARY` hub.
-2. **Plug & Play Architecture**: The module is entirely self-contained. It provides its own state management, persistence logic, and design injection, requiring only a `SarakUIProvider` at the root.
-3. **Agnostic Persistence Engine**: Support for host-defined `storageKey`, `endpoints`, and custom `onSave`/`onLoad` handlers. The library adapts to the host's storage strategy without hardcoded paths.
-4. **Industrial Design Engine (v12.0)**: Absolute governance of tokens via `MASTER_DESIGN_MAP` (v12.0.0) with **Granular Sovereignty**. 10 component schemas: Shell, Identity, Typography, Atmosphere, Card, Controls, Data, Animation, Specialized, System.
-5. **Manifest-Driven Discovery**: Host applications register local modules and components via the `manifest` prop, allowing the core `SarakShell` to discover and render external UI dynamically.
+## 🕹️ Centralization Guide: How to Add a New Component/Control
 
-## MASTER_DESIGN_MAP — 10 Schemas (v12.0.0)
+To ensure any new component is centrally controlled by the design engine, you must follow this mandatory pipeline:
 
-| Schema | File | Key Tokens |
-|---|---|---|
-| `ShellSchema` | `schema/shell.ts` | navigationStyle, sidebarWidth, autoHide |
-| `IdentitySchema` | `schema/identity.ts` | brandName, logoUrl, brandAccent |
-| `TypographySchema` | `schema/typography.ts` | fontFamily, fontSize, fontWeight |
-| `AtmosphereSchema` | `schema/atmosphere.ts` | primaryColor, texture, textureOpacity, glassOpacity |
-| `CardSchema` | `schema/cards.ts` | cardRadius, cardElevation, cardGlass |
-| `ControlsSchema` | `schema/controls.ts` | buttonRadius, inputStyle, language |
-| `DataSchema` | `schema/data.ts` | chartStyle, chartPalette, tableDensity |
-| `AnimationSchema` | `schema/animations.ts` | animationSpeed, animationPreset |
-| `SpecializedSchema` | `schema/specialized.ts` | chatBubbleStyle, qrSize, authDensity, authNoiseEnabled, statsVariant |
-| `SystemSchema` | `schema/system.ts` | persistenceKey, debugMode |
+1.  **Step 1: Token Definition (Schema)**
+    *   Create or update the schema in `src/core/Design/schema/`. *Example*: If creating a "Notification" system, add the tokens (color, radius, animation) to `SpecializedSchema`.
+2.  **Step 2: Master Map Registration**
+    *   Open `src/core/Design/master-map.ts` and ensure the new schema is included in the `MASTER_DESIGN_MAP`. This allows the draft system to monitor changes to these new tokens.
+3.  **Step 3: Pillar Mapping**
+    *   In `useDesignDraft.ts`, map the new schema to its corresponding pillar in the `pillarToSchemas` object. This enables the "Reset" and "Dirty State" logic for your new component.
+4.  **Step 4: Sidebar Injection (UI)**
+    *   In `ThemeCustomizationTab.tsx`, locate the relevant pillar (e.g., Visual) and add the new control section using `Section`, `ColorControl`, `SliderControl`, etc.
+    *   *Example*: `<VisualsSection draft={draft} updateDraft={updateDraft} ... />`
 
-## Key Exports (Public API via `src/index.ts`)
-- `SarakUIProvider`, `useSarakUI`, `SarakShell`
-- `MASTER_DESIGN_MAP`, `getDefaultDesignState`, `getAllDesignTokens`
-- `PRESETS_LIBRARY`, `COLOR_PALETTES`, `COLOR_PRESETS`
-- `DiscoveredModule`, `VisualContract` (types only)
-- All atomic templates: `SarakTable`, `SarakStats`, `SarakAuthScreen`, `SarakSecurityOrchestrator`, etc.
-
-## Technical Documentation Stack
-1. [Design Engine & Token Injection](./1_design_engine.md) - Atomic Presets & Granular Injection (v12.0).
-2. [Agnostic Integration & Persistence](./2_agnostic_integration.md) - How to "Plug & Play" (v12.0).
-3. [Manifest-Driven Registration](./3_visual_contracts.md) - Component and Module discovery.
-4. [Sovereign Validation Checklist](./4_validacao.md) - Rules for Industrial Quality.
+## 🛡️ Golden Rule: Total Centralization
+No component in the Sarak library should have "hidden" or local visual configurations. If a visual parameter exists, it **MUST** be traceable via the `MASTER_DESIGN_MAP` and editable through the `ThemeCustomizationTab`.
 
 ---
 **Sarak Engineering v12.0**  
-*Atomic Sovereignty, Agnostic Precision, and Plug & Play Excellence.*
+*Sovereign Design, Atomic Precision, and Industrial Control.*

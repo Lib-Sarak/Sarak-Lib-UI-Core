@@ -1,5 +1,6 @@
 import React from 'react';
 import { useDesignVariables } from '../hooks/useDesignVariables';
+import { DesignOverrideContext } from '../../Provider/SarakUIProvider';
 
 interface DesignScopeProps {
     design: any;
@@ -9,11 +10,11 @@ interface DesignScopeProps {
 }
 
 /**
- * DesignScope (v11.1)
+ * DesignScope (v12.0)
  * 
  * Envolve um conteúdo em um escopo isolado de variáveis CSS de design.
- * Essencial para Previews (Gêmeo Digital, Preset Cards) para garantir fidelidade total
- * sem afetar o estilo global da aplicação.
+ * Agora injeta também um DesignOverrideContext para que componentes que usam
+ * useSarakUI() dentro deste escopo consumam o design correto (rascunho).
  */
 export const DesignScope: React.FC<DesignScopeProps & Record<string, any>> = ({ 
     design, 
@@ -24,24 +25,26 @@ export const DesignScope: React.FC<DesignScopeProps & Record<string, any>> = ({
 }) => {
     const { variables, attributes } = useDesignVariables(design);
 
-    // Higienização de propriedades para evitar erros de "isDesignScope" ou similares no DOM
+    // Higienização de propriedades
     const { isDesignScope, ...domSafeProps } = rest as any;
 
     return (
-        <div 
-            className={`sarak-design-scope ${className}`}
-            style={{ 
-                ...variables, 
-                ...style,
-                position: 'relative',
-                width: '100%',
-                height: '100%'
-            }}
-            {...attributes}
-            {...domSafeProps}
-        >
-            {children}
-        </div>
+        <DesignOverrideContext.Provider value={design}>
+            <div 
+                className={`sarak-design-scope ${design?.mode || 'dark'} ${className}`}
+                style={{ 
+                    ...variables, 
+                    ...style,
+                    position: 'relative',
+                    width: '100%',
+                    height: '100%'
+                }}
+                {...attributes}
+                {...domSafeProps}
+            >
+                {children}
+            </div>
+        </DesignOverrideContext.Provider>
     );
 };
 

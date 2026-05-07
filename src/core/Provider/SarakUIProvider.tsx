@@ -1,4 +1,4 @@
-import React, { ReactNode, useEffect, useMemo, useContext } from 'react';
+import React, { ReactNode, useEffect, useMemo, useContext, createContext } from 'react';
 import '../../styles/sarak-base.css';
 import { LAYOUTS } from '../Design/presets/layout';
 import { NoiseOverlay } from '../../effects/NoiseOverlay';
@@ -16,24 +16,24 @@ export { computeColorVariants } from './utils/color-engine';
 export { DESIGN_MANIFEST } from './manifest';
 
 // --- SARAK UI BRIDGE CONTEXT ---
-export const UIContext = React.createContext<SarakUIContextType | undefined>(undefined);
+export const UIContext = createContext<SarakUIContextType | undefined>(undefined);
+export const DesignOverrideContext = createContext<any>(null);
 
 export const useSarakUI = () => {
     const context = useContext(UIContext);
+    const overrideDesign = useContext(DesignOverrideContext);
+    
     if (!context) {
-        return {
-            discoveryEndpoints: [],
-            design: {},
-            registeredModules: [],
-            layouts: [],
-            isHydrated: false,
-            applyConfig: () => { },
-            applyFullConfig: () => { }
-        } as any;
+        throw new Error('useSarakUI must be used within a SarakUIProvider');
     }
+    
+    // O design é o override (se houver, ex: dentro de um DesignScope/Preview) ou o sistema
+    const design = overrideDesign || context.design || {};
+
     return {
         ...context,
-        ...context.design,
+        design,
+        ...design, // Mantemos o spread aqui para compatibilidade local de quem consome o hook
     };
 };
 
@@ -85,27 +85,42 @@ export const SarakUIProvider: React.FC<SarakUIProviderProps> = ({
         document.head.prepend(style);
     }, []);
 
-    // 5. Valor do Contexto (Memorizado)
-    const activeDesign = useMemo(() => draftDesign || design, [draftDesign, design]);
+    // 5. Interceptor Inteligente (Isolamento Draft vs System)
+    const smartApplyConfig = React.useCallback((partial: any) => {
+        console.log('[SarakUIProvider] smartApplyConfig called with:', partial);
+        console.log('[SarakUIProvider] Current drafting status:', !!draftDesign);
+        
+        if (draftDesign) {
+            console.log('[SarakUIProvider] Updating DRAFT state');
+            setDraftDesign((prev: any) => ({ ...prev, ...partial }));
+        } else {
+            console.log('[SarakUIProvider] Updating SYSTEM state');
+            applyConfig(partial);
+        }
+    }, [draftDesign, applyConfig]);
 
+    // 6. Valor do Contexto (Memorizado)
     const uiContextValue = useMemo(() => ({
-        ...activeDesign,
         discoveryEndpoints: options?.endpoints?.discovery || discoveryEndpoints || [],
-        design,
-        draftDesign,
+        design,        // Estado persistido (Sistema)
+        draftDesign,   // Estado volátil (Preview)
+        isDrafting: !!draftDesign,
         setDesign,
         setDraftDesign,
-        applyConfig,
+        applyConfig: smartApplyConfig,
         applyFullConfig,
         registeredModules,
         layouts: Object.values(LAYOUTS),
         isHydrated,
         options
-    }), [discoveryEndpoints, design, draftDesign, setDesign, setDraftDesign, applyConfig, applyFullConfig, registeredModules, isHydrated, options, activeDesign]);
+    }), [discoveryEndpoints, design, draftDesign, setDesign, setDraftDesign, smartApplyConfig, applyFullConfig, registeredModules, isHydrated, options]);
 
     return (
         <UIContext.Provider value={uiContextValue}>
-            <DesignInjector design={activeDesign} />
+            <DesignInjector 
+                design={design} 
+                isDrafting={!!draftDesign} 
+            />
             <NoiseOverlay />
             {children}
         </UIContext.Provider>

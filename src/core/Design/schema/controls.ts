@@ -7,6 +7,7 @@ import { ComponentSchema } from '../types';
 export const ControlsSchema: ComponentSchema = {
     id: 'controls',
     label: 'Controles & Interação',
+    pilar: 'visual',
     tokens: [
         // --- ANATOMIA GERAL ---
         {

@@ -7,6 +7,7 @@ import { ComponentSchema } from '../types';
 export const SpecializedSchema: ComponentSchema = {
     id: 'specialized',
     label: 'Componentes Avançados',
+    pilar: 'visual',
     tokens: [
         // --- KPI & STATS: ANATOMIA INDUSTRIAL ---
         {

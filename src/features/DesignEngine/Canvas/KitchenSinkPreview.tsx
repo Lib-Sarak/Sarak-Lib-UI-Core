@@ -102,8 +102,8 @@ export const KitchenSinkPreview: React.FC = () => {
                         <button className="w-full py-3 bg-[var(--theme-primary)] text-white rounded-theme font-bold text-xs uppercase tracking-widest shadow-lg shadow-[var(--theme-primary)]/20 hover:brightness-110 active:scale-95 transition-all border-theme">
                             Ação Primária
                         </button>
-                        <button className="w-full py-3 bg-white/5 border border-theme text-white rounded-theme font-bold text-xs uppercase tracking-widest hover:bg-white/10 transition-all">
-                            Secundário
+                        <button className="w-full py-3 bg-[var(--theme-secondary)] text-white rounded-theme font-bold text-xs uppercase tracking-widest shadow-lg shadow-[var(--theme-secondary)]/20 hover:brightness-110 active:scale-95 transition-all border-theme">
+                            Ação Secundária
                         </button>
                         <button className="w-full py-3 border border-[var(--theme-primary)] text-[var(--theme-primary)] rounded-theme font-bold text-xs uppercase tracking-widest hover:bg-[var(--theme-primary)]/5 transition-all col-span-2">
                             Outline Button

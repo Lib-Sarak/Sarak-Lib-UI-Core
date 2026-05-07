@@ -1,34 +1,68 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useMemo } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
 import {
     Plus, Check, Zap, Edit3, Monitor, Tablet, Smartphone, 
     Palette, Box, Wind, Sparkles, AlertCircle, Moon, Sun, Type, Layout as LayoutIcon,
-    Globe, MousePointer2, MessageSquare, Shield
+    Globe, MousePointer2, MessageSquare, Shield, Layers, Command
 } from 'lucide-react';
 
 import { useSarakUI } from '../../../core/Provider/SarakUIProvider';
 import { ThemeList } from '../Library/ThemeList';
 import { PreviewCanvas } from '../Canvas/PreviewCanvas';
 import { PRESETS } from '../../../core/Design/presets';
+import { MASTER_DESIGN_MAP } from '../../../core/Design/master-map';
 
 // Modular Hooks & Components
 import { useDesignDraft } from '../hooks/useDesignDraft';
-import { CategoryLabel } from '../components/DesignControls';
-import { BrandingSection } from '../Sections/BrandingSection';
-import { TypographySection } from '../Sections/TypographySection';
-import { VisualsSection } from '../Sections/VisualsSection';
-import { CardsSection } from '../Sections/CardsSection';
-import { AnimationSection } from '../Sections/AnimationSection';
-import { ComponentsSection } from '../Sections/ComponentsSection';
-import { DataSection } from '../Sections/DataSection';
-import { ChatSection } from '../Sections/ChatSection';
-import { LayoutSection } from '../Sections/LayoutSection';
-import { SpecializedSection } from '../Sections/SpecializedSection';
-
+import { 
+    CategoryLabel, 
+    Section, 
+    ColorControl, 
+    SliderControl, 
+    SelectControl, 
+    SwitchControl 
+} from '../components/DesignControls';
 
 /**
- * ThemeCustomizationTab (v8.0 - Sovereign Reorganization)
- * Main design orchestrator for the Sarak ecosystem.
+ * TokenControl - Renderizador dinâmico de inputs baseado no tipo do token
+ */
+const TokenControl = ({ token, value, onChange }: { token: any, value: any, onChange: (val: any) => void }) => {
+    switch (token.type) {
+        case 'color':
+            return <ColorControl label={token.label} value={value} onChange={onChange} />;
+        case 'slider':
+            return (
+                <SliderControl 
+                    label={token.label} 
+                    value={value} 
+                    min={token.constraints?.min} 
+                    max={token.constraints?.max} 
+                    step={token.constraints?.step} 
+                    unit={token.unit}
+                    onChange={onChange} 
+                />
+            );
+        case 'select':
+        case 'font':
+            return (
+                <SelectControl 
+                    label={token.label} 
+                    options={token.constraints?.options} 
+                    value={value} 
+                    onChange={onChange} 
+                    isFont={token.type === 'font'}
+                />
+            );
+        case 'boolean':
+            return <SwitchControl label={token.label} value={value} onChange={onChange} description={token.description} />;
+        default:
+            return null;
+    }
+};
+
+/**
+ * ThemeCustomizationTab (v12.0 - Data-Driven Evolution)
+ * Orquestrador dinâmico de design baseado no Mapa Mestre.
  */
 export const ThemeCustomizationTab: React.FC = () => {
     const { design, ...rest } = useSarakUI();
@@ -39,6 +73,8 @@ export const ThemeCustomizationTab: React.FC = () => {
         updateDraft, 
         handleThemePreview, 
         handleApplyToSystem, 
+        isPillarDirty,
+        resetPillar,
         toast, 
         showToast 
     } = useDesignDraft(sarak);
@@ -46,56 +82,74 @@ export const ThemeCustomizationTab: React.FC = () => {
     const [activePreviewApp, setActivePreviewApp] = useState('dashboard');
     const [previewDevice, setPreviewDevice] = useState<'desktop' | 'tablet' | 'smartphone'>('desktop');
 
-    const [activeCategory, setActiveCategory] = useState<string | null>(null);
-    const [activeSection, setActiveSection] = useState<string | null>(null);
-    const [isDualView, setIsDualView] = useState(false); // Default as true for better UX
+    const [activePillarId, setActivePillarId] = useState<string | null>('identidade');
+    const [activeSectionId, setActiveSectionId] = useState<string | null>(null);
+    const [isDualView, setIsDualView] = useState(false);
 
-    // Auto-switch preview app based on category or section
+    // 1. Dinamização de Pilares (v12.0)
+    const pillars = useMemo(() => [
+        { id: 'identidade', title: 'Identidade', icon: Globe, index: 1, description: 'Branding e Fundamentos' },
+        { id: 'estetica', title: 'Estética', icon: Palette, index: 2, description: 'Atmosfera e Efeitos' },
+        { id: 'visual', title: 'Visual', icon: Monitor, index: 3, description: 'Componentes e Dados' }
+    ], []);
+
+    // 2. Agrupamento Dinâmico de Componentes por Pilar
+    const groupedComponents = useMemo(() => {
+        console.log("[v13.9 Audit] Iniciando agrupamento de componentes...");
+        const groups: Record<string, any[]> = { identidade: [], estetica: [], visual: [] };
+        
+        if (!MASTER_DESIGN_MAP || !MASTER_DESIGN_MAP.components) {
+            console.error("[v13.9 Audit] ERRO CRÍTICO: MASTER_DESIGN_MAP não encontrado ou sem componentes!");
+            return groups;
+        }
+
+        MASTER_DESIGN_MAP.components.forEach(comp => {
+            const pillar = comp.pilar || 'visual';
+            if (groups[pillar]) {
+                groups[pillar].push(comp);
+            } else {
+                console.warn(`[v13.9 Audit] Componente ${comp.id} possui pilar desconhecido: ${pillar}`);
+            }
+        });
+        
+        // Log de Auditoria (v13.9)
+        console.group(`%c [Sarak Design Engine] Pilar Coverage Audit v13.9 `, 'background: #222; color: #00f2ff; font-weight: bold;');
+        Object.entries(groups).forEach(([pillar, comps]) => {
+            const tokenCount = comps.reduce((acc, c) => acc + (c.tokens?.length || 0), 0);
+            console.log(`Pilar: ${pillar.toUpperCase().padEnd(10)} | Módulos: ${comps.length.toString().padStart(2)} | Tokens: ${tokenCount.toString().padStart(3)}`);
+        });
+        console.groupEnd();
+        
+        return groups;
+    }, []);
+
+    // 3. Lógica de Navegação de Preview
     useEffect(() => {
-        // 1. Prioridade para Seções Específicas (Deep Linking)
-        if (activeSection === 'chat-bubbles' || activeSection === 'chat-dynamics') {
-            setActivePreviewApp('chat');
-            return;
-        }
-        if (activeSection === 'chart-visuals' || activeSection === 'chart-geometry') {
-            setActivePreviewApp('dashboard');
-            return;
-        }
-        if (activeSection === 'security-system' || activeSection === 'auth-experience' || activeSection === 'qr-core') {
-            setActivePreviewApp('auth');
-            return;
-        }
-        if (activeSection === 'font-families' || activeSection === 'font-refinement') {
-
-            setActivePreviewApp('typography');
-            return;
-        }
-
-        // 2. Fallback para Categorias Principais
-        if (activeCategory === 'chats') setActivePreviewApp('chat');
-        else if (activeCategory === 'data') setActivePreviewApp('dashboard');
-        else if (activeCategory === 'fonts') setActivePreviewApp('typography');
-        else if (activeCategory === 'components' || activeCategory === 'cards') setActivePreviewApp('components');
-        else if (activeCategory === 'sovereignty') setActivePreviewApp('settings');
-        else if (activeCategory && ['layout', 'branding', 'visuals', 'animations', 'presets'].includes(activeCategory)) {
-
-            setActivePreviewApp('kitchen-sink');
-        }
-    }, [activeSection, activeCategory]);
+        if (!activeSectionId) return;
+        const mapping: Record<string, string> = {
+            'chat': 'chat',
+            'data': 'dashboard',
+            'typography': 'typography',
+            'identity': 'kitchen-sink',
+            'specialized': 'auth'
+        };
+        const target = Object.keys(mapping).find(k => activeSectionId.includes(k));
+        if (target) setActivePreviewApp(mapping[target]);
+    }, [activeSectionId]);
 
     return (
-        <div className="flex flex-1 min-h-[900px] bg-[#0c0c0d] overflow-hidden">
-            {/* Sidebar de Configuração */}
+        <div className="flex flex-1 h-full bg-[#0c0c0d] overflow-hidden">
+            {/* Sidebar de Configuração (Data-Driven) */}
             <div className="w-[440px] flex flex-col border-r border-white/5 bg-[#0a0a0b] relative z-10">
                 
-                {/* 1. Global Controls Header */}
+                {/* Header e Controles Globais */}
                 <div className="p-6 pb-2 shrink-0 border-b border-white/5 bg-black/20">
                     <div className="flex items-center justify-between mb-4">
                         <div className="flex items-center gap-3">
                             <div className="w-8 h-8 rounded-xl bg-[var(--theme-primary)] flex items-center justify-center shadow-[0_0_20px_rgba(var(--theme-primary-rgb),0.3)]">
                                 <Zap className="text-white w-4 h-4" />
                             </div>
-                            <h2 className="text-sm font-black text-white tracking-tight uppercase">Design Engine</h2>
+                            <h2 className="text-sm font-black text-white tracking-tight uppercase">Design Engine <span className="text-[var(--theme-primary)] ml-1 opacity-50">v12.0</span></h2>
                         </div>
                         <div className="flex gap-1.5 p-1 bg-white/5 rounded-xl border border-white/5">
                             {['desktop', 'tablet', 'smartphone'].map((t) => {
@@ -143,223 +197,138 @@ export const ThemeCustomizationTab: React.FC = () => {
                     </button>
                 </div>
 
-                {/* Scrollable Configuration Areas */}
-                <div className="flex-1 overflow-y-auto custom-scrollbar">
-                    <div className="pb-8">
-                        {/* 0. BIBLIOTECA DE TEMAS */}
-                        <CategoryLabel 
-                            icon={Edit3} 
-                            title="Modelos & Projetos" 
-                            index={0} 
-                            isOpen={activeCategory === 'presets'} 
-                            onToggle={() => setActiveCategory(activeCategory === 'presets' ? null : 'presets')}
-                            isDualView={isDualView}
-                            onToggleDual={() => setIsDualView(!isDualView)}
-                        />
-                        <AnimatePresence>
-                            {activeCategory === 'presets' && (
-                                <motion.div initial={{ height: 0, opacity: 0 }} animate={{ height: 'auto', opacity: 1 }} exit={{ height: 0, opacity: 0 }} className="overflow-hidden bg-black/40">
-                                    <div className="p-4">
-                                        <ThemeList 
-                                            layouts={PRESETS.layouts} 
-                                            customThemes={[]} 
-                                            currentLayout={sarak.layout} 
-                                            previewLayoutId={draft.layout} 
-                                            onPreview={handleThemePreview} 
-                                            onApply={(id) => { handleThemePreview(id); handleApplyToSystem(); }} 
-                                        />
-                                    </div>
-                                </motion.div>
-                            )}
-                        </AnimatePresence>
+                {/* Renderização Dinâmica por Pilar e Seção */}
+                <div className="flex-1 overflow-y-auto overflow-x-hidden custom-scrollbar-sidebar bg-black/5">
+                    <style>{`
+                        .custom-scrollbar-sidebar::-webkit-scrollbar {
+                            width: 10px !important;
+                        }
+                        .custom-scrollbar-sidebar::-webkit-scrollbar-track {
+                            background: rgba(0, 0, 0, 0.2) !important;
+                            border-radius: 10px !important;
+                            border: 1px solid rgba(255, 255, 255, 0.05) !important;
+                        }
+                        .custom-scrollbar-sidebar::-webkit-scrollbar-thumb {
+                            background: rgba(255, 255, 255, 0.4) !important;
+                            border-radius: 10px !important;
+                            border: 2px solid transparent !important;
+                            background-clip: content-box !important;
+                        }
+                        .custom-scrollbar-sidebar::-webkit-scrollbar-thumb:hover {
+                            background: rgba(255, 255, 255, 0.6) !important;
+                        }
+                        .custom-scrollbar-sidebar {
+                            scrollbar-width: auto !important;
+                            scrollbar-color: rgba(255, 255, 255, 0.4) rgba(0, 0, 0, 0.2) !important;
+                        }
+                    `}</style>
+                    <div className="pt-4 pb-20">
+                        {pillars.map((pillar) => (
+                            <React.Fragment key={pillar.id}>
+                                <CategoryLabel 
+                                    icon={pillar.icon} 
+                                    title={pillar.title} 
+                                    index={pillar.index} 
+                                    isOpen={activePillarId === pillar.id} 
+                                    onToggle={() => setActivePillarId(activePillarId === pillar.id ? null : pillar.id)}
+                                    isDualView={isDualView}
+                                    onToggleDual={() => setIsDualView(!isDualView)}
+                                    isDirty={isPillarDirty(pillar.id)}
+                                    onReset={() => resetPillar(pillar.id)}
+                                />
+                                <AnimatePresence>
+                                    {activePillarId === pillar.id && (
+                                        <motion.div 
+                                            initial={{ height: 0, opacity: 0 }} 
+                                            animate={{ height: activePillarId === pillar.id ? 'auto' : 0, opacity: activePillarId === pillar.id ? 1 : 0 }} 
+                                            exit={{ height: 0, opacity: 0 }} 
+                                            className={`bg-white/[0.02] ${activePillarId === pillar.id ? 'overflow-visible' : 'overflow-hidden'}`}
+                                        >
+                                            <div className="px-1">
+                                                {/* Injeção de Presets Específicos por Pilar */}
+                                                <div className="p-4 bg-black/40 mb-2 border-b border-white/5 space-y-4">
+                                                    <div className="flex items-center gap-2 px-2">
+                                                        <Sparkles size={10} className="text-[var(--theme-primary)]" />
+                                                        <span className="text-[9px] font-black uppercase tracking-widest text-white/40">Gêmeo Digital: Presets Industriais</span>
+                                                    </div>
+                                                    
+                                                    {pillar.id === 'identidade' && (
+                                                        <ThemeList 
+                                                            layouts={PRESETS.themes || []} 
+                                                            customThemes={[]} 
+                                                            currentLayout={sarak.layout} 
+                                                            previewLayoutId={draft.layout} 
+                                                            onPreview={handleThemePreview} 
+                                                            onApply={(id) => handleThemePreview(id)} 
+                                                        />
+                                                    )}
 
-                        {/* 1. CARDS */}
-                        <CategoryLabel 
-                            icon={Box} 
-                            title="Cards & Containers" 
-                            index={1} 
-                            isOpen={activeCategory === 'cards'} 
-                            onToggle={() => setActiveCategory(activeCategory === 'cards' ? null : 'cards')}
-                            isDualView={isDualView}
-                            onToggleDual={() => setIsDualView(!isDualView)}
-                        />
-                        <AnimatePresence>
-                            {activeCategory === 'cards' && (
-                                <motion.div initial={{ height: 0, opacity: 0 }} animate={{ height: 'auto', opacity: 1 }} exit={{ height: 0, opacity: 0 }} className="overflow-hidden">
-                                    <CardsSection draft={draft} updateDraft={updateDraft} activeSection={activeSection} setActiveSection={setActiveSection} />
-                                </motion.div>
-                            )}
-                        </AnimatePresence>
+                                                    {pillar.id === 'estetica' && (
+                                                        <div className="grid grid-cols-4 gap-2 px-2">
+                                                            {(PRESETS.atmosphere || []).slice(0, 8).map((p: any) => (
+                                                                <button 
+                                                                    key={p.id}
+                                                                    onClick={() => updateDraft('texture', p.id)}
+                                                                    className={`aspect-square rounded-lg border transition-all flex items-center justify-center text-[8px] font-bold uppercase text-center p-1 ${draft.texture === p.id ? 'border-[var(--theme-primary)] bg-[var(--theme-primary)]/10 text-white' : 'border-white/10 bg-white/5 text-white/30 hover:border-white/30'}`}
+                                                                >
+                                                                    {p.label || p.name}
+                                                                </button>
+                                                            ))}
+                                                        </div>
+                                                    )}
 
-                        {/* 2. FONTES */}
-                        <CategoryLabel 
-                            icon={Type} 
-                            title="Fontes & Tipografia" 
-                            index={2} 
-                            isOpen={activeCategory === 'fonts'} 
-                            onToggle={() => setActiveCategory(activeCategory === 'fonts' ? null : 'fonts')}
-                            isDualView={isDualView}
-                            onToggleDual={() => setIsDualView(!isDualView)}
-                        />
-                        <AnimatePresence>
-                            {activeCategory === 'fonts' && (
-                                <motion.div initial={{ height: 0, opacity: 0 }} animate={{ height: 'auto', opacity: 1 }} exit={{ height: 0, opacity: 0 }} className="overflow-hidden">
-                                    <TypographySection draft={draft} updateDraft={updateDraft} activeSection={activeSection} setActiveSection={setActiveSection} />
-                                </motion.div>
-                            )}
-                        </AnimatePresence>
+                                                    {pillar.id === 'visual' && (
+                                                        <div className="grid grid-cols-2 gap-2 px-2">
+                                                            {(PRESETS.typography || []).slice(0, 4).map((p: any) => (
+                                                                <button 
+                                                                    key={p.id}
+                                                                    onClick={() => {
+                                                                        if (p.design) {
+                                                                            Object.entries(p.design).forEach(([k, v]) => updateDraft(k, v));
+                                                                        }
+                                                                    }}
+                                                                    className={`p-2 rounded-lg border transition-all text-[8px] font-bold uppercase text-left ${draft.headingFont === p.design?.headingFont ? 'border-[var(--theme-primary)] bg-[var(--theme-primary)]/10 text-white' : 'border-white/10 bg-white/5 text-white/30 hover:border-white/30'}`}
+                                                                >
+                                                                    {p.label || p.name}
+                                                                </button>
+                                                            ))}
+                                                        </div>
+                                                    )}
+                                                </div>
 
-                        {/* 3. ANIMAÇÕES */}
-                        <CategoryLabel 
-                            icon={Sparkles} 
-                            title="Efeitos & Animações" 
-                            index={3} 
-                            isOpen={activeCategory === 'animations'} 
-                            onToggle={() => setActiveCategory(activeCategory === 'animations' ? null : 'animations')}
-                            isDualView={isDualView}
-                            onToggleDual={() => setIsDualView(!isDualView)}
-                        />
-                        <AnimatePresence>
-                            {activeCategory === 'animations' && (
-                                <motion.div initial={{ height: 0, opacity: 0 }} animate={{ height: 'auto', opacity: 1 }} exit={{ height: 0, opacity: 0 }} className="overflow-hidden">
-                                    <AnimationSection draft={draft} updateDraft={updateDraft} activeSection={activeSection} setActiveSection={setActiveSection} />
-                                </motion.div>
-                            )}
-                        </AnimatePresence>
-
-                        {/* 4. BRANDING */}
-                        <CategoryLabel 
-                            icon={Globe} 
-                            title="Branding & Identidade" 
-                            index={4} 
-                            isOpen={activeCategory === 'branding'} 
-                            onToggle={() => setActiveCategory(activeCategory === 'branding' ? null : 'branding')}
-                            isDualView={isDualView}
-                            onToggleDual={() => setIsDualView(!isDualView)}
-                        />
-                        <AnimatePresence>
-                            {activeCategory === 'branding' && (
-                                <motion.div initial={{ height: 0, opacity: 0 }} animate={{ height: 'auto', opacity: 1 }} exit={{ height: 0, opacity: 0 }} className="overflow-hidden">
-                                    <BrandingSection draft={draft} updateDraft={updateDraft} activeSection={activeSection} setActiveSection={setActiveSection} showToast={showToast} />
-                                </motion.div>
-                            )}
-                        </AnimatePresence>
-
-                        {/* 5. CORES E TEXTURAS */}
-                        <CategoryLabel 
-                            icon={Palette} 
-                            title="Cores & Texturas" 
-                            index={5} 
-                            isOpen={activeCategory === 'visuals'} 
-                            onToggle={() => setActiveCategory(activeCategory === 'visuals' ? null : 'visuals')}
-                            isDualView={isDualView}
-                            onToggleDual={() => setIsDualView(!isDualView)}
-                        />
-                        <AnimatePresence>
-                            {activeCategory === 'visuals' && (
-                                <motion.div initial={{ height: 0, opacity: 0 }} animate={{ height: 'auto', opacity: 1 }} exit={{ height: 0, opacity: 0 }} className="overflow-hidden">
-                                    <VisualsSection draft={draft} updateDraft={updateDraft} activeSection={activeSection} setActiveSection={setActiveSection} />
-                                </motion.div>
-                            )}
-                        </AnimatePresence>
-
-                        {/* 6. COMPONENTES */}
-                        <CategoryLabel 
-                            icon={MousePointer2} 
-                            title="Botões & Componentes" 
-                            index={6} 
-                            isOpen={activeCategory === 'components'} 
-                            onToggle={() => setActiveCategory(activeCategory === 'components' ? null : 'components')}
-                            isDualView={isDualView}
-                            onToggleDual={() => setIsDualView(!isDualView)}
-                        />
-                        <AnimatePresence>
-                            {activeCategory === 'components' && (
-                                <motion.div initial={{ height: 0, opacity: 0 }} animate={{ height: 'auto', opacity: 1 }} exit={{ height: 0, opacity: 0 }} className="overflow-hidden">
-                                    <ComponentsSection draft={draft} updateDraft={updateDraft} activeSection={activeSection} setActiveSection={setActiveSection} />
-                                </motion.div>
-                            )}
-                        </AnimatePresence>
-
-                        {/* 7. DADOS & VISUALIZAÇÃO */}
-                        <CategoryLabel 
-                            icon={Monitor} 
-                            title="Dados & Visualização" 
-                            index={7} 
-                            isOpen={activeCategory === 'data'} 
-                            onToggle={() => setActiveCategory(activeCategory === 'data' ? null : 'data')}
-                            isDualView={isDualView}
-                            onToggleDual={() => setIsDualView(!isDualView)}
-                        />
-                        <AnimatePresence>
-                            {activeCategory === 'data' && (
-                                <motion.div initial={{ height: 0, opacity: 0 }} animate={{ height: 'auto', opacity: 1 }} exit={{ height: 0, opacity: 0 }} className="overflow-hidden">
-                                    <DataSection draft={draft} updateDraft={updateDraft} activeSection={activeSection} setActiveSection={setActiveSection} />
-                                </motion.div>
-                            )}
-                        </AnimatePresence>
-
-                        {/* 8. CHATS */}
-                        <CategoryLabel 
-                            icon={MessageSquare} 
-                            title="Chats & Conversas" 
-                            index={8} 
-                            isOpen={activeCategory === 'chats'} 
-                            onToggle={() => setActiveCategory(activeCategory === 'chats' ? null : 'chats')}
-                            isDualView={isDualView}
-                            onToggleDual={() => setIsDualView(!isDualView)}
-                        />
-                        <AnimatePresence>
-                            {activeCategory === 'chats' && (
-                                <motion.div initial={{ height: 0, opacity: 0 }} animate={{ height: 'auto', opacity: 1 }} exit={{ height: 0, opacity: 0 }} className="overflow-hidden">
-                                    <ChatSection draft={draft} updateDraft={updateDraft} activeSection={activeSection} setActiveSection={setActiveSection} />
-                                </motion.div>
-                            )}
-                        </AnimatePresence>
-
-
-                        {/* 10. LAYOUT */}
-                        <CategoryLabel 
-                            icon={LayoutIcon} 
-                            title="Layout & Estrutura" 
-                            index={10} 
-                            isOpen={activeCategory === 'layout'} 
-                            onToggle={() => setActiveCategory(activeCategory === 'layout' ? null : 'layout')}
-                            isDualView={isDualView}
-                            onToggleDual={() => setIsDualView(!isDualView)}
-                        />
-                        <AnimatePresence>
-                            {activeCategory === 'layout' && (
-                                <motion.div initial={{ height: 0, opacity: 0 }} animate={{ height: 'auto', opacity: 1 }} exit={{ height: 0, opacity: 0 }} className="overflow-hidden">
-                                    <LayoutSection draft={draft} updateDraft={updateDraft} activeSection={activeSection} setActiveSection={setActiveSection} />
-                                </motion.div>
-                            )}
-                        </AnimatePresence>
-
-                        {/* 11. SOBERANIA & SEGURANÇA */}
-                        <CategoryLabel 
-                            icon={Shield} 
-                            title="Soberania & Segurança" 
-                            index={11} 
-                            isOpen={activeCategory === 'sovereignty'} 
-                            onToggle={() => setActiveCategory(activeCategory === 'sovereignty' ? null : 'sovereignty')}
-                            isDualView={isDualView}
-                            onToggleDual={() => setIsDualView(!isDualView)}
-                        />
-                        <AnimatePresence>
-                            {activeCategory === 'sovereignty' && (
-                                <motion.div initial={{ height: 0, opacity: 0 }} animate={{ height: 'auto', opacity: 1 }} exit={{ height: 0, opacity: 0 }} className="overflow-hidden">
-                                    <SpecializedSection draft={draft} updateDraft={updateDraft} activeSection={activeSection} setActiveSection={setActiveSection} />
-                                </motion.div>
-                            )}
-                        </AnimatePresence>
-
-
+                                                {/* Renderização Dinâmica dos Componentes do Mapa Mestre */}
+                                                {groupedComponents[pillar.id].map((comp) => (
+                                                    <Section 
+                                                        key={comp.id}
+                                                        id={comp.id}
+                                                        icon={Command} 
+                                                        title={comp.label}
+                                                        activeSection={activeSectionId}
+                                                        onToggle={setActiveSectionId}
+                                                    >
+                                                        <div className="flex flex-col gap-4">
+                                                            {comp.tokens.map((token: any) => (
+                                                                <TokenControl 
+                                                                    key={token.id}
+                                                                    token={token}
+                                                                    value={draft[token.id]}
+                                                                    onChange={(val) => updateDraft(token.id, val)}
+                                                                />
+                                                            ))}
+                                                        </div>
+                                                    </Section>
+                                                ))}
+                                            </div>
+                                        </motion.div>
+                                    )}
+                                </AnimatePresence>
+                            </React.Fragment>
+                        ))}
                     </div>
                 </div>
             </div>
 
-            {/* Preview Canvas (Source of Truth Display) */}
+            {/* Preview Canvas */}
             <div className="flex-1 relative bg-[#060607]">
                 <PreviewCanvas 
                     previewDevice={previewDevice}
@@ -369,17 +338,16 @@ export const ThemeCustomizationTab: React.FC = () => {
                     previewAnimationStyle={draft.animationStyle || sarak.animationStyle || 'standard'}
                     previewEmojiSet={draft.emojiSet || sarak.emojiSet || 'none'}
                     config={draft}
-                    previewPrimaryColor={draft.primaryColor || sarak.primaryColor || '#3b82f6'}
+                    previewPrimaryColor={draft.colorPrimary || sarak.colorPrimary || '#3b82f6'}
                     mode={draft.mode || sarak.mode || 'dark'}
                     draftTokens={draft}
-                    activeCategory={activeCategory}
+                    activeCategory={null}
                     onUpdateDraft={updateDraft}
                     isDualView={isDualView}
                     customThemes={[]}
                 />
 
-                
-                {/* Toast de Confirmação */}
+                {/* Toasts */}
                 <AnimatePresence>
                     {toast && (
                         <motion.div initial={{ y: 20, opacity: 0 }} animate={{ y: 0, opacity: 1 }} exit={{ y: 20, opacity: 0 }} className="absolute bottom-8 left-1/2 -translate-x-1/2 z-[100]">
@@ -396,4 +364,3 @@ export const ThemeCustomizationTab: React.FC = () => {
 };
 
 export default ThemeCustomizationTab;
-

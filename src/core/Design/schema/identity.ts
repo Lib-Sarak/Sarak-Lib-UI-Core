@@ -6,7 +6,24 @@ import { ComponentSchema } from '../types';
 export const IdentitySchema: ComponentSchema = {
     id: 'identity',
     label: 'Branding & Identidade',
+    pilar: 'identidade',
     tokens: [
+        // --- TEMA MASTER ---
+        {
+            id: 'mode',
+            label: 'Modo do Tema',
+            category: 'Personalidade',
+            type: 'select',
+            constraints: {
+                options: [
+                    { id: 'dark', label: 'Dark Mode (Industrial)' },
+                    { id: 'light', label: 'Light Mode (Modern)' }
+                ]
+            },
+            defaultValue: 'dark',
+            cssVars: ['--sarak-theme-mode']
+        },
+
         // --- LOGOTIPO ---
         {
             id: 'logoScale',
@@ -98,7 +115,7 @@ export const IdentitySchema: ComponentSchema = {
             type: 'color',
             defaultValue: '#00f2ff',
             generateVariants: true,
-            cssVars: ['--theme-primary', '--sarak-color-primary']
+            cssVars: ['--theme-primary', '--sarak-color-primary', '--primary-color']
         },
         {
             id: 'primaryLuminosity',
@@ -125,7 +142,7 @@ export const IdentitySchema: ComponentSchema = {
             type: 'color',
             defaultValue: '#ff00d4',
             generateVariants: true,
-            cssVars: ['--theme-secondary', '--sarak-color-secondary']
+            cssVars: ['--theme-secondary', '--sarak-color-secondary', '--secondary-color', '--accent-color', '--sarak-secondary-color']
         },
         
         {
@@ -163,7 +180,7 @@ export const IdentitySchema: ComponentSchema = {
             category: 'Superfícies & Fundos',
             type: 'color',
             defaultValue: '#020617',
-            cssVars: ['--sarak-bg-main']
+            cssVars: ['--sarak-bg-main', '--theme-bg', '--theme-body']
         },
         {
             id: 'bgSurface',
@@ -171,7 +188,7 @@ export const IdentitySchema: ComponentSchema = {
             category: 'Superfícies & Fundos',
             type: 'color',
             defaultValue: '#0f172a',
-            cssVars: ['--sarak-bg-surface']
+            cssVars: ['--sarak-bg-surface', '--bg-sidebar', '--theme-bg-alt', '--sarak-surface-1', '--sarak-surface-2']
         },
         {
             id: 'bgOverlay',
@@ -179,7 +196,7 @@ export const IdentitySchema: ComponentSchema = {
             category: 'Superfícies & Fundos',
             type: 'color',
             defaultValue: '#1e293b',
-            cssVars: ['--sarak-bg-overlay']
+            cssVars: ['--sarak-bg-overlay', '--bg-card', '--theme-surface', '--theme-overlay', '--sarak-surface-3']
         },
 
         // --- BORDAS & LINHAS ---
@@ -197,7 +214,7 @@ export const IdentitySchema: ComponentSchema = {
             category: 'Linhas & Divisores',
             type: 'color',
             defaultValue: 'rgba(255, 255, 255, 0.1)',
-            cssVars: ['--sarak-border-default']
+            cssVars: ['--sarak-border-default', '--theme-border']
         },
         {
             id: 'borderStrong',

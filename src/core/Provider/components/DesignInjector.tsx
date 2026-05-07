@@ -10,7 +10,7 @@ const useIsomorphicLayoutEffect = typeof window !== 'undefined' ? React.useLayou
  * Sincroniza o estado de design com o DOM global (root/body).
  * Agora utiliza o useDesignVariables para garantir paridade total com as previews.
  */
-export const DesignInjector: React.FC<{ design: any }> = ({ design: s }) => {
+export const DesignInjector: React.FC<{ design: any; isDrafting: boolean }> = ({ design: s, isDrafting }) => {
     const { variables, attributes } = useDesignVariables(s);
     const prevDesignRef = React.useRef<any>(null);
 
@@ -40,6 +40,18 @@ export const DesignInjector: React.FC<{ design: any }> = ({ design: s }) => {
     // Global CSS Variables & Attributes Injection
     useIsomorphicLayoutEffect(() => {
         if (typeof document === 'undefined' || !s) return;
+
+        console.log('[DesignInjector] Effect triggered. isDrafting:', isDrafting);
+
+        // CRITICAL: Se estivermos em modo de rascunho, bloqueamos a injeção global.
+        // Isso impede que mudanças no design vazem para o sistema antes do "Apply".
+        if (isDrafting) {
+            console.log('[DesignInjector] Bypassing global injection because a draft is active.');
+            return;
+        }
+
+        console.log('[DesignInjector] Starting global injection for design:', s);
+
         const root = document.documentElement;
         const body = document.body;
 
@@ -66,7 +78,7 @@ export const DesignInjector: React.FC<{ design: any }> = ({ design: s }) => {
         body.classList.add(mode);
 
         prevDesignRef.current = { ...s };
-    }, [s, variables, attributes]);
+    }, [s, variables, attributes, isDrafting]);
 
     return null;
 };

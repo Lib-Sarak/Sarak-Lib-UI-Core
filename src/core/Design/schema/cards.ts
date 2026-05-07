@@ -7,6 +7,7 @@ import { ComponentSchema } from '../types';
 export const CardSchema: ComponentSchema = {
     id: 'cards',
     label: 'Cards & Superfícies',
+    pilar: 'estetica',
     tokens: [
         // --- GEOMETRIA ---
         {
@@ -78,7 +79,7 @@ export const CardSchema: ComponentSchema = {
             type: 'color',
             defaultValue: 'rgba(15, 23, 42, 0.6)',
             generateVariants: true,
-            cssVars: ['--card-bg', '--theme-surface', '--sarak-card-bg']
+            cssVars: ['--card-bg', '--theme-surface', '--theme-card', '--sarak-card-bg']
         },
         {
             id: 'cardBackdropBlur',

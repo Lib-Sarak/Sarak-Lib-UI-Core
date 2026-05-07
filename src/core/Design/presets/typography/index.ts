@@ -11,7 +11,7 @@ export interface TypographyPreset {
         headingFont: string;
         bodyFont: string;
         headingWeight: string;
-        headingLetterSpacing: number;
+        letterSpacingHeading: number;
         fontScale: 's' | 'm' | 'l' | 'xl';
     };
 }
@@ -25,7 +25,7 @@ export const TYPOGRAPHY_PRESETS: TypographyPreset[] = [
             headingFont: "'Inter', sans-serif",
             bodyFont: "'Inter', sans-serif",
             headingWeight: '900',
-            headingLetterSpacing: -0.5,
+            letterSpacingHeading: -0.5,
             fontScale: 'm'
         }
     },
@@ -34,11 +34,11 @@ export const TYPOGRAPHY_PRESETS: TypographyPreset[] = [
         name: 'Industrial Mono',
         description: 'Foco em interfaces técnicas e centros de comando com toques mono-espaçados.',
         design: {
-            headingFont: "'Roboto Mono', monospace",
+            headingFont: "'JetBrains Mono', monospace",
             bodyFont: "'Inter', sans-serif",
             headingWeight: '700',
-            headingLetterSpacing: 1.0,
-            fontScale: 's'
+            letterSpacingHeading: 1.0,
+            fontScale: 'm'
         }
     },
     {
@@ -49,8 +49,8 @@ export const TYPOGRAPHY_PRESETS: TypographyPreset[] = [
             headingFont: "'Syne', sans-serif",
             bodyFont: "'Outfit', sans-serif",
             headingWeight: '900',
-            headingLetterSpacing: -1.0,
-            fontScale: 'xl'
+            letterSpacingHeading: -1.0,
+            fontScale: 'm'
         }
     },
     {
@@ -61,7 +61,7 @@ export const TYPOGRAPHY_PRESETS: TypographyPreset[] = [
             headingFont: "'Outfit', sans-serif",
             bodyFont: "'Outfit', sans-serif",
             headingWeight: '600',
-            headingLetterSpacing: 0,
+            letterSpacingHeading: 0,
             fontScale: 'l'
         }
     }

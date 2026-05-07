@@ -1,45 +1,50 @@
 export const TEXTURE_LIBRARY = [
-    { id: 'none', name: 'Nenhuma' },
-    { id: 'dots', name: 'Industrial Dots' },
-    { id: 'grid', name: 'Engineering Grid' },
-    { id: 'noise', name: 'Atmospheric Noise' },
-    { id: 'silk', name: 'Premium Silk' },
-    { id: 'circuit', name: 'Quantum Circuit' },
-    { id: 'squares', name: 'Geometry Squares' },
-    { id: 'honeycomb', name: 'Hex Honeycomb' },
-    { id: 'isometric', name: '3D Isometric' },
-    { id: 'stripes', name: 'Diagonal Stripes' },
-    { id: 'pinstripes', name: 'Vertical Pinstripes' },
-    { id: 'crosshatch', name: 'Diagonal Crosshatch' },
-    { id: 'blueprint', name: 'Engineering Blueprint' },
-    { id: 'micro-dots', name: 'Micro Dots' },
-    { id: 'stars', name: 'Star Field' },
-    { id: 'constellation', name: 'Constellation' },
-    { id: 'circuit-pro', name: 'Circuit Pro' },
-    { id: 'radar', name: 'Sonar / Radar' },
-    { id: 'carbon', name: 'Carbon Fiber' },
-    { id: 'carbon-tech', name: 'Carbon Tech' },
-    { id: 'brushed', name: 'Brushed Metal' },
-    { id: 'frosted', name: 'Frosted Glass' },
-    { id: 'prestige', name: 'Prestige Pattern' },
-    { id: 'paper', name: 'Vintage Paper' },
-    { id: 'mesh', name: 'Mesh Gradient' },
-    { id: 'aurora', name: 'Aurora Deep' },
-    { id: 'aurora-classic', name: 'Aurora Classic' },
-    { id: 'topo-deep', name: 'Topo Deep' },
-    { id: 'prism-mesh', name: 'Prism Mesh' },
-    { id: 'cyber-binary', name: 'Cyber Binary' },
-    { id: 'blueprint-pro', name: 'Blueprint Pro' },
-    { id: 'wave-pulse', name: 'Wave Pulse' },
-    { id: 'wood', name: 'Exotic Timber' },
-    { id: 'stucco', name: 'Plaster Relief' },
-    { id: 'fluid', name: 'Liquid Flow' },
-    { id: 'nebula', name: 'Deep Nebula' }
+    { id: 'none', label: 'Nenhuma' },
+    { id: 'grid', label: 'Grid Técnico' },
+    { id: 'dots', label: 'Pontos (Dotted)' },
+    { id: 'noise', label: 'Ruído Analógico' },
+    { id: 'grain', label: 'Grão Fotográfico' },
+    { id: 'mesh', label: 'Mesh Orgânico' },
+    { id: 'waves', label: 'Ondas Senoidais' },
+    { id: 'squares', label: 'Quadrados Industriais' },
+    { id: 'stripes', label: 'Listras Militares' },
+    { id: 'topo', label: 'Topografia' },
+    { id: 'diamond', label: 'Diamante' },
+    { id: 'prestige', label: 'Prestige' },
+    { id: 'carbon', label: 'Fibra de Carbono' },
+    { id: 'brushed', label: 'Metal Escovado' },
+    { id: 'frosted', label: 'Vidro Fosco (Frosted)' },
+    { id: 'circuit', label: 'Circuitos (Classic)' },
+    { id: 'paper', label: 'Papel Craft' },
+    { id: 'scanlines', label: 'Scanlines (CRT)' },
+    { id: 'hexagon', label: 'Hexagonais (Céptico)' },
+    { id: 'silk', label: 'Seda Líquida' },
+    { id: 'blueprint', label: 'Blueprint (Cianótipo)' },
+    { id: 'aurora', label: 'Aurora Boreal' },
+    { id: 'stars', label: 'Campo Estelar' },
+    { id: 'honeycomb', label: 'Favo de Mel' },
+    { id: 'isometric', label: 'Projeção Isométrica' },
+    { id: 'radar', label: 'Radar Tático' },
+    { id: 'crosshatch', label: 'Crosshatch' },
+    { id: 'micro-dots', label: 'Micro-Pontos' },
+    { id: 'pinstripes', label: 'Pinstripes' },
+    { id: 'constellation', label: 'Constelação' },
+    { id: 'circuit-pro', label: 'Circuitos (Pro)' },
+    { id: 'carbon-tech', label: 'Carbon Tech' },
+    { id: 'topo-deep', label: 'Topografia Profunda' },
+    { id: 'prism-mesh', label: 'Prism Mesh' },
+    { id: 'cyber-binary', label: 'Código Binário' },
+    { id: 'blueprint-pro', label: 'Blueprint Pro' },
+    { id: 'wave-pulse', label: 'Pulso de Onda' },
+    { id: 'wood', label: 'Madeira (Organic)' },
+    { id: 'stucco', label: 'Stucco (Parede)' },
+    { id: 'fluid', label: 'Fluido Dinâmico' },
+    { id: 'nebula', label: 'Nebulosa' }
 ];
 
 export interface AtmospherePreset {
     id: string;
-    name: string;
+    label: string;
     design: {
         texture: string;
     };
@@ -47,7 +52,7 @@ export interface AtmospherePreset {
 
 export const ATMOSPHERE_PRESETS: AtmospherePreset[] = TEXTURE_LIBRARY.map(texture => ({
     id: texture.id,
-    name: texture.name,
+    label: texture.label,
     design: {
         texture: texture.id
     }

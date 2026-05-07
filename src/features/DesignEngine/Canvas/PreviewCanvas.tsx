@@ -73,15 +73,43 @@ export const PreviewCanvas: React.FC<PreviewCanvasProps> = ({
     const LogoComponent = () => {
         const logoSrc = tokens.mode === 'light' ? (tokens.logoUrl || tokens.logoDarkUrl) : (tokens.logoDarkUrl || tokens.logoUrl);
         const scale = tokens.logoScale || 1.0;
+        const opacity = tokens.logoOpacity ?? 1;
+        const rotation = tokens.logoRotation ?? 0;
+        const shadow = tokens.logoDropShadow || 'none';
+        const animation = tokens.logoAnimationType || 'none';
+        
+        // Base size is 32px, scaled by logoScale
         const logoSize = 32 * scale;
         
+        const animationClasses: Record<string, string> = {
+            pulse: 'animate-pulse',
+            float: 'animate-sarak-float',
+            glow: 'animate-sarak-glow',
+            none: ''
+        };
+
         return (
-            <div className={`flex items-center gap-3 ${tokens.logoPosition === 'center' ? 'flex-col text-center' : 'flex-row'}`}>
+            <div 
+                className={`flex items-center gap-3 ${tokens.logoPosition === 'center' ? 'flex-col text-center' : 'flex-row'} transition-all duration-500`}
+                style={{ 
+                    opacity, 
+                    transform: `rotate(${rotation}deg)`,
+                    filter: shadow !== 'none' ? `drop-shadow(${shadow})` : undefined
+                }}
+            >
                 {logoSrc ? (
-                    <img src={logoSrc} alt="Logo" style={{ height: `${logoSize}px`, width: 'auto' }} className="object-contain transition-all duration-500" />
+                    <img 
+                        src={logoSrc} 
+                        alt="Logo" 
+                        style={{ height: `${logoSize}px`, width: 'auto' }} 
+                        className={`object-contain transition-all duration-500 ${animationClasses[animation] || ''}`} 
+                    />
                 ) : (
-                    <div className="w-8 h-8 rounded-lg bg-[var(--theme-primary)] flex items-center justify-center text-white shadow-lg shrink-0">
-                        <Zap size={16 * scale} />
+                    <div 
+                        className={`rounded-lg bg-[var(--theme-primary)] flex items-center justify-center text-white shadow-lg shrink-0 ${animationClasses[animation] || ''}`}
+                        style={{ width: `${logoSize}px`, height: `${logoSize}px` }}
+                    >
+                        <Zap size={logoSize * 0.5} />
                     </div>
                 )}
                 {!tokens.isNavHidden && (
@@ -111,14 +139,14 @@ export const PreviewCanvas: React.FC<PreviewCanvasProps> = ({
         <DesignScope design={tokens} className="w-full h-full flex flex-col bg-[var(--theme-bg)] transition-all duration-500 overflow-hidden relative">
             {/* Escala para simular tela cheia em miniatura */}
             <div className="absolute inset-0 origin-top-left overflow-hidden z-10" style={{ transform: 'scale(0.5)', width: '200%', height: '200%' }}>
-                {tokens.navigationStyle === 'topbar' ? (
+                {tokens.layout === 'topbar' ? (
                     <div className="flex flex-col w-full h-full relative">
                         {/* Texture layer inside the scaled context — renders at 200% size, shrinks correctly */}
                         {tokens.texture && tokens.texture !== 'none' && (
                             <div className={`absolute inset-0 pointer-events-none z-0 texture-${tokens.texture} SarakAtmosphereLayer`} style={{ opacity: 'var(--theme-texture-opacity)' }} />
                         )}
-                        <header className="h-28 border-b border-[var(--theme-border)] flex items-center justify-between px-12 bg-[var(--theme-card)]/40 backdrop-blur-md relative z-10">
-                            <div className="scale-150 origin-left"><LogoComponent /></div>
+                        <header className="h-[var(--sarak-topbar-height,112px)] border-b border-[var(--theme-border)] flex items-center justify-between px-12 bg-[var(--sarak-topbar-bg,var(--theme-card))]/40 backdrop-blur-[var(--sarak-glass-blur,var(--sarak-topbar-blur,16px))] relative z-10">
+                            <div className="origin-left"><LogoComponent /></div>
                             <nav className="flex gap-8">
                                 {appIds.map(id => (
                                     <button key={id} onClick={() => setActivePreviewApp(id)} className={`p-4 rounded-xl transition-all scale-150 ${activePreviewApp === id ? 'text-[var(--theme-primary)]' : 'text-[var(--theme-muted)]'}`}>
@@ -136,8 +164,8 @@ export const PreviewCanvas: React.FC<PreviewCanvasProps> = ({
                         {tokens.texture && tokens.texture !== 'none' && (
                             <div className={`absolute inset-0 pointer-events-none z-0 texture-${tokens.texture} SarakAtmosphereLayer`} style={{ opacity: 'var(--theme-texture-opacity)' }} />
                         )}
-                        <aside className="w-[400px] border-r border-[var(--theme-border)] flex flex-col bg-[var(--theme-card)]/40 backdrop-blur-md relative z-10">
-                            <div className="p-12 scale-150 origin-top-left"><LogoComponent /></div>
+                        <aside className="w-[var(--sarak-sidebar-width,400px)] border-r border-[var(--theme-border)] flex flex-col bg-[var(--sarak-sidebar-bg,var(--theme-card))]/40 backdrop-blur-[var(--sarak-glass-blur,var(--sarak-sidebar-blur,16px))] relative z-10">
+                            <div className="p-12 origin-top-left"><LogoComponent /></div>
                             <nav className="flex-1 p-8 space-y-4">
                                 {appIds.map(id => (
                                     <button key={id} onClick={() => setActivePreviewApp(id)} className={`w-full flex items-center gap-6 px-8 py-6 rounded-2xl transition-all text-sm font-black uppercase scale-110 origin-left ${activePreviewApp === id ? 'bg-[var(--theme-primary)] text-white shadow-xl' : 'text-[var(--theme-muted)] hover:bg-white/5'}`}>

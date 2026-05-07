@@ -40,43 +40,29 @@ export const VisualsSection: React.FC<VisualsSectionProps> = ({ draft, updateDra
                     </div>
                 </div>
 
-                <div className="grid grid-cols-2 gap-4 mb-6">
-                    <div className="flex flex-col gap-2">
-                        <span className="text-[10px] font-bold text-white/40 uppercase">Cor Secundária</span>
-                        <input type="color" value={draft.secondaryColor || '#ff00e5'} onChange={(e) => updateDraft('secondaryColor', e.target.value)} className="w-full h-10 rounded-xl bg-black/40 border border-white/5 cursor-pointer p-1" />
-                    </div>
+                <div className="grid grid-cols-1 gap-3 mb-6">
+                    <ColorControl 
+                        label="Cor Secundária" 
+                        value={draft.secondaryColor} 
+                        onChange={(v: any) => updateDraft('secondaryColor', v)} 
+                    />
                     <SliderControl label="Contraste" value={draft.contrastCurve || 1} min={0.5} max={1.5} step={0.05} onChange={(v: any) => updateDraft('contrastCurve', v)} />
                 </div>
 
-                <div className="space-y-4 pt-4 border-t border-white/5">
+                <div className="space-y-3 pt-4 border-t border-white/5">
                     <span className="text-2xs font-black uppercase tracking-widest text-white/20 block">Cores Semânticas</span>
-                    <div className="grid grid-cols-3 gap-4">
-                        <div className="flex flex-col gap-2">
-                            <span className="text-[10px] font-bold text-white/40 uppercase">Sucesso</span>
-                            <input type="color" value={draft.successColor || '#10b981'} onChange={(e) => updateDraft('successColor', e.target.value)} className="w-full h-8 rounded-lg bg-transparent cursor-pointer" />
-                        </div>
-                        <div className="flex flex-col gap-2">
-                            <span className="text-[10px] font-bold text-white/40 uppercase">Aviso</span>
-                            <input type="color" value={draft.warningColor || '#f59e0b'} onChange={(e) => updateDraft('warningColor', e.target.value)} className="w-full h-8 rounded-lg bg-transparent cursor-pointer" />
-                        </div>
-                        <div className="flex flex-col gap-2">
-                            <span className="text-[10px] font-bold text-white/40 uppercase">Erro</span>
-                            <input type="color" value={draft.errorColor || '#ef4444'} onChange={(e) => updateDraft('errorColor', e.target.value)} className="w-full h-8 rounded-lg bg-transparent cursor-pointer" />
-                        </div>
+                    <div className="grid grid-cols-1 gap-2">
+                        <ColorControl label="Sucesso" value={draft.successColor} onChange={(v: any) => updateDraft('successColor', v)} />
+                        <ColorControl label="Aviso" value={draft.warningColor} onChange={(v: any) => updateDraft('warningColor', v)} />
+                        <ColorControl label="Erro" value={draft.errorColor} onChange={(v: any) => updateDraft('errorColor', v)} />
                     </div>
                 </div>
 
-                <div className="space-y-4 pt-4 border-t border-white/5 mt-4">
+                <div className="space-y-3 pt-4 border-t border-white/5 mt-4">
                     <span className="text-2xs font-black uppercase tracking-widest text-white/20 block">Cores de Ambiente</span>
-                    <div className="grid grid-cols-2 gap-4">
-                        <div className="flex flex-col gap-2">
-                            <span className="text-[10px] font-bold text-white/40 uppercase">Fundo (Body)</span>
-                            <input type="color" value={draft.bodyColor || '#0c0c0d'} onChange={(e) => updateDraft('bodyColor', e.target.value)} className="w-full h-8 rounded-lg bg-transparent cursor-pointer" />
-                        </div>
-                        <div className="flex flex-col gap-2">
-                            <span className="text-[10px] font-bold text-white/40 uppercase">Títulos (Title)</span>
-                            <input type="color" value={draft.titleColor || '#ffffff'} onChange={(e) => updateDraft('titleColor', e.target.value)} className="w-full h-8 rounded-lg bg-transparent cursor-pointer" />
-                        </div>
+                    <div className="grid grid-cols-1 gap-2">
+                        <ColorControl label="Fundo (Body)" value={draft.bodyColor} onChange={(v: any) => updateDraft('bodyColor', v)} />
+                        <ColorControl label="Títulos (Title)" value={draft.titleColor} onChange={(v: any) => updateDraft('titleColor', v)} />
                     </div>
                 </div>
             </Section>

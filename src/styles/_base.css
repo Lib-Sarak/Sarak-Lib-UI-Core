@@ -71,3 +71,91 @@ body {
     margin-left: auto;
     margin-right: auto;
 }
+
+/* Sarak Industrial Scrollbars (v12.5) */
+::-webkit-scrollbar {
+  width: var(--sarak-scrollbar-width, 10px);
+  height: var(--sarak-scrollbar-width, 10px);
+}
+
+::-webkit-scrollbar-track {
+  background: rgba(0, 0, 0, 0.1);
+  border-radius: 10px;
+}
+
+::-webkit-scrollbar-thumb {
+  background: var(--sarak-scrollbar-thumb, rgba(255, 255, 255, 0.2));
+  border-radius: var(--sarak-scrollbar-radius, 10px);
+  border: 2px solid transparent;
+  background-clip: content-box;
+}
+
+::-webkit-scrollbar-thumb:hover {
+  background: var(--sarak-scrollbar-hover, var(--theme-primary, #00f2ff));
+  background-clip: content-box;
+}
+
+/* Sidebar Specific Scrollbar (High Visibility) */
+.custom-scrollbar-sidebar::-webkit-scrollbar {
+    width: 8px;
+}
+
+.custom-scrollbar-sidebar::-webkit-scrollbar-track {
+    background: rgba(255, 255, 255, 0.05);
+}
+
+.custom-scrollbar-sidebar::-webkit-scrollbar-thumb {
+    background: rgba(255, 255, 255, 0.4);
+    border-radius: 10px;
+    border: 2px solid transparent;
+    background-clip: content-box;
+}
+
+.custom-scrollbar-sidebar:hover::-webkit-scrollbar-thumb {
+    background: rgba(255, 255, 255, 0.6);
+}
+
+/* Force scrollbar track visibility */
+.custom-scrollbar-sidebar::-webkit-scrollbar-track {
+    background: rgba(255, 255, 255, 0.05);
+}
+
+/* Force scrollbar to stay visible on Firefox */
+.custom-scrollbar-sidebar {
+    scrollbar-width: thin;
+    scrollbar-color: rgba(255, 255, 255, 0.2) rgba(0, 0, 0, 0.1);
+}
+
+/* Horizontal Industrial Scrollbar */
+.custom-scrollbar-horizontal::-webkit-scrollbar {
+    height: 4px;
+}
+
+.custom-scrollbar-horizontal::-webkit-scrollbar-track {
+    background: rgba(255, 255, 255, 0.02);
+    border-radius: 10px;
+}
+
+.custom-scrollbar-horizontal::-webkit-scrollbar-thumb {
+    background: rgba(255, 255, 255, 0.3);
+    border-radius: 10px;
+}
+
+.custom-scrollbar-horizontal::-webkit-scrollbar-thumb:hover {
+    background: var(--theme-primary, #00f2ff);
+}
+
+/* Theme Mode Transitions */
+.sarak-design-scope.light {
+    --bg-body: #f8fafc;
+    --text-main: #0f172a;
+    --border-color: rgba(0,0,0,0.1);
+    --bg-card: rgba(255,255,255,0.8);
+}
+
+.sarak-design-scope.dark {
+    --bg-body: #020617;
+    --text-main: #ffffff;
+    --border-color: rgba(255,255,255,0.1);
+    --bg-card: rgba(15,23,42,0.6);
+}

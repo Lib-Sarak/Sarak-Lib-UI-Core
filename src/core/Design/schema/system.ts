@@ -8,6 +8,7 @@ import { ComponentSchema } from '../types';
 export const SystemSchema: ComponentSchema = {
     id: 'system',
     label: 'Configurações de Sistema',
+    pilar: 'identidade',
     tokens: [
         {
             id: 'moduleBlacklist',

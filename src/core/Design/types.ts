@@ -27,6 +27,7 @@ export interface DesignToken {
 export interface ComponentSchema {
     id: string;
     label: string;
+    pilar: 'identidade' | 'estetica' | 'visual';
     tokens: DesignToken[];
 }
 

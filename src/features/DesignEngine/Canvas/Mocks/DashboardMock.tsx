@@ -90,8 +90,8 @@ export const MockDashboard: React.FC<any> = ({ animationVariants, animationStyle
              {/* Cards de KPI Inferiores */}
              <div className="col-span-12 grid grid-cols-3" style={{ gap: 'var(--theme-gap)' }}>
                 {[
-                    { label: 'Conversion Rate', val: '3.2%', icon: Zap, color: 'text-amber-500' },
-                    { label: 'Active Users', val: '44.5k', icon: Globe, color: 'text-blue-500' },
+                    { label: 'Conversion Rate', val: '3.2%', icon: Zap, color: 'text-[var(--theme-secondary)]' },
+                    { label: 'Active Users', val: '44.5k', icon: Globe, color: 'text-[var(--theme-primary)]' },
                     { label: 'Bounce Rate', val: '12.4%', icon: Shield, color: 'text-emerald-500' }
                 ].map((stat, i) => (
                     <motion.div key={i} {...getAnim(i+2)} className="bg-theme-card sarak-card flex flex-col gap-6 relative overflow-hidden" style={cardStyle}>
