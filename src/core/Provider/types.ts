@@ -24,10 +24,15 @@ export interface SarakUIContextType {
     discoveryEndpoints: string[];
     design: any;
     draftDesign: any | null; // Rascunho ativo (para Live Preview)
+    isDrafting: boolean; // Flag explícita de modo rascunho
+    setIsDrafting: (active: boolean) => void;
+    lockDrafting: () => void;
     setDesign: (design: any) => void;
     setDraftDesign: (design: any | null) => void;
     applyConfig: (partial: any) => void;
     applyFullConfig: (config: any) => void;
+    applyConfigRaw: (partial: any) => void; // Canal direto para o sistema (ignora rascunho)
+    applyFullConfigRaw: (config: any) => void; // Canal direto para o sistema (ignora rascunho)
     registeredModules: any[];
     layouts: any[];
     isHydrated: boolean;

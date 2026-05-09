@@ -17,14 +17,13 @@ const formatKeyName = (key: string) => {
 
 export const ShortcutsTab: React.FC = () => {
     const sarak = useSarakUI();
-    const { applyFullConfig } = sarak;
     
     // Extração segura de propriedades de atalhos
     const shortcuts = (sarak as any).shortcuts || [];
     const registeredActions = (sarak as any).registeredActions || {};
     const updateShortcut = (sarak as any).updateShortcut || ((id: string, keys: string[]) => {
         // Fallback: tentar atualizar via config genérica se houver suporte futuro
-        applyFullConfig({ _shortcutUpdate: { id, keys } });
+        sarak.applyConfig({ _shortcutUpdate: { id, keys } });
     });
 
     const [editingId, setEditingId] = useState<string | null>(null);

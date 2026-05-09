@@ -27,8 +27,8 @@ export const useSarakUI = () => {
         throw new Error('useSarakUI must be used within a SarakUIProvider');
     }
     
-    // O design é o override (se houver, ex: dentro de um DesignScope/Preview) ou o sistema
-    const design = overrideDesign || context.design || {};
+    // O design é o override (se houver, ex: dentro de um DesignScope/Preview), o rascunho global ou o sistema
+    const design = overrideDesign || context.draftDesign || context.design || {};
 
     return {
         ...context,
@@ -65,6 +65,19 @@ export const SarakUIProvider: React.FC<SarakUIProviderProps> = ({
 
     // 3. Gerenciamento de Rascunho (Live Preview)
     const [draftDesign, setDraftDesign] = React.useState<any | null>(null);
+    const [isDrafting, setIsDraftingState] = React.useState(false);
+    const isDraftingRef = React.useRef(false);
+
+    // Sincroniza o estado visual com o Ref síncrono para evitar race conditions
+    const setIsDrafting = React.useCallback((active: boolean) => {
+        isDraftingRef.current = active;
+        setIsDraftingState(active);
+    }, []);
+
+    // Trava síncrona imediata (pode ser chamada durante a renderização)
+    const lockDrafting = React.useCallback(() => {
+        isDraftingRef.current = true;
+    }, []);
 
     // 4. Injeção de Fontes Avançadas (Core Optimization)
     useEffect(() => {
@@ -87,38 +100,45 @@ export const SarakUIProvider: React.FC<SarakUIProviderProps> = ({
 
     // 5. Interceptor Inteligente (Isolamento Draft vs System)
     const smartApplyConfig = React.useCallback((partial: any) => {
-        console.log('[SarakUIProvider] smartApplyConfig called with:', partial);
-        console.log('[SarakUIProvider] Current drafting status:', !!draftDesign);
-        
-        if (draftDesign) {
-            console.log('[SarakUIProvider] Updating DRAFT state');
-            setDraftDesign((prev: any) => ({ ...prev, ...partial }));
+        if (isDraftingRef.current || draftDesign) {
+            setDraftDesign((prev: any) => ({ ...(prev || design), ...partial }));
         } else {
-            console.log('[SarakUIProvider] Updating SYSTEM state');
             applyConfig(partial);
         }
-    }, [draftDesign, applyConfig]);
+    }, [design, applyConfig, draftDesign]);
+
+    const smartApplyFullConfig = React.useCallback((config: any) => {
+        if (isDraftingRef.current || draftDesign) {
+            setDraftDesign(config);
+        } else {
+            applyFullConfig(config);
+        }
+    }, [applyFullConfig, draftDesign]);
 
     // 6. Valor do Contexto (Memorizado)
     const uiContextValue = useMemo(() => ({
         discoveryEndpoints: options?.endpoints?.discovery || discoveryEndpoints || [],
         design,        // Estado persistido (Sistema)
         draftDesign,   // Estado volátil (Preview)
-        isDrafting: !!draftDesign,
-        setDesign,
+        isDrafting,
+        setIsDrafting,
+        lockDrafting,
+        setDesign,     // Mantemos o RAW para commits explícitos do Design Engine
         setDraftDesign,
         applyConfig: smartApplyConfig,
-        applyFullConfig,
+        applyFullConfig: smartApplyFullConfig,
+        applyConfigRaw: applyConfig,
+        applyFullConfigRaw: applyFullConfig,
         registeredModules,
         layouts: Object.values(LAYOUTS),
         isHydrated,
         options
-    }), [discoveryEndpoints, design, draftDesign, setDesign, setDraftDesign, smartApplyConfig, applyFullConfig, registeredModules, isHydrated, options]);
+    }), [discoveryEndpoints, design, draftDesign, isDrafting, setIsDrafting, lockDrafting, setDesign, setDraftDesign, smartApplyConfig, smartApplyFullConfig, applyConfig, applyFullConfig, registeredModules, isHydrated, options]);
 
     return (
         <UIContext.Provider value={uiContextValue}>
             <DesignInjector 
-                design={design} 
+                design={draftDesign || design} 
                 isDrafting={!!draftDesign} 
             />
             <NoiseOverlay />

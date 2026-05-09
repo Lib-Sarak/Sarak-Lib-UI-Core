@@ -154,6 +154,24 @@ export const SelectControl: React.FC<any> = ({ label, options, value, onChange, 
 );
 
 
+export const InputControl: React.FC<any> = ({ label, value, onChange, type = 'text', placeholder = '' }) => (
+    <div className="mb-3">
+        <div className="flex justify-between items-center mb-1.5">
+            <span className="text-[10px] font-black uppercase tracking-widest text-white/30 flex items-center gap-1.5">
+                {label}
+                <HelpTooltip label={label} />
+            </span>
+        </div>
+        <input 
+            type={type}
+            value={value ?? ''} 
+            placeholder={placeholder}
+            onChange={(e) => onChange(type === 'number' ? parseFloat(e.target.value) : e.target.value)}
+            className="w-full bg-white/5 border border-white/10 rounded-lg py-2 px-3 text-[10px] font-mono focus:border-[var(--theme-primary)] focus:outline-none transition-all text-white/80"
+        />
+    </div>
+);
+
 export const CategoryLabel: React.FC<{ 
     icon: any, 
     title: string, 
@@ -163,28 +181,39 @@ export const CategoryLabel: React.FC<{
     isDualView?: boolean,
     onToggleDual?: () => void,
     isDirty?: boolean,
-    onReset?: () => void
-}> = ({ icon: Icon, title, index, isOpen, onToggle, isDualView, onToggleDual, isDirty, onReset }) => (
+    onReset?: () => void,
+    onApply?: () => void,
+    pillarId?: string
+}> = ({ icon: Icon, title, index, isOpen, onToggle, isDualView, onToggleDual, isDirty, onReset, onApply, pillarId }) => (
     <div className={`w-full flex border-y border-white/5 transition-all ${isOpen ? 'bg-white/[0.03]' : 'bg-white/[0.01] hover:bg-white/[0.02]'}`}>
-        <button 
-            onClick={onToggle}
-            className="flex-1 px-6 py-4 flex items-center justify-between group"
-        >
-            <div className="flex items-center gap-3">
-                <div className={`w-6 h-6 rounded-lg flex items-center justify-center font-black text-2xs transition-all relative ${isOpen ? 'bg-[var(--theme-primary)] text-white shadow-[0_0_15px_rgba(var(--theme-primary-rgb),0.3)]' : 'bg-white/5 text-white/40'}`}>
-                    {index}
-                    {isDirty && !isOpen && (
-                        <div className="absolute -top-1 -right-1 w-2.5 h-2.5 bg-amber-500 rounded-full border-2 border-[#0a0a0b] animate-pulse" />
-                    )}
-                </div>
-                <div className="flex items-center gap-2">
-                    <Icon size={12} className={`transition-all ${isOpen ? 'text-[var(--theme-primary)]' : 'text-white/20'}`} />
-                    <h3 className={`text-2xs font-black uppercase tracking-[0.2em] transition-all ${isOpen ? 'text-white' : 'text-white/40'}`}>{title}</h3>
-                </div>
+    <div 
+        role="button"
+        tabIndex={0}
+        onClick={onToggle}
+        onKeyDown={(e) => {
+            if (e.key === 'Enter' || e.key === ' ') {
+                e.preventDefault();
+                onToggle();
+            }
+        }}
+        className="flex-1 px-6 py-4 flex items-center justify-between group cursor-pointer outline-none focus:bg-white/5"
+    >
+        <div className="flex items-center gap-3">
+            <div className={`w-6 h-6 rounded-lg flex items-center justify-center font-black text-2xs transition-all relative ${isOpen ? 'bg-[var(--theme-primary)] text-white shadow-[0_0_15px_rgba(var(--theme-primary-rgb),0.3)]' : 'bg-white/5 text-white/40'}`}>
+                {index}
+                {isDirty && !isOpen && (
+                    <div className="absolute -top-1 -right-1 w-2.5 h-2.5 bg-amber-500 rounded-full border-2 border-[#0a0a0b] animate-pulse" />
+                )}
             </div>
-            <div className="flex items-center gap-3">
-                <AnimatePresence>
-                    {isDirty && (
+            <div className="flex items-center gap-2">
+                <Icon size={12} className={`transition-all ${isOpen ? 'text-[var(--theme-primary)]' : 'text-white/20'}`} />
+                <h3 className={`text-2xs font-black uppercase tracking-[0.2em] transition-all ${isOpen ? 'text-white' : 'text-white/40'}`}>{title}</h3>
+            </div>
+        </div>
+        <div className="flex items-center gap-3">
+            <AnimatePresence>
+                {isDirty && (
+                    <div className="flex items-center gap-2">
                         <motion.button
                             initial={{ scale: 0, opacity: 0 }}
                             animate={{ scale: 1, opacity: 1 }}
@@ -195,11 +224,23 @@ export const CategoryLabel: React.FC<{
                         >
                             <RotateCcw size={10} />
                         </motion.button>
-                    )}
-                </AnimatePresence>
-                <ChevronDown size={14} className={`transition-transform duration-300 ${isOpen ? 'rotate-180 text-[var(--theme-primary)]' : 'text-white/20'}`} />
-            </div>
-        </button>
+                        
+                        <motion.button
+                            initial={{ scale: 0, opacity: 0 }}
+                            animate={{ scale: 1, opacity: 1 }}
+                            exit={{ scale: 0, opacity: 0 }}
+                            onClick={(e) => { e.stopPropagation(); onApply?.(); }}
+                            title={`Aplicar apenas o pilar ${title} ao sistema`}
+                            className="px-3 py-1.5 rounded-lg bg-[var(--theme-primary)]/10 text-[var(--theme-primary)] hover:bg-[var(--theme-primary)] hover:text-white text-[9px] font-black uppercase tracking-tighter transition-all active:scale-95 flex items-center gap-1.5"
+                        >
+                            <span>Commit {title}</span>
+                        </motion.button>
+                    </div>
+                )}
+            </AnimatePresence>
+            <ChevronDown size={14} className={`transition-transform duration-300 ${isOpen ? 'rotate-180 text-[var(--theme-primary)]' : 'text-white/20'}`} />
+        </div>
+    </div>
         
         {isOpen && onToggleDual && (
             <button 

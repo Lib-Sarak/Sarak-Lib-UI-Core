@@ -19,7 +19,7 @@ export const ModelPicker: React.FC<ModelPickerProps> = ({
   setModelSearch,
   setShowModelPicker
 }) => (
-  <div className="absolute bottom-full left-0 mb-3 w-80 bg-[#0f0f13] border border-white/10 rounded-2xl shadow-2xl backdrop-blur-2xl overflow-hidden z-50">
+  <div className="absolute bottom-full left-0 mb-3 w-80 bg-[var(--sarak-card-bg)] border border-[var(--sarak-card-border-color)] rounded-sarak shadow-2xl backdrop-blur-2xl overflow-hidden z-50">
     <div className="p-3">
       <div className="relative mb-3">
         <Search size={14} className="absolute left-3 top-1/2 -translate-y-1/2 text-slate-500" />

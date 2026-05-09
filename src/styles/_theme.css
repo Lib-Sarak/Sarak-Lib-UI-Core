@@ -1,20 +1,20 @@
 /* 0. TAILWIND v4 SOVEREIGN THEME (Plug & Play) */
 @theme {
-  --color-theme-primary: var(--primary-color);
-  --color-theme-secondary: var(--secondary-color);
-  --color-theme-accent: var(--accent-color);
-  --color-theme-surface: var(--surface-color);
-  --color-theme-body: var(--bg-body);
-  --color-theme-sidebar: var(--bg-sidebar);
-  --color-theme-card: var(--bg-card);
-  --color-theme-border: var(--border-color);
-  --color-theme-text: var(--text-main);
-  --color-theme-title: var(--text-title);
+  --color-theme-primary: var(--sarak-color-primary, var(--theme-primary, var(--primary-color)));
+  --color-theme-secondary: var(--sarak-secondary-color, var(--theme-secondary, var(--secondary-color)));
+  --color-theme-accent: var(--sarak-secondary-color, var(--theme-accent, var(--accent-color)));
+  --color-theme-surface: var(--sarak-card-bg, var(--theme-surface, var(--surface-color)));
+  --color-theme-body: var(--sarak-bg-base, var(--theme-body, var(--bg-body)));
+  --color-theme-sidebar: var(--sarak-sidebar-bg, var(--theme-sidebar, var(--bg-sidebar)));
+  --color-theme-card: var(--sarak-card-bg, var(--theme-card, var(--bg-card)));
+  --color-theme-border: var(--sarak-card-border-color, var(--theme-border, var(--border-color)));
+  --color-theme-text: var(--sarak-nav-color-default, var(--theme-text, var(--text-main)));
+  --color-theme-title: var(--sarak-topbar-title-color, var(--theme-title, var(--text-title)));
   --color-theme-muted: var(--text-muted);
   
   /* Escalas Geométricas */
-  --radius-sarak: var(--radius-theme);
-  --spacing-sarak-gap: var(--theme-gap);
+  --radius-sarak: var(--sarak-card-radius, var(--radius-theme));
+  --spacing-sarak-gap: var(--sarak-card-padding-md, var(--theme-gap));
   
   /* Fontes Dinâmicas */
   --font-sarak-heading: var(--font-heading);
@@ -37,18 +37,18 @@
   --font-size-2xl: calc(1.5rem * var(--font-size-factor, 1));
 
   /* Motor de Geometria Reativa (v8.5) */
-  --border-width: var(--theme-border-width, 1px);
-  --default-border-color: var(--theme-border);
+  --border-width: var(--sarak-card-border-width, var(--theme-border-width, 1px));
+  --default-border-color: var(--sarak-card-border-color, var(--theme-border));
   --default-ring-color: var(--theme-texture-color, var(--theme-primary));
 
   /* Ponte de Arredondamento (Sincroniza Tailwind com Slider de Radius) */
-  --radius-xs:  calc(0.125rem * (var(--radius-theme, 12px) / 12px));
-  --radius-sm:  calc(0.25rem  * (var(--radius-theme, 12px) / 12px));
-  --radius-md:  calc(0.375rem * (var(--radius-theme, 12px) / 12px));
-  --radius-lg:  calc(0.5rem   * (var(--radius-theme, 12px) / 12px));
-  --radius-xl:  calc(0.75rem  * (var(--radius-theme, 12px) / 12px));
-  --radius-2xl: calc(1rem     * (var(--radius-theme, 12px) / 12px));
-  --radius-3xl: calc(1.5rem   * (var(--radius-theme, 12px) / 12px));
+  --radius-xs:  calc(0.125rem * (var(--sarak-card-radius, var(--radius-theme, 12px)) / 12px));
+  --radius-sm:  calc(0.25rem  * (var(--sarak-card-radius, var(--radius-theme, 12px)) / 12px));
+  --radius-md:  calc(0.375rem * (var(--sarak-card-radius, var(--radius-theme, 12px)) / 12px));
+  --radius-lg:  calc(0.5rem   * (var(--sarak-card-radius, var(--radius-theme, 12px)) / 12px));
+  --radius-xl:  calc(0.75rem  * (var(--sarak-card-radius, var(--radius-theme, 12px)) / 12px));
+  --radius-2xl: calc(1rem     * (var(--sarak-card-radius, var(--radius-theme, 12px)) / 12px));
+  --radius-3xl: calc(1.5rem   * (var(--sarak-card-radius, var(--radius-theme, 12px)) / 12px));
   
   /* Motor de Profundidade Reativa */
   --shadow-sm: var(--theme-shadow);
@@ -57,16 +57,16 @@
   --shadow-lg: var(--theme-shadow);
   --shadow-xl: var(--theme-shadow);
 
-  /* Atomic Hierarchy Motor (v10.3) */
-  --sarak-border-radius-sm: var(--sarak-border-radius-sm, 4px);
-  --sarak-border-radius-md: var(--sarak-border-radius-md, 8px);
-  --sarak-border-radius-lg: var(--sarak-border-radius-lg, 12px);
+  /* Atomic Hierarchy Motor (v12.0 Sincronizado) */
+  --sarak-border-radius-sm: calc(var(--sarak-card-radius) * 0.33);
+  --sarak-border-radius-md: calc(var(--sarak-card-radius) * 0.66);
+  --sarak-border-radius-lg: var(--sarak-card-radius);
 
-  --sarak-layout-gap-sm: var(--sarak-layout-gap-sm, 8px);
-  --sarak-layout-gap-md: var(--sarak-layout-gap-md, 16px);
-  --sarak-layout-gap-lg: var(--sarak-layout-gap-lg, 24px);
+  --sarak-layout-gap-sm: calc(var(--sarak-card-padding-md) * 0.4);
+  --sarak-layout-gap-md: var(--sarak-card-padding-md);
+  --sarak-layout-gap-lg: calc(var(--sarak-card-padding-md) * 1.6);
 
-  --sarak-card-padding-sm: var(--sarak-card-padding-sm, 12px);
-  --sarak-card-padding-md: var(--sarak-card-padding-md, 20px);
-  --sarak-card-padding-lg: var(--sarak-card-padding-lg, 32px);
+  --sarak-card-padding-sm: calc(var(--sarak-card-padding-md) * 0.6);
+  --sarak-card-padding-md: var(--sarak-card-padding-md);
+  --sarak-card-padding-lg: calc(var(--sarak-card-padding-md) * 1.5);
 }

@@ -142,11 +142,14 @@ export const SarakShell: React.FC<SarakShellProps> = (props) => {
     }, [design, ui.options?.debug]);
 
     const isTopbar = design?.navigationStyle === 'topbar';
-    const isSidebar = design?.navigationStyle === 'sidebar' || !design?.navigationStyle; // Default to sidebar if missing
     const isDock = design?.navigationStyle === 'dock';
+    const isGlass = design?.navigationStyle === 'glass';
+    const isSidebar = design?.navigationStyle === 'sidebar' || (!isTopbar && !isDock && !isGlass);
+
+    const layoutClass = `layout-${design?.navigationStyle || 'sidebar'}`;
 
     return (
-        <div className="flex w-full h-screen overflow-hidden bg-[var(--theme-body)] text-[var(--theme-text)] font-sans selection:bg-[var(--theme-primary)] selection:text-white">
+        <div className={`flex w-full h-screen overflow-hidden bg-[var(--theme-body)] text-[var(--theme-text)] font-sans selection:bg-[var(--theme-primary)] selection:text-white ${layoutClass}`}>
             
             {/* HOVER SENSORS (v6.2) */}
             {design.isAutoHideEnabled && !shell.isNavVisible && (

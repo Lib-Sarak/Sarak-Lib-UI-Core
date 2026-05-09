@@ -84,7 +84,7 @@ interface SarakShellProps {
 declare const SarakShell: React$1.FC<SarakShellProps>;
 
 /**
- * useDesignDraft (v12.1)
+ * useDesignDraft (v12.1 - Data-Driven)
  * Orquestrador de rascunhos com isolamento de sandbox.
  */
 declare const useDesignDraft: (sarak: any) => {
@@ -96,6 +96,7 @@ declare const useDesignDraft: (sarak: any) => {
     resetToken: (tokenId: string) => void;
     handleThemePreview: (id: string) => void;
     handleApplyToSystem: () => void;
+    handleApplyPillar: (pillarId: string) => void;
     toast: {
         type: "success" | "warning";
         message: string;

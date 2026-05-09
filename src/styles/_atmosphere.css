@@ -1,4 +1,4 @@
-/* 2. ATMOSPHERE & TEXTURE ENGINE (v8.5) */
+/* 2. ATMOSPHERE & TEXTURE ENGINE (v12.0) */
 .SarakAtmosphereLayer,
 .sarak-atmosphere-layer {
     position: absolute;
@@ -7,54 +7,59 @@
     z-index: -1;
     overflow: hidden;
     will-change: opacity;
-    opacity: var(--sarak-bg-pattern-opacity, var(--theme-texture-opacity, var(--texture-opacity, 0.08)));
+    opacity: var(--sarak-bg-pattern-opacity, var(--theme-texture-opacity, 0.08));
     transition: opacity 0.5s ease;
-    /* Subpixel Precision Fix (v12.1) */
+    
+    /* Global Visual Processing */
+    filter: saturate(var(--sarak-saturation, 100%)) contrast(var(--sarak-contrast, 100%));
+    
+    /* Subpixel Precision Fix */
     backface-visibility: hidden;
     transform: translateZ(0);
-    -webkit-font-smoothing: antialiased;
+}
+
+/* Vignette Effect Layer */
+.SarakAtmosphereLayer::after {
+    content: '';
+    position: absolute;
+    inset: 0;
+    background: radial-gradient(circle, transparent 20%, rgba(0,0,0, var(--sarak-vignette-opacity, 0.4)) 100%);
+    pointer-events: none;
+    mix-blend-mode: multiply;
 }
 
 /* Layer-Specific Texture Overrides */
-.sarak-shell-sidebar .SarakAtmosphereLayer,
-.sarak-shell-sidebar .sarak-atmosphere-layer {
-    opacity: var(--sarak-sidebar-noise-opacity, var(--texture-opacity, 0.08));
+.sarak-shell-sidebar .SarakAtmosphereLayer {
+    opacity: var(--sarak-sidebar-noise-opacity, var(--sarak-bg-pattern-opacity, 0.08));
 }
 
-.sarak-shell-header .SarakAtmosphereLayer,
-.sarak-shell-header .sarak-atmosphere-layer {
-    opacity: var(--sarak-topbar-noise-opacity, var(--texture-opacity, 0.08));
+.bg-theme-card .SarakAtmosphereLayer {
+    opacity: var(--sarak-card-noise-opacity, var(--sarak-bg-pattern-opacity, 0.08));
 }
 
-.bg-theme-card .SarakAtmosphereLayer,
-.bg-theme-card .sarak-atmosphere-layer {
-    opacity: var(--sarak-card-noise-opacity, var(--texture-opacity, 0.08));
-}
-
-.SarakAtmosphereLayer::before,
-.sarak-atmosphere-layer::before {
-    content: "";
-    position: absolute;
-    inset: 0;
-    z-index: -1;
-    background-repeat: repeat;
+/* Glass Fidelity Engine */
+.sarak-glass, 
+[data-glass="1"] {
+    backdrop-filter: blur(var(--sarak-glass-blur, 12px)) saturate(var(--sarak-glass-saturation, 180%));
+    background-color: color-mix(in srgb, var(--sarak-bg-base), transparent calc(100% * (1 - var(--sarak-card-opacity, 0.8))));
+    border: var(--sarak-glass-edge-width, 1px) solid var(--sarak-glass-edge-color, rgba(255,255,255,0.1));
 }
 
 /* Texture Library Implementations */
 .texture-grid::before {
-    background-image: linear-gradient(var(--theme-border) 1px, transparent 1px), linear-gradient(90deg, var(--theme-border) 1px, transparent 1px);
+    background-image: linear-gradient(var(--sarak-card-border-color, var(--theme-border)) 1px, transparent 1px), 
+                      linear-gradient(90deg, var(--sarak-card-border-color, var(--theme-border)) 1px, transparent 1px);
     background-size: 100px 100px;
 }
 
 .texture-dots::before {
-    background-image: radial-gradient(var(--theme-texture-color, var(--theme-primary)) 1.5px, transparent 1.5px);
+    background-image: radial-gradient(var(--sarak-color-primary, var(--theme-primary)) 1.5px, transparent 1.5px);
     background-size: 32px 32px;
 }
 
 .texture-noise::before {
     background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 200 200' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.65' numOctaves='3' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)'/%3E%3C/svg%3E");
-    background-size: 200px 200px;
-    filter: contrast(150%) brightness(100%);
+    opacity: var(--sarak-noise-density, 0.05);
 }
 
 .texture-grain::before {

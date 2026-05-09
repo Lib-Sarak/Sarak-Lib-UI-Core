@@ -1,24 +1,28 @@
-/* 4. ATOMIC CARD ENGINE - INDUSTRIAL RENDERER (v8.5) */
+/* 4. ATOMIC CARD ENGINE - INDUSTRIAL RENDERER (v12.0) */
 .bg-theme-card {
     position: relative;
     isolation: isolate;
     overflow: hidden;
     
-    /* Geometria Básica */
-    border-radius: var(--radius-theme, 12px);
-    border: var(--theme-border-width, 1px) var(--border-style, solid) var(--theme-border);
-    padding: var(--theme-card-padding, 24px);
+    /* Geometria de Alta Fidelidade */
+    border-radius: var(--sarak-card-radius-tl, var(--sarak-card-radius, var(--radius-theme, 12px))) 
+                   var(--sarak-card-radius-tr, var(--sarak-card-radius, var(--radius-theme, 12px))) 
+                   var(--sarak-card-radius-br, var(--sarak-card-radius, var(--radius-theme, 12px))) 
+                   var(--sarak-card-radius-bl, var(--sarak-card-radius, var(--radius-theme, 12px)));
+    
+    border: var(--sarak-card-border-width, var(--theme-border-width, 1px)) var(--border-style, solid) var(--sarak-card-border-color, var(--theme-border));
+    padding: var(--sarak-card-padding-md, var(--theme-card-padding, 24px));
     
     /* Fundo Base (Sovereign Glass) */
-    background-color: color-mix(in srgb, var(--theme-card), transparent calc(100% * (1 - var(--glass-opacity, 0.7)))) !important;
+    background-color: color-mix(in srgb, var(--sarak-card-bg, var(--theme-card)), transparent calc(100% * (1 - var(--sarak-card-opacity, 0.8)))) !important;
     
     /* Sovereign Card Overrides */
     &:hover { background-color: var(--sarak-card-hover, initial) !important; }
     &:active { background-color: var(--sarak-card-active, initial) !important; }
     
     /* Motor de Filtros (Fidelidade Total) */
-    backdrop-filter: blur(var(--glass-blur, 10px)) saturate(var(--sarak-glass-saturation, 180%)) contrast(var(--contrast-curve, 100%));
-    -webkit-backdrop-filter: blur(var(--glass-blur, 10px)) saturate(var(--sarak-glass-saturation, 180%)) contrast(var(--contrast-curve, 100%));
+    backdrop-filter: blur(var(--sarak-card-blur, var(--glass-blur, 10px))) saturate(var(--sarak-glass-saturation, 180%)) contrast(var(--contrast-curve, 100%));
+    -webkit-backdrop-filter: blur(var(--sarak-card-blur, var(--glass-blur, 10px))) saturate(var(--sarak-glass-saturation, 180%)) contrast(var(--contrast-curve, 100%));
 
     /* Camada 0: Composição de Background (Spotlight + Texture) */
     background-image: var(--card-spotlight-image, none), var(--card-texture-image, none);
@@ -27,13 +31,26 @@
     background-size: cover, auto;
     
     /* Sombras Reativas */
-    box-shadow: var(--sarak-layered-shadows, var(--dynamic-shadow));
+    box-shadow: 0 var(--sarak-card-shadow-spread, 20px) calc(var(--sarak-card-shadow-spread, 20px) * 2) rgba(0, 0, 0, 0.4);
     
     /* Transição Fluida */
-    transition: transform var(--animation-speed, 0.4s) var(--ease-sarak-cubic), box-shadow var(--animation-speed, 0.4s) ease, border-color 0.2s ease, background-color 0.3s ease, backdrop-filter 0.3s ease;
+    transition: transform var(--sarak-anim-normal, 0.4s) var(--sarak-ease-main), box-shadow var(--sarak-anim-normal, 0.4s) ease, border-color 0.2s ease, background-color 0.3s ease, backdrop-filter 0.3s ease;
     
     /* Setup de Variáveis Internas */
     --card-spotlight-image: radial-gradient(600px circle at var(--mouse-px-x, 50%) var(--mouse-px-y, 50%), rgba(var(--theme-primary-rgb, 255,255,255), var(--spotlight-opacity, 0.15)), transparent 80%);
+}
+
+/* ANATOMIA INDUSTRIAL */
+.sarak-card-header {
+    background-color: var(--sarak-card-header-bg, rgba(255, 255, 255, 0.03));
+    border-bottom: 1px solid var(--sarak-card-header-border, rgba(255, 255, 255, 0.05));
+    padding: var(--sarak-card-header-padding, 16px);
+}
+
+.sarak-card-footer {
+    background-color: var(--sarak-card-footer-bg, transparent);
+    border-top: 1px solid var(--sarak-card-footer-border, rgba(255, 255, 255, 0.05));
+    padding: var(--sarak-card-header-padding, 16px);
 }
 
 /* 4.1 INTERACTIVE STATES */
@@ -44,9 +61,9 @@
 
 [data-hover-lift="1"] .bg-theme-card:hover,
 .bg-theme-card[data-hover-lift="1"]:hover {
-    transform: scale(1.01) translateY(-6px);
+    transform: scale(1.01) translateY(var(--sarak-card-hover-y, -6px));
     border-color: rgba(var(--theme-primary-rgb, 59, 130, 246), 0.5);
-    box-shadow: 0 32px 64px -16px rgba(0, 0, 0, 0.5), 0 0 30px rgba(var(--theme-primary-rgb, 59, 130, 246), 0.15);
+    box-shadow: 0 32px 64px -16px rgba(0, 0, 0, 0.5), 0 0 30px rgba(var(--theme-primary-rgb, 59, 130, 246), var(--sarak-card-hover-glow, 0.15));
 }
 
 /* Materials Integration (Card pseudo-layers) */

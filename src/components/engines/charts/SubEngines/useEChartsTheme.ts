@@ -8,11 +8,15 @@ export const hexToRgb = (hex: string): string => {
 
 export const useEChartsTheme = () => {
     const { design } = useSarakUI();
-    const { primaryColor, mode, bodyFont } = design || {};
-    const isDark = mode === 'dark';
     
-    const primaryRGB = hexToRgb(primaryColor || '#3b82f6');
-    const secondaryColor = '#8b5cf6';
+    // Fallbacks robustos para evitar erro 'undefined' no Canvas do ECharts
+    const primaryColor = design?.colorPrimary || design?.primaryColor || '#3b82f6';
+    const secondaryColor = design?.colorSecondary || design?.secondaryColor || '#8b5cf6';
+    const mode = design?.mode || 'dark';
+    const bodyFont = design?.bodyFont || 'Inter';
+    
+    const isDark = mode === 'dark';
+    const primaryRGB = hexToRgb(primaryColor);
     const secondaryRGB = hexToRgb(secondaryColor);
 
     const baseOption = useMemo(() => ({

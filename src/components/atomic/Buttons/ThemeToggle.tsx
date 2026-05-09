@@ -23,7 +23,7 @@ export const ThemeToggle: React.FC = () => {
             </button>
             
             {/* Dropdown de Temas */}
-            <div className="absolute right-0 top-full mt-2 w-64 max-h-[400px] overflow-y-auto bg-[#0f0f11] border border-white/10 rounded-xl shadow-2xl opacity-0 translate-y-2 pointer-events-none group-hover:opacity-100 group-hover:translate-y-0 group-hover:pointer-events-auto transition-sarak z-[100] p-2 custom-scrollbar">
+            <div className="absolute right-0 top-full mt-2 w-64 max-h-[400px] overflow-y-auto bg-[var(--sarak-card-bg)] border border-[var(--sarak-card-border-color)] rounded-sarak shadow-2xl opacity-0 translate-y-2 pointer-events-none group-hover:opacity-100 group-hover:translate-y-0 group-hover:pointer-events-auto transition-sarak z-[100] p-2 custom-scrollbar">
                 <div className="text-2xs font-bold text-white/30 uppercase tracking-widest px-3 py-2 border-b border-white/5 mb-1">
                     Layouts Premium Matrix
                 </div>

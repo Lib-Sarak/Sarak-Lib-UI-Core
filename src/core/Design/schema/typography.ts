@@ -8,6 +8,7 @@ export const TypographySchema: ComponentSchema = {
     id: 'typography',
     label: 'Tipografia & Escrita',
     pilar: 'visual',
+    targetApp: 'typography',
     tokens: [
         // --- FAMÍLIAS DE FONTES ---
         {

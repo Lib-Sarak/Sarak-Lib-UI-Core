@@ -47,8 +47,8 @@ export const ExpandableCard: React.FC<ExpandableCardProps> = ({
 
     return (
         <>
-            <div className={`bg-theme-card border border-theme-border p-6 rounded-theme shadow-theme flex flex-col relative group transition-sarak ${isExpanded ? 'opacity-0 pointer-events-none' : ''} ${className}`}>
-                <div className="w-full flex justify-between items-start mb-6">
+            <div className={`bg-theme-card border border-theme-border rounded-sarak shadow-theme flex flex-col relative group transition-sarak ${isExpanded ? 'opacity-0 pointer-events-none' : ''} ${className}`}>
+                <div className="sarak-card-header w-full flex justify-between items-start">
                     <h3 className="text-xs font-black text-theme-main uppercase tracking-widest flex items-center gap-2">
                         {iconContent}
                         <span className="truncate">{title}</span>
@@ -64,7 +64,7 @@ export const ExpandableCard: React.FC<ExpandableCardProps> = ({
                         </button>
                     </div>
                 </div>
-                <div className={`w-full flex-1 flex flex-col relative ${contentClassName}`} style={dynamicStyle}>
+                <div className={`w-full flex-1 flex flex-col relative p-[var(--sarak-card-padding-md,24px)] ${contentClassName}`} style={dynamicStyle}>
                     {children}
                 </div>
             </div>
@@ -74,7 +74,7 @@ export const ExpandableCard: React.FC<ExpandableCardProps> = ({
                     {isExpanded && (
                         <motion.div
                             initial={{ opacity: 0, backdropFilter: 'blur(0px)' }}
-                            animate={{ opacity: 1, backdropFilter: 'blur(var(--glass-blur))' }}
+                            animate={{ opacity: 1, backdropFilter: 'blur(var(--sarak-glass-blur, 12px))' }}
                             exit={{ opacity: 0, backdropFilter: 'blur(0px)' }}
                             transition={{ duration: 0.3 }}
                             className="fixed inset-0 z-[99999] bg-theme-body flex flex-col"
@@ -95,14 +95,14 @@ export const ExpandableCard: React.FC<ExpandableCardProps> = ({
                                         {helpButton && <div className="flex items-center">{helpButton}</div>}
                                         <button
                                             onClick={() => setIsExpanded(false)}
-                                            className="p-3 bg-theme-card hover:bg-theme-primary/20 text-theme-primary border border-theme-border rounded-[calc(var(--radius-theme)*2)] transition-sarak shadow-lg cursor-pointer shrink-0 ml-2"
+                                            className="p-3 bg-theme-card hover:bg-theme-primary/20 text-theme-primary border border-theme-border rounded-sarak transition-sarak shadow-lg cursor-pointer shrink-0 ml-2"
                                             title="Fechar"
                                         >
                                             <X className="w-5 h-5 sm:w-6 sm:h-6" />
                                         </button>
                                     </div>
                                 </div>
-                                <div className={`flex-1 w-full relative flex flex-col min-h-0 bg-theme-card rounded-[var(--radius-theme)] border border-theme-border shadow-theme ${contentClassName}`}>
+                                <div className={`flex-1 w-full relative flex flex-col min-h-0 bg-theme-card rounded-sarak border border-theme-border shadow-theme ${contentClassName} p-[var(--sarak-card-padding-md,24px)]`}>
                                     {children}
                                 </div>
                             </motion.div>

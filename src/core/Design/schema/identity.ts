@@ -7,6 +7,7 @@ export const IdentitySchema: ComponentSchema = {
     id: 'identity',
     label: 'Branding & Identidade',
     pilar: 'identidade',
+    targetApp: 'kitchen-sink',
     tokens: [
         // --- TEMA MASTER ---
         {

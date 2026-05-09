@@ -7,37 +7,24 @@ export const ShellSchema: ComponentSchema = {
     id: 'shell',
     label: 'Estrutura & Navegação',
     pilar: 'estetica',
+    targetApp: 'kitchen-sink',
     tokens: [
         // --- ESTRUTURA MASTER ---
         {
-            id: 'layout',
-            label: 'Layout do Sistema',
-            category: 'Estrutura Master',
-            type: 'select',
-            constraints: {
-                options: [
-                    { id: 'sidebar', label: 'Sidebar (Fixo Esquerda)' },
-                    { id: 'topbar', label: 'Topbar (Fixo Superior)' },
-                    { id: 'glass', label: 'Glass (Soberano)' }
-                ]
-            },
-            defaultValue: 'glass',
-            cssVars: ['--sarak-layout-type']
-        },
-        {
             id: 'navigationStyle',
-            label: 'Estilo de Navegação',
+            label: 'Arquitetura de Navegação',
             category: 'Estrutura Master',
             type: 'select',
             constraints: {
                 options: [
-                    { id: 'sidebar', label: 'Sidebar Vertical' },
-                    { id: 'topbar', label: 'Topbar Horizontal' },
-                    { id: 'floating', label: 'Floating (Doca)' }
+                    { id: 'sidebar', label: 'Sidebar Vertical (Fixo Esquerda)' },
+                    { id: 'topbar', label: 'Topbar Horizontal (Fixo Superior)' },
+                    { id: 'dock', label: 'Doca Flutuante (Dock)' },
+                    { id: 'glass', label: 'Glass (Soberano / Transparente)' }
                 ]
             },
             defaultValue: 'sidebar',
-            cssVars: ['--sarak-nav-style']
+            cssVars: ['--sarak-nav-style', '--sarak-layout-type']
         },
 
         // --- SIDEBAR CONTAINER ---

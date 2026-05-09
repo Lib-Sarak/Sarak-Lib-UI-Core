@@ -29,6 +29,7 @@ export interface ComponentSchema {
     label: string;
     pilar: 'identidade' | 'estetica' | 'visual';
     tokens: DesignToken[];
+    targetApp?: string; // App de preview sugerido para este componente
 }
 
 export interface MasterDesignSchema {

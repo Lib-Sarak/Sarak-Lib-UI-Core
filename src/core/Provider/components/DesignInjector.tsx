@@ -41,18 +41,17 @@ export const DesignInjector: React.FC<{ design: any; isDrafting: boolean }> = ({
     useIsomorphicLayoutEffect(() => {
         if (typeof document === 'undefined' || !s) return;
 
-        console.log('[DesignInjector] Effect triggered. isDrafting:', isDrafting);
+        // 1. Verificação de Mudança Real (Audit Level 12.5)
+        const hasDesignChanged = !prevDesignRef.current || JSON.stringify(s) !== JSON.stringify(prevDesignRef.current);
 
-        // CRITICAL: Se estivermos em modo de rascunho, bloqueamos a injeção global.
-        // Isso impede que mudanças no design vazem para o sistema antes do "Apply".
-        if (isDrafting) {
-            console.log('[DesignInjector] Bypassing global injection because a draft is active.');
-            return;
-        }
+        if (!hasDesignChanged) return;
+
+        console.log('[DesignInjector] Syncing global styles for:', isDrafting ? 'DRAFT' : 'SYSTEM');
 
         console.log('[DesignInjector] Starting global injection for design:', s);
 
         const root = document.documentElement;
+
         const body = document.body;
 
         // 1. Injetar Variáveis do Mapa Mestre

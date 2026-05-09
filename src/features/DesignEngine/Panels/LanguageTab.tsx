@@ -6,16 +6,14 @@ import { motion, AnimatePresence } from 'framer-motion';
 
 export const LanguageTab: React.FC = () => {
     const sarak = useSarakUI();
-    const { applyFullConfig } = sarak;
     
     // Extração segura com fallbacks para modo standalone
     const language = (sarak as any).language || 'pt-BR';
     const enabledLanguages = (sarak as any).enabledLanguages || ['pt-BR'];
     const availableLanguages = (sarak as any).availableLanguages || LANGUAGES;
 
-
-    const setLanguage = (val: string) => applyFullConfig({ language: val });
-    const setEnabledLanguages = (val: string[]) => applyFullConfig({ enabledLanguages: val });
+    const setLanguage = (val: string) => sarak.applyConfig({ language: val });
+    const setEnabledLanguages = (val: string[]) => sarak.applyConfig({ enabledLanguages: val });
 
     const [searchQuery, setSearchQuery] = useState("");
 

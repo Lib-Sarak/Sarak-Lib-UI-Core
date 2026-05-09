@@ -4,7 +4,7 @@ import {
     Zap, Shield, BarChart3, MessageSquare, History, Box, Network, Type, Grid, Sparkles, Search, Bell, Lock
 } from 'lucide-react';
 import { THEME_EFFECTS } from '../../../core/Design/presets/animations';
-import { UIContext } from '../../../core/Provider/SarakUIProvider';
+import { UIContext, useSarakUI } from '../../../core/Provider/SarakUIProvider';
 import { MockDashboard, MockChat, MockLogs, MockSettings, MockComponents, MockTypography, MockAuth } from './MockApps';
 import { KitchenSinkPreview } from './KitchenSinkPreview';
 import { GalleryRouter } from './Galleries/GalleryRouter';
@@ -25,6 +25,7 @@ interface PreviewCanvasProps {
     onUpdateDraft: (key: string, value: any) => void;
     isDualView?: boolean;
     customThemes?: any[];
+    sarak: any;
 }
 
 export const PreviewCanvas: React.FC<PreviewCanvasProps> = ({
@@ -37,12 +38,29 @@ export const PreviewCanvas: React.FC<PreviewCanvasProps> = ({
     activeCategory,
     onUpdateDraft,
     isDualView,
-    customThemes = []
+    customThemes = [],
+    sarak
 }) => {
 
-    const tokens = React.useMemo(() => {
-        return { ...draftTokens };
-    }, [draftTokens]);
+    const parentContext = useSarakUI();
+    const tokens = React.useMemo(() => ({ ...draftTokens }), [draftTokens]);
+    
+    const previewContextValue = React.useMemo(() => ({
+        ...parentContext,
+        design: tokens,
+        isDrafting: true,
+        // Sobrescrita total para garantir isolamento no preview
+        applyConfig: (partial: any) => {
+            Object.entries(partial).forEach(([key, value]) => {
+                onUpdateDraft(key, value);
+            });
+        },
+        applyFullConfig: (config: any) => {
+            Object.entries(config).forEach(([key, value]) => {
+                onUpdateDraft(key, value);
+            });
+        }
+    }), [parentContext, tokens, onUpdateDraft]);
 
     const apps: any = {
         dashboard: <MockDashboard tokens={tokens} config={config} animationVariants={THEME_EFFECTS.page} animationStyle={previewAnimationStyle} />,
@@ -70,13 +88,13 @@ export const PreviewCanvas: React.FC<PreviewCanvasProps> = ({
 
     };
 
-    const LogoComponent = () => {
-        const logoSrc = tokens.mode === 'light' ? (tokens.logoUrl || tokens.logoDarkUrl) : (tokens.logoDarkUrl || tokens.logoUrl);
-        const scale = tokens.logoScale || 1.0;
-        const opacity = tokens.logoOpacity ?? 1;
-        const rotation = tokens.logoRotation ?? 0;
-        const shadow = tokens.logoDropShadow || 'none';
-        const animation = tokens.logoAnimationType || 'none';
+    const LogoComponent = ({ design }: { design: any }) => {
+        const logoSrc = design.mode === 'light' ? (design.logoUrl || design.logoDarkUrl) : (design.logoDarkUrl || design.logoUrl);
+        const scale = design.logoScale || 1.0;
+        const opacity = design.logoOpacity ?? 1;
+        const rotation = design.logoRotation ?? 0;
+        const shadow = design.logoDropShadow || 'none';
+        const animation = design.logoAnimationType || 'none';
         
         // Base size is 32px, scaled by logoScale
         const logoSize = 32 * scale;
@@ -90,7 +108,7 @@ export const PreviewCanvas: React.FC<PreviewCanvasProps> = ({
 
         return (
             <div 
-                className={`flex items-center gap-3 ${tokens.logoPosition === 'center' ? 'flex-col text-center' : 'flex-row'} transition-all duration-500`}
+                className={`flex items-center gap-3 ${design.logoPosition === 'center' ? 'flex-col text-center' : 'flex-row'} transition-all duration-500`}
                 style={{ 
                     opacity, 
                     transform: `rotate(${rotation}deg)`,
@@ -112,9 +130,9 @@ export const PreviewCanvas: React.FC<PreviewCanvasProps> = ({
                         <Zap size={logoSize * 0.5} />
                     </div>
                 )}
-                {!tokens.isNavHidden && (
+                {!design.isNavHidden && (
                     <span className="font-bold text-[var(--theme-title)] text-2xs tracking-widest uppercase truncate max-w-[120px]">
-                        {tokens.systemName || 'SARAK'}
+                        {design.systemName || 'SARAK'}
                     </span>
                 )}
             </div>
@@ -135,56 +153,57 @@ export const PreviewCanvas: React.FC<PreviewCanvasProps> = ({
         </div>
     );
 
-    const renderSystemContent = () => (
-        <DesignScope design={tokens} className="w-full h-full flex flex-col bg-[var(--theme-bg)] transition-all duration-500 overflow-hidden relative">
-            {/* Escala para simular tela cheia em miniatura */}
-            <div className="absolute inset-0 origin-top-left overflow-hidden z-10" style={{ transform: 'scale(0.5)', width: '200%', height: '200%' }}>
-                {tokens.layout === 'topbar' ? (
-                    <div className="flex flex-col w-full h-full relative">
-                        {/* Texture layer inside the scaled context — renders at 200% size, shrinks correctly */}
-                        {tokens.texture && tokens.texture !== 'none' && (
-                            <div className={`absolute inset-0 pointer-events-none z-0 texture-${tokens.texture} SarakAtmosphereLayer`} style={{ opacity: 'var(--theme-texture-opacity)' }} />
-                        )}
-                        <header className="h-[var(--sarak-topbar-height,112px)] border-b border-[var(--theme-border)] flex items-center justify-between px-12 bg-[var(--sarak-topbar-bg,var(--theme-card))]/40 backdrop-blur-[var(--sarak-glass-blur,var(--sarak-topbar-blur,16px))] relative z-10">
-                            <div className="origin-left"><LogoComponent /></div>
-                            <nav className="flex gap-8">
-                                {appIds.map(id => (
-                                    <button key={id} onClick={() => setActivePreviewApp(id)} className={`p-4 rounded-xl transition-all scale-150 ${activePreviewApp === id ? 'text-[var(--theme-primary)]' : 'text-[var(--theme-muted)]'}`}>
-                                        {appIcons[id]}
-                                    </button>
-                                ))}
-                            </nav>
-                            <div className="scale-150 origin-right"><UserWidget variant="horizontal" /></div>
-                        </header>
-                        <main className="flex-1 overflow-y-auto p-16 relative z-10">{apps[activePreviewApp]}</main>
-                    </div>
-                ) : (
-                    <div className="flex w-full h-full relative">
-                        {/* Texture layer inside the scaled context — renders at 200% size, shrinks correctly */}
-                        {tokens.texture && tokens.texture !== 'none' && (
-                            <div className={`absolute inset-0 pointer-events-none z-0 texture-${tokens.texture} SarakAtmosphereLayer`} style={{ opacity: 'var(--theme-texture-opacity)' }} />
-                        )}
-                        <aside className="w-[var(--sarak-sidebar-width,400px)] border-r border-[var(--theme-border)] flex flex-col bg-[var(--sarak-sidebar-bg,var(--theme-card))]/40 backdrop-blur-[var(--sarak-glass-blur,var(--sarak-sidebar-blur,16px))] relative z-10">
-                            <div className="p-12 origin-top-left"><LogoComponent /></div>
-                            <nav className="flex-1 p-8 space-y-4">
-                                {appIds.map(id => (
-                                    <button key={id} onClick={() => setActivePreviewApp(id)} className={`w-full flex items-center gap-6 px-8 py-6 rounded-2xl transition-all text-sm font-black uppercase scale-110 origin-left ${activePreviewApp === id ? 'bg-[var(--theme-primary)] text-white shadow-xl' : 'text-[var(--theme-muted)] hover:bg-white/5'}`}>
-                                        <div className="scale-150">{appIcons[id]}</div> {id}
-                                    </button>
-                                ))}
-                            </nav>
-                            <div className="scale-150 origin-bottom-left"><UserWidget /></div>
-                        </aside>
-                        <main className="flex-1 overflow-y-auto p-16 relative z-10">{apps[activePreviewApp]}</main>
-                    </div>
-                )}
-            </div>
-        </DesignScope>
-    );
+    const renderSystemContent = (useSystemDesign = false) => {
+        const activeDesign = useSystemDesign ? (sarak?.design || {}) : tokens;
+
+        return (
+            <DesignScope design={activeDesign} className="w-full h-full flex flex-col bg-[var(--theme-bg)] transition-all duration-500 overflow-hidden relative">
+                <div className="absolute inset-0 origin-top-left overflow-hidden z-10" style={{ transform: 'scale(0.5)', width: '200%', height: '200%' }}>
+                    {activeDesign.layout === 'topbar' ? (
+                        <div className="flex flex-col w-full h-full relative">
+                            {activeDesign.texture && activeDesign.texture !== 'none' && (
+                                <div className={`absolute inset-0 pointer-events-none z-0 texture-${activeDesign.texture} SarakAtmosphereLayer`} style={{ opacity: 'var(--theme-texture-opacity)' }} />
+                            )}
+                            <header className="h-[var(--sarak-topbar-height,112px)] border-b border-[var(--theme-border)] flex items-center justify-between px-12 bg-[var(--sarak-topbar-bg,var(--theme-card))]/40 backdrop-blur-[var(--sarak-glass-blur,var(--sarak-topbar-blur,16px))] relative z-10">
+                                <div className="origin-left"><LogoComponent design={activeDesign} /></div>
+                                <nav className="flex gap-8">
+                                    {appIds.map(id => (
+                                        <button key={id} onClick={() => setActivePreviewApp(id)} className={`p-4 rounded-xl transition-all scale-150 ${activePreviewApp === id ? 'text-[var(--theme-primary)]' : 'text-[var(--theme-muted)]'}`}>
+                                            {appIcons[id]}
+                                        </button>
+                                    ))}
+                                </nav>
+                                <div className="scale-150 origin-right"><UserWidget variant="horizontal" /></div>
+                            </header>
+                            <main className="flex-1 overflow-y-auto p-16 relative z-10">{apps[activePreviewApp]}</main>
+                        </div>
+                    ) : (
+                        <div className="flex w-full h-full relative">
+                            {activeDesign.texture && activeDesign.texture !== 'none' && (
+                                <div className={`absolute inset-0 pointer-events-none z-0 texture-${activeDesign.texture} SarakAtmosphereLayer`} style={{ opacity: 'var(--theme-texture-opacity)' }} />
+                            )}
+                            <aside className="w-[var(--sarak-sidebar-width,400px)] border-r border-[var(--theme-border)] flex flex-col bg-[var(--sarak-sidebar-bg,var(--theme-card))]/40 backdrop-blur-[var(--sarak-glass-blur,var(--sarak-sidebar-blur,16px))] relative z-10">
+                                <div className="p-12 origin-top-left"><LogoComponent design={activeDesign} /></div>
+                                <nav className="flex-1 p-8 space-y-4">
+                                    {appIds.map(id => (
+                                        <button key={id} onClick={() => setActivePreviewApp(id)} className={`w-full flex items-center gap-6 px-8 py-6 rounded-2xl transition-all text-sm font-black uppercase scale-110 origin-left ${activePreviewApp === id ? 'bg-[var(--theme-primary)] text-white shadow-xl' : 'text-[var(--theme-muted)] hover:bg-white/5'}`}>
+                                            <div className="scale-150">{appIcons[id]}</div> {id}
+                                        </button>
+                                    ))}
+                                </nav>
+                                <div className="scale-150 origin-bottom-left"><UserWidget /></div>
+                            </aside>
+                            <main className="flex-1 overflow-y-auto p-16 relative z-10">{apps[activePreviewApp]}</main>
+                        </div>
+                    )}
+                </div>
+            </DesignScope>
+        );
+    };
 
     return (
         <div className="flex-grow flex flex-col relative overflow-hidden bg-[#050505] p-2 items-center justify-center">
-            <UIContext.Provider value={{ design: tokens } as any}>
+            <UIContext.Provider value={previewContextValue as any}>
                 <div className="w-full h-full flex flex-col lg:flex-row gap-8 p-6 overflow-auto justify-center items-center custom-scrollbar">
                     {isDualView ? (
                         <>
@@ -192,9 +211,9 @@ export const PreviewCanvas: React.FC<PreviewCanvasProps> = ({
                             <div className="relative shrink-0 flex-1 w-full max-w-[960px] aspect-[16/10] rounded-[2.5rem] border border-white/10 shadow-2xl overflow-hidden bg-black transition-all duration-500">
                                 <div className="absolute top-4 left-6 z-50 flex items-center gap-2">
                                     <div className="w-2 h-2 rounded-full bg-emerald-500 animate-pulse" />
-                                    <span className="text-[10px] font-black uppercase tracking-[0.2em] text-white/40">Gêmeo Digital (Real-Time)</span>
+                                    <span className="text-[10px] font-black uppercase tracking-[0.2em] text-white/40">Gêmeo Digital (Real-Time System)</span>
                                 </div>
-                                {renderSystemContent()}
+                                {renderSystemContent(true)} {/* Passamos um flag para usar o design do sistema */}
                             </div>
 
                             {/* Catalog Preview - Agora Responsivo */}
