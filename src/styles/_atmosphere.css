@@ -18,6 +18,16 @@
     transform: translateZ(0);
 }
 
+/* Base Pseudo-element for Texture Rendering (v12.1 Fix) */
+.SarakAtmosphereLayer::before,
+.sarak-atmosphere-layer::before {
+    content: '';
+    position: absolute;
+    inset: 0;
+    pointer-events: none;
+    background-repeat: repeat;
+}
+
 /* Vignette Effect Layer */
 .SarakAtmosphereLayer::after {
     content: '';

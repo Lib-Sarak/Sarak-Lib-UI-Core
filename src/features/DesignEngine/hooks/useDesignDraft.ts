@@ -20,22 +20,32 @@ const areValuesEqual = (valA: any, valB: any) => {
  */
 export const useDesignDraft = (sarak: any) => {
     // 1. Estado do Rascunho (Sandbox)
-    // Inicializamos apenas com os dados reais de design para evitar poluição de funções
-    const [draft, setDraft] = useState<any>(() => {
-        const initialState: Record<string, any> = {};
-        const allTokens = getAllDesignTokens();
+    // v12.2 - Inicialização Nula: O rascunho começa nulo para seguir o sistema 
+    // sem criar uma cópia dessincronizada no mount.
+    const [draftState, setDraftState] = useState<any | null>(sarak.draftDesign);
+
+    // 2. Resolução Dinâmica (Ground Truth)
+    // Se não há rascunho ativo, usamos o design do sistema.
+    const draft = useMemo(() => {
+        if (draftState) return draftState;
         
-        // Populamos com o estado atual do sistema (sarak.design) ou default
+        // Fallback para o design do sistema ou defaults totais se nada existir
+        const base = sarak.systemDesign || {};
+        const allTokens = getAllDesignTokens();
+        const resolved: any = { ...base };
+        
         allTokens.forEach(token => {
-            initialState[token.id] = sarak.design?.[token.id] ?? token.defaultValue;
+            if (resolved[token.id] === undefined) {
+                resolved[token.id] = token.defaultValue;
+            }
         });
 
-        // Garantimos propriedades de controle que podem não estar nos tokens mas são essenciais
-        initialState.layout = sarak.design?.layout || 'glass';
-        initialState.mode = sarak.design?.mode || 'dark';
-
-        return initialState;
-    });
+        // Propriedades estruturais obrigatórias
+        if (!resolved.layout) resolved.layout = base.layout || 'glass';
+        if (!resolved.mode) resolved.mode = base.mode || 'dark';
+        
+        return resolved;
+    }, [draftState, sarak.systemDesign]);
 
     const [toast, setToast] = useState<{ type: 'success' | 'warning', message: string } | null>(null);
 
@@ -44,88 +54,92 @@ export const useDesignDraft = (sarak: any) => {
         setTimeout(() => setToast(null), 3000);
     };
 
-    // 2. Mapeamento Dinâmico de Tokens por Pilar (Baseado no Mapa Mestre)
+    // 3. Mapeamento Dinâmico de Tokens por Pilar
     const getTokensByPillar = useCallback((pillarId: string) => {
         const pillarTokens = MASTER_DESIGN_MAP.components
             .filter(c => c.pilar === pillarId)
             .flatMap(c => c.tokens.map(t => t.id));
             
-        // Injeção de propriedades estruturais no pilar correto de forma dinâmica
-        // (Isso será movido para o schema em versões futuras)
         if (pillarId === 'identidade') {
             const structural = ['layout', 'mode', 'systemName', 'logoUrl', 'logoDarkUrl', 'fontScale'];
             structural.forEach(key => {
                 if (!pillarTokens.includes(key)) pillarTokens.push(key);
             });
         }
-        
         return pillarTokens;
     }, []);
 
-    // 1. Bloqueio Atômico Síncrono (Fase de Renderização)
-    // Garante que o firewall esteja ativo antes de qualquer componente filho montar.
+    // 4. Bloqueio Atômico Síncrono
     if (!sarak.isDrafting) {
         sarak.lockDrafting();
     }
 
-    // 2. Sincronização de Estado e Cleanup
     React.useLayoutEffect(() => {
         sarak.setIsDrafting(true);
         return () => {
             sarak.setIsDrafting(false);
-            sarak.setDraftDesign(null);
         };
     }, []);
 
-    // 3. Cálculo de Dirty State
+    // 5. Cálculo de Dirty State
     const isPillarDirty = useCallback((pillarId: string) => {
+        if (!draftState) return false;
         const allKeys = getTokensByPillar(pillarId);
-        return allKeys.some(key => !areValuesEqual(draft[key], sarak.design?.[key]));
-    }, [draft, sarak.design, getTokensByPillar]);
+        return allKeys.some(key => !areValuesEqual(draftState[key], sarak.systemDesign?.[key]));
+    }, [draftState, sarak.systemDesign, getTokensByPillar]);
 
     const isDirty = useMemo(() => {
-        const allKeys = Object.keys(draft);
-        return allKeys.some(key => !areValuesEqual(draft[key], sarak.design?.[key]));
-    }, [draft, sarak.design]);
+        if (!draftState) return false;
+        const allKeys = Object.keys(draftState);
+        return allKeys.some(key => !areValuesEqual(draftState[key], sarak.systemDesign?.[key]));
+    }, [draftState, sarak.systemDesign]);
 
-    // 4. Ponte de Live Preview (Sincroniza rascunho com o Provider)
-    // 4.1. Sincronização em Tempo Real (Draft -> Provider)
+    // 6. Ponte de Live Preview (Sincroniza com o Provider)
     useEffect(() => {
         if (!sarak.setDraftDesign) return;
-
-        // Otimização: Apenas sincroniza se o draft for realmente diferente do draft atual do provider
-        if (JSON.stringify(draft) !== JSON.stringify(sarak.draftDesign)) {
-            sarak.setDraftDesign(draft);
+        
+        // Se o draftState for null, não enviamos nada (o provider usará o systemDesign)
+        // Isso previne que o provider trave no "Cyan" se o rascunho local ainda estiver limpo.
+        if (draftState === null) {
+            if (sarak.draftDesign !== null) {
+                sarak.setDraftDesign(null);
+            }
+            return;
         }
-    }, [draft, sarak.setDraftDesign, sarak.draftDesign]);
 
-    // 4.2. Sincronização Inversa (Provider -> Draft)
-    // Essencial para componentes externos (ThemeToggle, PaletteSelector) refletirem no painel
+        if (JSON.stringify(draftState) !== JSON.stringify(sarak.draftDesign)) {
+            sarak.setDraftDesign(draftState);
+        }
+    }, [draftState, sarak.setDraftDesign, sarak.draftDesign]);
+
+    // 7. Sincronização Inversa (External Changes -> Local Draft)
     useEffect(() => {
-        if (!sarak.draftDesign) return;
+        if (!sarak.draftDesign) {
+            if (draftState !== null) setDraftState(null);
+            return;
+        }
 
-        // Se o rascunho do Provider mudou externamente, atualizamos o estado local
-        if (JSON.stringify(sarak.draftDesign) !== JSON.stringify(draft)) {
-            setDraft(sarak.draftDesign);
+        if (JSON.stringify(sarak.draftDesign) !== JSON.stringify(draftState)) {
+            setDraftState(sarak.draftDesign);
         }
     }, [sarak.draftDesign]);
 
-    // 4.2. Limpeza apenas na desmontagem completa (Unmount)
+    // 8. Limpeza Final
     useEffect(() => {
         return () => {
-            if (sarak.setDraftDesign) {
-                sarak.setDraftDesign(null);
-            }
+            if (sarak.setDraftDesign) sarak.setDraftDesign(null);
         };
     }, []); 
+
 
     /**
      * Atualiza o rascunho
      */
     const updateDraft = (key: string, value: any) => {
-        setDraft((prev: any) => {
-            if (prev[key] === value) return prev;
-            return { ...prev, [key]: value };
+        setDraftState((prev: any) => {
+            const current = prev || draft;
+            if (current[key] === value) return prev;
+            return { ...current, [key]: value };
         });
     };
 
@@ -133,8 +147,8 @@ export const useDesignDraft = (sarak: any) => {
      * Aplica um conjunto de tokens ao rascunho (Patch)
      */
     const applyPatch = (patch: Record<string, any>) => {
-        setDraft((prev: any) => ({
-            ...prev,
+        setDraftState((prev: any) => ({
+            ...(prev || draft),
             ...patch
         }));
     };
@@ -145,10 +159,11 @@ export const useDesignDraft = (sarak: any) => {
     const resetPillar = (pillarId: string) => {
         const pillarKeys = getTokensByPillar(pillarId);
         
-        setDraft((prev: any) => {
-            const newDraft = { ...prev };
+        setDraftState((prev: any) => {
+            const current = prev || draft;
+            const newDraft = { ...current };
             pillarKeys.forEach(key => {
-                newDraft[key] = sarak.design?.[key];
+                newDraft[key] = sarak.systemDesign?.[key];
             });
             return newDraft;
         });
@@ -160,9 +175,9 @@ export const useDesignDraft = (sarak: any) => {
      * Reverte um único token
      */
     const resetToken = (tokenId: string) => {
-        setDraft((prev: any) => ({
-            ...prev,
-            [tokenId]: sarak.design?.[tokenId]
+        setDraftState((prev: any) => ({
+            ...(prev || draft),
+            [tokenId]: sarak.systemDesign?.[tokenId]
         }));
     };
 
@@ -172,8 +187,11 @@ export const useDesignDraft = (sarak: any) => {
     const handleThemePreview = (id: string) => {
         const theme = PRESETS_LIBRARY.layouts?.find((t: any) => t.id === id);
         if (theme && theme.tokens) {
-            applyPatch(theme.tokens);
-            updateDraft('layout', id);
+            setDraftState((prev: any) => ({
+                ...(prev || draft),
+                ...theme.tokens,
+                layout: id
+            }));
         }
     };
 
@@ -183,13 +201,15 @@ export const useDesignDraft = (sarak: any) => {
     const handleApplyToSystem = () => {
         if (sarak.applyFullConfigRaw && isDirty) {
             sarak.applyFullConfigRaw(draft);
+            if (sarak.persistDesign) {
+                sarak.persistDesign(draft);
+            }
             showToast('success', 'Design aplicado ao sistema com sucesso.');
         }
     };
 
     /**
      * APLICAÇÃO GRANULAR (Commit por Pilar)
-     * Ignora o interceptor 'smartApplyConfig' usando 'setDesign' diretamente.
      */
     const handleApplyPillar = (pillarId: string) => {
         if (sarak.applyConfigRaw && isPillarDirty(pillarId)) {
@@ -199,10 +219,8 @@ export const useDesignDraft = (sarak: any) => {
                 patch[key] = draft[key];
             });
             
-            // Usamos applyConfigRaw (raw) para garantir que as mudanças persistam no sistema
-            // mesmo que o modo de rascunho esteja ativo.
             sarak.applyConfigRaw(patch);
-            showToast('success', `Pilar ${pillarId.toUpperCase()} aplicado individualmente.`);
+            showToast('success', `Pilar ${pillarId.toUpperCase()} aplicado.`);
         }
     };
 

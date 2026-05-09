@@ -164,36 +164,36 @@ export const PreviewCanvas: React.FC<PreviewCanvasProps> = ({
                             {activeDesign.texture && activeDesign.texture !== 'none' && (
                                 <div className={`absolute inset-0 pointer-events-none z-0 texture-${activeDesign.texture} SarakAtmosphereLayer`} style={{ opacity: 'var(--theme-texture-opacity)' }} />
                             )}
-                            <header className="h-[var(--sarak-topbar-height,112px)] border-b border-[var(--theme-border)] flex items-center justify-between px-12 bg-[var(--sarak-topbar-bg,var(--theme-card))]/40 backdrop-blur-[var(--sarak-glass-blur,var(--sarak-topbar-blur,16px))] relative z-10">
-                                <div className="origin-left"><LogoComponent design={activeDesign} /></div>
-                                <nav className="flex gap-8">
+                            <header className="h-[100px] border-b border-[var(--theme-border)] flex items-center justify-between px-10 bg-[var(--theme-card)]/40 backdrop-blur-[12px] relative z-10">
+                                <div className="scale-150 origin-left"><LogoComponent design={activeDesign} /></div>
+                                <nav className="flex gap-6">
                                     {appIds.map(id => (
-                                        <button key={id} onClick={() => setActivePreviewApp(id)} className={`p-4 rounded-xl transition-all scale-150 ${activePreviewApp === id ? 'text-[var(--theme-primary)]' : 'text-[var(--theme-muted)]'}`}>
+                                        <button key={id} onClick={() => setActivePreviewApp(id)} className={`p-3 transition-all scale-150 ${activePreviewApp === id ? 'text-[var(--theme-primary)]' : 'text-[var(--theme-muted)]'}`}>
                                             {appIcons[id]}
                                         </button>
                                     ))}
                                 </nav>
                                 <div className="scale-150 origin-right"><UserWidget variant="horizontal" /></div>
                             </header>
-                            <main className="flex-1 overflow-y-auto p-16 relative z-10">{apps[activePreviewApp]}</main>
+                            <main className="flex-1 overflow-y-auto p-12 relative z-10">{apps[activePreviewApp]}</main>
                         </div>
                     ) : (
                         <div className="flex w-full h-full relative">
                             {activeDesign.texture && activeDesign.texture !== 'none' && (
                                 <div className={`absolute inset-0 pointer-events-none z-0 texture-${activeDesign.texture} SarakAtmosphereLayer`} style={{ opacity: 'var(--theme-texture-opacity)' }} />
                             )}
-                            <aside className="w-[var(--sarak-sidebar-width,400px)] border-r border-[var(--theme-border)] flex flex-col bg-[var(--sarak-sidebar-bg,var(--theme-card))]/40 backdrop-blur-[var(--sarak-glass-blur,var(--sarak-sidebar-blur,16px))] relative z-10">
-                                <div className="p-12 origin-top-left"><LogoComponent design={activeDesign} /></div>
-                                <nav className="flex-1 p-8 space-y-4">
+                            <aside className="w-[300px] border-r border-[var(--theme-border)] flex flex-col bg-[var(--theme-card)]/40 backdrop-blur-[12px] relative z-10">
+                                <div className="p-10 origin-top-left scale-125"><LogoComponent design={activeDesign} /></div>
+                                <nav className="flex-1 p-6 space-y-4">
                                     {appIds.map(id => (
-                                        <button key={id} onClick={() => setActivePreviewApp(id)} className={`w-full flex items-center gap-6 px-8 py-6 rounded-2xl transition-all text-sm font-black uppercase scale-110 origin-left ${activePreviewApp === id ? 'bg-[var(--theme-primary)] text-white shadow-xl' : 'text-[var(--theme-muted)] hover:bg-white/5'}`}>
-                                            <div className="scale-150">{appIcons[id]}</div> {id}
+                                        <button key={id} onClick={() => setActivePreviewApp(id)} className={`w-full flex items-center gap-4 px-6 py-4 rounded-xl transition-all scale-125 origin-left ${activePreviewApp === id ? 'bg-[var(--theme-primary)] text-white' : 'text-[var(--theme-muted)]'}`}>
+                                            {appIcons[id]} {id}
                                         </button>
                                     ))}
                                 </nav>
-                                <div className="scale-150 origin-bottom-left"><UserWidget /></div>
+                                <div className="scale-125 origin-bottom-left"><UserWidget /></div>
                             </aside>
-                            <main className="flex-1 overflow-y-auto p-16 relative z-10">{apps[activePreviewApp]}</main>
+                            <main className="flex-1 overflow-y-auto p-12 relative z-10">{apps[activePreviewApp]}</main>
                         </div>
                     )}
                 </div>
@@ -202,27 +202,27 @@ export const PreviewCanvas: React.FC<PreviewCanvasProps> = ({
     };
 
     return (
-        <div className="flex-grow flex flex-col relative overflow-hidden bg-[#050505] p-2 items-center justify-center">
+        <div className="flex-grow flex flex-col relative overflow-hidden bg-[#050505] p-0 items-center justify-center">
             <UIContext.Provider value={previewContextValue as any}>
-                <div className="w-full h-full flex flex-col lg:flex-row gap-8 p-6 overflow-auto justify-center items-center custom-scrollbar">
+                <div className="w-full h-full flex flex-col gap-4 p-4 overflow-y-auto custom-scrollbar items-center">
                     {isDualView ? (
                         <>
-                            {/* System Mirror com Escala Original de Preview - Agora Responsivo */}
-                            <div className="relative shrink-0 flex-1 w-full max-w-[960px] aspect-[16/10] rounded-[2.5rem] border border-white/10 shadow-2xl overflow-hidden bg-black transition-all duration-500">
-                                <div className="absolute top-4 left-6 z-50 flex items-center gap-2">
-                                    <div className="w-2 h-2 rounded-full bg-emerald-500 animate-pulse" />
-                                    <span className="text-[10px] font-black uppercase tracking-[0.2em] text-white/40">Gêmeo Digital (Real-Time System)</span>
+                            {/* Live Draft Preview */}
+                            <div className="relative shrink-0 w-full aspect-video rounded-3xl border border-white/10 shadow-2xl overflow-hidden bg-black transition-all duration-500">
+                                <div className="absolute top-3 left-4 z-50 flex items-center gap-2">
+                                    <div className="w-2 h-2 rounded-full bg-amber-500 animate-pulse" />
+                                    <span className="text-[9px] font-black uppercase tracking-widest text-white/40">Live Preview</span>
                                 </div>
-                                {renderSystemContent(true)} {/* Passamos um flag para usar o design do sistema */}
+                                {renderSystemContent(false)} 
                             </div>
 
-                            {/* Catalog Preview - Agora Responsivo */}
-                            <div className="relative shrink-0 flex-1 w-full max-w-[960px] aspect-[16/10] rounded-[2.5rem] border border-white/10 shadow-2xl overflow-hidden bg-[#0c0c0d] transition-all duration-500">
+                            {/* Catalog Preview */}
+                            <div className="relative shrink-0 w-full aspect-video rounded-3xl border border-white/10 shadow-2xl overflow-hidden bg-[#0c0c0d] transition-all duration-500">
                                 <div className="w-full h-full flex flex-col">
-                                    <div className="px-8 py-5 border-b border-white/5 flex items-center justify-between bg-black/40">
+                                    <div className="px-5 py-3 border-b border-white/5 flex items-center justify-between bg-black/40">
                                         <div className="flex items-center gap-3">
-                                            <Sparkles size={14} className="text-[var(--theme-primary)]" />
-                                            <span className="text-[11px] font-black uppercase text-white/60 tracking-[0.3em]">Catálogo Sarak v11.1</span>
+                                            <Sparkles size={12} className="text-[var(--theme-primary)]" />
+                                            <span className="text-[10px] font-black uppercase text-white/60 tracking-widest">Catálogo Sarak</span>
                                         </div>
                                     </div>
                                     <div className="flex-1 overflow-y-auto custom-scrollbar bg-black/20">
@@ -238,7 +238,7 @@ export const PreviewCanvas: React.FC<PreviewCanvasProps> = ({
                             </div>
                         </>
                     ) : (
-                        <div className="relative w-full max-w-[1400px] aspect-video rounded-[3rem] border border-white/10 shadow-2xl overflow-hidden bg-black transition-all duration-500">
+                        <div className="relative w-full h-full rounded-2xl border border-white/10 shadow-2xl overflow-hidden bg-black transition-all duration-500">
                             {renderSystemContent()}
                         </div>
                     )}

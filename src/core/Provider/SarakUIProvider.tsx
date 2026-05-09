@@ -27,13 +27,19 @@ export const useSarakUI = () => {
         throw new Error('useSarakUI must be used within a SarakUIProvider');
     }
     
-    // O design é o override (se houver, ex: dentro de um DesignScope/Preview), o rascunho global ou o sistema
-    const design = overrideDesign || context.draftDesign || context.design || {};
+    // Design do Sistema (O que está persistido)
+    const systemDesign = context.design || {};
+    
+    // Design Ativo (Rascunho se houver override ou se o draft do contexto tiver dados reais)
+    const hasDraft = context.draftDesign && Object.keys(context.draftDesign).length > 0;
+    const activeDesign = overrideDesign || (hasDraft ? context.draftDesign : systemDesign);
 
     return {
         ...context,
-        design,
-        ...design, // Mantemos o spread aqui para compatibilidade local de quem consome o hook
+        systemDesign,
+        activeDesign,
+        design: activeDesign, // Mantemos 'design' como o ativo para compatibilidade
+        ...activeDesign,      // Spread do ativo para quem consome propriedades diretas
     };
 };
 
@@ -56,7 +62,7 @@ export const SarakUIProvider: React.FC<SarakUIProviderProps> = ({
     const { registeredModules, isHydrated } = useRegistryManager(options);
 
     // 2. Gerenciamento do Estado de Design e Persistência
-    const { design, setDesign, applyConfig, applyFullConfig } = useDesignManager({
+    const { design, setDesign, applyConfig, applyFullConfig, persistDesign } = useDesignManager({
         initialConfig: initialPropsConfig,
         options,
         token,
@@ -129,17 +135,18 @@ export const SarakUIProvider: React.FC<SarakUIProviderProps> = ({
         applyFullConfig: smartApplyFullConfig,
         applyConfigRaw: applyConfig,
         applyFullConfigRaw: applyFullConfig,
+        persistDesign,
         registeredModules,
         layouts: Object.values(LAYOUTS),
         isHydrated,
         options
-    }), [discoveryEndpoints, design, draftDesign, isDrafting, setIsDrafting, lockDrafting, setDesign, setDraftDesign, smartApplyConfig, smartApplyFullConfig, applyConfig, applyFullConfig, registeredModules, isHydrated, options]);
+    }), [discoveryEndpoints, design, draftDesign, isDrafting, setIsDrafting, lockDrafting, setDesign, setDraftDesign, smartApplyConfig, smartApplyFullConfig, applyConfig, applyFullConfig, persistDesign, registeredModules, isHydrated, options]);
 
     return (
         <UIContext.Provider value={uiContextValue}>
             <DesignInjector 
-                design={draftDesign || design} 
-                isDrafting={!!draftDesign} 
+                design={design} 
+                isDrafting={isDrafting} 
             />
             <NoiseOverlay />
             {children}

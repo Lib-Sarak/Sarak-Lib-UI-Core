@@ -7,6 +7,7 @@
 
 // Theme Engine and Constants
 export { default as SarakUIProvider, useSarakUI } from './core/Provider/SarakUIProvider';
+export { DesignScope } from './core/Design/components/DesignScope';
 export { default as ThemeToggle } from './components/atomic/Buttons/ThemeToggle';
 export { PRESETS_LIBRARY } from './core/Design/presets';
 

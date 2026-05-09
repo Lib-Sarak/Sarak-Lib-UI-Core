@@ -7,6 +7,7 @@ import {
 
 import { useSarakUI } from '../../../core/Provider/SarakUIProvider';
 import { PreviewCanvas } from '../Canvas/PreviewCanvas';
+import { DesignScope } from '../../../core/Design/components/DesignScope';
 import { PRESETS } from '../../../core/Design/presets';
 import { MASTER_DESIGN_MAP } from '../../../core/Design/master-map';
 
@@ -68,8 +69,8 @@ const TokenControl = ({ token, value, onChange }: { token: any, value: any, onCh
  * Orquestrador central de design. Garante cobertura total de tokens e aplicação granular.
  */
 export const ThemeCustomizationTab: React.FC = () => {
-    const { design, ...rest } = useSarakUI();
-    const sarak = useMemo(() => ({ ...design, ...rest }), [design, rest]);
+    const { systemDesign, design, ...rest } = useSarakUI();
+    const sarak = useMemo(() => ({ systemDesign, design, ...rest }), [systemDesign, design, rest]);
     
     const { 
         draft, 
@@ -136,7 +137,9 @@ export const ThemeCustomizationTab: React.FC = () => {
     return (
         <div className="flex flex-1 h-screen max-h-screen bg-[#0c0c0d] overflow-hidden">
             {/* Sidebar de Configuração (v12.1 Stabilized) */}
-            <div className="w-[440px] flex flex-col h-full max-h-full border-r border-white/5 bg-[#0a0a0b] relative z-10 overflow-hidden">
+            {/* Forçamos o DesignScope aqui com o systemDesign para garantir que a UI da ferramenta 
+                não mude enquanto editamos o rascunho */}
+            <DesignScope design={systemDesign} className="w-[320px] min-w-[320px] max-w-[320px] flex flex-col h-full max-h-full border-r border-white/5 bg-[#0a0a0b] relative z-10 overflow-hidden shrink-0">
                 
                 {/* Header e Controles Globais */}
                 <div className="p-6 pb-2 shrink-0 border-b border-white/5 bg-black/20">
@@ -224,47 +227,6 @@ export const ThemeCustomizationTab: React.FC = () => {
                                             className={`bg-white/[0.02] ${activePillarId === pillar.id ? 'overflow-visible' : 'overflow-hidden'}`}
                                         >
                                             <div className="px-1">
-                                                {/* Injeção de Presets Específicos */}
-                                                {(pillar.id === 'estetica' || pillar.id === 'visual') && (
-                                                    <div className="p-4 bg-black/40 mb-2 border-b border-white/5 space-y-4">
-                                                        <div className="flex items-center gap-2 px-2">
-                                                            <Sparkles size={10} className="text-[var(--theme-primary)]" />
-                                                            <span className="text-[9px] font-black uppercase tracking-widest text-white/40">Presets do Pilar</span>
-                                                        </div>
-
-                                                        {pillar.id === 'estetica' && (
-                                                            <div className="grid grid-cols-4 gap-2 px-2">
-                                                                {(PRESETS.atmosphere || []).slice(0, 8).map((p: any) => (
-                                                                    <button 
-                                                                        key={p.id}
-                                                                        onClick={() => updateDraft('texture', p.id)}
-                                                                        className={`aspect-square rounded-lg border transition-all flex items-center justify-center text-[8px] font-bold uppercase text-center p-1 ${draft.texture === p.id ? 'border-[var(--theme-primary)] bg-[var(--theme-primary)]/10 text-white' : 'border-white/10 bg-white/5 text-white/30 hover:border-white/30'}`}
-                                                                    >
-                                                                        {p.label || p.name}
-                                                                    </button>
-                                                                ))}
-                                                            </div>
-                                                        )}
-
-                                                        {pillar.id === 'visual' && (
-                                                            <div className="grid grid-cols-2 gap-2 px-2">
-                                                                {(PRESETS.typography || []).slice(0, 4).map((p: any) => (
-                                                                    <button 
-                                                                        key={p.id}
-                                                                        onClick={() => {
-                                                                            if (p.design) {
-                                                                                Object.entries(p.design).forEach(([k, v]) => updateDraft(k, v));
-                                                                            }
-                                                                        }}
-                                                                        className={`p-2 rounded-lg border transition-all text-[8px] font-bold uppercase text-left ${draft.headingFont === p.design?.headingFont ? 'border-[var(--theme-primary)] bg-[var(--theme-primary)]/10 text-white' : 'border-white/10 bg-white/5 text-white/30 hover:border-white/30'}`}
-                                                                    >
-                                                                        {p.label || p.name}
-                                                                    </button>
-                                                                ))}
-                                                            </div>
-                                                        )}
-                                                    </div>
-                                                )}
 
                                                 {/* Componentes do Mapa Mestre */}
                                                 {groupedComponents[pillar.id].map((comp) => (
@@ -296,7 +258,7 @@ export const ThemeCustomizationTab: React.FC = () => {
                         ))}
                     </div>
                 </div>
-            </div>
+            </DesignScope>
 
             {/* Preview Canvas */}
             <div className="flex-1 relative bg-[#060607]">

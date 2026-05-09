@@ -109,28 +109,34 @@ export const useDesignManager = (props: {
         loadRemote();
     }, [token, isBackendLoaded, isHydrated, uiBaseUrl]);
 
-    // 3. Persistência Automática (Debounced)
-    useEffect(() => {
+    // 3. Persistência de Design (Core Logic)
+    const persistDesign = useCallback(async (config: any) => {
         if (!isHydrated) return;
+        const opt = optionsRef.current;
+        try {
+            localStorage.setItem(storageKey, JSON.stringify(config));
+            if (opt?.persistence?.onSave) {
+                await opt.persistence.onSave(config);
+            } else if (token && opt?.endpoints?.designPath) {
+                await fetch(`${uiBaseUrl}${opt.endpoints.designPath}`, {
+                    method: 'POST',
+                    headers: { 'Authorization': `Bearer ${token}`, 'Content-Type': 'application/json' },
+                    body: JSON.stringify({ design: config })
+                });
+            }
+        } catch (e) {
+            console.error("[Sarak:Design] Save error:", e);
+        }
+    }, [isHydrated, storageKey, token, uiBaseUrl]);
 
-        const timer = setTimeout(async () => {
-            const opt = optionsRef.current;
-            try {
-                localStorage.setItem(storageKey, JSON.stringify(design));
-                if (opt?.persistence?.onSave) {
-                    await opt.persistence.onSave(design);
-                } else if (token && opt?.endpoints?.designPath) {
-                    await fetch(`${uiBaseUrl}${opt.endpoints.designPath}`, {
-                        method: 'POST',
-                        headers: { 'Authorization': `Bearer ${token}`, 'Content-Type': 'application/json' },
-                        body: JSON.stringify({ design })
-                    });
-                }
-            } catch (e) { console.error("[Sarak:Design] Save error:", e); }
+    // 4. Persistência Automática (Debounced)
+    useEffect(() => {
+        const timer = setTimeout(() => {
+            persistDesign(design);
         }, 1500);
 
         return () => clearTimeout(timer);
-    }, [design, token, isHydrated, uiBaseUrl, storageKey]);
+    }, [design, persistDesign]);
 
     const safeSetDesign = useCallback((next: any) => {
         setDesign((prev: any) => {
@@ -152,6 +158,7 @@ export const useDesignManager = (props: {
         setDesign: safeSetDesign,
         applyConfig,
         applyFullConfig,
+        persistDesign,
         isBackendLoaded
     };
 };

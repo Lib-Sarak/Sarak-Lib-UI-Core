@@ -52,6 +52,21 @@ declare const useSarakUI: () => any;
  */
 declare const SarakUIProvider: React$1.FC<SarakUIProviderProps>;
 
+interface DesignScopeProps {
+    design: any;
+    children: React$1.ReactNode;
+    className?: string;
+    style?: React$1.CSSProperties;
+}
+/**
+ * DesignScope (v12.0)
+ *
+ * Envolve um conteúdo em um escopo isolado de variáveis CSS de design.
+ * Agora injeta também um DesignOverrideContext para que componentes que usam
+ * useSarakUI() dentro deste escopo consumam o design correto (rascunho).
+ */
+declare const DesignScope: React$1.FC<DesignScopeProps & Record<string, any>>;
+
 declare const ThemeToggle: React$1.FC;
 
 /**
@@ -534,4 +549,4 @@ interface SarakRouterState {
  */
 declare function useSarakRouter(basePath?: string): SarakRouterState;
 
-export { CustomizationPanel, DESIGN_MANIFEST, type DiscoveredModule, DynamicRenderer, ExpandableCard, LanguageSelector, type ModuleManifest, ModuleSelector, PRESETS_LIBRARY, SarakAuthScreen, SarakCardGrid, SarakCatalogGrid, SarakChart, SarakChartEngine, SarakChat, SarakForm, SarakManagementGrid, type SarakModule, type SarakRouterState, SarakSecurityOrchestrator, SarakShell, SarakStats, SarakTable, SarakUIProvider, SocialButton, ThemeToggle, UserMenu, type VisualContract, type VisualContractType, getLocalComponent, getRegisteredModules, getSarakModule, registerLocalComponent, registerSarakModule, subscribeToRegistry, useDesignDraft, useModuleDiscovery, useSarakRouter, useSarakUI };
+export { CustomizationPanel, DESIGN_MANIFEST, DesignScope, type DiscoveredModule, DynamicRenderer, ExpandableCard, LanguageSelector, type ModuleManifest, ModuleSelector, PRESETS_LIBRARY, SarakAuthScreen, SarakCardGrid, SarakCatalogGrid, SarakChart, SarakChartEngine, SarakChat, SarakForm, SarakManagementGrid, type SarakModule, type SarakRouterState, SarakSecurityOrchestrator, SarakShell, SarakStats, SarakTable, SarakUIProvider, SocialButton, ThemeToggle, UserMenu, type VisualContract, type VisualContractType, getLocalComponent, getRegisteredModules, getSarakModule, registerLocalComponent, registerSarakModule, subscribeToRegistry, useDesignDraft, useModuleDiscovery, useSarakRouter, useSarakUI };

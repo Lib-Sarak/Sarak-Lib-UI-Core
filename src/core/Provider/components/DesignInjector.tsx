@@ -46,9 +46,7 @@ export const DesignInjector: React.FC<{ design: any; isDrafting: boolean }> = ({
 
         if (!hasDesignChanged) return;
 
-        console.log('[DesignInjector] Syncing global styles for:', isDrafting ? 'DRAFT' : 'SYSTEM');
-
-        console.log('[DesignInjector] Starting global injection for design:', s);
+        console.log('[DesignInjector] Syncing global styles for SYSTEM');
 
         const root = document.documentElement;
 
