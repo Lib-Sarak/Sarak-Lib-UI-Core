@@ -145,7 +145,7 @@ export const SarakUIProvider: React.FC<SarakUIProviderProps> = ({
     return (
         <UIContext.Provider value={uiContextValue}>
             <DesignInjector 
-                design={design} 
+                design={isDrafting ? (draftDesign || design) : design} 
                 isDrafting={isDrafting} 
             />
             <NoiseOverlay />

@@ -1,38 +1,47 @@
 import { MasterDesignSchema } from './types';
-import { CardSchema } from './schema/cards';
-import { ShellSchema } from './schema/shell';
-import { TypographySchema } from './schema/typography';
-import { ControlsSchema } from './schema/controls';
-import { AtmosphereSchema } from './schema/atmosphere';
-import { DataSchema } from './schema/data';
-import { IdentitySchema } from './schema/identity';
-import { AnimationSchema } from './schema/animations';
-import { SpecializedSchema } from './schema/specialized';
+import { BrandingSchema } from './schema/branding';
 import { SystemSchema } from './schema/system';
+import { NavigationSchema } from './schema/navigation';
+import { CardSchema } from './schema/cards';
+import { OverlaysSchema } from './schema/overlays';
+import { TablesSchema } from './schema/tables';
+import { TypographySchema } from './schema/typography';
+import { ButtonsSchema } from './schema/buttons';
+import { InputsSchema } from './schema/inputs';
+import { ColorsSchema } from './schema/colors';
+import { DataSchema } from './schema/data';
+import { AnimationSchema } from './schema/animations';
+import { AtmosphereSchema } from './schema/atmosphere';
+import { ChatSchema } from './schema/chat';
+import { StatusSchema } from './schema/status';
+import { EngineeringSchema } from './schema/engineering';
+import { SpecializedSchema } from './schema/specialized';
 
 /**
- * MASTER DESIGN MAP (v12.0)
+ * MASTER DESIGN MAP (v12.7 - Hyper-Granular 100% Coverage)
  * 
  * O ponto central de verdade para 100% das configurações do Sarak UI.
- * Este objeto é usado para:
- * 1. Gerar a UI do Painel de Personalização automaticamente.
- * 2. Validar a persistência (localStorage/backend).
- * 3. Injetar variáveis CSS no DOM.
- * 4. Definir a estrutura de Presets.
  */
 export const MASTER_DESIGN_MAP: MasterDesignSchema = {
-    version: '12.0.0',
+    version: '12.7.0',
     components: [
-        ShellSchema,
-        IdentitySchema,
-        TypographySchema,
-        AtmosphereSchema,
+        BrandingSchema,
+        SystemSchema,
+        NavigationSchema,
         CardSchema,
-        ControlsSchema,
+        OverlaysSchema,
+        TablesSchema,
+        TypographySchema,
+        ButtonsSchema,
+        InputsSchema,
+        ColorsSchema,
         DataSchema,
         AnimationSchema,
-        SpecializedSchema,
-        SystemSchema
+        AtmosphereSchema,
+        ChatSchema,
+        StatusSchema,
+        EngineeringSchema,
+        SpecializedSchema
     ]
 };
 

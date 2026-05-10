@@ -7,7 +7,7 @@ import { ComponentSchema } from '../types';
 export const CardSchema: ComponentSchema = {
     id: 'cards',
     label: 'Cards & Superfícies',
-    pilar: 'estetica',
+    pilar: 'cards',
     tokens: [
         // --- GEOMETRIA ---
         {
@@ -110,7 +110,7 @@ export const CardSchema: ComponentSchema = {
             unit: 'px',
             constraints: { min: 0, max: 8 },
             defaultValue: 1,
-            cssVars: ['--card-border-width', '--theme-border-width']
+            cssVars: ['--card-border-width', '--theme-border-width', '--sarak-card-border-width']
         },
         {
             id: 'cardBorderColor',
@@ -118,7 +118,7 @@ export const CardSchema: ComponentSchema = {
             category: 'Bordas',
             type: 'color',
             defaultValue: 'rgba(255, 255, 255, 0.1)',
-            cssVars: ['--card-border-color', '--theme-border']
+            cssVars: ['--card-border-color', '--theme-border', '--sarak-card-border-color']
         },
         {
             id: 'cardBorderOpacity',

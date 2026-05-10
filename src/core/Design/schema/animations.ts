@@ -7,7 +7,7 @@ import { ComponentSchema } from '../types';
 export const AnimationSchema: ComponentSchema = {
     id: 'animations',
     label: 'Animações & Ritmo',
-    pilar: 'estetica',
+    pilar: 'motion',
     tokens: [
         // --- TIMING ---
         {

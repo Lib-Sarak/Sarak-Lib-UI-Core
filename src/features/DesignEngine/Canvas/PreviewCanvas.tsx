@@ -9,6 +9,7 @@ import { MockDashboard, MockChat, MockLogs, MockSettings, MockComponents, MockTy
 import { KitchenSinkPreview } from './KitchenSinkPreview';
 import { GalleryRouter } from './Galleries/GalleryRouter';
 import { DesignScope } from '../../../core/Design/components/DesignScope';
+import { useResizable } from '../hooks/useResizable';
 
 interface PreviewCanvasProps {
     previewDevice: 'desktop' | 'tablet' | 'smartphone';
@@ -45,6 +46,31 @@ export const PreviewCanvas: React.FC<PreviewCanvasProps> = ({
     const parentContext = useSarakUI();
     const tokens = React.useMemo(() => ({ ...draftTokens }), [draftTokens]);
     
+    // 0. Redimensionamento Dinâmico (Sincronizado com Tokens)
+    const handleSidebarResize = React.useCallback((newWidth: number) => {
+        onUpdateDraft('sidebarWidth', Math.round(newWidth));
+    }, [onUpdateDraft]);
+
+    const handleTopbarResize = React.useCallback((newHeight: number) => {
+        onUpdateDraft('topbarHeight', Math.round(newHeight));
+    }, [onUpdateDraft]);
+
+    const { startResizing: startResizingSidebar, isResizing: isResizingSidebar } = useResizable({
+        initialSize: tokens.sidebarWidth || 240,
+        minSize: 150,
+        maxSize: 500,
+        direction: 'horizontal',
+        onResize: handleSidebarResize
+    });
+
+    const { startResizing: startResizingTopbar, isResizing: isResizingTopbar } = useResizable({
+        initialSize: tokens.topbarHeight || 64,
+        minSize: 40,
+        maxSize: 200,
+        direction: 'vertical',
+        onResize: handleTopbarResize
+    });
+
     const previewContextValue = React.useMemo(() => ({
         ...parentContext,
         design: tokens,
@@ -164,7 +190,10 @@ export const PreviewCanvas: React.FC<PreviewCanvasProps> = ({
                             {activeDesign.texture && activeDesign.texture !== 'none' && (
                                 <div className={`absolute inset-0 pointer-events-none z-0 texture-${activeDesign.texture} SarakAtmosphereLayer`} style={{ opacity: 'var(--theme-texture-opacity)' }} />
                             )}
-                            <header className="h-[100px] border-b border-[var(--theme-border)] flex items-center justify-between px-10 bg-[var(--theme-card)]/40 backdrop-blur-[12px] relative z-10">
+                            <header 
+                                className="border-b border-[var(--theme-border)] flex items-center justify-between px-10 bg-[var(--color-theme-topbar)] backdrop-blur-[var(--sarak-blur-master)] relative z-10"
+                                style={{ height: 'var(--sarak-topbar-h, 64px)' }}
+                            >
                                 <div className="scale-150 origin-left"><LogoComponent design={activeDesign} /></div>
                                 <nav className="flex gap-6">
                                     {appIds.map(id => (
@@ -174,6 +203,12 @@ export const PreviewCanvas: React.FC<PreviewCanvasProps> = ({
                                     ))}
                                 </nav>
                                 <div className="scale-150 origin-right"><UserWidget variant="horizontal" /></div>
+                                
+                                {/* Resizer Vertical (Topbar) */}
+                                <div 
+                                    onMouseDown={startResizingTopbar}
+                                    className="absolute bottom-0 left-0 w-full h-1.5 cursor-row-resize hover:bg-[var(--theme-primary)]/50 transition-colors active:bg-[var(--theme-primary)] z-50"
+                                />
                             </header>
                             <main className="flex-1 overflow-y-auto p-12 relative z-10">{apps[activePreviewApp]}</main>
                         </div>
@@ -182,16 +217,25 @@ export const PreviewCanvas: React.FC<PreviewCanvasProps> = ({
                             {activeDesign.texture && activeDesign.texture !== 'none' && (
                                 <div className={`absolute inset-0 pointer-events-none z-0 texture-${activeDesign.texture} SarakAtmosphereLayer`} style={{ opacity: 'var(--theme-texture-opacity)' }} />
                             )}
-                            <aside className="w-[300px] border-r border-[var(--theme-border)] flex flex-col bg-[var(--theme-card)]/40 backdrop-blur-[12px] relative z-10">
+                            <aside 
+                                className="border-r border-[var(--theme-border)] flex flex-col bg-[var(--color-theme-sidebar)] backdrop-blur-[var(--sarak-blur-master)] relative z-10"
+                                style={{ width: 'var(--sarak-sidebar-w, 240px)' }}
+                            >
                                 <div className="p-10 origin-top-left scale-125"><LogoComponent design={activeDesign} /></div>
                                 <nav className="flex-1 p-6 space-y-4">
                                     {appIds.map(id => (
-                                        <button key={id} onClick={() => setActivePreviewApp(id)} className={`w-full flex items-center gap-4 px-6 py-4 rounded-xl transition-all scale-125 origin-left ${activePreviewApp === id ? 'bg-[var(--theme-primary)] text-white' : 'text-[var(--theme-muted)]'}`}>
+                                        <button key={id} onClick={() => setActivePreviewApp(id)} className={`w-full flex items-center gap-4 px-6 py-4 rounded-sarak transition-all scale-125 origin-left ${activePreviewApp === id ? 'bg-[var(--theme-primary)] text-white' : 'text-[var(--theme-muted)]'}`}>
                                             {appIcons[id]} {id}
                                         </button>
                                     ))}
                                 </nav>
                                 <div className="scale-125 origin-bottom-left"><UserWidget /></div>
+
+                                {/* Resizer Horizontal (Sidebar) */}
+                                <div 
+                                    onMouseDown={startResizingSidebar}
+                                    className="absolute right-0 top-0 w-1.5 h-full cursor-col-resize hover:bg-[var(--theme-primary)]/50 transition-colors active:bg-[var(--theme-primary)] z-50"
+                                />
                             </aside>
                             <main className="flex-1 overflow-y-auto p-12 relative z-10">{apps[activePreviewApp]}</main>
                         </div>
@@ -242,6 +286,13 @@ export const PreviewCanvas: React.FC<PreviewCanvasProps> = ({
                             {renderSystemContent()}
                         </div>
                     )}
+                    {/* Overlay Global de Resizing (Shell) */}
+                {isResizingSidebar && (
+                    <div className="fixed inset-0 z-[9999] cursor-col-resize pointer-events-auto" />
+                )}
+                {isResizingTopbar && (
+                    <div className="fixed inset-0 z-[9999] cursor-row-resize pointer-events-auto" />
+                )}
                 </div>
             </UIContext.Provider>
             

@@ -30,18 +30,11 @@ export { useModuleDiscovery } from './shared/hooks/useModuleDiscovery';
 export { useSarakRouter } from './shared/hooks/useSarakRouter';
 export type { SarakRouterState } from './shared/hooks/useSarakRouter';
 
-import { registerLocalComponent, registerSarakModule } from './core/Discovery/registry';
-import { ThemeCustomizationTab } from './features/DesignEngine/Main/ThemeCustomizationTab';
+import { registerLocalComponent } from './core/Discovery/registry';
+import { CustomizationPanel } from './features/DesignEngine/Library/CustomizationPanel';
 
-// Metadata (Label, Icon, Category) will come from Seeds via API.
-registerLocalComponent('mx-customization', ThemeCustomizationTab);
-registerLocalComponent('personalization', ThemeCustomizationTab); // Compatibilidade com versões que buscam por este ID
-
-registerSarakModule({
-    id: 'mx-customization',
-    label: 'Personalização',
-    icon: 'Palette',
-    category: 'Sarak Core',
-    priority: 1000
-});
+// Component mapping for the registry. 
+// We use the unified CustomizationPanel (v12.0) as the target for both IDs.
+registerLocalComponent('mx-customization', CustomizationPanel);
+registerLocalComponent('personalization', CustomizationPanel); 
 

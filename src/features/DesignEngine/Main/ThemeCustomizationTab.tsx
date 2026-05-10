@@ -2,7 +2,9 @@ import React, { useState, useEffect, useMemo, useCallback } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
 import {
     Zap, Check, Monitor, Tablet, Smartphone, 
-    Palette, Moon, Sun, Globe, AlertCircle, Sparkles, Command, RotateCcw
+    Palette, Moon, Sun, Globe, AlertCircle, Sparkles, Command, RotateCcw,
+    Shield, Layout, Menu, Box, MousePointer2, Type, Hash, BarChart, Layers, 
+    MessageSquare, Bell, Cpu, ExternalLink, Table, Settings
 } from 'lucide-react';
 
 import { useSarakUI } from '../../../core/Provider/SarakUIProvider';
@@ -13,6 +15,7 @@ import { MASTER_DESIGN_MAP } from '../../../core/Design/master-map';
 
 // Modular Hooks & Components
 import { useDesignDraft } from '../hooks/useDesignDraft';
+import { useResizable } from '../hooks/useResizable';
 import { 
     CategoryLabel, 
     Section, 
@@ -85,25 +88,57 @@ export const ThemeCustomizationTab: React.FC = () => {
     const [activePreviewApp, setActivePreviewApp] = useState('dashboard');
     const [previewDevice, setPreviewDevice] = useState<'desktop' | 'tablet' | 'smartphone'>('desktop');
 
-    const [activePillarId, setActivePillarId] = useState<string | null>('identidade');
+    const [activePillarId, setActivePillarId] = useState<string | null>('branding');
     const [activeSectionId, setActiveSectionId] = useState<string | null>(null);
     const [isDualView, setIsDualView] = useState(false);
 
+    // 0. Redimensionamento da Barra Design Engine
+    const { size: engineSidebarWidth, startResizing: startResizingEngine, isResizing: isResizingEngine } = useResizable({
+        initialSize: 320,
+        minSize: 280,
+        maxSize: 600,
+        direction: 'horizontal'
+    });
+
     // 1. Definição de Pilares
     const pillars = useMemo(() => [
-        { id: 'identidade', title: 'Identidade', icon: Globe, index: 1, description: 'Branding e Fundamentos' },
-        { id: 'estetica', title: 'Estética', icon: Palette, index: 2, description: 'Atmosfera e Efeitos' },
-        { id: 'visual', title: 'Visual', icon: Monitor, index: 3, description: 'Componentes e Dados' }
+        { id: 'branding', title: 'Marca & Branding', icon: Shield, index: 1, description: 'Logos e Identidade' },
+        { id: 'system', title: 'Configurações Globais', icon: Layout, index: 2, description: 'Modo e Escala' },
+        { id: 'navigation', title: 'Navegação & Shell', icon: Menu, index: 3, description: 'Menus e Barras' },
+        { id: 'cards', title: 'Cards & Superfícies', icon: Box, index: 4, description: 'Containers e Vidro' },
+        { id: 'overlays', title: 'Modais & Popups', icon: ExternalLink, index: 5, description: 'Diálogos e Flutuantes' },
+        { id: 'tables', title: 'Tabelas & Grids', icon: Table, index: 6, description: 'Densidade de Dados' },
+        { id: 'buttons', title: 'Botões & Ações', icon: MousePointer2, index: 7, description: 'Clique e Estilo' },
+        { id: 'inputs', title: 'Campos de Entrada', icon: Type, index: 8, description: 'Formulários' },
+        { id: 'typography', title: 'Tipografia', icon: Hash, index: 9, description: 'Fontes e Escrita' },
+        { id: 'colors', title: 'Paletas de Cores', icon: Palette, index: 10, description: 'Temas Cromáticos' },
+        { id: 'charts', title: 'Gráficos & Dados', icon: BarChart, index: 11, description: 'Data Viz' },
+        { id: 'motion', title: 'Animação & Motion', icon: Zap, index: 12, description: 'Fluidez e UX' },
+        { id: 'glass', title: 'Atmosfera & Vidro', icon: Layers, index: 13, description: 'Efeitos Visuais' },
+        { id: 'chat', title: 'Chat & Mensagens', icon: MessageSquare, index: 14, description: 'Comunicação' },
+        { id: 'status', title: 'Badges & Status', icon: Bell, index: 15, description: 'Sinalização' },
+        { id: 'engineering', title: 'Engenharia & Acessib.', icon: Settings, index: 16, description: 'Acessibilidade e Foco' },
+        { id: 'specialized', title: 'Módulos IA', icon: Cpu, index: 17, description: 'Componentes IA' },
     ], []);
 
     // 2. Agrupamento Dinâmico de Componentes do Mapa Mestre
     const groupedComponents = useMemo(() => {
-        const groups: Record<string, any[]> = { identidade: [], estetica: [], visual: [] };
+        const groups: Record<string, any[]> = { 
+            branding: [], system: [], navigation: [], cards: [], 
+            overlays: [], tables: [], buttons: [], inputs: [], 
+            typography: [], colors: [], charts: [], motion: [], 
+            glass: [], chat: [], status: [], engineering: [], 
+            specialized: [] 
+        };
         
         if (MASTER_DESIGN_MAP?.components) {
             MASTER_DESIGN_MAP.components.forEach(comp => {
-                const pillar = comp.pilar || 'visual';
-                if (groups[pillar]) groups[pillar].push(comp);
+                const pillar = comp.pilar || 'specialized';
+                if (groups[pillar]) {
+                    groups[pillar].push(comp);
+                } else {
+                    groups.specialized.push(comp);
+                }
             });
         }
         
@@ -139,7 +174,16 @@ export const ThemeCustomizationTab: React.FC = () => {
             {/* Sidebar de Configuração (v12.1 Stabilized) */}
             {/* Forçamos o DesignScope aqui com o systemDesign para garantir que a UI da ferramenta 
                 não mude enquanto editamos o rascunho */}
-            <DesignScope design={systemDesign} className="w-[320px] min-w-[320px] max-w-[320px] flex flex-col h-full max-h-full border-r border-white/5 bg-[#0a0a0b] relative z-10 overflow-hidden shrink-0">
+            <DesignScope 
+                design={systemDesign} 
+                className={`flex flex-col h-full max-h-full border-r border-white/5 bg-[#0a0a0b] relative z-10 overflow-hidden shrink-0 ${isResizingEngine ? 'transition-none' : 'transition-all duration-300'}`}
+                style={{ width: `${engineSidebarWidth}px`, minWidth: '280px', maxWidth: '600px' }}
+            >
+                {/* Handle de Redimensionamento */}
+                <div 
+                    onMouseDown={startResizingEngine}
+                    className="absolute right-0 top-0 w-1.5 h-full cursor-col-resize hover:bg-[var(--theme-primary)]/50 transition-colors z-50 active:bg-[var(--theme-primary)]"
+                />
                 
                 {/* Header e Controles Globais */}
                 <div className="p-6 pb-2 shrink-0 border-b border-white/5 bg-black/20">
@@ -317,6 +361,11 @@ export const ThemeCustomizationTab: React.FC = () => {
                         overflow: hidden;
                     }
                 `}} />
+
+                {/* Overlay Global de Resizing (Impede que iframes ou charts roubem o foco) */}
+                {isResizingEngine && (
+                    <div className="fixed inset-0 z-[9999] cursor-col-resize pointer-events-auto" />
+                )}
             </div>
         </div>
     );

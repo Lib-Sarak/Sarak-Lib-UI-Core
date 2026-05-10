@@ -41,27 +41,31 @@ export const DesignInjector: React.FC<{ design: any; isDrafting: boolean }> = ({
     useIsomorphicLayoutEffect(() => {
         if (typeof document === 'undefined' || !s) return;
 
-        // 1. Verificação de Mudança Real (Audit Level 12.5)
-        const hasDesignChanged = !prevDesignRef.current || JSON.stringify(s) !== JSON.stringify(prevDesignRef.current);
-
-        if (!hasDesignChanged) return;
+        // 1. Verificação de Mudança Real (Audit Level 12.8 - Deep Sync Guard)
+        // Usamos uma string estável para comparar o conteúdo real do design
+        const currentDesignKey = JSON.stringify(s);
+        if (prevDesignRef.current === currentDesignKey) return;
 
         console.log('[DesignInjector] Syncing global styles for SYSTEM');
 
         const root = document.documentElement;
-
         const body = document.body;
 
         // 1. Injetar Variáveis do Mapa Mestre
+        // Fazemos o update apenas se o valor for diferente do atual para economizar ciclos de reflow
         Object.entries(variables).forEach(([k, v]) => {
-            root.style.setProperty(k, v);
-            body.style.setProperty(k, v);
+            if (root.style.getPropertyValue(k) !== v) {
+                root.style.setProperty(k, v);
+                body.style.setProperty(k, v);
+            }
         });
 
         // 2. Injetar Atributos de Estado
         Object.entries(attributes).forEach(([k, v]) => {
-            root.setAttribute(k, v);
-            body.setAttribute(k, v);
+            if (root.getAttribute(k) !== v) {
+                root.setAttribute(k, v);
+                body.setAttribute(k, v);
+            }
         });
 
         // 3. Curvas de Animação (Bezier)
@@ -71,11 +75,14 @@ export const DesignInjector: React.FC<{ design: any; isDrafting: boolean }> = ({
 
         // 4. Classes de Modo (Dark/Light)
         const mode = s.mode || 'dark';
-        body.classList.remove('light', 'dark');
-        body.classList.add(mode);
+        if (!body.classList.contains(mode)) {
+            body.classList.remove('light', 'dark');
+            body.classList.add(mode);
+        }
 
-        prevDesignRef.current = { ...s };
-    }, [s, variables, attributes, isDrafting]);
+        // Armazenamos a string para a próxima comparação
+        prevDesignRef.current = currentDesignKey;
+    }, [s, variables, attributes]);
 
     return null;
 };
