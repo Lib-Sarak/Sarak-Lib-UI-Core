@@ -2,6 +2,8 @@ import React, { useState } from 'react';
 import { Globe, Check, ChevronDown } from 'lucide-react';
 import { motion, AnimatePresence } from 'framer-motion';
 
+import { getLocalComponent } from '../../Discovery/registry';
+
 interface ShellLanguageSelectorProps {
     variant?: 'horizontal' | 'vertical';
 }
@@ -18,9 +20,25 @@ const LANGUAGES = [
 export const ShellLanguageSelector: React.FC<ShellLanguageSelectorProps> = ({ 
     variant = 'horizontal' 
 }) => {
+    // Discovery Logic (v11.0): Procura no Registro e no Backup Global
+    const fromRegistry = getLocalComponent('shell-language-selector');
+    const fromGlobal = (typeof window !== 'undefined' ? (window as any).__SARAK_OVERRIDES__?.['shell-language-selector'] : null);
+    const OverrideSelector = fromRegistry || fromGlobal;
+
+    console.log("%c[Sarak:UI-Core] Buscando Override de Idioma...", "color: cyan; font-weight: bold;", {
+        foundInRegistry: !!fromRegistry,
+        foundInGlobal: !!fromGlobal,
+        variant
+    });
+    
     const [isOpen, setIsOpen] = useState(false);
     const [currentLang, setCurrentLang] = useState(LANGUAGES[0]);
     
+    if (OverrideSelector) {
+        console.log("%c[Sarak:UI-Core] Override ENCONTRADO. Renderizando componente dinâmico.", "color: lime; font-weight: bold;");
+        return <OverrideSelector variant={variant} />;
+    }
+
     const isHorizontal = variant === 'horizontal';
 
     return (

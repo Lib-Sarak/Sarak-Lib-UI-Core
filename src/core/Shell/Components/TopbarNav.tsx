@@ -3,6 +3,7 @@ import { Menu, Bell } from 'lucide-react';
 import { DiscoveredModule } from '../../../core/Discovery/types';
 import { ShellSearchWidget } from './ShellSearchWidget';
 import { ShellUserWidget } from './ShellUserWidget';
+import { ShellLanguageSelector } from './ShellLanguageSelector';
 import { IconRenderer } from './IconRenderer';
 
 interface TopbarNavProps {
@@ -110,6 +111,10 @@ export const TopbarNav: React.FC<TopbarNavProps> = ({
                     <ShellSearchWidget variant={effectiveIsNavHidden ? 'icon' : 'bar'} onClick={() => setIsSearchOpen(true)} />
                     
                     <div className={`flex items-center gap-2 p-1 bg-white/5 rounded-xl border border-white/10 ${effectiveIsNavHidden ? 'scale-90' : ''}`}>
+                        <ShellLanguageSelector variant="horizontal" />
+                        
+                        <div className="w-[1px] h-4 bg-white/10 mx-1" />
+
                         <button className="p-1.5 text-white/20 hover:text-white transition-colors relative">
                             <Bell size={14} />
                             <div className="absolute top-1.5 right-1.5 w-1 h-1 bg-[var(--theme-primary)] rounded-full border border-black" />
