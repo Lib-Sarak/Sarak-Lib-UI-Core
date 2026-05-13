@@ -25,7 +25,7 @@ export const SidebarNav: React.FC<SidebarNavProps> = ({
     design, brand, user, logout, toggleNav, setIsSearchOpen, activeModuleId, setActiveModuleId, groupedModules, setIsNavVisible, startResizing
 }) => {
     const [isHovered, setIsHovered] = React.useState(false);
-    const { 
+    const {
         mode, animationSpeed, sidebarWidth, isNavHidden, isAutoHideEnabled,
         tabSectionMargin, borderRadius, borderWidth, borderStyle,
         systemName, logoUrl, logoDarkUrl, logoScale, logoPosition, tabGap
@@ -35,7 +35,7 @@ export const SidebarNav: React.FC<SidebarNavProps> = ({
     const effectiveIsNavHidden = isNavHidden && !isHovered;
 
     return (
-        <aside 
+        <aside
             onMouseEnter={() => {
                 setIsNavVisible(true);
                 if (isNavHidden) setIsHovered(true);
@@ -44,7 +44,7 @@ export const SidebarNav: React.FC<SidebarNavProps> = ({
                 if (isAutoHideEnabled) setIsNavVisible(false);
                 setIsHovered(false);
             }}
-            style={{ 
+            style={{
                 width: effectiveIsNavHidden ? '74px' : `${sidebarWidth || 240}px`,
                 opacity: 1,
                 visibility: 'visible',
@@ -64,11 +64,11 @@ export const SidebarNav: React.FC<SidebarNavProps> = ({
                     <div className={`flex items-center gap-3 w-full ${logoPosition === 'center' ? 'justify-center' : ''}`}>
                         {logoUrl ? (
                             <div style={{ height: '32px', display: 'flex', alignItems: 'center', justifyContent: logoPosition === 'center' ? 'center' : 'flex-start' }}>
-                                <img 
-                                    src={mode === 'dark' && logoDarkUrl ? logoDarkUrl : logoUrl} 
-                                    alt={systemName} 
-                                    style={{ height: `${32 * (logoScale || 1)}px` }} 
-                                    className="object-contain transition-all" 
+                                <img
+                                    src={mode === 'dark' && logoDarkUrl ? logoDarkUrl : logoUrl}
+                                    alt={systemName}
+                                    style={{ height: `${32 * (logoScale || 1)}px` }}
+                                    className="object-contain transition-all"
                                 />
                             </div>
                         ) : (
@@ -77,7 +77,7 @@ export const SidebarNav: React.FC<SidebarNavProps> = ({
                         <span className="text-sm font-bold tracking-tighter opacity-80 text-[var(--theme-title)] truncate max-w-[120px]">{systemName || brand.name}</span>
                     </div>
                 )}
-                
+
                 {effectiveIsNavHidden && (
                     <div className="w-9 h-9 rounded-xl bg-[var(--theme-primary)] flex items-center justify-center text-white shadow-lg">
                         <span className="font-black text-xs">S</span>
@@ -104,14 +104,14 @@ export const SidebarNav: React.FC<SidebarNavProps> = ({
                             {mods.map(mod => {
                                 const isOffline = mod.status === 'offline';
                                 return (
-                                    <button 
-                                        key={mod.id} 
-                                        onClick={() => !isOffline && setActiveModuleId(mod.id)} 
+                                    <button
+                                        key={mod.id}
+                                        onClick={() => !isOffline && setActiveModuleId(mod.id)}
                                         disabled={isOffline}
                                         title={isOffline ? `Offline Module: ${mod.error || 'Connection error'}` : mod.label}
                                         className={`w-full flex items-center gap-3 px-3 py-2.5 rounded-xl transition-all relative group font-tab 
-                                            ${activeModuleId === mod.id 
-                                                ? 'bg-[var(--sarak-sidebar-active,var(--theme-primary-rgb,59,130,246)/10)] text-[var(--theme-primary)] font-bold shadow-[inset_0_0_20px_rgba(var(--theme-primary-rgb),0.05)]' 
+                                            ${activeModuleId === mod.id
+                                                ? 'bg-[var(--sarak-sidebar-active,var(--theme-primary-rgb,59,130,246)/10)] text-[var(--theme-primary)] font-bold shadow-[inset_0_0_20px_rgba(var(--theme-primary-rgb),0.05)]'
                                                 : 'text-white/40 hover:bg-[var(--sarak-sidebar-hover,white/5)] hover:text-white'}
                                             ${isOffline ? 'opacity-30 grayscale cursor-not-allowed border border-dashed border-white/5' : ''}
                                         `}
@@ -138,7 +138,7 @@ export const SidebarNav: React.FC<SidebarNavProps> = ({
             <div className="mt-auto space-y-1 p-2">
                 {/* 2. Language Selector */}
                 <ShellLanguageSelector variant="vertical" />
-                
+
                 {/* 3. Notifications */}
                 <button className={`w-full flex items-center gap-3 px-3 py-2.5 rounded-xl text-white/40 hover:bg-white/5 hover:text-white transition-all group ${effectiveIsNavHidden ? 'justify-center' : ''}`}>
                     <Bell size={18} className="text-[var(--theme-muted)] group-hover:text-[var(--theme-primary)]" />
@@ -149,11 +149,11 @@ export const SidebarNav: React.FC<SidebarNavProps> = ({
 
             {/* 4. User Profile & Logout */}
             <ShellUserWidget user={user} logout={logout} variant={effectiveIsNavHidden ? 'mini' : 'vertical'} />
-            
+
             {/* RESIZE HANDLE (X-AXIS) */}
-            <div 
-                onMouseDown={startResizing} 
-                className="absolute top-0 right-0 w-1.5 h-full cursor-col-resize hover:bg-[var(--theme-primary)]/40 active:bg-[var(--theme-primary)] transition-all z-[1000]" 
+            <div
+                onMouseDown={startResizing}
+                className="absolute top-0 right-0 w-1.5 h-full cursor-col-resize hover:bg-[var(--theme-primary)]/40 active:bg-[var(--theme-primary)] transition-all z-[1000]"
                 title="Arraste para redimensionar"
             />
         </aside>
