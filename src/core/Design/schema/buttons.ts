@@ -6,8 +6,9 @@ import { ComponentSchema } from '../types';
  */
 export const ButtonsSchema: ComponentSchema = {
     id: 'buttons',
-    label: 'Botões & Ações',
-    pilar: 'buttons',
+    label: 'Anatomia do Botão',
+    pilar: 'interaction',
+    subcategory: 'Botões e Interação',
     tokens: [
         {
             id: 'btnBorderRadius',

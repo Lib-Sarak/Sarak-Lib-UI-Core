@@ -6,8 +6,9 @@ import { ComponentSchema } from '../types';
  */
 export const TypographySchema: ComponentSchema = {
     id: 'typography',
-    label: 'Tipografia & Escrita',
+    label: 'Configuração de Fontes',
     pilar: 'typography',
+    subcategory: 'Fontes',
     targetApp: 'typography',
     tokens: [
         // --- FAMÍLIAS DE FONTES ---

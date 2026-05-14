@@ -34,7 +34,7 @@ body {
   
   background-color: var(--bg-body) !important;
   color: var(--text-main);
-  transition: background-color var(--animation-speed, 0.4s) ease, color var(--animation-speed, 0.4s) ease;
+  transition: background-color var(--duration-normal) var(--ease-sarak), color var(--duration-normal) var(--ease-sarak);
   min-height: 100vh;
   margin: 0;
   padding: 0;
@@ -72,26 +72,26 @@ body {
     margin-right: auto;
 }
 
-/* Sarak Industrial Scrollbars (v12.5) */
+/* Sarak Industrial Scrollbars (v13.0 - Atomic Sync) */
 ::-webkit-scrollbar {
-  width: var(--sarak-scrollbar-width, 10px);
-  height: var(--sarak-scrollbar-width, 10px);
+  width: var(--scroll-w);
+  height: var(--scroll-w);
 }
 
 ::-webkit-scrollbar-track {
-  background: rgba(0, 0, 0, 0.1);
-  border-radius: 10px;
+  background: var(--scroll-track);
+  border-radius: var(--scroll-r);
 }
 
 ::-webkit-scrollbar-thumb {
-  background: var(--sarak-scrollbar-thumb, rgba(255, 255, 255, 0.2));
-  border-radius: var(--sarak-scrollbar-radius, 10px);
-  border: 2px solid transparent;
+  background: color-mix(in srgb, var(--scroll-thumb), transparent calc(100% - (var(--scroll-thumb-op) * 100%)));
+  border-radius: var(--scroll-r);
+  border: var(--sarak-scroll-padding, 2px) solid transparent;
   background-clip: content-box;
 }
 
 ::-webkit-scrollbar-thumb:hover {
-  background: var(--sarak-scrollbar-hover, var(--theme-primary, #00f2ff));
+  background: color-mix(in srgb, var(--scroll-thumb), transparent calc(100% - (var(--scroll-thumb-hover) * 100%)));
   background-clip: content-box;
 }
 

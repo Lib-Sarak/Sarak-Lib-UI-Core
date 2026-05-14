@@ -7,7 +7,8 @@ import { ComponentSchema } from '../types';
 export const StatusSchema: ComponentSchema = {
     id: 'status',
     label: 'Badges & Status',
-    pilar: 'status',
+    pilar: 'brand',
+    subcategory: 'Cores Semânticas',
     tokens: [
         {
             id: 'statusSuccessColor',

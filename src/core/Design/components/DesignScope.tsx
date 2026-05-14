@@ -33,11 +33,11 @@ export const DesignScope: React.FC<DesignScopeProps & Record<string, any>> = ({
             <div 
                 className={`sarak-design-scope ${design?.mode || 'dark'} ${className}`}
                 style={{ 
+                    width: '100%',
+                    height: '100%',
                     ...variables, 
                     ...style,
-                    position: 'relative',
-                    width: '100%',
-                    height: '100%'
+                    position: 'relative'
                 }}
                 {...attributes}
                 {...domSafeProps}

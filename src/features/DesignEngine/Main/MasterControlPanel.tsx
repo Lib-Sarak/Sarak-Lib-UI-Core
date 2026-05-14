@@ -52,41 +52,30 @@ export const MasterControlPanel: React.FC = () => {
 
     return (
         <div className="flex flex-col h-full bg-[#080809] text-white/90">
-            {/* Header de Gestão */}
-            <div className="p-8 border-b border-white/5 bg-black/20">
-                <div className="flex items-center justify-between mb-8">
-                    <div>
-                        <h1 className="text-2xl font-black tracking-tighter uppercase mb-1">
-                            Painel de Controle <span className="text-[var(--theme-primary)]">Sarak</span>
-                        </h1>
-                        <p className="text-xs text-white/40 font-medium uppercase tracking-[0.2em]">Auditoria de 100% dos Ativos de Design</p>
-                    </div>
-                    
-                    <button 
-                        onClick={handleApplyToSystem}
-                        className="flex items-center gap-3 px-8 py-4 bg-[var(--theme-primary)] text-black font-black text-xs uppercase tracking-widest rounded-2xl shadow-[0_10px_30px_rgba(var(--theme-primary-rgb),0.3)] hover:scale-105 active:scale-95 transition-all"
-                    >
-                        <Save size={14} />
-                        <span>Aplicar Mudanças ao Sistema</span>
-                    </button>
+            {/* Header de Gestão - Compacto para Sidebar */}
+            <div className="p-4 border-b border-white/5 bg-black/40">
+                <div className="flex items-center justify-between mb-4">
+                    <h3 className="text-[10px] font-black tracking-widest uppercase text-white/30">
+                        Catálogo de <span className="text-[var(--theme-primary)]">Tokens</span>
+                    </h3>
                 </div>
 
-                {/* Filtros */}
-                <div className="flex gap-4">
-                    <div className="flex-1 relative">
-                        <Search className="absolute left-4 top-1/2 -translate-y-1/2 text-white/20" size={16} />
+                {/* Filtros Compactos */}
+                <div className="flex flex-col gap-3">
+                    <div className="relative">
+                        <Search className="absolute left-3 top-1/2 -translate-y-1/2 text-white/20" size={12} />
                         <input 
                             type="text" 
-                            placeholder="BUSCAR TOKEN OU VARIÁVEL..."
+                            placeholder="BUSCAR..."
                             value={searchQuery}
                             onChange={(e) => setSearchQuery(e.target.value)}
-                            className="w-full bg-white/5 border border-white/10 rounded-xl py-4 pl-12 pr-4 text-xs font-bold tracking-widest uppercase focus:outline-none focus:border-[var(--theme-primary)]/50 transition-all"
+                            className="w-full bg-white/5 border border-white/10 rounded-lg py-2.5 pl-9 pr-3 text-[9px] font-bold tracking-widest uppercase focus:outline-none focus:border-[var(--theme-primary)]/50 transition-all"
                         />
                     </div>
-                    <div className="flex gap-2 overflow-x-auto pb-2 scrollbar-hide no-scrollbar">
+                    <div className="flex gap-2 overflow-x-auto pb-1 no-scrollbar">
                         <button 
                             onClick={() => setActiveCategory(null)}
-                            className={`px-6 py-4 rounded-xl text-[10px] font-black uppercase tracking-widest transition-all whitespace-nowrap border ${!activeCategory ? 'bg-white/10 border-white/20 text-white' : 'bg-transparent border-white/5 text-white/30 hover:bg-white/5'}`}
+                            className={`px-3 py-2 rounded-lg text-[8px] font-black uppercase tracking-widest transition-all whitespace-nowrap border ${!activeCategory ? 'bg-white/10 border-white/10 text-white' : 'bg-transparent border-white/5 text-white/20 hover:bg-white/5'}`}
                         >
                             Todos
                         </button>
@@ -94,7 +83,7 @@ export const MasterControlPanel: React.FC = () => {
                             <button 
                                 key={cat.id}
                                 onClick={() => setActiveCategory(cat.id)}
-                                className={`px-6 py-4 rounded-xl text-[10px] font-black uppercase tracking-widest transition-all whitespace-nowrap border ${activeCategory === cat.id ? 'bg-white/10 border-white/20 text-white shadow-xl' : 'bg-transparent border-white/5 text-white/30 hover:bg-white/5'}`}
+                                className={`px-3 py-2 rounded-lg text-[8px] font-black uppercase tracking-widest transition-all whitespace-nowrap border ${activeCategory === cat.id ? 'bg-white/10 border-white/10 text-white' : 'bg-transparent border-white/5 text-white/20 hover:bg-white/5'}`}
                             >
                                 {cat.label}
                             </button>
@@ -103,52 +92,45 @@ export const MasterControlPanel: React.FC = () => {
                 </div>
             </div>
 
-            {/* A Tabela / Planilha */}
-            <div className="flex-1 overflow-y-auto p-8 custom-scrollbar">
-                <div className="w-full border border-white/5 rounded-3xl overflow-hidden bg-white/[0.01]">
-                    <table className="w-full text-left border-collapse">
+            {/* A Tabela / Planilha - Otimizada para Sidebar */}
+            <div className="flex-1 overflow-y-auto p-2 custom-scrollbar">
+                <div className="w-full border border-white/5 rounded-xl overflow-hidden bg-white/[0.01]">
+                    <table className="w-full text-left border-collapse table-fixed">
                         <thead>
                             <tr className="bg-white/5 border-b border-white/5">
-                                <th className="px-6 py-5 text-[10px] font-black uppercase tracking-widest text-white/30 w-1/4">Token / Identificador</th>
-                                <th className="px-6 py-5 text-[10px] font-black uppercase tracking-widest text-white/30 w-1/4">Categoria</th>
-                                <th className="px-6 py-5 text-[10px] font-black uppercase tracking-widest text-white/30 w-1/4">Valor Atual</th>
-                                <th className="px-6 py-5 text-[10px] font-black uppercase tracking-widest text-white/30 w-[100px] text-right">Ações</th>
+                                <th className="px-3 py-3 text-[8px] font-black uppercase tracking-widest text-white/20 w-[45%]">Token</th>
+                                <th className="px-3 py-3 text-[8px] font-black uppercase tracking-widest text-white/20 w-[40%]">Valor</th>
+                                <th className="px-3 py-3 text-[8px] font-black uppercase tracking-widest text-white/20 w-[15%] text-right"></th>
                             </tr>
                         </thead>
                         <tbody>
                             {filteredTokens.map((token, idx) => (
                                 <tr key={token.id} className={`border-b border-white/5 hover:bg-white/[0.02] transition-colors ${idx % 2 === 0 ? 'bg-black/10' : 'bg-transparent'}`}>
-                                    <td className="px-6 py-5">
-                                        <div className="flex flex-col gap-1">
-                                            <span className="text-xs font-black uppercase tracking-tight">{token.label}</span>
-                                            <code className="text-[9px] text-white/20 font-mono tracking-tighter">{token.id}</code>
+                                    <td className="px-3 py-3 overflow-hidden">
+                                        <div className="flex flex-col gap-0.5">
+                                            <span className="text-[9px] font-black uppercase tracking-tight truncate">{token.label}</span>
+                                            <code className="text-[7px] text-white/10 font-mono tracking-tighter truncate">{token.id}</code>
                                         </div>
                                     </td>
-                                    <td className="px-6 py-5">
-                                        <div className="inline-flex items-center gap-2 px-3 py-1.5 rounded-lg bg-white/5 border border-white/5">
-                                            <Layers size={10} className="text-white/20" />
-                                            <span className="text-[9px] font-black uppercase tracking-widest text-white/40">{token.pilarName}</span>
-                                        </div>
-                                    </td>
-                                    <td className="px-6 py-5">
-                                        <div className="flex items-center gap-4">
-                                            {/* Editor Dinâmico baseado no Tipo */}
+                                    <td className="px-3 py-3">
+                                        <div className="flex items-center gap-2">
+                                            {/* Editor Dinâmico baseado no Tipo - Versão Ultra Compacta */}
                                             {token.type === 'color' && (
-                                                <div className="flex items-center gap-3">
+                                                <div className="flex items-center gap-2 flex-1">
                                                     <div 
-                                                        className="w-8 h-8 rounded-lg border border-white/10 shadow-lg" 
+                                                        className="w-5 h-5 shrink-0 rounded border border-white/10" 
                                                         style={{ backgroundColor: draft[token.id] || token.defaultValue }} 
                                                     />
                                                     <input 
                                                         type="text" 
                                                         value={draft[token.id] || token.defaultValue} 
                                                         onChange={(e) => updateDraft(token.id, e.target.value)}
-                                                        className="bg-transparent border-none text-[10px] font-mono text-white/60 focus:outline-none w-24"
+                                                        className="bg-transparent border-none text-[8px] font-mono text-white/40 focus:outline-none w-full"
                                                     />
                                                 </div>
                                             )}
                                             {token.type === 'slider' && (
-                                                <div className="flex items-center gap-4 flex-1 max-w-[200px]">
+                                                <div className="flex items-center gap-2 flex-1">
                                                     <input 
                                                         type="range" 
                                                         min={token.constraints?.min ?? 0}
@@ -158,8 +140,8 @@ export const MasterControlPanel: React.FC = () => {
                                                         onChange={(e) => updateDraft(token.id, Number(e.target.value))}
                                                         className="flex-1 accent-[var(--theme-primary)] h-1 bg-white/10 rounded-lg appearance-none cursor-pointer"
                                                     />
-                                                    <span className="text-[10px] font-black text-white/40 w-12 text-right">
-                                                        {draft[token.id] ?? token.defaultValue}{token.unit || ''}
+                                                    <span className="text-[8px] font-black text-white/20 w-6 text-right">
+                                                        {draft[token.id] ?? token.defaultValue}
                                                     </span>
                                                 </div>
                                             )}
@@ -167,7 +149,7 @@ export const MasterControlPanel: React.FC = () => {
                                                 <select 
                                                     value={draft[token.id] ?? token.defaultValue}
                                                     onChange={(e) => updateDraft(token.id, e.target.value)}
-                                                    className="bg-white/5 border border-white/10 rounded-lg py-2 px-3 text-[10px] font-black uppercase tracking-widest focus:outline-none"
+                                                    className="bg-white/5 border border-white/10 rounded-md py-1 px-2 text-[8px] font-black uppercase tracking-widest focus:outline-none w-full"
                                                 >
                                                     {token.constraints?.options?.map((opt: any) => (
                                                         <option key={opt.id} value={opt.id} className="bg-[#111]">{opt.label}</option>
@@ -179,7 +161,7 @@ export const MasterControlPanel: React.FC = () => {
                                                     type="text" 
                                                     value={draft[token.id] ?? token.defaultValue}
                                                     onChange={(e) => updateDraft(token.id, e.target.value)}
-                                                    className="bg-white/5 border border-white/10 rounded-lg py-2 px-3 text-[10px] font-bold focus:outline-none w-full max-w-[150px]"
+                                                    className="bg-white/5 border border-white/10 rounded-md py-1 px-2 text-[8px] font-bold focus:outline-none w-full"
                                                 />
                                             )}
                                             {token.type === 'boolean' && (
@@ -192,13 +174,13 @@ export const MasterControlPanel: React.FC = () => {
                                             )}
                                         </div>
                                     </td>
-                                    <td className="px-6 py-5 text-right">
+                                    <td className="px-3 py-3 text-right">
                                         <button 
                                             onClick={() => resetToken(token.id)}
-                                            title="Resetar para o padrão do sistema"
-                                            className="p-3 rounded-xl hover:bg-white/5 text-white/20 hover:text-white transition-all"
+                                            title="Reset"
+                                            className="p-2 rounded-lg hover:bg-white/5 text-white/10 hover:text-white transition-all"
                                         >
-                                            <RotateCcw size={14} />
+                                            <RotateCcw size={10} />
                                         </button>
                                     </td>
                                 </tr>

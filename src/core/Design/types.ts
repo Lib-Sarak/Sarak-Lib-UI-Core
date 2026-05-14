@@ -27,7 +27,8 @@ export interface DesignToken {
 export interface ComponentSchema {
     id: string;
     label: string;
-    pilar: 'identidade' | 'estetica' | 'visual';
+    pilar: 'brand' | 'typography' | 'surfaces' | 'interaction' | 'navigation' | 'systems' | 'specialized' | 'engineering';
+    subcategory: string;
     tokens: DesignToken[];
     targetApp?: string; // App de preview sugerido para este componente
 }

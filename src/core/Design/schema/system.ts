@@ -6,8 +6,9 @@ import { ComponentSchema } from '../types';
  */
 export const SystemSchema: ComponentSchema = {
     id: 'system',
-    label: 'Configurações Globais',
-    pilar: 'system',
+    label: 'Configurações de Layout',
+    pilar: 'navigation',
+    subcategory: 'Estrutura de Layout (Shell)',
     tokens: [
         {
             id: 'bgBaseColor',

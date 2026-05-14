@@ -5,8 +5,9 @@ import { ComponentSchema } from '../types';
  */
 export const AtmosphereSchema: ComponentSchema = {
     id: 'atmosphere',
-    label: 'Atmosfera & Ambiente',
-    pilar: 'glass',
+    label: 'Ambiente e Efeitos',
+    pilar: 'surfaces',
+    subcategory: 'Superfície e Óptica',
     tokens: [
         // --- BACKGROUND GLOBAL ---
         {

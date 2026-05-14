@@ -246,22 +246,25 @@ export const PreviewCanvas: React.FC<PreviewCanvasProps> = ({
     };
 
     return (
-        <div className="flex-grow flex flex-col relative overflow-hidden bg-[#050505] p-0 items-center justify-center">
+        <div className="w-full h-full flex flex-col relative overflow-hidden bg-[#050505] p-0 items-center justify-center">
             <UIContext.Provider value={previewContextValue as any}>
-                <div className="w-full h-full flex flex-col gap-4 p-4 overflow-y-auto custom-scrollbar items-center">
+                <div className="w-full h-full flex flex-col gap-8 p-8 overflow-y-auto custom-scrollbar items-center">
                     {isDualView ? (
                         <>
                             {/* Live Draft Preview */}
-                            <div className="relative shrink-0 w-full aspect-video rounded-3xl border border-white/10 shadow-2xl overflow-hidden bg-black transition-all duration-500">
+                            <div className="relative shrink-0 w-full max-w-[1200px] aspect-video rounded-3xl border border-white/10 shadow-2xl overflow-hidden bg-black transition-all duration-500 min-h-[400px]">
                                 <div className="absolute top-3 left-4 z-50 flex items-center gap-2">
                                     <div className="w-2 h-2 rounded-full bg-amber-500 animate-pulse" />
-                                    <span className="text-[9px] font-black uppercase tracking-widest text-white/40">Live Preview</span>
+                                    <span className="text-[9px] font-black uppercase tracking-widest text-white/40">Gêmeo Digital (Preview Ativa)</span>
+                                </div>
+                                <div className="absolute inset-0 flex items-center justify-center pointer-events-none opacity-5">
+                                    <span className="text-4xl font-black text-white uppercase tracking-widest">Preview Mode</span>
                                 </div>
                                 {renderSystemContent(false)} 
                             </div>
 
                             {/* Catalog Preview */}
-                            <div className="relative shrink-0 w-full aspect-video rounded-3xl border border-white/10 shadow-2xl overflow-hidden bg-[#0c0c0d] transition-all duration-500">
+                            <div className="relative shrink-0 w-full max-w-[1200px] aspect-video rounded-3xl border border-white/10 shadow-2xl overflow-hidden bg-[#0c0c0d] transition-all duration-500 min-h-[400px]">
                                 <div className="w-full h-full flex flex-col">
                                     <div className="px-5 py-3 border-b border-white/5 flex items-center justify-between bg-black/40">
                                         <div className="flex items-center gap-3">

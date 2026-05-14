@@ -6,8 +6,9 @@ import { ComponentSchema } from '../types';
  */
 export const InputsSchema: ComponentSchema = {
     id: 'inputs',
-    label: 'Campos de Entrada',
-    pilar: 'inputs',
+    label: 'Campos de Texto (Inputs)',
+    pilar: 'interaction',
+    subcategory: 'Campos de Texto (Inputs)',
     tokens: [
         {
             id: 'inputBorderRadius',

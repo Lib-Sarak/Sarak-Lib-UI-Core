@@ -6,8 +6,9 @@ import { ComponentSchema } from '../types';
  */
 export const ChatSchema: ComponentSchema = {
     id: 'chat',
-    label: 'Chat & Mensagens',
-    pilar: 'chat',
+    label: 'Interface de Chat',
+    pilar: 'systems',
+    subcategory: 'Chat e IA',
     tokens: [
         {
             id: 'chatBubbleRadius',

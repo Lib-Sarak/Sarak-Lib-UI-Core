@@ -6,8 +6,9 @@ import { ComponentSchema } from '../types';
  */
 export const AnimationSchema: ComponentSchema = {
     id: 'animations',
-    label: 'Animações & Ritmo',
-    pilar: 'motion',
+    label: 'Transições e Animações',
+    pilar: 'interaction',
+    subcategory: 'Transições e Animações',
     tokens: [
         // --- TIMING ---
         {

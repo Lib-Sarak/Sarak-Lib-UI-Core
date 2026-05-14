@@ -16,14 +16,17 @@ import { ChatSchema } from './schema/chat';
 import { StatusSchema } from './schema/status';
 import { EngineeringSchema } from './schema/engineering';
 import { SpecializedSchema } from './schema/specialized';
+import { MotionSchema } from './schema/motion';
+import { ScrollbarsSchema } from './schema/scrollbars';
+import { LayersSchema } from './schema/layers';
 
 /**
- * MASTER DESIGN MAP (v12.7 - Hyper-Granular 100% Coverage)
+ * MASTER DESIGN MAP (v13.0 - Atomic Granularity)
  * 
  * O ponto central de verdade para 100% das configurações do Sarak UI.
  */
 export const MASTER_DESIGN_MAP: MasterDesignSchema = {
-    version: '12.7.0',
+    version: '13.0.0',
     components: [
         BrandingSchema,
         SystemSchema,
@@ -41,7 +44,10 @@ export const MASTER_DESIGN_MAP: MasterDesignSchema = {
         ChatSchema,
         StatusSchema,
         EngineeringSchema,
-        SpecializedSchema
+        SpecializedSchema,
+        MotionSchema,
+        ScrollbarsSchema,
+        LayersSchema
     ]
 };
 

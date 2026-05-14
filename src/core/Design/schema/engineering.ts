@@ -6,8 +6,9 @@ import { ComponentSchema } from '../types';
  */
 export const EngineeringSchema: ComponentSchema = {
     id: 'engineering',
-    label: 'Engenharia & Acessib.',
-    pilar: 'engineering',
+    label: 'Acessibilidade e Camadas',
+    pilar: 'systems',
+    subcategory: 'Acessibilidade e Camadas',
     tokens: [
         {
             id: 'focusRingWidth',

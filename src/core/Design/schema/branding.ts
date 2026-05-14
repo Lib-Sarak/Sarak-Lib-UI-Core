@@ -6,12 +6,13 @@ import { ComponentSchema } from '../types';
  */
 export const BrandingSchema: ComponentSchema = {
     id: 'branding',
-    label: 'Marca & Identidade',
-    pilar: 'branding',
+    label: 'Identidade Visual',
+    pilar: 'brand',
+    subcategory: 'Marca',
     tokens: [
         {
             id: 'systemName',
-            label: 'Nome do Sistema',
+            label: 'Nome da Marca',
             category: 'Identidade',
             type: 'text',
             defaultValue: 'Sarak OS',
@@ -20,74 +21,108 @@ export const BrandingSchema: ComponentSchema = {
         // --- LOGOTIPO AVANÇADO ---
         {
             id: 'logoUrl',
-            label: 'Logo (Light Mode)',
+            label: 'Logo Principal (SVG/PNG)',
             category: 'Assets Visuais',
             type: 'text',
             defaultValue: '',
-            cssVars: ['--sarak-logo-light']
+            cssVars: ['--sarak-logo-main']
         },
         {
-            id: 'logoDarkUrl',
-            label: 'Logo (Dark Mode)',
+            id: 'logoMinimalUrl',
+            label: 'Logo Minimalista (Favicon)',
             category: 'Assets Visuais',
             type: 'text',
             defaultValue: '',
-            cssVars: ['--sarak-logo-dark']
+            cssVars: ['--sarak-logo-minimal']
         },
         {
             id: 'logoScale',
-            label: 'Escala do Logo',
-            category: 'Assets Visuais',
+            label: 'Escala do Logo (%)',
+            category: 'Posicionamento',
             type: 'slider',
-            constraints: { min: 0.5, max: 3, step: 0.1 },
-            defaultValue: 1,
+            constraints: { min: 10, max: 200, step: 5 },
+            defaultValue: 100,
             cssVars: ['--sarak-logo-scale']
         },
         {
-            id: 'logoRotation',
-            label: 'Rotação do Logo',
-            category: 'Assets Visuais',
-            type: 'slider',
-            unit: 'deg',
-            constraints: { min: -180, max: 180, step: 1 },
-            defaultValue: 0,
-            cssVars: ['--sarak-logo-rotation']
-        },
-        {
-            id: 'logoAnimationType',
-            label: 'Animação do Logo',
-            category: 'Assets Visuais',
+            id: 'identityAlignment',
+            label: 'Alinhamento',
+            category: 'Posicionamento',
             type: 'select',
             constraints: {
                 options: [
-                    { id: 'none', label: 'Nenhuma' },
-                    { id: 'pulse', label: 'Pulse' },
-                    { id: 'float', label: 'Float' },
-                    { id: 'glow', label: 'Glow' }
+                    { id: 'left', label: 'Esquerda' },
+                    { id: 'center', label: 'Centro' },
+                    { id: 'right', label: 'Direita' }
                 ]
             },
-            defaultValue: 'none',
-            cssVars: ['--sarak-logo-animation']
+            defaultValue: 'left',
+            cssVars: ['--sarak-identity-align']
         },
-        // --- SÍMBOLO DA MARCA ---
         {
-            id: 'identitySymbolSize',
-            label: 'Tamanho do Símbolo',
-            category: 'Símbolo & Ícone',
+            id: 'identityPadding',
+            label: 'Padding do Container',
+            category: 'Posicionamento',
             type: 'slider',
             unit: 'px',
-            constraints: { min: 16, max: 128, step: 1 },
-            defaultValue: 32,
-            cssVars: ['--sarak-symbol-size']
+            constraints: { min: 0, max: 64 },
+            defaultValue: 16,
+            cssVars: ['--sarak-identity-padding']
+        },
+
+        // --- TIPOGRAFIA DA MARCA ---
+        {
+            id: 'identityFontFamily',
+            label: 'Fonte do Logo',
+            category: 'Tipografia da Marca',
+            type: 'font',
+            defaultValue: 'Inter',
+            cssVars: ['--sarak-identity-font']
         },
         {
-            id: 'identitySymbolGlow',
-            label: 'Brilho do Símbolo',
-            category: 'Símbolo & Ícone',
+            id: 'identityFontWeight',
+            label: 'Peso da Fonte',
+            category: 'Tipografia da Marca',
             type: 'slider',
-            constraints: { min: 0, max: 20, step: 1 },
+            constraints: { min: 100, max: 900, step: 100 },
+            defaultValue: 700,
+            cssVars: ['--sarak-identity-weight']
+        },
+        {
+            id: 'identityTracking',
+            label: 'Espaçamento (Tracking)',
+            category: 'Tipografia da Marca',
+            type: 'slider',
+            unit: 'em',
+            constraints: { min: -0.1, max: 0.5, step: 0.01 },
             defaultValue: 0,
-            cssVars: ['--sarak-symbol-glow']
+            cssVars: ['--sarak-identity-tracking']
+        },
+
+        // --- COMPORTAMENTO ---
+        {
+            id: 'identityRedirectUrl',
+            label: 'Link de Redirecionamento',
+            category: 'Comportamento',
+            type: 'text',
+            defaultValue: '/',
+            cssVars: ['--sarak-identity-link']
+        },
+        {
+            id: 'identityHoverEffect',
+            label: 'Efeito ao Hover',
+            category: 'Comportamento',
+            type: 'select',
+            constraints: {
+                options: [
+                    { id: 'none', label: 'Nenhum' },
+                    { id: 'glow', label: 'Brilho' },
+                    { id: 'opacity', label: 'Opacidade' },
+                    { id: 'scale', label: 'Escala' }
+                ]
+            },
+            defaultValue: 'opacity',
+            cssVars: ['--sarak-identity-hover']
         }
     ]
 };

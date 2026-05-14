@@ -6,8 +6,9 @@ import { ComponentSchema } from '../types';
  */
 export const TablesSchema: ComponentSchema = {
     id: 'tables',
-    label: 'Tabelas & Grids',
-    pilar: 'tables',
+    label: 'Configuração de Tabelas',
+    pilar: 'systems',
+    subcategory: 'Tabelas',
     tokens: [
         {
             id: 'tableHeaderBg',

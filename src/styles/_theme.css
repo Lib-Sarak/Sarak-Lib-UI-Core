@@ -23,7 +23,22 @@
   --sarak-topbar-h: var(--sarak-topbar-height, 64px);
   --sarak-sidebar-w: var(--sarak-sidebar-width, 240px);
   
-  /* --- 3. STATUS SEMÂNTICOS --- */
+  /* --- 3. CAMADAS & PROFUNDIDADE (Layers) --- */
+  --z-index-base: var(--sarak-z-base, 1);
+  --z-index-sidebar: var(--sarak-z-sidebar, 500);
+  --z-index-modal: var(--sarak-z-modal, 2000);
+  --z-index-tooltip: var(--sarak-z-tooltip, 9000);
+  
+  --layer-backdrop-blur: var(--sarak-layer-backdrop-blur, 10px);
+  --layer-backdrop-bg: rgba(0, 0, 0, var(--sarak-layer-backdrop-opacity, 0.4));
+  
+  /* --- 4. MOVIMENTO (Motion) --- */
+  --ease-sarak: var(--sarak-motion-ease-main, cubic-bezier(0.4, 0, 0.2, 1));
+  --duration-fast: calc(var(--sarak-motion-dur-fast, 0.2) * 1s);
+  --duration-normal: calc(var(--sarak-motion-dur-normal, 0.3) * 1s);
+  --duration-slow: calc(var(--sarak-motion-dur-slow, 0.6) * 1s);
+  
+  /* --- 5. STATUS SEMÂNTICOS --- */
   --color-status-success: var(--sarak-status-success-color, #10b981);
   --color-status-error: var(--sarak-status-error-color, #ef4444);
   --color-status-warning: var(--sarak-status-warning-color, #f59e0b);
@@ -33,7 +48,15 @@
   --font-sarak-heading: var(--font-heading, 'Outfit', sans-serif);
   --font-sarak-body: var(--font-main, 'Inter', sans-serif);
   
-  /* --- 5. EFEITOS ESPECIAIS --- */
+  /* --- 7. SCROLLBARS --- */
+  --scroll-w: var(--sarak-scroll-width, 6px);
+  --scroll-r: var(--sarak-scroll-radius, 10px);
+  --scroll-track: rgba(255, 255, 255, var(--sarak-scroll-track-opacity, 0.05));
+  --scroll-thumb: var(--sarak-scroll-thumb-color, #ffffff);
+  --scroll-thumb-op: var(--sarak-scroll-thumb-opacity, 0.2);
+  --scroll-thumb-hover: var(--sarak-scroll-thumb-hover-opacity, 0.5);
+  
+  /* --- 8. EFEITOS ESPECIAIS --- */
   --sarak-blur-master: var(--sarak-glass-blur, 12px);
   --sarak-shadow-glow: var(--sarak-card-glow-color, rgba(0, 242, 255, 0.1));
   

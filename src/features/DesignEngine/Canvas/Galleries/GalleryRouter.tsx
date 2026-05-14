@@ -23,9 +23,21 @@ interface GalleryRouterProps {
 export const GalleryRouter: React.FC<GalleryRouterProps> = ({ activeCategory, tokens, onUpdateDraft, activePreviewApp, customThemes }) => {
 
     switch (activeCategory) {
-        case 'presets':
+        case 'brand':
+            return <BrandingGallery tokens={tokens} onUpdateDraft={onUpdateDraft} />;
+        case 'typography':
+            return <TypographyGallery tokens={tokens} onUpdateDraft={onUpdateDraft} />;
+        case 'surfaces':
+            return <CardsGallery tokens={tokens} onUpdateDraft={onUpdateDraft} />;
+        case 'interaction':
+            return <AnimationsGallery tokens={tokens} onUpdateDraft={onUpdateDraft} />;
+        case 'navigation':
+            return <LayoutGallery tokens={tokens} onUpdateDraft={onUpdateDraft} />;
+        case 'systems':
             return <PresetsGallery tokens={tokens} onUpdateDraft={onUpdateDraft} activePreviewApp={activePreviewApp} customThemes={customThemes} />;
 
+        case 'presets':
+            return <PresetsGallery tokens={tokens} onUpdateDraft={onUpdateDraft} activePreviewApp={activePreviewApp} customThemes={customThemes} />;
         case 'cards':
             return <CardsGallery tokens={tokens} onUpdateDraft={onUpdateDraft} />;
         case 'fonts':

@@ -7,7 +7,8 @@ import { ComponentSchema } from '../types';
 export const DataSchema: ComponentSchema = {
     id: 'data',
     label: 'Gráficos & Dados',
-    pilar: 'charts',
+    pilar: 'systems',
+    subcategory: 'Visualização de Dados',
     tokens: [
         {
             id: 'chartColorPalette',

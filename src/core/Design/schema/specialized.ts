@@ -6,8 +6,9 @@ import { ComponentSchema } from '../types';
  */
 export const SpecializedSchema: ComponentSchema = {
     id: 'specialized',
-    label: 'Módulos de IA',
-    pilar: 'specialized',
+    label: 'Ícones e Estética',
+    pilar: 'systems',
+    subcategory: 'Módulos e IA',
     tokens: [
         {
             id: 'aiPanelBg',

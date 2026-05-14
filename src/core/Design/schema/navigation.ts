@@ -6,8 +6,9 @@ import { ComponentSchema } from '../types';
  */
 export const NavigationSchema: ComponentSchema = {
     id: 'navigation',
-    label: 'Navegação & Shell',
+    label: 'Container de Nav',
     pilar: 'navigation',
+    subcategory: 'Navegação Principal',
     tokens: [
         {
             id: 'navigationStyle',
