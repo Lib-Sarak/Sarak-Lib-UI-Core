@@ -11,13 +11,73 @@ export const ButtonsSchema: ComponentSchema = {
     tokens: [
         {
             id: 'btnBorderRadius',
-            label: 'Arredondamento (Botão)',
-            category: 'Anatomia',
+            label: 'Arredondamento (Master)',
+            category: 'Geometria',
             type: 'slider',
             unit: 'px',
             constraints: { min: 0, max: 40 },
             defaultValue: 8,
-            cssVars: ['--sarak-btn-radius']
+            cssVars: ['--sarak-btn-border-radius', '--sarak-btn-radius-tl', '--sarak-btn-radius-tr', '--sarak-btn-radius-bl', '--sarak-btn-radius-br']
+        },
+        {
+            id: 'btnRadiusTL',
+            label: 'Canto: Superior Esquerdo',
+            category: 'Geometria: Avançado',
+            type: 'slider',
+            unit: 'px',
+            constraints: { min: 0, max: 40 },
+            defaultValue: 8,
+            cssVars: ['--sarak-btn-radius-tl']
+        },
+        {
+            id: 'btnRadiusTR',
+            label: 'Canto: Superior Direito',
+            category: 'Geometria: Avançado',
+            type: 'slider',
+            unit: 'px',
+            constraints: { min: 0, max: 40 },
+            defaultValue: 8,
+            cssVars: ['--sarak-btn-radius-tr']
+        },
+        {
+            id: 'btnRadiusBL',
+            label: 'Canto: Inferior Esquerdo',
+            category: 'Geometria: Avançado',
+            type: 'slider',
+            unit: 'px',
+            constraints: { min: 0, max: 40 },
+            defaultValue: 8,
+            cssVars: ['--sarak-btn-radius-bl']
+        },
+        {
+            id: 'btnRadiusBR',
+            label: 'Canto: Inferior Direito',
+            category: 'Geometria: Avançado',
+            type: 'slider',
+            unit: 'px',
+            constraints: { min: 0, max: 40 },
+            defaultValue: 8,
+            cssVars: ['--sarak-btn-radius-br']
+        },
+
+        // --- INTERAÇÃO ---
+        {
+            id: 'btnHoverScale',
+            label: 'Escala no Hover',
+            category: 'Interação',
+            type: 'slider',
+            constraints: { min: 0.8, max: 1.2, step: 0.01 },
+            defaultValue: 1.02,
+            cssVars: ['--sarak-btn-hover-scale']
+        },
+        {
+            id: 'btnActiveScale',
+            label: 'Escala no Clique',
+            category: 'Interação',
+            type: 'slider',
+            constraints: { min: 0.8, max: 1.2, step: 0.01 },
+            defaultValue: 0.98,
+            cssVars: ['--sarak-btn-active-scale']
         },
         {
             id: 'btnPrimaryBg',

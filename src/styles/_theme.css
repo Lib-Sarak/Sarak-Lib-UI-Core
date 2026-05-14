@@ -36,6 +36,18 @@
   /* --- 5. EFEITOS ESPECIAIS --- */
   --sarak-blur-master: var(--sarak-glass-blur, 12px);
   --sarak-shadow-glow: var(--sarak-card-glow-color, rgba(0, 242, 255, 0.1));
+  
+  /* Motor de Sombras Multi-Camada (Física Real) */
+  --sarak-dynamic-shadow: 
+    0 2px 5px rgba(0, 0, 0, var(--sarak-shadow-ambient-alpha, 0.4)),
+    0 var(--sarak-shadow-projection-blur, 40px) calc(var(--sarak-shadow-projection-blur, 40px) * 1.5) rgba(0, 0, 0, var(--sarak-shadow-projection-alpha, 0.2));
+
+  /* Óptica de Vidro Avançada */
+  --sarak-surface-specular: rgba(255, 255, 255, var(--sarak-glass-specularity, 0.1));
+  --sarak-surface-roughness: var(--sarak-glass-roughness, 0.05);
+
+  /* Viewport Effects */
+  --sarak-vignette: radial-gradient(circle, transparent 50%, rgba(0,0,0, var(--sarak-vignette-opacity, 0.3)) 100%);
 }
 
 /* Utilitários Globais de Sincronização */
@@ -44,5 +56,11 @@
 .rounded-input { border-radius: var(--radius-input); }
 .bg-theme-card { 
     background-color: var(--color-theme-card); 
-    backdrop-filter: blur(var(--sarak-blur-master));
+    backdrop-filter: blur(var(--sarak-blur-master)) saturate(var(--sarak-glass-saturation, 1.2));
+    box-shadow: var(--sarak-dynamic-shadow);
+}
+
+.sarak-vignette-layer {
+    position: fixed; inset: 0; pointer-events: none; z-index: 9999;
+    background: var(--sarak-vignette);
 }

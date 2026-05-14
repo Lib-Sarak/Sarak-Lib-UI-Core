@@ -127,11 +127,11 @@ export const AtmosphereSchema: ComponentSchema = {
             cssVars: ['--sarak-noise-speed']
         },
 
-        // --- GLASSMORPHISM ---
+        // --- GLASSMORPHISM PRO ---
         {
             id: 'glassBlur',
-            label: 'Backdrop Blur',
-            category: 'Efeitos de Vidro',
+            label: 'Backdrop Blur (Profundidade)',
+            category: 'Vidro: Óptica',
             type: 'slider',
             unit: 'px',
             constraints: { min: 0, max: 100, step: 1 },
@@ -139,78 +139,68 @@ export const AtmosphereSchema: ComponentSchema = {
             cssVars: ['--sarak-glass-blur']
         },
         {
+            id: 'glassSpecularity',
+            label: 'Specularity (Brilho de Luz)',
+            category: 'Vidro: Óptica',
+            type: 'slider',
+            constraints: { min: 0, max: 1, step: 0.05 },
+            defaultValue: 0.1,
+            cssVars: ['--sarak-glass-specularity']
+        },
+        {
+            id: 'glassRoughness',
+            label: 'Roughness (Rugosidade)',
+            category: 'Vidro: Óptica',
+            type: 'slider',
+            constraints: { min: 0, max: 1, step: 0.05 },
+            defaultValue: 0.05,
+            cssVars: ['--sarak-glass-roughness']
+        },
+        {
             id: 'glassSaturation',
-            label: 'Multiplicador de Saturação',
-            category: 'Efeitos de Vidro',
+            label: 'Saturação do Vidro',
+            category: 'Vidro: Óptica',
             type: 'slider',
             constraints: { min: 0.5, max: 3, step: 0.1 },
             defaultValue: 1.2,
             cssVars: ['--sarak-glass-saturation']
         },
-        {
-            id: 'glassEdgeColor',
-            label: 'Cor da Iluminação de Borda',
-            category: 'Efeitos de Vidro',
-            type: 'color',
-            defaultValue: 'rgba(255, 255, 255, 0.1)',
-            cssVars: ['--sarak-glass-edge-color']
-        },
-        {
-            id: 'glassEdgeWidth',
-            label: 'Largura da Borda de Vidro',
-            category: 'Efeitos de Vidro',
-            type: 'slider',
-            unit: 'px',
-            constraints: { min: 0, max: 5, step: 0.5 },
-            defaultValue: 1,
-            cssVars: ['--sarak-glass-edge-width']
-        },
 
-        // --- ELEVAÇÃO ---
+        // --- ORQUESTRAÇÃO DE SOMBRAS (ELEVAÇÃO) ---
         {
-            id: 'shadowGlobalColor',
-            label: 'Cor da Sombra Global',
-            category: 'Elevação',
-            type: 'color',
-            defaultValue: 'rgba(0, 0, 0, 0.8)',
-            cssVars: ['--sarak-shadow-color']
-        },
-        {
-            id: 'elevationIntensity',
-            label: 'Intensidade de Oclusão Ambiente',
-            category: 'Elevação',
+            id: 'shadowAmbientAlpha',
+            label: 'Sombra: Contato (Ambient)',
+            category: 'Sombras: Avançado',
             type: 'slider',
-            constraints: { min: 0, max: 1, step: 0.01 },
-            defaultValue: 0.3,
-            cssVars: ['--sarak-ao-intensity']
-        },
-
-        // --- GLOW & NEON ---
-        {
-            id: 'glowIntensity',
-            label: 'Intensidade de Brilho (Glow)',
-            category: 'Efeitos de Luz',
-            type: 'slider',
-            constraints: { min: 0, max: 2, step: 0.1 },
-            defaultValue: 1,
-            cssVars: ['--sarak-glow-intensity']
+            constraints: { min: 0, max: 1, step: 0.05 },
+            defaultValue: 0.4,
+            cssVars: ['--sarak-shadow-ambient-alpha']
         },
         {
-            id: 'glowSpread',
-            label: 'Difusão do Brilho (Spread)',
-            category: 'Efeitos de Luz',
+            id: 'shadowProjectionBlur',
+            label: 'Sombra: Projeção (Blur)',
+            category: 'Sombras: Avançado',
             type: 'slider',
             unit: 'px',
             constraints: { min: 0, max: 100 },
-            defaultValue: 20,
-            cssVars: ['--sarak-glow-spread']
+            defaultValue: 40,
+            cssVars: ['--sarak-shadow-projection-blur']
+        },
+        {
+            id: 'shadowProjectionAlpha',
+            label: 'Sombra: Projeção (Alpha)',
+            category: 'Sombras: Avançado',
+            type: 'slider',
+            constraints: { min: 0, max: 1, step: 0.05 },
+            defaultValue: 0.2,
+            cssVars: ['--sarak-shadow-projection-alpha']
         },
 
-        // --- CAMERA & VIEWPORT ---
+        // --- EFEITOS CINEMATOGRÁFICOS ---
         {
             id: 'vignetteOpacity',
-            label: 'Opacidade do Vignette',
-            category: 'Efeitos de Câmera',
+            label: 'Intensidade do Vignette',
+            category: 'Câmera & Viewport',
             type: 'slider',
             constraints: { min: 0, max: 1, step: 0.05 },
             defaultValue: 0.3,
@@ -218,8 +208,8 @@ export const AtmosphereSchema: ComponentSchema = {
         },
         {
             id: 'vignetteSoftness',
-            label: 'Suavidade do Vignette',
-            category: 'Efeitos de Câmera',
+            label: 'Suavidade das Bordas',
+            category: 'Câmera & Viewport',
             type: 'slider',
             constraints: { min: 0, max: 100 },
             defaultValue: 50,

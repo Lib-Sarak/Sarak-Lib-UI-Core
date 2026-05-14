@@ -67,6 +67,50 @@ export const NavigationSchema: ComponentSchema = {
             type: 'color',
             defaultValue: '#00f2ff',
             cssVars: ['--sarak-nav-active-color', '--theme-primary']
+        },
+        {
+            id: 'topbarTitleColor',
+            label: 'Cor do Título (Topbar)',
+            category: 'Topbar: Estilo',
+            type: 'color',
+            defaultValue: '#ffffff',
+            cssVars: ['--sarak-topbar-title-color']
+        },
+        // --- ESTÉTICA AVANÇADA DO SHELL ---
+        {
+            id: 'sidebarBlur',
+            label: 'Backdrop Blur (Sidebar)',
+            category: 'Sidebar: Estilo',
+            type: 'slider',
+            unit: 'px',
+            constraints: { min: 0, max: 50 },
+            defaultValue: 10,
+            cssVars: ['--sarak-sidebar-blur']
+        },
+        {
+            id: 'sidebarShadow',
+            label: 'Sombra da Sidebar',
+            category: 'Sidebar: Estilo',
+            type: 'text',
+            defaultValue: '10px 0 30px rgba(0,0,0,0.5)',
+            cssVars: ['--sarak-sidebar-shadow']
+        },
+        {
+            id: 'navActiveMarkerColor',
+            label: 'Cor do Marcador Ativo',
+            category: 'Itens de Menu',
+            type: 'color',
+            defaultValue: '#00f2ff',
+            cssVars: ['--sarak-nav-marker-color']
+        },
+        {
+            id: 'navActiveMarkerGlow',
+            label: 'Brilho do Marcador',
+            category: 'Itens de Menu',
+            type: 'slider',
+            constraints: { min: 0, max: 20 },
+            defaultValue: 10,
+            cssVars: ['--sarak-nav-marker-glow']
         }
     ]
 };

@@ -98,112 +98,21 @@ export const TypographySchema: ComponentSchema = {
             cssVars: ['--sarak-text-muted', '--theme-muted', '--theme-text-muted']
         },
 
-        // --- ESCALA DE TAMANHOS ---
+        // --- H1: O IMPACTO MASTER ---
         {
             id: 'h1Size',
-            label: 'Tamanho H1',
-            category: 'Escala: Títulos',
+            label: 'Tamanho (H1)',
+            category: 'H1: Configuração',
             type: 'slider',
             unit: 'px',
-            constraints: { min: 20, max: 80 },
-            defaultValue: 32,
+            constraints: { min: 20, max: 120 },
+            defaultValue: 48,
             cssVars: ['--sarak-h1-size']
         },
         {
-            id: 'h2Size',
-            label: 'Tamanho H2',
-            category: 'Escala: Títulos',
-            type: 'slider',
-            unit: 'px',
-            constraints: { min: 18, max: 60 },
-            defaultValue: 24,
-            cssVars: ['--sarak-h2-size']
-        },
-        {
-            id: 'h3Size',
-            label: 'Tamanho H3',
-            category: 'Escala: Títulos',
-            type: 'slider',
-            unit: 'px',
-            constraints: { min: 16, max: 48 },
-            defaultValue: 20,
-            cssVars: ['--sarak-h3-size']
-        },
-        {
-            id: 'h4Size',
-            label: 'Tamanho H4',
-            category: 'Escala: Títulos',
-            type: 'slider',
-            unit: 'px',
-            constraints: { min: 14, max: 32 },
-            defaultValue: 18,
-            cssVars: ['--sarak-h4-size']
-        },
-        {
-            id: 'h5Size',
-            label: 'Tamanho H5',
-            category: 'Escala: Títulos',
-            type: 'slider',
-            unit: 'px',
-            constraints: { min: 12, max: 24 },
-            defaultValue: 16,
-            cssVars: ['--sarak-h5-size']
-        },
-        {
-            id: 'h6Size',
-            label: 'Tamanho H6',
-            category: 'Escala: Títulos',
-            type: 'slider',
-            unit: 'px',
-            constraints: { min: 10, max: 20 },
-            defaultValue: 14,
-            cssVars: ['--sarak-h6-size']
-        },
-        {
-            id: 'bodySize',
-            label: 'Tamanho Corpo (Padrão)',
-            category: 'Escala: Corpo',
-            type: 'slider',
-            unit: 'px',
-            constraints: { min: 10, max: 24 },
-            defaultValue: 14,
-            cssVars: ['--sarak-body-size']
-        },
-        {
-            id: 'letterSpacingBody',
-            label: 'Espaçamento (Corpo)',
-            category: 'Legibilidade',
-            type: 'slider',
-            unit: 'px',
-            constraints: { min: -1, max: 4, step: 0.1 },
-            defaultValue: 0,
-            cssVars: ['--sarak-b-spacing']
-        },
-
-        // --- LEGIBILIDADE & ESTILO ---
-        {
-            id: 'lineHeightBase',
-            label: 'Altura da Linha (Corpo)',
-            category: 'Legibilidade',
-            type: 'slider',
-            constraints: { min: 1, max: 2, step: 0.1 },
-            defaultValue: 1.5,
-            cssVars: ['--sarak-line-height']
-        },
-        {
-            id: 'letterSpacingHeading',
-            label: 'Espaçamento (Títulos)',
-            category: 'Legibilidade',
-            type: 'slider',
-            unit: 'px',
-            constraints: { min: -2, max: 10, step: 0.5 },
-            defaultValue: 0,
-            cssVars: ['--letter-spacing-heading', '--sarak-h-spacing']
-        },
-        {
-            id: 'headingWeight',
-            label: 'Peso dos Títulos',
-            category: 'Legibilidade',
+            id: 'h1Weight',
+            label: 'Peso (H1)',
+            category: 'H1: Configuração',
             type: 'select',
             constraints: {
                 options: [
@@ -214,36 +123,130 @@ export const TypographySchema: ComponentSchema = {
                     { id: '900', label: 'Black' }
                 ]
             },
-            defaultValue: '700',
-            cssVars: ['--sarak-h-weight']
+            defaultValue: '900',
+            cssVars: ['--sarak-h1-weight']
         },
         {
-            id: 'bodyWeight',
-            label: 'Peso do Corpo',
-            category: 'Legibilidade',
+            id: 'h1LineHeight',
+            label: 'Altura da Linha (H1)',
+            category: 'H1: Configuração',
+            type: 'slider',
+            constraints: { min: 0.8, max: 2, step: 0.05 },
+            defaultValue: 1.1,
+            cssVars: ['--sarak-h1-lh']
+        },
+        {
+            id: 'h1LetterSpacing',
+            label: 'Espaçamento (H1)',
+            category: 'H1: Configuração',
+            type: 'slider',
+            unit: 'px',
+            constraints: { min: -5, max: 10, step: 0.5 },
+            defaultValue: -1,
+            cssVars: ['--sarak-h1-ls']
+        },
+
+        // --- H2: O TÍTULO DE SEÇÃO ---
+        {
+            id: 'h2Size',
+            label: 'Tamanho (H2)',
+            category: 'H2: Configuração',
+            type: 'slider',
+            unit: 'px',
+            constraints: { min: 18, max: 80 },
+            defaultValue: 32,
+            cssVars: ['--sarak-h2-size']
+        },
+        {
+            id: 'h2Weight',
+            label: 'Peso (H2)',
+            category: 'H2: Configuração',
             type: 'select',
             constraints: {
                 options: [
                     { id: '300', label: 'Light' },
                     { id: '400', label: 'Regular' },
-                    { id: '600', label: 'Semi-Bold' }
+                    { id: '600', label: 'Semi-Bold' },
+                    { id: '700', label: 'Bold' }
+                ]
+            },
+            defaultValue: '700',
+            cssVars: ['--sarak-h2-weight']
+        },
+        {
+            id: 'h2LineHeight',
+            label: 'Altura da Linha (H2)',
+            category: 'H2: Configuração',
+            type: 'slider',
+            constraints: { min: 0.8, max: 2, step: 0.05 },
+            defaultValue: 1.2,
+            cssVars: ['--sarak-h2-lh']
+        },
+
+        // --- CORPO & TEXTO ---
+        {
+            id: 'bodySize',
+            label: 'Tamanho do Corpo',
+            category: 'Corpo & Legibilidade',
+            type: 'slider',
+            unit: 'px',
+            constraints: { min: 10, max: 24 },
+            defaultValue: 14,
+            cssVars: ['--sarak-body-size', '--theme-font-size-base']
+        },
+        {
+            id: 'bodyLineHeight',
+            label: 'Altura da Linha (Corpo)',
+            category: 'Corpo & Legibilidade',
+            type: 'slider',
+            constraints: { min: 1, max: 2.5, step: 0.1 },
+            defaultValue: 1.6,
+            cssVars: ['--sarak-body-lh', '--sarak-line-height']
+        },
+        {
+            id: 'bodyWeight',
+            label: 'Peso do Corpo',
+            category: 'Corpo & Legibilidade',
+            type: 'select',
+            constraints: {
+                options: [
+                    { id: '300', label: 'Light' },
+                    { id: '400', label: 'Regular' },
+                    { id: '500', label: 'Medium' }
                 ]
             },
             defaultValue: '400',
-            cssVars: ['--sarak-b-weight']
+            cssVars: ['--sarak-body-weight', '--sarak-b-weight']
+        },
+
+        // --- TRANSFORMAÇÃO & ESTÉTICA ---
+        {
+            id: 'headingTransform',
+            label: 'Transformação de Títulos',
+            category: 'Estética Global',
+            type: 'select',
+            constraints: {
+                options: [
+                    { id: 'none', label: 'Normal' },
+                    { id: 'uppercase', label: 'UPPERCASE' },
+                    { id: 'capitalize', label: 'Capitalize' }
+                ]
+            },
+            defaultValue: 'none',
+            cssVars: ['--sarak-h-transform']
         },
         {
             id: 'textSmoothing',
             label: 'Suavização (Smoothing)',
-            category: 'Legibilidade',
+            category: 'Estética Global',
             type: 'boolean',
             defaultValue: true,
             cssVars: ['--sarak-text-smoothing']
         },
         {
             id: 'textGlowIntensity',
-            label: 'Brilho de Título (Neon)',
-            category: 'Estética',
+            label: 'Intensidade de Glow (H1)',
+            category: 'Estética Global',
             type: 'slider',
             constraints: { min: 0, max: 1, step: 0.05 },
             defaultValue: 0,

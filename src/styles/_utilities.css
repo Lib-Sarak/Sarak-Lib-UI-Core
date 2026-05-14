@@ -25,21 +25,29 @@
 .p-theme { padding: var(--theme-pad, 1.5rem); }
 .gap-theme { gap: var(--theme-gap, 20px); }
 
-/* Sincronização de Geometria em Botões e Inputs */
-button:not(.p-0), input, select, textarea {
-    border-radius: calc(var(--radius-theme, 12px) * 0.7);
+/* Sincronização de Geometria Atômica em Botões e Inputs */
+button:not(.p-0) {
+    border-radius: var(--sarak-btn-radius-tl, var(--sarak-btn-border-radius, 8px)) 
+                   var(--sarak-btn-radius-tr, var(--sarak-btn-border-radius, 8px)) 
+                   var(--sarak-btn-radius-br, var(--sarak-btn-border-radius, 8px)) 
+                   var(--sarak-btn-radius-bl, var(--sarak-btn-border-radius, 8px));
+    transition: all 0.2s var(--ease-sarak-cubic);
+}
+
+input, select, textarea {
+    border-radius: var(--sarak-input-border-radius, 8px);
     transition: all 0.2s var(--ease-sarak-cubic);
 }
 
 button:hover:not(.p-0) {
     background-color: var(--sarak-button-hover, var(--theme-primary-hover));
-    transform: translateY(-1px);
+    transform: translateY(-1px) scale(var(--sarak-btn-hover-scale, 1.02));
 }
 
 button:active:not(.p-0),
 .bg-theme-card:active {
     background-color: var(--sarak-button-active, var(--theme-primary-active));
-    transform: translateY(0) scale(var(--sarak-haptic-scale, 0.98)) !important;
+    transform: translateY(0) scale(var(--sarak-btn-active-scale, 0.98)) !important;
     transition: transform 0.1s var(--ease-sarak-fluid);
 }
 

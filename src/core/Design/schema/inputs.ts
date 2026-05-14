@@ -17,7 +17,7 @@ export const InputsSchema: ComponentSchema = {
             unit: 'px',
             constraints: { min: 0, max: 24 },
             defaultValue: 8,
-            cssVars: ['--sarak-input-radius']
+            cssVars: ['--sarak-input-border-radius']
         },
         {
             id: 'inputBg',

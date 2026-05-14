@@ -35,7 +35,7 @@ export const OverlaysSchema: ComponentSchema = {
             unit: 'px',
             constraints: { min: 0, max: 40 },
             defaultValue: 16,
-            cssVars: ['--sarak-modal-radius']
+            cssVars: ['--sarak-modal-border-radius']
         },
         {
             id: 'tooltipBg',

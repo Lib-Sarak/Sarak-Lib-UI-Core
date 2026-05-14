@@ -16,7 +16,7 @@ export const StatusSchema: ComponentSchema = {
             type: 'color',
             defaultValue: '#10b981',
             generateVariants: true,
-            cssVars: ['--sarak-status-success', '--theme-success']
+            cssVars: ['--sarak-status-success-color', '--theme-success']
         },
         {
             id: 'statusErrorColor',
@@ -25,7 +25,7 @@ export const StatusSchema: ComponentSchema = {
             type: 'color',
             defaultValue: '#ef4444',
             generateVariants: true,
-            cssVars: ['--sarak-status-error', '--theme-error']
+            cssVars: ['--sarak-status-error-color', '--theme-error']
         },
         {
             id: 'statusWarningColor',
@@ -34,7 +34,7 @@ export const StatusSchema: ComponentSchema = {
             type: 'color',
             defaultValue: '#f59e0b',
             generateVariants: true,
-            cssVars: ['--sarak-status-warning', '--theme-warning']
+            cssVars: ['--sarak-status-warning-color', '--theme-warning']
         },
         {
             id: 'statusInfoColor',
@@ -43,7 +43,7 @@ export const StatusSchema: ComponentSchema = {
             type: 'color',
             defaultValue: '#3b82f6',
             generateVariants: true,
-            cssVars: ['--sarak-status-info', '--theme-info']
+            cssVars: ['--sarak-status-info-color', '--theme-info']
         },
         {
             id: 'badgeRadius',

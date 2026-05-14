@@ -25,6 +25,7 @@ import {
     SwitchControl,
     InputControl
 } from '../components/DesignControls';
+import { MasterControlPanel } from './MasterControlPanel';
 
 /**
  * TokenControl (v12.1)
@@ -91,6 +92,7 @@ export const ThemeCustomizationTab: React.FC = () => {
     const [activePillarId, setActivePillarId] = useState<string | null>('branding');
     const [activeSectionId, setActiveSectionId] = useState<string | null>(null);
     const [isDualView, setIsDualView] = useState(false);
+    const [viewMode, setViewMode] = useState<'preview' | 'catalog'>('preview');
 
     // 0. Redimensionamento da Barra Design Engine
     const { size: engineSidebarWidth, startResizing: startResizingEngine, isResizing: isResizingEngine } = useResizable({
@@ -195,14 +197,20 @@ export const ThemeCustomizationTab: React.FC = () => {
                             <h2 className="text-sm font-black text-white tracking-tight uppercase">Design Engine <span className="text-[var(--theme-primary)] ml-1 opacity-50">v12.1</span></h2>
                         </div>
                         <div className="flex gap-1.5 p-1 bg-white/5 rounded-xl border border-white/5">
-                            {['desktop', 'tablet', 'smartphone'].map((t) => {
-                                const Icon = t === 'desktop' ? Monitor : t === 'tablet' ? Tablet : Smartphone;
-                                return (
-                                    <button key={t} onClick={() => setPreviewDevice(t as any)} className={`p-2 rounded-lg transition-all ${previewDevice === t ? 'bg-[var(--theme-primary)] text-white shadow-lg' : 'text-white/20 hover:text-white/40'}`}>
-                                        <Icon size={12} />
-                                    </button>
-                                );
-                            })}
+                            <button 
+                                onClick={() => setViewMode('preview')} 
+                                className={`p-2 rounded-lg transition-all flex items-center gap-2 ${viewMode === 'preview' ? 'bg-white/10 text-white' : 'text-white/20 hover:text-white/40'}`}
+                                title="Modo Preview"
+                            >
+                                <Monitor size={12} />
+                            </button>
+                            <button 
+                                onClick={() => setViewMode('catalog')} 
+                                className={`p-2 rounded-lg transition-all flex items-center gap-2 ${viewMode === 'catalog' ? 'bg-[var(--theme-primary)] text-white shadow-lg' : 'text-white/20 hover:text-white/40'}`}
+                                title="Catálogo Mestre (Planilha)"
+                            >
+                                <Table size={12} />
+                            </button>
                         </div>
                     </div>
 
@@ -304,25 +312,47 @@ export const ThemeCustomizationTab: React.FC = () => {
                 </div>
             </DesignScope>
 
-            {/* Preview Canvas */}
+            {/* Main Area: Preview Canvas or Master Catalog */}
             <div className="flex-1 relative bg-[#060607]">
-                <PreviewCanvas 
-                    previewDevice={previewDevice}
-                    previewLayoutId={draft.layout || sarak.layout || 'glass'}
-                    activePreviewApp={activePreviewApp}
-                    setActivePreviewApp={setActivePreviewApp}
-                    previewAnimationStyle={draft.animationStyle || sarak.animationStyle || 'standard'}
-                    previewEmojiSet={draft.emojiSet || sarak.emojiSet || 'none'}
-                    config={draft}
-                    previewPrimaryColor={draft.colorPrimary || sarak.colorPrimary || '#3b82f6'}
-                    mode={draft.mode || sarak.mode || 'dark'}
-                    draftTokens={draft}
-                    activeCategory={null}
-                    onUpdateDraft={updateDraft}
-                    isDualView={isDualView}
-                    customThemes={[]}
-                    sarak={sarak}
-                />
+                <AnimatePresence mode="wait">
+                    {viewMode === 'preview' ? (
+                        <motion.div 
+                            key="preview"
+                            initial={{ opacity: 0, x: 20 }}
+                            animate={{ opacity: 1, x: 0 }}
+                            exit={{ opacity: 0, x: -20 }}
+                            className="w-full h-full"
+                        >
+                            <PreviewCanvas 
+                                previewDevice={previewDevice}
+                                previewLayoutId={draft.layout || sarak.layout || 'glass'}
+                                activePreviewApp={activePreviewApp}
+                                setActivePreviewApp={setActivePreviewApp}
+                                previewAnimationStyle={draft.animationStyle || sarak.animationStyle || 'standard'}
+                                previewEmojiSet={draft.emojiSet || sarak.emojiSet || 'none'}
+                                config={draft}
+                                previewPrimaryColor={draft.colorPrimary || sarak.colorPrimary || '#3b82f6'}
+                                mode={draft.mode || sarak.mode || 'dark'}
+                                draftTokens={draft}
+                                activeCategory={null}
+                                onUpdateDraft={updateDraft}
+                                isDualView={isDualView}
+                                customThemes={[]}
+                                sarak={sarak}
+                            />
+                        </motion.div>
+                    ) : (
+                        <motion.div 
+                            key="catalog"
+                            initial={{ opacity: 0, x: 20 }}
+                            animate={{ opacity: 1, x: 0 }}
+                            exit={{ opacity: 0, x: -20 }}
+                            className="w-full h-full"
+                        >
+                            <MasterControlPanel />
+                        </motion.div>
+                    )}
+                </AnimatePresence>
 
                 {/* Toasts */}
                 <AnimatePresence>

@@ -130,6 +130,95 @@ export const CardSchema: ComponentSchema = {
             cssVars: ['--sarak-card-border-opacity']
         },
 
+        // --- BORDAS ASSIMÉTRICAS ---
+        {
+            id: 'cardBorderTop',
+            label: 'Espessura: Topo',
+            category: 'Bordas: Avançado',
+            type: 'slider',
+            unit: 'px',
+            constraints: { min: 0, max: 20 },
+            defaultValue: 1,
+            cssVars: ['--sarak-card-border-t']
+        },
+        {
+            id: 'cardBorderBottom',
+            label: 'Espessura: Base',
+            category: 'Bordas: Avançado',
+            type: 'slider',
+            unit: 'px',
+            constraints: { min: 0, max: 20 },
+            defaultValue: 1,
+            cssVars: ['--sarak-card-border-b']
+        },
+        {
+            id: 'cardBorderLeft',
+            label: 'Espessura: Esquerda',
+            category: 'Bordas: Avançado',
+            type: 'slider',
+            unit: 'px',
+            constraints: { min: 0, max: 20 },
+            defaultValue: 1,
+            cssVars: ['--sarak-card-border-l']
+        },
+        {
+            id: 'cardBorderRight',
+            label: 'Espessura: Direita',
+            category: 'Bordas: Avançado',
+            type: 'slider',
+            unit: 'px',
+            constraints: { min: 0, max: 20 },
+            defaultValue: 1,
+            cssVars: ['--sarak-card-border-r']
+        },
+
+        // --- ILUMINAÇÃO INTERNA ---
+        {
+            id: 'cardInnerGlowColor',
+            label: 'Cor do Glow Interno',
+            category: 'Superfície: Efeitos',
+            type: 'color',
+            defaultValue: 'rgba(255, 255, 255, 0.05)',
+            cssVars: ['--sarak-card-inner-glow-color']
+        },
+        {
+            id: 'cardInnerGlowWidth',
+            label: 'Largura do Glow Interno',
+            category: 'Superfície: Efeitos',
+            type: 'slider',
+            unit: 'px',
+            constraints: { min: 0, max: 10 },
+            defaultValue: 1,
+            cssVars: ['--sarak-card-inner-glow-width']
+        },
+
+        // --- TEXTURA DO CARD ---
+        {
+            id: 'cardTextureType',
+            label: 'Textura da Superfície',
+            category: 'Superfície: Textura',
+            type: 'select',
+            constraints: {
+                options: [
+                    { id: 'none', label: 'Liso' },
+                    { id: 'noise', label: 'Ruído Industrial' },
+                    { id: 'grid', label: 'Grid Técnico' },
+                    { id: 'dots', label: 'Dotted' }
+                ]
+            },
+            defaultValue: 'none',
+            cssVars: ['--sarak-card-texture-type']
+        },
+        {
+            id: 'cardTextureOpacity',
+            label: 'Opacidade da Textura',
+            category: 'Superfície: Textura',
+            type: 'slider',
+            constraints: { min: 0, max: 0.2, step: 0.01 },
+            defaultValue: 0.03,
+            cssVars: ['--sarak-card-texture-opacity']
+        },
+
         // --- HEADER ---
         {
             id: 'cardHeaderBg',
