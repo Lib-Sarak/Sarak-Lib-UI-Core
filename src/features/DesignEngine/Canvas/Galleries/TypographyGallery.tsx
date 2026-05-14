@@ -88,7 +88,7 @@ const FontFamilySpecimen: React.FC<{ font: any; onSelect: () => void; isActive: 
 
                 <div className="flex items-center justify-between mt-2">
                     <div className="flex gap-1">
-                        {font.weights.slice(0, 3).map((w: number) => (
+                        {font.weights?.slice(0, 3).map((w: number) => (
                             <span key={w} className={`text-[8px] px-1.5 py-0.5 rounded ${isActive ? 'bg-white/20 text-white' : 'bg-white/5 text-white/30'}`}>
                                 {w}
                             </span>

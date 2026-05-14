@@ -70,13 +70,7 @@ declare const DesignScope: React$1.FC<DesignScopeProps & Record<string, any>>;
 declare const ThemeToggle: React$1.FC;
 
 /**
- * Sarak Design Engine - Presets Library (v12.0)
- * Central Hub para todos os átomos de design.
- */
-
-/**
- * Biblioteca Mestra de Presets
- * Este objeto é consumido pelo CustomizationTab e galerias dinâmicas.
+ * Sarak Design Engine - Presets Library (Empty Placeholder)
  */
 declare const PRESETS_LIBRARY: any;
 
