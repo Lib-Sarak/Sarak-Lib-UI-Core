@@ -5,10 +5,35 @@ import { ComponentSchema } from '../types';
  */
 export const AtmosphereSchema: ComponentSchema = {
     id: 'atmosphere',
-    label: 'Ambiente e Efeitos',
+    label: 'Ambiente e Atmosfera',
     pilar: 'surfaces',
-    subcategory: 'Superfície e Óptica',
+    subcategory: 'Superfícies',
     tokens: [
+        // --- CORES DE SUPERFÍCIE (Duplicado de Branding para Contexto) ---
+        {
+            id: 'colorBgBody',
+            label: 'Fundo Global (Body)',
+            category: 'Superfície',
+            type: 'color',
+            defaultValue: '#050505',
+            cssVars: ['--sarak-bg-body', '--theme-bg']
+        },
+        {
+            id: 'colorBgLayer1',
+            label: 'Background Layer 1',
+            category: 'Superfície',
+            type: 'color',
+            defaultValue: '#0f0f0f',
+            cssVars: ['--sarak-bg-layer-1', '--theme-surface-1']
+        },
+        {
+            id: 'colorBgLayer2',
+            label: 'Background Layer 2',
+            category: 'Superfície',
+            type: 'color',
+            defaultValue: '#1a1a1a',
+            cssVars: ['--sarak-bg-layer-2', '--theme-surface-2']
+        },
         // --- BACKGROUND GLOBAL ---
         {
             id: 'bgBaseColor',

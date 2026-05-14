@@ -6,9 +6,9 @@ import { ComponentSchema } from '../types';
  */
 export const OverlaysSchema: ComponentSchema = {
     id: 'overlays',
-    label: 'Modais & Popups',
+    label: 'Modais & Profundidade',
     pilar: 'surfaces',
-    subcategory: 'Modais e Overlays',
+    subcategory: 'Superfícies',
     tokens: [
         {
             id: 'modalOverlayColor',

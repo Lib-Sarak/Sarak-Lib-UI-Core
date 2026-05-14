@@ -68,6 +68,23 @@ export const ColorsSchema: ComponentSchema = {
             type: 'color',
             defaultValue: 'rgba(15, 15, 15, 0.8)',
             cssVars: ['--sarak-bg-modal', '--theme-modal-bg']
+        },
+        // --- CORES DE COMPONENTES (Sincronizado com Cat 3) ---
+        {
+            id: 'cardBackgroundColor',
+            label: 'Background dos Cards',
+            category: 'Componentes',
+            type: 'color',
+            defaultValue: 'rgba(15, 23, 42, 0.6)',
+            cssVars: ['--card-bg', '--theme-surface', '--theme-card', '--sarak-card-bg']
+        },
+        {
+            id: 'cardBorderColor',
+            label: 'Borda dos Cards',
+            category: 'Componentes',
+            type: 'color',
+            defaultValue: 'rgba(255, 255, 255, 0.1)',
+            cssVars: ['--card-border-color', '--theme-border', '--sarak-card-border-color']
         }
     ]
 };

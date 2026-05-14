@@ -1,7 +1,8 @@
 import React from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
 import {
-    Zap, Shield, BarChart3, MessageSquare, History, Box, Network, Type, Grid, Sparkles, Search, Bell, Lock
+    Zap, Shield, BarChart3, MessageSquare, History, Box, Network, Type, Grid, Sparkles, Search, Bell, Lock,
+    Monitor, Layout, Layers, Terminal
 } from 'lucide-react';
 import { THEME_EFFECTS } from '../../../core/Design/presets/animations';
 import { UIContext, useSarakUI } from '../../../core/Provider/SarakUIProvider';
@@ -46,7 +47,6 @@ export const PreviewCanvas: React.FC<PreviewCanvasProps> = ({
     const parentContext = useSarakUI();
     const tokens = React.useMemo(() => ({ ...draftTokens }), [draftTokens]);
     
-    // 0. Redimensionamento Dinâmico (Sincronizado com Tokens)
     const handleSidebarResize = React.useCallback((newWidth: number) => {
         onUpdateDraft('sidebarWidth', Math.round(newWidth));
     }, [onUpdateDraft]);
@@ -75,7 +75,6 @@ export const PreviewCanvas: React.FC<PreviewCanvasProps> = ({
         ...parentContext,
         design: tokens,
         isDrafting: true,
-        // Sobrescrita total para garantir isolamento no preview
         applyConfig: (partial: any) => {
             Object.entries(partial).forEach(([key, value]) => {
                 onUpdateDraft(key, value);
@@ -97,7 +96,6 @@ export const PreviewCanvas: React.FC<PreviewCanvasProps> = ({
         typography: <MockTypography tokens={tokens} />,
         auth: <MockAuth tokens={tokens} />,
         'kitchen-sink': <KitchenSinkPreview />
-
     };
 
     const appIds = ['dashboard', 'chat', 'logs', 'settings', 'components', 'typography', 'auth', 'kitchen-sink'];
@@ -111,18 +109,16 @@ export const PreviewCanvas: React.FC<PreviewCanvasProps> = ({
         typography: <Type size={14} />,
         auth: <Lock size={14} />,
         'kitchen-sink': <Grid size={14} />
-
     };
 
     const LogoComponent = ({ design }: { design: any }) => {
-        const logoSrc = design.mode === 'light' ? (design.logoUrl || design.logoDarkUrl) : (design.logoDarkUrl || design.logoUrl);
-        const scale = design.logoScale || 1.0;
+        const logoSrc = design.logoUrl;
+        const scale = (design.logoScale || 100) / 100;
         const opacity = design.logoOpacity ?? 1;
         const rotation = design.logoRotation ?? 0;
         const shadow = design.logoDropShadow || 'none';
         const animation = design.logoAnimationType || 'none';
         
-        // Base size is 32px, scaled by logoScale
         const logoSize = 32 * scale;
         
         const animationClasses: Record<string, string> = {
@@ -157,7 +153,15 @@ export const PreviewCanvas: React.FC<PreviewCanvasProps> = ({
                     </div>
                 )}
                 {!design.isNavHidden && (
-                    <span className="font-bold text-[var(--theme-title)] text-2xs tracking-widest uppercase truncate max-w-[120px]">
+                    <span 
+                        className="font-bold text-[var(--theme-title)] tracking-widest uppercase truncate max-w-[120px]"
+                        style={{ 
+                            fontFamily: 'var(--sarak-identity-font, var(--font-heading))',
+                            fontWeight: 'var(--sarak-identity-weight, 700)',
+                            letterSpacing: 'var(--sarak-identity-tracking, 0.1em)',
+                            fontSize: '0.65rem'
+                        }}
+                    >
                         {design.systemName || 'SARAK'}
                     </span>
                 )}
@@ -181,18 +185,32 @@ export const PreviewCanvas: React.FC<PreviewCanvasProps> = ({
 
     const renderSystemContent = (useSystemDesign = false) => {
         const activeDesign = useSystemDesign ? (sarak?.design || {}) : tokens;
+        const navStyle = activeDesign.navigationStyle || 'sidebar';
+        const hasTexture = activeDesign.texture && activeDesign.texture !== 'none';
 
         return (
-            <DesignScope design={activeDesign} className="w-full h-full flex flex-col bg-[var(--theme-bg)] transition-all duration-500 overflow-hidden relative">
+            <DesignScope 
+                design={activeDesign} 
+                className={`w-full h-full flex flex-col transition-all duration-500 overflow-hidden relative isolate ${hasTexture ? 'texture-active' : ''}`}
+                data-sx-texture={activeDesign.texture}
+            >
+                {/* 1. Base Background Layer (Pilar de Cor) */}
+                <div 
+                    className="absolute inset-0 z-0 bg-[var(--sarak-bg-base)]" 
+                    style={{ backgroundColor: 'var(--sarak-bg-base)' }}
+                />
+
+                {/* 2. Content Layer (Pilar de Layout) - Scaled for 1:1 High Fidelity */}
                 <div className="absolute inset-0 origin-top-left overflow-hidden z-10" style={{ transform: 'scale(0.5)', width: '200%', height: '200%' }}>
-                    {activeDesign.layout === 'topbar' ? (
+                    {navStyle === 'topbar' ? (
                         <div className="flex flex-col w-full h-full relative">
-                            {activeDesign.texture && activeDesign.texture !== 'none' && (
-                                <div className={`absolute inset-0 pointer-events-none z-0 texture-${activeDesign.texture} SarakAtmosphereLayer`} style={{ opacity: 'var(--theme-texture-opacity)' }} />
-                            )}
                             <header 
-                                className="border-b border-[var(--theme-border)] flex items-center justify-between px-10 bg-[var(--color-theme-topbar)] backdrop-blur-[var(--sarak-blur-master)] relative z-10"
-                                style={{ height: 'var(--sarak-topbar-h, 64px)' }}
+                                className="border-b border-[var(--theme-border)] flex items-center justify-between px-10 relative z-10"
+                                style={{ 
+                                    height: 'var(--sarak-topbar-height, 64px)',
+                                    backgroundColor: 'var(--sarak-topbar-bg, rgba(10, 10, 12, 0.8))',
+                                    backdropFilter: 'blur(var(--sarak-glass-blur, 16px))'
+                                }}
                             >
                                 <div className="scale-150 origin-left"><LogoComponent design={activeDesign} /></div>
                                 <nav className="flex gap-6">
@@ -204,72 +222,98 @@ export const PreviewCanvas: React.FC<PreviewCanvasProps> = ({
                                 </nav>
                                 <div className="scale-150 origin-right"><UserWidget variant="horizontal" /></div>
                                 
-                                {/* Resizer Vertical (Topbar) */}
                                 <div 
                                     onMouseDown={startResizingTopbar}
                                     className="absolute bottom-0 left-0 w-full h-1.5 cursor-row-resize hover:bg-[var(--theme-primary)]/50 transition-colors active:bg-[var(--theme-primary)] z-50"
                                 />
                             </header>
-                            <main className="flex-1 overflow-y-auto p-12 relative z-10">{apps[activePreviewApp]}</main>
+                            <main 
+                                className={`flex-1 overflow-y-auto p-12 relative z-10 bg-transparent custom-scrollbar isolate ${hasTexture ? 'texture-active' : ''}`}
+                                data-sx-texture={activeDesign.texture}
+                            >
+                                {hasTexture && (
+                                    <div className={`absolute inset-0 pointer-events-none z-0 texture-${activeDesign.texture} SarakAtmosphereLayer`} />
+                                )}
+                                <div className="relative z-10">
+                                    {apps[activePreviewApp]}
+                                </div>
+                            </main>
                         </div>
                     ) : (
                         <div className="flex w-full h-full relative">
-                            {activeDesign.texture && activeDesign.texture !== 'none' && (
-                                <div className={`absolute inset-0 pointer-events-none z-0 texture-${activeDesign.texture} SarakAtmosphereLayer`} style={{ opacity: 'var(--theme-texture-opacity)' }} />
-                            )}
                             <aside 
-                                className="border-r border-[var(--theme-border)] flex flex-col bg-[var(--color-theme-sidebar)] backdrop-blur-[var(--sarak-blur-master)] relative z-10"
-                                style={{ width: 'var(--sarak-sidebar-w, 240px)' }}
+                                className="border-r border-[var(--theme-border)] flex flex-col relative z-10"
+                                style={{ 
+                                    width: 'var(--sarak-sidebar-width, 240px)',
+                                    backgroundColor: 'var(--sarak-sidebar-bg, rgba(10, 10, 12, 0.8))',
+                                    backdropFilter: 'blur(var(--sarak-sidebar-blur, 10px))',
+                                    boxShadow: 'var(--sarak-sidebar-shadow)'
+                                }}
                             >
                                 <div className="p-10 origin-top-left scale-125"><LogoComponent design={activeDesign} /></div>
                                 <nav className="flex-1 p-6 space-y-4">
                                     {appIds.map(id => (
-                                        <button key={id} onClick={() => setActivePreviewApp(id)} className={`w-full flex items-center gap-4 px-6 py-4 rounded-sarak transition-all scale-125 origin-left ${activePreviewApp === id ? 'bg-[var(--theme-primary)] text-white' : 'text-[var(--theme-muted)]'}`}>
+                                        <button key={id} onClick={() => setActivePreviewApp(id)} className={`w-full flex items-center gap-4 px-6 py-4 rounded-sarak transition-all scale-125 origin-left ${activePreviewApp === id ? 'bg-[var(--theme-primary)] text-white shadow-lg shadow-primary-500/20' : 'text-[var(--theme-muted)] hover:bg-white/5'}`}>
                                             {appIcons[id]} {id}
                                         </button>
                                     ))}
                                 </nav>
                                 <div className="scale-125 origin-bottom-left"><UserWidget /></div>
 
-                                {/* Resizer Horizontal (Sidebar) */}
                                 <div 
                                     onMouseDown={startResizingSidebar}
                                     className="absolute right-0 top-0 w-1.5 h-full cursor-col-resize hover:bg-[var(--theme-primary)]/50 transition-colors active:bg-[var(--theme-primary)] z-50"
                                 />
                             </aside>
-                            <main className="flex-1 overflow-y-auto p-12 relative z-10">{apps[activePreviewApp]}</main>
+                            <main 
+                                className={`flex-1 overflow-y-auto p-12 relative z-10 bg-transparent custom-scrollbar isolate ${hasTexture ? 'texture-active' : ''}`}
+                                data-sx-texture={activeDesign.texture}
+                            >
+                                {hasTexture && (
+                                    <div className={`absolute inset-0 pointer-events-none z-0 texture-${activeDesign.texture} SarakAtmosphereLayer`} />
+                                )}
+                                <div className="relative z-10">
+                                    {apps[activePreviewApp]}
+                                </div>
+                            </main>
                         </div>
                     )}
                 </div>
             </DesignScope>
         );
-    };
+    };;
 
     return (
         <div className="w-full h-full flex flex-col relative overflow-hidden bg-[#050505] p-0 items-center justify-center">
             <UIContext.Provider value={previewContextValue as any}>
-                <div className="w-full h-full flex flex-col gap-8 p-8 overflow-y-auto custom-scrollbar items-center">
+                <div className="w-full h-full flex flex-col gap-8 p-8 items-center overflow-hidden">
                     {isDualView ? (
                         <>
-                            {/* Live Draft Preview */}
-                            <div className="relative shrink-0 w-full max-w-[1200px] aspect-video rounded-3xl border border-white/10 shadow-2xl overflow-hidden bg-black transition-all duration-500 min-h-[400px]">
-                                <div className="absolute top-3 left-4 z-50 flex items-center gap-2">
-                                    <div className="w-2 h-2 rounded-full bg-amber-500 animate-pulse" />
-                                    <span className="text-[9px] font-black uppercase tracking-widest text-white/40">Gêmeo Digital (Preview Ativa)</span>
+                            {/* Live Draft Preview (Gêmeo Digital) */}
+                            <div className="relative shrink-0 w-full max-w-[1400px] aspect-video rounded-[2.5rem] border border-white/10 shadow-[0_50px_100px_-20px_rgba(0,0,0,0.8)] overflow-hidden bg-black transition-all duration-500 min-h-[500px] flex flex-col">
+                                
+                                <div className="flex-1 relative">
+                                    {/* Watermark */}
+                                    <div className="absolute inset-0 flex items-center justify-center pointer-events-none opacity-[0.02]">
+                                        <span className="text-[10rem] font-black text-white uppercase tracking-[0.2em] -rotate-12 select-none">SARAK TWIN</span>
+                                    </div>
+                                    {renderSystemContent(false)} 
                                 </div>
-                                <div className="absolute inset-0 flex items-center justify-center pointer-events-none opacity-5">
-                                    <span className="text-4xl font-black text-white uppercase tracking-widest">Preview Mode</span>
-                                </div>
-                                {renderSystemContent(false)} 
                             </div>
 
-                            {/* Catalog Preview */}
-                            <div className="relative shrink-0 w-full max-w-[1200px] aspect-video rounded-3xl border border-white/10 shadow-2xl overflow-hidden bg-[#0c0c0d] transition-all duration-500 min-h-[400px]">
+
+                            {/* Catalog Preview (Engine Controls) */}
+                            <div className="relative shrink-0 w-full max-w-[1400px] rounded-[2.5rem] border border-white/10 shadow-2xl overflow-hidden bg-[#0c0c0d] transition-all duration-500 min-h-[600px]">
                                 <div className="w-full h-full flex flex-col">
-                                    <div className="px-5 py-3 border-b border-white/5 flex items-center justify-between bg-black/40">
-                                        <div className="flex items-center gap-3">
-                                            <Sparkles size={12} className="text-[var(--theme-primary)]" />
-                                            <span className="text-[10px] font-black uppercase text-white/60 tracking-widest">Catálogo Sarak</span>
+                                    <div className="px-8 py-4 border-b border-white/5 flex items-center justify-between bg-black/40">
+                                        <div className="flex items-center gap-4">
+                                            <div className="p-2 bg-[var(--theme-primary)]/10 rounded-xl">
+                                                <Sparkles size={16} className="text-[var(--theme-primary)]" />
+                                            </div>
+                                            <div className="flex flex-col">
+                                                <span className="text-[11px] font-black uppercase text-white tracking-[0.3em]">Design Intelligence Catalog</span>
+                                                <span className="text-[9px] font-bold text-white/20 uppercase tracking-widest">Pillar Control: {activeCategory || 'Global'}</span>
+                                            </div>
                                         </div>
                                     </div>
                                     <div className="flex-1 overflow-y-auto custom-scrollbar bg-black/20">
@@ -289,7 +333,7 @@ export const PreviewCanvas: React.FC<PreviewCanvasProps> = ({
                             {renderSystemContent()}
                         </div>
                     )}
-                    {/* Overlay Global de Resizing (Shell) */}
+
                 {isResizingSidebar && (
                     <div className="fixed inset-0 z-[9999] cursor-col-resize pointer-events-auto" />
                 )}

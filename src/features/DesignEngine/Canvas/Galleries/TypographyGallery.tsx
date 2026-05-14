@@ -1,6 +1,5 @@
 import React from 'react';
 import { motion } from 'framer-motion';
-import { UIContext } from '../../../../core/Provider/SarakUIProvider';
 import { TYPOGRAPHY_PRESETS, TypographyPreset } from '../../../../core/Design/presets';
 import { DesignScope } from '../../../../core/Design/components/DesignScope';
 import { Check, Type, Hash, ArrowRight } from 'lucide-react';
@@ -12,49 +11,73 @@ interface TypographyGalleryProps {
 }
 
 export const TypographyGallery: React.FC<TypographyGalleryProps> = ({ onUpdateDraft, tokens }) => {
-    const typoEntries = TYPOGRAPHY_PRESETS;
+    const CATEGORIES = ['Quadradas', 'Arredondadas', 'Cursivas'];
 
     return (
-        <div className="space-y-16 p-8 overflow-y-auto custom-scrollbar h-full">
-            {/* Section 1: Curation Presets */}
-            <div className="space-y-6">
-                <div className="flex items-center gap-4 px-2">
-                    <span className="text-xs font-black uppercase tracking-[0.4em] text-white/20 italic">Curated Typography Presets</span>
-                    <div className="flex-1 h-[1px] bg-white/5" />
+        <div className="flex flex-col h-full bg-[#050505]">
+            {/* Gallery Header */}
+            <div className="flex items-center justify-between px-8 py-8 border-b border-white/5 bg-black/20 backdrop-blur-xl sticky top-0 z-10">
+                <div className="flex flex-col">
+                    <h2 className="text-sm font-black uppercase tracking-[0.4em] text-white italic">Typography Catalog</h2>
+                    <p className="text-[10px] font-bold text-white/20 uppercase tracking-widest mt-1">Sovereign Typeface Management System</p>
                 </div>
-                <div className="grid grid-cols-1 gap-8">
-                    {typoEntries.map((preset: TypographyPreset) => (
-                        <TypoSpecimen 
-                            key={preset.id} 
-                            preset={preset} 
-                            onSelect={() => {
-                                Object.entries(preset.design).forEach(([key, val]) => onUpdateDraft(key, val));
-                            }}
-                            isActive={tokens.headingFont === preset.design.headingFont && tokens.headingWeight === preset.design.headingWeight}
-                            globalTokens={tokens}
-                        />
-                    ))}
+                
+                <div className="flex items-center gap-3 px-4 py-2 bg-white/5 rounded-2xl border border-white/10">
+                    <Type size={14} className="text-[var(--theme-primary)]" />
+                    <span className="text-[10px] font-black text-white/60 uppercase tracking-widest">{THEME_FONTS.length} Sovereign Fonts</span>
                 </div>
             </div>
 
-            {/* Section 2: All Available Fonts (Individual) */}
-            <div className="space-y-6">
-                <div className="flex items-center gap-4 px-2">
-                    <span className="text-xs font-black uppercase tracking-[0.4em] text-white/20 italic">All Sovereign Typefaces</span>
-                    <div className="flex-1 h-[1px] bg-white/5" />
+            <div className="flex-1 overflow-y-auto custom-scrollbar p-8 space-y-20">
+                {/* Section 1: All Available Fonts (Categorized) */}
+                <div className="space-y-12">
+                    {CATEGORIES.map(category => {
+                        const categoryFonts = THEME_FONTS.filter(f => f.category === category);
+                        if (categoryFonts.length === 0) return null;
+
+                        return (
+                            <div key={category} className="space-y-8">
+                                <div className="flex items-center gap-4">
+                                    <span className="text-xs font-black uppercase tracking-[0.5em] text-[var(--theme-primary)] opacity-40 italic">{category}</span>
+                                    <div className="flex-1 h-px bg-gradient-to-r from-white/10 to-transparent" />
+                                </div>
+                                <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+                                    {categoryFonts.map((font) => (
+                                        <FontFamilySpecimen 
+                                            key={font.id}
+                                            font={font}
+                                            onSelect={() => {
+                                                onUpdateDraft('headingFont', font.value);
+                                                onUpdateDraft('bodyFont', font.value);
+                                            }}
+                                            isActive={tokens.headingFont === font.value}
+                                        />
+                                    ))}
+                                </div>
+                            </div>
+                        );
+                    })}
                 </div>
-                <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
-                    {THEME_FONTS.map((font) => (
-                        <FontFamilySpecimen 
-                            key={font.id}
-                            font={font}
-                            onSelect={() => {
-                                onUpdateDraft('headingFont', font.value);
-                                onUpdateDraft('bodyFont', font.value);
-                            }}
-                            isActive={tokens.headingFont === font.value}
-                        />
-                    ))}
+
+                {/* Section 2: Curation Presets */}
+                <div className="space-y-8">
+                    <div className="flex items-center gap-4">
+                        <span className="text-xs font-black uppercase tracking-[0.5em] text-white/20 italic">Hierarchy Presets</span>
+                        <div className="flex-1 h-px bg-gradient-to-r from-white/10 to-transparent" />
+                    </div>
+                    <div className="grid grid-cols-1 gap-8">
+                        {TYPOGRAPHY_PRESETS.map((preset: TypographyPreset) => (
+                            <TypoSpecimen 
+                                key={preset.id} 
+                                preset={preset} 
+                                onSelect={() => {
+                                    Object.entries(preset.design).forEach(([key, val]) => onUpdateDraft(key, val));
+                                }}
+                                isActive={tokens.typographyPreset === preset.id}
+                                globalTokens={tokens}
+                            />
+                        ))}
+                    </div>
                 </div>
             </div>
         </div>
@@ -64,7 +87,7 @@ export const TypographyGallery: React.FC<TypographyGalleryProps> = ({ onUpdateDr
 const FontFamilySpecimen: React.FC<{ font: any; onSelect: () => void; isActive: boolean }> = ({ font, onSelect, isActive }) => {
     return (
         <motion.div
-            whileHover={{ scale: 1.02 }}
+            whileHover={{ scale: 1.02, y: -2 }}
             whileTap={{ scale: 0.98 }}
             onClick={onSelect}
             className={`group relative p-6 rounded-2xl border transition-all duration-300 cursor-pointer ${
@@ -73,7 +96,7 @@ const FontFamilySpecimen: React.FC<{ font: any; onSelect: () => void; isActive: 
         >
             <div className="flex flex-col gap-4">
                 <div className="flex items-center justify-between">
-                    <span className={`text-[10px] font-black uppercase tracking-widest ${isActive ? 'text-white/60' : 'text-white/20'}`}>
+                    <span className={`text-[9px] font-black uppercase tracking-widest ${isActive ? 'text-white/60' : 'text-white/20'}`}>
                         {font.category}
                     </span>
                     {isActive && <Check size={12} className="text-white" />}
@@ -201,4 +224,3 @@ const TypoSpecimen: React.FC<{ preset: TypographyPreset; onSelect: () => void; i
         </motion.div>
     );
 };
-

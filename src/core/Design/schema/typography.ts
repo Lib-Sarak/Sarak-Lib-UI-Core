@@ -1,9 +1,16 @@
 import { ComponentSchema } from '../types';
+import { THEME_FONTS } from '../presets/typography';
 
 /**
  * Mapeamento 100% Atômico: Tipografia & Escrita (v12.0)
  * Governa a hierarquia visual e legibilidade de todo o conteúdo textual.
  */
+
+const FONT_OPTIONS = THEME_FONTS.map(font => ({
+    id: font.value,
+    label: `${font.name} [${(font as any).group || font.category}]`
+}));
+
 export const TypographySchema: ComponentSchema = {
     id: 'typography',
     label: 'Configuração de Fontes',
@@ -18,16 +25,7 @@ export const TypographySchema: ComponentSchema = {
             category: 'Famílias',
             type: 'font',
             constraints: {
-                options: [
-                    { id: "'Inter', sans-serif", label: 'Inter (Industrial)' },
-                    { id: "'Outfit', sans-serif", label: 'Outfit (Modern)' },
-                    { id: "'Syne', sans-serif", label: 'Syne (Avant-Garde)' },
-                    { id: "'JetBrains Mono', monospace", label: 'JetBrains Mono (Tech)' },
-                    { id: "'Montserrat', sans-serif", label: 'Montserrat (Classic)' },
-                    { id: "'Space Grotesk', sans-serif", label: 'Space Grotesk (Sci-Fi)' },
-                    { id: "'Archivo', sans-serif", label: 'Archivo (Neutral)' },
-                    { id: "'Bebas Neue', sans-serif", label: 'Bebas Neue (Impact)' }
-                ]
+                options: FONT_OPTIONS
             },
             defaultValue: "'Outfit', sans-serif",
             cssVars: ['--font-heading', '--sarak-font-h']
@@ -38,16 +36,7 @@ export const TypographySchema: ComponentSchema = {
             category: 'Famílias',
             type: 'font',
             constraints: {
-                options: [
-                    { id: "'Inter', sans-serif", label: 'Inter (Industrial)' },
-                    { id: "'Outfit', sans-serif", label: 'Outfit (Modern)' },
-                    { id: "'Syne', sans-serif", label: 'Syne (Avant-Garde)' },
-                    { id: "'JetBrains Mono', monospace", label: 'JetBrains Mono (Tech)' },
-                    { id: "'Montserrat', sans-serif", label: 'Montserrat (Classic)' },
-                    { id: "'Space Grotesk', sans-serif", label: 'Space Grotesk (Sci-Fi)' },
-                    { id: "'Archivo', sans-serif", label: 'Archivo (Neutral)' },
-                    { id: "'Bebas Neue', sans-serif", label: 'Bebas Neue (Impact)' }
-                ]
+                options: FONT_OPTIONS
             },
             defaultValue: "'Inter', sans-serif",
             cssVars: ['--font-main', '--sarak-font-b']
@@ -58,16 +47,7 @@ export const TypographySchema: ComponentSchema = {
             category: 'Famílias',
             type: 'font',
             constraints: {
-                options: [
-                    { id: "'Inter', sans-serif", label: 'Inter (Industrial)' },
-                    { id: "'Outfit', sans-serif", label: 'Outfit (Modern)' },
-                    { id: "'Syne', sans-serif", label: 'Syne (Avant-Garde)' },
-                    { id: "'JetBrains Mono', monospace", label: 'JetBrains Mono (Tech)' },
-                    { id: "'Montserrat', sans-serif", label: 'Montserrat (Classic)' },
-                    { id: "'Space Grotesk', sans-serif", label: 'Space Grotesk (Sci-Fi)' },
-                    { id: "'Archivo', sans-serif", label: 'Archivo (Neutral)' },
-                    { id: "'Bebas Neue', sans-serif", label: 'Bebas Neue (Impact)' }
-                ]
+                options: FONT_OPTIONS
             },
             defaultValue: "'JetBrains Mono', monospace",
             cssVars: ['--font-mono', '--sarak-font-m']

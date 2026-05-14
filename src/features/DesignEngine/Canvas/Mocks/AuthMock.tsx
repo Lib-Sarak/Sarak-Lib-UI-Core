@@ -26,11 +26,9 @@ export const MockAuth: React.FC<AuthMockProps> = ({ tokens }) => {
       display: 'flex',
       alignItems: 'center',
       justifyContent: 'center',
-      background: 'var(--sarak-surface-1)',
+      background: 'transparent',
       position: 'relative',
       overflow: 'hidden',
-      borderRadius: 'var(--sarak-radius-lg)',
-      border: '1px solid var(--sarak-border-color)'
     }}>
       {/* Camada de Ruído (Noise) Controlada por Token */}
       {showNoise && (
@@ -51,10 +49,10 @@ export const MockAuth: React.FC<AuthMockProps> = ({ tokens }) => {
       <motion.div 
         initial={{ opacity: 0, y: 20 }}
         animate={{ opacity: 1, y: 0 }}
+        className="sarak-card"
         style={{
           width: 'min(400px, 90%)',
           padding: densityPadding, // Mapeado para o token de densidade
-          background: 'var(--sarak-surface-2)',
           borderRadius: 'var(--sarak-security-radius, 16px)',
           border: '1px solid var(--sarak-border-color)',
           boxShadow: 'var(--sarak-shadow-lg)',

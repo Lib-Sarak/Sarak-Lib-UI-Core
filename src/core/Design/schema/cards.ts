@@ -6,7 +6,7 @@ import { ComponentSchema } from '../types';
  */
 export const CardSchema: ComponentSchema = {
     id: 'cards',
-    label: 'Cards e Superfícies',
+    label: 'Anatomia do Card',
     pilar: 'surfaces',
     subcategory: 'Cards',
     tokens: [

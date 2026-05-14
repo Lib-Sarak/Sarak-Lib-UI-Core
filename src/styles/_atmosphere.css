@@ -339,16 +339,30 @@
 
 
 /* NUCLEAR SOVEREIGNTY RESET (v6.8.6 - TRANSPARENCY BREACH) */
-[data-theme] main, [data-theme] section, [data-theme] article, [data-theme] .sarak-module-container, [data-surface] main, [data-surface] section, [data-surface] .sarak-module-container, [data-texture] main, [data-texture] section, [data-texture] .sarak-module-container, [data-texture] .module-wrapper {
+[data-sx-theme] main, [data-sx-theme] section, [data-sx-theme] article, [data-sx-theme] .sarak-module-container, 
+[data-sx-surface] main, [data-sx-surface] section, [data-sx-surface] .sarak-module-container, 
+[data-sx-texture] main, [data-sx-texture] section, [data-sx-texture] .sarak-module-container, [data-sx-texture] .module-wrapper {
     transition: background-color 0.4s ease, border-color 0.4s ease;
 }
 
-body:not(.texture-none) main, body:not(.texture-none) section, body:not(.texture-none) .sarak-module-container, body:not(.texture-none) article, body:not(.texture-none) .module-content, [data-texture] main, [data-texture] section, [data-texture] article, [data-texture] .sarak-module-container, .layout-glass main, .layout-glass section, .SarakAtmosphereLayer + div, main.texture-active {
+body:not([data-sx-texture="none"]) main, 
+body:not([data-sx-texture="none"]) section, 
+body:not([data-sx-texture="none"]) .sarak-module-container, 
+body:not([data-sx-texture="none"]) article, 
+body:not([data-sx-texture="none"]) .module-content,
+[data-sx-texture] main, 
+[data-sx-texture] section, 
+[data-sx-texture] article, 
+[data-sx-texture] .sarak-module-container, 
+.sarak-design-scope:not([data-sx-texture="none"]) main,
+.sarak-design-scope:not([data-sx-texture="none"]) section,
+.layout-glass main, .layout-glass section, .SarakAtmosphereLayer + div, main.texture-active {
     background-color: transparent !important;
     background-image: none !important;
 }
 
-[data-texture] .card, [data-texture] .sarak-card, [data-texture] [class*="card"] {
+[data-sx-texture] .card, [data-sx-texture] .sarak-card, [data-sx-texture] [class*="card"],
+.sarak-design-scope[data-sx-texture] .card, .sarak-design-scope[data-sx-texture] .sarak-card {
     background: color-mix(in srgb, var(--sarak-card-bg, var(--theme-card, #0f172a)), transparent calc(100% * (1 - var(--sarak-card-opacity, 0.7)))) !important;
     backdrop-filter: blur(var(--sarak-glass-blur, var(--glass-blur, 10px))) !important;
 }

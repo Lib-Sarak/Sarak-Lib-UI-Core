@@ -13,7 +13,11 @@ export const MockDashboard: React.FC<any> = ({ animationVariants, animationStyle
 
     // Estilo de Card Reativo (Deixa o CSS gerenciar Materiais e Texturas)
     const cardStyle = {
-        padding: `${tokens.cardPadding || 24}px`,
+        padding: 'var(--sarak-card-padding-md, 24px)',
+        borderRadius: 'var(--sarak-card-radius, 12px)',
+        borderWidth: 'var(--sarak-card-border-width, 1px)',
+        borderColor: 'var(--sarak-card-border-color, rgba(255, 255, 255, 0.1))',
+        backdropFilter: 'blur(var(--sarak-card-blur, 12px))'
     };
 
     const getAnim = (index: number) => ({
@@ -42,9 +46,9 @@ export const MockDashboard: React.FC<any> = ({ animationVariants, animationStyle
     );
 
     const renderExecutiveLayout = () => (
-        <div className="grid grid-cols-12 auto-rows-fr" style={{ gap: 'var(--theme-gap)' }}>
+        <div className="grid grid-cols-12 auto-rows-fr" style={{ gap: 'var(--theme-gap, 24px)' }}>
              {/* Card de Receita */}
-             <motion.div {...getAnim(0)} className="col-span-12 lg:col-span-4 bg-theme-card sarak-card flex flex-col justify-between shadow-2xl relative overflow-hidden" style={cardStyle}>
+             <motion.div {...getAnim(0)} className="col-span-12 lg:col-span-4 sarak-card flex flex-col justify-between shadow-2xl relative overflow-hidden" style={cardStyle}>
                 <div className="absolute -top-4 -right-4 p-8 opacity-5">
                     <TrendingUp size={160} />
                 </div>
@@ -65,7 +69,7 @@ export const MockDashboard: React.FC<any> = ({ animationVariants, animationStyle
              </motion.div>
 
              {/* Card de Gráfico Principal */}
-             <motion.div {...getAnim(1)} className="col-span-12 lg:col-span-8 bg-theme-card sarak-card" style={cardStyle}>
+             <motion.div {...getAnim(1)} className="col-span-12 lg:col-span-8 sarak-card" style={cardStyle}>
                 <div className="flex justify-between items-start mb-10">
                     <div>
                         <div className="text-[12px] font-black uppercase tracking-[0.25em] text-[var(--theme-muted)]">Market Share Growth</div>
@@ -88,13 +92,13 @@ export const MockDashboard: React.FC<any> = ({ animationVariants, animationStyle
              </motion.div>
 
              {/* Cards de KPI Inferiores */}
-             <div className="col-span-12 grid grid-cols-3" style={{ gap: 'var(--theme-gap)' }}>
+             <div className="col-span-12 grid grid-cols-3" style={{ gap: 'var(--theme-gap, 24px)' }}>
                 {[
                     { label: 'Conversion Rate', val: '3.2%', icon: Zap, color: 'text-[var(--theme-secondary)]' },
                     { label: 'Active Users', val: '44.5k', icon: Globe, color: 'text-[var(--theme-primary)]' },
                     { label: 'Bounce Rate', val: '12.4%', icon: Shield, color: 'text-emerald-500' }
                 ].map((stat, i) => (
-                    <motion.div key={i} {...getAnim(i+2)} className="bg-theme-card sarak-card flex flex-col gap-6 relative overflow-hidden" style={cardStyle}>
+                    <motion.div key={i} {...getAnim(i+2)} className="sarak-card flex flex-col gap-6 relative overflow-hidden" style={cardStyle}>
                         <div className="flex items-center gap-5 relative z-10">
                             <div className={`w-12 h-12 rounded-2xl bg-white/5 flex items-center justify-center ${stat.color} shadow-inner`}>
                                 <stat.icon size={24} />
@@ -112,7 +116,7 @@ export const MockDashboard: React.FC<any> = ({ animationVariants, animationStyle
     );
 
     return (
-        <div className="h-full flex flex-col bg-black/10 overflow-y-auto" style={{ padding: `${(tokens.cardPadding || 24) * 1.5}px` }}>
+        <div className="h-full flex flex-col bg-transparent overflow-y-auto" style={{ padding: 'var(--sarak-card-padding-md, 24px)' }}>
             <header className="mb-16 flex justify-between items-start">
                 <div>
                     <h3 className="text-4xl font-black text-[var(--theme-title)] tracking-tighter mb-2">
