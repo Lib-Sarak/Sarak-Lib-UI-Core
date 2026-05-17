@@ -429,6 +429,28 @@ interface SarakCatalogGridProps {
  */
 declare const SarakCatalogGrid: React$1.FC<SarakCatalogGridProps>;
 
+interface MatrixNodeConfig {
+    /** Variante visual de renderização do nó */
+    variant?: 'card' | 'row' | 'badge' | 'switch' | 'clean';
+    /** Se exibe checkbox/toggle para ativar/desativar */
+    hasToggle?: boolean;
+    /** Se o nó é expansível/colapsável */
+    hasExpand?: boolean;
+    /** Se o nó deve iniciar expandido */
+    defaultExpanded?: boolean;
+    /** Ícone customizado (Lucide ou elemento) */
+    icon?: React$1.ComponentType<any>;
+    /** Renderizador totalmente customizado para controle total */
+    renderCustom?: (node: any, level: number, isActive: boolean, isExpanded: boolean, onToggle: () => void, onToggleExpand: () => void) => React$1.ReactNode;
+}
+interface SarakMatrixManifest {
+    /** Mapeamento por nível de profundidade (0 para raiz, 1 para filhos, 2 para netos, etc.) */
+    levels?: Record<number, MatrixNodeConfig>;
+    /** Mapeamento dinâmico pelo atributo `node.type` */
+    types?: Record<string, MatrixNodeConfig>;
+    /** Configurações fallback padrão */
+    default?: MatrixNodeConfig;
+}
 interface SarakExpandableMatrixProps {
     /** Itens principais (ex: Roles/Papéis) */
     data: any[];
@@ -440,13 +462,17 @@ interface SarakExpandableMatrixProps {
     onToggle: (parentId: string, subItemId: string) => void;
     /** Renderizador customizado para o cabeçalho de cada item pai */
     renderItemHeader?: (item: any) => React$1.ReactNode;
+    /** Manifesto opcional de mapeamento recursivo para layout IAM/RBAC avançado */
+    manifest?: SarakMatrixManifest;
 }
-/**
- * SarakExpandableMatrix (v2.0)
- *
- * Componente agnóstico para renderização de matrizes de associação complexas com recursividade (N-níveis).
- * Segue a arquitetura Data-Driven da Sarak.
- */
+interface ResolvedNodeConfig {
+    variant: 'card' | 'row' | 'badge' | 'switch' | 'clean';
+    hasToggle: boolean;
+    hasExpand: boolean;
+    defaultExpanded: boolean;
+    icon?: React$1.ComponentType<any>;
+    renderCustom?: MatrixNodeConfig['renderCustom'];
+}
 declare const SarakExpandableMatrix: React$1.FC<SarakExpandableMatrixProps>;
 
 interface SarakChartEngineProps {
@@ -595,4 +621,4 @@ interface SarakRouterState {
  */
 declare function useSarakRouter(basePath?: string): SarakRouterState;
 
-export { CARD_PRESETS, type CardPreset, CustomizationPanel, DESIGN_MANIFEST, DesignScope, type DiscoveredModule, DynamicRenderer, ExpandableCard, LanguageSelector, type ModuleManifest, ModuleSelector, SarakAuthScreen, SarakCardGrid, SarakCatalogGrid, SarakChart, SarakChartEngine, SarakChat, SarakExpandableMatrix, type SarakExpandableMatrixProps, SarakForm, SarakManagementGrid, type SarakModule, type SarakRouterState, SarakSecurityOrchestrator, SarakShell, SarakStats, SarakTable, SarakUIProvider, SocialButton, ThemeToggle, UserMenu, type VisualContract, type VisualContractType, getLocalComponent, getRegisteredModules, getSarakModule, registerLocalComponent, registerSarakModule, subscribeToRegistry, useDesignDraft, useModuleDiscovery, useSarakRouter, useSarakUI };
+export { CARD_PRESETS, type CardPreset, CustomizationPanel, DESIGN_MANIFEST, DesignScope, type DiscoveredModule, DynamicRenderer, ExpandableCard, LanguageSelector, type MatrixNodeConfig, type ModuleManifest, ModuleSelector, type ResolvedNodeConfig, SarakAuthScreen, SarakCardGrid, SarakCatalogGrid, SarakChart, SarakChartEngine, SarakChat, SarakExpandableMatrix, type SarakExpandableMatrixProps, SarakForm, SarakManagementGrid, type SarakMatrixManifest, type SarakModule, type SarakRouterState, SarakSecurityOrchestrator, SarakShell, SarakStats, SarakTable, SarakUIProvider, SocialButton, ThemeToggle, UserMenu, type VisualContract, type VisualContractType, getLocalComponent, getRegisteredModules, getSarakModule, registerLocalComponent, registerSarakModule, subscribeToRegistry, useDesignDraft, useModuleDiscovery, useSarakRouter, useSarakUI };
