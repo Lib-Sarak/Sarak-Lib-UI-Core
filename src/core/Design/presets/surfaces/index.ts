@@ -1,2 +1,2 @@
 export * from './cards';
-export interface AtmospherePreset { id: string; name: string; design: { texture: string; }; } export const ATMOSPHERE_PRESETS: AtmospherePreset[] = [ { id: 'none', name: 'None', design: { texture: 'none' } }, { id: 'dots', name: 'Micro Dots', design: { texture: 'dots' } }, { id: 'circuit', name: 'Circuit Board', design: { texture: 'circuit' } }, { id: 'silk', name: 'Silk Flow', design: { texture: 'silk' } } ];
+export * from './atmospheres';

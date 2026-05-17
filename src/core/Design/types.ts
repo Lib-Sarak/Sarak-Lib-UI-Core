@@ -11,15 +11,19 @@ export interface DesignToken {
     label: string;              // Nome legível para o usuário
     category: string;           // Grupo (ex: "Cards", "Navegação")
     type: TokenValueType;
-    unit?: 'px' | '%' | 'rem' | 'ms' | 'deg' | 's';
+    unit?: 'px' | '%' | 'rem' | 'em' | 'ms' | 'deg' | 's';
     cssVars?: string[];         // Variáveis CSS que este token controla
     generateVariants?: boolean; // Se verdadeiro, gera variantes de cor automáticas
     constraints?: {
         min?: number;
         max?: number;
         step?: number;
-        options?: { id: string; label: string }[];
+        options?: { value?: string; id?: string; label: string }[];
     };
+    options?: { value?: string; id?: string; label: string }[];
+    min?: number;
+    max?: number;
+    step?: number;
     defaultValue: any;
     description?: string;
 }
@@ -27,7 +31,7 @@ export interface DesignToken {
 export interface ComponentSchema {
     id: string;
     label: string;
-    pilar: 'brand' | 'typography' | 'surfaces' | 'interaction' | 'navigation' | 'systems' | 'specialized' | 'engineering';
+    pilar: 'brand' | 'typography' | 'surfaces' | 'interaction' | 'navigation' | 'systems' | 'specialized' | 'engineering' | 'advanced';
     subcategory: string;
     tokens: DesignToken[];
     targetApp?: string; // App de preview sugerido para este componente

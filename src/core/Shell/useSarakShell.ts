@@ -41,13 +41,13 @@ export const useSarakShell = (loggedIn: boolean) => {
     useEffect(() => {
         if (discoveredModules.length > 0 && !activeModuleId) {
             const defaultId = options?.theme?.defaultModuleId;
-            const targetMod = defaultId ? discoveredModules.find(m => m.id === defaultId) : null;
+            const targetMod = defaultId ? discoveredModules.find((m: DiscoveredModule) => m.id === defaultId) : null;
             
             if (targetMod) {
                 navigate(`/${targetMod.id}`, true);
             } else {
                 // Fallback: Tenta encontrar mx-customization primeiro, senão pega o primeiro da lista
-                const customMod = discoveredModules.find(m => m.id === 'mx-customization');
+                const customMod = discoveredModules.find((m: DiscoveredModule) => m.id === 'mx-customization');
                 navigate(`/${customMod ? customMod.id : discoveredModules[0].id}`, true);
             }
         }
@@ -103,10 +103,10 @@ export const useSarakShell = (loggedIn: boolean) => {
         };
     }, [resizeType, resize, stopResizing]);
 
-    const activeModule = useMemo(() => discoveredModules.find(m => m.id === activeModuleId), [discoveredModules, activeModuleId]);
+    const activeModule = useMemo(() => discoveredModules.find((m: DiscoveredModule) => m.id === activeModuleId), [discoveredModules, activeModuleId]);
     
     const groupedModules = useMemo(() => {
-        return discoveredModules.reduce((acc, mod) => {
+        return discoveredModules.reduce((acc: Record<string, DiscoveredModule[]>, mod: DiscoveredModule) => {
             const cat = mod.category || 'System Modules';
             if (!acc[cat]) acc[cat] = [];
             acc[cat].push(mod);

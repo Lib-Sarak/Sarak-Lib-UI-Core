@@ -140,9 +140,9 @@ declare const useDesignDraft: (sarak: any) => {
     isDirty: boolean;
     isPillarDirty: (pillarId: string) => boolean;
     updateDraft: (key: string, value: any) => void;
-    resetPillar: (pillarId: string) => void;
+    resetPillar: (pillarIdOrSchemas: string | string[]) => void;
     resetToken: (tokenId: string) => void;
-    handleThemePreview: (id: string) => void;
+    handleThemePreview: (presetDesign: Record<string, any>, presetKeyId?: string) => void;
     handleApplyToSystem: () => void;
     handleApplyPillar: (pillarId: string) => void;
     toast: {

@@ -1,6 +1,6 @@
 import React from 'react';
 import { Palette, Box, Grid, AlertCircle, Check, Plus } from 'lucide-react';
-import { Section, SelectControl, SliderControl } from '../components/DesignControls';
+import { Section, SelectControl, SliderControl, ColorControl } from '../components/DesignControls';
 
 // TODO: Migrar para core/Design/presets/ quando forem criados
 const PRIMARY_COLORS: { name: string; value: string }[] = [

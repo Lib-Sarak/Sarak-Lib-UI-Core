@@ -15,16 +15,23 @@ export const NavigationSchema: ComponentSchema = {
             label: 'Modo de Navegação',
             category: 'Estrutura Master',
             type: 'select',
-            constraints: {
-                options: [
-                    { id: 'sidebar', label: 'Sidebar Vertical' },
-                    { id: 'topbar', label: 'Topbar Horizontal' },
-                    { id: 'dock', label: 'Doca Flutuante' }
-                ]
-            },
             defaultValue: 'sidebar',
-            cssVars: ['--sarak-nav-style']
+            options: [
+                { value: 'sidebar', label: 'Sidebar Vertical' },
+                { value: 'topbar', label: 'Topbar Horizontal' },
+                { value: 'dock', label: 'Doca Flutuante' }
+            ],
+            cssVars: ['--sarak-navigation-style', '--sarak-nav-style', '--nav-style']
         },
+        {
+            id: 'isNavHidden',
+            label: 'Ocultar Navegação',
+            category: 'Estrutura Master',
+            type: 'boolean',
+            defaultValue: false,
+            cssVars: ['--is-nav-hidden']
+        },
+        // --- SIDEBAR CONFIGURATIONS ---
         {
             id: 'sidebarWidth',
             label: 'Largura da Sidebar',
@@ -33,16 +40,62 @@ export const NavigationSchema: ComponentSchema = {
             unit: 'px',
             constraints: { min: 200, max: 400 },
             defaultValue: 240,
-            cssVars: ['--sarak-sidebar-width']
+            cssVars: ['--sidebar-width', '--sarak-sidebar-width']
         },
         {
-            id: 'sidebarBg',
-            label: 'Fundo da Sidebar',
+            id: 'sidebarMinWidth',
+            label: 'Largura Mínima da Sidebar',
+            category: 'Sidebar: Anatomia',
+            type: 'slider',
+            unit: 'px',
+            constraints: { min: 150, max: 300 },
+            defaultValue: 200,
+            cssVars: ['--sidebar-min-width']
+        },
+        {
+            id: 'sidebarMaxWidth',
+            label: 'Largura Máxima da Sidebar',
+            category: 'Sidebar: Anatomia',
+            type: 'slider',
+            unit: 'px',
+            constraints: { min: 300, max: 600 },
+            defaultValue: 450,
+            cssVars: ['--sidebar-max-width']
+        },
+        {
+            id: 'sidebarColor',
+            label: 'Cor da Sidebar (Fundo)',
             category: 'Sidebar: Estilo',
             type: 'color',
-            defaultValue: 'rgba(10, 10, 12, 0.8)',
-            cssVars: ['--sarak-sidebar-bg', '--theme-sidebar']
+            defaultValue: '#000000',
+            cssVars: ['--theme-sidebar-bg', '--sarak-sidebar-bg']
         },
+        {
+            id: 'sidebarHoverColor',
+            label: 'Hover da Sidebar',
+            category: 'Sidebar: Estilo',
+            type: 'color',
+            defaultValue: 'transparent',
+            cssVars: ['--sarak-sidebar-hover-color']
+        },
+        {
+            id: 'sidebarActiveColor',
+            label: 'Ativo da Sidebar',
+            category: 'Sidebar: Estilo',
+            type: 'color',
+            defaultValue: 'transparent',
+            cssVars: ['--sarak-sidebar-active-color']
+        },
+        {
+            id: 'sidebarNoiseOpacity',
+            label: 'Opacidade do Ruído (Sidebar)',
+            category: 'Sidebar: Estilo',
+            type: 'slider',
+            constraints: { min: 0, max: 1, step: 0.05 },
+            defaultValue: 0,
+            cssVars: ['--sarak-sidebar-noise-opacity']
+        },
+        // --- TOPBAR CONFIGURATIONS ---
         {
             id: 'topbarHeight',
             label: 'Altura da Topbar',
@@ -51,16 +104,71 @@ export const NavigationSchema: ComponentSchema = {
             unit: 'px',
             constraints: { min: 48, max: 100 },
             defaultValue: 64,
-            cssVars: ['--sarak-topbar-height']
+            cssVars: ['--topbar-height', '--sarak-topbar-height', '--theme-topbar-height']
         },
         {
-            id: 'topbarBg',
-            label: 'Fundo da Topbar',
+            id: 'topbarColor',
+            label: 'Cor da Topbar (Fundo)',
             category: 'Topbar: Estilo',
             type: 'color',
-            defaultValue: 'rgba(10, 10, 12, 0.8)',
-            cssVars: ['--sarak-topbar-bg']
+            defaultValue: '#000000',
+            cssVars: ['--theme-topbar-bg', '--sarak-topbar-bg']
         },
+        {
+            id: 'topbarHoverColor',
+            label: 'Hover da Topbar',
+            category: 'Topbar: Estilo',
+            type: 'color',
+            defaultValue: 'transparent',
+            cssVars: ['--sarak-topbar-hover-color']
+        },
+        {
+            id: 'topbarActiveColor',
+            label: 'Ativo da Topbar',
+            category: 'Topbar: Estilo',
+            type: 'color',
+            defaultValue: 'transparent',
+            cssVars: ['--sarak-topbar-active-color']
+        },
+        {
+            id: 'topbarNoiseOpacity',
+            label: 'Opacidade do Ruído (Topbar)',
+            category: 'Topbar: Estilo',
+            type: 'slider',
+            constraints: { min: 0, max: 1, step: 0.05 },
+            defaultValue: 0,
+            cssVars: ['--sarak-topbar-noise-opacity']
+        },
+        {
+            id: 'topbarTitleColor',
+            label: 'Cor do Título (Topbar)',
+            category: 'Topbar: Estilo',
+            type: 'color',
+            defaultValue: '#ffffff',
+            cssVars: ['--sarak-topbar-title-color']
+        },
+        // --- SEÇÕES E TABS ---
+        {
+            id: 'tabGap',
+            label: 'Espaço entre Abas',
+            category: 'Abas (Tabs)',
+            type: 'slider',
+            unit: 'px',
+            constraints: { min: 0, max: 24 },
+            defaultValue: 8,
+            cssVars: ['--tab-gap', '--sarak-tab-gap', '--theme-tab-gap']
+        },
+        {
+            id: 'tabSectionMargin',
+            label: 'Margem da Seção de Abas',
+            category: 'Abas (Tabs)',
+            type: 'slider',
+            unit: 'px',
+            constraints: { min: 0, max: 48 },
+            defaultValue: 16,
+            cssVars: ['--tab-section-margin', '--sarak-tab-section-margin', '--theme-tab-section-margin', '--safe-area-padding']
+        },
+        // --- ITENS DE MENU ---
         {
             id: 'navItemActiveColor',
             label: 'Cor do Item Ativo',
@@ -70,12 +178,21 @@ export const NavigationSchema: ComponentSchema = {
             cssVars: ['--sarak-nav-active-color', '--theme-primary']
         },
         {
-            id: 'topbarTitleColor',
-            label: 'Cor do Título (Topbar)',
-            category: 'Topbar: Estilo',
+            id: 'navActiveMarkerColor',
+            label: 'Cor do Marcador Ativo',
+            category: 'Itens de Menu',
             type: 'color',
-            defaultValue: '#ffffff',
-            cssVars: ['--sarak-topbar-title-color']
+            defaultValue: '#00f2ff',
+            cssVars: ['--sarak-nav-marker-color']
+        },
+        {
+            id: 'navActiveMarkerGlow',
+            label: 'Brilho do Marcador',
+            category: 'Itens de Menu',
+            type: 'slider',
+            constraints: { min: 0, max: 20 },
+            defaultValue: 10,
+            cssVars: ['--sarak-nav-marker-glow']
         },
         // --- ESTÉTICA AVANÇADA DO SHELL ---
         {
@@ -95,23 +212,6 @@ export const NavigationSchema: ComponentSchema = {
             type: 'text',
             defaultValue: '10px 0 30px rgba(0,0,0,0.5)',
             cssVars: ['--sarak-sidebar-shadow']
-        },
-        {
-            id: 'navActiveMarkerColor',
-            label: 'Cor do Marcador Ativo',
-            category: 'Itens de Menu',
-            type: 'color',
-            defaultValue: '#00f2ff',
-            cssVars: ['--sarak-nav-marker-color']
-        },
-        {
-            id: 'navActiveMarkerGlow',
-            label: 'Brilho do Marcador',
-            category: 'Itens de Menu',
-            type: 'slider',
-            constraints: { min: 0, max: 20 },
-            defaultValue: 10,
-            cssVars: ['--sarak-nav-marker-glow']
         }
     ]
 };

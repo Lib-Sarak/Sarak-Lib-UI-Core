@@ -36,10 +36,10 @@ export const useDesignManager = (props: {
         
         // Aplica o Preset base apenas se necessário, mas a fundação vem do Master Map
         const defaultThemeId = opt?.theme?.defaultTheme || 'classic';
-        const themeEntry = GLOBAL_THEMES.find(t => t.id === defaultThemeId) || GLOBAL_THEMES[0];
-        const defaultThemeTokens = themeEntry?.tokens || {};
+        const themeEntry = GLOBAL_THEMES.find(t => t.id === defaultThemeId) ?? GLOBAL_THEMES[0];
+        const themeDesignTokens = themeEntry?.design ?? {};
         
-        return { ...masterDefaults, ...defaultThemeTokens, ...configRef.current };
+        return { ...masterDefaults, ...themeDesignTokens, ...configRef.current };
     }, []);
 
     const [design, setDesign] = useState(() => {
@@ -68,7 +68,7 @@ export const useDesignManager = (props: {
                 const saved = localStorage.getItem(storageKey);
                 if (saved) {
                     const parsed = JSON.parse(saved);
-                    setDesign(prev => validateDesign({ ...prev, ...parsed }));
+                    setDesign((prev: any) => validateDesign({ ...prev, ...parsed }));
                 }
             } catch (e) {}
             hasHydratedRef.current = true;

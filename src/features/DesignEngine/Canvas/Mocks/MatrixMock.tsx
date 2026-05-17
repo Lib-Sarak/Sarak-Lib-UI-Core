@@ -59,7 +59,7 @@ export const MockMatrix: React.FC<MatrixMockProps> = ({ tokens, animationVariant
                 <SarakExpandableMatrix
                     data={roles}
                     subItems={permissions}
-                    activeMapping={(role) => mapping[role.id] || []}
+                    activeMapping={(roleId, permId) => mapping[roleId]?.includes(permId) || false}
                     onToggle={handleToggle}
                     renderItemHeader={(role) => (
                         <div className="flex items-center gap-4">

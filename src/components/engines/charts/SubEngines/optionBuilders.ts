@@ -1,6 +1,6 @@
 import * as echarts from 'echarts';
 
-export const buildBarSeries = (data: any[], config: any, theme: any) => ({
+export const buildBarSeries = (data: any[], config: any, theme: any): any => ({
     series: [{
         data: data.map(item => item[config?.dataKey || 'value']),
         type: 'bar',
@@ -25,7 +25,7 @@ export const buildBarSeries = (data: any[], config: any, theme: any) => ({
     }]
 });
 
-export const buildLineSeries = (data: any[], config: any, theme: any, isArea: boolean) => ({
+export const buildLineSeries = (data: any[], config: any, theme: any, isArea: boolean): any => ({
     series: [{
         data: data.map(item => item[config?.dataKey || 'value']),
         type: 'line',
@@ -63,7 +63,7 @@ export const buildLineSeries = (data: any[], config: any, theme: any, isArea: bo
     }]
 });
 
-export const buildPieSeries = (data: any[], config: any, theme: any) => ({
+export const buildPieSeries = (data: any[], config: any, theme: any): any => ({
     series: [{
         name: 'Distribuição',
         type: 'pie',
@@ -92,7 +92,7 @@ export const buildPieSeries = (data: any[], config: any, theme: any) => ({
     }]
 });
 
-export const buildRadarConfig = (data: any[], config: any, theme: any) => ({
+export const buildRadarConfig = (data: any[], config: any, theme: any): any => ({
     radar: {
         indicator: data.map(item => ({ name: item[config?.xAxisKey || 'name'], max: 1000 })),
         splitArea: { show: false },
@@ -116,7 +116,7 @@ export const buildRadarConfig = (data: any[], config: any, theme: any) => ({
     }]
 });
 
-export const buildGaugeSeries = (data: any[], config: any, theme: any) => ({
+export const buildGaugeSeries = (data: any[], config: any, theme: any): any => ({
     series: [{
         type: 'gauge',
         startAngle: 210,
@@ -151,7 +151,7 @@ export const buildGaugeSeries = (data: any[], config: any, theme: any) => ({
     }]
 });
 
-export const buildScatterSeries = (data: any[], config: any, theme: any) => ({
+export const buildScatterSeries = (data: any[], config: any, theme: any): any => ({
     series: [{
         data: data.map((item, i) => [i, item[config?.dataKey || 'value']]),
         type: 'scatter',
@@ -167,7 +167,7 @@ export const buildScatterSeries = (data: any[], config: any, theme: any) => ({
     }]
 });
 
-export const buildHeatmapSeries = (data: any[], config: any, theme: any) => ({
+export const buildHeatmapSeries = (data: any[], config: any, theme: any): any => ({
     visualMap: {
         min: 0,
         max: 1000,
@@ -191,7 +191,7 @@ export const buildHeatmapSeries = (data: any[], config: any, theme: any) => ({
     }]
 });
 
-export const buildFunnelSeries = (data: any[], config: any, theme: any) => ({
+export const buildFunnelSeries = (data: any[], config: any, theme: any): any => ({
     series: [{
         name: 'Funnel',
         type: 'funnel',
@@ -212,7 +212,7 @@ export const buildFunnelSeries = (data: any[], config: any, theme: any) => ({
     }]
 });
 
-export const buildTreeMapSeries = (data: any[], config: any, theme: any) => ({
+export const buildTreeMapSeries = (data: any[], config: any, theme: any): any => ({
     series: [{
         name: 'TreeMap',
         type: 'treemap',
@@ -224,7 +224,7 @@ export const buildTreeMapSeries = (data: any[], config: any, theme: any) => ({
     }]
 });
 
-export const buildCandlestickSeries = (data: any[], config: any, theme: any) => ({
+export const buildCandlestickSeries = (data: any[], config: any, theme: any): any => ({
     xAxis: { data: data.map(item => item.name) },
     series: [{
         type: 'candlestick',
@@ -238,7 +238,7 @@ export const buildCandlestickSeries = (data: any[], config: any, theme: any) => 
     }]
 });
 
-export const buildSunburstSeries = (data: any[], config: any, theme: any) => ({
+export const buildSunburstSeries = (data: any[], config: any, theme: any): any => ({
     series: [{
         type: 'sunburst',
         data: [
@@ -250,7 +250,7 @@ export const buildSunburstSeries = (data: any[], config: any, theme: any) => ({
     }]
 });
 
-export const buildBoxPlotSeries = (data: any[], config: any, theme: any) => ({
+export const buildBoxPlotSeries = (data: any[], config: any, theme: any): any => ({
     series: [{
         name: 'BoxPlot',
         type: 'boxplot',
@@ -267,7 +267,7 @@ export const buildBoxPlotSeries = (data: any[], config: any, theme: any) => ({
     }]
 });
 
-export const buildHistogramSeries = (data: any[], config: any, theme: any) => ({
+export const buildHistogramSeries = (data: any[], config: any, theme: any): any => ({
     series: [{
         name: 'Histogram',
         type: 'bar',

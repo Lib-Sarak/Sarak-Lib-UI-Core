@@ -24,7 +24,7 @@ export type { CardPreset } from './surfaces/cards';
 export interface BrandingPreset { id: string; name: string; description: string; design: Record<string, any>; }
 export const BRANDING_PRESETS: BrandingPreset[] = [];
 
-export interface ChartPreset { id: string; name: string; type: string; description: string; }
+export interface ChartPreset { id: string; name: string; type: string; description: string; icon?: any; }
 export const CHART_TYPES_PRESETS: ChartPreset[] = [];
 
 export interface DataPreset { id: string; name: string; type: string; description: string; design: Record<string, any>; }

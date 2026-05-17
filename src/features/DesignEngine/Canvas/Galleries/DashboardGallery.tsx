@@ -33,7 +33,7 @@ export const DashboardGallery: React.FC<DashboardGalleryProps> = ({ tokens }) =>
                         <div className="flex items-center justify-between">
                             <div className="flex items-center gap-3">
                                 <div className="w-10 h-10 rounded-xl bg-[var(--theme-primary)]/10 flex items-center justify-center text-[var(--theme-primary)]">
-                                    <chart.icon size={20} />
+                                    {chart.icon ? <chart.icon size={20} /> : <div className="w-5 h-5 bg-white/20 rounded" />}
                                 </div>
                                 <div>
                                     <h3 className="text-sm font-black uppercase text-white">{chart.name}</h3>
@@ -48,7 +48,7 @@ export const DashboardGallery: React.FC<DashboardGalleryProps> = ({ tokens }) =>
                                 <div className="w-full h-full" style={{ backgroundImage: 'radial-gradient(var(--theme-primary) 1px, transparent 1px)', backgroundSize: '15px 15px' }} />
                             </div>
                             <SarakChartEngine 
-                                type={chart.id} 
+                                type={chart.id as any} 
                                 data={mockData} 
                                 config={{ engine: 'echarts', dataKey: 'v', xAxisKey: 'name' }} 
                             />

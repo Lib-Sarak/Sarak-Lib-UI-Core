@@ -1,5 +1,4 @@
 import React, { useState, useEffect, useCallback, useMemo } from 'react';
-import { CARD_PRESETS } from '../../../core/Design/presets/surfaces/cards';
 import { MASTER_DESIGN_MAP, getAllDesignTokens } from '../../../core/Design/master-map';
 
 /**
@@ -154,11 +153,12 @@ export const useDesignDraft = (sarak: any) => {
         }));
     };
 
-    /**
-     * Reseta um pilar inteiro para o estado atual do sistema
-     */
-    const resetPillar = (pillarId: string) => {
-        const pillarKeys = getTokensByPillar(pillarId);
+    const resetPillar = (pillarIdOrSchemas: string | string[]) => {
+        const pillarKeys = typeof pillarIdOrSchemas === 'string'
+            ? getTokensByPillar(pillarIdOrSchemas)
+            : MASTER_DESIGN_MAP.components
+                .filter(c => pillarIdOrSchemas.includes(c.id))
+                .flatMap(c => c.tokens.map(t => t.id));
         
         setDraftState((prev: any) => {
             const current = prev || draft;
@@ -169,7 +169,8 @@ export const useDesignDraft = (sarak: any) => {
             return newDraft;
         });
 
-        showToast('warning', `Pilar ${pillarId.toUpperCase()} restaurado.`);
+        const label = typeof pillarIdOrSchemas === 'string' ? pillarIdOrSchemas : pillarIdOrSchemas.join(', ');
+        showToast('warning', `Tokens de ${label.toUpperCase()} restaurados.`);
     };
 
     /**
@@ -183,15 +184,15 @@ export const useDesignDraft = (sarak: any) => {
     };
 
     /**
-     * Preview de um tema (Preset)
+     * Preview de um preset genérico (qualquer subcategoria)
+     * Aceita diretamente o payload { design } do preset selecionado.
      */
-    const handleThemePreview = (id: string) => {
-        const preset = CARD_PRESETS.find(p => p.id === id);
-        if (preset && preset.design) {
+    const handleThemePreview = (presetDesign: Record<string, any>, presetKeyId?: string) => {
+        if (presetDesign && typeof presetDesign === 'object') {
             setDraftState((prev: any) => ({
                 ...(prev || draft),
-                ...preset.design,
-                cardPresetId: id
+                ...presetDesign,
+                ...(presetKeyId ? { [`${presetKeyId}PresetId`]: presetKeyId } : {})
             }));
         }
     };

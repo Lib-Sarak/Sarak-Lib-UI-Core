@@ -9,7 +9,7 @@ export const AtmosphereSchema: ComponentSchema = {
     pilar: 'surfaces',
     subcategory: 'Superfícies',
     tokens: [
-        // --- CORES DE SUPERFÍCIE (Duplicado de Branding para Contexto) ---
+        // --- CORES DE SUPERFÍCIE ---
         {
             id: 'colorBgBody',
             label: 'Fundo Global (Body)',
@@ -48,14 +48,12 @@ export const AtmosphereSchema: ComponentSchema = {
             label: 'Modo de Gradiente',
             category: 'Superfície',
             type: 'select',
-            constraints: {
-                options: [
-                    { id: 'none', label: 'Sólido' },
-                    { id: 'linear', label: 'Linear' },
-                    { id: 'radial', label: 'Radial' },
-                    { id: 'mesh', label: 'Mesh (Orgânico)' }
-                ]
-            },
+            options: [
+                { value: 'none', label: 'Sólido' },
+                { value: 'linear', label: 'Linear' },
+                { value: 'radial', label: 'Radial' },
+                { value: 'mesh', label: 'Mesh (Orgânico)' }
+            ],
             defaultValue: 'linear',
             cssVars: ['--sarak-bg-gradient-mode']
         },
@@ -69,6 +67,59 @@ export const AtmosphereSchema: ComponentSchema = {
             defaultValue: 135,
             cssVars: ['--sarak-bg-gradient-angle']
         },
+        // --- MATERIAIS ÓPTICOS ---
+        {
+            id: 'surfaceMaterial',
+            label: 'Material da Superfície',
+            category: 'Materiais Ópticos',
+            type: 'select',
+            options: [
+                { value: 'frosted', label: 'Vidro Fosco (Frosted)' },
+                { value: 'sleek', label: 'Polido (Sleek)' },
+                { value: 'industrial', label: 'Industrial Chapa' },
+                { value: 'organic', label: 'Orgânico Mate' }
+            ],
+            defaultValue: 'frosted',
+            cssVars: ['--sarak-surface', '--surface-material']
+        },
+        {
+            id: 'surfaceIntensity',
+            label: 'Intensidade do Efeito de Superfície',
+            category: 'Materiais Ópticos',
+            type: 'slider',
+            constraints: { min: 0, max: 1, step: 0.05 },
+            defaultValue: 0.5,
+            cssVars: ['--surface-intensity', '--sarak-surface-intensity']
+        },
+        {
+            id: 'borderType',
+            label: 'Estilo da Moldura (Border)',
+            category: 'Materiais Ópticos',
+            type: 'select',
+            options: [
+                { value: 'solid', label: 'Sólido Padrão' },
+                { value: 'cyber', label: 'Cyber Tech Segmentado' },
+                { value: 'double', label: 'Dupla Linha' },
+                { value: 'glow', label: 'Neon Glow' },
+                { value: 'none', label: 'Sem Moldura' }
+            ],
+            defaultValue: 'solid',
+            cssVars: ['--sarak-border-type', '--border-type']
+        },
+        {
+            id: 'systemTone',
+            label: 'Tom do Ambiente',
+            category: 'Materiais Ópticos',
+            type: 'select',
+            options: [
+                { value: 'dark', label: 'Escuro Profundo' },
+                { value: 'light', label: 'Claro Cromado' },
+                { value: 'cyber', label: 'Cibernético' },
+                { value: 'tactical', label: 'Militar Tático' }
+            ],
+            defaultValue: 'dark',
+            cssVars: ['--sarak-system-tone']
+        },
 
         // --- TEXTURA & RUÍDO ---
         {
@@ -76,51 +127,49 @@ export const AtmosphereSchema: ComponentSchema = {
             label: 'Textura Industrial (BG)',
             category: 'Textura Industrial',
             type: 'select',
-            constraints: {
-                options: [
-                    { id: 'none', label: 'Nenhuma' },
-                    { id: 'grid', label: 'Grid Técnico' },
-                    { id: 'dots', label: 'Pontos (Dotted)' },
-                    { id: 'noise', label: 'Ruído Analógico' },
-                    { id: 'grain', label: 'Grão Fotográfico' },
-                    { id: 'mesh', label: 'Mesh Orgânico' },
-                    { id: 'waves', label: 'Ondas Senoidais' },
-                    { id: 'squares', label: 'Quadrados Industriais' },
-                    { id: 'stripes', label: 'Listras Militares' },
-                    { id: 'topo', label: 'Topografia' },
-                    { id: 'diamond', label: 'Diamante' },
-                    { id: 'prestige', label: 'Prestige' },
-                    { id: 'carbon', label: 'Fibra de Carbono' },
-                    { id: 'brushed', label: 'Metal Escovado' },
-                    { id: 'frosted', label: 'Vidro Fosco (Frosted)' },
-                    { id: 'circuit', label: 'Circuitos (Classic)' },
-                    { id: 'paper', label: 'Papel Craft' },
-                    { id: 'scanlines', label: 'Scanlines (CRT)' },
-                    { id: 'hexagon', label: 'Hexagonais (Céptico)' },
-                    { id: 'silk', label: 'Seda Líquida' },
-                    { id: 'blueprint', label: 'Blueprint (Cianótipo)' },
-                    { id: 'aurora', label: 'Aurora Boreal' },
-                    { id: 'stars', label: 'Campo Estelar' },
-                    { id: 'honeycomb', label: 'Favo de Mel' },
-                    { id: 'isometric', label: 'Projeção Isométrica' },
-                    { id: 'radar', label: 'Radar Tático' },
-                    { id: 'crosshatch', label: 'Crosshatch' },
-                    { id: 'micro-dots', label: 'Micro-Pontos' },
-                    { id: 'pinstripes', label: 'Pinstripes' },
-                    { id: 'constellation', label: 'Constelação' },
-                    { id: 'circuit-pro', label: 'Circuitos (Pro)' },
-                    { id: 'carbon-tech', label: 'Carbon Tech' },
-                    { id: 'topo-deep', label: 'Topografia Profunda' },
-                    { id: 'prism-mesh', label: 'Prism Mesh' },
-                    { id: 'cyber-binary', label: 'Código Binário' },
-                    { id: 'blueprint-pro', label: 'Blueprint Pro' },
-                    { id: 'wave-pulse', label: 'Pulso de Onda' },
-                    { id: 'wood', label: 'Madeira (Organic)' },
-                    { id: 'stucco', label: 'Stucco (Parede)' },
-                    { id: 'fluid', label: 'Fluido Dinâmico' },
-                    { id: 'nebula', label: 'Nebulosa' }
-                ]
-            },
+            options: [
+                { value: 'none', label: 'Nenhuma' },
+                { value: 'grid', label: 'Grid Técnico' },
+                { value: 'dots', label: 'Pontos (Dotted)' },
+                { value: 'noise', label: 'Ruído Analógico' },
+                { value: 'grain', label: 'Grão Fotográfico' },
+                { value: 'mesh', label: 'Mesh Orgânico' },
+                { value: 'waves', label: 'Ondas Senoidais' },
+                { value: 'squares', label: 'Quadrados Industriais' },
+                { value: 'stripes', label: 'Listras Militares' },
+                { value: 'topo', label: 'Topografia' },
+                { value: 'diamond', label: 'Diamante' },
+                { value: 'prestige', label: 'Prestige' },
+                { value: 'carbon', label: 'Fibra de Carbono' },
+                { value: 'brushed', label: 'Metal Escovado' },
+                { value: 'frosted', label: 'Vidro Fosco (Frosted)' },
+                { value: 'circuit', label: 'Circuitos (Classic)' },
+                { value: 'paper', label: 'Papel Craft' },
+                { value: 'scanlines', label: 'Scanlines (CRT)' },
+                { value: 'hexagon', label: 'Hexagonais (Céptico)' },
+                { value: 'silk', label: 'Seda Líquida' },
+                { value: 'blueprint', label: 'Blueprint (Cianótipo)' },
+                { value: 'aurora', label: 'Aurora Boreal' },
+                { value: 'stars', label: 'Campo Estelar' },
+                { value: 'honeycomb', label: 'Favo de Mel' },
+                { value: 'isometric', label: 'Projeção Isométrica' },
+                { value: 'radar', label: 'Radar Tático' },
+                { value: 'crosshatch', label: 'Crosshatch' },
+                { value: 'micro-dots', label: 'Micro-Pontos' },
+                { value: 'pinstripes', label: 'Pinstripes' },
+                { value: 'constellation', label: 'Constelação' },
+                { value: 'circuit-pro', label: 'Circuitos (Pro)' },
+                { value: 'carbon-tech', label: 'Carbon Tech' },
+                { value: 'topo-deep', label: 'Topografia Profunda' },
+                { value: 'prism-mesh', label: 'Prism Mesh' },
+                { value: 'cyber-binary', label: 'Código Binário' },
+                { value: 'blueprint-pro', label: 'Blueprint Pro' },
+                { value: 'wave-pulse', label: 'Pulso de Onda' },
+                { value: 'wood', label: 'Madeira (Organic)' },
+                { value: 'stucco', label: 'Stucco (Parede)' },
+                { value: 'fluid', label: 'Fluido Dinâmico' },
+                { value: 'nebula', label: 'Nebulosa' }
+            ],
             defaultValue: 'grid',
             cssVars: ['--sarak-bg-pattern-id', '--theme-texture']
         },
@@ -134,8 +183,26 @@ export const AtmosphereSchema: ComponentSchema = {
             cssVars: ['--sarak-bg-pattern-opacity', '--theme-texture-opacity']
         },
         {
+            id: 'atmosphereNoiseOpacity',
+            label: 'Opacidade do Ruído da Atmosfera',
+            category: 'Ruído Industrial',
+            type: 'slider',
+            constraints: { min: 0, max: 0.5, step: 0.01 },
+            defaultValue: 0.05,
+            cssVars: ['--sarak-noise-opacity', '--theme-noise-opacity']
+        },
+        {
+            id: 'noiseIntensity',
+            label: 'Intensidade de Ruído',
+            category: 'Ruído Industrial',
+            type: 'slider',
+            constraints: { min: 0, max: 0.5, step: 0.01 },
+            defaultValue: 0.05,
+            cssVars: ['--sarak-noise-opacity', '--theme-noise-opacity']
+        },
+        {
             id: 'bgNoiseDensity',
-            label: 'Densidade de Ruído',
+            label: 'Densidade de Ruído (BG)',
             category: 'Ruído Industrial',
             type: 'slider',
             constraints: { min: 0, max: 1, step: 0.01 },
@@ -165,6 +232,15 @@ export const AtmosphereSchema: ComponentSchema = {
             cssVars: ['--sarak-glass-blur']
         },
         {
+            id: 'glassOpacity',
+            label: 'Opacidade do Vidro',
+            category: 'Vidro: Óptica',
+            type: 'slider',
+            constraints: { min: 0, max: 1, step: 0.05 },
+            defaultValue: 0.1,
+            cssVars: ['--glass-opacity', '--sarak-glass-opacity', '--sarak-bg-opacity']
+        },
+        {
             id: 'glassSpecularity',
             label: 'Specularity (Brilho de Luz)',
             category: 'Vidro: Óptica',
@@ -192,7 +268,52 @@ export const AtmosphereSchema: ComponentSchema = {
             cssVars: ['--sarak-glass-saturation']
         },
 
-        // --- ORQUESTRAÇÃO DE SOMBRAS (ELEVAÇÃO) ---
+        // --- SOMBRAS E ELEVAÇÃO ---
+        {
+            id: 'shadowIntensity',
+            label: 'Intensidade da Sombra',
+            category: 'Sombras e Elevação',
+            type: 'slider',
+            constraints: { min: 0, max: 2, step: 0.1 },
+            defaultValue: 0.5,
+            cssVars: ['--shadow-intensity', '--sarak-shadow-intensity']
+        },
+        {
+            id: 'layeredShadows',
+            label: 'Sombras em Camadas (Layered)',
+            category: 'Sombras e Elevação',
+            type: 'slider',
+            constraints: { min: 0, max: 2, step: 0.1 },
+            defaultValue: 1.0,
+            cssVars: ['--sarak-layered-shadows']
+        },
+        {
+            id: 'shadowOrientation',
+            label: 'Orientação das Sombras',
+            category: 'Sombras e Elevação',
+            type: 'select',
+            options: [
+                { value: 'bottom', label: 'Projeção Inferior' },
+                { value: 'center', label: 'Centro Uniforme' },
+                { value: 'top', label: 'Superior Invertida' },
+                { value: 'dynamic', label: 'Ângulo Dinâmico' }
+            ],
+            defaultValue: 'bottom',
+            cssVars: ['--shadow-orientation']
+        },
+        {
+            id: 'shadowColorMode',
+            label: 'Colorização das Sombras',
+            category: 'Sombras e Elevação',
+            type: 'select',
+            options: [
+                { value: 'neutral', label: 'Neutro (Preto)' },
+                { value: 'colored', label: 'Matizada (Colorida)' },
+                { value: 'ambient', label: 'Ambiental Suave' }
+            ],
+            defaultValue: 'neutral',
+            cssVars: ['--shadow-color-mode']
+        },
         {
             id: 'shadowAmbientAlpha',
             label: 'Sombra: Contato (Ambient)',
@@ -220,6 +341,28 @@ export const AtmosphereSchema: ComponentSchema = {
             constraints: { min: 0, max: 1, step: 0.05 },
             defaultValue: 0.2,
             cssVars: ['--sarak-shadow-projection-alpha']
+        },
+
+        // --- ESCUDOS DE SEGURANÇA ---
+        {
+            id: 'securityShieldGlow',
+            label: 'Brilho do Escudo de Segurança',
+            category: 'Escudo & Defesa',
+            type: 'slider',
+            unit: 'px',
+            constraints: { min: 0, max: 50 },
+            defaultValue: 10,
+            cssVars: ['--sarak-security-glow']
+        },
+        {
+            id: 'securityPulseSpeed',
+            label: 'Velocidade do Pulso (Escudo)',
+            category: 'Escudo & Defesa',
+            type: 'slider',
+            unit: 's',
+            constraints: { min: 0.5, max: 5.0, step: 0.1 },
+            defaultValue: 2.0,
+            cssVars: ['--sarak-security-pulse']
         },
 
         // --- EFEITOS CINEMATOGRÁFICOS ---
@@ -260,6 +403,15 @@ export const AtmosphereSchema: ComponentSchema = {
             constraints: { min: 0.5, max: 1.5, step: 0.05 },
             defaultValue: 1,
             cssVars: ['--sarak-contrast']
+        },
+        {
+            id: 'contrastCurve',
+            label: 'Curva de Contraste Cinematográfico',
+            category: 'Pós-Processamento',
+            type: 'slider',
+            constraints: { min: 0.5, max: 2.0, step: 0.1 },
+            defaultValue: 1.0,
+            cssVars: ['--contrast-curve', '--sarak-contrast-curve']
         }
     ]
 };

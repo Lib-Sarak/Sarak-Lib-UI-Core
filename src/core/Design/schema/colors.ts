@@ -11,30 +11,97 @@ export const ColorsSchema: ComponentSchema = {
     subcategory: 'Cores principais e ambiente',
     tokens: [
         {
-            id: 'colorPrimary',
+            id: 'colorPalette',
+            label: 'Paleta Ativa (Preset)',
+            category: 'Paletas',
+            type: 'select',
+            defaultValue: 'default',
+            options: [
+                { value: 'default', label: 'Padrão (Cyberpunk)' },
+                { value: 'neon', label: 'Neon Glow' },
+                { value: 'matrix', label: 'Green Matrix' },
+                { value: 'slate', label: 'Slate Industrial' },
+                { value: 'sunset', label: 'Sunset Orange' }
+            ]
+        },
+        {
+            id: 'primaryColor',
             label: 'Cor Primária (Base)',
             category: 'Paletas',
             type: 'color',
             defaultValue: '#00f2ff',
             generateVariants: true,
-            cssVars: ['--theme-primary', '--sarak-color-primary']
+            cssVars: ['--primary-color', '--theme-primary', '--sarak-primary-color']
         },
         {
-            id: 'colorSecondary',
+            id: 'secondaryColor',
             label: 'Cor Secundária',
             category: 'Paletas',
             type: 'color',
             defaultValue: '#7000ff',
             generateVariants: true,
-            cssVars: ['--theme-secondary', '--sarak-secondary-color']
+            cssVars: ['--secondary-color', '--theme-secondary', '--sarak-secondary-color']
         },
         {
-            id: 'colorAccent',
+            id: 'tertiaryColor',
+            label: 'Cor Terciária',
+            category: 'Paletas',
+            type: 'color',
+            defaultValue: '#10b981',
+            generateVariants: true,
+            cssVars: ['--tertiary-color', '--theme-tertiary', '--sarak-tertiary-color']
+        },
+        {
+            id: 'accentColor',
             label: 'Cor de Acento (Accent)',
             category: 'Paletas',
             type: 'color',
             defaultValue: '#ff00d4',
             cssVars: ['--theme-accent', '--sarak-accent-color']
+        },
+        {
+            id: 'surfaceColor',
+            label: 'Cor de Superfície',
+            category: 'Paletas',
+            type: 'color',
+            defaultValue: '#1e293b',
+            cssVars: ['--theme-surface', '--sarak-surface-color']
+        },
+        {
+            id: 'textureColor',
+            label: 'Cor da Textura',
+            category: 'Paletas',
+            type: 'color',
+            defaultValue: '#ffffff',
+            cssVars: ['--theme-texture-color', '--sarak-texture-color']
+        },
+        {
+            id: 'titleColor',
+            label: 'Cor do Título',
+            category: 'Paletas',
+            type: 'color',
+            defaultValue: '#ffffff',
+            cssVars: ['--theme-title-color', '--sarak-title-color']
+        },
+        {
+            id: 'colorDepth',
+            label: 'Profundidade da Cor',
+            category: 'Ambiente Cromático',
+            type: 'number',
+            defaultValue: 1,
+            min: 1,
+            max: 5,
+            cssVars: ['--sarak-color-depth']
+        },
+        {
+            id: 'colorVariation',
+            label: 'Variação da Cor',
+            category: 'Ambiente Cromático',
+            type: 'number',
+            defaultValue: 1,
+            min: 1,
+            max: 5,
+            cssVars: ['--sarak-color-variation']
         },
         // --- CORES DE SUPERFÍCIE ---
         {
@@ -69,14 +136,14 @@ export const ColorsSchema: ComponentSchema = {
             defaultValue: 'rgba(15, 15, 15, 0.8)',
             cssVars: ['--sarak-bg-modal', '--theme-modal-bg']
         },
-        // --- CORES DE COMPONENTES (Sincronizado com Cat 3) ---
+        // --- CORES DE COMPONENTES ---
         {
             id: 'cardBackgroundColor',
             label: 'Background dos Cards',
             category: 'Componentes',
             type: 'color',
             defaultValue: 'rgba(15, 23, 42, 0.6)',
-            cssVars: ['--card-bg', '--theme-surface', '--theme-card', '--sarak-card-bg']
+            cssVars: ['--card-bg', '--theme-surface', '--theme-card', '--sarak-card-bg', '--theme-card-bg']
         },
         {
             id: 'cardBorderColor',
@@ -84,7 +151,7 @@ export const ColorsSchema: ComponentSchema = {
             category: 'Componentes',
             type: 'color',
             defaultValue: 'rgba(255, 255, 255, 0.1)',
-            cssVars: ['--card-border-color', '--theme-border', '--sarak-card-border-color']
+            cssVars: ['--card-border-color', '--theme-border', '--sarak-card-border-color', '--theme-card-border']
         }
     ]
 };

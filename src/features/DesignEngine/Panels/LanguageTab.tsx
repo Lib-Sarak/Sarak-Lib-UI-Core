@@ -17,7 +17,7 @@ export const LanguageTab: React.FC = () => {
 
     const [searchQuery, setSearchQuery] = useState("");
 
-    const filteredLanguages = (availableLanguages || []).filter(lang => {
+    const filteredLanguages = (availableLanguages || []).filter((lang: any) => {
         if (!lang) return false;
         const name = (lang?.name || lang?.label || lang?.id || '').toString().toLowerCase();
         const query = (searchQuery || '').toLowerCase();
@@ -58,7 +58,7 @@ export const LanguageTab: React.FC = () => {
                         
                         <div className="flex items-center justify-between p-3 rounded-2xl bg-black/40 border border-white/5">
                             <span className="text-xs font-bold uppercase tracking-widest text-white/80">
-                                {availableLanguages.find(l => l.id === language)?.name || language}
+                                {availableLanguages.find((l: any) => l.id === language)?.name || language}
                             </span>
                             <div className="flex items-center gap-1.5 px-2 py-1 bg-emerald-500/10 border border-emerald-500/20 rounded-lg">
                                 <div className="w-1.5 h-1.5 bg-emerald-500 rounded-full animate-pulse" />
@@ -99,7 +99,7 @@ export const LanguageTab: React.FC = () => {
                 </div>
 
                 <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-3 overflow-y-auto custom-scrollbar pr-2 pb-8">
-                    {filteredLanguages.map((lang) => {
+                    {filteredLanguages.map((lang: any) => {
                         const isActive = language === lang.id;
                         const isEnabled = enabledLanguages.includes(lang.id);
 

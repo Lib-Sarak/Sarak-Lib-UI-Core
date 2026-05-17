@@ -11,8 +11,8 @@ interface AdvancedGalleryProps {
 
 export const AdvancedGallery: React.FC<AdvancedGalleryProps> = ({ tokens, onUpdateDraft }) => {
     
-    const handleApplyPreset = (presetTokens: any) => {
-        Object.entries(presetTokens).forEach(([key, value]) => {
+    const handleApplyPreset = (presetDesign: Record<string, any>) => {
+        Object.entries(presetDesign).forEach(([key, value]) => {
             onUpdateDraft(key, value);
         });
     };
@@ -38,13 +38,13 @@ export const AdvancedGallery: React.FC<AdvancedGalleryProps> = ({ tokens, onUpda
                 {ADVANCED_PRESETS.map((preset) => (
                     <GalleryItem
                         key={preset.id}
-                        title={preset.label}
-                        description={`Layout Agnostico: ${preset.id.split('-')[0]}`}
-                        onClick={() => handleApplyPreset(preset.tokens)}
+                        title={preset.name}
+                        description={preset.description}
+                        onClick={() => handleApplyPreset(preset.design)}
                         isActive={false} // Simplificado para esta visualização
                     >
                         {/* Miniatura Visual do Preset */}
-                        <DesignScope design={{ ...tokens, ...preset.tokens }} className="w-full h-32 rounded-xl border border-white/5 bg-black/40 overflow-hidden relative group">
+                        <DesignScope design={{ ...tokens, ...preset.design }} className="w-full h-32 rounded-xl border border-white/5 bg-black/40 overflow-hidden relative group">
                             <div className="absolute inset-0 p-4 flex flex-col gap-2">
                                 {/* Skeleton da Matriz para visualização rápida */}
                                 <div className="h-6 w-full rounded bg-[var(--sarak-matrix-search-bg)] border border-[var(--sarak-matrix-border-color)] opacity-50" />

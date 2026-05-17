@@ -48,7 +48,9 @@ export const useRegistryManager = (options: any) => {
         setIsHydrated(true);
 
         const unsubscribe = subscribeToRegistry(updateModules);
-        return () => unsubscribe();
+        return () => {
+            unsubscribe();
+        };
     }, [options?.manifest]);
 
     return {

@@ -9,6 +9,7 @@ export interface LayoutPreset {
     id: string;
     name: string;
     design: Record<string, any>;
+    description?: string;
 }
 
 export const LAYOUT_PRESETS: LayoutPreset[] = [];

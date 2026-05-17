@@ -1,6 +1,6 @@
 import React from 'react';
 import { useSarakUI } from '../../../core/Provider/SarakUIProvider';
-import { COLOR_PALETTES } from '../../../core/Design/presets/colors';
+import { COLOR_PALETTES, ColorPalette } from '../../../core/Design/presets/colors';
 
 /**
  * PaletteSelector - Componente Industrial para Seleção de Paletas Hierárquicas
@@ -25,7 +25,7 @@ export const PaletteSelector: React.FC = () => {
             </div>
 
             <div className="grid grid-cols-2 gap-3">
-                {COLOR_PALETTES.map((palette) => (
+                {COLOR_PALETTES.map((palette: ColorPalette) => (
                     <button
                         key={palette.id}
                         onClick={() => handleSelect(palette.id)}

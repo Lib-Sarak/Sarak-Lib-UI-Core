@@ -60,7 +60,7 @@ export const VisualizationGallery: React.FC<VisualizationGalleryProps> = ({ toke
                         <div className="h-64 bg-black/60 rounded-3xl border border-white/5 overflow-hidden relative shadow-inner">
                             <SarakVisualEngine 
                                 type={visual.id as any} 
-                                design={tokens} 
+                                tokens={tokens} 
                             />
                             
                             {/* Scanning Overlay Effect */}
