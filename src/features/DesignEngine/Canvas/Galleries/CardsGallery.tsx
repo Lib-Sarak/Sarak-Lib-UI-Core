@@ -1,18 +1,15 @@
 import React from 'react';
+import { motion } from 'framer-motion';
 import { GalleryItem } from './GalleryItem';
-import { DESIGN_MANIFEST, UIContext } from '../../../../core/Provider/SarakUIProvider';
 import { CARD_PRESETS, CardPreset } from '../../../../core/Design/presets';
 import { DesignScope } from '../../../../core/Design/components/DesignScope';
 import { 
-    User, 
-    MoreHorizontal,
-    Shield,
-    Wallet,
     Layers,
-    Search,
-    Bell,
-    Settings,
-    Activity
+    Activity,
+    Shield,
+    TrendingUp,
+    Zap,
+    Check
 } from 'lucide-react';
 
 interface CardsGalleryProps {
@@ -20,99 +17,118 @@ interface CardsGalleryProps {
     onUpdateDraft: (key: string, value: any) => void;
 }
 
-const CardSpecimen: React.FC<{ preset: CardPreset, contentType: string, globalTokens: any }> = ({ preset, contentType, globalTokens }) => {
-    const mergedTokens = React.useMemo(() => ({ ...globalTokens, ...preset.design }), [preset, globalTokens]);
-
-    const renderContent = () => {
-        switch (contentType) {
-            case 'profile':
-                return (
-                    <div className="flex flex-col h-full">
-                        <div className="flex items-center gap-4 mb-6">
-                            <div className="w-12 h-12 rounded-full bg-[var(--theme-primary)]/10 border border-[var(--theme-primary)]/20 flex items-center justify-center">
-                                <User className="text-[var(--theme-primary)]" size={20} />
-                            </div>
-                            <div>
-                                <div className="text-xs font-black uppercase tracking-widest text-white">Sarak Identity</div>
-                                <div className="text-[10px] text-white/40 uppercase font-bold">Premium Tier</div>
-                            </div>
-                            <MoreHorizontal className="ml-auto text-white/20" size={16} />
-                        </div>
-                        <div className="space-y-4">
-                            {[1, 2].map(i => (
-                                <div key={i} className="space-y-2">
-                                    <div className="h-1.5 w-full bg-white/5 rounded-full" />
-                                    <div className="h-1.5 w-2/3 bg-white/5 rounded-full" />
-                                </div>
-                            ))}
-                        </div>
-                        <button className="mt-auto w-full py-2 bg-[var(--theme-primary)]/10 border border-[var(--theme-primary)]/20 text-[var(--theme-primary)] text-[9px] font-black uppercase tracking-widest rounded-lg">
-                            Upgrade Vault
-                        </button>
-                    </div>
-                );
-            case 'chart':
-                return (
-                    <div className="flex flex-col h-full">
-                        <div className="flex justify-between items-start mb-4">
-                            <div>
-                                <div className="text-xs font-black uppercase tracking-widest text-white">Analytics</div>
-                                <div className="text-2xl font-black text-white tracking-tighter">$12,480</div>
-                            </div>
-                            <Activity size={20} className="text-[var(--theme-primary)]" />
-                        </div>
-                        <div className="flex-1 flex items-end gap-1 mt-2">
-                            {[30, 50, 45, 90, 65, 80, 55, 40, 75, 60].map((h, i) => (
-                                <div 
-                                    key={i}
-                                    className="flex-1 bg-[var(--theme-primary)]/20 rounded-t-sm"
-                                    style={{ height: `${h}%` }}
-                                />
-                            ))}
-                        </div>
-                    </div>
-                );
-            case 'control':
-                return (
-                    <div className="flex flex-col h-full gap-4">
-                        <div className="text-xs font-black uppercase tracking-widest text-white border-b border-white/5 pb-2">Control Panel</div>
-                        <div className="grid grid-cols-2 gap-2">
-                            {[
-                                { icon: Shield, label: 'Sec' },
-                                { icon: Wallet, label: 'Fin' },
-                                { icon: Bell, label: 'Not' },
-                                { icon: Settings, label: 'Cfg' }
-                            ].map((item, i) => (
-                                <div key={i} className="p-3 bg-white/5 border border-white/5 rounded-lg flex flex-col gap-2">
-                                    <item.icon size={14} className="text-[var(--theme-primary)]" />
-                                    <span className="text-[8px] font-black uppercase text-white/30">{item.label}</span>
-                                </div>
-                            ))}
-                        </div>
-                        <div className="flex items-center gap-2 px-3 py-2 bg-white/5 border border-white/5 rounded-lg mt-auto">
-                            <Search size={12} className="text-white/20" />
-                            <div className="h-1.5 flex-1 bg-white/5 rounded-full" />
-                        </div>
-                    </div>
-                );
-            default: return null;
-        }
-    };
-
+/**
+ * MiniDashboardFragment: Uma réplica miniaturizada de um componente real de dashboard.
+ * Usada para provar a fidelidade visual da anatomia aplicada.
+ */
+const MiniDashboardFragment: React.FC<{ isActive: boolean }> = ({ isActive }) => {
     return (
-        <DesignScope design={mergedTokens} className="w-full h-full p-6 relative overflow-hidden group z-10 transition-all duration-300">
-            {/* Checkerboard Stress Background for Transparency Visibility */}
-            <div className="absolute inset-4 rounded-xl overflow-hidden pointer-events-none opacity-20 z-0">
-                <div className="absolute inset-0" style={{ 
-                    backgroundImage: 'radial-gradient(rgba(255,255,255,0.1) 1px, transparent 1px)', 
-                    backgroundSize: '20px 20px' 
-                }} />
-                <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-40 h-40 bg-[var(--theme-primary)] blur-[80px] opacity-10 animate-pulse" />
+        <div className="w-full h-full flex flex-col p-5 gap-4 relative z-10">
+            {/* Header com Status */}
+            <div className="flex justify-between items-center">
+                <div className="flex items-center gap-2">
+                    <div className="w-1.5 h-1.5 rounded-full bg-emerald-500 animate-pulse shadow-[0_0_8px_rgba(16,185,129,0.5)]" />
+                    <span className="text-[9px] font-black uppercase tracking-widest text-white/40">Real-time Node</span>
+                </div>
+                <Activity size={10} className="text-white/20" />
             </div>
 
-            <div className="bg-theme-card border-theme w-full h-full p-6 relative overflow-hidden group z-10 transition-all duration-300">
-                <div className="relative z-10 h-full">
-                    {renderContent()}
+            {/* Title & Value */}
+            <div className="space-y-1">
+                <h4 className="text-[10px] font-bold text-white/60 uppercase tracking-tighter">Operational Load</h4>
+                <div className="flex items-baseline gap-2">
+                    <span className="text-2xl font-black text-white tracking-tighter italic">84.2%</span>
+                    <TrendingUp size={12} className="text-emerald-400 opacity-60" />
+                </div>
+            </div>
+
+            {/* Mini Chart (Pure CSS) */}
+            <div className="flex-1 flex items-end gap-1 px-1 py-2 bg-black/20 rounded-lg border border-white/5">
+                {[30, 50, 45, 70, 60, 85, 40, 65, 90, 75].map((h, i) => (
+                    <div 
+                        key={i} 
+                        className="flex-1 bg-gradient-to-t from-[var(--theme-primary)]/10 to-[var(--theme-primary)]/40 rounded-t-[2px] transition-all duration-700" 
+                        style={{ height: `${h}%`, opacity: 0.3 + (i * 0.05) }} 
+                    />
+                ))}
+            </div>
+
+            {/* Footer Metrics */}
+            <div className="space-y-3 pt-2 border-t border-white/5">
+                <div className="flex justify-between items-center text-[8px] font-bold uppercase tracking-widest">
+                    <span className="text-white/30">Protocol</span>
+                    <span className="text-[var(--theme-primary)]">SX-OVR-9</span>
+                </div>
+                <div className="h-1 bg-white/5 rounded-full overflow-hidden">
+                    <motion.div 
+                        initial={{ width: 0 }}
+                        animate={{ width: '84.2%' }}
+                        transition={{ duration: 1, ease: "easeOut" }}
+                        className="h-full bg-[var(--theme-primary)]/60" 
+                    />
+                </div>
+            </div>
+
+            {/* Floating Protection Tag */}
+            <div className="absolute top-4 right-4 opacity-0 group-hover:opacity-100 transition-opacity">
+                 <Shield size={12} className="text-white/10" />
+            </div>
+        </div>
+    );
+};
+
+/**
+ * CardSpecimen: Espécime isolado de ALTA FIDELIDADE.
+ * 
+ * Usa apenas DesignScope para injeção de variáveis — sem duplicação inline.
+ * Os tokens do preset são mergeados com o estado atual do sistema (globalTokens),
+ * mantendo reatividade para tema e modo, enquanto a anatomia vem 100% do preset.
+ */
+const CardSpecimen: React.FC<{ preset: CardPreset, globalTokens: any, isActive: boolean }> = ({ preset, globalTokens, isActive }) => {
+    const mergedTokens = React.useMemo(() => {
+        // Base: estado real do sistema (não defaults estáticos)
+        const final = { ...globalTokens, ...preset.design };
+        
+        // Mantemos reatividade para tema e modo — a anatomia é soberana do preset
+        const reactiveTokens = ['themePrimary', 'mode'];
+        reactiveTokens.forEach(token => {
+            if (globalTokens[token] !== undefined) final[token] = globalTokens[token];
+        });
+
+        return final;
+    }, [preset, globalTokens]);
+
+    return (
+        <DesignScope design={mergedTokens}>
+            <div className="w-full h-full p-10 relative overflow-hidden group bg-[#050505] border border-white/5">
+                
+                {/* Transparency Stress-Test (Checkerboard) */}
+                <div className="absolute inset-0 opacity-[0.04] pointer-events-none" style={{ 
+                    backgroundImage: `
+                        linear-gradient(45deg, #fff 25%, transparent 25%), 
+                        linear-gradient(-45deg, #fff 25%, transparent 25%), 
+                        linear-gradient(45deg, transparent 75%, #fff 75%), 
+                        linear-gradient(-45deg, transparent 75%, #fff 75%)
+                    `,
+                    backgroundSize: '40px 40px',
+                    backgroundPosition: '0 0, 0 20px, 20px -20px, -20px 0px'
+                }} />
+
+                {/* THE REPLICA CARD (Digital Twin) */}
+                <div 
+                    className="sarak-card w-full h-full relative z-10 transition-all duration-700 isolate group-hover:scale-[1.02] flex flex-col"
+                    data-sx-card-texture-type={mergedTokens.cardTextureType}
+                >
+
+                    {/* Miniature Dashboard Fragment */}
+                    <div className="relative z-10 flex-1 overflow-hidden">
+                        <MiniDashboardFragment isActive={isActive} />
+                    </div>
+                </div>
+
+                {/* Labeling Overlay */}
+                <div className="absolute bottom-4 left-1/2 -translate-x-1/2 flex flex-col items-center gap-1 opacity-40 group-hover:opacity-100 transition-opacity">
+                    <span className="text-[8px] font-black uppercase tracking-[0.4em] text-white/40">{preset.id}</span>
                 </div>
             </div>
         </DesignScope>
@@ -122,50 +138,78 @@ const CardSpecimen: React.FC<{ preset: CardPreset, contentType: string, globalTo
 export const CardsGallery: React.FC<CardsGalleryProps> = ({ tokens, onUpdateDraft }) => {
     
     const handleSelect = (preset: CardPreset) => {
+        // Injeção Atômica: aplica TODOS os tokens definidos no preset
+        // sem filtro restritivo — o preset já é alinhado 1:1 com o CardSchema
         Object.entries(preset.design).forEach(([key, val]) => {
-             onUpdateDraft(key, val);
+            onUpdateDraft(key, val);
         });
+        // Persiste o identificador do preset ativo
+        onUpdateDraft('cardPresetId', preset.id);
     };
 
-    const cardEntries = CARD_PRESETS;
-
     return (
-        <div className="p-8 grid grid-cols-1 lg:grid-cols-2 gap-8 overflow-y-auto custom-scrollbar h-full bg-[#020202]">
-            {cardEntries.map((preset: CardPreset, idx) => {
-                const isActive = tokens.surfaceMaterial === preset.design.surfaceMaterial && 
-                                tokens.cardBorderRadius === preset.design.cardBorderRadius &&
-                                tokens.borderType === preset.design.borderType;
+        <div className="flex flex-col h-full bg-[#050505]">
+            {/* Gallery Header */}
+            <div className="flex items-center justify-between px-10 py-10 border-b border-white/5 bg-black/20 backdrop-blur-2xl sticky top-0 z-20">
+                <div className="flex flex-col">
+                    <h2 className="text-sm font-black uppercase tracking-[0.5em] text-white italic">Card Surface Repository</h2>
+                    <p className="text-[10px] font-bold text-white/20 uppercase tracking-widest mt-1">Anatomical DNA & Geometric Structures</p>
+                </div>
+                
+                <div className="flex items-center gap-4 px-5 py-2 bg-white/5 rounded-2xl border border-white/10">
+                    <Zap size={14} className="text-[var(--theme-primary)]" />
+                    <span className="text-[10px] font-black text-white/60 uppercase tracking-widest">{CARD_PRESETS.length} Anatomies</span>
+                </div>
+            </div>
 
-                const contentTypes = ['profile', 'chart', 'control'];
-                const contentType = contentTypes[idx % 3];
+            {/* Gallery Grid */}
+            <div className="flex-1 overflow-y-auto custom-scrollbar p-10">
+                <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-10">
+                    {CARD_PRESETS.map((preset: CardPreset) => {
+                        const isActive = tokens.cardPresetId === preset.id;
 
-                return (
-                    <GalleryItem 
-                        key={preset.id}
-                        title={preset.name}
-                        description={preset.description}
-                        isActive={isActive}
-                        onClick={() => handleSelect(preset)}
-                    >
-                        <div className="w-full h-[320px] rounded-2xl overflow-hidden bg-black/80 border border-white/5 shadow-2xl relative group">
-                            <CardSpecimen 
-                                preset={preset} 
-                                contentType={contentType}
-                                globalTokens={tokens}
-                            />
-                            
-                            {/* Hover Overlay */}
-                            <div className="absolute inset-0 bg-black/40 opacity-0 group-hover:opacity-100 transition-opacity flex flex-col items-center justify-center backdrop-blur-sm pointer-events-none">
-                                <div className="p-4 bg-[var(--theme-primary)] rounded-full text-white shadow-xl scale-90 group-hover:scale-100 transition-transform mb-4">
-                                    <Layers size={28} />
+                        return (
+                            <div key={preset.id} className="space-y-4">
+                                <motion.div 
+                                    whileHover={{ y: -8 }}
+                                    onClick={() => handleSelect(preset)}
+                                    className={`relative h-[380px] rounded-[2.5rem] overflow-hidden cursor-pointer border transition-all duration-700 ${
+                                        isActive ? 'border-[var(--theme-primary)] shadow-2xl shadow-primary-500/20' : 'border-white/5 hover:border-white/20'
+                                    }`}
+                                >
+                                    <CardSpecimen 
+                                        preset={preset} 
+                                        globalTokens={tokens}
+                                        isActive={isActive}
+                                    />
+                                    
+                                    {/* Active Badge */}
+                                    {isActive && (
+                                        <div className="absolute top-6 right-6 z-30">
+                                            <div className="w-8 h-8 bg-[var(--theme-primary)] rounded-full flex items-center justify-center shadow-lg shadow-primary-500/40 border border-white/20 scale-110">
+                                                <Check className="text-white" size={14} />
+                                            </div>
+                                        </div>
+                                    )}
+
+                                    {/* Overlay de Interação */}
+                                    <div className="absolute inset-0 bg-black/60 opacity-0 hover:opacity-100 transition-all duration-500 flex flex-col items-center justify-center backdrop-blur-sm group z-20">
+                                        <div className="p-5 bg-white/10 rounded-2xl border border-white/20 mb-4 scale-75 group-hover:scale-100 transition-transform duration-500">
+                                            <Layers size={24} className="text-white" />
+                                        </div>
+                                        <span className="text-[10px] font-black uppercase tracking-[0.4em] text-white">Apply Blueprint</span>
+                                    </div>
+                                </motion.div>
+
+                                <div className="px-4">
+                                    <h3 className={`text-[11px] font-black uppercase tracking-widest ${isActive ? 'text-[var(--theme-primary)]' : 'text-white/80'}`}>{preset.name}</h3>
+                                    <p className="text-[9px] text-white/30 uppercase leading-relaxed mt-1 tracking-wider line-clamp-1">{preset.description}</p>
                                 </div>
-                                <span className="text-2xs font-black uppercase tracking-[0.3em] text-white">Aplicar Material</span>
                             </div>
-                        </div>
-                    </GalleryItem>
-                );
-            })}
+                        );
+                    })}
+                </div>
+            </div>
         </div>
     );
 };
-

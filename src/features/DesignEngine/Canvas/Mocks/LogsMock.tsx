@@ -11,13 +11,7 @@ export const MockLogs: React.FC<any> = ({ animationVariants, animationStyle, tok
                 initial={animationVariants[animationStyle]?.page?.initial || animationVariants.none?.page?.initial}
                 animate={animationVariants[animationStyle]?.page?.animate || animationVariants.none?.page?.animate}
                 transition={{ ...(animationVariants[animationStyle]?.page?.transition || animationVariants.none?.page?.transition), duration: parseFloat(tokens.animationSpeed || '0.4') }}
-                className="bg-theme-card shadow-[var(--theme-shadow)] overflow-hidden relative"
-                style={{ 
-                    borderRadius: 'var(--radius-theme)',
-                    borderWidth: 'var(--theme-border-width)',
-                    borderStyle: 'var(--theme-border-style)',
-                    borderColor: 'var(--theme-border)'
-                }}
+                className="sarak-card shadow-[var(--theme-shadow)] overflow-hidden relative p-0"
             >
                 <div className="absolute inset-0 bg-white/[0.02] pointer-events-none"></div>
                 <table className="w-full text-left text-2xs relative z-10">

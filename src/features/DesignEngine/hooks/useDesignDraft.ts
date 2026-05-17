@@ -1,5 +1,5 @@
 import React, { useState, useEffect, useCallback, useMemo } from 'react';
-import { PRESETS_LIBRARY } from '../../../core/Design/presets';
+import { CARD_PRESETS } from '../../../core/Design/presets/surfaces/cards';
 import { MASTER_DESIGN_MAP, getAllDesignTokens } from '../../../core/Design/master-map';
 
 /**
@@ -23,6 +23,7 @@ export const useDesignDraft = (sarak: any) => {
     // v12.2 - Inicialização Nula: O rascunho começa nulo para seguir o sistema 
     // sem criar uma cópia dessincronizada no mount.
     const [draftState, setDraftState] = useState<any | null>(sarak.draftDesign);
+    const isSyncingRef = React.useRef(false);
 
     // 2. Resolução Dinâmica (Ground Truth)
     // Se não há rascunho ativo, usamos o design do sistema.
@@ -94,33 +95,33 @@ export const useDesignDraft = (sarak: any) => {
         return allKeys.some(key => !areValuesEqual(draftState[key], sarak.systemDesign?.[key]));
     }, [draftState, sarak.systemDesign]);
 
-    // 6. Ponte de Live Preview (Sincroniza com o Provider)
+    // 6. Ponte de Live Preview (Sincronização Atômica v12.8)
     useEffect(() => {
         if (!sarak.setDraftDesign) return;
         
-        // Se o draftState for null, não enviamos nada (o provider usará o systemDesign)
-        // Isso previne que o provider trave no "Cyan" se o rascunho local ainda estiver limpo.
-        if (draftState === null) {
-            if (sarak.draftDesign !== null) {
-                sarak.setDraftDesign(null);
-            }
-            return;
-        }
+        // Se estamos no meio de uma sincronização vinda do provedor, ignoramos para evitar ecos
+        if (isSyncingRef.current) return;
 
-        if (JSON.stringify(draftState) !== JSON.stringify(sarak.draftDesign)) {
+        const currentDraftStr = JSON.stringify(draftState);
+        const providerDraftStr = JSON.stringify(sarak.draftDesign);
+
+        if (currentDraftStr !== providerDraftStr) {
             sarak.setDraftDesign(draftState);
         }
     }, [draftState, sarak.setDraftDesign, sarak.draftDesign]);
 
     // 7. Sincronização Inversa (External Changes -> Local Draft)
     useEffect(() => {
-        if (!sarak.draftDesign) {
-            if (draftState !== null) setDraftState(null);
-            return;
-        }
+        const providerDraftStr = JSON.stringify(sarak.draftDesign);
+        const currentDraftStr = JSON.stringify(draftState);
 
-        if (JSON.stringify(sarak.draftDesign) !== JSON.stringify(draftState)) {
+        if (providerDraftStr !== currentDraftStr) {
+            isSyncingRef.current = true;
             setDraftState(sarak.draftDesign);
+            // Resetamos a flag no próximo tick
+            setTimeout(() => {
+                isSyncingRef.current = false;
+            }, 0);
         }
     }, [sarak.draftDesign]);
 
@@ -185,12 +186,12 @@ export const useDesignDraft = (sarak: any) => {
      * Preview de um tema (Preset)
      */
     const handleThemePreview = (id: string) => {
-        const theme = PRESETS_LIBRARY.layouts?.find((t: any) => t.id === id);
-        if (theme && theme.tokens) {
+        const preset = CARD_PRESETS.find(p => p.id === id);
+        if (preset && preset.design) {
             setDraftState((prev: any) => ({
                 ...(prev || draft),
-                ...theme.tokens,
-                layout: id
+                ...preset.design,
+                cardPresetId: id
             }));
         }
     };

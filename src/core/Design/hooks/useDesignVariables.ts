@@ -71,7 +71,15 @@ export const useDesignVariables = (design: any) => {
             }
         });
 
-        // 2. OTIMIZAÇÃO FINAL
+        // 2. CÁLCULOS DERIVADOS (Geometria Dinâmica)
+        if (design.cardGeometricCut && design.cardGeometricCut > 0) {
+            const cut = design.cardGeometricCut;
+            variables['--sarak-card-clip-path'] = `polygon(${cut}px 0%, calc(100% - ${cut}px) 0%, 100% ${cut}px, 100% calc(100% - ${cut}px), calc(100% - ${cut}px) 100%, ${cut}px 100%, 0% calc(100% - ${cut}px), 0% ${cut}px)`;
+        } else {
+            variables['--sarak-card-clip-path'] = 'none';
+        }
+
+        // 3. OTIMIZAÇÃO FINAL
         // O sistema agora é 100% Data-Driven. Nenhuma variável é injetada manualmente.
         // Se o token existe no Schema, ele existe no CSS.
 

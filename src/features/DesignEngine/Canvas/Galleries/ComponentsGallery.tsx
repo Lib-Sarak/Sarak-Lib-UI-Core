@@ -1,8 +1,11 @@
 import React from 'react';
 import { motion } from 'framer-motion';
-import { COMPONENT_PRESETS, ComponentPreset } from '../../../../constants/component-presets';
 import { Check, Layout as LayoutIcon, Maximize, Zap } from 'lucide-react';
 import { SocialButton } from '../../../../components/atomic/Atoms';
+
+// TODO: Substituir por presets canônicos de core/Design/presets/ quando forem criados
+interface ComponentPreset { id: string; title: string; description: string; tokens: Record<string, any>; }
+const COMPONENT_PRESETS: ComponentPreset[] = [];
 
 interface ComponentsGalleryProps {
     onUpdateDraft: (key: string, value: any) => void;

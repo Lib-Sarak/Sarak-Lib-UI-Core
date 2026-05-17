@@ -1,10 +1,11 @@
 import React, { lazy } from 'react';
 import { motion } from 'framer-motion';
-import { SarakTable, SarakCardGrid, SarakStats, SarakChart, SarakForm, SarakManagementGrid, SarakChat, SarakSecurityOrchestrator, SarakAuthScreen, SarakCatalogGrid } from '../../components/atomic/Templates';
+import { SarakTable, SarakCardGrid, SarakStats, SarakChart, SarakForm, SarakManagementGrid, SarakChat, SarakSecurityOrchestrator, SarakAuthScreen, SarakCatalogGrid, SarakExpandableMatrix } from '../../components/atomic/Templates';
 import { VisualContract, DiscoveredModule } from '../../core/Discovery/types';
 import { getSarakModule } from './registry';
 import { AlertCircle } from 'lucide-react';
 import LazyEngineWrapper from '../../components/engines/LazyEngineWrapper';
+import api from '../../shared/services/api';
 
 // --- SARAK PRIME V7.0 ENGINES (LAZY) ---
 const SarakChartEngine = lazy(() => import('../../components/engines/charts/SarakChartEngine'));
@@ -23,6 +24,107 @@ interface DynamicRendererProps {
  * and builds the interface dynamically without prior knowledge
  * of the module's specifics.
  */
+
+const SarakExpandableMatrixEngine: React.FC<{ 
+    contract: VisualContract, 
+    resolveEndpoint: (e: string) => string 
+}> = ({ contract, resolveEndpoint }) => {
+    const [data, setData] = React.useState<any[]>([]);
+    const [subItems, setSubItems] = React.useState<any[]>([]);
+    const [loading, setLoading] = React.useState(true);
+    const config = contract.config || {};
+    
+    const mainEndpoint = resolveEndpoint(contract.endpoint);
+    const subItemsEndpoint = resolveEndpoint(config.subItemsEndpoint);
+
+    const fetchData = React.useCallback(async () => {
+        if (!mainEndpoint || !subItemsEndpoint) return;
+        setLoading(true);
+        try {
+            const [mainRes, subRes] = await Promise.all([
+                api.get(mainEndpoint),
+                api.get(subItemsEndpoint)
+            ]);
+            
+            const mainData = Array.isArray(mainRes.data) ? mainRes.data : (mainRes.data?.items || []);
+            const subData = Array.isArray(subRes.data) ? subRes.data : (subRes.data?.items || []);
+            
+            setData(mainData);
+            setSubItems(subData);
+        } catch (err) {
+            console.error("[MatrixEngine] Erro ao buscar dados:", err);
+        } finally {
+            setLoading(false);
+        }
+    }, [mainEndpoint, subItemsEndpoint]);
+
+    React.useEffect(() => {
+        fetchData();
+    }, [fetchData]);
+
+    const findNodeInTree = (nodes: any[], id: string): any => {
+        for (const node of nodes) {
+            if (node.id === id) return node;
+            if (node.children) {
+                const found = findNodeInTree(node.children, id);
+                if (found) return found;
+            }
+        }
+        return null;
+    };
+
+    const handleToggle = async (parentId: string, subItemId: string) => {
+        const toggleEndpointRaw = config.toggleEndpoint;
+        if (!toggleEndpointRaw) return;
+
+        // Resolve endpoint e substitui placeholders dinâmicos
+        let resolved = resolveEndpoint(toggleEndpointRaw)
+            .replace('{id}', parentId)
+            .replace('{role_id}', parentId);
+
+        try {
+            const subItem = findNodeInTree(subItems, subItemId); // <-- Usar busca em árvore
+            // Enviamos o identificador esperado pelo backend (permission_name)
+            await api.post(resolved, { 
+                permission_name: subItem?.id || subItemId // <-- ID absoluto para o backend
+            });
+            await fetchData(); // Sincroniza o estado binário imediatamente
+        } catch (err) {
+            console.error("[MatrixEngine] Erro no toggle:", err);
+        }
+    };
+
+    const activeMapping = (parentId: string, subItemId: string) => {
+        const parent = data.find(p => p.id === parentId);
+        const subItem = findNodeInTree(subItems, subItemId); // <-- Usar busca em árvore
+        if (!parent || !subItem) return false;
+
+        const mappingField = config.mappingField || 'sub_items';
+        const subItemIdentifier = config.subItemIdentifier || 'id';
+        
+        const activeList = parent[mappingField] || [];
+        const valueToCompare = subItem[subItemIdentifier];
+
+        return Array.isArray(activeList) && activeList.includes(valueToCompare);
+    };
+
+    if (loading) return (
+        <div className="p-20 flex flex-col items-center justify-center gap-4 text-white/10">
+            <div className="w-12 h-12 border-4 border-white/5 border-t-[var(--theme-primary)] rounded-full animate-spin" />
+            <span className="text-2xs font-black uppercase tracking-[0.3em]">Sincronizando Matriz...</span>
+        </div>
+    );
+
+    return (
+        <SarakExpandableMatrix 
+            data={data}
+            subItems={subItems}
+            activeMapping={activeMapping}
+            onToggle={handleToggle}
+        />
+    );
+};
+
 export const DynamicRenderer: React.FC<DynamicRendererProps> = ({ contracts, module }) => {
     
     // 1. Root Component Sovereignty (v9.3)
@@ -213,6 +315,9 @@ export const DynamicRenderer: React.FC<DynamicRendererProps> = ({ contracts, mod
                                 onMasterLogin={(contract as any).onMasterLogin}
                             />
                         );
+
+                    case 'EXPANDABLE_MATRIX':
+                        return <SarakExpandableMatrixEngine key={id} contract={contract} resolveEndpoint={resolveEndpoint} />;
 
                     case 'CATALOG_GRID':
                         return (

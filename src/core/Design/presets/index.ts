@@ -1,28 +1,31 @@
 /**
- * Sarak Design Engine - Presets Library (Empty Placeholder)
+ * Sarak Design Engine - Presets Library (v4.0 - Clean)
+ * 
+ * Barrel de exportação centralizado para todos os presets do sistema.
+ * Cada subcategoria exporta seus presets como fonte única de verdade.
  */
-
-export const PRESETS_LIBRARY: any = {};
-export const PRESETS = PRESETS_LIBRARY;
 
 export * from './layout';
 export * from './themes';
 export * from './animations';
 export * from './typography';
 export * from './surfaces';
+export * from './advanced';
 
-// Aliases para evitar erros de importação em outros componentes
-export const BRANDING_PRESETS: any[] = [];
-export const CARD_PRESETS: any[] = [];
-export const DATA_PRESETS: any[] = [];
-export const CHART_TYPES_PRESETS: any[] = [];
-export const NAVIGATION_PRESETS: any[] = [];
-
-// Interfaces vazias para o compilador
-export type BrandingPreset = any;
+// Re-exports tipados
 export type { TypographyPreset } from './typography';
-export type CardPreset = any;
 export type { AnimationPreset } from './animations';
-export type { AtmospherePreset } from './surfaces';
-export type ChartPreset = any;
 export type { LayoutPreset } from './layout';
+export type { ThemePreset } from './themes';
+export type { CardPreset } from './surfaces/cards';
+
+// Stubs vazios para galerias que consomem esses arrays (compilação segura)
+// TODO: Migrar para subdiretórios próprios com presets data-driven
+export interface BrandingPreset { id: string; name: string; description: string; design: Record<string, any>; }
+export const BRANDING_PRESETS: BrandingPreset[] = [];
+
+export interface ChartPreset { id: string; name: string; type: string; description: string; }
+export const CHART_TYPES_PRESETS: ChartPreset[] = [];
+
+export interface DataPreset { id: string; name: string; type: string; description: string; design: Record<string, any>; }
+export const DATA_PRESETS: DataPreset[] = [];

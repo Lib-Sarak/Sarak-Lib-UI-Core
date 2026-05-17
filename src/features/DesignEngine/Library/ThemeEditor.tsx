@@ -3,7 +3,12 @@ import { motion, AnimatePresence } from 'framer-motion';
 import {
     ChevronUp, ChevronDown, Palette, Grid, Type, Layers, Film, Smile, LucideIcon
 } from 'lucide-react';
-import { THEME_FONTS, TEXTURE_LIBRARY, EMOJI_SETS, THEME_EFFECTS } from '../../../constants/design-tokens';
+import { THEME_FONTS } from '../../../core/Design/presets/typography';
+import { THEME_EFFECTS } from '../../../core/Design/presets/animations';
+import { EMOJI_SETS } from '../../../constants/icon-packs';
+
+// TODO: Migrar TEXTURE_LIBRARY para core/Design/presets/atmosphere quando os presets forem recriados
+const TEXTURE_LIBRARY: { id: string; name: string; description: string }[] = [];
 
 interface ConfigSectionProps {
     id: string;

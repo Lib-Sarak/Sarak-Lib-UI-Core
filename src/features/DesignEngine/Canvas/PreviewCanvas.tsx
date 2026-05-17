@@ -6,7 +6,7 @@ import {
 } from 'lucide-react';
 import { THEME_EFFECTS } from '../../../core/Design/presets/animations';
 import { UIContext, useSarakUI } from '../../../core/Provider/SarakUIProvider';
-import { MockDashboard, MockChat, MockLogs, MockSettings, MockComponents, MockTypography, MockAuth } from './MockApps';
+import { MockDashboard, MockChat, MockLogs, MockSettings, MockComponents, MockTypography, MockAuth, MockMatrix } from './MockApps';
 import { KitchenSinkPreview } from './KitchenSinkPreview';
 import { GalleryRouter } from './Galleries/GalleryRouter';
 import { DesignScope } from '../../../core/Design/components/DesignScope';
@@ -87,7 +87,7 @@ export const PreviewCanvas: React.FC<PreviewCanvasProps> = ({
         }
     }), [parentContext, tokens, onUpdateDraft]);
 
-    const apps: any = {
+    const apps: any = React.useMemo(() => ({
         dashboard: <MockDashboard tokens={tokens} config={config} animationVariants={THEME_EFFECTS.page} animationStyle={previewAnimationStyle} />,
         chat: <MockChat tokens={tokens} config={config} animationVariants={THEME_EFFECTS.page} animationStyle={previewAnimationStyle} />,
         logs: <MockLogs tokens={tokens} config={config} animationVariants={THEME_EFFECTS.page} animationStyle={previewAnimationStyle} />,
@@ -95,10 +95,11 @@ export const PreviewCanvas: React.FC<PreviewCanvasProps> = ({
         components: <MockComponents tokens={tokens} />,
         typography: <MockTypography tokens={tokens} />,
         auth: <MockAuth tokens={tokens} />,
+        matrix: <MockMatrix tokens={tokens} config={config} animationVariants={THEME_EFFECTS.page} animationStyle={previewAnimationStyle} />,
         'kitchen-sink': <KitchenSinkPreview />
-    };
+    }), [tokens, config, previewAnimationStyle]);
 
-    const appIds = ['dashboard', 'chat', 'logs', 'settings', 'components', 'typography', 'auth', 'kitchen-sink'];
+    const appIds = ['dashboard', 'chat', 'logs', 'settings', 'components', 'typography', 'auth', 'matrix', 'kitchen-sink'];
 
     const appIcons: any = {
         dashboard: <BarChart3 size={14} />,
@@ -108,6 +109,7 @@ export const PreviewCanvas: React.FC<PreviewCanvasProps> = ({
         components: <Box size={14} />,
         typography: <Type size={14} />,
         auth: <Lock size={14} />,
+        matrix: <Layers size={14} />,
         'kitchen-sink': <Grid size={14} />
     };
 
@@ -231,9 +233,6 @@ export const PreviewCanvas: React.FC<PreviewCanvasProps> = ({
                                 className={`flex-1 overflow-y-auto p-12 relative z-10 bg-transparent custom-scrollbar isolate ${hasTexture ? 'texture-active' : ''}`}
                                 data-sx-texture={activeDesign.texture}
                             >
-                                {hasTexture && (
-                                    <div className={`absolute inset-0 pointer-events-none z-0 texture-${activeDesign.texture} SarakAtmosphereLayer`} />
-                                )}
                                 <div className="relative z-10">
                                     {apps[activePreviewApp]}
                                 </div>
@@ -269,9 +268,6 @@ export const PreviewCanvas: React.FC<PreviewCanvasProps> = ({
                                 className={`flex-1 overflow-y-auto p-12 relative z-10 bg-transparent custom-scrollbar isolate ${hasTexture ? 'texture-active' : ''}`}
                                 data-sx-texture={activeDesign.texture}
                             >
-                                {hasTexture && (
-                                    <div className={`absolute inset-0 pointer-events-none z-0 texture-${activeDesign.texture} SarakAtmosphereLayer`} />
-                                )}
                                 <div className="relative z-10">
                                     {apps[activePreviewApp]}
                                 </div>
@@ -284,13 +280,13 @@ export const PreviewCanvas: React.FC<PreviewCanvasProps> = ({
     };;
 
     return (
-        <div className="w-full h-full flex flex-col relative overflow-hidden bg-[#050505] p-0 items-center justify-center">
+        <DesignScope design={tokens} className="w-full h-full flex flex-col relative overflow-hidden bg-[#050505] p-0 items-center justify-center">
             <UIContext.Provider value={previewContextValue as any}>
-                <div className="w-full h-full flex flex-col gap-8 p-8 items-center overflow-hidden">
+                <div className="w-full h-full flex flex-col xl:flex-row gap-6 p-6 items-stretch overflow-hidden">
                     {isDualView ? (
                         <>
                             {/* Live Draft Preview (Gêmeo Digital) */}
-                            <div className="relative shrink-0 w-full max-w-[1400px] aspect-video rounded-[2.5rem] border border-white/10 shadow-[0_50px_100px_-20px_rgba(0,0,0,0.8)] overflow-hidden bg-black transition-all duration-500 min-h-[500px] flex flex-col">
+                            <div className="relative flex-1 rounded-[2rem] border border-white/10 shadow-[0_50px_100px_-20px_rgba(0,0,0,0.8)] overflow-hidden bg-black transition-all duration-500 flex flex-col">
                                 
                                 <div className="flex-1 relative">
                                     {/* Watermark */}
@@ -303,7 +299,7 @@ export const PreviewCanvas: React.FC<PreviewCanvasProps> = ({
 
 
                             {/* Catalog Preview (Engine Controls) */}
-                            <div className="relative shrink-0 w-full max-w-[1400px] rounded-[2.5rem] border border-white/10 shadow-2xl overflow-hidden bg-[#0c0c0d] transition-all duration-500 min-h-[600px]">
+                            <div className="relative flex-1 rounded-[2rem] border border-white/10 shadow-2xl overflow-hidden bg-[#0c0c0d] transition-all duration-500 flex flex-col h-full">
                                 <div className="w-full h-full flex flex-col">
                                     <div className="px-8 py-4 border-b border-white/5 flex items-center justify-between bg-black/40">
                                         <div className="flex items-center gap-4">
@@ -345,19 +341,24 @@ export const PreviewCanvas: React.FC<PreviewCanvasProps> = ({
             
             <style dangerouslySetInnerHTML={{ __html: `
                 .custom-scrollbar::-webkit-scrollbar {
-                    width: 6px;
+                    width: var(--sarak-scroll-width, 6px);
+                    height: var(--sarak-scroll-width, 6px);
                 }
                 .custom-scrollbar::-webkit-scrollbar-track {
                     background: transparent;
                 }
                 .custom-scrollbar::-webkit-scrollbar-thumb {
-                    background: rgba(255,255,255,0.05);
-                    border-radius: 10px;
+                    background: var(--sarak-scroll-thumb-color, rgba(255,255,255,0.2));
+                    border-radius: var(--sarak-scroll-radius, 10px);
+                    border: var(--sarak-scroll-padding, 2px) solid transparent;
+                    background-clip: padding-box;
                 }
                 .custom-scrollbar::-webkit-scrollbar-thumb:hover {
-                    background: rgba(255,255,255,0.1);
+                    background: var(--theme-primary, #00f2ff);
+                    background-clip: padding-box;
+                    opacity: var(--sarak-scroll-thumb-hover-opacity, 0.8);
                 }
             `}} />
-        </div>
+        </DesignScope>
     );
 };

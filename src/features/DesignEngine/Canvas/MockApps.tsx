@@ -5,5 +5,4 @@ export * from './Mocks/SettingsMock';
 export * from './Mocks/ComponentsMock';
 export * from './Mocks/TypographyMock';
 export * from './Mocks/AuthMock';
-
-
+export * from './Mocks/MatrixMock';

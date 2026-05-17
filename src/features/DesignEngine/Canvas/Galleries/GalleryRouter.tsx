@@ -10,6 +10,7 @@ import { ChatGallery } from './ChatGallery';
 import { VisualizationGallery } from './VisualizationGallery';
 import { LayoutGallery } from './LayoutGallery';
 import { PresetsGallery } from './PresetsGallery';
+import { AdvancedGallery } from './AdvancedGallery';
 
 interface GalleryRouterProps {
     activeCategory: string;
@@ -19,45 +20,58 @@ interface GalleryRouterProps {
     customThemes?: any[];
 }
 
-
+/**
+ * GalleryRouter (v3.0 - Unified)
+ * 
+ * Roteador de galerias sem aliases duplicados.
+ * Cada subcategoria aponta para uma única galeria canônica.
+ */
 export const GalleryRouter: React.FC<GalleryRouterProps> = ({ activeCategory, tokens, onUpdateDraft, activePreviewApp, customThemes }) => {
 
     switch (activeCategory) {
         case 'brand':
-            return <BrandingGallery tokens={tokens} onUpdateDraft={onUpdateDraft} />;
-        case 'typography':
-            return <TypographyGallery tokens={tokens} onUpdateDraft={onUpdateDraft} />;
-        case 'surfaces':
-            return <CardsGallery tokens={tokens} onUpdateDraft={onUpdateDraft} />;
-        case 'interaction':
-            return <AnimationsGallery tokens={tokens} onUpdateDraft={onUpdateDraft} />;
-        case 'navigation':
-            return <LayoutGallery tokens={tokens} onUpdateDraft={onUpdateDraft} />;
-        case 'systems':
-            return <PresetsGallery tokens={tokens} onUpdateDraft={onUpdateDraft} activePreviewApp={activePreviewApp} customThemes={customThemes} />;
-
-        case 'presets':
-            return <PresetsGallery tokens={tokens} onUpdateDraft={onUpdateDraft} activePreviewApp={activePreviewApp} customThemes={customThemes} />;
-        case 'cards':
-            return <CardsGallery tokens={tokens} onUpdateDraft={onUpdateDraft} />;
-        case 'fonts':
-            return <TypographyGallery tokens={tokens} onUpdateDraft={onUpdateDraft} />;
-        case 'animations':
-            return <AnimationsGallery tokens={tokens} onUpdateDraft={onUpdateDraft} />;
         case 'branding':
             return <BrandingGallery tokens={tokens} onUpdateDraft={onUpdateDraft} />;
-        case 'visuals':
-            return <VisualsGallery tokens={tokens} onUpdateDraft={onUpdateDraft} />;
-        case 'components':
-            return <ComponentsGallery tokens={tokens} onUpdateDraft={onUpdateDraft} />;
-        case 'dashboard':
-            return <DashboardGallery tokens={tokens} onUpdateDraft={onUpdateDraft} />;
-        case 'chats':
-            return <ChatGallery tokens={tokens} onUpdateDraft={onUpdateDraft} />;
-        case 'visuals-3d':
-            return <VisualizationGallery tokens={tokens} />;
+
+        case 'typography':
+        case 'fonts':
+            return <TypographyGallery tokens={tokens} onUpdateDraft={onUpdateDraft} />;
+
+        case 'surfaces':
+        case 'cards':
+            return <CardsGallery tokens={tokens} onUpdateDraft={onUpdateDraft} />;
+
+        case 'interaction':
+        case 'animations':
+            return <AnimationsGallery tokens={tokens} onUpdateDraft={onUpdateDraft} />;
+
+        case 'navigation':
         case 'layout':
             return <LayoutGallery tokens={tokens} onUpdateDraft={onUpdateDraft} />;
+
+        case 'systems':
+        case 'presets':
+            return <PresetsGallery tokens={tokens} onUpdateDraft={onUpdateDraft} activePreviewApp={activePreviewApp} customThemes={customThemes} />;
+
+        case 'visuals':
+            return <VisualsGallery tokens={tokens} onUpdateDraft={onUpdateDraft} />;
+
+        case 'components':
+            return <ComponentsGallery tokens={tokens} onUpdateDraft={onUpdateDraft} />;
+
+        case 'dashboard':
+            return <DashboardGallery tokens={tokens} />;
+
+        case 'chats':
+            return <ChatGallery tokens={tokens} onUpdateDraft={onUpdateDraft} />;
+
+        case 'visuals-3d':
+            return <VisualizationGallery tokens={tokens} />;
+
+        case 'advanced':
+        case 'matrix':
+            return <AdvancedGallery tokens={tokens} onUpdateDraft={onUpdateDraft} />;
+
         default:
             return (
                 <div className="flex items-center justify-center h-full text-white/20 uppercase tracking-[0.3em] font-black text-xs">

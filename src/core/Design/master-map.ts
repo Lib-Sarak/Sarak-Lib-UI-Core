@@ -19,6 +19,7 @@ import { SpecializedSchema } from './schema/specialized';
 import { MotionSchema } from './schema/motion';
 import { ScrollbarsSchema } from './schema/scrollbars';
 import { LayersSchema } from './schema/layers';
+import { AdvancedSchema } from './schema/advanced';
 
 /**
  * MASTER DESIGN MAP (v13.0 - Atomic Granularity)
@@ -47,7 +48,8 @@ export const MASTER_DESIGN_MAP: MasterDesignSchema = {
         SpecializedSchema,
         MotionSchema,
         ScrollbarsSchema,
-        LayersSchema
+        LayersSchema,
+        AdvancedSchema
     ]
 };
 

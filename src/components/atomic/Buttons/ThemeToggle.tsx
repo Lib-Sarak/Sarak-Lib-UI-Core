@@ -1,7 +1,9 @@
 import React from 'react';
 import { useSarakUI } from '../../../core/Provider/SarakUIProvider';
-import { LAYOUTS } from '../../../constants/theme-models';
 import { Palette, ChevronRight, Check } from 'lucide-react';
+
+// TODO: Substituir por presets canônicos de core/Design/presets/themes/ quando forem criados
+const LAYOUTS: Record<string, { id: string; name: string; class: string; animation: string }> = {};
 
 export const ThemeToggle: React.FC = () => {
     const { design, applyConfig } = useSarakUI();
@@ -50,4 +52,3 @@ export const ThemeToggle: React.FC = () => {
 };
 
 export default ThemeToggle;
-

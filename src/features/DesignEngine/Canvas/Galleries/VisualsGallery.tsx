@@ -65,7 +65,7 @@ const VisualsSpecimen: React.FC<{ preset: AtmospherePreset; onSelect: () => void
                     style={{ backgroundColor: globalTokens.mode === 'light' ? '#f1f5f9' : '#020617' }}
                 >
                     <div 
-                        className={`SarakAtmosphereLayer texture-${textureId}`} 
+                        data-sx-texture={textureId}
                         style={{ 
                             opacity: 0.8, /* Forçado para alta visibilidade na preview apenas */
                             position: 'absolute',

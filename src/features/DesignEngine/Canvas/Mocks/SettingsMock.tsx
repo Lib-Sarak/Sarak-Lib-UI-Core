@@ -86,8 +86,7 @@ export const MockSettings: React.FC<any> = ({ animationVariants, animationStyle,
                         initial={animationVariants[animationStyle]?.page?.initial || animationVariants.none?.page?.initial}
                         animate={animationVariants[animationStyle]?.page?.animate || animationVariants.none?.page?.animate}
                         transition={{ ...(animationVariants[animationStyle]?.page?.transition || animationVariants.none?.page?.transition), delay: i * 0.1, duration: parseFloat(tokens.animationSpeed || '0.4') }}
-                        className="bg-theme-card border-[var(--theme-border-width)] border-[var(--theme-border-style)] border-[var(--theme-border)] p-4 flex items-center justify-between group relative overflow-hidden"
-                        style={{ borderRadius: 'var(--radius-theme)' }}
+                        className="sarak-card p-4 flex items-center justify-between group relative overflow-hidden"
                     >
                         <div className="flex items-center gap-3 relative z-10">
                             <div className="p-2 rounded-lg bg-[var(--theme-primary)]/10 text-[var(--theme-primary)]">

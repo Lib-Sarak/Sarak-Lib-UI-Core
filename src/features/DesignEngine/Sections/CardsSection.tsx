@@ -54,11 +54,27 @@ export const CardsSection: React.FC<CardsSectionProps> = ({ draft, updateDraft, 
                 </div>
                 <div className="mt-4">
                     <button 
-                        onClick={() => updateDraft('isGeometricCut', !draft.isGeometricCut)}
+                        onClick={() => {
+                            const nextState = !draft.isGeometricCut;
+                            updateDraft('isGeometricCut', nextState);
+                            updateDraft('cardGeometricCut', nextState ? (draft.cardGeometricCut || 12) : 0);
+                        }}
                         className={`w-full py-2 rounded-lg text-3xs font-black uppercase transition-all ${draft.isGeometricCut ? 'bg-[var(--theme-primary)] text-white' : 'bg-white/5 text-white/20'}`}
                     >
                         Corte Geométrico (Chanfro) {draft.isGeometricCut ? 'Ativo' : 'Inativo'}
                     </button>
+                    {draft.isGeometricCut && (
+                        <div className="mt-4 p-3 bg-white/5 rounded-lg border border-white/5">
+                            <SliderControl 
+                                label="Tamanho do Chanfro" 
+                                value={draft.cardGeometricCut !== undefined ? draft.cardGeometricCut : 12} 
+                                min={2} 
+                                max={40} 
+                                onChange={(v: any) => updateDraft('cardGeometricCut', v)} 
+                                suffix="px" 
+                            />
+                        </div>
+                    )}
                 </div>
             </Section>
 
@@ -72,16 +88,22 @@ export const CardsSection: React.FC<CardsSectionProps> = ({ draft, updateDraft, 
                             { id: 'grid', label: 'Grelha' },
                             { id: 'noise', label: 'Ruído' }
                         ]} 
-                        value={draft.cardTexture || 'none'} 
-                        onChange={(v: any) => updateDraft('cardTexture', v)} 
+                        value={draft.cardTextureType || draft.cardTexture || 'none'} 
+                        onChange={(v: any) => {
+                            updateDraft('cardTextureType', v);
+                            updateDraft('cardTexture', v);
+                        }} 
                     />
                     <SliderControl 
                         label="Opacidade Textura" 
-                        value={draft.cardNoiseOpacity || 0.05} 
+                        value={draft.cardTextureOpacity !== undefined ? draft.cardTextureOpacity : (draft.cardNoiseOpacity || 0.03)} 
                         min={0} 
                         max={0.2} 
                         step={0.01} 
-                        onChange={(v: any) => updateDraft('cardNoiseOpacity', v)} 
+                        onChange={(v: any) => {
+                            updateDraft('cardTextureOpacity', v);
+                            updateDraft('cardNoiseOpacity', v);
+                        }} 
                     />
                 </div>
                 <div className="grid grid-cols-1 gap-4 mt-4">

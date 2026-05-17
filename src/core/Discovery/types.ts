@@ -16,7 +16,8 @@ export type VisualContractType =
     | 'SECURITY_ORCHESTRATOR' 
     | 'CATALOG_GRID' 
     | 'CUSTOM' 
-    | 'AUTH_FLOW';
+    | 'AUTH_FLOW'
+    | 'EXPANDABLE_MATRIX';
 
 export interface VisualContract {
     id: string;

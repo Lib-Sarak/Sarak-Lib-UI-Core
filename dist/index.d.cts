@@ -70,9 +70,48 @@ declare const DesignScope: React$1.FC<DesignScopeProps & Record<string, any>>;
 declare const ThemeToggle: React$1.FC;
 
 /**
- * Sarak Design Engine - Presets Library (Empty Placeholder)
+ * Sarak Design Engine - Card Presets (v12.0)
+ *
+ * Redefinição total focada em Gêmeos Digitais de Alta Fidelidade.
+ * Cada preset define o estado completo de todos os componentes reguláveis da subcategoria.
  */
-declare const PRESETS_LIBRARY: any;
+interface CardPreset {
+    id: string;
+    name: string;
+    description: string;
+    design: {
+        cardBorderRadius: number;
+        cardRadiusTL: number;
+        cardRadiusTR: number;
+        cardRadiusBL: number;
+        cardRadiusBR: number;
+        cardGeometricCut: number;
+        cardBackgroundColor: string;
+        cardBackdropBlur: number;
+        cardSurfaceOpacity: number;
+        cardBorderWidth: number;
+        cardBorderColor: string;
+        cardBorderOpacity: number;
+        cardBorderTop: number;
+        cardBorderBottom: number;
+        cardBorderLeft: number;
+        cardBorderRight: number;
+        cardTextureType: 'none' | 'noise' | 'grid' | 'dots';
+        cardTextureOpacity: number;
+        cardInnerGlowColor: string;
+        cardInnerGlowWidth: number;
+        cardShadowSpread: number;
+        cardGlowIntensity: number;
+        cardGlowColor: string;
+        cardHeaderBg: string;
+        cardHeaderBorder: string;
+        cardHeaderPadding: number;
+        cardFooterBg: string;
+        cardFooterBorder: string;
+        [key: string]: any;
+    };
+}
+declare const CARD_PRESETS: CardPreset[];
 
 interface SarakShellProps {
     children?: React$1.ReactNode;
@@ -390,6 +429,26 @@ interface SarakCatalogGridProps {
  */
 declare const SarakCatalogGrid: React$1.FC<SarakCatalogGridProps>;
 
+interface SarakExpandableMatrixProps {
+    /** Itens principais (ex: Roles/Papéis) */
+    data: any[];
+    /** Todos os sub-itens possíveis (ex: Todas as Permissões) */
+    subItems: any[];
+    /** Função para checar se um sub-item está ativo em um item pai */
+    activeMapping: (parentId: string, subItemId: string) => boolean;
+    /** Callback disparado ao clicar no toggle */
+    onToggle: (parentId: string, subItemId: string) => void;
+    /** Renderizador customizado para o cabeçalho de cada item pai */
+    renderItemHeader?: (item: any) => React$1.ReactNode;
+}
+/**
+ * SarakExpandableMatrix (v2.0)
+ *
+ * Componente agnóstico para renderização de matrizes de associação complexas com recursividade (N-níveis).
+ * Segue a arquitetura Data-Driven da Sarak.
+ */
+declare const SarakExpandableMatrix: React$1.FC<SarakExpandableMatrixProps>;
+
 interface SarakChartEngineProps {
     type: 'line' | 'area' | 'bar' | 'pie' | 'radar' | 'gauge' | 'scatter' | 'heatmap' | 'funnel' | 'treemap' | 'candlestick' | 'sunburst' | 'histogram' | 'boxplot';
     data: any[];
@@ -411,7 +470,7 @@ declare const SarakChartEngine: React$1.FC<SarakChartEngineProps>;
 /**
  * Sarak Discovery Core Types (v11.0)
  */
-type VisualContractType = 'TABLE' | 'STATS' | 'CARD_GRID' | 'MANAGEMENT_GRID' | 'FORM' | 'CHAT_INTERFACE' | 'CHART' | 'FLOW_DIAGRAM' | 'ELITE_CHART' | 'ADVANCED_CHAT' | 'SECURITY_ORCHESTRATOR' | 'CATALOG_GRID' | 'CUSTOM' | 'AUTH_FLOW';
+type VisualContractType = 'TABLE' | 'STATS' | 'CARD_GRID' | 'MANAGEMENT_GRID' | 'FORM' | 'CHAT_INTERFACE' | 'CHART' | 'FLOW_DIAGRAM' | 'ELITE_CHART' | 'ADVANCED_CHAT' | 'SECURITY_ORCHESTRATOR' | 'CATALOG_GRID' | 'CUSTOM' | 'AUTH_FLOW' | 'EXPANDABLE_MATRIX';
 interface VisualContract {
     id: string;
     type: VisualContractType;
@@ -465,13 +524,6 @@ interface DynamicRendererProps {
     contracts: VisualContract[];
     module?: DiscoveredModule;
 }
-/**
- * DynamicRenderer (v6.0-6.8 Smart Router)
- *
- * The UI-Core rendering engine. It receives a list of visual contracts
- * and builds the interface dynamically without prior knowledge
- * of the module's specifics.
- */
 declare const DynamicRenderer: React$1.FC<DynamicRendererProps>;
 
 /**
@@ -543,4 +595,4 @@ interface SarakRouterState {
  */
 declare function useSarakRouter(basePath?: string): SarakRouterState;
 
-export { CustomizationPanel, DESIGN_MANIFEST, DesignScope, type DiscoveredModule, DynamicRenderer, ExpandableCard, LanguageSelector, type ModuleManifest, ModuleSelector, PRESETS_LIBRARY, SarakAuthScreen, SarakCardGrid, SarakCatalogGrid, SarakChart, SarakChartEngine, SarakChat, SarakForm, SarakManagementGrid, type SarakModule, type SarakRouterState, SarakSecurityOrchestrator, SarakShell, SarakStats, SarakTable, SarakUIProvider, SocialButton, ThemeToggle, UserMenu, type VisualContract, type VisualContractType, getLocalComponent, getRegisteredModules, getSarakModule, registerLocalComponent, registerSarakModule, subscribeToRegistry, useDesignDraft, useModuleDiscovery, useSarakRouter, useSarakUI };
+export { CARD_PRESETS, type CardPreset, CustomizationPanel, DESIGN_MANIFEST, DesignScope, type DiscoveredModule, DynamicRenderer, ExpandableCard, LanguageSelector, type ModuleManifest, ModuleSelector, SarakAuthScreen, SarakCardGrid, SarakCatalogGrid, SarakChart, SarakChartEngine, SarakChat, SarakExpandableMatrix, type SarakExpandableMatrixProps, SarakForm, SarakManagementGrid, type SarakModule, type SarakRouterState, SarakSecurityOrchestrator, SarakShell, SarakStats, SarakTable, SarakUIProvider, SocialButton, ThemeToggle, UserMenu, type VisualContract, type VisualContractType, getLocalComponent, getRegisteredModules, getSarakModule, registerLocalComponent, registerSarakModule, subscribeToRegistry, useDesignDraft, useModuleDiscovery, useSarakRouter, useSarakUI };

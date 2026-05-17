@@ -10,7 +10,7 @@ import {
 import { useSarakUI } from '../../../core/Provider/SarakUIProvider';
 import { PreviewCanvas } from '../Canvas/PreviewCanvas';
 import { DesignScope } from '../../../core/Design/components/DesignScope';
-import { PRESETS } from '../../../core/Design/presets';
+
 import { MASTER_DESIGN_MAP } from '../../../core/Design/master-map';
 
 // Modular Hooks & Components
@@ -27,7 +27,7 @@ import {
 } from '../components/DesignControls';
 import { MasterControlPanel } from './MasterControlPanel';
 import { TemplatesTab } from './TemplatesTab';
-import { TokenDefinition } from '../../../core/Design/types';
+
 
 /**
  * TokenControl (v12.1)
@@ -75,7 +75,14 @@ const TokenControl = ({ token, value, onChange }: { token: any, value: any, onCh
  */
 export const ThemeCustomizationTab: React.FC = () => {
     const { systemDesign, design, ...rest } = useSarakUI();
-    const sarak = useMemo(() => ({ systemDesign, design, ...rest }), [systemDesign, design, rest]);
+    
+    // v12.6 - Deep Reference Stability
+    // Impedimos que a desestruturação do contexto crie um novo objeto sarak a cada render
+    const sarak = useMemo(() => ({ 
+        systemDesign, 
+        design, 
+        ...rest 
+    }), [systemDesign, design, JSON.stringify(rest)]);
     
     const { 
         draft, 
@@ -111,6 +118,7 @@ export const ThemeCustomizationTab: React.FC = () => {
         { id: 'interaction', title: '4. Interação e Estado', icon: MousePointer2, index: 4 },
         { id: 'navigation', title: '5. Navegação e Estrutura', icon: Activity, index: 5 },
         { id: 'systems', title: '6. Sistemas e Experiência', icon: Cpu, index: 6 },
+        { id: 'advanced', title: '7. Componentes Avançados', icon: Sparkles, index: 7 },
     ], []);
 
     // 2. Agrupamento Hierárquico: Pilar -> Subcategoria -> Componente
@@ -213,7 +221,11 @@ export const ThemeCustomizationTab: React.FC = () => {
                                             title={pillar.title} 
                                             index={pillar.index} 
                                             isOpen={activePillarId === pillar.id} 
-                                            onToggle={() => setActivePillarId(activePillarId === pillar.id ? null : pillar.id)}
+                                            onToggle={() => {
+                                                const nextId = activePillarId === pillar.id ? null : pillar.id;
+                                                setActivePillarId(nextId);
+                                                if (nextId === 'advanced') setActivePreviewApp('matrix');
+                                            }}
                                             isDirty={isPillarDirty(pillar.id)}
                                             onReset={() => resetPillar(pillar.id)}
                                             onApply={() => handleApplyPillar(pillar.id)}

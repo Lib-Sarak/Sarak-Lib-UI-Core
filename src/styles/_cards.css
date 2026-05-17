@@ -1,105 +1,70 @@
-/* 4. ATOMIC CARD ENGINE - INDUSTRIAL RENDERER (v12.0) */
-.bg-theme-card {
+/* 4. ATOMIC CARD ENGINE - INDUSTRIAL RENDERER (v12.5) */
+.sarak-card, .bg-theme-card {
     position: relative;
     isolation: isolate;
-    overflow: hidden;
     
-    /* Geometria de Alta Fidelidade (Assimetria) */
+    /* Geometria de Alta Fidelidade (Assimetria & Raio) */
     border-radius: var(--sarak-card-radius-tl, var(--sarak-card-radius, var(--radius-theme, 12px))) 
                    var(--sarak-card-radius-tr, var(--sarak-card-radius, var(--radius-theme, 12px))) 
                    var(--sarak-card-radius-br, var(--sarak-card-radius, var(--radius-theme, 12px))) 
                    var(--sarak-card-radius-bl, var(--sarak-card-radius, var(--radius-theme, 12px)));
     
-    border-top: var(--sarak-card-border-t, var(--sarak-card-border-width, 1px)) var(--border-style, solid) var(--sarak-card-border-color, var(--theme-border));
-    border-bottom: var(--sarak-card-border-b, var(--sarak-card-border-width, 1px)) var(--border-style, solid) var(--sarak-card-border-color, var(--theme-border));
-    border-left: var(--sarak-card-border-l, var(--sarak-card-border-width, 1px)) var(--border-style, solid) var(--sarak-card-border-color, var(--theme-border));
-    border-right: var(--sarak-card-border-r, var(--sarak-card-border-width, 1px)) var(--border-style, solid) var(--sarak-card-border-color, var(--theme-border));
+    /* Suporte a Bordas Independentes */
+    border-top: var(--sarak-card-border-top, var(--sarak-card-border-width, 1px)) solid var(--sarak-card-border-color, var(--theme-border));
+    border-bottom: var(--sarak-card-border-bottom, var(--sarak-card-border-width, 1px)) solid var(--sarak-card-border-color, var(--theme-border));
+    border-left: var(--sarak-card-border-left, var(--sarak-card-border-width, 1px)) solid var(--sarak-card-border-color, var(--theme-border));
+    border-right: var(--sarak-card-border-right, var(--sarak-card-border-width, 1px)) solid var(--sarak-card-border-color, var(--theme-border));
     
     padding: var(--sarak-card-padding-md, var(--theme-card-padding, 24px));
     
     /* Fundo Base (Sovereign Glass) */
-    background-color: color-mix(in srgb, var(--sarak-card-bg, var(--theme-card)), transparent calc(100% * (1 - var(--sarak-card-opacity, 0.8)))) !important;
+    background-color: var(--sarak-card-bg, var(--theme-card)) !important;
+    opacity: var(--sarak-card-surface-opacity, 1);
     
     /* Sombras Reativas & Inner Glow */
     box-shadow: 
-        var(--sarak-dynamic-shadow),
+        0 20px 50px -12px rgba(0, 0, 0, calc(var(--sarak-card-shadow-spread, 20) * 0.01)),
         inset 0 0 var(--sarak-card-inner-glow-width, 0px) var(--sarak-card-inner-glow-color, transparent);
     
     /* Transição Fluida */
-    transition: transform var(--sarak-anim-normal, 0.4s) var(--sarak-ease-main), box-shadow var(--sarak-anim-normal, 0.4s) ease, border-color 0.2s ease, background-color 0.3s ease;
+    transition: transform 0.4s var(--sarak-ease-main), box-shadow 0.4s ease, border-color 0.2s ease, background-color 0.3s ease;
     
     /* Motor de Filtros */
-    backdrop-filter: blur(var(--sarak-card-blur, var(--glass-blur, 10px))) saturate(var(--sarak-glass-saturation, 180%));
-    -webkit-backdrop-filter: blur(var(--sarak-card-blur, var(--glass-blur, 10px))) saturate(var(--sarak-glass-saturation, 180%));
+    backdrop-filter: blur(var(--sarak-card-backdrop-blur, var(--sarak-card-blur, 0px)));
+    -webkit-backdrop-filter: blur(var(--sarak-card-backdrop-blur, var(--sarak-card-blur, 0px)));
 
-    /* Composição de Textura */
-    &::after {
-        content: ''; position: absolute; inset: 0; z-index: -1; pointer-events: none;
-        opacity: var(--sarak-card-texture-opacity, 0.03);
-        background-image: var(--card-texture-image, none);
-        mix-blend-mode: overlay;
-    }
+    /* CORTE GEOMÉTRICO (OCTÓGONO DINÂMICO) */
+    clip-path: polygon(
+        var(--sarak-card-geometric-cut, 0px) 0%, 
+        calc(100% - var(--sarak-card-geometric-cut, 0px)) 0%, 
+        100% var(--sarak-card-geometric-cut, 0px), 
+        100% calc(100% - var(--sarak-card-geometric-cut, 0px)), 
+        calc(100% - var(--sarak-card-geometric-cut, 0px)) 100%, 
+        var(--sarak-card-geometric-cut, 0px) 100%, 
+        0% calc(100% - var(--sarak-card-geometric-cut, 0px)), 
+        0% var(--sarak-card-geometric-cut, 0px)
+    );
 }
 
-/* ANATOMIA INDUSTRIAL */
-.sarak-card-header {
-    background-color: var(--sarak-card-header-bg, rgba(255, 255, 255, 0.03));
-    border-bottom: 1px solid var(--sarak-card-header-border, rgba(255, 255, 255, 0.05));
-    padding: var(--sarak-card-header-padding, 16px);
+
+/* 4.3 GLOW SYSTEM */
+.sarak-card::before {
+    content: '';
+    position: absolute;
+    inset: 0;
+    z-index: 0;
+    pointer-events: none;
+    background: radial-gradient(
+        circle at 50% 50%, 
+        color-mix(in srgb, var(--sarak-card-glow-color, var(--theme-primary)), transparent 80%), 
+        transparent 70%
+    );
+    opacity: var(--sarak-card-glow-intensity, 0);
+    transition: opacity 0.5s ease;
 }
 
-.sarak-card-footer {
-    background-color: var(--sarak-card-footer-bg, transparent);
-    border-top: 1px solid var(--sarak-card-footer-border, rgba(255, 255, 255, 0.05));
-    padding: var(--sarak-card-header-padding, 16px);
+/* INTERACTIVE STATES */
+.sarak-card:hover {
+    border-color: rgba(var(--theme-primary-rgb), 0.4);
+    box-shadow: 0 30px 60px -12px rgba(0, 0, 0, 0.6);
 }
-
-/* 4.1 INTERACTIVE STATES */
-[data-spotlight="1"] .bg-theme-card,
-.bg-theme-card[data-spotlight="1"] {
-    background-image: var(--card-spotlight-image), var(--card-texture-image, none);
-}
-
-[data-hover-lift="1"] .bg-theme-card:hover,
-.bg-theme-card[data-hover-lift="1"]:hover {
-    transform: scale(1.01) translateY(var(--sarak-card-hover-y, -6px));
-    border-color: rgba(var(--theme-primary-rgb, 59, 130, 246), 0.5);
-    box-shadow: 0 32px 64px -16px rgba(0, 0, 0, 0.5), 0 0 30px rgba(var(--theme-primary-rgb, 59, 130, 246), var(--sarak-card-hover-glow, 0.15));
-}
-
-/* Materials Integration (Card pseudo-layers) */
-.bg-theme-card::before {
-    content: ''; position: absolute; inset: 0; z-index: -1; pointer-events: none; opacity: 0; transition: opacity 0.5s ease;
-}
-
-.bg-theme-card::after {
-    content: ''; position: absolute; inset: 0; z-index: 1; pointer-events: none; transition: opacity 0.5s ease;
-}
-
-/* CARD TEXTURES (v8.5 INDUSTRIAL) */
-[data-card-texture="grid"] { 
-    --card-texture-image: linear-gradient(rgba(var(--theme-texture-color-rgb, var(--theme-primary-rgb)), calc(var(--surface-intensity) * 0.5)) 1px, transparent 1px), linear-gradient(90deg, rgba(var(--theme-texture-color-rgb, var(--theme-primary-rgb)), calc(var(--surface-intensity) * 0.5)) 1px, transparent 1px); background-size: 40px 40px; 
-}
-[data-card-texture="dots"] { --card-texture-image: radial-gradient(var(--theme-texture-color, var(--theme-primary)) 1.5px, transparent 1.5px); background-size: 24px 24px; }
-[data-card-texture="circuit"] { --card-texture-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='80' height='80' viewBox='0 0 100 100'%3E%3Cpath d='M10 10 H 90 V 90 H 10 Z M20 20 V 40 M40 20 V 60 M60 40 V 80' fill='none' stroke='rgba(255,255,255,0.1)' stroke-width='0.5'/%3E%3C/svg%3E"); background-size: 100px 100px; }
-[data-card-texture="carbon"] { --card-texture-image: linear-gradient(45deg, rgba(0,0,0,0.2) 25%, transparent 25%), linear-gradient(-45deg, rgba(0,0,0,0.2) 25%, transparent 25%), linear-gradient(45deg, transparent 75%, rgba(0,0,0,0.2) 75%), linear-gradient(-45deg, transparent 75%, rgba(0,0,0,0.2) 75%); background-size: 8px 8px; }
-[data-card-texture="silk"] { --card-texture-image: linear-gradient(135deg, rgba(var(--theme-texture-color-rgb, var(--theme-primary-rgb)), 0.15) 0%, transparent 50%, rgba(0,0,0,0.2) 100%); }
-
-/* -----------------------------------------
-   CARD SPECIALIZED EFFECTS (v10.0)
-   ----------------------------------------- */
-[data-spotlight="1"] .spotlight-effect {
-    background: radial-gradient(600px circle at var(--mouse-px-x, 0) var(--mouse-px-y, 0), rgba(var(--theme-primary-rgb, 255, 255, 255), var(--spotlight-opacity, 0.15)), transparent 80%);
-}
-
-[data-border-beam="1"] .border-beam-effect {
-    position: absolute; inset: -1px; border: 1px solid transparent; border-radius: inherit; background: linear-gradient(var(--mouse-px-x, 0) var(--mouse-px-y, 0), var(--theme-texture-color, var(--theme-primary)), transparent); mask: linear-gradient(#fff, #fff) content-box, linear-gradient(#fff, #fff); mask-composite: exclude; pointer-events: none; z-index: 5;
-}
-
-[data-border-beam="1"] .bg-theme-card::after,
-.bg-theme-card[data-border-beam="1"]::after {
-    content: ''; position: absolute; inset: -1px; z-index: 1; pointer-events: none; background: conic-gradient(from var(--beam-angle, 0deg), transparent, var(--theme-texture-color, var(--theme-primary)), transparent 30%); mask: linear-gradient(#fff 0 0) content-box, linear-gradient(#fff 0 0); mask-composite: exclude; padding: var(--theme-border-width, 1px); border-radius: inherit; opacity: 0; transition: opacity 0.5s ease; animation: beam-rotate 4s linear infinite;
-}
-
-[data-border-beam="1"] .bg-theme-card:hover::after,
-.bg-theme-card[data-border-beam="1"]:hover::after { opacity: 1; }

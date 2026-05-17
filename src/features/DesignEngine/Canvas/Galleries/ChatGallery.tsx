@@ -1,7 +1,10 @@
 import React from 'react';
 import { motion } from 'framer-motion';
-import { CHAT_PRESETS, ChatPreset } from '../../../../constants/chat-presets';
 import { Check, MessageSquare, User, Bot, Clock } from 'lucide-react';
+
+// TODO: Substituir por presets canônicos de core/Design/presets/ quando forem criados
+interface ChatPreset { id: string; title: string; description: string; tokens: Record<string, any>; }
+const CHAT_PRESETS: ChatPreset[] = [];
 
 interface ChatGalleryProps {
     onUpdateDraft: (key: string, value: any) => void;

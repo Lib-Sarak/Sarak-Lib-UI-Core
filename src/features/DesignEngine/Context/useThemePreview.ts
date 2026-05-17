@@ -1,5 +1,7 @@
 import { useState, useEffect } from 'react';
-import { BASE_PRESETS } from '../../../constants/theme-models';
+
+// TODO: Substituir por presets canônicos de core/Design/presets/themes/ quando forem criados
+const BASE_PRESETS: Record<string, any> = {};
 
 export const useThemePreview = (
     currentLayout: string,

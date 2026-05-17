@@ -25,10 +25,7 @@ export const ShellContent: React.FC<ShellContentProps> = ({
     const transitionEffect = (THEME_EFFECTS.page as any)[pageTransition]?.page || THEME_EFFECTS.page.fade.page;
 
     return (
-        <main className={`flex-1 overflow-y-auto custom-scrollbar relative flex flex-col w-full min-h-0 isolate ${texture !== 'none' ? 'texture-active' : 'bg-[var(--theme-body)]'}`}>
-            {texture !== 'none' && (
-                <div className={`absolute inset-0 pointer-events-none z-0 texture-${texture} SarakAtmosphereLayer`} />
-            )}
+        <main className={`flex-1 overflow-y-auto custom-scrollbar relative flex flex-col w-full min-h-0 isolate ${texture !== 'none' ? 'texture-active' : 'bg-[var(--theme-body)]'}`} data-sx-texture={texture}>
 
             <div className="flex-1 flex flex-col relative w-full pt-8 lg:pt-12 z-10 transition-all duration-500 min-h-0" style={{ gap: `var(--theme-gap, ${layoutGap}px)`, padding: `var(--safe-area-padding, 0)` }}>
                 <AnimatePresence mode="wait">

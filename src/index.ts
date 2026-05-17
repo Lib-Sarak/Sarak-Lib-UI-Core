@@ -9,7 +9,8 @@
 export { default as SarakUIProvider, useSarakUI } from './core/Provider/SarakUIProvider';
 export { DesignScope } from './core/Design/components/DesignScope';
 export { default as ThemeToggle } from './components/atomic/Buttons/ThemeToggle';
-export { PRESETS_LIBRARY } from './core/Design/presets';
+export { CARD_PRESETS } from './core/Design/presets/surfaces/cards';
+export type { CardPreset } from './core/Design/presets/surfaces/cards';
 
 // Layout Components and Plug & Play UI
 export * from './core/Shell/SarakShell';

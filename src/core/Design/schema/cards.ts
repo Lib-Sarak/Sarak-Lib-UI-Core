@@ -69,7 +69,7 @@ export const CardSchema: ComponentSchema = {
             unit: 'px',
             constraints: { min: 0, max: 40 },
             defaultValue: 0,
-            cssVars: ['--sarak-card-cut']
+            cssVars: ['--sarak-card-geometric-cut']
         },
 
         // --- SUPERFÍCIE ---
@@ -90,7 +90,7 @@ export const CardSchema: ComponentSchema = {
             unit: 'px',
             constraints: { min: 0, max: 40 },
             defaultValue: 12,
-            cssVars: ['--sarak-card-blur']
+            cssVars: ['--sarak-card-backdrop-blur', '--sarak-card-blur', '--sarak-glass-blur']
         },
         {
             id: 'cardSurfaceOpacity',
@@ -99,7 +99,7 @@ export const CardSchema: ComponentSchema = {
             type: 'slider',
             constraints: { min: 0, max: 1, step: 0.05 },
             defaultValue: 0.8,
-            cssVars: ['--sarak-card-opacity']
+            cssVars: ['--sarak-card-surface-opacity', '--sarak-card-opacity']
         },
 
         // --- BORDAS & LINHAS ---
@@ -140,7 +140,7 @@ export const CardSchema: ComponentSchema = {
             unit: 'px',
             constraints: { min: 0, max: 20 },
             defaultValue: 1,
-            cssVars: ['--sarak-card-border-t']
+            cssVars: ['--sarak-card-border-top']
         },
         {
             id: 'cardBorderBottom',
@@ -150,7 +150,7 @@ export const CardSchema: ComponentSchema = {
             unit: 'px',
             constraints: { min: 0, max: 20 },
             defaultValue: 1,
-            cssVars: ['--sarak-card-border-b']
+            cssVars: ['--sarak-card-border-bottom']
         },
         {
             id: 'cardBorderLeft',
@@ -160,7 +160,7 @@ export const CardSchema: ComponentSchema = {
             unit: 'px',
             constraints: { min: 0, max: 20 },
             defaultValue: 1,
-            cssVars: ['--sarak-card-border-l']
+            cssVars: ['--sarak-card-border-left']
         },
         {
             id: 'cardBorderRight',
@@ -170,7 +170,7 @@ export const CardSchema: ComponentSchema = {
             unit: 'px',
             constraints: { min: 0, max: 20 },
             defaultValue: 1,
-            cssVars: ['--sarak-card-border-r']
+            cssVars: ['--sarak-card-border-right']
         },
 
         // --- ILUMINAÇÃO INTERNA ---

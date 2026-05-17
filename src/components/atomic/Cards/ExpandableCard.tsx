@@ -47,7 +47,7 @@ export const ExpandableCard: React.FC<ExpandableCardProps> = ({
 
     return (
         <>
-            <div className={`bg-theme-card border border-theme-border rounded-sarak shadow-theme flex flex-col relative group transition-sarak ${isExpanded ? 'opacity-0 pointer-events-none' : ''} ${className}`}>
+            <div className={`sarak-card bg-theme-card border border-theme-border rounded-sarak shadow-theme flex flex-col relative group transition-sarak ${isExpanded ? 'opacity-0 pointer-events-none' : ''} ${className}`}>
                 <div className="sarak-card-header w-full flex justify-between items-start">
                     <h3 className="text-xs font-black text-theme-main uppercase tracking-widest flex items-center gap-2">
                         {iconContent}
@@ -102,7 +102,7 @@ export const ExpandableCard: React.FC<ExpandableCardProps> = ({
                                         </button>
                                     </div>
                                 </div>
-                                <div className={`flex-1 w-full relative flex flex-col min-h-0 bg-theme-card rounded-sarak border border-theme-border shadow-theme ${contentClassName} p-[var(--sarak-card-padding-md,24px)]`}>
+                                <div className={`sarak-card flex-1 w-full relative flex flex-col min-h-0 bg-theme-card rounded-sarak border border-theme-border shadow-theme ${contentClassName} p-[var(--sarak-card-padding-md,24px)]`}>
                                     {children}
                                 </div>
                             </motion.div>

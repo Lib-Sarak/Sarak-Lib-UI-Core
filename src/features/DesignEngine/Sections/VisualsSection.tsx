@@ -1,8 +1,18 @@
 import React from 'react';
 import { Palette, Box, Grid, AlertCircle, Check, Plus } from 'lucide-react';
 import { Section, SelectControl, SliderControl } from '../components/DesignControls';
-import { PRIMARY_COLORS } from '../../../core/Design/presets/colors';
-import { TEXTURE_LIBRARY } from '../../../core/Design/presets/atmosphere';
+
+// TODO: Migrar para core/Design/presets/ quando forem criados
+const PRIMARY_COLORS: { name: string; value: string }[] = [
+    { name: 'Cyan', value: '#00f2ff' },
+    { name: 'Violet', value: '#7000ff' },
+    { name: 'Magenta', value: '#ff00d4' },
+    { name: 'Emerald', value: '#10b981' },
+    { name: 'Amber', value: '#f59e0b' },
+    { name: 'Red', value: '#ef4444' },
+    { name: 'Blue', value: '#3b82f6' },
+];
+const TEXTURE_LIBRARY: { id: string; name: string }[] = [];
 
 interface VisualsSectionProps {
     draft: any;

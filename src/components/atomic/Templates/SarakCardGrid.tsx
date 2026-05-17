@@ -252,15 +252,15 @@ const SarakCoreCard = ({ item, mapping }: { item: any; mapping: any }) => {
         <motion.div 
             initial={{ opacity: 0, y: 20 }}
             animate={{ opacity: 1, y: 0 }}
-            className="flex flex-col bg-theme-card border-theme group transition-all h-fit relative overflow-hidden"
+            className="flex flex-col sarak-card bg-theme-card border-theme group transition-all h-fit relative overflow-hidden"
             style={{ 
                 transitionDuration: 'var(--animation-speed, 0.5s)',
                 padding: design.cardPadding ? `${design.cardPadding}px` : undefined
             }}
-            data-card-texture={design.cardTexture}
+            data-sx-card-texture-type={design.cardTextureType || design.cardTexture || 'none'}
             data-spotlight={design.cardSpotlight > 0 ? '1' : '0'}
             data-border-beam={design.borderBeamEnabled ? '1' : '0'}
-            data-geometric={design.isGeometricCut ? '1' : '0'}
+            data-geometric={(design.cardGeometricCut > 0 || design.isGeometricCut) ? '1' : '0'}
         >
             {/* Atmosphere Layers (Sovereignty v8.5) */}
             <div className="absolute inset-0 z-0 spotlight-effect pointer-events-none opacity-0 group-hover:opacity-100 transition-opacity duration-500" />

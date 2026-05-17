@@ -10,3 +10,4 @@ export * from './SarakChat';
 export * from './SarakSecurityOrchestrator';
 export * from './SarakAuthScreen';
 export * from './SarakCatalogGrid';
+export * from './SarakExpandableMatrix';
