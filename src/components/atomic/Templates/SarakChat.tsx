@@ -3,6 +3,7 @@ import { useSarakChat } from './Chat/useSarakChat';
 import { ChatHeader } from './Chat/ChatHeader';
 import { MessageList } from './Chat/MessageList';
 import { ChatInput } from './Chat/ChatInput';
+import { useSarakUI } from '../../../core/Provider/SarakUIProvider';
 
 interface SarakChatProps {
   endpoint: string;
@@ -19,9 +20,17 @@ export const SarakChat: React.FC<SarakChatProps> = ({
   label = 'Sarak AI Chat Lab'
 }) => {
   const chat = useSarakChat(endpoint, modelsEndpoint);
+  const { design } = useSarakUI();
+  const cardTextureType = design?.cardTextureType || 'none';
 
   return (
-    <div className="flex flex-col h-full min-h-0 bg-theme-card border-theme group/chat transition-all rounded-theme" style={{ transitionDuration: 'var(--animation-speed, 0.5s)' }}>
+    <div 
+      className="sarak-card flex flex-col h-full min-h-0 group/chat transition-all !p-0" 
+      data-sx-card-texture-type={cardTextureType}
+      style={{ 
+        transitionDuration: 'var(--sarak-chat-anim-speed, 0.05s)' 
+      }}
+    >
       <ChatHeader 
         label={label} 
         mode={chat.mode} 
