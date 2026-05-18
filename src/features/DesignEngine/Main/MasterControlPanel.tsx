@@ -151,9 +151,13 @@ export const MasterControlPanel: React.FC = () => {
                                                     onChange={(e) => updateDraft(token.id, e.target.value)}
                                                     className="bg-white/5 border border-white/10 rounded-md py-1 px-2 text-[8px] font-black uppercase tracking-widest focus:outline-none w-full"
                                                 >
-                                                    {token.constraints?.options?.map((opt: any) => (
-                                                        <option key={opt.id} value={opt.id} className="bg-[#111]">{opt.label}</option>
-                                                    ))}
+                                                    {(token.constraints?.options || token.options || []).map((opt: any) => {
+                                                        const optId = typeof opt === 'object' ? (opt.id !== undefined ? opt.id : (opt.value !== undefined ? opt.value : '')) : opt;
+                                                        const optLabel = typeof opt === 'object' ? (opt.label || opt.name || optId) : opt;
+                                                        return (
+                                                            <option key={optId} value={optId} className="bg-[#111]">{optLabel}</option>
+                                                        );
+                                                    })}
                                                 </select>
                                             )}
                                             {(token.type === 'text' || token.type === 'string') && (

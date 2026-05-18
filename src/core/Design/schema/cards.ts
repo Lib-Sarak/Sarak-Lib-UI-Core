@@ -17,7 +17,7 @@ export const CardSchema: ComponentSchema = {
             category: 'Geometria',
             type: 'slider',
             unit: 'px',
-            constraints: { min: 0, max: 60 },
+            constraints: { min: 0, max: 120 },
             defaultValue: 12,
             cssVars: ['--radius-theme', '--sarak-card-radius', '--sarak-card-radius-tl', '--sarak-card-radius-tr', '--sarak-card-radius-bl', '--sarak-card-radius-br']
         },
@@ -67,7 +67,7 @@ export const CardSchema: ComponentSchema = {
             category: 'Geometria',
             type: 'slider',
             unit: 'px',
-            constraints: { min: 0, max: 40 },
+            constraints: { min: 0, max: 100 },
             defaultValue: 0,
             cssVars: ['--sarak-card-geometric-cut']
         },
@@ -88,7 +88,7 @@ export const CardSchema: ComponentSchema = {
             category: 'Superfície',
             type: 'slider',
             unit: 'px',
-            constraints: { min: 0, max: 40 },
+            constraints: { min: 0, max: 100 },
             defaultValue: 12,
             cssVars: ['--sarak-card-backdrop-blur', '--sarak-card-blur', '--sarak-glass-blur']
         },
@@ -109,7 +109,7 @@ export const CardSchema: ComponentSchema = {
             category: 'Bordas',
             type: 'slider',
             unit: 'px',
-            constraints: { min: 0, max: 8 },
+            constraints: { min: 0, max: 20 },
             defaultValue: 1,
             cssVars: ['--card-border-width', '--theme-border-width', '--sarak-card-border-width']
         },
@@ -138,7 +138,7 @@ export const CardSchema: ComponentSchema = {
             category: 'Bordas: Avançado',
             type: 'slider',
             unit: 'px',
-            constraints: { min: 0, max: 20 },
+            constraints: { min: 0, max: 40 },
             defaultValue: 1,
             cssVars: ['--sarak-card-border-top']
         },
@@ -148,7 +148,7 @@ export const CardSchema: ComponentSchema = {
             category: 'Bordas: Avançado',
             type: 'slider',
             unit: 'px',
-            constraints: { min: 0, max: 20 },
+            constraints: { min: 0, max: 40 },
             defaultValue: 1,
             cssVars: ['--sarak-card-border-bottom']
         },
@@ -158,7 +158,7 @@ export const CardSchema: ComponentSchema = {
             category: 'Bordas: Avançado',
             type: 'slider',
             unit: 'px',
-            constraints: { min: 0, max: 20 },
+            constraints: { min: 0, max: 40 },
             defaultValue: 1,
             cssVars: ['--sarak-card-border-left']
         },
@@ -168,7 +168,7 @@ export const CardSchema: ComponentSchema = {
             category: 'Bordas: Avançado',
             type: 'slider',
             unit: 'px',
-            constraints: { min: 0, max: 20 },
+            constraints: { min: 0, max: 40 },
             defaultValue: 1,
             cssVars: ['--sarak-card-border-right']
         },
@@ -188,7 +188,7 @@ export const CardSchema: ComponentSchema = {
             category: 'Superfície: Efeitos',
             type: 'slider',
             unit: 'px',
-            constraints: { min: 0, max: 10 },
+            constraints: { min: 0, max: 30 },
             defaultValue: 1,
             cssVars: ['--sarak-card-inner-glow-width']
         },
@@ -201,10 +201,47 @@ export const CardSchema: ComponentSchema = {
             type: 'select',
             constraints: {
                 options: [
-                    { id: 'none', label: 'Liso' },
-                    { id: 'noise', label: 'Ruído Industrial' },
-                    { id: 'grid', label: 'Grid Técnico' },
-                    { id: 'dots', label: 'Dotted' }
+                    { id: 'none', value: 'none', label: 'Nenhuma' },
+                    { id: 'grid', value: 'grid', label: 'Grid Técnico' },
+                    { id: 'dots', value: 'dots', label: 'Pontos (Dotted)' },
+                    { id: 'noise', value: 'noise', label: 'Ruído Analógico' },
+                    { id: 'grain', value: 'grain', label: 'Grão Fotográfico' },
+                    { id: 'mesh', value: 'mesh', label: 'Mesh Orgânico' },
+                    { id: 'waves', value: 'waves', label: 'Ondas Senoidais' },
+                    { id: 'squares', value: 'squares', label: 'Quadrados Industriais' },
+                    { id: 'stripes', value: 'stripes', label: 'Listras Militares' },
+                    { id: 'topo', value: 'topo', label: 'Topografia' },
+                    { id: 'diamond', value: 'diamond', label: 'Diamante' },
+                    { id: 'prestige', value: 'prestige', label: 'Prestige' },
+                    { id: 'carbon', value: 'carbon', label: 'Fibra de Carbono' },
+                    { id: 'brushed', value: 'brushed', label: 'Metal Escovado' },
+                    { id: 'frosted', value: 'frosted', label: 'Vidro Fosco (Frosted)' },
+                    { id: 'circuit', value: 'circuit', label: 'Circuitos (Classic)' },
+                    { id: 'paper', value: 'paper', label: 'Papel Craft' },
+                    { id: 'scanlines', value: 'scanlines', label: 'Scanlines (CRT)' },
+                    { id: 'hexagon', value: 'hexagon', label: 'Hexagonais (Céptico)' },
+                    { id: 'silk', value: 'silk', label: 'Seda Líquida' },
+                    { id: 'blueprint', value: 'blueprint', label: 'Blueprint (Cianótipo)' },
+                    { id: 'aurora', value: 'aurora', label: 'Aurora Boreal' },
+                    { id: 'stars', value: 'stars', label: 'Campo Estelar' },
+                    { id: 'honeycomb', value: 'honeycomb', label: 'Favo de Mel' },
+                    { id: 'isometric', value: 'isometric', label: 'Projeção Isométrica' },
+                    { id: 'radar', value: 'radar', label: 'Radar Tático' },
+                    { id: 'crosshatch', value: 'crosshatch', label: 'Crosshatch' },
+                    { id: 'micro-dots', value: 'micro-dots', label: 'Micro-Pontos' },
+                    { id: 'pinstripes', value: 'pinstripes', label: 'Pinstripes' },
+                    { id: 'constellation', value: 'constellation', label: 'Constelação' },
+                    { id: 'circuit-pro', value: 'circuit-pro', label: 'Circuitos (Pro)' },
+                    { id: 'carbon-tech', value: 'carbon-tech', label: 'Carbon Tech' },
+                    { id: 'topo-deep', value: 'topo-deep', label: 'Topografia Profunda' },
+                    { id: 'prism-mesh', value: 'prism-mesh', label: 'Prism Mesh' },
+                    { id: 'cyber-binary', value: 'cyber-binary', label: 'Código Binário' },
+                    { id: 'blueprint-pro', value: 'blueprint-pro', label: 'Blueprint Pro' },
+                    { id: 'wave-pulse', value: 'wave-pulse', label: 'Pulso de Onda' },
+                    { id: 'wood', value: 'wood', label: 'Madeira (Organic)' },
+                    { id: 'stucco', value: 'stucco', label: 'Stucco (Parede)' },
+                    { id: 'fluid', value: 'fluid', label: 'Fluido Dinâmico' },
+                    { id: 'nebula', value: 'nebula', label: 'Nebulosa' }
                 ]
             },
             defaultValue: 'none',
@@ -215,7 +252,7 @@ export const CardSchema: ComponentSchema = {
             label: 'Opacidade da Textura',
             category: 'Superfície: Textura',
             type: 'slider',
-            constraints: { min: 0, max: 0.2, step: 0.01 },
+            constraints: { min: 0, max: 1, step: 0.01 },
             defaultValue: 0.03,
             cssVars: ['--sarak-card-texture-opacity']
         },
@@ -243,7 +280,7 @@ export const CardSchema: ComponentSchema = {
             category: 'Anatomia: Header',
             type: 'slider',
             unit: 'px',
-            constraints: { min: 0, max: 60 },
+            constraints: { min: 0, max: 120 },
             defaultValue: 16,
             cssVars: ['--sarak-card-header-padding']
         },
@@ -273,7 +310,7 @@ export const CardSchema: ComponentSchema = {
             category: 'Efeitos: Glow',
             type: 'slider',
             unit: 'px',
-            constraints: { min: 0, max: 100 },
+            constraints: { min: 0, max: 200 },
             defaultValue: 20,
             cssVars: ['--sarak-card-shadow-spread']
         },
@@ -302,7 +339,7 @@ export const CardSchema: ComponentSchema = {
             category: 'Interação',
             type: 'slider',
             unit: 'px',
-            constraints: { min: -20, max: 0 },
+            constraints: { min: -50, max: 10 },
             defaultValue: -4,
             cssVars: ['--sarak-card-hover-y']
         },
@@ -332,7 +369,7 @@ export const CardSchema: ComponentSchema = {
             category: 'Espaçamento',
             type: 'slider',
             unit: 'px',
-            constraints: { min: 0, max: 80 },
+            constraints: { min: 0, max: 120 },
             defaultValue: 24,
             cssVars: ['--sarak-card-padding-md', '--theme-gap']
         }

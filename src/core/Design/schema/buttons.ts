@@ -16,7 +16,7 @@ export const ButtonsSchema: ComponentSchema = {
             category: 'Geometria',
             type: 'slider',
             unit: 'px',
-            constraints: { min: 0, max: 40 },
+            constraints: { min: 0, max: 120 },
             defaultValue: 8,
             cssVars: ['--sarak-btn-border-radius', '--sarak-btn-radius-tl', '--sarak-btn-radius-tr', '--sarak-btn-radius-bl', '--sarak-btn-radius-br']
         },
@@ -26,7 +26,7 @@ export const ButtonsSchema: ComponentSchema = {
             category: 'Geometria: Avançado',
             type: 'slider',
             unit: 'px',
-            constraints: { min: 0, max: 40 },
+            constraints: { min: 0, max: 120 },
             defaultValue: 8,
             cssVars: ['--sarak-btn-radius-tl']
         },
@@ -36,7 +36,7 @@ export const ButtonsSchema: ComponentSchema = {
             category: 'Geometria: Avançado',
             type: 'slider',
             unit: 'px',
-            constraints: { min: 0, max: 40 },
+            constraints: { min: 0, max: 120 },
             defaultValue: 8,
             cssVars: ['--sarak-btn-radius-tr']
         },
@@ -46,7 +46,7 @@ export const ButtonsSchema: ComponentSchema = {
             category: 'Geometria: Avançado',
             type: 'slider',
             unit: 'px',
-            constraints: { min: 0, max: 40 },
+            constraints: { min: 0, max: 120 },
             defaultValue: 8,
             cssVars: ['--sarak-btn-radius-bl']
         },
@@ -56,7 +56,7 @@ export const ButtonsSchema: ComponentSchema = {
             category: 'Geometria: Avançado',
             type: 'slider',
             unit: 'px',
-            constraints: { min: 0, max: 40 },
+            constraints: { min: 0, max: 120 },
             defaultValue: 8,
             cssVars: ['--sarak-btn-radius-br']
         },

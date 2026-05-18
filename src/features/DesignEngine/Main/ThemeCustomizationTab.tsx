@@ -53,7 +53,7 @@ const TokenControl = ({ token, value, onChange }: { token: any, value: any, onCh
             return (
                 <SelectControl 
                     label={token.label} 
-                    options={token.constraints?.options} 
+                    options={token.constraints?.options || token.options} 
                     value={value} 
                     onChange={onChange} 
                     isFont={token.type === 'font'}
@@ -153,10 +153,9 @@ export const ThemeCustomizationTab: React.FC = () => {
     return (
         <div className="flex flex-1 h-screen max-h-screen bg-[#0c0c0d] overflow-hidden">
             {/* Sidebar de Configuração */}
-            <DesignScope 
-                design={systemDesign} 
+            <div 
                 className={`flex flex-col h-full max-h-full border-r border-white/5 bg-[#0a0a0b] relative z-10 overflow-hidden shrink-0 ${isResizingEngine ? 'transition-none' : 'transition-all duration-300'}`}
-                style={{ width: `${engineSidebarWidth}px`, minWidth: '280px', maxWidth: '600px' }}
+                style={{ width: `${engineSidebarWidth}px`, minWidth: '280px', maxWidth: '600px', position: 'relative' }}
             >
                 <div onMouseDown={startResizingEngine} className="absolute right-0 top-0 w-1.5 h-full cursor-col-resize hover:bg-[var(--theme-primary)]/50 transition-colors z-50 active:bg-[var(--theme-primary)]" />
                 
@@ -272,7 +271,7 @@ export const ThemeCustomizationTab: React.FC = () => {
                         )}
                     </AnimatePresence>
                 </div>
-            </DesignScope>
+            </div>
 
             {/* Canvas de Preview */}
             <div className="flex-1 relative bg-[#060607] flex flex-col">
@@ -290,6 +289,7 @@ export const ThemeCustomizationTab: React.FC = () => {
                     previewPrimaryColor={draft.colorPrimary || sarak.colorPrimary || '#3b82f6'}
                     draftTokens={draft}
                     activeCategory={activePillarId}
+                    activeSectionId={activeSectionId}
                     isDualView={viewMode === 'preview'}
                     customThemes={[]}
                 />

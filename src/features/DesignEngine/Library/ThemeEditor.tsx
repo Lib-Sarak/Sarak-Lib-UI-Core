@@ -7,8 +7,14 @@ import { THEME_FONTS } from '../../../core/Design/presets/typography';
 import { THEME_EFFECTS } from '../../../core/Design/presets/animations';
 import { EMOJI_SETS } from '../../../constants/icon-packs';
 
-// TODO: Migrar TEXTURE_LIBRARY para core/Design/presets/atmosphere quando os presets forem recriados
-const TEXTURE_LIBRARY: { id: string; name: string; description: string }[] = [];
+import { AtmosphereSchema } from '../../../core/Design/schema/atmosphere';
+
+const textureToken = AtmosphereSchema.tokens.find(t => t.id === 'texture');
+const TEXTURE_LIBRARY: { id: string; name: string; description: string }[] = textureToken?.options?.map((opt: any) => ({
+    id: opt.value,
+    name: opt.label,
+    description: `Textura de padrão ${opt.label.toLowerCase()} para atmosfera industrial.`
+})) || [];
 
 interface ConfigSectionProps {
     id: string;

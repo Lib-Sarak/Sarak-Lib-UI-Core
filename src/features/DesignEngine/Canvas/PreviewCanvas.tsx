@@ -11,6 +11,10 @@ import { KitchenSinkPreview } from './KitchenSinkPreview';
 import { GalleryRouter } from './Galleries/GalleryRouter';
 import { DesignScope } from '../../../core/Design/components/DesignScope';
 import { useResizable } from '../hooks/useResizable';
+import { SidebarNav } from '../../../core/Shell/Components/SidebarNav';
+import { TopbarNav } from '../../../core/Shell/Components/TopbarNav';
+import { DockNav } from '../../../core/Shell/Components/DockNav';
+import { DiscoveredModule } from '../../../core/Discovery/types';
 
 interface PreviewCanvasProps {
     previewDevice: 'desktop' | 'tablet' | 'smartphone';
@@ -24,6 +28,7 @@ interface PreviewCanvasProps {
     mode: string;
     draftTokens: any;
     activeCategory: string | null;
+    activeSectionId?: string | null;
     onUpdateDraft: (key: string, value: any) => void;
     isDualView?: boolean;
     customThemes?: any[];
@@ -38,6 +43,7 @@ export const PreviewCanvas: React.FC<PreviewCanvasProps> = ({
     config,
     draftTokens,
     activeCategory,
+    activeSectionId,
     onUpdateDraft,
     isDualView,
     customThemes = [],
@@ -101,94 +107,45 @@ export const PreviewCanvas: React.FC<PreviewCanvasProps> = ({
 
     const appIds = ['dashboard', 'chat', 'logs', 'settings', 'components', 'typography', 'auth', 'matrix', 'kitchen-sink'];
 
-    const appIcons: any = {
-        dashboard: <BarChart3 size={14} />,
-        chat: <MessageSquare size={14} />,
-        logs: <History size={14} />,
-        settings: <Network size={14} />,
-        components: <Box size={14} />,
-        typography: <Type size={14} />,
-        auth: <Lock size={14} />,
-        matrix: <Layers size={14} />,
-        'kitchen-sink': <Grid size={14} />
-    };
+    const [previewNavVisible, setPreviewNavVisible] = React.useState(true);
 
-    const LogoComponent = ({ design }: { design: any }) => {
-        const logoSrc = design.logoUrl;
-        const scale = (design.logoScale || 100) / 100;
-        const opacity = design.logoOpacity ?? 1;
-        const rotation = design.logoRotation ?? 0;
-        const shadow = design.logoDropShadow || 'none';
-        const animation = design.logoAnimationType || 'none';
-        
-        const logoSize = 32 * scale;
-        
-        const animationClasses: Record<string, string> = {
-            pulse: 'animate-pulse',
-            float: 'animate-sarak-float',
-            glow: 'animate-sarak-glow',
-            none: ''
-        };
+    const mockDiscoveredModules = React.useMemo<DiscoveredModule[]>(() => {
+        return appIds.map((id, index) => ({
+            id,
+            label: id.charAt(0).toUpperCase() + id.slice(1),
+            icon: id === 'dashboard' ? 'BarChart3' 
+                : id === 'chat' ? 'MessageSquare' 
+                : id === 'logs' ? 'History' 
+                : id === 'settings' ? 'Network' 
+                : id === 'components' ? 'Box' 
+                : id === 'typography' ? 'Type' 
+                : id === 'auth' ? 'Lock' 
+                : id === 'matrix' ? 'Layers' 
+                : 'Grid',
+            category: id === 'kitchen-sink' ? 'Experimental' : 'System Modules',
+            status: 'online',
+            priority: index,
+        }));
+    }, []);
 
-        return (
-            <div 
-                className={`flex items-center gap-3 ${design.logoPosition === 'center' ? 'flex-col text-center' : 'flex-row'} transition-all duration-500`}
-                style={{ 
-                    opacity, 
-                    transform: `rotate(${rotation}deg)`,
-                    filter: shadow !== 'none' ? `drop-shadow(${shadow})` : undefined
-                }}
-            >
-                {logoSrc ? (
-                    <img 
-                        src={logoSrc} 
-                        alt="Logo" 
-                        style={{ height: `${logoSize}px`, width: 'auto' }} 
-                        className={`object-contain transition-all duration-500 ${animationClasses[animation] || ''}`} 
-                    />
-                ) : (
-                    <div 
-                        className={`rounded-lg bg-[var(--theme-primary)] flex items-center justify-center text-white shadow-lg shrink-0 ${animationClasses[animation] || ''}`}
-                        style={{ width: `${logoSize}px`, height: `${logoSize}px` }}
-                    >
-                        <Zap size={logoSize * 0.5} />
-                    </div>
-                )}
-                {!design.isNavHidden && (
-                    <span 
-                        className="font-bold text-[var(--theme-title)] tracking-widest uppercase truncate max-w-[120px]"
-                        style={{ 
-                            fontFamily: 'var(--sarak-identity-font, var(--font-heading))',
-                            fontWeight: 'var(--sarak-identity-weight, 700)',
-                            letterSpacing: 'var(--sarak-identity-tracking, 0.1em)',
-                            fontSize: '0.65rem'
-                        }}
-                    >
-                        {design.systemName || 'SARAK'}
-                    </span>
-                )}
-            </div>
-        );
-    };
+    const mockGroupedModules = React.useMemo(() => {
+        return mockDiscoveredModules.reduce((acc: Record<string, DiscoveredModule[]>, mod) => {
+            const cat = mod.category || 'System Modules';
+            if (!acc[cat]) acc[cat] = [];
+            acc[cat].push(mod);
+            return acc;
+        }, {});
+    }, [mockDiscoveredModules]);
 
-    const UserWidget = ({ variant = 'vertical' }: { variant?: 'horizontal' | 'vertical' }) => (
-        <div className={`flex items-center gap-3 p-4 border-t border-[var(--theme-border)] ${variant === 'vertical' ? 'mt-auto' : 'ml-auto border-l border-t-0 pl-6'}`}>
-            <div className="w-8 h-8 rounded-full bg-[var(--theme-primary)]/10 border border-[var(--theme-primary)]/20 flex items-center justify-center">
-                <Zap size={14} className="text-[var(--theme-primary)]" />
-            </div>
-            {variant === 'vertical' && (
-                <div className="flex flex-col">
-                    <span className="text-2xs font-bold text-[var(--theme-title)] uppercase">Sarak User</span>
-                    <span className="text-3xs text-[var(--theme-muted)] uppercase tracking-tighter">Administrator</span>
-                </div>
-            )}
-        </div>
-    );
 
     const renderSystemContent = (useSystemDesign = false) => {
         const activeDesign = useSystemDesign ? (sarak?.design || {}) : tokens;
         const navStyle = activeDesign.navigationStyle || 'sidebar';
         const hasTexture = activeDesign.texture && activeDesign.texture !== 'none';
+
+        const isTopbar = navStyle === 'topbar';
+        const isDock = navStyle === 'dock';
+        const isSidebar = navStyle === 'sidebar' || (!isTopbar && !isDock);
 
         return (
             <DesignScope 
@@ -203,77 +160,86 @@ export const PreviewCanvas: React.FC<PreviewCanvasProps> = ({
                 />
 
                 {/* 2. Content Layer (Pilar de Layout) - Scaled for 1:1 High Fidelity */}
-                <div className="absolute inset-0 origin-top-left overflow-hidden z-10" style={{ transform: 'scale(0.5)', width: '200%', height: '200%' }}>
-                    {navStyle === 'topbar' ? (
-                        <div className="flex flex-col w-full h-full relative">
-                            <header 
-                                className="border-b border-[var(--theme-border)] flex items-center justify-between px-10 relative z-10"
-                                style={{ 
-                                    height: 'var(--sarak-topbar-height, 64px)',
-                                    backgroundColor: 'var(--sarak-topbar-bg, rgba(10, 10, 12, 0.8))',
-                                    backdropFilter: 'blur(var(--sarak-glass-blur, 16px))'
-                                }}
-                            >
-                                <div className="scale-150 origin-left"><LogoComponent design={activeDesign} /></div>
-                                <nav className="flex gap-6">
-                                    {appIds.map(id => (
-                                        <button key={id} onClick={() => setActivePreviewApp(id)} className={`p-3 transition-all scale-150 ${activePreviewApp === id ? 'text-[var(--theme-primary)]' : 'text-[var(--theme-muted)]'}`}>
-                                            {appIcons[id]}
-                                        </button>
-                                    ))}
-                                </nav>
-                                <div className="scale-150 origin-right"><UserWidget variant="horizontal" /></div>
-                                
+                <div 
+                    className={`absolute inset-0 origin-top-left overflow-hidden z-10 flex w-[200%] h-[200%] bg-[var(--theme-body)] text-[var(--theme-text)] font-sans selection:bg-[var(--theme-primary)] selection:text-white layout-${navStyle}`}
+                    style={{ transform: 'scale(0.5)' }}
+                >
+                    {/* HOVER SENSORS (v6.2) */}
+                    {activeDesign.isAutoHideEnabled && !previewNavVisible && (
+                        <>
+                            {isSidebar && (
                                 <div 
-                                    onMouseDown={startResizingTopbar}
-                                    className="absolute bottom-0 left-0 w-full h-1.5 cursor-row-resize hover:bg-[var(--theme-primary)]/50 transition-colors active:bg-[var(--theme-primary)] z-50"
+                                    onMouseEnter={() => setPreviewNavVisible(true)}
+                                    className="absolute left-0 top-0 w-4 h-full z-[1000] cursor-pointer"
                                 />
-                            </header>
-                            <main 
-                                className={`flex-1 overflow-y-auto p-12 relative z-10 bg-transparent custom-scrollbar isolate ${hasTexture ? 'texture-active' : ''}`}
-                                data-sx-texture={activeDesign.texture}
-                            >
-                                <div className="relative z-10">
-                                    {apps[activePreviewApp]}
-                                </div>
-                            </main>
-                        </div>
-                    ) : (
-                        <div className="flex w-full h-full relative">
-                            <aside 
-                                className="border-r border-[var(--theme-border)] flex flex-col relative z-10"
-                                style={{ 
-                                    width: 'var(--sarak-sidebar-width, 240px)',
-                                    backgroundColor: 'var(--sarak-sidebar-bg, rgba(10, 10, 12, 0.8))',
-                                    backdropFilter: 'blur(var(--sarak-sidebar-blur, 10px))',
-                                    boxShadow: 'var(--sarak-sidebar-shadow)'
-                                }}
-                            >
-                                <div className="p-10 origin-top-left scale-125"><LogoComponent design={activeDesign} /></div>
-                                <nav className="flex-1 p-6 space-y-4">
-                                    {appIds.map(id => (
-                                        <button key={id} onClick={() => setActivePreviewApp(id)} className={`w-full flex items-center gap-4 px-6 py-4 rounded-sarak transition-all scale-125 origin-left ${activePreviewApp === id ? 'bg-[var(--theme-primary)] text-white shadow-lg shadow-primary-500/20' : 'text-[var(--theme-muted)] hover:bg-white/5'}`}>
-                                            {appIcons[id]} {id}
-                                        </button>
-                                    ))}
-                                </nav>
-                                <div className="scale-125 origin-bottom-left"><UserWidget /></div>
-
+                            )}
+                            {isDock && (
                                 <div 
-                                    onMouseDown={startResizingSidebar}
-                                    className="absolute right-0 top-0 w-1.5 h-full cursor-col-resize hover:bg-[var(--theme-primary)]/50 transition-colors active:bg-[var(--theme-primary)] z-50"
+                                    onMouseEnter={() => setPreviewNavVisible(true)}
+                                    className="absolute bottom-0 left-0 w-full h-8 z-[1000] cursor-pointer"
                                 />
-                            </aside>
-                            <main 
-                                className={`flex-1 overflow-y-auto p-12 relative z-10 bg-transparent custom-scrollbar isolate ${hasTexture ? 'texture-active' : ''}`}
-                                data-sx-texture={activeDesign.texture}
-                            >
-                                <div className="relative z-10">
-                                    {apps[activePreviewApp]}
-                                </div>
-                            </main>
-                        </div>
+                            )}
+                        </>
                     )}
+
+                    {/* SIDEBAR NAVIGATION */}
+                    {isSidebar && (
+                        <SidebarNav 
+                            design={activeDesign}
+                            brand={{ name: activeDesign.systemName || "Sarak Preview" }}
+                            user={parentContext?.options?.user || { displayName: 'Sarak User', primaryEmail: 'preview@sarak.io' }}
+                            logout={() => {}}
+                            toggleNav={() => onUpdateDraft('isNavHidden', !activeDesign.isNavHidden)}
+                            activeModuleId={activePreviewApp}
+                            setActiveModuleId={setActivePreviewApp}
+                            groupedModules={mockGroupedModules}
+                            setIsNavVisible={setPreviewNavVisible}
+                            setIsSearchOpen={() => {}}
+                            startResizing={startResizingSidebar as any}
+                        />
+                    )}
+
+                    {/* DOCK NAVIGATION */}
+                    {isDock && (
+                        <DockNav 
+                            design={activeDesign}
+                            discoveredModules={mockDiscoveredModules}
+                            activeModuleId={activePreviewApp}
+                            setActiveModuleId={setActivePreviewApp}
+                            setIsSearchOpen={() => {}}
+                            isNavVisible={previewNavVisible}
+                            setIsNavVisible={setPreviewNavVisible}
+                        />
+                    )}
+
+                    {/* CONTENT AREA */}
+                    <div className="flex-1 flex flex-col h-full overflow-hidden relative bg-[var(--theme-body)]">
+                        {/* SHELL HEADER (TOPBAR ONLY) */}
+                        {isTopbar && (
+                            <TopbarNav 
+                                design={activeDesign}
+                                brand={{ name: activeDesign.systemName || "Sarak Preview" }}
+                                toggleNav={() => onUpdateDraft('isNavHidden', !activeDesign.isNavHidden)}
+                                setIsSearchOpen={() => {}}
+                                activeModuleId={activePreviewApp}
+                                setActiveModuleId={setActivePreviewApp}
+                                discoveredModules={mockDiscoveredModules}
+                                user={parentContext?.options?.user || { displayName: 'Sarak User', primaryEmail: 'preview@sarak.io' }}
+                                logout={() => {}}
+                                startResizing={startResizingTopbar as any}
+                            />
+                        )}
+
+                        {/* MAIN CONTENT CANVAS */}
+                        <main 
+                            className={`flex-1 overflow-y-auto p-12 relative z-10 bg-transparent custom-scrollbar isolate ${hasTexture ? 'texture-active' : ''}`}
+                            data-sx-texture={activeDesign.texture}
+                        >
+                            <div className="relative z-10">
+                                {apps[activePreviewApp]}
+                            </div>
+                        </main>
+                    </div>
                 </div>
             </DesignScope>
         );
@@ -313,13 +279,14 @@ export const PreviewCanvas: React.FC<PreviewCanvasProps> = ({
                                         </div>
                                     </div>
                                     <div className="flex-1 overflow-y-auto custom-scrollbar bg-black/20">
-                                        <GalleryRouter 
-                                            activeCategory={activeCategory || ''} 
-                                            tokens={tokens} 
-                                            onUpdateDraft={onUpdateDraft} 
-                                            activePreviewApp={activePreviewApp}
-                                            customThemes={customThemes}
-                                        />
+                                         <GalleryRouter 
+                                             activeCategory={activeCategory || ''} 
+                                             activeSectionId={activeSectionId}
+                                             tokens={tokens} 
+                                             onUpdateDraft={onUpdateDraft} 
+                                             activePreviewApp={activePreviewApp}
+                                             customThemes={customThemes}
+                                         />
                                     </div>
                                 </div>
                             </div>

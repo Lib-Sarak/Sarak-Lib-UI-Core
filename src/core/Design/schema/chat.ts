@@ -27,6 +27,29 @@ export const ChatSchema: ComponentSchema = {
             type: 'color',
             defaultValue: 'rgba(255, 255, 255, 0.05)',
             cssVars: ['--sarak-chat-user-bg']
+        },
+        {
+            id: 'chatBubbleStyle',
+            label: 'Estilo de Bolha',
+            category: 'Anatomia',
+            type: 'select',
+            defaultValue: 'glass',
+            options: [
+                { value: 'glass', label: 'Glass' },
+                { value: 'solid', label: 'Solid' },
+                { value: 'minimal', label: 'Minimal' }
+            ],
+            cssVars: ['--sarak-chat-bubble']
+        },
+        {
+            id: 'chatAnimationSpeed',
+            label: 'Velocidade de Digitação',
+            category: 'IA Core',
+            type: 'slider',
+            unit: 's',
+            constraints: { min: 0, max: 0.5, step: 0.01 },
+            defaultValue: 0.05,
+            cssVars: ['--sarak-chat-anim-speed']
         }
     ]
 };

@@ -12,7 +12,14 @@ const PRIMARY_COLORS: { name: string; value: string }[] = [
     { name: 'Red', value: '#ef4444' },
     { name: 'Blue', value: '#3b82f6' },
 ];
-const TEXTURE_LIBRARY: { id: string; name: string }[] = [];
+import { AtmosphereSchema } from '../../../core/Design/schema/atmosphere';
+
+const textureToken = AtmosphereSchema.tokens.find(t => t.id === 'texture');
+const TEXTURE_LIBRARY: { id: string; name: string }[] = textureToken?.options?.map((opt: any) => ({
+    id: opt.value,
+    name: opt.label
+})) || [];
+
 
 interface VisualsSectionProps {
     draft: any;

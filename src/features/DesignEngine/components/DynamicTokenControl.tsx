@@ -64,7 +64,7 @@ export const DynamicTokenControl: React.FC<DynamicTokenControlProps> = ({
                 <SelectControl
                     label={token.label}
                     value={value}
-                    options={token.constraints?.options || []}
+                    options={token.constraints?.options || token.options || []}
                     isFont={token.type === 'font'}
                     onChange={handleChange}
                 />

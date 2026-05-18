@@ -96,7 +96,7 @@ interface CardPreset {
         cardBorderBottom: number;
         cardBorderLeft: number;
         cardBorderRight: number;
-        cardTextureType: 'none' | 'noise' | 'grid' | 'dots';
+        cardTextureType: string;
         cardTextureOpacity: number;
         cardInnerGlowColor: string;
         cardInnerGlowWidth: number;

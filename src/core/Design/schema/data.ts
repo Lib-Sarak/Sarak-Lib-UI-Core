@@ -34,6 +34,46 @@ export const DataSchema: ComponentSchema = {
             type: 'color',
             defaultValue: 'rgba(15, 23, 42, 0.9)',
             cssVars: ['--sarak-chart-tooltip-bg']
+        },
+        {
+            id: 'chartType',
+            label: 'Tipo de Gráfico',
+            category: 'Visualização',
+            type: 'select',
+            defaultValue: 'line',
+            options: [
+                { value: 'line', label: 'Lines' },
+                { value: 'bar', label: 'Bars' },
+                { value: 'pie', label: 'Pie/Donut' },
+                { value: 'radar', label: 'Radar' },
+                { value: 'scatter', label: 'Scatter' },
+                { value: 'heatmap', label: 'Heatmap' },
+                { value: 'gauge', label: 'Gauge' }
+            ]
+        },
+        {
+            id: 'chartShowGrid',
+            label: 'Mostrar Grid de Fundo',
+            category: 'Visualização',
+            type: 'boolean',
+            defaultValue: true
+        },
+        {
+            id: 'chartThickness',
+            label: 'Espessura da Linha',
+            category: 'Visualização',
+            type: 'slider',
+            unit: 'px',
+            constraints: { min: 1, max: 8, step: 1 },
+            defaultValue: 2,
+            cssVars: ['--sarak-chart-thickness']
+        },
+        {
+            id: 'chartSmoothing',
+            label: 'Suavização da Linha',
+            category: 'Visualização',
+            type: 'boolean',
+            defaultValue: true
         }
     ]
 };

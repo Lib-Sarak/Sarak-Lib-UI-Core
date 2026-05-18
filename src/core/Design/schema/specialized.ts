@@ -32,9 +32,21 @@ export const SpecializedSchema: ComponentSchema = {
             category: 'Editor de Fluxos',
             type: 'slider',
             unit: 'px',
-            constraints: { min: 0, max: 20 },
-            defaultValue: 8,
-            cssVars: ['--sarak-flow-node-radius']
+            constraints: { min: 0, max: 40, step: 1 },
+            defaultValue: 12,
+            cssVars: ['--sarak-flow-radius', '--sarak-flow-node-radius']
+        },
+        {
+            id: 'flowGridStyle',
+            label: 'Estilo do Grid (Fluxo)',
+            category: 'Editor de Fluxos',
+            type: 'select',
+            defaultValue: 'dots',
+            options: [
+                { value: 'dots', label: 'Dots (Standard)' },
+                { value: 'lines', label: 'Lines (Technical)' }
+            ],
+            cssVars: ['--sarak-flow-grid']
         }
     ]
 };

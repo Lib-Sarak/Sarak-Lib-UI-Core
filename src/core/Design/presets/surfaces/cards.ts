@@ -33,7 +33,7 @@ export interface CardPreset {
         cardBorderRight: number;
         
         // Atmosfera Local (Textura & Glow)
-        cardTextureType: 'none' | 'noise' | 'grid' | 'dots';
+        cardTextureType: string;
         cardTextureOpacity: number;
         cardInnerGlowColor: string;
         cardInnerGlowWidth: number;

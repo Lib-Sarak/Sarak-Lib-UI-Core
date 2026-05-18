@@ -144,11 +144,15 @@ export const SelectControl: React.FC<any> = ({ label, options, value, onChange, 
             className="w-full bg-white/5 border border-white/10 rounded-lg py-1.5 px-3 text-[10px] font-bold focus:border-[var(--theme-primary)] focus:outline-none transition-all text-white/80"
             style={isFont ? { fontFamily: value } : {}}
         >
-            {(options || []).map((opt: any) => (
-                <option key={opt.id || opt} value={opt.id || opt} className="bg-[#0a0a0b]">
-                    {typeof opt === 'object' ? (opt.label || opt.name || opt.id) : opt}
-                </option>
-            ))}
+            {(options || []).map((opt: any) => {
+                const optId = typeof opt === 'object' ? (opt.id !== undefined ? opt.id : (opt.value !== undefined ? opt.value : '')) : opt;
+                const optLabel = typeof opt === 'object' ? (opt.label || opt.name || optId) : opt;
+                return (
+                    <option key={optId} value={optId} className="bg-[#0a0a0b]">
+                        {optLabel}
+                    </option>
+                );
+            })}
         </select>
     </div>
 );

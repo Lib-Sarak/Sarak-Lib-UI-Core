@@ -18,6 +18,9 @@ export type { AnimationPreset } from './animations';
 export type { LayoutPreset } from './layout';
 export type { ThemePreset } from './themes';
 export type { CardPreset } from './surfaces/cards';
+export type { OverlayPreset } from './surfaces/overlays';
+export type { AtmospherePreset } from './surfaces/atmospheres';
+
 
 // Stubs vazios para galerias que consomem esses arrays (compilação segura)
 // TODO: Migrar para subdiretórios próprios com presets data-driven

@@ -30,9 +30,8 @@ export const useSarakUI = () => {
     // Design do Sistema (O que está persistido)
     const systemDesign = context.design || {};
     
-    // Design Ativo (Rascunho se houver override ou se o draft do contexto tiver dados reais)
-    const hasDraft = context.draftDesign && Object.keys(context.draftDesign).length > 0;
-    const activeDesign = overrideDesign || (hasDraft ? context.draftDesign : systemDesign);
+    // Design Ativo (Rascunho se houver override, caso contrário usa o design persistido do sistema)
+    const activeDesign = overrideDesign || systemDesign;
 
     return {
         ...context,
@@ -146,7 +145,7 @@ export const SarakUIProvider: React.FC<SarakUIProviderProps> = ({
         <UIContext.Provider value={uiContextValue}>
             <DesignInjector 
                 design={design} 
-                isDrafting={false} 
+                isDrafting={isDrafting} 
             />
             <NoiseOverlay />
             {children}

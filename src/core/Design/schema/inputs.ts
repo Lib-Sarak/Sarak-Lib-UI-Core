@@ -16,7 +16,7 @@ export const InputsSchema: ComponentSchema = {
             category: 'Inputs de Texto',
             type: 'slider',
             unit: 'px',
-            constraints: { min: 0, max: 24 },
+            constraints: { min: 0, max: 120 },
             defaultValue: 8,
             cssVars: ['--sarak-input-border-radius']
         },

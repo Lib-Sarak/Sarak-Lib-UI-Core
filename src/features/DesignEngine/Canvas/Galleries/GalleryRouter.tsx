@@ -1,5 +1,7 @@
 import React from 'react';
 import { CardsGallery } from './CardsGallery';
+import { OverlaysGallery } from './OverlaysGallery';
+import { AtmosphereGallery } from './AtmosphereGallery';
 import { TypographyGallery } from './TypographyGallery';
 import { AnimationsGallery } from './AnimationsGallery';
 import { BrandingGallery } from './BrandingGallery';
@@ -14,6 +16,7 @@ import { AdvancedGallery } from './AdvancedGallery';
 
 interface GalleryRouterProps {
     activeCategory: string;
+    activeSectionId?: string | null;
     tokens: any;
     onUpdateDraft: (key: string, value: any) => void;
     activePreviewApp?: string;
@@ -26,7 +29,7 @@ interface GalleryRouterProps {
  * Roteador de galerias sem aliases duplicados.
  * Cada subcategoria aponta para uma única galeria canônica.
  */
-export const GalleryRouter: React.FC<GalleryRouterProps> = ({ activeCategory, tokens, onUpdateDraft, activePreviewApp, customThemes }) => {
+export const GalleryRouter: React.FC<GalleryRouterProps> = ({ activeCategory, activeSectionId, tokens, onUpdateDraft, activePreviewApp, customThemes }) => {
 
     switch (activeCategory) {
         case 'brand':
@@ -39,6 +42,12 @@ export const GalleryRouter: React.FC<GalleryRouterProps> = ({ activeCategory, to
 
         case 'surfaces':
         case 'cards':
+            if (activeSectionId === 'overlays') {
+                return <OverlaysGallery tokens={tokens} onUpdateDraft={onUpdateDraft} />;
+            }
+            if (activeSectionId === 'atmosphere') {
+                return <AtmosphereGallery tokens={tokens} onUpdateDraft={onUpdateDraft} />;
+            }
             return <CardsGallery tokens={tokens} onUpdateDraft={onUpdateDraft} />;
 
         case 'interaction':

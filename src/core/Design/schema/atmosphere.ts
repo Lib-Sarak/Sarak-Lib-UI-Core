@@ -187,7 +187,7 @@ export const AtmosphereSchema: ComponentSchema = {
             label: 'Opacidade do Ruído da Atmosfera',
             category: 'Ruído Industrial',
             type: 'slider',
-            constraints: { min: 0, max: 0.5, step: 0.01 },
+            constraints: { min: 0, max: 1, step: 0.01 },
             defaultValue: 0.05,
             cssVars: ['--sarak-noise-opacity', '--theme-noise-opacity']
         },
@@ -196,7 +196,7 @@ export const AtmosphereSchema: ComponentSchema = {
             label: 'Intensidade de Ruído',
             category: 'Ruído Industrial',
             type: 'slider',
-            constraints: { min: 0, max: 0.5, step: 0.01 },
+            constraints: { min: 0, max: 1, step: 0.01 },
             defaultValue: 0.05,
             cssVars: ['--sarak-noise-opacity', '--theme-noise-opacity']
         },
@@ -227,7 +227,7 @@ export const AtmosphereSchema: ComponentSchema = {
             category: 'Vidro: Óptica',
             type: 'slider',
             unit: 'px',
-            constraints: { min: 0, max: 100, step: 1 },
+            constraints: { min: 0, max: 200, step: 1 },
             defaultValue: 16,
             cssVars: ['--sarak-glass-blur']
         },
@@ -329,7 +329,7 @@ export const AtmosphereSchema: ComponentSchema = {
             category: 'Sombras: Avançado',
             type: 'slider',
             unit: 'px',
-            constraints: { min: 0, max: 100 },
+            constraints: { min: 0, max: 200 },
             defaultValue: 40,
             cssVars: ['--sarak-shadow-projection-blur']
         },
@@ -350,7 +350,7 @@ export const AtmosphereSchema: ComponentSchema = {
             category: 'Escudo & Defesa',
             type: 'slider',
             unit: 'px',
-            constraints: { min: 0, max: 50 },
+            constraints: { min: 0, max: 200 },
             defaultValue: 10,
             cssVars: ['--sarak-security-glow']
         },
@@ -380,7 +380,7 @@ export const AtmosphereSchema: ComponentSchema = {
             label: 'Suavidade das Bordas',
             category: 'Câmera & Viewport',
             type: 'slider',
-            constraints: { min: 0, max: 100 },
+            constraints: { min: 0, max: 200 },
             defaultValue: 50,
             cssVars: ['--sarak-vignette-softness']
         },
@@ -400,7 +400,7 @@ export const AtmosphereSchema: ComponentSchema = {
             label: 'Contraste Global',
             category: 'Pós-Processamento',
             type: 'slider',
-            constraints: { min: 0.5, max: 1.5, step: 0.05 },
+            constraints: { min: 0.5, max: 3.0, step: 0.05 },
             defaultValue: 1,
             cssVars: ['--sarak-contrast']
         },
@@ -409,7 +409,7 @@ export const AtmosphereSchema: ComponentSchema = {
             label: 'Curva de Contraste Cinematográfico',
             category: 'Pós-Processamento',
             type: 'slider',
-            constraints: { min: 0.5, max: 2.0, step: 0.1 },
+            constraints: { min: 0.5, max: 4.0, step: 0.1 },
             defaultValue: 1.0,
             cssVars: ['--contrast-curve', '--sarak-contrast-curve']
         }
