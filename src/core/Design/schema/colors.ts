@@ -8,7 +8,7 @@ export const ColorsSchema: ComponentSchema = {
     id: 'colors',
     label: 'Paletas e Gradientes',
     pilar: 'brand',
-    subcategory: 'Cores principais e ambiente',
+    subcategory: 'Branding e Cores',
     tokens: [
         {
             id: 'colorPalette',

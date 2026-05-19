@@ -13,9 +13,9 @@ const FONT_OPTIONS = THEME_FONTS.map(font => ({
 
 export const TypographySchema: ComponentSchema = {
     id: 'typography',
-    label: 'Configuração de Fontes',
+    label: 'Tipografia e Escala',
     pilar: 'typography',
-    subcategory: 'Fontes',
+    subcategory: 'Tipografia',
     targetApp: 'typography',
     tokens: [
         // --- FAMÍLIAS DE FONTES ---

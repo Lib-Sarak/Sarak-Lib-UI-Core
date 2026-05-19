@@ -13,6 +13,9 @@ import {
 import * as LucideIcons from 'lucide-react';
 import api from '../../../shared/services/api';
 import { useSarakUI } from '../../../core/Provider/SarakUIProvider';
+import { SarakTitleCard } from '../Cards/SarakTitleCard';
+import { SarakActionCard } from '../Cards/SarakActionCard';
+import { SarakSearchCard } from '../Cards/SarakSearchCard';
 
 interface FilterConfig {
     id: string;
@@ -42,6 +45,7 @@ interface SarakCardGridProps {
     role?: 'primary' | 'secondary' | 'neutral' | 'accent';
     density?: 'compact' | 'standard' | 'spacious';
     importance?: 'hero' | 'base' | 'subtle';
+    variant?: 'classic' | 'title' | 'action' | 'search'; // v7.0
 }
 
 /**
@@ -50,7 +54,9 @@ interface SarakCardGridProps {
  * Renderiza um grid de cartões de alta fidelidade com suporte a metadados
  * técnicos complexos e FILTROS DINÂMICOS declarados via manifesto.
  */
-export const SarakCardGrid: React.FC<SarakCardGridProps> = ({ endpoint, label, mapping, filters = [] }) => {
+export const SarakCardGrid: React.FC<SarakCardGridProps> = ({ endpoint, label, mapping, filters = [], variant }) => {
+    const { design } = useSarakUI();
+    const activeVariant = variant || design.cardVariant || 'classic';
     const [data, setData] = useState<any[]>([]);
     const [loading, setLoading] = useState(true);
     const [error, setError] = useState<string | null>(null);
@@ -212,7 +218,7 @@ export const SarakCardGrid: React.FC<SarakCardGridProps> = ({ endpoint, label, m
                     </div>
                 ) : (
                     filteredData.map((item, idx) => (
-                        <SarakCoreCard key={idx} item={item} mapping={mapping} />
+                        <SarakCoreCard key={idx} item={item} mapping={mapping} variant={activeVariant} />
                     ))
                 )}
             </div>
@@ -220,9 +226,19 @@ export const SarakCardGrid: React.FC<SarakCardGridProps> = ({ endpoint, label, m
     );
 };
 
-const SarakCoreCard = ({ item, mapping }: { item: any; mapping: any }) => {
+const SarakCoreCard = ({ item, mapping, variant }: { item: any; mapping: any; variant?: 'classic' | 'title' | 'action' | 'search' }) => {
     const { design } = useSarakUI();
     const [isExpanded, setIsExpanded] = useState(false);
+
+    if (variant === 'title') {
+        return <SarakTitleCard item={item} mapping={mapping} />;
+    }
+    if (variant === 'action') {
+        return <SarakActionCard item={item} mapping={mapping} />;
+    }
+    if (variant === 'search') {
+        return <SarakSearchCard item={item} mapping={mapping} />;
+    }
 
     const getVal = (obj: any, path: string | undefined) => {
         if (!path) return undefined;

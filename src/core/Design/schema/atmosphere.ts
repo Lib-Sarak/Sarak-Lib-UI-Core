@@ -5,9 +5,9 @@ import { ComponentSchema } from '../types';
  */
 export const AtmosphereSchema: ComponentSchema = {
     id: 'atmosphere',
-    label: 'Ambiente e Atmosfera',
+    label: 'Fundo e Atmosfera',
     pilar: 'surfaces',
-    subcategory: 'Superfícies',
+    subcategory: 'Espaço e Atmosfera',
     tokens: [
         // --- CORES DE SUPERFÍCIE ---
         {

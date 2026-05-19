@@ -3,6 +3,9 @@ import { motion } from 'framer-motion';
 import { GalleryItem } from './GalleryItem';
 import { CARD_PRESETS, CardPreset } from '../../../../core/Design/presets';
 import { DesignScope } from '../../../../core/Design/components/DesignScope';
+import { SarakTitleCard } from '../../../../components/atomic/Cards/SarakTitleCard';
+import { SarakActionCard } from '../../../../components/atomic/Cards/SarakActionCard';
+import { SarakSearchCard } from '../../../../components/atomic/Cards/SarakSearchCard';
 import { 
     Layers,
     Activity,
@@ -98,11 +101,38 @@ const CardSpecimen: React.FC<{ preset: CardPreset, globalTokens: any, isActive: 
         return final;
     }, [preset, globalTokens]);
 
+    const activeVariant = mergedTokens.cardVariant || 'classic';
+
+    // Mock data item for high-fidelity specimen representation
+    const sampleItem = {
+        title: 'Gemini 1.5 Pro',
+        subtitle: 'Sarak AI Orchestrator',
+        context: '1000000',
+        input_caps: ['chat', 'vision', 'web'],
+        description: 'Next-generation multimodal orchestration engine designed for complex reasoning tasks.',
+        price_in: 0.007,
+        price_out: 0.021,
+        tokenizer: 'Gemini Tokenizer',
+        icon: 'Cpu'
+    };
+
+    const sampleMapping = {
+        title: 'title',
+        subtitle: 'subtitle',
+        context: 'context',
+        input_caps: 'input_caps',
+        description: 'description',
+        price_in: 'price_in',
+        price_out: 'price_out',
+        tokenizer: 'tokenizer',
+        icon: 'icon'
+    };
+
     return (
         <DesignScope design={mergedTokens}>
-            <div className="w-full h-full p-10 relative overflow-hidden group bg-[#050505] border border-white/5">
+            <div className="w-full h-full p-6 relative overflow-hidden group bg-[#050505] border border-white/5 flex flex-col justify-center">
                 
-                {/* Transparency Stress-Test (Checkerboard) */}
+                {/* Transparency Checkerboard */}
                 <div className="absolute inset-0 opacity-[0.04] pointer-events-none" style={{ 
                     backgroundImage: `
                         linear-gradient(45deg, #fff 25%, transparent 25%), 
@@ -114,20 +144,28 @@ const CardSpecimen: React.FC<{ preset: CardPreset, globalTokens: any, isActive: 
                     backgroundPosition: '0 0, 0 20px, 20px -20px, -20px 0px'
                 }} />
 
-                {/* THE REPLICA CARD (Digital Twin) */}
-                <div 
-                    className="sarak-card w-full h-full relative z-10 transition-all duration-700 isolate group-hover:scale-[1.02] flex flex-col"
-                    data-sx-card-texture-type={mergedTokens.cardTextureType}
-                >
-
-                    {/* Miniature Dashboard Fragment */}
-                    <div className="relative z-10 flex-1 overflow-hidden">
-                        <MiniDashboardFragment isActive={isActive} />
-                    </div>
+                {/* Specimen Render */}
+                <div className="relative z-10 w-full group-hover:scale-[1.01] transition-transform duration-700">
+                    {activeVariant === 'title' ? (
+                        <SarakTitleCard item={sampleItem} mapping={sampleMapping} />
+                    ) : activeVariant === 'action' ? (
+                        <SarakActionCard item={sampleItem} mapping={sampleMapping} />
+                    ) : activeVariant === 'search' ? (
+                        <SarakSearchCard item={sampleItem} mapping={sampleMapping} />
+                    ) : (
+                        <div 
+                            className="sarak-card w-full h-[260px] relative z-10 transition-all duration-700 isolate flex flex-col"
+                            data-sx-card-texture-type={mergedTokens.cardTextureType}
+                        >
+                            <div className="relative z-10 flex-1 overflow-hidden">
+                                <MiniDashboardFragment isActive={isActive} />
+                            </div>
+                        </div>
+                    )}
                 </div>
 
                 {/* Labeling Overlay */}
-                <div className="absolute bottom-4 left-1/2 -translate-x-1/2 flex flex-col items-center gap-1 opacity-40 group-hover:opacity-100 transition-opacity">
+                <div className="absolute bottom-2 left-1/2 -translate-x-1/2 flex flex-col items-center gap-1 opacity-40 group-hover:opacity-100 transition-opacity">
                     <span className="text-[8px] font-black uppercase tracking-[0.4em] text-white/40">{preset.id}</span>
                 </div>
             </div>

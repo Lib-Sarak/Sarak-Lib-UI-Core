@@ -6,9 +6,9 @@ import { ComponentSchema } from '../types';
  */
 export const ButtonsSchema: ComponentSchema = {
     id: 'buttons',
-    label: 'Anatomia do Botão',
+    label: 'Botão de Ação',
     pilar: 'interaction',
-    subcategory: 'Botões e Interação',
+    subcategory: 'Controles de Entrada',
     tokens: [
         {
             id: 'btnBorderRadius',
@@ -113,6 +113,52 @@ export const ButtonsSchema: ComponentSchema = {
             type: 'color',
             defaultValue: 'rgba(255, 255, 255, 0.05)',
             cssVars: ['--sarak-btn-ghost-hover']
+        },
+
+        // --- ESTILOS AVANÇADOS (SELEÇÃO DO USUÁRIO) ---
+        {
+            id: 'btnStyleType',
+            label: 'Estilo do Botão',
+            category: 'Estilos Avançados',
+            type: 'select',
+            constraints: {
+                options: [
+                    { id: 'matte', value: 'matte', label: 'Industrial Matte' },
+                    { id: 'neon', value: 'neon', label: 'Cyber Neon Glow' },
+                    { id: 'frosted', value: 'frosted', label: 'Glassmorphism Frosted' },
+                    { id: 'borderline', value: 'borderline', label: 'Minimalist Borderline' }
+                ]
+            },
+            defaultValue: 'matte',
+            cssVars: ['--sarak-btn-style-type']
+        },
+        {
+            id: 'btnNeonGlowColor',
+            label: 'Cor do Brilho (Neon)',
+            category: 'Estilos Avançados: Cyber Neon',
+            type: 'color',
+            defaultValue: 'rgba(0, 242, 255, 0.4)',
+            cssVars: ['--sarak-btn-neon-glow-color']
+        },
+        {
+            id: 'btnNeonPulseSpeed',
+            label: 'Velocidade de Pulso (s)',
+            category: 'Estilos Avançados: Cyber Neon',
+            type: 'slider',
+            unit: 's',
+            constraints: { min: 0.5, max: 4, step: 0.1 },
+            defaultValue: 1.5,
+            cssVars: ['--sarak-btn-neon-pulse-speed']
+        },
+        {
+            id: 'btnBackdropBlur',
+            label: 'Desfoque de Vidro (Backdrop Blur)',
+            category: 'Estilos Avançados: Glassmorphism',
+            type: 'slider',
+            unit: 'px',
+            constraints: { min: 0, max: 30 },
+            defaultValue: 8,
+            cssVars: ['--sarak-btn-backdrop-blur']
         }
     ]
 };

@@ -8,7 +8,7 @@ export const BrandingSchema: ComponentSchema = {
     id: 'branding',
     label: 'Identidade Visual',
     pilar: 'brand',
-    subcategory: 'Marca',
+    subcategory: 'Branding e Cores',
     tokens: [
         {
             id: 'systemName',

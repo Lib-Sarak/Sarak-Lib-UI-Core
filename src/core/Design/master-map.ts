@@ -3,11 +3,15 @@ import { BrandingSchema } from './schema/branding';
 import { SystemSchema } from './schema/system';
 import { NavigationSchema } from './schema/navigation';
 import { CardSchema } from './schema/cards';
+import { CardTitleSchema } from './schema/card-title';
+import { CardActionSchema } from './schema/card-action';
+import { CardSearchSchema } from './schema/card-search';
 import { OverlaysSchema } from './schema/overlays';
 import { TablesSchema } from './schema/tables';
 import { TypographySchema } from './schema/typography';
 import { ButtonsSchema } from './schema/buttons';
 import { InputsSchema } from './schema/inputs';
+import { SwitchesSchema } from './schema/switches';
 import { ColorsSchema } from './schema/colors';
 import { DataSchema } from './schema/data';
 import { AnimationSchema } from './schema/animations';
@@ -33,11 +37,15 @@ export const MASTER_DESIGN_MAP: MasterDesignSchema = {
         SystemSchema,
         NavigationSchema,
         CardSchema,
+        CardTitleSchema,
+        CardActionSchema,
+        CardSearchSchema,
         OverlaysSchema,
         TablesSchema,
         TypographySchema,
         ButtonsSchema,
         InputsSchema,
+        SwitchesSchema,
         ColorsSchema,
         DataSchema,
         AnimationSchema,

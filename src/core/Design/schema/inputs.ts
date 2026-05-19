@@ -6,9 +6,9 @@ import { ComponentSchema } from '../types';
  */
 export const InputsSchema: ComponentSchema = {
     id: 'inputs',
-    label: 'Campos de Texto (Inputs)',
+    label: 'Campo de Entrada (Input)',
     pilar: 'interaction',
-    subcategory: 'Campos de Texto (Inputs)',
+    subcategory: 'Controles de Entrada',
     tokens: [
         {
             id: 'inputBorderRadius',
@@ -28,32 +28,7 @@ export const InputsSchema: ComponentSchema = {
             defaultValue: 'rgba(255, 255, 255, 0.03)',
             generateVariants: true,
             cssVars: ['--sarak-input-bg']
-        },
-        {
-            id: 'switchTrackActiveBg',
-            label: 'Cor: Switch Ativo',
-            category: 'Switches & Toggles',
-            type: 'color',
-            defaultValue: '#00f2ff',
-            generateVariants: true,
-            cssVars: ['--sarak-switch-active-bg']
-        },
-        {
-            id: 'switchThumbBg',
-            label: 'Cor: Switch Botão',
-            category: 'Switches & Toggles',
-            type: 'color',
-            defaultValue: '#ffffff',
-            cssVars: ['--sarak-switch-thumb']
-        },
-        {
-            id: 'checkboxActiveColor',
-            label: 'Cor do Check Selecionado',
-            category: 'Checkboxes & Radios',
-            type: 'color',
-            defaultValue: '#00f2ff',
-            generateVariants: true,
-            cssVars: ['--sarak-checkbox-active']
         }
     ]
 };
+

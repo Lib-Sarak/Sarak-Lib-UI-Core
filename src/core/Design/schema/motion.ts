@@ -7,9 +7,9 @@ import { ComponentSchema } from '../types';
  */
 export const MotionSchema: ComponentSchema = {
     id: 'motion',
-    label: 'Física de Movimento',
+    label: 'Movimento e Física',
     pilar: 'interaction',
-    subcategory: 'Física e Movimento',
+    subcategory: 'Física e Dinâmicas',
     tokens: [
         // --- CURVAS DE FÍSICA ---
         {

@@ -58,8 +58,9 @@ export const CARD_PRESETS: CardPreset[] = [
     {
         id: 'cyber-precision',
         name: 'Cyber Precision',
-        description: 'Anatomia técnica com chanfros acentuados e malha de precisão.',
+        description: 'Anatomia técnica clássica com chanfros acentuados e malha de precisão.',
         design: {
+            cardVariant: 'classic',
             cardBorderRadius: 2,
             cardRadiusTL: 2, cardRadiusTR: 2, cardRadiusBL: 2, cardRadiusBR: 2,
             cardGeometricCut: 14,
@@ -86,9 +87,12 @@ export const CARD_PRESETS: CardPreset[] = [
     },
     {
         id: 'ethereal-glass',
-        name: 'Ethereal Glass',
-        description: 'Superfície vítrea de alta refração e bordas orgânicas.',
+        name: 'Ethereal Glass (Title Specimen)',
+        description: 'Superfície vítrea de cabeçalho limpo com badges de capacidade e alta refração.',
         design: {
+            cardVariant: 'title',
+            cardTitleFontSize: 22,
+            cardTitleIconGlow: 'rgba(255, 255, 255, 0.4)',
             cardBorderRadius: 28,
             cardRadiusTL: 28, cardRadiusTR: 28, cardRadiusBL: 28, cardRadiusBR: 28,
             cardGeometricCut: 0,
@@ -115,9 +119,14 @@ export const CARD_PRESETS: CardPreset[] = [
     },
     {
         id: 'industrial-stealth',
-        name: 'Industrial Stealth',
-        description: 'Construção tátil opaca com ruído orgânico e bordas assimétricas.',
+        name: 'Industrial Action Card',
+        description: 'Construção tátil com gatilhos de clique neon pulsantes e especificações colapsáveis.',
         design: {
+            cardVariant: 'action',
+            btnStyleType: 'neon',
+            btnNeonPulseSpeed: 2.0,
+            cardActionBtnPrimaryBg: 'var(--theme-primary)',
+            cardActionClickScale: 0.95,
             cardBorderRadius: 12,
             cardRadiusTL: 12, cardRadiusTR: 12, cardRadiusBL: 12, cardRadiusBR: 12,
             cardGeometricCut: 0,
@@ -144,9 +153,13 @@ export const CARD_PRESETS: CardPreset[] = [
     },
     {
         id: 'plasma-vibrance',
-        name: 'Plasma Glow',
-        description: 'Foco em iluminação interna profunda e projeção de brilho neon.',
+        name: 'Plasma Search Filter',
+        description: 'Card de pesquisa com filtros reativos táteis, switches neon e feixe de borda ativa.',
         design: {
+            cardVariant: 'search',
+            switchStyleType: 'pulsing',
+            cardSearchBgFocus: 'rgba(var(--theme-primary-rgb), 0.12)',
+            cardSearchBorderBeamActive: true,
             cardBorderRadius: 40,
             cardRadiusTL: 40, cardRadiusTR: 40, cardRadiusBL: 40, cardRadiusBR: 40,
             cardGeometricCut: 0,
@@ -174,8 +187,9 @@ export const CARD_PRESETS: CardPreset[] = [
     {
         id: 'brutalist-slab',
         name: 'Brutalist Slab',
-        description: 'Geometria crua com bordas pesadas e cortes assimétricos.',
+        description: 'Geometria crua com bordas pesadas e cortes assimétricos brutais.',
         design: {
+            cardVariant: 'classic',
             cardBorderRadius: 0,
             cardRadiusTL: 0, cardRadiusTR: 0, cardRadiusBL: 0, cardRadiusBR: 0,
             cardGeometricCut: 24,

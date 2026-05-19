@@ -6,9 +6,9 @@ import { ComponentSchema } from '../types';
  */
 export const CardSchema: ComponentSchema = {
     id: 'cards',
-    label: 'Anatomia do Card',
+    label: 'Card Geral',
     pilar: 'surfaces',
-    subcategory: 'Cards',
+    subcategory: 'Estruturas de Card',
     tokens: [
         // --- GEOMETRIA ---
         {
@@ -372,6 +372,24 @@ export const CardSchema: ComponentSchema = {
             constraints: { min: 0, max: 120 },
             defaultValue: 24,
             cssVars: ['--sarak-card-padding-md', '--theme-gap']
+        },
+
+        // --- ESPECIALIZAÇÕES (GRANULARIDADE) ---
+        {
+            id: 'cardVariant',
+            label: 'Variante de Card',
+            category: 'Especializações',
+            type: 'select',
+            constraints: {
+                options: [
+                    { id: 'classic', value: 'classic', label: 'Classic IA Detail Card' },
+                    { id: 'title', value: 'title', label: 'Sleek Title Metadata Card' },
+                    { id: 'action', value: 'action', label: 'Tactile CTA Action Card' },
+                    { id: 'search', value: 'search', label: 'Reactive Search Filter Card' }
+                ]
+            },
+            defaultValue: 'classic',
+            cssVars: ['--sarak-card-variant']
         }
     ]
 };

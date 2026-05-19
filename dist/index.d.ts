@@ -237,6 +237,7 @@ interface SarakCardGridProps {
     role?: 'primary' | 'secondary' | 'neutral' | 'accent';
     density?: 'compact' | 'standard' | 'spacious';
     importance?: 'hero' | 'base' | 'subtle';
+    variant?: 'classic' | 'title' | 'action' | 'search';
 }
 /**
  * SarakCardGrid Core (v6.4)

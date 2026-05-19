@@ -7,9 +7,9 @@ import { ComponentSchema } from '../types';
  */
 export const LayersSchema: ComponentSchema = {
     id: 'layers',
-    label: 'Camadas de Fundo',
+    label: 'Camadas e Profundidade',
     pilar: 'surfaces',
-    subcategory: 'Camadas e Profundidade',
+    subcategory: 'Espaço e Atmosfera',
     tokens: [
         // --- ARQUITETURA DE Z-INDEX ---
         {
