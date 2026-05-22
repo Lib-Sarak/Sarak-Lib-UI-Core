@@ -211,7 +211,7 @@ export const CategoryLabel: React.FC<{
             </div>
             <div className="flex items-center gap-2">
                 <Icon size={12} className={`transition-all ${isOpen ? 'text-[var(--theme-primary)]' : 'text-white/20'}`} />
-                <h3 className={`text-2xs font-black uppercase tracking-[0.2em] transition-all ${isOpen ? 'text-white' : 'text-white/40'}`}>{title}</h3>
+                <span className={`text-2xs font-black uppercase tracking-[0.2em] transition-all ${isOpen ? 'text-white' : 'text-white/40'}`}>{title}</span>
             </div>
         </div>
         <div className="flex items-center gap-3">

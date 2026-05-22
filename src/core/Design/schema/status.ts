@@ -7,13 +7,10 @@ import { ComponentSchema } from '../types';
 export const StatusSchema: ComponentSchema = {
     id: 'status',
     label: 'Cores Semânticas',
-    pilar: 'brand',
-    subcategory: 'Branding e Cores',
     tokens: [
         {
             id: 'statusSuccessColor',
             label: 'Cor: Sucesso',
-            category: 'Estados Semânticos',
             type: 'color',
             defaultValue: '#10b981',
             generateVariants: true,
@@ -22,7 +19,6 @@ export const StatusSchema: ComponentSchema = {
         {
             id: 'statusErrorColor',
             label: 'Cor: Erro',
-            category: 'Estados Semânticos',
             type: 'color',
             defaultValue: '#ef4444',
             generateVariants: true,
@@ -31,7 +27,6 @@ export const StatusSchema: ComponentSchema = {
         {
             id: 'statusWarningColor',
             label: 'Cor: Alerta',
-            category: 'Estados Semânticos',
             type: 'color',
             defaultValue: '#f59e0b',
             generateVariants: true,
@@ -40,7 +35,6 @@ export const StatusSchema: ComponentSchema = {
         {
             id: 'statusInfoColor',
             label: 'Cor: Info',
-            category: 'Estados Semânticos',
             type: 'color',
             defaultValue: '#3b82f6',
             generateVariants: true,
@@ -49,7 +43,6 @@ export const StatusSchema: ComponentSchema = {
         {
             id: 'badgeRadius',
             label: 'Raio das Badges',
-            category: 'Anatomia',
             type: 'slider',
             unit: 'px',
             constraints: { min: 0, max: 20 },

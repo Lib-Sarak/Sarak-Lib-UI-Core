@@ -7,13 +7,10 @@ import { ComponentSchema } from '../types';
 export const DataSchema: ComponentSchema = {
     id: 'data',
     label: 'Gráficos & Dados',
-    pilar: 'systems',
-    subcategory: 'Visualização de Dados',
     tokens: [
         {
             id: 'chartColorPalette',
             label: 'Paleta de Cores (Série)',
-            category: 'Visualização',
             type: 'color', // Futuramente pode ser um array, por enquanto cor base
             defaultValue: '#00f2ff',
             cssVars: ['--sarak-chart-primary']
@@ -21,7 +18,6 @@ export const DataSchema: ComponentSchema = {
         {
             id: 'chartGridOpacity',
             label: 'Opacidade da Grade',
-            category: 'Anatomia',
             type: 'slider',
             constraints: { min: 0, max: 0.5, step: 0.01 },
             defaultValue: 0.05,
@@ -30,7 +26,6 @@ export const DataSchema: ComponentSchema = {
         {
             id: 'chartTooltipBg',
             label: 'Fundo do Tooltip',
-            category: 'Anatomia',
             type: 'color',
             defaultValue: 'rgba(15, 23, 42, 0.9)',
             cssVars: ['--sarak-chart-tooltip-bg']
@@ -38,7 +33,6 @@ export const DataSchema: ComponentSchema = {
         {
             id: 'chartType',
             label: 'Tipo de Gráfico',
-            category: 'Visualização',
             type: 'select',
             defaultValue: 'line',
             options: [
@@ -54,14 +48,12 @@ export const DataSchema: ComponentSchema = {
         {
             id: 'chartShowGrid',
             label: 'Mostrar Grid de Fundo',
-            category: 'Visualização',
             type: 'boolean',
             defaultValue: true
         },
         {
             id: 'chartThickness',
             label: 'Espessura da Linha',
-            category: 'Visualização',
             type: 'slider',
             unit: 'px',
             constraints: { min: 1, max: 8, step: 1 },
@@ -71,7 +63,6 @@ export const DataSchema: ComponentSchema = {
         {
             id: 'chartSmoothing',
             label: 'Suavização da Linha',
-            category: 'Visualização',
             type: 'boolean',
             defaultValue: true
         }

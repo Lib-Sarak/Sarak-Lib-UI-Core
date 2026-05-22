@@ -49,7 +49,7 @@ const SOVEREIGN_PILLARS = [
  */
 export const HyperGranularityTab: React.FC = () => {
     const sarak = useSarakUI();
-    const { draft, updateDraft, handleApplyToSystem, resetPillar, resetToken, toast } = useDesignDraft(sarak);
+    const { draft, updateDraft, handleApplyToSystem, resetComponent, resetToken, toast } = useDesignDraft(sarak);
     
     const [activePillar, setActivePillar] = useState<string>('core');
     const [activeSection, setActiveSection] = useState<string | null>(null);
@@ -75,7 +75,6 @@ export const HyperGranularityTab: React.FC = () => {
             return MASTER_DESIGN_MAP.components.map(comp => {
                 const tokens = comp.tokens.filter(token => 
                     token.label.toLowerCase().includes(query) || 
-                    (token.category && token.category.toLowerCase().includes(query)) ||
                     token.id.toLowerCase().includes(query)
                 );
                 
@@ -150,8 +149,7 @@ export const HyperGranularityTab: React.FC = () => {
                                         {hasDraft && (
                                             <button 
                                                 onClick={(e) => {
-                                                    e.stopPropagation();
-                                                    resetPillar(pillar.schemas);
+                                                    resetComponent(pillar.schemas);
                                                 }}
                                                 className={`absolute top-1 right-1 p-0.5 rounded-full transition-all ${isActive ? 'bg-black text-[var(--theme-primary)] hover:scale-110' : 'bg-[var(--theme-primary)] text-black animate-pulse hover:animate-none hover:scale-110'}`}
                                                 title="Resetar Pilar"
@@ -181,7 +179,7 @@ export const HyperGranularityTab: React.FC = () => {
                         const isOpen = activeSection === component.id || (searchQuery.length > 0);
 
                         const groupedTokens = component.tokens.reduce((acc, token) => {
-                            const cat = token.category || 'Geral';
+                            const cat = 'Configurações Globais';
                             if (!acc[cat]) acc[cat] = [];
                             acc[cat].push(token);
                             return acc;

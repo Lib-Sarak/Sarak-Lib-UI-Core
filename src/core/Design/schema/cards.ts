@@ -7,14 +7,11 @@ import { ComponentSchema } from '../types';
 export const CardSchema: ComponentSchema = {
     id: 'cards',
     label: 'Card Geral',
-    pilar: 'surfaces',
-    subcategory: 'Estruturas de Card',
     tokens: [
         // --- GEOMETRIA ---
         {
             id: 'cardBorderRadius',
             label: 'Raio da Borda (Master)',
-            category: 'Geometria',
             type: 'slider',
             unit: 'px',
             constraints: { min: 0, max: 120 },
@@ -24,7 +21,6 @@ export const CardSchema: ComponentSchema = {
         {
             id: 'cardRadiusTL',
             label: 'Quina Superior Esquerda',
-            category: 'Geometria: Avançado',
             type: 'slider',
             unit: 'px',
             constraints: { min: 0, max: 120 },
@@ -34,7 +30,6 @@ export const CardSchema: ComponentSchema = {
         {
             id: 'cardRadiusTR',
             label: 'Quina Superior Direita',
-            category: 'Geometria: Avançado',
             type: 'slider',
             unit: 'px',
             constraints: { min: 0, max: 120 },
@@ -44,7 +39,6 @@ export const CardSchema: ComponentSchema = {
         {
             id: 'cardRadiusBL',
             label: 'Quina Inferior Esquerda',
-            category: 'Geometria: Avançado',
             type: 'slider',
             unit: 'px',
             constraints: { min: 0, max: 120 },
@@ -54,7 +48,6 @@ export const CardSchema: ComponentSchema = {
         {
             id: 'cardRadiusBR',
             label: 'Quina Inferior Direita',
-            category: 'Geometria: Avançado',
             type: 'slider',
             unit: 'px',
             constraints: { min: 0, max: 120 },
@@ -64,7 +57,6 @@ export const CardSchema: ComponentSchema = {
         {
             id: 'cardGeometricCut',
             label: 'Corte Geométrico (Chanfro)',
-            category: 'Geometria',
             type: 'slider',
             unit: 'px',
             constraints: { min: 0, max: 100 },
@@ -76,7 +68,6 @@ export const CardSchema: ComponentSchema = {
         {
             id: 'cardBackgroundColor',
             label: 'Cor de Fundo (Base)',
-            category: 'Superfície',
             type: 'color',
             defaultValue: 'rgba(15, 23, 42, 0.6)',
             generateVariants: true,
@@ -85,7 +76,6 @@ export const CardSchema: ComponentSchema = {
         {
             id: 'cardBackdropBlur',
             label: 'Backdrop Blur (Glass)',
-            category: 'Superfície',
             type: 'slider',
             unit: 'px',
             constraints: { min: 0, max: 100 },
@@ -95,7 +85,6 @@ export const CardSchema: ComponentSchema = {
         {
             id: 'cardSurfaceOpacity',
             label: 'Opacidade da Superfície',
-            category: 'Superfície',
             type: 'slider',
             constraints: { min: 0, max: 1, step: 0.05 },
             defaultValue: 0.8,
@@ -106,7 +95,6 @@ export const CardSchema: ComponentSchema = {
         {
             id: 'cardBorderWidth',
             label: 'Espessura da Borda',
-            category: 'Bordas',
             type: 'slider',
             unit: 'px',
             constraints: { min: 0, max: 20 },
@@ -116,7 +104,6 @@ export const CardSchema: ComponentSchema = {
         {
             id: 'cardBorderColor',
             label: 'Cor da Borda',
-            category: 'Bordas',
             type: 'color',
             defaultValue: 'rgba(255, 255, 255, 0.1)',
             cssVars: ['--card-border-color', '--theme-border', '--sarak-card-border-color']
@@ -124,7 +111,6 @@ export const CardSchema: ComponentSchema = {
         {
             id: 'cardBorderOpacity',
             label: 'Opacidade da Borda',
-            category: 'Bordas',
             type: 'slider',
             constraints: { min: 0, max: 1, step: 0.05 },
             defaultValue: 1,
@@ -135,7 +121,6 @@ export const CardSchema: ComponentSchema = {
         {
             id: 'cardBorderTop',
             label: 'Espessura: Topo',
-            category: 'Bordas: Avançado',
             type: 'slider',
             unit: 'px',
             constraints: { min: 0, max: 40 },
@@ -145,7 +130,6 @@ export const CardSchema: ComponentSchema = {
         {
             id: 'cardBorderBottom',
             label: 'Espessura: Base',
-            category: 'Bordas: Avançado',
             type: 'slider',
             unit: 'px',
             constraints: { min: 0, max: 40 },
@@ -155,7 +139,6 @@ export const CardSchema: ComponentSchema = {
         {
             id: 'cardBorderLeft',
             label: 'Espessura: Esquerda',
-            category: 'Bordas: Avançado',
             type: 'slider',
             unit: 'px',
             constraints: { min: 0, max: 40 },
@@ -165,7 +148,6 @@ export const CardSchema: ComponentSchema = {
         {
             id: 'cardBorderRight',
             label: 'Espessura: Direita',
-            category: 'Bordas: Avançado',
             type: 'slider',
             unit: 'px',
             constraints: { min: 0, max: 40 },
@@ -177,7 +159,6 @@ export const CardSchema: ComponentSchema = {
         {
             id: 'cardInnerGlowColor',
             label: 'Cor do Glow Interno',
-            category: 'Superfície: Efeitos',
             type: 'color',
             defaultValue: 'rgba(255, 255, 255, 0.05)',
             cssVars: ['--sarak-card-inner-glow-color']
@@ -185,7 +166,6 @@ export const CardSchema: ComponentSchema = {
         {
             id: 'cardInnerGlowWidth',
             label: 'Largura do Glow Interno',
-            category: 'Superfície: Efeitos',
             type: 'slider',
             unit: 'px',
             constraints: { min: 0, max: 30 },
@@ -197,7 +177,6 @@ export const CardSchema: ComponentSchema = {
         {
             id: 'cardTextureType',
             label: 'Textura da Superfície',
-            category: 'Superfície: Textura',
             type: 'select',
             constraints: {
                 options: [
@@ -250,7 +229,6 @@ export const CardSchema: ComponentSchema = {
         {
             id: 'cardTextureOpacity',
             label: 'Opacidade da Textura',
-            category: 'Superfície: Textura',
             type: 'slider',
             constraints: { min: 0, max: 1, step: 0.01 },
             defaultValue: 0.03,
@@ -261,7 +239,6 @@ export const CardSchema: ComponentSchema = {
         {
             id: 'cardHeaderBg',
             label: 'Fundo do Header',
-            category: 'Anatomia: Header',
             type: 'color',
             defaultValue: 'rgba(255, 255, 255, 0.03)',
             cssVars: ['--sarak-card-header-bg']
@@ -269,7 +246,6 @@ export const CardSchema: ComponentSchema = {
         {
             id: 'cardHeaderBorder',
             label: 'Linha Divisora (Bottom)',
-            category: 'Anatomia: Header',
             type: 'color',
             defaultValue: 'rgba(255, 255, 255, 0.05)',
             cssVars: ['--sarak-card-header-border']
@@ -277,7 +253,6 @@ export const CardSchema: ComponentSchema = {
         {
             id: 'cardHeaderPadding',
             label: 'Padding Vertical',
-            category: 'Anatomia: Header',
             type: 'slider',
             unit: 'px',
             constraints: { min: 0, max: 120 },
@@ -289,7 +264,6 @@ export const CardSchema: ComponentSchema = {
         {
             id: 'cardFooterBg',
             label: 'Fundo do Footer',
-            category: 'Anatomia: Footer',
             type: 'color',
             defaultValue: 'transparent',
             cssVars: ['--sarak-card-footer-bg']
@@ -297,7 +271,6 @@ export const CardSchema: ComponentSchema = {
         {
             id: 'cardFooterBorder',
             label: 'Linha Divisora (Top)',
-            category: 'Anatomia: Footer',
             type: 'color',
             defaultValue: 'rgba(255, 255, 255, 0.05)',
             cssVars: ['--sarak-card-footer-border']
@@ -307,7 +280,6 @@ export const CardSchema: ComponentSchema = {
         {
             id: 'cardShadowSpread',
             label: 'Espalhamento da Sombra',
-            category: 'Efeitos: Glow',
             type: 'slider',
             unit: 'px',
             constraints: { min: 0, max: 200 },
@@ -317,7 +289,6 @@ export const CardSchema: ComponentSchema = {
         {
             id: 'cardGlowColor',
             label: 'Cor do Brilho (Neon)',
-            category: 'Efeitos: Glow',
             type: 'color',
             defaultValue: 'rgba(0, 242, 255, 0.05)',
             cssVars: ['--sarak-card-glow-color']
@@ -325,7 +296,6 @@ export const CardSchema: ComponentSchema = {
         {
             id: 'cardGlowIntensity',
             label: 'Intensidade do Brilho',
-            category: 'Efeitos: Glow',
             type: 'slider',
             constraints: { min: 0, max: 1, step: 0.05 },
             defaultValue: 0,
@@ -336,7 +306,6 @@ export const CardSchema: ComponentSchema = {
         {
             id: 'cardHoverTranslate',
             label: 'Elevação no Hover (Y)',
-            category: 'Interação',
             type: 'slider',
             unit: 'px',
             constraints: { min: -50, max: 10 },
@@ -346,7 +315,6 @@ export const CardSchema: ComponentSchema = {
         {
             id: 'cardHoverGlowIncrease',
             label: 'Aumento de Brilho',
-            category: 'Interação',
             type: 'slider',
             constraints: { min: 0, max: 1, step: 0.05 },
             defaultValue: 0.2,
@@ -355,7 +323,6 @@ export const CardSchema: ComponentSchema = {
         {
             id: 'cardSpotlightOpacity',
             label: 'Opacidade do Spotlight',
-            category: 'Interação',
             type: 'slider',
             constraints: { min: 0, max: 1, step: 0.05 },
             defaultValue: 0.1,
@@ -366,7 +333,6 @@ export const CardSchema: ComponentSchema = {
         {
             id: 'cardPaddingMd',
             label: 'Padding Interno (MD)',
-            category: 'Espaçamento',
             type: 'slider',
             unit: 'px',
             constraints: { min: 0, max: 120 },
@@ -378,7 +344,6 @@ export const CardSchema: ComponentSchema = {
         {
             id: 'cardVariant',
             label: 'Variante de Card',
-            category: 'Especializações',
             type: 'select',
             constraints: {
                 options: [

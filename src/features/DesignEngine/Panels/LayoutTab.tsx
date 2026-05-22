@@ -1,6 +1,6 @@
 import React from 'react';
 import { useSarakUI } from '../../../core/Provider/SarakUIProvider';
-import { THEME_FONTS } from '../../../core/Design/presets/typography';
+const THEME_FONTS = [{ id: 'outfit', value: "'Outfit', sans-serif", name: 'Outfit', category: 'Sans-Serif' }, { id: 'inter', value: "'Inter', sans-serif", name: 'Inter', category: 'Sans-Serif' }];
 import { Maximize2, Minimize2, Type, Layout as LayoutIcon, Sidebar as SidebarIcon, ArrowRightLeft, CaseSensitive } from 'lucide-react';
 
 export const LayoutTab: React.FC = () => {
@@ -128,7 +128,7 @@ export const LayoutTab: React.FC = () => {
                                     className="w-full bg-white/5 border border-white/10 rounded-xl px-4 py-3 text-xs font-bold text-white/80 focus:border-amber-500/50 outline-none transition-all"
                                 >
                                     <option value="">(Usar Padrão do Tema)</option>
-                                    {THEME_FONTS.map(f => <option key={f.id} value={f.value}>{f.name}</option>)}
+                                    {THEME_FONTS.map((f: any) => <option key={f.id} value={f.value}>{f.name}</option>)}
                                 </select>
                             </div>
 
@@ -140,7 +140,7 @@ export const LayoutTab: React.FC = () => {
                                     className="w-full bg-white/5 border border-white/10 rounded-xl px-4 py-3 text-xs font-bold text-white/80 focus:border-amber-500/50 outline-none transition-all"
                                 >
                                     <option value="">(Usar Padrão do Tema)</option>
-                                    {THEME_FONTS.map(f => <option key={f.id} value={f.value}>{f.name}</option>)}
+                                    {THEME_FONTS.map((f: any) => <option key={f.id} value={f.value}>{f.name}</option>)}
                                 </select>
                             </div>
                         </div>

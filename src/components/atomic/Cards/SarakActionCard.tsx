@@ -9,10 +9,13 @@ interface SarakActionCardProps {
     mapping: any;
     className?: string;
     onAction?: (item: any) => void;
+    design?: any;
+    label?: string;
 }
 
-export const SarakActionCard: React.FC<SarakActionCardProps> = ({ item, mapping, className = '', onAction }) => {
-    const { design } = useSarakUI();
+export const SarakActionCard: React.FC<SarakActionCardProps> = ({ item, mapping, className = '', onAction, design: localDesign, label }) => {
+    const globalUI = useSarakUI();
+    const design = localDesign || globalUI.design;
     const [isExpanded, setIsExpanded] = useState(false);
 
     const getVal = (obj: any, path: string | undefined) => {
@@ -34,13 +37,26 @@ export const SarakActionCard: React.FC<SarakActionCardProps> = ({ item, mapping,
     const btnStyleType = design.btnStyleType || 'matte';
     const btnPulseSpeed = design.btnNeonPulseSpeed !== undefined ? `${design.btnNeonPulseSpeed}s` : '1.5s';
     const btnBlur = design.btnBackdropBlur !== undefined ? `${design.btnBackdropBlur}px` : '8px';
+    const clickScale = design.cardActionClickScale !== undefined ? Number(design.cardActionClickScale) : 0.96;
 
     const getButtonStyles = (): React.CSSProperties => {
         const baseBg = 'var(--sarak-card-action-btn-bg, var(--theme-primary, #00f2ff))';
+        const hoverBg = 'var(--sarak-card-action-btn-hover-bg, rgba(0, 242, 255, 0.8))';
+        const textCol = 'var(--sarak-card-action-btn-text, #090d16)';
+        const btnPaddingVal = 'var(--sarak-card-action-btn-padding, 12px)';
+        const btnBorderRadiusVal = 'var(--sarak-card-action-btn-radius, 8px)';
         
+        const baseStyles: React.CSSProperties = {
+            color: textCol,
+            paddingTop: btnPaddingVal,
+            paddingBottom: btnPaddingVal,
+            borderRadius: btnBorderRadiusVal,
+        };
+
         switch (btnStyleType) {
             case 'neon':
                 return {
+                    ...baseStyles,
                     background: baseBg,
                     boxShadow: '0 0 15px var(--sarak-btn-neon-glow-color, rgba(0, 242, 255, 0.4))',
                     animation: `sarak-neon-pulse ${btnPulseSpeed} infinite alternate`,
@@ -48,6 +64,7 @@ export const SarakActionCard: React.FC<SarakActionCardProps> = ({ item, mapping,
                 };
             case 'frosted':
                 return {
+                    ...baseStyles,
                     background: 'rgba(255, 255, 255, 0.08)',
                     backdropFilter: `blur(${btnBlur})`,
                     border: '1px solid rgba(255, 255, 255, 0.1)',
@@ -55,6 +72,7 @@ export const SarakActionCard: React.FC<SarakActionCardProps> = ({ item, mapping,
                 };
             case 'borderline':
                 return {
+                    ...baseStyles,
                     background: 'transparent',
                     border: `1.5px solid ${baseBg}`,
                     color: baseBg,
@@ -63,6 +81,7 @@ export const SarakActionCard: React.FC<SarakActionCardProps> = ({ item, mapping,
             case 'matte':
             default:
                 return {
+                    ...baseStyles,
                     background: baseBg,
                     boxShadow: 'inset 0 1px 0 rgba(255, 255, 255, 0.15), 0 2px 4px rgba(0, 0, 0, 0.2)',
                     border: '1px solid rgba(0, 0, 0, 0.15)'
@@ -87,6 +106,14 @@ export const SarakActionCard: React.FC<SarakActionCardProps> = ({ item, mapping,
             {/* Ambient Atmosphere */}
             <div className="absolute inset-0 z-0 spotlight-effect pointer-events-none opacity-0 group-hover:opacity-100 transition-opacity duration-500" />
             <div className="border-beam-effect" />
+
+            {/* DRAFT BADGE (v6.3) */}
+            {globalUI?.isDrafting && (
+                <div className="absolute top-2 left-4 z-40 pointer-events-none flex items-center gap-1.5 px-2 py-0.5 rounded bg-black/60 border border-[var(--theme-primary)]/20 text-[7px] font-black uppercase tracking-[0.2em] text-[var(--theme-primary)] shadow-[0_0_10px_rgba(0,242,255,0.05)]">
+                    <span className="w-1 h-1 rounded-full bg-[var(--theme-primary)] animate-pulse" />
+                    {label || "Card de Interação"}
+                </div>
+            )}
 
             <div className="relative z-10 flex flex-col h-full justify-between">
                 {/* Header Info */}
@@ -121,13 +148,12 @@ export const SarakActionCard: React.FC<SarakActionCardProps> = ({ item, mapping,
                     {/* Specialized Action Button */}
                     <motion.button 
                         whileHover={{ scale: design.btnHoverScale || 1.02 }}
-                        whileTap={{ scale: 'var(--sarak-card-action-click-scale, 0.96)' as any }}
+                        whileTap={{ scale: clickScale }}
                         onClick={() => onAction && onAction(item)}
-                        className="flex-1 py-3 text-white text-3xs font-black uppercase tracking-widest transition-all rounded-theme flex items-center justify-center gap-1.5 cursor-pointer"
+                        className="flex-1 text-3xs font-black uppercase tracking-widest transition-all flex items-center justify-center gap-1.5 cursor-pointer"
                         style={{ 
                             ...getButtonStyles(),
                             transitionDuration: 'var(--animation-speed, 0.2s)',
-                            borderRadius: design.btnBorderRadius !== undefined ? `${design.btnBorderRadius}px` : 'var(--sarak-grid-radius, 8px)'
                         }}
                     >
                         <span>Executar</span>

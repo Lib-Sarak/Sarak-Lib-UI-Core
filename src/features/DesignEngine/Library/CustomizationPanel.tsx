@@ -30,9 +30,9 @@ export const CustomizationPanel: React.FC = () => {
             {/* Header & Tabs Navigation */}
             <div className="p-8 pb-4 shrink-0">
                 <div className="flex items-center justify-between mb-6">
-                    <h2 className="text-2xl font-bold bg-clip-text text-transparent bg-gradient-to-r from-blue-400 to-indigo-400 uppercase tracking-tighter">
+                    <div className="text-2xl font-bold bg-clip-text text-transparent bg-gradient-to-r from-blue-400 to-indigo-400 uppercase tracking-tighter">
                         Central de Comando
-                    </h2>
+                    </div>
                     <div className="flex gap-2">
                         <div className="px-3 py-1 rounded-full bg-red-500/20 border border-red-500/30 text-[10px] font-black text-red-400 uppercase tracking-widest animate-pulse">
                             v13.9 - AUDIT ACTIVE

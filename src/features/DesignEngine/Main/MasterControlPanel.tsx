@@ -16,7 +16,7 @@ import { useDesignDraft } from '../hooks/useDesignDraft';
  */
 export const MasterControlPanel: React.FC = () => {
     const sarak = useSarakUI();
-    const { draft, updateDraft, handleApplyToSystem, isPillarDirty, resetToken } = useDesignDraft(sarak);
+    const { draft, isDirty, isComponentDirty, updateDraft, handleApplyToSystem, resetToken } = useDesignDraft(sarak);
     
     const [searchQuery, setSearchQuery] = useState('');
     const [activeCategory, setActiveCategory] = useState<string | null>(null);
@@ -55,9 +55,9 @@ export const MasterControlPanel: React.FC = () => {
             {/* Header de Gestão - Compacto para Sidebar */}
             <div className="p-4 border-b border-white/5 bg-black/40">
                 <div className="flex items-center justify-between mb-4">
-                    <h3 className="text-[10px] font-black tracking-widest uppercase text-white/30">
+                    <div className="text-[10px] font-black tracking-widest uppercase text-white/30">
                         Catálogo de <span className="text-[var(--theme-primary)]">Tokens</span>
-                    </h3>
+                    </div>
                 </div>
 
                 {/* Filtros Compactos */}

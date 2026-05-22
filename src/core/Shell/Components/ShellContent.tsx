@@ -5,7 +5,7 @@ import { IconRenderer } from './IconRenderer';
 import { DiscoveredModule } from '../../../core/Discovery/types';
 import { DynamicRenderer } from '../../Discovery/DynamicRenderer';
 import { SarakEmptyState } from '../../../components/atomic/Feedback/SarakEmptyState';
-import { THEME_EFFECTS } from '../../../core/Design/presets/animations';
+import { UIContext } from '../../Provider/SarakUIProvider';
 
 interface ShellContentProps {
     activeModule: DiscoveredModule | undefined;
@@ -19,10 +19,13 @@ interface ShellContentProps {
 export const ShellContent: React.FC<ShellContentProps> = ({
     activeModule, discoveredModules, design, user, authApi, setIsSearchOpen
 }) => {
-    const { texture, layoutGap, isSplitViewEnabled, secondaryModuleId, emptyStateId, pageTransition = 'fade' } = design || {};
+    const { texture, layoutGap, isSplitViewEnabled, secondaryModuleId, emptyStateId } = design || {};
 
-    // Obter configuração de animação baseada no token
-    const transitionEffect = (THEME_EFFECTS.page as any)[pageTransition]?.page || THEME_EFFECTS.page.fade.page;
+    const transitionEffect = {
+        initial: { opacity: 0 },
+        animate: { opacity: 1 },
+        exit: { opacity: 0 }
+    };
 
     return (
         <main className={`flex-1 overflow-y-auto custom-scrollbar relative flex flex-col w-full min-h-0 isolate ${texture !== 'none' ? 'texture-active' : 'bg-[var(--theme-body)]'}`} data-sx-texture={texture}>

@@ -3,8 +3,8 @@ import { motion, AnimatePresence } from 'framer-motion';
 import {
     ChevronUp, ChevronDown, Palette, Grid, Type, Layers, Film, Smile, LucideIcon
 } from 'lucide-react';
-import { THEME_FONTS } from '../../../core/Design/presets/typography';
-import { THEME_EFFECTS } from '../../../core/Design/presets/animations';
+const THEME_FONTS = [{ id: 'outfit', value: "'Outfit', sans-serif", name: 'Outfit', category: 'Sans-Serif' }, { id: 'inter', value: "'Inter', sans-serif", name: 'Inter', category: 'Sans-Serif' }];
+const THEME_EFFECTS = { page: {} };
 import { EMOJI_SETS } from '../../../constants/icon-packs';
 
 import { AtmosphereSchema } from '../../../core/Design/schema/atmosphere';
@@ -198,7 +198,7 @@ export const ThemeEditor: React.FC<ThemeEditorProps> = ({
                     <div>
                         <span className="text-2xs font-bold text-[var(--theme-muted)] uppercase tracking-wider block mb-3">Heading Font</span>
                         <div className="grid grid-cols-1 gap-2">
-                            {THEME_FONTS.filter(f => f.category === 'display' || f.category === 'serif' || f.category === 'sans').slice(0, 8).map(font => (
+                            {THEME_FONTS.filter((f: any) => f.category === 'display' || f.category === 'serif' || f.category === 'sans').slice(0, 8).map((font: any) => (
                                 <button
                                     key={font.id}
                                     onClick={() => onConfigChange('--font-heading', font.value)}

@@ -7,13 +7,10 @@ import { ComponentSchema } from '../types';
 export const CardTitleSchema: ComponentSchema = {
     id: 'cardTitle',
     label: 'Card de Título',
-    pilar: 'surfaces',
-    subcategory: 'Estruturas de Card',
     tokens: [
         {
             id: 'cardTitleFontSize',
             label: 'Tamanho da Fonte do Título',
-            category: 'Título: Tipografia',
             type: 'slider',
             unit: 'px',
             constraints: { min: 10, max: 40 },
@@ -23,7 +20,6 @@ export const CardTitleSchema: ComponentSchema = {
         {
             id: 'cardTitleColor',
             label: 'Cor do Texto do Título',
-            category: 'Título: Cores',
             type: 'color',
             defaultValue: '#ffffff',
             cssVars: ['--sarak-card-title-color']
@@ -31,7 +27,6 @@ export const CardTitleSchema: ComponentSchema = {
         {
             id: 'cardTitleFontWeight',
             label: 'Peso da Fonte do Título',
-            category: 'Título: Tipografia',
             type: 'select',
             constraints: {
                 options: [
@@ -49,7 +44,6 @@ export const CardTitleSchema: ComponentSchema = {
         {
             id: 'cardTitleLetterSpacing',
             label: 'Espaçamento de Letras',
-            category: 'Título: Tipografia',
             type: 'slider',
             unit: 'px',
             constraints: { min: -2, max: 10, step: 0.5 },
@@ -59,7 +53,6 @@ export const CardTitleSchema: ComponentSchema = {
         {
             id: 'cardTitleIconGlow',
             label: 'Brilho do Ícone do Título',
-            category: 'Título: Efeitos',
             type: 'color',
             defaultValue: 'rgba(0, 242, 255, 0.2)',
             cssVars: ['--sarak-card-title-icon-glow']

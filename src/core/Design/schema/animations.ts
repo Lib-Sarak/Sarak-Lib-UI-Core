@@ -7,14 +7,11 @@ import { ComponentSchema } from '../types';
 export const AnimationSchema: ComponentSchema = {
     id: 'animations',
     label: 'Transições e Animações',
-    pilar: 'interaction',
-    subcategory: 'Transições e Animações',
     tokens: [
         // --- TIMING ---
         {
             id: 'animInstant',
             label: 'Duração: Instante',
-            category: 'Timing (ms)',
             type: 'slider',
             unit: 'ms',
             constraints: { min: 0, max: 200, step: 10 },
@@ -24,7 +21,6 @@ export const AnimationSchema: ComponentSchema = {
         {
             id: 'animFast',
             label: 'Duração: Rápida',
-            category: 'Timing (ms)',
             type: 'slider',
             unit: 'ms',
             constraints: { min: 50, max: 400, step: 10 },
@@ -34,7 +30,6 @@ export const AnimationSchema: ComponentSchema = {
         {
             id: 'animNormal',
             label: 'Duração: Normal',
-            category: 'Timing (ms)',
             type: 'slider',
             unit: 'ms',
             constraints: { min: 100, max: 800, step: 10 },
@@ -44,7 +39,6 @@ export const AnimationSchema: ComponentSchema = {
         {
             id: 'animSlow',
             label: 'Duração: Lenta',
-            category: 'Timing (ms)',
             type: 'slider',
             unit: 'ms',
             constraints: { min: 200, max: 2000, step: 50 },
@@ -56,7 +50,6 @@ export const AnimationSchema: ComponentSchema = {
         {
             id: 'easeMain',
             label: 'Curva: Padrão (Main)',
-            category: 'Curvas de Easing',
             type: 'select',
             constraints: {
                 options: [
@@ -72,7 +65,6 @@ export const AnimationSchema: ComponentSchema = {
         {
             id: 'easeOut',
             label: 'Curva: Saída Suave',
-            category: 'Curvas de Easing',
             type: 'select',
             constraints: {
                 options: [
@@ -89,7 +81,6 @@ export const AnimationSchema: ComponentSchema = {
         {
             id: 'animEnabled',
             label: 'Ativar Movimentos',
-            category: 'Comportamento',
             type: 'boolean',
             defaultValue: true,
             cssVars: ['--sarak-anim-enabled']

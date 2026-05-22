@@ -7,13 +7,10 @@ import { ComponentSchema } from '../types';
 export const SwitchesSchema: ComponentSchema = {
     id: 'switches',
     label: 'Alternadores (Toggles)',
-    pilar: 'interaction',
-    subcategory: 'Controles de Entrada',
     tokens: [
         {
             id: 'switchTrackActiveBg',
             label: 'Cor: Switch Ativo',
-            category: 'Switches & Toggles',
             type: 'color',
             defaultValue: '#00f2ff',
             generateVariants: true,
@@ -22,7 +19,6 @@ export const SwitchesSchema: ComponentSchema = {
         {
             id: 'switchThumbBg',
             label: 'Cor: Switch Botão',
-            category: 'Switches & Toggles',
             type: 'color',
             defaultValue: '#ffffff',
             cssVars: ['--sarak-switch-thumb']
@@ -30,7 +26,6 @@ export const SwitchesSchema: ComponentSchema = {
         {
             id: 'checkboxActiveColor',
             label: 'Cor do Check Selecionado',
-            category: 'Checkboxes & Radios',
             type: 'color',
             defaultValue: '#00f2ff',
             generateVariants: true,
@@ -39,7 +34,6 @@ export const SwitchesSchema: ComponentSchema = {
         {
             id: 'switchStyleType',
             label: 'Estilo do Alternador (Switch)',
-            category: 'Switches Avançados',
             type: 'select',
             constraints: {
                 options: [
@@ -55,7 +49,6 @@ export const SwitchesSchema: ComponentSchema = {
         {
             id: 'switchBackdropBlur',
             label: 'Desfoque do Alternador (Vidro)',
-            category: 'Switches Avançados: Glass',
             type: 'slider',
             unit: 'px',
             constraints: { min: 0, max: 20 },
@@ -65,7 +58,6 @@ export const SwitchesSchema: ComponentSchema = {
         {
             id: 'switchPulseColor',
             label: 'Cor do Pulso (Pulsing Dot)',
-            category: 'Switches Avançados: Pulsing',
             type: 'color',
             defaultValue: '#00f2ff',
             cssVars: ['--sarak-switch-pulse-color']

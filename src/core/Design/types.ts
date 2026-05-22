@@ -9,7 +9,6 @@ export type TokenValueType = 'number' | 'color' | 'string' | 'boolean' | 'select
 export interface DesignToken {
     id: string;                 // Chave única no estado (ex: cardBorderRadius)
     label: string;              // Nome legível para o usuário
-    category: string;           // Grupo (ex: "Cards", "Navegação")
     type: TokenValueType;
     unit?: 'px' | '%' | 'rem' | 'em' | 'ms' | 'deg' | 's';
     cssVars?: string[];         // Variáveis CSS que este token controla
@@ -31,10 +30,7 @@ export interface DesignToken {
 export interface ComponentSchema {
     id: string;
     label: string;
-    pilar: 'brand' | 'typography' | 'surfaces' | 'interaction' | 'navigation' | 'systems' | 'specialized' | 'engineering' | 'advanced';
-    subcategory: string;
     tokens: DesignToken[];
-    targetApp?: string; // App de preview sugerido para este componente
 }
 
 export interface MasterDesignSchema {

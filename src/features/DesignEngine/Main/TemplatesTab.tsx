@@ -68,9 +68,9 @@ export const TemplatesTab: React.FC = () => {
         <div className="flex flex-col h-full bg-[#080809] text-white/90 p-5 overflow-y-auto custom-scrollbar">
             {/* Header */}
             <div className="mb-8">
-                <h3 className="text-xs font-black tracking-widest uppercase mb-1">
+                <div className="text-xs font-black tracking-widest uppercase mb-1">
                     Templates & <span className="text-[var(--theme-primary)]">Manifest</span>
-                </h3>
+                </div>
                 <p className="text-[8px] text-white/30 font-medium uppercase tracking-[0.2em]">
                     Integração Host
                 </p>
@@ -81,7 +81,7 @@ export const TemplatesTab: React.FC = () => {
                 <div className="bg-white/5 border border-white/10 p-4 rounded-xl">
                     <div className="flex items-center gap-2 mb-3 text-[var(--theme-primary)]">
                         <Terminal size={14} />
-                        <h3 className="text-[9px] font-black uppercase tracking-widest">Guia Rápido</h3>
+                        <div className="text-[9px] font-black uppercase tracking-widest">Guia Rápido</div>
                     </div>
                     <ul className="space-y-2">
                         {[
@@ -106,7 +106,7 @@ export const TemplatesTab: React.FC = () => {
                             <div>
                                 <div className="flex items-center gap-2 mb-1">
                                     <FileJson size={12} className="text-[var(--theme-primary)]" />
-                                    <h3 className="text-[10px] font-black uppercase tracking-tight">{template.name}</h3>
+                                    <div className="text-[10px] font-black uppercase tracking-tight">{template.name}</div>
                                 </div>
                                 <p className="text-[9px] text-white/30">{template.description}</p>
                             </div>

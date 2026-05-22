@@ -1,28 +1,49 @@
 import { ComponentSchema } from '../types';
-import { THEME_FONTS } from '../presets/typography';
+const THEME_FONTS = [
+    // Sans-Serif & Grotesk
+    { value: "'Inter', sans-serif", name: "Inter", category: "Sans-Serif" },
+    { value: "'Outfit', sans-serif", name: "Outfit", category: "Sans-Serif" },
+    { value: "'Roboto', sans-serif", name: "Roboto", category: "Sans-Serif" },
+    { value: "'Montserrat', sans-serif", name: "Montserrat", category: "Sans-Serif" },
+    { value: "'Space Grotesk', sans-serif", name: "Space Grotesk", category: "Sans-Serif" },
+    { value: "'Plus Jakarta Sans', sans-serif", name: "Plus Jakarta Sans", category: "Sans-Serif" },
+    { value: "'Lexend', sans-serif", name: "Lexend", category: "Sans-Serif" },
+    { value: "'Sora', sans-serif", name: "Sora", category: "Sans-Serif" },
+    { value: "'Syne', sans-serif", name: "Syne", category: "Sans-Serif" },
+    { value: "'Archivo', sans-serif", name: "Archivo", category: "Sans-Serif" },
+    { value: "system-ui, -apple-system, sans-serif", name: "System Default", category: "Sans-Serif" },
+    
+    // Display & Impact
+    { value: "'Unbounded', display", name: "Unbounded", category: "Display" },
+    { value: "'Bebas Neue', display", name: "Bebas Neue", category: "Display" },
+    
+    // Serifadas
+    { value: "'Playfair Display', serif", name: "Playfair Display", category: "Serif" },
+    { value: "'Fraunces', serif", name: "Fraunces", category: "Serif" },
 
-/**
- * Mapeamento 100% Atômico: Tipografia & Escrita (v12.0)
- * Governa a hierarquia visual e legibilidade de todo o conteúdo textual.
- */
+    // Script & Handwriting
+    { value: "'Dancing Script', cursive", name: "Dancing Script", category: "Handwriting" },
+    { value: "'Pacifico', cursive", name: "Pacifico", category: "Handwriting" },
+    { value: "'Satisfy', cursive", name: "Satisfy", category: "Handwriting" },
+    { value: "'Caveat', cursive", name: "Caveat", category: "Handwriting" },
+
+    // Monospaced
+    { value: "'JetBrains Mono', monospace", name: "JetBrains Mono", category: "Monospace" }
+];
 
 const FONT_OPTIONS = THEME_FONTS.map(font => ({
     id: font.value,
-    label: `${font.name} [${(font as any).group || font.category}]`
+    label: `${font.name} [${font.category}]`
 }));
 
 export const TypographySchema: ComponentSchema = {
     id: 'typography',
     label: 'Tipografia e Escala',
-    pilar: 'typography',
-    subcategory: 'Tipografia',
-    targetApp: 'typography',
     tokens: [
         // --- FAMÍLIAS DE FONTES ---
         {
             id: 'headingFont',
             label: 'Fonte de Títulos',
-            category: 'Famílias',
             type: 'font',
             constraints: {
                 options: FONT_OPTIONS
@@ -33,7 +54,6 @@ export const TypographySchema: ComponentSchema = {
         {
             id: 'bodyFont',
             label: 'Fonte de Corpo',
-            category: 'Famílias',
             type: 'font',
             constraints: {
                 options: FONT_OPTIONS
@@ -44,7 +64,6 @@ export const TypographySchema: ComponentSchema = {
         {
             id: 'monoFont',
             label: 'Fonte Mono (Dados)',
-            category: 'Famílias',
             type: 'font',
             constraints: {
                 options: FONT_OPTIONS
@@ -57,7 +76,6 @@ export const TypographySchema: ComponentSchema = {
         {
             id: 'textColorMaster',
             label: 'Texto Principal',
-            category: 'Cores de Texto',
             type: 'color',
             defaultValue: '#ffffff',
             cssVars: ['--sarak-text-main', '--theme-title', '--theme-text-primary']
@@ -65,7 +83,6 @@ export const TypographySchema: ComponentSchema = {
         {
             id: 'textColorSecondary',
             label: 'Texto Secundário',
-            category: 'Cores de Texto',
             type: 'color',
             defaultValue: 'rgba(255, 255, 255, 0.7)',
             cssVars: ['--sarak-text-sec']
@@ -73,7 +90,6 @@ export const TypographySchema: ComponentSchema = {
         {
             id: 'textColorMuted',
             label: 'Texto Mudo / Hint',
-            category: 'Cores de Texto',
             type: 'color',
             defaultValue: 'rgba(255, 255, 255, 0.4)',
             cssVars: ['--sarak-text-muted', '--theme-muted', '--theme-text-muted']
@@ -83,7 +99,6 @@ export const TypographySchema: ComponentSchema = {
         {
             id: 'h1Size',
             label: 'Tamanho (H1)',
-            category: 'H1: Configuração',
             type: 'slider',
             unit: 'px',
             constraints: { min: 20, max: 120 },
@@ -93,7 +108,6 @@ export const TypographySchema: ComponentSchema = {
         {
             id: 'h1Weight',
             label: 'Peso (H1)',
-            category: 'H1: Configuração',
             type: 'select',
             constraints: {
                 options: [
@@ -110,7 +124,6 @@ export const TypographySchema: ComponentSchema = {
         {
             id: 'h1LineHeight',
             label: 'Altura da Linha (H1)',
-            category: 'H1: Configuração',
             type: 'slider',
             constraints: { min: 0.8, max: 2, step: 0.05 },
             defaultValue: 1.1,
@@ -119,7 +132,6 @@ export const TypographySchema: ComponentSchema = {
         {
             id: 'h1LetterSpacing',
             label: 'Espaçamento (H1)',
-            category: 'H1: Configuração',
             type: 'slider',
             unit: 'px',
             constraints: { min: -5, max: 10, step: 0.5 },
@@ -131,7 +143,6 @@ export const TypographySchema: ComponentSchema = {
         {
             id: 'h2Size',
             label: 'Tamanho (H2)',
-            category: 'H2: Configuração',
             type: 'slider',
             unit: 'px',
             constraints: { min: 18, max: 80 },
@@ -141,7 +152,6 @@ export const TypographySchema: ComponentSchema = {
         {
             id: 'h2Weight',
             label: 'Peso (H2)',
-            category: 'H2: Configuração',
             type: 'select',
             constraints: {
                 options: [
@@ -157,7 +167,6 @@ export const TypographySchema: ComponentSchema = {
         {
             id: 'h2LineHeight',
             label: 'Altura da Linha (H2)',
-            category: 'H2: Configuração',
             type: 'slider',
             constraints: { min: 0.8, max: 2, step: 0.05 },
             defaultValue: 1.2,
@@ -165,20 +174,10 @@ export const TypographySchema: ComponentSchema = {
         },
 
         // --- CORPO & TEXTO ---
-        {
-            id: 'bodySize',
-            label: 'Tamanho do Corpo',
-            category: 'Corpo & Legibilidade',
-            type: 'slider',
-            unit: 'px',
-            constraints: { min: 10, max: 24 },
-            defaultValue: 14,
-            cssVars: ['--sarak-body-size', '--theme-font-size-base']
-        },
+
         {
             id: 'bodyLineHeight',
             label: 'Altura da Linha (Corpo)',
-            category: 'Corpo & Legibilidade',
             type: 'slider',
             constraints: { min: 1, max: 2.5, step: 0.1 },
             defaultValue: 1.6,
@@ -187,7 +186,6 @@ export const TypographySchema: ComponentSchema = {
         {
             id: 'bodyWeight',
             label: 'Peso do Corpo',
-            category: 'Corpo & Legibilidade',
             type: 'select',
             constraints: {
                 options: [
@@ -204,7 +202,6 @@ export const TypographySchema: ComponentSchema = {
         {
             id: 'headingTransform',
             label: 'Transformação de Títulos',
-            category: 'Estética Global',
             type: 'select',
             constraints: {
                 options: [
@@ -219,7 +216,6 @@ export const TypographySchema: ComponentSchema = {
         {
             id: 'textSmoothing',
             label: 'Suavização (Smoothing)',
-            category: 'Estética Global',
             type: 'boolean',
             defaultValue: true,
             cssVars: ['--sarak-text-smoothing']
@@ -227,7 +223,6 @@ export const TypographySchema: ComponentSchema = {
         {
             id: 'textGlowIntensity',
             label: 'Intensidade de Glow (H1)',
-            category: 'Estética Global',
             type: 'slider',
             constraints: { min: 0, max: 1, step: 0.05 },
             defaultValue: 0,

@@ -7,13 +7,10 @@ import { ComponentSchema } from '../types';
 export const OverlaysSchema: ComponentSchema = {
     id: 'overlays',
     label: 'Sobreposições (Overlays)',
-    pilar: 'surfaces',
-    subcategory: 'Espaço e Atmosfera',
     tokens: [
         {
             id: 'modalOverlayColor',
             label: 'Cor do Overlay',
-            category: 'Modais: Background',
             type: 'color',
             defaultValue: 'rgba(0, 0, 0, 0.4)',
             cssVars: ['--sarak-modal-overlay']
@@ -21,7 +18,6 @@ export const OverlaysSchema: ComponentSchema = {
         {
             id: 'modalOverlayBlur',
             label: 'Blur do Overlay',
-            category: 'Modais: Background',
             type: 'slider',
             unit: 'px',
             constraints: { min: 0, max: 40 },
@@ -31,7 +27,6 @@ export const OverlaysSchema: ComponentSchema = {
         {
             id: 'modalBorderRadius',
             label: 'Arredondamento (Modal)',
-            category: 'Modais: Geometria',
             type: 'slider',
             unit: 'px',
             constraints: { min: 0, max: 40 },
@@ -41,7 +36,6 @@ export const OverlaysSchema: ComponentSchema = {
         {
             id: 'tooltipBg',
             label: 'Fundo do Tooltip',
-            category: 'Tooltips & Popovers',
             type: 'color',
             defaultValue: '#0f172a',
             cssVars: ['--sarak-tooltip-bg']
@@ -49,7 +43,6 @@ export const OverlaysSchema: ComponentSchema = {
         {
             id: 'tooltipRadius',
             label: 'Raio do Tooltip',
-            category: 'Tooltips & Popovers',
             type: 'slider',
             unit: 'px',
             constraints: { min: 0, max: 12 },

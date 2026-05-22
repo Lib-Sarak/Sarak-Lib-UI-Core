@@ -7,13 +7,10 @@ import { ComponentSchema } from '../types';
 export const SystemSchema: ComponentSchema = {
     id: 'system',
     label: 'Configurações de Layout',
-    pilar: 'navigation',
-    subcategory: 'Estrutura de Layout (Shell)',
     tokens: [
         {
             id: 'bgBaseColor',
             label: 'Cor de Fundo Base',
-            category: 'Ambiente Global',
             type: 'color',
             defaultValue: '#0a0a0c',
             cssVars: ['--sarak-bg-base']
@@ -21,7 +18,6 @@ export const SystemSchema: ComponentSchema = {
         {
             id: 'layout',
             label: 'Modo de Layout',
-            category: 'Ambiente Global',
             type: 'select',
             defaultValue: 'grid',
             options: [
@@ -29,21 +25,10 @@ export const SystemSchema: ComponentSchema = {
                 { value: 'flex', label: 'Flexbox Layout' }
             ]
         },
-        {
-            id: 'mode',
-            label: 'Modo de Aparência',
-            category: 'Ambiente Global',
-            type: 'select',
-            defaultValue: 'dark',
-            options: [
-                { value: 'dark', label: 'Dark Mode' },
-                { value: 'light', label: 'Light Mode' }
-            ]
-        },
+
         {
             id: 'layoutDensity',
             label: 'Densidade Visual',
-            category: 'Ambiente Global',
             type: 'select',
             defaultValue: 'comfortable',
             options: [
@@ -55,7 +40,6 @@ export const SystemSchema: ComponentSchema = {
         {
             id: 'maxContentWidth',
             label: 'Largura Máxima do Conteúdo',
-            category: 'Ambiente Global',
             type: 'select',
             defaultValue: '1440px',
             options: [
@@ -68,7 +52,6 @@ export const SystemSchema: ComponentSchema = {
         {
             id: 'layoutPadding',
             label: 'Respiro do Conteúdo (Padding)',
-            category: 'Ambiente Global',
             type: 'slider',
             unit: 'px',
             constraints: { min: 0, max: 80 },
@@ -78,14 +61,12 @@ export const SystemSchema: ComponentSchema = {
         {
             id: 'isSplitViewEnabled',
             label: 'Ativar Vista Dividida (Split)',
-            category: 'Ambiente Global',
             type: 'boolean',
             defaultValue: false
         },
         {
             id: 'isAutoHideEnabled',
             label: 'Auto-ocultar Menus',
-            category: 'Ambiente Global',
             type: 'boolean',
             defaultValue: false
         },
@@ -93,7 +74,6 @@ export const SystemSchema: ComponentSchema = {
         {
             id: 'borderRadius',
             label: 'Arredondamento Padrão',
-            category: 'Arquitetura de Bordas',
             type: 'slider',
             unit: 'px',
             constraints: { min: 0, max: 40 },
@@ -103,7 +83,6 @@ export const SystemSchema: ComponentSchema = {
         {
             id: 'borderRadiusSm',
             label: 'Arredondamento Pequeno',
-            category: 'Arquitetura de Bordas',
             type: 'slider',
             unit: 'px',
             constraints: { min: 0, max: 20 },
@@ -113,7 +92,6 @@ export const SystemSchema: ComponentSchema = {
         {
             id: 'borderRadiusMd',
             label: 'Arredondamento Médio',
-            category: 'Arquitetura de Bordas',
             type: 'slider',
             unit: 'px',
             constraints: { min: 0, max: 40 },
@@ -123,7 +101,6 @@ export const SystemSchema: ComponentSchema = {
         {
             id: 'borderRadiusLg',
             label: 'Arredondamento Grande',
-            category: 'Arquitetura de Bordas',
             type: 'slider',
             unit: 'px',
             constraints: { min: 0, max: 60 },
@@ -133,7 +110,6 @@ export const SystemSchema: ComponentSchema = {
         {
             id: 'borderWidth',
             label: 'Espessura da Borda',
-            category: 'Arquitetura de Bordas',
             type: 'slider',
             unit: 'px',
             constraints: { min: 0, max: 10 },
@@ -143,7 +119,6 @@ export const SystemSchema: ComponentSchema = {
         {
             id: 'borderStyle',
             label: 'Estilo da Borda',
-            category: 'Arquitetura de Bordas',
             type: 'select',
             defaultValue: 'solid',
             options: [
@@ -158,7 +133,6 @@ export const SystemSchema: ComponentSchema = {
         {
             id: 'layoutGap',
             label: 'Espaçamento Padrão (Gap)',
-            category: 'Espaçamentos',
             type: 'slider',
             unit: 'px',
             constraints: { min: 0, max: 80 },
@@ -168,7 +142,6 @@ export const SystemSchema: ComponentSchema = {
         {
             id: 'layoutGapSm',
             label: 'Espaçamento Pequeno',
-            category: 'Espaçamentos',
             type: 'slider',
             unit: 'px',
             constraints: { min: 0, max: 40 },
@@ -178,7 +151,6 @@ export const SystemSchema: ComponentSchema = {
         {
             id: 'layoutGapMd',
             label: 'Espaçamento Médio',
-            category: 'Espaçamentos',
             type: 'slider',
             unit: 'px',
             constraints: { min: 0, max: 80 },
@@ -188,7 +160,6 @@ export const SystemSchema: ComponentSchema = {
         {
             id: 'layoutGapLg',
             label: 'Espaçamento Grande',
-            category: 'Espaçamentos',
             type: 'slider',
             unit: 'px',
             constraints: { min: 0, max: 120 },
@@ -199,7 +170,6 @@ export const SystemSchema: ComponentSchema = {
         {
             id: 'iconStrokeWidth',
             label: 'Espessura do Ícone',
-            category: 'Ícones',
             type: 'slider',
             constraints: { min: 1, max: 4, step: 0.5 },
             defaultValue: 2,
@@ -209,7 +179,6 @@ export const SystemSchema: ComponentSchema = {
         {
             id: 'scrollbarWidth',
             label: 'Largura da Scrollbar',
-            category: 'Scrollbars',
             type: 'slider',
             unit: 'px',
             constraints: { min: 2, max: 12 },
@@ -219,7 +188,6 @@ export const SystemSchema: ComponentSchema = {
         {
             id: 'scrollbarThumbColor',
             label: 'Cor do Trilho (Thumb)',
-            category: 'Scrollbars',
             type: 'color',
             defaultValue: 'rgba(255, 255, 255, 0.1)',
             cssVars: ['--sarak-scrollbar-thumb']
@@ -228,7 +196,6 @@ export const SystemSchema: ComponentSchema = {
         {
             id: 'industrialRegistry',
             label: 'Modo do Registro Industrial',
-            category: 'Core Engineering',
             type: 'boolean',
             defaultValue: true
         }

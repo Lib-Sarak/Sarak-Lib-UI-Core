@@ -1,4 +1,5 @@
 import { MasterDesignSchema } from './types';
+import { GlobalSchema } from './schema/global';
 import { BrandingSchema } from './schema/branding';
 import { SystemSchema } from './schema/system';
 import { NavigationSchema } from './schema/navigation';
@@ -33,6 +34,7 @@ import { AdvancedSchema } from './schema/advanced';
 export const MASTER_DESIGN_MAP: MasterDesignSchema = {
     version: '13.0.0',
     components: [
+        GlobalSchema,
         BrandingSchema,
         SystemSchema,
         NavigationSchema,

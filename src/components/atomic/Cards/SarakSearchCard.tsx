@@ -10,6 +10,8 @@ interface SarakSearchCardProps {
     className?: string;
     onSearchChange?: (text: string) => void;
     onToggleCapability?: (cap: string, active: boolean) => void;
+    design?: any;
+    label?: string;
 }
 
 export const SarakSearchCard: React.FC<SarakSearchCardProps> = ({ 
@@ -17,9 +19,12 @@ export const SarakSearchCard: React.FC<SarakSearchCardProps> = ({
     mapping, 
     className = '', 
     onSearchChange,
-    onToggleCapability 
+    onToggleCapability,
+    design: propDesign,
+    label
 }) => {
-    const { design } = useSarakUI();
+    const context = useSarakUI();
+    const design = propDesign || context.design || {};
     const [searchText, setSearchText] = useState('');
     const [focused, setFocused] = useState(false);
     
@@ -155,6 +160,21 @@ export const SarakSearchCard: React.FC<SarakSearchCardProps> = ({
                 <div className="border-beam-effect" style={{ opacity: focused ? 1 : 0.4 }} />
             )}
 
+            {/* DRAFT BADGE (v6.3) */}
+            {context?.isDrafting && (
+                <div className="absolute top-2 left-4 z-40 pointer-events-none flex items-center gap-1.5 px-2 py-0.5 rounded bg-black/60 border border-[var(--theme-primary)]/20 text-[7px] font-black uppercase tracking-[0.2em] text-[var(--theme-primary)] shadow-[0_0_10px_rgba(0,242,255,0.05)]">
+                    <span className="w-1 h-1 rounded-full bg-[var(--theme-primary)] animate-pulse" />
+                    {label || "Card de Interação"}
+                </div>
+            )}
+
+            {/* Dynamic CSS overrides for placeholder */}
+            <style dangerouslySetInnerHTML={{ __html: `
+                .sarak-search-input-${item?.id || 'default'}::placeholder {
+                    color: var(--sarak-card-search-placeholder-color, rgba(255, 255, 255, 0.25)) !important;
+                }
+            `}} />
+
             <div className="relative z-10 flex flex-col gap-4">
                 {/* Section Header */}
                 <div className="flex flex-col">
@@ -186,7 +206,7 @@ export const SarakSearchCard: React.FC<SarakSearchCardProps> = ({
                         onFocus={() => setFocused(true)}
                         onBlur={() => setFocused(false)}
                         placeholder="Buscar modelo ou tech..."
-                        className="w-full bg-transparent text-2xs text-[var(--theme-text)] font-semibold placeholder-white/20 pl-9 pr-4 py-2.5 outline-none border-none"
+                        className={`w-full bg-transparent text-2xs text-[var(--theme-text)] font-semibold pl-9 pr-4 py-2.5 outline-none border-none sarak-search-input-${item?.id || 'default'}`}
                     />
                 </div>
 

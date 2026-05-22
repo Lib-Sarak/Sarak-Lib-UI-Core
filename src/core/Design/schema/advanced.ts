@@ -7,13 +7,10 @@ import { ComponentSchema } from '../types';
 export const AdvancedSchema: ComponentSchema = {
     id: 'advanced',
     label: 'Componentes Avançados',
-    pilar: 'advanced',
-    subcategory: 'Matrizes e Estruturas',
     tokens: [
         {
             id: 'matrixGap',
             label: 'Espaçamento da Matriz',
-            category: 'Expandable Matrix',
             type: 'slider',
             unit: 'px',
             constraints: { min: 4, max: 32 },
@@ -23,7 +20,6 @@ export const AdvancedSchema: ComponentSchema = {
         {
             id: 'matrixRadius',
             label: 'Arredondamento dos Itens',
-            category: 'Expandable Matrix',
             type: 'slider',
             unit: 'px',
             constraints: { min: 0, max: 24 },
@@ -33,7 +29,6 @@ export const AdvancedSchema: ComponentSchema = {
         {
             id: 'matrixItemBg',
             label: 'Fundo do Item Pai',
-            category: 'Expandable Matrix',
             type: 'color',
             defaultValue: 'rgba(255, 255, 255, 0.02)',
             cssVars: ['--sarak-matrix-item-bg']
@@ -41,7 +36,6 @@ export const AdvancedSchema: ComponentSchema = {
         {
             id: 'matrixBorderColor',
             label: 'Cor da Borda Base',
-            category: 'Expandable Matrix',
             type: 'color',
             defaultValue: 'rgba(255, 255, 255, 0.05)',
             cssVars: ['--sarak-matrix-border-color']
@@ -49,7 +43,6 @@ export const AdvancedSchema: ComponentSchema = {
         {
             id: 'matrixSearchBg',
             label: 'Fundo da Busca',
-            category: 'Expandable Matrix',
             type: 'color',
             defaultValue: 'rgba(255, 255, 255, 0.05)',
             cssVars: ['--sarak-matrix-search-bg']
@@ -57,7 +50,6 @@ export const AdvancedSchema: ComponentSchema = {
         {
             id: 'matrixBlur',
             label: 'Desfoque de Vidro (Blur)',
-            category: 'Expandable Matrix',
             type: 'slider',
             unit: 'px',
             constraints: { min: 0, max: 40 },

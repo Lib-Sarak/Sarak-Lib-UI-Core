@@ -6,14 +6,11 @@ import { ComponentSchema } from '../types';
 export const AtmosphereSchema: ComponentSchema = {
     id: 'atmosphere',
     label: 'Fundo e Atmosfera',
-    pilar: 'surfaces',
-    subcategory: 'Espaço e Atmosfera',
     tokens: [
         // --- CORES DE SUPERFÍCIE ---
         {
             id: 'colorBgBody',
             label: 'Fundo Global (Body)',
-            category: 'Superfície',
             type: 'color',
             defaultValue: '#050505',
             cssVars: ['--sarak-bg-body', '--theme-bg']
@@ -21,7 +18,6 @@ export const AtmosphereSchema: ComponentSchema = {
         {
             id: 'colorBgLayer1',
             label: 'Background Layer 1',
-            category: 'Superfície',
             type: 'color',
             defaultValue: '#0f0f0f',
             cssVars: ['--sarak-bg-layer-1', '--theme-surface-1']
@@ -29,7 +25,6 @@ export const AtmosphereSchema: ComponentSchema = {
         {
             id: 'colorBgLayer2',
             label: 'Background Layer 2',
-            category: 'Superfície',
             type: 'color',
             defaultValue: '#1a1a1a',
             cssVars: ['--sarak-bg-layer-2', '--theme-surface-2']
@@ -38,7 +33,6 @@ export const AtmosphereSchema: ComponentSchema = {
         {
             id: 'bgBaseColor',
             label: 'Cor de Fundo Base',
-            category: 'Superfície',
             type: 'color',
             defaultValue: '#0a0a0c',
             cssVars: ['--sarak-bg-base']
@@ -46,7 +40,6 @@ export const AtmosphereSchema: ComponentSchema = {
         {
             id: 'bgGradientMode',
             label: 'Modo de Gradiente',
-            category: 'Superfície',
             type: 'select',
             options: [
                 { value: 'none', label: 'Sólido' },
@@ -60,7 +53,6 @@ export const AtmosphereSchema: ComponentSchema = {
         {
             id: 'bgGradientAngle',
             label: 'Direção do Gradiente',
-            category: 'Superfície',
             type: 'slider',
             unit: 'deg',
             constraints: { min: 0, max: 360, step: 1 },
@@ -71,7 +63,6 @@ export const AtmosphereSchema: ComponentSchema = {
         {
             id: 'surfaceMaterial',
             label: 'Material da Superfície',
-            category: 'Materiais Ópticos',
             type: 'select',
             options: [
                 { value: 'frosted', label: 'Vidro Fosco (Frosted)' },
@@ -85,7 +76,6 @@ export const AtmosphereSchema: ComponentSchema = {
         {
             id: 'surfaceIntensity',
             label: 'Intensidade do Efeito de Superfície',
-            category: 'Materiais Ópticos',
             type: 'slider',
             constraints: { min: 0, max: 1, step: 0.05 },
             defaultValue: 0.5,
@@ -94,7 +84,6 @@ export const AtmosphereSchema: ComponentSchema = {
         {
             id: 'borderType',
             label: 'Estilo da Moldura (Border)',
-            category: 'Materiais Ópticos',
             type: 'select',
             options: [
                 { value: 'solid', label: 'Sólido Padrão' },
@@ -109,7 +98,6 @@ export const AtmosphereSchema: ComponentSchema = {
         {
             id: 'systemTone',
             label: 'Tom do Ambiente',
-            category: 'Materiais Ópticos',
             type: 'select',
             options: [
                 { value: 'dark', label: 'Escuro Profundo' },
@@ -125,7 +113,6 @@ export const AtmosphereSchema: ComponentSchema = {
         {
             id: 'texture',
             label: 'Textura Industrial (BG)',
-            category: 'Textura Industrial',
             type: 'select',
             options: [
                 { value: 'none', label: 'Nenhuma' },
@@ -176,7 +163,6 @@ export const AtmosphereSchema: ComponentSchema = {
         {
             id: 'textureOpacity',
             label: 'Opacidade da Textura',
-            category: 'Textura Industrial',
             type: 'slider',
             constraints: { min: 0, max: 1, step: 0.01 },
             defaultValue: 0.1,
@@ -185,7 +171,6 @@ export const AtmosphereSchema: ComponentSchema = {
         {
             id: 'atmosphereNoiseOpacity',
             label: 'Opacidade do Ruído da Atmosfera',
-            category: 'Ruído Industrial',
             type: 'slider',
             constraints: { min: 0, max: 1, step: 0.01 },
             defaultValue: 0.05,
@@ -194,7 +179,6 @@ export const AtmosphereSchema: ComponentSchema = {
         {
             id: 'noiseIntensity',
             label: 'Intensidade de Ruído',
-            category: 'Ruído Industrial',
             type: 'slider',
             constraints: { min: 0, max: 1, step: 0.01 },
             defaultValue: 0.05,
@@ -203,7 +187,6 @@ export const AtmosphereSchema: ComponentSchema = {
         {
             id: 'bgNoiseDensity',
             label: 'Densidade de Ruído (BG)',
-            category: 'Ruído Industrial',
             type: 'slider',
             constraints: { min: 0, max: 1, step: 0.01 },
             defaultValue: 0.05,
@@ -212,7 +195,6 @@ export const AtmosphereSchema: ComponentSchema = {
         {
             id: 'bgNoiseAnimation',
             label: 'Velocidade do Ruído',
-            category: 'Ruído Industrial',
             type: 'slider',
             unit: 's',
             constraints: { min: 0, max: 10, step: 0.1 },
@@ -224,7 +206,6 @@ export const AtmosphereSchema: ComponentSchema = {
         {
             id: 'glassBlur',
             label: 'Backdrop Blur (Profundidade)',
-            category: 'Vidro: Óptica',
             type: 'slider',
             unit: 'px',
             constraints: { min: 0, max: 200, step: 1 },
@@ -234,7 +215,6 @@ export const AtmosphereSchema: ComponentSchema = {
         {
             id: 'glassOpacity',
             label: 'Opacidade do Vidro',
-            category: 'Vidro: Óptica',
             type: 'slider',
             constraints: { min: 0, max: 1, step: 0.05 },
             defaultValue: 0.1,
@@ -243,7 +223,6 @@ export const AtmosphereSchema: ComponentSchema = {
         {
             id: 'glassSpecularity',
             label: 'Specularity (Brilho de Luz)',
-            category: 'Vidro: Óptica',
             type: 'slider',
             constraints: { min: 0, max: 1, step: 0.05 },
             defaultValue: 0.1,
@@ -252,7 +231,6 @@ export const AtmosphereSchema: ComponentSchema = {
         {
             id: 'glassRoughness',
             label: 'Roughness (Rugosidade)',
-            category: 'Vidro: Óptica',
             type: 'slider',
             constraints: { min: 0, max: 1, step: 0.05 },
             defaultValue: 0.05,
@@ -261,7 +239,6 @@ export const AtmosphereSchema: ComponentSchema = {
         {
             id: 'glassSaturation',
             label: 'Saturação do Vidro',
-            category: 'Vidro: Óptica',
             type: 'slider',
             constraints: { min: 0.5, max: 3, step: 0.1 },
             defaultValue: 1.2,
@@ -272,7 +249,6 @@ export const AtmosphereSchema: ComponentSchema = {
         {
             id: 'shadowIntensity',
             label: 'Intensidade da Sombra',
-            category: 'Sombras e Elevação',
             type: 'slider',
             constraints: { min: 0, max: 2, step: 0.1 },
             defaultValue: 0.5,
@@ -281,7 +257,6 @@ export const AtmosphereSchema: ComponentSchema = {
         {
             id: 'layeredShadows',
             label: 'Sombras em Camadas (Layered)',
-            category: 'Sombras e Elevação',
             type: 'slider',
             constraints: { min: 0, max: 2, step: 0.1 },
             defaultValue: 1.0,
@@ -290,7 +265,6 @@ export const AtmosphereSchema: ComponentSchema = {
         {
             id: 'shadowOrientation',
             label: 'Orientação das Sombras',
-            category: 'Sombras e Elevação',
             type: 'select',
             options: [
                 { value: 'bottom', label: 'Projeção Inferior' },
@@ -304,7 +278,6 @@ export const AtmosphereSchema: ComponentSchema = {
         {
             id: 'shadowColorMode',
             label: 'Colorização das Sombras',
-            category: 'Sombras e Elevação',
             type: 'select',
             options: [
                 { value: 'neutral', label: 'Neutro (Preto)' },
@@ -317,7 +290,6 @@ export const AtmosphereSchema: ComponentSchema = {
         {
             id: 'shadowAmbientAlpha',
             label: 'Sombra: Contato (Ambient)',
-            category: 'Sombras: Avançado',
             type: 'slider',
             constraints: { min: 0, max: 1, step: 0.05 },
             defaultValue: 0.4,
@@ -326,7 +298,6 @@ export const AtmosphereSchema: ComponentSchema = {
         {
             id: 'shadowProjectionBlur',
             label: 'Sombra: Projeção (Blur)',
-            category: 'Sombras: Avançado',
             type: 'slider',
             unit: 'px',
             constraints: { min: 0, max: 200 },
@@ -336,7 +307,6 @@ export const AtmosphereSchema: ComponentSchema = {
         {
             id: 'shadowProjectionAlpha',
             label: 'Sombra: Projeção (Alpha)',
-            category: 'Sombras: Avançado',
             type: 'slider',
             constraints: { min: 0, max: 1, step: 0.05 },
             defaultValue: 0.2,
@@ -347,7 +317,6 @@ export const AtmosphereSchema: ComponentSchema = {
         {
             id: 'securityShieldGlow',
             label: 'Brilho do Escudo de Segurança',
-            category: 'Escudo & Defesa',
             type: 'slider',
             unit: 'px',
             constraints: { min: 0, max: 200 },
@@ -357,7 +326,6 @@ export const AtmosphereSchema: ComponentSchema = {
         {
             id: 'securityPulseSpeed',
             label: 'Velocidade do Pulso (Escudo)',
-            category: 'Escudo & Defesa',
             type: 'slider',
             unit: 's',
             constraints: { min: 0.5, max: 5.0, step: 0.1 },
@@ -369,7 +337,6 @@ export const AtmosphereSchema: ComponentSchema = {
         {
             id: 'vignetteOpacity',
             label: 'Intensidade do Vignette',
-            category: 'Câmera & Viewport',
             type: 'slider',
             constraints: { min: 0, max: 1, step: 0.05 },
             defaultValue: 0.3,
@@ -378,7 +345,6 @@ export const AtmosphereSchema: ComponentSchema = {
         {
             id: 'vignetteSoftness',
             label: 'Suavidade das Bordas',
-            category: 'Câmera & Viewport',
             type: 'slider',
             constraints: { min: 0, max: 200 },
             defaultValue: 50,
@@ -389,7 +355,6 @@ export const AtmosphereSchema: ComponentSchema = {
         {
             id: 'globalSaturation',
             label: 'Saturação Global',
-            category: 'Pós-Processamento',
             type: 'slider',
             constraints: { min: 0, max: 2, step: 0.1 },
             defaultValue: 1,
@@ -398,7 +363,6 @@ export const AtmosphereSchema: ComponentSchema = {
         {
             id: 'globalContrast',
             label: 'Contraste Global',
-            category: 'Pós-Processamento',
             type: 'slider',
             constraints: { min: 0.5, max: 3.0, step: 0.05 },
             defaultValue: 1,
@@ -407,7 +371,6 @@ export const AtmosphereSchema: ComponentSchema = {
         {
             id: 'contrastCurve',
             label: 'Curva de Contraste Cinematográfico',
-            category: 'Pós-Processamento',
             type: 'slider',
             constraints: { min: 0.5, max: 4.0, step: 0.1 },
             defaultValue: 1.0,

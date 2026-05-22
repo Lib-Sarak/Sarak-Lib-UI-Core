@@ -6,3 +6,7 @@ export * from './Mocks/ComponentsMock';
 export * from './Mocks/TypographyMock';
 export * from './Mocks/AuthMock';
 export * from './Mocks/MatrixMock';
+export * from './Mocks/TableMock';
+export * from './Mocks/TextMock';
+export * from './Mocks/ChartsMock';
+export * from './Mocks/MockForms';

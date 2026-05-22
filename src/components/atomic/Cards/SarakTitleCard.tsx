@@ -8,10 +8,13 @@ interface SarakTitleCardProps {
     item: any;
     mapping: any;
     className?: string;
+    design?: any;
+    label?: string;
 }
 
-export const SarakTitleCard: React.FC<SarakTitleCardProps> = ({ item, mapping, className = '' }) => {
-    const { design } = useSarakUI();
+export const SarakTitleCard: React.FC<SarakTitleCardProps> = ({ item, mapping, className = '', design: localDesign, label }) => {
+    const globalUI = useSarakUI();
+    const design = localDesign || globalUI.design;
 
     const getVal = (obj: any, path: string | undefined) => {
         if (!path) return undefined;
@@ -53,6 +56,14 @@ export const SarakTitleCard: React.FC<SarakTitleCardProps> = ({ item, mapping, c
             <div className="absolute inset-0 z-0 spotlight-effect pointer-events-none opacity-0 group-hover:opacity-100 transition-opacity duration-500" />
             <div className="border-beam-effect" />
 
+            {/* DRAFT BADGE (v6.3) */}
+            {globalUI?.isDrafting && (
+                <div className="absolute top-2 left-4 z-40 pointer-events-none flex items-center gap-1.5 px-2 py-0.5 rounded bg-black/60 border border-[var(--theme-primary)]/20 text-[7px] font-black uppercase tracking-[0.2em] text-[var(--theme-primary)] shadow-[0_0_10px_rgba(0,242,255,0.05)]">
+                    <span className="w-1 h-1 rounded-full bg-[var(--theme-primary)] animate-pulse" />
+                    {label || "Card de Título"}
+                </div>
+            )}
+
             <div className="relative z-10 flex flex-col h-full justify-between">
                 {/* Header Layout */}
                 <div className="flex justify-between items-start mb-4">
@@ -61,8 +72,13 @@ export const SarakTitleCard: React.FC<SarakTitleCardProps> = ({ item, mapping, c
                             {subtitle}
                         </span>
                         <h4 
-                            className="font-black text-[var(--theme-title)] tracking-tight group-hover:text-[var(--theme-primary)] transition-colors truncate"
-                            style={{ fontSize: 'var(--sarak-card-title-font-size, 20px)' }}
+                            className="text-[var(--theme-title)] tracking-tight group-hover:text-[var(--theme-primary)] transition-colors truncate"
+                            style={{ 
+                                fontSize: 'var(--sarak-card-title-font-size, 20px)',
+                                fontWeight: 'var(--sarak-card-title-font-weight, 900)' as any,
+                                letterSpacing: 'var(--sarak-card-title-letter-spacing, 0px)',
+                                color: 'var(--sarak-card-title-color, var(--theme-title, #ffffff))'
+                            }}
                         >
                             {title}
                         </h4>

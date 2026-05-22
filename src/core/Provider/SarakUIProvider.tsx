@@ -1,6 +1,5 @@
 import React, { ReactNode, useEffect, useMemo, useContext, createContext } from 'react';
 import '../../styles/sarak-base.css';
-import { LAYOUTS } from '../Design/presets/layout';
 import { NoiseOverlay } from '../../effects/NoiseOverlay';
 
 // Novos Módulos Refatorados
@@ -136,7 +135,7 @@ export const SarakUIProvider: React.FC<SarakUIProviderProps> = ({
         applyFullConfigRaw: applyFullConfig,
         persistDesign,
         registeredModules,
-        layouts: Object.values(LAYOUTS),
+        layouts: [],
         isHydrated,
         options
     }), [discoveryEndpoints, design, draftDesign, isDrafting, setIsDrafting, lockDrafting, setDesign, setDraftDesign, smartApplyConfig, smartApplyFullConfig, applyConfig, applyFullConfig, persistDesign, registeredModules, isHydrated, options]);

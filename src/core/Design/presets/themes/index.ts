@@ -1,7 +1,7 @@
 /**
- * Presets: Temas Globais (Combinações cross-schema)
+ * Presets: Temas Globais (Preview 2 Globais)
  * 
- * TODO: Criar presets data-driven que combinam tokens de múltiplos schemas
+ * Configurações que alteram a aplicação inteira de uma vez.
  * Formato esperado: { id: string; name: string; design: Record<string, any> }
  */
 

@@ -1,151 +1,107 @@
 import React from 'react';
 import { motion } from 'framer-motion';
-import { Lock, User, ShieldCheck, Mail, ArrowRight } from 'lucide-react';
+import { Lock, User, Shield, Zap, Cpu, Eye, ChevronRight, Github, Chrome } from 'lucide-react';
 
-interface AuthMockProps {
-  tokens: any;
-}
-
-/**
- * MockAuth - Sarak Sovereign Design System (v12.0)
- * Preview especializado para configurações de Soberania e Autenticação.
- */
-export const MockAuth: React.FC<AuthMockProps> = ({ tokens }) => {
-  // Mapeamento de densidade para padding real
-  const densityPadding = {
-    compact: '1.5rem',
-    standard: '2.5rem',
-    spacious: '4rem'
-  }[tokens.authDensity as 'compact' | 'standard' | 'spacious'] || '2.5rem';
-
-  const showNoise = tokens.authNoiseEnabled !== false;
+export const MockAuth: React.FC<any> = ({ tokens, animationVariants }) => {
   return (
-    <div className="sarak-auth-mock-container" style={{
-      width: '100%',
-      height: '100%',
-      display: 'flex',
-      alignItems: 'center',
-      justifyContent: 'center',
-      background: 'transparent',
-      position: 'relative',
-      overflow: 'hidden',
-    }}>
-      {/* Camada de Ruído (Noise) Controlada por Token */}
-      {showNoise && (
-        <div 
-          className="sarak-auth-noise"
-          style={{
-            position: 'absolute',
-            inset: 0,
-            opacity: 'calc(var(--sarak-noise-opacity, 5) / 100)',
-            backgroundImage: 'var(--sarak-auth-noise-url)',
-            pointerEvents: 'none',
-            zIndex: 1
-          }}
-        />
-      )}
-
-      {/* Card de Autenticação com Densidade Dinâmica */}
-      <motion.div 
-        initial={{ opacity: 0, y: 20 }}
-        animate={{ opacity: 1, y: 0 }}
-        className="sarak-card"
-        style={{
-          width: 'min(400px, 90%)',
-          padding: densityPadding, // Mapeado para o token de densidade
-          borderRadius: 'var(--sarak-security-radius, 16px)',
-          border: '1px solid var(--sarak-border-color)',
-          boxShadow: 'var(--sarak-shadow-lg)',
-          position: 'relative',
-          zIndex: 2,
-          display: 'flex',
-          flexDirection: 'column',
-          gap: '1.5rem'
-        }}
-      >
-        <div style={{ textAlign: 'center' }}>
-          <div style={{ 
-            width: '64px', 
-            height: '64px', 
-            background: 'var(--sarak-primary-10)', 
-            borderRadius: '50%', 
-            display: 'flex', 
-            alignItems: 'center', 
-            justifyContent: 'center',
-            margin: '0 auto 1rem',
-            color: 'var(--sarak-primary-color)',
-            boxShadow: '0 0 var(--sarak-security-glow, 15px) var(--sarak-primary-color)'
-          }}>
-            <ShieldCheck size={32} />
+    <motion.div 
+      variants={animationVariants} 
+      initial="initial" 
+      animate="animate" 
+      exit="exit" 
+      className="w-full h-full flex rounded-2xl overflow-hidden border border-[var(--theme-border)]"
+    >
+      {/* Lado Esquerdo - Branding */}
+      <div className="flex-1 flex flex-col items-center justify-center relative bg-[var(--theme-body)]">
+        {/* Camada de Ruído / Grid */}
+        <div className="absolute inset-0 opacity-20 pointer-events-none" style={{ backgroundImage: 'radial-gradient(circle at 2px 2px, rgba(255,255,255,0.15) 1px, transparent 0)', backgroundSize: '32px 32px' }}></div>
+        
+        <div className="relative z-10 flex flex-col items-center">
+          <div className="w-16 h-16 bg-[var(--theme-primary)] rounded-2xl flex items-center justify-center mb-6 shadow-[0_0_30px_rgba(var(--theme-primary-rgb),0.3)]">
+            <Cpu size={32} className="text-black" />
           </div>
-          <h2 style={{ color: 'var(--sarak-text-primary)', margin: 0, fontSize: '1.5rem' }}>Sovereign Access</h2>
-          <p style={{ color: 'var(--sarak-text-secondary)', fontSize: '0.875rem' }}>Confirme sua identidade para continuar</p>
+          <h1 className="text-3xl font-black text-white tracking-tight mb-8">Sarak MyService</h1>
+          
+          <div className="flex items-center gap-4">
+            <button className="flex items-center gap-2 px-4 py-2 rounded-lg bg-[var(--theme-card)] border border-[var(--theme-border)] text-[var(--theme-text-sec)] text-xs font-bold uppercase tracking-widest hover:text-white hover:border-white/20 transition-colors">
+              <Shield size={14} className="text-[var(--theme-primary)] opacity-70" /> SECURE
+            </button>
+            <button className="flex items-center gap-2 px-4 py-2 rounded-lg bg-[var(--theme-card)] border border-[var(--theme-border)] text-[var(--theme-text-sec)] text-xs font-bold uppercase tracking-widest hover:text-white hover:border-white/20 transition-colors">
+              <Zap size={14} className="text-[var(--theme-primary)] opacity-70" /> NEURAL
+            </button>
+          </div>
         </div>
+      </div>
 
-        <div style={{ display: 'flex', flexDirection: 'column', gap: '1rem' }}>
-          <div className="sarak-input-group" style={{ display: 'flex', flexDirection: 'column', gap: '0.5rem' }}>
-            <label style={{ fontSize: '0.75rem', color: 'var(--sarak-text-secondary)', textTransform: 'uppercase', letterSpacing: '0.05em' }}>E-mail</label>
-            <div style={{ position: 'relative' }}>
-              <Mail size={16} style={{ position: 'absolute', left: '12px', top: '50%', transform: 'translateY(-50%)', color: 'var(--sarak-text-tertiary)' }} />
-              <input 
-                readOnly
-                placeholder="admin@sarak.sovereign" 
-                style={{
-                  width: '100%',
-                  padding: '12px 12px 12px 40px',
-                  background: 'var(--sarak-surface-3)',
-                  border: '1px solid var(--sarak-border-color)',
-                  borderRadius: '8px',
-                  color: 'var(--sarak-text-primary)',
-                  fontSize: '0.9rem'
-                }}
-              />
-            </div>
+      {/* Lado Direito - Formulário de Login */}
+      <div className="flex-1 bg-black/90 flex flex-col items-center justify-center p-8 relative">
+        <div className="w-full max-w-sm flex flex-col gap-6 relative z-10">
+          
+          <div className="flex flex-col gap-1 mb-2">
+            <h2 className="text-xl font-bold text-white">Login do Sistema</h2>
+            <p className="text-sm text-[var(--theme-text-sec)]">Insira suas credenciais para continuar.</p>
           </div>
 
-          <div className="sarak-input-group" style={{ display: 'flex', flexDirection: 'column', gap: '0.5rem' }}>
-            <label style={{ fontSize: '0.75rem', color: 'var(--sarak-text-secondary)', textTransform: 'uppercase', letterSpacing: '0.05em' }}>Senha</label>
-            <div style={{ position: 'relative' }}>
-              <Lock size={16} style={{ position: 'absolute', left: '12px', top: '50%', transform: 'translateY(-50%)', color: 'var(--sarak-text-tertiary)' }} />
-              <input 
-                type="password"
-                readOnly
-                placeholder="••••••••••••" 
-                style={{
-                  width: '100%',
-                  padding: '12px 12px 12px 40px',
-                  background: 'var(--sarak-surface-3)',
-                  border: '1px solid var(--sarak-border-color)',
-                  borderRadius: '8px',
-                  color: 'var(--sarak-text-primary)',
-                  fontSize: '0.9rem'
-                }}
-              />
+          <div className="flex flex-col gap-4">
+            {/* Input Email */}
+            <div className="flex flex-col gap-1.5">
+              <label className="text-[10px] font-bold text-[var(--theme-title)] uppercase tracking-widest opacity-80">E-mail de Acesso</label>
+              <div className="relative">
+                <User size={16} className="absolute left-3 top-1/2 -translate-y-1/2 text-[var(--theme-text-sec)]" />
+                <input 
+                  type="email" 
+                  className="w-full bg-[var(--theme-body)] border border-[var(--theme-border)] rounded-lg py-3 pl-10 pr-4 text-sm text-white focus:outline-none focus:border-[var(--theme-primary)] transition-colors" 
+                  placeholder="eu@email.com" 
+                />
+              </div>
+            </div>
+
+            {/* Input Senha */}
+            <div className="flex flex-col gap-1.5">
+              <label className="text-[10px] font-bold text-[var(--theme-title)] uppercase tracking-widest opacity-80">Senha</label>
+              <div className="relative">
+                <Lock size={16} className="absolute left-3 top-1/2 -translate-y-1/2 text-[var(--theme-text-sec)]" />
+                <input 
+                  type="password" 
+                  className="w-full bg-[var(--theme-body)] border border-[var(--theme-border)] rounded-lg py-3 pl-10 pr-10 text-sm text-white focus:outline-none focus:border-[var(--theme-primary)] transition-colors" 
+                  placeholder="••••••••" 
+                />
+                <Eye size={16} className="absolute right-3 top-1/2 -translate-y-1/2 text-[var(--theme-text-sec)] cursor-pointer hover:text-white" />
+              </div>
+            </div>
+
+            {/* Botão Acessar */}
+            <button className="w-full bg-[#111] hover:bg-[#1a1a1a] border border-white/10 text-white font-bold text-xs uppercase tracking-widest py-3 rounded-lg mt-2 transition-colors flex items-center justify-center gap-2 shadow-lg">
+              Acessar Sistema <ChevronRight size={14} />
+            </button>
+
+            {/* Divisor */}
+            <div className="flex items-center gap-3 my-2 opacity-70">
+              <div className="flex-1 h-px bg-white/10"></div>
+              <span className="text-[9px] text-white/40 uppercase font-bold tracking-widest">Ou continue com</span>
+              <div className="flex-1 h-px bg-white/10"></div>
+            </div>
+
+            {/* Social Logins */}
+            <button className="w-full bg-[#111] border border-white/5 hover:border-white/20 text-white/80 font-bold text-[10px] uppercase tracking-widest py-3 rounded-lg flex items-center justify-center gap-2 transition-colors">
+              <Chrome size={14} /> Continue com Google
+            </button>
+            <button className="w-full bg-[#111] border border-white/5 hover:border-white/20 text-white/80 font-bold text-[10px] uppercase tracking-widest py-3 rounded-lg flex items-center justify-center gap-2 transition-colors">
+              <Github size={14} /> Acessar com Github
+            </button>
+
+            {/* Master Login */}
+            <button className="w-full bg-[var(--theme-primary)]/5 hover:bg-[var(--theme-primary)]/10 border border-[var(--theme-primary)]/20 text-[var(--theme-primary)] font-bold text-[10px] uppercase tracking-widest py-3 rounded-lg mt-2 transition-colors">
+              Entrar como Master
+            </button>
+
+            {/* Rodapé */}
+            <div className="text-center text-xs text-white/40 mt-4">
+              Não tem uma conta? <span className="text-[var(--theme-primary)] font-bold cursor-pointer hover:underline">Primeiro Acesso</span>
             </div>
           </div>
         </div>
-
-        <button style={{
-          width: '100%',
-          padding: '14px',
-          background: 'var(--sarak-primary-color)',
-          color: 'white',
-          border: 'none',
-          borderRadius: '8px',
-          fontWeight: 600,
-          display: 'flex',
-          alignItems: 'center',
-          justifyContent: 'center',
-          gap: '0.5rem',
-          cursor: 'not-allowed'
-        }}>
-          Entrar no Sistema <ArrowRight size={18} />
-        </button>
-
-        <div style={{ textAlign: 'center', fontSize: '0.75rem', color: 'var(--sarak-text-tertiary)' }}>
-          Protegido por Sarak Multi-Factor Sovereignty
-        </div>
-      </motion.div>
-    </div>
+      </div>
+    </motion.div>
   );
 };

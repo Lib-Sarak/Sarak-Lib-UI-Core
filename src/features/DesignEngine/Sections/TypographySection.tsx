@@ -1,7 +1,7 @@
 import React from 'react';
 import { Type, AlignLeft, Bold, MoveHorizontal } from 'lucide-react';
 import { Section, SelectControl, SliderControl } from '../components/DesignControls';
-import { THEME_FONTS } from '../../../core/Design/presets/typography';
+const THEME_FONTS = [{ id: 'outfit', value: "'Outfit', sans-serif", name: 'Outfit', category: 'Sans-Serif' }, { id: 'inter', value: "'Inter', sans-serif", name: 'Inter', category: 'Sans-Serif' }];
 
 interface TypographySectionProps {
     draft: any;
@@ -12,7 +12,7 @@ interface TypographySectionProps {
 
 export const TypographySection: React.FC<TypographySectionProps> = ({ draft, updateDraft, activeSection, setActiveSection }) => {
     // Mapear catálogo completo para o formato do SelectControl
-    const fontOptions = THEME_FONTS.map(f => ({
+    const fontOptions = THEME_FONTS.map((f: any) => ({
         id: f.value,
         label: f.name
     }));

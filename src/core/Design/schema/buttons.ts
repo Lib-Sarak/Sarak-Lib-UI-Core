@@ -7,13 +7,10 @@ import { ComponentSchema } from '../types';
 export const ButtonsSchema: ComponentSchema = {
     id: 'buttons',
     label: 'Botão de Ação',
-    pilar: 'interaction',
-    subcategory: 'Controles de Entrada',
     tokens: [
         {
             id: 'btnBorderRadius',
             label: 'Arredondamento (Master)',
-            category: 'Geometria',
             type: 'slider',
             unit: 'px',
             constraints: { min: 0, max: 120 },
@@ -23,7 +20,6 @@ export const ButtonsSchema: ComponentSchema = {
         {
             id: 'btnRadiusTL',
             label: 'Canto: Superior Esquerdo',
-            category: 'Geometria: Avançado',
             type: 'slider',
             unit: 'px',
             constraints: { min: 0, max: 120 },
@@ -33,7 +29,6 @@ export const ButtonsSchema: ComponentSchema = {
         {
             id: 'btnRadiusTR',
             label: 'Canto: Superior Direito',
-            category: 'Geometria: Avançado',
             type: 'slider',
             unit: 'px',
             constraints: { min: 0, max: 120 },
@@ -43,7 +38,6 @@ export const ButtonsSchema: ComponentSchema = {
         {
             id: 'btnRadiusBL',
             label: 'Canto: Inferior Esquerdo',
-            category: 'Geometria: Avançado',
             type: 'slider',
             unit: 'px',
             constraints: { min: 0, max: 120 },
@@ -53,7 +47,6 @@ export const ButtonsSchema: ComponentSchema = {
         {
             id: 'btnRadiusBR',
             label: 'Canto: Inferior Direito',
-            category: 'Geometria: Avançado',
             type: 'slider',
             unit: 'px',
             constraints: { min: 0, max: 120 },
@@ -65,7 +58,6 @@ export const ButtonsSchema: ComponentSchema = {
         {
             id: 'btnHoverScale',
             label: 'Escala no Hover',
-            category: 'Interação',
             type: 'slider',
             constraints: { min: 0.8, max: 1.2, step: 0.01 },
             defaultValue: 1.02,
@@ -74,7 +66,6 @@ export const ButtonsSchema: ComponentSchema = {
         {
             id: 'btnActiveScale',
             label: 'Escala no Clique',
-            category: 'Interação',
             type: 'slider',
             constraints: { min: 0.8, max: 1.2, step: 0.01 },
             defaultValue: 0.98,
@@ -83,7 +74,6 @@ export const ButtonsSchema: ComponentSchema = {
         {
             id: 'btnPrimaryBg',
             label: 'Fundo Primário',
-            category: 'Estilo: Primário',
             type: 'color',
             defaultValue: '#00f2ff',
             generateVariants: true,
@@ -92,7 +82,6 @@ export const ButtonsSchema: ComponentSchema = {
         {
             id: 'btnPrimaryText',
             label: 'Texto Primário',
-            category: 'Estilo: Primário',
             type: 'color',
             defaultValue: '#000000',
             cssVars: ['--sarak-btn-primary-text']
@@ -100,7 +89,6 @@ export const ButtonsSchema: ComponentSchema = {
         {
             id: 'btnSecondaryBg',
             label: 'Fundo Secundário',
-            category: 'Estilo: Secundário',
             type: 'color',
             defaultValue: 'rgba(255, 255, 255, 0.05)',
             generateVariants: true,
@@ -109,7 +97,6 @@ export const ButtonsSchema: ComponentSchema = {
         {
             id: 'btnGhostHoverBg',
             label: 'Hover (Ghost)',
-            category: 'Estilo: Ghost',
             type: 'color',
             defaultValue: 'rgba(255, 255, 255, 0.05)',
             cssVars: ['--sarak-btn-ghost-hover']
@@ -119,7 +106,6 @@ export const ButtonsSchema: ComponentSchema = {
         {
             id: 'btnStyleType',
             label: 'Estilo do Botão',
-            category: 'Estilos Avançados',
             type: 'select',
             constraints: {
                 options: [
@@ -135,7 +121,6 @@ export const ButtonsSchema: ComponentSchema = {
         {
             id: 'btnNeonGlowColor',
             label: 'Cor do Brilho (Neon)',
-            category: 'Estilos Avançados: Cyber Neon',
             type: 'color',
             defaultValue: 'rgba(0, 242, 255, 0.4)',
             cssVars: ['--sarak-btn-neon-glow-color']
@@ -143,7 +128,6 @@ export const ButtonsSchema: ComponentSchema = {
         {
             id: 'btnNeonPulseSpeed',
             label: 'Velocidade de Pulso (s)',
-            category: 'Estilos Avançados: Cyber Neon',
             type: 'slider',
             unit: 's',
             constraints: { min: 0.5, max: 4, step: 0.1 },
@@ -153,7 +137,6 @@ export const ButtonsSchema: ComponentSchema = {
         {
             id: 'btnBackdropBlur',
             label: 'Desfoque de Vidro (Backdrop Blur)',
-            category: 'Estilos Avançados: Glassmorphism',
             type: 'slider',
             unit: 'px',
             constraints: { min: 0, max: 30 },

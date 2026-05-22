@@ -7,13 +7,10 @@ import { ComponentSchema } from '../types';
 export const BrandingSchema: ComponentSchema = {
     id: 'branding',
     label: 'Identidade Visual',
-    pilar: 'brand',
-    subcategory: 'Branding e Cores',
     tokens: [
         {
             id: 'systemName',
             label: 'Nome da Marca',
-            category: 'Identidade',
             type: 'text',
             defaultValue: 'Sarak OS',
             cssVars: ['--sarak-system-name']
@@ -22,7 +19,6 @@ export const BrandingSchema: ComponentSchema = {
         {
             id: 'logoUrl',
             label: 'Logo Principal (SVG/PNG)',
-            category: 'Assets Visuais',
             type: 'text',
             defaultValue: '',
             cssVars: ['--sarak-logo-main']
@@ -30,7 +26,6 @@ export const BrandingSchema: ComponentSchema = {
         {
             id: 'logoMinimalUrl',
             label: 'Logo Minimalista (Favicon)',
-            category: 'Assets Visuais',
             type: 'text',
             defaultValue: '',
             cssVars: ['--sarak-logo-minimal']
@@ -38,7 +33,6 @@ export const BrandingSchema: ComponentSchema = {
         {
             id: 'logoScale',
             label: 'Escala do Logo (%)',
-            category: 'Posicionamento',
             type: 'slider',
             constraints: { min: 10, max: 200, step: 5 },
             defaultValue: 100,
@@ -47,7 +41,6 @@ export const BrandingSchema: ComponentSchema = {
         {
             id: 'identityAlignment',
             label: 'Alinhamento',
-            category: 'Posicionamento',
             type: 'select',
             constraints: {
                 options: [
@@ -62,7 +55,6 @@ export const BrandingSchema: ComponentSchema = {
         {
             id: 'identityPadding',
             label: 'Padding do Container',
-            category: 'Posicionamento',
             type: 'slider',
             unit: 'px',
             constraints: { min: 0, max: 64 },
@@ -74,7 +66,6 @@ export const BrandingSchema: ComponentSchema = {
         {
             id: 'identityFontFamily',
             label: 'Fonte do Logo',
-            category: 'Tipografia da Marca',
             type: 'font',
             defaultValue: 'Inter',
             cssVars: ['--sarak-identity-font']
@@ -82,7 +73,6 @@ export const BrandingSchema: ComponentSchema = {
         {
             id: 'identityFontWeight',
             label: 'Peso da Fonte',
-            category: 'Tipografia da Marca',
             type: 'slider',
             constraints: { min: 100, max: 900, step: 100 },
             defaultValue: 700,
@@ -91,7 +81,6 @@ export const BrandingSchema: ComponentSchema = {
         {
             id: 'identityTracking',
             label: 'Espaçamento (Tracking)',
-            category: 'Tipografia da Marca',
             type: 'slider',
             unit: 'em',
             constraints: { min: -0.1, max: 0.5, step: 0.01 },
@@ -103,7 +92,6 @@ export const BrandingSchema: ComponentSchema = {
         {
             id: 'identityRedirectUrl',
             label: 'Link de Redirecionamento',
-            category: 'Comportamento',
             type: 'text',
             defaultValue: '/',
             cssVars: ['--sarak-identity-link']
@@ -111,7 +99,6 @@ export const BrandingSchema: ComponentSchema = {
         {
             id: 'identityHoverEffect',
             label: 'Efeito ao Hover',
-            category: 'Comportamento',
             type: 'select',
             constraints: {
                 options: [

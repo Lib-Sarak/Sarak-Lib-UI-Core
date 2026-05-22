@@ -7,13 +7,10 @@ import { ComponentSchema } from '../types';
 export const SpecializedSchema: ComponentSchema = {
     id: 'specialized',
     label: 'Ícones e Estética',
-    pilar: 'systems',
-    subcategory: 'Módulos e IA',
     tokens: [
         {
             id: 'aiPanelBg',
             label: 'Fundo do Painel IA',
-            category: 'IA Core',
             type: 'color',
             defaultValue: 'rgba(0, 0, 0, 0.4)',
             cssVars: ['--sarak-ai-panel-bg']
@@ -21,7 +18,6 @@ export const SpecializedSchema: ComponentSchema = {
         {
             id: 'aiGlowColor',
             label: 'Cor do Brilho IA',
-            category: 'IA Core',
             type: 'color',
             defaultValue: '#00f2ff',
             cssVars: ['--sarak-ai-glow']
@@ -29,7 +25,6 @@ export const SpecializedSchema: ComponentSchema = {
         {
             id: 'flowNodeRadius',
             label: 'Raio dos Nós (Fluxo)',
-            category: 'Editor de Fluxos',
             type: 'slider',
             unit: 'px',
             constraints: { min: 0, max: 40, step: 1 },
@@ -39,7 +34,6 @@ export const SpecializedSchema: ComponentSchema = {
         {
             id: 'flowGridStyle',
             label: 'Estilo do Grid (Fluxo)',
-            category: 'Editor de Fluxos',
             type: 'select',
             defaultValue: 'dots',
             options: [

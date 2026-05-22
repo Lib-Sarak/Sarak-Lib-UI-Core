@@ -54,19 +54,19 @@ export const useDesignDraft = (sarak: any) => {
         setTimeout(() => setToast(null), 3000);
     };
 
-    // 3. Mapeamento Dinâmico de Tokens por Pilar
-    const getTokensByPillar = useCallback((pillarId: string) => {
-        const pillarTokens = MASTER_DESIGN_MAP.components
-            .filter(c => c.pilar === pillarId)
+    // 3. Mapeamento Dinâmico de Tokens por Componente (Schema ID)
+    const getTokensByComponent = useCallback((schemaId: string) => {
+        const schemaTokens = MASTER_DESIGN_MAP.components
+            .filter(c => c.id === schemaId)
             .flatMap(c => c.tokens.map(t => t.id));
             
-        if (pillarId === 'identidade') {
+        if (schemaId === 'branding') {
             const structural = ['layout', 'mode', 'systemName', 'logoUrl', 'logoDarkUrl', 'fontScale'];
             structural.forEach(key => {
-                if (!pillarTokens.includes(key)) pillarTokens.push(key);
+                if (!schemaTokens.includes(key)) schemaTokens.push(key);
             });
         }
-        return pillarTokens;
+        return schemaTokens;
     }, []);
 
     // 4. Bloqueio Atômico Síncrono
@@ -82,11 +82,11 @@ export const useDesignDraft = (sarak: any) => {
     }, []);
 
     // 5. Cálculo de Dirty State
-    const isPillarDirty = useCallback((pillarId: string) => {
+    const isComponentDirty = useCallback((schemaId: string) => {
         if (!draftState) return false;
-        const allKeys = getTokensByPillar(pillarId);
+        const allKeys = getTokensByComponent(schemaId);
         return allKeys.some(key => !areValuesEqual(draftState[key], sarak.systemDesign?.[key]));
-    }, [draftState, sarak.systemDesign, getTokensByPillar]);
+    }, [draftState, sarak.systemDesign, getTokensByComponent]);
 
     const isDirty = useMemo(() => {
         if (!draftState) return false;
@@ -153,23 +153,23 @@ export const useDesignDraft = (sarak: any) => {
         }));
     };
 
-    const resetPillar = (pillarIdOrSchemas: string | string[]) => {
-        const pillarKeys = typeof pillarIdOrSchemas === 'string'
-            ? getTokensByPillar(pillarIdOrSchemas)
+    const resetComponent = (schemaIdOrSchemas: string | string[]) => {
+        const componentKeys = typeof schemaIdOrSchemas === 'string'
+            ? getTokensByComponent(schemaIdOrSchemas)
             : MASTER_DESIGN_MAP.components
-                .filter(c => pillarIdOrSchemas.includes(c.id))
+                .filter(c => schemaIdOrSchemas.includes(c.id))
                 .flatMap(c => c.tokens.map(t => t.id));
         
         setDraftState((prev: any) => {
             const current = prev || draft;
             const newDraft = { ...current };
-            pillarKeys.forEach(key => {
+            componentKeys.forEach(key => {
                 newDraft[key] = sarak.systemDesign?.[key];
             });
             return newDraft;
         });
 
-        const label = typeof pillarIdOrSchemas === 'string' ? pillarIdOrSchemas : pillarIdOrSchemas.join(', ');
+        const label = typeof schemaIdOrSchemas === 'string' ? schemaIdOrSchemas : schemaIdOrSchemas.join(', ');
         showToast('warning', `Tokens de ${label.toUpperCase()} restaurados.`);
     };
 
@@ -211,31 +211,31 @@ export const useDesignDraft = (sarak: any) => {
     };
 
     /**
-     * APLICAÇÃO GRANULAR (Commit por Pilar)
+     * APLICAÇÃO GRANULAR (Commit por Componente)
      */
-    const handleApplyPillar = (pillarId: string) => {
-        if (sarak.applyConfigRaw && isPillarDirty(pillarId)) {
-            const pillarKeys = getTokensByPillar(pillarId);
+    const handleApplyComponent = (schemaId: string) => {
+        if (sarak.applyConfigRaw && isComponentDirty(schemaId)) {
+            const componentKeys = getTokensByComponent(schemaId);
             const patch: Record<string, any> = {};
-            pillarKeys.forEach(key => {
+            componentKeys.forEach(key => {
                 patch[key] = draft[key];
             });
             
             sarak.applyConfigRaw(patch);
-            showToast('success', `Pilar ${pillarId.toUpperCase()} aplicado.`);
+            showToast('success', `Módulo ${schemaId.toUpperCase()} aplicado.`);
         }
     };
 
     return {
         draft,
         isDirty,
-        isPillarDirty,
+        isComponentDirty,
         updateDraft,
-        resetPillar,
+        resetComponent,
         resetToken,
         handleThemePreview,
         handleApplyToSystem,
-        handleApplyPillar,
+        handleApplyComponent,
         toast,
         showToast
     };

@@ -13,6 +13,14 @@ import { DesignScope } from '../../../core/Design/components/DesignScope';
 
 import { MASTER_DESIGN_MAP } from '../../../core/Design/master-map';
 
+const ESSENTIAL_TOKENS = [
+    'colorPrimary', 'colorSecondary', 'colorAccent', 'colorSurface', 
+    'fontHeading', 'fontBody', 'h1Size', 'bodySize', 
+    'radiusTheme', 'themeGap', 
+    'buttonRadius', 'cardRadius', 
+    'layout', 'mode', 'texture'
+];
+
 // Modular Hooks & Components
 import { useDesignDraft } from '../hooks/useDesignDraft';
 import { useResizable } from '../hooks/useResizable';
@@ -88,9 +96,9 @@ export const ThemeCustomizationTab: React.FC = () => {
         draft, 
         updateDraft, 
         handleApplyToSystem, 
-        handleApplyPillar,
-        isPillarDirty,
-        resetPillar,
+        handleApplyComponent,
+        isComponentDirty,
+        resetComponent,
         toast 
     } = useDesignDraft(sarak);
     
@@ -101,6 +109,30 @@ export const ThemeCustomizationTab: React.FC = () => {
     const [activeSectionId, setActiveSectionId] = useState<string | null>(null);
     const [viewMode, setViewMode] = useState<'preview' | 'catalog' | 'templates'>('preview');
     const [searchQuery, setSearchQuery] = useState('');
+    const [isEssentialMode, setIsEssentialMode] = useState(true);
+
+    const appToPillarMap: Record<string, string> = useMemo(() => ({
+        'dashboard': 'surfaces',
+        'components': 'surfaces',
+        'tabela': 'surfaces',
+        'caixas-texto': 'interaction',
+        'typography': 'typography',
+        'chat': 'advanced',
+        'graficos': 'advanced',
+        'matrix': 'advanced',
+        'auth': 'brand',
+        'settings': 'systems',
+        'logs': 'systems'
+    }), []);
+
+    useEffect(() => {
+        const pillarId = appToPillarMap[activePreviewApp];
+        if (pillarId && activePillarId !== pillarId) {
+            setActivePillarId(pillarId);
+        }
+    }, [activePreviewApp, appToPillarMap]);
+
+    // handleInspectComponent moved below groupedStructure
 
     // 0. Redimensionamento da Barra Design Engine
     const { size: engineSidebarWidth, startResizing: startResizingEngine, isResizing: isResizingEngine } = useResizable({
@@ -121,16 +153,30 @@ export const ThemeCustomizationTab: React.FC = () => {
         { id: 'advanced', title: '7. Componentes Avançados', icon: Sparkles, index: 7 },
     ], []);
 
-    // 2. Agrupamento Hierárquico: Pilar -> Subcategoria -> Componente
+    // 2. Agrupamento Hierárquico: Pilar -> Componente
     const groupedStructure = useMemo(() => {
         const groups: Record<string, Record<string, any[]>> = {};
         
         pillars.forEach(p => { groups[p.id] = {}; });
 
+        const schemaToPillar: Record<string, string> = {
+            identity: 'brand',
+            typography: 'typography',
+            shell: 'surfaces',
+            cards: 'surfaces',
+            atmosphere: 'surfaces',
+            controls: 'interaction',
+            motion: 'interaction',
+            navigation: 'navigation',
+            system: 'systems',
+            data: 'systems',
+            specialized: 'advanced'
+        };
+
         if (MASTER_DESIGN_MAP?.components) {
             MASTER_DESIGN_MAP.components.forEach(comp => {
-                const pillarId = comp.pilar || 'brand';
-                const subcat = comp.subcategory || 'Geral';
+                const pillarId = schemaToPillar[comp.id] || 'brand';
+                const subcat = 'Geral';
 
                 if (!groups[pillarId]) groups[pillarId] = {};
                 if (!groups[pillarId][subcat]) groups[pillarId][subcat] = [];
@@ -140,6 +186,17 @@ export const ThemeCustomizationTab: React.FC = () => {
         }
         return groups;
     }, [pillars]);
+
+    const handleInspectComponent = useCallback((schemaId: string) => {
+        const foundPillar = Object.keys(groupedStructure).find(p => 
+            Object.values(groupedStructure[p]).some(comps => 
+                comps.some(c => c.id === schemaId)
+            )
+        );
+        if (foundPillar) setActivePillarId(foundPillar);
+        setTimeout(() => setActiveSectionId(schemaId), 100);
+        toast && toast.message ? null : null; // Suppress unused var warning
+    }, [groupedStructure, toast]);
 
     // Busca Filtrada
     const filteredResults = useMemo(() => {
@@ -166,7 +223,7 @@ export const ThemeCustomizationTab: React.FC = () => {
                             <div className="w-7 h-7 rounded-lg bg-[var(--theme-primary)] flex items-center justify-center">
                                 <Zap className="text-white w-3.5 h-3.5" />
                             </div>
-                            <h2 className="text-[10px] font-black text-white tracking-tight uppercase">Design Engine <span className="text-[var(--theme-primary)] ml-0.5 opacity-50">v14.0</span></h2>
+                            <div className="text-[10px] font-black text-white tracking-tight uppercase">Design Engine <span className="text-[var(--theme-primary)] ml-0.5 opacity-50">v14.0</span></div>
                         </div>
                         <div className="flex gap-1 p-0.5 bg-white/5 rounded-lg border border-white/5">
                             {['preview', 'catalog', 'templates'].map((m) => (
@@ -181,16 +238,32 @@ export const ThemeCustomizationTab: React.FC = () => {
                         </div>
                     </div>
 
-                    {/* Busca */}
-                    <div className="relative group mb-4">
-                        <Search size={10} className="absolute left-3 top-1/2 -translate-y-1/2 text-white/20 group-focus-within:text-[var(--theme-primary)] transition-all" />
-                        <input 
-                            type="text" 
-                            placeholder="BUSCAR TOKEN..."
-                            value={searchQuery}
-                            onChange={(e) => setSearchQuery(e.target.value)}
-                            className="w-full bg-white/5 border border-white/10 rounded-xl py-2.5 pl-9 pr-4 text-[9px] font-black tracking-widest uppercase focus:outline-none focus:border-[var(--theme-primary)]/50 transition-all text-white placeholder:text-white/10"
-                        />
+                    {/* Busca e Toggle Essencial */}
+                    <div className="flex flex-col gap-3 mb-4">
+                        <div className="relative group">
+                            <Search size={10} className="absolute left-3 top-1/2 -translate-y-1/2 text-white/20 group-focus-within:text-[var(--theme-primary)] transition-all" />
+                            <input 
+                                type="text" 
+                                placeholder="BUSCAR TOKEN..."
+                                value={searchQuery}
+                                onChange={(e) => setSearchQuery(e.target.value)}
+                                className="w-full bg-white/5 border border-white/10 rounded-xl py-2.5 pl-9 pr-4 text-[9px] font-black tracking-widest uppercase focus:outline-none focus:border-[var(--theme-primary)]/50 transition-all text-white placeholder:text-white/10"
+                            />
+                        </div>
+                        <div className="flex items-center justify-between">
+                            <label 
+                                className="flex items-center gap-2 cursor-pointer group"
+                                onClick={(e) => {
+                                    e.preventDefault();
+                                    setIsEssentialMode(!isEssentialMode);
+                                }}
+                            >
+                                <div className={`w-6 h-3 rounded-full relative transition-all ${!isEssentialMode ? 'bg-[var(--theme-primary)]' : 'bg-white/10'}`}>
+                                    <div className={`absolute top-0.5 w-2 h-2 rounded-full bg-white transition-all ${!isEssentialMode ? 'left-3.5' : 'left-0.5'}`} />
+                                </div>
+                                <span className="text-[9px] font-black uppercase tracking-widest text-white/40 group-hover:text-white/60">Modo Avançado (Hyper-Granular)</span>
+                            </label>
+                        </div>
                     </div>
 
                     <button onClick={handleApplyToSystem} className="w-full group relative overflow-hidden bg-[var(--theme-primary)] hover:bg-[var(--theme-primary)]/90 text-white py-2.5 rounded-lg font-black text-[9px] uppercase tracking-[0.1em] transition-all active:scale-[0.98] shadow-[0_10px_20px_-5px_rgba(var(--theme-primary-rgb),0.3)]">
@@ -225,9 +298,9 @@ export const ThemeCustomizationTab: React.FC = () => {
                                                 setActivePillarId(nextId);
                                                 if (nextId === 'advanced') setActivePreviewApp('matrix');
                                             }}
-                                            isDirty={isPillarDirty(pillar.id)}
-                                            onReset={() => resetPillar(pillar.id)}
-                                            onApply={() => handleApplyPillar(pillar.id)}
+                                            isDirty={isComponentDirty(pillar.id)}
+                                            onReset={() => resetComponent(pillar.id)}
+                                            onApply={() => handleApplyComponent(pillar.id)}
                                         />
                                         <AnimatePresence>
                                             {activePillarId === pillar.id && (
@@ -239,18 +312,22 @@ export const ThemeCustomizationTab: React.FC = () => {
                                                                     <div className="w-1 h-1 rounded-full bg-[var(--theme-primary)] opacity-30" />
                                                                     <span className="text-[7px] font-black uppercase tracking-[0.2em] text-white/20">{subcat}</span>
                                                                 </div>
-                                                                {comps.map((comp) => (
+                                                                {comps.map((comp) => {
+                                                                    const visibleTokens = comp.tokens.filter((token: any) => !isEssentialMode || ESSENTIAL_TOKENS.includes(token.id));
+                                                                    if (visibleTokens.length === 0) return null;
+                                                                    return (
                                                                     <Section 
                                                                         key={comp.id} id={comp.id} icon={Command} title={comp.label} 
                                                                         activeSection={activeSectionId} onToggle={setActiveSectionId}
                                                                     >
                                                                         <div className="flex flex-col gap-4">
-                                                                            {comp.tokens.map((token: any) => (
+                                                                            {visibleTokens.map((token: any) => (
                                                                                 <TokenControl key={token.id} token={token} value={draft[token.id]} onChange={(val) => updateDraft(token.id, val)} />
                                                                             ))}
                                                                         </div>
                                                                     </Section>
-                                                                ))}
+                                                                    );
+                                                                })}
                                                             </div>
                                                         ))}
                                                     </div>
@@ -292,6 +369,7 @@ export const ThemeCustomizationTab: React.FC = () => {
                     activeSectionId={activeSectionId}
                     isDualView={viewMode === 'preview'}
                     customThemes={[]}
+                    onInspectComponent={handleInspectComponent}
                 />
                 
                 {/* Toasts de Feedback */}

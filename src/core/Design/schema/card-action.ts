@@ -7,13 +7,10 @@ import { ComponentSchema } from '../types';
 export const CardActionSchema: ComponentSchema = {
     id: 'cardAction',
     label: 'Card de Ação',
-    pilar: 'surfaces',
-    subcategory: 'Estruturas de Card',
     tokens: [
         {
             id: 'cardActionBtnPrimaryBg',
             label: 'Fundo do Botão de Ação',
-            category: 'Botão de Ação: Cores',
             type: 'color',
             defaultValue: '#00f2ff',
             generateVariants: true,
@@ -22,7 +19,6 @@ export const CardActionSchema: ComponentSchema = {
         {
             id: 'cardActionBtnHoverBg',
             label: 'Fundo do Botão no Hover',
-            category: 'Botão de Ação: Cores',
             type: 'color',
             defaultValue: 'rgba(0, 242, 255, 0.8)',
             cssVars: ['--sarak-card-action-btn-hover-bg']
@@ -30,7 +26,6 @@ export const CardActionSchema: ComponentSchema = {
         {
             id: 'cardActionBtnText',
             label: 'Cor do Texto do Botão',
-            category: 'Botão de Ação: Cores',
             type: 'color',
             defaultValue: '#090d16',
             cssVars: ['--sarak-card-action-btn-text']
@@ -38,7 +33,6 @@ export const CardActionSchema: ComponentSchema = {
         {
             id: 'cardActionBtnBorderRadius',
             label: 'Arredondamento do Botão',
-            category: 'Botão de Ação: Geometria',
             type: 'slider',
             unit: 'px',
             constraints: { min: 0, max: 40 },
@@ -48,7 +42,6 @@ export const CardActionSchema: ComponentSchema = {
         {
             id: 'cardActionBtnPadding',
             label: 'Padding Vertical do Botão',
-            category: 'Botão de Ação: Geometria',
             type: 'slider',
             unit: 'px',
             constraints: { min: 4, max: 24 },
@@ -58,7 +51,6 @@ export const CardActionSchema: ComponentSchema = {
         {
             id: 'cardActionClickScale',
             label: 'Escala do Clique (Ação)',
-            category: 'Botão de Ação: Feedback',
             type: 'slider',
             constraints: { min: 0.8, max: 1.1, step: 0.01 },
             defaultValue: 0.96,

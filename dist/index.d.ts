@@ -69,50 +69,6 @@ declare const DesignScope: React$1.FC<DesignScopeProps & Record<string, any>>;
 
 declare const ThemeToggle: React$1.FC;
 
-/**
- * Sarak Design Engine - Card Presets (v12.0)
- *
- * Redefinição total focada em Gêmeos Digitais de Alta Fidelidade.
- * Cada preset define o estado completo de todos os componentes reguláveis da subcategoria.
- */
-interface CardPreset {
-    id: string;
-    name: string;
-    description: string;
-    design: {
-        cardBorderRadius: number;
-        cardRadiusTL: number;
-        cardRadiusTR: number;
-        cardRadiusBL: number;
-        cardRadiusBR: number;
-        cardGeometricCut: number;
-        cardBackgroundColor: string;
-        cardBackdropBlur: number;
-        cardSurfaceOpacity: number;
-        cardBorderWidth: number;
-        cardBorderColor: string;
-        cardBorderOpacity: number;
-        cardBorderTop: number;
-        cardBorderBottom: number;
-        cardBorderLeft: number;
-        cardBorderRight: number;
-        cardTextureType: string;
-        cardTextureOpacity: number;
-        cardInnerGlowColor: string;
-        cardInnerGlowWidth: number;
-        cardShadowSpread: number;
-        cardGlowIntensity: number;
-        cardGlowColor: string;
-        cardHeaderBg: string;
-        cardHeaderBorder: string;
-        cardHeaderPadding: number;
-        cardFooterBg: string;
-        cardFooterBorder: string;
-        [key: string]: any;
-    };
-}
-declare const CARD_PRESETS: CardPreset[];
-
 interface SarakShellProps {
     children?: React$1.ReactNode;
     brand?: {
@@ -138,13 +94,13 @@ declare const SarakShell: React$1.FC<SarakShellProps>;
 declare const useDesignDraft: (sarak: any) => {
     draft: any;
     isDirty: boolean;
-    isPillarDirty: (pillarId: string) => boolean;
+    isComponentDirty: (schemaId: string) => boolean;
     updateDraft: (key: string, value: any) => void;
-    resetPillar: (pillarIdOrSchemas: string | string[]) => void;
+    resetComponent: (schemaIdOrSchemas: string | string[]) => void;
     resetToken: (tokenId: string) => void;
     handleThemePreview: (presetDesign: Record<string, any>, presetKeyId?: string) => void;
     handleApplyToSystem: () => void;
-    handleApplyPillar: (pillarId: string) => void;
+    handleApplyComponent: (schemaId: string) => void;
     toast: {
         type: "success" | "warning";
         message: string;
@@ -622,4 +578,4 @@ interface SarakRouterState {
  */
 declare function useSarakRouter(basePath?: string): SarakRouterState;
 
-export { CARD_PRESETS, type CardPreset, CustomizationPanel, DESIGN_MANIFEST, DesignScope, type DiscoveredModule, DynamicRenderer, ExpandableCard, LanguageSelector, type MatrixNodeConfig, type ModuleManifest, ModuleSelector, type ResolvedNodeConfig, SarakAuthScreen, SarakCardGrid, SarakCatalogGrid, SarakChart, SarakChartEngine, SarakChat, SarakExpandableMatrix, type SarakExpandableMatrixProps, SarakForm, SarakManagementGrid, type SarakMatrixManifest, type SarakModule, type SarakRouterState, SarakSecurityOrchestrator, SarakShell, SarakStats, SarakTable, SarakUIProvider, SocialButton, ThemeToggle, UserMenu, type VisualContract, type VisualContractType, getLocalComponent, getRegisteredModules, getSarakModule, registerLocalComponent, registerSarakModule, subscribeToRegistry, useDesignDraft, useModuleDiscovery, useSarakRouter, useSarakUI };
+export { CustomizationPanel, DESIGN_MANIFEST, DesignScope, type DiscoveredModule, DynamicRenderer, ExpandableCard, LanguageSelector, type MatrixNodeConfig, type ModuleManifest, ModuleSelector, type ResolvedNodeConfig, SarakAuthScreen, SarakCardGrid, SarakCatalogGrid, SarakChart, SarakChartEngine, SarakChat, SarakExpandableMatrix, type SarakExpandableMatrixProps, SarakForm, SarakManagementGrid, type SarakMatrixManifest, type SarakModule, type SarakRouterState, SarakSecurityOrchestrator, SarakShell, SarakStats, SarakTable, SarakUIProvider, SocialButton, ThemeToggle, UserMenu, type VisualContract, type VisualContractType, getLocalComponent, getRegisteredModules, getSarakModule, registerLocalComponent, registerSarakModule, subscribeToRegistry, useDesignDraft, useModuleDiscovery, useSarakRouter, useSarakUI };

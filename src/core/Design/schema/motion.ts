@@ -8,14 +8,11 @@ import { ComponentSchema } from '../types';
 export const MotionSchema: ComponentSchema = {
     id: 'motion',
     label: 'Movimento e Física',
-    pilar: 'interaction',
-    subcategory: 'Física e Dinâmicas',
     tokens: [
         // --- CURVAS DE FÍSICA ---
         {
             id: 'motionEaseMain',
             label: 'Curva Master (Ease)',
-            category: 'Física de Movimento',
             type: 'text',
             defaultValue: 'cubic-bezier(0.4, 0, 0.2, 1)',
             cssVars: ['--sarak-motion-ease-main']
@@ -23,7 +20,6 @@ export const MotionSchema: ComponentSchema = {
         {
             id: 'motionEaseOut',
             label: 'Curva de Saída (Deceleration)',
-            category: 'Física de Movimento',
             type: 'text',
             defaultValue: 'cubic-bezier(0, 0, 0.2, 1)',
             cssVars: ['--sarak-motion-ease-out']
@@ -31,7 +27,6 @@ export const MotionSchema: ComponentSchema = {
         {
             id: 'motionEaseIn',
             label: 'Curva de Entrada (Acceleration)',
-            category: 'Física de Movimento',
             type: 'text',
             defaultValue: 'cubic-bezier(0.4, 0, 1, 1)',
             cssVars: ['--sarak-motion-ease-in']
@@ -41,7 +36,6 @@ export const MotionSchema: ComponentSchema = {
         {
             id: 'motionDurationInstant',
             label: 'Duração Instantânea',
-            category: 'Velocidade',
             type: 'slider',
             unit: 's',
             constraints: { min: 0, max: 0.2, step: 0.01 },
@@ -51,7 +45,6 @@ export const MotionSchema: ComponentSchema = {
         {
             id: 'motionDurationFast',
             label: 'Duração Rápida (UI)',
-            category: 'Velocidade',
             type: 'slider',
             unit: 's',
             constraints: { min: 0.1, max: 0.5, step: 0.05 },
@@ -61,7 +54,6 @@ export const MotionSchema: ComponentSchema = {
         {
             id: 'motionDurationNormal',
             label: 'Duração Normal',
-            category: 'Velocidade',
             type: 'slider',
             unit: 's',
             constraints: { min: 0.2, max: 1, step: 0.05 },
@@ -71,7 +63,6 @@ export const MotionSchema: ComponentSchema = {
         {
             id: 'motionDurationSlow',
             label: 'Duração Lenta (Cenário)',
-            category: 'Velocidade',
             type: 'slider',
             unit: 's',
             constraints: { min: 0.5, max: 2, step: 0.1 },
@@ -83,7 +74,6 @@ export const MotionSchema: ComponentSchema = {
         {
             id: 'motionStaggerDelay',
             label: 'Atraso de Cascata (Stagger)',
-            category: 'Sequenciamento',
             type: 'slider',
             unit: 's',
             constraints: { min: 0, max: 0.2, step: 0.01 },

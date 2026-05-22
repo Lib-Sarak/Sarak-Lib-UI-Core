@@ -9,8 +9,7 @@
 export { default as SarakUIProvider, useSarakUI } from './core/Provider/SarakUIProvider';
 export { DesignScope } from './core/Design/components/DesignScope';
 export { default as ThemeToggle } from './components/atomic/Buttons/ThemeToggle';
-export { CARD_PRESETS } from './core/Design/presets/surfaces/cards';
-export type { CardPreset } from './core/Design/presets/surfaces/cards';
+
 
 // Layout Components and Plug & Play UI
 export * from './core/Shell/SarakShell';
@@ -37,5 +36,4 @@ import { CustomizationPanel } from './features/DesignEngine/Library/Customizatio
 // Component mapping for the registry. 
 // We use the unified CustomizationPanel (v12.0) as the target for both IDs.
 registerLocalComponent('mx-customization', CustomizationPanel);
-registerLocalComponent('personalization', CustomizationPanel); 
-
+registerLocalComponent('personalization', CustomizationPanel);
