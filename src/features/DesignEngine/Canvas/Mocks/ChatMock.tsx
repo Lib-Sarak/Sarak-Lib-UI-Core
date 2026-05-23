@@ -1,6 +1,6 @@
 import React from 'react';
 import { motion } from 'framer-motion';
-import { User, Bot, Zap, MessageSquare, Maximize2, Minimize2, MoreHorizontal, Send, Paperclip } from 'lucide-react';
+import { SarakIcon } from '../../../../components/atomic/Icon/SarakIcon';
 
 export const MockChat: React.FC<any> = ({ tokens, animationVariants }) => {
     const bubbleStyle = tokens?.chatBubbleStyle || 'glass';
@@ -13,7 +13,7 @@ export const MockChat: React.FC<any> = ({ tokens, animationVariants }) => {
         <motion.div initial={{ opacity: 0, y: 10 }} animate={{ opacity: 1, y: 0 }} transition={{ duration: speed }} className={`flex ${isBot ? 'justify-start' : 'justify-end'} gap-3 w-full`}>
             {isBot && showAvatars && (
                 <div className="w-6 h-6 sm:w-8 sm:h-8 rounded-full bg-[var(--theme-primary)]/10 border border-[var(--theme-primary)]/20 flex items-center justify-center shrink-0">
-                    <Bot size={12} className="text-[var(--theme-primary)]" />
+                    <SarakIcon name="Bot" size={12} className="text-[var(--theme-primary)]" />
                 </div>
             )}
             <div
@@ -41,7 +41,7 @@ export const MockChat: React.FC<any> = ({ tokens, animationVariants }) => {
             </div>
             {!isBot && showAvatars && (
                 <div className="w-6 h-6 sm:w-8 sm:h-8 rounded-full bg-white/5 border border-white/10 flex items-center justify-center shrink-0">
-                    <User size={12} className="text-[var(--theme-title)]/60" />
+                    <SarakIcon name="User" size={12} className="text-[var(--theme-title)]/60" />
                 </div>
             )}
         </motion.div>
@@ -56,7 +56,7 @@ export const MockChat: React.FC<any> = ({ tokens, animationVariants }) => {
                 <div className="h-14 border-b border-[var(--theme-border)] bg-[var(--theme-card)] flex items-center justify-between px-6 shrink-0">
                     <div className="flex items-center gap-3">
                         <div className="w-8 h-8 rounded bg-[var(--theme-primary)]/20 flex items-center justify-center text-[var(--theme-primary)]">
-                            <MaxsizeIcon size={14} />
+                            <SarakIcon name="Maximize2" size={14} />
                         </div>
                         <div className="flex flex-col">
                             <span className="text-xs font-bold text-[var(--theme-title)]">Workspace Chat</span>
@@ -74,7 +74,7 @@ export const MockChat: React.FC<any> = ({ tokens, animationVariants }) => {
                 <div className="p-4 bg-[var(--theme-card)] border-t border-[var(--theme-border)]">
                     <div className="relative flex items-center">
                         <input type="text" placeholder="Escreva na thread principal..." className="w-full bg-[var(--theme-body)] border border-[var(--theme-border)] rounded-xl py-3 pl-4 pr-12 text-xs text-[var(--theme-title)] focus:outline-none focus:border-[var(--theme-primary)]" style={{ borderRadius: 'var(--sarak-radius)' }} />
-                        <button className="absolute right-2 p-1.5 bg-[var(--theme-primary)] text-white rounded-lg hover:scale-105 transition-transform"><Send size={14} /></button>
+                        <button className="absolute right-2 p-1.5 bg-[var(--theme-primary)] text-white rounded-lg hover:scale-105 transition-transform"><SarakIcon name="Send" size={14} /></button>
                     </div>
                 </div>
             </div>
@@ -85,8 +85,8 @@ export const MockChat: React.FC<any> = ({ tokens, animationVariants }) => {
                 {/* Variante 1: Widget Flutuante (Suporte) */}
                 <div className="sarak-card flex flex-col h-[350px] border border-[var(--theme-border)] bg-[var(--theme-card)] shadow-[0_20px_40px_-10px_rgba(0,0,0,0.5)] rounded-2xl overflow-hidden relative">
                     <div className="h-12 bg-[var(--theme-primary)] text-white flex items-center justify-between px-4 shrink-0 shadow-md relative z-10">
-                        <span className="text-xs font-black tracking-wider flex items-center gap-2"><MessageSquare size={14} /> Sarak Support</span>
-                        <div className="flex gap-2 opacity-70"><Minimize2 size={12} /><MoreHorizontal size={12} /></div>
+                        <span className="text-xs font-black tracking-wider flex items-center gap-2"><SarakIcon name="MessageSquare" size={14} /> Sarak Support</span>
+                        <div className="flex gap-2 opacity-70"><SarakIcon name="Minimize2" size={12} /><SarakIcon name="MoreHorizontal" size={12} /></div>
                     </div>
                     <div className="flex-1 p-4 bg-gradient-to-b from-[var(--theme-card)] to-[var(--theme-body)] flex flex-col gap-3 overflow-y-auto custom-scrollbar text-[10px]">
                         <div className="text-center text-[9px] text-white/30 uppercase tracking-widest my-2">Hoje 14:30</div>
@@ -94,9 +94,9 @@ export const MockChat: React.FC<any> = ({ tokens, animationVariants }) => {
                         <ChatMessage isBot={false} text="Preciso fazer um upgrade para o plano Enterprise." />
                     </div>
                     <div className="p-3 bg-[var(--theme-card)] border-t border-[var(--theme-border)] flex items-center gap-2">
-                        <Paperclip size={14} className="text-white/30" />
+                        <SarakIcon name="Paperclip" size={14} className="text-white/30" />
                         <input type="text" placeholder="Sua dúvida..." className="flex-1 bg-transparent text-xs text-[var(--theme-title)] outline-none" />
-                        <Zap size={14} className="text-[var(--theme-primary)]" />
+                        <SarakIcon name="Zap" size={14} className="text-[var(--theme-primary)]" />
                     </div>
                 </div>
 
@@ -107,14 +107,14 @@ export const MockChat: React.FC<any> = ({ tokens, animationVariants }) => {
                     </div>
                     <div className="flex-1 flex flex-col gap-4 overflow-y-auto custom-scrollbar">
                         <div className="flex gap-3">
-                            <div className="w-6 h-6 rounded-full bg-[var(--theme-primary)]/20 flex items-center justify-center mt-1"><User size={10} className="text-[var(--theme-primary)]" /></div>
+                            <div className="w-6 h-6 rounded-full bg-[var(--theme-primary)]/20 flex items-center justify-center mt-1"><SarakIcon name="User" size={10} className="text-[var(--theme-primary)]" /></div>
                             <div className="flex-1">
                                 <div className="text-[10px] font-bold text-[var(--theme-title)] mb-1">DevOps Team <span className="text-white/20 font-normal ml-2">Há 2 horas</span></div>
                                 <div className="text-[10px] text-[var(--theme-text-sec)] leading-relaxed">O deploy falhou na stage 4 devido a falta de variáveis de ambiente. Alguém pode verificar?</div>
                             </div>
                         </div>
                         <div className="flex gap-3 ml-6">
-                            <div className="w-6 h-6 rounded-full bg-emerald-500/20 flex items-center justify-center mt-1"><Bot size={10} className="text-emerald-500" /></div>
+                            <div className="w-6 h-6 rounded-full bg-emerald-500/20 flex items-center justify-center mt-1"><SarakIcon name="Bot" size={10} className="text-emerald-500" /></div>
                             <div className="flex-1">
                                 <div className="text-[10px] font-bold text-emerald-500 mb-1">CI/CD Bot <span className="text-white/20 font-normal ml-2">Há 5 min</span></div>
                                 <div className="text-[10px] text-[var(--theme-text-sec)] leading-relaxed border border-emerald-500/20 bg-emerald-500/5 p-2 rounded">Auto-fix aplicado. Secrets sincronizados do Vault. Re-iniciando pipeline.</div>
@@ -128,5 +128,5 @@ export const MockChat: React.FC<any> = ({ tokens, animationVariants }) => {
     );
 };
 
-const MaxsizeIcon = Maximize2;
+
 

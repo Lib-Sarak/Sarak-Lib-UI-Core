@@ -1,5 +1,5 @@
 import React from 'react';
-import { User, LogOut, Shield } from 'lucide-react';
+import { SarakIcon } from '../../../components/atomic/Icon/SarakIcon';
 import { motion } from 'framer-motion';
 
 interface ShellUserWidgetProps {
@@ -34,7 +34,7 @@ export const ShellUserWidget: React.FC<ShellUserWidgetProps> = ({
                 <div className="flex items-center gap-2">
                     <div className="w-9 h-9 rounded-xl bg-[var(--theme-card)] border border-[var(--theme-border)] flex items-center justify-center overflow-hidden relative">
                         <div className="absolute inset-0 bg-gradient-to-br from-[var(--theme-primary)] to-purple-600 opacity-10" />
-                        <User size={16} className="text-[var(--theme-primary)] relative z-10" />
+                        <SarakIcon name="User" size={16} className="text-[var(--theme-primary)] relative z-10" />
                     </div>
                     
                     <button
@@ -42,7 +42,7 @@ export const ShellUserWidget: React.FC<ShellUserWidgetProps> = ({
                         className="w-8 h-8 bg-red-500/10 hover:bg-red-500 text-red-500 hover:text-white rounded-lg flex items-center justify-center transition-all cursor-pointer border border-red-500/20"
                         title="Logout"
                     >
-                        <LogOut size={12} />
+                        <SarakIcon name="LogOut" size={12} />
                     </button>
                 </div>
             </div>
@@ -56,7 +56,7 @@ export const ShellUserWidget: React.FC<ShellUserWidgetProps> = ({
                 <div className={`flex items-center gap-3 ${isMini ? 'flex-col' : ''}`}>
                     <div className="relative w-9 h-9 rounded-xl bg-[var(--theme-primary)]/10 border border-[var(--theme-primary)]/20 flex items-center justify-center text-[var(--theme-primary)] overflow-hidden">
                          <div className="absolute inset-0 bg-gradient-to-tr from-[var(--theme-primary)] to-transparent opacity-10" />
-                        <User size={16} />
+                        <SarakIcon name="User" size={16} />
                     </div>
                     
                     {!isMini && (
@@ -65,7 +65,7 @@ export const ShellUserWidget: React.FC<ShellUserWidgetProps> = ({
                                 {user?.username || user?.email?.split('@')[0] || 'Sarak User'}
                             </span>
                             <div className="flex items-center gap-1.5">
-                                <Shield size={8} className="text-[var(--theme-primary)]" />
+                                <SarakIcon name="Shield" size={8} className="text-[var(--theme-primary)]" />
                                 <span className="text-[8px] text-[var(--theme-muted)] uppercase tracking-widest font-black">
                                     {user?.level === 100 ? 'Master' : user?.level >= 50 ? 'Admin' : 'User'}
                                 </span>
@@ -79,7 +79,7 @@ export const ShellUserWidget: React.FC<ShellUserWidgetProps> = ({
                     className={`p-2 text-[var(--theme-muted)] hover:text-red-400 hover:bg-red-400/5 rounded-lg transition-all ${isMini ? 'bg-red-500/5 text-red-500' : ''}`}
                     title="Logout"
                 >
-                    <LogOut size={isMini ? 12 : 14} />
+                    <SarakIcon name="LogOut" size={isMini ? 12 : 14} />
                 </button>
             </div>
         </div>

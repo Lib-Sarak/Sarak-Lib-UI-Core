@@ -1,6 +1,6 @@
 import React from 'react';
 import { motion } from 'framer-motion';
-import { Lock, User, Shield, Zap, Cpu, Eye, ChevronRight, Github, Chrome } from 'lucide-react';
+import { SarakIcon } from '../../../../components/atomic/Icon/SarakIcon';
 
 export const MockAuth: React.FC<any> = ({ tokens, animationVariants }) => {
   return (
@@ -18,16 +18,16 @@ export const MockAuth: React.FC<any> = ({ tokens, animationVariants }) => {
         
         <div className="relative z-10 flex flex-col items-center">
           <div className="w-16 h-16 bg-[var(--theme-primary)] rounded-2xl flex items-center justify-center mb-6 shadow-[0_0_30px_rgba(var(--theme-primary-rgb),0.3)]">
-            <Cpu size={32} className="text-black" />
+            <SarakIcon name="Cpu" size={32} className="text-black" />
           </div>
           <h1 className="text-3xl font-black text-white tracking-tight mb-8">Sarak MyService</h1>
           
           <div className="flex items-center gap-4">
             <button className="flex items-center gap-2 px-4 py-2 rounded-lg bg-[var(--theme-card)] border border-[var(--theme-border)] text-[var(--theme-text-sec)] text-xs font-bold uppercase tracking-widest hover:text-white hover:border-white/20 transition-colors">
-              <Shield size={14} className="text-[var(--theme-primary)] opacity-70" /> SECURE
+              <SarakIcon name="Shield" size={14} className="text-[var(--theme-primary)] opacity-70" /> SECURE
             </button>
             <button className="flex items-center gap-2 px-4 py-2 rounded-lg bg-[var(--theme-card)] border border-[var(--theme-border)] text-[var(--theme-text-sec)] text-xs font-bold uppercase tracking-widest hover:text-white hover:border-white/20 transition-colors">
-              <Zap size={14} className="text-[var(--theme-primary)] opacity-70" /> NEURAL
+              <SarakIcon name="Zap" size={14} className="text-[var(--theme-primary)] opacity-70" /> NEURAL
             </button>
           </div>
         </div>
@@ -47,7 +47,7 @@ export const MockAuth: React.FC<any> = ({ tokens, animationVariants }) => {
             <div className="flex flex-col gap-1.5">
               <label className="text-[10px] font-bold text-[var(--theme-title)] uppercase tracking-widest opacity-80">E-mail de Acesso</label>
               <div className="relative">
-                <User size={16} className="absolute left-3 top-1/2 -translate-y-1/2 text-[var(--theme-text-sec)]" />
+                <SarakIcon name="User" size={16} className="absolute left-3 top-1/2 -translate-y-1/2 text-[var(--theme-text-sec)]" />
                 <input 
                   type="email" 
                   className="w-full bg-[var(--theme-body)] border border-[var(--theme-border)] rounded-lg py-3 pl-10 pr-4 text-sm text-white focus:outline-none focus:border-[var(--theme-primary)] transition-colors" 
@@ -60,19 +60,19 @@ export const MockAuth: React.FC<any> = ({ tokens, animationVariants }) => {
             <div className="flex flex-col gap-1.5">
               <label className="text-[10px] font-bold text-[var(--theme-title)] uppercase tracking-widest opacity-80">Senha</label>
               <div className="relative">
-                <Lock size={16} className="absolute left-3 top-1/2 -translate-y-1/2 text-[var(--theme-text-sec)]" />
+                <SarakIcon name="Lock" size={16} className="absolute left-3 top-1/2 -translate-y-1/2 text-[var(--theme-text-sec)]" />
                 <input 
                   type="password" 
                   className="w-full bg-[var(--theme-body)] border border-[var(--theme-border)] rounded-lg py-3 pl-10 pr-10 text-sm text-white focus:outline-none focus:border-[var(--theme-primary)] transition-colors" 
                   placeholder="••••••••" 
                 />
-                <Eye size={16} className="absolute right-3 top-1/2 -translate-y-1/2 text-[var(--theme-text-sec)] cursor-pointer hover:text-white" />
+                <SarakIcon name="Eye" size={16} className="absolute right-3 top-1/2 -translate-y-1/2 text-[var(--theme-text-sec)] cursor-pointer hover:text-white" />
               </div>
             </div>
 
             {/* Botão Acessar */}
             <button className="w-full bg-[#111] hover:bg-[#1a1a1a] border border-white/10 text-white font-bold text-xs uppercase tracking-widest py-3 rounded-lg mt-2 transition-colors flex items-center justify-center gap-2 shadow-lg">
-              Acessar Sistema <ChevronRight size={14} />
+              Acessar Sistema <SarakIcon name="ChevronRight" size={14} />
             </button>
 
             {/* Divisor */}
@@ -84,10 +84,10 @@ export const MockAuth: React.FC<any> = ({ tokens, animationVariants }) => {
 
             {/* Social Logins */}
             <button className="w-full bg-[#111] border border-white/5 hover:border-white/20 text-white/80 font-bold text-[10px] uppercase tracking-widest py-3 rounded-lg flex items-center justify-center gap-2 transition-colors">
-              <Chrome size={14} /> Continue com Google
+              <SarakIcon name="Chrome" size={14} /> Continue com Google
             </button>
             <button className="w-full bg-[#111] border border-white/5 hover:border-white/20 text-white/80 font-bold text-[10px] uppercase tracking-widest py-3 rounded-lg flex items-center justify-center gap-2 transition-colors">
-              <Github size={14} /> Acessar com Github
+              <SarakIcon name="Github" size={14} /> Acessar com Github
             </button>
 
             {/* Master Login */}

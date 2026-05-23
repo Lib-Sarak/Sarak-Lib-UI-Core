@@ -10,6 +10,8 @@ export interface DesignToken {
     id: string;                 // Chave única no estado (ex: cardBorderRadius)
     label: string;              // Nome legível para o usuário
     type: TokenValueType;
+    iconFamily?: 'lucide' | 'phosphor' | 'tabler';
+    iconWeight?: 'thin' | 'light' | 'regular' | 'bold' | 'fill' | 'duotone';
     unit?: 'px' | '%' | 'rem' | 'em' | 'ms' | 'deg' | 's';
     cssVars?: string[];         // Variáveis CSS que este token controla
     generateVariants?: boolean; // Se verdadeiro, gera variantes de cor automáticas

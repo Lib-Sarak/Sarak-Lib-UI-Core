@@ -1,7 +1,7 @@
 import React from 'react';
 import { motion } from 'framer-motion';
 import { SarakExpandableMatrix } from '../../../../components/atomic/Templates/SarakExpandableMatrix';
-import { Shield, Lock, Eye, Edit, Trash2, UserPlus, Database, Cloud, Settings } from 'lucide-react';
+import { SarakIcon } from '../../../../components/atomic/Icon/SarakIcon';
 
 interface MatrixMockProps {
     tokens: any;
@@ -12,18 +12,18 @@ interface MatrixMockProps {
 
 export const MockMatrix: React.FC<MatrixMockProps> = ({ tokens, animationVariants, animationStyle }) => {
     const roles = [
-        { id: 'admin', title: 'Administrator', description: 'Full system access and control', icon: <Shield size={18} /> },
-        { id: 'editor', title: 'Editor', description: 'Can manage content and basic settings', icon: <Edit size={18} /> },
-        { id: 'viewer', title: 'Viewer', description: 'Read-only access to specific dashboards', icon: <Eye size={18} /> },
+        { id: 'admin', title: 'Administrator', description: 'Full system access and control', icon: <SarakIcon name="Shield" size={18} /> },
+        { id: 'editor', title: 'Editor', description: 'Can manage content and basic settings', icon: <SarakIcon name="Edit" size={18} /> },
+        { id: 'viewer', title: 'Viewer', description: 'Read-only access to specific dashboards', icon: <SarakIcon name="Eye" size={18} /> },
     ];
 
     const permissions = [
-        { id: 'user_create', title: 'Create Users', icon: <UserPlus size={14} /> },
-        { id: 'user_delete', title: 'Delete Users', icon: <Trash2 size={14} /> },
-        { id: 'db_access', title: 'Database Access', icon: <Database size={14} /> },
-        { id: 'cloud_config', title: 'Cloud Configuration', icon: <Cloud size={14} /> },
-        { id: 'security_settings', title: 'Security Settings', icon: <Lock size={14} /> },
-        { id: 'system_logs', title: 'View Logs', icon: <Settings size={14} /> },
+        { id: 'user_create', title: 'Create Users', icon: <SarakIcon name="UserPlus" size={14} /> },
+        { id: 'user_delete', title: 'Delete Users', icon: <SarakIcon name="Trash2" size={14} /> },
+        { id: 'db_access', title: 'Database Access', icon: <SarakIcon name="Database" size={14} /> },
+        { id: 'cloud_config', title: 'Cloud Configuration', icon: <SarakIcon name="Cloud" size={14} /> },
+        { id: 'security_settings', title: 'Security Settings', icon: <SarakIcon name="Lock" size={14} /> },
+        { id: 'system_logs', title: 'View Logs', icon: <SarakIcon name="Settings" size={14} /> },
     ];
 
     const [mapping, setMapping] = React.useState<Record<string, string[]>>({

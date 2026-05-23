@@ -1,5 +1,5 @@
 import React from 'react';
-import { Type, AlignLeft, Bold, Italic, Hash, Layers } from 'lucide-react';
+import { SarakIcon } from '../../../../components/atomic/Icon/SarakIcon';
 
 export const MockTypography: React.FC<any> = ({ tokens }) => {
     return (
@@ -7,7 +7,7 @@ export const MockTypography: React.FC<any> = ({ tokens }) => {
             <header className="space-y-6">
                 <div className="flex items-center gap-4">
                     <div className="px-4 py-2 bg-[var(--theme-primary)]/10 rounded-2xl border border-[var(--theme-primary)]/20">
-                        <Type size={20} className="text-[var(--theme-primary)]" />
+                        <SarakIcon name="Type" size={20} className="text-[var(--theme-primary)]" />
                     </div>
                     <div>
                         <h1 className="text-4xl font-black text-[var(--theme-title)] tracking-tight" style={{ fontFamily: 'var(--font-heading)' }}>
@@ -25,7 +25,7 @@ export const MockTypography: React.FC<any> = ({ tokens }) => {
             <section className="grid grid-cols-1 gap-16">
                 <div className="space-y-4">
                     <div className="flex items-center gap-3 text-[10px] font-black uppercase text-[var(--theme-primary)] tracking-[0.4em] opacity-40">
-                        <Hash size={12} />
+                        <SarakIcon name="Hash" size={12} />
                         Escala Hierárquica Principal
                     </div>
                     <div className="space-y-8">
@@ -61,7 +61,7 @@ export const MockTypography: React.FC<any> = ({ tokens }) => {
                 <div className="grid grid-cols-1 md:grid-cols-2 gap-16">
                     <div className="space-y-6">
                         <div className="flex items-center gap-3 text-[10px] font-black uppercase text-[var(--theme-primary)] tracking-[0.4em] opacity-40">
-                            <AlignLeft size={12} />
+                            <SarakIcon name="AlignLeft" size={12} />
                             Corpo de Texto (Body Paragraph)
                         </div>
                         <div className="p-8 rounded-3xl bg-white/[0.02] border border-white/5 space-y-4">
@@ -77,7 +77,7 @@ export const MockTypography: React.FC<any> = ({ tokens }) => {
 
                     <div className="space-y-6">
                         <div className="flex items-center gap-3 text-[10px] font-black uppercase text-[var(--theme-primary)] tracking-[0.4em] opacity-40">
-                            <Layers size={12} />
+                            <SarakIcon name="Layers" size={12} />
                             Contextos Auxiliares
                         </div>
                         <div className="grid grid-cols-1 gap-4">

@@ -1,8 +1,6 @@
 import React from 'react';
 import { motion } from 'framer-motion';
-import { 
-    FileText, Edit3, Copy, Check, Save, CornerDownRight, AlignLeft, RefreshCw
-} from 'lucide-react';
+import { SarakIcon } from '../../../../components/atomic/Icon/SarakIcon';
 
 interface TextMockProps {
     tokens: any;
@@ -56,7 +54,7 @@ export const MockText: React.FC<TextMockProps> = ({ tokens, animationVariants, a
             <div className="flex justify-between items-end">
                 <div className="flex flex-col gap-1">
                     <div className="flex items-center gap-2">
-                        <FileText className="text-[var(--theme-primary)]" size={20} />
+                        <SarakIcon name="FileText" className="text-[var(--theme-primary)]" size={20} />
                         <h2 className="text-2xl font-black text-white uppercase tracking-widest text-left">Text Workspace & Reports</h2>
                     </div>
                     <p className="text-sm text-white/40 uppercase tracking-tighter text-left">Editor de Relatórios Extensos e Caixas de Texto com Controle Tipográfico</p>
@@ -67,13 +65,13 @@ export const MockText: React.FC<TextMockProps> = ({ tokens, animationVariants, a
                         onClick={handleCopy}
                         className="px-4 py-2 bg-white/5 hover:bg-white/10 transition-colors text-[10px] font-bold uppercase tracking-widest text-slate-300 border border-white/5 rounded flex items-center gap-2"
                     >
-                        {copied ? <Check size={12} className="text-emerald-400" /> : <Copy size={12} />} {copied ? 'Copiado!' : 'Copiar Texto'}
+                        {copied ? <SarakIcon name="Check" size={12} className="text-emerald-400" /> : <SarakIcon name="Copy" size={12} />} {copied ? 'Copiado!' : 'Copiar Texto'}
                     </button>
                     <button 
                         onClick={handleSave}
                         className="px-4 py-2 bg-[var(--theme-primary)] text-black transition-colors text-[10px] font-black uppercase tracking-widest rounded flex items-center gap-2"
                     >
-                        {isSaving ? <RefreshCw size={12} className="animate-spin" /> : <Save size={12} />} {isSaving ? 'Gravando...' : 'Gravar Relatório'}
+                        {isSaving ? <SarakIcon name="RefreshCw" size={12} className="animate-spin" /> : <SarakIcon name="Save" size={12} />} {isSaving ? 'Gravando...' : 'Gravar Relatório'}
                     </button>
                 </div>
             </div>
@@ -91,7 +89,7 @@ export const MockText: React.FC<TextMockProps> = ({ tokens, animationVariants, a
                         }}
                     >
                         <div className="px-6 py-3 border-b border-white/5 bg-black/40 flex items-center justify-between text-2xs text-white/50 font-mono">
-                            <span className="flex items-center gap-2 uppercase tracking-wider"><Edit3 size={12} /> Caixa de Texto Grande</span>
+                            <span className="flex items-center gap-2 uppercase tracking-wider"><SarakIcon name="Edit3" size={12} /> Caixa de Texto Grande</span>
                             <span className="uppercase">{reportText.length} Caracteres</span>
                         </div>
                         <textarea
@@ -147,7 +145,7 @@ export const MockText: React.FC<TextMockProps> = ({ tokens, animationVariants, a
                     <div className="flex-1 bg-black/40 border border-white/5 rounded-2xl p-6 flex flex-col gap-6 relative overflow-y-auto custom-scrollbar max-h-[480px]">
                         <div className="flex justify-between items-center border-b border-white/5 pb-4">
                             <div className="flex items-center gap-3">
-                                <AlignLeft className="text-[var(--theme-primary)]" size={16} />
+                                <SarakIcon name="AlignLeft" className="text-[var(--theme-primary)]" size={16} />
                                 <span className="text-[10px] font-black uppercase text-white tracking-widest">Preview de Renderização</span>
                             </div>
                             <span className="px-2 py-0.5 bg-emerald-500/10 text-emerald-400 border border-emerald-500/20 text-[9px] font-bold rounded uppercase tracking-tighter">Pronto</span>
@@ -187,11 +185,11 @@ export const MockText: React.FC<TextMockProps> = ({ tokens, animationVariants, a
                         {/* ASSINATURA DA AUDITORIA */}
                         <div className="mt-8 pt-4 border-t border-white/5 flex flex-col gap-2 font-mono text-[9px] text-white/30 uppercase text-left">
                             <div className="flex items-center gap-2">
-                                <CornerDownRight size={10} />
+                                <SarakIcon name="CornerDownRight" size={10} />
                                 <span>Verificado por: Igor Sarak // Lead Architect</span>
                             </div>
                             <div className="flex items-center gap-2">
-                                <CornerDownRight size={10} />
+                                <SarakIcon name="CornerDownRight" size={10} />
                                 <span>Assinatura Criptográfica: SX-SIGN-88741-B</span>
                             </div>
                         </div>

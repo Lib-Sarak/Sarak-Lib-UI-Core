@@ -5,8 +5,9 @@ import {
     Monitor, Layout, Layers, Terminal
 } from 'lucide-react';
 import { UIContext, useSarakUI } from '../../../core/Provider/SarakUIProvider';
-import { MockDashboard, MockChat, MockLogs, MockSettings, MockComponents, MockTypography, MockAuth, MockMatrix, MockTable, MockText, MockCharts, MockForms } from './MockApps';
+import { MockDashboard, MockChat, MockLogs, MockSettings, MockComponents, MockTypography, MockAuth, MockMatrix, MockTable, MockText, MockCharts, MockForms, MockDocuments } from './MockApps';
 import { KitchenSinkPreview } from './KitchenSinkPreview';
+import { PresetsCatalog } from './components/PresetsCatalog';
 
 import { DesignScope } from '../../../core/Design/components/DesignScope';
 import { useResizable } from '../hooks/useResizable';
@@ -41,6 +42,7 @@ export const PreviewCanvas: React.FC<PreviewCanvasProps> = ({
     setActivePreviewApp,
     previewAnimationStyle,
     config,
+    mode,
     draftTokens,
     activeCategory,
     activeSectionId,
@@ -50,6 +52,11 @@ export const PreviewCanvas: React.FC<PreviewCanvasProps> = ({
     sarak,
     onInspectComponent
 }) => {
+    const handleApplyPreset = (presetTokens: Record<string, any>) => {
+        Object.entries(presetTokens).forEach(([key, value]) => {
+            onUpdateDraft(key, value);
+        });
+    };
 
     const parentContext = useSarakUI();
     const tokens = React.useMemo(() => ({ ...draftTokens }), [draftTokens]);
@@ -136,10 +143,11 @@ export const PreviewCanvas: React.FC<PreviewCanvasProps> = ({
         tabela: <MockTable tokens={tokens} config={config} animationVariants={dummyAnimation} animationStyle={previewAnimationStyle} />,
         'caixas-texto': <MockText tokens={tokens} config={config} animationVariants={dummyAnimation} animationStyle={previewAnimationStyle} />,
         graficos: <MockCharts tokens={tokens} config={config} animationVariants={dummyAnimation} animationStyle={previewAnimationStyle} />,
+        documentos: <MockDocuments tokens={tokens} config={config} animationVariants={dummyAnimation} animationStyle={previewAnimationStyle} />,
         'kitchen-sink': <KitchenSinkPreview />
     }}, [tokens, config, previewAnimationStyle]);
 
-    const appIds = ['dashboard', 'forms', 'chat', 'logs', 'settings', 'components', 'typography', 'auth', 'matrix', 'tabela', 'caixas-texto', 'graficos', 'kitchen-sink'];
+    const appIds = ['dashboard', 'forms', 'documentos', 'chat', 'logs', 'settings', 'components', 'typography', 'auth', 'matrix', 'tabela', 'caixas-texto', 'graficos', 'kitchen-sink'];
 
     const [previewNavVisible, setPreviewNavVisible] = React.useState(true);
 
@@ -148,6 +156,7 @@ export const PreviewCanvas: React.FC<PreviewCanvasProps> = ({
             id,
             label: id === 'dashboard' ? 'Dashboard'
                 : id === 'forms' ? 'Formulários'
+                : id === 'documentos' ? 'Documentos'
                 : id === 'chat' ? 'Chat Ops'
                 : id === 'logs' ? 'System Logs'
                 : id === 'settings' ? 'Settings'
@@ -161,6 +170,7 @@ export const PreviewCanvas: React.FC<PreviewCanvasProps> = ({
                 : 'Kitchen Sink',
             icon: id === 'dashboard' ? 'BarChart3' 
                 : id === 'forms' ? 'Layout'
+                : id === 'documentos' ? 'FileText'
                 : id === 'chat' ? 'MessageSquare' 
                 : id === 'logs' ? 'History' 
                 : id === 'settings' ? 'Network' 
@@ -340,26 +350,11 @@ export const PreviewCanvas: React.FC<PreviewCanvasProps> = ({
 
                             {/* Catalog Preview (Engine Controls) */}
                             <div className="relative flex-1 rounded-[2rem] border border-white/10 shadow-2xl overflow-hidden bg-[#0c0c0d] transition-all duration-500 flex flex-col h-full">
-                                <div className="w-full h-full flex flex-col">
-                                    <div className="px-8 py-4 border-b border-white/5 flex items-center justify-between bg-black/40">
-                                        <div className="flex items-center gap-4">
-                                            <div className="p-2 bg-[var(--theme-primary)]/10 rounded-xl">
-                                                <Sparkles size={16} className="text-[var(--theme-primary)]" />
-                                            </div>
-                                            <div className="flex flex-col">
-                                                <span className="text-[11px] font-black uppercase text-white tracking-[0.3em]">Design Intelligence Catalog</span>
-                                                <span className="text-[9px] font-bold text-white/20 uppercase tracking-widest">Pillar Control: {activeCategory || 'Global'}</span>
-                                            </div>
-                                        </div>
-                                    </div>
-                                    <div className="flex-1 overflow-y-auto custom-scrollbar bg-black/20">
-                                         <div className="flex flex-col items-center justify-center h-full p-8 text-white/30 text-center font-mono">
-                                             <Sparkles size={32} className="mb-4 opacity-50" />
-                                             <p className="text-sm">Digital Twin Ready</p>
-                                             <p className="text-[10px] mt-2">Navegação granular guiada pelas abas do sistema.</p>
-                                         </div>
-                                    </div>
-                                </div>
+                                <PresetsCatalog 
+                                    onApplyPreset={handleApplyPreset}
+                                    activeCategory={activeCategory}
+                                    currentMode={mode}
+                                />
                             </div>
                         </>
                     ) : (

@@ -168,6 +168,31 @@ export const SystemSchema: ComponentSchema = {
         },
         // --- ÍCONES ---
         {
+            id: 'iconFamily',
+            label: 'Família de Ícones',
+            type: 'select',
+            defaultValue: 'lucide',
+            options: [
+                { value: 'lucide', label: 'Lucide (Padrão)' },
+                { value: 'phosphor', label: 'Phosphor' },
+                { value: 'tabler', label: 'Tabler Icons' }
+            ]
+        },
+        {
+            id: 'iconWeight',
+            label: 'Peso / Estilo do Ícone',
+            type: 'select',
+            defaultValue: 'regular',
+            options: [
+                { value: 'thin', label: 'Thin' },
+                { value: 'light', label: 'Light' },
+                { value: 'regular', label: 'Regular' },
+                { value: 'bold', label: 'Bold' },
+                { value: 'fill', label: 'Fill (Preenchido)' },
+                { value: 'duotone', label: 'Duotone' }
+            ]
+        },
+        {
             id: 'iconStrokeWidth',
             label: 'Espessura do Ícone',
             type: 'slider',

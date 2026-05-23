@@ -37,9 +37,10 @@ export const useModuleDiscovery = (isEnabled: boolean = true) => {
                 version: mod.version || '1.0.0-local',
                 priority: mod.priority || 500,
                 status: 'online' as const,
-                baseUrl: mod.baseUrl || 'local',
+                baseUrl: mod.baseUrl || (mod.endpoints?.base ? mod.endpoints.base.replace('/api', '') : ''),
                 endpoints: mod.endpoints || {},
-                component: mod.component
+                component: mod.component,
+                visualContracts: mod.visualContracts || []
             } as DiscoveredModule));
     }, [registeredModules, isHydrated, token?.moduleBlacklist]);
 

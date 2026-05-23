@@ -10,3 +10,4 @@ export * from './Mocks/TableMock';
 export * from './Mocks/TextMock';
 export * from './Mocks/ChartsMock';
 export * from './Mocks/MockForms';
+export * from './Mocks/MockDocuments';

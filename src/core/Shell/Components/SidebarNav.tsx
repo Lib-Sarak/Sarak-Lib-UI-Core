@@ -1,6 +1,6 @@
 import React from 'react';
 import { motion } from 'framer-motion';
-import { ChevronLeft, Bell } from 'lucide-react';
+import { SarakIcon } from '../../../components/atomic/Icon/SarakIcon';
 import { IconRenderer } from './IconRenderer';
 import { DiscoveredModule } from '../../../core/Discovery/types';
 import { ShellUserWidget } from './ShellUserWidget';
@@ -86,7 +86,7 @@ export const SidebarNav: React.FC<SidebarNavProps> = ({
 
                 {!effectiveIsNavHidden && logoPosition !== 'center' && (
                     <button onClick={toggleNav} className="p-1.5 hover:bg-white/5 rounded-md text-white/20 hover:text-white transition-colors">
-                        <ChevronLeft size={16} />
+                        <SarakIcon name="ChevronLeft" size={16} />
                     </button>
                 )}
             </div>
@@ -141,7 +141,7 @@ export const SidebarNav: React.FC<SidebarNavProps> = ({
 
                 {/* 3. Notifications */}
                 <button className={`w-full flex items-center gap-3 px-3 py-2.5 rounded-xl text-white/40 hover:bg-white/5 hover:text-white transition-all group ${effectiveIsNavHidden ? 'justify-center' : ''}`}>
-                    <Bell size={18} className="text-[var(--theme-muted)] group-hover:text-[var(--theme-primary)]" />
+                    <SarakIcon name="Bell" size={18} className="text-[var(--theme-muted)] group-hover:text-[var(--theme-primary)]" />
                     {!effectiveIsNavHidden && <span className="text-sm font-tab flex-1 text-left">Notifications</span>}
                     <div className="w-1.5 h-1.5 bg-[var(--theme-primary)] rounded-full shadow-[0_0_5px_var(--theme-primary)]" />
                 </button>

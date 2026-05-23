@@ -1,6 +1,6 @@
 import React from 'react';
 import { motion } from 'framer-motion';
-import { Zap, Box, Shield, Database } from 'lucide-react';
+import { SarakIcon } from '../../../../components/atomic/Icon/SarakIcon';
 
 export const MockSettings: React.FC<any> = ({ animationVariants, animationStyle, tokens }) => {
     return (
@@ -29,7 +29,7 @@ export const MockSettings: React.FC<any> = ({ animationVariants, animationStyle,
                             className="p-4 bg-[var(--theme-primary)]/20 border border-[var(--theme-primary)]/40 flex items-center gap-3 shadow-[0_0_20px_rgba(var(--theme-primary-rgb),0.2)]"
                             style={{ borderRadius: `${tokens?.flowNodeRadius ?? 12}px` }}
                         >
-                            <Zap className="w-4 h-4 text-[var(--theme-primary)]" />
+                            <SarakIcon name="Zap" className="w-4 h-4 text-[var(--theme-primary)]" />
                             <span className="text-2xs font-black uppercase tracking-widest text-white">Source</span>
                         </div>
                         
@@ -39,7 +39,7 @@ export const MockSettings: React.FC<any> = ({ animationVariants, animationStyle,
                             className="p-4 bg-white/5 border border-white/10 flex items-center gap-3"
                             style={{ borderRadius: `${tokens?.flowNodeRadius ?? 12}px` }}
                         >
-                            <Box className="w-4 h-4 text-white/40" />
+                            <SarakIcon name="Box" className="w-4 h-4 text-white/40" />
                             <span className="text-2xs font-black uppercase tracking-widest text-white/40">Processor</span>
                         </div>
                     </div>
@@ -64,7 +64,7 @@ export const MockSettings: React.FC<any> = ({ animationVariants, animationStyle,
                             {/* Fake QR pattern */}
                             <div className="w-full h-full border-2 border-white/40 border-dashed rounded-sm" />
                         </div>
-                        <Shield className={`w-8 h-8 text-blue-400 relative z-10 ${tokens?.securityShieldGlow ? 'animate-pulse' : ''}`} style={{ animationDuration: `${tokens?.securityPulseSpeed ?? 2}s` }} />
+                        <SarakIcon name="Shield" className={`w-8 h-8 text-blue-400 relative z-10 ${tokens?.securityShieldGlow ? 'animate-pulse' : ''}`} style={{ animationDuration: `${tokens?.securityPulseSpeed ?? 2}s` }} />
                     </div>
 
                     <div className="mt-4 text-center">
@@ -78,8 +78,8 @@ export const MockSettings: React.FC<any> = ({ animationVariants, animationStyle,
 
             <div className="space-y-3">
                 {[
-                    { label: "Two-Factor Authentication", icon: <Shield />, active: true },
-                    { label: "Real-time Access Logs", icon: <Database />, active: false }
+                    { label: "Two-Factor Authentication", icon: <SarakIcon name="Shield" />, active: true },
+                    { label: "Real-time Access Logs", icon: <SarakIcon name="Database" />, active: false }
                 ].map((item, i) => (
                     <motion.div
                         key={i}

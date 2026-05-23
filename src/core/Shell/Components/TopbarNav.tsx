@@ -1,5 +1,5 @@
 import React from 'react';
-import { Menu, Bell } from 'lucide-react';
+import { SarakIcon } from '../../../components/atomic/Icon/SarakIcon';
 import { DiscoveredModule } from '../../../core/Discovery/types';
 import { ShellSearchWidget } from './ShellSearchWidget';
 import { ShellUserWidget } from './ShellUserWidget';
@@ -58,7 +58,7 @@ export const TopbarNav: React.FC<TopbarNavProps> = ({
                             onClick={toggleNav}
                             className={`p-1.5 bg-white/5 hover:bg-[var(--theme-primary)] hover:text-white rounded-lg text-white/40 transition-all shadow-lg border border-white/5 shrink-0`}
                         >
-                            <Menu size={16} />
+                            <SarakIcon name="Menu" size={16} />
                         </button>
 
                         <div className={`flex items-center gap-3 ${!effectiveIsNavHidden ? 'pr-6 border-r border-white/5' : ''} shrink-0`}>
@@ -116,7 +116,7 @@ export const TopbarNav: React.FC<TopbarNavProps> = ({
                         <div className="w-[1px] h-4 bg-white/10 mx-1" />
 
                         <button className="p-1.5 text-white/20 hover:text-white transition-colors relative">
-                            <Bell size={14} />
+                            <SarakIcon name="Bell" size={14} />
                             <div className="absolute top-1.5 right-1.5 w-1 h-1 bg-[var(--theme-primary)] rounded-full border border-black" />
                         </button>
                         {extraToolbarItems}

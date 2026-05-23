@@ -1,6 +1,6 @@
 import React from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
-import { Search } from 'lucide-react';
+import { SarakIcon } from '../../../components/atomic/Icon/SarakIcon';
 import { IconRenderer } from './IconRenderer';
 import { DiscoveredModule } from '../../../core/Discovery/types';
 

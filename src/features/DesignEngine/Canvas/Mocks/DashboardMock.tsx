@@ -1,10 +1,5 @@
 import React from 'react';
-import { 
-  Activity, Shield, Cpu, Zap, Database, HardDrive, 
-  Package, Users, AlertTriangle, MessageSquare, 
-  LineChart, Eye, Settings, Terminal, Globe,
-  Clock, Thermometer, Droplets, Battery, Search
-} from 'lucide-react';
+import { SarakIcon } from '../../../../components/atomic/Icon/SarakIcon';
 
 import { useDesignVariables } from '../../../../core/Design/hooks/useDesignVariables';
 import { SarakTitleCard } from '../../../../components/atomic/Cards/SarakTitleCard';
@@ -154,7 +149,7 @@ export const MockDashboard: React.FC<MockDashboardProps> = ({ tokens }) => {
         <SmartCard className="md:col-span-3 p-5 md:p-6 !gap-4" label="Card de Métricas (Latency)">
           <div className="flex justify-between items-center text-slate-500">
             <span className="text-[11px] uppercase font-bold tracking-wider">Latency</span>
-            <Activity size={14} />
+            <SarakIcon name="Activity" size={14} />
           </div>
           <div className="flex items-end gap-3">
             <span className="text-3xl font-mono text-white">14ms</span>
@@ -211,7 +206,7 @@ export const MockDashboard: React.FC<MockDashboardProps> = ({ tokens }) => {
         <SmartCard className="md:col-span-4 h-[420px] p-5 md:p-6 lg:p-8" label="Card de Texto (Logs)">
           <div className="flex justify-between items-center mb-4">
             <h3 className="text-xs font-bold uppercase tracking-widest text-slate-400">Live Activity</h3>
-            <Clock size={14} className="text-slate-600" />
+            <SarakIcon name="Clock" size={14} className="text-slate-600" />
           </div>
           <div className="flex-1 flex flex-col gap-6 overflow-y-auto pr-2 custom-scrollbar">
             {[
@@ -240,7 +235,7 @@ export const MockDashboard: React.FC<MockDashboardProps> = ({ tokens }) => {
                {/* ROW 3: LOGISTICS & SECURITY (INVENTORY + ACCESS - MAIORES) */}
         <SmartCard className="md:col-span-4 p-5 md:p-6 lg:p-8" label="Card de Ação (Inventory)">
            <div className="flex items-center gap-4 mb-4">
-             <Package size={20} className="text-[var(--theme-primary)]" />
+             <SarakIcon name="Package" size={20} className="text-[var(--theme-primary)]" />
              <h3 className="text-sm font-bold text-white uppercase italic tracking-wider">Inventory Flow</h3>
            </div>
            <div className="space-y-6">
@@ -278,10 +273,10 @@ export const MockDashboard: React.FC<MockDashboardProps> = ({ tokens }) => {
         <SmartCard className="md:col-span-5 !p-0" label="Card de Tabela (Access)">
            <div className="p-5 pb-3 md:p-8 md:pb-4 flex justify-between items-center">
              <div className="flex items-center gap-4">
-                <Shield size={20} className="text-[var(--theme-primary)]" />
+                <SarakIcon name="Shield" size={20} className="text-[var(--theme-primary)]" />
                 <h3 className="text-sm font-bold text-white uppercase italic tracking-wider">Access Control</h3>
              </div>
-             <Search size={16} className="text-slate-600" />
+             <SarakIcon name="Search" size={16} className="text-slate-600" />
            </div>
            <div className="px-5 pb-5 md:px-8 md:pb-8">
               <table className="w-full text-[11px] font-mono text-slate-400">
@@ -323,7 +318,7 @@ export const MockDashboard: React.FC<MockDashboardProps> = ({ tokens }) => {
         <SmartCard className="md:col-span-3 p-5 md:p-6 lg:p-8" label="Card de Métricas (Ambiente)">
            <div className="flex justify-between mb-6">
              <span className="text-[11px] font-bold uppercase text-slate-500 tracking-widest">Environment</span>
-             <Thermometer size={16} style={{ color: 'var(--theme-error, var(--theme-primary))' }} />
+             <SarakIcon name="Thermometer" size={16} style={{ color: 'var(--theme-error, var(--theme-primary))' }} />
            </div>
            <div className="flex flex-col gap-8">
               <div className="flex justify-between items-center">
@@ -350,7 +345,7 @@ export const MockDashboard: React.FC<MockDashboardProps> = ({ tokens }) => {
         <SmartCard className="md:col-span-4 p-5 md:p-6 lg:p-8" label="Card de Métricas (Energia)">
            <div className="flex justify-between mb-6">
              <span className="text-[11px] font-bold uppercase text-slate-500 tracking-widest">Energy Grid</span>
-             <Zap size={16} style={{ color: 'var(--theme-warning, var(--theme-primary))' }} />
+             <SarakIcon name="Zap" size={16} style={{ color: 'var(--theme-warning, var(--theme-primary))' }} />
            </div>
            <div className="flex items-center gap-8">
               <div className="flex-1 space-y-5">
@@ -384,7 +379,7 @@ export const MockDashboard: React.FC<MockDashboardProps> = ({ tokens }) => {
         <SmartCard className="md:col-span-5 p-5 md:p-6 lg:p-8 overflow-visible" label="Card de Interação (Terminal)">
            <div className="flex justify-between items-center mb-6">
               <h3 className="text-[11px] font-bold uppercase text-slate-500 tracking-widest">Operational Commands</h3>
-              <Terminal size={16} className="text-[var(--theme-primary)]" />
+              <SarakIcon name="Terminal" size={16} className="text-[var(--theme-primary)]" />
            </div>
            <div className="flex flex-col xl:flex-row gap-4">
               <div className="flex-1 bg-black/40 border border-white/5 p-5 rounded-lg font-mono text-[11px] text-[var(--theme-primary)]/80 relative group min-w-0">
@@ -395,7 +390,7 @@ export const MockDashboard: React.FC<MockDashboardProps> = ({ tokens }) => {
                  <p className="text-white/40 mb-1">&gt; fetch_sync_data --target=alpha</p>
                  <p className="text-[var(--theme-primary)]/60">&gt; SUCCESS: DATA_STREAM_OPEN</p>
                  <div className="absolute top-3 right-3 opacity-0 group-hover:opacity-100 transition-opacity">
-                    <button className="p-1.5 hover:bg-white/10 rounded-md"><Settings size={12} /></button>
+                    <button className="p-1.5 hover:bg-white/10 rounded-md"><SarakIcon name="Settings" size={12} /></button>
                  </div>
               </div>
               <div className="flex xl:flex-col gap-3 shrink-0">
@@ -409,7 +404,7 @@ export const MockDashboard: React.FC<MockDashboardProps> = ({ tokens }) => {
         <SmartCard className="md:col-span-6 p-5 md:p-6 lg:p-8" label="Card de Tabela (Pipelines)">
           <div className="flex justify-between items-center mb-6">
             <div className="flex items-center gap-3">
-              <Database size={18} className="text-[var(--theme-primary)]" />
+              <SarakIcon name="Database" size={18} className="text-[var(--theme-primary)]" />
               <div>
                 <h3 className="text-xs font-bold uppercase tracking-widest text-slate-400">Pipelines Ativos</h3>
                 <p className="text-[9px] text-slate-600 font-mono">NODE PIPELINE DATABASES</p>
@@ -457,7 +452,7 @@ export const MockDashboard: React.FC<MockDashboardProps> = ({ tokens }) => {
         <SmartCard className="md:col-span-6 p-5 md:p-6 lg:p-8" label="Card de Ação (Storage)">
           <div className="flex justify-between items-center mb-6">
             <div className="flex items-center gap-3">
-              <HardDrive size={18} className="text-[var(--theme-primary)]" />
+              <SarakIcon name="HardDrive" size={18} className="text-[var(--theme-primary)]" />
               <div>
                 <h3 className="text-xs font-bold uppercase tracking-widest text-slate-400">Armazenamento Hot-Tier</h3>
                 <p className="text-[9px] text-slate-600 font-mono">HIGH-SPEED STORAGE SYSTEM</p>
@@ -516,7 +511,7 @@ export const MockDashboard: React.FC<MockDashboardProps> = ({ tokens }) => {
           <span>Buffer: 1024mb</span>
         </div>
         <div className="flex items-center gap-2">
-          <Globe size={10} />
+          <SarakIcon name="Globe" size={10} />
           <span>Syncing with Global-Sarak-Node...</span>
         </div>
       </div>

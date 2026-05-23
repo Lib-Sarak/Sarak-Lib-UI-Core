@@ -1,6 +1,6 @@
 import React, { useState } from 'react';
 import { motion } from 'framer-motion';
-import { Download, Filter, Plus, ArrowUpDown, Search, FileSpreadsheet, Activity, Users, ArrowRight } from 'lucide-react';
+import { SarakIcon } from '../../../../components/atomic/Icon/SarakIcon';
 
 export const MockTable: React.FC<any> = ({ tokens, animationVariants }) => {
     const [searchQuery, setSearchQuery] = useState('');
@@ -29,11 +29,11 @@ export const MockTable: React.FC<any> = ({ tokens, animationVariants }) => {
                 <div className="flex-[2] sarak-card rounded-2xl border border-[var(--theme-border)] bg-[var(--theme-card)] shadow-xl overflow-hidden flex flex-col">
                     <div className="p-4 border-b border-[var(--theme-border)] flex items-center justify-between">
                         <div className="flex items-center gap-2">
-                            <Activity className="text-[var(--theme-primary)]" size={16} />
+                            <SarakIcon name="Activity" className="text-[var(--theme-primary)]" size={16} />
                             <h3 className="font-bold text-sm text-[var(--theme-title)] uppercase tracking-widest">Painel Operacional</h3>
                         </div>
                         <div className="relative">
-                            <Search className="absolute left-3 top-1/2 -translate-y-1/2 text-[var(--theme-text-sec)]" size={12} />
+                            <SarakIcon name="Search" className="absolute left-3 top-1/2 -translate-y-1/2 text-[var(--theme-text-sec)]" size={12} />
                             <input type="text" placeholder="Buscar..." className="bg-[var(--theme-body)] border border-[var(--theme-border)] text-[var(--theme-title)] text-xs rounded-lg pl-8 pr-3 py-1.5 focus:outline-none focus:border-[var(--theme-primary)]" />
                         </div>
                     </div>
@@ -83,10 +83,10 @@ export const MockTable: React.FC<any> = ({ tokens, animationVariants }) => {
                 <div className="flex-1 sarak-card rounded-2xl border border-[var(--theme-border)] bg-[var(--theme-card)] shadow-xl p-5 flex flex-col gap-4">
                     <div className="flex items-center justify-between">
                         <div className="flex items-center gap-2 text-[var(--theme-title)]">
-                            <Users size={16} className="text-[var(--theme-primary)]" />
+                            <SarakIcon name="Users" size={16} className="text-[var(--theme-primary)]" />
                             <h3 className="font-bold text-sm uppercase tracking-widest">Top Usuários</h3>
                         </div>
-                        <button className="text-[10px] font-bold text-[var(--theme-primary)] flex items-center gap-1 hover:underline">VER TODOS <ArrowRight size={10} /></button>
+                        <button className="text-[10px] font-bold text-[var(--theme-primary)] flex items-center gap-1 hover:underline">VER TODOS <SarakIcon name="ArrowRight" size={10} /></button>
                     </div>
                     
                     <div className="flex flex-col gap-3">
@@ -110,12 +110,12 @@ export const MockTable: React.FC<any> = ({ tokens, animationVariants }) => {
             <div className="w-full sarak-card rounded-2xl border border-[var(--sarak-table-border)] bg-[var(--theme-body)] shadow-xl overflow-hidden flex flex-col">
                 <div className="p-3 border-b border-[var(--sarak-table-border)] flex items-center justify-between bg-[var(--sarak-table-header-bg)]">
                     <div className="flex items-center gap-2">
-                        <FileSpreadsheet className="text-emerald-500" size={14} />
+                        <SarakIcon name="FileSpreadsheet" className="text-emerald-500" size={14} />
                         <h3 className="font-bold text-xs text-[var(--theme-title)] font-mono uppercase">Financial_Ledger_Q2.xlsx</h3>
                     </div>
                     <div className="flex items-center gap-2">
                         <button className="px-2 py-1 bg-white/5 hover:bg-white/10 transition-colors text-[9px] font-bold uppercase tracking-widest border border-white/5 rounded flex items-center gap-1 text-[var(--theme-title)]">
-                            <Download size={10} /> CSV
+                            <SarakIcon name="Download" size={10} /> CSV
                         </button>
                     </div>
                 </div>
@@ -126,7 +126,7 @@ export const MockTable: React.FC<any> = ({ tokens, animationVariants }) => {
                             <tr className="border-b border-[var(--sarak-table-border)] text-[var(--theme-text-sec)] bg-[var(--sarak-table-header-bg)]">
                                 {['Transaction ID', 'Date', 'Description', 'Amount', 'Status'].map(h => (
                                     <th key={h} className="font-bold uppercase px-3 py-1.5 border-r border-[var(--sarak-table-border)] last:border-r-0">
-                                        <div className="flex items-center gap-1">{h} <ArrowUpDown size={8} className="opacity-50" /></div>
+                                        <div className="flex items-center gap-1">{h} <SarakIcon name="ArrowUpDown" size={8} className="opacity-50" /></div>
                                     </th>
                                 ))}
                             </tr>

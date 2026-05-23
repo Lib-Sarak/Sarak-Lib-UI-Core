@@ -1,8 +1,6 @@
 import React from 'react';
 import { motion } from 'framer-motion';
-import { 
-    BarChart3, LineChart, PieChart, ScatterChart, TrendingUp, Info, HelpCircle
-} from 'lucide-react';
+import { SarakIcon } from '../../../../components/atomic/Icon/SarakIcon';
 
 interface ChartsMockProps {
     tokens: any;
@@ -29,7 +27,7 @@ export const MockCharts: React.FC<ChartsMockProps> = ({ tokens, animationVariant
             <div className="flex justify-between items-end">
                 <div className="flex flex-col gap-1">
                     <div className="flex items-center gap-2">
-                        <BarChart3 className="text-[var(--theme-primary)]" size={20} />
+                        <SarakIcon name="BarChart3" className="text-[var(--theme-primary)]" size={20} />
                         <h2 className="text-2xl font-black text-white uppercase tracking-widest text-left">Advanced Analytics & Charts</h2>
                     </div>
                     <p className="text-sm text-white/40 uppercase tracking-tighter text-left">Galeria de Múltiplos Espécimes de Gráficos Reativos ao Motor Sarak</p>
@@ -43,9 +41,9 @@ export const MockCharts: React.FC<ChartsMockProps> = ({ tokens, animationVariant
                 <div className="bg-black/40 border border-white/5 p-6 rounded-2xl flex flex-col gap-4">
                     <div className="flex justify-between items-center">
                         <span className="text-xs font-bold uppercase tracking-wider text-slate-400 flex items-center gap-2">
-                            <LineChart size={14} className="text-[var(--theme-primary)]" /> Gráfico de Linha (Line)
+                            <SarakIcon name="LineChart" size={14} className="text-[var(--theme-primary)]" /> Gráfico de Linha (Line)
                         </span>
-                        <TrendingUp size={12} className="text-emerald-400" />
+                        <SarakIcon name="TrendingUp" size={12} className="text-emerald-400" />
                     </div>
                     
                     <div className="h-48 w-full relative flex items-end">
@@ -84,9 +82,9 @@ export const MockCharts: React.FC<ChartsMockProps> = ({ tokens, animationVariant
                 <div className="bg-black/40 border border-white/5 p-6 rounded-2xl flex flex-col gap-4">
                     <div className="flex justify-between items-center">
                         <span className="text-xs font-bold uppercase tracking-wider text-slate-400 flex items-center gap-2">
-                            <LineChart size={14} className="text-[var(--theme-primary)]" /> Gráfico de Área (Area)
+                            <SarakIcon name="LineChart" size={14} className="text-[var(--theme-primary)]" /> Gráfico de Área (Area)
                         </span>
-                        <Info size={12} className="text-slate-500" />
+                        <SarakIcon name="Info" size={12} className="text-slate-500" />
                     </div>
                     
                     <div className="h-48 w-full relative flex items-end">
@@ -125,9 +123,9 @@ export const MockCharts: React.FC<ChartsMockProps> = ({ tokens, animationVariant
                 <div className="bg-black/40 border border-white/5 p-6 rounded-2xl flex flex-col gap-4">
                     <div className="flex justify-between items-center">
                         <span className="text-xs font-bold uppercase tracking-wider text-slate-400 flex items-center gap-2">
-                            <BarChart3 size={14} className="text-[var(--theme-primary)]" /> Gráfico de Barras (Bar)
+                            <SarakIcon name="BarChart3" size={14} className="text-[var(--theme-primary)]" /> Gráfico de Barras (Bar)
                         </span>
-                        <HelpCircle size={12} className="text-slate-500" />
+                        <SarakIcon name="HelpCircle" size={12} className="text-slate-500" />
                     </div>
                     
                     <div className="h-48 w-full relative flex items-end gap-3 justify-between">
@@ -163,7 +161,7 @@ export const MockCharts: React.FC<ChartsMockProps> = ({ tokens, animationVariant
                 <div className="bg-black/40 border border-white/5 p-6 rounded-2xl flex flex-col gap-4">
                     <div className="flex justify-between items-center">
                         <span className="text-xs font-bold uppercase tracking-wider text-slate-400 flex items-center gap-2">
-                            <PieChart size={14} className="text-[var(--theme-primary)]" /> Gráfico de Pizza (Donut)
+                            <SarakIcon name="PieChart" size={14} className="text-[var(--theme-primary)]" /> Gráfico de Pizza (Donut)
                         </span>
                     </div>
                     
@@ -208,7 +206,7 @@ export const MockCharts: React.FC<ChartsMockProps> = ({ tokens, animationVariant
                 <div className="bg-black/40 border border-white/5 p-6 rounded-2xl flex flex-col gap-4">
                     <div className="flex justify-between items-center">
                         <span className="text-xs font-bold uppercase tracking-wider text-slate-400 flex items-center gap-2">
-                            <ScatterChart size={14} className="text-[var(--theme-primary)]" /> Gráfico de Dispersão (Scatter)
+                            <SarakIcon name="ScatterChart" size={14} className="text-[var(--theme-primary)]" /> Gráfico de Dispersão (Scatter)
                         </span>
                     </div>
                     
@@ -250,7 +248,7 @@ export const MockCharts: React.FC<ChartsMockProps> = ({ tokens, animationVariant
                 <div className="bg-black/40 border border-white/5 p-6 rounded-2xl flex flex-col gap-4">
                     <div className="flex justify-between items-center">
                         <span className="text-xs font-bold uppercase tracking-wider text-slate-400 flex items-center gap-2">
-                            <TrendingUp size={14} className="text-[var(--theme-primary)]" /> Teia de Performance (Radar)
+                            <SarakIcon name="TrendingUp" size={14} className="text-[var(--theme-primary)]" /> Teia de Performance (Radar)
                         </span>
                     </div>
                     
