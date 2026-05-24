@@ -135,11 +135,7 @@ export const SarakShell: React.FC<SarakShellProps> = (props) => {
     }, []);
 
     // --- DESIGN HYDRATION LOG (v10.1) ---
-    React.useEffect(() => {
-        if (ui.options?.debug) {
-            console.log("[Sarak:Shell] Active Design:", design);
-        }
-    }, [design, ui.options?.debug]);
+    // Log removido para produção
 
     const isTopbar = design?.navigationStyle === 'topbar';
     const isDock = design?.navigationStyle === 'dock';

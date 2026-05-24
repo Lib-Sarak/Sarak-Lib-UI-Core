@@ -123,12 +123,24 @@ export const SarakUIProvider: React.FC<SarakUIProviderProps> = ({
         document.head.prepend(style);
     }, []);
 
-    // 4.5 Atualização Dinâmica do Título da Aba (Branding)
+    // 4.5 Atualização Dinâmica do Título e Ícone da Aba (Branding)
     useEffect(() => {
-        if (typeof document !== 'undefined' && branding?.tabName) {
+        if (typeof document === 'undefined') return;
+        
+        if (branding?.tabName) {
             document.title = branding.tabName;
         }
-    }, [branding?.tabName]);
+
+        if (branding?.logoBase64) {
+            let link = document.querySelector("link[rel~='icon']") as HTMLLinkElement;
+            if (!link) {
+                link = document.createElement('link');
+                link.rel = 'icon';
+                document.head.appendChild(link);
+            }
+            link.href = branding.logoBase64;
+        }
+    }, [branding?.tabName, branding?.logoBase64]);
 
     // 5. Interceptor Inteligente (Isolamento Draft vs System)
     const smartApplyConfig = React.useCallback((partial: any) => {

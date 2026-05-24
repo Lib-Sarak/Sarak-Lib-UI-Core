@@ -24,19 +24,16 @@ export const ShellLanguageSelector: React.FC<ShellLanguageSelectorProps> = ({
     const fromRegistry = getLocalComponent('shell-language-selector');
     const fromGlobal = (typeof window !== 'undefined' ? (window as any).__SARAK_OVERRIDES__?.['shell-language-selector'] : null);
     const OverrideSelector = fromRegistry || fromGlobal;
-
-    console.log("%c[Sarak:UI-Core] Buscando Override de Idioma...", "color: cyan; font-weight: bold;", {
-        foundInRegistry: !!fromRegistry,
-        foundInGlobal: !!fromGlobal,
-        variant
-    });
     
     const [isOpen, setIsOpen] = useState(false);
     const [currentLang, setCurrentLang] = useState(LANGUAGES[0]);
     
     if (OverrideSelector) {
-        console.log("%c[Sarak:UI-Core] Override ENCONTRADO. Renderizando componente dinâmico.", "color: lime; font-weight: bold;");
-        return <OverrideSelector variant={variant} />;
+        return (
+            <div className={`relative isolate !overflow-visible ${variant === 'horizontal' ? "[&_[class*='absolute']]:!right-0 [&_[class*='absolute']]:!left-auto [&_[class*='absolute']]:!min-w-[180px] [&>div]:!overflow-visible" : ""}`}>
+                <OverrideSelector variant={variant} />
+            </div>
+        );
     }
 
     const isHorizontal = variant === 'horizontal';

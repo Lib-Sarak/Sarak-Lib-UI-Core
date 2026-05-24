@@ -39,7 +39,7 @@ export const TopbarNav: React.FC<TopbarNavProps> = ({
         <header
             onMouseEnter={() => isNavHidden && setIsHovered(true)}
             onMouseLeave={() => setIsHovered(false)}
-            className={`backdrop-blur-2xl px-6 flex items-center justify-between z-[45] shrink-0 overflow-hidden group relative`}
+            className={`backdrop-blur-2xl px-6 flex items-center justify-between z-[45] shrink-0 group relative`}
             style={{
                 margin: `var(--theme-tab-section-margin, ${tabSectionMargin ?? 12}px)`,
                 borderRadius: `var(--radius-theme, ${borderRadius ?? 12}px)`,
@@ -110,7 +110,7 @@ export const TopbarNav: React.FC<TopbarNavProps> = ({
                     {/* 1. Search Widget */}
                     <ShellSearchWidget variant={effectiveIsNavHidden ? 'icon' : 'bar'} onClick={() => setIsSearchOpen(true)} />
 
-                    <div className={`flex items-center gap-2 p-1 bg-white/5 rounded-xl border border-white/10 ${effectiveIsNavHidden ? 'scale-90' : ''}`}>
+                    <div className={`flex items-center gap-2 p-1 bg-white/5 rounded-xl border border-white/10 !overflow-visible ${effectiveIsNavHidden ? 'scale-90' : ''}`}>
                         <ShellLanguageSelector variant="horizontal" />
 
                         <div className="w-[1px] h-4 bg-white/10 mx-1" />

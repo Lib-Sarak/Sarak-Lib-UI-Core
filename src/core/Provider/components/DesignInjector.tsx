@@ -46,8 +46,6 @@ export const DesignInjector: React.FC<{ design: any; isDrafting: boolean }> = ({
         const currentDesignKey = JSON.stringify(s);
         if (prevDesignRef.current === currentDesignKey) return;
 
-        console.log('[DesignInjector] Syncing global styles for SYSTEM');
-
         const root = document.documentElement;
         const body = document.body;
 

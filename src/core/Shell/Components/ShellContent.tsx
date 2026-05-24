@@ -48,10 +48,6 @@ export const ShellContent: React.FC<ShellContentProps> = ({
                                     </div>
                                     <h1 className="text-4xl lg:text-5xl font-black tracking-tighter text-[var(--theme-title)] uppercase">{activeModule.label}</h1>
                                 </div>
-                                <div className="flex items-center gap-2">
-                                    <button onClick={() => setIsSearchOpen(true)} className="p-3 rounded-[var(--radius-theme)] bg-[var(--theme-card)] border border-[var(--theme-border)] hover:border-[var(--theme-primary)]/50 transition-all text-[var(--theme-muted)] hover:text-[var(--theme-primary)]"><Search size={18} /></button>
-                                    <button className="hidden sm:flex items-center gap-2 px-6 py-3 rounded-[var(--radius-theme)] bg-[var(--theme-primary)] hover:opacity-90 text-white text-2xs font-black uppercase tracking-[0.2em] transition-all shadow-xl shadow-[var(--theme-primary)]/20 text-center"><Zap size={14} className="fill-current" /> New Record</button>
-                                </div>
                             </header>
 
                             <div className={`flex-1 ${isSplitViewEnabled ? 'grid grid-cols-2 gap-[var(--theme-gap)]' : 'flex flex-col'} animate-in fade-in zoom-in-95 duration-700`}>
