@@ -68,7 +68,7 @@ export const SarakUIProvider: React.FC<SarakUIProviderProps> = ({
     }, [customThemes]);
 
     // 2. Gerenciamento do Estado de Design e Persistência
-    const { design, setDesign, applyConfig, applyFullConfig, persistDesign } = useDesignManager({
+    const { design, setDesign, applyConfig, applyFullConfig, persistDesign, isBackendLoaded } = useDesignManager({
         initialConfig: initialPropsConfig,
         options,
         token,
@@ -151,6 +151,10 @@ export const SarakUIProvider: React.FC<SarakUIProviderProps> = ({
         allThemes
     }), [discoveryEndpoints, design, draftDesign, isDrafting, setIsDrafting, lockDrafting, setDesign, setDraftDesign, smartApplyConfig, smartApplyFullConfig, applyConfig, applyFullConfig, persistDesign, registeredModules, isHydrated, options, allThemes]);
 
+    // 7. Renderização com Strict Sync (Evita Flash de Temas)
+    const isStrictSync = options?.persistence?.strictBackendSync === true;
+    const shouldRenderChildren = isStrictSync ? isBackendLoaded : true;
+
     return (
         <UIContext.Provider value={uiContextValue}>
             <DesignInjector 
@@ -158,7 +162,7 @@ export const SarakUIProvider: React.FC<SarakUIProviderProps> = ({
                 isDrafting={isDrafting} 
             />
             <NoiseOverlay />
-            {children}
+            {shouldRenderChildren ? children : null}
         </UIContext.Provider>
     );
 };

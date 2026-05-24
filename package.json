@@ -3,6 +3,7 @@
     "version": "2.2.9",
     "description": "Sarak Design System and UI Engine [Pre-compiled]",
     "type": "module",
+    "style": "./dist/sarak.css",
     "main": "./dist/index.cjs",
     "module": "./dist/index.js",
     "types": "./dist/index.d.ts",

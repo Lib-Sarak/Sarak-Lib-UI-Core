@@ -14,6 +14,7 @@ interface SarakUIOptions {
         storageKey?: string;
         onSave?: (design: any) => Promise<void> | void;
         onLoad?: () => Promise<any> | any;
+        strictBackendSync?: boolean;
     };
     theme?: {
         defaultTheme?: string;

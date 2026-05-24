@@ -153,6 +153,9 @@ export const ThemeCustomizationTab: React.FC = () => {
         { id: 'advanced', title: '7. Componentes Avançados', icon: Sparkles, index: 7 },
     ], []);
 
+    // Componente Global (Preferências do Usuário) extraído do master map
+    const globalComponent = useMemo(() => MASTER_DESIGN_MAP?.components?.find(c => c.id === 'global'), []);
+
     // 2. Agrupamento Hierárquico: Pilar -> Componente
     const groupedStructure = useMemo(() => {
         const groups: Record<string, Record<string, any[]>> = {};
@@ -175,6 +178,7 @@ export const ThemeCustomizationTab: React.FC = () => {
 
         if (MASTER_DESIGN_MAP?.components) {
             MASTER_DESIGN_MAP.components.forEach(comp => {
+                if (comp.id === 'global') return; // Isola o globalComponent fora do fluxo
                 const pillarId = schemaToPillar[comp.id] || 'brand';
                 const subcat = 'Geral';
 
@@ -286,6 +290,24 @@ export const ThemeCustomizationTab: React.FC = () => {
                             </motion.div>
                         ) : viewMode === 'preview' ? (
                             <motion.div key="pillars" initial={{ opacity: 0, x: -10 }} animate={{ opacity: 1, x: 0 }} className="pt-2 pb-20">
+                                
+                                {/* BLOCO DE CONFIGURAÇÕES GLOBAIS */}
+                                {globalComponent && (
+                                    <div className="mx-4 mb-4 mt-2 p-5 rounded-2xl bg-gradient-to-b from-white/[0.03] to-transparent border border-white/[0.05] shadow-[0_0_20px_rgba(0,0,0,0.2)]">
+                                        <div className="flex items-center gap-2.5 mb-5">
+                                            <div className="w-5 h-5 rounded-md bg-blue-500/10 flex items-center justify-center border border-blue-500/20">
+                                                <Globe className="w-3 h-3 text-blue-400" />
+                                            </div>
+                                            <span className="text-[9px] font-black uppercase tracking-widest text-blue-400">Preferências Globais</span>
+                                        </div>
+                                        <div className="flex flex-col gap-4">
+                                            {globalComponent.tokens.map((token: any) => (
+                                                <TokenControl key={token.id} token={token} value={draft[token.id]} onChange={(val) => updateDraft(token.id, val)} />
+                                            ))}
+                                        </div>
+                                    </div>
+                                )}
+
                                 {pillars.map((pillar) => (
                                     <div key={pillar.id} className="border-b border-white/5 last:border-0">
                                         <CategoryLabel 
