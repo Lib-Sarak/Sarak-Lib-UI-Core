@@ -13,6 +13,8 @@ export { default as ThemeToggle } from './components/atomic/Buttons/ThemeToggle'
 
 // Layout Components and Plug & Play UI
 export * from './core/Shell/SarakShell';
+export * from './components/atomic/Icon/SarakIcon';
+export * from './components/atomic/Icon/IconMap';
 export { useDesignDraft } from './features/DesignEngine/hooks/useDesignDraft';
 export { DESIGN_MANIFEST } from './core/Provider/manifest';
 export * from './features/DesignEngine/Library/CustomizationPanel';

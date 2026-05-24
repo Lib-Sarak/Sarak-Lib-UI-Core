@@ -8,6 +8,8 @@ export const crystalGlassTheme: ThemePreset = {
         mode: 'dark',
         navigationStyle: 'topbar',
         bodySize: '16px',
+        iconFamily: 'lucide',
+        iconWeight: 'regular',
         systemName: 'Sarak OS',
         logoUrl: '',
         logoMinimalUrl: '',

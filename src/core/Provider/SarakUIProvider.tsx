@@ -8,6 +8,7 @@ import { DEFAULT_UI_BASE_URL } from './constants';
 import { useRegistryManager } from './hooks/useRegistryManager';
 import { useDesignManager } from './hooks/useDesignManager';
 import { DesignInjector } from './components/DesignInjector';
+import { GLOBAL_THEMES } from '../Design/presets/themes/index';
 
 // Re-exports para manter compatibilidade com arquivos que importam do Provider
 export * from './types';
@@ -54,17 +55,26 @@ export const SarakUIProvider: React.FC<SarakUIProviderProps> = ({
     config: initialPropsConfig = {},
     token,
     userId,
-    options = {}
+    options = {},
+    customThemes = [],
+    activeThemeId
 }) => {
     // 1. Gerenciamento do Registro e Discovery
     const { registeredModules, isHydrated } = useRegistryManager(options);
+
+    // 1.5. Merge Temas Híbridos
+    const allThemes = useMemo(() => {
+        return [...GLOBAL_THEMES, ...customThemes];
+    }, [customThemes]);
 
     // 2. Gerenciamento do Estado de Design e Persistência
     const { design, setDesign, applyConfig, applyFullConfig, persistDesign } = useDesignManager({
         initialConfig: initialPropsConfig,
         options,
         token,
-        isHydrated
+        isHydrated,
+        allThemes,
+        activeThemeId
     });
 
     // 3. Gerenciamento de Rascunho (Live Preview)
@@ -137,8 +147,9 @@ export const SarakUIProvider: React.FC<SarakUIProviderProps> = ({
         registeredModules,
         layouts: [],
         isHydrated,
-        options
-    }), [discoveryEndpoints, design, draftDesign, isDrafting, setIsDrafting, lockDrafting, setDesign, setDraftDesign, smartApplyConfig, smartApplyFullConfig, applyConfig, applyFullConfig, persistDesign, registeredModules, isHydrated, options]);
+        options,
+        allThemes
+    }), [discoveryEndpoints, design, draftDesign, isDrafting, setIsDrafting, lockDrafting, setDesign, setDraftDesign, smartApplyConfig, smartApplyFullConfig, applyConfig, applyFullConfig, persistDesign, registeredModules, isHydrated, options, allThemes]);
 
     return (
         <UIContext.Provider value={uiContextValue}>

@@ -8,6 +8,8 @@ export const synthwaveRetroTheme: ThemePreset = {
         mode: 'dark',
         navigationStyle: 'topbar',
         bodySize: '14px',
+        iconFamily: 'phosphor',
+        iconWeight: 'fill',
         systemName: 'Synth OS',
         logoUrl: '',
         logoMinimalUrl: '',

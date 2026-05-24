@@ -8,6 +8,8 @@ export const naturebreezeTheme: ThemePreset = {
         mode: "dark",
         navigationStyle: "sidebar",
         bodySize: "14px",
+        iconFamily: 'lucide',
+        iconWeight: 'light',
         systemName: "Sarak OS",
         logoUrl: "",
         logoMinimalUrl: "",

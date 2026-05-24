@@ -8,6 +8,8 @@ export const neobrutalismTheme: ThemePreset = {
         mode: "dark",
         navigationStyle: "topbar",
         bodySize: "14px",
+        iconFamily: 'tabler',
+        iconWeight: 'bold',
         systemName: "Sarak OS",
         logoUrl: "",
         logoMinimalUrl: "",

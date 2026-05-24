@@ -2,61 +2,24 @@ import React, { useState } from 'react';
 import { motion } from 'framer-motion';
 import { Copy, Check, FileJson, Info, ExternalLink, Code, Terminal } from 'lucide-react';
 
+import { useSarakUI } from '../../../core/Provider/SarakUIProvider';
+
 /**
  * TemplatesTab (v13.0)
- * Central de integração e exportação de manifestos para sistemas host.
+ * Exibe os temas híbridos (Scripts e Banco de Dados) para aplicação.
  */
 export const TemplatesTab: React.FC = () => {
     const [copiedId, setCopiedId] = useState<string | null>(null);
-
-    const templates = [
-        {
-            id: 'industrial',
-            name: 'Industrial Sovereign',
-            description: 'O padrão Sarak: técnico, preciso e de alta performance.',
-            config: {
-                version: "13.0.0",
-                config: {
-                    colorPrimary: "#00f2ff",
-                    colorSecondary: "#7000ff",
-                    bgBase: "#0a0a0c",
-                    cardBg: "rgba(15, 23, 42, 0.6)",
-                    cardRadius: 12,
-                    h1Size: 48,
-                    motionEaseMain: "cubic-bezier(0.4, 0, 0.2, 1)"
-                }
-            }
-        },
-        {
-            id: 'glass',
-            name: 'Crystal Glass',
-            description: 'Focado em profundidade óptica e transparências luxuosas.',
-            config: {
-                version: "13.0.0",
-                config: {
-                    glassBlur: 25,
-                    glassSaturation: 1.8,
-                    glassSpecularity: 0.2,
-                    cardInnerGlowWidth: 1,
-                    h1Weight: 300
-                }
-            }
-        },
-        {
-            id: 'cyber',
-            name: 'Cyber Neon',
-            description: 'Contraste agressivo e brilho intenso para interfaces futuristas.',
-            config: {
-                version: "13.0.0",
-                config: {
-                    colorPrimary: "#ff00ff",
-                    colorSecondary: "#00ffff",
-                    bgBase: "#050505",
-                    h1Glow: "0 0 20px rgba(255,0,255,0.5)"
-                }
-            }
-        }
-    ];
+    const [appliedId, setAppliedId] = useState<string | null>(null);
+    const sarak = useSarakUI();
+    const themes = sarak.allThemes || [];
+    const handleApply = async (theme: any) => {
+        setAppliedId(theme.id);
+        sarak.applyFullConfig(theme.design);
+        // O consumer system intercepta através do onSave para persistir ou ativar no banco
+        await sarak.persistDesign(theme.design);
+        setTimeout(() => setAppliedId(null), 2000);
+    };
 
     const handleCopy = (id: string, config: any) => {
         navigator.clipboard.writeText(JSON.stringify(config, null, 2));
@@ -100,7 +63,7 @@ export const TemplatesTab: React.FC = () => {
 
             {/* Template Grid - Single Column */}
             <div className="flex flex-col gap-4">
-                {templates.map((template) => (
+                {themes.map((template: any) => (
                     <div key={template.id} className="group bg-white/[0.02] border border-white/5 hover:border-white/10 p-5 rounded-2xl transition-all">
                         <div className="flex flex-col gap-3 mb-4">
                             <div>
@@ -108,24 +71,36 @@ export const TemplatesTab: React.FC = () => {
                                     <FileJson size={12} className="text-[var(--theme-primary)]" />
                                     <div className="text-[10px] font-black uppercase tracking-tight">{template.name}</div>
                                 </div>
-                                <p className="text-[9px] text-white/30">{template.description}</p>
+                                <p className="text-[9px] text-white/30">{template.description || 'Tema customizado.'}</p>
                             </div>
-                            <button 
-                                onClick={() => handleCopy(template.id, template.config)}
-                                className={`flex items-center justify-center gap-2 px-4 py-2 rounded-lg text-[9px] font-black uppercase tracking-widest transition-all ${
-                                    copiedId === template.id 
-                                    ? 'bg-emerald-500 text-white' 
-                                    : 'bg-white/5 hover:bg-white/10 text-white/40 hover:text-white'
-                                }`}
-                            >
-                                {copiedId === template.id ? <Check size={10} /> : <Copy size={10} />}
-                                {copiedId === template.id ? 'Copiado!' : 'Copiar JSON'}
-                            </button>
+                            <div className="flex gap-2">
+                                <button 
+                                    onClick={() => handleApply(template)}
+                                    className={`flex items-center justify-center gap-2 px-4 py-2 rounded-lg text-[9px] font-black uppercase tracking-widest transition-all flex-1 ${
+                                        appliedId === template.id 
+                                        ? 'bg-emerald-500 text-white' 
+                                        : 'bg-[var(--theme-primary)] hover:bg-[var(--theme-primary)]/80 text-black'
+                                    }`}
+                                >
+                                    {appliedId === template.id ? <Check size={10} /> : <Check size={10} />}
+                                    {appliedId === template.id ? 'Aplicado!' : 'Aplicar Tema'}
+                                </button>
+                                <button 
+                                    onClick={() => handleCopy(template.id, template.design)}
+                                    className={`flex items-center justify-center gap-2 px-4 py-2 rounded-lg text-[9px] font-black uppercase tracking-widest transition-all ${
+                                        copiedId === template.id 
+                                        ? 'bg-emerald-500/20 text-emerald-400 border-emerald-500/50' 
+                                        : 'bg-white/5 hover:bg-white/10 text-white/40 hover:text-white border border-white/5'
+                                    }`}
+                                >
+                                    {copiedId === template.id ? <Check size={10} /> : <Copy size={10} />}
+                                </button>
+                            </div>
                         </div>
 
                         <div className="relative">
                             <pre className="bg-black/40 rounded-xl p-4 text-[8px] font-mono text-white/20 overflow-x-auto border border-white/5 max-h-[120px] custom-scrollbar">
-                                {JSON.stringify(template.config, null, 2)}
+                                {JSON.stringify(template.design, null, 2)}
                             </pre>
                         </div>
                     </div>

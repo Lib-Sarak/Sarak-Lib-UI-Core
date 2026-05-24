@@ -8,6 +8,8 @@ export const holographicGlassTheme: ThemePreset = {
         mode: 'dark',
         navigationStyle: 'topbar',
         bodySize: '15px',
+        iconFamily: 'tabler',
+        iconWeight: 'thin',
         systemName: 'Holo OS',
         logoUrl: '',
         logoMinimalUrl: '',

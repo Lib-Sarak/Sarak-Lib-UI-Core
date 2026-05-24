@@ -37,6 +37,7 @@ export interface SarakUIContextType {
     layouts: any[];
     isHydrated: boolean;
     options: SarakUIOptions;
+    allThemes: any[]; // Array unificado (Scripts + DB) para a interface
 }
 
 export interface SarakUIProviderProps {
@@ -46,4 +47,6 @@ export interface SarakUIProviderProps {
     token?: string | null;
     userId?: string | null;
     options?: SarakUIOptions;
+    customThemes?: any[]; // Temas vindos do banco de dados (UI.custom_themes)
+    activeThemeId?: string; // ID do tema atualmente selecionado no banco
 }

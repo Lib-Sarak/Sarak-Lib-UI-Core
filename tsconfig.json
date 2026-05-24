@@ -14,7 +14,8 @@
       "@sarak/lib-translator-google": ["../Sarak-Lib-Translator-Google/src/index"]
     },
     "esModuleInterop": true,
-    "strict": true
+    "strict": true,
+    "resolveJsonModule": true
   },
-  "include": ["src"]
+  "include": ["src", "backend"]
 }

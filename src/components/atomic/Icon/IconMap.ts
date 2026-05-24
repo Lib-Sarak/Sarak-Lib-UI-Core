@@ -28,7 +28,32 @@ import {
     Layers as LucideLayers,
     Grid as LucideGrid,
     AlignLeft as LucideAlignLeft,
-    LineChart as LucideLineChart
+    LineChart as LucideLineChart,
+    Hash as LucideHash,
+    Copy as LucideCopy,
+    RefreshCw as LucideRefreshCw,
+    Edit3 as LucideEdit3,
+    CornerDownRight as LucideCornerDownRight,
+    Activity as LucideActivity,
+    Users as LucideUsers,
+    ArrowRight as LucideArrowRight,
+    FileSpreadsheet as LucideFileSpreadsheet,
+    Download as LucideDownload,
+    ArrowUpDown as LucideArrowUpDown,
+    Database as LucideDatabase,
+    List as LucideList,
+    CheckCircle2 as LucideCheckCircle2,
+    Loader2 as LucideLoader2,
+    Calendar as LucideCalendar,
+    Trash2 as LucideTrash2,
+    Plus as LucidePlus,
+    UploadCloud as LucideUploadCloud,
+    MoreVertical as LucideMoreVertical,
+    Image as LucideImage,
+    File as LucideFile,
+    Edit as LucideEdit,
+    Eye as LucideEye,
+    UserPlus as LucideUserPlus
 } from 'lucide-react';
 
 import { 
@@ -61,7 +86,32 @@ import {
     Stack as PhosphorLayers,
     GridFour as PhosphorGrid,
     TextAlignLeft as PhosphorAlignLeft,
-    ChartLineUp as PhosphorLineChart
+    ChartLineUp as PhosphorLineChart,
+    Hash as PhosphorHash,
+    Copy as PhosphorCopy,
+    ArrowsClockwise as PhosphorRefreshCw,
+    PencilSimple as PhosphorEdit3,
+    ArrowBendDownRight as PhosphorCornerDownRight,
+    Pulse as PhosphorActivity,
+    Users as PhosphorUsers,
+    ArrowRight as PhosphorArrowRight,
+    FileCsv as PhosphorFileSpreadsheet,
+    DownloadSimple as PhosphorDownload,
+    ArrowsVertical as PhosphorArrowUpDown,
+    Database as PhosphorDatabase,
+    List as PhosphorList,
+    CheckCircle as PhosphorCheckCircle2,
+    Spinner as PhosphorLoader2,
+    Calendar as PhosphorCalendar,
+    Trash as PhosphorTrash2,
+    Plus as PhosphorPlus,
+    CloudArrowUp as PhosphorUploadCloud,
+    DotsThreeVertical as PhosphorMoreVertical,
+    Image as PhosphorImage,
+    File as PhosphorFile,
+    Pencil as PhosphorEdit,
+    Eye as PhosphorEye,
+    UserPlus as PhosphorUserPlus
 } from '@phosphor-icons/react';
 
 import { 
@@ -94,7 +144,32 @@ import {
     IconStack2 as TablerLayers,
     IconGridDots as TablerGrid,
     IconAlignLeft as TablerAlignLeft,
-    IconChartLine as TablerLineChart
+    IconChartLine as TablerLineChart,
+    IconHash as TablerHash,
+    IconCopy as TablerCopy,
+    IconRefresh as TablerRefreshCw,
+    IconPencil as TablerEdit3,
+    IconCornerDownRight as TablerCornerDownRight,
+    IconActivity as TablerActivity,
+    IconUsers as TablerUsers,
+    IconArrowRight as TablerArrowRight,
+    IconFileSpreadsheet as TablerFileSpreadsheet,
+    IconDownload as TablerDownload,
+    IconArrowsVertical as TablerArrowUpDown,
+    IconDatabase as TablerDatabase,
+    IconList as TablerList,
+    IconCircleCheck as TablerCheckCircle2,
+    IconLoader2 as TablerLoader2,
+    IconCalendar as TablerCalendar,
+    IconTrash as TablerTrash2,
+    IconPlus as TablerPlus,
+    IconCloudUpload as TablerUploadCloud,
+    IconDotsVertical as TablerMoreVertical,
+    IconPhoto as TablerImage,
+    IconFile as TablerFile,
+    IconEdit as TablerEdit,
+    IconEye as TablerEye,
+    IconUserPlus as TablerUserPlus
 } from '@tabler/icons-react';
 
 export type IconName = 
@@ -102,7 +177,11 @@ export type IconName =
     | 'LogOut' | 'Shield' | 'Globe' | 'ChevronDown' | 'ChevronLeft' 
     | 'ChevronRight' | 'Zap' | 'LayoutDashboard' | 'Save' | 'Settings'
     | 'BarChart3' | 'Layout' | 'FileText' | 'MessageSquare' | 'History'
-    | 'Network' | 'Box' | 'Type' | 'Lock' | 'Layers' | 'Grid' | 'AlignLeft' | 'LineChart';
+    | 'Network' | 'Box' | 'Type' | 'Lock' | 'Layers' | 'Grid' | 'AlignLeft' | 'LineChart'
+    | 'Hash' | 'Copy' | 'RefreshCw' | 'Edit3' | 'CornerDownRight' | 'Activity'
+    | 'Users' | 'ArrowRight' | 'FileSpreadsheet' | 'Download' | 'ArrowUpDown'
+    | 'Database' | 'List' | 'CheckCircle2' | 'Loader2' | 'Calendar' | 'Trash2'
+    | 'Plus' | 'UploadCloud' | 'MoreVertical' | 'Image' | 'File' | 'Edit' | 'Eye' | 'UserPlus';
 
 export const IconMap: Record<IconName, { lucide: any, phosphor: any, tabler: any }> = {
     AlertCircle: { lucide: LucideAlertCircle, phosphor: PhosphorAlertCircle, tabler: TablerAlertCircle },
@@ -135,4 +214,29 @@ export const IconMap: Record<IconName, { lucide: any, phosphor: any, tabler: any
     Grid: { lucide: LucideGrid, phosphor: PhosphorGrid, tabler: TablerGrid },
     AlignLeft: { lucide: LucideAlignLeft, phosphor: PhosphorAlignLeft, tabler: TablerAlignLeft },
     LineChart: { lucide: LucideLineChart, phosphor: PhosphorLineChart, tabler: TablerLineChart },
+    Hash: { lucide: LucideHash, phosphor: PhosphorHash, tabler: TablerHash },
+    Copy: { lucide: LucideCopy, phosphor: PhosphorCopy, tabler: TablerCopy },
+    RefreshCw: { lucide: LucideRefreshCw, phosphor: PhosphorRefreshCw, tabler: TablerRefreshCw },
+    Edit3: { lucide: LucideEdit3, phosphor: PhosphorEdit3, tabler: TablerEdit3 },
+    CornerDownRight: { lucide: LucideCornerDownRight, phosphor: PhosphorCornerDownRight, tabler: TablerCornerDownRight },
+    Activity: { lucide: LucideActivity, phosphor: PhosphorActivity, tabler: TablerActivity },
+    Users: { lucide: LucideUsers, phosphor: PhosphorUsers, tabler: TablerUsers },
+    ArrowRight: { lucide: LucideArrowRight, phosphor: PhosphorArrowRight, tabler: TablerArrowRight },
+    FileSpreadsheet: { lucide: LucideFileSpreadsheet, phosphor: PhosphorFileSpreadsheet, tabler: TablerFileSpreadsheet },
+    Download: { lucide: LucideDownload, phosphor: PhosphorDownload, tabler: TablerDownload },
+    ArrowUpDown: { lucide: LucideArrowUpDown, phosphor: PhosphorArrowUpDown, tabler: TablerArrowUpDown },
+    Database: { lucide: LucideDatabase, phosphor: PhosphorDatabase, tabler: TablerDatabase },
+    List: { lucide: LucideList, phosphor: PhosphorList, tabler: TablerList },
+    CheckCircle2: { lucide: LucideCheckCircle2, phosphor: PhosphorCheckCircle2, tabler: TablerCheckCircle2 },
+    Loader2: { lucide: LucideLoader2, phosphor: PhosphorLoader2, tabler: TablerLoader2 },
+    Calendar: { lucide: LucideCalendar, phosphor: PhosphorCalendar, tabler: TablerCalendar },
+    Trash2: { lucide: LucideTrash2, phosphor: PhosphorTrash2, tabler: TablerTrash2 },
+    Plus: { lucide: LucidePlus, phosphor: PhosphorPlus, tabler: TablerPlus },
+    UploadCloud: { lucide: LucideUploadCloud, phosphor: PhosphorUploadCloud, tabler: TablerUploadCloud },
+    MoreVertical: { lucide: LucideMoreVertical, phosphor: PhosphorMoreVertical, tabler: TablerMoreVertical },
+    Image: { lucide: LucideImage, phosphor: PhosphorImage, tabler: TablerImage },
+    File: { lucide: LucideFile, phosphor: PhosphorFile, tabler: TablerFile },
+    Edit: { lucide: LucideEdit, phosphor: PhosphorEdit, tabler: TablerEdit },
+    Eye: { lucide: LucideEye, phosphor: PhosphorEye, tabler: TablerEye },
+    UserPlus: { lucide: LucideUserPlus, phosphor: PhosphorUserPlus, tabler: TablerUserPlus },
 };

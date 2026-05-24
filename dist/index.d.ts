@@ -27,6 +27,8 @@ interface SarakUIProviderProps {
     token?: string | null;
     userId?: string | null;
     options?: SarakUIOptions;
+    customThemes?: any[];
+    activeThemeId?: string;
 }
 
 /**
@@ -86,6 +88,23 @@ interface SarakShellProps {
  * Sarak Shell Core — Interface Engine (Refactored v7.2.5)
  */
 declare const SarakShell: React$1.FC<SarakShellProps>;
+
+type IconName = 'AlertCircle' | 'Check' | 'X' | 'Menu' | 'Search' | 'Bell' | 'User' | 'LogOut' | 'Shield' | 'Globe' | 'ChevronDown' | 'ChevronLeft' | 'ChevronRight' | 'Zap' | 'LayoutDashboard' | 'Save' | 'Settings' | 'BarChart3' | 'Layout' | 'FileText' | 'MessageSquare' | 'History' | 'Network' | 'Box' | 'Type' | 'Lock' | 'Layers' | 'Grid' | 'AlignLeft' | 'LineChart' | 'Hash' | 'Copy' | 'RefreshCw' | 'Edit3' | 'CornerDownRight' | 'Activity' | 'Users' | 'ArrowRight' | 'FileSpreadsheet' | 'Download' | 'ArrowUpDown' | 'Database' | 'List' | 'CheckCircle2' | 'Loader2' | 'Calendar' | 'Trash2' | 'Plus' | 'UploadCloud' | 'MoreVertical' | 'Image' | 'File' | 'Edit' | 'Eye' | 'UserPlus';
+declare const IconMap: Record<IconName, {
+    lucide: any;
+    phosphor: any;
+    tabler: any;
+}>;
+
+interface SarakIconProps {
+    name: IconName | string;
+    size?: number | string;
+    className?: string;
+    color?: string;
+    style?: React$1.CSSProperties;
+    onClick?: () => void;
+}
+declare const SarakIcon: React$1.FC<SarakIconProps>;
 
 /**
  * useDesignDraft (v12.1 - Data-Driven)
@@ -578,4 +597,4 @@ interface SarakRouterState {
  */
 declare function useSarakRouter(basePath?: string): SarakRouterState;
 
-export { CustomizationPanel, DESIGN_MANIFEST, DesignScope, type DiscoveredModule, DynamicRenderer, ExpandableCard, LanguageSelector, type MatrixNodeConfig, type ModuleManifest, ModuleSelector, type ResolvedNodeConfig, SarakAuthScreen, SarakCardGrid, SarakCatalogGrid, SarakChart, SarakChartEngine, SarakChat, SarakExpandableMatrix, type SarakExpandableMatrixProps, SarakForm, SarakManagementGrid, type SarakMatrixManifest, type SarakModule, type SarakRouterState, SarakSecurityOrchestrator, SarakShell, SarakStats, SarakTable, SarakUIProvider, SocialButton, ThemeToggle, UserMenu, type VisualContract, type VisualContractType, getLocalComponent, getRegisteredModules, getSarakModule, registerLocalComponent, registerSarakModule, subscribeToRegistry, useDesignDraft, useModuleDiscovery, useSarakRouter, useSarakUI };
+export { CustomizationPanel, DESIGN_MANIFEST, DesignScope, type DiscoveredModule, DynamicRenderer, ExpandableCard, IconMap, type IconName, LanguageSelector, type MatrixNodeConfig, type ModuleManifest, ModuleSelector, type ResolvedNodeConfig, SarakAuthScreen, SarakCardGrid, SarakCatalogGrid, SarakChart, SarakChartEngine, SarakChat, SarakExpandableMatrix, type SarakExpandableMatrixProps, SarakForm, SarakIcon, type SarakIconProps, SarakManagementGrid, type SarakMatrixManifest, type SarakModule, type SarakRouterState, SarakSecurityOrchestrator, SarakShell, SarakStats, SarakTable, SarakUIProvider, SocialButton, ThemeToggle, UserMenu, type VisualContract, type VisualContractType, getLocalComponent, getRegisteredModules, getSarakModule, registerLocalComponent, registerSarakModule, subscribeToRegistry, useDesignDraft, useModuleDiscovery, useSarakRouter, useSarakUI };

@@ -14,9 +14,11 @@ export const useDesignManager = (props: {
     initialConfig: any,
     options: any,
     token?: string | null,
-    isHydrated: boolean
+    isHydrated: boolean,
+    allThemes?: any[],
+    activeThemeId?: string
 }) => {
-    const { initialConfig, options, token, isHydrated } = props;
+    const { initialConfig, options, token, isHydrated, allThemes, activeThemeId } = props;
     
     const optionsRef = useRef(options);
     const configRef = useRef(initialConfig);
@@ -34,13 +36,24 @@ export const useDesignManager = (props: {
         const opt = optionsRef.current;
         const masterDefaults = getDefaultDesignState();
         
+        let themeDesignTokens = {};
+        
+        if (activeThemeId && allThemes) {
+            const activeTheme = allThemes.find(t => t.id === activeThemeId);
+            if (activeTheme) {
+                themeDesignTokens = activeTheme.design || {};
+            }
+        }
+        
         // Aplica o Preset base apenas se necessário, mas a fundação vem do Master Map
-        const defaultThemeId = opt?.theme?.defaultTheme || 'classic';
-        const themeEntry = GLOBAL_THEMES.find(t => t.id === defaultThemeId) ?? GLOBAL_THEMES[0];
-        const themeDesignTokens = themeEntry?.design ?? {};
+        if (Object.keys(themeDesignTokens).length === 0) {
+            const defaultThemeId = opt?.theme?.defaultTheme || 'classic';
+            const themeEntry = GLOBAL_THEMES.find(t => t.id === defaultThemeId) ?? GLOBAL_THEMES[0];
+            themeDesignTokens = themeEntry?.design ?? {};
+        }
         
         return { ...masterDefaults, ...themeDesignTokens, ...configRef.current };
-    }, []);
+    }, [activeThemeId, allThemes]);
 
     const [design, setDesign] = useState(() => {
         if (typeof window === 'undefined') return getSeedConfig();
@@ -66,14 +79,25 @@ export const useDesignManager = (props: {
         if (isHydrated && !hasHydratedRef.current) {
             try {
                 const saved = localStorage.getItem(storageKey);
-                if (saved) {
+                // Ignorar localStorage se um activeThemeId explícito foi passado
+                if (saved && !activeThemeId) {
                     const parsed = JSON.parse(saved);
                     setDesign((prev: any) => validateDesign({ ...prev, ...parsed }));
                 }
             } catch (e) {}
             hasHydratedRef.current = true;
         }
-    }, [isHydrated, storageKey]);
+    }, [isHydrated, storageKey, activeThemeId]);
+
+    // 1.5. ACTIVE THEME ID SYNC (Database Truth)
+    useEffect(() => {
+        if (isHydrated && activeThemeId && allThemes) {
+            const activeTheme = allThemes.find(t => t.id === activeThemeId);
+            if (activeTheme && activeTheme.design) {
+                setDesign((prev: any) => validateDesign({ ...prev, ...activeTheme.design }));
+            }
+        }
+    }, [activeThemeId, allThemes, isHydrated]);
 
     // 2. Carregamento Remoto
     useEffect(() => {
@@ -92,10 +116,14 @@ export const useDesignManager = (props: {
                 } catch (e) { console.error("[Sarak:Design] onLoad error:", e); }
             }
 
-            if (token && !isBackendLoaded && opt?.endpoints?.designPath) {
+            if (!isBackendLoaded) {
+                const designPath = opt?.endpoints?.designPath || '/design';
                 try {
-                    const resp = await fetch(`${uiBaseUrl}${opt.endpoints.designPath}`, {
-                        headers: { 'Authorization': `Bearer ${token}` }
+                    const headers: any = {};
+                    if (token) headers['Authorization'] = `Bearer ${token}`;
+                    
+                    const resp = await fetch(`${uiBaseUrl}${designPath}`, {
+                        headers
                     });
                     if (resp.ok) {
                         const data = await resp.json();
@@ -117,10 +145,14 @@ export const useDesignManager = (props: {
             localStorage.setItem(storageKey, JSON.stringify(config));
             if (opt?.persistence?.onSave) {
                 await opt.persistence.onSave(config);
-            } else if (token && opt?.endpoints?.designPath) {
-                await fetch(`${uiBaseUrl}${opt.endpoints.designPath}`, {
+            } else {
+                const designPath = opt?.endpoints?.designPath || '/design';
+                const headers: any = { 'Content-Type': 'application/json' };
+                if (token) headers['Authorization'] = `Bearer ${token}`;
+                
+                await fetch(`${uiBaseUrl}${designPath}`, {
                     method: 'POST',
-                    headers: { 'Authorization': `Bearer ${token}`, 'Content-Type': 'application/json' },
+                    headers,
                     body: JSON.stringify({ design: config })
                 });
             }

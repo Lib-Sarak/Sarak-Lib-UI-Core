@@ -8,6 +8,8 @@ export const cyberpunkneonTheme: ThemePreset = {
         mode: "dark",
         navigationStyle: "sidebar",
         bodySize: "14px",
+        iconFamily: 'phosphor',
+        iconWeight: 'duotone',
         systemName: "Sarak OS",
         logoUrl: "",
         logoMinimalUrl: "",
