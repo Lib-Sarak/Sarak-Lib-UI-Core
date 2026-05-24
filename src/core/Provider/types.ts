@@ -39,6 +39,14 @@ export interface SarakUIContextType {
     isHydrated: boolean;
     options: SarakUIOptions;
     allThemes: any[]; // Array unificado (Scripts + DB) para a interface
+    // Branding
+    branding?: {
+        companyName: string;
+        loginName: string;
+        tabName: string;
+        logoBase64: string | null;
+    };
+    updateBranding?: (partial: any) => Promise<void>;
 }
 
 export interface SarakUIProviderProps {

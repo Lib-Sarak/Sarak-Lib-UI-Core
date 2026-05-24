@@ -7,6 +7,7 @@ import { SarakUIContextType, SarakUIOptions, SarakUIProviderProps } from './type
 import { DEFAULT_UI_BASE_URL } from './constants';
 import { useRegistryManager } from './hooks/useRegistryManager';
 import { useDesignManager } from './hooks/useDesignManager';
+import { useBrandingManager } from './hooks/useBrandingManager';
 import { DesignInjector } from './components/DesignInjector';
 import { GLOBAL_THEMES } from '../Design/presets/themes/index';
 
@@ -33,12 +34,19 @@ export const useSarakUI = () => {
     // Design Ativo (Rascunho se houver override, caso contrário usa o design persistido do sistema)
     const activeDesign = overrideDesign || systemDesign;
 
+    // Merging the branding overrides smoothly
+    const activeDesignWithBranding = {
+        ...activeDesign,
+        systemName: context.branding?.companyName || activeDesign.systemName,
+        logoUrl: context.branding?.logoBase64 || activeDesign.logoUrl
+    };
+
     return {
         ...context,
         systemDesign,
-        activeDesign,
-        design: activeDesign, // Mantemos 'design' como o ativo para compatibilidade
-        ...activeDesign,      // Spread do ativo para quem consome propriedades diretas
+        activeDesign: activeDesignWithBranding,
+        design: activeDesignWithBranding,
+        ...activeDesignWithBranding,
     };
 };
 
@@ -76,6 +84,9 @@ export const SarakUIProvider: React.FC<SarakUIProviderProps> = ({
         allThemes,
         activeThemeId
     });
+
+    // 2.5 Gerenciamento do Estado da Marca (Branding)
+    const { branding, updateBranding, isBrandingLoaded } = useBrandingManager(options);
 
     // 3. Gerenciamento de Rascunho (Live Preview)
     const [draftDesign, setDraftDesign] = React.useState<any | null>(null);
@@ -148,8 +159,10 @@ export const SarakUIProvider: React.FC<SarakUIProviderProps> = ({
         layouts: [],
         isHydrated,
         options,
-        allThemes
-    }), [discoveryEndpoints, design, draftDesign, isDrafting, setIsDrafting, lockDrafting, setDesign, setDraftDesign, smartApplyConfig, smartApplyFullConfig, applyConfig, applyFullConfig, persistDesign, registeredModules, isHydrated, options, allThemes]);
+        allThemes,
+        branding,
+        updateBranding
+    }), [discoveryEndpoints, design, draftDesign, isDrafting, setIsDrafting, lockDrafting, setDesign, setDraftDesign, smartApplyConfig, smartApplyFullConfig, applyConfig, applyFullConfig, persistDesign, registeredModules, isHydrated, options, allThemes, branding, updateBranding]);
 
     // 7. Renderização com Strict Sync (Evita Flash de Temas)
     const isStrictSync = options?.persistence?.strictBackendSync === true;

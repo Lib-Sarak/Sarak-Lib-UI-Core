@@ -305,3 +305,66 @@ export const ToggleControl: React.FC<{ label: string, active: boolean, onClick: 
     </button>
 );
 
+export const ImageUploaderControl: React.FC<any> = ({ label, value, onChange }) => {
+    const inputRef = React.useRef<HTMLInputElement>(null);
+
+    const handleFileChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+        const file = e.target.files?.[0];
+        if (!file) return;
+
+        const reader = new FileReader();
+        reader.onload = (event) => {
+            const dataUrl = event.target?.result as string;
+            onChange(dataUrl);
+        };
+        reader.readAsDataURL(file);
+    };
+
+    return (
+        <div className="mb-3">
+            <div className="flex justify-between items-center mb-1.5">
+                <span className="text-[10px] font-black uppercase tracking-widest text-white/30 flex items-center gap-1.5">
+                    {label}
+                    <HelpTooltip label={label} />
+                </span>
+            </div>
+            <div className="flex items-center gap-3">
+                <div 
+                    onClick={() => inputRef.current?.click()}
+                    className="w-12 h-12 rounded-lg border border-dashed border-white/20 hover:border-[var(--theme-primary)] flex items-center justify-center bg-white/5 cursor-pointer transition-all hover:bg-white/10 overflow-hidden shrink-0"
+                >
+                    {value ? (
+                        <img src={value} alt="Preview" className="w-full h-full object-contain p-1" />
+                    ) : (
+                        <div className="text-[20px] font-light text-white/20">+</div>
+                    )}
+                </div>
+                <div className="flex-1 flex items-center gap-2">
+                    <button 
+                        onClick={() => inputRef.current?.click()}
+                        className="text-[9px] font-bold uppercase tracking-wider px-3 py-2 bg-white/5 hover:bg-white/10 rounded-md text-white/60 transition-all border border-white/10 shadow-sm"
+                    >
+                        Fazer Upload
+                    </button>
+                    {value && (
+                        <button 
+                            onClick={() => onChange(null)}
+                            className="text-[9px] font-bold uppercase tracking-wider px-3 py-2 hover:bg-amber-500/10 hover:text-amber-500 rounded-md text-white/40 transition-all"
+                        >
+                            Remover
+                        </button>
+                    )}
+                </div>
+            </div>
+            <input 
+                type="file" 
+                ref={inputRef} 
+                onChange={handleFileChange} 
+                className="hidden" 
+                accept=".svg,.png,.jpg,.jpeg,.webp" 
+            />
+        </div>
+    );
+};
+
+

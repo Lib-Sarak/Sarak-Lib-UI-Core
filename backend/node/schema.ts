@@ -46,4 +46,18 @@ BEGIN
         ALTER TABLE "ui_core"."custom_themes" ADD COLUMN IF NOT EXISTS is_active BOOLEAN DEFAULT false;
     END IF;
 END $$;
+
+-- 3. Cria a tabela isolada de Branding (Identidade Corporativa)
+CREATE TABLE IF NOT EXISTS "ui_core"."system_branding" (
+    id UUID PRIMARY KEY DEFAULT gen_random_uuid(),
+    system VARCHAR(50) DEFAULT 'global',
+    owner_id UUID, -- Referência opcional para o tenant/usuário
+    company_name VARCHAR(255) DEFAULT 'Sarak OS',
+    login_name VARCHAR(255) DEFAULT 'Acesso ao Sistema',
+    tab_name VARCHAR(255) DEFAULT 'Sarak OS',
+    logo_base64 TEXT,
+    created_at TIMESTAMP WITH TIME ZONE DEFAULT NOW(),
+    updated_at TIMESTAMP WITH TIME ZONE DEFAULT NOW(),
+    UNIQUE(system, owner_id)
+);
 `;

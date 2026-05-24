@@ -8,36 +8,7 @@ export const BrandingSchema: ComponentSchema = {
     id: 'branding',
     label: 'Identidade Visual',
     tokens: [
-        {
-            id: 'systemName',
-            label: 'Nome da Marca',
-            type: 'text',
-            defaultValue: 'Sarak OS',
-            cssVars: ['--sarak-system-name']
-        },
-        // --- LOGOTIPO AVANÇADO ---
-        {
-            id: 'logoUrl',
-            label: 'Logo Principal (SVG/PNG)',
-            type: 'text',
-            defaultValue: '',
-            cssVars: ['--sarak-logo-main']
-        },
-        {
-            id: 'logoMinimalUrl',
-            label: 'Logo Minimalista (Favicon)',
-            type: 'text',
-            defaultValue: '',
-            cssVars: ['--sarak-logo-minimal']
-        },
-        {
-            id: 'logoScale',
-            label: 'Escala do Logo (%)',
-            type: 'slider',
-            constraints: { min: 10, max: 200, step: 5 },
-            defaultValue: 100,
-            cssVars: ['--sarak-logo-scale']
-        },
+        // --- TIPOGRAFIA DA MARCA ---
         {
             id: 'identityAlignment',
             label: 'Alinhamento',

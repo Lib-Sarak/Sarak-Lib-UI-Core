@@ -20,4 +20,14 @@ declare function createDesignApiHandler(options: DesignApiOptions): {
     POST(req: Request): Promise<Response>;
 };
 
-export { type DesignApiOptions, createDesignApiHandler, setupUIDatabase };
+interface BrandingApiOptions {
+    connectionString: string;
+    systemName?: string;
+    getUserId?: (req: Request) => Promise<string | null> | string | null;
+}
+declare function createBrandingApiHandler(options: BrandingApiOptions): {
+    GET(req: Request): Promise<Response>;
+    POST(req: Request): Promise<Response>;
+};
+
+export { type DesignApiOptions, createBrandingApiHandler, createDesignApiHandler, setupUIDatabase };

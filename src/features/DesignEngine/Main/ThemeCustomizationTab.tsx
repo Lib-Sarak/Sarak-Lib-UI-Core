@@ -31,7 +31,8 @@ import {
     SliderControl, 
     SelectControl, 
     SwitchControl,
-    InputControl
+    InputControl,
+    ImageUploaderControl
 } from '../components/DesignControls';
 import { MasterControlPanel } from './MasterControlPanel';
 import { TemplatesTab } from './TemplatesTab';
@@ -82,7 +83,7 @@ const TokenControl = ({ token, value, onChange }: { token: any, value: any, onCh
  * Refatorado para a nova taxonomia de 6 pilares de soberania.
  */
 export const ThemeCustomizationTab: React.FC = () => {
-    const { systemDesign, design, ...rest } = useSarakUI();
+    const { systemDesign, design, branding, updateBranding, ...rest } = useSarakUI();
     
     // v12.6 - Deep Reference Stability
     // Impedimos que a desestruturação do contexto crie um novo objeto sarak a cada render
@@ -304,6 +305,43 @@ export const ThemeCustomizationTab: React.FC = () => {
                                             {globalComponent.tokens.map((token: any) => (
                                                 <TokenControl key={token.id} token={token} value={draft[token.id]} onChange={(val) => updateDraft(token.id, val)} />
                                             ))}
+                                        </div>
+                                    </div>
+                                )}
+
+                                {/* BLOCO DE BRANDING ISOLADO */}
+                                {branding && updateBranding && (
+                                    <div className="mx-4 mb-4 mt-2 p-5 rounded-2xl bg-gradient-to-b from-white/[0.03] to-transparent border border-white/[0.05] shadow-[0_0_20px_rgba(0,0,0,0.2)]">
+                                        <div className="flex items-center gap-2.5 mb-5">
+                                            <div className="w-5 h-5 rounded-md bg-amber-500/10 flex items-center justify-center border border-amber-500/20">
+                                                <Shield className="w-3 h-3 text-amber-400" />
+                                            </div>
+                                            <span className="text-[9px] font-black uppercase tracking-widest text-amber-400">Identidade da Empresa</span>
+                                        </div>
+                                        <div className="flex flex-col gap-4">
+                                            <InputControl 
+                                                label="Nome da Empresa (Topo/Sidebar)" 
+                                                type="text" 
+                                                value={branding.companyName || ''} 
+                                                onChange={(val: string) => updateBranding({ companyName: val })} 
+                                            />
+                                            <InputControl 
+                                                label="Nome no Login" 
+                                                type="text" 
+                                                value={branding.loginName || ''} 
+                                                onChange={(val: string) => updateBranding({ loginName: val })} 
+                                            />
+                                            <InputControl 
+                                                label="Título da Aba (Navegador)" 
+                                                type="text" 
+                                                value={branding.tabName || ''} 
+                                                onChange={(val: string) => updateBranding({ tabName: val })} 
+                                            />
+                                            <ImageUploaderControl 
+                                                label="Logotipo (Qualquer Formato)" 
+                                                value={branding.logoBase64 || null} 
+                                                onChange={(val: string | null) => updateBranding({ logoBase64: val })} 
+                                            />
                                         </div>
                                     </div>
                                 )}
