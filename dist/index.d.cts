@@ -7,6 +7,7 @@ interface SarakUIOptions {
         designPath?: string;
         discoveryPath?: string;
         discovery?: string[];
+        branding?: string;
     };
     manifest?: any;
     persistence?: {

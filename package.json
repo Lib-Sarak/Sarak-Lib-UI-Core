@@ -20,6 +20,7 @@
             "require": "./dist/index.cjs"
         },
         "./sarak.css": "./dist/sarak.css",
+        "./dist/sarak.css": "./dist/sarak.css",
         "./sarak-base.css": {
             "style": "./src/styles/sarak-base.css",
             "import": "./src/styles/sarak-base.css",

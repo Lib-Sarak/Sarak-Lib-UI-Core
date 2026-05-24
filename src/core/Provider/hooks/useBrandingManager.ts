@@ -7,14 +7,14 @@ export interface BrandingState {
     logoBase64: string | null;
 }
 
-export function useBrandingManager(options: any) {
+export function useBrandingManager(options: any, token?: string | null) {
     const [branding, setBranding] = useState<BrandingState>({
         companyName: 'Sarak OS',
         loginName: 'Acesso ao Sistema',
         tabName: 'Sarak OS',
         logoBase64: null
     });
-    
+
     const [isBrandingLoaded, setIsBrandingLoaded] = useState(false);
 
     useEffect(() => {
@@ -22,11 +22,10 @@ export function useBrandingManager(options: any) {
 
         const fetchBranding = async () => {
             try {
-                const res = await fetch(options.endpoints.branding, {
-                    headers: {
-                        'Authorization': options.token ? `Bearer ${options.token}` : ''
-                    }
-                });
+                const headers: any = {};
+                if (token) headers['Authorization'] = `Bearer ${token}`;
+
+                const res = await fetch(options.endpoints.branding, { headers });
                 if (res.ok) {
                     const data = await res.json();
                     if (data.branding && Object.keys(data.branding).length > 0) {
@@ -46,7 +45,7 @@ export function useBrandingManager(options: any) {
         };
 
         fetchBranding();
-    }, [options?.endpoints?.branding, options?.token]);
+    }, [options?.endpoints?.branding, token]);
 
     const updateBranding = useCallback(async (partial: Partial<BrandingState>) => {
         setBranding(prev => ({ ...prev, ...partial }));
@@ -54,18 +53,18 @@ export function useBrandingManager(options: any) {
         if (!options?.endpoints?.branding) return;
 
         try {
+            const headers: any = { 'Content-Type': 'application/json' };
+            if (token) headers['Authorization'] = `Bearer ${token}`;
+
             await fetch(options.endpoints.branding, {
                 method: 'POST',
-                headers: {
-                    'Content-Type': 'application/json',
-                    'Authorization': options.token ? `Bearer ${options.token}` : ''
-                },
+                headers,
                 body: JSON.stringify({ branding: partial })
             });
         } catch (err) {
             console.error('[Sarak-UI-Core] Failed to save branding', err);
         }
-    }, [options?.endpoints?.branding, options?.token]);
+    }, [options?.endpoints?.branding, token]);
 
     return {
         branding,

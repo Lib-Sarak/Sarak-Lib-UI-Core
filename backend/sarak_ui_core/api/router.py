@@ -6,7 +6,7 @@ import json
 import os
 
 from ..core.database import get_db, engine, setup_ui_db
-from ..core.models import CustomTheme
+from ..core.models import CustomTheme, SystemBranding
 from ..core.seed import seed_ui_core
 from ..core.security import get_current_identity, get_optional_identity, IdentityContext
 from pydantic import BaseModel
@@ -145,3 +145,81 @@ def update_user_design(
     db.commit()
     db.refresh(theme)
     return theme.to_dict()
+
+class BrandingUpdate(BaseModel):
+    branding: Dict[str, Any]
+
+@router.get("/branding")
+def get_branding(
+    db: Session = Depends(get_db),
+    identity: IdentityContext = Depends(get_optional_identity)
+):
+    user_id = identity.user_id
+    try:
+        user_id_uuid = uuid_pkg.UUID(user_id) if isinstance(user_id, str) and user_id != "anonymous" else None
+    except ValueError:
+        user_id_uuid = None
+
+    theme = None
+    if user_id_uuid:
+        theme = db.query(SystemBranding).filter(
+            SystemBranding.owner_id == user_id_uuid,
+            SystemBranding.system == identity.system
+        ).first()
+    
+    if not theme:
+        theme = db.query(SystemBranding).filter(
+            SystemBranding.system == identity.system,
+            SystemBranding.owner_id == None
+        ).first()
+
+    if theme:
+        return {"branding": {
+            "companyName": theme.company_name,
+            "loginName": theme.login_name,
+            "tabName": theme.tab_name,
+            "logoBase64": theme.logo_base64
+        }}
+    return {"branding": {}}
+
+@router.post("/branding")
+def update_branding(
+    update: BrandingUpdate,
+    db: Session = Depends(get_db),
+    identity: IdentityContext = Depends(get_optional_identity)
+):
+    user_id = identity.user_id
+    try:
+        user_id_uuid = uuid_pkg.UUID(user_id) if isinstance(user_id, str) and user_id != "anonymous" else None
+    except ValueError:
+        user_id_uuid = None
+
+    theme = None
+    if user_id_uuid:
+        theme = db.query(SystemBranding).filter(
+            SystemBranding.owner_id == user_id_uuid,
+            SystemBranding.system == identity.system
+        ).first()
+    
+    if not theme:
+        theme = db.query(SystemBranding).filter(
+            SystemBranding.system == identity.system,
+            SystemBranding.owner_id == None
+        ).first()
+
+    if not theme:
+        theme = SystemBranding(
+            owner_id=user_id_uuid,
+            system=identity.system
+        )
+        db.add(theme)
+    
+    b = update.branding
+    if "companyName" in b: theme.company_name = b["companyName"]
+    if "loginName" in b: theme.login_name = b["loginName"]
+    if "tabName" in b: theme.tab_name = b["tabName"]
+    if "logoBase64" in b: theme.logo_base64 = b["logoBase64"]
+
+    db.commit()
+    db.refresh(theme)
+    return {"success": True}

@@ -10,6 +10,24 @@ except ImportError:
     from sqlalchemy.orm import declarative_base
     Base = declarative_base()
 
+class SystemBranding(Base):
+    """
+    Tabela soberana para persistência da identidade visual corporativa.
+    """
+    __tablename__ = "system_branding"
+    __table_args__ = {"schema": "ui_core"}
+
+    id = Column(UUID(as_uuid=True), primary_key=True, default=uuid.uuid4, index=True)
+    system = Column(String(50), default="global", index=True)
+    owner_id = Column(UUID(as_uuid=True), nullable=True) # Referência opcional para o tenant/usuário
+    company_name = Column(String(255), default="Sarak OS")
+    login_name = Column(String(255), default="Acesso ao Sistema")
+    tab_name = Column(String(255), default="Sarak OS")
+    from sqlalchemy.dialects.postgresql import TEXT
+    logo_base64 = Column(TEXT, nullable=True)
+    created_at = Column(DateTime(timezone=True), server_default=func.now())
+    updated_at = Column(DateTime(timezone=True), server_default=func.now(), onupdate=func.now())
+
 class CustomTheme(Base):
     """
     Tabela única e soberana para persistência de temas híbridos (Sarak-UI-Core).
