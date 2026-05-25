@@ -3,6 +3,7 @@ import { motion, AnimatePresence } from 'framer-motion';
 import { SarakIcon } from '../../../components/atomic/Icon/SarakIcon';
 import { IconRenderer } from './IconRenderer';
 import { DiscoveredModule } from '../../../core/Discovery/types';
+import { Search } from 'lucide-react';
 
 interface DockNavProps {
     design: any;

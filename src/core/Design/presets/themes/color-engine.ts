@@ -19,7 +19,7 @@ MASTER_DESIGN_MAP.components.forEach(comp => {
  */
 export const syncThemeWithMode = (draftTokens: Record<string, any>, targetMode: 'light' | 'dark'): Record<string, any> => {
     const isLight = targetMode === 'light';
-    
+
     // Mescla o input com os defaults caso algo falte
     const merged = { ...baseDefaults, ...draftTokens, mode: targetMode };
 

@@ -9,10 +9,6 @@
     "bodySize"
   ],
   "branding_config": [
-    "systemName",
-    "logoUrl",
-    "logoMinimalUrl",
-    "logoScale",
     "identityAlignment",
     "identityPadding",
     "identityFontFamily",

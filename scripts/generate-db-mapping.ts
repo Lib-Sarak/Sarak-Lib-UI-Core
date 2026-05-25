@@ -1,5 +1,10 @@
 import fs from 'fs';
+import path from 'path';
+import { fileURLToPath } from 'url';
 import { MASTER_DESIGN_MAP } from '../src/core/Design/master-map';
+
+const __filename = fileURLToPath(import.meta.url);
+const __dirname = path.dirname(__filename);
 
 const columnMapping: Record<string, string[]> = {
     // Top-Level Columns
@@ -75,6 +80,6 @@ MASTER_DESIGN_MAP.components.forEach(schema => {
     });
 });
 
-const outputPath = '../src/core/Design/schema/theme_table_mapping.json';
+const outputPath = path.resolve(__dirname, '../src/core/Design/schema/theme_table_mapping.json');
 fs.writeFileSync(outputPath, JSON.stringify(columnMapping, null, 2), 'utf-8');
 console.log('Mapeamento limpo gerado com sucesso em:', outputPath);

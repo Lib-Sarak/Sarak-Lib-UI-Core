@@ -19,7 +19,7 @@ async function runParityCheck() {
     }
 
     // 2. Carregar o Theme Table Mapping (JSON)
-    const mappingPath = resolvePath('theme_table_mapping.json');
+    const mappingPath = resolvePath('src/core/Design/schema/theme_table_mapping.json');
     if (!fs.existsSync(mappingPath)) {
         console.error("❌ ERRO: O arquivo 'theme_table_mapping.json' não foi encontrado. Rode o gerador primeiro.");
         process.exit(1);
