@@ -44,8 +44,8 @@ export const ShellLanguageSelector: React.FC<ShellLanguageSelectorProps> = ({
                 onClick={() => setIsOpen(!isOpen)}
                 className={`flex items-center gap-2 transition-all group ${
                     isHorizontal 
-                        ? 'h-9 px-3 rounded-xl bg-white/5 border border-white/10 hover:border-[var(--theme-primary)]/40 hover:bg-white/10' 
-                        : 'w-full px-3 py-2.5 rounded-xl text-white/40 hover:bg-white/5 hover:text-white'
+                        ? 'h-9 px-3 rounded-xl bg-[var(--theme-muted)]/10 border border-[var(--theme-border)] hover:border-[var(--theme-primary)]/40 hover:bg-[var(--theme-muted)]/15' 
+                        : 'w-full px-3 py-2.5 rounded-xl text-[var(--theme-muted)] hover:bg-[var(--theme-muted)]/10 hover:text-[var(--theme-title)]'
                 }`}
             >
                 {isHorizontal ? (
@@ -84,8 +84,8 @@ export const ShellLanguageSelector: React.FC<ShellLanguageSelectorProps> = ({
                                 }}
                                 className={`w-full flex items-center justify-between px-3 py-2 rounded-lg text-[10px] font-bold uppercase tracking-wider transition-all ${
                                     currentLang.code === lang.code 
-                                        ? 'bg-[var(--theme-primary)] text-white' 
-                                        : 'text-white/40 hover:bg-white/5 hover:text-white'
+                                        ? 'bg-[var(--theme-primary)] text-[var(--theme-on-primary)]' 
+                                        : 'text-[var(--theme-muted)] hover:bg-[var(--theme-muted)]/10 hover:text-[var(--theme-title)]'
                                 }`}
                             >
                                 <div className="flex items-center gap-2">

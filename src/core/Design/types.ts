@@ -10,6 +10,7 @@ export interface DesignToken {
     id: string;                 // Chave única no estado (ex: cardBorderRadius)
     label: string;              // Nome legível para o usuário
     type: TokenValueType;
+    semanticRole?: 'bg' | 'text' | 'border' | 'primary';
     iconFamily?: 'lucide' | 'phosphor' | 'tabler';
     iconWeight?: 'thin' | 'light' | 'regular' | 'bold' | 'fill' | 'duotone';
     unit?: 'px' | '%' | 'rem' | 'em' | 'ms' | 'deg' | 's';

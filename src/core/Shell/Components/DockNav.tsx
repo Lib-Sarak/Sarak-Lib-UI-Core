@@ -33,12 +33,12 @@ export const DockNav: React.FC<DockNavProps> = ({
                     className="fixed bottom-6 left-1/2 -translate-x-1/2 z-[500] flex items-center gap-2 p-2 rounded-[var(--radius-theme)] bg-[var(--theme-card)]/40 backdrop-blur-[var(--glass-blur)] border border-[var(--theme-border)] shadow-[var(--dynamic-shadow)] group/dock"
                 >
                     {discoveredModules.filter(m => m.status === 'online').slice(0, 7).map((mod, i) => (
-                        <motion.button key={mod.id} whileHover={{ scale: 1.25, y: -12 }} transition={{ type: "spring", stiffness: 400, damping: 17 }} onClick={() => setActiveModuleId(mod.id)} className={`w-12 h-12 rounded-[calc(var(--radius-theme)*0.8)] flex items-center justify-center transition-all ${activeModuleId === mod.id ? 'bg-[var(--theme-primary)] text-white shadow-[0_0_20px_rgba(var(--theme-primary-rgb),0.3)]' : 'text-[var(--theme-muted)] hover:text-white hover:bg-white/5'}`}>
+                        <motion.button key={mod.id} whileHover={{ scale: 1.25, y: -12 }} transition={{ type: "spring", stiffness: 400, damping: 17 }} onClick={() => setActiveModuleId(mod.id)} className={`w-12 h-12 rounded-[calc(var(--radius-theme)*0.8)] flex items-center justify-center transition-all ${activeModuleId === mod.id ? 'bg-[var(--theme-primary)] text-[var(--theme-on-primary)] shadow-[0_0_20px_rgba(var(--theme-primary-rgb),0.3)]' : 'text-[var(--theme-muted)] hover:text-[var(--theme-title)] hover:bg-[var(--theme-muted)]/10'}`}>
                             <IconRenderer name={mod.icon} size={22} />
                         </motion.button>
                     ))}
                     <div className="w-px h-8 bg-[var(--theme-border)] mx-1" />
-                    <motion.button whileHover={{ scale: 1.25, y: -12 }} transition={{ type: "spring", stiffness: 400, damping: 17 }} onClick={() => setIsSearchOpen(true)} className="w-12 h-12 rounded-[calc(var(--radius-theme)*0.8)] flex items-center justify-center text-[var(--theme-muted)] hover:text-white hover:bg-white/5"><Search size={22} /></motion.button>
+                    <motion.button whileHover={{ scale: 1.25, y: -12 }} transition={{ type: "spring", stiffness: 400, damping: 17 }} onClick={() => setIsSearchOpen(true)} className="w-12 h-12 rounded-[calc(var(--radius-theme)*0.8)] flex items-center justify-center text-[var(--theme-muted)] hover:text-[var(--theme-title)] hover:bg-[var(--theme-muted)]/10"><Search size={22} /></motion.button>
                 </motion.div>
             )}
         </AnimatePresence>

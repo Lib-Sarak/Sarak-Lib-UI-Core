@@ -22,13 +22,13 @@ export const ModelPicker: React.FC<ModelPickerProps> = ({
   <div className="absolute bottom-full left-0 mb-3 w-80 bg-[var(--sarak-card-bg)] border border-[var(--sarak-card-border-color)] rounded-sarak shadow-2xl backdrop-blur-2xl overflow-hidden z-50">
     <div className="p-3">
       <div className="relative mb-3">
-        <Search size={14} className="absolute left-3 top-1/2 -translate-y-1/2 text-slate-500" />
+        <Search size={14} className="absolute left-3 top-1/2 -translate-y-1/2 text-[var(--theme-muted)]" />
         <input 
           type="text"
           placeholder="Pesquisar modelos..."
           value={modelSearch}
           onChange={(e) => setModelSearch(e.target.value)}
-          className="w-full bg-white/5 border border-white/5 rounded-xl py-2 pl-9 pr-3 text-xs focus:outline-none focus:border-[var(--theme-primary-border)] text-slate-200"
+          className="w-full bg-[var(--theme-muted)]/10 border border-[var(--theme-border)] rounded-xl py-2 pl-9 pr-3 text-xs focus:outline-none focus:border-[var(--theme-primary-border)] text-[var(--theme-title)] placeholder:text-[var(--theme-muted)]"
         />
       </div>
       <div className="max-h-60 overflow-y-auto custom-scrollbar pr-1">
@@ -39,7 +39,7 @@ export const ModelPicker: React.FC<ModelPickerProps> = ({
             key={idx}
             onClick={() => { setSelectedRoute(m); setShowModelPicker(false); }}
             className={`w-full flex items-center justify-between p-3 rounded-xl transition-all mb-1 ${
-              selectedRoute?.model === m.model ? 'bg-[var(--theme-primary-bg)] text-[var(--theme-primary)]' : 'hover:bg-white/5 text-slate-400'
+              selectedRoute?.model === m.model ? 'bg-[var(--theme-primary-bg)] text-[var(--theme-primary)]' : 'hover:bg-[var(--theme-muted)]/10 text-[var(--theme-muted)]'
             }`}
           >
             <div className="flex flex-col items-start overflow-hidden">

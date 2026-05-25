@@ -85,7 +85,7 @@ const PremiumSwitch: React.FC<{ checked: boolean; onChange: () => void }> = ({ c
     <div 
         onClick={(e) => { e.stopPropagation(); onChange(); }}
         className={`w-9 h-5 rounded-full p-0.5 transition-all cursor-pointer flex items-center ${
-            checked ? 'bg-[var(--theme-primary)] shadow-[0_0_10px_rgba(var(--theme-primary-rgb),0.3)]' : 'bg-white/10'
+            checked ? 'bg-[var(--theme-primary)] shadow-[0_0_10px_rgba(var(--theme-primary-rgb),0.3)]' : 'bg-[var(--theme-muted)]/10'
         }`}
     >
         <motion.div 
@@ -104,8 +104,8 @@ const PremiumCheckbox: React.FC<{ checked: boolean; onChange: () => void; isSmal
             isSmall ? 'w-4 h-4' : 'w-5 h-5'
         } ${
             checked 
-            ? 'bg-[var(--theme-primary)] text-white shadow-[0_0_10px_rgba(var(--theme-primary-rgb),0.5)]' 
-            : 'bg-white/10 text-white/20 hover:bg-white/20 hover:text-white/40'
+            ? 'bg-[var(--theme-primary)] text-[var(--theme-on-primary)] shadow-[0_0_10px_rgba(var(--theme-primary-rgb),0.5)]' 
+            : 'bg-[var(--theme-muted)]/10 text-[var(--theme-muted)]/50 hover:bg-[var(--theme-muted)]/20 hover:text-[var(--theme-muted)]'
         }`}
     >
         {checked ? <Check size={isSmall ? 10 : 12} strokeWidth={3} /> : <X size={isSmall ? 8 : 10} />}
@@ -162,7 +162,7 @@ const RecursiveMatrixNode: React.FC<{
                 className={`flex items-center gap-1.5 px-3 py-1.5 rounded-full border text-[10px] font-bold uppercase transition-all cursor-pointer select-none ${
                     isActive 
                     ? 'bg-[var(--theme-primary-10)] text-[var(--theme-primary)] border-[var(--theme-primary-30)] shadow-[0_0_8px_rgba(var(--theme-primary-rgb),0.15)]'
-                    : 'bg-white/5 text-white/50 border-white/5 hover:bg-white/10 hover:text-white/70'
+                    : 'bg-[var(--theme-muted)]/5 text-[var(--theme-muted)] border-[var(--theme-border)] hover:bg-[var(--theme-muted)]/10 hover:text-[var(--theme-title)]'
                 }`}
             >
                 {IconComponent && <IconComponent size={10} />}
@@ -175,16 +175,16 @@ const RecursiveMatrixNode: React.FC<{
         return (
             <div 
                 onClick={() => onToggle(parentId, item.id)}
-                className={`flex items-center justify-between px-3 py-2 rounded-lg border border-white/5 bg-white/[0.02] hover:bg-white/[0.04] transition-all cursor-pointer select-none min-w-[140px] flex-grow ${
+                className={`flex items-center justify-between px-3 py-2 rounded-lg border border-[var(--theme-border)] bg-[var(--theme-card)]/40 hover:bg-[var(--theme-muted)]/5 transition-all cursor-pointer select-none min-w-[140px] flex-grow ${
                     isActive ? 'border-[var(--theme-primary-20)] bg-[var(--theme-primary-10)]/5' : ''
                 }`}
             >
                 <div className="flex flex-col gap-0.5 pr-4">
-                    <span className={`text-[10px] font-bold uppercase tracking-tight ${isActive ? 'text-[var(--theme-primary)]' : 'text-white/60'}`}>
+                    <span className={`text-[10px] font-bold uppercase tracking-tight ${isActive ? 'text-[var(--theme-primary)]' : 'text-[var(--theme-title)]'}`}>
                         {item.name || item.id}
                     </span>
                     {item.description && (
-                        <span className="text-[9px] text-white/30 line-clamp-1">{item.description}</span>
+                        <span className="text-[9px] text-[var(--theme-muted)] line-clamp-1">{item.description}</span>
                     )}
                 </div>
                 <PremiumSwitch checked={isActive} onChange={() => onToggle(parentId, item.id)} />
@@ -198,7 +198,7 @@ const RecursiveMatrixNode: React.FC<{
                 className={`flex flex-col w-full p-4 rounded-xl border transition-all ${
                     isActive 
                     ? 'bg-[var(--theme-primary-10)]/5 border-[var(--theme-primary-30)] shadow-[0_4px_20px_rgba(0,0,0,0.2)]'
-                    : 'bg-white/[0.02] border-white/5 hover:border-white/10'
+                    : 'bg-[var(--theme-card)]/40 border-[var(--theme-border)] hover:border-[var(--theme-muted)]/30'
                 }`}
             >
                 <div className="flex items-center justify-between">
@@ -209,22 +209,22 @@ const RecursiveMatrixNode: React.FC<{
                         {config.hasExpand && (
                             <motion.div
                                 animate={{ rotate: showChildren ? 180 : 0 }}
-                                className="text-white/40"
+                                className="text-[var(--theme-muted)]"
                             >
                                 <ChevronDown size={14} />
                             </motion.div>
                         )}
                         {IconComponent && (
-                            <div className="w-7 h-7 rounded-lg bg-white/5 flex items-center justify-center text-white/60">
+                            <div className="w-7 h-7 rounded-lg bg-[var(--theme-muted)]/10 flex items-center justify-center text-[var(--theme-muted)]">
                                 <IconComponent size={14} />
                             </div>
                         )}
                         <div className="flex flex-col">
-                            <span className="text-xs font-bold uppercase tracking-wider text-white">
+                            <span className="text-xs font-bold uppercase tracking-wider text-[var(--theme-title)]">
                                 {item.name || item.id}
                             </span>
                             {item.description && (
-                                <span className="text-2xs text-white/40">{item.description}</span>
+                                <span className="text-2xs text-[var(--theme-muted)]">{item.description}</span>
                             )}
                         </div>
                     </div>
@@ -234,7 +234,7 @@ const RecursiveMatrixNode: React.FC<{
                 </div>
 
                 {hasChildren && showChildren && (
-                    <div className={areChildrenCompact ? "flex flex-wrap gap-2 p-3 bg-black/20 rounded-lg mt-3 border border-white/5" : "flex flex-col border-l border-white/10 ml-3 pl-2 mt-3 gap-2"}>
+                    <div className={areChildrenCompact ? "flex flex-wrap gap-2 p-3 bg-[var(--theme-card)]/50 rounded-lg mt-3 border border-[var(--theme-border)]" : "flex flex-col border-l border-[var(--theme-border)] ml-3 pl-2 mt-3 gap-2"}>
                         {item.children.map((child: any) => (
                             <RecursiveMatrixNode 
                                 key={child.id}
@@ -255,7 +255,7 @@ const RecursiveMatrixNode: React.FC<{
 
     if (config.variant === 'row') {
         return (
-            <div className="flex flex-col w-full border-b border-white/5 last:border-0 py-2">
+            <div className="flex flex-col w-full border-b border-[var(--theme-border)] last:border-0 py-2">
                 <div className="flex items-center justify-between px-2">
                     <div 
                         onClick={() => config.hasExpand && setIsExpanded(!isExpanded)}
@@ -264,16 +264,16 @@ const RecursiveMatrixNode: React.FC<{
                         {config.hasExpand && (
                             <motion.div
                                 animate={{ rotate: showChildren ? 180 : 0 }}
-                                className="text-white/40"
+                                className="text-[var(--theme-muted)]"
                             >
                                 <ChevronDown size={12} />
                             </motion.div>
                         )}
-                        <span className={`text-[11px] font-bold uppercase tracking-tight ${isActive ? 'text-[var(--theme-primary)]' : 'text-white/70'}`}>
+                        <span className={`text-[11px] font-bold uppercase tracking-tight ${isActive ? 'text-[var(--theme-primary)]' : 'text-[var(--theme-title)]'}`}>
                             {item.name || item.id}
                         </span>
                         {item.description && (
-                            <span className="text-[10px] text-white/30 hidden sm:inline">- {item.description}</span>
+                            <span className="text-[10px] text-[var(--theme-muted)] hidden sm:inline">- {item.description}</span>
                         )}
                     </div>
                     {config.hasToggle && (
@@ -282,7 +282,7 @@ const RecursiveMatrixNode: React.FC<{
                 </div>
 
                 {hasChildren && showChildren && (
-                    <div className={areChildrenCompact ? "flex flex-wrap gap-2 p-3 bg-black/20 rounded-lg mt-2 ml-6 border border-white/5" : "flex flex-col border-l border-white/10 ml-6 pl-2 mt-2 gap-2"}>
+                    <div className={areChildrenCompact ? "flex flex-wrap gap-2 p-3 bg-[var(--theme-card)]/50 rounded-lg mt-2 ml-6 border border-[var(--theme-border)]" : "flex flex-col border-l border-[var(--theme-border)] ml-6 pl-2 mt-2 gap-2"}>
                         {item.children.map((child: any) => (
                             <RecursiveMatrixNode 
                                 key={child.id}
@@ -304,13 +304,13 @@ const RecursiveMatrixNode: React.FC<{
     return (
         <div className="flex flex-col w-full py-1">
             <div className="flex items-center justify-between">
-                <span className="text-2xs text-white/60">{item.name || item.id}</span>
+                <span className="text-2xs text-[var(--theme-title)]">{item.name || item.id}</span>
                 {config.hasToggle && (
                     <PremiumCheckbox checked={isActive} onChange={() => onToggle(parentId, item.id)} isSmall />
                 )}
             </div>
             {hasChildren && showChildren && (
-                <div className="flex flex-col border-l border-white/5 ml-3 pl-2">
+                <div className="flex flex-col border-l border-[var(--theme-border)] ml-3 pl-2">
                     {item.children.map((child: any) => (
                         <RecursiveMatrixNode 
                             key={child.id}
@@ -383,13 +383,13 @@ export const SarakExpandableMatrix: React.FC<SarakExpandableMatrixProps> = ({
             } as any}
         >
             <div className="relative w-full group">
-                <Search className="absolute left-4 top-1/2 -translate-y-1/2 w-4 h-4 text-white/20 group-focus-within:text-[var(--theme-primary)] transition-colors" />
+                <Search className="absolute left-4 top-1/2 -translate-y-1/2 w-4 h-4 text-[var(--theme-muted)] group-focus-within:text-[var(--theme-primary)] transition-colors" />
                 <input
                     type="text"
                     placeholder="Filtrar matriz de permissões..."
                     value={searchTerm}
                     onChange={(e) => setSearchTerm(e.target.value)}
-                    className="w-full bg-white/5 border border-white/10 rounded-xl pl-11 pr-4 py-3 text-sm text-white placeholder:text-white/20 focus:outline-none focus:border-[var(--theme-primary)] focus:ring-1 focus:ring-[var(--theme-primary)]/20 transition-all"
+                    className="w-full bg-[var(--theme-card)]/40 border border-[var(--theme-border)] rounded-xl pl-11 pr-4 py-3 text-sm text-[var(--theme-title)] placeholder:text-[var(--theme-muted)] focus:outline-none focus:border-[var(--theme-primary)] focus:ring-1 focus:ring-[var(--theme-primary)]/20 transition-all"
                     style={{
                         backgroundColor: 'var(--sarak-matrix-search-bg, rgba(255,255,255,0.05))',
                         borderRadius: 'var(--sarak-matrix-radius, 12px)'
@@ -401,7 +401,7 @@ export const SarakExpandableMatrix: React.FC<SarakExpandableMatrixProps> = ({
                 {data.map((item) => (
                     <div 
                         key={item.id}
-                        className="sarak-card relative overflow-hidden border border-white/5 transition-all"
+                        className="sarak-card relative overflow-hidden border border-[var(--theme-border)] transition-all"
                         style={{
                             backgroundColor: 'var(--sarak-matrix-item-bg, rgba(255,255,255,0.02))',
                             borderRadius: 'var(--sarak-matrix-radius, 12px)',
@@ -411,7 +411,7 @@ export const SarakExpandableMatrix: React.FC<SarakExpandableMatrixProps> = ({
                     >
                         <div 
                             onClick={() => toggleExpand(item.id)}
-                            className="flex items-center justify-between p-4 cursor-pointer hover:bg-white/5 transition-colors select-none"
+                            className="flex items-center justify-between p-4 cursor-pointer hover:bg-[var(--theme-muted)]/5 transition-colors select-none"
                         >
                             <div className="flex items-center gap-4">
                                 {renderItemHeader ? (
@@ -422,8 +422,8 @@ export const SarakExpandableMatrix: React.FC<SarakExpandableMatrixProps> = ({
                                             <Shield size={20} />
                                         </div>
                                         <div>
-                                            <h4 className="text-sm font-bold text-white uppercase tracking-tight">{item.name || item.id}</h4>
-                                            <p className="text-2xs text-white/40">{item.description || 'Configurações de acesso'}</p>
+                                            <h4 className="text-sm font-bold text-[var(--theme-title)] uppercase tracking-tight">{item.name || item.id}</h4>
+                                            <p className="text-2xs text-[var(--theme-muted)]">{item.description || 'Configurações de acesso'}</p>
                                         </div>
                                     </div>
                                 )}
@@ -431,7 +431,7 @@ export const SarakExpandableMatrix: React.FC<SarakExpandableMatrixProps> = ({
                             <div className="flex items-center gap-4">
                                 <motion.div
                                     animate={{ rotate: expandedId === item.id ? 180 : 0 }}
-                                    className="w-8 h-8 rounded-full flex items-center justify-center bg-white/5 text-white/20"
+                                    className="w-8 h-8 rounded-full flex items-center justify-center bg-[var(--theme-muted)]/10 text-[var(--theme-muted)]"
                                 >
                                     <ChevronDown size={16} />
                                 </motion.div>
@@ -447,7 +447,7 @@ export const SarakExpandableMatrix: React.FC<SarakExpandableMatrixProps> = ({
                                     transition={{ duration: 0.3, ease: 'circOut' }}
                                     className="overflow-hidden"
                                 >
-                                    <div className="p-4 pt-0 border-t border-white/5 bg-black/20">
+                                    <div className="p-4 pt-0 border-t border-[var(--theme-border)] bg-[var(--theme-card)]/50">
                                         <div className="flex flex-col mt-4 gap-3">
                                             {filteredSubItems.map((subItem) => (
                                                 <RecursiveMatrixNode 
@@ -463,7 +463,7 @@ export const SarakExpandableMatrix: React.FC<SarakExpandableMatrixProps> = ({
                                             ))}
                                         </div>
                                         {filteredSubItems.length === 0 && (
-                                            <div className="py-8 flex flex-col items-center justify-center text-white/20 italic">
+                                            <div className="py-8 flex flex-col items-center justify-center text-[var(--theme-muted)] italic">
                                                 <Info size={24} className="mb-2 opacity-50" />
                                                 <span className="text-xs">Nenhum item encontrado para o filtro aplicado.</span>
                                             </div>

@@ -1,83 +1,175 @@
 import { MASTER_DESIGN_MAP } from '../../master-map';
+import { shiftColorMode } from '../../../Provider/utils/color-engine';
 
 /**
- * Motor de Cores Semântico em Tempo de Execução
+ * Motor de Cores Semântico em Tempo de Execução (v11.3)
  * Aplica inversão de cores mantendo consistência visual ao alternar entre Light/Dark Mode.
+ * Mapeamento EXAUSTIVO baseado em theme_table_mapping.json para garantir 100% de visibilidade.
  */
 
-// Extrai 100% dos tokens padrão do Sarak
+// 1. TOKENS DE TEXTO E ELEMENTOS DE FRENTE (Devem ficar ESCUROS no modo claro)
+const EXPLICIT_TEXT_TOKENS = new Set([
+    'textColorMaster',
+    'textColorSecondary',
+    'textColorMuted',
+    'titleColor',
+    'cardTitleColor',
+    'cardActionBtnText',
+    'cardSearchPlaceholderColor',
+    'cardSearchTextFocusColor',
+    'btnPrimaryText',
+    'topbarTitleColor',
+    'identityFontFamily', // Embora seja fonte, pode ser processado se for cor em alguns contextos
+    'identityTracking'
+]);
+
+// 2. TOKENS DE MARCA, STATUS E ACENTO (Preservam Matiz com ajuste fino)
+const EXPLICIT_PRIMARY_TOKENS = new Set([
+    'primaryColor',
+    'secondaryColor',
+    'tertiaryColor',
+    'accentColor',
+    'statusSuccessColor',
+    'statusErrorColor',
+    'statusWarningColor',
+    'statusInfoColor',
+    'navItemActiveColor',
+    'navActiveMarkerColor',
+    'navActiveMarkerGlow',
+    'checkboxActiveColor',
+    'switchTrackActiveBg',
+    'switchPulseColor',
+    'btnPrimaryBg',
+    'cardActionBtnPrimaryBg',
+    'cardActionBtnHoverBg',
+    'cardGlowColor',
+    'btnNeonGlowColor',
+    'securityShieldGlow',
+    'textureColor',
+    'aiGlowColor'
+]);
+
+// 3. TOKENS DE BORDA, LINHA E SEPARADORES (Contraste Suave)
+const EXPLICIT_BORDER_TOKENS = new Set([
+    'cardBorderColor',
+    'cardBorderTop',
+    'cardBorderBottom',
+    'cardBorderLeft',
+    'cardBorderRight',
+    'cardHeaderBorder',
+    'cardFooterBorder',
+    'tableBorderColor',
+    'matrixBorderColor',
+    'borderWidth',
+    'inputBorderColor', // Adicionado para inputs
+    'sidebarShadow',
+    'focusRingWidth'
+]);
+
+// 4. TOKENS DE FUNDO E SUPERFÍCIE (Devem ficar CLAROS no modo claro)
+// Qualquer token que NÃO estiver nos Sets acima e for do tipo 'color' cairá aqui como fallback.
+const EXPLICIT_BG_TOKENS = new Set([
+    'colorBgBody',
+    'colorBgLayer1',
+    'colorBgLayer2',
+    'colorBgModal',
+    'surfaceColor',
+    'bgBaseColor',
+    'cardBackgroundColor',
+    'cardHeaderBg',
+    'cardFooterBg',
+    'cardSearchBgFocus',
+    'sidebarColor',
+    'topbarColor',
+    'modalOverlayColor',
+    'tooltipBg',
+    'chartTooltipBg',
+    'tableHeaderBg',
+    'tableRowHoverBg',
+    'inputBg',
+    'btnSecondaryBg',
+    'btnGhostHoverBg',
+    'chatUserBg',
+    'matrixItemBg',
+    'matrixSearchBg',
+    'aiPanelBg',
+    'scrollThumbColor',
+    'chartGridOpacity'
+]);
+
+// Extrai 100% dos tokens padrão do Sarak para Fallback
 const baseDefaults: Record<string, any> = {};
+const colorTokens: Set<string> = new Set();
+const semanticRoles: Record<string, 'bg' | 'text' | 'border' | 'primary'> = {};
+
 MASTER_DESIGN_MAP.components.forEach(comp => {
     comp.tokens.forEach(token => {
         baseDefaults[token.id] = token.defaultValue;
+        if (token.type === 'color') {
+            colorTokens.add(token.id);
+            if (token.semanticRole) {
+                semanticRoles[token.id] = token.semanticRole;
+            }
+        }
     });
 });
 
 /**
  * Recebe um Rascunho (Draft) ou Base Theme e força as cores de acordo com o targetMode.
- * Mantém todos os outros tokens (raios, fontes, animações) inalterados.
+ * Utiliza o algoritmo HSL dinâmico para preservar a identidade (Hue/Saturation) do tema.
  */
 export const syncThemeWithMode = (draftTokens: Record<string, any>, targetMode: 'light' | 'dark'): Record<string, any> => {
-    const isLight = targetMode === 'light';
+    const merged = { ...baseDefaults, ...draftTokens };
+    const result: Record<string, any> = { ...merged, mode: targetMode };
 
-    // Mescla o input com os defaults caso algo falte
-    const merged = { ...baseDefaults, ...draftTokens, mode: targetMode };
+    colorTokens.forEach(tokenId => {
+        const originalValue = merged[tokenId];
+        if (!originalValue) return;
 
-    if (isLight) {
-        return {
-            ...merged,
-            bgBaseColor: '#f8fafc',
-            colorBgBody: '#f8fafc',
-            colorBgLayer1: '#ffffff',
-            colorBgLayer2: '#f1f5f9',
-            colorBgModal: 'rgba(255, 255, 255, 0.8)',
-            textColorMaster: '#0f172a',
-            textColorSecondary: 'rgba(15, 23, 42, 0.7)',
-            textColorMuted: 'rgba(15, 23, 42, 0.4)',
-            cardBackgroundColor: 'rgba(255, 255, 255, 0.6)',
-            cardTitleColor: '#0f172a',
-            cardBorderColor: 'rgba(0, 0, 0, 0.05)',
-            cardInnerGlowColor: 'transparent',
-            cardSearchTextFocusColor: '#0f172a',
-            cardSearchPlaceholderColor: 'rgba(15, 23, 42, 0.4)',
-            topbarColor: 'rgba(255, 255, 255, 0.8)',
-            topbarTitleColor: '#0f172a',
-            sidebarColor: 'rgba(255, 255, 255, 0.8)',
-            tableHeaderBg: 'rgba(0, 0, 0, 0.03)',
-            tableRowHoverBg: 'rgba(0, 0, 0, 0.02)',
-            tableBorderColor: 'rgba(0, 0, 0, 0.05)',
-            inputBg: 'rgba(0, 0, 0, 0.03)',
-            btnSecondaryBg: 'rgba(0, 0, 0, 0.05)',
-            btnPrimaryText: '#ffffff',
-            chatUserBg: 'rgba(0, 0, 0, 0.05)'
-        };
+        let semantic: 'bg' | 'text' | 'border' | 'primary' = semanticRoles[tokenId] || 'bg';
+        const idLower = tokenId.toLowerCase();
+
+        // 1. Prioridade para Mapeamento Explícito
+        if (semanticRoles[tokenId]) {
+            semantic = semanticRoles[tokenId];
+        } else if (EXPLICIT_TEXT_TOKENS.has(tokenId)) {
+            semantic = 'text';
+        } else if (EXPLICIT_PRIMARY_TOKENS.has(tokenId)) {
+            semantic = 'primary';
+        } else if (EXPLICIT_BORDER_TOKENS.has(tokenId)) {
+            semantic = 'border';
+        } else if (EXPLICIT_BG_TOKENS.has(tokenId)) {
+            semantic = 'bg';
+        } 
+        // 2. Heurística de Fallback (Caso surjam novos tokens no futuro)
+        else if (idLower.includes('text') || idLower.includes('title') || idLower.includes('label') || idLower.includes('value')) {
+            semantic = 'text';
+        } else if (idLower.includes('border') || idLower.includes('stroke')) {
+            semantic = 'border';
+        } else if (idLower.includes('bg') || idLower.includes('surface') || idLower.includes('layer')) {
+            semantic = 'bg';
+        }
+
+        result[tokenId] = shiftColorMode(originalValue, targetMode, semantic);
+    });
+
+    // Ajustes Ópticos Específicos (v11.3)
+    if (targetMode === 'light') {
+        result.colorBgModal = 'rgba(255, 255, 255, 0.8)';
+        result.cardInnerGlowColor = 'transparent';
+        result.vignetteOpacity = 0;
+        result.shadowIntensity = Math.min(Number(result.shadowIntensity) || 0, 0.25);
+        result.shadowAmbientAlpha = Math.min(Number(result.shadowAmbientAlpha) || 0, 0.08);
+        result.shadowProjectionAlpha = Math.min(Number(result.shadowProjectionAlpha) || 0, 0.1);
+        result.layerBackdropOpacity = Math.min(Number(result.layerBackdropOpacity) || 0, 0.12);
+        result.cardTextureOpacity = Math.min(result.cardTextureOpacity || 0, 0.05); // Suaviza texturas no claro
+        result.textureOpacity = Math.min(Number(result.textureOpacity) || 0, 0.03);
+        result.atmosphereNoiseOpacity = 0.01; // Reduz ruído para evitar aspecto de "sujeira"
+        result.noiseIntensity = 0.01;
     } else {
-        return {
-            ...merged,
-            bgBaseColor: '#050505',
-            colorBgBody: '#050505',
-            colorBgLayer1: '#0f0f0f',
-            colorBgLayer2: '#1a1a1a',
-            colorBgModal: 'rgba(15, 15, 15, 0.8)',
-            textColorMaster: '#ffffff',
-            textColorSecondary: 'rgba(255, 255, 255, 0.7)',
-            textColorMuted: 'rgba(255, 255, 255, 0.4)',
-            cardBackgroundColor: 'rgba(15, 23, 42, 0.6)',
-            cardTitleColor: '#ffffff',
-            cardBorderColor: 'rgba(255, 255, 255, 0.1)',
-            cardInnerGlowColor: 'rgba(255, 255, 255, 0.05)',
-            cardSearchTextFocusColor: '#ffffff',
-            cardSearchPlaceholderColor: 'rgba(255, 255, 255, 0.4)',
-            topbarColor: '#000000',
-            topbarTitleColor: '#ffffff',
-            sidebarColor: '#000000',
-            tableHeaderBg: 'rgba(255, 255, 255, 0.03)',
-            tableRowHoverBg: 'rgba(255, 255, 255, 0.02)',
-            tableBorderColor: 'rgba(255, 255, 255, 0.05)',
-            inputBg: 'rgba(255, 255, 255, 0.03)',
-            btnSecondaryBg: 'rgba(255, 255, 255, 0.05)',
-            btnPrimaryText: '#000000',
-            chatUserBg: 'rgba(255, 255, 255, 0.05)'
-        };
+        result.colorBgModal = 'rgba(15, 15, 15, 0.8)';
+        result.cardInnerGlowColor = 'rgba(255, 255, 255, 0.05)';
     }
+
+    return result;
 };

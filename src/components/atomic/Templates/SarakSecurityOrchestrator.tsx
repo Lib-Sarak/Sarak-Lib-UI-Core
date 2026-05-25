@@ -141,7 +141,7 @@ export const SarakSecurityOrchestrator: React.FC<SarakSecurityOrchestratorProps>
                         initial="hidden" animate="visible" exit="exit"
                         className="space-y-6"
                     >
-                        <div className="flex items-center justify-between p-6 bg-white/[0.02] border border-[var(--theme-border)] rounded-xl">
+                        <div className="flex items-center justify-between p-6 bg-[var(--theme-card)]/40 border border-[var(--theme-border)] rounded-xl">
                             <div className="flex items-center gap-4">
                                 {mfaStatus?.enabled ? (
                                     <ShieldCheck className="text-emerald-500" size={32} />
@@ -166,7 +166,7 @@ export const SarakSecurityOrchestrator: React.FC<SarakSecurityOrchestratorProps>
                             ) : (
                                 <button 
                                     onClick={startSetup}
-                                    className="px-6 py-2 bg-[var(--theme-primary)] text-white text-2xs font-black uppercase tracking-widest rounded-lg shadow-lg shadow-[var(--theme-primary)]/20 hover:brightness-110 transition-all"
+                                    className="px-6 py-2 bg-[var(--theme-primary)] text-[var(--theme-on-primary)] text-2xs font-black uppercase tracking-widest rounded-lg shadow-lg shadow-[var(--theme-primary)]/20 hover:brightness-110 transition-all"
                                 >
                                     Configurar
                                 </button>
@@ -224,7 +224,7 @@ export const SarakSecurityOrchestrator: React.FC<SarakSecurityOrchestratorProps>
                                     value={code}
                                     onChange={(e) => setCode(e.target.value.replace(/\D/g, ''))}
                                     placeholder="000000"
-                                    className="w-full bg-white/[0.03] border border-[var(--theme-border)] rounded-xl py-4 px-12 text-center text-xl font-black tracking-[0.5em] text-[var(--theme-title)] focus:outline-none focus:border-[var(--theme-primary)] transition-all"
+                                    className="w-full bg-[var(--theme-card)]/40 border border-[var(--theme-border)] rounded-xl py-4 px-12 text-center text-xl font-black tracking-[0.5em] text-[var(--theme-title)] focus:outline-none focus:border-[var(--theme-primary)] transition-all"
                                 />
                             </div>
 
@@ -237,7 +237,7 @@ export const SarakSecurityOrchestrator: React.FC<SarakSecurityOrchestratorProps>
                             <button 
                                 onClick={handleEnable}
                                 disabled={code.length !== 6 || isValidating}
-                                className="w-full py-4 bg-[var(--theme-primary)] text-white text-xs font-black uppercase tracking-[0.2em] rounded-xl shadow-xl shadow-[var(--theme-primary)]/20 hover:brightness-110 disabled:opacity-50 disabled:cursor-not-allowed transition-all"
+                                className="w-full py-4 bg-[var(--theme-primary)] text-[var(--theme-on-primary)] text-xs font-black uppercase tracking-[0.2em] rounded-xl shadow-xl shadow-[var(--theme-primary)]/20 hover:brightness-110 disabled:opacity-50 disabled:cursor-not-allowed transition-all"
                             >
                                 {isValidating ? 'Validando...' : 'Ativar Proteção'}
                             </button>
@@ -269,7 +269,7 @@ export const SarakSecurityOrchestrator: React.FC<SarakSecurityOrchestratorProps>
                                     value={code}
                                     onChange={(e) => setCode(e.target.value.replace(/\D/g, ''))}
                                     placeholder="000000"
-                                    className="w-full bg-white/[0.03] border border-[var(--theme-border)] rounded-xl py-4 px-12 text-center text-xl font-black tracking-[0.5em] text-[var(--theme-title)] focus:outline-none focus:border-red-500 transition-all"
+                                    className="w-full bg-[var(--theme-card)]/40 border border-[var(--theme-border)] rounded-xl py-4 px-12 text-center text-xl font-black tracking-[0.5em] text-[var(--theme-title)] focus:outline-none focus:border-red-500 transition-all"
                                 />
                             </div>
 
@@ -280,7 +280,7 @@ export const SarakSecurityOrchestrator: React.FC<SarakSecurityOrchestratorProps>
                             <div className="grid grid-cols-2 gap-4">
                                 <button 
                                     onClick={() => setStep('STATUS')}
-                                    className="py-4 border border-[var(--theme-border)] text-[var(--theme-title)] text-xs font-black uppercase tracking-widest rounded-xl hover:bg-white/5 transition-all"
+                                    className="py-4 border border-[var(--theme-border)] text-[var(--theme-title)] text-xs font-black uppercase tracking-widest rounded-xl hover:bg-[var(--theme-muted)]/10 transition-all"
                                 >
                                     Cancelar
                                 </button>
@@ -327,7 +327,7 @@ export const SarakSecurityOrchestrator: React.FC<SarakSecurityOrchestratorProps>
                             <div className="text-xs font-black uppercase tracking-widest text-red-500 mb-2">{error}</div>
                             <button 
                                 onClick={fetchStatus}
-                                className="px-6 py-2 border border-[var(--theme-border)] text-[var(--theme-title)] text-2xs font-black uppercase tracking-widest rounded-lg hover:bg-white/5 transition-all"
+                                className="px-6 py-2 border border-[var(--theme-border)] text-[var(--theme-title)] text-2xs font-black uppercase tracking-widest rounded-lg hover:bg-[var(--theme-muted)]/10 transition-all"
                             >
                                 Tentar Novamente
                             </button>

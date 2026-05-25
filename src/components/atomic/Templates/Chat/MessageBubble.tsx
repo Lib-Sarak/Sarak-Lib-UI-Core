@@ -33,11 +33,11 @@ export const MessageBubble: React.FC<MessageBubbleProps> = ({ msg }) => {
     } else if (chatBubbleStyle === 'solid') {
       bubbleStyle.backgroundColor = 'var(--theme-primary)';
       bubbleStyle.borderColor = 'transparent';
-      bubbleStyle.color = '#ffffff';
+      bubbleStyle.color = 'var(--theme-on-primary)';
     } else {
       // glass (default)
-      bubbleStyle.backgroundColor = 'var(--sarak-card-bg, rgba(15, 23, 42, 0.6))';
-      bubbleStyle.borderColor = 'var(--sarak-card-border-color, rgba(255, 255, 255, 0.1))';
+      bubbleStyle.backgroundColor = 'var(--sarak-card-bg, var(--theme-card))';
+      bubbleStyle.borderColor = 'var(--sarak-card-border-color, var(--theme-border))';
       bubbleStyle.backdropFilter = 'blur(var(--sarak-card-backdrop-blur, 10px))';
     }
   }
@@ -53,9 +53,9 @@ export const MessageBubble: React.FC<MessageBubbleProps> = ({ msg }) => {
           {msg.role === 'assistant' ? (
             <div className="flex items-center gap-2">
               <div className="w-5 h-5 rounded-full bg-[var(--theme-primary)] flex items-center justify-center">
-                 <Bot size={12} className="text-white" />
+                 <Bot size={12} className="text-[var(--theme-on-primary)]" />
               </div>
-              <span className="text-2xs font-bold text-white/40 uppercase tracking-widest">Sarak Assistant</span>
+              <span className="text-2xs font-bold text-[var(--theme-muted)] uppercase tracking-widest">Sarak Assistant</span>
             </div>
           ) : (
             <span className="text-2xs font-bold text-[var(--theme-primary)] uppercase tracking-widest">Requisitante</span>
@@ -63,7 +63,7 @@ export const MessageBubble: React.FC<MessageBubbleProps> = ({ msg }) => {
         </div>
 
         <div 
-          className={`shadow-xl border text-slate-200 transition-all`}
+          className={`shadow-xl border text-[var(--theme-title)] transition-all`}
           style={bubbleStyle}
         >
           <p className="text-sm leading-relaxed whitespace-pre-wrap">{msg.content}</p>
@@ -72,13 +72,13 @@ export const MessageBubble: React.FC<MessageBubbleProps> = ({ msg }) => {
         {msg.metadata && (
           <div className="flex flex-wrap gap-2 mt-1">
             {msg.metadata.model && (
-              <div className="flex items-center gap-1.5 px-2 py-0.5 bg-white/5 border border-white/5 rounded-md text-2xs font-mono text-slate-400">
+              <div className="flex items-center gap-1.5 px-2 py-0.5 bg-[var(--theme-muted)]/10 border border-[var(--theme-border)] rounded-md text-2xs font-mono text-[var(--theme-muted)]">
                 <Cpu size={10} className="text-[var(--theme-primary)]" />
                 {msg.metadata.model}
               </div>
             )}
             {msg.metadata.reasoning && (
-              <div className="flex items-center gap-1.5 px-2 py-0.5 bg-white/5 border border-white/5 rounded-md text-2xs font-medium text-slate-500 italic">
+              <div className="flex items-center gap-1.5 px-2 py-0.5 bg-[var(--theme-muted)]/10 border border-[var(--theme-border)] rounded-md text-2xs font-medium text-[var(--theme-muted)] italic">
                 <Search size={10} />
                 {msg.metadata.reasoning}
               </div>

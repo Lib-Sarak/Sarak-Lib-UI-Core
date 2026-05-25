@@ -34,7 +34,7 @@ class ErrorBoundary extends Component<Props, State> {
   public render() {
     if (this.state.hasError) {
       return this.props.fallback || (
-        <div className="p-8 text-red-500 bg-red-900/20 border border-red-500/50 rounded-lg">
+        <div className="p-8 text-[var(--theme-error)] bg-[var(--theme-error-bg)] border border-[var(--theme-error-border)] rounded-lg">
           <h2 className="text-xl font-bold mb-2">Falha Industrial de Renderização</h2>
           <p>O módulo encontrou um erro crítico. Tente recarregar a página.</p>
         </div>
@@ -120,12 +120,7 @@ export const SarakShell: React.FC<SarakShellProps> = (props) => {
             const primaryColor = getComputedStyle(testElement).getPropertyValue('--theme-primary').trim();
             
             if (!primaryColor || primaryColor === '') {
-                console.warn("[Sarak:Shell] Visual Safety Gate Triggered: CSS variables not detected. Injecting emergency fallbacks.");
-                testElement.style.setProperty('--theme-primary', '#3b82f6'); // Blue 500
-                testElement.style.setProperty('--theme-body', '#0f172a');    // Slate 900
-                testElement.style.setProperty('--theme-card', '#1e293b');    // Slate 800
-                testElement.style.setProperty('--theme-text', '#f8fafc');    // Slate 50
-                testElement.style.setProperty('--theme-border', '#334155');  // Slate 700
+                console.warn("[Sarak:Shell] Visual Safety Gate Triggered: CSS variables not detected. Theme data was not hydrated.");
             }
         };
 
@@ -145,7 +140,7 @@ export const SarakShell: React.FC<SarakShellProps> = (props) => {
     const layoutClass = `layout-${design?.navigationStyle || 'sidebar'}`;
 
     return (
-        <div className={`flex w-full h-screen overflow-hidden bg-[var(--theme-body)] text-[var(--theme-text)] font-sans selection:bg-[var(--theme-primary)] selection:text-white ${layoutClass}`}>
+        <div className={`flex w-full h-screen overflow-hidden bg-[var(--theme-body)] text-[var(--theme-text)] font-sans selection:bg-[var(--theme-primary)] selection:text-[var(--theme-on-primary)] ${layoutClass}`}>
             
             {/* HOVER SENSORS (v6.2) */}
             {design.isAutoHideEnabled && !shell.isNavVisible && (

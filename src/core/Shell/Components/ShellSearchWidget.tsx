@@ -18,12 +18,12 @@ export const ShellSearchWidget: React.FC<ShellSearchWidgetProps> = ({
         return (
             <button 
                 onClick={onClick}
-                className="w-full flex items-center gap-3 px-3 py-2.5 rounded-xl text-white/40 hover:bg-white/5 hover:text-white transition-all group"
+                className="w-full flex items-center gap-3 px-3 py-2.5 rounded-xl text-[var(--theme-muted)] hover:bg-[var(--theme-muted)]/10 hover:text-[var(--theme-title)] transition-all group"
                 title="Search (Ctrl + K)"
             >
                 <Search size={18} className="text-[var(--theme-muted)] group-hover:text-[var(--theme-primary)]" />
                 <span className="text-sm font-tab">Search...</span>
-                <div className="ml-auto flex items-center gap-1 px-1.5 py-0.5 rounded bg-white/5 border border-white/10 text-[8px] text-white/20 font-black opacity-0 group-hover:opacity-100 transition-opacity">
+                <div className="ml-auto flex items-center gap-1 px-1.5 py-0.5 rounded bg-[var(--theme-muted)]/10 border border-[var(--theme-border)] text-[8px] text-[var(--theme-muted)] font-black opacity-0 group-hover:opacity-100 transition-opacity">
                     <span>CTRL</span>
                     <span>K</span>
                 </div>
@@ -43,9 +43,9 @@ export const ShellSearchWidget: React.FC<ShellSearchWidgetProps> = ({
                 placeholder="Smart Search..." 
                 onClick={onClick}
                 readOnly 
-                className="w-full h-9 bg-[var(--theme-card)] border border-[var(--theme-border)] rounded-[var(--radius-theme)] pl-10 pr-4 text-xs font-bold text-[var(--theme-title)]/60 hover:bg-white/[0.08] hover:border-[var(--theme-primary)]/50 transition-all cursor-pointer outline-none" 
+                className="w-full h-9 bg-[var(--theme-card)] border border-[var(--theme-border)] rounded-[var(--radius-theme)] pl-10 pr-4 text-xs font-bold text-[var(--theme-title)]/60 hover:bg-[var(--theme-muted)]/10 hover:border-[var(--theme-primary)]/50 transition-all cursor-pointer outline-none" 
             />
-            <div className="absolute right-3 top-1/2 -translate-y-1/2 flex items-center gap-1 px-1.5 py-0.5 rounded bg-white/5 border border-white/10 text-[8px] text-white/20 font-black opacity-0 group-hover:opacity-100 transition-opacity">
+            <div className="absolute right-3 top-1/2 -translate-y-1/2 flex items-center gap-1 px-1.5 py-0.5 rounded bg-[var(--theme-muted)]/10 border border-[var(--theme-border)] text-[8px] text-[var(--theme-muted)] font-black opacity-0 group-hover:opacity-100 transition-opacity">
                 <span>CTRL</span>
                 <span>K</span>
             </div>

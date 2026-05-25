@@ -33,13 +33,13 @@ export const ShellUserWidget: React.FC<ShellUserWidgetProps> = ({
                 
                 <div className="flex items-center gap-2">
                     <div className="w-9 h-9 rounded-xl bg-[var(--theme-card)] border border-[var(--theme-border)] flex items-center justify-center overflow-hidden relative">
-                        <div className="absolute inset-0 bg-gradient-to-br from-[var(--theme-primary)] to-purple-600 opacity-10" />
+                        <div className="absolute inset-0 bg-gradient-to-br from-[var(--theme-primary)] to-[var(--theme-secondary)] opacity-10" />
                         <SarakIcon name="User" size={16} className="text-[var(--theme-primary)] relative z-10" />
                     </div>
                     
                     <button
                         onClick={logout}
-                        className="w-8 h-8 bg-red-500/10 hover:bg-red-500 text-red-500 hover:text-white rounded-lg flex items-center justify-center transition-all cursor-pointer border border-red-500/20"
+                        className="w-8 h-8 bg-[var(--theme-error-bg)] hover:bg-[var(--theme-error)] text-[var(--theme-error)] hover:text-[var(--theme-on-primary)] rounded-lg flex items-center justify-center transition-all cursor-pointer border border-[var(--theme-error-border)]"
                         title="Logout"
                     >
                         <SarakIcon name="LogOut" size={12} />
@@ -76,7 +76,7 @@ export const ShellUserWidget: React.FC<ShellUserWidgetProps> = ({
                 
                 <button 
                     onClick={logout} 
-                    className={`p-2 text-[var(--theme-muted)] hover:text-red-400 hover:bg-red-400/5 rounded-lg transition-all ${isMini ? 'bg-red-500/5 text-red-500' : ''}`}
+                    className={`p-2 text-[var(--theme-muted)] hover:text-[var(--theme-error)] hover:bg-[var(--theme-error-bg)] rounded-lg transition-all ${isMini ? 'bg-[var(--theme-error-bg)] text-[var(--theme-error)]' : ''}`}
                     title="Logout"
                 >
                     <SarakIcon name="LogOut" size={isMini ? 12 : 14} />

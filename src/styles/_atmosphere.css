@@ -27,9 +27,9 @@
     content: '';
     position: absolute;
     inset: 0;
-    background: radial-gradient(circle, transparent 20%, rgba(0,0,0, var(--sarak-vignette-opacity, 0.4)) 100%);
+    background: radial-gradient(circle, transparent 20%, var(--sarak-vignette-color, rgba(0,0,0, var(--sarak-vignette-opacity, 0.4))) 100%);
     pointer-events: none;
-    mix-blend-mode: multiply;
+    mix-blend-mode: var(--sarak-vignette-blend-mode, multiply);
     z-index: -1;
 }
 
@@ -62,9 +62,9 @@
     content: '';
     position: absolute;
     inset: 0;
-    background: radial-gradient(circle, transparent 20%, rgba(0,0,0, var(--sarak-vignette-opacity, 0.4)) 100%);
+    background: radial-gradient(circle, transparent 20%, var(--sarak-vignette-color, rgba(0,0,0, var(--sarak-vignette-opacity, 0.4))) 100%);
     pointer-events: none;
-    mix-blend-mode: multiply;
+    mix-blend-mode: var(--sarak-vignette-blend-mode, multiply);
 }
 
 .sarak-shell-sidebar .SarakAtmosphereLayer {

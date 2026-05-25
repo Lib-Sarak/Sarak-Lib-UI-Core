@@ -9,14 +9,14 @@ interface ChatHeaderProps {
 }
 
 export const ChatHeader: React.FC<ChatHeaderProps> = ({ label, mode, setMode, clearChat }) => (
-  <header className="flex items-center justify-between px-6 py-4 border-b border-theme bg-white/5" style={{ padding: 'calc(var(--theme-pad) / 1.5) var(--theme-pad)' }}>
+  <header className="flex items-center justify-between px-6 py-4 border-b border-theme bg-[var(--theme-muted)]/5" style={{ padding: 'calc(var(--theme-pad) / 1.5) var(--theme-pad)' }}>
     <div className="flex items-center" style={{ gap: 'calc(var(--theme-gap) / 2)' }}>
       <div className="p-2 bg-gradient-to-br from-[var(--theme-primary-focus)] to-[var(--theme-primary)] rounded-lg shadow-lg shadow-[var(--theme-primary-focus)]">
-        <Bot size={20} className="text-white" />
+        <Bot size={20} className="text-[var(--theme-on-primary)]" />
       </div>
       <div>
-        <h2 className="text-sm font-bold tracking-tight text-white uppercase" style={{ fontWeight: 'var(--heading-weight)' }}>{label}</h2>
-        <p className="text-2xs text-slate-400 font-medium tracking-widest">Agnostic Interface • Sarak Lib Engine</p>
+        <h2 className="text-sm font-bold tracking-tight text-[var(--theme-title)] uppercase" style={{ fontWeight: 'var(--heading-weight)' }}>{label}</h2>
+        <p className="text-2xs text-[var(--theme-muted)] font-medium tracking-widest">Agnostic Interface • Sarak Lib Engine</p>
       </div>
     </div>
 
@@ -34,7 +34,7 @@ export const ChatHeader: React.FC<ChatHeaderProps> = ({ label, mode, setMode, cl
         {mode === 'auto' ? 'Selector Inteligente' : 'Modo Manual'}
       </button>
       
-      <button onClick={clearChat} className="p-2 hover:bg-red-500/10 hover:text-red-400 rounded-lg transition-colors text-slate-500" style={{ transitionDuration: 'var(--animation-speed, 0.3s)' }}>
+      <button onClick={clearChat} className="p-2 hover:bg-[var(--theme-error-bg)] hover:text-[var(--theme-error)] rounded-lg transition-colors text-[var(--theme-muted)]" style={{ transitionDuration: 'var(--animation-speed, 0.3s)' }}>
         <Trash2 size={18} />
       </button>
     </div>

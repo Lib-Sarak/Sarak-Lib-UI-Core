@@ -31,7 +31,7 @@ export const ChatInput: React.FC<ChatInputProps> = ({
   showModelPicker, setShowModelPicker, modelSearch, setModelSearch,
   maxTokens, setMaxTokens, fileInputRef, handleFileSelect
 }) => (
-  <footer className="p-6 bg-gradient-to-t from-slate-900 via-transparent to-transparent">
+  <footer className="p-6 bg-gradient-to-t from-[var(--theme-card)] via-transparent to-transparent">
     <AnimatePresence>
       {attachments.length > 0 && (
         <motion.div 
@@ -44,10 +44,10 @@ export const ChatInput: React.FC<ChatInputProps> = ({
             {attachments.map((att, i) => (
               <div key={i} className="flex items-center gap-2 px-3 py-2 bg-[var(--theme-primary-bg)] border border-[var(--theme-primary-border)] rounded-xl relative group/att">
                 <FileIcon size={14} className="text-[var(--theme-primary)]" />
-                <span className="text-xs font-medium text-slate-300 max-w-[150px] truncate">{att.name}</span>
+                <span className="text-xs font-medium text-[var(--theme-title)] max-w-[150px] truncate">{att.name}</span>
                 <button 
                   onClick={() => removeAttachment(i)}
-                  className="ml-1 p-1 hover:bg-red-500/20 hover:text-red-400 rounded-full transition-all text-slate-500"
+                  className="ml-1 p-1 hover:bg-[var(--theme-error-bg)] hover:text-[var(--theme-error)] rounded-full transition-all text-[var(--theme-muted)]"
                 >
                   <X size={12} />
                 </button>
@@ -64,15 +64,15 @@ export const ChatInput: React.FC<ChatInputProps> = ({
           <div className="relative">
             <button 
               onClick={() => setShowModelPicker(!showModelPicker)}
-              className="flex items-center px-4 py-2.5 rounded-theme bg-theme-card border-theme hover:bg-white/10 transition-all text-left shadow-lg"
+              className="flex items-center px-4 py-2.5 rounded-theme bg-theme-card border-theme hover:bg-[var(--theme-muted)]/10 transition-all text-left shadow-lg"
               style={{ gap: 'calc(var(--theme-gap) / 1.5)' }}
             >
                <Cpu size={18} className="text-[var(--theme-primary)]" />
                <div className="flex flex-col">
-                  <span className="text-2xs text-slate-500 uppercase font-bold tracking-tight leading-none mb-1">Modelo Manual Ativo</span>
-                  <span className="text-xs font-semibold text-slate-200">{selectedRoute?.display_name || "Selecionar..."}</span>
+                  <span className="text-2xs text-[var(--theme-muted)] uppercase font-bold tracking-tight leading-none mb-1">Modelo Manual Ativo</span>
+                  <span className="text-xs font-semibold text-[var(--theme-title)]">{selectedRoute?.display_name || "Selecionar..."}</span>
                </div>
-               <ChevronDown size={14} className={`text-slate-500 transition-transform ${showModelPicker ? 'rotate-180' : ''}`} />
+               <ChevronDown size={14} className={`text-[var(--theme-muted)] transition-transform ${showModelPicker ? 'rotate-180' : ''}`} />
             </button>
 
             {showModelPicker && (
@@ -88,27 +88,27 @@ export const ChatInput: React.FC<ChatInputProps> = ({
           </div>
 
           <div className="flex-1 min-w-[120px] bg-theme-card border-theme px-4 py-2 flex flex-col justify-center">
-             <div className="flex items-center justify-between text-2xs text-slate-500 font-bold uppercase mb-1">
+             <div className="flex items-center justify-between text-2xs text-[var(--theme-muted)] font-bold uppercase mb-1">
                 <span>Limit</span>
                 <span className="text-[var(--theme-primary)] font-mono">{maxTokens}</span>
              </div>
              <input 
                type="range" min="128" max="16384" step="128" value={maxTokens} 
                onChange={(e) => setMaxTokens(parseInt(e.target.value))}
-               className="w-full h-1 bg-white/10 rounded-lg appearance-none cursor-pointer accent-[var(--theme-primary)]"
+               className="w-full h-1 bg-[var(--theme-muted)]/10 rounded-lg appearance-none cursor-pointer accent-[var(--theme-primary)]"
              />
           </div>
         </motion.div>
       )}
 
       <div className="relative group/input">
-        <div className="absolute -inset-0.5 bg-gradient-to-r from-indigo-500 to-purple-600 rounded-theme blur opacity-10 group-hover/input:opacity-25 transition-opacity" style={{ transitionDuration: 'var(--animation-speed, 0.5s)' }}></div>
+        <div className="absolute -inset-0.5 bg-gradient-to-r from-[var(--theme-primary)] to-[var(--theme-secondary)] rounded-theme blur opacity-10 group-hover/input:opacity-25 transition-opacity" style={{ transitionDuration: 'var(--animation-speed, 0.5s)' }}></div>
         <div className="relative flex items-center bg-theme-card border-theme overflow-hidden shadow-sm pr-2 rounded-theme">
           <input type="file" ref={fileInputRef} onChange={handleFileSelect} multiple accept="image/*" className="hidden" />
           
           <button 
             onClick={() => fileInputRef.current?.click()}
-            className="ml-2 p-3.5 text-slate-500 hover:text-[var(--theme-primary)] hover:bg-white/5 rounded-xl transition-all"
+            className="ml-2 p-3.5 text-[var(--theme-muted)] hover:text-[var(--theme-primary)] hover:bg-[var(--theme-muted)]/10 rounded-xl transition-all"
           >
             <Paperclip size={20} />
           </button>
@@ -119,13 +119,13 @@ export const ChatInput: React.FC<ChatInputProps> = ({
             onChange={(e) => setInput(e.target.value)}
             onKeyDown={(e) => e.key === 'Enter' && handleSend()}
             placeholder={mode === 'auto' ? "Digite sua mensagem..." : "Configuração manual detectada..."}
-            className="flex-1 bg-transparent px-4 py-4 text-sm text-slate-200 focus:outline-none placeholder:text-slate-600"
+            className="flex-1 bg-transparent px-4 py-4 text-sm text-[var(--theme-title)] focus:outline-none placeholder:text-[var(--theme-muted)]"
           />
           
           <button 
             onClick={handleSend}
             disabled={(!input.trim() && attachments.length === 0) || isLoading}
-            className="p-2.5 bg-[var(--theme-primary)] hover:opacity-90 text-white rounded-xl transition-all disabled:opacity-30 disabled:cursor-not-allowed group/btn shadow-lg shadow-[var(--theme-primary-focus)]"
+            className="p-2.5 bg-[var(--theme-primary)] hover:opacity-90 text-[var(--theme-on-primary)] rounded-xl transition-all disabled:opacity-30 disabled:cursor-not-allowed group/btn shadow-lg shadow-[var(--theme-primary-focus)]"
           >
             <Send size={20} className="group-hover/btn:translate-x-0.5 group-hover/btn:-translate-y-0.5 transition-transform" />
           </button>
@@ -133,7 +133,7 @@ export const ChatInput: React.FC<ChatInputProps> = ({
       </div>
     </div>
     
-    <p className="text-center text-2xs text-slate-600 mt-4 uppercase tracking-[0.3em] font-medium">
+    <p className="text-center text-2xs text-[var(--theme-muted)] mt-4 uppercase tracking-[0.3em] font-medium">
       Sarak Orchestrator • Hybrid Model Router
     </p>
   </footer>

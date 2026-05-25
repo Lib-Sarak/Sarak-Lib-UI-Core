@@ -56,12 +56,12 @@ export const TopbarNav: React.FC<TopbarNavProps> = ({
                     <div className="flex items-center gap-3">
                         <button
                             onClick={toggleNav}
-                            className={`p-1.5 bg-white/5 hover:bg-[var(--theme-primary)] hover:text-white rounded-lg text-white/40 transition-all shadow-lg border border-white/5 shrink-0`}
+                            className={`p-1.5 bg-[var(--theme-muted)]/10 hover:bg-[var(--theme-primary)] hover:text-[var(--theme-on-primary)] rounded-lg text-[var(--theme-muted)] transition-all shadow-lg border border-[var(--theme-border)] shrink-0`}
                         >
                             <SarakIcon name="Menu" size={16} />
                         </button>
 
-                        <div className={`flex items-center gap-3 ${!effectiveIsNavHidden ? 'pr-6 border-r border-white/5' : ''} shrink-0`}>
+                        <div className={`flex items-center gap-3 ${!effectiveIsNavHidden ? 'pr-6 border-r border-[var(--theme-border)]' : ''} shrink-0`}>
                             {logoUrl ? (
                                 <div style={{ height: effectiveIsNavHidden ? '20px' : '32px', display: 'flex', alignItems: 'center' }}>
                                     <img
@@ -92,8 +92,8 @@ export const TopbarNav: React.FC<TopbarNavProps> = ({
                                     title={mod.label}
                                     className={`flex items-center justify-center transition-all whitespace-nowrap font-tab shrink-0 
                                         ${effectiveIsNavHidden
-                                            ? `w-8 h-8 rounded-lg ${activeModuleId === mod.id ? 'bg-[var(--sarak-topbar-active,rgba(var(--theme-primary-rgb),0.2))] text-[var(--theme-primary)]' : 'text-white/20 hover:text-white hover:bg-[var(--sarak-topbar-hover,white/5)]'}`
-                                            : `px-4 py-1.5 rounded-full text-[10px] font-black uppercase tracking-widest ${activeModuleId === mod.id ? 'bg-[var(--sarak-topbar-active,var(--theme-primary))] text-white shadow-lg shadow-[var(--theme-primary)]/30 scale-105' : 'text-white/40 hover:text-white hover:bg-[var(--sarak-topbar-hover,white/5)]'}`
+                                            ? `w-8 h-8 rounded-lg ${activeModuleId === mod.id ? 'bg-[var(--sarak-topbar-active,rgba(var(--theme-primary-rgb),0.2))] text-[var(--theme-primary)]' : 'text-[var(--theme-muted)] hover:text-[var(--theme-title)] hover:bg-[var(--theme-muted)]/10'}`
+                                            : `px-4 py-1.5 rounded-full text-[10px] font-black uppercase tracking-widest ${activeModuleId === mod.id ? 'bg-[var(--sarak-topbar-active,var(--theme-primary))] text-[var(--theme-on-primary)] shadow-lg shadow-[var(--theme-primary)]/30 scale-105' : 'text-[var(--theme-muted)] hover:text-[var(--theme-title)] hover:bg-[var(--theme-muted)]/10'}`
                                         }
                                     `}
                                 >
@@ -110,14 +110,14 @@ export const TopbarNav: React.FC<TopbarNavProps> = ({
                     {/* 1. Search Widget */}
                     <ShellSearchWidget variant={effectiveIsNavHidden ? 'icon' : 'bar'} onClick={() => setIsSearchOpen(true)} />
 
-                    <div className={`flex items-center gap-2 p-1 bg-white/5 rounded-xl border border-white/10 !overflow-visible ${effectiveIsNavHidden ? 'scale-90' : ''}`}>
+                    <div className={`flex items-center gap-2 p-1 bg-[var(--theme-muted)]/10 rounded-xl border border-[var(--theme-border)] !overflow-visible ${effectiveIsNavHidden ? 'scale-90' : ''}`}>
                         <ShellLanguageSelector variant="horizontal" />
 
-                        <div className="w-[1px] h-4 bg-white/10 mx-1" />
+                        <div className="w-[1px] h-4 bg-[var(--theme-border)] mx-1" />
 
-                        <button className="p-1.5 text-white/20 hover:text-white transition-colors relative">
+                        <button className="p-1.5 text-[var(--theme-muted)] hover:text-[var(--theme-title)] transition-colors relative">
                             <SarakIcon name="Bell" size={14} />
-                            <div className="absolute top-1.5 right-1.5 w-1 h-1 bg-[var(--theme-primary)] rounded-full border border-black" />
+                            <div className="absolute top-1.5 right-1.5 w-1 h-1 bg-[var(--theme-primary)] rounded-full border border-[var(--theme-card)]" />
                         </button>
                         {extraToolbarItems}
                     </div>

@@ -1,6 +1,5 @@
 import React, { useState, useEffect, useCallback, useMemo } from 'react';
 import { MASTER_DESIGN_MAP, getAllDesignTokens } from '../../../core/Design/master-map';
-import { syncThemeWithMode } from '../../../core/Design/presets/themes/color-engine';
 
 /**
  * Deep Comparison Utility (v12.0)
@@ -141,9 +140,8 @@ export const useDesignDraft = (sarak: any) => {
             const current = prev || draft;
             if (current[key] === value) return prev;
             
-            // Intercepta a mudança de Modo Global e converte todas as cores do rascunho instantaneamente
             if (key === 'mode') {
-                return syncThemeWithMode(current, value);
+                return { ...current, mode: value };
             }
             
             return { ...current, [key]: value };

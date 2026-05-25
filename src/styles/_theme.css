@@ -4,11 +4,14 @@
   --color-theme-secondary: var(--sarak-secondary-color, var(--theme-secondary, #7000ff));
   
   --color-theme-bg: var(--sarak-bg-base, var(--theme-body, #0a0a0c));
+  --color-theme-body: var(--theme-body, var(--sarak-bg-body, #0a0a0c));
   --color-theme-card: var(--sarak-card-bg, var(--theme-card, rgba(15, 23, 42, 0.6)));
   --color-theme-sidebar: var(--sarak-sidebar-bg, var(--theme-sidebar, rgba(10, 10, 12, 0.8)));
   --color-theme-topbar: var(--sarak-topbar-bg, rgba(10, 10, 12, 0.8));
   
   --color-theme-border: var(--sarak-card-border-color, var(--theme-border, rgba(255, 255, 255, 0.1)));
+  --color-theme-text: var(--theme-text, var(--text-main, #ffffff));
+  --color-theme-on-primary: var(--theme-on-primary, #020617);
   --color-theme-title: var(--sarak-topbar-title-color, var(--theme-title, #ffffff));
   --color-theme-muted: var(--theme-muted, rgba(255, 255, 255, 0.4));
   
@@ -70,7 +73,7 @@
   --sarak-surface-roughness: var(--sarak-glass-roughness, 0.05);
 
   /* Viewport Effects */
-  --sarak-vignette: radial-gradient(circle, transparent 50%, rgba(0,0,0, var(--sarak-vignette-opacity, 0.3)) 100%);
+  --sarak-vignette: radial-gradient(circle, transparent 50%, var(--sarak-vignette-color, rgba(0,0,0, var(--sarak-vignette-opacity, 0.3))) 100%);
 }
 
 /* Utilitários Globais de Sincronização */
@@ -86,4 +89,5 @@
 .sarak-vignette-layer {
     position: fixed; inset: 0; pointer-events: none; z-index: 9999;
     background: var(--sarak-vignette);
+    mix-blend-mode: var(--sarak-vignette-blend-mode, multiply);
 }

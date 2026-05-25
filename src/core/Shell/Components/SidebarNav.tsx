@@ -72,20 +72,20 @@ export const SidebarNav: React.FC<SidebarNavProps> = ({
                                 />
                             </div>
                         ) : (
-                            <div className="w-8 h-8 rounded-[var(--radius-theme)] bg-gradient-to-br from-[var(--theme-primary)] to-[var(--theme-primary-rgb),0.5] flex items-center justify-center font-black text-xs text-white shrink-0">S</div>
+                            <div className="w-8 h-8 rounded-[var(--radius-theme)] bg-gradient-to-br from-[var(--theme-primary)] to-[var(--theme-primary-rgb),0.5] flex items-center justify-center font-black text-xs text-[var(--theme-on-primary)] shrink-0">S</div>
                         )}
                         <span className="text-sm font-bold tracking-tighter opacity-80 text-[var(--theme-title)] truncate max-w-[120px]">{systemName || brand.name}</span>
                     </div>
                 )}
 
                 {effectiveIsNavHidden && (
-                    <div className="w-9 h-9 rounded-xl bg-[var(--theme-primary)] flex items-center justify-center text-white shadow-lg">
+                    <div className="w-9 h-9 rounded-xl bg-[var(--theme-primary)] flex items-center justify-center text-[var(--theme-on-primary)] shadow-lg">
                         <span className="font-black text-xs">S</span>
                     </div>
                 )}
 
                 {!effectiveIsNavHidden && logoPosition !== 'center' && (
-                    <button onClick={toggleNav} className="p-1.5 hover:bg-white/5 rounded-md text-white/20 hover:text-white transition-colors">
+                    <button onClick={toggleNav} className="p-1.5 hover:bg-[var(--theme-muted)]/10 rounded-md text-[var(--theme-muted)] hover:text-[var(--theme-title)] transition-colors">
                         <SarakIcon name="ChevronLeft" size={16} />
                     </button>
                 )}
@@ -99,7 +99,7 @@ export const SidebarNav: React.FC<SidebarNavProps> = ({
 
                 {Object.entries(groupedModules).map(([category, mods]) => (
                     <div key={category} style={{ marginBottom: `var(--theme-tab-gap, ${tabGap}px)` }}>
-                        {!effectiveIsNavHidden && <h4 className="text-2xs font-bold text-white/20 uppercase tracking-[0.2em] mb-3 px-3">{category}</h4>}
+                        {!effectiveIsNavHidden && <h4 className="text-2xs font-bold text-[var(--theme-muted)] uppercase tracking-[0.2em] mb-3 px-3">{category}</h4>}
                         <div className="space-y-1" style={{ gap: `var(--theme-tab-gap, ${tabGap}px)` }}>
                             {mods.map(mod => {
                                 const isOffline = mod.status === 'offline';
@@ -112,8 +112,8 @@ export const SidebarNav: React.FC<SidebarNavProps> = ({
                                         className={`w-full flex items-center gap-3 px-3 py-2.5 rounded-xl transition-all relative group font-tab 
                                             ${activeModuleId === mod.id
                                                 ? 'bg-[var(--sarak-sidebar-active,var(--theme-primary-rgb,59,130,246)/10)] text-[var(--theme-primary)] font-bold shadow-[inset_0_0_20px_rgba(var(--theme-primary-rgb),0.05)]'
-                                                : 'text-white/40 hover:bg-[var(--sarak-sidebar-hover,white/5)] hover:text-white'}
-                                            ${isOffline ? 'opacity-30 grayscale cursor-not-allowed border border-dashed border-white/5' : ''}
+                                                : 'text-[var(--theme-muted)] hover:bg-[var(--theme-muted)]/10 hover:text-[var(--theme-title)]'}
+                                            ${isOffline ? 'opacity-30 grayscale cursor-not-allowed border border-dashed border-[var(--theme-border)]' : ''}
                                         `}
                                     >
                                         <div className={`shrink-0 ${effectiveIsNavHidden ? 'mx-auto' : ''}`}>
@@ -122,11 +122,11 @@ export const SidebarNav: React.FC<SidebarNavProps> = ({
                                         {!effectiveIsNavHidden && (
                                             <div className="flex flex-col items-start overflow-hidden">
                                                 <span className="text-sm truncate">{mod.label}</span>
-                                                {isOffline && <span className="text-3xs text-red-500 font-bold uppercase tracking-wider">Service Offline</span>}
+                                                {isOffline && <span className="text-3xs text-[var(--theme-error)] font-bold uppercase tracking-wider">Service Offline</span>}
                                             </div>
                                         )}
                                         {activeModuleId === mod.id && <motion.div layoutId="active-pill" className="absolute left-0 w-1 h-4 bg-[var(--theme-primary)] rounded-full shadow-[0_0_15px_var(--theme-primary)]" />}
-                                        {isOffline && <div className="absolute right-2 top-1/2 -translate-y-1/2 w-1.5 h-1.5 rounded-full bg-red-500 animate-pulse shadow-[0_0_5px_red]" />}
+                                        {isOffline && <div className="absolute right-2 top-1/2 -translate-y-1/2 w-1.5 h-1.5 rounded-full bg-[var(--theme-error)] animate-pulse shadow-[0_0_5px_var(--theme-error)]" />}
                                     </button>
                                 );
                             })}
@@ -140,7 +140,7 @@ export const SidebarNav: React.FC<SidebarNavProps> = ({
                 <ShellLanguageSelector variant="vertical" />
 
                 {/* 3. Notifications */}
-                <button className={`w-full flex items-center gap-3 px-3 py-2.5 rounded-xl text-white/40 hover:bg-white/5 hover:text-white transition-all group ${effectiveIsNavHidden ? 'justify-center' : ''}`}>
+                <button className={`w-full flex items-center gap-3 px-3 py-2.5 rounded-xl text-[var(--theme-muted)] hover:bg-[var(--theme-muted)]/10 hover:text-[var(--theme-title)] transition-all group ${effectiveIsNavHidden ? 'justify-center' : ''}`}>
                     <SarakIcon name="Bell" size={18} className="text-[var(--theme-muted)] group-hover:text-[var(--theme-primary)]" />
                     {!effectiveIsNavHidden && <span className="text-sm font-tab flex-1 text-left">Notifications</span>}
                     <div className="w-1.5 h-1.5 bg-[var(--theme-primary)] rounded-full shadow-[0_0_5px_var(--theme-primary)]" />
