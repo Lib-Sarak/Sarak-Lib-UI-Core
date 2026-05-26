@@ -31,6 +31,7 @@ interface PreviewCanvasProps {
     activeSectionId?: string | null;
     onUpdateDraft: (key: string, value: any) => void;
     isDualView?: boolean;
+    isPreviewStacked?: boolean;
     customThemes?: any[];
     sarak: any;
     onInspectComponent?: (schemaId: string) => void;
@@ -38,17 +39,21 @@ interface PreviewCanvasProps {
 
 export const PreviewCanvas: React.FC<PreviewCanvasProps> = ({
     previewDevice,
+    previewLayoutId,
     activePreviewApp,
     setActivePreviewApp,
     previewAnimationStyle,
+    previewEmojiSet,
     config,
+    previewPrimaryColor,
     mode,
     draftTokens,
     activeCategory,
     activeSectionId,
     onUpdateDraft,
     isDualView,
-    customThemes = [],
+    isPreviewStacked,
+    customThemes,
     sarak,
     onInspectComponent
 }) => {
@@ -60,24 +65,24 @@ export const PreviewCanvas: React.FC<PreviewCanvasProps> = ({
 
     const parentContext = useSarakUI();
     const tokens = React.useMemo(() => ({ ...draftTokens }), [draftTokens]);
-    
+
     const [isInspecting, setIsInspecting] = React.useState(false);
 
     React.useEffect(() => {
         if (!isInspecting) return;
-        
+
         const handleInspectClick = (e: MouseEvent) => {
             e.preventDefault();
             e.stopPropagation();
-            
+
             const target = e.target as HTMLElement;
             let schemaId = 'shell';
-            
+
             if (target.closest('button')) schemaId = 'controls';
             else if (target.closest('input, select, textarea')) schemaId = 'controls';
             else if (target.closest('.card, [class*="card"], [class*="panel"]')) schemaId = 'cards';
             else if (target.closest('h1, h2, h3, h4, h5, h6, p, span, a')) schemaId = 'typography';
-            
+
             setIsInspecting(false);
             if (onInspectComponent) {
                 onInspectComponent(schemaId);
@@ -87,7 +92,7 @@ export const PreviewCanvas: React.FC<PreviewCanvasProps> = ({
         document.addEventListener('click', handleInspectClick, true);
         return () => document.removeEventListener('click', handleInspectClick, true);
     }, [isInspecting, onInspectComponent]);
-    
+
     const handleSidebarResize = React.useCallback((newWidth: number) => {
         onUpdateDraft('sidebarWidth', Math.round(newWidth));
     }, [onUpdateDraft]);
@@ -131,21 +136,22 @@ export const PreviewCanvas: React.FC<PreviewCanvasProps> = ({
     const apps: any = React.useMemo(() => {
         const dummyAnimation = { initial: {}, animate: {}, exit: {} };
         return {
-        dashboard: <MockDashboard tokens={tokens} config={config} animationVariants={dummyAnimation} animationStyle={previewAnimationStyle} />,
-        forms: <MockForms tokens={tokens} config={config} animationVariants={dummyAnimation} animationStyle={previewAnimationStyle} />,
-        chat: <MockChat tokens={tokens} config={config} animationVariants={dummyAnimation} animationStyle={previewAnimationStyle} />,
-        logs: <MockLogs tokens={tokens} config={config} animationVariants={dummyAnimation} animationStyle={previewAnimationStyle} />,
-        settings: <MockSettings tokens={tokens} config={config} animationVariants={dummyAnimation} animationStyle={previewAnimationStyle} />,
-        components: <MockComponents tokens={tokens} />,
-        typography: <MockTypography tokens={tokens} />,
-        auth: <MockAuth tokens={tokens} />,
-        matrix: <MockMatrix tokens={tokens} config={config} animationVariants={dummyAnimation} animationStyle={previewAnimationStyle} />,
-        tabela: <MockTable tokens={tokens} config={config} animationVariants={dummyAnimation} animationStyle={previewAnimationStyle} />,
-        'caixas-texto': <MockText tokens={tokens} config={config} animationVariants={dummyAnimation} animationStyle={previewAnimationStyle} />,
-        graficos: <MockCharts tokens={tokens} config={config} animationVariants={dummyAnimation} animationStyle={previewAnimationStyle} />,
-        documentos: <MockDocuments tokens={tokens} config={config} animationVariants={dummyAnimation} animationStyle={previewAnimationStyle} />,
-        'kitchen-sink': <KitchenSinkPreview />
-    }}, [tokens, config, previewAnimationStyle]);
+            dashboard: <MockDashboard tokens={tokens} config={config} animationVariants={dummyAnimation} animationStyle={previewAnimationStyle} />,
+            forms: <MockForms tokens={tokens} config={config} animationVariants={dummyAnimation} animationStyle={previewAnimationStyle} />,
+            chat: <MockChat tokens={tokens} config={config} animationVariants={dummyAnimation} animationStyle={previewAnimationStyle} />,
+            logs: <MockLogs tokens={tokens} config={config} animationVariants={dummyAnimation} animationStyle={previewAnimationStyle} />,
+            settings: <MockSettings tokens={tokens} config={config} animationVariants={dummyAnimation} animationStyle={previewAnimationStyle} />,
+            components: <MockComponents tokens={tokens} />,
+            typography: <MockTypography tokens={tokens} />,
+            auth: <MockAuth tokens={tokens} />,
+            matrix: <MockMatrix tokens={tokens} config={config} animationVariants={dummyAnimation} animationStyle={previewAnimationStyle} />,
+            tabela: <MockTable tokens={tokens} config={config} animationVariants={dummyAnimation} animationStyle={previewAnimationStyle} />,
+            'caixas-texto': <MockText tokens={tokens} config={config} animationVariants={dummyAnimation} animationStyle={previewAnimationStyle} />,
+            graficos: <MockCharts tokens={tokens} config={config} animationVariants={dummyAnimation} animationStyle={previewAnimationStyle} />,
+            documentos: <MockDocuments tokens={tokens} config={config} animationVariants={dummyAnimation} animationStyle={previewAnimationStyle} />,
+            'kitchen-sink': <KitchenSinkPreview />
+        }
+    }, [tokens, config, previewAnimationStyle]);
 
     const appIds = ['dashboard', 'forms', 'documentos', 'chat', 'logs', 'settings', 'components', 'typography', 'auth', 'matrix', 'tabela', 'caixas-texto', 'graficos', 'kitchen-sink'];
 
@@ -156,32 +162,32 @@ export const PreviewCanvas: React.FC<PreviewCanvasProps> = ({
             id,
             label: id === 'dashboard' ? 'Dashboard'
                 : id === 'forms' ? 'Formulários'
-                : id === 'documentos' ? 'Documentos'
-                : id === 'chat' ? 'Chat Ops'
-                : id === 'logs' ? 'System Logs'
-                : id === 'settings' ? 'Settings'
-                : id === 'components' ? 'Gallery'
-                : id === 'typography' ? 'Typography'
-                : id === 'auth' ? 'Security Gate'
-                : id === 'matrix' ? 'Matrix Network'
-                : id === 'tabela' ? 'Tabela Analítica'
-                : id === 'caixas-texto' ? 'Caixas de Texto'
-                : id === 'graficos' ? 'Gráficos Avançados'
-                : 'Kitchen Sink',
-            icon: id === 'dashboard' ? 'BarChart3' 
+                    : id === 'documentos' ? 'Documentos'
+                        : id === 'chat' ? 'Chat Ops'
+                            : id === 'logs' ? 'System Logs'
+                                : id === 'settings' ? 'Settings'
+                                    : id === 'components' ? 'Gallery'
+                                        : id === 'typography' ? 'Typography'
+                                            : id === 'auth' ? 'Security Gate'
+                                                : id === 'matrix' ? 'Matrix Network'
+                                                    : id === 'tabela' ? 'Tabela Analítica'
+                                                        : id === 'caixas-texto' ? 'Caixas de Texto'
+                                                            : id === 'graficos' ? 'Gráficos Avançados'
+                                                                : 'Kitchen Sink',
+            icon: id === 'dashboard' ? 'BarChart3'
                 : id === 'forms' ? 'Layout'
-                : id === 'documentos' ? 'FileText'
-                : id === 'chat' ? 'MessageSquare' 
-                : id === 'logs' ? 'History' 
-                : id === 'settings' ? 'Network' 
-                : id === 'components' ? 'Box' 
-                : id === 'typography' ? 'Type' 
-                : id === 'auth' ? 'Lock' 
-                : id === 'matrix' ? 'Layers' 
-                : id === 'tabela' ? 'Grid'
-                : id === 'caixas-texto' ? 'AlignLeft'
-                : id === 'graficos' ? 'LineChart'
-                : 'Zap',
+                    : id === 'documentos' ? 'FileText'
+                        : id === 'chat' ? 'MessageSquare'
+                            : id === 'logs' ? 'History'
+                                : id === 'settings' ? 'Network'
+                                    : id === 'components' ? 'Box'
+                                        : id === 'typography' ? 'Type'
+                                            : id === 'auth' ? 'Lock'
+                                                : id === 'matrix' ? 'Layers'
+                                                    : id === 'tabela' ? 'Grid'
+                                                        : id === 'caixas-texto' ? 'AlignLeft'
+                                                            : id === 'graficos' ? 'LineChart'
+                                                                : 'Zap',
             category: id === 'kitchen-sink' ? 'Experimental' : 'System Modules',
             status: 'online',
             priority: index,
@@ -212,37 +218,37 @@ export const PreviewCanvas: React.FC<PreviewCanvasProps> = ({
         const heightPercent = `${(100 / scaleFactor).toFixed(2)}%`;
 
         return (
-            <DesignScope 
-                design={activeDesign} 
+            <DesignScope
+                design={activeDesign}
                 className={`w-full h-full flex flex-col transition-all duration-500 overflow-hidden relative isolate ${hasTexture ? 'texture-active' : ''}`}
                 data-sx-texture={activeDesign.texture}
             >
                 {/* 1. Base Background Layer (Pilar de Cor) */}
-                <div 
-                    className="absolute inset-0 z-0 bg-[var(--sarak-bg-base)]" 
+                <div
+                    className="absolute inset-0 z-0 bg-[var(--sarak-bg-base)]"
                     style={{ backgroundColor: 'var(--sarak-bg-base)' }}
                 />
 
                 {/* 2. Content Layer (Pilar de Layout) - Scaled dynamically to prevent micro-miniature rendering */}
-                <div 
+                <div
                     className={`absolute inset-0 origin-top-left overflow-hidden z-10 flex bg-[var(--theme-body)] text-[var(--theme-text)] font-sans selection:bg-[var(--theme-primary)] selection:text-white layout-${navStyle}`}
-                    style={{ 
-                        width: widthPercent, 
-                        height: heightPercent, 
-                        transform: `scale(${scaleFactor})` 
+                    style={{
+                        width: widthPercent,
+                        height: heightPercent,
+                        transform: `scale(${scaleFactor})`
                     }}
                 >
                     {/* HOVER SENSORS (v6.2) */}
                     {activeDesign.isAutoHideEnabled && !previewNavVisible && (
                         <>
                             {isSidebar && (
-                                <div 
+                                <div
                                     onMouseEnter={() => setPreviewNavVisible(true)}
                                     className="absolute left-0 top-0 w-4 h-full z-[1000] cursor-pointer"
                                 />
                             )}
                             {isDock && (
-                                <div 
+                                <div
                                     onMouseEnter={() => setPreviewNavVisible(true)}
                                     className="absolute bottom-0 left-0 w-full h-8 z-[1000] cursor-pointer"
                                 />
@@ -252,29 +258,29 @@ export const PreviewCanvas: React.FC<PreviewCanvasProps> = ({
 
                     {/* SIDEBAR NAVIGATION */}
                     {isSidebar && (
-                        <SidebarNav 
+                        <SidebarNav
                             design={activeDesign}
                             brand={{ name: activeDesign.systemName || "Sarak Preview" }}
                             user={parentContext?.options?.user || { displayName: 'Sarak User', primaryEmail: 'preview@sarak.io' }}
-                            logout={() => {}}
+                            logout={() => { }}
                             toggleNav={() => onUpdateDraft('isNavHidden', !activeDesign.isNavHidden)}
                             activeModuleId={activePreviewApp}
                             setActiveModuleId={setActivePreviewApp}
                             groupedModules={mockGroupedModules}
                             setIsNavVisible={setPreviewNavVisible}
-                            setIsSearchOpen={() => {}}
+                            setIsSearchOpen={() => { }}
                             startResizing={startResizingSidebar as any}
                         />
                     )}
 
                     {/* DOCK NAVIGATION */}
                     {isDock && (
-                        <DockNav 
+                        <DockNav
                             design={activeDesign}
                             discoveredModules={mockDiscoveredModules}
                             activeModuleId={activePreviewApp}
                             setActiveModuleId={setActivePreviewApp}
-                            setIsSearchOpen={() => {}}
+                            setIsSearchOpen={() => { }}
                             isNavVisible={previewNavVisible}
                             setIsNavVisible={setPreviewNavVisible}
                         />
@@ -284,22 +290,22 @@ export const PreviewCanvas: React.FC<PreviewCanvasProps> = ({
                     <div className="flex-1 flex flex-col h-full overflow-hidden relative bg-[var(--theme-body)]">
                         {/* SHELL HEADER (TOPBAR ONLY) */}
                         {isTopbar && (
-                            <TopbarNav 
+                            <TopbarNav
                                 design={activeDesign}
                                 brand={{ name: activeDesign.systemName || "Sarak Preview" }}
                                 toggleNav={() => onUpdateDraft('isNavHidden', !activeDesign.isNavHidden)}
-                                setIsSearchOpen={() => {}}
+                                setIsSearchOpen={() => { }}
                                 activeModuleId={activePreviewApp}
                                 setActiveModuleId={setActivePreviewApp}
                                 discoveredModules={mockDiscoveredModules}
                                 user={parentContext?.options?.user || { displayName: 'Sarak User', primaryEmail: 'preview@sarak.io' }}
-                                logout={() => {}}
+                                logout={() => { }}
                                 startResizing={startResizingTopbar as any}
                             />
                         )}
 
                         {/* MAIN CONTENT CANVAS */}
-                        <main 
+                        <main
                             className={`flex-1 overflow-y-auto p-12 relative z-10 bg-transparent custom-scrollbar isolate ${hasTexture ? 'texture-active' : ''}`}
                             data-sx-texture={activeDesign.texture}
                         >
@@ -314,14 +320,14 @@ export const PreviewCanvas: React.FC<PreviewCanvasProps> = ({
     };;
 
     return (
-        <DesignScope design={tokens} className="w-full h-full flex flex-col relative overflow-hidden bg-[#050505] p-0 items-center justify-center">
+        <DesignScope design={tokens} className="w-full h-full flex flex-col relative overflow-auto bg-[#050505] p-0 custom-scrollbar">
             <UIContext.Provider value={previewContextValue as any}>
-                <div className="w-full h-full flex flex-col xl:flex-row gap-6 p-6 items-stretch overflow-hidden">
+                <div className={`flex gap-6 p-6 items-stretch overflow-visible ${isPreviewStacked ? 'flex-col min-w-full min-h-full w-fit h-fit' : 'flex-col xl:flex-row min-w-full min-h-full w-fit h-fit'}`}>
                     {isDualView ? (
                         <>
                             {/* Live Draft Preview (Gêmeo Digital) */}
-                            <div className="relative flex-1 rounded-[2rem] border border-white/10 shadow-[0_50px_100px_-20px_rgba(0,0,0,0.8)] overflow-hidden bg-black transition-all duration-500 flex flex-col group">
-                                <button 
+                            <div className={`relative flex-auto shrink-0 rounded-[2rem] border border-white/10 shadow-[0_50px_100px_-20px_rgba(0,0,0,0.8)] overflow-hidden bg-black transition-colors duration-500 flex flex-col group ${isPreviewStacked ? 'w-full h-[45vh]' : 'w-1/2 h-full'}`} style={{ resize: 'both', minHeight: '300px', minWidth: '250px' }}>
+                                <button
                                     onClick={() => setIsInspecting(!isInspecting)}
                                     className={`absolute top-4 right-4 z-[9999] p-2 rounded-full backdrop-blur-md border shadow-2xl transition-all ${isInspecting ? 'bg-[var(--theme-primary)] text-white border-[var(--theme-primary)] animate-pulse scale-110' : 'bg-black/40 border-white/10 text-white/50 hover:text-white hover:bg-black/60 opacity-0 group-hover:opacity-100'}`}
                                     title="Modo de Inspeção (Selecionar elemento)"
@@ -337,20 +343,20 @@ export const PreviewCanvas: React.FC<PreviewCanvasProps> = ({
                                         </div>
                                     </div>
                                 )}
-                                
+
                                 <div className="flex-1 relative">
                                     {/* Watermark */}
                                     <div className="absolute inset-0 flex items-center justify-center pointer-events-none opacity-[0.02]">
                                         <span className="text-[10rem] font-black text-white uppercase tracking-[0.2em] -rotate-12 select-none">SARAK TWIN</span>
                                     </div>
-                                    {renderSystemContent(false)} 
+                                    {renderSystemContent(false)}
                                 </div>
                             </div>
 
 
                             {/* Catalog Preview (Engine Controls) */}
-                            <div className="relative flex-1 rounded-[2rem] border border-white/10 shadow-2xl overflow-hidden bg-[#0c0c0d] transition-all duration-500 flex flex-col h-full">
-                                <PresetsCatalog 
+                            <div className={`relative flex-auto shrink-0 rounded-[2rem] border border-white/10 shadow-2xl overflow-hidden bg-[#0c0c0d] transition-colors duration-500 flex flex-col ${isPreviewStacked ? 'w-full h-[45vh]' : 'w-1/2 h-full'}`} style={{ resize: 'both', minHeight: '300px', minWidth: '250px' }}>
+                                <PresetsCatalog
                                     onApplyPreset={handleApplyPreset}
                                     activeCategory={activeCategory}
                                     currentMode={mode}
@@ -363,16 +369,17 @@ export const PreviewCanvas: React.FC<PreviewCanvasProps> = ({
                         </div>
                     )}
 
-                {isResizingSidebar && (
-                    <div className="fixed inset-0 z-[9999] cursor-col-resize pointer-events-auto" />
-                )}
-                {isResizingTopbar && (
-                    <div className="fixed inset-0 z-[9999] cursor-row-resize pointer-events-auto" />
-                )}
+                    {isResizingSidebar && (
+                        <div className="fixed inset-0 z-[9999] cursor-col-resize pointer-events-auto" />
+                    )}
+                    {isResizingTopbar && (
+                        <div className="fixed inset-0 z-[9999] cursor-row-resize pointer-events-auto" />
+                    )}
                 </div>
             </UIContext.Provider>
-            
-            <style dangerouslySetInnerHTML={{ __html: `
+
+            <style dangerouslySetInnerHTML={{
+                __html: `
                 .custom-scrollbar::-webkit-scrollbar {
                     width: var(--sarak-scroll-width, 6px);
                     height: var(--sarak-scroll-width, 6px);

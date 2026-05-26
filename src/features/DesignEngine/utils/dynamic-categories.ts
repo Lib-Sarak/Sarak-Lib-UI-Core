@@ -19,16 +19,13 @@ export const sanitizeCategory = (rawCategory: string): string => {
     return 'Geral';
 };
 
-// Mapeamento dos pilares mestres para as categorias sanitizadas que ativam esse pilar
-export const PILLAR_TO_CATEGORIES: Record<string, string[]> = {
-    brand: ['Cores e Marca'],
-    typography: ['Tipografia'],
-    surfaces: ['Cards e Superfícies', 'Efeitos e Superfície', 'Geometria e Bordas'],
-    interaction: ['Botões e Interação', 'Formulários', 'Animações'],
-    navigation: ['Layout e Navegação'],
-    systems: ['Dados e Gráficos'],
-    advanced: ['Especializado']
-};
+import DesignPillars from '../config/design-pillars.json';
+
+// Extrai PILLAR_TO_CATEGORIES a partir do JSON de configuração
+export const PILLAR_TO_CATEGORIES: Record<string, string[]> = {};
+DesignPillars.forEach(pillar => {
+    PILLAR_TO_CATEGORIES[pillar.id] = pillar.categories;
+});
 
 export const CATEGORY_TO_PILLAR: Record<string, string> = {};
 Object.entries(PILLAR_TO_CATEGORIES).forEach(([pillarId, cats]) => {

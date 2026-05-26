@@ -46,12 +46,12 @@ export const HelpTooltip: React.FC<{ label: string, description?: string }> = ({
     );
 };
 
-export const SliderControl: React.FC<any> = ({ label, value, min = 0, max = 100, step = 1, onChange, suffix = '', unit = 'px' }) => (
+export const SliderControl: React.FC<any> = ({ label, description, value, min = 0, max = 100, step = 1, onChange, suffix = '', unit = 'px' }) => (
     <div className="mb-3">
         <div className="flex justify-between items-center mb-1.5">
             <span className="text-[10px] font-black uppercase tracking-widest text-[var(--theme-muted)] flex items-center gap-1.5">
                 {label}
-                <HelpTooltip label={label} />
+                <HelpTooltip label={label} description={description} />
             </span>
             <span className="text-[10px] font-mono text-[var(--theme-primary)]">{value ?? 0}{suffix || unit}</span>
         </div>
@@ -63,7 +63,7 @@ export const SliderControl: React.FC<any> = ({ label, value, min = 0, max = 100,
     </div>
 );
 
-export const ColorControl: React.FC<any> = ({ label, value, onChange }) => {
+export const ColorControl: React.FC<any> = ({ label, description, value, onChange }) => {
     const [localColor, setLocalColor] = React.useState(value || '#000000');
 
     // Sincroniza localmente para evitar engasgos no draft
@@ -92,7 +92,7 @@ export const ColorControl: React.FC<any> = ({ label, value, onChange }) => {
             <div className="flex flex-col gap-0.5">
                 <span className="text-[10px] font-black uppercase tracking-widest text-[var(--theme-muted)] flex items-center gap-1.5">
                     {label}
-                    <HelpTooltip label={label} />
+                    <HelpTooltip label={label} description={description} />
                 </span>
                 <span className="text-[9px] font-mono text-[var(--theme-muted)] uppercase">{localColor}</span>
             </div>
@@ -132,11 +132,11 @@ export const SwitchControl: React.FC<any> = ({ label, value, onChange, descripti
     </div>
 );
 
-export const SelectControl: React.FC<any> = ({ label, options, value, onChange, isFont = false }) => (
+export const SelectControl: React.FC<any> = ({ label, description, options, value, onChange, isFont = false }) => (
     <div className="mb-3">
         <span className="text-[10px] font-black uppercase tracking-widest text-[var(--theme-muted)] flex items-center gap-1.5 mb-1.5">
             {label}
-            <HelpTooltip label={label} />
+            <HelpTooltip label={label} description={description} />
         </span>
         <select 
             value={value ?? ''} 
@@ -158,12 +158,12 @@ export const SelectControl: React.FC<any> = ({ label, options, value, onChange, 
 );
 
 
-export const InputControl: React.FC<any> = ({ label, value, onChange, type = 'text', placeholder = '' }) => (
+export const InputControl: React.FC<any> = ({ label, description, value, onChange, type = 'text', placeholder = '' }) => (
     <div className="mb-3">
         <div className="flex justify-between items-center mb-1.5">
             <span className="text-[10px] font-black uppercase tracking-widest text-[var(--theme-muted)] flex items-center gap-1.5">
                 {label}
-                <HelpTooltip label={label} />
+                <HelpTooltip label={label} description={description} />
             </span>
         </div>
         <input 
@@ -305,7 +305,7 @@ export const ToggleControl: React.FC<{ label: string, active: boolean, onClick: 
     </button>
 );
 
-export const ImageUploaderControl: React.FC<any> = ({ label, value, onChange }) => {
+export const ImageUploaderControl: React.FC<any> = ({ label, description, value, onChange }) => {
     const inputRef = React.useRef<HTMLInputElement>(null);
 
     const handleFileChange = (e: React.ChangeEvent<HTMLInputElement>) => {
@@ -325,7 +325,7 @@ export const ImageUploaderControl: React.FC<any> = ({ label, value, onChange }) 
             <div className="flex justify-between items-center mb-1.5">
                 <span className="text-[10px] font-black uppercase tracking-widest text-[var(--theme-muted)] flex items-center gap-1.5">
                     {label}
-                    <HelpTooltip label={label} />
+                    <HelpTooltip label={label} description={description} />
                 </span>
             </div>
             <div className="flex items-center gap-3">

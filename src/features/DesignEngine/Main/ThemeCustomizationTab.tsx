@@ -14,6 +14,7 @@ import { DesignScope } from '../../../core/Design/components/DesignScope';
 import { MASTER_DESIGN_MAP } from '../../../core/Design/master-map';
 import { TokenCatalog } from '../../../core/Design/catalog';
 import { buildDynamicGroups } from '../utils/dynamic-categories';
+import DesignPillars from '../config/design-pillars.json';
 
 
 
@@ -34,44 +35,33 @@ import { MasterControlPanel } from './MasterControlPanel';
 import { TemplatesTab } from './TemplatesTab';
 
 
-/**
- * TokenControl (v12.1)
- */
+const ControlRegistry: Record<string, React.FC<any>> = {
+    color: (props) => <ColorControl label={props.token.label} {...props} />,
+    slider: (props) => (
+        <SliderControl 
+            label={props.token.label} 
+            value={props.value} 
+            min={props.token.constraints?.min} 
+            max={props.token.constraints?.max} 
+            step={props.token.constraints?.step} 
+            unit={props.token.unit}
+            onChange={props.onChange} 
+        />
+    ),
+    select: (props) => <SelectControl label={props.token.label} options={props.token.constraints?.options || props.token.options} {...props} />,
+    font: (props) => <SelectControl label={props.token.label} options={props.token.constraints?.options || props.token.options} isFont={true} {...props} />,
+    switch: (props) => <SwitchControl label={props.token.label} description={props.token.description} {...props} />,
+    boolean: (props) => <SwitchControl label={props.token.label} description={props.token.description} {...props} />,
+    input: (props) => <InputControl label={props.token.label} placeholder={props.token.defaultValue} {...props} />,
+    text: (props) => <InputControl label={props.token.label} type="text" placeholder={props.token.defaultValue} {...props} />,
+    number: (props) => <InputControl label={props.token.label} type="number" placeholder={props.token.defaultValue} {...props} />,
+    image: (props) => <ImageUploaderControl label={props.token.label} {...props} />
+};
+
 const TokenControl = ({ token, value, onChange }: { token: any, value: any, onChange: (val: any) => void }) => {
-    switch (token.type) {
-        case 'color':
-            return <ColorControl label={token.label} value={value} onChange={onChange} />;
-        case 'slider':
-            return (
-                <SliderControl 
-                    label={token.label} 
-                    value={value} 
-                    min={token.constraints?.min} 
-                    max={token.constraints?.max} 
-                    step={token.constraints?.step} 
-                    unit={token.unit}
-                    onChange={onChange} 
-                />
-            );
-        case 'select':
-        case 'font':
-            return (
-                <SelectControl 
-                    label={token.label} 
-                    options={token.constraints?.options || token.options} 
-                    value={value} 
-                    onChange={onChange} 
-                    isFont={token.type === 'font'}
-                />
-            );
-        case 'boolean':
-            return <SwitchControl label={token.label} value={value} onChange={onChange} description={token.description} />;
-        case 'text':
-        case 'number':
-            return <InputControl label={token.label} type={token.type} value={value} onChange={onChange} placeholder={token.defaultValue} />;
-        default:
-            return null;
-    }
+    const Widget = ControlRegistry[token.type];
+    if (!Widget) return null;
+    return <Widget token={token} value={value} onChange={onChange} />;
 };
 
 /**
@@ -107,6 +97,7 @@ export const ThemeCustomizationTab: React.FC = () => {
     const [viewMode, setViewMode] = useState<'preview' | 'catalog' | 'templates'>('preview');
     const [searchQuery, setSearchQuery] = useState('');
     const [isEssentialMode, setIsEssentialMode] = useState(true);
+    const [isPreviewStacked, setIsPreviewStacked] = useState(false);
 
     const appToPillarMap: Record<string, string> = useMemo(() => ({
         'dashboard': 'surfaces',
@@ -139,16 +130,18 @@ export const ThemeCustomizationTab: React.FC = () => {
         direction: 'horizontal'
     });
 
-    // 1. Definição dos 6 Pilares de Soberania (Taxonomia v14.0)
-    const pillars = useMemo(() => [
-        { id: 'brand', title: '1. Marca e Identidade', icon: Shield, index: 1 },
-        { id: 'typography', title: '2. Tipografia e Escala', icon: Type, index: 2 },
-        { id: 'surfaces', title: '3. Superfícies e Profundidade', icon: Layout, index: 3 },
-        { id: 'interaction', title: '4. Interação e Estado', icon: MousePointer2, index: 4 },
-        { id: 'navigation', title: '5. Navegação e Estrutura', icon: Activity, index: 5 },
-        { id: 'systems', title: '6. Sistemas e Experiência', icon: Cpu, index: 6 },
-        { id: 'advanced', title: '7. Componentes Avançados', icon: Sparkles, index: 7 },
-    ], []);
+    // 1. Definição dos Pilares dinamicamente via JSON
+    const pillars = useMemo(() => {
+        // Mapeamento dinâmico de strings para ícones do Lucide
+        const IconMap: Record<string, any> = {
+            Shield, Type, Layout, MousePointer2, Activity, Cpu, Sparkles
+        };
+
+        return DesignPillars.map(p => ({
+            ...p,
+            icon: IconMap[p.icon] || Layout // Fallback icon
+        }));
+    }, []);
 
     // Componente Global (Preferências do Usuário) extraído do master map
     const globalComponent = useMemo(() => MASTER_DESIGN_MAP?.components?.find(c => c.id === 'global'), []);
@@ -163,6 +156,15 @@ export const ThemeCustomizationTab: React.FC = () => {
     const dynamicEssentialTokens = useMemo(() => {
         if (!TokenCatalog) return new Set<string>();
         return new Set(TokenCatalog.filter((t: any) => (t.importance || 0) >= 80).map((t: any) => t.tokenId));
+    }, []);
+
+    // 4. Mapa Rápido do Catálogo para injetar Nome e Descrição
+    const catalogMap = useMemo(() => {
+        const map = new Map();
+        if (TokenCatalog) {
+            TokenCatalog.forEach((t: any) => map.set(t.tokenId, t));
+        }
+        return map;
     }, []);
 
     const handleInspectComponent = useCallback((schemaId: string) => {
@@ -241,6 +243,19 @@ export const ThemeCustomizationTab: React.FC = () => {
                                 </div>
                                 <span className="text-[9px] font-black uppercase tracking-widest text-[var(--theme-muted)] group-hover:text-[var(--theme-text)]">Modo Avançado (Hyper-Granular)</span>
                             </label>
+
+                            <label 
+                                className="flex items-center gap-2 cursor-pointer group"
+                                onClick={(e) => {
+                                    e.preventDefault();
+                                    setIsPreviewStacked(!isPreviewStacked);
+                                }}
+                            >
+                                <div className={`w-6 h-3 rounded-full relative transition-all ${isPreviewStacked ? 'bg-[var(--theme-primary)]' : 'bg-[var(--theme-border)]'}`}>
+                                    <div className={`absolute top-0.5 w-2 h-2 rounded-full bg-[var(--theme-text)] transition-all ${isPreviewStacked ? 'left-3.5' : 'left-0.5'}`} />
+                                </div>
+                                <span className="text-[9px] font-black uppercase tracking-widest text-[var(--theme-muted)] group-hover:text-[var(--theme-text)]">Empilhar Previews</span>
+                            </label>
                         </div>
                     </div>
 
@@ -258,66 +273,101 @@ export const ThemeCustomizationTab: React.FC = () => {
                         {searchQuery ? (
                             <motion.div key="search" initial={{ opacity: 0 }} animate={{ opacity: 1 }} className="p-6 space-y-6">
                                 <div className="text-[8px] font-black text-[var(--theme-muted)] uppercase tracking-widest mb-4">Resultados da Busca</div>
-                                {filteredResults?.map(token => (
-                                    <TokenControl key={token.id} token={token} value={draft[token.id]} onChange={(val) => updateDraft(token.id, val)} />
-                                ))}
+                                {filteredResults?.map(token => {
+                                    const meta = catalogMap.get(token.id);
+                                    const enhancedToken = { ...token, label: meta?.name || token.label, description: meta?.description || token.description };
+                                    return (
+                                        <TokenControl key={enhancedToken.id} token={enhancedToken} value={draft[enhancedToken.id]} onChange={(val) => updateDraft(enhancedToken.id, val)} />
+                                    );
+                                })}
                             </motion.div>
                         ) : viewMode === 'preview' ? (
                             <motion.div key="pillars" initial={{ opacity: 0, x: -10 }} animate={{ opacity: 1, x: 0 }} className="pt-2 pb-20">
                                 
-                                {/* BLOCO DE CONFIGURAÇÕES GLOBAIS */}
-                                {globalComponent && (
-                                    <div className="mx-4 mb-4 mt-2 p-5 rounded-2xl bg-gradient-to-b from-white/[0.03] to-transparent border border-white/[0.05] shadow-[0_0_20px_rgba(0,0,0,0.2)]">
-                                        <div className="flex items-center gap-2.5 mb-5">
-                                            <div className="w-5 h-5 rounded-md bg-blue-500/10 flex items-center justify-center border border-blue-500/20">
-                                                <Globe className="w-3 h-3 text-blue-400" />
-                                            </div>
-                                            <span className="text-[9px] font-black uppercase tracking-widest text-blue-400">Preferências Globais</span>
-                                        </div>
-                                        <div className="flex flex-col gap-4">
-                                            {globalComponent.tokens.map((token: any) => (
-                                                <TokenControl key={token.id} token={token} value={draft[token.id]} onChange={(val) => updateDraft(token.id, val)} />
-                                            ))}
-                                        </div>
-                                    </div>
-                                )}
-
-                                {/* BLOCO DE BRANDING ISOLADO */}
-                                {branding && updateBranding && (
-                                    <div className="mx-4 mb-4 mt-2 p-5 rounded-2xl bg-gradient-to-b from-white/[0.03] to-transparent border border-white/[0.05] shadow-[0_0_20px_rgba(0,0,0,0.2)]">
-                                        <div className="flex items-center gap-2.5 mb-5">
-                                            <div className="w-5 h-5 rounded-md bg-amber-500/10 flex items-center justify-center border border-amber-500/20">
-                                                <Shield className="w-3 h-3 text-amber-400" />
-                                            </div>
-                                            <span className="text-[9px] font-black uppercase tracking-widest text-amber-400">Identidade da Empresa</span>
-                                        </div>
-                                        <div className="flex flex-col gap-4">
-                                            <InputControl 
-                                                label="Nome da Empresa (Topo/Sidebar)" 
-                                                type="text" 
-                                                value={branding.companyName || ''} 
-                                                onChange={(val: string) => updateBranding({ companyName: val })} 
-                                            />
-                                            <InputControl 
-                                                label="Nome no Login" 
-                                                type="text" 
-                                                value={branding.loginName || ''} 
-                                                onChange={(val: string) => updateBranding({ loginName: val })} 
-                                            />
-                                            <InputControl 
-                                                label="Título da Aba (Navegador)" 
-                                                type="text" 
-                                                value={branding.tabName || ''} 
-                                                onChange={(val: string) => updateBranding({ tabName: val })} 
-                                            />
-                                            <ImageUploaderControl 
-                                                label="Logotipo (Qualquer Formato)" 
-                                                value={branding.logoBase64 || null} 
-                                                onChange={(val: string | null) => updateBranding({ logoBase64: val })} 
-                                            />
-                                        </div>
-                                    </div>
-                                )}
+                                {/* PILAR 0: CONFIGURAÇÕES GLOBAIS */}
+                                <div key="global-pillar" className="border-b border-[var(--theme-border)] last:border-0">
+                                    <CategoryLabel 
+                                        icon={Globe} 
+                                        title="0. Configurações Globais (2)" 
+                                        index={0} 
+                                        isOpen={activePillarId === 'global'} 
+                                        onToggle={() => setActivePillarId(activePillarId === 'global' ? null : 'global')}
+                                        isDirty={isComponentDirty('global')}
+                                        onReset={() => resetComponent('global')}
+                                        onApply={() => handleApplyComponent('global')}
+                                    />
+                                    <AnimatePresence>
+                                        {activePillarId === 'global' && (
+                                            <motion.div 
+                                                initial={{ height: 0, opacity: 0 }}
+                                                animate={{ height: 'auto', opacity: 1 }}
+                                                exit={{ height: 0, opacity: 0 }}
+                                                transition={{ duration: 0.3, ease: 'easeInOut' }}
+                                                className="overflow-hidden bg-[var(--theme-surface)]"
+                                            >
+                                                <div className="px-2 py-2 flex flex-col gap-1">
+                                                    {/* Preferências Globais */}
+                                                    {globalComponent && (
+                                                        <Section 
+                                                            id="global-preferences" 
+                                                            icon={Globe} 
+                                                            title={`Preferências Globais (${globalComponent.tokens.length})`} 
+                                                            activeSection={activeSectionId} 
+                                                            onToggle={setActiveSectionId}
+                                                        >
+                                                            <div className="flex flex-col gap-4">
+                                                                {globalComponent.tokens.map((token: any) => {
+                                                                    const meta = catalogMap.get(token.id);
+                                                                    const enhancedToken = { ...token, label: meta?.name || token.label, description: meta?.description || token.description };
+                                                                    return (
+                                                                        <TokenControl key={enhancedToken.id} token={enhancedToken} value={draft[enhancedToken.id]} onChange={(val) => updateDraft(enhancedToken.id, val)} />
+                                                                    );
+                                                                })}
+                                                            </div>
+                                                        </Section>
+                                                    )}
+                                                    
+                                                    {/* Identidade da Empresa */}
+                                                    {branding && updateBranding && (
+                                                        <Section 
+                                                            id="global-branding" 
+                                                            icon={Shield} 
+                                                            title="Identidade da Empresa (4)" 
+                                                            activeSection={activeSectionId} 
+                                                            onToggle={setActiveSectionId}
+                                                        >
+                                                            <div className="flex flex-col gap-4">
+                                                                <InputControl 
+                                                                    label="Nome da Empresa (Topo/Sidebar)" 
+                                                                    type="text" 
+                                                                    value={branding.companyName || ''} 
+                                                                    onChange={(val: string) => updateBranding({ companyName: val })} 
+                                                                />
+                                                                <InputControl 
+                                                                    label="Nome no Login" 
+                                                                    type="text" 
+                                                                    value={branding.loginName || ''} 
+                                                                    onChange={(val: string) => updateBranding({ loginName: val })} 
+                                                                />
+                                                                <InputControl 
+                                                                    label="Título da Aba (Navegador)" 
+                                                                    type="text" 
+                                                                    value={branding.tabName || ''} 
+                                                                    onChange={(val: string) => updateBranding({ tabName: val })} 
+                                                                />
+                                                                <ImageUploaderControl 
+                                                                    label="Logotipo (Qualquer Formato)" 
+                                                                    value={branding.logoBase64 || null} 
+                                                                    onChange={(val: string | null) => updateBranding({ logoBase64: val })} 
+                                                                />
+                                                            </div>
+                                                        </Section>
+                                                    )}
+                                                </div>
+                                            </motion.div>
+                                        )}
+                                    </AnimatePresence>
+                                </div>
 
                                 {pillars.map((pillar) => {
                                     // Conta quantas subcategorias possuem pelo menos 1 token visível
@@ -354,9 +404,17 @@ export const ThemeCustomizationTab: React.FC = () => {
                                                                     activeSection={activeSectionId} onToggle={setActiveSectionId}
                                                                 >
                                                                     <div className="flex flex-col gap-4">
-                                                                        {visibleTokens.map((token: any) => (
-                                                                            <TokenControl key={token.id} token={token} value={draft[token.id]} onChange={(val) => updateDraft(token.id, val)} />
-                                                                        ))}
+                                                                        {visibleTokens.map((token: any) => {
+                                                                            const meta = catalogMap.get(token.id);
+                                                                            const enhancedToken = {
+                                                                                ...token,
+                                                                                label: meta?.name || token.label,
+                                                                                description: meta?.description || token.description
+                                                                            };
+                                                                            return (
+                                                                                <TokenControl key={enhancedToken.id} token={enhancedToken} value={draft[enhancedToken.id]} onChange={(val) => updateDraft(enhancedToken.id, val)} />
+                                                                            );
+                                                                        })}
                                                                     </div>
                                                                 </Section>
                                                             );
@@ -400,6 +458,7 @@ export const ThemeCustomizationTab: React.FC = () => {
                     activeCategory={activePillarId}
                     activeSectionId={activeSectionId}
                     isDualView={viewMode === 'preview'}
+                    isPreviewStacked={isPreviewStacked}
                     customThemes={[]}
                     onInspectComponent={handleInspectComponent}
                 />
