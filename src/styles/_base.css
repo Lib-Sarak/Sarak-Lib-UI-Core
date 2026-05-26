@@ -145,17 +145,4 @@ body {
     background: var(--theme-primary, #00f2ff);
 }
 
-/* Theme Mode Transitions */
-.sarak-design-scope.light {
-    --bg-body: #f8fafc;
-    --text-main: #0f172a;
-    --border-color: rgba(0,0,0,0.1);
-    --bg-card: rgba(255,255,255,0.8);
-}
-
-.sarak-design-scope.dark {
-    --bg-body: #020617;
-    --text-main: #ffffff;
-    --border-color: rgba(255,255,255,0.1);
-    --bg-card: rgba(15,23,42,0.6);
-}
+/* Theme Mode Transitions (Removido - Sendo gerenciado pelo color-engine.ts) */

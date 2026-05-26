@@ -9,6 +9,7 @@ import { useRegistryManager } from './hooks/useRegistryManager';
 import { useDesignManager } from './hooks/useDesignManager';
 import { useBrandingManager } from './hooks/useBrandingManager';
 import { DesignInjector } from './components/DesignInjector';
+import { SovereignThemeInjector } from './components/SovereignThemeInjector';
 import { GLOBAL_THEMES } from '../Design/presets/themes/index';
 
 // Re-exports para manter compatibilidade com arquivos que importam do Provider
@@ -194,6 +195,7 @@ export const SarakUIProvider: React.FC<SarakUIProviderProps> = ({
                 isDrafting={isDrafting} 
             />
             <NoiseOverlay />
+            <SovereignThemeInjector design={design} manifest={options?.manifest} />
             {shouldRenderChildren ? children : null}
         </UIContext.Provider>
     );

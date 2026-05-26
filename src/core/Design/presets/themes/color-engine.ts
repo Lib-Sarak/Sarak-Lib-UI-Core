@@ -19,6 +19,7 @@ const EXPLICIT_TEXT_TOKENS = new Set([
     'cardSearchTextFocusColor',
     'btnPrimaryText',
     'topbarTitleColor',
+    'textureColor',
     'identityFontFamily', // Embora seja fonte, pode ser processado se for cor em alguns contextos
     'identityTracking'
 ]);
@@ -45,7 +46,6 @@ const EXPLICIT_PRIMARY_TOKENS = new Set([
     'cardGlowColor',
     'btnNeonGlowColor',
     'securityShieldGlow',
-    'textureColor',
     'aiGlowColor'
 ]);
 
@@ -161,7 +161,7 @@ export const syncThemeWithMode = (draftTokens: Record<string, any>, targetMode: 
         result.shadowIntensity = Math.min(Number(result.shadowIntensity) || 0, 0.25);
         result.shadowAmbientAlpha = Math.min(Number(result.shadowAmbientAlpha) || 0, 0.08);
         result.shadowProjectionAlpha = Math.min(Number(result.shadowProjectionAlpha) || 0, 0.1);
-        result.layerBackdropOpacity = Math.min(Number(result.layerBackdropOpacity) || 0, 0.12);
+        result.layerBackdropOpacity = Math.min(Number(result.layerBackdropOpacity) || 0, 0.02);
         result.cardTextureOpacity = Math.min(result.cardTextureOpacity || 0, 0.05); // Suaviza texturas no claro
         result.textureOpacity = Math.min(Number(result.textureOpacity) || 0, 0.03);
         result.atmosphereNoiseOpacity = 0.01; // Reduz ruído para evitar aspecto de "sujeira"

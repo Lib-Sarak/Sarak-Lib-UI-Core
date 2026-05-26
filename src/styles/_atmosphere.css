@@ -229,7 +229,7 @@
 .sarak-card[data-sx-card-texture-type="carbon"]::after,
 [data-sx-card-texture-type="carbon"] [class*="card"]::after,
 [class*="card"][data-sx-card-texture-type="carbon"]::after {
-    background: linear-gradient(27deg, #151515 5px, transparent 5px) 0 5px, linear-gradient(207deg, #151515 5px, transparent 5px) 10px 0px, linear-gradient(27deg, #222 5px, transparent 5px) 0px 10px, linear-gradient(207deg, #222 5px, transparent 5px) 10px 5px, linear-gradient(90deg, #1b1b1b 10px, transparent 10px), linear-gradient(#1d1d1d 25%, #1a1a1a 25%, #1a1a1a 50%, transparent 50%, transparent 75%, #242424 75%, #242424);
+    background: linear-gradient(27deg, rgba(var(--theme-texture-color-rgb, 21,21,21), 1) 5px, transparent 5px) 0 5px, linear-gradient(207deg, rgba(var(--theme-texture-color-rgb, 21,21,21), 1) 5px, transparent 5px) 10px 0px, linear-gradient(27deg, rgba(var(--theme-texture-color-rgb, 34,34,34), 0.8) 5px, transparent 5px) 0px 10px, linear-gradient(207deg, rgba(var(--theme-texture-color-rgb, 34,34,34), 0.8) 5px, transparent 5px) 10px 5px, linear-gradient(90deg, rgba(var(--theme-texture-color-rgb, 27,27,27), 0.9) 10px, transparent 10px), linear-gradient(rgba(var(--theme-texture-color-rgb, 29,29,29), 0.9) 25%, rgba(var(--theme-texture-color-rgb, 26,26,26), 1) 25%, rgba(var(--theme-texture-color-rgb, 26,26,26), 1) 50%, transparent 50%, transparent 75%, rgba(var(--theme-texture-color-rgb, 36,36,36), 0.85) 75%, rgba(var(--theme-texture-color-rgb, 36,36,36), 0.85));
     background-size: 20px 20px;
     filter: brightness(1.2) contrast(1.1);
 }
@@ -342,7 +342,7 @@
 .sarak-card[data-sx-card-texture-type="stars"]::after,
 [data-sx-card-texture-type="stars"] [class*="card"]::after,
 [class*="card"][data-sx-card-texture-type="stars"]::after {
-    background-image: radial-gradient(1.5px 1.5px at 20px 30px, #fff, rgba(0,0,0,0)), radial-gradient(1px 1px at 40px 70px, #fff, rgba(0,0,0,0)), radial-gradient(2px 2px at 50px 160px, #fff, rgba(0,0,0,0)), radial-gradient(1.5px 1.5px at 90px 40px, #fff, rgba(0,0,0,0)), radial-gradient(1px 1px at 130px 80px, #fff, rgba(0,0,0,0)), radial-gradient(2px 2px at 160px 120px, #fff, rgba(0,0,0,0));
+    background-image: radial-gradient(1.5px 1.5px at 20px 30px, var(--theme-texture-color, #fff), rgba(0,0,0,0)), radial-gradient(1px 1px at 40px 70px, var(--theme-texture-color, #fff), rgba(0,0,0,0)), radial-gradient(2px 2px at 50px 160px, var(--theme-texture-color, #fff), rgba(0,0,0,0)), radial-gradient(1.5px 1.5px at 90px 40px, var(--theme-texture-color, #fff), rgba(0,0,0,0)), radial-gradient(1px 1px at 130px 80px, var(--theme-texture-color, #fff), rgba(0,0,0,0)), radial-gradient(2px 2px at 160px 120px, var(--theme-texture-color, #fff), rgba(0,0,0,0));
     background-size: 250px 250px;
     animation: stars-twinkle 4s ease-in-out infinite alternate;
 }
@@ -443,7 +443,7 @@
 .sarak-card[data-sx-card-texture-type="constellation"]::after,
 [data-sx-card-texture-type="constellation"] [class*="card"]::after,
 [class*="card"][data-sx-card-texture-type="constellation"]::after {
-    background-image: radial-gradient(1.5px 1.5px at 10% 20%, white, transparent), radial-gradient(1.5px 1.5px at 30% 50%, white, transparent), radial-gradient(1.5px 1.5px at 50% 30%, white, transparent), radial-gradient(1.5px 1.5px at 80% 90%, white, transparent), radial-gradient(1.5px 1.5px at 90% 10%, white, transparent);
+    background-image: radial-gradient(1.5px 1.5px at 10% 20%, var(--theme-texture-color, white), transparent), radial-gradient(1.5px 1.5px at 30% 50%, var(--theme-texture-color, white), transparent), radial-gradient(1.5px 1.5px at 50% 30%, var(--theme-texture-color, white), transparent), radial-gradient(1.5px 1.5px at 80% 90%, var(--theme-texture-color, white), transparent), radial-gradient(1.5px 1.5px at 90% 10%, var(--theme-texture-color, white), transparent);
     background-size: 300px 300px;
     -webkit-mask-image: url("data:image/svg+xml,%3Csvg width='300' height='300' xmlns='http://www.w3.org/2000/svg'%3E%3Cpath d='M30 60 L90 150 L150 90 L240 270 L270 30' stroke='white' stroke-width='0.5' fill='none'/%3E%3C/svg%3E");
     mask-image: url("data:image/svg+xml,%3Csvg width='300' height='300' xmlns='http://www.w3.org/2000/svg'%3E%3Cpath d='M30 60 L90 150 L150 90 L240 270 L270 30' stroke='white' stroke-width='0.5' fill='none'/%3E%3C/svg%3E");
@@ -455,7 +455,7 @@
 .sarak-card[data-sx-card-texture-type="circuit-pro"]::after,
 [data-sx-card-texture-type="circuit-pro"] [class*="card"]::after,
 [class*="card"][data-sx-card-texture-type="circuit-pro"]::after {
-    background-image: url("data:image/svg+xml,%3Csvg width='100' height='100' xmlns='http://www.w3.org/2000/svg'%3E%3Cg fill='none' stroke='rgba(255,255,255,0.2)' stroke-width='0.5'%3E%3Cpath d='M10 10 L10 40 L30 40 L30 70 L60 70 L60 90'/%3E%3Cpath d='M90 10 L90 30 L70 30 L70 50 L40 50 L40 10'/%3E%3Ccircle cx='10' cy='10' r='1.5' fill='rgba(255,255,255,0.3)'/%3E%3Ccircle cx='60' cy='90' r='1.5' fill='rgba(255,255,255,0.3)'/%3E%3Ccircle cx='90' cy='10' r='1.5' fill='rgba(255,255,255,0.3)'/%3E%3C/g%3E%3C/svg%3E");
+    background-image: url("data:image/svg+xml,%3Csvg width='100' height='100' xmlns='http://www.w3.org/2000/svg'%3E%3Cg fill='none' stroke='currentColor' stroke-width='0.5' stroke-opacity='0.2'%3E%3Cpath d='M10 10 L10 40 L30 40 L30 70 L60 70 L60 90'/%3E%3Cpath d='M90 10 L90 30 L70 30 L70 50 L40 50 L40 10'/%3E%3Ccircle cx='10' cy='10' r='1.5' fill='currentColor' fill-opacity='0.3'/%3E%3Ccircle cx='60' cy='90' r='1.5' fill='currentColor' fill-opacity='0.3'/%3E%3Ccircle cx='90' cy='10' r='1.5' fill='currentColor' fill-opacity='0.3'/%3E%3C/g%3E%3C/svg%3E");
     background-size: 200px 200px;
 }
 
@@ -465,7 +465,7 @@
 .sarak-card[data-sx-card-texture-type="carbon-tech"]::after,
 [data-sx-card-texture-type="carbon-tech"] [class*="card"]::after,
 [class*="card"][data-sx-card-texture-type="carbon-tech"]::after {
-    background: linear-gradient(45deg, #111 25%, transparent 25%, transparent 75%, #111 75%, #111), linear-gradient(45deg, #111 25%, transparent 25%, transparent 75%, #111 75%, #111);
+    background: linear-gradient(45deg, var(--theme-texture-color, #111) 25%, transparent 25%, transparent 75%, var(--theme-texture-color, #111) 75%, var(--theme-texture-color, #111)), linear-gradient(45deg, var(--theme-texture-color, #111) 25%, transparent 25%, transparent 75%, var(--theme-texture-color, #111) 75%, var(--theme-texture-color, #111));
     background-size: 8px 8px;
     background-position: 0 0, 4px 4px;
     opacity: var(--sarak-card-texture-opacity, var(--sarak-bg-pattern-opacity, var(--theme-texture-opacity, 0.15)));
@@ -578,8 +578,8 @@
 [class*="card"][data-sx-card-texture-type="nebula"]::after {
     background: radial-gradient(circle at 30% 20%, rgba(var(--theme-primary-rgb), 0.4) 0%, transparent 50%),
                 radial-gradient(circle at 70% 80%, rgba(var(--theme-secondary-rgb), 0.3) 0%, transparent 50%),
-                radial-gradient(1px 1px at 50px 50px, white, transparent),
-                radial-gradient(2px 2px at 150px 150px, white, transparent);
+                radial-gradient(1px 1px at 50px 50px, var(--theme-texture-color, white), transparent),
+                radial-gradient(2px 2px at 150px 150px, var(--theme-texture-color, white), transparent);
     background-size: 100% 100%, 100% 100%, 200px 200px, 300px 300px;
     filter: blur(40px) contrast(150%);
     opacity: var(--sarak-card-texture-opacity, var(--sarak-bg-pattern-opacity, var(--theme-texture-opacity, 0.4)));
