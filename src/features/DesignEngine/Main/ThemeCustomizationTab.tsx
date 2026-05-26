@@ -12,14 +12,10 @@ import { PreviewCanvas } from '../Canvas/PreviewCanvas';
 import { DesignScope } from '../../../core/Design/components/DesignScope';
 
 import { MASTER_DESIGN_MAP } from '../../../core/Design/master-map';
+import { TokenCatalog } from '../../../core/Design/catalog';
+import { buildDynamicGroups } from '../utils/dynamic-categories';
 
-const ESSENTIAL_TOKENS = [
-    'colorPrimary', 'colorSecondary', 'colorAccent', 'colorSurface', 
-    'fontHeading', 'fontBody', 'h1Size', 'bodySize', 
-    'radiusTheme', 'themeGap', 
-    'buttonRadius', 'cardRadius', 
-    'layout', 'mode', 'texture'
-];
+
 
 // Modular Hooks & Components
 import { useDesignDraft } from '../hooks/useDesignDraft';
@@ -157,40 +153,17 @@ export const ThemeCustomizationTab: React.FC = () => {
     // Componente Global (Preferências do Usuário) extraído do master map
     const globalComponent = useMemo(() => MASTER_DESIGN_MAP?.components?.find(c => c.id === 'global'), []);
 
-    // 2. Agrupamento Hierárquico: Pilar -> Componente
+    // 2. Agrupamento Dinâmico (Folksonomia) via Json
     const groupedStructure = useMemo(() => {
-        const groups: Record<string, Record<string, any[]>> = {};
-        
-        pillars.forEach(p => { groups[p.id] = {}; });
-
-        const schemaToPillar: Record<string, string> = {
-            identity: 'brand',
-            typography: 'typography',
-            shell: 'surfaces',
-            cards: 'surfaces',
-            atmosphere: 'surfaces',
-            controls: 'interaction',
-            motion: 'interaction',
-            navigation: 'navigation',
-            system: 'systems',
-            data: 'systems',
-            specialized: 'advanced'
-        };
-
-        if (MASTER_DESIGN_MAP?.components) {
-            MASTER_DESIGN_MAP.components.forEach(comp => {
-                if (comp.id === 'global') return; // Isola o globalComponent fora do fluxo
-                const pillarId = schemaToPillar[comp.id] || 'brand';
-                const subcat = 'Geral';
-
-                if (!groups[pillarId]) groups[pillarId] = {};
-                if (!groups[pillarId][subcat]) groups[pillarId][subcat] = [];
-                
-                groups[pillarId][subcat].push(comp);
-            });
-        }
-        return groups;
+        if (!MASTER_DESIGN_MAP?.components || !TokenCatalog) return {};
+        return buildDynamicGroups(MASTER_DESIGN_MAP.components, TokenCatalog);
     }, [pillars]);
+
+    // 3. Tokens Essenciais Dinâmicos (Importance >= 80)
+    const dynamicEssentialTokens = useMemo(() => {
+        if (!TokenCatalog) return new Set<string>();
+        return new Set(TokenCatalog.filter((t: any) => (t.importance || 0) >= 80).map((t: any) => t.tokenId));
+    }, []);
 
     const handleInspectComponent = useCallback((schemaId: string) => {
         const foundPillar = Object.keys(groupedStructure).find(p => 
@@ -346,11 +319,17 @@ export const ThemeCustomizationTab: React.FC = () => {
                                     </div>
                                 )}
 
-                                {pillars.map((pillar) => (
+                                {pillars.map((pillar) => {
+                                    // Conta quantas subcategorias possuem pelo menos 1 token visível
+                                    const activeSubcategoriesCount = Object.values(groupedStructure[pillar.id] || {}).filter((tokens) => {
+                                        return (tokens as any[]).some((token: any) => !isEssentialMode || dynamicEssentialTokens.has(token.id));
+                                    }).length;
+
+                                    return (
                                     <div key={pillar.id} className="border-b border-[var(--theme-border)] last:border-0">
                                         <CategoryLabel 
                                             icon={pillar.icon} 
-                                            title={pillar.title} 
+                                            title={`${pillar.title} (${activeSubcategoriesCount})`} 
                                             index={pillar.index} 
                                             isOpen={activePillarId === pillar.id} 
                                             onToggle={() => {
@@ -366,36 +345,29 @@ export const ThemeCustomizationTab: React.FC = () => {
                                             {activePillarId === pillar.id && (
                                                 <motion.div initial={{ height: 0, opacity: 0 }} animate={{ height: 'auto', opacity: 1 }} exit={{ height: 0, opacity: 0 }} className="overflow-hidden bg-[var(--theme-layer)]">
                                                     <div className="px-2 py-2 flex flex-col gap-1">
-                                                        {Object.entries(groupedStructure[pillar.id] || {}).map(([subcat, comps]) => (
-                                                            <div key={subcat} className="flex flex-col gap-1 mb-2">
-                                                                <div className="px-4 py-2 flex items-center gap-2">
-                                                                    <div className="w-1 h-1 rounded-full bg-[var(--theme-primary)] opacity-30" />
-                                                                    <span className="text-[7px] font-black uppercase tracking-[0.2em] text-[var(--theme-muted)]">{subcat}</span>
-                                                                </div>
-                                                                {comps.map((comp) => {
-                                                                    const visibleTokens = comp.tokens.filter((token: any) => !isEssentialMode || ESSENTIAL_TOKENS.includes(token.id));
-                                                                    if (visibleTokens.length === 0) return null;
-                                                                    return (
-                                                                    <Section 
-                                                                        key={comp.id} id={comp.id} icon={Command} title={comp.label} 
-                                                                        activeSection={activeSectionId} onToggle={setActiveSectionId}
-                                                                    >
-                                                                        <div className="flex flex-col gap-4">
-                                                                            {visibleTokens.map((token: any) => (
-                                                                                <TokenControl key={token.id} token={token} value={draft[token.id]} onChange={(val) => updateDraft(token.id, val)} />
-                                                                            ))}
-                                                                        </div>
-                                                                    </Section>
-                                                                    );
-                                                                })}
-                                                            </div>
-                                                        ))}
+                                                        {Object.entries(groupedStructure[pillar.id] || {}).map(([subcat, tokens]) => {
+                                                            const visibleTokens = (tokens as any[]).filter((token: any) => !isEssentialMode || dynamicEssentialTokens.has(token.id));
+                                                            if (visibleTokens.length === 0) return null;
+                                                            return (
+                                                                <Section 
+                                                                    key={subcat} id={`${pillar.id}-${subcat}`} icon={Command} title={`${subcat} (${visibleTokens.length})`} 
+                                                                    activeSection={activeSectionId} onToggle={setActiveSectionId}
+                                                                >
+                                                                    <div className="flex flex-col gap-4">
+                                                                        {visibleTokens.map((token: any) => (
+                                                                            <TokenControl key={token.id} token={token} value={draft[token.id]} onChange={(val) => updateDraft(token.id, val)} />
+                                                                        ))}
+                                                                    </div>
+                                                                </Section>
+                                                            );
+                                                        })}
                                                     </div>
                                                 </motion.div>
                                             )}
                                         </AnimatePresence>
                                     </div>
-                                ))}
+                                    );
+                                })}
                             </motion.div>
                         ) : viewMode === 'catalog' ? (
                             <motion.div key="catalog" initial={{ opacity: 0 }} animate={{ opacity: 1 }} className="h-full">
