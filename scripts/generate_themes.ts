@@ -70,8 +70,55 @@ const crystalOverrides = {
     colorBgLayer2: '#f1f5f9'
 };
 
+// Nebula Space overrides (Utilizando os novos componentes de 100% granularidade)
+const nebulaOverrides = {
+    mode: 'dark',
+    layoutDensity: 'compact',
+    navigationStyle: 'topbar',
+    searchPositionTopbar: 'center', // Novo componente
+    searchPositionSidebar: 'hidden', // Novo componente
+    colorPrimary: '#ff007f',
+    colorSecondary: '#00e5ff',
+    colorSurface: 'rgba(10, 10, 20, 0.4)',
+    bgBase: '#020205',
+    globalBackgroundImageUrl: 'url("https://images.unsplash.com/photo-1534447677768-be436bb09401?q=80&w=1920&auto=format&fit=crop")', // Nova capacidade
+    globalBackgroundBlur: 4, // Nova capacidade
+    globalBackgroundBlendMode: 'screen', // Nova capacidade
+    globalBackgroundOpacity: 0.25, // Nova capacidade
+    pageTransitionType: 'zoom', // Nova animação
+    cardHoverStyle: '3d-tilt', // Novo hover
+    imageCardHoverZoom: 1.15, // Nova granularidade
+    imageCardOverlayOpacity: 0.7, // Nova granularidade
+    inputFocusBorderColor: '#ff007f', // Nova granularidade
+    inputBorderColor: 'rgba(255, 0, 127, 0.2)', // Nova granularidade
+    iconFamily: 'phosphor', // Escolha de pacote
+    iconWeight: 'duotone',
+    bodySize: '13px',
+    fontHeading: "'Outfit', sans-serif",
+    h1Size: 42,
+    radiusTheme: '16px',
+    buttonRadius: '12px',
+    cardRadius: '24px',
+    themeGap: '12px',
+    glassBlur: 20,
+    glassSaturation: 1.8,
+    motionEaseMain: 'cubic-bezier(0.175, 0.885, 0.32, 1.275)',
+    motionSpeedBase: 500,
+    texture: 'grid',
+    textColorMaster: '#ffffff',
+    textColorSecondary: 'rgba(255, 255, 255, 0.8)',
+    textColorMuted: 'rgba(255, 255, 255, 0.5)',
+    cardBackgroundColor: 'rgba(20, 20, 40, 0.2)',
+    cardTitleColor: '#ff007f',
+    cardBorderColor: 'rgba(0, 229, 255, 0.2)',
+    topbarColor: 'rgba(5, 5, 10, 0.5)',
+    topbarTitleColor: '#00e5ff',
+    sidebarColor: 'rgba(5, 5, 10, 0.5)'
+};
+
 const sovereignTokens = { ...baseTokens, ...sovereignOverrides };
 const crystalTokens = { ...baseTokens, ...crystalOverrides };
+const nebulaTokens = { ...baseTokens, ...nebulaOverrides };
 
 const fileContent = `/**
  * Presets: Temas Globais (Preview 2 Globais)
@@ -99,9 +146,22 @@ export const GLOBAL_THEMES: ThemePreset[] = [
         name: 'Crystal Glass',
         description: 'Clean & Light: Profundidade óptica, suavidade extrema e design translúcido.',
         design: ${JSON.stringify(crystalTokens, null, 8).replace(/\n/g, '\n        ')}
+    },
+    {
+        id: 'nebula-space',
+        name: 'Nebula Space',
+        description: 'Imersivo & Cyberpunk: Imagem de fundo, transições de Zoom e Ícones Duotone com alto desfoque de vidro e componentes centralizados.',
+        design: ${JSON.stringify(nebulaTokens, null, 8).replace(/\n/g, '\n        ')}
     }
 ];
 `;
 
-fs.writeFileSync('../src/core/Design/presets/themes/index.ts', fileContent, 'utf-8');
-console.log('Themes generated successfully.');
+import path from 'path';
+import { fileURLToPath } from 'url';
+
+const __filename = fileURLToPath(import.meta.url);
+const __dirname = path.dirname(__filename);
+const outputPath = path.resolve(__dirname, '../src/core/Design/presets/themes/index.ts');
+
+fs.writeFileSync(outputPath, fileContent, 'utf-8');
+console.log('Themes generated successfully at', outputPath);

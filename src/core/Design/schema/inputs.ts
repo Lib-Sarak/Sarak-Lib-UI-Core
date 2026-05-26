@@ -24,6 +24,27 @@ export const InputsSchema: ComponentSchema = {
             defaultValue: 'rgba(255, 255, 255, 0.03)',
             generateVariants: true,
             cssVars: ['--sarak-input-bg']
+        },
+        {
+            id: 'inputBorderColor',
+            label: 'Cor da Borda do Input',
+            type: 'color',
+            defaultValue: 'rgba(255, 255, 255, 0.1)',
+            cssVars: ['--sarak-input-border-color']
+        },
+        {
+            id: 'inputFocusBorderColor',
+            label: 'Cor da Borda (Foco)',
+            type: 'color',
+            defaultValue: '#00f2ff',
+            cssVars: ['--sarak-input-focus-border-color']
+        },
+        {
+            id: 'inputTextColor',
+            label: 'Cor do Texto do Input',
+            type: 'color',
+            defaultValue: '#ffffff',
+            cssVars: ['--sarak-input-text-color']
         }
     ]
 };

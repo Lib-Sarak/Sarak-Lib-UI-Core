@@ -50,7 +50,8 @@ const schemaToColumn: Record<string, string> = {
     'motion': 'motion_and_animation',
     'chat': 'specialized_engines',
     'engineering': 'specialized_engines',
-    'advanced': 'specialized_engines'
+    'advanced': 'specialized_engines',
+    'media': 'colors_and_atmosphere'
 };
 
 // Iterar todos os componentes

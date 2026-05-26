@@ -36,6 +36,13 @@ export const TopbarNav: React.FC<TopbarNavProps> = ({
     // Sovereign Logic: Parity with Sidebar Hover
     const effectiveIsNavHidden = isNavHidden && !isHovered;
 
+    const searchPos = design?.searchPositionTopbar || 'left';
+    
+    const renderSearch = () => {
+        if (searchPos === 'hidden') return null;
+        return <ShellSearchWidget variant={effectiveIsNavHidden ? 'icon' : 'bar'} onClick={() => setIsSearchOpen(true)} />;
+    };
+
     return (
         <header
             onMouseEnter={() => isNavHidden && setIsHovered(true)}
@@ -78,6 +85,7 @@ export const TopbarNav: React.FC<TopbarNavProps> = ({
                             )}
                             {!effectiveIsNavHidden && <span className="font-black tracking-tighter text-sm uppercase italic truncate max-w-[150px]">{systemName || brand.name}</span>}
                         </div>
+                        {searchPos === 'left' && renderSearch()}
                     </div>
 
                     {isTopbar && (
@@ -106,11 +114,17 @@ export const TopbarNav: React.FC<TopbarNavProps> = ({
                             ))}
                         </nav>
                     )}
+                    
+                    {searchPos === 'center' && (
+                        <div className="absolute left-1/2 top-1/2 -translate-x-1/2 -translate-y-1/2 z-20 pointer-events-auto">
+                            {renderSearch()}
+                        </div>
+                    )}
                 </div>
 
                 <div className="flex items-center gap-3">
                     {/* 1. Search Widget */}
-                    <ShellSearchWidget variant={effectiveIsNavHidden ? 'icon' : 'bar'} onClick={() => setIsSearchOpen(true)} />
+                    {searchPos === 'right' && renderSearch()}
 
                     <div className={`flex items-center gap-2 p-1 bg-[var(--theme-muted)]/10 rounded-xl border border-[var(--theme-border)] !overflow-visible ${effectiveIsNavHidden ? 'scale-90' : ''}`}>
                         <ShellLanguageSelector variant="horizontal" />

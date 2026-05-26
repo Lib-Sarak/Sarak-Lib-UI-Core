@@ -176,7 +176,34 @@ export const NavigationSchema: ComponentSchema = {
             label: 'Sombra da Sidebar',
             type: 'text',
             defaultValue: '10px 0 30px rgba(0,0,0,0.5)',
-            cssVars: ['--sarak-sidebar-shadow']
+        },
+        // --- PESQUISA (SEARCH BAR) ---
+        {
+            id: 'searchPositionTopbar',
+            label: 'Posição Pesquisa (Topbar)',
+            type: 'select',
+            constraints: {
+                options: [
+                    { id: 'left', value: 'left', label: 'Esquerda' },
+                    { id: 'center', value: 'center', label: 'Centro' },
+                    { id: 'right', value: 'right', label: 'Direita' },
+                    { id: 'hidden', value: 'hidden', label: 'Oculta' }
+                ]
+            },
+            defaultValue: 'left'
+        },
+        {
+            id: 'searchPositionSidebar',
+            label: 'Posição Pesquisa (Sidebar)',
+            type: 'select',
+            constraints: {
+                options: [
+                    { id: 'top', value: 'top', label: 'Topo' },
+                    { id: 'bottom', value: 'bottom', label: 'Rodapé' },
+                    { id: 'hidden', value: 'hidden', label: 'Oculta' }
+                ]
+            },
+            defaultValue: 'top'
         }
     ]
 };

@@ -355,6 +355,24 @@ export const CardSchema: ComponentSchema = {
             },
             defaultValue: 'classic',
             cssVars: ['--sarak-card-variant']
+        },
+
+        // --- IMAGE CARDS ---
+        {
+            id: 'imageCardOverlayOpacity',
+            label: 'Opacidade do Overlay (Imagem)',
+            type: 'slider',
+            constraints: { min: 0, max: 1, step: 0.05 },
+            defaultValue: 0.5,
+            cssVars: ['--sarak-image-card-overlay-opacity']
+        },
+        {
+            id: 'imageCardHoverZoom',
+            label: 'Escala de Zoom no Hover (Imagem)',
+            type: 'slider',
+            constraints: { min: 1, max: 1.5, step: 0.01 },
+            defaultValue: 1.05,
+            cssVars: ['--sarak-image-card-hover-zoom']
         }
     ]
 };

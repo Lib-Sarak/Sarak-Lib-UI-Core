@@ -35,6 +35,17 @@ export const SidebarNav: React.FC<SidebarNavProps> = ({
     // Sovereign Logic: Effective state for hover expansion
     const effectiveIsNavHidden = isNavHidden && !isHovered;
 
+    const searchPos = design?.searchPositionSidebar || 'top';
+
+    const renderSearch = () => {
+        if (searchPos === 'hidden') return null;
+        return (
+            <div className="px-1 mb-2 shrink-0">
+                <ShellSearchWidget variant={effectiveIsNavHidden ? 'icon' : 'bar'} onClick={() => setIsSearchOpen(true)} />
+            </div>
+        );
+    };
+
     return (
         <aside
             onMouseEnter={() => {
@@ -93,10 +104,8 @@ export const SidebarNav: React.FC<SidebarNavProps> = ({
             </div>
 
             <div className="flex-1 overflow-y-auto p-4 custom-scrollbar flex flex-col" style={{ gap: `var(--theme-tab-gap, ${tabGap}px)` }}>
-                {/* 1. Search (Icon Variant) */}
-                <div className="px-1 mb-2">
-                    <ShellSearchWidget variant={effectiveIsNavHidden ? 'icon' : 'bar'} onClick={() => setIsSearchOpen(true)} />
-                </div>
+                {/* 1. Search (Icon Variant) - TOP */}
+                {searchPos === 'top' && renderSearch()}
 
                 {Object.entries(groupedModules).map(([category, mods]) => (
                     <div key={category} style={{ marginBottom: `var(--theme-tab-gap, ${tabGap}px)` }}>
@@ -137,6 +146,9 @@ export const SidebarNav: React.FC<SidebarNavProps> = ({
             </div>
 
             <div className="mt-auto space-y-1 p-2">
+                {/* Search - BOTTOM */}
+                {searchPos === 'bottom' && renderSearch()}
+
                 {/* 2. Language Selector */}
                 <ShellLanguageSelector variant="vertical" />
 

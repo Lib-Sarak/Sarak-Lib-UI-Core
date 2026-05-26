@@ -83,7 +83,36 @@ export const AnimationSchema: ComponentSchema = {
             label: 'Ativar Movimentos',
             type: 'boolean',
             defaultValue: true,
-            cssVars: ['--sarak-anim-enabled']
+        },
+        // --- ADVANCED EFFECTS ---
+        {
+            id: 'pageTransitionType',
+            label: 'Transição de Página',
+            type: 'select',
+            constraints: {
+                options: [
+                    { id: 'fade', value: 'fade', label: 'Fade Suave' },
+                    { id: 'slide-up', value: 'slide-up', label: 'Deslizar para Cima' },
+                    { id: 'slide-side', value: 'slide-side', label: 'Deslizar Lateral' },
+                    { id: 'zoom', value: 'zoom', label: 'Zoom Espacial' },
+                    { id: 'none', value: 'none', label: 'Desativado' }
+                ]
+            },
+            defaultValue: 'fade'
+        },
+        {
+            id: 'cardHoverStyle',
+            label: 'Estilo de Hover (Cards)',
+            type: 'select',
+            constraints: {
+                options: [
+                    { id: 'lift', value: 'lift', label: 'Elevar (Lift)' },
+                    { id: 'glow-only', value: 'glow-only', label: 'Apenas Brilho' },
+                    { id: 'expand', value: 'expand', label: 'Expandir' },
+                    { id: '3d-tilt', value: '3d-tilt', label: 'Inclinação 3D' }
+                ]
+            },
+            defaultValue: 'lift'
         }
     ]
 };

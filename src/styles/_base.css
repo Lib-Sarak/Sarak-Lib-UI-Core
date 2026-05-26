@@ -47,6 +47,23 @@ body {
   --elastic-scale: calc(1 + (var(--sarak-elasticity, 0.2) * 0.05));
 }
 
+/* Motor de Fundo (Media Engine) */
+body::before {
+  content: "";
+  position: fixed;
+  inset: 0;
+  z-index: -10;
+  pointer-events: none;
+  background-image: var(--sarak-global-bg-image, none);
+  background-size: cover;
+  background-position: center;
+  background-repeat: no-repeat;
+  mix-blend-mode: var(--sarak-global-bg-blend-mode, normal);
+  opacity: var(--sarak-global-bg-opacity, 1);
+  filter: blur(var(--sarak-global-bg-blur, 0px));
+  transition: all var(--duration-slow) var(--ease-sarak);
+}
+
 /* System Tones personality layers */
 [data-tone="cyber"] {
     --theme-primary-rgb-mix: 0, 255, 128; /* Cyber Green fallback secondary */
