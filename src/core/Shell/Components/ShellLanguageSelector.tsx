@@ -30,7 +30,7 @@ export const ShellLanguageSelector: React.FC<ShellLanguageSelectorProps> = ({
     
     if (OverrideSelector) {
         return (
-            <div className={`relative isolate !overflow-visible ${variant === 'horizontal' ? "[&_[class*='absolute']]:!right-0 [&_[class*='absolute']]:!left-auto [&_[class*='absolute']]:!min-w-[180px] [&>div]:!overflow-visible" : ""}`}>
+            <div className={`relative isolate !overflow-visible sarak-language-override-wrapper ${variant === 'horizontal' ? 'horizontal-variant' : ''}`}>
                 <OverrideSelector variant={variant} />
             </div>
         );

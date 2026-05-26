@@ -4,6 +4,7 @@ import { DiscoveredModule } from '../../../core/Discovery/types';
 import { ShellSearchWidget } from './ShellSearchWidget';
 import { ShellUserWidget } from './ShellUserWidget';
 import { ShellLanguageSelector } from './ShellLanguageSelector';
+import { ShellThemeToggle } from './ShellThemeToggle';
 import { IconRenderer } from './IconRenderer';
 
 interface TopbarNavProps {
@@ -39,19 +40,20 @@ export const TopbarNav: React.FC<TopbarNavProps> = ({
         <header
             onMouseEnter={() => isNavHidden && setIsHovered(true)}
             onMouseLeave={() => setIsHovered(false)}
-            className={`backdrop-blur-2xl px-6 flex items-center justify-between z-[45] shrink-0 group relative`}
+            className={`px-6 flex items-center justify-between z-[45] shrink-0 group relative !overflow-visible`}
             style={{
                 margin: `var(--theme-tab-section-margin, ${tabSectionMargin ?? 12}px)`,
                 borderRadius: `var(--radius-theme, ${borderRadius ?? 12}px)`,
-                borderWidth: `${borderWidth ?? 1}px`,
-                borderStyle: borderStyle || 'solid',
                 height: effectiveIsNavHidden ? '40px' : `${topbarHeight || 64}px`,
-                transition: `all ${animationSpeed || 0.4}s cubic-bezier(0.16, 1, 0.3, 1)`,
-                backgroundColor: 'var(--theme-topbar-bg, var(--theme-sidebar-bg))',
-                borderColor: 'var(--theme-border)'
+                backgroundColor: 'var(--theme-topbar-bg)',
+                transition: 'all 0.4s cubic-bezier(0.4, 0, 0.2, 1)',
+                border: `var(--border-width, 1px) solid var(--theme-border)`,
             }}
         >
-            <div className="flex items-center justify-between w-full h-full">
+            {/* Background isolado para evitar o bug de clip-path do backdrop-filter no Chromium */}
+            <div className="absolute inset-0 backdrop-blur-2xl pointer-events-none" style={{ borderRadius: `inherit` }} />
+            
+            <div className="flex items-center justify-between w-full h-full relative z-10 !overflow-visible">
                 <div className="flex items-center gap-4">
                     <div className="flex items-center gap-3">
                         <button
@@ -114,6 +116,8 @@ export const TopbarNav: React.FC<TopbarNavProps> = ({
                         <ShellLanguageSelector variant="horizontal" />
 
                         <div className="w-[1px] h-4 bg-[var(--theme-border)] mx-1" />
+
+                        <ShellThemeToggle variant="horizontal" />
 
                         <button className="p-1.5 text-[var(--theme-muted)] hover:text-[var(--theme-title)] transition-colors relative">
                             <SarakIcon name="Bell" size={14} />

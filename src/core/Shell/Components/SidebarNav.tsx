@@ -6,6 +6,7 @@ import { DiscoveredModule } from '../../../core/Discovery/types';
 import { ShellUserWidget } from './ShellUserWidget';
 import { ShellSearchWidget } from './ShellSearchWidget';
 import { ShellLanguageSelector } from './ShellLanguageSelector';
+import { ShellThemeToggle } from './ShellThemeToggle';
 
 interface SidebarNavProps {
     design: any;
@@ -138,6 +139,9 @@ export const SidebarNav: React.FC<SidebarNavProps> = ({
             <div className="mt-auto space-y-1 p-2">
                 {/* 2. Language Selector */}
                 <ShellLanguageSelector variant="vertical" />
+
+                {/* Theme Toggle */}
+                <ShellThemeToggle variant={effectiveIsNavHidden ? 'mini' : 'vertical'} />
 
                 {/* 3. Notifications */}
                 <button className={`w-full flex items-center gap-3 px-3 py-2.5 rounded-xl text-[var(--theme-muted)] hover:bg-[var(--theme-muted)]/10 hover:text-[var(--theme-title)] transition-all group ${effectiveIsNavHidden ? 'justify-center' : ''}`}>
