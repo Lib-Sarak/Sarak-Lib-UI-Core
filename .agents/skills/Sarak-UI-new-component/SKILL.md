@@ -1,11 +1,11 @@
 ---
 name: Sarak-UI-new-component
-description: Skill especialista em adicionar novos componentes atômicos (tokens) ao Sarak-Lib-UI-Core garantindo a paridade 1:1:1:1 (Schema, MasterMap, Banco de Dados, Gêmeo Digital).
+description: Skill especialista em adicionar novos componentes atômicos (tokens) ao Sarak-Lib-UI-Core garantindo a paridade 1:1:1:1:1 (Schema, MasterMap, Banco de Dados, Gêmeo Digital, Catálogo JSON).
 ---
 
-# Skill: Adicionar Componente (Paridade 1:1:1:1)
+# Skill: Adicionar Componente (Paridade 1:1:1:1:1)
 
-Esta skill é acionada obrigatoriamente SEMPRE que houver a necessidade de criar ou alterar uma propriedade visual (token/componente) no Design System da Sarak UI. O objetivo é evitar dessincronização entre o Front-end e as instâncias de Banco de Dados de consumidores.
+Esta skill é acionada obrigatoriamente SEMPRE que houver a necessidade de criar ou alterar uma propriedade visual (token/componente) no Design System da Sarak UI. O objetivo é evitar dessincronização entre o Front-end, o Catálogo e as instâncias de Banco de Dados de consumidores.
 
 Para instruções detalhadas de execução, leia os arquivos abaixo sequencialmente:
 1. [Definição](./1_definicao.md)

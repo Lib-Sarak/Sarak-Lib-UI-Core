@@ -4,7 +4,7 @@ import { shiftColorMode } from '../../../Provider/utils/color-engine';
 /**
  * Motor de Cores Semântico em Tempo de Execução (v11.3)
  * Aplica inversão de cores mantendo consistência visual ao alternar entre Light/Dark Mode.
- * Mapeamento EXAUSTIVO baseado em theme_table_mapping.json para garantir 100% de visibilidade.
+ * Mapeamento EXAUSTIVO baseado em catalog/theme_table_mapping.json para garantir 100% de visibilidade.
  */
 
 // 1. TOKENS DE TEXTO E ELEMENTOS DE FRENTE (Devem ficar ESCUROS no modo claro)

@@ -81,6 +81,6 @@ MASTER_DESIGN_MAP.components.forEach(schema => {
     });
 });
 
-const outputPath = path.resolve(__dirname, '../src/core/Design/schema/theme_table_mapping.json');
+const outputPath = path.resolve(__dirname, '../src/core/Design/catalog/theme_table_mapping.json');
 fs.writeFileSync(outputPath, JSON.stringify(columnMapping, null, 2), 'utf-8');
 console.log('Mapeamento limpo gerado com sucesso em:', outputPath);

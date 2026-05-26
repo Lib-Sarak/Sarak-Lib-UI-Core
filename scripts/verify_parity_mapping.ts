@@ -1,7 +1,7 @@
 import * as fs from 'fs';
 import { MASTER_DESIGN_MAP } from '../src/core/Design/master-map';
 
-const mappingRaw = fs.readFileSync('../src/core/Design/schema/theme_table_mapping.json', 'utf8');
+const mappingRaw = fs.readFileSync('../src/core/Design/catalog/theme_table_mapping.json', 'utf8');
 const mapping = JSON.parse(mappingRaw);
 
 const tokenKeys = new Set<string>();

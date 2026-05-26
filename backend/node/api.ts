@@ -1,5 +1,5 @@
 import { Client } from 'pg';
-import ThemeMappingRaw from '../../src/core/Design/schema/theme_table_mapping.json';
+import ThemeMappingRaw from '../../src/core/Design/catalog/theme_table_mapping.json';
 const ThemeMapping: Record<string, string[]> = ThemeMappingRaw;
 
 export interface DesignApiOptions {
