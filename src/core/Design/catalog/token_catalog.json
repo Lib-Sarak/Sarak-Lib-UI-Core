@@ -1,0 +1,8744 @@
+[
+  {
+    "tokenId": "mode",
+    "name": "Tema do Sistema",
+    "description": "Define a raiz cromática global. Alterna a aplicação inteira entre claro e escuro, invertendo contrastes primários.",
+    "type": "select",
+    "importance": 100,
+    "categories": [
+      "tema",
+      "global"
+    ],
+    "tags": [
+      "core",
+      "acessibilidade",
+      "dark-mode"
+    ],
+    "databaseColumn": "mode",
+    "schemaOrigin": "global.ts",
+    "digitalTwins": [
+      "DesignInjector",
+      "SarakUIProvider"
+    ],
+    "cssVariables": [],
+    "allowedValues": [
+      "dark",
+      "light"
+    ],
+    "relatedTokens": [
+      "bgBaseColor",
+      "textColorMaster",
+      "colorSurface"
+    ]
+  },
+  {
+    "tokenId": "navigationStyle",
+    "name": "Estrutura de Navegação",
+    "description": "Altera o esqueleto principal da aplicação, movendo os menus primários para a lateral (Sidebar), para o topo (Topbar) ou como uma doca flutuante.",
+    "type": "select",
+    "importance": 100,
+    "categories": [
+      "layout",
+      "navegacao",
+      "estrutura"
+    ],
+    "tags": [
+      "arquitetura",
+      "core",
+      "menu"
+    ],
+    "databaseColumn": "navigation_style",
+    "schemaOrigin": "global.ts",
+    "digitalTwins": [
+      "SarakUIProvider",
+      "SidebarNav",
+      "TopbarNav"
+    ],
+    "cssVariables": [
+      "--sarak-navigation-style",
+      "--sarak-nav-style",
+      "--nav-style"
+    ],
+    "allowedValues": [
+      "sidebar",
+      "topbar",
+      "dock"
+    ],
+    "relatedTokens": [
+      "sidebarWidth",
+      "topbarHeight",
+      "isNavHidden"
+    ]
+  },
+  {
+    "tokenId": "bodySize",
+    "name": "Tamanho Global das Fontes (Body)",
+    "description": "A âncora root base do sistema de tipografia. Altera a escala de todos os textos de corpo ao mesmo tempo.",
+    "type": "select",
+    "importance": 90,
+    "categories": [
+      "tipografia",
+      "escala",
+      "global"
+    ],
+    "tags": [
+      "acessibilidade",
+      "texto",
+      "ux"
+    ],
+    "databaseColumn": "body_size",
+    "schemaOrigin": "global.ts",
+    "digitalTwins": [
+      "DesignInjector"
+    ],
+    "cssVariables": [
+      "--sarak-body-size",
+      "--theme-font-size-base"
+    ],
+    "allowedValues": [
+      "12px",
+      "14px",
+      "16px",
+      "18px",
+      "20px"
+    ],
+    "relatedTokens": [
+      "bodyFont",
+      "bodyLineHeight",
+      "h1Size"
+    ]
+  },
+  {
+    "tokenId": "identityAlignment",
+    "name": "Alinhamento do Logo/Marca",
+    "description": "Define como a identidade visual será alinhada dentro do contêiner de navegação (Sidebar ou Topbar).",
+    "type": "select",
+    "importance": 50,
+    "categories": [
+      "identidade",
+      "alinhamento",
+      "marca"
+    ],
+    "tags": [
+      "branding",
+      "logo"
+    ],
+    "databaseColumn": "branding_config",
+    "schemaOrigin": "branding.ts",
+    "digitalTwins": [
+      "SidebarNav",
+      "TopbarNav"
+    ],
+    "cssVariables": [
+      "--sarak-identity-align"
+    ],
+    "allowedValues": [
+      "left",
+      "center",
+      "right"
+    ],
+    "relatedTokens": [
+      "identityPadding"
+    ]
+  },
+  {
+    "tokenId": "identityPadding",
+    "name": "Padding da Identidade",
+    "description": "O espaço de respiro ao redor do logotipo. Evita que o logo toque nas bordas do menu.",
+    "type": "number",
+    "importance": 40,
+    "categories": [
+      "identidade",
+      "espacamento",
+      "marca"
+    ],
+    "tags": [
+      "branding",
+      "padding"
+    ],
+    "databaseColumn": "branding_config",
+    "schemaOrigin": "branding.ts",
+    "digitalTwins": [
+      "SidebarNav",
+      "TopbarNav"
+    ],
+    "cssVariables": [
+      "--sarak-identity-padding"
+    ],
+    "allowedValues": {
+      "min": 0,
+      "max": 64
+    },
+    "relatedTokens": [
+      "identityAlignment"
+    ]
+  },
+  {
+    "tokenId": "identityFontFamily",
+    "name": "Fonte do Logo (Texto)",
+    "description": "Se o logo for em texto, define qual família de fonte será usada independentemente da tipografia global.",
+    "type": "string",
+    "importance": 60,
+    "categories": [
+      "identidade",
+      "tipografia",
+      "marca"
+    ],
+    "tags": [
+      "branding",
+      "fonte"
+    ],
+    "databaseColumn": "branding_config",
+    "schemaOrigin": "branding.ts",
+    "digitalTwins": [
+      "SidebarNav",
+      "TopbarNav"
+    ],
+    "cssVariables": [
+      "--sarak-identity-font"
+    ],
+    "allowedValues": null,
+    "relatedTokens": [
+      "identityFontWeight"
+    ]
+  },
+  {
+    "tokenId": "identityFontWeight",
+    "name": "Peso da Fonte do Logo",
+    "description": "O peso tipográfico da marca, variando de super fino (100) a super negrito (900).",
+    "type": "number",
+    "importance": 50,
+    "categories": [
+      "identidade",
+      "tipografia",
+      "marca"
+    ],
+    "tags": [
+      "branding",
+      "peso"
+    ],
+    "databaseColumn": "branding_config",
+    "schemaOrigin": "branding.ts",
+    "digitalTwins": [
+      "SidebarNav",
+      "TopbarNav"
+    ],
+    "cssVariables": [
+      "--sarak-identity-weight"
+    ],
+    "allowedValues": {
+      "min": 100,
+      "max": 900
+    },
+    "relatedTokens": [
+      "identityFontFamily"
+    ]
+  },
+  {
+    "tokenId": "identityTracking",
+    "name": "Espaçamento de Letras (Tracking) do Logo",
+    "description": "Controla a distância horizontal entre as letras da marca. Para estética moderna/premium, usar tracking ligeiramente negativo (-0.05).",
+    "type": "number",
+    "importance": 40,
+    "categories": [
+      "identidade",
+      "tipografia",
+      "marca"
+    ],
+    "tags": [
+      "branding",
+      "tracking"
+    ],
+    "databaseColumn": "branding_config",
+    "schemaOrigin": "branding.ts",
+    "digitalTwins": [
+      "SidebarNav",
+      "TopbarNav"
+    ],
+    "cssVariables": [
+      "--sarak-identity-tracking"
+    ],
+    "allowedValues": {
+      "min": -0.1,
+      "max": 0.5
+    },
+    "relatedTokens": [
+      "identityFontFamily"
+    ]
+  },
+  {
+    "tokenId": "identityRedirectUrl",
+    "name": "Link de Redirecionamento da Marca",
+    "description": "A rota/URL para a qual o usuário é enviado ao clicar no logotipo no menu de navegação.",
+    "type": "string",
+    "importance": 20,
+    "categories": [
+      "identidade",
+      "navegacao",
+      "comportamento"
+    ],
+    "tags": [
+      "ux",
+      "link"
+    ],
+    "databaseColumn": "branding_config",
+    "schemaOrigin": "branding.ts",
+    "digitalTwins": [
+      "SidebarNav",
+      "TopbarNav"
+    ],
+    "cssVariables": [
+      "--sarak-identity-link"
+    ],
+    "allowedValues": null,
+    "relatedTokens": []
+  },
+  {
+    "tokenId": "identityHoverEffect",
+    "name": "Efeito Hover no Logo",
+    "description": "Animação disparada ao passar o mouse sobre o logotipo.",
+    "type": "select",
+    "importance": 30,
+    "categories": [
+      "identidade",
+      "interacao",
+      "marca"
+    ],
+    "tags": [
+      "hover",
+      "animacao"
+    ],
+    "databaseColumn": "branding_config",
+    "schemaOrigin": "branding.ts",
+    "digitalTwins": [
+      "SidebarNav",
+      "TopbarNav"
+    ],
+    "cssVariables": [
+      "--sarak-identity-hover"
+    ],
+    "allowedValues": [
+      "none",
+      "glow",
+      "opacity",
+      "scale"
+    ],
+    "relatedTokens": []
+  },
+  {
+    "tokenId": "bgBaseColor",
+    "name": "Cor de Fundo Base",
+    "description": "A cor de fundo absoluta e mais profunda do sistema. Ela afeta o contraste global. Use tons escuros para Dark Mode e claros para Light Mode.",
+    "type": "color",
+    "importance": 95,
+    "categories": [
+      "cores",
+      "fundo-global",
+      "tema-base"
+    ],
+    "tags": [
+      "core",
+      "base",
+      "acessibilidade"
+    ],
+    "databaseColumn": "branding_config",
+    "schemaOrigin": "system.ts",
+    "digitalTwins": [
+      "DesignInjector",
+      "SarakUIProvider"
+    ],
+    "cssVariables": [
+      "--sarak-bg-base"
+    ],
+    "allowedValues": null,
+    "relatedTokens": [
+      "textColorMaster",
+      "mode",
+      "colorBgBody"
+    ]
+  },
+  {
+    "tokenId": "layout",
+    "name": "Modo de Layout Global",
+    "description": "Define se a estrutura base de contêineres usará CSS Grid ou Flexbox. Altera radicalmente a distribuição espacial primária.",
+    "type": "select",
+    "importance": 85,
+    "categories": [
+      "layout",
+      "estrutura",
+      "alinhamento"
+    ],
+    "tags": [
+      "arquitetura",
+      "engine",
+      "core"
+    ],
+    "databaseColumn": "branding_config",
+    "schemaOrigin": "system.ts",
+    "digitalTwins": [
+      "DesignInjector"
+    ],
+    "cssVariables": [],
+    "allowedValues": [
+      "grid",
+      "flex"
+    ],
+    "relatedTokens": []
+  },
+  {
+    "tokenId": "layoutDensity",
+    "name": "Densidade Visual",
+    "description": "Controla a densidade dos componentes na tela. O modo 'compacto' diminui espaçamentos; 'espaçoso' dá foco minimalista.",
+    "type": "select",
+    "importance": 80,
+    "categories": [
+      "layout",
+      "espacamento",
+      "ergonomia"
+    ],
+    "tags": [
+      "ux",
+      "densidade"
+    ],
+    "databaseColumn": "branding_config",
+    "schemaOrigin": "system.ts",
+    "digitalTwins": [
+      "DesignInjector"
+    ],
+    "cssVariables": [],
+    "allowedValues": [
+      "compact",
+      "comfortable",
+      "spacious"
+    ],
+    "relatedTokens": [
+      "layoutPadding",
+      "layoutGap"
+    ]
+  },
+  {
+    "tokenId": "maxContentWidth",
+    "name": "Largura Máxima do Conteúdo",
+    "description": "Trava a largura central da aplicação (Container). Útil para telas ultrawide. 100% o torna fluido.",
+    "type": "select",
+    "importance": 70,
+    "categories": [
+      "layout",
+      "tamanho",
+      "container"
+    ],
+    "tags": [
+      "responsividade",
+      "largura"
+    ],
+    "databaseColumn": "branding_config",
+    "schemaOrigin": "system.ts",
+    "digitalTwins": [
+      "DesignInjector"
+    ],
+    "cssVariables": [],
+    "allowedValues": [
+      "1200px",
+      "1440px",
+      "1600px",
+      "100%"
+    ],
+    "relatedTokens": []
+  },
+  {
+    "tokenId": "layoutPadding",
+    "name": "Respiro do Conteúdo (Padding)",
+    "description": "O afastamento padrão do conteúdo em relação às margens da tela principal.",
+    "type": "number",
+    "importance": 60,
+    "categories": [
+      "layout",
+      "espacamento",
+      "margem"
+    ],
+    "tags": [
+      "ux",
+      "padding"
+    ],
+    "databaseColumn": "branding_config",
+    "schemaOrigin": "system.ts",
+    "digitalTwins": [
+      "DesignInjector"
+    ],
+    "cssVariables": [
+      "--sarak-layout-padding"
+    ],
+    "allowedValues": {
+      "min": 0,
+      "max": 80
+    },
+    "relatedTokens": [
+      "layoutDensity"
+    ]
+  },
+  {
+    "tokenId": "isSplitViewEnabled",
+    "name": "Ativar Vista Dividida (Split)",
+    "description": "Habilita um layout paralelo (ex: master-detail side by side) no contêiner principal.",
+    "type": "boolean",
+    "importance": 60,
+    "categories": [
+      "layout",
+      "estrutura",
+      "navegacao"
+    ],
+    "tags": [
+      "ux",
+      "modo-exibicao"
+    ],
+    "databaseColumn": "branding_config",
+    "schemaOrigin": "system.ts",
+    "digitalTwins": [
+      "DesignInjector",
+      "SarakUIProvider"
+    ],
+    "cssVariables": [],
+    "allowedValues": null,
+    "relatedTokens": [
+      "navigationStyle"
+    ]
+  },
+  {
+    "tokenId": "isAutoHideEnabled",
+    "name": "Auto-ocultar Menus",
+    "description": "Recolhe automaticamente barras de navegação (Sidebar ou Topbar) quando o usuário rola a página ou perde foco.",
+    "type": "boolean",
+    "importance": 50,
+    "categories": [
+      "layout",
+      "comportamento",
+      "navegacao"
+    ],
+    "tags": [
+      "animacao",
+      "foco"
+    ],
+    "databaseColumn": "branding_config",
+    "schemaOrigin": "system.ts",
+    "digitalTwins": [
+      "SidebarNav",
+      "TopbarNav"
+    ],
+    "cssVariables": [],
+    "allowedValues": null,
+    "relatedTokens": [
+      "navigationStyle"
+    ]
+  },
+  {
+    "tokenId": "borderRadius",
+    "name": "Arredondamento Padrão Global",
+    "description": "Define o quão circulares são as bordas dos elementos base. Um valor de 0 traz estética agressiva/brutalista.",
+    "type": "number",
+    "importance": 75,
+    "categories": [
+      "bordas",
+      "geometria",
+      "global"
+    ],
+    "tags": [
+      "estetica",
+      "radius"
+    ],
+    "databaseColumn": "branding_config",
+    "schemaOrigin": "system.ts",
+    "digitalTwins": [
+      "DesignInjector"
+    ],
+    "cssVariables": [
+      "--radius-theme",
+      "--sarak-border-radius",
+      "--border-radius"
+    ],
+    "allowedValues": {
+      "min": 0,
+      "max": 40
+    },
+    "relatedTokens": [
+      "borderRadiusSm",
+      "borderRadiusMd",
+      "borderRadiusLg"
+    ]
+  },
+  {
+    "tokenId": "borderRadiusSm",
+    "name": "Arredondamento Pequeno",
+    "description": "Arredondamento para componentes menores como tooltips ou badges.",
+    "type": "number",
+    "importance": 50,
+    "categories": [
+      "bordas",
+      "geometria"
+    ],
+    "tags": [
+      "estetica",
+      "radius"
+    ],
+    "databaseColumn": "branding_config",
+    "schemaOrigin": "system.ts",
+    "digitalTwins": [
+      "DesignInjector"
+    ],
+    "cssVariables": [
+      "--sarak-border-radius-sm"
+    ],
+    "allowedValues": {
+      "min": 0,
+      "max": 20
+    },
+    "relatedTokens": [
+      "borderRadius"
+    ]
+  },
+  {
+    "tokenId": "borderRadiusMd",
+    "name": "Arredondamento Médio",
+    "description": "Arredondamento intermediário para modais internos ou cartões secundários.",
+    "type": "number",
+    "importance": 60,
+    "categories": [
+      "bordas",
+      "geometria"
+    ],
+    "tags": [
+      "estetica",
+      "radius"
+    ],
+    "databaseColumn": "branding_config",
+    "schemaOrigin": "system.ts",
+    "digitalTwins": [
+      "DesignInjector"
+    ],
+    "cssVariables": [
+      "--sarak-border-radius-md"
+    ],
+    "allowedValues": {
+      "min": 0,
+      "max": 40
+    },
+    "relatedTokens": [
+      "borderRadius"
+    ]
+  },
+  {
+    "tokenId": "borderRadiusLg",
+    "name": "Arredondamento Grande",
+    "description": "Arredondamento para contêineres enormes, como modais principais ou cards de imagem amplos.",
+    "type": "number",
+    "importance": 65,
+    "categories": [
+      "bordas",
+      "geometria"
+    ],
+    "tags": [
+      "estetica",
+      "radius"
+    ],
+    "databaseColumn": "branding_config",
+    "schemaOrigin": "system.ts",
+    "digitalTwins": [
+      "DesignInjector"
+    ],
+    "cssVariables": [
+      "--sarak-border-radius-lg"
+    ],
+    "allowedValues": {
+      "min": 0,
+      "max": 60
+    },
+    "relatedTokens": [
+      "borderRadius"
+    ]
+  },
+  {
+    "tokenId": "borderWidth",
+    "name": "Espessura da Borda Global",
+    "description": "Controla a espessura padrão (em pixels) das bordas em botões, cartões e divisórias em todo o sistema.",
+    "type": "number",
+    "importance": 65,
+    "categories": [
+      "bordas",
+      "espessura",
+      "global"
+    ],
+    "tags": [
+      "linhas",
+      "stroke"
+    ],
+    "databaseColumn": "branding_config",
+    "schemaOrigin": "system.ts",
+    "digitalTwins": [
+      "DesignInjector"
+    ],
+    "cssVariables": [
+      "--theme-border-width",
+      "--border-width",
+      "--sarak-border-width"
+    ],
+    "allowedValues": {
+      "min": 0,
+      "max": 10
+    },
+    "relatedTokens": [
+      "borderStyle"
+    ]
+  },
+  {
+    "tokenId": "borderStyle",
+    "name": "Estilo da Borda",
+    "description": "Estilo de traçado usado no sistema (sólido, pontilhado, etc).",
+    "type": "select",
+    "importance": 50,
+    "categories": [
+      "bordas",
+      "estilo",
+      "global"
+    ],
+    "tags": [
+      "linhas"
+    ],
+    "databaseColumn": "branding_config",
+    "schemaOrigin": "system.ts",
+    "digitalTwins": [
+      "DesignInjector"
+    ],
+    "cssVariables": [
+      "--border-style",
+      "--sarak-border-style"
+    ],
+    "allowedValues": [
+      "solid",
+      "dashed",
+      "dotted",
+      "none"
+    ],
+    "relatedTokens": [
+      "borderWidth"
+    ]
+  },
+  {
+    "tokenId": "layoutGap",
+    "name": "Espaçamento Padrão Global (Gap)",
+    "description": "O espaço padrão que divide os componentes horizontal e verticalmente.",
+    "type": "number",
+    "importance": 80,
+    "categories": [
+      "layout",
+      "espacamento",
+      "global"
+    ],
+    "tags": [
+      "ux",
+      "gap"
+    ],
+    "databaseColumn": "branding_config",
+    "schemaOrigin": "system.ts",
+    "digitalTwins": [
+      "DesignInjector"
+    ],
+    "cssVariables": [
+      "--theme-gap",
+      "--sarak-layout-gap"
+    ],
+    "allowedValues": {
+      "min": 0,
+      "max": 80
+    },
+    "relatedTokens": [
+      "layoutDensity"
+    ]
+  },
+  {
+    "tokenId": "layoutGapSm",
+    "name": "Espaçamento Pequeno",
+    "description": "Distância curta entre ícones e textos ou pequenos botões contíguos.",
+    "type": "number",
+    "importance": 50,
+    "categories": [
+      "layout",
+      "espacamento"
+    ],
+    "tags": [
+      "ux",
+      "gap"
+    ],
+    "databaseColumn": "branding_config",
+    "schemaOrigin": "system.ts",
+    "digitalTwins": [
+      "DesignInjector"
+    ],
+    "cssVariables": [
+      "--sarak-layout-gap-sm"
+    ],
+    "allowedValues": {
+      "min": 0,
+      "max": 40
+    },
+    "relatedTokens": [
+      "layoutGap"
+    ]
+  },
+  {
+    "tokenId": "layoutGapMd",
+    "name": "Espaçamento Médio",
+    "description": "Distância média padrão usada na maioria das listas.",
+    "type": "number",
+    "importance": 60,
+    "categories": [
+      "layout",
+      "espacamento"
+    ],
+    "tags": [
+      "ux",
+      "gap"
+    ],
+    "databaseColumn": "branding_config",
+    "schemaOrigin": "system.ts",
+    "digitalTwins": [
+      "DesignInjector"
+    ],
+    "cssVariables": [
+      "--sarak-layout-gap-md"
+    ],
+    "allowedValues": {
+      "min": 0,
+      "max": 80
+    },
+    "relatedTokens": [
+      "layoutGap"
+    ]
+  },
+  {
+    "tokenId": "layoutGapLg",
+    "name": "Espaçamento Grande",
+    "description": "Afastamento largo para separação de grandes seções do sistema.",
+    "type": "number",
+    "importance": 65,
+    "categories": [
+      "layout",
+      "espacamento"
+    ],
+    "tags": [
+      "ux",
+      "gap"
+    ],
+    "databaseColumn": "branding_config",
+    "schemaOrigin": "system.ts",
+    "digitalTwins": [
+      "DesignInjector"
+    ],
+    "cssVariables": [
+      "--sarak-layout-gap-lg"
+    ],
+    "allowedValues": {
+      "min": 0,
+      "max": 120
+    },
+    "relatedTokens": [
+      "layoutGap"
+    ]
+  },
+  {
+    "tokenId": "iconFamily",
+    "name": "Família de Ícones (Engine)",
+    "description": "Altera o pacote de iconografia renderizado em tempo real (Lucide, Phosphor, Tabler). Muda a estética vetorial do tema.",
+    "type": "select",
+    "importance": 85,
+    "categories": [
+      "icones",
+      "identidade",
+      "global"
+    ],
+    "tags": [
+      "vetores",
+      "design-system"
+    ],
+    "databaseColumn": "branding_config",
+    "schemaOrigin": "system.ts",
+    "digitalTwins": [
+      "SarakIcon",
+      "IconRenderer"
+    ],
+    "cssVariables": [],
+    "allowedValues": [
+      "lucide",
+      "phosphor",
+      "tabler"
+    ],
+    "relatedTokens": [
+      "iconWeight",
+      "iconStrokeWidth"
+    ]
+  },
+  {
+    "tokenId": "iconWeight",
+    "name": "Estilo/Peso dos Ícones",
+    "description": "O preenchimento do ícone (Regular, Duotone, Bold, Thin). Ícones Duotone criam visual imersivo e futurista.",
+    "type": "select",
+    "importance": 80,
+    "categories": [
+      "icones",
+      "estilo"
+    ],
+    "tags": [
+      "vetores",
+      "estetica"
+    ],
+    "databaseColumn": "branding_config",
+    "schemaOrigin": "system.ts",
+    "digitalTwins": [
+      "SarakIcon",
+      "IconRenderer"
+    ],
+    "cssVariables": [],
+    "allowedValues": [
+      "thin",
+      "light",
+      "regular",
+      "bold",
+      "fill",
+      "duotone"
+    ],
+    "relatedTokens": [
+      "iconFamily"
+    ]
+  },
+  {
+    "tokenId": "iconStrokeWidth",
+    "name": "Espessura do Traçado do Ícone",
+    "description": "A grossura das linhas que compõem o ícone vetorial. Traços finos parecem sofisticados; grossos, amigáveis.",
+    "type": "number",
+    "importance": 70,
+    "categories": [
+      "icones",
+      "espessura"
+    ],
+    "tags": [
+      "vetores",
+      "estetica",
+      "stroke"
+    ],
+    "databaseColumn": "branding_config",
+    "schemaOrigin": "system.ts",
+    "digitalTwins": [
+      "SarakIcon",
+      "IconRenderer"
+    ],
+    "cssVariables": [
+      "--sarak-icon-stroke"
+    ],
+    "allowedValues": {
+      "min": 0.5,
+      "max": 3.0,
+      "step": 0.5
+    },
+    "relatedTokens": [
+      "iconFamily"
+    ]
+  },
+  {
+    "tokenId": "scrollbarWidth",
+    "name": "Largura da Scrollbar Global",
+    "description": "A grossura da barra de rolagem customizada da aplicação. Se for zero, a barra fica invisível.",
+    "type": "select",
+    "importance": 40,
+    "categories": [
+      "layout",
+      "interacao",
+      "scrollbar"
+    ],
+    "tags": [
+      "ux",
+      "scroll"
+    ],
+    "databaseColumn": "branding_config",
+    "schemaOrigin": "system.ts",
+    "digitalTwins": [
+      "DesignInjector"
+    ],
+    "cssVariables": [
+      "--scrollbar-width"
+    ],
+    "allowedValues": [
+      "none",
+      "thin",
+      "auto"
+    ],
+    "relatedTokens": [
+      "scrollbarThumbColor"
+    ]
+  },
+  {
+    "tokenId": "scrollbarThumbColor",
+    "name": "Cor do Polegar da Scrollbar",
+    "description": "Cor primária da alça móvel da barra de rolagem.",
+    "type": "color",
+    "importance": 30,
+    "categories": [
+      "cores",
+      "interacao",
+      "scrollbar"
+    ],
+    "tags": [
+      "ux",
+      "scroll"
+    ],
+    "databaseColumn": "branding_config",
+    "schemaOrigin": "system.ts",
+    "digitalTwins": [
+      "DesignInjector"
+    ],
+    "cssVariables": [
+      "--scrollbar-thumb"
+    ],
+    "allowedValues": null,
+    "relatedTokens": [
+      "scrollbarWidth"
+    ]
+  },
+  {
+    "tokenId": "industrialRegistry",
+    "name": "Modo de Registro Industrial",
+    "description": "Uma flag global que engatilha o modo 'Industrial' (interfaces técnicas de alta densidade sem muitas bordas arredondadas).",
+    "type": "boolean",
+    "importance": 90,
+    "categories": [
+      "tema",
+      "comportamento",
+      "global"
+    ],
+    "tags": [
+      "core",
+      "arquitetura",
+      "industrial"
+    ],
+    "databaseColumn": "branding_config",
+    "schemaOrigin": "system.ts",
+    "digitalTwins": [
+      "DesignInjector",
+      "SarakUIProvider"
+    ],
+    "cssVariables": [],
+    "allowedValues": null,
+    "relatedTokens": [
+      "borderRadius",
+      "layoutDensity",
+      "iconFamily"
+    ]
+  },
+  {
+    "tokenId": "colorPalette",
+    "name": "Paleta Ativa (Preset)",
+    "description": "Define qual esquema global de cores está em uso (ex: default, neon, matrix).",
+    "type": "select",
+    "importance": 95,
+    "categories": [
+      "colors-and-atmosphere",
+      "temas",
+      "cores"
+    ],
+    "tags": [
+      "palette",
+      "preset",
+      "global"
+    ],
+    "databaseColumn": "colors_and_atmosphere",
+    "schemaOrigin": "colors.ts",
+    "digitalTwins": [
+      "DesignInjector"
+    ],
+    "cssVariables": [],
+    "allowedValues": [
+      "default",
+      "neon",
+      "matrix",
+      "slate",
+      "sunset"
+    ],
+    "relatedTokens": [
+      "primaryColor"
+    ]
+  },
+  {
+    "tokenId": "primaryColor",
+    "name": "Cor Primária (Base)",
+    "description": "Cor de destaque principal do sistema, usada em botões primários e ações ativas.",
+    "type": "color",
+    "importance": 100,
+    "categories": [
+      "cores",
+      "colors-and-atmosphere",
+      "branding"
+    ],
+    "tags": [
+      "primary",
+      "brand",
+      "color"
+    ],
+    "databaseColumn": "colors_and_atmosphere",
+    "schemaOrigin": "colors.ts",
+    "digitalTwins": [
+      "DesignInjector"
+    ],
+    "cssVariables": [
+      "--primary-color",
+      "--theme-primary",
+      "--sarak-primary-color",
+      "--sarak-color-primary"
+    ],
+    "allowedValues": null,
+    "relatedTokens": [
+      "secondaryColor",
+      "colorPalette"
+    ]
+  },
+  {
+    "tokenId": "secondaryColor",
+    "name": "Cor Secundária",
+    "description": "Segunda cor de destaque para suporte ou variações de UI.",
+    "type": "color",
+    "importance": 90,
+    "categories": [
+      "cores",
+      "colors-and-atmosphere",
+      "branding"
+    ],
+    "tags": [
+      "secondary",
+      "brand",
+      "color"
+    ],
+    "databaseColumn": "colors_and_atmosphere",
+    "schemaOrigin": "colors.ts",
+    "digitalTwins": [
+      "DesignInjector"
+    ],
+    "cssVariables": [
+      "--secondary-color",
+      "--theme-secondary",
+      "--sarak-secondary-color",
+      "--sarak-color-secondary"
+    ],
+    "allowedValues": null,
+    "relatedTokens": [
+      "primaryColor",
+      "tertiaryColor"
+    ]
+  },
+  {
+    "tokenId": "tertiaryColor",
+    "name": "Cor Terciária",
+    "description": "Cor adicional para detalhes sutis ou terceiros níveis de hierarquia visual.",
+    "type": "color",
+    "importance": 80,
+    "categories": [
+      "cores",
+      "colors-and-atmosphere",
+      "branding"
+    ],
+    "tags": [
+      "tertiary",
+      "brand",
+      "color"
+    ],
+    "databaseColumn": "colors_and_atmosphere",
+    "schemaOrigin": "colors.ts",
+    "digitalTwins": [
+      "DesignInjector"
+    ],
+    "cssVariables": [
+      "--tertiary-color",
+      "--theme-tertiary",
+      "--sarak-tertiary-color",
+      "--sarak-color-tertiary"
+    ],
+    "allowedValues": null,
+    "relatedTokens": [
+      "secondaryColor"
+    ]
+  },
+  {
+    "tokenId": "accentColor",
+    "name": "Cor de Acento (Accent)",
+    "description": "Cor vibrante para chamar atenção em micro-elementos, badges ou notificações.",
+    "type": "color",
+    "importance": 85,
+    "categories": [
+      "cores",
+      "colors-and-atmosphere",
+      "destaque"
+    ],
+    "tags": [
+      "accent",
+      "highlight",
+      "color"
+    ],
+    "databaseColumn": "colors_and_atmosphere",
+    "schemaOrigin": "colors.ts",
+    "digitalTwins": [
+      "DesignInjector"
+    ],
+    "cssVariables": [
+      "--theme-accent",
+      "--sarak-accent-color"
+    ],
+    "allowedValues": null,
+    "relatedTokens": [
+      "primaryColor"
+    ]
+  },
+  {
+    "tokenId": "surfaceColor",
+    "name": "Cor de Superfície",
+    "description": "Tom para objetos elevados e content boxes em cima do background principal.",
+    "type": "color",
+    "importance": 85,
+    "categories": [
+      "cores",
+      "colors-and-atmosphere",
+      "background"
+    ],
+    "tags": [
+      "surface",
+      "bg",
+      "color"
+    ],
+    "databaseColumn": "colors_and_atmosphere",
+    "schemaOrigin": "colors.ts",
+    "digitalTwins": [
+      "DesignInjector"
+    ],
+    "cssVariables": [
+      "--theme-surface",
+      "--sarak-surface-color"
+    ],
+    "allowedValues": null,
+    "relatedTokens": [
+      "colorBgBody"
+    ]
+  },
+  {
+    "tokenId": "textureColor",
+    "name": "Cor da Textura",
+    "description": "Cor aplicada às linhas ou artefatos que formam as texturas industriais.",
+    "type": "color",
+    "importance": 60,
+    "categories": [
+      "cores",
+      "colors-and-atmosphere",
+      "efeitos"
+    ],
+    "tags": [
+      "texture",
+      "pattern",
+      "color"
+    ],
+    "databaseColumn": "colors_and_atmosphere",
+    "schemaOrigin": "colors.ts",
+    "digitalTwins": [
+      "DesignInjector"
+    ],
+    "cssVariables": [
+      "--theme-texture-color",
+      "--sarak-texture-color"
+    ],
+    "allowedValues": null,
+    "relatedTokens": [
+      "textureOpacity"
+    ]
+  },
+  {
+    "tokenId": "titleColor",
+    "name": "Cor do Título",
+    "description": "Cor de alto contraste designada especificamente para títulos globais.",
+    "type": "color",
+    "importance": 80,
+    "categories": [
+      "cores",
+      "colors-and-atmosphere",
+      "tipografia"
+    ],
+    "tags": [
+      "title",
+      "text",
+      "color"
+    ],
+    "databaseColumn": "colors_and_atmosphere",
+    "schemaOrigin": "colors.ts",
+    "digitalTwins": [
+      "DesignInjector"
+    ],
+    "cssVariables": [
+      "--theme-title-color",
+      "--sarak-title-color"
+    ],
+    "allowedValues": null,
+    "relatedTokens": [
+      "primaryColor"
+    ]
+  },
+  {
+    "tokenId": "colorDepth",
+    "name": "Profundidade da Cor",
+    "description": "Escala de sombras e saturação que adiciona volume (depth) à interface.",
+    "type": "number",
+    "importance": 70,
+    "categories": [
+      "colors-and-atmosphere",
+      "cores",
+      "ajuste"
+    ],
+    "tags": [
+      "depth",
+      "saturation",
+      "color"
+    ],
+    "databaseColumn": "colors_and_atmosphere",
+    "schemaOrigin": "colors.ts",
+    "digitalTwins": [
+      "DesignInjector"
+    ],
+    "cssVariables": [
+      "--sarak-color-depth"
+    ],
+    "allowedValues": {
+      "min": 1,
+      "max": 5
+    },
+    "relatedTokens": [
+      "colorVariation"
+    ]
+  },
+  {
+    "tokenId": "colorVariation",
+    "name": "Variação da Cor",
+    "description": "Nível de diversificação nas paletas geradas a partir das cores base.",
+    "type": "number",
+    "importance": 70,
+    "categories": [
+      "colors-and-atmosphere",
+      "cores",
+      "ajuste"
+    ],
+    "tags": [
+      "variation",
+      "palette",
+      "color"
+    ],
+    "databaseColumn": "colors_and_atmosphere",
+    "schemaOrigin": "colors.ts",
+    "digitalTwins": [
+      "DesignInjector"
+    ],
+    "cssVariables": [
+      "--sarak-color-variation"
+    ],
+    "allowedValues": {
+      "min": 1,
+      "max": 5
+    },
+    "relatedTokens": [
+      "colorDepth"
+    ]
+  },
+  {
+    "tokenId": "colorBgBody",
+    "name": "Background Geral (Body)",
+    "description": "Cor base que preenche todo o fundo do site/app e do document body.",
+    "type": "color",
+    "importance": 95,
+    "categories": [
+      "cores",
+      "colors-and-atmosphere",
+      "background"
+    ],
+    "tags": [
+      "bg",
+      "body",
+      "global"
+    ],
+    "databaseColumn": "colors_and_atmosphere",
+    "schemaOrigin": "colors.ts",
+    "digitalTwins": [
+      "DesignInjector"
+    ],
+    "cssVariables": [
+      "--sarak-bg-body",
+      "--theme-bg",
+      "--theme-body",
+      "--bg-body",
+      "--sarak-bg-base"
+    ],
+    "allowedValues": null,
+    "relatedTokens": [
+      "colorBgLayer1"
+    ]
+  },
+  {
+    "tokenId": "colorBgLayer1",
+    "name": "Background Layer 1",
+    "description": "Cor de fundo primária para elementos de nível 1 (painéis, sidebars).",
+    "type": "color",
+    "importance": 90,
+    "categories": [
+      "cores",
+      "colors-and-atmosphere",
+      "background"
+    ],
+    "tags": [
+      "layer",
+      "bg",
+      "surface"
+    ],
+    "databaseColumn": "colors_and_atmosphere",
+    "schemaOrigin": "colors.ts",
+    "digitalTwins": [
+      "DesignInjector"
+    ],
+    "cssVariables": [
+      "--sarak-bg-layer-1",
+      "--theme-surface-1"
+    ],
+    "allowedValues": null,
+    "relatedTokens": [
+      "colorBgLayer2"
+    ]
+  },
+  {
+    "tokenId": "colorBgLayer2",
+    "name": "Background Layer 2",
+    "description": "Cor de fundo para elementos de nível 2 (sobreposições leves, painéis de destaque).",
+    "type": "color",
+    "importance": 85,
+    "categories": [
+      "cores",
+      "colors-and-atmosphere",
+      "background"
+    ],
+    "tags": [
+      "layer",
+      "bg",
+      "surface"
+    ],
+    "databaseColumn": "colors_and_atmosphere",
+    "schemaOrigin": "colors.ts",
+    "digitalTwins": [
+      "DesignInjector"
+    ],
+    "cssVariables": [
+      "--sarak-bg-layer-2",
+      "--theme-surface-2"
+    ],
+    "allowedValues": null,
+    "relatedTokens": [
+      "colorBgLayer1"
+    ]
+  },
+  {
+    "tokenId": "colorBgModal",
+    "name": "Background Modais",
+    "description": "Cor do fundo utilizado no card principal de um Modal ou Dialog.",
+    "type": "color",
+    "importance": 85,
+    "categories": [
+      "cores",
+      "colors-and-atmosphere",
+      "overlays"
+    ],
+    "tags": [
+      "modal",
+      "bg",
+      "overlay"
+    ],
+    "databaseColumn": "colors_and_atmosphere",
+    "schemaOrigin": "colors.ts",
+    "digitalTwins": [
+      "DesignInjector"
+    ],
+    "cssVariables": [
+      "--sarak-bg-modal",
+      "--theme-modal-bg"
+    ],
+    "allowedValues": null,
+    "relatedTokens": [
+      "colorBgLayer2"
+    ]
+  },
+  {
+    "tokenId": "cardBackgroundColor",
+    "name": "Background dos Cards",
+    "description": "Cor de preenchimento padrão para cartões (Cards) do sistema.",
+    "type": "color",
+    "importance": 80,
+    "categories": [
+      "cores",
+      "colors-and-atmosphere",
+      "cards"
+    ],
+    "tags": [
+      "card",
+      "bg",
+      "surface"
+    ],
+    "databaseColumn": "colors_and_atmosphere",
+    "schemaOrigin": "colors.ts",
+    "digitalTwins": [
+      "DesignInjector"
+    ],
+    "cssVariables": [
+      "--card-bg",
+      "--theme-surface",
+      "--theme-card",
+      "--sarak-card-bg",
+      "--theme-card-bg"
+    ],
+    "allowedValues": null,
+    "relatedTokens": [
+      "cardBorderColor"
+    ]
+  },
+  {
+    "tokenId": "cardBorderColor",
+    "name": "Borda dos Cards (Global)",
+    "description": "Cor da linha delineadora de cartões na configuração global do tema.",
+    "type": "color",
+    "importance": 75,
+    "categories": [
+      "cores",
+      "colors-and-atmosphere",
+      "cards"
+    ],
+    "tags": [
+      "card",
+      "border",
+      "stroke"
+    ],
+    "databaseColumn": "colors_and_atmosphere",
+    "schemaOrigin": "colors.ts",
+    "digitalTwins": [
+      "DesignInjector"
+    ],
+    "cssVariables": [
+      "--card-border-color",
+      "--theme-border",
+      "--sarak-card-border-color",
+      "--theme-card-border"
+    ],
+    "allowedValues": null,
+    "relatedTokens": [
+      "cardBackgroundColor"
+    ]
+  },
+  {
+    "tokenId": "colorBgBody",
+    "name": "Background Geral (Body) - Duplicado",
+    "description": "Cor base que preenche todo o fundo do site/app e do document body.",
+    "type": "color",
+    "importance": 95,
+    "categories": [
+      "cores",
+      "colors-and-atmosphere",
+      "background"
+    ],
+    "tags": [
+      "bg",
+      "body",
+      "global"
+    ],
+    "databaseColumn": "colors_and_atmosphere",
+    "schemaOrigin": "colors.ts",
+    "digitalTwins": [
+      "DesignInjector"
+    ],
+    "cssVariables": [
+      "--sarak-bg-body",
+      "--theme-bg",
+      "--theme-body",
+      "--bg-body",
+      "--sarak-bg-base"
+    ],
+    "allowedValues": null,
+    "relatedTokens": [
+      "colorBgLayer1"
+    ]
+  },
+  {
+    "tokenId": "colorBgLayer1",
+    "name": "Background Layer 1 - Duplicado",
+    "description": "Cor de fundo primária para elementos de nível 1 (painéis, sidebars).",
+    "type": "color",
+    "importance": 90,
+    "categories": [
+      "cores",
+      "colors-and-atmosphere",
+      "background"
+    ],
+    "tags": [
+      "layer",
+      "bg",
+      "surface"
+    ],
+    "databaseColumn": "colors_and_atmosphere",
+    "schemaOrigin": "colors.ts",
+    "digitalTwins": [
+      "DesignInjector"
+    ],
+    "cssVariables": [
+      "--sarak-bg-layer-1",
+      "--theme-surface-1"
+    ],
+    "allowedValues": null,
+    "relatedTokens": [
+      "colorBgLayer2"
+    ]
+  },
+  {
+    "tokenId": "colorBgLayer2",
+    "name": "Background Layer 2 - Duplicado",
+    "description": "Cor de fundo para elementos de nível 2 (sobreposições leves, painéis de destaque).",
+    "type": "color",
+    "importance": 85,
+    "categories": [
+      "cores",
+      "colors-and-atmosphere",
+      "background"
+    ],
+    "tags": [
+      "layer",
+      "bg",
+      "surface"
+    ],
+    "databaseColumn": "colors_and_atmosphere",
+    "schemaOrigin": "colors.ts",
+    "digitalTwins": [
+      "DesignInjector"
+    ],
+    "cssVariables": [
+      "--sarak-bg-layer-2",
+      "--theme-surface-2"
+    ],
+    "allowedValues": null,
+    "relatedTokens": [
+      "colorBgLayer1"
+    ]
+  },
+  {
+    "tokenId": "bgBaseColor",
+    "name": "Cor de Fundo Base",
+    "description": "Cor de base mais profunda usada abaixo de qualquer textura ou padrão.",
+    "type": "color",
+    "importance": 90,
+    "categories": [
+      "cores",
+      "colors-and-atmosphere",
+      "background"
+    ],
+    "tags": [
+      "bg",
+      "base",
+      "global"
+    ],
+    "databaseColumn": "colors_and_atmosphere",
+    "schemaOrigin": "atmosphere.ts",
+    "digitalTwins": [
+      "DesignInjector"
+    ],
+    "cssVariables": [
+      "--sarak-bg-base"
+    ],
+    "allowedValues": null,
+    "relatedTokens": [
+      "bgGradientMode"
+    ]
+  },
+  {
+    "tokenId": "bgGradientMode",
+    "name": "Modo de Gradiente",
+    "description": "Formato de renderização de cor de fundo (sólido, linear, radial, orgânico).",
+    "type": "select",
+    "importance": 85,
+    "categories": [
+      "efeitos",
+      "colors-and-atmosphere",
+      "background"
+    ],
+    "tags": [
+      "gradient",
+      "mode",
+      "bg"
+    ],
+    "databaseColumn": "colors_and_atmosphere",
+    "schemaOrigin": "atmosphere.ts",
+    "digitalTwins": [
+      "DesignInjector"
+    ],
+    "cssVariables": [
+      "--sarak-bg-gradient-mode"
+    ],
+    "allowedValues": [
+      "none",
+      "linear",
+      "radial",
+      "mesh"
+    ],
+    "relatedTokens": [
+      "bgGradientAngle"
+    ]
+  },
+  {
+    "tokenId": "bgGradientAngle",
+    "name": "Direção do Gradiente",
+    "description": "Se o fundo for linear, define o grau em que as cores mudam.",
+    "type": "number",
+    "importance": 70,
+    "categories": [
+      "geometria",
+      "colors-and-atmosphere",
+      "background"
+    ],
+    "tags": [
+      "gradient",
+      "angle",
+      "bg"
+    ],
+    "databaseColumn": "colors_and_atmosphere",
+    "schemaOrigin": "atmosphere.ts",
+    "digitalTwins": [
+      "DesignInjector"
+    ],
+    "cssVariables": [
+      "--sarak-bg-gradient-angle"
+    ],
+    "allowedValues": {
+      "min": 0,
+      "max": 360,
+      "step": 1
+    },
+    "relatedTokens": [
+      "bgGradientMode"
+    ]
+  },
+  {
+    "tokenId": "surfaceMaterial",
+    "name": "Material da Superfície",
+    "description": "Estilo ótico predominante para superfícies flutuantes (vidro fosco, polido, orgânico).",
+    "type": "select",
+    "importance": 95,
+    "categories": [
+      "estetica",
+      "colors-and-atmosphere",
+      "surface"
+    ],
+    "tags": [
+      "material",
+      "surface",
+      "preset"
+    ],
+    "databaseColumn": "colors_and_atmosphere",
+    "schemaOrigin": "atmosphere.ts",
+    "digitalTwins": [
+      "DesignInjector"
+    ],
+    "cssVariables": [
+      "--sarak-surface",
+      "--surface-material"
+    ],
+    "allowedValues": [
+      "frosted",
+      "sleek",
+      "industrial",
+      "organic"
+    ],
+    "relatedTokens": [
+      "surfaceIntensity"
+    ]
+  },
+  {
+    "tokenId": "surfaceIntensity",
+    "name": "Intensidade do Efeito de Superfície",
+    "description": "O quanto do material simulado deve ser aplicado na renderização dos painéis.",
+    "type": "number",
+    "importance": 80,
+    "categories": [
+      "efeitos",
+      "colors-and-atmosphere",
+      "surface"
+    ],
+    "tags": [
+      "material",
+      "intensity",
+      "effect"
+    ],
+    "databaseColumn": "colors_and_atmosphere",
+    "schemaOrigin": "atmosphere.ts",
+    "digitalTwins": [
+      "DesignInjector"
+    ],
+    "cssVariables": [
+      "--surface-intensity",
+      "--sarak-surface-intensity"
+    ],
+    "allowedValues": {
+      "min": 0,
+      "max": 1,
+      "step": 0.05
+    },
+    "relatedTokens": [
+      "surfaceMaterial"
+    ]
+  },
+  {
+    "tokenId": "borderType",
+    "name": "Estilo da Moldura (Border)",
+    "description": "Estilo visual de fronteiras do sistema (sólido, segmentado cyber, duplo, neon).",
+    "type": "select",
+    "importance": 85,
+    "categories": [
+      "bordas",
+      "colors-and-atmosphere",
+      "estetica"
+    ],
+    "tags": [
+      "border",
+      "type",
+      "stroke"
+    ],
+    "databaseColumn": "colors_and_atmosphere",
+    "schemaOrigin": "atmosphere.ts",
+    "digitalTwins": [
+      "DesignInjector"
+    ],
+    "cssVariables": [
+      "--sarak-border-type",
+      "--border-type"
+    ],
+    "allowedValues": [
+      "solid",
+      "cyber",
+      "double",
+      "glow",
+      "none"
+    ],
+    "relatedTokens": [
+      "surfaceMaterial"
+    ]
+  },
+  {
+    "tokenId": "systemTone",
+    "name": "Tom do Ambiente",
+    "description": "Orientação do clima (dark profundo, claro cromado, cibernético verde).",
+    "type": "select",
+    "importance": 95,
+    "categories": [
+      "temas",
+      "colors-and-atmosphere",
+      "geral"
+    ],
+    "tags": [
+      "tone",
+      "theme",
+      "preset"
+    ],
+    "databaseColumn": "colors_and_atmosphere",
+    "schemaOrigin": "atmosphere.ts",
+    "digitalTwins": [
+      "DesignInjector"
+    ],
+    "cssVariables": [
+      "--sarak-system-tone"
+    ],
+    "allowedValues": [
+      "dark",
+      "light",
+      "cyber",
+      "tactical"
+    ],
+    "relatedTokens": [
+      "colorPalette"
+    ]
+  },
+  {
+    "tokenId": "texture",
+    "name": "Textura Global",
+    "description": "Estampa padrão para o fundo do sistema (grid, carbon, noise, hexagon).",
+    "type": "select",
+    "importance": 80,
+    "categories": [
+      "texturas",
+      "colors-and-atmosphere",
+      "geral"
+    ],
+    "tags": [
+      "texture",
+      "pattern",
+      "bg"
+    ],
+    "databaseColumn": "colors_and_atmosphere",
+    "schemaOrigin": "atmosphere.ts",
+    "digitalTwins": [
+      "DesignInjector"
+    ],
+    "cssVariables": [
+      "--sarak-texture",
+      "--bg-texture"
+    ],
+    "allowedValues": [
+      "none",
+      "grid",
+      "carbon",
+      "honeycomb",
+      "dots"
+    ],
+    "relatedTokens": [
+      "textureOpacity"
+    ]
+  },
+  {
+    "tokenId": "textureOpacity",
+    "name": "Opacidade da Textura",
+    "description": "Nível de transparência e visibilidade do pattern de textura.",
+    "type": "number",
+    "importance": 70,
+    "categories": [
+      "texturas",
+      "colors-and-atmosphere",
+      "ajuste"
+    ],
+    "tags": [
+      "texture",
+      "opacity",
+      "alpha"
+    ],
+    "databaseColumn": "colors_and_atmosphere",
+    "schemaOrigin": "atmosphere.ts",
+    "digitalTwins": [
+      "DesignInjector"
+    ],
+    "cssVariables": [
+      "--sarak-texture-opacity",
+      "--texture-opacity"
+    ],
+    "allowedValues": {
+      "min": 0,
+      "max": 1,
+      "step": 0.05
+    },
+    "relatedTokens": [
+      "texture"
+    ]
+  },
+  {
+    "tokenId": "atmosphereNoiseOpacity",
+    "name": "Opacidade do Noise Atmosférico",
+    "description": "Visibilidade do ruído visual (granulação) aplicado sobre toda a tela.",
+    "type": "number",
+    "importance": 60,
+    "categories": [
+      "efeitos",
+      "colors-and-atmosphere",
+      "ruído"
+    ],
+    "tags": [
+      "noise",
+      "film-grain",
+      "atmosphere"
+    ],
+    "databaseColumn": "colors_and_atmosphere",
+    "schemaOrigin": "atmosphere.ts",
+    "digitalTwins": [
+      "DesignInjector"
+    ],
+    "cssVariables": [
+      "--sarak-noise-opacity"
+    ],
+    "allowedValues": {
+      "min": 0,
+      "max": 1,
+      "step": 0.05
+    },
+    "relatedTokens": [
+      "noiseIntensity"
+    ]
+  },
+  {
+    "tokenId": "noiseIntensity",
+    "name": "Intensidade do Noise",
+    "description": "Nível de contraste e força da granulação da tela.",
+    "type": "number",
+    "importance": 55,
+    "categories": [
+      "efeitos",
+      "colors-and-atmosphere",
+      "ruído"
+    ],
+    "tags": [
+      "noise",
+      "intensity",
+      "grain"
+    ],
+    "databaseColumn": "colors_and_atmosphere",
+    "schemaOrigin": "atmosphere.ts",
+    "digitalTwins": [
+      "DesignInjector"
+    ],
+    "cssVariables": [
+      "--sarak-noise-intensity"
+    ],
+    "allowedValues": {
+      "min": 0,
+      "max": 1,
+      "step": 0.05
+    },
+    "relatedTokens": [
+      "atmosphereNoiseOpacity"
+    ]
+  },
+  {
+    "tokenId": "bgNoiseDensity",
+    "name": "Densidade do Noise de Fundo",
+    "description": "Quão agrupados são os pixels gerados pelo efeito de grain no background.",
+    "type": "number",
+    "importance": 50,
+    "categories": [
+      "efeitos",
+      "colors-and-atmosphere",
+      "ruído"
+    ],
+    "tags": [
+      "noise",
+      "density",
+      "bg"
+    ],
+    "databaseColumn": "colors_and_atmosphere",
+    "schemaOrigin": "atmosphere.ts",
+    "digitalTwins": [
+      "DesignInjector"
+    ],
+    "cssVariables": [
+      "--sarak-bg-noise-density"
+    ],
+    "allowedValues": {
+      "min": 1,
+      "max": 100,
+      "step": 1
+    },
+    "relatedTokens": [
+      "noiseIntensity"
+    ]
+  },
+  {
+    "tokenId": "bgNoiseAnimation",
+    "name": "Animação do Noise",
+    "description": "Se a textura de ruído é estática ou possui animação (estática do tipo TV antiga).",
+    "type": "boolean",
+    "importance": 50,
+    "categories": [
+      "animações",
+      "colors-and-atmosphere",
+      "efeitos"
+    ],
+    "tags": [
+      "noise",
+      "animation",
+      "motion"
+    ],
+    "databaseColumn": "colors_and_atmosphere",
+    "schemaOrigin": "atmosphere.ts",
+    "digitalTwins": [
+      "DesignInjector"
+    ],
+    "cssVariables": [],
+    "allowedValues": [
+      true,
+      false
+    ],
+    "relatedTokens": [
+      "noiseIntensity"
+    ]
+  },
+  {
+    "tokenId": "glassBlur",
+    "name": "Desfoque de Vidro (Glass Blur)",
+    "description": "Intensidade do backdrop-filter de blur nos materiais glassmorphism.",
+    "type": "string",
+    "importance": 85,
+    "categories": [
+      "efeitos",
+      "colors-and-atmosphere",
+      "glassmorphism"
+    ],
+    "tags": [
+      "glass",
+      "blur",
+      "backdrop"
+    ],
+    "databaseColumn": "colors_and_atmosphere",
+    "schemaOrigin": "atmosphere.ts",
+    "digitalTwins": [
+      "DesignInjector"
+    ],
+    "cssVariables": [
+      "--sarak-glass-blur",
+      "--glass-blur"
+    ],
+    "allowedValues": null,
+    "relatedTokens": [
+      "glassOpacity"
+    ]
+  },
+  {
+    "tokenId": "glassOpacity",
+    "name": "Opacidade do Vidro",
+    "description": "Transparência do painel nos estilos frosted e glassmorphism.",
+    "type": "number",
+    "importance": 85,
+    "categories": [
+      "efeitos",
+      "colors-and-atmosphere",
+      "glassmorphism"
+    ],
+    "tags": [
+      "glass",
+      "opacity",
+      "alpha"
+    ],
+    "databaseColumn": "colors_and_atmosphere",
+    "schemaOrigin": "atmosphere.ts",
+    "digitalTwins": [
+      "DesignInjector"
+    ],
+    "cssVariables": [
+      "--sarak-glass-opacity",
+      "--glass-opacity"
+    ],
+    "allowedValues": {
+      "min": 0,
+      "max": 1,
+      "step": 0.05
+    },
+    "relatedTokens": [
+      "glassBlur"
+    ]
+  },
+  {
+    "tokenId": "glassSpecularity",
+    "name": "Especularidade do Vidro",
+    "description": "Nível de brilho reflexivo artificial em superfícies de vidro.",
+    "type": "number",
+    "importance": 65,
+    "categories": [
+      "efeitos",
+      "colors-and-atmosphere",
+      "glassmorphism"
+    ],
+    "tags": [
+      "glass",
+      "specularity",
+      "shine"
+    ],
+    "databaseColumn": "colors_and_atmosphere",
+    "schemaOrigin": "atmosphere.ts",
+    "digitalTwins": [
+      "DesignInjector"
+    ],
+    "cssVariables": [
+      "--sarak-glass-specularity"
+    ],
+    "allowedValues": {
+      "min": 0,
+      "max": 1,
+      "step": 0.05
+    },
+    "relatedTokens": [
+      "surfaceMaterial"
+    ]
+  },
+  {
+    "tokenId": "glassRoughness",
+    "name": "Rugosidade do Vidro",
+    "description": "Nível de difusão de luz (fosco vs polido).",
+    "type": "number",
+    "importance": 65,
+    "categories": [
+      "efeitos",
+      "colors-and-atmosphere",
+      "glassmorphism"
+    ],
+    "tags": [
+      "glass",
+      "roughness",
+      "matte"
+    ],
+    "databaseColumn": "colors_and_atmosphere",
+    "schemaOrigin": "atmosphere.ts",
+    "digitalTwins": [
+      "DesignInjector"
+    ],
+    "cssVariables": [
+      "--sarak-glass-roughness"
+    ],
+    "allowedValues": {
+      "min": 0,
+      "max": 1,
+      "step": 0.05
+    },
+    "relatedTokens": [
+      "surfaceMaterial"
+    ]
+  },
+  {
+    "tokenId": "glassSaturation",
+    "name": "Saturação Atrás do Vidro",
+    "description": "Modificador de saturação (backdrop-filter) para o fundo que passa pelo vidro.",
+    "type": "number",
+    "importance": 60,
+    "categories": [
+      "efeitos",
+      "colors-and-atmosphere",
+      "glassmorphism"
+    ],
+    "tags": [
+      "glass",
+      "saturation",
+      "filter"
+    ],
+    "databaseColumn": "colors_and_atmosphere",
+    "schemaOrigin": "atmosphere.ts",
+    "digitalTwins": [
+      "DesignInjector"
+    ],
+    "cssVariables": [
+      "--sarak-glass-saturation"
+    ],
+    "allowedValues": {
+      "min": 0,
+      "max": 2,
+      "step": 0.1
+    },
+    "relatedTokens": [
+      "glassBlur"
+    ]
+  },
+  {
+    "tokenId": "shadowIntensity",
+    "name": "Intensidade da Sombra",
+    "description": "Nível de escuridão/opacidade das sombras (drop-shadows) projetadas por painéis.",
+    "type": "number",
+    "importance": 85,
+    "categories": [
+      "efeitos",
+      "sombra-luz",
+      "colors-and-atmosphere"
+    ],
+    "tags": [
+      "shadow",
+      "intensity",
+      "elevation"
+    ],
+    "databaseColumn": "colors_and_atmosphere",
+    "schemaOrigin": "atmosphere.ts",
+    "digitalTwins": [
+      "DesignInjector"
+    ],
+    "cssVariables": [
+      "--sarak-shadow-intensity"
+    ],
+    "allowedValues": {
+      "min": 0,
+      "max": 1,
+      "step": 0.05
+    },
+    "relatedTokens": [
+      "layeredShadows"
+    ]
+  },
+  {
+    "tokenId": "layeredShadows",
+    "name": "Sombras em Múltiplas Camadas",
+    "description": "Se ativado, utiliza sombras suaves formadas por múltiplos offsets, dando maior realismo.",
+    "type": "boolean",
+    "importance": 70,
+    "categories": [
+      "efeitos",
+      "sombra-luz",
+      "colors-and-atmosphere"
+    ],
+    "tags": [
+      "shadow",
+      "layered",
+      "realism"
+    ],
+    "databaseColumn": "colors_and_atmosphere",
+    "schemaOrigin": "atmosphere.ts",
+    "digitalTwins": [
+      "DesignInjector"
+    ],
+    "cssVariables": [],
+    "allowedValues": [
+      true,
+      false
+    ],
+    "relatedTokens": [
+      "shadowIntensity"
+    ]
+  },
+  {
+    "tokenId": "shadowOrientation",
+    "name": "Orientação da Sombra",
+    "description": "Ponto de luz virtual (e.g., bottom-right, top-left) que define para onde as sombras caem.",
+    "type": "select",
+    "importance": 70,
+    "categories": [
+      "geometria",
+      "sombra-luz",
+      "colors-and-atmosphere"
+    ],
+    "tags": [
+      "shadow",
+      "orientation",
+      "light"
+    ],
+    "databaseColumn": "colors_and_atmosphere",
+    "schemaOrigin": "atmosphere.ts",
+    "digitalTwins": [
+      "DesignInjector"
+    ],
+    "cssVariables": [
+      "--sarak-shadow-orientation"
+    ],
+    "allowedValues": [
+      "bottom-right",
+      "bottom",
+      "top-left",
+      "center"
+    ],
+    "relatedTokens": [
+      "shadowIntensity"
+    ]
+  },
+  {
+    "tokenId": "shadowColorMode",
+    "name": "Modo de Cor da Sombra",
+    "description": "A sombra é puro preto neutro ou sofre tonalização baseada na cor de fundo (tinted).",
+    "type": "select",
+    "importance": 65,
+    "categories": [
+      "cores",
+      "sombra-luz",
+      "colors-and-atmosphere"
+    ],
+    "tags": [
+      "shadow",
+      "color",
+      "tint"
+    ],
+    "databaseColumn": "colors_and_atmosphere",
+    "schemaOrigin": "atmosphere.ts",
+    "digitalTwins": [
+      "DesignInjector"
+    ],
+    "cssVariables": [
+      "--sarak-shadow-color-mode"
+    ],
+    "allowedValues": [
+      "neutral",
+      "tinted"
+    ],
+    "relatedTokens": [
+      "shadowIntensity"
+    ]
+  },
+  {
+    "tokenId": "shadowAmbientAlpha",
+    "name": "Alpha da Sombra Ambiente",
+    "description": "Transparência do halo próximo ao objeto (sombra de contato).",
+    "type": "number",
+    "importance": 60,
+    "categories": [
+      "efeitos",
+      "sombra-luz",
+      "colors-and-atmosphere"
+    ],
+    "tags": [
+      "shadow",
+      "ambient",
+      "alpha"
+    ],
+    "databaseColumn": "colors_and_atmosphere",
+    "schemaOrigin": "atmosphere.ts",
+    "digitalTwins": [
+      "DesignInjector"
+    ],
+    "cssVariables": [
+      "--sarak-shadow-ambient-alpha"
+    ],
+    "allowedValues": {
+      "min": 0,
+      "max": 1,
+      "step": 0.05
+    },
+    "relatedTokens": [
+      "shadowProjectionAlpha"
+    ]
+  },
+  {
+    "tokenId": "shadowProjectionBlur",
+    "name": "Desfoque da Sombra Projetada",
+    "description": "Tamanho do blur na sombra distante (projeção baseada em elevação).",
+    "type": "number",
+    "importance": 60,
+    "categories": [
+      "efeitos",
+      "sombra-luz",
+      "colors-and-atmosphere"
+    ],
+    "tags": [
+      "shadow",
+      "blur",
+      "projection"
+    ],
+    "databaseColumn": "colors_and_atmosphere",
+    "schemaOrigin": "atmosphere.ts",
+    "digitalTwins": [
+      "DesignInjector"
+    ],
+    "cssVariables": [
+      "--sarak-shadow-proj-blur"
+    ],
+    "allowedValues": {
+      "min": 0,
+      "max": 100,
+      "step": 1
+    },
+    "relatedTokens": [
+      "shadowProjectionAlpha"
+    ]
+  },
+  {
+    "tokenId": "shadowProjectionAlpha",
+    "name": "Alpha da Sombra Projetada",
+    "description": "Transparência da sombra principal à distância do objeto.",
+    "type": "number",
+    "importance": 60,
+    "categories": [
+      "efeitos",
+      "sombra-luz",
+      "colors-and-atmosphere"
+    ],
+    "tags": [
+      "shadow",
+      "projection",
+      "alpha"
+    ],
+    "databaseColumn": "colors_and_atmosphere",
+    "schemaOrigin": "atmosphere.ts",
+    "digitalTwins": [
+      "DesignInjector"
+    ],
+    "cssVariables": [
+      "--sarak-shadow-proj-alpha"
+    ],
+    "allowedValues": {
+      "min": 0,
+      "max": 1,
+      "step": 0.05
+    },
+    "relatedTokens": [
+      "shadowAmbientAlpha"
+    ]
+  },
+  {
+    "tokenId": "securityShieldGlow",
+    "name": "Brilho de Segurança (Shield Glow)",
+    "description": "Efeito especial de brilho pulsante usado em telas críticas ou restritas.",
+    "type": "boolean",
+    "importance": 50,
+    "categories": [
+      "efeitos",
+      "segurança",
+      "colors-and-atmosphere"
+    ],
+    "tags": [
+      "glow",
+      "security",
+      "pulse"
+    ],
+    "databaseColumn": "colors_and_atmosphere",
+    "schemaOrigin": "atmosphere.ts",
+    "digitalTwins": [
+      "DesignInjector"
+    ],
+    "cssVariables": [],
+    "allowedValues": [
+      true,
+      false
+    ],
+    "relatedTokens": [
+      "securityPulseSpeed"
+    ]
+  },
+  {
+    "tokenId": "securityPulseSpeed",
+    "name": "Velocidade do Pulso (Security)",
+    "description": "Ritmo da animação do glow de segurança se estiver ativado.",
+    "type": "select",
+    "importance": 40,
+    "categories": [
+      "animações",
+      "segurança",
+      "colors-and-atmosphere"
+    ],
+    "tags": [
+      "glow",
+      "speed",
+      "pulse"
+    ],
+    "databaseColumn": "colors_and_atmosphere",
+    "schemaOrigin": "atmosphere.ts",
+    "digitalTwins": [
+      "DesignInjector"
+    ],
+    "cssVariables": [
+      "--sarak-pulse-speed"
+    ],
+    "allowedValues": [
+      "slow",
+      "normal",
+      "fast",
+      "alert"
+    ],
+    "relatedTokens": [
+      "securityShieldGlow"
+    ]
+  },
+  {
+    "tokenId": "vignetteOpacity",
+    "name": "Opacidade da Vignette",
+    "description": "Escurecimento nas bordas da tela para focar a visão no centro.",
+    "type": "number",
+    "importance": 65,
+    "categories": [
+      "efeitos",
+      "câmera",
+      "colors-and-atmosphere"
+    ],
+    "tags": [
+      "vignette",
+      "focus",
+      "effect"
+    ],
+    "databaseColumn": "colors_and_atmosphere",
+    "schemaOrigin": "atmosphere.ts",
+    "digitalTwins": [
+      "DesignInjector"
+    ],
+    "cssVariables": [
+      "--sarak-vignette-opacity"
+    ],
+    "allowedValues": {
+      "min": 0,
+      "max": 1,
+      "step": 0.05
+    },
+    "relatedTokens": [
+      "vignetteSoftness"
+    ]
+  },
+  {
+    "tokenId": "vignetteSoftness",
+    "name": "Suavidade da Vignette",
+    "description": "Gradiente do escurecimento, do centro para as bordas.",
+    "type": "number",
+    "importance": 60,
+    "categories": [
+      "efeitos",
+      "câmera",
+      "colors-and-atmosphere"
+    ],
+    "tags": [
+      "vignette",
+      "softness",
+      "blur"
+    ],
+    "databaseColumn": "colors_and_atmosphere",
+    "schemaOrigin": "atmosphere.ts",
+    "digitalTwins": [
+      "DesignInjector"
+    ],
+    "cssVariables": [
+      "--sarak-vignette-softness"
+    ],
+    "allowedValues": {
+      "min": 0,
+      "max": 100,
+      "step": 1
+    },
+    "relatedTokens": [
+      "vignetteOpacity"
+    ]
+  },
+  {
+    "tokenId": "globalSaturation",
+    "name": "Saturação Global",
+    "description": "Modificador pós-processado que altera toda a vivacidade de cores da interface.",
+    "type": "number",
+    "importance": 85,
+    "categories": [
+      "cores",
+      "ajuste",
+      "colors-and-atmosphere"
+    ],
+    "tags": [
+      "saturation",
+      "global",
+      "post-process"
+    ],
+    "databaseColumn": "colors_and_atmosphere",
+    "schemaOrigin": "atmosphere.ts",
+    "digitalTwins": [
+      "DesignInjector"
+    ],
+    "cssVariables": [
+      "--sarak-global-saturation"
+    ],
+    "allowedValues": {
+      "min": 0,
+      "max": 2,
+      "step": 0.1
+    },
+    "relatedTokens": [
+      "globalContrast"
+    ]
+  },
+  {
+    "tokenId": "globalContrast",
+    "name": "Contraste Global",
+    "description": "Aumenta ou reduz o intervalo tonal (claros mais claros, escuros mais escuros).",
+    "type": "number",
+    "importance": 85,
+    "categories": [
+      "cores",
+      "ajuste",
+      "colors-and-atmosphere"
+    ],
+    "tags": [
+      "contrast",
+      "global",
+      "post-process"
+    ],
+    "databaseColumn": "colors_and_atmosphere",
+    "schemaOrigin": "atmosphere.ts",
+    "digitalTwins": [
+      "DesignInjector"
+    ],
+    "cssVariables": [
+      "--sarak-global-contrast"
+    ],
+    "allowedValues": {
+      "min": 0,
+      "max": 2,
+      "step": 0.1
+    },
+    "relatedTokens": [
+      "globalSaturation"
+    ]
+  },
+  {
+    "tokenId": "contrastCurve",
+    "name": "Curva de Contraste",
+    "description": "Maneira que os tons médios são processados (linear, dramático s-curve, suave).",
+    "type": "select",
+    "importance": 75,
+    "categories": [
+      "cores",
+      "ajuste",
+      "colors-and-atmosphere"
+    ],
+    "tags": [
+      "contrast",
+      "curve",
+      "post-process"
+    ],
+    "databaseColumn": "colors_and_atmosphere",
+    "schemaOrigin": "atmosphere.ts",
+    "digitalTwins": [
+      "DesignInjector"
+    ],
+    "cssVariables": [
+      "--sarak-contrast-curve"
+    ],
+    "allowedValues": [
+      "linear",
+      "s-curve",
+      "flat"
+    ],
+    "relatedTokens": [
+      "globalContrast"
+    ]
+  },
+  {
+    "tokenId": "statusSuccessColor",
+    "name": "Cor: Sucesso",
+    "description": "Cor primária para indicações de sucesso, conclusão ou ações positivas.",
+    "type": "color",
+    "importance": 90,
+    "categories": [
+      "cores",
+      "status",
+      "colors-and-atmosphere"
+    ],
+    "tags": [
+      "success",
+      "color",
+      "status"
+    ],
+    "databaseColumn": "colors_and_atmosphere",
+    "schemaOrigin": "status.ts",
+    "digitalTwins": [
+      "DesignInjector"
+    ],
+    "cssVariables": [
+      "--sarak-status-success-color",
+      "--theme-success"
+    ],
+    "allowedValues": null,
+    "relatedTokens": [
+      "statusErrorColor"
+    ]
+  },
+  {
+    "tokenId": "statusErrorColor",
+    "name": "Cor: Erro",
+    "description": "Cor primária para indicações de erro, falha ou ações destrutivas.",
+    "type": "color",
+    "importance": 90,
+    "categories": [
+      "cores",
+      "status",
+      "colors-and-atmosphere"
+    ],
+    "tags": [
+      "error",
+      "color",
+      "status"
+    ],
+    "databaseColumn": "colors_and_atmosphere",
+    "schemaOrigin": "status.ts",
+    "digitalTwins": [
+      "DesignInjector"
+    ],
+    "cssVariables": [
+      "--sarak-status-error-color",
+      "--theme-error"
+    ],
+    "allowedValues": null,
+    "relatedTokens": [
+      "statusWarningColor"
+    ]
+  },
+  {
+    "tokenId": "statusWarningColor",
+    "name": "Cor: Alerta",
+    "description": "Cor primária para indicações de atenção, avisos ou estados intermediários.",
+    "type": "color",
+    "importance": 90,
+    "categories": [
+      "cores",
+      "status",
+      "colors-and-atmosphere"
+    ],
+    "tags": [
+      "warning",
+      "color",
+      "status"
+    ],
+    "databaseColumn": "colors_and_atmosphere",
+    "schemaOrigin": "status.ts",
+    "digitalTwins": [
+      "DesignInjector"
+    ],
+    "cssVariables": [
+      "--sarak-status-warning-color",
+      "--theme-warning"
+    ],
+    "allowedValues": null,
+    "relatedTokens": [
+      "statusInfoColor"
+    ]
+  },
+  {
+    "tokenId": "statusInfoColor",
+    "name": "Cor: Info",
+    "description": "Cor primária para indicações de informação geral ou notas de sistema.",
+    "type": "color",
+    "importance": 90,
+    "categories": [
+      "cores",
+      "status",
+      "colors-and-atmosphere"
+    ],
+    "tags": [
+      "info",
+      "color",
+      "status"
+    ],
+    "databaseColumn": "colors_and_atmosphere",
+    "schemaOrigin": "status.ts",
+    "digitalTwins": [
+      "DesignInjector"
+    ],
+    "cssVariables": [
+      "--sarak-status-info-color",
+      "--theme-info"
+    ],
+    "allowedValues": null,
+    "relatedTokens": [
+      "statusSuccessColor"
+    ]
+  },
+  {
+    "tokenId": "badgeRadius",
+    "name": "Raio das Badges",
+    "description": "Arredondamento das bordas das badges de notificação e status.",
+    "type": "number",
+    "importance": 60,
+    "categories": [
+      "bordas",
+      "geometria",
+      "status",
+      "colors-and-atmosphere"
+    ],
+    "tags": [
+      "badge",
+      "radius",
+      "shape"
+    ],
+    "databaseColumn": "colors_and_atmosphere",
+    "schemaOrigin": "status.ts",
+    "digitalTwins": [
+      "DesignInjector"
+    ],
+    "cssVariables": [
+      "--sarak-badge-radius"
+    ],
+    "allowedValues": {
+      "min": 0,
+      "max": 20,
+      "step": 1
+    },
+    "relatedTokens": []
+  },
+  {
+    "tokenId": "globalBackgroundImageUrl",
+    "name": "URL da Imagem de Fundo",
+    "description": "Caminho da imagem de fundo global (pode ser arquivo ou base64).",
+    "type": "string",
+    "importance": 85,
+    "categories": [
+      "media",
+      "background",
+      "colors-and-atmosphere"
+    ],
+    "tags": [
+      "background",
+      "image",
+      "media"
+    ],
+    "databaseColumn": "colors_and_atmosphere",
+    "schemaOrigin": "media.ts",
+    "digitalTwins": [
+      "DesignInjector"
+    ],
+    "cssVariables": [
+      "--sarak-global-bg-image"
+    ],
+    "allowedValues": null,
+    "relatedTokens": [
+      "globalBackgroundOpacity"
+    ]
+  },
+  {
+    "tokenId": "globalBackgroundBlur",
+    "name": "Desfoque da Imagem Global",
+    "description": "Intensidade do blur aplicado à imagem de fundo.",
+    "type": "number",
+    "importance": 65,
+    "categories": [
+      "efeitos",
+      "media",
+      "colors-and-atmosphere"
+    ],
+    "tags": [
+      "blur",
+      "background",
+      "effect"
+    ],
+    "databaseColumn": "colors_and_atmosphere",
+    "schemaOrigin": "media.ts",
+    "digitalTwins": [
+      "DesignInjector"
+    ],
+    "cssVariables": [
+      "--sarak-global-bg-blur"
+    ],
+    "allowedValues": {
+      "min": 0,
+      "max": 100,
+      "step": 1
+    },
+    "relatedTokens": [
+      "globalBackgroundImageUrl"
+    ]
+  },
+  {
+    "tokenId": "globalBackgroundBlendMode",
+    "name": "Blend Mode (Mistura)",
+    "description": "Modo de mesclagem da imagem de fundo com as cores sólidas base.",
+    "type": "select",
+    "importance": 60,
+    "categories": [
+      "efeitos",
+      "media",
+      "colors-and-atmosphere"
+    ],
+    "tags": [
+      "blend-mode",
+      "background",
+      "mix"
+    ],
+    "databaseColumn": "colors_and_atmosphere",
+    "schemaOrigin": "media.ts",
+    "digitalTwins": [
+      "DesignInjector"
+    ],
+    "cssVariables": [
+      "--sarak-global-bg-blend-mode"
+    ],
+    "allowedValues": [
+      "normal",
+      "overlay",
+      "multiply",
+      "screen",
+      "soft-light"
+    ],
+    "relatedTokens": [
+      "globalBackgroundImageUrl"
+    ]
+  },
+  {
+    "tokenId": "globalBackgroundOpacity",
+    "name": "Opacidade da Imagem Global",
+    "description": "Nível de transparência da imagem de fundo principal.",
+    "type": "number",
+    "importance": 75,
+    "categories": [
+      "efeitos",
+      "media",
+      "colors-and-atmosphere"
+    ],
+    "tags": [
+      "opacity",
+      "background",
+      "alpha"
+    ],
+    "databaseColumn": "colors_and_atmosphere",
+    "schemaOrigin": "media.ts",
+    "digitalTwins": [
+      "DesignInjector"
+    ],
+    "cssVariables": [
+      "--sarak-global-bg-opacity"
+    ],
+    "allowedValues": {
+      "min": 0,
+      "max": 1,
+      "step": 0.05
+    },
+    "relatedTokens": [
+      "globalBackgroundImageUrl"
+    ]
+  },
+  {
+    "tokenId": "headingFont",
+    "name": "Fonte de Títulos",
+    "description": "Família tipográfica principal usada em Headers (H1, H2, etc).",
+    "type": "font",
+    "importance": 95,
+    "categories": [
+      "tipografia",
+      "estilo",
+      "typography"
+    ],
+    "tags": [
+      "font",
+      "heading",
+      "family"
+    ],
+    "databaseColumn": "typography",
+    "schemaOrigin": "typography.ts",
+    "digitalTwins": [
+      "DesignInjector"
+    ],
+    "cssVariables": [
+      "--font-heading",
+      "--sarak-font-h"
+    ],
+    "allowedValues": null,
+    "relatedTokens": [
+      "bodyFont",
+      "h1Size"
+    ]
+  },
+  {
+    "tokenId": "bodyFont",
+    "name": "Fonte de Corpo",
+    "description": "Família tipográfica usada em textos normais, parágrafos e ui components.",
+    "type": "font",
+    "importance": 95,
+    "categories": [
+      "tipografia",
+      "estilo",
+      "typography"
+    ],
+    "tags": [
+      "font",
+      "body",
+      "family"
+    ],
+    "databaseColumn": "typography",
+    "schemaOrigin": "typography.ts",
+    "digitalTwins": [
+      "DesignInjector"
+    ],
+    "cssVariables": [
+      "--font-main",
+      "--sarak-font-b"
+    ],
+    "allowedValues": null,
+    "relatedTokens": [
+      "headingFont",
+      "bodyWeight"
+    ]
+  },
+  {
+    "tokenId": "monoFont",
+    "name": "Fonte Mono (Dados)",
+    "description": "Família tipográfica de espaçamento fixo (monospace) para código, tabelas de dados e números críticos.",
+    "type": "font",
+    "importance": 80,
+    "categories": [
+      "tipografia",
+      "estilo",
+      "typography"
+    ],
+    "tags": [
+      "font",
+      "mono",
+      "data",
+      "code"
+    ],
+    "databaseColumn": "typography",
+    "schemaOrigin": "typography.ts",
+    "digitalTwins": [
+      "DesignInjector"
+    ],
+    "cssVariables": [
+      "--font-mono",
+      "--sarak-font-m"
+    ],
+    "allowedValues": null,
+    "relatedTokens": [
+      "bodyFont"
+    ]
+  },
+  {
+    "tokenId": "textColorMaster",
+    "name": "Texto Principal",
+    "description": "Cor de alto contraste usada em títulos e parágrafos focais.",
+    "type": "color",
+    "importance": 95,
+    "categories": [
+      "cores",
+      "tipografia",
+      "typography"
+    ],
+    "tags": [
+      "text",
+      "color",
+      "primary"
+    ],
+    "databaseColumn": "typography",
+    "schemaOrigin": "typography.ts",
+    "digitalTwins": [
+      "DesignInjector"
+    ],
+    "cssVariables": [
+      "--sarak-text-main",
+      "--theme-title",
+      "--theme-text-primary"
+    ],
+    "allowedValues": null,
+    "relatedTokens": [
+      "textColorSecondary"
+    ]
+  },
+  {
+    "tokenId": "textColorSecondary",
+    "name": "Texto Secundário",
+    "description": "Cor usada para descrições, subtítulos e textos de apoio (menor contraste).",
+    "type": "color",
+    "importance": 90,
+    "categories": [
+      "cores",
+      "tipografia",
+      "typography"
+    ],
+    "tags": [
+      "text",
+      "color",
+      "secondary"
+    ],
+    "databaseColumn": "typography",
+    "schemaOrigin": "typography.ts",
+    "digitalTwins": [
+      "DesignInjector"
+    ],
+    "cssVariables": [
+      "--sarak-text-sec"
+    ],
+    "allowedValues": null,
+    "relatedTokens": [
+      "textColorMaster",
+      "textColorMuted"
+    ]
+  },
+  {
+    "tokenId": "textColorMuted",
+    "name": "Texto Mudo / Hint",
+    "description": "Cor de baixíssimo contraste para hints, placeholders e textos inativos.",
+    "type": "color",
+    "importance": 85,
+    "categories": [
+      "cores",
+      "tipografia",
+      "typography"
+    ],
+    "tags": [
+      "text",
+      "color",
+      "muted",
+      "hint"
+    ],
+    "databaseColumn": "typography",
+    "schemaOrigin": "typography.ts",
+    "digitalTwins": [
+      "DesignInjector"
+    ],
+    "cssVariables": [
+      "--sarak-text-muted",
+      "--theme-muted",
+      "--theme-text-muted"
+    ],
+    "allowedValues": null,
+    "relatedTokens": [
+      "textColorSecondary"
+    ]
+  },
+  {
+    "tokenId": "h1Size",
+    "name": "Tamanho (H1)",
+    "description": "O tamanho da fonte principal do nível mais alto de hierarquia (H1).",
+    "type": "number",
+    "importance": 95,
+    "categories": [
+      "geometria",
+      "tipografia",
+      "typography"
+    ],
+    "tags": [
+      "size",
+      "h1",
+      "heading"
+    ],
+    "databaseColumn": "typography",
+    "schemaOrigin": "typography.ts",
+    "digitalTwins": [
+      "DesignInjector"
+    ],
+    "cssVariables": [
+      "--sarak-h1-size"
+    ],
+    "allowedValues": {
+      "min": 20,
+      "max": 120,
+      "step": 1
+    },
+    "relatedTokens": [
+      "h1Weight",
+      "h1LineHeight"
+    ]
+  },
+  {
+    "tokenId": "h1Weight",
+    "name": "Peso (H1)",
+    "description": "A espessura tipográfica do H1 (ex: Light, Regular, Bold, Black).",
+    "type": "select",
+    "importance": 90,
+    "categories": [
+      "estilo",
+      "tipografia",
+      "typography"
+    ],
+    "tags": [
+      "weight",
+      "h1",
+      "heading"
+    ],
+    "databaseColumn": "typography",
+    "schemaOrigin": "typography.ts",
+    "digitalTwins": [
+      "DesignInjector"
+    ],
+    "cssVariables": [
+      "--sarak-h1-weight"
+    ],
+    "allowedValues": [
+      "300",
+      "400",
+      "600",
+      "700",
+      "900"
+    ],
+    "relatedTokens": [
+      "h1Size"
+    ]
+  },
+  {
+    "tokenId": "h1LineHeight",
+    "name": "Altura da Linha (H1)",
+    "description": "Espaçamento vertical entre as linhas de um título longo H1.",
+    "type": "number",
+    "importance": 85,
+    "categories": [
+      "geometria",
+      "tipografia",
+      "typography"
+    ],
+    "tags": [
+      "line-height",
+      "h1",
+      "spacing"
+    ],
+    "databaseColumn": "typography",
+    "schemaOrigin": "typography.ts",
+    "digitalTwins": [
+      "DesignInjector"
+    ],
+    "cssVariables": [
+      "--sarak-h1-lh"
+    ],
+    "allowedValues": {
+      "min": 0.8,
+      "max": 2,
+      "step": 0.05
+    },
+    "relatedTokens": [
+      "h1Size"
+    ]
+  },
+  {
+    "tokenId": "h1LetterSpacing",
+    "name": "Espaçamento (H1)",
+    "description": "Distância horizontal entre as letras do H1 (tracking).",
+    "type": "number",
+    "importance": 80,
+    "categories": [
+      "geometria",
+      "tipografia",
+      "typography"
+    ],
+    "tags": [
+      "letter-spacing",
+      "h1",
+      "tracking"
+    ],
+    "databaseColumn": "typography",
+    "schemaOrigin": "typography.ts",
+    "digitalTwins": [
+      "DesignInjector"
+    ],
+    "cssVariables": [
+      "--sarak-h1-ls"
+    ],
+    "allowedValues": {
+      "min": -5,
+      "max": 10,
+      "step": 0.5
+    },
+    "relatedTokens": [
+      "h1Size"
+    ]
+  },
+  {
+    "tokenId": "h2Size",
+    "name": "Tamanho (H2)",
+    "description": "O tamanho da fonte do segundo nível de hierarquia (H2).",
+    "type": "number",
+    "importance": 90,
+    "categories": [
+      "geometria",
+      "tipografia",
+      "typography"
+    ],
+    "tags": [
+      "size",
+      "h2",
+      "heading"
+    ],
+    "databaseColumn": "typography",
+    "schemaOrigin": "typography.ts",
+    "digitalTwins": [
+      "DesignInjector"
+    ],
+    "cssVariables": [
+      "--sarak-h2-size"
+    ],
+    "allowedValues": {
+      "min": 18,
+      "max": 80,
+      "step": 1
+    },
+    "relatedTokens": [
+      "h2Weight",
+      "h1Size"
+    ]
+  },
+  {
+    "tokenId": "h2Weight",
+    "name": "Peso (H2)",
+    "description": "Espessura tipográfica do H2.",
+    "type": "select",
+    "importance": 85,
+    "categories": [
+      "estilo",
+      "tipografia",
+      "typography"
+    ],
+    "tags": [
+      "weight",
+      "h2",
+      "heading"
+    ],
+    "databaseColumn": "typography",
+    "schemaOrigin": "typography.ts",
+    "digitalTwins": [
+      "DesignInjector"
+    ],
+    "cssVariables": [
+      "--sarak-h2-weight"
+    ],
+    "allowedValues": [
+      "300",
+      "400",
+      "600",
+      "700"
+    ],
+    "relatedTokens": [
+      "h2Size"
+    ]
+  },
+  {
+    "tokenId": "h2LineHeight",
+    "name": "Altura da Linha (H2)",
+    "description": "Espaçamento vertical das linhas do H2.",
+    "type": "number",
+    "importance": 80,
+    "categories": [
+      "geometria",
+      "tipografia",
+      "typography"
+    ],
+    "tags": [
+      "line-height",
+      "h2",
+      "spacing"
+    ],
+    "databaseColumn": "typography",
+    "schemaOrigin": "typography.ts",
+    "digitalTwins": [
+      "DesignInjector"
+    ],
+    "cssVariables": [
+      "--sarak-h2-lh"
+    ],
+    "allowedValues": {
+      "min": 0.8,
+      "max": 2,
+      "step": 0.05
+    },
+    "relatedTokens": [
+      "h2Size"
+    ]
+  },
+  {
+    "tokenId": "bodyLineHeight",
+    "name": "Altura da Linha (Corpo)",
+    "description": "Espaçamento vertical que garante a legibilidade ótima do texto em parágrafos normais.",
+    "type": "number",
+    "importance": 90,
+    "categories": [
+      "geometria",
+      "tipografia",
+      "typography"
+    ],
+    "tags": [
+      "line-height",
+      "body",
+      "reading"
+    ],
+    "databaseColumn": "typography",
+    "schemaOrigin": "typography.ts",
+    "digitalTwins": [
+      "DesignInjector"
+    ],
+    "cssVariables": [
+      "--sarak-body-lh",
+      "--sarak-line-height"
+    ],
+    "allowedValues": {
+      "min": 1,
+      "max": 2.5,
+      "step": 0.1
+    },
+    "relatedTokens": [
+      "bodyFont",
+      "bodyWeight"
+    ]
+  },
+  {
+    "tokenId": "bodyWeight",
+    "name": "Peso do Corpo",
+    "description": "Espessura padrão do texto do corpo (usualmente Regular 400).",
+    "type": "select",
+    "importance": 90,
+    "categories": [
+      "estilo",
+      "tipografia",
+      "typography"
+    ],
+    "tags": [
+      "weight",
+      "body",
+      "reading"
+    ],
+    "databaseColumn": "typography",
+    "schemaOrigin": "typography.ts",
+    "digitalTwins": [
+      "DesignInjector"
+    ],
+    "cssVariables": [
+      "--sarak-body-weight",
+      "--sarak-b-weight"
+    ],
+    "allowedValues": [
+      "300",
+      "400",
+      "500"
+    ],
+    "relatedTokens": [
+      "bodyFont"
+    ]
+  },
+  {
+    "tokenId": "headingTransform",
+    "name": "Transformação de Títulos",
+    "description": "Estilização forçada de case dos títulos (UPPERCASE, Capitalize, Normal).",
+    "type": "select",
+    "importance": 70,
+    "categories": [
+      "estilo",
+      "tipografia",
+      "typography"
+    ],
+    "tags": [
+      "text-transform",
+      "heading",
+      "case"
+    ],
+    "databaseColumn": "typography",
+    "schemaOrigin": "typography.ts",
+    "digitalTwins": [
+      "DesignInjector"
+    ],
+    "cssVariables": [
+      "--sarak-h-transform"
+    ],
+    "allowedValues": [
+      "none",
+      "uppercase",
+      "capitalize"
+    ],
+    "relatedTokens": [
+      "headingFont"
+    ]
+  },
+  {
+    "tokenId": "textSmoothing",
+    "name": "Suavização (Smoothing)",
+    "description": "Aplica antialiasing para melhor renderização de tela no SO (macOS font-smoothing).",
+    "type": "boolean",
+    "importance": 60,
+    "categories": [
+      "efeitos",
+      "tipografia",
+      "typography"
+    ],
+    "tags": [
+      "smoothing",
+      "antialiasing",
+      "rendering"
+    ],
+    "databaseColumn": "typography",
+    "schemaOrigin": "typography.ts",
+    "digitalTwins": [
+      "DesignInjector"
+    ],
+    "cssVariables": [
+      "--sarak-text-smoothing"
+    ],
+    "allowedValues": [
+      true,
+      false
+    ],
+    "relatedTokens": []
+  },
+  {
+    "tokenId": "textGlowIntensity",
+    "name": "Intensidade de Glow (H1)",
+    "description": "Aplica um drop-shadow colorido nos textos H1 imitando iluminação de neon ou emissão.",
+    "type": "number",
+    "importance": 60,
+    "categories": [
+      "efeitos",
+      "sombra-luz",
+      "typography"
+    ],
+    "tags": [
+      "glow",
+      "text-shadow",
+      "emission"
+    ],
+    "databaseColumn": "typography",
+    "schemaOrigin": "typography.ts",
+    "digitalTwins": [
+      "DesignInjector"
+    ],
+    "cssVariables": [
+      "--sarak-text-glow"
+    ],
+    "allowedValues": {
+      "min": 0,
+      "max": 1,
+      "step": 0.05
+    },
+    "relatedTokens": [
+      "h1Size",
+      "h1Weight"
+    ]
+  },
+  {
+    "tokenId": "isNavHidden",
+    "name": "Ocultar Navegação",
+    "description": "Controla se as barras de navegação globais (sidebar, topbar) devem estar escondidas.",
+    "type": "boolean",
+    "importance": 95,
+    "categories": [
+      "layout",
+      "navegação",
+      "layout_and_navigation"
+    ],
+    "tags": [
+      "navigation",
+      "visibility",
+      "hidden"
+    ],
+    "databaseColumn": "layout_and_navigation",
+    "schemaOrigin": "navigation.ts",
+    "digitalTwins": [
+      "DesignInjector"
+    ],
+    "cssVariables": [
+      "--is-nav-hidden"
+    ],
+    "allowedValues": [
+      true,
+      false
+    ],
+    "relatedTokens": [
+      "sidebarWidth",
+      "topbarHeight"
+    ]
+  },
+  {
+    "tokenId": "sidebarWidth",
+    "name": "Largura da Sidebar",
+    "description": "Largura atual (ou padrão) da barra de navegação lateral.",
+    "type": "number",
+    "importance": 90,
+    "categories": [
+      "geometria",
+      "layout",
+      "layout_and_navigation"
+    ],
+    "tags": [
+      "sidebar",
+      "width",
+      "size"
+    ],
+    "databaseColumn": "layout_and_navigation",
+    "schemaOrigin": "navigation.ts",
+    "digitalTwins": [
+      "DesignInjector"
+    ],
+    "cssVariables": [
+      "--sidebar-width",
+      "--sarak-sidebar-width"
+    ],
+    "allowedValues": {
+      "min": 200,
+      "max": 400,
+      "step": 1
+    },
+    "relatedTokens": [
+      "sidebarMinWidth",
+      "sidebarMaxWidth"
+    ]
+  },
+  {
+    "tokenId": "sidebarMinWidth",
+    "name": "Largura Mínima da Sidebar",
+    "description": "Limita o tamanho mínimo da barra lateral ao ser redimensionada.",
+    "type": "number",
+    "importance": 80,
+    "categories": [
+      "geometria",
+      "layout",
+      "layout_and_navigation"
+    ],
+    "tags": [
+      "sidebar",
+      "min-width",
+      "constraint"
+    ],
+    "databaseColumn": "layout_and_navigation",
+    "schemaOrigin": "navigation.ts",
+    "digitalTwins": [
+      "DesignInjector"
+    ],
+    "cssVariables": [
+      "--sidebar-min-width"
+    ],
+    "allowedValues": {
+      "min": 150,
+      "max": 300,
+      "step": 1
+    },
+    "relatedTokens": [
+      "sidebarWidth"
+    ]
+  },
+  {
+    "tokenId": "sidebarMaxWidth",
+    "name": "Largura Máxima da Sidebar",
+    "description": "Limita o tamanho máximo da barra lateral ao ser redimensionada.",
+    "type": "number",
+    "importance": 80,
+    "categories": [
+      "geometria",
+      "layout",
+      "layout_and_navigation"
+    ],
+    "tags": [
+      "sidebar",
+      "max-width",
+      "constraint"
+    ],
+    "databaseColumn": "layout_and_navigation",
+    "schemaOrigin": "navigation.ts",
+    "digitalTwins": [
+      "DesignInjector"
+    ],
+    "cssVariables": [
+      "--sidebar-max-width"
+    ],
+    "allowedValues": {
+      "min": 300,
+      "max": 600,
+      "step": 1
+    },
+    "relatedTokens": [
+      "sidebarWidth"
+    ]
+  },
+  {
+    "tokenId": "sidebarColor",
+    "name": "Cor da Sidebar (Fundo)",
+    "description": "Cor primária de background da barra de navegação lateral.",
+    "type": "color",
+    "importance": 90,
+    "categories": [
+      "cores",
+      "layout",
+      "layout_and_navigation"
+    ],
+    "tags": [
+      "sidebar",
+      "color",
+      "background"
+    ],
+    "databaseColumn": "layout_and_navigation",
+    "schemaOrigin": "navigation.ts",
+    "digitalTwins": [
+      "DesignInjector"
+    ],
+    "cssVariables": [
+      "--theme-sidebar-bg",
+      "--sarak-sidebar-bg"
+    ],
+    "allowedValues": null,
+    "relatedTokens": [
+      "sidebarHoverColor"
+    ]
+  },
+  {
+    "tokenId": "sidebarHoverColor",
+    "name": "Hover da Sidebar",
+    "description": "Cor de fundo aplicada ao interagir (passar o mouse) sobre a barra lateral ou itens dentro dela.",
+    "type": "color",
+    "importance": 70,
+    "categories": [
+      "cores",
+      "interação",
+      "layout_and_navigation"
+    ],
+    "tags": [
+      "sidebar",
+      "color",
+      "hover"
+    ],
+    "databaseColumn": "layout_and_navigation",
+    "schemaOrigin": "navigation.ts",
+    "digitalTwins": [
+      "DesignInjector"
+    ],
+    "cssVariables": [
+      "--sarak-sidebar-hover-color"
+    ],
+    "allowedValues": null,
+    "relatedTokens": [
+      "sidebarColor"
+    ]
+  },
+  {
+    "tokenId": "sidebarActiveColor",
+    "name": "Ativo da Sidebar",
+    "description": "Cor de destaque usada quando a barra lateral inteira ou itens específicos estão focados ou ativos.",
+    "type": "color",
+    "importance": 80,
+    "categories": [
+      "cores",
+      "interação",
+      "layout_and_navigation"
+    ],
+    "tags": [
+      "sidebar",
+      "color",
+      "active"
+    ],
+    "databaseColumn": "layout_and_navigation",
+    "schemaOrigin": "navigation.ts",
+    "digitalTwins": [
+      "DesignInjector"
+    ],
+    "cssVariables": [
+      "--sarak-sidebar-active-color"
+    ],
+    "allowedValues": null,
+    "relatedTokens": [
+      "sidebarColor"
+    ]
+  },
+  {
+    "tokenId": "sidebarNoiseOpacity",
+    "name": "Opacidade do Ruído (Sidebar)",
+    "description": "Intensidade da textura de ruído (noise overlay) aplicada sobre a sidebar.",
+    "type": "number",
+    "importance": 60,
+    "categories": [
+      "efeitos",
+      "texturas",
+      "layout_and_navigation"
+    ],
+    "tags": [
+      "sidebar",
+      "noise",
+      "opacity",
+      "texture"
+    ],
+    "databaseColumn": "layout_and_navigation",
+    "schemaOrigin": "navigation.ts",
+    "digitalTwins": [
+      "DesignInjector"
+    ],
+    "cssVariables": [
+      "--sarak-sidebar-noise-opacity"
+    ],
+    "allowedValues": {
+      "min": 0,
+      "max": 1,
+      "step": 0.05
+    },
+    "relatedTokens": [
+      "sidebarColor"
+    ]
+  },
+  {
+    "tokenId": "topbarHeight",
+    "name": "Altura da Topbar",
+    "description": "Altura vertical do cabeçalho de navegação (topbar).",
+    "type": "number",
+    "importance": 90,
+    "categories": [
+      "geometria",
+      "layout",
+      "layout_and_navigation"
+    ],
+    "tags": [
+      "topbar",
+      "height",
+      "size"
+    ],
+    "databaseColumn": "layout_and_navigation",
+    "schemaOrigin": "navigation.ts",
+    "digitalTwins": [
+      "DesignInjector"
+    ],
+    "cssVariables": [
+      "--topbar-height",
+      "--sarak-topbar-height",
+      "--theme-topbar-height"
+    ],
+    "allowedValues": {
+      "min": 48,
+      "max": 100,
+      "step": 1
+    },
+    "relatedTokens": [
+      "topbarColor"
+    ]
+  },
+  {
+    "tokenId": "topbarColor",
+    "name": "Cor da Topbar (Fundo)",
+    "description": "Cor de fundo base do cabeçalho superior de navegação.",
+    "type": "color",
+    "importance": 90,
+    "categories": [
+      "cores",
+      "layout",
+      "layout_and_navigation"
+    ],
+    "tags": [
+      "topbar",
+      "color",
+      "background"
+    ],
+    "databaseColumn": "layout_and_navigation",
+    "schemaOrigin": "navigation.ts",
+    "digitalTwins": [
+      "DesignInjector"
+    ],
+    "cssVariables": [
+      "--theme-topbar-bg",
+      "--sarak-topbar-bg"
+    ],
+    "allowedValues": null,
+    "relatedTokens": [
+      "topbarHeight"
+    ]
+  },
+  {
+    "tokenId": "topbarHoverColor",
+    "name": "Hover da Topbar",
+    "description": "Cor ao passar o mouse sobre a barra superior.",
+    "type": "color",
+    "importance": 70,
+    "categories": [
+      "cores",
+      "interação",
+      "layout_and_navigation"
+    ],
+    "tags": [
+      "topbar",
+      "color",
+      "hover"
+    ],
+    "databaseColumn": "layout_and_navigation",
+    "schemaOrigin": "navigation.ts",
+    "digitalTwins": [
+      "DesignInjector"
+    ],
+    "cssVariables": [
+      "--sarak-topbar-hover-color"
+    ],
+    "allowedValues": null,
+    "relatedTokens": [
+      "topbarColor"
+    ]
+  },
+  {
+    "tokenId": "topbarActiveColor",
+    "name": "Ativo da Topbar",
+    "description": "Cor aplicada quando a topbar possui o foco ou é clicada.",
+    "type": "color",
+    "importance": 80,
+    "categories": [
+      "cores",
+      "interação",
+      "layout_and_navigation"
+    ],
+    "tags": [
+      "topbar",
+      "color",
+      "active"
+    ],
+    "databaseColumn": "layout_and_navigation",
+    "schemaOrigin": "navigation.ts",
+    "digitalTwins": [
+      "DesignInjector"
+    ],
+    "cssVariables": [
+      "--sarak-topbar-active-color"
+    ],
+    "allowedValues": null,
+    "relatedTokens": [
+      "topbarColor"
+    ]
+  },
+  {
+    "tokenId": "topbarNoiseOpacity",
+    "name": "Opacidade do Ruído (Topbar)",
+    "description": "Intensidade da textura visual de ruído aplicada sobre o cabeçalho.",
+    "type": "number",
+    "importance": 60,
+    "categories": [
+      "efeitos",
+      "texturas",
+      "layout_and_navigation"
+    ],
+    "tags": [
+      "topbar",
+      "noise",
+      "opacity",
+      "texture"
+    ],
+    "databaseColumn": "layout_and_navigation",
+    "schemaOrigin": "navigation.ts",
+    "digitalTwins": [
+      "DesignInjector"
+    ],
+    "cssVariables": [
+      "--sarak-topbar-noise-opacity"
+    ],
+    "allowedValues": {
+      "min": 0,
+      "max": 1,
+      "step": 0.05
+    },
+    "relatedTokens": [
+      "topbarColor"
+    ]
+  },
+  {
+    "tokenId": "topbarTitleColor",
+    "name": "Cor do Título (Topbar)",
+    "description": "Cor da fonte do título ou brand textual localizado na Topbar.",
+    "type": "color",
+    "importance": 85,
+    "categories": [
+      "cores",
+      "layout",
+      "layout_and_navigation"
+    ],
+    "tags": [
+      "topbar",
+      "color",
+      "title",
+      "text"
+    ],
+    "databaseColumn": "layout_and_navigation",
+    "schemaOrigin": "navigation.ts",
+    "digitalTwins": [
+      "DesignInjector"
+    ],
+    "cssVariables": [
+      "--sarak-topbar-title-color"
+    ],
+    "allowedValues": null,
+    "relatedTokens": [
+      "topbarColor"
+    ]
+  },
+  {
+    "tokenId": "tabGap",
+    "name": "Espaço entre Abas",
+    "description": "Distância horizontal (gap) entre itens de navegação tipo tab.",
+    "type": "number",
+    "importance": 70,
+    "categories": [
+      "geometria",
+      "layout",
+      "layout_and_navigation"
+    ],
+    "tags": [
+      "tabs",
+      "gap",
+      "spacing"
+    ],
+    "databaseColumn": "layout_and_navigation",
+    "schemaOrigin": "navigation.ts",
+    "digitalTwins": [
+      "DesignInjector"
+    ],
+    "cssVariables": [
+      "--tab-gap",
+      "--sarak-tab-gap",
+      "--theme-tab-gap"
+    ],
+    "allowedValues": {
+      "min": 0,
+      "max": 24,
+      "step": 1
+    },
+    "relatedTokens": [
+      "tabSectionMargin"
+    ]
+  },
+  {
+    "tokenId": "tabSectionMargin",
+    "name": "Margem da Seção de Abas",
+    "description": "Distância de respiro (padding/margin) aplicada ao redor do container inteiro de abas.",
+    "type": "number",
+    "importance": 70,
+    "categories": [
+      "geometria",
+      "layout",
+      "layout_and_navigation"
+    ],
+    "tags": [
+      "tabs",
+      "margin",
+      "padding"
+    ],
+    "databaseColumn": "layout_and_navigation",
+    "schemaOrigin": "navigation.ts",
+    "digitalTwins": [
+      "DesignInjector"
+    ],
+    "cssVariables": [
+      "--tab-section-margin",
+      "--sarak-tab-section-margin",
+      "--theme-tab-section-margin",
+      "--safe-area-padding"
+    ],
+    "allowedValues": {
+      "min": 0,
+      "max": 48,
+      "step": 1
+    },
+    "relatedTokens": [
+      "tabGap"
+    ]
+  },
+  {
+    "tokenId": "navItemActiveColor",
+    "name": "Cor do Item Ativo",
+    "description": "Cor de destaque usada no texto ou ícone de um item de menu quando ele está selecionado.",
+    "type": "color",
+    "importance": 85,
+    "categories": [
+      "cores",
+      "interação",
+      "layout_and_navigation"
+    ],
+    "tags": [
+      "navigation",
+      "item",
+      "color",
+      "active"
+    ],
+    "databaseColumn": "layout_and_navigation",
+    "schemaOrigin": "navigation.ts",
+    "digitalTwins": [
+      "DesignInjector"
+    ],
+    "cssVariables": [
+      "--sarak-nav-active-color",
+      "--theme-primary"
+    ],
+    "allowedValues": null,
+    "relatedTokens": [
+      "navActiveMarkerColor"
+    ]
+  },
+  {
+    "tokenId": "navActiveMarkerColor",
+    "name": "Cor do Marcador Ativo",
+    "description": "Cor do indicador visual (linha, ponto ou borda) ao lado do item de navegação ativo.",
+    "type": "color",
+    "importance": 80,
+    "categories": [
+      "cores",
+      "indicadores",
+      "layout_and_navigation"
+    ],
+    "tags": [
+      "navigation",
+      "marker",
+      "color",
+      "active"
+    ],
+    "databaseColumn": "layout_and_navigation",
+    "schemaOrigin": "navigation.ts",
+    "digitalTwins": [
+      "DesignInjector"
+    ],
+    "cssVariables": [
+      "--sarak-nav-marker-color"
+    ],
+    "allowedValues": null,
+    "relatedTokens": [
+      "navItemActiveColor"
+    ]
+  },
+  {
+    "tokenId": "navActiveMarkerGlow",
+    "name": "Brilho do Marcador",
+    "description": "Intensidade do efeito de drop-shadow brilhante sobre o marcador de menu ativo.",
+    "type": "number",
+    "importance": 60,
+    "categories": [
+      "efeitos",
+      "sombra-luz",
+      "layout_and_navigation"
+    ],
+    "tags": [
+      "navigation",
+      "marker",
+      "glow",
+      "shadow"
+    ],
+    "databaseColumn": "layout_and_navigation",
+    "schemaOrigin": "navigation.ts",
+    "digitalTwins": [
+      "DesignInjector"
+    ],
+    "cssVariables": [
+      "--sarak-nav-marker-glow"
+    ],
+    "allowedValues": {
+      "min": 0,
+      "max": 20,
+      "step": 1
+    },
+    "relatedTokens": [
+      "navActiveMarkerColor"
+    ]
+  },
+  {
+    "tokenId": "sidebarBlur",
+    "name": "Backdrop Blur (Sidebar)",
+    "description": "Quantidade de desfoque de fundo (backdrop-filter) aplicada à barra de navegação lateral.",
+    "type": "number",
+    "importance": 75,
+    "categories": [
+      "efeitos",
+      "filtros",
+      "layout_and_navigation"
+    ],
+    "tags": [
+      "sidebar",
+      "blur",
+      "backdrop",
+      "glassmorphism"
+    ],
+    "databaseColumn": "layout_and_navigation",
+    "schemaOrigin": "navigation.ts",
+    "digitalTwins": [
+      "DesignInjector"
+    ],
+    "cssVariables": [
+      "--sarak-sidebar-blur"
+    ],
+    "allowedValues": {
+      "min": 0,
+      "max": 50,
+      "step": 1
+    },
+    "relatedTokens": [
+      "sidebarColor"
+    ]
+  },
+  {
+    "tokenId": "sidebarShadow",
+    "name": "Sombra da Sidebar",
+    "description": "Configuração da sombra projetada (box-shadow) pela barra lateral sobre o conteúdo da página.",
+    "type": "text",
+    "importance": 70,
+    "categories": [
+      "efeitos",
+      "sombra-luz",
+      "layout_and_navigation"
+    ],
+    "tags": [
+      "sidebar",
+      "shadow",
+      "depth"
+    ],
+    "databaseColumn": "layout_and_navigation",
+    "schemaOrigin": "navigation.ts",
+    "digitalTwins": [
+      "DesignInjector"
+    ],
+    "cssVariables": [],
+    "allowedValues": null,
+    "relatedTokens": [
+      "sidebarBlur"
+    ]
+  },
+  {
+    "tokenId": "searchPositionTopbar",
+    "name": "Posição Pesquisa (Topbar)",
+    "description": "Alinhamento do input de busca global dentro da Topbar.",
+    "type": "select",
+    "importance": 65,
+    "categories": [
+      "layout",
+      "posicionamento",
+      "layout_and_navigation"
+    ],
+    "tags": [
+      "search",
+      "topbar",
+      "position"
+    ],
+    "databaseColumn": "layout_and_navigation",
+    "schemaOrigin": "navigation.ts",
+    "digitalTwins": [
+      "DesignInjector"
+    ],
+    "cssVariables": [],
+    "allowedValues": [
+      "left",
+      "center",
+      "right",
+      "hidden"
+    ],
+    "relatedTokens": [
+      "searchPositionSidebar"
+    ]
+  },
+  {
+    "tokenId": "searchPositionSidebar",
+    "name": "Posição Pesquisa (Sidebar)",
+    "description": "Alinhamento do input de busca dentro da Sidebar.",
+    "type": "select",
+    "importance": 65,
+    "categories": [
+      "layout",
+      "posicionamento",
+      "layout_and_navigation"
+    ],
+    "tags": [
+      "search",
+      "sidebar",
+      "position"
+    ],
+    "databaseColumn": "layout_and_navigation",
+    "schemaOrigin": "navigation.ts",
+    "digitalTwins": [
+      "DesignInjector"
+    ],
+    "cssVariables": [],
+    "allowedValues": [
+      "top",
+      "bottom",
+      "hidden"
+    ],
+    "relatedTokens": [
+      "searchPositionTopbar"
+    ]
+  },
+  {
+    "tokenId": "scrollWidth",
+    "name": "Largura da Barra",
+    "description": "Largura (ou altura) principal do scrollbar do Sarak.",
+    "type": "number",
+    "importance": 75,
+    "categories": [
+      "geometria",
+      "layout",
+      "layout_and_navigation"
+    ],
+    "tags": [
+      "scroll",
+      "width",
+      "scrollbar"
+    ],
+    "databaseColumn": "layout_and_navigation",
+    "schemaOrigin": "scrollbars.ts",
+    "digitalTwins": [
+      "DesignInjector"
+    ],
+    "cssVariables": [
+      "--sarak-scroll-width"
+    ],
+    "allowedValues": {
+      "min": 2,
+      "max": 12,
+      "step": 1
+    },
+    "relatedTokens": [
+      "scrollRadius"
+    ]
+  },
+  {
+    "tokenId": "scrollRadius",
+    "name": "Arredondamento (Thumb)",
+    "description": "Curvatura nas pontas do polegar da barra de rolagem (border-radius).",
+    "type": "number",
+    "importance": 65,
+    "categories": [
+      "bordas",
+      "geometria",
+      "layout_and_navigation"
+    ],
+    "tags": [
+      "scroll",
+      "radius",
+      "border-radius"
+    ],
+    "databaseColumn": "layout_and_navigation",
+    "schemaOrigin": "scrollbars.ts",
+    "digitalTwins": [
+      "DesignInjector"
+    ],
+    "cssVariables": [
+      "--sarak-scroll-radius"
+    ],
+    "allowedValues": {
+      "min": 0,
+      "max": 10,
+      "step": 1
+    },
+    "relatedTokens": [
+      "scrollWidth"
+    ]
+  },
+  {
+    "tokenId": "scrollTrackOpacity",
+    "name": "Opacidade do Trilho",
+    "description": "Opacidade do track onde a barra de rolagem desliza.",
+    "type": "number",
+    "importance": 60,
+    "categories": [
+      "efeitos",
+      "filtros",
+      "layout_and_navigation"
+    ],
+    "tags": [
+      "scroll",
+      "track",
+      "opacity"
+    ],
+    "databaseColumn": "layout_and_navigation",
+    "schemaOrigin": "scrollbars.ts",
+    "digitalTwins": [
+      "DesignInjector"
+    ],
+    "cssVariables": [
+      "--sarak-scroll-track-opacity"
+    ],
+    "allowedValues": {
+      "min": 0,
+      "max": 1,
+      "step": 0.05
+    },
+    "relatedTokens": [
+      "scrollThumbOpacity"
+    ]
+  },
+  {
+    "tokenId": "scrollThumbColor",
+    "name": "Cor do Cursor (Thumb)",
+    "description": "Cor de fundo do elemento manipulador (thumb) do scroll.",
+    "type": "color",
+    "importance": 85,
+    "categories": [
+      "cores",
+      "layout",
+      "layout_and_navigation"
+    ],
+    "tags": [
+      "scroll",
+      "thumb",
+      "color"
+    ],
+    "databaseColumn": "layout_and_navigation",
+    "schemaOrigin": "scrollbars.ts",
+    "digitalTwins": [
+      "DesignInjector"
+    ],
+    "cssVariables": [
+      "--sarak-scroll-thumb-color"
+    ],
+    "allowedValues": null,
+    "relatedTokens": [
+      "scrollThumbOpacity",
+      "scrollThumbHoverOpacity"
+    ]
+  },
+  {
+    "tokenId": "scrollThumbOpacity",
+    "name": "Opacidade (Thumb)",
+    "description": "Opacidade padrão da barra de rolagem quando não interativa.",
+    "type": "number",
+    "importance": 70,
+    "categories": [
+      "efeitos",
+      "filtros",
+      "layout_and_navigation"
+    ],
+    "tags": [
+      "scroll",
+      "thumb",
+      "opacity"
+    ],
+    "databaseColumn": "layout_and_navigation",
+    "schemaOrigin": "scrollbars.ts",
+    "digitalTwins": [
+      "DesignInjector"
+    ],
+    "cssVariables": [
+      "--sarak-scroll-thumb-opacity"
+    ],
+    "allowedValues": {
+      "min": 0.1,
+      "max": 1,
+      "step": 0.05
+    },
+    "relatedTokens": [
+      "scrollThumbHoverOpacity"
+    ]
+  },
+  {
+    "tokenId": "scrollThumbHoverOpacity",
+    "name": "Opacidade ao Hover",
+    "description": "Opacidade aplicada à barra de rolagem quando o mouse foca sobre ela.",
+    "type": "number",
+    "importance": 70,
+    "categories": [
+      "interação",
+      "estado",
+      "layout_and_navigation"
+    ],
+    "tags": [
+      "scroll",
+      "thumb",
+      "hover",
+      "opacity"
+    ],
+    "databaseColumn": "layout_and_navigation",
+    "schemaOrigin": "scrollbars.ts",
+    "digitalTwins": [
+      "DesignInjector"
+    ],
+    "cssVariables": [
+      "--sarak-scroll-thumb-hover-opacity"
+    ],
+    "allowedValues": {
+      "min": 0.2,
+      "max": 1,
+      "step": 0.05
+    },
+    "relatedTokens": [
+      "scrollThumbOpacity"
+    ]
+  },
+  {
+    "tokenId": "scrollPadding",
+    "name": "Espaçamento (Padding)",
+    "description": "Distância (margem) da barra de rolagem em relação às bordas extremas do container.",
+    "type": "number",
+    "importance": 65,
+    "categories": [
+      "layout",
+      "espaçamento",
+      "layout_and_navigation"
+    ],
+    "tags": [
+      "scroll",
+      "padding",
+      "margin",
+      "spacing"
+    ],
+    "databaseColumn": "layout_and_navigation",
+    "schemaOrigin": "scrollbars.ts",
+    "digitalTwins": [
+      "DesignInjector"
+    ],
+    "cssVariables": [
+      "--sarak-scroll-padding"
+    ],
+    "allowedValues": {
+      "min": 0,
+      "max": 4,
+      "step": 1
+    },
+    "relatedTokens": [
+      "scrollWidth"
+    ]
+  },
+  {
+    "tokenId": "zIndexBase",
+    "name": "Base Z-Index",
+    "description": "Nível Z padrão para os elementos em nível de base, logo acima do background do sistema.",
+    "type": "number",
+    "importance": 50,
+    "categories": [
+      "layout",
+      "camadas",
+      "layout_and_navigation"
+    ],
+    "tags": [
+      "z-index",
+      "base",
+      "layer"
+    ],
+    "databaseColumn": "layout_and_navigation",
+    "schemaOrigin": "layers.ts",
+    "digitalTwins": [
+      "DesignInjector"
+    ],
+    "cssVariables": [
+      "--sarak-z-base"
+    ],
+    "allowedValues": {
+      "min": 0,
+      "max": 100,
+      "step": 1
+    },
+    "relatedTokens": [
+      "zIndexSidebar"
+    ]
+  },
+  {
+    "tokenId": "zIndexSidebar",
+    "name": "Sidebar Z-Index",
+    "description": "Nível Z aplicado à barra lateral de navegação (Sidebar).",
+    "type": "number",
+    "importance": 70,
+    "categories": [
+      "layout",
+      "camadas",
+      "layout_and_navigation"
+    ],
+    "tags": [
+      "z-index",
+      "sidebar",
+      "layer"
+    ],
+    "databaseColumn": "layout_and_navigation",
+    "schemaOrigin": "layers.ts",
+    "digitalTwins": [
+      "DesignInjector"
+    ],
+    "cssVariables": [
+      "--sarak-z-sidebar"
+    ],
+    "allowedValues": {
+      "min": 100,
+      "max": 1000,
+      "step": 50
+    },
+    "relatedTokens": [
+      "zIndexBase",
+      "zIndexModal"
+    ]
+  },
+  {
+    "tokenId": "zIndexModal",
+    "name": "Modal Z-Index",
+    "description": "Nível Z aplicado a janelas modais, sobreposições críticas e pop-ups.",
+    "type": "number",
+    "importance": 90,
+    "categories": [
+      "layout",
+      "camadas",
+      "layout_and_navigation"
+    ],
+    "tags": [
+      "z-index",
+      "modal",
+      "overlay",
+      "layer"
+    ],
+    "databaseColumn": "layout_and_navigation",
+    "schemaOrigin": "layers.ts",
+    "digitalTwins": [
+      "DesignInjector"
+    ],
+    "cssVariables": [
+      "--sarak-z-modal"
+    ],
+    "allowedValues": {
+      "min": 1000,
+      "max": 5000,
+      "step": 100
+    },
+    "relatedTokens": [
+      "zIndexTooltip"
+    ]
+  },
+  {
+    "tokenId": "zIndexTooltip",
+    "name": "Tooltip Z-Index",
+    "description": "O nível mais alto no sistema, reservado para tooltips, toasts e drop-downs críticos.",
+    "type": "number",
+    "importance": 95,
+    "categories": [
+      "layout",
+      "camadas",
+      "layout_and_navigation"
+    ],
+    "tags": [
+      "z-index",
+      "tooltip",
+      "highest",
+      "layer"
+    ],
+    "databaseColumn": "layout_and_navigation",
+    "schemaOrigin": "layers.ts",
+    "digitalTwins": [
+      "DesignInjector"
+    ],
+    "cssVariables": [
+      "--sarak-z-tooltip"
+    ],
+    "allowedValues": {
+      "min": 5000,
+      "max": 9999,
+      "step": 100
+    },
+    "relatedTokens": [
+      "zIndexModal"
+    ]
+  },
+  {
+    "tokenId": "layerBackdropBlur",
+    "name": "Blur do Fundo (Modal)",
+    "description": "Nível de desfoque (backdrop-filter) aplicado no fundo das modais.",
+    "type": "number",
+    "importance": 70,
+    "categories": [
+      "efeitos",
+      "filtros",
+      "layout_and_navigation"
+    ],
+    "tags": [
+      "backdrop",
+      "blur",
+      "modal"
+    ],
+    "databaseColumn": "layout_and_navigation",
+    "schemaOrigin": "layers.ts",
+    "digitalTwins": [
+      "DesignInjector"
+    ],
+    "cssVariables": [
+      "--sarak-layer-backdrop-blur"
+    ],
+    "allowedValues": {
+      "min": 0,
+      "max": 40,
+      "step": 1
+    },
+    "relatedTokens": [
+      "layerBackdropOpacity"
+    ]
+  },
+  {
+    "tokenId": "layerBackdropOpacity",
+    "name": "Escurecimento do Fundo",
+    "description": "Nível de opacidade do fundo escuro por trás de elementos sobrepostos.",
+    "type": "number",
+    "importance": 65,
+    "categories": [
+      "efeitos",
+      "filtros",
+      "layout_and_navigation"
+    ],
+    "tags": [
+      "backdrop",
+      "opacity",
+      "overlay"
+    ],
+    "databaseColumn": "layout_and_navigation",
+    "schemaOrigin": "layers.ts",
+    "digitalTwins": [
+      "DesignInjector"
+    ],
+    "cssVariables": [
+      "--sarak-layer-backdrop-opacity"
+    ],
+    "allowedValues": {
+      "min": 0,
+      "max": 1,
+      "step": 0.05
+    },
+    "relatedTokens": [
+      "layerBackdropBlur"
+    ]
+  },
+  {
+    "tokenId": "layerElevationFactor",
+    "name": "Fator de Elevação",
+    "description": "Multiplicador dinâmico de profundidade para ajustar a força de drop-shadows globais.",
+    "type": "number",
+    "importance": 60,
+    "categories": [
+      "efeitos",
+      "sombra-luz",
+      "layout_and_navigation"
+    ],
+    "tags": [
+      "elevation",
+      "shadow",
+      "multiplier"
+    ],
+    "databaseColumn": "layout_and_navigation",
+    "schemaOrigin": "layers.ts",
+    "digitalTwins": [
+      "DesignInjector"
+    ],
+    "cssVariables": [
+      "--sarak-layer-elevation-factor"
+    ],
+    "allowedValues": {
+      "min": 0.5,
+      "max": 2,
+      "step": 0.1
+    },
+    "relatedTokens": []
+  },
+  {
+    "tokenId": "modalOverlayColor",
+    "name": "Cor do Overlay (Modal)",
+    "description": "Cor de fundo aplicada à tela quando um modal ou overlay é aberto.",
+    "type": "color",
+    "importance": 70,
+    "categories": [
+      "cores",
+      "overlays",
+      "background"
+    ],
+    "tags": [
+      "modal",
+      "overlay",
+      "backdrop"
+    ],
+    "databaseColumn": "components_base",
+    "schemaOrigin": "overlays.ts",
+    "digitalTwins": [
+      "SarakModal",
+      "SarakOverlay"
+    ],
+    "cssVariables": [
+      "--sarak-modal-overlay"
+    ],
+    "allowedValues": null,
+    "relatedTokens": [
+      "modalOverlayBlur"
+    ]
+  },
+  {
+    "tokenId": "modalOverlayBlur",
+    "name": "Blur do Overlay (Modal)",
+    "description": "Desfoque de fundo aplicado à tela ao abrir um modal (Glassmorphism).",
+    "type": "number",
+    "importance": 65,
+    "categories": [
+      "efeitos",
+      "overlays",
+      "glassmorphism"
+    ],
+    "tags": [
+      "blur",
+      "modal",
+      "backdrop"
+    ],
+    "databaseColumn": "components_base",
+    "schemaOrigin": "overlays.ts",
+    "digitalTwins": [
+      "SarakModal",
+      "SarakOverlay"
+    ],
+    "cssVariables": [
+      "--sarak-modal-blur"
+    ],
+    "allowedValues": {
+      "min": 0,
+      "max": 40
+    },
+    "relatedTokens": [
+      "modalOverlayColor"
+    ]
+  },
+  {
+    "tokenId": "modalBorderRadius",
+    "name": "Arredondamento do Modal",
+    "description": "Raio da borda principal da janela modal flutuante.",
+    "type": "number",
+    "importance": 80,
+    "categories": [
+      "bordas",
+      "overlays",
+      "geometria"
+    ],
+    "tags": [
+      "modal",
+      "radius"
+    ],
+    "databaseColumn": "components_base",
+    "schemaOrigin": "overlays.ts",
+    "digitalTwins": [
+      "SarakModal"
+    ],
+    "cssVariables": [
+      "--sarak-modal-border-radius"
+    ],
+    "allowedValues": {
+      "min": 0,
+      "max": 40
+    },
+    "relatedTokens": [
+      "modalOverlayBlur"
+    ]
+  },
+  {
+    "tokenId": "tooltipBg",
+    "name": "Fundo do Tooltip",
+    "description": "Cor de fundo das caixas de dica flutuantes (Tooltips).",
+    "type": "color",
+    "importance": 60,
+    "categories": [
+      "cores",
+      "overlays",
+      "tooltip"
+    ],
+    "tags": [
+      "tooltip",
+      "background"
+    ],
+    "databaseColumn": "components_base",
+    "schemaOrigin": "overlays.ts",
+    "digitalTwins": [
+      "SarakTooltip"
+    ],
+    "cssVariables": [
+      "--sarak-tooltip-bg"
+    ],
+    "allowedValues": null,
+    "relatedTokens": [
+      "tooltipRadius"
+    ]
+  },
+  {
+    "tokenId": "tooltipRadius",
+    "name": "Raio do Tooltip",
+    "description": "Arredondamento das caixas de dica flutuantes (Tooltips).",
+    "type": "number",
+    "importance": 50,
+    "categories": [
+      "bordas",
+      "overlays",
+      "geometria"
+    ],
+    "tags": [
+      "tooltip",
+      "radius"
+    ],
+    "databaseColumn": "components_base",
+    "schemaOrigin": "overlays.ts",
+    "digitalTwins": [
+      "SarakTooltip"
+    ],
+    "cssVariables": [
+      "--sarak-tooltip-radius"
+    ],
+    "allowedValues": {
+      "min": 0,
+      "max": 12
+    },
+    "relatedTokens": [
+      "tooltipBg"
+    ]
+  },
+  {
+    "tokenId": "tableHeaderBg",
+    "name": "Fundo do Cabeçalho da Tabela",
+    "description": "Cor de fundo para a primeira linha (cabeçalho) de tabelas e grids de dados.",
+    "type": "color",
+    "importance": 70,
+    "categories": [
+      "cores",
+      "tabelas",
+      "background"
+    ],
+    "tags": [
+      "table",
+      "header"
+    ],
+    "databaseColumn": "components_base",
+    "schemaOrigin": "tables.ts",
+    "digitalTwins": [
+      "SarakTable"
+    ],
+    "cssVariables": [
+      "--sarak-table-header-bg"
+    ],
+    "allowedValues": null,
+    "relatedTokens": [
+      "tableBorderColor"
+    ]
+  },
+  {
+    "tokenId": "tableRowHoverBg",
+    "name": "Fundo Hover da Linha (Tabela)",
+    "description": "Feedback visual ao passar o mouse sobre uma linha da tabela.",
+    "type": "color",
+    "importance": 65,
+    "categories": [
+      "cores",
+      "tabelas",
+      "interacao"
+    ],
+    "tags": [
+      "table",
+      "hover",
+      "row"
+    ],
+    "databaseColumn": "components_base",
+    "schemaOrigin": "tables.ts",
+    "digitalTwins": [
+      "SarakTable"
+    ],
+    "cssVariables": [
+      "--sarak-table-row-hover"
+    ],
+    "allowedValues": null,
+    "relatedTokens": [
+      "tableHeaderBg"
+    ]
+  },
+  {
+    "tokenId": "tableCellPadding",
+    "name": "Densidade Celular da Tabela",
+    "description": "Espaçamento interno das células da tabela (controla a densidade visual).",
+    "type": "number",
+    "importance": 80,
+    "categories": [
+      "layout",
+      "tabelas",
+      "espacamento"
+    ],
+    "tags": [
+      "table",
+      "padding",
+      "density"
+    ],
+    "databaseColumn": "components_base",
+    "schemaOrigin": "tables.ts",
+    "digitalTwins": [
+      "SarakTable"
+    ],
+    "cssVariables": [
+      "--sarak-table-padding"
+    ],
+    "allowedValues": {
+      "min": 4,
+      "max": 32
+    },
+    "relatedTokens": [
+      "tableRowHoverBg"
+    ]
+  },
+  {
+    "tokenId": "tableBorderColor",
+    "name": "Cor das Linhas da Tabela",
+    "description": "Cor das linhas divisórias horizontais e verticais em grids de dados.",
+    "type": "color",
+    "importance": 60,
+    "categories": [
+      "cores",
+      "tabelas",
+      "bordas"
+    ],
+    "tags": [
+      "table",
+      "border"
+    ],
+    "databaseColumn": "components_base",
+    "schemaOrigin": "tables.ts",
+    "digitalTwins": [
+      "SarakTable"
+    ],
+    "cssVariables": [
+      "--sarak-table-border"
+    ],
+    "allowedValues": null,
+    "relatedTokens": [
+      "tableHeaderBg"
+    ]
+  },
+  {
+    "tokenId": "btnBorderRadius",
+    "name": "Arredondamento do Botão (Master)",
+    "description": "Controle master para arredondamento de todos os cantos dos botões base.",
+    "type": "number",
+    "importance": 90,
+    "categories": [
+      "bordas",
+      "botoes",
+      "geometria"
+    ],
+    "tags": [
+      "button",
+      "radius"
+    ],
+    "databaseColumn": "components_base",
+    "schemaOrigin": "buttons.ts",
+    "digitalTwins": [
+      "SarakButton"
+    ],
+    "cssVariables": [
+      "--sarak-btn-border-radius",
+      "--sarak-btn-radius-tl",
+      "--sarak-btn-radius-tr",
+      "--sarak-btn-radius-bl",
+      "--sarak-btn-radius-br"
+    ],
+    "allowedValues": {
+      "min": 0,
+      "max": 120
+    },
+    "relatedTokens": [
+      "btnRadiusTL",
+      "btnStyleType"
+    ]
+  },
+  {
+    "tokenId": "btnRadiusTL",
+    "name": "Canto do Botão: Superior Esquerdo",
+    "description": "Controle individual de raio para cantos assimétricos (Superior Esquerdo).",
+    "type": "number",
+    "importance": 50,
+    "categories": [
+      "bordas",
+      "botoes",
+      "geometria"
+    ],
+    "tags": [
+      "button",
+      "radius",
+      "tl"
+    ],
+    "databaseColumn": "components_base",
+    "schemaOrigin": "buttons.ts",
+    "digitalTwins": [
+      "SarakButton"
+    ],
+    "cssVariables": [
+      "--sarak-btn-radius-tl"
+    ],
+    "allowedValues": {
+      "min": 0,
+      "max": 120
+    },
+    "relatedTokens": [
+      "btnBorderRadius"
+    ]
+  },
+  {
+    "tokenId": "btnRadiusTR",
+    "name": "Canto do Botão: Superior Direito",
+    "description": "Controle individual de raio para cantos assimétricos (Superior Direito).",
+    "type": "number",
+    "importance": 50,
+    "categories": [
+      "bordas",
+      "botoes",
+      "geometria"
+    ],
+    "tags": [
+      "button",
+      "radius",
+      "tr"
+    ],
+    "databaseColumn": "components_base",
+    "schemaOrigin": "buttons.ts",
+    "digitalTwins": [
+      "SarakButton"
+    ],
+    "cssVariables": [
+      "--sarak-btn-radius-tr"
+    ],
+    "allowedValues": {
+      "min": 0,
+      "max": 120
+    },
+    "relatedTokens": [
+      "btnBorderRadius"
+    ]
+  },
+  {
+    "tokenId": "btnRadiusBL",
+    "name": "Canto do Botão: Inferior Esquerdo",
+    "description": "Controle individual de raio para cantos assimétricos (Inferior Esquerdo).",
+    "type": "number",
+    "importance": 50,
+    "categories": [
+      "bordas",
+      "botoes",
+      "geometria"
+    ],
+    "tags": [
+      "button",
+      "radius",
+      "bl"
+    ],
+    "databaseColumn": "components_base",
+    "schemaOrigin": "buttons.ts",
+    "digitalTwins": [
+      "SarakButton"
+    ],
+    "cssVariables": [
+      "--sarak-btn-radius-bl"
+    ],
+    "allowedValues": {
+      "min": 0,
+      "max": 120
+    },
+    "relatedTokens": [
+      "btnBorderRadius"
+    ]
+  },
+  {
+    "tokenId": "btnRadiusBR",
+    "name": "Canto do Botão: Inferior Direito",
+    "description": "Controle individual de raio para cantos assimétricos (Inferior Direito).",
+    "type": "number",
+    "importance": 50,
+    "categories": [
+      "bordas",
+      "botoes",
+      "geometria"
+    ],
+    "tags": [
+      "button",
+      "radius",
+      "br"
+    ],
+    "databaseColumn": "components_base",
+    "schemaOrigin": "buttons.ts",
+    "digitalTwins": [
+      "SarakButton"
+    ],
+    "cssVariables": [
+      "--sarak-btn-radius-br"
+    ],
+    "allowedValues": {
+      "min": 0,
+      "max": 120
+    },
+    "relatedTokens": [
+      "btnBorderRadius"
+    ]
+  },
+  {
+    "tokenId": "btnHoverScale",
+    "name": "Escala no Hover do Botão",
+    "description": "Qual o nível de dilatação/expansão que o botão tem ao passar o mouse.",
+    "type": "number",
+    "importance": 80,
+    "categories": [
+      "interacao",
+      "botoes",
+      "animacao"
+    ],
+    "tags": [
+      "button",
+      "hover",
+      "scale"
+    ],
+    "databaseColumn": "components_base",
+    "schemaOrigin": "buttons.ts",
+    "digitalTwins": [
+      "SarakButton"
+    ],
+    "cssVariables": [
+      "--sarak-btn-hover-scale"
+    ],
+    "allowedValues": {
+      "min": 0.8,
+      "max": 1.2,
+      "step": 0.01
+    },
+    "relatedTokens": [
+      "btnActiveScale"
+    ]
+  },
+  {
+    "tokenId": "btnActiveScale",
+    "name": "Escala no Clique do Botão",
+    "description": "O quanto o botão encolhe (efeito tátil) quando recebe o evento de 'mousedown/active'.",
+    "type": "number",
+    "importance": 80,
+    "categories": [
+      "interacao",
+      "botoes",
+      "animacao"
+    ],
+    "tags": [
+      "button",
+      "active",
+      "click",
+      "scale"
+    ],
+    "databaseColumn": "components_base",
+    "schemaOrigin": "buttons.ts",
+    "digitalTwins": [
+      "SarakButton"
+    ],
+    "cssVariables": [
+      "--sarak-btn-active-scale"
+    ],
+    "allowedValues": {
+      "min": 0.8,
+      "max": 1.2,
+      "step": 0.01
+    },
+    "relatedTokens": [
+      "btnHoverScale"
+    ]
+  },
+  {
+    "tokenId": "btnPrimaryBg",
+    "name": "Fundo do Botão Primário",
+    "description": "Cor sólida de fundo para botões primários (Call to Action principal).",
+    "type": "color",
+    "importance": 90,
+    "categories": [
+      "cores",
+      "botoes",
+      "background"
+    ],
+    "tags": [
+      "button",
+      "primary",
+      "bg"
+    ],
+    "databaseColumn": "components_base",
+    "schemaOrigin": "buttons.ts",
+    "digitalTwins": [
+      "SarakButton"
+    ],
+    "cssVariables": [
+      "--sarak-btn-primary-bg",
+      "--theme-primary"
+    ],
+    "allowedValues": null,
+    "relatedTokens": [
+      "btnPrimaryText"
+    ]
+  },
+  {
+    "tokenId": "btnPrimaryText",
+    "name": "Texto do Botão Primário",
+    "description": "Cor de contraste da tipografia nos botões primários.",
+    "type": "color",
+    "importance": 85,
+    "categories": [
+      "cores",
+      "botoes",
+      "tipografia"
+    ],
+    "tags": [
+      "button",
+      "primary",
+      "text"
+    ],
+    "databaseColumn": "components_base",
+    "schemaOrigin": "buttons.ts",
+    "digitalTwins": [
+      "SarakButton"
+    ],
+    "cssVariables": [
+      "--sarak-btn-primary-text"
+    ],
+    "allowedValues": null,
+    "relatedTokens": [
+      "btnPrimaryBg"
+    ]
+  },
+  {
+    "tokenId": "btnSecondaryBg",
+    "name": "Fundo do Botão Secundário",
+    "description": "Cor de fundo (geralmente mais sutil ou transparente) para ações secundárias.",
+    "type": "color",
+    "importance": 70,
+    "categories": [
+      "cores",
+      "botoes",
+      "background"
+    ],
+    "tags": [
+      "button",
+      "secondary",
+      "bg"
+    ],
+    "databaseColumn": "components_base",
+    "schemaOrigin": "buttons.ts",
+    "digitalTwins": [
+      "SarakButton"
+    ],
+    "cssVariables": [
+      "--sarak-btn-secondary-bg"
+    ],
+    "allowedValues": null,
+    "relatedTokens": [
+      "btnPrimaryBg"
+    ]
+  },
+  {
+    "tokenId": "btnGhostHoverBg",
+    "name": "Hover do Botão Ghost",
+    "description": "Cor do fundo sutil que surge ao passar o mouse em botões invisíveis (Ghost/Text).",
+    "type": "color",
+    "importance": 60,
+    "categories": [
+      "cores",
+      "botoes",
+      "interacao"
+    ],
+    "tags": [
+      "button",
+      "ghost",
+      "hover"
+    ],
+    "databaseColumn": "components_base",
+    "schemaOrigin": "buttons.ts",
+    "digitalTwins": [
+      "SarakButton"
+    ],
+    "cssVariables": [
+      "--sarak-btn-ghost-hover"
+    ],
+    "allowedValues": null,
+    "relatedTokens": [
+      "btnSecondaryBg"
+    ]
+  },
+  {
+    "tokenId": "btnStyleType",
+    "name": "Estilo Base do Botão",
+    "description": "Definição arquitetural visual (Matte, Neon, Frosted/Glass, Borderline) aplicada aos botões.",
+    "type": "select",
+    "importance": 80,
+    "categories": [
+      "botoes",
+      "estetica",
+      "variante"
+    ],
+    "tags": [
+      "button",
+      "style",
+      "preset"
+    ],
+    "databaseColumn": "components_base",
+    "schemaOrigin": "buttons.ts",
+    "digitalTwins": [
+      "SarakButton"
+    ],
+    "cssVariables": [
+      "--sarak-btn-style-type"
+    ],
+    "allowedValues": [
+      "matte",
+      "neon",
+      "frosted",
+      "borderline"
+    ],
+    "relatedTokens": [
+      "btnNeonGlowColor",
+      "btnBackdropBlur"
+    ]
+  },
+  {
+    "tokenId": "btnNeonGlowColor",
+    "name": "Cor do Brilho (Botão Neon)",
+    "description": "Caso o estilo seja 'neon', esta é a cor emitida pela aura externa do botão.",
+    "type": "color",
+    "importance": 65,
+    "categories": [
+      "cores",
+      "botoes",
+      "efeitos"
+    ],
+    "tags": [
+      "button",
+      "neon",
+      "glow"
+    ],
+    "databaseColumn": "components_base",
+    "schemaOrigin": "buttons.ts",
+    "digitalTwins": [
+      "SarakButton"
+    ],
+    "cssVariables": [
+      "--sarak-btn-neon-glow-color"
+    ],
+    "allowedValues": null,
+    "relatedTokens": [
+      "btnStyleType",
+      "btnNeonPulseSpeed"
+    ]
+  },
+  {
+    "tokenId": "btnNeonPulseSpeed",
+    "name": "Velocidade de Pulso do Botão Neon",
+    "description": "Se animado, a rapidez com que a aura de brilho pisca ou respira (em segundos).",
+    "type": "number",
+    "importance": 60,
+    "categories": [
+      "efeitos",
+      "botoes",
+      "animacao"
+    ],
+    "tags": [
+      "button",
+      "neon",
+      "pulse"
+    ],
+    "databaseColumn": "components_base",
+    "schemaOrigin": "buttons.ts",
+    "digitalTwins": [
+      "SarakButton"
+    ],
+    "cssVariables": [
+      "--sarak-btn-neon-pulse-speed"
+    ],
+    "allowedValues": {
+      "min": 0.5,
+      "max": 4,
+      "step": 0.1
+    },
+    "relatedTokens": [
+      "btnNeonGlowColor"
+    ]
+  },
+  {
+    "tokenId": "btnBackdropBlur",
+    "name": "Desfoque de Vidro (Botões Frosted)",
+    "description": "Quando o botão usa estilo 'frosted', quantidade de desfoque aplicado sobre o que está atrás.",
+    "type": "number",
+    "importance": 60,
+    "categories": [
+      "efeitos",
+      "botoes",
+      "glassmorphism"
+    ],
+    "tags": [
+      "button",
+      "glass",
+      "blur"
+    ],
+    "databaseColumn": "components_base",
+    "schemaOrigin": "buttons.ts",
+    "digitalTwins": [
+      "SarakButton"
+    ],
+    "cssVariables": [
+      "--sarak-btn-backdrop-blur"
+    ],
+    "allowedValues": {
+      "min": 0,
+      "max": 30
+    },
+    "relatedTokens": [
+      "btnStyleType"
+    ]
+  },
+  {
+    "tokenId": "inputBorderRadius",
+    "name": "Arredondamento do Input",
+    "description": "Raio da borda de campos de entrada de texto e textareas.",
+    "type": "number",
+    "importance": 75,
+    "categories": [
+      "bordas",
+      "inputs",
+      "geometria"
+    ],
+    "tags": [
+      "input",
+      "radius",
+      "form"
+    ],
+    "databaseColumn": "components_base",
+    "schemaOrigin": "inputs.ts",
+    "digitalTwins": [
+      "SarakInput"
+    ],
+    "cssVariables": [
+      "--sarak-input-border-radius"
+    ],
+    "allowedValues": {
+      "min": 0,
+      "max": 120
+    },
+    "relatedTokens": [
+      "inputBg"
+    ]
+  },
+  {
+    "tokenId": "inputBg",
+    "name": "Fundo do Input",
+    "description": "Cor de fundo principal para campos de formulário e inputs de dados.",
+    "type": "color",
+    "importance": 80,
+    "categories": [
+      "cores",
+      "inputs",
+      "background"
+    ],
+    "tags": [
+      "input",
+      "form",
+      "bg"
+    ],
+    "databaseColumn": "components_base",
+    "schemaOrigin": "inputs.ts",
+    "digitalTwins": [
+      "SarakInput"
+    ],
+    "cssVariables": [
+      "--sarak-input-bg"
+    ],
+    "allowedValues": null,
+    "relatedTokens": [
+      "inputBorderColor"
+    ]
+  },
+  {
+    "tokenId": "inputBorderColor",
+    "name": "Cor da Borda do Input",
+    "description": "Cor do delineado (outline/border) dos campos de entrada em estado normal/ocioso.",
+    "type": "color",
+    "importance": 70,
+    "categories": [
+      "cores",
+      "inputs",
+      "bordas"
+    ],
+    "tags": [
+      "input",
+      "border",
+      "form"
+    ],
+    "databaseColumn": "components_base",
+    "schemaOrigin": "inputs.ts",
+    "digitalTwins": [
+      "SarakInput"
+    ],
+    "cssVariables": [
+      "--sarak-input-border-color"
+    ],
+    "allowedValues": null,
+    "relatedTokens": [
+      "inputFocusBorderColor"
+    ]
+  },
+  {
+    "tokenId": "inputFocusBorderColor",
+    "name": "Cor da Borda (Foco) do Input",
+    "description": "Cor ativada na borda quando o input está selecionado (focus ring).",
+    "type": "color",
+    "importance": 85,
+    "categories": [
+      "cores",
+      "inputs",
+      "interacao"
+    ],
+    "tags": [
+      "input",
+      "focus",
+      "border"
+    ],
+    "databaseColumn": "components_base",
+    "schemaOrigin": "inputs.ts",
+    "digitalTwins": [
+      "SarakInput"
+    ],
+    "cssVariables": [
+      "--sarak-input-focus-border-color"
+    ],
+    "allowedValues": null,
+    "relatedTokens": [
+      "inputBorderColor",
+      "inputTextColor"
+    ]
+  },
+  {
+    "tokenId": "inputTextColor",
+    "name": "Cor do Texto do Input",
+    "description": "Cor da tipografia para os valores digitados pelo usuário.",
+    "type": "color",
+    "importance": 80,
+    "categories": [
+      "cores",
+      "inputs",
+      "tipografia"
+    ],
+    "tags": [
+      "input",
+      "text",
+      "form"
+    ],
+    "databaseColumn": "components_base",
+    "schemaOrigin": "inputs.ts",
+    "digitalTwins": [
+      "SarakInput"
+    ],
+    "cssVariables": [
+      "--sarak-input-text-color"
+    ],
+    "allowedValues": null,
+    "relatedTokens": [
+      "inputBg"
+    ]
+  },
+  {
+    "tokenId": "switchTrackActiveBg",
+    "name": "Cor: Switch Ativo",
+    "description": "Cor da pista de fundo de um Switch quando está na posição 'On' (ligado).",
+    "type": "color",
+    "importance": 80,
+    "categories": [
+      "cores",
+      "switches",
+      "background"
+    ],
+    "tags": [
+      "switch",
+      "toggle",
+      "active"
+    ],
+    "databaseColumn": "components_base",
+    "schemaOrigin": "switches.ts",
+    "digitalTwins": [
+      "SarakSwitch"
+    ],
+    "cssVariables": [
+      "--sarak-switch-active-bg"
+    ],
+    "allowedValues": null,
+    "relatedTokens": [
+      "switchThumbBg"
+    ]
+  },
+  {
+    "tokenId": "switchThumbBg",
+    "name": "Cor: Switch Botão (Thumb)",
+    "description": "Cor da bolinha (thumb) do alternador/switch que corre sobre a pista.",
+    "type": "color",
+    "importance": 70,
+    "categories": [
+      "cores",
+      "switches",
+      "botoes"
+    ],
+    "tags": [
+      "switch",
+      "thumb",
+      "toggle"
+    ],
+    "databaseColumn": "components_base",
+    "schemaOrigin": "switches.ts",
+    "digitalTwins": [
+      "SarakSwitch"
+    ],
+    "cssVariables": [
+      "--sarak-switch-thumb"
+    ],
+    "allowedValues": null,
+    "relatedTokens": [
+      "switchTrackActiveBg"
+    ]
+  },
+  {
+    "tokenId": "checkboxActiveColor",
+    "name": "Cor do Check Selecionado",
+    "description": "Cor de preenchimento quando um Checkbox padrão está marcado (checked).",
+    "type": "color",
+    "importance": 80,
+    "categories": [
+      "cores",
+      "switches",
+      "interacao"
+    ],
+    "tags": [
+      "checkbox",
+      "active"
+    ],
+    "databaseColumn": "components_base",
+    "schemaOrigin": "switches.ts",
+    "digitalTwins": [
+      "SarakCheckbox"
+    ],
+    "cssVariables": [
+      "--sarak-checkbox-active"
+    ],
+    "allowedValues": null,
+    "relatedTokens": [
+      "switchTrackActiveBg"
+    ]
+  },
+  {
+    "tokenId": "switchStyleType",
+    "name": "Estilo do Alternador (Switch)",
+    "description": "Estilo arquitetural base para o controle visual do Switch (Tactile, Glass, Pulsing).",
+    "type": "select",
+    "importance": 85,
+    "categories": [
+      "switches",
+      "estetica",
+      "variante"
+    ],
+    "tags": [
+      "switch",
+      "style",
+      "preset"
+    ],
+    "databaseColumn": "components_base",
+    "schemaOrigin": "switches.ts",
+    "digitalTwins": [
+      "SarakSwitch"
+    ],
+    "cssVariables": [
+      "--sarak-switch-style-type"
+    ],
+    "allowedValues": [
+      "tactile",
+      "asymmetric",
+      "pulsing",
+      "glass"
+    ],
+    "relatedTokens": [
+      "switchBackdropBlur",
+      "switchPulseColor"
+    ]
+  },
+  {
+    "tokenId": "switchBackdropBlur",
+    "name": "Desfoque do Alternador (Vidro)",
+    "description": "Se o estilo for 'glass', determina o blur do fundo do track do Switch.",
+    "type": "number",
+    "importance": 60,
+    "categories": [
+      "efeitos",
+      "switches",
+      "glassmorphism"
+    ],
+    "tags": [
+      "switch",
+      "glass",
+      "blur"
+    ],
+    "databaseColumn": "components_base",
+    "schemaOrigin": "switches.ts",
+    "digitalTwins": [
+      "SarakSwitch"
+    ],
+    "cssVariables": [
+      "--sarak-switch-backdrop-blur"
+    ],
+    "allowedValues": {
+      "min": 0,
+      "max": 20
+    },
+    "relatedTokens": [
+      "switchStyleType"
+    ]
+  },
+  {
+    "tokenId": "switchPulseColor",
+    "name": "Cor do Pulso (Switch)",
+    "description": "Cor da animação de radar/pulso do switch se o estilo for 'pulsing'.",
+    "type": "color",
+    "importance": 50,
+    "categories": [
+      "efeitos",
+      "switches",
+      "animacao"
+    ],
+    "tags": [
+      "switch",
+      "pulse",
+      "glow"
+    ],
+    "databaseColumn": "components_base",
+    "schemaOrigin": "switches.ts",
+    "digitalTwins": [
+      "SarakSwitch"
+    ],
+    "cssVariables": [
+      "--sarak-switch-pulse-color"
+    ],
+    "allowedValues": null,
+    "relatedTokens": [
+      "switchStyleType"
+    ]
+  },
+  {
+    "tokenId": "cardBorderRadius",
+    "name": "Raio da Borda do Card (Master)",
+    "description": "Governa o arredondamento de todos os cartões. Pode ser substituído individualmente por cantos específicos.",
+    "type": "number",
+    "importance": 85,
+    "categories": [
+      "cards",
+      "geometria",
+      "superficie"
+    ],
+    "tags": [
+      "estetica",
+      "radius",
+      "container"
+    ],
+    "databaseColumn": "cards_engine",
+    "schemaOrigin": "cards.ts",
+    "digitalTwins": [
+      "SarakCard",
+      "DesignInjector"
+    ],
+    "cssVariables": [
+      "--radius-theme",
+      "--sarak-card-radius",
+      "--sarak-card-radius-tl",
+      "--sarak-card-radius-tr",
+      "--sarak-card-radius-bl",
+      "--sarak-card-radius-br"
+    ],
+    "allowedValues": {
+      "min": 0,
+      "max": 120
+    },
+    "relatedTokens": [
+      "cardGeometricCut",
+      "borderRadius"
+    ]
+  },
+  {
+    "tokenId": "cardRadiusTL",
+    "name": "Quina Superior Esquerda do Card",
+    "description": "Sobrescreve o raio mestre apenas no canto superior esquerdo.",
+    "type": "number",
+    "importance": 50,
+    "categories": [
+      "cards",
+      "geometria",
+      "assimetria"
+    ],
+    "tags": [
+      "radius"
+    ],
+    "databaseColumn": "cards_engine",
+    "schemaOrigin": "cards.ts",
+    "digitalTwins": [
+      "SarakCard"
+    ],
+    "cssVariables": [
+      "--sarak-card-radius-tl"
+    ],
+    "allowedValues": {
+      "min": 0,
+      "max": 120
+    },
+    "relatedTokens": [
+      "cardBorderRadius"
+    ]
+  },
+  {
+    "tokenId": "cardRadiusTR",
+    "name": "Quina Superior Direita do Card",
+    "description": "Sobrescreve o raio mestre apenas no canto superior direito.",
+    "type": "number",
+    "importance": 50,
+    "categories": [
+      "cards",
+      "geometria",
+      "assimetria"
+    ],
+    "tags": [
+      "radius"
+    ],
+    "databaseColumn": "cards_engine",
+    "schemaOrigin": "cards.ts",
+    "digitalTwins": [
+      "SarakCard"
+    ],
+    "cssVariables": [
+      "--sarak-card-radius-tr"
+    ],
+    "allowedValues": {
+      "min": 0,
+      "max": 120
+    },
+    "relatedTokens": [
+      "cardBorderRadius"
+    ]
+  },
+  {
+    "tokenId": "cardRadiusBL",
+    "name": "Quina Inferior Esquerda do Card",
+    "description": "Sobrescreve o raio mestre apenas no canto inferior esquerdo.",
+    "type": "number",
+    "importance": 50,
+    "categories": [
+      "cards",
+      "geometria",
+      "assimetria"
+    ],
+    "tags": [
+      "radius"
+    ],
+    "databaseColumn": "cards_engine",
+    "schemaOrigin": "cards.ts",
+    "digitalTwins": [
+      "SarakCard"
+    ],
+    "cssVariables": [
+      "--sarak-card-radius-bl"
+    ],
+    "allowedValues": {
+      "min": 0,
+      "max": 120
+    },
+    "relatedTokens": [
+      "cardBorderRadius"
+    ]
+  },
+  {
+    "tokenId": "cardRadiusBR",
+    "name": "Quina Inferior Direita do Card",
+    "description": "Sobrescreve o raio mestre apenas no canto inferior direito.",
+    "type": "number",
+    "importance": 50,
+    "categories": [
+      "cards",
+      "geometria",
+      "assimetria"
+    ],
+    "tags": [
+      "radius"
+    ],
+    "databaseColumn": "cards_engine",
+    "schemaOrigin": "cards.ts",
+    "digitalTwins": [
+      "SarakCard"
+    ],
+    "cssVariables": [
+      "--sarak-card-radius-br"
+    ],
+    "allowedValues": {
+      "min": 0,
+      "max": 120
+    },
+    "relatedTokens": [
+      "cardBorderRadius"
+    ]
+  },
+  {
+    "tokenId": "cardGeometricCut",
+    "name": "Corte Geométrico (Chanfro) do Card",
+    "description": "Aplica um corte em ângulo estilo sci-fi/cyberpunk nos cartões em vez de uma curva suave.",
+    "type": "number",
+    "importance": 70,
+    "categories": [
+      "cards",
+      "geometria",
+      "efeito"
+    ],
+    "tags": [
+      "estetica",
+      "cyberpunk",
+      "chanfro"
+    ],
+    "databaseColumn": "cards_engine",
+    "schemaOrigin": "cards.ts",
+    "digitalTwins": [
+      "SarakCard"
+    ],
+    "cssVariables": [
+      "--sarak-card-geometric-cut"
+    ],
+    "allowedValues": {
+      "min": 0,
+      "max": 100
+    },
+    "relatedTokens": [
+      "cardBorderRadius"
+    ]
+  },
+  {
+    "tokenId": "cardBackgroundColor",
+    "name": "Cor de Fundo do Card",
+    "description": "Cor primária de todas as superfícies de cartão. Em ambientes cyber, usar fundos semitransparentes com Glassmorphism.",
+    "type": "color",
+    "importance": 90,
+    "categories": [
+      "cores",
+      "cards",
+      "superficie"
+    ],
+    "tags": [
+      "background",
+      "glass",
+      "fill"
+    ],
+    "databaseColumn": "cards_engine",
+    "schemaOrigin": "cards.ts",
+    "digitalTwins": [
+      "SarakCard"
+    ],
+    "cssVariables": [
+      "--card-bg",
+      "--theme-surface",
+      "--theme-card",
+      "--sarak-card-bg"
+    ],
+    "allowedValues": null,
+    "relatedTokens": [
+      "cardBackdropBlur",
+      "cardSurfaceOpacity"
+    ]
+  },
+  {
+    "tokenId": "cardBackdropBlur",
+    "name": "Intensidade do Backdrop Blur (Glass)",
+    "description": "Nível de desfoque de fundo atrás do cartão. Essencial para Glassmorphism premium.",
+    "type": "number",
+    "importance": 85,
+    "categories": [
+      "cards",
+      "efeito",
+      "glassmorphism"
+    ],
+    "tags": [
+      "blur",
+      "estetica",
+      "premium"
+    ],
+    "databaseColumn": "cards_engine",
+    "schemaOrigin": "cards.ts",
+    "digitalTwins": [
+      "SarakCard"
+    ],
+    "cssVariables": [
+      "--sarak-card-backdrop-blur",
+      "--sarak-card-blur",
+      "--sarak-glass-blur"
+    ],
+    "allowedValues": {
+      "min": 0,
+      "max": 100
+    },
+    "relatedTokens": [
+      "cardBackgroundColor"
+    ]
+  },
+  {
+    "tokenId": "cardSurfaceOpacity",
+    "name": "Opacidade da Superfície do Card",
+    "description": "Transparência nativa do cartão. Geralmente casada com Backdrop Blur para dar profundidade.",
+    "type": "number",
+    "importance": 70,
+    "categories": [
+      "cards",
+      "efeito",
+      "opacidade"
+    ],
+    "tags": [
+      "glass",
+      "alpha"
+    ],
+    "databaseColumn": "cards_engine",
+    "schemaOrigin": "cards.ts",
+    "digitalTwins": [
+      "SarakCard"
+    ],
+    "cssVariables": [
+      "--sarak-card-surface-opacity",
+      "--sarak-card-opacity"
+    ],
+    "allowedValues": {
+      "min": 0,
+      "max": 1,
+      "step": 0.05
+    },
+    "relatedTokens": [
+      "cardBackgroundColor",
+      "cardBackdropBlur"
+    ]
+  },
+  {
+    "tokenId": "cardBorderWidth",
+    "name": "Espessura da Borda do Card",
+    "description": "Controla se o card tem bordas demarcadas.",
+    "type": "number",
+    "importance": 60,
+    "categories": [
+      "cards",
+      "bordas",
+      "espessura"
+    ],
+    "tags": [
+      "stroke"
+    ],
+    "databaseColumn": "cards_engine",
+    "schemaOrigin": "cards.ts",
+    "digitalTwins": [
+      "SarakCard"
+    ],
+    "cssVariables": [
+      "--card-border-width",
+      "--theme-border-width",
+      "--sarak-card-border-width"
+    ],
+    "allowedValues": {
+      "min": 0,
+      "max": 20
+    },
+    "relatedTokens": [
+      "cardBorderColor"
+    ]
+  },
+  {
+    "tokenId": "cardBorderColor",
+    "name": "Cor da Borda do Card",
+    "description": "Coloração da linha que contorna o cartão.",
+    "type": "color",
+    "importance": 60,
+    "categories": [
+      "cores",
+      "cards",
+      "bordas"
+    ],
+    "tags": [
+      "stroke"
+    ],
+    "databaseColumn": "cards_engine",
+    "schemaOrigin": "cards.ts",
+    "digitalTwins": [
+      "SarakCard"
+    ],
+    "cssVariables": [
+      "--card-border-color",
+      "--theme-border",
+      "--sarak-card-border-color"
+    ],
+    "allowedValues": null,
+    "relatedTokens": [
+      "cardBorderWidth",
+      "cardBorderOpacity"
+    ]
+  },
+  {
+    "tokenId": "cardBorderOpacity",
+    "name": "Opacidade da Borda do Card",
+    "description": "Controle fino de transparência apenas para a borda. Útil para contornos luminosos suaves.",
+    "type": "number",
+    "importance": 50,
+    "categories": [
+      "cards",
+      "bordas",
+      "opacidade"
+    ],
+    "tags": [
+      "efeito",
+      "alpha"
+    ],
+    "databaseColumn": "cards_engine",
+    "schemaOrigin": "cards.ts",
+    "digitalTwins": [
+      "SarakCard"
+    ],
+    "cssVariables": [
+      "--sarak-card-border-opacity"
+    ],
+    "allowedValues": {
+      "min": 0,
+      "max": 1,
+      "step": 0.05
+    },
+    "relatedTokens": [
+      "cardBorderColor"
+    ]
+  },
+  {
+    "tokenId": "cardBorderTop",
+    "name": "Borda do Card: Topo",
+    "description": "Espessura isolada da borda superior do cartão. Usada em cartões que destacam a parte superior (ex: status headers).",
+    "type": "number",
+    "importance": 40,
+    "categories": [
+      "cards",
+      "bordas",
+      "assimetria"
+    ],
+    "tags": [
+      "stroke"
+    ],
+    "databaseColumn": "cards_engine",
+    "schemaOrigin": "cards.ts",
+    "digitalTwins": [
+      "SarakCard"
+    ],
+    "cssVariables": [
+      "--sarak-card-border-top"
+    ],
+    "allowedValues": {
+      "min": 0,
+      "max": 40
+    },
+    "relatedTokens": [
+      "cardBorderWidth"
+    ]
+  },
+  {
+    "tokenId": "cardBorderBottom",
+    "name": "Borda do Card: Base",
+    "description": "Espessura isolada da borda inferior do cartão. Comum em painéis táticos para criar peso visual.",
+    "type": "number",
+    "importance": 40,
+    "categories": [
+      "cards",
+      "bordas",
+      "assimetria"
+    ],
+    "tags": [
+      "stroke"
+    ],
+    "databaseColumn": "cards_engine",
+    "schemaOrigin": "cards.ts",
+    "digitalTwins": [
+      "SarakCard"
+    ],
+    "cssVariables": [
+      "--sarak-card-border-bottom"
+    ],
+    "allowedValues": {
+      "min": 0,
+      "max": 40
+    },
+    "relatedTokens": [
+      "cardBorderWidth"
+    ]
+  },
+  {
+    "tokenId": "cardBorderLeft",
+    "name": "Borda do Card: Esquerda",
+    "description": "Espessura isolada da borda esquerda do cartão. Frequentemente usada para indicar status ativo ou perigo (ex: alertas vermelhos).",
+    "type": "number",
+    "importance": 45,
+    "categories": [
+      "cards",
+      "bordas",
+      "assimetria"
+    ],
+    "tags": [
+      "stroke"
+    ],
+    "databaseColumn": "cards_engine",
+    "schemaOrigin": "cards.ts",
+    "digitalTwins": [
+      "SarakCard"
+    ],
+    "cssVariables": [
+      "--sarak-card-border-left"
+    ],
+    "allowedValues": {
+      "min": 0,
+      "max": 40
+    },
+    "relatedTokens": [
+      "cardBorderWidth"
+    ]
+  },
+  {
+    "tokenId": "cardBorderRight",
+    "name": "Borda do Card: Direita",
+    "description": "Espessura isolada da borda direita do cartão.",
+    "type": "number",
+    "importance": 30,
+    "categories": [
+      "cards",
+      "bordas",
+      "assimetria"
+    ],
+    "tags": [
+      "stroke"
+    ],
+    "databaseColumn": "cards_engine",
+    "schemaOrigin": "cards.ts",
+    "digitalTwins": [
+      "SarakCard"
+    ],
+    "cssVariables": [
+      "--sarak-card-border-right"
+    ],
+    "allowedValues": {
+      "min": 0,
+      "max": 40
+    },
+    "relatedTokens": [
+      "cardBorderWidth"
+    ]
+  },
+  {
+    "tokenId": "cardInnerGlowColor",
+    "name": "Cor do Glow Interno do Card",
+    "description": "Define a cor da iluminação interna suave nas bordas, dando volume ao cartão glassmórfico.",
+    "type": "color",
+    "importance": 65,
+    "categories": [
+      "cores",
+      "cards",
+      "iluminacao"
+    ],
+    "tags": [
+      "efeito",
+      "glow",
+      "glass"
+    ],
+    "databaseColumn": "cards_engine",
+    "schemaOrigin": "cards.ts",
+    "digitalTwins": [
+      "SarakCard"
+    ],
+    "cssVariables": [
+      "--sarak-card-inner-glow-color"
+    ],
+    "allowedValues": null,
+    "relatedTokens": [
+      "cardInnerGlowWidth"
+    ]
+  },
+  {
+    "tokenId": "cardInnerGlowWidth",
+    "name": "Espessura do Glow Interno do Card",
+    "description": "Controla até onde a luz se espalha a partir das bordas para o centro do cartão.",
+    "type": "number",
+    "importance": 60,
+    "categories": [
+      "efeitos",
+      "cards",
+      "sombra-luz"
+    ],
+    "tags": [
+      "efeito",
+      "glow"
+    ],
+    "databaseColumn": "cards_engine",
+    "schemaOrigin": "cards.ts",
+    "digitalTwins": [
+      "SarakCard"
+    ],
+    "cssVariables": [
+      "--sarak-card-inner-glow-width"
+    ],
+    "allowedValues": {
+      "min": 0,
+      "max": 30
+    },
+    "relatedTokens": [
+      "cardInnerGlowColor"
+    ]
+  },
+  {
+    "tokenId": "cardTextureType",
+    "name": "Textura da Superfície do Card",
+    "description": "Tipo de padrão (Grid, Dots, Scanlines) a ser sobreposto no cartão, dando vida ao material.",
+    "type": "select",
+    "importance": 85,
+    "categories": [
+      "estilo",
+      "cards",
+      "texturas"
+    ],
+    "tags": [
+      "pattern",
+      "material"
+    ],
+    "databaseColumn": "cards_engine",
+    "schemaOrigin": "cards.ts",
+    "digitalTwins": [
+      "SarakCard"
+    ],
+    "cssVariables": [
+      "--sarak-card-texture-type"
+    ],
+    "allowedValues": [
+      "none",
+      "grid",
+      "dots",
+      "noise",
+      "grain",
+      "mesh",
+      "waves",
+      "squares",
+      "stripes",
+      "topo",
+      "diamond",
+      "prestige",
+      "carbon",
+      "brushed",
+      "frosted",
+      "circuit",
+      "paper",
+      "scanlines",
+      "hexagon",
+      "silk",
+      "blueprint",
+      "aurora",
+      "stars",
+      "honeycomb",
+      "isometric",
+      "radar",
+      "crosshatch",
+      "micro-dots",
+      "pinstripes",
+      "constellation",
+      "circuit-pro",
+      "carbon-tech",
+      "topo-deep",
+      "prism-mesh",
+      "cyber-binary",
+      "blueprint-pro",
+      "wave-pulse",
+      "wood",
+      "stucco",
+      "fluid",
+      "nebula"
+    ],
+    "relatedTokens": [
+      "cardTextureOpacity"
+    ]
+  },
+  {
+    "tokenId": "cardTextureOpacity",
+    "name": "Opacidade da Textura do Card",
+    "description": "Quão visível será o padrão textual no fundo do cartão.",
+    "type": "number",
+    "importance": 80,
+    "categories": [
+      "estilo",
+      "cards",
+      "texturas",
+      "opacidade"
+    ],
+    "tags": [
+      "pattern",
+      "alpha"
+    ],
+    "databaseColumn": "cards_engine",
+    "schemaOrigin": "cards.ts",
+    "digitalTwins": [
+      "SarakCard"
+    ],
+    "cssVariables": [
+      "--sarak-card-texture-opacity"
+    ],
+    "allowedValues": {
+      "min": 0,
+      "max": 1,
+      "step": 0.01
+    },
+    "relatedTokens": [
+      "cardTextureType"
+    ]
+  },
+  {
+    "tokenId": "cardHeaderBg",
+    "name": "Cor de Fundo do Header",
+    "description": "Fundo específico para a seção de cabeçalho do cartão.",
+    "type": "color",
+    "importance": 50,
+    "categories": [
+      "cores",
+      "cards",
+      "cabecalho"
+    ],
+    "tags": [
+      "header",
+      "background"
+    ],
+    "databaseColumn": "cards_engine",
+    "schemaOrigin": "cards.ts",
+    "digitalTwins": [
+      "SarakCard"
+    ],
+    "cssVariables": [
+      "--sarak-card-header-bg"
+    ],
+    "allowedValues": null,
+    "relatedTokens": [
+      "cardHeaderBorder"
+    ]
+  },
+  {
+    "tokenId": "cardHeaderBorder",
+    "name": "Linha Divisora Inferior do Header",
+    "description": "Cor da borda que separa o header do corpo do cartão.",
+    "type": "color",
+    "importance": 40,
+    "categories": [
+      "cores",
+      "cards",
+      "bordas"
+    ],
+    "tags": [
+      "header",
+      "separator"
+    ],
+    "databaseColumn": "cards_engine",
+    "schemaOrigin": "cards.ts",
+    "digitalTwins": [
+      "SarakCard"
+    ],
+    "cssVariables": [
+      "--sarak-card-header-border"
+    ],
+    "allowedValues": null,
+    "relatedTokens": [
+      "cardHeaderBg"
+    ]
+  },
+  {
+    "tokenId": "cardHeaderPadding",
+    "name": "Padding Vertical do Header",
+    "description": "Espaço de respiro vertical interno do header.",
+    "type": "number",
+    "importance": 40,
+    "categories": [
+      "layout",
+      "cards",
+      "espacamento"
+    ],
+    "tags": [
+      "header",
+      "padding"
+    ],
+    "databaseColumn": "cards_engine",
+    "schemaOrigin": "cards.ts",
+    "digitalTwins": [
+      "SarakCard"
+    ],
+    "cssVariables": [
+      "--sarak-card-header-padding"
+    ],
+    "allowedValues": {
+      "min": 0,
+      "max": 120
+    },
+    "relatedTokens": [
+      "cardPaddingMd"
+    ]
+  },
+  {
+    "tokenId": "cardFooterBg",
+    "name": "Cor de Fundo do Footer",
+    "description": "Fundo específico para a seção de rodapé do cartão.",
+    "type": "color",
+    "importance": 50,
+    "categories": [
+      "cores",
+      "cards",
+      "rodape"
+    ],
+    "tags": [
+      "footer",
+      "background"
+    ],
+    "databaseColumn": "cards_engine",
+    "schemaOrigin": "cards.ts",
+    "digitalTwins": [
+      "SarakCard"
+    ],
+    "cssVariables": [
+      "--sarak-card-footer-bg"
+    ],
+    "allowedValues": null,
+    "relatedTokens": [
+      "cardFooterBorder"
+    ]
+  },
+  {
+    "tokenId": "cardFooterBorder",
+    "name": "Linha Divisora Superior do Footer",
+    "description": "Cor da borda que separa o footer do corpo do cartão.",
+    "type": "color",
+    "importance": 40,
+    "categories": [
+      "cores",
+      "cards",
+      "bordas"
+    ],
+    "tags": [
+      "footer",
+      "separator"
+    ],
+    "databaseColumn": "cards_engine",
+    "schemaOrigin": "cards.ts",
+    "digitalTwins": [
+      "SarakCard"
+    ],
+    "cssVariables": [
+      "--sarak-card-footer-border"
+    ],
+    "allowedValues": null,
+    "relatedTokens": [
+      "cardFooterBg"
+    ]
+  },
+  {
+    "tokenId": "cardShadowSpread",
+    "name": "Espalhamento da Sombra do Card",
+    "description": "A distância e desfoque da projeção de sombra do cartão no ambiente.",
+    "type": "number",
+    "importance": 70,
+    "categories": [
+      "efeitos",
+      "cards",
+      "sombra-luz"
+    ],
+    "tags": [
+      "shadow",
+      "depth"
+    ],
+    "databaseColumn": "cards_engine",
+    "schemaOrigin": "cards.ts",
+    "digitalTwins": [
+      "SarakCard"
+    ],
+    "cssVariables": [
+      "--sarak-card-shadow-spread"
+    ],
+    "allowedValues": {
+      "min": 0,
+      "max": 200
+    },
+    "relatedTokens": [
+      "cardGlowIntensity"
+    ]
+  },
+  {
+    "tokenId": "cardGlowColor",
+    "name": "Cor do Brilho Externo (Neon)",
+    "description": "A cor da aura luminosa ao redor do cartão (estética Sci-Fi).",
+    "type": "color",
+    "importance": 60,
+    "categories": [
+      "cores",
+      "cards",
+      "iluminacao"
+    ],
+    "tags": [
+      "neon",
+      "glow",
+      "cyber"
+    ],
+    "databaseColumn": "cards_engine",
+    "schemaOrigin": "cards.ts",
+    "digitalTwins": [
+      "SarakCard"
+    ],
+    "cssVariables": [
+      "--sarak-card-glow-color"
+    ],
+    "allowedValues": null,
+    "relatedTokens": [
+      "cardGlowIntensity"
+    ]
+  },
+  {
+    "tokenId": "cardGlowIntensity",
+    "name": "Intensidade do Brilho Externo",
+    "description": "Força com que o brilho Neon é emitido para fora do cartão.",
+    "type": "number",
+    "importance": 65,
+    "categories": [
+      "efeitos",
+      "cards",
+      "sombra-luz"
+    ],
+    "tags": [
+      "neon",
+      "glow"
+    ],
+    "databaseColumn": "cards_engine",
+    "schemaOrigin": "cards.ts",
+    "digitalTwins": [
+      "SarakCard"
+    ],
+    "cssVariables": [
+      "--sarak-card-glow-intensity"
+    ],
+    "allowedValues": {
+      "min": 0,
+      "max": 1,
+      "step": 0.05
+    },
+    "relatedTokens": [
+      "cardGlowColor"
+    ]
+  },
+  {
+    "tokenId": "cardHoverTranslate",
+    "name": "Elevação no Hover (Y)",
+    "description": "Quantos pixels o cartão deve subir (levitar) quando o usuário passa o mouse por cima.",
+    "type": "number",
+    "importance": 80,
+    "categories": [
+      "interacao",
+      "cards",
+      "animacao"
+    ],
+    "tags": [
+      "hover",
+      "motion",
+      "ux"
+    ],
+    "databaseColumn": "cards_engine",
+    "schemaOrigin": "cards.ts",
+    "digitalTwins": [
+      "SarakCard"
+    ],
+    "cssVariables": [
+      "--sarak-card-hover-y"
+    ],
+    "allowedValues": {
+      "min": -50,
+      "max": 10
+    },
+    "relatedTokens": [
+      "cardHoverGlowIncrease"
+    ]
+  },
+  {
+    "tokenId": "cardHoverGlowIncrease",
+    "name": "Aumento de Brilho no Hover",
+    "description": "Quantidade extra de brilho externo (Glow) adicionada ao interagir com o cartão.",
+    "type": "number",
+    "importance": 70,
+    "categories": [
+      "efeitos",
+      "interacao",
+      "cards"
+    ],
+    "tags": [
+      "hover",
+      "glow",
+      "ux"
+    ],
+    "databaseColumn": "cards_engine",
+    "schemaOrigin": "cards.ts",
+    "digitalTwins": [
+      "SarakCard"
+    ],
+    "cssVariables": [
+      "--sarak-card-hover-glow"
+    ],
+    "allowedValues": {
+      "min": 0,
+      "max": 1,
+      "step": 0.05
+    },
+    "relatedTokens": [
+      "cardGlowIntensity",
+      "cardHoverTranslate"
+    ]
+  },
+  {
+    "tokenId": "cardSpotlightOpacity",
+    "name": "Opacidade do Spotlight (Mouse Tracking)",
+    "description": "Opacidade do efeito de holofote (Spotlight) que segue o cursor dentro do cartão.",
+    "type": "number",
+    "importance": 85,
+    "categories": [
+      "efeitos",
+      "interacao",
+      "cards"
+    ],
+    "tags": [
+      "spotlight",
+      "hover",
+      "premium"
+    ],
+    "databaseColumn": "cards_engine",
+    "schemaOrigin": "cards.ts",
+    "digitalTwins": [
+      "SarakCard",
+      "SpotlightEffect"
+    ],
+    "cssVariables": [
+      "--spotlight-opacity"
+    ],
+    "allowedValues": {
+      "min": 0,
+      "max": 1,
+      "step": 0.05
+    },
+    "relatedTokens": [
+      "cardHoverGlowIncrease"
+    ]
+  },
+  {
+    "tokenId": "cardPaddingMd",
+    "name": "Padding Interno (Master/MD)",
+    "description": "Respiro base interno do cartão.",
+    "type": "number",
+    "importance": 90,
+    "categories": [
+      "layout",
+      "cards",
+      "espacamento"
+    ],
+    "tags": [
+      "padding",
+      "ux"
+    ],
+    "databaseColumn": "cards_engine",
+    "schemaOrigin": "cards.ts",
+    "digitalTwins": [
+      "SarakCard"
+    ],
+    "cssVariables": [
+      "--sarak-card-padding-md",
+      "--theme-gap"
+    ],
+    "allowedValues": {
+      "min": 0,
+      "max": 120
+    },
+    "relatedTokens": [
+      "cardHeaderPadding"
+    ]
+  },
+  {
+    "tokenId": "cardVariant",
+    "name": "Variante de Card",
+    "description": "Estilo pré-definido arquitetural do cartão (Ex: Classic, Sleek Title, Action).",
+    "type": "select",
+    "importance": 85,
+    "categories": [
+      "cards",
+      "arquitetura",
+      "variante"
+    ],
+    "tags": [
+      "preset"
+    ],
+    "databaseColumn": "cards_engine",
+    "schemaOrigin": "cards.ts",
+    "digitalTwins": [
+      "SarakCard"
+    ],
+    "cssVariables": [
+      "--sarak-card-variant"
+    ],
+    "allowedValues": [
+      "classic",
+      "title",
+      "action",
+      "search"
+    ],
+    "relatedTokens": [
+      "cardGeometricCut",
+      "cardPaddingMd"
+    ]
+  },
+  {
+    "tokenId": "imageCardOverlayOpacity",
+    "name": "Opacidade do Overlay em Cartões de Imagem",
+    "description": "Define a escuridão da película sobre imagens dentro de cartões para legibilidade de texto.",
+    "type": "number",
+    "importance": 50,
+    "categories": [
+      "cards",
+      "efeito",
+      "imagem"
+    ],
+    "tags": [
+      "overlay",
+      "alpha"
+    ],
+    "databaseColumn": "cards_engine",
+    "schemaOrigin": "cards.ts",
+    "digitalTwins": [
+      "SarakImageCard"
+    ],
+    "cssVariables": [
+      "--sarak-image-card-overlay-opacity"
+    ],
+    "allowedValues": {
+      "min": 0,
+      "max": 1,
+      "step": 0.05
+    },
+    "relatedTokens": [
+      "imageCardHoverZoom"
+    ]
+  },
+  {
+    "tokenId": "imageCardHoverZoom",
+    "name": "Efeito de Zoom (Hover) em Cartões de Imagem",
+    "description": "Controla o zoom inético das imagens dentro do cartão ao passar o mouse.",
+    "type": "number",
+    "importance": 60,
+    "categories": [
+      "cards",
+      "interacao",
+      "animacao"
+    ],
+    "tags": [
+      "hover",
+      "zoom",
+      "imagem"
+    ],
+    "databaseColumn": "cards_engine",
+    "schemaOrigin": "cards.ts",
+    "digitalTwins": [
+      "SarakImageCard"
+    ],
+    "cssVariables": [
+      "--sarak-image-card-hover-zoom"
+    ],
+    "allowedValues": {
+      "min": 1,
+      "max": 1.5,
+      "step": 0.01
+    },
+    "relatedTokens": [
+      "imageCardOverlayOpacity"
+    ]
+  },
+  {
+    "tokenId": "cardTitleFontSize",
+    "name": "Tamanho da Fonte do Título (Card)",
+    "description": "Tamanho específico para títulos principais de cartão.",
+    "type": "number",
+    "importance": 70,
+    "categories": [
+      "tipografia",
+      "cards",
+      "tamanho"
+    ],
+    "tags": [
+      "font-size",
+      "h3"
+    ],
+    "databaseColumn": "cards_engine",
+    "schemaOrigin": "cards.ts",
+    "digitalTwins": [
+      "SarakCard"
+    ],
+    "cssVariables": [],
+    "allowedValues": {
+      "min": 10,
+      "max": 64
+    },
+    "relatedTokens": [
+      "cardTitleColor",
+      "cardTitleFontWeight"
+    ]
+  },
+  {
+    "tokenId": "cardTitleColor",
+    "name": "Cor do Título (Card)",
+    "description": "A cor principal para o texto em destaque no cabeçalho do cartão.",
+    "type": "color",
+    "importance": 70,
+    "categories": [
+      "cores",
+      "cards",
+      "tipografia"
+    ],
+    "tags": [
+      "text",
+      "color"
+    ],
+    "databaseColumn": "cards_engine",
+    "schemaOrigin": "cards.ts",
+    "digitalTwins": [
+      "SarakCard"
+    ],
+    "cssVariables": [],
+    "allowedValues": null,
+    "relatedTokens": [
+      "cardTitleFontSize"
+    ]
+  },
+  {
+    "tokenId": "cardTitleFontWeight",
+    "name": "Peso da Fonte do Título (Card)",
+    "description": "Peso (Bold, Medium, etc.) para os títulos dentro do cartão.",
+    "type": "select",
+    "importance": 60,
+    "categories": [
+      "tipografia",
+      "cards",
+      "peso"
+    ],
+    "tags": [
+      "font-weight"
+    ],
+    "databaseColumn": "cards_engine",
+    "schemaOrigin": "cards.ts",
+    "digitalTwins": [
+      "SarakCard"
+    ],
+    "cssVariables": [],
+    "allowedValues": [
+      "100",
+      "300",
+      "400",
+      "500",
+      "600",
+      "700",
+      "800",
+      "900"
+    ],
+    "relatedTokens": [
+      "cardTitleFontSize"
+    ]
+  },
+  {
+    "tokenId": "cardTitleLetterSpacing",
+    "name": "Espaçamento de Letras do Título (Card)",
+    "description": "Ajuste fino (tracking) para dar aspecto mais tecnológico ou elegante aos títulos.",
+    "type": "number",
+    "importance": 50,
+    "categories": [
+      "tipografia",
+      "cards",
+      "espacamento"
+    ],
+    "tags": [
+      "letter-spacing",
+      "estetica"
+    ],
+    "databaseColumn": "cards_engine",
+    "schemaOrigin": "cards.ts",
+    "digitalTwins": [
+      "SarakCard"
+    ],
+    "cssVariables": [],
+    "allowedValues": {
+      "min": -2,
+      "max": 10,
+      "step": 0.5
+    },
+    "relatedTokens": [
+      "cardTitleFontWeight"
+    ]
+  },
+  {
+    "tokenId": "cardTitleIconGlow",
+    "name": "Glow no Ícone do Título (Card)",
+    "description": "Intensidade do brilho em ícones localizados perto dos títulos do cartão.",
+    "type": "number",
+    "importance": 50,
+    "categories": [
+      "efeitos",
+      "cards",
+      "iluminacao"
+    ],
+    "tags": [
+      "icon",
+      "glow"
+    ],
+    "databaseColumn": "cards_engine",
+    "schemaOrigin": "cards.ts",
+    "digitalTwins": [
+      "SarakCard"
+    ],
+    "cssVariables": [],
+    "allowedValues": {
+      "min": 0,
+      "max": 1,
+      "step": 0.05
+    },
+    "relatedTokens": [
+      "cardTitleColor"
+    ]
+  },
+  {
+    "tokenId": "cardActionBtnPrimaryBg",
+    "name": "Fundo do Botão de Ação (Card)",
+    "description": "Cor primária para Call to Actions internos de cartões de Ação.",
+    "type": "color",
+    "importance": 65,
+    "categories": [
+      "cores",
+      "cards",
+      "botoes"
+    ],
+    "tags": [
+      "cta",
+      "background"
+    ],
+    "databaseColumn": "cards_engine",
+    "schemaOrigin": "cards.ts",
+    "digitalTwins": [
+      "SarakCard"
+    ],
+    "cssVariables": [],
+    "allowedValues": null,
+    "relatedTokens": [
+      "cardActionBtnHoverBg",
+      "cardActionBtnText"
+    ]
+  },
+  {
+    "tokenId": "cardActionBtnHoverBg",
+    "name": "Fundo do Botão de Ação no Hover (Card)",
+    "description": "Feedback visual ao interagir com o Call to Action de um cartão.",
+    "type": "color",
+    "importance": 60,
+    "categories": [
+      "cores",
+      "cards",
+      "interacao"
+    ],
+    "tags": [
+      "cta",
+      "hover"
+    ],
+    "databaseColumn": "cards_engine",
+    "schemaOrigin": "cards.ts",
+    "digitalTwins": [
+      "SarakCard"
+    ],
+    "cssVariables": [],
+    "allowedValues": null,
+    "relatedTokens": [
+      "cardActionBtnPrimaryBg"
+    ]
+  },
+  {
+    "tokenId": "cardActionBtnText",
+    "name": "Cor do Texto do Botão de Ação (Card)",
+    "description": "Cor da label dentro dos botões de ação do cartão.",
+    "type": "color",
+    "importance": 60,
+    "categories": [
+      "cores",
+      "cards",
+      "tipografia"
+    ],
+    "tags": [
+      "cta",
+      "text"
+    ],
+    "databaseColumn": "cards_engine",
+    "schemaOrigin": "cards.ts",
+    "digitalTwins": [
+      "SarakCard"
+    ],
+    "cssVariables": [],
+    "allowedValues": null,
+    "relatedTokens": [
+      "cardActionBtnPrimaryBg"
+    ]
+  },
+  {
+    "tokenId": "cardActionBtnBorderRadius",
+    "name": "Raio da Borda do Botão de Ação (Card)",
+    "description": "Arredondamento específico para os botões do cartão (geralmente menor que o card).",
+    "type": "number",
+    "importance": 50,
+    "categories": [
+      "bordas",
+      "cards",
+      "geometria"
+    ],
+    "tags": [
+      "radius",
+      "cta"
+    ],
+    "databaseColumn": "cards_engine",
+    "schemaOrigin": "cards.ts",
+    "digitalTwins": [
+      "SarakCard"
+    ],
+    "cssVariables": [],
+    "allowedValues": {
+      "min": 0,
+      "max": 120
+    },
+    "relatedTokens": [
+      "cardBorderRadius"
+    ]
+  },
+  {
+    "tokenId": "cardActionBtnPadding",
+    "name": "Padding Interno do Botão de Ação (Card)",
+    "description": "Tamanho vertical/horizontal da área clicável no botão do cartão.",
+    "type": "number",
+    "importance": 50,
+    "categories": [
+      "layout",
+      "cards",
+      "espacamento"
+    ],
+    "tags": [
+      "padding",
+      "cta"
+    ],
+    "databaseColumn": "cards_engine",
+    "schemaOrigin": "cards.ts",
+    "digitalTwins": [
+      "SarakCard"
+    ],
+    "cssVariables": [],
+    "allowedValues": {
+      "min": 0,
+      "max": 40
+    },
+    "relatedTokens": [
+      "cardActionBtnPrimaryBg"
+    ]
+  },
+  {
+    "tokenId": "cardActionClickScale",
+    "name": "Escala do Clique no Botão de Ação (Card)",
+    "description": "O quanto o botão encolhe ao ser pressionado fisicamente (efeito tátil).",
+    "type": "number",
+    "importance": 55,
+    "categories": [
+      "interacao",
+      "cards",
+      "animacao"
+    ],
+    "tags": [
+      "scale",
+      "click",
+      "ux"
+    ],
+    "databaseColumn": "cards_engine",
+    "schemaOrigin": "cards.ts",
+    "digitalTwins": [
+      "SarakCard"
+    ],
+    "cssVariables": [],
+    "allowedValues": {
+      "min": 0.8,
+      "max": 1.0,
+      "step": 0.01
+    },
+    "relatedTokens": [
+      "cardHoverTranslate"
+    ]
+  },
+  {
+    "tokenId": "cardSearchBgFocus",
+    "name": "Cor de Fundo (Foco) - Cartão de Busca",
+    "description": "Cor de fundo quando o input dentro do cartão variante de pesquisa recebe foco.",
+    "type": "color",
+    "importance": 60,
+    "categories": [
+      "cores",
+      "cards",
+      "interacao"
+    ],
+    "tags": [
+      "search",
+      "focus"
+    ],
+    "databaseColumn": "cards_engine",
+    "schemaOrigin": "cards.ts",
+    "digitalTwins": [
+      "SarakCard"
+    ],
+    "cssVariables": [],
+    "allowedValues": null,
+    "relatedTokens": [
+      "cardSearchBorderBeamActive"
+    ]
+  },
+  {
+    "tokenId": "cardSearchBorderBeamActive",
+    "name": "Feixe Luminoso de Borda (Foco) - Busca",
+    "description": "Cor da animação da borda correndo quando o search card entra em ativação.",
+    "type": "color",
+    "importance": 75,
+    "categories": [
+      "efeitos",
+      "cards",
+      "animacao"
+    ],
+    "tags": [
+      "search",
+      "beam",
+      "glow"
+    ],
+    "databaseColumn": "cards_engine",
+    "schemaOrigin": "cards.ts",
+    "digitalTwins": [
+      "SarakCard"
+    ],
+    "cssVariables": [],
+    "allowedValues": null,
+    "relatedTokens": [
+      "cardSearchBgFocus"
+    ]
+  },
+  {
+    "tokenId": "cardSearchPlaceholderColor",
+    "name": "Cor do Placeholder - Busca",
+    "description": "Cor do texto de ajuda vazio no cartão de busca.",
+    "type": "color",
+    "importance": 40,
+    "categories": [
+      "cores",
+      "cards",
+      "tipografia"
+    ],
+    "tags": [
+      "search",
+      "placeholder"
+    ],
+    "databaseColumn": "cards_engine",
+    "schemaOrigin": "cards.ts",
+    "digitalTwins": [
+      "SarakCard"
+    ],
+    "cssVariables": [],
+    "allowedValues": null,
+    "relatedTokens": [
+      "cardSearchTextFocusColor"
+    ]
+  },
+  {
+    "tokenId": "cardSearchTextFocusColor",
+    "name": "Cor do Texto (Foco) - Busca",
+    "description": "Cor da tipografia enquanto o usuário digita na busca dentro do cartão.",
+    "type": "color",
+    "importance": 50,
+    "categories": [
+      "cores",
+      "cards",
+      "tipografia"
+    ],
+    "tags": [
+      "search",
+      "text",
+      "focus"
+    ],
+    "databaseColumn": "cards_engine",
+    "schemaOrigin": "cards.ts",
+    "digitalTwins": [
+      "SarakCard"
+    ],
+    "cssVariables": [],
+    "allowedValues": null,
+    "relatedTokens": [
+      "cardSearchBgFocus"
+    ]
+  },
+  {
+    "tokenId": "chartColorPalette",
+    "name": "Cor Primária (Gráficos)",
+    "description": "Cor de destaque principal usada em linhas, barras ou séries de dados ativos em gráficos.",
+    "type": "color",
+    "importance": 85,
+    "categories": [
+      "cores",
+      "gráficos",
+      "data-and-charts"
+    ],
+    "tags": [
+      "chart",
+      "color",
+      "palette",
+      "data"
+    ],
+    "databaseColumn": "data_and_charts",
+    "schemaOrigin": "data.ts",
+    "digitalTwins": [
+      "DesignInjector"
+    ],
+    "cssVariables": [
+      "--sarak-chart-primary"
+    ],
+    "allowedValues": null,
+    "relatedTokens": [
+      "chartGridOpacity"
+    ]
+  },
+  {
+    "tokenId": "chartGridOpacity",
+    "name": "Opacidade da Grade (Gráficos)",
+    "description": "Nível de opacidade das linhas guias de fundo dentro da área de plotagem de gráficos.",
+    "type": "number",
+    "importance": 60,
+    "categories": [
+      "efeitos",
+      "filtros",
+      "data-and-charts"
+    ],
+    "tags": [
+      "chart",
+      "grid",
+      "opacity",
+      "data"
+    ],
+    "databaseColumn": "data_and_charts",
+    "schemaOrigin": "data.ts",
+    "digitalTwins": [
+      "DesignInjector"
+    ],
+    "cssVariables": [
+      "--sarak-chart-grid-opacity"
+    ],
+    "allowedValues": {
+      "min": 0,
+      "max": 0.5,
+      "step": 0.01
+    },
+    "relatedTokens": [
+      "chartShowGrid"
+    ]
+  },
+  {
+    "tokenId": "chartTooltipBg",
+    "name": "Fundo do Tooltip (Gráficos)",
+    "description": "Cor e transparência do fundo dos balões de dica ao focar em pontos de dados.",
+    "type": "color",
+    "importance": 70,
+    "categories": [
+      "cores",
+      "data-and-charts"
+    ],
+    "tags": [
+      "chart",
+      "tooltip",
+      "background",
+      "data"
+    ],
+    "databaseColumn": "data_and_charts",
+    "schemaOrigin": "data.ts",
+    "digitalTwins": [
+      "DesignInjector"
+    ],
+    "cssVariables": [
+      "--sarak-chart-tooltip-bg"
+    ],
+    "allowedValues": null,
+    "relatedTokens": [
+      "chartColorPalette"
+    ]
+  },
+  {
+    "tokenId": "chartType",
+    "name": "Tipo de Gráfico",
+    "description": "Formato de renderização padrão para blocos genéricos de visualização de dados.",
+    "type": "select",
+    "importance": 80,
+    "categories": [
+      "layout",
+      "comportamento",
+      "data-and-charts"
+    ],
+    "tags": [
+      "chart",
+      "type",
+      "render",
+      "data"
+    ],
+    "databaseColumn": "data_and_charts",
+    "schemaOrigin": "data.ts",
+    "digitalTwins": [
+      "DesignInjector"
+    ],
+    "cssVariables": [],
+    "allowedValues": [
+      "line",
+      "bar",
+      "pie",
+      "radar",
+      "scatter",
+      "heatmap",
+      "gauge"
+    ],
+    "relatedTokens": [
+      "chartThickness"
+    ]
+  },
+  {
+    "tokenId": "chartShowGrid",
+    "name": "Mostrar Grade",
+    "description": "Define se as linhas do plano cartesiano devem ser desenhadas atrás dos gráficos.",
+    "type": "boolean",
+    "importance": 65,
+    "categories": [
+      "layout",
+      "exibição",
+      "data-and-charts"
+    ],
+    "tags": [
+      "chart",
+      "grid",
+      "visibility",
+      "data"
+    ],
+    "databaseColumn": "data_and_charts",
+    "schemaOrigin": "data.ts",
+    "digitalTwins": [
+      "DesignInjector"
+    ],
+    "cssVariables": [],
+    "allowedValues": [
+      true,
+      false
+    ],
+    "relatedTokens": [
+      "chartGridOpacity"
+    ]
+  },
+  {
+    "tokenId": "chartThickness",
+    "name": "Espessura da Linha (Gráficos)",
+    "description": "Largura das linhas vetoriais (stroke-width) utilizadas em gráficos como Line ou Radar.",
+    "type": "number",
+    "importance": 75,
+    "categories": [
+      "geometria",
+      "bordas",
+      "data-and-charts"
+    ],
+    "tags": [
+      "chart",
+      "thickness",
+      "stroke",
+      "data"
+    ],
+    "databaseColumn": "data_and_charts",
+    "schemaOrigin": "data.ts",
+    "digitalTwins": [
+      "DesignInjector"
+    ],
+    "cssVariables": [
+      "--sarak-chart-thickness"
+    ],
+    "allowedValues": {
+      "min": 1,
+      "max": 8,
+      "step": 1
+    },
+    "relatedTokens": [
+      "chartSmoothing"
+    ]
+  },
+  {
+    "tokenId": "chartSmoothing",
+    "name": "Suavização de Linha",
+    "description": "Define se linhas de gráficos (Line/Radar) usarão interpolação curva (spline) ou ângulos retos.",
+    "type": "boolean",
+    "importance": 70,
+    "categories": [
+      "layout",
+      "comportamento",
+      "data-and-charts"
+    ],
+    "tags": [
+      "chart",
+      "smoothing",
+      "curve",
+      "data"
+    ],
+    "databaseColumn": "data_and_charts",
+    "schemaOrigin": "data.ts",
+    "digitalTwins": [
+      "DesignInjector"
+    ],
+    "cssVariables": [],
+    "allowedValues": [
+      true,
+      false
+    ],
+    "relatedTokens": [
+      "chartThickness"
+    ]
+  },
+  {
+    "tokenId": "aiPanelBg",
+    "name": "Fundo do Painel IA",
+    "description": "Cor de fundo especializada para janelas, modais e painéis contextuais de Inteligência Artificial.",
+    "type": "color",
+    "importance": 85,
+    "categories": [
+      "cores",
+      "especial",
+      "data-and-charts"
+    ],
+    "tags": [
+      "ai",
+      "panel",
+      "background",
+      "specialized"
+    ],
+    "databaseColumn": "data_and_charts",
+    "schemaOrigin": "specialized.ts",
+    "digitalTwins": [
+      "DesignInjector"
+    ],
+    "cssVariables": [
+      "--sarak-ai-panel-bg"
+    ],
+    "allowedValues": null,
+    "relatedTokens": [
+      "aiGlowColor"
+    ]
+  },
+  {
+    "tokenId": "aiGlowColor",
+    "name": "Cor do Brilho IA",
+    "description": "Cor temática usada para gerar glowing effects (sombras coloridas e brilhantes) em agentes de IA.",
+    "type": "color",
+    "importance": 80,
+    "categories": [
+      "cores",
+      "especial",
+      "efeitos",
+      "data-and-charts"
+    ],
+    "tags": [
+      "ai",
+      "glow",
+      "color",
+      "specialized"
+    ],
+    "databaseColumn": "data_and_charts",
+    "schemaOrigin": "specialized.ts",
+    "digitalTwins": [
+      "DesignInjector"
+    ],
+    "cssVariables": [
+      "--sarak-ai-glow"
+    ],
+    "allowedValues": null,
+    "relatedTokens": [
+      "aiPanelBg"
+    ]
+  },
+  {
+    "tokenId": "flowNodeRadius",
+    "name": "Raio dos Nós (Fluxo)",
+    "description": "Arredondamento das bordas dos nós visuais em diagramas de fluxo, pipelines e canvas.",
+    "type": "number",
+    "importance": 70,
+    "categories": [
+      "bordas",
+      "geometria",
+      "data-and-charts"
+    ],
+    "tags": [
+      "flow",
+      "node",
+      "radius",
+      "specialized"
+    ],
+    "databaseColumn": "data_and_charts",
+    "schemaOrigin": "specialized.ts",
+    "digitalTwins": [
+      "DesignInjector"
+    ],
+    "cssVariables": [
+      "--sarak-flow-radius",
+      "--sarak-flow-node-radius"
+    ],
+    "allowedValues": {
+      "min": 0,
+      "max": 40,
+      "step": 1
+    },
+    "relatedTokens": [
+      "flowGridStyle"
+    ]
+  },
+  {
+    "tokenId": "flowGridStyle",
+    "name": "Estilo do Grid (Fluxo)",
+    "description": "Padrão de fundo do canvas infinito usado para diagramas de fluxos ou mapas.",
+    "type": "select",
+    "importance": 65,
+    "categories": [
+      "layout",
+      "texturas",
+      "data-and-charts"
+    ],
+    "tags": [
+      "flow",
+      "grid",
+      "background",
+      "specialized"
+    ],
+    "databaseColumn": "data_and_charts",
+    "schemaOrigin": "specialized.ts",
+    "digitalTwins": [
+      "DesignInjector"
+    ],
+    "cssVariables": [
+      "--sarak-flow-grid"
+    ],
+    "allowedValues": [
+      "dots",
+      "lines"
+    ],
+    "relatedTokens": [
+      "flowNodeRadius"
+    ]
+  },
+  {
+    "tokenId": "animInstant",
+    "name": "Duração: Instante",
+    "description": "Tempo de animação para respostas muito rápidas (microinterações, hover rápido).",
+    "type": "number",
+    "importance": 70,
+    "categories": [
+      "timing",
+      "animações",
+      "motion-and-animation"
+    ],
+    "tags": [
+      "animation",
+      "instant",
+      "duration",
+      "fast"
+    ],
+    "databaseColumn": "motion_and_animation",
+    "schemaOrigin": "animations.ts",
+    "digitalTwins": [
+      "DesignInjector"
+    ],
+    "cssVariables": [
+      "--sarak-anim-instant"
+    ],
+    "allowedValues": {
+      "min": 0,
+      "max": 200,
+      "step": 10
+    },
+    "relatedTokens": [
+      "animFast"
+    ]
+  },
+  {
+    "tokenId": "animFast",
+    "name": "Duração: Rápida",
+    "description": "Tempo para interações padrão de interface como fechar modais, expansões curtas.",
+    "type": "number",
+    "importance": 80,
+    "categories": [
+      "timing",
+      "animações",
+      "motion-and-animation"
+    ],
+    "tags": [
+      "animation",
+      "fast",
+      "duration"
+    ],
+    "databaseColumn": "motion_and_animation",
+    "schemaOrigin": "animations.ts",
+    "digitalTwins": [
+      "DesignInjector"
+    ],
+    "cssVariables": [
+      "--sarak-anim-fast"
+    ],
+    "allowedValues": {
+      "min": 50,
+      "max": 400,
+      "step": 10
+    },
+    "relatedTokens": [
+      "animNormal"
+    ]
+  },
+  {
+    "tokenId": "animNormal",
+    "name": "Duração: Normal",
+    "description": "Duração base da interface para a maioria das transições (ex: abrir sidebar, deslizar páginas).",
+    "type": "number",
+    "importance": 90,
+    "categories": [
+      "timing",
+      "animações",
+      "motion-and-animation"
+    ],
+    "tags": [
+      "animation",
+      "normal",
+      "duration",
+      "base"
+    ],
+    "databaseColumn": "motion_and_animation",
+    "schemaOrigin": "animations.ts",
+    "digitalTwins": [
+      "DesignInjector"
+    ],
+    "cssVariables": [
+      "--sarak-anim-normal"
+    ],
+    "allowedValues": {
+      "min": 100,
+      "max": 800,
+      "step": 10
+    },
+    "relatedTokens": [
+      "animSlow"
+    ]
+  },
+  {
+    "tokenId": "animSlow",
+    "name": "Duração: Lenta",
+    "description": "Tempo longo usado para transições épicas de página ou apresentações focais.",
+    "type": "number",
+    "importance": 70,
+    "categories": [
+      "timing",
+      "animações",
+      "motion-and-animation"
+    ],
+    "tags": [
+      "animation",
+      "slow",
+      "duration",
+      "epic"
+    ],
+    "databaseColumn": "motion_and_animation",
+    "schemaOrigin": "animations.ts",
+    "digitalTwins": [
+      "DesignInjector"
+    ],
+    "cssVariables": [
+      "--sarak-anim-slow"
+    ],
+    "allowedValues": {
+      "min": 200,
+      "max": 2000,
+      "step": 50
+    },
+    "relatedTokens": [
+      "animNormal"
+    ]
+  },
+  {
+    "tokenId": "easeMain",
+    "name": "Curva: Padrão (Main)",
+    "description": "Curva de easing predominante (geralmente cubic-bezier) para a maioria dos movimentos.",
+    "type": "select",
+    "importance": 90,
+    "categories": [
+      "curvas",
+      "animações",
+      "motion-and-animation"
+    ],
+    "tags": [
+      "animation",
+      "easing",
+      "curve",
+      "main"
+    ],
+    "databaseColumn": "motion_and_animation",
+    "schemaOrigin": "animations.ts",
+    "digitalTwins": [
+      "DesignInjector"
+    ],
+    "cssVariables": [
+      "--sarak-ease-main"
+    ],
+    "allowedValues": [
+      "cubic-bezier(0.4, 0, 0.2, 1)",
+      "cubic-bezier(0.6, 0.05, 0.01, 0.9)",
+      "cubic-bezier(0.4, 0, 1, 1)",
+      "cubic-bezier(0, 0, 0.2, 1)"
+    ],
+    "relatedTokens": [
+      "easeOut"
+    ]
+  },
+  {
+    "tokenId": "easeOut",
+    "name": "Curva: Saída Suave",
+    "description": "Curva de easing específica para saídas (elementos que desaparecem ou recolhem).",
+    "type": "select",
+    "importance": 80,
+    "categories": [
+      "curvas",
+      "animações",
+      "motion-and-animation"
+    ],
+    "tags": [
+      "animation",
+      "easing",
+      "curve",
+      "out"
+    ],
+    "databaseColumn": "motion_and_animation",
+    "schemaOrigin": "animations.ts",
+    "digitalTwins": [
+      "DesignInjector"
+    ],
+    "cssVariables": [
+      "--sarak-ease-out"
+    ],
+    "allowedValues": [
+      "cubic-bezier(0.4, 0, 0.2, 1)",
+      "cubic-bezier(0.23, 1, 0.32, 1)",
+      "cubic-bezier(0.19, 1, 0.22, 1)"
+    ],
+    "relatedTokens": [
+      "easeMain"
+    ]
+  },
+  {
+    "tokenId": "animEnabled",
+    "name": "Ativar Movimentos",
+    "description": "Master switch (killswitch) para ligar/desligar todas as animações (acessibilidade ou performance).",
+    "type": "boolean",
+    "importance": 95,
+    "categories": [
+      "estado",
+      "animações",
+      "motion-and-animation"
+    ],
+    "tags": [
+      "animation",
+      "toggle",
+      "accessibility",
+      "performance"
+    ],
+    "databaseColumn": "motion_and_animation",
+    "schemaOrigin": "animations.ts",
+    "digitalTwins": [
+      "DesignInjector"
+    ],
+    "cssVariables": [],
+    "allowedValues": [
+      true,
+      false
+    ],
+    "relatedTokens": []
+  },
+  {
+    "tokenId": "pageTransitionType",
+    "name": "Transição de Página",
+    "description": "Efeito padrão aplicado na troca de rotas ou páginas completas do Sarak.",
+    "type": "select",
+    "importance": 85,
+    "categories": [
+      "efeitos",
+      "animações",
+      "motion-and-animation"
+    ],
+    "tags": [
+      "animation",
+      "transition",
+      "page",
+      "route"
+    ],
+    "databaseColumn": "motion_and_animation",
+    "schemaOrigin": "animations.ts",
+    "digitalTwins": [
+      "DesignInjector"
+    ],
+    "cssVariables": [],
+    "allowedValues": [
+      "fade",
+      "slide-up",
+      "slide-side",
+      "zoom",
+      "none"
+    ],
+    "relatedTokens": [
+      "animNormal"
+    ]
+  },
+  {
+    "tokenId": "cardHoverStyle",
+    "name": "Estilo de Hover (Cards)",
+    "description": "Comportamento visual aplicado quando o usuário interage (mouse over) com cartões genéricos.",
+    "type": "select",
+    "importance": 75,
+    "categories": [
+      "interação",
+      "motion-and-animation",
+      "animações"
+    ],
+    "tags": [
+      "card",
+      "hover",
+      "style",
+      "animation"
+    ],
+    "databaseColumn": "motion_and_animation",
+    "schemaOrigin": "animations.ts",
+    "digitalTwins": [
+      "DesignInjector"
+    ],
+    "cssVariables": [],
+    "allowedValues": [
+      "lift",
+      "glow-only",
+      "expand",
+      "3d-tilt"
+    ],
+    "relatedTokens": []
+  },
+  {
+    "tokenId": "motionEaseMain",
+    "name": "Curva Master (Ease)",
+    "description": "Curva de bézier primária (física de aceleração) para a maioria das animações.",
+    "type": "text",
+    "importance": 90,
+    "categories": [
+      "motion-and-animation",
+      "física",
+      "animações"
+    ],
+    "tags": [
+      "ease",
+      "motion",
+      "bezier",
+      "curve"
+    ],
+    "databaseColumn": "motion_and_animation",
+    "schemaOrigin": "motion.ts",
+    "digitalTwins": [
+      "DesignInjector"
+    ],
+    "cssVariables": [
+      "--sarak-motion-ease-main"
+    ],
+    "allowedValues": null,
+    "relatedTokens": [
+      "motionEaseOut",
+      "motionEaseIn"
+    ]
+  },
+  {
+    "tokenId": "motionEaseOut",
+    "name": "Curva de Saída (Deceleration)",
+    "description": "Curva de desaceleração (física) para elementos saindo da tela ou encerrando interações.",
+    "type": "text",
+    "importance": 85,
+    "categories": [
+      "motion-and-animation",
+      "física",
+      "animações"
+    ],
+    "tags": [
+      "ease-out",
+      "motion",
+      "bezier",
+      "deceleration"
+    ],
+    "databaseColumn": "motion_and_animation",
+    "schemaOrigin": "motion.ts",
+    "digitalTwins": [
+      "DesignInjector"
+    ],
+    "cssVariables": [
+      "--sarak-motion-ease-out"
+    ],
+    "allowedValues": null,
+    "relatedTokens": [
+      "motionEaseMain"
+    ]
+  },
+  {
+    "tokenId": "motionEaseIn",
+    "name": "Curva de Entrada (Acceleration)",
+    "description": "Curva de aceleração (física) para elementos entrando em tela.",
+    "type": "text",
+    "importance": 85,
+    "categories": [
+      "motion-and-animation",
+      "física",
+      "animações"
+    ],
+    "tags": [
+      "ease-in",
+      "motion",
+      "bezier",
+      "acceleration"
+    ],
+    "databaseColumn": "motion_and_animation",
+    "schemaOrigin": "motion.ts",
+    "digitalTwins": [
+      "DesignInjector"
+    ],
+    "cssVariables": [
+      "--sarak-motion-ease-in"
+    ],
+    "allowedValues": null,
+    "relatedTokens": [
+      "motionEaseMain"
+    ]
+  },
+  {
+    "tokenId": "motionDurationInstant",
+    "name": "Duração Instantânea",
+    "description": "Tempo de duração muito curto, usado para micro-respostas hiper-rápidas.",
+    "type": "number",
+    "importance": 80,
+    "categories": [
+      "motion-and-animation",
+      "timing",
+      "animações"
+    ],
+    "tags": [
+      "duration",
+      "instant",
+      "speed"
+    ],
+    "databaseColumn": "motion_and_animation",
+    "schemaOrigin": "motion.ts",
+    "digitalTwins": [
+      "DesignInjector"
+    ],
+    "cssVariables": [
+      "--sarak-motion-dur-instant"
+    ],
+    "allowedValues": {
+      "min": 0,
+      "max": 0.2,
+      "step": 0.01
+    },
+    "relatedTokens": [
+      "motionDurationFast"
+    ]
+  },
+  {
+    "tokenId": "motionDurationFast",
+    "name": "Duração Rápida (UI)",
+    "description": "Duração rápida padrão para transições comuns e mudanças de estado simples.",
+    "type": "number",
+    "importance": 85,
+    "categories": [
+      "motion-and-animation",
+      "timing",
+      "animações"
+    ],
+    "tags": [
+      "duration",
+      "fast",
+      "speed"
+    ],
+    "databaseColumn": "motion_and_animation",
+    "schemaOrigin": "motion.ts",
+    "digitalTwins": [
+      "DesignInjector"
+    ],
+    "cssVariables": [
+      "--sarak-motion-dur-fast"
+    ],
+    "allowedValues": {
+      "min": 0.1,
+      "max": 0.5,
+      "step": 0.05
+    },
+    "relatedTokens": [
+      "motionDurationNormal"
+    ]
+  },
+  {
+    "tokenId": "motionDurationNormal",
+    "name": "Duração Normal",
+    "description": "Duração padrão moderada para elementos mais pesados como modais ou painéis.",
+    "type": "number",
+    "importance": 85,
+    "categories": [
+      "motion-and-animation",
+      "timing",
+      "animações"
+    ],
+    "tags": [
+      "duration",
+      "normal",
+      "speed"
+    ],
+    "databaseColumn": "motion_and_animation",
+    "schemaOrigin": "motion.ts",
+    "digitalTwins": [
+      "DesignInjector"
+    ],
+    "cssVariables": [
+      "--sarak-motion-dur-normal"
+    ],
+    "allowedValues": {
+      "min": 0.2,
+      "max": 1,
+      "step": 0.05
+    },
+    "relatedTokens": [
+      "motionDurationSlow"
+    ]
+  },
+  {
+    "tokenId": "motionDurationSlow",
+    "name": "Duração Lenta (Cenário)",
+    "description": "Duração arrastada para efeitos cinematográficos ou transições inteiras de cenários.",
+    "type": "number",
+    "importance": 70,
+    "categories": [
+      "motion-and-animation",
+      "timing",
+      "animações"
+    ],
+    "tags": [
+      "duration",
+      "slow",
+      "speed",
+      "cinematic"
+    ],
+    "databaseColumn": "motion_and_animation",
+    "schemaOrigin": "motion.ts",
+    "digitalTwins": [
+      "DesignInjector"
+    ],
+    "cssVariables": [
+      "--sarak-motion-dur-slow"
+    ],
+    "allowedValues": {
+      "min": 0.5,
+      "max": 2,
+      "step": 0.1
+    },
+    "relatedTokens": [
+      "motionDurationNormal"
+    ]
+  },
+  {
+    "tokenId": "motionStaggerDelay",
+    "name": "Atraso de Cascata (Stagger)",
+    "description": "Delay em segundos entre animações em cascata para múltiplos elementos.",
+    "type": "number",
+    "importance": 75,
+    "categories": [
+      "motion-and-animation",
+      "timing",
+      "interação"
+    ],
+    "tags": [
+      "stagger",
+      "delay",
+      "cascade"
+    ],
+    "databaseColumn": "motion_and_animation",
+    "schemaOrigin": "motion.ts",
+    "digitalTwins": [
+      "DesignInjector"
+    ],
+    "cssVariables": [
+      "--sarak-motion-stagger"
+    ],
+    "allowedValues": {
+      "min": 0,
+      "max": 0.2,
+      "step": 0.01
+    },
+    "relatedTokens": [
+      "motionDurationFast"
+    ]
+  },
+  {
+    "tokenId": "chatBubbleRadius",
+    "name": "Arredondamento das Bolhas (Chat)",
+    "description": "Border-radius aplicado em balões de mensagens em componentes de Chat.",
+    "type": "number",
+    "importance": 70,
+    "categories": [
+      "bordas",
+      "geometria",
+      "specialized-engines"
+    ],
+    "tags": [
+      "chat",
+      "bubble",
+      "radius",
+      "specialized"
+    ],
+    "databaseColumn": "specialized_engines",
+    "schemaOrigin": "chat.ts",
+    "digitalTwins": [
+      "DesignInjector"
+    ],
+    "cssVariables": [
+      "--sarak-chat-radius"
+    ],
+    "allowedValues": {
+      "min": 0,
+      "max": 24,
+      "step": 1
+    },
+    "relatedTokens": [
+      "chatBubbleStyle"
+    ]
+  },
+  {
+    "tokenId": "chatUserBg",
+    "name": "Fundo (Usuário) do Chat",
+    "description": "Cor de fundo das mensagens pertencentes ao usuário logado no componente de Chat.",
+    "type": "color",
+    "importance": 80,
+    "categories": [
+      "cores",
+      "specialized-engines"
+    ],
+    "tags": [
+      "chat",
+      "user",
+      "background",
+      "specialized"
+    ],
+    "databaseColumn": "specialized_engines",
+    "schemaOrigin": "chat.ts",
+    "digitalTwins": [
+      "DesignInjector"
+    ],
+    "cssVariables": [
+      "--sarak-chat-user-bg"
+    ],
+    "allowedValues": null,
+    "relatedTokens": [
+      "chatBubbleStyle"
+    ]
+  },
+  {
+    "tokenId": "chatBubbleStyle",
+    "name": "Estilo de Bolha (Chat)",
+    "description": "Define a aparência geral das mensagens de chat (vidro translúcido, sólido ou minimalista).",
+    "type": "select",
+    "importance": 75,
+    "categories": [
+      "estilo",
+      "specialized-engines",
+      "layout"
+    ],
+    "tags": [
+      "chat",
+      "bubble",
+      "style",
+      "specialized"
+    ],
+    "databaseColumn": "specialized_engines",
+    "schemaOrigin": "chat.ts",
+    "digitalTwins": [
+      "DesignInjector"
+    ],
+    "cssVariables": [
+      "--sarak-chat-bubble"
+    ],
+    "allowedValues": [
+      "glass",
+      "solid",
+      "minimal"
+    ],
+    "relatedTokens": [
+      "chatUserBg"
+    ]
+  },
+  {
+    "tokenId": "chatAnimationSpeed",
+    "name": "Velocidade de Digitação (Chat)",
+    "description": "Controla o tempo da animação de feedback 'escrevendo' ou revelação de mensagens de IA.",
+    "type": "number",
+    "importance": 60,
+    "categories": [
+      "motion-and-animation",
+      "specialized-engines",
+      "timing"
+    ],
+    "tags": [
+      "chat",
+      "animation",
+      "speed",
+      "specialized"
+    ],
+    "databaseColumn": "specialized_engines",
+    "schemaOrigin": "chat.ts",
+    "digitalTwins": [
+      "DesignInjector"
+    ],
+    "cssVariables": [
+      "--sarak-chat-anim-speed"
+    ],
+    "allowedValues": {
+      "min": 0,
+      "max": 0.5,
+      "step": 0.01
+    },
+    "relatedTokens": [
+      "motionDurationInstant"
+    ]
+  },
+  {
+    "tokenId": "focusRingWidth",
+    "name": "Largura do Anel de Foco",
+    "description": "Acessibilidade: espessura do outline visual quando um elemento focável é navegado via teclado.",
+    "type": "number",
+    "importance": 90,
+    "categories": [
+      "acessibilidade",
+      "bordas",
+      "specialized-engines"
+    ],
+    "tags": [
+      "focus",
+      "ring",
+      "accessibility",
+      "engineering"
+    ],
+    "databaseColumn": "specialized_engines",
+    "schemaOrigin": "engineering.ts",
+    "digitalTwins": [
+      "DesignInjector"
+    ],
+    "cssVariables": [
+      "--sarak-focus-width"
+    ],
+    "allowedValues": {
+      "min": 0,
+      "max": 6,
+      "step": 1
+    },
+    "relatedTokens": [
+      "reducedMotion"
+    ]
+  },
+  {
+    "tokenId": "reducedMotion",
+    "name": "Reduzir Movimento",
+    "description": "Acessibilidade: desabilita globalmente ou atenua animações pesadas para prevenir desconforto (motion sickness).",
+    "type": "boolean",
+    "importance": 95,
+    "categories": [
+      "acessibilidade",
+      "comportamento",
+      "specialized-engines"
+    ],
+    "tags": [
+      "accessibility",
+      "reduced-motion",
+      "engineering"
+    ],
+    "databaseColumn": "specialized_engines",
+    "schemaOrigin": "engineering.ts",
+    "digitalTwins": [
+      "DesignInjector"
+    ],
+    "cssVariables": [
+      "--sarak-reduced-motion"
+    ],
+    "allowedValues": [
+      true,
+      false
+    ],
+    "relatedTokens": [
+      "focusRingWidth"
+    ]
+  },
+  {
+    "tokenId": "zIndexModal",
+    "name": "Camada: Modais (Engenharia)",
+    "description": "Variável de engenharia mapeando o índice Z para janelas Modais.",
+    "type": "number",
+    "importance": 85,
+    "categories": [
+      "layout",
+      "camadas",
+      "specialized-engines"
+    ],
+    "tags": [
+      "z-index",
+      "modal",
+      "layer",
+      "engineering"
+    ],
+    "databaseColumn": "specialized_engines",
+    "schemaOrigin": "engineering.ts",
+    "digitalTwins": [
+      "DesignInjector"
+    ],
+    "cssVariables": [
+      "--sarak-z-modal"
+    ],
+    "allowedValues": null,
+    "relatedTokens": [
+      "zIndexToast"
+    ]
+  },
+  {
+    "tokenId": "zIndexToast",
+    "name": "Camada: Notificações (Toast)",
+    "description": "Variável de engenharia mapeando o índice Z para componentes superpostos de Notificação/Toast.",
+    "type": "number",
+    "importance": 85,
+    "categories": [
+      "layout",
+      "camadas",
+      "specialized-engines"
+    ],
+    "tags": [
+      "z-index",
+      "toast",
+      "layer",
+      "engineering"
+    ],
+    "databaseColumn": "specialized_engines",
+    "schemaOrigin": "engineering.ts",
+    "digitalTwins": [
+      "DesignInjector"
+    ],
+    "cssVariables": [
+      "--sarak-z-toast"
+    ],
+    "allowedValues": null,
+    "relatedTokens": [
+      "zIndexModal"
+    ]
+  },
+  {
+    "tokenId": "matrixGap",
+    "name": "Espaçamento da Matriz",
+    "description": "Distância (gap) entre os itens do componente visual SarakExpandableMatrix.",
+    "type": "number",
+    "importance": 65,
+    "categories": [
+      "layout",
+      "espaçamento",
+      "specialized-engines"
+    ],
+    "tags": [
+      "matrix",
+      "gap",
+      "spacing",
+      "advanced"
+    ],
+    "databaseColumn": "specialized_engines",
+    "schemaOrigin": "advanced.ts",
+    "digitalTwins": [
+      "DesignInjector"
+    ],
+    "cssVariables": [
+      "--sarak-matrix-gap"
+    ],
+    "allowedValues": {
+      "min": 4,
+      "max": 32,
+      "step": 1
+    },
+    "relatedTokens": [
+      "matrixRadius"
+    ]
+  },
+  {
+    "tokenId": "matrixRadius",
+    "name": "Arredondamento dos Itens (Matriz)",
+    "description": "Raio da borda (border-radius) para os itens renderizados na Matriz Sarak.",
+    "type": "number",
+    "importance": 60,
+    "categories": [
+      "bordas",
+      "geometria",
+      "specialized-engines"
+    ],
+    "tags": [
+      "matrix",
+      "radius",
+      "border-radius",
+      "advanced"
+    ],
+    "databaseColumn": "specialized_engines",
+    "schemaOrigin": "advanced.ts",
+    "digitalTwins": [
+      "DesignInjector"
+    ],
+    "cssVariables": [
+      "--sarak-matrix-radius"
+    ],
+    "allowedValues": {
+      "min": 0,
+      "max": 24,
+      "step": 1
+    },
+    "relatedTokens": [
+      "matrixGap"
+    ]
+  },
+  {
+    "tokenId": "matrixItemBg",
+    "name": "Fundo do Item Pai (Matriz)",
+    "description": "Cor de fundo (geralmente translúcida) para as caixas da SarakExpandableMatrix.",
+    "type": "color",
+    "importance": 70,
+    "categories": [
+      "cores",
+      "layout",
+      "specialized-engines"
+    ],
+    "tags": [
+      "matrix",
+      "item",
+      "background",
+      "advanced"
+    ],
+    "databaseColumn": "specialized_engines",
+    "schemaOrigin": "advanced.ts",
+    "digitalTwins": [
+      "DesignInjector"
+    ],
+    "cssVariables": [
+      "--sarak-matrix-item-bg"
+    ],
+    "allowedValues": null,
+    "relatedTokens": [
+      "matrixBorderColor"
+    ]
+  },
+  {
+    "tokenId": "matrixBorderColor",
+    "name": "Cor da Borda Base (Matriz)",
+    "description": "Coloração de delimitadores/bordas em torno dos itens matriciais.",
+    "type": "color",
+    "importance": 65,
+    "categories": [
+      "cores",
+      "bordas",
+      "specialized-engines"
+    ],
+    "tags": [
+      "matrix",
+      "border",
+      "color",
+      "advanced"
+    ],
+    "databaseColumn": "specialized_engines",
+    "schemaOrigin": "advanced.ts",
+    "digitalTwins": [
+      "DesignInjector"
+    ],
+    "cssVariables": [
+      "--sarak-matrix-border-color"
+    ],
+    "allowedValues": null,
+    "relatedTokens": [
+      "matrixItemBg"
+    ]
+  },
+  {
+    "tokenId": "matrixSearchBg",
+    "name": "Fundo da Busca (Matriz)",
+    "description": "Cor de fundo alocada especificamente para o campo de busca embutido na matriz.",
+    "type": "color",
+    "importance": 65,
+    "categories": [
+      "cores",
+      "layout",
+      "specialized-engines"
+    ],
+    "tags": [
+      "matrix",
+      "search",
+      "background",
+      "advanced"
+    ],
+    "databaseColumn": "specialized_engines",
+    "schemaOrigin": "advanced.ts",
+    "digitalTwins": [
+      "DesignInjector"
+    ],
+    "cssVariables": [
+      "--sarak-matrix-search-bg"
+    ],
+    "allowedValues": null,
+    "relatedTokens": [
+      "matrixItemBg"
+    ]
+  },
+  {
+    "tokenId": "matrixBlur",
+    "name": "Desfoque de Vidro (Matriz)",
+    "description": "Grau de backdrop-filter para gerar glassmorphism sobrepondo itens na Matriz Expandida.",
+    "type": "number",
+    "importance": 60,
+    "categories": [
+      "efeitos",
+      "filtros",
+      "specialized-engines"
+    ],
+    "tags": [
+      "matrix",
+      "blur",
+      "glass",
+      "advanced"
+    ],
+    "databaseColumn": "specialized_engines",
+    "schemaOrigin": "advanced.ts",
+    "digitalTwins": [
+      "DesignInjector"
+    ],
+    "cssVariables": [
+      "--sarak-matrix-blur"
+    ],
+    "allowedValues": {
+      "min": 0,
+      "max": 40,
+      "step": 1
+    },
+    "relatedTokens": [
+      "matrixItemBg"
+    ]
+  }
+]
