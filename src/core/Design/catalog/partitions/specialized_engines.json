@@ -1,0 +1,451 @@
+[
+  {
+    "tokenId": "chatBubbleRadius",
+    "name": "Arredondamento das Bolhas (Chat)",
+    "description": "Border-radius aplicado em balões de mensagens em componentes de Chat.",
+    "type": "number",
+    "importance": 70,
+    "categories": [
+      "bordas",
+      "geometria",
+      "specialized-engines"
+    ],
+    "tags": [
+      "chat",
+      "bubble",
+      "radius",
+      "specialized"
+    ],
+    "databaseColumn": "specialized_engines",
+    "schemaOrigin": "chat.ts",
+    "digitalTwins": [
+      "DesignInjector"
+    ],
+    "cssVariables": [
+      "--sarak-chat-radius"
+    ],
+    "allowedValues": {
+      "min": 0,
+      "max": 24,
+      "step": 1
+    },
+    "relatedTokens": [
+      "chatBubbleStyle"
+    ]
+  },
+  {
+    "tokenId": "chatUserBg",
+    "name": "Fundo (Usuário) do Chat",
+    "description": "Cor de fundo das mensagens pertencentes ao usuário logado no componente de Chat.",
+    "type": "color",
+    "importance": 80,
+    "categories": [
+      "cores",
+      "specialized-engines"
+    ],
+    "tags": [
+      "chat",
+      "user",
+      "background",
+      "specialized"
+    ],
+    "databaseColumn": "specialized_engines",
+    "schemaOrigin": "chat.ts",
+    "digitalTwins": [
+      "DesignInjector"
+    ],
+    "cssVariables": [
+      "--sarak-chat-user-bg"
+    ],
+    "allowedValues": null,
+    "relatedTokens": [
+      "chatBubbleStyle"
+    ]
+  },
+  {
+    "tokenId": "chatBubbleStyle",
+    "name": "Estilo de Bolha (Chat)",
+    "description": "Define a aparência geral das mensagens de chat (vidro translúcido, sólido ou minimalista).",
+    "type": "select",
+    "importance": 75,
+    "categories": [
+      "estilo",
+      "specialized-engines",
+      "layout"
+    ],
+    "tags": [
+      "chat",
+      "bubble",
+      "style",
+      "specialized"
+    ],
+    "databaseColumn": "specialized_engines",
+    "schemaOrigin": "chat.ts",
+    "digitalTwins": [
+      "DesignInjector"
+    ],
+    "cssVariables": [
+      "--sarak-chat-bubble"
+    ],
+    "allowedValues": [
+      "glass",
+      "solid",
+      "minimal"
+    ],
+    "relatedTokens": [
+      "chatUserBg"
+    ]
+  },
+  {
+    "tokenId": "chatAnimationSpeed",
+    "name": "Velocidade de Digitação (Chat)",
+    "description": "Controla o tempo da animação de feedback 'escrevendo' ou revelação de mensagens de IA.",
+    "type": "number",
+    "importance": 60,
+    "categories": [
+      "motion-and-animation",
+      "specialized-engines",
+      "timing"
+    ],
+    "tags": [
+      "chat",
+      "animation",
+      "speed",
+      "specialized"
+    ],
+    "databaseColumn": "specialized_engines",
+    "schemaOrigin": "chat.ts",
+    "digitalTwins": [
+      "DesignInjector"
+    ],
+    "cssVariables": [
+      "--sarak-chat-anim-speed"
+    ],
+    "allowedValues": {
+      "min": 0,
+      "max": 0.5,
+      "step": 0.01
+    },
+    "relatedTokens": [
+      "motionDurationInstant"
+    ]
+  },
+  {
+    "tokenId": "focusRingWidth",
+    "name": "Largura do Anel de Foco",
+    "description": "Acessibilidade: espessura do outline visual quando um elemento focável é navegado via teclado.",
+    "type": "number",
+    "importance": 90,
+    "categories": [
+      "acessibilidade",
+      "bordas",
+      "specialized-engines"
+    ],
+    "tags": [
+      "focus",
+      "ring",
+      "accessibility",
+      "engineering"
+    ],
+    "databaseColumn": "specialized_engines",
+    "schemaOrigin": "engineering.ts",
+    "digitalTwins": [
+      "DesignInjector"
+    ],
+    "cssVariables": [
+      "--sarak-focus-width"
+    ],
+    "allowedValues": {
+      "min": 0,
+      "max": 6,
+      "step": 1
+    },
+    "relatedTokens": [
+      "reducedMotion"
+    ]
+  },
+  {
+    "tokenId": "reducedMotion",
+    "name": "Reduzir Movimento",
+    "description": "Acessibilidade: desabilita globalmente ou atenua animações pesadas para prevenir desconforto (motion sickness).",
+    "type": "boolean",
+    "importance": 95,
+    "categories": [
+      "acessibilidade",
+      "comportamento",
+      "specialized-engines"
+    ],
+    "tags": [
+      "accessibility",
+      "reduced-motion",
+      "engineering"
+    ],
+    "databaseColumn": "specialized_engines",
+    "schemaOrigin": "engineering.ts",
+    "digitalTwins": [
+      "DesignInjector"
+    ],
+    "cssVariables": [
+      "--sarak-reduced-motion"
+    ],
+    "allowedValues": [
+      true,
+      false
+    ],
+    "relatedTokens": [
+      "focusRingWidth"
+    ]
+  },
+  {
+    "tokenId": "zIndexModal",
+    "name": "Camada: Modais (Engenharia)",
+    "description": "Variável de engenharia mapeando o índice Z para janelas Modais.",
+    "type": "number",
+    "importance": 85,
+    "categories": [
+      "layout",
+      "camadas",
+      "specialized-engines"
+    ],
+    "tags": [
+      "z-index",
+      "modal",
+      "layer",
+      "engineering"
+    ],
+    "databaseColumn": "specialized_engines",
+    "schemaOrigin": "engineering.ts",
+    "digitalTwins": [
+      "DesignInjector"
+    ],
+    "cssVariables": [
+      "--sarak-z-modal"
+    ],
+    "allowedValues": null,
+    "relatedTokens": [
+      "zIndexToast"
+    ]
+  },
+  {
+    "tokenId": "zIndexToast",
+    "name": "Camada: Notificações (Toast)",
+    "description": "Variável de engenharia mapeando o índice Z para componentes superpostos de Notificação/Toast.",
+    "type": "number",
+    "importance": 85,
+    "categories": [
+      "layout",
+      "camadas",
+      "specialized-engines"
+    ],
+    "tags": [
+      "z-index",
+      "toast",
+      "layer",
+      "engineering"
+    ],
+    "databaseColumn": "specialized_engines",
+    "schemaOrigin": "engineering.ts",
+    "digitalTwins": [
+      "DesignInjector"
+    ],
+    "cssVariables": [
+      "--sarak-z-toast"
+    ],
+    "allowedValues": null,
+    "relatedTokens": [
+      "zIndexModal"
+    ]
+  },
+  {
+    "tokenId": "matrixGap",
+    "name": "Espaçamento da Matriz",
+    "description": "Distância (gap) entre os itens do componente visual SarakExpandableMatrix.",
+    "type": "number",
+    "importance": 65,
+    "categories": [
+      "layout",
+      "espaçamento",
+      "specialized-engines"
+    ],
+    "tags": [
+      "matrix",
+      "gap",
+      "spacing",
+      "advanced"
+    ],
+    "databaseColumn": "specialized_engines",
+    "schemaOrigin": "advanced.ts",
+    "digitalTwins": [
+      "DesignInjector"
+    ],
+    "cssVariables": [
+      "--sarak-matrix-gap"
+    ],
+    "allowedValues": {
+      "min": 4,
+      "max": 32,
+      "step": 1
+    },
+    "relatedTokens": [
+      "matrixRadius"
+    ]
+  },
+  {
+    "tokenId": "matrixRadius",
+    "name": "Arredondamento dos Itens (Matriz)",
+    "description": "Raio da borda (border-radius) para os itens renderizados na Matriz Sarak.",
+    "type": "number",
+    "importance": 60,
+    "categories": [
+      "bordas",
+      "geometria",
+      "specialized-engines"
+    ],
+    "tags": [
+      "matrix",
+      "radius",
+      "border-radius",
+      "advanced"
+    ],
+    "databaseColumn": "specialized_engines",
+    "schemaOrigin": "advanced.ts",
+    "digitalTwins": [
+      "DesignInjector"
+    ],
+    "cssVariables": [
+      "--sarak-matrix-radius"
+    ],
+    "allowedValues": {
+      "min": 0,
+      "max": 24,
+      "step": 1
+    },
+    "relatedTokens": [
+      "matrixGap"
+    ]
+  },
+  {
+    "tokenId": "matrixItemBg",
+    "name": "Fundo do Item Pai (Matriz)",
+    "description": "Cor de fundo (geralmente translúcida) para as caixas da SarakExpandableMatrix.",
+    "type": "color",
+    "importance": 70,
+    "categories": [
+      "cores",
+      "layout",
+      "specialized-engines"
+    ],
+    "tags": [
+      "matrix",
+      "item",
+      "background",
+      "advanced"
+    ],
+    "databaseColumn": "specialized_engines",
+    "schemaOrigin": "advanced.ts",
+    "digitalTwins": [
+      "DesignInjector"
+    ],
+    "cssVariables": [
+      "--sarak-matrix-item-bg"
+    ],
+    "allowedValues": null,
+    "relatedTokens": [
+      "matrixBorderColor"
+    ]
+  },
+  {
+    "tokenId": "matrixBorderColor",
+    "name": "Cor da Borda Base (Matriz)",
+    "description": "Coloração de delimitadores/bordas em torno dos itens matriciais.",
+    "type": "color",
+    "importance": 65,
+    "categories": [
+      "cores",
+      "bordas",
+      "specialized-engines"
+    ],
+    "tags": [
+      "matrix",
+      "border",
+      "color",
+      "advanced"
+    ],
+    "databaseColumn": "specialized_engines",
+    "schemaOrigin": "advanced.ts",
+    "digitalTwins": [
+      "DesignInjector"
+    ],
+    "cssVariables": [
+      "--sarak-matrix-border-color"
+    ],
+    "allowedValues": null,
+    "relatedTokens": [
+      "matrixItemBg"
+    ]
+  },
+  {
+    "tokenId": "matrixSearchBg",
+    "name": "Fundo da Busca (Matriz)",
+    "description": "Cor de fundo alocada especificamente para o campo de busca embutido na matriz.",
+    "type": "color",
+    "importance": 65,
+    "categories": [
+      "cores",
+      "layout",
+      "specialized-engines"
+    ],
+    "tags": [
+      "matrix",
+      "search",
+      "background",
+      "advanced"
+    ],
+    "databaseColumn": "specialized_engines",
+    "schemaOrigin": "advanced.ts",
+    "digitalTwins": [
+      "DesignInjector"
+    ],
+    "cssVariables": [
+      "--sarak-matrix-search-bg"
+    ],
+    "allowedValues": null,
+    "relatedTokens": [
+      "matrixItemBg"
+    ]
+  },
+  {
+    "tokenId": "matrixBlur",
+    "name": "Desfoque de Vidro (Matriz)",
+    "description": "Grau de backdrop-filter para gerar glassmorphism sobrepondo itens na Matriz Expandida.",
+    "type": "number",
+    "importance": 60,
+    "categories": [
+      "efeitos",
+      "filtros",
+      "specialized-engines"
+    ],
+    "tags": [
+      "matrix",
+      "blur",
+      "glass",
+      "advanced"
+    ],
+    "databaseColumn": "specialized_engines",
+    "schemaOrigin": "advanced.ts",
+    "digitalTwins": [
+      "DesignInjector"
+    ],
+    "cssVariables": [
+      "--sarak-matrix-blur"
+    ],
+    "allowedValues": {
+      "min": 0,
+      "max": 40,
+      "step": 1
+    },
+    "relatedTokens": [
+      "matrixItemBg"
+    ]
+  }
+]

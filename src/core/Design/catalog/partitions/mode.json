@@ -1,0 +1,34 @@
+[
+  {
+    "tokenId": "mode",
+    "name": "Tema do Sistema",
+    "description": "Define a raiz cromática global. Alterna a aplicação inteira entre claro e escuro, invertendo contrastes primários.",
+    "type": "select",
+    "importance": 100,
+    "categories": [
+      "tema",
+      "global"
+    ],
+    "tags": [
+      "core",
+      "acessibilidade",
+      "dark-mode"
+    ],
+    "databaseColumn": "mode",
+    "schemaOrigin": "global.ts",
+    "digitalTwins": [
+      "DesignInjector",
+      "SarakUIProvider"
+    ],
+    "cssVariables": [],
+    "allowedValues": [
+      "dark",
+      "light"
+    ],
+    "relatedTokens": [
+      "bgBaseColor",
+      "textColorMaster",
+      "colorSurface"
+    ]
+  }
+]

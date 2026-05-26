@@ -1,0 +1,41 @@
+[
+  {
+    "tokenId": "navigationStyle",
+    "name": "Estrutura de Navegação",
+    "description": "Altera o esqueleto principal da aplicação, movendo os menus primários para a lateral (Sidebar), para o topo (Topbar) ou como uma doca flutuante.",
+    "type": "select",
+    "importance": 100,
+    "categories": [
+      "layout",
+      "navegacao",
+      "estrutura"
+    ],
+    "tags": [
+      "arquitetura",
+      "core",
+      "menu"
+    ],
+    "databaseColumn": "navigation_style",
+    "schemaOrigin": "global.ts",
+    "digitalTwins": [
+      "SarakUIProvider",
+      "SidebarNav",
+      "TopbarNav"
+    ],
+    "cssVariables": [
+      "--sarak-navigation-style",
+      "--sarak-nav-style",
+      "--nav-style"
+    ],
+    "allowedValues": [
+      "sidebar",
+      "topbar",
+      "dock"
+    ],
+    "relatedTokens": [
+      "sidebarWidth",
+      "topbarHeight",
+      "isNavHidden"
+    ]
+  }
+]

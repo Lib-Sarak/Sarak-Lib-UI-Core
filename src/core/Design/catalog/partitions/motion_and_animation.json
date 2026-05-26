@@ -1,0 +1,557 @@
+[
+  {
+    "tokenId": "animInstant",
+    "name": "Duração: Instante",
+    "description": "Tempo de animação para respostas muito rápidas (microinterações, hover rápido).",
+    "type": "number",
+    "importance": 70,
+    "categories": [
+      "timing",
+      "animações",
+      "motion-and-animation"
+    ],
+    "tags": [
+      "animation",
+      "instant",
+      "duration",
+      "fast"
+    ],
+    "databaseColumn": "motion_and_animation",
+    "schemaOrigin": "animations.ts",
+    "digitalTwins": [
+      "DesignInjector"
+    ],
+    "cssVariables": [
+      "--sarak-anim-instant"
+    ],
+    "allowedValues": {
+      "min": 0,
+      "max": 200,
+      "step": 10
+    },
+    "relatedTokens": [
+      "animFast"
+    ]
+  },
+  {
+    "tokenId": "animFast",
+    "name": "Duração: Rápida",
+    "description": "Tempo para interações padrão de interface como fechar modais, expansões curtas.",
+    "type": "number",
+    "importance": 80,
+    "categories": [
+      "timing",
+      "animações",
+      "motion-and-animation"
+    ],
+    "tags": [
+      "animation",
+      "fast",
+      "duration"
+    ],
+    "databaseColumn": "motion_and_animation",
+    "schemaOrigin": "animations.ts",
+    "digitalTwins": [
+      "DesignInjector"
+    ],
+    "cssVariables": [
+      "--sarak-anim-fast"
+    ],
+    "allowedValues": {
+      "min": 50,
+      "max": 400,
+      "step": 10
+    },
+    "relatedTokens": [
+      "animNormal"
+    ]
+  },
+  {
+    "tokenId": "animNormal",
+    "name": "Duração: Normal",
+    "description": "Duração base da interface para a maioria das transições (ex: abrir sidebar, deslizar páginas).",
+    "type": "number",
+    "importance": 90,
+    "categories": [
+      "timing",
+      "animações",
+      "motion-and-animation"
+    ],
+    "tags": [
+      "animation",
+      "normal",
+      "duration",
+      "base"
+    ],
+    "databaseColumn": "motion_and_animation",
+    "schemaOrigin": "animations.ts",
+    "digitalTwins": [
+      "DesignInjector"
+    ],
+    "cssVariables": [
+      "--sarak-anim-normal"
+    ],
+    "allowedValues": {
+      "min": 100,
+      "max": 800,
+      "step": 10
+    },
+    "relatedTokens": [
+      "animSlow"
+    ]
+  },
+  {
+    "tokenId": "animSlow",
+    "name": "Duração: Lenta",
+    "description": "Tempo longo usado para transições épicas de página ou apresentações focais.",
+    "type": "number",
+    "importance": 70,
+    "categories": [
+      "timing",
+      "animações",
+      "motion-and-animation"
+    ],
+    "tags": [
+      "animation",
+      "slow",
+      "duration",
+      "epic"
+    ],
+    "databaseColumn": "motion_and_animation",
+    "schemaOrigin": "animations.ts",
+    "digitalTwins": [
+      "DesignInjector"
+    ],
+    "cssVariables": [
+      "--sarak-anim-slow"
+    ],
+    "allowedValues": {
+      "min": 200,
+      "max": 2000,
+      "step": 50
+    },
+    "relatedTokens": [
+      "animNormal"
+    ]
+  },
+  {
+    "tokenId": "easeMain",
+    "name": "Curva: Padrão (Main)",
+    "description": "Curva de easing predominante (geralmente cubic-bezier) para a maioria dos movimentos.",
+    "type": "select",
+    "importance": 90,
+    "categories": [
+      "curvas",
+      "animações",
+      "motion-and-animation"
+    ],
+    "tags": [
+      "animation",
+      "easing",
+      "curve",
+      "main"
+    ],
+    "databaseColumn": "motion_and_animation",
+    "schemaOrigin": "animations.ts",
+    "digitalTwins": [
+      "DesignInjector"
+    ],
+    "cssVariables": [
+      "--sarak-ease-main"
+    ],
+    "allowedValues": [
+      "cubic-bezier(0.4, 0, 0.2, 1)",
+      "cubic-bezier(0.6, 0.05, 0.01, 0.9)",
+      "cubic-bezier(0.4, 0, 1, 1)",
+      "cubic-bezier(0, 0, 0.2, 1)"
+    ],
+    "relatedTokens": [
+      "easeOut"
+    ]
+  },
+  {
+    "tokenId": "easeOut",
+    "name": "Curva: Saída Suave",
+    "description": "Curva de easing específica para saídas (elementos que desaparecem ou recolhem).",
+    "type": "select",
+    "importance": 80,
+    "categories": [
+      "curvas",
+      "animações",
+      "motion-and-animation"
+    ],
+    "tags": [
+      "animation",
+      "easing",
+      "curve",
+      "out"
+    ],
+    "databaseColumn": "motion_and_animation",
+    "schemaOrigin": "animations.ts",
+    "digitalTwins": [
+      "DesignInjector"
+    ],
+    "cssVariables": [
+      "--sarak-ease-out"
+    ],
+    "allowedValues": [
+      "cubic-bezier(0.4, 0, 0.2, 1)",
+      "cubic-bezier(0.23, 1, 0.32, 1)",
+      "cubic-bezier(0.19, 1, 0.22, 1)"
+    ],
+    "relatedTokens": [
+      "easeMain"
+    ]
+  },
+  {
+    "tokenId": "animEnabled",
+    "name": "Ativar Movimentos",
+    "description": "Master switch (killswitch) para ligar/desligar todas as animações (acessibilidade ou performance).",
+    "type": "boolean",
+    "importance": 95,
+    "categories": [
+      "estado",
+      "animações",
+      "motion-and-animation"
+    ],
+    "tags": [
+      "animation",
+      "toggle",
+      "accessibility",
+      "performance"
+    ],
+    "databaseColumn": "motion_and_animation",
+    "schemaOrigin": "animations.ts",
+    "digitalTwins": [
+      "DesignInjector"
+    ],
+    "cssVariables": [],
+    "allowedValues": [
+      true,
+      false
+    ],
+    "relatedTokens": []
+  },
+  {
+    "tokenId": "pageTransitionType",
+    "name": "Transição de Página",
+    "description": "Efeito padrão aplicado na troca de rotas ou páginas completas do Sarak.",
+    "type": "select",
+    "importance": 85,
+    "categories": [
+      "efeitos",
+      "animações",
+      "motion-and-animation"
+    ],
+    "tags": [
+      "animation",
+      "transition",
+      "page",
+      "route"
+    ],
+    "databaseColumn": "motion_and_animation",
+    "schemaOrigin": "animations.ts",
+    "digitalTwins": [
+      "DesignInjector"
+    ],
+    "cssVariables": [],
+    "allowedValues": [
+      "fade",
+      "slide-up",
+      "slide-side",
+      "zoom",
+      "none"
+    ],
+    "relatedTokens": [
+      "animNormal"
+    ]
+  },
+  {
+    "tokenId": "cardHoverStyle",
+    "name": "Estilo de Hover (Cards)",
+    "description": "Comportamento visual aplicado quando o usuário interage (mouse over) com cartões genéricos.",
+    "type": "select",
+    "importance": 75,
+    "categories": [
+      "interação",
+      "motion-and-animation",
+      "animações"
+    ],
+    "tags": [
+      "card",
+      "hover",
+      "style",
+      "animation"
+    ],
+    "databaseColumn": "motion_and_animation",
+    "schemaOrigin": "animations.ts",
+    "digitalTwins": [
+      "DesignInjector"
+    ],
+    "cssVariables": [],
+    "allowedValues": [
+      "lift",
+      "glow-only",
+      "expand",
+      "3d-tilt"
+    ],
+    "relatedTokens": []
+  },
+  {
+    "tokenId": "motionEaseMain",
+    "name": "Curva Master (Ease)",
+    "description": "Curva de bézier primária (física de aceleração) para a maioria das animações.",
+    "type": "text",
+    "importance": 90,
+    "categories": [
+      "motion-and-animation",
+      "física",
+      "animações"
+    ],
+    "tags": [
+      "ease",
+      "motion",
+      "bezier",
+      "curve"
+    ],
+    "databaseColumn": "motion_and_animation",
+    "schemaOrigin": "motion.ts",
+    "digitalTwins": [
+      "DesignInjector"
+    ],
+    "cssVariables": [
+      "--sarak-motion-ease-main"
+    ],
+    "allowedValues": null,
+    "relatedTokens": [
+      "motionEaseOut",
+      "motionEaseIn"
+    ]
+  },
+  {
+    "tokenId": "motionEaseOut",
+    "name": "Curva de Saída (Deceleration)",
+    "description": "Curva de desaceleração (física) para elementos saindo da tela ou encerrando interações.",
+    "type": "text",
+    "importance": 85,
+    "categories": [
+      "motion-and-animation",
+      "física",
+      "animações"
+    ],
+    "tags": [
+      "ease-out",
+      "motion",
+      "bezier",
+      "deceleration"
+    ],
+    "databaseColumn": "motion_and_animation",
+    "schemaOrigin": "motion.ts",
+    "digitalTwins": [
+      "DesignInjector"
+    ],
+    "cssVariables": [
+      "--sarak-motion-ease-out"
+    ],
+    "allowedValues": null,
+    "relatedTokens": [
+      "motionEaseMain"
+    ]
+  },
+  {
+    "tokenId": "motionEaseIn",
+    "name": "Curva de Entrada (Acceleration)",
+    "description": "Curva de aceleração (física) para elementos entrando em tela.",
+    "type": "text",
+    "importance": 85,
+    "categories": [
+      "motion-and-animation",
+      "física",
+      "animações"
+    ],
+    "tags": [
+      "ease-in",
+      "motion",
+      "bezier",
+      "acceleration"
+    ],
+    "databaseColumn": "motion_and_animation",
+    "schemaOrigin": "motion.ts",
+    "digitalTwins": [
+      "DesignInjector"
+    ],
+    "cssVariables": [
+      "--sarak-motion-ease-in"
+    ],
+    "allowedValues": null,
+    "relatedTokens": [
+      "motionEaseMain"
+    ]
+  },
+  {
+    "tokenId": "motionDurationInstant",
+    "name": "Duração Instantânea",
+    "description": "Tempo de duração muito curto, usado para micro-respostas hiper-rápidas.",
+    "type": "number",
+    "importance": 80,
+    "categories": [
+      "motion-and-animation",
+      "timing",
+      "animações"
+    ],
+    "tags": [
+      "duration",
+      "instant",
+      "speed"
+    ],
+    "databaseColumn": "motion_and_animation",
+    "schemaOrigin": "motion.ts",
+    "digitalTwins": [
+      "DesignInjector"
+    ],
+    "cssVariables": [
+      "--sarak-motion-dur-instant"
+    ],
+    "allowedValues": {
+      "min": 0,
+      "max": 0.2,
+      "step": 0.01
+    },
+    "relatedTokens": [
+      "motionDurationFast"
+    ]
+  },
+  {
+    "tokenId": "motionDurationFast",
+    "name": "Duração Rápida (UI)",
+    "description": "Duração rápida padrão para transições comuns e mudanças de estado simples.",
+    "type": "number",
+    "importance": 85,
+    "categories": [
+      "motion-and-animation",
+      "timing",
+      "animações"
+    ],
+    "tags": [
+      "duration",
+      "fast",
+      "speed"
+    ],
+    "databaseColumn": "motion_and_animation",
+    "schemaOrigin": "motion.ts",
+    "digitalTwins": [
+      "DesignInjector"
+    ],
+    "cssVariables": [
+      "--sarak-motion-dur-fast"
+    ],
+    "allowedValues": {
+      "min": 0.1,
+      "max": 0.5,
+      "step": 0.05
+    },
+    "relatedTokens": [
+      "motionDurationNormal"
+    ]
+  },
+  {
+    "tokenId": "motionDurationNormal",
+    "name": "Duração Normal",
+    "description": "Duração padrão moderada para elementos mais pesados como modais ou painéis.",
+    "type": "number",
+    "importance": 85,
+    "categories": [
+      "motion-and-animation",
+      "timing",
+      "animações"
+    ],
+    "tags": [
+      "duration",
+      "normal",
+      "speed"
+    ],
+    "databaseColumn": "motion_and_animation",
+    "schemaOrigin": "motion.ts",
+    "digitalTwins": [
+      "DesignInjector"
+    ],
+    "cssVariables": [
+      "--sarak-motion-dur-normal"
+    ],
+    "allowedValues": {
+      "min": 0.2,
+      "max": 1,
+      "step": 0.05
+    },
+    "relatedTokens": [
+      "motionDurationSlow"
+    ]
+  },
+  {
+    "tokenId": "motionDurationSlow",
+    "name": "Duração Lenta (Cenário)",
+    "description": "Duração arrastada para efeitos cinematográficos ou transições inteiras de cenários.",
+    "type": "number",
+    "importance": 70,
+    "categories": [
+      "motion-and-animation",
+      "timing",
+      "animações"
+    ],
+    "tags": [
+      "duration",
+      "slow",
+      "speed",
+      "cinematic"
+    ],
+    "databaseColumn": "motion_and_animation",
+    "schemaOrigin": "motion.ts",
+    "digitalTwins": [
+      "DesignInjector"
+    ],
+    "cssVariables": [
+      "--sarak-motion-dur-slow"
+    ],
+    "allowedValues": {
+      "min": 0.5,
+      "max": 2,
+      "step": 0.1
+    },
+    "relatedTokens": [
+      "motionDurationNormal"
+    ]
+  },
+  {
+    "tokenId": "motionStaggerDelay",
+    "name": "Atraso de Cascata (Stagger)",
+    "description": "Delay em segundos entre animações em cascata para múltiplos elementos.",
+    "type": "number",
+    "importance": 75,
+    "categories": [
+      "motion-and-animation",
+      "timing",
+      "interação"
+    ],
+    "tags": [
+      "stagger",
+      "delay",
+      "cascade"
+    ],
+    "databaseColumn": "motion_and_animation",
+    "schemaOrigin": "motion.ts",
+    "digitalTwins": [
+      "DesignInjector"
+    ],
+    "cssVariables": [
+      "--sarak-motion-stagger"
+    ],
+    "allowedValues": {
+      "min": 0,
+      "max": 0.2,
+      "step": 0.01
+    },
+    "relatedTokens": [
+      "motionDurationFast"
+    ]
+  }
+]

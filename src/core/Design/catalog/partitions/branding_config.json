@@ -1,0 +1,925 @@
+[
+  {
+    "tokenId": "identityAlignment",
+    "name": "Alinhamento do Logo/Marca",
+    "description": "Define como a identidade visual será alinhada dentro do contêiner de navegação (Sidebar ou Topbar).",
+    "type": "select",
+    "importance": 50,
+    "categories": [
+      "identidade",
+      "alinhamento",
+      "marca"
+    ],
+    "tags": [
+      "branding",
+      "logo"
+    ],
+    "databaseColumn": "branding_config",
+    "schemaOrigin": "branding.ts",
+    "digitalTwins": [
+      "SidebarNav",
+      "TopbarNav"
+    ],
+    "cssVariables": [
+      "--sarak-identity-align"
+    ],
+    "allowedValues": [
+      "left",
+      "center",
+      "right"
+    ],
+    "relatedTokens": [
+      "identityPadding"
+    ]
+  },
+  {
+    "tokenId": "identityPadding",
+    "name": "Padding da Identidade",
+    "description": "O espaço de respiro ao redor do logotipo. Evita que o logo toque nas bordas do menu.",
+    "type": "number",
+    "importance": 40,
+    "categories": [
+      "identidade",
+      "espacamento",
+      "marca"
+    ],
+    "tags": [
+      "branding",
+      "padding"
+    ],
+    "databaseColumn": "branding_config",
+    "schemaOrigin": "branding.ts",
+    "digitalTwins": [
+      "SidebarNav",
+      "TopbarNav"
+    ],
+    "cssVariables": [
+      "--sarak-identity-padding"
+    ],
+    "allowedValues": {
+      "min": 0,
+      "max": 64
+    },
+    "relatedTokens": [
+      "identityAlignment"
+    ]
+  },
+  {
+    "tokenId": "identityFontFamily",
+    "name": "Fonte do Logo (Texto)",
+    "description": "Se o logo for em texto, define qual família de fonte será usada independentemente da tipografia global.",
+    "type": "string",
+    "importance": 60,
+    "categories": [
+      "identidade",
+      "tipografia",
+      "marca"
+    ],
+    "tags": [
+      "branding",
+      "fonte"
+    ],
+    "databaseColumn": "branding_config",
+    "schemaOrigin": "branding.ts",
+    "digitalTwins": [
+      "SidebarNav",
+      "TopbarNav"
+    ],
+    "cssVariables": [
+      "--sarak-identity-font"
+    ],
+    "allowedValues": null,
+    "relatedTokens": [
+      "identityFontWeight"
+    ]
+  },
+  {
+    "tokenId": "identityFontWeight",
+    "name": "Peso da Fonte do Logo",
+    "description": "O peso tipográfico da marca, variando de super fino (100) a super negrito (900).",
+    "type": "number",
+    "importance": 50,
+    "categories": [
+      "identidade",
+      "tipografia",
+      "marca"
+    ],
+    "tags": [
+      "branding",
+      "peso"
+    ],
+    "databaseColumn": "branding_config",
+    "schemaOrigin": "branding.ts",
+    "digitalTwins": [
+      "SidebarNav",
+      "TopbarNav"
+    ],
+    "cssVariables": [
+      "--sarak-identity-weight"
+    ],
+    "allowedValues": {
+      "min": 100,
+      "max": 900
+    },
+    "relatedTokens": [
+      "identityFontFamily"
+    ]
+  },
+  {
+    "tokenId": "identityTracking",
+    "name": "Espaçamento de Letras (Tracking) do Logo",
+    "description": "Controla a distância horizontal entre as letras da marca. Para estética moderna/premium, usar tracking ligeiramente negativo (-0.05).",
+    "type": "number",
+    "importance": 40,
+    "categories": [
+      "identidade",
+      "tipografia",
+      "marca"
+    ],
+    "tags": [
+      "branding",
+      "tracking"
+    ],
+    "databaseColumn": "branding_config",
+    "schemaOrigin": "branding.ts",
+    "digitalTwins": [
+      "SidebarNav",
+      "TopbarNav"
+    ],
+    "cssVariables": [
+      "--sarak-identity-tracking"
+    ],
+    "allowedValues": {
+      "min": -0.1,
+      "max": 0.5
+    },
+    "relatedTokens": [
+      "identityFontFamily"
+    ]
+  },
+  {
+    "tokenId": "identityRedirectUrl",
+    "name": "Link de Redirecionamento da Marca",
+    "description": "A rota/URL para a qual o usuário é enviado ao clicar no logotipo no menu de navegação.",
+    "type": "string",
+    "importance": 20,
+    "categories": [
+      "identidade",
+      "navegacao",
+      "comportamento"
+    ],
+    "tags": [
+      "ux",
+      "link"
+    ],
+    "databaseColumn": "branding_config",
+    "schemaOrigin": "branding.ts",
+    "digitalTwins": [
+      "SidebarNav",
+      "TopbarNav"
+    ],
+    "cssVariables": [
+      "--sarak-identity-link"
+    ],
+    "allowedValues": null,
+    "relatedTokens": []
+  },
+  {
+    "tokenId": "identityHoverEffect",
+    "name": "Efeito Hover no Logo",
+    "description": "Animação disparada ao passar o mouse sobre o logotipo.",
+    "type": "select",
+    "importance": 30,
+    "categories": [
+      "identidade",
+      "interacao",
+      "marca"
+    ],
+    "tags": [
+      "hover",
+      "animacao"
+    ],
+    "databaseColumn": "branding_config",
+    "schemaOrigin": "branding.ts",
+    "digitalTwins": [
+      "SidebarNav",
+      "TopbarNav"
+    ],
+    "cssVariables": [
+      "--sarak-identity-hover"
+    ],
+    "allowedValues": [
+      "none",
+      "glow",
+      "opacity",
+      "scale"
+    ],
+    "relatedTokens": []
+  },
+  {
+    "tokenId": "bgBaseColor",
+    "name": "Cor de Fundo Base",
+    "description": "A cor de fundo absoluta e mais profunda do sistema. Ela afeta o contraste global. Use tons escuros para Dark Mode e claros para Light Mode.",
+    "type": "color",
+    "importance": 95,
+    "categories": [
+      "cores",
+      "fundo-global",
+      "tema-base"
+    ],
+    "tags": [
+      "core",
+      "base",
+      "acessibilidade"
+    ],
+    "databaseColumn": "branding_config",
+    "schemaOrigin": "system.ts",
+    "digitalTwins": [
+      "DesignInjector",
+      "SarakUIProvider"
+    ],
+    "cssVariables": [
+      "--sarak-bg-base"
+    ],
+    "allowedValues": null,
+    "relatedTokens": [
+      "textColorMaster",
+      "mode",
+      "colorBgBody"
+    ]
+  },
+  {
+    "tokenId": "layout",
+    "name": "Modo de Layout Global",
+    "description": "Define se a estrutura base de contêineres usará CSS Grid ou Flexbox. Altera radicalmente a distribuição espacial primária.",
+    "type": "select",
+    "importance": 85,
+    "categories": [
+      "layout",
+      "estrutura",
+      "alinhamento"
+    ],
+    "tags": [
+      "arquitetura",
+      "engine",
+      "core"
+    ],
+    "databaseColumn": "branding_config",
+    "schemaOrigin": "system.ts",
+    "digitalTwins": [
+      "DesignInjector"
+    ],
+    "cssVariables": [],
+    "allowedValues": [
+      "grid",
+      "flex"
+    ],
+    "relatedTokens": []
+  },
+  {
+    "tokenId": "layoutDensity",
+    "name": "Densidade Visual",
+    "description": "Controla a densidade dos componentes na tela. O modo 'compacto' diminui espaçamentos; 'espaçoso' dá foco minimalista.",
+    "type": "select",
+    "importance": 80,
+    "categories": [
+      "layout",
+      "espacamento",
+      "ergonomia"
+    ],
+    "tags": [
+      "ux",
+      "densidade"
+    ],
+    "databaseColumn": "branding_config",
+    "schemaOrigin": "system.ts",
+    "digitalTwins": [
+      "DesignInjector"
+    ],
+    "cssVariables": [],
+    "allowedValues": [
+      "compact",
+      "comfortable",
+      "spacious"
+    ],
+    "relatedTokens": [
+      "layoutPadding",
+      "layoutGap"
+    ]
+  },
+  {
+    "tokenId": "maxContentWidth",
+    "name": "Largura Máxima do Conteúdo",
+    "description": "Trava a largura central da aplicação (Container). Útil para telas ultrawide. 100% o torna fluido.",
+    "type": "select",
+    "importance": 70,
+    "categories": [
+      "layout",
+      "tamanho",
+      "container"
+    ],
+    "tags": [
+      "responsividade",
+      "largura"
+    ],
+    "databaseColumn": "branding_config",
+    "schemaOrigin": "system.ts",
+    "digitalTwins": [
+      "DesignInjector"
+    ],
+    "cssVariables": [],
+    "allowedValues": [
+      "1200px",
+      "1440px",
+      "1600px",
+      "100%"
+    ],
+    "relatedTokens": []
+  },
+  {
+    "tokenId": "layoutPadding",
+    "name": "Respiro do Conteúdo (Padding)",
+    "description": "O afastamento padrão do conteúdo em relação às margens da tela principal.",
+    "type": "number",
+    "importance": 60,
+    "categories": [
+      "layout",
+      "espacamento",
+      "margem"
+    ],
+    "tags": [
+      "ux",
+      "padding"
+    ],
+    "databaseColumn": "branding_config",
+    "schemaOrigin": "system.ts",
+    "digitalTwins": [
+      "DesignInjector"
+    ],
+    "cssVariables": [
+      "--sarak-layout-padding"
+    ],
+    "allowedValues": {
+      "min": 0,
+      "max": 80
+    },
+    "relatedTokens": [
+      "layoutDensity"
+    ]
+  },
+  {
+    "tokenId": "isSplitViewEnabled",
+    "name": "Ativar Vista Dividida (Split)",
+    "description": "Habilita um layout paralelo (ex: master-detail side by side) no contêiner principal.",
+    "type": "boolean",
+    "importance": 60,
+    "categories": [
+      "layout",
+      "estrutura",
+      "navegacao"
+    ],
+    "tags": [
+      "ux",
+      "modo-exibicao"
+    ],
+    "databaseColumn": "branding_config",
+    "schemaOrigin": "system.ts",
+    "digitalTwins": [
+      "DesignInjector",
+      "SarakUIProvider"
+    ],
+    "cssVariables": [],
+    "allowedValues": null,
+    "relatedTokens": [
+      "navigationStyle"
+    ]
+  },
+  {
+    "tokenId": "isAutoHideEnabled",
+    "name": "Auto-ocultar Menus",
+    "description": "Recolhe automaticamente barras de navegação (Sidebar ou Topbar) quando o usuário rola a página ou perde foco.",
+    "type": "boolean",
+    "importance": 50,
+    "categories": [
+      "layout",
+      "comportamento",
+      "navegacao"
+    ],
+    "tags": [
+      "animacao",
+      "foco"
+    ],
+    "databaseColumn": "branding_config",
+    "schemaOrigin": "system.ts",
+    "digitalTwins": [
+      "SidebarNav",
+      "TopbarNav"
+    ],
+    "cssVariables": [],
+    "allowedValues": null,
+    "relatedTokens": [
+      "navigationStyle"
+    ]
+  },
+  {
+    "tokenId": "borderRadius",
+    "name": "Arredondamento Padrão Global",
+    "description": "Define o quão circulares são as bordas dos elementos base. Um valor de 0 traz estética agressiva/brutalista.",
+    "type": "number",
+    "importance": 75,
+    "categories": [
+      "bordas",
+      "geometria",
+      "global"
+    ],
+    "tags": [
+      "estetica",
+      "radius"
+    ],
+    "databaseColumn": "branding_config",
+    "schemaOrigin": "system.ts",
+    "digitalTwins": [
+      "DesignInjector"
+    ],
+    "cssVariables": [
+      "--radius-theme",
+      "--sarak-border-radius",
+      "--border-radius"
+    ],
+    "allowedValues": {
+      "min": 0,
+      "max": 40
+    },
+    "relatedTokens": [
+      "borderRadiusSm",
+      "borderRadiusMd",
+      "borderRadiusLg"
+    ]
+  },
+  {
+    "tokenId": "borderRadiusSm",
+    "name": "Arredondamento Pequeno",
+    "description": "Arredondamento para componentes menores como tooltips ou badges.",
+    "type": "number",
+    "importance": 50,
+    "categories": [
+      "bordas",
+      "geometria"
+    ],
+    "tags": [
+      "estetica",
+      "radius"
+    ],
+    "databaseColumn": "branding_config",
+    "schemaOrigin": "system.ts",
+    "digitalTwins": [
+      "DesignInjector"
+    ],
+    "cssVariables": [
+      "--sarak-border-radius-sm"
+    ],
+    "allowedValues": {
+      "min": 0,
+      "max": 20
+    },
+    "relatedTokens": [
+      "borderRadius"
+    ]
+  },
+  {
+    "tokenId": "borderRadiusMd",
+    "name": "Arredondamento Médio",
+    "description": "Arredondamento intermediário para modais internos ou cartões secundários.",
+    "type": "number",
+    "importance": 60,
+    "categories": [
+      "bordas",
+      "geometria"
+    ],
+    "tags": [
+      "estetica",
+      "radius"
+    ],
+    "databaseColumn": "branding_config",
+    "schemaOrigin": "system.ts",
+    "digitalTwins": [
+      "DesignInjector"
+    ],
+    "cssVariables": [
+      "--sarak-border-radius-md"
+    ],
+    "allowedValues": {
+      "min": 0,
+      "max": 40
+    },
+    "relatedTokens": [
+      "borderRadius"
+    ]
+  },
+  {
+    "tokenId": "borderRadiusLg",
+    "name": "Arredondamento Grande",
+    "description": "Arredondamento para contêineres enormes, como modais principais ou cards de imagem amplos.",
+    "type": "number",
+    "importance": 65,
+    "categories": [
+      "bordas",
+      "geometria"
+    ],
+    "tags": [
+      "estetica",
+      "radius"
+    ],
+    "databaseColumn": "branding_config",
+    "schemaOrigin": "system.ts",
+    "digitalTwins": [
+      "DesignInjector"
+    ],
+    "cssVariables": [
+      "--sarak-border-radius-lg"
+    ],
+    "allowedValues": {
+      "min": 0,
+      "max": 60
+    },
+    "relatedTokens": [
+      "borderRadius"
+    ]
+  },
+  {
+    "tokenId": "borderWidth",
+    "name": "Espessura da Borda Global",
+    "description": "Controla a espessura padrão (em pixels) das bordas em botões, cartões e divisórias em todo o sistema.",
+    "type": "number",
+    "importance": 65,
+    "categories": [
+      "bordas",
+      "espessura",
+      "global"
+    ],
+    "tags": [
+      "linhas",
+      "stroke"
+    ],
+    "databaseColumn": "branding_config",
+    "schemaOrigin": "system.ts",
+    "digitalTwins": [
+      "DesignInjector"
+    ],
+    "cssVariables": [
+      "--theme-border-width",
+      "--border-width",
+      "--sarak-border-width"
+    ],
+    "allowedValues": {
+      "min": 0,
+      "max": 10
+    },
+    "relatedTokens": [
+      "borderStyle"
+    ]
+  },
+  {
+    "tokenId": "borderStyle",
+    "name": "Estilo da Borda",
+    "description": "Estilo de traçado usado no sistema (sólido, pontilhado, etc).",
+    "type": "select",
+    "importance": 50,
+    "categories": [
+      "bordas",
+      "estilo",
+      "global"
+    ],
+    "tags": [
+      "linhas"
+    ],
+    "databaseColumn": "branding_config",
+    "schemaOrigin": "system.ts",
+    "digitalTwins": [
+      "DesignInjector"
+    ],
+    "cssVariables": [
+      "--border-style",
+      "--sarak-border-style"
+    ],
+    "allowedValues": [
+      "solid",
+      "dashed",
+      "dotted",
+      "none"
+    ],
+    "relatedTokens": [
+      "borderWidth"
+    ]
+  },
+  {
+    "tokenId": "layoutGap",
+    "name": "Espaçamento Padrão Global (Gap)",
+    "description": "O espaço padrão que divide os componentes horizontal e verticalmente.",
+    "type": "number",
+    "importance": 80,
+    "categories": [
+      "layout",
+      "espacamento",
+      "global"
+    ],
+    "tags": [
+      "ux",
+      "gap"
+    ],
+    "databaseColumn": "branding_config",
+    "schemaOrigin": "system.ts",
+    "digitalTwins": [
+      "DesignInjector"
+    ],
+    "cssVariables": [
+      "--theme-gap",
+      "--sarak-layout-gap"
+    ],
+    "allowedValues": {
+      "min": 0,
+      "max": 80
+    },
+    "relatedTokens": [
+      "layoutDensity"
+    ]
+  },
+  {
+    "tokenId": "layoutGapSm",
+    "name": "Espaçamento Pequeno",
+    "description": "Distância curta entre ícones e textos ou pequenos botões contíguos.",
+    "type": "number",
+    "importance": 50,
+    "categories": [
+      "layout",
+      "espacamento"
+    ],
+    "tags": [
+      "ux",
+      "gap"
+    ],
+    "databaseColumn": "branding_config",
+    "schemaOrigin": "system.ts",
+    "digitalTwins": [
+      "DesignInjector"
+    ],
+    "cssVariables": [
+      "--sarak-layout-gap-sm"
+    ],
+    "allowedValues": {
+      "min": 0,
+      "max": 40
+    },
+    "relatedTokens": [
+      "layoutGap"
+    ]
+  },
+  {
+    "tokenId": "layoutGapMd",
+    "name": "Espaçamento Médio",
+    "description": "Distância média padrão usada na maioria das listas.",
+    "type": "number",
+    "importance": 60,
+    "categories": [
+      "layout",
+      "espacamento"
+    ],
+    "tags": [
+      "ux",
+      "gap"
+    ],
+    "databaseColumn": "branding_config",
+    "schemaOrigin": "system.ts",
+    "digitalTwins": [
+      "DesignInjector"
+    ],
+    "cssVariables": [
+      "--sarak-layout-gap-md"
+    ],
+    "allowedValues": {
+      "min": 0,
+      "max": 80
+    },
+    "relatedTokens": [
+      "layoutGap"
+    ]
+  },
+  {
+    "tokenId": "layoutGapLg",
+    "name": "Espaçamento Grande",
+    "description": "Afastamento largo para separação de grandes seções do sistema.",
+    "type": "number",
+    "importance": 65,
+    "categories": [
+      "layout",
+      "espacamento"
+    ],
+    "tags": [
+      "ux",
+      "gap"
+    ],
+    "databaseColumn": "branding_config",
+    "schemaOrigin": "system.ts",
+    "digitalTwins": [
+      "DesignInjector"
+    ],
+    "cssVariables": [
+      "--sarak-layout-gap-lg"
+    ],
+    "allowedValues": {
+      "min": 0,
+      "max": 120
+    },
+    "relatedTokens": [
+      "layoutGap"
+    ]
+  },
+  {
+    "tokenId": "iconFamily",
+    "name": "Família de Ícones (Engine)",
+    "description": "Altera o pacote de iconografia renderizado em tempo real (Lucide, Phosphor, Tabler). Muda a estética vetorial do tema.",
+    "type": "select",
+    "importance": 85,
+    "categories": [
+      "icones",
+      "identidade",
+      "global"
+    ],
+    "tags": [
+      "vetores",
+      "design-system"
+    ],
+    "databaseColumn": "branding_config",
+    "schemaOrigin": "system.ts",
+    "digitalTwins": [
+      "SarakIcon",
+      "IconRenderer"
+    ],
+    "cssVariables": [],
+    "allowedValues": [
+      "lucide",
+      "phosphor",
+      "tabler"
+    ],
+    "relatedTokens": [
+      "iconWeight",
+      "iconStrokeWidth"
+    ]
+  },
+  {
+    "tokenId": "iconWeight",
+    "name": "Estilo/Peso dos Ícones",
+    "description": "O preenchimento do ícone (Regular, Duotone, Bold, Thin). Ícones Duotone criam visual imersivo e futurista.",
+    "type": "select",
+    "importance": 80,
+    "categories": [
+      "icones",
+      "estilo"
+    ],
+    "tags": [
+      "vetores",
+      "estetica"
+    ],
+    "databaseColumn": "branding_config",
+    "schemaOrigin": "system.ts",
+    "digitalTwins": [
+      "SarakIcon",
+      "IconRenderer"
+    ],
+    "cssVariables": [],
+    "allowedValues": [
+      "thin",
+      "light",
+      "regular",
+      "bold",
+      "fill",
+      "duotone"
+    ],
+    "relatedTokens": [
+      "iconFamily"
+    ]
+  },
+  {
+    "tokenId": "iconStrokeWidth",
+    "name": "Espessura do Traçado do Ícone",
+    "description": "A grossura das linhas que compõem o ícone vetorial. Traços finos parecem sofisticados; grossos, amigáveis.",
+    "type": "number",
+    "importance": 70,
+    "categories": [
+      "icones",
+      "espessura"
+    ],
+    "tags": [
+      "vetores",
+      "estetica",
+      "stroke"
+    ],
+    "databaseColumn": "branding_config",
+    "schemaOrigin": "system.ts",
+    "digitalTwins": [
+      "SarakIcon",
+      "IconRenderer"
+    ],
+    "cssVariables": [
+      "--sarak-icon-stroke"
+    ],
+    "allowedValues": {
+      "min": 0.5,
+      "max": 3,
+      "step": 0.5
+    },
+    "relatedTokens": [
+      "iconFamily"
+    ]
+  },
+  {
+    "tokenId": "scrollbarWidth",
+    "name": "Largura da Scrollbar Global",
+    "description": "A grossura da barra de rolagem customizada da aplicação. Se for zero, a barra fica invisível.",
+    "type": "select",
+    "importance": 40,
+    "categories": [
+      "layout",
+      "interacao",
+      "scrollbar"
+    ],
+    "tags": [
+      "ux",
+      "scroll"
+    ],
+    "databaseColumn": "branding_config",
+    "schemaOrigin": "system.ts",
+    "digitalTwins": [
+      "DesignInjector"
+    ],
+    "cssVariables": [
+      "--scrollbar-width"
+    ],
+    "allowedValues": [
+      "none",
+      "thin",
+      "auto"
+    ],
+    "relatedTokens": [
+      "scrollbarThumbColor"
+    ]
+  },
+  {
+    "tokenId": "scrollbarThumbColor",
+    "name": "Cor do Polegar da Scrollbar",
+    "description": "Cor primária da alça móvel da barra de rolagem.",
+    "type": "color",
+    "importance": 30,
+    "categories": [
+      "cores",
+      "interacao",
+      "scrollbar"
+    ],
+    "tags": [
+      "ux",
+      "scroll"
+    ],
+    "databaseColumn": "branding_config",
+    "schemaOrigin": "system.ts",
+    "digitalTwins": [
+      "DesignInjector"
+    ],
+    "cssVariables": [
+      "--scrollbar-thumb"
+    ],
+    "allowedValues": null,
+    "relatedTokens": [
+      "scrollbarWidth"
+    ]
+  },
+  {
+    "tokenId": "industrialRegistry",
+    "name": "Modo de Registro Industrial",
+    "description": "Uma flag global que engatilha o modo 'Industrial' (interfaces técnicas de alta densidade sem muitas bordas arredondadas).",
+    "type": "boolean",
+    "importance": 90,
+    "categories": [
+      "tema",
+      "comportamento",
+      "global"
+    ],
+    "tags": [
+      "core",
+      "arquitetura",
+      "industrial"
+    ],
+    "databaseColumn": "branding_config",
+    "schemaOrigin": "system.ts",
+    "digitalTwins": [
+      "DesignInjector",
+      "SarakUIProvider"
+    ],
+    "cssVariables": [],
+    "allowedValues": null,
+    "relatedTokens": [
+      "borderRadius",
+      "layoutDensity",
+      "iconFamily"
+    ]
+  }
+]

@@ -1,0 +1,1934 @@
+[
+  {
+    "tokenId": "colorPalette",
+    "name": "Paleta Ativa (Preset)",
+    "description": "Define qual esquema global de cores está em uso (ex: default, neon, matrix).",
+    "type": "select",
+    "importance": 95,
+    "categories": [
+      "colors-and-atmosphere",
+      "temas",
+      "cores"
+    ],
+    "tags": [
+      "palette",
+      "preset",
+      "global"
+    ],
+    "databaseColumn": "colors_and_atmosphere",
+    "schemaOrigin": "colors.ts",
+    "digitalTwins": [
+      "DesignInjector"
+    ],
+    "cssVariables": [],
+    "allowedValues": [
+      "default",
+      "neon",
+      "matrix",
+      "slate",
+      "sunset"
+    ],
+    "relatedTokens": [
+      "primaryColor"
+    ]
+  },
+  {
+    "tokenId": "primaryColor",
+    "name": "Cor Primária (Base)",
+    "description": "Cor de destaque principal do sistema, usada em botões primários e ações ativas.",
+    "type": "color",
+    "importance": 100,
+    "categories": [
+      "cores",
+      "colors-and-atmosphere",
+      "branding"
+    ],
+    "tags": [
+      "primary",
+      "brand",
+      "color"
+    ],
+    "databaseColumn": "colors_and_atmosphere",
+    "schemaOrigin": "colors.ts",
+    "digitalTwins": [
+      "DesignInjector"
+    ],
+    "cssVariables": [
+      "--primary-color",
+      "--theme-primary",
+      "--sarak-primary-color",
+      "--sarak-color-primary"
+    ],
+    "allowedValues": null,
+    "relatedTokens": [
+      "secondaryColor",
+      "colorPalette"
+    ]
+  },
+  {
+    "tokenId": "secondaryColor",
+    "name": "Cor Secundária",
+    "description": "Segunda cor de destaque para suporte ou variações de UI.",
+    "type": "color",
+    "importance": 90,
+    "categories": [
+      "cores",
+      "colors-and-atmosphere",
+      "branding"
+    ],
+    "tags": [
+      "secondary",
+      "brand",
+      "color"
+    ],
+    "databaseColumn": "colors_and_atmosphere",
+    "schemaOrigin": "colors.ts",
+    "digitalTwins": [
+      "DesignInjector"
+    ],
+    "cssVariables": [
+      "--secondary-color",
+      "--theme-secondary",
+      "--sarak-secondary-color",
+      "--sarak-color-secondary"
+    ],
+    "allowedValues": null,
+    "relatedTokens": [
+      "primaryColor",
+      "tertiaryColor"
+    ]
+  },
+  {
+    "tokenId": "tertiaryColor",
+    "name": "Cor Terciária",
+    "description": "Cor adicional para detalhes sutis ou terceiros níveis de hierarquia visual.",
+    "type": "color",
+    "importance": 80,
+    "categories": [
+      "cores",
+      "colors-and-atmosphere",
+      "branding"
+    ],
+    "tags": [
+      "tertiary",
+      "brand",
+      "color"
+    ],
+    "databaseColumn": "colors_and_atmosphere",
+    "schemaOrigin": "colors.ts",
+    "digitalTwins": [
+      "DesignInjector"
+    ],
+    "cssVariables": [
+      "--tertiary-color",
+      "--theme-tertiary",
+      "--sarak-tertiary-color",
+      "--sarak-color-tertiary"
+    ],
+    "allowedValues": null,
+    "relatedTokens": [
+      "secondaryColor"
+    ]
+  },
+  {
+    "tokenId": "accentColor",
+    "name": "Cor de Acento (Accent)",
+    "description": "Cor vibrante para chamar atenção em micro-elementos, badges ou notificações.",
+    "type": "color",
+    "importance": 85,
+    "categories": [
+      "cores",
+      "colors-and-atmosphere",
+      "destaque"
+    ],
+    "tags": [
+      "accent",
+      "highlight",
+      "color"
+    ],
+    "databaseColumn": "colors_and_atmosphere",
+    "schemaOrigin": "colors.ts",
+    "digitalTwins": [
+      "DesignInjector"
+    ],
+    "cssVariables": [
+      "--theme-accent",
+      "--sarak-accent-color"
+    ],
+    "allowedValues": null,
+    "relatedTokens": [
+      "primaryColor"
+    ]
+  },
+  {
+    "tokenId": "surfaceColor",
+    "name": "Cor de Superfície",
+    "description": "Tom para objetos elevados e content boxes em cima do background principal.",
+    "type": "color",
+    "importance": 85,
+    "categories": [
+      "cores",
+      "colors-and-atmosphere",
+      "background"
+    ],
+    "tags": [
+      "surface",
+      "bg",
+      "color"
+    ],
+    "databaseColumn": "colors_and_atmosphere",
+    "schemaOrigin": "colors.ts",
+    "digitalTwins": [
+      "DesignInjector"
+    ],
+    "cssVariables": [
+      "--theme-surface",
+      "--sarak-surface-color"
+    ],
+    "allowedValues": null,
+    "relatedTokens": [
+      "colorBgBody"
+    ]
+  },
+  {
+    "tokenId": "textureColor",
+    "name": "Cor da Textura",
+    "description": "Cor aplicada às linhas ou artefatos que formam as texturas industriais.",
+    "type": "color",
+    "importance": 60,
+    "categories": [
+      "cores",
+      "colors-and-atmosphere",
+      "efeitos"
+    ],
+    "tags": [
+      "texture",
+      "pattern",
+      "color"
+    ],
+    "databaseColumn": "colors_and_atmosphere",
+    "schemaOrigin": "colors.ts",
+    "digitalTwins": [
+      "DesignInjector"
+    ],
+    "cssVariables": [
+      "--theme-texture-color",
+      "--sarak-texture-color"
+    ],
+    "allowedValues": null,
+    "relatedTokens": [
+      "textureOpacity"
+    ]
+  },
+  {
+    "tokenId": "titleColor",
+    "name": "Cor do Título",
+    "description": "Cor de alto contraste designada especificamente para títulos globais.",
+    "type": "color",
+    "importance": 80,
+    "categories": [
+      "cores",
+      "colors-and-atmosphere",
+      "tipografia"
+    ],
+    "tags": [
+      "title",
+      "text",
+      "color"
+    ],
+    "databaseColumn": "colors_and_atmosphere",
+    "schemaOrigin": "colors.ts",
+    "digitalTwins": [
+      "DesignInjector"
+    ],
+    "cssVariables": [
+      "--theme-title-color",
+      "--sarak-title-color"
+    ],
+    "allowedValues": null,
+    "relatedTokens": [
+      "primaryColor"
+    ]
+  },
+  {
+    "tokenId": "colorDepth",
+    "name": "Profundidade da Cor",
+    "description": "Escala de sombras e saturação que adiciona volume (depth) à interface.",
+    "type": "number",
+    "importance": 70,
+    "categories": [
+      "colors-and-atmosphere",
+      "cores",
+      "ajuste"
+    ],
+    "tags": [
+      "depth",
+      "saturation",
+      "color"
+    ],
+    "databaseColumn": "colors_and_atmosphere",
+    "schemaOrigin": "colors.ts",
+    "digitalTwins": [
+      "DesignInjector"
+    ],
+    "cssVariables": [
+      "--sarak-color-depth"
+    ],
+    "allowedValues": {
+      "min": 1,
+      "max": 5
+    },
+    "relatedTokens": [
+      "colorVariation"
+    ]
+  },
+  {
+    "tokenId": "colorVariation",
+    "name": "Variação da Cor",
+    "description": "Nível de diversificação nas paletas geradas a partir das cores base.",
+    "type": "number",
+    "importance": 70,
+    "categories": [
+      "colors-and-atmosphere",
+      "cores",
+      "ajuste"
+    ],
+    "tags": [
+      "variation",
+      "palette",
+      "color"
+    ],
+    "databaseColumn": "colors_and_atmosphere",
+    "schemaOrigin": "colors.ts",
+    "digitalTwins": [
+      "DesignInjector"
+    ],
+    "cssVariables": [
+      "--sarak-color-variation"
+    ],
+    "allowedValues": {
+      "min": 1,
+      "max": 5
+    },
+    "relatedTokens": [
+      "colorDepth"
+    ]
+  },
+  {
+    "tokenId": "colorBgBody",
+    "name": "Background Geral (Body)",
+    "description": "Cor base que preenche todo o fundo do site/app e do document body.",
+    "type": "color",
+    "importance": 95,
+    "categories": [
+      "cores",
+      "colors-and-atmosphere",
+      "background"
+    ],
+    "tags": [
+      "bg",
+      "body",
+      "global"
+    ],
+    "databaseColumn": "colors_and_atmosphere",
+    "schemaOrigin": "colors.ts",
+    "digitalTwins": [
+      "DesignInjector"
+    ],
+    "cssVariables": [
+      "--sarak-bg-body",
+      "--theme-bg",
+      "--theme-body",
+      "--bg-body",
+      "--sarak-bg-base"
+    ],
+    "allowedValues": null,
+    "relatedTokens": [
+      "colorBgLayer1"
+    ]
+  },
+  {
+    "tokenId": "colorBgLayer1",
+    "name": "Background Layer 1",
+    "description": "Cor de fundo primária para elementos de nível 1 (painéis, sidebars).",
+    "type": "color",
+    "importance": 90,
+    "categories": [
+      "cores",
+      "colors-and-atmosphere",
+      "background"
+    ],
+    "tags": [
+      "layer",
+      "bg",
+      "surface"
+    ],
+    "databaseColumn": "colors_and_atmosphere",
+    "schemaOrigin": "colors.ts",
+    "digitalTwins": [
+      "DesignInjector"
+    ],
+    "cssVariables": [
+      "--sarak-bg-layer-1",
+      "--theme-surface-1"
+    ],
+    "allowedValues": null,
+    "relatedTokens": [
+      "colorBgLayer2"
+    ]
+  },
+  {
+    "tokenId": "colorBgLayer2",
+    "name": "Background Layer 2",
+    "description": "Cor de fundo para elementos de nível 2 (sobreposições leves, painéis de destaque).",
+    "type": "color",
+    "importance": 85,
+    "categories": [
+      "cores",
+      "colors-and-atmosphere",
+      "background"
+    ],
+    "tags": [
+      "layer",
+      "bg",
+      "surface"
+    ],
+    "databaseColumn": "colors_and_atmosphere",
+    "schemaOrigin": "colors.ts",
+    "digitalTwins": [
+      "DesignInjector"
+    ],
+    "cssVariables": [
+      "--sarak-bg-layer-2",
+      "--theme-surface-2"
+    ],
+    "allowedValues": null,
+    "relatedTokens": [
+      "colorBgLayer1"
+    ]
+  },
+  {
+    "tokenId": "colorBgModal",
+    "name": "Background Modais",
+    "description": "Cor do fundo utilizado no card principal de um Modal ou Dialog.",
+    "type": "color",
+    "importance": 85,
+    "categories": [
+      "cores",
+      "colors-and-atmosphere",
+      "overlays"
+    ],
+    "tags": [
+      "modal",
+      "bg",
+      "overlay"
+    ],
+    "databaseColumn": "colors_and_atmosphere",
+    "schemaOrigin": "colors.ts",
+    "digitalTwins": [
+      "DesignInjector"
+    ],
+    "cssVariables": [
+      "--sarak-bg-modal",
+      "--theme-modal-bg"
+    ],
+    "allowedValues": null,
+    "relatedTokens": [
+      "colorBgLayer2"
+    ]
+  },
+  {
+    "tokenId": "cardBackgroundColor",
+    "name": "Background dos Cards",
+    "description": "Cor de preenchimento padrão para cartões (Cards) do sistema.",
+    "type": "color",
+    "importance": 80,
+    "categories": [
+      "cores",
+      "colors-and-atmosphere",
+      "cards"
+    ],
+    "tags": [
+      "card",
+      "bg",
+      "surface"
+    ],
+    "databaseColumn": "colors_and_atmosphere",
+    "schemaOrigin": "colors.ts",
+    "digitalTwins": [
+      "DesignInjector"
+    ],
+    "cssVariables": [
+      "--card-bg",
+      "--theme-surface",
+      "--theme-card",
+      "--sarak-card-bg",
+      "--theme-card-bg"
+    ],
+    "allowedValues": null,
+    "relatedTokens": [
+      "cardBorderColor"
+    ]
+  },
+  {
+    "tokenId": "cardBorderColor",
+    "name": "Borda dos Cards (Global)",
+    "description": "Cor da linha delineadora de cartões na configuração global do tema.",
+    "type": "color",
+    "importance": 75,
+    "categories": [
+      "cores",
+      "colors-and-atmosphere",
+      "cards"
+    ],
+    "tags": [
+      "card",
+      "border",
+      "stroke"
+    ],
+    "databaseColumn": "colors_and_atmosphere",
+    "schemaOrigin": "colors.ts",
+    "digitalTwins": [
+      "DesignInjector"
+    ],
+    "cssVariables": [
+      "--card-border-color",
+      "--theme-border",
+      "--sarak-card-border-color",
+      "--theme-card-border"
+    ],
+    "allowedValues": null,
+    "relatedTokens": [
+      "cardBackgroundColor"
+    ]
+  },
+  {
+    "tokenId": "colorBgBody",
+    "name": "Background Geral (Body) - Duplicado",
+    "description": "Cor base que preenche todo o fundo do site/app e do document body.",
+    "type": "color",
+    "importance": 95,
+    "categories": [
+      "cores",
+      "colors-and-atmosphere",
+      "background"
+    ],
+    "tags": [
+      "bg",
+      "body",
+      "global"
+    ],
+    "databaseColumn": "colors_and_atmosphere",
+    "schemaOrigin": "colors.ts",
+    "digitalTwins": [
+      "DesignInjector"
+    ],
+    "cssVariables": [
+      "--sarak-bg-body",
+      "--theme-bg",
+      "--theme-body",
+      "--bg-body",
+      "--sarak-bg-base"
+    ],
+    "allowedValues": null,
+    "relatedTokens": [
+      "colorBgLayer1"
+    ]
+  },
+  {
+    "tokenId": "colorBgLayer1",
+    "name": "Background Layer 1 - Duplicado",
+    "description": "Cor de fundo primária para elementos de nível 1 (painéis, sidebars).",
+    "type": "color",
+    "importance": 90,
+    "categories": [
+      "cores",
+      "colors-and-atmosphere",
+      "background"
+    ],
+    "tags": [
+      "layer",
+      "bg",
+      "surface"
+    ],
+    "databaseColumn": "colors_and_atmosphere",
+    "schemaOrigin": "colors.ts",
+    "digitalTwins": [
+      "DesignInjector"
+    ],
+    "cssVariables": [
+      "--sarak-bg-layer-1",
+      "--theme-surface-1"
+    ],
+    "allowedValues": null,
+    "relatedTokens": [
+      "colorBgLayer2"
+    ]
+  },
+  {
+    "tokenId": "colorBgLayer2",
+    "name": "Background Layer 2 - Duplicado",
+    "description": "Cor de fundo para elementos de nível 2 (sobreposições leves, painéis de destaque).",
+    "type": "color",
+    "importance": 85,
+    "categories": [
+      "cores",
+      "colors-and-atmosphere",
+      "background"
+    ],
+    "tags": [
+      "layer",
+      "bg",
+      "surface"
+    ],
+    "databaseColumn": "colors_and_atmosphere",
+    "schemaOrigin": "colors.ts",
+    "digitalTwins": [
+      "DesignInjector"
+    ],
+    "cssVariables": [
+      "--sarak-bg-layer-2",
+      "--theme-surface-2"
+    ],
+    "allowedValues": null,
+    "relatedTokens": [
+      "colorBgLayer1"
+    ]
+  },
+  {
+    "tokenId": "bgBaseColor",
+    "name": "Cor de Fundo Base",
+    "description": "Cor de base mais profunda usada abaixo de qualquer textura ou padrão.",
+    "type": "color",
+    "importance": 90,
+    "categories": [
+      "cores",
+      "colors-and-atmosphere",
+      "background"
+    ],
+    "tags": [
+      "bg",
+      "base",
+      "global"
+    ],
+    "databaseColumn": "colors_and_atmosphere",
+    "schemaOrigin": "atmosphere.ts",
+    "digitalTwins": [
+      "DesignInjector"
+    ],
+    "cssVariables": [
+      "--sarak-bg-base"
+    ],
+    "allowedValues": null,
+    "relatedTokens": [
+      "bgGradientMode"
+    ]
+  },
+  {
+    "tokenId": "bgGradientMode",
+    "name": "Modo de Gradiente",
+    "description": "Formato de renderização de cor de fundo (sólido, linear, radial, orgânico).",
+    "type": "select",
+    "importance": 85,
+    "categories": [
+      "efeitos",
+      "colors-and-atmosphere",
+      "background"
+    ],
+    "tags": [
+      "gradient",
+      "mode",
+      "bg"
+    ],
+    "databaseColumn": "colors_and_atmosphere",
+    "schemaOrigin": "atmosphere.ts",
+    "digitalTwins": [
+      "DesignInjector"
+    ],
+    "cssVariables": [
+      "--sarak-bg-gradient-mode"
+    ],
+    "allowedValues": [
+      "none",
+      "linear",
+      "radial",
+      "mesh"
+    ],
+    "relatedTokens": [
+      "bgGradientAngle"
+    ]
+  },
+  {
+    "tokenId": "bgGradientAngle",
+    "name": "Direção do Gradiente",
+    "description": "Se o fundo for linear, define o grau em que as cores mudam.",
+    "type": "number",
+    "importance": 70,
+    "categories": [
+      "geometria",
+      "colors-and-atmosphere",
+      "background"
+    ],
+    "tags": [
+      "gradient",
+      "angle",
+      "bg"
+    ],
+    "databaseColumn": "colors_and_atmosphere",
+    "schemaOrigin": "atmosphere.ts",
+    "digitalTwins": [
+      "DesignInjector"
+    ],
+    "cssVariables": [
+      "--sarak-bg-gradient-angle"
+    ],
+    "allowedValues": {
+      "min": 0,
+      "max": 360,
+      "step": 1
+    },
+    "relatedTokens": [
+      "bgGradientMode"
+    ]
+  },
+  {
+    "tokenId": "surfaceMaterial",
+    "name": "Material da Superfície",
+    "description": "Estilo ótico predominante para superfícies flutuantes (vidro fosco, polido, orgânico).",
+    "type": "select",
+    "importance": 95,
+    "categories": [
+      "estetica",
+      "colors-and-atmosphere",
+      "surface"
+    ],
+    "tags": [
+      "material",
+      "surface",
+      "preset"
+    ],
+    "databaseColumn": "colors_and_atmosphere",
+    "schemaOrigin": "atmosphere.ts",
+    "digitalTwins": [
+      "DesignInjector"
+    ],
+    "cssVariables": [
+      "--sarak-surface",
+      "--surface-material"
+    ],
+    "allowedValues": [
+      "frosted",
+      "sleek",
+      "industrial",
+      "organic"
+    ],
+    "relatedTokens": [
+      "surfaceIntensity"
+    ]
+  },
+  {
+    "tokenId": "surfaceIntensity",
+    "name": "Intensidade do Efeito de Superfície",
+    "description": "O quanto do material simulado deve ser aplicado na renderização dos painéis.",
+    "type": "number",
+    "importance": 80,
+    "categories": [
+      "efeitos",
+      "colors-and-atmosphere",
+      "surface"
+    ],
+    "tags": [
+      "material",
+      "intensity",
+      "effect"
+    ],
+    "databaseColumn": "colors_and_atmosphere",
+    "schemaOrigin": "atmosphere.ts",
+    "digitalTwins": [
+      "DesignInjector"
+    ],
+    "cssVariables": [
+      "--surface-intensity",
+      "--sarak-surface-intensity"
+    ],
+    "allowedValues": {
+      "min": 0,
+      "max": 1,
+      "step": 0.05
+    },
+    "relatedTokens": [
+      "surfaceMaterial"
+    ]
+  },
+  {
+    "tokenId": "borderType",
+    "name": "Estilo da Moldura (Border)",
+    "description": "Estilo visual de fronteiras do sistema (sólido, segmentado cyber, duplo, neon).",
+    "type": "select",
+    "importance": 85,
+    "categories": [
+      "bordas",
+      "colors-and-atmosphere",
+      "estetica"
+    ],
+    "tags": [
+      "border",
+      "type",
+      "stroke"
+    ],
+    "databaseColumn": "colors_and_atmosphere",
+    "schemaOrigin": "atmosphere.ts",
+    "digitalTwins": [
+      "DesignInjector"
+    ],
+    "cssVariables": [
+      "--sarak-border-type",
+      "--border-type"
+    ],
+    "allowedValues": [
+      "solid",
+      "cyber",
+      "double",
+      "glow",
+      "none"
+    ],
+    "relatedTokens": [
+      "surfaceMaterial"
+    ]
+  },
+  {
+    "tokenId": "systemTone",
+    "name": "Tom do Ambiente",
+    "description": "Orientação do clima (dark profundo, claro cromado, cibernético verde).",
+    "type": "select",
+    "importance": 95,
+    "categories": [
+      "temas",
+      "colors-and-atmosphere",
+      "geral"
+    ],
+    "tags": [
+      "tone",
+      "theme",
+      "preset"
+    ],
+    "databaseColumn": "colors_and_atmosphere",
+    "schemaOrigin": "atmosphere.ts",
+    "digitalTwins": [
+      "DesignInjector"
+    ],
+    "cssVariables": [
+      "--sarak-system-tone"
+    ],
+    "allowedValues": [
+      "dark",
+      "light",
+      "cyber",
+      "tactical"
+    ],
+    "relatedTokens": [
+      "colorPalette"
+    ]
+  },
+  {
+    "tokenId": "texture",
+    "name": "Textura Global",
+    "description": "Estampa padrão para o fundo do sistema (grid, carbon, noise, hexagon).",
+    "type": "select",
+    "importance": 80,
+    "categories": [
+      "texturas",
+      "colors-and-atmosphere",
+      "geral"
+    ],
+    "tags": [
+      "texture",
+      "pattern",
+      "bg"
+    ],
+    "databaseColumn": "colors_and_atmosphere",
+    "schemaOrigin": "atmosphere.ts",
+    "digitalTwins": [
+      "DesignInjector"
+    ],
+    "cssVariables": [
+      "--sarak-texture",
+      "--bg-texture"
+    ],
+    "allowedValues": [
+      "none",
+      "grid",
+      "carbon",
+      "honeycomb",
+      "dots"
+    ],
+    "relatedTokens": [
+      "textureOpacity"
+    ]
+  },
+  {
+    "tokenId": "textureOpacity",
+    "name": "Opacidade da Textura",
+    "description": "Nível de transparência e visibilidade do pattern de textura.",
+    "type": "number",
+    "importance": 70,
+    "categories": [
+      "texturas",
+      "colors-and-atmosphere",
+      "ajuste"
+    ],
+    "tags": [
+      "texture",
+      "opacity",
+      "alpha"
+    ],
+    "databaseColumn": "colors_and_atmosphere",
+    "schemaOrigin": "atmosphere.ts",
+    "digitalTwins": [
+      "DesignInjector"
+    ],
+    "cssVariables": [
+      "--sarak-texture-opacity",
+      "--texture-opacity"
+    ],
+    "allowedValues": {
+      "min": 0,
+      "max": 1,
+      "step": 0.05
+    },
+    "relatedTokens": [
+      "texture"
+    ]
+  },
+  {
+    "tokenId": "atmosphereNoiseOpacity",
+    "name": "Opacidade do Noise Atmosférico",
+    "description": "Visibilidade do ruído visual (granulação) aplicado sobre toda a tela.",
+    "type": "number",
+    "importance": 60,
+    "categories": [
+      "efeitos",
+      "colors-and-atmosphere",
+      "ruído"
+    ],
+    "tags": [
+      "noise",
+      "film-grain",
+      "atmosphere"
+    ],
+    "databaseColumn": "colors_and_atmosphere",
+    "schemaOrigin": "atmosphere.ts",
+    "digitalTwins": [
+      "DesignInjector"
+    ],
+    "cssVariables": [
+      "--sarak-noise-opacity"
+    ],
+    "allowedValues": {
+      "min": 0,
+      "max": 1,
+      "step": 0.05
+    },
+    "relatedTokens": [
+      "noiseIntensity"
+    ]
+  },
+  {
+    "tokenId": "noiseIntensity",
+    "name": "Intensidade do Noise",
+    "description": "Nível de contraste e força da granulação da tela.",
+    "type": "number",
+    "importance": 55,
+    "categories": [
+      "efeitos",
+      "colors-and-atmosphere",
+      "ruído"
+    ],
+    "tags": [
+      "noise",
+      "intensity",
+      "grain"
+    ],
+    "databaseColumn": "colors_and_atmosphere",
+    "schemaOrigin": "atmosphere.ts",
+    "digitalTwins": [
+      "DesignInjector"
+    ],
+    "cssVariables": [
+      "--sarak-noise-intensity"
+    ],
+    "allowedValues": {
+      "min": 0,
+      "max": 1,
+      "step": 0.05
+    },
+    "relatedTokens": [
+      "atmosphereNoiseOpacity"
+    ]
+  },
+  {
+    "tokenId": "bgNoiseDensity",
+    "name": "Densidade do Noise de Fundo",
+    "description": "Quão agrupados são os pixels gerados pelo efeito de grain no background.",
+    "type": "number",
+    "importance": 50,
+    "categories": [
+      "efeitos",
+      "colors-and-atmosphere",
+      "ruído"
+    ],
+    "tags": [
+      "noise",
+      "density",
+      "bg"
+    ],
+    "databaseColumn": "colors_and_atmosphere",
+    "schemaOrigin": "atmosphere.ts",
+    "digitalTwins": [
+      "DesignInjector"
+    ],
+    "cssVariables": [
+      "--sarak-bg-noise-density"
+    ],
+    "allowedValues": {
+      "min": 1,
+      "max": 100,
+      "step": 1
+    },
+    "relatedTokens": [
+      "noiseIntensity"
+    ]
+  },
+  {
+    "tokenId": "bgNoiseAnimation",
+    "name": "Animação do Noise",
+    "description": "Se a textura de ruído é estática ou possui animação (estática do tipo TV antiga).",
+    "type": "boolean",
+    "importance": 50,
+    "categories": [
+      "animações",
+      "colors-and-atmosphere",
+      "efeitos"
+    ],
+    "tags": [
+      "noise",
+      "animation",
+      "motion"
+    ],
+    "databaseColumn": "colors_and_atmosphere",
+    "schemaOrigin": "atmosphere.ts",
+    "digitalTwins": [
+      "DesignInjector"
+    ],
+    "cssVariables": [],
+    "allowedValues": [
+      true,
+      false
+    ],
+    "relatedTokens": [
+      "noiseIntensity"
+    ]
+  },
+  {
+    "tokenId": "glassBlur",
+    "name": "Desfoque de Vidro (Glass Blur)",
+    "description": "Intensidade do backdrop-filter de blur nos materiais glassmorphism.",
+    "type": "string",
+    "importance": 85,
+    "categories": [
+      "efeitos",
+      "colors-and-atmosphere",
+      "glassmorphism"
+    ],
+    "tags": [
+      "glass",
+      "blur",
+      "backdrop"
+    ],
+    "databaseColumn": "colors_and_atmosphere",
+    "schemaOrigin": "atmosphere.ts",
+    "digitalTwins": [
+      "DesignInjector"
+    ],
+    "cssVariables": [
+      "--sarak-glass-blur",
+      "--glass-blur"
+    ],
+    "allowedValues": null,
+    "relatedTokens": [
+      "glassOpacity"
+    ]
+  },
+  {
+    "tokenId": "glassOpacity",
+    "name": "Opacidade do Vidro",
+    "description": "Transparência do painel nos estilos frosted e glassmorphism.",
+    "type": "number",
+    "importance": 85,
+    "categories": [
+      "efeitos",
+      "colors-and-atmosphere",
+      "glassmorphism"
+    ],
+    "tags": [
+      "glass",
+      "opacity",
+      "alpha"
+    ],
+    "databaseColumn": "colors_and_atmosphere",
+    "schemaOrigin": "atmosphere.ts",
+    "digitalTwins": [
+      "DesignInjector"
+    ],
+    "cssVariables": [
+      "--sarak-glass-opacity",
+      "--glass-opacity"
+    ],
+    "allowedValues": {
+      "min": 0,
+      "max": 1,
+      "step": 0.05
+    },
+    "relatedTokens": [
+      "glassBlur"
+    ]
+  },
+  {
+    "tokenId": "glassSpecularity",
+    "name": "Especularidade do Vidro",
+    "description": "Nível de brilho reflexivo artificial em superfícies de vidro.",
+    "type": "number",
+    "importance": 65,
+    "categories": [
+      "efeitos",
+      "colors-and-atmosphere",
+      "glassmorphism"
+    ],
+    "tags": [
+      "glass",
+      "specularity",
+      "shine"
+    ],
+    "databaseColumn": "colors_and_atmosphere",
+    "schemaOrigin": "atmosphere.ts",
+    "digitalTwins": [
+      "DesignInjector"
+    ],
+    "cssVariables": [
+      "--sarak-glass-specularity"
+    ],
+    "allowedValues": {
+      "min": 0,
+      "max": 1,
+      "step": 0.05
+    },
+    "relatedTokens": [
+      "surfaceMaterial"
+    ]
+  },
+  {
+    "tokenId": "glassRoughness",
+    "name": "Rugosidade do Vidro",
+    "description": "Nível de difusão de luz (fosco vs polido).",
+    "type": "number",
+    "importance": 65,
+    "categories": [
+      "efeitos",
+      "colors-and-atmosphere",
+      "glassmorphism"
+    ],
+    "tags": [
+      "glass",
+      "roughness",
+      "matte"
+    ],
+    "databaseColumn": "colors_and_atmosphere",
+    "schemaOrigin": "atmosphere.ts",
+    "digitalTwins": [
+      "DesignInjector"
+    ],
+    "cssVariables": [
+      "--sarak-glass-roughness"
+    ],
+    "allowedValues": {
+      "min": 0,
+      "max": 1,
+      "step": 0.05
+    },
+    "relatedTokens": [
+      "surfaceMaterial"
+    ]
+  },
+  {
+    "tokenId": "glassSaturation",
+    "name": "Saturação Atrás do Vidro",
+    "description": "Modificador de saturação (backdrop-filter) para o fundo que passa pelo vidro.",
+    "type": "number",
+    "importance": 60,
+    "categories": [
+      "efeitos",
+      "colors-and-atmosphere",
+      "glassmorphism"
+    ],
+    "tags": [
+      "glass",
+      "saturation",
+      "filter"
+    ],
+    "databaseColumn": "colors_and_atmosphere",
+    "schemaOrigin": "atmosphere.ts",
+    "digitalTwins": [
+      "DesignInjector"
+    ],
+    "cssVariables": [
+      "--sarak-glass-saturation"
+    ],
+    "allowedValues": {
+      "min": 0,
+      "max": 2,
+      "step": 0.1
+    },
+    "relatedTokens": [
+      "glassBlur"
+    ]
+  },
+  {
+    "tokenId": "shadowIntensity",
+    "name": "Intensidade da Sombra",
+    "description": "Nível de escuridão/opacidade das sombras (drop-shadows) projetadas por painéis.",
+    "type": "number",
+    "importance": 85,
+    "categories": [
+      "efeitos",
+      "sombra-luz",
+      "colors-and-atmosphere"
+    ],
+    "tags": [
+      "shadow",
+      "intensity",
+      "elevation"
+    ],
+    "databaseColumn": "colors_and_atmosphere",
+    "schemaOrigin": "atmosphere.ts",
+    "digitalTwins": [
+      "DesignInjector"
+    ],
+    "cssVariables": [
+      "--sarak-shadow-intensity"
+    ],
+    "allowedValues": {
+      "min": 0,
+      "max": 1,
+      "step": 0.05
+    },
+    "relatedTokens": [
+      "layeredShadows"
+    ]
+  },
+  {
+    "tokenId": "layeredShadows",
+    "name": "Sombras em Múltiplas Camadas",
+    "description": "Se ativado, utiliza sombras suaves formadas por múltiplos offsets, dando maior realismo.",
+    "type": "boolean",
+    "importance": 70,
+    "categories": [
+      "efeitos",
+      "sombra-luz",
+      "colors-and-atmosphere"
+    ],
+    "tags": [
+      "shadow",
+      "layered",
+      "realism"
+    ],
+    "databaseColumn": "colors_and_atmosphere",
+    "schemaOrigin": "atmosphere.ts",
+    "digitalTwins": [
+      "DesignInjector"
+    ],
+    "cssVariables": [],
+    "allowedValues": [
+      true,
+      false
+    ],
+    "relatedTokens": [
+      "shadowIntensity"
+    ]
+  },
+  {
+    "tokenId": "shadowOrientation",
+    "name": "Orientação da Sombra",
+    "description": "Ponto de luz virtual (e.g., bottom-right, top-left) que define para onde as sombras caem.",
+    "type": "select",
+    "importance": 70,
+    "categories": [
+      "geometria",
+      "sombra-luz",
+      "colors-and-atmosphere"
+    ],
+    "tags": [
+      "shadow",
+      "orientation",
+      "light"
+    ],
+    "databaseColumn": "colors_and_atmosphere",
+    "schemaOrigin": "atmosphere.ts",
+    "digitalTwins": [
+      "DesignInjector"
+    ],
+    "cssVariables": [
+      "--sarak-shadow-orientation"
+    ],
+    "allowedValues": [
+      "bottom-right",
+      "bottom",
+      "top-left",
+      "center"
+    ],
+    "relatedTokens": [
+      "shadowIntensity"
+    ]
+  },
+  {
+    "tokenId": "shadowColorMode",
+    "name": "Modo de Cor da Sombra",
+    "description": "A sombra é puro preto neutro ou sofre tonalização baseada na cor de fundo (tinted).",
+    "type": "select",
+    "importance": 65,
+    "categories": [
+      "cores",
+      "sombra-luz",
+      "colors-and-atmosphere"
+    ],
+    "tags": [
+      "shadow",
+      "color",
+      "tint"
+    ],
+    "databaseColumn": "colors_and_atmosphere",
+    "schemaOrigin": "atmosphere.ts",
+    "digitalTwins": [
+      "DesignInjector"
+    ],
+    "cssVariables": [
+      "--sarak-shadow-color-mode"
+    ],
+    "allowedValues": [
+      "neutral",
+      "tinted"
+    ],
+    "relatedTokens": [
+      "shadowIntensity"
+    ]
+  },
+  {
+    "tokenId": "shadowAmbientAlpha",
+    "name": "Alpha da Sombra Ambiente",
+    "description": "Transparência do halo próximo ao objeto (sombra de contato).",
+    "type": "number",
+    "importance": 60,
+    "categories": [
+      "efeitos",
+      "sombra-luz",
+      "colors-and-atmosphere"
+    ],
+    "tags": [
+      "shadow",
+      "ambient",
+      "alpha"
+    ],
+    "databaseColumn": "colors_and_atmosphere",
+    "schemaOrigin": "atmosphere.ts",
+    "digitalTwins": [
+      "DesignInjector"
+    ],
+    "cssVariables": [
+      "--sarak-shadow-ambient-alpha"
+    ],
+    "allowedValues": {
+      "min": 0,
+      "max": 1,
+      "step": 0.05
+    },
+    "relatedTokens": [
+      "shadowProjectionAlpha"
+    ]
+  },
+  {
+    "tokenId": "shadowProjectionBlur",
+    "name": "Desfoque da Sombra Projetada",
+    "description": "Tamanho do blur na sombra distante (projeção baseada em elevação).",
+    "type": "number",
+    "importance": 60,
+    "categories": [
+      "efeitos",
+      "sombra-luz",
+      "colors-and-atmosphere"
+    ],
+    "tags": [
+      "shadow",
+      "blur",
+      "projection"
+    ],
+    "databaseColumn": "colors_and_atmosphere",
+    "schemaOrigin": "atmosphere.ts",
+    "digitalTwins": [
+      "DesignInjector"
+    ],
+    "cssVariables": [
+      "--sarak-shadow-proj-blur"
+    ],
+    "allowedValues": {
+      "min": 0,
+      "max": 100,
+      "step": 1
+    },
+    "relatedTokens": [
+      "shadowProjectionAlpha"
+    ]
+  },
+  {
+    "tokenId": "shadowProjectionAlpha",
+    "name": "Alpha da Sombra Projetada",
+    "description": "Transparência da sombra principal à distância do objeto.",
+    "type": "number",
+    "importance": 60,
+    "categories": [
+      "efeitos",
+      "sombra-luz",
+      "colors-and-atmosphere"
+    ],
+    "tags": [
+      "shadow",
+      "projection",
+      "alpha"
+    ],
+    "databaseColumn": "colors_and_atmosphere",
+    "schemaOrigin": "atmosphere.ts",
+    "digitalTwins": [
+      "DesignInjector"
+    ],
+    "cssVariables": [
+      "--sarak-shadow-proj-alpha"
+    ],
+    "allowedValues": {
+      "min": 0,
+      "max": 1,
+      "step": 0.05
+    },
+    "relatedTokens": [
+      "shadowAmbientAlpha"
+    ]
+  },
+  {
+    "tokenId": "securityShieldGlow",
+    "name": "Brilho de Segurança (Shield Glow)",
+    "description": "Efeito especial de brilho pulsante usado em telas críticas ou restritas.",
+    "type": "boolean",
+    "importance": 50,
+    "categories": [
+      "efeitos",
+      "segurança",
+      "colors-and-atmosphere"
+    ],
+    "tags": [
+      "glow",
+      "security",
+      "pulse"
+    ],
+    "databaseColumn": "colors_and_atmosphere",
+    "schemaOrigin": "atmosphere.ts",
+    "digitalTwins": [
+      "DesignInjector"
+    ],
+    "cssVariables": [],
+    "allowedValues": [
+      true,
+      false
+    ],
+    "relatedTokens": [
+      "securityPulseSpeed"
+    ]
+  },
+  {
+    "tokenId": "securityPulseSpeed",
+    "name": "Velocidade do Pulso (Security)",
+    "description": "Ritmo da animação do glow de segurança se estiver ativado.",
+    "type": "select",
+    "importance": 40,
+    "categories": [
+      "animações",
+      "segurança",
+      "colors-and-atmosphere"
+    ],
+    "tags": [
+      "glow",
+      "speed",
+      "pulse"
+    ],
+    "databaseColumn": "colors_and_atmosphere",
+    "schemaOrigin": "atmosphere.ts",
+    "digitalTwins": [
+      "DesignInjector"
+    ],
+    "cssVariables": [
+      "--sarak-pulse-speed"
+    ],
+    "allowedValues": [
+      "slow",
+      "normal",
+      "fast",
+      "alert"
+    ],
+    "relatedTokens": [
+      "securityShieldGlow"
+    ]
+  },
+  {
+    "tokenId": "vignetteOpacity",
+    "name": "Opacidade da Vignette",
+    "description": "Escurecimento nas bordas da tela para focar a visão no centro.",
+    "type": "number",
+    "importance": 65,
+    "categories": [
+      "efeitos",
+      "câmera",
+      "colors-and-atmosphere"
+    ],
+    "tags": [
+      "vignette",
+      "focus",
+      "effect"
+    ],
+    "databaseColumn": "colors_and_atmosphere",
+    "schemaOrigin": "atmosphere.ts",
+    "digitalTwins": [
+      "DesignInjector"
+    ],
+    "cssVariables": [
+      "--sarak-vignette-opacity"
+    ],
+    "allowedValues": {
+      "min": 0,
+      "max": 1,
+      "step": 0.05
+    },
+    "relatedTokens": [
+      "vignetteSoftness"
+    ]
+  },
+  {
+    "tokenId": "vignetteSoftness",
+    "name": "Suavidade da Vignette",
+    "description": "Gradiente do escurecimento, do centro para as bordas.",
+    "type": "number",
+    "importance": 60,
+    "categories": [
+      "efeitos",
+      "câmera",
+      "colors-and-atmosphere"
+    ],
+    "tags": [
+      "vignette",
+      "softness",
+      "blur"
+    ],
+    "databaseColumn": "colors_and_atmosphere",
+    "schemaOrigin": "atmosphere.ts",
+    "digitalTwins": [
+      "DesignInjector"
+    ],
+    "cssVariables": [
+      "--sarak-vignette-softness"
+    ],
+    "allowedValues": {
+      "min": 0,
+      "max": 100,
+      "step": 1
+    },
+    "relatedTokens": [
+      "vignetteOpacity"
+    ]
+  },
+  {
+    "tokenId": "globalSaturation",
+    "name": "Saturação Global",
+    "description": "Modificador pós-processado que altera toda a vivacidade de cores da interface.",
+    "type": "number",
+    "importance": 85,
+    "categories": [
+      "cores",
+      "ajuste",
+      "colors-and-atmosphere"
+    ],
+    "tags": [
+      "saturation",
+      "global",
+      "post-process"
+    ],
+    "databaseColumn": "colors_and_atmosphere",
+    "schemaOrigin": "atmosphere.ts",
+    "digitalTwins": [
+      "DesignInjector"
+    ],
+    "cssVariables": [
+      "--sarak-global-saturation"
+    ],
+    "allowedValues": {
+      "min": 0,
+      "max": 2,
+      "step": 0.1
+    },
+    "relatedTokens": [
+      "globalContrast"
+    ]
+  },
+  {
+    "tokenId": "globalContrast",
+    "name": "Contraste Global",
+    "description": "Aumenta ou reduz o intervalo tonal (claros mais claros, escuros mais escuros).",
+    "type": "number",
+    "importance": 85,
+    "categories": [
+      "cores",
+      "ajuste",
+      "colors-and-atmosphere"
+    ],
+    "tags": [
+      "contrast",
+      "global",
+      "post-process"
+    ],
+    "databaseColumn": "colors_and_atmosphere",
+    "schemaOrigin": "atmosphere.ts",
+    "digitalTwins": [
+      "DesignInjector"
+    ],
+    "cssVariables": [
+      "--sarak-global-contrast"
+    ],
+    "allowedValues": {
+      "min": 0,
+      "max": 2,
+      "step": 0.1
+    },
+    "relatedTokens": [
+      "globalSaturation"
+    ]
+  },
+  {
+    "tokenId": "contrastCurve",
+    "name": "Curva de Contraste",
+    "description": "Maneira que os tons médios são processados (linear, dramático s-curve, suave).",
+    "type": "select",
+    "importance": 75,
+    "categories": [
+      "cores",
+      "ajuste",
+      "colors-and-atmosphere"
+    ],
+    "tags": [
+      "contrast",
+      "curve",
+      "post-process"
+    ],
+    "databaseColumn": "colors_and_atmosphere",
+    "schemaOrigin": "atmosphere.ts",
+    "digitalTwins": [
+      "DesignInjector"
+    ],
+    "cssVariables": [
+      "--sarak-contrast-curve"
+    ],
+    "allowedValues": [
+      "linear",
+      "s-curve",
+      "flat"
+    ],
+    "relatedTokens": [
+      "globalContrast"
+    ]
+  },
+  {
+    "tokenId": "statusSuccessColor",
+    "name": "Cor: Sucesso",
+    "description": "Cor primária para indicações de sucesso, conclusão ou ações positivas.",
+    "type": "color",
+    "importance": 90,
+    "categories": [
+      "cores",
+      "status",
+      "colors-and-atmosphere"
+    ],
+    "tags": [
+      "success",
+      "color",
+      "status"
+    ],
+    "databaseColumn": "colors_and_atmosphere",
+    "schemaOrigin": "status.ts",
+    "digitalTwins": [
+      "DesignInjector"
+    ],
+    "cssVariables": [
+      "--sarak-status-success-color",
+      "--theme-success"
+    ],
+    "allowedValues": null,
+    "relatedTokens": [
+      "statusErrorColor"
+    ]
+  },
+  {
+    "tokenId": "statusErrorColor",
+    "name": "Cor: Erro",
+    "description": "Cor primária para indicações de erro, falha ou ações destrutivas.",
+    "type": "color",
+    "importance": 90,
+    "categories": [
+      "cores",
+      "status",
+      "colors-and-atmosphere"
+    ],
+    "tags": [
+      "error",
+      "color",
+      "status"
+    ],
+    "databaseColumn": "colors_and_atmosphere",
+    "schemaOrigin": "status.ts",
+    "digitalTwins": [
+      "DesignInjector"
+    ],
+    "cssVariables": [
+      "--sarak-status-error-color",
+      "--theme-error"
+    ],
+    "allowedValues": null,
+    "relatedTokens": [
+      "statusWarningColor"
+    ]
+  },
+  {
+    "tokenId": "statusWarningColor",
+    "name": "Cor: Alerta",
+    "description": "Cor primária para indicações de atenção, avisos ou estados intermediários.",
+    "type": "color",
+    "importance": 90,
+    "categories": [
+      "cores",
+      "status",
+      "colors-and-atmosphere"
+    ],
+    "tags": [
+      "warning",
+      "color",
+      "status"
+    ],
+    "databaseColumn": "colors_and_atmosphere",
+    "schemaOrigin": "status.ts",
+    "digitalTwins": [
+      "DesignInjector"
+    ],
+    "cssVariables": [
+      "--sarak-status-warning-color",
+      "--theme-warning"
+    ],
+    "allowedValues": null,
+    "relatedTokens": [
+      "statusInfoColor"
+    ]
+  },
+  {
+    "tokenId": "statusInfoColor",
+    "name": "Cor: Info",
+    "description": "Cor primária para indicações de informação geral ou notas de sistema.",
+    "type": "color",
+    "importance": 90,
+    "categories": [
+      "cores",
+      "status",
+      "colors-and-atmosphere"
+    ],
+    "tags": [
+      "info",
+      "color",
+      "status"
+    ],
+    "databaseColumn": "colors_and_atmosphere",
+    "schemaOrigin": "status.ts",
+    "digitalTwins": [
+      "DesignInjector"
+    ],
+    "cssVariables": [
+      "--sarak-status-info-color",
+      "--theme-info"
+    ],
+    "allowedValues": null,
+    "relatedTokens": [
+      "statusSuccessColor"
+    ]
+  },
+  {
+    "tokenId": "badgeRadius",
+    "name": "Raio das Badges",
+    "description": "Arredondamento das bordas das badges de notificação e status.",
+    "type": "number",
+    "importance": 60,
+    "categories": [
+      "bordas",
+      "geometria",
+      "status",
+      "colors-and-atmosphere"
+    ],
+    "tags": [
+      "badge",
+      "radius",
+      "shape"
+    ],
+    "databaseColumn": "colors_and_atmosphere",
+    "schemaOrigin": "status.ts",
+    "digitalTwins": [
+      "DesignInjector"
+    ],
+    "cssVariables": [
+      "--sarak-badge-radius"
+    ],
+    "allowedValues": {
+      "min": 0,
+      "max": 20,
+      "step": 1
+    },
+    "relatedTokens": []
+  },
+  {
+    "tokenId": "globalBackgroundImageUrl",
+    "name": "URL da Imagem de Fundo",
+    "description": "Caminho da imagem de fundo global (pode ser arquivo ou base64).",
+    "type": "string",
+    "importance": 85,
+    "categories": [
+      "media",
+      "background",
+      "colors-and-atmosphere"
+    ],
+    "tags": [
+      "background",
+      "image",
+      "media"
+    ],
+    "databaseColumn": "colors_and_atmosphere",
+    "schemaOrigin": "media.ts",
+    "digitalTwins": [
+      "DesignInjector"
+    ],
+    "cssVariables": [
+      "--sarak-global-bg-image"
+    ],
+    "allowedValues": null,
+    "relatedTokens": [
+      "globalBackgroundOpacity"
+    ]
+  },
+  {
+    "tokenId": "globalBackgroundBlur",
+    "name": "Desfoque da Imagem Global",
+    "description": "Intensidade do blur aplicado à imagem de fundo.",
+    "type": "number",
+    "importance": 65,
+    "categories": [
+      "efeitos",
+      "media",
+      "colors-and-atmosphere"
+    ],
+    "tags": [
+      "blur",
+      "background",
+      "effect"
+    ],
+    "databaseColumn": "colors_and_atmosphere",
+    "schemaOrigin": "media.ts",
+    "digitalTwins": [
+      "DesignInjector"
+    ],
+    "cssVariables": [
+      "--sarak-global-bg-blur"
+    ],
+    "allowedValues": {
+      "min": 0,
+      "max": 100,
+      "step": 1
+    },
+    "relatedTokens": [
+      "globalBackgroundImageUrl"
+    ]
+  },
+  {
+    "tokenId": "globalBackgroundBlendMode",
+    "name": "Blend Mode (Mistura)",
+    "description": "Modo de mesclagem da imagem de fundo com as cores sólidas base.",
+    "type": "select",
+    "importance": 60,
+    "categories": [
+      "efeitos",
+      "media",
+      "colors-and-atmosphere"
+    ],
+    "tags": [
+      "blend-mode",
+      "background",
+      "mix"
+    ],
+    "databaseColumn": "colors_and_atmosphere",
+    "schemaOrigin": "media.ts",
+    "digitalTwins": [
+      "DesignInjector"
+    ],
+    "cssVariables": [
+      "--sarak-global-bg-blend-mode"
+    ],
+    "allowedValues": [
+      "normal",
+      "overlay",
+      "multiply",
+      "screen",
+      "soft-light"
+    ],
+    "relatedTokens": [
+      "globalBackgroundImageUrl"
+    ]
+  },
+  {
+    "tokenId": "globalBackgroundOpacity",
+    "name": "Opacidade da Imagem Global",
+    "description": "Nível de transparência da imagem de fundo principal.",
+    "type": "number",
+    "importance": 75,
+    "categories": [
+      "efeitos",
+      "media",
+      "colors-and-atmosphere"
+    ],
+    "tags": [
+      "opacity",
+      "background",
+      "alpha"
+    ],
+    "databaseColumn": "colors_and_atmosphere",
+    "schemaOrigin": "media.ts",
+    "digitalTwins": [
+      "DesignInjector"
+    ],
+    "cssVariables": [
+      "--sarak-global-bg-opacity"
+    ],
+    "allowedValues": {
+      "min": 0,
+      "max": 1,
+      "step": 0.05
+    },
+    "relatedTokens": [
+      "globalBackgroundImageUrl"
+    ]
+  }
+]

@@ -1,0 +1,1560 @@
+[
+  {
+    "tokenId": "cardBorderRadius",
+    "name": "Raio da Borda do Card (Master)",
+    "description": "Governa o arredondamento de todos os cartões. Pode ser substituído individualmente por cantos específicos.",
+    "type": "number",
+    "importance": 85,
+    "categories": [
+      "cards",
+      "geometria",
+      "superficie"
+    ],
+    "tags": [
+      "estetica",
+      "radius",
+      "container"
+    ],
+    "databaseColumn": "cards_engine",
+    "schemaOrigin": "cards.ts",
+    "digitalTwins": [
+      "SarakCard",
+      "DesignInjector"
+    ],
+    "cssVariables": [
+      "--radius-theme",
+      "--sarak-card-radius",
+      "--sarak-card-radius-tl",
+      "--sarak-card-radius-tr",
+      "--sarak-card-radius-bl",
+      "--sarak-card-radius-br"
+    ],
+    "allowedValues": {
+      "min": 0,
+      "max": 120
+    },
+    "relatedTokens": [
+      "cardGeometricCut",
+      "borderRadius"
+    ]
+  },
+  {
+    "tokenId": "cardRadiusTL",
+    "name": "Quina Superior Esquerda do Card",
+    "description": "Sobrescreve o raio mestre apenas no canto superior esquerdo.",
+    "type": "number",
+    "importance": 50,
+    "categories": [
+      "cards",
+      "geometria",
+      "assimetria"
+    ],
+    "tags": [
+      "radius"
+    ],
+    "databaseColumn": "cards_engine",
+    "schemaOrigin": "cards.ts",
+    "digitalTwins": [
+      "SarakCard"
+    ],
+    "cssVariables": [
+      "--sarak-card-radius-tl"
+    ],
+    "allowedValues": {
+      "min": 0,
+      "max": 120
+    },
+    "relatedTokens": [
+      "cardBorderRadius"
+    ]
+  },
+  {
+    "tokenId": "cardRadiusTR",
+    "name": "Quina Superior Direita do Card",
+    "description": "Sobrescreve o raio mestre apenas no canto superior direito.",
+    "type": "number",
+    "importance": 50,
+    "categories": [
+      "cards",
+      "geometria",
+      "assimetria"
+    ],
+    "tags": [
+      "radius"
+    ],
+    "databaseColumn": "cards_engine",
+    "schemaOrigin": "cards.ts",
+    "digitalTwins": [
+      "SarakCard"
+    ],
+    "cssVariables": [
+      "--sarak-card-radius-tr"
+    ],
+    "allowedValues": {
+      "min": 0,
+      "max": 120
+    },
+    "relatedTokens": [
+      "cardBorderRadius"
+    ]
+  },
+  {
+    "tokenId": "cardRadiusBL",
+    "name": "Quina Inferior Esquerda do Card",
+    "description": "Sobrescreve o raio mestre apenas no canto inferior esquerdo.",
+    "type": "number",
+    "importance": 50,
+    "categories": [
+      "cards",
+      "geometria",
+      "assimetria"
+    ],
+    "tags": [
+      "radius"
+    ],
+    "databaseColumn": "cards_engine",
+    "schemaOrigin": "cards.ts",
+    "digitalTwins": [
+      "SarakCard"
+    ],
+    "cssVariables": [
+      "--sarak-card-radius-bl"
+    ],
+    "allowedValues": {
+      "min": 0,
+      "max": 120
+    },
+    "relatedTokens": [
+      "cardBorderRadius"
+    ]
+  },
+  {
+    "tokenId": "cardRadiusBR",
+    "name": "Quina Inferior Direita do Card",
+    "description": "Sobrescreve o raio mestre apenas no canto inferior direito.",
+    "type": "number",
+    "importance": 50,
+    "categories": [
+      "cards",
+      "geometria",
+      "assimetria"
+    ],
+    "tags": [
+      "radius"
+    ],
+    "databaseColumn": "cards_engine",
+    "schemaOrigin": "cards.ts",
+    "digitalTwins": [
+      "SarakCard"
+    ],
+    "cssVariables": [
+      "--sarak-card-radius-br"
+    ],
+    "allowedValues": {
+      "min": 0,
+      "max": 120
+    },
+    "relatedTokens": [
+      "cardBorderRadius"
+    ]
+  },
+  {
+    "tokenId": "cardGeometricCut",
+    "name": "Corte Geométrico (Chanfro) do Card",
+    "description": "Aplica um corte em ângulo estilo sci-fi/cyberpunk nos cartões em vez de uma curva suave.",
+    "type": "number",
+    "importance": 70,
+    "categories": [
+      "cards",
+      "geometria",
+      "efeito"
+    ],
+    "tags": [
+      "estetica",
+      "cyberpunk",
+      "chanfro"
+    ],
+    "databaseColumn": "cards_engine",
+    "schemaOrigin": "cards.ts",
+    "digitalTwins": [
+      "SarakCard"
+    ],
+    "cssVariables": [
+      "--sarak-card-geometric-cut"
+    ],
+    "allowedValues": {
+      "min": 0,
+      "max": 100
+    },
+    "relatedTokens": [
+      "cardBorderRadius"
+    ]
+  },
+  {
+    "tokenId": "cardBackgroundColor",
+    "name": "Cor de Fundo do Card",
+    "description": "Cor primária de todas as superfícies de cartão. Em ambientes cyber, usar fundos semitransparentes com Glassmorphism.",
+    "type": "color",
+    "importance": 90,
+    "categories": [
+      "cores",
+      "cards",
+      "superficie"
+    ],
+    "tags": [
+      "background",
+      "glass",
+      "fill"
+    ],
+    "databaseColumn": "cards_engine",
+    "schemaOrigin": "cards.ts",
+    "digitalTwins": [
+      "SarakCard"
+    ],
+    "cssVariables": [
+      "--card-bg",
+      "--theme-surface",
+      "--theme-card",
+      "--sarak-card-bg"
+    ],
+    "allowedValues": null,
+    "relatedTokens": [
+      "cardBackdropBlur",
+      "cardSurfaceOpacity"
+    ]
+  },
+  {
+    "tokenId": "cardBackdropBlur",
+    "name": "Intensidade do Backdrop Blur (Glass)",
+    "description": "Nível de desfoque de fundo atrás do cartão. Essencial para Glassmorphism premium.",
+    "type": "number",
+    "importance": 85,
+    "categories": [
+      "cards",
+      "efeito",
+      "glassmorphism"
+    ],
+    "tags": [
+      "blur",
+      "estetica",
+      "premium"
+    ],
+    "databaseColumn": "cards_engine",
+    "schemaOrigin": "cards.ts",
+    "digitalTwins": [
+      "SarakCard"
+    ],
+    "cssVariables": [
+      "--sarak-card-backdrop-blur",
+      "--sarak-card-blur",
+      "--sarak-glass-blur"
+    ],
+    "allowedValues": {
+      "min": 0,
+      "max": 100
+    },
+    "relatedTokens": [
+      "cardBackgroundColor"
+    ]
+  },
+  {
+    "tokenId": "cardSurfaceOpacity",
+    "name": "Opacidade da Superfície do Card",
+    "description": "Transparência nativa do cartão. Geralmente casada com Backdrop Blur para dar profundidade.",
+    "type": "number",
+    "importance": 70,
+    "categories": [
+      "cards",
+      "efeito",
+      "opacidade"
+    ],
+    "tags": [
+      "glass",
+      "alpha"
+    ],
+    "databaseColumn": "cards_engine",
+    "schemaOrigin": "cards.ts",
+    "digitalTwins": [
+      "SarakCard"
+    ],
+    "cssVariables": [
+      "--sarak-card-surface-opacity",
+      "--sarak-card-opacity"
+    ],
+    "allowedValues": {
+      "min": 0,
+      "max": 1,
+      "step": 0.05
+    },
+    "relatedTokens": [
+      "cardBackgroundColor",
+      "cardBackdropBlur"
+    ]
+  },
+  {
+    "tokenId": "cardBorderWidth",
+    "name": "Espessura da Borda do Card",
+    "description": "Controla se o card tem bordas demarcadas.",
+    "type": "number",
+    "importance": 60,
+    "categories": [
+      "cards",
+      "bordas",
+      "espessura"
+    ],
+    "tags": [
+      "stroke"
+    ],
+    "databaseColumn": "cards_engine",
+    "schemaOrigin": "cards.ts",
+    "digitalTwins": [
+      "SarakCard"
+    ],
+    "cssVariables": [
+      "--card-border-width",
+      "--theme-border-width",
+      "--sarak-card-border-width"
+    ],
+    "allowedValues": {
+      "min": 0,
+      "max": 20
+    },
+    "relatedTokens": [
+      "cardBorderColor"
+    ]
+  },
+  {
+    "tokenId": "cardBorderColor",
+    "name": "Cor da Borda do Card",
+    "description": "Coloração da linha que contorna o cartão.",
+    "type": "color",
+    "importance": 60,
+    "categories": [
+      "cores",
+      "cards",
+      "bordas"
+    ],
+    "tags": [
+      "stroke"
+    ],
+    "databaseColumn": "cards_engine",
+    "schemaOrigin": "cards.ts",
+    "digitalTwins": [
+      "SarakCard"
+    ],
+    "cssVariables": [
+      "--card-border-color",
+      "--theme-border",
+      "--sarak-card-border-color"
+    ],
+    "allowedValues": null,
+    "relatedTokens": [
+      "cardBorderWidth",
+      "cardBorderOpacity"
+    ]
+  },
+  {
+    "tokenId": "cardBorderOpacity",
+    "name": "Opacidade da Borda do Card",
+    "description": "Controle fino de transparência apenas para a borda. Útil para contornos luminosos suaves.",
+    "type": "number",
+    "importance": 50,
+    "categories": [
+      "cards",
+      "bordas",
+      "opacidade"
+    ],
+    "tags": [
+      "efeito",
+      "alpha"
+    ],
+    "databaseColumn": "cards_engine",
+    "schemaOrigin": "cards.ts",
+    "digitalTwins": [
+      "SarakCard"
+    ],
+    "cssVariables": [
+      "--sarak-card-border-opacity"
+    ],
+    "allowedValues": {
+      "min": 0,
+      "max": 1,
+      "step": 0.05
+    },
+    "relatedTokens": [
+      "cardBorderColor"
+    ]
+  },
+  {
+    "tokenId": "cardBorderTop",
+    "name": "Borda do Card: Topo",
+    "description": "Espessura isolada da borda superior do cartão. Usada em cartões que destacam a parte superior (ex: status headers).",
+    "type": "number",
+    "importance": 40,
+    "categories": [
+      "cards",
+      "bordas",
+      "assimetria"
+    ],
+    "tags": [
+      "stroke"
+    ],
+    "databaseColumn": "cards_engine",
+    "schemaOrigin": "cards.ts",
+    "digitalTwins": [
+      "SarakCard"
+    ],
+    "cssVariables": [
+      "--sarak-card-border-top"
+    ],
+    "allowedValues": {
+      "min": 0,
+      "max": 40
+    },
+    "relatedTokens": [
+      "cardBorderWidth"
+    ]
+  },
+  {
+    "tokenId": "cardBorderBottom",
+    "name": "Borda do Card: Base",
+    "description": "Espessura isolada da borda inferior do cartão. Comum em painéis táticos para criar peso visual.",
+    "type": "number",
+    "importance": 40,
+    "categories": [
+      "cards",
+      "bordas",
+      "assimetria"
+    ],
+    "tags": [
+      "stroke"
+    ],
+    "databaseColumn": "cards_engine",
+    "schemaOrigin": "cards.ts",
+    "digitalTwins": [
+      "SarakCard"
+    ],
+    "cssVariables": [
+      "--sarak-card-border-bottom"
+    ],
+    "allowedValues": {
+      "min": 0,
+      "max": 40
+    },
+    "relatedTokens": [
+      "cardBorderWidth"
+    ]
+  },
+  {
+    "tokenId": "cardBorderLeft",
+    "name": "Borda do Card: Esquerda",
+    "description": "Espessura isolada da borda esquerda do cartão. Frequentemente usada para indicar status ativo ou perigo (ex: alertas vermelhos).",
+    "type": "number",
+    "importance": 45,
+    "categories": [
+      "cards",
+      "bordas",
+      "assimetria"
+    ],
+    "tags": [
+      "stroke"
+    ],
+    "databaseColumn": "cards_engine",
+    "schemaOrigin": "cards.ts",
+    "digitalTwins": [
+      "SarakCard"
+    ],
+    "cssVariables": [
+      "--sarak-card-border-left"
+    ],
+    "allowedValues": {
+      "min": 0,
+      "max": 40
+    },
+    "relatedTokens": [
+      "cardBorderWidth"
+    ]
+  },
+  {
+    "tokenId": "cardBorderRight",
+    "name": "Borda do Card: Direita",
+    "description": "Espessura isolada da borda direita do cartão.",
+    "type": "number",
+    "importance": 30,
+    "categories": [
+      "cards",
+      "bordas",
+      "assimetria"
+    ],
+    "tags": [
+      "stroke"
+    ],
+    "databaseColumn": "cards_engine",
+    "schemaOrigin": "cards.ts",
+    "digitalTwins": [
+      "SarakCard"
+    ],
+    "cssVariables": [
+      "--sarak-card-border-right"
+    ],
+    "allowedValues": {
+      "min": 0,
+      "max": 40
+    },
+    "relatedTokens": [
+      "cardBorderWidth"
+    ]
+  },
+  {
+    "tokenId": "cardInnerGlowColor",
+    "name": "Cor do Glow Interno do Card",
+    "description": "Define a cor da iluminação interna suave nas bordas, dando volume ao cartão glassmórfico.",
+    "type": "color",
+    "importance": 65,
+    "categories": [
+      "cores",
+      "cards",
+      "iluminacao"
+    ],
+    "tags": [
+      "efeito",
+      "glow",
+      "glass"
+    ],
+    "databaseColumn": "cards_engine",
+    "schemaOrigin": "cards.ts",
+    "digitalTwins": [
+      "SarakCard"
+    ],
+    "cssVariables": [
+      "--sarak-card-inner-glow-color"
+    ],
+    "allowedValues": null,
+    "relatedTokens": [
+      "cardInnerGlowWidth"
+    ]
+  },
+  {
+    "tokenId": "cardInnerGlowWidth",
+    "name": "Espessura do Glow Interno do Card",
+    "description": "Controla até onde a luz se espalha a partir das bordas para o centro do cartão.",
+    "type": "number",
+    "importance": 60,
+    "categories": [
+      "efeitos",
+      "cards",
+      "sombra-luz"
+    ],
+    "tags": [
+      "efeito",
+      "glow"
+    ],
+    "databaseColumn": "cards_engine",
+    "schemaOrigin": "cards.ts",
+    "digitalTwins": [
+      "SarakCard"
+    ],
+    "cssVariables": [
+      "--sarak-card-inner-glow-width"
+    ],
+    "allowedValues": {
+      "min": 0,
+      "max": 30
+    },
+    "relatedTokens": [
+      "cardInnerGlowColor"
+    ]
+  },
+  {
+    "tokenId": "cardTextureType",
+    "name": "Textura da Superfície do Card",
+    "description": "Tipo de padrão (Grid, Dots, Scanlines) a ser sobreposto no cartão, dando vida ao material.",
+    "type": "select",
+    "importance": 85,
+    "categories": [
+      "estilo",
+      "cards",
+      "texturas"
+    ],
+    "tags": [
+      "pattern",
+      "material"
+    ],
+    "databaseColumn": "cards_engine",
+    "schemaOrigin": "cards.ts",
+    "digitalTwins": [
+      "SarakCard"
+    ],
+    "cssVariables": [
+      "--sarak-card-texture-type"
+    ],
+    "allowedValues": [
+      "none",
+      "grid",
+      "dots",
+      "noise",
+      "grain",
+      "mesh",
+      "waves",
+      "squares",
+      "stripes",
+      "topo",
+      "diamond",
+      "prestige",
+      "carbon",
+      "brushed",
+      "frosted",
+      "circuit",
+      "paper",
+      "scanlines",
+      "hexagon",
+      "silk",
+      "blueprint",
+      "aurora",
+      "stars",
+      "honeycomb",
+      "isometric",
+      "radar",
+      "crosshatch",
+      "micro-dots",
+      "pinstripes",
+      "constellation",
+      "circuit-pro",
+      "carbon-tech",
+      "topo-deep",
+      "prism-mesh",
+      "cyber-binary",
+      "blueprint-pro",
+      "wave-pulse",
+      "wood",
+      "stucco",
+      "fluid",
+      "nebula"
+    ],
+    "relatedTokens": [
+      "cardTextureOpacity"
+    ]
+  },
+  {
+    "tokenId": "cardTextureOpacity",
+    "name": "Opacidade da Textura do Card",
+    "description": "Quão visível será o padrão textual no fundo do cartão.",
+    "type": "number",
+    "importance": 80,
+    "categories": [
+      "estilo",
+      "cards",
+      "texturas",
+      "opacidade"
+    ],
+    "tags": [
+      "pattern",
+      "alpha"
+    ],
+    "databaseColumn": "cards_engine",
+    "schemaOrigin": "cards.ts",
+    "digitalTwins": [
+      "SarakCard"
+    ],
+    "cssVariables": [
+      "--sarak-card-texture-opacity"
+    ],
+    "allowedValues": {
+      "min": 0,
+      "max": 1,
+      "step": 0.01
+    },
+    "relatedTokens": [
+      "cardTextureType"
+    ]
+  },
+  {
+    "tokenId": "cardHeaderBg",
+    "name": "Cor de Fundo do Header",
+    "description": "Fundo específico para a seção de cabeçalho do cartão.",
+    "type": "color",
+    "importance": 50,
+    "categories": [
+      "cores",
+      "cards",
+      "cabecalho"
+    ],
+    "tags": [
+      "header",
+      "background"
+    ],
+    "databaseColumn": "cards_engine",
+    "schemaOrigin": "cards.ts",
+    "digitalTwins": [
+      "SarakCard"
+    ],
+    "cssVariables": [
+      "--sarak-card-header-bg"
+    ],
+    "allowedValues": null,
+    "relatedTokens": [
+      "cardHeaderBorder"
+    ]
+  },
+  {
+    "tokenId": "cardHeaderBorder",
+    "name": "Linha Divisora Inferior do Header",
+    "description": "Cor da borda que separa o header do corpo do cartão.",
+    "type": "color",
+    "importance": 40,
+    "categories": [
+      "cores",
+      "cards",
+      "bordas"
+    ],
+    "tags": [
+      "header",
+      "separator"
+    ],
+    "databaseColumn": "cards_engine",
+    "schemaOrigin": "cards.ts",
+    "digitalTwins": [
+      "SarakCard"
+    ],
+    "cssVariables": [
+      "--sarak-card-header-border"
+    ],
+    "allowedValues": null,
+    "relatedTokens": [
+      "cardHeaderBg"
+    ]
+  },
+  {
+    "tokenId": "cardHeaderPadding",
+    "name": "Padding Vertical do Header",
+    "description": "Espaço de respiro vertical interno do header.",
+    "type": "number",
+    "importance": 40,
+    "categories": [
+      "layout",
+      "cards",
+      "espacamento"
+    ],
+    "tags": [
+      "header",
+      "padding"
+    ],
+    "databaseColumn": "cards_engine",
+    "schemaOrigin": "cards.ts",
+    "digitalTwins": [
+      "SarakCard"
+    ],
+    "cssVariables": [
+      "--sarak-card-header-padding"
+    ],
+    "allowedValues": {
+      "min": 0,
+      "max": 120
+    },
+    "relatedTokens": [
+      "cardPaddingMd"
+    ]
+  },
+  {
+    "tokenId": "cardFooterBg",
+    "name": "Cor de Fundo do Footer",
+    "description": "Fundo específico para a seção de rodapé do cartão.",
+    "type": "color",
+    "importance": 50,
+    "categories": [
+      "cores",
+      "cards",
+      "rodape"
+    ],
+    "tags": [
+      "footer",
+      "background"
+    ],
+    "databaseColumn": "cards_engine",
+    "schemaOrigin": "cards.ts",
+    "digitalTwins": [
+      "SarakCard"
+    ],
+    "cssVariables": [
+      "--sarak-card-footer-bg"
+    ],
+    "allowedValues": null,
+    "relatedTokens": [
+      "cardFooterBorder"
+    ]
+  },
+  {
+    "tokenId": "cardFooterBorder",
+    "name": "Linha Divisora Superior do Footer",
+    "description": "Cor da borda que separa o footer do corpo do cartão.",
+    "type": "color",
+    "importance": 40,
+    "categories": [
+      "cores",
+      "cards",
+      "bordas"
+    ],
+    "tags": [
+      "footer",
+      "separator"
+    ],
+    "databaseColumn": "cards_engine",
+    "schemaOrigin": "cards.ts",
+    "digitalTwins": [
+      "SarakCard"
+    ],
+    "cssVariables": [
+      "--sarak-card-footer-border"
+    ],
+    "allowedValues": null,
+    "relatedTokens": [
+      "cardFooterBg"
+    ]
+  },
+  {
+    "tokenId": "cardShadowSpread",
+    "name": "Espalhamento da Sombra do Card",
+    "description": "A distância e desfoque da projeção de sombra do cartão no ambiente.",
+    "type": "number",
+    "importance": 70,
+    "categories": [
+      "efeitos",
+      "cards",
+      "sombra-luz"
+    ],
+    "tags": [
+      "shadow",
+      "depth"
+    ],
+    "databaseColumn": "cards_engine",
+    "schemaOrigin": "cards.ts",
+    "digitalTwins": [
+      "SarakCard"
+    ],
+    "cssVariables": [
+      "--sarak-card-shadow-spread"
+    ],
+    "allowedValues": {
+      "min": 0,
+      "max": 200
+    },
+    "relatedTokens": [
+      "cardGlowIntensity"
+    ]
+  },
+  {
+    "tokenId": "cardGlowColor",
+    "name": "Cor do Brilho Externo (Neon)",
+    "description": "A cor da aura luminosa ao redor do cartão (estética Sci-Fi).",
+    "type": "color",
+    "importance": 60,
+    "categories": [
+      "cores",
+      "cards",
+      "iluminacao"
+    ],
+    "tags": [
+      "neon",
+      "glow",
+      "cyber"
+    ],
+    "databaseColumn": "cards_engine",
+    "schemaOrigin": "cards.ts",
+    "digitalTwins": [
+      "SarakCard"
+    ],
+    "cssVariables": [
+      "--sarak-card-glow-color"
+    ],
+    "allowedValues": null,
+    "relatedTokens": [
+      "cardGlowIntensity"
+    ]
+  },
+  {
+    "tokenId": "cardGlowIntensity",
+    "name": "Intensidade do Brilho Externo",
+    "description": "Força com que o brilho Neon é emitido para fora do cartão.",
+    "type": "number",
+    "importance": 65,
+    "categories": [
+      "efeitos",
+      "cards",
+      "sombra-luz"
+    ],
+    "tags": [
+      "neon",
+      "glow"
+    ],
+    "databaseColumn": "cards_engine",
+    "schemaOrigin": "cards.ts",
+    "digitalTwins": [
+      "SarakCard"
+    ],
+    "cssVariables": [
+      "--sarak-card-glow-intensity"
+    ],
+    "allowedValues": {
+      "min": 0,
+      "max": 1,
+      "step": 0.05
+    },
+    "relatedTokens": [
+      "cardGlowColor"
+    ]
+  },
+  {
+    "tokenId": "cardHoverTranslate",
+    "name": "Elevação no Hover (Y)",
+    "description": "Quantos pixels o cartão deve subir (levitar) quando o usuário passa o mouse por cima.",
+    "type": "number",
+    "importance": 80,
+    "categories": [
+      "interacao",
+      "cards",
+      "animacao"
+    ],
+    "tags": [
+      "hover",
+      "motion",
+      "ux"
+    ],
+    "databaseColumn": "cards_engine",
+    "schemaOrigin": "cards.ts",
+    "digitalTwins": [
+      "SarakCard"
+    ],
+    "cssVariables": [
+      "--sarak-card-hover-y"
+    ],
+    "allowedValues": {
+      "min": -50,
+      "max": 10
+    },
+    "relatedTokens": [
+      "cardHoverGlowIncrease"
+    ]
+  },
+  {
+    "tokenId": "cardHoverGlowIncrease",
+    "name": "Aumento de Brilho no Hover",
+    "description": "Quantidade extra de brilho externo (Glow) adicionada ao interagir com o cartão.",
+    "type": "number",
+    "importance": 70,
+    "categories": [
+      "efeitos",
+      "interacao",
+      "cards"
+    ],
+    "tags": [
+      "hover",
+      "glow",
+      "ux"
+    ],
+    "databaseColumn": "cards_engine",
+    "schemaOrigin": "cards.ts",
+    "digitalTwins": [
+      "SarakCard"
+    ],
+    "cssVariables": [
+      "--sarak-card-hover-glow"
+    ],
+    "allowedValues": {
+      "min": 0,
+      "max": 1,
+      "step": 0.05
+    },
+    "relatedTokens": [
+      "cardGlowIntensity",
+      "cardHoverTranslate"
+    ]
+  },
+  {
+    "tokenId": "cardSpotlightOpacity",
+    "name": "Opacidade do Spotlight (Mouse Tracking)",
+    "description": "Opacidade do efeito de holofote (Spotlight) que segue o cursor dentro do cartão.",
+    "type": "number",
+    "importance": 85,
+    "categories": [
+      "efeitos",
+      "interacao",
+      "cards"
+    ],
+    "tags": [
+      "spotlight",
+      "hover",
+      "premium"
+    ],
+    "databaseColumn": "cards_engine",
+    "schemaOrigin": "cards.ts",
+    "digitalTwins": [
+      "SarakCard",
+      "SpotlightEffect"
+    ],
+    "cssVariables": [
+      "--spotlight-opacity"
+    ],
+    "allowedValues": {
+      "min": 0,
+      "max": 1,
+      "step": 0.05
+    },
+    "relatedTokens": [
+      "cardHoverGlowIncrease"
+    ]
+  },
+  {
+    "tokenId": "cardPaddingMd",
+    "name": "Padding Interno (Master/MD)",
+    "description": "Respiro base interno do cartão.",
+    "type": "number",
+    "importance": 90,
+    "categories": [
+      "layout",
+      "cards",
+      "espacamento"
+    ],
+    "tags": [
+      "padding",
+      "ux"
+    ],
+    "databaseColumn": "cards_engine",
+    "schemaOrigin": "cards.ts",
+    "digitalTwins": [
+      "SarakCard"
+    ],
+    "cssVariables": [
+      "--sarak-card-padding-md",
+      "--theme-gap"
+    ],
+    "allowedValues": {
+      "min": 0,
+      "max": 120
+    },
+    "relatedTokens": [
+      "cardHeaderPadding"
+    ]
+  },
+  {
+    "tokenId": "cardVariant",
+    "name": "Variante de Card",
+    "description": "Estilo pré-definido arquitetural do cartão (Ex: Classic, Sleek Title, Action).",
+    "type": "select",
+    "importance": 85,
+    "categories": [
+      "cards",
+      "arquitetura",
+      "variante"
+    ],
+    "tags": [
+      "preset"
+    ],
+    "databaseColumn": "cards_engine",
+    "schemaOrigin": "cards.ts",
+    "digitalTwins": [
+      "SarakCard"
+    ],
+    "cssVariables": [
+      "--sarak-card-variant"
+    ],
+    "allowedValues": [
+      "classic",
+      "title",
+      "action",
+      "search"
+    ],
+    "relatedTokens": [
+      "cardGeometricCut",
+      "cardPaddingMd"
+    ]
+  },
+  {
+    "tokenId": "imageCardOverlayOpacity",
+    "name": "Opacidade do Overlay em Cartões de Imagem",
+    "description": "Define a escuridão da película sobre imagens dentro de cartões para legibilidade de texto.",
+    "type": "number",
+    "importance": 50,
+    "categories": [
+      "cards",
+      "efeito",
+      "imagem"
+    ],
+    "tags": [
+      "overlay",
+      "alpha"
+    ],
+    "databaseColumn": "cards_engine",
+    "schemaOrigin": "cards.ts",
+    "digitalTwins": [
+      "SarakImageCard"
+    ],
+    "cssVariables": [
+      "--sarak-image-card-overlay-opacity"
+    ],
+    "allowedValues": {
+      "min": 0,
+      "max": 1,
+      "step": 0.05
+    },
+    "relatedTokens": [
+      "imageCardHoverZoom"
+    ]
+  },
+  {
+    "tokenId": "imageCardHoverZoom",
+    "name": "Efeito de Zoom (Hover) em Cartões de Imagem",
+    "description": "Controla o zoom inético das imagens dentro do cartão ao passar o mouse.",
+    "type": "number",
+    "importance": 60,
+    "categories": [
+      "cards",
+      "interacao",
+      "animacao"
+    ],
+    "tags": [
+      "hover",
+      "zoom",
+      "imagem"
+    ],
+    "databaseColumn": "cards_engine",
+    "schemaOrigin": "cards.ts",
+    "digitalTwins": [
+      "SarakImageCard"
+    ],
+    "cssVariables": [
+      "--sarak-image-card-hover-zoom"
+    ],
+    "allowedValues": {
+      "min": 1,
+      "max": 1.5,
+      "step": 0.01
+    },
+    "relatedTokens": [
+      "imageCardOverlayOpacity"
+    ]
+  },
+  {
+    "tokenId": "cardTitleFontSize",
+    "name": "Tamanho da Fonte do Título (Card)",
+    "description": "Tamanho específico para títulos principais de cartão.",
+    "type": "number",
+    "importance": 70,
+    "categories": [
+      "tipografia",
+      "cards",
+      "tamanho"
+    ],
+    "tags": [
+      "font-size",
+      "h3"
+    ],
+    "databaseColumn": "cards_engine",
+    "schemaOrigin": "cards.ts",
+    "digitalTwins": [
+      "SarakCard"
+    ],
+    "cssVariables": [],
+    "allowedValues": {
+      "min": 10,
+      "max": 64
+    },
+    "relatedTokens": [
+      "cardTitleColor",
+      "cardTitleFontWeight"
+    ]
+  },
+  {
+    "tokenId": "cardTitleColor",
+    "name": "Cor do Título (Card)",
+    "description": "A cor principal para o texto em destaque no cabeçalho do cartão.",
+    "type": "color",
+    "importance": 70,
+    "categories": [
+      "cores",
+      "cards",
+      "tipografia"
+    ],
+    "tags": [
+      "text",
+      "color"
+    ],
+    "databaseColumn": "cards_engine",
+    "schemaOrigin": "cards.ts",
+    "digitalTwins": [
+      "SarakCard"
+    ],
+    "cssVariables": [],
+    "allowedValues": null,
+    "relatedTokens": [
+      "cardTitleFontSize"
+    ]
+  },
+  {
+    "tokenId": "cardTitleFontWeight",
+    "name": "Peso da Fonte do Título (Card)",
+    "description": "Peso (Bold, Medium, etc.) para os títulos dentro do cartão.",
+    "type": "select",
+    "importance": 60,
+    "categories": [
+      "tipografia",
+      "cards",
+      "peso"
+    ],
+    "tags": [
+      "font-weight"
+    ],
+    "databaseColumn": "cards_engine",
+    "schemaOrigin": "cards.ts",
+    "digitalTwins": [
+      "SarakCard"
+    ],
+    "cssVariables": [],
+    "allowedValues": [
+      "100",
+      "300",
+      "400",
+      "500",
+      "600",
+      "700",
+      "800",
+      "900"
+    ],
+    "relatedTokens": [
+      "cardTitleFontSize"
+    ]
+  },
+  {
+    "tokenId": "cardTitleLetterSpacing",
+    "name": "Espaçamento de Letras do Título (Card)",
+    "description": "Ajuste fino (tracking) para dar aspecto mais tecnológico ou elegante aos títulos.",
+    "type": "number",
+    "importance": 50,
+    "categories": [
+      "tipografia",
+      "cards",
+      "espacamento"
+    ],
+    "tags": [
+      "letter-spacing",
+      "estetica"
+    ],
+    "databaseColumn": "cards_engine",
+    "schemaOrigin": "cards.ts",
+    "digitalTwins": [
+      "SarakCard"
+    ],
+    "cssVariables": [],
+    "allowedValues": {
+      "min": -2,
+      "max": 10,
+      "step": 0.5
+    },
+    "relatedTokens": [
+      "cardTitleFontWeight"
+    ]
+  },
+  {
+    "tokenId": "cardTitleIconGlow",
+    "name": "Glow no Ícone do Título (Card)",
+    "description": "Intensidade do brilho em ícones localizados perto dos títulos do cartão.",
+    "type": "number",
+    "importance": 50,
+    "categories": [
+      "efeitos",
+      "cards",
+      "iluminacao"
+    ],
+    "tags": [
+      "icon",
+      "glow"
+    ],
+    "databaseColumn": "cards_engine",
+    "schemaOrigin": "cards.ts",
+    "digitalTwins": [
+      "SarakCard"
+    ],
+    "cssVariables": [],
+    "allowedValues": {
+      "min": 0,
+      "max": 1,
+      "step": 0.05
+    },
+    "relatedTokens": [
+      "cardTitleColor"
+    ]
+  },
+  {
+    "tokenId": "cardActionBtnPrimaryBg",
+    "name": "Fundo do Botão de Ação (Card)",
+    "description": "Cor primária para Call to Actions internos de cartões de Ação.",
+    "type": "color",
+    "importance": 65,
+    "categories": [
+      "cores",
+      "cards",
+      "botoes"
+    ],
+    "tags": [
+      "cta",
+      "background"
+    ],
+    "databaseColumn": "cards_engine",
+    "schemaOrigin": "cards.ts",
+    "digitalTwins": [
+      "SarakCard"
+    ],
+    "cssVariables": [],
+    "allowedValues": null,
+    "relatedTokens": [
+      "cardActionBtnHoverBg",
+      "cardActionBtnText"
+    ]
+  },
+  {
+    "tokenId": "cardActionBtnHoverBg",
+    "name": "Fundo do Botão de Ação no Hover (Card)",
+    "description": "Feedback visual ao interagir com o Call to Action de um cartão.",
+    "type": "color",
+    "importance": 60,
+    "categories": [
+      "cores",
+      "cards",
+      "interacao"
+    ],
+    "tags": [
+      "cta",
+      "hover"
+    ],
+    "databaseColumn": "cards_engine",
+    "schemaOrigin": "cards.ts",
+    "digitalTwins": [
+      "SarakCard"
+    ],
+    "cssVariables": [],
+    "allowedValues": null,
+    "relatedTokens": [
+      "cardActionBtnPrimaryBg"
+    ]
+  },
+  {
+    "tokenId": "cardActionBtnText",
+    "name": "Cor do Texto do Botão de Ação (Card)",
+    "description": "Cor da label dentro dos botões de ação do cartão.",
+    "type": "color",
+    "importance": 60,
+    "categories": [
+      "cores",
+      "cards",
+      "tipografia"
+    ],
+    "tags": [
+      "cta",
+      "text"
+    ],
+    "databaseColumn": "cards_engine",
+    "schemaOrigin": "cards.ts",
+    "digitalTwins": [
+      "SarakCard"
+    ],
+    "cssVariables": [],
+    "allowedValues": null,
+    "relatedTokens": [
+      "cardActionBtnPrimaryBg"
+    ]
+  },
+  {
+    "tokenId": "cardActionBtnBorderRadius",
+    "name": "Raio da Borda do Botão de Ação (Card)",
+    "description": "Arredondamento específico para os botões do cartão (geralmente menor que o card).",
+    "type": "number",
+    "importance": 50,
+    "categories": [
+      "bordas",
+      "cards",
+      "geometria"
+    ],
+    "tags": [
+      "radius",
+      "cta"
+    ],
+    "databaseColumn": "cards_engine",
+    "schemaOrigin": "cards.ts",
+    "digitalTwins": [
+      "SarakCard"
+    ],
+    "cssVariables": [],
+    "allowedValues": {
+      "min": 0,
+      "max": 120
+    },
+    "relatedTokens": [
+      "cardBorderRadius"
+    ]
+  },
+  {
+    "tokenId": "cardActionBtnPadding",
+    "name": "Padding Interno do Botão de Ação (Card)",
+    "description": "Tamanho vertical/horizontal da área clicável no botão do cartão.",
+    "type": "number",
+    "importance": 50,
+    "categories": [
+      "layout",
+      "cards",
+      "espacamento"
+    ],
+    "tags": [
+      "padding",
+      "cta"
+    ],
+    "databaseColumn": "cards_engine",
+    "schemaOrigin": "cards.ts",
+    "digitalTwins": [
+      "SarakCard"
+    ],
+    "cssVariables": [],
+    "allowedValues": {
+      "min": 0,
+      "max": 40
+    },
+    "relatedTokens": [
+      "cardActionBtnPrimaryBg"
+    ]
+  },
+  {
+    "tokenId": "cardActionClickScale",
+    "name": "Escala do Clique no Botão de Ação (Card)",
+    "description": "O quanto o botão encolhe ao ser pressionado fisicamente (efeito tátil).",
+    "type": "number",
+    "importance": 55,
+    "categories": [
+      "interacao",
+      "cards",
+      "animacao"
+    ],
+    "tags": [
+      "scale",
+      "click",
+      "ux"
+    ],
+    "databaseColumn": "cards_engine",
+    "schemaOrigin": "cards.ts",
+    "digitalTwins": [
+      "SarakCard"
+    ],
+    "cssVariables": [],
+    "allowedValues": {
+      "min": 0.8,
+      "max": 1,
+      "step": 0.01
+    },
+    "relatedTokens": [
+      "cardHoverTranslate"
+    ]
+  },
+  {
+    "tokenId": "cardSearchBgFocus",
+    "name": "Cor de Fundo (Foco) - Cartão de Busca",
+    "description": "Cor de fundo quando o input dentro do cartão variante de pesquisa recebe foco.",
+    "type": "color",
+    "importance": 60,
+    "categories": [
+      "cores",
+      "cards",
+      "interacao"
+    ],
+    "tags": [
+      "search",
+      "focus"
+    ],
+    "databaseColumn": "cards_engine",
+    "schemaOrigin": "cards.ts",
+    "digitalTwins": [
+      "SarakCard"
+    ],
+    "cssVariables": [],
+    "allowedValues": null,
+    "relatedTokens": [
+      "cardSearchBorderBeamActive"
+    ]
+  },
+  {
+    "tokenId": "cardSearchBorderBeamActive",
+    "name": "Feixe Luminoso de Borda (Foco) - Busca",
+    "description": "Cor da animação da borda correndo quando o search card entra em ativação.",
+    "type": "color",
+    "importance": 75,
+    "categories": [
+      "efeitos",
+      "cards",
+      "animacao"
+    ],
+    "tags": [
+      "search",
+      "beam",
+      "glow"
+    ],
+    "databaseColumn": "cards_engine",
+    "schemaOrigin": "cards.ts",
+    "digitalTwins": [
+      "SarakCard"
+    ],
+    "cssVariables": [],
+    "allowedValues": null,
+    "relatedTokens": [
+      "cardSearchBgFocus"
+    ]
+  },
+  {
+    "tokenId": "cardSearchPlaceholderColor",
+    "name": "Cor do Placeholder - Busca",
+    "description": "Cor do texto de ajuda vazio no cartão de busca.",
+    "type": "color",
+    "importance": 40,
+    "categories": [
+      "cores",
+      "cards",
+      "tipografia"
+    ],
+    "tags": [
+      "search",
+      "placeholder"
+    ],
+    "databaseColumn": "cards_engine",
+    "schemaOrigin": "cards.ts",
+    "digitalTwins": [
+      "SarakCard"
+    ],
+    "cssVariables": [],
+    "allowedValues": null,
+    "relatedTokens": [
+      "cardSearchTextFocusColor"
+    ]
+  },
+  {
+    "tokenId": "cardSearchTextFocusColor",
+    "name": "Cor do Texto (Foco) - Busca",
+    "description": "Cor da tipografia enquanto o usuário digita na busca dentro do cartão.",
+    "type": "color",
+    "importance": 50,
+    "categories": [
+      "cores",
+      "cards",
+      "tipografia"
+    ],
+    "tags": [
+      "search",
+      "text",
+      "focus"
+    ],
+    "databaseColumn": "cards_engine",
+    "schemaOrigin": "cards.ts",
+    "digitalTwins": [
+      "SarakCard"
+    ],
+    "cssVariables": [],
+    "allowedValues": null,
+    "relatedTokens": [
+      "cardSearchBgFocus"
+    ]
+  }
+]

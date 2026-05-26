@@ -1,0 +1,40 @@
+[
+  {
+    "tokenId": "bodySize",
+    "name": "Tamanho Global das Fontes (Body)",
+    "description": "A âncora root base do sistema de tipografia. Altera a escala de todos os textos de corpo ao mesmo tempo.",
+    "type": "select",
+    "importance": 90,
+    "categories": [
+      "tipografia",
+      "escala",
+      "global"
+    ],
+    "tags": [
+      "acessibilidade",
+      "texto",
+      "ux"
+    ],
+    "databaseColumn": "body_size",
+    "schemaOrigin": "global.ts",
+    "digitalTwins": [
+      "DesignInjector"
+    ],
+    "cssVariables": [
+      "--sarak-body-size",
+      "--theme-font-size-base"
+    ],
+    "allowedValues": [
+      "12px",
+      "14px",
+      "16px",
+      "18px",
+      "20px"
+    ],
+    "relatedTokens": [
+      "bodyFont",
+      "bodyLineHeight",
+      "h1Size"
+    ]
+  }
+]

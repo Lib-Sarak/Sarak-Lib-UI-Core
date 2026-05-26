@@ -1,0 +1,356 @@
+[
+  {
+    "tokenId": "chartColorPalette",
+    "name": "Cor Primária (Gráficos)",
+    "description": "Cor de destaque principal usada em linhas, barras ou séries de dados ativos em gráficos.",
+    "type": "color",
+    "importance": 85,
+    "categories": [
+      "cores",
+      "gráficos",
+      "data-and-charts"
+    ],
+    "tags": [
+      "chart",
+      "color",
+      "palette",
+      "data"
+    ],
+    "databaseColumn": "data_and_charts",
+    "schemaOrigin": "data.ts",
+    "digitalTwins": [
+      "DesignInjector"
+    ],
+    "cssVariables": [
+      "--sarak-chart-primary"
+    ],
+    "allowedValues": null,
+    "relatedTokens": [
+      "chartGridOpacity"
+    ]
+  },
+  {
+    "tokenId": "chartGridOpacity",
+    "name": "Opacidade da Grade (Gráficos)",
+    "description": "Nível de opacidade das linhas guias de fundo dentro da área de plotagem de gráficos.",
+    "type": "number",
+    "importance": 60,
+    "categories": [
+      "efeitos",
+      "filtros",
+      "data-and-charts"
+    ],
+    "tags": [
+      "chart",
+      "grid",
+      "opacity",
+      "data"
+    ],
+    "databaseColumn": "data_and_charts",
+    "schemaOrigin": "data.ts",
+    "digitalTwins": [
+      "DesignInjector"
+    ],
+    "cssVariables": [
+      "--sarak-chart-grid-opacity"
+    ],
+    "allowedValues": {
+      "min": 0,
+      "max": 0.5,
+      "step": 0.01
+    },
+    "relatedTokens": [
+      "chartShowGrid"
+    ]
+  },
+  {
+    "tokenId": "chartTooltipBg",
+    "name": "Fundo do Tooltip (Gráficos)",
+    "description": "Cor e transparência do fundo dos balões de dica ao focar em pontos de dados.",
+    "type": "color",
+    "importance": 70,
+    "categories": [
+      "cores",
+      "data-and-charts"
+    ],
+    "tags": [
+      "chart",
+      "tooltip",
+      "background",
+      "data"
+    ],
+    "databaseColumn": "data_and_charts",
+    "schemaOrigin": "data.ts",
+    "digitalTwins": [
+      "DesignInjector"
+    ],
+    "cssVariables": [
+      "--sarak-chart-tooltip-bg"
+    ],
+    "allowedValues": null,
+    "relatedTokens": [
+      "chartColorPalette"
+    ]
+  },
+  {
+    "tokenId": "chartType",
+    "name": "Tipo de Gráfico",
+    "description": "Formato de renderização padrão para blocos genéricos de visualização de dados.",
+    "type": "select",
+    "importance": 80,
+    "categories": [
+      "layout",
+      "comportamento",
+      "data-and-charts"
+    ],
+    "tags": [
+      "chart",
+      "type",
+      "render",
+      "data"
+    ],
+    "databaseColumn": "data_and_charts",
+    "schemaOrigin": "data.ts",
+    "digitalTwins": [
+      "DesignInjector"
+    ],
+    "cssVariables": [],
+    "allowedValues": [
+      "line",
+      "bar",
+      "pie",
+      "radar",
+      "scatter",
+      "heatmap",
+      "gauge"
+    ],
+    "relatedTokens": [
+      "chartThickness"
+    ]
+  },
+  {
+    "tokenId": "chartShowGrid",
+    "name": "Mostrar Grade",
+    "description": "Define se as linhas do plano cartesiano devem ser desenhadas atrás dos gráficos.",
+    "type": "boolean",
+    "importance": 65,
+    "categories": [
+      "layout",
+      "exibição",
+      "data-and-charts"
+    ],
+    "tags": [
+      "chart",
+      "grid",
+      "visibility",
+      "data"
+    ],
+    "databaseColumn": "data_and_charts",
+    "schemaOrigin": "data.ts",
+    "digitalTwins": [
+      "DesignInjector"
+    ],
+    "cssVariables": [],
+    "allowedValues": [
+      true,
+      false
+    ],
+    "relatedTokens": [
+      "chartGridOpacity"
+    ]
+  },
+  {
+    "tokenId": "chartThickness",
+    "name": "Espessura da Linha (Gráficos)",
+    "description": "Largura das linhas vetoriais (stroke-width) utilizadas em gráficos como Line ou Radar.",
+    "type": "number",
+    "importance": 75,
+    "categories": [
+      "geometria",
+      "bordas",
+      "data-and-charts"
+    ],
+    "tags": [
+      "chart",
+      "thickness",
+      "stroke",
+      "data"
+    ],
+    "databaseColumn": "data_and_charts",
+    "schemaOrigin": "data.ts",
+    "digitalTwins": [
+      "DesignInjector"
+    ],
+    "cssVariables": [
+      "--sarak-chart-thickness"
+    ],
+    "allowedValues": {
+      "min": 1,
+      "max": 8,
+      "step": 1
+    },
+    "relatedTokens": [
+      "chartSmoothing"
+    ]
+  },
+  {
+    "tokenId": "chartSmoothing",
+    "name": "Suavização de Linha",
+    "description": "Define se linhas de gráficos (Line/Radar) usarão interpolação curva (spline) ou ângulos retos.",
+    "type": "boolean",
+    "importance": 70,
+    "categories": [
+      "layout",
+      "comportamento",
+      "data-and-charts"
+    ],
+    "tags": [
+      "chart",
+      "smoothing",
+      "curve",
+      "data"
+    ],
+    "databaseColumn": "data_and_charts",
+    "schemaOrigin": "data.ts",
+    "digitalTwins": [
+      "DesignInjector"
+    ],
+    "cssVariables": [],
+    "allowedValues": [
+      true,
+      false
+    ],
+    "relatedTokens": [
+      "chartThickness"
+    ]
+  },
+  {
+    "tokenId": "aiPanelBg",
+    "name": "Fundo do Painel IA",
+    "description": "Cor de fundo especializada para janelas, modais e painéis contextuais de Inteligência Artificial.",
+    "type": "color",
+    "importance": 85,
+    "categories": [
+      "cores",
+      "especial",
+      "data-and-charts"
+    ],
+    "tags": [
+      "ai",
+      "panel",
+      "background",
+      "specialized"
+    ],
+    "databaseColumn": "data_and_charts",
+    "schemaOrigin": "specialized.ts",
+    "digitalTwins": [
+      "DesignInjector"
+    ],
+    "cssVariables": [
+      "--sarak-ai-panel-bg"
+    ],
+    "allowedValues": null,
+    "relatedTokens": [
+      "aiGlowColor"
+    ]
+  },
+  {
+    "tokenId": "aiGlowColor",
+    "name": "Cor do Brilho IA",
+    "description": "Cor temática usada para gerar glowing effects (sombras coloridas e brilhantes) em agentes de IA.",
+    "type": "color",
+    "importance": 80,
+    "categories": [
+      "cores",
+      "especial",
+      "efeitos",
+      "data-and-charts"
+    ],
+    "tags": [
+      "ai",
+      "glow",
+      "color",
+      "specialized"
+    ],
+    "databaseColumn": "data_and_charts",
+    "schemaOrigin": "specialized.ts",
+    "digitalTwins": [
+      "DesignInjector"
+    ],
+    "cssVariables": [
+      "--sarak-ai-glow"
+    ],
+    "allowedValues": null,
+    "relatedTokens": [
+      "aiPanelBg"
+    ]
+  },
+  {
+    "tokenId": "flowNodeRadius",
+    "name": "Raio dos Nós (Fluxo)",
+    "description": "Arredondamento das bordas dos nós visuais em diagramas de fluxo, pipelines e canvas.",
+    "type": "number",
+    "importance": 70,
+    "categories": [
+      "bordas",
+      "geometria",
+      "data-and-charts"
+    ],
+    "tags": [
+      "flow",
+      "node",
+      "radius",
+      "specialized"
+    ],
+    "databaseColumn": "data_and_charts",
+    "schemaOrigin": "specialized.ts",
+    "digitalTwins": [
+      "DesignInjector"
+    ],
+    "cssVariables": [
+      "--sarak-flow-radius",
+      "--sarak-flow-node-radius"
+    ],
+    "allowedValues": {
+      "min": 0,
+      "max": 40,
+      "step": 1
+    },
+    "relatedTokens": [
+      "flowGridStyle"
+    ]
+  },
+  {
+    "tokenId": "flowGridStyle",
+    "name": "Estilo do Grid (Fluxo)",
+    "description": "Padrão de fundo do canvas infinito usado para diagramas de fluxos ou mapas.",
+    "type": "select",
+    "importance": 65,
+    "categories": [
+      "layout",
+      "texturas",
+      "data-and-charts"
+    ],
+    "tags": [
+      "flow",
+      "grid",
+      "background",
+      "specialized"
+    ],
+    "databaseColumn": "data_and_charts",
+    "schemaOrigin": "specialized.ts",
+    "digitalTwins": [
+      "DesignInjector"
+    ],
+    "cssVariables": [
+      "--sarak-flow-grid"
+    ],
+    "allowedValues": [
+      "dots",
+      "lines"
+    ],
+    "relatedTokens": [
+      "flowNodeRadius"
+    ]
+  }
+]

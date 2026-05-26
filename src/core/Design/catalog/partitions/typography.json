@@ -1,0 +1,590 @@
+[
+  {
+    "tokenId": "headingFont",
+    "name": "Fonte de Títulos",
+    "description": "Família tipográfica principal usada em Headers (H1, H2, etc).",
+    "type": "font",
+    "importance": 95,
+    "categories": [
+      "tipografia",
+      "estilo",
+      "typography"
+    ],
+    "tags": [
+      "font",
+      "heading",
+      "family"
+    ],
+    "databaseColumn": "typography",
+    "schemaOrigin": "typography.ts",
+    "digitalTwins": [
+      "DesignInjector"
+    ],
+    "cssVariables": [
+      "--font-heading",
+      "--sarak-font-h"
+    ],
+    "allowedValues": null,
+    "relatedTokens": [
+      "bodyFont",
+      "h1Size"
+    ]
+  },
+  {
+    "tokenId": "bodyFont",
+    "name": "Fonte de Corpo",
+    "description": "Família tipográfica usada em textos normais, parágrafos e ui components.",
+    "type": "font",
+    "importance": 95,
+    "categories": [
+      "tipografia",
+      "estilo",
+      "typography"
+    ],
+    "tags": [
+      "font",
+      "body",
+      "family"
+    ],
+    "databaseColumn": "typography",
+    "schemaOrigin": "typography.ts",
+    "digitalTwins": [
+      "DesignInjector"
+    ],
+    "cssVariables": [
+      "--font-main",
+      "--sarak-font-b"
+    ],
+    "allowedValues": null,
+    "relatedTokens": [
+      "headingFont",
+      "bodyWeight"
+    ]
+  },
+  {
+    "tokenId": "monoFont",
+    "name": "Fonte Mono (Dados)",
+    "description": "Família tipográfica de espaçamento fixo (monospace) para código, tabelas de dados e números críticos.",
+    "type": "font",
+    "importance": 80,
+    "categories": [
+      "tipografia",
+      "estilo",
+      "typography"
+    ],
+    "tags": [
+      "font",
+      "mono",
+      "data",
+      "code"
+    ],
+    "databaseColumn": "typography",
+    "schemaOrigin": "typography.ts",
+    "digitalTwins": [
+      "DesignInjector"
+    ],
+    "cssVariables": [
+      "--font-mono",
+      "--sarak-font-m"
+    ],
+    "allowedValues": null,
+    "relatedTokens": [
+      "bodyFont"
+    ]
+  },
+  {
+    "tokenId": "textColorMaster",
+    "name": "Texto Principal",
+    "description": "Cor de alto contraste usada em títulos e parágrafos focais.",
+    "type": "color",
+    "importance": 95,
+    "categories": [
+      "cores",
+      "tipografia",
+      "typography"
+    ],
+    "tags": [
+      "text",
+      "color",
+      "primary"
+    ],
+    "databaseColumn": "typography",
+    "schemaOrigin": "typography.ts",
+    "digitalTwins": [
+      "DesignInjector"
+    ],
+    "cssVariables": [
+      "--sarak-text-main",
+      "--theme-title",
+      "--theme-text-primary"
+    ],
+    "allowedValues": null,
+    "relatedTokens": [
+      "textColorSecondary"
+    ]
+  },
+  {
+    "tokenId": "textColorSecondary",
+    "name": "Texto Secundário",
+    "description": "Cor usada para descrições, subtítulos e textos de apoio (menor contraste).",
+    "type": "color",
+    "importance": 90,
+    "categories": [
+      "cores",
+      "tipografia",
+      "typography"
+    ],
+    "tags": [
+      "text",
+      "color",
+      "secondary"
+    ],
+    "databaseColumn": "typography",
+    "schemaOrigin": "typography.ts",
+    "digitalTwins": [
+      "DesignInjector"
+    ],
+    "cssVariables": [
+      "--sarak-text-sec"
+    ],
+    "allowedValues": null,
+    "relatedTokens": [
+      "textColorMaster",
+      "textColorMuted"
+    ]
+  },
+  {
+    "tokenId": "textColorMuted",
+    "name": "Texto Mudo / Hint",
+    "description": "Cor de baixíssimo contraste para hints, placeholders e textos inativos.",
+    "type": "color",
+    "importance": 85,
+    "categories": [
+      "cores",
+      "tipografia",
+      "typography"
+    ],
+    "tags": [
+      "text",
+      "color",
+      "muted",
+      "hint"
+    ],
+    "databaseColumn": "typography",
+    "schemaOrigin": "typography.ts",
+    "digitalTwins": [
+      "DesignInjector"
+    ],
+    "cssVariables": [
+      "--sarak-text-muted",
+      "--theme-muted",
+      "--theme-text-muted"
+    ],
+    "allowedValues": null,
+    "relatedTokens": [
+      "textColorSecondary"
+    ]
+  },
+  {
+    "tokenId": "h1Size",
+    "name": "Tamanho (H1)",
+    "description": "O tamanho da fonte principal do nível mais alto de hierarquia (H1).",
+    "type": "number",
+    "importance": 95,
+    "categories": [
+      "geometria",
+      "tipografia",
+      "typography"
+    ],
+    "tags": [
+      "size",
+      "h1",
+      "heading"
+    ],
+    "databaseColumn": "typography",
+    "schemaOrigin": "typography.ts",
+    "digitalTwins": [
+      "DesignInjector"
+    ],
+    "cssVariables": [
+      "--sarak-h1-size"
+    ],
+    "allowedValues": {
+      "min": 20,
+      "max": 120,
+      "step": 1
+    },
+    "relatedTokens": [
+      "h1Weight",
+      "h1LineHeight"
+    ]
+  },
+  {
+    "tokenId": "h1Weight",
+    "name": "Peso (H1)",
+    "description": "A espessura tipográfica do H1 (ex: Light, Regular, Bold, Black).",
+    "type": "select",
+    "importance": 90,
+    "categories": [
+      "estilo",
+      "tipografia",
+      "typography"
+    ],
+    "tags": [
+      "weight",
+      "h1",
+      "heading"
+    ],
+    "databaseColumn": "typography",
+    "schemaOrigin": "typography.ts",
+    "digitalTwins": [
+      "DesignInjector"
+    ],
+    "cssVariables": [
+      "--sarak-h1-weight"
+    ],
+    "allowedValues": [
+      "300",
+      "400",
+      "600",
+      "700",
+      "900"
+    ],
+    "relatedTokens": [
+      "h1Size"
+    ]
+  },
+  {
+    "tokenId": "h1LineHeight",
+    "name": "Altura da Linha (H1)",
+    "description": "Espaçamento vertical entre as linhas de um título longo H1.",
+    "type": "number",
+    "importance": 85,
+    "categories": [
+      "geometria",
+      "tipografia",
+      "typography"
+    ],
+    "tags": [
+      "line-height",
+      "h1",
+      "spacing"
+    ],
+    "databaseColumn": "typography",
+    "schemaOrigin": "typography.ts",
+    "digitalTwins": [
+      "DesignInjector"
+    ],
+    "cssVariables": [
+      "--sarak-h1-lh"
+    ],
+    "allowedValues": {
+      "min": 0.8,
+      "max": 2,
+      "step": 0.05
+    },
+    "relatedTokens": [
+      "h1Size"
+    ]
+  },
+  {
+    "tokenId": "h1LetterSpacing",
+    "name": "Espaçamento (H1)",
+    "description": "Distância horizontal entre as letras do H1 (tracking).",
+    "type": "number",
+    "importance": 80,
+    "categories": [
+      "geometria",
+      "tipografia",
+      "typography"
+    ],
+    "tags": [
+      "letter-spacing",
+      "h1",
+      "tracking"
+    ],
+    "databaseColumn": "typography",
+    "schemaOrigin": "typography.ts",
+    "digitalTwins": [
+      "DesignInjector"
+    ],
+    "cssVariables": [
+      "--sarak-h1-ls"
+    ],
+    "allowedValues": {
+      "min": -5,
+      "max": 10,
+      "step": 0.5
+    },
+    "relatedTokens": [
+      "h1Size"
+    ]
+  },
+  {
+    "tokenId": "h2Size",
+    "name": "Tamanho (H2)",
+    "description": "O tamanho da fonte do segundo nível de hierarquia (H2).",
+    "type": "number",
+    "importance": 90,
+    "categories": [
+      "geometria",
+      "tipografia",
+      "typography"
+    ],
+    "tags": [
+      "size",
+      "h2",
+      "heading"
+    ],
+    "databaseColumn": "typography",
+    "schemaOrigin": "typography.ts",
+    "digitalTwins": [
+      "DesignInjector"
+    ],
+    "cssVariables": [
+      "--sarak-h2-size"
+    ],
+    "allowedValues": {
+      "min": 18,
+      "max": 80,
+      "step": 1
+    },
+    "relatedTokens": [
+      "h2Weight",
+      "h1Size"
+    ]
+  },
+  {
+    "tokenId": "h2Weight",
+    "name": "Peso (H2)",
+    "description": "Espessura tipográfica do H2.",
+    "type": "select",
+    "importance": 85,
+    "categories": [
+      "estilo",
+      "tipografia",
+      "typography"
+    ],
+    "tags": [
+      "weight",
+      "h2",
+      "heading"
+    ],
+    "databaseColumn": "typography",
+    "schemaOrigin": "typography.ts",
+    "digitalTwins": [
+      "DesignInjector"
+    ],
+    "cssVariables": [
+      "--sarak-h2-weight"
+    ],
+    "allowedValues": [
+      "300",
+      "400",
+      "600",
+      "700"
+    ],
+    "relatedTokens": [
+      "h2Size"
+    ]
+  },
+  {
+    "tokenId": "h2LineHeight",
+    "name": "Altura da Linha (H2)",
+    "description": "Espaçamento vertical das linhas do H2.",
+    "type": "number",
+    "importance": 80,
+    "categories": [
+      "geometria",
+      "tipografia",
+      "typography"
+    ],
+    "tags": [
+      "line-height",
+      "h2",
+      "spacing"
+    ],
+    "databaseColumn": "typography",
+    "schemaOrigin": "typography.ts",
+    "digitalTwins": [
+      "DesignInjector"
+    ],
+    "cssVariables": [
+      "--sarak-h2-lh"
+    ],
+    "allowedValues": {
+      "min": 0.8,
+      "max": 2,
+      "step": 0.05
+    },
+    "relatedTokens": [
+      "h2Size"
+    ]
+  },
+  {
+    "tokenId": "bodyLineHeight",
+    "name": "Altura da Linha (Corpo)",
+    "description": "Espaçamento vertical que garante a legibilidade ótima do texto em parágrafos normais.",
+    "type": "number",
+    "importance": 90,
+    "categories": [
+      "geometria",
+      "tipografia",
+      "typography"
+    ],
+    "tags": [
+      "line-height",
+      "body",
+      "reading"
+    ],
+    "databaseColumn": "typography",
+    "schemaOrigin": "typography.ts",
+    "digitalTwins": [
+      "DesignInjector"
+    ],
+    "cssVariables": [
+      "--sarak-body-lh",
+      "--sarak-line-height"
+    ],
+    "allowedValues": {
+      "min": 1,
+      "max": 2.5,
+      "step": 0.1
+    },
+    "relatedTokens": [
+      "bodyFont",
+      "bodyWeight"
+    ]
+  },
+  {
+    "tokenId": "bodyWeight",
+    "name": "Peso do Corpo",
+    "description": "Espessura padrão do texto do corpo (usualmente Regular 400).",
+    "type": "select",
+    "importance": 90,
+    "categories": [
+      "estilo",
+      "tipografia",
+      "typography"
+    ],
+    "tags": [
+      "weight",
+      "body",
+      "reading"
+    ],
+    "databaseColumn": "typography",
+    "schemaOrigin": "typography.ts",
+    "digitalTwins": [
+      "DesignInjector"
+    ],
+    "cssVariables": [
+      "--sarak-body-weight",
+      "--sarak-b-weight"
+    ],
+    "allowedValues": [
+      "300",
+      "400",
+      "500"
+    ],
+    "relatedTokens": [
+      "bodyFont"
+    ]
+  },
+  {
+    "tokenId": "headingTransform",
+    "name": "Transformação de Títulos",
+    "description": "Estilização forçada de case dos títulos (UPPERCASE, Capitalize, Normal).",
+    "type": "select",
+    "importance": 70,
+    "categories": [
+      "estilo",
+      "tipografia",
+      "typography"
+    ],
+    "tags": [
+      "text-transform",
+      "heading",
+      "case"
+    ],
+    "databaseColumn": "typography",
+    "schemaOrigin": "typography.ts",
+    "digitalTwins": [
+      "DesignInjector"
+    ],
+    "cssVariables": [
+      "--sarak-h-transform"
+    ],
+    "allowedValues": [
+      "none",
+      "uppercase",
+      "capitalize"
+    ],
+    "relatedTokens": [
+      "headingFont"
+    ]
+  },
+  {
+    "tokenId": "textSmoothing",
+    "name": "Suavização (Smoothing)",
+    "description": "Aplica antialiasing para melhor renderização de tela no SO (macOS font-smoothing).",
+    "type": "boolean",
+    "importance": 60,
+    "categories": [
+      "efeitos",
+      "tipografia",
+      "typography"
+    ],
+    "tags": [
+      "smoothing",
+      "antialiasing",
+      "rendering"
+    ],
+    "databaseColumn": "typography",
+    "schemaOrigin": "typography.ts",
+    "digitalTwins": [
+      "DesignInjector"
+    ],
+    "cssVariables": [
+      "--sarak-text-smoothing"
+    ],
+    "allowedValues": [
+      true,
+      false
+    ],
+    "relatedTokens": []
+  },
+  {
+    "tokenId": "textGlowIntensity",
+    "name": "Intensidade de Glow (H1)",
+    "description": "Aplica um drop-shadow colorido nos textos H1 imitando iluminação de neon ou emissão.",
+    "type": "number",
+    "importance": 60,
+    "categories": [
+      "efeitos",
+      "sombra-luz",
+      "typography"
+    ],
+    "tags": [
+      "glow",
+      "text-shadow",
+      "emission"
+    ],
+    "databaseColumn": "typography",
+    "schemaOrigin": "typography.ts",
+    "digitalTwins": [
+      "DesignInjector"
+    ],
+    "cssVariables": [
+      "--sarak-text-glow"
+    ],
+    "allowedValues": {
+      "min": 0,
+      "max": 1,
+      "step": 0.05
+    },
+    "relatedTokens": [
+      "h1Size",
+      "h1Weight"
+    ]
+  }
+]

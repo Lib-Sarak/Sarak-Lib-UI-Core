@@ -1,0 +1,1197 @@
+[
+  {
+    "tokenId": "isNavHidden",
+    "name": "Ocultar Navegação",
+    "description": "Controla se as barras de navegação globais (sidebar, topbar) devem estar escondidas.",
+    "type": "boolean",
+    "importance": 95,
+    "categories": [
+      "layout",
+      "navegação",
+      "layout_and_navigation"
+    ],
+    "tags": [
+      "navigation",
+      "visibility",
+      "hidden"
+    ],
+    "databaseColumn": "layout_and_navigation",
+    "schemaOrigin": "navigation.ts",
+    "digitalTwins": [
+      "DesignInjector"
+    ],
+    "cssVariables": [
+      "--is-nav-hidden"
+    ],
+    "allowedValues": [
+      true,
+      false
+    ],
+    "relatedTokens": [
+      "sidebarWidth",
+      "topbarHeight"
+    ]
+  },
+  {
+    "tokenId": "sidebarWidth",
+    "name": "Largura da Sidebar",
+    "description": "Largura atual (ou padrão) da barra de navegação lateral.",
+    "type": "number",
+    "importance": 90,
+    "categories": [
+      "geometria",
+      "layout",
+      "layout_and_navigation"
+    ],
+    "tags": [
+      "sidebar",
+      "width",
+      "size"
+    ],
+    "databaseColumn": "layout_and_navigation",
+    "schemaOrigin": "navigation.ts",
+    "digitalTwins": [
+      "DesignInjector"
+    ],
+    "cssVariables": [
+      "--sidebar-width",
+      "--sarak-sidebar-width"
+    ],
+    "allowedValues": {
+      "min": 200,
+      "max": 400,
+      "step": 1
+    },
+    "relatedTokens": [
+      "sidebarMinWidth",
+      "sidebarMaxWidth"
+    ]
+  },
+  {
+    "tokenId": "sidebarMinWidth",
+    "name": "Largura Mínima da Sidebar",
+    "description": "Limita o tamanho mínimo da barra lateral ao ser redimensionada.",
+    "type": "number",
+    "importance": 80,
+    "categories": [
+      "geometria",
+      "layout",
+      "layout_and_navigation"
+    ],
+    "tags": [
+      "sidebar",
+      "min-width",
+      "constraint"
+    ],
+    "databaseColumn": "layout_and_navigation",
+    "schemaOrigin": "navigation.ts",
+    "digitalTwins": [
+      "DesignInjector"
+    ],
+    "cssVariables": [
+      "--sidebar-min-width"
+    ],
+    "allowedValues": {
+      "min": 150,
+      "max": 300,
+      "step": 1
+    },
+    "relatedTokens": [
+      "sidebarWidth"
+    ]
+  },
+  {
+    "tokenId": "sidebarMaxWidth",
+    "name": "Largura Máxima da Sidebar",
+    "description": "Limita o tamanho máximo da barra lateral ao ser redimensionada.",
+    "type": "number",
+    "importance": 80,
+    "categories": [
+      "geometria",
+      "layout",
+      "layout_and_navigation"
+    ],
+    "tags": [
+      "sidebar",
+      "max-width",
+      "constraint"
+    ],
+    "databaseColumn": "layout_and_navigation",
+    "schemaOrigin": "navigation.ts",
+    "digitalTwins": [
+      "DesignInjector"
+    ],
+    "cssVariables": [
+      "--sidebar-max-width"
+    ],
+    "allowedValues": {
+      "min": 300,
+      "max": 600,
+      "step": 1
+    },
+    "relatedTokens": [
+      "sidebarWidth"
+    ]
+  },
+  {
+    "tokenId": "sidebarColor",
+    "name": "Cor da Sidebar (Fundo)",
+    "description": "Cor primária de background da barra de navegação lateral.",
+    "type": "color",
+    "importance": 90,
+    "categories": [
+      "cores",
+      "layout",
+      "layout_and_navigation"
+    ],
+    "tags": [
+      "sidebar",
+      "color",
+      "background"
+    ],
+    "databaseColumn": "layout_and_navigation",
+    "schemaOrigin": "navigation.ts",
+    "digitalTwins": [
+      "DesignInjector"
+    ],
+    "cssVariables": [
+      "--theme-sidebar-bg",
+      "--sarak-sidebar-bg"
+    ],
+    "allowedValues": null,
+    "relatedTokens": [
+      "sidebarHoverColor"
+    ]
+  },
+  {
+    "tokenId": "sidebarHoverColor",
+    "name": "Hover da Sidebar",
+    "description": "Cor de fundo aplicada ao interagir (passar o mouse) sobre a barra lateral ou itens dentro dela.",
+    "type": "color",
+    "importance": 70,
+    "categories": [
+      "cores",
+      "interação",
+      "layout_and_navigation"
+    ],
+    "tags": [
+      "sidebar",
+      "color",
+      "hover"
+    ],
+    "databaseColumn": "layout_and_navigation",
+    "schemaOrigin": "navigation.ts",
+    "digitalTwins": [
+      "DesignInjector"
+    ],
+    "cssVariables": [
+      "--sarak-sidebar-hover-color"
+    ],
+    "allowedValues": null,
+    "relatedTokens": [
+      "sidebarColor"
+    ]
+  },
+  {
+    "tokenId": "sidebarActiveColor",
+    "name": "Ativo da Sidebar",
+    "description": "Cor de destaque usada quando a barra lateral inteira ou itens específicos estão focados ou ativos.",
+    "type": "color",
+    "importance": 80,
+    "categories": [
+      "cores",
+      "interação",
+      "layout_and_navigation"
+    ],
+    "tags": [
+      "sidebar",
+      "color",
+      "active"
+    ],
+    "databaseColumn": "layout_and_navigation",
+    "schemaOrigin": "navigation.ts",
+    "digitalTwins": [
+      "DesignInjector"
+    ],
+    "cssVariables": [
+      "--sarak-sidebar-active-color"
+    ],
+    "allowedValues": null,
+    "relatedTokens": [
+      "sidebarColor"
+    ]
+  },
+  {
+    "tokenId": "sidebarNoiseOpacity",
+    "name": "Opacidade do Ruído (Sidebar)",
+    "description": "Intensidade da textura de ruído (noise overlay) aplicada sobre a sidebar.",
+    "type": "number",
+    "importance": 60,
+    "categories": [
+      "efeitos",
+      "texturas",
+      "layout_and_navigation"
+    ],
+    "tags": [
+      "sidebar",
+      "noise",
+      "opacity",
+      "texture"
+    ],
+    "databaseColumn": "layout_and_navigation",
+    "schemaOrigin": "navigation.ts",
+    "digitalTwins": [
+      "DesignInjector"
+    ],
+    "cssVariables": [
+      "--sarak-sidebar-noise-opacity"
+    ],
+    "allowedValues": {
+      "min": 0,
+      "max": 1,
+      "step": 0.05
+    },
+    "relatedTokens": [
+      "sidebarColor"
+    ]
+  },
+  {
+    "tokenId": "topbarHeight",
+    "name": "Altura da Topbar",
+    "description": "Altura vertical do cabeçalho de navegação (topbar).",
+    "type": "number",
+    "importance": 90,
+    "categories": [
+      "geometria",
+      "layout",
+      "layout_and_navigation"
+    ],
+    "tags": [
+      "topbar",
+      "height",
+      "size"
+    ],
+    "databaseColumn": "layout_and_navigation",
+    "schemaOrigin": "navigation.ts",
+    "digitalTwins": [
+      "DesignInjector"
+    ],
+    "cssVariables": [
+      "--topbar-height",
+      "--sarak-topbar-height",
+      "--theme-topbar-height"
+    ],
+    "allowedValues": {
+      "min": 48,
+      "max": 100,
+      "step": 1
+    },
+    "relatedTokens": [
+      "topbarColor"
+    ]
+  },
+  {
+    "tokenId": "topbarColor",
+    "name": "Cor da Topbar (Fundo)",
+    "description": "Cor de fundo base do cabeçalho superior de navegação.",
+    "type": "color",
+    "importance": 90,
+    "categories": [
+      "cores",
+      "layout",
+      "layout_and_navigation"
+    ],
+    "tags": [
+      "topbar",
+      "color",
+      "background"
+    ],
+    "databaseColumn": "layout_and_navigation",
+    "schemaOrigin": "navigation.ts",
+    "digitalTwins": [
+      "DesignInjector"
+    ],
+    "cssVariables": [
+      "--theme-topbar-bg",
+      "--sarak-topbar-bg"
+    ],
+    "allowedValues": null,
+    "relatedTokens": [
+      "topbarHeight"
+    ]
+  },
+  {
+    "tokenId": "topbarHoverColor",
+    "name": "Hover da Topbar",
+    "description": "Cor ao passar o mouse sobre a barra superior.",
+    "type": "color",
+    "importance": 70,
+    "categories": [
+      "cores",
+      "interação",
+      "layout_and_navigation"
+    ],
+    "tags": [
+      "topbar",
+      "color",
+      "hover"
+    ],
+    "databaseColumn": "layout_and_navigation",
+    "schemaOrigin": "navigation.ts",
+    "digitalTwins": [
+      "DesignInjector"
+    ],
+    "cssVariables": [
+      "--sarak-topbar-hover-color"
+    ],
+    "allowedValues": null,
+    "relatedTokens": [
+      "topbarColor"
+    ]
+  },
+  {
+    "tokenId": "topbarActiveColor",
+    "name": "Ativo da Topbar",
+    "description": "Cor aplicada quando a topbar possui o foco ou é clicada.",
+    "type": "color",
+    "importance": 80,
+    "categories": [
+      "cores",
+      "interação",
+      "layout_and_navigation"
+    ],
+    "tags": [
+      "topbar",
+      "color",
+      "active"
+    ],
+    "databaseColumn": "layout_and_navigation",
+    "schemaOrigin": "navigation.ts",
+    "digitalTwins": [
+      "DesignInjector"
+    ],
+    "cssVariables": [
+      "--sarak-topbar-active-color"
+    ],
+    "allowedValues": null,
+    "relatedTokens": [
+      "topbarColor"
+    ]
+  },
+  {
+    "tokenId": "topbarNoiseOpacity",
+    "name": "Opacidade do Ruído (Topbar)",
+    "description": "Intensidade da textura visual de ruído aplicada sobre o cabeçalho.",
+    "type": "number",
+    "importance": 60,
+    "categories": [
+      "efeitos",
+      "texturas",
+      "layout_and_navigation"
+    ],
+    "tags": [
+      "topbar",
+      "noise",
+      "opacity",
+      "texture"
+    ],
+    "databaseColumn": "layout_and_navigation",
+    "schemaOrigin": "navigation.ts",
+    "digitalTwins": [
+      "DesignInjector"
+    ],
+    "cssVariables": [
+      "--sarak-topbar-noise-opacity"
+    ],
+    "allowedValues": {
+      "min": 0,
+      "max": 1,
+      "step": 0.05
+    },
+    "relatedTokens": [
+      "topbarColor"
+    ]
+  },
+  {
+    "tokenId": "topbarTitleColor",
+    "name": "Cor do Título (Topbar)",
+    "description": "Cor da fonte do título ou brand textual localizado na Topbar.",
+    "type": "color",
+    "importance": 85,
+    "categories": [
+      "cores",
+      "layout",
+      "layout_and_navigation"
+    ],
+    "tags": [
+      "topbar",
+      "color",
+      "title",
+      "text"
+    ],
+    "databaseColumn": "layout_and_navigation",
+    "schemaOrigin": "navigation.ts",
+    "digitalTwins": [
+      "DesignInjector"
+    ],
+    "cssVariables": [
+      "--sarak-topbar-title-color"
+    ],
+    "allowedValues": null,
+    "relatedTokens": [
+      "topbarColor"
+    ]
+  },
+  {
+    "tokenId": "tabGap",
+    "name": "Espaço entre Abas",
+    "description": "Distância horizontal (gap) entre itens de navegação tipo tab.",
+    "type": "number",
+    "importance": 70,
+    "categories": [
+      "geometria",
+      "layout",
+      "layout_and_navigation"
+    ],
+    "tags": [
+      "tabs",
+      "gap",
+      "spacing"
+    ],
+    "databaseColumn": "layout_and_navigation",
+    "schemaOrigin": "navigation.ts",
+    "digitalTwins": [
+      "DesignInjector"
+    ],
+    "cssVariables": [
+      "--tab-gap",
+      "--sarak-tab-gap",
+      "--theme-tab-gap"
+    ],
+    "allowedValues": {
+      "min": 0,
+      "max": 24,
+      "step": 1
+    },
+    "relatedTokens": [
+      "tabSectionMargin"
+    ]
+  },
+  {
+    "tokenId": "tabSectionMargin",
+    "name": "Margem da Seção de Abas",
+    "description": "Distância de respiro (padding/margin) aplicada ao redor do container inteiro de abas.",
+    "type": "number",
+    "importance": 70,
+    "categories": [
+      "geometria",
+      "layout",
+      "layout_and_navigation"
+    ],
+    "tags": [
+      "tabs",
+      "margin",
+      "padding"
+    ],
+    "databaseColumn": "layout_and_navigation",
+    "schemaOrigin": "navigation.ts",
+    "digitalTwins": [
+      "DesignInjector"
+    ],
+    "cssVariables": [
+      "--tab-section-margin",
+      "--sarak-tab-section-margin",
+      "--theme-tab-section-margin",
+      "--safe-area-padding"
+    ],
+    "allowedValues": {
+      "min": 0,
+      "max": 48,
+      "step": 1
+    },
+    "relatedTokens": [
+      "tabGap"
+    ]
+  },
+  {
+    "tokenId": "navItemActiveColor",
+    "name": "Cor do Item Ativo",
+    "description": "Cor de destaque usada no texto ou ícone de um item de menu quando ele está selecionado.",
+    "type": "color",
+    "importance": 85,
+    "categories": [
+      "cores",
+      "interação",
+      "layout_and_navigation"
+    ],
+    "tags": [
+      "navigation",
+      "item",
+      "color",
+      "active"
+    ],
+    "databaseColumn": "layout_and_navigation",
+    "schemaOrigin": "navigation.ts",
+    "digitalTwins": [
+      "DesignInjector"
+    ],
+    "cssVariables": [
+      "--sarak-nav-active-color",
+      "--theme-primary"
+    ],
+    "allowedValues": null,
+    "relatedTokens": [
+      "navActiveMarkerColor"
+    ]
+  },
+  {
+    "tokenId": "navActiveMarkerColor",
+    "name": "Cor do Marcador Ativo",
+    "description": "Cor do indicador visual (linha, ponto ou borda) ao lado do item de navegação ativo.",
+    "type": "color",
+    "importance": 80,
+    "categories": [
+      "cores",
+      "indicadores",
+      "layout_and_navigation"
+    ],
+    "tags": [
+      "navigation",
+      "marker",
+      "color",
+      "active"
+    ],
+    "databaseColumn": "layout_and_navigation",
+    "schemaOrigin": "navigation.ts",
+    "digitalTwins": [
+      "DesignInjector"
+    ],
+    "cssVariables": [
+      "--sarak-nav-marker-color"
+    ],
+    "allowedValues": null,
+    "relatedTokens": [
+      "navItemActiveColor"
+    ]
+  },
+  {
+    "tokenId": "navActiveMarkerGlow",
+    "name": "Brilho do Marcador",
+    "description": "Intensidade do efeito de drop-shadow brilhante sobre o marcador de menu ativo.",
+    "type": "number",
+    "importance": 60,
+    "categories": [
+      "efeitos",
+      "sombra-luz",
+      "layout_and_navigation"
+    ],
+    "tags": [
+      "navigation",
+      "marker",
+      "glow",
+      "shadow"
+    ],
+    "databaseColumn": "layout_and_navigation",
+    "schemaOrigin": "navigation.ts",
+    "digitalTwins": [
+      "DesignInjector"
+    ],
+    "cssVariables": [
+      "--sarak-nav-marker-glow"
+    ],
+    "allowedValues": {
+      "min": 0,
+      "max": 20,
+      "step": 1
+    },
+    "relatedTokens": [
+      "navActiveMarkerColor"
+    ]
+  },
+  {
+    "tokenId": "sidebarBlur",
+    "name": "Backdrop Blur (Sidebar)",
+    "description": "Quantidade de desfoque de fundo (backdrop-filter) aplicada à barra de navegação lateral.",
+    "type": "number",
+    "importance": 75,
+    "categories": [
+      "efeitos",
+      "filtros",
+      "layout_and_navigation"
+    ],
+    "tags": [
+      "sidebar",
+      "blur",
+      "backdrop",
+      "glassmorphism"
+    ],
+    "databaseColumn": "layout_and_navigation",
+    "schemaOrigin": "navigation.ts",
+    "digitalTwins": [
+      "DesignInjector"
+    ],
+    "cssVariables": [
+      "--sarak-sidebar-blur"
+    ],
+    "allowedValues": {
+      "min": 0,
+      "max": 50,
+      "step": 1
+    },
+    "relatedTokens": [
+      "sidebarColor"
+    ]
+  },
+  {
+    "tokenId": "sidebarShadow",
+    "name": "Sombra da Sidebar",
+    "description": "Configuração da sombra projetada (box-shadow) pela barra lateral sobre o conteúdo da página.",
+    "type": "text",
+    "importance": 70,
+    "categories": [
+      "efeitos",
+      "sombra-luz",
+      "layout_and_navigation"
+    ],
+    "tags": [
+      "sidebar",
+      "shadow",
+      "depth"
+    ],
+    "databaseColumn": "layout_and_navigation",
+    "schemaOrigin": "navigation.ts",
+    "digitalTwins": [
+      "DesignInjector"
+    ],
+    "cssVariables": [],
+    "allowedValues": null,
+    "relatedTokens": [
+      "sidebarBlur"
+    ]
+  },
+  {
+    "tokenId": "searchPositionTopbar",
+    "name": "Posição Pesquisa (Topbar)",
+    "description": "Alinhamento do input de busca global dentro da Topbar.",
+    "type": "select",
+    "importance": 65,
+    "categories": [
+      "layout",
+      "posicionamento",
+      "layout_and_navigation"
+    ],
+    "tags": [
+      "search",
+      "topbar",
+      "position"
+    ],
+    "databaseColumn": "layout_and_navigation",
+    "schemaOrigin": "navigation.ts",
+    "digitalTwins": [
+      "DesignInjector"
+    ],
+    "cssVariables": [],
+    "allowedValues": [
+      "left",
+      "center",
+      "right",
+      "hidden"
+    ],
+    "relatedTokens": [
+      "searchPositionSidebar"
+    ]
+  },
+  {
+    "tokenId": "searchPositionSidebar",
+    "name": "Posição Pesquisa (Sidebar)",
+    "description": "Alinhamento do input de busca dentro da Sidebar.",
+    "type": "select",
+    "importance": 65,
+    "categories": [
+      "layout",
+      "posicionamento",
+      "layout_and_navigation"
+    ],
+    "tags": [
+      "search",
+      "sidebar",
+      "position"
+    ],
+    "databaseColumn": "layout_and_navigation",
+    "schemaOrigin": "navigation.ts",
+    "digitalTwins": [
+      "DesignInjector"
+    ],
+    "cssVariables": [],
+    "allowedValues": [
+      "top",
+      "bottom",
+      "hidden"
+    ],
+    "relatedTokens": [
+      "searchPositionTopbar"
+    ]
+  },
+  {
+    "tokenId": "scrollWidth",
+    "name": "Largura da Barra",
+    "description": "Largura (ou altura) principal do scrollbar do Sarak.",
+    "type": "number",
+    "importance": 75,
+    "categories": [
+      "geometria",
+      "layout",
+      "layout_and_navigation"
+    ],
+    "tags": [
+      "scroll",
+      "width",
+      "scrollbar"
+    ],
+    "databaseColumn": "layout_and_navigation",
+    "schemaOrigin": "scrollbars.ts",
+    "digitalTwins": [
+      "DesignInjector"
+    ],
+    "cssVariables": [
+      "--sarak-scroll-width"
+    ],
+    "allowedValues": {
+      "min": 2,
+      "max": 12,
+      "step": 1
+    },
+    "relatedTokens": [
+      "scrollRadius"
+    ]
+  },
+  {
+    "tokenId": "scrollRadius",
+    "name": "Arredondamento (Thumb)",
+    "description": "Curvatura nas pontas do polegar da barra de rolagem (border-radius).",
+    "type": "number",
+    "importance": 65,
+    "categories": [
+      "bordas",
+      "geometria",
+      "layout_and_navigation"
+    ],
+    "tags": [
+      "scroll",
+      "radius",
+      "border-radius"
+    ],
+    "databaseColumn": "layout_and_navigation",
+    "schemaOrigin": "scrollbars.ts",
+    "digitalTwins": [
+      "DesignInjector"
+    ],
+    "cssVariables": [
+      "--sarak-scroll-radius"
+    ],
+    "allowedValues": {
+      "min": 0,
+      "max": 10,
+      "step": 1
+    },
+    "relatedTokens": [
+      "scrollWidth"
+    ]
+  },
+  {
+    "tokenId": "scrollTrackOpacity",
+    "name": "Opacidade do Trilho",
+    "description": "Opacidade do track onde a barra de rolagem desliza.",
+    "type": "number",
+    "importance": 60,
+    "categories": [
+      "efeitos",
+      "filtros",
+      "layout_and_navigation"
+    ],
+    "tags": [
+      "scroll",
+      "track",
+      "opacity"
+    ],
+    "databaseColumn": "layout_and_navigation",
+    "schemaOrigin": "scrollbars.ts",
+    "digitalTwins": [
+      "DesignInjector"
+    ],
+    "cssVariables": [
+      "--sarak-scroll-track-opacity"
+    ],
+    "allowedValues": {
+      "min": 0,
+      "max": 1,
+      "step": 0.05
+    },
+    "relatedTokens": [
+      "scrollThumbOpacity"
+    ]
+  },
+  {
+    "tokenId": "scrollThumbColor",
+    "name": "Cor do Cursor (Thumb)",
+    "description": "Cor de fundo do elemento manipulador (thumb) do scroll.",
+    "type": "color",
+    "importance": 85,
+    "categories": [
+      "cores",
+      "layout",
+      "layout_and_navigation"
+    ],
+    "tags": [
+      "scroll",
+      "thumb",
+      "color"
+    ],
+    "databaseColumn": "layout_and_navigation",
+    "schemaOrigin": "scrollbars.ts",
+    "digitalTwins": [
+      "DesignInjector"
+    ],
+    "cssVariables": [
+      "--sarak-scroll-thumb-color"
+    ],
+    "allowedValues": null,
+    "relatedTokens": [
+      "scrollThumbOpacity",
+      "scrollThumbHoverOpacity"
+    ]
+  },
+  {
+    "tokenId": "scrollThumbOpacity",
+    "name": "Opacidade (Thumb)",
+    "description": "Opacidade padrão da barra de rolagem quando não interativa.",
+    "type": "number",
+    "importance": 70,
+    "categories": [
+      "efeitos",
+      "filtros",
+      "layout_and_navigation"
+    ],
+    "tags": [
+      "scroll",
+      "thumb",
+      "opacity"
+    ],
+    "databaseColumn": "layout_and_navigation",
+    "schemaOrigin": "scrollbars.ts",
+    "digitalTwins": [
+      "DesignInjector"
+    ],
+    "cssVariables": [
+      "--sarak-scroll-thumb-opacity"
+    ],
+    "allowedValues": {
+      "min": 0.1,
+      "max": 1,
+      "step": 0.05
+    },
+    "relatedTokens": [
+      "scrollThumbHoverOpacity"
+    ]
+  },
+  {
+    "tokenId": "scrollThumbHoverOpacity",
+    "name": "Opacidade ao Hover",
+    "description": "Opacidade aplicada à barra de rolagem quando o mouse foca sobre ela.",
+    "type": "number",
+    "importance": 70,
+    "categories": [
+      "interação",
+      "estado",
+      "layout_and_navigation"
+    ],
+    "tags": [
+      "scroll",
+      "thumb",
+      "hover",
+      "opacity"
+    ],
+    "databaseColumn": "layout_and_navigation",
+    "schemaOrigin": "scrollbars.ts",
+    "digitalTwins": [
+      "DesignInjector"
+    ],
+    "cssVariables": [
+      "--sarak-scroll-thumb-hover-opacity"
+    ],
+    "allowedValues": {
+      "min": 0.2,
+      "max": 1,
+      "step": 0.05
+    },
+    "relatedTokens": [
+      "scrollThumbOpacity"
+    ]
+  },
+  {
+    "tokenId": "scrollPadding",
+    "name": "Espaçamento (Padding)",
+    "description": "Distância (margem) da barra de rolagem em relação às bordas extremas do container.",
+    "type": "number",
+    "importance": 65,
+    "categories": [
+      "layout",
+      "espaçamento",
+      "layout_and_navigation"
+    ],
+    "tags": [
+      "scroll",
+      "padding",
+      "margin",
+      "spacing"
+    ],
+    "databaseColumn": "layout_and_navigation",
+    "schemaOrigin": "scrollbars.ts",
+    "digitalTwins": [
+      "DesignInjector"
+    ],
+    "cssVariables": [
+      "--sarak-scroll-padding"
+    ],
+    "allowedValues": {
+      "min": 0,
+      "max": 4,
+      "step": 1
+    },
+    "relatedTokens": [
+      "scrollWidth"
+    ]
+  },
+  {
+    "tokenId": "zIndexBase",
+    "name": "Base Z-Index",
+    "description": "Nível Z padrão para os elementos em nível de base, logo acima do background do sistema.",
+    "type": "number",
+    "importance": 50,
+    "categories": [
+      "layout",
+      "camadas",
+      "layout_and_navigation"
+    ],
+    "tags": [
+      "z-index",
+      "base",
+      "layer"
+    ],
+    "databaseColumn": "layout_and_navigation",
+    "schemaOrigin": "layers.ts",
+    "digitalTwins": [
+      "DesignInjector"
+    ],
+    "cssVariables": [
+      "--sarak-z-base"
+    ],
+    "allowedValues": {
+      "min": 0,
+      "max": 100,
+      "step": 1
+    },
+    "relatedTokens": [
+      "zIndexSidebar"
+    ]
+  },
+  {
+    "tokenId": "zIndexSidebar",
+    "name": "Sidebar Z-Index",
+    "description": "Nível Z aplicado à barra lateral de navegação (Sidebar).",
+    "type": "number",
+    "importance": 70,
+    "categories": [
+      "layout",
+      "camadas",
+      "layout_and_navigation"
+    ],
+    "tags": [
+      "z-index",
+      "sidebar",
+      "layer"
+    ],
+    "databaseColumn": "layout_and_navigation",
+    "schemaOrigin": "layers.ts",
+    "digitalTwins": [
+      "DesignInjector"
+    ],
+    "cssVariables": [
+      "--sarak-z-sidebar"
+    ],
+    "allowedValues": {
+      "min": 100,
+      "max": 1000,
+      "step": 50
+    },
+    "relatedTokens": [
+      "zIndexBase",
+      "zIndexModal"
+    ]
+  },
+  {
+    "tokenId": "zIndexModal",
+    "name": "Modal Z-Index",
+    "description": "Nível Z aplicado a janelas modais, sobreposições críticas e pop-ups.",
+    "type": "number",
+    "importance": 90,
+    "categories": [
+      "layout",
+      "camadas",
+      "layout_and_navigation"
+    ],
+    "tags": [
+      "z-index",
+      "modal",
+      "overlay",
+      "layer"
+    ],
+    "databaseColumn": "layout_and_navigation",
+    "schemaOrigin": "layers.ts",
+    "digitalTwins": [
+      "DesignInjector"
+    ],
+    "cssVariables": [
+      "--sarak-z-modal"
+    ],
+    "allowedValues": {
+      "min": 1000,
+      "max": 5000,
+      "step": 100
+    },
+    "relatedTokens": [
+      "zIndexTooltip"
+    ]
+  },
+  {
+    "tokenId": "zIndexTooltip",
+    "name": "Tooltip Z-Index",
+    "description": "O nível mais alto no sistema, reservado para tooltips, toasts e drop-downs críticos.",
+    "type": "number",
+    "importance": 95,
+    "categories": [
+      "layout",
+      "camadas",
+      "layout_and_navigation"
+    ],
+    "tags": [
+      "z-index",
+      "tooltip",
+      "highest",
+      "layer"
+    ],
+    "databaseColumn": "layout_and_navigation",
+    "schemaOrigin": "layers.ts",
+    "digitalTwins": [
+      "DesignInjector"
+    ],
+    "cssVariables": [
+      "--sarak-z-tooltip"
+    ],
+    "allowedValues": {
+      "min": 5000,
+      "max": 9999,
+      "step": 100
+    },
+    "relatedTokens": [
+      "zIndexModal"
+    ]
+  },
+  {
+    "tokenId": "layerBackdropBlur",
+    "name": "Blur do Fundo (Modal)",
+    "description": "Nível de desfoque (backdrop-filter) aplicado no fundo das modais.",
+    "type": "number",
+    "importance": 70,
+    "categories": [
+      "efeitos",
+      "filtros",
+      "layout_and_navigation"
+    ],
+    "tags": [
+      "backdrop",
+      "blur",
+      "modal"
+    ],
+    "databaseColumn": "layout_and_navigation",
+    "schemaOrigin": "layers.ts",
+    "digitalTwins": [
+      "DesignInjector"
+    ],
+    "cssVariables": [
+      "--sarak-layer-backdrop-blur"
+    ],
+    "allowedValues": {
+      "min": 0,
+      "max": 40,
+      "step": 1
+    },
+    "relatedTokens": [
+      "layerBackdropOpacity"
+    ]
+  },
+  {
+    "tokenId": "layerBackdropOpacity",
+    "name": "Escurecimento do Fundo",
+    "description": "Nível de opacidade do fundo escuro por trás de elementos sobrepostos.",
+    "type": "number",
+    "importance": 65,
+    "categories": [
+      "efeitos",
+      "filtros",
+      "layout_and_navigation"
+    ],
+    "tags": [
+      "backdrop",
+      "opacity",
+      "overlay"
+    ],
+    "databaseColumn": "layout_and_navigation",
+    "schemaOrigin": "layers.ts",
+    "digitalTwins": [
+      "DesignInjector"
+    ],
+    "cssVariables": [
+      "--sarak-layer-backdrop-opacity"
+    ],
+    "allowedValues": {
+      "min": 0,
+      "max": 1,
+      "step": 0.05
+    },
+    "relatedTokens": [
+      "layerBackdropBlur"
+    ]
+  },
+  {
+    "tokenId": "layerElevationFactor",
+    "name": "Fator de Elevação",
+    "description": "Multiplicador dinâmico de profundidade para ajustar a força de drop-shadows globais.",
+    "type": "number",
+    "importance": 60,
+    "categories": [
+      "efeitos",
+      "sombra-luz",
+      "layout_and_navigation"
+    ],
+    "tags": [
+      "elevation",
+      "shadow",
+      "multiplier"
+    ],
+    "databaseColumn": "layout_and_navigation",
+    "schemaOrigin": "layers.ts",
+    "digitalTwins": [
+      "DesignInjector"
+    ],
+    "cssVariables": [
+      "--sarak-layer-elevation-factor"
+    ],
+    "allowedValues": {
+      "min": 0.5,
+      "max": 2,
+      "step": 0.1
+    },
+    "relatedTokens": []
+  }
+]

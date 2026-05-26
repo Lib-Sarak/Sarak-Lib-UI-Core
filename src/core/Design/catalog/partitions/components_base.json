@@ -1,0 +1,1081 @@
+[
+  {
+    "tokenId": "modalOverlayColor",
+    "name": "Cor do Overlay (Modal)",
+    "description": "Cor de fundo aplicada à tela quando um modal ou overlay é aberto.",
+    "type": "color",
+    "importance": 70,
+    "categories": [
+      "cores",
+      "overlays",
+      "background"
+    ],
+    "tags": [
+      "modal",
+      "overlay",
+      "backdrop"
+    ],
+    "databaseColumn": "components_base",
+    "schemaOrigin": "overlays.ts",
+    "digitalTwins": [
+      "SarakModal",
+      "SarakOverlay"
+    ],
+    "cssVariables": [
+      "--sarak-modal-overlay"
+    ],
+    "allowedValues": null,
+    "relatedTokens": [
+      "modalOverlayBlur"
+    ]
+  },
+  {
+    "tokenId": "modalOverlayBlur",
+    "name": "Blur do Overlay (Modal)",
+    "description": "Desfoque de fundo aplicado à tela ao abrir um modal (Glassmorphism).",
+    "type": "number",
+    "importance": 65,
+    "categories": [
+      "efeitos",
+      "overlays",
+      "glassmorphism"
+    ],
+    "tags": [
+      "blur",
+      "modal",
+      "backdrop"
+    ],
+    "databaseColumn": "components_base",
+    "schemaOrigin": "overlays.ts",
+    "digitalTwins": [
+      "SarakModal",
+      "SarakOverlay"
+    ],
+    "cssVariables": [
+      "--sarak-modal-blur"
+    ],
+    "allowedValues": {
+      "min": 0,
+      "max": 40
+    },
+    "relatedTokens": [
+      "modalOverlayColor"
+    ]
+  },
+  {
+    "tokenId": "modalBorderRadius",
+    "name": "Arredondamento do Modal",
+    "description": "Raio da borda principal da janela modal flutuante.",
+    "type": "number",
+    "importance": 80,
+    "categories": [
+      "bordas",
+      "overlays",
+      "geometria"
+    ],
+    "tags": [
+      "modal",
+      "radius"
+    ],
+    "databaseColumn": "components_base",
+    "schemaOrigin": "overlays.ts",
+    "digitalTwins": [
+      "SarakModal"
+    ],
+    "cssVariables": [
+      "--sarak-modal-border-radius"
+    ],
+    "allowedValues": {
+      "min": 0,
+      "max": 40
+    },
+    "relatedTokens": [
+      "modalOverlayBlur"
+    ]
+  },
+  {
+    "tokenId": "tooltipBg",
+    "name": "Fundo do Tooltip",
+    "description": "Cor de fundo das caixas de dica flutuantes (Tooltips).",
+    "type": "color",
+    "importance": 60,
+    "categories": [
+      "cores",
+      "overlays",
+      "tooltip"
+    ],
+    "tags": [
+      "tooltip",
+      "background"
+    ],
+    "databaseColumn": "components_base",
+    "schemaOrigin": "overlays.ts",
+    "digitalTwins": [
+      "SarakTooltip"
+    ],
+    "cssVariables": [
+      "--sarak-tooltip-bg"
+    ],
+    "allowedValues": null,
+    "relatedTokens": [
+      "tooltipRadius"
+    ]
+  },
+  {
+    "tokenId": "tooltipRadius",
+    "name": "Raio do Tooltip",
+    "description": "Arredondamento das caixas de dica flutuantes (Tooltips).",
+    "type": "number",
+    "importance": 50,
+    "categories": [
+      "bordas",
+      "overlays",
+      "geometria"
+    ],
+    "tags": [
+      "tooltip",
+      "radius"
+    ],
+    "databaseColumn": "components_base",
+    "schemaOrigin": "overlays.ts",
+    "digitalTwins": [
+      "SarakTooltip"
+    ],
+    "cssVariables": [
+      "--sarak-tooltip-radius"
+    ],
+    "allowedValues": {
+      "min": 0,
+      "max": 12
+    },
+    "relatedTokens": [
+      "tooltipBg"
+    ]
+  },
+  {
+    "tokenId": "tableHeaderBg",
+    "name": "Fundo do Cabeçalho da Tabela",
+    "description": "Cor de fundo para a primeira linha (cabeçalho) de tabelas e grids de dados.",
+    "type": "color",
+    "importance": 70,
+    "categories": [
+      "cores",
+      "tabelas",
+      "background"
+    ],
+    "tags": [
+      "table",
+      "header"
+    ],
+    "databaseColumn": "components_base",
+    "schemaOrigin": "tables.ts",
+    "digitalTwins": [
+      "SarakTable"
+    ],
+    "cssVariables": [
+      "--sarak-table-header-bg"
+    ],
+    "allowedValues": null,
+    "relatedTokens": [
+      "tableBorderColor"
+    ]
+  },
+  {
+    "tokenId": "tableRowHoverBg",
+    "name": "Fundo Hover da Linha (Tabela)",
+    "description": "Feedback visual ao passar o mouse sobre uma linha da tabela.",
+    "type": "color",
+    "importance": 65,
+    "categories": [
+      "cores",
+      "tabelas",
+      "interacao"
+    ],
+    "tags": [
+      "table",
+      "hover",
+      "row"
+    ],
+    "databaseColumn": "components_base",
+    "schemaOrigin": "tables.ts",
+    "digitalTwins": [
+      "SarakTable"
+    ],
+    "cssVariables": [
+      "--sarak-table-row-hover"
+    ],
+    "allowedValues": null,
+    "relatedTokens": [
+      "tableHeaderBg"
+    ]
+  },
+  {
+    "tokenId": "tableCellPadding",
+    "name": "Densidade Celular da Tabela",
+    "description": "Espaçamento interno das células da tabela (controla a densidade visual).",
+    "type": "number",
+    "importance": 80,
+    "categories": [
+      "layout",
+      "tabelas",
+      "espacamento"
+    ],
+    "tags": [
+      "table",
+      "padding",
+      "density"
+    ],
+    "databaseColumn": "components_base",
+    "schemaOrigin": "tables.ts",
+    "digitalTwins": [
+      "SarakTable"
+    ],
+    "cssVariables": [
+      "--sarak-table-padding"
+    ],
+    "allowedValues": {
+      "min": 4,
+      "max": 32
+    },
+    "relatedTokens": [
+      "tableRowHoverBg"
+    ]
+  },
+  {
+    "tokenId": "tableBorderColor",
+    "name": "Cor das Linhas da Tabela",
+    "description": "Cor das linhas divisórias horizontais e verticais em grids de dados.",
+    "type": "color",
+    "importance": 60,
+    "categories": [
+      "cores",
+      "tabelas",
+      "bordas"
+    ],
+    "tags": [
+      "table",
+      "border"
+    ],
+    "databaseColumn": "components_base",
+    "schemaOrigin": "tables.ts",
+    "digitalTwins": [
+      "SarakTable"
+    ],
+    "cssVariables": [
+      "--sarak-table-border"
+    ],
+    "allowedValues": null,
+    "relatedTokens": [
+      "tableHeaderBg"
+    ]
+  },
+  {
+    "tokenId": "btnBorderRadius",
+    "name": "Arredondamento do Botão (Master)",
+    "description": "Controle master para arredondamento de todos os cantos dos botões base.",
+    "type": "number",
+    "importance": 90,
+    "categories": [
+      "bordas",
+      "botoes",
+      "geometria"
+    ],
+    "tags": [
+      "button",
+      "radius"
+    ],
+    "databaseColumn": "components_base",
+    "schemaOrigin": "buttons.ts",
+    "digitalTwins": [
+      "SarakButton"
+    ],
+    "cssVariables": [
+      "--sarak-btn-border-radius",
+      "--sarak-btn-radius-tl",
+      "--sarak-btn-radius-tr",
+      "--sarak-btn-radius-bl",
+      "--sarak-btn-radius-br"
+    ],
+    "allowedValues": {
+      "min": 0,
+      "max": 120
+    },
+    "relatedTokens": [
+      "btnRadiusTL",
+      "btnStyleType"
+    ]
+  },
+  {
+    "tokenId": "btnRadiusTL",
+    "name": "Canto do Botão: Superior Esquerdo",
+    "description": "Controle individual de raio para cantos assimétricos (Superior Esquerdo).",
+    "type": "number",
+    "importance": 50,
+    "categories": [
+      "bordas",
+      "botoes",
+      "geometria"
+    ],
+    "tags": [
+      "button",
+      "radius",
+      "tl"
+    ],
+    "databaseColumn": "components_base",
+    "schemaOrigin": "buttons.ts",
+    "digitalTwins": [
+      "SarakButton"
+    ],
+    "cssVariables": [
+      "--sarak-btn-radius-tl"
+    ],
+    "allowedValues": {
+      "min": 0,
+      "max": 120
+    },
+    "relatedTokens": [
+      "btnBorderRadius"
+    ]
+  },
+  {
+    "tokenId": "btnRadiusTR",
+    "name": "Canto do Botão: Superior Direito",
+    "description": "Controle individual de raio para cantos assimétricos (Superior Direito).",
+    "type": "number",
+    "importance": 50,
+    "categories": [
+      "bordas",
+      "botoes",
+      "geometria"
+    ],
+    "tags": [
+      "button",
+      "radius",
+      "tr"
+    ],
+    "databaseColumn": "components_base",
+    "schemaOrigin": "buttons.ts",
+    "digitalTwins": [
+      "SarakButton"
+    ],
+    "cssVariables": [
+      "--sarak-btn-radius-tr"
+    ],
+    "allowedValues": {
+      "min": 0,
+      "max": 120
+    },
+    "relatedTokens": [
+      "btnBorderRadius"
+    ]
+  },
+  {
+    "tokenId": "btnRadiusBL",
+    "name": "Canto do Botão: Inferior Esquerdo",
+    "description": "Controle individual de raio para cantos assimétricos (Inferior Esquerdo).",
+    "type": "number",
+    "importance": 50,
+    "categories": [
+      "bordas",
+      "botoes",
+      "geometria"
+    ],
+    "tags": [
+      "button",
+      "radius",
+      "bl"
+    ],
+    "databaseColumn": "components_base",
+    "schemaOrigin": "buttons.ts",
+    "digitalTwins": [
+      "SarakButton"
+    ],
+    "cssVariables": [
+      "--sarak-btn-radius-bl"
+    ],
+    "allowedValues": {
+      "min": 0,
+      "max": 120
+    },
+    "relatedTokens": [
+      "btnBorderRadius"
+    ]
+  },
+  {
+    "tokenId": "btnRadiusBR",
+    "name": "Canto do Botão: Inferior Direito",
+    "description": "Controle individual de raio para cantos assimétricos (Inferior Direito).",
+    "type": "number",
+    "importance": 50,
+    "categories": [
+      "bordas",
+      "botoes",
+      "geometria"
+    ],
+    "tags": [
+      "button",
+      "radius",
+      "br"
+    ],
+    "databaseColumn": "components_base",
+    "schemaOrigin": "buttons.ts",
+    "digitalTwins": [
+      "SarakButton"
+    ],
+    "cssVariables": [
+      "--sarak-btn-radius-br"
+    ],
+    "allowedValues": {
+      "min": 0,
+      "max": 120
+    },
+    "relatedTokens": [
+      "btnBorderRadius"
+    ]
+  },
+  {
+    "tokenId": "btnHoverScale",
+    "name": "Escala no Hover do Botão",
+    "description": "Qual o nível de dilatação/expansão que o botão tem ao passar o mouse.",
+    "type": "number",
+    "importance": 80,
+    "categories": [
+      "interacao",
+      "botoes",
+      "animacao"
+    ],
+    "tags": [
+      "button",
+      "hover",
+      "scale"
+    ],
+    "databaseColumn": "components_base",
+    "schemaOrigin": "buttons.ts",
+    "digitalTwins": [
+      "SarakButton"
+    ],
+    "cssVariables": [
+      "--sarak-btn-hover-scale"
+    ],
+    "allowedValues": {
+      "min": 0.8,
+      "max": 1.2,
+      "step": 0.01
+    },
+    "relatedTokens": [
+      "btnActiveScale"
+    ]
+  },
+  {
+    "tokenId": "btnActiveScale",
+    "name": "Escala no Clique do Botão",
+    "description": "O quanto o botão encolhe (efeito tátil) quando recebe o evento de 'mousedown/active'.",
+    "type": "number",
+    "importance": 80,
+    "categories": [
+      "interacao",
+      "botoes",
+      "animacao"
+    ],
+    "tags": [
+      "button",
+      "active",
+      "click",
+      "scale"
+    ],
+    "databaseColumn": "components_base",
+    "schemaOrigin": "buttons.ts",
+    "digitalTwins": [
+      "SarakButton"
+    ],
+    "cssVariables": [
+      "--sarak-btn-active-scale"
+    ],
+    "allowedValues": {
+      "min": 0.8,
+      "max": 1.2,
+      "step": 0.01
+    },
+    "relatedTokens": [
+      "btnHoverScale"
+    ]
+  },
+  {
+    "tokenId": "btnPrimaryBg",
+    "name": "Fundo do Botão Primário",
+    "description": "Cor sólida de fundo para botões primários (Call to Action principal).",
+    "type": "color",
+    "importance": 90,
+    "categories": [
+      "cores",
+      "botoes",
+      "background"
+    ],
+    "tags": [
+      "button",
+      "primary",
+      "bg"
+    ],
+    "databaseColumn": "components_base",
+    "schemaOrigin": "buttons.ts",
+    "digitalTwins": [
+      "SarakButton"
+    ],
+    "cssVariables": [
+      "--sarak-btn-primary-bg",
+      "--theme-primary"
+    ],
+    "allowedValues": null,
+    "relatedTokens": [
+      "btnPrimaryText"
+    ]
+  },
+  {
+    "tokenId": "btnPrimaryText",
+    "name": "Texto do Botão Primário",
+    "description": "Cor de contraste da tipografia nos botões primários.",
+    "type": "color",
+    "importance": 85,
+    "categories": [
+      "cores",
+      "botoes",
+      "tipografia"
+    ],
+    "tags": [
+      "button",
+      "primary",
+      "text"
+    ],
+    "databaseColumn": "components_base",
+    "schemaOrigin": "buttons.ts",
+    "digitalTwins": [
+      "SarakButton"
+    ],
+    "cssVariables": [
+      "--sarak-btn-primary-text"
+    ],
+    "allowedValues": null,
+    "relatedTokens": [
+      "btnPrimaryBg"
+    ]
+  },
+  {
+    "tokenId": "btnSecondaryBg",
+    "name": "Fundo do Botão Secundário",
+    "description": "Cor de fundo (geralmente mais sutil ou transparente) para ações secundárias.",
+    "type": "color",
+    "importance": 70,
+    "categories": [
+      "cores",
+      "botoes",
+      "background"
+    ],
+    "tags": [
+      "button",
+      "secondary",
+      "bg"
+    ],
+    "databaseColumn": "components_base",
+    "schemaOrigin": "buttons.ts",
+    "digitalTwins": [
+      "SarakButton"
+    ],
+    "cssVariables": [
+      "--sarak-btn-secondary-bg"
+    ],
+    "allowedValues": null,
+    "relatedTokens": [
+      "btnPrimaryBg"
+    ]
+  },
+  {
+    "tokenId": "btnGhostHoverBg",
+    "name": "Hover do Botão Ghost",
+    "description": "Cor do fundo sutil que surge ao passar o mouse em botões invisíveis (Ghost/Text).",
+    "type": "color",
+    "importance": 60,
+    "categories": [
+      "cores",
+      "botoes",
+      "interacao"
+    ],
+    "tags": [
+      "button",
+      "ghost",
+      "hover"
+    ],
+    "databaseColumn": "components_base",
+    "schemaOrigin": "buttons.ts",
+    "digitalTwins": [
+      "SarakButton"
+    ],
+    "cssVariables": [
+      "--sarak-btn-ghost-hover"
+    ],
+    "allowedValues": null,
+    "relatedTokens": [
+      "btnSecondaryBg"
+    ]
+  },
+  {
+    "tokenId": "btnStyleType",
+    "name": "Estilo Base do Botão",
+    "description": "Definição arquitetural visual (Matte, Neon, Frosted/Glass, Borderline) aplicada aos botões.",
+    "type": "select",
+    "importance": 80,
+    "categories": [
+      "botoes",
+      "estetica",
+      "variante"
+    ],
+    "tags": [
+      "button",
+      "style",
+      "preset"
+    ],
+    "databaseColumn": "components_base",
+    "schemaOrigin": "buttons.ts",
+    "digitalTwins": [
+      "SarakButton"
+    ],
+    "cssVariables": [
+      "--sarak-btn-style-type"
+    ],
+    "allowedValues": [
+      "matte",
+      "neon",
+      "frosted",
+      "borderline"
+    ],
+    "relatedTokens": [
+      "btnNeonGlowColor",
+      "btnBackdropBlur"
+    ]
+  },
+  {
+    "tokenId": "btnNeonGlowColor",
+    "name": "Cor do Brilho (Botão Neon)",
+    "description": "Caso o estilo seja 'neon', esta é a cor emitida pela aura externa do botão.",
+    "type": "color",
+    "importance": 65,
+    "categories": [
+      "cores",
+      "botoes",
+      "efeitos"
+    ],
+    "tags": [
+      "button",
+      "neon",
+      "glow"
+    ],
+    "databaseColumn": "components_base",
+    "schemaOrigin": "buttons.ts",
+    "digitalTwins": [
+      "SarakButton"
+    ],
+    "cssVariables": [
+      "--sarak-btn-neon-glow-color"
+    ],
+    "allowedValues": null,
+    "relatedTokens": [
+      "btnStyleType",
+      "btnNeonPulseSpeed"
+    ]
+  },
+  {
+    "tokenId": "btnNeonPulseSpeed",
+    "name": "Velocidade de Pulso do Botão Neon",
+    "description": "Se animado, a rapidez com que a aura de brilho pisca ou respira (em segundos).",
+    "type": "number",
+    "importance": 60,
+    "categories": [
+      "efeitos",
+      "botoes",
+      "animacao"
+    ],
+    "tags": [
+      "button",
+      "neon",
+      "pulse"
+    ],
+    "databaseColumn": "components_base",
+    "schemaOrigin": "buttons.ts",
+    "digitalTwins": [
+      "SarakButton"
+    ],
+    "cssVariables": [
+      "--sarak-btn-neon-pulse-speed"
+    ],
+    "allowedValues": {
+      "min": 0.5,
+      "max": 4,
+      "step": 0.1
+    },
+    "relatedTokens": [
+      "btnNeonGlowColor"
+    ]
+  },
+  {
+    "tokenId": "btnBackdropBlur",
+    "name": "Desfoque de Vidro (Botões Frosted)",
+    "description": "Quando o botão usa estilo 'frosted', quantidade de desfoque aplicado sobre o que está atrás.",
+    "type": "number",
+    "importance": 60,
+    "categories": [
+      "efeitos",
+      "botoes",
+      "glassmorphism"
+    ],
+    "tags": [
+      "button",
+      "glass",
+      "blur"
+    ],
+    "databaseColumn": "components_base",
+    "schemaOrigin": "buttons.ts",
+    "digitalTwins": [
+      "SarakButton"
+    ],
+    "cssVariables": [
+      "--sarak-btn-backdrop-blur"
+    ],
+    "allowedValues": {
+      "min": 0,
+      "max": 30
+    },
+    "relatedTokens": [
+      "btnStyleType"
+    ]
+  },
+  {
+    "tokenId": "inputBorderRadius",
+    "name": "Arredondamento do Input",
+    "description": "Raio da borda de campos de entrada de texto e textareas.",
+    "type": "number",
+    "importance": 75,
+    "categories": [
+      "bordas",
+      "inputs",
+      "geometria"
+    ],
+    "tags": [
+      "input",
+      "radius",
+      "form"
+    ],
+    "databaseColumn": "components_base",
+    "schemaOrigin": "inputs.ts",
+    "digitalTwins": [
+      "SarakInput"
+    ],
+    "cssVariables": [
+      "--sarak-input-border-radius"
+    ],
+    "allowedValues": {
+      "min": 0,
+      "max": 120
+    },
+    "relatedTokens": [
+      "inputBg"
+    ]
+  },
+  {
+    "tokenId": "inputBg",
+    "name": "Fundo do Input",
+    "description": "Cor de fundo principal para campos de formulário e inputs de dados.",
+    "type": "color",
+    "importance": 80,
+    "categories": [
+      "cores",
+      "inputs",
+      "background"
+    ],
+    "tags": [
+      "input",
+      "form",
+      "bg"
+    ],
+    "databaseColumn": "components_base",
+    "schemaOrigin": "inputs.ts",
+    "digitalTwins": [
+      "SarakInput"
+    ],
+    "cssVariables": [
+      "--sarak-input-bg"
+    ],
+    "allowedValues": null,
+    "relatedTokens": [
+      "inputBorderColor"
+    ]
+  },
+  {
+    "tokenId": "inputBorderColor",
+    "name": "Cor da Borda do Input",
+    "description": "Cor do delineado (outline/border) dos campos de entrada em estado normal/ocioso.",
+    "type": "color",
+    "importance": 70,
+    "categories": [
+      "cores",
+      "inputs",
+      "bordas"
+    ],
+    "tags": [
+      "input",
+      "border",
+      "form"
+    ],
+    "databaseColumn": "components_base",
+    "schemaOrigin": "inputs.ts",
+    "digitalTwins": [
+      "SarakInput"
+    ],
+    "cssVariables": [
+      "--sarak-input-border-color"
+    ],
+    "allowedValues": null,
+    "relatedTokens": [
+      "inputFocusBorderColor"
+    ]
+  },
+  {
+    "tokenId": "inputFocusBorderColor",
+    "name": "Cor da Borda (Foco) do Input",
+    "description": "Cor ativada na borda quando o input está selecionado (focus ring).",
+    "type": "color",
+    "importance": 85,
+    "categories": [
+      "cores",
+      "inputs",
+      "interacao"
+    ],
+    "tags": [
+      "input",
+      "focus",
+      "border"
+    ],
+    "databaseColumn": "components_base",
+    "schemaOrigin": "inputs.ts",
+    "digitalTwins": [
+      "SarakInput"
+    ],
+    "cssVariables": [
+      "--sarak-input-focus-border-color"
+    ],
+    "allowedValues": null,
+    "relatedTokens": [
+      "inputBorderColor",
+      "inputTextColor"
+    ]
+  },
+  {
+    "tokenId": "inputTextColor",
+    "name": "Cor do Texto do Input",
+    "description": "Cor da tipografia para os valores digitados pelo usuário.",
+    "type": "color",
+    "importance": 80,
+    "categories": [
+      "cores",
+      "inputs",
+      "tipografia"
+    ],
+    "tags": [
+      "input",
+      "text",
+      "form"
+    ],
+    "databaseColumn": "components_base",
+    "schemaOrigin": "inputs.ts",
+    "digitalTwins": [
+      "SarakInput"
+    ],
+    "cssVariables": [
+      "--sarak-input-text-color"
+    ],
+    "allowedValues": null,
+    "relatedTokens": [
+      "inputBg"
+    ]
+  },
+  {
+    "tokenId": "switchTrackActiveBg",
+    "name": "Cor: Switch Ativo",
+    "description": "Cor da pista de fundo de um Switch quando está na posição 'On' (ligado).",
+    "type": "color",
+    "importance": 80,
+    "categories": [
+      "cores",
+      "switches",
+      "background"
+    ],
+    "tags": [
+      "switch",
+      "toggle",
+      "active"
+    ],
+    "databaseColumn": "components_base",
+    "schemaOrigin": "switches.ts",
+    "digitalTwins": [
+      "SarakSwitch"
+    ],
+    "cssVariables": [
+      "--sarak-switch-active-bg"
+    ],
+    "allowedValues": null,
+    "relatedTokens": [
+      "switchThumbBg"
+    ]
+  },
+  {
+    "tokenId": "switchThumbBg",
+    "name": "Cor: Switch Botão (Thumb)",
+    "description": "Cor da bolinha (thumb) do alternador/switch que corre sobre a pista.",
+    "type": "color",
+    "importance": 70,
+    "categories": [
+      "cores",
+      "switches",
+      "botoes"
+    ],
+    "tags": [
+      "switch",
+      "thumb",
+      "toggle"
+    ],
+    "databaseColumn": "components_base",
+    "schemaOrigin": "switches.ts",
+    "digitalTwins": [
+      "SarakSwitch"
+    ],
+    "cssVariables": [
+      "--sarak-switch-thumb"
+    ],
+    "allowedValues": null,
+    "relatedTokens": [
+      "switchTrackActiveBg"
+    ]
+  },
+  {
+    "tokenId": "checkboxActiveColor",
+    "name": "Cor do Check Selecionado",
+    "description": "Cor de preenchimento quando um Checkbox padrão está marcado (checked).",
+    "type": "color",
+    "importance": 80,
+    "categories": [
+      "cores",
+      "switches",
+      "interacao"
+    ],
+    "tags": [
+      "checkbox",
+      "active"
+    ],
+    "databaseColumn": "components_base",
+    "schemaOrigin": "switches.ts",
+    "digitalTwins": [
+      "SarakCheckbox"
+    ],
+    "cssVariables": [
+      "--sarak-checkbox-active"
+    ],
+    "allowedValues": null,
+    "relatedTokens": [
+      "switchTrackActiveBg"
+    ]
+  },
+  {
+    "tokenId": "switchStyleType",
+    "name": "Estilo do Alternador (Switch)",
+    "description": "Estilo arquitetural base para o controle visual do Switch (Tactile, Glass, Pulsing).",
+    "type": "select",
+    "importance": 85,
+    "categories": [
+      "switches",
+      "estetica",
+      "variante"
+    ],
+    "tags": [
+      "switch",
+      "style",
+      "preset"
+    ],
+    "databaseColumn": "components_base",
+    "schemaOrigin": "switches.ts",
+    "digitalTwins": [
+      "SarakSwitch"
+    ],
+    "cssVariables": [
+      "--sarak-switch-style-type"
+    ],
+    "allowedValues": [
+      "tactile",
+      "asymmetric",
+      "pulsing",
+      "glass"
+    ],
+    "relatedTokens": [
+      "switchBackdropBlur",
+      "switchPulseColor"
+    ]
+  },
+  {
+    "tokenId": "switchBackdropBlur",
+    "name": "Desfoque do Alternador (Vidro)",
+    "description": "Se o estilo for 'glass', determina o blur do fundo do track do Switch.",
+    "type": "number",
+    "importance": 60,
+    "categories": [
+      "efeitos",
+      "switches",
+      "glassmorphism"
+    ],
+    "tags": [
+      "switch",
+      "glass",
+      "blur"
+    ],
+    "databaseColumn": "components_base",
+    "schemaOrigin": "switches.ts",
+    "digitalTwins": [
+      "SarakSwitch"
+    ],
+    "cssVariables": [
+      "--sarak-switch-backdrop-blur"
+    ],
+    "allowedValues": {
+      "min": 0,
+      "max": 20
+    },
+    "relatedTokens": [
+      "switchStyleType"
+    ]
+  },
+  {
+    "tokenId": "switchPulseColor",
+    "name": "Cor do Pulso (Switch)",
+    "description": "Cor da animação de radar/pulso do switch se o estilo for 'pulsing'.",
+    "type": "color",
+    "importance": 50,
+    "categories": [
+      "efeitos",
+      "switches",
+      "animacao"
+    ],
+    "tags": [
+      "switch",
+      "pulse",
+      "glow"
+    ],
+    "databaseColumn": "components_base",
+    "schemaOrigin": "switches.ts",
+    "digitalTwins": [
+      "SarakSwitch"
+    ],
+    "cssVariables": [
+      "--sarak-switch-pulse-color"
+    ],
+    "allowedValues": null,
+    "relatedTokens": [
+      "switchStyleType"
+    ]
+  }
+]
