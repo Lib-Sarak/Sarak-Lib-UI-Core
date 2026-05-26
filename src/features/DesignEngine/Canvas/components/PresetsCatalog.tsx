@@ -18,15 +18,15 @@ export const PresetsCatalog: React.FC<PresetsCatalogProps> = ({ onApplyPreset, a
     const themes = GLOBAL_THEMES;
 
     return (
-        <div className="w-full h-full flex flex-col relative bg-[#0c0c0d]">
+        <div className="w-full h-full flex flex-col relative bg-[var(--theme-bg)]">
             {/* Header */}
-            <div className="px-8 py-5 border-b border-white/5 flex items-center justify-between bg-black/40 backdrop-blur-md sticky top-0 z-10">
+            <div className="px-8 py-5 border-b border-[var(--theme-border)] flex items-center justify-between bg-[var(--theme-surface)] backdrop-blur-md sticky top-0 z-10">
                 <div className="flex items-center gap-4">
                     <div className="p-2.5 bg-[var(--theme-primary)]/10 rounded-xl border border-[var(--theme-primary)]/20 shadow-[0_0_20px_rgba(var(--theme-primary-rgb),0.2)]">
                         <Sparkles size={18} className="text-[var(--theme-primary)]" />
                     </div>
                     <div className="flex flex-col">
-                        <span className="text-xs font-black uppercase text-white tracking-[0.3em]">Design Intelligence Catalog</span>
+                        <span className="text-xs font-black uppercase text-[var(--theme-text)] tracking-[0.3em]">Design Intelligence Catalog</span>
                         <span className="text-[9px] font-bold text-[var(--theme-primary)] uppercase tracking-widest mt-0.5">
                             {activeCategory ? `Pillar: ${activeCategory}` : 'Temas Globais'}
                         </span>
@@ -97,7 +97,7 @@ const PresetCard = ({ theme, currentMode, onApply, index }: { theme: ThemePreset
             animate={{ opacity: 1, y: 0 }}
             transition={{ delay: index * 0.1 }}
             onClick={onApply}
-            className="group relative flex flex-col text-left rounded-2xl border border-white/10 overflow-hidden bg-black/20 hover:bg-black/40 transition-all duration-300 hover:border-white/20 hover:shadow-[0_10px_40px_-10px_rgba(var(--theme-primary-rgb),0.1)] focus:outline-none"
+            className="group relative flex flex-col text-left rounded-2xl border border-[var(--theme-border)] overflow-hidden bg-[var(--theme-card)] hover:bg-[var(--theme-surface)] transition-all duration-300 hover:border-[var(--theme-primary)]/50 hover:shadow-[0_10px_40px_-10px_rgba(var(--theme-primary-rgb),0.1)] focus:outline-none"
         >
             {/* Top Showcase Area - Mini Dashboard */}
             <div 
@@ -190,13 +190,13 @@ const PresetCard = ({ theme, currentMode, onApply, index }: { theme: ThemePreset
             </div>
 
             {/* Content Area - Minimalista */}
-            <div className="px-4 py-3 flex items-center justify-between border-t border-white/5 bg-black/40 backdrop-blur-md group-hover:bg-black/60 transition-colors shrink-0">
-                <h3 className="text-xs font-black uppercase tracking-widest text-white group-hover:text-[var(--theme-primary)] transition-colors">
+            <div className="px-4 py-3 flex items-center justify-between border-t border-[var(--theme-border)] bg-[var(--theme-surface)] backdrop-blur-md group-hover:bg-[var(--theme-layer)] transition-colors shrink-0">
+                <h3 className="text-xs font-black uppercase tracking-widest text-[var(--theme-text)] group-hover:text-[var(--theme-primary)] transition-colors">
                     {theme.name}
                 </h3>
                 
                 <div className="flex items-center gap-2">
-                    <div className="px-1.5 py-0.5 bg-white/5 rounded text-[8px] font-bold uppercase tracking-widest text-white/30 flex items-center gap-1">
+                    <div className="px-1.5 py-0.5 bg-[var(--theme-layer)] rounded text-[8px] font-bold uppercase tracking-widest text-[var(--theme-muted)] flex items-center gap-1">
                         <Layout size={8} /> {design.navigationStyle || 'sidebar'}
                     </div>
                     <div className="flex items-center gap-1 text-[9px] font-bold uppercase tracking-widest text-[var(--theme-primary)] opacity-0 -translate-x-2 group-hover:opacity-100 group-hover:translate-x-0 transition-all duration-300">

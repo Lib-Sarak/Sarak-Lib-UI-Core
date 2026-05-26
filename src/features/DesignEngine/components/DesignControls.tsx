@@ -15,7 +15,7 @@ export const HelpTooltip: React.FC<{ label: string, description?: string }> = ({
                 onMouseEnter={() => setIsOpen(true)}
                 onMouseLeave={() => setIsOpen(false)}
                 onClick={() => setIsOpen(!isOpen)}
-                className="text-white/20 hover:text-[var(--theme-primary)] transition-colors focus:outline-none p-1 rounded-full hover:bg-white/5 cursor-help"
+                className="text-[var(--theme-muted)] hover:text-[var(--theme-primary)] transition-colors focus:outline-none p-1 rounded-full hover:bg-[var(--theme-layer)] cursor-help"
             >
                 <HelpCircle size={10} />
             </button>
@@ -25,20 +25,20 @@ export const HelpTooltip: React.FC<{ label: string, description?: string }> = ({
                         initial={{ opacity: 0, y: 10, scale: 0.95 }}
                         animate={{ opacity: 1, y: 0, scale: 1 }}
                         exit={{ opacity: 0, y: 10, scale: 0.95 }}
-                        className="absolute left-1/2 -translate-x-1/2 bottom-full mb-3 w-72 p-5 rounded-2xl bg-[#0f0f10] border border-white/10 shadow-[0_20px_50px_rgba(0,0,0,0.5)] z-[9999] pointer-events-none"
+                        className="absolute left-1/2 -translate-x-1/2 bottom-full mb-3 w-72 p-5 rounded-2xl bg-[var(--theme-surface)] border border-[var(--theme-border)] shadow-[0_20px_50px_rgba(0,0,0,0.5)] z-[9999] pointer-events-none"
                     >
                         <div className="flex flex-col gap-2 relative z-10">
                             <div className="flex items-center gap-2">
                                 <div className="w-1.5 h-1.5 rounded-full bg-[var(--theme-primary)] shadow-[0_0_8px_var(--theme-primary)]" />
-                                <span className="text-[10px] font-black uppercase text-white tracking-[0.2em]">{label}</span>
+                                <span className="text-[10px] font-black uppercase text-[var(--theme-text)] tracking-[0.2em]">{label}</span>
                             </div>
-                            <div className="h-[1px] w-full bg-white/5" />
-                            <p className="text-[10px] text-white/40 leading-relaxed uppercase font-medium">
+                            <div className="h-[1px] w-full bg-[var(--theme-border)]" />
+                            <p className="text-[10px] text-[var(--theme-muted)] leading-relaxed uppercase font-medium">
                                 {description || `Configuração granular para o parâmetro ${label.toLowerCase()} no ecossistema Sarak UI.`}
                             </p>
                         </div>
                         {/* Triângulo indicador */}
-                        <div className="absolute top-full left-1/2 -translate-x-1/2 -mt-1 border-8 border-transparent border-t-[#0f0f10]" />
+                        <div className="absolute top-full left-1/2 -translate-x-1/2 -mt-1 border-8 border-transparent border-t-[var(--theme-surface)]" />
                     </motion.div>
                 )}
             </AnimatePresence>
@@ -49,7 +49,7 @@ export const HelpTooltip: React.FC<{ label: string, description?: string }> = ({
 export const SliderControl: React.FC<any> = ({ label, value, min = 0, max = 100, step = 1, onChange, suffix = '', unit = 'px' }) => (
     <div className="mb-3">
         <div className="flex justify-between items-center mb-1.5">
-            <span className="text-[10px] font-black uppercase tracking-widest text-white/30 flex items-center gap-1.5">
+            <span className="text-[10px] font-black uppercase tracking-widest text-[var(--theme-muted)] flex items-center gap-1.5">
                 {label}
                 <HelpTooltip label={label} />
             </span>
@@ -58,7 +58,7 @@ export const SliderControl: React.FC<any> = ({ label, value, min = 0, max = 100,
         <input 
             type="range" min={min} max={max} step={step} value={value ?? 0} 
             onChange={(e) => onChange(parseFloat(e.target.value))}
-            className="w-full h-1 bg-white/5 rounded-lg appearance-none cursor-pointer accent-[var(--theme-primary)]"
+            className="w-full h-1 bg-[var(--theme-layer)] rounded-lg appearance-none cursor-pointer accent-[var(--theme-primary)]"
         />
     </div>
 );
@@ -88,16 +88,16 @@ export const ColorControl: React.FC<any> = ({ label, value, onChange }) => {
     }, [value]);
 
     return (
-        <div className="flex items-center justify-between p-3 rounded-xl bg-white/5 border border-white/10 group transition-all hover:bg-white/10 hover:border-white/20">
+        <div className="flex items-center justify-between p-3 rounded-xl bg-[var(--theme-layer)] border border-[var(--theme-border)] group transition-all hover:bg-[var(--theme-border)]">
             <div className="flex flex-col gap-0.5">
-                <span className="text-[10px] font-black uppercase tracking-widest text-white/50 flex items-center gap-1.5">
+                <span className="text-[10px] font-black uppercase tracking-widest text-[var(--theme-muted)] flex items-center gap-1.5">
                     {label}
                     <HelpTooltip label={label} />
                 </span>
-                <span className="text-[9px] font-mono text-white/20 uppercase">{localColor}</span>
+                <span className="text-[9px] font-mono text-[var(--theme-muted)] uppercase">{localColor}</span>
             </div>
             <div className="flex items-center gap-3">
-                <div className="relative w-8 h-8 rounded-lg overflow-hidden border border-white/10 shadow-lg ring-1 ring-white/5">
+                <div className="relative w-8 h-8 rounded-lg overflow-hidden border border-[var(--theme-border)] shadow-lg ring-1 ring-[var(--theme-layer)]">
                     <input 
                         type="color" 
                         value={sanitizeColor(localColor)} 
@@ -107,7 +107,7 @@ export const ColorControl: React.FC<any> = ({ label, value, onChange }) => {
                         }}
                         className="absolute inset-0 w-[200%] h-[200%] -top-[50%] -left-[50%] cursor-pointer border-none bg-transparent"
                     />
-                    <div className="absolute inset-0 pointer-events-none ring-inset ring-1 ring-white/10" />
+                    <div className="absolute inset-0 pointer-events-none ring-inset ring-1 ring-[var(--theme-border)]" />
                 </div>
             </div>
         </div>
@@ -115,40 +115,40 @@ export const ColorControl: React.FC<any> = ({ label, value, onChange }) => {
 };
 
 export const SwitchControl: React.FC<any> = ({ label, value, onChange, description }) => (
-    <div className="flex items-center justify-between p-2.5 rounded-xl bg-white/5 border border-white/10 group hover:bg-white/10 transition-all">
+    <div className="flex items-center justify-between p-2.5 rounded-xl bg-[var(--theme-layer)] border border-[var(--theme-border)] group hover:bg-[var(--theme-border)] transition-all">
         <div className="flex flex-col gap-0.5">
-            <span className="text-[10px] font-black uppercase tracking-widest text-white/50 flex items-center gap-1.5">
+            <span className="text-[10px] font-black uppercase tracking-widest text-[var(--theme-text)] flex items-center gap-1.5">
                 {label}
                 <HelpTooltip label={label} description={description} />
             </span>
-            {description && <span className="text-[9px] text-white/20 uppercase tracking-tighter italic">{description}</span>}
+            {description && <span className="text-[9px] text-[var(--theme-muted)] uppercase tracking-tighter italic">{description}</span>}
         </div>
         <button 
             onClick={() => onChange(!value)}
-            className={`w-9 h-4.5 rounded-full relative transition-all ${value ? 'bg-[var(--theme-primary)]' : 'bg-white/10'}`}
+            className={`w-9 h-4.5 rounded-full relative transition-all ${value ? 'bg-[var(--theme-primary)]' : 'bg-[var(--theme-border)]'}`}
         >
-            <div className={`absolute top-0.5 w-3.5 h-3.5 rounded-full bg-white shadow-sm transition-all ${value ? 'left-5' : 'left-0.5'}`} />
+            <div className={`absolute top-0.5 w-3.5 h-3.5 rounded-full bg-[var(--theme-surface)] shadow-sm transition-all ${value ? 'left-5' : 'left-0.5'}`} />
         </button>
     </div>
 );
 
 export const SelectControl: React.FC<any> = ({ label, options, value, onChange, isFont = false }) => (
     <div className="mb-3">
-        <span className="text-[10px] font-black uppercase tracking-widest text-white/30 flex items-center gap-1.5 mb-1.5">
+        <span className="text-[10px] font-black uppercase tracking-widest text-[var(--theme-muted)] flex items-center gap-1.5 mb-1.5">
             {label}
             <HelpTooltip label={label} />
         </span>
         <select 
             value={value ?? ''} 
             onChange={(e) => onChange(e.target.value)}
-            className="w-full bg-white/5 border border-white/10 rounded-lg py-1.5 px-3 text-[10px] font-bold focus:border-[var(--theme-primary)] focus:outline-none transition-all text-white/80"
+            className="w-full bg-[var(--theme-layer)] border border-[var(--theme-border)] rounded-lg py-1.5 px-3 text-[10px] font-bold focus:border-[var(--theme-primary)] focus:outline-none transition-all text-[var(--theme-text)]"
             style={isFont ? { fontFamily: value } : {}}
         >
             {(options || []).map((opt: any) => {
                 const optId = typeof opt === 'object' ? (opt.id !== undefined ? opt.id : (opt.value !== undefined ? opt.value : '')) : opt;
                 const optLabel = typeof opt === 'object' ? (opt.label || opt.name || optId) : opt;
                 return (
-                    <option key={optId} value={optId} className="bg-[#0a0a0b]">
+                    <option key={optId} value={optId} className="bg-[var(--theme-surface)]">
                         {optLabel}
                     </option>
                 );
@@ -161,7 +161,7 @@ export const SelectControl: React.FC<any> = ({ label, options, value, onChange, 
 export const InputControl: React.FC<any> = ({ label, value, onChange, type = 'text', placeholder = '' }) => (
     <div className="mb-3">
         <div className="flex justify-between items-center mb-1.5">
-            <span className="text-[10px] font-black uppercase tracking-widest text-white/30 flex items-center gap-1.5">
+            <span className="text-[10px] font-black uppercase tracking-widest text-[var(--theme-muted)] flex items-center gap-1.5">
                 {label}
                 <HelpTooltip label={label} />
             </span>
@@ -171,7 +171,7 @@ export const InputControl: React.FC<any> = ({ label, value, onChange, type = 'te
             value={value ?? ''} 
             placeholder={placeholder}
             onChange={(e) => onChange(type === 'number' ? parseFloat(e.target.value) : e.target.value)}
-            className="w-full bg-white/5 border border-white/10 rounded-lg py-2 px-3 text-[10px] font-mono focus:border-[var(--theme-primary)] focus:outline-none transition-all text-white/80"
+            className="w-full bg-[var(--theme-layer)] border border-[var(--theme-border)] rounded-lg py-2 px-3 text-[10px] font-mono focus:border-[var(--theme-primary)] focus:outline-none transition-all text-[var(--theme-text)] placeholder:text-[var(--theme-muted)]"
         />
     </div>
 );
@@ -189,7 +189,7 @@ export const CategoryLabel: React.FC<{
     onApply?: () => void,
     pillarId?: string
 }> = ({ icon: Icon, title, index, isOpen, onToggle, isDualView, onToggleDual, isDirty, onReset, onApply, pillarId }) => (
-    <div className={`w-full flex border-y border-white/5 transition-all ${isOpen ? 'bg-white/[0.03]' : 'bg-white/[0.01] hover:bg-white/[0.02]'}`}>
+    <div className={`w-full flex border-y border-[var(--theme-border)] transition-all ${isOpen ? 'bg-[var(--theme-layer)]' : 'bg-transparent hover:bg-[var(--theme-surface)]'}`}>
     <div 
         role="button"
         tabIndex={0}
@@ -200,18 +200,18 @@ export const CategoryLabel: React.FC<{
                 onToggle();
             }
         }}
-        className="flex-1 px-6 py-4 flex items-center justify-between group cursor-pointer outline-none focus:bg-white/5"
+        className="flex-1 px-6 py-4 flex items-center justify-between group cursor-pointer outline-none focus:bg-[var(--theme-layer)]"
     >
         <div className="flex items-center gap-3">
-            <div className={`w-6 h-6 rounded-lg flex items-center justify-center font-black text-2xs transition-all relative ${isOpen ? 'bg-[var(--theme-primary)] text-white shadow-[0_0_15px_rgba(var(--theme-primary-rgb),0.3)]' : 'bg-white/5 text-white/40'}`}>
+            <div className={`w-6 h-6 rounded-lg flex items-center justify-center font-black text-2xs transition-all relative ${isOpen ? 'bg-[var(--theme-primary)] text-white shadow-[0_0_15px_rgba(var(--theme-primary-rgb),0.3)]' : 'bg-[var(--theme-layer)] text-[var(--theme-muted)]'}`}>
                 {index}
                 {isDirty && !isOpen && (
-                    <div className="absolute -top-1 -right-1 w-2.5 h-2.5 bg-amber-500 rounded-full border-2 border-[#0a0a0b] animate-pulse" />
+                    <div className="absolute -top-1 -right-1 w-2.5 h-2.5 bg-[var(--theme-primary)] rounded-full border-2 border-[var(--theme-bg)] animate-pulse" />
                 )}
             </div>
             <div className="flex items-center gap-2">
-                <Icon size={12} className={`transition-all ${isOpen ? 'text-[var(--theme-primary)]' : 'text-white/20'}`} />
-                <span className={`text-2xs font-black uppercase tracking-[0.2em] transition-all ${isOpen ? 'text-white' : 'text-white/40'}`}>{title}</span>
+                <Icon size={12} className={`transition-all ${isOpen ? 'text-[var(--theme-primary)]' : 'text-[var(--theme-muted)]'}`} />
+                <span className={`text-2xs font-black uppercase tracking-[0.2em] transition-all ${isOpen ? 'text-[var(--theme-text)]' : 'text-[var(--theme-muted)]'}`}>{title}</span>
             </div>
         </div>
         <div className="flex items-center gap-3">
@@ -242,7 +242,7 @@ export const CategoryLabel: React.FC<{
                     </div>
                 )}
             </AnimatePresence>
-            <ChevronDown size={14} className={`transition-transform duration-300 ${isOpen ? 'rotate-180 text-[var(--theme-primary)]' : 'text-white/20'}`} />
+            <ChevronDown size={14} className={`transition-transform duration-300 ${isOpen ? 'rotate-180 text-[var(--theme-primary)]' : 'text-[var(--theme-muted)]'}`} />
         </div>
     </div>
         
@@ -250,7 +250,7 @@ export const CategoryLabel: React.FC<{
             <button 
                 onClick={(e) => { e.stopPropagation(); onToggleDual(); }}
                 title="Ativar/Desativar Split View"
-                className={`px-4 border-l border-white/5 flex items-center justify-center transition-all ${isDualView ? 'text-[var(--theme-primary)] bg-white/5' : 'text-white/10 hover:text-white/30'}`}
+                className={`px-4 border-l border-[var(--theme-border)] flex items-center justify-center transition-all ${isDualView ? 'text-[var(--theme-primary)] bg-[var(--theme-layer)]' : 'text-[var(--theme-muted)] hover:text-[var(--theme-text)]'}`}
             >
                 <div className="relative">
                     <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round">
@@ -265,13 +265,13 @@ export const CategoryLabel: React.FC<{
 );
 
 export const Section: React.FC<{ id: string, icon: any, title: string, activeSection: string | null, onToggle: (id: string | null) => void, children: React.ReactNode }> = ({ id, icon: Icon, title, activeSection, onToggle, children }) => (
-    <div className="border-b border-white/5 last:border-0">
-        <button onClick={() => onToggle(activeSection === id ? null : id)} className="w-full py-4 flex items-center justify-between hover:bg-white/[0.02] transition-all px-6 group">
+    <div className="border-b border-[var(--theme-border)] last:border-0">
+        <button onClick={() => onToggle(activeSection === id ? null : id)} className="w-full py-4 flex items-center justify-between hover:bg-[var(--theme-surface)] transition-all px-6 group">
             <div className="flex items-center gap-3">
-                <div className={`p-1.5 rounded-lg transition-all ${activeSection === id ? 'bg-[var(--theme-primary)] text-white' : 'bg-white/5 text-white/30 group-hover:text-white/60'}`}><Icon size={14} /></div>
-                <span className={`text-2xs font-black uppercase tracking-[0.2em] transition-all ${activeSection === id ? 'text-white' : 'text-white/30 group-hover:text-white/60'}`}>{title}</span>
+                <div className={`p-1.5 rounded-lg transition-all ${activeSection === id ? 'bg-[var(--theme-primary)] text-white' : 'bg-[var(--theme-layer)] text-[var(--theme-muted)] group-hover:text-[var(--theme-text)]'}`}><Icon size={14} /></div>
+                <span className={`text-2xs font-black uppercase tracking-[0.2em] transition-all ${activeSection === id ? 'text-[var(--theme-text)]' : 'text-[var(--theme-muted)] group-hover:text-[var(--theme-text)]'}`}>{title}</span>
             </div>
-            <ChevronDown size={14} className={`transition-transform duration-300 ${activeSection === id ? 'rotate-180 text-[var(--theme-primary)]' : 'text-white/20'}`} />
+            <ChevronDown size={14} className={`transition-transform duration-300 ${activeSection === id ? 'rotate-180 text-[var(--theme-primary)]' : 'text-[var(--theme-muted)]'}`} />
         </button>
         <AnimatePresence>
             {activeSection === id && (
@@ -280,7 +280,7 @@ export const Section: React.FC<{ id: string, icon: any, title: string, activeSec
                     animate={{ height: activeSection === id ? 'auto' : 0, opacity: activeSection === id ? 1 : 0 }} 
                     exit={{ height: 0, opacity: 0 }} 
                     transition={{ duration: 0.3, ease: "circOut" }} 
-                    className={`bg-black/20 ${activeSection === id ? 'overflow-visible' : 'overflow-hidden'}`}
+                    className={`bg-[var(--theme-layer)] ${activeSection === id ? 'overflow-visible' : 'overflow-hidden'}`}
                 >
                     <div className="p-6 pt-2">{children}</div>
                 </motion.div>
@@ -294,13 +294,13 @@ export const ToggleControl: React.FC<{ label: string, active: boolean, onClick: 
         onClick={onClick}
         className={`flex items-center justify-between p-3 rounded-lg border transition-all ${
             active 
-                ? 'bg-[var(--theme-primary)]/10 border-[var(--theme-primary)]/30 text-white' 
-                : 'bg-white/5 border-white/5 text-white/40 hover:bg-white/[0.08]'
+                ? 'bg-[var(--theme-primary)]/10 border-[var(--theme-primary)]/30 text-[var(--theme-primary)]' 
+                : 'bg-[var(--theme-layer)] border-[var(--theme-border)] text-[var(--theme-muted)] hover:bg-[var(--theme-border)]'
         }`}
     >
         <span className="text-[10px] font-black uppercase tracking-wider">{label}</span>
-        <div className={`w-8 h-4 rounded-full relative transition-all ${active ? 'bg-[var(--theme-primary)]' : 'bg-white/10'}`}>
-            <div className={`absolute top-0.5 w-3 h-3 bg-white rounded-full transition-all ${active ? 'left-4.5' : 'left-0.5'}`} />
+        <div className={`w-8 h-4 rounded-full relative transition-all ${active ? 'bg-[var(--theme-primary)]' : 'bg-[var(--theme-border)]'}`}>
+            <div className={`absolute top-0.5 w-3 h-3 bg-[var(--theme-surface)] rounded-full transition-all ${active ? 'left-4.5' : 'left-0.5'}`} />
         </div>
     </button>
 );
@@ -323,7 +323,7 @@ export const ImageUploaderControl: React.FC<any> = ({ label, value, onChange }) 
     return (
         <div className="mb-3">
             <div className="flex justify-between items-center mb-1.5">
-                <span className="text-[10px] font-black uppercase tracking-widest text-white/30 flex items-center gap-1.5">
+                <span className="text-[10px] font-black uppercase tracking-widest text-[var(--theme-muted)] flex items-center gap-1.5">
                     {label}
                     <HelpTooltip label={label} />
                 </span>
@@ -331,25 +331,25 @@ export const ImageUploaderControl: React.FC<any> = ({ label, value, onChange }) 
             <div className="flex items-center gap-3">
                 <div 
                     onClick={() => inputRef.current?.click()}
-                    className="w-12 h-12 rounded-lg border border-dashed border-white/20 hover:border-[var(--theme-primary)] flex items-center justify-center bg-white/5 cursor-pointer transition-all hover:bg-white/10 overflow-hidden shrink-0"
+                    className="w-12 h-12 rounded-lg border border-dashed border-[var(--theme-border)] hover:border-[var(--theme-primary)] flex items-center justify-center bg-[var(--theme-layer)] cursor-pointer transition-all hover:bg-[var(--theme-border)] overflow-hidden shrink-0"
                 >
                     {value ? (
                         <img src={value} alt="Preview" className="w-full h-full object-contain p-1" />
                     ) : (
-                        <div className="text-[20px] font-light text-white/20">+</div>
+                        <div className="text-[20px] font-light text-[var(--theme-muted)]">+</div>
                     )}
                 </div>
                 <div className="flex-1 flex items-center gap-2">
                     <button 
                         onClick={() => inputRef.current?.click()}
-                        className="text-[9px] font-bold uppercase tracking-wider px-3 py-2 bg-white/5 hover:bg-white/10 rounded-md text-white/60 transition-all border border-white/10 shadow-sm"
+                        className="text-[9px] font-bold uppercase tracking-wider px-3 py-2 bg-[var(--theme-layer)] hover:bg-[var(--theme-border)] rounded-md text-[var(--theme-text)] transition-all border border-[var(--theme-border)] shadow-sm"
                     >
                         Fazer Upload
                     </button>
                     {value && (
                         <button 
                             onClick={() => onChange(null)}
-                            className="text-[9px] font-bold uppercase tracking-wider px-3 py-2 hover:bg-amber-500/10 hover:text-amber-500 rounded-md text-white/40 transition-all"
+                            className="text-[9px] font-bold uppercase tracking-wider px-3 py-2 hover:bg-amber-500/10 hover:text-amber-500 rounded-md text-[var(--theme-muted)] transition-all"
                         >
                             Remover
                         </button>

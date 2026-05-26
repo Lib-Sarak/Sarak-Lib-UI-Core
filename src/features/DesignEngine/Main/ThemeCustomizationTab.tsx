@@ -213,29 +213,29 @@ export const ThemeCustomizationTab: React.FC = () => {
     }, [searchQuery]);
 
     return (
-        <div className="flex flex-1 h-screen max-h-screen bg-[#0c0c0d] overflow-hidden">
+        <div className="flex flex-1 h-screen max-h-screen bg-[var(--theme-bg)] overflow-hidden">
             {/* Sidebar de Configuração */}
             <div 
-                className={`flex flex-col h-full max-h-full border-r border-white/5 bg-[#0a0a0b] relative z-10 overflow-hidden shrink-0 ${isResizingEngine ? 'transition-none' : 'transition-all duration-300'}`}
+                className={`flex flex-col h-full max-h-full border-r border-[var(--theme-border)] bg-[var(--theme-card)] relative z-10 overflow-hidden shrink-0 ${isResizingEngine ? 'transition-none' : 'transition-all duration-300'}`}
                 style={{ width: `${engineSidebarWidth}px`, minWidth: '280px', maxWidth: '600px', position: 'relative' }}
             >
                 <div onMouseDown={startResizingEngine} className="absolute right-0 top-0 w-1.5 h-full cursor-col-resize hover:bg-[var(--theme-primary)]/50 transition-colors z-50 active:bg-[var(--theme-primary)]" />
                 
                 {/* Header Superior */}
-                <div className="p-5 pb-4 shrink-0 border-b border-white/5 bg-black/20">
+                <div className="p-5 pb-4 shrink-0 border-b border-[var(--theme-border)] bg-[var(--theme-surface)]">
                     <div className="flex items-center justify-between mb-4">
                         <div className="flex items-center gap-2.5">
                             <div className="w-7 h-7 rounded-lg bg-[var(--theme-primary)] flex items-center justify-center">
                                 <Zap className="text-white w-3.5 h-3.5" />
                             </div>
-                            <div className="text-[10px] font-black text-white tracking-tight uppercase">Design Engine <span className="text-[var(--theme-primary)] ml-0.5 opacity-50">v14.0</span></div>
+                            <div className="text-[10px] font-black text-[var(--theme-text)] tracking-tight uppercase">Design Engine <span className="text-[var(--theme-primary)] ml-0.5 opacity-50">v14.0</span></div>
                         </div>
-                        <div className="flex gap-1 p-0.5 bg-white/5 rounded-lg border border-white/5">
+                        <div className="flex gap-1 p-0.5 bg-[var(--theme-layer)] rounded-lg border border-[var(--theme-border)]">
                             {['preview', 'catalog', 'templates'].map((m) => (
                                 <button 
                                     key={m} 
                                     onClick={() => setViewMode(m as any)} 
-                                    className={`p-1.5 rounded-md transition-all ${viewMode === m ? 'bg-white/10 text-white' : 'text-white/20 hover:text-white/40'}`}
+                                    className={`p-1.5 rounded-md transition-all ${viewMode === m ? 'bg-[var(--theme-primary)]/20 text-[var(--theme-primary)]' : 'text-[var(--theme-muted)] hover:text-[var(--theme-text)]'}`}
                                 >
                                     {m === 'preview' ? <Monitor size={10} /> : m === 'catalog' ? <Table size={10} /> : <FileJson size={10} />}
                                 </button>
@@ -246,13 +246,13 @@ export const ThemeCustomizationTab: React.FC = () => {
                     {/* Busca e Toggle Essencial */}
                     <div className="flex flex-col gap-3 mb-4">
                         <div className="relative group">
-                            <Search size={10} className="absolute left-3 top-1/2 -translate-y-1/2 text-white/20 group-focus-within:text-[var(--theme-primary)] transition-all" />
+                            <Search size={10} className="absolute left-3 top-1/2 -translate-y-1/2 text-[var(--theme-muted)] group-focus-within:text-[var(--theme-primary)] transition-all" />
                             <input 
                                 type="text" 
                                 placeholder="BUSCAR TOKEN..."
                                 value={searchQuery}
                                 onChange={(e) => setSearchQuery(e.target.value)}
-                                className="w-full bg-white/5 border border-white/10 rounded-xl py-2.5 pl-9 pr-4 text-[9px] font-black tracking-widest uppercase focus:outline-none focus:border-[var(--theme-primary)]/50 transition-all text-white placeholder:text-white/10"
+                                className="w-full bg-[var(--theme-surface)] border border-[var(--theme-border)] rounded-xl py-2.5 pl-9 pr-4 text-[9px] font-black tracking-widest uppercase focus:outline-none focus:border-[var(--theme-primary)]/50 transition-all text-[var(--theme-text)] placeholder:text-[var(--theme-muted)]"
                             />
                         </div>
                         <div className="flex items-center justify-between">
@@ -263,10 +263,10 @@ export const ThemeCustomizationTab: React.FC = () => {
                                     setIsEssentialMode(!isEssentialMode);
                                 }}
                             >
-                                <div className={`w-6 h-3 rounded-full relative transition-all ${!isEssentialMode ? 'bg-[var(--theme-primary)]' : 'bg-white/10'}`}>
-                                    <div className={`absolute top-0.5 w-2 h-2 rounded-full bg-white transition-all ${!isEssentialMode ? 'left-3.5' : 'left-0.5'}`} />
+                                <div className={`w-6 h-3 rounded-full relative transition-all ${!isEssentialMode ? 'bg-[var(--theme-primary)]' : 'bg-[var(--theme-border)]'}`}>
+                                    <div className={`absolute top-0.5 w-2 h-2 rounded-full bg-[var(--theme-text)] transition-all ${!isEssentialMode ? 'left-3.5' : 'left-0.5'}`} />
                                 </div>
-                                <span className="text-[9px] font-black uppercase tracking-widest text-white/40 group-hover:text-white/60">Modo Avançado (Hyper-Granular)</span>
+                                <span className="text-[9px] font-black uppercase tracking-widest text-[var(--theme-muted)] group-hover:text-[var(--theme-text)]">Modo Avançado (Hyper-Granular)</span>
                             </label>
                         </div>
                     </div>
@@ -280,11 +280,11 @@ export const ThemeCustomizationTab: React.FC = () => {
                 </div>
 
                 {/* Área de Conteúdo (Scrollable) */}
-                <div className="flex-1 min-h-0 overflow-y-auto overflow-x-hidden custom-scrollbar-sidebar bg-black/5">
+                <div className="flex-1 min-h-0 overflow-y-auto overflow-x-hidden custom-scrollbar-sidebar bg-[var(--theme-bg)]/30">
                     <AnimatePresence mode="wait">
                         {searchQuery ? (
                             <motion.div key="search" initial={{ opacity: 0 }} animate={{ opacity: 1 }} className="p-6 space-y-6">
-                                <div className="text-[8px] font-black text-white/20 uppercase tracking-widest mb-4">Resultados da Busca</div>
+                                <div className="text-[8px] font-black text-[var(--theme-muted)] uppercase tracking-widest mb-4">Resultados da Busca</div>
                                 {filteredResults?.map(token => (
                                     <TokenControl key={token.id} token={token} value={draft[token.id]} onChange={(val) => updateDraft(token.id, val)} />
                                 ))}
@@ -347,7 +347,7 @@ export const ThemeCustomizationTab: React.FC = () => {
                                 )}
 
                                 {pillars.map((pillar) => (
-                                    <div key={pillar.id} className="border-b border-white/5 last:border-0">
+                                    <div key={pillar.id} className="border-b border-[var(--theme-border)] last:border-0">
                                         <CategoryLabel 
                                             icon={pillar.icon} 
                                             title={pillar.title} 
@@ -364,13 +364,13 @@ export const ThemeCustomizationTab: React.FC = () => {
                                         />
                                         <AnimatePresence>
                                             {activePillarId === pillar.id && (
-                                                <motion.div initial={{ height: 0, opacity: 0 }} animate={{ height: 'auto', opacity: 1 }} exit={{ height: 0, opacity: 0 }} className="overflow-hidden bg-white/[0.01]">
+                                                <motion.div initial={{ height: 0, opacity: 0 }} animate={{ height: 'auto', opacity: 1 }} exit={{ height: 0, opacity: 0 }} className="overflow-hidden bg-[var(--theme-layer)]">
                                                     <div className="px-2 py-2 flex flex-col gap-1">
                                                         {Object.entries(groupedStructure[pillar.id] || {}).map(([subcat, comps]) => (
                                                             <div key={subcat} className="flex flex-col gap-1 mb-2">
                                                                 <div className="px-4 py-2 flex items-center gap-2">
                                                                     <div className="w-1 h-1 rounded-full bg-[var(--theme-primary)] opacity-30" />
-                                                                    <span className="text-[7px] font-black uppercase tracking-[0.2em] text-white/20">{subcat}</span>
+                                                                    <span className="text-[7px] font-black uppercase tracking-[0.2em] text-[var(--theme-muted)]">{subcat}</span>
                                                                 </div>
                                                                 {comps.map((comp) => {
                                                                     const visibleTokens = comp.tokens.filter((token: any) => !isEssentialMode || ESSENTIAL_TOKENS.includes(token.id));
@@ -411,7 +411,7 @@ export const ThemeCustomizationTab: React.FC = () => {
             </div>
 
             {/* Canvas de Preview */}
-            <div className="flex-1 relative bg-[#060607] flex flex-col">
+            <div className="flex-1 relative bg-[var(--theme-bg)] flex flex-col">
                 <PreviewCanvas 
                     previewDevice={previewDevice}
                     activePreviewApp={activePreviewApp}

@@ -31,16 +31,24 @@ export const SovereignThemeInjector: React.FC<SovereignThemeInjectorProps> = ({ 
             return `
                 /* Sarak Sovereign Bridge - Light Mode Hijack */
                 
-                /* Textos Ofensivos */
+                /* Textos Ofensivos (Brancos e Cinzas Claros que somem no modo Claro) */
                 body.light .text-white,
                 body.light .text-white\\/20,
                 body.light .text-white\\/30,
                 body.light .text-white\\/40,
                 body.light .text-white\\/50,
-                body.light .text-white\\/60 {
+                body.light .text-white\\/60,
+                body.light .text-white\\/70,
+                body.light .text-white\\/80,
+                body.light .text-white\\/90,
+                body.light .text-zinc-50, body.light .text-zinc-100, body.light .text-zinc-200, body.light .text-zinc-300, body.light .text-zinc-400, body.light .text-zinc-500, body.light .text-zinc-600,
+                body.light .text-slate-50, body.light .text-slate-100, body.light .text-slate-200, body.light .text-slate-300, body.light .text-slate-400, body.light .text-slate-500, body.light .text-slate-600,
+                body.light .text-gray-50, body.light .text-gray-100, body.light .text-gray-200, body.light .text-gray-300, body.light .text-gray-400, body.light .text-gray-500, body.light .text-gray-600,
+                body.light .text-neutral-50, body.light .text-neutral-100, body.light .text-neutral-200, body.light .text-neutral-300, body.light .text-neutral-400, body.light .text-neutral-500, body.light .text-neutral-600 {
                     color: var(--theme-text) !important;
                 }
 
+                body.light .text-white\\/5,
                 body.light .text-white\\/10 {
                     color: var(--theme-muted) !important;
                 }
