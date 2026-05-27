@@ -33,7 +33,7 @@ import {
 } from '../components/DesignControls';
 import { MasterControlPanel } from './MasterControlPanel';
 import { TemplatesTab } from './TemplatesTab';
-
+import { SaveThemeModal, SaveThemeAction } from './components/SaveThemeModal';
 
 const ControlRegistry: Record<string, React.FC<any>> = {
     color: (props) => <ColorControl label={props.token.label} {...props} />,
@@ -86,7 +86,10 @@ export const ThemeCustomizationTab: React.FC = () => {
         handleApplyComponent,
         isComponentDirty,
         resetComponent,
-        toast 
+        isDirty,
+        toast,
+        showToast,
+        handleThemePreview
     } = useDesignDraft(sarak);
     
     const [activePreviewApp, setActivePreviewApp] = useState('dashboard');
@@ -98,6 +101,14 @@ export const ThemeCustomizationTab: React.FC = () => {
     const [searchQuery, setSearchQuery] = useState('');
     const [isEssentialMode, setIsEssentialMode] = useState(true);
     const [isPreviewStacked, setIsPreviewStacked] = useState(false);
+
+    // Theme Persistence Tracking
+    const [currentThemeId, setCurrentThemeId] = useState<string | null>(null);
+    const [currentThemeOrigin, setCurrentThemeOrigin] = useState<'script' | 'database'>('script');
+    const [currentThemeName, setCurrentThemeName] = useState<string>('');
+    const [isSaveModalOpen, setIsSaveModalOpen] = useState(false);
+    const [isSaving, setIsSaving] = useState(false);
+    const [pendingApply, setPendingApply] = useState(false);
 
     const appToPillarMap: Record<string, string> = useMemo(() => ({
         'dashboard': 'surfaces',
@@ -120,7 +131,145 @@ export const ThemeCustomizationTab: React.FC = () => {
         }
     }, [activePreviewApp, appToPillarMap]);
 
+    const uiBaseUrl = sarak.options?.endpoints?.baseUrl || '/api/ui';
+    const apiToken = sarak.token;
+
+    const fetchActiveTheme = useCallback(async () => {
+        try {
+            const headers: any = { 'Content-Type': 'application/json' };
+            if (apiToken) headers['Authorization'] = `Bearer ${apiToken}`;
+            const res = await fetch(`${uiBaseUrl}/design`, { headers });
+            if (!res.ok) return null;
+            const data = await res.json();
+            return data.id ? data : null;
+        } catch (e) {
+            return null;
+        }
+    }, [uiBaseUrl, apiToken]);
+
+    const saveNewThemeAPI = async (design: any, name: string, isActive: boolean) => {
+        const headers: any = { 'Content-Type': 'application/json' };
+        if (apiToken) headers['Authorization'] = `Bearer ${apiToken}`;
+        const res = await fetch(`${uiBaseUrl}/themes`, {
+            method: 'POST',
+            headers,
+            body: JSON.stringify({ design, name, is_active: isActive })
+        });
+        return await res.json();
+    };
+
+    const updateThemeAPI = async (themeId: string, design: any, name: string, isActive: boolean = false) => {
+        const headers: any = { 'Content-Type': 'application/json' };
+        if (apiToken) headers['Authorization'] = `Bearer ${apiToken}`;
+        const res = await fetch(`${uiBaseUrl}/themes/${themeId}`, {
+            method: 'PUT',
+            headers,
+            body: JSON.stringify({ design, name, is_active: isActive })
+        });
+        return await res.json();
+    };
+
+    const activateThemeAPI = async (themeId: string) => {
+        const headers: any = { 'Content-Type': 'application/json' };
+        if (apiToken) headers['Authorization'] = `Bearer ${apiToken}`;
+        const res = await fetch(`${uiBaseUrl}/themes/${themeId}/activate`, {
+            method: 'PUT',
+            headers
+        });
+        return await res.json();
+    };
+
+    // Busca o tema ativo na API real ao montar, para não perder o estado após reload (F5)
+    useEffect(() => {
+        const loadActive = async () => {
+            const active = await fetchActiveTheme();
+            if (active) {
+                setCurrentThemeId(active.id);
+                setCurrentThemeOrigin('database');
+                setCurrentThemeName(active.name);
+            }
+        };
+        loadActive();
+    }, [fetchActiveTheme]);
+
     // handleInspectComponent moved below groupedStructure
+
+    const handleSaveTheme = async (action: SaveThemeAction) => {
+        if (action.type === 'CANCEL') {
+            setIsSaveModalOpen(false);
+            setPendingApply(false);
+            return;
+        }
+
+        setIsSaving(true);
+        try {
+            if (action.type === 'CREATE_NEW') {
+                const newTheme = await saveNewThemeAPI(draft, action.name, pendingApply); // Ativa junto se for pendingApply
+                setCurrentThemeId(newTheme.id);
+                setCurrentThemeOrigin('database');
+                setCurrentThemeName(newTheme.name);
+                showToast('success', `Tema "${newTheme.name}" salvo no banco com sucesso!`);
+            } else if (action.type === 'OVERWRITE_EXISTING') {
+                if (currentThemeId) {
+                    await updateThemeAPI(currentThemeId, draft, currentThemeName, pendingApply);
+                    showToast('success', `Tema atualizado no banco com sucesso!`);
+                }
+            }
+
+            if (pendingApply) {
+                handleApplyToSystem();
+            }
+
+            setIsSaveModalOpen(false);
+        } catch (error) {
+            console.error(error);
+            showToast('warning', 'Erro ao salvar o tema.');
+        } finally {
+            setIsSaving(false);
+            setPendingApply(false);
+        }
+    };
+
+    const handleApplyGlobalChanges = async () => {
+        if (!currentThemeId || currentThemeOrigin === 'script') {
+            // Se for script (novo tema), perguntar o nome antes de salvar e aplicar
+            setPendingApply(true);
+            setIsSaveModalOpen(true);
+            return;
+        }
+
+        if (isDirty) {
+            // Se foi modificado, perguntar se atualiza ou salva novo
+            setPendingApply(true);
+            setIsSaveModalOpen(true);
+            return;
+        }
+
+        // Se já tá no DB e não tá dirty, só ativa e aplica
+        setIsSaving(true);
+        try {
+            await activateThemeAPI(currentThemeId);
+            handleApplyToSystem();
+            showToast('success', `Tema ativado com sucesso!`);
+        } catch (e) {
+            console.error(e);
+            showToast('warning', 'Erro ao ativar tema.');
+        } finally {
+            setIsSaving(false);
+        }
+    };
+
+    const handleApplyFullTheme = useCallback((design: any) => {
+        // Quando um tema global é escolhido, rastreamos sua origem
+        setCurrentThemeOrigin('script');
+        setCurrentThemeId(null);
+        setCurrentThemeName(design.systemName || 'Novo Tema');
+        
+        // Joga o design inteiro pro draft (Sandbox) para refletir no Preview
+        if (handleThemePreview) {
+            handleThemePreview(design);
+        }
+    }, [handleThemePreview]);
 
     // 0. Redimensionamento da Barra Design Engine
     const { size: engineSidebarWidth, startResizing: startResizingEngine, isResizing: isResizingEngine } = useResizable({
@@ -205,16 +354,32 @@ export const ThemeCustomizationTab: React.FC = () => {
                             </div>
                             <div className="text-[10px] font-black text-[var(--theme-text)] tracking-tight uppercase">Design Engine <span className="text-[var(--theme-primary)] ml-0.5 opacity-50">v14.0</span></div>
                         </div>
-                        <div className="flex gap-1 p-0.5 bg-[var(--theme-layer)] rounded-lg border border-[var(--theme-border)]">
-                            {['preview', 'catalog', 'templates'].map((m) => (
-                                <button 
-                                    key={m} 
-                                    onClick={() => setViewMode(m as any)} 
-                                    className={`p-1.5 rounded-md transition-all ${viewMode === m ? 'bg-[var(--theme-primary)]/20 text-[var(--theme-primary)]' : 'text-[var(--theme-muted)] hover:text-[var(--theme-text)]'}`}
-                                >
-                                    {m === 'preview' ? <Monitor size={10} /> : m === 'catalog' ? <Table size={10} /> : <FileJson size={10} />}
-                                </button>
-                            ))}
+                        <div className="flex items-center gap-2">
+                            <div className="flex gap-1 p-0.5 bg-[var(--theme-layer)] rounded-lg border border-[var(--theme-border)]">
+                                {['preview', 'catalog', 'templates'].map((m) => (
+                                    <button 
+                                        key={m} 
+                                        onClick={() => setViewMode(m as any)} 
+                                        className={`p-1.5 rounded-md transition-all ${viewMode === m ? 'bg-[var(--theme-primary)]/20 text-[var(--theme-primary)]' : 'text-[var(--theme-muted)] hover:text-[var(--theme-text)]'}`}
+                                    >
+                                        {m === 'preview' ? <Monitor size={10} /> : m === 'catalog' ? <Table size={10} /> : <FileJson size={10} />}
+                                    </button>
+                                ))}
+                            </div>
+                            
+                            {/* Botão de Salvar Dinâmico */}
+                            <button
+                                onClick={() => setIsSaveModalOpen(true)}
+                                disabled={!isDirty}
+                                className={`flex items-center gap-1.5 px-3 py-1.5 rounded-lg border transition-all ${
+                                    isDirty 
+                                        ? 'bg-[var(--theme-primary)]/20 border-[var(--theme-primary)]/50 text-[var(--theme-primary)] hover:bg-[var(--theme-primary)] hover:text-white shadow-[0_0_15px_rgba(var(--theme-primary-rgb),0.2)]'
+                                        : 'bg-black/10 border-[var(--theme-border)] text-[var(--theme-muted)] cursor-not-allowed'
+                                }`}
+                                title={isDirty ? "Você possui alterações não salvas" : "Nenhuma alteração"}
+                            >
+                                <span className="text-[10px] font-black uppercase tracking-widest">{isDirty ? 'Salvar' : 'Salvo'}</span>
+                            </button>
                         </div>
                     </div>
 
@@ -259,7 +424,7 @@ export const ThemeCustomizationTab: React.FC = () => {
                         </div>
                     </div>
 
-                    <button onClick={handleApplyToSystem} className="w-full group relative overflow-hidden bg-[var(--theme-primary)] hover:bg-[var(--theme-primary)]/90 text-white py-2.5 rounded-lg font-black text-[9px] uppercase tracking-[0.1em] transition-all active:scale-[0.98] shadow-[0_10px_20px_-5px_rgba(var(--theme-primary-rgb),0.3)]">
+                    <button onClick={handleApplyGlobalChanges} className="w-full group relative overflow-hidden bg-[var(--theme-primary)] hover:bg-[var(--theme-primary)]/90 text-white py-2.5 rounded-lg font-black text-[9px] uppercase tracking-[0.1em] transition-all active:scale-[0.98] shadow-[0_10px_20px_-5px_rgba(var(--theme-primary-rgb),0.3)]">
                         <div className="flex items-center justify-center gap-2 relative z-10">
                             <Check size={10} />
                             <span>Aplicar Alterações Globais</span>
@@ -460,6 +625,7 @@ export const ThemeCustomizationTab: React.FC = () => {
                     isPreviewStacked={isPreviewStacked}
                     customThemes={[]}
                     onInspectComponent={handleInspectComponent}
+                    onApplyFullTheme={handleApplyFullTheme}
                 />
                 
                 {/* Toasts de Feedback */}
@@ -474,6 +640,15 @@ export const ThemeCustomizationTab: React.FC = () => {
                     )}
                 </AnimatePresence>
             </div>
+
+            <SaveThemeModal 
+                isOpen={isSaveModalOpen}
+                origin={currentThemeOrigin}
+                themeName={currentThemeName}
+                onClose={() => setIsSaveModalOpen(false)}
+                onAction={handleSaveTheme}
+                isSaving={isSaving}
+            />
 
             <style dangerouslySetInnerHTML={{ __html: `
                 .custom-scrollbar-sidebar::-webkit-scrollbar { width: 4px; }

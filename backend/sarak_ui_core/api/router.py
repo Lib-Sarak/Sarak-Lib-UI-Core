@@ -1,7 +1,7 @@
 from fastapi import APIRouter, Depends, HTTPException, status
 from sqlalchemy.orm import Session
 import uuid as uuid_pkg
-from typing import Dict, Any
+from typing import Dict, Any, Optional
 import json
 import os
 
@@ -13,7 +13,7 @@ from pydantic import BaseModel
 
 try:
     base_dir = os.path.dirname(os.path.dirname(os.path.dirname(os.path.dirname(__file__))))
-    mapping_path = os.path.join(base_dir, 'src', 'core', 'Design', 'schema', 'theme_table_mapping.json')
+    mapping_path = os.path.join(base_dir, 'src', 'core', 'Design', 'catalog', 'theme_table_mapping.json')
     
     with open(mapping_path, 'r', encoding='utf-8') as f:
         THEME_MAPPING = json.load(f)
@@ -95,6 +95,8 @@ def update_user_design(
     db: Session = Depends(get_db),
     identity: IdentityContext = Depends(get_current_identity)
 ):
+    print("\n\n[SARAK UI CORE DEBUG] === INICIANDO SALVAMENTO DE DESIGN NO BANCO (POST /design) ===")
+    
     """Atualiza as propriedades do tema ativo do usuário, ou cria um novo tema ativo."""
     user_id_uuid = uuid_pkg.UUID(identity.user_id) if isinstance(identity.user_id, str) else identity.user_id
     
@@ -106,6 +108,7 @@ def update_user_design(
     ).first()
     
     if not theme:
+        print("[SARAK UI CORE DEBUG] Tema não encontrado. Criando um novo tema ativo.")
         theme = CustomTheme(
             name="Personalizado",
             owner_id=user_id_uuid, 
@@ -113,10 +116,10 @@ def update_user_design(
             is_active=True
         )
         db.add(theme)
+    else:
+        print(f"[SARAK UI CORE DEBUG] Tema encontrado. ID: {theme.id}")
     
     # Merge lógico: iteramos os campos e atualizamos
-    # O frontend envia um objeto "design" flat. Lemos o mapeamento para 
-    # rotear os valores paras as colunas JSONB correspondentes.
     GRANULAR_COLUMNS = [
         'branding_config', 'colors_and_atmosphere', 'typography', 
         'layout_and_navigation', 'components_base', 'cards_engine', 
@@ -127,6 +130,8 @@ def update_user_design(
     for col in GRANULAR_COLUMNS:
         val = getattr(theme, col, None)
         granular_data[col] = dict(val) if val else {}
+    
+    print(f"[SARAK UI CORE DEBUG] Recebidos {len(update.design.items())} itens para atualizar.")
     
     for key, value in update.design.items():
         if hasattr(theme, key) and key not in ['id', 'created_at', 'updated_at', 'owner_id', 'system']:
@@ -139,11 +144,22 @@ def update_user_design(
                     break
             granular_data[found_col][key] = value
             
+    from sqlalchemy.orm.attributes import flag_modified
     for col in GRANULAR_COLUMNS:
+        keys_count = len(granular_data[col].keys())
+        if keys_count > 0:
+            print(f"[SARAK UI CORE DEBUG] Gravando coluna {col} com {keys_count} chaves.")
         setattr(theme, col, granular_data[col])
+        flag_modified(theme, col)
         
-    db.commit()
-    db.refresh(theme)
+    try:
+        db.commit()
+        db.refresh(theme)
+        print("[SARAK UI CORE DEBUG] === SALVAMENTO CONCLUIDO COM SUCESSO NO BANCO ===\n\n")
+    except Exception as e:
+        print(f"[SARAK UI CORE DEBUG] Erro ao salvar no banco: {str(e)}\n\n")
+        db.rollback()
+        
     return theme.to_dict()
 
 class BrandingUpdate(BaseModel):
@@ -222,4 +238,168 @@ def update_branding(
 
     db.commit()
     db.refresh(theme)
+    return {"success": True}
+
+# ==========================================
+# THEMES CATALOG CRUD (Substitui db-mock.ts)
+# ==========================================
+
+from typing import List
+
+class ThemeCreateUpdate(BaseModel):
+    name: str
+    design: Dict[str, Any]
+    is_active: Optional[bool] = False
+
+@router.get("/themes")
+def list_themes(
+    db: Session = Depends(get_db),
+    identity: IdentityContext = Depends(get_current_identity)
+):
+    user_id_uuid = uuid_pkg.UUID(identity.user_id) if isinstance(identity.user_id, str) else identity.user_id
+    
+    themes = db.query(CustomTheme).filter(
+        CustomTheme.owner_id == user_id_uuid,
+        CustomTheme.system == identity.system
+    ).all()
+    
+    return [t.to_dict() for t in themes]
+
+def _apply_design_to_theme(theme: CustomTheme, design: Dict[str, Any]):
+    GRANULAR_COLUMNS = [
+        'branding_config', 'colors_and_atmosphere', 'typography', 
+        'layout_and_navigation', 'components_base', 'cards_engine', 
+        'data_and_charts', 'motion_and_animation', 'specialized_engines'
+    ]
+    
+    granular_data = {}
+    for col in GRANULAR_COLUMNS:
+        val = getattr(theme, col, None)
+        granular_data[col] = dict(val) if val else {}
+    
+    for key, value in design.items():
+        if hasattr(theme, key) and key not in ['id', 'created_at', 'updated_at', 'owner_id', 'system']:
+            setattr(theme, key, value)
+        elif key not in ['id', 'created_at', 'updated_at', 'owner_id', 'system']:
+            found_col = 'branding_config' # fallback
+            for col, fields in THEME_MAPPING.items():
+                if key in fields and col in GRANULAR_COLUMNS:
+                    found_col = col
+                    break
+            granular_data[found_col][key] = value
+            
+    from sqlalchemy.orm.attributes import flag_modified
+    for col in GRANULAR_COLUMNS:
+        setattr(theme, col, granular_data[col])
+        flag_modified(theme, col)
+
+@router.post("/themes")
+def create_theme(
+    payload: ThemeCreateUpdate,
+    db: Session = Depends(get_db),
+    identity: IdentityContext = Depends(get_current_identity)
+):
+    user_id_uuid = uuid_pkg.UUID(identity.user_id) if isinstance(identity.user_id, str) else identity.user_id
+    
+    if payload.is_active:
+        db.query(CustomTheme).filter(
+            CustomTheme.owner_id == user_id_uuid,
+            CustomTheme.system == identity.system,
+            CustomTheme.is_active == True
+        ).update({"is_active": False})
+        
+    new_theme = CustomTheme(
+        name=payload.name,
+        owner_id=user_id_uuid,
+        system=identity.system,
+        is_active=payload.is_active
+    )
+    db.add(new_theme)
+    _apply_design_to_theme(new_theme, payload.design)
+    
+    db.commit()
+    db.refresh(new_theme)
+    return new_theme.to_dict()
+
+@router.put("/themes/{theme_id}")
+def update_theme(
+    theme_id: str,
+    payload: ThemeCreateUpdate,
+    db: Session = Depends(get_db),
+    identity: IdentityContext = Depends(get_current_identity)
+):
+    user_id_uuid = uuid_pkg.UUID(identity.user_id) if isinstance(identity.user_id, str) else identity.user_id
+    
+    theme = db.query(CustomTheme).filter(
+        CustomTheme.id == theme_id,
+        CustomTheme.owner_id == user_id_uuid,
+        CustomTheme.system == identity.system
+    ).first()
+    
+    if not theme:
+        raise HTTPException(status_code=404, detail="Tema não encontrado")
+        
+    theme.name = payload.name
+    
+    if payload.is_active:
+        db.query(CustomTheme).filter(
+            CustomTheme.owner_id == user_id_uuid,
+            CustomTheme.system == identity.system,
+            CustomTheme.id != theme_id,
+            CustomTheme.is_active == True
+        ).update({"is_active": False})
+        theme.is_active = True
+        
+    _apply_design_to_theme(theme, payload.design)
+    
+    db.commit()
+    db.refresh(theme)
+    return theme.to_dict()
+
+@router.put("/themes/{theme_id}/activate")
+def activate_theme(
+    theme_id: str,
+    db: Session = Depends(get_db),
+    identity: IdentityContext = Depends(get_current_identity)
+):
+    user_id_uuid = uuid_pkg.UUID(identity.user_id) if isinstance(identity.user_id, str) else identity.user_id
+    
+    theme = db.query(CustomTheme).filter(
+        CustomTheme.id == theme_id,
+        CustomTheme.owner_id == user_id_uuid,
+        CustomTheme.system == identity.system
+    ).first()
+    
+    if not theme:
+        raise HTTPException(status_code=404, detail="Tema não encontrado")
+        
+    db.query(CustomTheme).filter(
+        CustomTheme.owner_id == user_id_uuid,
+        CustomTheme.system == identity.system,
+        CustomTheme.is_active == True
+    ).update({"is_active": False})
+    
+    theme.is_active = True
+    db.commit()
+    return {"success": True}
+
+@router.delete("/themes/{theme_id}")
+def delete_theme(
+    theme_id: str,
+    db: Session = Depends(get_db),
+    identity: IdentityContext = Depends(get_current_identity)
+):
+    user_id_uuid = uuid_pkg.UUID(identity.user_id) if isinstance(identity.user_id, str) else identity.user_id
+    
+    theme = db.query(CustomTheme).filter(
+        CustomTheme.id == theme_id,
+        CustomTheme.owner_id == user_id_uuid,
+        CustomTheme.system == identity.system
+    ).first()
+    
+    if not theme:
+        raise HTTPException(status_code=404, detail="Tema não encontrado")
+        
+    db.delete(theme)
+    db.commit()
     return {"success": True}

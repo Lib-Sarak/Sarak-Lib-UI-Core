@@ -35,6 +35,7 @@ interface PreviewCanvasProps {
     customThemes?: any[];
     sarak: any;
     onInspectComponent?: (schemaId: string) => void;
+    onApplyFullTheme?: (design: any) => void;
 }
 
 export const PreviewCanvas: React.FC<PreviewCanvasProps> = ({
@@ -55,12 +56,21 @@ export const PreviewCanvas: React.FC<PreviewCanvasProps> = ({
     isPreviewStacked,
     customThemes,
     sarak,
-    onInspectComponent
+    onInspectComponent,
+    onApplyFullTheme
 }) => {
-    const handleApplyPreset = (presetTokens: Record<string, any>) => {
-        Object.entries(presetTokens).forEach(([key, value]) => {
-            onUpdateDraft(key, value);
-        });
+    const handleApplyPreset = (presetTokens: Record<string, any>, isPartial = false) => {
+        if (isPartial) {
+            Object.entries(presetTokens).forEach(([key, value]) => {
+                onUpdateDraft(key, value);
+            });
+        } else if (onApplyFullTheme) {
+            onApplyFullTheme(presetTokens);
+        } else {
+            Object.entries(presetTokens).forEach(([key, value]) => {
+                onUpdateDraft(key, value);
+            });
+        }
     };
 
     const parentContext = useSarakUI();

@@ -40,6 +40,7 @@ export interface SarakUIContextType {
     isHydrated: boolean;
     options: SarakUIOptions;
     allThemes: any[]; // Array unificado (Scripts + DB) para a interface
+    token?: string | null; // Adicionado para expor o token aos componentes filhos (Catálogo, Temas, etc)
     // Branding
     branding?: {
         companyName: string;

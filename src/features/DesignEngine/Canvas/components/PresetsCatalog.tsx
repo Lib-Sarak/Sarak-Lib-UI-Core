@@ -11,11 +11,12 @@ import { TypographyCatalog } from './TypographyCatalog';
 
 interface PresetsCatalogProps {
     onApplyPreset: (presetDesign: Record<string, any>) => void;
+    onApplyFullTheme?: (design: Record<string, any>) => void;
     activeCategory: string | null;
     currentMode: string;
 }
 
-export const PresetsCatalog: React.FC<PresetsCatalogProps> = ({ onApplyPreset, activeCategory, currentMode }) => {
+export const PresetsCatalog: React.FC<PresetsCatalogProps> = ({ onApplyPreset, onApplyFullTheme, activeCategory, currentMode }) => {
     
     // Roteamento Modular de Presets
     if (activeCategory === 'navigation') {
@@ -54,7 +55,20 @@ export const PresetsCatalog: React.FC<PresetsCatalogProps> = ({ onApplyPreset, a
             <div className="flex-1 overflow-y-auto custom-scrollbar p-6 bg-[radial-gradient(ellipse_at_top_right,rgba(var(--theme-primary-rgb),0.03)_0%,transparent_50%)]">
                 <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
                     {themes.map((theme, i) => (
-                        <PresetCard key={theme.id} theme={theme} currentMode={currentMode} onApply={() => onApplyPreset(upgradeThemePayload({ ...theme.design, mode: currentMode }))} index={i} />
+                        <PresetCard 
+                            key={theme.id} 
+                            theme={theme} 
+                            currentMode={currentMode} 
+                            onApply={() => {
+                                const payload = upgradeThemePayload({ ...theme.design, mode: currentMode });
+                                if (onApplyFullTheme) {
+                                    onApplyFullTheme(payload);
+                                } else {
+                                    onApplyPreset(payload);
+                                }
+                            }} 
+                            index={i} 
+                        />
                     ))}
                 </div>
             </div>
