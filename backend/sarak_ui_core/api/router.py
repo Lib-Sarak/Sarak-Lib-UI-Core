@@ -123,7 +123,8 @@ def update_user_design(
     GRANULAR_COLUMNS = [
         'branding_config', 'colors_and_atmosphere', 'typography', 
         'layout_and_navigation', 'components_base', 'cards_engine', 
-        'data_and_charts', 'motion_and_animation', 'specialized_engines'
+        'data_and_charts', 'motion_and_animation', 'specialized_engines',
+        'legacy_and_runtime'
     ]
     
     granular_data = {}
@@ -137,7 +138,7 @@ def update_user_design(
         if hasattr(theme, key) and key not in ['id', 'created_at', 'updated_at', 'owner_id', 'system']:
             setattr(theme, key, value)
         elif key not in ['id', 'created_at', 'updated_at', 'owner_id', 'system']:
-            found_col = 'branding_config' # fallback
+            found_col = 'legacy_and_runtime' # fallback (Lixo de runtime/legacy)
             for col, fields in THEME_MAPPING.items():
                 if key in fields and col in GRANULAR_COLUMNS:
                     found_col = col

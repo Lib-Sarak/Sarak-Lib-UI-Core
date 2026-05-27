@@ -11,12 +11,12 @@ Identifique a categoria à qual o token pertence (ex: tipografia, botões, cards
 - **Importante**: Defina as propriedades `cssVars` caso esse token vá manipular o Gêmeo Digital.
 
 ### Passo 2: Atualização do Banco de Dados (JSON Mapping)
-A tabela do banco é atualizada de forma dinâmica. Para inserir a coluna lá, basta rodar nosso gerador local:
-- No terminal, dentro da pasta da biblioteca, rode o comando de atualização de mapping:
+A persistência no banco de dados exige que o token tenha um local para ser armazenado. Ele não precisa obrigatoriamente de uma nova coluna física na tabela, mas **deve ser mapeado para uma das colunas JSONB existentes** (ex: `colors_and_atmosphere`, `cards_engine`, etc).
+- Para atualizar o mapeamento, rode o nosso gerador local no terminal (dentro da pasta da biblioteca):
 ```bash
 npx tsx generate-db-mapping.ts
 ```
-- Valide se o `theme_table_mapping.json` recebeu o seu token recém-criado na coluna JSONB correta.
+- **Validação Crítica:** Verifique o arquivo `theme_table_mapping.json` para garantir que o token recém-criado foi inserido corretamente no array de uma coluna JSONB existente. Se ele ficar de fora, o backend irá descartá-lo no momento de salvar.
 
 ### Passo 3: Adição no Gêmeo Digital / UI
 Se o token recém-criado for algo estrutural da interface:

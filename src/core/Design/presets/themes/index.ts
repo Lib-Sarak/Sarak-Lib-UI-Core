@@ -24,6 +24,7 @@ import { nebulaSpaceTheme } from './nebula-space';
 import { dotMatrixElegantTheme } from './dot-matrix-elegant';
 import { stellarNebulaTheme } from './stellar-nebula';
 import { kineticFlowTheme } from './kinetic-flow';
+import { cyberRetroWaveTheme } from './cyber-retro-wave';
 
 export const GLOBAL_THEMES: ThemePreset[] = [
     sarakSovereignTheme,
@@ -37,5 +38,6 @@ export const GLOBAL_THEMES: ThemePreset[] = [
     nebulaSpaceTheme,
     dotMatrixElegantTheme,
     stellarNebulaTheme,
-    kineticFlowTheme
+    kineticFlowTheme,
+    cyberRetroWaveTheme
 ];

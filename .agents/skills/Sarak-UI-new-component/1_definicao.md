@@ -11,3 +11,11 @@ Quando criamos um token (ex: `buttonNeonGlow`), ele não existe isoladamente. El
 4. **Gêmeo Digital**: A variável CSS do token (ex: `--btn-neon-glow`) deve ser extraída e injetada na interface no provider.
 
 Se qualquer uma das 4 pontas estiver ausente, o sistema estará quebrado em ambientes de produção.
+
+
+5 Pilares da Paridade 1:1:1:1:1
+Schemas e MasterMap: A fonte da verdade técnica. Se um componente existe, ele nasce aqui.
+Gêmeo Digital: A prova visual. O componente tem que ser tangível na UI do Canvas (para live preview).
+Temas (O Ponto de Falha Atual): Os arquivos .ts (como stellar-nebula.ts) atualmente são parciais. Eles devem ser Integrais. O template gerador tem que "cuspir" o MasterMap inteiro preenchido.
+Catálogo JSON: A ponte para o front. Todos os componentes devem estar listados lá.
+Banco de Dados (PostgreSQL): A persistência soberana. O Json de mapeamento (theme_table_mapping.json) 

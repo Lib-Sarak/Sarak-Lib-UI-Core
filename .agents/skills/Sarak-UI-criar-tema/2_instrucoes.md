@@ -22,11 +22,19 @@ Isso criará um arquivo vazio em `src/core/Design/presets/themes/[id-do-tema].ts
 ## Passo 3: Preenchimento do Tema
 
 Utilize ferramentas de edição (`replace_file_content` ou `multi_replace_file_content`) para preencher os valores no arquivo recém-criado em `src/core/Design/presets/themes/`.
-- Substitua as chaves vazias ou com valores padrão pelos valores que correspondem à identidade definida no Passo 1.
+- Substitua as chaves com valores padrão pelos valores que correspondem à identidade definida no Passo 1.
 - Mantenha estritamente o tipo de dado (se é `number`, forneça número sem "px", a menos que a tipagem exija string).
-- **Importante:** Não adicione nenhuma propriedade nova. Apenas preencha as chaves geradas pelo script.
+- **CRÍTICO - Paridade Integral:** Você **NÃO PODE DELETAR** nenhuma chave ou propriedade gerada pelo script. O arquivo deve manter **100% dos tokens** (mesmo os que não sofrerem alteração). O banco de dados e a arquitetura exigem que um tema novo seja um "dump" integral de todas as variáveis do sistema naquele instante (Cápsula do Tempo).
 
-## Passo 4: Registro no Catálogo de Temas
+## Passo 4: Teste de Paridade do Tema (Obrigatório)
+
+Obrigatoriamente rode o script de verificação de paridade para atestar que o tema manteve 100% dos tokens:
+```bash
+npx tsx .agents/skills/Sarak-UI-criar-tema/ferramentas/scripts/verify_theme_parity.ts [id-do-tema]
+```
+Se o script acusar erro, você **NÃO TEM PERMISSÃO PARA FINALIZAR A TAREFA**. Você deve corrigir as dessincronizações apontadas (provavelmente você deletou propriedades geradas no template).
+
+## Passo 5: Registro no Catálogo de Temas
 
 O novo tema deve estar acessível para o Design Engine.
 Abra o arquivo `src/core/Design/presets/themes/index.ts`.
