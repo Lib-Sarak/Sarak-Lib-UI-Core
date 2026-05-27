@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useState, useEffect } from 'react';
 
 interface SarakBackgroundRendererProps {
     imageUrl?: string;
@@ -8,6 +8,65 @@ interface SarakBackgroundRendererProps {
     isFixed?: boolean;
     mode?: 'light' | 'dark';
 }
+
+// Hook de Inteligência Visual (Analisa a luminância real da imagem)
+const useMediaLuminance = (url: string | undefined, isVideo: boolean) => {
+    const [luminance, setLuminance] = useState<'light' | 'dark' | 'unknown'>('unknown');
+
+    useEffect(() => {
+        if (!url || isVideo) {
+            setLuminance('unknown');
+            return;
+        }
+
+        const img = new Image();
+        img.crossOrigin = 'anonymous'; // Essencial para burlar CORS em CDNs como Unsplash
+        
+        img.onload = () => {
+            try {
+                const canvas = document.createElement('canvas');
+                const ctx = canvas.getContext('2d', { willReadFrequently: true });
+                if (!ctx) return;
+                
+                // Amostragem ultra rápida de 50x50 pixels
+                canvas.width = 50;
+                canvas.height = 50;
+                ctx.drawImage(img, 0, 0, 50, 50);
+                
+                const imageData = ctx.getImageData(0, 0, 50, 50);
+                const data = imageData.data;
+                let r = 0, g = 0, b = 0;
+                
+                for (let i = 0, l = data.length; i < l; i += 4) {
+                    r += data[i];
+                    g += data[i+1];
+                    b += data[i+2];
+                }
+                
+                const pixelCount = data.length / 4;
+                r = r / pixelCount;
+                g = g / pixelCount;
+                b = b / pixelCount;
+                
+                // Equação HSP (Highly Sensitive Perceived luminance)
+                const hsp = Math.sqrt(
+                    0.299 * (r * r) +
+                    0.587 * (g * g) +
+                    0.114 * (b * b)
+                );
+                
+                // 127.5 é o ponto de equilíbrio matemático entre claro e escuro
+                setLuminance(hsp > 127.5 ? 'light' : 'dark');
+            } catch (e) {
+                // Se o servidor da imagem bloquear o CORS, caímos num graceful fallback
+                setLuminance('unknown');
+            }
+        };
+        img.src = url;
+    }, [url, isVideo]);
+
+    return luminance;
+};
 
 export const SarakBackgroundRenderer: React.FC<SarakBackgroundRendererProps> = ({ 
     imageUrl, 
@@ -19,57 +78,98 @@ export const SarakBackgroundRenderer: React.FC<SarakBackgroundRendererProps> = (
 }) => {
     if (!imageUrl) return null;
 
-    // Sanitiza a URL caso ainda venha com sintaxe CSS (url("..."))
     const rawUrl = typeof imageUrl === 'string' ? imageUrl.replace(/^url\(["']?/, '').replace(/["']?\)$/, '') : imageUrl;
-    
     const isVideo = rawUrl?.includes('video') || rawUrl?.endsWith('.webm') || rawUrl?.endsWith('.mp4');
 
-    // Proteção para Light Mode: Modos de mesclagem como 'screen' ou 'color-dodge' desaparecem no fundo branco.
-    // Usamos a prop `mode` para evitar race conditions com a atualização assíncrona da classList do body no React.
     const isLightMode = mode === 'light';
-    const safeBlendMode = isLightMode && ['screen', 'color-dodge', 'lighten', 'plus-lighter'].includes(blendMode) 
-        ? 'multiply' 
-        : blendMode;
-    
-    // Pequeno boost na opacidade se for muito baixa no modo claro (já que perde contraste)
-    const safeOpacity = (isLightMode && opacity < 0.2) ? Math.min(opacity * 1.5, 1) : opacity;
+    const luminance = useMediaLuminance(rawUrl, isVideo);
 
-    const style: React.CSSProperties = {
+    // 1. Escudo de Simetria Absoluta
+    // Os logs revelaram que o preset estava usando 'color-dodge'.
+    // Em um sistema dual-theme, o fundo do container alterna entre Branco (#ffffff) e Preto (#0f0f11).
+    // QUALQUER blend-mode que não seja 'normal' vai gerar um resultado matemático brutalmente diferente
+    // entre claro e escuro (ex: color-dodge no claro = branco puro, no escuro = contraste extremo).
+    // Para garantir a regra do usuário ("Não devemos inverter cores da midia base"), 
+    // a base DEVE ser renderizada com blend-mode 'normal'.
+    const safeBlendMode = 'normal';
+
+    const containerStyle: React.CSSProperties = {
         position: isFixed ? 'fixed' : 'absolute',
         top: 0,
         left: 0,
         width: '100%',
         height: '100%',
-        zIndex: -1, // Sempre atrás de todo o conteúdo da aplicação/container
-        opacity: safeOpacity,
+        zIndex: -1,
+        pointerEvents: 'none',
+        overflow: 'hidden',
+        backgroundColor: 'var(--sarak-bg-body)'
+    };
+
+    const mediaStyle: React.CSSProperties = {
+        width: '100%',
+        height: '100%',
+        opacity: opacity,
         filter: `blur(${blur}px)`,
         mixBlendMode: safeBlendMode as any,
+        objectFit: 'cover'
+    };
+
+    // Inteligência Condicional (Regra Exata Solicitada pelo Usuário)
+    // A única diferença em relação à mídia base DEVE ser a camada de gradiente por cima.
+    let showOverlay = false;
+    let overlayColor = 'transparent';
+
+    if (!isLightMode && luminance === 'light') {
+        // Tema escuro + Imagem clara -> Aplica gradiente escuro
+        showOverlay = true;
+        overlayColor = 'rgba(0, 0, 0, 0.85)';
+    } else if (isLightMode && luminance === 'dark') {
+        // Tema claro + Imagem escura -> Aplica gradiente claro
+        showOverlay = true;
+        overlayColor = 'rgba(255, 255, 255, 0.85)';
+    } 
+
+    // LOGS PROFUNDOS PARA INVESTIGAÇÃO (Solicitado pelo Usuário)
+    console.groupCollapsed(`[SarakBackgroundRenderer] Debug: ${rawUrl?.substring(0, 30)}...`);
+    console.log(`Theme: ${isLightMode ? 'LIGHT' : 'DARK'}`);
+    console.log(`Image Detected Luminance: ${luminance}`);
+    console.log(`Original BlendMode: ${blendMode}`);
+    console.log(`Safe (Applied) BlendMode: ${safeBlendMode}`);
+    console.log(`Opacity: ${opacity}`);
+    console.log(`Overlay Applied: ${showOverlay}`);
+    console.log(`Overlay Color: ${overlayColor}`);
+    console.log(`Container Background: var(--sarak-bg-body)`);
+    console.groupEnd();
+
+    const overlayStyle: React.CSSProperties = {
+        position: 'absolute',
+        inset: 0,
+        background: `radial-gradient(ellipse at 70% 30%, transparent 10%, ${overlayColor} 140%)`,
+        zIndex: 1,
         pointerEvents: 'none',
-        overflow: 'hidden'
+        opacity: showOverlay ? 1 : 0,
+        transition: 'opacity 1s ease-in-out'
     };
 
     if (isVideo) {
         return (
-            <div style={style}>
-                <video 
-                    src={rawUrl} 
-                    autoPlay 
-                    loop 
-                    muted 
-                    playsInline 
-                    style={{ width: '100%', height: '100%', objectFit: 'cover' }} 
-                />
+            <div style={containerStyle}>
+                <video src={rawUrl} autoPlay loop muted playsInline style={mediaStyle} />
+                <div style={overlayStyle} />
             </div>
         );
     }
 
     return (
-        <div style={{
-            ...style,
-            backgroundImage: `url("${rawUrl}")`,
-            backgroundSize: 'cover',
-            backgroundPosition: 'center',
-            backgroundRepeat: 'no-repeat'
-        }} />
+        <div style={containerStyle}>
+            <div style={{
+                ...mediaStyle,
+                backgroundImage: `url("${rawUrl}")`,
+                backgroundSize: 'cover',
+                backgroundPosition: 'center',
+                backgroundRepeat: 'no-repeat'
+            }} />
+            <div style={overlayStyle} />
+        </div>
     );
 };

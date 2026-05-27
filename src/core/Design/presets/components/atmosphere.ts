@@ -33,6 +33,14 @@ export const MEDIA_PRESETS: ComponentPreset[] = [
         design: {
             globalBackgroundImageUrl: 'https://images.unsplash.com/photo-1550745165-9bc0b252726f?q=80&w=1920&auto=format&fit=crop'
         }
+    },
+    {
+        id: 'bg-dark-cinematic',
+        name: 'Dark Cinematic',
+        description: 'Mídia noturna/escura para testes de contraste.',
+        design: {
+            globalBackgroundImageUrl: 'https://images.unsplash.com/photo-1503756234508-e32369269deb?q=80&w=1920&auto=format&fit=crop'
+        }
     }
 ];
 
