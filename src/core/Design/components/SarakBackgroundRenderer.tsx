@@ -5,13 +5,15 @@ interface SarakBackgroundRendererProps {
     opacity?: number;
     blur?: number;
     blendMode?: string;
+    isFixed?: boolean;
 }
 
 export const SarakBackgroundRenderer: React.FC<SarakBackgroundRendererProps> = ({ 
     imageUrl, 
     opacity = 1, 
     blur = 0, 
-    blendMode = 'normal' 
+    blendMode = 'normal',
+    isFixed = false
 }) => {
     if (!imageUrl) return null;
 
@@ -21,12 +23,12 @@ export const SarakBackgroundRenderer: React.FC<SarakBackgroundRendererProps> = (
     const isVideo = rawUrl?.includes('video') || rawUrl?.endsWith('.webm') || rawUrl?.endsWith('.mp4');
 
     const style: React.CSSProperties = {
-        position: 'absolute',
+        position: isFixed ? 'fixed' : 'absolute',
         top: 0,
         left: 0,
         width: '100%',
         height: '100%',
-        zIndex: 0, // Logo acima do background principal do contêiner, mas atrás do conteúdo
+        zIndex: -1, // Sempre atrás de todo o conteúdo da aplicação/container
         opacity: opacity,
         filter: `blur(${blur}px)`,
         mixBlendMode: blendMode as any,

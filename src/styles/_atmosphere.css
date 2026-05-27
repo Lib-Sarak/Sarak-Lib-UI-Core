@@ -637,3 +637,10 @@ body:not([data-sx-texture="none"]) .module-content,
 
     transition: all 0.3s ease !important;
 }
+
+/* Sarak Media Background Support */
+body[data-sarak-has-media="true"] #root,
+body[data-sarak-has-media="true"] .bg-theme-body {
+    background-color: transparent !important;
+    background-image: none !important;
+}

@@ -140,7 +140,7 @@ export const SarakShell: React.FC<SarakShellProps> = (props) => {
     const layoutClass = `layout-${design?.navigationStyle || 'sidebar'}`;
 
     return (
-        <div className={`flex w-full h-screen overflow-hidden bg-[var(--theme-body)] text-[var(--theme-text)] font-sans selection:bg-[var(--theme-primary)] selection:text-[var(--theme-on-primary)] ${layoutClass}`}>
+        <div className={`flex w-full h-screen overflow-hidden ${design.globalBackgroundImageUrl ? 'bg-transparent' : 'bg-[var(--theme-body)]'} text-[var(--theme-text)] font-sans selection:bg-[var(--theme-primary)] selection:text-[var(--theme-on-primary)] ${layoutClass}`}>
             
             {/* HOVER SENSORS (v6.2) */}
             {design.isAutoHideEnabled && !shell.isNavVisible && (
@@ -191,7 +191,7 @@ export const SarakShell: React.FC<SarakShellProps> = (props) => {
             )}
 
             {/* CONTENT AREA */}
-            <div className="flex-1 flex flex-col h-screen overflow-hidden relative bg-[var(--theme-body)]">
+            <div className={`flex-1 flex flex-col h-screen overflow-hidden relative ${design.globalBackgroundImageUrl ? 'bg-transparent' : 'bg-[var(--theme-body)]'}`}>
                 
                 {/* SHELL HEADER (TOPBAR ONLY) */}
                 {isTopbar && (

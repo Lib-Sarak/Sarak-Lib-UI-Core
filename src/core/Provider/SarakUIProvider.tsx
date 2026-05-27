@@ -10,6 +10,7 @@ import { useDesignManager } from './hooks/useDesignManager';
 import { useBrandingManager } from './hooks/useBrandingManager';
 import { DesignInjector } from './components/DesignInjector';
 import { SovereignThemeInjector } from './components/SovereignThemeInjector';
+import { SarakBackgroundRenderer } from '../Design/components/SarakBackgroundRenderer';
 import { GLOBAL_THEMES } from '../Design/presets/themes/index';
 
 // Re-exports para manter compatibilidade com arquivos que importam do Provider
@@ -198,6 +199,16 @@ export const SarakUIProvider: React.FC<SarakUIProviderProps> = ({
             />
             <NoiseOverlay />
             <SovereignThemeInjector design={design} manifest={options?.manifest} />
+            
+            {/* Aplicação Global da Mídia de Fundo do Sistema */}
+            <SarakBackgroundRenderer 
+                imageUrl={design?.globalBackgroundImageUrl}
+                opacity={design?.globalBackgroundOpacity}
+                blur={design?.globalBackgroundBlur}
+                blendMode={design?.globalBackgroundBlendMode}
+                isFixed={true}
+            />
+
             {shouldRenderChildren ? children : null}
         </UIContext.Provider>
     );

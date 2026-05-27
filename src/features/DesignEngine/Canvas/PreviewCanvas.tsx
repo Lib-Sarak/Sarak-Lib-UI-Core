@@ -225,13 +225,13 @@ export const PreviewCanvas: React.FC<PreviewCanvasProps> = ({
             >
                 {/* 1. Base Background Layer (Pilar de Cor) */}
                 <div
-                    className="absolute inset-0 z-0 bg-[var(--sarak-bg-base)]"
-                    style={{ backgroundColor: 'var(--sarak-bg-base)' }}
+                    className={`absolute inset-0 z-0 ${activeDesign.globalBackgroundImageUrl ? 'bg-transparent' : 'bg-[var(--sarak-bg-base)]'}`}
+                    style={{ backgroundColor: activeDesign.globalBackgroundImageUrl ? 'transparent' : 'var(--sarak-bg-base)' }}
                 />
 
                 {/* 2. Content Layer (Pilar de Layout) - Scaled dynamically to prevent micro-miniature rendering */}
                 <div
-                    className={`absolute inset-0 origin-top-left overflow-hidden z-10 flex bg-[var(--theme-body)] text-[var(--theme-text)] font-sans selection:bg-[var(--theme-primary)] selection:text-white layout-${navStyle}`}
+                    className={`absolute inset-0 origin-top-left overflow-hidden z-10 flex text-[var(--theme-text)] font-sans selection:bg-[var(--theme-primary)] selection:text-white layout-${navStyle} ${activeDesign.globalBackgroundImageUrl ? 'bg-transparent' : 'bg-[var(--theme-body)]'}`}
                     style={{
                         width: widthPercent,
                         height: heightPercent,
@@ -287,7 +287,7 @@ export const PreviewCanvas: React.FC<PreviewCanvasProps> = ({
                     )}
 
                     {/* CONTENT AREA */}
-                    <div className="flex-1 flex flex-col h-full overflow-hidden relative bg-[var(--theme-body)]">
+                    <div className={`flex-1 flex flex-col h-full overflow-hidden relative ${activeDesign.globalBackgroundImageUrl ? 'bg-transparent' : 'bg-[var(--theme-body)]'}`}>
                         {/* SHELL HEADER (TOPBAR ONLY) */}
                         {isTopbar && (
                             <TopbarNav
@@ -320,7 +320,7 @@ export const PreviewCanvas: React.FC<PreviewCanvasProps> = ({
     };;
 
     return (
-        <DesignScope design={tokens} className="w-full h-full flex flex-col relative overflow-auto bg-[#050505] p-0 custom-scrollbar">
+        <DesignScope design={{ ...tokens, globalBackgroundImageUrl: undefined }} className="w-full h-full flex flex-col relative overflow-auto bg-[#050505] p-0 custom-scrollbar">
             <UIContext.Provider value={previewContextValue as any}>
                 <div className={`flex gap-6 p-6 items-stretch overflow-visible ${isPreviewStacked ? 'flex-col min-w-full min-h-full w-fit h-fit' : 'flex-col xl:flex-row min-w-full min-h-full w-fit h-fit'}`}>
                     {isDualView ? (
