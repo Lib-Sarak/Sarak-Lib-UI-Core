@@ -1,5 +1,5 @@
 import { ComponentSchema } from '../types';
-const THEME_FONTS = [
+export const THEME_FONTS = [
     // Sans-Serif & Grotesk
     { value: "'Inter', sans-serif", name: "Inter", category: "Sans-Serif" },
     { value: "'Outfit', sans-serif", name: "Outfit", category: "Sans-Serif" },

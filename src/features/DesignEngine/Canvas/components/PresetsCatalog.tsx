@@ -4,6 +4,9 @@ import { GLOBAL_THEMES, ThemePreset } from '../../../../core/Design/presets/them
 import { syncThemeWithMode } from '../../../../core/Design/presets/themes/color-engine';
 import { useDesignVariables } from '../../../../core/Design/hooks/useDesignVariables';
 import { Sparkles, ArrowRight, Layout, Moon, Sun } from 'lucide-react';
+import { CardsCatalog } from './CardsCatalog';
+import { AtmosphereCatalog } from './AtmosphereCatalog';
+import { TypographyCatalog } from './TypographyCatalog';
 
 interface PresetsCatalogProps {
     onApplyPreset: (presetDesign: Record<string, any>) => void;
@@ -13,8 +16,20 @@ interface PresetsCatalogProps {
 
 export const PresetsCatalog: React.FC<PresetsCatalogProps> = ({ onApplyPreset, activeCategory, currentMode }) => {
     
-    // Filtro futuro: Se o activeCategory for de um módulo específico, poderemos filtrar temas granulares.
-    // Por enquanto, mostraremos os temas globais.
+    // Roteamento Modular de Presets
+    if (activeCategory === 'navigation') {
+        return <CardsCatalog onApplyPreset={onApplyPreset} currentMode={currentMode} />;
+    }
+    
+    if (activeCategory === 'surfaces') {
+        return <AtmosphereCatalog onApplyPreset={onApplyPreset} currentMode={currentMode} />;
+    }
+    
+    if (activeCategory === 'typography') {
+        return <TypographyCatalog onApplyPreset={onApplyPreset} currentMode={currentMode} />;
+    }
+
+    // Fallback: Temas Globais
     const themes = GLOBAL_THEMES;
 
     return (
@@ -28,7 +43,7 @@ export const PresetsCatalog: React.FC<PresetsCatalogProps> = ({ onApplyPreset, a
                     <div className="flex flex-col">
                         <span className="text-xs font-black uppercase text-[var(--theme-text)] tracking-[0.3em]">Design Intelligence Catalog</span>
                         <span className="text-[9px] font-bold text-[var(--theme-primary)] uppercase tracking-widest mt-0.5">
-                            {activeCategory ? `Pillar: ${activeCategory}` : 'Temas Globais'}
+                            Temas Globais
                         </span>
                     </div>
                 </div>
