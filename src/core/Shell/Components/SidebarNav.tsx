@@ -37,6 +37,9 @@ export const SidebarNav: React.FC<SidebarNavProps> = ({
 
     const searchPos = design?.searchPositionSidebar || 'top';
 
+    const activeLogo = mode === 'dark' && logoDarkUrl ? logoDarkUrl : logoUrl;
+    const isVideo = (url: string) => url?.includes('video') || url?.endsWith('.webm') || url?.endsWith('.mp4');
+
     const renderSearch = () => {
         if (searchPos === 'hidden') return null;
         return (
@@ -76,12 +79,21 @@ export const SidebarNav: React.FC<SidebarNavProps> = ({
                     <div className={`flex items-center gap-3 w-full ${logoPosition === 'center' ? 'justify-center' : ''}`}>
                         {logoUrl ? (
                             <div style={{ height: '32px', display: 'flex', alignItems: 'center', justifyContent: logoPosition === 'center' ? 'center' : 'flex-start' }}>
-                                <img
-                                    src={mode === 'dark' && logoDarkUrl ? logoDarkUrl : logoUrl}
-                                    alt={systemName}
-                                    style={{ height: `${32 * (logoScale || 1)}px` }}
-                                    className="object-contain transition-all"
-                                />
+                                {isVideo(activeLogo) ? (
+                                    <video
+                                        src={activeLogo}
+                                        autoPlay loop muted playsInline
+                                        style={{ height: `${32 * (logoScale || 1)}px` }}
+                                        className="object-contain transition-all"
+                                    />
+                                ) : (
+                                    <img
+                                        src={activeLogo}
+                                        alt={systemName}
+                                        style={{ height: `${32 * (logoScale || 1)}px` }}
+                                        className="object-contain transition-all"
+                                    />
+                                )}
                             </div>
                         ) : (
                             <div className="w-8 h-8 rounded-[var(--radius-theme)] bg-gradient-to-br from-[var(--theme-primary)] to-[var(--theme-primary-rgb),0.5] flex items-center justify-center font-black text-xs text-[var(--theme-on-primary)] shrink-0">S</div>

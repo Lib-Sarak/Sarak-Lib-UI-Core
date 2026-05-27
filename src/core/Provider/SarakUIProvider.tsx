@@ -66,7 +66,8 @@ export const SarakUIProvider: React.FC<SarakUIProviderProps> = ({
     userId,
     options = {},
     customThemes = [],
-    activeThemeId
+    activeThemeId,
+    onMediaUpload
 }) => {
     // 1. Gerenciamento do Registro e Discovery
     const { registeredModules, isHydrated } = useRegistryManager(options);
@@ -181,8 +182,9 @@ export const SarakUIProvider: React.FC<SarakUIProviderProps> = ({
         options,
         allThemes,
         branding,
-        updateBranding
-    }), [discoveryEndpoints, design, draftDesign, isDrafting, setIsDrafting, lockDrafting, setDesign, setDraftDesign, smartApplyConfig, smartApplyFullConfig, applyConfig, applyFullConfig, persistDesign, registeredModules, isHydrated, options, allThemes, branding, updateBranding]);
+        updateBranding,
+        onMediaUpload
+    }), [discoveryEndpoints, design, draftDesign, isDrafting, setIsDrafting, lockDrafting, setDesign, setDraftDesign, smartApplyConfig, smartApplyFullConfig, applyConfig, applyFullConfig, persistDesign, registeredModules, isHydrated, options, allThemes, branding, updateBranding, onMediaUpload]);
 
     // 7. Renderização com Strict Sync (Evita Flash de Temas)
     const isStrictSync = options?.persistence?.strictBackendSync === true;

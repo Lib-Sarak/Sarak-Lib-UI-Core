@@ -29,7 +29,7 @@ import {
     SelectControl, 
     SwitchControl,
     InputControl,
-    ImageUploaderControl
+    MediaUploaderControl
 } from '../components/DesignControls';
 import { MasterControlPanel } from './MasterControlPanel';
 import { TemplatesTab } from './TemplatesTab';
@@ -55,7 +55,7 @@ const ControlRegistry: Record<string, React.FC<any>> = {
     input: (props) => <InputControl label={props.token.label} placeholder={props.token.defaultValue} {...props} />,
     text: (props) => <InputControl label={props.token.label} type="text" placeholder={props.token.defaultValue} {...props} />,
     number: (props) => <InputControl label={props.token.label} type="number" placeholder={props.token.defaultValue} {...props} />,
-    image: (props) => <ImageUploaderControl label={props.token.label} {...props} />
+    image: (props) => <MediaUploaderControl label={props.token.label} {...props} />
 };
 
 const TokenControl = ({ token, value, onChange }: { token: any, value: any, onChange: (val: any) => void }) => {
@@ -350,13 +350,12 @@ export const ThemeCustomizationTab: React.FC = () => {
                                                                     onChange={(val: string) => updateBranding({ loginName: val })} 
                                                                 />
                                                                 <InputControl 
-                                                                    label="Título da Aba (Navegador)" 
-                                                                    type="text" 
+                                                                    label="Aba do Navegador" 
                                                                     value={branding.tabName || ''} 
                                                                     onChange={(val: string) => updateBranding({ tabName: val })} 
                                                                 />
-                                                                <ImageUploaderControl 
-                                                                    label="Logotipo (Qualquer Formato)" 
+                                                                <MediaUploaderControl 
+                                                                    label="Logotipo (Mídia Híbrida)" 
                                                                     value={branding.logoBase64 || null} 
                                                                     onChange={(val: string | null) => updateBranding({ logoBase64: val })} 
                                                                 />

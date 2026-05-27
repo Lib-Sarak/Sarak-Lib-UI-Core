@@ -21,6 +21,9 @@ import { naturebreezeTheme } from './nature-breeze';
 import { neobrutalismTheme } from './neo-brutalism';
 import { synthwaveRetroTheme } from './synthwave-retro';
 import { nebulaSpaceTheme } from './nebula-space';
+import { dotMatrixElegantTheme } from './dot-matrix-elegant';
+import { stellarNebulaTheme } from './stellar-nebula';
+import { kineticFlowTheme } from './kinetic-flow';
 
 export const GLOBAL_THEMES: ThemePreset[] = [
     sarakSovereignTheme,
@@ -31,5 +34,8 @@ export const GLOBAL_THEMES: ThemePreset[] = [
     naturebreezeTheme,
     neobrutalismTheme,
     synthwaveRetroTheme,
-    nebulaSpaceTheme
+    nebulaSpaceTheme,
+    dotMatrixElegantTheme,
+    stellarNebulaTheme,
+    kineticFlowTheme
 ];

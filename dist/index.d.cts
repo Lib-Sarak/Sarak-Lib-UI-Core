@@ -31,6 +31,7 @@ interface SarakUIProviderProps {
     options?: SarakUIOptions;
     customThemes?: any[];
     activeThemeId?: string;
+    onMediaUpload?: (file: File) => Promise<string>;
 }
 
 /**

@@ -1,6 +1,7 @@
 import React from 'react';
 import { useDesignVariables } from '../hooks/useDesignVariables';
 import { DesignOverrideContext } from '../../Provider/SarakUIProvider';
+import { SarakBackgroundRenderer } from './SarakBackgroundRenderer';
 
 interface DesignScopeProps {
     design: any;
@@ -42,6 +43,12 @@ export const DesignScope: React.FC<DesignScopeProps & Record<string, any>> = ({
                 {...attributes}
                 {...domSafeProps}
             >
+                <SarakBackgroundRenderer 
+                    imageUrl={design?.globalBackgroundImageUrl}
+                    opacity={design?.globalBackgroundOpacity}
+                    blur={design?.globalBackgroundBlur}
+                    blendMode={design?.globalBackgroundBlendMode}
+                />
                 {children}
             </div>
         </DesignOverrideContext.Provider>

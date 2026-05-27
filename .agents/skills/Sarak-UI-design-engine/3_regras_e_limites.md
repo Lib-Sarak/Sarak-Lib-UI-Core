@@ -27,3 +27,6 @@ Ao aplicar um preset de cards, persista o identificador com `cardPresetId` — n
 
 ### 8. NÃO saia do escopo desta skill
 Se ao trabalhar num componente do Design Engine você detectar problemas de performance, considere acionar a skill `otimizacao-nivel-1`. Se detectar código morto ou arquivos órfãos, considere acionar a skill `code-project-cleanup`. Esta skill trata exclusivamente da integridade data-driven do pipeline de design.
+
+### 9. NÃO embarque conversores de mídia pesados
+A lei do CSS Variables aplica-se perfeitamente às mídias (onde injetamos `var(--sarak-bg-image)` contendo a `url(...)`). Porém, não embarque lógicas pesadas de compressão de vídeo na UI. A Sarak UI mantém a agnostia de infraestrutura utilizando o Callback de Injeção de Dependência (`onMediaUpload`). Mídias sem o callback (Offline) são limitadas a 2MB convertidas em Base64 para proteger a integridade do banco.

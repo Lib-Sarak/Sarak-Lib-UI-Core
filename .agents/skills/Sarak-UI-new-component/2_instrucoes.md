@@ -6,6 +6,7 @@ Siga exatamente a ordem de execução abaixo para inserir um novo componente ou 
 Identifique a categoria à qual o token pertence (ex: tipografia, botões, cards).
 - Abra o arquivo correspondente em `src/core/Design/schema/`.
 - Adicione o novo token ao array `tokens` usando a tipagem padrão (id, label, type, defaultValue).
+  - **Dica de Mídia**: Se o token for uma mídia dinâmica (ex: background, textura, avatar, cover), o `type` DEVE obrigatoriamente ser `'image'`. Isso forçará a Engine a renderizar o componente híbrido de upload capaz de aceitar vídeos e Cloud Storage.
 - **Importante**: Defina as propriedades `cssVars` caso esse token vá manipular o Gêmeo Digital.
 
 ### Passo 2: Atualização do Banco de Dados (JSON Mapping)

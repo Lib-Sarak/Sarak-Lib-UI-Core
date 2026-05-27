@@ -14,6 +14,22 @@ Siga estes passos rigorosamente para instalar o Sarak-Lib-UI-Core em qualquer si
    ```tsx
    import { SarakUIProvider } from '@sarak/lib-ui-core';
    import '@sarak/lib-ui-core/sarak.css';
+
+   export default function App() {
+       return (
+           <SarakUIProvider
+               // RECOMENDADO: Injeção de dependência para uploads híbridos
+               // Sem isso, a UI bloqueará mídias > 2MB e converterá em Base64.
+               onMediaUpload={async (file) => {
+                   // Exemplo: const url = await uploadToS3(file);
+                   // return url;
+                   return "";
+               }}
+           >
+               <SuaAplicacao />
+           </SarakUIProvider>
+       );
+   }
    ```
 
 ## Passo 3: Injeção da Inicialização de Banco de Dados (Bridges)

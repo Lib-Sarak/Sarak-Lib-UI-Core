@@ -11,7 +11,7 @@ export const MediaSchema: ComponentSchema = {
         {
             id: 'globalBackgroundImageUrl',
             label: 'URL da Imagem de Fundo',
-            type: 'text',
+            type: 'image',
             defaultValue: '',
             cssVars: ['--sarak-global-bg-image']
         },

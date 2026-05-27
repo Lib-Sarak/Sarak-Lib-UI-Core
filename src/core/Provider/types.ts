@@ -48,6 +48,9 @@ export interface SarakUIContextType {
         logoBase64: string | null;
     };
     updateBranding?: (partial: any) => Promise<void>;
+    
+    // Media Strategy
+    onMediaUpload?: (file: File) => Promise<string>;
 }
 
 export interface SarakUIProviderProps {
@@ -59,4 +62,5 @@ export interface SarakUIProviderProps {
     options?: SarakUIOptions;
     customThemes?: any[]; // Temas vindos do banco de dados (UI.custom_themes)
     activeThemeId?: string; // ID do tema atualmente selecionado no banco
+    onMediaUpload?: (file: File) => Promise<string>; // Adapter opcional para envio de mídias para Storage externo
 }

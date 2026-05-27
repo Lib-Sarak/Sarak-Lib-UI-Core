@@ -38,6 +38,9 @@ export const TopbarNav: React.FC<TopbarNavProps> = ({
 
     const searchPos = design?.searchPositionTopbar || 'left';
     
+    const activeLogo = mode === 'dark' && logoDarkUrl ? logoDarkUrl : logoUrl;
+    const isVideo = (url: string) => url?.includes('video') || url?.endsWith('.webm') || url?.endsWith('.mp4');
+
     const renderSearch = () => {
         if (searchPos === 'hidden') return null;
         return <ShellSearchWidget variant={effectiveIsNavHidden ? 'icon' : 'bar'} onClick={() => setIsSearchOpen(true)} />;
@@ -73,12 +76,21 @@ export const TopbarNav: React.FC<TopbarNavProps> = ({
                         <div className={`flex items-center gap-3 ${!effectiveIsNavHidden ? 'pr-6 border-r border-[var(--theme-border)]' : ''} shrink-0`}>
                             {logoUrl ? (
                                 <div style={{ height: effectiveIsNavHidden ? '20px' : '32px', display: 'flex', alignItems: 'center' }}>
-                                    <img
-                                        src={mode === 'dark' && logoDarkUrl ? logoDarkUrl : logoUrl}
-                                        alt={systemName}
-                                        style={{ height: `${(effectiveIsNavHidden ? 20 : 32) * (logoScale || 1)}px` }}
-                                        className="object-contain transition-all"
-                                    />
+                                    {isVideo(activeLogo) ? (
+                                        <video
+                                            src={activeLogo}
+                                            autoPlay loop muted playsInline
+                                            style={{ height: `${(effectiveIsNavHidden ? 20 : 32) * (logoScale || 1)}px` }}
+                                            className="object-contain transition-all"
+                                        />
+                                    ) : (
+                                        <img
+                                            src={activeLogo}
+                                            alt={systemName}
+                                            style={{ height: `${(effectiveIsNavHidden ? 20 : 32) * (logoScale || 1)}px` }}
+                                            className="object-contain transition-all"
+                                        />
+                                    )}
                                 </div>
                             ) : (
                                 <div className={`${effectiveIsNavHidden ? 'w-6 h-6 text-[10px]' : 'w-8 h-8 text-xs'} rounded-lg bg-[var(--theme-primary)] flex items-center justify-center font-bold shrink-0`}>S</div>
