@@ -74,12 +74,13 @@ const AtmospherePresetPreview = ({ preset, index, onApply }: { preset: Component
             onClick={onApply}
             className="group relative flex flex-col text-left rounded-2xl border border-[var(--theme-border)] overflow-hidden bg-[var(--theme-card)] hover:border-[var(--theme-primary)] hover:shadow-[0_10px_40px_-10px_rgba(var(--theme-primary-rgb),0.2)] transition-all duration-300"
         >
-            <div className="h-64 w-full relative overflow-hidden bg-black flex items-center justify-center">
-                <div 
-                    className="absolute inset-0 z-0" 
-                    data-sx-texture={preset.design.texture && preset.design.texture !== 'none' ? preset.design.texture : undefined}
-                >
-                    {preset.design.globalBackgroundImageUrl ? (
+            <div 
+                className="h-64 w-full relative overflow-hidden flex items-center justify-center sarak-card"
+                data-sx-card-texture-type={preset.design.texture && preset.design.texture !== 'none' ? preset.design.texture : undefined}
+                style={{ '--sarak-card-texture-opacity': '0.8' } as React.CSSProperties}
+            >
+                <div className="absolute inset-0 z-0 bg-neutral-900">
+                    {preset.design.globalBackgroundImageUrl && (
                         <SarakBackgroundRenderer
                             imageUrl={preset.design.globalBackgroundImageUrl}
                             opacity={preset.design.globalBackgroundOpacity}
@@ -87,8 +88,6 @@ const AtmospherePresetPreview = ({ preset, index, onApply }: { preset: Component
                             blendMode={preset.design.globalBackgroundBlendMode as any}
                             isFixed={false}
                         />
-                    ) : (
-                        <div className="w-full h-full bg-neutral-900" />
                     )}
                 </div>
                 
