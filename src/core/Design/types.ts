@@ -27,6 +27,7 @@ export interface DesignToken {
     max?: number;
     step?: number;
     defaultValue: any;
+    legacyValue?: any; // Valor estático imutável que este token assume para temas/presets antigos que não o possuem
     description?: string;
 }
 

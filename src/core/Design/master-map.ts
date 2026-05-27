@@ -82,3 +82,22 @@ export const getDefaultDesignState = () => {
     });
     return state;
 };
+
+/**
+ * Theme Migration/Upgrader (Pacote Fechado Retrocompatível)
+ * Garante que temas antigos incorporem chaves novas com seus "legacyValues",
+ * mantendo-os como pacotes imutáveis e blindados contra fallbacks dinâmicos.
+ */
+export const upgradeThemePayload = (themePayload: Record<string, any>, partialMode = false) => {
+    const upgraded = { ...themePayload };
+    getAllDesignTokens().forEach(token => {
+        // Se a chave não existe no payload
+        if (upgraded[token.id] === undefined) {
+            // Se o token possui um legacyValue definido (Zero Absoluto para temas antigos)
+            if (token.legacyValue !== undefined) {
+                upgraded[token.id] = token.legacyValue;
+            }
+        }
+    });
+    return upgraded;
+};

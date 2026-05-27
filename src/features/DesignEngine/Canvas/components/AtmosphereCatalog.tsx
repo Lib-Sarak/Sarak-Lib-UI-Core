@@ -28,21 +28,39 @@ export const AtmosphereCatalog: React.FC<AtmosphereCatalogProps> = ({ onApplyPre
                     </div>
                 </div>
 
-                <div className="flex items-center gap-2 p-1 bg-black/20 rounded-xl border border-[var(--theme-border)]">
-                    <button 
-                        onClick={() => setActiveTab('media')}
-                        className={`px-4 py-2 rounded-lg text-[10px] font-black uppercase tracking-widest transition-all flex items-center gap-2 ${activeTab === 'media' ? 'bg-[var(--theme-primary)] text-white shadow-lg' : 'text-[var(--theme-muted)] hover:text-white hover:bg-white/5'}`}
-                    >
-                        <Video size={12} />
-                        Mídia Base
-                    </button>
-                    <button 
-                        onClick={() => setActiveTab('textures')}
-                        className={`px-4 py-2 rounded-lg text-[10px] font-black uppercase tracking-widest transition-all flex items-center gap-2 ${activeTab === 'textures' ? 'bg-[var(--theme-primary)] text-white shadow-lg' : 'text-[var(--theme-muted)] hover:text-white hover:bg-white/5'}`}
-                    >
-                        <Grid size={12} />
-                        Texturas
-                    </button>
+                <div className="flex items-center gap-4">
+                    <div className="flex items-center gap-2 p-1 bg-black/20 rounded-xl border border-[var(--theme-border)]">
+                        <button 
+                            onClick={() => setActiveTab('media')}
+                            className={`px-4 py-2 rounded-lg text-[10px] font-black uppercase tracking-widest transition-all flex items-center gap-2 ${activeTab === 'media' ? 'bg-[var(--theme-primary)] text-white shadow-lg' : 'text-[var(--theme-muted)] hover:text-white hover:bg-white/5'}`}
+                        >
+                            <Video size={12} />
+                            Mídia Base
+                        </button>
+                        <button 
+                            onClick={() => setActiveTab('textures')}
+                            className={`px-4 py-2 rounded-lg text-[10px] font-black uppercase tracking-widest transition-all flex items-center gap-2 ${activeTab === 'textures' ? 'bg-[var(--theme-primary)] text-white shadow-lg' : 'text-[var(--theme-muted)] hover:text-white hover:bg-white/5'}`}
+                        >
+                            <Grid size={12} />
+                            Texturas
+                        </button>
+                    </div>
+
+                    <div className="flex items-center gap-3 px-4 py-2 bg-black/20 rounded-xl border border-[var(--theme-border)]">
+                        <span className="text-[10px] font-black text-[var(--theme-text)] uppercase tracking-widest">Opacidade</span>
+                        <input 
+                            key={activeTab}
+                            type="range" 
+                            min="0" max="1" step="0.01" 
+                            defaultValue={activeTab === 'textures' ? 0.08 : 1}
+                            onChange={(e) => onApplyPreset(
+                                activeTab === 'textures' 
+                                    ? { textureOpacity: parseFloat(e.target.value) }
+                                    : { globalBackgroundOpacity: parseFloat(e.target.value) }
+                            , true)}
+                            className="w-32 accent-[var(--theme-primary)] cursor-pointer"
+                        />
+                    </div>
                 </div>
             </div>
 

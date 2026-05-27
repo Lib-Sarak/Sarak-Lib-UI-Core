@@ -3,6 +3,7 @@ import { motion } from 'framer-motion';
 import { GLOBAL_THEMES, ThemePreset } from '../../../../core/Design/presets/themes';
 import { syncThemeWithMode } from '../../../../core/Design/presets/themes/color-engine';
 import { useDesignVariables } from '../../../../core/Design/hooks/useDesignVariables';
+import { upgradeThemePayload } from '../../../../core/Design/master-map';
 import { Sparkles, ArrowRight, Layout, Moon, Sun } from 'lucide-react';
 import { CardsCatalog } from './CardsCatalog';
 import { AtmosphereCatalog } from './AtmosphereCatalog';
@@ -53,7 +54,7 @@ export const PresetsCatalog: React.FC<PresetsCatalogProps> = ({ onApplyPreset, a
             <div className="flex-1 overflow-y-auto custom-scrollbar p-6 bg-[radial-gradient(ellipse_at_top_right,rgba(var(--theme-primary-rgb),0.03)_0%,transparent_50%)]">
                 <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
                     {themes.map((theme, i) => (
-                        <PresetCard key={theme.id} theme={theme} currentMode={currentMode} onApply={() => onApplyPreset({ ...theme.design, mode: currentMode })} index={i} />
+                        <PresetCard key={theme.id} theme={theme} currentMode={currentMode} onApply={() => onApplyPreset(upgradeThemePayload({ ...theme.design, mode: currentMode }))} index={i} />
                     ))}
                 </div>
             </div>

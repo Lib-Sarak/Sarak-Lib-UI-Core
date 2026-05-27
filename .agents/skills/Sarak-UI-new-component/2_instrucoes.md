@@ -5,7 +5,8 @@ Siga exatamente a ordem de execução abaixo para inserir um novo componente ou 
 ### Passo 1: Inserção no Schema
 Identifique a categoria à qual o token pertence (ex: tipografia, botões, cards).
 - Abra o arquivo correspondente em `src/core/Design/schema/`.
-- Adicione o novo token ao array `tokens` usando a tipagem padrão (id, label, type, defaultValue).
+- Adicione o novo token ao array `tokens` usando a tipagem padrão (`id`, `label`, `type`, `defaultValue`, `legacyValue`).
+  - **Regra de Retrocompatibilidade (legacyValue)**: OBRIGATORIAMENTE defina um `legacyValue` (o valor de "Zero Absoluto" ou fallback estático que este token deve assumir quando um Tema Global antigo, que não possui este token, for aplicado, garantindo que temas fechados se mantenham imutáveis).
   - **Dica de Mídia**: Se o token for uma mídia dinâmica (ex: background, textura, avatar, cover), o `type` DEVE obrigatoriamente ser `'image'`. Isso forçará a Engine a renderizar o componente híbrido de upload capaz de aceitar vídeos e Cloud Storage.
 - **Importante**: Defina as propriedades `cssVars` caso esse token vá manipular o Gêmeo Digital.
 

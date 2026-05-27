@@ -13,6 +13,7 @@ export const MediaSchema: ComponentSchema = {
             label: 'URL da Imagem de Fundo',
             type: 'image',
             defaultValue: '',
+            legacyValue: '', // Garante que temas antigos apaguem a mídia de fundo
             cssVars: ['--sarak-global-bg-image']
         },
         {
