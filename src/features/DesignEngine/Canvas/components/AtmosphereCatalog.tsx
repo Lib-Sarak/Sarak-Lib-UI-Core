@@ -105,6 +105,7 @@ const AtmospherePresetPreview = ({ preset, index, onApply }: { preset: Component
                             blur={preset.design.globalBackgroundBlur}
                             blendMode={preset.design.globalBackgroundBlendMode as any}
                             isFixed={false}
+                            mode={preset.design.mode}
                         />
                     )}
                 </div>

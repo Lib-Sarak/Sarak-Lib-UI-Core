@@ -6,6 +6,7 @@ interface SarakBackgroundRendererProps {
     blur?: number;
     blendMode?: string;
     isFixed?: boolean;
+    mode?: 'light' | 'dark';
 }
 
 export const SarakBackgroundRenderer: React.FC<SarakBackgroundRendererProps> = ({ 
@@ -13,7 +14,8 @@ export const SarakBackgroundRenderer: React.FC<SarakBackgroundRendererProps> = (
     opacity = 1, 
     blur = 0, 
     blendMode = 'normal',
-    isFixed = false
+    isFixed = false,
+    mode
 }) => {
     if (!imageUrl) return null;
 
@@ -22,6 +24,16 @@ export const SarakBackgroundRenderer: React.FC<SarakBackgroundRendererProps> = (
     
     const isVideo = rawUrl?.includes('video') || rawUrl?.endsWith('.webm') || rawUrl?.endsWith('.mp4');
 
+    // Proteção para Light Mode: Modos de mesclagem como 'screen' ou 'color-dodge' desaparecem no fundo branco.
+    // Usamos a prop `mode` para evitar race conditions com a atualização assíncrona da classList do body no React.
+    const isLightMode = mode === 'light';
+    const safeBlendMode = isLightMode && ['screen', 'color-dodge', 'lighten', 'plus-lighter'].includes(blendMode) 
+        ? 'multiply' 
+        : blendMode;
+    
+    // Pequeno boost na opacidade se for muito baixa no modo claro (já que perde contraste)
+    const safeOpacity = (isLightMode && opacity < 0.2) ? Math.min(opacity * 1.5, 1) : opacity;
+
     const style: React.CSSProperties = {
         position: isFixed ? 'fixed' : 'absolute',
         top: 0,
@@ -29,9 +41,9 @@ export const SarakBackgroundRenderer: React.FC<SarakBackgroundRendererProps> = (
         width: '100%',
         height: '100%',
         zIndex: -1, // Sempre atrás de todo o conteúdo da aplicação/container
-        opacity: opacity,
+        opacity: safeOpacity,
         filter: `blur(${blur}px)`,
-        mixBlendMode: blendMode as any,
+        mixBlendMode: safeBlendMode as any,
         pointerEvents: 'none',
         overflow: 'hidden'
     };

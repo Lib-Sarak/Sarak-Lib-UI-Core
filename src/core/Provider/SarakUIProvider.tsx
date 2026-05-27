@@ -208,6 +208,7 @@ export const SarakUIProvider: React.FC<SarakUIProviderProps> = ({
                 blur={design?.globalBackgroundBlur}
                 blendMode={design?.globalBackgroundBlendMode}
                 isFixed={true}
+                mode={design?.mode}
             />
 
             {shouldRenderChildren ? children : null}

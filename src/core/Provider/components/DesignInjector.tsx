@@ -78,14 +78,10 @@ export const DesignInjector: React.FC<{ design: any; isDrafting: boolean }> = ({
             body.classList.add(mode);
         }
 
-        // 5. Injeção de Transparência Global (Media Backgrounds)
+        // 5. Gestão de Atributos da Mídia de Fundo
         if (s.globalBackgroundImageUrl) {
-            root.style.setProperty('background-color', 'transparent', 'important');
-            body.style.setProperty('background-color', 'transparent', 'important');
             body.setAttribute('data-sarak-has-media', 'true');
         } else {
-            root.style.removeProperty('background-color');
-            body.style.removeProperty('background-color');
             body.removeAttribute('data-sarak-has-media');
         }
 

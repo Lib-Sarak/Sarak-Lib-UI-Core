@@ -48,6 +48,7 @@ export const DesignScope: React.FC<DesignScopeProps & Record<string, any>> = ({
                     opacity={design?.globalBackgroundOpacity}
                     blur={design?.globalBackgroundBlur}
                     blendMode={design?.globalBackgroundBlendMode}
+                    mode={design?.mode}
                 />
                 {children}
             </div>
