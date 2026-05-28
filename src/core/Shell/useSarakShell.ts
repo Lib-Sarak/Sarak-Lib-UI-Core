@@ -18,6 +18,7 @@ export const useSarakShell = (loggedIn: boolean) => {
 
     const [isSearchOpen, setIsSearchOpen] = useState(false);
     const [isNavVisible, setIsNavVisible] = useState(true);
+    const [isMobileNavOpen, setIsMobileNavOpen] = useState(false);
     const [resizeType, setResizeType] = useState<'sidebar' | 'topbar' | null>(null);
 
     const sidebarMinWidth = useMemo(() => design?.sidebarMinWidth || 200, [design?.sidebarMinWidth]);
@@ -52,6 +53,11 @@ export const useSarakShell = (loggedIn: boolean) => {
             }
         }
     }, [discoveredModules, activeModuleId, navigate, options?.theme?.defaultModuleId]);
+
+    // Fechar menu mobile ao trocar de módulo
+    useEffect(() => {
+        setIsMobileNavOpen(false);
+    }, [activeModuleId]);
 
     // Shortcuts
     useEffect(() => {
@@ -126,6 +132,8 @@ export const useSarakShell = (loggedIn: boolean) => {
         setIsSearchOpen,
         isNavVisible,
         setIsNavVisible,
+        isMobileNavOpen,
+        setIsMobileNavOpen,
         toggleNav,
         startResizingSidebar,
         startResizingTopbar,

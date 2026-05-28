@@ -5,6 +5,7 @@ import {
     Monitor, Layout, Layers, Terminal
 } from 'lucide-react';
 import { UIContext, useSarakUI } from '../../../core/Provider/SarakUIProvider';
+import { DeviceProvider } from '../../../core/Provider/DeviceProvider';
 import { MockDashboard, MockChat, MockLogs, MockSettings, MockComponents, MockTypography, MockAuth, MockMatrix, MockTable, MockText, MockCharts, MockForms, MockDocuments } from './MockApps';
 import { KitchenSinkPreview } from './KitchenSinkPreview';
 import { PresetsCatalog } from './components/PresetsCatalog';
@@ -228,12 +229,13 @@ export const PreviewCanvas: React.FC<PreviewCanvasProps> = ({
         const heightPercent = `${(100 / scaleFactor).toFixed(2)}%`;
 
         return (
-            <DesignScope
-                design={activeDesign}
-                className={`@container sarak-device-${previewDevice} w-full h-full flex flex-col transition-all duration-500 overflow-hidden relative isolate ${hasTexture ? 'texture-active' : ''}`}
-                data-sx-texture={activeDesign.texture}
-            >
-                {/* 1. Base Background Layer (Pilar de Cor) */}
+            <DeviceProvider overrideDevice={previewDevice}>
+                <DesignScope
+                    design={activeDesign}
+                    className={`@container sarak-device-${previewDevice} w-full h-full flex flex-col transition-all duration-500 overflow-hidden relative isolate ${hasTexture ? 'texture-active' : ''}`}
+                    data-sx-texture={activeDesign.texture}
+                >
+                    {/* 1. Base Background Layer (Pilar de Cor) */}
                 <div
                     className={`absolute inset-0 z-0 ${activeDesign.globalBackgroundImageUrl ? 'bg-transparent' : 'bg-[var(--sarak-bg-base)]'}`}
                     style={{ backgroundColor: activeDesign.globalBackgroundImageUrl ? 'transparent' : 'var(--sarak-bg-base)' }}
@@ -326,8 +328,9 @@ export const PreviewCanvas: React.FC<PreviewCanvasProps> = ({
                     </div>
                 </div>
             </DesignScope>
+        </DeviceProvider>
         );
-    };;
+    };
 
     const deviceWidths = {
         desktop: '100%',

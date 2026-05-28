@@ -5,7 +5,7 @@ description: Instalação e acoplamento plug-and-play da biblioteca Sarak-Lib-UI
 
 # Skill: Sarak UI Import
 
-Esta skill guia o agente no processo de identificação do ecossistema alvo (Node.js/Next.js ou Python/FastAPI) e realiza a instalação, inicialização de bancos de dados via bridges nativas e injeção de Providers.
+Esta skill guia o agente no processo de identificação do ecossistema alvo (Node.js/Next.js ou Python/FastAPI) e realiza a instalação, inicialização de bancos de dados via bridges nativas, injeção de Providers e criação da pasta obrigatória `Sarak-UI/`.
 
 Para instruções detalhadas de execução, leia os arquivos:
 1. [Definição](./1_definicao.md)

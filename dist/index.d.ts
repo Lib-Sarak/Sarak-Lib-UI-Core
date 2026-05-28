@@ -92,6 +92,44 @@ interface SarakShellProps {
  */
 declare const SarakShell: React$1.FC<SarakShellProps>;
 
+type DeviceType = 'smartphone' | 'tablet' | 'desktop';
+declare const useSarakDevice: () => DeviceType;
+interface DeviceProviderProps {
+    children: ReactNode;
+    /** Se fornecido, sequestra o valor (usado pelo Gêmeo Digital) */
+    overrideDevice?: DeviceType;
+}
+declare const DeviceProvider: React$1.FC<DeviceProviderProps>;
+
+interface SarakAnalyticalPageProps {
+    navBar?: ReactNode;
+    mainContent: ReactNode;
+    sidePanel?: ReactNode;
+    /** Se true, o painel lateral abre como um modal/drawer por cima no mobile. Se false, fica empilhado. Default: true */
+    sidePanelAsDrawerOnMobile?: boolean;
+}
+/**
+ * SarakAnalyticalPage
+ *
+ * Uma Fôrma Inteligente (Smart Layout) para telas de dashboard/análise.
+ * No Desktop: Distribui navBar, mainContent e sidePanel em colunas.
+ * No Mobile: Oculta navBar ou transforma em modal, empilha mainContent e transforma sidePanel em BottomSheet/Drawer.
+ */
+declare const SarakAnalyticalPage: React$1.FC<SarakAnalyticalPageProps>;
+
+interface SarakHiddenProps {
+    children: ReactNode;
+    /** Esconder quando o dispositivo ativo estiver nesta lista */
+    on: DeviceType | DeviceType[];
+}
+/**
+ * SarakHidden
+ *
+ * Componente utilitário que não renderiza o conteúdo dependendo do dispositivo.
+ * Isso evita poluição do DOM e uso de RAM em dispositivos que não exibirão o componente.
+ */
+declare const SarakHidden: React$1.FC<SarakHiddenProps>;
+
 type IconName = 'AlertCircle' | 'Check' | 'X' | 'Menu' | 'Search' | 'Bell' | 'User' | 'LogOut' | 'Shield' | 'Globe' | 'ChevronDown' | 'ChevronLeft' | 'ChevronRight' | 'Zap' | 'LayoutDashboard' | 'Save' | 'Settings' | 'BarChart3' | 'Layout' | 'FileText' | 'MessageSquare' | 'History' | 'Network' | 'Box' | 'Type' | 'Lock' | 'Layers' | 'Grid' | 'AlignLeft' | 'LineChart' | 'Hash' | 'Copy' | 'RefreshCw' | 'Edit3' | 'CornerDownRight' | 'Activity' | 'Users' | 'ArrowRight' | 'FileSpreadsheet' | 'Download' | 'ArrowUpDown' | 'Database' | 'List' | 'CheckCircle2' | 'Loader2' | 'Calendar' | 'Trash2' | 'Plus' | 'UploadCloud' | 'MoreVertical' | 'Image' | 'File' | 'Edit' | 'Eye' | 'UserPlus';
 declare const IconMap: Record<IconName, {
     lucide: any;
@@ -600,4 +638,4 @@ interface SarakRouterState {
  */
 declare function useSarakRouter(basePath?: string): SarakRouterState;
 
-export { CustomizationPanel, DESIGN_MANIFEST, DesignScope, type DiscoveredModule, DynamicRenderer, ExpandableCard, IconMap, type IconName, LanguageSelector, type MatrixNodeConfig, type ModuleManifest, ModuleSelector, type ResolvedNodeConfig, SarakAuthScreen, SarakCardGrid, SarakCatalogGrid, SarakChart, SarakChartEngine, SarakChat, SarakExpandableMatrix, type SarakExpandableMatrixProps, SarakForm, SarakIcon, type SarakIconProps, SarakManagementGrid, type SarakMatrixManifest, type SarakModule, type SarakRouterState, SarakSecurityOrchestrator, SarakShell, SarakStats, SarakTable, SarakUIProvider, SocialButton, ThemeToggle, UserMenu, type VisualContract, type VisualContractType, getLocalComponent, getRegisteredModules, getSarakModule, registerLocalComponent, registerSarakModule, subscribeToRegistry, useDesignDraft, useModuleDiscovery, useSarakRouter, useSarakUI };
+export { CustomizationPanel, DESIGN_MANIFEST, DesignScope, DeviceProvider, type DeviceType, type DiscoveredModule, DynamicRenderer, ExpandableCard, IconMap, type IconName, LanguageSelector, type MatrixNodeConfig, type ModuleManifest, ModuleSelector, type ResolvedNodeConfig, SarakAnalyticalPage, type SarakAnalyticalPageProps, SarakAuthScreen, SarakCardGrid, SarakCatalogGrid, SarakChart, SarakChartEngine, SarakChat, SarakExpandableMatrix, type SarakExpandableMatrixProps, SarakForm, SarakHidden, SarakIcon, type SarakIconProps, SarakManagementGrid, type SarakMatrixManifest, type SarakModule, type SarakRouterState, SarakSecurityOrchestrator, SarakShell, SarakStats, SarakTable, SarakUIProvider, SocialButton, ThemeToggle, UserMenu, type VisualContract, type VisualContractType, getLocalComponent, getRegisteredModules, getSarakModule, registerLocalComponent, registerSarakModule, subscribeToRegistry, useDesignDraft, useModuleDiscovery, useSarakDevice, useSarakRouter, useSarakUI };

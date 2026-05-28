@@ -8,6 +8,7 @@ import SarakSearch from '../../components/atomic/Inputs/SarakSearch';
 import { SarakShellProps } from './Components/types';
 
 import { useSarakUI } from '../Provider/SarakUIProvider';
+import { useSarakDevice } from '../Provider/DeviceProvider';
 
 interface Props {
   children?: ReactNode;
@@ -61,6 +62,9 @@ export const SarakShell: React.FC<SarakShellProps> = (props) => {
     
     const shell = useSarakShell(!!(token || ui.options?.token));
     const { design } = shell;
+    
+    const device = useSarakDevice();
+    const isMobile = device === 'smartphone';
 
     // --- DIMENSION GUARD (v10.1.10 Industrial Diagnostic) ---
     const [isReady, setIsReady] = React.useState(false);
@@ -140,7 +144,7 @@ export const SarakShell: React.FC<SarakShellProps> = (props) => {
     const layoutClass = `layout-${design?.navigationStyle || 'sidebar'}`;
 
     return (
-        <div className={`flex w-full h-screen overflow-hidden ${design.globalBackgroundImageUrl ? 'bg-transparent' : 'bg-[var(--theme-body)]'} text-[var(--theme-text)] font-sans selection:bg-[var(--theme-primary)] selection:text-[var(--theme-on-primary)] ${layoutClass}`}>
+        <div className={`flex ${isMobile ? 'flex-col' : ''} w-full h-screen overflow-hidden ${design.globalBackgroundImageUrl ? 'bg-transparent' : 'bg-[var(--theme-body)]'} text-[var(--theme-text)] font-sans selection:bg-[var(--theme-primary)] selection:text-[var(--theme-on-primary)] ${layoutClass}`}>
             
             {/* HOVER SENSORS (v6.2) */}
             {design.isAutoHideEnabled && !shell.isNavVisible && (
@@ -160,8 +164,8 @@ export const SarakShell: React.FC<SarakShellProps> = (props) => {
                 </>
             )}
 
-            {/* SIDEBAR NAVIGATION */}
-            {isSidebar && (
+            {/* SIDEBAR NAVIGATION (DESKTOP) */}
+            {isSidebar && !isMobile && (
                 <SidebarNav 
                     design={design}
                     brand={brand}
@@ -175,6 +179,46 @@ export const SarakShell: React.FC<SarakShellProps> = (props) => {
                     setIsSearchOpen={shell.setIsSearchOpen}
                     startResizing={shell.startResizingSidebar}
                 />
+            )}
+
+            {/* MOBILE SHELL HEADER */}
+            {isMobile && isSidebar && (
+                <div className="flex items-center justify-between px-4 py-3 border-b border-[var(--theme-border)] bg-[var(--theme-sidebar)] z-20 shrink-0 shadow-sm">
+                    <div className="flex items-center gap-3">
+                        <button 
+                            onClick={() => shell.setIsMobileNavOpen(true)}
+                            className="p-1.5 -ml-1.5 rounded-md text-[var(--theme-muted)] hover:text-[var(--theme-title)] hover:bg-[var(--theme-primary)]/10 transition-colors"
+                        >
+                            <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><line x1="3" y1="12" x2="21" y2="12"></line><line x1="3" y1="6" x2="21" y2="6"></line><line x1="3" y1="18" x2="21" y2="18"></line></svg>
+                        </button>
+                        <span className="font-bold tracking-tight text-[var(--theme-title)] truncate">
+                            {brand.name || "Sarak"}
+                        </span>
+                    </div>
+                </div>
+            )}
+
+            {/* MOBILE DRAWER OVERLAY */}
+            {isMobile && isSidebar && shell.isMobileNavOpen && (
+                <div className="fixed inset-0 z-[9999] flex">
+                    <div className="absolute inset-0 bg-black/60 backdrop-blur-sm transition-opacity" onClick={() => shell.setIsMobileNavOpen(false)} />
+                    <div className="relative w-4/5 max-w-sm h-full flex flex-col bg-[var(--theme-sidebar)] shadow-2xl animate-in slide-in-from-left duration-300">
+                        <SidebarNav 
+                            design={{...design, isNavHidden: false, isAutoHideEnabled: false}}
+                            brand={brand}
+                            user={user}
+                            logout={logout}
+                            toggleNav={() => shell.setIsMobileNavOpen(false)}
+                            activeModuleId={shell.activeModuleId}
+                            setActiveModuleId={shell.setActiveModuleId}
+                            groupedModules={shell.groupedModules}
+                            setIsNavVisible={shell.setIsNavVisible}
+                            setIsSearchOpen={shell.setIsSearchOpen}
+                            startResizing={() => {}}
+                            isMobileDrawer={true}
+                        />
+                    </div>
+                </div>
             )}
 
             {/* DOCK NAVIGATION */}

@@ -12,6 +12,7 @@ import { DesignInjector } from './components/DesignInjector';
 import { SovereignThemeInjector } from './components/SovereignThemeInjector';
 import { SarakBackgroundRenderer } from '../Design/components/SarakBackgroundRenderer';
 import { GLOBAL_THEMES } from '../Design/presets/themes/index';
+import { DeviceProvider } from './DeviceProvider';
 
 // Re-exports para manter compatibilidade com arquivos que importam do Provider
 export * from './types';
@@ -193,26 +194,28 @@ export const SarakUIProvider: React.FC<SarakUIProviderProps> = ({
     const shouldRenderChildren = isStrictSync ? isBackendLoaded : true;
 
     return (
-        <UIContext.Provider value={uiContextValue}>
-            <DesignInjector 
-                design={design} 
-                isDrafting={isDrafting} 
-            />
-            <NoiseOverlay />
-            <SovereignThemeInjector design={design} manifest={options?.manifest} />
-            
-            {/* Aplicação Global da Mídia de Fundo do Sistema */}
-            <SarakBackgroundRenderer 
-                imageUrl={design?.globalBackgroundImageUrl}
-                opacity={design?.globalBackgroundOpacity}
-                blur={design?.globalBackgroundBlur}
-                blendMode={design?.globalBackgroundBlendMode}
-                isFixed={true}
-                mode={design?.mode}
-            />
+        <DeviceProvider>
+            <UIContext.Provider value={uiContextValue}>
+                <DesignInjector 
+                    design={design} 
+                    isDrafting={isDrafting} 
+                />
+                <NoiseOverlay />
+                <SovereignThemeInjector design={design} manifest={options?.manifest} />
+                
+                {/* Aplicação Global da Mídia de Fundo do Sistema */}
+                <SarakBackgroundRenderer 
+                    imageUrl={design?.globalBackgroundImageUrl}
+                    opacity={design?.globalBackgroundOpacity}
+                    blur={design?.globalBackgroundBlur}
+                    blendMode={design?.globalBackgroundBlendMode}
+                    isFixed={true}
+                    mode={design?.mode}
+                />
 
-            {shouldRenderChildren ? children : null}
-        </UIContext.Provider>
+                {shouldRenderChildren ? children : null}
+            </UIContext.Provider>
+        </DeviceProvider>
     );
 };
 

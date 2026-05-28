@@ -58,7 +58,136 @@ O módulo Sarak UI necessita criar o schema `ui_core` e a tabela `custom_themes`
    setup_ui_db(engine)
    ```
 
-## Passo 4: Apresentação e Confirmação do Usuário (HITL)
+## Passo 4: Criação da Pasta Obrigatória `Sarak-UI/` (Contrato Duplo)
+
+**Esta é a etapa mais crítica.** Todo sistema que importa o módulo UI deve possuir uma pasta `Sarak-UI/` (preferencialmente dentro de `src/`, mas aceita-se dentro de `frontend/`). Esta pasta centraliza **todo** o acoplamento visual com o Sarak-Lib-UI-Core.
+
+### Estrutura Obrigatória
+
+```text
+MeuSistema/
+└── src/
+    └── Sarak-UI/
+        ├── manifest.ts       # [Obrigatório] O Cérebro
+        ├── Painel.tsx         # [Obrigatório] O Corpo  
+        ├── index.ts           # [Obrigatório] O Contrato
+        └── components/        # [Opcional] Extensões visuais específicas
+```
+
+### 4.1: Criar `manifest.ts`
+
+Define a identidade do módulo no ecossistema. Deve conter obrigatoriamente `id`, `label`, `icon`, e opcionalmente `category`, `priority`, `endpoints`, `visualContracts`.
+
+```typescript
+export const MeuModuloManifest = {
+    id: "meu-modulo",
+    label: "Meu Módulo",
+    icon: "LayoutDashboard",
+    category: "Negócios",
+    version: "1.0.0",
+    priority: 10,
+    endpoints: {
+        // endpoints da API do módulo
+    },
+    visualContracts: [
+        // contratos visuais para renderização dinâmica (opcional)
+    ]
+};
+```
+
+### 4.2: Criar `Painel.tsx`
+
+O componente mestre que envelopa a tela principal do módulo na fôrma inteligente `SarakAnalyticalPage`. Esta fôrma garante responsividade automática em Desktop, Tablet e Mobile.
+
+```tsx
+import React from 'react';
+import { SarakAnalyticalPage, SarakHidden } from '@sarak/lib-ui-core';
+import MeuComponentePrincipal from '../components/MeuComponentePrincipal';
+import MeusFiltros from '../components/MeusFiltros';
+import MeusDetalhes from '../components/MeusDetalhes';
+
+const Painel: React.FC<any> = (props) => {
+    return (
+        <SarakAnalyticalPage 
+            // [Opcional] navBar: Menu/filtros lateral. No mobile, vira drawer.
+            navBar={<MeusFiltros />}
+            
+            // [Obrigatório] mainContent: Conteúdo central da tela.
+            mainContent={
+                <div className="flex flex-col gap-8 w-full">
+                    <MeuComponentePrincipal {...props} />
+                </div>
+            }
+            
+            // [Opcional] sidePanel: Painel secundário. No mobile, vira bottom sheet.
+            sidePanel={
+                <SarakHidden on={['smartphone']}>
+                    <MeusDetalhes />
+                </SarakHidden>
+            }
+        />
+    );
+};
+
+export default Painel;
+```
+
+**Importante sobre Responsividade:**
+- A `SarakAnalyticalPage` SÓ demonstra diferença visual entre dispositivos quando recebe `navBar` e/ou `sidePanel`. 
+- Se apenas `mainContent` for passado, o layout será idêntico em todos os dispositivos (um contêiner flexível full-width).
+- Para controle granular de visibilidade, use `SarakHidden` com o array de dispositivos: `on={['smartphone']}`, `on={['smartphone', 'tablet']}`.
+- Para lógica programática, use o hook `useSarakDevice()` que retorna `'smartphone' | 'tablet' | 'desktop'`.
+
+### 4.3: Criar `index.ts`
+
+O ponto de exportação final. **DEVE** espalhar (spread) as propriedades do manifesto na raiz do objeto para compatibilidade com `registerSarakModule()`.
+
+```typescript
+import { MeuModuloManifest } from './manifest';
+import Painel from './Painel';
+
+export const UI = {
+    ...MeuModuloManifest,  // ← SPREAD obrigatório (NÃO aninhar em .manifest)
+    component: Painel
+};
+
+export default UI;
+```
+
+### 4.4: Exportar no `index.ts` raiz do módulo
+
+```typescript
+// Exportação Estrita do Frontend
+export { default as SarakUI } from './Sarak-UI';
+```
+
+## Passo 5: Registro no Sistema Host (ex: `main.tsx` do MyService)
+
+No sistema que consome os módulos, o registro é feito com uma única linha por módulo:
+
+```typescript
+import { registerSarakModule } from '@sarak/lib-ui-core';
+import { SarakUI as MeuModuloUI } from '@meu-pacote';
+
+// Wrapper de segurança para registro
+const registerSarakModuleSafe = (mod: any) => {
+    const effectiveMod = mod?.default || mod;
+    if (effectiveMod && effectiveMod.id) {
+        registerSarakModule(effectiveMod);
+    }
+};
+
+registerSarakModuleSafe(MeuModuloUI);
+```
+
+## Passo 6: Utilizando Smart Layouts para Responsividade Automática
+Ao construir a tela principal do módulo consumido (o `Painel.tsx`), utilize a "Fôrma Inteligente" do Sarak para garantir mutação de layout perfeita em Celulares e Tablets, sem escrever media queries.
+
+**Regras de Responsabilidade:**
+- Controle visual do conteúdo: Fica no `.tsx` usando `SarakHidden` ou o hook `useSarakDevice()`.
+- Controle da Casca (Menu Top/Side): Fica no `manifest.json` do sistema host.
+
+## Passo 7: Apresentação e Confirmação do Usuário (HITL)
 
 ```markdown
 ## ✅ Plano de Execução — Importação do Sarak UI
@@ -66,10 +195,11 @@ O módulo Sarak UI necessita criar o schema `ui_core` e a tabela `custom_themes`
 **O que será modificado:** [lista de arquivos ex: package.json, layout.tsx, instrumentation.ts]
 **Ecossistema Detectado:** [Node.js ou Python]
 **Bridge Utilizada:** [bridge-node ou bridge-python]
+**Pasta Sarak-UI criada:** [sim/não — com lista de arquivos]
 
 ⚠️ Confirma a execução desta injeção?
 ```
 **Regra:** Aguarde a confirmação do usuário antes de realizar as alterações reais nos arquivos.
 
-## Passo 5: Registro
+## Passo 8: Registro
 Após a aprovação e execução bem-sucedida, compile os resultados para a documentação e registre no `skill-registro-sessao`.

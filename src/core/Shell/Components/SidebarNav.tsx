@@ -20,10 +20,11 @@ interface SidebarNavProps {
     groupedModules: Record<string, DiscoveredModule[]>;
     setIsNavVisible: (visible: boolean) => void;
     startResizing: () => void;
+    isMobileDrawer?: boolean;
 }
 
 export const SidebarNav: React.FC<SidebarNavProps> = ({
-    design, brand, user, logout, toggleNav, setIsSearchOpen, activeModuleId, setActiveModuleId, groupedModules, setIsNavVisible, startResizing
+    design, brand, user, logout, toggleNav, setIsSearchOpen, activeModuleId, setActiveModuleId, groupedModules, setIsNavVisible, startResizing, isMobileDrawer
 }) => {
     const [isHovered, setIsHovered] = React.useState(false);
     const {
@@ -60,14 +61,14 @@ export const SidebarNav: React.FC<SidebarNavProps> = ({
                 setIsHovered(false);
             }}
             style={{
-                width: effectiveIsNavHidden ? '74px' : `${sidebarWidth || 240}px`,
+                width: isMobileDrawer ? '100%' : (effectiveIsNavHidden ? '74px' : `${sidebarWidth || 240}px`),
                 opacity: 1,
                 visibility: 'visible',
                 transition: `width ${animationSpeed || 0.4}s cubic-bezier(0.16, 1, 0.3, 1), transform ${animationSpeed || 0.4}s ease`,
-                margin: `var(--theme-tab-section-margin, ${tabSectionMargin ?? 12}px)`,
-                borderRadius: `var(--radius-theme, ${borderRadius ?? 12}px)`,
-                height: `calc(100vh - (var(--theme-tab-section-margin, ${tabSectionMargin ?? 12}px) * 2))`,
-                borderWidth: `${borderWidth ?? 1}px`,
+                margin: isMobileDrawer ? '0' : `var(--theme-tab-section-margin, ${tabSectionMargin ?? 12}px)`,
+                borderRadius: isMobileDrawer ? '0' : `var(--radius-theme, ${borderRadius ?? 12}px)`,
+                height: isMobileDrawer ? '100%' : `calc(100vh - (var(--theme-tab-section-margin, ${tabSectionMargin ?? 12}px) * 2))`,
+                borderWidth: isMobileDrawer ? '0' : `${borderWidth ?? 1}px`,
                 borderStyle: borderStyle || 'solid',
                 backgroundColor: 'var(--theme-sidebar-bg, var(--theme-sidebar))',
                 borderColor: 'var(--theme-border)'
@@ -179,11 +180,13 @@ export const SidebarNav: React.FC<SidebarNavProps> = ({
             <ShellUserWidget user={user} logout={logout} variant={effectiveIsNavHidden ? 'mini' : 'vertical'} />
 
             {/* RESIZE HANDLE (X-AXIS) */}
-            <div
-                onMouseDown={startResizing}
-                className="absolute top-0 right-0 w-1.5 h-full cursor-col-resize hover:bg-[var(--theme-primary)]/40 active:bg-[var(--theme-primary)] transition-all z-[1000]"
-                title="Arraste para redimensionar"
-            />
+            {!isMobileDrawer && (
+                <div
+                    onMouseDown={startResizing}
+                    className="absolute top-0 right-0 w-1.5 h-full cursor-col-resize hover:bg-[var(--theme-primary)]/40 active:bg-[var(--theme-primary)] transition-all z-[1000]"
+                    title="Arraste para redimensionar"
+                />
+            )}
         </aside>
     );
 };
