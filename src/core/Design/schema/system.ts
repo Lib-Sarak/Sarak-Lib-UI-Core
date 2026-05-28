@@ -53,9 +53,10 @@ export const SystemSchema: ComponentSchema = {
             id: 'layoutPadding',
             label: 'Respiro do Conteúdo (Padding)',
             type: 'slider',
+            isResponsive: true,
             unit: 'px',
             constraints: { min: 0, max: 80 },
-            defaultValue: 32,
+            defaultValue: { mob: 16, tab: 24, desk: 32 },
             cssVars: ['--sarak-layout-padding']
         },
         {
@@ -75,36 +76,40 @@ export const SystemSchema: ComponentSchema = {
             id: 'borderRadius',
             label: 'Arredondamento Padrão',
             type: 'slider',
+            isResponsive: true,
             unit: 'px',
             constraints: { min: 0, max: 40 },
-            defaultValue: 12,
+            defaultValue: { mob: 8, tab: 10, desk: 12 },
             cssVars: ['--radius-theme', '--sarak-border-radius', '--border-radius']
         },
         {
             id: 'borderRadiusSm',
             label: 'Arredondamento Pequeno',
             type: 'slider',
+            isResponsive: true,
             unit: 'px',
             constraints: { min: 0, max: 20 },
-            defaultValue: 6,
+            defaultValue: { mob: 4, tab: 6, desk: 6 },
             cssVars: ['--sarak-border-radius-sm']
         },
         {
             id: 'borderRadiusMd',
             label: 'Arredondamento Médio',
             type: 'slider',
+            isResponsive: true,
             unit: 'px',
             constraints: { min: 0, max: 40 },
-            defaultValue: 12,
+            defaultValue: { mob: 8, tab: 10, desk: 12 },
             cssVars: ['--sarak-border-radius-md']
         },
         {
             id: 'borderRadiusLg',
             label: 'Arredondamento Grande',
             type: 'slider',
+            isResponsive: true,
             unit: 'px',
             constraints: { min: 0, max: 60 },
-            defaultValue: 20,
+            defaultValue: { mob: 12, tab: 16, desk: 20 },
             cssVars: ['--sarak-border-radius-lg']
         },
         {
@@ -134,36 +139,40 @@ export const SystemSchema: ComponentSchema = {
             id: 'layoutGap',
             label: 'Espaçamento Padrão (Gap)',
             type: 'slider',
+            isResponsive: true,
             unit: 'px',
             constraints: { min: 0, max: 80 },
-            defaultValue: 24,
+            defaultValue: { mob: 16, tab: 20, desk: 24 },
             cssVars: ['--theme-gap', '--sarak-layout-gap']
         },
         {
             id: 'layoutGapSm',
             label: 'Espaçamento Pequeno',
             type: 'slider',
+            isResponsive: true,
             unit: 'px',
             constraints: { min: 0, max: 40 },
-            defaultValue: 12,
+            defaultValue: { mob: 8, tab: 10, desk: 12 },
             cssVars: ['--sarak-layout-gap-sm']
         },
         {
             id: 'layoutGapMd',
             label: 'Espaçamento Médio',
             type: 'slider',
+            isResponsive: true,
             unit: 'px',
             constraints: { min: 0, max: 80 },
-            defaultValue: 24,
+            defaultValue: { mob: 16, tab: 20, desk: 24 },
             cssVars: ['--sarak-layout-gap-md']
         },
         {
             id: 'layoutGapLg',
             label: 'Espaçamento Grande',
             type: 'slider',
+            isResponsive: true,
             unit: 'px',
             constraints: { min: 0, max: 120 },
-            defaultValue: 36,
+            defaultValue: { mob: 24, tab: 32, desk: 36 },
             cssVars: ['--sarak-layout-gap-lg']
         },
         // --- ÍCONES ---
@@ -205,9 +214,10 @@ export const SystemSchema: ComponentSchema = {
             id: 'scrollbarWidth',
             label: 'Largura da Scrollbar',
             type: 'slider',
+            isResponsive: true,
             unit: 'px',
             constraints: { min: 2, max: 12 },
-            defaultValue: 6,
+            defaultValue: { mob: 4, tab: 4, desk: 6 },
             cssVars: ['--sarak-scrollbar-width']
         },
         {

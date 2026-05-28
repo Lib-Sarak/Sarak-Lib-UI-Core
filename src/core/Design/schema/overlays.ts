@@ -28,9 +28,10 @@ export const OverlaysSchema: ComponentSchema = {
             id: 'modalBorderRadius',
             label: 'Arredondamento (Modal)',
             type: 'slider',
+            isResponsive: true,
             unit: 'px',
             constraints: { min: 0, max: 40 },
-            defaultValue: 16,
+            defaultValue: { mob: 12, tab: 16, desk: 16 },
             cssVars: ['--sarak-modal-border-radius']
         },
         {

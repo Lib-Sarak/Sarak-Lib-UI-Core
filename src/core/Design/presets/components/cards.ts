@@ -1,10 +1,8 @@
-import { DesignVariables } from '../../../types';
-
 export interface ComponentPreset {
     id: string;
     name: string;
     description: string;
-    design: Partial<DesignVariables>;
+    design: Record<string, any>;
 }
 
 export const CARD_PRESETS: ComponentPreset[] = [

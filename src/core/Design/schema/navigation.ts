@@ -21,27 +21,30 @@ export const NavigationSchema: ComponentSchema = {
             id: 'sidebarWidth',
             label: 'Largura da Sidebar',
             type: 'slider',
+            isResponsive: true,
             unit: 'px',
             constraints: { min: 200, max: 400 },
-            defaultValue: 240,
+            defaultValue: { mob: 200, tab: 220, desk: 240 },
             cssVars: ['--sidebar-width', '--sarak-sidebar-width']
         },
         {
             id: 'sidebarMinWidth',
             label: 'Largura Mínima da Sidebar',
             type: 'slider',
+            isResponsive: true,
             unit: 'px',
             constraints: { min: 150, max: 300 },
-            defaultValue: 200,
+            defaultValue: { mob: 150, tab: 180, desk: 200 },
             cssVars: ['--sidebar-min-width']
         },
         {
             id: 'sidebarMaxWidth',
             label: 'Largura Máxima da Sidebar',
             type: 'slider',
+            isResponsive: true,
             unit: 'px',
             constraints: { min: 300, max: 600 },
-            defaultValue: 450,
+            defaultValue: { mob: 280, tab: 350, desk: 450 },
             cssVars: ['--sidebar-max-width']
         },
         {
@@ -78,9 +81,10 @@ export const NavigationSchema: ComponentSchema = {
             id: 'topbarHeight',
             label: 'Altura da Topbar',
             type: 'slider',
+            isResponsive: true,
             unit: 'px',
             constraints: { min: 48, max: 100 },
-            defaultValue: 64,
+            defaultValue: { mob: 56, tab: 60, desk: 64 },
             cssVars: ['--topbar-height', '--sarak-topbar-height', '--theme-topbar-height']
         },
         {
@@ -124,18 +128,20 @@ export const NavigationSchema: ComponentSchema = {
             id: 'tabGap',
             label: 'Espaço entre Abas',
             type: 'slider',
+            isResponsive: true,
             unit: 'px',
             constraints: { min: 0, max: 24 },
-            defaultValue: 8,
+            defaultValue: { mob: 4, tab: 6, desk: 8 },
             cssVars: ['--tab-gap', '--sarak-tab-gap', '--theme-tab-gap']
         },
         {
             id: 'tabSectionMargin',
             label: 'Margem da Seção de Abas',
             type: 'slider',
+            isResponsive: true,
             unit: 'px',
             constraints: { min: 0, max: 48 },
-            defaultValue: 16,
+            defaultValue: { mob: 8, tab: 12, desk: 16 },
             cssVars: ['--tab-section-margin', '--sarak-tab-section-margin', '--theme-tab-section-margin', '--safe-area-padding']
         },
         // --- ITENS DE MENU ---

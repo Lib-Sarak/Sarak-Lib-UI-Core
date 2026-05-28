@@ -12,9 +12,10 @@ export const InputsSchema: ComponentSchema = {
             id: 'inputBorderRadius',
             label: 'Arredondamento (Texto)',
             type: 'slider',
+            isResponsive: true,
             unit: 'px',
             constraints: { min: 0, max: 120 },
-            defaultValue: 8,
+            defaultValue: { mob: 6, tab: 8, desk: 8 },
             cssVars: ['--sarak-input-border-radius']
         },
         {

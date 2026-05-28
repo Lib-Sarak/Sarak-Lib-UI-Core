@@ -127,19 +127,9 @@ export const SarakBackgroundRenderer: React.FC<SarakBackgroundRendererProps> = (
         // Tema claro + Imagem escura -> Aplica gradiente claro
         showOverlay = true;
         overlayColor = 'rgba(255, 255, 255, 0.85)';
-    } 
-
-    // LOGS PROFUNDOS PARA INVESTIGAÇÃO (Solicitado pelo Usuário)
-    console.groupCollapsed(`[SarakBackgroundRenderer] Debug: ${rawUrl?.substring(0, 30)}...`);
-    console.log(`Theme: ${isLightMode ? 'LIGHT' : 'DARK'}`);
-    console.log(`Image Detected Luminance: ${luminance}`);
-    console.log(`Original BlendMode: ${blendMode}`);
-    console.log(`Safe (Applied) BlendMode: ${safeBlendMode}`);
-    console.log(`Opacity: ${opacity}`);
-    console.log(`Overlay Applied: ${showOverlay}`);
-    console.log(`Overlay Color: ${overlayColor}`);
-    console.log(`Container Background: var(--sarak-bg-body)`);
-    console.groupEnd();
+    }
+    // Se for 'unknown' (falha de CORS) ou se a imagem já combinar com o tema, 
+    // NÃO aplicamos nenhum overlay para garantir zero alteração nas cores originais.
 
     const overlayStyle: React.CSSProperties = {
         position: 'absolute',

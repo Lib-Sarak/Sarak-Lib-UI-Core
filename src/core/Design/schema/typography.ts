@@ -100,9 +100,11 @@ export const TypographySchema: ComponentSchema = {
             id: 'h1Size',
             label: 'Tamanho (H1)',
             type: 'slider',
+            isResponsive: true, // FLAG DE RESPONSIVIDADE!
             unit: 'px',
             constraints: { min: 20, max: 120 },
-            defaultValue: 48,
+            // Valores ideais matemáticos já predefinidos por dispositivo!
+            defaultValue: { mob: 32, tab: 40, desk: 48 },
             cssVars: ['--sarak-h1-size']
         },
         {
@@ -144,9 +146,11 @@ export const TypographySchema: ComponentSchema = {
             id: 'h2Size',
             label: 'Tamanho (H2)',
             type: 'slider',
+            isResponsive: true, // FLAG DE RESPONSIVIDADE!
             unit: 'px',
             constraints: { min: 18, max: 80 },
-            defaultValue: 32,
+            // Valores ideais matemáticos já predefinidos por dispositivo!
+            defaultValue: { mob: 24, tab: 28, desk: 32 },
             cssVars: ['--sarak-h2-size']
         },
         {

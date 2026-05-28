@@ -26,9 +26,10 @@ export const SpecializedSchema: ComponentSchema = {
             id: 'flowNodeRadius',
             label: 'Raio dos Nós (Fluxo)',
             type: 'slider',
+            isResponsive: true,
             unit: 'px',
             constraints: { min: 0, max: 40, step: 1 },
-            defaultValue: 12,
+            defaultValue: { mob: 8, tab: 10, desk: 12 },
             cssVars: ['--sarak-flow-radius', '--sarak-flow-node-radius']
         },
         {

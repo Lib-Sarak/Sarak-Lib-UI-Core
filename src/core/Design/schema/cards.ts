@@ -13,45 +13,50 @@ export const CardSchema: ComponentSchema = {
             id: 'cardBorderRadius',
             label: 'Raio da Borda (Master)',
             type: 'slider',
+            isResponsive: true,
             unit: 'px',
             constraints: { min: 0, max: 120 },
-            defaultValue: 12,
+            defaultValue: { mob: 8, tab: 12, desk: 12 },
             cssVars: ['--radius-theme', '--sarak-card-radius', '--sarak-card-radius-tl', '--sarak-card-radius-tr', '--sarak-card-radius-bl', '--sarak-card-radius-br']
         },
         {
             id: 'cardRadiusTL',
             label: 'Quina Superior Esquerda',
             type: 'slider',
+            isResponsive: true,
             unit: 'px',
             constraints: { min: 0, max: 120 },
-            defaultValue: 12,
+            defaultValue: { mob: 8, tab: 12, desk: 12 },
             cssVars: ['--sarak-card-radius-tl']
         },
         {
             id: 'cardRadiusTR',
             label: 'Quina Superior Direita',
             type: 'slider',
+            isResponsive: true,
             unit: 'px',
             constraints: { min: 0, max: 120 },
-            defaultValue: 12,
+            defaultValue: { mob: 8, tab: 12, desk: 12 },
             cssVars: ['--sarak-card-radius-tr']
         },
         {
             id: 'cardRadiusBL',
             label: 'Quina Inferior Esquerda',
             type: 'slider',
+            isResponsive: true,
             unit: 'px',
             constraints: { min: 0, max: 120 },
-            defaultValue: 12,
+            defaultValue: { mob: 8, tab: 12, desk: 12 },
             cssVars: ['--sarak-card-radius-bl']
         },
         {
             id: 'cardRadiusBR',
             label: 'Quina Inferior Direita',
             type: 'slider',
+            isResponsive: true,
             unit: 'px',
             constraints: { min: 0, max: 120 },
-            defaultValue: 12,
+            defaultValue: { mob: 8, tab: 12, desk: 12 },
             cssVars: ['--sarak-card-radius-br']
         },
         {
@@ -254,9 +259,10 @@ export const CardSchema: ComponentSchema = {
             id: 'cardHeaderPadding',
             label: 'Padding Vertical',
             type: 'slider',
+            isResponsive: true,
             unit: 'px',
             constraints: { min: 0, max: 120 },
-            defaultValue: 16,
+            defaultValue: { mob: 12, tab: 16, desk: 16 },
             cssVars: ['--sarak-card-header-padding']
         },
 
@@ -334,9 +340,10 @@ export const CardSchema: ComponentSchema = {
             id: 'cardPaddingMd',
             label: 'Padding Interno (MD)',
             type: 'slider',
+            isResponsive: true,
             unit: 'px',
             constraints: { min: 0, max: 120 },
-            defaultValue: 24,
+            defaultValue: { mob: 16, tab: 20, desk: 24 },
             cssVars: ['--sarak-card-padding-md', '--theme-gap']
         },
 

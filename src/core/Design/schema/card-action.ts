@@ -34,9 +34,10 @@ export const CardActionSchema: ComponentSchema = {
             id: 'cardActionBtnBorderRadius',
             label: 'Arredondamento do Botão',
             type: 'slider',
+            isResponsive: true,
             unit: 'px',
             constraints: { min: 0, max: 40 },
-            defaultValue: 8,
+            defaultValue: { mob: 6, tab: 8, desk: 8 },
             cssVars: ['--sarak-card-action-btn-radius']
         },
         {

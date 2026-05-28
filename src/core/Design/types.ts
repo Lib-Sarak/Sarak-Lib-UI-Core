@@ -4,12 +4,19 @@
  * Define o contrato para mapeamento de 100% das funcionalidades e componentes.
  */
 
-export type TokenValueType = 'number' | 'color' | 'string' | 'boolean' | 'select' | 'slider' | 'font' | 'text';
+export type TokenValueType = 'number' | 'color' | 'string' | 'boolean' | 'select' | 'slider' | 'font' | 'text' | 'image' | 'file';
+
+export type ResponsiveValue<T> = {
+    desk: T;
+    tab: T;
+    mob: T;
+};
 
 export interface DesignToken {
     id: string;                 // Chave única no estado (ex: cardBorderRadius)
     label: string;              // Nome legível para o usuário
     type: TokenValueType;
+    isResponsive?: boolean;     // Indica se este token é físico/espacial e suporta o ResponsiveValue
     semanticRole?: 'bg' | 'text' | 'border' | 'primary';
     iconFamily?: 'lucide' | 'phosphor' | 'tabler';
     iconWeight?: 'thin' | 'light' | 'regular' | 'bold' | 'fill' | 'duotone';

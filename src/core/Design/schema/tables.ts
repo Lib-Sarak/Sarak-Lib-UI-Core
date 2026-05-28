@@ -26,9 +26,10 @@ export const TablesSchema: ComponentSchema = {
             id: 'tableCellPadding',
             label: 'Densidade (Padding)',
             type: 'slider',
+            isResponsive: true,
             unit: 'px',
             constraints: { min: 4, max: 32 },
-            defaultValue: 12,
+            defaultValue: { mob: 8, tab: 10, desk: 12 },
             cssVars: ['--sarak-table-padding']
         },
         {

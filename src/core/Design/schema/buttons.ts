@@ -12,45 +12,50 @@ export const ButtonsSchema: ComponentSchema = {
             id: 'btnBorderRadius',
             label: 'Arredondamento (Master)',
             type: 'slider',
+            isResponsive: true,
             unit: 'px',
             constraints: { min: 0, max: 120 },
-            defaultValue: 8,
+            defaultValue: { mob: 6, tab: 8, desk: 8 },
             cssVars: ['--sarak-btn-border-radius', '--sarak-btn-radius-tl', '--sarak-btn-radius-tr', '--sarak-btn-radius-bl', '--sarak-btn-radius-br']
         },
         {
             id: 'btnRadiusTL',
             label: 'Canto: Superior Esquerdo',
             type: 'slider',
+            isResponsive: true,
             unit: 'px',
             constraints: { min: 0, max: 120 },
-            defaultValue: 8,
+            defaultValue: { mob: 6, tab: 8, desk: 8 },
             cssVars: ['--sarak-btn-radius-tl']
         },
         {
             id: 'btnRadiusTR',
             label: 'Canto: Superior Direito',
             type: 'slider',
+            isResponsive: true,
             unit: 'px',
             constraints: { min: 0, max: 120 },
-            defaultValue: 8,
+            defaultValue: { mob: 6, tab: 8, desk: 8 },
             cssVars: ['--sarak-btn-radius-tr']
         },
         {
             id: 'btnRadiusBL',
             label: 'Canto: Inferior Esquerdo',
             type: 'slider',
+            isResponsive: true,
             unit: 'px',
             constraints: { min: 0, max: 120 },
-            defaultValue: 8,
+            defaultValue: { mob: 6, tab: 8, desk: 8 },
             cssVars: ['--sarak-btn-radius-bl']
         },
         {
             id: 'btnRadiusBR',
             label: 'Canto: Inferior Direito',
             type: 'slider',
+            isResponsive: true,
             unit: 'px',
             constraints: { min: 0, max: 120 },
-            defaultValue: 8,
+            defaultValue: { mob: 6, tab: 8, desk: 8 },
             cssVars: ['--sarak-btn-radius-br']
         },
 

@@ -12,9 +12,10 @@ export const ChatSchema: ComponentSchema = {
             id: 'chatBubbleRadius',
             label: 'Arredondamento das Bolhas',
             type: 'slider',
+            isResponsive: true,
             unit: 'px',
             constraints: { min: 0, max: 24 },
-            defaultValue: 12,
+            defaultValue: { mob: 8, tab: 10, desk: 12 },
             cssVars: ['--sarak-chat-radius']
         },
         {

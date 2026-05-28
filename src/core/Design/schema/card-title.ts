@@ -12,9 +12,10 @@ export const CardTitleSchema: ComponentSchema = {
             id: 'cardTitleFontSize',
             label: 'Tamanho da Fonte do Título',
             type: 'slider',
+            isResponsive: true,
             unit: 'px',
             constraints: { min: 10, max: 40 },
-            defaultValue: 20,
+            defaultValue: { mob: 16, tab: 18, desk: 20 },
             cssVars: ['--sarak-card-title-font-size']
         },
         {

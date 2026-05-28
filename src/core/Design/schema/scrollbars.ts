@@ -14,18 +14,20 @@ export const ScrollbarsSchema: ComponentSchema = {
             id: 'scrollWidth',
             label: 'Largura da Barra',
             type: 'slider',
+            isResponsive: true,
             unit: 'px',
             constraints: { min: 2, max: 12, step: 1 },
-            defaultValue: 6,
+            defaultValue: { mob: 4, tab: 4, desk: 6 },
             cssVars: ['--sarak-scroll-width']
         },
         {
             id: 'scrollRadius',
             label: 'Arredondamento (Thumb)',
             type: 'slider',
+            isResponsive: true,
             unit: 'px',
             constraints: { min: 0, max: 10, step: 1 },
-            defaultValue: 10,
+            defaultValue: { mob: 8, tab: 10, desk: 10 },
             cssVars: ['--sarak-scroll-radius']
         },
 
@@ -67,9 +69,10 @@ export const ScrollbarsSchema: ComponentSchema = {
             id: 'scrollPadding',
             label: 'Espaçamento (Padding)',
             type: 'slider',
+            isResponsive: true,
             unit: 'px',
             constraints: { min: 0, max: 4, step: 1 },
-            defaultValue: 2,
+            defaultValue: { mob: 0, tab: 2, desk: 2 },
             cssVars: ['--sarak-scroll-padding']
         }
     ]
