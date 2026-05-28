@@ -58,10 +58,28 @@ const ControlRegistry: Record<string, React.FC<any>> = {
     image: (props) => <MediaUploaderControl label={props.token.label} {...props} />
 };
 
-const TokenControl = ({ token, value, onChange }: { token: any, value: any, onChange: (val: any) => void }) => {
+const TokenControl = ({ token, value, onChange, previewDevice = 'desktop' }: { token: any, value: any, onChange: (val: any) => void, previewDevice?: string }) => {
     const Widget = ControlRegistry[token.type];
     if (!Widget) return null;
-    return <Widget token={token} value={value} onChange={onChange} />;
+
+    const isResponsiveObj = typeof value === 'object' && value !== null && 'mob' in value;
+    const deviceKey = previewDevice === 'smartphone' ? 'mob' : previewDevice === 'tablet' ? 'tab' : 'desk';
+    
+    // Fallback: Se for responsivo mas não tiver o objeto (migração de presets antigos)
+    const displayValue = isResponsiveObj ? value[deviceKey] : value;
+
+    const handleChange = (val: any) => {
+        if (token.isResponsive) {
+            // Garante que o valor salvo preserve os outros breakpoints
+            const currentObj = isResponsiveObj ? { ...value } : { mob: value, tab: value, desk: value };
+            currentObj[deviceKey] = val;
+            onChange(currentObj);
+        } else {
+            onChange(val);
+        }
+    };
+
+    return <Widget token={token} value={displayValue} onChange={handleChange} />;
 };
 
 /**
@@ -383,6 +401,28 @@ export const ThemeCustomizationTab: React.FC = () => {
                         </div>
                     </div>
 
+                    {/* Device Switcher (Responsive Engine) */}
+                    <div className="flex bg-[var(--theme-layer)] rounded-xl border border-[var(--theme-border)] p-1 mb-4">
+                        {[
+                            { id: 'desktop', icon: Monitor, label: 'Desktop' },
+                            { id: 'tablet', icon: Tablet, label: 'Tablet' },
+                            { id: 'smartphone', icon: Smartphone, label: 'Mobile' }
+                        ].map((device) => (
+                            <button
+                                key={device.id}
+                                onClick={() => setPreviewDevice(device.id as any)}
+                                className={`flex-1 flex items-center justify-center gap-1.5 py-1.5 rounded-lg text-[9px] font-black uppercase tracking-widest transition-all ${
+                                    previewDevice === device.id 
+                                        ? 'bg-[var(--theme-primary)] text-white shadow-[0_0_10px_rgba(var(--theme-primary-rgb),0.3)]' 
+                                        : 'text-[var(--theme-muted)] hover:text-[var(--theme-text)] hover:bg-[var(--theme-surface)]'
+                                }`}
+                            >
+                                <device.icon size={12} />
+                                {device.label}
+                            </button>
+                        ))}
+                    </div>
+
                     {/* Busca e Toggle Essencial */}
                     <div className="flex flex-col gap-3 mb-4">
                         <div className="relative group">
@@ -442,7 +482,7 @@ export const ThemeCustomizationTab: React.FC = () => {
                                     const meta = catalogMap.get(token.id);
                                     const enhancedToken = { ...token, label: meta?.name || token.label, description: meta?.description || token.description };
                                     return (
-                                        <TokenControl key={enhancedToken.id} token={enhancedToken} value={draft[enhancedToken.id]} onChange={(val) => updateDraft(enhancedToken.id, val)} />
+                                        <TokenControl key={enhancedToken.id} token={enhancedToken} value={draft[enhancedToken.id]} onChange={(val) => updateDraft(enhancedToken.id, val)} previewDevice={previewDevice} />
                                     );
                                 })}
                             </motion.div>
@@ -485,7 +525,7 @@ export const ThemeCustomizationTab: React.FC = () => {
                                                                     const meta = catalogMap.get(token.id);
                                                                     const enhancedToken = { ...token, label: meta?.name || token.label, description: meta?.description || token.description };
                                                                     return (
-                                                                        <TokenControl key={enhancedToken.id} token={enhancedToken} value={draft[enhancedToken.id]} onChange={(val) => updateDraft(enhancedToken.id, val)} />
+                                                                        <TokenControl key={enhancedToken.id} token={enhancedToken} value={draft[enhancedToken.id]} onChange={(val) => updateDraft(enhancedToken.id, val)} previewDevice={previewDevice} />
                                                                     );
                                                                 })}
                                                             </div>
@@ -576,7 +616,7 @@ export const ThemeCustomizationTab: React.FC = () => {
                                                                                 description: meta?.description || token.description
                                                                             };
                                                                             return (
-                                                                                <TokenControl key={enhancedToken.id} token={enhancedToken} value={draft[enhancedToken.id]} onChange={(val) => updateDraft(enhancedToken.id, val)} />
+                                                                                <TokenControl key={enhancedToken.id} token={enhancedToken} value={draft[enhancedToken.id]} onChange={(val) => updateDraft(enhancedToken.id, val)} previewDevice={previewDevice} />
                                                                             );
                                                                         })}
                                                                     </div>

@@ -24,7 +24,7 @@ export const MockTable: React.FC<any> = ({ tokens, animationVariants }) => {
     return (
         <motion.div variants={animationVariants} initial="initial" animate="animate" exit="exit" className="w-full h-full flex flex-col gap-6 overflow-y-auto custom-scrollbar p-2">
             
-            <div className="flex flex-col xl:flex-row gap-6">
+            <div className="flex flex-col @xl:flex-row gap-6">
                 {/* Tabela Interativa (Atual Administrativa) */}
                 <div className="flex-[2] sarak-card rounded-2xl border border-[var(--theme-border)] bg-[var(--theme-card)] shadow-xl overflow-hidden flex flex-col">
                     <div className="p-4 border-b border-[var(--theme-border)] flex items-center justify-between">

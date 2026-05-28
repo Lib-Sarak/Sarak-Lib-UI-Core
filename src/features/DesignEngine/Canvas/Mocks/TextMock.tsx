@@ -77,10 +77,10 @@ export const MockText: React.FC<TextMockProps> = ({ tokens, animationVariants, a
             </div>
 
             {/* ÁREA PRINCIPAL DO EDITOR */}
-            <div className="grid grid-cols-1 lg:grid-cols-12 gap-6 flex-1 items-stretch">
+            <div className="grid grid-cols-1 @lg:grid-cols-12 gap-6 flex-1 items-stretch">
                 
                 {/* COLUNA ESQUERDA: EDITOR E INPUTS GRANDES */}
-                <div className="lg:col-span-7 flex flex-col gap-4">
+                <div className="@lg:col-span-7 flex flex-col gap-4">
                     <div 
                         className="flex-1 flex flex-col relative rounded-2xl border border-white/5 overflow-hidden"
                         style={{
@@ -104,7 +104,7 @@ export const MockText: React.FC<TextMockProps> = ({ tokens, animationVariants, a
                     </div>
 
                     {/* DADOS ADICIONAIS DO DOCUMENTO */}
-                    <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                    <div className="grid grid-cols-1 @md:grid-cols-2 gap-4">
                         <div 
                             className="p-5 border border-white/5 bg-black/20"
                             style={{ borderRadius: 'calc(var(--sarak-input-border-radius, 8) * 1px)' }}
@@ -141,7 +141,7 @@ export const MockText: React.FC<TextMockProps> = ({ tokens, animationVariants, a
                 </div>
 
                 {/* COLUNA DIREITA: PREVIEW PREMIUM DO TEXTO (EXIBIÇÃO TIPO DOCUMENTO) */}
-                <div className="lg:col-span-5 flex flex-col gap-4">
+                <div className="@lg:col-span-5 flex flex-col gap-4">
                     <div className="flex-1 bg-black/40 border border-white/5 rounded-2xl p-6 flex flex-col gap-6 relative overflow-y-auto custom-scrollbar max-h-[480px]">
                         <div className="flex justify-between items-center border-b border-white/5 pb-4">
                             <div className="flex items-center gap-3">

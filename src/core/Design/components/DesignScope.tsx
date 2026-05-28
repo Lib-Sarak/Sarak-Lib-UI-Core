@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useId } from 'react';
 import { useDesignVariables } from '../hooks/useDesignVariables';
 import { DesignOverrideContext } from '../../Provider/SarakUIProvider';
 import { SarakBackgroundRenderer } from './SarakBackgroundRenderer';
@@ -24,7 +24,12 @@ export const DesignScope: React.FC<DesignScopeProps & Record<string, any>> = ({
     style = {},
     ...rest 
 }) => {
-    const { variables, attributes } = useDesignVariables(design);
+    // Generate a React 18 friendly ID, stripped of colons which break CSS selectors
+    const rawId = useId();
+    const uniqueId = rawId ? rawId.replace(/:/g, '') : Math.random().toString(36).slice(2, 9);
+    const scopeClass = `sarak-scope-${uniqueId}`;
+
+    const { variables, attributes, responsiveCSS } = useDesignVariables(design, `.${scopeClass}`);
 
     // Higienização de propriedades
     const { isDesignScope, ...domSafeProps } = rest as any;
@@ -32,7 +37,7 @@ export const DesignScope: React.FC<DesignScopeProps & Record<string, any>> = ({
     return (
         <DesignOverrideContext.Provider value={design}>
             <div 
-                className={`sarak-design-scope ${design?.mode || 'dark'} ${className}`}
+                className={`sarak-design-scope ${scopeClass} ${design?.mode || 'dark'} ${className}`}
                 style={{ 
                     width: '100%',
                     height: '100%',
@@ -43,6 +48,11 @@ export const DesignScope: React.FC<DesignScopeProps & Record<string, any>> = ({
                 {...attributes}
                 {...domSafeProps}
             >
+                {/* CSS Responsivo Dinâmico com Escopo Isolado */}
+                {responsiveCSS && (
+                    <style dangerouslySetInnerHTML={{ __html: responsiveCSS }} />
+                )}
+
                 <SarakBackgroundRenderer 
                     imageUrl={design?.globalBackgroundImageUrl}
                     opacity={design?.globalBackgroundOpacity}

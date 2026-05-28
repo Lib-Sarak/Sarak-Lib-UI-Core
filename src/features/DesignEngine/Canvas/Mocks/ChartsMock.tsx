@@ -35,7 +35,7 @@ export const MockCharts: React.FC<ChartsMockProps> = ({ tokens, animationVariant
             </div>
 
             {/* GRID DOS GRÁFICOS */}
-            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6 auto-rows-auto">
+            <div className="grid grid-cols-1 @md:grid-cols-2 @lg:grid-cols-3 gap-6 auto-rows-auto">
                 
                 {/* 1. LINE CHART (SVG) */}
                 <div className="bg-black/40 border border-white/5 p-6 rounded-2xl flex flex-col gap-4">

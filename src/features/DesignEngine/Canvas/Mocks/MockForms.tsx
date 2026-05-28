@@ -22,7 +22,7 @@ export const MockForms: React.FC<{ tokens: any, config: any, animationVariants: 
                 <p className="text-sm text-[var(--theme-text-sec)] mt-1 font-medium">Demonstração de diferentes topologias de entrada de dados.</p>
             </div>
 
-            <div className="flex flex-col xl:flex-row gap-6 w-full">
+            <div className="flex flex-col @xl:flex-row gap-6 w-full">
                 
                 {/* Coluna Principal: Formulário de Aba Inteira (Full Form) */}
                 <div className="flex-[2] sarak-card rounded-2xl border border-[var(--theme-border)] shadow-xl bg-[var(--theme-card)] backdrop-blur-md p-8 flex flex-col gap-6" style={{ borderRadius: 'calc(var(--sarak-radius) * 1.5)' }}>
@@ -34,7 +34,7 @@ export const MockForms: React.FC<{ tokens: any, config: any, animationVariants: 
                         <div className="text-xs font-bold text-[var(--theme-text-sec)] bg-[var(--theme-body)] px-3 py-1 rounded-full border border-[var(--theme-border)]">Step 1 de 3</div>
                     </div>
 
-                    <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+                    <div className="grid grid-cols-1 @md:grid-cols-2 gap-6">
                         {/* Input 1 */}
                         <div className="flex flex-col gap-2">
                             <label className="text-xs font-bold text-[var(--theme-title)] uppercase tracking-widest opacity-80">Nome da Empresa</label>

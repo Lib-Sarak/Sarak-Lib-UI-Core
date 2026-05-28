@@ -58,7 +58,7 @@ export const MockTypography: React.FC<any> = ({ tokens }) => {
                     </div>
                 </div>
 
-                <div className="grid grid-cols-1 md:grid-cols-2 gap-16">
+                <div className="grid grid-cols-1 @md:grid-cols-2 gap-16">
                     <div className="space-y-6">
                         <div className="flex items-center gap-3 text-[10px] font-black uppercase text-[var(--theme-primary)] tracking-[0.4em] opacity-40">
                             <SarakIcon name="AlignLeft" size={12} />

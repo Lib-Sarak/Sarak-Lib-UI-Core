@@ -63,7 +63,7 @@ export const MockDocuments: React.FC<{ tokens: any, config: any, animationVarian
             </div>
 
             {/* Document Grid */}
-            <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
+            <div className="grid grid-cols-1 @md:grid-cols-3 gap-6">
                 
                 {/* PDF Document Card */}
                 <div className="sarak-card rounded-2xl border border-[var(--theme-border)] shadow-xl bg-[var(--theme-card)] backdrop-blur-md p-4 flex flex-col gap-4 relative group" style={{ borderRadius: 'var(--sarak-radius)' }}>

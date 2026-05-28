@@ -16,9 +16,9 @@ const toKebabCase = (str: string) =>
  * nos 17 schemas seja traduzido para o padrão CSS que o sistema espera.
  * Agora com suporte reativo à inversão dinâmica de cores (Sincronização de Modo).
  */
-export const useDesignVariables = (rawDesign: any) => {
+export const useDesignVariables = (rawDesign: any, scopeSelector: string = ':root') => {
     return useMemo(() => {
-        if (!rawDesign) return { variables: {}, attributes: {} };
+        if (!rawDesign) return { variables: {}, attributes: {}, responsiveCSS: '' };
 
         // 0. INTERCEPTAÇÃO DE MODO (LIGHT/DARK) - Sincronização Reativa em Tempo Real
         // Garante que, independente do que estiver no banco de dados ou no estado bruto, 
@@ -29,6 +29,9 @@ export const useDesignVariables = (rawDesign: any) => {
 
         const variables: Record<string, string> = {};
         const attributes: Record<string, string> = {};
+        let responsiveCssRoot = '';
+        let responsiveCssTab = '';
+        let responsiveCssDesk = '';
         const tokens = getAllDesignTokens();
         
         const isDark = targetMode === 'dark';
@@ -38,57 +41,86 @@ export const useDesignVariables = (rawDesign: any) => {
         tokens.forEach(token => {
             const value = design[token.id] ?? token.defaultValue;
             const kebabId = toKebabCase(token.id);
-            
-            // Gerador de Variável Padrão: --sarak-[kebab-case]
             const autoVar = `--sarak-${kebabId}`;
             
-            let finalValue = String(value);
-            if (token.unit && typeof value === 'number') {
-                finalValue = `${value}${token.unit}`;
-            }
-            variables[autoVar] = finalValue;
+            const isResponsiveValue = value && typeof value === 'object' && 'mob' in value;
 
-            // Injeção de Variáveis Extras definidas no Schema
-            if (token.cssVars && token.cssVars.length > 0) {
-                token.cssVars.forEach(v => {
-                    variables[v] = finalValue;
+            let finalValue = '';
 
-                    // Gerador de Variantes Cromáticas (RGB, Hover, Active, Light)
-                    if (token.generateVariants && token.type === 'color' && value && value !== 'transparent') {
-                        try {
-                            const variants = computeColorVariants(value, anchorColor);
-                            variables[`${v}-rgb`] = variants.rgb;
-                            variables[`${v}-bg`] = variants.bg;
-                            variables[`${v}-border`] = variants.border;
-                            variables[`${v}-10`] = variants[10];
-                            variables[`${v}-20`] = variants[20];
-                            variables[`${v}-30`] = variants[30];
-                            variables[`${v}-40`] = variants[40];
-                            variables[`${v}-50`] = variants[50];
-                            variables[`${v}-hover`] = variants.hover;
-                            variables[`${v}-active`] = variants.active;
-                            variables[`${v}-light`] = variants.light;
-                            
-                            // Também gera variante para o padrão sarak-kebab
-                            variables[`${autoVar}-rgb`] = variants.rgb;
-                            variables[`${autoVar}-bg`] = variants.bg;
-                            variables[`${autoVar}-border`] = variants.border;
-                            variables[`${autoVar}-10`] = variants[10];
-                            variables[`${autoVar}-20`] = variants[20];
-                            variables[`${autoVar}-30`] = variants[30];
-                            variables[`${autoVar}-40`] = variants[40];
-                            variables[`${autoVar}-50`] = variants[50];
-                            variables[`${autoVar}-hover`] = variants.hover;
-                        } catch (e) {
-                            console.error(`[AtomicSync] Error for ${token.id}:`, e);
+            if (isResponsiveValue) {
+                // FALLBACK: Gerador Responsivo Inteligente
+                const parseUnit = (v: any) => token.unit && typeof v === 'number' ? `${v}${token.unit}` : String(v);
+                const mobVal = parseUnit(value.mob);
+                const tabVal = parseUnit(value.tab);
+                const deskVal = parseUnit(value.desk);
+
+                responsiveCssRoot += `  ${autoVar}: ${mobVal};\n`;
+                responsiveCssTab += `  ${autoVar}: ${tabVal};\n`;
+                responsiveCssDesk += `  ${autoVar}: ${deskVal};\n`;
+
+                if (token.cssVars && token.cssVars.length > 0) {
+                    token.cssVars.forEach(v => {
+                        responsiveCssRoot += `  ${v}: ${mobVal};\n`;
+                        responsiveCssTab += `  ${v}: ${tabVal};\n`;
+                        responsiveCssDesk += `  ${v}: ${deskVal};\n`;
+                    });
+                }
+                // CRÍTICO: Não injetamos o valor 'deskVal' no objeto JS `variables`.
+                // Se injetarmos, o DesignScope aplicará como estilo inline, o que tem
+                // especificidade maior que as nossas media queries e classes (.sarak-device-*),
+                // quebrando totalmente a responsividade e travando no modo desktop.
+                // A responsabilidade de prover as variáveis fica 100% com o responsiveCSS injetado na tag <style>.
+
+            } else {
+                // COMPORTAMENTO ORIGINAL (Valores Primitivos / Cores)
+                finalValue = String(value);
+                if (token.unit && typeof value === 'number') {
+                    finalValue = `${value}${token.unit}`;
+                }
+                variables[autoVar] = finalValue;
+
+                // Injeção de Variáveis Extras definidas no Schema
+                if (token.cssVars && token.cssVars.length > 0) {
+                    token.cssVars.forEach(v => {
+                        variables[v] = finalValue;
+
+                        // Gerador de Variantes Cromáticas (RGB, Hover, Active, Light)
+                        if (token.generateVariants && token.type === 'color' && value && value !== 'transparent') {
+                            try {
+                                const variants = computeColorVariants(value, anchorColor);
+                                variables[`${v}-rgb`] = variants.rgb;
+                                variables[`${v}-bg`] = variants.bg;
+                                variables[`${v}-border`] = variants.border;
+                                variables[`${v}-10`] = variants[10];
+                                variables[`${v}-20`] = variants[20];
+                                variables[`${v}-30`] = variants[30];
+                                variables[`${v}-40`] = variants[40];
+                                variables[`${v}-50`] = variants[50];
+                                variables[`${v}-hover`] = variants.hover;
+                                variables[`${v}-active`] = variants.active;
+                                variables[`${v}-light`] = variants.light;
+                                
+                                // Também gera variante para o padrão sarak-kebab
+                                variables[`${autoVar}-rgb`] = variants.rgb;
+                                variables[`${autoVar}-bg`] = variants.bg;
+                                variables[`${autoVar}-border`] = variants.border;
+                                variables[`${autoVar}-10`] = variants[10];
+                                variables[`${autoVar}-20`] = variants[20];
+                                variables[`${autoVar}-30`] = variants[30];
+                                variables[`${autoVar}-40`] = variants[40];
+                                variables[`${autoVar}-50`] = variants[50];
+                                variables[`${autoVar}-hover`] = variants.hover;
+                            } catch (e) {
+                                console.error(`[AtomicSync] Error for ${token.id}:`, e);
+                            }
                         }
-                    }
-                });
+                    });
+                }
             }
 
             // Injeção de Atributos de Estado (data-sx-*)
             if (token.type === 'select' || token.type === 'boolean' || token.type === 'font') {
-                attributes[`data-sx-${kebabId}`] = String(value);
+                attributes[`data-sx-${kebabId}`] = isResponsiveValue ? String(value.desk) : String(value);
             }
         });
 
@@ -131,6 +163,33 @@ export const useDesignVariables = (rawDesign: any) => {
             variables['--sarak-card-clip-path'] = 'none';
         }
 
-        return { variables, attributes };
-    }, [rawDesign]);
+        const responsiveCSS = `
+${scopeSelector} {
+${responsiveCssRoot}
+}
+@media (min-width: 768px) {
+  ${scopeSelector} {
+${responsiveCssTab}
+  }
+}
+@media (min-width: 1024px) {
+  ${scopeSelector} {
+${responsiveCssDesk}
+  }
+}
+
+/* Escopos explícitos para o Gêmeo Digital (Twin Mode) */
+${scopeSelector}.sarak-device-smartphone, ${scopeSelector} .sarak-device-smartphone {
+${responsiveCssRoot}
+}
+${scopeSelector}.sarak-device-tablet, ${scopeSelector} .sarak-device-tablet {
+${responsiveCssTab}
+}
+${scopeSelector}.sarak-device-desktop, ${scopeSelector} .sarak-device-desktop {
+${responsiveCssDesk}
+}
+`.trim();
+
+        return { variables, attributes, responsiveCSS };
+    }, [rawDesign, scopeSelector]);
 };

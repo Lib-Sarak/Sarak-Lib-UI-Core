@@ -11,7 +11,7 @@ const useIsomorphicLayoutEffect = typeof window !== 'undefined' ? React.useLayou
  * Agora utiliza o useDesignVariables para garantir paridade total com as previews.
  */
 export const DesignInjector: React.FC<{ design: any; isDrafting: boolean }> = ({ design: s, isDrafting }) => {
-    const { variables, attributes } = useDesignVariables(s);
+    const { variables, attributes, responsiveCSS } = useDesignVariables(s);
     const prevDesignRef = React.useRef<any>(null);
 
     // Mouse Tracking (Global)
@@ -85,9 +85,22 @@ export const DesignInjector: React.FC<{ design: any; isDrafting: boolean }> = ({
             body.removeAttribute('data-sarak-has-media');
         }
 
+        // 6. Injeção de CSS Responsivo (Media Queries Dinâmicas)
+        if (responsiveCSS) {
+            let styleTag = document.getElementById('sarak-responsive-vars') as HTMLStyleElement;
+            if (!styleTag) {
+                styleTag = document.createElement('style');
+                styleTag.id = 'sarak-responsive-vars';
+                document.head.appendChild(styleTag);
+            }
+            if (styleTag.innerHTML !== responsiveCSS) {
+                styleTag.innerHTML = responsiveCSS;
+            }
+        }
+
         // Armazenamos a string para a próxima comparação
         prevDesignRef.current = currentDesignKey;
-    }, [s, variables, attributes]);
+    }, [s, variables, attributes, responsiveCSS]);
 
     return null;
 };

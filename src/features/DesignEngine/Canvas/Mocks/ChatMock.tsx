@@ -12,12 +12,12 @@ export const MockChat: React.FC<any> = ({ tokens, animationVariants }) => {
     const ChatMessage = ({ isBot, text }: { isBot: boolean, text: string }) => (
         <motion.div initial={{ opacity: 0, y: 10 }} animate={{ opacity: 1, y: 0 }} transition={{ duration: speed }} className={`flex ${isBot ? 'justify-start' : 'justify-end'} gap-3 w-full`}>
             {isBot && showAvatars && (
-                <div className="w-6 h-6 sm:w-8 sm:h-8 rounded-full bg-[var(--theme-primary)]/10 border border-[var(--theme-primary)]/20 flex items-center justify-center shrink-0">
+                <div className="w-6 h-6 @sm:w-8 @sm:h-8 rounded-full bg-[var(--theme-primary)]/10 border border-[var(--theme-primary)]/20 flex items-center justify-center shrink-0">
                     <SarakIcon name="Bot" size={12} className="text-[var(--theme-primary)]" />
                 </div>
             )}
             <div
-                className={`p-3 sm:p-4 shadow-xl max-w-[85%] relative transition-all duration-500 sarak-card
+                className={`p-3 @sm:p-4 shadow-xl max-w-[85%] relative transition-all duration-500 sarak-card
                     ${isBot ? 
                         (bubbleStyle === 'glass' ? 'bg-[var(--theme-card)] backdrop-blur-md border border-[var(--theme-border)]' : 
                          bubbleStyle === 'solid' ? 'bg-[var(--theme-card)] border border-[var(--theme-border)]' : 
@@ -35,12 +35,12 @@ export const MockChat: React.FC<any> = ({ tokens, animationVariants }) => {
                     color: (!isBot && bubbleStyle === 'solid') ? 'white' : 'var(--theme-title)'
                 }}
             >
-                <div className="text-[10px] sm:text-xs font-medium leading-relaxed">
+                <div className="text-[10px] @sm:text-xs font-medium leading-relaxed">
                     {text}
                 </div>
             </div>
             {!isBot && showAvatars && (
-                <div className="w-6 h-6 sm:w-8 sm:h-8 rounded-full bg-white/5 border border-white/10 flex items-center justify-center shrink-0">
+                <div className="w-6 h-6 @sm:w-8 @sm:h-8 rounded-full bg-white/5 border border-white/10 flex items-center justify-center shrink-0">
                     <SarakIcon name="User" size={12} className="text-[var(--theme-title)]/60" />
                 </div>
             )}
@@ -80,7 +80,7 @@ export const MockChat: React.FC<any> = ({ tokens, animationVariants }) => {
             </div>
 
             {/* Coluna Direita: Variantes Compactas */}
-            <div className="w-80 hidden xl:flex flex-col gap-6 relative">
+            <div className="w-80 hidden @xl:flex flex-col gap-6 relative">
                 
                 {/* Variante 1: Widget Flutuante (Suporte) */}
                 <div className="sarak-card flex flex-col h-[350px] border border-[var(--theme-border)] bg-[var(--theme-card)] shadow-[0_20px_40px_-10px_rgba(0,0,0,0.5)] rounded-2xl overflow-hidden relative">

@@ -230,7 +230,7 @@ export const PreviewCanvas: React.FC<PreviewCanvasProps> = ({
         return (
             <DesignScope
                 design={activeDesign}
-                className={`w-full h-full flex flex-col transition-all duration-500 overflow-hidden relative isolate ${hasTexture ? 'texture-active' : ''}`}
+                className={`@container sarak-device-${previewDevice} w-full h-full flex flex-col transition-all duration-500 overflow-hidden relative isolate ${hasTexture ? 'texture-active' : ''}`}
                 data-sx-texture={activeDesign.texture}
             >
                 {/* 1. Base Background Layer (Pilar de Cor) */}
@@ -329,14 +329,60 @@ export const PreviewCanvas: React.FC<PreviewCanvasProps> = ({
         );
     };;
 
+    const deviceWidths = {
+        desktop: '100%',
+        tablet: '768px',
+        smartphone: '375px'
+    };
+    const targetWidth = deviceWidths[previewDevice] || '100%';
+
+    const getDeviceFrameStyles = () => {
+        if (previewDevice === 'smartphone') {
+            return "rounded-[3rem] border-[14px] border-[#1a1a1c] shadow-[0_0_0_1px_rgba(255,255,255,0.1),_0_50px_100px_-20px_rgba(0,0,0,0.8)]";
+        }
+        if (previewDevice === 'tablet') {
+            return "rounded-[2rem] border-[24px] border-[#1a1a1c] shadow-[0_0_0_1px_rgba(255,255,255,0.1),_0_50px_100px_-20px_rgba(0,0,0,0.8)]";
+        }
+        return "rounded-[2rem] border border-white/10 shadow-[0_50px_100px_-20px_rgba(0,0,0,0.8)]";
+    };
+
+    const getDeviceHeightClass = () => {
+        if (previewDevice !== 'desktop') return '';
+        return isPreviewStacked ? 'h-[45vh]' : 'h-full';
+    };
+
     return (
         <DesignScope design={{ ...tokens, globalBackgroundImageUrl: undefined }} className="w-full h-full flex flex-col relative overflow-auto bg-[#050505] p-0 custom-scrollbar">
             <UIContext.Provider value={previewContextValue as any}>
-                <div className={`flex gap-6 p-6 items-stretch overflow-visible ${isPreviewStacked ? 'flex-col min-w-full min-h-full w-fit h-fit' : 'flex-col xl:flex-row min-w-full min-h-full w-fit h-fit'}`}>
+                <div className={`flex gap-6 p-6 items-stretch overflow-visible ${isPreviewStacked ? 'flex-col min-w-full min-h-full w-fit h-fit items-center' : 'flex-col xl:flex-row min-w-full min-h-full w-fit h-fit justify-center'}`}>
                     {isDualView ? (
                         <>
                             {/* Live Draft Preview (Gêmeo Digital) */}
-                            <div className={`relative flex-auto shrink-0 rounded-[2rem] border border-white/10 shadow-[0_50px_100px_-20px_rgba(0,0,0,0.8)] overflow-hidden bg-black transition-colors duration-500 flex flex-col group ${isPreviewStacked ? 'w-full h-[45vh]' : 'w-1/2 h-full'}`} style={{ resize: 'both', minHeight: '300px', minWidth: '250px' }}>
+                            <div 
+                                className={`relative shrink-0 overflow-hidden bg-black transition-all duration-500 flex flex-col group ${getDeviceHeightClass()} ${getDeviceFrameStyles()}`} 
+                                style={{ 
+                                    resize: previewDevice === 'desktop' ? 'both' : 'none', 
+                                    minHeight: '300px', 
+                                    width: previewDevice === 'desktop' ? (isPreviewStacked ? '100%' : '50%') : targetWidth,
+                                    height: previewDevice === 'smartphone' ? '812px' : previewDevice === 'tablet' ? '1024px' : undefined,
+                                    maxWidth: '100%',
+                                    maxHeight: previewDevice !== 'desktop' ? '90vh' : undefined
+                                }}
+                            >
+                                {/* Hardware Mockup Extras (Notch, Camera) */}
+                                {previewDevice === 'smartphone' && (
+                                    <div className="absolute top-0 left-1/2 -translate-x-1/2 w-32 h-6 bg-[#1a1a1c] rounded-b-[1rem] z-[1000] flex items-center justify-center gap-2">
+                                        <div className="w-12 h-1.5 rounded-full bg-black/50"></div>
+                                        <div className="w-2 h-2 rounded-full bg-[#0a0a0c] shadow-inner border border-white/5"></div>
+                                    </div>
+                                )}
+                                {previewDevice === 'tablet' && (
+                                    <div className="absolute left-0 top-1/2 -translate-y-1/2 w-6 h-32 flex items-center justify-center z-[1000]">
+                                        {/* Camera na borda esquerda simulando modo paisagem/retrato dependendo do frame */}
+                                        <div className="absolute top-1/2 -translate-y-1/2 -left-3 w-2 h-2 rounded-full bg-[#0a0a0c] shadow-inner border border-white/5"></div>
+                                    </div>
+                                )}
+
                                 <button
                                     onClick={() => setIsInspecting(!isInspecting)}
                                     className={`absolute top-4 right-4 z-[9999] p-2 rounded-full backdrop-blur-md border shadow-2xl transition-all ${isInspecting ? 'bg-[var(--theme-primary)] text-white border-[var(--theme-primary)] animate-pulse scale-110' : 'bg-black/40 border-white/10 text-white/50 hover:text-white hover:bg-black/60 opacity-0 group-hover:opacity-100'}`}
@@ -347,14 +393,14 @@ export const PreviewCanvas: React.FC<PreviewCanvasProps> = ({
                                 {/* Overlay visually when inspecting */}
                                 {isInspecting && (
                                     <div className="absolute inset-0 z-[9998] bg-[var(--theme-primary)]/5 cursor-crosshair pointer-events-none border-2 border-[var(--theme-primary)]/50 rounded-[2rem]">
-                                        <div className="absolute top-4 left-1/2 -translate-x-1/2 px-4 py-2 bg-black/80 backdrop-blur border border-[var(--theme-primary)]/50 rounded-full text-white text-xs font-bold flex items-center gap-2 shadow-[0_0_20px_rgba(var(--theme-primary-rgb),0.3)]">
+                                        <div className="absolute top-8 left-1/2 -translate-x-1/2 px-4 py-2 bg-black/80 backdrop-blur border border-[var(--theme-primary)]/50 rounded-full text-white text-xs font-bold flex items-center gap-2 shadow-[0_0_20px_rgba(var(--theme-primary-rgb),0.3)]">
                                             <div className="w-2 h-2 rounded-full bg-[var(--theme-primary)] animate-ping" />
                                             Clique em um componente para inspecionar
                                         </div>
                                     </div>
                                 )}
 
-                                <div className="flex-1 relative">
+                                <div className={`flex-1 relative sarak-device-${previewDevice} w-full h-full`}>
                                     {/* Watermark */}
                                     <div className="absolute inset-0 flex items-center justify-center pointer-events-none opacity-[0.02]">
                                         <span className="text-[10rem] font-black text-white uppercase tracking-[0.2em] -rotate-12 select-none">SARAK TWIN</span>
@@ -374,7 +420,10 @@ export const PreviewCanvas: React.FC<PreviewCanvasProps> = ({
                             </div>
                         </>
                     ) : (
-                        <div className="relative w-full h-full rounded-2xl border border-white/10 shadow-2xl overflow-hidden bg-black transition-all duration-500">
+                        <div 
+                            className="relative h-full rounded-2xl border border-white/10 shadow-2xl overflow-hidden bg-black transition-all duration-500 mx-auto"
+                            style={{ width: targetWidth, maxWidth: '100%' }}
+                        >
                             {renderSystemContent()}
                         </div>
                     )}
