@@ -97,33 +97,24 @@ export const MeuModuloManifest = {
 
 ### 4.2: Criar `Painel.tsx`
 
-O componente mestre que envelopa a tela principal do módulo na fôrma inteligente `SarakAnalyticalPage`. Esta fôrma garante responsividade automática em Desktop, Tablet e Mobile.
+O componente mestre que envelopa a tela principal do módulo na fôrma inteligente `SarakAnalyticalPage`. Esta fôrma garante responsividade automática e limpa.
+
+**Lei Arquitetural 1 (Contrato Dual Mínimo):** O `Painel.tsx` **NÃO DEVE** fatiar o código fonte interno do módulo para tentar separar em `navBar` e `sidePanel`. Ele deve manter o componente original inteiro, passando-o diretamente como `mainContent` para a `SarakAnalyticalPage`. A fôrma atuará apenas como um invólucro limpo.
+
+**Lei Arquitetural 2 (Container Queries):** Para suportar a renderização em Drawers ou diferentes layouts do Shell Global, todo o layout interno do módulo (grid, flexbox) **DEVE OBRIGATORIAMENTE** utilizar Container Queries do Tailwind (ex: `@md:grid-cols-2` ao invés de `md:grid-cols-2`). Garanta que a raiz do seu componente principal possua a classe `@container` para que seus filhos reajam ao tamanho da fôrma.
 
 ```tsx
 import React from 'react';
-import { SarakAnalyticalPage, SarakHidden } from '@sarak/lib-ui-core';
+import { SarakAnalyticalPage } from '@sarak/lib-ui-core';
 import MeuComponentePrincipal from '../components/MeuComponentePrincipal';
-import MeusFiltros from '../components/MeusFiltros';
-import MeusDetalhes from '../components/MeusDetalhes';
 
 const Painel: React.FC<any> = (props) => {
     return (
         <SarakAnalyticalPage 
-            // [Opcional] navBar: Menu/filtros lateral. No mobile, vira drawer.
-            navBar={<MeusFiltros />}
-            
-            // [Obrigatório] mainContent: Conteúdo central da tela.
+            // [Obrigatório e Exclusivo] mainContent: Conteúdo integral do módulo.
+            // O componente deve ter @container na raiz e usar @md:, @lg:, etc internamente.
             mainContent={
-                <div className="flex flex-col gap-8 w-full">
-                    <MeuComponentePrincipal {...props} />
-                </div>
-            }
-            
-            // [Opcional] sidePanel: Painel secundário. No mobile, vira bottom sheet.
-            sidePanel={
-                <SarakHidden on={['smartphone']}>
-                    <MeusDetalhes />
-                </SarakHidden>
+                <MeuComponentePrincipal {...props} />
             }
         />
     );
@@ -132,11 +123,7 @@ const Painel: React.FC<any> = (props) => {
 export default Painel;
 ```
 
-**Importante sobre Responsividade:**
-- A `SarakAnalyticalPage` SÓ demonstra diferença visual entre dispositivos quando recebe `navBar` e/ou `sidePanel`. 
-- Se apenas `mainContent` for passado, o layout será idêntico em todos os dispositivos (um contêiner flexível full-width).
-- Para controle granular de visibilidade, use `SarakHidden` com o array de dispositivos: `on={['smartphone']}`, `on={['smartphone', 'tablet']}`.
-- Para lógica programática, use o hook `useSarakDevice()` que retorna `'smartphone' | 'tablet' | 'desktop'`.
+**Importante:** Historicamente existiam props como `navBar` e `sidePanel` no `SarakAnalyticalPage`, mas seu uso foi depreciado em prol do Contrato Mínimo e responsividade delegada ao Container Query do módulo.
 
 ### 4.3: Criar `index.ts`
 
