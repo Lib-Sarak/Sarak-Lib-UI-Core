@@ -1,8 +1,13 @@
 import fs from 'fs';
 import path from 'path';
-import { MASTER_DESIGN_MAP } from '../../../../src/core/Design/master-map.js';
+import { MASTER_DESIGN_MAP } from '../../../../src/core/Design/master-map.ts';
 
-const resolvePath = (relativePath: string) => path.join(process.cwd(), relativePath);
+import { fileURLToPath } from 'url';
+
+const __filename = fileURLToPath(import.meta.url);
+const __dirname = path.dirname(__filename);
+const rootDir = path.resolve(__dirname, '../../../../');
+const resolvePath = (relativePath: string) => path.join(rootDir, relativePath);
 
 function runParityCheck() {
     console.log("Iniciando Verificação de Paridade 1:1:1:1:1...\n");

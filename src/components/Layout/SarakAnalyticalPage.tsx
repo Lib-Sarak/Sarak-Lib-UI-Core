@@ -8,6 +8,8 @@ export interface SarakAnalyticalPageProps {
     sidePanel?: ReactNode;
     /** Se true, o painel lateral abre como um modal/drawer por cima no mobile. Se false, fica empilhado. Default: true */
     sidePanelAsDrawerOnMobile?: boolean;
+    /** Se true, centraliza horizontalmente e verticalmente o mainContent no Desktop para preencher vazios. */
+    centeredOnDesktop?: boolean;
 }
 
 /**
@@ -21,7 +23,8 @@ export const SarakAnalyticalPage: React.FC<SarakAnalyticalPageProps> = ({
     navBar, 
     mainContent, 
     sidePanel,
-    sidePanelAsDrawerOnMobile = true
+    sidePanelAsDrawerOnMobile = true,
+    centeredOnDesktop = false
 }) => {
     const device = useSarakDevice();
     const isMobile = device === 'smartphone';
@@ -105,8 +108,10 @@ export const SarakAnalyticalPage: React.FC<SarakAnalyticalPageProps> = ({
                 </div>
             )}
             
-            <div className="flex-1 flex flex-col min-w-0 overflow-y-auto">
-                {mainContent}
+            <div className={`flex-1 flex flex-col min-w-0 overflow-y-auto ${centeredOnDesktop ? 'justify-center items-center py-10' : ''}`}>
+                <div className={centeredOnDesktop ? 'w-full max-w-7xl mx-auto' : 'w-full h-full flex flex-col'}>
+                    {mainContent}
+                </div>
             </div>
 
             {sidePanel && (

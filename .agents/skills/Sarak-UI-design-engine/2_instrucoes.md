@@ -72,7 +72,11 @@ Antes de mapear o componente no Design Engine, ele deve existir fisicamente. Sig
    };
    ```
 
-3. **Exportação:** Garanta que o componente seja exportado no barrel `src/components/index.ts` ou `src/components/atomic/Templates/index.ts` para ser visível pelo `DynamicRenderer`.
+3. **Responsividade Estrita (O Padrão Adapter):**
+   Componentes complexos (Engines ou Templates) NUNCA devem tentar adivinhar se estão num celular ou tentar consertar "fontes colossais" ou esconder textos inteiros baseados no tamanho da janela internamente. O componente original é **intocável** e agnóstico de ambiente (mantendo-se o mais limpo possível).
+   Qualquer intervenção brutal (como esconder descrições via `line-clamp`, reduzir fontes `text-5xl` para `text-xl` em Mobile, ou colocar max-heights para criar barras de rolagem) deve ser DELEGADA ao **Injetor CSS do sistema importador** (`Painel.tsx` usando seletores Tailwind V4).
+
+4. **Exportação:** Garanta que o componente seja exportado no barrel `src/components/index.ts` ou `src/components/atomic/Templates/index.ts` para ser visível pelo `DynamicRenderer`.
 
 ---
 
@@ -232,12 +236,12 @@ Antes de criar a Galeria (Passo 7), apresente ao usuário:
 
 ---
 
-## Passo 7: Criar a Galeria de Specimens (se aplicável)
+## Passo 7: Criar o Catálogo de Specimens (se aplicável)
 
 **Ferramenta:** `write_to_file`  
-**Arquivo:** `src/features/DesignEngine/Canvas/Galleries/{Nome}Gallery.tsx`
+**Arquivo:** `src/features/DesignEngine/Canvas/components/{Nome}Catalog.tsx`
 
-A galeria exibe specimens visuais de cada preset para que o usuário escolha. Regras obrigatórias:
+O catálogo (Galeria) exibe specimens visuais de cada preset para que o usuário escolha. Regras obrigatórias:
 
 1. **Usar `DesignScope` como ÚNICA camada de injeção CSS.** Nunca duplicar com `style={variables}` inline.
 
@@ -270,16 +274,17 @@ const handleSelect = (preset: ExemploPreset) => {
 
 ---
 
-## Passo 8: Registrar a Galeria no Router
+## Passo 8: Registrar o Catálogo no Router Central
 
 **Ferramenta:** `replace_file_content`  
-**Arquivo:** `src/features/DesignEngine/Canvas/Galleries/GalleryRouter.tsx`
+**Arquivo:** `src/features/DesignEngine/Canvas/components/PresetsCatalog.tsx`
 
-Adicione o case para a nova galeria:
+Adicione a condição de roteamento para o novo catálogo baseado na `activeCategory`:
 
 ```tsx
-case '{subcategoria}':
-    return <ExemploGallery tokens={tokens} onUpdateDraft={onUpdateDraft} />;
+if (activeCategory === '{subcategoria}') {
+    return <ExemploCatalog onApplyPreset={onApplyPreset} currentMode={currentMode} />;
+}
 ```
 
 ---
@@ -303,5 +308,5 @@ Documente o resultado da execução para rastreabilidade:
 - Schema: `src/core/Design/schema/{nome}.ts` ({N} tokens)
 - Master Map: atualizado (v{versão})
 - Presets: `src/core/Design/presets/{subcategoria}/{nome}.ts` ({N} variantes)
-- Galeria: `src/features/DesignEngine/Canvas/Galleries/{Nome}Gallery.tsx`
+- Catálogo: `src/features/DesignEngine/Canvas/components/{Nome}Catalog.tsx`
 - Build: ✅ sem erros novos

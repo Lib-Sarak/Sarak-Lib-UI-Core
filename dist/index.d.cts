@@ -107,6 +107,8 @@ interface SarakAnalyticalPageProps {
     sidePanel?: ReactNode;
     /** Se true, o painel lateral abre como um modal/drawer por cima no mobile. Se false, fica empilhado. Default: true */
     sidePanelAsDrawerOnMobile?: boolean;
+    /** Se true, centraliza horizontalmente e verticalmente o mainContent no Desktop para preencher vazios. */
+    centeredOnDesktop?: boolean;
 }
 /**
  * SarakAnalyticalPage

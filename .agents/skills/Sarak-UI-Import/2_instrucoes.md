@@ -68,10 +68,10 @@ O módulo Sarak UI necessita criar o schema `ui_core` e a tabela `custom_themes`
 MeuSistema/
 └── src/
     └── Sarak-UI/
-        ├── manifest.ts       # [Obrigatório] O Cérebro
-        ├── Painel.tsx         # [Obrigatório] O Corpo  
-        ├── index.ts           # [Obrigatório] O Contrato
-        └── components/        # [Opcional] Extensões visuais específicas
+        ├── sarak.manifest.json  # [Obrigatório] O Cérebro (Configurações, ícone, endpoints)
+        ├── Painel.tsx           # [Obrigatório] O Corpo (O Adapter Injetor de CSS)
+        ├── index.ts             # [Obrigatório] O Contrato de Exportação (Barrel)
+        └── components/          # [Opcional] Extensões visuais específicas
 ```
 
 ### 4.1: Criar `manifest.ts`
@@ -97,9 +97,9 @@ export const MeuModuloManifest = {
 
 ### 4.2: Criar `Painel.tsx`
 
-O componente mestre que envelopa a tela principal do módulo na fôrma inteligente `SarakAnalyticalPage`. Esta fôrma garante responsividade automática e limpa.
+O componente mestre que envelopa a tela principal do módulo na fôrma inteligente `SarakAnalyticalPage` (`centeredOnDesktop={true}`). 
 
-**Lei Arquitetural 1 (Contrato Dual Mínimo):** O `Painel.tsx` **NÃO DEVE** fatiar o código fonte interno do módulo para tentar separar em `navBar` e `sidePanel`. Ele deve manter o componente original inteiro, passando-o diretamente como `mainContent` para a `SarakAnalyticalPage`. A fôrma atuará apenas como um invólucro limpo.
+**Lei Arquitetural 1 (Padrão Adapter e Injeção de CSS):** O `Painel.tsx` **NUNCA DEVE** fatiar ou alterar o código fonte interno do componente original do módulo. O componente original é intocável. O `Painel.tsx` deve envelopar o componente no `mainContent` e atuar como um **Injetor de CSS**. Se for necessário esconder descrições em mobile, domar títulos colossais ou colocar barras de rolagem internas em listas, tudo isso DEVE ser feito no `Painel.tsx` através de pseudo-seletores no Tailwind (Ex: `className="max-sm:[&_h1]:!text-4xl max-sm:[&_.description]:line-clamp-2"`).
 
 **Lei Arquitetural 2 (Container Queries):** Para suportar a renderização em Drawers ou diferentes layouts do Shell Global, todo o layout interno do módulo (grid, flexbox) **DEVE OBRIGATORIAMENTE** utilizar Container Queries do Tailwind (ex: `@md:grid-cols-2` ao invés de `md:grid-cols-2`). Garanta que a raiz do seu componente principal possua a classe `@container` para que seus filhos reajam ao tamanho da fôrma.
 
@@ -111,10 +111,13 @@ import MeuComponentePrincipal from '../components/MeuComponentePrincipal';
 const Painel: React.FC<any> = (props) => {
     return (
         <SarakAnalyticalPage 
-            // [Obrigatório e Exclusivo] mainContent: Conteúdo integral do módulo.
-            // O componente deve ter @container na raiz e usar @md:, @lg:, etc internamente.
+            centeredOnDesktop={true}
+            // [Obrigatório e Exclusivo] mainContent: Envelopa o componente inteiro.
+            // Aqui é feita a INJEÇÃO DE CSS para domar comportamentos responsivos.
             mainContent={
-                <MeuComponentePrincipal {...props} />
+                <div className="max-sm:[&>div]:!p-4 max-sm:[&_h1]:!text-4xl">
+                    <MeuComponentePrincipal {...props} />
+                </div>
             }
         />
     );
@@ -148,9 +151,24 @@ export default UI;
 export { default as SarakUI } from './Sarak-UI';
 ```
 
-## Passo 5: Registro no Sistema Host (ex: `main.tsx` do MyService)
+## Passo 5: Registro e Linkagem do Tailwind V4 (Sistema Host)
 
-No sistema que consome os módulos, o registro é feito com uma única linha por módulo:
+No sistema que consome os módulos (como o `Sarak-MyService`), existem duas obrigações críticas.
+
+### 5.1: Escaneamento do Tailwind (Obrigatório)
+Se o Host usa Tailwind V4, os estilos injetados nos painéis NÃO FUNCIONARÃO a menos que o compilador os enxergue.
+Vá até o arquivo `index.css` (ou global) do Host e adicione a tag `@source` apontando para o módulo que acabou de importar:
+
+```css
+@import "tailwindcss";
+@import "@sarak/lib-ui-core/dist/sarak.css";
+
+/* Master Scan: Escaneamento Local */
+@source "../../Caminho-Para-O-Modulo/src/**/*.tsx";
+```
+
+### 5.2: Registro Lógico no Host
+No código do sistema host (`main.tsx` ou configuração equivalente), registre o módulo:
 
 ```typescript
 import { registerSarakModule } from '@sarak/lib-ui-core';
