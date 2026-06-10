@@ -23,9 +23,9 @@
         <div class='clearfix'>
             
             <div class='fl pad1y space-right2'>
-                <span class="strong">7.14% </span>
+                <span class="strong">50% </span>
                 <span class="quiet">Statements</span>
-                <span class='fraction'>1/14</span>
+                <span class='fraction'>7/14</span>
             </div>
         
             
@@ -37,16 +37,16 @@
         
             
             <div class='fl pad1y space-right2'>
-                <span class="strong">0% </span>
+                <span class="strong">33.33% </span>
                 <span class="quiet">Functions</span>
-                <span class='fraction'>0/6</span>
+                <span class='fraction'>2/6</span>
             </div>
         
             
             <div class='fl pad1y space-right2'>
-                <span class="strong">7.69% </span>
+                <span class="strong">53.84% </span>
                 <span class="quiet">Lines</span>
-                <span class='fraction'>1/13</span>
+                <span class='fraction'>7/13</span>
             </div>
         
             
@@ -61,7 +61,7 @@
             </div>
         </template>
     </div>
-    <div class='status-line low'></div>
+    <div class='status-line medium'></div>
     <pre><table class="coverage">
 <tr><td class="line-count quiet"><a name='L1'></a><a href='#L1'>1</a>
 <a name='L2'></a><a href='#L2'>2</a>
@@ -154,30 +154,30 @@
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-yes">4x</span>
+<span class="cline-any cline-yes">2x</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-yes">2x</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-yes">2x</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-yes">2x</span>
 <span class="cline-any cline-no">&nbsp;</span>
-<span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-no">&nbsp;</span>
-<span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-no">&nbsp;</span>
-<span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-no">&nbsp;</span>
-<span class="cline-any cline-no">&nbsp;</span>
 <span class="cline-any cline-no">&nbsp;</span>
 <span class="cline-any cline-no">&nbsp;</span>
 <span class="cline-any cline-no">&nbsp;</span>
@@ -186,7 +186,7 @@
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-yes">2x</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
@@ -206,7 +206,7 @@
 <span class="cline-any cline-no">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-yes">6x</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
@@ -233,14 +233,14 @@ interface MatrixMockProps {
     animationStyle: string;
 }
 &nbsp;
-export const <span class="fstat-no" title="function not covered" >MockMatrix: React.FC&lt;MatrixMockProps&gt; = ({</span> tokens, animationVariants, animationStyle }) =&gt; {
-    const roles = <span class="cstat-no" title="statement not covered" >[</span>
+export const MockMatrix: React.FC&lt;MatrixMockProps&gt; = ({ tokens, animationVariants, animationStyle }) =&gt; {
+    const roles = [
         { id: 'admin', title: 'Administrator', description: 'Full system access and control', icon: &lt;SarakIcon name="Shield" size={18} /&gt; },
         { id: 'editor', title: 'Editor', description: 'Can manage content and basic settings', icon: &lt;SarakIcon name="Edit" size={18} /&gt; },
         { id: 'viewer', title: 'Viewer', description: 'Read-only access to specific dashboards', icon: &lt;SarakIcon name="Eye" size={18} /&gt; },
     ];
 &nbsp;
-    const permissions = <span class="cstat-no" title="statement not covered" >[</span>
+    const permissions = [
         { id: 'user_create', title: 'Create Users', icon: &lt;SarakIcon name="UserPlus" size={14} /&gt; },
         { id: 'user_delete', title: 'Delete Users', icon: &lt;SarakIcon name="Trash2" size={14} /&gt; },
         { id: 'db_access', title: 'Database Access', icon: &lt;SarakIcon name="Database" size={14} /&gt; },
@@ -249,13 +249,13 @@ export const <span class="fstat-no" title="function not covered" >MockMatrix: Re
         { id: 'system_logs', title: 'View Logs', icon: &lt;SarakIcon name="Settings" size={14} /&gt; },
     ];
 &nbsp;
-    const [mapping, setMapping] = <span class="cstat-no" title="statement not covered" >React.useState&lt;Record&lt;string, string[]&gt;&gt;({</span>
+    const [mapping, setMapping] = React.useState&lt;Record&lt;string, string[]&gt;&gt;({
         admin: ['user_create', 'user_delete', 'db_access', 'cloud_config', 'security_settings', 'system_logs'],
         editor: ['user_create', 'cloud_config', 'system_logs'],
         viewer: ['system_logs'],
     });
 &nbsp;
-    const <span class="cstat-no" title="statement not covered" ><span class="fstat-no" title="function not covered" >handleToggle = (r</span>oleId: string, permId: string) =&gt; {</span>
+    const <span class="fstat-no" title="function not covered" >handleToggle = (r</span>oleId: string, permId: string) =&gt; {
 <span class="cstat-no" title="statement not covered" ><span class="fstat-no" title="function not covered" >        setMapping(p</span>rev =&gt; {</span>
             const current = <span class="cstat-no" title="statement not covered" >prev[roleId] || [];</span>
 <span class="cstat-no" title="statement not covered" >            if (current.includes(permId)) {</span>
@@ -265,7 +265,7 @@ export const <span class="fstat-no" title="function not covered" >MockMatrix: Re
         });
     };
 &nbsp;
-<span class="cstat-no" title="statement not covered" >    return (</span>
+    return (
         &lt;motion.div
             variants={animationVariants}
             initial="initial"
@@ -284,8 +284,8 @@ export const <span class="fstat-no" title="function not covered" >MockMatrix: Re
                     subItems={permissions}
 <span class="fstat-no" title="function not covered" >                    activeMapping={(r</span>oleId, permId) =&gt; <span class="cstat-no" title="statement not covered" >mapping[roleId]?.includes(permId) || false}</span>
                     onToggle={handleToggle}
-<span class="fstat-no" title="function not covered" >                    renderItemHeader={(r</span>ole) =&gt; (
-<span class="cstat-no" title="statement not covered" >                        &lt;div className="flex items-center gap-4"&gt;</span>
+                    renderItemHeader={(role) =&gt; (
+                        &lt;div className="flex items-center gap-4"&gt;
                             &lt;div className="w-10 h-10 rounded-xl bg-[var(--theme-primary)]/10 flex items-center justify-center text-[var(--theme-primary)]"&gt;
                                 {role.icon}
                             &lt;/div&gt;
@@ -307,7 +307,7 @@ export const <span class="fstat-no" title="function not covered" >MockMatrix: Re
             <div class='footer quiet pad2 space-top1 center small'>
                 Code coverage generated by
                 <a href="https://istanbul.js.org/" target="_blank" rel="noopener noreferrer">istanbul</a>
-                at 2026-06-10T21:50:30.786Z
+                at 2026-06-10T22:36:35.954Z
             </div>
         <script src="../../../../prettify.js"></script>
         <script>
