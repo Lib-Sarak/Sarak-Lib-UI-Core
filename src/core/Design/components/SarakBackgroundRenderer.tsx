@@ -1,4 +1,5 @@
-import React, { useState, useEffect } from 'react';
+import React from 'react';
+import { useMediaLuminance } from '../hooks/useMediaLuminance';
 
 interface SarakBackgroundRendererProps {
     imageUrl?: string;
@@ -8,65 +9,6 @@ interface SarakBackgroundRendererProps {
     isFixed?: boolean;
     mode?: 'light' | 'dark';
 }
-
-// Hook de Inteligência Visual (Analisa a luminância real da imagem)
-const useMediaLuminance = (url: string | undefined, isVideo: boolean) => {
-    const [luminance, setLuminance] = useState<'light' | 'dark' | 'unknown'>('unknown');
-
-    useEffect(() => {
-        if (!url || isVideo) {
-            setLuminance('unknown');
-            return;
-        }
-
-        const img = new Image();
-        img.crossOrigin = 'anonymous'; // Essencial para burlar CORS em CDNs como Unsplash
-        
-        img.onload = () => {
-            try {
-                const canvas = document.createElement('canvas');
-                const ctx = canvas.getContext('2d', { willReadFrequently: true });
-                if (!ctx) return;
-                
-                // Amostragem ultra rápida de 50x50 pixels
-                canvas.width = 50;
-                canvas.height = 50;
-                ctx.drawImage(img, 0, 0, 50, 50);
-                
-                const imageData = ctx.getImageData(0, 0, 50, 50);
-                const data = imageData.data;
-                let r = 0, g = 0, b = 0;
-                
-                for (let i = 0, l = data.length; i < l; i += 4) {
-                    r += data[i];
-                    g += data[i+1];
-                    b += data[i+2];
-                }
-                
-                const pixelCount = data.length / 4;
-                r = r / pixelCount;
-                g = g / pixelCount;
-                b = b / pixelCount;
-                
-                // Equação HSP (Highly Sensitive Perceived luminance)
-                const hsp = Math.sqrt(
-                    0.299 * (r * r) +
-                    0.587 * (g * g) +
-                    0.114 * (b * b)
-                );
-                
-                // 127.5 é o ponto de equilíbrio matemático entre claro e escuro
-                setLuminance(hsp > 127.5 ? 'light' : 'dark');
-            } catch (e) {
-                // Se o servidor da imagem bloquear o CORS, caímos num graceful fallback
-                setLuminance('unknown');
-            }
-        };
-        img.src = url;
-    }, [url, isVideo]);
-
-    return luminance;
-};
 
 export const SarakBackgroundRenderer: React.FC<SarakBackgroundRendererProps> = ({ 
     imageUrl, 
@@ -119,14 +61,10 @@ export const SarakBackgroundRenderer: React.FC<SarakBackgroundRendererProps> = (
     let showOverlay = false;
     let overlayColor = 'transparent';
 
-    if (!isLightMode && luminance === 'light') {
-        // Tema escuro + Imagem clara -> Aplica gradiente escuro
+    if ((!isLightMode && luminance === 'light') || (isLightMode && luminance === 'dark')) {
+        // Oposto: aplica gradiente base do tema dinamicamente
         showOverlay = true;
-        overlayColor = 'rgba(0, 0, 0, 0.85)';
-    } else if (isLightMode && luminance === 'dark') {
-        // Tema claro + Imagem escura -> Aplica gradiente claro
-        showOverlay = true;
-        overlayColor = 'rgba(255, 255, 255, 0.85)';
+        overlayColor = 'color-mix(in srgb, var(--sarak-bg-base) 85%, transparent)';
     }
     // Se for 'unknown' (falha de CORS) ou se a imagem já combinar com o tema, 
     // NÃO aplicamos nenhum overlay para garantir zero alteração nas cores originais.

@@ -66,3 +66,9 @@ body.is-geometric .sarak-shell-header,
 .bg-theme-card[data-geometric="1"] {
     clip-path: polygon(0 0, 100% 0, 100% calc(100% - 15px), calc(100% - 15px) 100%, 0 100%) !important;
 }
+
+/* Scrollbars customizadas (refatoração Data-Driven) */
+.custom-scrollbar-sidebar::-webkit-scrollbar { width: 4px; }
+.custom-scrollbar-sidebar::-webkit-scrollbar-track { background: transparent; }
+.custom-scrollbar-sidebar::-webkit-scrollbar-thumb { background: rgba(255,255,255,0.05); border-radius: 10px; }
+.custom-scrollbar-sidebar::-webkit-scrollbar-thumb:hover { background: var(--theme-primary); }

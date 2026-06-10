@@ -1,0 +1,22 @@
+#!/bin/sh
+# --- Sarak Git Hook (Pre-Commit) ---
+if command -v python >/dev/null 2>&1; then PY=python; else PY=python3; fi
+
+# 1. Gate de Segurança (Diff Rápido)
+echo "[Sarak] Verificando vazamento de segredos no staged..."
+"$PY" .githooks/verificar_commit.py --raiz .
+status=$?
+
+if [ "$status" -ne 0 ]; then
+  echo ""
+  echo "⛔ COMMIT BLOQUEADO — segredo ou arquivo sensível detectado no staged."
+  echo "   Corrija: mova o segredo para .env (e adicione ao .gitignore) e re-stage."
+  exit 1
+fi
+
+# 2. Auto-Indexador da Inteligência Local
+echo "[Sarak] Atualizando indice local de agentes..."
+"$PY" .agents/gerar_indice.py
+git add .agents/index.md
+
+exit 0

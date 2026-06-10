@@ -362,15 +362,12 @@ export const PreviewCanvas: React.FC<PreviewCanvasProps> = ({
                         <>
                             {/* Live Draft Preview (Gêmeo Digital) */}
                             <div 
-                                className={`relative shrink-0 overflow-hidden bg-black transition-all duration-500 flex flex-col group ${getDeviceHeightClass()} ${getDeviceFrameStyles()}`} 
+                                className={`relative shrink-0 overflow-hidden bg-[var(--theme-surface)] transition-all duration-500 flex flex-col group min-h-[300px] w-[var(--device-width)] h-[var(--device-height)] max-w-full max-h-[var(--device-max-height)] ${getDeviceHeightClass()} ${getDeviceFrameStyles()} ${previewDevice === 'desktop' ? 'resize' : 'resize-none'}`} 
                                 style={{ 
-                                    resize: previewDevice === 'desktop' ? 'both' : 'none', 
-                                    minHeight: '300px', 
-                                    width: previewDevice === 'desktop' ? (isPreviewStacked ? '100%' : '50%') : targetWidth,
-                                    height: previewDevice === 'smartphone' ? '812px' : previewDevice === 'tablet' ? '1024px' : undefined,
-                                    maxWidth: '100%',
-                                    maxHeight: previewDevice !== 'desktop' ? '90vh' : undefined
-                                }}
+                                    '--device-width': previewDevice === 'desktop' ? (isPreviewStacked ? '100%' : '50%') : targetWidth,
+                                    '--device-height': previewDevice === 'smartphone' ? '812px' : previewDevice === 'tablet' ? '1024px' : 'auto',
+                                    '--device-max-height': previewDevice !== 'desktop' ? '90vh' : 'none'
+                                } as React.CSSProperties}
                             >
                                 {/* Hardware Mockup Extras (Notch, Camera) */}
                                 {previewDevice === 'smartphone' && (
@@ -414,7 +411,7 @@ export const PreviewCanvas: React.FC<PreviewCanvasProps> = ({
 
 
                             {/* Catalog Preview (Engine Controls) */}
-                            <div className={`relative flex-auto shrink-0 rounded-[2rem] border border-white/10 shadow-2xl overflow-hidden bg-[#0c0c0d] transition-colors duration-500 flex flex-col ${isPreviewStacked ? 'w-full h-[45vh]' : 'w-1/2 h-full'}`} style={{ resize: 'both', minHeight: '300px', minWidth: '250px' }}>
+                            <div className={`relative flex-auto shrink-0 rounded-[2rem] border border-[var(--theme-border)] shadow-theme overflow-hidden bg-[var(--theme-card)] transition-colors duration-500 flex flex-col min-h-[300px] min-w-[250px] resize ${isPreviewStacked ? 'w-full h-[45vh]' : 'w-1/2 h-full'}`}>
                                 <PresetsCatalog
                                     onApplyPreset={handleApplyPreset}
                                     activeCategory={activeCategory}
@@ -424,8 +421,8 @@ export const PreviewCanvas: React.FC<PreviewCanvasProps> = ({
                         </>
                     ) : (
                         <div 
-                            className="relative h-full rounded-2xl border border-white/10 shadow-2xl overflow-hidden bg-black transition-all duration-500 mx-auto"
-                            style={{ width: targetWidth, maxWidth: '100%' }}
+                            className="relative h-full rounded-2xl border border-[var(--theme-border)] shadow-theme overflow-hidden bg-[var(--theme-surface)] transition-all duration-500 mx-auto w-[var(--target-width)] max-w-full"
+                            style={{ '--target-width': targetWidth } as React.CSSProperties}
                         >
                             {renderSystemContent()}
                         </div>

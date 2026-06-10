@@ -20,7 +20,9 @@ import DesignPillars from '../config/design-pillars.json';
 
 // Modular Hooks & Components
 import { useDesignDraft } from '../hooks/useDesignDraft';
+import { useThemeEngineState } from './hooks/useThemeEngineState';
 import { useResizable } from '../hooks/useResizable';
+import { TokenControl } from './components/TokenControl';
 import { 
     CategoryLabel, 
     Section, 
@@ -35,68 +37,31 @@ import { MasterControlPanel } from './MasterControlPanel';
 import { TemplatesTab } from './TemplatesTab';
 import { SaveThemeModal, SaveThemeAction } from './components/SaveThemeModal';
 
-const ControlRegistry: Record<string, React.FC<any>> = {
-    color: (props) => <ColorControl label={props.token.label} {...props} />,
-    slider: (props) => (
-        <SliderControl 
-            label={props.token.label} 
-            value={props.value} 
-            min={props.token.constraints?.min} 
-            max={props.token.constraints?.max} 
-            step={props.token.constraints?.step} 
-            unit={props.token.unit}
-            onChange={props.onChange} 
-        />
-    ),
-    select: (props) => <SelectControl label={props.token.label} options={props.token.constraints?.options || props.token.options} {...props} />,
-    font: (props) => <SelectControl label={props.token.label} options={props.token.constraints?.options || props.token.options} isFont={true} {...props} />,
-    switch: (props) => <SwitchControl label={props.token.label} description={props.token.description} {...props} />,
-    boolean: (props) => <SwitchControl label={props.token.label} description={props.token.description} {...props} />,
-    input: (props) => <InputControl label={props.token.label} placeholder={props.token.defaultValue} {...props} />,
-    text: (props) => <InputControl label={props.token.label} type="text" placeholder={props.token.defaultValue} {...props} />,
-    number: (props) => <InputControl label={props.token.label} type="number" placeholder={props.token.defaultValue} {...props} />,
-    image: (props) => <MediaUploaderControl label={props.token.label} {...props} />
-};
-
-const TokenControl = ({ token, value, onChange, previewDevice = 'desktop' }: { token: any, value: any, onChange: (val: any) => void, previewDevice?: string }) => {
-    const Widget = ControlRegistry[token.type];
-    if (!Widget) return null;
-
-    const isResponsiveObj = typeof value === 'object' && value !== null && 'mob' in value;
-    const deviceKey = previewDevice === 'smartphone' ? 'mob' : previewDevice === 'tablet' ? 'tab' : 'desk';
-    
-    // Fallback: Se for responsivo mas não tiver o objeto (migração de presets antigos)
-    const displayValue = isResponsiveObj ? value[deviceKey] : value;
-
-    const handleChange = (val: any) => {
-        if (token.isResponsive) {
-            // Garante que o valor salvo preserve os outros breakpoints
-            const currentObj = isResponsiveObj ? { ...value } : { mob: value, tab: value, desk: value };
-            currentObj[deviceKey] = val;
-            onChange(currentObj);
-        } else {
-            onChange(val);
-        }
-    };
-
-    return <Widget token={token} value={displayValue} onChange={handleChange} />;
-};
-
 /**
  * ThemeCustomizationTab (v14.0 - Sovereign 6-Pillar Architecture)
  * Refatorado para a nova taxonomia de 6 pilares de soberania.
  */
 export const ThemeCustomizationTab: React.FC = () => {
-    const { systemDesign, design, branding, updateBranding, ...rest } = useSarakUI();
-    
-    // v12.6 - Deep Reference Stability
-    // Impedimos que a desestruturação do contexto crie um novo objeto sarak a cada render
-    const sarak = useMemo(() => ({ 
-        systemDesign, 
-        design, 
-        ...rest 
-    }), [systemDesign, design, JSON.stringify(rest)]);
-    
+    // 1) Puxamos o estado visual e métodos globais de persistência do Theme Engine
+    const {
+        sarak, uiBaseUrl, apiToken,
+        activePreviewApp, setActivePreviewApp,
+        previewDevice, setPreviewDevice,
+        activePillarId, setActivePillarId,
+        activeSectionId, setActiveSectionId,
+        viewMode, setViewMode,
+        searchQuery, setSearchQuery,
+        isEssentialMode, setIsEssentialMode,
+        isPreviewStacked, setIsPreviewStacked,
+        currentThemeId, setCurrentThemeId,
+        currentThemeOrigin, setCurrentThemeOrigin,
+        currentThemeName, setCurrentThemeName,
+        isSaveModalOpen, setIsSaveModalOpen,
+        isSaving, setIsSaving,
+        pendingApply, setPendingApply,
+        fetchActiveTheme
+    } = useThemeEngineState();
+
     const { 
         draft, 
         updateDraft, 
@@ -109,61 +74,6 @@ export const ThemeCustomizationTab: React.FC = () => {
         showToast,
         handleThemePreview
     } = useDesignDraft(sarak);
-    
-    const [activePreviewApp, setActivePreviewApp] = useState('dashboard');
-    const [previewDevice, setPreviewDevice] = useState<'desktop' | 'tablet' | 'smartphone'>('desktop');
-
-    const [activePillarId, setActivePillarId] = useState<string | null>('brand');
-    const [activeSectionId, setActiveSectionId] = useState<string | null>(null);
-    const [viewMode, setViewMode] = useState<'preview' | 'catalog' | 'templates'>('preview');
-    const [searchQuery, setSearchQuery] = useState('');
-    const [isEssentialMode, setIsEssentialMode] = useState(true);
-    const [isPreviewStacked, setIsPreviewStacked] = useState(false);
-
-    // Theme Persistence Tracking
-    const [currentThemeId, setCurrentThemeId] = useState<string | null>(null);
-    const [currentThemeOrigin, setCurrentThemeOrigin] = useState<'script' | 'database'>('script');
-    const [currentThemeName, setCurrentThemeName] = useState<string>('');
-    const [isSaveModalOpen, setIsSaveModalOpen] = useState(false);
-    const [isSaving, setIsSaving] = useState(false);
-    const [pendingApply, setPendingApply] = useState(false);
-
-    const appToPillarMap: Record<string, string> = useMemo(() => ({
-        'dashboard': 'surfaces',
-        'components': 'surfaces',
-        'tabela': 'surfaces',
-        'caixas-texto': 'interaction',
-        'typography': 'typography',
-        'chat': 'advanced',
-        'graficos': 'advanced',
-        'matrix': 'advanced',
-        'auth': 'brand',
-        'settings': 'systems',
-        'logs': 'systems'
-    }), []);
-
-    useEffect(() => {
-        const pillarId = appToPillarMap[activePreviewApp];
-        if (pillarId && activePillarId !== pillarId) {
-            setActivePillarId(pillarId);
-        }
-    }, [activePreviewApp, appToPillarMap]);
-
-    const uiBaseUrl = sarak.options?.endpoints?.baseUrl || '/api/ui';
-    const apiToken = sarak.token;
-
-    const fetchActiveTheme = useCallback(async () => {
-        try {
-            const headers: any = { 'Content-Type': 'application/json' };
-            if (apiToken) headers['Authorization'] = `Bearer ${apiToken}`;
-            const res = await fetch(`${uiBaseUrl}/design`, { headers });
-            if (!res.ok) return null;
-            const data = await res.json();
-            return data.id ? data : null;
-        } catch (e) {
-            return null;
-        }
-    }, [uiBaseUrl, apiToken]);
 
     const saveNewThemeAPI = async (design: any, name: string, isActive: boolean) => {
         const headers: any = { 'Content-Type': 'application/json' };
@@ -358,8 +268,8 @@ export const ThemeCustomizationTab: React.FC = () => {
         <div className="flex flex-1 h-screen max-h-screen bg-[var(--theme-bg)] overflow-hidden">
             {/* Sidebar de Configuração */}
             <div 
-                className={`flex flex-col h-full max-h-full border-r border-[var(--theme-border)] bg-[var(--theme-card)] relative z-10 overflow-hidden shrink-0 ${isResizingEngine ? 'transition-none' : 'transition-all duration-300'}`}
-                style={{ width: `${engineSidebarWidth}px`, minWidth: '280px', maxWidth: '600px', position: 'relative' }}
+                className={`flex flex-col h-full max-h-full border-r border-[var(--theme-border)] bg-[var(--theme-card)] relative z-10 overflow-hidden shrink-0 w-[var(--engine-sidebar-width)] min-w-[280px] max-w-[600px] ${isResizingEngine ? 'transition-none' : 'transition-all duration-300'}`}
+                style={{ '--engine-sidebar-width': `${engineSidebarWidth}px` } as React.CSSProperties}
             >
                 <div onMouseDown={startResizingEngine} className="absolute right-0 top-0 w-1.5 h-full cursor-col-resize hover:bg-[var(--theme-primary)]/50 transition-colors z-50 active:bg-[var(--theme-primary)]" />
                 
@@ -533,7 +443,7 @@ export const ThemeCustomizationTab: React.FC = () => {
                                                     )}
                                                     
                                                     {/* Identidade da Empresa */}
-                                                    {branding && updateBranding && (
+                                                    {sarak.branding && sarak.updateBranding && (
                                                         <Section 
                                                             id="global-branding" 
                                                             icon={Shield} 
@@ -545,24 +455,24 @@ export const ThemeCustomizationTab: React.FC = () => {
                                                                 <InputControl 
                                                                     label="Nome da Empresa (Topo/Sidebar)" 
                                                                     type="text" 
-                                                                    value={branding.companyName || ''} 
-                                                                    onChange={(val: string) => updateBranding({ companyName: val })} 
+                                                                    value={sarak.branding.companyName || ''} 
+                                                                    onChange={(val: string) => sarak.updateBranding!({ companyName: val })} 
                                                                 />
                                                                 <InputControl 
                                                                     label="Nome no Login" 
                                                                     type="text" 
-                                                                    value={branding.loginName || ''} 
-                                                                    onChange={(val: string) => updateBranding({ loginName: val })} 
+                                                                    value={sarak.branding.loginName || ''} 
+                                                                    onChange={(val: string) => sarak.updateBranding!({ loginName: val })} 
                                                                 />
                                                                 <InputControl 
                                                                     label="Aba do Navegador" 
-                                                                    value={branding.tabName || ''} 
-                                                                    onChange={(val: string) => updateBranding({ tabName: val })} 
+                                                                    value={sarak.branding.tabName || ''} 
+                                                                    onChange={(val: string) => sarak.updateBranding!({ tabName: val })} 
                                                                 />
                                                                 <MediaUploaderControl 
                                                                     label="Logotipo (Mídia Híbrida)" 
-                                                                    value={branding.logoBase64 || null} 
-                                                                    onChange={(val: string | null) => updateBranding({ logoBase64: val })} 
+                                                                    value={sarak.branding.logoBase64 || null} 
+                                                                    onChange={(val: string | null) => sarak.updateBranding!({ logoBase64: val })} 
                                                                 />
                                                             </div>
                                                         </Section>
@@ -690,12 +600,6 @@ export const ThemeCustomizationTab: React.FC = () => {
                 isSaving={isSaving}
             />
 
-            <style dangerouslySetInnerHTML={{ __html: `
-                .custom-scrollbar-sidebar::-webkit-scrollbar { width: 4px; }
-                .custom-scrollbar-sidebar::-webkit-scrollbar-track { background: transparent; }
-                .custom-scrollbar-sidebar::-webkit-scrollbar-thumb { background: rgba(255,255,255,0.05); border-radius: 10px; }
-                .custom-scrollbar-sidebar::-webkit-scrollbar-thumb:hover { background: var(--theme-primary); }
-            `}} />
         </div>
     );
 };
