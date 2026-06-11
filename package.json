@@ -11,7 +11,8 @@
         "build:css": "npx @tailwindcss/cli -i ./src/styles/sarak-base.css -o ./dist/sarak.css --minify",
         "build:js": "tsup src/index.ts --format esm,cjs --dts --clean --minify --external react,react-dom,framer-motion,lucide-react,recharts,echarts-for-react,echarts,reactflow,react-grid-layout,react-markdown,react-syntax-highlighter,react-dropzone,clsx,tailwind-merge,date-fns,pg && tsup backend/node/backend-node.ts --format esm,cjs --dts --minify --external pg",
         "build": "npm run build:js && npm run build:css",
-        "prepublishOnly": "npm run build"
+        "prepublishOnly": "npm run build",
+        "test-ct": "playwright test -c playwright-ct.config.ts"
     },
     "exports": {
         ".": {
@@ -57,7 +58,10 @@
         "tailwindcss": ">=4.0.0"
     },
     "devDependencies": {
+        "@playwright/experimental-ct-react": "^1.60.0",
+        "@playwright/test": "^1.44.0",
         "@tailwindcss/cli": "^4.2.2",
+        "@tailwindcss/vite": "^4.3.0",
         "@testing-library/dom": "^10.4.1",
         "@testing-library/jest-dom": "^6.9.1",
         "@testing-library/react": "^16.3.2",

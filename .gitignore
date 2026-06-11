@@ -9,6 +9,11 @@ out/
 .vite/
 .turbo/
 
+# Playwright Test Reports & Cache
+playwright-report/
+test-results/
+playwright/.cache/
+
 # Python
 .venv/
 venv/

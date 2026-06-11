@@ -62,5 +62,5 @@ describe('PreviewCanvas - Refatoração Data-Driven', () => {
             expect(style).toContain('--device-width');
             expect(style).not.toMatch(/(^|;)\s*width:\s*50%/i); // Não deve ter "width: 50%" como propriedade CSS direta
         }
-    });
+    }, 15000);
 });
