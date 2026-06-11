@@ -23,30 +23,30 @@
         <div class='clearfix'>
             
             <div class='fl pad1y space-right2'>
-                <span class="strong">12.5% </span>
+                <span class="strong">100% </span>
                 <span class="quiet">Statements</span>
-                <span class='fraction'>1/8</span>
+                <span class='fraction'>8/8</span>
             </div>
         
             
             <div class='fl pad1y space-right2'>
-                <span class="strong">0% </span>
+                <span class="strong">63.15% </span>
                 <span class="quiet">Branches</span>
-                <span class='fraction'>0/38</span>
+                <span class='fraction'>24/38</span>
             </div>
         
             
             <div class='fl pad1y space-right2'>
-                <span class="strong">0% </span>
+                <span class="strong">100% </span>
                 <span class="quiet">Functions</span>
-                <span class='fraction'>0/2</span>
+                <span class='fraction'>2/2</span>
             </div>
         
             
             <div class='fl pad1y space-right2'>
-                <span class="strong">12.5% </span>
+                <span class="strong">100% </span>
                 <span class="quiet">Lines</span>
-                <span class='fraction'>1/8</span>
+                <span class='fraction'>8/8</span>
             </div>
         
             
@@ -61,7 +61,7 @@
             </div>
         </template>
     </div>
-    <div class='status-line low'></div>
+    <div class='status-line high'></div>
     <pre><table class="coverage">
 <tr><td class="line-count quiet"><a name='L1'></a><a href='#L1'>1</a>
 <a name='L2'></a><a href='#L2'>2</a>
@@ -199,18 +199,15 @@
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-yes">3x</span>
-<span class="cline-any cline-no">&nbsp;</span>
-<span class="cline-any cline-no">&nbsp;</span>
-<span class="cline-any cline-no">&nbsp;</span>
-<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-yes">5x</span>
+<span class="cline-any cline-yes">1x</span>
+<span class="cline-any cline-yes">1x</span>
+<span class="cline-any cline-yes">1x</span>
+<span class="cline-any cline-yes">1x</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-no">&nbsp;</span>
-<span class="cline-any cline-no">&nbsp;</span>
-<span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-yes">1x</span>
+<span class="cline-any cline-yes">5x</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
@@ -244,7 +241,10 @@
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-yes">1x</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
@@ -331,15 +331,15 @@
 import { motion } from 'framer-motion';
 import { SarakIcon } from '../../../../components/atomic/Icon/SarakIcon';
 &nbsp;
-export const <span class="fstat-no" title="function not covered" >MockChat: React.FC&lt;any&gt; = ({</span> tokens, animationVariants }) =&gt; {
-    const bubbleStyle = <span class="cstat-no" title="statement not covered" >tokens?.chatBubbleStyle || 'glass';</span>
-    const radius = <span class="cstat-no" title="statement not covered" >tokens?.chatBubbleRadius || 12;</span>
-    const speed = <span class="cstat-no" title="statement not covered" >tokens?.chatAnimationSpeed || 0.4;</span>
-    const showAvatars = <span class="cstat-no" title="statement not covered" >tokens?.showAvatars !== false;</span>
+export const MockChat: React.FC&lt;any&gt; = ({ tokens, animationVariants }) =&gt; {
+    const bubbleStyle = tokens?.chatBubbleStyle || 'glass';
+    const radius = tokens?.chatBubbleRadius || 12;
+    const speed = tokens?.chatAnimationSpeed || 0.4;
+    const showAvatars = tokens?.showAvatars !== false;
 &nbsp;
     // Mini Componente para a Mensagem
-    const <span class="cstat-no" title="statement not covered" ><span class="fstat-no" title="function not covered" >ChatMessage = ({</span> isBot, text }: { isBot: boolean, text: string }) =&gt; (</span>
-<span class="cstat-no" title="statement not covered" >        &lt;motion.div initial={{ opacity: 0, y: 10 }} animate={{ opacity: 1, y: 0 }} transition={{ duration: speed }} className={`flex ${isBot ? 'justify-start' : 'justify-end'} gap-3 w-full`}&gt;</span>
+    const ChatMessage = ({ isBot, text }: { isBot: boolean, text: string }) =&gt; (
+        &lt;motion.div initial={{ opacity: 0, y: 10 }} animate={{ opacity: 1, y: 0 }} transition={{ duration: speed }} className={`flex ${isBot ? 'justify-start' : 'justify-end'} gap-3 w-full`}&gt;
             {isBot &amp;&amp; showAvatars &amp;&amp; (
                 &lt;div className="w-6 h-6 @sm:w-8 @sm:h-8 rounded-full bg-[var(--theme-primary)]/10 border border-[var(--theme-primary)]/20 flex items-center justify-center shrink-0"&gt;
                     &lt;SarakIcon name="Bot" size={12} className="text-[var(--theme-primary)]" /&gt;
@@ -349,19 +349,19 @@ export const <span class="fstat-no" title="function not covered" >MockChat: Reac
                 className={`p-3 @sm:p-4 shadow-xl max-w-[85%] relative transition-all duration-500 sarak-card
                     ${isBot ? 
                         (bubbleStyle === 'glass' ? 'bg-[var(--theme-card)] backdrop-blur-md border border-[var(--theme-border)]' : 
-                         bubbleStyle === 'solid' ? 'bg-[var(--theme-card)] border border-[var(--theme-border)]' : 
+<span class="branch-1 cbranch-no" title="branch not covered" >                         bubbleStyle === 'solid' ? 'bg-[var(--theme-card)] border border-[var(--theme-border)]' : </span>
                          bubbleStyle === 'outline' ? 'bg-transparent border-2 border-[var(--theme-border)]' : 
                          'bg-transparent border-l-4 border-l-[var(--theme-primary)] rounded-none') 
                     : 
                         (bubbleStyle === 'glass' ? 'bg-[var(--theme-primary)]/20 backdrop-blur-md border border-[var(--theme-primary)]/30' : 
-                         bubbleStyle === 'solid' ? 'bg-[var(--theme-primary)] text-white' : 
+<span class="branch-1 cbranch-no" title="branch not covered" >                         bubbleStyle === 'solid' ? 'bg-[var(--theme-primary)] text-white' : </span>
                          bubbleStyle === 'outline' ? 'border-2 border-[var(--theme-primary)] bg-transparent' : 
                          'bg-white/5 border border-white/10 rounded-lg')
                     }
                 `}
                 style={{ 
-                    borderRadius: bubbleStyle === 'minimal' ? (isBot ? '0' : '4px') : (isBot ? `${radius}px ${radius}px ${radius}px 0px` : `${radius}px ${radius}px 0px ${radius}px`),
-                    color: (!isBot &amp;&amp; bubbleStyle === 'solid') ? 'white' : 'var(--theme-title)'
+                    borderRadius: bubbleStyle === 'minimal' ? (<span class="branch-0 cbranch-no" title="branch not covered" >isBot ? '0' : '4px') : (i</span>sBot ? `${radius}px ${radius}px ${radius}px 0px` : `${radius}px ${radius}px 0px ${radius}px`),
+                    color: (!isBot &amp;&amp; bubbleStyle === 'solid') ? <span class="branch-0 cbranch-no" title="branch not covered" >'white' : '</span>var(--theme-title)'
                 }}
             &gt;
                 &lt;div className="text-[10px] @sm:text-xs font-medium leading-relaxed"&gt;
@@ -376,7 +376,7 @@ export const <span class="fstat-no" title="function not covered" >MockChat: Reac
         &lt;/motion.div&gt;
     );
 &nbsp;
-<span class="cstat-no" title="statement not covered" >    return (</span>
+    return (
         &lt;motion.div variants={animationVariants} initial="initial" animate="animate" exit="exit" className="w-full h-full flex gap-6 overflow-hidden relative p-2"&gt;
             
             {/* Coluna Esquerda: Workspace (Tela Cheia simulada) */}
@@ -466,7 +466,7 @@ export const <span class="fstat-no" title="function not covered" >MockChat: Reac
             <div class='footer quiet pad2 space-top1 center small'>
                 Code coverage generated by
                 <a href="https://istanbul.js.org/" target="_blank" rel="noopener noreferrer">istanbul</a>
-                at 2026-06-10T22:36:35.954Z
+                at 2026-06-10T23:11:31.174Z
             </div>
         <script src="../../../../prettify.js"></script>
         <script>

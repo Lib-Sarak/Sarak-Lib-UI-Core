@@ -14,6 +14,24 @@ vi.mock('../../../../core/Provider/SarakUIProvider', async (importOriginal) => {
     };
 });
 
+vi.mock('framer-motion', () => ({
+    motion: {
+        div: ({ children, ...props }: any) => <div {...props}>{children}</div>,
+        section: ({ children, ...props }: any) => <section {...props}>{children}</section>,
+        aside: ({ children, ...props }: any) => <aside {...props}>{children}</aside>,
+        button: ({ children, ...props }: any) => <button {...props}>{children}</button>
+    },
+    AnimatePresence: ({ children }: any) => <>{children}</>
+}));
+
+vi.mock('../Mocks/DashboardMock', () => ({
+    MockDashboard: () => <div data-testid="mock-dashboard">Dashboard Mocked</div>
+}));
+
+vi.mock('../KitchenSinkPreview', () => ({
+    KitchenSinkPreview: () => <div data-testid="mock-kitchen-sink">Kitchen Sink Mocked</div>
+}));
+
 describe('PreviewCanvas - Refatoração Data-Driven', () => {
     it('deve usar variaveis CSS injetadas no style em vez de inline widths', () => {
         const { container } = render(

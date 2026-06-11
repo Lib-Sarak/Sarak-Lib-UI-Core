@@ -23,9 +23,9 @@
         <div class='clearfix'>
             
             <div class='fl pad1y space-right2'>
-                <span class="strong">33.33% </span>
+                <span class="strong">83.33% </span>
                 <span class="quiet">Statements</span>
-                <span class='fraction'>2/6</span>
+                <span class='fraction'>5/6</span>
             </div>
         
             
@@ -37,16 +37,16 @@
         
             
             <div class='fl pad1y space-right2'>
-                <span class="strong">0% </span>
+                <span class="strong">75% </span>
                 <span class="quiet">Functions</span>
-                <span class='fraction'>0/4</span>
+                <span class='fraction'>3/4</span>
             </div>
         
             
             <div class='fl pad1y space-right2'>
-                <span class="strong">40% </span>
+                <span class="strong">100% </span>
                 <span class="quiet">Lines</span>
-                <span class='fraction'>2/5</span>
+                <span class='fraction'>5/5</span>
             </div>
         
             
@@ -61,7 +61,7 @@
             </div>
         </template>
     </div>
-    <div class='status-line low'></div>
+    <div class='status-line high'></div>
     <pre><table class="coverage">
 <tr><td class="line-count quiet"><a name='L1'></a><a href='#L1'>1</a>
 <a name='L2'></a><a href='#L2'>2</a>
@@ -152,8 +152,8 @@
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-yes">3x</span>
-<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-yes">6x</span>
+<span class="cline-any cline-yes">2x</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
@@ -172,7 +172,7 @@
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-yes">40x</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
@@ -180,8 +180,8 @@
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-yes">3x</span>
-<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-yes">6x</span>
+<span class="cline-any cline-yes">40x</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
@@ -230,8 +230,8 @@ interface TypographyCatalogProps {
     currentMode: string;
 }
 &nbsp;
-export const <span class="fstat-no" title="function not covered" >TypographyCatalog: React.FC&lt;TypographyCatalogProps&gt; = ({</span> onApplyPreset }) =&gt; {
-<span class="cstat-no" title="statement not covered" >    return (</span>
+export const TypographyCatalog: React.FC&lt;TypographyCatalogProps&gt; = ({ onApplyPreset }) =&gt; {
+    return (
         &lt;div className="w-full h-full flex flex-col relative bg-[var(--theme-bg)]"&gt;
             &lt;div className="px-8 py-5 border-b border-[var(--theme-border)] flex items-center justify-between bg-[var(--theme-surface)] backdrop-blur-md sticky top-0 z-10"&gt;
                 &lt;div className="flex items-center gap-4"&gt;
@@ -249,8 +249,8 @@ export const <span class="fstat-no" title="function not covered" >TypographyCata
 &nbsp;
             &lt;div className="flex-1 overflow-y-auto custom-scrollbar p-6"&gt;
                 &lt;div className="grid grid-cols-1 md:grid-cols-2 gap-6"&gt;
-                    {TYPOGRAPHY_PRESETS.<span class="fstat-no" title="function not covered" >map((p</span>reset, i) =&gt; (
-<span class="cstat-no" title="statement not covered" >                        &lt;TypographyPresetPreview key={preset.id} preset={preset} index={i} <span class="fstat-no" title="function not covered" >onApply={() =&gt; <span class="cstat-no" title="statement not covered" >o</span>nApplyPreset(preset.design, true)} /&gt;</span></span>
+                    {TYPOGRAPHY_PRESETS.map((preset, i) =&gt; (
+                        &lt;TypographyPresetPreview key={preset.id} preset={preset} index={i} <span class="fstat-no" title="function not covered" >onApply={() =&gt; <span class="cstat-no" title="statement not covered" >o</span>nApplyPreset(preset.design, true)} /&gt;</span>
                     ))}
                 &lt;/div&gt;
             &lt;/div&gt;
@@ -258,8 +258,8 @@ export const <span class="fstat-no" title="function not covered" >TypographyCata
     );
 };
 &nbsp;
-const <span class="fstat-no" title="function not covered" >TypographyPresetPreview = ({</span> preset, index, onApply }: { preset: ComponentPreset, index: number, onApply: () =&gt; void }) =&gt; {
-<span class="cstat-no" title="statement not covered" >    return (</span>
+const TypographyPresetPreview = ({ preset, index, onApply }: { preset: ComponentPreset, index: number, onApply: () =&gt; void }) =&gt; {
+    return (
         &lt;motion.button
             initial={{ opacity: 0, y: 10 }}
             animate={{ opacity: 1, y: 0 }}
@@ -304,7 +304,7 @@ const <span class="fstat-no" title="function not covered" >TypographyPresetPrevi
             <div class='footer quiet pad2 space-top1 center small'>
                 Code coverage generated by
                 <a href="https://istanbul.js.org/" target="_blank" rel="noopener noreferrer">istanbul</a>
-                at 2026-06-10T22:36:35.954Z
+                at 2026-06-10T23:11:31.174Z
             </div>
         <script src="../../../../prettify.js"></script>
         <script>

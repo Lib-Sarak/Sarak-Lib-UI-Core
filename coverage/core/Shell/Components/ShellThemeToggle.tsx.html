@@ -23,30 +23,30 @@
         <div class='clearfix'>
             
             <div class='fl pad1y space-right2'>
-                <span class="strong">70% </span>
+                <span class="strong">90% </span>
                 <span class="quiet">Statements</span>
-                <span class='fraction'>7/10</span>
+                <span class='fraction'>9/10</span>
             </div>
         
             
             <div class='fl pad1y space-right2'>
-                <span class="strong">33.33% </span>
+                <span class="strong">52.38% </span>
                 <span class="quiet">Branches</span>
-                <span class='fraction'>7/21</span>
+                <span class='fraction'>11/21</span>
             </div>
         
             
             <div class='fl pad1y space-right2'>
-                <span class="strong">50% </span>
+                <span class="strong">100% </span>
                 <span class="quiet">Functions</span>
-                <span class='fraction'>1/2</span>
+                <span class='fraction'>2/2</span>
             </div>
         
             
             <div class='fl pad1y space-right2'>
-                <span class="strong">70% </span>
+                <span class="strong">90% </span>
                 <span class="quiet">Lines</span>
-                <span class='fraction'>7/10</span>
+                <span class='fraction'>9/10</span>
             </div>
         
             
@@ -61,7 +61,7 @@
             </div>
         </template>
     </div>
-    <div class='status-line medium'></div>
+    <div class='status-line high'></div>
     <pre><table class="coverage">
 <tr><td class="line-count quiet"><a name='L1'></a><a href='#L1'>1</a>
 <a name='L2'></a><a href='#L2'>2</a>
@@ -130,18 +130,19 @@
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-yes">5x</span>
+<span class="cline-any cline-yes">3x</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-yes">3x</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-yes">3x</span>
 <span class="cline-any cline-yes">1x</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-yes">3x</span>
 <span class="cline-any cline-yes">1x</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-yes">1x</span>
-<span class="cline-any cline-no">&nbsp;</span>
-<span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-yes">1x</span>
-<span class="cline-any cline-no">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
@@ -151,9 +152,8 @@
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-yes">1x</span>
-<span class="cline-any cline-yes">1x</span>
+<span class="cline-any cline-yes">2x</span>
+<span class="cline-any cline-yes">2x</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
@@ -195,18 +195,18 @@ export const ShellThemeToggle: React.FC&lt;ShellThemeToggleProps&gt; = ({ varian
     // Safely fallback to 'dark' if undefined
     const isDarkMode = (design?.mode || 'dark') === 'dark';
 &nbsp;
-    const <span class="fstat-no" title="function not covered" >toggleTheme = () =&gt; {</span>
-<span class="cstat-no" title="statement not covered" >        applyConfigRaw({ mode: isDarkMode ? 'light' : 'dark' });</span>
+    const toggleTheme = () =&gt; {
+        applyConfigRaw({ mode: isDarkMode ? 'light' : <span class="branch-1 cbranch-no" title="branch not covered" >'dark' }</span>);
     };
 &nbsp;
-    <span class="missing-if-branch" title="if path not taken" >I</span>if (variant === 'mini') {
-<span class="cstat-no" title="statement not covered" >        return (</span>
+    if (variant === 'mini') {
+        return (
             &lt;button 
                 onClick={toggleTheme}
                 className="w-full flex justify-center p-2.5 rounded-xl text-[var(--theme-muted)] hover:bg-[var(--theme-muted)]/10 hover:text-[var(--theme-title)] transition-all"
-                title={`Mudar para modo ${isDarkMode ? 'claro' : 'escuro'}`}
+                title={`Mudar para modo ${isDarkMode ? 'claro' : <span class="branch-1 cbranch-no" title="branch not covered" >'escuro'}`}</span>
             &gt;
-                {isDarkMode ? &lt;Sun size={18} /&gt; : &lt;Moon size={18} /&gt;}
+                {isDarkMode ? &lt;Sun size={18} /&gt; : <span class="branch-1 cbranch-no" title="branch not covered" >&lt;Moon size={18} /&gt;}</span>
             &lt;/button&gt;
         );
     }
@@ -247,7 +247,7 @@ export const ShellThemeToggle: React.FC&lt;ShellThemeToggleProps&gt; = ({ varian
             <div class='footer quiet pad2 space-top1 center small'>
                 Code coverage generated by
                 <a href="https://istanbul.js.org/" target="_blank" rel="noopener noreferrer">istanbul</a>
-                at 2026-06-10T22:36:35.954Z
+                at 2026-06-10T23:11:31.174Z
             </div>
         <script src="../../../prettify.js"></script>
         <script>

@@ -23,30 +23,30 @@
         <div class='clearfix'>
             
             <div class='fl pad1y space-right2'>
-                <span class="strong">9.09% </span>
+                <span class="strong">100% </span>
                 <span class="quiet">Statements</span>
-                <span class='fraction'>1/11</span>
+                <span class='fraction'>11/11</span>
             </div>
         
             
             <div class='fl pad1y space-right2'>
-                <span class="strong">0% </span>
+                <span class="strong">100% </span>
                 <span class="quiet">Branches</span>
-                <span class='fraction'>0/8</span>
+                <span class='fraction'>8/8</span>
             </div>
         
             
             <div class='fl pad1y space-right2'>
-                <span class="strong">0% </span>
+                <span class="strong">100% </span>
                 <span class="quiet">Functions</span>
-                <span class='fraction'>0/2</span>
+                <span class='fraction'>2/2</span>
             </div>
         
             
             <div class='fl pad1y space-right2'>
-                <span class="strong">10% </span>
+                <span class="strong">100% </span>
                 <span class="quiet">Lines</span>
-                <span class='fraction'>1/10</span>
+                <span class='fraction'>10/10</span>
             </div>
         
             
@@ -61,7 +61,7 @@
             </div>
         </template>
     </div>
-    <div class='status-line low'></div>
+    <div class='status-line high'></div>
     <pre><table class="coverage">
 <tr><td class="line-count quiet"><a name='L1'></a><a href='#L1'>1</a>
 <a name='L2'></a><a href='#L2'>2</a>
@@ -185,22 +185,27 @@
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-yes">5x</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-yes">4x</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-yes">4x</span>
+<span class="cline-any cline-yes">1x</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-yes">3x</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-no">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-no">&nbsp;</span>
-<span class="cline-any cline-no">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-yes">4x</span>
+<span class="cline-any cline-yes">1x</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-no">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-no">&nbsp;</span>
-<span class="cline-any cline-no">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
@@ -256,24 +261,19 @@
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-yes">2x</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-no">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-yes">4x</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-no">&nbsp;</span>
-<span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-yes">3x</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
@@ -292,22 +292,22 @@ interface SovereignThemeInjectorProps {
  * que "sequestra" componentes externos com Tailwind absoluto (text-white, bg-zinc-950, etc) 
  * forçando a paridade visual (1:1:1:1) com o UI Core.
  */
-export const <span class="fstat-no" title="function not covered" >SovereignThemeInjector: React.FC&lt;SovereignThemeInjectorProps&gt; = ({</span> design, manifest }) =&gt; {
+export const SovereignThemeInjector: React.FC&lt;SovereignThemeInjectorProps&gt; = ({ design, manifest }) =&gt; {
     
-    const <span class="cstat-no" title="statement not covered" >hijackStyle = <span class="fstat-no" title="function not covered" >useMemo(() =&gt; {</span></span>
+    const hijackStyle = useMemo(() =&gt; {
         // Se o manifest pedir explicitamente para NÃO ser sequestrado, pulamos.
         // Isso permite o uso de frontends legados totalmente isentos, caso necessário.
-<span class="cstat-no" title="statement not covered" >        if (manifest?.sovereignHijack === false) {</span>
-<span class="cstat-no" title="statement not covered" >            return '';</span>
+        if (manifest?.sovereignHijack === false) {
+            return '';
         }
 &nbsp;
-        const mode = <span class="cstat-no" title="statement not covered" >design?.mode || 'dark';</span>
+        const mode = design?.mode || 'dark';
 &nbsp;
         // O Sequestro só é agressivo no MODO CLARO, porque no modo escuro 
         // as cores "bg-zinc-950" e "text-white" já coincidem naturalmente com o visual esperado.
         // No entanto, injetamos as regras usando os tokens da Sarak.
-<span class="cstat-no" title="statement not covered" >        if (mode === 'light') {</span>
-<span class="cstat-no" title="statement not covered" >            return `</span>
+        if (mode === 'light') {
+            return `
                 /* Sarak Sovereign Bridge - Light Mode Hijack */
                 
                 /* Textos Ofensivos (Brancos e Cinzas Claros que somem no modo Claro) */
@@ -368,7 +368,7 @@ export const <span class="fstat-no" title="function not covered" >SovereignTheme
         // Se for Dark Mode, forçamos os fundos para responder à tonalidade do tema atual
         // caso o tema seja colorido (ex: Tema Cyberpunk Dark), o "bg-zinc-950" hardcoded 
         // atrapalharia a coesão da matiz do cartão.
-<span class="cstat-no" title="statement not covered" >        return `</span>
+        return `
             /* Sarak Sovereign Bridge - Dark Mode Hue Hijack */
             body.dark .bg-zinc-950,
             body.dark .bg-black\\/40,
@@ -378,9 +378,9 @@ export const <span class="fstat-no" title="function not covered" >SovereignTheme
         `;
     }, [design?.mode, manifest]);
 &nbsp;
-<span class="cstat-no" title="statement not covered" >    if (!hijackStyle) <span class="cstat-no" title="statement not covered" >return null;</span></span>
+    if (!hijackStyle) return null;
 &nbsp;
-<span class="cstat-no" title="statement not covered" >    return (</span>
+    return (
         &lt;style id="sarak-sovereign-bridge" dangerouslySetInnerHTML={{ __html: hijackStyle }} /&gt;
     );
 };
@@ -391,7 +391,7 @@ export const <span class="fstat-no" title="function not covered" >SovereignTheme
             <div class='footer quiet pad2 space-top1 center small'>
                 Code coverage generated by
                 <a href="https://istanbul.js.org/" target="_blank" rel="noopener noreferrer">istanbul</a>
-                at 2026-06-10T22:36:35.954Z
+                at 2026-06-10T23:11:31.174Z
             </div>
         <script src="../../../prettify.js"></script>
         <script>

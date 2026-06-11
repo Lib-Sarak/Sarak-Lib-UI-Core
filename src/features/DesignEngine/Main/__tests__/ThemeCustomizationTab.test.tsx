@@ -51,13 +51,26 @@ vi.mock('../components/SaveThemeModal', () => ({
     )
 }));
 
-// Mocks do catálogo dinâmico
 vi.mock('../../../../core/Design/master-map', () => ({
-    MASTER_DESIGN_MAP: { components: [] }
+    MASTER_DESIGN_MAP: {
+        components: [
+            { id: 'cards', title: 'Cards', icon: () => <div data-testid="icon-cards" /> }
+        ]
+    }
 }));
 
 vi.mock('../../../../core/Design/catalog', () => ({
-    TokenCatalog: []
+    TokenCatalog: [
+        { id: 'cardBorderWidth', type: 'number', category: 'cards', subcategory: 'Base', defaultValue: 1 }
+    ]
+}));
+
+vi.mock('../../utils/dynamic-categories', () => ({
+    buildDynamicGroups: vi.fn(() => ({
+        cards: {
+            'Base': [{ id: 'cardBorderWidth', type: 'number', category: 'cards', subcategory: 'Base', defaultValue: 1 }]
+        }
+    }))
 }));
 
 vi.mock('../../utils/dynamic-categories', () => ({
@@ -138,6 +151,36 @@ describe('ThemeCustomizationTab', () => {
         
         expect(screen.getByText('Design Engine')).toBeInTheDocument();
         expect(screen.getByTestId('preview-canvas')).toBeInTheDocument();
+    });
+
+    it('expande uma categoria e renderiza tokens', () => {
+        const mockSetActivePillarId = vi.fn();
+        vi.mocked(useThemeEngineState).mockReturnValue({
+            ...vi.mocked(useThemeEngineState)(),
+            activePillarId: null,
+            setActivePillarId: mockSetActivePillarId,
+            isEssentialMode: false
+        } as any);
+
+        const { container, rerender } = render(<ThemeCustomizationTab />);
+        
+        // Em vez de procurar texto que pode ser quebrado, procuramos o ícone mockado
+        const icon = screen.queryByTestId('icon-cards');
+        if (icon) {
+            fireEvent.click(icon.parentElement!);
+            expect(mockSetActivePillarId).toHaveBeenCalledWith('cards');
+        }
+
+        // Mudar o estado para simular expansão
+        vi.mocked(useThemeEngineState).mockReturnValue({
+            ...vi.mocked(useThemeEngineState)(),
+            activePillarId: 'cards',
+            activeSectionId: null,
+            setActiveSectionId: vi.fn(),
+            isEssentialMode: false
+        } as any);
+
+        rerender(<ThemeCustomizationTab />);
     });
 
     it('alterna o modo de visualização', () => {

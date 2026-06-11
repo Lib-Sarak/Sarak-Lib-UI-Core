@@ -1,5 +1,5 @@
 import React from 'react';
-import { render, screen } from '@testing-library/react';
+import { render, screen, fireEvent } from '@testing-library/react';
 import '@testing-library/jest-dom';
 import { describe, it, expect, vi, beforeEach } from 'vitest';
 import { SarakUIProvider, useSarakUI } from '../SarakUIProvider';
@@ -49,6 +49,11 @@ const TestConsumer = () => {
         <div>
             <span data-testid="active-design-systemName">{ui.activeDesign.systemName}</span>
             <span data-testid="is-drafting">{ui.isDrafting ? 'true' : 'false'}</span>
+            <button data-testid="btn-set-drafting" onClick={() => ui.setIsDrafting(true)}>Set Drafting</button>
+            <button data-testid="btn-lock-drafting" onClick={() => ui.lockDrafting()}>Lock Drafting</button>
+            <button data-testid="btn-smart-apply" onClick={() => ui.applyConfig({ mode: 'dark' })}>Smart Apply</button>
+            <button data-testid="btn-smart-apply-full" onClick={() => ui.applyFullConfig({ mode: 'dark' })}>Smart Apply Full</button>
+            <span data-testid="draft-mode">{ui.draftDesign?.mode || 'null'}</span>
         </div>
     );
 };
@@ -112,5 +117,45 @@ describe('SarakUIProvider', () => {
         );
 
         expect(screen.queryByTestId('hidden-child')).not.toBeInTheDocument();
+    });
+
+    it('injeta as fontes no head do document ao montar', () => {
+        render(
+            <SarakUIProvider>
+                <div />
+            </SarakUIProvider>
+        );
+
+        const styleTag = document.getElementById('sarak-core-fonts');
+        expect(styleTag).toBeInTheDocument();
+        expect(styleTag?.textContent).toContain('@import url');
+
+        const links = document.querySelectorAll('link[rel="preconnect"]');
+        expect(links.length).toBeGreaterThan(0);
+    });
+
+    it('altera o estado de rascunho com setIsDrafting e lockDrafting', () => {
+        render(
+            <SarakUIProvider>
+                <TestConsumer />
+            </SarakUIProvider>
+        );
+
+        expect(screen.getByTestId('is-drafting')).toHaveTextContent('false');
+        
+        fireEvent.click(screen.getByTestId('btn-set-drafting'));
+        expect(screen.getByTestId('is-drafting')).toHaveTextContent('true');
+        
+        // lockDrafting atualiza o ref, mas não o estado renderizado, 
+        // então checamos se o smartApply reage ao lock.
+        fireEvent.click(screen.getByTestId('btn-lock-drafting'));
+        
+        // Ao clicar em smartApply com isDrafting=true ou lockDrafting, ele seta o draftDesign ao invés de chamar applyConfig
+        fireEvent.click(screen.getByTestId('btn-smart-apply'));
+        expect(screen.getByTestId('draft-mode')).toHaveTextContent('dark');
+        
+        // E smartApplyFullConfig
+        fireEvent.click(screen.getByTestId('btn-smart-apply-full'));
+        expect(screen.getByTestId('draft-mode')).toHaveTextContent('dark');
     });
 });
