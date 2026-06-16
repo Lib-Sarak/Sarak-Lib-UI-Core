@@ -236,99 +236,99 @@ export const PreviewCanvas: React.FC<PreviewCanvasProps> = ({
                     data-sx-texture={activeDesign.texture}
                 >
                     {/* 1. Base Background Layer (Pilar de Cor) */}
-                <div
-                    className={`absolute inset-0 z-0 ${activeDesign.globalBackgroundImageUrl ? 'bg-transparent' : 'bg-[var(--sarak-bg-base)]'}`}
-                    style={{ backgroundColor: activeDesign.globalBackgroundImageUrl ? 'transparent' : 'var(--sarak-bg-base)' }}
-                />
+                    <div
+                        className={`absolute inset-0 z-0 ${activeDesign.globalBackgroundImageUrl ? 'bg-transparent' : 'bg-[var(--sarak-bg-base)]'}`}
+                        style={{ backgroundColor: activeDesign.globalBackgroundImageUrl ? 'transparent' : 'var(--sarak-bg-base)' }}
+                    />
 
-                {/* 2. Content Layer (Pilar de Layout) - Scaled dynamically to prevent micro-miniature rendering */}
-                <div
-                    className={`absolute inset-0 origin-top-left overflow-hidden z-10 flex text-[var(--theme-text)] font-sans selection:bg-[var(--theme-primary)] selection:text-white layout-${navStyle} ${activeDesign.globalBackgroundImageUrl ? 'bg-transparent' : 'bg-[var(--theme-body)]'}`}
-                    style={{
-                        width: widthPercent,
-                        height: heightPercent,
-                        transform: `scale(${scaleFactor})`
-                    }}
-                >
-                    {/* HOVER SENSORS (v6.2) */}
-                    {activeDesign.isAutoHideEnabled && !previewNavVisible && (
-                        <>
-                            {isSidebar && (
-                                <div
-                                    onMouseEnter={() => setPreviewNavVisible(true)}
-                                    className="absolute left-0 top-0 w-4 h-full z-[1000] cursor-pointer"
-                                />
-                            )}
-                            {isDock && (
-                                <div
-                                    onMouseEnter={() => setPreviewNavVisible(true)}
-                                    className="absolute bottom-0 left-0 w-full h-8 z-[1000] cursor-pointer"
-                                />
-                            )}
-                        </>
-                    )}
+                    {/* 2. Content Layer (Pilar de Layout) - Scaled dynamically to prevent micro-miniature rendering */}
+                    <div
+                        className={`absolute inset-0 origin-top-left overflow-hidden z-10 flex text-[var(--theme-text)] font-sans selection:bg-[var(--theme-primary)] selection:text-white layout-${navStyle} ${activeDesign.globalBackgroundImageUrl ? 'bg-transparent' : 'bg-[var(--theme-body)]'}`}
+                        style={{
+                            width: widthPercent,
+                            height: heightPercent,
+                            transform: `scale(${scaleFactor})`
+                        }}
+                    >
+                        {/* HOVER SENSORS (v6.2) */}
+                        {activeDesign.isAutoHideEnabled && !previewNavVisible && (
+                            <>
+                                {isSidebar && (
+                                    <div
+                                        onMouseEnter={() => setPreviewNavVisible(true)}
+                                        className="absolute left-0 top-0 w-4 h-full z-[1000] cursor-pointer"
+                                    />
+                                )}
+                                {isDock && (
+                                    <div
+                                        onMouseEnter={() => setPreviewNavVisible(true)}
+                                        className="absolute bottom-0 left-0 w-full h-8 z-[1000] cursor-pointer"
+                                    />
+                                )}
+                            </>
+                        )}
 
-                    {/* SIDEBAR NAVIGATION */}
-                    {isSidebar && (
-                        <SidebarNav
-                            design={activeDesign}
-                            brand={{ name: activeDesign.systemName || "Sarak Preview" }}
-                            user={parentContext?.options?.user || { displayName: 'Sarak User', primaryEmail: 'preview@sarak.io' }}
-                            logout={() => { }}
-                            toggleNav={() => onUpdateDraft('isNavHidden', !activeDesign.isNavHidden)}
-                            activeModuleId={activePreviewApp}
-                            setActiveModuleId={setActivePreviewApp}
-                            groupedModules={mockGroupedModules}
-                            setIsNavVisible={setPreviewNavVisible}
-                            setIsSearchOpen={() => { }}
-                            startResizing={startResizingSidebar as any}
-                        />
-                    )}
-
-                    {/* DOCK NAVIGATION */}
-                    {isDock && (
-                        <DockNav
-                            design={activeDesign}
-                            discoveredModules={mockDiscoveredModules}
-                            activeModuleId={activePreviewApp}
-                            setActiveModuleId={setActivePreviewApp}
-                            setIsSearchOpen={() => { }}
-                            isNavVisible={previewNavVisible}
-                            setIsNavVisible={setPreviewNavVisible}
-                        />
-                    )}
-
-                    {/* CONTENT AREA */}
-                    <div className={`flex-1 flex flex-col h-full overflow-hidden relative ${activeDesign.globalBackgroundImageUrl ? 'bg-transparent' : 'bg-[var(--theme-body)]'}`}>
-                        {/* SHELL HEADER (TOPBAR ONLY) */}
-                        {isTopbar && (
-                            <TopbarNav
+                        {/* SIDEBAR NAVIGATION */}
+                        {isSidebar && (
+                            <SidebarNav
                                 design={activeDesign}
                                 brand={{ name: activeDesign.systemName || "Sarak Preview" }}
-                                toggleNav={() => onUpdateDraft('isNavHidden', !activeDesign.isNavHidden)}
-                                setIsSearchOpen={() => { }}
-                                activeModuleId={activePreviewApp}
-                                setActiveModuleId={setActivePreviewApp}
-                                discoveredModules={mockDiscoveredModules}
                                 user={parentContext?.options?.user || { displayName: 'Sarak User', primaryEmail: 'preview@sarak.io' }}
                                 logout={() => { }}
-                                startResizing={startResizingTopbar as any}
+                                toggleNav={() => onUpdateDraft('isNavHidden', !activeDesign.isNavHidden)}
+                                activeModuleId={activePreviewApp}
+                                setActiveModuleId={setActivePreviewApp}
+                                groupedModules={mockGroupedModules}
+                                setIsNavVisible={setPreviewNavVisible}
+                                setIsSearchOpen={() => { }}
+                                startResizing={startResizingSidebar as any}
                             />
                         )}
 
-                        {/* MAIN CONTENT CANVAS */}
-                        <main
-                            className={`flex-1 overflow-y-auto p-12 relative z-10 bg-transparent custom-scrollbar isolate ${hasTexture ? 'texture-active' : ''}`}
-                            data-sx-texture={activeDesign.texture}
-                        >
-                            <div className="relative z-10">
-                                {apps[activePreviewApp]}
-                            </div>
-                        </main>
+                        {/* DOCK NAVIGATION */}
+                        {isDock && (
+                            <DockNav
+                                design={activeDesign}
+                                discoveredModules={mockDiscoveredModules}
+                                activeModuleId={activePreviewApp}
+                                setActiveModuleId={setActivePreviewApp}
+                                setIsSearchOpen={() => { }}
+                                isNavVisible={previewNavVisible}
+                                setIsNavVisible={setPreviewNavVisible}
+                            />
+                        )}
+
+                        {/* CONTENT AREA */}
+                        <div className={`flex-1 flex flex-col h-full overflow-hidden relative ${activeDesign.globalBackgroundImageUrl ? 'bg-transparent' : 'bg-[var(--theme-body)]'}`}>
+                            {/* SHELL HEADER (TOPBAR ONLY) */}
+                            {isTopbar && (
+                                <TopbarNav
+                                    design={activeDesign}
+                                    brand={{ name: activeDesign.systemName || "Sarak Preview" }}
+                                    toggleNav={() => onUpdateDraft('isNavHidden', !activeDesign.isNavHidden)}
+                                    setIsSearchOpen={() => { }}
+                                    activeModuleId={activePreviewApp}
+                                    setActiveModuleId={setActivePreviewApp}
+                                    discoveredModules={mockDiscoveredModules}
+                                    user={parentContext?.options?.user || { displayName: 'Sarak User', primaryEmail: 'preview@sarak.io' }}
+                                    logout={() => { }}
+                                    startResizing={startResizingTopbar as any}
+                                />
+                            )}
+
+                            {/* MAIN CONTENT CANVAS */}
+                            <main
+                                className={`flex-1 overflow-y-auto p-12 relative z-10 bg-transparent custom-scrollbar isolate ${hasTexture ? 'texture-active' : ''}`}
+                                data-sx-texture={activeDesign.texture}
+                            >
+                                <div className="relative z-10">
+                                    {apps[activePreviewApp]}
+                                </div>
+                            </main>
+                        </div>
                     </div>
-                </div>
-            </DesignScope>
-        </DeviceProvider>
+                </DesignScope>
+            </DeviceProvider>
         );
     };
 
@@ -361,9 +361,9 @@ export const PreviewCanvas: React.FC<PreviewCanvasProps> = ({
                     {isDualView ? (
                         <>
                             {/* Live Draft Preview (Gêmeo Digital) */}
-                            <div 
-                                className={`relative shrink-0 overflow-hidden bg-[var(--theme-surface)] transition-all duration-500 flex flex-col group min-h-[300px] w-[var(--device-width)] h-[var(--device-height)] max-w-full max-h-[var(--device-max-height)] ${getDeviceHeightClass()} ${getDeviceFrameStyles()} ${previewDevice === 'desktop' ? 'resize' : 'resize-none'}`} 
-                                style={{ 
+                            <div
+                                className={`relative shrink-0 overflow-hidden bg-[var(--theme-surface)] transition-all duration-500 flex flex-col group min-h-[300px] w-[var(--device-width)] h-[var(--device-height)] max-w-full max-h-[var(--device-max-height)] ${getDeviceHeightClass()} ${getDeviceFrameStyles()} ${previewDevice === 'desktop' ? 'resize' : 'resize-none'}`}
+                                style={{
                                     '--device-width': previewDevice === 'desktop' ? (isPreviewStacked ? '100%' : '50%') : targetWidth,
                                     '--device-height': previewDevice === 'smartphone' ? '812px' : previewDevice === 'tablet' ? '1024px' : 'auto',
                                     '--device-max-height': previewDevice !== 'desktop' ? '90vh' : 'none'
@@ -386,6 +386,7 @@ export const PreviewCanvas: React.FC<PreviewCanvasProps> = ({
                                 <button
                                     onClick={() => setIsInspecting(!isInspecting)}
                                     className={`absolute top-4 right-4 z-[9999] p-2 rounded-full backdrop-blur-md border shadow-2xl transition-all ${isInspecting ? 'bg-[var(--theme-primary)] text-white border-[var(--theme-primary)] animate-pulse scale-110' : 'bg-black/40 border-white/10 text-white/50 hover:text-white hover:bg-black/60 opacity-0 group-hover:opacity-100'}`}
+                                    style={isInspecting ? { backgroundColor: 'var(--theme-primary, #00f2ff)', borderColor: 'var(--theme-primary, #00f2ff)' } : {}}
                                     title="Modo de Inspeção (Selecionar elemento)"
                                 >
                                     <Monitor size={16} />
@@ -411,7 +412,8 @@ export const PreviewCanvas: React.FC<PreviewCanvasProps> = ({
 
 
                             {/* Catalog Preview (Engine Controls) */}
-                            <div className={`relative flex-auto shrink-0 rounded-[2rem] border border-[var(--theme-border)] shadow-theme overflow-hidden bg-[var(--theme-card)] transition-colors duration-500 flex flex-col min-h-[300px] min-w-[250px] resize ${isPreviewStacked ? 'w-full h-[45vh]' : 'w-1/2 h-full'}`}>
+                            <div className={`relative flex-auto shrink-0 rounded-[2rem] border border-[var(--theme-border)] shadow-theme overflow-hidden bg-[var(--theme-card)] transition-colors duration-500 flex flex-col min-h-[300px] min-w-[250px] resize ${isPreviewStacked ? 'w-full h-[45vh]' : 'w-1/2 h-full'}`}
+                                 style={{ backgroundColor: 'var(--theme-card, #111111)', borderColor: 'var(--theme-border, rgba(255,255,255,0.1))' }}>
                                 <PresetsCatalog
                                     onApplyPreset={handleApplyPreset}
                                     activeCategory={activeCategory}
@@ -420,7 +422,7 @@ export const PreviewCanvas: React.FC<PreviewCanvasProps> = ({
                             </div>
                         </>
                     ) : (
-                        <div 
+                        <div
                             className="relative h-full rounded-2xl border border-[var(--theme-border)] shadow-theme overflow-hidden bg-[var(--theme-surface)] transition-all duration-500 mx-auto w-[var(--target-width)] max-w-full"
                             style={{ '--target-width': targetWidth } as React.CSSProperties}
                         >

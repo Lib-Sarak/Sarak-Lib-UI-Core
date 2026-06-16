@@ -1,9 +1,9 @@
 import React, { useState, useEffect, useMemo, useCallback } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
 import {
-    Zap, Check, Monitor, Tablet, Smartphone, 
+    Zap, Check, Monitor, Tablet, Smartphone,
     Palette, Moon, Sun, Globe, AlertCircle, Sparkles, Command, RotateCcw,
-    Shield, Layout, Menu, Box, MousePointer2, Type, Hash, BarChart, Layers, 
+    Shield, Layout, Menu, Box, MousePointer2, Type, Hash, BarChart, Layers,
     MessageSquare, Bell, Cpu, ExternalLink, Table, Settings, FileJson, ChevronDown, Search, Activity
 } from 'lucide-react';
 
@@ -23,12 +23,12 @@ import { useDesignDraft } from '../hooks/useDesignDraft';
 import { useThemeEngineState } from './hooks/useThemeEngineState';
 import { useResizable } from '../hooks/useResizable';
 import { TokenControl } from './components/TokenControl';
-import { 
-    CategoryLabel, 
-    Section, 
-    ColorControl, 
-    SliderControl, 
-    SelectControl, 
+import {
+    CategoryLabel,
+    Section,
+    ColorControl,
+    SliderControl,
+    SelectControl,
     SwitchControl,
     InputControl,
     MediaUploaderControl
@@ -62,10 +62,10 @@ export const ThemeCustomizationTab: React.FC = () => {
         fetchActiveTheme
     } = useThemeEngineState();
 
-    const { 
-        draft, 
-        updateDraft, 
-        handleApplyToSystem, 
+    const {
+        draft,
+        updateDraft,
+        handleApplyToSystem,
         handleApplyComponent,
         isComponentDirty,
         resetComponent,
@@ -192,7 +192,7 @@ export const ThemeCustomizationTab: React.FC = () => {
         setCurrentThemeOrigin('script');
         setCurrentThemeId(null);
         setCurrentThemeName(design.systemName || 'Novo Tema');
-        
+
         // Joga o design inteiro pro draft (Sandbox) para refletir no Preview
         if (handleThemePreview) {
             handleThemePreview(design);
@@ -245,8 +245,8 @@ export const ThemeCustomizationTab: React.FC = () => {
     }, []);
 
     const handleInspectComponent = useCallback((schemaId: string) => {
-        const foundPillar = Object.keys(groupedStructure).find(p => 
-            Object.values(groupedStructure[p]).some(comps => 
+        const foundPillar = Object.keys(groupedStructure).find(p =>
+            Object.values(groupedStructure[p]).some(comps =>
                 comps.some(c => c.id === schemaId)
             )
         );
@@ -259,7 +259,7 @@ export const ThemeCustomizationTab: React.FC = () => {
     const filteredResults = useMemo(() => {
         if (!searchQuery) return null;
         const query = searchQuery.toLowerCase();
-        return MASTER_DESIGN_MAP.components.flatMap(c => 
+        return MASTER_DESIGN_MAP.components.flatMap(c =>
             c.tokens.filter(t => t.label.toLowerCase().includes(query) || t.id.toLowerCase().includes(query))
         );
     }, [searchQuery]);
@@ -267,12 +267,12 @@ export const ThemeCustomizationTab: React.FC = () => {
     return (
         <div className="flex flex-1 h-screen max-h-screen bg-[var(--theme-bg)] overflow-hidden">
             {/* Sidebar de Configuração */}
-            <div 
+            <div
                 className={`flex flex-col h-full max-h-full border-r border-[var(--theme-border)] bg-[var(--theme-card)] relative z-10 overflow-hidden shrink-0 w-[var(--engine-sidebar-width)] min-w-[280px] max-w-[600px] ${isResizingEngine ? 'transition-none' : 'transition-all duration-300'}`}
                 style={{ '--engine-sidebar-width': `${engineSidebarWidth}px` } as React.CSSProperties}
             >
                 <div onMouseDown={startResizingEngine} className="absolute right-0 top-0 w-1.5 h-full cursor-col-resize hover:bg-[var(--theme-primary)]/50 transition-colors z-50 active:bg-[var(--theme-primary)]" />
-                
+
                 {/* Header Superior */}
                 <div className="p-5 pb-4 shrink-0 border-b border-[var(--theme-border)] bg-[var(--theme-surface)]">
                     <div className="flex items-center justify-between mb-4">
@@ -285,25 +285,24 @@ export const ThemeCustomizationTab: React.FC = () => {
                         <div className="flex items-center gap-2">
                             <div className="flex gap-1 p-0.5 bg-[var(--theme-layer)] rounded-lg border border-[var(--theme-border)]">
                                 {['preview', 'catalog', 'templates'].map((m) => (
-                                    <button 
-                                        key={m} 
-                                        onClick={() => setViewMode(m as any)} 
+                                    <button
+                                        key={m}
+                                        onClick={() => setViewMode(m as any)}
                                         className={`p-1.5 rounded-md transition-all ${viewMode === m ? 'bg-[var(--theme-primary)]/20 text-[var(--theme-primary)]' : 'text-[var(--theme-muted)] hover:text-[var(--theme-text)]'}`}
                                     >
                                         {m === 'preview' ? <Monitor size={10} /> : m === 'catalog' ? <Table size={10} /> : <FileJson size={10} />}
                                     </button>
                                 ))}
                             </div>
-                            
+
                             {/* Botão de Salvar Dinâmico */}
                             <button
                                 onClick={() => setIsSaveModalOpen(true)}
                                 disabled={!isDirty}
-                                className={`flex items-center gap-1.5 px-3 py-1.5 rounded-lg border transition-all ${
-                                    isDirty 
+                                className={`flex items-center gap-1.5 px-3 py-1.5 rounded-lg border transition-all ${isDirty
                                         ? 'bg-[var(--theme-primary)]/20 border-[var(--theme-primary)]/50 text-[var(--theme-primary)] hover:bg-[var(--theme-primary)] hover:text-white shadow-[0_0_15px_rgba(var(--theme-primary-rgb),0.2)]'
                                         : 'bg-black/10 border-[var(--theme-border)] text-[var(--theme-muted)] cursor-not-allowed'
-                                }`}
+                                    }`}
                                 title={isDirty ? "Você possui alterações não salvas" : "Nenhuma alteração"}
                             >
                                 <span className="text-[10px] font-black uppercase tracking-widest">{isDirty ? 'Salvar' : 'Salvo'}</span>
@@ -321,11 +320,10 @@ export const ThemeCustomizationTab: React.FC = () => {
                             <button
                                 key={device.id}
                                 onClick={() => setPreviewDevice(device.id as any)}
-                                className={`flex-1 flex items-center justify-center gap-1.5 py-1.5 rounded-lg text-[9px] font-black uppercase tracking-widest transition-all ${
-                                    previewDevice === device.id 
-                                        ? 'bg-[var(--theme-primary)] text-white shadow-[0_0_10px_rgba(var(--theme-primary-rgb),0.3)]' 
+                                className={`flex-1 flex items-center justify-center gap-1.5 py-1.5 rounded-lg text-[9px] font-black uppercase tracking-widest transition-all ${previewDevice === device.id
+                                        ? 'bg-[var(--theme-primary)] text-white shadow-[0_0_10px_rgba(var(--theme-primary-rgb),0.3)]'
                                         : 'text-[var(--theme-muted)] hover:text-[var(--theme-text)] hover:bg-[var(--theme-surface)]'
-                                }`}
+                                    }`}
                             >
                                 <device.icon size={12} />
                                 {device.label}
@@ -337,8 +335,8 @@ export const ThemeCustomizationTab: React.FC = () => {
                     <div className="flex flex-col gap-3 mb-4">
                         <div className="relative group">
                             <Search size={10} className="absolute left-3 top-1/2 -translate-y-1/2 text-[var(--theme-muted)] group-focus-within:text-[var(--theme-primary)] transition-all" />
-                            <input 
-                                type="text" 
+                            <input
+                                type="text"
                                 placeholder="BUSCAR TOKEN..."
                                 value={searchQuery}
                                 onChange={(e) => setSearchQuery(e.target.value)}
@@ -346,7 +344,7 @@ export const ThemeCustomizationTab: React.FC = () => {
                             />
                         </div>
                         <div className="flex items-center justify-between">
-                            <label 
+                            <label
                                 className="flex items-center gap-2 cursor-pointer group"
                                 onClick={(e) => {
                                     e.preventDefault();
@@ -359,7 +357,7 @@ export const ThemeCustomizationTab: React.FC = () => {
                                 <span className="text-[9px] font-black uppercase tracking-widest text-[var(--theme-muted)] group-hover:text-[var(--theme-text)]">Modo Avançado (Hyper-Granular)</span>
                             </label>
 
-                            <label 
+                            <label
                                 className="flex items-center gap-2 cursor-pointer group"
                                 onClick={(e) => {
                                     e.preventDefault();
@@ -398,14 +396,14 @@ export const ThemeCustomizationTab: React.FC = () => {
                             </motion.div>
                         ) : viewMode === 'preview' ? (
                             <motion.div key="pillars" initial={{ opacity: 0, x: -10 }} animate={{ opacity: 1, x: 0 }} className="pt-2 pb-20">
-                                
+
                                 {/* PILAR 0: CONFIGURAÇÕES GLOBAIS */}
                                 <div key="global-pillar" className="border-b border-[var(--theme-border)] last:border-0">
-                                    <CategoryLabel 
-                                        icon={Globe} 
-                                        title="0. Configurações Globais (2)" 
-                                        index={0} 
-                                        isOpen={activePillarId === 'global'} 
+                                    <CategoryLabel
+                                        icon={Globe}
+                                        title="0. Configurações Globais (2)"
+                                        index={0}
+                                        isOpen={activePillarId === 'global'}
                                         onToggle={() => setActivePillarId(activePillarId === 'global' ? null : 'global')}
                                         isDirty={isComponentDirty('global')}
                                         onReset={() => resetComponent('global')}
@@ -413,7 +411,7 @@ export const ThemeCustomizationTab: React.FC = () => {
                                     />
                                     <AnimatePresence>
                                         {activePillarId === 'global' && (
-                                            <motion.div 
+                                            <motion.div
                                                 initial={{ height: 0, opacity: 0 }}
                                                 animate={{ height: 'auto', opacity: 1 }}
                                                 exit={{ height: 0, opacity: 0 }}
@@ -423,11 +421,11 @@ export const ThemeCustomizationTab: React.FC = () => {
                                                 <div className="px-2 py-2 flex flex-col gap-1">
                                                     {/* Preferências Globais */}
                                                     {globalComponent && (
-                                                        <Section 
-                                                            id="global-preferences" 
-                                                            icon={Globe} 
-                                                            title={`Preferências Globais (${globalComponent.tokens.length})`} 
-                                                            activeSection={activeSectionId} 
+                                                        <Section
+                                                            id="global-preferences"
+                                                            icon={Globe}
+                                                            title={`Preferências Globais (${globalComponent.tokens.length})`}
+                                                            activeSection={activeSectionId}
                                                             onToggle={setActiveSectionId}
                                                         >
                                                             <div className="flex flex-col gap-4">
@@ -441,38 +439,38 @@ export const ThemeCustomizationTab: React.FC = () => {
                                                             </div>
                                                         </Section>
                                                     )}
-                                                    
+
                                                     {/* Identidade da Empresa */}
                                                     {sarak.branding && sarak.updateBranding && (
-                                                        <Section 
-                                                            id="global-branding" 
-                                                            icon={Shield} 
-                                                            title="Identidade da Empresa (4)" 
-                                                            activeSection={activeSectionId} 
+                                                        <Section
+                                                            id="global-branding"
+                                                            icon={Shield}
+                                                            title="Identidade da Empresa (4)"
+                                                            activeSection={activeSectionId}
                                                             onToggle={setActiveSectionId}
                                                         >
                                                             <div className="flex flex-col gap-4">
-                                                                <InputControl 
-                                                                    label="Nome da Empresa (Topo/Sidebar)" 
-                                                                    type="text" 
-                                                                    value={sarak.branding.companyName || ''} 
-                                                                    onChange={(val: string) => sarak.updateBranding!({ companyName: val })} 
+                                                                <InputControl
+                                                                    label="Nome da Empresa (Topo/Sidebar)"
+                                                                    type="text"
+                                                                    value={sarak.branding.companyName || ''}
+                                                                    onChange={(val: string) => sarak.updateBranding!({ companyName: val })}
                                                                 />
-                                                                <InputControl 
-                                                                    label="Nome no Login" 
-                                                                    type="text" 
-                                                                    value={sarak.branding.loginName || ''} 
-                                                                    onChange={(val: string) => sarak.updateBranding!({ loginName: val })} 
+                                                                <InputControl
+                                                                    label="Nome no Login"
+                                                                    type="text"
+                                                                    value={sarak.branding.loginName || ''}
+                                                                    onChange={(val: string) => sarak.updateBranding!({ loginName: val })}
                                                                 />
-                                                                <InputControl 
-                                                                    label="Aba do Navegador" 
-                                                                    value={sarak.branding.tabName || ''} 
-                                                                    onChange={(val: string) => sarak.updateBranding!({ tabName: val })} 
+                                                                <InputControl
+                                                                    label="Aba do Navegador"
+                                                                    value={sarak.branding.tabName || ''}
+                                                                    onChange={(val: string) => sarak.updateBranding!({ tabName: val })}
                                                                 />
-                                                                <MediaUploaderControl 
-                                                                    label="Logotipo (Mídia Híbrida)" 
-                                                                    value={sarak.branding.logoBase64 || null} 
-                                                                    onChange={(val: string | null) => sarak.updateBranding!({ logoBase64: val })} 
+                                                                <MediaUploaderControl
+                                                                    label="Logotipo (Mídia Híbrida)"
+                                                                    value={sarak.branding.logoBase64 || null}
+                                                                    onChange={(val: string | null) => sarak.updateBranding!({ logoBase64: val })}
                                                                 />
                                                             </div>
                                                         </Section>
@@ -490,54 +488,54 @@ export const ThemeCustomizationTab: React.FC = () => {
                                     }).length;
 
                                     return (
-                                    <div key={pillar.id} className="border-b border-[var(--theme-border)] last:border-0">
-                                        <CategoryLabel 
-                                            icon={pillar.icon} 
-                                            title={`${pillar.title} (${activeSubcategoriesCount})`} 
-                                            index={pillar.index} 
-                                            isOpen={activePillarId === pillar.id} 
-                                            onToggle={() => {
-                                                const nextId = activePillarId === pillar.id ? null : pillar.id;
-                                                setActivePillarId(nextId);
-                                                if (nextId === 'advanced') setActivePreviewApp('matrix');
-                                            }}
-                                            isDirty={isComponentDirty(pillar.id)}
-                                            onReset={() => resetComponent(pillar.id)}
-                                            onApply={() => handleApplyComponent(pillar.id)}
-                                        />
-                                        <AnimatePresence>
-                                            {activePillarId === pillar.id && (
-                                                <motion.div initial={{ height: 0, opacity: 0 }} animate={{ height: 'auto', opacity: 1 }} exit={{ height: 0, opacity: 0 }} className="overflow-hidden bg-[var(--theme-layer)]">
-                                                    <div className="px-2 py-2 flex flex-col gap-1">
-                                                        {Object.entries(groupedStructure[pillar.id] || {}).map(([subcat, tokens]) => {
-                                                            const visibleTokens = (tokens as any[]).filter((token: any) => !isEssentialMode || dynamicEssentialTokens.has(token.id));
-                                                            if (visibleTokens.length === 0) return null;
-                                                            return (
-                                                                <Section 
-                                                                    key={subcat} id={`${pillar.id}-${subcat}`} icon={Command} title={`${subcat} (${visibleTokens.length})`} 
-                                                                    activeSection={activeSectionId} onToggle={setActiveSectionId}
-                                                                >
-                                                                    <div className="flex flex-col gap-4">
-                                                                        {visibleTokens.map((token: any) => {
-                                                                            const meta = catalogMap.get(token.id);
-                                                                            const enhancedToken = {
-                                                                                ...token,
-                                                                                label: meta?.name || token.label,
-                                                                                description: meta?.description || token.description
-                                                                            };
-                                                                            return (
-                                                                                <TokenControl key={enhancedToken.id} token={enhancedToken} value={draft[enhancedToken.id]} onChange={(val) => updateDraft(enhancedToken.id, val)} previewDevice={previewDevice} />
-                                                                            );
-                                                                        })}
-                                                                    </div>
-                                                                </Section>
-                                                            );
-                                                        })}
-                                                    </div>
-                                                </motion.div>
-                                            )}
-                                        </AnimatePresence>
-                                    </div>
+                                        <div key={pillar.id} className="border-b border-[var(--theme-border)] last:border-0">
+                                            <CategoryLabel
+                                                icon={pillar.icon}
+                                                title={`${pillar.title} (${activeSubcategoriesCount})`}
+                                                index={pillar.index}
+                                                isOpen={activePillarId === pillar.id}
+                                                onToggle={() => {
+                                                    const nextId = activePillarId === pillar.id ? null : pillar.id;
+                                                    setActivePillarId(nextId);
+                                                    if (nextId === 'advanced') setActivePreviewApp('matrix');
+                                                }}
+                                                isDirty={isComponentDirty(pillar.id)}
+                                                onReset={() => resetComponent(pillar.id)}
+                                                onApply={() => handleApplyComponent(pillar.id)}
+                                            />
+                                            <AnimatePresence>
+                                                {activePillarId === pillar.id && (
+                                                    <motion.div initial={{ height: 0, opacity: 0 }} animate={{ height: 'auto', opacity: 1 }} exit={{ height: 0, opacity: 0 }} className="overflow-hidden bg-[var(--theme-layer)]">
+                                                        <div className="px-2 py-2 flex flex-col gap-1">
+                                                            {Object.entries(groupedStructure[pillar.id] || {}).map(([subcat, tokens]) => {
+                                                                const visibleTokens = (tokens as any[]).filter((token: any) => !isEssentialMode || dynamicEssentialTokens.has(token.id));
+                                                                if (visibleTokens.length === 0) return null;
+                                                                return (
+                                                                    <Section
+                                                                        key={subcat} id={`${pillar.id}-${subcat}`} icon={Command} title={`${subcat} (${visibleTokens.length})`}
+                                                                        activeSection={activeSectionId} onToggle={setActiveSectionId}
+                                                                    >
+                                                                        <div className="flex flex-col gap-4">
+                                                                            {visibleTokens.map((token: any) => {
+                                                                                const meta = catalogMap.get(token.id);
+                                                                                const enhancedToken = {
+                                                                                    ...token,
+                                                                                    label: meta?.name || token.label,
+                                                                                    description: meta?.description || token.description
+                                                                                };
+                                                                                return (
+                                                                                    <TokenControl key={enhancedToken.id} token={enhancedToken} value={draft[enhancedToken.id]} onChange={(val) => updateDraft(enhancedToken.id, val)} previewDevice={previewDevice} />
+                                                                                );
+                                                                            })}
+                                                                        </div>
+                                                                    </Section>
+                                                                );
+                                                            })}
+                                                        </div>
+                                                    </motion.div>
+                                                )}
+                                            </AnimatePresence>
+                                        </div>
                                     );
                                 })}
                             </motion.div>
@@ -556,7 +554,7 @@ export const ThemeCustomizationTab: React.FC = () => {
 
             {/* Canvas de Preview */}
             <div className="flex-1 relative bg-[var(--theme-bg)] flex flex-col">
-                <PreviewCanvas 
+                <PreviewCanvas
                     previewDevice={previewDevice}
                     activePreviewApp={activePreviewApp}
                     config={draft}
@@ -577,7 +575,7 @@ export const ThemeCustomizationTab: React.FC = () => {
                     onInspectComponent={handleInspectComponent}
                     onApplyFullTheme={handleApplyFullTheme}
                 />
-                
+
                 {/* Toasts de Feedback */}
                 <AnimatePresence>
                     {toast && (
@@ -591,7 +589,7 @@ export const ThemeCustomizationTab: React.FC = () => {
                 </AnimatePresence>
             </div>
 
-            <SaveThemeModal 
+            <SaveThemeModal
                 isOpen={isSaveModalOpen}
                 origin={currentThemeOrigin}
                 themeName={currentThemeName}

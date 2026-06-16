@@ -10,7 +10,7 @@ interface AtmosphereCatalogProps {
     currentMode: string;
 }
 
-export const AtmosphereCatalog: React.FC<AtmosphereCatalogProps> = ({ onApplyPreset }) => {
+export const AtmosphereCatalog: React.FC<AtmosphereCatalogProps> = ({ onApplyPreset, currentMode }) => {
     const [activeTab, setActiveTab] = useState<'media' | 'textures'>('media');
 
     return (
@@ -30,14 +30,14 @@ export const AtmosphereCatalog: React.FC<AtmosphereCatalogProps> = ({ onApplyPre
 
                 <div className="flex items-center gap-4">
                     <div className="flex items-center gap-2 p-1 bg-black/20 rounded-xl border border-[var(--theme-border)]">
-                        <button 
+                        <button
                             onClick={() => setActiveTab('media')}
                             className={`px-4 py-2 rounded-lg text-[10px] font-black uppercase tracking-widest transition-all flex items-center gap-2 ${activeTab === 'media' ? 'bg-[var(--theme-primary)] text-white shadow-lg' : 'text-[var(--theme-muted)] hover:text-white hover:bg-white/5'}`}
                         >
                             <Video size={12} />
                             Mídia Base
                         </button>
-                        <button 
+                        <button
                             onClick={() => setActiveTab('textures')}
                             className={`px-4 py-2 rounded-lg text-[10px] font-black uppercase tracking-widest transition-all flex items-center gap-2 ${activeTab === 'textures' ? 'bg-[var(--theme-primary)] text-white shadow-lg' : 'text-[var(--theme-muted)] hover:text-white hover:bg-white/5'}`}
                         >
@@ -48,16 +48,16 @@ export const AtmosphereCatalog: React.FC<AtmosphereCatalogProps> = ({ onApplyPre
 
                     <div className="flex items-center gap-3 px-4 py-2 bg-black/20 rounded-xl border border-[var(--theme-border)]">
                         <span className="text-[10px] font-black text-[var(--theme-text)] uppercase tracking-widest">Opacidade</span>
-                        <input 
+                        <input
                             key={activeTab}
-                            type="range" 
-                            min="0" max="1" step="0.01" 
+                            type="range"
+                            min="0" max="1" step="0.01"
                             defaultValue={activeTab === 'textures' ? 0.08 : 1}
                             onChange={(e) => onApplyPreset(
-                                activeTab === 'textures' 
+                                activeTab === 'textures'
                                     ? { textureOpacity: parseFloat(e.target.value) }
                                     : { globalBackgroundOpacity: parseFloat(e.target.value) }
-                            , true)}
+                                , true)}
                             className="w-32 accent-[var(--theme-primary)] cursor-pointer"
                         />
                     </div>
@@ -67,7 +67,7 @@ export const AtmosphereCatalog: React.FC<AtmosphereCatalogProps> = ({ onApplyPre
             <div className="flex-1 overflow-y-auto custom-scrollbar p-6">
                 <div className="grid grid-cols-1 gap-6">
                     {(activeTab === 'media' ? MEDIA_PRESETS : TEXTURE_PRESETS).map((preset, i) => (
-                        <AtmospherePresetPreview key={preset.id} preset={preset} index={i} onApply={() => onApplyPreset(preset.design, true)} />
+                        <AtmospherePresetPreview key={preset.id} preset={preset} index={i} currentMode={currentMode} onApply={() => onApplyPreset(preset.design, true)} />
                     ))}
                 </div>
             </div>
@@ -75,13 +75,13 @@ export const AtmosphereCatalog: React.FC<AtmosphereCatalogProps> = ({ onApplyPre
     );
 };
 
-const AtmospherePresetPreview = ({ preset, index, onApply }: { preset: ComponentPreset, index: number, onApply: () => void }) => {
+const AtmospherePresetPreview = ({ preset, index, onApply, currentMode }: { preset: ComponentPreset, index: number, onApply: () => void, currentMode: string }) => {
     const isVideo = preset.design.globalBackgroundImageUrl && (
-        preset.design.globalBackgroundImageUrl.includes('video') || 
-        preset.design.globalBackgroundImageUrl.endsWith('.webm') || 
+        preset.design.globalBackgroundImageUrl.includes('video') ||
+        preset.design.globalBackgroundImageUrl.endsWith('.webm') ||
         preset.design.globalBackgroundImageUrl.endsWith('.mp4')
     );
-    
+
     const isImage = preset.design.globalBackgroundImageUrl && !isVideo;
 
     return (
@@ -92,12 +92,12 @@ const AtmospherePresetPreview = ({ preset, index, onApply }: { preset: Component
             onClick={onApply}
             className="group relative flex flex-col text-left rounded-2xl border border-[var(--theme-border)] overflow-hidden bg-[var(--theme-card)] hover:border-[var(--theme-primary)] hover:shadow-[0_10px_40px_-10px_rgba(var(--theme-primary-rgb),0.2)] transition-all duration-300"
         >
-            <div 
+            <div
                 className="h-64 w-full relative overflow-hidden flex items-center justify-center sarak-card"
                 data-sx-card-texture-type={preset.design.texture && preset.design.texture !== 'none' ? preset.design.texture : undefined}
                 style={{ '--sarak-card-texture-opacity': '0.8' } as React.CSSProperties}
             >
-                <div className="absolute inset-0 z-0 bg-neutral-900">
+                <div className="absolute inset-0 z-0">
                     {preset.design.globalBackgroundImageUrl && (
                         <SarakBackgroundRenderer
                             imageUrl={preset.design.globalBackgroundImageUrl}
@@ -105,19 +105,21 @@ const AtmospherePresetPreview = ({ preset, index, onApply }: { preset: Component
                             blur={preset.design.globalBackgroundBlur}
                             blendMode={preset.design.globalBackgroundBlendMode as any}
                             isFixed={false}
-                            mode={preset.design.mode}
+                            mode={(preset.design.mode || currentMode) as 'light' | 'dark'}
+                            disableOverlay={true}
+                            zIndex={0}
                         />
                     )}
                 </div>
-                
-                <div className="absolute inset-0 bg-gradient-to-t from-black/80 via-black/20 to-transparent z-10" />
+
+                {/* Removido o gradiente preto global para evitar escurecimento não intencional da mídia brilhante */}
 
                 <div className="relative z-20 flex flex-col items-center gap-4 group-hover:scale-110 transition-transform duration-700">
                     <div className="p-4 bg-white/5 backdrop-blur-xl border border-white/10 rounded-2xl text-white shadow-2xl">
                         {isVideo ? <Play size={32} /> : isImage ? <ImageIcon size={32} /> : <Layers size={32} />}
                     </div>
                 </div>
-                
+
                 <div className="absolute bottom-0 left-0 w-full p-6 z-20">
                     <div className="flex items-center gap-3 mb-2">
                         {isVideo && <span className="px-2 py-1 rounded bg-blue-500/20 border border-blue-500/50 text-blue-400 text-[10px] font-bold uppercase tracking-wider backdrop-blur-md">Live Media</span>}

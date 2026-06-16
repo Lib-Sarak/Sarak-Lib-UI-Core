@@ -47,10 +47,10 @@ export function useThemeEngineState() {
 
     useEffect(() => {
         const pillarId = appToPillarMap[activePreviewApp];
-        if (pillarId && activePillarId !== pillarId) {
+        if (pillarId) {
             setActivePillarId(pillarId);
         }
-    }, [activePreviewApp, appToPillarMap, activePillarId]);
+    }, [activePreviewApp, appToPillarMap]);
 
     const uiBaseUrl = sarak.options?.endpoints?.baseUrl || '/api/ui';
     const apiToken = sarak.token;

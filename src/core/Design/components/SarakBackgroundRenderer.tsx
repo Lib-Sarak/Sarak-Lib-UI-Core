@@ -8,6 +8,8 @@ interface SarakBackgroundRendererProps {
     blendMode?: string;
     isFixed?: boolean;
     mode?: 'light' | 'dark';
+    disableOverlay?: boolean;
+    zIndex?: number;
 }
 
 export const SarakBackgroundRenderer: React.FC<SarakBackgroundRendererProps> = ({ 
@@ -16,7 +18,9 @@ export const SarakBackgroundRenderer: React.FC<SarakBackgroundRendererProps> = (
     blur = 0, 
     blendMode = 'normal',
     isFixed = false,
-    mode
+    mode,
+    disableOverlay = false,
+    zIndex = -1
 }) => {
     if (!imageUrl) return null;
 
@@ -41,7 +45,7 @@ export const SarakBackgroundRenderer: React.FC<SarakBackgroundRendererProps> = (
         left: 0,
         width: '100%',
         height: '100%',
-        zIndex: -1,
+        zIndex: zIndex,
         pointerEvents: 'none',
         overflow: 'hidden',
         backgroundColor: 'var(--sarak-bg-body)'
@@ -61,10 +65,11 @@ export const SarakBackgroundRenderer: React.FC<SarakBackgroundRendererProps> = (
     let showOverlay = false;
     let overlayColor = 'transparent';
 
-    if ((!isLightMode && luminance === 'light') || (isLightMode && luminance === 'dark')) {
-        // Oposto: aplica gradiente base do tema dinamicamente
+    if (!disableOverlay && ((!isLightMode && luminance === 'light') || (isLightMode && luminance === 'dark'))) {
+        // Oposto: aplica gradiente base do tema dinamicamente com fallback robusto
         showOverlay = true;
-        overlayColor = 'color-mix(in srgb, var(--sarak-bg-base) 85%, transparent)';
+        const fallbackColor = isLightMode ? '#ffffff' : '#000000';
+        overlayColor = `color-mix(in srgb, var(--sarak-bg-base, ${fallbackColor}) 85%, transparent)`;
     }
     // Se for 'unknown' (falha de CORS) ou se a imagem já combinar com o tema, 
     // NÃO aplicamos nenhum overlay para garantir zero alteração nas cores originais.
