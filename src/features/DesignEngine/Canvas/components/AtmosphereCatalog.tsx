@@ -14,40 +14,40 @@ export const AtmosphereCatalog: React.FC<AtmosphereCatalogProps> = ({ onApplyPre
     const [activeTab, setActiveTab] = useState<'media' | 'textures'>('media');
 
     return (
-        <div className="w-full h-full flex flex-col relative bg-[var(--theme-bg)]">
-            <div className="px-8 py-5 border-b border-[var(--theme-border)] flex items-center justify-between bg-[var(--theme-surface)] backdrop-blur-md sticky top-0 z-10">
+        <div className="w-full h-full flex flex-col relative bg-theme-bg">
+            <div className="px-8 py-5 border-b border-theme-border flex items-center justify-between bg-theme-sidebar backdrop-blur-md sticky top-0 z-10">
                 <div className="flex items-center gap-4">
-                    <div className="p-2.5 bg-[var(--theme-primary)]/10 rounded-xl border border-[var(--theme-primary)]/20">
-                        <Layers size={18} className="text-[var(--theme-primary)]" />
+                    <div className="p-2.5 bg-theme-primary/10 rounded-xl border border-theme-primary/20">
+                        <Layers size={18} className="text-theme-primary" />
                     </div>
                     <div className="flex flex-col">
-                        <span className="text-xs font-black uppercase text-[var(--theme-text)] tracking-[0.3em]">Design Intelligence Catalog</span>
-                        <span className="text-[9px] font-bold text-[var(--theme-primary)] uppercase tracking-widest mt-0.5">
+                        <span className="text-xs font-black uppercase text-theme-text tracking-[0.3em]">Design Intelligence Catalog</span>
+                        <span className="text-[9px] font-bold text-theme-primary uppercase tracking-widest mt-0.5">
                             Pilar: Atmosphere & Textures
                         </span>
                     </div>
                 </div>
 
                 <div className="flex items-center gap-4">
-                    <div className="flex items-center gap-2 p-1 bg-black/20 rounded-xl border border-[var(--theme-border)]">
+                    <div className="flex items-center gap-2 p-1 bg-black/20 rounded-xl border border-theme-border">
                         <button
                             onClick={() => setActiveTab('media')}
-                            className={`px-4 py-2 rounded-lg text-[10px] font-black uppercase tracking-widest transition-all flex items-center gap-2 ${activeTab === 'media' ? 'bg-[var(--theme-primary)] text-white shadow-lg' : 'text-[var(--theme-muted)] hover:text-white hover:bg-white/5'}`}
+                            className={`px-4 py-2 rounded-lg text-[10px] font-black uppercase tracking-widest transition-all flex items-center gap-2 ${activeTab === 'media' ? 'bg-theme-primary text-white shadow-lg' : 'text-theme-muted hover:text-white hover:bg-white/5'}`}
                         >
                             <Video size={12} />
                             Mídia Base
                         </button>
                         <button
                             onClick={() => setActiveTab('textures')}
-                            className={`px-4 py-2 rounded-lg text-[10px] font-black uppercase tracking-widest transition-all flex items-center gap-2 ${activeTab === 'textures' ? 'bg-[var(--theme-primary)] text-white shadow-lg' : 'text-[var(--theme-muted)] hover:text-white hover:bg-white/5'}`}
+                            className={`px-4 py-2 rounded-lg text-[10px] font-black uppercase tracking-widest transition-all flex items-center gap-2 ${activeTab === 'textures' ? 'bg-theme-primary text-white shadow-lg' : 'text-theme-muted hover:text-white hover:bg-white/5'}`}
                         >
                             <Grid size={12} />
                             Texturas
                         </button>
                     </div>
 
-                    <div className="flex items-center gap-3 px-4 py-2 bg-black/20 rounded-xl border border-[var(--theme-border)]">
-                        <span className="text-[10px] font-black text-[var(--theme-text)] uppercase tracking-widest">Opacidade</span>
+                    <div className="flex items-center gap-3 px-4 py-2 bg-black/20 rounded-xl border border-theme-border">
+                        <span className="text-[10px] font-black text-theme-text uppercase tracking-widest">Opacidade</span>
                         <input
                             key={activeTab}
                             type="range"
@@ -90,7 +90,7 @@ const AtmospherePresetPreview = ({ preset, index, onApply, currentMode }: { pres
             animate={{ opacity: 1, x: 0 }}
             transition={{ delay: index * 0.1 }}
             onClick={onApply}
-            className="group relative flex flex-col text-left rounded-2xl border border-[var(--theme-border)] overflow-hidden bg-[var(--theme-card)] hover:border-[var(--theme-primary)] hover:shadow-[0_10px_40px_-10px_rgba(var(--theme-primary-rgb),0.2)] transition-all duration-300"
+            className="group relative flex flex-col text-left rounded-2xl border border-theme-border overflow-hidden bg-theme-card hover:border-theme-primary hover:shadow-[0_10px_40px_-10px_rgba(var(--theme-primary-rgb),0.2)] transition-all duration-300"
         >
             <div
                 className="h-64 w-full relative overflow-hidden flex items-center justify-center sarak-card"

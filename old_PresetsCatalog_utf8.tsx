@@ -1,4 +1,4 @@
-import React from 'react';
+﻿import React from 'react';
 import { motion } from 'framer-motion';
 import { GLOBAL_THEMES, ThemePreset } from '../../../../core/Design/presets/themes';
 import { syncThemeWithMode } from '../../../../core/Design/presets/themes/color-engine';
@@ -17,16 +17,16 @@ interface PresetsCatalogProps {
 }
 
 export const PresetsCatalog: React.FC<PresetsCatalogProps> = ({ onApplyPreset, onApplyFullTheme, activeCategory, currentMode }) => {
-
+    
     // Roteamento Modular de Presets
     if (activeCategory === 'navigation') {
         return <CardsCatalog onApplyPreset={onApplyPreset} currentMode={currentMode} />;
     }
-
+    
     if (activeCategory === 'surfaces') {
         return <AtmosphereCatalog onApplyPreset={onApplyPreset} currentMode={currentMode} />;
     }
-
+    
     if (activeCategory === 'typography') {
         return <TypographyCatalog onApplyPreset={onApplyPreset} currentMode={currentMode} />;
     }
@@ -35,16 +35,16 @@ export const PresetsCatalog: React.FC<PresetsCatalogProps> = ({ onApplyPreset, o
     const themes = GLOBAL_THEMES;
 
     return (
-        <div className="w-full h-full flex flex-col relative bg-theme-bg">
+        <div className="w-full h-full flex flex-col relative bg-[var(--theme-bg)]">
             {/* Header */}
-            <div className="px-8 py-5 border-b border-theme-border flex items-center justify-between bg-theme-sidebar backdrop-blur-md sticky top-0 z-10">
+            <div className="px-8 py-5 border-b border-[var(--theme-border)] flex items-center justify-between bg-[var(--theme-surface)] backdrop-blur-md sticky top-0 z-10">
                 <div className="flex items-center gap-4">
-                    <div className="p-2.5 bg-theme-primary/10 rounded-xl border border-theme-primary/20 shadow-[0_0_20px_rgba(var(--theme-primary-rgb),0.2)]">
-                        <Sparkles size={18} className="text-theme-primary" />
+                    <div className="p-2.5 bg-[var(--theme-primary)]/10 rounded-xl border border-[var(--theme-primary)]/20 shadow-[0_0_20px_rgba(var(--theme-primary-rgb),0.2)]">
+                        <Sparkles size={18} className="text-[var(--theme-primary)]" />
                     </div>
                     <div className="flex flex-col">
-                        <span className="text-xs font-black uppercase text-theme-text tracking-[0.3em]">Design Intelligence Catalog</span>
-                        <span className="text-[9px] font-bold text-theme-primary uppercase tracking-widest mt-0.5">
+                        <span className="text-xs font-black uppercase text-[var(--theme-text)] tracking-[0.3em]">Design Intelligence Catalog</span>
+                        <span className="text-[9px] font-bold text-[var(--theme-primary)] uppercase tracking-widest mt-0.5">
                             Temas Globais
                         </span>
                     </div>
@@ -55,10 +55,10 @@ export const PresetsCatalog: React.FC<PresetsCatalogProps> = ({ onApplyPreset, o
             <div className="flex-1 overflow-y-auto custom-scrollbar p-6 bg-[radial-gradient(ellipse_at_top_right,rgba(var(--theme-primary-rgb),0.03)_0%,transparent_50%)]">
                 <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
                     {themes.map((theme, i) => (
-                        <PresetCard
-                            key={theme.id}
-                            theme={theme}
-                            currentMode={currentMode}
+                        <PresetCard 
+                            key={theme.id} 
+                            theme={theme} 
+                            currentMode={currentMode} 
                             onApply={() => {
                                 const payload = upgradeThemePayload({ ...theme.design, mode: currentMode });
                                 if (onApplyFullTheme) {
@@ -66,8 +66,8 @@ export const PresetsCatalog: React.FC<PresetsCatalogProps> = ({ onApplyPreset, o
                                 } else {
                                     onApplyPreset(payload);
                                 }
-                            }}
-                            index={i}
+                            }} 
+                            index={i} 
                         />
                     ))}
                 </div>
@@ -80,7 +80,7 @@ const PresetCard = ({ theme, currentMode, onApply, index }: { theme: ThemePreset
     // Calcula o design final na hora baseando-se no modo atual do sistema
     const design = syncThemeWithMode(theme.design, currentMode as 'light' | 'dark');
     const { variables, attributes } = useDesignVariables(design);
-
+    
     const primary = design.colorPrimary || '#3b82f6';
     const secondary = design.colorSecondary || '#8b5cf6';
     const bgBase = design.colorSurface || '#000000';
@@ -99,21 +99,21 @@ const PresetCard = ({ theme, currentMode, onApply, index }: { theme: ThemePreset
         borderBottomRightRadius: variables['--sarak-card-radius-b-r'] || variables['--sarak-card-border-radius'] || '12px',
         borderBottomLeftRadius: variables['--sarak-card-radius-b-l'] || variables['--sarak-card-border-radius'] || '12px',
         backdropFilter: `blur(${variables['--sarak-card-backdrop-blur'] || '12px'})`,
-        boxShadow: design.cardShadow && design.cardShadow !== 'none'
-            ? design.cardShadow
-            : design.cardShadowSpread
+        boxShadow: design.cardShadow && design.cardShadow !== 'none' 
+            ? design.cardShadow 
+            : design.cardShadowSpread 
                 ? `0 4px ${design.cardShadowSpread}px -2px ${design.cardGlowColor || 'rgba(0,0,0,0.5)'}`
                 : '0 4px 10px -2px rgba(0,0,0,0.5)',
         clipPath: variables['--sarak-card-clip-path']
     };
 
     const textureLayer = design.cardTextureType && design.cardTextureType !== 'none' ? (
-        <div
+        <div 
             className="absolute inset-0 pointer-events-none opacity-50"
             style={{
-                backgroundImage: design.cardTextureType === 'grid'
+                backgroundImage: design.cardTextureType === 'grid' 
                     ? 'linear-gradient(to right, rgba(255,255,255,0.05) 1px, transparent 1px), linear-gradient(to bottom, rgba(255,255,255,0.05) 1px, transparent 1px)'
-                    : design.cardTextureType === 'noise'
+                    : design.cardTextureType === 'noise' 
                         ? 'url("data:image/svg+xml,%3Csvg viewBox=%220 0 200 200%22 xmlns=%22http://www.w3.org/2000/svg%22%3E%3Cfilter id=%22noiseFilter%22%3E%3CfeTurbulence type=%22fractalNoise%22 baseFrequency=%220.65%22 numOctaves=%223%22 stitchTiles=%22stitch%22/%3E%3C/filter%3E%3Crect width=%22100%25%22 height=%22100%25%22 filter=%22url(%23noiseFilter)%22/%3E%3C/svg%3E")'
                         : 'none',
                 backgroundSize: design.cardTextureType === 'grid' ? '8px 8px' : 'auto'
@@ -127,24 +127,24 @@ const PresetCard = ({ theme, currentMode, onApply, index }: { theme: ThemePreset
             animate={{ opacity: 1, y: 0 }}
             transition={{ delay: index * 0.1 }}
             onClick={onApply}
-            className="group relative flex flex-col text-left rounded-2xl border border-theme-border overflow-hidden bg-theme-card hover:bg-theme-sidebar transition-all duration-300 hover:border-theme-primary/50 hover:shadow-[0_10px_40px_-10px_rgba(var(--theme-primary-rgb),0.1)] focus:outline-none"
+            className="group relative flex flex-col text-left rounded-2xl border border-[var(--theme-border)] overflow-hidden bg-[var(--theme-card)] hover:bg-[var(--theme-surface)] transition-all duration-300 hover:border-[var(--theme-primary)]/50 hover:shadow-[0_10px_40px_-10px_rgba(var(--theme-primary-rgb),0.1)] focus:outline-none"
         >
             {/* Top Showcase Area - Mini Dashboard */}
-            <div
+            <div 
                 className="h-48 w-full relative flex transition-colors overflow-hidden"
                 style={{ backgroundColor: bgBase, ...variables as any }}
                 {...attributes as any}
             >
                 {/* Mini Shell Navigation */}
                 {design.navigationStyle === 'sidebar' ? (
-                    <div className="h-full w-8 flex flex-col items-center py-3 gap-2 border-r z-10 shrink-0 shadow-xl" style={{ borderColor: cardStyle.borderColor as string, backgroundColor: cardStyle.backgroundColor as string }}>
+                    <div className="h-full w-8 flex flex-col items-center py-3 gap-2 border-r z-10 shrink-0 shadow-xl" style={{ borderColor: cardStyle.borderColor, backgroundColor: cardStyle.backgroundColor }}>
                         <div className="w-4 h-4 rounded-sm mb-3 shadow-lg" style={{ backgroundColor: primary }} />
                         <div className="w-3 h-0.5 rounded-full bg-white/20" />
                         <div className="w-3 h-0.5 rounded-full bg-white/20" />
                         <div className="w-3 h-0.5 rounded-full bg-white/20" />
                     </div>
                 ) : (
-                    <div className="absolute top-0 left-0 w-full h-6 flex items-center px-4 gap-3 border-b z-10 shadow-xl" style={{ borderColor: cardStyle.borderColor as string, backgroundColor: cardStyle.backgroundColor as string }}>
+                    <div className="absolute top-0 left-0 w-full h-6 flex items-center px-4 gap-3 border-b z-10 shadow-xl" style={{ borderColor: cardStyle.borderColor, backgroundColor: cardStyle.backgroundColor }}>
                         <div className="w-4 h-4 rounded-sm shadow-lg" style={{ backgroundColor: primary }} />
                         <div className="w-12 h-0.5 rounded-full bg-white/20" />
                         <div className="flex-1" />
@@ -170,7 +170,7 @@ const PresetCard = ({ theme, currentMode, onApply, index }: { theme: ThemePreset
                                 <div className="h-1.5 w-10 bg-white/20 rounded-full relative z-10" />
                                 <div className="h-2.5 w-16 bg-white/60 rounded-full mt-auto relative z-10" />
                             </div>
-
+                            
                             {/* Card 2: Filter/Toggles */}
                             <div className="flex-[1.2] relative overflow-hidden flex flex-col p-2 gap-1.5 shadow-xl transition-all" style={cardStyle as any}>
                                 {textureLayer}
@@ -184,7 +184,7 @@ const PresetCard = ({ theme, currentMode, onApply, index }: { theme: ThemePreset
                                     <div className="w-4 h-2 rounded-full bg-white/10" />
                                 </div>
                             </div>
-
+                            
                             {/* Card 3: Status */}
                             <div className="flex-1 relative overflow-hidden flex flex-col p-2 justify-center items-center shadow-xl transition-all" style={cardStyle as any}>
                                 {textureLayer}
@@ -200,11 +200,11 @@ const PresetCard = ({ theme, currentMode, onApply, index }: { theme: ThemePreset
                                 <div className="h-1.5 w-16 bg-white/20 rounded-full mb-auto relative z-10" />
                                 <div className="flex items-end justify-between gap-1 h-8 px-1 relative z-10 mt-2">
                                     {[40, 70, 30, 90, 50, 80, 60, 45].map((h, i) => (
-                                        <div key={i} className="w-full rounded-t-[1px]" style={{ height: `${h}%`, backgroundColor: primary, opacity: 0.7 + (i * 0.03) }} />
+                                        <div key={i} className="w-full rounded-t-[1px]" style={{ height: `${h}%`, backgroundColor: primary, opacity: 0.7 + (i*0.03) }} />
                                     ))}
                                 </div>
                             </div>
-
+                            
                             {/* Card 5: Logs */}
                             <div className="flex-1 relative overflow-hidden flex flex-col p-2 gap-1.5 shadow-xl transition-all" style={cardStyle as any}>
                                 {textureLayer}
@@ -220,16 +220,16 @@ const PresetCard = ({ theme, currentMode, onApply, index }: { theme: ThemePreset
             </div>
 
             {/* Content Area - Minimalista */}
-            <div className="px-4 py-3 flex items-center justify-between border-t border-theme-border bg-theme-sidebar backdrop-blur-md group-hover:bg-theme-topbar transition-colors shrink-0">
-                <h3 className="text-xs font-black uppercase tracking-widest text-theme-text group-hover:text-theme-primary transition-colors">
+            <div className="px-4 py-3 flex items-center justify-between border-t border-[var(--theme-border)] bg-[var(--theme-surface)] backdrop-blur-md group-hover:bg-[var(--theme-layer)] transition-colors shrink-0">
+                <h3 className="text-xs font-black uppercase tracking-widest text-[var(--theme-text)] group-hover:text-[var(--theme-primary)] transition-colors">
                     {theme.name}
                 </h3>
-
+                
                 <div className="flex items-center gap-2">
-                    <div className="px-1.5 py-0.5 bg-theme-card rounded text-[8px] font-bold uppercase tracking-widest text-theme-muted flex items-center gap-1">
+                    <div className="px-1.5 py-0.5 bg-[var(--theme-layer)] rounded text-[8px] font-bold uppercase tracking-widest text-[var(--theme-muted)] flex items-center gap-1">
                         <Layout size={8} /> {design.navigationStyle || 'sidebar'}
                     </div>
-                    <div className="flex items-center gap-1 text-[9px] font-bold uppercase tracking-widest text-theme-primary opacity-0 -translate-x-2 group-hover:opacity-100 group-hover:translate-x-0 transition-all duration-300">
+                    <div className="flex items-center gap-1 text-[9px] font-bold uppercase tracking-widest text-[var(--theme-primary)] opacity-0 -translate-x-2 group-hover:opacity-100 group-hover:translate-x-0 transition-all duration-300">
                         <ArrowRight size={12} />
                     </div>
                 </div>

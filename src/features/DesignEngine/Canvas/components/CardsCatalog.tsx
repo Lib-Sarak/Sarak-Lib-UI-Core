@@ -11,15 +11,15 @@ interface CardsCatalogProps {
 
 export const CardsCatalog: React.FC<CardsCatalogProps> = ({ onApplyPreset }) => {
     return (
-        <div className="w-full h-full flex flex-col relative bg-[var(--theme-bg)]">
-            <div className="px-8 py-5 border-b border-[var(--theme-border)] flex items-center justify-between bg-[var(--theme-surface)] backdrop-blur-md sticky top-0 z-10">
+        <div className="w-full h-full flex flex-col relative bg-theme-bg">
+            <div className="px-8 py-5 border-b border-theme-border flex items-center justify-between bg-theme-sidebar backdrop-blur-md sticky top-0 z-10">
                 <div className="flex items-center gap-4">
-                    <div className="p-2.5 bg-[var(--theme-primary)]/10 rounded-xl border border-[var(--theme-primary)]/20">
-                        <Layout size={18} className="text-[var(--theme-primary)]" />
+                    <div className="p-2.5 bg-theme-primary/10 rounded-xl border border-theme-primary/20">
+                        <Layout size={18} className="text-theme-primary" />
                     </div>
                     <div className="flex flex-col">
-                        <span className="text-xs font-black uppercase text-[var(--theme-text)] tracking-[0.3em]">Design Intelligence Catalog</span>
-                        <span className="text-[9px] font-bold text-[var(--theme-primary)] uppercase tracking-widest mt-0.5">
+                        <span className="text-xs font-black uppercase text-theme-text tracking-[0.3em]">Design Intelligence Catalog</span>
+                        <span className="text-[9px] font-bold text-theme-primary uppercase tracking-widest mt-0.5">
                             Pilar: Cards & Surfaces
                         </span>
                     </div>
@@ -82,7 +82,7 @@ const CardPresetPreview = ({ preset, index, onApply }: { preset: ComponentPreset
             animate={{ opacity: 1, y: 0 }}
             transition={{ delay: index * 0.1 }}
             onClick={onApply}
-            className="group flex flex-col text-left rounded-2xl border border-[var(--theme-border)] overflow-hidden bg-[var(--theme-card)] hover:border-[var(--theme-primary)] hover:shadow-[0_10px_40px_-10px_rgba(var(--theme-primary-rgb),0.1)] transition-all duration-300"
+            className="group flex flex-col text-left rounded-2xl border border-theme-border overflow-hidden bg-theme-card hover:border-theme-primary hover:shadow-[0_10px_40px_-10px_rgba(var(--theme-primary-rgb),0.1)] transition-all duration-300"
         >
             <div className="h-48 w-full relative flex items-center justify-center p-6 bg-[#0a0a0b] overflow-hidden" {...attributes as any}>
                 <div className="absolute inset-0 bg-[radial-gradient(ellipse_at_center,rgba(255,255,255,0.05)_0%,transparent_70%)]" />
@@ -113,9 +113,9 @@ const CardPresetPreview = ({ preset, index, onApply }: { preset: ComponentPreset
                 </div>
             </div>
 
-            <div className="p-4 bg-[var(--theme-surface)]">
-                <h3 className="text-sm font-bold text-[var(--theme-text)] uppercase tracking-wider">{preset.name}</h3>
-                <p className="text-xs text-[var(--theme-muted)] mt-1">{preset.description}</p>
+            <div className="p-4 bg-theme-sidebar">
+                <h3 className="text-sm font-bold text-theme-text uppercase tracking-wider">{preset.name}</h3>
+                <p className="text-xs text-theme-muted mt-1">{preset.description}</p>
             </div>
         </motion.button>
     );

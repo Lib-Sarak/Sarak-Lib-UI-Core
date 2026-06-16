@@ -412,8 +412,7 @@ export const PreviewCanvas: React.FC<PreviewCanvasProps> = ({
 
 
                             {/* Catalog Preview (Engine Controls) */}
-                            <div className={`relative flex-auto shrink-0 rounded-[2rem] border border-[var(--theme-border)] shadow-theme overflow-hidden bg-[var(--theme-card)] transition-colors duration-500 flex flex-col min-h-[300px] min-w-[250px] resize ${isPreviewStacked ? 'w-full h-[45vh]' : 'w-1/2 h-full'}`}
-                                 style={{ backgroundColor: 'var(--theme-card, #111111)', borderColor: 'var(--theme-border, rgba(255,255,255,0.1))' }}>
+                            <div className={`relative flex-auto shrink-0 rounded-[2rem] border border-theme-border shadow-theme overflow-hidden bg-theme-card transition-colors duration-500 flex flex-col min-h-[300px] min-w-[250px] resize ${isPreviewStacked ? 'w-full h-[45vh]' : 'w-1/2 h-full'}`}>
                                 <PresetsCatalog
                                     onApplyPreset={handleApplyPreset}
                                     activeCategory={activeCategory}
