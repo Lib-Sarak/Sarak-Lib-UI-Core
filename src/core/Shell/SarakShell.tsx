@@ -6,6 +6,7 @@ import { DockNav } from './Components/DockNav';
 import { ShellContent } from './Components/ShellContent';
 import SarakSearch from '../../components/atomic/Inputs/SarakSearch';
 import { SarakShellProps } from './Components/types';
+import { useShellLayoutStyles } from './hooks/useShellLayoutStyles';
 
 import { useSarakUI } from '../Provider/SarakUIProvider';
 import { useSarakDevice } from '../Provider/DeviceProvider';
@@ -62,6 +63,7 @@ export const SarakShell: React.FC<SarakShellProps> = (props) => {
     
     const shell = useSarakShell(!!(token || ui.options?.token));
     const { design } = shell;
+    const { shellClass } = useShellLayoutStyles(design);
     
     const device = useSarakDevice();
     const isMobile = device === 'smartphone';
@@ -144,7 +146,7 @@ export const SarakShell: React.FC<SarakShellProps> = (props) => {
     const layoutClass = `layout-${design?.navigationStyle || 'sidebar'}`;
 
     return (
-        <div className={`flex ${isMobile ? 'flex-col' : ''} w-full h-screen overflow-hidden ${design.globalBackgroundImageUrl ? 'bg-transparent' : 'bg-[var(--theme-body)]'} text-[var(--theme-text)] font-sans selection:bg-[var(--theme-primary)] selection:text-[var(--theme-on-primary)] ${layoutClass}`}>
+        <div className={`${shellClass} ${isMobile ? '!flex-col' : ''} ${design.globalBackgroundImageUrl ? 'bg-transparent' : 'bg-[var(--theme-body)]'} text-[var(--theme-text)] font-sans selection:bg-[var(--theme-primary)] selection:text-[var(--theme-on-primary)] ${layoutClass}`}>
             
             {/* HOVER SENSORS (v6.2) */}
             {design.isAutoHideEnabled && !shell.isNavVisible && (

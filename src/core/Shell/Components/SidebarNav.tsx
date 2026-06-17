@@ -7,6 +7,7 @@ import { ShellUserWidget } from './ShellUserWidget';
 import { ShellSearchWidget } from './ShellSearchWidget';
 import { ShellLanguageSelector } from './ShellLanguageSelector';
 import { ShellThemeToggle } from './ShellThemeToggle';
+import { useShellLayoutStyles } from '../hooks/useShellLayoutStyles';
 
 interface SidebarNavProps {
     design: any;
@@ -32,6 +33,8 @@ export const SidebarNav: React.FC<SidebarNavProps> = ({
         tabSectionMargin, borderRadius, borderWidth, borderStyle,
         systemName, logoUrl, logoDarkUrl, logoScale, logoPosition, tabGap
     } = design || {};
+    
+    const { sidebarClass } = useShellLayoutStyles(design);
 
     // Sovereign Logic: Effective state for hover expansion
     const effectiveIsNavHidden = isNavHidden && !isHovered;
@@ -73,7 +76,7 @@ export const SidebarNav: React.FC<SidebarNavProps> = ({
                 backgroundColor: 'var(--theme-sidebar-bg, var(--theme-sidebar))',
                 borderColor: 'var(--theme-border)'
             }}
-            className="sarak-shell-sidebar flex flex-col shrink-0 relative z-[100] shadow-2xl overflow-hidden"
+            className={`sarak-shell-sidebar ${sidebarClass} flex flex-col shrink-0 relative z-[100] shadow-2xl overflow-hidden`}
         >
             <div className={`h-16 sarak-shell-header px-6 flex items-center border-b border-[var(--theme-border)] bg-[var(--theme-title)]/5 ${effectiveIsNavHidden ? 'justify-center' : 'justify-between'}`}>
                 {!effectiveIsNavHidden && (

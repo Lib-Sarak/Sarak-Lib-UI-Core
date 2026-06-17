@@ -124,6 +124,9 @@
   ],
   "layout_and_navigation": [
     "isNavHidden",
+    "sidebarPosition",
+    "navbarLayout",
+    "contentAlignment",
     "sidebarWidth",
     "sidebarMinWidth",
     "sidebarMaxWidth",
@@ -162,6 +165,14 @@
     "layerElevationFactor"
   ],
   "components_base": [
+    "formLayoutDirection",
+    "inputIconPosition",
+    "modalActionAlignment",
+    "modalHeaderStyle",
+    "buttonIconPosition",
+    "buttonWidthStrategy",
+    "tableDensity",
+    "tableActionPosition",
     "modalOverlayColor",
     "modalOverlayBlur",
     "modalBorderRadius",

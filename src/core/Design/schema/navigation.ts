@@ -18,6 +18,19 @@ export const NavigationSchema: ComponentSchema = {
         },
         // --- SIDEBAR CONFIGURATIONS ---
         {
+            id: 'sidebarPosition',
+            label: 'Posição da Sidebar',
+            type: 'select',
+            constraints: {
+                options: [
+                    { id: 'left', value: 'left', label: 'Esquerda' },
+                    { id: 'right', value: 'right', label: 'Direita' },
+                    { id: 'floating', value: 'floating', label: 'Flutuante' }
+                ]
+            },
+            defaultValue: 'left'
+        },
+        {
             id: 'sidebarWidth',
             label: 'Largura da Sidebar',
             type: 'slider',
@@ -78,6 +91,19 @@ export const NavigationSchema: ComponentSchema = {
         },
         // --- TOPBAR CONFIGURATIONS ---
         {
+            id: 'navbarLayout',
+            label: 'Comportamento da Topbar',
+            type: 'select',
+            constraints: {
+                options: [
+                    { id: 'sticky', value: 'sticky', label: 'Fixo no Topo' },
+                    { id: 'inline', value: 'inline', label: 'Rola com o conteúdo' },
+                    { id: 'hidden', value: 'hidden', label: 'Oculta' }
+                ]
+            },
+            defaultValue: 'sticky'
+        },
+        {
             id: 'topbarHeight',
             label: 'Altura da Topbar',
             type: 'slider',
@@ -124,6 +150,18 @@ export const NavigationSchema: ComponentSchema = {
             cssVars: ['--sarak-topbar-title-color']
         },
         // --- SEÇÕES E TABS ---
+        {
+            id: 'contentAlignment',
+            label: 'Alinhamento do Conteúdo',
+            type: 'select',
+            constraints: {
+                options: [
+                    { id: 'stretch', value: 'stretch', label: 'Largura Total' },
+                    { id: 'center', value: 'center', label: 'Centralizado' }
+                ]
+            },
+            defaultValue: 'stretch'
+        },
         {
             id: 'tabGap',
             label: 'Espaço entre Abas',

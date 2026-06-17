@@ -6,6 +6,7 @@ import { DiscoveredModule } from '../../../core/Discovery/types';
 import { DynamicRenderer } from '../../Discovery/DynamicRenderer';
 import { SarakEmptyState } from '../../../components/atomic/Feedback/SarakEmptyState';
 import { UIContext } from '../../Provider/SarakUIProvider';
+import { useShellLayoutStyles } from '../hooks/useShellLayoutStyles';
 
 interface ShellContentProps {
     activeModule: DiscoveredModule | undefined;
@@ -20,6 +21,7 @@ export const ShellContent: React.FC<ShellContentProps> = ({
     activeModule, discoveredModules, design, user, authApi, setIsSearchOpen
 }) => {
     const { texture, layoutGap, isSplitViewEnabled, secondaryModuleId, emptyStateId } = design || {};
+    const { mainContentClass } = useShellLayoutStyles(design);
 
     const transitionEffect = {
         initial: { opacity: 0 },
@@ -28,7 +30,7 @@ export const ShellContent: React.FC<ShellContentProps> = ({
     };
 
     return (
-        <main className={`flex-1 overflow-y-auto custom-scrollbar relative flex flex-col w-full min-h-0 isolate ${texture !== 'none' ? 'texture-active' : 'bg-[var(--theme-body)]'}`} data-sx-texture={texture}>
+        <main className={`${mainContentClass} custom-scrollbar isolate ${texture !== 'none' ? 'texture-active' : 'bg-[var(--theme-body)]'}`} data-sx-texture={texture}>
 
             <div className="flex-1 flex flex-col relative w-full pt-8 lg:pt-12 z-10 transition-all duration-500 min-h-0" style={{ gap: `var(--theme-gap, ${layoutGap}px)`, padding: `var(--safe-area-padding, 0)` }}>
                 <AnimatePresence mode="wait">

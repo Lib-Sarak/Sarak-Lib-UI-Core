@@ -1,6 +1,7 @@
 import React, { ButtonHTMLAttributes, useState } from 'react';
 import { useSarakUI } from '../../../core/Provider/SarakUIProvider';
 import { useAtomicStyles } from '../hooks/useAtomicStyles';
+import { useButtonLayoutStyles } from './hooks/useButtonLayoutStyles';
 
 export interface SarakButtonProps extends ButtonHTMLAttributes<HTMLButtonElement> {
     variant?: 'primary' | 'secondary' | 'ghost' | 'danger' | 'success' | 'outline';
@@ -30,6 +31,7 @@ export const SarakButton: React.FC<SarakButtonProps> = ({
 }) => {
     const { design } = useSarakUI();
     const { getButtonStyles } = useAtomicStyles();
+    const { containerClass, iconOrderClass } = useButtonLayoutStyles(design);
     const [isHovered, setIsHovered] = useState(false);
 
     const styleType = design?.btnStyleType || 'matte';
@@ -41,7 +43,7 @@ export const SarakButton: React.FC<SarakButtonProps> = ({
         lg: 'py-5 px-8 text-base'
     };
 
-    const baseClasses = `inline-flex items-center justify-center gap-2 font-black uppercase tracking-widest transition-all focus:outline-none rounded-btn ${sizeClasses[size]}`;
+    const baseClasses = `${containerClass} ${iconOrderClass} font-black uppercase tracking-widest transition-all focus:outline-none rounded-btn ${sizeClasses[size]}`;
 
     let tailwindClasses = '';
 

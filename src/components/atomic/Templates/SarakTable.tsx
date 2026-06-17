@@ -14,6 +14,8 @@ import {
 import api from '../../../shared/services/api';
 import { SarakInput } from '../Inputs';
 import { SarakButton, SarakIconButton } from '../Buttons';
+import { useSarakUI } from '../../../core/Provider/SarakUIProvider';
+import { useTableLayoutStyles } from '../Tables/hooks/useTableLayoutStyles';
 
 interface SarakTableProps {
     endpoint: string;
@@ -31,6 +33,8 @@ interface SarakTableProps {
  * baseado em um contrato visual enviado pelo manifesto do módulo.
  */
 export const SarakTable: React.FC<SarakTableProps> = ({ endpoint, label, mapping, role = 'neutral', density = 'standard' }) => {
+    const { design } = useSarakUI();
+    const { tableWrapperClass, cellDensityClass, actionColumnAlignmentClass } = useTableLayoutStyles(design);
     const [data, setData] = useState<any[]>([]);
     const [loading, setLoading] = useState(true);
     const [error, setError] = useState<string | null>(null);
@@ -127,10 +131,7 @@ export const SarakTable: React.FC<SarakTableProps> = ({ endpoint, label, mapping
                                 {columns.map(col => (
                                     <th 
                                         key={col} 
-                                        className="text-2xs font-black text-white/30 uppercase tracking-[0.2em]" 
-                                        style={{ 
-                                            padding: density === 'compact' ? 'var(--sx-spacing-sm) var(--sx-spacing-md)' : 'calc(var(--sx-spacing-md) / 1.5) var(--sx-spacing-md)' 
-                                        }}
+                                        className={`text-2xs font-black text-white/30 uppercase tracking-[0.2em] ${cellDensityClass}`}
                                     >
                                         <div className="flex items-center gap-2 cursor-pointer hover:text-white transition-colors">
                                             {columnLabels[col]}
@@ -138,7 +139,7 @@ export const SarakTable: React.FC<SarakTableProps> = ({ endpoint, label, mapping
                                         </div>
                                     </th>
                                 ))}
-                                <th style={{ padding: density === 'compact' ? 'var(--sx-spacing-sm) var(--sx-spacing-md)' : 'calc(var(--sx-spacing-md) / 1.5) var(--sx-spacing-md)' }}></th>
+                                <th className={cellDensityClass}></th>
                             </tr>
                         </thead>
                         <tbody>
@@ -147,11 +148,11 @@ export const SarakTable: React.FC<SarakTableProps> = ({ endpoint, label, mapping
                                     [...Array(5)].map((_, i) => (
                                         <tr key={`skeleton-${i}`} className="animate-pulse">
                                             {columns.map(col => (
-                                                <td key={`cell-sk-${col}`} style={{ padding: 'calc(var(--sx-spacing-md) / 2) var(--sx-spacing-md)' }}>
+                                                <td key={`cell-sk-${col}`} className={cellDensityClass}>
                                                     <div className="h-4 bg-white/5 rounded-md w-3/4"></div>
                                                 </td>
                                             ))}
-                                            <td style={{ padding: 'calc(var(--sx-spacing-md) / 2) var(--sx-spacing-md)' }}></td>
+                                            <td className={cellDensityClass}></td>
                                         </tr>
                                     ))
                                 ) : (
@@ -166,10 +167,7 @@ export const SarakTable: React.FC<SarakTableProps> = ({ endpoint, label, mapping
                                             {columns.map(col => (
                                                 <td 
                                                     key={col} 
-                                                    className={`text-white/70 font-medium ${density === 'compact' ? 'text-xs' : 'text-sm'}`} 
-                                                    style={{ 
-                                                        padding: density === 'compact' ? 'var(--sx-spacing-sm) var(--sx-spacing-md)' : 'calc(var(--sx-spacing-md) / 2) var(--sx-spacing-md)' 
-                                                    }}
+                                                    className={`text-white/70 font-medium ${density === 'compact' ? 'text-xs' : 'text-sm'} ${cellDensityClass}`}
                                                 >
                                                     {typeof row[col] === 'boolean' ? (
                                                         <span 
@@ -186,7 +184,7 @@ export const SarakTable: React.FC<SarakTableProps> = ({ endpoint, label, mapping
                                                     )}
                                                 </td>
                                             ))}
-                                            <td className="text-right" style={{ padding: density === 'compact' ? 'var(--sx-spacing-sm) var(--sx-spacing-md)' : 'calc(var(--sx-spacing-md) / 2) var(--sx-spacing-md)' }}>
+                                            <td className={`flex items-center ${actionColumnAlignmentClass} ${cellDensityClass}`}>
                                                 <SarakIconButton 
                                                     icon={<MoreHorizontal size={16} />}
                                                     variant="ghost"

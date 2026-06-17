@@ -9,6 +9,33 @@ export const OverlaysSchema: ComponentSchema = {
     label: 'Sobreposições (Overlays)',
     tokens: [
         {
+            id: 'modalActionAlignment',
+            label: 'Alinhamento das Ações',
+            type: 'select',
+            constraints: {
+                options: [
+                    { id: 'left', value: 'left', label: 'Esquerda' },
+                    { id: 'center', value: 'center', label: 'Centro' },
+                    { id: 'right', value: 'right', label: 'Direita' },
+                    { id: 'stretch', value: 'stretch', label: 'Largura Total' }
+                ]
+            },
+            defaultValue: 'right'
+        },
+        {
+            id: 'modalHeaderStyle',
+            label: 'Estilo do Cabeçalho',
+            type: 'select',
+            constraints: {
+                options: [
+                    { id: 'inline', value: 'inline', label: 'Na mesma linha' },
+                    { id: 'stacked', value: 'stacked', label: 'Empilhado' },
+                    { id: 'floating', value: 'floating', label: 'Flutuante (X fora)' }
+                ]
+            },
+            defaultValue: 'inline'
+        },
+        {
             id: 'modalOverlayColor',
             label: 'Cor do Overlay',
             type: 'color',

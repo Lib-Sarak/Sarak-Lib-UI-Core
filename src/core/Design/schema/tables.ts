@@ -9,6 +9,31 @@ export const TablesSchema: ComponentSchema = {
     label: 'Configuração de Tabelas',
     tokens: [
         {
+            id: 'tableDensity',
+            label: 'Densidade da Tabela',
+            type: 'select',
+            constraints: {
+                options: [
+                    { id: 'compact', value: 'compact', label: 'Compacta' },
+                    { id: 'comfortable', value: 'comfortable', label: 'Confortável' },
+                    { id: 'spacious', value: 'spacious', label: 'Espaçosa' }
+                ]
+            },
+            defaultValue: 'comfortable'
+        },
+        {
+            id: 'tableActionPosition',
+            label: 'Posição das Ações',
+            type: 'select',
+            constraints: {
+                options: [
+                    { id: 'left', value: 'left', label: 'Esquerda' },
+                    { id: 'right', value: 'right', label: 'Direita' }
+                ]
+            },
+            defaultValue: 'right'
+        },
+        {
             id: 'tableHeaderBg',
             label: 'Fundo do Cabeçalho',
             type: 'color',

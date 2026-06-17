@@ -6,6 +6,7 @@ import { ShellUserWidget } from './ShellUserWidget';
 import { ShellLanguageSelector } from './ShellLanguageSelector';
 import { ShellThemeToggle } from './ShellThemeToggle';
 import { IconRenderer } from './IconRenderer';
+import { useShellLayoutStyles } from '../hooks/useShellLayoutStyles';
 
 interface TopbarNavProps {
     design: any;
@@ -30,6 +31,8 @@ export const TopbarNav: React.FC<TopbarNavProps> = ({
         logoPosition, tabSectionMargin, borderRadius, borderWidth, borderStyle, animationSpeed,
         topbarHeight
     } = design || {};
+    
+    const { topbarClass } = useShellLayoutStyles(design);
 
     const isTopbar = navigationStyle === 'topbar';
 
@@ -50,7 +53,7 @@ export const TopbarNav: React.FC<TopbarNavProps> = ({
         <header
             onMouseEnter={() => isNavHidden && setIsHovered(true)}
             onMouseLeave={() => setIsHovered(false)}
-            className={`px-6 flex items-center justify-between z-[45] shrink-0 group relative !overflow-visible`}
+            className={`${topbarClass} px-6 flex items-center justify-between z-[45] shrink-0 group relative !overflow-visible`}
             style={{
                 margin: `var(--theme-tab-section-margin, ${tabSectionMargin ?? 12}px)`,
                 borderRadius: `var(--radius-theme, ${borderRadius ?? 12}px)`,

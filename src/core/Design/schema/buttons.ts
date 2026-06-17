@@ -9,6 +9,30 @@ export const ButtonsSchema: ComponentSchema = {
     label: 'Botão de Ação',
     tokens: [
         {
+            id: 'buttonIconPosition',
+            label: 'Posição do Ícone',
+            type: 'select',
+            constraints: {
+                options: [
+                    { id: 'left', value: 'left', label: 'Esquerda' },
+                    { id: 'right', value: 'right', label: 'Direita' }
+                ]
+            },
+            defaultValue: 'left'
+        },
+        {
+            id: 'buttonWidthStrategy',
+            label: 'Largura do Botão',
+            type: 'select',
+            constraints: {
+                options: [
+                    { id: 'auto', value: 'auto', label: 'Automático (Conteúdo)' },
+                    { id: 'full', value: 'full', label: 'Largura Total (100%)' }
+                ]
+            },
+            defaultValue: 'auto'
+        },
+        {
             id: 'btnBorderRadius',
             label: 'Arredondamento (Master)',
             type: 'slider',

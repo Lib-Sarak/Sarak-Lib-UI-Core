@@ -9,6 +9,30 @@ export const InputsSchema: ComponentSchema = {
     label: 'Campo de Entrada (Input)',
     tokens: [
         {
+            id: 'formLayoutDirection',
+            label: 'Direção do Formulário',
+            type: 'select',
+            constraints: {
+                options: [
+                    { id: 'stack', value: 'stack', label: 'Empilhado (Top)' },
+                    { id: 'inline', value: 'inline', label: 'Em linha (Left)' }
+                ]
+            },
+            defaultValue: 'stack'
+        },
+        {
+            id: 'inputIconPosition',
+            label: 'Posição do Ícone',
+            type: 'select',
+            constraints: {
+                options: [
+                    { id: 'left', value: 'left', label: 'Esquerda' },
+                    { id: 'right', value: 'right', label: 'Direita' }
+                ]
+            },
+            defaultValue: 'left'
+        },
+        {
             id: 'inputBorderRadius',
             label: 'Arredondamento',
             type: 'slider',
