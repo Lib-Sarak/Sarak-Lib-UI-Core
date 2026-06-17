@@ -196,7 +196,16 @@
     "checkboxActiveColor",
     "switchStyleType",
     "switchBackdropBlur",
-    "switchPulseColor"
+    "switchPulseColor",
+    "tableZebraStriping",
+    "tableBorderRadius",
+    "inputPadding",
+    "inputBorderType",
+    "inputBackdropBlur",
+    "inputShadow",
+    "inputIconColor",
+    "inputErrorColor",
+    "inputSuccessColor"
   ],
   "cards_engine": [
     "cardBorderRadius",

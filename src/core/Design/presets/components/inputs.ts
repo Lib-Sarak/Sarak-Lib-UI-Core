@@ -8,8 +8,8 @@ export const INPUT_PRESETS: ComponentPreset[] = [
         design: {
             inputBorderType: 'underline',
             inputBorderRadius: 0,
-            inputBorderColor: 'rgba(255,255,255,0.2)',
-            inputFocusBorderColor: '#3b82f6',
+            inputBorderColor: 'var(--theme-border)',
+            inputFocusBorderColor: 'var(--theme-primary)',
             inputBg: 'transparent',
             inputBackdropBlur: 0,
             inputShadow: 'none',
@@ -22,7 +22,7 @@ export const INPUT_PRESETS: ComponentPreset[] = [
         design: {
             inputBorderType: 'none',
             inputBorderRadius: 12,
-            inputBg: 'rgba(30,30,30,1)', 
+            inputBg: 'var(--theme-card)', 
             inputShadow: 'inset 4px 4px 8px rgba(0,0,0,0.5), inset -4px -4px 8px rgba(255,255,255,0.05)',
             inputBackdropBlur: 0,
             inputBorderColor: 'transparent',
@@ -36,25 +36,67 @@ export const INPUT_PRESETS: ComponentPreset[] = [
         design: {
             inputBorderType: 'solid',
             inputBorderRadius: 8,
-            inputBg: 'rgba(255,255,255,0.05)',
-            inputBorderColor: 'rgba(255,255,255,0.1)',
-            inputFocusBorderColor: '#00f2ff',
+            inputBg: 'var(--theme-card)',
+            inputBorderColor: 'var(--theme-border)',
+            inputFocusBorderColor: 'var(--theme-primary)',
             inputBackdropBlur: 10,
             inputShadow: '0 2px 10px rgba(0,0,0,0.1)',
         }
     },
     {
         id: 'input-high-contrast',
-        name: 'High Contrast',
+        name: 'High Contrast (Brutalism)',
         description: 'Solid dark background with sharp border.',
         design: {
             inputBorderType: 'solid',
-            inputBorderRadius: 4,
-            inputBg: '#000000',
-            inputBorderColor: '#ffffff',
-            inputFocusBorderColor: '#ff00ff',
+            inputBorderRadius: 0,
+            inputBg: 'var(--theme-background)',
+            inputBorderColor: 'var(--theme-title)',
+            inputFocusBorderColor: 'var(--theme-primary)',
             inputBackdropBlur: 0,
             inputShadow: 'none',
+        }
+    },
+    {
+        id: 'input-cyberpunk',
+        name: 'Cyberpunk Neon',
+        description: 'Dark background, dashed glowing border.',
+        design: {
+            inputBorderType: 'dashed',
+            inputBorderRadius: 0,
+            inputBg: 'var(--theme-card)',
+            inputBorderColor: 'var(--theme-border)',
+            inputFocusBorderColor: 'var(--theme-primary-focus)',
+            inputBackdropBlur: 0,
+            inputShadow: '0 0 10px var(--theme-primary-focus)',
+        }
+    },
+    {
+        id: 'input-soft-ui',
+        name: 'Soft UI',
+        description: 'Extremely rounded pill-shape with soft background.',
+        design: {
+            inputBorderType: 'none',
+            inputBorderRadius: 9999,
+            inputBg: 'var(--theme-card)',
+            inputBorderColor: 'transparent',
+            inputFocusBorderColor: 'var(--theme-primary)',
+            inputBackdropBlur: 0,
+            inputShadow: 'none',
+        }
+    },
+    {
+        id: 'input-apple-glass',
+        name: 'Apple Glass',
+        description: 'High blur, translucent white background similar to macOS/iOS.',
+        design: {
+            inputBorderType: 'solid',
+            inputBorderRadius: 12,
+            inputBg: 'var(--theme-card)',
+            inputBorderColor: 'var(--theme-border)',
+            inputFocusBorderColor: 'var(--theme-primary)',
+            inputBackdropBlur: 24,
+            inputShadow: '0 4px 24px rgba(0, 0, 0, 0.1)',
         }
     }
 ];

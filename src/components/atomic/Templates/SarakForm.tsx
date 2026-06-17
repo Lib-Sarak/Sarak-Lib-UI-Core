@@ -2,6 +2,8 @@ import React, { useState, useEffect } from 'react';
 import { motion } from 'framer-motion';
 import { Save, Settings, ShieldCheck, AlertCircle } from 'lucide-react';
 import api from '../../../shared/services/api';
+import { SarakInput } from '../Inputs';
+import { SarakButton } from '../Buttons';
 
 interface SarakFormProps {
     endpoint: string;
@@ -123,12 +125,9 @@ export const SarakForm: React.FC<SarakFormProps> = ({
                         <label className="text-2xs font-black text-white/30 uppercase tracking-widest pl-1 block">
                             {mapping ? mapping[key] : key.replace(/_/g, ' ')}
                         </label>
-                        <input
-                            type="text"
+                        <SarakInput
                             value={formData[key] || ''}
                             onChange={(e) => handleChange(key, e.target.value)}
-                            className="w-full bg-theme-card border-theme text-white text-sm font-medium focus:border-[var(--theme-primary-border)] outline-none transition-all placeholder:text-white/10 rounded-theme"
-                            style={{ padding: 'calc(var(--theme-pad) / 1.5) var(--theme-pad)', transitionDuration: 'var(--animation-speed, 0.3s)' }}
                             placeholder={`Digite o ${mapping ? mapping[key] : key}...`}
                         />
                     </div>
@@ -157,17 +156,11 @@ export const SarakForm: React.FC<SarakFormProps> = ({
 
             {/* Actions Area */}
             <div className="flex justify-end border-t border-theme" style={{ paddingTop: 'var(--theme-gap)' }}>
-                <motion.button
-                    whileHover={{ scale: 1.02 }}
-                    whileTap={{ scale: 0.98 }}
+                <SarakButton
                     onClick={handleSave}
                     disabled={saving}
-                    className="flex items-center bg-[var(--theme-primary)] hover:opacity-90 text-white rounded-theme text-xs font-black uppercase tracking-widest shadow-xl shadow-[var(--theme-primary-focus)] transition-all disabled:opacity-50"
-                    style={{ 
-                        gap: 'calc(var(--theme-gap) / 3)', 
-                        padding: 'calc(var(--theme-pad) / 1.5) var(--theme-pad)',
-                        transitionDuration: 'var(--animation-speed, 0.3s)'
-                    }}
+                    className="shadow-xl"
+                    style={{ boxShadow: '0 10px 20px -10px var(--theme-primary-focus)' }}
                 >
                     {saving ? (
                         <div className="w-4 h-4 border-2 border-white/30 border-t-white rounded-full animate-spin" />
@@ -175,7 +168,7 @@ export const SarakForm: React.FC<SarakFormProps> = ({
                         <Save size={16} />
                     )}
                     {saving ? 'Sincronizando...' : 'Salvar Alterações'}
-                </motion.button>
+                </SarakButton>
             </div>
         </div>
     );

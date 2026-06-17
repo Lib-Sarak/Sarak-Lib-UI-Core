@@ -5,6 +5,7 @@ import { atomDark } from 'react-syntax-highlighter/dist/esm/styles/prism';
 import { Send, Paperclip, User, Bot, Sparkles } from 'lucide-react';
 import { motion, AnimatePresence } from 'framer-motion';
 import { useSarakUI } from '../../../core/Provider/SarakUIProvider';
+import { SarakInput } from '../../../components/atomic/Inputs/SarakInput';
 
 interface Message {
     id: string;
@@ -188,12 +189,12 @@ const SarakChatEngine: React.FC<SarakChatEngineProps> = ({
                     <button type="button" className="p-2 text-white/20 hover:text-white transition-colors">
                         <Paperclip size={18} />
                     </button>
-                    <input 
-                        type="text" 
+                    <SarakInput 
                         value={input}
                         onChange={(e) => setInput(e.target.value)}
                         placeholder={placeholder}
-                        className="bg-transparent border-none outline-none flex-1 text-sm text-white py-2"
+                        className="!bg-transparent !border-none !outline-none !shadow-none !text-white flex-1"
+                        fullWidth
                     />
                     <button 
                         type="submit" 

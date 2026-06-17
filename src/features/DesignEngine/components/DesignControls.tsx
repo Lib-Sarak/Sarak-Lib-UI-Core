@@ -2,6 +2,7 @@ import React, { useState } from 'react';
 import { ChevronDown, RotateCcw, HelpCircle, Loader2 } from 'lucide-react';
 import { motion, AnimatePresence } from 'framer-motion';
 import { useSarakUI } from '../../../core/Provider/SarakUIProvider';
+import { SarakSlider, SarakSwitch, SarakSelect, SarakInput } from '../../../components/atomic/Inputs';
 
 /**
  * HelpTooltip (v12.0)
@@ -56,10 +57,13 @@ export const SliderControl: React.FC<any> = ({ label, description, value, min = 
             </span>
             <span className="text-[10px] font-mono text-[var(--theme-primary)]">{value ?? 0}{suffix || unit}</span>
         </div>
-        <input 
-            type="range" min={min} max={max} step={step} value={value ?? 0} 
+        <SarakSlider 
+            min={min} 
+            max={max} 
+            step={step} 
+            value={value ?? 0} 
+            valueLabel={`${value ?? 0}${suffix || unit}`}
             onChange={(e) => onChange(parseFloat(e.target.value))}
-            className="w-full h-1 bg-[var(--theme-layer)] rounded-lg appearance-none cursor-pointer accent-[var(--theme-primary)]"
         />
     </div>
 );
@@ -116,21 +120,16 @@ export const ColorControl: React.FC<any> = ({ label, description, value, onChang
 };
 
 export const SwitchControl: React.FC<any> = ({ label, value, onChange, description }) => (
-    <div className="flex items-center justify-between p-2.5 rounded-xl bg-[var(--theme-layer)] border border-[var(--theme-border)] group hover:bg-[var(--theme-border)] transition-all">
-        <div className="flex flex-col gap-0.5">
-            <span className="text-[10px] font-black uppercase tracking-widest text-[var(--theme-text)] flex items-center gap-1.5">
+    <SarakSwitch 
+        checked={value}
+        onChange={(checked) => onChange(checked)}
+        label={
+            <span className="text-[10px] font-black uppercase tracking-widest flex items-center gap-1.5">
                 {label}
                 <HelpTooltip label={label} description={description} />
             </span>
-            {description && <span className="text-[9px] text-[var(--theme-muted)] uppercase tracking-tighter italic">{description}</span>}
-        </div>
-        <button 
-            onClick={() => onChange(!value)}
-            className={`w-9 h-4.5 rounded-full relative transition-all ${value ? 'bg-[var(--theme-primary)]' : 'bg-[var(--theme-border)]'}`}
-        >
-            <div className={`absolute top-0.5 w-3.5 h-3.5 rounded-full bg-[var(--theme-surface)] shadow-sm transition-all ${value ? 'left-5' : 'left-0.5'}`} />
-        </button>
-    </div>
+        }
+    />
 );
 
 export const SelectControl: React.FC<any> = ({ label, description, options, value, onChange, isFont = false }) => (
@@ -139,22 +138,21 @@ export const SelectControl: React.FC<any> = ({ label, description, options, valu
             {label}
             <HelpTooltip label={label} description={description} />
         </span>
-        <select 
+        <SarakSelect 
             value={value ?? ''} 
             onChange={(e) => onChange(e.target.value)}
-            className="w-full bg-[var(--theme-layer)] border border-[var(--theme-border)] rounded-lg py-1.5 px-3 text-[10px] font-bold focus:border-[var(--theme-primary)] focus:outline-none transition-all text-[var(--theme-text)]"
             style={isFont ? { fontFamily: value } : {}}
         >
             {(options || []).map((opt: any) => {
                 const optId = typeof opt === 'object' ? (opt.id !== undefined ? opt.id : (opt.value !== undefined ? opt.value : '')) : opt;
                 const optLabel = typeof opt === 'object' ? (opt.label || opt.name || optId) : opt;
                 return (
-                    <option key={optId} value={optId} className="bg-[var(--theme-surface)]">
+                    <option key={optId} value={optId}>
                         {optLabel}
                     </option>
                 );
             })}
-        </select>
+        </SarakSelect>
     </div>
 );
 
@@ -167,12 +165,11 @@ export const InputControl: React.FC<any> = ({ label, description, value, onChang
                 <HelpTooltip label={label} description={description} />
             </span>
         </div>
-        <input 
+        <SarakInput 
             type={type}
             value={value ?? ''} 
             placeholder={placeholder}
             onChange={(e) => onChange(type === 'number' ? parseFloat(e.target.value) : e.target.value)}
-            className="w-full bg-[var(--theme-layer)] border border-[var(--theme-border)] rounded-lg py-2 px-3 text-[10px] font-mono focus:border-[var(--theme-primary)] focus:outline-none transition-all text-[var(--theme-text)] placeholder:text-[var(--theme-muted)]"
         />
     </div>
 );

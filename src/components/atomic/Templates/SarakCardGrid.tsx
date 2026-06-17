@@ -16,6 +16,8 @@ import { useSarakUI } from '../../../core/Provider/SarakUIProvider';
 import { SarakTitleCard } from '../Cards/SarakTitleCard';
 import { SarakActionCard } from '../Cards/SarakActionCard';
 import { SarakSearchCard } from '../Cards/SarakSearchCard';
+import { SarakInput } from '../Inputs';
+import { SarakButton, SarakIconButton } from '../Buttons';
 
 interface FilterConfig {
     id: string;
@@ -139,14 +141,13 @@ export const SarakCardGrid: React.FC<SarakCardGridProps> = ({ endpoint, label, m
                         <p className="text-[var(--theme-muted)] opacity-40 text-2xs font-bold uppercase tracking-[0.3em] mt-1">Sintonizando {filteredData.length} unidades disponíveis</p>
                     </div>
                     <div className="flex items-center" style={{ gap: 'calc(var(--theme-gap) / 2)' }}>
-                        <div className="relative group">
-                            <Search className="absolute left-4 top-1/2 -translate-y-1/2 text-[var(--theme-muted)] opacity-30 group-focus-within:text-[var(--theme-primary)] transition-colors" size={16} />
-                            <input 
+                        <div className="w-full md:w-80">
+                            <SarakInput 
                                 type="text" 
                                 placeholder="Pesquisar..." 
                                 value={search}
                                 onChange={(e) => setSearch(e.target.value)}
-                                className="bg-theme-card border-theme py-4 pl-12 pr-6 text-sm text-[var(--theme-text)] outline-none focus:border-[var(--theme-primary-border)] transition-all w-full md:w-80 rounded-theme"
+                                leftIcon={<Search size={16} />}
                             />
                         </div>
                     </div>
@@ -158,17 +159,14 @@ export const SarakCardGrid: React.FC<SarakCardGridProps> = ({ endpoint, label, m
                     {mainFilter && (
                         <div className="flex flex-wrap" style={{ gap: '0.5rem' }}>
                             {['all', ...(mainFilter.options || (mainFilter.dynamic ? getDynamicOptions(mainFilter.field) : [])).map(o => typeof o === 'string' ? o : o.value)].map(opt => (
-                                <button
+                                <SarakButton
                                     key={opt}
                                     onClick={() => setActiveFilters(prev => ({ ...prev, [mainFilter.id]: opt }))}
-                                    className={`px-6 py-3 rounded-theme text-2xs font-black uppercase tracking-widest transition-all border ${
-                                        (activeFilters[mainFilter.id] || 'all') === opt
-                                            ? 'bg-[var(--theme-primary)] border-[var(--theme-primary-border)] text-white shadow-lg shadow-[var(--theme-primary-focus)]'
-                                            : 'bg-theme-card border-theme text-[var(--theme-muted)] hover:text-[var(--theme-title)]'
-                                    }`}
+                                    variant={(activeFilters[mainFilter.id] || 'all') === opt ? 'primary' : 'secondary'}
+                                    className={(activeFilters[mainFilter.id] || 'all') === opt ? 'shadow-lg shadow-[var(--theme-primary-focus)]' : ''}
                                 >
                                     {opt === 'all' ? `Todos (${mainFilter.label})` : opt}
-                                </button>
+                                </SarakButton>
                             ))}
                         </div>
                     )}
@@ -344,17 +342,19 @@ const SarakCoreCard = ({ item, mapping, variant }: { item: any; mapping: any; va
                 </div>
 
                 <div className="flex" style={{ gap: 'calc(var(--theme-gap) / 2.5)' }}>
-                    <button 
+                    <SarakButton 
                         onClick={() => setIsExpanded(!isExpanded)}
-                        className="flex-1 flex items-center justify-center gap-2 py-4 bg-theme-card border-theme text-[var(--theme-muted)] hover:text-[var(--theme-secondary)] hover:border-[var(--theme-secondary-border)] rounded-theme text-2xs font-black uppercase tracking-widest transition-all"
-                        style={{ transitionDuration: 'var(--animation-speed, 0.3s)' }}
+                        variant="secondary"
+                        className="flex-1"
                     >
                         <LucideIcons.ChevronDown className={`w-3 h-3 transition-transform ${isExpanded ? 'rotate-180' : ''}`} />
                         {isExpanded ? 'Fechar' : 'Ver Specs'}
-                    </button>
-                    <button className="p-4 bg-[var(--theme-primary)] hover:opacity-90 text-white rounded-theme transition-all shadow-lg" style={{ transitionDuration: 'var(--animation-speed, 0.3s)' }}>
-                        <ExternalLink size={18} />
-                    </button>
+                    </SarakButton>
+                    <SarakIconButton 
+                        icon={<ExternalLink size={18} />}
+                        variant="primary"
+                        className="shadow-lg"
+                    />
                 </div>
 
                 <AnimatePresence>

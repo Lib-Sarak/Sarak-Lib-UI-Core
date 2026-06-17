@@ -1,6 +1,8 @@
 import React from 'react';
 import { Search, Check } from 'lucide-react';
 import { ModelRoute } from './types';
+import { SarakInput } from '../../Inputs';
+import { SarakButton } from '../../Buttons';
 
 interface ModelPickerProps {
   availableModels: ModelRoute[];
@@ -21,36 +23,34 @@ export const ModelPicker: React.FC<ModelPickerProps> = ({
 }) => (
   <div className="absolute bottom-full left-0 mb-3 w-80 bg-[var(--sarak-card-bg)] border border-[var(--sarak-card-border-color)] rounded-sarak shadow-2xl backdrop-blur-2xl overflow-hidden z-50">
     <div className="p-3">
-      <div className="relative mb-3">
-        <Search size={14} className="absolute left-3 top-1/2 -translate-y-1/2 text-[var(--theme-muted)]" />
-        <input 
+      <div className="mb-3">
+        <SarakInput 
           type="text"
           placeholder="Pesquisar modelos..."
           value={modelSearch}
           onChange={(e) => setModelSearch(e.target.value)}
-          className="w-full bg-[var(--theme-muted)]/10 border border-[var(--theme-border)] rounded-xl py-2 pl-9 pr-3 text-xs focus:outline-none focus:border-[var(--theme-primary-border)] text-[var(--theme-title)] placeholder:text-[var(--theme-muted)]"
+          leftIcon={<Search size={14} />}
+          fullWidth
         />
       </div>
       <div className="max-h-60 overflow-y-auto custom-scrollbar pr-1">
         {availableModels
           .filter(m => m.display_name.toLowerCase().includes(modelSearch.toLowerCase()))
           .map((m, idx) => (
-          <button
+          <SarakButton
             key={idx}
             onClick={() => { setSelectedRoute(m); setShowModelPicker(false); }}
-            className={`w-full flex items-center justify-between p-3 rounded-xl transition-all mb-1 ${
-              selectedRoute?.model === m.model ? 'bg-[var(--theme-primary-bg)] text-[var(--theme-primary)]' : 'hover:bg-[var(--theme-muted)]/10 text-[var(--theme-muted)]'
-            }`}
+            variant={selectedRoute?.model === m.model ? 'primary' : 'ghost'}
+            className="w-full justify-between mb-1"
           >
             <div className="flex flex-col items-start overflow-hidden">
               <span className="text-xs font-bold truncate w-full">{m.display_name}</span>
               <span className="text-2xs opacity-60 uppercase tracking-tighter">{m.provider}</span>
             </div>
             {selectedRoute?.model === m.model && <Check size={14} />}
-          </button>
+          </SarakButton>
         ))}
       </div>
     </div>
   </div>
 );
-

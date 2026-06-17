@@ -12,6 +12,8 @@ import {
 } from 'lucide-react';
 import { useSarakUI } from '../../../core/Provider/SarakUIProvider';
 import api from '../../../shared/services/api';
+import { SarakButton } from '../Buttons';
+import { SarakInput } from '../Inputs';
 
 interface SarakSecurityOrchestratorProps {
     endpoint: string;
@@ -157,19 +159,19 @@ export const SarakSecurityOrchestrator: React.FC<SarakSecurityOrchestratorProps>
                             </div>
                             
                             {mfaStatus?.enabled ? (
-                                <button 
+                                <SarakButton 
                                     onClick={() => setStep('DISABLE_CHALLENGE')}
-                                    className="px-6 py-2 border border-red-500/30 text-red-500 text-2xs font-black uppercase tracking-widest rounded-lg hover:bg-red-500/5 transition-all"
+                                    variant="danger"
                                 >
                                     Desativar
-                                </button>
+                                </SarakButton>
                             ) : (
-                                <button 
+                                <SarakButton 
                                     onClick={startSetup}
-                                    className="px-6 py-2 bg-[var(--theme-primary)] text-[var(--theme-on-primary)] text-2xs font-black uppercase tracking-widest rounded-lg shadow-lg shadow-[var(--theme-primary)]/20 hover:brightness-110 transition-all"
+                                    variant="primary"
                                 >
                                     Configurar
-                                </button>
+                                </SarakButton>
                             )}
                         </div>
 
@@ -216,17 +218,16 @@ export const SarakSecurityOrchestrator: React.FC<SarakSecurityOrchestratorProps>
                         </div>
 
                         <div className="w-full max-w-xs space-y-4">
-                            <div className="relative">
-                                <Key className="absolute left-4 top-1/2 -translate-y-1/2 text-[var(--theme-muted)]" size={16} />
-                                <input 
+                                <SarakInput 
                                     type="text" 
                                     maxLength={6}
                                     value={code}
                                     onChange={(e) => setCode(e.target.value.replace(/\D/g, ''))}
                                     placeholder="000000"
-                                    className="w-full bg-[var(--theme-card)]/40 border border-[var(--theme-border)] rounded-xl py-4 px-12 text-center text-xl font-black tracking-[0.5em] text-[var(--theme-title)] focus:outline-none focus:border-[var(--theme-primary)] transition-all"
+                                    leftIcon={<Key size={16} />}
+                                    className="text-center text-xl font-black tracking-[0.5em]"
+                                    fullWidth
                                 />
-                            </div>
 
                             {error && (
                                 <motion.div initial={{ opacity: 0 }} animate={{ opacity: 1 }} className="text-[10px] uppercase font-black text-red-500 tracking-widest">
@@ -234,13 +235,15 @@ export const SarakSecurityOrchestrator: React.FC<SarakSecurityOrchestratorProps>
                                 </motion.div>
                             )}
 
-                            <button 
+                            <SarakButton 
                                 onClick={handleEnable}
                                 disabled={code.length !== 6 || isValidating}
-                                className="w-full py-4 bg-[var(--theme-primary)] text-[var(--theme-on-primary)] text-xs font-black uppercase tracking-[0.2em] rounded-xl shadow-xl shadow-[var(--theme-primary)]/20 hover:brightness-110 disabled:opacity-50 disabled:cursor-not-allowed transition-all"
+                                variant="primary"
+                                fullWidth
+                                className="py-4 shadow-xl shadow-[var(--theme-primary)]/20"
                             >
                                 {isValidating ? 'Validando...' : 'Ativar Proteção'}
-                            </button>
+                            </SarakButton>
                         </div>
                     </motion.div>
                 )}
@@ -261,36 +264,35 @@ export const SarakSecurityOrchestrator: React.FC<SarakSecurityOrchestratorProps>
                         </div>
 
                         <div className="w-full max-w-xs space-y-4">
-                            <div className="relative">
-                                <Key className="absolute left-4 top-1/2 -translate-y-1/2 text-[var(--theme-muted)]" size={16} />
-                                <input 
+                                <SarakInput 
                                     type="text" 
                                     maxLength={6}
                                     value={code}
                                     onChange={(e) => setCode(e.target.value.replace(/\D/g, ''))}
                                     placeholder="000000"
-                                    className="w-full bg-[var(--theme-card)]/40 border border-[var(--theme-border)] rounded-xl py-4 px-12 text-center text-xl font-black tracking-[0.5em] text-[var(--theme-title)] focus:outline-none focus:border-red-500 transition-all"
+                                    leftIcon={<Key size={16} />}
+                                    className="text-center text-xl font-black tracking-[0.5em] focus:border-red-500"
+                                    fullWidth
                                 />
-                            </div>
 
                             {error && (
                                 <div className="text-[10px] uppercase font-black text-red-500 tracking-widest">{error}</div>
                             )}
 
                             <div className="grid grid-cols-2 gap-4">
-                                <button 
+                                <SarakButton 
                                     onClick={() => setStep('STATUS')}
-                                    className="py-4 border border-[var(--theme-border)] text-[var(--theme-title)] text-xs font-black uppercase tracking-widest rounded-xl hover:bg-[var(--theme-muted)]/10 transition-all"
+                                    variant="secondary"
                                 >
                                     Cancelar
-                                </button>
-                                <button 
+                                </SarakButton>
+                                <SarakButton 
                                     onClick={handleDisable}
                                     disabled={code.length !== 6 || isValidating}
-                                    className="py-4 bg-red-500 text-white text-xs font-black uppercase tracking-widest rounded-xl shadow-xl shadow-red-500/20 hover:brightness-110 disabled:opacity-50 transition-all"
+                                    variant="danger"
                                 >
                                     {isValidating ? 'Processando...' : 'Confirmar'}
-                                </button>
+                                </SarakButton>
                             </div>
                         </div>
                     </motion.div>
@@ -325,12 +327,12 @@ export const SarakSecurityOrchestrator: React.FC<SarakSecurityOrchestratorProps>
                         <ShieldAlert className="text-red-500" size={48} />
                         <div>
                             <div className="text-xs font-black uppercase tracking-widest text-red-500 mb-2">{error}</div>
-                            <button 
+                            <SarakButton 
                                 onClick={fetchStatus}
-                                className="px-6 py-2 border border-[var(--theme-border)] text-[var(--theme-title)] text-2xs font-black uppercase tracking-widest rounded-lg hover:bg-[var(--theme-muted)]/10 transition-all"
+                                variant="secondary"
                             >
                                 Tentar Novamente
-                            </button>
+                            </SarakButton>
                         </div>
                     </motion.div>
                 )}

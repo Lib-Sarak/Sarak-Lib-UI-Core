@@ -1,5 +1,6 @@
 import React from 'react';
 import { Bot, Sparkles, Settings2, Trash2 } from 'lucide-react';
+import { SarakButton, SarakIconButton } from '../../Buttons';
 
 interface ChatHeaderProps {
   label: string;
@@ -21,23 +22,21 @@ export const ChatHeader: React.FC<ChatHeaderProps> = ({ label, mode, setMode, cl
     </div>
 
     <div className="flex items-center" style={{ gap: 'calc(var(--theme-gap) / 4)' }}>
-      <button 
+      <SarakButton 
         onClick={() => setMode(mode === 'auto' ? 'manual' : 'auto')}
-        className={`flex items-center gap-2 px-3 py-1.5 rounded-full text-xs font-semibold transition-all border ${
-          mode === 'auto' 
-            ? 'bg-[var(--theme-success-bg)] text-[var(--theme-success)] border-[var(--theme-success-border)] shadow-[var(--theme-success-focus)]' 
-            : 'bg-[var(--theme-primary-bg)] text-[var(--theme-primary)] border-[var(--theme-primary-border)] shadow-[var(--theme-primary-focus)]'
-        }`}
-        style={{ transitionDuration: 'var(--animation-speed, 0.3s)' }}
+        variant={mode === 'auto' ? 'success' : 'primary'}
+        className="rounded-full shadow-lg"
       >
         {mode === 'auto' ? <Sparkles size={14} /> : <Settings2 size={14} />}
         {mode === 'auto' ? 'Selector Inteligente' : 'Modo Manual'}
-      </button>
+      </SarakButton>
       
-      <button onClick={clearChat} className="p-2 hover:bg-[var(--theme-error-bg)] hover:text-[var(--theme-error)] rounded-lg transition-colors text-[var(--theme-muted)]" style={{ transitionDuration: 'var(--animation-speed, 0.3s)' }}>
-        <Trash2 size={18} />
-      </button>
+      <SarakIconButton 
+        onClick={clearChat} 
+        icon={<Trash2 size={18} />}
+        variant="ghost"
+        className="hover:bg-[var(--theme-error-bg)] hover:text-[var(--theme-error)]"
+      />
     </div>
   </header>
 );
-

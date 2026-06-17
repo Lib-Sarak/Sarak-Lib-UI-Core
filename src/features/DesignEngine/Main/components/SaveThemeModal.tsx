@@ -1,6 +1,7 @@
 import React, { useState } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
 import { Save, Copy, X, Database } from 'lucide-react';
+import { SarakInput } from '../../../../components/atomic/Inputs';
 
 export type SaveThemeAction = 
     | { type: 'CREATE_NEW'; name: string }
@@ -83,11 +84,9 @@ export const SaveThemeModal: React.FC<SaveThemeModalProps> = ({
                                 </p>
                                 <div className="mt-2 flex flex-col gap-1.5">
                                     <label className="text-[10px] font-bold text-[var(--theme-text)] uppercase tracking-widest">Nome do Novo Tema</label>
-                                    <input 
-                                        type="text" 
+                                    <SarakInput 
                                         value={newName}
                                         onChange={(e) => setNewName(e.target.value)}
-                                        className="w-full bg-black/30 border border-[var(--theme-border)] rounded-lg px-4 py-2.5 text-sm text-white focus:outline-none focus:border-[var(--theme-primary)] transition-colors"
                                         placeholder="Ex: Sarak Sovereign Customizado"
                                         disabled={isSaving}
                                         autoFocus
@@ -121,14 +120,14 @@ export const SaveThemeModal: React.FC<SaveThemeModalProps> = ({
 
                                     <div className="flex flex-col gap-2">
                                         <div className="flex items-center gap-2">
-                                            <input 
-                                                type="text" 
-                                                value={newName}
-                                                onChange={(e) => setNewName(e.target.value)}
-                                                className="flex-1 bg-black/30 border border-[var(--theme-border)] rounded-lg px-4 py-2.5 text-sm text-white focus:outline-none focus:border-[var(--theme-primary)] transition-colors"
-                                                placeholder="Nome para a cópia"
-                                                disabled={isSaving}
-                                            />
+                                            <div className="flex-1">
+                                                <SarakInput 
+                                                    value={newName}
+                                                    onChange={(e) => setNewName(e.target.value)}
+                                                    placeholder="Nome para a cópia"
+                                                    disabled={isSaving}
+                                                />
+                                            </div>
                                             <button 
                                                 onClick={() => onAction({ type: 'CREATE_NEW', name: newName })}
                                                 disabled={isSaving || !newName.trim()}

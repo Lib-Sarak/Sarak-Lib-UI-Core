@@ -7,6 +7,7 @@ import {
     Layers, Sliders, Sparkles, HelpCircle
 } from 'lucide-react';
 import { HelpTooltip } from '../components/DesignControls';
+import { SarakSlider, SarakSwitch } from '../../../components/atomic/Inputs';
 
 /**
  * EngineCustomizationTab v7.0
@@ -64,15 +65,14 @@ export const EngineCustomizationTab: React.FC = () => {
                 </Control>
                 <div className="grid grid-cols-1 gap-4">
                     <div className="space-y-3">
-                        <div className="flex justify-between items-center text-2xs font-black uppercase text-white/30">
+                        <div className="flex justify-between items-center text-2xs font-black uppercase text-white/30 mb-2">
                             <span>Velocidade de Digitação</span>
-                            <span className="text-[var(--theme-primary)]">{design.chatAnimationSpeed || 0.05}s</span>
                         </div>
-                        <input 
-                            type="range" min="0" max="0.5" step="0.01" 
+                        <SarakSlider 
+                            min={0} max={0.5} step={0.01} 
                             value={design.chatAnimationSpeed || 0.05}
+                            valueLabel={`${design.chatAnimationSpeed || 0.05}s`}
                             onChange={(e) => update('chatAnimationSpeed', parseFloat(e.target.value))}
-                            className="w-full h-1 bg-white/5 rounded-full appearance-none cursor-pointer accent-[var(--theme-primary)]"
                         />
                     </div>
                 </div>
@@ -97,15 +97,14 @@ export const EngineCustomizationTab: React.FC = () => {
                     </div>
                 </Control>
                 <div className="space-y-3">
-                    <div className="flex justify-between items-center text-2xs font-black uppercase text-white/30">
+                    <div className="flex justify-between items-center text-2xs font-black uppercase text-white/30 mb-2">
                         <span>Raio das Nodes</span>
-                        <span className="text-[var(--theme-primary)]">{design.flowNodeRadius || 12}px</span>
                     </div>
-                    <input 
-                        type="range" min="0" max="40" step="1" 
+                    <SarakSlider 
+                        min={0} max={40} step={1} 
                         value={design.flowNodeRadius || 12}
+                        valueLabel={`${design.flowNodeRadius || 12}px`}
                         onChange={(e) => update('flowNodeRadius', parseInt(e.target.value))}
-                        className="w-full h-1 bg-white/5 rounded-full appearance-none cursor-pointer accent-[var(--theme-primary)]"
                     />
                 </div>
             </Section>
@@ -142,12 +141,10 @@ export const EngineCustomizationTab: React.FC = () => {
                         </span>
                         <span className="text-3xs text-white/20 uppercase tracking-tighter italic">Visibilidade das linhas de referência</span>
                     </div>
-                    <button 
-                        onClick={() => update('chartShowGrid', !design.chartShowGrid)}
-                        className={`w-10 h-5 rounded-full relative transition-all ${design.chartShowGrid ? 'bg-[var(--theme-primary)]' : 'bg-white/10'}`}
-                    >
-                        <div className={`absolute top-1 w-3 h-3 rounded-full bg-white transition-all ${design.chartShowGrid ? 'left-6' : 'left-1'}`} />
-                    </button>
+                    <SarakSwitch 
+                        checked={design.chartShowGrid}
+                        onChange={() => update('chartShowGrid', !design.chartShowGrid)}
+                    />
                 </div>
                 
                 <div className="p-4 rounded-2xl bg-[var(--theme-primary)]/5 border border-[var(--theme-primary)]/10 flex items-start gap-4">

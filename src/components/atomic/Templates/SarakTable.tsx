@@ -12,6 +12,8 @@ import {
     AlertCircle
 } from 'lucide-react';
 import api from '../../../shared/services/api';
+import { SarakInput } from '../Inputs';
+import { SarakButton, SarakIconButton } from '../Buttons';
 
 interface SarakTableProps {
     endpoint: string;
@@ -75,7 +77,7 @@ export const SarakTable: React.FC<SarakTableProps> = ({ endpoint, label, mapping
                 <div>
                     <h4 className="font-bold">Erro ao carregar dados</h4>
                     <p className="text-xs opacity-60">{error}</p>
-                    <button onClick={fetchData} className="mt-2 text-2xs font-black uppercase tracking-widest hover:underline">Tentar novamente</button>
+                    <SarakButton onClick={fetchData} variant="ghost" className="mt-2 text-2xs font-black uppercase tracking-widest hover:underline p-0">Tentar novamente</SarakButton>
                 </div>
             </div>
         );
@@ -99,19 +101,20 @@ export const SarakTable: React.FC<SarakTableProps> = ({ endpoint, label, mapping
                 </div>
                 
                 <div className="flex items-center" style={{ gap: 'calc(var(--theme-gap) / 3)' }}>
-                    <div className="relative group">
-                        <Search className="absolute left-4 top-1/2 -translate-y-1/2 text-white/20 transition-colors" size={14} style={{ color: 'group-focus-within:var(--theme-primary)' }} />
-                        <input 
+                    <div className="w-full md:w-64">
+                        <SarakInput 
                             type="text" 
                             placeholder="Pesquisar..." 
                             value={search}
                             onChange={(e) => setSearch(e.target.value)}
-                            className="bg-theme-card border-theme py-2 pl-12 pr-4 text-xs text-white outline-none transition-all w-full md:w-64 rounded-theme focus:border-[var(--theme-primary-focus)]"
+                            leftIcon={<Search size={16} />}
                         />
                     </div>
-                    <button onClick={fetchData} className="p-2 bg-theme-card border-theme text-white/40 hover:text-white hover:bg-white/10 transition-all rounded-theme" style={{ transitionDuration: 'var(--animation-speed, 0.3s)' }}>
-                        <RefreshCw size={16} className={loading ? 'animate-spin' : ''} />
-                    </button>
+                    <SarakIconButton 
+                        icon={<RefreshCw size={16} className={loading ? 'animate-spin' : ''} />} 
+                        onClick={fetchData} 
+                        variant="secondary"
+                    />
                 </div>
             </div>
 
@@ -184,9 +187,10 @@ export const SarakTable: React.FC<SarakTableProps> = ({ endpoint, label, mapping
                                                 </td>
                                             ))}
                                             <td className="text-right" style={{ padding: density === 'compact' ? '0.5rem 1rem' : 'calc(var(--theme-pad) / 2) var(--theme-pad)' }}>
-                                                <button className="p-2 text-white/10 hover:text-white/60 transition-colors" style={{ transitionDuration: 'var(--animation-speed, 0.3s)' }}>
-                                                    <MoreHorizontal size={16} />
-                                                </button>
+                                                <SarakIconButton 
+                                                    icon={<MoreHorizontal size={16} />}
+                                                    variant="ghost"
+                                                />
                                             </td>
                                         </motion.tr>
                                     ))

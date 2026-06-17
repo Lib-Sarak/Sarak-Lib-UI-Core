@@ -3,6 +3,7 @@ import { useSarakUI } from '../../../core/Provider/SarakUIProvider';
 import { LANGUAGES } from '../../../core/Discovery/constants';
 import { Globe, Languages, Check, X, Search, Info, Plus } from 'lucide-react';
 import { motion, AnimatePresence } from 'framer-motion';
+import { SarakInput } from '../../../components/atomic/Inputs';
 
 export const LanguageTab: React.FC = () => {
     const sarak = useSarakUI();
@@ -87,14 +88,12 @@ export const LanguageTab: React.FC = () => {
 
             {/* List / Selection */}
             <div className="flex-grow overflow-hidden flex flex-col p-8 pt-0">
-                <div className="flex items-center gap-4 mb-4 bg-white/5 border border-white/5 px-4 py-3 rounded-2xl group focus-within:border-blue-500/50 transition-all">
-                    <Search className="w-4 h-4 text-white/20 group-focus-within:text-blue-400" />
-                    <input 
-                        type="text" 
+                <div className="mb-4">
+                    <SarakInput 
                         placeholder="Buscar idiomas..." 
                         value={searchQuery}
                         onChange={(e) => setSearchQuery(e.target.value)}
-                        className="bg-transparent border-none outline-none text-xs text-white/70 w-full placeholder:text-white/10 uppercase font-black tracking-widest"
+                        leftIcon={<Search className="w-4 h-4" />}
                     />
                 </div>
 

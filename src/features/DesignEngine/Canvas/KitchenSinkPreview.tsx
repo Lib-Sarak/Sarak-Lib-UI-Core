@@ -6,6 +6,8 @@ import {
     BarChart2, MessageSquare, Share2, MoreHorizontal
 } from 'lucide-react';
 import { useSarakUI } from '../../../core/Provider/SarakUIProvider';
+import { SarakInput, SarakSelect, SarakSlider, SarakSwitch } from '../../../components/atomic/Inputs';
+import { SarakButton, SarakIconButton } from '../../../components/atomic/Buttons';
 
 export const KitchenSinkPreview: React.FC = () => {
     const sarak = useSarakUI();
@@ -25,16 +27,10 @@ export const KitchenSinkPreview: React.FC = () => {
                     </div>
                 </div>
                 <div className="flex items-center gap-3">
-                    <div className="relative">
-                        <Search className="absolute left-3 top-1/2 -translate-y-1/2 text-[var(--theme-muted)]" size={14} />
-                        <input 
-                            type="text" 
+                    <div className="relative w-40 focus-within:w-60 transition-all">
+                        <SarakInput 
                             placeholder="Pesquisar..." 
-                            className="pl-9 pr-4 py-2 bg-black/20 border border-theme rounded-theme text-xs focus:outline-none focus:border-[var(--theme-primary)] transition-all w-40 focus:w-60"
-                            style={{ 
-                                borderWidth: 'var(--theme-border-width)',
-                                borderStyle: 'var(--border-style)'
-                            }}
+                            leftIcon={<Search size={14} />}
                         />
                     </div>
                     <button className="p-2 bg-white/5 rounded-theme text-[var(--theme-muted)] hover:text-[var(--theme-title)] transition-colors border-theme">
@@ -55,38 +51,30 @@ export const KitchenSinkPreview: React.FC = () => {
                     <div className="bg-theme-card rounded-theme border-theme p-6 space-y-4 shadow-theme">
                         <div className="space-y-2">
                             <label className="text-2xs font-bold uppercase text-[var(--theme-muted)]">Campo de Texto</label>
-                            <input 
-                                type="text" 
-                                className="w-full px-4 py-3 bg-black/20 border border-theme rounded-theme text-sm focus:ring-2 focus:ring-[var(--theme-primary)]/20 transition-all focus:outline-none focus:border-[var(--theme-primary)]"
+                            <SarakInput 
                                 placeholder="Fidelidade absoluta..."
-                                style={{ 
-                                    borderWidth: 'var(--theme-border-width)',
-                                    borderStyle: 'var(--border-style)'
-                                }}
                             />
                         </div>
                         
                         <div className="flex items-center gap-4">
                             <div className="flex-1 space-y-2">
                                 <label className="text-2xs font-bold uppercase text-[var(--theme-muted)]">Select Dinâmico</label>
-                                <select className="w-full px-4 py-3 bg-black/20 border border-theme rounded-theme text-sm outline-none">
+                                <SarakSelect>
                                     <option>Opção Alpha</option>
                                     <option>Opção Beta</option>
-                                </select>
+                                </SarakSelect>
                             </div>
                             <div className="w-24 space-y-2">
                                 <label className="text-2xs font-bold uppercase text-[var(--theme-muted)]">Toggle</label>
                                 <div className="h-[46px] flex items-center justify-center bg-black/20 border border-theme rounded-theme">
-                                    <div className="w-10 h-5 bg-[var(--theme-primary)] rounded-full relative p-1 cursor-pointer">
-                                        <div className="w-3 h-3 bg-white rounded-full absolute right-1" />
-                                    </div>
+                                    <SarakSwitch checked={true} onChange={() => {}} />
                                 </div>
                             </div>
                         </div>
 
                         <div className="space-y-2">
                             <label className="text-2xs font-bold uppercase text-[var(--theme-muted)]">Slider de Precisão</label>
-                            <input type="range" className="w-full accent-[var(--theme-primary)]" />
+                            <SarakSlider value={50} min={0} max={100} />
                         </div>
                     </div>
                 </motion.section>
@@ -99,27 +87,23 @@ export const KitchenSinkPreview: React.FC = () => {
                     </div>
                     
                     <div className="bg-theme-card rounded-theme border-theme p-6 grid grid-cols-2 gap-4 shadow-theme">
-                        <button className="w-full py-3 bg-[var(--theme-primary)] text-white rounded-theme font-bold text-xs uppercase tracking-widest shadow-lg shadow-[var(--theme-primary)]/20 hover:brightness-110 active:scale-95 transition-all border-theme">
+                        <SarakButton variant="primary" fullWidth>
                             Ação Primária
-                        </button>
-                        <button className="w-full py-3 bg-[var(--theme-secondary)] text-white rounded-theme font-bold text-xs uppercase tracking-widest shadow-lg shadow-[var(--theme-secondary)]/20 hover:brightness-110 active:scale-95 transition-all border-theme">
+                        </SarakButton>
+                        <SarakButton variant="secondary" fullWidth>
                             Ação Secundária
-                        </button>
-                        <button className="w-full py-3 border border-[var(--theme-primary)] text-[var(--theme-primary)] rounded-theme font-bold text-xs uppercase tracking-widest hover:bg-[var(--theme-primary)]/5 transition-all col-span-2">
-                            Outline Button
-                        </button>
-                        <button 
-                            className="w-full py-3 rounded-theme font-bold text-xs uppercase tracking-widest flex items-center justify-center gap-2 border"
-                            style={{ backgroundColor: 'var(--theme-success-bg)', borderColor: 'var(--theme-success-border)', color: 'var(--theme-success)' }}
-                        >
-                            <Check size={14} /> Sucesso
-                        </button>
-                        <button 
-                            className="w-full py-3 rounded-theme font-bold text-xs uppercase tracking-widest flex items-center justify-center gap-2 border"
-                            style={{ backgroundColor: 'var(--theme-error-bg)', borderColor: 'var(--theme-error-border)', color: 'var(--theme-error)' }}
-                        >
-                            <AlertCircle size={14} /> Erro
-                        </button>
+                        </SarakButton>
+                        <div className="col-span-2">
+                            <SarakButton variant="outline" fullWidth>
+                                Outline Button
+                            </SarakButton>
+                        </div>
+                        <SarakButton variant="success" fullWidth leftIcon={<Check size={14} />}>
+                            Sucesso
+                        </SarakButton>
+                        <SarakButton variant="danger" fullWidth leftIcon={<AlertCircle size={14} />}>
+                            Erro
+                        </SarakButton>
                     </div>
                 </motion.section>
 
@@ -168,9 +152,7 @@ export const KitchenSinkPreview: React.FC = () => {
                                             </div>
                                         </td>
                                         <td className="px-6 py-4">
-                                            <button className="p-2 hover:bg-white/5 rounded-theme transition-colors text-[var(--theme-muted)]">
-                                                <MoreHorizontal size={14} />
-                                            </button>
+                                            <SarakIconButton variant="ghost" size="sm" icon={<MoreHorizontal size={14} />} />
                                         </td>
                                     </tr>
                                 ))}
@@ -211,8 +193,12 @@ export const KitchenSinkPreview: React.FC = () => {
                                 Você está prestes a aplicar um novo DNA visual globalmente. Esta ação não pode ser desfeita e afetará todos os módulos ativos.
                             </p>
                             <div className="flex gap-3">
-                                <button className="flex-1 py-3 bg-white/5 rounded-theme text-2xs font-black uppercase border-theme text-[var(--theme-muted)]">Cancelar</button>
-                                <button className="flex-1 py-3 bg-[var(--theme-primary)] rounded-theme text-2xs font-black uppercase shadow-lg shadow-[var(--theme-primary)]/20 border-theme text-white">Confirmar</button>
+                                <div className="flex-1">
+                                    <SarakButton variant="outline" fullWidth>Cancelar</SarakButton>
+                                </div>
+                                <div className="flex-1">
+                                    <SarakButton variant="primary" fullWidth>Confirmar</SarakButton>
+                                </div>
                             </div>
                         </div>
                     </div>
@@ -248,9 +234,9 @@ export const KitchenSinkPreview: React.FC = () => {
                                         <div key={i} className="w-6 h-6 rounded-full border-2 border-theme bg-white/10" />
                                     ))}
                                 </div>
-                                <button className="text-[var(--theme-primary)] text-2xs font-black uppercase flex items-center gap-1 hover:gap-2 transition-all">
-                                    Explorar <ChevronRight size={10} />
-                                </button>
+                                <SarakButton variant="ghost" size="sm" rightIcon={<ChevronRight size={10} />}>
+                                    Explorar
+                                </SarakButton>
                             </div>
                         </div>
                     </div>

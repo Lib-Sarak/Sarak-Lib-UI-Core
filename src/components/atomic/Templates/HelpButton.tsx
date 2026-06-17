@@ -1,18 +1,18 @@
 import React, { useState } from "react";
-import { X } from "lucide-react";
+import { X, HelpCircle } from "lucide-react";
+import { SarakButton, SarakIconButton } from '../Buttons';
 
 const HelpButton = ({ text }: { text: string }) => {
     const [isOpen, setIsOpen] = useState(false);
 
     return (
         <>
-            <button
-                onClick={(e) => { e.preventDefault(); e.stopPropagation(); setIsOpen(true); }}
-                className="w-5 h-5 rounded-full border border-theme flex items-center justify-center text-2xs text-slate-400 hover:border-[var(--theme-primary-border)] hover:text-[var(--theme-primary)] transition-colors z-20 relative outline-none"
-                style={{ transitionDuration: 'var(--animation-speed, 0.3s)' }}
-            >
-                ?
-            </button>
+            <SarakIconButton
+                onClick={(e: React.MouseEvent) => { e.preventDefault(); e.stopPropagation(); setIsOpen(true); }}
+                icon={<HelpCircle size={14} />}
+                variant="ghost"
+                className="w-5 h-5 rounded-full z-20 relative border border-theme"
+            />
 
             {isOpen && (
                 <div
@@ -30,12 +30,12 @@ const HelpButton = ({ text }: { text: string }) => {
                                 <div className="w-6 h-6 rounded-full bg-[var(--theme-primary-bg)] flex items-center justify-center text-[var(--theme-primary)] font-black">?</div>
                                 Indicator Information
                             </h3>
-                            <button
+                            <SarakIconButton
                                 onClick={() => setIsOpen(false)}
-                                className="text-slate-400 hover:text-white transition-colors"
-                            >
-                                <X className="w-5 h-5" />
-                            </button>
+                                icon={<X size={20} />}
+                                variant="ghost"
+                                className="text-slate-400 hover:text-white"
+                            />
                         </div>
                         <div style={{ padding: 'calc(var(--theme-pad) * 1.5)' }}>
                             <p className="text-sm text-slate-300 leading-relaxed font-medium">
@@ -43,13 +43,12 @@ const HelpButton = ({ text }: { text: string }) => {
                             </p>
                         </div>
                         <div className="border-t border-theme flex justify-end" style={{ padding: 'var(--theme-pad)' }}>
-                            <button
+                            <SarakButton
                                 onClick={() => setIsOpen(false)}
-                                className="bg-[var(--theme-primary)] text-white text-xs font-bold uppercase rounded-theme transition-colors shadow-theme hover:opacity-90"
-                                style={{ padding: 'calc(var(--theme-pad) / 2) var(--theme-pad)', transitionDuration: 'var(--animation-speed, 0.3s)' }}
+                                variant="primary"
                             >
                                 Got it
-                            </button>
+                            </SarakButton>
                         </div>
                     </div>
                 </div>

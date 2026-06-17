@@ -4,6 +4,8 @@ import { SarakIcon } from '../../../../components/atomic/Icon/SarakIcon';
 import { SarakButton } from '../../../../components/atomic/Buttons/SarakButton';
 import { SarakIconButton } from '../../../../components/atomic/Buttons/SarakIconButton';
 import { SarakInput } from '../../../../components/atomic/Inputs/SarakInput';
+import { SarakSelect } from '../../../../components/atomic/Inputs/SarakSelect';
+import { SarakTextarea } from '../../../../components/atomic/Inputs/SarakTextarea';
 
 export const MockForms: React.FC<{ tokens: any, config: any, animationVariants: any, animationStyle: string }> = ({ tokens, animationVariants }) => {
     const [isLoading, setIsLoading] = useState(false);
@@ -71,24 +73,19 @@ export const MockForms: React.FC<{ tokens: any, config: any, animationVariants: 
                         {/* Input 4 (Select) */}
                         <div className="flex flex-col gap-2">
                             <label className="text-xs font-bold text-[var(--theme-title)] uppercase tracking-widest opacity-80">Setor</label>
-                            <select 
-                                className="w-full bg-[var(--theme-body)] border border-[var(--theme-border)] text-[var(--theme-title)] text-sm px-4 py-3 focus:outline-none focus:border-[var(--theme-primary)] focus:ring-1 focus:ring-[var(--theme-primary)] transition-all font-medium appearance-none"
-                                style={{ borderRadius: 'var(--sarak-radius-sm)' }}
-                            >
+                            <SarakSelect>
                                 <option>Tecnologia da Informação</option>
                                 <option>Saúde</option>
                                 <option>Finanças</option>
-                            </select>
+                            </SarakSelect>
                         </div>
                     </div>
 
                     <div className="flex flex-col gap-2 mt-2">
                         <label className="text-xs font-bold text-[var(--theme-title)] uppercase tracking-widest opacity-80">Descrição Detalhada</label>
-                        <textarea 
+                        <SarakTextarea 
                             rows={4}
                             placeholder="Descreva o principal objetivo do sistema..."
-                            className="w-full bg-[var(--theme-body)] border border-[var(--theme-border)] text-[var(--theme-title)] text-sm px-4 py-3 focus:outline-none focus:border-[var(--theme-primary)] focus:ring-1 focus:ring-[var(--theme-primary)] transition-all font-medium resize-none custom-scrollbar"
-                            style={{ borderRadius: 'var(--sarak-radius-sm)' }}
                         />
                     </div>
 

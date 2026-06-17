@@ -9,6 +9,8 @@ import {
     Zap,
     Binary
 } from 'lucide-react';
+import { SarakInput } from '../Inputs';
+import { SarakButton } from '../Buttons';
 
 interface CatalogItem {
     id: string;
@@ -100,30 +102,27 @@ export const SarakCatalogGrid: React.FC<SarakCatalogGridProps> = ({
 
                     <div className="space-y-4">
                         <div className="flex flex-col lg:flex-row gap-6">
-                            <div className="relative flex-1 group">
-                                <Search className="absolute left-6 top-1/2 -translate-y-1/2 text-theme-muted group-focus-within:text-theme-primary transition-colors" size={18} />
-                                <input 
+                            <div className="flex-1">
+                                <SarakInput 
                                     type="text"
                                     placeholder="Buscar..."
                                     value={search}
                                     onChange={(e) => setSearch(e.target.value)}
-                                    className="w-full sarak-glass bg-theme-body/30 border border-theme-border rounded-2xl py-4 pl-16 pr-6 text-theme-text text-sm focus:ring-2 focus:ring-theme-primary/20 focus:border-theme-primary outline-none transition-all"
+                                    leftIcon={<Search size={16} />}
                                 />
                             </div>
                             
                             <div className="flex flex-wrap gap-2">
                                 {Object.entries(categories).map(([key, label]) => (
-                                    <button
+                                    <SarakButton
                                         key={key}
                                         onClick={() => setSelectedCategory(key)}
-                                        className={`px-6 py-4 rounded-2xl text-[10px] font-black uppercase tracking-widest transition-all border ${
-                                            selectedCategory === key 
-                                            ? 'bg-theme-primary text-theme-text border-theme-primary shadow-xl shadow-theme-primary/20 scale-105' 
-                                            : 'bg-theme-body/30 text-theme-muted border-theme-border hover:border-theme-primary/50'
-                                        }`}
+                                        variant={selectedCategory === key ? 'primary' : 'secondary'}
+                                        className={selectedCategory === key ? "shadow-xl" : ""}
+                                        style={selectedCategory === key ? { boxShadow: '0 10px 20px -10px var(--theme-primary-focus)' } : {}}
                                     >
                                         {label}
-                                    </button>
+                                    </SarakButton>
                                 ))}
                             </div>
                         </div>
@@ -133,12 +132,13 @@ export const SarakCatalogGrid: React.FC<SarakCatalogGridProps> = ({
                                 {filteredItems.length} Itens encontrados
                             </div>
                             {(search || selectedCategory !== 'all') && (
-                                <button 
+                                <SarakButton 
                                     onClick={() => { setSearch(''); setSelectedCategory('all'); }}
-                                    className="text-theme-muted hover:text-red-400 text-[9px] font-black uppercase tracking-widest flex items-center gap-2 transition-colors"
+                                    variant="ghost"
+                                    className="text-theme-muted hover:text-red-400"
                                 >
                                     <XCircle size={14} /> Limpar Filtros
-                                </button>
+                                </SarakButton>
                             )}
                         </div>
                     </div>
@@ -175,12 +175,13 @@ export const SarakCatalogGrid: React.FC<SarakCatalogGridProps> = ({
 
             {onSync && (
                 <div className="fixed bottom-10 right-10 z-50">
-                    <button 
+                    <SarakButton 
                         onClick={onSync}
-                        className="px-8 py-4 bg-theme-primary text-theme-text font-black text-[10px] uppercase tracking-widest rounded-2xl shadow-2xl hover:scale-105 active:scale-95 transition-all"
+                        className="shadow-2xl"
+                        style={{ padding: '16px 32px' }}
                     >
                         Sincronizar
-                    </button>
+                    </SarakButton>
                 </div>
             )}
         </div>

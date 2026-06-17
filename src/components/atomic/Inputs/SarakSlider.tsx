@@ -1,0 +1,47 @@
+import React, { InputHTMLAttributes } from 'react';
+import { useSarakUI } from '../../../core/Provider/SarakUIProvider';
+
+export interface SarakSliderProps extends Omit<InputHTMLAttributes<HTMLInputElement>, 'type'> {
+    label?: string;
+    valueLabel?: string | number;
+}
+
+/**
+ * Componente Atômico: SarakSlider
+ * Substitui o `<input type="range">`. 
+ */
+export const SarakSlider: React.FC<SarakSliderProps> = ({
+    label,
+    valueLabel,
+    className = '',
+    disabled,
+    style,
+    ...props
+}) => {
+    const { design } = useSarakUI();
+
+    const activeColor = 'var(--sarak-switch-active-bg, var(--theme-primary))';
+    const trackColor = 'rgba(255, 255, 255, 0.1)';
+
+    return (
+        <div className={`space-y-3 ${disabled ? 'opacity-50 cursor-not-allowed pointer-events-none' : ''} ${className}`} style={style}>
+            {(label || valueLabel) && (
+                <div className="flex justify-between items-center text-2xs font-black uppercase tracking-widest text-[var(--theme-text-sec)]">
+                    {label && <span>{label}</span>}
+                    {valueLabel !== undefined && <span style={{ color: activeColor }}>{valueLabel}</span>}
+                </div>
+            )}
+            
+            <input 
+                type="range"
+                disabled={disabled}
+                {...props}
+                className="w-full h-1 rounded-full appearance-none cursor-pointer"
+                style={{ 
+                    backgroundColor: trackColor,
+                    accentColor: activeColor
+                }}
+            />
+        </div>
+    );
+};

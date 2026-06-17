@@ -1077,5 +1077,119 @@
     "relatedTokens": [
       "switchStyleType"
     ]
+  },
+  {
+    "tokenId": "tableZebraStriping",
+    "label": "Listras Alternadas (Zebra)",
+    "type": "boolean",
+    "defaultValue": false,
+    "cssVars": [
+      "--sarak-table-zebra-striping"
+    ]
+  },
+  {
+    "tokenId": "tableBorderRadius",
+    "label": "Arredondamento da Tabela",
+    "type": "slider",
+    "unit": "px",
+    "constraints": {
+      "min": 0,
+      "max": 40
+    },
+    "defaultValue": 8,
+    "cssVars": [
+      "--sarak-table-border-radius"
+    ]
+  },
+  {
+    "tokenId": "inputPadding",
+    "label": "Espaçamento Interno (Y)",
+    "type": "slider",
+    "unit": "px",
+    "constraints": {
+      "min": 0,
+      "max": 32
+    },
+    "defaultValue": 12,
+    "cssVars": [
+      "--sarak-input-padding"
+    ]
+  },
+  {
+    "tokenId": "inputBorderType",
+    "label": "Estilo da Borda",
+    "type": "select",
+    "options": [
+      {
+        "id": "solid",
+        "label": "Sólida"
+      },
+      {
+        "id": "dashed",
+        "label": "Tracejada"
+      },
+      {
+        "id": "none",
+        "label": "Nenhuma"
+      },
+      {
+        "id": "underline",
+        "label": "Apenas Linha Inferior"
+      }
+    ],
+    "defaultValue": "solid",
+    "cssVars": [
+      "--sarak-input-border-type"
+    ]
+  },
+  {
+    "tokenId": "inputBackdropBlur",
+    "label": "Desfoque de Fundo (Blur)",
+    "type": "slider",
+    "unit": "px",
+    "constraints": {
+      "min": 0,
+      "max": 50
+    },
+    "defaultValue": 0,
+    "cssVars": [
+      "--sarak-input-backdrop-blur"
+    ]
+  },
+  {
+    "tokenId": "inputShadow",
+    "label": "Sombra / Neumorphism",
+    "type": "text",
+    "defaultValue": "none",
+    "cssVars": [
+      "--sarak-input-shadow"
+    ]
+  },
+  {
+    "tokenId": "inputIconColor",
+    "label": "Cor dos Ícones",
+    "type": "color",
+    "defaultValue": "rgba(255, 255, 255, 0.5)",
+    "cssVars": [
+      "--sarak-input-icon-color"
+    ]
+  },
+  {
+    "tokenId": "inputErrorColor",
+    "label": "Cor de Erro",
+    "type": "color",
+    "defaultValue": "#ff4d4f",
+    "cssVars": [
+      "--sarak-input-error-color"
+    ]
+  },
+  {
+    "tokenId": "inputSuccessColor",
+    "label": "Cor de Sucesso",
+    "type": "color",
+    "defaultValue": "#52c41a",
+    "cssVars": [
+      "--sarak-input-success-color"
+    ]
   }
 ]

@@ -12,7 +12,7 @@ import {
     Loader2
 } from 'lucide-react';
 import { SocialButton } from '../Atoms/SocialButton';
-import { SarakButton } from '../Buttons';
+import { SarakButton, SarakIconButton } from '../Buttons';
 import { SarakInput } from '../Inputs';
 
 interface SarakAuthScreenProps {
@@ -218,13 +218,13 @@ export const SarakAuthScreen: React.FC<SarakAuthScreenProps> = ({
                                     <div className="flex items-center justify-between px-1">
                                         <label className="text-xs font-bold text-theme-muted uppercase tracking-widest">Senha</label>
                                         {!isRegistering && onForgot && (
-                                            <button 
-                                                type="button" 
+                                            <SarakButton 
                                                 onClick={onForgot}
-                                                className="text-xs font-bold text-theme-primary hover:opacity-80 transition-colors"
+                                                variant="ghost"
+                                                className="text-xs font-bold text-theme-primary px-0 py-0 h-auto hover:opacity-80"
                                             >
                                                 Esqueceu?
-                                            </button>
+                                            </SarakButton>
                                         )}
                                     </div>
                                     <SarakInput
@@ -236,13 +236,12 @@ export const SarakAuthScreen: React.FC<SarakAuthScreenProps> = ({
                                         autoComplete="new-password"
                                         leftIcon={<Lock className="h-5 w-5" />}
                                         rightIcon={setShowPassword ? (
-                                            <button
-                                                type="button"
+                                            <SarakIconButton
                                                 onClick={() => setShowPassword(!showPassword)}
-                                                className="text-[var(--sarak-input-icon-color,var(--theme-muted))] hover:text-theme-text transition-colors outline-none"
-                                            >
-                                                {showPassword ? <EyeOff className="h-5 w-5" /> : <Eye className="h-5 w-5" />}
-                                            </button>
+                                                icon={showPassword ? <EyeOff className="h-5 w-5" /> : <Eye className="h-5 w-5" />}
+                                                variant="ghost"
+                                                className="text-[var(--sarak-input-icon-color,var(--theme-muted))] hover:text-theme-text px-1 py-1"
+                                            />
                                         ) : undefined}
                                         fullWidth
                                     />
@@ -263,13 +262,13 @@ export const SarakAuthScreen: React.FC<SarakAuthScreenProps> = ({
                                     leftIcon={<ShieldCheck className="h-5 w-5" />}
                                     fullWidth
                                 />
-                                <button 
-                                    type="button" 
+                                <SarakButton 
                                     onClick={() => setMfaStep(false)}
-                                    className="text-xs font-bold text-theme-muted hover:text-theme-primary transition-colors mt-2"
+                                    variant="ghost"
+                                    className="text-xs font-bold text-theme-muted hover:text-theme-primary mt-2 px-0 h-auto"
                                 >
                                     ← Voltar para senha
-                                </button>
+                                </SarakButton>
                             </div>
                         )}
 
@@ -328,12 +327,13 @@ export const SarakAuthScreen: React.FC<SarakAuthScreenProps> = ({
                     <div className="mt-10 pt-8 border-t border-theme-border text-center">
                         <p className="text-theme-muted text-sm font-medium">
                             {isRegistering ? 'Já tem uma conta?' : 'Não tem uma conta?'} 
-                            <button 
+                            <SarakButton 
                                 onClick={() => setIsRegistering(!isRegistering)}
-                                className="ml-1 text-theme-primary font-bold hover:underline"
+                                variant="ghost"
+                                className="ml-1 text-theme-primary font-bold hover:underline px-0 py-0 h-auto"
                             >
                                 {isRegistering ? 'Fazer Login' : 'Primeiro Acesso'}
-                            </button>
+                            </SarakButton>
                         </p>
                     </div>
                 </motion.div>

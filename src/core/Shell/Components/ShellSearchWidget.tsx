@@ -1,6 +1,7 @@
 import React, { useState, useRef, useEffect } from 'react';
 import { Search, Command, ArrowRight } from 'lucide-react';
 import { getRegisteredModules } from '../../../core/Discovery/registry';
+import { SarakInput } from '../../../components/atomic/Inputs/SarakInput';
 
 interface ShellSearchWidgetProps {
     variant?: 'bar' | 'icon';
@@ -55,25 +56,23 @@ export const ShellSearchWidget: React.FC<ShellSearchWidgetProps> = ({
     // Bar / Topbar Variant
     return (
         <div className="hidden md:flex items-center w-64 group relative" ref={containerRef}>
-            <Search 
-                size={14} 
-                className="absolute left-3 top-1/2 -translate-y-1/2 text-[var(--theme-muted)] group-focus-within:text-[var(--theme-primary)] transition-colors" 
-            />
-            <input 
-                type="text" 
-                placeholder="Smart Search..." 
+            <SarakInput 
                 value={query}
+                placeholder="Smart Search..." 
                 onChange={(e) => {
                     setQuery(e.target.value);
                     setIsOpen(true);
                 }}
                 onFocus={() => setIsOpen(true)}
-                className="w-full h-9 bg-[var(--theme-card)] border border-[var(--theme-border)] rounded-[var(--radius-theme)] pl-10 pr-12 text-xs font-bold text-[var(--theme-title)] hover:bg-[var(--theme-muted)]/10 focus:bg-[var(--theme-card)] focus:border-[var(--theme-primary)]/50 transition-all outline-none placeholder:text-[var(--theme-title)]/40" 
+                leftIcon={<Search size={14} className="text-[var(--theme-muted)] group-focus-within:text-[var(--theme-primary)] transition-colors" />}
+                rightIcon={
+                    <div className="flex items-center gap-1 px-1.5 py-0.5 rounded bg-[var(--theme-muted)]/10 border border-[var(--theme-border)] text-[8px] text-[var(--theme-muted)] font-black transition-opacity pointer-events-none">
+                        <span>CTRL</span>
+                        <span>K</span>
+                    </div>
+                }
+                fullWidth
             />
-            <div className="absolute right-3 top-1/2 -translate-y-1/2 flex items-center gap-1 px-1.5 py-0.5 rounded bg-[var(--theme-muted)]/10 border border-[var(--theme-border)] text-[8px] text-[var(--theme-muted)] font-black transition-opacity pointer-events-none">
-                <span>CTRL</span>
-                <span>K</span>
-            </div>
 
             {/* Dropdown de Resultados */}
             {isOpen && query.length > 0 && (

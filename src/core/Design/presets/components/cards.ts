@@ -13,7 +13,7 @@ export const CARD_PRESETS: ComponentPreset[] = [
         design: {
             cardBorderRadius: '16px',
             cardBorderWidth: '1px',
-            cardBorderColor: 'rgba(255, 255, 255, 0.1)',
+            cardBorderColor: 'var(--theme-border)',
             cardShadow: '0 4px 30px rgba(0, 0, 0, 0.1)',
             cardBackdropBlur: '12px',
             cardTextureType: 'none',
@@ -26,10 +26,10 @@ export const CARD_PRESETS: ComponentPreset[] = [
         design: {
             cardBorderRadius: '0px',
             cardBorderWidth: '1px',
-            cardBorderColor: 'rgba(56, 189, 248, 0.5)',
+            cardBorderColor: 'var(--theme-primary-focus)',
             cardShadow: 'none',
             cardShadowSpread: 10,
-            cardGlowColor: 'rgba(56, 189, 248, 0.4)',
+            cardGlowColor: 'var(--theme-primary-focus)',
             cardBackdropBlur: '4px',
             cardTextureType: 'grid',
             cardClipPath: 'polygon(10px 0, 100% 0, 100% calc(100% - 10px), calc(100% - 10px) 100%, 0 100%, 0 10px)',
@@ -42,8 +42,8 @@ export const CARD_PRESETS: ComponentPreset[] = [
         design: {
             cardBorderRadius: '4px',
             cardBorderWidth: '3px',
-            cardBorderColor: '#000000',
-            cardShadow: '4px 4px 0px #000000',
+            cardBorderColor: 'var(--theme-title)',
+            cardShadow: '4px 4px 0px var(--theme-title)',
             cardBackdropBlur: '0px',
             cardTextureType: 'none',
         }
@@ -57,6 +57,32 @@ export const CARD_PRESETS: ComponentPreset[] = [
             cardBorderWidth: '0px',
             cardBorderColor: 'transparent',
             cardShadow: '20px 20px 60px rgba(0,0,0,0.5), -20px -20px 60px rgba(255,255,255,0.05)',
+            cardBackdropBlur: '0px',
+            cardTextureType: 'none',
+        }
+    },
+    {
+        id: 'card-apple-frosted',
+        name: 'Apple Frosted',
+        description: 'Heavy blur, classic iOS feeling.',
+        design: {
+            cardBorderRadius: '20px',
+            cardBorderWidth: '1px',
+            cardBorderColor: 'var(--theme-border)',
+            cardShadow: '0 8px 32px rgba(0, 0, 0, 0.12)',
+            cardBackdropBlur: '24px',
+            cardTextureType: 'none',
+        }
+    },
+    {
+        id: 'card-material',
+        name: 'Material Card',
+        description: 'Standard elevation-based material design card.',
+        design: {
+            cardBorderRadius: '8px',
+            cardBorderWidth: '0px',
+            cardBorderColor: 'transparent',
+            cardShadow: '0 4px 6px -1px rgba(0, 0, 0, 0.1), 0 2px 4px -1px rgba(0, 0, 0, 0.06)',
             cardBackdropBlur: '0px',
             cardTextureType: 'none',
         }

@@ -8,8 +8,8 @@ export const BUTTON_PRESETS: ComponentPreset[] = [
         design: {
             btnStyleType: 'matte',
             btnBorderRadius: 4,
-            btnPrimaryBg: '#3b82f6',
-            btnPrimaryText: '#ffffff',
+            btnPrimaryBg: 'var(--theme-primary)',
+            btnPrimaryText: 'var(--theme-on-primary)',
             btnBackdropBlur: 0
         }
     },
@@ -20,9 +20,9 @@ export const BUTTON_PRESETS: ComponentPreset[] = [
         design: {
             btnStyleType: 'neon',
             btnBorderRadius: 0,
-            btnPrimaryBg: 'rgba(0, 242, 255, 0.1)',
-            btnPrimaryText: '#00f2ff',
-            btnNeonGlowColor: 'rgba(0, 242, 255, 0.8)',
+            btnPrimaryBg: 'transparent',
+            btnPrimaryText: 'var(--theme-primary-focus)',
+            btnNeonGlowColor: 'var(--theme-primary-focus)',
             btnNeonPulseSpeed: 1.0,
             btnBackdropBlur: 0
         }
@@ -34,8 +34,8 @@ export const BUTTON_PRESETS: ComponentPreset[] = [
         design: {
             btnStyleType: 'frosted',
             btnBorderRadius: 12,
-            btnPrimaryBg: 'rgba(255, 255, 255, 0.1)',
-            btnPrimaryText: '#ffffff',
+            btnPrimaryBg: 'var(--theme-card)',
+            btnPrimaryText: 'var(--theme-title)',
             btnBackdropBlur: 16
         }
     },
@@ -46,8 +46,68 @@ export const BUTTON_PRESETS: ComponentPreset[] = [
         design: {
             btnStyleType: 'matte',
             btnBorderRadius: 0,
-            btnPrimaryBg: '#ffffff',
-            btnPrimaryText: '#000000',
+            btnPrimaryBg: 'var(--theme-title)',
+            btnPrimaryText: 'var(--theme-background)',
+            btnBackdropBlur: 0
+        }
+    },
+    {
+        id: 'btn-material',
+        name: 'Material Design',
+        description: 'Classic Material Design look with subtle shadow and rounded corners.',
+        design: {
+            btnStyleType: 'matte',
+            btnBorderRadius: 4,
+            btnPrimaryBg: 'var(--theme-primary)',
+            btnPrimaryText: 'var(--theme-on-primary)',
+            btnBackdropBlur: 0
+        }
+    },
+    {
+        id: 'btn-apple-glass',
+        name: 'Apple Glassmorphism',
+        description: 'High blur, translucent white background similar to macOS/iOS.',
+        design: {
+            btnStyleType: 'frosted',
+            btnBorderRadius: 16,
+            btnPrimaryBg: 'var(--theme-card)',
+            btnPrimaryText: 'var(--theme-title)',
+            btnBackdropBlur: 24
+        }
+    },
+    {
+        id: 'btn-neumorphism',
+        name: 'Neumorphism',
+        description: 'Soft extruded plastic look, blending with the background.',
+        design: {
+            btnStyleType: 'neumorphism',
+            btnBorderRadius: 12,
+            btnPrimaryBg: 'var(--theme-card)',
+            btnPrimaryText: 'var(--theme-text)',
+            btnBackdropBlur: 0
+        }
+    },
+    {
+        id: 'btn-wireframe',
+        name: 'Wireframe',
+        description: 'No background, thin solid border, for schematic looks.',
+        design: {
+            btnStyleType: 'cyberpunk',
+            btnBorderRadius: 0,
+            btnPrimaryBg: 'transparent',
+            btnPrimaryText: 'var(--theme-primary)',
+            btnBackdropBlur: 0
+        }
+    },
+    {
+        id: 'btn-soft-ui',
+        name: 'Soft UI',
+        description: 'Extremely rounded, soft background colors with subtle contrast.',
+        design: {
+            btnStyleType: 'matte',
+            btnBorderRadius: 9999,
+            btnPrimaryBg: 'var(--theme-primary)',
+            btnPrimaryText: 'var(--theme-on-primary)',
             btnBackdropBlur: 0
         }
     }

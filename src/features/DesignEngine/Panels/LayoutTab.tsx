@@ -2,6 +2,7 @@ import React from 'react';
 import { useSarakUI } from '../../../core/Provider/SarakUIProvider';
 const THEME_FONTS = [{ id: 'outfit', value: "'Outfit', sans-serif", name: 'Outfit', category: 'Sans-Serif' }, { id: 'inter', value: "'Inter', sans-serif", name: 'Inter', category: 'Sans-Serif' }];
 import { Maximize2, Minimize2, Type, Layout as LayoutIcon, Sidebar as SidebarIcon, ArrowRightLeft, CaseSensitive } from 'lucide-react';
+import { SarakSlider, SarakSelect } from '../../../components/atomic/Inputs';
 
 export const LayoutTab: React.FC = () => {
     const sarak = useSarakUI();
@@ -92,21 +93,17 @@ export const LayoutTab: React.FC = () => {
 
                     {/* Dimensões da Sidebar */}
                     <div className="space-y-4 pt-4 border-t border-white/5">
-                        <div className="flex items-center justify-between">
+                        <div className="flex justify-between items-center text-2xs font-black uppercase text-white/30 mb-2">
                             <div className="flex items-center gap-2">
                                 <SidebarIcon className="w-4 h-4 text-white/40" />
                                 <span className="text-2xs font-black uppercase tracking-widest text-white/60">Largura Lateral</span>
                             </div>
-                            <span className="text-xs font-mono text-blue-400">{sidebarWidth}px</span>
                         </div>
-                        <input 
-                            type="range" 
-                            min="200" 
-                            max="400" 
-                            step="5"
+                        <SarakSlider 
+                            min={200} max={400} step={5}
                             value={sidebarWidth}
+                            valueLabel={`${sidebarWidth}px`}
                             onChange={(e) => setSidebarWidth(parseInt(e.target.value))}
-                            className="w-full h-1.5 bg-black/40 rounded-full appearance-none cursor-pointer accent-blue-500"
                         />
                     </div>
 
@@ -122,26 +119,24 @@ export const LayoutTab: React.FC = () => {
                         <div className="grid grid-cols-1 gap-4">
                             <div className="space-y-2">
                                 <label className="text-2xs font-black uppercase tracking-[0.2em] text-white/30 ml-2">Heading Font</label>
-                                <select 
+                                <SarakSelect 
                                     value={headingFont} 
                                     onChange={(e) => setHeadingFont(e.target.value)}
-                                    className="w-full bg-white/5 border border-white/10 rounded-xl px-4 py-3 text-xs font-bold text-white/80 focus:border-amber-500/50 outline-none transition-all"
                                 >
                                     <option value="">(Usar Padrão do Tema)</option>
                                     {THEME_FONTS.map((f: any) => <option key={f.id} value={f.value}>{f.name}</option>)}
-                                </select>
+                                </SarakSelect>
                             </div>
 
                             <div className="space-y-2">
                                 <label className="text-2xs font-black uppercase tracking-[0.2em] text-white/30 ml-2">Body Font</label>
-                                <select 
+                                <SarakSelect 
                                     value={bodyFont} 
                                     onChange={(e) => setBodyFont(e.target.value)}
-                                    className="w-full bg-white/5 border border-white/10 rounded-xl px-4 py-3 text-xs font-bold text-white/80 focus:border-amber-500/50 outline-none transition-all"
                                 >
                                     <option value="">(Usar Padrão do Tema)</option>
                                     {THEME_FONTS.map((f: any) => <option key={f.id} value={f.value}>{f.name}</option>)}
-                                </select>
+                                </SarakSelect>
                             </div>
                         </div>
                     </div>

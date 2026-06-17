@@ -7,6 +7,7 @@ import {
 import { MASTER_DESIGN_MAP } from '../../../core/Design/master-map';
 import { useSarakUI } from '../../../core/Provider/SarakUIProvider';
 import { useDesignDraft } from '../hooks/useDesignDraft';
+import { SarakInput } from '../../../components/atomic/Inputs';
 
 /**
  * MasterControlPanel (v13.0) - A Planilha Mestra do Sarak UI
@@ -62,14 +63,12 @@ export const MasterControlPanel: React.FC = () => {
 
                 {/* Filtros Compactos */}
                 <div className="flex flex-col gap-3">
-                    <div className="relative">
-                        <Search className="absolute left-3 top-1/2 -translate-y-1/2 text-white/20" size={12} />
-                        <input 
-                            type="text" 
+                    <div className="mb-2">
+                        <SarakInput 
                             placeholder="BUSCAR..."
                             value={searchQuery}
                             onChange={(e) => setSearchQuery(e.target.value)}
-                            className="w-full bg-white/5 border border-white/10 rounded-lg py-2.5 pl-9 pr-3 text-[9px] font-bold tracking-widest uppercase focus:outline-none focus:border-[var(--theme-primary)]/50 transition-all"
+                            leftIcon={<Search className="w-4 h-4" />}
                         />
                     </div>
                     <div className="flex gap-2 overflow-x-auto pb-1 no-scrollbar">

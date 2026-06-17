@@ -14,6 +14,7 @@ import {
 } from 'lucide-react';
 import api from '../../../shared/services/api';
 import { SarakForm } from './SarakForm';
+import { SarakButton, SarakIconButton } from '../Buttons';
 
 interface SarakManagementGridProps {
     endpoint: string;
@@ -151,21 +152,15 @@ export const SarakManagementGrid: React.FC<SarakManagementGridProps> = ({
                     </div>
                     <div className="flex" style={{ gap: 'calc(var(--theme-gap) / 1.5)' }}>
                         {headerActions.map(action => (
-                            <button
+                            <SarakButton
                                 key={action.label}
                                 onClick={() => handleAction(action.action)}
-                                className="flex items-center text-white rounded-theme font-black text-xs uppercase tracking-widest transition-all shadow-lg"
-                                style={{ 
-                                    gap: 'calc(var(--theme-gap) / 3)', 
-                                    padding: 'calc(var(--theme-pad) / 2) var(--theme-pad)', 
-                                    transitionDuration: 'var(--animation-speed, 0.3s)',
-                                    backgroundColor: 'var(--theme-primary)',
-                                    boxShadow: '0 10px 20px -10px var(--theme-primary-focus)'
-                                }}
+                                className="shadow-lg"
+                                style={{ boxShadow: '0 10px 20px -10px var(--theme-primary-focus)' }}
                             >
                                 <Plus size={16} />
                                 {action.label}
-                            </button>
+                            </SarakButton>
                         ))}
                     </div>
                 </div>
@@ -198,15 +193,13 @@ export const SarakManagementGrid: React.FC<SarakManagementGridProps> = ({
                                     </div>
                                     <div className="flex" style={{ gap: 'calc(var(--theme-gap) / 6)' }}>
                                         {groupActions.map(action => (
-                                            <button
+                                            <SarakIconButton
                                                 key={action.label}
                                                 onClick={() => handleAction(action.action, groupName)}
-                                                className="p-2 hover:bg-white/10 transition-all"
-                                                style={{ color: 'var(--theme-primary)', borderRadius: 'var(--sarak-grid-radius)' }}
+                                                icon={action.icon === 'plus' ? <Plus size={18} /> : <Settings2 size={16} />}
+                                                variant="ghost"
                                                 title={action.label}
-                                            >
-                                                {action.icon === 'plus' ? <Plus size={18} /> : <Settings2 size={16} />}
-                                            </button>
+                                            />
                                         ))}
                                     </div>
                                 </div>
@@ -233,13 +226,13 @@ export const SarakManagementGrid: React.FC<SarakManagementGridProps> = ({
                                                                 {getVal(item, mapping.description || '') || '************'}
                                                             </span>
                                                         </div>
-                                                        <button 
+                                                        <SarakIconButton 
                                                             onClick={() => handleToggle(itemId)}
-                                                            className="transition-all hover:scale-110"
-                                                            style={{ transitionDuration: 'var(--animation-speed, 0.2s)', color: isActive ? 'var(--theme-success)' : 'rgba(255,255,255,0.2)' }}
-                                                        >
-                                                            {isActive ? <ToggleRight size={28} /> : <ToggleLeft size={28} />}
-                                                        </button>
+                                                            icon={isActive ? <ToggleRight size={28} /> : <ToggleLeft size={28} />}
+                                                            variant="ghost"
+                                                            className="hover:scale-110"
+                                                            style={{ color: isActive ? 'var(--theme-success)' : 'rgba(255,255,255,0.2)' }}
+                                                        />
                                                     </div>
                                                     <div className="flex items-center justify-between" style={{ marginTop: 'calc(var(--theme-gap) / 1.5)' }}>
                                                         <div className="flex items-center" style={{ gap: 'calc(var(--theme-gap) / 2)' }}>
@@ -254,12 +247,12 @@ export const SarakManagementGrid: React.FC<SarakManagementGridProps> = ({
                                                                 {status === 'active' ? 'Conectado' : status === 'error' ? 'Falha' : 'Validando...'}
                                                             </span>
                                                         </div>
-                                                        <button 
+                                                        <SarakIconButton 
                                                             onClick={() => handleDelete(itemId)}
-                                                            className="p-1.5 text-white/10 hover:text-[var(--theme-error)] transition-colors"
-                                                        >
-                                                            <Trash2 size={14} />
-                                                        </button>
+                                                            icon={<Trash2 size={14} />}
+                                                            variant="ghost"
+                                                            className="hover:text-[var(--theme-error)]"
+                                                        />
                                                     </div>
                                                     {errorMsg && (
                                                         <div className="rounded-theme border" style={{ marginTop: 'calc(var(--theme-gap) / 3)', padding: 'calc(var(--theme-pad) / 2)', backgroundColor: 'var(--theme-error-bg)', borderColor: 'var(--theme-error-border)' }}>

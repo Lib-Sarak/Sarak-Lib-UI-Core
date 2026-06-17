@@ -1,6 +1,7 @@
 import React, { useState, useMemo } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
 import { Search, ChevronDown, Check, X, Shield, Info } from 'lucide-react';
+import { SarakInput } from '../Inputs';
 
 export interface MatrixNodeConfig {
     /** Variante visual de renderização do nó */
@@ -382,18 +383,13 @@ export const SarakExpandableMatrix: React.FC<SarakExpandableMatrixProps> = ({
                 gap: 'var(--matrix-gap)'
             } as any}
         >
-            <div className="relative w-full group">
-                <Search className="absolute left-4 top-1/2 -translate-y-1/2 w-4 h-4 text-[var(--theme-muted)] group-focus-within:text-[var(--theme-primary)] transition-colors" />
-                <input
+            <div className="w-full">
+                <SarakInput
                     type="text"
                     placeholder="Filtrar matriz de permissões..."
                     value={searchTerm}
                     onChange={(e) => setSearchTerm(e.target.value)}
-                    className="w-full bg-[var(--theme-card)]/40 border border-[var(--theme-border)] rounded-xl pl-11 pr-4 py-3 text-sm text-[var(--theme-title)] placeholder:text-[var(--theme-muted)] focus:outline-none focus:border-[var(--theme-primary)] focus:ring-1 focus:ring-[var(--theme-primary)]/20 transition-all"
-                    style={{
-                        backgroundColor: 'var(--sarak-matrix-search-bg, rgba(255,255,255,0.05))',
-                        borderRadius: 'var(--sarak-matrix-radius, 12px)'
-                    }}
+                    leftIcon={<Search size={18} />}
                 />
             </div>
 

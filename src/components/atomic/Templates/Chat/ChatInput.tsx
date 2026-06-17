@@ -3,6 +3,8 @@ import { motion, AnimatePresence } from 'framer-motion';
 import { Paperclip, Send, Cpu, ChevronDown, FileIcon, X } from 'lucide-react';
 import { Attachment, ModelRoute } from './types';
 import { ModelPicker } from './ModelPicker';
+import { SarakInput } from '../../Inputs';
+import { SarakButton, SarakIconButton } from '../../Buttons';
 
 interface ChatInputProps {
   input: string;
@@ -45,12 +47,12 @@ export const ChatInput: React.FC<ChatInputProps> = ({
               <div key={i} className="flex items-center gap-2 px-3 py-2 bg-[var(--theme-primary-bg)] border border-[var(--theme-primary-border)] rounded-xl relative group/att">
                 <FileIcon size={14} className="text-[var(--theme-primary)]" />
                 <span className="text-xs font-medium text-[var(--theme-title)] max-w-[150px] truncate">{att.name}</span>
-                <button 
+                <SarakIconButton 
                   onClick={() => removeAttachment(i)}
-                  className="ml-1 p-1 hover:bg-[var(--theme-error-bg)] hover:text-[var(--theme-error)] rounded-full transition-all text-[var(--theme-muted)]"
-                >
-                  <X size={12} />
-                </button>
+                  icon={<X size={12} />}
+                  variant="ghost"
+                  className="ml-1 p-1 hover:bg-[var(--theme-error-bg)] hover:text-[var(--theme-error)]"
+                />
               </div>
             ))}
           </div>
@@ -62,9 +64,10 @@ export const ChatInput: React.FC<ChatInputProps> = ({
       {mode === 'manual' && (
         <motion.div initial={{ opacity: 0, y: 10 }} animate={{ opacity: 1, y: 0 }} className="flex flex-wrap items-center" style={{ gap: 'var(--theme-gap, 1rem)' }}>
           <div className="relative">
-            <button 
+            <SarakButton 
               onClick={() => setShowModelPicker(!showModelPicker)}
-              className="flex items-center px-4 py-2.5 rounded-theme bg-theme-card border-theme hover:bg-[var(--theme-muted)]/10 transition-all text-left shadow-lg"
+              variant="outline"
+              className="text-left shadow-lg"
               style={{ gap: 'calc(var(--theme-gap) / 1.5)' }}
             >
                <Cpu size={18} className="text-[var(--theme-primary)]" />
@@ -73,7 +76,7 @@ export const ChatInput: React.FC<ChatInputProps> = ({
                   <span className="text-xs font-semibold text-[var(--theme-title)]">{selectedRoute?.display_name || "Selecionar..."}</span>
                </div>
                <ChevronDown size={14} className={`text-[var(--theme-muted)] transition-transform ${showModelPicker ? 'rotate-180' : ''}`} />
-            </button>
+            </SarakButton>
 
             {showModelPicker && (
               <ModelPicker 
@@ -106,35 +109,37 @@ export const ChatInput: React.FC<ChatInputProps> = ({
         <div className="relative flex items-center bg-theme-card border-theme overflow-hidden shadow-sm pr-2 rounded-theme">
           <input type="file" ref={fileInputRef} onChange={handleFileSelect} multiple accept="image/*" className="hidden" />
           
-          <button 
+          <SarakIconButton 
             onClick={() => fileInputRef.current?.click()}
-            className="ml-2 p-3.5 text-[var(--theme-muted)] hover:text-[var(--theme-primary)] hover:bg-[var(--theme-muted)]/10 rounded-xl transition-all"
-          >
-            <Paperclip size={20} />
-          </button>
+            icon={<Paperclip size={20} />}
+            variant="ghost"
+            className="ml-2"
+          />
 
-          <input 
+          <SarakInput 
             type="text"
             value={input}
             onChange={(e) => setInput(e.target.value)}
             onKeyDown={(e) => e.key === 'Enter' && handleSend()}
             placeholder={mode === 'auto' ? "Digite sua mensagem..." : "Configuração manual detectada..."}
-            className="flex-1 bg-transparent px-4 py-4 text-sm text-[var(--theme-title)] focus:outline-none placeholder:text-[var(--theme-muted)]"
+            fullWidth
+            className="border-none bg-transparent shadow-none"
           />
           
-          <button 
-            onClick={handleSend}
-            disabled={(!input.trim() && attachments.length === 0) || isLoading}
-            className="p-2.5 bg-[var(--theme-primary)] hover:opacity-90 text-[var(--theme-on-primary)] rounded-xl transition-all disabled:opacity-30 disabled:cursor-not-allowed group/btn shadow-lg shadow-[var(--theme-primary-focus)]"
-          >
-            <Send size={20} className="group-hover/btn:translate-x-0.5 group-hover/btn:-translate-y-0.5 transition-transform" />
-          </button>
+          <div className="pr-2 py-2 flex items-center">
+              <SarakIconButton 
+                onClick={handleSend}
+                disabled={(!input.trim() && attachments.length === 0) || isLoading}
+                icon={<Send size={20} className="group-hover/btn:translate-x-0.5 group-hover/btn:-translate-y-0.5 transition-transform" />}
+                variant="primary"
+                className="shadow-lg shadow-[var(--theme-primary-focus)] group/btn"
+              />
+          </div>
         </div>
       </div>
     </div>
     
     <p className="text-center text-2xs text-[var(--theme-muted)] mt-4 uppercase tracking-[0.3em] font-medium">
-      Sarak Orchestrator • Hybrid Model Router
     </p>
   </footer>
 );
