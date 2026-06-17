@@ -347,6 +347,50 @@ export const CardSchema: ComponentSchema = {
             cssVars: ['--sarak-card-padding-md', '--theme-gap']
         },
 
+        // --- ESTRUTURA (LAYOUT DATA-DRIVEN) ---
+        {
+            id: 'cardLayoutDirection',
+            label: 'Direção do Layout',
+            type: 'select',
+            constraints: {
+                options: [
+                    { id: 'column', value: 'column', label: 'Vertical (Coluna)' },
+                    { id: 'row', value: 'row', label: 'Horizontal (Linha)' }
+                ]
+            },
+            defaultValue: 'column',
+            cssVars: ['--sarak-card-layout-direction']
+        },
+        {
+            id: 'cardImagePosition',
+            label: 'Posição da Imagem',
+            type: 'select',
+            constraints: {
+                options: [
+                    { id: 'none', value: 'none', label: 'Nenhuma' },
+                    { id: 'top', value: 'top', label: 'Topo' },
+                    { id: 'left', value: 'left', label: 'Esquerda' },
+                    { id: 'right', value: 'right', label: 'Direita' }
+                ]
+            },
+            defaultValue: 'top',
+            cssVars: ['--sarak-card-image-position']
+        },
+        {
+            id: 'cardTextAlign',
+            label: 'Alinhamento de Texto',
+            type: 'select',
+            constraints: {
+                options: [
+                    { id: 'left', value: 'left', label: 'Esquerda' },
+                    { id: 'center', value: 'center', label: 'Centro' },
+                    { id: 'right', value: 'right', label: 'Direita' }
+                ]
+            },
+            defaultValue: 'left',
+            cssVars: ['--sarak-card-text-align']
+        },
+
         // --- ESPECIALIZAÇÕES (GRANULARIDADE) ---
         {
             id: 'cardVariant',

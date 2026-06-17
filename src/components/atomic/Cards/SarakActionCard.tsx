@@ -4,6 +4,7 @@ import * as LucideIcons from 'lucide-react';
 import { Box, ExternalLink, ChevronDown } from 'lucide-react';
 import { useSarakUI } from '../../../core/Provider/SarakUIProvider';
 import { SarakButton } from '../Buttons/SarakButton';
+import { useCardLayoutStyles } from './hooks/useCardLayoutStyles';
 
 interface SarakActionCardProps {
     item: any;
@@ -17,6 +18,7 @@ interface SarakActionCardProps {
 export const SarakActionCard: React.FC<SarakActionCardProps> = ({ item, mapping, className = '', onAction, design: localDesign, label }) => {
     const globalUI = useSarakUI();
     const design = localDesign || globalUI.design;
+    const layout = useCardLayoutStyles(design);
     const [isExpanded, setIsExpanded] = useState(false);
 
     const getVal = (obj: any, path: string | undefined) => {
@@ -41,7 +43,7 @@ export const SarakActionCard: React.FC<SarakActionCardProps> = ({ item, mapping,
         <motion.div 
             initial={{ opacity: 0, y: 15 }}
             animate={{ opacity: 1, y: 0 }}
-            className={`flex flex-col sarak-card bg-[var(--sx-color-surface-base)] border-[var(--sx-color-border-base)] group transition-all relative overflow-hidden h-fit ${className}`}
+            className={`${layout.containerClass} sarak-card bg-[var(--sx-color-surface-base)] border-[var(--sx-color-border-base)] group transition-all relative overflow-hidden h-fit ${className}`}
             style={{ 
                 transitionDuration: 'var(--animation-speed, 0.4s)',
                 padding: design.cardPadding ? `${design.cardPadding}px` : 'var(--sarak-card-padding-md, 24px)'
@@ -63,9 +65,9 @@ export const SarakActionCard: React.FC<SarakActionCardProps> = ({ item, mapping,
                 </div>
             )}
 
-            <div className="relative z-10 flex flex-col h-full justify-between">
+            <div className={layout.contentClass}>
                 {/* Header Info */}
-                <div className="flex justify-between items-start mb-4">
+                <div className={layout.headerClass}>
                     <div className="flex flex-col flex-1 min-w-0">
                         <span className="text-[9px] font-black text-[var(--sx-color-primary-base)] uppercase tracking-[0.2em] mb-1">
                             {subtitle}
@@ -92,7 +94,7 @@ export const SarakActionCard: React.FC<SarakActionCardProps> = ({ item, mapping,
                 )}
 
                 {/* Primary Actions Grid */}
-                <div className="flex gap-2" style={{ marginTop: 'auto' }}>
+                <div className={layout.footerClass}>
                     {/* Specialized Action Button */}
                     <SarakButton 
                         variant="primary"

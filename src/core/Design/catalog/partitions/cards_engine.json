@@ -1,5 +1,104 @@
 [
   {
+    "tokenId": "cardLayoutDirection",
+    "name": "Direção do Layout do Card",
+    "description": "Controla se os elementos internos fluem em coluna (vertical) ou linha (horizontal).",
+    "type": "string",
+    "importance": 90,
+    "categories": [
+      "cards",
+      "layout",
+      "estrutura"
+    ],
+    "tags": [
+      "direcao",
+      "flex",
+      "alinhamento"
+    ],
+    "databaseColumn": "cards_engine",
+    "schemaOrigin": "cards.ts",
+    "digitalTwins": [
+      "SarakCard"
+    ],
+    "cssVariables": [
+      "--sarak-card-layout-direction"
+    ],
+    "allowedValues": [
+      "column",
+      "row"
+    ],
+    "relatedTokens": [
+      "cardImagePosition",
+      "cardTextAlign"
+    ]
+  },
+  {
+    "tokenId": "cardImagePosition",
+    "name": "Posição da Imagem no Card",
+    "description": "Onde a imagem de capa do card deve ser renderizada em relação ao conteúdo textual.",
+    "type": "string",
+    "importance": 85,
+    "categories": [
+      "cards",
+      "layout",
+      "estrutura"
+    ],
+    "tags": [
+      "imagem",
+      "posicao",
+      "cover"
+    ],
+    "databaseColumn": "cards_engine",
+    "schemaOrigin": "cards.ts",
+    "digitalTwins": [
+      "SarakCard"
+    ],
+    "cssVariables": [
+      "--sarak-card-image-position"
+    ],
+    "allowedValues": [
+      "none",
+      "top",
+      "left",
+      "right"
+    ],
+    "relatedTokens": [
+      "cardLayoutDirection"
+    ]
+  },
+  {
+    "tokenId": "cardTextAlign",
+    "name": "Alinhamento de Texto do Card",
+    "description": "Alinhamento horizontal do conteúdo textual dentro do card.",
+    "type": "string",
+    "importance": 80,
+    "categories": [
+      "cards",
+      "layout",
+      "tipografia"
+    ],
+    "tags": [
+      "alinhamento",
+      "texto"
+    ],
+    "databaseColumn": "cards_engine",
+    "schemaOrigin": "cards.ts",
+    "digitalTwins": [
+      "SarakCard"
+    ],
+    "cssVariables": [
+      "--sarak-card-text-align"
+    ],
+    "allowedValues": [
+      "left",
+      "center",
+      "right"
+    ],
+    "relatedTokens": [
+      "cardLayoutDirection"
+    ]
+  },
+  {
     "tokenId": "cardBorderRadius",
     "name": "Raio da Borda do Card (Master)",
     "description": "Governa o arredondamento de todos os cartões. Pode ser substituído individualmente por cantos específicos.",

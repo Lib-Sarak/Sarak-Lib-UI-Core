@@ -208,6 +208,9 @@
     "inputSuccessColor"
   ],
   "cards_engine": [
+    "cardLayoutDirection",
+    "cardImagePosition",
+    "cardTextAlign",
     "cardBorderRadius",
     "cardRadiusTL",
     "cardRadiusTR",
