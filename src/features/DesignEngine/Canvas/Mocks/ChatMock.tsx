@@ -1,7 +1,8 @@
 import React from 'react';
 import { motion } from 'framer-motion';
 import { SarakIcon } from '../../../../components/atomic/Icon/SarakIcon';
-
+import { SarakInput } from '../../../../components/atomic/Inputs/SarakInput';
+import { SarakIconButton } from '../../../../components/atomic/Buttons/SarakIconButton';
 export const MockChat: React.FC<any> = ({ tokens, animationVariants }) => {
     const bubbleStyle = tokens?.chatBubbleStyle || 'glass';
     const radius = tokens?.chatBubbleRadius || 12;
@@ -73,8 +74,19 @@ export const MockChat: React.FC<any> = ({ tokens, animationVariants }) => {
                 {/* Input Workspace */}
                 <div className="p-4 bg-[var(--theme-card)] border-t border-[var(--theme-border)]">
                     <div className="relative flex items-center">
-                        <input type="text" placeholder="Escreva na thread principal..." className="w-full bg-[var(--theme-body)] border border-[var(--theme-border)] rounded-xl py-3 pl-4 pr-12 text-xs text-[var(--theme-title)] focus:outline-none focus:border-[var(--theme-primary)]" style={{ borderRadius: 'var(--sarak-radius)' }} />
-                        <button className="absolute right-2 p-1.5 bg-[var(--theme-primary)] text-white rounded-lg hover:scale-105 transition-transform"><SarakIcon name="Send" size={14} /></button>
+                        <SarakInput 
+                            type="text" 
+                            placeholder="Escreva na thread principal..." 
+                            fullWidth 
+                            rightIcon={
+                                <SarakIconButton 
+                                    variant="primary" 
+                                    size="sm" 
+                                    icon={<SarakIcon name="Send" size={14} />} 
+                                    className="absolute right-1" 
+                                />
+                            }
+                        />
                     </div>
                 </div>
             </div>
@@ -95,7 +107,7 @@ export const MockChat: React.FC<any> = ({ tokens, animationVariants }) => {
                     </div>
                     <div className="p-3 bg-[var(--theme-card)] border-t border-[var(--theme-border)] flex items-center gap-2">
                         <SarakIcon name="Paperclip" size={14} className="text-white/30" />
-                        <input type="text" placeholder="Sua dúvida..." className="flex-1 bg-transparent text-xs text-[var(--theme-title)] outline-none" />
+                        <SarakInput type="text" placeholder="Sua dúvida..." fullWidth />
                         <SarakIcon name="Zap" size={14} className="text-[var(--theme-primary)]" />
                     </div>
                 </div>

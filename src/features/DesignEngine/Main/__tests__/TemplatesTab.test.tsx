@@ -1,7 +1,7 @@
 import React from 'react';
 import '@testing-library/jest-dom';
 import { render, fireEvent, screen } from '@testing-library/react';
-import { describe, it, expect, vi } from 'vitest';
+import { describe, it, expect, vi, beforeEach } from 'vitest';
 import { TemplatesTab } from '../TemplatesTab';
 import { useSarakUI } from '../../../../core/Provider/SarakUIProvider';
 

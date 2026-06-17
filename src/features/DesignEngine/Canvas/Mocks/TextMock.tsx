@@ -1,6 +1,8 @@
 import React from 'react';
 import { motion } from 'framer-motion';
 import { SarakIcon } from '../../../../components/atomic/Icon/SarakIcon';
+import { SarakButton } from '../../../../components/atomic/Buttons/SarakButton';
+import { SarakInput } from '../../../../components/atomic/Inputs/SarakInput';
 
 interface TextMockProps {
     tokens: any;
@@ -61,18 +63,21 @@ export const MockText: React.FC<TextMockProps> = ({ tokens, animationVariants, a
                 </div>
 
                 <div className="flex gap-3">
-                    <button 
+                    <SarakButton 
+                        variant="secondary"
                         onClick={handleCopy}
-                        className="px-4 py-2 bg-white/5 hover:bg-white/10 transition-colors text-[10px] font-bold uppercase tracking-widest text-slate-300 border border-white/5 rounded flex items-center gap-2"
+                        leftIcon={copied ? <SarakIcon name="Check" size={12} className="text-emerald-400" /> : <SarakIcon name="Copy" size={12} />}
                     >
-                        {copied ? <SarakIcon name="Check" size={12} className="text-emerald-400" /> : <SarakIcon name="Copy" size={12} />} {copied ? 'Copiado!' : 'Copiar Texto'}
-                    </button>
-                    <button 
+                        {copied ? 'Copiado!' : 'Copiar Texto'}
+                    </SarakButton>
+                    <SarakButton 
+                        variant="primary"
                         onClick={handleSave}
-                        className="px-4 py-2 bg-[var(--theme-primary)] text-black transition-colors text-[10px] font-black uppercase tracking-widest rounded flex items-center gap-2"
+                        isLoading={isSaving}
+                        leftIcon={!isSaving && <SarakIcon name="Save" size={12} />}
                     >
-                        {isSaving ? <SarakIcon name="RefreshCw" size={12} className="animate-spin" /> : <SarakIcon name="Save" size={12} />} {isSaving ? 'Gravando...' : 'Gravar Relatório'}
-                    </button>
+                        {isSaving ? 'Gravando...' : 'Gravar Relatório'}
+                    </SarakButton>
                 </div>
             </div>
 
@@ -127,14 +132,10 @@ export const MockText: React.FC<TextMockProps> = ({ tokens, animationVariants, a
                             style={{ borderRadius: 'calc(var(--sarak-input-border-radius, 8) * 1px)' }}
                         >
                             <label className="text-[10px] font-black text-slate-500 uppercase tracking-widest block mb-2 text-left">Meta-Tag do Relatório</label>
-                            <input 
+                            <SarakInput 
                                 type="text"
                                 defaultValue="#relatorio-perf-v13"
-                                className="w-full px-4 py-2 border border-white/10 rounded-lg text-xs font-mono text-white placeholder-white/30 focus:outline-none focus:border-[var(--theme-primary)] transition-colors"
-                                style={{
-                                    backgroundColor: 'var(--sarak-input-bg, rgba(255,255,255,0.03))',
-                                    borderRadius: 'calc(var(--sarak-input-border-radius, 8) * 1px)'
-                                }}
+                                fullWidth
                             />
                         </div>
                     </div>

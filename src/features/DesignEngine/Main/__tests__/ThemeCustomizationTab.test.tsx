@@ -254,8 +254,16 @@ describe('ThemeCustomizationTab', () => {
         } as any);
 
         vi.mocked(useDesignDraft).mockReturnValue({
-            ...vi.mocked(useDesignDraft)(),
-            isDirty: true
+            draft: { mode: 'light' },
+            updateDraft: vi.fn(),
+            handleApplyToSystem: vi.fn(),
+            handleApplyComponent: vi.fn(),
+            isComponentDirty: vi.fn(() => false),
+            resetComponent: vi.fn(),
+            isDirty: true,
+            toast: null,
+            showToast: vi.fn(),
+            handleThemePreview: vi.fn()
         } as any);
 
         render(<ThemeCustomizationTab />);

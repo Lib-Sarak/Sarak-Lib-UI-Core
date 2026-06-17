@@ -1,6 +1,9 @@
 import React, { useState } from 'react';
 import { motion } from 'framer-motion';
 import { SarakIcon } from '../../../../components/atomic/Icon/SarakIcon';
+import { SarakButton } from '../../../../components/atomic/Buttons/SarakButton';
+import { SarakIconButton } from '../../../../components/atomic/Buttons/SarakIconButton';
+import { SarakInput } from '../../../../components/atomic/Inputs/SarakInput';
 
 export const MockForms: React.FC<{ tokens: any, config: any, animationVariants: any, animationStyle: string }> = ({ tokens, animationVariants }) => {
     const [isLoading, setIsLoading] = useState(false);
@@ -38,11 +41,9 @@ export const MockForms: React.FC<{ tokens: any, config: any, animationVariants: 
                         {/* Input 1 */}
                         <div className="flex flex-col gap-2">
                             <label className="text-xs font-bold text-[var(--theme-title)] uppercase tracking-widest opacity-80">Nome da Empresa</label>
-                            <input 
+                            <SarakInput 
                                 type="text" 
                                 placeholder="Sarak Enterprise"
-                                className="w-full bg-[var(--theme-body)] border border-[var(--theme-border)] text-[var(--theme-title)] text-sm px-4 py-3 focus:outline-none focus:border-[var(--theme-primary)] focus:ring-1 focus:ring-[var(--theme-primary)] transition-all font-medium"
-                                style={{ borderRadius: 'var(--sarak-radius-sm)' }}
                             />
                         </div>
                         {/* Input 2 */}
@@ -50,11 +51,10 @@ export const MockForms: React.FC<{ tokens: any, config: any, animationVariants: 
                             <label className="text-xs font-bold text-[var(--theme-title)] uppercase tracking-widest opacity-80 flex items-center gap-2">
                                 <SarakIcon name="Hash" size={14} /> CNPJ / ID
                             </label>
-                            <input 
+                            <SarakInput 
                                 type="text" 
                                 placeholder="00.000.000/0001-00"
-                                className="w-full bg-[var(--theme-body)] border border-[var(--theme-border)] text-[var(--theme-title)] text-sm px-4 py-3 focus:outline-none focus:border-[var(--theme-primary)] focus:ring-1 focus:ring-[var(--theme-primary)] transition-all font-mono"
-                                style={{ borderRadius: 'var(--sarak-radius-sm)' }}
+                                className="font-mono"
                             />
                         </div>
                         {/* Input 3 (Success) */}
@@ -62,11 +62,10 @@ export const MockForms: React.FC<{ tokens: any, config: any, animationVariants: 
                             <label className="text-xs font-bold text-emerald-500 uppercase tracking-widest flex items-center gap-1.5">
                                 <SarakIcon name="Mail" size={14} /> Email Oficial <SarakIcon name="CheckCircle2" size={12} />
                             </label>
-                            <input 
+                            <SarakInput 
                                 type="email" 
                                 defaultValue="contato@sarak.io"
-                                className="w-full bg-emerald-500/5 border border-emerald-500/50 text-emerald-500 text-sm px-4 py-3 focus:outline-none focus:border-emerald-500 focus:ring-1 focus:ring-emerald-500 transition-all font-medium"
-                                style={{ borderRadius: 'var(--sarak-radius-sm)' }}
+                                className="!bg-emerald-500/5 !border-emerald-500/50 !text-emerald-500 focus:!border-emerald-500"
                             />
                         </div>
                         {/* Input 4 (Select) */}
@@ -94,20 +93,19 @@ export const MockForms: React.FC<{ tokens: any, config: any, animationVariants: 
                     </div>
 
                     <div className="flex justify-end gap-4 mt-4 pt-6 border-t border-[var(--theme-border)]">
-                        <button 
-                            className="sarak-preview-btn bg-transparent text-[var(--theme-title)] hover:bg-[var(--theme-body)] border border-[var(--theme-border)] hover:border-[var(--theme-primary)]/50 py-2.5 px-6 transition-all font-bold text-xs"
-                            style={{ borderRadius: 'var(--sarak-radius-btn, var(--sarak-radius))' }}
+                        <SarakButton 
+                            variant="secondary"
                         >
                             CANCELAR
-                        </button>
-                        <button 
+                        </SarakButton>
+                        <SarakButton 
+                            variant="primary"
+                            isLoading={isLoading}
                             onClick={() => setIsLoading(!isLoading)}
-                            className="sarak-preview-btn bg-[var(--theme-primary)] text-white hover:bg-[var(--theme-primary)]/90 py-2.5 px-8 shadow-[0_10px_20px_-5px_rgba(var(--theme-primary-rgb),0.3)] transition-all font-bold text-xs flex items-center justify-center gap-2 group"
-                            style={{ borderRadius: 'var(--sarak-radius-btn, var(--sarak-radius))' }}
+                            leftIcon={!isLoading && <SarakIcon name="Save" size={16} />}
                         >
-                            {isLoading ? <SarakIcon name="Loader2" size={16} className="animate-spin" /> : <SarakIcon name="Save" size={16} className="group-hover:scale-110 transition-transform" />}
                             {isLoading ? 'SALVANDO...' : 'SALVAR E CONTINUAR'}
-                        </button>
+                        </SarakButton>
                     </div>
                 </div>
 
@@ -143,23 +141,17 @@ export const MockForms: React.FC<{ tokens: any, config: any, animationVariants: 
                         
                         <div className="flex flex-col gap-3">
                             <div className="flex items-center gap-2">
-                                <div className="relative flex-1">
-                                    <SarakIcon name="Calendar" size={14} className="absolute left-3 top-1/2 -translate-y-1/2 text-[var(--theme-text-sec)]" />
-                                    <input type="text" defaultValue="12/05/2026" className="w-full bg-[var(--theme-body)] border border-[var(--theme-border)] text-[var(--theme-title)] text-xs px-9 py-2 focus:outline-none focus:border-[var(--theme-primary)] transition-all font-mono rounded-md" />
+                                <div className="flex-1">
+                                    <SarakInput type="text" defaultValue="12/05/2026" leftIcon={<SarakIcon name="Calendar" size={14} className="text-[var(--theme-text-sec)]" />} fullWidth />
                                 </div>
-                                <button className="p-2 bg-[var(--theme-body)] border border-[var(--theme-border)] text-rose-500 hover:bg-rose-500 hover:text-white rounded-md transition-colors">
-                                    <SarakIcon name="Trash2" size={14} />
-                                </button>
+                                <SarakIconButton variant="danger" size="sm" icon={<SarakIcon name="Trash2" size={14} />} />
                             </div>
                             
                             <div className="flex items-center gap-2">
-                                <div className="relative flex-1">
-                                    <SarakIcon name="Calendar" size={14} className="absolute left-3 top-1/2 -translate-y-1/2 text-[var(--theme-text-sec)]" />
-                                    <input type="text" placeholder="Adicionar data..." className="w-full bg-[var(--theme-body)] border border-[var(--theme-border)] text-[var(--theme-title)] text-xs px-9 py-2 focus:outline-none focus:border-[var(--theme-primary)] transition-all font-mono rounded-md" />
+                                <div className="flex-1">
+                                    <SarakInput type="text" placeholder="Adicionar data..." leftIcon={<SarakIcon name="Calendar" size={14} className="text-[var(--theme-text-sec)]" />} fullWidth />
                                 </div>
-                                <button className="p-2 bg-[var(--theme-primary)]/10 text-[var(--theme-primary)] hover:bg-[var(--theme-primary)] hover:text-white rounded-md transition-colors">
-                                    <SarakIcon name="Plus" size={14} />
-                                </button>
+                                <SarakIconButton variant="primary" size="sm" icon={<SarakIcon name="Plus" size={14} />} />
                             </div>
                         </div>
                         

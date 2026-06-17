@@ -12,6 +12,8 @@ import {
     Loader2
 } from 'lucide-react';
 import { SocialButton } from '../Atoms/SocialButton';
+import { SarakButton } from '../Buttons';
+import { SarakInput } from '../Inputs';
 
 interface SarakAuthScreenProps {
     branding?: {
@@ -200,20 +202,16 @@ export const SarakAuthScreen: React.FC<SarakAuthScreenProps> = ({
                             <>
                                 <div className="space-y-1.5">
                                     <label className="text-xs font-bold text-theme-muted uppercase tracking-widest ml-1">E-mail de Acesso</label>
-                                    <div className="relative group">
-                                        <div className="absolute inset-y-0 left-0 pl-4 flex items-center pointer-events-none transition-colors group-focus-within:text-theme-primary text-theme-muted">
-                                            <User className="h-5 w-5" />
-                                        </div>
-                                        <input
-                                            type="email"
-                                            required
-                                            value={username}
-                                            onChange={(e) => setUsername(e.target.value)}
-                                            className="block w-full pl-11 pr-4 py-4 sarak-glass bg-theme-card border border-theme-border rounded-sarak focus:ring-2 focus:ring-theme-primary/20 focus:border-theme-primary outline-none transition-all placeholder:text-theme-muted/30 text-theme-text font-medium"
-                                            placeholder="seu@email.com"
-                                            autoComplete="off"
-                                        />
-                                    </div>
+                                    <SarakInput
+                                        type="email"
+                                        required
+                                        value={username}
+                                        onChange={(e) => setUsername(e.target.value)}
+                                        placeholder="seu@email.com"
+                                        autoComplete="off"
+                                        leftIcon={<User className="h-5 w-5" />}
+                                        fullWidth
+                                    />
                                 </div>
 
                                 <div className="space-y-1.5">
@@ -229,49 +227,42 @@ export const SarakAuthScreen: React.FC<SarakAuthScreenProps> = ({
                                             </button>
                                         )}
                                     </div>
-                                    <div className="relative group">
-                                        <div className="absolute inset-y-0 left-0 pl-4 flex items-center pointer-events-none transition-colors group-focus-within:text-theme-primary text-theme-muted">
-                                            <Lock className="h-5 w-5" />
-                                        </div>
-                                        <input
-                                            type={showPassword ? "text" : "password"}
-                                            required
-                                            value={password || ''}
-                                            onChange={(e) => setPassword?.(e.target.value)}
-                                            className="block w-full pl-11 pr-12 py-4 sarak-glass bg-theme-card border border-theme-border rounded-sarak focus:ring-2 focus:ring-theme-primary/20 focus:border-theme-primary outline-none transition-all placeholder:text-theme-muted/30 text-theme-text font-medium"
-                                            placeholder="••••••••"
-                                            autoComplete="new-password"
-                                        />
-                                        {setShowPassword && (
+                                    <SarakInput
+                                        type={showPassword ? "text" : "password"}
+                                        required
+                                        value={password || ''}
+                                        onChange={(e) => setPassword?.(e.target.value)}
+                                        placeholder="••••••••"
+                                        autoComplete="new-password"
+                                        leftIcon={<Lock className="h-5 w-5" />}
+                                        rightIcon={setShowPassword ? (
                                             <button
                                                 type="button"
                                                 onClick={() => setShowPassword(!showPassword)}
-                                                className="absolute inset-y-0 right-0 pr-4 flex items-center text-theme-muted hover:text-theme-text transition-colors"
+                                                className="text-[var(--sarak-input-icon-color,var(--theme-muted))] hover:text-theme-text transition-colors outline-none"
                                             >
                                                 {showPassword ? <EyeOff className="h-5 w-5" /> : <Eye className="h-5 w-5" />}
                                             </button>
-                                        )}
-                                    </div>
+                                        ) : undefined}
+                                        fullWidth
+                                    />
                                 </div>
                             </>
                         ) : (
                             <div className="space-y-1.5">
                                 <label className="text-xs font-bold text-theme-muted uppercase tracking-widest ml-1">Código de Segurança</label>
-                                <div className="relative group">
-                                    <div className="absolute inset-y-0 left-0 pl-4 flex items-center pointer-events-none transition-colors group-focus-within:text-theme-primary text-theme-muted">
-                                        <ShieldCheck className="h-5 w-5" />
-                                    </div>
-                                    <input
-                                        type="text"
-                                        required
-                                        maxLength={6}
-                                        value={mfaCode || ''}
-                                        onChange={(e) => setMfaCode?.(e.target.value.replace(/\D/g, ''))}
-                                        className="block w-full pl-11 pr-4 py-4 sarak-glass bg-theme-card border border-theme-border rounded-sarak focus:ring-2 focus:ring-theme-primary/20 focus:border-theme-primary outline-none transition-all placeholder:text-theme-muted/30 text-theme-text font-medium text-center text-2xl tracking-[0.5em]"
-                                        placeholder="000000"
-                                        autoFocus
-                                    />
-                                </div>
+                                <SarakInput
+                                    type="text"
+                                    required
+                                    maxLength={6}
+                                    value={mfaCode || ''}
+                                    onChange={(e) => setMfaCode?.(e.target.value.replace(/\D/g, ''))}
+                                    placeholder="000000"
+                                    autoFocus
+                                    className="text-center text-2xl tracking-[0.5em]"
+                                    leftIcon={<ShieldCheck className="h-5 w-5" />}
+                                    fullWidth
+                                />
                                 <button 
                                     type="button" 
                                     onClick={() => setMfaStep(false)}
@@ -282,17 +273,16 @@ export const SarakAuthScreen: React.FC<SarakAuthScreenProps> = ({
                             </div>
                         )}
 
-                        <button
+                        <SarakButton
                             type="submit"
-                            disabled={isPending}
-                            className="w-full mt-4 flex items-center justify-center gap-2 py-4 bg-theme-primary hover:opacity-90 disabled:bg-theme-card disabled:text-theme-muted text-theme-text rounded-sarak font-black uppercase tracking-widest text-sm transition-all shadow-xl shadow-theme-primary/10 active:scale-[0.98]"
+                            isLoading={isPending}
+                            variant="primary"
+                            fullWidth
+                            className="mt-4"
+                            rightIcon={!isPending ? <ChevronRight className="w-4 h-4" /> : undefined}
                         >
-                            {isPending ? (
-                                <Loader2 className="w-5 h-5 animate-spin" />
-                            ) : (
-                                <>{mfaStep ? 'Confirmar Acesso' : (isRegistering ? 'Criar Minha Conta' : 'Acessar Sistema')} <ChevronRight className="w-4 h-4" /></>
-                            )}
-                        </button>
+                            {mfaStep ? 'Confirmar Acesso' : (isRegistering ? 'Criar Minha Conta' : 'Acessar Sistema')}
+                        </SarakButton>
                     </form>
 
                     {/* Social Login Section */}
@@ -322,13 +312,15 @@ export const SarakAuthScreen: React.FC<SarakAuthScreenProps> = ({
                     {onMasterLogin && (
                         <div className="mt-8 space-y-3">
                             {!isRegistering && (
-                                <button
+                                <SarakButton
                                     type="button"
                                     onClick={onMasterLogin}
-                                    className="w-full py-3 bg-theme-primary/10 hover:bg-theme-primary/20 border border-theme-primary/30 hover:border-theme-primary/50 text-theme-primary rounded-sarak font-black text-xs uppercase tracking-[0.2em] transition-all"
+                                    variant="secondary"
+                                    fullWidth
+                                    className="uppercase"
                                 >
                                     ENTRAR COMO MASTER
-                                </button>
+                                </SarakButton>
                             )}
                         </div>
                     )}

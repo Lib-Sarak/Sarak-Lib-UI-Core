@@ -1,11 +1,10 @@
 import { test, expect } from '@playwright/experimental-ct-react';
 import React from 'react';
-import { SarakUIProvider } from '@/core/Provider/SarakUIProvider';
-import { PreviewCanvas } from '@/features/DesignEngine/Canvas/PreviewCanvas';
-import { SystemConfig } from '@/core/Provider/types';
+import { SarakUIProvider } from '../../../core/Provider/SarakUIProvider';
+import { PreviewCanvas } from '../../../features/DesignEngine/Canvas/PreviewCanvas';
 
 // Configuração Básica do SarakUIProvider para os testes
-const mockConfig: SystemConfig = {
+const mockConfig: any = {
     brand: { name: 'Test Brand', type: 'system' },
     design: {
         mode: 'light',
@@ -23,7 +22,7 @@ test('Jornada 1: Boot do Motor Visual', async ({ mount }) => {
     const component = await mount(
         <SarakUIProvider config={mockConfig}>
             <div style={{ padding: '2rem', background: 'var(--theme-base)', height: '100vh' }}>
-                <PreviewCanvas />
+                <PreviewCanvas {...({} as any)} />
             </div>
         </SarakUIProvider>
     );

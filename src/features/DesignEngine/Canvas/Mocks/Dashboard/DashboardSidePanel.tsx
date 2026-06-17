@@ -1,6 +1,7 @@
 import React from 'react';
 import { SarakIcon } from '../../../../../components/atomic/Icon/SarakIcon';
 import { SmartCard } from './DashboardShared';
+import { SarakButton } from '../../../../../components/atomic/Buttons/SarakButton';
 
 export const DashboardSidePanel = ({ variables, textureType }: any) => {
     return (
@@ -29,9 +30,11 @@ export const DashboardSidePanel = ({ variables, textureType }: any) => {
                     </div>
                 ))}
             </div>
-            <button className="mt-4 w-full py-2 bg-white/5 hover:bg-white/10 transition-colors text-[9px] font-bold uppercase tracking-widest text-slate-400 border border-white/5 rounded">
-                View All History
-            </button>
+            <div className="mt-4">
+                <SarakButton variant="ghost" fullWidth size="sm">
+                    View All History
+                </SarakButton>
+            </div>
         </SmartCard>
     );
 };

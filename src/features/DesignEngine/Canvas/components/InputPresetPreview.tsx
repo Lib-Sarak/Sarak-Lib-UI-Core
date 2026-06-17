@@ -1,0 +1,71 @@
+import React from 'react';
+import { motion } from 'framer-motion';
+import { ComponentPreset } from '../../../../core/Design/presets/components/cards';
+
+interface InputPresetPreviewProps {
+    preset: ComponentPreset;
+    index: number;
+    onApply: () => void;
+    currentMode: string;
+}
+
+export const InputPresetPreview: React.FC<InputPresetPreviewProps> = ({ preset, index, onApply, currentMode }) => {
+    const styles: React.CSSProperties = {};
+    Object.entries(preset.design).forEach(([key, value]) => {
+        if (key === 'inputBorderRadius') styles.borderRadius = value;
+        if (key === 'inputBg') styles.backgroundColor = value;
+        if (key === 'inputBorderColor') styles.borderColor = value;
+        if (key === 'inputBorderType') {
+            if (value === 'none') {
+                styles.borderWidth = '0px';
+            } else if (value === 'underline') {
+                styles.borderWidth = '0px 0px 2px 0px';
+                styles.borderStyle = 'solid';
+            } else {
+                styles.borderStyle = value;
+                styles.borderWidth = '1px';
+            }
+        }
+        if (key === 'inputShadow') styles.boxShadow = value;
+        if (key === 'inputBackdropBlur' && value > 0) {
+            styles.backdropFilter = `blur(${value}px)`;
+            styles.WebkitBackdropFilter = `blur(${value}px)`;
+        }
+    });
+
+    return (
+        <motion.button
+            initial={{ opacity: 0, scale: 0.95 }}
+            animate={{ opacity: 1, scale: 1 }}
+            transition={{ delay: index * 0.05 }}
+            onClick={onApply}
+            className="group relative flex flex-col items-center justify-center p-6 rounded-2xl border border-theme-border overflow-hidden bg-[rgba(10,10,10,0.5)] hover:border-theme-primary hover:shadow-[0_10px_40px_-10px_rgba(var(--theme-primary-rgb),0.2)] transition-all duration-300"
+            style={{ minHeight: '180px' }}
+        >
+            <div className="absolute inset-0 z-0 bg-[radial-gradient(ellipse_at_center,rgba(255,255,255,0.05)_0%,transparent_70%)] opacity-50"></div>
+            
+            <div className="relative z-10 flex items-center justify-center w-full h-full px-4 mb-6 pointer-events-none">
+                <input 
+                    type="text"
+                    placeholder="Type here..."
+                    readOnly
+                    style={{
+                        padding: '12px 16px',
+                        fontSize: '14px',
+                        width: '100%',
+                        color: '#ffffff',
+                        outline: 'none',
+                        transition: 'all 0.2s ease',
+                        ...styles
+                    }}
+                    className="group-hover:scale-105 transition-transform"
+                />
+            </div>
+
+            <div className="absolute bottom-0 left-0 w-full p-4 bg-black/40 backdrop-blur-md border-t border-white/5 z-20 text-left">
+                <h3 className="text-xs font-black text-white uppercase tracking-wider">{preset.name}</h3>
+                <p className="text-[9px] text-white/50 mt-1 uppercase tracking-widest leading-relaxed">{preset.description}</p>
+            </div>
+        </motion.button>
+    );
+};

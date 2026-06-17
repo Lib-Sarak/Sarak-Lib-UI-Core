@@ -36,6 +36,8 @@ import {
 import { MasterControlPanel } from './MasterControlPanel';
 import { TemplatesTab } from './TemplatesTab';
 import { SaveThemeModal, SaveThemeAction } from './components/SaveThemeModal';
+import { SarakButton } from '../../../components/atomic/Buttons/SarakButton';
+import { SarakIconButton } from '../../../components/atomic/Buttons/SarakIconButton';
 
 /**
  * ThemeCustomizationTab (v14.0 - Sovereign 6-Pillar Architecture)
@@ -285,28 +287,26 @@ export const ThemeCustomizationTab: React.FC = () => {
                         <div className="flex items-center gap-2">
                             <div className="flex gap-1 p-0.5 bg-[var(--theme-layer)] rounded-lg border border-[var(--theme-border)]">
                                 {['preview', 'catalog', 'templates'].map((m) => (
-                                    <button
+                                    <SarakIconButton
                                         key={m}
                                         onClick={() => setViewMode(m as any)}
-                                        className={`p-1.5 rounded-md transition-all ${viewMode === m ? 'bg-[var(--theme-primary)]/20 text-[var(--theme-primary)]' : 'text-[var(--theme-muted)] hover:text-[var(--theme-text)]'}`}
-                                    >
-                                        {m === 'preview' ? <Monitor size={10} /> : m === 'catalog' ? <Table size={10} /> : <FileJson size={10} />}
-                                    </button>
+                                        variant={viewMode === m ? 'primary' : 'ghost'}
+                                        size="sm"
+                                        icon={m === 'preview' ? <Monitor size={10} /> : m === 'catalog' ? <Table size={10} /> : <FileJson size={10} />}
+                                    />
                                 ))}
                             </div>
 
                             {/* Botão de Salvar Dinâmico */}
-                            <button
+                            <SarakButton
                                 onClick={() => setIsSaveModalOpen(true)}
                                 disabled={!isDirty}
-                                className={`flex items-center gap-1.5 px-3 py-1.5 rounded-lg border transition-all ${isDirty
-                                        ? 'bg-[var(--theme-primary)]/20 border-[var(--theme-primary)]/50 text-[var(--theme-primary)] hover:bg-[var(--theme-primary)] hover:text-white shadow-[0_0_15px_rgba(var(--theme-primary-rgb),0.2)]'
-                                        : 'bg-black/10 border-[var(--theme-border)] text-[var(--theme-muted)] cursor-not-allowed'
-                                    }`}
+                                variant={isDirty ? 'secondary' : 'ghost'}
+                                size="xs"
                                 title={isDirty ? "Você possui alterações não salvas" : "Nenhuma alteração"}
                             >
                                 <span className="text-[10px] font-black uppercase tracking-widest">{isDirty ? 'Salvar' : 'Salvo'}</span>
-                            </button>
+                            </SarakButton>
                         </div>
                     </div>
 
@@ -317,17 +317,16 @@ export const ThemeCustomizationTab: React.FC = () => {
                             { id: 'tablet', icon: Tablet, label: 'Tablet' },
                             { id: 'smartphone', icon: Smartphone, label: 'Mobile' }
                         ].map((device) => (
-                            <button
+                            <SarakButton
                                 key={device.id}
                                 onClick={() => setPreviewDevice(device.id as any)}
-                                className={`flex-1 flex items-center justify-center gap-1.5 py-1.5 rounded-lg text-[9px] font-black uppercase tracking-widest transition-all ${previewDevice === device.id
-                                        ? 'bg-[var(--theme-primary)] text-white shadow-[0_0_10px_rgba(var(--theme-primary-rgb),0.3)]'
-                                        : 'text-[var(--theme-muted)] hover:text-[var(--theme-text)] hover:bg-[var(--theme-surface)]'
-                                    }`}
+                                variant={previewDevice === device.id ? 'primary' : 'ghost'}
+                                size="xs"
+                                leftIcon={<device.icon size={12} />}
+                                className="flex-1"
                             >
-                                <device.icon size={12} />
                                 {device.label}
-                            </button>
+                            </SarakButton>
                         ))}
                     </div>
 
@@ -372,12 +371,15 @@ export const ThemeCustomizationTab: React.FC = () => {
                         </div>
                     </div>
 
-                    <button onClick={handleApplyGlobalChanges} className="w-full group relative overflow-hidden bg-[var(--theme-primary)] hover:bg-[var(--theme-primary)]/90 text-white py-2.5 rounded-lg font-black text-[9px] uppercase tracking-[0.1em] transition-all active:scale-[0.98] shadow-[0_10px_20px_-5px_rgba(var(--theme-primary-rgb),0.3)]">
-                        <div className="flex items-center justify-center gap-2 relative z-10">
-                            <Check size={10} />
-                            <span>Aplicar Alterações Globais</span>
-                        </div>
-                    </button>
+                    <SarakButton
+                        onClick={handleApplyGlobalChanges}
+                        variant="primary"
+                        fullWidth
+                        size="md"
+                        leftIcon={<Check size={12} />}
+                    >
+                        Aplicar Alterações Globais
+                    </SarakButton>
                 </div>
 
                 {/* Área de Conteúdo (Scrollable) */}

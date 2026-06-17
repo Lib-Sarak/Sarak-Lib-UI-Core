@@ -1,6 +1,9 @@
 import React, { useState } from 'react';
 import { motion } from 'framer-motion';
 import { SarakIcon } from '../../../../components/atomic/Icon/SarakIcon';
+import { SarakButton } from '../../../../components/atomic/Buttons/SarakButton';
+import { SarakIconButton } from '../../../../components/atomic/Buttons/SarakIconButton';
+import { SarakInput } from '../../../../components/atomic/Inputs/SarakInput';
 
 export const MockDocuments: React.FC<{ tokens: any, config: any, animationVariants: any, animationStyle: string }> = ({ tokens, animationVariants }) => {
     const [isDragging, setIsDragging] = useState(false);
@@ -23,15 +26,12 @@ export const MockDocuments: React.FC<{ tokens: any, config: any, animationVarian
                     <p className="text-sm text-[var(--theme-text-sec)] mt-1 font-medium">Faça o upload e gerencie os artefatos do sistema.</p>
                 </div>
                 <div className="flex items-center gap-3">
-                    <div className="relative">
-                        <SarakIcon name="Search" size={16} className="absolute left-3 top-1/2 -translate-y-1/2 text-[var(--theme-text-sec)]" />
-                        <input 
-                            type="text" 
-                            placeholder="Buscar documentos..."
-                            className="bg-[var(--theme-body)] border border-[var(--theme-border)] text-[var(--theme-title)] text-sm px-10 py-2 focus:outline-none focus:border-[var(--theme-primary)] focus:ring-1 focus:ring-[var(--theme-primary)] transition-all"
-                            style={{ borderRadius: 'var(--sarak-radius-sm, 8px)' }}
-                        />
-                    </div>
+                    <SarakInput 
+                        type="text" 
+                        placeholder="Buscar documentos..."
+                        leftIcon={<SarakIcon name="Search" size={16} />}
+                        style={{ minWidth: '250px' }}
+                    />
                 </div>
             </div>
 
@@ -54,12 +54,9 @@ export const MockDocuments: React.FC<{ tokens: any, config: any, animationVarian
                     <h3 className="text-[var(--theme-title)] font-bold text-lg">Arraste e solte seus arquivos aqui</h3>
                     <p className="text-[var(--theme-text-sec)] text-sm mt-1">Ou clique para procurar (PDF, JPG, PNG, DOCX até 50MB)</p>
                 </div>
-                <button 
-                    className="mt-2 bg-[var(--theme-primary)] text-white hover:bg-[var(--theme-primary)]/90 py-2.5 px-6 shadow-lg transition-all font-bold text-sm uppercase tracking-wide"
-                    style={{ borderRadius: 'var(--sarak-radius-btn, var(--sarak-radius))' }}
-                >
+                <SarakButton variant="primary" className="mt-2">
                     Selecionar Arquivos
-                </button>
+                </SarakButton>
             </div>
 
             {/* Document Grid */}
@@ -68,8 +65,8 @@ export const MockDocuments: React.FC<{ tokens: any, config: any, animationVarian
                 {/* PDF Document Card */}
                 <div className="sarak-card rounded-2xl border border-[var(--theme-border)] shadow-xl bg-[var(--theme-card)] backdrop-blur-md p-4 flex flex-col gap-4 relative group" style={{ borderRadius: 'var(--sarak-radius)' }}>
                     <div className="absolute top-4 right-4 text-[var(--theme-text-sec)] opacity-0 group-hover:opacity-100 transition-opacity flex gap-2">
-                        <button className="hover:text-[var(--theme-primary)] transition-colors"><SarakIcon name="Download" size={16} /></button>
-                        <button className="hover:text-[var(--theme-title)] transition-colors"><SarakIcon name="MoreVertical" size={16} /></button>
+                        <SarakIconButton variant="ghost" size="sm" icon={<SarakIcon name="Download" size={16} />} />
+                        <SarakIconButton variant="ghost" size="sm" icon={<SarakIcon name="MoreVertical" size={16} />} />
                     </div>
                     
                     <div className="w-full h-32 bg-[var(--theme-body)] rounded-lg flex items-center justify-center border border-[var(--theme-border)]/50 relative overflow-hidden" style={{ borderRadius: 'var(--sarak-radius-sm)' }}>
@@ -90,8 +87,8 @@ export const MockDocuments: React.FC<{ tokens: any, config: any, animationVarian
                 {/* Image Document Card */}
                 <div className="sarak-card rounded-2xl border border-[var(--theme-border)] shadow-xl bg-[var(--theme-card)] backdrop-blur-md p-4 flex flex-col gap-4 relative group" style={{ borderRadius: 'var(--sarak-radius)' }}>
                     <div className="absolute top-4 right-4 text-[var(--theme-text-sec)] opacity-0 group-hover:opacity-100 transition-opacity flex gap-2">
-                        <button className="hover:text-[var(--theme-primary)] transition-colors"><SarakIcon name="Download" size={16} /></button>
-                        <button className="hover:text-[var(--theme-title)] transition-colors"><SarakIcon name="MoreVertical" size={16} /></button>
+                        <SarakIconButton variant="ghost" size="sm" icon={<SarakIcon name="Download" size={16} />} />
+                        <SarakIconButton variant="ghost" size="sm" icon={<SarakIcon name="MoreVertical" size={16} />} />
                     </div>
                     
                     <div className="w-full h-32 bg-[var(--theme-body)] rounded-lg flex items-center justify-center border border-[var(--theme-border)]/50 relative overflow-hidden" style={{ borderRadius: 'var(--sarak-radius-sm)' }}>
@@ -127,7 +124,7 @@ export const MockDocuments: React.FC<{ tokens: any, config: any, animationVarian
                     <div>
                         <div className="flex items-center justify-between">
                             <h4 className="text-[var(--theme-title)] font-bold text-sm truncate">Contrato_Servicos.docx</h4>
-                            <button className="text-[var(--theme-text-sec)] hover:text-rose-500 transition-colors"><SarakIcon name="X" size={14} /></button>
+                            <SarakIconButton variant="danger" size="sm" icon={<SarakIcon name="X" size={14} />} />
                         </div>
                         <div className="flex items-center justify-between mt-2">
                             <span className="text-[10px] uppercase font-bold text-[var(--theme-primary)] animate-pulse">Sincronizando...</span>

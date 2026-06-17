@@ -1,8 +1,7 @@
 import { test, expect } from '@playwright/experimental-ct-react';
 import React from 'react';
-import { SarakUIProvider } from '@/core/Provider/SarakUIProvider';
-import { DesignScope } from '@/core/Design/components/DesignScope';
-import { SarakTheme } from '@/core/Provider/types';
+import { SarakUIProvider } from '../../../core/Provider/SarakUIProvider';
+import { DesignScope } from '../../../core/Design/components/DesignScope';
 
 const mockTheme: any = {
     mode: 'light',

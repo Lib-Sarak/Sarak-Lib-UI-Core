@@ -23,6 +23,22 @@ export const TablesSchema: ComponentSchema = {
             cssVars: ['--sarak-table-row-hover']
         },
         {
+            id: 'tableZebraStriping',
+            label: 'Listras Alternadas (Zebra)',
+            type: 'boolean',
+            defaultValue: false,
+            cssVars: ['--sarak-table-zebra-striping']
+        },
+        {
+            id: 'tableBorderRadius',
+            label: 'Arredondamento da Tabela',
+            type: 'slider',
+            unit: 'px',
+            constraints: { min: 0, max: 40 },
+            defaultValue: 8,
+            cssVars: ['--sarak-table-border-radius']
+        },
+        {
             id: 'tableCellPadding',
             label: 'Densidade (Padding)',
             type: 'slider',

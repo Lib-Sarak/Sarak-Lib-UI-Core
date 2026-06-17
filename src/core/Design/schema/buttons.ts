@@ -82,7 +82,7 @@ export const ButtonsSchema: ComponentSchema = {
             type: 'color',
             defaultValue: '#00f2ff',
             generateVariants: true,
-            cssVars: ['--sarak-btn-primary-bg', '--theme-primary']
+            cssVars: ['--sarak-btn-primary-bg']
         },
         {
             id: 'btnPrimaryText',

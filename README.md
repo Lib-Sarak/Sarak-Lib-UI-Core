@@ -1,40 +1,61 @@
-# 💠 Sarak-Lib-UI-Core
+# 💠 Sarak-Lib-UI-Core (Design Engine & Visual Contracts)
 
-O **Sarak-Lib-UI-Core** é o motor de interface industrial de alta performance da Sarak. Ele utiliza uma arquitetura baseada em **Contratos Visuais (Zero-Code Frontend)** e um **Design Engine Data-Driven**, permitindo que sistemas inteiros sejam renderizados e estilizados puramente através de manifestos JSON declarativos, sem necessidade de escrever código de interface repetitivo.
-
----
-
-## 🚀 Como Funciona
-
-A biblioteca funciona como um barramento centralizado de UI que:
-1.  **Orquestra o Design:** Injeta variáveis CSS dinâmicas baseadas em tokens de design.
-2.  **Resolve Módulos:** Lê manifestos JSON para descobrir abas, ícones e rotas.
-3.  **Renderiza via Contratos:** Utiliza o `DynamicRenderer` para transformar definições de tipo (`TABLE`, `CHART`, `FORM`) em componentes físicos funcionais conectados a APIs.
-4.  **Isolamento de Negócio:** Permite que o desenvolvedor foque no backend e nos dados, enquanto a UI é gerada automaticamente.
+O **Sarak-Lib-UI-Core** é o motor de interface industrial de alta performance do ecossistema Sarak. Ele utiliza uma arquitetura baseada em **Contratos Visuais (Zero-Code Frontend)** e um **Design Engine Data-Driven**, permitindo que sistemas inteiros sejam renderizados e estilizados puramente através de manifestos declarativos, sem a necessidade de escrever código de interface repetitivo ou hardcoded.
 
 ---
 
-## 📦 Instalação e Importação
+## 🤖 Guia Rápido para Agentes IA (Contexto Inicial)
 
-Para utilizar o núcleo da Sarak UI no seu projeto React/TypeScript:
+> **Atenção Agente:** Se você está iniciando uma conversa neste repositório, leia esta seção atentamente.
 
-### 1. Importação do Provedor e Componentes
-No seu arquivo de entrada principal (ex: `App.tsx` ou `main.tsx`), importe o `SarakUIProvider` e o `SarakShell`.
+Este módulo é estritamente regulado por 4 skills principais da Sarak que devem ditar o seu comportamento e escolhas de código:
 
+1. **`/ui-arquitetura-design`**: **Regra de Ouro do Design Engine.** NENHUMA propriedade visual (como `margin: 10px`, `color: #fff`, ou `bg-[#050505]`) deve ser inserida de forma "hardcoded" ou "inline" nos componentes. A estilização deve seguir o fluxo pipeline: `Schema → Master Map → CSS Variables → Tailwind Classes`.
+2. **`/ui-novo-componente`**: **Regra da Paridade 1:1:1:1:1.** Ao adicionar um novo "token" de design ou componente base, ele deve obrigatoriamente ser refletido em: `Schema TS`, `MasterMap`, `Banco de Dados`, `Gêmeo Digital (Presets)` e `Catálogo JSON`.
+3. **`/padrao-escrita`**: Funções curtas (≤ 40 linhas, ≤ 3 níveis aninhamento), modularidade extrema e encapsulamento rigoroso.
+4. **`/code-limpeza-projeto`**: Manter a árvore limpa (Zero lixo, TODOs abandonados ou variáveis mortas).
+
+### Integração com Tailwind v4
+Este projeto utiliza **Tailwind CSS v4**. Isso significa que as variáveis de cor geradas pelo Design Engine (ex: `--sarak-card-bg` ou `--sarak-bg-base`) são mapeadas no bloco `@theme` no arquivo `src/styles/sarak-base.css` e expostas como variáveis semânticas do Tailwind (`--color-theme-card`, `--color-theme-bg`).
+- **NUNCA use:** `bg-[var(--theme-card)]` ou classes dinâmicas arbitrárias de fallback de CSS puro se a variável existir no `@theme`.
+- **USE SEMPRE:** As classes semânticas canônicas nativas como `bg-theme-card`, `bg-theme-bg`, `bg-theme-sidebar`, `border-theme-border`, e `text-theme-text`. Elas se encarregam da reatividade nativa e transparência correta sem causar falhas de escurecimento.
+
+---
+
+## 🚀 Como Funciona a Arquitetura
+
+A biblioteca funciona como um barramento centralizado de UI que opera em dois grandes eixos:
+
+### 1. O Design Engine (Motor Visual)
+Responsável por orquestrar a estética do sistema de maneira unificada e reativa.
+- Ele recebe um JSON de configuração (O "Manifesto" ou "Preset").
+- O hook `useDesignVariables` transforma essas definições de alto nível em **CSS Variables Globais**.
+- O componente `DesignInjector` pendura essas variáveis no `:root` e no `body` da aplicação de forma transparente.
+- Os componentes físicos e o Tailwind CSS (`@theme`) consomem essas variáveis passivamente, gerando mudanças globais instantâneas sem a necessidade de re-renderizações onerosas no React.
+
+### 2. Os Visual Contracts (Motor Lógico)
+Aplicações hosts injetam um manifesto estrutural descrevendo o sistema funcional.
+O módulo resolve esse JSON descobrindo abas, navegação e rotas, acionando o `DynamicRenderer` para transformar Definições de Tipo (ex: `TABLE`, `CHART`, `FORM`) em componentes físicos perfeitamente conectados a endpoints de API.
+
+---
+
+## 📦 Inicialização e Desenvolvimento
+
+### Comandos Principais
+- `npm run dev`: Inicia o **Canvas do Design Engine** e a área de Live Preview local. Essencial para testar novos presets, tipografia e catálogos atômicos.
+- `npm run build`: Compila a biblioteca (Gera os bundles JS via `tsup` e compila o CSS via Tailwind CLI) criando a pasta `dist/` pronta para ser consumida como pacote `@sarak/lib-ui-core`.
+- `npm run build:js` e `npm run build:css`: Sub-comandos isolados.
+
+### Consumindo na Aplicação Host (SarakUIProvider)
 ```tsx
 import { SarakUIProvider, SarakShell } from '@sarak/lib-ui-core';
-import '@sarak/lib-ui-core/dist/style.css'; // Importe os estilos base
-```
+import '@sarak/lib-ui-core/dist/sarak.css'; // Importe os estilos base v4
 
-### 2. Configuração Inicial (Bootstrap)
-O `SarakUIProvider` deve envolver toda a aplicação. O `SarakShell` é o componente que renderiza a moldura (menus, headers, etc.).
-
-```tsx
 export const App = () => {
     return (
         <SarakUIProvider 
             options={{ 
-                manifest: myMergedManifest, // Ver seção "Criação do Manifest"
+                manifest: myMergedManifest, 
                 theme: { defaultTheme: 'classic' } 
             }}
         >
@@ -49,47 +70,16 @@ export const App = () => {
 
 ---
 
-## 📑 Guia do Manifesto (100% Declarativo)
+## 📑 O Manifesto Funcional (Visual Contracts)
 
-O Manifesto é o cérebro da sua aplicação. Ele deve ser dividido para manter a modularidade.
-
-### 1. Estrutura Recomendada
-Recomendamos criar uma pasta `/manifests` no seu projeto host:
-- `brand.json`: Configurações de identidade e marca.
-- `tabs/*.json`: Um arquivo para cada aba/módulo funcional do sistema.
-
-### 2. Manifesto de Marca (`brand.json`)
-Define a identidade visual e opções globais.
-
-```json
-{
-  "brand": {
-    "name": "Sarak OS",
-    "logo": "/assets/logo.svg",
-    "supportEmail": "suporte@empresa.com"
-  },
-  "options": {
-    "themeBase": "dark",
-    "defaultLayout": "sidebar"
-  },
-  "themeOverrides": {
-    "headingFont": "'Outfit', sans-serif",
-    "bodyFont": "'Inter', sans-serif",
-    "textColorMaster": "#ffffff"
-  }
-}
-```
-
-### 3. Manifesto de Módulo/Aba (`tabs/vendas.json`)
-Cada aba define sua identidade no menu e quais **Contratos Visuais** ela carrega.
+Cada sistema modular define suas abas através de manifestos.
+Exemplo (`tabs/vendas.json`):
 
 ```json
 {
   "id": "mod-vendas",
   "label": "Vendas",
   "icon": "ShoppingCart",
-  "category": "Comercial",
-  "priority": 100,
   "endpoints": { "base": "/api/v1/vendas" },
   "visualContracts": [
     {
@@ -113,58 +103,17 @@ Cada aba define sua identidade no menu e quais **Contratos Visuais** ela carrega
 }
 ```
 
----
-
-## 🛠️ Contratos Visuais Suportados
-
-Ao criar um `visualContract` dentro de uma aba, você deve escolher um `type`. Os principais são:
-
+### Contratos Principais Suportados:
 | Tipo | Descrição | Parâmetros Principais |
 |---|---|---|
 | `STATS` | Cards de métricas e KPIs. | `importance` ("hero", "subtle") |
-| `TABLE` | Tabelas de dados com busca e ações. | `mapping`, `actions` |
-| `FORM` | Formulários dinâmicos. | `formMapping` (ex: `{"nome": "text"}`) |
-| `CHART` | Gráficos (Linha, Barra, Pizza). | `config` (type, axes) |
-| `EXPANDABLE_MATRIX` | Matrizes de permissões ou árvores. | `config.manifest` (hierarquia) |
-| `ADVANCED_CHAT` | Interface de chat para IA/Suporte. | `endpoint` (streaming) |
-| `CUSTOM` | Liga a um componente físico registrado. | `component` (ID do componente) |
+| `TABLE` | Tabelas de dados conectadas com endpoints e busca. | `mapping`, `actions` |
+| `FORM` | Formulários dinâmicos com schema inference. | `formMapping` |
+| `CHART` | Gráficos (ECharts / Recharts). | `config` (type, axes) |
+| `EXPANDABLE_MATRIX` | Matrizes de permissões e árvores hierárquicas. | `config.manifest` |
+| `ADVANCED_CHAT` | Interface LLM para IA conversacional de negócio. | `endpoint` |
+| `CUSTOM` | Liga um manifest genérico a um componente físico React registrado localmente via código. | `component` (ID) |
 
 ---
 
-## 🔌 Integração de Componentes Físicos (`CUSTOM`)
-
-Se o sistema precisar de uma lógica que o JSON não cobre, você pode registrar um componente TSX local:
-
-1. **Registre no código (antes do Shell):**
-```tsx
-import { registerLocalComponent } from '@sarak/lib-ui-core';
-import MyDashboard from './components/MyDashboard';
-
-registerLocalComponent('meu-dash-custom', MyDashboard);
-```
-
-2. **Chame no Manifesto:**
-```json
-{
-  "id": "aba-custom",
-  "label": "Dashboard Especial",
-  "visualContracts": [
-    { "id": "c1", "type": "CUSTOM", "component": "meu-dash-custom" }
-  ]
-}
-```
-
----
-
-## 🎨 Design Engine e CSS Tokens
-
-A biblioteca injeta automaticamente variáveis CSS baseadas no seu manifesto. Você pode utilizá-las nos seus componentes customizados:
-
-- `--sarak-text-main`: Cor de texto principal.
-- `--sarak-accent-primary`: Cor de destaque do sistema.
-- `--font-heading`: Fonte configurada para títulos.
-- `--theme-card`: Cor de fundo para cards e superfícies.
-
----
-
-> **Nota:** Para detalhes sobre esquemas de validação, consulte o arquivo `sarak-contract.schema.json` na pasta de exemplos da biblioteca.
+Mantendo a ordem estrutural e garantindo as normativas de *Design Architecture*, este repositório continua modular, escalável e 100% "Production Ready" para arquiteturas Headless/Zero-Code.

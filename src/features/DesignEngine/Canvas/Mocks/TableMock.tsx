@@ -1,6 +1,8 @@
 import React, { useState } from 'react';
 import { motion } from 'framer-motion';
 import { SarakIcon } from '../../../../components/atomic/Icon/SarakIcon';
+import { SarakInput } from '../../../../components/atomic/Inputs/SarakInput';
+import { SarakButton } from '../../../../components/atomic/Buttons/SarakButton';
 
 export const MockTable: React.FC<any> = ({ tokens, animationVariants }) => {
     const [searchQuery, setSearchQuery] = useState('');
@@ -32,9 +34,13 @@ export const MockTable: React.FC<any> = ({ tokens, animationVariants }) => {
                             <SarakIcon name="Activity" className="text-[var(--theme-primary)]" size={16} />
                             <h3 className="font-bold text-sm text-[var(--theme-title)] uppercase tracking-widest">Painel Operacional</h3>
                         </div>
-                        <div className="relative">
-                            <SarakIcon name="Search" className="absolute left-3 top-1/2 -translate-y-1/2 text-[var(--theme-text-sec)]" size={12} />
-                            <input type="text" placeholder="Buscar..." className="bg-[var(--theme-body)] border border-[var(--theme-border)] text-[var(--theme-title)] text-xs rounded-lg pl-8 pr-3 py-1.5 focus:outline-none focus:border-[var(--theme-primary)]" />
+                        <div className="w-48">
+                            <SarakInput 
+                                type="text" 
+                                placeholder="Buscar..." 
+                                fullWidth
+                                leftIcon={<SarakIcon name="Search" className="text-[var(--theme-text-sec)]" size={12} />} 
+                            />
                         </div>
                     </div>
                     <div className="overflow-x-auto">
@@ -86,7 +92,9 @@ export const MockTable: React.FC<any> = ({ tokens, animationVariants }) => {
                             <SarakIcon name="Users" size={16} className="text-[var(--theme-primary)]" />
                             <h3 className="font-bold text-sm uppercase tracking-widest">Top Usuários</h3>
                         </div>
-                        <button className="text-[10px] font-bold text-[var(--theme-primary)] flex items-center gap-1 hover:underline">VER TODOS <SarakIcon name="ArrowRight" size={10} /></button>
+                        <SarakButton variant="ghost" size="xs" rightIcon={<SarakIcon name="ArrowRight" size={10} />}>
+                            VER TODOS
+                        </SarakButton>
                     </div>
                     
                     <div className="flex flex-col gap-3">
@@ -114,9 +122,9 @@ export const MockTable: React.FC<any> = ({ tokens, animationVariants }) => {
                         <h3 className="font-bold text-xs text-[var(--theme-title)] font-mono uppercase">Financial_Ledger_Q2.xlsx</h3>
                     </div>
                     <div className="flex items-center gap-2">
-                        <button className="px-2 py-1 bg-white/5 hover:bg-white/10 transition-colors text-[9px] font-bold uppercase tracking-widest border border-white/5 rounded flex items-center gap-1 text-[var(--theme-title)]">
-                            <SarakIcon name="Download" size={10} /> CSV
-                        </button>
+                        <SarakButton variant="secondary" size="xs" leftIcon={<SarakIcon name="Download" size={10} />}>
+                            CSV
+                        </SarakButton>
                     </div>
                 </div>
                 <div className="overflow-x-auto">

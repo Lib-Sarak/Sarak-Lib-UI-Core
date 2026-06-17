@@ -30,21 +30,16 @@ vi.mock('../ShellUserWidget', () => ({
 
 describe('TopbarNav', () => {
     const mockProps = {
-        design: {
-            navigationStyle: 'topbar',
-            mode: 'light',
-            systemName: 'Sarak Test',
-            searchPositionTopbar: 'left'
-        },
+        design: { searchPositionTopbar: 'left', navigationStyle: 'topbar', mode: 'light', systemName: 'Sarak Test' },
         brand: { name: 'Brand Name' },
         toggleNav: vi.fn(),
         setIsSearchOpen: vi.fn(),
         activeModuleId: 'module1',
         setActiveModuleId: vi.fn(),
         discoveredModules: [
-            { id: 'module1', label: 'Mod 1', status: 'online', icon: 'Box' },
-            { id: 'module2', label: 'Mod 2', status: 'online', icon: 'Activity' },
-            { id: 'module3', label: 'Mod 3', status: 'offline', icon: 'Off' }
+            { id: 'module1', label: 'Mod 1', status: 'online' as const, icon: 'Box', category: 'system', priority: 1 },
+            { id: 'module2', label: 'Mod 2', status: 'online' as const, icon: 'Activity', category: 'system', priority: 2 },
+            { id: 'module3', label: 'Mod 3', status: 'offline' as const, icon: 'Off', category: 'system', priority: 3 }
         ],
         startResizing: vi.fn()
     };

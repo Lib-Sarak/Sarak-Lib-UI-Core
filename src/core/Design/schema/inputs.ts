@@ -10,13 +10,35 @@ export const InputsSchema: ComponentSchema = {
     tokens: [
         {
             id: 'inputBorderRadius',
-            label: 'Arredondamento (Texto)',
+            label: 'Arredondamento',
             type: 'slider',
             isResponsive: true,
             unit: 'px',
             constraints: { min: 0, max: 120 },
             defaultValue: { mob: 6, tab: 8, desk: 8 },
             cssVars: ['--sarak-input-border-radius']
+        },
+        {
+            id: 'inputPadding',
+            label: 'Espaçamento Interno (Y)',
+            type: 'slider',
+            unit: 'px',
+            constraints: { min: 0, max: 32 },
+            defaultValue: 12,
+            cssVars: ['--sarak-input-padding']
+        },
+        {
+            id: 'inputBorderType',
+            label: 'Estilo da Borda',
+            type: 'select',
+            options: [
+                { id: 'solid', label: 'Sólida' },
+                { id: 'dashed', label: 'Tracejada' },
+                { id: 'none', label: 'Nenhuma' },
+                { id: 'underline', label: 'Apenas Linha Inferior' }
+            ],
+            defaultValue: 'solid',
+            cssVars: ['--sarak-input-border-type']
         },
         {
             id: 'inputBg',
@@ -27,8 +49,24 @@ export const InputsSchema: ComponentSchema = {
             cssVars: ['--sarak-input-bg']
         },
         {
+            id: 'inputBackdropBlur',
+            label: 'Desfoque de Fundo (Blur)',
+            type: 'slider',
+            unit: 'px',
+            constraints: { min: 0, max: 50 },
+            defaultValue: 0,
+            cssVars: ['--sarak-input-backdrop-blur']
+        },
+        {
+            id: 'inputShadow',
+            label: 'Sombra / Neumorphism',
+            type: 'text',
+            defaultValue: 'none',
+            cssVars: ['--sarak-input-shadow']
+        },
+        {
             id: 'inputBorderColor',
-            label: 'Cor da Borda do Input',
+            label: 'Cor da Borda',
             type: 'color',
             defaultValue: 'rgba(255, 255, 255, 0.1)',
             cssVars: ['--sarak-input-border-color']
@@ -42,11 +80,31 @@ export const InputsSchema: ComponentSchema = {
         },
         {
             id: 'inputTextColor',
-            label: 'Cor do Texto do Input',
+            label: 'Cor do Texto',
             type: 'color',
             defaultValue: '#ffffff',
             cssVars: ['--sarak-input-text-color']
+        },
+        {
+            id: 'inputIconColor',
+            label: 'Cor dos Ícones',
+            type: 'color',
+            defaultValue: 'rgba(255, 255, 255, 0.5)',
+            cssVars: ['--sarak-input-icon-color']
+        },
+        {
+            id: 'inputErrorColor',
+            label: 'Cor de Erro',
+            type: 'color',
+            defaultValue: '#ff4d4f',
+            cssVars: ['--sarak-input-error-color']
+        },
+        {
+            id: 'inputSuccessColor',
+            label: 'Cor de Sucesso',
+            type: 'color',
+            defaultValue: '#52c41a',
+            cssVars: ['--sarak-input-success-color']
         }
     ]
 };
-
