@@ -92,7 +92,7 @@ export const SarakForm: React.FC<SarakFormProps> = ({
     };
 
     if (loading) return (
-        <div className="bg-theme-card border-theme flex flex-col items-center justify-center animate-pulse rounded-theme" style={{ padding: 'calc(var(--theme-pad) * 3)', gap: 'calc(var(--theme-gap) / 2)' }}>
+        <div className="bg-[var(--sx-color-surface-base)] border-[var(--sx-color-border-base)] flex flex-col items-center justify-center animate-pulse rounded-[var(--sx-radius-md)]" style={{ padding: 'calc(var(--sx-spacing-md) * 3)', gap: 'calc(var(--sx-spacing-md) / 2)' }}>
             <div className="w-12 h-12 bg-white/10 rounded-full" />
             <div className="h-4 w-48 bg-white/5 rounded" />
         </div>
@@ -101,27 +101,27 @@ export const SarakForm: React.FC<SarakFormProps> = ({
     const fields = mapping ? Object.keys(mapping) : Object.keys(formData);
 
     return (
-        <div className="bg-theme-card border-theme relative overflow-hidden group rounded-theme" style={{ padding: 'calc(var(--theme-pad) * 2)' }}>
+        <div className="bg-[var(--sx-color-surface-base)] border-[var(--sx-color-border-base)] relative overflow-hidden group rounded-[var(--sx-radius-md)]" style={{ padding: 'calc(var(--sx-spacing-md) * 2)' }}>
             {/* Header Area */}
-            <div className="flex items-center justify-between relative z-10" style={{ marginBottom: 'calc(var(--theme-gap) * 1.5)' }}>
-                <div className="flex items-center" style={{ gap: 'calc(var(--theme-gap) / 2)' }}>
-                    <div className="p-3 bg-[var(--theme-primary-bg)] rounded-2xl border border-[var(--theme-primary-border)]" style={{ padding: 'calc(var(--theme-pad) / 2)' }}>
-                        <Settings size={20} className="text-[var(--theme-primary)]" />
+            <div className="flex items-center justify-between relative z-10" style={{ marginBottom: 'calc(var(--sx-spacing-md) * 1.5)' }}>
+                <div className="flex items-center" style={{ gap: 'calc(var(--sx-spacing-md) / 2)' }}>
+                    <div className="p-3 bg-[var(--sx-color-primary-surface)] rounded-2xl border border-[var(--sx-color-border-base)]" style={{ padding: 'calc(var(--sx-spacing-md) / 2)' }}>
+                        <Settings size={20} className="text-[var(--sx-color-primary-base)]" />
                     </div>
                     <div>
                         <h3 className="text-2xl font-black text-white tracking-tight" style={{ fontWeight: 'var(--heading-weight)' }}>{label}</h3>
                         <p className="text-2xs font-bold text-white/20 uppercase tracking-[0.2em]">Painel de Controle Atômico</p>
                     </div>
                 </div>
-                <div className="flex items-center bg-[var(--theme-success-bg)] rounded-xl border border-[var(--theme-success-border)] text-[var(--theme-success)] text-2xs font-black uppercase tracking-widest" style={{ gap: 'calc(var(--theme-gap) / 4)', padding: 'calc(var(--theme-pad) / 3) calc(var(--theme-pad) / 1.5)' }}>
+                <div className="flex items-center bg-[var(--sx-color-success-surface)] rounded-xl border border-[var(--sx-color-success-border)] text-[var(--sx-color-success-base)] text-2xs font-black uppercase tracking-widest" style={{ gap: 'calc(var(--sx-spacing-md) / 4)', padding: 'calc(var(--sx-spacing-md) / 3) calc(var(--sx-spacing-md) / 1.5)' }}>
                     <ShieldCheck size={12} /> Sincronização Segura
                 </div>
             </div>
 
             {/* Form Fields Grid */}
-            <div className="grid grid-cols-1 md:grid-cols-2 relative z-10" style={{ gap: 'var(--theme-gap, 1.5rem)', marginBottom: 'calc(var(--theme-gap) * 1.5)' }}>
+            <div className="grid grid-cols-1 md:grid-cols-2 relative z-10" style={{ gap: 'var(--sx-spacing-md)', marginBottom: 'calc(var(--sx-spacing-md) * 1.5)' }}>
                 {fields.map((key) => (
-                    <div key={key} className="flex flex-col" style={{ gap: 'calc(var(--theme-gap) / 4)' }}>
+                    <div key={key} className="flex flex-col" style={{ gap: 'calc(var(--sx-spacing-md) / 4)' }}>
                         <label className="text-2xs font-black text-white/30 uppercase tracking-widest pl-1 block">
                             {mapping ? mapping[key] : key.replace(/_/g, ' ')}
                         </label>
@@ -139,14 +139,14 @@ export const SarakForm: React.FC<SarakFormProps> = ({
                 <motion.div 
                     initial={{ opacity: 0, y: 10 }}
                     animate={{ opacity: 1, y: 0 }}
-                    className={`flex items-center border rounded-theme`}
+                    className={`flex items-center border rounded-[var(--sx-radius-md)]`}
                     style={{ 
-                        marginBottom: 'var(--theme-gap)', 
-                        padding: 'var(--theme-pad)', 
-                        gap: 'calc(var(--theme-gap) / 3)',
-                        backgroundColor: status.type === 'success' ? 'var(--theme-success-bg)' : 'var(--theme-error-bg)',
-                        borderColor: status.type === 'success' ? 'var(--theme-success-border)' : 'var(--theme-error-border)',
-                        color: status.type === 'success' ? 'var(--theme-success)' : 'var(--theme-error)'
+                        marginBottom: 'var(--sx-spacing-md)', 
+                        padding: 'var(--sx-spacing-md)', 
+                        gap: 'calc(var(--sx-spacing-md) / 3)',
+                        backgroundColor: status.type === 'success' ? 'var(--sx-color-success-surface)' : 'var(--sx-color-danger-surface)',
+                        borderColor: status.type === 'success' ? 'var(--sx-color-success-border)' : 'var(--sx-color-danger-border)',
+                        color: status.type === 'success' ? 'var(--sx-color-success-base)' : 'var(--sx-color-danger-base)'
                     }}
                 >
                     {status.type === 'success' ? <ShieldCheck size={16} /> : <AlertCircle size={16} />}
@@ -155,12 +155,12 @@ export const SarakForm: React.FC<SarakFormProps> = ({
             )}
 
             {/* Actions Area */}
-            <div className="flex justify-end border-t border-theme" style={{ paddingTop: 'var(--theme-gap)' }}>
+            <div className="flex justify-end border-t border-[var(--sx-color-border-base)]" style={{ paddingTop: 'var(--sx-spacing-md)' }}>
                 <SarakButton
                     onClick={handleSave}
                     disabled={saving}
                     className="shadow-xl"
-                    style={{ boxShadow: '0 10px 20px -10px var(--theme-primary-focus)' }}
+                    style={{ boxShadow: '0 10px 20px -10px var(--sx-color-primary-glow)' }}
                 >
                     {saving ? (
                         <div className="w-4 h-4 border-2 border-white/30 border-t-white rounded-full animate-spin" />

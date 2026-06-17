@@ -13,8 +13,9 @@ Cria e adiciona novos presets granulares para componentes no Sarak-Lib-UI-Core. 
 
 ## Workflow
 
-1. **Identificação do Pilar**
+1. **Identificação do Pilar e Schema**
    - **Ação:** Identifique qual arquivo do pilar o preset afeta (`cards.ts`, `atmosphere.ts` ou `typography.ts` em `src/core/Design/presets/components/`).
+   - **Gate Estrito:** Verifique se o nome do Preset que será criado existe no arquivo de Typescript (Schema) do componente. Se não existir, avise o usuário e exija a atualização do Schema primeiro. Nunca injete uma string de Preset que não esteja previamente tipada.
 2. **Elaboração do Preset (HITL)**
    - **Ação:** Mostre ao usuário o objeto JSON/TypeScript preliminar da interface `ComponentPreset` preenchida com as escolhas solicitadas.
    - **Aguarde** confirmação.
@@ -30,5 +31,6 @@ Cria e adiciona novos presets granulares para componentes no Sarak-Lib-UI-Core. 
 - O ID do preset DEVE possuir um prefixo do componente (ex: `card-`, `bg-`, `typo-`).
 
 ## Checklist
+- [ ] O Schema Typescript foi validado e atualizado para suportar este Preset?
 - [ ] O ID possui o prefixo correto?
 - [ ] O objeto não vazou propriedades globais de tema (Merge Parcial respeitado)?

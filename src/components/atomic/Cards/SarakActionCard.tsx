@@ -3,6 +3,7 @@ import { motion, AnimatePresence } from 'framer-motion';
 import * as LucideIcons from 'lucide-react';
 import { Box, ExternalLink, ChevronDown } from 'lucide-react';
 import { useSarakUI } from '../../../core/Provider/SarakUIProvider';
+import { SarakButton } from '../Buttons/SarakButton';
 
 interface SarakActionCardProps {
     item: any;
@@ -33,67 +34,14 @@ export const SarakActionCard: React.FC<SarakActionCardProps> = ({ item, mapping,
     const subtitle = getVal(item, mapping?.subtitle) || 'Modelo';
     const title = getVal(item, mapping?.title);
 
-    // Get Button Style Configurations based on design state
-    const btnStyleType = design.btnStyleType || 'matte';
-    const btnPulseSpeed = design.btnNeonPulseSpeed !== undefined ? `${design.btnNeonPulseSpeed}s` : '1.5s';
-    const btnBlur = design.btnBackdropBlur !== undefined ? `${design.btnBackdropBlur}px` : '8px';
+    // Get Configurations based on design state
     const clickScale = design.cardActionClickScale !== undefined ? Number(design.cardActionClickScale) : 0.96;
-
-    const getButtonStyles = (): React.CSSProperties => {
-        const baseBg = 'var(--sarak-card-action-btn-bg, var(--theme-primary, #00f2ff))';
-        const hoverBg = 'var(--sarak-card-action-btn-hover-bg, rgba(0, 242, 255, 0.8))';
-        const textCol = 'var(--sarak-card-action-btn-text, #090d16)';
-        const btnPaddingVal = 'var(--sarak-card-action-btn-padding, 12px)';
-        const btnBorderRadiusVal = 'var(--sarak-card-action-btn-radius, 8px)';
-        
-        const baseStyles: React.CSSProperties = {
-            color: textCol,
-            paddingTop: btnPaddingVal,
-            paddingBottom: btnPaddingVal,
-            borderRadius: btnBorderRadiusVal,
-        };
-
-        switch (btnStyleType) {
-            case 'neon':
-                return {
-                    ...baseStyles,
-                    background: baseBg,
-                    boxShadow: '0 0 15px var(--sarak-btn-neon-glow-color, rgba(0, 242, 255, 0.4))',
-                    animation: `sarak-neon-pulse ${btnPulseSpeed} infinite alternate`,
-                    border: '1px solid rgba(255, 255, 255, 0.2)'
-                };
-            case 'frosted':
-                return {
-                    ...baseStyles,
-                    background: 'rgba(255, 255, 255, 0.08)',
-                    backdropFilter: `blur(${btnBlur})`,
-                    border: '1px solid rgba(255, 255, 255, 0.1)',
-                    boxShadow: '0 4px 30px rgba(0, 0, 0, 0.1)'
-                };
-            case 'borderline':
-                return {
-                    ...baseStyles,
-                    background: 'transparent',
-                    border: `1.5px solid ${baseBg}`,
-                    color: baseBg,
-                    boxShadow: 'none'
-                };
-            case 'matte':
-            default:
-                return {
-                    ...baseStyles,
-                    background: baseBg,
-                    boxShadow: 'inset 0 1px 0 rgba(255, 255, 255, 0.15), 0 2px 4px rgba(0, 0, 0, 0.2)',
-                    border: '1px solid rgba(0, 0, 0, 0.15)'
-                };
-        }
-    };
 
     return (
         <motion.div 
             initial={{ opacity: 0, y: 15 }}
             animate={{ opacity: 1, y: 0 }}
-            className={`flex flex-col sarak-card bg-theme-card border-theme group transition-all relative overflow-hidden h-fit ${className}`}
+            className={`flex flex-col sarak-card bg-[var(--sx-color-surface-base)] border-[var(--sx-color-border-base)] group transition-all relative overflow-hidden h-fit ${className}`}
             style={{ 
                 transitionDuration: 'var(--animation-speed, 0.4s)',
                 padding: design.cardPadding ? `${design.cardPadding}px` : 'var(--sarak-card-padding-md, 24px)'
@@ -109,8 +57,8 @@ export const SarakActionCard: React.FC<SarakActionCardProps> = ({ item, mapping,
 
             {/* DRAFT BADGE (v6.3) */}
             {globalUI?.isDrafting && (
-                <div className="absolute top-2 left-4 z-40 pointer-events-none flex items-center gap-1.5 px-2 py-0.5 rounded bg-black/60 border border-[var(--theme-primary)]/20 text-[7px] font-black uppercase tracking-[0.2em] text-[var(--theme-primary)] shadow-[0_0_10px_rgba(0,242,255,0.05)]">
-                    <span className="w-1 h-1 rounded-full bg-[var(--theme-primary)] animate-pulse" />
+                <div className="absolute top-2 left-4 z-40 pointer-events-none flex items-center gap-1.5 px-2 py-0.5 rounded bg-black/60 border border-[var(--sx-color-primary-base)]/20 text-[7px] font-black uppercase tracking-[0.2em] text-[var(--sx-color-primary-base)] shadow-[0_0_10px_rgba(0,242,255,0.05)]">
+                    <span className="w-1 h-1 rounded-full bg-[var(--sx-color-primary-base)] animate-pulse" />
                     {label || "Card de Interação"}
                 </div>
             )}
@@ -119,26 +67,26 @@ export const SarakActionCard: React.FC<SarakActionCardProps> = ({ item, mapping,
                 {/* Header Info */}
                 <div className="flex justify-between items-start mb-4">
                     <div className="flex flex-col flex-1 min-w-0">
-                        <span className="text-[9px] font-black text-[var(--theme-primary)] uppercase tracking-[0.2em] mb-1">
+                        <span className="text-[9px] font-black text-[var(--sx-color-primary-base)] uppercase tracking-[0.2em] mb-1">
                             {subtitle}
                         </span>
-                        <h4 className="text-lg font-black text-[var(--theme-title)] tracking-tight group-hover:text-[var(--theme-primary)] transition-colors truncate">
+                        <h4 className="text-lg font-black text-[var(--sx-color-text-title)] tracking-tight group-hover:text-[var(--sx-color-primary-base)] transition-colors truncate">
                             {title}
                         </h4>
                     </div>
-                    <div className="bg-theme-card border-theme p-2 shrink-0 rounded-lg">
+                    <div className="bg-[var(--sx-color-surface-base)] border-[var(--sx-color-border-base)] p-2 shrink-0 rounded-lg">
                         {mapping?.icon && LucideIcons[mapping.icon as keyof typeof LucideIcons] ? (
                             React.createElement(LucideIcons[mapping.icon as keyof typeof LucideIcons] as any, { 
                                 size: 16, 
-                                className: "text-[var(--theme-muted)]" 
+                                className: "text-[var(--sx-color-text-muted)]" 
                             })
-                        ) : <Box size={16} className="text-[var(--theme-muted)]" />}
+                        ) : <Box size={16} className="text-[var(--sx-color-text-muted)]" />}
                     </div>
                 </div>
 
                 {/* Micro-Details */}
                 {description && (
-                    <p className="text-2xs text-[var(--theme-text)] opacity-60 leading-relaxed line-clamp-2 mb-4">
+                    <p className="text-2xs text-[var(--sx-color-text-muted)] opacity-60 leading-relaxed line-clamp-2 mb-4">
                         {description}
                     </p>
                 )}
@@ -146,31 +94,26 @@ export const SarakActionCard: React.FC<SarakActionCardProps> = ({ item, mapping,
                 {/* Primary Actions Grid */}
                 <div className="flex gap-2" style={{ marginTop: 'auto' }}>
                     {/* Specialized Action Button */}
-                    <motion.button 
-                        whileHover={{ scale: design.btnHoverScale || 1.02 }}
-                        whileTap={{ scale: clickScale }}
+                    <SarakButton 
+                        variant="primary"
                         onClick={() => onAction && onAction(item)}
-                        className="flex-1 text-3xs font-black uppercase tracking-widest transition-all flex items-center justify-center gap-1.5 cursor-pointer"
-                        style={{ 
-                            ...getButtonStyles(),
-                            transitionDuration: 'var(--animation-speed, 0.2s)',
-                        }}
+                        rightIcon={<ExternalLink size={10} className="stroke-[3]" />}
+                        className="flex-1 text-3xs font-black uppercase tracking-widest"
                     >
-                        <span>Executar</span>
-                        <ExternalLink size={10} className="stroke-[3]" />
-                    </motion.button>
+                        Executar
+                    </SarakButton>
 
                     {/* Expander Trigger */}
                     <motion.button 
                         whileTap={{ scale: 0.95 }}
                         onClick={() => setIsExpanded(!isExpanded)}
-                        className="p-3 bg-theme-card border-theme text-[var(--theme-muted)] hover:text-[var(--theme-secondary)] hover:border-[var(--theme-secondary-border)] rounded-theme transition-all cursor-pointer flex items-center justify-center"
+                        className="p-3 bg-[var(--sx-color-surface-base)] border-[var(--sx-color-border-base)] text-[var(--sx-color-text-muted)] hover:text-[var(--sx-color-primary-glow)] hover:border-[var(--theme-secondary-border)] rounded-[var(--sx-radius-md)] transition-all cursor-pointer flex items-center justify-center"
                         style={{ 
                             transitionDuration: 'var(--animation-speed, 0.3s)',
                             borderRadius: design.btnBorderRadius !== undefined ? `${design.btnBorderRadius}px` : 'var(--sarak-grid-radius, 8px)'
                         }}
                     >
-                        <ChevronDown className={`w-3.5 h-3.5 transition-transform duration-300 ${isExpanded ? 'rotate-180 text-[var(--theme-secondary)]' : ''}`} />
+                        <ChevronDown className={`w-3.5 h-3.5 transition-transform duration-300 ${isExpanded ? 'rotate-180 text-[var(--sx-color-primary-glow)]' : ''}`} />
                     </motion.button>
                 </div>
 
@@ -183,23 +126,23 @@ export const SarakActionCard: React.FC<SarakActionCardProps> = ({ item, mapping,
                             exit={{ height: 0, opacity: 0 }}
                             className="overflow-hidden mt-3"
                         >
-                            <div className="flex flex-col gap-3 pt-3 border-t border-theme/30">
-                                <div className="grid grid-cols-2 gap-2 bg-theme-body/30 p-3 border border-theme/20" style={{ borderRadius: 'var(--sarak-grid-radius, 8px)' }}>
+                            <div className="flex flex-col gap-3 pt-3 border-t border-[var(--sx-color-border-base)]/30">
+                                <div className="grid grid-cols-2 gap-2 bg-theme-body/30 p-3 border border-[var(--sx-color-border-base)]/20" style={{ borderRadius: 'var(--sarak-grid-radius, 8px)' }}>
                                     <div className="flex flex-col">
-                                        <span className="text-[8px] font-black text-[var(--theme-muted)] opacity-50 uppercase tracking-widest">Custo In (1M)</span>
-                                        <span className="text-2xs font-mono text-[var(--theme-success)] font-bold">
+                                        <span className="text-[8px] font-black text-[var(--sx-color-text-muted)] opacity-50 uppercase tracking-widest">Custo In (1M)</span>
+                                        <span className="text-2xs font-mono text-[var(--sx-color-success-base)] font-bold">
                                             {priceIn !== undefined ? `$${Number(priceIn).toFixed(4)}` : 'N/A'}
                                         </span>
                                     </div>
                                     <div className="flex flex-col">
-                                        <span className="text-[8px] font-black text-[var(--theme-muted)] opacity-50 uppercase tracking-widest">Custo Out (1M)</span>
-                                        <span className="text-2xs font-mono text-[var(--theme-warning)] font-bold">
+                                        <span className="text-[8px] font-black text-[var(--sx-color-text-muted)] opacity-50 uppercase tracking-widest">Custo Out (1M)</span>
+                                        <span className="text-2xs font-mono text-[var(--sx-color-danger-base)] font-bold">
                                             {priceOut !== undefined ? `$${Number(priceOut).toFixed(4)}` : 'N/A'}
                                         </span>
                                     </div>
-                                    <div className="flex flex-col col-span-2 pt-1.5 border-t border-theme/10">
-                                        <span className="text-[8px] font-black text-[var(--theme-muted)] opacity-50 uppercase tracking-widest">Janela / Tokenizer</span>
-                                        <span className="text-3xs font-black text-[var(--theme-text)] uppercase truncate">
+                                    <div className="flex flex-col col-span-2 pt-1.5 border-t border-[var(--sx-color-border-base)]/10">
+                                        <span className="text-[8px] font-black text-[var(--sx-color-text-muted)] opacity-50 uppercase tracking-widest">Janela / Tokenizer</span>
+                                        <span className="text-3xs font-black text-[var(--sx-color-text-muted)] uppercase truncate">
                                             {context ? `${(Number(context) / 1000)}k tokens` : 'Default'}
                                             {tokenizer ? ` | ${tokenizer}` : ''}
                                         </span>
@@ -211,21 +154,6 @@ export const SarakActionCard: React.FC<SarakActionCardProps> = ({ item, mapping,
                 </AnimatePresence>
             </div>
             
-            {/* Inline pulse keyframe styles if using neon button */}
-            {btnStyleType === 'neon' && (
-                <style dangerouslySetInnerHTML={{__html: `
-                    @keyframes sarak-neon-pulse {
-                        from {
-                            box-shadow: 0 0 10px var(--sarak-btn-neon-glow-color, rgba(0, 242, 255, 0.4));
-                            filter: brightness(1);
-                        }
-                        to {
-                            box-shadow: 0 0 20px var(--sarak-btn-neon-glow-color, rgba(0, 242, 255, 0.6));
-                            filter: brightness(1.15);
-                        }
-                    }
-                `}} />
-            )}
         </motion.div>
     );
 };

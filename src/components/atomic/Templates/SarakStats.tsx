@@ -83,19 +83,19 @@ export const SarakStats: React.FC<SarakStatsProps> = ({ endpoint, data, label, m
     if (error) return null;
 
     return (
-        <div className="grid grid-cols-2 lg:grid-cols-4" style={{ gap: 'var(--theme-gap, 1.5rem)' }}>
+        <div className="grid grid-cols-2 lg:grid-cols-4" style={{ gap: 'var(--sx-spacing-md)' }}>
             {loading && !Object.keys(stats).length ? (
                 [...Array(4)].map((_, i) => (
-                    <div key={`skel-${i}`} className="bg-theme-card border-theme animate-pulse rounded-theme" style={{ height: 'calc(var(--theme-pad) * 6)' }} />
+                    <div key={`skel-${i}`} className="bg-[var(--sx-color-surface-base)] border-[var(--sx-color-border-base)] animate-pulse rounded-[var(--sx-radius-md)]" style={{ height: 'calc(var(--sx-spacing-md) * 6)' }} />
                 ))
             ) : (
                 keys.map((key, idx) => (
                     <div
                         key={key}
-                        className="bg-theme-card border-theme hover:bg-white/[0.04] transition-all group rounded-theme"
-                        style={{ padding: 'var(--theme-pad, 1.5rem)', transitionDuration: 'var(--animation-speed, 0.5s)' }}
+                        className="bg-[var(--sx-color-surface-base)] border-[var(--sx-color-border-base)] hover:bg-white/[0.04] transition-all group rounded-[var(--sx-radius-md)]"
+                        style={{ padding: 'var(--sx-spacing-md)', transitionDuration: 'var(--animation-speed, 0.5s)' }}
                     >
-                        <span className="text-2xs text-white/30 font-black uppercase tracking-widest block transition-colors group-hover:text-[var(--theme-primary)]" style={{ marginBottom: 'calc(var(--theme-gap) / 6)' }}>
+                        <span className="text-2xs text-white/30 font-black uppercase tracking-widest block transition-colors group-hover:text-[var(--sx-color-primary-base)]" style={{ marginBottom: 'calc(var(--sx-spacing-md) / 6)' }}>
                             {mapping ? mapping[key] : key.replace(/_/g, ' ')}
                         </span>
                         <div className="flex items-center justify-between">
@@ -112,8 +112,8 @@ export const SarakStats: React.FC<SarakStatsProps> = ({ endpoint, data, label, m
                                 const levels = ['primary', 'secondary', 'accent'];
                                 const level = levels[idx % levels.length];
                                 return (
-                                    <div className="rounded-theme transition-colors" style={{ padding: 'calc(var(--theme-pad) / 3)', backgroundColor: `var(--theme-${level}-bg)`, transitionDuration: 'var(--animation-speed, 0.3s)' }}>
-                                        <Activity size={16} className="transition-colors" style={{ color: `var(--theme-${level})`, transitionDuration: 'var(--animation-speed, 0.3s)' }} />
+                                    <div className="rounded-[var(--sx-radius-md)] transition-colors" style={{ padding: 'calc(var(--sx-spacing-md) / 3)', backgroundColor: `var(--sx-color-primary-surface)`, transitionDuration: 'var(--animation-speed, 0.3s)' }}>
+                                        <Activity size={16} className="transition-colors" style={{ color: `var(--sx-color-primary-base)`, transitionDuration: 'var(--animation-speed, 0.3s)' }} />
                                     </div>
                                 );
                             })()}

@@ -15,8 +15,9 @@ Esta skill é acionada SEMPRE que houver a necessidade de criar ou alterar uma p
 
 ## Workflow
 
-1. **Verificação de Intenção**
+1. **Verificação de Intenção e Schema**
    - **Ação:** Confirme com o usuário os detalhes da propriedade/componente a ser criado (nome, valores, pilares afetados).
+   - **Gate Estrito:** Antes de injetar qualquer Preset ou Token no Catálogo/MasterMap, você **DEVE** validar e atualizar a Interface TypeScript associada (Schema). Se a variante (ex: `neon`) não estiver na interface, atualize-a primeiro para garantir Type-Safety.
 2. **Injeção nas 5 Camadas (Paridade)**
    - **Ação:** Edite os arquivos necessários para garantir a existência do dado nestes locais exatos:
      1. **Schema:** A definição estrita (Typescript Interface).
@@ -26,18 +27,19 @@ Esta skill é acionada SEMPRE que houver a necessidade de criar ou alterar uma p
      5. **Catálogo JSON:** A base de dados exportável.
 3. **Verificação de Integridade (Script)**
    - **Ferramenta:** `run_command`
-   - **Ação:** Execute o comando `npx tsx scripts/verify_parity.ts` na raiz do projeto.
+   - **Ação:** Execute o comando `npx tsx .agents/skills/ui-novo-componente/scripts/verify_parity.ts` na raiz do projeto.
    - **Critério:** O script deve retornar sucesso (exit 0).
 4. **Finalização**
    - **Ação:** Informe ao usuário o resultado da injeção e se a paridade foi confirmada pelo script.
 
 ## Regras
 - **NUNCA** crie um token em apenas uma ou duas camadas; a paridade é estritamente 1:1:1:1:1.
-- **NÃO** finalize a tarefa sem rodar o script de verificação `verify_parity.ts` (caso implementado).
+- **NÃO** finalize a tarefa sem rodar o script de verificação de paridade.
 
 ## Checklist
+- [ ] O Type/Interface do Schema foi atualizado para suportar as chaves novas ANTES da injeção?
 - [ ] O token foi refletido nas 5 camadas?
 - [ ] O script de integridade passou sem erros?
 
 ## Referências (Camada 3)
-- `scripts/verify_parity.ts` — Validador estático que afere se o token injetado possui reflexo nas 5 camadas obrigatórias do Design System. Execute via `npx tsx scripts/verify_parity.ts`.
+- `.agents/skills/ui-novo-componente/scripts/verify_parity.ts` — Validador estático que afere se o token injetado possui reflexo nas 5 camadas obrigatórias do Design System. Execute via `npx tsx .agents/skills/ui-novo-componente/scripts/verify_parity.ts`.

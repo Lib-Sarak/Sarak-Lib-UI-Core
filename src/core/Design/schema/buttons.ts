@@ -117,7 +117,9 @@ export const ButtonsSchema: ComponentSchema = {
                     { id: 'matte', value: 'matte', label: 'Industrial Matte' },
                     { id: 'neon', value: 'neon', label: 'Cyber Neon Glow' },
                     { id: 'frosted', value: 'frosted', label: 'Glassmorphism Frosted' },
-                    { id: 'borderline', value: 'borderline', label: 'Minimalist Borderline' }
+                    { id: 'borderline', value: 'borderline', label: 'Minimalist Borderline' },
+                    { id: 'cyberpunk', value: 'cyberpunk', label: 'Cyberpunk Wireframe' },
+                    { id: 'neumorphism', value: 'neumorphism', label: 'Neumorphism Soft' }
                 ]
             },
             defaultValue: 'matte',

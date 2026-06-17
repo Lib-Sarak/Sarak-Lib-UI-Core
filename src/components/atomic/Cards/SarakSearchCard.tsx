@@ -3,6 +3,8 @@ import { motion } from 'framer-motion';
 import * as LucideIcons from 'lucide-react';
 import { Search, Eye, Globe, MessageSquare, Zap } from 'lucide-react';
 import { useSarakUI } from '../../../core/Provider/SarakUIProvider';
+import { SarakInput } from '../Inputs/SarakInput';
+import { SarakSwitch } from '../Inputs/SarakSwitch';
 
 interface SarakSearchCardProps {
     item: any;
@@ -50,99 +52,12 @@ export const SarakSearchCard: React.FC<SarakSearchCardProps> = ({
         });
     };
 
-    // Retrieve Toggler options from design variables
-    const switchStyle = design.switchStyleType || 'tactile';
-    const switchBlur = design.switchBackdropBlur !== undefined ? `${design.switchBackdropBlur}px` : '4px';
-    const pulseColor = design.switchPulseColor || '#00f2ff';
-    const borderBeamActive = design.cardSearchBorderBeamActive !== false;
-
-    // Helper for rendering custom switch element based on switchStyle
-    const renderSwitch = (active: boolean) => {
-        const activeBg = 'var(--sarak-switch-active-bg, var(--theme-primary, #00f2ff))';
-        const thumbBg = 'var(--sarak-switch-thumb, #ffffff)';
-
-        switch (switchStyle) {
-            case 'asymmetric':
-                return (
-                    <div 
-                        className={`w-10 h-5 relative flex items-center transition-all duration-300 ${active ? 'pl-5' : 'pl-0.5'}`}
-                        style={{
-                            background: active ? activeBg : 'rgba(255, 255, 255, 0.05)',
-                            borderRadius: '4px 12px 4px 12px',
-                            border: '1px solid rgba(255, 255, 255, 0.1)'
-                        }}
-                    >
-                        <div 
-                            className="w-4 h-4 transition-all"
-                            style={{ 
-                                background: thumbBg, 
-                                borderRadius: active ? '3px 8px 3px 8px' : '2px 6px 2px 6px' 
-                            }} 
-                        />
-                    </div>
-                );
-            case 'pulsing':
-                return (
-                    <div className="flex items-center gap-2">
-                        <div 
-                            className="w-3 h-3 rounded-full relative"
-                            style={{
-                                background: active ? activeBg : 'rgba(255, 255, 255, 0.1)',
-                                border: '1px solid rgba(255, 255, 255, 0.2)'
-                            }}
-                        >
-                            {active && (
-                                <span 
-                                    className="absolute inset-0 rounded-full animate-ping opacity-75"
-                                    style={{ background: pulseColor }}
-                                />
-                            )}
-                        </div>
-                    </div>
-                );
-            case 'glass':
-                return (
-                    <div 
-                        className={`w-9 h-5 relative flex items-center p-0.5 transition-all duration-300 ${active ? 'justify-end' : 'justify-start'}`}
-                        style={{
-                            background: 'rgba(255, 255, 255, 0.03)',
-                            backdropFilter: `blur(${switchBlur})`,
-                            borderRadius: '20px',
-                            border: `1px solid ${active ? activeBg : 'rgba(255, 255, 255, 0.1)'}`
-                        }}
-                    >
-                        <div 
-                            className="w-3.5 h-3.5 rounded-full transition-all"
-                            style={{ background: active ? activeBg : 'rgba(255, 255, 255, 0.3)' }} 
-                        />
-                    </div>
-                );
-            case 'tactile':
-            default:
-                return (
-                    <div 
-                        className={`w-9 h-5 relative flex items-center p-0.5 transition-all duration-200 ${active ? 'bg-[var(--theme-primary)]' : 'bg-white/10'} rounded-full`}
-                        style={{
-                            background: active ? activeBg : undefined
-                        }}
-                    >
-                        <motion.div 
-                            layout
-                            className="w-3.5 h-3.5 rounded-full shadow-md"
-                            style={{ background: thumbBg }}
-                            transition={{ type: "spring", stiffness: 500, damping: 30 }}
-                            animate={{ x: active ? 16 : 0 }}
-                        />
-                    </div>
-                );
-        }
-    };
 
     return (
         <motion.div 
             initial={{ opacity: 0, y: 15 }}
             animate={{ opacity: 1, y: 0 }}
-            className={`flex flex-col sarak-card bg-theme-card border-theme relative overflow-hidden group transition-all h-fit ${className}`}
+            className={`flex flex-col sarak-card bg-[var(--sx-color-surface-base)] border-[var(--sx-color-border-base)] relative overflow-hidden group transition-all h-fit ${className}`}
             style={{ 
                 transitionDuration: 'var(--animation-speed, 0.4s)',
                 padding: design.cardPadding ? `${design.cardPadding}px` : 'var(--sarak-card-padding-md, 24px)'
@@ -156,62 +71,45 @@ export const SarakSearchCard: React.FC<SarakSearchCardProps> = ({
             <div className="absolute inset-0 z-0 spotlight-effect pointer-events-none opacity-0 group-hover:opacity-100 transition-opacity duration-500" />
             
             {/* Border Beam - lights up on focus or hover */}
-            {(borderBeamActive && (focused || borderBeamActive)) && (
+            {(design.cardSearchBorderBeamActive !== false && (focused || design.cardSearchBorderBeamActive !== false)) && (
                 <div className="border-beam-effect" style={{ opacity: focused ? 1 : 0.4 }} />
             )}
 
             {/* DRAFT BADGE (v6.3) */}
             {context?.isDrafting && (
-                <div className="absolute top-2 left-4 z-40 pointer-events-none flex items-center gap-1.5 px-2 py-0.5 rounded bg-black/60 border border-[var(--theme-primary)]/20 text-[7px] font-black uppercase tracking-[0.2em] text-[var(--theme-primary)] shadow-[0_0_10px_rgba(0,242,255,0.05)]">
-                    <span className="w-1 h-1 rounded-full bg-[var(--theme-primary)] animate-pulse" />
+                <div className="absolute top-2 left-4 z-40 pointer-events-none flex items-center gap-1.5 px-2 py-0.5 rounded bg-black/60 border border-[var(--sx-color-primary-base)]/20 text-[7px] font-black uppercase tracking-[0.2em] text-[var(--sx-color-primary-base)] shadow-[0_0_10px_rgba(0,242,255,0.05)]">
+                    <span className="w-1 h-1 rounded-full bg-[var(--sx-color-primary-base)] animate-pulse" />
                     {label || "Card de Interação"}
                 </div>
             )}
 
-            {/* Dynamic CSS overrides for placeholder */}
-            <style dangerouslySetInnerHTML={{ __html: `
-                .sarak-search-input-${item?.id || 'default'}::placeholder {
-                    color: var(--sarak-card-search-placeholder-color, rgba(255, 255, 255, 0.25)) !important;
-                }
-            `}} />
+
 
             <div className="relative z-10 flex flex-col gap-4">
                 {/* Section Header */}
                 <div className="flex flex-col">
-                    <span className="text-[9px] font-black text-[var(--theme-primary)] uppercase tracking-[0.2em] mb-1">
+                    <span className="text-[9px] font-black text-[var(--sx-color-primary-base)] uppercase tracking-[0.2em] mb-1">
                         Painel de Filtros
                     </span>
-                    <h4 className="text-sm font-black text-[var(--theme-title)] tracking-tight">
+                    <h4 className="text-sm font-black text-[var(--sx-color-text-title)] tracking-tight">
                         Busca de Capacidades
                     </h4>
                 </div>
 
                 {/* Highly tactile input search field */}
-                <div 
-                    className="relative flex items-center transition-all duration-300"
-                    style={{
-                        borderRadius: design.inputBorderRadius !== undefined ? `${design.inputBorderRadius}px` : '8px',
-                        border: focused ? '1.5px solid var(--theme-primary, #00f2ff)' : '1px solid rgba(255, 255, 255, 0.1)',
-                        background: focused 
-                            ? 'var(--sarak-card-search-bg-focus, rgba(0, 242, 255, 0.08))' 
-                            : 'rgba(255, 255, 255, 0.03)',
-                        boxShadow: focused ? '0 0 10px rgba(0, 242, 255, 0.15)' : 'none'
-                    }}
-                >
-                    <Search className="w-3.5 h-3.5 text-white/30 absolute left-3 pointer-events-none" />
-                    <input 
-                        type="text"
-                        value={searchText}
-                        onChange={handleSearch}
-                        onFocus={() => setFocused(true)}
-                        onBlur={() => setFocused(false)}
-                        placeholder="Buscar modelo ou tech..."
-                        className={`w-full bg-transparent text-2xs text-[var(--theme-text)] font-semibold pl-9 pr-4 py-2.5 outline-none border-none sarak-search-input-${item?.id || 'default'}`}
-                    />
-                </div>
+                <SarakInput 
+                    leftIcon={<Search className="w-3.5 h-3.5" />}
+                    value={searchText}
+                    onChange={handleSearch}
+                    onFocus={() => setFocused(true)}
+                    onBlur={() => setFocused(false)}
+                    placeholder="Buscar modelo ou tech..."
+                    className="text-2xs font-semibold"
+                    fullWidth
+                />
 
                 {/* Tactile toggles / Switch selector grid */}
-                <div className="flex flex-col gap-2 pt-2 border-t border-theme/20">
+                <div className="flex flex-col gap-2 pt-2 border-t border-[var(--sx-color-border-base)]/20">
                     <span className="text-[8px] font-black text-white/20 uppercase tracking-widest mb-1">Filtro de Abilities</span>
                     
                     {/* Vision Switch */}
@@ -220,10 +118,10 @@ export const SarakSearchCard: React.FC<SarakSearchCardProps> = ({
                         className="flex items-center justify-between p-2 hover:bg-white/5 border border-transparent hover:border-white/5 transition-all cursor-pointer rounded-lg"
                     >
                         <div className="flex items-center gap-2">
-                            <Eye size={12} className="text-[var(--theme-primary)]" />
-                            <span className="text-3xs font-black uppercase text-[var(--theme-text)]">Visão Computacional</span>
+                            <Eye size={12} className="text-[var(--sx-color-primary-base)]" />
+                            <span className="text-3xs font-black uppercase text-[var(--sx-color-text-muted)]">Visão Computacional</span>
                         </div>
-                        {renderSwitch(caps.vision)}
+                        <SarakSwitch checked={caps.vision} onChange={() => handleToggle('vision')} />
                     </div>
 
                     {/* Web Switch */}
@@ -232,10 +130,10 @@ export const SarakSearchCard: React.FC<SarakSearchCardProps> = ({
                         className="flex items-center justify-between p-2 hover:bg-white/5 border border-transparent hover:border-white/5 transition-all cursor-pointer rounded-lg"
                     >
                         <div className="flex items-center gap-2">
-                            <Globe size={12} className="text-[var(--theme-secondary)]" />
-                            <span className="text-3xs font-black uppercase text-[var(--theme-text)]">Navegação Web</span>
+                            <Globe size={12} className="text-[var(--sx-color-primary-glow)]" />
+                            <span className="text-3xs font-black uppercase text-[var(--sx-color-text-muted)]">Navegação Web</span>
                         </div>
-                        {renderSwitch(caps.web)}
+                        <SarakSwitch checked={caps.web} onChange={() => handleToggle('web')} />
                     </div>
 
                     {/* Chat Switch */}
@@ -244,10 +142,10 @@ export const SarakSearchCard: React.FC<SarakSearchCardProps> = ({
                         className="flex items-center justify-between p-2 hover:bg-white/5 border border-transparent hover:border-white/5 transition-all cursor-pointer rounded-lg"
                     >
                         <div className="flex items-center gap-2">
-                            <MessageSquare size={12} className="text-[var(--theme-accent)]" />
-                            <span className="text-3xs font-black uppercase text-[var(--theme-text)]">Modo Conversacional</span>
+                            <MessageSquare size={12} className="text-[var(--sx-color-primary-base)]" />
+                            <span className="text-3xs font-black uppercase text-[var(--sx-color-text-muted)]">Modo Conversacional</span>
                         </div>
-                        {renderSwitch(caps.chat)}
+                        <SarakSwitch checked={caps.chat} onChange={() => handleToggle('chat')} />
                     </div>
                 </div>
             </div>

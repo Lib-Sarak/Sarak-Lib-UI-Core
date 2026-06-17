@@ -48,27 +48,27 @@ export const SarakChart: React.FC<SarakChartProps> = ({ endpoint, label, mapping
     const maxValue = Math.max(...data.map(d => d.tokens || d.value || 0), 1);
 
     return (
-        <div className="bg-theme-card border-theme gap-theme flex flex-col relative overflow-hidden group rounded-theme" style={{ padding: 'var(--theme-pad, 1.5rem)', gap: 'var(--theme-gap, 1.5rem)' }}>
+        <div className="bg-[var(--sx-color-surface-base)] border-[var(--sx-color-border-base)] gap-theme flex flex-col relative overflow-hidden group rounded-[var(--sx-radius-md)]" style={{ padding: 'var(--sx-spacing-md)', gap: 'var(--sx-spacing-md)' }}>
             {/* Contextual Glow Header */}
-            <div className="absolute top-0 right-0 w-64 h-64 bg-[var(--theme-primary-bg)] blur-[100px] pointer-events-none" />
+            <div className="absolute top-0 right-0 w-64 h-64 bg-[var(--sx-color-primary-surface)] blur-[100px] pointer-events-none" />
 
             <div className="flex items-center justify-between relative z-10">
-                <div className="flex items-center" style={{ gap: 'calc(var(--theme-gap) / 2)' }}>
-                    <div className="bg-[var(--theme-primary-bg)] rounded-2xl border border-[var(--theme-primary-border)]" style={{ padding: 'calc(var(--theme-pad) / 3)' }}>
-                        <TrendingUp size={16} className="text-[var(--theme-primary)]" />
+                <div className="flex items-center" style={{ gap: 'calc(var(--sx-spacing-md) / 2)' }}>
+                    <div className="bg-[var(--sx-color-primary-surface)] rounded-2xl border border-[var(--sx-color-border-base)]" style={{ padding: 'calc(var(--sx-spacing-md) / 3)' }}>
+                        <TrendingUp size={16} className="text-[var(--sx-color-primary-base)]" />
                     </div>
                     <div>
                         <h3 className="text-xl font-black text-white tracking-tight" style={{ fontWeight: 'var(--heading-weight)' }}>{label}</h3>
                         <p className="text-2xs font-bold text-white/20 uppercase tracking-widest">Análise de Tendência em Tempo Real</p>
                     </div>
                 </div>
-                <div className="flex items-center bg-white/5 rounded-theme border border-theme" style={{ gap: 'calc(var(--theme-gap) / 3)', padding: 'calc(var(--theme-pad) / 3) calc(var(--theme-pad) / 1.5)' }}>
-                    <Activity size={12} className="text-[var(--theme-success)] animate-pulse" />
+                <div className="flex items-center bg-white/5 rounded-[var(--sx-radius-md)] border border-[var(--sx-color-border-base)]" style={{ gap: 'calc(var(--sx-spacing-md) / 3)', padding: 'calc(var(--sx-spacing-md) / 3) calc(var(--sx-spacing-md) / 1.5)' }}>
+                    <Activity size={12} className="text-[var(--sx-color-success-base)] animate-pulse" />
                     <span className="text-2xs font-black text-white/40 uppercase tracking-tighter">Live Monitor</span>
                 </div>
             </div>
 
-            <div className="h-48 flex items-end justify-between relative z-10" style={{ gap: 'calc(var(--theme-gap) / 4)' }}>
+            <div className="h-48 flex items-end justify-between relative z-10" style={{ gap: 'calc(var(--sx-spacing-md) / 4)' }}>
                 {loading ? (
                     <div className="w-full h-full flex items-center justify-center border border-dashed border-white/5 rounded-3xl opacity-20">
                         <span className="text-2xs font-black uppercase tracking-[0.3em] animate-pulse">Sincronizando Datastream...</span>
@@ -87,7 +87,7 @@ export const SarakChart: React.FC<SarakChartProps> = ({ endpoint, label, mapping
                                             duration: (parseFloat(getComputedStyle(document.documentElement).getPropertyValue('--animation-speed')) || 0.5) * 1.5, 
                                             ease: "circOut" 
                                         }}
-                                        className="w-full bg-gradient-to-t from-[var(--theme-primary-focus)] to-[var(--theme-primary)] rounded-t-lg group-hover/item:brightness-125 transition-all relative"
+                                        className="w-full bg-gradient-to-t from-[var(--sx-color-primary-glow)] to-[var(--sx-color-primary-base)] rounded-t-lg group-hover/item:brightness-125 transition-all relative"
                                         style={{ transitionDuration: 'var(--animation-speed, 0.3s)' }}
                                     >
                                         <div className="absolute -top-10 left-1/2 -translate-x-1/2 bg-white text-black text-2xs font-black px-2 py-1 rounded shadow-2xl opacity-0 group-hover/item:opacity-100 pointer-events-none transition-opacity whitespace-nowrap z-30">
@@ -107,7 +107,7 @@ export const SarakChart: React.FC<SarakChartProps> = ({ endpoint, label, mapping
                 )}
             </div>
 
-            <div className="border-t border-theme flex justify-between items-center opacity-40" style={{ paddingTop: 'calc(var(--theme-gap) / 2)' }}>
+            <div className="border-t border-[var(--sx-color-border-base)] flex justify-between items-center opacity-40" style={{ paddingTop: 'calc(var(--sx-spacing-md) / 2)' }}>
                 <span className="text-3xs font-black text-white uppercase tracking-widest">Sarak Visual Metrics engine v1.0</span>
                 <span className="text-3xs font-bold text-white/40 uppercase">Performance Agnostic Layer</span>
             </div>

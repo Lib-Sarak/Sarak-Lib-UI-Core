@@ -113,19 +113,23 @@ export const SarakManagementGrid: React.FC<SarakManagementGridProps> = ({
         <div className="flex flex-col" style={{ gap: 'var(--sarak-grid-gap, 1.5rem)' }}>
             <AnimatePresence>
                 {activeModal && (
-                    <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/80 backdrop-blur-md" style={{ padding: 'var(--theme-pad)' }}>
+                    <div className="fixed inset-0 z-50 flex items-center justify-center bg-[var(--sx-color-overlay-base)] backdrop-blur-md" style={{ padding: 'var(--sx-spacing-md)' }}>
                         <motion.div 
                             initial={{ opacity: 0, scale: 0.9 }}
                             animate={{ opacity: 1, scale: 1 }}
                             exit={{ opacity: 0, scale: 0.9 }}
                             transition={{ duration: parseFloat(getComputedStyle(document.documentElement).getPropertyValue('--animation-speed')) || 0.4 }}
-                            className="w-full max-w-lg bg-theme-card border-theme shadow-2xl relative rounded-theme"
-                            style={{ padding: 'calc(var(--theme-pad) * 1.5)' }}
+                            className="w-full max-w-lg bg-[var(--sx-color-surface-base)] border-[var(--sx-color-border-base)] shadow-2xl relative rounded-[var(--sx-radius-md)]"
+                            style={{ padding: 'calc(var(--sx-spacing-md) * 1.5)' }}
                         >
-                            <button onClick={() => setActiveModal(null)} className="absolute p-2 hover:bg-white/5 rounded-full text-white/20 hover:text-white transition-all" style={{ top: 'var(--theme-pad)', right: 'var(--theme-pad)' }}>
-                                <X size={24} />
-                            </button>
-                            <h3 className="text-xl font-black text-white uppercase tracking-wider" style={{ marginBottom: 'var(--theme-gap)', fontWeight: 'var(--heading-weight)' }}>
+                            <SarakIconButton 
+                                onClick={() => setActiveModal(null)} 
+                                icon={<X size={24} />}
+                                variant="ghost"
+                                className="absolute hover:bg-white/5 text-white/20 hover:text-white transition-all z-50" 
+                                style={{ top: 'var(--sx-spacing-md)', right: 'var(--sx-spacing-md)' }} 
+                            />
+                            <h3 className="text-xl font-black text-white uppercase tracking-wider" style={{ marginBottom: 'var(--sx-spacing-md)', fontWeight: 'var(--heading-weight)' }}>
                                 {activeModal.group ? `Configurar ${activeModal.group}` : 'Nova Identidade'}
                             </h3>
                             <SarakForm 
@@ -145,18 +149,18 @@ export const SarakManagementGrid: React.FC<SarakManagementGridProps> = ({
             </AnimatePresence>
 
             {headerActions.length > 0 && (
-                <div className="flex justify-between items-center bg-theme-card border-theme rounded-theme" style={{ padding: 'var(--theme-pad)' }}>
+                <div className="flex justify-between items-center bg-[var(--sx-color-surface-base)] border-[var(--sx-color-border-base)] rounded-[var(--sx-radius-md)]" style={{ padding: 'var(--sx-spacing-md)' }}>
                     <div>
                         <h2 className="text-xl font-black text-white" style={{ fontWeight: 'var(--heading-weight)' }}>Gestão Operacional</h2>
                         <p className="text-xs text-white/30 font-medium">Configurações granulares de identidades e provedores.</p>
                     </div>
-                    <div className="flex" style={{ gap: 'calc(var(--theme-gap) / 1.5)' }}>
+                    <div className="flex" style={{ gap: 'calc(var(--sx-spacing-md) / 1.5)' }}>
                         {headerActions.map(action => (
                             <SarakButton
                                 key={action.label}
                                 onClick={() => handleAction(action.action)}
                                 className="shadow-lg"
-                                style={{ boxShadow: '0 10px 20px -10px var(--theme-primary-focus)' }}
+                                style={{ boxShadow: '0 10px 20px -10px var(--sx-color-primary-glow)' }}
                             >
                                 <Plus size={16} />
                                 {action.label}
@@ -169,7 +173,7 @@ export const SarakManagementGrid: React.FC<SarakManagementGridProps> = ({
             <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3" style={{ gap: 'var(--sarak-grid-gap, 1.5rem)' }}>
                 {loading ? (
                     [...Array(6)].map((_, i) => (
-                        <div key={i} className="bg-theme-card border-theme animate-pulse rounded-theme" style={{ height: 'calc(var(--theme-pad) * 16)' }} />
+                        <div key={i} className="bg-[var(--sx-color-surface-base)] border-[var(--sx-color-border-base)] animate-pulse rounded-[var(--sx-radius-md)]" style={{ height: 'calc(var(--sx-spacing-md) * 16)' }} />
                     ))
                 ) : (
                     (Object.entries(groups) as [string, any[]][]).map(([groupName, items]) => {
@@ -179,19 +183,19 @@ export const SarakManagementGrid: React.FC<SarakManagementGridProps> = ({
                                 key={groupName}
                                 initial={{ opacity: 0, scale: 0.95 }}
                                 animate={{ opacity: 1, scale: 1 }}
-                                className={`flex flex-col rounded-theme border overflow-hidden transition-all h-full ${
-                                    isConfigured ? 'bg-theme-card border-theme' : 'bg-theme-card border-theme opacity-50 grayscale'
+                                className={`flex flex-col rounded-[var(--sx-radius-md)] border overflow-hidden transition-all h-full ${
+                                    isConfigured ? 'bg-[var(--sx-color-surface-base)] border-[var(--sx-color-border-base)]' : 'bg-[var(--sx-color-surface-base)] border-[var(--sx-color-border-base)] opacity-50 grayscale'
                                 }`}
                                 style={{ transitionDuration: 'var(--animation-speed, 0.5s)' }}
                             >
-                                <div className="border-b border-theme flex justify-between items-center bg-white/[0.02]" style={{ padding: 'var(--theme-pad)' }}>
-                                    <div className="flex items-center" style={{ gap: 'calc(var(--theme-gap) / 2)' }}>
-                                        <div className="rounded-theme" style={{ padding: 'calc(var(--theme-pad) / 2.5)', borderRadius: 'var(--sarak-grid-radius)', backgroundColor: isConfigured ? 'var(--theme-primary-focus)' : 'rgba(255,255,255,0.05)', color: isConfigured ? 'var(--theme-primary)' : 'rgba(255,255,255,0.2)' }}>
+                                <div className="border-b border-[var(--sx-color-border-base)] flex justify-between items-center bg-white/[0.02]" style={{ padding: 'var(--sx-spacing-md)' }}>
+                                    <div className="flex items-center" style={{ gap: 'calc(var(--sx-spacing-md) / 2)' }}>
+                                        <div className="rounded-[var(--sx-radius-md)]" style={{ padding: 'calc(var(--sx-spacing-md) / 2.5)', borderRadius: 'var(--sx-radius-md)', backgroundColor: isConfigured ? 'var(--sx-color-primary-glow)' : 'rgba(255,255,255,0.05)', color: isConfigured ? 'var(--sx-color-primary-base)' : 'rgba(255,255,255,0.2)' }}>
                                             <Cloud className="w-4 h-4" />
                                         </div>
                                         <h3 className="font-black text-white uppercase text-xs tracking-[0.2em]">{groupName}</h3>
                                     </div>
-                                    <div className="flex" style={{ gap: 'calc(var(--theme-gap) / 6)' }}>
+                                    <div className="flex" style={{ gap: 'calc(var(--sx-spacing-md) / 6)' }}>
                                         {groupActions.map(action => (
                                             <SarakIconButton
                                                 key={action.label}
@@ -204,7 +208,7 @@ export const SarakManagementGrid: React.FC<SarakManagementGridProps> = ({
                                     </div>
                                 </div>
 
-                                <div className="flex-1 max-h-[340px] overflow-y-auto custom-scrollbar flex flex-col" style={{ padding: 'var(--theme-pad)', gap: 'calc(var(--theme-gap) / 2)' }}>
+                                <div className="flex-1 max-h-[340px] overflow-y-auto custom-scrollbar flex flex-col" style={{ padding: 'var(--sx-spacing-md)', gap: 'calc(var(--sx-spacing-md) / 2)' }}>
                                     {isConfigured ? (
                                         items.map((item: any) => {
                                             const itemId = getVal(item, mapping.id);
@@ -214,14 +218,14 @@ export const SarakManagementGrid: React.FC<SarakManagementGridProps> = ({
                                             return (
                                                 <div 
                                                     key={itemId} 
-                                                    className={`border transition-all rounded-theme ${
-                                                        isActive ? 'bg-theme-card border-theme' : 'bg-black/40 border-transparent opacity-40'
+                                                    className={`border transition-all rounded-[var(--sx-radius-md)] ${
+                                                        isActive ? 'bg-[var(--sx-color-surface-base)] border-[var(--sx-color-border-base)]' : 'bg-[var(--sx-color-overlay-base)] border-transparent opacity-40'
                                                     }`}
-                                                    style={{ padding: 'var(--theme-pad)', transitionDuration: 'var(--animation-speed, 0.3s)' }}
+                                                    style={{ padding: 'var(--sx-spacing-md)', transitionDuration: 'var(--animation-speed, 0.3s)' }}
                                                 >
-                                                    <div className="flex justify-between items-start" style={{ marginBottom: 'calc(var(--theme-gap) / 3)' }}>
+                                                    <div className="flex justify-between items-start" style={{ marginBottom: 'calc(var(--sx-spacing-md) / 3)' }}>
                                                         <div className="flex flex-col truncate">
-                                                            <span className="text-2xs font-black uppercase tracking-widest" style={{ color: 'var(--theme-primary)' }}>{getVal(item, mapping.title)}</span>
+                                                            <span className="text-2xs font-black uppercase tracking-widest" style={{ color: 'var(--sx-color-primary-base)' }}>{getVal(item, mapping.title)}</span>
                                                             <span className="text-2xs font-mono text-white/30 truncate max-w-[140px]">
                                                                 {getVal(item, mapping.description || '') || '************'}
                                                             </span>
@@ -231,16 +235,16 @@ export const SarakManagementGrid: React.FC<SarakManagementGridProps> = ({
                                                             icon={isActive ? <ToggleRight size={28} /> : <ToggleLeft size={28} />}
                                                             variant="ghost"
                                                             className="hover:scale-110"
-                                                            style={{ color: isActive ? 'var(--theme-success)' : 'rgba(255,255,255,0.2)' }}
+                                                            style={{ color: isActive ? 'var(--sx-color-success-base)' : 'rgba(255,255,255,0.2)' }}
                                                         />
                                                     </div>
-                                                    <div className="flex items-center justify-between" style={{ marginTop: 'calc(var(--theme-gap) / 1.5)' }}>
-                                                        <div className="flex items-center" style={{ gap: 'calc(var(--theme-gap) / 2)' }}>
+                                                    <div className="flex items-center justify-between" style={{ marginTop: 'calc(var(--sx-spacing-md) / 1.5)' }}>
+                                                        <div className="flex items-center" style={{ gap: 'calc(var(--sx-spacing-md) / 2)' }}>
                                                             <div 
                                                                 className="w-1.5 h-1.5 rounded-full" 
                                                                 style={{ 
-                                                                    backgroundColor: status === 'active' ? 'var(--theme-success)' : status === 'error' ? 'var(--theme-error)' : 'rgba(156, 163, 175, 0.5)',
-                                                                    boxShadow: status === 'active' ? '0 0 8px var(--theme-success)' : 'none'
+                                                                    backgroundColor: status === 'active' ? 'var(--sx-color-success-base)' : status === 'error' ? 'var(--sx-color-danger-base)' : 'rgba(156, 163, 175, 0.5)',
+                                                                    boxShadow: status === 'active' ? '0 0 8px var(--sx-color-success-base)' : 'none'
                                                                 }} 
                                                             />
                                                             <span className="text-3xs font-black text-white/40 uppercase tracking-tighter">
@@ -251,19 +255,19 @@ export const SarakManagementGrid: React.FC<SarakManagementGridProps> = ({
                                                             onClick={() => handleDelete(itemId)}
                                                             icon={<Trash2 size={14} />}
                                                             variant="ghost"
-                                                            className="hover:text-[var(--theme-error)]"
+                                                            className="hover:text-[var(--sx-color-danger-base)]"
                                                         />
                                                     </div>
                                                     {errorMsg && (
-                                                        <div className="rounded-theme border" style={{ marginTop: 'calc(var(--theme-gap) / 3)', padding: 'calc(var(--theme-pad) / 2)', backgroundColor: 'var(--theme-error-bg)', borderColor: 'var(--theme-error-border)' }}>
-                                                            <p className="text-3xs font-bold leading-tight" style={{ color: 'var(--theme-error)' }}>{errorMsg}</p>
+                                                        <div className="rounded-[var(--sx-radius-md)] border" style={{ marginTop: 'calc(var(--sx-spacing-md) / 3)', padding: 'calc(var(--sx-spacing-md) / 2)', backgroundColor: 'var(--sx-color-danger-surface)', borderColor: 'var(--sx-color-danger-border)' }}>
+                                                            <p className="text-3xs font-bold leading-tight" style={{ color: 'var(--sx-color-danger-base)' }}>{errorMsg}</p>
                                                         </div>
                                                     )}
                                                 </div>
                                             );
                                         })
                                     ) : (
-                                        <div className="py-12 flex flex-col items-center justify-center text-center opacity-20" style={{ gap: 'calc(var(--theme-gap) / 2)' }}>
+                                        <div className="py-12 flex flex-col items-center justify-center text-center opacity-20" style={{ gap: 'calc(var(--sx-spacing-md) / 2)' }}>
                                             <Settings2 className="w-10 h-10" />
                                             <p className="text-2xs font-black uppercase tracking-[0.2em]">Offline</p>
                                         </div>

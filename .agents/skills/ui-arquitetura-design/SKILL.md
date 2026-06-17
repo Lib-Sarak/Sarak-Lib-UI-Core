@@ -31,6 +31,8 @@ Esta skill define a lei arquitetural do módulo Design Engine do Sarak-Lib-UI-Co
 ## Regras
 - **NUNCA** escreva valores hexadecimais, `px`, `rem`, ou `em` diretamente nas estilizações de componentes.
 - **NÃO** duplique definições de estilo que já existam no Master Map.
+- **ABSTRAÇÃO DE VARIANTES OBRIGATÓRIA:** Todo o mapeamento de variáveis CSS para criar variantes complexas (ex: `neon`, `frosted`, lógicas matemáticas) DEVE morar em um Hook Controlador (ex: `useAtomicStyles`).
+- **PROIBIDO LÓGICA NO JSX:** É estritamente proibido criar blocos condicionais grandes (if/switch) de roteamento de estilo ou injetar tags `<style>` cruas dentro do componente atômico. O Componente é "burro" (Dumb Component) e deve ter menos de 40 linhas.
 
 ## Checklist
 - [ ] O componente obedece ao fluxo Schema -> CSS Variables?

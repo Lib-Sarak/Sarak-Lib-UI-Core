@@ -96,7 +96,7 @@ export const SarakAuthScreen: React.FC<SarakAuthScreenProps> = ({
                         display: 'var(--sarak-auth-noise-enabled, block)'
                     }}
                 ></div>
-                <div className="absolute inset-0" style={{ backgroundImage: 'radial-gradient(circle at 2px 2px, var(--theme-border) 1px, transparent 0)', backgroundSize: '40px 40px' }}></div>
+                <div className="absolute inset-0" style={{ backgroundImage: 'radial-gradient(circle at 2px 2px, var(--sx-color-border-base) 1px, transparent 0)', backgroundSize: '40px 40px' }}></div>
 
                 <div 
                     className="relative z-10 max-w-xl text-center flex flex-col items-center"
@@ -106,7 +106,7 @@ export const SarakAuthScreen: React.FC<SarakAuthScreenProps> = ({
                         initial={{ opacity: 0, scale: 0.8, rotate: -10 }}
                         animate={{ opacity: 1, scale: 1, rotate: 0 }}
                         transition={{ duration: 0.8, type: "spring" }}
-                        className="w-24 h-24 bg-gradient-to-tr from-theme-primary to-theme-primary/60 flex items-center justify-center shadow-2xl shadow-theme-primary/20 border border-theme-border"
+                        className="w-24 h-24 bg-gradient-to-tr from-theme-primary to-theme-primary/60 flex items-center justify-center shadow-2xl shadow-lg-primary/20 border border-[var(--sx-color-border-base)]-border"
                         style={{ borderRadius: 'var(--button-radius, 12px)' }}
                     >
                         {branding?.logo ? (
@@ -131,11 +131,11 @@ export const SarakAuthScreen: React.FC<SarakAuthScreenProps> = ({
                         transition={{ delay: 0.5, duration: 1 }}
                         className="mt-12 flex gap-4"
                     >
-                        <div className="flex items-center gap-2 px-4 py-2 rounded-full sarak-glass bg-theme-card border border-theme-border backdrop-blur-md">
+                        <div className="flex items-center gap-2 px-4 py-2 rounded-full sarak-glass bg-[var(--sx-color-surface-base)] border border-[var(--sx-color-border-base)]-border backdrop-blur-md">
                             <ShieldCheck className="w-4 h-4 text-theme-secondary" />
                             <span className="text-xs font-bold text-theme-muted uppercase tracking-widest">Secure</span>
                         </div>
-                        <div className="flex items-center gap-2 px-4 py-2 rounded-full sarak-glass bg-theme-card border border-theme-border backdrop-blur-md">
+                        <div className="flex items-center gap-2 px-4 py-2 rounded-full sarak-glass bg-[var(--sx-color-surface-base)] border border-[var(--sx-color-border-base)]-border backdrop-blur-md">
                             <Activity className="w-4 h-4 text-theme-primary" />
                             <span className="text-xs font-bold text-theme-muted uppercase tracking-widest">Neural</span>
                         </div>
@@ -144,7 +144,7 @@ export const SarakAuthScreen: React.FC<SarakAuthScreenProps> = ({
             </div>
 
             {/* Right Side - Form Section */}
-            <div className="w-full lg:w-2/5 flex items-center justify-center p-8 bg-theme-body border-l border-theme-border shadow-[-20px_0_50px_rgba(0,0,0,0.5)] relative">
+            <div className="w-full lg:w-2/5 flex items-center justify-center p-8 bg-theme-body border-l border-[var(--sx-color-border-base)]-border shadow-[-20px_0_50px_rgba(0,0,0,0.5)] relative">
                 
                 {/* Floating Elements in Background */}
                 <div className="absolute top-1/4 right-1/4 w-32 h-32 bg-theme-primary/10 rounded-full blur-3xl animate-pulse"></div>
@@ -240,7 +240,7 @@ export const SarakAuthScreen: React.FC<SarakAuthScreenProps> = ({
                                                 onClick={() => setShowPassword(!showPassword)}
                                                 icon={showPassword ? <EyeOff className="h-5 w-5" /> : <Eye className="h-5 w-5" />}
                                                 variant="ghost"
-                                                className="text-[var(--sarak-input-icon-color,var(--theme-muted))] hover:text-theme-text px-1 py-1"
+                                                className="text-[var(--sarak-input-icon-color,var(--sx-color-text-muted))] hover:text-theme-text px-1 py-1"
                                             />
                                         ) : undefined}
                                         fullWidth
@@ -324,7 +324,7 @@ export const SarakAuthScreen: React.FC<SarakAuthScreenProps> = ({
                         </div>
                     )}
 
-                    <div className="mt-10 pt-8 border-t border-theme-border text-center">
+                    <div className="mt-10 pt-8 border-t border-[var(--sx-color-border-base)]-border text-center">
                         <p className="text-theme-muted text-sm font-medium">
                             {isRegistering ? 'Já tem uma conta?' : 'Não tem uma conta?'} 
                             <SarakButton 

@@ -42,7 +42,7 @@ export const SarakTitleCard: React.FC<SarakTitleCardProps> = ({ item, mapping, c
             initial={{ opacity: 0, y: 15 }}
             animate={{ opacity: 1, y: 0 }}
             whileHover={{ y: -4, scale: 1.01 }}
-            className={`flex flex-col sarak-card bg-theme-card border-theme group transition-all relative overflow-hidden ${className}`}
+            className={`flex flex-col sarak-card bg-[var(--sx-color-surface-base)] border-[var(--sx-color-border-base)] group transition-all relative overflow-hidden ${className}`}
             style={{ 
                 transitionDuration: 'var(--animation-speed, 0.4s)',
                 padding: design.cardPadding ? `${design.cardPadding}px` : 'var(--sarak-card-padding-md, 24px)'
@@ -58,8 +58,8 @@ export const SarakTitleCard: React.FC<SarakTitleCardProps> = ({ item, mapping, c
 
             {/* DRAFT BADGE (v6.3) */}
             {globalUI?.isDrafting && (
-                <div className="absolute top-2 left-4 z-40 pointer-events-none flex items-center gap-1.5 px-2 py-0.5 rounded bg-black/60 border border-[var(--theme-primary)]/20 text-[7px] font-black uppercase tracking-[0.2em] text-[var(--theme-primary)] shadow-[0_0_10px_rgba(0,242,255,0.05)]">
-                    <span className="w-1 h-1 rounded-full bg-[var(--theme-primary)] animate-pulse" />
+                <div className="absolute top-2 left-4 z-40 pointer-events-none flex items-center gap-1.5 px-2 py-0.5 rounded bg-black/60 border border-[var(--sx-color-primary-base)]/20 text-[7px] font-black uppercase tracking-[0.2em] text-[var(--sx-color-primary-base)] shadow-[0_0_10px_rgba(0,242,255,0.05)]">
+                    <span className="w-1 h-1 rounded-full bg-[var(--sx-color-primary-base)] animate-pulse" />
                     {label || "Card de Título"}
                 </div>
             )}
@@ -68,11 +68,11 @@ export const SarakTitleCard: React.FC<SarakTitleCardProps> = ({ item, mapping, c
                 {/* Header Layout */}
                 <div className="flex justify-between items-start mb-4">
                     <div className="flex flex-col flex-1 min-w-0 pr-2">
-                        <span className="text-[9px] font-black text-[var(--theme-primary)] uppercase tracking-[0.2em] mb-1">
+                        <span className="text-[9px] font-black text-[var(--sx-color-primary-base)] uppercase tracking-[0.2em] mb-1">
                             {subtitle}
                         </span>
                         <h4 
-                            className="text-[var(--theme-title)] tracking-tight group-hover:text-[var(--theme-primary)] transition-colors truncate"
+                            className="text-[var(--sx-color-text-title)] tracking-tight group-hover:text-[var(--sx-color-primary-base)] transition-colors truncate"
                             style={{ 
                                 fontSize: 'var(--sarak-card-title-font-size, 20px)',
                                 fontWeight: 'var(--sarak-card-title-font-weight, 900)' as any,
@@ -86,7 +86,7 @@ export const SarakTitleCard: React.FC<SarakTitleCardProps> = ({ item, mapping, c
 
                     {/* Glowing Icon Container */}
                     <div 
-                        className="bg-theme-card border-theme flex items-center justify-center p-3 relative shrink-0 transition-all group-hover:border-[var(--theme-primary)]"
+                        className="bg-[var(--sx-color-surface-base)] border-[var(--sx-color-border-base)] flex items-center justify-center p-3 relative shrink-0 transition-all group-hover:border-[var(--sx-color-primary-base)]"
                         style={{ 
                             borderRadius: 'var(--sarak-grid-radius, 8px)',
                             boxShadow: '0 0 15px var(--sarak-card-title-icon-glow, rgba(0, 242, 255, 0.2))'
@@ -95,9 +95,9 @@ export const SarakTitleCard: React.FC<SarakTitleCardProps> = ({ item, mapping, c
                         {mapping?.icon && LucideIcons[mapping.icon as keyof typeof LucideIcons] ? (
                             React.createElement(LucideIcons[mapping.icon as keyof typeof LucideIcons] as any, { 
                                 size: 18, 
-                                className: "text-[var(--theme-primary)] group-hover:scale-110 transition-transform" 
+                                className: "text-[var(--sx-color-primary-base)] group-hover:scale-110 transition-transform" 
                             })
-                        ) : <Box size={18} className="text-[var(--theme-muted)]" />}
+                        ) : <Box size={18} className="text-[var(--sx-color-text-muted)]" />}
                     </div>
                 </div>
 
@@ -106,18 +106,18 @@ export const SarakTitleCard: React.FC<SarakTitleCardProps> = ({ item, mapping, c
                     {context && (
                         <div className="flex items-center justify-between text-3xs font-black uppercase text-white/40 tracking-wider">
                             <span>Contexto</span>
-                            <span className="text-2xs font-mono text-[var(--theme-text)]">
+                            <span className="text-2xs font-mono text-[var(--sx-color-text-muted)]">
                                 {Number(context) >= 1000 ? `${(Number(context) / 1000)}k` : context} tokens
                             </span>
                         </div>
                     )}
                     
                     {inputCaps.length > 0 && (
-                        <div className="flex flex-wrap gap-1.5 pt-2 border-t border-theme/30">
+                        <div className="flex flex-wrap gap-1.5 pt-2 border-t border-[var(--sx-color-border-base)]/30">
                             {inputCaps.slice(0, 3).map((cap: string) => (
                                 <div 
                                     key={cap} 
-                                    className="flex items-center gap-1 bg-[var(--theme-primary-bg)] text-[var(--theme-primary)] border border-[var(--theme-primary-border)] text-3xs font-black uppercase px-2 py-0.5" 
+                                    className="flex items-center gap-1 bg-[var(--sx-color-primary-surface)] text-[var(--sx-color-primary-base)] border border-[var(--sx-color-border-base)] text-3xs font-black uppercase px-2 py-0.5" 
                                     style={{ borderRadius: '4px' }}
                                 >
                                     {getCapIcon(cap)}

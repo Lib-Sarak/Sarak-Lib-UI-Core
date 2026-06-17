@@ -62,7 +62,7 @@ export const SocialButton: React.FC<SocialButtonProps> = ({
                     ? "w-12 h-12 justify-center" 
                     : "w-full gap-4 py-3.5 px-6",
                 variant === 'sovereign' || designVariant === 'sovereign'
-                    ? "shadow-xl shadow-[var(--theme-primary)]/20 hover:shadow-[var(--theme-primary)]/40 hover:-translate-y-0.5" 
+                    ? "shadow-xl shadow-[var(--sx-color-primary-base)]/20 hover:shadow-[var(--sx-color-primary-base)]/40 hover:-translate-y-0.5" 
                     : "hover:bg-white/[0.08] hover:text-white",
                 className
             )}
@@ -85,7 +85,7 @@ export const SocialButton: React.FC<SocialButtonProps> = ({
                     </span>
                     <span className={cn(
                         "text-[7px] font-bold uppercase tracking-widest opacity-30",
-                        variant === 'sovereign' ? "text-white" : "text-[var(--theme-primary)]"
+                        variant === 'sovereign' ? "text-white" : "text-[var(--sx-color-primary-base)]"
                     )}>
                         Sovereign SSO Protocol
                     </span>

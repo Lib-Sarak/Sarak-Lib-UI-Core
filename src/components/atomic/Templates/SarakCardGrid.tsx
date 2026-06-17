@@ -16,7 +16,7 @@ import { useSarakUI } from '../../../core/Provider/SarakUIProvider';
 import { SarakTitleCard } from '../Cards/SarakTitleCard';
 import { SarakActionCard } from '../Cards/SarakActionCard';
 import { SarakSearchCard } from '../Cards/SarakSearchCard';
-import { SarakInput } from '../Inputs';
+import { SarakInput, SarakSelect } from '../Inputs';
 import { SarakButton, SarakIconButton } from '../Buttons';
 
 interface FilterConfig {
@@ -134,13 +134,13 @@ export const SarakCardGrid: React.FC<SarakCardGridProps> = ({ endpoint, label, m
     return (
         <div className="flex flex-col" style={{ gap: 'calc(var(--sarak-grid-gap) * 1.25)' }}>
             {/* Header & Filter Section Core */}
-            <div className="flex flex-col" style={{ gap: 'var(--theme-gap)' }}>
-                <div className="flex flex-col md:flex-row md:items-center justify-between" style={{ gap: 'var(--theme-gap)' }}>
+            <div className="flex flex-col" style={{ gap: 'var(--sx-spacing-md)' }}>
+                <div className="flex flex-col md:flex-row md:items-center justify-between" style={{ gap: 'var(--sx-spacing-md)' }}>
                     <div>
-                        <h3 className="text-3xl font-black text-[var(--theme-title)] tracking-tighter" style={{ fontWeight: 'var(--heading-weight)' }}>{label || 'Explorar'}</h3>
-                        <p className="text-[var(--theme-muted)] opacity-40 text-2xs font-bold uppercase tracking-[0.3em] mt-1">Sintonizando {filteredData.length} unidades disponíveis</p>
+                        <h3 className="text-3xl font-black text-[var(--sx-color-text-title)] tracking-tighter" style={{ fontWeight: 'var(--heading-weight)' }}>{label || 'Explorar'}</h3>
+                        <p className="text-[var(--sx-color-text-muted)] opacity-40 text-2xs font-bold uppercase tracking-[0.3em] mt-1">Sintonizando {filteredData.length} unidades disponíveis</p>
                     </div>
-                    <div className="flex items-center" style={{ gap: 'calc(var(--theme-gap) / 2)' }}>
+                    <div className="flex items-center" style={{ gap: 'calc(var(--sx-spacing-md) / 2)' }}>
                         <div className="w-full md:w-80">
                             <SarakInput 
                                 type="text" 
@@ -155,15 +155,15 @@ export const SarakCardGrid: React.FC<SarakCardGridProps> = ({ endpoint, label, m
 
             {/* Dynamic Filters Bar */}
             {(mainFilter || sideFilters.length > 0) && (
-                <div className="flex flex-col pt-4 border-t border-theme" style={{ gap: 'calc(var(--theme-gap) * 0.75)' }}>
+                <div className="flex flex-col pt-4 border-t border-[var(--sx-color-border-base)]" style={{ gap: 'calc(var(--sx-spacing-md) * 0.75)' }}>
                     {mainFilter && (
-                        <div className="flex flex-wrap" style={{ gap: '0.5rem' }}>
+                        <div className="flex flex-wrap" style={{ gap: 'var(--sx-spacing-sm)' }}>
                             {['all', ...(mainFilter.options || (mainFilter.dynamic ? getDynamicOptions(mainFilter.field) : [])).map(o => typeof o === 'string' ? o : o.value)].map(opt => (
                                 <SarakButton
                                     key={opt}
                                     onClick={() => setActiveFilters(prev => ({ ...prev, [mainFilter.id]: opt }))}
                                     variant={(activeFilters[mainFilter.id] || 'all') === opt ? 'primary' : 'secondary'}
-                                    className={(activeFilters[mainFilter.id] || 'all') === opt ? 'shadow-lg shadow-[var(--theme-primary-focus)]' : ''}
+                                    className={(activeFilters[mainFilter.id] || 'all') === opt ? 'shadow-lg shadow-[var(--sx-color-primary-glow)]' : ''}
                                 >
                                     {opt === 'all' ? `Todos (${mainFilter.label})` : opt}
                                 </SarakButton>
@@ -175,10 +175,10 @@ export const SarakCardGrid: React.FC<SarakCardGridProps> = ({ endpoint, label, m
                         <div className="flex flex-wrap" style={{ gap: '1rem' }}>
                             {sideFilters.map(filter => (
                                 <div key={filter.id} className="relative group min-w-[160px]">
-                                    <select
+                                    <SarakSelect
                                         value={activeFilters[filter.id] || 'all'}
                                         onChange={(e) => setActiveFilters(prev => ({ ...prev, [filter.id]: e.target.value }))}
-                                        className="w-full appearance-none bg-theme-card border-theme px-4 py-3 pr-10 rounded-theme text-2xs font-black text-[var(--theme-muted)] opacity-60 uppercase tracking-widest outline-none focus:border-[var(--theme-primary-border)] transition-all cursor-pointer"
+                                        className="w-full text-2xs font-black text-[var(--sx-color-text-muted)] opacity-60 uppercase tracking-widest cursor-pointer"
                                     >
                                         <option value="all">{filter.label}: Todos</option>
                                         {(filter.options || (filter.dynamic ? getDynamicOptions(filter.field) : [])).map(opt => {
@@ -186,8 +186,7 @@ export const SarakCardGrid: React.FC<SarakCardGridProps> = ({ endpoint, label, m
                                             const lab = typeof opt === 'string' ? opt : opt.label;
                                             return <option key={val} value={val}>{lab}</option>;
                                         })}
-                                    </select>
-                                    <Filter className="absolute right-3 top-1/2 -translate-y-1/2 w-3 h-3 text-[var(--theme-muted)] opacity-30 pointer-events-none group-focus-within:text-[var(--theme-primary)]" />
+                                    </SarakSelect>
                                 </div>
                             ))}
                         </div>
@@ -200,7 +199,7 @@ export const SarakCardGrid: React.FC<SarakCardGridProps> = ({ endpoint, label, m
             <div className="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-3" style={{ gap: 'var(--sarak-grid-gap, 2rem)' }}>
                 {loading ? (
                     [...Array(6)].map((_, i) => (
-                        <div key={i} className="h-80 bg-theme-card border-theme animate-pulse" />
+                        <div key={i} className="h-80 bg-[var(--sx-color-surface-base)] border-[var(--sx-color-border-base)] animate-pulse" />
                     ))
                 ) : error ? (
                     <div className="col-span-full py-20 flex flex-col items-center justify-center text-center">
@@ -266,7 +265,7 @@ const SarakCoreCard = ({ item, mapping, variant }: { item: any; mapping: any; va
         <motion.div 
             initial={{ opacity: 0, y: 20 }}
             animate={{ opacity: 1, y: 0 }}
-            className="flex flex-col sarak-card bg-theme-card border-theme group transition-all h-fit relative overflow-hidden"
+            className="flex flex-col sarak-card bg-[var(--sx-color-surface-base)] border-[var(--sx-color-border-base)] group transition-all h-fit relative overflow-hidden"
             style={{ 
                 transitionDuration: 'var(--animation-speed, 0.5s)',
                 padding: design.cardPadding ? `${design.cardPadding}px` : undefined
@@ -281,21 +280,21 @@ const SarakCoreCard = ({ item, mapping, variant }: { item: any; mapping: any; va
             <div className="border-beam-effect" />
 
             
-            <div className="p-theme relative z-10" style={{ padding: 'var(--theme-pad, 2rem)' }}>
+            <div className="p-theme relative z-10" style={{ padding: 'var(--sx-spacing-lg)' }}>
 
-                <div className="flex justify-between items-start mb-6" style={{ marginBottom: 'calc(var(--theme-gap) / 1.5)' }}>
+                <div className="flex justify-between items-start mb-6" style={{ marginBottom: 'calc(var(--sx-spacing-md) / 1.5)' }}>
                     <div className="flex flex-col">
-                        <span className="text-2xs font-black text-[var(--theme-primary)] uppercase tracking-[0.2em] mb-1">
+                        <span className="text-2xs font-black text-[var(--sx-color-primary-base)] uppercase tracking-[0.2em] mb-1">
                             {getVal(item, mapping?.subtitle) || 'Modelo'}
                         </span>
-                        <h4 className="text-xl font-black text-[var(--theme-title)] tracking-tight group-hover:text-[var(--theme-primary)] transition-colors">
+                        <h4 className="text-xl font-black text-[var(--sx-color-text-title)] tracking-tight group-hover:text-[var(--sx-color-primary-base)] transition-colors">
                             {getVal(item, mapping?.title)}
                         </h4>
                     </div>
-                    <div className="bg-theme-card border-theme" style={{ padding: 'calc(var(--theme-pad) / 2)', borderRadius: 'var(--sarak-grid-radius)' }}>
+                    <div className="bg-[var(--sx-color-surface-base)] border-[var(--sx-color-border-base)]" style={{ padding: 'calc(var(--sx-spacing-md) / 2)', borderRadius: 'var(--sx-radius-md)' }}>
                         {mapping?.icon && LucideIcons[mapping.icon as keyof typeof LucideIcons] ? (
-                            React.createElement(LucideIcons[mapping.icon as keyof typeof LucideIcons] as any, { size: 20, className: "text-[var(--theme-muted)]" })
-                        ) : <Box size={20} className="text-[var(--theme-muted)]" />}
+                            React.createElement(LucideIcons[mapping.icon as keyof typeof LucideIcons] as any, { size: 20, className: "text-[var(--sx-color-text-muted)]" })
+                        ) : <Box size={20} className="text-[var(--sx-color-text-muted)]" />}
                     </div>
                 </div>
 
@@ -303,7 +302,7 @@ const SarakCoreCard = ({ item, mapping, variant }: { item: any; mapping: any; va
                     <div className="flex flex-wrap gap-2">
                         <span className="text-3xs font-black text-white/20 uppercase w-full mb-1">Input Capacities</span>
                         {inputCaps.map((cap: string) => (
-                            <div key={cap} className="flex items-center gap-1.5 bg-[var(--theme-primary-bg)] text-[var(--theme-primary)] border border-[var(--theme-primary-border)] text-2xs font-black uppercase" style={{ padding: 'calc(var(--theme-pad) / 4) calc(var(--theme-pad) / 1.5)', borderRadius: 'var(--sarak-grid-radius)' }}>
+                            <div key={cap} className="flex items-center gap-1.5 bg-[var(--sx-color-primary-surface)] text-[var(--sx-color-primary-base)] border border-[var(--sx-color-border-base)] text-2xs font-black uppercase" style={{ padding: 'calc(var(--sx-spacing-md) / 4) calc(var(--sx-spacing-md) / 1.5)', borderRadius: 'var(--sx-radius-md)' }}>
                                 {getCapIcon(cap)} {cap}
                             </div>
                         ))}
@@ -312,7 +311,7 @@ const SarakCoreCard = ({ item, mapping, variant }: { item: any; mapping: any; va
                         <div className="flex flex-wrap gap-2">
                             <span className="text-3xs font-black text-white/20 uppercase w-full mb-1">Output Capacities</span>
                             {outputCaps.map((cap: string) => (
-                                <div key={cap} className="flex items-center gap-1.5 bg-[var(--theme-accent-bg)] text-[var(--theme-accent)] border border-[var(--theme-accent-border)] text-2xs font-black uppercase" style={{ padding: 'calc(var(--theme-pad) / 4) calc(var(--theme-pad) / 1.5)', borderRadius: 'var(--sarak-grid-radius)' }}>
+                                <div key={cap} className="flex items-center gap-1.5 bg-[var(--sx-color-primary-surface)] text-[var(--sx-color-primary-base)] border border-[var(--sx-color-border-base)] text-2xs font-black uppercase" style={{ padding: 'calc(var(--sx-spacing-md) / 4) calc(var(--sx-spacing-md) / 1.5)', borderRadius: 'var(--sx-radius-md)' }}>
                                     {getCapIcon(cap)} {cap}
                                 </div>
                             ))}
@@ -320,28 +319,28 @@ const SarakCoreCard = ({ item, mapping, variant }: { item: any; mapping: any; va
                     )}
                 </div>
 
-                <div className="grid grid-cols-2 mb-8 pt-6 border-t border-theme" style={{ gap: 'var(--theme-gap, 1rem)', marginBottom: 'var(--theme-gap)', marginTop: 'var(--theme-gap)' }}>
+                <div className="grid grid-cols-2 mb-8 pt-6 border-t border-[var(--sx-color-border-base)]" style={{ gap: 'var(--sx-spacing-md)', marginBottom: 'var(--sx-spacing-md)', marginTop: 'var(--sx-spacing-md)' }}>
                     <div className="flex flex-col">
-                        <span className="text-3xs font-black text-[var(--theme-muted)] opacity-50 uppercase tracking-widest mb-1">Custo In (1M)</span>
-                        <span className="text-sm font-mono text-[var(--theme-success)] font-bold">
+                        <span className="text-3xs font-black text-[var(--sx-color-text-muted)] opacity-50 uppercase tracking-widest mb-1">Custo In (1M)</span>
+                        <span className="text-sm font-mono text-[var(--sx-color-success-base)] font-bold">
                             {priceIn !== undefined ? `$${Number(priceIn).toFixed(4)}` : 'N/A'}
                         </span>
                     </div>
                     <div className="flex flex-col">
-                        <span className="text-3xs font-black text-[var(--theme-muted)] opacity-50 uppercase tracking-widest mb-1">Custo Out (1M)</span>
-                        <span className="text-sm font-mono text-[var(--theme-warning)] font-bold">
+                        <span className="text-3xs font-black text-[var(--sx-color-text-muted)] opacity-50 uppercase tracking-widest mb-1">Custo Out (1M)</span>
+                        <span className="text-sm font-mono text-[var(--sx-color-danger-base)] font-bold">
                             {priceOut !== undefined ? `$${Number(priceOut).toFixed(4)}` : 'N/A'}
                         </span>
                     </div>
                     <div className="flex flex-col col-span-2">
-                        <span className="text-3xs font-black text-[var(--theme-muted)] opacity-50 uppercase tracking-widest mb-1">Janela de Contexto</span>
-                        <span className="text-2xs font-black text-[var(--theme-text)] uppercase">
+                        <span className="text-3xs font-black text-[var(--sx-color-text-muted)] opacity-50 uppercase tracking-widest mb-1">Janela de Contexto</span>
+                        <span className="text-2xs font-black text-[var(--sx-color-text-muted)] uppercase">
                             {context ? `${(Number(context) / 1000)}k tokens` : 'Desconhecida'}
                         </span>
                     </div>
                 </div>
 
-                <div className="flex" style={{ gap: 'calc(var(--theme-gap) / 2.5)' }}>
+                <div className="flex" style={{ gap: 'calc(var(--sx-spacing-md) / 2.5)' }}>
                     <SarakButton 
                         onClick={() => setIsExpanded(!isExpanded)}
                         variant="secondary"
@@ -365,17 +364,17 @@ const SarakCoreCard = ({ item, mapping, variant }: { item: any; mapping: any; va
                             exit={{ height: 0, opacity: 0 }}
                             className="overflow-hidden"
                         >
-                            <div className="flex flex-col pt-8" style={{ gap: 'calc(var(--theme-gap) / 1.5)', paddingTop: 'var(--theme-gap)' }}>
+                            <div className="flex flex-col pt-8" style={{ gap: 'calc(var(--sx-spacing-md) / 1.5)', paddingTop: 'var(--sx-spacing-md)' }}>
                                 {description && (
-                                    <div className="p-6 bg-theme-card border-theme rounded-theme">
-                                        <span className="text-3xs font-black text-[var(--theme-primary)] uppercase mb-2 block">Descrição Técnica</span>
-                                        <p className="text-xs text-[var(--theme-text)] opacity-70 leading-relaxed font-medium">{description}</p>
+                                    <div className="p-6 bg-[var(--sx-color-surface-base)] border-[var(--sx-color-border-base)] rounded-[var(--sx-radius-md)]">
+                                        <span className="text-3xs font-black text-[var(--sx-color-primary-base)] uppercase mb-2 block">Descrição Técnica</span>
+                                        <p className="text-xs text-[var(--sx-color-text-muted)] opacity-70 leading-relaxed font-medium">{description}</p>
                                     </div>
                                 )}
                                 {tokenizer && (
-                                    <div className="flex items-center justify-between px-6 py-4 bg-theme-card border-theme rounded-theme">
+                                    <div className="flex items-center justify-between px-6 py-4 bg-[var(--sx-color-surface-base)] border-[var(--sx-color-border-base)] rounded-[var(--sx-radius-md)]">
                                         <span className="text-3xs font-black text-white/30 uppercase">Tokenizer</span>
-                                        <span className="text-2xs font-mono text-[var(--theme-primary)]">{tokenizer}</span>
+                                        <span className="text-2xs font-mono text-[var(--sx-color-primary-base)]">{tokenizer}</span>
                                     </div>
                                 )}
                             </div>

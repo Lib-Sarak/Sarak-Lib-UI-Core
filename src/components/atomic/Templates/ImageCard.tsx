@@ -67,8 +67,8 @@ export const ImageCard: React.FC<ImageCardProps> = ({
 
             {/* Content Layer */}
             <div className="relative z-10 p-6 flex flex-col h-full justify-end">
-                {title && <h3 className="text-xl font-bold text-[var(--theme-title)]">{title}</h3>}
-                {subtitle && <p className="text-sm text-[var(--theme-muted)] mt-1">{subtitle}</p>}
+                {title && <h3 className="text-xl font-bold text-[var(--sx-color-text-title)]">{title}</h3>}
+                {subtitle && <p className="text-sm text-[var(--sx-color-text-muted)] mt-1">{subtitle}</p>}
                 
                 {children && <div className="mt-4">{children}</div>}
             </div>

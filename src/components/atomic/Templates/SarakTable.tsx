@@ -72,7 +72,7 @@ export const SarakTable: React.FC<SarakTableProps> = ({ endpoint, label, mapping
 
     if (error) {
         return (
-            <div className="p-10 rounded-3xl flex items-center gap-4 border" style={{ backgroundColor: 'var(--theme-error-bg)', borderColor: 'var(--theme-error-border)', color: 'var(--theme-error)' }}>
+            <div className="p-10 rounded-3xl flex items-center gap-4 border" style={{ backgroundColor: 'var(--sx-color-danger-surface)', borderColor: 'var(--sx-color-danger-border)', color: 'var(--sx-color-danger-base)' }}>
                 <AlertCircle size={24} />
                 <div>
                     <h4 className="font-bold">Erro ao carregar dados</h4>
@@ -84,15 +84,15 @@ export const SarakTable: React.FC<SarakTableProps> = ({ endpoint, label, mapping
     }
 
     return (
-        <div className="flex flex-col" style={{ gap: 'var(--theme-gap, 1.5rem)' }}>
+        <div className="flex flex-col" style={{ gap: 'var(--sx-spacing-md)' }}>
             {/* Header da Tabela */}
-            <div className="flex flex-col md:flex-row md:items-center justify-between" style={{ gap: 'calc(var(--theme-gap) / 1.5)' }}>
+            <div className="flex flex-col md:flex-row md:items-center justify-between" style={{ gap: 'calc(var(--sx-spacing-md) / 1.5)' }}>
                 <div>
                     <h3 
                         className={`font-black text-white tracking-tight ${density === 'spacious' ? 'text-2xl' : 'text-xl'}`} 
                         style={{ 
                             fontWeight: 'var(--heading-weight)',
-                            color: role === 'primary' ? 'var(--theme-primary)' : 'white'
+                            color: role === 'primary' ? 'var(--sx-color-primary-base)' : 'white'
                         }}
                     >
                         {label || 'Listagem de Dados'}
@@ -100,7 +100,7 @@ export const SarakTable: React.FC<SarakTableProps> = ({ endpoint, label, mapping
                     <p className="text-white/30 text-xs">{filteredData.length} registros encontrados</p>
                 </div>
                 
-                <div className="flex items-center" style={{ gap: 'calc(var(--theme-gap) / 3)' }}>
+                <div className="flex items-center" style={{ gap: 'calc(var(--sx-spacing-md) / 3)' }}>
                     <div className="w-full md:w-64">
                         <SarakInput 
                             type="text" 
@@ -119,17 +119,17 @@ export const SarakTable: React.FC<SarakTableProps> = ({ endpoint, label, mapping
             </div>
 
             {/* Container da Tabela com Glassmorphism */}
-            <div className="relative bg-theme-card border-theme overflow-hidden rounded-theme">
+            <div className="relative bg-[var(--sx-color-surface-base)] border-[var(--sx-color-border-base)] overflow-hidden rounded-[var(--sx-radius-md)]">
                 <div className="overflow-x-auto">
                     <table className="w-full text-left border-collapse">
                         <thead>
-                            <tr className="bg-white/5 border-b border-theme">
+                            <tr className="bg-white/5 border-b border-[var(--sx-color-border-base)]">
                                 {columns.map(col => (
                                     <th 
                                         key={col} 
                                         className="text-2xs font-black text-white/30 uppercase tracking-[0.2em]" 
                                         style={{ 
-                                            padding: density === 'compact' ? '0.5rem 1rem' : 'calc(var(--theme-pad) / 1.5) var(--theme-pad)' 
+                                            padding: density === 'compact' ? 'var(--sx-spacing-sm) var(--sx-spacing-md)' : 'calc(var(--sx-spacing-md) / 1.5) var(--sx-spacing-md)' 
                                         }}
                                     >
                                         <div className="flex items-center gap-2 cursor-pointer hover:text-white transition-colors">
@@ -138,7 +138,7 @@ export const SarakTable: React.FC<SarakTableProps> = ({ endpoint, label, mapping
                                         </div>
                                     </th>
                                 ))}
-                                <th style={{ padding: density === 'compact' ? '0.5rem 1rem' : 'calc(var(--theme-pad) / 1.5) var(--theme-pad)' }}></th>
+                                <th style={{ padding: density === 'compact' ? 'var(--sx-spacing-sm) var(--sx-spacing-md)' : 'calc(var(--sx-spacing-md) / 1.5) var(--sx-spacing-md)' }}></th>
                             </tr>
                         </thead>
                         <tbody>
@@ -147,11 +147,11 @@ export const SarakTable: React.FC<SarakTableProps> = ({ endpoint, label, mapping
                                     [...Array(5)].map((_, i) => (
                                         <tr key={`skeleton-${i}`} className="animate-pulse">
                                             {columns.map(col => (
-                                                <td key={`cell-sk-${col}`} style={{ padding: 'calc(var(--theme-pad) / 2) var(--theme-pad)' }}>
+                                                <td key={`cell-sk-${col}`} style={{ padding: 'calc(var(--sx-spacing-md) / 2) var(--sx-spacing-md)' }}>
                                                     <div className="h-4 bg-white/5 rounded-md w-3/4"></div>
                                                 </td>
                                             ))}
-                                            <td style={{ padding: 'calc(var(--theme-pad) / 2) var(--theme-pad)' }}></td>
+                                            <td style={{ padding: 'calc(var(--sx-spacing-md) / 2) var(--sx-spacing-md)' }}></td>
                                         </tr>
                                     ))
                                 ) : (
@@ -168,15 +168,15 @@ export const SarakTable: React.FC<SarakTableProps> = ({ endpoint, label, mapping
                                                     key={col} 
                                                     className={`text-white/70 font-medium ${density === 'compact' ? 'text-xs' : 'text-sm'}`} 
                                                     style={{ 
-                                                        padding: density === 'compact' ? '0.5rem 1rem' : 'calc(var(--theme-pad) / 2) var(--theme-pad)' 
+                                                        padding: density === 'compact' ? 'var(--sx-spacing-sm) var(--sx-spacing-md)' : 'calc(var(--sx-spacing-md) / 2) var(--sx-spacing-md)' 
                                                     }}
                                                 >
                                                     {typeof row[col] === 'boolean' ? (
                                                         <span 
-                                                            className="px-2 py-0.5 rounded-theme text-2xs font-black uppercase"
+                                                            className="px-2 py-0.5 rounded-[var(--sx-radius-md)] text-2xs font-black uppercase"
                                                             style={{ 
-                                                                backgroundColor: row[col] ? 'var(--theme-success-bg)' : 'var(--theme-error-bg)',
-                                                                color: row[col] ? 'var(--theme-success)' : 'var(--theme-error)'
+                                                                backgroundColor: row[col] ? 'var(--sx-color-success-surface)' : 'var(--sx-color-danger-surface)',
+                                                                color: row[col] ? 'var(--sx-color-success-base)' : 'var(--sx-color-danger-base)'
                                                             }}
                                                         >
                                                             {row[col] ? 'Ativo' : 'Inativo'}
@@ -186,7 +186,7 @@ export const SarakTable: React.FC<SarakTableProps> = ({ endpoint, label, mapping
                                                     )}
                                                 </td>
                                             ))}
-                                            <td className="text-right" style={{ padding: density === 'compact' ? '0.5rem 1rem' : 'calc(var(--theme-pad) / 2) var(--theme-pad)' }}>
+                                            <td className="text-right" style={{ padding: density === 'compact' ? 'var(--sx-spacing-sm) var(--sx-spacing-md)' : 'calc(var(--sx-spacing-md) / 2) var(--sx-spacing-md)' }}>
                                                 <SarakIconButton 
                                                     icon={<MoreHorizontal size={16} />}
                                                     variant="ghost"
@@ -201,8 +201,8 @@ export const SarakTable: React.FC<SarakTableProps> = ({ endpoint, label, mapping
                 </div>
 
                 {filteredData.length === 0 && !loading && (
-                    <div className="flex flex-col items-center justify-center text-center" style={{ padding: 'calc(var(--theme-pad) * 5)', gap: 'calc(var(--theme-gap) / 2)' }}>
-                        <div className="inline-flex p-4 bg-theme-card border-theme rounded-theme">
+                    <div className="flex flex-col items-center justify-center text-center" style={{ padding: 'calc(var(--sx-spacing-md) * 5)', gap: 'calc(var(--sx-spacing-md) / 2)' }}>
+                        <div className="inline-flex p-4 bg-[var(--sx-color-surface-base)] border-[var(--sx-color-border-base)] rounded-[var(--sx-radius-md)]">
                             <AlertCircle className="text-white/10" size={32} />
                         </div>
                         <p className="text-white/20 text-xs font-black uppercase tracking-widest">Nenhum dado encontrado</p>

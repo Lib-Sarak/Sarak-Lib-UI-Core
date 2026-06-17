@@ -31,7 +31,7 @@ export const LanguageSelector = () => {
         .filter(Boolean) as any[];
 
     return (
-        <div className="flex items-center gap-1 bg-theme-card border border-theme-border rounded-xl px-2 py-1">
+        <div className="flex items-center gap-1 bg-[var(--sx-color-surface-base)] border border-[var(--sx-color-border-base)]-border rounded-xl px-2 py-1">
             {activeLangs.map(l => (
                 <button
                     key={l.id}
@@ -58,7 +58,7 @@ export const ThemeToggle = () => {
                 data-action-id="ui:theme_toggle_btn"
                 data-action-name="Toggle Brightness (Bar)"
                 data-action-category="Interface"
-                className="p-2.5 rounded-xl bg-theme-card border border-theme-border text-theme-muted hover:text-theme-primary transition-all group overflow-hidden relative"
+                className="p-2.5 rounded-xl bg-[var(--sx-color-surface-base)] border border-[var(--sx-color-border-base)]-border text-theme-muted hover:text-theme-primary transition-all group overflow-hidden relative"
             >
                 <AnimatePresence mode="wait" initial={false}>
                     <motion.div
@@ -89,7 +89,7 @@ export const UserMenu = ({ user, onPasswordModal, onLogout }: { user: any, onPas
                 <span className="text-xs font-bold text-theme-muted group-hover:text-theme-primary transition-all hidden sm:block uppercase tracking-widest">
                     {userName}
                 </span>
-                <div className="w-8 h-8 rounded-full bg-theme-body border border-theme-border flex items-center justify-center text-theme-muted group-hover:text-theme-primary transition-all">
+                <div className="w-8 h-8 rounded-full bg-theme-body border border-[var(--sx-color-border-base)]-border flex items-center justify-center text-theme-muted group-hover:text-theme-primary transition-all">
                     <User className="w-4 h-4" />
                 </div>
                 <ChevronDown className={`w-3 h-3 text-theme-muted transition-transform ${isOpen ? 'rotate-180' : ''}`} />
@@ -103,7 +103,7 @@ export const UserMenu = ({ user, onPasswordModal, onLogout }: { user: any, onPas
                             initial={{ opacity: 0, y: -10, scale: 0.95 }}
                             animate={{ opacity: 1, y: 0, scale: 1 }}
                             exit={{ opacity: 0, y: -10, scale: 0.95 }}
-                            className="absolute right-0 bottom-full mb-2 w-48 bg-theme-card border border-theme-border rounded-xl shadow-2xl z-50 overflow-hidden"
+                            className="absolute right-0 bottom-full mb-2 w-48 bg-[var(--sx-color-surface-base)] border border-[var(--sx-color-border-base)]-border rounded-xl shadow-2xl z-50 overflow-hidden"
                         >
                             <div className="p-1">
                                 <button onClick={() => { setIsOpen(false); onPasswordModal(); }} className="w-full flex items-center gap-3 px-3 py-2.5 text-sm text-theme-main hover:bg-theme-primary/10 rounded-lg transition-colors text-left">
@@ -125,7 +125,7 @@ export const UserMenu = ({ user, onPasswordModal, onLogout }: { user: any, onPas
 };
 
 export const ModuleSelector = ({ currentModule, setCurrentModule, modules = [] }: { currentModule: string, setCurrentModule: (id: string) => void, modules: any[] }) => (
-    <div className="flex items-center bg-theme-body/50 p-1 rounded-xl border border-theme-border">
+    <div className="flex items-center bg-theme-body/50 p-1 rounded-xl border border-[var(--sx-color-border-base)]-border">
         {modules.map((mod: any) => (
             <button
                 key={mod.id}

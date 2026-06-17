@@ -107,17 +107,17 @@ export const SarakSecurityOrchestrator: React.FC<SarakSecurityOrchestratorProps>
     };
 
     return (
-        <div className="w-full max-w-2xl mx-auto bg-theme-card border-theme overflow-hidden shadow-2xl" style={{ padding: 'var(--theme-pad)', borderRadius: 'var(--sarak-security-radius, 16px)' }}>
+        <div className="w-full max-w-2xl mx-auto bg-[var(--sx-color-surface-base)] border-[var(--sx-color-border-base)] overflow-hidden shadow-2xl" style={{ padding: 'var(--sx-spacing-md)', borderRadius: 'var(--sx-radius-lg)' }}>
             {/* Header */}
-            <div className="flex items-center gap-4 mb-8 border-b border-[var(--theme-border)] pb-6">
-                <div className="p-3 bg-[var(--theme-primary)]/10" style={{ borderRadius: 'calc(var(--sarak-security-radius, 16px) * 0.75)' }}>
-                    <Shield className="text-[var(--theme-primary)]" size={24} />
+            <div className="flex items-center gap-4 mb-8 border-b border-[var(--sx-color-border-base)] pb-6">
+                <div className="p-3 bg-[var(--sx-color-primary-base)]/10" style={{ borderRadius: 'calc(var(--sx-radius-lg) * 0.75)' }}>
+                    <Shield className="text-[var(--sx-color-primary-base)]" size={24} />
                 </div>
                 <div>
-                    <h2 className="text-xl font-black uppercase tracking-[0.2em] text-[var(--theme-title)]">
+                    <h2 className="text-xl font-black uppercase tracking-[0.2em] text-[var(--sx-color-text-title)]">
                         {label || 'Orquestrador de Segurança'}
                     </h2>
-                    <p className="text-2xs uppercase tracking-widest text-[var(--theme-muted)] font-bold">
+                    <p className="text-2xs uppercase tracking-widest text-[var(--sx-color-text-muted)] font-bold">
                         Gestão de Identidade e Autenticação Multifator
                     </p>
                 </div>
@@ -131,8 +131,8 @@ export const SarakSecurityOrchestrator: React.FC<SarakSecurityOrchestratorProps>
                         initial="hidden" animate="visible" exit="exit"
                         className="flex flex-col items-center justify-center py-12 gap-4"
                     >
-                        <RefreshCw className="animate-spin text-[var(--theme-primary)]" size={32} />
-                        <span className="text-2xs uppercase font-black tracking-[0.3em] text-[var(--theme-muted)]">Sincronizando Vault...</span>
+                        <RefreshCw className="animate-spin text-[var(--sx-color-primary-base)]" size={32} />
+                        <span className="text-2xs uppercase font-black tracking-[0.3em] text-[var(--sx-color-text-muted)]">Sincronizando Vault...</span>
                     </motion.div>
                 )}
 
@@ -143,7 +143,7 @@ export const SarakSecurityOrchestrator: React.FC<SarakSecurityOrchestratorProps>
                         initial="hidden" animate="visible" exit="exit"
                         className="space-y-6"
                     >
-                        <div className="flex items-center justify-between p-6 bg-[var(--theme-card)]/40 border border-[var(--theme-border)] rounded-xl">
+                        <div className="flex items-center justify-between p-6 bg-[var(--sx-color-surface-base)]/40 border border-[var(--sx-color-border-base)] rounded-xl">
                             <div className="flex items-center gap-4">
                                 {mfaStatus?.enabled ? (
                                     <ShieldCheck className="text-emerald-500" size={32} />
@@ -151,7 +151,7 @@ export const SarakSecurityOrchestrator: React.FC<SarakSecurityOrchestratorProps>
                                     <ShieldAlert className="text-amber-500" size={32} />
                                 )}
                                 <div>
-                                    <div className="text-xs font-black uppercase tracking-widest text-[var(--theme-title)]">Autenticação de Dois Fatores (2FA)</div>
+                                    <div className="text-xs font-black uppercase tracking-widest text-[var(--sx-color-text-title)]">Autenticação de Dois Fatores (2FA)</div>
                                     <div className="text-2xs uppercase tracking-widest font-bold opacity-50">
                                         Status: {mfaStatus?.enabled ? 'Ativo e Protegido' : 'Desativado'}
                                     </div>
@@ -191,10 +191,10 @@ export const SarakSecurityOrchestrator: React.FC<SarakSecurityOrchestratorProps>
                         initial="hidden" animate="visible" exit="exit"
                         className="flex flex-col items-center text-center gap-6"
                     >
-                        <div className="text-xs font-black uppercase tracking-widest text-[var(--theme-title)]">Configuração de Segundo Fator</div>
+                        <div className="text-xs font-black uppercase tracking-widest text-[var(--sx-color-text-title)]">Configuração de Segundo Fator</div>
                         
                         {/* QR Code Container */}
-                        <div className="p-4 bg-white rounded-2xl shadow-xl border-4 border-[var(--theme-primary)]/20">
+                        <div className="p-4 bg-white rounded-2xl shadow-xl border-4 border-[var(--sx-color-primary-base)]/20">
                             {setupData?.provisioning_uri ? (
                                 <img 
                                     src={`https://api.qrserver.com/v1/create-qr-code/?size=${qrSize}x${qrSize}&data=${encodeURIComponent(setupData.provisioning_uri)}`}
@@ -212,7 +212,7 @@ export const SarakSecurityOrchestrator: React.FC<SarakSecurityOrchestratorProps>
                         </div>
 
                         <div className="max-w-xs space-y-2">
-                            <p className="text-[10px] uppercase tracking-wider text-[var(--theme-muted)] leading-tight">
+                            <p className="text-[10px] uppercase tracking-wider text-[var(--sx-color-text-muted)] leading-tight">
                                 Escaneie o código acima com seu app de autenticação (Google Authenticator, Authy, etc.) e insira o código de 6 dígitos abaixo.
                             </p>
                         </div>
@@ -240,7 +240,7 @@ export const SarakSecurityOrchestrator: React.FC<SarakSecurityOrchestratorProps>
                                 disabled={code.length !== 6 || isValidating}
                                 variant="primary"
                                 fullWidth
-                                className="py-4 shadow-xl shadow-[var(--theme-primary)]/20"
+                                className="py-4 shadow-xl shadow-[var(--sx-color-primary-base)]/20"
                             >
                                 {isValidating ? 'Validando...' : 'Ativar Proteção'}
                             </SarakButton>
@@ -257,8 +257,8 @@ export const SarakSecurityOrchestrator: React.FC<SarakSecurityOrchestratorProps>
                     >
                         <ShieldAlert className="text-red-500" size={48} />
                         <div>
-                            <div className="text-xs font-black uppercase tracking-widest text-[var(--theme-title)] mb-2">Confirmar Desativação</div>
-                            <p className="text-[10px] uppercase tracking-wider text-[var(--theme-muted)] max-w-xs">
+                            <div className="text-xs font-black uppercase tracking-widest text-[var(--sx-color-text-title)] mb-2">Confirmar Desativação</div>
+                            <p className="text-[10px] uppercase tracking-wider text-[var(--sx-color-text-muted)] max-w-xs">
                                 Por segurança, insira o código de 6 dígitos do seu app para remover a proteção de segundo fator.
                             </p>
                         </div>
@@ -309,8 +309,8 @@ export const SarakSecurityOrchestrator: React.FC<SarakSecurityOrchestratorProps>
                             <CheckCircle2 className="text-emerald-500" size={40} />
                         </div>
                         <div>
-                            <div className="text-lg font-black uppercase tracking-[0.2em] text-[var(--theme-title)] mb-2">Operação Concluída</div>
-                            <p className="text-2xs uppercase tracking-widest text-[var(--theme-muted)] font-bold">
+                            <div className="text-lg font-black uppercase tracking-[0.2em] text-[var(--sx-color-text-title)] mb-2">Operação Concluída</div>
+                            <p className="text-2xs uppercase tracking-widest text-[var(--sx-color-text-muted)] font-bold">
                                 O cofre de segurança foi atualizado com sucesso.
                             </p>
                         </div>

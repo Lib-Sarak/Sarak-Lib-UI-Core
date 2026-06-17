@@ -1,47 +1,28 @@
 import React, { InputHTMLAttributes } from 'react';
 import { useSarakUI } from '../../../core/Provider/SarakUIProvider';
+import { useAtomicStyles } from '../hooks/useAtomicStyles';
 
 export interface SarakSwitchProps extends Omit<InputHTMLAttributes<HTMLInputElement>, 'type'> {
-    label?: string;
-    description?: string;
+    label?: React.ReactNode;
+    description?: React.ReactNode;
 }
 
 /**
  * Componente Atômico: SarakSwitch
- * Substitui o `<input type="checkbox">` e alternadores. 
- * Estilizado via Design Engine.
  */
 export const SarakSwitch: React.FC<SarakSwitchProps> = ({
     label,
     description,
     className = '',
     disabled,
-    checked,
+    checked = false,
     style,
     ...props
 }) => {
     const { design } = useSarakUI();
+    const { getSwitchStyles } = useAtomicStyles();
 
-    const activeBg = 'var(--sarak-switch-active-bg, var(--theme-primary))';
-    const thumbBg = 'var(--sarak-switch-thumb, #ffffff)';
-    const blurAmount = design?.switchBackdropBlur || 4;
-    const styleType = design?.switchStyleType || 'tactile';
-
-    const dynamicTrackStyle: React.CSSProperties = {
-        backgroundColor: checked ? activeBg : 'rgba(255, 255, 255, 0.1)',
-        backdropFilter: `blur(${blurAmount}px)`,
-        WebkitBackdropFilter: `blur(${blurAmount}px)`
-    };
-
-    const dynamicThumbStyle: React.CSSProperties = {
-        backgroundColor: thumbBg,
-        transform: checked ? 'translateX(100%)' : 'translateX(0)',
-    };
-
-    if (styleType === 'glass') {
-        dynamicTrackStyle.backgroundColor = checked ? activeBg : 'rgba(255, 255, 255, 0.05)';
-        dynamicTrackStyle.border = '1px solid rgba(255, 255, 255, 0.1)';
-    }
+    const { trackStyle, thumbStyle } = getSwitchStyles(design, !!checked);
 
     return (
         <label className={`flex items-center gap-4 cursor-pointer ${disabled ? 'opacity-50 cursor-not-allowed pointer-events-none' : ''} ${className}`} style={style}>
@@ -55,18 +36,18 @@ export const SarakSwitch: React.FC<SarakSwitchProps> = ({
                 />
                 <div
                     className="block w-10 h-6 rounded-full transition-all duration-300 ease-in-out"
-                    style={dynamicTrackStyle}
+                    style={trackStyle}
                 ></div>
                 <div
                     className="absolute left-1 top-1 w-4 h-4 rounded-full transition-transform duration-300 ease-in-out shadow-sm"
-                    style={dynamicThumbStyle}
+                    style={thumbStyle}
                 ></div>
             </div>
             
             {(label || description) && (
                 <div className="flex flex-col">
-                    {label && <span className="text-sm font-medium text-[var(--theme-text)]">{label}</span>}
-                    {description && <span className="text-xs text-[var(--theme-text-sec)]">{description}</span>}
+                    {label && <span className="text-sm font-medium text-[var(--sx-color-text-muted)]">{label}</span>}
+                    {description && <span className="text-xs text-[var(--sx-color-text-muted)]">{description}</span>}
                 </div>
             )}
         </label>

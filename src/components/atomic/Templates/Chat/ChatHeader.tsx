@@ -10,18 +10,18 @@ interface ChatHeaderProps {
 }
 
 export const ChatHeader: React.FC<ChatHeaderProps> = ({ label, mode, setMode, clearChat }) => (
-  <header className="flex items-center justify-between px-6 py-4 border-b border-theme bg-[var(--theme-muted)]/5" style={{ padding: 'calc(var(--theme-pad) / 1.5) var(--theme-pad)' }}>
-    <div className="flex items-center" style={{ gap: 'calc(var(--theme-gap) / 2)' }}>
-      <div className="p-2 bg-gradient-to-br from-[var(--theme-primary-focus)] to-[var(--theme-primary)] rounded-lg shadow-lg shadow-[var(--theme-primary-focus)]">
-        <Bot size={20} className="text-[var(--theme-on-primary)]" />
+  <header className="flex items-center justify-between px-6 py-4 border-b border-[var(--sx-color-border-base)] bg-[var(--sx-color-text-muted)]/5" style={{ padding: 'calc(var(--sx-spacing-md) / 1.5) var(--sx-spacing-md)' }}>
+    <div className="flex items-center" style={{ gap: 'calc(var(--sx-spacing-md) / 2)' }}>
+      <div className="p-2 bg-gradient-to-br from-[var(--sx-color-primary-glow)] to-[var(--sx-color-primary-base)] rounded-lg shadow-lg shadow-[var(--sx-color-primary-glow)]">
+        <Bot size={20} className="text-[var(--sx-color-primary-text)]" />
       </div>
       <div>
-        <h2 className="text-sm font-bold tracking-tight text-[var(--theme-title)] uppercase" style={{ fontWeight: 'var(--heading-weight)' }}>{label}</h2>
-        <p className="text-2xs text-[var(--theme-muted)] font-medium tracking-widest">Agnostic Interface • Sarak Lib Engine</p>
+        <h2 className="text-sm font-bold tracking-tight text-[var(--sx-color-text-title)] uppercase" style={{ fontWeight: 'var(--heading-weight)' }}>{label}</h2>
+        <p className="text-2xs text-[var(--sx-color-text-muted)] font-medium tracking-widest">Agnostic Interface • Sarak Lib Engine</p>
       </div>
     </div>
 
-    <div className="flex items-center" style={{ gap: 'calc(var(--theme-gap) / 4)' }}>
+    <div className="flex items-center" style={{ gap: 'calc(var(--sx-spacing-md) / 4)' }}>
       <SarakButton 
         onClick={() => setMode(mode === 'auto' ? 'manual' : 'auto')}
         variant={mode === 'auto' ? 'success' : 'primary'}
@@ -35,7 +35,7 @@ export const ChatHeader: React.FC<ChatHeaderProps> = ({ label, mode, setMode, cl
         onClick={clearChat} 
         icon={<Trash2 size={18} />}
         variant="ghost"
-        className="hover:bg-[var(--theme-error-bg)] hover:text-[var(--theme-error)]"
+        className="hover:bg-[var(--sx-color-danger-surface)] hover:text-[var(--sx-color-danger-base)]"
       />
     </div>
   </header>

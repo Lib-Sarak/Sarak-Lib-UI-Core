@@ -62,15 +62,15 @@ export const SarakEmptyState: React.FC<SarakEmptyStateProps> = ({ type = 'abstra
                     className="w-[500px] h-[500px] border border-dashed border-white/5 rounded-full flex items-center justify-center relative"
                 >
                     <div className="w-[300px] h-[300px] border border-dashed border-white/10 rounded-full" />
-                    <div className="absolute top-0 left-1/2 -translate-x-1/2 w-2 h-2 rounded-full bg-[var(--theme-primary)] shadow-[0_0_15px_var(--theme-primary)]" />
+                    <div className="absolute top-0 left-1/2 -translate-x-1/2 w-2 h-2 rounded-full bg-[var(--sx-color-primary-base)] shadow-[0_0_15px_var(--sx-color-primary-base)]" />
                 </motion.div>
 
                 <div className="absolute z-10 text-center">
-                    <motion.div variants={itemVariants} className="text-[var(--theme-primary)] mb-6 mx-auto w-12 h-12 flex items-center justify-center">
+                    <motion.div variants={itemVariants} className="text-[var(--sx-color-primary-base)] mb-6 mx-auto w-12 h-12 flex items-center justify-center">
                         <Box size={40} strokeWidth={1} />
                     </motion.div>
                     <motion.h2 variants={itemVariants} className="text-2xl font-black uppercase tracking-[0.8em] text-white/10 ml-[0.8em]">VOID</motion.h2>
-                    <motion.p variants={itemVariants} className="text-2xs mt-4 uppercase tracking-[0.2em] text-[var(--theme-primary)]/40 font-bold">Start a module in the toolbar</motion.p>
+                    <motion.p variants={itemVariants} className="text-2xs mt-4 uppercase tracking-[0.2em] text-[var(--sx-color-primary-base)]/40 font-bold">Start a module in the toolbar</motion.p>
                 </div>
             </motion.div>
         );
@@ -90,12 +90,12 @@ export const SarakEmptyState: React.FC<SarakEmptyStateProps> = ({ type = 'abstra
                     opacity: [0.3, 0.6, 0.3]
                 }}
                 transition={{ duration: 4, repeat: Infinity }}
-                className="absolute w-[300px] h-[300px] rounded-full bg-[var(--theme-primary)]/5 blur-[100px]"
+                className="absolute w-[300px] h-[300px] rounded-full bg-[var(--sx-color-primary-base)]/5 blur-[100px]"
             />
             
             <motion.div variants={itemVariants} className="relative mb-8">
                 <div className="relative z-10 p-6 rounded-3xl bg-white/[0.02] border border-white/5 backdrop-blur-3xl shadow-2xl">
-                    <Sparkles size={48} className="text-[var(--theme-primary)] animate-pulse" />
+                    <Sparkles size={48} className="text-[var(--sx-color-primary-base)] animate-pulse" />
                 </div>
                 <motion.div 
                     animate={{ rotate: -360 }}
@@ -106,7 +106,7 @@ export const SarakEmptyState: React.FC<SarakEmptyStateProps> = ({ type = 'abstra
 
             <motion.div variants={itemVariants} className="text-center z-10">
                 <h2 className="text-sm font-black uppercase tracking-[0.4em] text-white/40 mb-2">Sarak Lib Core Engine</h2>
-                <div className="h-px w-12 bg-[var(--theme-primary)]/40 mx-auto mb-4" />
+                <div className="h-px w-12 bg-[var(--sx-color-primary-base)]/40 mx-auto mb-4" />
                 <p className="text-2xs text-white/20 uppercase tracking-widest max-w-[280px] leading-loose">
                     The ecosystem is in harmony. <br/>
                     No signal detected in the main viewport.
