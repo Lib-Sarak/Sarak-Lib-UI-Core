@@ -67,3 +67,22 @@ Um **Motor Genérico de Renderização (Dynamic Renderer)** lê esse JSON e mont
 **Escolha A: Tokens Estruturais (Structural Props)** foi a rota arquitetural selecionada.
 
 **Nota Técnica de Execução (Regra de Paridade):** Para respeitar a Spec 05, é estritamente proibido incluir a lógica condicional de classes (ex: `if (layout === 'row')`) diretamente no JSX do componente atômico. A transformação dos tokens estruturais em classes utilitárias deve obrigatoriamente ocorrer de forma isolada na **Camada 6 (Hook Controlador)**. O componente atômico permanece como um receptor passivo (dumb component).
+
+---
+
+# 4. Roteiro de Desengessamento (Expansão Geométrica)
+Para viabilizar a "Opção A" na prática, a biblioteca passa por um processo de erradicação de HTML hardcoded (Tailwind estrutural direto no JSX). A geometria de todo átomo passa a ser ditada pelo Banco de Dados.
+
+## 4.1 Eixos Alvo de Expansão (Tokens Geométricos)
+As áreas críticas que receberão injeção pesada de tokens de Layout:
+- **Macro-Layout:** Controle de Grids, larguras máximas e espaçamentos entre seções.
+- **Anatomia de Cards:** Direcionamento de mídia, flex-direction de cabeçalho e rodapé.
+- **Geometria de Formulários:** Posição de labels (Top, Left, Float), densidade de inputs, e estratégia de exibição de erros.
+- **Modais e Drawers:** Empacotamento de ações (Footer) e integração de Header.
+- **Escala Tipográfica:** Fatores de proporção e espaçamento entre linhas dinâmico.
+
+## 4.2 Fases Operacionais da Manobra
+1. **Adição de Containers:** Criação de átomos estruturais puramente focados em macro-layout (ex: `SarakGrid`, `SarakFormGroup`).
+2. **Refatoração Dinâmica:** Remoção completa de classes geométricas hardcoded (`p-4`, `flex-col`, `gap-4`) do JSX dos 38 átomos atuais, substituindo-as pela injeção do *Hook Controlador Estrutural*.
+3. **Cisão de Átomos:** Criação de novos átomos caso os antigos estivessem excessivamente complexos para a arquitetura purista.
+4. **Varredura Final (Auditoria):** Limpeza automatizada garantindo 0% de ocorrências Tailwind estruturais chumbadas na raiz.

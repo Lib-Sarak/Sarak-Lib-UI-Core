@@ -11,6 +11,13 @@ relacionados: ["03-padrao-biblioteca-atomica"]
 # 1. Visão Geral
 Esta especificação atua como um catálogo descritivo para as hierarquias visuais, variantes e propósitos dos componentes da Sarak-Lib-UI-Core. Enquanto a Spec 03 define a proibição do uso de HTML (Dogfooding e Regras de Negócio), esta Spec define o **comportamento** e as **variantes** de cada componente dentro da taxonomia da biblioteca.
 
+# 1.1 Fronteiras da Arquitetura (O Guia para Agentes e Devs)
+Para garantir a sanidade da Sarak UI Core, o ecossistema é estritamente particionado em três camadas mentais e estruturais:
+
+- **Componentes Físicos:** É a métrica de infraestrutura. Refere-se à existência literal de um arquivo `.tsx` exportável no código-fonte.
+- **Componentes Atômicos (`src/components/atomic/`):** São blocos de construção indivisíveis, cegos e altamente reutilizáveis (Dumb Components). A única responsabilidade de um átomo é consumir o payload visual do Banco de Dados (Tokens JSON) e renderizar a UI. Eles **NUNCA** possuem lógica de negócio, requisições de API ou regras de estado complexas.
+- **Features / Módulos (`src/features/`):** São os "organismos funcionais". Uma feature é a composição de dezenas de átomos acoplada a gerenciamento de estado global (Context/Redux) e regras de negócio. O Agente LLM visual modifica os átomos indiretamente (via BD), o que reflete magicamente em toda a Feature sem alterar a lógica de negócio estrutural.
+
 # 2. Taxonomia de Botões (`<SarakButton>` e derivados)
 Para suportar temas complexos como Neon Glow e Frosted Glass sem perder hierarquia ou poluir as interfaces, os botões são categorizados nos seguintes níveis de ênfase:
 

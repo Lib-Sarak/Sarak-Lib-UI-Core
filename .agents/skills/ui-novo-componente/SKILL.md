@@ -11,6 +11,7 @@ Esta skill é acionada SEMPRE que houver a necessidade de criar ou alterar uma p
 
 ## Quando usar
 - Quando solicitado a adicionar um novo token, propriedade visual ou componente atômico ao repositório.
+- **Validação de Fronteira:** Antes de aceitar a tarefa, identifique se o componente possui estado/negócio (deve ir para `src/features/`) ou se é puramente visual (deve ir para `src/components/atomic/`). Se for para features, rejeite usar esta skill e siga arquitetura padrão.
 - Use APENAS quando o usuário solicitar explicitamente. NÃO acione proativamente.
 
 ## Workflow
@@ -34,6 +35,7 @@ Esta skill é acionada SEMPRE que houver a necessidade de criar ou alterar uma p
 
 ## Regras
 - **NUNCA** crie um token em apenas uma ou duas camadas; a paridade é estritamente 1:1:1:1:1.
+- **ALOCAÇÃO CORRETA:** Todo componente atômico novo DEVE ser criado dentro de `src/components/atomic/`. Se a demanda envolver lógica de negócio, redirecione-a para `src/features/` fora desta skill.
 - **NÃO** finalize a tarefa sem rodar o script de verificação de paridade.
 
 ## Checklist

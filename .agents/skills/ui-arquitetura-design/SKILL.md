@@ -33,6 +33,8 @@ Esta skill define a lei arquitetural do módulo Design Engine do Sarak-Lib-UI-Co
 - **NÃO** duplique definições de estilo que já existam no Master Map.
 - **ABSTRAÇÃO DE VARIANTES OBRIGATÓRIA:** Todo o mapeamento de variáveis CSS para criar variantes complexas (ex: `neon`, `frosted`, lógicas matemáticas) DEVE morar em um Hook Controlador (ex: `useAtomicStyles`).
 - **PROIBIDO LÓGICA NO JSX:** É estritamente proibido criar blocos condicionais grandes (if/switch) de roteamento de estilo ou injetar tags `<style>` cruas dentro do componente atômico. O Componente é "burro" (Dumb Component) e deve ter menos de 40 linhas.
+- **FRONTEIRA LÓGICA (ATÔMICO VS FEATURE):** É **ESTRITAMENTE PROIBIDO** injetar lógica de negócio (ex: requests HTTP, `useEffect` complexo, chamadas à API ou estado global Context/Redux) dentro de `src/components/atomic/`. Toda inteligência e estado da aplicação DEVE ser alocada numa Feature (`src/features/`), enquanto os átomos permanecem passivos.
+- **PROIBIÇÃO DE HARDCODE ESTRUTURAL (DESENGESSAMENTO):** É absolutamente proibido chumbar classes estruturais do Tailwind (ex: `flex-col`, `gap-4`, `p-4`, `w-full`, `items-center`) diretamente no `className` do JSX dos átomos. Toda e qualquer geometria, layout e espaçamento deve obrigatoriamente derivar de um Hook de Layout (ex: `className={layoutStyles.container}`). O átomo deve ser fluidamente controlado pelo BD.
 
 ## Checklist
 - [ ] O componente obedece ao fluxo Schema -> CSS Variables?
