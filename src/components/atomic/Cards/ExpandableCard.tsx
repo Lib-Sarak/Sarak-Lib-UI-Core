@@ -2,6 +2,8 @@ import React, { useState, useEffect } from 'react';
 import { createPortal } from 'react-dom';
 import { Maximize2, Minimize2, X } from 'lucide-react';
 import { motion, AnimatePresence } from 'framer-motion';
+import { useSarakUI } from '../../../core/Provider/SarakUIProvider';
+import { useCardLayoutStyles } from './hooks/useCardLayoutStyles';
 
 interface ExpandableCardProps {
     title: string;
@@ -22,6 +24,9 @@ export const ExpandableCard: React.FC<ExpandableCardProps> = ({
     contentClassName = "",
     baseHeight = 300
 }) => {
+    const globalUI = useSarakUI();
+    const design = globalUI.design;
+    const layout = useCardLayoutStyles(design);
     const [isExpanded, setIsExpanded] = useState(false);
     const [mounted, setMounted] = useState(false);
 
@@ -47,8 +52,9 @@ export const ExpandableCard: React.FC<ExpandableCardProps> = ({
 
     return (
         <>
-            <div className={`sarak-card bg-[var(--sx-color-surface-base)] border border-[var(--sx-color-border-base)]-border rounded-sarak shadow-lg flex flex-col relative group transition-sarak ${isExpanded ? 'opacity-0 pointer-events-none' : ''} ${className}`}>
-                <div className="sarak-card-header w-full flex justify-between items-start">
+            <div className={`${layout.containerClass} sarak-card bg-[var(--sx-color-surface-base)] border border-[var(--sx-color-border-base)]-border rounded-sarak shadow-lg relative group transition-sarak ${isExpanded ? 'opacity-0 pointer-events-none' : ''} ${className}`}>
+                <div className={layout.contentClass}>
+                <div className={layout.headerClass}>
                     <h3 className="text-xs font-black text-theme-main uppercase tracking-widest flex items-center gap-2">
                         {iconContent}
                         <span className="truncate">{title}</span>
@@ -64,8 +70,9 @@ export const ExpandableCard: React.FC<ExpandableCardProps> = ({
                         </button>
                     </div>
                 </div>
-                <div className={`w-full flex-1 flex flex-col relative p-[var(--sarak-card-padding-md,24px)] ${contentClassName}`} style={dynamicStyle}>
+                <div className={`w-full flex-1 relative p-[var(--sarak-card-padding-md,24px)] ${contentClassName}`} style={dynamicStyle}>
                     {children}
+                </div>
                 </div>
             </div>
 

@@ -3,11 +3,16 @@ import '@testing-library/jest-dom';
 import { render, fireEvent, screen } from '@testing-library/react';
 import { describe, it, expect, vi } from 'vitest';
 import { SliderControl, ColorControl, SwitchControl, SelectControl } from '../DesignControls';
+import { SarakUIProvider } from '../../../../core/Provider/SarakUIProvider';
+
+const customRender = (ui: React.ReactElement) => {
+    return render(<SarakUIProvider>{ui}</SarakUIProvider>);
+};
 
 describe('DesignControls', () => {
     it('renderiza SliderControl e reage a mudanças', () => {
         const onChange = vi.fn();
-        const { container } = render(
+        const { container } = customRender(
             <SliderControl label="Opacidade" value={0.5} min={0} max={1} step={0.1} unit="" onChange={onChange} />
         );
         expect(screen.getByText('Opacidade')).toBeInTheDocument();
@@ -21,7 +26,7 @@ describe('DesignControls', () => {
 
     it('renderiza ColorControl e reage a mudanças', () => {
         const onChange = vi.fn();
-        const { container } = render(
+        const { container } = customRender(
             <ColorControl label="Cor Primária" value="#ff0000" onChange={onChange} />
         );
         expect(screen.getByText('Cor Primária')).toBeInTheDocument();
@@ -35,19 +40,19 @@ describe('DesignControls', () => {
 
     it('renderiza SwitchControl e reage a cliques', () => {
         const onChange = vi.fn();
-        const { container } = render(
+        const { container } = customRender(
             <SwitchControl label="Ativar Algo" value={false} onChange={onChange} />
         );
         expect(screen.getByText('Ativar Algo')).toBeInTheDocument();
-        
-        const buttons = container.querySelectorAll('button');
-        fireEvent.click(buttons[buttons.length - 1]);
+        // Clica no switch (que agora é um input checkbox)
+        const checkbox = container.querySelector('input[type="checkbox"]');
+        fireEvent.click(checkbox!);
         expect(onChange).toHaveBeenCalledWith(true);
     });
 
     it('renderiza SelectControl e reage a mudanças', () => {
         const onChange = vi.fn();
-        const { container } = render(
+        const { container } = customRender(
             <SelectControl label="Fonte" value="Inter" options={['Inter', 'Roboto']} onChange={onChange} />
         );
         expect(screen.getByText('Fonte')).toBeInTheDocument();

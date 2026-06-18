@@ -1,5 +1,6 @@
 import React, { InputHTMLAttributes } from 'react';
 import { useSarakUI } from '../../../core/Provider/SarakUIProvider';
+import { SarakFormGroup } from '../Layouts/SarakFormGroup';
 
 export interface SarakSliderProps extends Omit<InputHTMLAttributes<HTMLInputElement>, 'type'> {
     label?: string;
@@ -24,9 +25,9 @@ export const SarakSlider: React.FC<SarakSliderProps> = ({
     const trackColor = 'rgba(255, 255, 255, 0.1)';
 
     return (
-        <div className={`space-y-3 ${disabled ? 'opacity-50 cursor-not-allowed pointer-events-none' : ''} ${className}`} style={style}>
+        <SarakFormGroup className={`${disabled ? 'opacity-50 cursor-not-allowed pointer-events-none' : ''} ${className}`} style={style}>
             {(label || valueLabel) && (
-                <div className="flex justify-between items-center text-2xs font-black uppercase tracking-widest text-[var(--sx-color-text-muted)]">
+                <div className="flex justify-between items-center w-full text-2xs font-black uppercase tracking-widest text-[var(--sx-color-text-muted)]">
                     {label && <span>{label}</span>}
                     {valueLabel !== undefined && <span style={{ color: activeColor }}>{valueLabel}</span>}
                 </div>
@@ -42,6 +43,6 @@ export const SarakSlider: React.FC<SarakSliderProps> = ({
                     accentColor: activeColor
                 }}
             />
-        </div>
+        </SarakFormGroup>
     );
 };

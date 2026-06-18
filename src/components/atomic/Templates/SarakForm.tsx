@@ -4,6 +4,9 @@ import { Save, Settings, ShieldCheck, AlertCircle } from 'lucide-react';
 import api from '../../../shared/services/api';
 import { SarakInput } from '../Inputs';
 import { SarakButton } from '../Buttons';
+import { SarakGrid, SarakFormGroup } from '../Layouts';
+import { useStructuralStyles } from '../hooks/useStructuralStyles';
+import { twMerge } from 'tailwind-merge';
 
 interface SarakFormProps {
     endpoint: string;
@@ -41,6 +44,9 @@ export const SarakForm: React.FC<SarakFormProps> = ({
     const [loading, setLoading] = useState(mode === 'edit');
     const [saving, setSaving] = useState(false);
     const [status, setStatus] = useState<{ type: 'success' | 'error', message: string } | null>(null);
+
+    const { getContainerStyles } = useStructuralStyles();
+    const containerLayout = getContainerStyles();
 
     const fetchData = async () => {
         try {
@@ -92,7 +98,7 @@ export const SarakForm: React.FC<SarakFormProps> = ({
     };
 
     if (loading) return (
-        <div className="bg-[var(--sx-color-surface-base)] border-[var(--sx-color-border-base)] flex flex-col items-center justify-center animate-pulse rounded-[var(--sx-radius-md)]" style={{ padding: 'calc(var(--sx-spacing-md) * 3)', gap: 'calc(var(--sx-spacing-md) / 2)' }}>
+        <div className={twMerge("bg-[var(--sx-color-surface-base)] border-[var(--sx-color-border-base)] items-center justify-center animate-pulse rounded-[var(--sx-radius-md)]", containerLayout.className)} style={{ padding: 'calc(var(--sx-spacing-md) * 3)', gap: 'calc(var(--sx-spacing-md) / 2)' }}>
             <div className="w-12 h-12 bg-white/10 rounded-full" />
             <div className="h-4 w-48 bg-white/5 rounded" />
         </div>
@@ -101,7 +107,7 @@ export const SarakForm: React.FC<SarakFormProps> = ({
     const fields = mapping ? Object.keys(mapping) : Object.keys(formData);
 
     return (
-        <div className="bg-[var(--sx-color-surface-base)] border-[var(--sx-color-border-base)] relative overflow-hidden group rounded-[var(--sx-radius-md)]" style={{ padding: 'calc(var(--sx-spacing-md) * 2)' }}>
+        <div className={twMerge("bg-[var(--sx-color-surface-base)] border-[var(--sx-color-border-base)] relative overflow-hidden group rounded-[var(--sx-radius-md)]", containerLayout.className)} style={{ padding: 'calc(var(--sx-spacing-md) * 2)' }}>
             {/* Header Area */}
             <div className="flex items-center justify-between relative z-10" style={{ marginBottom: 'calc(var(--sx-spacing-md) * 1.5)' }}>
                 <div className="flex items-center" style={{ gap: 'calc(var(--sx-spacing-md) / 2)' }}>
@@ -118,10 +124,10 @@ export const SarakForm: React.FC<SarakFormProps> = ({
                 </div>
             </div>
 
-            {/* Form Fields Grid */}
-            <div className="grid grid-cols-1 md:grid-cols-2 relative z-10" style={{ gap: 'var(--sx-spacing-md)', marginBottom: 'calc(var(--sx-spacing-md) * 1.5)' }}>
+            {/* Form Fields Grid (Controlado por SarakGrid) */}
+            <SarakGrid className="relative z-10" style={{ marginBottom: 'calc(var(--sx-spacing-md) * 1.5)' }}>
                 {fields.map((key) => (
-                    <div key={key} className="flex flex-col" style={{ gap: 'calc(var(--sx-spacing-md) / 4)' }}>
+                    <SarakFormGroup key={key}>
                         <label className="text-2xs font-black text-white/30 uppercase tracking-widest pl-1 block">
                             {mapping ? mapping[key] : key.replace(/_/g, ' ')}
                         </label>
@@ -130,9 +136,9 @@ export const SarakForm: React.FC<SarakFormProps> = ({
                             onChange={(e) => handleChange(key, e.target.value)}
                             placeholder={`Digite o ${mapping ? mapping[key] : key}...`}
                         />
-                    </div>
+                    </SarakFormGroup>
                 ))}
-            </div>
+            </SarakGrid>
 
             {/* Status Message */}
             {status && (

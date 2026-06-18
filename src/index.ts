@@ -25,6 +25,9 @@ export * from './components/atomic/Atoms';
 export * from './components/atomic/Cards/ExpandableCard';
 export * from './components/atomic/Inputs/Controls';
 export * from './components/atomic/Templates';
+export * from './components/atomic/Modals';
+export * from './components/atomic/Feedback';
+export * from './components/atomic/UX';
 export { default as SarakChartEngine } from './components/engines/charts/SarakChartEngine';
 
 // Discovery and Dynamic Rendering (Universal Bridge)

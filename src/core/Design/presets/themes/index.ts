@@ -12,6 +12,17 @@ export interface ThemePreset {
     design: Record<string, any>;
 }
 
+export * from './stellar-nebula';
+export * from './crystal-glass';
+export * from './holographic-glass';
+
+// Novos Temas de Extremo Layout (Data-Driven)
+export * from './minimalist-airy';
+export * from './data-terminal';
+export * from './neumorphic-mobile';
+export * from './industrial-dashboard';
+export * from './asymmetric-editorial';
+
 import { sarakSovereignTheme } from './sarak-sovereign';
 import { crystalGlassTheme } from './crystal-glass';
 import { cyberpunkneonTheme } from './cyberpunk-neon';
@@ -25,6 +36,11 @@ import { dotMatrixElegantTheme } from './dot-matrix-elegant';
 import { stellarNebulaTheme } from './stellar-nebula';
 import { kineticFlowTheme } from './kinetic-flow';
 import { cyberRetroWaveTheme } from './cyber-retro-wave';
+import { minimalistAiry } from './minimalist-airy';
+import { dataTerminal } from './data-terminal';
+import { neumorphicMobile } from './neumorphic-mobile';
+import { industrialDashboard } from './industrial-dashboard';
+import { asymmetricEditorial } from './asymmetric-editorial';
 
 export const GLOBAL_THEMES: ThemePreset[] = [
     sarakSovereignTheme,
@@ -39,5 +55,10 @@ export const GLOBAL_THEMES: ThemePreset[] = [
     dotMatrixElegantTheme,
     stellarNebulaTheme,
     kineticFlowTheme,
-    cyberRetroWaveTheme
+    cyberRetroWaveTheme,
+    minimalistAiry,
+    dataTerminal,
+    neumorphicMobile,
+    industrialDashboard,
+    asymmetricEditorial
 ];

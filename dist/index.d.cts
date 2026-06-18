@@ -494,6 +494,79 @@ interface ResolvedNodeConfig {
 }
 declare const SarakExpandableMatrix: React$1.FC<SarakExpandableMatrixProps>;
 
+interface SarakModalProps {
+    isOpen: boolean;
+    onClose: () => void;
+    title?: React$1.ReactNode;
+    children: React$1.ReactNode;
+    footer?: React$1.ReactNode;
+    /** Se true, o clique no overlay (fundo) não fecha o modal */
+    disableOverlayClick?: boolean;
+    /** Se true, o botão de fechar não é renderizado */
+    hideCloseButton?: boolean;
+    /** Classe CSS customizada para o contêiner do modal */
+    className?: string;
+}
+declare const SarakModal: React$1.FC<SarakModalProps>;
+
+interface ModalLayoutContext {
+    headerClass: string;
+    footerClass: string;
+    closeButtonClass: string;
+}
+/**
+ * Hook Controlador Estrutural (Camada 6) - Modais
+ * Define como o Header (e botão de fechar) e o Footer (alinhamento de ações) se comportam.
+ */
+declare const useModalLayoutStyles: (design: any) => ModalLayoutContext;
+
+interface SarakEmptyStateProps {
+    type?: 'minimal' | 'abstract' | 'geometric';
+}
+declare const SarakEmptyState: React$1.FC<SarakEmptyStateProps>;
+
+type BadgeVariant = 'primary' | 'secondary' | 'success' | 'danger' | 'warning' | 'info' | 'muted';
+type BadgeSize = 'sm' | 'md' | 'lg';
+interface SarakBadgeProps extends React$1.HTMLAttributes<HTMLSpanElement> {
+    variant?: BadgeVariant;
+    size?: BadgeSize;
+    /** Se true, o badge terá bordas mais arredondadas (estilo pill) */
+    pill?: boolean;
+    /** Se true, o fundo será translúcido/suave em vez de sólido */
+    soft?: boolean;
+}
+declare const SarakBadge: React$1.FC<SarakBadgeProps>;
+
+interface SarakTabItem {
+    id: string;
+    label: React$1.ReactNode;
+    icon?: React$1.ReactNode;
+    disabled?: boolean;
+}
+interface SarakTabsProps {
+    tabs: SarakTabItem[];
+    activeTab: string;
+    onChange: (tabId: string) => void;
+    /** Estilo de exibição das abas */
+    variant?: 'pills' | 'underlined' | 'enclosed';
+    /** Preencher a largura toda? */
+    fullWidth?: boolean;
+    className?: string;
+    listClassName?: string;
+}
+declare const SarakTabs: React$1.FC<SarakTabsProps>;
+
+interface SarakTooltipProps {
+    children: React$1.ReactNode;
+    content: React$1.ReactNode;
+    position?: 'top' | 'bottom' | 'left' | 'right';
+    delay?: number;
+    className?: string;
+    /** Se true, desativa o tooltip */
+    disabled?: boolean;
+}
+declare const SarakTooltip: React$1.FC<SarakTooltipProps>;
+
 interface SarakChartEngineProps {
     type: 'line' | 'area' | 'bar' | 'pie' | 'radar' | 'gauge' | 'scatter' | 'heatmap' | 'funnel' | 'treemap' | 'candlestick' | 'sunburst' | 'histogram' | 'boxplot';
     data: any[];
@@ -640,4 +713,4 @@ interface SarakRouterState {
  */
 declare function useSarakRouter(basePath?: string): SarakRouterState;
 
-export { CustomizationPanel, DESIGN_MANIFEST, DesignScope, DeviceProvider, type DeviceType, type DiscoveredModule, DynamicRenderer, ExpandableCard, IconMap, type IconName, LanguageSelector, type MatrixNodeConfig, type ModuleManifest, ModuleSelector, type ResolvedNodeConfig, SarakAnalyticalPage, type SarakAnalyticalPageProps, SarakAuthScreen, SarakCardGrid, SarakCatalogGrid, SarakChart, SarakChartEngine, SarakChat, SarakExpandableMatrix, type SarakExpandableMatrixProps, SarakForm, SarakHidden, SarakIcon, type SarakIconProps, SarakManagementGrid, type SarakMatrixManifest, type SarakModule, type SarakRouterState, SarakSecurityOrchestrator, SarakShell, SarakStats, SarakTable, SarakUIProvider, SocialButton, ThemeToggle, UserMenu, type VisualContract, type VisualContractType, getLocalComponent, getRegisteredModules, getSarakModule, registerLocalComponent, registerSarakModule, subscribeToRegistry, useDesignDraft, useModuleDiscovery, useSarakDevice, useSarakRouter, useSarakUI };
+export { type BadgeSize, type BadgeVariant, CustomizationPanel, DESIGN_MANIFEST, DesignScope, DeviceProvider, type DeviceType, type DiscoveredModule, DynamicRenderer, ExpandableCard, IconMap, type IconName, LanguageSelector, type MatrixNodeConfig, type ModalLayoutContext, type ModuleManifest, ModuleSelector, type ResolvedNodeConfig, SarakAnalyticalPage, type SarakAnalyticalPageProps, SarakAuthScreen, SarakBadge, type SarakBadgeProps, SarakCardGrid, SarakCatalogGrid, SarakChart, SarakChartEngine, SarakChat, SarakEmptyState, SarakExpandableMatrix, type SarakExpandableMatrixProps, SarakForm, SarakHidden, SarakIcon, type SarakIconProps, SarakManagementGrid, type SarakMatrixManifest, SarakModal, type SarakModalProps, type SarakModule, type SarakRouterState, SarakSecurityOrchestrator, SarakShell, SarakStats, type SarakTabItem, SarakTable, SarakTabs, type SarakTabsProps, SarakTooltip, type SarakTooltipProps, SarakUIProvider, SocialButton, ThemeToggle, UserMenu, type VisualContract, type VisualContractType, getLocalComponent, getRegisteredModules, getSarakModule, registerLocalComponent, registerSarakModule, subscribeToRegistry, useDesignDraft, useModalLayoutStyles, useModuleDiscovery, useSarakDevice, useSarakRouter, useSarakUI };

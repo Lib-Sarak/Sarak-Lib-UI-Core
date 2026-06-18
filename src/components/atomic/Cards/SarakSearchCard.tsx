@@ -5,6 +5,7 @@ import { Search, Eye, Globe, MessageSquare, Zap } from 'lucide-react';
 import { useSarakUI } from '../../../core/Provider/SarakUIProvider';
 import { SarakInput } from '../Inputs/SarakInput';
 import { SarakSwitch } from '../Inputs/SarakSwitch';
+import { useCardLayoutStyles } from './hooks/useCardLayoutStyles';
 
 interface SarakSearchCardProps {
     item: any;
@@ -27,6 +28,7 @@ export const SarakSearchCard: React.FC<SarakSearchCardProps> = ({
 }) => {
     const context = useSarakUI();
     const design = propDesign || context.design || {};
+    const layout = useCardLayoutStyles(design);
     const [searchText, setSearchText] = useState('');
     const [focused, setFocused] = useState(false);
     
@@ -57,7 +59,7 @@ export const SarakSearchCard: React.FC<SarakSearchCardProps> = ({
         <motion.div 
             initial={{ opacity: 0, y: 15 }}
             animate={{ opacity: 1, y: 0 }}
-            className={`flex flex-col sarak-card bg-[var(--sx-color-surface-base)] border-[var(--sx-color-border-base)] relative overflow-hidden group transition-all h-fit ${className}`}
+            className={`${layout.containerClass} sarak-card bg-[var(--sx-color-surface-base)] border-[var(--sx-color-border-base)] relative overflow-hidden group transition-all h-fit ${className}`}
             style={{ 
                 transitionDuration: 'var(--animation-speed, 0.4s)',
                 padding: design.cardPadding ? `${design.cardPadding}px` : 'var(--sarak-card-padding-md, 24px)'
@@ -85,15 +87,17 @@ export const SarakSearchCard: React.FC<SarakSearchCardProps> = ({
 
 
 
-            <div className="relative z-10 flex flex-col gap-4">
+            <div className={layout.contentClass}>
                 {/* Section Header */}
-                <div className="flex flex-col">
-                    <span className="text-[9px] font-black text-[var(--sx-color-primary-base)] uppercase tracking-[0.2em] mb-1">
+                <div className={layout.headerClass}>
+                    <div className="flex flex-col">
+                        <span className="text-[9px] font-black text-[var(--sx-color-primary-base)] uppercase tracking-[0.2em] mb-1">
                         Painel de Filtros
                     </span>
                     <h4 className="text-sm font-black text-[var(--sx-color-text-title)] tracking-tight">
                         Busca de Capacidades
                     </h4>
+                    </div>
                 </div>
 
                 {/* Highly tactile input search field */}
@@ -109,8 +113,9 @@ export const SarakSearchCard: React.FC<SarakSearchCardProps> = ({
                 />
 
                 {/* Tactile toggles / Switch selector grid */}
-                <div className="flex flex-col gap-2 pt-2 border-t border-[var(--sx-color-border-base)]/20">
-                    <span className="text-[8px] font-black text-white/20 uppercase tracking-widest mb-1">Filtro de Abilities</span>
+                <div className={layout.footerClass}>
+                    <div className="flex flex-col gap-2 pt-2 border-t border-[var(--sx-color-border-base)]/20 w-full">
+                        <span className="text-[8px] font-black text-white/20 uppercase tracking-widest mb-1">Filtro de Abilities</span>
                     
                     {/* Vision Switch */}
                     <div 
@@ -145,7 +150,8 @@ export const SarakSearchCard: React.FC<SarakSearchCardProps> = ({
                             <MessageSquare size={12} className="text-[var(--sx-color-primary-base)]" />
                             <span className="text-3xs font-black uppercase text-[var(--sx-color-text-muted)]">Modo Conversacional</span>
                         </div>
-                        <SarakSwitch checked={caps.chat} onChange={() => handleToggle('chat')} />
+                            <SarakSwitch checked={caps.chat} onChange={() => handleToggle('chat')} />
+                        </div>
                     </div>
                 </div>
             </div>

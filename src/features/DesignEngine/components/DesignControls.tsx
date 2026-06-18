@@ -122,7 +122,7 @@ export const ColorControl: React.FC<any> = ({ label, description, value, onChang
 export const SwitchControl: React.FC<any> = ({ label, value, onChange, description }) => (
     <SarakSwitch 
         checked={value}
-        onChange={(checked) => onChange(checked)}
+        onChange={(e) => onChange(e.target.checked)}
         label={
             <span className="text-[10px] font-black uppercase tracking-widest flex items-center gap-1.5">
                 {label}

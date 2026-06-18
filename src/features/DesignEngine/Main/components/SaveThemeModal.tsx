@@ -2,6 +2,8 @@ import React, { useState } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
 import { Save, Copy, X, Database } from 'lucide-react';
 import { SarakInput } from '../../../../components/atomic/Inputs';
+import { useSarakUI } from '../../../../core/Provider/SarakUIProvider';
+import { useModalLayoutStyles } from '../../../../components/atomic/Modals/hooks/useModalLayoutStyles';
 
 export type SaveThemeAction = 
     | { type: 'CREATE_NEW'; name: string }
@@ -25,6 +27,9 @@ export const SaveThemeModal: React.FC<SaveThemeModalProps> = ({
     onAction,
     isSaving = false
 }) => {
+    const { design } = useSarakUI();
+    const modalLayout = useModalLayoutStyles(design);
+
     const [newName, setNewName] = useState('');
 
     // Pre-fill a base name when copying
@@ -58,7 +63,7 @@ export const SaveThemeModal: React.FC<SaveThemeModalProps> = ({
                     className="relative w-full max-w-md bg-[var(--theme-surface)] border border-[var(--theme-border)] rounded-2xl shadow-2xl overflow-hidden flex flex-col"
                 >
                     {/* Header */}
-                    <div className="px-6 py-4 border-b border-[var(--theme-border)] flex items-center justify-between bg-black/20">
+                    <div className={`px-6 py-4 border-b border-[var(--theme-border)] bg-black/20 ${modalLayout.headerClass}`}>
                         <div className="flex items-center gap-3">
                             <div className="p-2 bg-[var(--theme-primary)]/10 rounded-lg">
                                 <Database size={18} className="text-[var(--theme-primary)]" />
@@ -67,7 +72,7 @@ export const SaveThemeModal: React.FC<SaveThemeModalProps> = ({
                         </div>
                         <button 
                             onClick={!isSaving ? onClose : undefined}
-                            className="p-1 text-[var(--theme-muted)] hover:text-white transition-colors rounded-md hover:bg-white/5"
+                            className={`p-1 text-[var(--theme-muted)] hover:text-white transition-colors rounded-md hover:bg-white/5 ${modalLayout.closeButtonClass}`}
                             disabled={isSaving}
                         >
                             <X size={16} />
@@ -145,7 +150,7 @@ export const SaveThemeModal: React.FC<SaveThemeModalProps> = ({
 
                     {/* Footer for Script origin */}
                     {origin === 'script' && (
-                        <div className="px-6 py-4 border-t border-[var(--theme-border)] flex items-center justify-end gap-3 bg-black/20">
+                        <div className={`px-6 py-4 border-t border-[var(--theme-border)] bg-black/20 ${modalLayout.footerClass}`}>
                             <button 
                                 onClick={() => onAction({ type: 'CANCEL' })}
                                 disabled={isSaving}

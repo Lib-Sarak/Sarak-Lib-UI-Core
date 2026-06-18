@@ -1,4 +1,4 @@
-import { useSarak } from '../../../core/Provider/SarakProvider';
+import { useSarakUI } from '../../../core/Provider/SarakUIProvider';
 
 /**
  * Hook Controlador Estrutural (Fase 2 da Expansão).
@@ -6,7 +6,7 @@ import { useSarak } from '../../../core/Provider/SarakProvider';
  * os traduz para classes utilitárias ou variáveis CSS inline, removendo o hardcode do JSX.
  */
 export const useStructuralStyles = () => {
-    const { design } = useSarak();
+    const { design } = useSarakUI();
 
     // ==========================================
     // EIXO 1: MACRO-LAYOUT (Grids e Containers)
@@ -93,5 +93,93 @@ export const useStructuralStyles = () => {
         };
     };
 
-    return { getGridStyles, getFormGroupStyles, getCardStyles };
+    // ==========================================
+    // EIXO 4: MICRO-LAYOUT DE INPUTS
+    // ==========================================
+    const getInputIconStyles = () => {
+        const iconPosition = design?.inputIconPosition || 'left';
+        
+        let positionClass = 'absolute ';
+        if (iconPosition === 'right') {
+            positionClass += 'right-3 ';
+        } else {
+            positionClass += 'left-3 ';
+        }
+
+        return {
+            iconPositionClass: positionClass,
+            isIconRight: iconPosition === 'right'
+        };
+    };
+
+    // ==========================================
+    // EIXO 5: MICRO-LAYOUT DE SWITCHES/CHECKBOXES
+    // ==========================================
+    const getSwitchLayoutStyles = () => {
+        const switchPos = design?.switchLabelPosition || 'right'; // label a direita do switch
+        
+        let containerClass = 'flex items-center cursor-pointer ';
+        if (switchPos === 'left') {
+            containerClass += 'flex-row-reverse justify-end ';
+        } else if (switchPos === 'space-between') {
+            containerClass += 'justify-between w-full ';
+        } else {
+            containerClass += 'flex-row ';
+        }
+
+        return {
+            containerClass,
+            textContainerClass: 'flex flex-col',
+            style: { gap: 'var(--sx-spacing-sm)' }
+        };
+    };
+
+    // ==========================================
+    // EIXO 6: MACRO-CONTAINERS GENÉRICOS
+    // ==========================================
+    const getContainerStyles = () => {
+        const flow = design?.globalFlowDirection || 'column'; // column ou row
+        const align = design?.globalFlowAlign || 'stretch';
+
+        let containerClass = 'flex ';
+        if (flow === 'row') {
+            containerClass += 'flex-row flex-wrap ';
+        } else {
+            containerClass += 'flex-col ';
+        }
+
+        if (align === 'center') containerClass += 'items-center ';
+        if (align === 'start') containerClass += 'items-start ';
+        if (align === 'end') containerClass += 'items-end ';
+
+        return {
+            className: containerClass.trim(),
+            style: { gap: 'var(--sx-spacing-md)' }
+        };
+    };
+
+    const getHeaderStyles = () => {
+        // Cabecalho tipicamente row com space-between
+        const align = design?.headerAlignment || 'space-between';
+        
+        let headerClass = 'flex flex-col md:flex-row md:items-center w-full ';
+        if (align === 'space-between') headerClass += 'justify-between ';
+        else if (align === 'center') headerClass += 'justify-center ';
+        else if (align === 'start') headerClass += 'justify-start ';
+
+        return {
+            className: headerClass.trim(),
+            style: { gap: 'calc(var(--sx-spacing-md) / 1.5)' }
+        };
+    };
+
+    return { 
+        getGridStyles, 
+        getFormGroupStyles, 
+        getCardStyles, 
+        getInputIconStyles, 
+        getSwitchLayoutStyles,
+        getContainerStyles,
+        getHeaderStyles
+    };
 };

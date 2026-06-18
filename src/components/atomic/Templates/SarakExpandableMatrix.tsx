@@ -2,6 +2,7 @@ import React, { useState, useMemo } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
 import { Search, ChevronDown, Check, X, Shield, Info } from 'lucide-react';
 import { SarakInput } from '../Inputs';
+import { useStructuralStyles } from '../hooks/useStructuralStyles';
 
 export interface MatrixNodeConfig {
     /** Variante visual de renderização do nó */
@@ -338,6 +339,9 @@ export const SarakExpandableMatrix: React.FC<SarakExpandableMatrixProps> = ({
     renderItemHeader,
     manifest
 }) => {
+    const { getContainerStyles } = useStructuralStyles();
+    const containerLayout = getContainerStyles();
+
     const [searchTerm, setSearchTerm] = useState('');
     const [expandedId, setExpandedId] = useState<string | null>(null);
 
@@ -377,8 +381,9 @@ export const SarakExpandableMatrix: React.FC<SarakExpandableMatrixProps> = ({
 
     return (
         <div 
-            className="w-full flex flex-col gap-4"
+            className={`w-full ${containerLayout.className}`}
             style={{ 
+                ...containerLayout.style,
                 '--matrix-gap': 'var(--sarak-matrix-gap, 12px)',
                 gap: 'var(--matrix-gap)'
             } as any}
@@ -393,7 +398,7 @@ export const SarakExpandableMatrix: React.FC<SarakExpandableMatrixProps> = ({
                 />
             </div>
 
-            <div className="flex flex-col gap-2">
+            <div className={containerLayout.className} style={{ gap: 'var(--sx-spacing-xs)' }}>
                 {data.map((item) => (
                     <div 
                         key={item.id}

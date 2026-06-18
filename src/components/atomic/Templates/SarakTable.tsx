@@ -16,6 +16,8 @@ import { SarakInput } from '../Inputs';
 import { SarakButton, SarakIconButton } from '../Buttons';
 import { useSarakUI } from '../../../core/Provider/SarakUIProvider';
 import { useTableLayoutStyles } from '../Tables/hooks/useTableLayoutStyles';
+import { useStructuralStyles } from '../hooks/useStructuralStyles';
+import { twMerge } from 'tailwind-merge';
 
 interface SarakTableProps {
     endpoint: string;
@@ -35,6 +37,11 @@ interface SarakTableProps {
 export const SarakTable: React.FC<SarakTableProps> = ({ endpoint, label, mapping, role = 'neutral', density = 'standard' }) => {
     const { design } = useSarakUI();
     const { tableWrapperClass, cellDensityClass, actionColumnAlignmentClass } = useTableLayoutStyles(design);
+    const { getContainerStyles, getHeaderStyles } = useStructuralStyles();
+    
+    const containerLayout = getContainerStyles();
+    const headerLayout = getHeaderStyles();
+
     const [data, setData] = useState<any[]>([]);
     const [loading, setLoading] = useState(true);
     const [error, setError] = useState<string | null>(null);
@@ -76,7 +83,7 @@ export const SarakTable: React.FC<SarakTableProps> = ({ endpoint, label, mapping
 
     if (error) {
         return (
-            <div className="p-10 rounded-3xl flex items-center gap-4 border" style={{ backgroundColor: 'var(--sx-color-danger-surface)', borderColor: 'var(--sx-color-danger-border)', color: 'var(--sx-color-danger-base)' }}>
+            <div className={twMerge("p-10 rounded-3xl items-center border", containerLayout.className)} style={{ backgroundColor: 'var(--sx-color-danger-surface)', borderColor: 'var(--sx-color-danger-border)', color: 'var(--sx-color-danger-base)', gap: 'calc(var(--sx-spacing-md) / 2)' }}>
                 <AlertCircle size={24} />
                 <div>
                     <h4 className="font-bold">Erro ao carregar dados</h4>
@@ -88,9 +95,9 @@ export const SarakTable: React.FC<SarakTableProps> = ({ endpoint, label, mapping
     }
 
     return (
-        <div className="flex flex-col" style={{ gap: 'var(--sx-spacing-md)' }}>
+        <div className={containerLayout.className} style={containerLayout.style}>
             {/* Header da Tabela */}
-            <div className="flex flex-col md:flex-row md:items-center justify-between" style={{ gap: 'calc(var(--sx-spacing-md) / 1.5)' }}>
+            <div className={headerLayout.className} style={headerLayout.style}>
                 <div>
                     <h3 
                         className={`font-black text-white tracking-tight ${density === 'spacious' ? 'text-2xl' : 'text-xl'}`} 
@@ -199,7 +206,7 @@ export const SarakTable: React.FC<SarakTableProps> = ({ endpoint, label, mapping
                 </div>
 
                 {filteredData.length === 0 && !loading && (
-                    <div className="flex flex-col items-center justify-center text-center" style={{ padding: 'calc(var(--sx-spacing-md) * 5)', gap: 'calc(var(--sx-spacing-md) / 2)' }}>
+                    <div className={twMerge("items-center justify-center text-center", containerLayout.className)} style={{ padding: 'calc(var(--sx-spacing-md) * 5)', gap: 'calc(var(--sx-spacing-md) / 2)' }}>
                         <div className="inline-flex p-4 bg-[var(--sx-color-surface-base)] border-[var(--sx-color-border-base)] rounded-[var(--sx-radius-md)]">
                             <AlertCircle className="text-white/10" size={32} />
                         </div>

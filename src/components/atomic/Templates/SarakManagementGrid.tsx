@@ -15,6 +15,9 @@ import {
 import api from '../../../shared/services/api';
 import { SarakForm } from './SarakForm';
 import { SarakButton, SarakIconButton } from '../Buttons';
+import { useStructuralStyles } from '../hooks/useStructuralStyles';
+import { twMerge } from 'tailwind-merge';
+import { useSarakUI } from '../../../core/Provider/SarakUIProvider';
 
 interface SarakManagementGridProps {
     endpoint: string;
@@ -52,6 +55,11 @@ export const SarakManagementGrid: React.FC<SarakManagementGridProps> = ({
     groupActions = [],
     formMapping
 }) => {
+    const { getContainerStyles, getHeaderStyles, getGridStyles } = useStructuralStyles();
+    const containerLayout = getContainerStyles();
+    const headerLayout = getHeaderStyles();
+    const gridLayout = getGridStyles();
+
     const [data, setData] = useState<any[]>([]);
     const [loading, setLoading] = useState(true);
     const [activeModal, setActiveModal] = useState<{ type: string; group?: string } | null>(null);
@@ -110,7 +118,7 @@ export const SarakManagementGrid: React.FC<SarakManagementGridProps> = ({
     };
 
     return (
-        <div className="flex flex-col" style={{ gap: 'var(--sarak-grid-gap, 1.5rem)' }}>
+        <div className={containerLayout.className} style={containerLayout.style}>
             <AnimatePresence>
                 {activeModal && (
                     <div className="fixed inset-0 z-50 flex items-center justify-center bg-[var(--sx-color-overlay-base)] backdrop-blur-md" style={{ padding: 'var(--sx-spacing-md)' }}>
@@ -149,7 +157,7 @@ export const SarakManagementGrid: React.FC<SarakManagementGridProps> = ({
             </AnimatePresence>
 
             {headerActions.length > 0 && (
-                <div className="flex justify-between items-center bg-[var(--sx-color-surface-base)] border-[var(--sx-color-border-base)] rounded-[var(--sx-radius-md)]" style={{ padding: 'var(--sx-spacing-md)' }}>
+                <div className={`${headerLayout.className} bg-[var(--sx-color-surface-base)] border border-[var(--sx-color-border-base)] rounded-[var(--sx-radius-md)]`} style={{ padding: 'var(--sx-spacing-md)', gap: headerLayout.style.gap }}>
                     <div>
                         <h2 className="text-xl font-black text-white" style={{ fontWeight: 'var(--heading-weight)' }}>Gestão Operacional</h2>
                         <p className="text-xs text-white/30 font-medium">Configurações granulares de identidades e provedores.</p>
@@ -170,7 +178,7 @@ export const SarakManagementGrid: React.FC<SarakManagementGridProps> = ({
                 </div>
             )}
 
-            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3" style={{ gap: 'var(--sarak-grid-gap, 1.5rem)' }}>
+            <div className={gridLayout.className} style={gridLayout.style}>
                 {loading ? (
                     [...Array(6)].map((_, i) => (
                         <div key={i} className="bg-[var(--sx-color-surface-base)] border-[var(--sx-color-border-base)] animate-pulse rounded-[var(--sx-radius-md)]" style={{ height: 'calc(var(--sx-spacing-md) * 16)' }} />
@@ -183,9 +191,9 @@ export const SarakManagementGrid: React.FC<SarakManagementGridProps> = ({
                                 key={groupName}
                                 initial={{ opacity: 0, scale: 0.95 }}
                                 animate={{ opacity: 1, scale: 1 }}
-                                className={`flex flex-col rounded-[var(--sx-radius-md)] border overflow-hidden transition-all h-full ${
+                                className={twMerge(`rounded-[var(--sx-radius-md)] border overflow-hidden transition-all h-full`, containerLayout.className, 
                                     isConfigured ? 'bg-[var(--sx-color-surface-base)] border-[var(--sx-color-border-base)]' : 'bg-[var(--sx-color-surface-base)] border-[var(--sx-color-border-base)] opacity-50 grayscale'
-                                }`}
+                                )}
                                 style={{ transitionDuration: 'var(--animation-speed, 0.5s)' }}
                             >
                                 <div className="border-b border-[var(--sx-color-border-base)] flex justify-between items-center bg-white/[0.02]" style={{ padding: 'var(--sx-spacing-md)' }}>
@@ -208,7 +216,7 @@ export const SarakManagementGrid: React.FC<SarakManagementGridProps> = ({
                                     </div>
                                 </div>
 
-                                <div className="flex-1 max-h-[340px] overflow-y-auto custom-scrollbar flex flex-col" style={{ padding: 'var(--sx-spacing-md)', gap: 'calc(var(--sx-spacing-md) / 2)' }}>
+                                <div className={twMerge("flex-1 max-h-[340px] overflow-y-auto custom-scrollbar", containerLayout.className)} style={{ padding: 'var(--sx-spacing-md)', gap: containerLayout.style.gap }}>
                                     {isConfigured ? (
                                         items.map((item: any) => {
                                             const itemId = getVal(item, mapping.id);
@@ -224,7 +232,7 @@ export const SarakManagementGrid: React.FC<SarakManagementGridProps> = ({
                                                     style={{ padding: 'var(--sx-spacing-md)', transitionDuration: 'var(--animation-speed, 0.3s)' }}
                                                 >
                                                     <div className="flex justify-between items-start" style={{ marginBottom: 'calc(var(--sx-spacing-md) / 3)' }}>
-                                                        <div className="flex flex-col truncate">
+                                                        <div className={twMerge("truncate", containerLayout.className)} style={{ padding: 0, gap: 'calc(var(--sx-spacing-md) / 4)' }}>
                                                             <span className="text-2xs font-black uppercase tracking-widest" style={{ color: 'var(--sx-color-primary-base)' }}>{getVal(item, mapping.title)}</span>
                                                             <span className="text-2xs font-mono text-white/30 truncate max-w-[140px]">
                                                                 {getVal(item, mapping.description || '') || '************'}
@@ -267,7 +275,7 @@ export const SarakManagementGrid: React.FC<SarakManagementGridProps> = ({
                                             );
                                         })
                                     ) : (
-                                        <div className="py-12 flex flex-col items-center justify-center text-center opacity-20" style={{ gap: 'calc(var(--sx-spacing-md) / 2)' }}>
+                                        <div className={twMerge("py-12 items-center justify-center text-center opacity-20", containerLayout.className)} style={{ gap: containerLayout.style.gap, padding: 0 }}>
                                             <Settings2 className="w-10 h-10" />
                                             <p className="text-2xs font-black uppercase tracking-[0.2em]">Offline</p>
                                         </div>

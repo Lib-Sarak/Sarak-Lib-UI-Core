@@ -1,6 +1,7 @@
 import React, { InputHTMLAttributes } from 'react';
 import { useSarakUI } from '../../../core/Provider/SarakUIProvider';
 import { useAtomicStyles } from '../hooks/useAtomicStyles';
+import { useStructuralStyles } from '../hooks/useStructuralStyles';
 
 export interface SarakSwitchProps extends Omit<InputHTMLAttributes<HTMLInputElement>, 'type'> {
     label?: React.ReactNode;
@@ -21,11 +22,15 @@ export const SarakSwitch: React.FC<SarakSwitchProps> = ({
 }) => {
     const { design } = useSarakUI();
     const { getSwitchStyles } = useAtomicStyles();
+    const { getSwitchLayoutStyles } = useStructuralStyles();
 
     const { trackStyle, thumbStyle } = getSwitchStyles(design, !!checked);
+    const layoutStyles = getSwitchLayoutStyles();
+
+    const baseClass = `${layoutStyles.containerClass} ${disabled ? 'opacity-50 cursor-not-allowed pointer-events-none' : ''} ${className}`;
 
     return (
-        <label className={`flex items-center gap-4 cursor-pointer ${disabled ? 'opacity-50 cursor-not-allowed pointer-events-none' : ''} ${className}`} style={style}>
+        <label className={baseClass.trim()} style={{ ...layoutStyles.style, ...style }}>
             <div className="relative">
                 <input
                     type="checkbox"
@@ -45,7 +50,7 @@ export const SarakSwitch: React.FC<SarakSwitchProps> = ({
             </div>
             
             {(label || description) && (
-                <div className="flex flex-col">
+                <div className={layoutStyles.textContainerClass}>
                     {label && <span className="text-sm font-medium text-[var(--sx-color-text-muted)]">{label}</span>}
                     {description && <span className="text-xs text-[var(--sx-color-text-muted)]">{description}</span>}
                 </div>

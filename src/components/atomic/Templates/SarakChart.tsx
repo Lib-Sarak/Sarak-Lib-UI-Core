@@ -2,6 +2,8 @@ import React, { useState, useEffect } from 'react';
 import { motion } from 'framer-motion';
 import { TrendingUp, Activity } from 'lucide-react';
 import api from '../../../shared/services/api';
+import { useStructuralStyles } from '../hooks/useStructuralStyles';
+import { twMerge } from 'tailwind-merge';
 
 interface SarakChartProps {
     endpoint: string;
@@ -46,9 +48,11 @@ export const SarakChart: React.FC<SarakChartProps> = ({ endpoint, label, mapping
     }, [endpoint]);
 
     const maxValue = Math.max(...data.map(d => d.tokens || d.value || 0), 1);
+    const { getContainerStyles } = useStructuralStyles();
+    const containerLayout = getContainerStyles();
 
     return (
-        <div className="bg-[var(--sx-color-surface-base)] border-[var(--sx-color-border-base)] gap-theme flex flex-col relative overflow-hidden group rounded-[var(--sx-radius-md)]" style={{ padding: 'var(--sx-spacing-md)', gap: 'var(--sx-spacing-md)' }}>
+        <div className={twMerge("bg-[var(--sx-color-surface-base)] border-[var(--sx-color-border-base)] relative overflow-hidden group rounded-[var(--sx-radius-md)]", containerLayout.className)} style={containerLayout.style}>
             {/* Contextual Glow Header */}
             <div className="absolute top-0 right-0 w-64 h-64 bg-[var(--sx-color-primary-surface)] blur-[100px] pointer-events-none" />
 

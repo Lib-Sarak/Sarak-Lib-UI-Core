@@ -1,7 +1,8 @@
 import React, { InputHTMLAttributes, useState } from 'react';
 import { useSarakUI } from '../../../core/Provider/SarakUIProvider';
 import { useAtomicStyles } from '../hooks/useAtomicStyles';
-import { useFormLayoutStyles } from './hooks/useFormLayoutStyles';
+import { useStructuralStyles } from '../hooks/useStructuralStyles';
+import { SarakFormGroup } from '../Layouts/SarakFormGroup';
 
 export interface SarakInputProps extends InputHTMLAttributes<HTMLInputElement> {
     label?: string;
@@ -30,7 +31,8 @@ export const SarakInput: React.FC<SarakInputProps> = ({
 }) => {
     const { design } = useSarakUI();
     const { getInputStyles } = useAtomicStyles();
-    const { wrapperClass, labelClass, inputContainerClass, iconPositionClass } = useFormLayoutStyles(design);
+    const { getInputIconStyles } = useStructuralStyles();
+    const { iconPositionClass, isIconRight } = getInputIconStyles();
     const [isFocused, setIsFocused] = useState(false);
 
     const baseClasses = 'block text-[var(--sarak-input-text-color,var(--sx-color-text-muted))] font-medium outline-none transition-all placeholder:text-[var(--sarak-input-text-color,var(--sx-color-text-muted))]/30 bg-[var(--sarak-input-bg,var(--sx-color-surface-base))]';
@@ -44,7 +46,6 @@ export const SarakInput: React.FC<SarakInputProps> = ({
     const hasIcon = !!activeIcon;
     
     // Se a posição estrutural for right, o padding muda de lado dinamicamente
-    const isIconRight = iconPositionClass.includes('right');
     const paddingLeftClass = hasIcon && !isIconRight ? 'pl-11' : 'pl-4';
     const paddingRightClass = hasIcon && isIconRight ? 'pr-11' : 'pr-4';
 
@@ -54,11 +55,11 @@ export const SarakInput: React.FC<SarakInputProps> = ({
     };
 
     return (
-        <div className={`${wrapperClass} ${widthClass} ${className}`}>
-            {label && <label className={labelClass}>{label}</label>}
+        <SarakFormGroup className={`${widthClass} ${className}`}>
+            {label && <label className="text-sm font-medium">{label}</label>}
             
             <div className="flex-1 flex flex-col relative w-full">
-                <div className={inputContainerClass}>
+                <div className="relative w-full flex items-center">
                     {hasIcon && (
                         <div className={`${iconPositionClass} flex items-center pointer-events-none text-[var(--sarak-input-icon-color,rgba(255,255,255,0.5))] transition-colors group-focus-within:text-[var(--sarak-input-focus-border-color,var(--sx-color-primary-base))]`}>
                             {activeIcon}
@@ -81,6 +82,6 @@ export const SarakInput: React.FC<SarakInputProps> = ({
                     </p>
                 )}
             </div>
-        </div>
+        </SarakFormGroup>
     );
 };

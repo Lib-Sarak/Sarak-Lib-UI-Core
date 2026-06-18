@@ -11,6 +11,8 @@ import {
     AlertTriangle
 } from 'lucide-react';
 import { useSarakUI } from '../../../core/Provider/SarakUIProvider';
+import { useStructuralStyles } from '../hooks/useStructuralStyles';
+import { twMerge } from 'tailwind-merge';
 import api from '../../../shared/services/api';
 import { SarakButton } from '../Buttons';
 import { SarakInput } from '../Inputs';
@@ -38,6 +40,9 @@ export const SarakSecurityOrchestrator: React.FC<SarakSecurityOrchestratorProps>
     const [code, setCode] = useState('');
     const [isValidating, setIsValidating] = useState(false);
     const [error, setError] = useState<string | null>(null);
+
+    const { getContainerStyles } = useStructuralStyles();
+    const layout = getContainerStyles();
 
     const fetchStatus = async () => {
         try {
@@ -107,10 +112,10 @@ export const SarakSecurityOrchestrator: React.FC<SarakSecurityOrchestratorProps>
     };
 
     return (
-        <div className="w-full max-w-2xl mx-auto bg-[var(--sx-color-surface-base)] border-[var(--sx-color-border-base)] overflow-hidden shadow-2xl" style={{ padding: 'var(--sx-spacing-md)', borderRadius: 'var(--sx-radius-lg)' }}>
+        <div className={twMerge(`w-full max-w-2xl mx-auto bg-[var(--sx-color-surface-base)] border-[var(--sx-color-border-base)] overflow-hidden shadow-2xl`, layout.className)} style={layout.style}>
             {/* Header */}
-            <div className="flex items-center gap-4 mb-8 border-b border-[var(--sx-color-border-base)] pb-6">
-                <div className="p-3 bg-[var(--sx-color-primary-base)]/10" style={{ borderRadius: 'calc(var(--sx-radius-lg) * 0.75)' }}>
+            <div className="flex items-center border-b border-[var(--sx-color-border-base)] pb-6" style={{ marginBottom: 'calc(var(--sx-spacing-md) * 2)', gap: layout.style.gap }}>
+                <div className="p-3 bg-[var(--sx-color-primary-base)]/10" style={{ borderRadius: 'calc(var(--sarak-border-radius-lg, 12px) * 0.75)' }}>
                     <Shield className="text-[var(--sx-color-primary-base)]" size={24} />
                 </div>
                 <div>
@@ -129,7 +134,8 @@ export const SarakSecurityOrchestrator: React.FC<SarakSecurityOrchestratorProps>
                         key="loading"
                         variants={containerVariants}
                         initial="hidden" animate="visible" exit="exit"
-                        className="flex flex-col items-center justify-center py-12 gap-4"
+                        className={twMerge("flex flex-col items-center justify-center py-12", layout.className)}
+                        style={{ gap: layout.style.gap }}
                     >
                         <RefreshCw className="animate-spin text-[var(--sx-color-primary-base)]" size={32} />
                         <span className="text-2xs uppercase font-black tracking-[0.3em] text-[var(--sx-color-text-muted)]">Sincronizando Vault...</span>
@@ -189,7 +195,8 @@ export const SarakSecurityOrchestrator: React.FC<SarakSecurityOrchestratorProps>
                         key="setup"
                         variants={containerVariants}
                         initial="hidden" animate="visible" exit="exit"
-                        className="flex flex-col items-center text-center gap-6"
+                        className={twMerge("flex flex-col items-center text-center", layout.className)}
+                        style={{ gap: layout.style.gap }}
                     >
                         <div className="text-xs font-black uppercase tracking-widest text-[var(--sx-color-text-title)]">Configuração de Segundo Fator</div>
                         
@@ -253,7 +260,8 @@ export const SarakSecurityOrchestrator: React.FC<SarakSecurityOrchestratorProps>
                         key="disable"
                         variants={containerVariants}
                         initial="hidden" animate="visible" exit="exit"
-                        className="flex flex-col items-center text-center gap-6"
+                        className={twMerge("flex flex-col items-center text-center", layout.className)}
+                        style={{ gap: layout.style.gap }}
                     >
                         <ShieldAlert className="text-red-500" size={48} />
                         <div>
@@ -303,7 +311,8 @@ export const SarakSecurityOrchestrator: React.FC<SarakSecurityOrchestratorProps>
                         key="success"
                         variants={containerVariants}
                         initial="hidden" animate="visible" exit="exit"
-                        className="flex flex-col items-center justify-center py-12 gap-6 text-center"
+                        className={twMerge("flex flex-col items-center justify-center py-12 text-center", layout.className)}
+                        style={{ gap: layout.style.gap }}
                     >
                         <div className="w-20 h-20 bg-emerald-500/10 rounded-full flex items-center justify-center border border-emerald-500/30">
                             <CheckCircle2 className="text-emerald-500" size={40} />
@@ -322,7 +331,8 @@ export const SarakSecurityOrchestrator: React.FC<SarakSecurityOrchestratorProps>
                         key="error"
                         variants={containerVariants}
                         initial="hidden" animate="visible" exit="exit"
-                        className="flex flex-col items-center justify-center py-12 gap-6 text-center"
+                        className={twMerge("flex flex-col items-center justify-center py-12 text-center", layout.className)}
+                        style={{ gap: layout.style.gap }}
                     >
                         <ShieldAlert className="text-red-500" size={48} />
                         <div>

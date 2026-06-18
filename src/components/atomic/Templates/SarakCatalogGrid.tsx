@@ -11,6 +11,8 @@ import {
 } from 'lucide-react';
 import { SarakInput } from '../Inputs';
 import { SarakButton } from '../Buttons';
+import { useStructuralStyles } from '../hooks/useStructuralStyles';
+import { twMerge } from 'tailwind-merge';
 
 interface CatalogItem {
     id: string;
@@ -54,6 +56,11 @@ export const SarakCatalogGrid: React.FC<SarakCatalogGridProps> = ({
     const [search, setSearch] = useState('');
     const [selectedCategory, setSelectedCategory] = useState('all');
 
+    const { getContainerStyles, getHeaderStyles, getGridStyles } = useStructuralStyles();
+    const containerLayout = getContainerStyles();
+    const headerLayout = getHeaderStyles();
+    const gridLayout = getGridStyles();
+
     const filteredItems = useMemo(() => {
         return items.filter(item => {
             const matchesSearch = (item.display_name + (item.organization || '') + item.id).toLowerCase().includes(search.toLowerCase());
@@ -77,14 +84,14 @@ export const SarakCatalogGrid: React.FC<SarakCatalogGridProps> = ({
     }
 
     return (
-        <div className="space-y-10 pb-20">
+        <div className={twMerge("pb-20 flex flex-col", containerLayout.className)} style={{ gap: 'calc(var(--sx-spacing-md) * 2.5)' }}>
             {/* Header & Filter Section */}
-            <section className="relative p-10 bg-[var(--sx-color-surface-base)] border border-[var(--sx-color-border-base)]-border rounded-[3rem] overflow-hidden">
+            <section className={twMerge("relative bg-[var(--sx-color-surface-base)] border border-[var(--sx-color-border-base)] rounded-[3rem] overflow-hidden", headerLayout.className)} style={{ padding: 'calc(var(--sx-spacing-md) * 2.5)' }}>
                 <div className="absolute top-0 right-0 p-10 opacity-5 pointer-events-none">
                     <LayoutGrid size={240} />
                 </div>
 
-                <div className="relative z-10 space-y-8">
+                <div className="relative z-10 flex flex-col" style={{ gap: headerLayout.style.gap }}>
                     <div>
                         <div className="flex items-center gap-2 text-theme-primary mb-3">
                             <Binary size={14} />
@@ -100,8 +107,8 @@ export const SarakCatalogGrid: React.FC<SarakCatalogGridProps> = ({
                         )}
                     </div>
 
-                    <div className="space-y-4">
-                        <div className="flex flex-col lg:flex-row gap-6">
+                    <div className="flex flex-col" style={{ gap: headerLayout.style.gap }}>
+                        <div className="flex flex-col lg:flex-row" style={{ gap: 'calc(var(--sx-spacing-md) * 1.5)' }}>
                             <div className="flex-1">
                                 <SarakInput 
                                     type="text"
@@ -147,7 +154,7 @@ export const SarakCatalogGrid: React.FC<SarakCatalogGridProps> = ({
 
             {/* Catalog Grid */}
             {filteredItems.length > 0 ? (
-                <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6">
+                <div className={twMerge(gridLayout.className, "grid-cols-1 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4")} style={gridLayout.style}>
                     <AnimatePresence mode="popLayout">
                         {filteredItems.map((item) => (
                             <div key={item.id}>

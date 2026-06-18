@@ -3,16 +3,7 @@ import { render } from '@testing-library/react';
 import React from 'react';
 import { PreviewCanvas } from '../PreviewCanvas';
 
-// Mocks simples para não quebrar dependências de hooks externos complexos
-vi.mock('../../../../core/Provider/SarakUIProvider', async (importOriginal) => {
-    const actual = await importOriginal<any>();
-    return {
-        ...actual,
-        UIContext: { Provider: ({ children }: any) => <div>{children}</div> },
-        DesignOverrideContext: { Provider: ({ children }: any) => <div>{children}</div> },
-        useSarakUI: () => ({ options: { user: {} } })
-    };
-});
+// Removido mock do SarakUIProvider para que os inputs internos funcionem com o contexto real
 
 vi.mock('framer-motion', () => ({
     motion: {
@@ -32,10 +23,13 @@ vi.mock('../KitchenSinkPreview', () => ({
     KitchenSinkPreview: () => <div data-testid="mock-kitchen-sink">Kitchen Sink Mocked</div>
 }));
 
+import { SarakUIProvider } from '../../../../core/Provider/SarakUIProvider';
+
 describe('PreviewCanvas - Refatoração Data-Driven', () => {
     it('deve usar variaveis CSS injetadas no style em vez de inline widths', () => {
         const { container } = render(
-            <PreviewCanvas 
+            <SarakUIProvider>
+                <PreviewCanvas 
                 previewDevice="desktop"
                 previewLayoutId="test"
                 activePreviewApp="dashboard"
@@ -52,6 +46,7 @@ describe('PreviewCanvas - Refatoração Data-Driven', () => {
                 isDualView={true}
                 isPreviewStacked={false}
             />
+            </SarakUIProvider>
         );
 
         // A div externa do Preview deve conter o css variable --device-width em vez de width explícito

@@ -3,6 +3,7 @@ import { motion } from 'framer-motion';
 import * as LucideIcons from 'lucide-react';
 import { Box } from 'lucide-react';
 import { useSarakUI } from '../../../core/Provider/SarakUIProvider';
+import { useCardLayoutStyles } from './hooks/useCardLayoutStyles';
 
 interface SarakTitleCardProps {
     item: any;
@@ -15,6 +16,7 @@ interface SarakTitleCardProps {
 export const SarakTitleCard: React.FC<SarakTitleCardProps> = ({ item, mapping, className = '', design: localDesign, label }) => {
     const globalUI = useSarakUI();
     const design = localDesign || globalUI.design;
+    const layout = useCardLayoutStyles(design);
 
     const getVal = (obj: any, path: string | undefined) => {
         if (!path) return undefined;
@@ -42,7 +44,7 @@ export const SarakTitleCard: React.FC<SarakTitleCardProps> = ({ item, mapping, c
             initial={{ opacity: 0, y: 15 }}
             animate={{ opacity: 1, y: 0 }}
             whileHover={{ y: -4, scale: 1.01 }}
-            className={`flex flex-col sarak-card bg-[var(--sx-color-surface-base)] border-[var(--sx-color-border-base)] group transition-all relative overflow-hidden ${className}`}
+            className={`${layout.containerClass} sarak-card bg-[var(--sx-color-surface-base)] border-[var(--sx-color-border-base)] group transition-all relative overflow-hidden ${className}`}
             style={{ 
                 transitionDuration: 'var(--animation-speed, 0.4s)',
                 padding: design.cardPadding ? `${design.cardPadding}px` : 'var(--sarak-card-padding-md, 24px)'
@@ -64,9 +66,9 @@ export const SarakTitleCard: React.FC<SarakTitleCardProps> = ({ item, mapping, c
                 </div>
             )}
 
-            <div className="relative z-10 flex flex-col h-full justify-between">
+            <div className={layout.contentClass}>
                 {/* Header Layout */}
-                <div className="flex justify-between items-start mb-4">
+                <div className={layout.headerClass}>
                     <div className="flex flex-col flex-1 min-w-0 pr-2">
                         <span className="text-[9px] font-black text-[var(--sx-color-primary-base)] uppercase tracking-[0.2em] mb-1">
                             {subtitle}
@@ -102,8 +104,9 @@ export const SarakTitleCard: React.FC<SarakTitleCardProps> = ({ item, mapping, c
                 </div>
 
                 {/* Minimalist Specs */}
-                <div className="flex flex-col gap-3 mt-2">
-                    {context && (
+                <div className={layout.footerClass}>
+                    <div className="flex flex-col gap-3 w-full">
+                        {context && (
                         <div className="flex items-center justify-between text-3xs font-black uppercase text-white/40 tracking-wider">
                             <span>Contexto</span>
                             <span className="text-2xs font-mono text-[var(--sx-color-text-muted)]">
@@ -126,6 +129,7 @@ export const SarakTitleCard: React.FC<SarakTitleCardProps> = ({ item, mapping, c
                             ))}
                         </div>
                     )}
+                    </div>
                 </div>
             </div>
         </motion.div>
