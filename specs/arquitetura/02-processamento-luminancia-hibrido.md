@@ -4,7 +4,7 @@ titulo: "Processamento Híbrido de Luminância (Web Worker)"
 dominio: "Core / Infraestrutura"
 status: "🟢 Vigente"
 tags: ["arquitetura", "performance", "web-worker", "hsp"]
-relacionados: ["01-motor-tema-data-driven"]
+relacionados: ["01-arquitetura-motor-tema-design-engine"]
 ---
 
 # 1. Propósito

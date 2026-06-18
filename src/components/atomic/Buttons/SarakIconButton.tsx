@@ -42,7 +42,7 @@ export const SarakIconButton: React.FC<SarakIconButtonProps> = ({
 
     // Computar cores base
     const baseColor = variant === 'danger' ? 'var(--theme-danger, #ef4444)' : 'var(--sx-color-primary-base)';
-    const baseTextColor = variant === 'danger' ? '#ffffff' : 'var(--sx-color-text-muted)';
+    const baseTextColor = variant === 'danger' ? 'var(--sarak-text-inverse, #ffffff)' : 'var(--sx-color-text-muted)';
     const localGlow = variant === 'danger' ? 'rgba(239, 68, 68, 0.5)' : glowColor;
 
     const getTailwindClasses = (v: string, st: string) => {

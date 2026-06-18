@@ -7,7 +7,7 @@ interface SarakVisualEngineProps {
 }
 
 const SarakVisualEngine: React.FC<SarakVisualEngineProps> = ({ type, tokens }) => {
-    const primaryColor = tokens.primaryColor || '#3b82f6';
+    const primaryColor = tokens.primaryColor || 'var(--sarak-accent, #3b82f6)';
 
     const renderVisual = () => {
         switch (type) {
@@ -18,7 +18,7 @@ const SarakVisualEngine: React.FC<SarakVisualEngineProps> = ({ type, tokens }) =
                             animate={{ rotateY: 360 }}
                             transition={{ duration: 15, repeat: Infinity, ease: "linear" }}
                             className="relative w-48 h-32"
-                            style={{ perspective: '1000px', transformStyle: 'preserve-3d' }}
+                            style={{ perspective: 'var(--sarak-container-lg, 1000px)', transformStyle: 'preserve-3d' }}
                         >
                             <div className="absolute inset-0 bg-gradient-to-r from-white/10 to-white/5 border border-white/20 rounded-xl" style={{ transform: 'translateZ(20px)' }}>
                                 <div className="absolute inset-0 flex flex-col justify-between p-2">

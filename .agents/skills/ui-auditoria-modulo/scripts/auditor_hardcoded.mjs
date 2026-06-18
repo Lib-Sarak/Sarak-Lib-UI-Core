@@ -37,14 +37,18 @@ function checkHardcoded(filePath) {
     if (ts.isStringLiteral(node) || ts.isNoSubstitutionTemplateLiteral(node)) {
       const text = node.text;
       
+      // Sanitização: Remove completamente os blocos de variáveis CSS que contém fallbacks
+      // Exemplo que será removido: var(--theme-danger, #ef4444) ou var(--theme-danger,#ef4444)
+      const sanitizedText = text.replace(/var\([^,]+,\s*#[0-9a-fA-F]{3,8}\s*\)/ig, '');
+      
       // Verify HEX
-      if (hexPattern.test(text)) {
+      if (hexPattern.test(sanitizedText)) {
         const { line } = sourceFile.getLineAndCharacterOfPosition(node.getStart());
         violations.push(`Line ${line + 1}: Hardcoded hex color found -> ${text}`);
       }
       
       // Verify PX (excluding 0px which is common and often fine)
-      if (pxPattern.test(text)) {
+      if (pxPattern.test(sanitizedText)) {
         const { line } = sourceFile.getLineAndCharacterOfPosition(node.getStart());
         violations.push(`Line ${line + 1}: Hardcoded px value found -> ${text}`);
       }

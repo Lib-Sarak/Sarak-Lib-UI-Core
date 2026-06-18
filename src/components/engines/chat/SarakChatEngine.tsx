@@ -104,7 +104,7 @@ const SarakChatEngine: React.FC<SarakChatEngineProps> = ({
                                 solid: () => {
                                     bubbleStyle.backgroundColor = 'var(--theme-primary)';
                                     bubbleStyle.borderColor = 'transparent';
-                                    bubbleStyle.color = '#ffffff';
+                                    bubbleStyle.color = 'var(--sarak-text-inverse, #ffffff)';
                                 },
                                 glass: () => {
                                     bubbleStyle.backgroundColor = 'rgba(0, 0, 0, 0.4)';

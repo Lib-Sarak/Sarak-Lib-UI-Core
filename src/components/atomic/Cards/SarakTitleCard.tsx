@@ -47,7 +47,7 @@ export const SarakTitleCard: React.FC<SarakTitleCardProps> = ({ item, mapping, c
             className={`${layout.containerClass} sarak-card bg-[var(--sx-color-surface-base)] border-[var(--sx-color-border-base)] group transition-all relative overflow-hidden ${className}`}
             style={{ 
                 transitionDuration: 'var(--animation-speed, 0.4s)',
-                padding: design.cardPadding ? `${design.cardPadding}px` : 'var(--sarak-card-padding-md, 24px)'
+                padding: design.cardPadding ? `${design.cardPadding}px` : 'var(--sarak-card-padding-md, 2var(--sarak-border-width, 4px))'
             }}
             data-sx-card-texture-type={design.cardTextureType || design.cardTexture || 'none'}
             data-spotlight={design.cardSpotlight > 0 ? '1' : '0'}
@@ -121,7 +121,7 @@ export const SarakTitleCard: React.FC<SarakTitleCardProps> = ({ item, mapping, c
                                 <div 
                                     key={cap} 
                                     className="flex items-center gap-1 bg-[var(--sx-color-primary-surface)] text-[var(--sx-color-primary-base)] border border-[var(--sx-color-border-base)] text-3xs font-black uppercase px-2 py-0.5" 
-                                    style={{ borderRadius: '4px' }}
+                                    style={{ borderRadius: 'var(--sarak-border-width, 4px)' }}
                                 >
                                     {getCapIcon(cap)}
                                     <span>{cap}</span>

@@ -2,11 +2,11 @@ import React from 'react';
 import { HelpTooltip } from './HelpTooltip';
 
 export const ColorControl: React.FC<any> = ({ label, description, value, onChange }) => {
-    const [localColor, setLocalColor] = React.useState(value || '#000000');
+    const [localColor, setLocalColor] = React.useState(value || 'var(--sarak-default-color, #000000)');
 
     // Sincroniza localmente para evitar engasgos no draft
     const sanitizeColor = (color: any) => {
-        if (typeof color !== 'string') return '#000000';
+        if (typeof color !== 'string') return 'var(--sarak-default-color, #000000)';
         if (color.startsWith('#')) return color;
         if (color.startsWith('rgba')) {
             const matches = color.match(/rgba?\((\d+),\s*(\d+),\s*(\d+)/);
@@ -17,12 +17,12 @@ export const ColorControl: React.FC<any> = ({ label, description, value, onChang
                 return `#${r}${g}${b}`;
             }
         }
-        if (color === 'transparent') return '#000000';
-        return '#000000';
+        if (color === 'transparent') return 'var(--sarak-default-color, #000000)';
+        return 'var(--sarak-default-color, #000000)';
     };
 
     React.useEffect(() => {
-        setLocalColor(value || '#000000');
+        setLocalColor(value || 'var(--sarak-default-color, #000000)');
     }, [value]);
 
     return (

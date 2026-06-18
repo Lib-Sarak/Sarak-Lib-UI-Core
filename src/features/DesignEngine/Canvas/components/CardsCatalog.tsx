@@ -43,17 +43,17 @@ const CardPresetPreview = ({ preset, index, onApply }: { preset: ComponentPreset
 
     const cardStyle = {
         backgroundColor: variables['--sarak-card-background-color'] || 'rgba(255,255,255,0.05)',
-        borderTopWidth: variables['--sarak-card-border-top'] || variables['--sarak-card-border-width'] || '1px',
-        borderRightWidth: variables['--sarak-card-border-right'] || variables['--sarak-card-border-width'] || '1px',
-        borderBottomWidth: variables['--sarak-card-border-bottom'] || variables['--sarak-card-border-width'] || '1px',
-        borderLeftWidth: variables['--sarak-card-border-left'] || variables['--sarak-card-border-width'] || '1px',
+        borderTopWidth: variables['--sarak-card-border-top'] || variables['--sarak-card-border-width'] || 'var(--sarak-border-base, 1px)',
+        borderRightWidth: variables['--sarak-card-border-right'] || variables['--sarak-card-border-width'] || 'var(--sarak-border-base, 1px)',
+        borderBottomWidth: variables['--sarak-card-border-bottom'] || variables['--sarak-card-border-width'] || 'var(--sarak-border-base, 1px)',
+        borderLeftWidth: variables['--sarak-card-border-left'] || variables['--sarak-card-border-width'] || 'var(--sarak-border-base, 1px)',
         borderColor: variables['--sarak-card-border-color'] || 'rgba(255,255,255,0.1)',
         borderStyle: variables['--sarak-border-style'] || 'solid',
-        borderTopLeftRadius: variables['--sarak-card-radius-t-l'] || variables['--sarak-card-border-radius'] || '12px',
-        borderTopRightRadius: variables['--sarak-card-radius-t-r'] || variables['--sarak-card-border-radius'] || '12px',
-        borderBottomRightRadius: variables['--sarak-card-radius-b-r'] || variables['--sarak-card-border-radius'] || '12px',
-        borderBottomLeftRadius: variables['--sarak-card-radius-b-l'] || variables['--sarak-card-border-radius'] || '12px',
-        backdropFilter: `blur(${variables['--sarak-card-backdrop-blur'] || '12px'})`,
+        borderTopLeftRadius: variables['--sarak-card-radius-t-l'] || variables['--sarak-card-border-radius'] || 'var(--sarak-spacing-md, 12px)',
+        borderTopRightRadius: variables['--sarak-card-radius-t-r'] || variables['--sarak-card-border-radius'] || 'var(--sarak-spacing-md, 12px)',
+        borderBottomRightRadius: variables['--sarak-card-radius-b-r'] || variables['--sarak-card-border-radius'] || 'var(--sarak-spacing-md, 12px)',
+        borderBottomLeftRadius: variables['--sarak-card-radius-b-l'] || variables['--sarak-card-border-radius'] || 'var(--sarak-spacing-md, 12px)',
+        backdropFilter: `blur(${variables['--sarak-card-backdrop-blur'] || 'var(--sarak-spacing-md, 12px)'})`,
         boxShadow: preset.design.cardShadow && preset.design.cardShadow !== 'none' 
             ? preset.design.cardShadow 
             : preset.design.cardShadowSpread 
@@ -67,7 +67,7 @@ const CardPresetPreview = ({ preset, index, onApply }: { preset: ComponentPreset
             className="absolute inset-0 pointer-events-none opacity-50"
             style={{
                 backgroundImage: preset.design.cardTextureType === 'grid' 
-                    ? 'linear-gradient(to right, rgba(255,255,255,0.05) 1px, transparent 1px), linear-gradient(to bottom, rgba(255,255,255,0.05) 1px, transparent 1px)'
+                    ? 'linear-gradient(to right, rgba(255,255,255,0.05) var(--sarak-border-base, 1px), transparent var(--sarak-border-base, 1px)), linear-gradient(to bottom, rgba(255,255,255,0.05) var(--sarak-border-base, 1px), transparent var(--sarak-border-base, 1px))'
                     : preset.design.cardTextureType === 'noise' 
                         ? 'url("data:image/svg+xml,%3Csvg viewBox=%220 0 200 200%22 xmlns=%22http://www.w3.org/2000/svg%22%3E%3Cfilter id=%22noiseFilter%22%3E%3CfeTurbulence type=%22fractalNoise%22 baseFrequency=%220.65%22 numOctaves=%223%22 stitchTiles=%22stitch%22/%3E%3C/filter%3E%3Crect width=%22100%25%22 height=%22100%25%22 filter=%22url(%23noiseFilter)%22/%3E%3C/svg%3E")'
                         : 'none',
@@ -84,7 +84,7 @@ const CardPresetPreview = ({ preset, index, onApply }: { preset: ComponentPreset
             onClick={onApply}
             className="group flex flex-col text-left rounded-2xl border border-theme-border overflow-hidden bg-theme-card hover:border-theme-primary hover:shadow-[0_10px_40px_-10px_rgba(var(--theme-primary-rgb),0.1)] transition-all duration-300"
         >
-            <div className="h-48 w-full relative flex items-center justify-center p-6 bg-[#0a0a0b] overflow-hidden" {...attributes as any}>
+            <div className="h-48 w-full relative flex items-center justify-center p-6 bg-[var(--sarak-surface-sunken, #0a0a0b)] overflow-hidden" {...attributes as any}>
                 <div className="absolute inset-0 bg-[radial-gradient(ellipse_at_center,rgba(255,255,255,0.05)_0%,transparent_70%)]" />
                 
                 {/* O Card Gigante de Preview */}

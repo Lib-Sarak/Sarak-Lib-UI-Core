@@ -4,7 +4,7 @@ titulo: "Paridade de 5 Camadas e Folksonomia Dinâmica"
 dominio: "Design Engine"
 status: "🟢 Vigente"
 tags: ["arquitetura", "paridade", "motor"]
-relacionados: ["06-taxonomia-atomica-e-dogfooding"]
+relacionados: ["03-padrao-e-taxonomia-biblioteca-atomica"]
 ---
 
 # 1. Propósito

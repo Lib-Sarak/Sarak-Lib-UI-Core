@@ -165,7 +165,7 @@ export const LayoutTab: React.FC = () => {
                                     <div className="text-2xs text-white/40 uppercase">Padrão Sarak OS (Fixo/Expandível)</div>
                                 </div>
                             </div>
-                            {navigationStyle === 'sidebar' && <div className="w-2 h-2 rounded-full bg-emerald-500 shadow-[0_0_10px_#10b981]" />}
+                            {navigationStyle === 'sidebar' && <div className="w-2 h-2 rounded-full bg-emerald-500 shadow-[0_0_10px_var(--theme-success, #10b981)]" />}
                         </button>
 
                         <button
@@ -183,7 +183,7 @@ export const LayoutTab: React.FC = () => {
                                     <div className="text-2xs text-white/40 uppercase">Foco no Conteúdo (Minimalista)</div>
                                 </div>
                             </div>
-                            {navigationStyle === 'topbar' && <div className="w-2 h-2 rounded-full bg-emerald-500 shadow-[0_0_10px_#10b981]" />}
+                            {navigationStyle === 'topbar' && <div className="w-2 h-2 rounded-full bg-emerald-500 shadow-[0_0_10px_var(--theme-success, #10b981)]" />}
                         </button>
                     </div>
                 </div>

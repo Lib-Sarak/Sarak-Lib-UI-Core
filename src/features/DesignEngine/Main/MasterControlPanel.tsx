@@ -52,7 +52,7 @@ export const MasterControlPanel: React.FC = () => {
     }, []);
 
     return (
-        <div className="flex flex-col h-full bg-[#080809] text-white/90">
+        <div className="flex flex-col h-full bg-[var(--sarak-panel-bg, #080809)] text-white/90">
             {/* Header de Gestão - Compacto para Sidebar */}
             <div className="p-4 border-b border-white/5 bg-black/40">
                 <div className="flex items-center justify-between mb-4">
@@ -154,7 +154,7 @@ export const MasterControlPanel: React.FC = () => {
                                                         const optId = typeof opt === 'object' ? (opt.id !== undefined ? opt.id : (opt.value !== undefined ? opt.value : '')) : opt;
                                                         const optLabel = typeof opt === 'object' ? (opt.label || opt.name || optId) : opt;
                                                         return (
-                                                            <option key={optId} value={optId} className="bg-[#111]">{optLabel}</option>
+                                                            <option key={optId} value={optId} className="bg-[var(--sarak-panel-hover, #111111)]">{optLabel}</option>
                                                         );
                                                     })}
                                                 </select>

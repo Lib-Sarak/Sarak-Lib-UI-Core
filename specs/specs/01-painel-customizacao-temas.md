@@ -5,7 +5,7 @@ dominio: "DesignEngine / Main"
 status: "🟢 Implementado"
 prioridade: "Alta"
 tags: ["spec", "ui", "design-engine", "painel"]
-relacionados: ["01-motor-tema-data-driven"]
+relacionados: ["01-arquitetura-motor-tema-design-engine"]
 ---
 
 # 1. Visão Geral

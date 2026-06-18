@@ -4,7 +4,7 @@ titulo: "Arquitetura dos Motores Especiais (Super Componentes)"
 dominio: "Core / Engines"
 status: "🟢 Vigente"
 tags: ["arquitetura", "engines", "charts", "chat", "flows"]
-relacionados: ["01-motor-tema-data-driven"]
+relacionados: ["01-arquitetura-motor-tema-design-engine"]
 ---
 
 # 1. Propósito

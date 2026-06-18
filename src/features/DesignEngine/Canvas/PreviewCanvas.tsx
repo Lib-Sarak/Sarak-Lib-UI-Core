@@ -124,7 +124,7 @@ export const PreviewCanvas: React.FC<PreviewCanvasProps> = ({
     const { targetWidth, getDeviceFrameStyles, getDeviceHeightClass } = useDeviceStyles(previewDevice, isPreviewStacked);
 
     return (
-        <DesignScope design={{ ...tokens, globalBackgroundImageUrl: undefined }} className="w-full h-full flex flex-col relative overflow-auto bg-[#050505] p-0 custom-scrollbar">
+        <DesignScope design={{ ...tokens, globalBackgroundImageUrl: undefined }} className="w-full h-full flex flex-col relative overflow-auto bg-[var(--sarak-canvas-bg, #050505)] p-0 custom-scrollbar">
             <UIContext.Provider value={previewContextValue as any}>
                 <div className={`flex gap-6 p-6 items-stretch overflow-visible ${isPreviewStacked ? 'flex-col min-w-full min-h-full w-fit h-fit items-center' : 'flex-col xl:flex-row min-w-full min-h-full w-fit h-fit justify-center'}`}>
                     {isDualView ? (
@@ -134,21 +134,21 @@ export const PreviewCanvas: React.FC<PreviewCanvasProps> = ({
                                 className={`relative shrink-0 overflow-hidden bg-[var(--theme-surface)] transition-all duration-500 flex flex-col group min-h-[300px] w-[var(--device-width)] h-[var(--device-height)] max-w-full max-h-[var(--device-max-height)] ${getDeviceHeightClass()} ${getDeviceFrameStyles()} ${previewDevice === 'desktop' ? 'resize' : 'resize-none'}`}
                                 style={{
                                     '--device-width': previewDevice === 'desktop' ? (isPreviewStacked ? '100%' : '50%') : targetWidth,
-                                    '--device-height': previewDevice === 'smartphone' ? '812px' : previewDevice === 'tablet' ? '1024px' : 'auto',
+                                    '--device-height': previewDevice === 'smartphone' ? 'var(--sarak-mobile-h, 812px)' : previewDevice === 'tablet' ? 'var(--sarak-tablet-h, 1024px)' : 'auto',
                                     '--device-max-height': previewDevice !== 'desktop' ? '90vh' : 'none'
                                 } as React.CSSProperties}
                             >
                                 {/* Hardware Mockup Extras (Notch, Camera) */}
                                 {previewDevice === 'smartphone' && (
-                                    <div className="absolute top-0 left-1/2 -translate-x-1/2 w-32 h-6 bg-[#1a1a1c] rounded-b-[1rem] z-[1000] flex items-center justify-center gap-2">
+                                    <div className="absolute top-0 left-1/2 -translate-x-1/2 w-32 h-6 bg-[var(--sarak-panel-bg, #1a1a1c)] rounded-b-[1rem] z-[1000] flex items-center justify-center gap-2">
                                         <div className="w-12 h-1.5 rounded-full bg-black/50"></div>
-                                        <div className="w-2 h-2 rounded-full bg-[#0a0a0c] shadow-inner border border-white/5"></div>
+                                        <div className="w-2 h-2 rounded-full bg-[var(--sarak-cutout-bg, #0a0a0c)] shadow-inner border border-white/5"></div>
                                     </div>
                                 )}
                                 {previewDevice === 'tablet' && (
                                     <div className="absolute left-0 top-1/2 -translate-y-1/2 w-6 h-32 flex items-center justify-center z-[1000]">
                                         {/* Camera na borda esquerda simulando modo paisagem/retrato dependendo do frame */}
-                                        <div className="absolute top-1/2 -translate-y-1/2 -left-3 w-2 h-2 rounded-full bg-[#0a0a0c] shadow-inner border border-white/5"></div>
+                                        <div className="absolute top-1/2 -translate-y-1/2 -left-3 w-2 h-2 rounded-full bg-[var(--sarak-cutout-bg, #0a0a0c)] shadow-inner border border-white/5"></div>
                                     </div>
                                 )}
 

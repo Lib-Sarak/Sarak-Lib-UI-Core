@@ -19,9 +19,11 @@ function getFiles(dir, extFilter, fileList = []) {
   for (const file of files) {
     const fullPath = path.join(dir, file);
     if (fs.statSync(fullPath).isDirectory()) {
-      getFiles(fullPath, extFilter, fileList);
+      if (!fullPath.includes('__tests__') && !fullPath.includes('Mocks')) {
+        getFiles(fullPath, extFilter, fileList);
+      }
     } else {
-      if (extFilter.includes(path.extname(fullPath))) {
+      if (extFilter.includes(path.extname(fullPath)) && !fullPath.endsWith('.test.tsx') && !fullPath.endsWith('.test.ts')) {
         fileList.push(fullPath);
       }
     }
@@ -86,12 +88,26 @@ for (const key of expectedKeys) {
   }
 }
 
+const srcDir = path.resolve('src');
+const atomicDir = path.resolve('src/components/atomic');
+
+const totalFisicos = getFiles(srcDir, ['.tsx']).length;
+const totalAtomic = getFiles(atomicDir, ['.tsx']).length;
+
+function printCounters() {
+  console.log(`\nTokens/Propriedades de Design mapeadas: ${expectedKeys.length}`);
+  console.log(`Arquivos Físicos (.tsx) catalogados: ${totalFisicos}`);
+  console.log(`Arquivos Atômicos (.tsx) catalogados: ${totalAtomic}`);
+}
+
 if (totalViolations === 0) {
-  console.log("\n[OK] Paridade perfeita 1:1! Todas as chaves do banco de dados existem nos Schemas TS.");
+  console.log("\n[OK] Paridade perfeita 1:1:1:1:1! Todas as chaves do banco de dados existem nos Schemas TS.");
+  printCounters();
   process.exit(0);
 } else {
   console.log(`\n[FAIL] Faltam ${totalViolations} chaves do mapping.json nos schemas TS:`);
   missingKeys.forEach(k => console.log(`  - Chave órfã: ${k}`));
   console.log(`\n[ERROR] Paridade 1:1:1:1:1 quebrada.`);
+  printCounters();
   process.exit(1);
 }

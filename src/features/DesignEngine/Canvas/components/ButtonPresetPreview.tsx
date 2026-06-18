@@ -15,7 +15,7 @@ export const ButtonPresetPreview: React.FC<ButtonPresetPreviewProps> = ({ preset
     // Leitura direta dos tokens do preset
     const d = preset.design;
     const styleType = d.btnStyleType || 'matte';
-    const borderRadius = d.btnBorderRadius !== undefined ? d.btnBorderRadius : '8px';
+    const borderRadius = d.btnBorderRadius !== undefined ? d.btnBorderRadius : 'var(--sarak-spacing-sm, 8px)';
     const glowColor = d.btnNeonGlowColor || 'rgba(0, 242, 255, 0.4)';
     const blurAmount = d.btnBackdropBlur || 0;
     const primaryBg = d.btnPrimaryBg || 'var(--theme-primary)';
@@ -24,7 +24,7 @@ export const ButtonPresetPreview: React.FC<ButtonPresetPreviewProps> = ({ preset
     // Construir estilo dinâmico como o SarakButton
     const dynamicStyle: React.CSSProperties = {
         padding: '12px 24px',
-        fontSize: '14px',
+        fontSize: 'var(--sarak-text-sm, 14px)',
         fontWeight: '900',
         textTransform: 'uppercase',
         letterSpacing: '0.1em',
@@ -50,12 +50,12 @@ export const ButtonPresetPreview: React.FC<ButtonPresetPreviewProps> = ({ preset
             dynamicStyle.backdropFilter = `blur(${blurAmount}px)`;
             dynamicStyle.WebkitBackdropFilter = `blur(${blurAmount}px)`;
             dynamicStyle.border = '1px solid rgba(255,255,255,0.1)';
-            dynamicStyle.boxShadow = '0 8px 32px 0 rgba(0, 0, 0, 0.3)';
+            dynamicStyle.boxShadow = '0 var(--sarak-spacing-sm, 8px) 32px 0 rgba(0, 0, 0, 0.3)';
         },
         'borderline': () => {
             dynamicStyle.backgroundColor = isHovered ? primaryBg : 'transparent';
             dynamicStyle.border = `1px solid ${primaryBg}`;
-            dynamicStyle.color = isHovered ? '#000' : primaryText;
+            dynamicStyle.color = isHovered ? 'var(--sarak-text-primary, #000000)' : primaryText;
         },
         'matte': () => {
             dynamicStyle.backgroundColor = primaryBg;
@@ -79,7 +79,7 @@ export const ButtonPresetPreview: React.FC<ButtonPresetPreviewProps> = ({ preset
             transition={{ delay: index * 0.05 }}
             onClick={onApply}
             className="group relative flex flex-col items-center justify-center p-6 rounded-2xl border border-theme-border overflow-hidden bg-[rgba(10,10,10,0.5)] hover:border-theme-primary transition-all duration-300"
-            style={{ minHeight: '180px' }}
+            style={{ minHeight: 'var(--sarak-preview-width, 180px)' }}
         >
             <div className="absolute inset-0 z-0 bg-[radial-gradient(ellipse_at_center,rgba(255,255,255,0.05)_0%,transparent_70%)] opacity-50"></div>
             

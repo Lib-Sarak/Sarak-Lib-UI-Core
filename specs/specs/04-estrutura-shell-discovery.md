@@ -5,7 +5,7 @@ dominio: "Core / Roteamento"
 status: "🟢 Implementado"
 prioridade: "Alta"
 tags: ["spec", "shell", "layout", "discovery", "routing"]
-relacionados: ["03-padrao-biblioteca-atomica"]
+relacionados: ["03-padrao-e-taxonomia-biblioteca-atomica"]
 ---
 
 # 1. Visão Geral
