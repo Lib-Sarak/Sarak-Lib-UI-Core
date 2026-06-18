@@ -17,37 +17,52 @@ export const useAtomicStyles = () => {
         const dynamicStyle: React.CSSProperties = {};
         
         if (styleType === 'neon') {
-            if (variant === 'primary' || variant === 'danger') {
+            const isPrimaryDanger = variant === 'primary' || variant === 'danger';
+            
+            if (isPrimaryDanger) {
                 dynamicStyle.boxShadow = isHovered 
                     ? `0 0 20px ${glowColor}, inset 0 0 10px ${glowColor}`
                     : `0 0 10px ${glowColor}`;
                 dynamicStyle.border = `1px solid ${glowColor}`;
-            } else if (variant === 'secondary') {
+                return dynamicStyle;
+            }
+            
+            if (variant === 'secondary') {
                 dynamicStyle.boxShadow = isHovered 
                     ? `0 0 15px ${glowColor}`
                     : `0 0 5px ${glowColor}`;
                 dynamicStyle.border = `1px solid ${glowColor}`;
                 dynamicStyle.backgroundColor = 'var(--sarak-btn-secondary-bg)';
-            } else if (variant === 'ghost') {
+                return dynamicStyle;
+            }
+            
+            if (variant === 'ghost') {
                 dynamicStyle.boxShadow = isHovered ? `0 0 15px ${glowColor}` : 'none';
                 if (isHovered) {
                     dynamicStyle.textShadow = `0 0 8px ${glowColor}`;
                 }
+                return dynamicStyle;
             }
-        } else if (styleType === 'frosted') {
-            if (['primary', 'secondary', 'danger', 'success', 'outline'].includes(variant)) {
-                if (blurAmount > 0) {
-                    dynamicStyle.backdropFilter = `blur(${blurAmount}px)`;
-                    dynamicStyle.WebkitBackdropFilter = `blur(${blurAmount}px)`;
-                }
-                dynamicStyle.border = 'var(--sarak-btn-border-frosted, 1px solid rgba(255,255,255,0.1))';
-                if (variant === 'primary' || variant === 'danger') {
-                    dynamicStyle.boxShadow = 'var(--sarak-btn-shadow-frosted, 0 8px 32px 0 rgba(0, 0, 0, 0.3))';
-                }
-                if (variant === 'secondary') {
-                    dynamicStyle.backgroundColor = 'var(--sarak-btn-secondary-bg)';
-                }
+        } 
+        
+        if (styleType === 'frosted') {
+            const isFrostedTarget = ['primary', 'secondary', 'danger', 'success', 'outline'].includes(variant);
+            if (!isFrostedTarget) return dynamicStyle;
+            
+            if (blurAmount > 0) {
+                dynamicStyle.backdropFilter = `blur(${blurAmount}px)`;
+                dynamicStyle.WebkitBackdropFilter = `blur(${blurAmount}px)`;
             }
+            dynamicStyle.border = 'var(--sarak-btn-border-frosted, 1px solid rgba(255,255,255,0.1))';
+            
+            if (variant === 'primary' || variant === 'danger') {
+                dynamicStyle.boxShadow = 'var(--sarak-btn-shadow-frosted, 0 8px 32px 0 rgba(0, 0, 0, 0.3))';
+            }
+            
+            if (variant === 'secondary') {
+                dynamicStyle.backgroundColor = 'var(--sarak-btn-secondary-bg)';
+            }
+            return dynamicStyle;
         }
 
         return dynamicStyle;
@@ -66,17 +81,23 @@ export const useAtomicStyles = () => {
 
         const dynamicStyle: React.CSSProperties = {};
         
-        if (borderType === 'none') {
-            dynamicStyle.border = 'none';
-        } else if (borderType === 'underline') {
-            dynamicStyle.border = 'none';
-            dynamicStyle.borderBottom = `2px solid ${isFocused ? focusColor : borderColor}`;
-            dynamicStyle.borderRadius = '0px';
-        } else if (borderType === 'dashed') {
-            dynamicStyle.border = `2px dashed ${isFocused ? focusColor : borderColor}`;
-        } else {
-            dynamicStyle.border = `1px solid ${isFocused ? focusColor : borderColor}`;
-        }
+        const applyBorder: Record<string, () => void> = {
+            'none': () => { dynamicStyle.border = 'none'; },
+            'underline': () => {
+                dynamicStyle.border = 'none';
+                dynamicStyle.borderBottom = `2px solid ${isFocused ? focusColor : borderColor}`;
+                dynamicStyle.borderRadius = '0px';
+            },
+            'dashed': () => {
+                dynamicStyle.border = `2px dashed ${isFocused ? focusColor : borderColor}`;
+            },
+            'solid': () => {
+                dynamicStyle.border = `1px solid ${isFocused ? focusColor : borderColor}`;
+            }
+        };
+
+        const executeBorder = applyBorder[borderType] || applyBorder['solid'];
+        executeBorder();
 
         if (isFocused && borderType !== 'underline' && borderType !== 'none') {
             dynamicStyle.boxShadow = `var(--sarak-input-focus-ring, 0 0 0 2px ${focusColor}33)`;
@@ -88,7 +109,9 @@ export const useAtomicStyles = () => {
             } else {
                 dynamicStyle.boxShadow = `var(--sarak-input-shadow-neumorphism-focus, inset 2px 2px 5px rgba(0,0,0,0.5), inset -2px -2px 5px rgba(255,255,255,0.05)), var(--sarak-input-focus-ring, 0 0 0 2px ${focusColor}33)`;
             }
-        } else if (shadowType !== 'none' && !isFocused) {
+        } 
+        
+        if (shadowType !== 'none' && shadowType !== 'neumorphism' && !isFocused) {
             dynamicStyle.boxShadow = shadowType;
         }
 

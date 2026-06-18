@@ -45,54 +45,74 @@ export const SarakIconButton: React.FC<SarakIconButtonProps> = ({
     const baseTextColor = variant === 'danger' ? '#ffffff' : 'var(--sx-color-text-muted)';
     const localGlow = variant === 'danger' ? 'rgba(239, 68, 68, 0.5)' : glowColor;
 
-    let tailwindClasses = '';
+    const getTailwindClasses = (v: string, st: string) => {
+        const strats: Record<string, () => string> = {
+            'primary': () => {
+                if (st === 'borderline') return 'border border-[var(--sx-color-primary-base)] bg-transparent hover:bg-[var(--sx-color-primary-base)] hover:text-[var(--sx-color-text-muted)] active:scale-[0.95] text-[var(--sx-color-primary-base)]';
+                const base = 'bg-[var(--sx-color-primary-base)] text-[var(--sx-color-text-muted)] hover:brightness-110 active:scale-[0.95]';
+                return st === 'matte' ? `${base} shadow-xl shadow-[var(--sx-color-primary-base)]/20` : base;
+            },
+            'secondary': () => 'bg-[var(--sx-color-surface-base)] text-[var(--sx-color-text-muted)] hover:bg-[var(--sx-color-primary-base)] hover:text-[var(--sx-color-text-muted)] border border-[var(--sx-color-primary-base)]/20 active:scale-[0.95]',
+            'ghost': () => 'bg-transparent text-[var(--sx-color-primary-base)] hover:bg-white/5 active:scale-[0.98]',
+            'danger': () => 'bg-[var(--theme-danger,#ef4444)] text-white hover:brightness-110 shadow-lg shadow-[var(--theme-danger,#ef4444)]/20 active:scale-[0.95]'
+        };
+        return strats[v] ? strats[v]() : '';
+    };
 
-    if (variant === 'primary') {
-        tailwindClasses = 'bg-[var(--sx-color-primary-base)] text-[var(--sx-color-text-muted)] hover:brightness-110 active:scale-[0.95]';
-        if (styleType === 'matte') tailwindClasses += ' shadow-xl shadow-[var(--sx-color-primary-base)]/20';
-        if (styleType === 'borderline') tailwindClasses = 'border border-[var(--sx-color-primary-base)] bg-transparent hover:bg-[var(--sx-color-primary-base)] hover:text-[var(--sx-color-text-muted)] active:scale-[0.95] text-[var(--sx-color-primary-base)]';
-    } else if (variant === 'secondary') {
-        tailwindClasses = 'bg-[var(--sx-color-surface-base)] text-[var(--sx-color-text-muted)] hover:bg-[var(--sx-color-primary-base)] hover:text-[var(--sx-color-text-muted)] border border-[var(--sx-color-primary-base)]/20 active:scale-[0.95]';
-    } else if (variant === 'ghost') {
-        tailwindClasses = 'bg-transparent text-[var(--sx-color-primary-base)] hover:bg-white/5 active:scale-[0.98]';
-    } else if (variant === 'danger') {
-        tailwindClasses = 'bg-[var(--theme-danger,#ef4444)] text-white hover:brightness-110 shadow-lg shadow-[var(--theme-danger,#ef4444)]/20 active:scale-[0.95]';
-    }
+    const tailwindClasses = getTailwindClasses(variant, styleType);
 
     const disabledClass = disabled || isLoading ? 'opacity-50 cursor-not-allowed pointer-events-none' : '';
 
     const dynamicStyle: React.CSSProperties = { ...style };
     
     // Processamento Visual Dinâmico Reduzido para Ícones
-    if (styleType === 'neon') {
-        if (variant === 'primary' || variant === 'danger') {
-            dynamicStyle.boxShadow = isHovered 
-                ? `0 0 12px ${localGlow}, inset 0 0 5px ${localGlow}`
-                : `0 0 5px ${localGlow}`;
-            dynamicStyle.border = `1px solid ${localGlow}`;
-        } else if (variant === 'secondary') {
-            dynamicStyle.boxShadow = isHovered ? `0 0 8px ${localGlow}` : 'none';
-            dynamicStyle.border = `1px solid ${localGlow}`;
-            dynamicStyle.backgroundColor = `rgba(0,0,0,0.4)`;
-        } else if (variant === 'ghost') {
-            dynamicStyle.boxShadow = isHovered ? `0 0 8px ${localGlow}` : 'none';
-            if (isHovered) {
-                dynamicStyle.textShadow = `0 0 5px ${localGlow}`;
+    const applyDynamicStyles = () => {
+        const neonStyles: Record<string, () => void> = {
+            'primary': () => {
+                dynamicStyle.boxShadow = isHovered ? `0 0 12px ${localGlow}, inset 0 0 5px ${localGlow}` : `0 0 5px ${localGlow}`;
+                dynamicStyle.border = `1px solid ${localGlow}`;
+            },
+            'danger': () => {
+                dynamicStyle.boxShadow = isHovered ? `0 0 12px ${localGlow}, inset 0 0 5px ${localGlow}` : `0 0 5px ${localGlow}`;
+                dynamicStyle.border = `1px solid ${localGlow}`;
+            },
+            'secondary': () => {
+                dynamicStyle.boxShadow = isHovered ? `0 0 8px ${localGlow}` : 'none';
+                dynamicStyle.border = `1px solid ${localGlow}`;
+                dynamicStyle.backgroundColor = `rgba(0,0,0,0.4)`;
+            },
+            'ghost': () => {
+                dynamicStyle.boxShadow = isHovered ? `0 0 8px ${localGlow}` : 'none';
+                if (isHovered) dynamicStyle.textShadow = `0 0 5px ${localGlow}`;
             }
-        }
-    } else if (styleType === 'frosted') {
-        if (variant === 'primary' || variant === 'secondary' || variant === 'danger') {
-            dynamicStyle.backdropFilter = `blur(${blurAmount}px)`;
-            dynamicStyle.WebkitBackdropFilter = `blur(${blurAmount}px)`;
-            dynamicStyle.border = '1px solid rgba(255,255,255,0.1)';
-            if (variant === 'primary' || variant === 'danger') {
+        };
+
+        const frostedStyles: Record<string, () => void> = {
+            'primary': () => {
+                dynamicStyle.backdropFilter = `blur(${blurAmount}px)`;
+                dynamicStyle.WebkitBackdropFilter = `blur(${blurAmount}px)`;
+                dynamicStyle.border = '1px solid rgba(255,255,255,0.1)';
                 dynamicStyle.boxShadow = '0 4px 16px 0 rgba(0, 0, 0, 0.3)';
-            }
-            if (variant === 'secondary') {
+            },
+            'danger': () => {
+                dynamicStyle.backdropFilter = `blur(${blurAmount}px)`;
+                dynamicStyle.WebkitBackdropFilter = `blur(${blurAmount}px)`;
+                dynamicStyle.border = '1px solid rgba(255,255,255,0.1)';
+                dynamicStyle.boxShadow = '0 4px 16px 0 rgba(0, 0, 0, 0.3)';
+            },
+            'secondary': () => {
+                dynamicStyle.backdropFilter = `blur(${blurAmount}px)`;
+                dynamicStyle.WebkitBackdropFilter = `blur(${blurAmount}px)`;
+                dynamicStyle.border = '1px solid rgba(255,255,255,0.1)';
                 dynamicStyle.backgroundColor = 'rgba(255,255,255,0.05)';
             }
-        }
-    }
+        };
+
+        if (styleType === 'neon' && neonStyles[variant]) neonStyles[variant]();
+        if (styleType === 'frosted' && frostedStyles[variant]) frostedStyles[variant]();
+    };
+    
+    applyDynamicStyles();
 
     return (
         <button

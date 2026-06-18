@@ -25,11 +25,13 @@ export const DeviceProvider: React.FC<DeviceProviderProps> = ({ children, overri
             const width = window.innerWidth;
             if (width < 768) {
                 setDevice('smartphone');
-            } else if (width < 1024) {
-                setDevice('tablet');
-            } else {
-                setDevice('desktop');
+                return;
             }
+            if (width < 1024) {
+                setDevice('tablet');
+                return;
+            }
+            setDevice('desktop');
         };
 
         // Escuta ativamente

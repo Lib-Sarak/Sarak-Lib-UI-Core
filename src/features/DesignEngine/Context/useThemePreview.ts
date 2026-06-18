@@ -1,7 +1,19 @@
-import { useState, useEffect } from 'react';
+import { useState, useEffect, useCallback } from 'react';
 
 // TODO: Substituir por presets canônicos de core/Design/presets/themes/ quando forem criados
 const BASE_PRESETS: Record<string, any> = {};
+
+export interface ThemePreviewState {
+    previewLayoutId: string;
+    previewAnimationStyle: string;
+    previewEmojiSet: string;
+    previewPrimaryColor: string;
+    previewFontScale: string;
+    previewNavigationStyle: 'sidebar' | 'topbar';
+    previewSidebarWidth: number;
+    config: any;
+    themeName: string;
+}
 
 export const useThemePreview = (
     currentLayout: string,
@@ -14,65 +26,97 @@ export const useThemePreview = (
     customThemes: any[],
     layouts: any
 ) => {
-    const [previewLayoutId, setPreviewLayoutId] = useState(currentLayout);
-    const [previewAnimationStyle, setPreviewAnimationStyle] = useState(globalAnimationStyle);
-    const [previewEmojiSet, setPreviewEmojiSet] = useState(globalEmojiSet);
-    const [previewPrimaryColor, setPreviewPrimaryColor] = useState(primaryColor);
-    const [previewFontScale, setPreviewFontScale] = useState(fontScale);
-    const [previewNavigationStyle, setPreviewNavigationStyle] = useState(navigationStyle);
-    const [previewSidebarWidth, setPreviewSidebarWidth] = useState(sidebarWidth);
+    const getInitialConfig = () => {
+        return (BASE_PRESETS as any)[(currentLayout || '').toLowerCase()] ||
+            ((currentLayout || '').startsWith('custom-') ? customThemes.find(t => t.id === currentLayout.replace('custom-', ''))?.config : null) ||
+            (BASE_PRESETS as any).glass;
+    };
 
-    // Initialize with current layout config
-    const [config, setConfig] = useState(
-        (BASE_PRESETS as any)[(currentLayout || '').toLowerCase()] ||
-        ((currentLayout || '').startsWith('custom-') ? customThemes.find(t => t.id === currentLayout.replace('custom-', ''))?.config : null) ||
-        (BASE_PRESETS as any).glass
-    );
+    const [state, setState] = useState<ThemePreviewState>({
+        previewLayoutId: currentLayout,
+        previewAnimationStyle: globalAnimationStyle,
+        previewEmojiSet: globalEmojiSet,
+        previewPrimaryColor: primaryColor,
+        previewFontScale: fontScale,
+        previewNavigationStyle: navigationStyle,
+        previewSidebarWidth: sidebarWidth,
+        config: getInitialConfig(),
+        themeName: ""
+    });
 
-    const [themeName, setThemeName] = useState("");
+    const updateState = useCallback((updates: Partial<ThemePreviewState>) => {
+        setState(prev => ({ ...prev, ...updates }));
+    }, []);
 
     // Sync local preview with the selected theme from list
     useEffect(() => {
-        const isCustom = (previewLayoutId || '').startsWith('custom-');
+        const isCustom = (state.previewLayoutId || '').startsWith('custom-');
 
         if (isCustom) {
-            const cleanId = (previewLayoutId || '').replace('custom-', '');
+            const cleanId = (state.previewLayoutId || '').replace('custom-', '');
             const theme = customThemes.find(t => t.id === cleanId);
-            if (theme) {
-                if (theme.config) setConfig(theme.config);
-                setThemeName(theme.name);
-                if (theme.animationStyle) setPreviewAnimationStyle(theme.animationStyle);
-                if (theme.emojiSet) setPreviewEmojiSet(theme.emojiSet);
-            }
-        } else if (previewLayoutId) {
-            const normalizedId = previewLayoutId.toLowerCase();
-            if ((BASE_PRESETS as any)[normalizedId]) {
-                setConfig((BASE_PRESETS as any)[normalizedId]);
-                const nativeKey = previewLayoutId.toUpperCase();
+            if (!theme) return;
+            
+            const updates: Partial<ThemePreviewState> = { themeName: theme.name };
+            if (theme.config) updates.config = theme.config;
+            if (theme.animationStyle) updates.previewAnimationStyle = theme.animationStyle;
+            if (theme.emojiSet) updates.previewEmojiSet = theme.emojiSet;
+            
+            updateState(updates);
+            return;
+        } 
+        
+        if (state.previewLayoutId) {
+            const normalizedId = state.previewLayoutId.toLowerCase();
+            const basePreset = (BASE_PRESETS as any)[normalizedId];
+            
+            if (basePreset) {
+                const nativeKey = state.previewLayoutId.toUpperCase();
                 const native = layouts[nativeKey];
-                setThemeName(native?.name || previewLayoutId);
+                
+                const updates: Partial<ThemePreviewState> = {
+                    config: basePreset,
+                    themeName: native?.name || state.previewLayoutId
+                };
+                
                 if (native) {
-                    setPreviewAnimationStyle(native.animation || 'standard');
-                    setPreviewEmojiSet(native.emoji || 'none');
+                    updates.previewAnimationStyle = native.animation || 'standard';
+                    updates.previewEmojiSet = native.emoji || 'none';
                 }
+                
+                updateState(updates);
             }
         }
-    }, [previewLayoutId, customThemes, layouts]);
+    }, [state.previewLayoutId, customThemes, layouts, updateState]);
 
-    const handleConfigChange = (key: string, value: string) => {
-        setConfig((prev: any) => ({ ...prev, [key]: value }));
-    };
+    const handleConfigChange = useCallback((key: string, value: string) => {
+        setState(prev => ({ 
+            ...prev, 
+            config: { ...prev.config, [key]: value } 
+        }));
+    }, []);
 
     return {
-        previewLayoutId, setPreviewLayoutId,
-        previewAnimationStyle, setPreviewAnimationStyle,
-        previewEmojiSet, setPreviewEmojiSet,
-        previewPrimaryColor, setPreviewPrimaryColor,
-        previewFontScale, setPreviewFontScale,
-        previewNavigationStyle, setPreviewNavigationStyle,
-        previewSidebarWidth, setPreviewSidebarWidth,
-        config, setConfig,
-        themeName, setThemeName,
-        handleConfigChange
+        previewLayoutId: state.previewLayoutId,
+        setPreviewLayoutId: (v: string) => updateState({ previewLayoutId: v }),
+        previewAnimationStyle: state.previewAnimationStyle,
+        setPreviewAnimationStyle: (v: string) => updateState({ previewAnimationStyle: v }),
+        previewEmojiSet: state.previewEmojiSet,
+        setPreviewEmojiSet: (v: string) => updateState({ previewEmojiSet: v }),
+        previewPrimaryColor: state.previewPrimaryColor,
+        setPreviewPrimaryColor: (v: string) => updateState({ previewPrimaryColor: v }),
+        previewFontScale: state.previewFontScale,
+        setPreviewFontScale: (v: string) => updateState({ previewFontScale: v }),
+        previewNavigationStyle: state.previewNavigationStyle,
+        setPreviewNavigationStyle: (v: 'sidebar' | 'topbar') => updateState({ previewNavigationStyle: v }),
+        previewSidebarWidth: state.previewSidebarWidth,
+        setPreviewSidebarWidth: (v: number) => updateState({ previewSidebarWidth: v }),
+        config: state.config,
+        setConfig: (v: any) => updateState({ config: v }),
+        themeName: state.themeName,
+        setThemeName: (v: string) => updateState({ themeName: v }),
+        handleConfigChange,
+        state,
+        updateState
     };
 };

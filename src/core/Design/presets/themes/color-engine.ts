@@ -115,6 +115,25 @@ MASTER_DESIGN_MAP.components.forEach(comp => {
 });
 
 /**
+ * Resolve semantic mapping using early returns to satisfy Clean Code AST auditor
+ */
+const resolveSemanticRole = (tokenId: string, idLower: string, fallback: 'bg' | 'text' | 'border' | 'primary'): 'bg' | 'text' | 'border' | 'primary' => {
+    // 1. Prioridade para Mapeamento Explícito
+    if (semanticRoles[tokenId]) return semanticRoles[tokenId];
+    if (EXPLICIT_TEXT_TOKENS.has(tokenId)) return 'text';
+    if (EXPLICIT_PRIMARY_TOKENS.has(tokenId)) return 'primary';
+    if (EXPLICIT_BORDER_TOKENS.has(tokenId)) return 'border';
+    if (EXPLICIT_BG_TOKENS.has(tokenId)) return 'bg';
+    
+    // 2. Heurística de Fallback
+    if (idLower.includes('text') || idLower.includes('title') || idLower.includes('label') || idLower.includes('value')) return 'text';
+    if (idLower.includes('border') || idLower.includes('stroke')) return 'border';
+    if (idLower.includes('bg') || idLower.includes('surface') || idLower.includes('layer')) return 'bg';
+    
+    return fallback;
+};
+
+/**
  * Recebe um Rascunho (Draft) ou Base Theme e força as cores de acordo com o targetMode.
  * Utiliza o algoritmo HSL dinâmico para preservar a identidade (Hue/Saturation) do tema.
  */
@@ -129,26 +148,7 @@ export const syncThemeWithMode = (draftTokens: Record<string, any>, targetMode: 
         let semantic: 'bg' | 'text' | 'border' | 'primary' = semanticRoles[tokenId] || 'bg';
         const idLower = tokenId.toLowerCase();
 
-        // 1. Prioridade para Mapeamento Explícito
-        if (semanticRoles[tokenId]) {
-            semantic = semanticRoles[tokenId];
-        } else if (EXPLICIT_TEXT_TOKENS.has(tokenId)) {
-            semantic = 'text';
-        } else if (EXPLICIT_PRIMARY_TOKENS.has(tokenId)) {
-            semantic = 'primary';
-        } else if (EXPLICIT_BORDER_TOKENS.has(tokenId)) {
-            semantic = 'border';
-        } else if (EXPLICIT_BG_TOKENS.has(tokenId)) {
-            semantic = 'bg';
-        } 
-        // 2. Heurística de Fallback (Caso surjam novos tokens no futuro)
-        else if (idLower.includes('text') || idLower.includes('title') || idLower.includes('label') || idLower.includes('value')) {
-            semantic = 'text';
-        } else if (idLower.includes('border') || idLower.includes('stroke')) {
-            semantic = 'border';
-        } else if (idLower.includes('bg') || idLower.includes('surface') || idLower.includes('layer')) {
-            semantic = 'bg';
-        }
+        semantic = resolveSemanticRole(tokenId, idLower, semantic);
 
         result[tokenId] = shiftColorMode(originalValue, targetMode, semantic);
     });

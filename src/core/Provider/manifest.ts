@@ -1,4 +1,11 @@
 import { computeColorVariants } from './utils/color-engine';
+import { 
+    transformHeadingLetterSpacing, 
+    transformFontScale, 
+    transformScaleRatio, 
+    transformLayeredShadows, 
+    transformFluidScaling 
+} from './utils/manifest-transformers';
 
 /**
  * SOVEREIGN DESIGN MANIFEST (v10.1)
@@ -97,7 +104,7 @@ export const DESIGN_MANIFEST: Record<string, {
     headingWeight: { vars: ['--heading-weight', '--sarak-heading-weight'] },
     headingLetterSpacing: {
         vars: ['--heading-spacing', '--sarak-heading-spacing'],
-        transform: (v) => (({ tight: '-0.05em', normal: '0', wide: '0.1em', widest: '0.25em' } as any)[v] || v)
+        transform: transformHeadingLetterSpacing
     },
     fontLineHeight: { vars: ['--line-height', '--sarak-line-height'] },
     fontBaseSize: { vars: ['--font-size-base', '--sarak-font-size-base'], unit: 'px' },
@@ -166,40 +173,16 @@ export const DESIGN_MANIFEST: Record<string, {
     fontScale: {
         vars: ['--sarak-font-scale', '--sarak-font-size', '--font-size-factor', '--theme-font-size-base'],
         attr: 'data-font-scale',
-        transform: (v: string) => {
-            const scales: any = {
-                'pp': { px: '12px', factor: '0.75' },
-                'p': { px: '14px', factor: '0.85' },
-                'm': { px: '16px', factor: '1.0' },
-                'g': { px: '20px', factor: '1.25' },
-                'gg': { px: '24px', factor: '1.5' }
-            };
-            return scales[v] || scales['m'];
-        }
+        transform: transformFontScale
     },
     scaleRatio: {
         vars: ['--sarak-scale-ratio'],
-        transform: (v) => {
-            const ratio = parseFloat(v) || 1.0;
-            return {
-                ratio,
-                gap: `${1.25 * ratio}rem`,
-                pad: `${1.5 * ratio}rem`,
-                margin: `${1 * ratio}rem`,
-                radius: `${12 * ratio}px`
-            };
-        }
+        transform: transformScaleRatio
     },
 
     layeredShadows: {
         vars: ['--sarak-layered-shadows'],
-        transform: (v) => {
-            const intensity = parseFloat(v) || 1.0;
-            return `0 2px 4px rgba(0,0,0,${0.05 * intensity}), 
-                    0 4px 8px rgba(0,0,0,${0.05 * intensity}), 
-                    0 8px 16px rgba(0,0,0,${0.05 * intensity}), 
-                    0 16px 32px rgba(0,0,0,${0.05 * intensity})`;
-        }
+        transform: transformLayeredShadows
     },
     chatBubbleStyle: { attr: 'data-chat-bubble', vars: ['--sarak-chat-bubble'] },
     chatAnimationSpeed: { vars: ['--sarak-chat-anim-speed'] },
@@ -239,14 +222,7 @@ export const DESIGN_MANIFEST: Record<string, {
     scrollbarStyle: { vars: ['--sarak-scrollbar-width'], unit: 'px', attr: 'data-scrollbar-style' },
     fluidScaling: {
         vars: ['--sarak-fluid-scale'],
-        transform: (v) => {
-            const factor = parseFloat(v) || 1.0;
-            return {
-                base: `clamp(12px, ${0.8 * factor}vw + 8px, ${20 * factor}px)`,
-                gap: `clamp(10px, ${1 * factor}vw + 4px, ${32 * factor}px)`,
-                padding: `clamp(16px, ${1.5 * factor}vw + 8px, ${48 * factor}px)`
-            };
-        }
+        transform: transformFluidScaling
     },
     topbarHeight: { vars: ['--topbar-height', '--sarak-topbar-height', '--theme-topbar-height'], unit: 'px' },
     isNavHidden: { vars: ['--is-nav-hidden'], attr: 'data-nav-hidden' },

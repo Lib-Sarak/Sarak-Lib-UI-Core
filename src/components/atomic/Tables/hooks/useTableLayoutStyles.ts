@@ -6,6 +6,17 @@ export interface TableLayoutContext {
     actionColumnAlignmentClass: string;
 }
 
+const densityMap: Record<string, string> = {
+    'compact': 'py-1.5 px-2 text-sm',
+    'spacious': 'py-5 px-6',
+    'comfortable': 'py-3 px-4'
+};
+
+const actionAlignmentMap: Record<string, string> = {
+    'left': 'text-left justify-start',
+    'right': 'text-right justify-end'
+};
+
 /**
  * Hook Controlador Estrutural (Camada 6) - Tabelas e Lists
  */
@@ -14,25 +25,13 @@ export const useTableLayoutStyles = (design: any): TableLayoutContext => {
         const density = design?.tableDensity || 'comfortable';
         const actionPosition = design?.tableActionPosition || 'right';
 
-        let cellDensityClass = 'py-3 px-4 '; // comfortable default
-        
-        if (density === 'compact') {
-            cellDensityClass = 'py-1.5 px-2 text-sm ';
-        } else if (density === 'spacious') {
-            cellDensityClass = 'py-5 px-6 ';
-        }
-
-        // Se action for na esquerda, a tabela precisará tratar a ordem das colunas lógicas no componente
-        // O Hook provê as classes utilitárias para alinhamento dentro da célula
-        let actionColumnAlignmentClass = 'text-right justify-end ';
-        if (actionPosition === 'left') {
-            actionColumnAlignmentClass = 'text-left justify-start ';
-        }
+        const cellDensityClass = densityMap[density] || densityMap['comfortable'];
+        const actionColumnAlignmentClass = actionAlignmentMap[actionPosition] || actionAlignmentMap['right'];
 
         return {
             tableWrapperClass: 'w-full overflow-x-auto',
-            cellDensityClass: cellDensityClass.trim(),
-            actionColumnAlignmentClass: actionColumnAlignmentClass.trim()
+            cellDensityClass,
+            actionColumnAlignmentClass
         };
     }, [design?.tableDensity, design?.tableActionPosition]);
 };

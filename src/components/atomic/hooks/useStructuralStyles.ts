@@ -12,22 +12,17 @@ export const useStructuralStyles = () => {
     // EIXO 1: MACRO-LAYOUT (Grids e Containers)
     // ==========================================
     const getGridStyles = () => {
-        // Fallbacks seguros até que os tokens sejam injetados no MasterMap
         const layoutType = design?.layoutGridTemplate || 'col-12';
         const gap = design?.globalSectionGap || 'var(--sx-spacing-md)';
         
-        let layoutClass = 'grid w-full ';
-        if (layoutType === 'col-12') {
-            layoutClass += 'grid-cols-1 md:grid-cols-12';
-        } else if (layoutType === 'auto-fit') {
-            // Um grid que se auto-preenche sem media queries fixas
-            layoutClass += 'grid-cols-[repeat(auto-fit,minmax(280px,1fr))]';
-        } else if (layoutType === 'masonry') {
-            layoutClass = 'columns-1 md:columns-2 lg:columns-3 w-full '; // Remove 'grid'
-        }
+        const gridStrategies: Record<string, string> = {
+            'col-12': 'grid w-full grid-cols-1 md:grid-cols-12',
+            'auto-fit': 'grid w-full grid-cols-[repeat(auto-fit,minmax(280px,1fr))]',
+            'masonry': 'columns-1 md:columns-2 lg:columns-3 w-full'
+        };
 
         return {
-            className: layoutClass,
+            className: gridStrategies[layoutType] || gridStrategies['col-12'],
             style: { gap, columnGap: layoutType === 'masonry' ? gap : undefined }
         };
     };
@@ -39,23 +34,20 @@ export const useStructuralStyles = () => {
         const labelPos = design?.formLabelPosition || 'top';
         const density = design?.formFieldDensity || 'comfortable';
 
-        let groupClass = 'flex w-full ';
-        
-        // Direcionamento do Label (Cima vs Lado)
-        if (labelPos === 'left') {
-            groupClass += 'flex-row items-center ';
-        } else {
-            groupClass += 'flex-col ';
-        }
+        const labelStrategies: Record<string, string> = {
+            'left': 'flex flex-row items-center w-full',
+            'top': 'flex flex-col w-full'
+        };
 
-        // Densidade de Espaçamento
-        let gap = 'var(--sx-spacing-xs)'; // Default Comfortable
-        if (density === 'tight') gap = 'var(--sx-spacing-2xs)';
-        if (density === 'relaxed') gap = 'var(--sx-spacing-md)';
+        const densityStrategies: Record<string, string> = {
+            'tight': 'var(--sx-spacing-2xs)',
+            'relaxed': 'var(--sx-spacing-md)',
+            'comfortable': 'var(--sx-spacing-xs)'
+        };
 
         return {
-            className: groupClass,
-            style: { gap }
+            className: labelStrategies[labelPos] || labelStrategies['top'],
+            style: { gap: densityStrategies[density] || densityStrategies['comfortable'] }
         };
     };
 
@@ -66,29 +58,23 @@ export const useStructuralStyles = () => {
         const mediaPos = design?.cardMediaPlacement || 'top';
         const contentAlign = design?.cardContentAlignment || 'start';
 
-        let cardClass = 'flex relative overflow-hidden ';
-        
-        // Posição da Mídia (Imagem) vs Conteúdo
-        if (mediaPos === 'left') {
-            cardClass += 'flex-row ';
-        } else if (mediaPos === 'right') {
-            cardClass += 'flex-row-reverse ';
-        } else {
-            // top ou default
-            cardClass += 'flex-col ';
-        }
+        const mediaStrategies: Record<string, string> = {
+            'left': 'flex flex-row relative overflow-hidden',
+            'right': 'flex flex-row-reverse relative overflow-hidden',
+            'top': 'flex flex-col relative overflow-hidden'
+        };
 
-        // Alinhamento do conteúdo
-        if (contentAlign === 'center') {
-            cardClass += 'items-center text-center ';
-        } else if (contentAlign === 'space-between') {
-            cardClass += 'justify-between ';
-        } else {
-            cardClass += 'items-start ';
-        }
+        const alignStrategies: Record<string, string> = {
+            'center': 'items-center text-center',
+            'space-between': 'justify-between',
+            'start': 'items-start'
+        };
+
+        const baseClass = mediaStrategies[mediaPos] || mediaStrategies['top'];
+        const alignClass = alignStrategies[contentAlign] || alignStrategies['start'];
 
         return {
-            className: cardClass,
+            className: `${baseClass} ${alignClass}`,
             style: {}
         };
     };
@@ -99,15 +85,13 @@ export const useStructuralStyles = () => {
     const getInputIconStyles = () => {
         const iconPosition = design?.inputIconPosition || 'left';
         
-        let positionClass = 'absolute ';
-        if (iconPosition === 'right') {
-            positionClass += 'right-3 ';
-        } else {
-            positionClass += 'left-3 ';
-        }
+        const posStrategies: Record<string, string> = {
+            'right': 'absolute right-3',
+            'left': 'absolute left-3'
+        };
 
         return {
-            iconPositionClass: positionClass,
+            iconPositionClass: posStrategies[iconPosition] || posStrategies['left'],
             isIconRight: iconPosition === 'right'
         };
     };
@@ -116,19 +100,16 @@ export const useStructuralStyles = () => {
     // EIXO 5: MICRO-LAYOUT DE SWITCHES/CHECKBOXES
     // ==========================================
     const getSwitchLayoutStyles = () => {
-        const switchPos = design?.switchLabelPosition || 'right'; // label a direita do switch
+        const switchPos = design?.switchLabelPosition || 'right';
         
-        let containerClass = 'flex items-center cursor-pointer ';
-        if (switchPos === 'left') {
-            containerClass += 'flex-row-reverse justify-end ';
-        } else if (switchPos === 'space-between') {
-            containerClass += 'justify-between w-full ';
-        } else {
-            containerClass += 'flex-row ';
-        }
+        const switchStrategies: Record<string, string> = {
+            'left': 'flex items-center cursor-pointer flex-row-reverse justify-end',
+            'space-between': 'flex items-center cursor-pointer justify-between w-full',
+            'right': 'flex items-center cursor-pointer flex-row'
+        };
 
         return {
-            containerClass,
+            containerClass: switchStrategies[switchPos] || switchStrategies['right'],
             textContainerClass: 'flex flex-col',
             style: { gap: 'var(--sx-spacing-sm)' }
         };
@@ -138,34 +119,41 @@ export const useStructuralStyles = () => {
     // EIXO 6: MACRO-CONTAINERS GENÉRICOS
     // ==========================================
     const getContainerStyles = () => {
-        const flow = design?.globalFlowDirection || 'column'; // column ou row
+        const flow = design?.globalFlowDirection || 'column';
         const align = design?.globalFlowAlign || 'stretch';
 
-        let containerClass = 'flex ';
-        if (flow === 'row') {
-            containerClass += 'flex-row flex-wrap ';
-        } else {
-            containerClass += 'flex-col ';
-        }
+        const flowStrategies: Record<string, string> = {
+            'row': 'flex flex-row flex-wrap',
+            'column': 'flex flex-col'
+        };
 
-        if (align === 'center') containerClass += 'items-center ';
-        if (align === 'start') containerClass += 'items-start ';
-        if (align === 'end') containerClass += 'items-end ';
+        const alignStrategies: Record<string, string> = {
+            'center': 'items-center',
+            'start': 'items-start',
+            'end': 'items-end',
+            'stretch': ''
+        };
+
+        const flowClass = flowStrategies[flow] || flowStrategies['column'];
+        const alignClass = alignStrategies[align] || '';
 
         return {
-            className: containerClass.trim(),
+            className: `${flowClass} ${alignClass}`.trim(),
             style: { gap: 'var(--sx-spacing-md)' }
         };
     };
 
     const getHeaderStyles = () => {
-        // Cabecalho tipicamente row com space-between
         const align = design?.headerAlignment || 'space-between';
         
-        let headerClass = 'flex flex-col md:flex-row md:items-center w-full ';
-        if (align === 'space-between') headerClass += 'justify-between ';
-        else if (align === 'center') headerClass += 'justify-center ';
-        else if (align === 'start') headerClass += 'justify-start ';
+        const alignStrategies: Record<string, string> = {
+            'space-between': 'justify-between',
+            'center': 'justify-center',
+            'start': 'justify-start'
+        };
+
+        const alignClass = alignStrategies[align] || alignStrategies['space-between'];
+        const headerClass = `flex flex-col md:flex-row md:items-center w-full ${alignClass}`;
 
         return {
             className: headerClass.trim(),

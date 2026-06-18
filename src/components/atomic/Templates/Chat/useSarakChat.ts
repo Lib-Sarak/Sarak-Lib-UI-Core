@@ -2,18 +2,24 @@ import { useState, useRef, useEffect } from 'react';
 import { Message, Attachment, ModelRoute } from './types';
 
 export const useSarakChat = (endpoint: string, modelsEndpoint?: string) => {
-  const [messages, setMessages] = useState<Message[]>([]);
-  const [input, setInput] = useState('');
-  const [attachments, setAttachments] = useState<Attachment[]>([]);
-  const [isLoading, setIsLoading] = useState(false);
-  const [isProcessingFiles, setIsProcessingFiles] = useState(false);
-  const [mode, setMode] = useState<'auto' | 'manual'>('auto');
-  const [availableModels, setAvailableModels] = useState<ModelRoute[]>([]);
-  const [selectedRoute, setSelectedRoute] = useState<ModelRoute | null>(null);
-  const [showModelPicker, setShowModelPicker] = useState(false);
-  const [modelSearch, setModelSearch] = useState('');
-  const [maxTokens, setMaxTokens] = useState(2048);
-  
+  const [state, setState] = useState({
+    messages: [] as Message[],
+    input: '',
+    attachments: [] as Attachment[],
+    isLoading: false,
+    isProcessingFiles: false,
+    mode: 'auto' as 'auto' | 'manual',
+    availableModels: [] as ModelRoute[],
+    selectedRoute: null as ModelRoute | null,
+    showModelPicker: false,
+    modelSearch: '',
+    maxTokens: 2048
+  });
+
+  const updateState = (updates: Partial<typeof state>) => {
+    setState(prev => ({ ...prev, ...updates }));
+  };
+
   const scrollRef = useRef<HTMLDivElement>(null);
   const fileInputRef = useRef<HTMLInputElement>(null);
 
@@ -33,23 +39,23 @@ export const useSarakChat = (endpoint: string, modelsEndpoint?: string) => {
         });
         if (res.ok) {
           const data = await res.json();
-          setAvailableModels(data);
-          if (data.length > 0 && !selectedRoute) {
-            setSelectedRoute(data[0]);
-          }
+          updateState({
+              availableModels: data,
+              selectedRoute: (data.length > 0 && !state.selectedRoute) ? data[0] : state.selectedRoute
+          });
         }
       } catch (err) {
         console.error("Erro ao carregar modelos:", err);
       }
     };
     fetchModels();
-  }, [modelsEndpoint]);
+  }, [modelsEndpoint, state.selectedRoute]);
 
   useEffect(() => {
     if (scrollRef.current) {
       scrollRef.current.scrollTop = scrollRef.current.scrollHeight;
     }
-  }, [messages]);
+  }, [state.messages]);
 
   const toBase64 = (file: File): Promise<string> => new Promise((resolve, reject) => {
     const reader = new FileReader();
@@ -65,45 +71,50 @@ export const useSarakChat = (endpoint: string, modelsEndpoint?: string) => {
       name: f.name,
       type: f.type
     }));
-    setAttachments(prev => [...prev, ...newFiles]);
+    updateState({ attachments: [...state.attachments, ...newFiles] });
     if (fileInputRef.current) fileInputRef.current.value = '';
   };
 
   const removeAttachment = (index: number) => {
-    setAttachments(prev => prev.filter((_, i) => i !== index));
+    updateState({ attachments: state.attachments.filter((_, i) => i !== index) });
   };
 
   const handleSend = async () => {
-    if ((!input.trim() && attachments.length === 0) || isLoading) return;
+    if ((!state.input.trim() && state.attachments.length === 0) || state.isLoading) return;
 
-    const userContent = input.trim();
-    const userMessage: Message = { role: 'user', content: userContent || (attachments.length > 0 ? "[Anexo]" : "") };
-    setMessages(prev => [...prev, userMessage]);
-    setInput('');
-    setIsLoading(true);
+    const userContent = state.input.trim();
+    const userMessage: Message = { role: 'user', content: userContent || (state.attachments.length > 0 ? "[Anexo]" : "") };
+    
+    updateState({ 
+        messages: [...state.messages, userMessage],
+        input: '',
+        isLoading: true
+    });
 
     const assistantPlaceholder: Message = { 
       role: 'assistant', 
       content: '', 
-      metadata: { model: mode === 'manual' ? selectedRoute?.model : 'Selecionando...' } 
+      metadata: { model: state.mode === 'manual' ? state.selectedRoute?.model : 'Selecionando...' } 
     };
     
-    setMessages(prev => [...prev, assistantPlaceholder]);
-    const assistantIndex = messages.length + 1;
+    // Precisamos de um estado local forte para as mensagens durante o stream
+    let currentMessages = [...state.messages, userMessage, assistantPlaceholder];
+    updateState({ messages: currentMessages });
+    
+    const assistantIndex = currentMessages.length - 1;
 
     try {
-      setIsProcessingFiles(true);
+      updateState({ isProcessingFiles: true });
       const blocks: any[] = [];
       if (userContent) blocks.push({ text: userContent });
 
-      for (const att of attachments) {
+      for (const att of state.attachments) {
         if (att.type.startsWith('image/')) {
           const b64 = await toBase64(att.file);
           blocks.push({ image_url: { url: b64 } });
         }
       }
-      setIsProcessingFiles(false);
-      setAttachments([]);
+      updateState({ isProcessingFiles: false, attachments: [] });
 
       const system = (window as any).__SARAK_SYSTEM__ || 'global';
       const token = localStorage.getItem(`${system}_token`) || 
@@ -118,10 +129,10 @@ export const useSarakChat = (endpoint: string, modelsEndpoint?: string) => {
         },
         body: JSON.stringify({
           blocks: blocks,
-          mode: mode,
-          manual_model: mode === 'manual' ? selectedRoute?.model : undefined,
-          manual_provider: mode === 'manual' ? selectedRoute?.provider : undefined,
-          max_tokens: maxTokens
+          mode: state.mode,
+          manual_model: state.mode === 'manual' ? state.selectedRoute?.model : undefined,
+          manual_provider: state.mode === 'manual' ? state.selectedRoute?.provider : undefined,
+          max_tokens: state.maxTokens
         })
       });
 
@@ -148,15 +159,16 @@ export const useSarakChat = (endpoint: string, modelsEndpoint?: string) => {
                 const payload = JSON.parse(data);
                 if (payload.token) {
                   fullContent += payload.token;
-                  setMessages(prev => {
-                    const newMsgs = [...prev];
-                    newMsgs[assistantIndex] = {
-                      ...newMsgs[assistantIndex],
+                  currentMessages = [...currentMessages];
+                  currentMessages[assistantIndex] = {
+                      ...currentMessages[assistantIndex],
                       content: fullContent
-                    };
-                    return newMsgs;
-                  });
-                } else if (payload.error) {
+                  };
+                  updateState({ messages: currentMessages });
+                  continue;
+                }
+                
+                if (payload.error) {
                    throw new Error(payload.error);
                 }
               } catch (e) {
@@ -169,44 +181,41 @@ export const useSarakChat = (endpoint: string, modelsEndpoint?: string) => {
 
     } catch (err: any) {
       console.error("Erro no Chat Lab Stream:", err);
-      setMessages(prev => {
-        const newMsgs = [...prev];
-        newMsgs[assistantIndex] = {
+      currentMessages = [...currentMessages];
+      currentMessages[assistantIndex] = {
           role: 'assistant',
           content: `❌ Erro na Orquestração: ${err.message}`
-        };
-        return newMsgs;
-      });
+      };
+      updateState({ messages: currentMessages });
     } finally {
-      setIsLoading(false);
-      setIsProcessingFiles(false);
+      updateState({ isLoading: false, isProcessingFiles: false });
     }
   };
 
   const clearChat = () => {
     if (confirm("Deseja limpar o histórico desta sessão?")) {
-      setMessages([]);
+      updateState({ messages: [] });
     }
   };
 
   return {
-    messages,
-    input,
-    setInput,
-    attachments,
-    isLoading,
-    isProcessingFiles,
-    mode,
-    setMode,
-    availableModels,
-    selectedRoute,
-    setSelectedRoute,
-    showModelPicker,
-    setShowModelPicker,
-    modelSearch,
-    setModelSearch,
-    maxTokens,
-    setMaxTokens,
+    messages: state.messages,
+    input: state.input,
+    setInput: (v: string) => updateState({ input: v }),
+    attachments: state.attachments,
+    isLoading: state.isLoading,
+    isProcessingFiles: state.isProcessingFiles,
+    mode: state.mode,
+    setMode: (v: 'auto' | 'manual') => updateState({ mode: v }),
+    availableModels: state.availableModels,
+    selectedRoute: state.selectedRoute,
+    setSelectedRoute: (v: ModelRoute | null) => updateState({ selectedRoute: v }),
+    showModelPicker: state.showModelPicker,
+    setShowModelPicker: (v: boolean) => updateState({ showModelPicker: v }),
+    modelSearch: state.modelSearch,
+    setModelSearch: (v: string) => updateState({ modelSearch: v }),
+    maxTokens: state.maxTokens,
+    setMaxTokens: (v: number) => updateState({ maxTokens: v }),
     scrollRef,
     fileInputRef,
     handleFileSelect,

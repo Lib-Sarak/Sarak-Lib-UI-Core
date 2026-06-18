@@ -1,13 +1,15 @@
-import { useState, useEffect, useCallback, useMemo } from 'react';
+import { useEffect, useCallback, useMemo } from 'react';
 import { useSarakUI } from '../Provider/SarakUIProvider';
 import { useModuleDiscovery } from '../../shared/hooks/useModuleDiscovery';
 import { useSarakRouter } from '../../shared/hooks/useSarakRouter';
 import { DiscoveredModule } from '../Discovery/types';
+import { useSarakShellUI } from './hooks/useSarakShellUI';
 
 export const useSarakShell = (loggedIn: boolean) => {
-    const { design, applyConfig, options } = useSarakUI();
+    const { design, options } = useSarakUI();
     const { modules: discoveredModules, isLoading: isDiscovering } = useModuleDiscovery(loggedIn);
     const { segments, navigate } = useSarakRouter();
+    const { state: uiState, updateState, toggleNav, startResizingSidebar, startResizingTopbar } = useSarakShellUI();
     
     // O módulo ativo é derivado do primeiro segmento da URL
     const activeModuleId = segments[0] || null;
@@ -15,28 +17,6 @@ export const useSarakShell = (loggedIn: boolean) => {
     const setActiveModuleId = useCallback((id: string) => {
         navigate(`/${id}`);
     }, [navigate]);
-
-    const [isSearchOpen, setIsSearchOpen] = useState(false);
-    const [isNavVisible, setIsNavVisible] = useState(true);
-    const [isMobileNavOpen, setIsMobileNavOpen] = useState(false);
-    const [resizeType, setResizeType] = useState<'sidebar' | 'topbar' | null>(null);
-
-    const sidebarMinWidth = useMemo(() => design?.sidebarMinWidth || 200, [design?.sidebarMinWidth]);
-    const sidebarMaxWidth = useMemo(() => design?.sidebarMaxWidth || 450, [design?.sidebarMaxWidth]);
-    const topbarMinHeight = 40;
-    const topbarMaxHeight = 120;
-
-    const toggleNav = useCallback(() => {
-        applyConfig({ isNavHidden: !design?.isNavHidden });
-    }, [applyConfig, design?.isNavHidden]);
-
-    const setSidebarWidth = useCallback((w: number) => {
-        applyConfig({ sidebarWidth: w });
-    }, [applyConfig]);
-
-    const setTopbarHeight = useCallback((h: number) => {
-        applyConfig({ topbarHeight: h });
-    }, [applyConfig]);
 
     // Module activation (Native Routing v10.2) - Prioritizes default or mx-customization
     useEffect(() => {
@@ -56,58 +36,8 @@ export const useSarakShell = (loggedIn: boolean) => {
 
     // Fechar menu mobile ao trocar de módulo
     useEffect(() => {
-        setIsMobileNavOpen(false);
-    }, [activeModuleId]);
-
-    // Shortcuts
-    useEffect(() => {
-        const handleKeyDown = (e: KeyboardEvent) => {
-            if (e.altKey && e.key === 'n') {
-                e.preventDefault();
-                toggleNav();
-            }
-            if ((e.ctrlKey || e.metaKey) && e.key === 'k') {
-                e.preventDefault();
-                setIsSearchOpen(true);
-            }
-        };
-        window.addEventListener('keydown', handleKeyDown);
-        return () => window.removeEventListener('keydown', handleKeyDown);
-    }, [toggleNav]);
-
-    // --- Unified Resize Engine (v10.3) ---
-    const startResizingSidebar = useCallback(() => setResizeType('sidebar'), []);
-    const startResizingTopbar = useCallback(() => setResizeType('topbar'), []);
-    const stopResizing = useCallback(() => setResizeType(null), []);
-
-    const resize = useCallback((e: MouseEvent) => {
-        if (resizeType === 'sidebar') {
-            const newWidth = e.clientX;
-            if (newWidth >= sidebarMinWidth && newWidth <= sidebarMaxWidth) setSidebarWidth(newWidth);
-        } else if (resizeType === 'topbar') {
-            const newHeight = e.clientY;
-            if (newHeight >= topbarMinHeight && newHeight <= topbarMaxHeight) setTopbarHeight(newHeight);
-        }
-    }, [resizeType, setSidebarWidth, setTopbarHeight, sidebarMinWidth, sidebarMaxWidth]);
-
-    useEffect(() => {
-        if (typeof document === 'undefined') return;
-        
-        if (resizeType) {
-            window.addEventListener('mousemove', resize);
-            window.addEventListener('mouseup', stopResizing);
-            document.body.style.cursor = resizeType === 'sidebar' ? 'col-resize' : 'row-resize';
-            document.body.style.userSelect = 'none';
-        }
-        return () => {
-            window.removeEventListener('mousemove', resize);
-            window.removeEventListener('mouseup', stopResizing);
-            if (typeof document !== 'undefined' && document.body) {
-                document.body.style.cursor = 'default';
-                document.body.style.userSelect = 'auto';
-            }
-        };
-    }, [resizeType, resize, stopResizing]);
+        updateState({ isMobileNavOpen: false });
+    }, [activeModuleId, updateState]);
 
     const activeModule = useMemo(() => discoveredModules.find((m: DiscoveredModule) => m.id === activeModuleId), [discoveredModules, activeModuleId]);
     
@@ -128,12 +58,12 @@ export const useSarakShell = (loggedIn: boolean) => {
         setActiveModuleId,
         activeModule,
         groupedModules,
-        isSearchOpen,
-        setIsSearchOpen,
-        isNavVisible,
-        setIsNavVisible,
-        isMobileNavOpen,
-        setIsMobileNavOpen,
+        isSearchOpen: uiState.isSearchOpen,
+        setIsSearchOpen: (v: boolean) => updateState({ isSearchOpen: v }),
+        isNavVisible: uiState.isNavVisible,
+        setIsNavVisible: (v: boolean) => updateState({ isNavVisible: v }),
+        isMobileNavOpen: uiState.isMobileNavOpen,
+        setIsMobileNavOpen: (v: boolean) => updateState({ isMobileNavOpen: v }),
         toggleNav,
         startResizingSidebar,
         startResizingTopbar,

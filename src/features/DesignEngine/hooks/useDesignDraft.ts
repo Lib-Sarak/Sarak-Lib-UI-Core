@@ -1,5 +1,6 @@
-import React, { useState, useEffect, useCallback, useMemo } from 'react';
+import React, { useState, useCallback, useMemo } from 'react';
 import { MASTER_DESIGN_MAP, getAllDesignTokens } from '../../../core/Design/master-map';
+import { useDesignDraftSync } from './useDesignDraftSync';
 
 /**
  * Deep Comparison Utility (v12.0)
@@ -49,10 +50,10 @@ export const useDesignDraft = (sarak: any) => {
 
     const [toast, setToast] = useState<{ type: 'success' | 'warning', message: string } | null>(null);
 
-    const showToast = (type: 'success' | 'warning', message: string) => {
+    const showToast = useCallback((type: 'success' | 'warning', message: string) => {
         setToast({ type, message });
         setTimeout(() => setToast(null), 3000);
-    };
+    }, []);
 
     // 3. Mapeamento Dinâmico de Tokens por Componente (Schema ID)
     const getTokensByComponent = useCallback((schemaId: string) => {
@@ -79,7 +80,7 @@ export const useDesignDraft = (sarak: any) => {
         return () => {
             sarak.setIsDrafting(false);
         };
-    }, []);
+    }, []); // eslint-disable-line react-hooks/exhaustive-deps
 
     // 5. Cálculo de Dirty State
     const isComponentDirty = useCallback((schemaId: string) => {
@@ -94,48 +95,13 @@ export const useDesignDraft = (sarak: any) => {
         return allKeys.some(key => !areValuesEqual(draftState[key], sarak.systemDesign?.[key]));
     }, [draftState, sarak.systemDesign]);
 
-    // 6. Ponte de Live Preview (Sincronização Atômica v12.8)
-    useEffect(() => {
-        if (!sarak.setDraftDesign) return;
-        
-        // Se estamos no meio de uma sincronização vinda do provedor, ignoramos para evitar ecos
-        if (isSyncingRef.current) return;
-
-        const currentDraftStr = JSON.stringify(draftState);
-        const providerDraftStr = JSON.stringify(sarak.draftDesign);
-
-        if (currentDraftStr !== providerDraftStr) {
-            sarak.setDraftDesign(draftState);
-        }
-    }, [draftState, sarak.setDraftDesign, sarak.draftDesign]);
-
-    // 7. Sincronização Inversa (External Changes -> Local Draft)
-    useEffect(() => {
-        const providerDraftStr = JSON.stringify(sarak.draftDesign);
-        const currentDraftStr = JSON.stringify(draftState);
-
-        if (providerDraftStr !== currentDraftStr) {
-            isSyncingRef.current = true;
-            setDraftState(sarak.draftDesign);
-            // Resetamos a flag no próximo tick
-            setTimeout(() => {
-                isSyncingRef.current = false;
-            }, 0);
-        }
-    }, [sarak.draftDesign]);
-
-    // 8. Limpeza Final
-    useEffect(() => {
-        return () => {
-            if (sarak.setDraftDesign) sarak.setDraftDesign(null);
-        };
-    }, []); 
-
+    // 6. Ponte de Live Preview, Sincronização e Limpeza
+    useDesignDraftSync(draftState, setDraftState, sarak, isSyncingRef);
 
     /**
      * Atualiza o rascunho
      */
-    const updateDraft = (key: string, value: any) => {
+    const updateDraft = useCallback((key: string, value: any) => {
         setDraftState((prev: any) => {
             const current = prev || draft;
             if (current[key] === value) return prev;
@@ -146,19 +112,9 @@ export const useDesignDraft = (sarak: any) => {
             
             return { ...current, [key]: value };
         });
-    };
+    }, [draft]);
 
-    /**
-     * Aplica um conjunto de tokens ao rascunho (Patch)
-     */
-    const applyPatch = (patch: Record<string, any>) => {
-        setDraftState((prev: any) => ({
-            ...(prev || draft),
-            ...patch
-        }));
-    };
-
-    const resetComponent = (schemaIdOrSchemas: string | string[]) => {
+    const resetComponent = useCallback((schemaIdOrSchemas: string | string[]) => {
         const componentKeys = typeof schemaIdOrSchemas === 'string'
             ? getTokensByComponent(schemaIdOrSchemas)
             : MASTER_DESIGN_MAP.components
@@ -176,17 +132,17 @@ export const useDesignDraft = (sarak: any) => {
 
         const label = typeof schemaIdOrSchemas === 'string' ? schemaIdOrSchemas : schemaIdOrSchemas.join(', ');
         showToast('warning', `Tokens de ${label.toUpperCase()} restaurados.`);
-    };
+    }, [draft, getTokensByComponent, showToast, sarak.systemDesign]);
 
     /**
      * Reverte um único token
      */
-    const resetToken = (tokenId: string) => {
+    const resetToken = useCallback((tokenId: string) => {
         setDraftState((prev: any) => ({
             ...(prev || draft),
             [tokenId]: sarak.systemDesign?.[tokenId]
         }));
-    };
+    }, [draft, sarak.systemDesign]);
 
     /**
      * Preview de um preset genérico (qualquer subcategoria)

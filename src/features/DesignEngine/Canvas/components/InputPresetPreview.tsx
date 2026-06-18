@@ -16,11 +16,16 @@ export const InputPresetPreview: React.FC<InputPresetPreviewProps> = ({ preset, 
         if (key === 'inputBg') styles.backgroundColor = value;
         if (key === 'inputBorderColor') styles.borderColor = value;
         if (key === 'inputBorderType') {
-            if (value === 'none') {
-                styles.borderWidth = '0px';
-            } else if (value === 'underline') {
-                styles.borderWidth = '0px 0px 2px 0px';
-                styles.borderStyle = 'solid';
+            const borderStyles: Record<string, () => void> = {
+                'none': () => { styles.borderWidth = '0px'; },
+                'underline': () => {
+                    styles.borderWidth = '0px 0px 2px 0px';
+                    styles.borderStyle = 'solid';
+                }
+            };
+            
+            if (borderStyles[value]) {
+                borderStyles[value]();
             } else {
                 styles.borderStyle = value;
                 styles.borderWidth = '1px';

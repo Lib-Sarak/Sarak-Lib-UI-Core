@@ -8,10 +8,8 @@ export const validateDesign = (design: any) => {
 
     // 1. Integrity Sanitization (Removes Manifest garbage)
     Object.entries(design).forEach(([k, v]) => {
-        if (v !== null && v !== undefined && v !== '' && typeof v !== 'object') {
+        if (v !== null && v !== undefined && v !== '') {
             s[k] = v;
-        } else if (typeof v === 'object' && v !== null) {
-            s[k] = v; // Mantém objetos (como arrays de cores ou tokens complexos)
         }
     });
 
@@ -50,4 +48,3 @@ export const validateDesign = (design: any) => {
 
     return s;
 };
-

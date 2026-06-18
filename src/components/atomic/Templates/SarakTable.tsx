@@ -11,12 +11,12 @@ import {
     RefreshCw,
     AlertCircle
 } from 'lucide-react';
-import api from '../../../shared/services/api';
 import { SarakInput } from '../Inputs';
 import { SarakButton, SarakIconButton } from '../Buttons';
 import { useSarakUI } from '../../../core/Provider/SarakUIProvider';
 import { useTableLayoutStyles } from '../Tables/hooks/useTableLayoutStyles';
 import { useStructuralStyles } from '../hooks/useStructuralStyles';
+import { useSarakTableData } from './hooks/useSarakTableData';
 import { twMerge } from 'tailwind-merge';
 
 interface SarakTableProps {
@@ -42,44 +42,19 @@ export const SarakTable: React.FC<SarakTableProps> = ({ endpoint, label, mapping
     const containerLayout = getContainerStyles();
     const headerLayout = getHeaderStyles();
 
-    const [data, setData] = useState<any[]>([]);
-    const [loading, setLoading] = useState(true);
-    const [error, setError] = useState<string | null>(null);
-    const [search, setSearch] = useState('');
-
-    const fetchData = async () => {
-        try {
-            setLoading(true);
-            setError(null);
-            const response = await api.get(endpoint);
-            if (Array.isArray(response.data)) {
-                setData(response.data);
-            } else if (response.data && Array.isArray(response.data.items)) {
-                setData(response.data.items);
-            } else {
-                setData([]);
-            }
-        } catch (err: any) {
-            console.error(`[SarakTable] Falha ao carregar ${endpoint}:`, err);
-            setError(err.message || 'Erro ao carregar dados');
-        } finally {
-            setLoading(false);
-        }
-    };
-
-    useEffect(() => {
-        fetchData();
-    }, [endpoint]);
+    const {
+        data,
+        filteredData,
+        loading,
+        error,
+        search,
+        setSearch,
+        fetchData
+    } = useSarakTableData(endpoint);
 
     // Gerar colunas dinamicamente caso não exista um mapping
     const columns = mapping ? Object.keys(mapping) : (data.length > 0 ? Object.keys(data[0]).filter(k => !k.startsWith('_')) : []);
     const columnLabels = mapping || columns.reduce((acc: Record<string, string>, col) => ({ ...acc, [col]: col.charAt(0).toUpperCase() + col.slice(1).replace(/_/g, ' ') }), {} as Record<string, string>);
-
-    const filteredData = data.filter(item => 
-        Object.values(item).some(val => 
-            String(val).toLowerCase().includes(search.toLowerCase())
-        )
-    );
 
     if (error) {
         return (

@@ -115,28 +115,35 @@ export const shiftColorMode = (
 
     const isLight = targetMode === 'light';
 
-    if (semanticType === 'bg') {
-        // Fundos: Dark < 15%, Light > 85%
-        newL = isLight ? Math.max(88, 100 - (l * 0.1)) : Math.min(15, l * 0.8);
-    } else if (semanticType === 'text') {
-        // Textos: Dark > 85%, Light < 25%
-        newL = isLight ? Math.min(25, l * 0.25) : Math.max(85, 100 - (l * 0.1));
-        
-        // Textos translúcidos no claro precisam de um BOOST de opacidade para legibilidade (WCAG)
-        if (isLight && a < 0.8) {
-            newA = Math.min(0.8, a * 1.8); 
+    const shiftStrategies: Record<string, () => void> = {
+        bg: () => {
+            // Fundos: Dark < 15%, Light > 85%
+            newL = isLight ? Math.max(88, 100 - (l * 0.1)) : Math.min(15, l * 0.8);
+        },
+        text: () => {
+            // Textos: Dark > 85%, Light < 25%
+            newL = isLight ? Math.min(25, l * 0.25) : Math.max(85, 100 - (l * 0.1));
+            // Textos translúcidos no claro precisam de um BOOST de opacidade para legibilidade (WCAG)
+            if (isLight && a < 0.8) {
+                newA = Math.min(0.8, a * 1.8); 
+            }
+        },
+        border: () => {
+            // Bordas: Contraste suave
+            newL = isLight ? 90 : 20;
+            // Aumenta presença de borda translúcida no modo claro
+            if (isLight && a < 0.5) {
+                 newA = Math.min(0.5, a * 1.5);
+            }
+        },
+        primary: () => {
+            // Cores Primárias: Ajuste leve para legibilidade sem perder o tom vibrante
+            newL = isLight ? Math.min(l, 55) : Math.max(l, 45);
         }
-    } else if (semanticType === 'border') {
-        // Bordas: Contraste suave
-        newL = isLight ? 90 : 20;
-        
-        // Aumenta presença de borda translúcida no modo claro
-        if (isLight && a < 0.5) {
-             newA = Math.min(0.5, a * 1.5);
-        }
-    } else if (semanticType === 'primary') {
-        // Cores Primárias: Ajuste leve para legibilidade sem perder o tom vibrante
-        newL = isLight ? Math.min(l, 55) : Math.max(l, 45);
+    };
+
+    if (shiftStrategies[semanticType]) {
+        shiftStrategies[semanticType]();
     }
 
     const [newR, newG, newB] = hslToRgb(h, s, newL);

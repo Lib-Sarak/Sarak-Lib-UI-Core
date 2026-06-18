@@ -4,6 +4,7 @@ import { TrendingUp, Activity } from 'lucide-react';
 import api from '../../../shared/services/api';
 import { useStructuralStyles } from '../hooks/useStructuralStyles';
 import { twMerge } from 'tailwind-merge';
+import { useChartData } from './hooks/useChartData';
 
 interface SarakChartProps {
     endpoint: string;
@@ -21,31 +22,7 @@ interface SarakChartProps {
  * com barras animadas em CSS/SVG, mantendo o padrão Glassmorphism.
  */
 export const SarakChart: React.FC<SarakChartProps> = ({ endpoint, label, mapping }) => {
-    const [data, setData] = useState<any[]>([]);
-    const [loading, setLoading] = useState(true);
-    const [error, setError] = useState<string | null>(null);
-
-    const fetchData = async () => {
-        try {
-            setLoading(true);
-            setError(null);
-            const response = await api.get(endpoint);
-            
-            // Tenta localizar a lista de tendência nos dados retornados
-            // Prioriza 'daily_trend' ou o próprio corpo se for lista
-            const rawData = response.data.daily_trend || (Array.isArray(response.data) ? response.data : []);
-            setData(rawData.slice(-15)); // Pega os últimos 15 pontos para manter a densidade visual
-        } catch (err: any) {
-            console.error(`[SarakChart] Falha ao carregar ${endpoint}:`, err);
-            setError(err.message || 'Erro');
-        } finally {
-            setLoading(false);
-        }
-    };
-
-    useEffect(() => {
-        fetchData();
-    }, [endpoint]);
+    const { data, loading, error } = useChartData(endpoint);
 
     const maxValue = Math.max(...data.map(d => d.tokens || d.value || 0), 1);
     const { getContainerStyles } = useStructuralStyles();

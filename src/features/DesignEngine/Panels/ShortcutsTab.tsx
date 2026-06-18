@@ -1,8 +1,8 @@
-import React, { useState, useEffect, useCallback } from 'react';
+import React from 'react';
 import { useSarakUI } from '../../../core/Provider/SarakUIProvider';
-import { Keyboard, Edit3, X, RotateCcw, Plus, Trash2, Command, Search, Filter } from 'lucide-react';
-import { motion, AnimatePresence } from 'framer-motion';
+import { Edit3, X, Command, Search, Filter } from 'lucide-react';
 import { SarakInput } from '../../../components/atomic/Inputs';
+import { useShortcutsManager } from './hooks/useShortcutsManager';
 
 const Kbd = ({ children, isEditing = false }: { children: React.ReactNode, isEditing?: boolean }) => (
     <kbd className={`px-2 py-1.5 bg-black/40 text-2xs font-black font-mono rounded-lg border shadow-sm uppercase tracking-widest inline-flex items-center justify-center min-w-[28px] transition-all ${isEditing ? 'border-blue-500 text-blue-400 animate-pulse bg-blue-500/10' : 'border-white/10 text-white/60'}`}>
@@ -19,96 +19,14 @@ const formatKeyName = (key: string) => {
 export const ShortcutsTab: React.FC = () => {
     const sarak = useSarakUI();
     
-    // Extração segura de propriedades de atalhos
-    const shortcuts = (sarak as any).shortcuts || [];
-    const registeredActions = (sarak as any).registeredActions || {};
-    const updateShortcut = (sarak as any).updateShortcut || ((id: string, keys: string[]) => {
-        // Fallback: tentar atualizar via config genérica se houver suporte futuro
-        sarak.applyConfig({ _shortcutUpdate: { id, keys } });
-    });
-
-    const [editingId, setEditingId] = useState<string | null>(null);
-    const [tempKeys, setTempKeys] = useState<string[]>([]);
-    const [isCreating, setIsCreating] = useState(false);
-    const [searchQuery, setSearchQuery] = useState("");
-    const [domActions, setDomActions] = useState<any>({});
-
-    useEffect(() => {
-        const elements = document.querySelectorAll('[data-action-id]');
-        const found: any = {};
-        elements.forEach(el => {
-            const id = el.getAttribute('data-action-id');
-            if (id) {
-                found[id] = { 
-                    id, 
-                    name: el.getAttribute('data-action-name') || id, 
-                    category: el.getAttribute('data-action-category') || 'Interface', 
-                    isDom: true 
-                };
-            }
-        });
-        setDomActions(found);
-    }, []);
-
-    const allAvailableActions: any = { ...registeredActions, ...domActions };
-    
-    // Convert shortcuts to array for mapping
-    const shortcutsArray = Array.isArray(shortcuts) ? shortcuts : Object.values(shortcuts || {});
-    
-    const filteredShortcuts = shortcutsArray.filter((s: any) => 
-        s.description?.toLowerCase().includes(searchQuery.toLowerCase()) ||
-        s.category?.toLowerCase().includes(searchQuery.toLowerCase())
-    );
-
-    const groupedShortcuts = filteredShortcuts.reduce((acc: any, s: any) => {
-        (acc[s.category] = acc[s.category] || []).push(s);
-        return acc;
-    }, {});
-
-    const startEditing = (id: string) => {
-        setEditingId(id);
-        setTempKeys([]);
-    };
-
-    const cancelEditing = () => {
-        setEditingId(null);
-        setTempKeys([]);
-        setIsCreating(false);
-    };
-
-    const handleKeyDown = useCallback((e: KeyboardEvent) => {
-        if (!editingId) return;
-        
-        e.preventDefault();
-        e.stopPropagation();
-
-        if (e.key === 'Escape') {
-            cancelEditing();
-            return;
-        }
-
-        const newKeys: string[] = [];
-        if (e.ctrlKey) newKeys.push('Control');
-        if (e.shiftKey) newKeys.push('Shift');
-        if (e.altKey) newKeys.push('Alt');
-        if (e.metaKey) newKeys.push('Meta');
-
-        const isModifier = ['Control', 'Shift', 'Alt', 'Meta'].includes(e.key);
-        if (!isModifier) newKeys.push(e.key);
-
-        setTempKeys(newKeys);
-
-        if (!isModifier && newKeys.length > 0) {
-            updateShortcut(editingId, newKeys);
-            setEditingId(null);
-            setTempKeys([]);
-        }
-    }, [editingId, updateShortcut]);
-
-    useEffect(() => {
-        window.addEventListener('keydown', handleKeyDown, { capture: true });
-        return () => window.removeEventListener('keydown', handleKeyDown, { capture: true });
-    }, [handleKeyDown]);
+    const {
+        state,
+        shortcutsArray,
+        groupedShortcuts,
+        startEditing,
+        cancelEditing,
+        setSearchQuery
+    } = useShortcutsManager(sarak);
 
     return (
         <div className="flex flex-col h-full animate-in fade-in duration-500 overflow-hidden">
@@ -117,7 +35,7 @@ export const ShortcutsTab: React.FC = () => {
                 <div className="flex-1 max-w-sm">
                     <SarakInput 
                         placeholder="Buscar ação ou categoria..." 
-                        value={searchQuery}
+                        value={state.searchQuery}
                         onChange={(e) => setSearchQuery(e.target.value)}
                         leftIcon={<Search className="w-4 h-4" />}
                     />
@@ -141,8 +59,8 @@ export const ShortcutsTab: React.FC = () => {
                         
                         <div className="grid grid-cols-1 gap-2">
                             {items.map((s: any) => {
-                                const isEd = editingId === s.id;
-                                const keys = isEd ? (tempKeys.length > 0 ? [...tempKeys, '...'] : ['AGUARDANDO...']) : (s.keys || []);
+                                const isEd = state.editingId === s.id;
+                                const keys = isEd ? (state.tempKeys.length > 0 ? [...state.tempKeys, '...'] : ['AGUARDANDO...']) : (s.keys || []);
                                 
                                 return (
                                     <div key={s.id} className={`flex items-center justify-between p-4 rounded-2xl border transition-all duration-300 ${isEd ? 'bg-blue-600/20 border-blue-500/50 ring-1 ring-blue-500/20 shadow-lg shadow-blue-900/20' : 'bg-white/5 border-white/5 hover:bg-white/10 hover:border-white/10 group'}`}>
@@ -198,4 +116,3 @@ export const ShortcutsTab: React.FC = () => {
 };
 
 export default ShortcutsTab;
-

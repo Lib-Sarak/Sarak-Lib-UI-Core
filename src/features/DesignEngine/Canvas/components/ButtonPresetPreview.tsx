@@ -37,28 +37,35 @@ export const ButtonPresetPreview: React.FC<ButtonPresetPreviewProps> = ({ preset
         color: primaryText,
     };
 
-    if (styleType === 'neon') {
-        dynamicStyle.backgroundColor = primaryBg;
-        dynamicStyle.boxShadow = isHovered 
-            ? `0 0 20px ${glowColor}, inset 0 0 10px ${glowColor}`
-            : `0 0 10px ${glowColor}`;
-        dynamicStyle.border = `1px solid ${glowColor}`;
-    } else if (styleType === 'frosted') {
-        dynamicStyle.backgroundColor = primaryBg;
-        dynamicStyle.backdropFilter = `blur(${blurAmount}px)`;
-        dynamicStyle.WebkitBackdropFilter = `blur(${blurAmount}px)`;
-        dynamicStyle.border = '1px solid rgba(255,255,255,0.1)';
-        dynamicStyle.boxShadow = '0 8px 32px 0 rgba(0, 0, 0, 0.3)';
-    } else if (styleType === 'borderline') {
-        dynamicStyle.backgroundColor = isHovered ? primaryBg : 'transparent';
-        dynamicStyle.border = `1px solid ${primaryBg}`;
-        dynamicStyle.color = isHovered ? '#000' : primaryText;
-    } else {
-        // Matte
-        dynamicStyle.backgroundColor = primaryBg;
-        dynamicStyle.boxShadow = `0 10px 15px -3px rgba(0,0,0,0.2), 0 4px 6px -4px rgba(0,0,0,0.2)`;
-        dynamicStyle.border = 'none';
-    }
+    const applyStyles: Record<string, () => void> = {
+        'neon': () => {
+            dynamicStyle.backgroundColor = primaryBg;
+            dynamicStyle.boxShadow = isHovered 
+                ? `0 0 20px ${glowColor}, inset 0 0 10px ${glowColor}`
+                : `0 0 10px ${glowColor}`;
+            dynamicStyle.border = `1px solid ${glowColor}`;
+        },
+        'frosted': () => {
+            dynamicStyle.backgroundColor = primaryBg;
+            dynamicStyle.backdropFilter = `blur(${blurAmount}px)`;
+            dynamicStyle.WebkitBackdropFilter = `blur(${blurAmount}px)`;
+            dynamicStyle.border = '1px solid rgba(255,255,255,0.1)';
+            dynamicStyle.boxShadow = '0 8px 32px 0 rgba(0, 0, 0, 0.3)';
+        },
+        'borderline': () => {
+            dynamicStyle.backgroundColor = isHovered ? primaryBg : 'transparent';
+            dynamicStyle.border = `1px solid ${primaryBg}`;
+            dynamicStyle.color = isHovered ? '#000' : primaryText;
+        },
+        'matte': () => {
+            dynamicStyle.backgroundColor = primaryBg;
+            dynamicStyle.boxShadow = `0 10px 15px -3px rgba(0,0,0,0.2), 0 4px 6px -4px rgba(0,0,0,0.2)`;
+            dynamicStyle.border = 'none';
+        }
+    };
+
+    const strategy = applyStyles[styleType] || applyStyles['matte'];
+    strategy();
 
     // Hover scale
     if (isHovered) {

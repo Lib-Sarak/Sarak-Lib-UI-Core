@@ -5,7 +5,6 @@ import {
     registerLocalComponent, 
     registerSarakModule 
 } from '../../Discovery/registry';
-import { CustomizationPanel } from '../../../features/DesignEngine/Library/CustomizationPanel';
 
 /**
  * useRegistryManager (v10.1)
@@ -19,8 +18,8 @@ export const useRegistryManager = (options: any) => {
 
     useEffect(() => {
 
-        // 1. Garantir que o componente de personalização está registrado globalmente
-        registerLocalComponent('mx-customization', CustomizationPanel);
+        // 1. O componente local 'mx-customization' já é registrado na raiz (index.ts) para evitar
+        // dependência circular (Core -> Features). O registry vai resolver a referência pelo ID.
 
         // 2. Registrar módulos do manifesto (se houver)
         if (options?.manifest?.modules) {
@@ -35,8 +34,8 @@ export const useRegistryManager = (options: any) => {
             label: 'Design Engine',
             icon: 'Palette',
             category: 'Personalização',
-            priority: 9999,
-            component: CustomizationPanel
+            priority: 9999
+            // O componente será resolvido através de registerLocalComponent('mx-customization') no entrypoint
         });
 
         const updateModules = () => {

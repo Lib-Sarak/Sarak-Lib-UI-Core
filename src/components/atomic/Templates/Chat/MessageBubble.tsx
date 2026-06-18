@@ -26,20 +26,26 @@ export const MessageBubble: React.FC<MessageBubbleProps> = ({ msg }) => {
   } else {
     bubbleStyle.borderRadius = '0px var(--sarak-chat-radius, 12px) var(--sarak-chat-radius, 12px) var(--sarak-chat-radius, 12px)';
     
-    if (chatBubbleStyle === 'minimal') {
-      bubbleStyle.backgroundColor = 'transparent';
-      bubbleStyle.borderColor = 'transparent';
-      bubbleStyle.padding = '0';
-    } else if (chatBubbleStyle === 'solid') {
-      bubbleStyle.backgroundColor = 'var(--sx-color-primary-base)';
-      bubbleStyle.borderColor = 'transparent';
-      bubbleStyle.color = 'var(--sx-color-primary-text)';
-    } else {
-      // glass (default)
-      bubbleStyle.backgroundColor = 'var(--sarak-card-bg, var(--sx-color-surface-base))';
-      bubbleStyle.borderColor = 'var(--sarak-card-border-color, var(--sx-color-border-base))';
-      bubbleStyle.backdropFilter = 'blur(var(--sarak-card-backdrop-blur, 10px))';
-    }
+    const strategies: Record<string, () => void> = {
+      'minimal': () => {
+        bubbleStyle.backgroundColor = 'transparent';
+        bubbleStyle.borderColor = 'transparent';
+        bubbleStyle.padding = '0';
+      },
+      'solid': () => {
+        bubbleStyle.backgroundColor = 'var(--sx-color-primary-base)';
+        bubbleStyle.borderColor = 'transparent';
+        bubbleStyle.color = 'var(--sx-color-primary-text)';
+      },
+      'glass': () => {
+        bubbleStyle.backgroundColor = 'var(--sarak-card-bg, var(--sx-color-surface-base))';
+        bubbleStyle.borderColor = 'var(--sarak-card-border-color, var(--sx-color-border-base))';
+        bubbleStyle.backdropFilter = 'blur(var(--sarak-card-backdrop-blur, 10px))';
+      }
+    };
+    
+    const applyStrategy = strategies[chatBubbleStyle] || strategies['glass'];
+    applyStrategy();
   }
 
   return (
@@ -89,4 +95,3 @@ export const MessageBubble: React.FC<MessageBubbleProps> = ({ msg }) => {
     </motion.div>
   );
 };
-

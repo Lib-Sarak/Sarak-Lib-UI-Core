@@ -9,11 +9,6 @@ interface UseResizableOptions {
     onResizeEnd?: (finalSize: number) => void;
 }
 
-/**
- * useResizable (v1.1 - Professional Draggable)
- * Hook robusto para redimensionamento com suporte a overlay global 
- * e cálculo baseado em posição absoluta para evitar drift.
- */
 export const useResizable = ({
     initialSize,
     minSize,
@@ -22,77 +17,64 @@ export const useResizable = ({
     onResize,
     onResizeEnd
 }: UseResizableOptions) => {
-    const [size, setSize] = useState(initialSize);
-    const [isResizing, setIsResizing] = useState(false);
+    const [state, setState] = useState({ size: initialSize, isResizing: false });
     
-    // Referências para rastrear o estado durante o evento sem depender do ciclo do React
     const startPosRef = useRef(0);
     const startSizeRef = useRef(initialSize);
+    const callbacksRef = useRef({ onResize, onResizeEnd });
+    
+    // Sync callbacks sem precisar de useEffect
+    callbacksRef.current = { onResize, onResizeEnd };
 
     const startResizing = useCallback((e: React.MouseEvent) => {
         e.preventDefault();
-        setIsResizing(true);
+        setState(prev => ({ ...prev, isResizing: true }));
         
-        // Salva a posição inicial onde o mouse clicou
         startPosRef.current = direction === 'horizontal' ? e.clientX : e.clientY;
-        startSizeRef.current = size;
+        startSizeRef.current = state.size;
 
-        // Adiciona classe ao body para evitar seleção de texto durante o arraste
         document.body.style.cursor = direction === 'horizontal' ? 'col-resize' : 'row-resize';
         document.body.style.userSelect = 'none';
-    }, [size, direction]);
-
-    // Referências para callbacks para evitar loops de re-render
-    const onResizeRef = useRef(onResize);
-    const onResizeEndRef = useRef(onResizeEnd);
-    
-    useEffect(() => {
-        onResizeRef.current = onResize;
-        onResizeEndRef.current = onResizeEnd;
-    });
+    }, [state.size, direction]);
 
     const stopResizing = useCallback(() => {
-        if (isResizing) {
-            setIsResizing(false);
+        if (state.isResizing) {
+            setState(prev => ({ ...prev, isResizing: false }));
             document.body.style.cursor = '';
             document.body.style.userSelect = '';
-            onResizeEndRef.current?.(size);
+            callbacksRef.current.onResizeEnd?.(state.size);
         }
-    }, [isResizing, size]);
+    }, [state.isResizing, state.size]);
 
     const resize = useCallback((e: MouseEvent) => {
-        if (!isResizing) return;
+        if (!state.isResizing) return;
 
         const currentPos = direction === 'horizontal' ? e.clientX : e.clientY;
         const delta = currentPos - startPosRef.current;
         let newSize = startSizeRef.current + delta;
 
-        // Clamp values
         if (newSize < minSize) newSize = minSize;
         if (newSize > maxSize) newSize = maxSize;
 
-        setSize(newSize);
-        onResizeRef.current?.(newSize);
-    }, [isResizing, direction, minSize, maxSize]);
+        setState(prev => ({ ...prev, size: newSize }));
+        callbacksRef.current.onResize?.(newSize);
+    }, [state.isResizing, direction, minSize, maxSize]);
 
     useEffect(() => {
-        if (isResizing) {
+        if (state.isResizing) {
             window.addEventListener('mousemove', resize);
             window.addEventListener('mouseup', stopResizing);
-        } else {
-            window.removeEventListener('mousemove', resize);
-            window.removeEventListener('mouseup', stopResizing);
         }
 
         return () => {
             window.removeEventListener('mousemove', resize);
             window.removeEventListener('mouseup', stopResizing);
         };
-    }, [isResizing, resize, stopResizing]);
+    }, [state.isResizing, resize, stopResizing]);
 
     return {
-        size,
-        isResizing,
+        size: state.size,
+        isResizing: state.isResizing,
         startResizing
     };
 };

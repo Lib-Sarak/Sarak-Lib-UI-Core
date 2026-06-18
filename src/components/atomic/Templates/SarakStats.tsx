@@ -7,7 +7,7 @@ import {
     RefreshCw,
     AlertCircle
 } from 'lucide-react';
-import api from '../../../shared/services/api';
+import { useSarakStatsData } from './hooks/useSarakStatsData';
 
 interface SarakStatsProps {
     endpoint?: string;
@@ -26,38 +26,7 @@ interface SarakStatsProps {
  * um mini-dashboard dinâmico para qualquer módulo.
  */
 export const SarakStats: React.FC<SarakStatsProps> = ({ endpoint, data, label, mapping }) => {
-    const [stats, setStats] = useState<Record<string, any>>(data || {});
-    const [loading, setLoading] = useState(!data);
-    const [error, setError] = useState<string | null>(null);
-
-    const fetchData = async () => {
-        if (!endpoint) return;
-        try {
-            setError(null);
-            const response = await api.get(endpoint);
-            setStats(response.data);
-        } catch (err: any) {
-            console.error(`[SarakStats] Falha ao carregar ${endpoint}:`, err);
-            setError(err.message || 'Erro');
-        } finally {
-            setLoading(false);
-        }
-    };
-
-    useEffect(() => {
-        if (data) {
-            // Se recebemos novos dados via props, atualizamos apenas o estado de dados
-            // O loading permanece false se já tivermos dados
-            setStats(prev => {
-                // Só atualiza se for realmente diferente (referência ou conteúdo)
-                if (JSON.stringify(prev) === JSON.stringify(data)) return prev;
-                return data;
-            });
-            setLoading(false);
-        } else if (endpoint) {
-            fetchData();
-        }
-    }, [endpoint, data]);
+    const { stats, loading, error } = useSarakStatsData(endpoint, data);
 
     // Lógica de Agregação Sarak v6.5 (Se for array, resumimos)
     const renderValue = (key: string) => {

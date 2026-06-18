@@ -94,22 +94,28 @@ const SarakChatEngine: React.FC<SarakChatEngineProps> = ({
                             bubbleStyle.color = 'rgba(255, 255, 255, 0.9)';
                         } else {
                             bubbleStyle.borderRadius = '0px var(--sarak-chat-radius, 12px) var(--sarak-chat-radius, 12px) var(--sarak-chat-radius, 12px)';
-                            if (chatBubbleStyle === 'minimal') {
-                                bubbleStyle.backgroundColor = 'transparent';
-                                bubbleStyle.borderColor = 'transparent';
-                                bubbleStyle.padding = '0';
-                                bubbleStyle.color = 'rgba(255, 255, 255, 0.9)';
-                            } else if (chatBubbleStyle === 'solid') {
-                                bubbleStyle.backgroundColor = 'var(--theme-primary)';
-                                bubbleStyle.borderColor = 'transparent';
-                                bubbleStyle.color = '#ffffff';
-                            } else {
-                                // glass
-                                bubbleStyle.backgroundColor = 'rgba(0, 0, 0, 0.4)';
-                                bubbleStyle.borderColor = 'rgba(255, 255, 255, 0.05)';
-                                bubbleStyle.backdropFilter = 'blur(12px)';
-                                bubbleStyle.color = 'rgba(255, 255, 255, 0.9)';
-                            }
+                            const styleStrategies: Record<string, () => void> = {
+                                minimal: () => {
+                                    bubbleStyle.backgroundColor = 'transparent';
+                                    bubbleStyle.borderColor = 'transparent';
+                                    bubbleStyle.padding = '0';
+                                    bubbleStyle.color = 'rgba(255, 255, 255, 0.9)';
+                                },
+                                solid: () => {
+                                    bubbleStyle.backgroundColor = 'var(--theme-primary)';
+                                    bubbleStyle.borderColor = 'transparent';
+                                    bubbleStyle.color = '#ffffff';
+                                },
+                                glass: () => {
+                                    bubbleStyle.backgroundColor = 'rgba(0, 0, 0, 0.4)';
+                                    bubbleStyle.borderColor = 'rgba(255, 255, 255, 0.05)';
+                                    bubbleStyle.backdropFilter = 'blur(12px)';
+                                    bubbleStyle.color = 'rgba(255, 255, 255, 0.9)';
+                                }
+                            };
+                            
+                            const strategy = styleStrategies[chatBubbleStyle] || styleStrategies.glass;
+                            strategy();
                         }
 
                         return (

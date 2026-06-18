@@ -7,6 +7,7 @@ import { SarakButton } from '../Buttons';
 import { SarakGrid, SarakFormGroup } from '../Layouts';
 import { useStructuralStyles } from '../hooks/useStructuralStyles';
 import { twMerge } from 'tailwind-merge';
+import { useFormData } from './hooks/useFormData';
 
 interface SarakFormProps {
     endpoint: string;
@@ -40,62 +41,10 @@ export const SarakForm: React.FC<SarakFormProps> = ({
     initialData = {}, 
     onSuccess 
 }) => {
-    const [formData, setFormData] = useState<Record<string, any>>(initialData);
-    const [loading, setLoading] = useState(mode === 'edit');
-    const [saving, setSaving] = useState(false);
-    const [status, setStatus] = useState<{ type: 'success' | 'error', message: string } | null>(null);
+    const { formData, loading, saving, status, handleChange, handleSave } = useFormData(endpoint, mode, initialData, mapping, actions, onSuccess);
 
     const { getContainerStyles } = useStructuralStyles();
     const containerLayout = getContainerStyles();
-
-    const fetchData = async () => {
-        try {
-            setLoading(true);
-            const response = await api.get(endpoint);
-            setFormData(response.data);
-        } catch (err) {
-            console.error('[SarakForm] Erro ao carregar dados:', err);
-        } finally {
-            setLoading(false);
-        }
-    };
-
-    useEffect(() => {
-        if (mode === 'edit') {
-            fetchData();
-        } else {
-            // Em modo create, garantir que campos definidos no mapping existam no formData
-            if (mapping) {
-                const base: any = { ...initialData };
-                Object.keys(mapping).forEach(k => { if (base[k] === undefined) base[k] = ''; });
-                setFormData(base);
-            }
-        }
-    }, [endpoint, mode]);
-
-    const handleChange = (key: string, value: any) => {
-        setFormData(prev => ({ ...prev, [key]: value }));
-    };
-
-    const handleSave = async () => {
-        const defaultMethod = mode === 'create' ? 'POST' : 'PATCH';
-        const action = actions?.[0] || { endpoint: endpoint, method: defaultMethod };
-        try {
-            setSaving(true);
-            setStatus(null);
-            
-            const method = action.method.toLowerCase();
-            const response = await (api as any)[method](action.endpoint, formData);
-            
-            setStatus({ type: 'success', message: 'Configurações sincronizadas com sucesso.' });
-            if (onSuccess) onSuccess();
-            setTimeout(() => setStatus(null), 3000);
-        } catch (err: any) {
-            setStatus({ type: 'error', message: err.message || 'Falha ao salvar.' });
-        } finally {
-            setSaving(false);
-        }
-    };
 
     if (loading) return (
         <div className={twMerge("bg-[var(--sx-color-surface-base)] border-[var(--sx-color-border-base)] items-center justify-center animate-pulse rounded-[var(--sx-radius-md)]", containerLayout.className)} style={{ padding: 'calc(var(--sx-spacing-md) * 3)', gap: 'calc(var(--sx-spacing-md) / 2)' }}>

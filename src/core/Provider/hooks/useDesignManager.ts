@@ -3,6 +3,8 @@ import { validateDesign } from '../utils/validation';
 import { DEFAULT_STORAGE_KEY, DEFAULT_UI_BASE_URL } from '../constants';
 import { GLOBAL_THEMES } from '../../Design/presets/themes';
 import { getDefaultDesignState } from '../../Design/master-map';
+import { useDesignSync } from './useDesignSync';
+import { useDesignRemoteLoader } from './useDesignRemoteLoader';
 
 /**
  * useDesignManager (v10.1)
@@ -24,10 +26,8 @@ export const useDesignManager = (props: {
     const configRef = useRef(initialConfig);
     const hasHydratedRef = useRef(false);
 
-    useEffect(() => {
-        optionsRef.current = options;
-        configRef.current = initialConfig;
-    }, [options, initialConfig]);
+    optionsRef.current = options;
+    configRef.current = initialConfig;
 
     const [isBackendLoaded, setIsBackendLoaded] = useState(false);
 
@@ -72,70 +72,8 @@ export const useDesignManager = (props: {
     const storageKey = useMemo(() => options?.persistence?.storageKey || DEFAULT_STORAGE_KEY, [options?.persistence?.storageKey]);
     const uiBaseUrl = useMemo(() => options?.endpoints?.baseUrl || DEFAULT_UI_BASE_URL, [options?.endpoints?.baseUrl]);
 
-    // 1. RE-HYDRATION SYNC (v10.2)
-    // Se o isHydrated mudar de false para true, tentamos ler novamente o localStorage
-    // Isso resolve o problema de race condition com a storageKey customizada.
-    useEffect(() => {
-        if (isHydrated && !hasHydratedRef.current) {
-            try {
-                const saved = localStorage.getItem(storageKey);
-                // Ignorar localStorage se um activeThemeId explícito foi passado
-                if (saved && !activeThemeId) {
-                    const parsed = JSON.parse(saved);
-                    setDesign((prev: any) => validateDesign({ ...prev, ...parsed }));
-                }
-            } catch (e) {}
-            hasHydratedRef.current = true;
-        }
-    }, [isHydrated, storageKey, activeThemeId]);
-
-    // 1.5. ACTIVE THEME ID SYNC (Database Truth)
-    useEffect(() => {
-        if (isHydrated && activeThemeId && allThemes) {
-            const activeTheme = allThemes.find(t => t.id === activeThemeId);
-            if (activeTheme && activeTheme.design) {
-                setDesign((prev: any) => validateDesign({ ...prev, ...activeTheme.design }));
-            }
-        }
-    }, [activeThemeId, allThemes, isHydrated]);
-
-    // 2. Carregamento Remoto
-    useEffect(() => {
-        if (!isHydrated) return;
-
-        const loadRemote = async () => {
-            const opt = optionsRef.current;
-            if (opt?.persistence?.onLoad) {
-                try {
-                    const custom = await opt.persistence.onLoad();
-                    if (custom) {
-                        setDesign((prev: any) => validateDesign({ ...prev, ...custom }));
-                        setIsBackendLoaded(true);
-                        return;
-                    }
-                } catch (e) { console.error("[Sarak:Design] onLoad error:", e); }
-            }
-
-            if (!isBackendLoaded) {
-                const designPath = opt?.endpoints?.designPath || '/design';
-                try {
-                    const headers: any = {};
-                    if (token) headers['Authorization'] = `Bearer ${token}`;
-                    
-                    const resp = await fetch(`${uiBaseUrl}${designPath}`, {
-                        headers
-                    });
-                    if (resp.ok) {
-                        const data = await resp.json();
-                        if (data.design) setDesign((prev: any) => validateDesign({ ...prev, ...data.design }));
-                        setIsBackendLoaded(true);
-                    }
-                } catch (e) {}
-            }
-        };
-
-        loadRemote();
-    }, [token, isBackendLoaded, isHydrated, uiBaseUrl]);
+    useDesignSync(isHydrated, activeThemeId, allThemes, storageKey, hasHydratedRef, setDesign);
+    useDesignRemoteLoader(isHydrated, token, uiBaseUrl, optionsRef, isBackendLoaded, setIsBackendLoaded, setDesign);
 
     // 3. Persistência de Design (Core Logic)
     const persistDesign = useCallback(async (config: any) => {
@@ -194,4 +132,3 @@ export const useDesignManager = (props: {
         isBackendLoaded
     };
 };
-

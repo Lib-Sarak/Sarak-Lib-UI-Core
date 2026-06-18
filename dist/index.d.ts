@@ -484,14 +484,6 @@ interface SarakExpandableMatrixProps {
     /** Manifesto opcional de mapeamento recursivo para layout IAM/RBAC avançado */
     manifest?: SarakMatrixManifest;
 }
-interface ResolvedNodeConfig {
-    variant: 'card' | 'row' | 'badge' | 'switch' | 'clean';
-    hasToggle: boolean;
-    hasExpand: boolean;
-    defaultExpanded: boolean;
-    icon?: React$1.ComponentType<any>;
-    renderCustom?: MatrixNodeConfig['renderCustom'];
-}
 declare const SarakExpandableMatrix: React$1.FC<SarakExpandableMatrixProps>;
 
 interface SarakModalProps {
@@ -642,6 +634,13 @@ interface DynamicRendererProps {
     contracts: VisualContract[];
     module?: DiscoveredModule;
 }
+/**
+ * DynamicRenderer (v6.0-6.8 Smart Router)
+ *
+ * The UI-Core rendering engine. It receives a list of visual contracts
+ * and builds the interface dynamically without prior knowledge
+ * of the module's specifics.
+ */
 declare const DynamicRenderer: React$1.FC<DynamicRendererProps>;
 
 /**
@@ -713,4 +712,4 @@ interface SarakRouterState {
  */
 declare function useSarakRouter(basePath?: string): SarakRouterState;
 
-export { type BadgeSize, type BadgeVariant, CustomizationPanel, DESIGN_MANIFEST, DesignScope, DeviceProvider, type DeviceType, type DiscoveredModule, DynamicRenderer, ExpandableCard, IconMap, type IconName, LanguageSelector, type MatrixNodeConfig, type ModalLayoutContext, type ModuleManifest, ModuleSelector, type ResolvedNodeConfig, SarakAnalyticalPage, type SarakAnalyticalPageProps, SarakAuthScreen, SarakBadge, type SarakBadgeProps, SarakCardGrid, SarakCatalogGrid, SarakChart, SarakChartEngine, SarakChat, SarakEmptyState, SarakExpandableMatrix, type SarakExpandableMatrixProps, SarakForm, SarakHidden, SarakIcon, type SarakIconProps, SarakManagementGrid, type SarakMatrixManifest, SarakModal, type SarakModalProps, type SarakModule, type SarakRouterState, SarakSecurityOrchestrator, SarakShell, SarakStats, type SarakTabItem, SarakTable, SarakTabs, type SarakTabsProps, SarakTooltip, type SarakTooltipProps, SarakUIProvider, SocialButton, ThemeToggle, UserMenu, type VisualContract, type VisualContractType, getLocalComponent, getRegisteredModules, getSarakModule, registerLocalComponent, registerSarakModule, subscribeToRegistry, useDesignDraft, useModalLayoutStyles, useModuleDiscovery, useSarakDevice, useSarakRouter, useSarakUI };
+export { type BadgeSize, type BadgeVariant, CustomizationPanel, DESIGN_MANIFEST, DesignScope, DeviceProvider, type DeviceType, type DiscoveredModule, DynamicRenderer, ExpandableCard, IconMap, type IconName, LanguageSelector, type MatrixNodeConfig, type ModalLayoutContext, type ModuleManifest, ModuleSelector, SarakAnalyticalPage, type SarakAnalyticalPageProps, SarakAuthScreen, type SarakAuthScreenProps, SarakBadge, type SarakBadgeProps, SarakCardGrid, SarakCatalogGrid, SarakChart, SarakChartEngine, SarakChat, SarakEmptyState, SarakExpandableMatrix, type SarakExpandableMatrixProps, SarakForm, SarakHidden, SarakIcon, type SarakIconProps, SarakManagementGrid, type SarakMatrixManifest, SarakModal, type SarakModalProps, type SarakModule, type SarakRouterState, SarakSecurityOrchestrator, SarakShell, SarakStats, type SarakTabItem, SarakTable, SarakTabs, type SarakTabsProps, SarakTooltip, type SarakTooltipProps, SarakUIProvider, SocialButton, ThemeToggle, UserMenu, type VisualContract, type VisualContractType, getLocalComponent, getRegisteredModules, getSarakModule, registerLocalComponent, registerSarakModule, subscribeToRegistry, useDesignDraft, useModalLayoutStyles, useModuleDiscovery, useSarakDevice, useSarakRouter, useSarakUI };

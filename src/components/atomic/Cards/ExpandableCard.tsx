@@ -4,6 +4,7 @@ import { Maximize2, Minimize2, X } from 'lucide-react';
 import { motion, AnimatePresence } from 'framer-motion';
 import { useSarakUI } from '../../../core/Provider/SarakUIProvider';
 import { useCardLayoutStyles } from './hooks/useCardLayoutStyles';
+import { useExpandableCard } from './hooks/useExpandableCard';
 
 interface ExpandableCardProps {
     title: string;
@@ -27,23 +28,7 @@ export const ExpandableCard: React.FC<ExpandableCardProps> = ({
     const globalUI = useSarakUI();
     const design = globalUI.design;
     const layout = useCardLayoutStyles(design);
-    const [isExpanded, setIsExpanded] = useState(false);
-    const [mounted, setMounted] = useState(false);
-
-    useEffect(() => {
-        setMounted(true);
-    }, []);
-
-    useEffect(() => {
-        if (isExpanded) {
-            document.body.style.overflow = 'hidden';
-        } else {
-            document.body.style.overflow = '';
-        }
-        return () => {
-            document.body.style.overflow = '';
-        };
-    }, [isExpanded]);
+    const { isExpanded, setIsExpanded, mounted } = useExpandableCard();
 
     // Dynamic height based on global font scale factor, ensuring it scales up
     const dynamicStyle = {

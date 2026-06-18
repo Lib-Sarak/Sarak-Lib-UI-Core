@@ -7,6 +7,29 @@ export interface ShellLayoutContext {
     mainContentClass: string;
 }
 
+const shellStrategies: Record<string, string> = {
+    'right': 'flex-row-reverse',
+    'floating': 'flex-row',
+    'left': 'flex-row'
+};
+
+const sidebarStrategies: Record<string, string> = {
+    'floating': 'absolute top-4 bottom-4 left-4 rounded-xl shadow-2xl',
+    'right': 'border-l',
+    'left': 'border-r'
+};
+
+const topbarStrategies: Record<string, string> = {
+    'sticky': 'sticky top-0',
+    'hidden': 'hidden',
+    'relative': 'relative'
+};
+
+const contentStrategies: Record<string, string> = {
+    'center': 'max-w-7xl mx-auto w-full px-4 sm:px-6 lg:px-8',
+    'stretch': 'w-full'
+};
+
 /**
  * Hook Controlador Estrutural (Camada 6) - Shell & Navegação
  * Traduz tokens de layout (sidebarPosition, navbarLayout, contentAlignment) em classes estruturais.
@@ -17,45 +40,17 @@ export const useShellLayoutStyles = (design: any): ShellLayoutContext => {
         const navbarLayout = design?.navbarLayout || 'sticky';
         const contentAlignment = design?.contentAlignment || 'stretch';
 
-        // 1. Container Geral do Shell
-        let shellClass = 'flex h-screen w-full overflow-hidden relative ';
-        if (sidebarPosition === 'right') {
-            shellClass += 'flex-row-reverse';
-        } else if (sidebarPosition === 'floating') {
-            shellClass += 'flex-row'; // floating will position absolutely inside
-        } else {
-            shellClass += 'flex-row';
-        }
+        const shClass = shellStrategies[sidebarPosition] || shellStrategies['left'];
+        const shellClass = `flex h-screen w-full overflow-hidden relative ${shClass}`;
 
-        // 2. Comportamento da Sidebar
-        let sidebarClass = 'flex-shrink-0 h-full transition-all duration-300 z-30 ';
-        if (sidebarPosition === 'floating') {
-            sidebarClass += 'absolute top-4 bottom-4 left-4 rounded-xl shadow-2xl ';
-        } else if (sidebarPosition === 'right') {
-            sidebarClass += 'border-l ';
-        } else {
-            sidebarClass += 'border-r ';
-        }
+        const sbClass = sidebarStrategies[sidebarPosition] || sidebarStrategies['left'];
+        const sidebarClass = `flex-shrink-0 h-full transition-all duration-300 z-30 ${sbClass}`;
 
-        // 3. Comportamento da Topbar
-        let topbarClass = 'w-full flex items-center px-4 transition-all duration-300 z-20 ';
-        if (navbarLayout === 'sticky') {
-            topbarClass += 'sticky top-0 ';
-        } else if (navbarLayout === 'hidden') {
-            topbarClass += 'hidden ';
-        } else {
-            topbarClass += 'relative ';
-        }
+        const tbClass = topbarStrategies[navbarLayout] || topbarStrategies['relative'];
+        const topbarClass = `w-full flex items-center px-4 transition-all duration-300 z-20 ${tbClass}`;
 
-        // 4. Alinhamento do Conteúdo Central
-        let mainContentClass = 'flex-1 flex flex-col overflow-y-auto relative ';
-        if (contentAlignment === 'center') {
-            // Container centralizado com limite de max-width
-            mainContentClass += 'max-w-7xl mx-auto w-full px-4 sm:px-6 lg:px-8 ';
-        } else {
-            // Stretch normal
-            mainContentClass += 'w-full ';
-        }
+        const cntClass = contentStrategies[contentAlignment] || contentStrategies['stretch'];
+        const mainContentClass = `flex-1 flex flex-col overflow-y-auto relative ${cntClass}`;
 
         return {
             shellClass: shellClass.trim(),

@@ -34,11 +34,14 @@ export const SaveThemeModal: React.FC<SaveThemeModalProps> = ({
 
     // Pre-fill a base name when copying
     React.useEffect(() => {
-        if (isOpen && themeName) {
+        if (!isOpen) return;
+
+        if (themeName) {
             setNewName(`${themeName} (Custom)`);
-        } else if (isOpen) {
-            setNewName('Meu Novo Tema');
+            return;
         }
+        
+        setNewName('Meu Novo Tema');
     }, [isOpen, themeName]);
 
     if (!isOpen) return null;

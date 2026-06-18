@@ -7,6 +7,7 @@ import { ShellContent } from './Components/ShellContent';
 import SarakSearch from '../../components/atomic/Inputs/SarakSearch';
 import { SarakShellProps } from './Components/types';
 import { useShellLayoutStyles } from './hooks/useShellLayoutStyles';
+import { useShellDiagnostics } from './hooks/useShellDiagnostics';
 
 import { useSarakUI } from '../Provider/SarakUIProvider';
 import { useSarakDevice } from '../Provider/DeviceProvider';
@@ -68,72 +69,8 @@ export const SarakShell: React.FC<SarakShellProps> = (props) => {
     const device = useSarakDevice();
     const isMobile = device === 'smartphone';
 
-    // --- DIMENSION GUARD (v10.1.10 Industrial Diagnostic) ---
-    const [isReady, setIsReady] = React.useState(false);
-    const contentRef = React.useRef<HTMLDivElement>(null);
-    const [dimensions, setDimensions] = React.useState({ w: 0, h: 0 });
-    const stabilityTimer = React.useRef<NodeJS.Timeout | null>(null);
-    const fallbackTimer = React.useRef<NodeJS.Timeout | null>(null);
-
-    React.useEffect(() => {
-        if (!contentRef.current) return;
-
-        const observer = new ResizeObserver((entries) => {
-            for (let entry of entries) {
-                const { width, height } = entry.contentRect;
-                setDimensions({ w: width, h: height });
-                
-                if (stabilityTimer.current) clearTimeout(stabilityTimer.current);
-
-                // Requisitos Industriais (v10.1.10: Reduzido para maior compatibilidade)
-                if (width > 100 && height > 100) {
-                    stabilityTimer.current = setTimeout(() => {
-                        if (!isReady) {
-                            setIsReady(true);
-                            if (fallbackTimer.current) clearTimeout(fallbackTimer.current);
-                        }
-                    }, 100);
-                }
-            }
-        });
-
-        observer.observe(contentRef.current);
-
-        // FALLBACK DE SEGURANÇA: Se em 3s não estabilizar, força a renderização para não travar a UI
-        fallbackTimer.current = setTimeout(() => {
-            if (!isReady) {
-                console.warn("[Sarak:Shell] Dimension Guard: Tempo limite de estabilização excedido. Forçando montagem.");
-                setIsReady(true);
-            }
-        }, 3000);
-
-        return () => {
-            observer.disconnect();
-            if (stabilityTimer.current) clearTimeout(stabilityTimer.current);
-            if (fallbackTimer.current) clearTimeout(fallbackTimer.current);
-        };
-    }, [isReady]);
-
-    // Reset ao trocar de módulo para garantir nova verificação
-    React.useEffect(() => {
-        setIsReady(false);
-    }, [shell.activeModuleId]);
-
-    // --- VISUAL SAFETY GATE (v9.5 Industrial) ---
-    React.useEffect(() => {
-        const checkCSS = () => {
-            const testElement = document.documentElement;
-            const primaryColor = getComputedStyle(testElement).getPropertyValue('--theme-primary').trim();
-            
-            if (!primaryColor || primaryColor === '') {
-                console.warn("[Sarak:Shell] Visual Safety Gate Triggered: CSS variables not detected. Theme data was not hydrated.");
-            }
-        };
-
-        // Pequeno atraso para garantir que o navegador processou os estilos iniciais
-        const timer = setTimeout(checkCSS, 1500);
-        return () => clearTimeout(timer);
-    }, []);
+    // --- DIMENSION GUARD & VISUAL SAFETY GATE (v10.1.10 Industrial Diagnostic) ---
+    const { isReady, contentRef, dimensions } = useShellDiagnostics({ activeModuleId: shell.activeModuleId });
 
     // --- DESIGN HYDRATION LOG (v10.1) ---
     // Log removido para produção
