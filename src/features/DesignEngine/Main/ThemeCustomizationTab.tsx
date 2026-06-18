@@ -170,7 +170,7 @@ export const ThemeCustomizationTab: React.FC = () => {
                 {/* Área de Conteúdo (Scrollable) */}
                 <ThemeSidebarContent
                     searchQuery={searchQuery}
-                    filteredResults={filteredResults}
+                    filteredResults={filteredResults || []}
                     catalogMap={catalogMap}
                     draft={draft}
                     updateDraft={updateDraft}

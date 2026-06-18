@@ -1,7 +1,7 @@
 import React, { useState, useMemo } from 'react';
 import { motion } from 'framer-motion';
 import { ChevronDown, Check, X } from 'lucide-react';
-import { MatrixNodeConfig, SarakMatrixManifest, ResolvedNodeConfig } from '../SarakExpandableMatrix';
+import { MatrixNodeConfig, SarakMatrixManifest } from '../SarakExpandableMatrix';
 
 import { PremiumSwitch } from './PremiumSwitch';
 import { PremiumCheckbox } from './PremiumCheckbox';

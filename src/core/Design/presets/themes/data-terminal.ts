@@ -1,4 +1,4 @@
-import { ThemePreset } from '../../catalog/ThemePreset';
+import { ThemePreset } from './index';
 
 export const dataTerminal: ThemePreset = {
     id: 'data-terminal',

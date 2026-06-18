@@ -1,8 +1,8 @@
 import React, { useMemo } from 'react';
 
 interface SovereignThemeInjectorProps {
-    design: any;
-    manifest?: any;
+    design: Record<string, unknown>;
+    manifest?: Record<string, unknown>;
 }
 
 /**

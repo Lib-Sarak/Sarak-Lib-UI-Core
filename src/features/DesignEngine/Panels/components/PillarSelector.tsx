@@ -1,7 +1,7 @@
 import React from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
 import { RotateCcw } from 'lucide-react';
-import { SOVEREIGN_PILLARS } from './hooks/useSovereignSearch';
+import { SOVEREIGN_PILLARS } from '../hooks/useSovereignSearch';
 
 interface PillarSelectorProps {
     searchQuery: string;
@@ -31,7 +31,7 @@ export const PillarSelector: React.FC<PillarSelectorProps> = ({
                     exit={{ opacity: 0, y: -10 }}
                     className="flex items-center justify-between gap-1 p-1 bg-white/5 rounded-xl border border-white/5"
                 >
-                    {SOVEREIGN_PILLARS.map((pillar) => {
+                    {SOVEREIGN_PILLARS.map((pillar: any) => {
                         const Icon = pillar.icon;
                         const isActive = activePillar === pillar.id;
                         const hasDraft = pillarsWithDrafts.includes(pillar.id);

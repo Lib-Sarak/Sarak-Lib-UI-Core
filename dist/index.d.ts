@@ -1,7 +1,83 @@
 import React$1, { ReactNode } from 'react';
 import * as react_jsx_runtime from 'react/jsx-runtime';
 
+interface SarakThemePayload {
+    [key: string]: unknown;
+    systemName?: string;
+    logoUrl?: string;
+    mode?: string;
+    layout?: string;
+    animationStyle?: string;
+    emojiSet?: string;
+    colorPrimary?: string;
+    primaryColor?: string;
+    colorSecondary?: string;
+    secondaryColor?: string;
+    flowGridStyle?: string;
+    flowNodeRadius?: number;
+    chatBubbleStyle?: string;
+    chatAnimationSpeed?: number;
+    chartType?: string;
+    chartShowGrid?: boolean;
+    cardHoverStyle?: 'lift' | 'expand' | 'glow' | 'glow-only' | 'none';
+    cardSpotlight?: number;
+    cardTextureType?: string;
+    cardTexture?: string;
+    cardGeometricCut?: number;
+    cardPadding?: number;
+    isGeometricCut?: boolean;
+    cardVariant?: 'classic' | 'title' | 'action' | 'search';
+    imageOverlay?: boolean;
+    imageCardHoverZoom?: number;
+    imageCardOverlayOpacity?: number;
+    iconStrokeWidth?: number;
+    layoutDensity?: string;
+    fontScale?: string;
+    navigationStyle?: string;
+    sidebarMinWidth?: number;
+    sidebarMaxWidth?: number;
+    sidebarWidth?: number;
+    headingFont?: string;
+    bodyFont?: string;
+    globalBackgroundImageUrl?: string;
+    globalBackgroundOpacity?: number;
+    globalBackgroundBlur?: number;
+    globalBackgroundBlendMode?: string;
+    moduleBlacklist?: string;
+    searchVariant?: "search" | "classic" | "title" | "action";
+    columnGap?: string | number;
+    iconSize?: string;
+    iconFamily?: string;
+    iconWeight?: string;
+    scale?: string | number;
+    btnStyleType?: string;
+    radius?: string;
+    borderStyle?: string;
+    shadowType?: string;
+    chartGridStyle?: string;
+    map?: Record<string, unknown>;
+    imageOpacity?: number;
+    imageScale?: number | string;
+    layoutMaxWidth?: number;
+    enabledLanguages?: string[];
+    layoutGridTemplate?: string;
+    globalSectionGap?: string;
+    formLabelPosition?: string;
+    formFieldDensity?: string;
+    cardMediaPlacement?: string;
+    cardContentAlignment?: string;
+    inputIconPosition?: string;
+    switchLabelPosition?: string;
+    globalFlowDirection?: string;
+    globalFlowAlign?: string;
+    headerAlignment?: string;
+    borderBeamEnabled?: boolean;
+    qrSize?: number;
+    isAutoHideEnabled?: boolean;
+    isNavHidden?: boolean;
+}
 interface SarakUIOptions {
+    token?: string;
     endpoints?: {
         baseUrl?: string;
         designPath?: string;
@@ -9,27 +85,64 @@ interface SarakUIOptions {
         discovery?: string[];
         branding?: string;
     };
-    manifest?: any;
+    manifest?: {
+        brand?: {
+            name?: string;
+            logoUrl?: string;
+        };
+        [key: string]: unknown;
+    };
     persistence?: {
         strategy?: 'local' | 'remote' | 'hybrid';
         storageKey?: string;
-        onSave?: (design: any) => Promise<void> | void;
-        onLoad?: () => Promise<any> | any;
+        onSave?: (design: SarakThemePayload) => Promise<void> | void;
+        onLoad?: () => Promise<SarakThemePayload> | SarakThemePayload;
         strictBackendSync?: boolean;
     };
     theme?: {
         defaultTheme?: string;
-        extraTokens?: any;
+        defaultModuleId?: string;
+        extraTokens?: Record<string, unknown>;
     };
+}
+interface SarakUIContextType {
+    discoveryEndpoints: string[];
+    design: SarakThemePayload;
+    activeDesign: SarakThemePayload;
+    draftDesign: SarakThemePayload | null;
+    isDrafting: boolean;
+    setIsDrafting: (active: boolean) => void;
+    lockDrafting: () => void;
+    setDesign: (design: SarakThemePayload) => void;
+    setDraftDesign: (design: SarakThemePayload | null) => void;
+    persistDesign?: (design: SarakThemePayload) => void;
+    applyConfig: (partial: Partial<SarakThemePayload>) => void;
+    applyFullConfig: (config: SarakThemePayload) => void;
+    applyConfigRaw: (partial: Partial<SarakThemePayload>) => void;
+    applyFullConfigRaw: (config: SarakThemePayload) => void;
+    registeredModules: unknown[];
+    layouts: unknown[];
+    isHydrated: boolean;
+    options: SarakUIOptions;
+    allThemes: unknown[];
+    token?: string | null;
+    branding?: {
+        companyName: string;
+        loginName: string;
+        tabName: string;
+        logoBase64: string | null;
+    };
+    updateBranding?: (partial: Record<string, unknown>) => Promise<void>;
+    onMediaUpload?: (file: File) => Promise<string>;
 }
 interface SarakUIProviderProps {
     children: ReactNode;
     discoveryEndpoints?: string[];
-    config?: any;
+    config?: SarakThemePayload;
     token?: string | null;
     userId?: string | null;
     options?: SarakUIOptions;
-    customThemes?: any[];
+    customThemes?: unknown[];
     activeThemeId?: string;
     onMediaUpload?: (file: File) => Promise<string>;
 }
@@ -48,7 +161,7 @@ declare const DESIGN_MANIFEST: Record<string, {
     classPrefix?: string;
 }>;
 
-declare const useSarakUI: () => any;
+declare const useSarakUI: () => SarakUIContextType & SarakThemePayload;
 /**
  * SarakUIProvider Orchestrator (v10.1)
  *
@@ -691,7 +804,7 @@ declare const getSarakModule: (id: string) => SarakModule | undefined;
  * localmente no SarakUIProvider.
  */
 declare const useModuleDiscovery: (isEnabled?: boolean) => {
-    modules: any;
+    modules: DiscoveredModule[];
     isLoading: boolean;
     lastScan: Date;
     refresh: () => void;

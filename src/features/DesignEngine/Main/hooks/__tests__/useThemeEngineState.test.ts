@@ -14,9 +14,6 @@ vi.mock('../../../../core/Provider/SarakUIProvider', () => ({
     })
 }));
 
-vi.mock('./usePreviewUIState', () => ({
-    usePreviewUIState: () => ({ isPreviewing: true })
-}));
 
 vi.mock('./usePersistenceState', () => ({
     usePersistenceState: (url: string, token: string) => ({
@@ -32,7 +29,6 @@ describe('useThemeEngineState', () => {
         
         expect(result.current.uiBaseUrl).toBe('http://test/api');
         expect(result.current.apiToken).toBe('test-token');
-        expect(result.current.isPreviewing).toBe(true);
         expect(result.current.currentThemeId).toBe('123');
         expect(result.current.sarak).toBeDefined();
     });

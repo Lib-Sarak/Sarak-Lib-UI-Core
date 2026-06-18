@@ -1,4 +1,4 @@
-import axios from 'axios';
+import axios, { InternalAxiosRequestConfig, AxiosResponse, AxiosError } from 'axios';
 
 // Instância base padrão
 const api = axios.create({
@@ -7,7 +7,7 @@ const api = axios.create({
     },
 });
 
-api.interceptors.request.use((config: any) => {
+api.interceptors.request.use((config: InternalAxiosRequestConfig) => {
     // Mantemos a baseURL unificada '/api' para que o Vite Proxy gerencie.
     // Se o sistema estiver em modo legado multiserviço, as variáveis env cuidariam disso,
     // mas no Sarak Matrix Full, tudo flui pelo Gateway.
@@ -15,7 +15,7 @@ api.interceptors.request.use((config: any) => {
     
     // Suporte a Multi-Tenancy (Sovereignty v6.0)
     // Busca o token baseado no identificador do sistema atual para evitar colisão entre microsserviços
-    const system = (window as any).__SARAK_SYSTEM__ || 'global';
+    const system = (window as Window & { __SARAK_SYSTEM__?: string }).__SARAK_SYSTEM__ || 'global';
     const token = localStorage.getItem(`${system}_token`) || 
                   localStorage.getItem('sarak_token') || 
                   localStorage.getItem('auth_token');
@@ -27,11 +27,11 @@ api.interceptors.request.use((config: any) => {
 });
 
 api.interceptors.response.use(
-    (response: any) => response,
-    (error: any) => {
+    (response: AxiosResponse) => response,
+    (error: AxiosError) => {
         if (error.response?.status === 401) {
             // 401 Unauthorized detected. Wiping tokens.
-            const system = (window as any).__SARAK_SYSTEM__ || 'global';
+            const system = (window as Window & { __SARAK_SYSTEM__?: string }).__SARAK_SYSTEM__ || 'global';
             localStorage.removeItem(`${system}_token`);
             localStorage.removeItem('sarak_token');
             sessionStorage.removeItem('auth_token');
@@ -67,7 +67,7 @@ export interface ApiKeyStatus {
     blocked_models: string[];
     error: string | null;
     models_by_category?: {
-        [category: string]: any[];
+        [category: string]: unknown[];
     };
     credits?: string | number | null;
 }
@@ -100,7 +100,7 @@ export const apiKeysApi = {
         return response.data;
     },
 
-    delete: async (id: string): Promise<any> => {
+    delete: async (id: string): Promise<unknown> => {
         const response = await api.delete(`/orchestrator/keys/${id}`);
         return response.data;
     },
@@ -117,14 +117,14 @@ export interface UsageStatsResponse {
     input_tokens: number;
     output_tokens: number;
     requests: number;
-    models: any[];
-    daily_usage: any[];
+    models: Record<string, unknown>[];
+    daily_usage: Record<string, unknown>[];
     period_days: number;
 }
 
 export const usageApi = {
     getStats: async (service?: string, days: number = 30): Promise<UsageStatsResponse> => {
-        const params: any = { days };
+        const params: Record<string, string | number> = { days };
         if (service) params.service = service;
         const response = await api.get<UsageStatsResponse>('/usage/stats', { params });
         return response.data;
@@ -135,7 +135,7 @@ export interface UserProfile {
     id: string;
     email: string;
     username: string;
-    model_preferences?: any;
+    model_preferences?: Record<string, unknown>;
 }
 
 export interface LoginRequest {
@@ -161,12 +161,12 @@ export const authApi = {
         return response.data;
     },
 
-    updatePreferences: async (preferences: any): Promise<any> => {
+    updatePreferences: async (preferences: Record<string, unknown>): Promise<unknown> => {
         const response = await api.put('/auth/user/preferences/', preferences);
         return response.data;
     },
 
-    changePassword: async (new_password: string): Promise<any> => {
+    changePassword: async (new_password: string): Promise<unknown> => {
         const response = await api.post('/auth/change-password', null, { params: { new_password } });
         return response.data;
     },
@@ -188,13 +188,13 @@ export const modelCatalogApi = {
         return response.data;
     },
 
-    sync: async (): Promise<any> => {
+    sync: async (): Promise<void> => {
         // Silent skip in standalone mode
         return;
     },
 
-    listModels: async (): Promise<{ total: number; models: any[] }> => {
-        const response = await api.get<any[]>('/catalog/models');
+    listModels: async (): Promise<{ total: number; models: Record<string, unknown>[] }> => {
+        const response = await api.get<Record<string, unknown>[]>('/catalog/models');
         const data = response.data || [];
         return { total: data.length, models: data };
     },

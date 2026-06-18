@@ -3,7 +3,7 @@ import '../../styles/sarak-base.css';
 import { NoiseOverlay } from '../../effects/NoiseOverlay';
 
 // Novos Módulos Refatorados
-import { SarakUIContextType, SarakUIOptions, SarakUIProviderProps } from './types';
+import { SarakUIContextType, SarakUIOptions, SarakUIProviderProps, SarakThemePayload } from './types';
 import { DEFAULT_UI_BASE_URL } from './constants';
 import { useRegistryManager } from './hooks/useRegistryManager';
 import { useDesignManager } from './hooks/useDesignManager';
@@ -23,9 +23,9 @@ export { DESIGN_MANIFEST } from './manifest';
 
 // --- SARAK UI BRIDGE CONTEXT ---
 export const UIContext = createContext<SarakUIContextType | undefined>(undefined);
-export const DesignOverrideContext = createContext<any>(null);
+export const DesignOverrideContext = createContext<Partial<SarakThemePayload> | null>(null);
 
-export const useSarakUI = () => {
+export const useSarakUI = (): SarakUIContextType & SarakThemePayload => {
     const context = useContext(UIContext);
     const overrideDesign = useContext(DesignOverrideContext);
     
@@ -123,7 +123,8 @@ export const SarakUIProvider: React.FC<SarakUIProviderProps> = ({
         token,
         branding,
         updateBranding,
-        onMediaUpload
+        onMediaUpload,
+        activeDesign: drafting.isDrafting && drafting.draftDesign ? drafting.draftDesign : design
     }), [
         discoveryEndpoints, design, drafting.draftDesign, drafting.isDrafting, 
         drafting.setIsDrafting, drafting.lockDrafting, setDesign, 

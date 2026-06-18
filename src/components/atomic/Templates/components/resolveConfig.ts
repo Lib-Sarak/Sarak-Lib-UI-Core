@@ -1,7 +1,7 @@
-import { SarakMatrixManifest, ResolvedNodeConfig } from '../SarakExpandableMatrix';
+import { SarakMatrixManifest, MatrixNodeConfig } from '../SarakExpandableMatrix';
 
-export const resolveConfig = (node: any, level: number, manifest?: SarakMatrixManifest): ResolvedNodeConfig => {
-    const fallback: ResolvedNodeConfig = {
+export const resolveConfig = (node: any, level: number, manifest?: SarakMatrixManifest): MatrixNodeConfig => {
+    const fallback: MatrixNodeConfig = {
         variant: level === 0 ? 'card' : 'row',
         hasToggle: true,
         hasExpand: !!(node.children && node.children.length > 0),

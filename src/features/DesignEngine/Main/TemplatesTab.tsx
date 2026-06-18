@@ -17,7 +17,7 @@ export const TemplatesTab: React.FC = () => {
         setAppliedId(theme.id);
         sarak.applyFullConfig(theme.design);
         // O consumer system intercepta através do onSave para persistir ou ativar no banco
-        await sarak.persistDesign(theme.design);
+        await sarak.persistDesign?.(theme.design);
         setTimeout(() => setAppliedId(null), 2000);
     };
 

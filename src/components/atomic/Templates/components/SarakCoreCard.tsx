@@ -56,9 +56,9 @@ export const SarakCoreCard = ({ item, mapping, variant }: { item: any; mapping: 
                 padding: design.cardPadding ? `${design.cardPadding}px` : undefined
             }}
             data-sx-card-texture-type={design.cardTextureType || design.cardTexture || 'none'}
-            data-spotlight={design.cardSpotlight > 0 ? '1' : '0'}
+            data-spotlight={(design.cardSpotlight || 0) > 0 ? '1' : '0'}
             data-border-beam={design.borderBeamEnabled ? '1' : '0'}
-            data-geometric={(design.cardGeometricCut > 0 || design.isGeometricCut) ? '1' : '0'}
+            data-geometric={((design.cardGeometricCut || 0) > 0 || design.isGeometricCut) ? '1' : '0'}
         >
             {/* Atmosphere Layers (Sovereignty v8.5) */}
             <div className="absolute inset-0 z-0 spotlight-effect pointer-events-none opacity-0 group-hover:opacity-100 transition-opacity duration-500" />

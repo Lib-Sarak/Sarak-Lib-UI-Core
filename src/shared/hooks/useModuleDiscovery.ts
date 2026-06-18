@@ -12,25 +12,25 @@ import { getRegisteredModules } from '../../core/Discovery/registry';
  * localmente no SarakUIProvider.
  */
 export const useModuleDiscovery = (isEnabled: boolean = true) => {
-    const { registeredModules, isHydrated, token } = useSarakUI();
+    const { registeredModules, isHydrated, design } = useSarakUI();
     
     const formattedModules = useMemo(() => {
         if (!isHydrated) return [];
 
         // Soberania Total: Prioriza o Registry global para evitar race conditions
         const all = getRegisteredModules();
-        const displayModules = all.length > 0 ? all : registeredModules;
+        const displayModules = (all.length > 0 ? all : registeredModules) as Partial<DiscoveredModule>[];
 
         // O filtro de Blacklist agora deve vir do estado do Design (SystemSchema)
         // Por padrão, filtramos apenas se o modo for 'standard'
-        const isStandardMode = token?.moduleBlacklist !== 'none';
+        const isStandardMode = design?.moduleBlacklist !== 'none';
         const DEMO_BLACKLIST = isStandardMode ? ['grid-system', 'blueprint-test', 'demo-ui', 'debug-module'] : [];
 
         return displayModules
-            .filter((mod: any) => !DEMO_BLACKLIST.includes(mod.id))
-            .sort((a: any, b: any) => (b.priority || 0) - (a.priority || 0))
-            .map((mod: any) => ({
-                id: mod.id,
+            .filter((mod) => mod.id && !DEMO_BLACKLIST.includes(mod.id))
+            .sort((a, b) => (b.priority || 0) - (a.priority || 0))
+            .map((mod) => ({
+                id: mod.id!,
                 label: mod.label || mod.id,
                 icon: mod.icon || 'Box',
                 category: mod.category || 'Sistema',
@@ -42,7 +42,7 @@ export const useModuleDiscovery = (isEnabled: boolean = true) => {
                 component: mod.component,
                 visualContracts: mod.visualContracts || []
             } as DiscoveredModule));
-    }, [registeredModules, isHydrated, token?.moduleBlacklist]);
+    }, [registeredModules, isHydrated, design?.moduleBlacklist]);
 
     return {
         modules: formattedModules,

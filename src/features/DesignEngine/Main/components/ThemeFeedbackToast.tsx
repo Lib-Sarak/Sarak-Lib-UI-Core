@@ -3,7 +3,7 @@ import { motion, AnimatePresence } from 'framer-motion';
 import { Check, AlertCircle } from 'lucide-react';
 
 interface ThemeFeedbackToastProps {
-    toast: { message: string; type: 'success' | 'error' } | null;
+    toast: { message: string; type: 'success' | 'error' | 'warning' } | null;
 }
 
 export const ThemeFeedbackToast: React.FC<ThemeFeedbackToastProps> = ({ toast }) => {

@@ -17,7 +17,7 @@ Esta spec define as regras imutáveis para construção, manutenção e consumo 
 - **Features / Módulos (`src/features/`):** "Organismos funcionais" que compõem átomos + lógica (Context/Redux) + negócio.
 
 # 2. Regras de Negócio
-- **Regra 1 (Ausência de Hardcode):** Sob NENHUMA hipótese um componente pode ter configurações rígidas em classes ou inline styles (exceto `flex`, etc). Tudo deve mapear variáveis (`bg-[var(--sx-...)]`).
+- **Regra 1 (Ausência de Hardcode):** Sob NENHUMA hipótese um componente pode ter configurações rígidas em classes ou inline styles (exceto `flex`, etc). Tudo deve mapear variáveis (`bg-[var(--sx-variavel)]`).
 - **Regra 2 (Paridade 1:1:1:1:1):** Todo Token deve nascer no `Schema`, `MasterMap`, `Database`, `DesignEngine` e `Catalog JSON`. Nunca crie tokens soltos.
 - **Regra 3 (Herança Passiva):** Átomos não injetam `<SarakUIProvider>`. Eles pressupõem a existência da árvore superior.
 - **Regra 4 (Proibição de HTML Nativo e Dogfooding):** É terminantemente proibido o uso de `<button>`, `<input>`, `<select>` puros. Deve-se usar `<SarakButton>`, `<SarakInput>`. O próprio Design Engine obedece a isso (Dogfooding).

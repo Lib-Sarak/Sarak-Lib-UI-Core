@@ -1,11 +1,12 @@
 /**
  * Sarak Matrix UI Types (v5.5 - Sovereign)
  */
+import React from 'react';
 
 export interface ISarakAuthEngine {
-    login: (identification: string, password?: string) => Promise<{ success: boolean; error?: string; token?: string; user?: any }>;
+    login: (identification: string, password?: string) => Promise<{ success: boolean; error?: string; token?: string; user?: Record<string, unknown> }>;
     register: (email: string, password: string) => Promise<{ success: boolean; error?: string }>;
-    fetchMe: (token: string) => Promise<any>;
+    fetchMe: (token: string) => Promise<Record<string, unknown>>;
     logout?: () => void;
 }
 
@@ -16,8 +17,8 @@ export interface ISarakTranslatorEngine {
 }
 
 export interface ISarakThemeEngine {
-    saveTheme: (theme: any) => Promise<void>;
-    getThemes: () => Promise<any[]>;
+    saveTheme: (theme: Record<string, unknown>) => Promise<void>;
+    getThemes: () => Promise<Record<string, unknown>[]>;
     deleteTheme: (id: string) => Promise<void>;
 }
 
@@ -40,7 +41,7 @@ export interface SarakModule {
         id: string; 
         label: string; 
         icon?: string;
-        component?: any;
+        component?: React.ReactNode | React.ComponentType;
     }>;
-    component?: any;
+    component?: React.ReactNode | React.ComponentType;
 }

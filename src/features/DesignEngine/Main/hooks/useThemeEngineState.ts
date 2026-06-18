@@ -18,7 +18,7 @@ export function useThemeEngineState() {
     const apiToken = sarak.token;
 
     const uiState = usePreviewUIState();
-    const persistenceState = usePersistenceState(uiBaseUrl, apiToken);
+    const persistenceState = usePersistenceState(uiBaseUrl, apiToken ?? undefined);
 
     return {
         sarak,

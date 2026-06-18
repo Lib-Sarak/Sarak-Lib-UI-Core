@@ -1,4 +1,4 @@
-import { ThemePreset } from '../../catalog/ThemePreset';
+import { ThemePreset } from './index';
 
 export const neumorphicMobile: ThemePreset = {
     id: 'neumorphic-mobile',
