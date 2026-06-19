@@ -77,5 +77,12 @@ A materialização resulta no `<SarakManifestRenderer payload={seu_json_aqui} />
 
 ---
 
-## Próximos Passos
-Esta expansão lógica monstruosa será fatiada metodicamente em especificações técnicas (ex: `12-motor-de-data-binding.md`, `13-dispatcher-de-eventos.md`), preservando o ecossistema Sarak contra loops infinitos de re-renderização do React.
+## 5. Gate de Qualidade do Bloco Funcional (Auditoria)
+A **Paridade 1:1:1:1:1 NÃO se aplica** a este bloco: os motores (renderFor, dispatcher, avaliador, etc.) não são design tokens e não têm representação nas 5 camadas do catálogo. Forçar a paridade aqui é um erro de categoria. O gate próprio do bloco funcional é:
+
+- **Contratos TypeScript tipados (Zero Any estrito):** toda fronteira dinâmica (nó do manifesto, store, ações, pipes, validação) é descrita por interfaces explícitas — `ManifestNode` (Spec 20), `SarakDataStore` (Spec 21), `ComponentType` (Spec 22), `Action`/`Pipe`/`ValidationRule`. Como JSON dinâmico é o maior ímã de `any` do sistema, este gate é a barreira que impede o nascimento de nova dívida de `any`.
+- **Cobertura de testes por engine:** cada motor entrega testes unitários (lógica pura), de integração (interação entre engines) e os fluxos E2E descritos em sua spec.
+- **Incorporação à auditoria:** este gate **deve ser adicionado à `ui-auditoria-modulo`** como um sub-auditor dedicado ao bloco funcional (validando os contratos TS e a cobertura), análogo aos auditores de Hardcoded/Paridade existentes. *(A implementação do sub-auditor é tarefa de código, separada da redação destas specs.)*
+
+## 6. Faseamento e Índice
+O bloco funcional está fatiado nas Specs **20–30** (ver `00-indice-plano-expansao.md` para a ordem de build e o grafo de dependências). A **fundação obrigatória** vem primeiro — `20-manifest-schema`, `21-datastore-estado-reativo`, `22-component-registry` — pois nenhum motor (`23`–`29`) compila sem ela; a composição final é o `30-contrato-importador-renderer`. Esse faseamento preserva o ecossistema Sarak contra loops infinitos de re-renderização do React.

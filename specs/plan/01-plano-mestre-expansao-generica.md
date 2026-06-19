@@ -81,5 +81,5 @@ Para atingir a Regra Zero, a biblioteca precisa fornecer um arsenal abrangente d
 
 ## Próximos Passos (Faseamento)
 
-A implementação de tudo isso em um único fôlego quebraria a integridade da Sarak. O plano estratégico será "recortar" este documento em várias **Specs Arquiteturais Individuais** (ex: `10-expansao-micro-layout.md`, `11-expansao-data-grids.md`). 
-Cada categoria passará pela validação estrita da **Paridade 1:1:1:1:1** antes da próxima começar.
+A implementação de tudo isso em um único fôlego quebraria a integridade da Sarak. Este documento já foi "recortado" nas **Specs Arquiteturais do Bloco Visual (10–15)**: `10-expansao-micro-layout`, `11-expansao-formularios`, `12-expansao-data-grids-vis`, `13-expansao-feedback-interacoes`, `14-expansao-navegacao`, `15-expansao-midia-renderizadores` (ver `00-indice-plano-expansao.md`).
+Cada categoria passará pela validação estrita da **Paridade 1:1:1:1:1** (tokens novos nas 5 camadas) antes da próxima começar — este é o gate do Bloco Visual. O Bloco Funcional (20–30) usa um gate próprio, definido no Mestre Funcional (`02-...`).
