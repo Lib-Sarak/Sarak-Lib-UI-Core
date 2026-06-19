@@ -265,8 +265,6 @@ export const industrialTerminalTheme: ThemePreset = {
         matrixBorderColor: '#333333',
         matrixSearchBg: '#0a0a0a',
         matrixBlur: 0,
-        colorPrimary: '#ff9900',
-        colorSecondary: '#cc7a00',
         fontHeading: "'JetBrains Mono', monospace",
         radiusTheme: '0px',
         buttonRadius: '0px',

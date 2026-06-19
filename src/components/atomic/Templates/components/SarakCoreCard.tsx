@@ -53,12 +53,12 @@ export const SarakCoreCard = ({ item, mapping, variant }: { item: any; mapping: 
             className="flex flex-col sarak-card bg-[var(--sx-color-surface-base)] border-[var(--sx-color-border-base)] group transition-all h-fit relative overflow-hidden"
             style={{ 
                 transitionDuration: 'var(--animation-speed, 0.5s)',
-                padding: design.cardPadding ? `${design.cardPadding}px` : undefined
+                padding: 'var(--sarak-card-padding-md)'
             }}
-            data-sx-card-texture-type={design.cardTextureType || design.cardTexture || 'none'}
-            data-spotlight={(design.cardSpotlight || 0) > 0 ? '1' : '0'}
+            data-sx-card-texture-type={(design.cardTextureType as string) || 'none'}
+            data-spotlight={Number(design.cardSpotlightOpacity) > 0 ? '1' : '0'}
             data-border-beam={design.borderBeamEnabled ? '1' : '0'}
-            data-geometric={((design.cardGeometricCut || 0) > 0 || design.isGeometricCut) ? '1' : '0'}
+            data-geometric={Number(design.cardGeometricCut) > 0 ? '1' : '0'}
         >
             {/* Atmosphere Layers (Sovereignty v8.5) */}
             <div className="absolute inset-0 z-0 spotlight-effect pointer-events-none opacity-0 group-hover:opacity-100 transition-opacity duration-500" />

@@ -26,6 +26,7 @@ import { ScrollbarsSchema } from './schema/scrollbars';
 import { LayersSchema } from './schema/layers';
 import { AdvancedSchema } from './schema/advanced';
 import { MediaSchema } from './schema/media';
+import { StructuralSchema } from './schema/structural';
 
 /**
  * MASTER DESIGN MAP (v13.0 - Atomic Granularity)
@@ -61,7 +62,8 @@ export const MASTER_DESIGN_MAP: MasterDesignSchema = {
         ScrollbarsSchema,
         LayersSchema,
         AdvancedSchema,
-        MediaSchema
+        MediaSchema,
+        StructuralSchema
     ]
 };
 

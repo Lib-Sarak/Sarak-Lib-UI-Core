@@ -1,3 +1,4 @@
+import React from 'react';
 import { useSarakUI } from '../../../core/Provider/SarakUIProvider';
 
 /**
@@ -9,11 +10,15 @@ export const useStructuralStyles = () => {
     const { design } = useSarakUI();
 
     // ==========================================
-    // EIXO 1: MACRO-LAYOUT (Grids e Containers)
+    // EIXO 1: MACRO-LAYOUT (Grids, Flex e Containers)
     // ==========================================
-    const getGridStyles = () => {
-        const layoutType = design?.layoutGridTemplate || 'col-12';
-        const gap = design?.globalSectionGap || 'var(--sx-spacing-md)';
+    const getGridStyles = (
+        templateColumns?: string,
+        templateAreas?: string,
+        gapOverride?: string
+    ) => {
+        const layoutType = (design?.layoutGridTemplate as string) || 'col-12';
+        const gap = gapOverride || design?.globalSectionGap || design?.layoutGap || 'var(--sx-spacing-md)';
         
         const gridStrategies: Record<string, string> = {
             'col-12': 'grid w-full grid-cols-1 md:grid-cols-12',
@@ -21,9 +26,35 @@ export const useStructuralStyles = () => {
             'masonry': 'columns-1 md:columns-2 lg:columns-3 w-full'
         };
 
+        const hasCustomTemplate = !!templateColumns || !!templateAreas;
+        const className = hasCustomTemplate ? 'grid w-full' : (gridStrategies[layoutType] || gridStrategies['col-12']);
+
         return {
-            className: gridStrategies[layoutType] || gridStrategies['col-12'],
-            style: { gap, columnGap: layoutType === 'masonry' ? gap : undefined }
+            className,
+            style: { 
+                gap, 
+                columnGap: layoutType === 'masonry' && !hasCustomTemplate ? gap : undefined,
+                gridTemplateColumns: templateColumns,
+                gridTemplateAreas: templateAreas
+            } as React.CSSProperties
+        };
+    };
+
+    const getFlexStyles = (
+        direction?: 'row' | 'column' | 'row-reverse' | 'column-reverse' | string,
+        justify?: string,
+        align?: string,
+        gapOverride?: string
+    ) => {
+        const gap = gapOverride || design?.layoutGap || 'var(--sx-spacing-md)';
+        return {
+            className: 'flex w-full',
+            style: {
+                flexDirection: direction as any,
+                justifyContent: justify,
+                alignItems: align,
+                gap
+            }
         };
     };
 
@@ -31,8 +62,8 @@ export const useStructuralStyles = () => {
     // EIXO 2: FORMULÁRIOS E AGRUPAMENTOS
     // ==========================================
     const getFormGroupStyles = () => {
-        const labelPos = design?.formLabelPosition || 'top';
-        const density = design?.formFieldDensity || 'comfortable';
+        const labelPos = (design?.formLabelPosition as string) || 'top';
+        const density = (design?.formFieldDensity as string) || 'comfortable';
 
         const labelStrategies: Record<string, string> = {
             'left': 'flex flex-row items-center w-full',
@@ -55,8 +86,8 @@ export const useStructuralStyles = () => {
     // EIXO 3: ANATOMIA DE CARDS
     // ==========================================
     const getCardStyles = () => {
-        const mediaPos = design?.cardMediaPlacement || 'top';
-        const contentAlign = design?.cardContentAlignment || 'start';
+        const mediaPos = (design?.cardImagePosition as string) || 'top';
+        const contentAlign = (design?.cardContentAlignment as string) || 'start';
 
         const mediaStrategies: Record<string, string> = {
             'left': 'flex flex-row relative overflow-hidden',
@@ -100,7 +131,7 @@ export const useStructuralStyles = () => {
     // EIXO 5: MICRO-LAYOUT DE SWITCHES/CHECKBOXES
     // ==========================================
     const getSwitchLayoutStyles = () => {
-        const switchPos = design?.switchLabelPosition || 'right';
+        const switchPos = (design?.switchLabelPosition as string) || 'right';
         
         const switchStrategies: Record<string, string> = {
             'left': 'flex items-center cursor-pointer flex-row-reverse justify-end',
@@ -119,8 +150,8 @@ export const useStructuralStyles = () => {
     // EIXO 6: MACRO-CONTAINERS GENÉRICOS
     // ==========================================
     const getContainerStyles = () => {
-        const flow = design?.globalFlowDirection || 'column';
-        const align = design?.globalFlowAlign || 'stretch';
+        const flow = (design?.globalFlowDirection as string) || 'column';
+        const align = (design?.globalFlowAlign as string) || 'stretch';
 
         const flowStrategies: Record<string, string> = {
             'row': 'flex flex-row flex-wrap',
@@ -144,7 +175,7 @@ export const useStructuralStyles = () => {
     };
 
     const getHeaderStyles = () => {
-        const align = design?.headerAlignment || 'space-between';
+        const align = (design?.headerAlignment as string) || 'space-between';
         
         const alignStrategies: Record<string, string> = {
             'space-between': 'justify-between',
@@ -163,6 +194,7 @@ export const useStructuralStyles = () => {
 
     return { 
         getGridStyles, 
+        getFlexStyles,
         getFormGroupStyles, 
         getCardStyles, 
         getInputIconStyles, 

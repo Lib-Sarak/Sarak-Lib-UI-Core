@@ -1,9 +1,9 @@
 import { describe, it, expect } from 'vitest';
 
 const mockGlobalDraft = {
-    colorPrimary: '#ff0000',
-    colorSecondary: '#00ff00',
-    colorSurface: '#ffffff',
+    primaryColor: '#ff0000',
+    secondaryColor: '#00ff00',
+    surfaceColor: '#ffffff',
     btnBg: '#ffffff',
     btnTextColor: '#000000',
     btnBorderRadius: '4px'
@@ -29,9 +29,9 @@ describe('Design Engine - Merge Preset Logic', () => {
         const result = applyPartialPreset(mockGlobalDraft, buttonPreset);
 
         // Verifica que os globals não foram alterados
-        expect(result.colorPrimary).toBe('#ff0000');
-        expect(result.colorSecondary).toBe('#00ff00');
-        expect(result.colorSurface).toBe('#ffffff');
+        expect(result.primaryColor).toBe('#ff0000');
+        expect(result.secondaryColor).toBe('#00ff00');
+        expect(result.surfaceColor).toBe('#ffffff');
 
         // Verifica que os tokens do componente foram atualizados
         expect(result.btnBg).toBe('#000000');
@@ -41,14 +41,14 @@ describe('Design Engine - Merge Preset Logic', () => {
 
     it('não deve conter chaves globais dentro de presets de componente', () => {
         // Validação das boas práticas arquiteturais do sistema:
-        // Presets atômicos não devem misturar chaves (ex: colorPrimary)
+        // Presets atômicos não devem misturar chaves (ex: primaryColor)
         const atomicPresetDesign = {
             inputBg: '#333333',
             inputBorderColor: 'transparent',
             inputBorderRadius: '12px'
         };
 
-        const globalKeys = ['colorPrimary', 'colorSecondary', 'colorBg', 'colorSurface', 'colorText'];
+        const globalKeys = ['primaryColor', 'secondaryColor', 'colorBg', 'surfaceColor', 'colorText'];
         
         const hasGlobalKey = Object.keys(atomicPresetDesign).some(key => globalKeys.includes(key));
         expect(hasGlobalKey).toBe(false);

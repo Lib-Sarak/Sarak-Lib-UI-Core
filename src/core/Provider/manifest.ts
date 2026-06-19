@@ -128,15 +128,12 @@ export const DESIGN_MANIFEST: Record<string, {
     contrastCurve: { vars: ['--contrast-curve', '--sarak-contrast-curve'], transform: (v) => parseFloat(v) || 1.0 },
     shadowIntensity: { vars: ['--shadow-intensity', '--sarak-shadow-intensity'] },
     
-    cardPadding: { vars: ['--card-padding', '--sarak-card-padding', '--theme-card-padding'], unit: 'px' },
     cardPaddingSm: { vars: ['--sarak-card-padding-sm'], unit: 'px' },
     cardPaddingMd: { vars: ['--sarak-card-padding-md'], unit: 'px' },
     cardPaddingLg: { vars: ['--sarak-card-padding-lg'], unit: 'px' },
 
-    cardTexture: { vars: ['--sarak-card-texture'], attr: 'data-card-texture' },
     tabGap: { vars: ['--tab-gap', '--sarak-tab-gap', '--theme-tab-gap'], unit: 'px' },
     tabSectionMargin: { vars: ['--tab-section-margin', '--sarak-tab-section-margin', '--theme-tab-section-margin', '--safe-area-padding'], unit: 'px' },
-    isGeometricCut: { classPrefix: 'is-geometric', attr: 'data-geometric' },
     textureOpacity: { vars: ['--texture-opacity', '--sarak-texture-opacity', '--theme-texture-opacity'] },
     animationSpeed: { vars: ['--animation-speed', '--sarak-animation-speed', '--transition-speed'], unit: 's' },
     surfaceMaterial: { attr: 'data-surface', vars: ['--sarak-surface', '--surface-material'] },
@@ -155,7 +152,7 @@ export const DESIGN_MANIFEST: Record<string, {
     isSplitViewEnabled: { attr: 'data-split-view' },
     chartStyle: { attr: 'data-chart-style' },
     chartPalette: { vars: ['--chart-palette'], transform: (v) => Array.isArray(v) ? v.join(',') : v },
-    cardSpotlight: {
+    cardSpotlightOpacity: {
         vars: ['--spotlight-opacity'],
         transform: (v: any) => parseFloat(v) || 0
     },

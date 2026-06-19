@@ -10,8 +10,8 @@ export const useEChartsTheme = () => {
     const { design } = useSarakUI();
     
     // Fallbacks robustos para evitar erro 'undefined' no Canvas do ECharts
-    const primaryColor = design?.colorPrimary || design?.primaryColor || '#3b82f6';
-    const secondaryColor = design?.colorSecondary || design?.secondaryColor || '#8b5cf6';
+    const primaryColor = design?.primaryColor || '#3b82f6';
+    const secondaryColor = design?.secondaryColor || '#8b5cf6';
     const mode = design?.mode || 'dark';
     const bodyFont = design?.bodyFont || 'Inter';
     

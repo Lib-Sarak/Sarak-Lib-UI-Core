@@ -206,7 +206,7 @@ export const ThemeCustomizationTab: React.FC = () => {
                     setActivePreviewApp={setActivePreviewApp}
                     previewAnimationStyle={draft.animationStyle || sarak.animationStyle || 'standard'}
                     previewEmojiSet={draft.emojiSet || sarak.emojiSet || 'none'}
-                    previewPrimaryColor={draft.colorPrimary || sarak.colorPrimary || 'var(--sarak-accent, #3b82f6)'}
+                    previewPrimaryColor={draft.primaryColor || sarak.primaryColor || 'var(--sarak-accent, #3b82f6)'}
                     draftTokens={draft}
                     activeCategory={activePillarId}
                     activeSectionId={activeSectionId}

@@ -49,8 +49,8 @@ describe('DESIGN_MANIFEST', () => {
         expect(DESIGN_MANIFEST.contrastCurve.transform?.('invalid')).toBe(1.0);
         expect(DESIGN_MANIFEST.logoScale.transform?.('2.0')).toBe('2.0');
         expect(DESIGN_MANIFEST.logoScale.transform?.(undefined)).toBe(1.0);
-        expect(DESIGN_MANIFEST.cardSpotlight.transform?.('0.5')).toBe(0.5);
-        expect(DESIGN_MANIFEST.cardSpotlight.transform?.('invalid')).toBe(0);
+        expect(DESIGN_MANIFEST.cardSpotlightOpacity.transform?.('0.5')).toBe(0.5);
+        expect(DESIGN_MANIFEST.cardSpotlightOpacity.transform?.('invalid')).toBe(0);
         expect(DESIGN_MANIFEST.hapticIntensity.transform?.('0.05')).toBeCloseTo(0.95);
         expect(DESIGN_MANIFEST.hapticIntensity.transform?.('invalid')).toBeCloseTo(0.98);
         expect(DESIGN_MANIFEST.sidebarMinWidth.transform?.('300')).toBe(300);

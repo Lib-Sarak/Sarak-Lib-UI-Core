@@ -10,9 +10,9 @@ export const PresetCard = ({ theme, currentMode, onApply, index }: { theme: Them
     const design = syncThemeWithMode(theme.design, currentMode as 'light' | 'dark');
     const { variables, attributes } = useDesignVariables(design);
 
-    const primary = design.colorPrimary || 'var(--sarak-accent, #3b82f6)';
-    const secondary = design.colorSecondary || 'var(--sarak-accent-alt, #8b5cf6)';
-    const bgBase = design.colorSurface || 'var(--sarak-surface-dark, #000000)';
+    const primary = design.primaryColor || 'var(--sarak-accent, #3b82f6)';
+    const secondary = design.secondaryColor || 'var(--sarak-accent-alt, #8b5cf6)';
+    const bgBase = design.surfaceColor || 'var(--sarak-surface-dark, #000000)';
     const isLight = design.mode === 'light';
 
     const cardStyle = {

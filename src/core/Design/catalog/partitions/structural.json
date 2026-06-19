@@ -1,0 +1,253 @@
+[
+  {
+    "tokenId": "layoutGridTemplate",
+    "name": "Template de Grid Global",
+    "description": "Estratégia de grid macro aplicada às seções: 12 colunas, auto-fit responsivo ou masonry.",
+    "type": "string",
+    "importance": 90,
+    "categories": [
+      "estrutura",
+      "layout",
+      "grid"
+    ],
+    "tags": [
+      "grid",
+      "macro-layout",
+      "colunas"
+    ],
+    "databaseColumn": "structural",
+    "schemaOrigin": "structural.ts",
+    "digitalTwins": [
+      "SarakGrid"
+    ],
+    "cssVariables": [
+      "--sarak-layout-grid-template"
+    ],
+    "allowedValues": [
+      "col-12",
+      "auto-fit",
+      "masonry"
+    ],
+    "relatedTokens": [
+      "globalSectionGap"
+    ]
+  },
+  {
+    "tokenId": "globalSectionGap",
+    "name": "Espaçamento entre Seções",
+    "description": "Distância (gap) aplicada entre as seções e itens do grid macro global.",
+    "type": "number",
+    "importance": 80,
+    "categories": [
+      "estrutura",
+      "espacamento"
+    ],
+    "tags": [
+      "gap",
+      "spacing",
+      "secoes"
+    ],
+    "databaseColumn": "structural",
+    "schemaOrigin": "structural.ts",
+    "digitalTwins": [
+      "SarakGrid"
+    ],
+    "cssVariables": [
+      "--sarak-global-section-gap"
+    ],
+    "allowedValues": null,
+    "relatedTokens": [
+      "layoutGridTemplate"
+    ]
+  },
+  {
+    "tokenId": "globalFlowDirection",
+    "name": "Direção do Fluxo Global",
+    "description": "Direção do flex dos containers genéricos globais: coluna (vertical) ou linha (horizontal).",
+    "type": "string",
+    "importance": 75,
+    "categories": [
+      "estrutura",
+      "fluxo"
+    ],
+    "tags": [
+      "flex",
+      "direcao",
+      "container"
+    ],
+    "databaseColumn": "structural",
+    "schemaOrigin": "structural.ts",
+    "digitalTwins": [
+      "SarakContainer"
+    ],
+    "cssVariables": [
+      "--sarak-global-flow-direction"
+    ],
+    "allowedValues": [
+      "column",
+      "row"
+    ],
+    "relatedTokens": [
+      "globalFlowAlign"
+    ]
+  },
+  {
+    "tokenId": "globalFlowAlign",
+    "name": "Alinhamento do Fluxo Global",
+    "description": "Alinhamento dos itens nos containers genéricos globais.",
+    "type": "string",
+    "importance": 70,
+    "categories": [
+      "estrutura",
+      "fluxo",
+      "alinhamento"
+    ],
+    "tags": [
+      "flex",
+      "align",
+      "container"
+    ],
+    "databaseColumn": "structural",
+    "schemaOrigin": "structural.ts",
+    "digitalTwins": [
+      "SarakContainer"
+    ],
+    "cssVariables": [
+      "--sarak-global-flow-align"
+    ],
+    "allowedValues": [
+      "stretch",
+      "start",
+      "center",
+      "end"
+    ],
+    "relatedTokens": [
+      "globalFlowDirection"
+    ]
+  },
+  {
+    "tokenId": "headerAlignment",
+    "name": "Alinhamento do Header",
+    "description": "Distribuição horizontal dos elementos no cabeçalho das seções.",
+    "type": "string",
+    "importance": 70,
+    "categories": [
+      "estrutura",
+      "header",
+      "alinhamento"
+    ],
+    "tags": [
+      "header",
+      "align",
+      "topo"
+    ],
+    "databaseColumn": "structural",
+    "schemaOrigin": "structural.ts",
+    "digitalTwins": [
+      "SarakHeader"
+    ],
+    "cssVariables": [
+      "--sarak-header-alignment"
+    ],
+    "allowedValues": [
+      "space-between",
+      "center",
+      "start"
+    ],
+    "relatedTokens": []
+  },
+  {
+    "tokenId": "formLabelPosition",
+    "name": "Posição do Rótulo (Form)",
+    "description": "Posição do label em relação ao campo nos grupos de formulário: acima ou à esquerda.",
+    "type": "string",
+    "importance": 70,
+    "categories": [
+      "estrutura",
+      "formularios"
+    ],
+    "tags": [
+      "form",
+      "label",
+      "posicao"
+    ],
+    "databaseColumn": "structural",
+    "schemaOrigin": "structural.ts",
+    "digitalTwins": [
+      "SarakFormGroup"
+    ],
+    "cssVariables": [
+      "--sarak-form-label-position"
+    ],
+    "allowedValues": [
+      "top",
+      "left"
+    ],
+    "relatedTokens": [
+      "formFieldDensity"
+    ]
+  },
+  {
+    "tokenId": "formFieldDensity",
+    "name": "Densidade dos Campos (Form)",
+    "description": "Espaçamento interno entre os elementos dos grupos de formulário.",
+    "type": "string",
+    "importance": 65,
+    "categories": [
+      "estrutura",
+      "formularios",
+      "densidade"
+    ],
+    "tags": [
+      "form",
+      "densidade",
+      "spacing"
+    ],
+    "databaseColumn": "structural",
+    "schemaOrigin": "structural.ts",
+    "digitalTwins": [
+      "SarakFormGroup"
+    ],
+    "cssVariables": [
+      "--sarak-form-field-density"
+    ],
+    "allowedValues": [
+      "tight",
+      "comfortable",
+      "relaxed"
+    ],
+    "relatedTokens": [
+      "formLabelPosition"
+    ]
+  },
+  {
+    "tokenId": "switchLabelPosition",
+    "name": "Posição do Rótulo (Switch)",
+    "description": "Posição do texto em relação ao controle nos switches e checkboxes.",
+    "type": "string",
+    "importance": 65,
+    "categories": [
+      "estrutura",
+      "switches"
+    ],
+    "tags": [
+      "switch",
+      "checkbox",
+      "label"
+    ],
+    "databaseColumn": "structural",
+    "schemaOrigin": "structural.ts",
+    "digitalTwins": [
+      "SarakSwitch"
+    ],
+    "cssVariables": [
+      "--sarak-switch-label-position"
+    ],
+    "allowedValues": [
+      "right",
+      "left",
+      "space-between"
+    ],
+    "relatedTokens": []
+  }
+]

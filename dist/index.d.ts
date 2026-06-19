@@ -1,17 +1,30 @@
 import React$1, { ReactNode } from 'react';
 import * as react_jsx_runtime from 'react/jsx-runtime';
 
-interface SarakThemePayload {
-    [key: string]: unknown;
+type DesignTokenId = 'accentColor' | 'aiGlowColor' | 'aiPanelBg' | 'animEnabled' | 'animFast' | 'animInstant' | 'animNormal' | 'animSlow' | 'atmosphereNoiseOpacity' | 'badgeRadius' | 'bgBaseColor' | 'bgGradientAngle' | 'bgGradientMode' | 'bgNoiseAnimation' | 'bgNoiseDensity' | 'bodyFont' | 'bodyLineHeight' | 'bodySize' | 'bodyWeight' | 'borderBeamEnabled' | 'borderRadius' | 'borderRadiusLg' | 'borderRadiusMd' | 'borderRadiusSm' | 'borderStyle' | 'borderType' | 'borderWidth' | 'btnActiveScale' | 'btnBackdropBlur' | 'btnBorderRadius' | 'btnGhostHoverBg' | 'btnHoverScale' | 'btnNeonGlowColor' | 'btnNeonPulseSpeed' | 'btnPrimaryBg' | 'btnPrimaryText' | 'btnRadiusBL' | 'btnRadiusBR' | 'btnRadiusTL' | 'btnRadiusTR' | 'btnSecondaryBg' | 'btnStyleType' | 'buttonIconPosition' | 'buttonWidthStrategy' | 'cardActionBtnBorderRadius' | 'cardActionBtnHoverBg' | 'cardActionBtnPadding' | 'cardActionBtnPrimaryBg' | 'cardActionBtnText' | 'cardActionClickScale' | 'cardBackdropBlur' | 'cardBackgroundColor' | 'cardBorderBottom' | 'cardBorderColor' | 'cardBorderLeft' | 'cardBorderOpacity' | 'cardBorderRadius' | 'cardBorderRight' | 'cardBorderTop' | 'cardBorderWidth' | 'cardContentAlignment' | 'cardFooterBg' | 'cardFooterBorder' | 'cardGeometricCut' | 'cardGlowColor' | 'cardGlowIntensity' | 'cardHeaderBg' | 'cardHeaderBorder' | 'cardHeaderPadding' | 'cardHoverGlowIncrease' | 'cardHoverStyle' | 'cardHoverTranslate' | 'cardImagePosition' | 'cardInnerGlowColor' | 'cardInnerGlowWidth' | 'cardLayoutDirection' | 'cardPaddingMd' | 'cardRadiusBL' | 'cardRadiusBR' | 'cardRadiusTL' | 'cardRadiusTR' | 'cardSearchBgFocus' | 'cardSearchBorderBeamActive' | 'cardSearchPlaceholderColor' | 'cardSearchTextFocusColor' | 'cardShadow' | 'cardShadowSpread' | 'cardSpotlightOpacity' | 'cardSurfaceOpacity' | 'cardTextAlign' | 'cardTextureOpacity' | 'cardTextureType' | 'cardTitleColor' | 'cardTitleFontSize' | 'cardTitleFontWeight' | 'cardTitleIconGlow' | 'cardTitleLetterSpacing' | 'cardVariant' | 'chartColorPalette' | 'chartGridOpacity' | 'chartShowGrid' | 'chartSmoothing' | 'chartThickness' | 'chartTooltipBg' | 'chartType' | 'chatAnimationSpeed' | 'chatBubbleRadius' | 'chatBubbleStyle' | 'chatUserBg' | 'checkboxActiveColor' | 'colorBgBody' | 'colorBgLayer1' | 'colorBgLayer2' | 'colorBgModal' | 'colorDepth' | 'colorPalette' | 'colorVariation' | 'contentAlignment' | 'contrastCurve' | 'easeMain' | 'easeOut' | 'flowGridStyle' | 'flowNodeRadius' | 'focusRingWidth' | 'formFieldDensity' | 'formLabelPosition' | 'formLayoutDirection' | 'glassBlur' | 'glassOpacity' | 'glassRoughness' | 'glassSaturation' | 'glassSpecularity' | 'globalBackgroundBlendMode' | 'globalBackgroundBlur' | 'globalBackgroundImageUrl' | 'globalBackgroundOpacity' | 'globalContrast' | 'globalFlowAlign' | 'globalFlowDirection' | 'globalSaturation' | 'globalSectionGap' | 'h1LetterSpacing' | 'h1LineHeight' | 'h1Size' | 'h1Weight' | 'h2LineHeight' | 'h2Size' | 'h2Weight' | 'headerAlignment' | 'headingFont' | 'headingTransform' | 'iconFamily' | 'iconStrokeWidth' | 'iconWeight' | 'identityAlignment' | 'identityFontFamily' | 'identityFontWeight' | 'identityHoverEffect' | 'identityPadding' | 'identityRedirectUrl' | 'identityTracking' | 'imageCardHoverZoom' | 'imageCardOverlayOpacity' | 'industrialRegistry' | 'inputBackdropBlur' | 'inputBg' | 'inputBorderColor' | 'inputBorderRadius' | 'inputBorderType' | 'inputErrorColor' | 'inputFocusBorderColor' | 'inputIconColor' | 'inputIconPosition' | 'inputPadding' | 'inputShadow' | 'inputSuccessColor' | 'inputTextColor' | 'isAutoHideEnabled' | 'isNavHidden' | 'isSplitViewEnabled' | 'layerBackdropBlur' | 'layerBackdropOpacity' | 'layeredShadows' | 'layerElevationFactor' | 'layout' | 'layoutDensity' | 'layoutGap' | 'layoutGapLg' | 'layoutGapMd' | 'layoutGapSm' | 'layoutGridTemplate' | 'layoutPadding' | 'matrixBlur' | 'matrixBorderColor' | 'matrixGap' | 'matrixItemBg' | 'matrixRadius' | 'matrixSearchBg' | 'maxContentWidth' | 'modalActionAlignment' | 'modalBorderRadius' | 'modalHeaderStyle' | 'modalOverlayBlur' | 'modalOverlayColor' | 'mode' | 'monoFont' | 'motionDurationFast' | 'motionDurationInstant' | 'motionDurationNormal' | 'motionDurationSlow' | 'motionEaseIn' | 'motionEaseMain' | 'motionEaseOut' | 'motionStaggerDelay' | 'navActiveMarkerColor' | 'navActiveMarkerGlow' | 'navbarLayout' | 'navigationStyle' | 'navItemActiveColor' | 'noiseIntensity' | 'pageTransitionType' | 'primaryColor' | 'reducedMotion' | 'scrollbarThumbColor' | 'scrollbarWidth' | 'scrollPadding' | 'scrollRadius' | 'scrollThumbColor' | 'scrollThumbHoverOpacity' | 'scrollThumbOpacity' | 'scrollTrackOpacity' | 'scrollWidth' | 'searchPositionSidebar' | 'searchPositionTopbar' | 'secondaryColor' | 'securityPulseSpeed' | 'securityShieldGlow' | 'shadowAmbientAlpha' | 'shadowColorMode' | 'shadowIntensity' | 'shadowOrientation' | 'shadowProjectionAlpha' | 'shadowProjectionBlur' | 'sidebarActiveColor' | 'sidebarBlur' | 'sidebarColor' | 'sidebarHoverColor' | 'sidebarMaxWidth' | 'sidebarMinWidth' | 'sidebarNoiseOpacity' | 'sidebarPosition' | 'sidebarShadow' | 'sidebarWidth' | 'statusErrorColor' | 'statusInfoColor' | 'statusSuccessColor' | 'statusWarningColor' | 'surfaceColor' | 'surfaceIntensity' | 'surfaceMaterial' | 'switchBackdropBlur' | 'switchLabelPosition' | 'switchPulseColor' | 'switchStyleType' | 'switchThumbBg' | 'switchTrackActiveBg' | 'systemTone' | 'tabGap' | 'tableActionPosition' | 'tableBorderColor' | 'tableBorderRadius' | 'tableCellPadding' | 'tableDensity' | 'tableHeaderBg' | 'tableRowHoverBg' | 'tableZebraStriping' | 'tabSectionMargin' | 'tertiaryColor' | 'textColorMaster' | 'textColorMuted' | 'textColorSecondary' | 'textGlowIntensity' | 'textSmoothing' | 'texture' | 'textureColor' | 'textureOpacity' | 'titleColor' | 'tooltipBg' | 'tooltipRadius' | 'topbarActiveColor' | 'topbarColor' | 'topbarHeight' | 'topbarHoverColor' | 'topbarNoiseOpacity' | 'topbarTitleColor' | 'vignetteOpacity' | 'vignetteSoftness' | 'zIndexBase' | 'zIndexModal' | 'zIndexSidebar' | 'zIndexToast' | 'zIndexTooltip';
+
+/**
+ * Contrato do Theme Payload com DOMÍNIO DE CHAVES FECHADO: somente design tokens
+ * reais (DesignTokenId — gerado da SSOT MASTER_DESIGN_MAP, mesma fonte validada
+ * pela paridade 1:1:1:1:1) + os campos legados/branding declarados em
+ * SarakThemePayloadExtras. Qualquer outra chave (ex.: 'brandColorPrimary') passa
+ * a ser ERRO DE COMPILAÇÃO — "a Interface do Payload dita a Realidade".
+ */
+type SarakThemePayload = Partial<Record<DesignTokenId, unknown>> & SarakThemePayloadExtras;
+/**
+ * Campos presentes no payload que ainda NÃO foram modelados como design tokens
+ * no schema (branding/sistema, estrutura consumida por useStructuralStyles e
+ * aliases de cor legados). Pendente reconciliação com a paridade 1:1:1:1:1.
+ * NÃO adicione tokens novos aqui: um token novo nasce no schema, não nesta lista.
+ */
+interface SarakThemePayloadExtras {
     systemName?: string;
     logoUrl?: string;
     mode?: string;
     layout?: string;
     animationStyle?: string;
     emojiSet?: string;
-    colorPrimary?: string;
     primaryColor?: string;
-    colorSecondary?: string;
     secondaryColor?: string;
     flowGridStyle?: string;
     flowNodeRadius?: number;
@@ -20,12 +33,8 @@ interface SarakThemePayload {
     chartType?: string;
     chartShowGrid?: boolean;
     cardHoverStyle?: 'lift' | 'expand' | 'glow' | 'glow-only' | 'none';
-    cardSpotlight?: number;
     cardTextureType?: string;
-    cardTexture?: string;
     cardGeometricCut?: number;
-    cardPadding?: number;
-    isGeometricCut?: boolean;
     cardVariant?: 'classic' | 'title' | 'action' | 'search';
     imageOverlay?: boolean;
     imageCardHoverZoom?: number;
@@ -60,21 +69,16 @@ interface SarakThemePayload {
     imageScale?: number | string;
     layoutMaxWidth?: number;
     enabledLanguages?: string[];
-    layoutGridTemplate?: string;
-    globalSectionGap?: string;
-    formLabelPosition?: string;
-    formFieldDensity?: string;
-    cardMediaPlacement?: string;
-    cardContentAlignment?: string;
     inputIconPosition?: string;
-    switchLabelPosition?: string;
-    globalFlowDirection?: string;
-    globalFlowAlign?: string;
-    headerAlignment?: string;
-    borderBeamEnabled?: boolean;
     qrSize?: number;
     isAutoHideEnabled?: boolean;
     isNavHidden?: boolean;
+    logoDarkUrl?: string;
+    fontFamily?: string;
+    socialButtonStyle?: string;
+    searchStyle?: string;
+    language?: string;
+    availableLanguages?: string[];
 }
 interface SarakUIOptions {
     token?: string;
@@ -108,6 +112,7 @@ interface SarakUIOptions {
 interface SarakUIContextType {
     discoveryEndpoints: string[];
     design: SarakThemePayload;
+    systemDesign?: SarakThemePayload;
     activeDesign: SarakThemePayload;
     draftDesign: SarakThemePayload | null;
     isDrafting: boolean;
@@ -614,6 +619,20 @@ interface SarakModalProps {
 }
 declare const SarakModal: React$1.FC<SarakModalProps>;
 
+interface SarakDrawerProps {
+    isOpen: boolean;
+    onClose: () => void;
+    direction?: 'left' | 'right' | 'top' | 'bottom';
+    children: React$1.ReactNode;
+    size?: string | number;
+    className?: string;
+}
+/**
+ * Componente de Painel Lateral Deslizante (Drawer).
+ * Renderiza um overlay e conteúdo deslizante baseado na direção.
+ */
+declare const SarakDrawer: React$1.FC<SarakDrawerProps>;
+
 interface ModalLayoutContext {
     headerClass: string;
     footerClass: string;
@@ -825,4 +844,4 @@ interface SarakRouterState {
  */
 declare function useSarakRouter(basePath?: string): SarakRouterState;
 
-export { type BadgeSize, type BadgeVariant, CustomizationPanel, DESIGN_MANIFEST, DesignScope, DeviceProvider, type DeviceType, type DiscoveredModule, DynamicRenderer, ExpandableCard, IconMap, type IconName, LanguageSelector, type MatrixNodeConfig, type ModalLayoutContext, type ModuleManifest, ModuleSelector, SarakAnalyticalPage, type SarakAnalyticalPageProps, SarakAuthScreen, type SarakAuthScreenProps, SarakBadge, type SarakBadgeProps, SarakCardGrid, SarakCatalogGrid, SarakChart, SarakChartEngine, SarakChat, SarakEmptyState, SarakExpandableMatrix, type SarakExpandableMatrixProps, SarakForm, SarakHidden, SarakIcon, type SarakIconProps, SarakManagementGrid, type SarakMatrixManifest, SarakModal, type SarakModalProps, type SarakModule, type SarakRouterState, SarakSecurityOrchestrator, SarakShell, SarakStats, type SarakTabItem, SarakTable, SarakTabs, type SarakTabsProps, SarakTooltip, type SarakTooltipProps, SarakUIProvider, SocialButton, ThemeToggle, UserMenu, type VisualContract, type VisualContractType, getLocalComponent, getRegisteredModules, getSarakModule, registerLocalComponent, registerSarakModule, subscribeToRegistry, useDesignDraft, useModalLayoutStyles, useModuleDiscovery, useSarakDevice, useSarakRouter, useSarakUI };
+export { type BadgeSize, type BadgeVariant, CustomizationPanel, DESIGN_MANIFEST, DesignScope, DeviceProvider, type DeviceType, type DiscoveredModule, DynamicRenderer, ExpandableCard, IconMap, type IconName, LanguageSelector, type MatrixNodeConfig, type ModalLayoutContext, type ModuleManifest, ModuleSelector, SarakAnalyticalPage, type SarakAnalyticalPageProps, SarakAuthScreen, type SarakAuthScreenProps, SarakBadge, type SarakBadgeProps, SarakCardGrid, SarakCatalogGrid, SarakChart, SarakChartEngine, SarakChat, SarakDrawer, type SarakDrawerProps, SarakEmptyState, SarakExpandableMatrix, type SarakExpandableMatrixProps, SarakForm, SarakHidden, SarakIcon, type SarakIconProps, SarakManagementGrid, type SarakMatrixManifest, SarakModal, type SarakModalProps, type SarakModule, type SarakRouterState, SarakSecurityOrchestrator, SarakShell, SarakStats, type SarakTabItem, SarakTable, SarakTabs, type SarakTabsProps, SarakTooltip, type SarakTooltipProps, SarakUIProvider, SocialButton, ThemeToggle, UserMenu, type VisualContract, type VisualContractType, getLocalComponent, getRegisteredModules, getSarakModule, registerLocalComponent, registerSarakModule, subscribeToRegistry, useDesignDraft, useModalLayoutStyles, useModuleDiscovery, useSarakDevice, useSarakRouter, useSarakUI };

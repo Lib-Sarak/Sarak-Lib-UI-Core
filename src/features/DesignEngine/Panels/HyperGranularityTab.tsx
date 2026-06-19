@@ -122,7 +122,7 @@ export const HyperGranularityTab: React.FC = () => {
                                                         </div>
                                                         <div className="space-y-4">
                                                             {tokens.map(token => {
-                                                                const isTokenDirty = draft[token.id] !== undefined && JSON.stringify(draft[token.id]) !== JSON.stringify(sarak[token.id]);
+                                                                const isTokenDirty = draft[token.id] !== undefined && JSON.stringify(draft[token.id]) !== JSON.stringify((sarak as unknown as Record<string, unknown>)[token.id]);
                                                                 
                                                                 return (
                                                                     <div key={token.id} className="relative group/token">

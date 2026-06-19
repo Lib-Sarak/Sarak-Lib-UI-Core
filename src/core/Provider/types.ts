@@ -1,16 +1,29 @@
 import { ReactNode } from 'react';
+import type { DesignTokenId } from './generated/design-token-ids';
 
-export interface SarakThemePayload {
-    [key: string]: unknown;
+/**
+ * Contrato do Theme Payload com DOMÍNIO DE CHAVES FECHADO: somente design tokens
+ * reais (DesignTokenId — gerado da SSOT MASTER_DESIGN_MAP, mesma fonte validada
+ * pela paridade 1:1:1:1:1) + os campos legados/branding declarados em
+ * SarakThemePayloadExtras. Qualquer outra chave (ex.: 'brandColorPrimary') passa
+ * a ser ERRO DE COMPILAÇÃO — "a Interface do Payload dita a Realidade".
+ */
+export type SarakThemePayload = Partial<Record<DesignTokenId, unknown>> & SarakThemePayloadExtras;
+
+/**
+ * Campos presentes no payload que ainda NÃO foram modelados como design tokens
+ * no schema (branding/sistema, estrutura consumida por useStructuralStyles e
+ * aliases de cor legados). Pendente reconciliação com a paridade 1:1:1:1:1.
+ * NÃO adicione tokens novos aqui: um token novo nasce no schema, não nesta lista.
+ */
+interface SarakThemePayloadExtras {
     systemName?: string;
     logoUrl?: string;
     mode?: string;
     layout?: string;
     animationStyle?: string;
     emojiSet?: string;
-    colorPrimary?: string;
     primaryColor?: string;
-    colorSecondary?: string;
     secondaryColor?: string;
     flowGridStyle?: string;
     flowNodeRadius?: number;
@@ -19,12 +32,8 @@ export interface SarakThemePayload {
     chartType?: string;
     chartShowGrid?: boolean;
     cardHoverStyle?: 'lift' | 'expand' | 'glow' | 'glow-only' | 'none';
-    cardSpotlight?: number;
     cardTextureType?: string;
-    cardTexture?: string;
     cardGeometricCut?: number;
-    cardPadding?: number;
-    isGeometricCut?: boolean;
     cardVariant?: 'classic' | 'title' | 'action' | 'search';
     
     // Components (Images/Icons)
@@ -63,21 +72,18 @@ export interface SarakThemePayload {
     enabledLanguages?: string[];
     
     // Propriedades estruturais e de layout
-    layoutGridTemplate?: string;
-    globalSectionGap?: string;
-    formLabelPosition?: string;
-    formFieldDensity?: string;
-    cardMediaPlacement?: string;
-    cardContentAlignment?: string;
     inputIconPosition?: string;
-    switchLabelPosition?: string;
-    globalFlowDirection?: string;
-    globalFlowAlign?: string;
-    headerAlignment?: string;
-    borderBeamEnabled?: boolean;
     qrSize?: number;
     isAutoHideEnabled?: boolean;
     isNavHidden?: boolean;
+
+    // Extras legados sem token correspondente no schema (pendente reconciliação)
+    logoDarkUrl?: string;
+    fontFamily?: string;
+    socialButtonStyle?: string;
+    searchStyle?: string;
+    language?: string;
+    availableLanguages?: string[];
 }
 
 export interface SarakUIOptions {
@@ -110,6 +116,7 @@ export interface SarakUIOptions {
 export interface SarakUIContextType {
     discoveryEndpoints: string[];
     design: SarakThemePayload;
+    systemDesign?: SarakThemePayload; // Design persistido do sistema (sem rascunho/branding)
     activeDesign: SarakThemePayload;
     draftDesign: SarakThemePayload | null; // Rascunho ativo (para Live Preview)
     isDrafting: boolean; // Flag explícita de modo rascunho

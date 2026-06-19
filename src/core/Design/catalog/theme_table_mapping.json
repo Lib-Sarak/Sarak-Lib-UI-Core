@@ -222,6 +222,9 @@
     "cardLayoutDirection",
     "cardImagePosition",
     "cardTextAlign",
+    "cardContentAlignment",
+    "cardShadow",
+    "borderBeamEnabled",
     "cardBorderRadius",
     "cardRadiusTL",
     "cardRadiusTR",
@@ -320,5 +323,15 @@
     "matrixBorderColor",
     "matrixSearchBg",
     "matrixBlur"
+  ],
+  "structural": [
+    "layoutGridTemplate",
+    "globalSectionGap",
+    "globalFlowDirection",
+    "globalFlowAlign",
+    "headerAlignment",
+    "formLabelPosition",
+    "formFieldDensity",
+    "switchLabelPosition"
   ]
 }

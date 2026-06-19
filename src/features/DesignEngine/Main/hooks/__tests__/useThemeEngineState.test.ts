@@ -3,7 +3,7 @@ import { describe, it, expect, vi } from 'vitest';
 import { useThemeEngineState } from '../useThemeEngineState';
 
 // Mock dependencies
-vi.mock('../../../../core/Provider/SarakUIProvider', () => ({
+vi.mock('../../../../../core/Provider/SarakUIProvider', () => ({
     useSarakUI: () => ({
         systemDesign: {},
         design: {},
@@ -15,7 +15,7 @@ vi.mock('../../../../core/Provider/SarakUIProvider', () => ({
 }));
 
 
-vi.mock('./usePersistenceState', () => ({
+vi.mock('../usePersistenceState', () => ({
     usePersistenceState: (url: string, token: string) => ({
         currentThemeId: '123',
         apiToken: token,

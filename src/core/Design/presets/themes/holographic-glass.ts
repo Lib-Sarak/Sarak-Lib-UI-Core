@@ -265,8 +265,6 @@ export const holographicGlassTheme: ThemePreset = {
         matrixBorderColor: 'rgba(0, 255, 255, 0.1)',
         matrixSearchBg: 'rgba(10, 15, 40, 0.5)',
         matrixBlur: 40,
-        colorPrimary: '#00ffff',
-        colorSecondary: '#ff00ff',
         fontHeading: "'Inter', sans-serif",
         radiusTheme: '24px',
         buttonRadius: '20px',

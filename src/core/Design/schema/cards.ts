@@ -390,6 +390,33 @@ export const CardSchema: ComponentSchema = {
             defaultValue: 'left',
             cssVars: ['--sarak-card-text-align']
         },
+        {
+            id: 'cardContentAlignment',
+            label: 'Alinhamento do Conteúdo',
+            type: 'select',
+            constraints: {
+                options: [
+                    { id: 'start', value: 'start', label: 'Início' },
+                    { id: 'center', value: 'center', label: 'Centro' },
+                    { id: 'space-between', value: 'space-between', label: 'Espaçado (Between)' }
+                ]
+            },
+            defaultValue: 'start',
+            cssVars: ['--sarak-card-content-alignment']
+        },
+        {
+            id: 'cardShadow',
+            label: 'Sombra do Card (CSS)',
+            type: 'text',
+            defaultValue: 'none',
+            cssVars: ['--sarak-card-shadow']
+        },
+        {
+            id: 'borderBeamEnabled',
+            label: 'Ativar Border Beam',
+            type: 'boolean',
+            defaultValue: false
+        },
 
         // --- ESPECIALIZAÇÕES (GRANULARIDADE) ---
         {

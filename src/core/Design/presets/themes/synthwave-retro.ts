@@ -264,8 +264,6 @@ export const synthwaveRetroTheme: ThemePreset = {
         matrixBorderColor: '#00ffff',
         matrixSearchBg: '#090014',
         matrixBlur: 0,
-        colorPrimary: '#ff00ff',
-        colorSecondary: '#00ffff',
         fontHeading: "'JetBrains Mono', monospace",
         radiusTheme: '0px',
         buttonRadius: '0px',

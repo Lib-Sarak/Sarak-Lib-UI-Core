@@ -1655,5 +1655,94 @@
     "relatedTokens": [
       "cardSearchBgFocus"
     ]
+  },
+  {
+    "tokenId": "cardContentAlignment",
+    "name": "Alinhamento do Conteúdo do Card",
+    "description": "Controla o alinhamento (flexbox) do bloco de conteúdo dentro do card: início, centro ou espaçado.",
+    "type": "string",
+    "importance": 75,
+    "categories": [
+      "cards",
+      "layout",
+      "alinhamento"
+    ],
+    "tags": [
+      "flex",
+      "conteudo",
+      "alinhamento"
+    ],
+    "databaseColumn": "cards_engine",
+    "schemaOrigin": "cards.ts",
+    "digitalTwins": [
+      "SarakCard"
+    ],
+    "cssVariables": [
+      "--sarak-card-content-alignment"
+    ],
+    "allowedValues": [
+      "start",
+      "center",
+      "space-between"
+    ],
+    "relatedTokens": [
+      "cardTextAlign"
+    ]
+  },
+  {
+    "tokenId": "cardShadow",
+    "name": "Sombra do Card (CSS)",
+    "description": "Valor completo de box-shadow aplicado ao card. Use 'none' para desativar.",
+    "type": "string",
+    "importance": 70,
+    "categories": [
+      "cards",
+      "sombra",
+      "elevacao"
+    ],
+    "tags": [
+      "shadow",
+      "box-shadow",
+      "elevacao"
+    ],
+    "databaseColumn": "cards_engine",
+    "schemaOrigin": "cards.ts",
+    "digitalTwins": [
+      "SarakCard"
+    ],
+    "cssVariables": [
+      "--sarak-card-shadow"
+    ],
+    "allowedValues": null,
+    "relatedTokens": [
+      "cardShadowSpread"
+    ]
+  },
+  {
+    "tokenId": "borderBeamEnabled",
+    "name": "Ativar Border Beam",
+    "description": "Liga/desliga o efeito de feixe luminoso percorrendo a borda dos cards.",
+    "type": "boolean",
+    "importance": 60,
+    "categories": [
+      "cards",
+      "efeitos",
+      "borda"
+    ],
+    "tags": [
+      "beam",
+      "borda",
+      "efeito"
+    ],
+    "databaseColumn": "cards_engine",
+    "schemaOrigin": "cards.ts",
+    "digitalTwins": [
+      "SarakCard"
+    ],
+    "cssVariables": [],
+    "allowedValues": null,
+    "relatedTokens": [
+      "cardSearchBorderBeamActive"
+    ]
   }
 ]

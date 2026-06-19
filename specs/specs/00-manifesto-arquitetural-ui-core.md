@@ -10,6 +10,10 @@ A **Sarak-Lib-UI-Core** não é apenas uma biblioteca de componentes; ela é um 
 - Resiliência visual (Zero Hardcode).
 - Aplicação determinística de Design Tokens.
 
+### A Filosofia do Preenchimento (Não programe, configure)
+Aqui, criar um layout diferente não significa criar uma *div* nova ou um componente novo no React. Significa apenas **enviar um conjunto diferente de dados** para as propriedades (props/tokens) mapeadas em nosso catálogo (`theme_table_mapping.json`). 
+O motor UI Core é uma máquina cega que reage a dicionários de dados (JSON/Payloads). O seu trabalho, como agente de design, é **alimentar a máquina com os valores corretos**, e não atuar como um *Front-End Coder* tradicional. Alterações visuais são alterações de preenchimento de formulário.
+
 ## 2. As Três Camadas (3-Layer Architecture)
 
 A organização da biblioteca respeita uma divisão hermética. Componentes nunca podem pular ou mesclar responsabilidades.
