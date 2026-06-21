@@ -28,6 +28,9 @@ export type {
     RouteMap,
     ThemeDirective,
     AriaDirective,
+    DataSourceMethod,
+    DataNodeState,
+    DataSourceStates,
 } from './types';
 export { SUPPORTED_SCHEMA_VERSION } from './types';
 export {
@@ -75,7 +78,35 @@ export {
 export { NATIVE_COMPONENTS, type NativeComponentType } from './Registry/nativeComponents';
 export { SarakFallback, type SarakFallbackProps } from './Registry/Fallback';
 
-// Spec 30 (mínima) — Renderer harness
+// Spec 24 — Data Binding e Pipes
+export {
+    interpolate,
+    interpolateProps,
+    resolveExpression,
+    resolveBinding,
+    registerPipe,
+    getPipe,
+    hasPipe,
+    type Pipe,
+} from './Binding';
+
+// Spec 23 — Motor de Repetição (renderFor)
+export {
+    expandRenderFor,
+    VIRTUALIZE_THRESHOLD,
+    type ExpandedNode,
+    type RenderForResult,
+} from './RenderFor';
+
+// Spec 31 — Fonte de Dados Declarativa
+export {
+    useDataSource,
+    type NetworkInterceptor,
+    type NetworkRequest,
+    type DataSourceController,
+} from './DataSource';
+
+// Spec 30 — Renderer (Motor de Dados Vivo a partir da Onda 1)
 export {
     SarakManifestRenderer,
     default as SarakManifestRendererDefault,

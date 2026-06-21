@@ -133,8 +133,8 @@ Cada **onda** é um conjunto construível em conjunto; a ordem **entre** ondas �
   - [x] 20 manifest-schema  · [x] 21 datastore  · [x] 22 registry  · [x] 34 conferência-funcional
   - [x] 10 micro-layout *(visual base — verificado/conformado e registrado no Component Registry)*
 - **Onda 1 — Motor de dados vivo**
-  - [ ] 23 renderFor  · [ ] 24 data-binding-pipes  · [ ] 31 fonte-de-dados
-  - [ ] 12 data-grids *(virtualização que a 23 delega)*
+  - [x] 23 renderFor  · [x] 24 data-binding-pipes  · [x] 31 fonte-de-dados
+  - [x] 12 data-grids *(BASE: virtualização que a 23 delega — `SarakDataGrid` headless via `@tanstack/react-virtual`; Kanban/Charts/TreeView ficam para a Spec 12 completa)*
 - **Onda 2 — Interação e regras**
   - [ ] 25 dispatcher  · [ ] 26 avaliação-condicional
   - [ ] 13 feedback *(toasts/modais que a 25 abre)*

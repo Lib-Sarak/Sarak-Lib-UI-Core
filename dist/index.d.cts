@@ -662,6 +662,36 @@ interface SarakBadgeProps extends React__default.HTMLAttributes<HTMLSpanElement>
 }
 declare const SarakBadge: React__default.FC<SarakBadgeProps>;
 
+/**
+ * SarakSkeleton — placeholder MÍNIMO de carregamento (puxado sob demanda)
+ *
+ * ⚠️ MÍNIMO: estado `loading` da Fonte de Dados (Spec 31, Regra 2) enquanto a Spec 13
+ * (Feedback/Skeletons completa) não chega. Apenas um bloco pulsante neutro, tokenizado
+ * (Zero Hardcode: cores/raio via `var(--sx-*)`). Sem dependência de tema ou ícones.
+ */
+
+interface SarakSkeletonProps {
+    /** Número de linhas-fantasma a exibir (default: 3). */
+    rows?: number;
+    /** Altura de cada linha (default: `1rem`). */
+    rowHeight?: string;
+}
+declare const SarakSkeleton: React__default.FC<SarakSkeletonProps>;
+
+/**
+ * SarakDataEmpty — placeholder MÍNIMO de "sem dados" (puxado sob demanda)
+ *
+ * ⚠️ MÍNIMO: estado `empty` da Fonte de Dados (Spec 31, Regra 2). Mensagem neutra e
+ * tokenizada — distinto do `SarakEmptyState` (peça de branding de viewport vazio).
+ * A UX completa de Empty States chega na Spec 13.
+ */
+
+interface SarakDataEmptyProps {
+    /** Mensagem exibida (default: "Nenhum dado encontrado."). */
+    message?: string;
+}
+declare const SarakDataEmpty: React__default.FC<SarakDataEmptyProps>;
+
 interface SarakTabItem {
     id: string;
     label: React__default.ReactNode;
@@ -691,6 +721,51 @@ interface SarakTooltipProps {
     disabled?: boolean;
 }
 declare const SarakTooltip: React__default.FC<SarakTooltipProps>;
+
+/**
+ * SarakDataGrid — BASE de virtualização (Spec 12, recorte da Onda 1)
+ *
+ * ⚠️ ESCOPO REDUZIDO: esta é apenas a *janela virtual* (windowing) que o motor de
+ * repetição (Spec 23, Regra 4) delega para listas grandes (> limiar). As demais
+ * Regras da Spec 12 — pinned/resize/reorder de colunas, Kanban, Charts/Sparklines,
+ * Tree Views — ficam para a implementação COMPLETA da Spec 12 (onda posterior).
+ *
+ * Headless por design: não impõe markup de tabela nem cores próprias. Renderiza só
+ * as linhas visíveis (60 FPS / 10k+ itens) e delega o conteúdo de cada linha ao
+ * `renderRow`. Zero Hardcode: dimensões/efeitos via tokens `var(--sx-*)`.
+ */
+
+interface SarakDataGridProps {
+    /** Quantidade total de linhas (a fonte real vive fora; aqui só virtualizamos). */
+    count: number;
+    /** Render de UMA linha pelo índice — chamado apenas para linhas visíveis. */
+    renderRow: (index: number) => React__default.ReactNode;
+    /** Altura estimada de cada linha em px (default: 44). */
+    estimateSize?: number;
+    /** Linhas extra montadas fora da viewport para scroll suave (default: 8). */
+    overscan?: number;
+    /** Altura da janela de scroll (default: 100% do contêiner pai). */
+    height?: number | string;
+    /** Classe utilitária extra do contêiner. */
+    className?: string;
+}
+/**
+ * Lista virtualizada vertical. Só as linhas dentro da viewport (+ overscan) são
+ * montadas no DOM, mantendo a contagem de nós baixa independentemente de `count`.
+ */
+declare const SarakDataGridImpl: React__default.FC<SarakDataGridProps>;
+
+/**
+ * SarakDataGrid — barrel + carregamento preguiçoso (Spec 12, base da Onda 1).
+ *
+ * `SarakDataGrid` é um `React.lazy`: a dependência de virtualização
+ * (`@tanstack/react-virtual`) só é baixada quando um grid é realmente renderizado
+ * — telas sem listas grandes pagam custo zero. Sempre renderize sob `<Suspense>`.
+ *
+ * `SarakDataGridImpl`/`SarakDataGridProps` são exportados para teste direto (sem
+ * a fronteira de Suspense).
+ */
+declare const SarakDataGrid: React$1.LazyExoticComponent<React$1.FC<SarakDataGridProps>>;
 
 interface SarakChartEngineProps {
     type: 'line' | 'area' | 'bar' | 'pie' | 'radar' | 'gauge' | 'scatter' | 'heatmap' | 'funnel' | 'treemap' | 'candlestick' | 'sunburst' | 'histogram' | 'boxplot';
@@ -770,12 +845,40 @@ interface ValidationRule {
 }
 /** Schema de validação de um campo/formulário (Spec 29). */
 type ValidationSchema = ValidationRule[];
-/** Diretiva de fonte de dados assíncrona (Spec 31). */
+/** Método HTTP declarativo da fonte de dados (Spec 31). */
+type DataSourceMethod = 'GET' | 'POST' | 'PUT' | 'PATCH' | 'DELETE';
+/** Estados do ciclo de vida de um nó de dados (Spec 31, Regra 2). */
+type DataNodeState = 'loading' | 'success' | 'empty' | 'error';
+/**
+ * Overrides opcionais dos estados de um nó com `source` (Spec 31, Regra 2):
+ * cada estado pode declarar um nó Sarak próprio em vez do placeholder padrão.
+ */
+interface DataSourceStates {
+    /** Nó exibido durante o carregamento (default: Skeleton mínimo). */
+    loading?: ManifestNode;
+    /** Nó exibido quando o resultado é vazio (default: Empty State mínimo). */
+    empty?: ManifestNode;
+    /** Nó exibido em caso de erro (default: Fallback). */
+    error?: ManifestNode;
+}
+/**
+ * Diretiva de fonte de dados assíncrona (Spec 31). O nó carrega seus próprios dados
+ * ao montar, deposita-os no DataStore na chave `into` e expõe o ciclo de vida.
+ * A E/S NUNCA é embutida: passa pelo `networkInterceptor` injetado (Regra 5).
+ */
 interface DataSourceDirective {
-    /** Endpoint/identificador da fonte. */
+    /** Endpoint/identificador da fonte (interpolável). */
     endpoint: string;
-    /** Caminho no estado onde o resultado é depositado. */
-    target?: string;
+    /** Método HTTP (default: `GET`). */
+    method?: DataSourceMethod;
+    /** Parâmetros declarativos (interpoláveis via Spec 24). */
+    params?: ManifestProps;
+    /** Chave no DataStore onde o resultado é depositado (de onde o `renderFor` itera). */
+    into: string;
+    /** Quando disparar a busca (default: `onMount`). */
+    trigger?: 'onMount' | 'manual';
+    /** Overrides dos nós de estado (loading/empty/error). */
+    states?: DataSourceStates;
 }
 /** Diretiva de modelo de formulário / two-way binding (Spec 32). */
 interface FormModelDirective {
@@ -1066,6 +1169,10 @@ interface SarakTabsProps {
 /**
  * Registro nativo. `as const` em conjunto com `satisfies` mantém a inferência das
  * chaves literais (para derivar `ComponentType`) sem afrouxar a tipagem dos valores.
+ *
+ * `SarakDataGrid` é o primeiro componente pesado registrado via `React.lazy`
+ * (Regra 5): a virtualização (`@tanstack/react-virtual`) só carrega quando um grid
+ * é renderizado. O Renderer já envolve a árvore em `<Suspense>`.
  */
 declare const NATIVE_COMPONENTS: {
     readonly SarakFlex: React$1.FC<SarakFlexProps>;
@@ -1074,6 +1181,7 @@ declare const NATIVE_COMPONENTS: {
     readonly SarakTabs: React$1.FC<SarakTabsProps>;
     readonly SarakAccordion: React$1.FC<SarakAccordionProps>;
     readonly SarakFormGroup: React$1.FC<SarakFormGroupProps>;
+    readonly SarakDataGrid: React$1.LazyExoticComponent<React$1.FC<SarakDataGridProps>>;
 };
 /** União dos `type` nativos oficiais — fonte do `ComponentType` (Spec 22, Regra 1). */
 type NativeComponentType = keyof typeof NATIVE_COMPONENTS;
@@ -1150,19 +1258,159 @@ interface SarakFallbackProps {
 declare const SarakFallback: React__default.FC<SarakFallbackProps>;
 
 /**
- * SarakManifestRenderer — versão MÍNIMA (harness da Onda 0)
+ * Motor de Interpolação / Data Binding (Spec 24 — Regras 1, 3, 4)
  *
- * Conforme a nota da §3.1 do índice do plano, o Renderer (Spec 30) existe em versão
- * mínima já na Onda 0 para PROVAR a fundação (20/21/22) ponta-a-ponta. Esta versão:
- *  - valida o nó raiz (Spec 20, Regra 5) e cai no fallback de "Manifesto Inválido";
- *  - resolve `type` pelo Component Registry (Spec 22);
- *  - separa `props` de diretivas e repassa SOMENTE `props` ao átomo — diretivas
- *    NUNCA vazam ao DOM (Spec 20, Regra 4);
- *  - renderiza `children` recursivamente, isolando types desconhecidos no fallback.
+ * Interpretador léxico que caça templates `{{ ... }}` no manifesto e os substitui
+ * pelo estado correspondente em tempo de execução, aplicando pipes de formatação.
  *
- * O processamento das diretivas (renderFor, bindings, actions, renderIf…) é das ondas
- * seguintes; aqui elas são apenas removidas do caminho visual. O `dataStore` é aceito
- * e disponibilizado para essas engines futuras, com a árvore reagindo a mudanças.
+ * Princípios:
+ *  - Resolução SEGURA (Regra 1): reusa `resolveScopedPath` da Spec 21 — caminho
+ *    ausente vira `''` (ou o fallback `|| 'literal'`), nunca lança.
+ *  - Reativo (Regra 3): puro e síncrono; o Renderer reexecuta a interpolação quando
+ *    o DataStore muda (via `useSyncExternalStore` na raiz).
+ *  - Anti-XSS (Regra 4): produz apenas `string`/valor primitivo, nunca HTML cru.
+ *
+ * Zero Any: a fronteira dinâmica é `unknown` + `ManifestValue`; sem `any`.
+ */
+
+/**
+ * Resolve UMA expressão de template (o conteúdo entre `{{ }}`): caminho + fallback
+ * `|| 'literal'` opcional + pipes encadeados. Retorna o valor cru (sem `String()`),
+ * para que props possam preservar o tipo (ex.: `"{{count}}"` → número).
+ */
+declare const resolveExpression: (expr: string, scope: StateRecord, globalState: unknown) => unknown;
+/**
+ * Resolve um binding solto (`"{{users}}"` ou `"users"`) ao seu valor cru.
+ * Usado pelo motor de repetição (Spec 23) para obter a lista a iterar.
+ */
+declare const resolveBinding: (binding: string, scope: StateRecord, globalState: unknown) => unknown;
+/**
+ * Substitui todos os `{{ ... }}` de uma string pelo texto resolvido. Valores
+ * ausentes (`undefined`/`null`) viram `''` (Regra 1).
+ */
+declare const interpolate: (template: string, scope: StateRecord, globalState: unknown) => string;
+/**
+ * Interpola todas as `props` visuais de um nó contra o escopo+estado atuais.
+ * O que chega ao átomo já vem com as variáveis resolvidas (Regra 3).
+ */
+declare const interpolateProps: (props: ManifestProps, scope: StateRecord, globalState: unknown) => ManifestProps;
+
+/**
+ * Pipes de Formatação (Spec 24 — Regra 2)
+ *
+ * Registro de funções formatadoras PURAS aplicadas no template via `|`
+ * (ex.: `{{valor | currency: 'BRL'}}`). Cada pipe recebe o valor resolvido e
+ * argumentos string do template, e devolve sempre uma `string` (Regra 4 — nunca
+ * HTML cru; sanitização rica fica no `SarakMarkdownRenderer`, Spec 15).
+ *
+ * Contrato Zero Any: o valor de entrada é `unknown`; nenhuma `any` na fronteira.
+ */
+/**
+ * Assinatura de um pipe: transforma um valor resolvido em texto, com argumentos
+ * literais (string) extraídos do template após o `:`.
+ */
+type Pipe = (value: unknown, ...args: string[]) => string;
+/** Registra (ou substitui) um pipe pelo nome. API pública (importador). */
+declare const registerPipe: (name: string, pipe: Pipe) => void;
+/** Recupera um pipe pelo nome, ou `undefined` se não cadastrado. */
+declare const getPipe: (name: string) => Pipe | undefined;
+/** True se o pipe está registrado. */
+declare const hasPipe: (name: string) => boolean;
+
+/**
+ * Motor de Repetição (Spec 23 — Regras 1, 2, 3, 4)
+ *
+ * Coração dinâmico do Renderer: intercepta a diretiva `renderFor` de um nó, resolve
+ * a lista-fonte no estado (via Spec 24) e multiplica o nó N vezes, injetando um
+ * ESCOPO LOCAL por iteração (`item`/`index`) que se sobrepõe ao global (Spec 21).
+ *
+ * Esta camada é PURA (sem React): devolve a descrição das instâncias a renderizar.
+ * O Renderer materializa cada instância e decide (Regra 4) entre map direto e a
+ * virtualização da Spec 12 quando a lista passa do limiar.
+ *
+ * Zero Any: fronteiras em `unknown`/`StateRecord`; nenhuma `any`.
+ */
+
+/** Uma instância expandida do nó: o nó-base (sem `renderFor`) + escopo + chave. */
+interface ExpandedNode {
+    /** Nó a renderizar — o original sem a diretiva `renderFor` (evita re-expansão). */
+    node: ManifestNode;
+    /** Escopo local da iteração (pai + `{ [as]: item, [indexAs]: index }`). */
+    scope: StateRecord;
+    /** Chave estável de reconciliação (Regra 3). */
+    key: string;
+}
+/** Resultado da expansão. `ok=false` quando a fonte não é um Array (Regra 2). */
+interface RenderForResult {
+    ok: boolean;
+    items: ExpandedNode[];
+    /** Mensagem de erro capturável quando `ok=false`. */
+    error?: string;
+}
+/** Limiar de itens a partir do qual o Renderer delega à virtualização (Regra 4). */
+declare const VIRTUALIZE_THRESHOLD = 100;
+/**
+ * Expande um nó que carrega `renderFor`. Retorna a lista de instâncias a renderizar
+ * (cada uma com seu escopo local) ou um erro capturável se a fonte não for um Array.
+ */
+declare const expandRenderFor: (node: ManifestNode, scope: StateRecord, globalState: unknown) => RenderForResult;
+
+/**
+ * Fonte de Dados Declarativa (Spec 31 — Regras 1–5)
+ *
+ * Fecha o ciclo "JSON vira app viva": um nó com `source` carrega seus próprios
+ * dados ao montar, deposita-os no DataStore na chave `into` (de onde o `renderFor`
+ * itera) e dirige a máquina de estados `loading → success | empty | error`.
+ *
+ *  - Regra 4 (anti-loop): a busca dispara UMA vez por montagem, chaveada por
+ *    endpoint+params interpolados; só refaz por `trigger: manual` (reload) ou
+ *    mudança das params.
+ *  - Regra 5 (sem rede embutida): a biblioteca NUNCA chama `fetch`; toda E/S passa
+ *    pelo `networkInterceptor` injetado pelo importador (mantém auth/JWT fora daqui).
+ *
+ * Zero Any: a fronteira do payload é `unknown`; nenhuma `any`.
+ */
+
+/** Requisição declarativa entregue ao interceptor do importador. */
+interface NetworkRequest {
+    endpoint: string;
+    method?: DataSourceMethod;
+    params?: ManifestProps;
+}
+/**
+ * Interceptor de rede injetado pelo importador (Spec 30/31, Regra 5). Recebe a
+ * requisição declarativa e devolve os dados. A biblioteca não conhece auth nem fetch.
+ */
+type NetworkInterceptor = (request: NetworkRequest) => Promise<unknown>;
+/** Controlador retornado pelo hook: estado do ciclo + erro + recarga manual. */
+interface DataSourceController {
+    state: DataNodeState;
+    error: unknown;
+    /** Dispara uma nova busca (modo `manual` ou re-fetch sob demanda). */
+    reload: () => void;
+}
+/**
+ * Gerencia o ciclo de vida de um nó com `source`. Deposita o resultado em
+ * `directive.into` no `store` e devolve o estado para o Renderer escolher entre
+ * Skeleton / Empty / Fallback / conteúdo.
+ */
+declare const useDataSource: (directive: DataSourceDirective, store: SarakDataStore<StateRecord> | undefined, interceptor: NetworkInterceptor | undefined, scope: StateRecord, globalState: unknown) => DataSourceController;
+
+/**
+ * SarakManifestRenderer — Renderer com Motor de Dados Vivo (Onda 1)
+ *
+ * Evolução do harness da Onda 0: o nó deixa de ser uma função pura que descarta
+ * diretivas e passa a ser um COMPONENTE (`ManifestNodeRenderer`) que processa, na
+ * descida da árvore, o pipeline de diretivas desta onda:
+ *
+ *   1. `source` (Spec 31) — carrega dados ao montar e decide loading/empty/error;
+ *   2. `renderFor` (Spec 23) — expande em N instâncias com escopo local;
+ *   3. interpolação de `props` (Spec 24) — resolve `{{ }}` com escopo+estado;
+ *   4. resolve `type` (Spec 22) e renderiza, recursando em `children`.
+ *
+ * Reatividade (Spec 24, Regra 3): a raiz assina o DataStore; qualquer `mutate_state`
+ * reexecuta a árvore e re-interpola os textos. A diretiva `source` é a primeira fatia
+ * da finalização do contrato do importador (Spec 30), via `networkInterceptor`.
  */
 
 interface SarakManifestRendererProps {
@@ -1172,10 +1420,13 @@ interface SarakManifestRendererProps {
     dataStore?: SarakDataStore<StateRecord>;
     /** Registry a usar; default = singleton da biblioteca. */
     registry?: ComponentRegistry;
+    /** Interceptor de rede injetado (Spec 31, Regra 5) — toda E/S passa por ele. */
+    networkInterceptor?: NetworkInterceptor;
 }
 /**
- * Harness que materializa um manifesto. Se o store for fornecido, a árvore re-renderiza
- * quando o estado muda (plumbing reativo pronto para as engines de binding das ondas 1+).
+ * Materializa um manifesto. Assina o DataStore (se fornecido) para reagir a mudanças
+ * de estado e re-interpolar a árvore. Toda a saída fica sob `<Suspense>` para acomodar
+ * componentes pesados carregados via `React.lazy` (ex.: virtualização do DataGrid).
  */
 declare const SarakManifestRenderer: React__default.FC<SarakManifestRendererProps>;
 
@@ -1314,4 +1565,4 @@ interface SarakRouterState {
  */
 declare function useSarakRouter(basePath?: string): SarakRouterState;
 
-export { type ActionList, type AriaDirective, type BadgeSize, type BadgeVariant, type BindingExpression, type ComponentRegistry, type ComponentResolution, type ComponentType, type ConditionExpression, CustomizationPanel, DESIGN_MANIFEST, DIRECTIVE_OWNERS, type DataSourceDirective, DesignScope, DeviceProvider, type DeviceType, type DirectiveName, type DiscoveredModule, DynamicRenderer, ExpandableCard, type FormModelDirective, IconMap, type IconName, LanguageSelector, type ManifestAction, type ManifestComponent, type ManifestComponentProps, type ManifestNode, type ManifestProps, type ManifestRoot, type ManifestValidationError, type ManifestValidationResult, type ManifestValue, type MatrixNodeConfig, type ModalLayoutContext, type ModuleManifest, ModuleSelector, NATIVE_COMPONENTS, type NativeComponentType, type NodeParts, type PersistDirective, RESERVED_DIRECTIVES, type RenderForDirective, type ResponsiveDirective, type RouteMap, STRUCTURAL_KEYS, SUPPORTED_SCHEMA_VERSION, SarakAnalyticalPage, type SarakAnalyticalPageProps, SarakAuthScreen, type SarakAuthScreenProps, SarakBadge, type SarakBadgeProps, SarakCardGrid, SarakCatalogGrid, SarakChart, SarakChartEngine, SarakChat, type SarakDataStore, SarakDrawer, type SarakDrawerProps, SarakEmptyState, SarakExpandableMatrix, type SarakExpandableMatrixProps, SarakFallback, type SarakFallbackProps, SarakForm, SarakHidden, SarakIcon, type SarakIconProps, SarakManagementGrid, SarakManifestRenderer, SarakManifestRenderer as SarakManifestRendererDefault, type SarakManifestRendererProps, type SarakMatrixManifest, SarakModal, type SarakModalProps, type SarakModule, type SarakRouterState, SarakSecurityOrchestrator, SarakShell, SarakStats, type SarakTabItem, SarakTable, SarakTabs, type SarakTabsProps$1 as SarakTabsProps, SarakTooltip, type SarakTooltipProps, SarakUIProvider, type Selector, type ShellDirective, type SlotMap, SocialButton, type StateRecord, type ThemeDirective, ThemeToggle, UserMenu, type ValidationRule, type ValidationSchema, type VisualContract, type VisualContractType, createComponentRegistry, createSarakDataStore, defaultComponentRegistry, getByPath, getLocalComponent, getRegisteredModules, getSarakModule, isReservedDirective, isStructuralKey, registerComponent, registerLocalComponent, registerSarakModule, resolveComponent, resolveScopedPath, separateNodeParts, setByPath, subscribeToRegistry, useDesignDraft, useModalLayoutStyles, useModuleDiscovery, useSarakDevice, useSarakRouter, useSarakUI, validateManifestNode, validateManifestRoot };
+export { type ActionList, type AriaDirective, type BadgeSize, type BadgeVariant, type BindingExpression, type ComponentRegistry, type ComponentResolution, type ComponentType, type ConditionExpression, CustomizationPanel, DESIGN_MANIFEST, DIRECTIVE_OWNERS, type DataNodeState, type DataSourceController, type DataSourceDirective, type DataSourceMethod, type DataSourceStates, DesignScope, DeviceProvider, type DeviceType, type DirectiveName, type DiscoveredModule, DynamicRenderer, ExpandableCard, type ExpandedNode, type FormModelDirective, IconMap, type IconName, LanguageSelector, type ManifestAction, type ManifestComponent, type ManifestComponentProps, type ManifestNode, type ManifestProps, type ManifestRoot, type ManifestValidationError, type ManifestValidationResult, type ManifestValue, type MatrixNodeConfig, type ModalLayoutContext, type ModuleManifest, ModuleSelector, NATIVE_COMPONENTS, type NativeComponentType, type NetworkInterceptor, type NetworkRequest, type NodeParts, type PersistDirective, type Pipe, RESERVED_DIRECTIVES, type RenderForDirective, type RenderForResult, type ResponsiveDirective, type RouteMap, STRUCTURAL_KEYS, SUPPORTED_SCHEMA_VERSION, SarakAnalyticalPage, type SarakAnalyticalPageProps, SarakAuthScreen, type SarakAuthScreenProps, SarakBadge, type SarakBadgeProps, SarakCardGrid, SarakCatalogGrid, SarakChart, SarakChartEngine, SarakChat, SarakDataEmpty, type SarakDataEmptyProps, SarakDataGrid, SarakDataGridImpl, type SarakDataGridProps, type SarakDataStore, SarakDrawer, type SarakDrawerProps, SarakEmptyState, SarakExpandableMatrix, type SarakExpandableMatrixProps, SarakFallback, type SarakFallbackProps, SarakForm, SarakHidden, SarakIcon, type SarakIconProps, SarakManagementGrid, SarakManifestRenderer, SarakManifestRenderer as SarakManifestRendererDefault, type SarakManifestRendererProps, type SarakMatrixManifest, SarakModal, type SarakModalProps, type SarakModule, type SarakRouterState, SarakSecurityOrchestrator, SarakShell, SarakSkeleton, type SarakSkeletonProps, SarakStats, type SarakTabItem, SarakTable, SarakTabs, type SarakTabsProps$1 as SarakTabsProps, SarakTooltip, type SarakTooltipProps, SarakUIProvider, type Selector, type ShellDirective, type SlotMap, SocialButton, type StateRecord, type ThemeDirective, ThemeToggle, UserMenu, VIRTUALIZE_THRESHOLD, type ValidationRule, type ValidationSchema, type VisualContract, type VisualContractType, createComponentRegistry, createSarakDataStore, defaultComponentRegistry, expandRenderFor, getByPath, getLocalComponent, getPipe, getRegisteredModules, getSarakModule, hasPipe, interpolate, interpolateProps, isReservedDirective, isStructuralKey, registerComponent, registerLocalComponent, registerPipe, registerSarakModule, resolveBinding, resolveComponent, resolveExpression, resolveScopedPath, separateNodeParts, setByPath, subscribeToRegistry, useDataSource, useDesignDraft, useModalLayoutStyles, useModuleDiscovery, useSarakDevice, useSarakRouter, useSarakUI, validateManifestNode, validateManifestRoot };

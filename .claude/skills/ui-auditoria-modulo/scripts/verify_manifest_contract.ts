@@ -149,10 +149,15 @@ const scanAnyInContracts = (): void => {
 // ---------------------------------------------------------------------------
 
 const REQUIRED_TESTS = [
+    // Fundação (Onda 0)
     'validateNode.test.ts',
     'SarakDataStore.test.ts',
     'ComponentRegistry.test.tsx',
     'SarakManifestRenderer.test.tsx',
+    // Motor de Dados Vivo (Onda 1)
+    'interpolate.test.ts', // Spec 24 — data-binding e pipes
+    'expandRenderFor.test.ts', // Spec 23 — motor de repetição
+    'useDataSource.test.tsx', // Spec 31 — fonte de dados declarativa
 ];
 
 const checkTestCoverage = (): void => {

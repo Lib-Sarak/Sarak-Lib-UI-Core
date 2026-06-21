@@ -83,12 +83,43 @@ export interface ValidationRule {
 /** Schema de validação de um campo/formulário (Spec 29). */
 export type ValidationSchema = ValidationRule[];
 
-/** Diretiva de fonte de dados assíncrona (Spec 31). */
+/** Método HTTP declarativo da fonte de dados (Spec 31). */
+export type DataSourceMethod = 'GET' | 'POST' | 'PUT' | 'PATCH' | 'DELETE';
+
+/** Estados do ciclo de vida de um nó de dados (Spec 31, Regra 2). */
+export type DataNodeState = 'loading' | 'success' | 'empty' | 'error';
+
+/**
+ * Overrides opcionais dos estados de um nó com `source` (Spec 31, Regra 2):
+ * cada estado pode declarar um nó Sarak próprio em vez do placeholder padrão.
+ */
+export interface DataSourceStates {
+    /** Nó exibido durante o carregamento (default: Skeleton mínimo). */
+    loading?: ManifestNode;
+    /** Nó exibido quando o resultado é vazio (default: Empty State mínimo). */
+    empty?: ManifestNode;
+    /** Nó exibido em caso de erro (default: Fallback). */
+    error?: ManifestNode;
+}
+
+/**
+ * Diretiva de fonte de dados assíncrona (Spec 31). O nó carrega seus próprios dados
+ * ao montar, deposita-os no DataStore na chave `into` e expõe o ciclo de vida.
+ * A E/S NUNCA é embutida: passa pelo `networkInterceptor` injetado (Regra 5).
+ */
 export interface DataSourceDirective {
-    /** Endpoint/identificador da fonte. */
+    /** Endpoint/identificador da fonte (interpolável). */
     endpoint: string;
-    /** Caminho no estado onde o resultado é depositado. */
-    target?: string;
+    /** Método HTTP (default: `GET`). */
+    method?: DataSourceMethod;
+    /** Parâmetros declarativos (interpoláveis via Spec 24). */
+    params?: ManifestProps;
+    /** Chave no DataStore onde o resultado é depositado (de onde o `renderFor` itera). */
+    into: string;
+    /** Quando disparar a busca (default: `onMount`). */
+    trigger?: 'onMount' | 'manual';
+    /** Overrides dos nós de estado (loading/empty/error). */
+    states?: DataSourceStates;
 }
 
 /** Diretiva de modelo de formulário / two-way binding (Spec 32). */

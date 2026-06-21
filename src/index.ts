@@ -28,10 +28,13 @@ export * from './components/atomic/Templates';
 export * from './components/atomic/Modals';
 export * from './components/atomic/Feedback';
 export * from './components/atomic/UX';
+export * from './components/atomic/DataDisplay/SarakDataGrid';
 export { default as SarakChartEngine } from './components/engines/charts/SarakChartEngine';
 
-// Manifest Engine — Fundação do Contrato (Bloco Funcional / Onda 0)
-// Gramática do nó (20), estado reativo (21), registry tipado (22), Renderer mínimo (30).
+// Manifest Engine — Bloco Funcional
+// Fundação (Onda 0): gramática do nó (20), estado reativo (21), registry (22).
+// Motor de Dados Vivo (Onda 1): data-binding/pipes (24), renderFor (23),
+// fonte de dados declarativa (31) e o Renderer que orquestra o pipeline (30).
 export * from './core/Manifest';
 
 // Discovery and Dynamic Rendering (Universal Bridge)
