@@ -5,7 +5,7 @@ dominio: "Sarak-Lib-UI-Core (Arquitetura Suprema)"
 status: "🔴 A Implementar"
 prioridade: "Crítica"
 tags: ["spec", "architecture", "renderer", "integration"]
-relacionados: ["08-consumo-externo-e-integracao"]
+relacionados: ["08-consumo-externo-e-integracao", "31-fonte-de-dados-declarativa", "33-composicao-pagina-rota-shell"]
 ---
 
 # 1. Visão Geral

@@ -5,7 +5,7 @@ dominio: "Sarak-Lib-UI-Core (Lógica e Dados)"
 status: "🔴 A Implementar"
 prioridade: "Alta"
 tags: ["spec", "logic", "forms", "validation"]
-relacionados: []
+relacionados: ["32-binding-bidirecional-de-formulario", "25-dispatcher-central-de-eventos", "11-expansao-formularios"]
 ---
 
 # 1. Visão Geral

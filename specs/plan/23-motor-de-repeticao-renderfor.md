@@ -5,7 +5,7 @@ dominio: "Sarak-Lib-UI-Core (Lógica e Dados)"
 status: "🔴 A Implementar"
 prioridade: "Crítica"
 tags: ["spec", "logic", "repeater", "lists"]
-relacionados: []
+relacionados: ["21-datastore-estado-reativo", "31-fonte-de-dados-declarativa", "12-expansao-data-grids-vis"]
 ---
 
 # 1. Visão Geral
