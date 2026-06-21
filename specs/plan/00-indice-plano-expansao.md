@@ -8,6 +8,53 @@ tags: ["indice", "plano", "roadmap", "dependencias"]
 relacionados: ["01-plano-mestre-expansao-generica", "02-plano-mestre-expansao-logica-e-dados"]
 ---
 
+# 0. Como Executar (Entrypoint do Agente)
+> Este índice é o **único arquivo que precisa ser enviado** para iniciar a execução. Ele aponta para as regras, define o fluxo e os comandos de verificação; o **detalhe de cada spec vive no próprio arquivo `NN-*.md`**, puxado sob demanda.
+
+## 0.1 Onboarding obrigatório (LEIA ANTES DE CODIFICAR)
+1. Acione a skill **`ui-contexto-repositorio`** e leia **`.agents/index.md`** + **`CLAUDE.md`** — inclui a **Regra de Ouro**: iniciar o time-tracking via MCP **antes** de qualquer tarefa de spec/código.
+2. Leia as specs-fundação em **`specs/specs/`** (as leis do módulo):
+   - `00-manifesto-arquitetural` — as **3 camadas** (`core/` · `components/atomic/` · `features/`).
+   - `03-padrao-e-taxonomia` — **Zero Hardcode** (só `var(--sx-*)`).
+   - `09-expansao-vs-configuracao` — quando é **Configuração** (dado) vs **Expansão** (engenharia).
+   - `05-cobertura-de-testes`.
+3. **Leis absolutas e inegociáveis:** 3 camadas · **Zero Hardcode** · **Zero Any** · **Paridade 1:1:1:1:1** (tokens) · **contratos TS tipados** (engines).
+
+## 0.2 Workflow — uma spec por vez
+1. Pegue o próximo item não marcado na **§3.1 (ordem de ondas)**.
+2. Abra `specs/plan/NN-*.md` e siga as **Regras de Negócio** dela (o índice é o mapa; o conteúdo está na spec).
+3. Classifique o tipo — **token / funcional / híbrido** — e escolha a skill (§0.4).
+4. Implemente.
+5. Rode o **Ciclo de Verificação** (§0.3).
+6. Só marque `[x]` ao atingir o **Definition of Done** (§0.5). **Não encadeie** specs sem verificar a anterior.
+
+## 0.3 Ciclo de Verificação (comandos)
+- **Auditor:** `node .agents/skills/ui-auditoria-modulo/scripts/run_audit.mjs`
+- **Tipos:** `npx tsc --noEmit` (alvo: 0 erros)
+- **Testes:** `npx vitest run` (alvo: verde; qualquer falha nova é regressão sua)
+- **Specs de token** (16 + visuais): após editar as 5 camadas, rode `npx tsx scripts/generate-token-types.ts` e confirme a **Paridade (302 + N)** no auditor.
+- **Specs funcionais (20–34):** o sub-auditor da Conferência (Spec 34) **ainda não existe** → verifique manualmente os contratos TS (sem `any`) + os testes da spec até a 34 ser implementada.
+
+## 0.4 Skill por tipo de mudança
+- **Token / componente atômico novo** → `ui-novo-componente` (executa a paridade nas 5 camadas).
+- **Deletar / alterar assinatura de token** → `ui-refatorar-componente`.
+- **Auditar a base** → `ui-auditoria-modulo`.
+- **Tema / preset** → `ui-criar-tema` / `ui-criar-preset`.
+- **Engines funcionais (20–34)** → sem skill própria; siga a spec + o gate de contratos TS + a Conferência (34).
+
+## 0.5 Definition of Done (por spec)
+Marque `[x]` **só quando TODOS**:
+- [ ] Todos os Critérios de Aceite da spec atendidos.
+- [ ] Auditor sem **regressão nova** (única reprovação tolerada: `any`, ver §0.6).
+- [ ] `tsc --noEmit` = 0 erros.
+- [ ] `vitest run` sem falha nova.
+- [ ] Se token: **Paridade = 302 + N** (Schema ↔ DB ↔ Catálogo).
+
+## 0.6 Caveats do ambiente
+- **ESLint não instalado** → o hook de padrão-escrita só **avisa** (modo warn), não bloqueia.
+- **`any` (492 ocorrências)** é dívida pré-existente (baseline travado) — **não** conta como regressão. **Limpeza oportunista (obrigatória):** ao **tocar** um arquivo que contém `any` durante uma spec, **limpe aquele arquivo** como parte do trabalho (baixando o baseline). O resíduo não tocado fica para a **Spec 50** (Finalização).
+- **Conferência (Spec 34)** é spec, ainda **não** é auditor; automatizá-la é tarefa de código futura.
+
 # 1. Propósito
 Mapa de navegação do diretório `specs/plan/`. O plano transforma a Sarak-Lib-UI-Core num **Motor UI agnóstico** (Design as Data) e divide-se em **dois blocos por faixa numérica**, cada um com seu Mestre. Este índice fixa a **ordem de build** e o **grafo de dependências** para evitar construção fora de ordem.
 
@@ -55,6 +102,11 @@ Mapa de navegação do diretório `specs/plan/`. O plano transforma a Sarak-Lib-
 | 41 | contrato-de-acessibilidade | a11y transversal |
 | 42 | ponte-tema-designscope | Tema por região (bridge Visual ↔ Funcional) |
 
+## Finalização (50–59)
+| Nº | Spec | Papel |
+|---|---|---|
+| 50 | finalizacao-adequacao-e-entrega | `any` residual → 0, documentação, guia do importador, entrega |
+
 # 3. Ordem de Build e Grafo de Dependências
 A construção segue dependências reais (não a ordem numérica cega):
 
@@ -78,8 +130,8 @@ A construção segue dependências reais (não a ordem numérica cega):
 Cada **onda** é um conjunto construível em conjunto; a ordem **entre** ondas é a dependência real. Specs visuais (10–16) são **puxadas sob demanda** pela engine que as consome.
 
 - **Onda 0 — Fundação do contrato** *(nada funcional compila sem ela; a Conferência guarda o crescimento desde já)*
-  - [ ] 20 manifest-schema  · [ ] 21 datastore  · [ ] 22 registry  · [ ] 34 conferência-funcional
-  - [ ] 10 micro-layout *(visual base — já parcialmente implementado)*
+  - [x] 20 manifest-schema  · [x] 21 datastore  · [x] 22 registry  · [x] 34 conferência-funcional
+  - [x] 10 micro-layout *(visual base — verificado/conformado e registrado no Component Registry)*
 - **Onda 1 — Motor de dados vivo**
   - [ ] 23 renderFor  · [ ] 24 data-binding-pipes  · [ ] 31 fonte-de-dados
   - [ ] 12 data-grids *(virtualização que a 23 delega)*
@@ -97,6 +149,8 @@ Cada **onda** é um conjunto construível em conjunto; a ordem **entre** ondas �
 - **Onda 6 — Transversais e mídia**
   - [ ] 40 segurança  · [ ] 41 a11y  · [ ] 42 ponte-tema
   - [ ] 15 mídia *(sob demanda)*
+- **Onda 7 — Finalização** *(após 0–6, ou em paralelo em baixa prioridade)*
+  - [ ] 50 finalização *(`any` residual → 0, docs, guia do importador, entrega)*
 
 > O **30 (Renderer)** existe em versão **mínima** já na Onda 0 (harness para testar a fundação) e só é **finalizado** na Onda 5, quando o contrato completo (`payload`, `dataStore`, `routes`, interceptors) está pronto.
 

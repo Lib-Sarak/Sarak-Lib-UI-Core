@@ -30,6 +30,10 @@ export * from './components/atomic/Feedback';
 export * from './components/atomic/UX';
 export { default as SarakChartEngine } from './components/engines/charts/SarakChartEngine';
 
+// Manifest Engine — Fundação do Contrato (Bloco Funcional / Onda 0)
+// Gramática do nó (20), estado reativo (21), registry tipado (22), Renderer mínimo (30).
+export * from './core/Manifest';
+
 // Discovery and Dynamic Rendering (Universal Bridge)
 export { default as DynamicRenderer } from './core/Discovery/DynamicRenderer';
 export * from './core/Discovery/registry';

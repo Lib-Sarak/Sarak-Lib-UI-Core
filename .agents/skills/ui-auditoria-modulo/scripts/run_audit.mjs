@@ -28,7 +28,8 @@ function main() {
     'auditor_coverage.mjs',
     'auditor_arquitetura.mjs',
     'auditor_cleancode.mjs',
-    'auditor_paridade.mjs'
+    'auditor_paridade.mjs',
+    'auditor_manifesto.mjs'
   ];
   
   let totalFailures = 0;
