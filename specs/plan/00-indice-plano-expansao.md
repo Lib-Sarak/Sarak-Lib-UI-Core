@@ -136,11 +136,11 @@ Cada **onda** é um conjunto construível em conjunto; a ordem **entre** ondas �
   - [x] 23 renderFor  · [x] 24 data-binding-pipes  · [x] 31 fonte-de-dados
   - [x] 12 data-grids *(BASE: virtualização que a 23 delega — `SarakDataGrid` headless via `@tanstack/react-virtual`; Kanban/Charts/TreeView ficam para a Spec 12 completa)*
 - **Onda 2 — Interação e regras**
-  - [ ] 25 dispatcher  · [ ] 26 avaliação-condicional
-  - [ ] 13 feedback *(toasts/modais que a 25 abre)*
+  - [x] 25 dispatcher  · [x] 26 avaliação-condicional
+  - [x] 13 feedback *(Toast/Overlay providers + ContextMenu novos; Modal/Drawer/Tooltip/Skeleton conformados e registrados)*
 - **Onda 3 — Formulários**
-  - [ ] 29 validação  · [ ] 32 binding-bidirecional
-  - [ ] 11 formulários *(inputs consumidos pela 29/32)*
+  - [x] 29 validação  · [x] 32 binding-bidirecional
+  - [x] 11 formulários *(BASE: Input/Select/Textarea/Switch/Slider registrados + fiados com `model`+`validation` via LeafNode/FormScope. DatePicker/MultiSelect/Uploader/RichText/RangeSlider ficam para a Spec 11 completa — sob demanda, pós-Spec 40)*
 - **Onda 4 — Resiliência e estado**
   - [ ] 27 error-boundaries  · [ ] 28 persistência
 - **Onda 5 — Aplicação real**

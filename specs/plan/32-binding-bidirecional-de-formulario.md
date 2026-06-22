@@ -2,7 +2,7 @@
 tipo: "spec"
 titulo: "Binding Bidirecional e Ciclo de Vida de Formulário"
 dominio: "Sarak-Lib-UI-Core (Lógica e Dados)"
-status: "🔴 A Implementar"
+status: "🟢 Implementado"
 prioridade: "Alta"
 tags: ["spec", "logic", "forms", "binding", "two-way"]
 relacionados: ["20-manifest-schema-e-gramatica-no", "21-datastore-estado-reativo", "24-motor-de-data-binding-pipes", "29-validacao-schema-formularios", "25-dispatcher-central-de-eventos"]

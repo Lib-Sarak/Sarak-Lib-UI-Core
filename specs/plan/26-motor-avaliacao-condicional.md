@@ -2,7 +2,7 @@
 tipo: "spec"
 titulo: "Motor de Avaliação Condicional"
 dominio: "Sarak-Lib-UI-Core (Lógica e Dados)"
-status: "🔴 A Implementar"
+status: "🟢 Implementado"
 prioridade: "Alta"
 tags: ["spec", "logic", "conditions", "security"]
 relacionados: []

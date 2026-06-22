@@ -2,7 +2,7 @@
 tipo: "spec"
 titulo: "Validação de Schema de Formulários"
 dominio: "Sarak-Lib-UI-Core (Lógica e Dados)"
-status: "🔴 A Implementar"
+status: "🟢 Implementado"
 prioridade: "Alta"
 tags: ["spec", "logic", "forms", "validation"]
 relacionados: ["32-binding-bidirecional-de-formulario", "25-dispatcher-central-de-eventos", "11-expansao-formularios"]

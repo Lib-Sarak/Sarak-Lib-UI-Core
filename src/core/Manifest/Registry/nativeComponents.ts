@@ -20,6 +20,16 @@ import {
     SarakFormGroup,
 } from '../../../components/atomic/Layouts';
 import { SarakDataGrid } from '../../../components/atomic/DataDisplay/SarakDataGrid';
+import { SarakSkeleton, SarakDataEmpty } from '../../../components/atomic/Feedback';
+import { SarakModal, SarakDrawer } from '../../../components/atomic/Modals';
+import { SarakTooltip, SarakContextMenu } from '../../../components/atomic/UX';
+import {
+    SarakInput,
+    SarakSelect,
+    SarakTextarea,
+    SarakSwitch,
+    SarakSlider,
+} from '../../../components/atomic/Inputs';
 
 /**
  * Registro nativo. `as const` em conjunto com `satisfies` mantém a inferência das
@@ -37,6 +47,23 @@ export const NATIVE_COMPONENTS = {
     SarakAccordion,
     SarakFormGroup,
     SarakDataGrid,
+    // Feedback e Interações (Spec 13).
+    SarakSkeleton,
+    SarakDataEmpty,
+    SarakModal,
+    SarakDrawer,
+    SarakTooltip,
+    SarakContextMenu,
+    // Formulários — inputs BASE (Spec 11-BASE / Onda 3). Leves: SEM React.lazy.
+    // Consumidos pela malha model (Spec 32) + validation (Spec 29) via LeafNode.
+    SarakInput,
+    SarakSelect,
+    SarakTextarea,
+    SarakSwitch,
+    SarakSlider,
+    // Spec 11 completa — sob demanda, pós-Spec 40 (sanitização/fronteira de confiança):
+    // SarakDatePicker, SarakTimePicker, SarakMultiSelect (chips), SarakUploader
+    // (drag-and-drop), SarakRichText (WYSIWYG blindado), SarakRangeSlider (duplo).
 } as const;
 
 /** União dos `type` nativos oficiais — fonte do `ComponentType` (Spec 22, Regra 1). */

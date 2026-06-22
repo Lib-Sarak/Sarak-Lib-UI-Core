@@ -15,10 +15,9 @@
  * da finalização do contrato do importador (Spec 30), via `networkInterceptor`.
  */
 
-import React, { useSyncExternalStore } from 'react';
+import React, { useMemo, useSyncExternalStore } from 'react';
 import type { ManifestNode } from './types';
 import { validateManifestRoot } from './validateNode';
-import { separateNodeParts } from './validateNode';
 import {
     defaultComponentRegistry,
     type ComponentRegistry,
@@ -26,12 +25,19 @@ import {
 import { SarakFallback } from './Registry/Fallback';
 import type { SarakDataStore } from './DataStore/SarakDataStore';
 import type { StateRecord } from './DataStore/resolvePath';
-import { interpolateProps } from './Binding/interpolate';
+import { evaluateCondition } from './Conditional/evaluateCondition';
 import { expandRenderFor, VIRTUALIZE_THRESHOLD } from './RenderFor/expandRenderFor';
 import { useDataSource, type NetworkInterceptor } from './DataSource/useDataSource';
+import type { NavigateFn } from './Dispatcher';
+import { LeafNode } from './nodes/LeafNode';
+import { createFormScope } from './Form/formScope';
+import { FormScopeContext } from './Form/context';
+import { EMPTY_STATE, type NodeRenderContext, type NodeRendererProps } from './nodes/context';
 import { SarakDataGrid } from '../../components/atomic/DataDisplay/SarakDataGrid';
 import { SarakSkeleton } from '../../components/atomic/Feedback/SarakSkeleton';
 import { SarakDataEmpty } from '../../components/atomic/Feedback/SarakDataEmpty';
+import { useToast } from '../../components/atomic/Feedback/SarakToast';
+import { useOverlay } from '../../components/atomic/Modals/SarakOverlayProvider';
 
 export interface SarakManifestRendererProps {
     /** Nó raiz do manifesto (deve declarar `schemaVersion`). */
@@ -42,25 +48,9 @@ export interface SarakManifestRendererProps {
     registry?: ComponentRegistry;
     /** Interceptor de rede injetado (Spec 31, Regra 5) — toda E/S passa por ele. */
     networkInterceptor?: NetworkInterceptor;
+    /** Callback de navegação do importador (Spec 25, ação `navigate`). */
+    onNavigate?: NavigateFn;
 }
-
-/** Contexto compartilhado por toda a árvore durante uma renderização. */
-interface NodeRenderContext {
-    registry: ComponentRegistry;
-    store?: SarakDataStore<StateRecord>;
-    interceptor?: NetworkInterceptor;
-    /** Snapshot atual do estado global (para interpolação e resolução de listas). */
-    global: unknown;
-}
-
-interface NodeRendererProps {
-    node: ManifestNode;
-    path: string;
-    scope: StateRecord;
-    ctx: NodeRenderContext;
-}
-
-const EMPTY_STATE: StateRecord = {};
 
 /**
  * Nó com `source` (Spec 31): carrega dados e escolhe entre Skeleton / Empty /
@@ -103,10 +93,32 @@ const DataSourceNode: React.FC<NodeRendererProps> = ({ node, path, scope, ctx })
 };
 
 /**
- * Componente recursivo de um nó do manifesto. Como `source` usa hooks, cada nó é um
- * componente (hooks por-nó são legais). Processa o pipeline de diretivas da Onda 1.
+ * Nó com `form` (Spec 32): cria um escopo de formulário (valores no DataStore; meta-estado
+ * dirty/touched/erros isolado) e o provê à sub-árvore. Os campos descendentes com `model`
+ * se registram nele; o botão de submit consulta sua validade via Dispatcher.
  */
-const ManifestNodeRenderer: React.FC<NodeRendererProps> = ({ node, path, scope, ctx }) => {
+const FormNode: React.FC<NodeRendererProps> = ({ node, path, scope, ctx }) => {
+    const formId = node.form?.id ?? path;
+    const formScope = useMemo(() => createFormScope(formId, ctx.store), [formId, ctx.store]);
+    return (
+        <FormScopeContext.Provider value={formScope}>
+            <LeafNode node={node} path={path} scope={scope} ctx={ctx} />
+        </FormScopeContext.Provider>
+    );
+};
+
+/**
+ * Componente recursivo de um nó do manifesto. Como `source` usa hooks, cada nó é um
+ * componente (hooks por-nó são legais). Processa o pipeline de diretivas (Specs 26/31/23)
+ * e delega a folha ao `LeafNode` (Specs 22/24/25/26).
+ */
+export const ManifestNodeRenderer: React.FC<NodeRendererProps> = ({ node, path, scope, ctx }) => {
+    // 0. Avaliação condicional (Spec 26, Regra 2): `renderIf` falso suprime o nó
+    // ANTES de qualquer trabalho (fonte/loop/render) — o nó sequer monta no DOM.
+    if (node.renderIf !== undefined && !evaluateCondition(node.renderIf, scope, ctx.global)) {
+        return null;
+    }
+
     // 1. Fonte de dados declarativa (Spec 31).
     if (node.source) {
         return <DataSourceNode node={node} path={path} scope={scope} ctx={ctx} />;
@@ -152,26 +164,14 @@ const ManifestNodeRenderer: React.FC<NodeRendererProps> = ({ node, path, scope, 
         );
     }
 
-    // 3. Resolução do componente + interpolação das props (Spec 22 + Spec 24).
-    const { Component, isFallback } = ctx.registry.resolve(node.type, node.id ?? path);
-    if (isFallback) {
-        return <SarakFallback type={node.type} nodeId={node.id ?? path} />;
+    // 3. Escopo de formulário (Spec 32): envolve a sub-árvore num FormScope antes da folha.
+    if (node.form) {
+        return <FormNode node={node} path={path} scope={scope} ctx={ctx} />;
     }
 
-    const { props } = separateNodeParts(node);
-    const interpolated = interpolateProps(props, scope, ctx.global);
-
-    const children = node.children?.map((child, index) => (
-        <ManifestNodeRenderer
-            key={`${path}.children[${index}]`}
-            node={child}
-            path={`${path}.children[${index}]`}
-            scope={scope}
-            ctx={ctx}
-        />
-    ));
-
-    return <Component {...interpolated}>{children}</Component>;
+    // 4. Folha: resolve o componente, interpola props, aplica disabledIf, fia o two-way
+    // `model` + Validação e os eventos do Dispatcher. Isolado porque usa hooks.
+    return <LeafNode node={node} path={path} scope={scope} ctx={ctx} />;
 };
 
 /**
@@ -184,6 +184,7 @@ export const SarakManifestRenderer: React.FC<SarakManifestRendererProps> = ({
     dataStore,
     registry = defaultComponentRegistry,
     networkInterceptor,
+    onNavigate,
 }) => {
     const snapshot = useSyncExternalStore(
         (onChange) =>
@@ -191,6 +192,11 @@ export const SarakManifestRenderer: React.FC<SarakManifestRendererProps> = ({
         () => (dataStore ? dataStore.getSnapshot() : EMPTY_STATE),
         () => (dataStore ? dataStore.getSnapshot() : EMPTY_STATE),
     );
+
+    // Capacidades de feedback do Dispatcher (Spec 25). Degradam a no-op fora dos
+    // respectivos Providers (Spec 13) — a árvore não quebra sem eles.
+    const toast = useToast();
+    const overlay = useOverlay();
 
     const validation = validateManifestRoot(manifest);
     if (!validation.valid) {
@@ -207,6 +213,9 @@ export const SarakManifestRenderer: React.FC<SarakManifestRendererProps> = ({
         store: dataStore,
         interceptor: networkInterceptor,
         global: snapshot ?? EMPTY_STATE,
+        navigate: onNavigate,
+        toast,
+        overlay,
     };
 
     return (

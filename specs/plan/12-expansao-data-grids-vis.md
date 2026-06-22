@@ -2,7 +2,7 @@
 tipo: "spec"
 titulo: "Expansão de Data Grids e Visualização"
 dominio: "Sarak-Lib-UI-Core (Visual)"
-status: "🔴 A Implementar"
+status: "🟡 Implementado (base — Kanban/Charts/TreeView pendentes)"
 prioridade: "Média"
 tags: ["spec", "datagrid", "charts", "kanban"]
 relacionados: []

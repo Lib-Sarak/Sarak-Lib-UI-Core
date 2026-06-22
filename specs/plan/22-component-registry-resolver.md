@@ -2,7 +2,7 @@
 tipo: "spec"
 titulo: "Component Registry e Resolver (type → Componente)"
 dominio: "Sarak-Lib-UI-Core (Lógica e Dados / Fundação)"
-status: "🔴 A Implementar"
+status: "🟢 Implementado"
 prioridade: "Crítica"
 tags: ["spec", "logic", "registry", "resolver"]
 relacionados: ["20-manifest-schema-e-gramatica-no", "27-error-boundaries-e-fallbacks", "30-contrato-importador-renderer"]

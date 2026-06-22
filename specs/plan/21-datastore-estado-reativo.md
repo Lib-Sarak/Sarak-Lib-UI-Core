@@ -2,7 +2,7 @@
 tipo: "spec"
 titulo: "DataStore e Estado Reativo (Container de Estado)"
 dominio: "Sarak-Lib-UI-Core (Lógica e Dados / Fundação)"
-status: "🔴 A Implementar"
+status: "🟢 Implementado"
 prioridade: "Crítica"
 tags: ["spec", "logic", "state", "reactive", "datastore"]
 relacionados: ["20-manifest-schema-e-gramatica-no", "23-motor-de-repeticao-renderfor", "24-motor-de-data-binding-pipes", "25-dispatcher-central-de-eventos", "28-persistencia-estado-local"]

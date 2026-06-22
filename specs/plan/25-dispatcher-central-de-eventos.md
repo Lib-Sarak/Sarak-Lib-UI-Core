@@ -2,7 +2,7 @@
 tipo: "spec"
 titulo: "Dispatcher Central de Eventos e Ações"
 dominio: "Sarak-Lib-UI-Core (Lógica e Dados)"
-status: "🔴 A Implementar"
+status: "🟢 Implementado"
 prioridade: "Crítica"
 tags: ["spec", "logic", "events", "actions"]
 relacionados: []

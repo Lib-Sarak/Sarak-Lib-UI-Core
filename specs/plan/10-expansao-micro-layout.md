@@ -2,7 +2,7 @@
 tipo: "spec"
 titulo: "Expansão de Micro-Layout"
 dominio: "Sarak-Lib-UI-Core (Visual)"
-status: "🔴 A Implementar"
+status: "🟢 Implementado"
 prioridade: "Alta"
 tags: ["spec", "layout", "flex", "grid"]
 relacionados: []

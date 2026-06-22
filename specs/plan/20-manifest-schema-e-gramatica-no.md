@@ -2,7 +2,7 @@
 tipo: "spec"
 titulo: "Manifest Schema e Gramática do Nó (Contrato JSON)"
 dominio: "Sarak-Lib-UI-Core (Lógica e Dados / Fundação)"
-status: "🔴 A Implementar"
+status: "🟢 Implementado"
 prioridade: "Crítica"
 tags: ["spec", "logic", "manifest", "schema", "contrato"]
 relacionados: ["22-component-registry-resolver", "21-datastore-estado-reativo", "34-conferencia-funcional-do-manifesto", "30-contrato-importador-renderer"]

@@ -2,7 +2,7 @@
 tipo: "spec"
 titulo: "Expansão de Formulários"
 dominio: "Sarak-Lib-UI-Core (Visual)"
-status: "🔴 A Implementar"
+status: "🟡 Implementado (base — DatePicker/TimePicker/MultiSelect/Uploader/RichText/RangeSlider pendentes)"
 prioridade: "Alta"
 tags: ["spec", "forms", "inputs"]
 relacionados: ["12-expansao-data-grids-vis"]

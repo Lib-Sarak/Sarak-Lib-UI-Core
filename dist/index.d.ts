@@ -1,5 +1,5 @@
 import * as React$1 from 'react';
-import React__default, { ReactNode } from 'react';
+import React__default, { ReactNode, InputHTMLAttributes, TextareaHTMLAttributes, SelectHTMLAttributes } from 'react';
 import * as react_jsx_runtime from 'react/jsx-runtime';
 
 type DesignTokenId = 'accentColor' | 'aiGlowColor' | 'aiPanelBg' | 'animEnabled' | 'animFast' | 'animInstant' | 'animNormal' | 'animSlow' | 'atmosphereNoiseOpacity' | 'badgeRadius' | 'bgBaseColor' | 'bgGradientAngle' | 'bgGradientMode' | 'bgNoiseAnimation' | 'bgNoiseDensity' | 'bodyFont' | 'bodyLineHeight' | 'bodySize' | 'bodyWeight' | 'borderBeamEnabled' | 'borderRadius' | 'borderRadiusLg' | 'borderRadiusMd' | 'borderRadiusSm' | 'borderStyle' | 'borderType' | 'borderWidth' | 'btnActiveScale' | 'btnBackdropBlur' | 'btnBorderRadius' | 'btnGhostHoverBg' | 'btnHoverScale' | 'btnNeonGlowColor' | 'btnNeonPulseSpeed' | 'btnPrimaryBg' | 'btnPrimaryText' | 'btnRadiusBL' | 'btnRadiusBR' | 'btnRadiusTL' | 'btnRadiusTR' | 'btnSecondaryBg' | 'btnStyleType' | 'buttonIconPosition' | 'buttonWidthStrategy' | 'cardActionBtnBorderRadius' | 'cardActionBtnHoverBg' | 'cardActionBtnPadding' | 'cardActionBtnPrimaryBg' | 'cardActionBtnText' | 'cardActionClickScale' | 'cardBackdropBlur' | 'cardBackgroundColor' | 'cardBorderBottom' | 'cardBorderColor' | 'cardBorderLeft' | 'cardBorderOpacity' | 'cardBorderRadius' | 'cardBorderRight' | 'cardBorderTop' | 'cardBorderWidth' | 'cardContentAlignment' | 'cardFooterBg' | 'cardFooterBorder' | 'cardGeometricCut' | 'cardGlowColor' | 'cardGlowIntensity' | 'cardHeaderBg' | 'cardHeaderBorder' | 'cardHeaderPadding' | 'cardHoverGlowIncrease' | 'cardHoverStyle' | 'cardHoverTranslate' | 'cardImagePosition' | 'cardInnerGlowColor' | 'cardInnerGlowWidth' | 'cardLayoutDirection' | 'cardPaddingMd' | 'cardRadiusBL' | 'cardRadiusBR' | 'cardRadiusTL' | 'cardRadiusTR' | 'cardSearchBgFocus' | 'cardSearchBorderBeamActive' | 'cardSearchPlaceholderColor' | 'cardSearchTextFocusColor' | 'cardShadow' | 'cardShadowSpread' | 'cardSpotlightOpacity' | 'cardSurfaceOpacity' | 'cardTextAlign' | 'cardTextureOpacity' | 'cardTextureType' | 'cardTitleColor' | 'cardTitleFontSize' | 'cardTitleFontWeight' | 'cardTitleIconGlow' | 'cardTitleLetterSpacing' | 'cardVariant' | 'chartColorPalette' | 'chartGridOpacity' | 'chartShowGrid' | 'chartSmoothing' | 'chartThickness' | 'chartTooltipBg' | 'chartType' | 'chatAnimationSpeed' | 'chatBubbleRadius' | 'chatBubbleStyle' | 'chatUserBg' | 'checkboxActiveColor' | 'colorBgBody' | 'colorBgLayer1' | 'colorBgLayer2' | 'colorBgModal' | 'colorDepth' | 'colorPalette' | 'colorVariation' | 'contentAlignment' | 'contrastCurve' | 'easeMain' | 'easeOut' | 'flowGridStyle' | 'flowNodeRadius' | 'focusRingWidth' | 'formFieldDensity' | 'formLabelPosition' | 'formLayoutDirection' | 'glassBlur' | 'glassOpacity' | 'glassRoughness' | 'glassSaturation' | 'glassSpecularity' | 'globalBackgroundBlendMode' | 'globalBackgroundBlur' | 'globalBackgroundImageUrl' | 'globalBackgroundOpacity' | 'globalContrast' | 'globalFlowAlign' | 'globalFlowDirection' | 'globalSaturation' | 'globalSectionGap' | 'h1LetterSpacing' | 'h1LineHeight' | 'h1Size' | 'h1Weight' | 'h2LineHeight' | 'h2Size' | 'h2Weight' | 'headerAlignment' | 'headingFont' | 'headingTransform' | 'iconFamily' | 'iconStrokeWidth' | 'iconWeight' | 'identityAlignment' | 'identityFontFamily' | 'identityFontWeight' | 'identityHoverEffect' | 'identityPadding' | 'identityRedirectUrl' | 'identityTracking' | 'imageCardHoverZoom' | 'imageCardOverlayOpacity' | 'industrialRegistry' | 'inputBackdropBlur' | 'inputBg' | 'inputBorderColor' | 'inputBorderRadius' | 'inputBorderType' | 'inputErrorColor' | 'inputFocusBorderColor' | 'inputIconColor' | 'inputIconPosition' | 'inputPadding' | 'inputShadow' | 'inputSuccessColor' | 'inputTextColor' | 'isAutoHideEnabled' | 'isNavHidden' | 'isSplitViewEnabled' | 'layerBackdropBlur' | 'layerBackdropOpacity' | 'layeredShadows' | 'layerElevationFactor' | 'layout' | 'layoutDensity' | 'layoutGap' | 'layoutGapLg' | 'layoutGapMd' | 'layoutGapSm' | 'layoutGridTemplate' | 'layoutPadding' | 'matrixBlur' | 'matrixBorderColor' | 'matrixGap' | 'matrixItemBg' | 'matrixRadius' | 'matrixSearchBg' | 'maxContentWidth' | 'modalActionAlignment' | 'modalBorderRadius' | 'modalHeaderStyle' | 'modalOverlayBlur' | 'modalOverlayColor' | 'mode' | 'monoFont' | 'motionDurationFast' | 'motionDurationInstant' | 'motionDurationNormal' | 'motionDurationSlow' | 'motionEaseIn' | 'motionEaseMain' | 'motionEaseOut' | 'motionStaggerDelay' | 'navActiveMarkerColor' | 'navActiveMarkerGlow' | 'navbarLayout' | 'navigationStyle' | 'navItemActiveColor' | 'noiseIntensity' | 'pageTransitionType' | 'primaryColor' | 'reducedMotion' | 'scrollbarThumbColor' | 'scrollbarWidth' | 'scrollPadding' | 'scrollRadius' | 'scrollThumbColor' | 'scrollThumbHoverOpacity' | 'scrollThumbOpacity' | 'scrollTrackOpacity' | 'scrollWidth' | 'searchPositionSidebar' | 'searchPositionTopbar' | 'secondaryColor' | 'securityPulseSpeed' | 'securityShieldGlow' | 'shadowAmbientAlpha' | 'shadowColorMode' | 'shadowIntensity' | 'shadowOrientation' | 'shadowProjectionAlpha' | 'shadowProjectionBlur' | 'sidebarActiveColor' | 'sidebarBlur' | 'sidebarColor' | 'sidebarHoverColor' | 'sidebarMaxWidth' | 'sidebarMinWidth' | 'sidebarNoiseOpacity' | 'sidebarPosition' | 'sidebarShadow' | 'sidebarWidth' | 'statusErrorColor' | 'statusInfoColor' | 'statusSuccessColor' | 'statusWarningColor' | 'surfaceColor' | 'surfaceIntensity' | 'surfaceMaterial' | 'switchBackdropBlur' | 'switchLabelPosition' | 'switchPulseColor' | 'switchStyleType' | 'switchThumbBg' | 'switchTrackActiveBg' | 'systemTone' | 'tabGap' | 'tableActionPosition' | 'tableBorderColor' | 'tableBorderRadius' | 'tableCellPadding' | 'tableDensity' | 'tableHeaderBg' | 'tableRowHoverBg' | 'tableZebraStriping' | 'tabSectionMargin' | 'tertiaryColor' | 'textColorMaster' | 'textColorMuted' | 'textColorSecondary' | 'textGlowIntensity' | 'textSmoothing' | 'texture' | 'textureColor' | 'textureOpacity' | 'titleColor' | 'tooltipBg' | 'tooltipRadius' | 'topbarActiveColor' | 'topbarColor' | 'topbarHeight' | 'topbarHoverColor' | 'topbarNoiseOpacity' | 'topbarTitleColor' | 'vignetteOpacity' | 'vignetteSoftness' | 'zIndexBase' | 'zIndexModal' | 'zIndexSidebar' | 'zIndexToast' | 'zIndexTooltip';
@@ -609,8 +609,16 @@ interface SarakModalProps {
     isOpen: boolean;
     onClose: () => void;
     title?: React__default.ReactNode;
-    children: React__default.ReactNode;
+    children?: React__default.ReactNode;
     footer?: React__default.ReactNode;
+    /**
+     * Sub-wizard multi-step (Spec 13, Regra 2): cada passo é renderizado isolado dentro
+     * do overlay, com navegação "Voltar/Avançar" contida no rodapé. Tem precedência
+     * sobre `children`. No último passo, "Avançar" é substituído por `onComplete`.
+     */
+    steps?: React__default.ReactNode[];
+    /** Chamado ao avançar além do último passo (conclusão do wizard). */
+    onComplete?: () => void;
     /** Se true, o clique no overlay (fundo) não fecha o modal */
     disableOverlayClick?: boolean;
     /** Se true, o botão de fechar não é renderizado */
@@ -633,6 +641,34 @@ interface SarakDrawerProps {
  * Renderiza um overlay e conteúdo deslizante baseado na direção.
  */
 declare const SarakDrawer: React__default.FC<SarakDrawerProps>;
+
+/**
+ * SarakOverlayProvider + useOverlay (Spec 13 ↔ Spec 25)
+ *
+ * Host imperativo de overlays que o Dispatcher abre via `open_modal`/`open_drawer`.
+ * Mantém um único overlay ativo por vez e o materializa no `SarakModal`/`SarakDrawer`.
+ * O controller (`open`/`close`) casa estruturalmente com o `OverlayController` do
+ * Dispatcher — sem import cruzado core↔components (evita ciclo).
+ *
+ * Conteúdo nesta onda: `title` + `message` (texto). Conteúdo rico como nó de manifesto
+ * é refinamento posterior (Spec 30/33).
+ */
+
+interface SarakOverlayRequest {
+    kind: 'modal' | 'drawer';
+    title?: string;
+    message?: string;
+}
+/** Casa estruturalmente com o `OverlayController` do Dispatcher (Spec 25), sem import cruzado. */
+interface SarakOverlayController {
+    open(request: SarakOverlayRequest): void;
+    close(): void;
+}
+declare const SarakOverlayProvider: React__default.FC<{
+    children: React__default.ReactNode;
+}>;
+/** Acessa o controller de overlays; no-op fora do Provider (degrada sem quebrar). */
+declare const useOverlay: () => SarakOverlayController;
 
 interface ModalLayoutContext {
     headerClass: string;
@@ -663,18 +699,26 @@ interface SarakBadgeProps extends React__default.HTMLAttributes<HTMLSpanElement>
 declare const SarakBadge: React__default.FC<SarakBadgeProps>;
 
 /**
- * SarakSkeleton — placeholder MÍNIMO de carregamento (puxado sob demanda)
+ * SarakSkeleton — placeholder de carregamento (Spec 13, Regra 3 + Spec 31, Regra 2)
  *
- * ⚠️ MÍNIMO: estado `loading` da Fonte de Dados (Spec 31, Regra 2) enquanto a Spec 13
- * (Feedback/Skeletons completa) não chega. Apenas um bloco pulsante neutro, tokenizado
- * (Zero Hardcode: cores/raio via `var(--sx-*)`). Sem dependência de tema ou ícones.
+ * Assume FORMAS declaradas (`shape`): `text` (barras finas), `circle` (avatar) e `rect`
+ * (bloco). Mantém o uso original como estado `loading` da Fonte de Dados (linhas-fantasma)
+ * por padrão. Zero Hardcode: cores/raio via `var(--sx-*)`; pulso via `animate-pulse`.
  */
 
+/** Forma do esqueleto. */
+type SkeletonShape = 'text' | 'circle' | 'rect';
 interface SarakSkeletonProps {
-    /** Número de linhas-fantasma a exibir (default: 3). */
+    /** Forma do placeholder (default: `text`). */
+    shape?: SkeletonShape;
+    /** Número de linhas-fantasma quando `shape="text"` (default: 3). */
     rows?: number;
-    /** Altura de cada linha (default: `1rem`). */
+    /** Altura de cada linha/bloco (default: `1rem`). */
     rowHeight?: string;
+    /** Diâmetro quando `shape="circle"` (default: `2.5rem`). */
+    size?: string;
+    /** Largura quando `shape="rect"`/`circle` (default: `100%` / `size`). */
+    width?: string;
 }
 declare const SarakSkeleton: React__default.FC<SarakSkeletonProps>;
 
@@ -691,6 +735,51 @@ interface SarakDataEmptyProps {
     message?: string;
 }
 declare const SarakDataEmpty: React__default.FC<SarakDataEmptyProps>;
+
+/**
+ * SarakToast + SarakToastProvider (Spec 13 — Regra 1)
+ *
+ * Sistema de notificações em pilha, estável (sem conflito de z-index) e tokenizado.
+ * As cores mapeiam o Status Schema (`--sarak-status-*-color`), sem hardcode. O
+ * Provider expõe um controller imperativo via `useToast()` — é por aqui que o
+ * Dispatcher (Spec 25) dispara a ação `trigger_toast`.
+ *
+ * Cada toast desmonta sozinho após `duration` ms (Plano de Testes: mount/unmount por
+ * timeout). A pilha empilha com espaçamento e anima a entrada via transição CSS.
+ *
+ * Zero Any: o controller é tipado; a fronteira não usa `any`.
+ */
+
+/** Variantes semânticas, mapeadas 1:1 ao Status Schema. */
+type ToastVariant = 'success' | 'error' | 'warning' | 'info';
+/** Opções de um disparo de toast (interface estável consumida pelo Dispatcher). */
+interface ToastOptions {
+    /** Texto exibido. */
+    message: string;
+    /** Variante semântica (default: `info`). */
+    variant?: ToastVariant;
+    /** Duração até o auto-dismiss em ms (default: 3000). */
+    duration?: number;
+}
+/** Controller público do sistema de toasts. */
+interface ToastController {
+    /** Empilha um toast; devolve seu id (para dismiss manual). */
+    notify(options: ToastOptions): string;
+    /** Remove um toast pelo id. */
+    dismiss(id: string): void;
+}
+/**
+ * Provider do sistema de toasts. Renderiza a pilha num portal no `body` (z-index alto,
+ * estável) e gerencia o ciclo de auto-dismiss. Envolva a app (ou o Renderer) com ele.
+ */
+declare const SarakToastProvider: React__default.FC<{
+    children: React__default.ReactNode;
+}>;
+/**
+ * Acessa o controller de toasts. Fora de um `SarakToastProvider`, devolve um
+ * controller no-op (loga um aviso) para que o Dispatcher degrade sem quebrar a árvore.
+ */
+declare const useToast: () => ToastController;
 
 interface SarakTabItem {
     id: string;
@@ -711,16 +800,56 @@ interface SarakTabsProps$1 {
 }
 declare const SarakTabs: React__default.FC<SarakTabsProps$1>;
 
+/**
+ * SarakTooltip (Spec 13 — Regra 4)
+ *
+ * Balão flutuante que NÃO é cortado pelo `overflow:hidden` de containers ancestrais:
+ * o conteúdo é renderizado num portal no `body` e posicionado em `position: fixed` a
+ * partir do retângulo do gatilho. Inclui edge detection — se a posição preferida sair
+ * da viewport, é espelhada (flip) e/ou deslocada para dentro.
+ *
+ * Zero Hardcode nas cores (tokens `--theme-*`).
+ */
+
+type TooltipPosition = 'top' | 'bottom' | 'left' | 'right';
 interface SarakTooltipProps {
     children: React__default.ReactNode;
     content: React__default.ReactNode;
-    position?: 'top' | 'bottom' | 'left' | 'right';
+    position?: TooltipPosition;
     delay?: number;
     className?: string;
     /** Se true, desativa o tooltip */
     disabled?: boolean;
 }
 declare const SarakTooltip: React__default.FC<SarakTooltipProps>;
+
+/**
+ * SarakContextMenu (Spec 13 — Regra 5)
+ *
+ * Menu que abre exatamente na coordenada X,Y do clique (tipicamente o botão direito) e
+ * desaparece instantaneamente ao clicar em qualquer outro lugar (ou ESC). Renderiza num
+ * portal no `body` para escapar de `overflow:hidden` de containers ancestrais.
+ *
+ * Edge detection: se a coordenada jogaria o menu para fora da viewport, ele é deslocado
+ * para dentro. Zero Hardcode nas cores (tokens `--sx-*`/`--theme-*`).
+ */
+
+interface ContextMenuPosition {
+    x: number;
+    y: number;
+}
+interface SarakContextMenuProps {
+    /** Controla a visibilidade. */
+    isOpen: boolean;
+    /** Coordenada (viewport) onde abrir — normalmente `{ x: e.clientX, y: e.clientY }`. */
+    position: ContextMenuPosition;
+    /** Fecha o menu (clique fora / ESC / escolha de item). */
+    onClose: () => void;
+    /** Itens do menu (ex.: botões). */
+    children: React__default.ReactNode;
+    className?: string;
+}
+declare const SarakContextMenu: React__default.FC<SarakContextMenuProps>;
 
 /**
  * SarakDataGrid — BASE de virtualização (Spec 12, recorte da Onda 1)
@@ -824,8 +953,15 @@ interface ManifestAction {
     type: string;
     /** Carga declarativa da ação (interpolável). */
     payload?: ManifestProps;
-    /** Atraso de disparo em ms (debounce declarativo). */
+    /** Atraso de disparo em ms (debounce declarativo — aguarda a parada). */
     debounce?: number;
+    /** Taxa máxima de disparo em ms (throttle declarativo — limita a frequência). */
+    throttle?: number;
+    /**
+     * Marca um `api_call` como submit de formulário (Spec 29/32): monta o payload a
+     * partir dos `model` do form-escopo ativo e é BLOQUEADO se a Validação acusar erro.
+     */
+    submit?: boolean;
 }
 /** Lista de ações associadas a um evento/nó (Spec 25). */
 type ActionList = ManifestAction[];
@@ -834,13 +970,20 @@ interface PersistDirective {
     /** Chave sob a qual o estado é salvo/restaurado no storage. */
     key: string;
 }
+/** Nomes de regra de validação suportados (Spec 29, Regra 1). */
+type ValidationRuleName = 'required' | 'minLength' | 'maxLength' | 'pattern' | 'type';
+/** Tipos semânticos validáveis pela regra `type` (Spec 29, Regra 1). */
+type ValidationTypeName = 'email' | 'url' | 'numero';
 /** Regra única de validação de campo (Spec 29). */
 interface ValidationRule {
-    /** Identificador da regra: `required`, `pattern`, `min`, `max`, etc. */
-    rule: string;
-    /** Argumento da regra (ex.: o regex de `pattern`). */
-    value?: ManifestValue;
-    /** Mensagem exibida quando a regra falha. */
+    /** Identificador da regra: `required`, `minLength`, `maxLength`, `pattern`, `type`. */
+    rule: ValidationRuleName;
+    /**
+     * Argumento da regra: comprimento (`minLength`/`maxLength`), regex string
+     * (`pattern`) ou nome do tipo (`type`). `required` dispensa argumento.
+     */
+    value?: number | string;
+    /** Mensagem custom exibida quando a regra falha (Regra 4). */
     message?: string;
 }
 /** Schema de validação de um campo/formulário (Spec 29). */
@@ -880,10 +1023,25 @@ interface DataSourceDirective {
     /** Overrides dos nós de estado (loading/empty/error). */
     states?: DataSourceStates;
 }
-/** Diretiva de modelo de formulário / two-way binding (Spec 32). */
+/**
+ * Diretiva de modelo de formulário / two-way binding (Spec 32, Regra 1).
+ * O valor do campo é genérico (lido/escrito via `FormState`), nunca `any` (Regra 5).
+ */
 interface FormModelDirective {
-    /** Caminho no estado vinculado ao campo. */
+    /** Caminho no estado vinculado ao campo (lido do DataStore e escrito de volta). */
     path: string;
+}
+/** Evento que dispara o reset de um escopo de formulário (Spec 32, Regra 4). */
+type FormResetTrigger = 'submitSuccess';
+/**
+ * Diretiva de escopo de formulário (Spec 32, Regra 2). Cria um escopo isolado de
+ * estado (valores + dirty + touched + erros) montado sobre o DataStore.
+ */
+interface FormScopeDirective {
+    /** Identificador do escopo de formulário. */
+    id: string;
+    /** Quando restaurar os valores iniciais (ex.: sucesso do submit). */
+    resetOn?: FormResetTrigger;
 }
 /** Diretiva responsiva (Spec 16). Override de props por breakpoint. */
 interface ResponsiveDirective {
@@ -931,7 +1089,7 @@ interface ManifestNode {
     validation?: ValidationSchema;
     source?: DataSourceDirective;
     model?: FormModelDirective;
-    form?: FormModelDirective;
+    form?: FormScopeDirective;
     responsive?: ResponsiveDirective;
     shell?: ShellDirective;
     routes?: RouteMap;
@@ -1105,6 +1263,35 @@ interface SarakDataStore<TState extends StateRecord = StateRecord> {
  */
 declare const createSarakDataStore: <TState extends StateRecord = StateRecord>(initialState: TState) => SarakDataStore<TState>;
 
+interface SarakInputProps extends InputHTMLAttributes<HTMLInputElement> {
+    label?: string;
+    icon?: React__default.ReactNode;
+    leftIcon?: React__default.ReactNode;
+    rightIcon?: React__default.ReactNode;
+    error?: string;
+    fullWidth?: boolean;
+}
+
+interface SarakTextareaProps extends TextareaHTMLAttributes<HTMLTextAreaElement> {
+    error?: string;
+    fullWidth?: boolean;
+}
+
+interface SarakSelectProps extends SelectHTMLAttributes<HTMLSelectElement> {
+    error?: string;
+    fullWidth?: boolean;
+}
+
+interface SarakSwitchProps extends Omit<InputHTMLAttributes<HTMLInputElement>, 'type'> {
+    label?: React__default.ReactNode;
+    description?: React__default.ReactNode;
+}
+
+interface SarakSliderProps extends Omit<InputHTMLAttributes<HTMLInputElement>, 'type'> {
+    label?: string;
+    valueLabel?: string | number;
+}
+
 interface SarakGridProps extends React__default.HTMLAttributes<HTMLDivElement> {
     children: React__default.ReactNode;
     templateColumns?: string;
@@ -1182,6 +1369,17 @@ declare const NATIVE_COMPONENTS: {
     readonly SarakAccordion: React$1.FC<SarakAccordionProps>;
     readonly SarakFormGroup: React$1.FC<SarakFormGroupProps>;
     readonly SarakDataGrid: React$1.LazyExoticComponent<React$1.FC<SarakDataGridProps>>;
+    readonly SarakSkeleton: React$1.FC<SarakSkeletonProps>;
+    readonly SarakDataEmpty: React$1.FC<SarakDataEmptyProps>;
+    readonly SarakModal: React$1.FC<SarakModalProps>;
+    readonly SarakDrawer: React$1.FC<SarakDrawerProps>;
+    readonly SarakTooltip: React$1.FC<SarakTooltipProps>;
+    readonly SarakContextMenu: React$1.FC<SarakContextMenuProps>;
+    readonly SarakInput: React$1.FC<SarakInputProps>;
+    readonly SarakSelect: React$1.FC<SarakSelectProps>;
+    readonly SarakTextarea: React$1.FC<SarakTextareaProps>;
+    readonly SarakSwitch: React$1.FC<SarakSwitchProps>;
+    readonly SarakSlider: React$1.FC<SarakSliderProps>;
 };
 /** União dos `type` nativos oficiais — fonte do `ComponentType` (Spec 22, Regra 1). */
 type NativeComponentType = keyof typeof NATIVE_COMPONENTS;
@@ -1397,6 +1595,232 @@ interface DataSourceController {
 declare const useDataSource: (directive: DataSourceDirective, store: SarakDataStore<StateRecord> | undefined, interceptor: NetworkInterceptor | undefined, scope: StateRecord, globalState: unknown) => DataSourceController;
 
 /**
+ * Tokenizer do Motor de Avaliação Condicional (Spec 26 — Regras 1, 3, 4)
+ *
+ * Quebra a expressão em tokens de um conjunto FECHADO de operadores. Os `{{ }}` são
+ * resolvidos aqui (valor tipado) e os literais reconhecidos; identificadores que não
+ * sejam `true`/`false`/`null` são PROIBIDOS — fecha a porta a globais (`window`/`document`)
+ * e a chamadas de função, sem nunca tocar em `eval`.
+ */
+
+/** Erro restrito do avaliador — sintaxe inválida, token inesperado ou global proibido. */
+declare class ConditionSyntaxError extends Error {
+    constructor(message: string);
+}
+
+/**
+ * Motor de Avaliação Condicional (Spec 26 — Regras 1–4)
+ *
+ * Avalia strings lógicas declaradas no manifesto (`renderIf`/`disabledIf`) SEM jamais
+ * tocar em `eval`/`Function`. Um parser recursivo-descendente próprio consome os tokens
+ * (ver `tokenize.ts`) sobre um conjunto FECHADO de operadores; os operandos só nascem de
+ * literais ou de `{{ }}` resolvidos pela Spec 24.
+ *
+ * Segurança (Regra 1/4): qualquer construção fora da gramática vira erro de parse → o
+ * avaliador falha de forma passiva (`console.warn`) e assume `false` (segurança por
+ * default). Zero Any: a fronteira dinâmica é `unknown`.
+ */
+
+/**
+ * Avalia uma `ConditionExpression` de forma segura. Retorna sempre `boolean` (o valor
+ * final é coagido por veracidade). Em QUALQUER erro de sintaxe/token (incluindo
+ * tentativas de alcançar globais), loga e retorna `false` (fail-safe — Regra 4).
+ */
+declare const evaluateCondition: (expression: string, scope: StateRecord, global: unknown) => boolean;
+
+/**
+ * Validação Declarativa de Campos (Spec 29)
+ *
+ * Lógica PURA e determinística (sem React, sem `any`): recebe o valor de um campo e
+ * seu `ValidationSchema` e devolve os erros. As engrenagens visuais (LeafNode) e o
+ * bloqueio de submit (Dispatcher) consomem este resultado — a regra de negócio vive
+ * aqui, isolada e testável.
+ *
+ * Regra 1 (tipos): `required`, `minLength`, `maxLength`, `pattern` (regex), `type`
+ * (`email`/`url`/`numero`). Regra 4: cada regra aceita `message` custom; senão usa o
+ * default em pt-BR. A compilação de regex é blindada (try/catch) — regex inválida no
+ * JSON nunca derruba o motor (mesma postura anti-injeção do `evaluateCondition`).
+ */
+
+/** Erro de validação de um campo, pronto para exibição (Regra 3/4). */
+interface ValidationError {
+    /** Regra que falhou. */
+    rule: ValidationRule['rule'];
+    /** Mensagem (custom do JSON ou default). */
+    message: string;
+}
+/**
+ * Valida um valor contra um schema, retornando TODOS os erros (na ordem das regras).
+ * Determinístico: mesmo valor + schema => mesmo resultado.
+ */
+declare const validateValue: (value: unknown, schema: ValidationSchema | undefined) => ValidationError[];
+/** Conveniência: primeira mensagem de erro de um campo (a exibida abaixo do input). */
+declare const firstErrorMessage: (value: unknown, schema: ValidationSchema | undefined) => string | undefined;
+
+/**
+ * Escopo de Formulário (Spec 32, Regras 2 e 4)
+ *
+ * Controlador PURO (sem React) de um `form: { id, resetOn? }`: isola valores, dirty,
+ * touched e erros de um formulário montado sobre o DataStore. Os VALORES vivem no
+ * próprio DataStore (escritos pela diretiva `model` via two-way) — este escopo guarda
+ * apenas o META-estado (quais campos pertencem ao form, quais estão sujos/tocados,
+ * os valores iniciais para reset) e deriva validade/payload sob demanda.
+ *
+ * Store injetável (`FormStore`) para teste isolado sem React/DataStore real.
+ * Zero Any: valores de campo são `unknown` na fronteira, nunca `any` (Regra 5).
+ */
+
+/** Acesso mínimo ao estado que o escopo precisa (subconjunto do SarakDataStore). */
+interface FormStore {
+    get(path: string): unknown;
+    set(path: string, value: unknown): void;
+}
+/** Chave de estado onde o meta-estado do form é espelhado (lido por `{{form.*}}`). */
+declare const FORM_META_KEY = "form";
+/** Contrato do escopo de formulário ativo. */
+interface FormScope {
+    /** Identificador do form (da diretiva `form.id`). */
+    readonly id: string;
+    /** Registra um campo (pelo seu `model` path); devolve a função de baixa. */
+    registerField(path: string, schema?: ValidationSchema): () => void;
+    /** Marca um campo como sujo (valor mudou em relação ao inicial). */
+    markDirty(path: string): void;
+    /** Marca um campo como tocado (recebeu e perdeu foco). */
+    markTouched(path: string): void;
+    /** True se o campo já foi tocado (controla quando exibir erro). */
+    isTouched(path: string): boolean;
+    /** Valida TODOS os campos registrados contra os valores atuais do store. */
+    validate(): Record<string, ValidationError[]>;
+    /** True se algum campo registrado tem erro agora. */
+    hasErrors(): boolean;
+    /** Monta o payload de submit a partir dos `model` registrados (estrutura aninhada). */
+    buildPayload(): StateRecord;
+    /** Restaura os valores iniciais e limpa dirty/touched (Regra 4 — `resetOn`). */
+    reset(): void;
+    /** Sinaliza tentativa de submit: campos passam a exibir erro mesmo sem `touched`. */
+    markSubmitAttempted(): void;
+    /** True após uma tentativa de submit (limpo no reset). */
+    readonly submitAttempted: boolean;
+    /** True se algum campo está sujo. */
+    readonly isDirty: boolean;
+    /** Assina mudanças de meta-estado (touched/dirty/submitAttempted) para re-render. */
+    subscribe(listener: () => void): () => void;
+}
+/**
+ * Cria um escopo de formulário. `store` é opcional: sem ele, o escopo degrada para
+ * no-op de leitura/escrita (a árvore não quebra fora de um DataStore).
+ */
+declare const createFormScope: (id: string, store?: FormStore) => FormScope;
+
+/**
+ * Dispatcher Central de Eventos e Ações (Spec 25)
+ *
+ * Medula da interatividade: traduz a diretiva declarativa `actions: []` num pipeline
+ * de execução real. As ações rodam EM SEQUÊNCIA (Regra 2) — uma assíncrona (`api_call`)
+ * só libera a próxima em sucesso; em falha, a cadeia para e o `onError` é disparado.
+ *
+ * A biblioteca NÃO conhece rede/rota/feedback diretamente: tudo entra por um
+ * `DispatchContext` injetável (interceptor, navigate, toast, overlay) — a mesma
+ * fronteira de confiança da Fonte de Dados (Spec 31, Regra 5).
+ *
+ * Zero Any: payloads são `ManifestProps`; as fronteiras dinâmicas são `unknown`.
+ */
+
+/**
+ * Sinaliza que um `api_call` com `submit: true` foi BARRADO pela Validação (Spec 29,
+ * Regra 2). `runActions` o reconhece e interrompe a cadeia SILENCIOSAMENTE — sem
+ * disparar `onError` (diferente de uma falha de rede real).
+ */
+declare class SubmitBlockedError extends Error {
+    constructor(message?: string);
+}
+/** Pedido de overlay imperativo (open_modal/open_drawer). */
+interface OverlayRequest {
+    kind: 'modal' | 'drawer';
+    title?: string;
+    message?: string;
+}
+/** Controller de overlays injetado (Spec 13 fornece a implementação). */
+interface OverlayController {
+    open(request: OverlayRequest): void;
+    close(): void;
+}
+/** Callback de navegação injetado pelo importador (router do consumidor). */
+type NavigateFn = (to: string, payload?: ManifestProps) => void;
+/**
+ * Capacidades disponíveis às ações. Tudo opcional: um handler que precise de uma
+ * capacidade ausente falha de forma controlada (loga; em `api_call`, propaga o erro
+ * para parar a cadeia). `scope`/`global` alimentam a interpolação (Spec 24).
+ */
+interface DispatchContext {
+    store?: SarakDataStore<StateRecord>;
+    interceptor?: NetworkInterceptor;
+    toast?: ToastController;
+    navigate?: NavigateFn;
+    overlay?: OverlayController;
+    /** Escopo de formulário ativo (Spec 32) — usado pelo `api_call` com `submit`. */
+    form?: FormScope;
+    scope: StateRecord;
+    global: unknown;
+}
+/** Handler de uma ação. Pode ser assíncrono (a cadeia aguarda). */
+type ActionHandler = (action: ManifestAction, ctx: DispatchContext) => void | Promise<void>;
+/** Registry tipado `type → handler` (Regra 1). Extensível sem `any`. */
+declare const ACTION_HANDLERS: Readonly<Record<string, ActionHandler>>;
+/**
+ * Executa uma lista de ações em sequência (Regra 2). Se uma ação falhar, as seguintes
+ * são BLOQUEADAS e a lista `onError` (se houver) é disparada — best-effort, sem
+ * recursão de `onError` sobre `onError`.
+ */
+declare const runActions: (actions: ActionList, ctx: DispatchContext, onError?: ActionList) => Promise<void>;
+
+/**
+ * Modificadores de Taxa do Dispatcher (Spec 25 — Regra 3)
+ *
+ * `debounce` (aguarda a parada) e `throttle` (limita a frequência) declarativos.
+ * Ambos preservam os argumentos e devolvem uma função estável que mantém seu próprio
+ * estado de temporização entre chamadas. Baseados em `setTimeout` (sem `Date.now`),
+ * o que os torna determinísticos sob fake timers.
+ *
+ * Zero Any: o genérico captura a assinatura exata da função embrulhada.
+ */
+/** Assinatura genérica de um handler de evento (retorno ignorado). */
+type AnyHandler<TArgs extends unknown[]> = (...args: TArgs) => void;
+/**
+ * Debounce: só executa `fn` após `waitMs` sem novas chamadas. Digitar 10 caracteres
+ * rápido com `waitMs=1000` resulta em UMA execução (Critério de Aceite 3 da Spec 25).
+ */
+declare const debounce: <TArgs extends unknown[]>(fn: AnyHandler<TArgs>, waitMs: number) => AnyHandler<TArgs>;
+/**
+ * Throttle (leading): executa `fn` imediatamente e bloqueia novas chamadas por `waitMs`.
+ * Um double-click com `waitMs=500` dispara só a primeira (Plano de Testes da Spec 25).
+ */
+declare const throttle: <TArgs extends unknown[]>(fn: AnyHandler<TArgs>, waitMs: number) => AnyHandler<TArgs>;
+
+/** Contexto do escopo de formulário ativo (null fora de um `form`). */
+declare const FormScopeContext: React$1.Context<FormScope | null>;
+/** Lê o escopo de formulário ativo, se houver. */
+declare const useFormScope: () => FormScope | null;
+
+/**
+ * Two-Way Binding `model` (Spec 32, Regra 1) — helpers puros
+ *
+ * O caminho de VOLTA do Data Binding (Spec 24 só lê): lê o valor do campo do DataStore
+ * (respeitando o escopo local do renderFor) e extrai o novo valor de um evento de
+ * mudança para reescrever no estado. Sem React, sem `any`.
+ */
+
+/** Lê o valor atual de um `model` path, escopo local antes do global (Spec 21, Regra 5). */
+declare const resolveModelValue: (path: string, scope: StateRecord, global: unknown) => unknown;
+/**
+ * Extrai o valor a gravar no estado a partir do que o `onChange` recebeu:
+ *  - evento de checkbox/switch → `target.checked` (boolean);
+ *  - evento de input/select/textarea/range → `target.value`;
+ *  - valor já primitivo (componentes que chamam `onChange(value)`) → ele mesmo.
+ */
+declare const coerceEventValue: (event: unknown) => unknown;
+
+/**
  * SarakManifestRenderer — Renderer com Motor de Dados Vivo (Onda 1)
  *
  * Evolução do harness da Onda 0: o nó deixa de ser uma função pura que descarta
@@ -1422,6 +1846,8 @@ interface SarakManifestRendererProps {
     registry?: ComponentRegistry;
     /** Interceptor de rede injetado (Spec 31, Regra 5) — toda E/S passa por ele. */
     networkInterceptor?: NetworkInterceptor;
+    /** Callback de navegação do importador (Spec 25, ação `navigate`). */
+    onNavigate?: NavigateFn;
 }
 /**
  * Materializa um manifesto. Assina o DataStore (se fornecido) para reagir a mudanças
@@ -1565,4 +1991,4 @@ interface SarakRouterState {
  */
 declare function useSarakRouter(basePath?: string): SarakRouterState;
 
-export { type ActionList, type AriaDirective, type BadgeSize, type BadgeVariant, type BindingExpression, type ComponentRegistry, type ComponentResolution, type ComponentType, type ConditionExpression, CustomizationPanel, DESIGN_MANIFEST, DIRECTIVE_OWNERS, type DataNodeState, type DataSourceController, type DataSourceDirective, type DataSourceMethod, type DataSourceStates, DesignScope, DeviceProvider, type DeviceType, type DirectiveName, type DiscoveredModule, DynamicRenderer, ExpandableCard, type ExpandedNode, type FormModelDirective, IconMap, type IconName, LanguageSelector, type ManifestAction, type ManifestComponent, type ManifestComponentProps, type ManifestNode, type ManifestProps, type ManifestRoot, type ManifestValidationError, type ManifestValidationResult, type ManifestValue, type MatrixNodeConfig, type ModalLayoutContext, type ModuleManifest, ModuleSelector, NATIVE_COMPONENTS, type NativeComponentType, type NetworkInterceptor, type NetworkRequest, type NodeParts, type PersistDirective, type Pipe, RESERVED_DIRECTIVES, type RenderForDirective, type RenderForResult, type ResponsiveDirective, type RouteMap, STRUCTURAL_KEYS, SUPPORTED_SCHEMA_VERSION, SarakAnalyticalPage, type SarakAnalyticalPageProps, SarakAuthScreen, type SarakAuthScreenProps, SarakBadge, type SarakBadgeProps, SarakCardGrid, SarakCatalogGrid, SarakChart, SarakChartEngine, SarakChat, SarakDataEmpty, type SarakDataEmptyProps, SarakDataGrid, SarakDataGridImpl, type SarakDataGridProps, type SarakDataStore, SarakDrawer, type SarakDrawerProps, SarakEmptyState, SarakExpandableMatrix, type SarakExpandableMatrixProps, SarakFallback, type SarakFallbackProps, SarakForm, SarakHidden, SarakIcon, type SarakIconProps, SarakManagementGrid, SarakManifestRenderer, SarakManifestRenderer as SarakManifestRendererDefault, type SarakManifestRendererProps, type SarakMatrixManifest, SarakModal, type SarakModalProps, type SarakModule, type SarakRouterState, SarakSecurityOrchestrator, SarakShell, SarakSkeleton, type SarakSkeletonProps, SarakStats, type SarakTabItem, SarakTable, SarakTabs, type SarakTabsProps$1 as SarakTabsProps, SarakTooltip, type SarakTooltipProps, SarakUIProvider, type Selector, type ShellDirective, type SlotMap, SocialButton, type StateRecord, type ThemeDirective, ThemeToggle, UserMenu, VIRTUALIZE_THRESHOLD, type ValidationRule, type ValidationSchema, type VisualContract, type VisualContractType, createComponentRegistry, createSarakDataStore, defaultComponentRegistry, expandRenderFor, getByPath, getLocalComponent, getPipe, getRegisteredModules, getSarakModule, hasPipe, interpolate, interpolateProps, isReservedDirective, isStructuralKey, registerComponent, registerLocalComponent, registerPipe, registerSarakModule, resolveBinding, resolveComponent, resolveExpression, resolveScopedPath, separateNodeParts, setByPath, subscribeToRegistry, useDataSource, useDesignDraft, useModalLayoutStyles, useModuleDiscovery, useSarakDevice, useSarakRouter, useSarakUI, validateManifestNode, validateManifestRoot };
+export { ACTION_HANDLERS, type ActionHandler, type ActionList, type AriaDirective, type BadgeSize, type BadgeVariant, type BindingExpression, type ComponentRegistry, type ComponentResolution, type ComponentType, type ConditionExpression, ConditionSyntaxError, type ContextMenuPosition, CustomizationPanel, DESIGN_MANIFEST, DIRECTIVE_OWNERS, type DataNodeState, type DataSourceController, type DataSourceDirective, type DataSourceMethod, type DataSourceStates, DesignScope, DeviceProvider, type DeviceType, type DirectiveName, type DiscoveredModule, type DispatchContext, DynamicRenderer, ExpandableCard, type ExpandedNode, FORM_META_KEY, type FormModelDirective, type FormResetTrigger, type FormScope, FormScopeContext, type FormScopeDirective, type FormStore, IconMap, type IconName, LanguageSelector, type ManifestAction, type ManifestComponent, type ManifestComponentProps, type ManifestNode, type ManifestProps, type ManifestRoot, type ManifestValidationError, type ManifestValidationResult, type ManifestValue, type MatrixNodeConfig, type ModalLayoutContext, type ModuleManifest, ModuleSelector, NATIVE_COMPONENTS, type NativeComponentType, type NavigateFn, type NetworkInterceptor, type NetworkRequest, type NodeParts, type OverlayController, type OverlayRequest, type PersistDirective, type Pipe, RESERVED_DIRECTIVES, type RenderForDirective, type RenderForResult, type ResponsiveDirective, type RouteMap, STRUCTURAL_KEYS, SUPPORTED_SCHEMA_VERSION, SarakAnalyticalPage, type SarakAnalyticalPageProps, SarakAuthScreen, type SarakAuthScreenProps, SarakBadge, type SarakBadgeProps, SarakCardGrid, SarakCatalogGrid, SarakChart, SarakChartEngine, SarakChat, SarakContextMenu, type SarakContextMenuProps, SarakDataEmpty, type SarakDataEmptyProps, SarakDataGrid, SarakDataGridImpl, type SarakDataGridProps, type SarakDataStore, SarakDrawer, type SarakDrawerProps, SarakEmptyState, SarakExpandableMatrix, type SarakExpandableMatrixProps, SarakFallback, type SarakFallbackProps, SarakForm, SarakHidden, SarakIcon, type SarakIconProps, SarakManagementGrid, SarakManifestRenderer, SarakManifestRenderer as SarakManifestRendererDefault, type SarakManifestRendererProps, type SarakMatrixManifest, SarakModal, type SarakModalProps, type SarakModule, type SarakOverlayController, SarakOverlayProvider, type SarakOverlayRequest, type SarakRouterState, SarakSecurityOrchestrator, SarakShell, SarakSkeleton, type SarakSkeletonProps, SarakStats, type SarakTabItem, SarakTable, SarakTabs, type SarakTabsProps$1 as SarakTabsProps, SarakToastProvider, SarakTooltip, type SarakTooltipProps, SarakUIProvider, type Selector, type ShellDirective, type SkeletonShape, type SlotMap, SocialButton, type StateRecord, SubmitBlockedError, type ThemeDirective, ThemeToggle, type ToastController, type ToastOptions, type ToastVariant, type TooltipPosition, UserMenu, VIRTUALIZE_THRESHOLD, type ValidationError, type ValidationRule, type ValidationRuleName, type ValidationSchema, type ValidationTypeName, type VisualContract, type VisualContractType, coerceEventValue, createComponentRegistry, createFormScope, createSarakDataStore, debounce, defaultComponentRegistry, evaluateCondition, expandRenderFor, firstErrorMessage, getByPath, getLocalComponent, getPipe, getRegisteredModules, getSarakModule, hasPipe, interpolate, interpolateProps, isReservedDirective, isStructuralKey, registerComponent, registerLocalComponent, registerPipe, registerSarakModule, resolveBinding, resolveComponent, resolveExpression, resolveModelValue, resolveScopedPath, runActions, separateNodeParts, setByPath, subscribeToRegistry, throttle, useDataSource, useDesignDraft, useFormScope, useModalLayoutStyles, useModuleDiscovery, useOverlay, useSarakDevice, useSarakRouter, useSarakUI, useToast, validateManifestNode, validateManifestRoot, validateValue };

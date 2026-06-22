@@ -2,7 +2,7 @@
 tipo: "spec"
 titulo: "Motor de Repetição (Repeater / For-Loop Engine)"
 dominio: "Sarak-Lib-UI-Core (Lógica e Dados)"
-status: "🔴 A Implementar"
+status: "🟢 Implementado"
 prioridade: "Crítica"
 tags: ["spec", "logic", "repeater", "lists"]
 relacionados: ["21-datastore-estado-reativo", "31-fonte-de-dados-declarativa", "12-expansao-data-grids-vis"]

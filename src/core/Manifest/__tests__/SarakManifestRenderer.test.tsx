@@ -35,6 +35,9 @@ describe('Spec 30 (mínima) — SarakManifestRenderer (E2E da fundação)', () =
     });
 
     it('deve NÃO vazar diretivas como atributos no DOM (Regra 4)', () => {
+        // `renderIf` avalia true (Spec 26) com o estado fornecido → o nó monta, e aí
+        // verificamos que as diretivas comportamentais não viram atributos do DOM.
+        const store = createSarakDataStore({ role: 'ADMIN' });
         const manifest: ManifestRoot = {
             schemaVersion: 1,
             type: 'SarakFlex',
@@ -43,13 +46,27 @@ describe('Spec 30 (mínima) — SarakManifestRenderer (E2E da fundação)', () =
             actions: [{ type: 'navigate', payload: { to: '/x' } }],
         };
 
-        renderWithProvider(<SarakManifestRenderer manifest={manifest} />);
+        renderWithProvider(<SarakManifestRenderer manifest={manifest} dataStore={store} />);
 
         const host = screen.getByTestId('host');
         expect(host.getAttribute('renderIf')).toBeNull();
         expect(host.getAttribute('actions')).toBeNull();
         expect(host.outerHTML).not.toContain('renderIf');
         expect(host.outerHTML).not.toContain('navigate');
+    });
+
+    it('deve suprimir o nó do DOM quando renderIf é falso (Spec 26, Regra 2)', () => {
+        const store = createSarakDataStore({ role: 'USER' });
+        const manifest: ManifestRoot = {
+            schemaVersion: 1,
+            type: 'SarakFlex',
+            props: { 'data-testid': 'host' },
+            renderIf: "{{role}} === 'ADMIN'",
+        };
+
+        renderWithProvider(<SarakManifestRenderer manifest={manifest} dataStore={store} />);
+
+        expect(screen.queryByTestId('host')).not.toBeInTheDocument();
     });
 
     it('deve isolar type desconhecido no fallback sem derrubar a árvore', () => {

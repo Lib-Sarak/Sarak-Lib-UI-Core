@@ -1,29 +1,75 @@
 /**
- * SarakSkeleton — placeholder MÍNIMO de carregamento (puxado sob demanda)
+ * SarakSkeleton — placeholder de carregamento (Spec 13, Regra 3 + Spec 31, Regra 2)
  *
- * ⚠️ MÍNIMO: estado `loading` da Fonte de Dados (Spec 31, Regra 2) enquanto a Spec 13
- * (Feedback/Skeletons completa) não chega. Apenas um bloco pulsante neutro, tokenizado
- * (Zero Hardcode: cores/raio via `var(--sx-*)`). Sem dependência de tema ou ícones.
+ * Assume FORMAS declaradas (`shape`): `text` (barras finas), `circle` (avatar) e `rect`
+ * (bloco). Mantém o uso original como estado `loading` da Fonte de Dados (linhas-fantasma)
+ * por padrão. Zero Hardcode: cores/raio via `var(--sx-*)`; pulso via `animate-pulse`.
  */
 
 import React from 'react';
 
+/** Forma do esqueleto. */
+export type SkeletonShape = 'text' | 'circle' | 'rect';
+
 export interface SarakSkeletonProps {
-    /** Número de linhas-fantasma a exibir (default: 3). */
+    /** Forma do placeholder (default: `text`). */
+    shape?: SkeletonShape;
+    /** Número de linhas-fantasma quando `shape="text"` (default: 3). */
     rows?: number;
-    /** Altura de cada linha (default: `1rem`). */
+    /** Altura de cada linha/bloco (default: `1rem`). */
     rowHeight?: string;
+    /** Diâmetro quando `shape="circle"` (default: `2.5rem`). */
+    size?: string;
+    /** Largura quando `shape="rect"`/`circle` (default: `100%` / `size`). */
+    width?: string;
 }
 
-export const SarakSkeleton: React.FC<SarakSkeletonProps> = ({ rows = 3, rowHeight = '1rem' }) => {
+const PULSE_BG =
+    'var(--sx-color-surface-muted, var(--sx-color-border-base, rgba(127,127,127,0.18)))';
+
+export const SarakSkeleton: React.FC<SarakSkeletonProps> = ({
+    shape = 'text',
+    rows = 3,
+    rowHeight = '1rem',
+    size = '2.5rem',
+    width,
+}) => {
+    const common = {
+        role: 'status' as const,
+        'aria-busy': true,
+        'aria-live': 'polite' as const,
+        'data-sarak-skeleton': 'true',
+    };
+
+    if (shape === 'circle') {
+        return (
+            <div
+                {...common}
+                data-shape="circle"
+                className="animate-pulse"
+                style={{ width: size, height: size, borderRadius: '50%', background: PULSE_BG }}
+            />
+        );
+    }
+
+    if (shape === 'rect') {
+        return (
+            <div
+                {...common}
+                data-shape="rect"
+                className="animate-pulse"
+                style={{
+                    width: width ?? '100%',
+                    height: rowHeight,
+                    borderRadius: 'var(--sx-radius-md, 8px)',
+                    background: PULSE_BG,
+                }}
+            />
+        );
+    }
+
     return (
-        <div
-            role="status"
-            aria-busy="true"
-            aria-live="polite"
-            data-sarak-skeleton="true"
-            className="flex flex-col gap-2 w-full"
-        >
+        <div {...common} data-shape="text" className="flex flex-col gap-2 w-full">
             {Array.from({ length: Math.max(1, rows) }, (_v, index) => (
                 <div
                     key={index}
@@ -31,7 +77,7 @@ export const SarakSkeleton: React.FC<SarakSkeletonProps> = ({ rows = 3, rowHeigh
                     style={{
                         height: rowHeight,
                         borderRadius: 'var(--sx-radius-sm, 4px)',
-                        background: 'var(--sx-color-surface-muted, var(--sx-color-border-base, rgba(127,127,127,0.18)))',
+                        background: PULSE_BG,
                     }}
                 />
             ))}

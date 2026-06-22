@@ -1,0 +1,101 @@
+/**
+ * SarakContextMenu (Spec 13 — Regra 5)
+ *
+ * Menu que abre exatamente na coordenada X,Y do clique (tipicamente o botão direito) e
+ * desaparece instantaneamente ao clicar em qualquer outro lugar (ou ESC). Renderiza num
+ * portal no `body` para escapar de `overflow:hidden` de containers ancestrais.
+ *
+ * Edge detection: se a coordenada jogaria o menu para fora da viewport, ele é deslocado
+ * para dentro. Zero Hardcode nas cores (tokens `--sx-*`/`--theme-*`).
+ */
+
+import React, { useEffect, useLayoutEffect, useRef, useState } from 'react';
+import { createPortal } from 'react-dom';
+
+export interface ContextMenuPosition {
+    x: number;
+    y: number;
+}
+
+export interface SarakContextMenuProps {
+    /** Controla a visibilidade. */
+    isOpen: boolean;
+    /** Coordenada (viewport) onde abrir — normalmente `{ x: e.clientX, y: e.clientY }`. */
+    position: ContextMenuPosition;
+    /** Fecha o menu (clique fora / ESC / escolha de item). */
+    onClose: () => void;
+    /** Itens do menu (ex.: botões). */
+    children: React.ReactNode;
+    className?: string;
+}
+
+export const SarakContextMenu: React.FC<SarakContextMenuProps> = ({
+    isOpen,
+    position,
+    onClose,
+    children,
+    className = '',
+}) => {
+    const menuRef = useRef<HTMLDivElement | null>(null);
+    const [coords, setCoords] = useState<ContextMenuPosition>(position);
+
+    // Fecha ao clicar fora ou pressionar ESC (Critério: some ao clicar em outro lugar).
+    useEffect(() => {
+        if (!isOpen) return;
+        const handlePointer = (e: MouseEvent) => {
+            if (menuRef.current && !menuRef.current.contains(e.target as Node)) {
+                onClose();
+            }
+        };
+        const handleKey = (e: KeyboardEvent) => {
+            if (e.key === 'Escape') onClose();
+        };
+        // `mousedown` no capture fecha antes de um novo clique abrir outro contexto.
+        document.addEventListener('mousedown', handlePointer, true);
+        document.addEventListener('keydown', handleKey);
+        return () => {
+            document.removeEventListener('mousedown', handlePointer, true);
+            document.removeEventListener('keydown', handleKey);
+        };
+    }, [isOpen, onClose]);
+
+    // Edge detection: corrige a posição para o menu não sair da viewport.
+    useLayoutEffect(() => {
+        if (!isOpen || !menuRef.current || typeof window === 'undefined') {
+            setCoords(position);
+            return;
+        }
+        const rect = menuRef.current.getBoundingClientRect();
+        const margin = 8;
+        const maxX = window.innerWidth - rect.width - margin;
+        const maxY = window.innerHeight - rect.height - margin;
+        setCoords({
+            x: Math.max(margin, Math.min(position.x, maxX)),
+            y: Math.max(margin, Math.min(position.y, maxY)),
+        });
+    }, [isOpen, position]);
+
+    if (!isOpen || typeof document === 'undefined') return null;
+
+    return createPortal(
+        <div
+            ref={menuRef}
+            role="menu"
+            data-sarak-context-menu="true"
+            className={`fixed flex flex-col py-1 shadow-xl ${className}`}
+            style={{
+                top: coords.y,
+                left: coords.x,
+                minWidth: '10rem',
+                borderRadius: 'var(--sx-radius-md, 8px)',
+                background: 'var(--sx-color-surface-base, var(--theme-surface, #1a1a1a))',
+                color: 'var(--sx-color-text-base, var(--theme-text, #f5f5f5))',
+                border: '1px solid var(--sx-color-border-base, var(--theme-border, rgba(127,127,127,0.2)))',
+                zIndex: 'var(--z-index-popover, 1200)' as React.CSSProperties['zIndex'],
+            }}
+        >
+            {children}
+        </div>,
+        document.body,
+    );
+};

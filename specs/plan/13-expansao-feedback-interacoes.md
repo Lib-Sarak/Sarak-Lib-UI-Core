@@ -2,7 +2,7 @@
 tipo: "spec"
 titulo: "Expansão de Feedback e Interações"
 dominio: "Sarak-Lib-UI-Core (Visual)"
-status: "🔴 A Implementar"
+status: "🟢 Implementado"
 prioridade: "Baixa"
 tags: ["spec", "feedback", "modals", "toasts"]
 relacionados: []

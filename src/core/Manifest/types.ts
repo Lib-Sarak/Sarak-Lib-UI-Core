@@ -57,8 +57,15 @@ export interface ManifestAction {
     type: string;
     /** Carga declarativa da ação (interpolável). */
     payload?: ManifestProps;
-    /** Atraso de disparo em ms (debounce declarativo). */
+    /** Atraso de disparo em ms (debounce declarativo — aguarda a parada). */
     debounce?: number;
+    /** Taxa máxima de disparo em ms (throttle declarativo — limita a frequência). */
+    throttle?: number;
+    /**
+     * Marca um `api_call` como submit de formulário (Spec 29/32): monta o payload a
+     * partir dos `model` do form-escopo ativo e é BLOQUEADO se a Validação acusar erro.
+     */
+    submit?: boolean;
 }
 
 /** Lista de ações associadas a um evento/nó (Spec 25). */
@@ -70,13 +77,22 @@ export interface PersistDirective {
     key: string;
 }
 
+/** Nomes de regra de validação suportados (Spec 29, Regra 1). */
+export type ValidationRuleName = 'required' | 'minLength' | 'maxLength' | 'pattern' | 'type';
+
+/** Tipos semânticos validáveis pela regra `type` (Spec 29, Regra 1). */
+export type ValidationTypeName = 'email' | 'url' | 'numero';
+
 /** Regra única de validação de campo (Spec 29). */
 export interface ValidationRule {
-    /** Identificador da regra: `required`, `pattern`, `min`, `max`, etc. */
-    rule: string;
-    /** Argumento da regra (ex.: o regex de `pattern`). */
-    value?: ManifestValue;
-    /** Mensagem exibida quando a regra falha. */
+    /** Identificador da regra: `required`, `minLength`, `maxLength`, `pattern`, `type`. */
+    rule: ValidationRuleName;
+    /**
+     * Argumento da regra: comprimento (`minLength`/`maxLength`), regex string
+     * (`pattern`) ou nome do tipo (`type`). `required` dispensa argumento.
+     */
+    value?: number | string;
+    /** Mensagem custom exibida quando a regra falha (Regra 4). */
     message?: string;
 }
 
@@ -122,10 +138,27 @@ export interface DataSourceDirective {
     states?: DataSourceStates;
 }
 
-/** Diretiva de modelo de formulário / two-way binding (Spec 32). */
+/**
+ * Diretiva de modelo de formulário / two-way binding (Spec 32, Regra 1).
+ * O valor do campo é genérico (lido/escrito via `FormState`), nunca `any` (Regra 5).
+ */
 export interface FormModelDirective {
-    /** Caminho no estado vinculado ao campo. */
+    /** Caminho no estado vinculado ao campo (lido do DataStore e escrito de volta). */
     path: string;
+}
+
+/** Evento que dispara o reset de um escopo de formulário (Spec 32, Regra 4). */
+export type FormResetTrigger = 'submitSuccess';
+
+/**
+ * Diretiva de escopo de formulário (Spec 32, Regra 2). Cria um escopo isolado de
+ * estado (valores + dirty + touched + erros) montado sobre o DataStore.
+ */
+export interface FormScopeDirective {
+    /** Identificador do escopo de formulário. */
+    id: string;
+    /** Quando restaurar os valores iniciais (ex.: sucesso do submit). */
+    resetOn?: FormResetTrigger;
 }
 
 /** Diretiva responsiva (Spec 16). Override de props por breakpoint. */
@@ -186,7 +219,7 @@ export interface ManifestNode {
     validation?: ValidationSchema;
     source?: DataSourceDirective;
     model?: FormModelDirective;
-    form?: FormModelDirective;
+    form?: FormScopeDirective;
     responsive?: ResponsiveDirective;
     shell?: ShellDirective;
     routes?: RouteMap;

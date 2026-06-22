@@ -2,7 +2,7 @@
 tipo: "spec"
 titulo: "Fonte de Dados Declarativa (Async Loading + Ciclo de Vida)"
 dominio: "Sarak-Lib-UI-Core (Lógica e Dados)"
-status: "🔴 A Implementar"
+status: "🟢 Implementado"
 prioridade: "Crítica"
 tags: ["spec", "logic", "datasource", "async", "lifecycle"]
 relacionados: ["20-manifest-schema-e-gramatica-no", "21-datastore-estado-reativo", "23-motor-de-repeticao-renderfor", "27-error-boundaries-e-fallbacks", "30-contrato-importador-renderer"]

@@ -1,8 +1,9 @@
-import React, { useEffect } from 'react';
+import React from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
 import { X } from 'lucide-react';
 import { useSarakUI } from '../../../core/Provider/SarakUIProvider';
 import { useModalLayoutStyles } from './hooks/useModalLayoutStyles';
+import { useModalBehavior } from './hooks/useModalBehavior';
 import { clsx } from 'clsx';
 import { twMerge } from 'tailwind-merge';
 
@@ -10,8 +11,16 @@ export interface SarakModalProps {
     isOpen: boolean;
     onClose: () => void;
     title?: React.ReactNode;
-    children: React.ReactNode;
+    children?: React.ReactNode;
     footer?: React.ReactNode;
+    /**
+     * Sub-wizard multi-step (Spec 13, Regra 2): cada passo é renderizado isolado dentro
+     * do overlay, com navegação "Voltar/Avançar" contida no rodapé. Tem precedência
+     * sobre `children`. No último passo, "Avançar" é substituído por `onComplete`.
+     */
+    steps?: React.ReactNode[];
+    /** Chamado ao avançar além do último passo (conclusão do wizard). */
+    onComplete?: () => void;
     /** Se true, o clique no overlay (fundo) não fecha o modal */
     disableOverlayClick?: boolean;
     /** Se true, o botão de fechar não é renderizado */
@@ -26,26 +35,51 @@ export const SarakModal: React.FC<SarakModalProps> = ({
     title,
     children,
     footer,
+    steps,
+    onComplete,
     disableOverlayClick = false,
     hideCloseButton = false,
     className,
 }) => {
     const { design } = useSarakUI();
     const { headerClass, footerClass, closeButtonClass } = useModalLayoutStyles(design);
+    const { dialogRef, stepIndex, setStepIndex, handleTrap } = useModalBehavior(isOpen, onClose);
 
-    // Bloqueia rolagem do body quando aberto
-    useEffect(() => {
-        if (isOpen) {
-            document.body.style.overflow = 'hidden';
-        } else {
-            document.body.style.overflow = '';
-        }
-        return () => {
-            document.body.style.overflow = '';
-        };
-    }, [isOpen]);
+    const hasSteps = Array.isArray(steps) && steps.length > 0;
+    const lastStep = hasSteps ? steps.length - 1 : 0;
 
     if (!isOpen) return null;
+
+    const advance = () => {
+        if (stepIndex >= lastStep) {
+            onComplete?.();
+            return;
+        }
+        setStepIndex((i) => Math.min(i + 1, lastStep));
+    };
+    const goBack = () => setStepIndex((i) => Math.max(i - 1, 0));
+
+    const body = hasSteps ? steps[stepIndex] : children;
+    const wizardFooter = hasSteps ? (
+        <div className="flex items-center justify-between w-full">
+            <button
+                type="button"
+                onClick={goBack}
+                disabled={stepIndex === 0}
+                className="px-3 py-1.5 text-sm rounded-md disabled:opacity-50"
+            >
+                Voltar
+            </button>
+            <span className="text-xs text-[var(--theme-muted)]">
+                {stepIndex + 1} / {steps.length}
+            </span>
+            <button type="button" onClick={advance} className="px-3 py-1.5 text-sm rounded-md">
+                {stepIndex === lastStep ? 'Concluir' : 'Avançar'}
+            </button>
+        </div>
+    ) : (
+        footer
+    );
 
     return (
         <AnimatePresence>
@@ -61,7 +95,10 @@ export const SarakModal: React.FC<SarakModalProps> = ({
                 />
 
                 {/* Modal Container */}
-                <motion.div 
+                <motion.div
+                    ref={dialogRef}
+                    tabIndex={-1}
+                    onKeyDown={handleTrap}
                     initial={{ opacity: 0, scale: 0.95, y: 20 }}
                     animate={{ opacity: 1, scale: 1, y: 0 }}
                     exit={{ opacity: 0, scale: 0.95, y: 20 }}
@@ -99,13 +136,13 @@ export const SarakModal: React.FC<SarakModalProps> = ({
 
                     {/* Body */}
                     <div className="p-6 flex flex-col overflow-y-auto max-h-[70vh]">
-                        {children}
+                        {body}
                     </div>
 
                     {/* Footer */}
-                    {footer && (
+                    {wizardFooter && (
                         <div className={clsx("px-6 py-4 border-t border-[var(--theme-border)] bg-black/10", footerClass)}>
-                            {footer}
+                            {wizardFooter}
                         </div>
                     )}
                 </motion.div>

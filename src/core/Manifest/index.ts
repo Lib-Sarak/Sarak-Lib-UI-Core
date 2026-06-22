@@ -20,9 +20,13 @@ export type {
     BindingExpression,
     PersistDirective,
     ValidationRule,
+    ValidationRuleName,
+    ValidationTypeName,
     ValidationSchema,
     DataSourceDirective,
     FormModelDirective,
+    FormScopeDirective,
+    FormResetTrigger,
     ResponsiveDirective,
     ShellDirective,
     RouteMap,
@@ -105,6 +109,38 @@ export {
     type NetworkRequest,
     type DataSourceController,
 } from './DataSource';
+
+// Spec 26 — Motor de Avaliação Condicional (renderIf/disabledIf)
+export { evaluateCondition, ConditionSyntaxError } from './Conditional';
+
+// Spec 25 — Dispatcher Central de Eventos
+export {
+    runActions,
+    ACTION_HANDLERS,
+    SubmitBlockedError,
+    debounce,
+    throttle,
+    type DispatchContext,
+    type ActionHandler,
+    type OverlayController,
+    type OverlayRequest,
+    type NavigateFn,
+} from './Dispatcher';
+
+// Specs 29 + 32 — Formulários (validação, two-way `model`, ciclo de vida do `form`)
+export {
+    validateValue,
+    firstErrorMessage,
+    createFormScope,
+    FORM_META_KEY,
+    FormScopeContext,
+    useFormScope,
+    resolveModelValue,
+    coerceEventValue,
+    type ValidationError,
+    type FormScope,
+    type FormStore,
+} from './Form';
 
 // Spec 30 — Renderer (Motor de Dados Vivo a partir da Onda 1)
 export {

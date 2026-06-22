@@ -2,7 +2,7 @@
 tipo: "spec"
 titulo: "Motor de Data Binding e Pipes (Formatadores)"
 dominio: "Sarak-Lib-UI-Core (Lógica e Dados)"
-status: "🔴 A Implementar"
+status: "🟢 Implementado"
 prioridade: "Crítica"
 tags: ["spec", "logic", "databinding", "pipes"]
 relacionados: []
