@@ -1,21 +1,11 @@
 /**
- * Manifest Schema e Gramática do Nó (Spec 20 — Onda 0)
- *
- * `ManifestNode` é a Lei do JSON do bloco funcional — análoga ao `SarakThemePayload`
- * para o Design Engine. Todos os motores (renderFor, pipes, dispatcher, condicional,
- * validação) consomem esta gramática única.
- *
- * Contrato Zero Any (Regra 3): cada diretiva tem tipo próprio; não há `any` nem
- * `Record<string, unknown>` aberto nas diretivas. Nesta onda (0) as engines donas
- * (23–42) ainda não existem, então as diretivas são tipadas como PLACEHOLDERS
- * versionados — formato estável que as specs donas refinam sem quebrar o contrato.
+ * Manifest Schema e Gramática do Nó (Spec 20). `ManifestNode` é a Lei do JSON do bloco
+ * funcional — análoga ao `SarakThemePayload` do Design Engine; todos os motores a consomem.
+ * Contrato Zero Any (Regra 3): cada diretiva tem tipo próprio (sem `any` nem `Record`
+ * aberto); as specs donas refinam os tipos sem quebrar o contrato.
  */
 
 import type { DirectiveName } from './directives';
-
-// ---------------------------------------------------------------------------
-// Valores primitivos do manifesto (JSON-serializável, sem `any`)
-// ---------------------------------------------------------------------------
 
 /** Valor serializável de um manifesto JSON. Substitui qualquer `any` em props. */
 export type ManifestValue =
@@ -29,9 +19,7 @@ export type ManifestValue =
 /** Bag de props visuais repassadas ao átomo (apenas dados, nunca comportamento). */
 export type ManifestProps = Record<string, ManifestValue>;
 
-// ---------------------------------------------------------------------------
-// Diretivas reservadas — tipos próprios (placeholders versionados da Onda 0)
-// ---------------------------------------------------------------------------
+// --- Diretivas reservadas — tipos próprios (refinados pelas specs donas) ---
 
 /** Expressão de template do tipo `"{{caminho.de.estado}}"`. */
 export type BindingExpression = string;
@@ -73,8 +61,10 @@ export type ActionList = ManifestAction[];
 
 /** Diretiva de persistência local (Spec 28). */
 export interface PersistDirective {
-    /** Chave sob a qual o estado é salvo/restaurado no storage. */
+    /** Chave sob a qual o estado é salvo/restaurado no storage (namespaced p/ `@sarak:`). */
     key: string;
+    /** Se `true`, o valor é ofuscado (base64) antes de persistir no storage visível (Regra 4). */
+    sensitive?: boolean;
 }
 
 /** Nomes de regra de validação suportados (Spec 29, Regra 1). */
@@ -234,6 +224,11 @@ export interface ManifestNode {
 export interface ManifestRoot extends ManifestNode {
     /** Versão do schema do manifesto (ex.: `1`). */
     schemaVersion: number;
+    /**
+     * Tela de recuperação global (Spec 27, Regra 2): o nó renderizado pelos Error
+     * Boundaries quando uma sub-árvore quebra. Ausente → cai no Fallback estático.
+     */
+    fallbackErrorUI?: ManifestNode;
 }
 
 /** Versão de schema suportada por esta build da fundação. */

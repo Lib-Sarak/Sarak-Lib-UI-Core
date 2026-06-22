@@ -142,7 +142,7 @@ Cada **onda** é um conjunto construível em conjunto; a ordem **entre** ondas �
   - [x] 29 validação  · [x] 32 binding-bidirecional
   - [x] 11 formulários *(BASE: Input/Select/Textarea/Switch/Slider registrados + fiados com `model`+`validation` via LeafNode/FormScope. DatePicker/MultiSelect/Uploader/RichText/RangeSlider ficam para a Spec 11 completa — sob demanda, pós-Spec 40)*
 - **Onda 4 — Resiliência e estado**
-  - [ ] 27 error-boundaries  · [ ] 28 persistência
+  - [x] 27 error-boundaries  · [x] 28 persistência
 - **Onda 5 — Aplicação real**
   - [ ] 33 shell/rotas  · [ ] 16 responsividade  · [ ] 30 contrato-renderer *(composição final)*
   - [ ] 14 navegação

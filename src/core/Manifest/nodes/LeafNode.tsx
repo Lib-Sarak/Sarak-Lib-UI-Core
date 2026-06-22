@@ -17,8 +17,9 @@ import { runActions, debounce, throttle, type DispatchContext } from '../Dispatc
 import { useFormScope } from '../Form/context';
 import { resolveModelValue, coerceEventValue } from '../Form/model';
 import { validateValue } from '../Form/validate';
+import { usePersistedSlice } from '../Storage';
 import { SarakFallback } from '../Registry/Fallback';
-import { ManifestNodeRenderer } from '../SarakManifestRenderer';
+import { ManifestNodeRenderer } from './renderNode';
 import type { NodeRendererProps } from './context';
 
 /** Maior `debounce`/`throttle` declarado entre as ações do nó (Spec 25, Regra 3). */
@@ -56,6 +57,16 @@ export const LeafNode: React.FC<NodeRendererProps> = ({ node, path, scope, ctx }
         if (!formScope || !modelPath) return undefined;
         return formScope.registerField(modelPath, validationSchema);
     }, [formScope, modelPath, validationSchema]);
+
+    // Persistência local (Spec 28): liga a fatia ao localStorage. O caminho é o `model`
+    // quando houver; senão o próprio `key` vira o caminho no estado (decisão híbrida).
+    const persist = node.persistState;
+    usePersistedSlice(
+        ctx.store,
+        persist ? (modelPath ?? persist.key) : undefined,
+        persist?.key,
+        persist?.sensitive,
+    );
 
     // Closure sempre atual (lê scope/global frescos) por trás de uma identidade estável.
     const latest = useRef<() => void>(() => undefined);

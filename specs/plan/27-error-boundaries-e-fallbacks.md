@@ -2,7 +2,7 @@
 tipo: "spec"
 titulo: "Error Boundaries e Fallbacks as Data"
 dominio: "Sarak-Lib-UI-Core (Lógica e Dados)"
-status: "🔴 A Implementar"
+status: "🟢 Implementado"
 prioridade: "Média"
 tags: ["spec", "logic", "error-handling", "fallback"]
 relacionados: []

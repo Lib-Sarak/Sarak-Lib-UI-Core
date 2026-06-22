@@ -95,13 +95,15 @@ describe('Spec 32 — Escopo de formulário (createFormScope)', () => {
         expect(form.hasErrors()).toBe(true);
     });
 
-    it('caveat conhecido: model em índice de array colapsa o array — atualizar por fatia', () => {
-        // Documenta a limitação do setByPath (escrita em índice aninhado vira objeto).
+    it('model em índice de array PRESERVA o array (correção do setByPath)', () => {
+        // Antes era um caveat (a escrita em índice colapsava o array em objeto).
+        // O setByPath agora clona arrays como arrays — a escrita por índice é segura.
         const store = createSarakDataStore<{ tags: string[] }>({ tags: ['a', 'b'] });
-        store.set('tags.1', 'B'); // ANTI-PADRÃO: colapsa o array
-        expect(Array.isArray(store.get('tags'))).toBe(false);
+        store.set('tags.1', 'B');
+        expect(Array.isArray(store.get('tags'))).toBe(true);
+        expect(store.get('tags')).toEqual(['a', 'B']);
 
-        // Workaround correto: substituir a fatia inteira preserva o array.
+        // Substituir a fatia inteira continua válido (atualização imutável idiomática).
         const store2 = createSarakDataStore<{ tags: string[] }>({ tags: ['a', 'b'] });
         const tags = [...(store2.get('tags') as string[])];
         tags[1] = 'B';

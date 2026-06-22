@@ -24,6 +24,8 @@ export interface NodeRenderContext {
     navigate?: NavigateFn;
     toast?: ToastController;
     overlay?: OverlayController;
+    /** Tela de recuperação global renderizada pelos Error Boundaries (Spec 27, Regra 2). */
+    fallbackErrorUI?: ManifestNode;
 }
 
 export interface NodeRendererProps {

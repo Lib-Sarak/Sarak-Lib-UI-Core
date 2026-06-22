@@ -17,7 +17,7 @@
  * Chaves estruturais do nó que NÃO são diretivas de comportamento nem `props`.
  * São tratadas explicitamente pela gramática (Regra 1 e Regra 6 da Spec 20).
  */
-export const STRUCTURAL_KEYS = ['type', 'id', 'props', 'children', 'schemaVersion'] as const;
+export const STRUCTURAL_KEYS = ['type', 'id', 'props', 'children', 'schemaVersion', 'fallbackErrorUI'] as const;
 export type StructuralKey = (typeof STRUCTURAL_KEYS)[number];
 
 /**

@@ -50,6 +50,23 @@ describe('Spec 21 — setByPath (Regra 3: imutabilidade)', () => {
         expect((next.a as { x: number }).x).toBe(10);
         expect(state.a.x).toBe(1); // original imutável
     });
+
+    it('deve PRESERVAR array ao escrever em índice (list.0.name), não colapsar em objeto', () => {
+        const state = { list: [{ name: 'X' }, { name: 'Y' }] };
+        const next = setByPath(state, 'list.0.name', 'Z') as { list: { name: string }[] };
+
+        expect(Array.isArray(next.list)).toBe(true);
+        expect(next.list).toHaveLength(2);
+        expect(next.list[0].name).toBe('Z');
+        expect(next.list[1]).toBe(state.list[1]); // item não tocado mantém identidade
+        expect(state.list[0].name).toBe('X'); // original imutável
+    });
+
+    it('deve criar array (não objeto) quando o caminho ausente tem próximo segmento numérico', () => {
+        const next = setByPath({}, 'items.0', 'a') as { items: string[] };
+        expect(Array.isArray(next.items)).toBe(true);
+        expect(next.items[0]).toBe('a');
+    });
 });
 
 describe('Spec 21 — SarakDataStore', () => {
@@ -88,6 +105,18 @@ describe('Spec 21 — SarakDataStore', () => {
         await tick();
         expect(store.get('user.name')).toBe('Bia');
         expect(store.get('user.missing.deep')).toBeUndefined();
+    });
+
+    it('deve preservar array no store ao mutar índice (mutate_state em rows.0.done)', async () => {
+        const store = createSarakDataStore<{ rows: { done: boolean }[] }>({
+            rows: [{ done: false }, { done: false }],
+        });
+        store.mutate_state('rows.0.done', true);
+        await tick();
+
+        expect(Array.isArray(store.getSnapshot().rows)).toBe(true);
+        expect(store.get('rows.0.done')).toBe(true);
+        expect(store.get('rows.1.done')).toBe(false);
     });
 
     it('deve parar de notificar após unsubscribe', async () => {

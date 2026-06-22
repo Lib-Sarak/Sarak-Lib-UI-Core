@@ -36,7 +36,7 @@ const dataGridManifest = (): ManifestRoot => ({
     ],
 });
 
-describe('Spec 31 — Fonte de dados → renderFor (ciclo completo)', () => {
+describe('Spec 31 — Fonte de dados → renderFor (ciclo completo / integração)', () => {
     it('deve carregar no onMount, depositar em `into` e desenhar as linhas', async () => {
         const interceptor: NetworkInterceptor = vi.fn(async () => [
             { id: 1, nome: 'Ana' },

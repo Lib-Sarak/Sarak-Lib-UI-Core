@@ -915,16 +915,10 @@ interface SarakChartEngineProps {
 declare const SarakChartEngine: React__default.FC<SarakChartEngineProps>;
 
 /**
- * Manifest Schema e Gramática do Nó (Spec 20 — Onda 0)
- *
- * `ManifestNode` é a Lei do JSON do bloco funcional — análoga ao `SarakThemePayload`
- * para o Design Engine. Todos os motores (renderFor, pipes, dispatcher, condicional,
- * validação) consomem esta gramática única.
- *
- * Contrato Zero Any (Regra 3): cada diretiva tem tipo próprio; não há `any` nem
- * `Record<string, unknown>` aberto nas diretivas. Nesta onda (0) as engines donas
- * (23–42) ainda não existem, então as diretivas são tipadas como PLACEHOLDERS
- * versionados — formato estável que as specs donas refinam sem quebrar o contrato.
+ * Manifest Schema e Gramática do Nó (Spec 20). `ManifestNode` é a Lei do JSON do bloco
+ * funcional — análoga ao `SarakThemePayload` do Design Engine; todos os motores a consomem.
+ * Contrato Zero Any (Regra 3): cada diretiva tem tipo próprio (sem `any` nem `Record`
+ * aberto); as specs donas refinam os tipos sem quebrar o contrato.
  */
 /** Valor serializável de um manifesto JSON. Substitui qualquer `any` em props. */
 type ManifestValue = string | number | boolean | null | ManifestValue[] | {
@@ -967,8 +961,10 @@ interface ManifestAction {
 type ActionList = ManifestAction[];
 /** Diretiva de persistência local (Spec 28). */
 interface PersistDirective {
-    /** Chave sob a qual o estado é salvo/restaurado no storage. */
+    /** Chave sob a qual o estado é salvo/restaurado no storage (namespaced p/ `@sarak:`). */
     key: string;
+    /** Se `true`, o valor é ofuscado (base64) antes de persistir no storage visível (Regra 4). */
+    sensitive?: boolean;
 }
 /** Nomes de regra de validação suportados (Spec 29, Regra 1). */
 type ValidationRuleName = 'required' | 'minLength' | 'maxLength' | 'pattern' | 'type';
@@ -1103,6 +1099,11 @@ interface ManifestNode {
 interface ManifestRoot extends ManifestNode {
     /** Versão do schema do manifesto (ex.: `1`). */
     schemaVersion: number;
+    /**
+     * Tela de recuperação global (Spec 27, Regra 2): o nó renderizado pelos Error
+     * Boundaries quando uma sub-árvore quebra. Ausente → cai no Fallback estático.
+     */
+    fallbackErrorUI?: ManifestNode;
 }
 /** Versão de schema suportada por esta build da fundação. */
 declare const SUPPORTED_SCHEMA_VERSION: 1;
@@ -1125,7 +1126,7 @@ declare const SUPPORTED_SCHEMA_VERSION: 1;
  * Chaves estruturais do nó que NÃO são diretivas de comportamento nem `props`.
  * São tratadas explicitamente pela gramática (Regra 1 e Regra 6 da Spec 20).
  */
-declare const STRUCTURAL_KEYS: readonly ["type", "id", "props", "children", "schemaVersion"];
+declare const STRUCTURAL_KEYS: readonly ["type", "id", "props", "children", "schemaVersion", "fallbackErrorUI"];
 type StructuralKey = (typeof STRUCTURAL_KEYS)[number];
 /**
  * Nome canônico de cada diretiva reservada. União fechada e versionada:
@@ -1821,20 +1822,92 @@ declare const resolveModelValue: (path: string, scope: StateRecord, global: unkn
 declare const coerceEventValue: (event: unknown) => unknown;
 
 /**
- * SarakManifestRenderer — Renderer com Motor de Dados Vivo (Onda 1)
+ * Error Boundary do Manifesto (Spec 27)
  *
- * Evolução do harness da Onda 0: o nó deixa de ser uma função pura que descarta
- * diretivas e passa a ser um COMPONENTE (`ManifestNodeRenderer`) que processa, na
- * descida da árvore, o pipeline de diretivas desta onda:
+ * Isola falhas de renderização de uma sub-árvore (Regra 1): um erro fatal num nó
+ * (ex.: API devolve `undefined` onde se esperava array) NÃO derruba a árvore inteira
+ * — só o nó culpado é substituído pela tela de recuperação. Boundary de classe porque
+ * `getDerivedStateFromError`/`componentDidCatch` não têm equivalente em hooks.
  *
- *   1. `source` (Spec 31) — carrega dados ao montar e decide loading/empty/error;
- *   2. `renderFor` (Spec 23) — expande em N instâncias com escopo local;
- *   3. interpolação de `props` (Spec 24) — resolve `{{ }}` com escopo+estado;
- *   4. resolve `type` (Spec 22) e renderiza, recursando em `children`.
+ * Regra 4 (log silencioso): registra a chave JSON exata (`nodeId`/`path`) que panicou,
+ * acelerando o debug do importador.
+ */
+
+interface SarakErrorBoundaryProps {
+    /** `id`/path do nó protegido — usado no log de diagnóstico (Regra 4). */
+    nodeId: string;
+    /** Tela de recuperação a renderizar quando a sub-árvore quebra (Regra 2). */
+    renderFallback: () => React__default.ReactNode;
+    children: React__default.ReactNode;
+}
+interface SarakErrorBoundaryState {
+    hasError: boolean;
+}
+declare class SarakErrorBoundary extends React__default.Component<SarakErrorBoundaryProps, SarakErrorBoundaryState> {
+    state: SarakErrorBoundaryState;
+    static getDerivedStateFromError(): SarakErrorBoundaryState;
+    componentDidCatch(error: Error, info: React__default.ErrorInfo): void;
+    render(): React__default.ReactNode;
+}
+
+/**
+ * Acesso Guardado ao LocalStorage (Spec 28)
  *
- * Reatividade (Spec 24, Regra 3): a raiz assina o DataStore; qualquer `mutate_state`
- * reexecuta a árvore e re-interpola os textos. A diretiva `source` é a primeira fatia
- * da finalização do contrato do importador (Spec 30), via `networkInterceptor`.
+ * Fronteira de confiança do storage: a biblioteca NUNCA toca o `localStorage`
+ * diretamente — passa por aqui. Determinístico, sem `any`, e à prova de ambientes
+ * hostis (modo anônimo, storage bloqueado, SSR sem `window`): todo acesso é guardado
+ * e degrada para no-op em vez de derrubar o render (Regra de degradação suave).
+ *
+ *  - Namespace (Regra 3): toda chave é prefixada com `@sarak:` para não colidir com
+ *    chaves do sistema importador (ex.: as legadas `sarak_*`).
+ *  - sensitive (Regra 4): o valor é ofuscado em base64 (não é cripto — só evita o
+ *    valor em claro no storage visível).
+ */
+/** Prefixo obrigatório de namespace (Regra 3). */
+declare const STORAGE_NAMESPACE = "@sarak:";
+/** Monta a chave namespaced a partir da chave declarada no JSON. */
+declare const namespacedKey: (key: string) => string;
+/**
+ * Lê e desserializa um valor persistido. Retorna `undefined` se ausente ou ilegível
+ * (nunca lança). `sensitive` deve casar com o usado na escrita.
+ */
+declare const readPersisted: (key: string, sensitive?: boolean) => unknown;
+/**
+ * Serializa e persiste um valor. No-op silencioso (com aviso) se o storage estiver
+ * indisponível — nunca derruba o render.
+ */
+declare const writePersisted: (key: string, value: unknown, sensitive?: boolean) => void;
+/** Remove uma chave persistida (no-op se indisponível). */
+declare const removePersisted: (key: string) => void;
+/**
+ * Assina mudanças EXTERNAS de uma chave (Regra 2 — outra aba do navegador altera o
+ * storage). Dispara `onChange` com o novo valor desserializado. Devolve a função de
+ * baixa. No-op (devolve cleanup vazio) fora do browser.
+ */
+declare const subscribeStorage: (key: string, onChange: (value: unknown) => void, sensitive?: boolean) => (() => void);
+
+/**
+ * Hook de Persistência de Fatia (Spec 28)
+ *
+ * Liga uma fatia do DataStore (em `path`) a uma chave de `localStorage`, fechando o
+ * ciclo declarativo do `persistState`:
+ *   1. hidrata o estado a partir do storage no mount, ANTES do paint (sem flicker);
+ *   2. grava no storage sempre que a fatia muda;
+ *   3. sincroniza entre abas (Regra 2): mudança externa do storage volta ao estado.
+ *
+ * Tudo guardado por `safeStorage` (degrada suave se o storage estiver bloqueado).
+ */
+
+declare const usePersistedSlice: (store: SarakDataStore<StateRecord> | undefined, path: string | undefined, key: string | undefined, sensitive?: boolean) => void;
+
+/**
+ * SarakManifestRenderer — Componente público do Motor de Dados Vivo
+ *
+ * Materializa um manifesto JSON numa árvore React. Assina o DataStore (Spec 21) para
+ * reagir a mudanças de estado e re-interpolar a árvore; injeta as capacidades do
+ * Dispatcher (Spec 25), o interceptor de rede (Spec 31) e a tela de recuperação global
+ * (Spec 27). A maquinaria recursiva de nós vive em `nodes/renderNode` (pipeline de
+ * diretivas + Error Boundary por nó).
  */
 
 interface SarakManifestRendererProps {
@@ -1848,6 +1921,11 @@ interface SarakManifestRendererProps {
     networkInterceptor?: NetworkInterceptor;
     /** Callback de navegação do importador (Spec 25, ação `navigate`). */
     onNavigate?: NavigateFn;
+    /**
+     * Tela de recuperação global (Spec 27, Regra 2). Override do importador; se ausente,
+     * usa a chave `fallbackErrorUI` do próprio manifesto.
+     */
+    fallbackErrorUI?: ManifestNode;
 }
 /**
  * Materializa um manifesto. Assina o DataStore (se fornecido) para reagir a mudanças
@@ -1991,4 +2069,4 @@ interface SarakRouterState {
  */
 declare function useSarakRouter(basePath?: string): SarakRouterState;
 
-export { ACTION_HANDLERS, type ActionHandler, type ActionList, type AriaDirective, type BadgeSize, type BadgeVariant, type BindingExpression, type ComponentRegistry, type ComponentResolution, type ComponentType, type ConditionExpression, ConditionSyntaxError, type ContextMenuPosition, CustomizationPanel, DESIGN_MANIFEST, DIRECTIVE_OWNERS, type DataNodeState, type DataSourceController, type DataSourceDirective, type DataSourceMethod, type DataSourceStates, DesignScope, DeviceProvider, type DeviceType, type DirectiveName, type DiscoveredModule, type DispatchContext, DynamicRenderer, ExpandableCard, type ExpandedNode, FORM_META_KEY, type FormModelDirective, type FormResetTrigger, type FormScope, FormScopeContext, type FormScopeDirective, type FormStore, IconMap, type IconName, LanguageSelector, type ManifestAction, type ManifestComponent, type ManifestComponentProps, type ManifestNode, type ManifestProps, type ManifestRoot, type ManifestValidationError, type ManifestValidationResult, type ManifestValue, type MatrixNodeConfig, type ModalLayoutContext, type ModuleManifest, ModuleSelector, NATIVE_COMPONENTS, type NativeComponentType, type NavigateFn, type NetworkInterceptor, type NetworkRequest, type NodeParts, type OverlayController, type OverlayRequest, type PersistDirective, type Pipe, RESERVED_DIRECTIVES, type RenderForDirective, type RenderForResult, type ResponsiveDirective, type RouteMap, STRUCTURAL_KEYS, SUPPORTED_SCHEMA_VERSION, SarakAnalyticalPage, type SarakAnalyticalPageProps, SarakAuthScreen, type SarakAuthScreenProps, SarakBadge, type SarakBadgeProps, SarakCardGrid, SarakCatalogGrid, SarakChart, SarakChartEngine, SarakChat, SarakContextMenu, type SarakContextMenuProps, SarakDataEmpty, type SarakDataEmptyProps, SarakDataGrid, SarakDataGridImpl, type SarakDataGridProps, type SarakDataStore, SarakDrawer, type SarakDrawerProps, SarakEmptyState, SarakExpandableMatrix, type SarakExpandableMatrixProps, SarakFallback, type SarakFallbackProps, SarakForm, SarakHidden, SarakIcon, type SarakIconProps, SarakManagementGrid, SarakManifestRenderer, SarakManifestRenderer as SarakManifestRendererDefault, type SarakManifestRendererProps, type SarakMatrixManifest, SarakModal, type SarakModalProps, type SarakModule, type SarakOverlayController, SarakOverlayProvider, type SarakOverlayRequest, type SarakRouterState, SarakSecurityOrchestrator, SarakShell, SarakSkeleton, type SarakSkeletonProps, SarakStats, type SarakTabItem, SarakTable, SarakTabs, type SarakTabsProps$1 as SarakTabsProps, SarakToastProvider, SarakTooltip, type SarakTooltipProps, SarakUIProvider, type Selector, type ShellDirective, type SkeletonShape, type SlotMap, SocialButton, type StateRecord, SubmitBlockedError, type ThemeDirective, ThemeToggle, type ToastController, type ToastOptions, type ToastVariant, type TooltipPosition, UserMenu, VIRTUALIZE_THRESHOLD, type ValidationError, type ValidationRule, type ValidationRuleName, type ValidationSchema, type ValidationTypeName, type VisualContract, type VisualContractType, coerceEventValue, createComponentRegistry, createFormScope, createSarakDataStore, debounce, defaultComponentRegistry, evaluateCondition, expandRenderFor, firstErrorMessage, getByPath, getLocalComponent, getPipe, getRegisteredModules, getSarakModule, hasPipe, interpolate, interpolateProps, isReservedDirective, isStructuralKey, registerComponent, registerLocalComponent, registerPipe, registerSarakModule, resolveBinding, resolveComponent, resolveExpression, resolveModelValue, resolveScopedPath, runActions, separateNodeParts, setByPath, subscribeToRegistry, throttle, useDataSource, useDesignDraft, useFormScope, useModalLayoutStyles, useModuleDiscovery, useOverlay, useSarakDevice, useSarakRouter, useSarakUI, useToast, validateManifestNode, validateManifestRoot, validateValue };
+export { ACTION_HANDLERS, type ActionHandler, type ActionList, type AriaDirective, type BadgeSize, type BadgeVariant, type BindingExpression, type ComponentRegistry, type ComponentResolution, type ComponentType, type ConditionExpression, ConditionSyntaxError, type ContextMenuPosition, CustomizationPanel, DESIGN_MANIFEST, DIRECTIVE_OWNERS, type DataNodeState, type DataSourceController, type DataSourceDirective, type DataSourceMethod, type DataSourceStates, DesignScope, DeviceProvider, type DeviceType, type DirectiveName, type DiscoveredModule, type DispatchContext, DynamicRenderer, ExpandableCard, type ExpandedNode, FORM_META_KEY, type FormModelDirective, type FormResetTrigger, type FormScope, FormScopeContext, type FormScopeDirective, type FormStore, IconMap, type IconName, LanguageSelector, type ManifestAction, type ManifestComponent, type ManifestComponentProps, type ManifestNode, type ManifestProps, type ManifestRoot, type ManifestValidationError, type ManifestValidationResult, type ManifestValue, type MatrixNodeConfig, type ModalLayoutContext, type ModuleManifest, ModuleSelector, NATIVE_COMPONENTS, type NativeComponentType, type NavigateFn, type NetworkInterceptor, type NetworkRequest, type NodeParts, type OverlayController, type OverlayRequest, type PersistDirective, type Pipe, RESERVED_DIRECTIVES, type RenderForDirective, type RenderForResult, type ResponsiveDirective, type RouteMap, STORAGE_NAMESPACE, STRUCTURAL_KEYS, SUPPORTED_SCHEMA_VERSION, SarakAnalyticalPage, type SarakAnalyticalPageProps, SarakAuthScreen, type SarakAuthScreenProps, SarakBadge, type SarakBadgeProps, SarakCardGrid, SarakCatalogGrid, SarakChart, SarakChartEngine, SarakChat, SarakContextMenu, type SarakContextMenuProps, SarakDataEmpty, type SarakDataEmptyProps, SarakDataGrid, SarakDataGridImpl, type SarakDataGridProps, type SarakDataStore, SarakDrawer, type SarakDrawerProps, SarakEmptyState, SarakErrorBoundary, type SarakErrorBoundaryProps, SarakExpandableMatrix, type SarakExpandableMatrixProps, SarakFallback, type SarakFallbackProps, SarakForm, SarakHidden, SarakIcon, type SarakIconProps, SarakManagementGrid, SarakManifestRenderer, SarakManifestRenderer as SarakManifestRendererDefault, type SarakManifestRendererProps, type SarakMatrixManifest, SarakModal, type SarakModalProps, type SarakModule, type SarakOverlayController, SarakOverlayProvider, type SarakOverlayRequest, type SarakRouterState, SarakSecurityOrchestrator, SarakShell, SarakSkeleton, type SarakSkeletonProps, SarakStats, type SarakTabItem, SarakTable, SarakTabs, type SarakTabsProps$1 as SarakTabsProps, SarakToastProvider, SarakTooltip, type SarakTooltipProps, SarakUIProvider, type Selector, type ShellDirective, type SkeletonShape, type SlotMap, SocialButton, type StateRecord, SubmitBlockedError, type ThemeDirective, ThemeToggle, type ToastController, type ToastOptions, type ToastVariant, type TooltipPosition, UserMenu, VIRTUALIZE_THRESHOLD, type ValidationError, type ValidationRule, type ValidationRuleName, type ValidationSchema, type ValidationTypeName, type VisualContract, type VisualContractType, coerceEventValue, createComponentRegistry, createFormScope, createSarakDataStore, debounce, defaultComponentRegistry, evaluateCondition, expandRenderFor, firstErrorMessage, getByPath, getLocalComponent, getPipe, getRegisteredModules, getSarakModule, hasPipe, interpolate, interpolateProps, isReservedDirective, isStructuralKey, namespacedKey, readPersisted, registerComponent, registerLocalComponent, registerPipe, registerSarakModule, removePersisted, resolveBinding, resolveComponent, resolveExpression, resolveModelValue, resolveScopedPath, runActions, separateNodeParts, setByPath, subscribeStorage, subscribeToRegistry, throttle, useDataSource, useDesignDraft, useFormScope, useModalLayoutStyles, useModuleDiscovery, useOverlay, usePersistedSlice, useSarakDevice, useSarakRouter, useSarakUI, useToast, validateManifestNode, validateManifestRoot, validateValue, writePersisted };

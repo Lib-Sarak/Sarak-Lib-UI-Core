@@ -1,0 +1,142 @@
+import React from 'react';
+import { render, screen, fireEvent, waitFor, act } from '@testing-library/react';
+import { describe, it, expect, vi, beforeEach, afterEach } from 'vitest';
+import { SarakManifestRenderer } from '../SarakManifestRenderer';
+import { createComponentRegistry } from '../Registry/ComponentRegistry';
+import { createSarakDataStore } from '../DataStore/SarakDataStore';
+import { namespacedKey } from '../Storage/safeStorage';
+import { SarakUIProvider } from '../../Provider/SarakUIProvider';
+import { SarakToastProvider } from '../../../components/atomic/Feedback/SarakToast';
+import type { ManifestRoot } from '../types';
+
+const Safe: React.FC<{ label?: React.ReactNode }> = ({ label }) => <div>{label}</div>;
+const Boom: React.FC = () => {
+    throw new Error('explosão fatal no card');
+};
+const Btn: React.FC<{ children?: React.ReactNode }> = (props) => <button {...props} />;
+
+describe('Spec 27 — Isolamento de falhas (Error Boundaries)', () => {
+    afterEach(() => vi.restoreAllMocks());
+
+    it('erro fatal num card isola só aquele nó; irmãos sobrevivem (Critério 27.1)', () => {
+        vi.spyOn(console, 'error').mockImplementation(() => undefined);
+        vi.spyOn(console, 'warn').mockImplementation(() => undefined);
+
+        const registry = createComponentRegistry();
+        registry.register('Safe', Safe);
+        registry.register('Boom', Boom);
+
+        const manifest: ManifestRoot = {
+            schemaVersion: 1,
+            type: 'SarakFlex',
+            fallbackErrorUI: { type: 'Safe', props: { label: 'Ops, falha ao carregar' } },
+            children: [
+                { type: 'Safe', id: 'a', props: { label: 'Card A' } },
+                { type: 'Boom', id: 'b' },
+                { type: 'Safe', id: 'c', props: { label: 'Card C' } },
+            ],
+        };
+
+        render(
+            <SarakUIProvider>
+                <SarakManifestRenderer manifest={manifest} registry={registry} />
+            </SarakUIProvider>,
+        );
+
+        // Irmãos intactos + fallback dinâmico no lugar do card que quebrou.
+        expect(screen.getByText('Card A')).toBeInTheDocument();
+        expect(screen.getByText('Card C')).toBeInTheDocument();
+        expect(screen.getByText('Ops, falha ao carregar')).toBeInTheDocument();
+    });
+
+    it('api_call que rejeita dispara onError sem quebrar a árvore (Critério 27.2)', async () => {
+        const interceptor = vi.fn(async () => {
+            throw new Error('CORS');
+        });
+        const registry = createComponentRegistry();
+        registry.register('Btn', Btn);
+
+        const manifest: ManifestRoot = {
+            schemaVersion: 1,
+            type: 'Btn',
+            props: { 'data-testid': 'go', children: 'Enviar' },
+            actions: [{ type: 'api_call', payload: { endpoint: '/x' } }],
+            onError: [{ type: 'trigger_toast', payload: { message: 'Falha de rede', variant: 'error' } }],
+        };
+
+        render(
+            <SarakUIProvider>
+                <SarakToastProvider>
+                    <SarakManifestRenderer
+                        manifest={manifest}
+                        registry={registry}
+                        networkInterceptor={interceptor}
+                    />
+                </SarakToastProvider>
+            </SarakUIProvider>,
+        );
+
+        fireEvent.click(screen.getByTestId('go'));
+
+        await waitFor(() => expect(screen.getByText('Falha de rede')).toBeInTheDocument());
+        // O botão (árvore) continua montado.
+        expect(screen.getByTestId('go')).toBeInTheDocument();
+    });
+});
+
+describe('Spec 28 — Persistência declarativa (persistState)', () => {
+    beforeEach(() => window.localStorage.clear());
+
+    const buildManifest = (): ManifestRoot => ({
+        schemaVersion: 1,
+        type: 'SarakInput',
+        model: { path: 'profile.name' },
+        persistState: { key: 'profile.name' },
+        props: { 'data-testid': 'name' },
+    });
+
+    it('hidrata do storage no mount (F5 já com o valor) e grava on-change', async () => {
+        window.localStorage.setItem(namespacedKey('profile.name'), JSON.stringify('Bob'));
+        const store = createSarakDataStore<{ profile: { name: string } }>({ profile: { name: '' } });
+
+        render(
+            <SarakUIProvider>
+                <SarakManifestRenderer manifest={buildManifest()} dataStore={store} />
+            </SarakUIProvider>,
+        );
+
+        const input = screen.getByTestId('name') as HTMLInputElement;
+        // Hidratação (useLayoutEffect) semeia o estado antes do paint.
+        await waitFor(() => expect(input.value).toBe('Bob'));
+
+        fireEvent.change(input, { target: { value: 'Carol' } });
+        await waitFor(() =>
+            expect(window.localStorage.getItem(namespacedKey('profile.name'))).toBe(
+                JSON.stringify('Carol'),
+            ),
+        );
+    });
+
+    it('sincroniza entre abas: evento storage externo atualiza a UI (Regra 2)', async () => {
+        const store = createSarakDataStore<{ profile: { name: string } }>({ profile: { name: 'Ana' } });
+
+        render(
+            <SarakUIProvider>
+                <SarakManifestRenderer manifest={buildManifest()} dataStore={store} />
+            </SarakUIProvider>,
+        );
+
+        const input = screen.getByTestId('name') as HTMLInputElement;
+        await waitFor(() => expect(input.value).toBe('Ana'));
+
+        // Outra aba grava e emite o evento storage.
+        window.localStorage.setItem(namespacedKey('profile.name'), JSON.stringify('Dora'));
+        act(() => {
+            window.dispatchEvent(
+                new StorageEvent('storage', { key: namespacedKey('profile.name') }),
+            );
+        });
+
+        await waitFor(() => expect(input.value).toBe('Dora'));
+    });
+});

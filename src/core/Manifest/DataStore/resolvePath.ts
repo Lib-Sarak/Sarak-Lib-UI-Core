@@ -55,28 +55,49 @@ export const resolveScopedPath = (
     return getByPath(globalState, path);
 };
 
+/** Um segmento puramente numérico endereça um índice de array (ex.: `list.0.name`). */
+const isArrayIndex = (key: string): boolean => /^\d+$/.test(key);
+
+/** Lê uma chave de um container (objeto ou array) sem `any`. */
+const readKey = (container: object, key: string): unknown =>
+    (container as Record<string, unknown>)[key];
+
+/** Escreve uma chave num container (objeto ou array) sem `any`. */
+const writeKey = (container: object, key: string, value: unknown): void => {
+    (container as Record<string, unknown>)[key] = value;
+};
+
+/**
+ * Clona o próximo elo do trajeto PRESERVANDO o tipo: array continua array (nunca
+ * colapsa em objeto), objeto continua objeto. Elo ausente/primitivo vira array se o
+ * próximo segmento é índice numérico, senão objeto.
+ */
+const cloneStep = (child: unknown, nextKey: string | undefined): object => {
+    if (Array.isArray(child)) return [...child];
+    if (isIndexable(child)) return { ...(child as StateRecord) };
+    return nextKey !== undefined && isArrayIndex(nextKey) ? [] : {};
+};
+
 /**
  * Escreve `value` em `path` de forma IMUTÁVEL: clona apenas o trajeto afetado,
- * preservando o resto da árvore por referência (barato e anti-loop). Retorna a
- * nova raiz; objetos não tocados mantêm identidade (seletores não disparam à toa).
+ * preservando o resto da árvore por referência (barato e anti-loop). Arrays no
+ * caminho são preservados como arrays (escrita em índice como `list.0.name`).
+ * Retorna a nova raiz; objetos não tocados mantêm identidade (seletores não disparam à toa).
  */
 export const setByPath = (root: StateRecord, path: string, value: unknown): StateRecord => {
     const parts = segments(path);
     if (parts.length === 0) return root;
 
     const nextRoot: StateRecord = { ...root };
-    let cursor: StateRecord = nextRoot;
+    let cursor: object = nextRoot;
 
     for (let i = 0; i < parts.length - 1; i++) {
         const key = parts[i];
-        const child = cursor[key];
-        const clonedChild: StateRecord = isIndexable(child) && !Array.isArray(child)
-            ? { ...(child as StateRecord) }
-            : {};
-        cursor[key] = clonedChild;
-        cursor = clonedChild;
+        const cloned = cloneStep(readKey(cursor, key), parts[i + 1]);
+        writeKey(cursor, key, cloned);
+        cursor = cloned;
     }
 
-    cursor[parts[parts.length - 1]] = value;
+    writeKey(cursor, parts[parts.length - 1], value);
     return nextRoot;
 };

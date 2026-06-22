@@ -142,6 +142,20 @@ export {
     type FormStore,
 } from './Form';
 
+// Spec 27 — Error Boundaries e Fallbacks as Data
+export { SarakErrorBoundary, type SarakErrorBoundaryProps } from './ErrorBoundary';
+
+// Spec 28 — Persistência de Estado Local (localStorage)
+export {
+    STORAGE_NAMESPACE,
+    namespacedKey,
+    readPersisted,
+    writePersisted,
+    removePersisted,
+    subscribeStorage,
+    usePersistedSlice,
+} from './Storage';
+
 // Spec 30 — Renderer (Motor de Dados Vivo a partir da Onda 1)
 export {
     SarakManifestRenderer,
