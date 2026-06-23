@@ -1,4 +1,5 @@
 import React, { createContext, useContext, useEffect, useState, ReactNode } from 'react';
+import { BREAKPOINT_TABLET, BREAKPOINT_DESKTOP } from '../Design/breakpoints';
 
 export type DeviceType = 'smartphone' | 'tablet' | 'desktop';
 
@@ -23,11 +24,11 @@ export const DeviceProvider: React.FC<DeviceProviderProps> = ({ children, overri
 
         const handleResize = () => {
             const width = window.innerWidth;
-            if (width < 768) {
+            if (width < BREAKPOINT_TABLET) {
                 setDevice('smartphone');
                 return;
             }
-            if (width < 1024) {
+            if (width < BREAKPOINT_DESKTOP) {
                 setDevice('tablet');
                 return;
             }

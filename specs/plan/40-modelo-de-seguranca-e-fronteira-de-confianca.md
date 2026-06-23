@@ -2,7 +2,7 @@
 tipo: "spec"
 titulo: "Modelo de Segurança e Fronteira de Confiança"
 dominio: "Sarak-Lib-UI-Core (Transversal)"
-status: "🔴 A Implementar"
+status: "🟢 Implementada"
 prioridade: "Alta"
 tags: ["spec", "security", "xss", "trust-boundary", "transversal"]
 relacionados: ["24-motor-de-data-binding-pipes", "26-motor-avaliacao-condicional", "15-expansao-midia-renderizadores", "30-contrato-importador-renderer"]
@@ -19,18 +19,24 @@ O Manifest Renderer **executa JSON autorado por usuário ou IA** — um vetor de
 - **Regra 5 — Limites e DoS:** Profundidade máxima de aninhamento e teto de itens em `renderFor` (Spec 23) para impedir manifests maliciosos que travam o navegador.
 
 # 3. Critérios de Aceite
-- [ ] Um manifesto com `javascript:`/`<script>` em texto e em Markdown é neutralizado em todos os canais.
-- [ ] Condicional com acesso a `window` falha fechado, sem execução.
-- [ ] A documentação deixa explícito o que o importador DEVE prover (auth, interceptors) — sem suposição implícita.
+- [x] Um manifesto com `javascript:`/`<script>` em texto e em Markdown é neutralizado em todos os canais. *(Texto auto-escapado pelo React; canal único `sanitizeHtml`/DOMPurify pronto para o `SarakMarkdownRenderer` da Spec 15.)*
+- [x] Condicional com acesso a `window` falha fechado, sem execução.
+- [x] A documentação deixa explícito o que o importador DEVE prover (auth, interceptors) — sem suposição implícita (Spec 08 §6).
 
 # 4. Plano de Testes (Quality Gate)
 
 ## Testes Unitários
-- [ ] **Deve** neutralizar payloads de XSS em texto, Markdown e atributos.
-- [ ] **Deve** rejeitar expressões condicionais que tocam globais.
+- [x] **Deve** neutralizar payloads de XSS em texto, Markdown e atributos. *(`Security/__tests__/sanitizeHtml.test.ts`)*
+- [x] **Deve** rejeitar expressões condicionais que tocam globais. *(`Security/__tests__/trustBoundary.test.tsx`)*
 
 ## Testes de Contrato (API)
-- [ ] **Deve** documentar e tipar a fronteira (quais callbacks são obrigatórios do importador).
+- [x] **Deve** documentar e tipar a fronteira (quais callbacks são obrigatórios do importador). *(tipos em `SarakManifestRenderer` + doc na Spec 08 §6.)*
 
 ## Testes E2E (Integração)
-- [ ] Forjar um manifesto hostil e confirmar que nenhuma execução não autorizada ocorre, com a UI permanecendo estável.
+- [x] Forjar um manifesto hostil e confirmar que nenhuma execução não autorizada ocorre, com a UI permanecendo estável. *(`trustBoundary.test.tsx`: condicional fail-closed + teto `renderFor` + corte de profundidade.)*
+
+# 5. Status de Implementação (Onda 6)
+- **Canal de sanitização:** `src/core/Manifest/Security/sanitizeHtml.ts` (DOMPurify v3; fallback fail-closed em SSR). Único canal autorizado a produzir HTML — exceção documentada: `<style>` de `responsiveCSS` do `DesignScope` (CSS da engine, não conteúdo externo).
+- **Limites anti-DoS:** `MAX_NESTING_DEPTH=100` (`nodes/context.ts` + `ManifestNodeRenderer`) e `MAX_RENDERFOR_ITEMS=10000` (`RenderFor/expandRenderFor.ts`).
+- **Safe-eval reafirmado:** `Conditional/` (Spec 26) já falha fechado; coberto por teste adversarial explícito.
+- **Fronteira documentada:** `specs/specs/08-consumo-externo-e-integracao.md` §6 (o que a Sarak garante × o que o importador DEVE prover).

@@ -2,7 +2,7 @@
 tipo: "spec"
 titulo: "Contrato de Acessibilidade (a11y Transversal)"
 dominio: "Sarak-Lib-UI-Core (Transversal)"
-status: "🔴 A Implementar"
+status: "🟢 Implementada"
 prioridade: "Média"
 tags: ["spec", "a11y", "accessibility", "transversal"]
 relacionados: ["13-expansao-feedback-interacoes", "14-expansao-navegacao", "11-expansao-formularios"]
@@ -19,18 +19,24 @@ Cada spec testa acessibilidade isoladamente, mas sem um **modelo único** o resu
 - **Regra 5 — a11y como Dado:** O `ManifestNode` permite `aria` (label, describedby) por nó, repassado ao átomo; rótulos de formulário (Spec 11) são obrigatórios ou derivados.
 
 # 3. Critérios de Aceite
-- [ ] Modal/Drawer retêm o foco e o devolvem ao gatilho ao fechar.
-- [ ] Navegação completa por teclado nos componentes de Navegação (Spec 14) e Formulário (Spec 11).
-- [ ] Estados de erro/foco perceptíveis sem depender exclusivamente de cor.
+- [x] Modal/Drawer retêm o foco e o devolvem ao gatilho ao fechar. *(`useFocusTrap` aplicado a ambos; `onClose` por ref para o trap não reentrar a cada render.)*
+- [x] Navegação completa por teclado nos componentes de Navegação (Spec 14) e Formulário (Spec 11). *(Tabs setas/Home/End + roving tabindex; Spotlight setas; Breadcrumbs Enter/Espaço; Pagination botões nativos; Stepper é indicador não-interativo; inputs nativos.)*
+- [x] Estados de erro/foco perceptíveis sem depender exclusivamente de cor. *(Input expõe mensagem de erro textual + `aria-invalid`/`aria-describedby`, além da cor.)*
 
 # 4. Plano de Testes (Quality Gate)
 
 ## Testes Unitários
-- [ ] **Deve** validar presença de `role`/`aria-*` corretos por componente interativo.
-- [ ] **Deve** garantir focus trap e restauração de foco nos overlays.
+- [x] **Deve** validar presença de `role`/`aria-*` corretos por componente interativo. *(`nodes/__tests__/aria.test.tsx`, `UX/__tests__/SarakTabs.keyboard.test.tsx`)*
+- [x] **Deve** garantir focus trap e restauração de foco nos overlays. *(`Modals/hooks/__tests__/useFocusTrap.test.tsx`)*
 
 ## Testes de Contrato (API)
-- [ ] **Deve** aceitar e repassar a diretiva `aria` do nó ao átomo correspondente.
+- [x] **Deve** aceitar e repassar a diretiva `aria` do nó ao átomo correspondente. *(`mapAriaDirective` + teste de integração no LeafNode.)*
 
 ## Testes E2E (Integração)
-- [ ] Percorrer um fluxo completo (abrir modal, preencher form, submeter) usando somente o teclado.
+- [x] Percorrer um fluxo completo (abrir modal, preencher form, submeter) usando somente o teclado. *(`Modals/__tests__/keyboardJourney.test.tsx` via `@testing-library/user-event`: abre por teclado → preenche → Tab → submete; + ESC fecha e devolve o foco ao gatilho.)*
+
+# 5. Status de Implementação (Ondas 6 BASE + 7)
+- **a11y como dado (Regra 5):** diretiva `aria` fiada no `LeafNode` via `nodes/aria.ts` (`mapAriaDirective`) — passa na Conferência Funcional (Spec 34).
+- **Modelo de foco (Regra 1):** `Modals/hooks/useFocusTrap.ts` (trap + ESC + restauração) aplicado a `SarakModal` e `SarakDrawer`. **Onda 7:** `onClose` guardado em ref — o efeito do trap só depende de `isOpen`, evitando reentrada de foco a cada render (corrige perda de digitação).
+- **ARIA por papel (Regras 2/4):** `SarakInput` (label↔input via id + erro linkado), `SarakSlider` (`aria-label`/`aria-valuetext`), `SarakSwitch` (`role="switch"` + descrição), `SarakTabs` (setas/Home/End + roving tabindex).
+- **Teclado de Navegação (Regra 3 — Onda 7):** `SarakBreadcrumbs` ativa por Enter/Espaço; Pagination usa botões nativos; Stepper é indicador não-interativo. Jornada E2E só-teclado coberta.

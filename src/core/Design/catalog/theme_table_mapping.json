@@ -325,6 +325,8 @@
     "matrixBlur"
   ],
   "structural": [
+    "breakpointTablet",
+    "breakpointDesktop",
     "layoutGridTemplate",
     "globalSectionGap",
     "globalFlowDirection",

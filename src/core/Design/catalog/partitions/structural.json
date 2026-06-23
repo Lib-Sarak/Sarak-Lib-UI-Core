@@ -1,5 +1,63 @@
 [
   {
+    "tokenId": "breakpointTablet",
+    "name": "Breakpoint Tablet",
+    "description": "Largura mínima (px) a partir da qual o layout é tratado como tablet. Consumido pelo gerador de media-queries e pelo detector JS de dispositivo (Spec 16).",
+    "type": "number",
+    "importance": 85,
+    "categories": [
+      "estrutura",
+      "responsividade",
+      "breakpoints"
+    ],
+    "tags": [
+      "breakpoint",
+      "responsive",
+      "media-query"
+    ],
+    "databaseColumn": "structural",
+    "schemaOrigin": "structural.ts",
+    "digitalTwins": [
+      "DeviceProvider"
+    ],
+    "cssVariables": [
+      "--sarak-breakpoint-tablet"
+    ],
+    "allowedValues": null,
+    "relatedTokens": [
+      "breakpointDesktop"
+    ]
+  },
+  {
+    "tokenId": "breakpointDesktop",
+    "name": "Breakpoint Desktop",
+    "description": "Largura mínima (px) a partir da qual o layout é tratado como desktop. Consumido pelo gerador de media-queries e pelo detector JS de dispositivo (Spec 16).",
+    "type": "number",
+    "importance": 85,
+    "categories": [
+      "estrutura",
+      "responsividade",
+      "breakpoints"
+    ],
+    "tags": [
+      "breakpoint",
+      "responsive",
+      "media-query"
+    ],
+    "databaseColumn": "structural",
+    "schemaOrigin": "structural.ts",
+    "digitalTwins": [
+      "DeviceProvider"
+    ],
+    "cssVariables": [
+      "--sarak-breakpoint-desktop"
+    ],
+    "allowedValues": null,
+    "relatedTokens": [
+      "breakpointTablet"
+    ]
+  },
+  {
     "tokenId": "layoutGridTemplate",
     "name": "Template de Grid Global",
     "description": "Estratégia de grid macro aplicada às seções: 12 colunas, auto-fit responsivo ou masonry.",

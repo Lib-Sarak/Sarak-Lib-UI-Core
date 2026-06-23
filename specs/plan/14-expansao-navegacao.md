@@ -2,7 +2,7 @@
 tipo: "spec"
 titulo: "Expansão de Navegação"
 dominio: "Sarak-Lib-UI-Core (Visual)"
-status: "🔴 A Implementar"
+status: "🟢 Implementado"
 prioridade: "Média"
 tags: ["spec", "navigation", "stepper", "breadcrumbs"]
 relacionados: []

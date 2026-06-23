@@ -1,4 +1,5 @@
 import { ComponentSchema } from '../types';
+import { BREAKPOINT_TABLET, BREAKPOINT_DESKTOP } from '../breakpoints';
 
 /**
  * STRUCTURAL SCHEMA (v13.0)
@@ -11,6 +12,31 @@ export const StructuralSchema: ComponentSchema = {
     id: 'structural',
     label: 'Estrutura e Macro-Layout',
     tokens: [
+        // --- BREAKPOINTS (Spec 16, Regra 1) ---
+        // Limiares de responsividade consumidos pelo gerador de media-queries
+        // (useDesignVariables) e pelo detector JS (DeviceProvider). Default/legacy
+        // derivam da fonte única em ../breakpoints.ts (coerência CSS↔JS, Regra 4).
+        {
+            id: 'breakpointTablet',
+            label: 'Breakpoint Tablet',
+            type: 'slider',
+            unit: 'px',
+            constraints: { min: 480, max: 1024, step: 1 },
+            defaultValue: BREAKPOINT_TABLET,
+            legacyValue: BREAKPOINT_TABLET,
+            cssVars: ['--sarak-breakpoint-tablet']
+        },
+        {
+            id: 'breakpointDesktop',
+            label: 'Breakpoint Desktop',
+            type: 'slider',
+            unit: 'px',
+            constraints: { min: 768, max: 1600, step: 1 },
+            defaultValue: BREAKPOINT_DESKTOP,
+            legacyValue: BREAKPOINT_DESKTOP,
+            cssVars: ['--sarak-breakpoint-desktop']
+        },
+
         // --- MACRO GRID ---
         {
             id: 'layoutGridTemplate',

@@ -1,11 +1,11 @@
 /**
  * Maquinaria recursiva de renderização de nós (extraída do `SarakManifestRenderer`).
- * Pipeline por nó: 0 `renderIf` (26) → 1 `source` (31) → 2 `renderFor` (23) →
- * 3 `form` (32) → 4 folha (22/24/25/26/29/32/28). Cada nó é envolto num Error Boundary
- * (Spec 27, Regra 1): uma falha isola-se ao nó culpado.
+ * Pipeline por nó: 0 `renderIf` (26) → 0.5 `theme` (42) → 1 `source` (31) →
+ * 2 `renderFor` (23) → 3 `form` (32) → 4 folha (22/24/25/26/29/32/28). Cada nó é envolto
+ * num Error Boundary (Spec 27, Regra 1): uma falha isola-se ao nó culpado.
  */
 
-import React, { useMemo } from 'react';
+import React, { useContext, useMemo } from 'react';
 import type { ManifestNode } from '../types';
 import { SarakFallback } from '../Registry/Fallback';
 import type { StateRecord } from '../DataStore/resolvePath';
@@ -15,11 +15,14 @@ import { useDataSource } from '../DataSource/useDataSource';
 import { SarakErrorBoundary } from '../ErrorBoundary';
 import { createFormScope } from '../Form/formScope';
 import { FormScopeContext } from '../Form/context';
+import { resolveTheme } from '../Theme/resolveTheme';
 import { LeafNode } from './LeafNode';
 import type { NodeRenderContext, NodeRendererProps } from './context';
 import { SarakDataGrid } from '../../../components/atomic/DataDisplay/SarakDataGrid';
 import { SarakSkeleton } from '../../../components/atomic/Feedback/SarakSkeleton';
 import { SarakDataEmpty } from '../../../components/atomic/Feedback/SarakDataEmpty';
+import { DesignScope } from '../../Design/components/DesignScope';
+import { DesignOverrideContext } from '../../Provider/SarakUIProvider';
 
 /**
  * Renderiza a tela de recuperação de um Error Boundary (Spec 27, Regra 2): usa o
@@ -102,7 +105,26 @@ const FormNode: React.FC<NodeRendererProps> = ({ node, path, scope, ctx }) => {
 };
 
 /**
- * Pipeline de diretivas de um nó (Specs 26/31/23/32/22). Separado do wrapper de Error
+ * Nó com `theme` (Spec 42): envolve a subárvore num `DesignScope` com o tema resolvido
+ * (preset nomeado ou override parcial mesclado sobre o herdado) e re-renderiza o nó SEM
+ * a diretiva `theme` (evita laço). A troca do tema via `mutate_state` (Spec 25) re-injeta
+ * as variáveis da região sem remontar a subárvore — o `DesignScope` mantém id estável.
+ */
+const ThemeNode: React.FC<NodeRendererProps> = ({ node, path, scope, ctx }) => {
+    const inherited = useContext(DesignOverrideContext);
+    const directive = node.theme as NonNullable<ManifestNode['theme']>;
+    const design = resolveTheme(directive, scope, ctx.global, inherited);
+    const { theme: _omit, ...rest } = node;
+    void _omit;
+    return (
+        <DesignScope design={design}>
+            <ManifestNodeRenderer node={rest as ManifestNode} path={path} scope={scope} ctx={ctx} />
+        </DesignScope>
+    );
+};
+
+/**
+ * Pipeline de diretivas de um nó (Specs 26/42/31/23/32/22). Separado do wrapper de Error
  * Boundary para que uma falha aqui seja capturada e isolada (Spec 27, Regra 1).
  */
 const ManifestNodePipeline: React.FC<NodeRendererProps> = ({ node, path, scope, ctx }) => {
@@ -110,6 +132,11 @@ const ManifestNodePipeline: React.FC<NodeRendererProps> = ({ node, path, scope, 
     // ANTES de qualquer trabalho (fonte/loop/render) — o nó sequer monta no DOM.
     if (node.renderIf !== undefined && !evaluateCondition(node.renderIf, scope, ctx.global)) {
         return null;
+    }
+
+    // 0.5. Tema por região (Spec 42): envolve a subárvore num DesignScope isolado.
+    if (node.theme !== undefined) {
+        return <ThemeNode node={node} path={path} scope={scope} ctx={ctx} />;
     }
 
     // 1. Fonte de dados declarativa (Spec 31).
@@ -167,18 +194,27 @@ const ManifestNodePipeline: React.FC<NodeRendererProps> = ({ node, path, scope, 
     return <LeafNode node={node} path={path} scope={scope} ctx={ctx} />;
 };
 
+/** Profundidade máxima de aninhamento (Spec 40, Regra 5 — limite anti-DoS). */
+export const MAX_NESTING_DEPTH = 100;
+
 /**
  * Componente recursivo de um nó: ENVOLVE o pipeline num Error Boundary (Spec 27, Regra 1),
  * isolando a falha ao nó culpado — irmãos, navbar e sidebar sobrevivem. O root também é
- * protegido (esta função renderiza o nó raiz).
+ * protegido (esta função renderiza o nó raiz). Conta a profundidade da recursão e cai no
+ * Fallback ao exceder `MAX_NESTING_DEPTH` (Spec 40): manifesto hostil não estoura a pilha.
  */
 export const ManifestNodeRenderer: React.FC<NodeRendererProps> = ({ node, path, scope, ctx }) => {
+    const depth = (ctx.depth ?? 0) + 1;
+    if (depth > MAX_NESTING_DEPTH) {
+        return <SarakFallback type="ProfundidadeExcedida" nodeId={node.id ?? path} />;
+    }
+    const childCtx: NodeRenderContext = { ...ctx, depth };
     return (
         <SarakErrorBoundary
             nodeId={node.id ?? path}
-            renderFallback={() => renderNodeFallback(node, path, scope, ctx)}
+            renderFallback={() => renderNodeFallback(node, path, scope, childCtx)}
         >
-            <ManifestNodePipeline node={node} path={path} scope={scope} ctx={ctx} />
+            <ManifestNodePipeline node={node} path={path} scope={scope} ctx={childCtx} />
         </SarakErrorBoundary>
     );
 };

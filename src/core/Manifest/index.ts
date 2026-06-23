@@ -30,6 +30,7 @@ export type {
     ResponsiveDirective,
     ShellDirective,
     RouteMap,
+    RouteTarget,
     ThemeDirective,
     AriaDirective,
     DataSourceMethod,

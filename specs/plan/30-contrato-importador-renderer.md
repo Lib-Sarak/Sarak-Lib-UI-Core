@@ -2,7 +2,7 @@
 tipo: "spec"
 titulo: "Contrato do Importador e Manifest Renderer"
 dominio: "Sarak-Lib-UI-Core (Arquitetura Suprema)"
-status: "🔴 A Implementar"
+status: "🟢 Implementado"
 prioridade: "Crítica"
 tags: ["spec", "architecture", "renderer", "integration"]
 relacionados: ["08-consumo-externo-e-integracao", "31-fonte-de-dados-declarativa", "33-composicao-pagina-rota-shell"]

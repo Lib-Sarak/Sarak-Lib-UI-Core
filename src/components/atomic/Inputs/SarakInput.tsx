@@ -1,4 +1,4 @@
-import React, { InputHTMLAttributes, useState } from 'react';
+import React, { InputHTMLAttributes, useId, useState } from 'react';
 import { useSarakUI } from '../../../core/Provider/SarakUIProvider';
 import { useAtomicStyles } from '../hooks/useAtomicStyles';
 import { useStructuralStyles } from '../hooks/useStructuralStyles';
@@ -35,6 +35,11 @@ export const SarakInput: React.FC<SarakInputProps> = ({
     const { iconPositionClass, isIconRight } = getInputIconStyles();
     const [isFocused, setIsFocused] = useState(false);
 
+    // a11y (Spec 41, Regras 2/5): conecta label↔input via id e o erro via aria-describedby.
+    const reactId = useId();
+    const inputId = props.id ?? reactId;
+    const errorId = `${inputId}-error`;
+
     const baseClasses = 'block text-[var(--sarak-input-text-color,var(--sx-color-text-muted))] font-medium outline-none transition-all placeholder:text-[var(--sarak-input-text-color,var(--sx-color-text-muted))]/30 bg-[var(--sarak-input-bg,var(--sx-color-surface-base))]';
     const shapeClasses = 'rounded-input py-4';
     
@@ -56,7 +61,7 @@ export const SarakInput: React.FC<SarakInputProps> = ({
 
     return (
         <SarakFormGroup className={`${widthClass} ${className}`}>
-            {label && <label className="text-sm font-medium">{label}</label>}
+            {label && <label htmlFor={inputId} className="text-sm font-medium">{label}</label>}
             
             <div className="flex-1 flex flex-col relative w-full">
                 <div className="relative w-full flex items-center">
@@ -70,14 +75,17 @@ export const SarakInput: React.FC<SarakInputProps> = ({
                         className={`${baseClasses} ${shapeClasses} ${paddingLeftClass} ${paddingRightClass} w-full ${disabledClass}`}
                         disabled={disabled}
                         style={dynamicStyle}
+                        aria-invalid={error ? true : undefined}
+                        aria-describedby={error ? errorId : undefined}
                         onFocus={(e) => { setIsFocused(true); props.onFocus?.(e); }}
                         onBlur={(e) => { setIsFocused(false); props.onBlur?.(e); }}
                         {...props}
+                        id={inputId}
                     />
                 </div>
 
                 {error && (
-                    <p className="mt-1 text-sm text-[var(--sarak-input-error-color,#ff4d4f)]">
+                    <p id={errorId} className="mt-1 text-sm text-[var(--sarak-input-error-color,#ff4d4f)]">
                         {error}
                     </p>
                 )}

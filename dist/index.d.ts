@@ -2,7 +2,7 @@ import * as React$1 from 'react';
 import React__default, { ReactNode, InputHTMLAttributes, TextareaHTMLAttributes, SelectHTMLAttributes } from 'react';
 import * as react_jsx_runtime from 'react/jsx-runtime';
 
-type DesignTokenId = 'accentColor' | 'aiGlowColor' | 'aiPanelBg' | 'animEnabled' | 'animFast' | 'animInstant' | 'animNormal' | 'animSlow' | 'atmosphereNoiseOpacity' | 'badgeRadius' | 'bgBaseColor' | 'bgGradientAngle' | 'bgGradientMode' | 'bgNoiseAnimation' | 'bgNoiseDensity' | 'bodyFont' | 'bodyLineHeight' | 'bodySize' | 'bodyWeight' | 'borderBeamEnabled' | 'borderRadius' | 'borderRadiusLg' | 'borderRadiusMd' | 'borderRadiusSm' | 'borderStyle' | 'borderType' | 'borderWidth' | 'btnActiveScale' | 'btnBackdropBlur' | 'btnBorderRadius' | 'btnGhostHoverBg' | 'btnHoverScale' | 'btnNeonGlowColor' | 'btnNeonPulseSpeed' | 'btnPrimaryBg' | 'btnPrimaryText' | 'btnRadiusBL' | 'btnRadiusBR' | 'btnRadiusTL' | 'btnRadiusTR' | 'btnSecondaryBg' | 'btnStyleType' | 'buttonIconPosition' | 'buttonWidthStrategy' | 'cardActionBtnBorderRadius' | 'cardActionBtnHoverBg' | 'cardActionBtnPadding' | 'cardActionBtnPrimaryBg' | 'cardActionBtnText' | 'cardActionClickScale' | 'cardBackdropBlur' | 'cardBackgroundColor' | 'cardBorderBottom' | 'cardBorderColor' | 'cardBorderLeft' | 'cardBorderOpacity' | 'cardBorderRadius' | 'cardBorderRight' | 'cardBorderTop' | 'cardBorderWidth' | 'cardContentAlignment' | 'cardFooterBg' | 'cardFooterBorder' | 'cardGeometricCut' | 'cardGlowColor' | 'cardGlowIntensity' | 'cardHeaderBg' | 'cardHeaderBorder' | 'cardHeaderPadding' | 'cardHoverGlowIncrease' | 'cardHoverStyle' | 'cardHoverTranslate' | 'cardImagePosition' | 'cardInnerGlowColor' | 'cardInnerGlowWidth' | 'cardLayoutDirection' | 'cardPaddingMd' | 'cardRadiusBL' | 'cardRadiusBR' | 'cardRadiusTL' | 'cardRadiusTR' | 'cardSearchBgFocus' | 'cardSearchBorderBeamActive' | 'cardSearchPlaceholderColor' | 'cardSearchTextFocusColor' | 'cardShadow' | 'cardShadowSpread' | 'cardSpotlightOpacity' | 'cardSurfaceOpacity' | 'cardTextAlign' | 'cardTextureOpacity' | 'cardTextureType' | 'cardTitleColor' | 'cardTitleFontSize' | 'cardTitleFontWeight' | 'cardTitleIconGlow' | 'cardTitleLetterSpacing' | 'cardVariant' | 'chartColorPalette' | 'chartGridOpacity' | 'chartShowGrid' | 'chartSmoothing' | 'chartThickness' | 'chartTooltipBg' | 'chartType' | 'chatAnimationSpeed' | 'chatBubbleRadius' | 'chatBubbleStyle' | 'chatUserBg' | 'checkboxActiveColor' | 'colorBgBody' | 'colorBgLayer1' | 'colorBgLayer2' | 'colorBgModal' | 'colorDepth' | 'colorPalette' | 'colorVariation' | 'contentAlignment' | 'contrastCurve' | 'easeMain' | 'easeOut' | 'flowGridStyle' | 'flowNodeRadius' | 'focusRingWidth' | 'formFieldDensity' | 'formLabelPosition' | 'formLayoutDirection' | 'glassBlur' | 'glassOpacity' | 'glassRoughness' | 'glassSaturation' | 'glassSpecularity' | 'globalBackgroundBlendMode' | 'globalBackgroundBlur' | 'globalBackgroundImageUrl' | 'globalBackgroundOpacity' | 'globalContrast' | 'globalFlowAlign' | 'globalFlowDirection' | 'globalSaturation' | 'globalSectionGap' | 'h1LetterSpacing' | 'h1LineHeight' | 'h1Size' | 'h1Weight' | 'h2LineHeight' | 'h2Size' | 'h2Weight' | 'headerAlignment' | 'headingFont' | 'headingTransform' | 'iconFamily' | 'iconStrokeWidth' | 'iconWeight' | 'identityAlignment' | 'identityFontFamily' | 'identityFontWeight' | 'identityHoverEffect' | 'identityPadding' | 'identityRedirectUrl' | 'identityTracking' | 'imageCardHoverZoom' | 'imageCardOverlayOpacity' | 'industrialRegistry' | 'inputBackdropBlur' | 'inputBg' | 'inputBorderColor' | 'inputBorderRadius' | 'inputBorderType' | 'inputErrorColor' | 'inputFocusBorderColor' | 'inputIconColor' | 'inputIconPosition' | 'inputPadding' | 'inputShadow' | 'inputSuccessColor' | 'inputTextColor' | 'isAutoHideEnabled' | 'isNavHidden' | 'isSplitViewEnabled' | 'layerBackdropBlur' | 'layerBackdropOpacity' | 'layeredShadows' | 'layerElevationFactor' | 'layout' | 'layoutDensity' | 'layoutGap' | 'layoutGapLg' | 'layoutGapMd' | 'layoutGapSm' | 'layoutGridTemplate' | 'layoutPadding' | 'matrixBlur' | 'matrixBorderColor' | 'matrixGap' | 'matrixItemBg' | 'matrixRadius' | 'matrixSearchBg' | 'maxContentWidth' | 'modalActionAlignment' | 'modalBorderRadius' | 'modalHeaderStyle' | 'modalOverlayBlur' | 'modalOverlayColor' | 'mode' | 'monoFont' | 'motionDurationFast' | 'motionDurationInstant' | 'motionDurationNormal' | 'motionDurationSlow' | 'motionEaseIn' | 'motionEaseMain' | 'motionEaseOut' | 'motionStaggerDelay' | 'navActiveMarkerColor' | 'navActiveMarkerGlow' | 'navbarLayout' | 'navigationStyle' | 'navItemActiveColor' | 'noiseIntensity' | 'pageTransitionType' | 'primaryColor' | 'reducedMotion' | 'scrollbarThumbColor' | 'scrollbarWidth' | 'scrollPadding' | 'scrollRadius' | 'scrollThumbColor' | 'scrollThumbHoverOpacity' | 'scrollThumbOpacity' | 'scrollTrackOpacity' | 'scrollWidth' | 'searchPositionSidebar' | 'searchPositionTopbar' | 'secondaryColor' | 'securityPulseSpeed' | 'securityShieldGlow' | 'shadowAmbientAlpha' | 'shadowColorMode' | 'shadowIntensity' | 'shadowOrientation' | 'shadowProjectionAlpha' | 'shadowProjectionBlur' | 'sidebarActiveColor' | 'sidebarBlur' | 'sidebarColor' | 'sidebarHoverColor' | 'sidebarMaxWidth' | 'sidebarMinWidth' | 'sidebarNoiseOpacity' | 'sidebarPosition' | 'sidebarShadow' | 'sidebarWidth' | 'statusErrorColor' | 'statusInfoColor' | 'statusSuccessColor' | 'statusWarningColor' | 'surfaceColor' | 'surfaceIntensity' | 'surfaceMaterial' | 'switchBackdropBlur' | 'switchLabelPosition' | 'switchPulseColor' | 'switchStyleType' | 'switchThumbBg' | 'switchTrackActiveBg' | 'systemTone' | 'tabGap' | 'tableActionPosition' | 'tableBorderColor' | 'tableBorderRadius' | 'tableCellPadding' | 'tableDensity' | 'tableHeaderBg' | 'tableRowHoverBg' | 'tableZebraStriping' | 'tabSectionMargin' | 'tertiaryColor' | 'textColorMaster' | 'textColorMuted' | 'textColorSecondary' | 'textGlowIntensity' | 'textSmoothing' | 'texture' | 'textureColor' | 'textureOpacity' | 'titleColor' | 'tooltipBg' | 'tooltipRadius' | 'topbarActiveColor' | 'topbarColor' | 'topbarHeight' | 'topbarHoverColor' | 'topbarNoiseOpacity' | 'topbarTitleColor' | 'vignetteOpacity' | 'vignetteSoftness' | 'zIndexBase' | 'zIndexModal' | 'zIndexSidebar' | 'zIndexToast' | 'zIndexTooltip';
+type DesignTokenId = 'accentColor' | 'aiGlowColor' | 'aiPanelBg' | 'animEnabled' | 'animFast' | 'animInstant' | 'animNormal' | 'animSlow' | 'atmosphereNoiseOpacity' | 'badgeRadius' | 'bgBaseColor' | 'bgGradientAngle' | 'bgGradientMode' | 'bgNoiseAnimation' | 'bgNoiseDensity' | 'bodyFont' | 'bodyLineHeight' | 'bodySize' | 'bodyWeight' | 'borderBeamEnabled' | 'borderRadius' | 'borderRadiusLg' | 'borderRadiusMd' | 'borderRadiusSm' | 'borderStyle' | 'borderType' | 'borderWidth' | 'breakpointDesktop' | 'breakpointTablet' | 'btnActiveScale' | 'btnBackdropBlur' | 'btnBorderRadius' | 'btnGhostHoverBg' | 'btnHoverScale' | 'btnNeonGlowColor' | 'btnNeonPulseSpeed' | 'btnPrimaryBg' | 'btnPrimaryText' | 'btnRadiusBL' | 'btnRadiusBR' | 'btnRadiusTL' | 'btnRadiusTR' | 'btnSecondaryBg' | 'btnStyleType' | 'buttonIconPosition' | 'buttonWidthStrategy' | 'cardActionBtnBorderRadius' | 'cardActionBtnHoverBg' | 'cardActionBtnPadding' | 'cardActionBtnPrimaryBg' | 'cardActionBtnText' | 'cardActionClickScale' | 'cardBackdropBlur' | 'cardBackgroundColor' | 'cardBorderBottom' | 'cardBorderColor' | 'cardBorderLeft' | 'cardBorderOpacity' | 'cardBorderRadius' | 'cardBorderRight' | 'cardBorderTop' | 'cardBorderWidth' | 'cardContentAlignment' | 'cardFooterBg' | 'cardFooterBorder' | 'cardGeometricCut' | 'cardGlowColor' | 'cardGlowIntensity' | 'cardHeaderBg' | 'cardHeaderBorder' | 'cardHeaderPadding' | 'cardHoverGlowIncrease' | 'cardHoverStyle' | 'cardHoverTranslate' | 'cardImagePosition' | 'cardInnerGlowColor' | 'cardInnerGlowWidth' | 'cardLayoutDirection' | 'cardPaddingMd' | 'cardRadiusBL' | 'cardRadiusBR' | 'cardRadiusTL' | 'cardRadiusTR' | 'cardSearchBgFocus' | 'cardSearchBorderBeamActive' | 'cardSearchPlaceholderColor' | 'cardSearchTextFocusColor' | 'cardShadow' | 'cardShadowSpread' | 'cardSpotlightOpacity' | 'cardSurfaceOpacity' | 'cardTextAlign' | 'cardTextureOpacity' | 'cardTextureType' | 'cardTitleColor' | 'cardTitleFontSize' | 'cardTitleFontWeight' | 'cardTitleIconGlow' | 'cardTitleLetterSpacing' | 'cardVariant' | 'chartColorPalette' | 'chartGridOpacity' | 'chartShowGrid' | 'chartSmoothing' | 'chartThickness' | 'chartTooltipBg' | 'chartType' | 'chatAnimationSpeed' | 'chatBubbleRadius' | 'chatBubbleStyle' | 'chatUserBg' | 'checkboxActiveColor' | 'colorBgBody' | 'colorBgLayer1' | 'colorBgLayer2' | 'colorBgModal' | 'colorDepth' | 'colorPalette' | 'colorVariation' | 'contentAlignment' | 'contrastCurve' | 'easeMain' | 'easeOut' | 'flowGridStyle' | 'flowNodeRadius' | 'focusRingWidth' | 'formFieldDensity' | 'formLabelPosition' | 'formLayoutDirection' | 'glassBlur' | 'glassOpacity' | 'glassRoughness' | 'glassSaturation' | 'glassSpecularity' | 'globalBackgroundBlendMode' | 'globalBackgroundBlur' | 'globalBackgroundImageUrl' | 'globalBackgroundOpacity' | 'globalContrast' | 'globalFlowAlign' | 'globalFlowDirection' | 'globalSaturation' | 'globalSectionGap' | 'h1LetterSpacing' | 'h1LineHeight' | 'h1Size' | 'h1Weight' | 'h2LineHeight' | 'h2Size' | 'h2Weight' | 'headerAlignment' | 'headingFont' | 'headingTransform' | 'iconFamily' | 'iconStrokeWidth' | 'iconWeight' | 'identityAlignment' | 'identityFontFamily' | 'identityFontWeight' | 'identityHoverEffect' | 'identityPadding' | 'identityRedirectUrl' | 'identityTracking' | 'imageCardHoverZoom' | 'imageCardOverlayOpacity' | 'industrialRegistry' | 'inputBackdropBlur' | 'inputBg' | 'inputBorderColor' | 'inputBorderRadius' | 'inputBorderType' | 'inputErrorColor' | 'inputFocusBorderColor' | 'inputIconColor' | 'inputIconPosition' | 'inputPadding' | 'inputShadow' | 'inputSuccessColor' | 'inputTextColor' | 'isAutoHideEnabled' | 'isNavHidden' | 'isSplitViewEnabled' | 'layerBackdropBlur' | 'layerBackdropOpacity' | 'layeredShadows' | 'layerElevationFactor' | 'layout' | 'layoutDensity' | 'layoutGap' | 'layoutGapLg' | 'layoutGapMd' | 'layoutGapSm' | 'layoutGridTemplate' | 'layoutPadding' | 'matrixBlur' | 'matrixBorderColor' | 'matrixGap' | 'matrixItemBg' | 'matrixRadius' | 'matrixSearchBg' | 'maxContentWidth' | 'modalActionAlignment' | 'modalBorderRadius' | 'modalHeaderStyle' | 'modalOverlayBlur' | 'modalOverlayColor' | 'mode' | 'monoFont' | 'motionDurationFast' | 'motionDurationInstant' | 'motionDurationNormal' | 'motionDurationSlow' | 'motionEaseIn' | 'motionEaseMain' | 'motionEaseOut' | 'motionStaggerDelay' | 'navActiveMarkerColor' | 'navActiveMarkerGlow' | 'navbarLayout' | 'navigationStyle' | 'navItemActiveColor' | 'noiseIntensity' | 'pageTransitionType' | 'primaryColor' | 'reducedMotion' | 'scrollbarThumbColor' | 'scrollbarWidth' | 'scrollPadding' | 'scrollRadius' | 'scrollThumbColor' | 'scrollThumbHoverOpacity' | 'scrollThumbOpacity' | 'scrollTrackOpacity' | 'scrollWidth' | 'searchPositionSidebar' | 'searchPositionTopbar' | 'secondaryColor' | 'securityPulseSpeed' | 'securityShieldGlow' | 'shadowAmbientAlpha' | 'shadowColorMode' | 'shadowIntensity' | 'shadowOrientation' | 'shadowProjectionAlpha' | 'shadowProjectionBlur' | 'sidebarActiveColor' | 'sidebarBlur' | 'sidebarColor' | 'sidebarHoverColor' | 'sidebarMaxWidth' | 'sidebarMinWidth' | 'sidebarNoiseOpacity' | 'sidebarPosition' | 'sidebarShadow' | 'sidebarWidth' | 'statusErrorColor' | 'statusInfoColor' | 'statusSuccessColor' | 'statusWarningColor' | 'surfaceColor' | 'surfaceIntensity' | 'surfaceMaterial' | 'switchBackdropBlur' | 'switchLabelPosition' | 'switchPulseColor' | 'switchStyleType' | 'switchThumbBg' | 'switchTrackActiveBg' | 'systemTone' | 'tabGap' | 'tableActionPosition' | 'tableBorderColor' | 'tableBorderRadius' | 'tableCellPadding' | 'tableDensity' | 'tableHeaderBg' | 'tableRowHoverBg' | 'tableZebraStriping' | 'tabSectionMargin' | 'tertiaryColor' | 'textColorMaster' | 'textColorMuted' | 'textColorSecondary' | 'textGlowIntensity' | 'textSmoothing' | 'texture' | 'textureColor' | 'textureOpacity' | 'titleColor' | 'tooltipBg' | 'tooltipRadius' | 'topbarActiveColor' | 'topbarColor' | 'topbarHeight' | 'topbarHoverColor' | 'topbarNoiseOpacity' | 'topbarTitleColor' | 'vignetteOpacity' | 'vignetteSoftness' | 'zIndexBase' | 'zIndexModal' | 'zIndexSidebar' | 'zIndexToast' | 'zIndexTooltip';
 
 /**
  * Contrato do Theme Payload com DOMÍNIO DE CHAVES FECHADO: somente design tokens
@@ -896,6 +896,54 @@ declare const SarakDataGridImpl: React__default.FC<SarakDataGridProps>;
  */
 declare const SarakDataGrid: React$1.LazyExoticComponent<React$1.FC<SarakDataGridProps>>;
 
+/**
+ * SarakMarkdownRenderer (Spec 15, Regra 1) — implementação pesada (lazy).
+ *
+ * Ingere Markdown cru e o renderiza como elementos estilizados pelos tokens Sarak
+ * (`var(--sx-*)`), com highlight de código atrelado ao modo (dark/light) do tema.
+ * Segurança (Spec 40): NÃO usa `dangerouslySetInnerHTML` nem `rehype-raw` — HTML cru
+ * no Markdown é tratado como texto literal (não executado); URLs passam por uma
+ * allowlist de esquemas seguros (`javascript:`/`data:` viram href vazio).
+ *
+ * A dependência pesada (`react-markdown` + `react-syntax-highlighter`) vive AQUI; o
+ * `index.ts` exporta isto via `React.lazy`, mantendo-a fora do entry de quem não a usa.
+ */
+
+interface SarakMarkdownRendererProps {
+    /** String de Markdown cru a renderizar. */
+    content: string;
+    className?: string;
+}
+
+declare const SarakMarkdownRenderer: React$1.LazyExoticComponent<React$1.FC<SarakMarkdownRendererProps>>;
+
+/**
+ * SarakLightbox (Spec 15, Regra 3) — galeria/carrossel em overlay escuro.
+ *
+ * Reaproveita o modelo de foco transversal (`useFocusTrap` da Spec 41): trap + ESC +
+ * restauração do foco ao fechar. Navega entre mídias por botões prev/next e pelas
+ * setas do teclado (←/→), com contador de posição. Renderiza via portal no topo do DOM.
+ * Leve (sem dependência nova) — não precisa de `React.lazy`.
+ */
+
+interface LightboxImage {
+    src: string;
+    alt?: string;
+}
+interface SarakLightboxProps {
+    /** Mídias da galeria, na ordem de exibição. */
+    images: LightboxImage[];
+    /** Controla a visibilidade do overlay. */
+    isOpen: boolean;
+    /** Índice inicial ao abrir (default: 0). */
+    initialIndex?: number;
+    /** Fecha o overlay (ESC, clique no ✕ ou no fundo). */
+    onClose: () => void;
+    /** Notifica a troca de mídia (avançar/retroceder). */
+    onIndexChange?: (index: number) => void;
+}
+declare const SarakLightbox: React__default.FC<SarakLightboxProps>;
+
 interface SarakChartEngineProps {
     type: 'line' | 'area' | 'bar' | 'pie' | 'radar' | 'gauge' | 'scatter' | 'heatmap' | 'funnel' | 'treemap' | 'candlestick' | 'sunburst' | 'histogram' | 'boxplot';
     data: any[];
@@ -915,11 +963,32 @@ interface SarakChartEngineProps {
 declare const SarakChartEngine: React__default.FC<SarakChartEngineProps>;
 
 /**
+ * Presets: Temas Globais
+ *
+ * Configurações que alteram a aplicação inteira de uma vez.
+ * Formato: { id: ThemePresetId; name: string; description: string; design: Record<string, unknown> }
+ *
+ * `design` é `Record<string, unknown>` (Zero `any` — §0.6) e NÃO o `SarakThemePayload`
+ * estrito: os presets legados carregam valores que divergiram do domínio fechado do
+ * payload (ex.: `logoMinimalUrl`, `cardVariant: "solid"`), reconciliação pendente com a
+ * paridade 1:1:1:1:1 (ver `Provider/types.ts`). A blindagem estrita vive na diretiva
+ * `theme` (Spec 42), que autores de manifesto consomem via `Partial<SarakThemePayload>`.
+ */
+/**
+ * União conhecida dos ids de preset (fonte única; espelha `GLOBAL_THEMES`).
+ * Adicionar um tema = adicionar seu id aqui e importá-lo abaixo. Consumida pela
+ * diretiva `theme` (Spec 42) como o ramo "preset nomeado".
+ */
+declare const THEME_PRESET_IDS: readonly ["sarak-sovereign", "crystal-glass", "cyberpunk-neon", "holographic-glass", "industrial-terminal", "nature-breeze", "neo-brutalism", "synthwave-retro", "nebula-space", "dot-matrix-elegant", "stellar-nebula", "kinetic-flow", "cyber-retro-wave", "minimalist-airy", "data-terminal", "neumorphic-mobile", "industrial-dashboard", "asymmetric-editorial"];
+type ThemePresetId = (typeof THEME_PRESET_IDS)[number];
+
+/**
  * Manifest Schema e Gramática do Nó (Spec 20). `ManifestNode` é a Lei do JSON do bloco
  * funcional — análoga ao `SarakThemePayload` do Design Engine; todos os motores a consomem.
  * Contrato Zero Any (Regra 3): cada diretiva tem tipo próprio (sem `any` nem `Record`
  * aberto); as specs donas refinam os tipos sem quebrar o contrato.
  */
+
 /** Valor serializável de um manifesto JSON. Substitui qualquer `any` em props. */
 type ManifestValue = string | number | boolean | null | ManifestValue[] | {
     [key: string]: ManifestValue;
@@ -988,10 +1057,7 @@ type ValidationSchema = ValidationRule[];
 type DataSourceMethod = 'GET' | 'POST' | 'PUT' | 'PATCH' | 'DELETE';
 /** Estados do ciclo de vida de um nó de dados (Spec 31, Regra 2). */
 type DataNodeState = 'loading' | 'success' | 'empty' | 'error';
-/**
- * Overrides opcionais dos estados de um nó com `source` (Spec 31, Regra 2):
- * cada estado pode declarar um nó Sarak próprio em vez do placeholder padrão.
- */
+/** Overrides dos estados de um nó com `source` (Spec 31, Regra 2): cada estado pode ter nó próprio. */
 interface DataSourceStates {
     /** Nó exibido durante o carregamento (default: Skeleton mínimo). */
     loading?: ManifestNode;
@@ -1001,9 +1067,8 @@ interface DataSourceStates {
     error?: ManifestNode;
 }
 /**
- * Diretiva de fonte de dados assíncrona (Spec 31). O nó carrega seus próprios dados
- * ao montar, deposita-os no DataStore na chave `into` e expõe o ciclo de vida.
- * A E/S NUNCA é embutida: passa pelo `networkInterceptor` injetado (Regra 5).
+ * Fonte de dados assíncrona (Spec 31): carrega ao montar, deposita em `into`, expõe
+ * o ciclo de vida; a E/S passa pelo `networkInterceptor` injetado (Regra 5).
  */
 interface DataSourceDirective {
     /** Endpoint/identificador da fonte (interpolável). */
@@ -1019,10 +1084,7 @@ interface DataSourceDirective {
     /** Overrides dos nós de estado (loading/empty/error). */
     states?: DataSourceStates;
 }
-/**
- * Diretiva de modelo de formulário / two-way binding (Spec 32, Regra 1).
- * O valor do campo é genérico (lido/escrito via `FormState`), nunca `any` (Regra 5).
- */
+/** Modelo de form / two-way binding (Spec 32, Regra 1): valor lido/escrito via `FormState`, nunca `any`. */
 interface FormModelDirective {
     /** Caminho no estado vinculado ao campo (lido do DataStore e escrito de volta). */
     path: string;
@@ -1039,23 +1101,34 @@ interface FormScopeDirective {
     /** Quando restaurar os valores iniciais (ex.: sucesso do submit). */
     resetOn?: FormResetTrigger;
 }
-/** Diretiva responsiva (Spec 16). Override de props por breakpoint. */
+/**
+ * Diretiva responsiva (Spec 16, Regra 2): override de props em cascata
+ * mobile-first (`mob` base → `tab` → `desk`). Cada camada é `Partial` das props
+ * base — Zero Any (Regra 3); resolvida sem remontar o nó (Regra 5).
+ */
 interface ResponsiveDirective {
-    /** Overrides aplicados por breakpoint (`desktop`/`tablet`/`mobile`). */
-    breakpoints: Record<string, ManifestProps>;
+    mob?: Partial<ManifestProps>;
+    tab?: Partial<ManifestProps>;
+    desk?: Partial<ManifestProps>;
 }
-/** Mapa de rotas declarativas (Spec 33). */
-type RouteMap = Record<string, ManifestNode>;
-/** Diretiva de app-shell (Spec 33). */
+/** Alvo de rota (Spec 33): subárvore inline ou referência lazy a manifesto externo. */
+type RouteTarget = ManifestNode | {
+    lazy: string;
+};
+/** Mapa de rotas (Spec 33): caminho → subárvore montada na região `content`. */
+type RouteMap = Record<string, RouteTarget>;
+/**
+ * Diretiva de app-shell (Spec 33, Regra 1): regiões persistentes (sidebar/topbar)
+ * + slot `content` ("<slot-rotas>") onde a rota ativa monta sua subárvore.
+ */
 interface ShellDirective {
-    /** Identificador do layout de shell. */
-    layout?: string;
+    sidebar?: ManifestNode;
+    topbar?: ManifestNode;
+    content: string;
 }
-/** Diretiva de tema por região (Spec 42 — bridge com DesignScope). */
-interface ThemeDirective {
-    /** Nome do preset/escopo de tema aplicado à sub-árvore. */
-    scope: string;
-}
+/** Diretiva de tema por região (Spec 42 — bridge `DesignScope`): preset (`ThemePresetId`) ou
+ *  binding `"{{designTheme}}"` (R4), ou override parcial (`SarakThemePayload`) sobre o herdado (R3). */
+type ThemeDirective = ThemePresetId | (string & {}) | Partial<SarakThemePayload>;
 /** Diretiva de acessibilidade (Spec 41). */
 type AriaDirective = Record<string, string | number | boolean>;
 /** Mapa de slots nomeados (Spec 20, Regra 6). Ex.: header/body/footer. */
@@ -1219,8 +1292,9 @@ declare const getByPath: (root: unknown, path: string) => unknown;
 declare const resolveScopedPath: (path: string, localScope: StateRecord, globalState: unknown) => unknown;
 /**
  * Escreve `value` em `path` de forma IMUTÁVEL: clona apenas o trajeto afetado,
- * preservando o resto da árvore por referência (barato e anti-loop). Retorna a
- * nova raiz; objetos não tocados mantêm identidade (seletores não disparam à toa).
+ * preservando o resto da árvore por referência (barato e anti-loop). Arrays no
+ * caminho são preservados como arrays (escrita em índice como `list.0.name`).
+ * Retorna a nova raiz; objetos não tocados mantêm identidade (seletores não disparam à toa).
  */
 declare const setByPath: (root: StateRecord, path: string, value: unknown) => StateRecord;
 
@@ -1263,6 +1337,81 @@ interface SarakDataStore<TState extends StateRecord = StateRecord> {
  * O agendamento de flush usa microtask para coalescer escritas síncronas.
  */
 declare const createSarakDataStore: <TState extends StateRecord = StateRecord>(initialState: TState) => SarakDataStore<TState>;
+
+/** Item navegável da Command Palette (Spec 14, Regra 1). */
+interface NavigationItem {
+    /** Identificador único. */
+    id: string;
+    /** Rótulo exibido e base da busca. */
+    label: string;
+    /** Termos extra para o filtro (além do label). */
+    keywords?: string;
+    /** Ícone opcional à esquerda. */
+    icon?: React__default.ReactNode;
+}
+interface SarakSpotlightProps {
+    /** Itens disponíveis para navegação instantânea. */
+    items: NavigationItem[];
+    /** Atalho de ativação global (default: `mod+k` = Ctrl/Cmd+K). */
+    shortcut?: string;
+    /** Modo controlado: estado de abertura. */
+    open?: boolean;
+    /** Notifica mudanças de abertura (abrir via atalho / fechar via Esc). */
+    onOpenChange?: (open: boolean) => void;
+    /** Acionado ao confirmar um item (Enter ou clique). */
+    onSelect: (item: NavigationItem) => void;
+    /** Placeholder do input central. */
+    placeholder?: string;
+}
+
+/** Passo de um fluxo orientado (Spec 14, Regra 2). */
+interface StepConfig {
+    /** Rótulo do passo. */
+    label: string;
+    /** Descrição/legenda opcional. */
+    description?: string;
+}
+type StepperOrientation = 'horizontal' | 'vertical';
+interface SarakStepperProps {
+    /** Passos na ordem do fluxo. */
+    steps: StepConfig[];
+    /** Índice (0-based) do passo atual. */
+    current: number;
+    /** Disposição (default: horizontal). */
+    orientation?: StepperOrientation;
+    className?: string;
+}
+
+/** Migalha do caminho de navegação (Spec 14, Regra 3). */
+interface BreadcrumbItem {
+    /** Rótulo exibido. */
+    label: string;
+    /** Destino opcional (acionado via `onNavigate`, não pela URL diretamente). */
+    href?: string;
+    /** Ícone opcional à esquerda do rótulo. */
+    icon?: React__default.ReactNode;
+}
+interface SarakBreadcrumbsProps {
+    /** Caminho do usuário, da raiz à folha. */
+    items: BreadcrumbItem[];
+    /** Separador entre migalhas (default: `/`). */
+    separator?: React__default.ReactNode;
+    /** Delega a navegação ao host (Spec 33, Regra 3) — não manipula a URL. */
+    onNavigate?: (href: string) => void;
+    className?: string;
+}
+
+interface SarakPaginationProps {
+    /** Página atual (1-based). */
+    current: number;
+    /** Total de páginas. */
+    total: number;
+    /** Máximo de botões numéricos antes de compactar com reticências (default: 7). */
+    maxVisible?: number;
+    /** Disparado ao escolher uma página válida (diferente da atual). */
+    onChange: (page: number) => void;
+    className?: string;
+}
 
 interface SarakInputProps extends InputHTMLAttributes<HTMLInputElement> {
     label?: string;
@@ -1381,6 +1530,10 @@ declare const NATIVE_COMPONENTS: {
     readonly SarakTextarea: React$1.FC<SarakTextareaProps>;
     readonly SarakSwitch: React$1.FC<SarakSwitchProps>;
     readonly SarakSlider: React$1.FC<SarakSliderProps>;
+    readonly SarakSpotlight: React$1.FC<SarakSpotlightProps>;
+    readonly SarakStepper: React$1.FC<SarakStepperProps>;
+    readonly SarakBreadcrumbs: React$1.FC<SarakBreadcrumbsProps>;
+    readonly SarakPagination: React$1.FC<SarakPaginationProps>;
 };
 /** União dos `type` nativos oficiais — fonte do `ComponentType` (Spec 22, Regra 1). */
 type NativeComponentType = keyof typeof NATIVE_COMPONENTS;
@@ -1910,17 +2063,31 @@ declare const usePersistedSlice: (store: SarakDataStore<StateRecord> | undefined
  * diretivas + Error Boundary por nó).
  */
 
+/**
+ * Contrato do importador (Spec 30, Regra 2). As 4 chaves cruciais: `payload`,
+ * `dataStore`, `networkInterceptor`, `routerInterceptor` (+ `route` da Spec 33).
+ * `manifest`/`onNavigate` permanecem como aliases retrocompatíveis.
+ */
 interface SarakManifestRendererProps {
-    /** Nó raiz do manifesto (deve declarar `schemaVersion`). */
-    manifest: unknown;
+    /** Nó raiz do manifesto (deve declarar `schemaVersion`). Alias canônico: `payload`. */
+    manifest?: unknown;
+    /** Payload do manifesto (Spec 30, Regra 2) — string/objeto JSON. Alias de `manifest`. */
+    payload?: unknown;
     /** Store reativo opcional (Spec 21), injetado pelo importador. */
     dataStore?: SarakDataStore<StateRecord>;
     /** Registry a usar; default = singleton da biblioteca. */
     registry?: ComponentRegistry;
     /** Interceptor de rede injetado (Spec 31, Regra 5) — toda E/S passa por ele. */
     networkInterceptor?: NetworkInterceptor;
-    /** Callback de navegação do importador (Spec 25, ação `navigate`). */
+    /** Ponte de navegação do host (Spec 30, Regra 2): processa os `navigate` do JSON. */
+    routerInterceptor?: NavigateFn;
+    /** @deprecated Use `routerInterceptor`. Mantido por compatibilidade (Spec 25). */
     onNavigate?: NavigateFn;
+    /**
+     * Rota ativa informada pelo host (Spec 33, Regra 3): a Sarak reage e resolve qual
+     * subárvore de `routes` monta na região `content` — NUNCA controla a URL diretamente.
+     */
+    route?: string;
     /**
      * Tela de recuperação global (Spec 27, Regra 2). Override do importador; se ausente,
      * usa a chave `fallbackErrorUI` do próprio manifesto.
@@ -2069,4 +2236,4 @@ interface SarakRouterState {
  */
 declare function useSarakRouter(basePath?: string): SarakRouterState;
 
-export { ACTION_HANDLERS, type ActionHandler, type ActionList, type AriaDirective, type BadgeSize, type BadgeVariant, type BindingExpression, type ComponentRegistry, type ComponentResolution, type ComponentType, type ConditionExpression, ConditionSyntaxError, type ContextMenuPosition, CustomizationPanel, DESIGN_MANIFEST, DIRECTIVE_OWNERS, type DataNodeState, type DataSourceController, type DataSourceDirective, type DataSourceMethod, type DataSourceStates, DesignScope, DeviceProvider, type DeviceType, type DirectiveName, type DiscoveredModule, type DispatchContext, DynamicRenderer, ExpandableCard, type ExpandedNode, FORM_META_KEY, type FormModelDirective, type FormResetTrigger, type FormScope, FormScopeContext, type FormScopeDirective, type FormStore, IconMap, type IconName, LanguageSelector, type ManifestAction, type ManifestComponent, type ManifestComponentProps, type ManifestNode, type ManifestProps, type ManifestRoot, type ManifestValidationError, type ManifestValidationResult, type ManifestValue, type MatrixNodeConfig, type ModalLayoutContext, type ModuleManifest, ModuleSelector, NATIVE_COMPONENTS, type NativeComponentType, type NavigateFn, type NetworkInterceptor, type NetworkRequest, type NodeParts, type OverlayController, type OverlayRequest, type PersistDirective, type Pipe, RESERVED_DIRECTIVES, type RenderForDirective, type RenderForResult, type ResponsiveDirective, type RouteMap, STORAGE_NAMESPACE, STRUCTURAL_KEYS, SUPPORTED_SCHEMA_VERSION, SarakAnalyticalPage, type SarakAnalyticalPageProps, SarakAuthScreen, type SarakAuthScreenProps, SarakBadge, type SarakBadgeProps, SarakCardGrid, SarakCatalogGrid, SarakChart, SarakChartEngine, SarakChat, SarakContextMenu, type SarakContextMenuProps, SarakDataEmpty, type SarakDataEmptyProps, SarakDataGrid, SarakDataGridImpl, type SarakDataGridProps, type SarakDataStore, SarakDrawer, type SarakDrawerProps, SarakEmptyState, SarakErrorBoundary, type SarakErrorBoundaryProps, SarakExpandableMatrix, type SarakExpandableMatrixProps, SarakFallback, type SarakFallbackProps, SarakForm, SarakHidden, SarakIcon, type SarakIconProps, SarakManagementGrid, SarakManifestRenderer, SarakManifestRenderer as SarakManifestRendererDefault, type SarakManifestRendererProps, type SarakMatrixManifest, SarakModal, type SarakModalProps, type SarakModule, type SarakOverlayController, SarakOverlayProvider, type SarakOverlayRequest, type SarakRouterState, SarakSecurityOrchestrator, SarakShell, SarakSkeleton, type SarakSkeletonProps, SarakStats, type SarakTabItem, SarakTable, SarakTabs, type SarakTabsProps$1 as SarakTabsProps, SarakToastProvider, SarakTooltip, type SarakTooltipProps, SarakUIProvider, type Selector, type ShellDirective, type SkeletonShape, type SlotMap, SocialButton, type StateRecord, SubmitBlockedError, type ThemeDirective, ThemeToggle, type ToastController, type ToastOptions, type ToastVariant, type TooltipPosition, UserMenu, VIRTUALIZE_THRESHOLD, type ValidationError, type ValidationRule, type ValidationRuleName, type ValidationSchema, type ValidationTypeName, type VisualContract, type VisualContractType, coerceEventValue, createComponentRegistry, createFormScope, createSarakDataStore, debounce, defaultComponentRegistry, evaluateCondition, expandRenderFor, firstErrorMessage, getByPath, getLocalComponent, getPipe, getRegisteredModules, getSarakModule, hasPipe, interpolate, interpolateProps, isReservedDirective, isStructuralKey, namespacedKey, readPersisted, registerComponent, registerLocalComponent, registerPipe, registerSarakModule, removePersisted, resolveBinding, resolveComponent, resolveExpression, resolveModelValue, resolveScopedPath, runActions, separateNodeParts, setByPath, subscribeStorage, subscribeToRegistry, throttle, useDataSource, useDesignDraft, useFormScope, useModalLayoutStyles, useModuleDiscovery, useOverlay, usePersistedSlice, useSarakDevice, useSarakRouter, useSarakUI, useToast, validateManifestNode, validateManifestRoot, validateValue, writePersisted };
+export { ACTION_HANDLERS, type ActionHandler, type ActionList, type AriaDirective, type BadgeSize, type BadgeVariant, type BindingExpression, type ComponentRegistry, type ComponentResolution, type ComponentType, type ConditionExpression, ConditionSyntaxError, type ContextMenuPosition, CustomizationPanel, DESIGN_MANIFEST, DIRECTIVE_OWNERS, type DataNodeState, type DataSourceController, type DataSourceDirective, type DataSourceMethod, type DataSourceStates, DesignScope, DeviceProvider, type DeviceType, type DirectiveName, type DiscoveredModule, type DispatchContext, DynamicRenderer, ExpandableCard, type ExpandedNode, FORM_META_KEY, type FormModelDirective, type FormResetTrigger, type FormScope, FormScopeContext, type FormScopeDirective, type FormStore, IconMap, type IconName, LanguageSelector, type LightboxImage, type ManifestAction, type ManifestComponent, type ManifestComponentProps, type ManifestNode, type ManifestProps, type ManifestRoot, type ManifestValidationError, type ManifestValidationResult, type ManifestValue, type MatrixNodeConfig, type ModalLayoutContext, type ModuleManifest, ModuleSelector, NATIVE_COMPONENTS, type NativeComponentType, type NavigateFn, type NetworkInterceptor, type NetworkRequest, type NodeParts, type OverlayController, type OverlayRequest, type PersistDirective, type Pipe, RESERVED_DIRECTIVES, type RenderForDirective, type RenderForResult, type ResponsiveDirective, type RouteMap, type RouteTarget, STORAGE_NAMESPACE, STRUCTURAL_KEYS, SUPPORTED_SCHEMA_VERSION, SarakAnalyticalPage, type SarakAnalyticalPageProps, SarakAuthScreen, type SarakAuthScreenProps, SarakBadge, type SarakBadgeProps, SarakCardGrid, SarakCatalogGrid, SarakChart, SarakChartEngine, SarakChat, SarakContextMenu, type SarakContextMenuProps, SarakDataEmpty, type SarakDataEmptyProps, SarakDataGrid, SarakDataGridImpl, type SarakDataGridProps, type SarakDataStore, SarakDrawer, type SarakDrawerProps, SarakEmptyState, SarakErrorBoundary, type SarakErrorBoundaryProps, SarakExpandableMatrix, type SarakExpandableMatrixProps, SarakFallback, type SarakFallbackProps, SarakForm, SarakHidden, SarakIcon, type SarakIconProps, SarakLightbox, type SarakLightboxProps, SarakManagementGrid, SarakManifestRenderer, SarakManifestRenderer as SarakManifestRendererDefault, type SarakManifestRendererProps, SarakMarkdownRenderer, type SarakMarkdownRendererProps, type SarakMatrixManifest, SarakModal, type SarakModalProps, type SarakModule, type SarakOverlayController, SarakOverlayProvider, type SarakOverlayRequest, type SarakRouterState, SarakSecurityOrchestrator, SarakShell, SarakSkeleton, type SarakSkeletonProps, SarakStats, type SarakTabItem, SarakTable, SarakTabs, type SarakTabsProps$1 as SarakTabsProps, SarakToastProvider, SarakTooltip, type SarakTooltipProps, SarakUIProvider, type Selector, type ShellDirective, type SkeletonShape, type SlotMap, SocialButton, type StateRecord, SubmitBlockedError, type ThemeDirective, ThemeToggle, type ToastController, type ToastOptions, type ToastVariant, type TooltipPosition, UserMenu, VIRTUALIZE_THRESHOLD, type ValidationError, type ValidationRule, type ValidationRuleName, type ValidationSchema, type ValidationTypeName, type VisualContract, type VisualContractType, coerceEventValue, createComponentRegistry, createFormScope, createSarakDataStore, debounce, defaultComponentRegistry, evaluateCondition, expandRenderFor, firstErrorMessage, getByPath, getLocalComponent, getPipe, getRegisteredModules, getSarakModule, hasPipe, interpolate, interpolateProps, isReservedDirective, isStructuralKey, namespacedKey, readPersisted, registerComponent, registerLocalComponent, registerPipe, registerSarakModule, removePersisted, resolveBinding, resolveComponent, resolveExpression, resolveModelValue, resolveScopedPath, runActions, separateNodeParts, setByPath, subscribeStorage, subscribeToRegistry, throttle, useDataSource, useDesignDraft, useFormScope, useModalLayoutStyles, useModuleDiscovery, useOverlay, usePersistedSlice, useSarakDevice, useSarakRouter, useSarakUI, useToast, validateManifestNode, validateManifestRoot, validateValue, writePersisted };

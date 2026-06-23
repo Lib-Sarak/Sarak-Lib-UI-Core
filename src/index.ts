@@ -29,12 +29,16 @@ export * from './components/atomic/Modals';
 export * from './components/atomic/Feedback';
 export * from './components/atomic/UX';
 export * from './components/atomic/DataDisplay/SarakDataGrid';
+// Renderizadores de mídia (Spec 15): Markdown (lazy) + Lightbox. PDFViewer fica na Onda 10.
+export * from './components/atomic/Media';
 export { default as SarakChartEngine } from './components/engines/charts/SarakChartEngine';
 
-// Manifest Engine — Bloco Funcional
-// Fundação (Onda 0): gramática do nó (20), estado reativo (21), registry (22).
-// Motor de Dados Vivo (Onda 1): data-binding/pipes (24), renderFor (23),
-// fonte de dados declarativa (31) e o Renderer que orquestra o pipeline (30).
+// Manifest Engine — Bloco Funcional (Contrato do Importador — Spec 30)
+// Porta de entrada da automação total: `<SarakManifestRenderer />` + suas Interfaces
+// TS. Contrato (Spec 30, Regra 2): `payload` · `dataStore` (21) · `networkInterceptor`
+// (31) · `routerInterceptor` (25) — e `route`/`shell`/`routes` da composição em app
+// multi-página (Spec 33). Fundação 20–22; engines 23–29/31; responsividade como dado
+// (16). Os átomos isolados (SarakButton, etc.) seguem exportados acima (Regra 1).
 export * from './core/Manifest';
 
 // Discovery and Dynamic Rendering (Universal Bridge)

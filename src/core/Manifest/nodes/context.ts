@@ -24,8 +24,16 @@ export interface NodeRenderContext {
     navigate?: NavigateFn;
     toast?: ToastController;
     overlay?: OverlayController;
+    /** Rota ativa informada pelo host (Spec 33, Regra 3): a Sarak reage, não controla a URL. */
+    route?: string;
     /** Tela de recuperação global renderizada pelos Error Boundaries (Spec 27, Regra 2). */
     fallbackErrorUI?: ManifestNode;
+    /**
+     * Profundidade de aninhamento da recursão (Spec 40, Regra 5 — limite anti-DoS).
+     * Incrementada a cada nível em `ManifestNodeRenderer`; ao exceder `MAX_NESTING_DEPTH`
+     * o nó cai no Fallback em vez de estourar a pilha do navegador.
+     */
+    depth?: number;
 }
 
 export interface NodeRendererProps {

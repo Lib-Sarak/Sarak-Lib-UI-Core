@@ -1,5 +1,6 @@
 import { useMemo } from 'react';
 import { getAllDesignTokens } from '../master-map';
+import { BREAKPOINT_TABLET, BREAKPOINT_DESKTOP } from '../breakpoints';
 import { computeColorVariants, parseToRgba, rgbToHsl } from '../../../core/Provider/utils/color-engine';
 import { syncThemeWithMode } from '../presets/themes/color-engine';
 
@@ -16,7 +17,10 @@ const toKebabCase = (str: string) =>
  * nos 17 schemas seja traduzido para o padrão CSS que o sistema espera.
  * Agora com suporte reativo à inversão dinâmica de cores (Sincronização de Modo).
  */
-export const useDesignVariables = (rawDesign: any, scopeSelector: string = ':root') => {
+export const useDesignVariables = (
+    rawDesign: Record<string, unknown> | null | undefined,
+    scopeSelector: string = ':root',
+) => {
     return useMemo(() => {
         if (!rawDesign) return { variables: {}, attributes: {}, responsiveCSS: '' };
 
@@ -24,7 +28,7 @@ export const useDesignVariables = (rawDesign: any, scopeSelector: string = ':roo
         // Garante que, independente do que estiver no banco de dados ou no estado bruto, 
         // as cores sejam matematicamente forçadas a obedecer o targetMode (Claro/Escuro) 
         // antes de serem injetadas no DOM global.
-        const targetMode = rawDesign.mode || 'dark';
+        const targetMode = (rawDesign.mode as 'light' | 'dark') || 'dark';
         const design = syncThemeWithMode(rawDesign, targetMode);
 
         const variables: Record<string, string> = {};
@@ -36,6 +40,12 @@ export const useDesignVariables = (rawDesign: any, scopeSelector: string = ':roo
         
         const isDark = targetMode === 'dark';
         const anchorColor = isDark ? '#000000' : '#ffffff';
+
+        // Breakpoints como dado (Spec 16, Regra 1): lê os tokens do tema (se o
+        // tema os declarar) com fallback à fonte única; `@media` não aceita
+        // `var(--...)`, então o valor numérico é interpolado aqui na geração.
+        const bpTablet = typeof design.breakpointTablet === 'number' ? design.breakpointTablet : BREAKPOINT_TABLET;
+        const bpDesktop = typeof design.breakpointDesktop === 'number' ? design.breakpointDesktop : BREAKPOINT_DESKTOP;
 
         // 1. PROCESSAMENTO ATÔMICO (Do Token para a Variável)
         tokens.forEach(token => {
@@ -49,7 +59,7 @@ export const useDesignVariables = (rawDesign: any, scopeSelector: string = ':roo
 
             if (isResponsiveValue) {
                 // FALLBACK: Gerador Responsivo Inteligente
-                const parseUnit = (v: any) => token.unit && typeof v === 'number' ? `${v}${token.unit}` : String(v);
+                const parseUnit = (v: unknown) => token.unit && typeof v === 'number' ? `${v}${token.unit}` : String(v);
                 const mobVal = parseUnit(value.mob);
                 const tabVal = parseUnit(value.tab);
                 const deskVal = parseUnit(value.desk);
@@ -167,12 +177,12 @@ export const useDesignVariables = (rawDesign: any, scopeSelector: string = ':roo
 ${scopeSelector} {
 ${responsiveCssRoot}
 }
-@media (min-width: 768px) {
+@media (min-width: ${bpTablet}px) {
   ${scopeSelector} {
 ${responsiveCssTab}
   }
 }
-@media (min-width: 1024px) {
+@media (min-width: ${bpDesktop}px) {
   ${scopeSelector} {
 ${responsiveCssDesk}
   }

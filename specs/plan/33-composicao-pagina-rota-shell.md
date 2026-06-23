@@ -2,7 +2,7 @@
 tipo: "spec"
 titulo: "Composição de Página, Rota e App-Shell como Dado"
 dominio: "Sarak-Lib-UI-Core (Visual + Lógica / Híbrida)"
-status: "🔴 A Implementar"
+status: "🟡 Implementado (base — carregador de rota lazy {lazy:id} pendente, liga ao contrato do importador)"
 prioridade: "Crítica"
 tags: ["spec", "shell", "routing", "pages", "manifest"]
 relacionados: ["20-manifest-schema-e-gramatica-no", "30-contrato-importador-renderer", "14-expansao-navegacao"]

@@ -20,6 +20,8 @@ import { validateValue } from '../Form/validate';
 import { usePersistedSlice } from '../Storage';
 import { SarakFallback } from '../Registry/Fallback';
 import { ManifestNodeRenderer } from './renderNode';
+import { useResponsiveProps } from './useResponsiveProps';
+import { mapAriaDirective } from './aria';
 import type { NodeRendererProps } from './context';
 
 /** Maior `debounce`/`throttle` declarado entre as ações do nó (Spec 25, Regra 3). */
@@ -92,14 +94,24 @@ export const LeafNode: React.FC<NodeRendererProps> = ({ node, path, scope, ctx }
         return handler;
     }, [debounceMs, throttleMs]);
 
+    // Responsividade como dado (Spec 16): sobrepõe as props base com a camada do
+    // breakpoint ativo ANTES da interpolação (cascata mobile-first). Hook chamado
+    // incondicionalmente, antes de qualquer early-return.
+    const { props } = separateNodeParts(node);
+    const responsiveProps = useResponsiveProps(props, node.responsive);
+
     const { Component, isFallback } = ctx.registry.resolve(node.type, node.id ?? path);
     if (isFallback) {
         return <SarakFallback type={node.type} nodeId={node.id ?? path} />;
     }
 
-    const { props } = separateNodeParts(node);
     // Props finais são `unknown` para acomodar handlers de evento (funções não são `ManifestValue`).
-    const finalProps: Record<string, unknown> = { ...interpolateProps(props, scope, ctx.global) };
+    const finalProps: Record<string, unknown> = { ...interpolateProps(responsiveProps, scope, ctx.global) };
+
+    // a11y como dado (Spec 41, Regra 5): a diretiva `aria` do nó vira atributos ARIA reais
+    // repassados ao átomo (`label` → `aria-label`, etc.). Aplicada antes do `disabledIf`
+    // para que o `aria-disabled` derivado da regra (abaixo) tenha a palavra final.
+    Object.assign(finalProps, mapAriaDirective(node.aria));
 
     // `disabledIf` (Spec 26, Regra 2): NÃO remove o nó — apenas bloqueia ações. Injeta
     // `disabled`/`aria-disabled` e o átomo aplica seu próprio estilo de desabilitado.

@@ -21,22 +21,37 @@ import type { StateRecord } from './DataStore/resolvePath';
 import type { NetworkInterceptor } from './DataSource/useDataSource';
 import type { NavigateFn } from './Dispatcher';
 import { ManifestNodeRenderer } from './nodes/renderNode';
+import { ShellRouterNode } from './nodes/ShellRouterNode';
 import { EMPTY_STATE, type NodeRenderContext } from './nodes/context';
 import { SarakSkeleton } from '../../components/atomic/Feedback/SarakSkeleton';
 import { useToast } from '../../components/atomic/Feedback/SarakToast';
 import { useOverlay } from '../../components/atomic/Modals/SarakOverlayProvider';
 
+/**
+ * Contrato do importador (Spec 30, Regra 2). As 4 chaves cruciais: `payload`,
+ * `dataStore`, `networkInterceptor`, `routerInterceptor` (+ `route` da Spec 33).
+ * `manifest`/`onNavigate` permanecem como aliases retrocompatíveis.
+ */
 export interface SarakManifestRendererProps {
-    /** Nó raiz do manifesto (deve declarar `schemaVersion`). */
-    manifest: unknown;
+    /** Nó raiz do manifesto (deve declarar `schemaVersion`). Alias canônico: `payload`. */
+    manifest?: unknown;
+    /** Payload do manifesto (Spec 30, Regra 2) — string/objeto JSON. Alias de `manifest`. */
+    payload?: unknown;
     /** Store reativo opcional (Spec 21), injetado pelo importador. */
     dataStore?: SarakDataStore<StateRecord>;
     /** Registry a usar; default = singleton da biblioteca. */
     registry?: ComponentRegistry;
     /** Interceptor de rede injetado (Spec 31, Regra 5) — toda E/S passa por ele. */
     networkInterceptor?: NetworkInterceptor;
-    /** Callback de navegação do importador (Spec 25, ação `navigate`). */
+    /** Ponte de navegação do host (Spec 30, Regra 2): processa os `navigate` do JSON. */
+    routerInterceptor?: NavigateFn;
+    /** @deprecated Use `routerInterceptor`. Mantido por compatibilidade (Spec 25). */
     onNavigate?: NavigateFn;
+    /**
+     * Rota ativa informada pelo host (Spec 33, Regra 3): a Sarak reage e resolve qual
+     * subárvore de `routes` monta na região `content` — NUNCA controla a URL diretamente.
+     */
+    route?: string;
     /**
      * Tela de recuperação global (Spec 27, Regra 2). Override do importador; se ausente,
      * usa a chave `fallbackErrorUI` do próprio manifesto.
@@ -51,10 +66,13 @@ export interface SarakManifestRendererProps {
  */
 export const SarakManifestRenderer: React.FC<SarakManifestRendererProps> = ({
     manifest,
+    payload,
     dataStore,
     registry = defaultComponentRegistry,
     networkInterceptor,
+    routerInterceptor,
     onNavigate,
+    route,
     fallbackErrorUI,
 }) => {
     const snapshot = useSyncExternalStore(
@@ -69,8 +87,15 @@ export const SarakManifestRenderer: React.FC<SarakManifestRendererProps> = ({
     const toast = useToast();
     const overlay = useOverlay();
 
-    const validation = validateManifestRoot(manifest);
+    // Contrato do importador (Spec 30, Regra 2): `payload`/`routerInterceptor` são os
+    // nomes canônicos; `manifest`/`onNavigate` ficam como aliases retrocompatíveis.
+    const source = payload ?? manifest;
+    const navigate = routerInterceptor ?? onNavigate;
+
+    const validation = validateManifestRoot(source);
     if (!validation.valid) {
+        // Regra 3: payload malformado → Error Boundary base + aviso explícito no console.
+        console.error('[Sarak] Manifesto de UI Inválido:', validation.errors[0]?.message ?? 'estrutura inválida');
         return (
             <SarakFallback
                 type="ManifestoInvalido"
@@ -81,27 +106,31 @@ export const SarakManifestRenderer: React.FC<SarakManifestRendererProps> = ({
 
     // Tela de recuperação (Spec 27, Regra 2): override do importador tem prioridade;
     // senão usa a chave `fallbackErrorUI` do próprio manifesto.
-    const rootFallback = fallbackErrorUI ?? (manifest as ManifestRoot).fallbackErrorUI;
+    const rootFallback = fallbackErrorUI ?? (source as ManifestRoot).fallbackErrorUI;
 
     const ctx: NodeRenderContext = {
         registry,
         store: dataStore,
         interceptor: networkInterceptor,
         global: snapshot ?? EMPTY_STATE,
-        navigate: onNavigate,
+        navigate,
+        route,
         toast,
         overlay,
         fallbackErrorUI: rootFallback,
     };
 
+    // App-shell + roteamento como dado (Spec 33): quando o raiz declara `shell`, o
+    // shell orquestra as regiões persistentes e a rota ativa; senão, árvore única.
+    const root = source as ManifestRoot;
+
     return (
         <React.Suspense fallback={<SarakSkeleton />}>
-            <ManifestNodeRenderer
-                node={manifest as ManifestNode}
-                path="root"
-                scope={EMPTY_STATE}
-                ctx={ctx}
-            />
+            {root.shell ? (
+                <ShellRouterNode root={root} ctx={ctx} />
+            ) : (
+                <ManifestNodeRenderer node={root} path="root" scope={EMPTY_STATE} ctx={ctx} />
+            )}
         </React.Suspense>
     );
 };

@@ -25,3 +25,17 @@ Sistemas backend Python devem consultar os dados gerados em `dist/catalog/` ou c
 ## 5. Prevenção de Colisão (Prefixing)
 Todos os tokens expostos pela biblioteca utilizam o prefixo estrito `--sx-` nas suas variáveis CSS nativas (ex: `--sx-color-background-base`). 
 Esta regra existe para garantir que o consumidor (ex: Tailwind nativo do Site Earendel) não sofra colisão e sobreponha indevidamente as regras fundamentais do motor Sarak.
+
+## 6. Fronteira de Confiança (Spec 40 — Segurança)
+O `SarakManifestRenderer` **executa um manifesto JSON autorado por usuário ou IA**. Por isso a Sarak trata o `payload` (manifesto) e o `dataStore` como **não confiáveis por padrão**. A divisão de responsabilidades é explícita — sem suposição implícita:
+
+### 6.1 O que a Sarak garante (do lado da biblioteca)
+- **Sanitização centralizada:** todo HTML/Markdown rico passa por um único canal (`sanitizeHtml`, baseado em DOMPurify). É **proibido** `dangerouslySetInnerHTML` com conteúdo externo fora desse canal. *(Única exceção: o `<style>` de `responsiveCSS` do `DesignScope`, que é CSS gerado pela própria engine, não conteúdo externo.)*
+- **Avaliação sem `eval`:** `renderIf`/`disabledIf` usam um *Safe Evaluator* (Spec 26) que **falha fechado** — sem acesso a `window`/`document`/globais; expressão fora da gramática retorna `false`.
+- **Interpolação escapada:** `{{...}}` (Spec 24) coage a `string`/primitivo; nunca concatena HTML cru executável.
+- **Limites anti-DoS:** profundidade máxima de aninhamento (`MAX_NESTING_DEPTH`) e teto de itens em `renderFor` (`MAX_RENDERFOR_ITEMS`) impedem manifestos hostis de travar o navegador.
+
+### 6.2 O que o importador DEVE prover (do lado do consumidor)
+- **Autenticação e segredos:** a Sarak **nunca** embute tokens nem chama a rede diretamente. O `networkInterceptor` é o ÚNICO canal de rede — o importador injeta auth (headers/cookies), faz a chamada e devolve os dados.
+- **Roteamento:** o `routerInterceptor`/`NavigateFn` é responsabilidade do importador (ex.: o router do Next.js). A Sarak reage à rota, não controla a URL.
+- **Validação de origem do manifesto:** garantir que o JSON vem de uma fonte legítima e aplicar CSP/CORS no nível do app — a sanitização da Sarak é defesa em profundidade, não substitui o controle de origem.

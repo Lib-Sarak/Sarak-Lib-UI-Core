@@ -1,4 +1,4 @@
-import React, { InputHTMLAttributes } from 'react';
+import React, { InputHTMLAttributes, useId } from 'react';
 import { useSarakUI } from '../../../core/Provider/SarakUIProvider';
 import { useAtomicStyles } from '../hooks/useAtomicStyles';
 import { useStructuralStyles } from '../hooks/useStructuralStyles';
@@ -29,14 +29,21 @@ export const SarakSwitch: React.FC<SarakSwitchProps> = ({
 
     const baseClass = `${layoutStyles.containerClass} ${disabled ? 'opacity-50 cursor-not-allowed pointer-events-none' : ''} ${className}`;
 
+    // a11y (Spec 41, Regras 2/5): padrão WAI-ARIA switch + descrição linkada por id.
+    const reactId = useId();
+    const descId = description ? `${reactId}-desc` : undefined;
+
     return (
         <label className={baseClass.trim()} style={{ ...layoutStyles.style, ...style }}>
             <div className="relative">
                 <input
                     type="checkbox"
+                    role="switch"
                     className="sr-only"
                     disabled={disabled}
                     checked={checked}
+                    aria-checked={!!checked}
+                    aria-describedby={descId}
                     {...props}
                 />
                 <div
@@ -52,7 +59,7 @@ export const SarakSwitch: React.FC<SarakSwitchProps> = ({
             {(label || description) && (
                 <div className={layoutStyles.textContainerClass}>
                     {label && <span className="text-sm font-medium text-[var(--sx-color-text-muted)]">{label}</span>}
-                    {description && <span className="text-xs text-[var(--sx-color-text-muted)]">{description}</span>}
+                    {description && <span id={descId} className="text-xs text-[var(--sx-color-text-muted)]">{description}</span>}
                 </div>
             )}
         </label>

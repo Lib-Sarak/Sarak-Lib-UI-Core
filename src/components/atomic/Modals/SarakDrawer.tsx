@@ -1,6 +1,7 @@
 import React, { useEffect, useState } from 'react';
 import { createPortal } from 'react-dom';
 import { useSarakUI } from '../../../core/Provider/SarakUIProvider';
+import { useFocusTrap } from './hooks/useFocusTrap';
 
 export interface SarakDrawerProps {
     isOpen: boolean;
@@ -25,6 +26,8 @@ export const SarakDrawer: React.FC<SarakDrawerProps> = ({
 }) => {
     const { design } = useSarakUI();
     const [shouldRender, setShouldRender] = useState(isOpen);
+    // Modelo de foco transversal (Spec 41, Regra 1): trap + ESC + restauração ao fechar.
+    const { containerRef, handleTrap } = useFocusTrap(isOpen, onClose);
 
     const animSlow = design?.animSlow;
     const animDuration = typeof animSlow === 'number' ? `${animSlow}ms` : (animSlow as string) || '400ms';
@@ -47,16 +50,6 @@ export const SarakDrawer: React.FC<SarakDrawerProps> = ({
             document.body.style.overflow = '';
         };
     }, [isOpen, animDuration]);
-
-    useEffect(() => {
-        const handleEsc = (e: KeyboardEvent) => {
-            if (e.key === 'Escape' && isOpen) {
-                onClose();
-            }
-        };
-        document.addEventListener('keydown', handleEsc);
-        return () => document.removeEventListener('keydown', handleEsc);
-    }, [isOpen, onClose]);
 
     if (!shouldRender) return null;
 
@@ -118,11 +111,14 @@ export const SarakDrawer: React.FC<SarakDrawerProps> = ({
                 aria-hidden="true"
             />
             {/* Drawer */}
-            <div 
+            <div
+                ref={containerRef}
                 className={`overflow-y-auto ${className}`}
                 style={getPositionStyles()}
                 role="dialog"
                 aria-modal="true"
+                tabIndex={-1}
+                onKeyDown={handleTrap}
             >
                 {children}
             </div>

@@ -1,15 +1,49 @@
 /**
  * Presets: Temas Globais
- * 
+ *
  * Configurações que alteram a aplicação inteira de uma vez.
- * Formato esperado: { id: string; name: string; description: string; design: Record<string, any> }
+ * Formato: { id: ThemePresetId; name: string; description: string; design: Record<string, unknown> }
+ *
+ * `design` é `Record<string, unknown>` (Zero `any` — §0.6) e NÃO o `SarakThemePayload`
+ * estrito: os presets legados carregam valores que divergiram do domínio fechado do
+ * payload (ex.: `logoMinimalUrl`, `cardVariant: "solid"`), reconciliação pendente com a
+ * paridade 1:1:1:1:1 (ver `Provider/types.ts`). A blindagem estrita vive na diretiva
+ * `theme` (Spec 42), que autores de manifesto consomem via `Partial<SarakThemePayload>`.
  */
 
+/**
+ * União conhecida dos ids de preset (fonte única; espelha `GLOBAL_THEMES`).
+ * Adicionar um tema = adicionar seu id aqui e importá-lo abaixo. Consumida pela
+ * diretiva `theme` (Spec 42) como o ramo "preset nomeado".
+ */
+export const THEME_PRESET_IDS = [
+    'sarak-sovereign',
+    'crystal-glass',
+    'cyberpunk-neon',
+    'holographic-glass',
+    'industrial-terminal',
+    'nature-breeze',
+    'neo-brutalism',
+    'synthwave-retro',
+    'nebula-space',
+    'dot-matrix-elegant',
+    'stellar-nebula',
+    'kinetic-flow',
+    'cyber-retro-wave',
+    'minimalist-airy',
+    'data-terminal',
+    'neumorphic-mobile',
+    'industrial-dashboard',
+    'asymmetric-editorial',
+] as const;
+
+export type ThemePresetId = (typeof THEME_PRESET_IDS)[number];
+
 export interface ThemePreset {
-    id: string;
+    id: ThemePresetId;
     name: string;
     description: string;
-    design: Record<string, any>;
+    design: Record<string, unknown>;
 }
 
 export * from './stellar-nebula';

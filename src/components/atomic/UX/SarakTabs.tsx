@@ -31,6 +31,27 @@ export const SarakTabs: React.FC<SarakTabsProps> = ({
     className,
     listClassName,
 }) => {
+    // Navegação por teclado (Spec 41, Regra 3 — WAI-ARIA tabs): setas movem para a aba
+    // habilitada anterior/próxima; Home/End vão para a primeira/última. Pula desabilitadas.
+    const moveTo = (start: number, step: number): void => {
+        const total = tabs.length;
+        let idx = start;
+        for (let i = 0; i < total; i++) {
+            idx = (idx + step + total) % total;
+            if (tabs[idx] && !tabs[idx].disabled) {
+                onChange(tabs[idx].id);
+                return;
+            }
+        }
+    };
+
+    const handleKeyDown = (e: React.KeyboardEvent<HTMLButtonElement>, index: number): void => {
+        if (e.key === 'ArrowRight') { e.preventDefault(); moveTo(index, 1); return; }
+        if (e.key === 'ArrowLeft') { e.preventDefault(); moveTo(index, -1); return; }
+        if (e.key === 'Home') { e.preventDefault(); moveTo(-1, 1); return; }
+        if (e.key === 'End') { e.preventDefault(); moveTo(tabs.length, -1); }
+    };
+
     return (
         <div className={twMerge("w-full flex flex-col", className)}>
             <div 
@@ -43,7 +64,7 @@ export const SarakTabs: React.FC<SarakTabsProps> = ({
                 )}
                 role="tablist"
             >
-                {tabs.map((tab) => {
+                {tabs.map((tab, index) => {
                     const isActive = activeTab === tab.id;
                     const isDisabled = tab.disabled;
 
@@ -54,6 +75,8 @@ export const SarakTabs: React.FC<SarakTabsProps> = ({
                             aria-selected={isActive}
                             aria-disabled={isDisabled}
                             disabled={isDisabled}
+                            tabIndex={isActive ? 0 : -1}
+                            onKeyDown={(e) => handleKeyDown(e, index)}
                             onClick={() => !isDisabled && onChange(tab.id)}
                             className={clsx(
                                 "relative flex items-center justify-center gap-2 py-2.5 px-3 text-sm font-bold transition-colors",

@@ -94,6 +94,9 @@ const apiCall: ActionHandler = async (action, ctx) => {
     }
 
     if (!ctx.interceptor) {
+        // Spec 30, Regra 2: o importador não injetou o `networkInterceptor`. Avisa em
+        // desenvolvimento (artefato testável) e bloqueia a cadeia (a E/S nunca é embutida).
+        console.warn('[Sarak:Dispatcher] api_call sem networkInterceptor injetado pelo importador (Spec 30).');
         throw new Error('[Sarak:Dispatcher] api_call sem networkInterceptor injetado.');
     }
     // `endpoint` é interpolado mesmo quando misturado a texto (ex.: `/users/{{user.id}}`).

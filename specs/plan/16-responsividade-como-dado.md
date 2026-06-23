@@ -2,7 +2,7 @@
 tipo: "spec"
 titulo: "Responsividade como Dado (Breakpoints + Diretiva responsive)"
 dominio: "Sarak-Lib-UI-Core (Visual + Lógica / Híbrida)"
-status: "🔴 A Implementar"
+status: "🟢 Implementado"
 prioridade: "Alta"
 tags: ["spec", "responsive", "breakpoints", "layout", "manifest"]
 relacionados: ["20-manifest-schema-e-gramatica-no", "10-expansao-micro-layout"]

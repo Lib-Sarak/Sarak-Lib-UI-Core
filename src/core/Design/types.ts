@@ -1,6 +1,6 @@
 /**
  * Sarak Industrial Design Schema (v11.0)
- * 
+ *
  * Define o contrato para mapeamento de 100% das funcionalidades e componentes.
  */
 

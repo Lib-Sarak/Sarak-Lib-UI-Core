@@ -1,0 +1,169 @@
+import React, { useEffect, useMemo, useRef, useState } from 'react';
+
+/** Item navegável da Command Palette (Spec 14, Regra 1). */
+export interface NavigationItem {
+    /** Identificador único. */
+    id: string;
+    /** Rótulo exibido e base da busca. */
+    label: string;
+    /** Termos extra para o filtro (além do label). */
+    keywords?: string;
+    /** Ícone opcional à esquerda. */
+    icon?: React.ReactNode;
+}
+
+export interface SarakSpotlightProps {
+    /** Itens disponíveis para navegação instantânea. */
+    items: NavigationItem[];
+    /** Atalho de ativação global (default: `mod+k` = Ctrl/Cmd+K). */
+    shortcut?: string;
+    /** Modo controlado: estado de abertura. */
+    open?: boolean;
+    /** Notifica mudanças de abertura (abrir via atalho / fechar via Esc). */
+    onOpenChange?: (open: boolean) => void;
+    /** Acionado ao confirmar um item (Enter ou clique). */
+    onSelect: (item: NavigationItem) => void;
+    /** Placeholder do input central. */
+    placeholder?: string;
+}
+
+/**
+ * Registra um atalho de teclado GLOBAL de forma segura (adiciona/remove o listener
+ * no ciclo de vida). A closure sempre vê o handler mais recente via ref (Spec 14,
+ * Regra 1 / Teste Unitário).
+ */
+const useGlobalShortcut = (combo: string, onTrigger: () => void): void => {
+    const handlerRef = useRef(onTrigger);
+    handlerRef.current = onTrigger;
+    useEffect(() => {
+        const parts = combo.toLowerCase().split('+').map((part) => part.trim());
+        const key = parts[parts.length - 1];
+        const needsMod = parts.some((part) => ['mod', 'ctrl', 'control', 'cmd', 'meta'].includes(part));
+        const onKeyDown = (event: KeyboardEvent): void => {
+            if (event.key.toLowerCase() !== key) return;
+            if (needsMod && !(event.metaKey || event.ctrlKey)) return;
+            event.preventDefault();
+            handlerRef.current();
+        };
+        window.addEventListener('keydown', onKeyDown);
+        return () => window.removeEventListener('keydown', onKeyDown);
+    }, [combo]);
+};
+
+const matches = (item: NavigationItem, query: string): boolean => {
+    const haystack = `${item.label} ${item.keywords ?? ''}`.toLowerCase();
+    return haystack.includes(query.toLowerCase());
+};
+
+/**
+ * Command Palette global (Spec 14, Regra 1): modal por cima de tudo, acionável por
+ * atalho, com input central + lista filtrada e navegação por teclado (setas + Enter).
+ */
+export const SarakSpotlight: React.FC<SarakSpotlightProps> = ({
+    items,
+    shortcut = 'mod+k',
+    open,
+    onOpenChange,
+    onSelect,
+    placeholder = 'Buscar…',
+}) => {
+    const [internalOpen, setInternalOpen] = useState(false);
+    const [query, setQuery] = useState('');
+    const [activeIndex, setActiveIndex] = useState(0);
+
+    const isOpen = open ?? internalOpen;
+    const setOpen = (next: boolean): void => {
+        if (open === undefined) setInternalOpen(next);
+        onOpenChange?.(next);
+        if (next) {
+            setQuery('');
+            setActiveIndex(0);
+        }
+    };
+
+    useGlobalShortcut(shortcut, () => setOpen(!isOpen));
+
+    const results = useMemo(() => items.filter((item) => matches(item, query)), [items, query]);
+    const active = Math.min(activeIndex, Math.max(results.length - 1, 0));
+
+    if (!isOpen) return null;
+
+    const choose = (item: NavigationItem | undefined): void => {
+        if (!item) return;
+        onSelect(item);
+        setOpen(false);
+    };
+
+    const onKeyDown = (event: React.KeyboardEvent<HTMLInputElement>): void => {
+        if (event.key === 'ArrowDown') {
+            event.preventDefault();
+            setActiveIndex((index) => Math.min(index + 1, results.length - 1));
+            return;
+        }
+        if (event.key === 'ArrowUp') {
+            event.preventDefault();
+            setActiveIndex((index) => Math.max(index - 1, 0));
+            return;
+        }
+        if (event.key === 'Enter') {
+            event.preventDefault();
+            choose(results[active]);
+            return;
+        }
+        if (event.key === 'Escape') setOpen(false);
+    };
+
+    return (
+        <div
+            className="fixed inset-0 z-[9999] flex items-start justify-center p-4 pt-[12vh] bg-black/50 backdrop-blur-sm"
+            role="presentation"
+            onClick={() => setOpen(false)}
+        >
+            <div
+                role="dialog"
+                aria-modal="true"
+                aria-label="Command Palette"
+                className="w-full max-w-xl rounded-lg overflow-hidden border border-[var(--sx-color-border-base)] bg-[var(--sx-color-surface-base)] shadow-2xl"
+                onClick={(event) => event.stopPropagation()}
+            >
+                <input
+                    autoFocus
+                    type="text"
+                    value={query}
+                    placeholder={placeholder}
+                    onChange={(event) => {
+                        setQuery(event.target.value);
+                        setActiveIndex(0);
+                    }}
+                    onKeyDown={onKeyDown}
+                    aria-label="Campo de busca"
+                    className="w-full px-4 py-3 bg-transparent outline-none text-[var(--sx-color-text-main)] border-b border-[var(--sx-color-border-base)]"
+                />
+                <ul role="listbox" className="max-h-80 overflow-y-auto py-1">
+                    {results.map((item, index) => (
+                        <li
+                            key={item.id}
+                            role="option"
+                            aria-selected={index === active}
+                            onMouseEnter={() => setActiveIndex(index)}
+                            onClick={() => choose(item)}
+                            className={`flex items-center gap-3 px-4 py-2 cursor-pointer text-sm ${
+                                index === active
+                                    ? 'bg-[var(--sx-color-primary-base)] text-[var(--sx-color-surface-base)]'
+                                    : 'text-[var(--sx-color-text-main)]'
+                            }`}
+                        >
+                            {item.icon}
+                            {item.label}
+                        </li>
+                    ))}
+                    {results.length === 0 && (
+                        <li className="px-4 py-6 text-center text-sm text-[var(--sx-color-text-muted)]">
+                            Nenhum resultado
+                        </li>
+                    )}
+                </ul>
+            </div>
+        </div>
+    );
+};

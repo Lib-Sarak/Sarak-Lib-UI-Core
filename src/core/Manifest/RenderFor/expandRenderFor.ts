@@ -38,6 +38,13 @@ export interface RenderForResult {
 /** Limiar de itens a partir do qual o Renderer delega à virtualização (Regra 4). */
 export const VIRTUALIZE_THRESHOLD = 100;
 
+/**
+ * Teto duro de itens (Spec 40, Regra 5 — limite anti-DoS): mesmo virtualizando, um
+ * manifesto hostil com uma lista gigantesca não deve materializar instâncias sem fim.
+ * Acima disto a lista é truncada (com aviso), mantendo o navegador estável.
+ */
+export const MAX_RENDERFOR_ITEMS = 10_000;
+
 const extractKey = (
     item: unknown,
     index: number,
@@ -94,7 +101,16 @@ export const expandRenderFor = (
     void _omit;
     const baseNode = rest as ManifestNode;
 
-    const items: ExpandedNode[] = source.map((item, index) => ({
+    // Teto anti-DoS (Spec 40, Regra 5): trunca listas hostis, mantendo a UI estável.
+    const bounded = source.length > MAX_RENDERFOR_ITEMS ? source.slice(0, MAX_RENDERFOR_ITEMS) : source;
+    if (bounded.length < source.length) {
+        console.warn(
+            `[Sarak:renderFor] lista com ${source.length} itens excede o teto ` +
+            `(${MAX_RENDERFOR_ITEMS}); truncada${node.id ? ` no nó "${node.id}"` : ''}.`,
+        );
+    }
+
+    const items: ExpandedNode[] = bounded.map((item, index) => ({
         node: baseNode,
         scope: { ...scope, [asName]: item, [indexName]: index },
         key: extractKey(item, index, directive.keyBy, node.id),

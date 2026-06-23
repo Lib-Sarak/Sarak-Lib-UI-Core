@@ -30,6 +30,12 @@ import {
     SarakSwitch,
     SarakSlider,
 } from '../../../components/atomic/Inputs';
+import {
+    SarakSpotlight,
+    SarakStepper,
+    SarakBreadcrumbs,
+    SarakPagination,
+} from '../../../components/atomic/Navigation';
 
 /**
  * Registro nativo. `as const` em conjunto com `satisfies` mantém a inferência das
@@ -61,6 +67,11 @@ export const NATIVE_COMPONENTS = {
     SarakTextarea,
     SarakSwitch,
     SarakSlider,
+    // Navegação contextual (Spec 14): Command Palette, Stepper, Breadcrumbs, Paginação.
+    SarakSpotlight,
+    SarakStepper,
+    SarakBreadcrumbs,
+    SarakPagination,
     // Spec 11 completa — sob demanda, pós-Spec 40 (sanitização/fronteira de confiança):
     // SarakDatePicker, SarakTimePicker, SarakMultiSelect (chips), SarakUploader
     // (drag-and-drop), SarakRichText (WYSIWYG blindado), SarakRangeSlider (duplo).

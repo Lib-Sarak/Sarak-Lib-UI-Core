@@ -144,13 +144,26 @@ Cada **onda** é um conjunto construível em conjunto; a ordem **entre** ondas �
 - **Onda 4 — Resiliência e estado**
   - [x] 27 error-boundaries  · [x] 28 persistência
 - **Onda 5 — Aplicação real**
-  - [ ] 33 shell/rotas  · [ ] 16 responsividade  · [ ] 30 contrato-renderer *(composição final)*
-  - [ ] 14 navegação
-- **Onda 6 — Transversais e mídia**
-  - [ ] 40 segurança  · [ ] 41 a11y  · [ ] 42 ponte-tema
-  - [ ] 15 mídia *(sob demanda)*
-- **Onda 7 — Finalização** *(após 0–6, ou em paralelo em baixa prioridade)*
-  - [ ] 50 finalização *(`any` residual → 0, docs, guia do importador, entrega)*
+  - [x] 33 shell/rotas  · [x] 16 responsividade  · [x] 30 contrato-renderer *(composição final)*
+  - [x] 14 navegação
+- **Onda 6 — Transversais** *(mídia re-planejada nas Ondas 7/10)*
+  - [x] 40 segurança *(canal `sanitizeHtml`/DOMPurify + limites anti-DoS: `MAX_NESTING_DEPTH`/`MAX_RENDERFOR_ITEMS` + fronteira de confiança documentada na Spec 08)*  · [x] 41 a11y *(BASE — diretiva `aria` no LeafNode + `useFocusTrap` (Modal/Drawer) + ARIA nos átomos + teclado WAI-ARIA nas Tabs; **resto na Onda 7**)*  · [x] 42 ponte-tema *(diretiva `theme` → `DesignScope` via `resolveTheme`; preset nomeado | override parcial; tipagem reaproveita `SarakThemePayload`)*
+
+> **Princípio de agrupamento das Ondas 7–11:** isolar o atrito. As **Ondas 7–9 não adicionam nenhuma dependência nova** (usam peers já declarados ou são feitas in-house) — entregam leves e rápidas. A **Onda 10 concentra os 3 componentes que trazem lib nova** (cada um = decisão HITL de dependência, sempre `peerDependency` + `React.lazy`, para não inchar o bundle de quem não os usa). A **Onda 11 (Finalização)** fecha o módulo. Specs 11/12/15 só viram 🟢 **completas** quando seu item pesado aterrissar na Onda 10.
+
+- **Onda 7 — a11y completa + mídia leve** ✅ *(zero dependência nova — entregue)*
+  - [x] 41 a11y (resto) *(teclado nos Breadcrumbs (Enter/Espaço) — Pagination/Stepper já nativos/não-interativos; E2E de jornada só-teclado via `user-event`; fix de raiz no `useFocusTrap` — `onClose` por ref)*
+  - [x] 15 mídia (parte 1) *(`SarakMarkdownRenderer` lazy: `react-markdown`+`react-syntax-highlighter` fora do entry, highlight por modo do tema, URLs seguras (Spec 40) · `SarakLightbox` reusando `useFocusTrap`; exportados em `index.ts`. **Registro no manifesto nativo adiado** — exige Suspense no LeafNode + atualizar a Conferência; melhor junto da integração da Spec 15)*
+- **Onda 8 — Entrada de dados** *(Spec 11 — zero dependência nova; `date-fns` e `react-dropzone` já são peers)*
+  - [ ] 11 formulários (resto, exceto RichText) *(RangeSlider · MultiSelect · Uploader · DatePicker/TimePicker — calendário in-house sobre `date-fns`)*
+- **Onda 9 — Densidade de dados** *(Spec 12 — zero dependência nova; `@tanstack/react-virtual` já é peer)*
+  - [ ] 12 data-grids (resto, exceto Kanban) *(Charts: verificar herança de tokens + Sparkline · TreeView (reusa `SarakExpandableMatrix`/`RecursiveMatrixNode`) · DataGrid avançado: pinned/resize/reorder)*
+- **Onda 10 — Componentes pesados (gate de dependência)** *(cada item = decisão HITL de lib; sempre `peerDependency` + `React.lazy`)*
+  - [ ] 15 mídia (parte 2) *(`SarakPDFViewer` — `pdfjs-dist`)*
+  - [ ] 12 data-grids *(`SarakKanban` — DnD: `@dnd-kit` ou HTML5 nativo zero-dep)*
+  - [ ] 11 formulários *(`SarakRichText` — Tiptap/Lexical ou `contentEditable` + `sanitizeHtml` zero-dep)*
+- **Onda 11 — Finalização** *(após as anteriores, ou em paralelo em baixa prioridade)*
+  - [ ] 50 finalização *(`any` residual → 0, docs/README, guia do importador, build/exports)*
 
 > O **30 (Renderer)** existe em versão **mínima** já na Onda 0 (harness para testar a fundação) e só é **finalizado** na Onda 5, quando o contrato completo (`payload`, `dataStore`, `routes`, interceptors) está pronto.
 

@@ -33,12 +33,14 @@ export const SarakSlider: React.FC<SarakSliderProps> = ({
                 </div>
             )}
             
-            <input 
+            <input
                 type="range"
                 disabled={disabled}
+                aria-label={props['aria-label'] ?? label}
+                aria-valuetext={valueLabel !== undefined ? String(valueLabel) : undefined}
                 {...props}
                 className="w-full h-1 rounded-full appearance-none cursor-pointer"
-                style={{ 
+                style={{
                     backgroundColor: trackColor,
                     accentColor: activeColor
                 }}

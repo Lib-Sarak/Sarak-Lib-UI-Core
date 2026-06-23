@@ -6,6 +6,8 @@
  */
 
 import type { DirectiveName } from './directives';
+import type { ThemePresetId } from '../Design/presets/themes';
+import type { SarakThemePayload } from '../Provider/types';
 
 /** Valor serializável de um manifesto JSON. Substitui qualquer `any` em props. */
 export type ManifestValue =
@@ -95,10 +97,7 @@ export type DataSourceMethod = 'GET' | 'POST' | 'PUT' | 'PATCH' | 'DELETE';
 /** Estados do ciclo de vida de um nó de dados (Spec 31, Regra 2). */
 export type DataNodeState = 'loading' | 'success' | 'empty' | 'error';
 
-/**
- * Overrides opcionais dos estados de um nó com `source` (Spec 31, Regra 2):
- * cada estado pode declarar um nó Sarak próprio em vez do placeholder padrão.
- */
+/** Overrides dos estados de um nó com `source` (Spec 31, Regra 2): cada estado pode ter nó próprio. */
 export interface DataSourceStates {
     /** Nó exibido durante o carregamento (default: Skeleton mínimo). */
     loading?: ManifestNode;
@@ -109,9 +108,8 @@ export interface DataSourceStates {
 }
 
 /**
- * Diretiva de fonte de dados assíncrona (Spec 31). O nó carrega seus próprios dados
- * ao montar, deposita-os no DataStore na chave `into` e expõe o ciclo de vida.
- * A E/S NUNCA é embutida: passa pelo `networkInterceptor` injetado (Regra 5).
+ * Fonte de dados assíncrona (Spec 31): carrega ao montar, deposita em `into`, expõe
+ * o ciclo de vida; a E/S passa pelo `networkInterceptor` injetado (Regra 5).
  */
 export interface DataSourceDirective {
     /** Endpoint/identificador da fonte (interpolável). */
@@ -128,10 +126,7 @@ export interface DataSourceDirective {
     states?: DataSourceStates;
 }
 
-/**
- * Diretiva de modelo de formulário / two-way binding (Spec 32, Regra 1).
- * O valor do campo é genérico (lido/escrito via `FormState`), nunca `any` (Regra 5).
- */
+/** Modelo de form / two-way binding (Spec 32, Regra 1): valor lido/escrito via `FormState`, nunca `any`. */
 export interface FormModelDirective {
     /** Caminho no estado vinculado ao campo (lido do DataStore e escrito de volta). */
     path: string;
@@ -151,26 +146,36 @@ export interface FormScopeDirective {
     resetOn?: FormResetTrigger;
 }
 
-/** Diretiva responsiva (Spec 16). Override de props por breakpoint. */
+/**
+ * Diretiva responsiva (Spec 16, Regra 2): override de props em cascata
+ * mobile-first (`mob` base → `tab` → `desk`). Cada camada é `Partial` das props
+ * base — Zero Any (Regra 3); resolvida sem remontar o nó (Regra 5).
+ */
 export interface ResponsiveDirective {
-    /** Overrides aplicados por breakpoint (`desktop`/`tablet`/`mobile`). */
-    breakpoints: Record<string, ManifestProps>;
+    mob?: Partial<ManifestProps>;
+    tab?: Partial<ManifestProps>;
+    desk?: Partial<ManifestProps>;
 }
 
-/** Mapa de rotas declarativas (Spec 33). */
-export type RouteMap = Record<string, ManifestNode>;
+/** Alvo de rota (Spec 33): subárvore inline ou referência lazy a manifesto externo. */
+export type RouteTarget = ManifestNode | { lazy: string };
 
-/** Diretiva de app-shell (Spec 33). */
+/** Mapa de rotas (Spec 33): caminho → subárvore montada na região `content`. */
+export type RouteMap = Record<string, RouteTarget>;
+
+/**
+ * Diretiva de app-shell (Spec 33, Regra 1): regiões persistentes (sidebar/topbar)
+ * + slot `content` ("<slot-rotas>") onde a rota ativa monta sua subárvore.
+ */
 export interface ShellDirective {
-    /** Identificador do layout de shell. */
-    layout?: string;
+    sidebar?: ManifestNode;
+    topbar?: ManifestNode;
+    content: string;
 }
 
-/** Diretiva de tema por região (Spec 42 — bridge com DesignScope). */
-export interface ThemeDirective {
-    /** Nome do preset/escopo de tema aplicado à sub-árvore. */
-    scope: string;
-}
+/** Diretiva de tema por região (Spec 42 — bridge `DesignScope`): preset (`ThemePresetId`) ou
+ *  binding `"{{designTheme}}"` (R4), ou override parcial (`SarakThemePayload`) sobre o herdado (R3). */
+export type ThemeDirective = ThemePresetId | (string & {}) | Partial<SarakThemePayload>;
 
 /** Diretiva de acessibilidade (Spec 41). */
 export type AriaDirective = Record<string, string | number | boolean>;
