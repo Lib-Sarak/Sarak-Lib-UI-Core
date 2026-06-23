@@ -24,6 +24,12 @@ export * from './features/DesignEngine/Library/CustomizationPanel';
 export * from './components/atomic/Atoms';
 export * from './components/atomic/Cards/ExpandableCard';
 export * from './components/atomic/Inputs/Controls';
+// Entrada de dados avançada (Spec 11 / Onda 8) — também resolvíveis via manifesto.
+export * from './components/atomic/Inputs/SarakRangeSlider';
+export * from './components/atomic/Inputs/SarakMultiSelect';
+export * from './components/atomic/Inputs/SarakUploader';
+export * from './components/atomic/Inputs/SarakDatePicker';
+export * from './components/atomic/Inputs/SarakTimePicker';
 export * from './components/atomic/Templates';
 export * from './components/atomic/Modals';
 export * from './components/atomic/Feedback';

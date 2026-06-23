@@ -1,5 +1,5 @@
 import * as React$1 from 'react';
-import React__default, { ReactNode, InputHTMLAttributes, TextareaHTMLAttributes, SelectHTMLAttributes } from 'react';
+import React__default, { ReactNode, HTMLAttributes, InputHTMLAttributes, TextareaHTMLAttributes, SelectHTMLAttributes } from 'react';
 import * as react_jsx_runtime from 'react/jsx-runtime';
 
 type DesignTokenId = 'accentColor' | 'aiGlowColor' | 'aiPanelBg' | 'animEnabled' | 'animFast' | 'animInstant' | 'animNormal' | 'animSlow' | 'atmosphereNoiseOpacity' | 'badgeRadius' | 'bgBaseColor' | 'bgGradientAngle' | 'bgGradientMode' | 'bgNoiseAnimation' | 'bgNoiseDensity' | 'bodyFont' | 'bodyLineHeight' | 'bodySize' | 'bodyWeight' | 'borderBeamEnabled' | 'borderRadius' | 'borderRadiusLg' | 'borderRadiusMd' | 'borderRadiusSm' | 'borderStyle' | 'borderType' | 'borderWidth' | 'breakpointDesktop' | 'breakpointTablet' | 'btnActiveScale' | 'btnBackdropBlur' | 'btnBorderRadius' | 'btnGhostHoverBg' | 'btnHoverScale' | 'btnNeonGlowColor' | 'btnNeonPulseSpeed' | 'btnPrimaryBg' | 'btnPrimaryText' | 'btnRadiusBL' | 'btnRadiusBR' | 'btnRadiusTL' | 'btnRadiusTR' | 'btnSecondaryBg' | 'btnStyleType' | 'buttonIconPosition' | 'buttonWidthStrategy' | 'cardActionBtnBorderRadius' | 'cardActionBtnHoverBg' | 'cardActionBtnPadding' | 'cardActionBtnPrimaryBg' | 'cardActionBtnText' | 'cardActionClickScale' | 'cardBackdropBlur' | 'cardBackgroundColor' | 'cardBorderBottom' | 'cardBorderColor' | 'cardBorderLeft' | 'cardBorderOpacity' | 'cardBorderRadius' | 'cardBorderRight' | 'cardBorderTop' | 'cardBorderWidth' | 'cardContentAlignment' | 'cardFooterBg' | 'cardFooterBorder' | 'cardGeometricCut' | 'cardGlowColor' | 'cardGlowIntensity' | 'cardHeaderBg' | 'cardHeaderBorder' | 'cardHeaderPadding' | 'cardHoverGlowIncrease' | 'cardHoverStyle' | 'cardHoverTranslate' | 'cardImagePosition' | 'cardInnerGlowColor' | 'cardInnerGlowWidth' | 'cardLayoutDirection' | 'cardPaddingMd' | 'cardRadiusBL' | 'cardRadiusBR' | 'cardRadiusTL' | 'cardRadiusTR' | 'cardSearchBgFocus' | 'cardSearchBorderBeamActive' | 'cardSearchPlaceholderColor' | 'cardSearchTextFocusColor' | 'cardShadow' | 'cardShadowSpread' | 'cardSpotlightOpacity' | 'cardSurfaceOpacity' | 'cardTextAlign' | 'cardTextureOpacity' | 'cardTextureType' | 'cardTitleColor' | 'cardTitleFontSize' | 'cardTitleFontWeight' | 'cardTitleIconGlow' | 'cardTitleLetterSpacing' | 'cardVariant' | 'chartColorPalette' | 'chartGridOpacity' | 'chartShowGrid' | 'chartSmoothing' | 'chartThickness' | 'chartTooltipBg' | 'chartType' | 'chatAnimationSpeed' | 'chatBubbleRadius' | 'chatBubbleStyle' | 'chatUserBg' | 'checkboxActiveColor' | 'colorBgBody' | 'colorBgLayer1' | 'colorBgLayer2' | 'colorBgModal' | 'colorDepth' | 'colorPalette' | 'colorVariation' | 'contentAlignment' | 'contrastCurve' | 'easeMain' | 'easeOut' | 'flowGridStyle' | 'flowNodeRadius' | 'focusRingWidth' | 'formFieldDensity' | 'formLabelPosition' | 'formLayoutDirection' | 'glassBlur' | 'glassOpacity' | 'glassRoughness' | 'glassSaturation' | 'glassSpecularity' | 'globalBackgroundBlendMode' | 'globalBackgroundBlur' | 'globalBackgroundImageUrl' | 'globalBackgroundOpacity' | 'globalContrast' | 'globalFlowAlign' | 'globalFlowDirection' | 'globalSaturation' | 'globalSectionGap' | 'h1LetterSpacing' | 'h1LineHeight' | 'h1Size' | 'h1Weight' | 'h2LineHeight' | 'h2Size' | 'h2Weight' | 'headerAlignment' | 'headingFont' | 'headingTransform' | 'iconFamily' | 'iconStrokeWidth' | 'iconWeight' | 'identityAlignment' | 'identityFontFamily' | 'identityFontWeight' | 'identityHoverEffect' | 'identityPadding' | 'identityRedirectUrl' | 'identityTracking' | 'imageCardHoverZoom' | 'imageCardOverlayOpacity' | 'industrialRegistry' | 'inputBackdropBlur' | 'inputBg' | 'inputBorderColor' | 'inputBorderRadius' | 'inputBorderType' | 'inputErrorColor' | 'inputFocusBorderColor' | 'inputIconColor' | 'inputIconPosition' | 'inputPadding' | 'inputShadow' | 'inputSuccessColor' | 'inputTextColor' | 'isAutoHideEnabled' | 'isNavHidden' | 'isSplitViewEnabled' | 'layerBackdropBlur' | 'layerBackdropOpacity' | 'layeredShadows' | 'layerElevationFactor' | 'layout' | 'layoutDensity' | 'layoutGap' | 'layoutGapLg' | 'layoutGapMd' | 'layoutGapSm' | 'layoutGridTemplate' | 'layoutPadding' | 'matrixBlur' | 'matrixBorderColor' | 'matrixGap' | 'matrixItemBg' | 'matrixRadius' | 'matrixSearchBg' | 'maxContentWidth' | 'modalActionAlignment' | 'modalBorderRadius' | 'modalHeaderStyle' | 'modalOverlayBlur' | 'modalOverlayColor' | 'mode' | 'monoFont' | 'motionDurationFast' | 'motionDurationInstant' | 'motionDurationNormal' | 'motionDurationSlow' | 'motionEaseIn' | 'motionEaseMain' | 'motionEaseOut' | 'motionStaggerDelay' | 'navActiveMarkerColor' | 'navActiveMarkerGlow' | 'navbarLayout' | 'navigationStyle' | 'navItemActiveColor' | 'noiseIntensity' | 'pageTransitionType' | 'primaryColor' | 'reducedMotion' | 'scrollbarThumbColor' | 'scrollbarWidth' | 'scrollPadding' | 'scrollRadius' | 'scrollThumbColor' | 'scrollThumbHoverOpacity' | 'scrollThumbOpacity' | 'scrollTrackOpacity' | 'scrollWidth' | 'searchPositionSidebar' | 'searchPositionTopbar' | 'secondaryColor' | 'securityPulseSpeed' | 'securityShieldGlow' | 'shadowAmbientAlpha' | 'shadowColorMode' | 'shadowIntensity' | 'shadowOrientation' | 'shadowProjectionAlpha' | 'shadowProjectionBlur' | 'sidebarActiveColor' | 'sidebarBlur' | 'sidebarColor' | 'sidebarHoverColor' | 'sidebarMaxWidth' | 'sidebarMinWidth' | 'sidebarNoiseOpacity' | 'sidebarPosition' | 'sidebarShadow' | 'sidebarWidth' | 'statusErrorColor' | 'statusInfoColor' | 'statusSuccessColor' | 'statusWarningColor' | 'surfaceColor' | 'surfaceIntensity' | 'surfaceMaterial' | 'switchBackdropBlur' | 'switchLabelPosition' | 'switchPulseColor' | 'switchStyleType' | 'switchThumbBg' | 'switchTrackActiveBg' | 'systemTone' | 'tabGap' | 'tableActionPosition' | 'tableBorderColor' | 'tableBorderRadius' | 'tableCellPadding' | 'tableDensity' | 'tableHeaderBg' | 'tableRowHoverBg' | 'tableZebraStriping' | 'tabSectionMargin' | 'tertiaryColor' | 'textColorMaster' | 'textColorMuted' | 'textColorSecondary' | 'textGlowIntensity' | 'textSmoothing' | 'texture' | 'textureColor' | 'textureOpacity' | 'titleColor' | 'tooltipBg' | 'tooltipRadius' | 'topbarActiveColor' | 'topbarColor' | 'topbarHeight' | 'topbarHoverColor' | 'topbarNoiseOpacity' | 'topbarTitleColor' | 'vignetteOpacity' | 'vignetteSoftness' | 'zIndexBase' | 'zIndexModal' | 'zIndexSidebar' | 'zIndexToast' | 'zIndexTooltip';
@@ -327,6 +327,154 @@ declare const ModuleSelector: ({ currentModule, setCurrentModule, modules }: {
     setCurrentModule: (id: string) => void;
     modules: any[];
 }) => react_jsx_runtime.JSX.Element;
+
+/** Par ordenado [início, fim] de um intervalo contínuo. */
+type RangeValue = [number, number];
+interface SarakRangeSliderProps extends Omit<HTMLAttributes<HTMLDivElement>, 'onChange' | 'defaultValue'> {
+    label?: string;
+    min?: number;
+    max?: number;
+    step?: number;
+    /** Controlado: par [início, fim]. */
+    value?: RangeValue;
+    /** Não-controlado: valor inicial. */
+    defaultValue?: RangeValue;
+    disabled?: boolean;
+    error?: string;
+    /** Esconde as tooltips de valor sobre os thumbs. */
+    hideTooltips?: boolean;
+    /** Recebe o novo par já clampado/ordenado (Spec 32: `onChange(value)`). */
+    onChange?: (value: RangeValue) => void;
+}
+/**
+ * Componente Atômico: SarakRangeSlider (Spec 11, Regra 5)
+ * Slider duplo (início/fim) para intervalos contínuos, com tooltips de valor.
+ * Dois `<input type="range">` sobrepostos preservam a navegação por teclado nativa;
+ * o trilho colorido entre os thumbs reflete os tokens do Design Engine.
+ */
+declare const SarakRangeSlider: React__default.FC<SarakRangeSliderProps>;
+
+interface MultiSelectOption {
+    value: string;
+    label: string;
+}
+interface SarakMultiSelectProps {
+    label?: string;
+    options: MultiSelectOption[];
+    /** Controlado: lista de values selecionados. */
+    value?: string[];
+    /** Não-controlado: seleção inicial. */
+    defaultValue?: string[];
+    placeholder?: string;
+    disabled?: boolean;
+    error?: string;
+    className?: string;
+    style?: React__default.CSSProperties;
+    /** Emite a nova lista de values (Spec 32: `onChange(value)`). */
+    onChange?: (value: string[]) => void;
+}
+/**
+ * Componente Atômico: SarakMultiSelect (Spec 11, Regra 2)
+ * Combobox com autocomplete: busca digitada, seleção múltipla e chips deletáveis.
+ * O input de busca e os chips coexistem no mesmo campo — digitar NÃO desmonta os
+ * chips nem perde o foco (Plano de Testes §4).
+ */
+declare const SarakMultiSelect: React__default.FC<SarakMultiSelectProps>;
+
+/**
+ * Tipos estruturais do react-dropzone declarados localmente — os tipos nomeados
+ * (`Accept`/`FileRejection`) não resolvem sob `moduleResolution: node`. O formato
+ * espelha o contrato real da lib: `accept` = MIME → extensões; `FileRejection` =
+ * arquivo + motivos. São aceitos pela assinatura de opções do `useDropzone`.
+ */
+type Accept = Record<string, string[]>;
+interface FileRejection {
+    file: File;
+    errors: Array<{
+        code: string;
+        message: string;
+    }>;
+}
+interface SarakUploaderProps {
+    label?: string;
+    /** Tipos aceitos no formato do react-dropzone (ex.: `{ 'image/*': [] }`). */
+    accept?: Accept;
+    /** Tamanho máximo por arquivo, em bytes. */
+    maxSize?: number;
+    multiple?: boolean;
+    disabled?: boolean;
+    /** Texto-dica abaixo do título da área. */
+    hint?: string;
+    error?: string;
+    className?: string;
+    style?: React__default.CSSProperties;
+    /** Recebe os arquivos aceitos (Spec 32: `onChange(value)`). */
+    onChange?: (files: File[]) => void;
+    /** Recebe as rejeições (ex.: arquivo maior que `maxSize`). */
+    onReject?: (rejections: FileRejection[]) => void;
+}
+/**
+ * Componente Atômico: SarakUploader (Spec 11, Regra 3)
+ * Área drag-and-drop acessível sobre `react-dropzone` (peerDependency). Os estados
+ * (ocioso, arrastando, rejeitado, erro de tamanho) mudam a borda para os tokens de
+ * cor semânticos — `--sx-color-primary` ao arrastar, `--sx-color-danger` ao rejeitar.
+ */
+declare const SarakUploader: React__default.FC<SarakUploaderProps>;
+
+type WeekStart = 0 | 1;
+
+/**
+ * Locale do `date-fns` passado adiante para `format`. Tipado de forma estrutural
+ * (objeto opaco) porque o tipo nomeado `Locale` não resolve sob
+ * `moduleResolution: node` — os locales reais (`ptBR`, etc.) são objetos atribuíveis.
+ */
+type DateLocale = object;
+
+/** Valor: string ISO (single) ou par [início, fim] de ISOs (range). */
+type DatePickerValue = string | [string, string];
+interface SarakDatePickerProps {
+    label?: string;
+    mode?: 'single' | 'range';
+    value?: DatePickerValue;
+    /** Formato de exibição (i18n via JSON), ex.: `dd/MM/yyyy`. */
+    displayFormat?: string;
+    /** Locale do `date-fns` para nomes de mês/dia (i18n). */
+    locale?: DateLocale;
+    weekStartsOn?: WeekStart;
+    placeholder?: string;
+    disabled?: boolean;
+    error?: string;
+    className?: string;
+    style?: React__default.CSSProperties;
+    /** Emite a nova data/intervalo em ISO (Spec 32: `onChange(value)`). */
+    onChange?: (value: DatePickerValue) => void;
+}
+/**
+ * Componente Atômico: SarakDatePicker (Spec 11, Regra 1)
+ * Calendário popover in-house sobre `date-fns`. Suporta seleção única e de intervalo
+ * na mesma interface, formatos i18n configuráveis e navegação por teclado (setas).
+ */
+declare const SarakDatePicker: React__default.FC<SarakDatePickerProps>;
+
+interface SarakTimePickerProps {
+    label?: string;
+    /** Valor no formato 24h `HH:mm`. */
+    value?: string;
+    /** Passo dos minutos (ex.: 5, 15). */
+    minuteStep?: number;
+    disabled?: boolean;
+    error?: string;
+    className?: string;
+    style?: React__default.CSSProperties;
+    /** Emite o novo horário `HH:mm` (Spec 32: `onChange(value)`). */
+    onChange?: (value: string) => void;
+}
+/**
+ * Componente Atômico: SarakTimePicker (Spec 11, Regra 1 — par temporal)
+ * Seleção de horário 24h via dois campos (hora/minuto), com passo de minutos
+ * configurável. Emite `HH:mm`; teclado nativo dos `<select>` cobre a navegação.
+ */
+declare const SarakTimePicker: React__default.FC<SarakTimePickerProps>;
 
 interface SarakTableProps {
     endpoint: string;
@@ -1530,6 +1678,11 @@ declare const NATIVE_COMPONENTS: {
     readonly SarakTextarea: React$1.FC<SarakTextareaProps>;
     readonly SarakSwitch: React$1.FC<SarakSwitchProps>;
     readonly SarakSlider: React$1.FC<SarakSliderProps>;
+    readonly SarakRangeSlider: React$1.FC<SarakRangeSliderProps>;
+    readonly SarakMultiSelect: React$1.FC<SarakMultiSelectProps>;
+    readonly SarakUploader: React$1.FC<SarakUploaderProps>;
+    readonly SarakDatePicker: React$1.FC<SarakDatePickerProps>;
+    readonly SarakTimePicker: React$1.FC<SarakTimePickerProps>;
     readonly SarakSpotlight: React$1.FC<SarakSpotlightProps>;
     readonly SarakStepper: React$1.FC<SarakStepperProps>;
     readonly SarakBreadcrumbs: React$1.FC<SarakBreadcrumbsProps>;
@@ -2236,4 +2389,4 @@ interface SarakRouterState {
  */
 declare function useSarakRouter(basePath?: string): SarakRouterState;
 
-export { ACTION_HANDLERS, type ActionHandler, type ActionList, type AriaDirective, type BadgeSize, type BadgeVariant, type BindingExpression, type ComponentRegistry, type ComponentResolution, type ComponentType, type ConditionExpression, ConditionSyntaxError, type ContextMenuPosition, CustomizationPanel, DESIGN_MANIFEST, DIRECTIVE_OWNERS, type DataNodeState, type DataSourceController, type DataSourceDirective, type DataSourceMethod, type DataSourceStates, DesignScope, DeviceProvider, type DeviceType, type DirectiveName, type DiscoveredModule, type DispatchContext, DynamicRenderer, ExpandableCard, type ExpandedNode, FORM_META_KEY, type FormModelDirective, type FormResetTrigger, type FormScope, FormScopeContext, type FormScopeDirective, type FormStore, IconMap, type IconName, LanguageSelector, type LightboxImage, type ManifestAction, type ManifestComponent, type ManifestComponentProps, type ManifestNode, type ManifestProps, type ManifestRoot, type ManifestValidationError, type ManifestValidationResult, type ManifestValue, type MatrixNodeConfig, type ModalLayoutContext, type ModuleManifest, ModuleSelector, NATIVE_COMPONENTS, type NativeComponentType, type NavigateFn, type NetworkInterceptor, type NetworkRequest, type NodeParts, type OverlayController, type OverlayRequest, type PersistDirective, type Pipe, RESERVED_DIRECTIVES, type RenderForDirective, type RenderForResult, type ResponsiveDirective, type RouteMap, type RouteTarget, STORAGE_NAMESPACE, STRUCTURAL_KEYS, SUPPORTED_SCHEMA_VERSION, SarakAnalyticalPage, type SarakAnalyticalPageProps, SarakAuthScreen, type SarakAuthScreenProps, SarakBadge, type SarakBadgeProps, SarakCardGrid, SarakCatalogGrid, SarakChart, SarakChartEngine, SarakChat, SarakContextMenu, type SarakContextMenuProps, SarakDataEmpty, type SarakDataEmptyProps, SarakDataGrid, SarakDataGridImpl, type SarakDataGridProps, type SarakDataStore, SarakDrawer, type SarakDrawerProps, SarakEmptyState, SarakErrorBoundary, type SarakErrorBoundaryProps, SarakExpandableMatrix, type SarakExpandableMatrixProps, SarakFallback, type SarakFallbackProps, SarakForm, SarakHidden, SarakIcon, type SarakIconProps, SarakLightbox, type SarakLightboxProps, SarakManagementGrid, SarakManifestRenderer, SarakManifestRenderer as SarakManifestRendererDefault, type SarakManifestRendererProps, SarakMarkdownRenderer, type SarakMarkdownRendererProps, type SarakMatrixManifest, SarakModal, type SarakModalProps, type SarakModule, type SarakOverlayController, SarakOverlayProvider, type SarakOverlayRequest, type SarakRouterState, SarakSecurityOrchestrator, SarakShell, SarakSkeleton, type SarakSkeletonProps, SarakStats, type SarakTabItem, SarakTable, SarakTabs, type SarakTabsProps$1 as SarakTabsProps, SarakToastProvider, SarakTooltip, type SarakTooltipProps, SarakUIProvider, type Selector, type ShellDirective, type SkeletonShape, type SlotMap, SocialButton, type StateRecord, SubmitBlockedError, type ThemeDirective, ThemeToggle, type ToastController, type ToastOptions, type ToastVariant, type TooltipPosition, UserMenu, VIRTUALIZE_THRESHOLD, type ValidationError, type ValidationRule, type ValidationRuleName, type ValidationSchema, type ValidationTypeName, type VisualContract, type VisualContractType, coerceEventValue, createComponentRegistry, createFormScope, createSarakDataStore, debounce, defaultComponentRegistry, evaluateCondition, expandRenderFor, firstErrorMessage, getByPath, getLocalComponent, getPipe, getRegisteredModules, getSarakModule, hasPipe, interpolate, interpolateProps, isReservedDirective, isStructuralKey, namespacedKey, readPersisted, registerComponent, registerLocalComponent, registerPipe, registerSarakModule, removePersisted, resolveBinding, resolveComponent, resolveExpression, resolveModelValue, resolveScopedPath, runActions, separateNodeParts, setByPath, subscribeStorage, subscribeToRegistry, throttle, useDataSource, useDesignDraft, useFormScope, useModalLayoutStyles, useModuleDiscovery, useOverlay, usePersistedSlice, useSarakDevice, useSarakRouter, useSarakUI, useToast, validateManifestNode, validateManifestRoot, validateValue, writePersisted };
+export { ACTION_HANDLERS, type Accept, type ActionHandler, type ActionList, type AriaDirective, type BadgeSize, type BadgeVariant, type BindingExpression, type ComponentRegistry, type ComponentResolution, type ComponentType, type ConditionExpression, ConditionSyntaxError, type ContextMenuPosition, CustomizationPanel, DESIGN_MANIFEST, DIRECTIVE_OWNERS, type DataNodeState, type DataSourceController, type DataSourceDirective, type DataSourceMethod, type DataSourceStates, type DatePickerValue, DesignScope, DeviceProvider, type DeviceType, type DirectiveName, type DiscoveredModule, type DispatchContext, DynamicRenderer, ExpandableCard, type ExpandedNode, FORM_META_KEY, type FileRejection, type FormModelDirective, type FormResetTrigger, type FormScope, FormScopeContext, type FormScopeDirective, type FormStore, IconMap, type IconName, LanguageSelector, type LightboxImage, type ManifestAction, type ManifestComponent, type ManifestComponentProps, type ManifestNode, type ManifestProps, type ManifestRoot, type ManifestValidationError, type ManifestValidationResult, type ManifestValue, type MatrixNodeConfig, type ModalLayoutContext, type ModuleManifest, ModuleSelector, type MultiSelectOption, NATIVE_COMPONENTS, type NativeComponentType, type NavigateFn, type NetworkInterceptor, type NetworkRequest, type NodeParts, type OverlayController, type OverlayRequest, type PersistDirective, type Pipe, RESERVED_DIRECTIVES, type RangeValue, type RenderForDirective, type RenderForResult, type ResponsiveDirective, type RouteMap, type RouteTarget, STORAGE_NAMESPACE, STRUCTURAL_KEYS, SUPPORTED_SCHEMA_VERSION, SarakAnalyticalPage, type SarakAnalyticalPageProps, SarakAuthScreen, type SarakAuthScreenProps, SarakBadge, type SarakBadgeProps, SarakCardGrid, SarakCatalogGrid, SarakChart, SarakChartEngine, SarakChat, SarakContextMenu, type SarakContextMenuProps, SarakDataEmpty, type SarakDataEmptyProps, SarakDataGrid, SarakDataGridImpl, type SarakDataGridProps, type SarakDataStore, SarakDatePicker, type SarakDatePickerProps, SarakDrawer, type SarakDrawerProps, SarakEmptyState, SarakErrorBoundary, type SarakErrorBoundaryProps, SarakExpandableMatrix, type SarakExpandableMatrixProps, SarakFallback, type SarakFallbackProps, SarakForm, SarakHidden, SarakIcon, type SarakIconProps, SarakLightbox, type SarakLightboxProps, SarakManagementGrid, SarakManifestRenderer, SarakManifestRenderer as SarakManifestRendererDefault, type SarakManifestRendererProps, SarakMarkdownRenderer, type SarakMarkdownRendererProps, type SarakMatrixManifest, SarakModal, type SarakModalProps, type SarakModule, SarakMultiSelect, type SarakMultiSelectProps, type SarakOverlayController, SarakOverlayProvider, type SarakOverlayRequest, SarakRangeSlider, type SarakRangeSliderProps, type SarakRouterState, SarakSecurityOrchestrator, SarakShell, SarakSkeleton, type SarakSkeletonProps, SarakStats, type SarakTabItem, SarakTable, SarakTabs, type SarakTabsProps$1 as SarakTabsProps, SarakTimePicker, type SarakTimePickerProps, SarakToastProvider, SarakTooltip, type SarakTooltipProps, SarakUIProvider, SarakUploader, type SarakUploaderProps, type Selector, type ShellDirective, type SkeletonShape, type SlotMap, SocialButton, type StateRecord, SubmitBlockedError, type ThemeDirective, ThemeToggle, type ToastController, type ToastOptions, type ToastVariant, type TooltipPosition, UserMenu, VIRTUALIZE_THRESHOLD, type ValidationError, type ValidationRule, type ValidationRuleName, type ValidationSchema, type ValidationTypeName, type VisualContract, type VisualContractType, coerceEventValue, createComponentRegistry, createFormScope, createSarakDataStore, debounce, defaultComponentRegistry, evaluateCondition, expandRenderFor, firstErrorMessage, getByPath, getLocalComponent, getPipe, getRegisteredModules, getSarakModule, hasPipe, interpolate, interpolateProps, isReservedDirective, isStructuralKey, namespacedKey, readPersisted, registerComponent, registerLocalComponent, registerPipe, registerSarakModule, removePersisted, resolveBinding, resolveComponent, resolveExpression, resolveModelValue, resolveScopedPath, runActions, separateNodeParts, setByPath, subscribeStorage, subscribeToRegistry, throttle, useDataSource, useDesignDraft, useFormScope, useModalLayoutStyles, useModuleDiscovery, useOverlay, usePersistedSlice, useSarakDevice, useSarakRouter, useSarakUI, useToast, validateManifestNode, validateManifestRoot, validateValue, writePersisted };

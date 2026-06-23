@@ -29,6 +29,11 @@ import {
     SarakTextarea,
     SarakSwitch,
     SarakSlider,
+    SarakRangeSlider,
+    SarakMultiSelect,
+    SarakUploader,
+    SarakDatePicker,
+    SarakTimePicker,
 } from '../../../components/atomic/Inputs';
 import {
     SarakSpotlight,
@@ -67,14 +72,21 @@ export const NATIVE_COMPONENTS = {
     SarakTextarea,
     SarakSwitch,
     SarakSlider,
+    // Formulários — entrada avançada (Spec 11 / Onda 8). Leves: SEM React.lazy.
+    // RangeSlider (duplo), MultiSelect (chips), Uploader (drag-and-drop via
+    // react-dropzone), DatePicker (popover in-house + date-fns) e TimePicker.
+    SarakRangeSlider,
+    SarakMultiSelect,
+    SarakUploader,
+    SarakDatePicker,
+    SarakTimePicker,
     // Navegação contextual (Spec 14): Command Palette, Stepper, Breadcrumbs, Paginação.
     SarakSpotlight,
     SarakStepper,
     SarakBreadcrumbs,
     SarakPagination,
-    // Spec 11 completa — sob demanda, pós-Spec 40 (sanitização/fronteira de confiança):
-    // SarakDatePicker, SarakTimePicker, SarakMultiSelect (chips), SarakUploader
-    // (drag-and-drop), SarakRichText (WYSIWYG blindado), SarakRangeSlider (duplo).
+    // Spec 11 — pendente (Onda 10, gate de dependência):
+    // SarakRichText (WYSIWYG blindado).
 } as const;
 
 /** União dos `type` nativos oficiais — fonte do `ComponentType` (Spec 22, Regra 1). */

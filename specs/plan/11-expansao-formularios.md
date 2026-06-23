@@ -2,7 +2,7 @@
 tipo: "spec"
 titulo: "Expansão de Formulários"
 dominio: "Sarak-Lib-UI-Core (Visual)"
-status: "🟡 Implementado (base — DatePicker/TimePicker/MultiSelect/Uploader/RichText/RangeSlider pendentes)"
+status: "🟡 Implementado (base + Onda 8: RangeSlider/MultiSelect/Uploader/DatePicker/TimePicker — só RichText pendente, Onda 10)"
 prioridade: "Alta"
 tags: ["spec", "forms", "inputs"]
 relacionados: ["12-expansao-data-grids-vis"]
@@ -19,21 +19,21 @@ Esta especificação descreve os componentes visuais avançados de entrada de da
 - **Regra 5: Range Sliders Duplos:** O `SarakSlider` deve suportar dois controles deslizantes (início e fim) para definição de intervalos contínuos, com suporte à visualização de tooltips mostrando o valor.
 
 # 3. Critérios de Aceite
-- [ ] `SarakDatePicker` permite seleção única e seleção de intervalo contínuo na mesma interface de calendário popover.
-- [ ] `SarakMultiSelect` exibe corretamente *chips* das escolhas feitas e possui um botão "X" para remoção individual.
-- [ ] `SarakUploader` captura eventos de arrastar arquivo para dentro da tela e altera sua borda para o estado de `--sx-color-primary`.
-- [ ] `SarakRichText` gera outputs purificados de HTML, bloqueando scripts e estilos maliciosos.
-- [ ] Todos os novos componentes de formulário disparam os visuais corretos de erro quando o JSON marcar a propriedade `hasError: true`.
+- [x] `SarakDatePicker` permite seleção única e seleção de intervalo contínuo na mesma interface de calendário popover.
+- [x] `SarakMultiSelect` exibe corretamente *chips* das escolhas feitas e possui um botão "X" para remoção individual.
+- [x] `SarakUploader` captura eventos de arrastar arquivo para dentro da tela e altera sua borda para o estado de `--sx-color-primary`.
+- [ ] `SarakRichText` gera outputs purificados de HTML, bloqueando scripts e estilos maliciosos. *(Onda 10)*
+- [x] Todos os novos componentes de formulário disparam os visuais corretos de erro quando o JSON marcar a propriedade `hasError: true` (via prop `error`, fiada pelo LeafNode/validação).
 
 # 4. Plano de Testes (Quality Gate)
 
 ## Testes Unitários
-- [ ] **Deve** permitir a digitação de dados na barra de pesquisa do `SarakMultiSelect` sem perder o foco dos *chips* selecionados.
-- [ ] **Deve** renderizar os valores mínimo, máximo e passo atual do `SarakSlider` exatamente conforme os dados passados no manifesto JSON.
+- [x] **Deve** permitir a digitação de dados na barra de pesquisa do `SarakMultiSelect` sem perder o foco dos *chips* selecionados.
+- [x] **Deve** renderizar os valores mínimo, máximo e passo atual do `SarakRangeSlider` exatamente conforme os dados passados no manifesto JSON.
 
 ## Testes de Contrato (API)
 - [ ] N/A. (Estritamente visual).
 
 ## Testes E2E (Integração)
-- [ ] Fluxo feliz: O usuário abre um MultiSelect, digita um termo de pesquisa e a lista suspensa é filtrada sem piscar a interface.
-- [ ] Acessibilidade: Navegação com teclado no `SarakDatePicker` alterando o dia/mês puramente com setas.
+- [x] Fluxo feliz: O usuário abre um MultiSelect, digita um termo de pesquisa e a lista suspensa é filtrada sem piscar a interface.
+- [x] Acessibilidade: Navegação com teclado no `SarakDatePicker` alterando o dia/mês puramente com setas.

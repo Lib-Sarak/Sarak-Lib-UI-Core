@@ -154,8 +154,8 @@ Cada **onda** é um conjunto construível em conjunto; a ordem **entre** ondas �
 - **Onda 7 — a11y completa + mídia leve** ✅ *(zero dependência nova — entregue)*
   - [x] 41 a11y (resto) *(teclado nos Breadcrumbs (Enter/Espaço) — Pagination/Stepper já nativos/não-interativos; E2E de jornada só-teclado via `user-event`; fix de raiz no `useFocusTrap` — `onClose` por ref)*
   - [x] 15 mídia (parte 1) *(`SarakMarkdownRenderer` lazy: `react-markdown`+`react-syntax-highlighter` fora do entry, highlight por modo do tema, URLs seguras (Spec 40) · `SarakLightbox` reusando `useFocusTrap`; exportados em `index.ts`. **Registro no manifesto nativo adiado** — exige Suspense no LeafNode + atualizar a Conferência; melhor junto da integração da Spec 15)*
-- **Onda 8 — Entrada de dados** *(Spec 11 — zero dependência nova; `date-fns` e `react-dropzone` já são peers)*
-  - [ ] 11 formulários (resto, exceto RichText) *(RangeSlider · MultiSelect · Uploader · DatePicker/TimePicker — calendário in-house sobre `date-fns`)*
+- **Onda 8 — Entrada de dados** ✅ *(Spec 11 — zero dependência nova; `date-fns` e `react-dropzone` já são peers — entregue)*
+  - [x] 11 formulários (resto, exceto RichText) *(`SarakRangeSlider` (duplo + tooltips) · `SarakMultiSelect` (autocomplete + chips deletáveis, foco preservado) · `SarakUploader` (drag-and-drop via `react-dropzone`, estados em tokens semânticos) · `SarakDatePicker`/`SarakTimePicker` (calendário popover in-house sobre `date-fns`, single+range, i18n, teclado por setas). Registrados no manifesto nativo (27 tipos) e exportados; tipos das libs declarados estruturalmente por causa do `moduleResolution: node`. **RichText fica para a Onda 10**)*
 - **Onda 9 — Densidade de dados** *(Spec 12 — zero dependência nova; `@tanstack/react-virtual` já é peer)*
   - [ ] 12 data-grids (resto, exceto Kanban) *(Charts: verificar herança de tokens + Sparkline · TreeView (reusa `SarakExpandableMatrix`/`RecursiveMatrixNode`) · DataGrid avançado: pinned/resize/reorder)*
 - **Onda 10 — Componentes pesados (gate de dependência)** *(cada item = decisão HITL de lib; sempre `peerDependency` + `React.lazy`)*

@@ -67,6 +67,29 @@ body.is-geometric .sarak-shell-header,
     clip-path: polygon(0 0, 100% 0, 100% calc(100% - 15px), calc(100% - 15px) 100%, 0 100%) !important;
 }
 
+/* SarakRangeSlider (Spec 11) — dois ranges sobrepostos: o input ignora o ponteiro
+   (pointer-events:none na classe via Tailwind), mas o THUMB volta a captá-lo para
+   permitir o arraste de cada extremo do intervalo independentemente. */
+.sarak-range-thumb::-webkit-slider-thumb {
+    pointer-events: auto;
+    -webkit-appearance: none;
+    appearance: none;
+    width: 16px;
+    height: 16px;
+    border-radius: 9999px;
+    background: var(--sarak-range-active-bg, var(--sx-color-primary-base));
+    cursor: pointer;
+}
+.sarak-range-thumb::-moz-range-thumb {
+    pointer-events: auto;
+    width: 16px;
+    height: 16px;
+    border: none;
+    border-radius: 9999px;
+    background: var(--sarak-range-active-bg, var(--sx-color-primary-base));
+    cursor: pointer;
+}
+
 /* Scrollbars customizadas (refatoração Data-Driven) */
 .custom-scrollbar-sidebar::-webkit-scrollbar { width: 4px; }
 .custom-scrollbar-sidebar::-webkit-scrollbar-track { background: transparent; }
