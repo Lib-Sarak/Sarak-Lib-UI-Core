@@ -52,7 +52,7 @@ Marque `[x]` **só quando TODOS**:
 
 ## 0.6 Caveats do ambiente
 - **ESLint não instalado** → o hook de padrão-escrita só **avisa** (modo warn), não bloqueia.
-- **`any` (492 ocorrências)** é dívida pré-existente (baseline travado) — **não** conta como regressão. **Limpeza oportunista (obrigatória):** ao **tocar** um arquivo que contém `any` durante uma spec, **limpe aquele arquivo** como parte do trabalho (baixando o baseline). O resíduo não tocado fica para a **Spec 50** (Finalização).
+- **`any` (~484 ocorrências, baseline)** é dívida pré-existente (baseline travado) — **não** conta como regressão. **Limpeza oportunista (obrigatória):** ao **tocar** um arquivo que contém `any` durante uma spec, **limpe aquele arquivo** como parte do trabalho (baixando o baseline). O resíduo não tocado é quitado pela **campanha 60–64 (Onda 12)**, que zera o baseline e dá por satisfeita a Regra 1 da **Spec 50** (Finalização).
 - **Conferência (Spec 34)** é spec, ainda **não** é auditor; automatizá-la é tarefa de código futura.
 
 # 1. Propósito
@@ -107,6 +107,17 @@ Mapa de navegação do diretório `specs/plan/`. O plano transforma a Sarak-Lib-
 |---|---|---|
 | 50 | finalizacao-adequacao-e-entrega | `any` residual → 0, documentação, guia do importador, entrega |
 
+## Adequação (60–69) — campanha dedicada de erradicação de `any`
+| Nº | Spec | Papel |
+|---|---|---|
+| 60 | erradicacao-any-plano-mestre | **Mestre da campanha:** baseline, leis, gate por fatia, roteamento por risco |
+| 61 | erradicacao-any-nucleo | `src/core/**` (Provider · Shell · Design · Discovery) — ~134 |
+| 62 | erradicacao-any-componentes | `src/components/**` (atomic · engines) — ~179 |
+| 63 | erradicacao-any-design-engine | `src/features/DesignEngine/**` — ~165 |
+| 64 | erradicacao-any-constantes-e-fechamento | `src/constants/**` + varredura final → baseline **0** |
+
+> Operacionaliza a **Regra 1 da Spec 50** (`any` → 0) como eixo próprio. Quando a campanha zerar o baseline, a Spec 50 apenas confirma o verde.
+
 # 3. Ordem de Build e Grafo de Dependências
 A construção segue dependências reais (não a ordem numérica cega):
 
@@ -156,14 +167,19 @@ Cada **onda** é um conjunto construível em conjunto; a ordem **entre** ondas �
   - [x] 15 mídia (parte 1) *(`SarakMarkdownRenderer` lazy: `react-markdown`+`react-syntax-highlighter` fora do entry, highlight por modo do tema, URLs seguras (Spec 40) · `SarakLightbox` reusando `useFocusTrap`; exportados em `index.ts`. **Registro no manifesto nativo adiado** — exige Suspense no LeafNode + atualizar a Conferência; melhor junto da integração da Spec 15)*
 - **Onda 8 — Entrada de dados** ✅ *(Spec 11 — zero dependência nova; `date-fns` e `react-dropzone` já são peers — entregue)*
   - [x] 11 formulários (resto, exceto RichText) *(`SarakRangeSlider` (duplo + tooltips) · `SarakMultiSelect` (autocomplete + chips deletáveis, foco preservado) · `SarakUploader` (drag-and-drop via `react-dropzone`, estados em tokens semânticos) · `SarakDatePicker`/`SarakTimePicker` (calendário popover in-house sobre `date-fns`, single+range, i18n, teclado por setas). Registrados no manifesto nativo (27 tipos) e exportados; tipos das libs declarados estruturalmente por causa do `moduleResolution: node`. **RichText fica para a Onda 10**)*
-- **Onda 9 — Densidade de dados** *(Spec 12 — zero dependência nova; `@tanstack/react-virtual` já é peer)*
-  - [ ] 12 data-grids (resto, exceto Kanban) *(Charts: verificar herança de tokens + Sparkline · TreeView (reusa `SarakExpandableMatrix`/`RecursiveMatrixNode`) · DataGrid avançado: pinned/resize/reorder)*
-- **Onda 10 — Componentes pesados (gate de dependência)** *(cada item = decisão HITL de lib; sempre `peerDependency` + `React.lazy`)*
-  - [ ] 15 mídia (parte 2) *(`SarakPDFViewer` — `pdfjs-dist`)*
-  - [ ] 12 data-grids *(`SarakKanban` — DnD: `@dnd-kit` ou HTML5 nativo zero-dep)*
-  - [ ] 11 formulários *(`SarakRichText` — Tiptap/Lexical ou `contentEditable` + `sanitizeHtml` zero-dep)*
+- **Onda 9 — Densidade de dados** ✅ *(Spec 12 — zero dependência nova; `@tanstack/react-virtual` já é peer — entregue)*
+  - [x] 12 data-grids (resto, exceto Kanban) *(`SarakDataTable` colunar avançado: pinned (sticky left/right) + resize (pointer) + reorder (DnD nativo), num único contêiner de scroll sobre a virtualização — a primitiva headless `SarakDataGridImpl` ficou intocada · `SarakSparkline` SVG in-house (line/area/bar, sem eixos, cabe no `SarakCard`, cor herda `--sarak-chart-primary`) · `SarakTreeView` reusando `RecursiveMatrixNode` (N níveis + `lazyLoadingIcon` ativável via JSON + `onExpand`); `RecursiveMatrixNode` tipado (Zero Any — limpeza §0.6) · Charts existentes (`SarakChart`/`SarakChartEngine`) verificados: herdam cor/fonte de marca do `design` (Regra 4 ✓); `SarakChart` conformado a tokens. Registrados no manifesto nativo (27 → 30 tipos, Conferência ✓). **Kanban fica para a Onda 10**)*
+- **Onda 10 — Componentes pesados (gate de dependência)** ✅ *(única dep nova: `pdfjs-dist`; Kanban e RichText zero-dep — entregue)*
+  - [x] 15 mídia (parte 2) *(`SarakPDFViewer` — `pdfjs-dist` peer + `--external` + `React.lazy`; canvas + worker fora da main thread (hook `usePdfDocument`); barra de controles zoom/página/download tokenizada)*
+  - [x] 12 data-grids *(`SarakKanban` — DnD HTML5 **nativo zero-dep**; `moveCard` puro atualiza o modelo no drop (origem→destino imediato) + emite `onCardMove`)*
+  - [x] 11 formulários *(`SarakRichText` — **zero-dep**: `contentEditable` + toolbar; saída E paste blindados pelo canal `sanitizeHtml` (Spec 40) com allowlist restrita (sem `<style>`/`<script>`/`on*`/`javascript:`); fia ao `model` via `onChange`)*
+  - **Enabler:** Suspense por folha no `LeafNode` (`HEAVY_LAZY`) → suspensão de pesado-lazy isola-se ao nó (Skeleton local, não branqueia a árvore). Registro nativo finalizado: +5 tipos (PDFViewer/Kanban/RichText + Markdown/Lightbox adiados da Onda 7) → **Conferência 30 → 35**.
 - **Onda 11 — Finalização** *(após as anteriores, ou em paralelo em baixa prioridade)*
   - [ ] 50 finalização *(`any` residual → 0, docs/README, guia do importador, build/exports)*
+- **Onda 12 — Erradicação de `any`** *(campanha de adequação — núcleo→fora; quita a Regra 1 da Spec 50)*
+  - [ ] 60 plano-mestre *(baseline ~484, leis, gate por fatia, roteamento por risco)*
+  - [ ] 61 núcleo *(`src/core/**` — fundação tipada primeiro)* · [ ] 62 componentes *(`src/components/**` — maior volume)* · [ ] 63 design-engine *(`src/features/DesignEngine/**`)*
+  - [ ] 64 constantes + fechamento *(varredura final → baseline 0; atualiza §0.6 e a Regra 1 da Spec 50)*
 
 > O **30 (Renderer)** existe em versão **mínima** já na Onda 0 (harness para testar a fundação) e só é **finalizado** na Onda 5, quando o contrato completo (`payload`, `dataStore`, `routes`, interceptors) está pronto.
 

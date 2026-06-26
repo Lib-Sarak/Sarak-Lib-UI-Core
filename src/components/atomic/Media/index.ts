@@ -5,10 +5,12 @@
  *   sob demanda — renderize sob `<Suspense>`).
  * - `SarakLightbox`: leve, sem dependência nova.
  *
- * `SarakPDFViewer` (Spec 15, parte 2) entra na Onda 10 (gate de dependência: `pdfjs-dist`).
+ * - `SarakPDFViewer`: lazy (carrega `pdfjs-dist` sob demanda — renderize sob `<Suspense>`).
  */
 
 export { SarakMarkdownRenderer } from './SarakMarkdownRenderer';
 export type { SarakMarkdownRendererProps } from './SarakMarkdownRenderer';
 export { SarakLightbox } from './SarakLightbox';
 export type { LightboxImage, SarakLightboxProps } from './SarakLightbox';
+export { SarakPDFViewer } from './SarakPDFViewer';
+export type { SarakPDFViewerProps } from './SarakPDFViewer';

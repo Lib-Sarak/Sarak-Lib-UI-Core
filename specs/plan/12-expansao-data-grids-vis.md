@@ -2,7 +2,7 @@
 tipo: "spec"
 titulo: "Expansão de Data Grids e Visualização"
 dominio: "Sarak-Lib-UI-Core (Visual)"
-status: "🟡 Implementado (base — Kanban/Charts/TreeView pendentes)"
+status: "🟢 Completa (Onda 9 — DataTable/Sparkline/TreeView/Charts; Onda 10 — Kanban DnD nativo)"
 prioridade: "Média"
 tags: ["spec", "datagrid", "charts", "kanban"]
 relacionados: []
@@ -19,17 +19,17 @@ Esta especificação rege a criação dos componentes pesados de apresentação 
 - **Regra 5: Tree Views Expansíveis:** A hierarquia em árvore deve suportar níveis infinitos em profundidade e um estado de `lazyLoadingIcon` ativável via JSON.
 
 # 3. Critérios de Aceite
-- [ ] O `SarakDataGrid` mantém fluidez nativa a 60 FPS com 10.000 objetos mockados carregados via JSON.
-- [ ] Pinned columns no Datagrid não perdem o alinhamento com as linhas ao realizar scroll horizontal ou vertical.
-- [ ] `SarakKanban` move os elementos corretamente com mouse drag-and-drop.
-- [ ] Os gráficos mapeiam com sucesso as cores de marca da Sarak repassadas através das propriedades de tema.
-- [ ] Componente Sparkline (gráfico minimalista sem eixos) é capaz de renderizar perfeitamente dentro do espaço confinado de um `<SarakCard>`.
+- [x] O `SarakDataGrid` mantém fluidez nativa a 60 FPS com 10.000 objetos mockados carregados via JSON. *(windowing via `@tanstack/react-virtual`; `SarakDataTable` herda a virtualização)*
+- [x] Pinned columns no Datagrid não perdem o alinhamento com as linhas ao realizar scroll horizontal ou vertical. *(único contêiner de scroll + `position: sticky` left/right partilhado por cabeçalho e corpo; linhas posicionadas por `top` para não quebrar o sticky horizontal)*
+- [x] `SarakKanban` move os elementos corretamente com mouse drag-and-drop. *(Onda 10 — DnD HTML5 nativo zero-dep; `moveCard` puro move no drop e emite `onCardMove`)*
+- [x] Os gráficos mapeiam com sucesso as cores de marca da Sarak repassadas através das propriedades de tema. *(`useEChartsTheme` herda `primaryColor`/`secondaryColor`/`bodyFont` do `design`; `SarakChart` usa `var(--sx-color-primary-*)`)*
+- [x] Componente Sparkline (gráfico minimalista sem eixos) é capaz de renderizar perfeitamente dentro do espaço confinado de um `<SarakCard>`. *(`SarakSparkline` SVG `width:100%`, `vector-effect: non-scaling-stroke`)*
 
 # 4. Plano de Testes (Quality Gate)
 
 ## Testes Unitários
-- [ ] **Deve** calcular corretamente as alturas de janela (*windowing*) no `SarakDataGrid` impedindo montagem de nós excessivos no DOM real.
-- [ ] **Deve** engatilhar corretamente o evento de "drag_end" identificando o bloco de origem e o bloco de destino no Kanban.
+- [x] **Deve** calcular corretamente as alturas de janela (*windowing*) no `SarakDataGrid` impedindo montagem de nós excessivos no DOM real. *(coberto; `SarakDataTable` adiciona testes de pinned/resize/reorder + `columnModel`)*
+- [x] **Deve** engatilhar corretamente o evento de "drag_end" identificando o bloco de origem e o bloco de destino no Kanban. *(Onda 10 — `SarakKanban`/`kanbanModel` testados: drop emite `onCardMove` origem→destino)*
 
 ## Testes de Contrato (API)
 - [ ] N/A.

@@ -30,12 +30,16 @@ export * from './components/atomic/Inputs/SarakMultiSelect';
 export * from './components/atomic/Inputs/SarakUploader';
 export * from './components/atomic/Inputs/SarakDatePicker';
 export * from './components/atomic/Inputs/SarakTimePicker';
+// RichText WYSIWYG blindado (Spec 11 / Onda 10) — contentEditable + sanitizeHtml.
+export * from './components/atomic/Inputs/SarakRichText';
 export * from './components/atomic/Templates';
 export * from './components/atomic/Modals';
 export * from './components/atomic/Feedback';
 export * from './components/atomic/UX';
-export * from './components/atomic/DataDisplay/SarakDataGrid';
-// Renderizadores de mídia (Spec 15): Markdown (lazy) + Lightbox. PDFViewer fica na Onda 10.
+// Densidade de dados (Spec 12 / Onda 9): DataGrid (windowing), DataTable (colunar
+// avançado), Sparkline (micro-gráfico) e TreeView. Resolvíveis via manifesto.
+export * from './components/atomic/DataDisplay';
+// Renderizadores de mídia (Spec 15): Markdown (lazy) + Lightbox + PDFViewer (lazy, Onda 10).
 export * from './components/atomic/Media';
 export { default as SarakChartEngine } from './components/engines/charts/SarakChartEngine';
 

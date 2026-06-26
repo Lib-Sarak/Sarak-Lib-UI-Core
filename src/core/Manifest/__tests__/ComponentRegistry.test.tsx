@@ -18,6 +18,26 @@ describe('Spec 22 — ComponentRegistry', () => {
         expect(Component).toBe(NATIVE_COMPONENTS.SarakFlex);
     });
 
+    it('deve resolver os átomos de densidade da Onda 9 (Spec 12) como nativos, não fallback', () => {
+        const registry = createComponentRegistry();
+        const densityTypes = ['SarakDataTable', 'SarakSparkline', 'SarakTreeView'] as const;
+        for (const type of densityTypes) {
+            const { isFallback, Component } = registry.resolve(type);
+            expect(isFallback).toBe(false);
+            expect(Component).toBe(NATIVE_COMPONENTS[type]);
+        }
+    });
+
+    it('deve resolver os componentes pesados da Onda 10 (Specs 15/12/11) como nativos', () => {
+        const registry = createComponentRegistry();
+        const onda10 = ['SarakPDFViewer', 'SarakKanban', 'SarakRichText', 'SarakMarkdownRenderer', 'SarakLightbox'] as const;
+        for (const type of onda10) {
+            const { isFallback, Component } = registry.resolve(type);
+            expect(isFallback).toBe(false);
+            expect(Component).toBe(NATIVE_COMPONENTS[type]);
+        }
+    });
+
     it('deve devolver o fallback (sem lançar) para type desconhecido e logar o nó culpado', () => {
         const registry = createComponentRegistry();
         const warn = vi.spyOn(console, 'warn').mockImplementation(() => undefined);

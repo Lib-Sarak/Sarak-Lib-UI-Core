@@ -11,3 +11,5 @@ export * from './SarakMultiSelect';
 export * from './SarakUploader';
 export * from './SarakDatePicker';
 export * from './SarakTimePicker';
+// Spec 11 (Onda 10) — RichText WYSIWYG blindado (contentEditable + sanitizeHtml, zero-dep).
+export * from './SarakRichText';

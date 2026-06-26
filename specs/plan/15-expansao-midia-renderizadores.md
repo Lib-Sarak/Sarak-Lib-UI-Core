@@ -2,7 +2,7 @@
 tipo: "spec"
 titulo: "Expansão de Mídia e Renderizadores"
 dominio: "Sarak-Lib-UI-Core (Visual)"
-status: "🟡 Implementado (parte 1 — Markdown + Lightbox; PDFViewer na Onda 10)"
+status: "🟢 Completa (Onda 10 — Markdown + Lightbox + PDFViewer; todos registrados no manifesto)"
 prioridade: "Baixa"
 tags: ["spec", "markdown", "pdf", "media"]
 relacionados: []
@@ -18,7 +18,7 @@ Trata a capacidade de renderização avançada para componentes que extrapolam i
 
 # 3. Critérios de Aceite
 - [x] O componente Markdown não injeta HTML cru malicioso (*Sanitization* via purificador seguro embutido). *(react-markdown sem `rehype-raw` → HTML cru vira texto; URLs por allowlist (Spec 40).)*
-- [ ] O visualizador de PDF possui barra de controles customizada na parte superior (Botão de Zoom In, Zoom Out e Download) alinhada à estética da Sarak UI. *(**Onda 10** — `pdfjs-dist`.)*
+- [x] O visualizador de PDF possui barra de controles customizada na parte superior (Botão de Zoom In, Zoom Out e Download) alinhada à estética da Sarak UI. *(Onda 10 — `SarakPDFViewer` sobre `pdfjs-dist` (peer+lazy); controles tokenizados, worker fora da main thread.)*
 - [x] Tabelas escritas em sintaxe de Markdown no JSON devem se transmutar para tabelas HTML formatadas. *(renderers `table`/`th`/`td` → `<table>` estilizada por tokens.)*
 
 # 4. Plano de Testes (Quality Gate)
@@ -36,5 +36,5 @@ Trata a capacidade de renderização avançada para componentes que extrapolam i
 # 5. Status de Implementação (Onda 7 — parte 1)
 - **`SarakMarkdownRenderer`** (`components/atomic/Media/SarakMarkdownRenderer/`): `React.lazy` (Impl + index) mantém `react-markdown` + `react-syntax-highlighter` fora do entry. Mapeia Markdown → elementos com tokens `var(--sx-*)`; highlight por modo do tema; sanitização por ausência de `rehype-raw` + allowlist de URL (Spec 40). Renderize sob `<Suspense>`.
 - **`SarakLightbox`** (`components/atomic/Media/SarakLightbox.tsx`): overlay/carrossel leve (sem dep nova) reusando `useFocusTrap` (trap + ESC + restauração); setas ←/→, prev/next e contador. Regra 3 atendida.
-- **Exports:** ambos em `src/index.ts` via `components/atomic/Media`. **Registro no manifesto nativo adiado** (exige Suspense no LeafNode + atualizar a Conferência).
-- **Parte 2 (Onda 10 — gate de dependência):** `SarakPDFViewer` (`pdfjs-dist`, peer + lazy).
+- **Exports:** ambos em `src/index.ts` via `components/atomic/Media`.
+- **Parte 2 (Onda 10 — entregue):** `SarakPDFViewer` (`components/atomic/Media/SarakPDFViewer/`): `React.lazy` sobre `pdfjs-dist` (peer + `--external`); render em `<canvas>` com worker fora da main thread (hook `usePdfDocument`); barra de controles (zoom/página/download) tokenizada. **Registro nativo finalizado:** Markdown/Lightbox/PDFViewer agora no manifesto — o `LeafNode` envolve os pesados-lazy (`HEAVY_LAZY`) num `<Suspense>` localizado; Conferência re-derivada (35 tipos).

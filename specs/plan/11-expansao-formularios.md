@@ -2,7 +2,7 @@
 tipo: "spec"
 titulo: "Expansão de Formulários"
 dominio: "Sarak-Lib-UI-Core (Visual)"
-status: "🟡 Implementado (base + Onda 8: RangeSlider/MultiSelect/Uploader/DatePicker/TimePicker — só RichText pendente, Onda 10)"
+status: "🟢 Completa (base + Onda 8 + Onda 10: RichText WYSIWYG blindado entregue)"
 prioridade: "Alta"
 tags: ["spec", "forms", "inputs"]
 relacionados: ["12-expansao-data-grids-vis"]
@@ -22,7 +22,7 @@ Esta especificação descreve os componentes visuais avançados de entrada de da
 - [x] `SarakDatePicker` permite seleção única e seleção de intervalo contínuo na mesma interface de calendário popover.
 - [x] `SarakMultiSelect` exibe corretamente *chips* das escolhas feitas e possui um botão "X" para remoção individual.
 - [x] `SarakUploader` captura eventos de arrastar arquivo para dentro da tela e altera sua borda para o estado de `--sx-color-primary`.
-- [ ] `SarakRichText` gera outputs purificados de HTML, bloqueando scripts e estilos maliciosos. *(Onda 10)*
+- [x] `SarakRichText` gera outputs purificados de HTML, bloqueando scripts e estilos maliciosos. *(Onda 10 — `contentEditable` zero-dep; saída e paste passam pelo canal `sanitizeHtml` (Spec 40) com allowlist restrita; sem `<style>`/`<script>`/`on*`/`javascript:`.)*
 - [x] Todos os novos componentes de formulário disparam os visuais corretos de erro quando o JSON marcar a propriedade `hasError: true` (via prop `error`, fiada pelo LeafNode/validação).
 
 # 4. Plano de Testes (Quality Gate)

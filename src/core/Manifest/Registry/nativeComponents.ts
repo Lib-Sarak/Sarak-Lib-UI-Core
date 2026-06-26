@@ -19,7 +19,13 @@ import {
     SarakAccordion,
     SarakFormGroup,
 } from '../../../components/atomic/Layouts';
-import { SarakDataGrid } from '../../../components/atomic/DataDisplay/SarakDataGrid';
+import {
+    SarakDataGrid,
+    SarakDataTable,
+    SarakSparkline,
+    SarakTreeView,
+    SarakKanban,
+} from '../../../components/atomic/DataDisplay';
 import { SarakSkeleton, SarakDataEmpty } from '../../../components/atomic/Feedback';
 import { SarakModal, SarakDrawer } from '../../../components/atomic/Modals';
 import { SarakTooltip, SarakContextMenu } from '../../../components/atomic/UX';
@@ -34,6 +40,7 @@ import {
     SarakUploader,
     SarakDatePicker,
     SarakTimePicker,
+    SarakRichText,
 } from '../../../components/atomic/Inputs';
 import {
     SarakSpotlight,
@@ -41,6 +48,11 @@ import {
     SarakBreadcrumbs,
     SarakPagination,
 } from '../../../components/atomic/Navigation';
+import {
+    SarakMarkdownRenderer,
+    SarakLightbox,
+    SarakPDFViewer,
+} from '../../../components/atomic/Media';
 
 /**
  * Registro nativo. `as const` em conjunto com `satisfies` mantém a inferência das
@@ -58,6 +70,14 @@ export const NATIVE_COMPONENTS = {
     SarakAccordion,
     SarakFormGroup,
     SarakDataGrid,
+    // Densidade de dados — Spec 12 / Onda 9. DataTable (colunar: pinned/resize/reorder)
+    // é pesado → `React.lazy`; Sparkline (SVG in-house) e TreeView (reusa a matriz
+    // recursiva) são leves → SEM lazy. Kanban fica para a Onda 10 (gate de dependência DnD).
+    SarakDataTable,
+    SarakSparkline,
+    SarakTreeView,
+    // Quadro Kanban (Spec 12, Regra 3 / Onda 10). DnD HTML5 nativo → zero-dep, SEM lazy.
+    SarakKanban,
     // Feedback e Interações (Spec 13).
     SarakSkeleton,
     SarakDataEmpty,
@@ -80,13 +100,20 @@ export const NATIVE_COMPONENTS = {
     SarakUploader,
     SarakDatePicker,
     SarakTimePicker,
+    // RichText WYSIWYG blindado (Spec 11, Regra 4 / Onda 10). contentEditable +
+    // sanitizeHtml (Spec 40) → zero-dep, SEM lazy.
+    SarakRichText,
     // Navegação contextual (Spec 14): Command Palette, Stepper, Breadcrumbs, Paginação.
     SarakSpotlight,
     SarakStepper,
     SarakBreadcrumbs,
     SarakPagination,
-    // Spec 11 — pendente (Onda 10, gate de dependência):
-    // SarakRichText (WYSIWYG blindado).
+    // Renderizadores de mídia (Spec 15). Markdown + PDFViewer são PESADOS (react-markdown,
+    // pdfjs-dist) → `React.lazy`; o LeafNode os envolve num <Suspense> localizado (HEAVY_LAZY).
+    // Lightbox é leve (overlay in-house) → SEM lazy.
+    SarakMarkdownRenderer,
+    SarakLightbox,
+    SarakPDFViewer,
 } as const;
 
 /** União dos `type` nativos oficiais — fonte do `ComponentType` (Spec 22, Regra 1). */

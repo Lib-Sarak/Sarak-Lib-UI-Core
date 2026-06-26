@@ -19,10 +19,23 @@ import { resolveModelValue, coerceEventValue } from '../Form/model';
 import { validateValue } from '../Form/validate';
 import { usePersistedSlice } from '../Storage';
 import { SarakFallback } from '../Registry/Fallback';
+import { SarakSkeleton } from '../../../components/atomic/Feedback/SarakSkeleton';
 import { ManifestNodeRenderer } from './renderNode';
 import { useResponsiveProps } from './useResponsiveProps';
 import { mapAriaDirective } from './aria';
 import type { NodeRendererProps } from './context';
+
+/**
+ * Types nativos PESADOS (registrados via `React.lazy`): ao resolver um destes, o render
+ * da folha é envolto num `<Suspense>` LOCALIZADO — assim a suspensão de UM nó pesado mostra
+ * só o Skeleton dele, sem branquear a árvore inteira no Suspense raiz (Spec 12/15, Onda 10).
+ */
+const HEAVY_LAZY: ReadonlySet<string> = new Set([
+    'SarakDataGrid',
+    'SarakDataTable',
+    'SarakMarkdownRenderer',
+    'SarakPDFViewer',
+]);
 
 /** Maior `debounce`/`throttle` declarado entre as ações do nó (Spec 25, Regra 3). */
 const deriveRate = (actions: ManifestNode['actions']): { debounceMs: number; throttleMs: number } => {
@@ -177,5 +190,11 @@ export const LeafNode: React.FC<NodeRendererProps> = ({ node, path, scope, ctx }
         />
     ));
 
-    return <Component {...finalProps}>{children}</Component>;
+    const element = <Component {...finalProps}>{children}</Component>;
+
+    // Suspense localizado para os pesados-lazy (Onda 10): isola a suspensão ao nó culpado.
+    if (HEAVY_LAZY.has(node.type)) {
+        return <React.Suspense fallback={<SarakSkeleton />}>{element}</React.Suspense>;
+    }
+    return element;
 };

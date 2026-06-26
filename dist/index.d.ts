@@ -1045,6 +1045,154 @@ declare const SarakDataGridImpl: React__default.FC<SarakDataGridProps>;
 declare const SarakDataGrid: React$1.LazyExoticComponent<React$1.FC<SarakDataGridProps>>;
 
 /**
+ * Modelo de colunas do SarakDataTable (Spec 12, Regra 2 · Onda 9).
+ *
+ * Lógica pura (sem React/DOM) de ordenação, largura e deslocamento das colunas
+ * congeladas (pinned). Mantém o componente visual enxuto e testável de forma isolada.
+ */
+
+interface SarakColumn<T> {
+    /** Identidade estável da coluna (chave de largura/ordem/reorder). */
+    id: string;
+    /** Conteúdo do cabeçalho. */
+    header: React__default.ReactNode;
+    /** Largura inicial em px (default: `DEFAULT_COLUMN_WIDTH`). */
+    width?: number;
+    /** Largura mínima ao redimensionar em px (default: `MIN_COLUMN_WIDTH`). */
+    minWidth?: number;
+    /** Congelamento lateral; ausente = coluna rola normalmente. */
+    pinned?: 'left' | 'right';
+    /** Render da célula; ausente = `String(row[id])`. */
+    render?: (row: T, rowIndex: number) => React__default.ReactNode;
+}
+declare const DEFAULT_COLUMN_WIDTH = 160;
+declare const MIN_COLUMN_WIDTH = 60;
+/** Resolve a largura efetiva da coluna a partir do estado controlado + default. */
+declare const widthOf: <T>(column: SarakColumn<T>, widths: Record<string, number>) => number;
+/** Reordena `order` movendo `fromId` para a posição de `toId` (imutável). */
+declare const reorder: (order: string[], fromId: string, toId: string) => string[];
+interface PinnedOffsets {
+    /** Deslocamento `left` acumulado por id de coluna congelada à esquerda. */
+    left: Record<string, number>;
+    /** Deslocamento `right` acumulado por id de coluna congelada à direita. */
+    right: Record<string, number>;
+    /** Soma das larguras de todas as colunas ordenadas. */
+    total: number;
+}
+/**
+ * Calcula os deslocamentos sticky das colunas congeladas na ordem atual:
+ * left-pinned acumulam da esquerda; right-pinned acumulam da direita (ré).
+ */
+declare const computeOffsets: <T>(ordered: Array<SarakColumn<T>>, widths: Record<string, number>) => PinnedOffsets;
+
+interface SarakDataTableProps<T = Record<string, unknown>> {
+    /** Definição declarativa das colunas (ordem inicial = ordem do array). */
+    columns: Array<SarakColumn<T>>;
+    /** Linhas de dados; a fonte real (fetch) vive fora — aqui só virtualizamos. */
+    rows: T[];
+    /** Altura de cada linha em px (default: 44). */
+    rowHeight?: number;
+    /** Altura do cabeçalho em px (default: 44). */
+    headerHeight?: number;
+    /** Altura da janela de scroll (default: 100% do contêiner pai). */
+    height?: number | string;
+    /** Linhas extra montadas fora da viewport (default: 8). */
+    overscan?: number;
+    /** Chave estável da linha (default: índice). */
+    getRowKey?: (row: T, index: number) => React__default.Key;
+    /** Notifica nova largura ao soltar o handle de resize. */
+    onColumnResize?: (columnId: string, width: number) => void;
+    /** Notifica reordenação (origem → destino) ao soltar o drag do cabeçalho. */
+    onColumnReorder?: (fromId: string, toId: string) => void;
+    className?: string;
+}
+declare function SarakDataTableImpl<T>({ columns, rows, rowHeight, headerHeight, height, overscan, getRowKey, onColumnResize, onColumnReorder, className, }: SarakDataTableProps<T>): react_jsx_runtime.JSX.Element;
+
+/**
+ * SarakDataTable — barrel + carregamento preguiçoso (Spec 12, Regra 2 · Onda 9).
+ *
+ * Componente pesado: a virtualização (`@tanstack/react-virtual`) só é baixada quando
+ * uma tabela colunar é realmente renderizada. Sempre renderize sob `<Suspense>`.
+ * `SarakDataTableImpl`/tipos são exportados para teste direto (sem a fronteira de Suspense).
+ */
+declare const SarakDataTable: React$1.LazyExoticComponent<typeof SarakDataTableImpl>;
+
+/**
+ * SarakSparkline — micro-gráfico sem eixos (Spec 12, Regra 4 · Onda 9)
+ *
+ * Visualização minimalista (linha/área/barra) que cabe no espaço confinado de um
+ * `<SarakCard>` (Critério de Aceite 5). In-house em SVG puro: **zero dependência
+ * nova** (as Ondas 7–9 não adicionam libs). Zero Hardcode: a cor da série herda dos
+ * tokens globais — `--sarak-chart-primary` (Spec 12 / schema `data.ts`) com cascata
+ * para `--sx-color-primary-base`. O traço usa `vector-effect: non-scaling-stroke`
+ * para permanecer nítido mesmo quando o SVG é esticado na largura do contêiner.
+ */
+
+type SparklineVariant = 'line' | 'area' | 'bar';
+interface SarakSparklineProps {
+    /** Série de valores. Vazia ou com 1 ponto degrada para um traço plano/único. */
+    data: number[];
+    /** Forma do micro-gráfico (default: 'line'). */
+    variant?: SparklineVariant;
+    /** Altura em px do desenho (default: 40). A largura preenche o contêiner. */
+    height?: number;
+    /** Espessura do traço (line/area) em px (default: 2). */
+    strokeWidth?: number;
+    /** Opacidade do preenchimento da área (default: 0.15). */
+    fillOpacity?: number;
+    /** Descrição acessível do gráfico (vira `<title>` + `aria-label`). */
+    label?: string;
+    className?: string;
+    style?: React__default.CSSProperties;
+}
+declare const SarakSparkline: React__default.FC<SarakSparklineProps>;
+
+/**
+ * Contratos do nó recursivo (RBAC/IAM e TreeView genérico).
+ *
+ * Extraídos de `RecursiveMatrixNode.tsx` na Onda 9 para manter o componente sob o
+ * limite de 250 linhas (Clean Code). Tipado — Zero Any.
+ */
+
+interface MatrixTreeNode {
+    id: string;
+    name?: string;
+    description?: string;
+    /** Discriminador opcional para o mapeamento `manifest.types`. */
+    type?: string;
+    children?: MatrixTreeNode[];
+    /** Carregamento assíncrono em andamento — renderiza o `lazyLoadingIcon`. */
+    loading?: boolean;
+}
+
+/**
+ * SarakTreeView — árvore hierárquica genérica (Spec 12, Regra 5 · Onda 9)
+ *
+ * Wrapper fino que **reusa** o motor de recursão `RecursiveMatrixNode` (o mesmo que
+ * serve a matriz RBAC) — sem duplicar a recursão. Suporta profundidade infinita e o
+ * estado `lazyLoadingIcon` ativável via JSON (nó com `loading: true`), além de seleção
+ * opcional por nó e callback de expansão para carregamento sob demanda. Zero dependência
+ * nova; Zero Hardcode (estilos herdados dos átomos via tokens `var(--sx-*)`).
+ */
+
+interface SarakTreeViewProps {
+    /** Floresta de nós; cada nó pode ter `children` (N níveis) e `loading`. */
+    data: MatrixTreeNode[];
+    /** Manifesto de layout por nível/tipo (default: variante limpa por profundidade). */
+    manifest?: SarakMatrixManifest;
+    /** Indicador exibido sob nós com `loading: true` (default: spinner tokenizado). */
+    lazyLoadingIcon?: React__default.ReactNode;
+    /** Disparado ao expandir/colapsar um nó — ponto de gancho para fetch assíncrono. */
+    onExpand?: (node: MatrixTreeNode, expanded: boolean) => void;
+    /** IDs selecionados (habilita o toggle por nó quando combinado com `onSelect`). */
+    selectedIds?: string[];
+    /** Disparado ao alternar a seleção de um nó. */
+    onSelect?: (nodeId: string) => void;
+    className?: string;
+}
+declare const SarakTreeView: React__default.FC<SarakTreeViewProps>;
+
+/**
  * SarakMarkdownRenderer (Spec 15, Regra 1) — implementação pesada (lazy).
  *
  * Ingere Markdown cru e o renderiza como elementos estilizados pelos tokens Sarak
@@ -1667,6 +1815,9 @@ declare const NATIVE_COMPONENTS: {
     readonly SarakAccordion: React$1.FC<SarakAccordionProps>;
     readonly SarakFormGroup: React$1.FC<SarakFormGroupProps>;
     readonly SarakDataGrid: React$1.LazyExoticComponent<React$1.FC<SarakDataGridProps>>;
+    readonly SarakDataTable: React$1.LazyExoticComponent<typeof SarakDataTableImpl>;
+    readonly SarakSparkline: React$1.FC<SarakSparklineProps>;
+    readonly SarakTreeView: React$1.FC<SarakTreeViewProps>;
     readonly SarakSkeleton: React$1.FC<SarakSkeletonProps>;
     readonly SarakDataEmpty: React$1.FC<SarakDataEmptyProps>;
     readonly SarakModal: React$1.FC<SarakModalProps>;
@@ -2389,4 +2540,4 @@ interface SarakRouterState {
  */
 declare function useSarakRouter(basePath?: string): SarakRouterState;
 
-export { ACTION_HANDLERS, type Accept, type ActionHandler, type ActionList, type AriaDirective, type BadgeSize, type BadgeVariant, type BindingExpression, type ComponentRegistry, type ComponentResolution, type ComponentType, type ConditionExpression, ConditionSyntaxError, type ContextMenuPosition, CustomizationPanel, DESIGN_MANIFEST, DIRECTIVE_OWNERS, type DataNodeState, type DataSourceController, type DataSourceDirective, type DataSourceMethod, type DataSourceStates, type DatePickerValue, DesignScope, DeviceProvider, type DeviceType, type DirectiveName, type DiscoveredModule, type DispatchContext, DynamicRenderer, ExpandableCard, type ExpandedNode, FORM_META_KEY, type FileRejection, type FormModelDirective, type FormResetTrigger, type FormScope, FormScopeContext, type FormScopeDirective, type FormStore, IconMap, type IconName, LanguageSelector, type LightboxImage, type ManifestAction, type ManifestComponent, type ManifestComponentProps, type ManifestNode, type ManifestProps, type ManifestRoot, type ManifestValidationError, type ManifestValidationResult, type ManifestValue, type MatrixNodeConfig, type ModalLayoutContext, type ModuleManifest, ModuleSelector, type MultiSelectOption, NATIVE_COMPONENTS, type NativeComponentType, type NavigateFn, type NetworkInterceptor, type NetworkRequest, type NodeParts, type OverlayController, type OverlayRequest, type PersistDirective, type Pipe, RESERVED_DIRECTIVES, type RangeValue, type RenderForDirective, type RenderForResult, type ResponsiveDirective, type RouteMap, type RouteTarget, STORAGE_NAMESPACE, STRUCTURAL_KEYS, SUPPORTED_SCHEMA_VERSION, SarakAnalyticalPage, type SarakAnalyticalPageProps, SarakAuthScreen, type SarakAuthScreenProps, SarakBadge, type SarakBadgeProps, SarakCardGrid, SarakCatalogGrid, SarakChart, SarakChartEngine, SarakChat, SarakContextMenu, type SarakContextMenuProps, SarakDataEmpty, type SarakDataEmptyProps, SarakDataGrid, SarakDataGridImpl, type SarakDataGridProps, type SarakDataStore, SarakDatePicker, type SarakDatePickerProps, SarakDrawer, type SarakDrawerProps, SarakEmptyState, SarakErrorBoundary, type SarakErrorBoundaryProps, SarakExpandableMatrix, type SarakExpandableMatrixProps, SarakFallback, type SarakFallbackProps, SarakForm, SarakHidden, SarakIcon, type SarakIconProps, SarakLightbox, type SarakLightboxProps, SarakManagementGrid, SarakManifestRenderer, SarakManifestRenderer as SarakManifestRendererDefault, type SarakManifestRendererProps, SarakMarkdownRenderer, type SarakMarkdownRendererProps, type SarakMatrixManifest, SarakModal, type SarakModalProps, type SarakModule, SarakMultiSelect, type SarakMultiSelectProps, type SarakOverlayController, SarakOverlayProvider, type SarakOverlayRequest, SarakRangeSlider, type SarakRangeSliderProps, type SarakRouterState, SarakSecurityOrchestrator, SarakShell, SarakSkeleton, type SarakSkeletonProps, SarakStats, type SarakTabItem, SarakTable, SarakTabs, type SarakTabsProps$1 as SarakTabsProps, SarakTimePicker, type SarakTimePickerProps, SarakToastProvider, SarakTooltip, type SarakTooltipProps, SarakUIProvider, SarakUploader, type SarakUploaderProps, type Selector, type ShellDirective, type SkeletonShape, type SlotMap, SocialButton, type StateRecord, SubmitBlockedError, type ThemeDirective, ThemeToggle, type ToastController, type ToastOptions, type ToastVariant, type TooltipPosition, UserMenu, VIRTUALIZE_THRESHOLD, type ValidationError, type ValidationRule, type ValidationRuleName, type ValidationSchema, type ValidationTypeName, type VisualContract, type VisualContractType, coerceEventValue, createComponentRegistry, createFormScope, createSarakDataStore, debounce, defaultComponentRegistry, evaluateCondition, expandRenderFor, firstErrorMessage, getByPath, getLocalComponent, getPipe, getRegisteredModules, getSarakModule, hasPipe, interpolate, interpolateProps, isReservedDirective, isStructuralKey, namespacedKey, readPersisted, registerComponent, registerLocalComponent, registerPipe, registerSarakModule, removePersisted, resolveBinding, resolveComponent, resolveExpression, resolveModelValue, resolveScopedPath, runActions, separateNodeParts, setByPath, subscribeStorage, subscribeToRegistry, throttle, useDataSource, useDesignDraft, useFormScope, useModalLayoutStyles, useModuleDiscovery, useOverlay, usePersistedSlice, useSarakDevice, useSarakRouter, useSarakUI, useToast, validateManifestNode, validateManifestRoot, validateValue, writePersisted };
+export { ACTION_HANDLERS, type Accept, type ActionHandler, type ActionList, type AriaDirective, type BadgeSize, type BadgeVariant, type BindingExpression, type ComponentRegistry, type ComponentResolution, type ComponentType, type ConditionExpression, ConditionSyntaxError, type ContextMenuPosition, CustomizationPanel, DEFAULT_COLUMN_WIDTH, DESIGN_MANIFEST, DIRECTIVE_OWNERS, type DataNodeState, type DataSourceController, type DataSourceDirective, type DataSourceMethod, type DataSourceStates, type DatePickerValue, DesignScope, DeviceProvider, type DeviceType, type DirectiveName, type DiscoveredModule, type DispatchContext, DynamicRenderer, ExpandableCard, type ExpandedNode, FORM_META_KEY, type FileRejection, type FormModelDirective, type FormResetTrigger, type FormScope, FormScopeContext, type FormScopeDirective, type FormStore, IconMap, type IconName, LanguageSelector, type LightboxImage, MIN_COLUMN_WIDTH, type ManifestAction, type ManifestComponent, type ManifestComponentProps, type ManifestNode, type ManifestProps, type ManifestRoot, type ManifestValidationError, type ManifestValidationResult, type ManifestValue, type MatrixNodeConfig, type MatrixTreeNode, type ModalLayoutContext, type ModuleManifest, ModuleSelector, type MultiSelectOption, NATIVE_COMPONENTS, type NativeComponentType, type NavigateFn, type NetworkInterceptor, type NetworkRequest, type NodeParts, type OverlayController, type OverlayRequest, type PersistDirective, type Pipe, RESERVED_DIRECTIVES, type RangeValue, type RenderForDirective, type RenderForResult, type ResponsiveDirective, type RouteMap, type RouteTarget, STORAGE_NAMESPACE, STRUCTURAL_KEYS, SUPPORTED_SCHEMA_VERSION, SarakAnalyticalPage, type SarakAnalyticalPageProps, SarakAuthScreen, type SarakAuthScreenProps, SarakBadge, type SarakBadgeProps, SarakCardGrid, SarakCatalogGrid, SarakChart, SarakChartEngine, SarakChat, type SarakColumn, SarakContextMenu, type SarakContextMenuProps, SarakDataEmpty, type SarakDataEmptyProps, SarakDataGrid, SarakDataGridImpl, type SarakDataGridProps, type SarakDataStore, SarakDataTable, SarakDataTableImpl, type SarakDataTableProps, SarakDatePicker, type SarakDatePickerProps, SarakDrawer, type SarakDrawerProps, SarakEmptyState, SarakErrorBoundary, type SarakErrorBoundaryProps, SarakExpandableMatrix, type SarakExpandableMatrixProps, SarakFallback, type SarakFallbackProps, SarakForm, SarakHidden, SarakIcon, type SarakIconProps, SarakLightbox, type SarakLightboxProps, SarakManagementGrid, SarakManifestRenderer, SarakManifestRenderer as SarakManifestRendererDefault, type SarakManifestRendererProps, SarakMarkdownRenderer, type SarakMarkdownRendererProps, type SarakMatrixManifest, SarakModal, type SarakModalProps, type SarakModule, SarakMultiSelect, type SarakMultiSelectProps, type SarakOverlayController, SarakOverlayProvider, type SarakOverlayRequest, SarakRangeSlider, type SarakRangeSliderProps, type SarakRouterState, SarakSecurityOrchestrator, SarakShell, SarakSkeleton, type SarakSkeletonProps, SarakSparkline, type SarakSparklineProps, SarakStats, type SarakTabItem, SarakTable, SarakTabs, type SarakTabsProps$1 as SarakTabsProps, SarakTimePicker, type SarakTimePickerProps, SarakToastProvider, SarakTooltip, type SarakTooltipProps, SarakTreeView, type SarakTreeViewProps, SarakUIProvider, SarakUploader, type SarakUploaderProps, type Selector, type ShellDirective, type SkeletonShape, type SlotMap, SocialButton, type SparklineVariant, type StateRecord, SubmitBlockedError, type ThemeDirective, ThemeToggle, type ToastController, type ToastOptions, type ToastVariant, type TooltipPosition, UserMenu, VIRTUALIZE_THRESHOLD, type ValidationError, type ValidationRule, type ValidationRuleName, type ValidationSchema, type ValidationTypeName, type VisualContract, type VisualContractType, coerceEventValue, computeOffsets, createComponentRegistry, createFormScope, createSarakDataStore, debounce, defaultComponentRegistry, evaluateCondition, expandRenderFor, firstErrorMessage, getByPath, getLocalComponent, getPipe, getRegisteredModules, getSarakModule, hasPipe, interpolate, interpolateProps, isReservedDirective, isStructuralKey, namespacedKey, readPersisted, registerComponent, registerLocalComponent, registerPipe, registerSarakModule, removePersisted, reorder, resolveBinding, resolveComponent, resolveExpression, resolveModelValue, resolveScopedPath, runActions, separateNodeParts, setByPath, subscribeStorage, subscribeToRegistry, throttle, useDataSource, useDesignDraft, useFormScope, useModalLayoutStyles, useModuleDiscovery, useOverlay, usePersistedSlice, useSarakDevice, useSarakRouter, useSarakUI, useToast, validateManifestNode, validateManifestRoot, validateValue, widthOf, writePersisted };
