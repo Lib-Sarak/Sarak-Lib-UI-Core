@@ -1,14 +1,15 @@
-import { useEffect } from 'react';
+import { useEffect, MutableRefObject } from 'react';
 import { validateDesign } from '../utils/validation';
+import { SarakUIOptions, SetDesign } from '../types';
 
 export const useDesignRemoteLoader = (
     isHydrated: boolean,
     token: string | null | undefined,
     uiBaseUrl: string,
-    optionsRef: any,
+    optionsRef: MutableRefObject<SarakUIOptions>,
     isBackendLoaded: boolean,
     setIsBackendLoaded: (v: boolean) => void,
-    setDesign: (updater: any) => void
+    setDesign: SetDesign
 ) => {
     useEffect(() => {
         if (!isHydrated) return;
@@ -19,7 +20,7 @@ export const useDesignRemoteLoader = (
                 try {
                     const custom = await opt.persistence.onLoad();
                     if (custom) {
-                        setDesign((prev: any) => validateDesign({ ...prev, ...custom }));
+                        setDesign((prev) => validateDesign({ ...prev, ...custom }));
                         setIsBackendLoaded(true);
                         return;
                     }
@@ -29,15 +30,15 @@ export const useDesignRemoteLoader = (
             if (!isBackendLoaded) {
                 const designPath = opt?.endpoints?.designPath || '/design';
                 try {
-                    const headers: any = {};
+                    const headers: Record<string, string> = {};
                     if (token) headers['Authorization'] = `Bearer ${token}`;
-                    
+
                     const resp = await fetch(`${uiBaseUrl}${designPath}`, {
                         headers
                     });
                     if (resp.ok) {
                         const data = await resp.json();
-                        if (data.design) setDesign((prev: any) => validateDesign({ ...prev, ...data.design }));
+                        if (data.design) setDesign((prev) => validateDesign({ ...prev, ...data.design }));
                         setIsBackendLoaded(true);
                     }
                 } catch (e) {}

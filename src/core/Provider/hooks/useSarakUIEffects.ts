@@ -1,6 +1,7 @@
 import { useEffect } from 'react';
+import { BrandingState } from './useBrandingManager';
 
-export const useSarakUIEffects = (branding: any) => {
+export const useSarakUIEffects = (branding: BrandingState | undefined) => {
     // Injeção de Fontes Avançadas (Core Optimization)
     useEffect(() => {
         if (typeof document === 'undefined') return;

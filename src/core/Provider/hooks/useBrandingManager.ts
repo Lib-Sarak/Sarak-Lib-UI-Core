@@ -1,4 +1,5 @@
 import { useState, useEffect, useCallback } from 'react';
+import { SarakUIOptions } from '../types';
 
 export interface BrandingState {
     companyName: string;
@@ -7,7 +8,7 @@ export interface BrandingState {
     logoBase64: string | null;
 }
 
-export function useBrandingManager(options: any, token?: string | null) {
+export function useBrandingManager(options: SarakUIOptions, token?: string | null) {
     const [branding, setBranding] = useState<BrandingState>({
         companyName: 'Sarak OS',
         loginName: 'Acesso ao Sistema',
@@ -18,14 +19,15 @@ export function useBrandingManager(options: any, token?: string | null) {
     const [isBrandingLoaded, setIsBrandingLoaded] = useState(false);
 
     useEffect(() => {
-        if (!options?.endpoints?.branding) return;
+        const brandingUrl = options?.endpoints?.branding;
+        if (!brandingUrl) return;
 
         const fetchBranding = async () => {
             try {
-                const headers: any = {};
+                const headers: Record<string, string> = {};
                 if (token) headers['Authorization'] = `Bearer ${token}`;
 
-                const res = await fetch(options.endpoints.branding, { headers });
+                const res = await fetch(brandingUrl, { headers });
                 if (res.ok) {
                     const data = await res.json();
                     if (data.branding && Object.keys(data.branding).length > 0) {
@@ -50,13 +52,14 @@ export function useBrandingManager(options: any, token?: string | null) {
     const updateBranding = useCallback(async (partial: Partial<BrandingState>) => {
         setBranding(prev => ({ ...prev, ...partial }));
 
-        if (!options?.endpoints?.branding) return;
+        const brandingUrl = options?.endpoints?.branding;
+        if (!brandingUrl) return;
 
         try {
-            const headers: any = { 'Content-Type': 'application/json' };
+            const headers: Record<string, string> = { 'Content-Type': 'application/json' };
             if (token) headers['Authorization'] = `Bearer ${token}`;
 
-            await fetch(options.endpoints.branding, {
+            await fetch(brandingUrl, {
                 method: 'POST',
                 headers,
                 body: JSON.stringify({ branding: partial })

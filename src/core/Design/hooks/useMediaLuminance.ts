@@ -31,7 +31,7 @@ export const useMediaLuminance = (url: string | undefined, isVideo: boolean) => 
         img.crossOrigin = 'anonymous'; // CORS fix for CDNs
         
         // Timeout cleanup
-        let timeoutId: any = null;
+        let timeoutId: ReturnType<typeof setTimeout> | undefined;
         let worker: Worker | null = null;
 
         img.onload = () => {

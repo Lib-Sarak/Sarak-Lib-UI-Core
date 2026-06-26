@@ -5,19 +5,20 @@ import { GLOBAL_THEMES } from '../../Design/presets/themes';
 import { getDefaultDesignState } from '../../Design/master-map';
 import { useDesignSync } from './useDesignSync';
 import { useDesignRemoteLoader } from './useDesignRemoteLoader';
+import { SarakThemePayload, SarakUIOptions, SarakDesignState, ThemeEntry } from '../types';
 
 /**
  * useDesignManager (v10.1)
- * 
+ *
  * Centraliza a lógica de estado do design, rascunhos, rascunhos persistentes
  * e sincronização com backend/localStorage.
  */
 export const useDesignManager = (props: {
-    initialConfig: any,
-    options: any,
+    initialConfig: SarakThemePayload,
+    options: SarakUIOptions,
     token?: string | null,
     isHydrated: boolean,
-    allThemes?: any[],
+    allThemes?: ThemeEntry[],
     activeThemeId?: string
 }) => {
     const { initialConfig, options, token, isHydrated, allThemes, activeThemeId } = props;
@@ -36,8 +37,8 @@ export const useDesignManager = (props: {
         const opt = optionsRef.current;
         const masterDefaults = getDefaultDesignState();
         
-        let themeDesignTokens = {};
-        
+        let themeDesignTokens: Record<string, unknown> = {};
+
         if (activeThemeId && allThemes) {
             const activeTheme = allThemes.find(t => t.id === activeThemeId);
             if (activeTheme) {
@@ -55,7 +56,7 @@ export const useDesignManager = (props: {
         return { ...masterDefaults, ...themeDesignTokens, ...configRef.current };
     }, [activeThemeId, allThemes]);
 
-    const [design, setDesign] = useState(() => {
+    const [design, setDesign] = useState<SarakDesignState>(() => {
         if (typeof window === 'undefined') return getSeedConfig();
         
         try {
@@ -76,7 +77,7 @@ export const useDesignManager = (props: {
     useDesignRemoteLoader(isHydrated, token, uiBaseUrl, optionsRef, isBackendLoaded, setIsBackendLoaded, setDesign);
 
     // 3. Persistência de Design (Core Logic)
-    const persistDesign = useCallback(async (config: any) => {
+    const persistDesign = useCallback(async (config: SarakDesignState) => {
         if (!isHydrated) return;
         const opt = optionsRef.current;
         try {
@@ -85,7 +86,7 @@ export const useDesignManager = (props: {
                 await opt.persistence.onSave(config);
             } else {
                 const designPath = opt?.endpoints?.designPath || '/design';
-                const headers: any = { 'Content-Type': 'application/json' };
+                const headers: Record<string, string> = { 'Content-Type': 'application/json' };
                 if (token) headers['Authorization'] = `Bearer ${token}`;
                 
                 await fetch(`${uiBaseUrl}${designPath}`, {
@@ -108,18 +109,18 @@ export const useDesignManager = (props: {
         return () => clearTimeout(timer);
     }, [design, persistDesign]);
 
-    const safeSetDesign = useCallback((next: any) => {
-        setDesign((prev: any) => {
+    const safeSetDesign = useCallback((next: SarakDesignState | ((prev: SarakDesignState) => SarakDesignState)) => {
+        setDesign((prev) => {
             const updated = typeof next === 'function' ? next(prev) : next;
             return validateDesign(updated);
         });
     }, []);
 
-    const applyConfig = useCallback((partial: any) => {
-        safeSetDesign((prev: any) => ({ ...prev, ...partial }));
+    const applyConfig = useCallback((partial: Partial<SarakThemePayload>) => {
+        safeSetDesign((prev) => ({ ...prev, ...partial }));
     }, [safeSetDesign]);
 
-    const applyFullConfig = useCallback((config: any) => {
+    const applyFullConfig = useCallback((config: SarakThemePayload) => {
         safeSetDesign(config);
     }, [safeSetDesign]);
 

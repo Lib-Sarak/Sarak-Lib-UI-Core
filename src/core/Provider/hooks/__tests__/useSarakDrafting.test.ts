@@ -4,23 +4,23 @@ import { useSarakDrafting } from '../useSarakDrafting';
 
 describe('useSarakDrafting', () => {
     it('should route smartApplyConfig correctly when not drafting', () => {
-        const design = { color: 'red' };
+        const design = { primaryColor: 'red' };
         const applyConfig = vi.fn();
         const applyFullConfig = vi.fn();
 
         const { result } = renderHook(() => useSarakDrafting(design, applyConfig, applyFullConfig));
 
         act(() => {
-            result.current.smartApplyConfig({ color: 'blue' });
+            result.current.smartApplyConfig({ primaryColor: 'blue' });
         });
 
         // Should call global provider because not drafting
-        expect(applyConfig).toHaveBeenCalledWith({ color: 'blue' });
+        expect(applyConfig).toHaveBeenCalledWith({ primaryColor: 'blue' });
         expect(result.current.draftDesign).toBeNull();
     });
 
     it('should route smartApplyConfig to draftDesign when drafting is active', () => {
-        const design = { color: 'red' };
+        const design = { primaryColor: 'red' };
         const applyConfig = vi.fn();
         const applyFullConfig = vi.fn();
 
@@ -31,16 +31,16 @@ describe('useSarakDrafting', () => {
         });
 
         act(() => {
-            result.current.smartApplyConfig({ color: 'blue' });
+            result.current.smartApplyConfig({ primaryColor: 'blue' });
         });
 
         // Should NOT call global provider because drafting is true
         expect(applyConfig).not.toHaveBeenCalled();
-        expect(result.current.draftDesign).toEqual({ color: 'blue' }); // Merged over design
+        expect(result.current.draftDesign).toEqual({ primaryColor: 'blue' }); // Merged over design
     });
 
     it('should lock drafting synchronously', () => {
-        const design = { color: 'red' };
+        const design = { primaryColor: 'red' };
         const applyConfig = vi.fn();
         const applyFullConfig = vi.fn();
 
@@ -48,10 +48,10 @@ describe('useSarakDrafting', () => {
 
         act(() => {
             result.current.lockDrafting(); // sets Ref to true sync
-            result.current.smartApplyFullConfig({ color: 'green' });
+            result.current.smartApplyFullConfig({ primaryColor: 'green' });
         });
 
         expect(applyFullConfig).not.toHaveBeenCalled();
-        expect(result.current.draftDesign).toEqual({ color: 'green' });
+        expect(result.current.draftDesign).toEqual({ primaryColor: 'green' });
     });
 });

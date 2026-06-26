@@ -1,10 +1,12 @@
 import { useState, useEffect } from 'react';
-import { 
-    getRegisteredModules, 
-    subscribeToRegistry, 
-    registerLocalComponent, 
-    registerSarakModule 
+import {
+    getRegisteredModules,
+    subscribeToRegistry,
+    registerLocalComponent,
+    registerSarakModule,
+    type SarakModule
 } from '../../Discovery/registry';
+import { SarakUIOptions } from '../types';
 
 /**
  * useRegistryManager (v10.1)
@@ -12,8 +14,8 @@ import {
  * Gerencia a descoberta de módulos, registro de componentes locais 
  * e sincronização com o registro global da Sarak.
  */
-export const useRegistryManager = (options: any) => {
-    const [registeredModules, setRegisteredModules] = useState<any[]>(() => getRegisteredModules());
+export const useRegistryManager = (options: SarakUIOptions) => {
+    const [registeredModules, setRegisteredModules] = useState<SarakModule[]>(() => getRegisteredModules());
     const [isHydrated, setIsHydrated] = useState(false);
 
     useEffect(() => {
@@ -22,9 +24,10 @@ export const useRegistryManager = (options: any) => {
         // dependência circular (Core -> Features). O registry vai resolver a referência pelo ID.
 
         // 2. Registrar módulos do manifesto (se houver)
-        if (options?.manifest?.modules) {
-            options.manifest.modules.forEach((mod: any) => {
-                registerSarakModule(mod);
+        const manifestModules = options?.manifest?.modules;
+        if (Array.isArray(manifestModules)) {
+            manifestModules.forEach((mod) => {
+                registerSarakModule(mod as SarakModule);
             });
         }
 

@@ -1,7 +1,8 @@
 import React, { useMemo } from 'react';
+import { SarakThemePayload } from '../types';
 
 interface SovereignThemeInjectorProps {
-    design: Record<string, unknown>;
+    design: SarakThemePayload;
     manifest?: Record<string, unknown>;
 }
 

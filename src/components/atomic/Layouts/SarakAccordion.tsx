@@ -24,7 +24,7 @@ export const SarakAccordion: React.FC<SarakAccordionProps> = ({
     const contentRef = useRef<HTMLDivElement>(null);
 
     const animNormal = design?.animNormal;
-    const animDuration = typeof animNormal === 'number' ? `${animNormal}ms` : (animNormal as string) || '300ms';
+    const animDuration = typeof animNormal === 'number' ? `${animNormal}ms` : '300ms';
     const animEasing = (design?.easeMain as string) || 'ease-in-out';
     const borderRadius = (design?.borderRadius as string | number) || 'var(--sx-radius-md)';
     const borderColor = 'var(--sx-color-border-base, rgba(255,255,255,0.1))';

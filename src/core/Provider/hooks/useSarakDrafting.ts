@@ -1,7 +1,12 @@
 import { useState, useRef, useCallback } from 'react';
+import { SarakThemePayload } from '../types';
 
-export const useSarakDrafting = (design: any, applyConfig: any, applyFullConfig: any) => {
-    const [draftDesign, setDraftDesign] = useState<any | null>(null);
+export const useSarakDrafting = (
+    design: SarakThemePayload,
+    applyConfig: (partial: Partial<SarakThemePayload>) => void,
+    applyFullConfig: (config: SarakThemePayload) => void
+) => {
+    const [draftDesign, setDraftDesign] = useState<SarakThemePayload | null>(null);
     const [isDrafting, setIsDraftingState] = useState(false);
     const isDraftingRef = useRef(false);
 
@@ -17,15 +22,15 @@ export const useSarakDrafting = (design: any, applyConfig: any, applyFullConfig:
     }, []);
 
     // Interceptor Inteligente (Isolamento Draft vs System)
-    const smartApplyConfig = useCallback((partial: any) => {
+    const smartApplyConfig = useCallback((partial: Partial<SarakThemePayload>) => {
         if (isDraftingRef.current || draftDesign) {
-            setDraftDesign((prev: any) => ({ ...(prev || design), ...partial }));
+            setDraftDesign((prev) => ({ ...(prev || design), ...partial }));
         } else {
             applyConfig(partial);
         }
     }, [design, applyConfig, draftDesign]);
 
-    const smartApplyFullConfig = useCallback((config: any) => {
+    const smartApplyFullConfig = useCallback((config: SarakThemePayload) => {
         if (isDraftingRef.current || draftDesign) {
             setDraftDesign(config);
         } else {

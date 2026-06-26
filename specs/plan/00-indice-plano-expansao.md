@@ -115,6 +115,7 @@ Mapa de navegação do diretório `specs/plan/`. O plano transforma a Sarak-Lib-
 | 62 | erradicacao-any-componentes | `src/components/**` (atomic · engines) — ~179 |
 | 63 | erradicacao-any-design-engine | `src/features/DesignEngine/**` — ~165 |
 | 64 | erradicacao-any-constantes-e-fechamento | `src/constants/**` + varredura final → baseline **0** |
+| 65 | foundation-design-state | **Fundação transversal:** tipo `SarakDesignState`; destrava todos os sites `design:any` (61↔62↔63) |
 
 > Operacionaliza a **Regra 1 da Spec 50** (`any` → 0) como eixo próprio. Quando a campanha zerar o baseline, a Spec 50 apenas confirma o verde.
 
@@ -177,9 +178,11 @@ Cada **onda** é um conjunto construível em conjunto; a ordem **entre** ondas �
 - **Onda 11 — Finalização** *(após as anteriores, ou em paralelo em baixa prioridade)*
   - [ ] 50 finalização *(`any` residual → 0, docs/README, guia do importador, build/exports)*
 - **Onda 12 — Erradicação de `any`** *(campanha de adequação — núcleo→fora; quita a Regra 1 da Spec 50)*
-  - [ ] 60 plano-mestre *(baseline ~484, leis, gate por fatia, roteamento por risco)*
-  - [ ] 61 núcleo *(`src/core/**` — fundação tipada primeiro)* · [ ] 62 componentes *(`src/components/**` — maior volume)* · [ ] 63 design-engine *(`src/features/DesignEngine/**`)*
-  - [ ] 64 constantes + fechamento *(varredura final → baseline 0; atualiza §0.6 e a Regra 1 da Spec 50)*
+  - [ ] 60 plano-mestre *(baseline ~484, leis, gate por fatia, roteamento por risco)* — 🟡 em andamento (484→454)
+  - [~] 61 núcleo *(`src/core/**` — parte autônoma feita; design-state → Spec 65)* · [ ] 62 componentes *(`src/components/**`)* · [ ] 63 design-engine *(`src/features/DesignEngine/**`)*
+  - [ ] **65 foundation** *(tipo `SarakDesignState` — transversal; roda ANTES do resto de 61/62/63)* · [ ] 64 constantes + fechamento *(varredura final → baseline 0)*
+
+  > **Ordem interna da Onda 12:** parte autônoma da 61 ✅ → **65 (Foundation)** → restante 61/62/63 (desbloqueadas) → 64.
 
 > O **30 (Renderer)** existe em versão **mínima** já na Onda 0 (harness para testar a fundação) e só é **finalizado** na Onda 5, quando o contrato completo (`payload`, `dataStore`, `routes`, interceptors) está pronto.
 

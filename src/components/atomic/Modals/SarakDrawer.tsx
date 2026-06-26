@@ -30,7 +30,7 @@ export const SarakDrawer: React.FC<SarakDrawerProps> = ({
     const { containerRef, handleTrap } = useFocusTrap(isOpen, onClose);
 
     const animSlow = design?.animSlow;
-    const animDuration = typeof animSlow === 'number' ? `${animSlow}ms` : (animSlow as string) || '400ms';
+    const animDuration = typeof animSlow === 'number' ? `${animSlow}ms` : '400ms';
     const animEasing = (design?.easeMain as string) || 'ease-in-out';
     const zIndex = (design?.zIndexModal as number) || 1000;
     const overlayBg = design?.modalOverlayColor || 'var(--sx-color-overlay-base)';

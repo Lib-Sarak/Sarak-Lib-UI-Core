@@ -1,14 +1,45 @@
 import { ReactNode } from 'react';
-import type { DesignTokenId } from './generated/design-token-ids';
+import type { DesignTokenId, SarakDesignTokens } from './generated/design-token-ids';
 
 /**
  * Contrato do Theme Payload com DOMÍNIO DE CHAVES FECHADO: somente design tokens
- * reais (DesignTokenId — gerado da SSOT MASTER_DESIGN_MAP, mesma fonte validada
- * pela paridade 1:1:1:1:1) + os campos legados/branding declarados em
- * SarakThemePayloadExtras. Qualquer outra chave (ex.: 'brandColorPrimary') passa
- * a ser ERRO DE COMPILAÇÃO — "a Interface do Payload dita a Realidade".
+ * reais (SarakDesignTokens — gerado da SSOT MASTER_DESIGN_MAP, mesma fonte
+ * validada pela paridade 1:1:1:1:1, agora com VALORES tipados por `token.type`)
+ * + os campos legados/branding declarados em SarakThemePayloadExtras. Qualquer
+ * outra chave (ex.: 'brandColorPrimary') passa a ser ERRO DE COMPILAÇÃO —
+ * "a Interface do Payload dita a Realidade".
  */
-export type SarakThemePayload = Partial<Record<DesignTokenId, unknown>> & SarakThemePayloadExtras;
+export type SarakThemePayload = Partial<SarakDesignTokens> & SarakThemePayloadExtras;
+
+/**
+ * Chaves estruturais/sanitizador que existem no estado de design em RUNTIME mas
+ * não são design tokens do schema (Spec 65, Fase 0). Não criar token novo aqui —
+ * token novo nasce no schema/paridade.
+ */
+interface SarakRuntimeExtras {
+    animationSpeed?: number;
+    secondaryModuleId?: string;
+    emptyStateId?: string;
+    logoPosition?: 'left' | 'center';
+    logoScale?: number;
+    atmosphere?: Record<string, unknown>;
+    specialized?: Record<string, unknown>;
+    schema_version?: string;
+}
+
+/** Estado de design REAL em runtime: o payload público + os extras de runtime. */
+export type SarakDesignState = SarakThemePayload & SarakRuntimeExtras;
+
+/** Entrada da lista unificada de temas (GLOBAL_THEMES + custom_themes do banco). */
+export interface ThemeEntry {
+    id: string;
+    design?: Record<string, unknown>;
+}
+
+/** Assinatura do setter do design-state (valor ou updater functional). */
+export type SetDesign = (
+    updater: SarakDesignState | ((prev: SarakDesignState) => SarakDesignState),
+) => void;
 
 /**
  * Campos presentes no payload que ainda NÃO foram modelados como design tokens

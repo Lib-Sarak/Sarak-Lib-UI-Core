@@ -1,15 +1,30 @@
 import { useEffect, useReducer, useCallback } from 'react';
 import api from '../../../../shared/services/api';
 
+/** Nó genérico da matriz: id + filhos opcionais + atributos dinâmicos do backend. */
+export interface MatrixNode {
+    id: string;
+    children?: MatrixNode[];
+    [key: string]: unknown;
+}
+
+/** Config do contrato consumida pela engine (apenas as chaves usadas aqui). */
+export interface MatrixEngineConfig {
+    toggleEndpoint?: string;
+    mappingField?: string;
+    subItemIdentifier?: string;
+    [key: string]: unknown;
+}
+
 type State = {
-    data: any[];
-    subItems: any[];
+    data: MatrixNode[];
+    subItems: MatrixNode[];
     loading: boolean;
 };
 
-type Action = 
+type Action =
     | { type: 'FETCH_START' }
-    | { type: 'FETCH_SUCCESS'; payload: { data: any[]; subItems: any[] } }
+    | { type: 'FETCH_SUCCESS'; payload: { data: MatrixNode[]; subItems: MatrixNode[] } }
     | { type: 'FETCH_ERROR' };
 
 function reducer(state: State, action: Action): State {
@@ -25,7 +40,7 @@ function reducer(state: State, action: Action): State {
     }
 }
 
-export const useExpandableMatrixEngine = (config: any, mainEndpoint: string, subItemsEndpoint: string, resolveEndpoint: (e: string) => string) => {
+export const useExpandableMatrixEngine = (config: MatrixEngineConfig, mainEndpoint: string, subItemsEndpoint: string, resolveEndpoint: (e: string) => string) => {
     const [state, dispatch] = useReducer(reducer, { data: [], subItems: [], loading: true });
 
     const fetchData = useCallback(async () => {
@@ -51,7 +66,7 @@ export const useExpandableMatrixEngine = (config: any, mainEndpoint: string, sub
         fetchData();
     }, [fetchData]);
 
-    const findNodeInTree = (nodes: any[], id: string): any => {
+    const findNodeInTree = (nodes: MatrixNode[], id: string): MatrixNode | null => {
         for (const node of nodes) {
             if (node.id === id) return node;
             if (node.children) {

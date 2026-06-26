@@ -1,25 +1,29 @@
+import { SarakDesignState } from '../types';
+
 /**
  * Sarak Design Validation (v10.1)
  * Garante que os tokens de design sejam válidos e estejam dentro de faixas seguras.
+ * Entrada é JSON cru (localStorage/backend) → `unknown`; a saída é o estado tipado.
  */
-export const validateDesign = (design: any) => {
-    if (!design) return {};
-    const s: any = {};
+export const validateDesign = (design: unknown): SarakDesignState => {
+    if (!design) return {} as SarakDesignState;
+    const input = design as Record<string, unknown>;
+    const s: Record<string, unknown> = {};
 
     // 1. Integrity Sanitization (Removes Manifest garbage)
-    Object.entries(design).forEach(([k, v]) => {
+    Object.entries(input).forEach(([k, v]) => {
         if (v !== null && v !== undefined && v !== '') {
             s[k] = v;
         }
     });
 
     // 1.1 Branding Preservation (Garante que nomes não sejam perdidos)
-    if (design.systemName) s.systemName = design.systemName;
-    if (design.logoUrl) s.logoUrl = design.logoUrl;
-    if (design.logoDarkUrl) s.logoDarkUrl = design.logoDarkUrl;
+    if (input.systemName) s.systemName = input.systemName;
+    if (input.logoUrl) s.logoUrl = input.logoUrl;
+    if (input.logoDarkUrl) s.logoDarkUrl = input.logoDarkUrl;
 
-    const clamp = (val: any, min: number, max: number, fallback: number) => {
-        const n = parseFloat(val);
+    const clamp = (val: unknown, min: number, max: number, fallback: number) => {
+        const n = parseFloat(val as string);
         if (isNaN(n)) return fallback;
         return Math.min(Math.max(n, min), max);
     };
@@ -46,5 +50,6 @@ export const validateDesign = (design: any) => {
 
     s.schema_version = "11.0"; // Upgrade to v11.0 (Structured Design Engine)
 
-    return s;
+    // Seam cast (Spec 65): o acumulador dinâmico vira o estado tipado na fronteira.
+    return s as unknown as SarakDesignState;
 };

@@ -4,26 +4,50 @@
  * Local manager for registered modules to avoid dependency on lib-shared.
  */
 
+/**
+ * Props que um componente registrado pode receber (heterogêneo, sem `any`).
+ * Espelha o padrão canônico de `ManifestComponentProps` (Spec 22).
+ */
+export interface SarakComponentProps {
+    children?: React.ReactNode;
+    [prop: string]: unknown;
+}
+
+/** Tipo uniforme sob o qual qualquer componente é guardado no registro. */
+export type SarakComponent = React.ComponentType<SarakComponentProps>;
+
+const toSarakComponent = <P extends object>(
+    component: React.ComponentType<P>,
+): SarakComponent => component as unknown as SarakComponent;
+
 export interface SarakModule {
     id: string;
     label: string;
     icon?: string;
     category?: string;
-    component?: React.ComponentType<any>;
-    components?: Record<string, React.ComponentType<any>>;
+    component?: SarakComponent;
+    components?: Record<string, SarakComponent>;
     priority?: number;
     description?: string;
+    isLocal?: boolean;
+}
+
+/** Forma das janelas que carregam o registro soberano por instância. */
+interface SarakRegistryGlobal {
+    __SARAK_REGISTRY_MODS__?: Map<string, SarakModule>;
+    __SARAK_REGISTRY_COMPS__?: Map<string, SarakComponent>;
+    __SARAK_REGISTRY_LISTENERS__?: Set<() => void>;
 }
 
 // --- INSTANCE SOVEREIGNTY (v9.1) ---
 // Garantimos que, mesmo se houver múltiplas instâncias da biblioteca (ex: link local + node_modules),
 // elas compartilhem o mesmo registro global no objeto window.
-const _global = (typeof window !== 'undefined' ? window : {}) as any;
+const _global = (typeof window !== 'undefined' ? window : {}) as unknown as SarakRegistryGlobal;
 
 const registeredModules: Map<string, SarakModule> = _global.__SARAK_REGISTRY_MODS__ || new Map();
 _global.__SARAK_REGISTRY_MODS__ = registeredModules;
 
-const localComponents: Map<string, React.ComponentType<any>> = _global.__SARAK_REGISTRY_COMPS__ || new Map();
+const localComponents: Map<string, SarakComponent> = _global.__SARAK_REGISTRY_COMPS__ || new Map();
 _global.__SARAK_REGISTRY_COMPS__ = localComponents;
 
 const listeners: Set<() => void> = _global.__SARAK_REGISTRY_LISTENERS__ || new Set();
@@ -44,15 +68,15 @@ export const subscribeToRegistry = (listener: () => void) => {
 /**
  * Registers a local component linked to a system ID (v6.5).
  */
-export const registerLocalComponent = (id: string, component: React.ComponentType<any>) => {
-    localComponents.set(id, component);
+export const registerLocalComponent = <P extends object>(id: string, component: React.ComponentType<P>) => {
+    localComponents.set(id, toSarakComponent(component));
     notifyListeners();
 };
 
 /**
  * Returns the component associated with an ID, if it exists.
  */
-export const getLocalComponent = (id: string): React.ComponentType<any> | undefined => {
+export const getLocalComponent = (id: string): SarakComponent | undefined => {
     return localComponents.get(id);
 };
 
@@ -89,9 +113,9 @@ const validateSarakModule = (manifest: SarakModule) => {
 export const registerSarakModule = (manifest: SarakModule) => {
     if (!validateSarakModule(manifest)) return;
 
-    const existing = _global.__SARAK_REGISTRY_MODS__.get(manifest.id);
-    const mod = { ...existing, ...manifest, isLocal: true };
-    _global.__SARAK_REGISTRY_MODS__.set(manifest.id, mod);
+    const existing = registeredModules.get(manifest.id);
+    const mod: SarakModule = { ...existing, ...manifest, isLocal: true };
+    registeredModules.set(manifest.id, mod);
     
     // Notificar assinantes
     notifyListeners();

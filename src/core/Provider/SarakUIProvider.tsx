@@ -3,7 +3,7 @@ import '../../styles/sarak-base.css';
 import { NoiseOverlay } from '../../effects/NoiseOverlay';
 
 // Novos Módulos Refatorados
-import { SarakUIContextType, SarakUIOptions, SarakUIProviderProps, SarakThemePayload } from './types';
+import { SarakUIContextType, SarakUIOptions, SarakUIProviderProps, SarakThemePayload, ThemeEntry } from './types';
 import { DEFAULT_UI_BASE_URL } from './constants';
 import { useRegistryManager } from './hooks/useRegistryManager';
 import { useDesignManager } from './hooks/useDesignManager';
@@ -77,8 +77,8 @@ export const SarakUIProvider: React.FC<SarakUIProviderProps> = ({
     const { registeredModules, isHydrated } = useRegistryManager(options);
 
     // 1.5. Merge Temas Híbridos
-    const allThemes = useMemo(() => {
-        return [...GLOBAL_THEMES, ...customThemes];
+    const allThemes = useMemo<ThemeEntry[]>(() => {
+        return [...GLOBAL_THEMES, ...customThemes] as ThemeEntry[];
     }, [customThemes]);
 
     // 2. Gerenciamento do Estado de Design e Persistência
@@ -155,7 +155,7 @@ export const SarakUIProvider: React.FC<SarakUIProviderProps> = ({
                     blur={design?.globalBackgroundBlur}
                     blendMode={design?.globalBackgroundBlendMode}
                     isFixed={true}
-                    mode={design?.mode}
+                    mode={design?.mode as 'light' | 'dark' | undefined}
                 />
 
                 {shouldRenderChildren ? children : null}

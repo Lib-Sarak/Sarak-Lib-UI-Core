@@ -2,10 +2,10 @@
 tipo: "plano-mestre"
 titulo: "Plano Mestre — Erradicação de `any` (Campanha de Adequação)"
 dominio: "Sarak-Lib-UI-Core (Adequação)"
-status: "🔴 A Implementar"
+status: "🟡 Em Andamento (484 → 454; Spec 61 parcial)"
 prioridade: "Média"
 tags: ["spec", "plano-mestre", "any", "adequacao", "type-safety", "campanha"]
-relacionados: ["00-indice-plano-expansao", "50-finalizacao-adequacao-e-entrega", "61-erradicacao-any-nucleo", "62-erradicacao-any-componentes", "63-erradicacao-any-design-engine", "64-erradicacao-any-constantes-e-fechamento"]
+relacionados: ["00-indice-plano-expansao", "50-finalizacao-adequacao-e-entrega", "61-erradicacao-any-nucleo", "62-erradicacao-any-componentes", "63-erradicacao-any-design-engine", "64-erradicacao-any-constantes-e-fechamento", "65-foundation-design-state"]
 ---
 
 # 1. Visão Geral
@@ -25,6 +25,13 @@ Snapshot da varredura `node .agents/skills/ui-auditoria-modulo/scripts/auditor_t
 | | **Total baseline** | **~484** |
 
 > Hotspot único a vigiar: `src/core/Discovery/components/ContractRenderer.tsx` concentra **39** ocorrências sozinho (cabe na Spec 61, mas é tarefa de **alto risco** — ver §4).
+
+## 2.1 Estado da campanha (commit 1)
+**484 → 454** (−30). Spec 61 com a parte autônoma (risco baixo/médio) concluída e verde — ver Spec 61 §1.1 para a lista de arquivos.
+
+**Refinamento de sequência (achado-fundação):** o padrão `design: any` domina o restante e **não** se resolve por arquivo — `SarakThemePayload` é estrito demais (domínio fechado) e `Record<string,unknown>` cascateia para `features/` (valor de token usado como CSS). Por isso a campanha ganha um **batch transversal de Foundation** que precede o resto: definir o **tipo-fundação do design-state** (`SarakDesignState`, Opção C) e então varrer junto todos os sites `design:any` (Provider core + Shell + color-engine/presets) **e** seus consumidores em `features/` (atravessa Specs 61↔62↔63). **Especificado na Spec 65.** Os demais batches HITL: `ContractRenderer`+`types.ts` (Discovery) e `manifest.ts`.
+
+> **Ordem revisada:** **Foundation (Spec 65)** → restante de 61 (Discovery `ContractRenderer`+`types.ts`) → 62 → 63 (já desbloqueadas pela 65) → 64. A 65 é o de-risco de maior alavancagem.
 
 # 3. Leis da Campanha (inegociáveis)
 1. **Comportamento preservado.** Nenhum refactor de tipo pode mudar runtime. Toda fatia segue a skill **`code-adequacao`**: rede de **testes de caracterização** captura o comportamento ATUAL **antes** de tocar o arquivo.

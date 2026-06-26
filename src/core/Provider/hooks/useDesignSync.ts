@@ -1,13 +1,14 @@
 import { useEffect, MutableRefObject } from 'react';
 import { validateDesign } from '../utils/validation';
+import { ThemeEntry, SetDesign } from '../types';
 
 export const useDesignSync = (
     isHydrated: boolean,
     activeThemeId: string | undefined,
-    allThemes: any[] | undefined,
+    allThemes: ThemeEntry[] | undefined,
     storageKey: string,
     hasHydratedRef: MutableRefObject<boolean>,
-    setDesign: (updater: any) => void
+    setDesign: SetDesign
 ) => {
     // RE-HYDRATION & ACTIVE THEME ID SYNC
     useEffect(() => {
@@ -17,7 +18,7 @@ export const useDesignSync = (
         if (activeThemeId && allThemes) {
             const activeTheme = allThemes.find(t => t.id === activeThemeId);
             if (activeTheme && activeTheme.design) {
-                setDesign((prev: any) => validateDesign({ ...prev, ...activeTheme.design }));
+                setDesign((prev) => validateDesign({ ...prev, ...activeTheme.design }));
             }
             return;
         }
@@ -28,7 +29,7 @@ export const useDesignSync = (
                 const saved = localStorage.getItem(storageKey);
                 if (saved) {
                     const parsed = JSON.parse(saved);
-                    setDesign((prev: any) => validateDesign({ ...prev, ...parsed }));
+                    setDesign((prev) => validateDesign({ ...prev, ...parsed }));
                 }
             } catch (e) {}
             hasHydratedRef.current = true;

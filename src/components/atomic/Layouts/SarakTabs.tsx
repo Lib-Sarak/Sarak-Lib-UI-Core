@@ -30,7 +30,7 @@ export const SarakTabs: React.FC<SarakTabsProps> = ({
     const activeColor = design?.primaryColor || 'var(--sx-color-primary-base)';
     const borderColor = 'var(--sx-color-border-base, rgba(255,255,255,0.1))';
     const animFast = design?.animFast;
-    const animDuration = typeof animFast === 'number' ? `${animFast}ms` : (animFast as string) || '200ms';
+    const animDuration = typeof animFast === 'number' ? `${animFast}ms` : '200ms';
 
     const isHorizontal = alignment === 'horizontal';
 

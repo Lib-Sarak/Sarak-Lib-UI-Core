@@ -2,16 +2,328 @@ import * as React$1 from 'react';
 import React__default, { ReactNode, HTMLAttributes, InputHTMLAttributes, TextareaHTMLAttributes, SelectHTMLAttributes } from 'react';
 import * as react_jsx_runtime from 'react/jsx-runtime';
 
-type DesignTokenId = 'accentColor' | 'aiGlowColor' | 'aiPanelBg' | 'animEnabled' | 'animFast' | 'animInstant' | 'animNormal' | 'animSlow' | 'atmosphereNoiseOpacity' | 'badgeRadius' | 'bgBaseColor' | 'bgGradientAngle' | 'bgGradientMode' | 'bgNoiseAnimation' | 'bgNoiseDensity' | 'bodyFont' | 'bodyLineHeight' | 'bodySize' | 'bodyWeight' | 'borderBeamEnabled' | 'borderRadius' | 'borderRadiusLg' | 'borderRadiusMd' | 'borderRadiusSm' | 'borderStyle' | 'borderType' | 'borderWidth' | 'breakpointDesktop' | 'breakpointTablet' | 'btnActiveScale' | 'btnBackdropBlur' | 'btnBorderRadius' | 'btnGhostHoverBg' | 'btnHoverScale' | 'btnNeonGlowColor' | 'btnNeonPulseSpeed' | 'btnPrimaryBg' | 'btnPrimaryText' | 'btnRadiusBL' | 'btnRadiusBR' | 'btnRadiusTL' | 'btnRadiusTR' | 'btnSecondaryBg' | 'btnStyleType' | 'buttonIconPosition' | 'buttonWidthStrategy' | 'cardActionBtnBorderRadius' | 'cardActionBtnHoverBg' | 'cardActionBtnPadding' | 'cardActionBtnPrimaryBg' | 'cardActionBtnText' | 'cardActionClickScale' | 'cardBackdropBlur' | 'cardBackgroundColor' | 'cardBorderBottom' | 'cardBorderColor' | 'cardBorderLeft' | 'cardBorderOpacity' | 'cardBorderRadius' | 'cardBorderRight' | 'cardBorderTop' | 'cardBorderWidth' | 'cardContentAlignment' | 'cardFooterBg' | 'cardFooterBorder' | 'cardGeometricCut' | 'cardGlowColor' | 'cardGlowIntensity' | 'cardHeaderBg' | 'cardHeaderBorder' | 'cardHeaderPadding' | 'cardHoverGlowIncrease' | 'cardHoverStyle' | 'cardHoverTranslate' | 'cardImagePosition' | 'cardInnerGlowColor' | 'cardInnerGlowWidth' | 'cardLayoutDirection' | 'cardPaddingMd' | 'cardRadiusBL' | 'cardRadiusBR' | 'cardRadiusTL' | 'cardRadiusTR' | 'cardSearchBgFocus' | 'cardSearchBorderBeamActive' | 'cardSearchPlaceholderColor' | 'cardSearchTextFocusColor' | 'cardShadow' | 'cardShadowSpread' | 'cardSpotlightOpacity' | 'cardSurfaceOpacity' | 'cardTextAlign' | 'cardTextureOpacity' | 'cardTextureType' | 'cardTitleColor' | 'cardTitleFontSize' | 'cardTitleFontWeight' | 'cardTitleIconGlow' | 'cardTitleLetterSpacing' | 'cardVariant' | 'chartColorPalette' | 'chartGridOpacity' | 'chartShowGrid' | 'chartSmoothing' | 'chartThickness' | 'chartTooltipBg' | 'chartType' | 'chatAnimationSpeed' | 'chatBubbleRadius' | 'chatBubbleStyle' | 'chatUserBg' | 'checkboxActiveColor' | 'colorBgBody' | 'colorBgLayer1' | 'colorBgLayer2' | 'colorBgModal' | 'colorDepth' | 'colorPalette' | 'colorVariation' | 'contentAlignment' | 'contrastCurve' | 'easeMain' | 'easeOut' | 'flowGridStyle' | 'flowNodeRadius' | 'focusRingWidth' | 'formFieldDensity' | 'formLabelPosition' | 'formLayoutDirection' | 'glassBlur' | 'glassOpacity' | 'glassRoughness' | 'glassSaturation' | 'glassSpecularity' | 'globalBackgroundBlendMode' | 'globalBackgroundBlur' | 'globalBackgroundImageUrl' | 'globalBackgroundOpacity' | 'globalContrast' | 'globalFlowAlign' | 'globalFlowDirection' | 'globalSaturation' | 'globalSectionGap' | 'h1LetterSpacing' | 'h1LineHeight' | 'h1Size' | 'h1Weight' | 'h2LineHeight' | 'h2Size' | 'h2Weight' | 'headerAlignment' | 'headingFont' | 'headingTransform' | 'iconFamily' | 'iconStrokeWidth' | 'iconWeight' | 'identityAlignment' | 'identityFontFamily' | 'identityFontWeight' | 'identityHoverEffect' | 'identityPadding' | 'identityRedirectUrl' | 'identityTracking' | 'imageCardHoverZoom' | 'imageCardOverlayOpacity' | 'industrialRegistry' | 'inputBackdropBlur' | 'inputBg' | 'inputBorderColor' | 'inputBorderRadius' | 'inputBorderType' | 'inputErrorColor' | 'inputFocusBorderColor' | 'inputIconColor' | 'inputIconPosition' | 'inputPadding' | 'inputShadow' | 'inputSuccessColor' | 'inputTextColor' | 'isAutoHideEnabled' | 'isNavHidden' | 'isSplitViewEnabled' | 'layerBackdropBlur' | 'layerBackdropOpacity' | 'layeredShadows' | 'layerElevationFactor' | 'layout' | 'layoutDensity' | 'layoutGap' | 'layoutGapLg' | 'layoutGapMd' | 'layoutGapSm' | 'layoutGridTemplate' | 'layoutPadding' | 'matrixBlur' | 'matrixBorderColor' | 'matrixGap' | 'matrixItemBg' | 'matrixRadius' | 'matrixSearchBg' | 'maxContentWidth' | 'modalActionAlignment' | 'modalBorderRadius' | 'modalHeaderStyle' | 'modalOverlayBlur' | 'modalOverlayColor' | 'mode' | 'monoFont' | 'motionDurationFast' | 'motionDurationInstant' | 'motionDurationNormal' | 'motionDurationSlow' | 'motionEaseIn' | 'motionEaseMain' | 'motionEaseOut' | 'motionStaggerDelay' | 'navActiveMarkerColor' | 'navActiveMarkerGlow' | 'navbarLayout' | 'navigationStyle' | 'navItemActiveColor' | 'noiseIntensity' | 'pageTransitionType' | 'primaryColor' | 'reducedMotion' | 'scrollbarThumbColor' | 'scrollbarWidth' | 'scrollPadding' | 'scrollRadius' | 'scrollThumbColor' | 'scrollThumbHoverOpacity' | 'scrollThumbOpacity' | 'scrollTrackOpacity' | 'scrollWidth' | 'searchPositionSidebar' | 'searchPositionTopbar' | 'secondaryColor' | 'securityPulseSpeed' | 'securityShieldGlow' | 'shadowAmbientAlpha' | 'shadowColorMode' | 'shadowIntensity' | 'shadowOrientation' | 'shadowProjectionAlpha' | 'shadowProjectionBlur' | 'sidebarActiveColor' | 'sidebarBlur' | 'sidebarColor' | 'sidebarHoverColor' | 'sidebarMaxWidth' | 'sidebarMinWidth' | 'sidebarNoiseOpacity' | 'sidebarPosition' | 'sidebarShadow' | 'sidebarWidth' | 'statusErrorColor' | 'statusInfoColor' | 'statusSuccessColor' | 'statusWarningColor' | 'surfaceColor' | 'surfaceIntensity' | 'surfaceMaterial' | 'switchBackdropBlur' | 'switchLabelPosition' | 'switchPulseColor' | 'switchStyleType' | 'switchThumbBg' | 'switchTrackActiveBg' | 'systemTone' | 'tabGap' | 'tableActionPosition' | 'tableBorderColor' | 'tableBorderRadius' | 'tableCellPadding' | 'tableDensity' | 'tableHeaderBg' | 'tableRowHoverBg' | 'tableZebraStriping' | 'tabSectionMargin' | 'tertiaryColor' | 'textColorMaster' | 'textColorMuted' | 'textColorSecondary' | 'textGlowIntensity' | 'textSmoothing' | 'texture' | 'textureColor' | 'textureOpacity' | 'titleColor' | 'tooltipBg' | 'tooltipRadius' | 'topbarActiveColor' | 'topbarColor' | 'topbarHeight' | 'topbarHoverColor' | 'topbarNoiseOpacity' | 'topbarTitleColor' | 'vignetteOpacity' | 'vignetteSoftness' | 'zIndexBase' | 'zIndexModal' | 'zIndexSidebar' | 'zIndexToast' | 'zIndexTooltip';
+type ResponsiveValue<T> = {
+    desk: T;
+    tab: T;
+    mob: T;
+};
+
+interface SarakDesignTokens {
+    accentColor: string;
+    aiGlowColor: string;
+    aiPanelBg: string;
+    animEnabled: boolean;
+    animFast: number;
+    animInstant: number;
+    animNormal: number;
+    animSlow: number;
+    atmosphereNoiseOpacity: number;
+    badgeRadius: number;
+    bgBaseColor: string;
+    bgGradientAngle: number;
+    bgGradientMode: string;
+    bgNoiseAnimation: number;
+    bgNoiseDensity: number;
+    bodyFont: string;
+    bodyLineHeight: number;
+    bodySize: string;
+    bodyWeight: string;
+    borderBeamEnabled: boolean;
+    borderRadius: number | ResponsiveValue<number>;
+    borderRadiusLg: number | ResponsiveValue<number>;
+    borderRadiusMd: number | ResponsiveValue<number>;
+    borderRadiusSm: number | ResponsiveValue<number>;
+    borderStyle: string;
+    borderType: string;
+    borderWidth: number;
+    breakpointDesktop: number;
+    breakpointTablet: number;
+    btnActiveScale: number;
+    btnBackdropBlur: number;
+    btnBorderRadius: number | ResponsiveValue<number>;
+    btnGhostHoverBg: string;
+    btnHoverScale: number;
+    btnNeonGlowColor: string;
+    btnNeonPulseSpeed: number;
+    btnPrimaryBg: string;
+    btnPrimaryText: string;
+    btnRadiusBL: number | ResponsiveValue<number>;
+    btnRadiusBR: number | ResponsiveValue<number>;
+    btnRadiusTL: number | ResponsiveValue<number>;
+    btnRadiusTR: number | ResponsiveValue<number>;
+    btnSecondaryBg: string;
+    btnStyleType: string;
+    buttonIconPosition: string;
+    buttonWidthStrategy: string;
+    cardActionBtnBorderRadius: number | ResponsiveValue<number>;
+    cardActionBtnHoverBg: string;
+    cardActionBtnPadding: number;
+    cardActionBtnPrimaryBg: string;
+    cardActionBtnText: string;
+    cardActionClickScale: number;
+    cardBackdropBlur: number;
+    cardBackgroundColor: string;
+    cardBorderBottom: number;
+    cardBorderColor: string;
+    cardBorderLeft: number;
+    cardBorderOpacity: number;
+    cardBorderRadius: number | ResponsiveValue<number>;
+    cardBorderRight: number;
+    cardBorderTop: number;
+    cardBorderWidth: number;
+    cardContentAlignment: string;
+    cardFooterBg: string;
+    cardFooterBorder: string;
+    cardGeometricCut: number;
+    cardGlowColor: string;
+    cardGlowIntensity: number;
+    cardHeaderBg: string;
+    cardHeaderBorder: string;
+    cardHeaderPadding: number | ResponsiveValue<number>;
+    cardHoverGlowIncrease: number;
+    cardHoverStyle: string;
+    cardHoverTranslate: number;
+    cardImagePosition: string;
+    cardInnerGlowColor: string;
+    cardInnerGlowWidth: number;
+    cardLayoutDirection: string;
+    cardPaddingMd: number | ResponsiveValue<number>;
+    cardRadiusBL: number | ResponsiveValue<number>;
+    cardRadiusBR: number | ResponsiveValue<number>;
+    cardRadiusTL: number | ResponsiveValue<number>;
+    cardRadiusTR: number | ResponsiveValue<number>;
+    cardSearchBgFocus: string;
+    cardSearchBorderBeamActive: boolean;
+    cardSearchPlaceholderColor: string;
+    cardSearchTextFocusColor: string;
+    cardShadow: string;
+    cardShadowSpread: number;
+    cardSpotlightOpacity: number;
+    cardSurfaceOpacity: number;
+    cardTextAlign: string;
+    cardTextureOpacity: number;
+    cardTextureType: string;
+    cardTitleColor: string;
+    cardTitleFontSize: number | ResponsiveValue<number>;
+    cardTitleFontWeight: string;
+    cardTitleIconGlow: string;
+    cardTitleLetterSpacing: number;
+    cardVariant: string;
+    chartColorPalette: string;
+    chartGridOpacity: number;
+    chartShowGrid: boolean;
+    chartSmoothing: boolean;
+    chartThickness: number;
+    chartTooltipBg: string;
+    chartType: string;
+    chatAnimationSpeed: number;
+    chatBubbleRadius: number | ResponsiveValue<number>;
+    chatBubbleStyle: string;
+    chatUserBg: string;
+    checkboxActiveColor: string;
+    colorBgBody: string;
+    colorBgLayer1: string;
+    colorBgLayer2: string;
+    colorBgModal: string;
+    colorDepth: number;
+    colorPalette: string;
+    colorVariation: number;
+    contentAlignment: string;
+    contrastCurve: number;
+    easeMain: string;
+    easeOut: string;
+    flowGridStyle: string;
+    flowNodeRadius: number | ResponsiveValue<number>;
+    focusRingWidth: number;
+    formFieldDensity: string;
+    formLabelPosition: string;
+    formLayoutDirection: string;
+    glassBlur: number;
+    glassOpacity: number;
+    glassRoughness: number;
+    glassSaturation: number;
+    glassSpecularity: number;
+    globalBackgroundBlendMode: string;
+    globalBackgroundBlur: number;
+    globalBackgroundImageUrl: string;
+    globalBackgroundOpacity: number;
+    globalContrast: number;
+    globalFlowAlign: string;
+    globalFlowDirection: string;
+    globalSaturation: number;
+    globalSectionGap: number;
+    h1LetterSpacing: number;
+    h1LineHeight: number;
+    h1Size: number | ResponsiveValue<number>;
+    h1Weight: string;
+    h2LineHeight: number;
+    h2Size: number | ResponsiveValue<number>;
+    h2Weight: string;
+    headerAlignment: string;
+    headingFont: string;
+    headingTransform: string;
+    iconFamily: string;
+    iconStrokeWidth: number;
+    iconWeight: string;
+    identityAlignment: string;
+    identityFontFamily: string;
+    identityFontWeight: number;
+    identityHoverEffect: string;
+    identityPadding: number;
+    identityRedirectUrl: string;
+    identityTracking: number;
+    imageCardHoverZoom: number;
+    imageCardOverlayOpacity: number;
+    industrialRegistry: boolean;
+    inputBackdropBlur: number;
+    inputBg: string;
+    inputBorderColor: string;
+    inputBorderRadius: number | ResponsiveValue<number>;
+    inputBorderType: string;
+    inputErrorColor: string;
+    inputFocusBorderColor: string;
+    inputIconColor: string;
+    inputIconPosition: string;
+    inputPadding: number;
+    inputShadow: string;
+    inputSuccessColor: string;
+    inputTextColor: string;
+    isAutoHideEnabled: boolean;
+    isNavHidden: boolean;
+    isSplitViewEnabled: boolean;
+    layerBackdropBlur: number;
+    layerBackdropOpacity: number;
+    layeredShadows: number;
+    layerElevationFactor: number;
+    layout: string;
+    layoutDensity: string;
+    layoutGap: number | ResponsiveValue<number>;
+    layoutGapLg: number | ResponsiveValue<number>;
+    layoutGapMd: number | ResponsiveValue<number>;
+    layoutGapSm: number | ResponsiveValue<number>;
+    layoutGridTemplate: string;
+    layoutPadding: number | ResponsiveValue<number>;
+    matrixBlur: number;
+    matrixBorderColor: string;
+    matrixGap: number;
+    matrixItemBg: string;
+    matrixRadius: number;
+    matrixSearchBg: string;
+    maxContentWidth: string;
+    modalActionAlignment: string;
+    modalBorderRadius: number | ResponsiveValue<number>;
+    modalHeaderStyle: string;
+    modalOverlayBlur: number;
+    modalOverlayColor: string;
+    mode: string;
+    monoFont: string;
+    motionDurationFast: number;
+    motionDurationInstant: number;
+    motionDurationNormal: number;
+    motionDurationSlow: number;
+    motionEaseIn: string;
+    motionEaseMain: string;
+    motionEaseOut: string;
+    motionStaggerDelay: number;
+    navActiveMarkerColor: string;
+    navActiveMarkerGlow: number;
+    navbarLayout: string;
+    navigationStyle: string;
+    navItemActiveColor: string;
+    noiseIntensity: number;
+    pageTransitionType: string;
+    primaryColor: string;
+    reducedMotion: boolean;
+    scrollbarThumbColor: string;
+    scrollbarWidth: number | ResponsiveValue<number>;
+    scrollPadding: number | ResponsiveValue<number>;
+    scrollRadius: number | ResponsiveValue<number>;
+    scrollThumbColor: string;
+    scrollThumbHoverOpacity: number;
+    scrollThumbOpacity: number;
+    scrollTrackOpacity: number;
+    scrollWidth: number | ResponsiveValue<number>;
+    searchPositionSidebar: string;
+    searchPositionTopbar: string;
+    secondaryColor: string;
+    securityPulseSpeed: number;
+    securityShieldGlow: number;
+    shadowAmbientAlpha: number;
+    shadowColorMode: string;
+    shadowIntensity: number;
+    shadowOrientation: string;
+    shadowProjectionAlpha: number;
+    shadowProjectionBlur: number;
+    sidebarActiveColor: string;
+    sidebarBlur: number;
+    sidebarColor: string;
+    sidebarHoverColor: string;
+    sidebarMaxWidth: number | ResponsiveValue<number>;
+    sidebarMinWidth: number | ResponsiveValue<number>;
+    sidebarNoiseOpacity: number;
+    sidebarPosition: string;
+    sidebarShadow: string;
+    sidebarWidth: number | ResponsiveValue<number>;
+    statusErrorColor: string;
+    statusInfoColor: string;
+    statusSuccessColor: string;
+    statusWarningColor: string;
+    surfaceColor: string;
+    surfaceIntensity: number;
+    surfaceMaterial: string;
+    switchBackdropBlur: number;
+    switchLabelPosition: string;
+    switchPulseColor: string;
+    switchStyleType: string;
+    switchThumbBg: string;
+    switchTrackActiveBg: string;
+    systemTone: string;
+    tabGap: number | ResponsiveValue<number>;
+    tableActionPosition: string;
+    tableBorderColor: string;
+    tableBorderRadius: number;
+    tableCellPadding: number | ResponsiveValue<number>;
+    tableDensity: string;
+    tableHeaderBg: string;
+    tableRowHoverBg: string;
+    tableZebraStriping: boolean;
+    tabSectionMargin: number | ResponsiveValue<number>;
+    tertiaryColor: string;
+    textColorMaster: string;
+    textColorMuted: string;
+    textColorSecondary: string;
+    textGlowIntensity: number;
+    textSmoothing: boolean;
+    texture: string;
+    textureColor: string;
+    textureOpacity: number;
+    titleColor: string;
+    tooltipBg: string;
+    tooltipRadius: number;
+    topbarActiveColor: string;
+    topbarColor: string;
+    topbarHeight: number | ResponsiveValue<number>;
+    topbarHoverColor: string;
+    topbarNoiseOpacity: number;
+    topbarTitleColor: string;
+    vignetteOpacity: number;
+    vignetteSoftness: number;
+    zIndexBase: number;
+    zIndexModal: number;
+    zIndexSidebar: number;
+    zIndexToast: number;
+    zIndexTooltip: number;
+}
 
 /**
  * Contrato do Theme Payload com DOMÍNIO DE CHAVES FECHADO: somente design tokens
- * reais (DesignTokenId — gerado da SSOT MASTER_DESIGN_MAP, mesma fonte validada
- * pela paridade 1:1:1:1:1) + os campos legados/branding declarados em
- * SarakThemePayloadExtras. Qualquer outra chave (ex.: 'brandColorPrimary') passa
- * a ser ERRO DE COMPILAÇÃO — "a Interface do Payload dita a Realidade".
+ * reais (SarakDesignTokens — gerado da SSOT MASTER_DESIGN_MAP, mesma fonte
+ * validada pela paridade 1:1:1:1:1, agora com VALORES tipados por `token.type`)
+ * + os campos legados/branding declarados em SarakThemePayloadExtras. Qualquer
+ * outra chave (ex.: 'brandColorPrimary') passa a ser ERRO DE COMPILAÇÃO —
+ * "a Interface do Payload dita a Realidade".
  */
-type SarakThemePayload = Partial<Record<DesignTokenId, unknown>> & SarakThemePayloadExtras;
+type SarakThemePayload = Partial<SarakDesignTokens> & SarakThemePayloadExtras;
 /**
  * Campos presentes no payload que ainda NÃO foram modelados como design tokens
  * no schema (branding/sistema, estrutura consumida por useStructuralStyles e
@@ -475,6 +787,33 @@ interface SarakTimePickerProps {
  * configurável. Emite `HH:mm`; teclado nativo dos `<select>` cobre a navegação.
  */
 declare const SarakTimePicker: React__default.FC<SarakTimePickerProps>;
+
+/**
+ * SarakRichText — editor WYSIWYG blindado (Spec 11, Regra 4 · Onda 10)
+ *
+ * Editor in-house sobre `contentEditable` — **zero dependência nova**. Toda saída (digitação
+ * E colagem) passa pelo canal único de sanitização (`sanitizeHtml`, Spec 40), com allowlist
+ * RESTRITA: marcações semânticas (negrito, itálico, listas, links, títulos), **nunca** tags
+ * `<style>`/`<script>`, handlers `on*` ou `javascript:` (Critério de Aceite). Sem estilos
+ * locais que rompam o escopo CSS. Integra ao formulário via `value` + `onChange(htmlLimpo)`,
+ * consumido pelo `model`/`coerceEventValue` do LeafNode (Spec 32).
+ */
+
+/** Sanitiza o HTML do editor pela allowlist restrita. Exportado para teste isolado. */
+declare const sanitizeRichText: (html: string) => string;
+interface SarakRichTextProps {
+    /** Conteúdo HTML controlado (fiado pelo `model` no manifesto). */
+    value?: string;
+    /** Conteúdo inicial não-controlado. */
+    defaultValue?: string;
+    /** Emite o HTML JÁ sanitizado a cada mudança. */
+    onChange?: (html: string) => void;
+    placeholder?: string;
+    disabled?: boolean;
+    error?: string;
+    className?: string;
+}
+declare const SarakRichText: React__default.FC<SarakRichTextProps>;
 
 interface SarakTableProps {
     endpoint: string;
@@ -1193,6 +1532,46 @@ interface SarakTreeViewProps {
 declare const SarakTreeView: React__default.FC<SarakTreeViewProps>;
 
 /**
+ * Modelo de dados do SarakKanban (Spec 12, Regra 3 · Onda 10).
+ *
+ * Lógica pura (sem React/DOM) de movimentação de cards entre colunas — testável de forma
+ * isolada e reusada pelo componente no `drop`.
+ */
+interface KanbanCard {
+    id: string;
+    title?: string;
+    description?: string;
+}
+interface KanbanColumn<C extends KanbanCard = KanbanCard> {
+    id: string;
+    title: string;
+    cards: C[];
+}
+interface CardMove {
+    cardId: string;
+    fromColumn: string;
+    toColumn: string;
+    /** Índice de destino dentro da coluna alvo. */
+    toIndex: number;
+}
+/**
+ * Move `cardId` de `fromColumn` para `toColumn` na posição `toIndex` (imutável).
+ * Devolve as colunas inalteradas se o card/coluna não existirem.
+ */
+declare const moveCard: <C extends KanbanCard>(columns: Array<KanbanColumn<C>>, cardId: string, fromColumn: string, toColumn: string, toIndex: number) => Array<KanbanColumn<C>>;
+
+interface SarakKanbanProps<C extends KanbanCard = KanbanCard> {
+    /** Colunas e seus cards (a ordem do array é a ordem visual). */
+    columns: Array<KanbanColumn<C>>;
+    /** Disparado ao soltar um card numa coluna (origem → destino). */
+    onCardMove?: (move: CardMove) => void;
+    /** Render customizado do card (default: título + descrição). */
+    renderCard?: (card: C, columnId: string) => React__default.ReactNode;
+    className?: string;
+}
+declare function SarakKanbanImpl<C extends KanbanCard>({ columns, onCardMove, renderCard, className, }: SarakKanbanProps<C>): react_jsx_runtime.JSX.Element;
+
+/**
  * SarakMarkdownRenderer (Spec 15, Regra 1) — implementação pesada (lazy).
  *
  * Ingere Markdown cru e o renderiza como elementos estilizados pelos tokens Sarak
@@ -1239,6 +1618,45 @@ interface SarakLightboxProps {
     onIndexChange?: (index: number) => void;
 }
 declare const SarakLightbox: React__default.FC<SarakLightboxProps>;
+
+/**
+ * usePdfDocument (Spec 15, Regra 2 · Onda 10) — ciclo de vida do documento PDF.
+ *
+ * Extraído do `SarakPDFViewerImpl` para manter o componente enxuto (limite de
+ * estado/efeitos do Clean Code). Configura o worker (fora da main thread), carrega o
+ * documento via `pdfjs-dist` e cancela/destrói a tarefa na troca da fonte. Zero Any.
+ */
+
+/** Fonte do documento: URL, bytes ou ArrayBuffer. */
+type PdfSource = string | Uint8Array | ArrayBuffer;
+
+/**
+ * SarakPDFViewer (Spec 15, Regra 2) — implementação pesada (lazy).
+ *
+ * Desenha as páginas do PDF em `<canvas>` via `pdfjs-dist` (peer), sem depender do
+ * visualizador nativo bloqueado do navegador. O parse roda num Web Worker (fora da main
+ * thread) — `GlobalWorkerOptions.workerSrc` é configurável pela prop `workerSrc`. A barra
+ * de controles (zoom/página/download) é 100% estilizada por tokens (`var(--sx-*)`).
+ *
+ * A dependência pesada (`pdfjs-dist`) vive AQUI; o `index.ts` exporta isto via
+ * `React.lazy`, mantendo-a fora do entry de quem não a usa.
+ */
+
+interface SarakPDFViewerProps {
+    /** Origem do documento: URL, bytes ou ArrayBuffer. */
+    src: PdfSource;
+    /** Página inicial (1-based, default: 1). */
+    initialPage?: number;
+    /** Escala inicial de zoom (default: 1.2). */
+    zoom?: number;
+    /** URL do worker do pdf.js; default resolvido do pacote via `import.meta.url`. */
+    workerSrc?: string;
+    /** Disparado ao clicar em Download (recebe a `src` quando string). */
+    onDownload?: (src: PdfSource) => void;
+    className?: string;
+}
+
+declare const SarakPDFViewer: React$1.LazyExoticComponent<React$1.FC<SarakPDFViewerProps>>;
 
 interface SarakChartEngineProps {
     type: 'line' | 'area' | 'bar' | 'pie' | 'radar' | 'gauge' | 'scatter' | 'heatmap' | 'funnel' | 'treemap' | 'candlestick' | 'sunburst' | 'histogram' | 'boxplot';
@@ -1788,18 +2206,6 @@ interface SarakTabsProps {
 }
 
 /**
- * Mapa Nativo de Componentes (Spec 22 — Regra 1)
- *
- * Conjunto oficial de átomos resolvíveis por `type` no Manifesto. As chaves deste
- * mapa derivam o tipo `ComponentType` (união de string-literais), garantindo
- * autocomplete e barrando `type` inválido em tempo de compilação.
- *
- * Os átomos de micro-layout (Spec 10) já existem em `components/atomic/Layouts/` —
- * aqui apenas os registramos (decisão da Onda 0: verificar e conformar, não reescrever).
- * Componentes pesados (DataGrid, PDFViewer, charts) entram aqui via `React.lazy`
- * quando suas specs (12/15) forem implementadas.
- */
-/**
  * Registro nativo. `as const` em conjunto com `satisfies` mantém a inferência das
  * chaves literais (para derivar `ComponentType`) sem afrouxar a tipagem dos valores.
  *
@@ -1818,6 +2224,7 @@ declare const NATIVE_COMPONENTS: {
     readonly SarakDataTable: React$1.LazyExoticComponent<typeof SarakDataTableImpl>;
     readonly SarakSparkline: React$1.FC<SarakSparklineProps>;
     readonly SarakTreeView: React$1.FC<SarakTreeViewProps>;
+    readonly SarakKanban: typeof SarakKanbanImpl;
     readonly SarakSkeleton: React$1.FC<SarakSkeletonProps>;
     readonly SarakDataEmpty: React$1.FC<SarakDataEmptyProps>;
     readonly SarakModal: React$1.FC<SarakModalProps>;
@@ -1834,10 +2241,14 @@ declare const NATIVE_COMPONENTS: {
     readonly SarakUploader: React$1.FC<SarakUploaderProps>;
     readonly SarakDatePicker: React$1.FC<SarakDatePickerProps>;
     readonly SarakTimePicker: React$1.FC<SarakTimePickerProps>;
+    readonly SarakRichText: React$1.FC<SarakRichTextProps>;
     readonly SarakSpotlight: React$1.FC<SarakSpotlightProps>;
     readonly SarakStepper: React$1.FC<SarakStepperProps>;
     readonly SarakBreadcrumbs: React$1.FC<SarakBreadcrumbsProps>;
     readonly SarakPagination: React$1.FC<SarakPaginationProps>;
+    readonly SarakMarkdownRenderer: React$1.LazyExoticComponent<React$1.FC<SarakMarkdownRendererProps>>;
+    readonly SarakLightbox: React$1.FC<SarakLightboxProps>;
+    readonly SarakPDFViewer: React$1.LazyExoticComponent<React$1.FC<SarakPDFViewerProps>>;
 };
 /** União dos `type` nativos oficiais — fonte do `ComponentType` (Spec 22, Regra 1). */
 type NativeComponentType = keyof typeof NATIVE_COMPONENTS;
@@ -2476,15 +2887,26 @@ declare const DynamicRenderer: React__default.FC<DynamicRendererProps>;
  *
  * Local manager for registered modules to avoid dependency on lib-shared.
  */
+/**
+ * Props que um componente registrado pode receber (heterogêneo, sem `any`).
+ * Espelha o padrão canônico de `ManifestComponentProps` (Spec 22).
+ */
+interface SarakComponentProps {
+    children?: React.ReactNode;
+    [prop: string]: unknown;
+}
+/** Tipo uniforme sob o qual qualquer componente é guardado no registro. */
+type SarakComponent = React.ComponentType<SarakComponentProps>;
 interface SarakModule {
     id: string;
     label: string;
     icon?: string;
     category?: string;
-    component?: React.ComponentType<any>;
-    components?: Record<string, React.ComponentType<any>>;
+    component?: SarakComponent;
+    components?: Record<string, SarakComponent>;
     priority?: number;
     description?: string;
+    isLocal?: boolean;
 }
 /**
  * Subscribes to registry changes (v9.0 Passive Discovery).
@@ -2493,11 +2915,11 @@ declare const subscribeToRegistry: (listener: () => void) => () => boolean;
 /**
  * Registers a local component linked to a system ID (v6.5).
  */
-declare const registerLocalComponent: (id: string, component: React.ComponentType<any>) => void;
+declare const registerLocalComponent: <P extends object>(id: string, component: React.ComponentType<P>) => void;
 /**
  * Returns the component associated with an ID, if it exists.
  */
-declare const getLocalComponent: (id: string) => React.ComponentType<any> | undefined;
+declare const getLocalComponent: (id: string) => SarakComponent | undefined;
 /**
  * Registers or updates a Sarak module in the system (v9.1 - Merging Support).
  */
@@ -2540,4 +2962,4 @@ interface SarakRouterState {
  */
 declare function useSarakRouter(basePath?: string): SarakRouterState;
 
-export { ACTION_HANDLERS, type Accept, type ActionHandler, type ActionList, type AriaDirective, type BadgeSize, type BadgeVariant, type BindingExpression, type ComponentRegistry, type ComponentResolution, type ComponentType, type ConditionExpression, ConditionSyntaxError, type ContextMenuPosition, CustomizationPanel, DEFAULT_COLUMN_WIDTH, DESIGN_MANIFEST, DIRECTIVE_OWNERS, type DataNodeState, type DataSourceController, type DataSourceDirective, type DataSourceMethod, type DataSourceStates, type DatePickerValue, DesignScope, DeviceProvider, type DeviceType, type DirectiveName, type DiscoveredModule, type DispatchContext, DynamicRenderer, ExpandableCard, type ExpandedNode, FORM_META_KEY, type FileRejection, type FormModelDirective, type FormResetTrigger, type FormScope, FormScopeContext, type FormScopeDirective, type FormStore, IconMap, type IconName, LanguageSelector, type LightboxImage, MIN_COLUMN_WIDTH, type ManifestAction, type ManifestComponent, type ManifestComponentProps, type ManifestNode, type ManifestProps, type ManifestRoot, type ManifestValidationError, type ManifestValidationResult, type ManifestValue, type MatrixNodeConfig, type MatrixTreeNode, type ModalLayoutContext, type ModuleManifest, ModuleSelector, type MultiSelectOption, NATIVE_COMPONENTS, type NativeComponentType, type NavigateFn, type NetworkInterceptor, type NetworkRequest, type NodeParts, type OverlayController, type OverlayRequest, type PersistDirective, type Pipe, RESERVED_DIRECTIVES, type RangeValue, type RenderForDirective, type RenderForResult, type ResponsiveDirective, type RouteMap, type RouteTarget, STORAGE_NAMESPACE, STRUCTURAL_KEYS, SUPPORTED_SCHEMA_VERSION, SarakAnalyticalPage, type SarakAnalyticalPageProps, SarakAuthScreen, type SarakAuthScreenProps, SarakBadge, type SarakBadgeProps, SarakCardGrid, SarakCatalogGrid, SarakChart, SarakChartEngine, SarakChat, type SarakColumn, SarakContextMenu, type SarakContextMenuProps, SarakDataEmpty, type SarakDataEmptyProps, SarakDataGrid, SarakDataGridImpl, type SarakDataGridProps, type SarakDataStore, SarakDataTable, SarakDataTableImpl, type SarakDataTableProps, SarakDatePicker, type SarakDatePickerProps, SarakDrawer, type SarakDrawerProps, SarakEmptyState, SarakErrorBoundary, type SarakErrorBoundaryProps, SarakExpandableMatrix, type SarakExpandableMatrixProps, SarakFallback, type SarakFallbackProps, SarakForm, SarakHidden, SarakIcon, type SarakIconProps, SarakLightbox, type SarakLightboxProps, SarakManagementGrid, SarakManifestRenderer, SarakManifestRenderer as SarakManifestRendererDefault, type SarakManifestRendererProps, SarakMarkdownRenderer, type SarakMarkdownRendererProps, type SarakMatrixManifest, SarakModal, type SarakModalProps, type SarakModule, SarakMultiSelect, type SarakMultiSelectProps, type SarakOverlayController, SarakOverlayProvider, type SarakOverlayRequest, SarakRangeSlider, type SarakRangeSliderProps, type SarakRouterState, SarakSecurityOrchestrator, SarakShell, SarakSkeleton, type SarakSkeletonProps, SarakSparkline, type SarakSparklineProps, SarakStats, type SarakTabItem, SarakTable, SarakTabs, type SarakTabsProps$1 as SarakTabsProps, SarakTimePicker, type SarakTimePickerProps, SarakToastProvider, SarakTooltip, type SarakTooltipProps, SarakTreeView, type SarakTreeViewProps, SarakUIProvider, SarakUploader, type SarakUploaderProps, type Selector, type ShellDirective, type SkeletonShape, type SlotMap, SocialButton, type SparklineVariant, type StateRecord, SubmitBlockedError, type ThemeDirective, ThemeToggle, type ToastController, type ToastOptions, type ToastVariant, type TooltipPosition, UserMenu, VIRTUALIZE_THRESHOLD, type ValidationError, type ValidationRule, type ValidationRuleName, type ValidationSchema, type ValidationTypeName, type VisualContract, type VisualContractType, coerceEventValue, computeOffsets, createComponentRegistry, createFormScope, createSarakDataStore, debounce, defaultComponentRegistry, evaluateCondition, expandRenderFor, firstErrorMessage, getByPath, getLocalComponent, getPipe, getRegisteredModules, getSarakModule, hasPipe, interpolate, interpolateProps, isReservedDirective, isStructuralKey, namespacedKey, readPersisted, registerComponent, registerLocalComponent, registerPipe, registerSarakModule, removePersisted, reorder, resolveBinding, resolveComponent, resolveExpression, resolveModelValue, resolveScopedPath, runActions, separateNodeParts, setByPath, subscribeStorage, subscribeToRegistry, throttle, useDataSource, useDesignDraft, useFormScope, useModalLayoutStyles, useModuleDiscovery, useOverlay, usePersistedSlice, useSarakDevice, useSarakRouter, useSarakUI, useToast, validateManifestNode, validateManifestRoot, validateValue, widthOf, writePersisted };
+export { ACTION_HANDLERS, type Accept, type ActionHandler, type ActionList, type AriaDirective, type BadgeSize, type BadgeVariant, type BindingExpression, type CardMove, type ComponentRegistry, type ComponentResolution, type ComponentType, type ConditionExpression, ConditionSyntaxError, type ContextMenuPosition, CustomizationPanel, DEFAULT_COLUMN_WIDTH, DESIGN_MANIFEST, DIRECTIVE_OWNERS, type DataNodeState, type DataSourceController, type DataSourceDirective, type DataSourceMethod, type DataSourceStates, type DatePickerValue, DesignScope, DeviceProvider, type DeviceType, type DirectiveName, type DiscoveredModule, type DispatchContext, DynamicRenderer, ExpandableCard, type ExpandedNode, FORM_META_KEY, type FileRejection, type FormModelDirective, type FormResetTrigger, type FormScope, FormScopeContext, type FormScopeDirective, type FormStore, IconMap, type IconName, type KanbanCard, type KanbanColumn, LanguageSelector, type LightboxImage, MIN_COLUMN_WIDTH, type ManifestAction, type ManifestComponent, type ManifestComponentProps, type ManifestNode, type ManifestProps, type ManifestRoot, type ManifestValidationError, type ManifestValidationResult, type ManifestValue, type MatrixNodeConfig, type MatrixTreeNode, type ModalLayoutContext, type ModuleManifest, ModuleSelector, type MultiSelectOption, NATIVE_COMPONENTS, type NativeComponentType, type NavigateFn, type NetworkInterceptor, type NetworkRequest, type NodeParts, type OverlayController, type OverlayRequest, type PersistDirective, type Pipe, RESERVED_DIRECTIVES, type RangeValue, type RenderForDirective, type RenderForResult, type ResponsiveDirective, type RouteMap, type RouteTarget, STORAGE_NAMESPACE, STRUCTURAL_KEYS, SUPPORTED_SCHEMA_VERSION, SarakAnalyticalPage, type SarakAnalyticalPageProps, SarakAuthScreen, type SarakAuthScreenProps, SarakBadge, type SarakBadgeProps, SarakCardGrid, SarakCatalogGrid, SarakChart, SarakChartEngine, SarakChat, type SarakColumn, type SarakComponent, type SarakComponentProps, SarakContextMenu, type SarakContextMenuProps, SarakDataEmpty, type SarakDataEmptyProps, SarakDataGrid, SarakDataGridImpl, type SarakDataGridProps, type SarakDataStore, SarakDataTable, SarakDataTableImpl, type SarakDataTableProps, SarakDatePicker, type SarakDatePickerProps, SarakDrawer, type SarakDrawerProps, SarakEmptyState, SarakErrorBoundary, type SarakErrorBoundaryProps, SarakExpandableMatrix, type SarakExpandableMatrixProps, SarakFallback, type SarakFallbackProps, SarakForm, SarakHidden, SarakIcon, type SarakIconProps, SarakKanbanImpl as SarakKanban, type SarakKanbanProps, SarakLightbox, type SarakLightboxProps, SarakManagementGrid, SarakManifestRenderer, SarakManifestRenderer as SarakManifestRendererDefault, type SarakManifestRendererProps, SarakMarkdownRenderer, type SarakMarkdownRendererProps, type SarakMatrixManifest, SarakModal, type SarakModalProps, type SarakModule, SarakMultiSelect, type SarakMultiSelectProps, type SarakOverlayController, SarakOverlayProvider, type SarakOverlayRequest, SarakPDFViewer, type SarakPDFViewerProps, SarakRangeSlider, type SarakRangeSliderProps, SarakRichText, type SarakRichTextProps, type SarakRouterState, SarakSecurityOrchestrator, SarakShell, SarakSkeleton, type SarakSkeletonProps, SarakSparkline, type SarakSparklineProps, SarakStats, type SarakTabItem, SarakTable, SarakTabs, type SarakTabsProps$1 as SarakTabsProps, SarakTimePicker, type SarakTimePickerProps, SarakToastProvider, SarakTooltip, type SarakTooltipProps, SarakTreeView, type SarakTreeViewProps, SarakUIProvider, SarakUploader, type SarakUploaderProps, type Selector, type ShellDirective, type SkeletonShape, type SlotMap, SocialButton, type SparklineVariant, type StateRecord, SubmitBlockedError, type ThemeDirective, ThemeToggle, type ToastController, type ToastOptions, type ToastVariant, type TooltipPosition, UserMenu, VIRTUALIZE_THRESHOLD, type ValidationError, type ValidationRule, type ValidationRuleName, type ValidationSchema, type ValidationTypeName, type VisualContract, type VisualContractType, coerceEventValue, computeOffsets, createComponentRegistry, createFormScope, createSarakDataStore, debounce, defaultComponentRegistry, evaluateCondition, expandRenderFor, firstErrorMessage, getByPath, getLocalComponent, getPipe, getRegisteredModules, getSarakModule, hasPipe, interpolate, interpolateProps, isReservedDirective, isStructuralKey, moveCard, namespacedKey, readPersisted, registerComponent, registerLocalComponent, registerPipe, registerSarakModule, removePersisted, reorder, resolveBinding, resolveComponent, resolveExpression, resolveModelValue, resolveScopedPath, runActions, sanitizeRichText, separateNodeParts, setByPath, subscribeStorage, subscribeToRegistry, throttle, useDataSource, useDesignDraft, useFormScope, useModalLayoutStyles, useModuleDiscovery, useOverlay, usePersistedSlice, useSarakDevice, useSarakRouter, useSarakUI, useToast, validateManifestNode, validateManifestRoot, validateValue, widthOf, writePersisted };
