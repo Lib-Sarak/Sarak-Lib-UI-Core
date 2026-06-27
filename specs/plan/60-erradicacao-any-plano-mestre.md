@@ -2,7 +2,7 @@
 tipo: "plano-mestre"
 titulo: "Plano Mestre — Erradicação de `any` (Campanha de Adequação)"
 dominio: "Sarak-Lib-UI-Core (Adequação)"
-status: "🟡 Em Andamento (484 → 432; Fundação+fonte do design-state OK)"
+status: "🟡 Em Andamento (484 → 410; Fundação+fonte+Shell+DesignInjector OK)"
 prioridade: "Média"
 tags: ["spec", "plano-mestre", "any", "adequacao", "type-safety", "campanha"]
 relacionados: ["00-indice-plano-expansao", "50-finalizacao-adequacao-e-entrega", "61-erradicacao-any-nucleo", "62-erradicacao-any-componentes", "63-erradicacao-any-design-engine", "64-erradicacao-any-constantes-e-fechamento", "65-foundation-design-state"]

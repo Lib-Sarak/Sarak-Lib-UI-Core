@@ -1,6 +1,7 @@
 import React, { useEffect } from 'react';
 import { BEZIER_CURVES } from '../constants';
 import { useDesignVariables } from '../../Design/hooks/useDesignVariables';
+import { SarakDesignState } from '../types';
 
 const useIsomorphicLayoutEffect = typeof window !== 'undefined' ? React.useLayoutEffect : React.useEffect;
 
@@ -10,9 +11,10 @@ const useIsomorphicLayoutEffect = typeof window !== 'undefined' ? React.useLayou
  * Sincroniza o estado de design com o DOM global (root/body).
  * Agora utiliza o useDesignVariables para garantir paridade total com as previews.
  */
-export const DesignInjector: React.FC<{ design: any; isDrafting: boolean }> = ({ design: s, isDrafting }) => {
-    const { variables, attributes, responsiveCSS } = useDesignVariables(s);
-    const prevDesignRef = React.useRef<any>(null);
+export const DesignInjector: React.FC<{ design: SarakDesignState | null; isDrafting: boolean }> = ({ design: s, isDrafting }) => {
+    // Seam (Spec 65): o estado tipado é entregue ao motor genérico de variáveis CSS.
+    const { variables, attributes, responsiveCSS } = useDesignVariables(s as unknown as Record<string, unknown> | null);
+    const prevDesignRef = React.useRef<string | null>(null);
 
     // Mouse Tracking (Global)
     useEffect(() => {

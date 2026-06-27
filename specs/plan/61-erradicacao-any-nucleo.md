@@ -38,9 +38,9 @@ Por sub-bloco do núcleo (contagem aproximada do `auditor_typescript.mjs`):
 ## 2.2 `core/Provider/` (~42)
 - ✅ `hooks/useDesignManager.ts` — 10 *(Spec 65 Fase 2)*
 - ✅ `hooks/useSarakDrafting.ts` — 7 · ✅ `hooks/useDesignRemoteLoader.ts` — 5 *(65 F2)*
-- ⏸️F `manifest.ts` — 4 · ✅ `hooks/useDesignSync.ts` — 4 *(65 F2)* · ✅ `utils/validation.ts` — 3 *(65 F2)*
+- 🟥 `manifest.ts` — 4 *(mapa heterogêneo; resíduo difícil → Spec 64)* · ✅ `hooks/useDesignSync.ts` — 4 *(65 F2)* · ✅ `utils/validation.ts` — 3 *(65 F2)*
 - ✅ `hooks/useRegistryManager.ts` — 3 · ✅ `hooks/useBrandingManager.ts` — 3
-- ⏸️F `components/DesignInjector.tsx` — 2 *(Fase 3)* · ✅ `hooks/useSarakUIEffects.ts` — 1
+- ✅ `components/DesignInjector.tsx` — 2 *(65 F3)* · ✅ `hooks/useSarakUIEffects.ts` — 1
 
 ## 2.3 `core/Shell/` (~20) — ✅ bloco inteiro feito (Spec 65 Fase 3; `design: SarakDesignState`)
 - ✅ `Components/ShellContent.tsx` — 6 *(design→SarakDesignState, user→ShellUser, authApi→unknown, casts `as any` mortos removidos)* · ✅ `Components/TopbarNav.tsx` — 3 · ✅ `Components/SidebarNav.tsx` — 3

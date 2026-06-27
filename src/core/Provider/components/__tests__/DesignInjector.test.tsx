@@ -73,7 +73,7 @@ describe('DesignInjector', () => {
             responsiveCSS: null
         });
 
-        const design = { mode: undefined, globalBackgroundImageUrl: null }; // sem modo => fallback 'dark'
+        const design = { mode: undefined }; // sem modo e sem media => fallback 'dark', sem data-sarak-has-media
 
         render(<DesignInjector design={design} isDrafting={false} />);
 

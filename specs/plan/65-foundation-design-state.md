@@ -2,7 +2,7 @@
 tipo: "spec"
 titulo: "Foundation — Tipo do Design-State (`SarakDesignState`)"
 dominio: "Sarak-Lib-UI-Core (Adequação)"
-status: "🟡 Em Andamento (Fundação aplicada; sweep pendente)"
+status: "🟢 Essencial entregue (Fundação + fonte + Shell + DesignInjector; resíduo difícil → Spec 64)"
 prioridade: "Alta"
 tags: ["spec", "any", "adequacao", "design-state", "type-safety", "foundation", "transversal"]
 relacionados: ["60-erradicacao-any-plano-mestre", "61-erradicacao-any-nucleo", "62-erradicacao-any-componentes", "63-erradicacao-any-design-engine"]
@@ -74,8 +74,9 @@ interface SarakRuntimeExtras {           // SÓ o que a Fase 0 achou fora do sch
 - **✅ Cascade medido = baixíssimo:** apertar `unknown → preciso` gerou **só 3 erros** (mesmo padrão: cast morto `(animX as string)` em `SarakTabs`/`SarakAccordion`/`SarakDrawer`, onde o token de duração já é `number`). Corrigidos (`typeof x === 'number' ? \`${x}ms\` : default`). `tsc` 0 · testes das pastas verdes · auditor segue **454** (a fundação ainda não remove `any` — isso é o sweep).
 - **✅ Fase 2 — Fonte tipada (−22 `any`: 432):** `validateDesign(design: unknown): SarakDesignState` (1 seam cast `as unknown as` no return); `useDesignManager` usa `useState<SarakDesignState>` + props `SarakThemePayload`/`SarakUIOptions`/`ThemeEntry`; `useDesignSync`/`useDesignRemoteLoader` recebem `SetDesign`+`ThemeEntry[]`/`MutableRefObject<SarakUIOptions>`. Tipos auxiliares `ThemeEntry` e `SetDesign` em `types.ts`; `SarakUIProvider` passa `allThemes` como `ThemeEntry[]` (1 cast de fronteira: GLOBAL_THEMES + custom do banco). Seam: `SovereignThemeInjector.design → SarakThemePayload`; `mode` castado p/ `'light'|'dark'` no `SarakBackgroundRenderer`. `tsc` 0 · Provider 34/34 · paridade ✅.
 - **Fase 3 — Sweep dos consumidores (queda em bloco):**
-  - ✅ **Shell inteiro (−20: 412)** — `design: SarakDesignState` em `ShellContent`/`TopbarNav`/`SidebarNav`/`DockNav`/`useShellLayoutStyles`; `ShellUser` novo; widgets (`ShellUserWidget`/`ShellSearchWidget`/`ShellLanguageSelector`) limpos; cascade mínimo (isVideo opcional, `user?.level ?? 0`). `tsc` 0 · Shell 26/26.
-  - 🔲 Restante: `DesignInjector`, `color-engine`/presets, `manifest.ts`, e os consumidores via `useSarakUI().design` em `components/` (Spec 62).
+  - ✅ **Shell inteiro (−20: 412)** — `design: SarakDesignState` em `ShellContent`/`TopbarNav`/`SidebarNav`/`DockNav`/`useShellLayoutStyles`; `ShellUser` novo; widgets limpos; cascade mínimo (isVideo opcional, `user?.level ?? 0`). `tsc` 0 · Shell 26/26.
+  - ✅ **DesignInjector (−2: 410)** — `design: SarakDesignState | null`; 1 seam cast no `useDesignVariables` (motor genérico de CSS); teste de caracterização ajustado (input `null` inválido → omitido). `tsc` 0 · 7/7.
+  - 🟥 **Resíduo difícil (deferido → tabela de exceções Spec 64):** `manifest.ts` (4) = mapa de callbacks heterogêneo (`transform?: (v) => …` com param/retorno diferentes por entrada; `unknown` quebra os `(v: string)` por contravariância, `never` quebra os testes que chamam com valores reais) · `color-engine`/`presets` (5) = mapa de token com índice dinâmico que cascateia para os previews em `features/`. Removê-los troca poucos `any` por muitos casts (net-negativo) — decisão própria na Spec 64/refino.
 - **Fase 4 — Gate:** `tsc` 0 · `vitest run` por pasta · auditor (delta) · `verify_parity.ts` ✅.
 
 > **Risco-chave (Fase 1b):** apertar `unknown → tipo preciso` pode revelar usos hoje incorretos (tokens `boolean`/responsivos usados como string). São achados legítimos, corrigidos no sweep; mitigação: `select → string` em v1 (§3.3) para minimizar a superfície, e `tsc`/testes por pasta gateando cada bloco.
