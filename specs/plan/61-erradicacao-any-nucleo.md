@@ -36,17 +36,17 @@ Por sub-bloco do núcleo (contagem aproximada do `auditor_typescript.mjs`):
 - ✅ `registry.ts` — 6 · ⏸️D `types.ts` — 3 · ✅ `hooks/useEndpointResolver.ts` — 2
 
 ## 2.2 `core/Provider/` (~42)
-- ⏸️F `hooks/useDesignManager.ts` — 10 ⚠️ (gerente de design; risco médio-alto)
-- ✅ `hooks/useSarakDrafting.ts` — 7 · ⏸️F `hooks/useDesignRemoteLoader.ts` — 5
-- ⏸️F `manifest.ts` — 4 · ⏸️F `hooks/useDesignSync.ts` — 4 · ⏸️F `utils/validation.ts` — 3
+- ✅ `hooks/useDesignManager.ts` — 10 *(Spec 65 Fase 2)*
+- ✅ `hooks/useSarakDrafting.ts` — 7 · ✅ `hooks/useDesignRemoteLoader.ts` — 5 *(65 F2)*
+- ⏸️F `manifest.ts` — 4 · ✅ `hooks/useDesignSync.ts` — 4 *(65 F2)* · ✅ `utils/validation.ts` — 3 *(65 F2)*
 - ✅ `hooks/useRegistryManager.ts` — 3 · ✅ `hooks/useBrandingManager.ts` — 3
-- ⏸️F `components/DesignInjector.tsx` — 2 · ✅ `hooks/useSarakUIEffects.ts` — 1
+- ⏸️F `components/DesignInjector.tsx` — 2 *(Fase 3)* · ✅ `hooks/useSarakUIEffects.ts` — 1
 
-## 2.3 `core/Shell/` (~20) — ⏸️F bloco inteiro (todos recebem `design: any`)
-- `Components/ShellContent.tsx` — 6 · `Components/TopbarNav.tsx` — 3 · `Components/SidebarNav.tsx` — 3
-- `Components/types.ts` — 2 · `Components/ShellUserWidget.tsx` — 2
-- `hooks/useShellLayoutStyles.ts` — 1 · `Components/ShellSearchWidget.tsx` — 1
-- `Components/ShellLanguageSelector.tsx` — 1 · `Components/DockNav.tsx` — 1
+## 2.3 `core/Shell/` (~20) — ✅ bloco inteiro feito (Spec 65 Fase 3; `design: SarakDesignState`)
+- ✅ `Components/ShellContent.tsx` — 6 *(design→SarakDesignState, user→ShellUser, authApi→unknown, casts `as any` mortos removidos)* · ✅ `Components/TopbarNav.tsx` — 3 · ✅ `Components/SidebarNav.tsx` — 3
+- ✅ `Components/types.ts` — 2 *(novo `ShellUser`)* · ✅ `Components/ShellUserWidget.tsx` — 2
+- ✅ `hooks/useShellLayoutStyles.ts` — 1 · ✅ `Components/ShellSearchWidget.tsx` — 1
+- ✅ `Components/ShellLanguageSelector.tsx` — 1 *(global window tipado)* · ✅ `Components/DockNav.tsx` — 1
 
 ## 2.4 `core/Design/` (~15)
 - ⏸️F `presets/themes/color-engine.ts` — 4 · 🔲 `components/DesignScope.tsx` — 3

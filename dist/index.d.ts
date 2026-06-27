@@ -505,6 +505,13 @@ declare const DesignScope: React__default.FC<DesignScopeProps & Record<string, a
 
 declare const ThemeToggle: React__default.FC;
 
+/** Identidade do usuário exibida no Shell (vinda do app consumidor). */
+interface ShellUser {
+    username?: string;
+    email?: string;
+    level?: number;
+    [key: string]: unknown;
+}
 interface SarakShellProps {
     children?: React__default.ReactNode;
     brand?: {
@@ -512,10 +519,10 @@ interface SarakShellProps {
         logo?: string;
     };
     extraToolbarItems?: React__default.ReactNode;
-    user?: any;
+    user?: ShellUser;
     logout?: () => void;
     token?: string;
-    authApi?: any;
+    authApi?: unknown;
 }
 
 /**

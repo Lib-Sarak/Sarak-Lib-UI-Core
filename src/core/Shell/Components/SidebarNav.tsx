@@ -3,6 +3,8 @@ import { motion } from 'framer-motion';
 import { SarakIcon } from '../../../components/atomic/Icon/SarakIcon';
 import { IconRenderer } from './IconRenderer';
 import { DiscoveredModule } from '../../../core/Discovery/types';
+import { SarakDesignState } from '../../../core/Provider/types';
+import { ShellUser } from './types';
 import { ShellUserWidget } from './ShellUserWidget';
 import { ShellSearchWidget } from './ShellSearchWidget';
 import { ShellLanguageSelector } from './ShellLanguageSelector';
@@ -10,9 +12,9 @@ import { ShellThemeToggle } from './ShellThemeToggle';
 import { useShellLayoutStyles } from '../hooks/useShellLayoutStyles';
 
 interface SidebarNavProps {
-    design: any;
-    brand: any;
-    user: any;
+    design: SarakDesignState;
+    brand: { name?: string };
+    user?: ShellUser;
     logout?: () => void;
     toggleNav: () => void;
     setIsSearchOpen: (open: boolean) => void;
@@ -42,7 +44,7 @@ export const SidebarNav: React.FC<SidebarNavProps> = ({
     const searchPos = design?.searchPositionSidebar || 'top';
 
     const activeLogo = mode === 'dark' && logoDarkUrl ? logoDarkUrl : logoUrl;
-    const isVideo = (url: string) => url?.includes('video') || url?.endsWith('.webm') || url?.endsWith('.mp4');
+    const isVideo = (url?: string) => url?.includes('video') || url?.endsWith('.webm') || url?.endsWith('.mp4');
 
     const renderSearch = () => {
         if (searchPos === 'hidden') return null;

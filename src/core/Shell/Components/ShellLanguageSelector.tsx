@@ -22,7 +22,9 @@ export const ShellLanguageSelector: React.FC<ShellLanguageSelectorProps> = ({
 }) => {
     // Discovery Logic (v11.0): Procura no Registro e no Backup Global
     const fromRegistry = getLocalComponent('shell-language-selector');
-    const fromGlobal = (typeof window !== 'undefined' ? (window as any).__SARAK_OVERRIDES__?.['shell-language-selector'] : null);
+    const fromGlobal = (typeof window !== 'undefined'
+        ? (window as Window & { __SARAK_OVERRIDES__?: Record<string, React.ComponentType<{ variant?: string }>> }).__SARAK_OVERRIDES__?.['shell-language-selector']
+        : null);
     const OverrideSelector = fromRegistry || fromGlobal;
     
     const [isOpen, setIsOpen] = useState(false);

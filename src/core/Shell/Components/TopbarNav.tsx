@@ -1,6 +1,8 @@
 import React from 'react';
 import { SarakIcon } from '../../../components/atomic/Icon/SarakIcon';
 import { DiscoveredModule } from '../../../core/Discovery/types';
+import { SarakDesignState } from '../../../core/Provider/types';
+import { ShellUser } from './types';
 import { ShellSearchWidget } from './ShellSearchWidget';
 import { ShellUserWidget } from './ShellUserWidget';
 import { ShellLanguageSelector } from './ShellLanguageSelector';
@@ -9,15 +11,15 @@ import { IconRenderer } from './IconRenderer';
 import { useShellLayoutStyles } from '../hooks/useShellLayoutStyles';
 
 interface TopbarNavProps {
-    design: any;
-    brand: any;
+    design: SarakDesignState;
+    brand: { name?: string };
     toggleNav: () => void;
     setIsSearchOpen: (open: boolean) => void;
     activeModuleId: string | null;
     setActiveModuleId: (id: string) => void;
     discoveredModules: DiscoveredModule[];
     extraToolbarItems?: React.ReactNode;
-    user?: any;
+    user?: ShellUser;
     logout?: () => void;
     startResizing: () => void;
 }
@@ -42,7 +44,7 @@ export const TopbarNav: React.FC<TopbarNavProps> = ({
     const searchPos = design?.searchPositionTopbar || 'left';
     
     const activeLogo = mode === 'dark' && logoDarkUrl ? logoDarkUrl : logoUrl;
-    const isVideo = (url: string) => url?.includes('video') || url?.endsWith('.webm') || url?.endsWith('.mp4');
+    const isVideo = (url?: string) => url?.includes('video') || url?.endsWith('.webm') || url?.endsWith('.mp4');
 
     const renderSearch = () => {
         if (searchPos === 'hidden') return null;

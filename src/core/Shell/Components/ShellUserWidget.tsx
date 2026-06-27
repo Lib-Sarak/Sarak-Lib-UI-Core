@@ -1,12 +1,12 @@
 import React from 'react';
 import { SarakIcon } from '../../../components/atomic/Icon/SarakIcon';
 import { motion } from 'framer-motion';
+import { ShellUser } from './types';
 
 interface ShellUserWidgetProps {
-    user: any;
+    user?: ShellUser;
     logout?: () => void;
     variant?: 'horizontal' | 'vertical' | 'mini';
-    design?: any;
 }
 
 /**
@@ -27,7 +27,7 @@ export const ShellUserWidget: React.FC<ShellUserWidgetProps> = ({
                         {user?.username || user?.email?.split('@')[0] || 'Sarak User'}
                     </span>
                     <span className="text-[7px] text-[var(--theme-primary)] font-bold uppercase tracking-[0.2em]">
-                        {user?.level === 100 ? 'Master' : user?.level >= 50 ? 'Admin' : 'User'}
+                        {user?.level === 100 ? 'Master' : (user?.level ?? 0) >= 50 ? 'Admin' : 'User'}
                     </span>
                 </div>
                 
@@ -67,7 +67,7 @@ export const ShellUserWidget: React.FC<ShellUserWidgetProps> = ({
                             <div className="flex items-center gap-1.5">
                                 <SarakIcon name="Shield" size={8} className="text-[var(--theme-primary)]" />
                                 <span className="text-[8px] text-[var(--theme-muted)] uppercase tracking-widest font-black">
-                                    {user?.level === 100 ? 'Master' : user?.level >= 50 ? 'Admin' : 'User'}
+                                    {user?.level === 100 ? 'Master' : (user?.level ?? 0) >= 50 ? 'Admin' : 'User'}
                                 </span>
                             </div>
                         </div>

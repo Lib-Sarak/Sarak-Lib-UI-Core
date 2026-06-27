@@ -6,7 +6,6 @@ import { SarakInput } from '../../../components/atomic/Inputs/SarakInput';
 interface ShellSearchWidgetProps {
     variant?: 'bar' | 'icon';
     onClick: () => void;
-    design?: any;
 }
 
 /**

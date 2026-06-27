@@ -3,6 +3,8 @@ import { motion, AnimatePresence } from 'framer-motion';
 import { Search, Zap } from 'lucide-react';
 import { IconRenderer } from './IconRenderer';
 import { DiscoveredModule } from '../../../core/Discovery/types';
+import { SarakDesignState } from '../../../core/Provider/types';
+import { ShellUser } from './types';
 import { DynamicRenderer } from '../../Discovery/DynamicRenderer';
 import { SarakEmptyState } from '../../../components/atomic/Feedback/SarakEmptyState';
 import { UIContext } from '../../Provider/SarakUIProvider';
@@ -11,9 +13,9 @@ import { useShellLayoutStyles } from '../hooks/useShellLayoutStyles';
 interface ShellContentProps {
     activeModule: DiscoveredModule | undefined;
     discoveredModules: DiscoveredModule[];
-    design: any;
-    user: any;
-    authApi: any;
+    design: SarakDesignState;
+    user?: ShellUser;
+    authApi?: unknown;
     setIsSearchOpen: (open: boolean) => void;
 }
 
@@ -54,7 +56,7 @@ export const ShellContent: React.FC<ShellContentProps> = ({
 
                             <div className={`flex-1 ${isSplitViewEnabled ? 'grid grid-cols-2 gap-[var(--theme-gap)]' : 'flex flex-col'} animate-in fade-in zoom-in-95 duration-700`}>
                                     {(() => {
-                                        const ModComponent = (activeModule as any)?.component;
+                                        const ModComponent = activeModule?.component;
                                         const contracts = activeModule.visualContracts;
 
                                         if (ModComponent) {
@@ -76,7 +78,7 @@ export const ShellContent: React.FC<ShellContentProps> = ({
                                 {isSplitViewEnabled && secondaryModuleId && (
                                     <div className="flex flex-col min-h-full border-l border-[var(--theme-border)]/30 pl-[var(--theme-gap)]">
                                         {(() => {
-                                            const SecMod = (discoveredModules.find(m => m.id === secondaryModuleId) as any)?.component;
+                                            const SecMod = discoveredModules.find(m => m.id === secondaryModuleId)?.component;
                                             return SecMod ? <SecMod /> : <div className="opacity-20 flex items-center justify-center h-full text-[var(--theme-muted)]">Select a secondary module</div>;
                                         })()}
                                     </div>
@@ -84,7 +86,7 @@ export const ShellContent: React.FC<ShellContentProps> = ({
                             </div>
                         </motion.div>
                     ) : (
-                        <motion.div key="empty-state" initial={{ opacity: 0 }} animate={{ opacity: 1 }} exit={{ opacity: 0 }} className="flex-grow flex flex-col items-center justify-center p-12"><SarakEmptyState type={(emptyStateId || 'default') as any} /></motion.div>
+                        <motion.div key="empty-state" initial={{ opacity: 0 }} animate={{ opacity: 1 }} exit={{ opacity: 0 }} className="flex-grow flex flex-col items-center justify-center p-12"><SarakEmptyState type={(emptyStateId || 'default') as 'minimal' | 'abstract' | 'geometric'} /></motion.div>
                     )}
                 </AnimatePresence>
             </div>

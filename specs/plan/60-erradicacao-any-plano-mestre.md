@@ -2,7 +2,7 @@
 tipo: "plano-mestre"
 titulo: "Plano Mestre — Erradicação de `any` (Campanha de Adequação)"
 dominio: "Sarak-Lib-UI-Core (Adequação)"
-status: "🟡 Em Andamento (484 → 454; Spec 61 parcial)"
+status: "🟡 Em Andamento (484 → 432; Fundação+fonte do design-state OK)"
 prioridade: "Média"
 tags: ["spec", "plano-mestre", "any", "adequacao", "type-safety", "campanha"]
 relacionados: ["00-indice-plano-expansao", "50-finalizacao-adequacao-e-entrega", "61-erradicacao-any-nucleo", "62-erradicacao-any-componentes", "63-erradicacao-any-design-engine", "64-erradicacao-any-constantes-e-fechamento", "65-foundation-design-state"]
@@ -26,8 +26,10 @@ Snapshot da varredura `node .agents/skills/ui-auditoria-modulo/scripts/auditor_t
 
 > Hotspot único a vigiar: `src/core/Discovery/components/ContractRenderer.tsx` concentra **39** ocorrências sozinho (cabe na Spec 61, mas é tarefa de **alto risco** — ver §4).
 
-## 2.1 Estado da campanha (commit 1)
-**484 → 454** (−30). Spec 61 com a parte autônoma (risco baixo/médio) concluída e verde — ver Spec 61 §1.1 para a lista de arquivos.
+## 2.1 Estado da campanha
+**484 → 432** (−52). Concluído e verde:
+- Spec 61 parte autônoma (−30; ver Spec 61 §1.1).
+- **Spec 65 Fundação** (gerador tipado `SarakDesignTokens` + `SarakDesignState`; cascade mínimo, 3 casts mortos) + **Fase 2 fonte do design-state** (−22: `validation`/`useDesignManager`/`useDesignSync`/`useDesignRemoteLoader`). Falta a Fase 3 (sweep dos consumidores: Shell, DesignInjector, color-engine/presets, features).
 
 **Refinamento de sequência (achado-fundação):** o padrão `design: any` domina o restante e **não** se resolve por arquivo — `SarakThemePayload` é estrito demais (domínio fechado) e `Record<string,unknown>` cascateia para `features/` (valor de token usado como CSS). Por isso a campanha ganha um **batch transversal de Foundation** que precede o resto: definir o **tipo-fundação do design-state** (`SarakDesignState`, Opção C) e então varrer junto todos os sites `design:any` (Provider core + Shell + color-engine/presets) **e** seus consumidores em `features/` (atravessa Specs 61↔62↔63). **Especificado na Spec 65.** Os demais batches HITL: `ContractRenderer`+`types.ts` (Discovery) e `manifest.ts`.
 

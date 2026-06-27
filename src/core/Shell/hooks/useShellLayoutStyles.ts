@@ -1,4 +1,5 @@
 import { useMemo } from 'react';
+import { SarakDesignState } from '../../Provider/types';
 
 export interface ShellLayoutContext {
     shellClass: string;
@@ -34,7 +35,7 @@ const contentStrategies: Record<string, string> = {
  * Hook Controlador Estrutural (Camada 6) - Shell & Navegação
  * Traduz tokens de layout (sidebarPosition, navbarLayout, contentAlignment) em classes estruturais.
  */
-export const useShellLayoutStyles = (design: any): ShellLayoutContext => {
+export const useShellLayoutStyles = (design: SarakDesignState): ShellLayoutContext => {
     return useMemo(() => {
         const sidebarPosition = design?.sidebarPosition || 'left';
         const navbarLayout = design?.navbarLayout || 'sticky';
