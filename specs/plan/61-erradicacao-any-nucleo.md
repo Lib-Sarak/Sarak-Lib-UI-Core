@@ -30,10 +30,10 @@ Por sub-bloco do núcleo (contagem aproximada do `auditor_typescript.mjs`):
 
 > Legenda: ✅ feito · ⏸️F deferido p/ batch Foundation (design-state) · ⏸️D deferido p/ batch Discovery alto risco · 🔲 pendente.
 
-## 2.1 `core/Discovery/` (~57)
-- ⏸️D **`components/ContractRenderer.tsx` — 39** ⚠️ **ALTO RISCO** (coração do runtime de descoberta; caracterização reforçada + HITL antes de tocar).
+## 2.1 `core/Discovery/` (~57) — ✅ completo
+- ✅ **`components/ContractRenderer.tsx` — 39** *(caracterização reforçada 14 casos → verde; Grupo 1 enriquecido via `contract as VisualContract & React.ComponentProps<...>` (1 cast/caso); Grupo 2 mismatches via cast tipado `as unknown as ComponentProps<...>['prop']`; Grupo 3 `module?.components` após tipar `DiscoveredModule`)*
 - ✅ `components/hooks/useExpandableMatrixEngine.ts` — 7
-- ✅ `registry.ts` — 6 · ⏸️D `types.ts` — 3 · ✅ `hooks/useEndpointResolver.ts` — 2
+- ✅ `registry.ts` — 6 · ✅ `types.ts` — 3 *(`FilterDescriptor` em core; `config`→`Record<string,unknown>`; `DiscoveredModule.component`→`SarakComponent` + `components`)* · ✅ `hooks/useEndpointResolver.ts` — 2
 
 ## 2.2 `core/Provider/` (~42)
 - ✅ `hooks/useDesignManager.ts` — 10 *(Spec 65 Fase 2)*

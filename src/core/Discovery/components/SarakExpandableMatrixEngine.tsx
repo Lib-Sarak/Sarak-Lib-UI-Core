@@ -1,16 +1,16 @@
 import React from 'react';
 import { SarakExpandableMatrix } from '../../../components/atomic/Templates';
 import { VisualContract } from '../types';
-import { useExpandableMatrixEngine } from './hooks/useExpandableMatrixEngine';
+import { useExpandableMatrixEngine, MatrixEngineConfig } from './hooks/useExpandableMatrixEngine';
 
 export const SarakExpandableMatrixEngine: React.FC<{ 
     contract: VisualContract, 
     resolveEndpoint: (e: string) => string 
 }> = ({ contract, resolveEndpoint }) => {
-    const config = contract.config || {};
-    
+    const config = (contract.config ?? {}) as MatrixEngineConfig;
+
     const mainEndpoint = resolveEndpoint(contract.endpoint);
-    const subItemsEndpoint = resolveEndpoint(config.subItemsEndpoint);
+    const subItemsEndpoint = resolveEndpoint(config.subItemsEndpoint as string);
 
     const { data, subItems, loading, handleToggle, activeMapping } = useExpandableMatrixEngine(config, mainEndpoint, subItemsEndpoint, resolveEndpoint);
 

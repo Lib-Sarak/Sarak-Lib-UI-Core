@@ -2,7 +2,19 @@
  * Sarak Discovery Core Types (v11.0)
  */
 
-export type VisualContractType = 
+import type { SarakComponent } from './registry';
+
+/** Descritor de filtro de um contrato (espelha estruturalmente o FilterConfig do CardGrid; core fica sem dependência de `components/`). */
+export interface FilterDescriptor {
+    id: string;
+    label: string;
+    type: 'TABS' | 'SELECT';
+    field: string;
+    options?: { label: string; value: string }[];
+    dynamic?: boolean;
+}
+
+export type VisualContractType =
     | 'TABLE' 
     | 'STATS' 
     | 'CARD_GRID' 
@@ -26,7 +38,7 @@ export interface VisualContract {
     endpoint: string;
     tab?: string;
     mapping?: Record<string, string>;
-    filters?: any[];
+    filters?: FilterDescriptor[];
     actions?: Array<{
         label: string;
         endpoint: string;
@@ -42,7 +54,7 @@ export interface VisualContract {
     density?: 'compact' | 'standard' | 'spacious';
     importance?: 'hero' | 'base' | 'subtle';
     component?: string;
-    config?: any;
+    config?: Record<string, unknown>;
 }
 
 export interface ModuleManifest {
@@ -59,6 +71,7 @@ export interface ModuleManifest {
 export interface DiscoveredModule extends ModuleManifest {
     status: 'online' | 'offline';
     baseUrl?: string;
-    component?: any;
+    component?: SarakComponent;
+    components?: Record<string, SarakComponent>;
     error?: string;
 }

@@ -22,21 +22,21 @@ export const ContractRenderer: React.FC<{
 
                 switch (type) {
                     case 'TABLE':
-                        return <SarakTable key={id} endpoint={resolvedEndpoint} label={label} mapping={mapping} role={contract.role} density={contract.density} /> as any;
-                    
+                        return <SarakTable key={id} endpoint={resolvedEndpoint} label={label} mapping={mapping} role={contract.role} density={contract.density} />;
+
                     case 'CARD_GRID':
-                        return <SarakCardGrid key={id} endpoint={resolvedEndpoint} label={label} mapping={mapping as any} filters={contract.filters} importance={contract.importance} role={contract.role} />;
+                        return <SarakCardGrid key={id} endpoint={resolvedEndpoint} label={label} mapping={mapping as unknown as React.ComponentProps<typeof SarakCardGrid>['mapping']} filters={contract.filters} importance={contract.importance} role={contract.role} />;
                     
                     case 'MANAGEMENT_GRID':
                         return (
                             <SarakManagementGrid 
                                 key={id} 
                                 endpoint={resolvedEndpoint} 
-                                groupBy={contract.groupBy || ''} 
-                                mapping={mapping as any}
+                                groupBy={contract.groupBy || ''}
+                                mapping={mapping as unknown as React.ComponentProps<typeof SarakManagementGrid>['mapping']}
                                 ghostGroups={contract.ghostGroups}
-                                headerActions={contract.headerActions as any}
-                                groupActions={contract.groupActions as any}
+                                headerActions={contract.headerActions}
+                                groupActions={contract.groupActions as unknown as React.ComponentProps<typeof SarakManagementGrid>['groupActions']}
                                 formMapping={contract.formMapping}
                                 role={contract.role}
                             />
@@ -46,10 +46,10 @@ export const ContractRenderer: React.FC<{
                         return <SarakStats key={id} endpoint={resolvedEndpoint} label={label} mapping={mapping} importance={contract.importance} />;
 
                     case 'CHART':
-                        return <SarakChart key={id} endpoint={resolvedEndpoint} label={label} mapping={mapping} role={contract.role} /> as any;
+                        return <SarakChart key={id} endpoint={resolvedEndpoint} label={label} mapping={mapping} role={contract.role} />;
 
                     case 'FORM':
-                        return <SarakForm key={id} endpoint={resolvedEndpoint} label={label} mapping={mapping as any} actions={contract.actions as any} density={contract.density} /> as any;
+                        return <SarakForm key={id} endpoint={resolvedEndpoint} label={label} mapping={mapping} actions={contract.actions} density={contract.density} />;
 
                     
                     case 'CHAT_INTERFACE':
@@ -75,10 +75,10 @@ export const ContractRenderer: React.FC<{
                     case 'ELITE_CHART':
                         return (
                             <LazyEngineWrapper key={id}>
-                                <SarakChartEngine 
-                                    type={contract.mapping?.type as any || 'line'} 
-                                    data={[]} 
-                                    config={contract.mapping} 
+                                <SarakChartEngine
+                                    type={(contract.mapping?.type || 'line') as React.ComponentProps<typeof SarakChartEngine>['type']}
+                                    data={[]}
+                                    config={contract.mapping}
                                 />
                             </LazyEngineWrapper>
                         );
@@ -98,60 +98,65 @@ export const ContractRenderer: React.FC<{
                             <SarakSecurityOrchestrator 
                                 key={id} 
                                 endpoint={resolvedEndpoint} 
-                                label={label} 
-                                config={(contract as any).config} 
+                                label={label}
+                                config={contract.config as React.ComponentProps<typeof SarakSecurityOrchestrator>['config']}
                             />
                         );
 
-                    case 'AUTH_FLOW':
+                    case 'AUTH_FLOW': {
+                        // O contrato AUTH_FLOW é enriquecido em runtime com os props da tela de auth.
+                        const c = contract as VisualContract & React.ComponentProps<typeof SarakAuthScreen>;
                         return (
-                            <SarakAuthScreen 
-                                key={id} 
-                                branding={(contract as any).branding}
-                                isRegistering={(contract as any).isRegistering}
-                                setIsRegistering={(contract as any).setIsRegistering}
-                                mfaStep={(contract as any).mfaStep}
-                                setMfaStep={(contract as any).setMfaStep}
-                                username={(contract as any).username}
-                                setUsername={(contract as any).setUsername}
-                                password={(contract as any).password}
-                                setPassword={(contract as any).setPassword}
-                                mfaCode={(contract as any).mfaCode}
-                                setMfaCode={(contract as any).setMfaCode}
-                                showPassword={(contract as any).showPassword}
-                                setShowPassword={(contract as any).setShowPassword}
-                                error={(contract as any).error}
-                                isPending={(contract as any).isPending}
-                                onSubmit={(contract as any).onSubmit}
-                                onSocialLogin={(contract as any).onSocialLogin}
-                                socialConfig={(contract as any).socialConfig}
-                                onForgot={(contract as any).onForgot}
-                                onMasterLogin={(contract as any).onMasterLogin}
+                            <SarakAuthScreen
+                                key={id}
+                                branding={c.branding}
+                                isRegistering={c.isRegistering}
+                                setIsRegistering={c.setIsRegistering}
+                                mfaStep={c.mfaStep}
+                                setMfaStep={c.setMfaStep}
+                                username={c.username}
+                                setUsername={c.setUsername}
+                                password={c.password}
+                                setPassword={c.setPassword}
+                                mfaCode={c.mfaCode}
+                                setMfaCode={c.setMfaCode}
+                                showPassword={c.showPassword}
+                                setShowPassword={c.setShowPassword}
+                                error={c.error}
+                                isPending={c.isPending}
+                                onSubmit={c.onSubmit}
+                                onSocialLogin={c.onSocialLogin}
+                                socialConfig={c.socialConfig}
+                                onForgot={c.onForgot}
+                                onMasterLogin={c.onMasterLogin}
                             />
                         );
+                    }
 
                     case 'EXPANDABLE_MATRIX':
                         return <SarakExpandableMatrixEngine key={id} contract={contract} resolveEndpoint={resolveEndpoint} />;
 
-                    case 'CATALOG_GRID':
+                    case 'CATALOG_GRID': {
+                        const c = contract as VisualContract & React.ComponentProps<typeof SarakCatalogGrid>;
                         return (
-                            <SarakCatalogGrid 
-                                key={id} 
-                                items={(contract as any).items || []}
-                                loading={(contract as any).loading}
+                            <SarakCatalogGrid
+                                key={id}
+                                items={c.items || []}
+                                loading={c.loading}
                                 title={label}
-                                subtitle={(contract as any).subtitle}
-                                categories={(contract as any).categories}
-                                onSync={(contract as any).onSync}
-                                renderCard={(contract as any).renderCard}
-                                emptyMessage={(contract as any).emptyMessage}
+                                subtitle={c.subtitle}
+                                categories={c.categories}
+                                onSync={c.onSync}
+                                renderCard={c.renderCard}
+                                emptyMessage={c.emptyMessage}
                             />
                         );
+                    }
 
                     case 'CUSTOM':
                         const componentName = contract.component || '';
                         // 1. Tentar pegar do contexto do módulo (se injetado)
-                        let CustomComponent = (module as any)?.components?.[componentName];
+                        let CustomComponent = module?.components?.[componentName];
                         
                         // 2. Fallback: Tentar pegar do Registro Global pelo ID do módulo
                         if (!CustomComponent && module?.id) {

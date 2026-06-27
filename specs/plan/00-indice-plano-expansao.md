@@ -178,8 +178,8 @@ Cada **onda** é um conjunto construível em conjunto; a ordem **entre** ondas �
 - **Onda 11 — Finalização** *(após as anteriores, ou em paralelo em baixa prioridade)*
   - [ ] 50 finalização *(`any` residual → 0, docs/README, guia do importador, build/exports)*
 - **Onda 12 — Erradicação de `any`** *(campanha de adequação — núcleo→fora; quita a Regra 1 da Spec 50)*
-  - [ ] 60 plano-mestre *(baseline ~484, leis, gate por fatia, roteamento por risco)* — 🟡 em andamento (484→432)
-  - [~] 61 núcleo *(`src/core/**` — parte autônoma + core do design-state feitos; falta Shell/manifest)* · [ ] 62 componentes *(`src/components/**`)* · [ ] 63 design-engine *(`src/features/DesignEngine/**`)*
+  - [ ] 60 plano-mestre *(baseline ~484, leis, gate por fatia, roteamento por risco)* — 🟡 em andamento (484→368)
+  - [~] 61 núcleo *(`src/core/**` — Discovery/Provider/Shell feitos; resta só resíduo difícil manifest/color-engine + Design leftover)* · [ ] 62 componentes *(`src/components/**`)* · [ ] 63 design-engine *(`src/features/DesignEngine/**`)*
   - [~] **65 foundation** *(`SarakDesignState` — gerador tipado + fonte ✅; falta Fase 3 sweep dos consumidores)* · [ ] 64 constantes + fechamento *(varredura final → baseline 0)*
 
   > **Ordem interna da Onda 12:** parte autônoma da 61 ✅ → **65 (Foundation)** → restante 61/62/63 (desbloqueadas) → 64.
