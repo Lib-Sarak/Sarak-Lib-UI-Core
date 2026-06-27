@@ -19,8 +19,9 @@ import { useStructuralStyles } from '../hooks/useStructuralStyles';
 import { useSarakTableData } from './hooks/useSarakTableData';
 import { twMerge } from 'tailwind-merge';
 
-interface SarakTableProps {
+interface SarakTableProps<TData extends Record<string, unknown> = Record<string, unknown>> {
     endpoint: string;
+    data?: TData[];
     label?: string;
     mapping?: Record<string, string>; // { key_in_json: "Label na Coluna" }
     role?: 'primary' | 'secondary' | 'neutral' | 'accent';
@@ -34,7 +35,7 @@ interface SarakTableProps {
  * Um componente agnóstico que renderiza qualquer conjunto de dados tabular
  * baseado em um contrato visual enviado pelo manifesto do módulo.
  */
-export const SarakTable: React.FC<SarakTableProps> = ({ endpoint, label, mapping, role = 'neutral', density = 'standard' }) => {
+export const SarakTable = <TData extends Record<string, unknown> = Record<string, unknown>>({ endpoint, data: initialData, label, mapping, role = 'neutral', density = 'standard' }: SarakTableProps<TData>) => {
     const { design } = useSarakUI();
     const { tableWrapperClass, cellDensityClass, actionColumnAlignmentClass } = useTableLayoutStyles(design);
     const { getContainerStyles, getHeaderStyles } = useStructuralStyles();
@@ -50,7 +51,7 @@ export const SarakTable: React.FC<SarakTableProps> = ({ endpoint, label, mapping
         search,
         setSearch,
         fetchData
-    } = useSarakTableData(endpoint);
+    } = useSarakTableData<TData>(endpoint);
 
     // Gerar colunas dinamicamente caso não exista um mapping
     const columns = mapping ? Object.keys(mapping) : (data.length > 0 ? Object.keys(data[0]).filter(k => !k.startsWith('_')) : []);
@@ -140,7 +141,7 @@ export const SarakTable: React.FC<SarakTableProps> = ({ endpoint, label, mapping
                                 ) : (
                                     filteredData.map((row, idx) => (
                                         <motion.tr 
-                                            key={row.id || idx}
+                                            key={String(row.id || idx)}
                                             initial={{ opacity: 0, y: 10 }}
                                             animate={{ opacity: 1, y: 0 }}
                                             transition={{ delay: idx * 0.05 }}

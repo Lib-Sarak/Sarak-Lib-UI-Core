@@ -9,12 +9,12 @@ import { useStructuralStyles } from '../hooks/useStructuralStyles';
 import { twMerge } from 'tailwind-merge';
 import { useFormData } from './hooks/useFormData';
 
-interface SarakFormProps {
+interface SarakFormProps<TData extends Record<string, unknown>> {
     endpoint: string;
     label?: string;
     mapping?: Record<string, string>; // { field_name: "Label do Input" }
     mode?: 'create' | 'edit';
-    initialData?: Record<string, any>;
+    initialData?: TData;
     actions?: Array<{
         label: string;
         endpoint: string;
@@ -32,16 +32,19 @@ interface SarakFormProps {
  * Gera formulários de configuração dinamicamente baseados no manifesto.
  * Idela para abas de "Preferências" e "Configurações" de módulos.
  */
-export const SarakForm: React.FC<SarakFormProps> = ({ 
+export const SarakForm = <TData extends Record<string, unknown> = Record<string, unknown>>({ 
     endpoint, 
     label, 
     mapping, 
     actions, 
     mode = 'edit', 
-    initialData = {}, 
-    onSuccess 
-}) => {
-    const { formData, loading, saving, status, handleChange, handleSave } = useFormData(endpoint, mode, initialData, mapping, actions, onSuccess);
+    initialData = {} as TData, 
+    onSuccess,
+    role = 'neutral', 
+    density = 'standard', 
+    importance = 'base' 
+}: SarakFormProps<TData>) => {
+    const { formData, loading, saving, status, handleChange, handleSave } = useFormData<TData>(endpoint, mode, initialData, mapping, actions, onSuccess);
 
     const { getContainerStyles } = useStructuralStyles();
     const containerLayout = getContainerStyles();
@@ -81,7 +84,7 @@ export const SarakForm: React.FC<SarakFormProps> = ({
                             {mapping ? mapping[key] : key.replace(/_/g, ' ')}
                         </label>
                         <SarakInput
-                            value={formData[key] || ''}
+                            value={String(formData[key] || '')}
                             onChange={(e) => handleChange(key, e.target.value)}
                             placeholder={`Digite o ${mapping ? mapping[key] : key}...`}
                         />

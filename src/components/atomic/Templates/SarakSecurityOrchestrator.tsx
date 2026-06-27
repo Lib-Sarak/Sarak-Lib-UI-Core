@@ -23,7 +23,7 @@ import { SecurityOrchestratorDisable } from './components/SecurityOrchestratorDi
 interface SarakSecurityOrchestratorProps {
     endpoint: string;
     label?: string;
-    config?: any;
+    config?: Record<string, unknown>;
     role?: 'primary' | 'secondary' | 'neutral' | 'accent';
     density?: 'compact' | 'standard' | 'spacious';
     importance?: 'hero' | 'base' | 'subtle';
@@ -83,7 +83,7 @@ export const SarakSecurityOrchestrator: React.FC<SarakSecurityOrchestratorProps>
                     <SecurityOrchestratorStatus 
                         mfaStatus={mfaStatus}
                         containerVariants={containerVariants}
-                        setStep={setStep}
+                        setStep={setStep as (step: string) => void}
                         startSetup={startSetup}
                     />
                 )}
@@ -109,7 +109,7 @@ export const SarakSecurityOrchestrator: React.FC<SarakSecurityOrchestratorProps>
                         isValidating={isValidating}
                         error={error}
                         handleDisable={handleDisable}
-                        setStep={setStep}
+                        setStep={setStep as (step: string) => void}
                         containerVariants={containerVariants}
                         layout={layout}
                     />

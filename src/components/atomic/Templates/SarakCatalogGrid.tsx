@@ -20,7 +20,7 @@ interface CatalogItem {
     organization?: string;
     category?: string;
     description?: string;
-    [key: string]: any;
+    [key: string]: unknown;
 }
 
 interface SarakCatalogGridProps {

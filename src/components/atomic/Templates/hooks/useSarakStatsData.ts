@@ -1,9 +1,9 @@
 import { useState, useEffect } from 'react';
 import api from '../../../../shared/services/api';
 
-export function useSarakStatsData(endpoint?: string, initialData?: Record<string, any>) {
+export function useSarakStatsData<T extends Record<string, unknown>>(endpoint?: string, initialData?: T) {
     const [state, setState] = useState({
-        stats: initialData || {},
+        stats: initialData || ({} as T),
         loading: !initialData,
         error: null as string | null
     });
@@ -17,10 +17,11 @@ export function useSarakStatsData(endpoint?: string, initialData?: Record<string
         try {
             updateState({ error: null });
             const response = await api.get(endpoint);
-            updateState({ stats: response.data });
-        } catch (err: any) {
+            updateState({ stats: response.data as T });
+        } catch (err: unknown) {
             console.error(`[SarakStats] Falha ao carregar ${endpoint}:`, err);
-            updateState({ error: err.message || 'Erro' });
+            const errorMessage = err instanceof Error ? err.message : 'Erro';
+            updateState({ error: errorMessage });
         } finally {
             updateState({ loading: false });
         }

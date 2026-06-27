@@ -29,7 +29,7 @@ interface AuthFormProps {
     socialConfig?: {
         enabled: boolean;
         display: 'compact' | 'full';
-        providers: Array<{ id: string; variant: any }>;
+        providers: Array<{ id: string; variant: 'glass' | 'sovereign' }>;
     };
     onForgot?: () => void;
     onMasterLogin?: () => void;

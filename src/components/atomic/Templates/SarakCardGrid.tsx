@@ -57,16 +57,19 @@ interface SarakCardGridProps {
  * Renderiza um grid de cartões de alta fidelidade com suporte a metadados
  * técnicos complexos e FILTROS DINÂMICOS declarados via manifesto.
  */
-export const SarakCardGrid: React.FC<SarakCardGridProps> = ({ endpoint, label, mapping, filters = [], variant }) => {
+export const SarakCardGrid = <TData extends Record<string, unknown>>({ endpoint, label, mapping, filters = [], variant }: SarakCardGridProps) => {
     const { design } = useSarakUI();
     const activeVariant = variant || design.cardVariant || 'classic';
-    const { data, loading, error, search, activeFilters, setSearch, setActiveFilters } = useCardGridState(endpoint);
+    const { data, loading, error, search, activeFilters, setSearch, setActiveFilters } = useCardGridState<TData>(endpoint);
 
     // Utility for nested path resolution
-    const getVal = (obj: any, path: string | undefined) => {
+    const getVal = (obj: TData, path: string | undefined): unknown => {
         if (!path) return undefined;
         try {
-            return path.split('.').reduce((acc, part) => acc && acc[part], obj);
+            return path.split('.').reduce((acc: unknown, part) => {
+                if (acc && typeof acc === 'object') return (acc as Record<string, unknown>)[part];
+                return undefined;
+            }, obj as unknown);
         } catch (e) {
             return undefined;
         }

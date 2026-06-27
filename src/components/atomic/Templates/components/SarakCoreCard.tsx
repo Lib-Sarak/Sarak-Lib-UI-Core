@@ -8,7 +8,7 @@ import { SarakActionCard } from '../../Cards/SarakActionCard';
 import { SarakSearchCard } from '../../Cards/SarakSearchCard';
 import { SarakButton, SarakIconButton } from '../../Buttons';
 
-export const SarakCoreCard = ({ item, mapping, variant }: { item: any; mapping: any; variant?: 'classic' | 'title' | 'action' | 'search' }) => {
+export const SarakCoreCard = <TItem extends Record<string, unknown>>({ item, mapping, variant }: { item: TItem; mapping?: Record<string, string>; variant?: 'classic' | 'title' | 'action' | 'search' }) => {
     const { design } = useSarakUI();
     const [isExpanded, setIsExpanded] = useState(false);
 
@@ -22,10 +22,13 @@ export const SarakCoreCard = ({ item, mapping, variant }: { item: any; mapping: 
         return <SarakSearchCard item={item} mapping={mapping} />;
     }
 
-    const getVal = (obj: any, path: string | undefined) => {
+    const getVal = (obj: TItem, path: string | undefined): unknown => {
         if (!path) return undefined;
         try {
-            return path.split('.').reduce((acc, part) => acc && acc[part], obj);
+            return path.split('.').reduce((acc: unknown, part) => {
+                if (acc && typeof acc === 'object') return (acc as Record<string, unknown>)[part];
+                return undefined;
+            }, obj as unknown);
         } catch (e) { return undefined; }
     };
 
@@ -70,15 +73,15 @@ export const SarakCoreCard = ({ item, mapping, variant }: { item: any; mapping: 
                 <div className="flex justify-between items-start mb-6" style={{ marginBottom: 'calc(var(--sx-spacing-md) / 1.5)' }}>
                     <div className="flex flex-col">
                         <span className="text-2xs font-black text-[var(--sx-color-primary-base)] uppercase tracking-[0.2em] mb-1">
-                            {getVal(item, mapping?.subtitle) || 'Modelo'}
+                            {String(getVal(item, mapping?.subtitle) || 'Modelo')}
                         </span>
                         <h4 className="text-xl font-black text-[var(--sx-color-text-title)] tracking-tight group-hover:text-[var(--sx-color-primary-base)] transition-colors">
-                            {getVal(item, mapping?.title)}
+                            {String(getVal(item, mapping?.title) || '')}
                         </h4>
                     </div>
                     <div className="bg-[var(--sx-color-surface-base)] border-[var(--sx-color-border-base)]" style={{ padding: 'calc(var(--sx-spacing-md) / 2)', borderRadius: 'var(--sx-radius-md)' }}>
                         {mapping?.icon && LucideIcons[mapping.icon as keyof typeof LucideIcons] ? (
-                            React.createElement(LucideIcons[mapping.icon as keyof typeof LucideIcons] as any, { size: 20, className: "text-[var(--sx-color-text-muted)]" })
+                            React.createElement(LucideIcons[mapping.icon as keyof typeof LucideIcons] as React.ElementType, { size: 20, className: "text-[var(--sx-color-text-muted)]" })
                         ) : <Box size={20} className="text-[var(--sx-color-text-muted)]" />}
                     </div>
                 </div>
@@ -86,16 +89,17 @@ export const SarakCoreCard = ({ item, mapping, variant }: { item: any; mapping: 
                 <div className="flex flex-col gap-4 mb-8">
                     <div className="flex flex-wrap gap-2">
                         <span className="text-3xs font-black text-white/20 uppercase w-full mb-1">Input Capacities</span>
-                        {inputCaps.map((cap: string) => (
+                        {(inputCaps as string[]).map((cap: string) => (
                             <div key={cap} className="flex items-center gap-1.5 bg-[var(--sx-color-primary-surface)] text-[var(--sx-color-primary-base)] border border-[var(--sx-color-border-base)] text-2xs font-black uppercase" style={{ padding: 'calc(var(--sx-spacing-md) / 4) calc(var(--sx-spacing-md) / 1.5)', borderRadius: 'var(--sx-radius-md)' }}>
                                 {getCapIcon(cap)} {cap}
                             </div>
                         ))}
                     </div>
-                    {outputCaps.length > 0 && (
+
+                    {(outputCaps as string[]).length > 0 && (
                         <div className="flex flex-wrap gap-2">
                             <span className="text-3xs font-black text-white/20 uppercase w-full mb-1">Output Capacities</span>
-                            {outputCaps.map((cap: string) => (
+                            {(outputCaps as string[]).map((cap: string) => (
                                 <div key={cap} className="flex items-center gap-1.5 bg-[var(--sx-color-primary-surface)] text-[var(--sx-color-primary-base)] border border-[var(--sx-color-border-base)] text-2xs font-black uppercase" style={{ padding: 'calc(var(--sx-spacing-md) / 4) calc(var(--sx-spacing-md) / 1.5)', borderRadius: 'var(--sx-radius-md)' }}>
                                     {getCapIcon(cap)} {cap}
                                 </div>
@@ -150,16 +154,16 @@ export const SarakCoreCard = ({ item, mapping, variant }: { item: any; mapping: 
                             className="overflow-hidden"
                         >
                             <div className="flex flex-col pt-8" style={{ gap: 'calc(var(--sx-spacing-md) / 1.5)', paddingTop: 'var(--sx-spacing-md)' }}>
-                                {description && (
+                                {!!description && (
                                     <div className="p-6 bg-[var(--sx-color-surface-base)] border-[var(--sx-color-border-base)] rounded-[var(--sx-radius-md)]">
                                         <span className="text-3xs font-black text-[var(--sx-color-primary-base)] uppercase mb-2 block">Descrição Técnica</span>
-                                        <p className="text-xs text-[var(--sx-color-text-muted)] opacity-70 leading-relaxed font-medium">{description}</p>
+                                        <p className="text-xs text-[var(--sx-color-text-muted)] opacity-70 leading-relaxed font-medium">{String(description)}</p>
                                     </div>
                                 )}
-                                {tokenizer && (
+                                {!!tokenizer && (
                                     <div className="flex items-center justify-between px-6 py-4 bg-[var(--sx-color-surface-base)] border-[var(--sx-color-border-base)] rounded-[var(--sx-radius-md)]">
                                         <span className="text-3xs font-black text-white/30 uppercase">Tokenizer</span>
-                                        <span className="text-2xs font-mono text-[var(--sx-color-primary-base)]">{tokenizer}</span>
+                                        <span className="text-2xs font-mono text-[var(--sx-color-primary-base)]">{String(tokenizer)}</span>
                                     </div>
                                 )}
                             </div>

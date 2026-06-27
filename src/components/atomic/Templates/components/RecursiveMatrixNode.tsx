@@ -30,7 +30,7 @@ export const RecursiveMatrixNode: React.FC<RecursiveMatrixNodeProps> = ({
     lazyLoadingIcon,
     onExpandChange,
 }) => {
-    const config = resolveConfig(item, level, manifest);
+    const config = resolveConfig(item as unknown as Record<string, unknown>, level, manifest);
     const [isExpanded, setIsExpanded] = useState(config.defaultExpanded);
 
     const isActive = activeMapping(parentId, item.id);
@@ -50,7 +50,7 @@ export const RecursiveMatrixNode: React.FC<RecursiveMatrixNodeProps> = ({
     const areChildrenCompact = useMemo(() => {
         if (!hasChildren) return false;
         return item.children!.every((c) => {
-            const childConfig = resolveConfig(c, level + 1, manifest);
+            const childConfig = resolveConfig(c as unknown as Record<string, unknown>, level + 1, manifest);
             return childConfig.variant === 'badge' || childConfig.variant === 'switch';
         });
     }, [item.children, level, manifest, hasChildren]);

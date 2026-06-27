@@ -5,7 +5,9 @@ import { SarakInput } from '../Inputs';
 import { useStructuralStyles } from '../hooks/useStructuralStyles';
 import { RecursiveMatrixNode } from './components/RecursiveMatrixNode';
 
-export interface MatrixNodeConfig {
+import type { MatrixTreeNode } from './components/matrixTree';
+
+export interface MatrixNodeConfig<TNode = MatrixTreeNode> {
     /** Variante visual de renderização do nó */
     variant?: 'card' | 'row' | 'badge' | 'switch' | 'clean';
     /** Se exibe checkbox/toggle para ativar/desativar */
@@ -15,10 +17,10 @@ export interface MatrixNodeConfig {
     /** Se o nó deve iniciar expandido */
     defaultExpanded?: boolean;
     /** Ícone customizado (Lucide ou elemento) */
-    icon?: React.ComponentType<any>;
+    icon?: React.ComponentType<Record<string, unknown>>;
     /** Renderizador totalmente customizado para controle total */
     renderCustom?: (
-        node: any,
+        node: TNode,
         level: number,
         isActive: boolean,
         isExpanded: boolean,
@@ -29,38 +31,45 @@ export interface MatrixNodeConfig {
 
 export interface SarakMatrixManifest {
     /** Mapeamento por nível de profundidade (0 para raiz, 1 para filhos, 2 para netos, etc.) */
-    levels?: Record<number, MatrixNodeConfig>;
+    levels?: Record<number, MatrixNodeConfig<MatrixTreeNode>>;
     /** Mapeamento dinâmico pelo atributo `node.type` */
-    types?: Record<string, MatrixNodeConfig>;
+    types?: Record<string, MatrixNodeConfig<MatrixTreeNode>>;
     /** Configurações fallback padrão */
-    default?: MatrixNodeConfig;
+    default?: MatrixNodeConfig<MatrixTreeNode>;
 }
 
-export interface SarakExpandableMatrixProps {
+export interface MatrixParentData {
+    id: string;
+    name?: string;
+    description?: string;
+    [key: string]: unknown;
+}
+
+export interface SarakExpandableMatrixProps<TData extends MatrixParentData> {
     /** Itens principais (ex: Roles/Papéis) */
-    data: any[];
+    data: TData[];
     /** Todos os sub-itens possíveis (ex: Todas as Permissões) */
-    subItems: any[];
+    subItems: MatrixTreeNode[];
     /** Função para checar se um sub-item está ativo em um item pai */
     activeMapping: (parentId: string, subItemId: string) => boolean;
     /** Callback disparado ao clicar no toggle */
     onToggle: (parentId: string, subItemId: string) => void;
     /** Renderizador customizado para o cabeçalho de cada item pai */
-    renderItemHeader?: (item: any) => React.ReactNode;
+    renderItemHeader?: (item: TData) => React.ReactNode;
     /** Manifesto opcional de mapeamento recursivo para layout IAM/RBAC avançado */
     manifest?: SarakMatrixManifest;
 }
 
 
 
-export const SarakExpandableMatrix: React.FC<SarakExpandableMatrixProps> = ({
+export const SarakExpandableMatrix = <TData extends MatrixParentData>({
     data,
     subItems,
     activeMapping,
     onToggle,
     renderItemHeader,
     manifest
-}) => {
+}: SarakExpandableMatrixProps<TData>) => {
     const { getContainerStyles } = useStructuralStyles();
     const containerLayout = getContainerStyles();
 
@@ -72,14 +81,14 @@ export const SarakExpandableMatrix: React.FC<SarakExpandableMatrixProps> = ({
 
         const term = searchTerm.toLowerCase();
 
-        const filterTree = (nodes: any[]): any[] => {
+        const filterTree = (nodes: MatrixTreeNode[]): MatrixTreeNode[] => {
             return nodes.reduce((acc, node) => {
                 const matchesNode = 
                     node.name?.toLowerCase().includes(term) ||
                     node.description?.toLowerCase().includes(term) ||
                     node.id?.toLowerCase().includes(term);
 
-                let filteredChildren: any[] = [];
+                let filteredChildren: MatrixTreeNode[] = [];
                 if (node.children && node.children.length > 0) {
                     filteredChildren = filterTree(node.children);
                 }
@@ -94,7 +103,7 @@ export const SarakExpandableMatrix: React.FC<SarakExpandableMatrixProps> = ({
                 }
 
                 return acc;
-            }, [] as any[]);
+            }, [] as MatrixTreeNode[]);
         };
 
         return filterTree(subItems);
@@ -111,7 +120,7 @@ export const SarakExpandableMatrix: React.FC<SarakExpandableMatrixProps> = ({
                 ...containerLayout.style,
                 '--matrix-gap': 'var(--sarak-matrix-gap, 12px)',
                 gap: 'var(--matrix-gap)'
-            } as any}
+            } as React.CSSProperties}
         >
             <div className="w-full">
                 <SarakInput

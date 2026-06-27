@@ -27,7 +27,7 @@ export const useSarakChat = (endpoint: string, modelsEndpoint?: string) => {
     const fetchModels = async () => {
       if (!modelsEndpoint) return;
       try {
-        const system = (window as any).__SARAK_SYSTEM__ || 'global';
+        const system = (window as typeof window & { __SARAK_SYSTEM__?: string }).__SARAK_SYSTEM__ || 'global';
         const token = localStorage.getItem(`${system}_token`) || 
                       localStorage.getItem('sarak_token') || 
                       localStorage.getItem('auth_token');
@@ -105,7 +105,7 @@ export const useSarakChat = (endpoint: string, modelsEndpoint?: string) => {
 
     try {
       updateState({ isProcessingFiles: true });
-      const blocks: any[] = [];
+      const blocks: Record<string, unknown>[] = [];
       if (userContent) blocks.push({ text: userContent });
 
       for (const att of state.attachments) {
@@ -116,7 +116,7 @@ export const useSarakChat = (endpoint: string, modelsEndpoint?: string) => {
       }
       updateState({ isProcessingFiles: false, attachments: [] });
 
-      const system = (window as any).__SARAK_SYSTEM__ || 'global';
+      const system = (window as typeof window & { __SARAK_SYSTEM__?: string }).__SARAK_SYSTEM__ || 'global';
       const token = localStorage.getItem(`${system}_token`) || 
                     localStorage.getItem('sarak_token') || 
                     localStorage.getItem('auth_token');
@@ -179,12 +179,12 @@ export const useSarakChat = (endpoint: string, modelsEndpoint?: string) => {
         }
       }
 
-    } catch (err: any) {
+    } catch (err: unknown) {
       console.error("Erro no Chat Lab Stream:", err);
       currentMessages = [...currentMessages];
       currentMessages[assistantIndex] = {
           role: 'assistant',
-          content: `❌ Erro na Orquestração: ${err.message}`
+          content: `❌ Erro na Orquestração: ${err instanceof Error ? err.message : String(err)}`
       };
       updateState({ messages: currentMessages });
     } finally {

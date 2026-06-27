@@ -15,6 +15,12 @@ interface SarakChartProps {
     importance?: 'hero' | 'base' | 'subtle';
 }
 
+interface ChartDatum extends Record<string, unknown> {
+    tokens?: number;
+    value?: number;
+    date?: string;
+}
+
 /**
  * SarakChart Genérico (v6.2)
  * 
@@ -22,9 +28,9 @@ interface SarakChartProps {
  * com barras animadas em CSS/SVG, mantendo o padrão Glassmorphism.
  */
 export const SarakChart: React.FC<SarakChartProps> = ({ endpoint, label, mapping }) => {
-    const { data, loading, error } = useChartData(endpoint);
+    const { data, loading, error } = useChartData<ChartDatum>(endpoint);
 
-    const maxValue = Math.max(...data.map(d => d.tokens || d.value || 0), 1);
+    const maxValue = Math.max(...data.map((d) => (d.tokens as number) || (d.value as number) || 0), 1);
     const { getContainerStyles } = useStructuralStyles();
     const containerLayout = getContainerStyles();
 
@@ -56,7 +62,7 @@ export const SarakChart: React.FC<SarakChartProps> = ({ endpoint, label, mapping
                     </div>
                 ) : data.length > 0 ? (
                     data.map((item, idx) => {
-                        const val = item.tokens || item.value || 0;
+                        const val = (item.tokens as number) || (item.value as number) || 0;
                         const height = (val / maxValue) * 100;
                         return (
                             <div key={idx} className="flex-1 flex flex-col items-center group/item h-full justify-end">
@@ -76,7 +82,7 @@ export const SarakChart: React.FC<SarakChartProps> = ({ endpoint, label, mapping
                                         </div>
                                     </motion.div>
                                 <div className="text-[7px] font-bold text-[var(--sx-color-text-muted)] uppercase mt-3 rotate-45 origin-left hidden lg:block">
-                                   {item.date?.split('-').slice(1).join('/') || ''}
+                                   {item.date ? String(item.date).split('-').slice(1).join('/') : ''}
                                 </div>
                             </div>
                         );

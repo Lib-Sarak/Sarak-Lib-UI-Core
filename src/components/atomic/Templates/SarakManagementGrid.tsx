@@ -21,7 +21,7 @@ import { useSarakUI } from '../../../core/Provider/SarakUIProvider';
 import { ManagementGroupCard } from './components/ManagementGroupCard';
 import { useManagementGrid } from './hooks/useManagementGrid';
 
-interface SarakManagementGridProps {
+interface SarakManagementGridProps<TItem extends Record<string, unknown>> {
     endpoint: string;
     groupBy: string;
     ghostGroups?: string[];
@@ -48,7 +48,7 @@ interface SarakManagementGridProps {
     importance?: 'hero' | 'base' | 'subtle';
 }
 
-export const SarakManagementGrid: React.FC<SarakManagementGridProps> = ({ 
+export const SarakManagementGrid = <TItem extends Record<string, unknown> = Record<string, unknown>>({ 
     endpoint, 
     groupBy, 
     ghostGroups = [],
@@ -56,15 +56,20 @@ export const SarakManagementGrid: React.FC<SarakManagementGridProps> = ({
     headerActions = [],
     groupActions = [],
     formMapping
-}) => {
+}: SarakManagementGridProps<TItem>) => {
     const { getContainerStyles, getHeaderStyles, getGridStyles } = useStructuralStyles();
     const containerLayout = getContainerStyles();
     const headerLayout = getHeaderStyles();
     const gridLayout = getGridStyles();
 
-    const getVal = (obj: any, path: string) => {
+    const getVal = (obj: TItem, path: string): unknown => {
         if (!path) return undefined;
-        return path.split('.').reduce((acc, part) => acc && acc[part], obj);
+        return path.split('.').reduce((acc: unknown, part) => {
+            if (acc && typeof acc === 'object') {
+                return (acc as Record<string, unknown>)[part];
+            }
+            return undefined;
+        }, obj as unknown);
     };
 
     const {
@@ -145,7 +150,7 @@ export const SarakManagementGrid: React.FC<SarakManagementGridProps> = ({
                         <div key={i} className="bg-[var(--sx-color-surface-base)] border-[var(--sx-color-border-base)] animate-pulse rounded-[var(--sx-radius-md)]" style={{ height: 'calc(var(--sx-spacing-md) * 16)' }} />
                     ))
                 ) : (
-                    (Object.entries(groups) as [string, any[]][]).map(([groupName, items]) => {
+                    (Object.entries(groups) as [string, TItem[]][]).map(([groupName, items]) => {
                         const isConfigured = items.length > 0;
                         return (
                             <ManagementGroupCard 
@@ -155,7 +160,7 @@ export const SarakManagementGrid: React.FC<SarakManagementGridProps> = ({
                                 isConfigured={isConfigured}
                                 containerLayout={containerLayout}
                                 groupActions={groupActions}
-                                mapping={mapping as any}
+                                mapping={mapping}
                                 handleAction={handleAction}
                                 handleToggle={handleToggle}
                                 handleDelete={handleDelete}

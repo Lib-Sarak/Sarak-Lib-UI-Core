@@ -1,12 +1,12 @@
 import React from 'react';
-import { motion } from 'framer-motion';
+import { motion, Variants } from 'framer-motion';
 import { ShieldCheck, ShieldAlert, AlertTriangle } from 'lucide-react';
 import { SarakButton } from '../../Buttons';
 
 interface SecurityOrchestratorStatusProps {
-    mfaStatus: any;
-    containerVariants: any;
-    setStep: (step: any) => void;
+    mfaStatus: Record<string, unknown> | null;
+    containerVariants: Variants;
+    setStep: (step: 'STATUS' | 'SETUP' | 'DISABLE_CHALLENGE' | 'SUCCESS' | 'ERROR' | 'LOADING') => void;
     startSetup: () => void;
 }
 

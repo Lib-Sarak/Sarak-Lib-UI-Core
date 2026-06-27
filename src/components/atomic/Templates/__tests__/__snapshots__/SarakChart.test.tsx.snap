@@ -1,0 +1,143 @@
+// Vitest Snapshot v1, https://vitest.dev/guide/snapshot.html
+
+exports[`SarakChart > matches snapshot to ensure no layout regressions during type fixes 1`] = `
+<DocumentFragment>
+  <div
+    class="bg-[var(--sx-color-surface-base)] border-[var(--sx-color-border-base)] relative overflow-hidden group rounded-[var(--sx-radius-md)] mocked-container"
+  >
+    <div
+      class="absolute top-0 right-0 w-64 h-64 bg-[var(--sx-color-primary-surface)] blur-[100px] pointer-events-none"
+    />
+    <div
+      class="flex items-center justify-between relative z-10"
+    >
+      <div
+        class="flex items-center"
+        style="gap: calc(var(--sx-spacing-md) / 2);"
+      >
+        <div
+          class="bg-[var(--sx-color-primary-surface)] rounded-2xl border border-[var(--sx-color-border-base)]"
+          style="padding: calc(var(--sx-spacing-md) / 3);"
+        >
+          <svg
+            class="text-[var(--sx-color-primary-base)]"
+            fill="none"
+            height="16"
+            stroke="currentColor"
+            stroke-linecap="round"
+            stroke-linejoin="round"
+            stroke-width="2"
+            viewBox="0 0 24 24"
+            width="16"
+            xmlns="http://www.w3.org/2000/svg"
+          >
+            <polyline
+              points="22 7 13.5 15.5 8.5 10.5 2 17"
+            />
+            <polyline
+              points="16 7 22 7 22 13"
+            />
+          </svg>
+        </div>
+        <div>
+          <h3
+            class="text-xl font-black text-[var(--sx-color-text-title)] tracking-tight"
+            style="font-weight: var(--heading-weight);"
+          >
+            Test Chart
+          </h3>
+          <p
+            class="text-2xs font-bold text-[var(--sx-color-text-muted)] uppercase tracking-widest"
+          >
+            Análise de Tendência em Tempo Real
+          </p>
+        </div>
+      </div>
+      <div
+        class="flex items-center bg-[var(--sx-color-text-muted)]/5 rounded-[var(--sx-radius-md)] border border-[var(--sx-color-border-base)]"
+        style="gap: calc(var(--sx-spacing-md) / 3); padding: calc(var(--sx-spacing-md) / 3) calc(var(--sx-spacing-md) / 1.5);"
+      >
+        <svg
+          class="text-[var(--sx-color-success-base)] animate-pulse"
+          fill="none"
+          height="12"
+          stroke="currentColor"
+          stroke-linecap="round"
+          stroke-linejoin="round"
+          stroke-width="2"
+          viewBox="0 0 24 24"
+          width="12"
+          xmlns="http://www.w3.org/2000/svg"
+        >
+          <path
+            d="M22 12h-4l-3 9L9 3l-3 9H2"
+          />
+        </svg>
+        <span
+          class="text-2xs font-black text-[var(--sx-color-text-muted)] uppercase tracking-tighter"
+        >
+          Live Monitor
+        </span>
+      </div>
+    </div>
+    <div
+      class="h-48 flex items-end justify-between relative z-10"
+      style="gap: calc(var(--sx-spacing-md) / 4);"
+    >
+      <div
+        class="flex-1 flex flex-col items-center group/item h-full justify-end"
+      >
+        <div
+          class="w-full bg-gradient-to-t from-[var(--sx-color-primary-glow)] to-[var(--sx-color-primary-base)] rounded-t-lg group-hover/item:brightness-125 transition-all relative"
+          style="transition-duration: var(--animation-speed, 0.3s); height: 0px;"
+        >
+          <div
+            class="absolute -top-10 left-1/2 -translate-x-1/2 bg-[var(--sx-color-text-title)] text-[var(--sx-color-surface-base)] text-2xs font-black px-2 py-1 rounded shadow-2xl opacity-0 group-hover/item:opacity-100 pointer-events-none transition-opacity whitespace-nowrap z-30"
+          >
+            100
+          </div>
+        </div>
+        <div
+          class="text-[7px] font-bold text-[var(--sx-color-text-muted)] uppercase mt-3 rotate-45 origin-left hidden lg:block"
+        >
+          01/01
+        </div>
+      </div>
+      <div
+        class="flex-1 flex flex-col items-center group/item h-full justify-end"
+      >
+        <div
+          class="w-full bg-gradient-to-t from-[var(--sx-color-primary-glow)] to-[var(--sx-color-primary-base)] rounded-t-lg group-hover/item:brightness-125 transition-all relative"
+          style="transition-duration: var(--animation-speed, 0.3s); height: 0px;"
+        >
+          <div
+            class="absolute -top-10 left-1/2 -translate-x-1/2 bg-[var(--sx-color-text-title)] text-[var(--sx-color-surface-base)] text-2xs font-black px-2 py-1 rounded shadow-2xl opacity-0 group-hover/item:opacity-100 pointer-events-none transition-opacity whitespace-nowrap z-30"
+          >
+            200
+          </div>
+        </div>
+        <div
+          class="text-[7px] font-bold text-[var(--sx-color-text-muted)] uppercase mt-3 rotate-45 origin-left hidden lg:block"
+        >
+          01/02
+        </div>
+      </div>
+    </div>
+    <div
+      class="border-t border-[var(--sx-color-border-base)] flex justify-between items-center opacity-40"
+      style="padding-top: calc(var(--sx-spacing-md) / 2);"
+    >
+      <span
+        class="text-3xs font-black text-[var(--sx-color-text-title)] uppercase tracking-widest"
+      >
+        Sarak Visual Metrics engine v1.0
+      </span>
+      <span
+        class="text-3xs font-bold text-[var(--sx-color-text-muted)] uppercase"
+      >
+        Performance Agnostic Layer
+      </span>
+    </div>
+  </div>
+</DocumentFragment>
+`;

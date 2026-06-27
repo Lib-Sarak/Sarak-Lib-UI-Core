@@ -1,9 +1,9 @@
 import { useState, useEffect, useCallback } from 'react';
 import api from '../../../../shared/services/api';
 
-export const useCardGridState = (endpoint: string) => {
+export const useCardGridState = <T extends Record<string, unknown>>(endpoint: string) => {
     const [state, setState] = useState({
-        data: [] as any[],
+        data: [] as T[],
         loading: true,
         error: null as string | null,
         search: '',
@@ -16,9 +16,10 @@ export const useCardGridState = (endpoint: string) => {
             const response = await api.get(endpoint);
             const rawData = response.data.items || response.data || [];
             setState(prev => ({ ...prev, data: Array.isArray(rawData) ? rawData : [], loading: false }));
-        } catch (err: any) {
+        } catch (err: unknown) {
             console.error(`[SarakCardGrid] Erro:`, err);
-            setState(prev => ({ ...prev, error: err.message || 'Erro ao carregar', loading: false }));
+            const errorMessage = err instanceof Error ? err.message : 'Erro ao carregar';
+            setState(prev => ({ ...prev, error: errorMessage, loading: false }));
         }
     }, [endpoint]);
 

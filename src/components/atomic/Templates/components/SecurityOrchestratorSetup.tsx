@@ -1,20 +1,20 @@
 import React from 'react';
-import { motion } from 'framer-motion';
+import { motion, Variants } from 'framer-motion';
 import { QrCode, Key } from 'lucide-react';
 import { SarakButton } from '../../Buttons';
 import { SarakInput } from '../../Inputs';
 import { twMerge } from 'tailwind-merge';
 
 interface SecurityOrchestratorSetupProps {
-    setupData: any;
+    setupData: Record<string, unknown> | null;
     qrSize: number;
     code: string;
     setCode: (code: string) => void;
     isValidating: boolean;
     error: string | null;
     handleEnable: () => void;
-    containerVariants: any;
-    layout: any;
+    containerVariants: Variants;
+    layout: { className: string; style: React.CSSProperties };
 }
 
 export const SecurityOrchestratorSetup: React.FC<SecurityOrchestratorSetupProps> = ({
@@ -41,7 +41,7 @@ export const SecurityOrchestratorSetup: React.FC<SecurityOrchestratorSetupProps>
             <div className="p-4 bg-white rounded-2xl shadow-xl border-4 border-[var(--sx-color-primary-base)]/20">
                 {setupData?.provisioning_uri ? (
                     <img 
-                        src={`https://api.qrserver.com/v1/create-qr-code/?size=${qrSize}x${qrSize}&data=${encodeURIComponent(setupData.provisioning_uri)}`}
+                        src={`https://api.qrserver.com/v1/create-qr-code/?size=${qrSize}x${qrSize}&data=${encodeURIComponent(String(setupData.provisioning_uri || ''))}`}
                         alt="MFA QR Code"
                         style={{ width: 'var(--sarak-qr-size, 200px)', height: 'var(--sarak-qr-size, 200px)' }}
                     />

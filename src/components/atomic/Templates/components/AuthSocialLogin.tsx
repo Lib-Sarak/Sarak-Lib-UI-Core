@@ -5,7 +5,7 @@ interface AuthSocialLoginProps {
     socialConfig?: {
         enabled: boolean;
         display: 'compact' | 'full';
-        providers: Array<{ id: string; variant: any }>;
+        providers: Array<{ id: string; variant: 'glass' | 'sovereign' }>;
     };
     onSocialLogin?: (provider: string) => void;
 }
@@ -26,7 +26,7 @@ export const AuthSocialLogin: React.FC<AuthSocialLoginProps> = ({ socialConfig, 
                 {socialConfig.providers.map((p) => (
                     <SocialButton 
                         key={p.id} 
-                        provider={p.id as any} 
+                        provider={p.id as React.ComponentProps<typeof SocialButton>['provider']} 
                         variant={p.variant} 
                         hideLabel={socialConfig.display === 'compact'}
                         onClick={() => onSocialLogin?.(p.id)} 

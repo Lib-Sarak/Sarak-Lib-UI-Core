@@ -9,9 +9,9 @@ import {
 } from 'lucide-react';
 import { useSarakStatsData } from './hooks/useSarakStatsData';
 
-interface SarakStatsProps {
+interface SarakStatsProps<TData extends Record<string, unknown>> {
     endpoint?: string;
-    data?: Record<string, any>;
+    data?: TData;
     label?: string;
     mapping?: Record<string, string>; // { key_in_json: "Label do Contador" }
     role?: 'primary' | 'secondary' | 'neutral' | 'accent';
@@ -25,8 +25,8 @@ interface SarakStatsProps {
  * Exibe contadores e métricas-chave de forma elegante, servindo como
  * um mini-dashboard dinâmico para qualquer módulo.
  */
-export const SarakStats: React.FC<SarakStatsProps> = ({ endpoint, data, label, mapping }) => {
-    const { stats, loading, error } = useSarakStatsData(endpoint, data);
+export const SarakStats = <TData extends Record<string, unknown> = Record<string, unknown>>({ endpoint, data, label, mapping }: SarakStatsProps<TData>) => {
+    const { stats, loading, error } = useSarakStatsData<TData>(endpoint, data);
 
     // Lógica de Agregação Sarak v6.5 (Se for array, resumimos)
     const renderValue = (key: string) => {
@@ -75,7 +75,7 @@ export const SarakStats: React.FC<SarakStatsProps> = ({ endpoint, data, label, m
                                 className="text-2xl font-black text-white tracking-tighter" 
                                 style={{ fontWeight: 'var(--heading-weight)' }}
                             >
-                                {renderValue(key)}
+                                {String(renderValue(key) || '')}
                             </motion.span>
                             {(() => {
                                 const levels = ['primary', 'secondary', 'accent'];

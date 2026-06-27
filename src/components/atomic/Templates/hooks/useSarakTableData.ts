@@ -1,9 +1,9 @@
 import { useState, useEffect } from 'react';
 import api from '../../../../shared/services/api';
 
-export const useSarakTableData = (endpoint: string) => {
+export const useSarakTableData = <T extends Record<string, unknown>>(endpoint: string) => {
     const [state, setState] = useState({
-        data: [] as any[],
+        data: [] as T[],
         loading: true,
         error: null as string | null,
         search: ''
@@ -28,9 +28,10 @@ export const useSarakTableData = (endpoint: string) => {
             }
             
             updateState({ data: [], loading: false });
-        } catch (err: any) {
+        } catch (err: unknown) {
             console.error(`[SarakTable] Falha ao carregar ${endpoint}:`, err);
-            updateState({ error: err.message || 'Erro ao carregar dados', loading: false });
+            const errorMessage = err instanceof Error ? err.message : 'Erro ao carregar dados';
+            updateState({ error: errorMessage, loading: false });
         }
     };
 

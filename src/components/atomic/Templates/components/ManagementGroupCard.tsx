@@ -4,11 +4,11 @@ import { twMerge } from 'tailwind-merge';
 import { Cloud, Plus, Settings2, ToggleRight, ToggleLeft, Trash2 } from 'lucide-react';
 import { SarakIconButton } from '../../Buttons';
 
-interface ManagementGroupCardProps {
+interface ManagementGroupCardProps<TItem extends Record<string, unknown>> {
     groupName: string;
-    items: any[];
+    items: TItem[];
     isConfigured: boolean;
-    containerLayout: any;
+    containerLayout: { className?: string; style?: React.CSSProperties };
     groupActions: { label: string; icon?: 'plus' | 'settings'; action: string; }[];
     mapping: {
         id: string;
@@ -21,10 +21,10 @@ interface ManagementGroupCardProps {
     handleAction: (action: string, group?: string) => void;
     handleToggle: (id: string) => void;
     handleDelete: (id: string) => void;
-    getVal: (obj: any, path: string) => any;
+    getVal: (obj: TItem, path: string) => unknown;
 }
 
-export const ManagementGroupCard: React.FC<ManagementGroupCardProps> = ({
+export const ManagementGroupCard = <TItem extends Record<string, unknown>>({
     groupName,
     items,
     isConfigured,
@@ -35,7 +35,7 @@ export const ManagementGroupCard: React.FC<ManagementGroupCardProps> = ({
     handleToggle,
     handleDelete,
     getVal
-}) => {
+}: ManagementGroupCardProps<TItem>) => {
     return (
         <motion.div
             initial={{ opacity: 0, scale: 0.95 }}
@@ -65,13 +65,13 @@ export const ManagementGroupCard: React.FC<ManagementGroupCardProps> = ({
                 </div>
             </div>
 
-            <div className={twMerge("flex-1 max-h-[340px] overflow-y-auto custom-scrollbar", containerLayout.className)} style={{ padding: 'var(--sx-spacing-md)', gap: containerLayout.style.gap }}>
+            <div className={twMerge("flex-1 max-h-[340px] overflow-y-auto custom-scrollbar", containerLayout.className)} style={{ padding: 'var(--sx-spacing-md)', gap: containerLayout.style?.gap }}>
                 {isConfigured ? (
-                    items.map((item: any) => {
-                        const itemId = getVal(item, mapping.id);
-                        const isActive = getVal(item, mapping.isActive);
-                        const status = getVal(item, mapping.status);
-                        const errorMsg = getVal(item, mapping.error || '');
+                    items.map((item: TItem) => {
+                        const itemId = String(getVal(item, mapping.id) || '');
+                        const isActive = Boolean(getVal(item, mapping.isActive));
+                        const status = String(getVal(item, mapping.status) || '');
+                        const errorMsg = String(getVal(item, mapping.error || '') || '');
                         return (
                             <div 
                                 key={itemId} 
@@ -82,9 +82,9 @@ export const ManagementGroupCard: React.FC<ManagementGroupCardProps> = ({
                             >
                                 <div className="flex justify-between items-start" style={{ marginBottom: 'calc(var(--sx-spacing-md) / 3)' }}>
                                     <div className={twMerge("truncate", containerLayout.className)} style={{ padding: 0, gap: 'calc(var(--sx-spacing-md) / 4)' }}>
-                                        <span className="text-2xs font-black uppercase tracking-widest" style={{ color: 'var(--sx-color-primary-base)' }}>{getVal(item, mapping.title)}</span>
+                                        <span className="text-2xs font-black uppercase tracking-widest" style={{ color: 'var(--sx-color-primary-base)' }}>{String(getVal(item, mapping.title) || '')}</span>
                                         <span className="text-2xs font-mono text-white/30 truncate max-w-[140px]">
-                                            {getVal(item, mapping.description || '') || '************'}
+                                            {String(getVal(item, mapping.description || '') || '') || '************'}
                                         </span>
                                     </div>
                                     <SarakIconButton 
@@ -124,7 +124,7 @@ export const ManagementGroupCard: React.FC<ManagementGroupCardProps> = ({
                         );
                     })
                 ) : (
-                    <div className={twMerge("py-12 items-center justify-center text-center opacity-20", containerLayout.className)} style={{ gap: containerLayout.style.gap, padding: 0 }}>
+                    <div className={twMerge("py-12 items-center justify-center text-center opacity-20", containerLayout.className)} style={{ gap: containerLayout.style?.gap, padding: 0 }}>
                         <Settings2 className="w-10 h-10" />
                         <p className="text-2xs font-black uppercase tracking-[0.2em]">Offline</p>
                     </div>

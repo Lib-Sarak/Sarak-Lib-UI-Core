@@ -1,16 +1,16 @@
 import { SarakMatrixManifest, MatrixNodeConfig } from '../SarakExpandableMatrix';
 
-export const resolveConfig = (node: any, level: number, manifest?: SarakMatrixManifest): MatrixNodeConfig => {
+export const resolveConfig = (node: Record<string, unknown>, level: number, manifest?: SarakMatrixManifest): MatrixNodeConfig => {
     const fallback: MatrixNodeConfig = {
         variant: level === 0 ? 'card' : 'row',
         hasToggle: true,
-        hasExpand: !!(node.children && node.children.length > 0),
+        hasExpand: !!(node.children && Array.isArray(node.children) && node.children.length > 0),
         defaultExpanded: false
     };
 
     if (!manifest) return fallback;
 
-    const typeConfig = node.type ? manifest.types?.[node.type] : undefined;
+    const typeConfig = node.type && typeof node.type === 'string' ? manifest.types?.[node.type] : undefined;
     const levelConfig = manifest.levels?.[level];
     const defaultConfig = manifest.default;
 

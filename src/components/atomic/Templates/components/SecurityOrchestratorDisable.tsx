@@ -1,5 +1,5 @@
 import React from 'react';
-import { motion } from 'framer-motion';
+import { motion, Variants } from 'framer-motion';
 import { ShieldAlert, Key } from 'lucide-react';
 import { SarakButton } from '../../Buttons';
 import { SarakInput } from '../../Inputs';
@@ -11,9 +11,9 @@ interface SecurityOrchestratorDisableProps {
     isValidating: boolean;
     error: string | null;
     handleDisable: () => void;
-    setStep: (step: any) => void;
-    containerVariants: any;
-    layout: any;
+    setStep: (step: 'STATUS' | 'SETUP' | 'DISABLE_CHALLENGE' | 'SUCCESS' | 'ERROR' | 'LOADING') => void;
+    containerVariants: Variants;
+    layout: { className: string; style: React.CSSProperties };
 }
 
 export const SecurityOrchestratorDisable: React.FC<SecurityOrchestratorDisableProps> = ({
