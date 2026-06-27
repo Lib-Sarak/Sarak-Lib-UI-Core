@@ -2824,72 +2824,6 @@ interface SarakManifestRendererProps {
 declare const SarakManifestRenderer: React__default.FC<SarakManifestRendererProps>;
 
 /**
- * Sarak Discovery Core Types (v11.0)
- */
-type VisualContractType = 'TABLE' | 'STATS' | 'CARD_GRID' | 'MANAGEMENT_GRID' | 'FORM' | 'CHAT_INTERFACE' | 'CHART' | 'FLOW_DIAGRAM' | 'ELITE_CHART' | 'ADVANCED_CHAT' | 'SECURITY_ORCHESTRATOR' | 'CATALOG_GRID' | 'CUSTOM' | 'AUTH_FLOW' | 'EXPANDABLE_MATRIX';
-interface VisualContract {
-    id: string;
-    type: VisualContractType;
-    label: string;
-    endpoint: string;
-    tab?: string;
-    mapping?: Record<string, string>;
-    filters?: any[];
-    actions?: Array<{
-        label: string;
-        endpoint: string;
-        method: 'POST' | 'PATCH' | 'DELETE';
-        icon?: string;
-    }>;
-    groupBy?: string;
-    ghostGroups?: string[];
-    headerActions?: {
-        label: string;
-        action: string;
-    }[];
-    groupActions?: {
-        label: string;
-        icon: string;
-        action: string;
-    }[];
-    formMapping?: Record<string, string>;
-    role?: 'primary' | 'secondary' | 'neutral' | 'accent';
-    density?: 'compact' | 'standard' | 'spacious';
-    importance?: 'hero' | 'base' | 'subtle';
-    component?: string;
-    config?: any;
-}
-interface ModuleManifest {
-    id: string;
-    label: string;
-    icon: string;
-    category: string;
-    version?: string;
-    priority: number;
-    endpoints?: Record<string, string>;
-    visualContracts?: VisualContract[];
-}
-interface DiscoveredModule extends ModuleManifest {
-    status: 'online' | 'offline';
-    baseUrl?: string;
-    component?: any;
-    error?: string;
-}
-
-interface DynamicRendererProps {
-    contracts: VisualContract[];
-    module?: DiscoveredModule;
-}
-/**
- * DynamicRenderer (v6.0-6.8 Smart Router)
- *
- * The UI-Core rendering engine. It receives a list of visual contracts
- * and builds the interface dynamically without prior knowledge
- * of the module's specifics.
- */
-declare const DynamicRenderer: React__default.FC<DynamicRendererProps>;
-
-/**
  * Sarak Registry (v5.5)
  *
  * Local manager for registered modules to avoid dependency on lib-shared.
@@ -2941,6 +2875,86 @@ declare const getRegisteredModules: () => SarakModule[];
 declare const getSarakModule: (id: string) => SarakModule | undefined;
 
 /**
+ * Sarak Discovery Core Types (v11.0)
+ */
+
+/** Descritor de filtro de um contrato (espelha estruturalmente o FilterConfig do CardGrid; core fica sem dependência de `components/`). */
+interface FilterDescriptor {
+    id: string;
+    label: string;
+    type: 'TABS' | 'SELECT';
+    field: string;
+    options?: {
+        label: string;
+        value: string;
+    }[];
+    dynamic?: boolean;
+}
+type VisualContractType = 'TABLE' | 'STATS' | 'CARD_GRID' | 'MANAGEMENT_GRID' | 'FORM' | 'CHAT_INTERFACE' | 'CHART' | 'FLOW_DIAGRAM' | 'ELITE_CHART' | 'ADVANCED_CHAT' | 'SECURITY_ORCHESTRATOR' | 'CATALOG_GRID' | 'CUSTOM' | 'AUTH_FLOW' | 'EXPANDABLE_MATRIX';
+interface VisualContract {
+    id: string;
+    type: VisualContractType;
+    label: string;
+    endpoint: string;
+    tab?: string;
+    mapping?: Record<string, string>;
+    filters?: FilterDescriptor[];
+    actions?: Array<{
+        label: string;
+        endpoint: string;
+        method: 'POST' | 'PATCH' | 'DELETE';
+        icon?: string;
+    }>;
+    groupBy?: string;
+    ghostGroups?: string[];
+    headerActions?: {
+        label: string;
+        action: string;
+    }[];
+    groupActions?: {
+        label: string;
+        icon: string;
+        action: string;
+    }[];
+    formMapping?: Record<string, string>;
+    role?: 'primary' | 'secondary' | 'neutral' | 'accent';
+    density?: 'compact' | 'standard' | 'spacious';
+    importance?: 'hero' | 'base' | 'subtle';
+    component?: string;
+    config?: Record<string, unknown>;
+}
+interface ModuleManifest {
+    id: string;
+    label: string;
+    icon: string;
+    category: string;
+    version?: string;
+    priority: number;
+    endpoints?: Record<string, string>;
+    visualContracts?: VisualContract[];
+}
+interface DiscoveredModule extends ModuleManifest {
+    status: 'online' | 'offline';
+    baseUrl?: string;
+    component?: SarakComponent;
+    components?: Record<string, SarakComponent>;
+    error?: string;
+}
+
+interface DynamicRendererProps {
+    contracts: VisualContract[];
+    module?: DiscoveredModule;
+}
+/**
+ * DynamicRenderer (v6.0-6.8 Smart Router)
+ *
+ * The UI-Core rendering engine. It receives a list of visual contracts
+ * and builds the interface dynamically without prior knowledge
+ * of the module's specifics.
+ */
+declare const DynamicRenderer: React__default.FC<DynamicRendererProps>;
+
+/**
  * Hook de Descoberta Passiva (v9.0 Industrial)
  *
  * Este hook não realiza mais escaneamento proativo (Active Polling).
@@ -2969,4 +2983,4 @@ interface SarakRouterState {
  */
 declare function useSarakRouter(basePath?: string): SarakRouterState;
 
-export { ACTION_HANDLERS, type Accept, type ActionHandler, type ActionList, type AriaDirective, type BadgeSize, type BadgeVariant, type BindingExpression, type CardMove, type ComponentRegistry, type ComponentResolution, type ComponentType, type ConditionExpression, ConditionSyntaxError, type ContextMenuPosition, CustomizationPanel, DEFAULT_COLUMN_WIDTH, DESIGN_MANIFEST, DIRECTIVE_OWNERS, type DataNodeState, type DataSourceController, type DataSourceDirective, type DataSourceMethod, type DataSourceStates, type DatePickerValue, DesignScope, DeviceProvider, type DeviceType, type DirectiveName, type DiscoveredModule, type DispatchContext, DynamicRenderer, ExpandableCard, type ExpandedNode, FORM_META_KEY, type FileRejection, type FormModelDirective, type FormResetTrigger, type FormScope, FormScopeContext, type FormScopeDirective, type FormStore, IconMap, type IconName, type KanbanCard, type KanbanColumn, LanguageSelector, type LightboxImage, MIN_COLUMN_WIDTH, type ManifestAction, type ManifestComponent, type ManifestComponentProps, type ManifestNode, type ManifestProps, type ManifestRoot, type ManifestValidationError, type ManifestValidationResult, type ManifestValue, type MatrixNodeConfig, type MatrixTreeNode, type ModalLayoutContext, type ModuleManifest, ModuleSelector, type MultiSelectOption, NATIVE_COMPONENTS, type NativeComponentType, type NavigateFn, type NetworkInterceptor, type NetworkRequest, type NodeParts, type OverlayController, type OverlayRequest, type PersistDirective, type Pipe, RESERVED_DIRECTIVES, type RangeValue, type RenderForDirective, type RenderForResult, type ResponsiveDirective, type RouteMap, type RouteTarget, STORAGE_NAMESPACE, STRUCTURAL_KEYS, SUPPORTED_SCHEMA_VERSION, SarakAnalyticalPage, type SarakAnalyticalPageProps, SarakAuthScreen, type SarakAuthScreenProps, SarakBadge, type SarakBadgeProps, SarakCardGrid, SarakCatalogGrid, SarakChart, SarakChartEngine, SarakChat, type SarakColumn, type SarakComponent, type SarakComponentProps, SarakContextMenu, type SarakContextMenuProps, SarakDataEmpty, type SarakDataEmptyProps, SarakDataGrid, SarakDataGridImpl, type SarakDataGridProps, type SarakDataStore, SarakDataTable, SarakDataTableImpl, type SarakDataTableProps, SarakDatePicker, type SarakDatePickerProps, SarakDrawer, type SarakDrawerProps, SarakEmptyState, SarakErrorBoundary, type SarakErrorBoundaryProps, SarakExpandableMatrix, type SarakExpandableMatrixProps, SarakFallback, type SarakFallbackProps, SarakForm, SarakHidden, SarakIcon, type SarakIconProps, SarakKanbanImpl as SarakKanban, type SarakKanbanProps, SarakLightbox, type SarakLightboxProps, SarakManagementGrid, SarakManifestRenderer, SarakManifestRenderer as SarakManifestRendererDefault, type SarakManifestRendererProps, SarakMarkdownRenderer, type SarakMarkdownRendererProps, type SarakMatrixManifest, SarakModal, type SarakModalProps, type SarakModule, SarakMultiSelect, type SarakMultiSelectProps, type SarakOverlayController, SarakOverlayProvider, type SarakOverlayRequest, SarakPDFViewer, type SarakPDFViewerProps, SarakRangeSlider, type SarakRangeSliderProps, SarakRichText, type SarakRichTextProps, type SarakRouterState, SarakSecurityOrchestrator, SarakShell, SarakSkeleton, type SarakSkeletonProps, SarakSparkline, type SarakSparklineProps, SarakStats, type SarakTabItem, SarakTable, SarakTabs, type SarakTabsProps$1 as SarakTabsProps, SarakTimePicker, type SarakTimePickerProps, SarakToastProvider, SarakTooltip, type SarakTooltipProps, SarakTreeView, type SarakTreeViewProps, SarakUIProvider, SarakUploader, type SarakUploaderProps, type Selector, type ShellDirective, type SkeletonShape, type SlotMap, SocialButton, type SparklineVariant, type StateRecord, SubmitBlockedError, type ThemeDirective, ThemeToggle, type ToastController, type ToastOptions, type ToastVariant, type TooltipPosition, UserMenu, VIRTUALIZE_THRESHOLD, type ValidationError, type ValidationRule, type ValidationRuleName, type ValidationSchema, type ValidationTypeName, type VisualContract, type VisualContractType, coerceEventValue, computeOffsets, createComponentRegistry, createFormScope, createSarakDataStore, debounce, defaultComponentRegistry, evaluateCondition, expandRenderFor, firstErrorMessage, getByPath, getLocalComponent, getPipe, getRegisteredModules, getSarakModule, hasPipe, interpolate, interpolateProps, isReservedDirective, isStructuralKey, moveCard, namespacedKey, readPersisted, registerComponent, registerLocalComponent, registerPipe, registerSarakModule, removePersisted, reorder, resolveBinding, resolveComponent, resolveExpression, resolveModelValue, resolveScopedPath, runActions, sanitizeRichText, separateNodeParts, setByPath, subscribeStorage, subscribeToRegistry, throttle, useDataSource, useDesignDraft, useFormScope, useModalLayoutStyles, useModuleDiscovery, useOverlay, usePersistedSlice, useSarakDevice, useSarakRouter, useSarakUI, useToast, validateManifestNode, validateManifestRoot, validateValue, widthOf, writePersisted };
+export { ACTION_HANDLERS, type Accept, type ActionHandler, type ActionList, type AriaDirective, type BadgeSize, type BadgeVariant, type BindingExpression, type CardMove, type ComponentRegistry, type ComponentResolution, type ComponentType, type ConditionExpression, ConditionSyntaxError, type ContextMenuPosition, CustomizationPanel, DEFAULT_COLUMN_WIDTH, DESIGN_MANIFEST, DIRECTIVE_OWNERS, type DataNodeState, type DataSourceController, type DataSourceDirective, type DataSourceMethod, type DataSourceStates, type DatePickerValue, DesignScope, DeviceProvider, type DeviceType, type DirectiveName, type DiscoveredModule, type DispatchContext, DynamicRenderer, ExpandableCard, type ExpandedNode, FORM_META_KEY, type FileRejection, type FilterDescriptor, type FormModelDirective, type FormResetTrigger, type FormScope, FormScopeContext, type FormScopeDirective, type FormStore, IconMap, type IconName, type KanbanCard, type KanbanColumn, LanguageSelector, type LightboxImage, MIN_COLUMN_WIDTH, type ManifestAction, type ManifestComponent, type ManifestComponentProps, type ManifestNode, type ManifestProps, type ManifestRoot, type ManifestValidationError, type ManifestValidationResult, type ManifestValue, type MatrixNodeConfig, type MatrixTreeNode, type ModalLayoutContext, type ModuleManifest, ModuleSelector, type MultiSelectOption, NATIVE_COMPONENTS, type NativeComponentType, type NavigateFn, type NetworkInterceptor, type NetworkRequest, type NodeParts, type OverlayController, type OverlayRequest, type PersistDirective, type Pipe, RESERVED_DIRECTIVES, type RangeValue, type RenderForDirective, type RenderForResult, type ResponsiveDirective, type RouteMap, type RouteTarget, STORAGE_NAMESPACE, STRUCTURAL_KEYS, SUPPORTED_SCHEMA_VERSION, SarakAnalyticalPage, type SarakAnalyticalPageProps, SarakAuthScreen, type SarakAuthScreenProps, SarakBadge, type SarakBadgeProps, SarakCardGrid, SarakCatalogGrid, SarakChart, SarakChartEngine, SarakChat, type SarakColumn, type SarakComponent, type SarakComponentProps, SarakContextMenu, type SarakContextMenuProps, SarakDataEmpty, type SarakDataEmptyProps, SarakDataGrid, SarakDataGridImpl, type SarakDataGridProps, type SarakDataStore, SarakDataTable, SarakDataTableImpl, type SarakDataTableProps, SarakDatePicker, type SarakDatePickerProps, SarakDrawer, type SarakDrawerProps, SarakEmptyState, SarakErrorBoundary, type SarakErrorBoundaryProps, SarakExpandableMatrix, type SarakExpandableMatrixProps, SarakFallback, type SarakFallbackProps, SarakForm, SarakHidden, SarakIcon, type SarakIconProps, SarakKanbanImpl as SarakKanban, type SarakKanbanProps, SarakLightbox, type SarakLightboxProps, SarakManagementGrid, SarakManifestRenderer, SarakManifestRenderer as SarakManifestRendererDefault, type SarakManifestRendererProps, SarakMarkdownRenderer, type SarakMarkdownRendererProps, type SarakMatrixManifest, SarakModal, type SarakModalProps, type SarakModule, SarakMultiSelect, type SarakMultiSelectProps, type SarakOverlayController, SarakOverlayProvider, type SarakOverlayRequest, SarakPDFViewer, type SarakPDFViewerProps, SarakRangeSlider, type SarakRangeSliderProps, SarakRichText, type SarakRichTextProps, type SarakRouterState, SarakSecurityOrchestrator, SarakShell, SarakSkeleton, type SarakSkeletonProps, SarakSparkline, type SarakSparklineProps, SarakStats, type SarakTabItem, SarakTable, SarakTabs, type SarakTabsProps$1 as SarakTabsProps, SarakTimePicker, type SarakTimePickerProps, SarakToastProvider, SarakTooltip, type SarakTooltipProps, SarakTreeView, type SarakTreeViewProps, SarakUIProvider, SarakUploader, type SarakUploaderProps, type Selector, type ShellDirective, type SkeletonShape, type SlotMap, SocialButton, type SparklineVariant, type StateRecord, SubmitBlockedError, type ThemeDirective, ThemeToggle, type ToastController, type ToastOptions, type ToastVariant, type TooltipPosition, UserMenu, VIRTUALIZE_THRESHOLD, type ValidationError, type ValidationRule, type ValidationRuleName, type ValidationSchema, type ValidationTypeName, type VisualContract, type VisualContractType, coerceEventValue, computeOffsets, createComponentRegistry, createFormScope, createSarakDataStore, debounce, defaultComponentRegistry, evaluateCondition, expandRenderFor, firstErrorMessage, getByPath, getLocalComponent, getPipe, getRegisteredModules, getSarakModule, hasPipe, interpolate, interpolateProps, isReservedDirective, isStructuralKey, moveCard, namespacedKey, readPersisted, registerComponent, registerLocalComponent, registerPipe, registerSarakModule, removePersisted, reorder, resolveBinding, resolveComponent, resolveExpression, resolveModelValue, resolveScopedPath, runActions, sanitizeRichText, separateNodeParts, setByPath, subscribeStorage, subscribeToRegistry, throttle, useDataSource, useDesignDraft, useFormScope, useModalLayoutStyles, useModuleDiscovery, useOverlay, usePersistedSlice, useSarakDevice, useSarakRouter, useSarakUI, useToast, validateManifestNode, validateManifestRoot, validateValue, widthOf, writePersisted };

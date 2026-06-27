@@ -69,7 +69,14 @@ const header = [
     '',
 ].join('\n');
 
-const interfaceLines = sortedTokens.map((t) => `    ${propKey(t.id)}: ${tsType(t)};`);
+// Saída compacta (vários membros por linha) para manter o arquivo gerado enxuto
+// (Clean Code: evita "arquivo gigantesco"). Continua TS válido.
+const PER_LINE = 4;
+const members = sortedTokens.map((t) => `${propKey(t.id)}: ${tsType(t)};`);
+const interfaceLines: string[] = [];
+for (let i = 0; i < members.length; i += PER_LINE) {
+    interfaceLines.push('    ' + members.slice(i, i + PER_LINE).join(' '));
+}
 const interfaceType = `export interface SarakDesignTokens {\n${interfaceLines.join('\n')}\n}\n\n`;
 const idType = 'export type DesignTokenId = keyof SarakDesignTokens;\n';
 
