@@ -14,7 +14,7 @@ interface Message {
     timestamp: Date;
 }
 
-interface SarakChatEngineProps {
+export interface SarakChatEngineProps {
     messages: Message[];
     onSendMessage: (text: string) => void;
     isLoading?: boolean;
@@ -136,14 +136,14 @@ const SarakChatEngine: React.FC<SarakChatEngineProps> = ({
                                         <ReactMarkdown 
                                             className="prose prose-invert prose-sm max-w-none text-xs leading-relaxed"
                                             components={{
-                                                code({node, inline, className, children, ...props}: any) {
+                                                code({ node, inline, className, children, ...props }: React.ComponentPropsWithoutRef<'code'> & { node?: unknown; inline?: boolean }) {
                                                     const match = /language-(\w+)/.exec(className || '');
                                                     return !inline && match ? (
                                                         <SyntaxHighlighter
-                                                            style={atomDark}
                                                             language={match[1]}
                                                             PreTag="div"
                                                             {...props}
+                                                            style={atomDark as { [key: string]: React.CSSProperties }}
                                                         >
                                                             {String(children).replace(/\n$/, '')}
                                                         </SyntaxHighlighter>

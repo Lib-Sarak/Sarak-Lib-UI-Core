@@ -1,15 +1,18 @@
 import React from 'react';
-import ReactFlow, { 
-    Background, Controls, MiniMap, 
-    BackgroundVariant, Panel 
+import ReactFlow, {
+    Background, Controls, MiniMap,
+    BackgroundVariant, Panel
 } from 'reactflow';
 import 'reactflow/dist/style.css';
 import { useSarakUI } from '../../../core/Provider/SarakUIProvider';
 
-interface SarakFlowEngineProps {
-    nodes: any[];
-    edges: any[];
-    onConnect?: (params: any) => void;
+// Deriva os contratos diretamente do componente ReactFlow (fonte única).
+type ReactFlowProps = React.ComponentProps<typeof ReactFlow>;
+
+export interface SarakFlowEngineProps {
+    nodes: NonNullable<ReactFlowProps['nodes']>;
+    edges: NonNullable<ReactFlowProps['edges']>;
+    onConnect?: ReactFlowProps['onConnect'];
 }
 
 /**

@@ -2,7 +2,7 @@
 tipo: "plano-mestre"
 titulo: "Plano Mestre — Erradicação de `any` (Campanha de Adequação)"
 dominio: "Sarak-Lib-UI-Core (Adequação)"
-status: "🟡 Em Andamento (484 → 307; núcleo quase fechado + Spec 62 charts builders ALTO RISCO OK)"
+status: "🟡 Em Andamento (484 → 294; núcleo quase fechado + Spec 62 engines/ 100% limpo)"
 prioridade: "Média"
 tags: ["spec", "plano-mestre", "any", "adequacao", "type-safety", "campanha"]
 relacionados: ["00-indice-plano-expansao", "50-finalizacao-adequacao-e-entrega", "61-erradicacao-any-nucleo", "62-erradicacao-any-componentes", "63-erradicacao-any-design-engine", "64-erradicacao-any-constantes-e-fechamento", "65-foundation-design-state"]
@@ -27,8 +27,8 @@ Snapshot da varredura `node .agents/skills/ui-auditoria-modulo/scripts/auditor_t
 > Hotspot único a vigiar: `src/core/Discovery/components/ContractRenderer.tsx` concentra **39** ocorrências sozinho (cabe na Spec 61, mas é tarefa de **alto risco** — ver §4).
 
 ## 2.1 Estado da campanha
-**484 → 307** (−177). Concluído e verde:
-- **Spec 62 charts builders** (−53, ALTO RISCO): `basic/statistical/advancedCharts` tipados via `builders/types.ts` + rede de caracterização (14 snapshots idênticos). Ver Spec 62 §2.1.
+**484 → 294** (−190). Concluído e verde:
+- **Spec 62 `engines/` 100% limpo** (−66): charts builders ALTO RISCO (−53, via `builders/types.ts` + 14 snapshots de caracterização idênticos) + resto de engines (−13: barrel `index.ts`, Flow/Visual/Chat/Palette/Chart). Ver Spec 62 §2.1.
 - Spec 61 parte autônoma (−30; ver Spec 61 §1.1).
 - **Spec 65 Fundação** (gerador tipado `SarakDesignTokens` + `SarakDesignState`; cascade mínimo, 3 casts mortos) + **Fase 2 fonte do design-state** (`validation`/`useDesignManager`/`useDesignSync`/`useDesignRemoteLoader`) + **Fase 3** (Shell inteiro, DesignInjector).
 - **Discovery alto risco**: `ContractRenderer` (39) + `types.ts` (3).

@@ -1,9 +1,10 @@
 import React from 'react';
 import { motion } from 'framer-motion';
+import type { SarakThemePayload } from '../../../core/Provider/types';
 
-interface SarakVisualEngineProps {
+export interface SarakVisualEngineProps {
     type: 'globe' | 'mesh' | 'topology' | 'map-density' | 'point-cloud' | 'hologram' | 'motor-twin' | 'factory-floor' | 'pump-system';
-    tokens: any;
+    tokens: SarakThemePayload;
 }
 
 const SarakVisualEngine: React.FC<SarakVisualEngineProps> = ({ type, tokens }) => {

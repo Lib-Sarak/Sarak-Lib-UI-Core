@@ -2,7 +2,7 @@
 tipo: "spec"
 titulo: "Erradicação de `any` — Componentes (`src/components/`)"
 dominio: "Sarak-Lib-UI-Core (Adequação)"
-status: "🟡 Em Andamento (charts builders ALTO RISCO feitos −53; restam atomic/Templates + Cards/Inputs + engines resto)"
+status: "🟡 Em Andamento (engines/ 100% limpo −66; restam atomic/Templates ~89 + atomic Cards/Inputs/Icon ~24)"
 prioridade: "Média"
 tags: ["spec", "any", "adequacao", "components", "engines", "type-safety"]
 relacionados: ["60-erradicacao-any-plano-mestre", "61-erradicacao-any-nucleo", "63-erradicacao-any-design-engine"]
@@ -17,8 +17,12 @@ Fatia **2** da campanha (Spec 60): quita o `any` em **`src/components/**`** — 
 - ✅ **`charts/SubEngines/builders/advancedCharts.ts` — 24** *(ALTO RISCO; caracterizado + tipado)*
 - ✅ **`charts/SubEngines/builders/statisticalCharts.ts` — 17** *(ALTO RISCO; caracterizado + tipado)*
 - ✅ **`charts/SubEngines/builders/basicCharts.ts` — 12** *(caracterizado + tipado)*
-- 🔲 `index.ts` — 5 · 🔲 `flows/SarakFlowEngine.tsx` — 3 · 🔲 `visuals/PaletteSelector.tsx` — 2
-- 🔲 `visuals/SarakVisualEngine.tsx` — 1 · 🔲 `chat/SarakChatEngine.tsx` — 1 · 🔲 `charts/SarakChartEngine.tsx` — 1
+- ✅ `index.ts` — 5 *(casts mortos `ComponentType<any>` removidos; barrel não consumido internamente; `lazy` infere o tipo real → exigiu `export` das 4 interfaces `*Props`)*
+- ✅ `flows/SarakFlowEngine.tsx` — 3 *(`nodes`/`edges`/`onConnect` derivados de `React.ComponentProps<typeof ReactFlow>` — `Edge`/`Connection` são namespaces no reactflow)*
+- ✅ `visuals/PaletteSelector.tsx` — 2 *(interface `ColorPalette` própria)* · ✅ `visuals/SarakVisualEngine.tsx` — 1 *(`tokens: SarakThemePayload`)*
+- ✅ `chat/SarakChatEngine.tsx` — 1 *(code renderer `ComponentPropsWithoutRef<'code'> & {node?,inline?}`; `style` reordenado após `{...props}` + cast do `atomDark`)* · ✅ `charts/SarakChartEngine.tsx` — 1 *(`data: ChartDataItem[]`)*
+
+> ✅ **`components/engines/` 100% limpo (−66 no total da pasta).**
 
 > ✅ **Builders de charts feitos (−53):** novo `builders/types.ts` (`ChartTheme = ReturnType<typeof useEChartsTheme>` [fonte única], `ChartDataItem = Record<string,unknown>` [dataset externo], `ChartBuilderConfig` [subset lido], `ChartOptionFragment = Record<string,unknown>` [fragmento p/ echarts-for-react]). Rede de caracterização: `builders/__tests__/builders.characterization.test.ts` (14 snapshots da saída ATUAL) — **idênticos após o refactor**. Sem cascade no consumer (`typeSpecificConfig` é `{}`-tipado). Único toque de corpo: candlestick `item.v as number` (minus já coage via ToNumber → zero mudança runtime) e callback `symbolSize(value: number[])`.
 

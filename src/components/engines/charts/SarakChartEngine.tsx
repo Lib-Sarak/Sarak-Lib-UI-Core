@@ -6,10 +6,11 @@ import {
 } from 'recharts';
 import { useEChartsTheme } from './SubEngines/useEChartsTheme';
 import * as builders from './SubEngines/optionBuilders';
+import type { ChartDataItem } from './SubEngines/builders/types';
 
-interface SarakChartEngineProps {
+export interface SarakChartEngineProps {
     type: 'line' | 'area' | 'bar' | 'pie' | 'radar' | 'gauge' | 'scatter' | 'heatmap' | 'funnel' | 'treemap' | 'candlestick' | 'sunburst' | 'histogram' | 'boxplot';
-    data: any[];
+    data: ChartDataItem[];
     config?: {
         xAxisKey?: string;
         dataKey?: string;

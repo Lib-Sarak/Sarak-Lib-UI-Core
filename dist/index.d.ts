@@ -1682,9 +1682,12 @@ interface SarakPDFViewerProps {
 
 declare const SarakPDFViewer: React$1.LazyExoticComponent<React$1.FC<SarakPDFViewerProps>>;
 
+/** Item de dado de série: dataset externo, lido por chave dinâmica. */
+type ChartDataItem = Record<string, unknown>;
+
 interface SarakChartEngineProps {
     type: 'line' | 'area' | 'bar' | 'pie' | 'radar' | 'gauge' | 'scatter' | 'heatmap' | 'funnel' | 'treemap' | 'candlestick' | 'sunburst' | 'histogram' | 'boxplot';
-    data: any[];
+    data: ChartDataItem[];
     config?: {
         xAxisKey?: string;
         dataKey?: string;
