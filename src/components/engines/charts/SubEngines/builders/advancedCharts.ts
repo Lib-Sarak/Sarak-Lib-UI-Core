@@ -1,6 +1,7 @@
 import * as echarts from 'echarts';
+import type { ChartDataItem, ChartBuilderConfig, ChartTheme, ChartOptionFragment } from './types';
 
-export const buildRadarConfig = (data: any[], config: any, theme: any): any => ({
+export const buildRadarConfig = (data: ChartDataItem[], config: ChartBuilderConfig | undefined, theme: ChartTheme): ChartOptionFragment => ({
     radar: {
         indicator: data.map(item => ({ name: item[config?.xAxisKey || 'name'], max: 1000 })),
         splitArea: { show: false },
@@ -24,7 +25,7 @@ export const buildRadarConfig = (data: any[], config: any, theme: any): any => (
     }]
 });
 
-export const buildGaugeSeries = (data: any[], config: any, theme: any): any => ({
+export const buildGaugeSeries = (data: ChartDataItem[], config: ChartBuilderConfig | undefined, theme: ChartTheme): ChartOptionFragment => ({
     series: [{
         type: 'gauge',
         startAngle: 210,
@@ -59,7 +60,7 @@ export const buildGaugeSeries = (data: any[], config: any, theme: any): any => (
     }]
 });
 
-export const buildHeatmapSeries = (data: any[], config: any, theme: any): any => ({
+export const buildHeatmapSeries = (data: ChartDataItem[], config: ChartBuilderConfig | undefined, theme: ChartTheme): ChartOptionFragment => ({
     visualMap: {
         min: 0,
         max: 1000,
@@ -83,7 +84,7 @@ export const buildHeatmapSeries = (data: any[], config: any, theme: any): any =>
     }]
 });
 
-export const buildFunnelSeries = (data: any[], config: any, theme: any): any => ({
+export const buildFunnelSeries = (data: ChartDataItem[], config: ChartBuilderConfig | undefined, theme: ChartTheme): ChartOptionFragment => ({
     series: [{
         name: 'Funnel',
         type: 'funnel',
@@ -104,7 +105,7 @@ export const buildFunnelSeries = (data: any[], config: any, theme: any): any => 
     }]
 });
 
-export const buildTreeMapSeries = (data: any[], config: any, theme: any): any => ({
+export const buildTreeMapSeries = (data: ChartDataItem[], config: ChartBuilderConfig | undefined, theme: ChartTheme): ChartOptionFragment => ({
     series: [{
         name: 'TreeMap',
         type: 'treemap',
@@ -116,7 +117,7 @@ export const buildTreeMapSeries = (data: any[], config: any, theme: any): any =>
     }]
 });
 
-export const buildSunburstSeries = (data: any[], config: any, theme: any): any => ({
+export const buildSunburstSeries = (data: ChartDataItem[], config: ChartBuilderConfig | undefined, theme: ChartTheme): ChartOptionFragment => ({
     series: [{
         type: 'sunburst',
         data: [

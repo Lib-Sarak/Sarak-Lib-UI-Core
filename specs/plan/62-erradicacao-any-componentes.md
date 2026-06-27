@@ -2,7 +2,7 @@
 tipo: "spec"
 titulo: "Erradicação de `any` — Componentes (`src/components/`)"
 dominio: "Sarak-Lib-UI-Core (Adequação)"
-status: "🔴 A Implementar"
+status: "🟡 Em Andamento (charts builders ALTO RISCO feitos −53; restam atomic/Templates + Cards/Inputs + engines resto)"
 prioridade: "Média"
 tags: ["spec", "any", "adequacao", "components", "engines", "type-safety"]
 relacionados: ["60-erradicacao-any-plano-mestre", "61-erradicacao-any-nucleo", "63-erradicacao-any-design-engine"]
@@ -14,13 +14,13 @@ Fatia **2** da campanha (Spec 60): quita o `any` em **`src/components/**`** — 
 # 2. Escopo e Hotspots (laudo)
 
 ## 2.1 `components/engines/` (~66) — concentrado nos builders de charts
-- **`charts/SubEngines/builders/advancedCharts.ts` — 24** ⚠️ **ALTO RISCO**
-- **`charts/SubEngines/builders/statisticalCharts.ts` — 17** ⚠️ **ALTO RISCO**
-- **`charts/SubEngines/builders/basicCharts.ts` — 12** ⚠️ (risco médio-alto)
-- `index.ts` — 5 · `flows/SarakFlowEngine.tsx` — 3 · `visuals/PaletteSelector.tsx` — 2
-- `visuals/SarakVisualEngine.tsx` — 1 · `chat/SarakChatEngine.tsx` — 1 · `charts/SarakChartEngine.tsx` — 1
+- ✅ **`charts/SubEngines/builders/advancedCharts.ts` — 24** *(ALTO RISCO; caracterizado + tipado)*
+- ✅ **`charts/SubEngines/builders/statisticalCharts.ts` — 17** *(ALTO RISCO; caracterizado + tipado)*
+- ✅ **`charts/SubEngines/builders/basicCharts.ts` — 12** *(caracterizado + tipado)*
+- 🔲 `index.ts` — 5 · 🔲 `flows/SarakFlowEngine.tsx` — 3 · 🔲 `visuals/PaletteSelector.tsx` — 2
+- 🔲 `visuals/SarakVisualEngine.tsx` — 1 · 🔲 `chat/SarakChatEngine.tsx` — 1 · 🔲 `charts/SarakChartEngine.tsx` — 1
 
-> Os builders de charts são o miolo de risco desta fatia: tipam a forma de dado de série/config dos gráficos. Caracterização forte antes de tocar (a saída visual precisa ser idêntica).
+> ✅ **Builders de charts feitos (−53):** novo `builders/types.ts` (`ChartTheme = ReturnType<typeof useEChartsTheme>` [fonte única], `ChartDataItem = Record<string,unknown>` [dataset externo], `ChartBuilderConfig` [subset lido], `ChartOptionFragment = Record<string,unknown>` [fragmento p/ echarts-for-react]). Rede de caracterização: `builders/__tests__/builders.characterization.test.ts` (14 snapshots da saída ATUAL) — **idênticos após o refactor**. Sem cascade no consumer (`typeSpecificConfig` é `{}`-tipado). Único toque de corpo: candlestick `item.v as number` (minus já coage via ToNumber → zero mudança runtime) e callback `symbolSize(value: number[])`.
 
 ## 2.2 `components/atomic/Templates/` (~89) — a maior superfície atômica
 - `hooks/useFormData.ts` — 11 ⚠️ · `SarakExpandableMatrix.tsx` — 10 ⚠️

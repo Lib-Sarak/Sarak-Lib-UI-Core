@@ -1,0 +1,714 @@
+// Vitest Snapshot v1, https://vitest.dev/guide/snapshot.html
+
+exports[`chart builders — caracterização da saída > advancedCharts.buildFunnelSeries 1`] = `
+{
+  "series": [
+    {
+      "bottom": 60,
+      "data": [
+        {
+          "name": "A",
+          "value": 10,
+        },
+        {
+          "name": "B",
+          "value": 20,
+        },
+        {
+          "name": "C",
+          "value": 30,
+        },
+      ],
+      "emphasis": {
+        "label": {
+          "fontSize": 20,
+        },
+      },
+      "gap": 2,
+      "itemStyle": {
+        "borderColor": "#fff",
+        "borderWidth": 1,
+        "opacity": 0.7,
+      },
+      "label": {
+        "fontFamily": "Inter",
+        "fontSize": 10,
+        "position": "inside",
+        "show": true,
+      },
+      "left": "10%",
+      "max": 1000,
+      "maxSize": "100%",
+      "min": 0,
+      "minSize": "0%",
+      "name": "Funnel",
+      "sort": "descending",
+      "top": 60,
+      "type": "funnel",
+      "width": "80%",
+    },
+  ],
+}
+`;
+
+exports[`chart builders — caracterização da saída > advancedCharts.buildGaugeSeries 1`] = `
+{
+  "series": [
+    {
+      "axisLabel": {
+        "show": false,
+      },
+      "axisLine": {
+        "lineStyle": {
+          "color": [
+            [
+              1,
+              "rgba(255,255,255,0.05)",
+            ],
+          ],
+          "width": 14,
+        },
+      },
+      "axisTick": {
+        "show": false,
+      },
+      "data": [
+        {
+          "value": 30,
+        },
+      ],
+      "detail": {
+        "color": "#fff",
+        "fontFamily": "Inter",
+        "fontSize": 28,
+        "fontWeight": "900",
+        "formatter": "{value}%",
+        "offsetCenter": [
+          0,
+          0,
+        ],
+        "valueAnimation": true,
+      },
+      "endAngle": -30,
+      "max": 100,
+      "min": 0,
+      "pointer": {
+        "show": false,
+      },
+      "progress": {
+        "itemStyle": {
+          "color": LinearGradient {
+            "colorStops": [
+              {
+                "color": "#3b82f6",
+                "offset": 0,
+              },
+              {
+                "color": "#8b5cf6",
+                "offset": 1,
+              },
+            ],
+            "global": false,
+            "type": "linear",
+            "x": 0,
+            "x2": 1,
+            "y": 0,
+            "y2": 0,
+          },
+        },
+        "show": true,
+        "width": 14,
+      },
+      "splitLine": {
+        "show": false,
+      },
+      "startAngle": 210,
+      "type": "gauge",
+    },
+  ],
+}
+`;
+
+exports[`chart builders — caracterização da saída > advancedCharts.buildHeatmapSeries 1`] = `
+{
+  "series": [
+    {
+      "data": [
+        [
+          0,
+          0,
+          10,
+        ],
+        [
+          1,
+          0,
+          20,
+        ],
+        [
+          2,
+          0,
+          30,
+        ],
+      ],
+      "emphasis": {
+        "itemStyle": {
+          "shadowBlur": 10,
+          "shadowColor": "rgba(0, 0, 0, 0.5)",
+        },
+      },
+      "label": {
+        "show": false,
+      },
+      "type": "heatmap",
+    },
+  ],
+  "visualMap": {
+    "bottom": "0%",
+    "calculable": true,
+    "inRange": {
+      "color": [
+        "rgba(59, 130, 246, 0.1)",
+        "#3b82f6",
+        "#ef4444",
+      ],
+    },
+    "left": "center",
+    "max": 1000,
+    "min": 0,
+    "orient": "horizontal",
+    "show": false,
+  },
+}
+`;
+
+exports[`chart builders — caracterização da saída > advancedCharts.buildRadarConfig 1`] = `
+{
+  "radar": {
+    "axisLine": {
+      "lineStyle": {
+        "color": "rgba(255,255,255,0.05)",
+      },
+    },
+    "indicator": [
+      {
+        "max": 1000,
+        "name": "A",
+      },
+      {
+        "max": 1000,
+        "name": "B",
+      },
+      {
+        "max": 1000,
+        "name": "C",
+      },
+    ],
+    "splitArea": {
+      "show": false,
+    },
+    "splitLine": {
+      "lineStyle": {
+        "color": "rgba(255,255,255,0.05)",
+      },
+    },
+  },
+  "series": [
+    {
+      "data": [
+        {
+          "areaStyle": {
+            "color": RadialGradient {
+              "colorStops": [
+                {
+                  "color": "rgba(59, 130, 246, 0.6)",
+                  "offset": 0,
+                },
+                {
+                  "color": "rgba(139, 92, 246, 0.2)",
+                  "offset": 1,
+                },
+              ],
+              "global": false,
+              "r": 1,
+              "type": "radial",
+              "x": 0.5,
+              "y": 0.5,
+            },
+          },
+          "lineStyle": {
+            "color": "#3b82f6",
+            "width": 2,
+          },
+          "name": "Métrica Sarak",
+          "symbol": "none",
+          "value": [
+            10,
+            20,
+            30,
+          ],
+        },
+      ],
+      "type": "radar",
+    },
+  ],
+}
+`;
+
+exports[`chart builders — caracterização da saída > advancedCharts.buildSunburstSeries 1`] = `
+{
+  "series": [
+    {
+      "data": [
+        {
+          "children": [
+            {
+              "name": "A1",
+              "value": 10,
+            },
+            {
+              "name": "A2",
+              "value": 20,
+            },
+          ],
+          "name": "Node A",
+        },
+        {
+          "children": [
+            {
+              "name": "B1",
+              "value": 15,
+            },
+            {
+              "name": "B2",
+              "value": 25,
+            },
+          ],
+          "name": "Node B",
+        },
+      ],
+      "label": {
+        "fontFamily": "Inter",
+        "fontSize": 8,
+        "rotate": "radial",
+      },
+      "radius": [
+        0,
+        "90%",
+      ],
+      "type": "sunburst",
+    },
+  ],
+}
+`;
+
+exports[`chart builders — caracterização da saída > advancedCharts.buildTreeMapSeries 1`] = `
+{
+  "series": [
+    {
+      "data": [
+        {
+          "name": "A",
+          "value": 10,
+        },
+        {
+          "name": "B",
+          "value": 20,
+        },
+        {
+          "name": "C",
+          "value": 30,
+        },
+      ],
+      "itemStyle": {
+        "borderColor": "#fff",
+        "borderWidth": 1,
+        "gapWidth": 1,
+      },
+      "label": {
+        "fontFamily": "Inter",
+        "fontSize": 10,
+        "formatter": "{b}",
+        "show": true,
+      },
+      "name": "TreeMap",
+      "type": "treemap",
+      "upperLabel": {
+        "height": 20,
+        "show": true,
+      },
+      "visibleMin": 300,
+    },
+  ],
+}
+`;
+
+exports[`chart builders — caracterização da saída > basicCharts.buildBarSeries 1`] = `
+{
+  "series": [
+    {
+      "barWidth": "40%",
+      "data": [
+        10,
+        20,
+        30,
+      ],
+      "emphasis": {
+        "itemStyle": {
+          "color": LinearGradient {
+            "colorStops": [
+              {
+                "color": "#fff",
+                "offset": 0,
+              },
+              {
+                "color": "#3b82f6",
+                "offset": 1,
+              },
+            ],
+            "global": false,
+            "type": "linear",
+            "x": 0,
+            "x2": 0,
+            "y": 0,
+            "y2": 1,
+          },
+          "shadowBlur": 20,
+          "shadowColor": "rgba(59, 130, 246, 0.4)",
+        },
+      },
+      "itemStyle": {
+        "borderRadius": [
+          10,
+          10,
+          2,
+          2,
+        ],
+        "color": LinearGradient {
+          "colorStops": [
+            {
+              "color": "#3b82f6",
+              "offset": 0,
+            },
+            {
+              "color": "rgba(59, 130, 246, 0.1)",
+              "offset": 1,
+            },
+          ],
+          "global": false,
+          "type": "linear",
+          "x": 0,
+          "x2": 0,
+          "y": 0,
+          "y2": 1,
+        },
+      },
+      "type": "bar",
+    },
+  ],
+}
+`;
+
+exports[`chart builders — caracterização da saída > basicCharts.buildLineSeries (area) 1`] = `
+{
+  "series": [
+    {
+      "areaStyle": {
+        "color": LinearGradient {
+          "colorStops": [
+            {
+              "color": "rgba(59, 130, 246, 0.5)",
+              "offset": 0,
+            },
+            {
+              "color": "rgba(59, 130, 246, 0.1)",
+              "offset": 0.5,
+            },
+            {
+              "color": "rgba(59, 130, 246, 0)",
+              "offset": 1,
+            },
+          ],
+          "global": false,
+          "type": "linear",
+          "x": 0,
+          "x2": 0,
+          "y": 0,
+          "y2": 1,
+        },
+      },
+      "data": [
+        10,
+        20,
+        30,
+      ],
+      "emphasis": {
+        "itemStyle": {
+          "shadowBlur": 15,
+          "shadowColor": "#3b82f6",
+        },
+        "scale": 1.5,
+      },
+      "itemStyle": {
+        "borderColor": "#0f172a",
+        "borderWidth": 3,
+        "color": "#3b82f6",
+        "shadowBlur": 5,
+        "shadowColor": "rgba(0,0,0,0.2)",
+      },
+      "lineStyle": {
+        "color": "#3b82f6",
+        "shadowBlur": 15,
+        "shadowColor": "rgba(59, 130, 246, 0.5)",
+        "shadowOffsetY": 8,
+        "width": 5,
+      },
+      "smooth": 0.4,
+      "symbol": "circle",
+      "symbolSize": 10,
+      "type": "line",
+    },
+  ],
+}
+`;
+
+exports[`chart builders — caracterização da saída > basicCharts.buildLineSeries (line) 1`] = `
+{
+  "series": [
+    {
+      "areaStyle": undefined,
+      "data": [
+        10,
+        20,
+        30,
+      ],
+      "emphasis": {
+        "itemStyle": {
+          "shadowBlur": 15,
+          "shadowColor": "#3b82f6",
+        },
+        "scale": 1.5,
+      },
+      "itemStyle": {
+        "borderColor": "#0f172a",
+        "borderWidth": 3,
+        "color": "#3b82f6",
+        "shadowBlur": 5,
+        "shadowColor": "rgba(0,0,0,0.2)",
+      },
+      "lineStyle": {
+        "color": "#3b82f6",
+        "shadowBlur": 15,
+        "shadowColor": "rgba(59, 130, 246, 0.5)",
+        "shadowOffsetY": 8,
+        "width": 5,
+      },
+      "smooth": 0.4,
+      "symbol": "circle",
+      "symbolSize": 10,
+      "type": "line",
+    },
+  ],
+}
+`;
+
+exports[`chart builders — caracterização da saída > basicCharts.buildPieSeries 1`] = `
+{
+  "series": [
+    {
+      "avoidLabelOverlap": true,
+      "data": [
+        {
+          "name": "A",
+          "value": 10,
+        },
+        {
+          "name": "B",
+          "value": 20,
+        },
+        {
+          "name": "C",
+          "value": 30,
+        },
+      ],
+      "emphasis": {
+        "itemStyle": {
+          "shadowBlur": 20,
+          "shadowColor": "rgba(0,0,0,0.2)",
+        },
+        "label": {
+          "color": "#fff",
+          "fontFamily": "Inter",
+          "fontSize": 16,
+          "fontWeight": "bold",
+          "show": true,
+        },
+      },
+      "itemStyle": {
+        "borderColor": "#0f172a",
+        "borderRadius": 12,
+        "borderWidth": 4,
+      },
+      "label": {
+        "position": "center",
+        "show": false,
+      },
+      "name": "Distribuição",
+      "radius": [
+        "55%",
+        "85%",
+      ],
+      "type": "pie",
+    },
+  ],
+}
+`;
+
+exports[`chart builders — caracterização da saída > statisticalCharts.buildBoxPlotSeries 1`] = `
+{
+  "series": [
+    {
+      "data": [
+        [
+          200,
+          300,
+          400,
+          500,
+          700,
+        ],
+        [
+          300,
+          450,
+          550,
+          650,
+          850,
+        ],
+        [
+          150,
+          250,
+          350,
+          450,
+          650,
+        ],
+      ],
+      "itemStyle": {
+        "borderColor": "#3b82f6",
+        "borderWidth": 2,
+        "color": "rgba(59, 130, 246, 0.2)",
+      },
+      "name": "BoxPlot",
+      "type": "boxplot",
+    },
+  ],
+}
+`;
+
+exports[`chart builders — caracterização da saída > statisticalCharts.buildCandlestickSeries 1`] = `
+{
+  "series": [
+    {
+      "data": [
+        [
+          90,
+          110,
+          80,
+          120,
+        ],
+        [
+          190,
+          210,
+          180,
+          220,
+        ],
+        [
+          290,
+          310,
+          280,
+          320,
+        ],
+      ],
+      "itemStyle": {
+        "borderColor": "#3b82f6",
+        "borderColor0": "#ef4444",
+        "color": "#3b82f6",
+        "color0": "#ef4444",
+      },
+      "type": "candlestick",
+    },
+  ],
+  "xAxis": {
+    "data": [
+      "A",
+      "B",
+      "C",
+    ],
+  },
+}
+`;
+
+exports[`chart builders — caracterização da saída > statisticalCharts.buildHistogramSeries 1`] = `
+{
+  "series": [
+    {
+      "barWidth": "99%",
+      "data": [
+        10,
+        20,
+        30,
+      ],
+      "itemStyle": {
+        "borderColor": "#3b82f6",
+        "borderWidth": 1,
+        "color": "rgba(59, 130, 246, 0.6)",
+      },
+      "name": "Histogram",
+      "type": "bar",
+    },
+  ],
+}
+`;
+
+exports[`chart builders — caracterização da saída > statisticalCharts.buildScatterSeries 1`] = `
+{
+  "series": [
+    {
+      "data": [
+        [
+          0,
+          10,
+        ],
+        [
+          1,
+          20,
+        ],
+        [
+          2,
+          30,
+        ],
+      ],
+      "itemStyle": {
+        "color": RadialGradient {
+          "colorStops": [
+            {
+              "color": "rgba(59, 130, 246, 1)",
+              "offset": 0,
+            },
+            {
+              "color": "rgba(139, 92, 246, 0.4)",
+              "offset": 1,
+            },
+          ],
+          "global": false,
+          "r": 1,
+          "type": "radial",
+          "x": 0.4,
+          "y": 0.3,
+        },
+        "shadowBlur": 10,
+        "shadowColor": "rgba(59, 130, 246, 0.5)",
+      },
+      "symbolSize": [Function],
+      "type": "scatter",
+    },
+  ],
+}
+`;

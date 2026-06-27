@@ -1,10 +1,11 @@
 import * as echarts from 'echarts';
+import type { ChartDataItem, ChartBuilderConfig, ChartTheme, ChartOptionFragment } from './types';
 
-export const buildScatterSeries = (data: any[], config: any, theme: any): any => ({
+export const buildScatterSeries = (data: ChartDataItem[], config: ChartBuilderConfig | undefined, theme: ChartTheme): ChartOptionFragment => ({
     series: [{
         data: data.map((item, i) => [i, item[config?.dataKey || 'value']]),
         type: 'scatter',
-        symbolSize: (data: any) => Math.sqrt(data[1]) * 1.5,
+        symbolSize: (value: number[]) => Math.sqrt(value[1]) * 1.5,
         itemStyle: {
             color: new echarts.graphic.RadialGradient(0.4, 0.3, 1, [
                 { offset: 0, color: `rgba(${theme.primaryRGB}, 1)` },
@@ -16,11 +17,14 @@ export const buildScatterSeries = (data: any[], config: any, theme: any): any =>
     }]
 });
 
-export const buildCandlestickSeries = (data: any[], config: any, theme: any): any => ({
+export const buildCandlestickSeries = (data: ChartDataItem[], config: ChartBuilderConfig | undefined, theme: ChartTheme): ChartOptionFragment => ({
     xAxis: { data: data.map(item => item.name) },
     series: [{
         type: 'candlestick',
-        data: data.map(item => [item.v - 10, item.v + 10, item.v - 20, item.v + 20]),
+        data: data.map(item => {
+            const v = item.v as number;
+            return [v - 10, v + 10, v - 20, v + 20];
+        }),
         itemStyle: {
             color: theme.primaryColor,
             color0: '#ef4444',
@@ -30,7 +34,7 @@ export const buildCandlestickSeries = (data: any[], config: any, theme: any): an
     }]
 });
 
-export const buildBoxPlotSeries = (data: any[], config: any, theme: any): any => ({
+export const buildBoxPlotSeries = (data: ChartDataItem[], config: ChartBuilderConfig | undefined, theme: ChartTheme): ChartOptionFragment => ({
     series: [{
         name: 'BoxPlot',
         type: 'boxplot',
@@ -47,7 +51,7 @@ export const buildBoxPlotSeries = (data: any[], config: any, theme: any): any =>
     }]
 });
 
-export const buildHistogramSeries = (data: any[], config: any, theme: any): any => ({
+export const buildHistogramSeries = (data: ChartDataItem[], config: ChartBuilderConfig | undefined, theme: ChartTheme): ChartOptionFragment => ({
     series: [{
         name: 'Histogram',
         type: 'bar',
