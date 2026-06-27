@@ -56,7 +56,7 @@ export const SarakBackgroundRenderer: React.FC<SarakBackgroundRendererProps> = (
         height: '100%',
         opacity: opacity,
         filter: `blur(${blur}px)`,
-        mixBlendMode: safeBlendMode as any,
+        mixBlendMode: safeBlendMode,
         objectFit: 'cover'
     };
 

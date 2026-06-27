@@ -5,6 +5,7 @@ import { describe, it, expect, vi, beforeEach } from 'vitest';
 import { DesignScope } from '../DesignScope';
 import { useDesignVariables } from '../../hooks/useDesignVariables';
 import { DesignOverrideContext } from '../../../Provider/SarakUIProvider';
+import type { SarakDesignState } from '../../../Provider/types';
 
 // Mock dos hooks e componentes
 vi.mock('../../hooks/useDesignVariables', () => ({
@@ -86,7 +87,7 @@ describe('DesignScope', () => {
         };
 
         render(
-            <DesignScope design={mockDesign}>
+            <DesignScope design={mockDesign as unknown as SarakDesignState}>
                 <div />
             </DesignScope>
         );

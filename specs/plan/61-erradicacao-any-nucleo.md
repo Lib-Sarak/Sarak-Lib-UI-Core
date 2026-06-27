@@ -2,7 +2,7 @@
 tipo: "spec"
 titulo: "Erradicação de `any` — Núcleo (`src/core/`)"
 dominio: "Sarak-Lib-UI-Core (Adequação)"
-status: "🟡 Em Andamento (parte autônoma feita; design-state em HITL)"
+status: "🟡 Em Andamento (Discovery+Shell+design-state+Design leftover feitos; restam ⏸️F color-engine/presets + manifest.ts)"
 prioridade: "Alta"
 tags: ["spec", "any", "adequacao", "core", "type-safety"]
 relacionados: ["60-erradicacao-any-plano-mestre", "65-foundation-design-state", "62-erradicacao-any-componentes", "50-finalizacao-adequacao-e-entrega"]
@@ -48,11 +48,13 @@ Por sub-bloco do núcleo (contagem aproximada do `auditor_typescript.mjs`):
 - ✅ `hooks/useShellLayoutStyles.ts` — 1 · ✅ `Components/ShellSearchWidget.tsx` — 1
 - ✅ `Components/ShellLanguageSelector.tsx` — 1 *(global window tipado)* · ✅ `Components/DockNav.tsx` — 1
 
-## 2.4 `core/Design/` (~15)
-- ⏸️F `presets/themes/color-engine.ts` — 4 · 🔲 `components/DesignScope.tsx` — 3
-- 🔲 `types.ts` — 2 · 🔲 `master-map.ts` — 2 ⚠️ (fonte da paridade — não alterar IDs/estrutura, só tipos)
+## 2.4 `core/Design/` (~15) — ✅ "Design leftover" feito (−8); restam só os ⏸️F do batch Foundation
+- ⏸️F `presets/themes/color-engine.ts` — 4 · ✅ `components/DesignScope.tsx` — 3 *(`design: SarakDesignState`; props/rest `Record<string,unknown>`; cast hook espelha `DesignInjector`; `mode` cast pontual)*
+- ✅ `types.ts` — 2 *(novo `SarakTokenValue = string|number|boolean|ResponsiveValue<string|number>`; `defaultValue`/`legacyValue` tipo próprio, NÃO `unknown`)* · ✅ `master-map.ts` — 2 *(`getDefaultDesignState`→`Record<string,SarakTokenValue>`; `upgradeThemePayload` mantém `Record<string,unknown>` = payload externo; só tipos, IDs/estrutura intactos — paridade ✅)*
 - ⏸️F `presets/modules/index.ts` — 1 · ⏸️F `presets/components/cards.ts` — 1
-- ✅ `hooks/useMediaLuminance.ts` — 1 · 🔲 `components/SarakBackgroundRenderer.tsx` — 1
+- ✅ `hooks/useMediaLuminance.ts` — 1 · ✅ `components/SarakBackgroundRenderer.tsx` — 1 *(`mixBlendMode` literal `'normal'` → cast `as any` removido)*
+
+> **Cascade absorvido:** tirar o `any` de `getDefaultDesignState` exigiu **1 cast pontual tipado** (`as SarakDesignState`, NÃO `as any`) no seed de `Provider/hooks/useDesignManager.ts` (`getSeedConfig`). Lição registrada: `unknown` só em fronteira dinâmica de verdade; valor de espaço conhecido → união própria (`any ?? União = any` não cascateia; `any ?? unknown = unknown` cascateia).
 
 # 3. Regras de Negócio
 - **Regra 1 — Caracterização antes do refactor:** para cada arquivo de risco médio/alto, garantir teste de caracterização verde (skill `code-adequacao`) antes de tipar. Arquivos de 1–2 ocorrências de risco baixo podem ser adequados diretos se já cobertos.

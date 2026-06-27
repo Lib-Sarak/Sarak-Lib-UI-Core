@@ -2,9 +2,10 @@ import React, { useId } from 'react';
 import { useDesignVariables } from '../hooks/useDesignVariables';
 import { DesignOverrideContext } from '../../Provider/SarakUIProvider';
 import { SarakBackgroundRenderer } from './SarakBackgroundRenderer';
+import type { SarakDesignState } from '../../Provider/types';
 
 interface DesignScopeProps {
-    design: any;
+    design: SarakDesignState;
     children: React.ReactNode;
     className?: string;
     style?: React.CSSProperties;
@@ -17,7 +18,7 @@ interface DesignScopeProps {
  * Agora injeta também um DesignOverrideContext para que componentes que usam
  * useSarakUI() dentro deste escopo consumam o design correto (rascunho).
  */
-export const DesignScope: React.FC<DesignScopeProps & Record<string, any>> = ({ 
+export const DesignScope: React.FC<DesignScopeProps & Record<string, unknown>> = ({
     design, 
     children, 
     className = '', 
@@ -29,10 +30,10 @@ export const DesignScope: React.FC<DesignScopeProps & Record<string, any>> = ({
     const uniqueId = rawId ? rawId.replace(/:/g, '') : Math.random().toString(36).slice(2, 9);
     const scopeClass = `sarak-scope-${uniqueId}`;
 
-    const { variables, attributes, responsiveCSS } = useDesignVariables(design, `.${scopeClass}`);
+    const { variables, attributes, responsiveCSS } = useDesignVariables(design as unknown as Record<string, unknown>, `.${scopeClass}`);
 
     // Higienização de propriedades
-    const { isDesignScope, ...domSafeProps } = rest as any;
+    const { isDesignScope, ...domSafeProps } = rest as Record<string, unknown>;
 
     return (
         <DesignOverrideContext.Provider value={design}>
@@ -58,7 +59,7 @@ export const DesignScope: React.FC<DesignScopeProps & Record<string, any>> = ({
                     opacity={design?.globalBackgroundOpacity}
                     blur={design?.globalBackgroundBlur}
                     blendMode={design?.globalBackgroundBlendMode}
-                    mode={design?.mode}
+                    mode={design?.mode as 'light' | 'dark' | undefined}
                 />
                 {children}
             </div>

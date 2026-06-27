@@ -1,4 +1,4 @@
-import { MasterDesignSchema } from './types';
+import { MasterDesignSchema, SarakTokenValue } from './types';
 import { GlobalSchema } from './schema/global';
 import { BrandingSchema } from './schema/branding';
 import { SystemSchema } from './schema/system';
@@ -78,7 +78,7 @@ export const getAllDesignTokens = () => {
  * Helper para obter os valores padrão de todos os tokens.
  */
 export const getDefaultDesignState = () => {
-    const state: Record<string, any> = {};
+    const state: Record<string, SarakTokenValue> = {};
     getAllDesignTokens().forEach(token => {
         state[token.id] = token.defaultValue;
     });
@@ -90,7 +90,9 @@ export const getDefaultDesignState = () => {
  * Garante que temas antigos incorporem chaves novas com seus "legacyValues",
  * mantendo-os como pacotes imutáveis e blindados contra fallbacks dinâmicos.
  */
-export const upgradeThemePayload = (themePayload: Record<string, any>, partialMode = false) => {
+// `themePayload` é um pacote de tema vindo do banco/preset (chaves dinâmicas,
+// fora do nosso controle): fronteira dinâmica de verdade → `Record<string, unknown>`.
+export const upgradeThemePayload = (themePayload: Record<string, unknown>, partialMode = false) => {
     const upgraded = { ...themePayload };
     getAllDesignTokens().forEach(token => {
         // Se a chave não existe no payload

@@ -12,6 +12,9 @@ export type ResponsiveValue<T> = {
     mob: T;
 };
 
+/** Espaço de valores que um token pode assumir (espelha SarakDesignTokens). */
+export type SarakTokenValue = string | number | boolean | ResponsiveValue<string | number>;
+
 export interface DesignToken {
     id: string;                 // Chave única no estado (ex: cardBorderRadius)
     label: string;              // Nome legível para o usuário
@@ -33,8 +36,8 @@ export interface DesignToken {
     min?: number;
     max?: number;
     step?: number;
-    defaultValue: any;
-    legacyValue?: any; // Valor estático imutável que este token assume para temas/presets antigos que não o possuem
+    defaultValue: SarakTokenValue;
+    legacyValue?: SarakTokenValue; // Valor estático imutável que este token assume para temas/presets antigos que não o possuem
     description?: string;
 }
 

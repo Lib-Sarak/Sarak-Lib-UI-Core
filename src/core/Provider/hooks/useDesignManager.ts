@@ -53,7 +53,10 @@ export const useDesignManager = (props: {
             themeDesignTokens = themeEntry?.design ?? {};
         }
         
-        return { ...masterDefaults, ...themeDesignTokens, ...configRef.current };
+        // Mescla de defaults conhecidos + payload dinâmico do banco no estado
+        // canônico: cast pontual tipado (o índice dinâmico de `themeDesignTokens`
+        // não se atribui sozinho a `SarakDesignState`).
+        return { ...masterDefaults, ...themeDesignTokens, ...configRef.current } as SarakDesignState;
     }, [activeThemeId, allThemes]);
 
     const [design, setDesign] = useState<SarakDesignState>(() => {

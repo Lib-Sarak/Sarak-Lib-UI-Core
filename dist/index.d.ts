@@ -325,6 +325,23 @@ interface SarakDesignTokens {
  */
 type SarakThemePayload = Partial<SarakDesignTokens> & SarakThemePayloadExtras;
 /**
+ * Chaves estruturais/sanitizador que existem no estado de design em RUNTIME mas
+ * não são design tokens do schema (Spec 65, Fase 0). Não criar token novo aqui —
+ * token novo nasce no schema/paridade.
+ */
+interface SarakRuntimeExtras {
+    animationSpeed?: number;
+    secondaryModuleId?: string;
+    emptyStateId?: string;
+    logoPosition?: 'left' | 'center';
+    logoScale?: number;
+    atmosphere?: Record<string, unknown>;
+    specialized?: Record<string, unknown>;
+    schema_version?: string;
+}
+/** Estado de design REAL em runtime: o payload público + os extras de runtime. */
+type SarakDesignState = SarakThemePayload & SarakRuntimeExtras;
+/**
  * Campos presentes no payload que ainda NÃO foram modelados como design tokens
  * no schema (branding/sistema, estrutura consumida por useStructuralStyles e
  * aliases de cor legados). Pendente reconciliação com a paridade 1:1:1:1:1.
@@ -489,7 +506,7 @@ declare const useSarakUI: () => SarakUIContextType & SarakThemePayload;
 declare const SarakUIProvider: React__default.FC<SarakUIProviderProps>;
 
 interface DesignScopeProps {
-    design: any;
+    design: SarakDesignState;
     children: React__default.ReactNode;
     className?: string;
     style?: React__default.CSSProperties;
@@ -501,7 +518,7 @@ interface DesignScopeProps {
  * Agora injeta também um DesignOverrideContext para que componentes que usam
  * useSarakUI() dentro deste escopo consumam o design correto (rascunho).
  */
-declare const DesignScope: React__default.FC<DesignScopeProps & Record<string, any>>;
+declare const DesignScope: React__default.FC<DesignScopeProps & Record<string, unknown>>;
 
 declare const ThemeToggle: React__default.FC;
 
