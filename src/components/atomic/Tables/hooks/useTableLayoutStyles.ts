@@ -1,4 +1,5 @@
 import { useMemo } from 'react';
+import { SarakThemePayload } from '../../../../core/Provider/types';
 
 export interface TableLayoutContext {
     tableWrapperClass: string;
@@ -18,9 +19,9 @@ const actionAlignmentMap: Record<string, string> = {
 };
 
 /**
- * Hook Controlador Estrutural (Camada 6) - Tabelas e Lists
+ * Hook Controlador Estrutural (Camada 6) - Tables
  */
-export const useTableLayoutStyles = (design: any): TableLayoutContext => {
+export const useTableLayoutStyles = (design: SarakThemePayload): TableLayoutContext => {
     return useMemo(() => {
         const density = design?.tableDensity || 'comfortable';
         const actionPosition = design?.tableActionPosition || 'right';

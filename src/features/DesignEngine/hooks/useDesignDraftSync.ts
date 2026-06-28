@@ -1,9 +1,10 @@
 import { useEffect, useRef } from 'react';
+import { SarakUIContextType, SarakDesignState } from '../../../core/Provider/types';
 
 export const useDesignDraftSync = (
-    draftState: any, 
-    setDraftState: (draft: any) => void, 
-    sarak: any, 
+    draftState: SarakDesignState | null, 
+    setDraftState: (draft: SarakDesignState | null) => void, 
+    sarak: SarakUIContextType, 
     isSyncingRef: React.MutableRefObject<boolean>
 ) => {
     // 6. Ponte de Live Preview (Sincronização Atômica v12.8)

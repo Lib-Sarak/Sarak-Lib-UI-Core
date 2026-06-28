@@ -1,4 +1,5 @@
 import { useMemo } from 'react';
+import { SarakThemePayload } from '../../../../core/Provider/types';
 
 export interface ButtonLayoutContext {
     containerClass: string;
@@ -8,7 +9,7 @@ export interface ButtonLayoutContext {
 /**
  * Hook Controlador Estrutural (Camada 6) - Botões
  */
-export const useButtonLayoutStyles = (design: any): ButtonLayoutContext => {
+export const useButtonLayoutStyles = (design: SarakThemePayload): ButtonLayoutContext => {
     return useMemo(() => {
         const iconPosition = design?.buttonIconPosition || 'left';
         const widthStrategy = design?.buttonWidthStrategy || 'auto';

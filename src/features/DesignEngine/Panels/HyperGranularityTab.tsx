@@ -41,6 +41,7 @@ const COMPONENT_ICONS: Record<string, any> = {
 export const HyperGranularityTab: React.FC = () => {
     const sarak = useSarakUI();
     const { draft, updateDraft, handleApplyToSystem, resetComponent, resetToken, toast } = useDesignDraft(sarak);
+    const draftRecord = draft as Record<string, any>;
     
     const [activePillar, setActivePillar] = useState<string>('core');
     const [activeSection, setActiveSection] = useState<string | null>(null);
@@ -122,7 +123,7 @@ export const HyperGranularityTab: React.FC = () => {
                                                         </div>
                                                         <div className="space-y-4">
                                                             {tokens.map(token => {
-                                                                const isTokenDirty = draft[token.id] !== undefined && JSON.stringify(draft[token.id]) !== JSON.stringify((sarak as unknown as Record<string, unknown>)[token.id]);
+                                                                const isTokenDirty = draftRecord[token.id] !== undefined && JSON.stringify(draftRecord[token.id]) !== JSON.stringify((sarak as unknown as Record<string, unknown>)[token.id]);
                                                                 
                                                                 return (
                                                                     <div key={token.id} className="relative group/token">

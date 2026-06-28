@@ -1,7 +1,8 @@
 import { useState, useEffect, useCallback } from 'react';
+import { SarakDesignState } from '../../../core/Provider/types';
 
 // TODO: Substituir por presets canônicos de core/Design/presets/themes/ quando forem criados
-const BASE_PRESETS: Record<string, any> = {};
+const BASE_PRESETS: Record<string, SarakDesignState> = {};
 
 export interface ThemePreviewState {
     previewLayoutId: string;
@@ -11,7 +12,7 @@ export interface ThemePreviewState {
     previewFontScale: string;
     previewNavigationStyle: 'sidebar' | 'topbar';
     previewSidebarWidth: number;
-    config: any;
+    config: SarakDesignState;
     themeName: string;
 }
 
@@ -23,13 +24,13 @@ export const useThemePreview = (
     fontScale: string,
     navigationStyle: 'sidebar' | 'topbar',
     sidebarWidth: number,
-    customThemes: any[],
-    layouts: any
+    customThemes: Array<{ id: string, name: string, config: SarakDesignState, animationStyle?: string, emojiSet?: string }>,
+    layouts: Record<string, { name: string, animation?: string, emoji?: string }>
 ) => {
     const getInitialConfig = () => {
-        return (BASE_PRESETS as any)[(currentLayout || '').toLowerCase()] ||
+        return BASE_PRESETS[(currentLayout || '').toLowerCase()] ||
             ((currentLayout || '').startsWith('custom-') ? customThemes.find(t => t.id === currentLayout.replace('custom-', ''))?.config : null) ||
-            (BASE_PRESETS as any).glass;
+            BASE_PRESETS.glass;
     };
 
     const [state, setState] = useState<ThemePreviewState>({
@@ -68,7 +69,7 @@ export const useThemePreview = (
         
         if (state.previewLayoutId) {
             const normalizedId = state.previewLayoutId.toLowerCase();
-            const basePreset = (BASE_PRESETS as any)[normalizedId];
+            const basePreset = BASE_PRESETS[normalizedId];
             
             if (basePreset) {
                 const nativeKey = state.previewLayoutId.toUpperCase();
@@ -112,7 +113,7 @@ export const useThemePreview = (
         previewSidebarWidth: state.previewSidebarWidth,
         setPreviewSidebarWidth: (v: number) => updateState({ previewSidebarWidth: v }),
         config: state.config,
-        setConfig: (v: any) => updateState({ config: v }),
+        setConfig: (v: SarakDesignState) => updateState({ config: v }),
         themeName: state.themeName,
         setThemeName: (v: string) => updateState({ themeName: v }),
         handleConfigChange,

@@ -1,12 +1,14 @@
 import React, { useState, useCallback, useMemo } from 'react';
 import { MASTER_DESIGN_MAP, getAllDesignTokens } from '../../../core/Design/master-map';
 import { useDesignDraftSync } from './useDesignDraftSync';
+import { SarakUIContextType, SarakDesignState } from '../../../core/Provider/types';
+import { SarakTokenValue } from '../../../core/Design/types';
 
 /**
  * Deep Comparison Utility (v12.0)
  * Compara tokens e propriedades estruturais para detectar mudanças reais.
  */
-const areValuesEqual = (valA: any, valB: any) => {
+const areValuesEqual = (valA: unknown, valB: unknown) => {
     if (valA === valB) return true;
     if (typeof valA === 'object' && valA !== null && typeof valB === 'object' && valB !== null) {
         return JSON.stringify(valA) === JSON.stringify(valB);
@@ -18,11 +20,11 @@ const areValuesEqual = (valA: any, valB: any) => {
  * useDesignDraft (v12.1 - Data-Driven)
  * Orquestrador de rascunhos com isolamento de sandbox.
  */
-export const useDesignDraft = (sarak: any) => {
+export const useDesignDraft = (sarak: SarakUIContextType) => {
     // 1. Estado do Rascunho (Sandbox)
     // v12.2 - Inicialização Nula: O rascunho começa nulo para seguir o sistema 
     // sem criar uma cópia dessincronizada no mount.
-    const [draftState, setDraftState] = useState<any | null>(sarak.draftDesign);
+    const [draftState, setDraftState] = useState<SarakDesignState | null>((sarak.draftDesign as SarakDesignState) || null);
     const isSyncingRef = React.useRef(false);
 
     // 2. Resolução Dinâmica (Ground Truth)
@@ -31,9 +33,9 @@ export const useDesignDraft = (sarak: any) => {
         if (draftState) return draftState;
         
         // Fallback para o design do sistema ou defaults totais se nada existir
-        const base = sarak.systemDesign || {};
+        const base = sarak.systemDesign || {} as SarakDesignState;
         const allTokens = getAllDesignTokens();
-        const resolved: any = { ...base };
+        const resolved: Record<string, SarakTokenValue> = { ...(base as Record<string, SarakTokenValue>) };
         
         allTokens.forEach(token => {
             if (resolved[token.id] === undefined) {
@@ -45,7 +47,7 @@ export const useDesignDraft = (sarak: any) => {
         if (!resolved.layout) resolved.layout = base.layout || 'glass';
         if (!resolved.mode) resolved.mode = base.mode || 'dark';
         
-        return resolved;
+        return resolved as unknown as SarakDesignState;
     }, [draftState, sarak.systemDesign]);
 
     const [toast, setToast] = useState<{ type: 'success' | 'warning', message: string } | null>(null);
@@ -86,13 +88,13 @@ export const useDesignDraft = (sarak: any) => {
     const isComponentDirty = useCallback((schemaId: string) => {
         if (!draftState) return false;
         const allKeys = getTokensByComponent(schemaId);
-        return allKeys.some(key => !areValuesEqual(draftState[key], sarak.systemDesign?.[key]));
+        return allKeys.some(key => !areValuesEqual((draftState as Record<string, SarakTokenValue>)[key], (sarak.systemDesign as Record<string, SarakTokenValue>)?.[key]));
     }, [draftState, sarak.systemDesign, getTokensByComponent]);
 
     const isDirty = useMemo(() => {
         if (!draftState) return false;
         const allKeys = Object.keys(draftState);
-        return allKeys.some(key => !areValuesEqual(draftState[key], sarak.systemDesign?.[key]));
+        return allKeys.some(key => !areValuesEqual((draftState as Record<string, SarakTokenValue>)[key], (sarak.systemDesign as Record<string, SarakTokenValue>)?.[key]));
     }, [draftState, sarak.systemDesign]);
 
     // 6. Ponte de Live Preview, Sincronização e Limpeza
@@ -101,16 +103,17 @@ export const useDesignDraft = (sarak: any) => {
     /**
      * Atualiza o rascunho
      */
-    const updateDraft = useCallback((key: string, value: any) => {
-        setDraftState((prev: any) => {
+    const updateDraft = useCallback((key: string, value: SarakTokenValue) => {
+        setDraftState((prev: SarakDesignState | null) => {
             const current = prev || draft;
-            if (current[key] === value) return prev;
+            const currentAsRecord = current as Record<string, SarakTokenValue>;
+            if (currentAsRecord[key] === value) return prev;
             
             if (key === 'mode') {
-                return { ...current, mode: value };
+                return { ...current, mode: value as SarakDesignState['mode'] } as SarakDesignState;
             }
             
-            return { ...current, [key]: value };
+            return { ...current, [key]: value } as SarakDesignState;
         });
     }, [draft]);
 
@@ -121,13 +124,13 @@ export const useDesignDraft = (sarak: any) => {
                 .filter(c => schemaIdOrSchemas.includes(c.id))
                 .flatMap(c => c.tokens.map(t => t.id));
         
-        setDraftState((prev: any) => {
+        setDraftState((prev: SarakDesignState | null) => {
             const current = prev || draft;
-            const newDraft = { ...current };
+            const newDraft: Record<string, SarakTokenValue> = { ...(current as Record<string, SarakTokenValue>) };
             componentKeys.forEach(key => {
-                newDraft[key] = sarak.systemDesign?.[key];
+                newDraft[key] = (sarak.systemDesign as Record<string, SarakTokenValue>)?.[key];
             });
-            return newDraft;
+            return newDraft as unknown as SarakDesignState;
         });
 
         const label = typeof schemaIdOrSchemas === 'string' ? schemaIdOrSchemas : schemaIdOrSchemas.join(', ');
@@ -138,23 +141,23 @@ export const useDesignDraft = (sarak: any) => {
      * Reverte um único token
      */
     const resetToken = useCallback((tokenId: string) => {
-        setDraftState((prev: any) => ({
+        setDraftState((prev: SarakDesignState | null) => ({
             ...(prev || draft),
-            [tokenId]: sarak.systemDesign?.[tokenId]
-        }));
+            [tokenId]: (sarak.systemDesign as Record<string, SarakTokenValue>)?.[tokenId]
+        } as SarakDesignState));
     }, [draft, sarak.systemDesign]);
 
     /**
      * Preview de um preset genérico (qualquer subcategoria)
      * Aceita diretamente o payload { design } do preset selecionado.
      */
-    const handleThemePreview = (presetDesign: Record<string, any>, presetKeyId?: string) => {
+    const handleThemePreview = (presetDesign: Partial<SarakDesignState>, presetKeyId?: string) => {
         if (presetDesign && typeof presetDesign === 'object') {
-            setDraftState((prev: any) => ({
+            setDraftState((prev: SarakDesignState | null) => ({
                 ...(prev || draft),
                 ...presetDesign,
                 ...(presetKeyId ? { [`${presetKeyId}PresetId`]: presetKeyId } : {})
-            }));
+            } as SarakDesignState));
         }
     };
 
@@ -177,9 +180,11 @@ export const useDesignDraft = (sarak: any) => {
     const handleApplyComponent = (schemaId: string) => {
         if (sarak.applyConfigRaw && isComponentDirty(schemaId)) {
             const componentKeys = getTokensByComponent(schemaId);
-            const patch: Record<string, any> = {};
+            const patch: Partial<SarakDesignState> = {};
+            const patchRecord = patch as Record<string, SarakTokenValue>;
+            const draftRecord = draft as Record<string, SarakTokenValue>;
             componentKeys.forEach(key => {
-                patch[key] = draft[key];
+                patchRecord[key] = draftRecord[key];
             });
             
             sarak.applyConfigRaw(patch);

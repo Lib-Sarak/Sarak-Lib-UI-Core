@@ -1,4 +1,5 @@
 import { useMemo } from 'react';
+import { SarakThemePayload } from '../../../../core/Provider/types';
 
 export interface ModalLayoutContext {
     headerClass: string;
@@ -20,10 +21,9 @@ const footerStylesMap: Record<string, string> = {
 };
 
 /**
- * Hook Controlador Estrutural (Camada 6) - Modais
- * Define como o Header (e botão de fechar) e o Footer (alinhamento de ações) se comportam.
+ * Hook Controlador Estrutural (Camada 6) - Modals
  */
-export const useModalLayoutStyles = (design: any): ModalLayoutContext => {
+export const useModalLayoutStyles = (design: SarakThemePayload): ModalLayoutContext => {
     return useMemo(() => {
         const actionAlignment = design?.modalActionAlignment || 'right';
         const headerStyle = design?.modalHeaderStyle || 'inline';

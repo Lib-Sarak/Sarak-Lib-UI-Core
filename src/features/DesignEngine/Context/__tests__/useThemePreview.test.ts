@@ -1,6 +1,7 @@
 import { renderHook, act } from '@testing-library/react';
 import { describe, it, expect } from 'vitest';
 import { useThemePreview } from '../useThemePreview';
+import { SarakDesignState } from '../../../../core/Provider/types';
 
 describe('useThemePreview', () => {
     it('should initialize state with default parameters', () => {
@@ -24,7 +25,7 @@ describe('useThemePreview', () => {
     });
 
     it('should sync local preview when previewLayoutId matches a layout', () => {
-        const customThemes = [{ id: '123', name: 'My Custom Theme', config: { color: 'blue' }, animationStyle: 'smooth', emojiSet: '3d' }];
+        const customThemes = [{ id: '123', name: 'My Custom Theme', config: { color: 'blue' } as unknown as SarakDesignState, animationStyle: 'smooth', emojiSet: '3d' }];
         
         const { result } = renderHook(() => 
             useThemePreview(
@@ -56,6 +57,6 @@ describe('useThemePreview', () => {
         });
 
         expect(result.current.config).toBeDefined();
-        expect(result.current.config.backgroundColor).toBe('#111');
+        expect((result.current.config as Record<string, any>).backgroundColor).toBe('#111');
     });
 });

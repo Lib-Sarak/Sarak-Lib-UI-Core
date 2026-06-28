@@ -18,6 +18,7 @@ import { SarakInput } from '../../../components/atomic/Inputs';
 export const MasterControlPanel: React.FC = () => {
     const sarak = useSarakUI();
     const { draft, isDirty, isComponentDirty, updateDraft, handleApplyToSystem, resetToken } = useDesignDraft(sarak);
+    const draftRecord = draft as Record<string, any>;
     
     const [searchQuery, setSearchQuery] = useState('');
     const [activeCategory, setActiveCategory] = useState<string | null>(null);
@@ -118,11 +119,11 @@ export const MasterControlPanel: React.FC = () => {
                                                 <div className="flex items-center gap-2 flex-1">
                                                     <div 
                                                         className="w-5 h-5 shrink-0 rounded border border-white/10" 
-                                                        style={{ backgroundColor: draft[token.id] || token.defaultValue }} 
+                                                        style={{ backgroundColor: draftRecord[token.id] || token.defaultValue }} 
                                                     />
                                                     <input 
                                                         type="text" 
-                                                        value={draft[token.id] || token.defaultValue} 
+                                                        value={draftRecord[token.id] || token.defaultValue} 
                                                         onChange={(e) => updateDraft(token.id, e.target.value)}
                                                         className="bg-transparent border-none text-[8px] font-mono text-white/40 focus:outline-none w-full"
                                                     />
@@ -135,18 +136,18 @@ export const MasterControlPanel: React.FC = () => {
                                                         min={token.constraints?.min ?? 0}
                                                         max={token.constraints?.max ?? 100}
                                                         step={token.constraints?.step ?? 1}
-                                                        value={draft[token.id] ?? token.defaultValue}
+                                                        value={draftRecord[token.id] ?? token.defaultValue}
                                                         onChange={(e) => updateDraft(token.id, Number(e.target.value))}
                                                         className="flex-1 accent-[var(--theme-primary)] h-1 bg-white/10 rounded-lg appearance-none cursor-pointer"
                                                     />
                                                     <span className="text-[8px] font-black text-white/20 w-6 text-right">
-                                                        {draft[token.id] ?? token.defaultValue}
+                                                        {draftRecord[token.id] ?? token.defaultValue}
                                                     </span>
                                                 </div>
                                             )}
                                             {token.type === 'select' && (
                                                 <select 
-                                                    value={draft[token.id] ?? token.defaultValue}
+                                                    value={draftRecord[token.id] ?? token.defaultValue}
                                                     onChange={(e) => updateDraft(token.id, e.target.value)}
                                                     className="bg-white/5 border border-white/10 rounded-md py-1 px-2 text-[8px] font-black uppercase tracking-widest focus:outline-none w-full"
                                                 >
@@ -162,17 +163,17 @@ export const MasterControlPanel: React.FC = () => {
                                             {(token.type === 'text' || token.type === 'string') && (
                                                 <input 
                                                     type="text" 
-                                                    value={draft[token.id] ?? token.defaultValue}
+                                                    value={draftRecord[token.id] ?? token.defaultValue}
                                                     onChange={(e) => updateDraft(token.id, e.target.value)}
                                                     className="bg-white/5 border border-white/10 rounded-md py-1 px-2 text-[8px] font-bold focus:outline-none w-full"
                                                 />
                                             )}
                                             {token.type === 'boolean' && (
                                                 <button 
-                                                    onClick={() => updateDraft(token.id, !draft[token.id])}
-                                                    className={`w-10 h-5 rounded-full relative transition-all ${draft[token.id] ? 'bg-[var(--theme-primary)]' : 'bg-white/10'}`}
+                                                    onClick={() => updateDraft(token.id, !draftRecord[token.id])}
+                                                    className={`w-10 h-5 rounded-full relative transition-all ${draftRecord[token.id] ? 'bg-[var(--theme-primary)]' : 'bg-white/10'}`}
                                                 >
-                                                    <div className={`absolute top-1 w-3 h-3 rounded-full bg-white transition-all ${draft[token.id] ? 'left-6' : 'left-1'}`} />
+                                                    <div className={`absolute top-1 w-3 h-3 rounded-full bg-white transition-all ${draftRecord[token.id] ? 'left-6' : 'left-1'}`} />
                                                 </button>
                                             )}
                                         </div>

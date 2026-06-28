@@ -1,7 +1,7 @@
 import { renderHook, act } from '@testing-library/react';
 import { describe, it, expect, vi } from 'vitest';
 import { useDesignDraft } from '../useDesignDraft';
-
+import { SarakUIContextType } from '../../../../core/Provider/types';
 describe('useDesignDraft', () => {
     it('inicializa com o draft do provedor ou fallback para o sistema', () => {
         const sarak = {
@@ -10,7 +10,7 @@ describe('useDesignDraft', () => {
             isDrafting: false,
             setIsDrafting: vi.fn(),
             lockDrafting: vi.fn()
-        };
+        } as unknown as SarakUIContextType;
 
         const { result } = renderHook(() => useDesignDraft(sarak));
 
@@ -25,7 +25,7 @@ describe('useDesignDraft', () => {
             isDrafting: true,
             setIsDrafting: vi.fn(),
             lockDrafting: vi.fn()
-        };
+        } as unknown as SarakUIContextType;
 
         const { result } = renderHook(() => useDesignDraft(sarak));
 
@@ -44,7 +44,7 @@ describe('useDesignDraft', () => {
             isDrafting: true,
             setIsDrafting: vi.fn(),
             lockDrafting: vi.fn()
-        };
+        } as unknown as SarakUIContextType;
 
         const { result } = renderHook(() => useDesignDraft(sarak));
 
@@ -62,7 +62,7 @@ describe('useDesignDraft', () => {
             isDrafting: true,
             setIsDrafting: vi.fn(),
             lockDrafting: vi.fn()
-        };
+        } as unknown as SarakUIContextType;
         const { result } = renderHook(() => useDesignDraft(sarak));
         
         act(() => {
@@ -86,7 +86,7 @@ describe('useDesignDraft', () => {
             isDrafting: true,
             setIsDrafting: vi.fn(),
             lockDrafting: vi.fn()
-        };
+        } as unknown as SarakUIContextType;
         const { result } = renderHook(() => useDesignDraft(sarak));
         
         act(() => {
