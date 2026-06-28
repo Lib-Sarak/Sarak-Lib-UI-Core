@@ -10,6 +10,9 @@ Este arquivo é auto-gerado. Ele lista todas as regras de negócio deste projeto
 - **ui-arquitetura-design**: Define a regra arquitetural do módulo Design Engine do Sarak-Lib-UI-Core. Use ao desenvolver, revisar ou validar o CSS/Design de componentes. NÃO acione proativamente.
   - *Caminho*: `.agents/skills/ui-arquitetura-design/SKILL.md`
 
+- **ui-auditoria-manifesto**: Skill de conferência estática do JSON do manifesto. Vasculha chaves órfãs, loops infinitos e vazamentos de segurança (Safe Eval). Use ao auditar layouts. NÃO acione proativamente.
+  - *Caminho*: `.agents/skills/ui-auditoria-manifesto/SKILL.md`
+
 - **ui-auditoria-modulo**: Audita a integridade estrutural do Sarak-Lib-UI-Core. Varre o módulo em busca de quebras de Clean Code, falhas de cobertura (Coverage), dependências circulares, tipagens inseguras (any), hardcoded e paridade de Design Tokens. Use APENAS quando pedirem para auditar a base ou validar um PR. NÃO acione proativamente.
   - *Caminho*: `.agents/skills/ui-auditoria-modulo/SKILL.md`
 
@@ -22,11 +25,17 @@ Este arquivo é auto-gerado. Ele lista todas as regras de negócio deste projeto
 - **ui-criar-tema**: Orquestra a geração autônoma e paramétrica de temas completos (ThemePresets) para a Sarak UI Core. Use ao configurar esquemas globais de cores e atmosferas. NÃO acione proativamente.
   - *Caminho*: `.agents/skills/ui-criar-tema/SKILL.md`
 
-- **ui-integra-consumidor**: Instala e acopla a biblioteca Sarak-Lib-UI-Core num sistema consumidor (Node.js/Next.js ou Python/FastAPI). Use ao integrar o front-end com a Lib. NÃO acione proativamente.
+- **ui-integra-consumidor**: Instala e acopla o motor SarakManifestRenderer num sistema consumidor (Next.js/React/FastAPI). Configura Interceptors e DataStore. Use ao iniciar a infraestrutura do front-end com a Lib. NÃO acione proativamente.
   - *Caminho*: `.agents/skills/ui-integra-consumidor/SKILL.md`
+
+- **ui-integra-escrever-manifesto**: Ensina a compor telas, componentes e lógicas construindo arquivos JSON válidos para o SarakManifestRenderer. Use ao criar ou editar páginas de interface no consumidor. NÃO acione proativamente.
+  - *Caminho*: `.agents/skills/ui-integra-escrever-manifesto/SKILL.md`
 
 - **ui-novo-componente**: Orquestra a adição de novos componentes atômicos à UI Core garantindo a paridade 1:1:1:1:1. Use ao adicionar um token ou componente base ao sistema. NÃO acione proativamente.
   - *Caminho*: `.agents/skills/ui-novo-componente/SKILL.md`
+
+- **ui-novo-pipe**: Cria e registra novos modificadores de dados (Pipes) para a Engine Declarativa. Use ao adicionar formatações (ex uppercase, currency) que as telas consumirão via JSON. NÃO acione proativamente.
+  - *Caminho*: `.agents/skills/ui-novo-pipe/SKILL.md`
 
 - **ui-refatorar-componente**: Orquestra a refatoração, deleção ou modificação de tipagem de propriedades e tokens no Sarak-Lib-UI-Core. Use APENAS quando precisar deletar um token existente ou alterar sua assinatura sem quebrar a paridade 1:1:1:1:1. NÃO acione proativamente.
   - *Caminho*: `.agents/skills/ui-refatorar-componente/SKILL.md`

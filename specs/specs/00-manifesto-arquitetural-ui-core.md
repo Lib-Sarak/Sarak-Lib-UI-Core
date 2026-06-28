@@ -11,8 +11,8 @@ A **Sarak-Lib-UI-Core** não é apenas uma biblioteca de componentes; ela é um 
 - Aplicação determinística de Design Tokens.
 
 ### A Filosofia do Preenchimento (Não programe, configure)
-Aqui, criar um layout diferente não significa criar uma *div* nova ou um componente novo no React. Significa apenas **enviar um conjunto diferente de dados** para as propriedades (props/tokens) mapeadas em nosso catálogo (`theme_table_mapping.json`). 
-O motor UI Core é uma máquina cega que reage a dicionários de dados (JSON/Payloads). O seu trabalho, como agente de design, é **alimentar a máquina com os valores corretos**, e não atuar como um *Front-End Coder* tradicional. Alterações visuais são alterações de preenchimento de formulário.
+Aqui, criar um layout diferente ou um comportamento funcional novo não significa criar um componente React ou escrever lógica imperativa. Significa apenas **enviar um conjunto diferente de dados (Manifestos)** para as propriedades mapeadas no sistema.
+O motor UI Core atua como uma **Engine Declarativa (Low-Code/No-Code)** que reage a dicionários de dados (JSON/Payloads). Seu trabalho é alimentar a máquina com os valores estruturais e os comandos lógicos (ex: `renderFor`, ações) corretos, sem atuar como um *Front-End Coder* tradicional. Alterações de UI e Lógica são tratadas estritamente como injeção de dados.
 
 ## 2. As Três Camadas (3-Layer Architecture)
 
@@ -32,5 +32,7 @@ A fundação visual. Esta pasta abriga blocos puros que não sabem de onde seus 
 Os casos de uso inteligentes. Enquanto `atomic` tem os componentes puramente visuais, `features` abriga os blocos que interagem com o usuário, chamam APIs (ou simulam estados avançados) e disparam eventos (Redux, Zustand).
 - Exemplo: `DesignEngine/Panels` possui regras reais de state management, salvamento em banco e lógica de troca de contexto, logo, pertence à `features`.
 
-## 3. Diretriz de Contrato e Tipagem Estrita
-A biblioteca atua sob a regra do "Zero Any". O uso de `any` ou `Record<string, unknown>` para burlar tipagem dinâmica é terminantemente proibido. A paridade entre Schema (TS), MasterMap (Motor), Banco de Dados e JSON do Catálogo deve ser mantida sempre em **1:1:1:1:1**.
+## 3. Diretriz de Contrato e Tipagem Estrita (Zero Any Absoluto)
+A biblioteca atua sob a **Lei do "Zero Any"**, solidificada após a extensa Campanha de Erradicação. O uso de `any` ou `Record<string, unknown>` para burlar tipagem dinâmica é terminantemente proibido em toda a base. 
+O sistema exige tipagem determinística até nas fronteiras dinâmicas (utilizando `SarakDesignState`, *Type Guards* e genéricos restritos).
+A paridade entre Schema (TS), MasterMap (Motor), Banco de Dados, Lógica da Engine e JSON do Catálogo deve ser mantida sempre em **1:1:1:1:1**.

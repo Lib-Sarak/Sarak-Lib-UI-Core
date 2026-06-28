@@ -1,36 +1,37 @@
 ---
 name: ui-integra-consumidor
-description: Instala e acopla a biblioteca Sarak-Lib-UI-Core num sistema consumidor (Node.js/Next.js ou Python/FastAPI). Use ao integrar o front-end com a Lib. NÃO acione proativamente.
+description: Instala e acopla o motor SarakManifestRenderer num sistema consumidor (Next.js/React/FastAPI). Configura Interceptors e DataStore. Use ao iniciar a infraestrutura do front-end com a Lib. NÃO acione proativamente.
 ---
 
-# Skill: Integrar UI Consumidor
+# Skill: Integrar Consumidor (Infraestrutura)
 
-Skill responsável pela instalação plug-and-play da biblioteca em sistemas clientes, garantindo a criação da pasta isolada de consumo e injeção de Providers.
+Skill responsável pela instalação plug-and-play do Motor Declarativo (Sarak-Lib-UI-Core) no projeto cliente, garantindo a inicialização do `SarakManifestRenderer`, `SarakDataStore` e `Interceptors`.
 
 ## Quando usar
-- Quando o usuário informar que está num repositório que consumirá a `Sarak-Lib-UI-Core` como dependência, e precisa acoplar o sistema.
-- Use APENAS quando o usuário solicitar explicitamente. NÃO acione proativamente.
+- Quando o usuário informar que está num repositório que consumirá a `Sarak-Lib-UI-Core` e precisa acoplar o sistema (Engine) na raiz do projeto.
+- Quando for necessário plugar roteamento do framework hospedeiro ou cabeçalhos de autenticação na Engine.
+- Use APENAS quando o usuário solicitar explicitamente a instalação/integração inicial. NÃO acione proativamente.
 
 ## Workflow
 
 1. **Identificação do Ecossistema (HITL)**
-   - **Ação:** Pergunte qual é a stack do projeto consumidor (Ex: Next.js/React ou FastAPI).
-2. **Criação da Pasta Sarak-UI**
+   - **Ação:** Pergunte qual é a stack do projeto consumidor (Ex: Next.js/React, Vite, etc).
+2. **Criação da Pasta Sarak-Engine (Isolamento)**
    - **Ferramenta:** `run_command`
-   - **Ação:** Crie o diretório dedicado `Sarak-UI/` na raiz do consumidor, que isolará os proxies e chamadas para a library.
-3. **Injeção de Providers**
-   - **Ação:** Auxilie o usuário injetando os Contextos/Providers obrigatórios no ponto de entrada da aplicação cliente (ex: `_app.tsx` ou `layout.tsx`).
-4. **Verificação das Bridges**
-   - **Ação:** Certifique-se de que a biblioteca está corretamente plugada nas funções de persistência de banco de dados se houver comunicação local.
+   - **Ação:** Crie o diretório dedicado `Sarak-Engine/` na raiz do consumidor, que isolará os proxies, a store local e instâncias da biblioteca.
+3. **Instanciação da DataStore e Interceptors**
+   - **Ação:** Crie o arquivo de inicialização exportando uma instância isolada de `SarakDataStore`.
+   - **Ação:** Configure o `networkInterceptor` (para injetar tokens JWT e cookies em chamadas de API geradas pela Sarak) e o `routerInterceptor` (para conectar o router do framework cliente, ex: `useRouter` do Next.js).
+4. **Injeção do Manifest Renderer**
+   - **Ação:** Substitua o conteúdo estático da página/layout raiz ou crie um Ponto de Entrada base injetando o componente mestre: `<SarakManifestRenderer payload={jsonDaPagina} dataStore={store} networkInterceptor={apiHandler} routerInterceptor={routeHandler} />`.
+5. **Handoff (Ponto de Transição)**
+   - **Ação:** Após a infraestrutura base estar acoplada e renderizando com sucesso um manifesto vazio ou de teste (fallback), informe ao usuário que a integração arquitetural terminou.
+   - **Próximo Passo Obrigatório:** Oriente o usuário (ou você mesmo no próximo turno) a invocar a skill **`ui-integra-escrever-manifesto`** para começar, de fato, a construir as telas (escrever o JSON).
 
-## Regras
-- **NÃO** tente ditar como a lógica de negócios do consumidor deve ser feita; limite-se apenas a conectar os Providers da Sarak-UI.
-- **SEMPRE** garanta que todo código da library gerado localmente fique confinado no diretório `Sarak-UI/`.
+## Regras (SRP - Responsabilidade Única)
+- **NÃO** ensine ou tente montar telas, formulários ou laços de repetição (`renderFor`) nesta skill. O foco aqui é estrito: DevOps e Infraestrutura Front-end.
+- **SEMPRE** garanta que o componente importado nas rotas seja o Renderizador Mestre, bloqueando a importação direta de componentes atômicos isolados pelo desenvolvedor (garantindo que tudo passe pelo JSON).
 
-## Checklist
-- [ ] A pasta `Sarak-UI/` foi criada no projeto cliente?
-- [ ] Os providers foram acoplados na raiz?
-
-## Referências (Camada 3)
-- `assets/Sarak-UI/` — Boilerplate copiável para a criação da pasta de consumo no sistema cliente.
-- `references/examples.md` — Exemplos práticos do padrão de injeção de dependência e integração (Bom e Ruim).
+## Referências
+- Spec 11 (`11-engine-declarativa-e-manifestos.md`) da Biblioteca Core.
+- `references/examples.md` — Exemplos práticos do padrão de injeção de dependência e integração do Renderer.
