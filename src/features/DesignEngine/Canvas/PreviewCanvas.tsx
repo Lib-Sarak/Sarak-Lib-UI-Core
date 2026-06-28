@@ -12,6 +12,9 @@ import { useInspector } from './hooks/useInspector';
 import { useDeviceStyles } from './hooks/useDeviceStyles';
 import { usePreviewContextValue, useApplyPreset } from './hooks/useDesignOperations';
 import { PreviewSystemRenderer } from './components/PreviewSystemRenderer';
+import { SarakUIOptions, SarakUIContextType } from '../../../core/Provider/types';
+import { SarakDesignState } from '../../../core/Provider/types';
+import { SarakTokenValue } from '../../../core/Design/types';
 
 interface PreviewCanvasProps {
     previewDevice: 'desktop' | 'tablet' | 'smartphone';
@@ -20,19 +23,19 @@ interface PreviewCanvasProps {
     setActivePreviewApp: (app: string) => void;
     previewAnimationStyle: string;
     previewEmojiSet: string;
-    config: any;
+    config: SarakUIOptions;
     previewPrimaryColor: string;
     mode: string;
-    draftTokens: any;
+    draftTokens: Partial<SarakDesignState>;
     activeCategory: string | null;
     activeSectionId?: string | null;
-    onUpdateDraft: (key: string, value: any) => void;
+    onUpdateDraft: (key: string, value: SarakTokenValue) => void;
     isDualView?: boolean;
     isPreviewStacked?: boolean;
-    customThemes?: any[];
-    sarak: any;
+    customThemes?: Record<string, Partial<SarakDesignState>>[];
+    sarak: SarakUIContextType;
     onInspectComponent?: (schemaId: string) => void;
-    onApplyFullTheme?: (design: any) => void;
+    onApplyFullTheme?: (design: Partial<SarakDesignState>) => void;
 }
 
 export const PreviewCanvas: React.FC<PreviewCanvasProps> = ({
@@ -72,7 +75,7 @@ export const PreviewCanvas: React.FC<PreviewCanvasProps> = ({
     }, [onUpdateDraft]);
 
     const { startResizing: startResizingSidebar, isResizing: isResizingSidebar } = useResizable({
-        initialSize: tokens.sidebarWidth || 240,
+        initialSize: (tokens.sidebarWidth as number) || 240,
         minSize: 150,
         maxSize: 500,
         direction: 'horizontal',
@@ -80,7 +83,7 @@ export const PreviewCanvas: React.FC<PreviewCanvasProps> = ({
     });
 
     const { startResizing: startResizingTopbar, isResizing: isResizingTopbar } = useResizable({
-        initialSize: tokens.topbarHeight || 64,
+        initialSize: (tokens.topbarHeight as number) || 64,
         minSize: 40,
         maxSize: 200,
         direction: 'vertical',
@@ -125,7 +128,7 @@ export const PreviewCanvas: React.FC<PreviewCanvasProps> = ({
 
     return (
         <DesignScope design={{ ...tokens, globalBackgroundImageUrl: undefined }} className="w-full h-full flex flex-col relative overflow-auto bg-[var(--sarak-canvas-bg, #050505)] p-0 custom-scrollbar">
-            <UIContext.Provider value={previewContextValue as any}>
+            <UIContext.Provider value={previewContextValue as SarakUIContextType}>
                 <div className={`flex gap-6 p-6 items-stretch overflow-visible ${isPreviewStacked ? 'flex-col min-w-full min-h-full w-fit h-fit items-center' : 'flex-col xl:flex-row min-w-full min-h-full w-fit h-fit justify-center'}`}>
                     {isDualView ? (
                         <>

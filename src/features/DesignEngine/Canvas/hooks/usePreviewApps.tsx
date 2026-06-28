@@ -1,11 +1,14 @@
 import React, { useMemo } from 'react';
 import { 
-    MockDashboard, MockChat, MockLogs, MockSettings, MockComponents, MockTypography, 
+    MockChat, MockLogs, MockSettings, MockComponents, MockTypography, 
     MockAuth, MockMatrix, MockTable, MockText, MockCharts, MockForms, MockDocuments 
 } from '../MockApps';
+import { MockDashboard } from '../Mocks/DashboardMock';
+import { SarakUIOptions } from '../../../../core/Provider/types';
+import { SarakDesignState } from '../../../../core/Provider/types';
 import { KitchenSinkPreview } from '../KitchenSinkPreview';
 
-export const usePreviewApps = (tokens: any, config: any, previewAnimationStyle: string) => {
+export const usePreviewApps = (tokens: Partial<SarakDesignState>, config: SarakUIOptions, previewAnimationStyle: string) => {
     return useMemo(() => {
         const dummyAnimation = { initial: {}, animate: {}, exit: {} };
         return {

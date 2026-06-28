@@ -26,11 +26,15 @@ export const useResizable = ({
     // Sync callbacks sem precisar de useEffect
     callbacksRef.current = { onResize, onResizeEnd };
 
-    const startResizing = useCallback((e: React.MouseEvent) => {
-        e.preventDefault();
+    const startResizing = useCallback((e?: React.MouseEvent | React.TouchEvent) => {
+        if (e) {
+            e.preventDefault();
+        }
+        
+        const ev = e as React.MouseEvent;
         setState(prev => ({ ...prev, isResizing: true }));
         
-        startPosRef.current = direction === 'horizontal' ? e.clientX : e.clientY;
+        startPosRef.current = direction === 'horizontal' ? (ev ? ev.clientX : 0) : (ev ? ev.clientY : 0);
         startSizeRef.current = state.size;
 
         document.body.style.cursor = direction === 'horizontal' ? 'col-resize' : 'row-resize';

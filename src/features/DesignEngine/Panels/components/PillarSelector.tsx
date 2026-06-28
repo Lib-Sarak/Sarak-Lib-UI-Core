@@ -31,7 +31,7 @@ export const PillarSelector: React.FC<PillarSelectorProps> = ({
                     exit={{ opacity: 0, y: -10 }}
                     className="flex items-center justify-between gap-1 p-1 bg-white/5 rounded-xl border border-white/5"
                 >
-                    {SOVEREIGN_PILLARS.map((pillar: any) => {
+                    {SOVEREIGN_PILLARS.map((pillar: { id: string; label: string; icon: React.ElementType; schemas: string[] }) => {
                         const Icon = pillar.icon;
                         const isActive = activePillar === pillar.id;
                         const hasDraft = pillarsWithDrafts.includes(pillar.id);

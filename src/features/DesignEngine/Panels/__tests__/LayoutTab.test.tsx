@@ -1,9 +1,23 @@
-import { describe, it, expect } from 'vitest';
-import * as ComponentModule from '../LayoutTab';
+import React from 'react';
+import { render } from '@testing-library/react';
+import { describe, it, expect, vi } from 'vitest';
+import { LayoutTab } from '../LayoutTab';
+
+vi.mock('../../../../core/Provider/SarakUIProvider', () => ({
+    useSarakUI: vi.fn(() => ({
+        layoutDensity: 'standard',
+        fontScale: 'p',
+        navigationStyle: 'sidebar',
+        sidebarWidth: 260,
+        headingFont: 'Outfit',
+        bodyFont: 'Inter',
+        applyConfig: vi.fn()
+    }))
+}));
 
 describe('LayoutTab', () => {
-    it('should be defined and export its contents without crashing', () => {
-        expect(ComponentModule).toBeDefined();
-        // TODO: Injetar testes de montagem profunda caso o componente cresça em complexidade
+    it('matches baseline snapshot', () => {
+        const { asFragment } = render(<LayoutTab />);
+        expect(asFragment()).toMatchSnapshot();
     });
 });

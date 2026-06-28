@@ -5,8 +5,10 @@ import { ComponentPreset } from '../../../../core/Design/presets/components/card
 import { Layers, Play, Image as ImageIcon, Video, Grid } from 'lucide-react';
 import { SarakBackgroundRenderer } from '../../../../core/Design/components/SarakBackgroundRenderer';
 
+import { SarakDesignState } from '../../../../core/Provider/types';
+
 interface AtmosphereCatalogProps {
-    onApplyPreset: (presetDesign: Record<string, any>, isPartial?: boolean) => void;
+    onApplyPreset: (presetDesign: Partial<SarakDesignState>, isPartial?: boolean) => void;
     currentMode: string;
 }
 
@@ -103,7 +105,7 @@ const AtmospherePresetPreview = ({ preset, index, onApply, currentMode }: { pres
                             imageUrl={preset.design.globalBackgroundImageUrl}
                             opacity={preset.design.globalBackgroundOpacity}
                             blur={preset.design.globalBackgroundBlur}
-                            blendMode={preset.design.globalBackgroundBlendMode as any}
+                            blendMode={preset.design.globalBackgroundBlendMode as React.CSSProperties['mixBlendMode']}
                             isFixed={false}
                             mode={(preset.design.mode || currentMode) as 'light' | 'dark'}
                             disableOverlay={true}

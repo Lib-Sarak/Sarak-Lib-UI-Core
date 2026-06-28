@@ -179,10 +179,10 @@ Cada **onda** é um conjunto construível em conjunto; a ordem **entre** ondas �
   - [ ] 50 finalização *(`any` residual → 0, docs/README, guia do importador, build/exports)*
 - **Onda 12 — Erradicação de `any`** *(campanha de adequação — núcleo→fora; quita a Regra 1 da Spec 50)*
   - [ ] 60 plano-mestre *(baseline ~484, leis, gate por fatia, roteamento por risco)* — 🟡 em andamento (484→294)
-  - [~] 61 núcleo *(`src/core/**` — Discovery/Provider/Shell + Design leftover feitos; resta só o resíduo difícil `manifest.ts`/`color-engine`/`presets` → Spec 64)* · [~] 62 componentes *(`src/components/**` — `engines/` 100% limpo; resta `atomic/Templates` + `atomic` Cards/Inputs/Icon)* · [ ] 63 design-engine *(`src/features/DesignEngine/**`)*
-  - [~] **65 foundation** *(`SarakDesignState` — gerador tipado + fonte + Shell + DesignInjector ✅; só resíduo difícil → 64)* · [ ] 64 constantes + fechamento *(varredura final → baseline 0)*
+  - [~] 61 núcleo *(`src/core/**` — Discovery/Provider/Shell + Design leftover feitos; resta só o resíduo difícil `manifest.ts`/`color-engine`/`presets` → Spec 64)* · [x] 62 componentes *(`src/components/**` — `engines/` 100% limpo; resta `atomic/Templates` + `atomic` Cards/Inputs/Icon)* · [~] 63 design-engine *(`src/features/DesignEngine/**`)*
+  - [x] **65 foundation** *(`SarakDesignState` — gerador tipado + fonte + Shell + DesignInjector ✅; só resíduo difícil → 64)* · [ ] 64 constantes + fechamento *(varredura final → baseline 0)*
 
-  > **Ordem interna da Onda 12:** parte autônoma da 61 ✅ → **65 (Foundation)** ✅ → restante 61/62/63 (desbloqueadas) → 64. **Estado: 484 → 294** (núcleo quase fechado + `engines/` limpo; rede de caracterização nos builders de charts).
+  > **Ordem interna da Onda 12:** parte autônoma da 61 ✅ → **65 (Foundation)** ✅ → restante 61/62/63 (desbloqueadas) → 64. **Estado: 484 → 137** (núcleo quase fechado + `components/` limpo).
 
 > O **30 (Renderer)** existe em versão **mínima** já na Onda 0 (harness para testar a fundação) e só é **finalizado** na Onda 5, quando o contrato completo (`payload`, `dataStore`, `routes`, interceptors) está pronto.
 

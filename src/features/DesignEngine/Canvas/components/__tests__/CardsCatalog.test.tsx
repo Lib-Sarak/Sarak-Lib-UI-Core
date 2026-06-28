@@ -14,8 +14,9 @@ vi.mock('framer-motion', async () => {
 });
 
 describe('CardsCatalog', () => {
-    it('renderiza o título do catálogo', () => {
-        render(<CardsCatalog onApplyPreset={vi.fn()} currentMode="dark" />);
+    it('renderiza o título do catálogo e faz snapshot', () => {
+        const { container } = render(<CardsCatalog onApplyPreset={vi.fn()} currentMode="dark" />);
         expect(screen.getByText('Pilar: Cards & Surfaces')).toBeInTheDocument();
+        expect(container).toMatchSnapshot();
     });
 });

@@ -14,9 +14,10 @@ vi.mock('framer-motion', async () => {
 });
 
 describe('PresetsCatalog', () => {
-    it('renderiza o fallback de Globais por padrão', () => {
-        render(<PresetsCatalog onApplyPreset={vi.fn()} activeCategory={null} currentMode="dark" />);
+    it('renderiza o fallback de Globais por padrão e faz snapshot', () => {
+        const { container } = render(<PresetsCatalog onApplyPreset={vi.fn()} activeCategory={null} currentMode="dark" />);
         expect(screen.getByText('Globais')).toBeInTheDocument();
+        expect(container).toMatchSnapshot();
     });
 
     it('renderiza o catálogo de Typography quando a categoria for typography', () => {

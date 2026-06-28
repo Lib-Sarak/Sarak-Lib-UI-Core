@@ -61,8 +61,8 @@ export const PresetCard = ({ theme, currentMode, onApply, index }: { theme: Them
             {/* Top Showcase Area - Mini Dashboard */}
             <div
                 className="h-48 w-full relative flex transition-colors overflow-hidden"
-                style={{ backgroundColor: bgBase, ...variables as any }}
-                {...attributes as any}
+                style={{ backgroundColor: bgBase, ...(variables as React.CSSProperties) }}
+                {...(attributes as React.HTMLAttributes<HTMLDivElement>)}
             >
                 {/* Mini Shell Navigation */}
                 {design.navigationStyle === 'sidebar' ? (
@@ -94,14 +94,14 @@ export const PresetCard = ({ theme, currentMode, onApply, index }: { theme: Them
                         {/* Top Row: 3 cards */}
                         <div className="flex gap-3 h-[45%]">
                             {/* Card 1: Text */}
-                            <div className="flex-1 relative overflow-hidden flex flex-col p-2 gap-1.5 shadow-xl transition-all" style={cardStyle as any}>
+                            <div className="flex-1 relative overflow-hidden flex flex-col p-2 gap-1.5 shadow-xl transition-all" style={cardStyle as React.CSSProperties}>
                                 {textureLayer}
                                 <div className="h-1.5 w-10 bg-white/20 rounded-full relative z-10" />
                                 <div className="h-2.5 w-16 bg-white/60 rounded-full mt-auto relative z-10" />
                             </div>
 
                             {/* Card 2: Filter/Toggles */}
-                            <div className="flex-[1.2] relative overflow-hidden flex flex-col p-2 gap-1.5 shadow-xl transition-all" style={cardStyle as any}>
+                            <div className="flex-[1.2] relative overflow-hidden flex flex-col p-2 gap-1.5 shadow-xl transition-all" style={cardStyle as React.CSSProperties}>
                                 {textureLayer}
                                 <div className="h-1.5 w-12 bg-white/20 rounded-full mb-1 relative z-10" />
                                 <div className="flex items-center justify-between mt-auto relative z-10">
@@ -115,7 +115,7 @@ export const PresetCard = ({ theme, currentMode, onApply, index }: { theme: Them
                             </div>
 
                             {/* Card 3: Status */}
-                            <div className="flex-1 relative overflow-hidden flex flex-col p-2 justify-center items-center shadow-xl transition-all" style={cardStyle as any}>
+                            <div className="flex-1 relative overflow-hidden flex flex-col p-2 justify-center items-center shadow-xl transition-all" style={cardStyle as React.CSSProperties}>
                                 {textureLayer}
                                 <div className="w-6 h-6 rounded-full border-[2px] border-t-transparent relative z-10" style={{ borderColor: `${secondary} transparent ${secondary} ${secondary}` }} />
                             </div>
@@ -124,7 +124,7 @@ export const PresetCard = ({ theme, currentMode, onApply, index }: { theme: Them
                         {/* Bottom Row: 2 cards */}
                         <div className="flex gap-3 h-[55%]">
                             {/* Card 4: Bar Chart */}
-                            <div className="flex-[2] relative overflow-hidden flex flex-col p-2 shadow-xl transition-all" style={cardStyle as any}>
+                            <div className="flex-[2] relative overflow-hidden flex flex-col p-2 shadow-xl transition-all" style={cardStyle as React.CSSProperties}>
                                 {textureLayer}
                                 <div className="h-1.5 w-16 bg-white/20 rounded-full mb-auto relative z-10" />
                                 <div className="flex items-end justify-between gap-1 h-8 px-1 relative z-10 mt-2">
@@ -135,7 +135,7 @@ export const PresetCard = ({ theme, currentMode, onApply, index }: { theme: Them
                             </div>
 
                             {/* Card 5: Logs */}
-                            <div className="flex-1 relative overflow-hidden flex flex-col p-2 gap-1.5 shadow-xl transition-all" style={cardStyle as any}>
+                            <div className="flex-1 relative overflow-hidden flex flex-col p-2 gap-1.5 shadow-xl transition-all" style={cardStyle as React.CSSProperties}>
                                 {textureLayer}
                                 <div className="h-1.5 w-12 bg-white/20 rounded-full mb-1.5 relative z-10" />
                                 <div className="h-0.5 w-full bg-white/10 rounded-full relative z-10" />

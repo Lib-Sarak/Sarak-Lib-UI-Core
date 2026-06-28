@@ -1,0 +1,425 @@
+// Vitest Snapshot v1, https://vitest.dev/guide/snapshot.html
+
+exports[`AdvancedTab > matches baseline snapshot 1`] = `
+<DocumentFragment>
+  <div
+    class="flex flex-col h-full animate-in fade-in duration-500 overflow-y-auto custom-scrollbar p-8"
+  >
+    <div
+      class="grid grid-cols-1 md:grid-cols-2 gap-8"
+    >
+      <div
+        class="space-y-6"
+      >
+        <div
+          class="flex items-center gap-3"
+        >
+          <div
+            class="p-2 bg-indigo-500/10 rounded-lg text-indigo-400"
+          >
+            <svg
+              class="w-4 h-4"
+              fill="none"
+              height="24"
+              stroke="currentColor"
+              stroke-linecap="round"
+              stroke-linejoin="round"
+              stroke-width="2"
+              viewBox="0 0 24 24"
+              width="24"
+              xmlns="http://www.w3.org/2000/svg"
+            >
+              <path
+                d="M12.22 2h-.44a2 2 0 0 0-2 2v.18a2 2 0 0 1-1 1.73l-.43.25a2 2 0 0 1-2 0l-.15-.08a2 2 0 0 0-2.73.73l-.22.38a2 2 0 0 0 .73 2.73l.15.1a2 2 0 0 1 1 1.72v.51a2 2 0 0 1-1 1.74l-.15.09a2 2 0 0 0-.73 2.73l.22.38a2 2 0 0 0 2.73.73l.15-.08a2 2 0 0 1 2 0l.43.25a2 2 0 0 1 1 1.73V20a2 2 0 0 0 2 2h.44a2 2 0 0 0 2-2v-.18a2 2 0 0 1 1-1.73l.43-.25a2 2 0 0 1 2 0l.15.08a2 2 0 0 0 2.73-.73l.22-.39a2 2 0 0 0-.73-2.73l-.15-.08a2 2 0 0 1-1-1.74v-.5a2 2 0 0 1 1-1.74l.15-.09a2 2 0 0 0 .73-2.73l-.22-.38a2 2 0 0 0-2.73-.73l-.15.08a2 2 0 0 1-2 0l-.43-.25a2 2 0 0 1-1-1.73V4a2 2 0 0 0-2-2z"
+              />
+              <circle
+                cx="12"
+                cy="12"
+                r="3"
+              />
+            </svg>
+          </div>
+          <h3
+            class="text-sm font-black uppercase tracking-widest italic text-white/90"
+          >
+            Sovereign Engine Status
+          </h3>
+        </div>
+        <div
+          class="grid grid-cols-1 sm:grid-cols-2 gap-3"
+        >
+          <div
+            class="flex flex-col gap-2 p-4 rounded-2xl bg-white/5 border border-white/5"
+          >
+            <div
+              class="flex items-center gap-2 text-white/20"
+            >
+              <svg
+                class="w-3.5 h-3.5"
+                fill="none"
+                height="24"
+                stroke="currentColor"
+                stroke-linecap="round"
+                stroke-linejoin="round"
+                stroke-width="2"
+                viewBox="0 0 24 24"
+                width="24"
+                xmlns="http://www.w3.org/2000/svg"
+              >
+                <path
+                  d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10"
+                />
+              </svg>
+              <span
+                class="text-2xs font-black uppercase tracking-widest"
+              >
+                ID do Sistema
+              </span>
+            </div>
+            <span
+              class="text-xs font-mono font-bold tracking-tight text-white/70"
+            >
+              TEST-SYSTEM
+            </span>
+          </div>
+          <div
+            class="flex flex-col gap-2 p-4 rounded-2xl bg-white/5 border border-white/5"
+          >
+            <div
+              class="flex items-center gap-2 text-white/20"
+            >
+              <svg
+                class="w-3.5 h-3.5"
+                fill="none"
+                height="24"
+                stroke="currentColor"
+                stroke-linecap="round"
+                stroke-linejoin="round"
+                stroke-width="2"
+                viewBox="0 0 24 24"
+                width="24"
+                xmlns="http://www.w3.org/2000/svg"
+              >
+                <path
+                  d="M22 12h-4l-3 9L9 3l-3 9H2"
+                />
+              </svg>
+              <span
+                class="text-2xs font-black uppercase tracking-widest"
+              >
+                Status da Engine
+              </span>
+            </div>
+            <span
+              class="text-xs font-mono font-bold tracking-tight text-emerald-400"
+            >
+              HIDRATADA
+            </span>
+          </div>
+          <div
+            class="flex flex-col gap-2 p-4 rounded-2xl bg-white/5 border border-white/5"
+          >
+            <div
+              class="flex items-center gap-2 text-white/20"
+            >
+              <svg
+                class="w-3.5 h-3.5"
+                fill="none"
+                height="24"
+                stroke="currentColor"
+                stroke-linecap="round"
+                stroke-linejoin="round"
+                stroke-width="2"
+                viewBox="0 0 24 24"
+                width="24"
+                xmlns="http://www.w3.org/2000/svg"
+              >
+                <rect
+                  height="16"
+                  rx="2"
+                  width="16"
+                  x="4"
+                  y="4"
+                />
+                <rect
+                  height="6"
+                  width="6"
+                  x="9"
+                  y="9"
+                />
+                <path
+                  d="M15 2v2"
+                />
+                <path
+                  d="M15 20v2"
+                />
+                <path
+                  d="M2 15h2"
+                />
+                <path
+                  d="M2 9h2"
+                />
+                <path
+                  d="M20 15h2"
+                />
+                <path
+                  d="M20 9h2"
+                />
+                <path
+                  d="M9 2v2"
+                />
+                <path
+                  d="M9 20v2"
+                />
+              </svg>
+              <span
+                class="text-2xs font-black uppercase tracking-widest"
+              >
+                Módulos Ativos
+              </span>
+            </div>
+            <span
+              class="text-xs font-mono font-bold tracking-tight text-white/70"
+            >
+              0
+            </span>
+          </div>
+          <div
+            class="flex flex-col gap-2 p-4 rounded-2xl bg-white/5 border border-white/5"
+          >
+            <div
+              class="flex items-center gap-2 text-white/20"
+            >
+              <svg
+                class="w-3.5 h-3.5"
+                fill="none"
+                height="24"
+                stroke="currentColor"
+                stroke-linecap="round"
+                stroke-linejoin="round"
+                stroke-width="2"
+                viewBox="0 0 24 24"
+                width="24"
+                xmlns="http://www.w3.org/2000/svg"
+              >
+                <polygon
+                  points="13 2 3 14 12 14 11 22 21 10 12 10 13 2"
+                />
+              </svg>
+              <span
+                class="text-2xs font-black uppercase tracking-widest"
+              >
+                SDT Version
+              </span>
+            </div>
+            <span
+              class="text-xs font-mono font-bold tracking-tight text-white/70"
+            >
+              v1.0 (Elite)
+            </span>
+          </div>
+        </div>
+        <div
+          class="p-4 rounded-2xl bg-indigo-500/5 border border-indigo-500/10 flex items-start gap-4"
+        >
+          <svg
+            class="w-5 h-5 text-indigo-400 shrink-0 mt-1"
+            fill="none"
+            height="24"
+            stroke="currentColor"
+            stroke-linecap="round"
+            stroke-linejoin="round"
+            stroke-width="2"
+            viewBox="0 0 24 24"
+            width="24"
+            xmlns="http://www.w3.org/2000/svg"
+          >
+            <circle
+              cx="12"
+              cy="12"
+              r="10"
+            />
+            <path
+              d="M9.09 9a3 3 0 0 1 5.83 1c0 2-3 3-3 3"
+            />
+            <path
+              d="M12 17h.01"
+            />
+          </svg>
+          <div
+            class="space-y-2"
+          >
+            <h4
+              class="text-2xs font-bold text-white/80 uppercase"
+            >
+              Sobre a Sarak Matrix v5.0
+            </h4>
+            <p
+              class="text-2xs text-white/40 leading-relaxed uppercase font-medium"
+            >
+              O Motor Elite SDT gerencia 100% da visualidade através de tokens source-driven. Qualquer alteração aqui reflete em todos os módulos registrados instantaneamente via Context Bridge.
+            </p>
+          </div>
+        </div>
+      </div>
+      <div
+        class="space-y-6"
+      >
+        <div
+          class="flex items-center gap-3"
+        >
+          <div
+            class="p-2 bg-rose-500/10 rounded-lg text-rose-400"
+          >
+            <svg
+              class="w-4 h-4"
+              fill="none"
+              height="24"
+              stroke="currentColor"
+              stroke-linecap="round"
+              stroke-linejoin="round"
+              stroke-width="2"
+              viewBox="0 0 24 24"
+              width="24"
+              xmlns="http://www.w3.org/2000/svg"
+            >
+              <path
+                d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10"
+              />
+            </svg>
+          </div>
+          <h3
+            class="text-sm font-black uppercase tracking-widest italic text-white/90"
+          >
+            Gestão de Persistência
+          </h3>
+        </div>
+        <div
+          class="p-6 rounded-3xl bg-rose-500/5 border border-rose-500/10 space-y-6"
+        >
+          <div
+            class="flex items-center gap-4"
+          >
+            <div
+              class="p-3 bg-rose-500 rounded-2xl text-white shadow-lg shadow-rose-900/20"
+            >
+              <svg
+                class="w-6 h-6"
+                fill="none"
+                height="24"
+                stroke="currentColor"
+                stroke-linecap="round"
+                stroke-linejoin="round"
+                stroke-width="2"
+                viewBox="0 0 24 24"
+                width="24"
+                xmlns="http://www.w3.org/2000/svg"
+              >
+                <line
+                  x1="22"
+                  x2="2"
+                  y1="12"
+                  y2="12"
+                />
+                <path
+                  d="M5.45 5.11 2 12v6a2 2 0 0 0 2 2h16a2 2 0 0 0 2-2v-6l-3.45-6.89A2 2 0 0 0 16.76 4H7.24a2 2 0 0 0-1.79 1.11z"
+                />
+                <line
+                  x1="6"
+                  x2="6.01"
+                  y1="16"
+                  y2="16"
+                />
+                <line
+                  x1="10"
+                  x2="10.01"
+                  y1="16"
+                  y2="16"
+                />
+              </svg>
+            </div>
+            <div>
+              <h4
+                class="text-xs font-black uppercase tracking-widest text-white/90"
+              >
+                Factory Hard Reset
+              </h4>
+              <p
+                class="text-2xs text-white/30 uppercase font-medium"
+              >
+                Limpar cache local e configurações de tema
+              </p>
+            </div>
+          </div>
+          <button
+            class="w-full py-4 rounded-2xl bg-rose-500/10 hover:bg-rose-500 text-rose-500 hover:text-white border border-rose-500/20 transition-all duration-300 flex items-center justify-center gap-3 group disabled:opacity-50"
+          >
+            <svg
+              class="w-4 h-4 group-hover:rotate-180 transition-transform duration-500"
+              fill="none"
+              height="24"
+              stroke="currentColor"
+              stroke-linecap="round"
+              stroke-linejoin="round"
+              stroke-width="2"
+              viewBox="0 0 24 24"
+              width="24"
+              xmlns="http://www.w3.org/2000/svg"
+            >
+              <path
+                d="M3 12a9 9 0 0 1 9-9 9.75 9.75 0 0 1 6.74 2.74L21 8"
+              />
+              <path
+                d="M21 3v5h-5"
+              />
+              <path
+                d="M21 12a9 9 0 0 1-9 9 9.75 9.75 0 0 1-6.74-2.74L3 16"
+              />
+              <path
+                d="M8 16H3v5"
+              />
+            </svg>
+            <span
+              class="text-2xs font-black uppercase tracking-[0.2em]"
+            >
+              Restaurar Padrões
+            </span>
+          </button>
+          <div
+            class="text-center"
+          >
+            <span
+              class="text-3xs text-white/10 uppercase font-black tracking-widest"
+            >
+              Ação Irreversível • Sincronize com a Nuvem Antes
+            </span>
+          </div>
+        </div>
+        <div
+          class="space-y-4 pt-4"
+        >
+          <div
+            class="flex items-center justify-between text-2xs font-black uppercase tracking-widest text-white/40"
+          >
+            <span>
+              Sincronização Cloud
+            </span>
+            <span
+              class="text-emerald-400"
+            >
+              Ativa (v2)
+            </span>
+          </div>
+          <div
+            class="h-1 bg-white/5 rounded-full overflow-hidden"
+          >
+            <div
+              class="h-full w-full bg-emerald-500/50 shadow-[0_0_10px_rgba(16,185,129,0.3)]"
+            />
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</DocumentFragment>
+`;

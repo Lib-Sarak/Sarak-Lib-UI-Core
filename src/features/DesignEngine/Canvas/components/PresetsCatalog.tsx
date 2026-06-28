@@ -14,9 +14,11 @@ import { ButtonPresetPreview } from './ButtonPresetPreview';
 import { InputPresetPreview } from './InputPresetPreview';
 import { PresetCard } from './PresetCard';
 
+import { SarakDesignState } from '../../../../core/Provider/types';
+
 interface PresetsCatalogProps {
-    onApplyPreset: (presetDesign: Record<string, any>, isPartial?: boolean) => void;
-    onApplyFullTheme?: (design: Record<string, any>) => void;
+    onApplyPreset: (presetDesign: Partial<SarakDesignState>, isPartial?: boolean) => void;
+    onApplyFullTheme?: (design: Partial<SarakDesignState>) => void;
     activeCategory: string | null;
     currentMode: string;
 }

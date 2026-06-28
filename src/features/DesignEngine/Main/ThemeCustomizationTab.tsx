@@ -9,7 +9,7 @@ import {
 
 import { useSarakUI } from '../../../core/Provider/SarakUIProvider';
 import { PreviewCanvas } from '../Canvas/PreviewCanvas';
-import { DesignScope } from '../../../core/Design/components/DesignScope';
+import { SarakUIOptions, SarakUIContextType } from '../../../core/Provider/types';
 
 import { MASTER_DESIGN_MAP } from '../../../core/Design/master-map';
 import { useThemeCustomizationData } from './hooks/useThemeCustomizationData';
@@ -198,7 +198,7 @@ export const ThemeCustomizationTab: React.FC = () => {
                 <PreviewCanvas
                     previewDevice={previewDevice}
                     activePreviewApp={activePreviewApp}
-                    config={draft}
+                    config={draft as unknown as SarakUIOptions}
                     mode={draft.mode || sarak.mode || 'dark'}
                     onUpdateDraft={updateDraft}
                     sarak={sarak}

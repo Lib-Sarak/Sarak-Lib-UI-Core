@@ -124,7 +124,7 @@ export const LayoutTab: React.FC = () => {
                                     onChange={(e) => setHeadingFont(e.target.value)}
                                 >
                                     <option value="">(Usar Padrão do Tema)</option>
-                                    {THEME_FONTS.map((f: any) => <option key={f.id} value={f.value}>{f.name}</option>)}
+                                    {THEME_FONTS.map((f: { id: string, value: string, name: string }) => <option key={f.id} value={f.value}>{f.name}</option>)}
                                 </SarakSelect>
                             </div>
 
@@ -135,7 +135,7 @@ export const LayoutTab: React.FC = () => {
                                     onChange={(e) => setBodyFont(e.target.value)}
                                 >
                                     <option value="">(Usar Padrão do Tema)</option>
-                                    {THEME_FONTS.map((f: any) => <option key={f.id} value={f.value}>{f.name}</option>)}
+                                    {THEME_FONTS.map((f: { id: string, value: string, name: string }) => <option key={f.id} value={f.value}>{f.name}</option>)}
                                 </SarakSelect>
                             </div>
                         </div>

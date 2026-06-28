@@ -1,9 +1,24 @@
-import { describe, it, expect } from 'vitest';
-import * as ComponentModule from '../AdvancedTab';
+import React from 'react';
+import { render } from '@testing-library/react';
+import { describe, it, expect, vi } from 'vitest';
+import { AdvancedTab } from '../AdvancedTab';
+
+vi.mock('../../../../core/Provider/SarakUIProvider', () => ({
+    useSarakUI: vi.fn(() => ({
+        systemId: 'TEST-SYSTEM',
+        isHydrated: true,
+        registeredModules: [],
+        applyConfig: vi.fn()
+    }))
+}));
+
+vi.mock('../../../../core/Discovery/registry', () => ({
+    getRegisteredModules: vi.fn(() => [])
+}));
 
 describe('AdvancedTab', () => {
-    it('should be defined and export its contents without crashing', () => {
-        expect(ComponentModule).toBeDefined();
-        // TODO: Injetar testes de montagem profunda caso o componente cresça em complexidade
+    it('matches baseline snapshot', () => {
+        const { asFragment } = render(<AdvancedTab />);
+        expect(asFragment()).toMatchSnapshot();
     });
 });

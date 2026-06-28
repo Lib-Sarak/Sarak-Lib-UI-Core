@@ -11,9 +11,10 @@ vi.mock('framer-motion', async () => {
 
 describe('AtmosphereCatalog', () => {
     it('renderiza os títulos e abas do catálogo', () => {
-        render(<AtmosphereCatalog onApplyPreset={vi.fn()} currentMode="dark" />);
+        const { container } = render(<AtmosphereCatalog onApplyPreset={vi.fn()} currentMode="dark" />);
         expect(screen.getByText('Pilar: Atmosphere & Textures')).toBeInTheDocument();
         expect(screen.getByText('Mídia Base')).toBeInTheDocument();
         expect(screen.getByText('Texturas')).toBeInTheDocument();
+        expect(container).toMatchSnapshot();
     });
 });

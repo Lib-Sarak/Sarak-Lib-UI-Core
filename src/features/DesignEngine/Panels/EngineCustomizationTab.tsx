@@ -9,6 +9,8 @@ import {
 import { HelpTooltip } from '../components/DesignControls';
 import { SarakSlider, SarakSwitch } from '../../../components/atomic/Inputs';
 
+import { SarakThemePayload } from '../../../core/Provider/types';
+
 /**
  * EngineCustomizationTab v7.0
  * Specialized controls for Sarak Prime Engines (Chat, Flow, Charts).
@@ -17,9 +19,9 @@ export const EngineCustomizationTab: React.FC = () => {
     const sarak = useSarakUI();
     const { applyConfig, ...design } = sarak;
 
-    const update = (key: string, val: any) => applyConfig({ [key]: val });
+    const update = (key: keyof SarakThemePayload, val: string | number | boolean) => applyConfig({ [key]: val } as Partial<SarakThemePayload>);
 
-    const Section = ({ title, icon: Icon, children }: any) => (
+    const Section = ({ title, icon: Icon, children }: { title: string, icon: React.ElementType, children: React.ReactNode }) => (
         <div className="p-6 border-b border-white/5 last:border-0">
             <div className="flex items-center gap-3 mb-6">
                 <div className="p-2 rounded-lg bg-[var(--theme-primary)]/10 text-[var(--theme-primary)]">
@@ -31,7 +33,7 @@ export const EngineCustomizationTab: React.FC = () => {
         </div>
     );
 
-    const Control = ({ label, children }: any) => (
+    const Control = ({ label, children }: { label: string, children: React.ReactNode }) => (
         <div className="space-y-2">
             <label className="text-2xs font-black uppercase tracking-widest text-white/30 ml-1 flex items-center gap-2">
                 {label}

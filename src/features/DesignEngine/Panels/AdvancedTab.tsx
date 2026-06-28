@@ -4,12 +4,12 @@ import { getRegisteredModules } from '../../../core/Discovery/registry';
 import { Settings, Cpu, HardDrive, RefreshCw, Zap, Shield, HelpCircle, Activity } from 'lucide-react';
 
 export const AdvancedTab: React.FC = () => {
-    const sarak = useSarakUI();
+    const sarak = useSarakUI() as ReturnType<typeof useSarakUI> & { systemId?: string };
     
     // Destruturação com fallbacks para modo standalone
-    const systemId = (sarak as any).systemId || 'STANDALONE-MODE';
-    const isHydrated = (sarak as any).isHydrated ?? true;
-    const registeredModules = (sarak as any).registeredModules || getRegisteredModules();
+    const systemId = sarak.systemId || 'STANDALONE-MODE';
+    const isHydrated = sarak.isHydrated ?? true;
+    const registeredModules = sarak.registeredModules || getRegisteredModules();
 
 
     const [isResetting, setIsResetting] = useState(false);

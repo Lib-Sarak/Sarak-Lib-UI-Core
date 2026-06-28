@@ -1,0 +1,553 @@
+// Vitest Snapshot v1, https://vitest.dev/guide/snapshot.html
+
+exports[`EngineCustomizationTab > matches baseline snapshot 1`] = `
+<DocumentFragment>
+  <div
+    class="flex flex-col h-full animate-in fade-in slide-in-from-right-4 duration-500 overflow-y-auto custom-scrollbar-sidebar"
+  >
+    <div
+      class="p-6 border-b border-white/5 last:border-0"
+    >
+      <div
+        class="flex items-center gap-3 mb-6"
+      >
+        <div
+          class="p-2 rounded-lg bg-[var(--theme-primary)]/10 text-[var(--theme-primary)]"
+        >
+          <svg
+            class="lucide lucide-message-square"
+            fill="none"
+            height="16"
+            stroke="currentColor"
+            stroke-linecap="round"
+            stroke-linejoin="round"
+            stroke-width="2"
+            viewBox="0 0 24 24"
+            width="16"
+            xmlns="http://www.w3.org/2000/svg"
+          >
+            <path
+              d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"
+            />
+          </svg>
+        </div>
+        <h3
+          class="text-xs font-black uppercase tracking-[0.2em] italic text-white/90"
+        >
+          Chat Engine
+        </h3>
+      </div>
+      <div
+        class="space-y-6"
+      >
+        <div
+          class="space-y-2"
+        >
+          <label
+            class="text-2xs font-black uppercase tracking-widest text-white/30 ml-1 flex items-center gap-2"
+          >
+            Estilo de Bolha
+            <div
+              class="relative inline-flex items-center"
+            >
+              <button
+                class="text-[var(--theme-muted)] hover:text-[var(--theme-primary)] transition-colors focus:outline-none p-1 rounded-full hover:bg-[var(--theme-layer)] cursor-help"
+              >
+                <svg
+                  class="lucide lucide-help-circle"
+                  fill="none"
+                  height="10"
+                  stroke="currentColor"
+                  stroke-linecap="round"
+                  stroke-linejoin="round"
+                  stroke-width="2"
+                  viewBox="0 0 24 24"
+                  width="10"
+                  xmlns="http://www.w3.org/2000/svg"
+                >
+                  <circle
+                    cx="12"
+                    cy="12"
+                    r="10"
+                  />
+                  <path
+                    d="M9.09 9a3 3 0 0 1 5.83 1c0 2-3 3-3 3"
+                  />
+                  <path
+                    d="M12 17h.01"
+                  />
+                </svg>
+              </button>
+            </div>
+          </label>
+          <div
+            class="grid grid-cols-3 gap-2"
+          >
+            <button
+              class="py-3 rounded-xl border text-2xs font-black uppercase transition-all bg-[var(--theme-primary)] border-transparent text-white shadow-lg"
+            >
+              Glass
+            </button>
+            <button
+              class="py-3 rounded-xl border text-2xs font-black uppercase transition-all bg-white/5 border-white/10 text-white/40 hover:text-white/60"
+            >
+              Solid
+            </button>
+            <button
+              class="py-3 rounded-xl border text-2xs font-black uppercase transition-all bg-white/5 border-white/10 text-white/40 hover:text-white/60"
+            >
+              Minimal
+            </button>
+          </div>
+        </div>
+        <div
+          class="grid grid-cols-1 gap-4"
+        >
+          <div
+            class="space-y-3"
+          >
+            <div
+              class="flex justify-between items-center text-2xs font-black uppercase text-white/30 mb-2"
+            >
+              <span>
+                Velocidade de Digitação
+              </span>
+            </div>
+            <div
+              class="flex flex-col w-full"
+              style="gap: var(--sx-spacing-xs);"
+            >
+              <div
+                class="flex justify-between items-center w-full text-2xs font-black uppercase tracking-widest text-[var(--sx-color-text-muted)]"
+              >
+                <span
+                  style="color: var(--sarak-switch-active-bg, var(--sx-color-primary-base));"
+                >
+                  0.05s
+                </span>
+              </div>
+              <input
+                aria-valuetext="0.05s"
+                class="w-full h-1 rounded-full appearance-none cursor-pointer"
+                max="0.5"
+                min="0"
+                step="0.01"
+                style="background-color: rgba(255, 255, 255, 0.1); accent-color: var(--sarak-switch-active-bg, var(--sx-color-primary-base));"
+                type="range"
+                value="0.05"
+              />
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+    <div
+      class="p-6 border-b border-white/5 last:border-0"
+    >
+      <div
+        class="flex items-center gap-3 mb-6"
+      >
+        <div
+          class="p-2 rounded-lg bg-[var(--theme-primary)]/10 text-[var(--theme-primary)]"
+        >
+          <svg
+            class="lucide lucide-network"
+            fill="none"
+            height="16"
+            stroke="currentColor"
+            stroke-linecap="round"
+            stroke-linejoin="round"
+            stroke-width="2"
+            viewBox="0 0 24 24"
+            width="16"
+            xmlns="http://www.w3.org/2000/svg"
+          >
+            <rect
+              height="6"
+              rx="1"
+              width="6"
+              x="16"
+              y="16"
+            />
+            <rect
+              height="6"
+              rx="1"
+              width="6"
+              x="2"
+              y="16"
+            />
+            <rect
+              height="6"
+              rx="1"
+              width="6"
+              x="9"
+              y="2"
+            />
+            <path
+              d="M5 16v-3a1 1 0 0 1 1-1h12a1 1 0 0 1 1 1v3"
+            />
+            <path
+              d="M12 12V8"
+            />
+          </svg>
+        </div>
+        <h3
+          class="text-xs font-black uppercase tracking-[0.2em] italic text-white/90"
+        >
+          Flow Engine
+        </h3>
+      </div>
+      <div
+        class="space-y-6"
+      >
+        <div
+          class="space-y-2"
+        >
+          <label
+            class="text-2xs font-black uppercase tracking-widest text-white/30 ml-1 flex items-center gap-2"
+          >
+            Estilo do Grid
+            <div
+              class="relative inline-flex items-center"
+            >
+              <button
+                class="text-[var(--theme-muted)] hover:text-[var(--theme-primary)] transition-colors focus:outline-none p-1 rounded-full hover:bg-[var(--theme-layer)] cursor-help"
+              >
+                <svg
+                  class="lucide lucide-help-circle"
+                  fill="none"
+                  height="10"
+                  stroke="currentColor"
+                  stroke-linecap="round"
+                  stroke-linejoin="round"
+                  stroke-width="2"
+                  viewBox="0 0 24 24"
+                  width="10"
+                  xmlns="http://www.w3.org/2000/svg"
+                >
+                  <circle
+                    cx="12"
+                    cy="12"
+                    r="10"
+                  />
+                  <path
+                    d="M9.09 9a3 3 0 0 1 5.83 1c0 2-3 3-3 3"
+                  />
+                  <path
+                    d="M12 17h.01"
+                  />
+                </svg>
+              </button>
+            </div>
+          </label>
+          <div
+            class="grid grid-cols-2 gap-2"
+          >
+            <button
+              class="py-3 rounded-xl border text-2xs font-black uppercase transition-all bg-[var(--theme-primary)] border-transparent text-white shadow-lg"
+            >
+              Dots (Standard)
+            </button>
+            <button
+              class="py-3 rounded-xl border text-2xs font-black uppercase transition-all bg-white/5 border-white/10 text-white/40 hover:text-white/60"
+            >
+              Lines (Technical)
+            </button>
+          </div>
+        </div>
+        <div
+          class="space-y-3"
+        >
+          <div
+            class="flex justify-between items-center text-2xs font-black uppercase text-white/30 mb-2"
+          >
+            <span>
+              Raio das Nodes
+            </span>
+          </div>
+          <div
+            class="flex flex-col w-full"
+            style="gap: var(--sx-spacing-xs);"
+          >
+            <div
+              class="flex justify-between items-center w-full text-2xs font-black uppercase tracking-widest text-[var(--sx-color-text-muted)]"
+            >
+              <span
+                style="color: var(--sarak-switch-active-bg, var(--sx-color-primary-base));"
+              >
+                12px
+              </span>
+            </div>
+            <input
+              aria-valuetext="12px"
+              class="w-full h-1 rounded-full appearance-none cursor-pointer"
+              max="40"
+              min="0"
+              step="1"
+              style="background-color: rgba(255, 255, 255, 0.1); accent-color: var(--sarak-switch-active-bg, var(--sx-color-primary-base));"
+              type="range"
+              value="12"
+            />
+          </div>
+        </div>
+      </div>
+    </div>
+    <div
+      class="p-6 border-b border-white/5 last:border-0"
+    >
+      <div
+        class="flex items-center gap-3 mb-6"
+      >
+        <div
+          class="p-2 rounded-lg bg-[var(--theme-primary)]/10 text-[var(--theme-primary)]"
+        >
+          <svg
+            class="lucide lucide-bar-chart"
+            fill="none"
+            height="16"
+            stroke="currentColor"
+            stroke-linecap="round"
+            stroke-linejoin="round"
+            stroke-width="2"
+            viewBox="0 0 24 24"
+            width="16"
+            xmlns="http://www.w3.org/2000/svg"
+          >
+            <line
+              x1="12"
+              x2="12"
+              y1="20"
+              y2="10"
+            />
+            <line
+              x1="18"
+              x2="18"
+              y1="20"
+              y2="4"
+            />
+            <line
+              x1="6"
+              x2="6"
+              y1="20"
+              y2="16"
+            />
+          </svg>
+        </div>
+        <h3
+          class="text-xs font-black uppercase tracking-[0.2em] italic text-white/90"
+        >
+          Chart Engine
+        </h3>
+      </div>
+      <div
+        class="space-y-6"
+      >
+        <div
+          class="space-y-2"
+        >
+          <label
+            class="text-2xs font-black uppercase tracking-widest text-white/30 ml-1 flex items-center gap-2"
+          >
+            Tipo de Visualização
+            <div
+              class="relative inline-flex items-center"
+            >
+              <button
+                class="text-[var(--theme-muted)] hover:text-[var(--theme-primary)] transition-colors focus:outline-none p-1 rounded-full hover:bg-[var(--theme-layer)] cursor-help"
+              >
+                <svg
+                  class="lucide lucide-help-circle"
+                  fill="none"
+                  height="10"
+                  stroke="currentColor"
+                  stroke-linecap="round"
+                  stroke-linejoin="round"
+                  stroke-width="2"
+                  viewBox="0 0 24 24"
+                  width="10"
+                  xmlns="http://www.w3.org/2000/svg"
+                >
+                  <circle
+                    cx="12"
+                    cy="12"
+                    r="10"
+                  />
+                  <path
+                    d="M9.09 9a3 3 0 0 1 5.83 1c0 2-3 3-3 3"
+                  />
+                  <path
+                    d="M12 17h.01"
+                  />
+                </svg>
+              </button>
+            </div>
+          </label>
+          <div
+            class="grid grid-cols-2 gap-2"
+          >
+            <button
+              class="py-3 rounded-xl border text-2xs font-black uppercase transition-all bg-[var(--theme-primary)] border-transparent text-white shadow-lg"
+            >
+              Lines
+            </button>
+            <button
+              class="py-3 rounded-xl border text-2xs font-black uppercase transition-all bg-white/5 border-white/10 text-white/40 hover:text-white/60"
+            >
+              Bars
+            </button>
+            <button
+              class="py-3 rounded-xl border text-2xs font-black uppercase transition-all bg-white/5 border-white/10 text-white/40 hover:text-white/60"
+            >
+              Pie/Donut
+            </button>
+            <button
+              class="py-3 rounded-xl border text-2xs font-black uppercase transition-all bg-white/5 border-white/10 text-white/40 hover:text-white/60"
+            >
+              Radar
+            </button>
+            <button
+              class="py-3 rounded-xl border text-2xs font-black uppercase transition-all bg-white/5 border-white/10 text-white/40 hover:text-white/60"
+            >
+              Scatter
+            </button>
+            <button
+              class="py-3 rounded-xl border text-2xs font-black uppercase transition-all bg-white/5 border-white/10 text-white/40 hover:text-white/60"
+            >
+              Heatmap
+            </button>
+            <button
+              class="py-3 rounded-xl border text-2xs font-black uppercase transition-all bg-white/5 border-white/10 text-white/40 hover:text-white/60"
+            >
+              Gauge
+            </button>
+          </div>
+        </div>
+        <div
+          class="flex items-center justify-between p-4 rounded-2xl bg-white/5 border border-white/10 group"
+        >
+          <div
+            class="flex flex-col gap-0.5"
+          >
+            <span
+              class="text-[10px] font-black uppercase tracking-widest text-white/50 flex items-center gap-1.5"
+            >
+              Mostrar Grid de Fundo
+              <div
+                class="relative inline-flex items-center"
+              >
+                <button
+                  class="text-[var(--theme-muted)] hover:text-[var(--theme-primary)] transition-colors focus:outline-none p-1 rounded-full hover:bg-[var(--theme-layer)] cursor-help"
+                >
+                  <svg
+                    class="lucide lucide-help-circle"
+                    fill="none"
+                    height="10"
+                    stroke="currentColor"
+                    stroke-linecap="round"
+                    stroke-linejoin="round"
+                    stroke-width="2"
+                    viewBox="0 0 24 24"
+                    width="10"
+                    xmlns="http://www.w3.org/2000/svg"
+                  >
+                    <circle
+                      cx="12"
+                      cy="12"
+                      r="10"
+                    />
+                    <path
+                      d="M9.09 9a3 3 0 0 1 5.83 1c0 2-3 3-3 3"
+                    />
+                    <path
+                      d="M12 17h.01"
+                    />
+                  </svg>
+                </button>
+              </div>
+            </span>
+            <span
+              class="text-3xs text-white/20 uppercase tracking-tighter italic"
+            >
+              Visibilidade das linhas de referência
+            </span>
+          </div>
+          <label
+            class="flex items-center cursor-pointer flex-row"
+            style="gap: var(--sx-spacing-sm);"
+          >
+            <div
+              class="relative"
+            >
+              <input
+                aria-checked="true"
+                checked=""
+                class="sr-only"
+                role="switch"
+                type="checkbox"
+              />
+              <div
+                class="block w-10 h-6 rounded-full transition-all duration-300 ease-in-out"
+                style="background-color: var(--sarak-switch-active-bg, var(--sx-color-primary-base)); backdrop-filter: blur(4px);"
+              />
+              <div
+                class="absolute left-1 top-1 w-4 h-4 rounded-full transition-transform duration-300 ease-in-out shadow-sm"
+                style="background-color: var(--sarak-switch-thumb, #ffffff); transform: translateX(100%);"
+              />
+            </div>
+          </label>
+        </div>
+        <div
+          class="p-4 rounded-2xl bg-[var(--theme-primary)]/5 border border-[var(--theme-primary)]/10 flex items-start gap-4"
+        >
+          <svg
+            class="w-5 h-5 text-[var(--theme-primary)] shrink-0 mt-1"
+            fill="none"
+            height="24"
+            stroke="currentColor"
+            stroke-linecap="round"
+            stroke-linejoin="round"
+            stroke-width="2"
+            viewBox="0 0 24 24"
+            width="24"
+            xmlns="http://www.w3.org/2000/svg"
+          >
+            <path
+              d="m12 3-1.912 5.813a2 2 0 0 1-1.275 1.275L3 12l5.813 1.912a2 2 0 0 1 1.275 1.275L12 21l1.912-5.813a2 2 0 0 1 1.275-1.275L21 12l-5.813-1.912a2 2 0 0 1-1.275-1.275L12 3Z"
+            />
+            <path
+              d="M5 3v4"
+            />
+            <path
+              d="M19 17v4"
+            />
+            <path
+              d="M3 5h4"
+            />
+            <path
+              d="M17 19h4"
+            />
+          </svg>
+          <p
+            class="text-2xs text-white/40 leading-relaxed uppercase font-medium"
+          >
+            As cores e estilos são sincronizados dinamicamente com o Sarak Design Engine v7.5.
+          </p>
+        </div>
+      </div>
+    </div>
+    <div
+      class="p-8 mt-auto"
+    >
+      <div
+        class="p-4 rounded-2xl bg-indigo-500/10 border border-indigo-500/20 text-center"
+      >
+        <span
+          class="text-3xs font-black uppercase tracking-[0.4em] text-indigo-400/60"
+        >
+          Sovereign Engine v7.0
+        </span>
+      </div>
+    </div>
+  </div>
+</DocumentFragment>
+`;

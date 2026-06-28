@@ -7,12 +7,12 @@ import { PreviewCanvas } from '../PreviewCanvas';
 
 vi.mock('framer-motion', () => ({
     motion: {
-        div: ({ children, ...props }: any) => <div {...props}>{children}</div>,
-        section: ({ children, ...props }: any) => <section {...props}>{children}</section>,
-        aside: ({ children, ...props }: any) => <aside {...props}>{children}</aside>,
-        button: ({ children, ...props }: any) => <button {...props}>{children}</button>
+        div: ({ children, ...props }: React.PropsWithChildren<unknown>) => <div {...props}>{children}</div>,
+        section: ({ children, ...props }: React.PropsWithChildren<unknown>) => <section {...props}>{children}</section>,
+        aside: ({ children, ...props }: React.PropsWithChildren<unknown>) => <aside {...props}>{children}</aside>,
+        button: ({ children, ...props }: React.PropsWithChildren<unknown>) => <button {...props}>{children}</button>
     },
-    AnimatePresence: ({ children }: any) => <>{children}</>
+    AnimatePresence: ({ children }: React.PropsWithChildren<unknown>) => <>{children}</>
 }));
 
 vi.mock('../Mocks/DashboardMock', () => ({
@@ -24,6 +24,7 @@ vi.mock('../KitchenSinkPreview', () => ({
 }));
 
 import { SarakUIProvider } from '../../../../core/Provider/SarakUIProvider';
+import { SarakUIContextType } from '../../../../core/Provider/types';
 
 describe('PreviewCanvas - Refatoração Data-Driven', () => {
     it('deve usar variaveis CSS injetadas no style em vez de inline widths', () => {
@@ -42,7 +43,7 @@ describe('PreviewCanvas - Refatoração Data-Driven', () => {
                 draftTokens={{ sidebarWidth: 250 }}
                 activeCategory="colors"
                 onUpdateDraft={() => {}}
-                sarak={{}}
+                sarak={{} as unknown as SarakUIContextType}
                 isDualView={true}
                 isPreviewStacked={false}
             />
@@ -57,5 +58,7 @@ describe('PreviewCanvas - Refatoração Data-Driven', () => {
             expect(style).toContain('--device-width');
             expect(style).not.toMatch(/(^|;)\s*width:\s*50%/i); // Não deve ter "width: 50%" como propriedade CSS direta
         }
+        
+        expect(container).toMatchSnapshot();
     }, 15000);
 });

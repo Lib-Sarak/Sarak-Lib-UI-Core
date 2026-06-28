@@ -4,8 +4,10 @@ import { TYPOGRAPHY_PRESETS } from '../../../../core/Design/presets/components/t
 import { ComponentPreset } from '../../../../core/Design/presets/components/cards';
 import { Type } from 'lucide-react';
 
+import { SarakDesignState } from '../../../../core/Provider/types';
+
 interface TypographyCatalogProps {
-    onApplyPreset: (presetDesign: Record<string, any>, isPartial?: boolean) => void;
+    onApplyPreset: (presetDesign: Partial<SarakDesignState>, isPartial?: boolean) => void;
     currentMode: string;
 }
 

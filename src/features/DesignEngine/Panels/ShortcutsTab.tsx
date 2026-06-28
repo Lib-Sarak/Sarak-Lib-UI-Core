@@ -2,7 +2,7 @@ import React from 'react';
 import { useSarakUI } from '../../../core/Provider/SarakUIProvider';
 import { Edit3, X, Command, Search, Filter } from 'lucide-react';
 import { SarakInput } from '../../../components/atomic/Inputs';
-import { useShortcutsManager } from './hooks/useShortcutsManager';
+import { useShortcutsManager, ShortcutItem } from './hooks/useShortcutsManager';
 
 const Kbd = ({ children, isEditing = false }: { children: React.ReactNode, isEditing?: boolean }) => (
     <kbd className={`px-2 py-1.5 bg-black/40 text-2xs font-black font-mono rounded-lg border shadow-sm uppercase tracking-widest inline-flex items-center justify-center min-w-[28px] transition-all ${isEditing ? 'border-blue-500 text-blue-400 animate-pulse bg-blue-500/10' : 'border-white/10 text-white/60'}`}>
@@ -16,8 +16,14 @@ const formatKeyName = (key: string) => {
     return key.charAt(0).toUpperCase() + key.slice(1);
 };
 
+type SarakShortcutsContext = ReturnType<typeof useSarakUI> & {
+    shortcuts?: ShortcutItem[];
+    registeredActions?: Record<string, () => void>;
+    updateShortcut?: (id: string, newKeys: string[]) => void;
+};
+
 export const ShortcutsTab: React.FC = () => {
-    const sarak = useSarakUI();
+    const sarak = useSarakUI() as SarakShortcutsContext;
     
     const {
         state,
@@ -50,7 +56,7 @@ export const ShortcutsTab: React.FC = () => {
 
             {/* List */}
             <div className="flex-grow overflow-y-auto custom-scrollbar p-8 pt-6 space-y-8">
-                {Object.entries(groupedShortcuts).map(([cat, items]: [string, any]) => (
+                {(Object.entries(groupedShortcuts as Record<string, ShortcutItem[]>) as [string, ShortcutItem[]][]).map(([cat, items]) => (
                     <div key={cat} className="space-y-4">
                         <div className="flex items-center gap-3">
                             <Filter className="w-3.5 h-3.5 text-white/20" />
@@ -58,7 +64,7 @@ export const ShortcutsTab: React.FC = () => {
                         </div>
                         
                         <div className="grid grid-cols-1 gap-2">
-                            {items.map((s: any) => {
+                            {items.map((s: ShortcutItem) => {
                                 const isEd = state.editingId === s.id;
                                 const keys = isEd ? (state.tempKeys.length > 0 ? [...state.tempKeys, '...'] : ['AGUARDANDO...']) : (s.keys || []);
                                 

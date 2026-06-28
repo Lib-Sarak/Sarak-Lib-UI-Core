@@ -1,0 +1,284 @@
+// Vitest Snapshot v1, https://vitest.dev/guide/snapshot.html
+
+exports[`PillarSelector > matches baseline snapshot 1`] = `
+<DocumentFragment>
+  <div
+    class="flex items-center justify-between gap-1 p-1 bg-white/5 rounded-xl border border-white/5"
+    style="opacity: 0; transform: translateY(-10px);"
+  >
+    <button
+      class="relative flex-1 flex flex-col items-center gap-1.5 py-2 rounded-lg transition-all bg-[var(--theme-primary)] text-black shadow-lg"
+      title="Fundação (DNA)"
+    >
+      <svg
+        class="lucide lucide-fingerprint"
+        fill="none"
+        height="14"
+        stroke="currentColor"
+        stroke-linecap="round"
+        stroke-linejoin="round"
+        stroke-width="3"
+        viewBox="0 0 24 24"
+        width="14"
+        xmlns="http://www.w3.org/2000/svg"
+      >
+        <path
+          d="M2 12C2 6.5 6.5 2 12 2a10 10 0 0 1 8 4"
+        />
+        <path
+          d="M5 19.5C5.5 18 6 15 6 12c0-.7.12-1.37.34-2"
+        />
+        <path
+          d="M17.29 21.02c.12-.6.43-2.3.5-3.02"
+        />
+        <path
+          d="M12 10a2 2 0 0 0-2 2c0 1.02-.1 2.51-.26 4"
+        />
+        <path
+          d="M8.65 22c.21-.66.45-1.32.57-2"
+        />
+        <path
+          d="M14 13.12c0 2.38 0 6.38-1 8.88"
+        />
+        <path
+          d="M2 16h.01"
+        />
+        <path
+          d="M21.8 16c.2-2 .131-5.354 0-6"
+        />
+        <path
+          d="M9 6.8a6 6 0 0 1 9 5.2c0 .47 0 1.17-.02 2"
+        />
+      </svg>
+      <span
+        class="text-[8px] font-black uppercase tracking-tighter"
+      >
+        Fundação (DNA)
+      </span>
+    </button>
+    <button
+      class="absolute top-1 right-1 p-0.5 rounded-full transition-all bg-black text-[var(--theme-primary)] hover:scale-110"
+      title="Resetar Pilar"
+    >
+      <svg
+        class="lucide lucide-rotate-ccw"
+        fill="none"
+        height="8"
+        stroke="currentColor"
+        stroke-linecap="round"
+        stroke-linejoin="round"
+        stroke-width="4"
+        viewBox="0 0 24 24"
+        width="8"
+        xmlns="http://www.w3.org/2000/svg"
+      >
+        <path
+          d="M3 12a9 9 0 1 0 9-9 9.75 9.75 0 0 0-6.74 2.74L3 8"
+        />
+        <path
+          d="M3 3v5h5"
+        />
+      </svg>
+    </button>
+    <button
+      class="relative flex-1 flex flex-col items-center gap-1.5 py-2 rounded-lg transition-all hover:bg-white/5 text-white/30 hover:text-white/60"
+      title="Semântica Texto"
+    >
+      <svg
+        class="lucide lucide-type"
+        fill="none"
+        height="14"
+        stroke="currentColor"
+        stroke-linecap="round"
+        stroke-linejoin="round"
+        stroke-width="2"
+        viewBox="0 0 24 24"
+        width="14"
+        xmlns="http://www.w3.org/2000/svg"
+      >
+        <polyline
+          points="4 7 4 4 20 4 20 7"
+        />
+        <line
+          x1="9"
+          x2="15"
+          y1="20"
+          y2="20"
+        />
+        <line
+          x1="12"
+          x2="12"
+          y1="4"
+          y2="20"
+        />
+      </svg>
+      <span
+        class="text-[8px] font-black uppercase tracking-tighter"
+      >
+        Semântica Texto
+      </span>
+    </button>
+    <button
+      class="relative flex-1 flex flex-col items-center gap-1.5 py-2 rounded-lg transition-all hover:bg-white/5 text-white/30 hover:text-white/60"
+      title="Arquitetura UI"
+    >
+      <svg
+        class="lucide lucide-layout"
+        fill="none"
+        height="14"
+        stroke="currentColor"
+        stroke-linecap="round"
+        stroke-linejoin="round"
+        stroke-width="2"
+        viewBox="0 0 24 24"
+        width="14"
+        xmlns="http://www.w3.org/2000/svg"
+      >
+        <rect
+          height="18"
+          rx="2"
+          ry="2"
+          width="18"
+          x="3"
+          y="3"
+        />
+        <line
+          x1="3"
+          x2="21"
+          y1="9"
+          y2="9"
+        />
+        <line
+          x1="9"
+          x2="9"
+          y1="21"
+          y2="9"
+        />
+      </svg>
+      <span
+        class="text-[8px] font-black uppercase tracking-tighter"
+      >
+        Arquitetura UI
+      </span>
+    </button>
+    <button
+      class="relative flex-1 flex flex-col items-center gap-1.5 py-2 rounded-lg transition-all hover:bg-white/5 text-white/30 hover:text-white/60"
+      title="Atmosfera (Vibe)"
+    >
+      <svg
+        class="lucide lucide-waves"
+        fill="none"
+        height="14"
+        stroke="currentColor"
+        stroke-linecap="round"
+        stroke-linejoin="round"
+        stroke-width="2"
+        viewBox="0 0 24 24"
+        width="14"
+        xmlns="http://www.w3.org/2000/svg"
+      >
+        <path
+          d="M2 6c.6.5 1.2 1 2.5 1C7 7 7 5 9.5 5c2.6 0 2.4 2 5 2 2.5 0 2.5-2 5-2 1.3 0 1.9.5 2.5 1"
+        />
+        <path
+          d="M2 12c.6.5 1.2 1 2.5 1 2.5 0 2.5-2 5-2 2.6 0 2.4 2 5 2 2.5 0 2.5-2 5-2 1.3 0 1.9.5 2.5 1"
+        />
+        <path
+          d="M2 18c.6.5 1.2 1 2.5 1 2.5 0 2.5-2 5-2 2.6 0 2.4 2 5 2 2.5 0 2.5-2 5-2 1.3 0 1.9.5 2.5 1"
+        />
+      </svg>
+      <span
+        class="text-[8px] font-black uppercase tracking-tighter"
+      >
+        Atmosfera (Vibe)
+      </span>
+    </button>
+    <button
+      class="relative flex-1 flex flex-col items-center gap-1.5 py-2 rounded-lg transition-all hover:bg-white/5 text-white/30 hover:text-white/60"
+      title="Fluxo & Input"
+    >
+      <svg
+        class="lucide lucide-mouse-pointer2"
+        fill="none"
+        height="14"
+        stroke="currentColor"
+        stroke-linecap="round"
+        stroke-linejoin="round"
+        stroke-width="2"
+        viewBox="0 0 24 24"
+        width="14"
+        xmlns="http://www.w3.org/2000/svg"
+      >
+        <path
+          d="m4 4 7.07 17 2.51-7.39L21 11.07z"
+        />
+      </svg>
+      <span
+        class="text-[8px] font-black uppercase tracking-tighter"
+      >
+        Fluxo & Input
+      </span>
+    </button>
+    <button
+      class="relative flex-1 flex flex-col items-center gap-1.5 py-2 rounded-lg transition-all hover:bg-white/5 text-white/30 hover:text-white/60"
+      title="Core Engine"
+    >
+      <svg
+        class="lucide lucide-cpu"
+        fill="none"
+        height="14"
+        stroke="currentColor"
+        stroke-linecap="round"
+        stroke-linejoin="round"
+        stroke-width="2"
+        viewBox="0 0 24 24"
+        width="14"
+        xmlns="http://www.w3.org/2000/svg"
+      >
+        <rect
+          height="16"
+          rx="2"
+          width="16"
+          x="4"
+          y="4"
+        />
+        <rect
+          height="6"
+          width="6"
+          x="9"
+          y="9"
+        />
+        <path
+          d="M15 2v2"
+        />
+        <path
+          d="M15 20v2"
+        />
+        <path
+          d="M2 15h2"
+        />
+        <path
+          d="M2 9h2"
+        />
+        <path
+          d="M20 15h2"
+        />
+        <path
+          d="M20 9h2"
+        />
+        <path
+          d="M9 2v2"
+        />
+        <path
+          d="M9 20v2"
+        />
+      </svg>
+      <span
+        class="text-[8px] font-black uppercase tracking-tighter"
+      >
+        Core Engine
+      </span>
+    </button>
+  </div>
+</DocumentFragment>
+`;

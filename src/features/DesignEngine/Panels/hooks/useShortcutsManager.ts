@@ -1,10 +1,21 @@
 import { useState, useEffect, useCallback, useMemo } from 'react';
+import { useSarakUI } from '../../../../core/Provider/SarakUIProvider';
+import { SarakThemePayload } from '../../../../core/Provider/types';
 
-export const useShortcutsManager = (sarak: any) => {
+export interface ShortcutItem {
+    id: string;
+    name?: string;
+    description: string;
+    category: string;
+    keys: string[];
+    isDom?: boolean;
+}
+
+export const useShortcutsManager = (sarak: ReturnType<typeof useSarakUI> & { shortcuts?: ShortcutItem[], registeredActions?: Record<string, () => void>, updateShortcut?: (id: string, keys: string[]) => void }) => {
     const shortcuts = sarak?.shortcuts || [];
     const registeredActions = sarak?.registeredActions || {};
     const updateShortcut = sarak?.updateShortcut || ((id: string, keys: string[]) => {
-        sarak.applyConfig({ _shortcutUpdate: { id, keys } });
+        sarak.applyConfig({ _shortcutUpdate: { id, keys } } as unknown as Partial<SarakThemePayload>);
     });
 
     const [state, setState] = useState<{
@@ -12,7 +23,7 @@ export const useShortcutsManager = (sarak: any) => {
         tempKeys: string[];
         isCreating: boolean;
         searchQuery: string;
-        domActions: any;
+        domActions: Record<string, Partial<ShortcutItem>>;
     }>({
         editingId: null,
         tempKeys: [],
@@ -23,7 +34,7 @@ export const useShortcutsManager = (sarak: any) => {
 
     useEffect(() => {
         const elements = document.querySelectorAll('[data-action-id]');
-        const found: any = {};
+        const found: Record<string, Partial<ShortcutItem>> = {};
         elements.forEach(el => {
             const id = el.getAttribute('data-action-id');
             if (id) {
@@ -38,17 +49,17 @@ export const useShortcutsManager = (sarak: any) => {
         setState(prev => ({ ...prev, domActions: found }));
     }, []);
 
-    const shortcutsArray = Array.isArray(shortcuts) ? shortcuts : Object.values(shortcuts || {});
+    const shortcutsArray = (Array.isArray(shortcuts) ? shortcuts : Object.values(shortcuts || {})) as ShortcutItem[];
     
     const filteredShortcuts = useMemo(() => {
-        return shortcutsArray.filter((s: any) => 
+        return shortcutsArray.filter((s: ShortcutItem) => 
             s.description?.toLowerCase().includes(state.searchQuery.toLowerCase()) ||
             s.category?.toLowerCase().includes(state.searchQuery.toLowerCase())
         );
     }, [shortcutsArray, state.searchQuery]);
 
     const groupedShortcuts = useMemo(() => {
-        return filteredShortcuts.reduce((acc: any, s: any) => {
+        return filteredShortcuts.reduce((acc: Record<string, ShortcutItem[]>, s: ShortcutItem) => {
             (acc[s.category] = acc[s.category] || []).push(s);
             return acc;
         }, {});

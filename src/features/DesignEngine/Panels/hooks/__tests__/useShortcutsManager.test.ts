@@ -9,7 +9,7 @@ describe('useShortcutsManager', () => {
                 { id: '1', category: 'General', description: 'Save' },
                 { id: '2', category: 'Editor', description: 'Undo' }
             ]
-        };
+        } as unknown as Parameters<typeof useShortcutsManager>[0];
 
         const { result } = renderHook(() => useShortcutsManager(sarak));
         
@@ -25,7 +25,7 @@ describe('useShortcutsManager', () => {
     });
 
     it('should start and cancel editing', () => {
-        const { result } = renderHook(() => useShortcutsManager({}));
+        const { result } = renderHook(() => useShortcutsManager({} as Parameters<typeof useShortcutsManager>[0]));
         
         act(() => {
             result.current.startEditing('action-1');

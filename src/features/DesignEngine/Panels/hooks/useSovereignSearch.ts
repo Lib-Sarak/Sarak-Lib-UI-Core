@@ -1,4 +1,5 @@
 import { useMemo } from 'react';
+import { SarakDesignState } from '../../../../core/Provider/types';
 import { MASTER_DESIGN_MAP } from '../../../../core/Design/master-map';
 import { Fingerprint, Type, Layout, Waves, MousePointer2, Cpu } from 'lucide-react';
 
@@ -10,8 +11,7 @@ export const SOVEREIGN_PILLARS = [
     { id: 'action', label: 'Fluxo & Input', icon: MousePointer2, schemas: ['controls'] },
     { id: 'system', label: 'Core Engine', icon: Cpu, schemas: ['specialized', 'data', 'system'] },
 ];
-
-export const useSovereignSearch = (draft: any, searchQuery: string, activePillar: string) => {
+export const useSovereignSearch = (draft: Partial<SarakDesignState>, searchQuery: string, activePillar: string) => {
     // IDENTIFICA QUAIS PILARES POSSUEM DRAFTS ATIVOS
     const pillarsWithDrafts = useMemo(() => {
         const changedKeys = Object.keys(draft);

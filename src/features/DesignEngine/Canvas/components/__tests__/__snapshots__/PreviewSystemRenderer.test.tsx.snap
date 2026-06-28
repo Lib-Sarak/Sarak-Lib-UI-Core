@@ -1,0 +1,1105 @@
+// Vitest Snapshot v1, https://vitest.dev/guide/snapshot.html
+
+exports[`PreviewSystemRenderer > should render and match snapshot 1`] = `
+<div>
+  <div
+    class="fixed inset-0 pointer-events-none z-[9999] opacity-[var(--sarak-noise-opacity,0)] transition-opacity duration-1000"
+    style="mix-blend-mode: overlay; background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 200 200' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.65' numOctaves='3' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)'/%3E%3C/svg%3E"); background-size: 200px 200px; background-repeat: repeat;"
+  />
+  <style
+    id="sarak-sovereign-bridge"
+  >
+    
+            /* Sarak Sovereign Bridge - Dark Mode Hue Hijack */
+            body.dark .bg-zinc-950,
+            body.dark .bg-black\\/40,
+            body.dark .bg-zinc-950\\/40 {
+                background-color: var(--theme-card) !important;
+            }
+        
+  </style>
+  <div
+    class="sarak-design-scope sarak-scope-r0 dark @container sarak-device-desktop w-full h-full flex flex-col transition-all duration-500 overflow-hidden relative isolate "
+    data-sx-anim-enabled="true"
+    data-sx-bg-gradient-mode="linear"
+    data-sx-body-font="'Inter', sans-serif"
+    data-sx-body-size="14px"
+    data-sx-body-weight="400"
+    data-sx-border-beam-enabled="false"
+    data-sx-border-style="solid"
+    data-sx-border-type="solid"
+    data-sx-btn-style-type="matte"
+    data-sx-button-icon-position="left"
+    data-sx-button-width-strategy="auto"
+    data-sx-card-content-alignment="start"
+    data-sx-card-hover-style="lift"
+    data-sx-card-image-position="top"
+    data-sx-card-layout-direction="column"
+    data-sx-card-search-border-beam-active="true"
+    data-sx-card-text-align="left"
+    data-sx-card-texture-type="none"
+    data-sx-card-title-font-weight="900"
+    data-sx-card-variant="classic"
+    data-sx-chart-show-grid="true"
+    data-sx-chart-smoothing="true"
+    data-sx-chart-type="line"
+    data-sx-chat-bubble-style="glass"
+    data-sx-color-palette="default"
+    data-sx-content-alignment="stretch"
+    data-sx-ease-main="cubic-bezier(0.4, 0, 0.2, 1)"
+    data-sx-ease-out="cubic-bezier(0, 0, 0.2, 1)"
+    data-sx-flow-grid-style="dots"
+    data-sx-form-field-density="comfortable"
+    data-sx-form-label-position="top"
+    data-sx-form-layout-direction="stack"
+    data-sx-global-background-blend-mode="normal"
+    data-sx-global-flow-align="stretch"
+    data-sx-global-flow-direction="column"
+    data-sx-h1-weight="900"
+    data-sx-h2-weight="700"
+    data-sx-header-alignment="space-between"
+    data-sx-heading-font="'Outfit', sans-serif"
+    data-sx-heading-transform="none"
+    data-sx-icon-family="lucide"
+    data-sx-icon-weight="regular"
+    data-sx-identity-alignment="left"
+    data-sx-identity-font-family="Inter"
+    data-sx-identity-hover-effect="opacity"
+    data-sx-industrial-registry="true"
+    data-sx-input-border-type="solid"
+    data-sx-input-icon-position="left"
+    data-sx-is-auto-hide-enabled="false"
+    data-sx-is-nav-hidden="false"
+    data-sx-is-split-view-enabled="false"
+    data-sx-layout="grid"
+    data-sx-layout-density="comfortable"
+    data-sx-layout-grid-template="col-12"
+    data-sx-max-content-width="1440px"
+    data-sx-modal-action-alignment="right"
+    data-sx-modal-header-style="inline"
+    data-sx-mode="dark"
+    data-sx-mono-font="'JetBrains Mono', monospace"
+    data-sx-navbar-layout="sticky"
+    data-sx-navigation-style="sidebar"
+    data-sx-page-transition-type="fade"
+    data-sx-reduced-motion="false"
+    data-sx-search-position-sidebar="top"
+    data-sx-search-position-topbar="left"
+    data-sx-shadow-color-mode="neutral"
+    data-sx-shadow-orientation="bottom"
+    data-sx-sidebar-position="left"
+    data-sx-surface-material="frosted"
+    data-sx-switch-label-position="right"
+    data-sx-switch-style-type="tactile"
+    data-sx-system-tone="dark"
+    data-sx-table-action-position="right"
+    data-sx-table-density="comfortable"
+    data-sx-table-zebra-striping="false"
+    data-sx-text-smoothing="true"
+    style="width: 100%; height: 100%; --sarak-mode: dark; --sarak-navigation-style: sidebar; --sarak-nav-style: sidebar; --nav-style: sidebar; --sarak-body-size: 14px; --theme-font-size-base: 14px; --sarak-identity-alignment: left; --sarak-identity-align: left; --sarak-identity-padding: 16px; --sarak-identity-font-family: Inter; --sarak-identity-font: Inter; --sarak-identity-font-weight: 700; --sarak-identity-weight: 700; --sarak-identity-tracking: 0em; --sarak-identity-redirect-url: /; --sarak-identity-link: /; --sarak-identity-hover-effect: opacity; --sarak-identity-hover: opacity; --sarak-bg-base-color: #08080aff; --sarak-bg-base: #08080aff; --sarak-layout: grid; --sarak-layout-density: comfortable; --sarak-max-content-width: 1440px; --sarak-is-split-view-enabled: false; --sarak-is-auto-hide-enabled: false; --sarak-border-width: 1px; --theme-border-width: 1px; --border-width: 1px; --sarak-border-style: solid; --border-style: solid; --sarak-icon-family: lucide; --sarak-icon-weight: regular; --sarak-icon-stroke-width: 2; --sarak-icon-stroke: 2; --theme-icon-stroke: 2; --sarak-scrollbar-thumb-color: #2626261a; --sarak-scrollbar-thumb: #2626261a; --sarak-industrial-registry: true; --sarak-is-nav-hidden: false; --is-nav-hidden: false; --sarak-sidebar-position: left; --sarak-sidebar-color: #000000ff; --theme-sidebar-bg: #000000ff; --sarak-sidebar-bg: #000000ff; --sarak-sidebar-hover-color: transparent; --sarak-sidebar-active-color: transparent; --sarak-sidebar-noise-opacity: 0; --sarak-navbar-layout: sticky; --sarak-topbar-color: #000000ff; --theme-topbar-bg: #000000ff; --sarak-topbar-bg: #000000ff; --sarak-topbar-hover-color: transparent; --sarak-topbar-active-color: transparent; --sarak-topbar-noise-opacity: 0; --sarak-topbar-title-color: #e6e6e6ff; --sarak-content-alignment: stretch; --sarak-nav-item-active-color: #00f2ffff; --sarak-nav-active-color: #00f2ffff; --theme-primary: #00f2ffff; --sarak-nav-active-marker-color: #00f2ffff; --sarak-nav-marker-color: #00f2ffff; --sarak-nav-active-marker-glow: 10; --sarak-nav-marker-glow: 10; --sarak-sidebar-blur: 10px; --sarak-sidebar-shadow: 10px 0 30px rgba(0,0,0,0.5); --sarak-search-position-topbar: left; --sarak-search-position-sidebar: top; --sarak-card-geometric-cut: 0px; --sarak-card-background-color: #0c122299; --card-bg: #0c122299; --card-bg-rgb: 12, 18, 34; --card-bg-bg: rgba(12, 18, 34, 0.15); --card-bg-border: rgba(12, 18, 34, 0.25); --card-bg-10: rgba(12, 18, 34, 0.10); --card-bg-20: rgba(12, 18, 34, 0.20); --card-bg-30: rgba(12, 18, 34, 0.30); --card-bg-40: rgba(12, 18, 34, 0.40); --card-bg-50: rgba(12, 18, 34, 0.50); --card-bg-hover: #0d1425; --card-bg-active: #0b101f; --card-bg-light: rgba(12, 18, 34, 0.05); --sarak-card-background-color-rgb: 12, 18, 34; --sarak-card-background-color-bg: rgba(12, 18, 34, 0.15); --sarak-card-background-color-border: rgba(12, 18, 34, 0.25); --sarak-card-background-color-10: rgba(12, 18, 34, 0.10); --sarak-card-background-color-20: rgba(12, 18, 34, 0.20); --sarak-card-background-color-30: rgba(12, 18, 34, 0.30); --sarak-card-background-color-40: rgba(12, 18, 34, 0.40); --sarak-card-background-color-50: rgba(12, 18, 34, 0.50); --sarak-card-background-color-hover: #0d1425; --theme-surface: #0c122299; --theme-surface-rgb: 12, 18, 34; --theme-surface-bg: rgba(12, 18, 34, 0.15); --theme-surface-border: rgba(12, 18, 34, 0.25); --theme-surface-10: rgba(12, 18, 34, 0.10); --theme-surface-20: rgba(12, 18, 34, 0.20); --theme-surface-30: rgba(12, 18, 34, 0.30); --theme-surface-40: rgba(12, 18, 34, 0.40); --theme-surface-50: rgba(12, 18, 34, 0.50); --theme-surface-hover: #0d1425; --theme-surface-active: #0b101f; --theme-surface-light: rgba(12, 18, 34, 0.05); --theme-card: #0c122299; --theme-card-rgb: 12, 18, 34; --theme-card-bg: #0c122299; --theme-card-border: #3333331a; --theme-card-10: rgba(12, 18, 34, 0.10); --theme-card-20: rgba(12, 18, 34, 0.20); --theme-card-30: rgba(12, 18, 34, 0.30); --theme-card-40: rgba(12, 18, 34, 0.40); --theme-card-50: rgba(12, 18, 34, 0.50); --theme-card-hover: #0d1425; --theme-card-active: #0b101f; --theme-card-light: rgba(12, 18, 34, 0.05); --sarak-card-bg: #0c122299; --sarak-card-bg-rgb: 12, 18, 34; --sarak-card-bg-bg: rgba(12, 18, 34, 0.15); --sarak-card-bg-border: rgba(12, 18, 34, 0.25); --sarak-card-bg-10: rgba(12, 18, 34, 0.10); --sarak-card-bg-20: rgba(12, 18, 34, 0.20); --sarak-card-bg-30: rgba(12, 18, 34, 0.30); --sarak-card-bg-40: rgba(12, 18, 34, 0.40); --sarak-card-bg-50: rgba(12, 18, 34, 0.50); --sarak-card-bg-hover: #0d1425; --sarak-card-bg-active: #0b101f; --sarak-card-bg-light: rgba(12, 18, 34, 0.05); --sarak-card-backdrop-blur: 12px; --sarak-card-blur: 12px; --sarak-glass-blur: 16px; --sarak-card-surface-opacity: 0.8; --sarak-card-opacity: 0.8; --sarak-card-border-width: 1px; --card-border-width: 1px; --sarak-card-border-color: #3333331a; --card-border-color: #3333331a; --theme-border: #3333331a; --sarak-card-border-opacity: 1; --sarak-card-border-top: 1px; --sarak-card-border-bottom: 1px; --sarak-card-border-left: 1px; --sarak-card-border-right: 1px; --sarak-card-inner-glow-color: rgba(255, 255, 255, 0.05); --sarak-card-inner-glow-width: 1px; --sarak-card-texture-type: none; --sarak-card-texture-opacity: 0.03; --sarak-card-header-bg: #26262608; --sarak-card-header-border: #3333330d; --sarak-card-footer-bg: transparent; --sarak-card-footer-border: #3333330d; --sarak-card-shadow-spread: 20px; --sarak-card-glow-color: #00f2ff0d; --sarak-card-glow-intensity: 0; --sarak-card-hover-translate: -4px; --sarak-card-hover-y: -4px; --sarak-card-hover-glow-increase: 0.2; --sarak-card-hover-glow: 0.2; --sarak-card-spotlight-opacity: 0.1; --spotlight-opacity: 0.1; --sarak-card-layout-direction: column; --sarak-card-image-position: top; --sarak-card-text-align: left; --sarak-card-content-alignment: start; --sarak-card-shadow: none; --sarak-border-beam-enabled: false; --sarak-card-variant: classic; --sarak-image-card-overlay-opacity: 0.5; --sarak-image-card-hover-zoom: 1.05; --sarak-card-title-color: #e6e6e6ff; --sarak-card-title-font-weight: 900; --sarak-card-title-letter-spacing: 0px; --sarak-card-title-icon-glow: #e5feff33; --sarak-card-action-btn-primary-bg: #00f2ffff; --sarak-card-action-btn-bg: #00f2ffff; --sarak-card-action-btn-bg-rgb: 0, 242, 255; --sarak-card-action-btn-bg-bg: rgba(0, 242, 255, 0.15); --sarak-card-action-btn-bg-border: rgba(0, 242, 255, 0.25); --sarak-card-action-btn-bg-10: rgba(0, 242, 255, 0.10); --sarak-card-action-btn-bg-20: rgba(0, 242, 255, 0.20); --sarak-card-action-btn-bg-30: rgba(0, 242, 255, 0.30); --sarak-card-action-btn-bg-40: rgba(0, 242, 255, 0.40); --sarak-card-action-btn-bg-50: rgba(0, 242, 255, 0.50); --sarak-card-action-btn-bg-hover: #00ffff; --sarak-card-action-btn-bg-active: #00dae6; --sarak-card-action-btn-bg-light: rgba(0, 242, 255, 0.05); --sarak-card-action-btn-primary-bg-rgb: 0, 242, 255; --sarak-card-action-btn-primary-bg-bg: rgba(0, 242, 255, 0.15); --sarak-card-action-btn-primary-bg-border: rgba(0, 242, 255, 0.25); --sarak-card-action-btn-primary-bg-10: rgba(0, 242, 255, 0.10); --sarak-card-action-btn-primary-bg-20: rgba(0, 242, 255, 0.20); --sarak-card-action-btn-primary-bg-30: rgba(0, 242, 255, 0.30); --sarak-card-action-btn-primary-bg-40: rgba(0, 242, 255, 0.40); --sarak-card-action-btn-primary-bg-50: rgba(0, 242, 255, 0.50); --sarak-card-action-btn-primary-bg-hover: #00ffff; --sarak-card-action-btn-hover-bg: #00f2ffcc; --sarak-card-action-btn-text: #fdfdfeff; --sarak-card-action-btn-padding: 12px; --sarak-card-action-click-scale: 0.96; --sarak-card-search-bg-focus: #00494d14; --sarak-card-search-border-beam-active: true; --sarak-card-search-placeholder-color: #e6e6e666; --sarak-card-search-placeholder: #e6e6e666; --sarak-card-search-text-focus-color: #e6e6e6ff; --sarak-card-search-text-focus: #e6e6e6ff; --sarak-modal-action-alignment: right; --sarak-modal-header-style: inline; --sarak-modal-overlay-color: #00000066; --sarak-modal-overlay: #00000066; --sarak-modal-overlay-blur: 8px; --sarak-modal-blur: 8px; --sarak-tooltip-bg: #0c1222ff; --sarak-tooltip-radius: 4px; --sarak-table-density: comfortable; --sarak-table-action-position: right; --sarak-table-header-bg: #26262608; --sarak-table-row-hover-bg: #26262605; --sarak-table-row-hover: #26262605; --sarak-table-zebra-striping: false; --sarak-table-border-radius: 8px; --sarak-table-border-color: #3333330d; --sarak-table-border: #3333330d; --sarak-heading-font: 'Outfit', sans-serif; --font-heading: 'Outfit', sans-serif; --sarak-font-h: 'Outfit', sans-serif; --sarak-body-font: 'Inter', sans-serif; --font-main: 'Inter', sans-serif; --sarak-font-b: 'Inter', sans-serif; --sarak-mono-font: 'JetBrains Mono', monospace; --font-mono: 'JetBrains Mono', monospace; --sarak-font-m: 'JetBrains Mono', monospace; --sarak-text-color-master: #e6e6e6ff; --sarak-text-main: #e6e6e6ff; --theme-title: #e6e6e6ff; --theme-text-primary: #e6e6e6ff; --sarak-text-color-secondary: #e6e6e6b3; --sarak-text-sec: #e6e6e6b3; --sarak-text-color-muted: #e6e6e666; --sarak-text-muted: #e6e6e666; --theme-muted: #e6e6e666; --theme-text-muted: #e6e6e666; --sarak-h1-weight: 900; --sarak-h1-line-height: 1.1; --sarak-h1-lh: 1.1; --sarak-h1-letter-spacing: -1px; --sarak-h1-ls: -1px; --sarak-h2-weight: 700; --sarak-h2-line-height: 1.2; --sarak-h2-lh: 1.2; --sarak-body-line-height: 1.6; --sarak-body-lh: 1.6; --sarak-line-height: 1.6; --sarak-body-weight: 400; --sarak-b-weight: 400; --sarak-heading-transform: none; --sarak-h-transform: none; --sarak-text-smoothing: true; --sarak-text-glow-intensity: 0; --sarak-text-glow: 0; --sarak-button-icon-position: left; --sarak-button-width-strategy: auto; --sarak-btn-hover-scale: 1.02; --sarak-btn-active-scale: 0.98; --sarak-btn-primary-bg: #00f2ffff; --sarak-btn-primary-bg-rgb: 0, 242, 255; --sarak-btn-primary-bg-bg: rgba(0, 242, 255, 0.15); --sarak-btn-primary-bg-border: rgba(0, 242, 255, 0.25); --sarak-btn-primary-bg-10: rgba(0, 242, 255, 0.10); --sarak-btn-primary-bg-20: rgba(0, 242, 255, 0.20); --sarak-btn-primary-bg-30: rgba(0, 242, 255, 0.30); --sarak-btn-primary-bg-40: rgba(0, 242, 255, 0.40); --sarak-btn-primary-bg-50: rgba(0, 242, 255, 0.50); --sarak-btn-primary-bg-hover: #00ffff; --sarak-btn-primary-bg-active: #00dae6; --sarak-btn-primary-bg-light: rgba(0, 242, 255, 0.05); --sarak-btn-primary-text: #ffffffff; --sarak-btn-secondary-bg: #2626260d; --sarak-btn-secondary-bg-rgb: 38, 38, 38; --sarak-btn-secondary-bg-bg: rgba(38, 38, 38, 0.15); --sarak-btn-secondary-bg-border: rgba(38, 38, 38, 0.25); --sarak-btn-secondary-bg-10: rgba(38, 38, 38, 0.10); --sarak-btn-secondary-bg-20: rgba(38, 38, 38, 0.20); --sarak-btn-secondary-bg-30: rgba(38, 38, 38, 0.30); --sarak-btn-secondary-bg-40: rgba(38, 38, 38, 0.40); --sarak-btn-secondary-bg-50: rgba(38, 38, 38, 0.50); --sarak-btn-secondary-bg-hover: #2a2a2a; --sarak-btn-secondary-bg-active: #222222; --sarak-btn-secondary-bg-light: rgba(38, 38, 38, 0.05); --sarak-btn-ghost-hover-bg: #2626260d; --sarak-btn-ghost-hover: #2626260d; --sarak-btn-style-type: matte; --sarak-btn-neon-glow-color: #00f2ff66; --sarak-btn-neon-pulse-speed: 1.5s; --sarak-btn-backdrop-blur: 8px; --sarak-form-layout-direction: stack; --sarak-input-icon-position: left; --sarak-input-padding: 12px; --sarak-input-border-type: solid; --sarak-input-bg: #26262608; --sarak-input-bg-rgb: 38, 38, 38; --sarak-input-bg-bg: rgba(38, 38, 38, 0.15); --sarak-input-bg-border: rgba(38, 38, 38, 0.25); --sarak-input-bg-10: rgba(38, 38, 38, 0.10); --sarak-input-bg-20: rgba(38, 38, 38, 0.20); --sarak-input-bg-30: rgba(38, 38, 38, 0.30); --sarak-input-bg-40: rgba(38, 38, 38, 0.40); --sarak-input-bg-50: rgba(38, 38, 38, 0.50); --sarak-input-bg-hover: #2a2a2a; --sarak-input-bg-active: #222222; --sarak-input-bg-light: rgba(38, 38, 38, 0.05); --sarak-input-backdrop-blur: 0px; --sarak-input-shadow: none; --sarak-input-border-color: #3333331a; --sarak-input-focus-border-color: #006166ff; --sarak-input-text-color: #e6e6e6ff; --sarak-input-icon-color: #26262680; --sarak-input-error-color: #4d0001ff; --sarak-input-success-color: #1c4409ff; --sarak-switch-track-active-bg: #00f2ffff; --sarak-switch-active-bg: #00f2ffff; --sarak-switch-active-bg-rgb: 0, 242, 255; --sarak-switch-active-bg-bg: rgba(0, 242, 255, 0.15); --sarak-switch-active-bg-border: rgba(0, 242, 255, 0.25); --sarak-switch-active-bg-10: rgba(0, 242, 255, 0.10); --sarak-switch-active-bg-20: rgba(0, 242, 255, 0.20); --sarak-switch-active-bg-30: rgba(0, 242, 255, 0.30); --sarak-switch-active-bg-40: rgba(0, 242, 255, 0.40); --sarak-switch-active-bg-50: rgba(0, 242, 255, 0.50); --sarak-switch-active-bg-hover: #00ffff; --sarak-switch-active-bg-active: #00dae6; --sarak-switch-active-bg-light: rgba(0, 242, 255, 0.05); --sarak-switch-track-active-bg-rgb: 0, 242, 255; --sarak-switch-track-active-bg-bg: rgba(0, 242, 255, 0.15); --sarak-switch-track-active-bg-border: rgba(0, 242, 255, 0.25); --sarak-switch-track-active-bg-10: rgba(0, 242, 255, 0.10); --sarak-switch-track-active-bg-20: rgba(0, 242, 255, 0.20); --sarak-switch-track-active-bg-30: rgba(0, 242, 255, 0.30); --sarak-switch-track-active-bg-40: rgba(0, 242, 255, 0.40); --sarak-switch-track-active-bg-50: rgba(0, 242, 255, 0.50); --sarak-switch-track-active-bg-hover: #00ffff; --sarak-switch-thumb-bg: #262626ff; --sarak-switch-thumb: #262626ff; --sarak-checkbox-active-color: #00f2ffff; --sarak-checkbox-active: #00f2ffff; --sarak-checkbox-active-rgb: 0, 242, 255; --sarak-checkbox-active-bg: rgba(0, 242, 255, 0.15); --sarak-checkbox-active-border: rgba(0, 242, 255, 0.25); --sarak-checkbox-active-10: rgba(0, 242, 255, 0.10); --sarak-checkbox-active-20: rgba(0, 242, 255, 0.20); --sarak-checkbox-active-30: rgba(0, 242, 255, 0.30); --sarak-checkbox-active-40: rgba(0, 242, 255, 0.40); --sarak-checkbox-active-50: rgba(0, 242, 255, 0.50); --sarak-checkbox-active-hover: #00ffff; --sarak-checkbox-active-active: #00dae6; --sarak-checkbox-active-light: rgba(0, 242, 255, 0.05); --sarak-checkbox-active-color-rgb: 0, 242, 255; --sarak-checkbox-active-color-bg: rgba(0, 242, 255, 0.15); --sarak-checkbox-active-color-border: rgba(0, 242, 255, 0.25); --sarak-checkbox-active-color-10: rgba(0, 242, 255, 0.10); --sarak-checkbox-active-color-20: rgba(0, 242, 255, 0.20); --sarak-checkbox-active-color-30: rgba(0, 242, 255, 0.30); --sarak-checkbox-active-color-40: rgba(0, 242, 255, 0.40); --sarak-checkbox-active-color-50: rgba(0, 242, 255, 0.50); --sarak-checkbox-active-color-hover: #00ffff; --sarak-switch-style-type: tactile; --sarak-switch-backdrop-blur: 4px; --sarak-switch-pulse-color: #00f2ffff; --sarak-color-palette: default; --sarak-primary-color: #00f2ffff; --primary-color: #00f2ffff; --primary-color-rgb: 0, 242, 255; --primary-color-bg: rgba(0, 242, 255, 0.15); --primary-color-border: rgba(0, 242, 255, 0.25); --primary-color-10: rgba(0, 242, 255, 0.10); --primary-color-20: rgba(0, 242, 255, 0.20); --primary-color-30: rgba(0, 242, 255, 0.30); --primary-color-40: rgba(0, 242, 255, 0.40); --primary-color-50: rgba(0, 242, 255, 0.50); --primary-color-hover: #00ffff; --primary-color-active: #00dae6; --primary-color-light: rgba(0, 242, 255, 0.05); --sarak-primary-color-rgb: 0, 242, 255; --sarak-primary-color-bg: rgba(0, 242, 255, 0.15); --sarak-primary-color-border: rgba(0, 242, 255, 0.25); --sarak-primary-color-10: rgba(0, 242, 255, 0.10); --sarak-primary-color-20: rgba(0, 242, 255, 0.20); --sarak-primary-color-30: rgba(0, 242, 255, 0.30); --sarak-primary-color-40: rgba(0, 242, 255, 0.40); --sarak-primary-color-50: rgba(0, 242, 255, 0.50); --sarak-primary-color-hover: #00ffff; --theme-primary-rgb: 0, 242, 255; --theme-primary-bg: rgba(0, 242, 255, 0.15); --theme-primary-border: rgba(0, 242, 255, 0.25); --theme-primary-10: rgba(0, 242, 255, 0.10); --theme-primary-20: rgba(0, 242, 255, 0.20); --theme-primary-30: rgba(0, 242, 255, 0.30); --theme-primary-40: rgba(0, 242, 255, 0.40); --theme-primary-50: rgba(0, 242, 255, 0.50); --theme-primary-hover: #00ffff; --theme-primary-active: #00dae6; --theme-primary-light: rgba(0, 242, 255, 0.05); --sarak-primary-color-active: #00dae6; --sarak-primary-color-light: rgba(0, 242, 255, 0.05); --sarak-color-primary: #00f2ffff; --sarak-color-primary-rgb: 0, 242, 255; --sarak-color-primary-bg: rgba(0, 242, 255, 0.15); --sarak-color-primary-border: rgba(0, 242, 255, 0.25); --sarak-color-primary-10: rgba(0, 242, 255, 0.10); --sarak-color-primary-20: rgba(0, 242, 255, 0.20); --sarak-color-primary-30: rgba(0, 242, 255, 0.30); --sarak-color-primary-40: rgba(0, 242, 255, 0.40); --sarak-color-primary-50: rgba(0, 242, 255, 0.50); --sarak-color-primary-hover: #00ffff; --sarak-color-primary-active: #00dae6; --sarak-color-primary-light: rgba(0, 242, 255, 0.05); --sarak-secondary-color: #7000ffff; --secondary-color: #7000ffff; --secondary-color-rgb: 112, 0, 255; --secondary-color-bg: rgba(112, 0, 255, 0.15); --secondary-color-border: rgba(112, 0, 255, 0.25); --secondary-color-10: rgba(112, 0, 255, 0.10); --secondary-color-20: rgba(112, 0, 255, 0.20); --secondary-color-30: rgba(112, 0, 255, 0.30); --secondary-color-40: rgba(112, 0, 255, 0.40); --secondary-color-50: rgba(112, 0, 255, 0.50); --secondary-color-hover: #7b00ff; --secondary-color-active: #6500e6; --secondary-color-light: rgba(112, 0, 255, 0.05); --sarak-secondary-color-rgb: 112, 0, 255; --sarak-secondary-color-bg: rgba(112, 0, 255, 0.15); --sarak-secondary-color-border: rgba(112, 0, 255, 0.25); --sarak-secondary-color-10: rgba(112, 0, 255, 0.10); --sarak-secondary-color-20: rgba(112, 0, 255, 0.20); --sarak-secondary-color-30: rgba(112, 0, 255, 0.30); --sarak-secondary-color-40: rgba(112, 0, 255, 0.40); --sarak-secondary-color-50: rgba(112, 0, 255, 0.50); --sarak-secondary-color-hover: #7b00ff; --theme-secondary: #7000ffff; --theme-secondary-rgb: 112, 0, 255; --theme-secondary-bg: rgba(112, 0, 255, 0.15); --theme-secondary-border: rgba(112, 0, 255, 0.25); --theme-secondary-10: rgba(112, 0, 255, 0.10); --theme-secondary-20: rgba(112, 0, 255, 0.20); --theme-secondary-30: rgba(112, 0, 255, 0.30); --theme-secondary-40: rgba(112, 0, 255, 0.40); --theme-secondary-50: rgba(112, 0, 255, 0.50); --theme-secondary-hover: #7b00ff; --theme-secondary-active: #6500e6; --theme-secondary-light: rgba(112, 0, 255, 0.05); --sarak-secondary-color-active: #6500e6; --sarak-secondary-color-light: rgba(112, 0, 255, 0.05); --sarak-color-secondary: #7000ffff; --sarak-color-secondary-rgb: 112, 0, 255; --sarak-color-secondary-bg: rgba(112, 0, 255, 0.15); --sarak-color-secondary-border: rgba(112, 0, 255, 0.25); --sarak-color-secondary-10: rgba(112, 0, 255, 0.10); --sarak-color-secondary-20: rgba(112, 0, 255, 0.20); --sarak-color-secondary-30: rgba(112, 0, 255, 0.30); --sarak-color-secondary-40: rgba(112, 0, 255, 0.40); --sarak-color-secondary-50: rgba(112, 0, 255, 0.50); --sarak-color-secondary-hover: #7b00ff; --sarak-color-secondary-active: #6500e6; --sarak-color-secondary-light: rgba(112, 0, 255, 0.05); --sarak-tertiary-color: #12d393ff; --tertiary-color: #12d393ff; --tertiary-color-rgb: 18, 211, 147; --tertiary-color-bg: rgba(18, 211, 147, 0.15); --tertiary-color-border: rgba(18, 211, 147, 0.25); --tertiary-color-10: rgba(18, 211, 147, 0.10); --tertiary-color-20: rgba(18, 211, 147, 0.20); --tertiary-color-30: rgba(18, 211, 147, 0.30); --tertiary-color-40: rgba(18, 211, 147, 0.40); --tertiary-color-50: rgba(18, 211, 147, 0.50); --tertiary-color-hover: #14e8a2; --tertiary-color-active: #10be84; --tertiary-color-light: rgba(18, 211, 147, 0.05); --sarak-tertiary-color-rgb: 18, 211, 147; --sarak-tertiary-color-bg: rgba(18, 211, 147, 0.15); --sarak-tertiary-color-border: rgba(18, 211, 147, 0.25); --sarak-tertiary-color-10: rgba(18, 211, 147, 0.10); --sarak-tertiary-color-20: rgba(18, 211, 147, 0.20); --sarak-tertiary-color-30: rgba(18, 211, 147, 0.30); --sarak-tertiary-color-40: rgba(18, 211, 147, 0.40); --sarak-tertiary-color-50: rgba(18, 211, 147, 0.50); --sarak-tertiary-color-hover: #14e8a2; --theme-tertiary: #12d393ff; --theme-tertiary-rgb: 18, 211, 147; --theme-tertiary-bg: rgba(18, 211, 147, 0.15); --theme-tertiary-border: rgba(18, 211, 147, 0.25); --theme-tertiary-10: rgba(18, 211, 147, 0.10); --theme-tertiary-20: rgba(18, 211, 147, 0.20); --theme-tertiary-30: rgba(18, 211, 147, 0.30); --theme-tertiary-40: rgba(18, 211, 147, 0.40); --theme-tertiary-50: rgba(18, 211, 147, 0.50); --theme-tertiary-hover: #14e8a2; --theme-tertiary-active: #10be84; --theme-tertiary-light: rgba(18, 211, 147, 0.05); --sarak-tertiary-color-active: #10be84; --sarak-tertiary-color-light: rgba(18, 211, 147, 0.05); --sarak-color-tertiary: #12d393ff; --sarak-color-tertiary-rgb: 18, 211, 147; --sarak-color-tertiary-bg: rgba(18, 211, 147, 0.15); --sarak-color-tertiary-border: rgba(18, 211, 147, 0.25); --sarak-color-tertiary-10: rgba(18, 211, 147, 0.10); --sarak-color-tertiary-20: rgba(18, 211, 147, 0.20); --sarak-color-tertiary-30: rgba(18, 211, 147, 0.30); --sarak-color-tertiary-40: rgba(18, 211, 147, 0.40); --sarak-color-tertiary-50: rgba(18, 211, 147, 0.50); --sarak-color-tertiary-hover: #14e8a2; --sarak-color-tertiary-active: #10be84; --sarak-color-tertiary-light: rgba(18, 211, 147, 0.05); --sarak-accent-color: #ff00d4ff; --theme-accent: #ff00d4ff; --sarak-surface-color: #18212fff; --sarak-texture-color: #e6e6e6ff; --theme-texture-color: #e6e6e6ff; --sarak-title-color: #e6e6e6ff; --theme-title-color: #e6e6e6ff; --sarak-color-depth: 1; --sarak-color-variation: 1; --sarak-color-bg-body: #040404ff; --sarak-bg-body: #040404ff; --theme-bg: #040404ff; --theme-body: #040404ff; --bg-body: #040404ff; --sarak-color-bg-layer1: #0c0c0cff; --sarak-bg-layer-1: #0c0c0cff; --theme-surface-1: #0c0c0cff; --sarak-color-bg-layer2: #151515ff; --sarak-bg-layer-2: #151515ff; --theme-surface-2: #151515ff; --sarak-color-bg-modal: rgba(15, 15, 15, 0.8); --sarak-bg-modal: rgba(15, 15, 15, 0.8); --theme-modal-bg: rgba(15, 15, 15, 0.8); --sarak-chart-color-palette: #00494dff; --sarak-chart-primary: #00494dff; --sarak-chart-grid-opacity: 0.05; --sarak-chart-tooltip-bg: #0c1222e6; --sarak-chart-type: line; --sarak-chart-show-grid: true; --sarak-chart-thickness: 2px; --sarak-chart-smoothing: true; --sarak-anim-instant: 100ms; --sarak-anim-fast: 200ms; --sarak-anim-normal: 300ms; --sarak-anim-slow: 500ms; --sarak-ease-main: cubic-bezier(0.4, 0, 0.2, 1); --sarak-ease-out: cubic-bezier(0, 0, 0.2, 1); --sarak-anim-enabled: true; --sarak-page-transition-type: fade; --sarak-card-hover-style: lift; --sarak-bg-gradient-mode: linear; --sarak-bg-gradient-angle: 135deg; --sarak-surface-material: frosted; --sarak-surface: frosted; --surface-material: frosted; --sarak-surface-intensity: 0.5; --surface-intensity: 0.5; --sarak-border-type: solid; --border-type: solid; --sarak-system-tone: dark; --sarak-texture: grid; --sarak-bg-pattern-id: grid; --theme-texture: grid; --sarak-texture-opacity: 0.1; --sarak-bg-pattern-opacity: 0.1; --theme-texture-opacity: 0.1; --sarak-atmosphere-noise-opacity: 0.05; --sarak-noise-opacity: 0.05; --theme-noise-opacity: 0.05; --sarak-noise-intensity: 0.05; --sarak-bg-noise-density: 0.05; --sarak-noise-density: 0.05; --sarak-bg-noise-animation: 1s; --sarak-noise-speed: 1s; --sarak-glass-opacity: 0.1; --glass-opacity: 0.1; --sarak-bg-opacity: 0.1; --sarak-glass-specularity: 0.1; --sarak-glass-roughness: 0.05; --sarak-glass-saturation: 1.2; --sarak-shadow-intensity: 0.5; --shadow-intensity: 0.5; --sarak-layered-shadows: 1; --sarak-shadow-orientation: bottom; --shadow-orientation: bottom; --sarak-shadow-color-mode: neutral; --shadow-color-mode: neutral; --sarak-shadow-ambient-alpha: 0.4; --sarak-shadow-projection-blur: 40px; --sarak-shadow-projection-alpha: 0.2; --sarak-security-shield-glow: 10px; --sarak-security-glow: 10px; --sarak-security-pulse-speed: 2s; --sarak-security-pulse: 2s; --sarak-vignette-opacity: 0.3; --sarak-vignette-softness: 50; --sarak-global-saturation: 1; --sarak-saturation: 1; --sarak-global-contrast: 1; --sarak-contrast: 1; --sarak-contrast-curve: 1; --contrast-curve: 1; --sarak-chat-user-bg: #2626260d; --sarak-chat-bubble-style: glass; --sarak-chat-bubble: glass; --sarak-chat-animation-speed: 0.05s; --sarak-chat-anim-speed: 0.05s; --sarak-status-success-color: #12d393ff; --sarak-status-success-color-rgb: 18, 211, 147; --sarak-status-success-color-bg: rgba(18, 211, 147, 0.15); --sarak-status-success-color-border: rgba(18, 211, 147, 0.25); --sarak-status-success-color-10: rgba(18, 211, 147, 0.10); --sarak-status-success-color-20: rgba(18, 211, 147, 0.20); --sarak-status-success-color-30: rgba(18, 211, 147, 0.30); --sarak-status-success-color-40: rgba(18, 211, 147, 0.40); --sarak-status-success-color-50: rgba(18, 211, 147, 0.50); --sarak-status-success-color-hover: #14e8a2; --sarak-status-success-color-active: #10be84; --sarak-status-success-color-light: rgba(18, 211, 147, 0.05); --theme-success: #12d393ff; --theme-success-rgb: 18, 211, 147; --theme-success-bg: rgba(18, 211, 147, 0.15); --theme-success-border: rgba(18, 211, 147, 0.25); --theme-success-10: rgba(18, 211, 147, 0.10); --theme-success-20: rgba(18, 211, 147, 0.20); --theme-success-30: rgba(18, 211, 147, 0.30); --theme-success-40: rgba(18, 211, 147, 0.40); --theme-success-50: rgba(18, 211, 147, 0.50); --theme-success-hover: #14e8a2; --theme-success-active: #10be84; --theme-success-light: rgba(18, 211, 147, 0.05); --sarak-status-error-color: #ef4444ff; --sarak-status-error-color-rgb: 239, 68, 68; --sarak-status-error-color-bg: rgba(239, 68, 68, 0.15); --sarak-status-error-color-border: rgba(239, 68, 68, 0.25); --sarak-status-error-color-10: rgba(239, 68, 68, 0.10); --sarak-status-error-color-20: rgba(239, 68, 68, 0.20); --sarak-status-error-color-30: rgba(239, 68, 68, 0.30); --sarak-status-error-color-40: rgba(239, 68, 68, 0.40); --sarak-status-error-color-50: rgba(239, 68, 68, 0.50); --sarak-status-error-color-hover: #ff4b4b; --sarak-status-error-color-active: #d73d3d; --sarak-status-error-color-light: rgba(239, 68, 68, 0.05); --theme-error: #ef4444ff; --theme-error-rgb: 239, 68, 68; --theme-error-bg: rgba(239, 68, 68, 0.15); --theme-error-border: rgba(239, 68, 68, 0.25); --theme-error-10: rgba(239, 68, 68, 0.10); --theme-error-20: rgba(239, 68, 68, 0.20); --theme-error-30: rgba(239, 68, 68, 0.30); --theme-error-40: rgba(239, 68, 68, 0.40); --theme-error-50: rgba(239, 68, 68, 0.50); --theme-error-hover: #ff4b4b; --theme-error-active: #d73d3d; --theme-error-light: rgba(239, 68, 68, 0.05); --sarak-status-warning-color: #f59e0bff; --sarak-status-warning-color-rgb: 245, 158, 11; --sarak-status-warning-color-bg: rgba(245, 158, 11, 0.15); --sarak-status-warning-color-border: rgba(245, 158, 11, 0.25); --sarak-status-warning-color-10: rgba(245, 158, 11, 0.10); --sarak-status-warning-color-20: rgba(245, 158, 11, 0.20); --sarak-status-warning-color-30: rgba(245, 158, 11, 0.30); --sarak-status-warning-color-40: rgba(245, 158, 11, 0.40); --sarak-status-warning-color-50: rgba(245, 158, 11, 0.50); --sarak-status-warning-color-hover: #ffae0c; --sarak-status-warning-color-active: #dd8e0a; --sarak-status-warning-color-light: rgba(245, 158, 11, 0.05); --theme-warning: #f59e0bff; --theme-warning-rgb: 245, 158, 11; --theme-warning-bg: rgba(245, 158, 11, 0.15); --theme-warning-border: rgba(245, 158, 11, 0.25); --theme-warning-10: rgba(245, 158, 11, 0.10); --theme-warning-20: rgba(245, 158, 11, 0.20); --theme-warning-30: rgba(245, 158, 11, 0.30); --theme-warning-40: rgba(245, 158, 11, 0.40); --theme-warning-50: rgba(245, 158, 11, 0.50); --theme-warning-hover: #ffae0c; --theme-warning-active: #dd8e0a; --theme-warning-light: rgba(245, 158, 11, 0.05); --sarak-status-info-color: #3b82f6ff; --sarak-status-info-color-rgb: 59, 130, 246; --sarak-status-info-color-bg: rgba(59, 130, 246, 0.15); --sarak-status-info-color-border: rgba(59, 130, 246, 0.25); --sarak-status-info-color-10: rgba(59, 130, 246, 0.10); --sarak-status-info-color-20: rgba(59, 130, 246, 0.20); --sarak-status-info-color-30: rgba(59, 130, 246, 0.30); --sarak-status-info-color-40: rgba(59, 130, 246, 0.40); --sarak-status-info-color-50: rgba(59, 130, 246, 0.50); --sarak-status-info-color-hover: #418fff; --sarak-status-info-color-active: #3575dd; --sarak-status-info-color-light: rgba(59, 130, 246, 0.05); --theme-info: #3b82f6ff; --theme-info-rgb: 59, 130, 246; --theme-info-bg: rgba(59, 130, 246, 0.15); --theme-info-border: rgba(59, 130, 246, 0.25); --theme-info-10: rgba(59, 130, 246, 0.10); --theme-info-20: rgba(59, 130, 246, 0.20); --theme-info-30: rgba(59, 130, 246, 0.30); --theme-info-40: rgba(59, 130, 246, 0.40); --theme-info-50: rgba(59, 130, 246, 0.50); --theme-info-hover: #418fff; --theme-info-active: #3575dd; --theme-info-light: rgba(59, 130, 246, 0.05); --sarak-badge-radius: 99px; --sarak-focus-ring-width: 2px; --sarak-focus-width: 2px; --sarak-reduced-motion: false; --sarak-z-index-modal: 2000; --sarak-z-modal: 2000; --sarak-z-index-toast: 2000; --sarak-z-toast: 2000; --sarak-ai-panel-bg: #00000066; --sarak-ai-glow-color: #00f2ffff; --sarak-ai-glow: #00f2ffff; --sarak-flow-grid-style: dots; --sarak-flow-grid: dots; --sarak-motion-ease-main: cubic-bezier(0.4, 0, 0.2, 1); --sarak-motion-ease-out: cubic-bezier(0, 0, 0.2, 1); --sarak-motion-ease-in: cubic-bezier(0.4, 0, 1, 1); --sarak-motion-duration-instant: 0.1s; --sarak-motion-dur-instant: 0.1s; --sarak-motion-duration-fast: 0.2s; --sarak-motion-dur-fast: 0.2s; --sarak-motion-duration-normal: 0.3s; --sarak-motion-dur-normal: 0.3s; --sarak-motion-duration-slow: 0.6s; --sarak-motion-dur-slow: 0.6s; --sarak-motion-stagger-delay: 0.05s; --sarak-motion-stagger: 0.05s; --sarak-scroll-track-opacity: 0.05; --sarak-scroll-thumb-color: #262626ff; --sarak-scroll-thumb-opacity: 0.2; --sarak-scroll-thumb-hover-opacity: 0.5; --sarak-z-index-base: 1; --sarak-z-base: 1; --sarak-z-index-sidebar: 500; --sarak-z-sidebar: 500; --sarak-z-index-tooltip: 9000; --sarak-z-tooltip: 9000; --sarak-layer-backdrop-blur: 10px; --sarak-layer-backdrop-opacity: 0.4; --sarak-layer-elevation-factor: 1; --sarak-matrix-gap: 12px; --sarak-matrix-radius: 12px; --sarak-matrix-item-bg: #26262605; --sarak-matrix-border-color: #3333330d; --sarak-matrix-search-bg: #2626260d; --sarak-matrix-blur: 10px; --sarak-global-background-blur: 0px; --sarak-global-bg-blur: 0px; --sarak-global-background-blend-mode: normal; --sarak-global-bg-blend-mode: normal; --sarak-global-background-opacity: 1; --sarak-global-bg-opacity: 1; --sarak-breakpoint-tablet: 768px; --sarak-breakpoint-desktop: 1024px; --sarak-layout-grid-template: col-12; --sarak-global-section-gap: 24px; --sarak-global-flow-direction: column; --sarak-global-flow-align: stretch; --sarak-header-alignment: space-between; --sarak-form-label-position: top; --sarak-form-field-density: comfortable; --sarak-switch-label-position: right; --text-main: #e6e6e6ff; --text-muted: #e6e6e666; --text-secondary: #e6e6e6b3; --bg-card: #0c122299; --bg-sidebar: #000000ff; --border-color: #3333331a; --accent-color: #ff00d4ff; --surface-color: #18212fff; --theme-text: #e6e6e6ff; --theme-on-primary: #ffffff; --sarak-vignette-color: rgba(0, 0, 0, 0.3); --sarak-vignette-blend-mode: multiply; --sarak-card-clip-path: none; position: relative;"
+  >
+    <style>
+      .sarak-scope-r0 {
+  --sarak-layout-padding: 16px;
+  --sarak-layout-padding: 16px;
+  --sarak-border-radius: 8px;
+  --radius-theme: 8px;
+  --sarak-border-radius: 8px;
+  --border-radius: 8px;
+  --sarak-border-radius-sm: 4px;
+  --sarak-border-radius-sm: 4px;
+  --sarak-border-radius-md: 8px;
+  --sarak-border-radius-md: 8px;
+  --sarak-border-radius-lg: 12px;
+  --sarak-border-radius-lg: 12px;
+  --sarak-layout-gap: 16px;
+  --theme-gap: 16px;
+  --sarak-layout-gap: 16px;
+  --sarak-layout-gap-sm: 8px;
+  --sarak-layout-gap-sm: 8px;
+  --sarak-layout-gap-md: 16px;
+  --sarak-layout-gap-md: 16px;
+  --sarak-layout-gap-lg: 24px;
+  --sarak-layout-gap-lg: 24px;
+  --sarak-scrollbar-width: 4px;
+  --sarak-scrollbar-width: 4px;
+  --sarak-sidebar-width: 200px;
+  --sidebar-width: 200px;
+  --sarak-sidebar-width: 200px;
+  --sarak-sidebar-min-width: 150px;
+  --sidebar-min-width: 150px;
+  --sarak-sidebar-max-width: 280px;
+  --sidebar-max-width: 280px;
+  --sarak-topbar-height: 56px;
+  --topbar-height: 56px;
+  --sarak-topbar-height: 56px;
+  --theme-topbar-height: 56px;
+  --sarak-tab-gap: 4px;
+  --tab-gap: 4px;
+  --sarak-tab-gap: 4px;
+  --theme-tab-gap: 4px;
+  --sarak-tab-section-margin: 8px;
+  --tab-section-margin: 8px;
+  --sarak-tab-section-margin: 8px;
+  --theme-tab-section-margin: 8px;
+  --safe-area-padding: 8px;
+  --sarak-card-border-radius: 8px;
+  --radius-theme: 8px;
+  --sarak-card-radius: 8px;
+  --sarak-card-radius-tl: 8px;
+  --sarak-card-radius-tr: 8px;
+  --sarak-card-radius-bl: 8px;
+  --sarak-card-radius-br: 8px;
+  --sarak-card-radius-t-l: 8px;
+  --sarak-card-radius-tl: 8px;
+  --sarak-card-radius-t-r: 8px;
+  --sarak-card-radius-tr: 8px;
+  --sarak-card-radius-b-l: 8px;
+  --sarak-card-radius-bl: 8px;
+  --sarak-card-radius-b-r: 8px;
+  --sarak-card-radius-br: 8px;
+  --sarak-card-header-padding: 12px;
+  --sarak-card-header-padding: 12px;
+  --sarak-card-padding-md: 16px;
+  --sarak-card-padding-md: 16px;
+  --theme-gap: 16px;
+  --sarak-card-title-font-size: 16px;
+  --sarak-card-title-font-size: 16px;
+  --sarak-card-action-btn-border-radius: 6px;
+  --sarak-card-action-btn-radius: 6px;
+  --sarak-modal-border-radius: 12px;
+  --sarak-modal-border-radius: 12px;
+  --sarak-table-cell-padding: 8px;
+  --sarak-table-padding: 8px;
+  --sarak-h1-size: 32px;
+  --sarak-h1-size: 32px;
+  --sarak-h2-size: 24px;
+  --sarak-h2-size: 24px;
+  --sarak-btn-border-radius: 6px;
+  --sarak-btn-border-radius: 6px;
+  --sarak-btn-radius-tl: 6px;
+  --sarak-btn-radius-tr: 6px;
+  --sarak-btn-radius-bl: 6px;
+  --sarak-btn-radius-br: 6px;
+  --sarak-btn-radius-t-l: 6px;
+  --sarak-btn-radius-tl: 6px;
+  --sarak-btn-radius-t-r: 6px;
+  --sarak-btn-radius-tr: 6px;
+  --sarak-btn-radius-b-l: 6px;
+  --sarak-btn-radius-bl: 6px;
+  --sarak-btn-radius-b-r: 6px;
+  --sarak-btn-radius-br: 6px;
+  --sarak-input-border-radius: 6px;
+  --sarak-input-border-radius: 6px;
+  --sarak-chat-bubble-radius: 8px;
+  --sarak-chat-radius: 8px;
+  --sarak-flow-node-radius: 8px;
+  --sarak-flow-radius: 8px;
+  --sarak-flow-node-radius: 8px;
+  --sarak-scroll-width: 4px;
+  --sarak-scroll-width: 4px;
+  --sarak-scroll-radius: 8px;
+  --sarak-scroll-radius: 8px;
+  --sarak-scroll-padding: 0px;
+  --sarak-scroll-padding: 0px;
+
+}
+@media (min-width: 768px) {
+  .sarak-scope-r0 {
+  --sarak-layout-padding: 24px;
+  --sarak-layout-padding: 24px;
+  --sarak-border-radius: 10px;
+  --radius-theme: 10px;
+  --sarak-border-radius: 10px;
+  --border-radius: 10px;
+  --sarak-border-radius-sm: 6px;
+  --sarak-border-radius-sm: 6px;
+  --sarak-border-radius-md: 10px;
+  --sarak-border-radius-md: 10px;
+  --sarak-border-radius-lg: 16px;
+  --sarak-border-radius-lg: 16px;
+  --sarak-layout-gap: 20px;
+  --theme-gap: 20px;
+  --sarak-layout-gap: 20px;
+  --sarak-layout-gap-sm: 10px;
+  --sarak-layout-gap-sm: 10px;
+  --sarak-layout-gap-md: 20px;
+  --sarak-layout-gap-md: 20px;
+  --sarak-layout-gap-lg: 32px;
+  --sarak-layout-gap-lg: 32px;
+  --sarak-scrollbar-width: 4px;
+  --sarak-scrollbar-width: 4px;
+  --sarak-sidebar-width: 220px;
+  --sidebar-width: 220px;
+  --sarak-sidebar-width: 220px;
+  --sarak-sidebar-min-width: 180px;
+  --sidebar-min-width: 180px;
+  --sarak-sidebar-max-width: 350px;
+  --sidebar-max-width: 350px;
+  --sarak-topbar-height: 60px;
+  --topbar-height: 60px;
+  --sarak-topbar-height: 60px;
+  --theme-topbar-height: 60px;
+  --sarak-tab-gap: 6px;
+  --tab-gap: 6px;
+  --sarak-tab-gap: 6px;
+  --theme-tab-gap: 6px;
+  --sarak-tab-section-margin: 12px;
+  --tab-section-margin: 12px;
+  --sarak-tab-section-margin: 12px;
+  --theme-tab-section-margin: 12px;
+  --safe-area-padding: 12px;
+  --sarak-card-border-radius: 12px;
+  --radius-theme: 12px;
+  --sarak-card-radius: 12px;
+  --sarak-card-radius-tl: 12px;
+  --sarak-card-radius-tr: 12px;
+  --sarak-card-radius-bl: 12px;
+  --sarak-card-radius-br: 12px;
+  --sarak-card-radius-t-l: 12px;
+  --sarak-card-radius-tl: 12px;
+  --sarak-card-radius-t-r: 12px;
+  --sarak-card-radius-tr: 12px;
+  --sarak-card-radius-b-l: 12px;
+  --sarak-card-radius-bl: 12px;
+  --sarak-card-radius-b-r: 12px;
+  --sarak-card-radius-br: 12px;
+  --sarak-card-header-padding: 16px;
+  --sarak-card-header-padding: 16px;
+  --sarak-card-padding-md: 20px;
+  --sarak-card-padding-md: 20px;
+  --theme-gap: 20px;
+  --sarak-card-title-font-size: 18px;
+  --sarak-card-title-font-size: 18px;
+  --sarak-card-action-btn-border-radius: 8px;
+  --sarak-card-action-btn-radius: 8px;
+  --sarak-modal-border-radius: 16px;
+  --sarak-modal-border-radius: 16px;
+  --sarak-table-cell-padding: 10px;
+  --sarak-table-padding: 10px;
+  --sarak-h1-size: 40px;
+  --sarak-h1-size: 40px;
+  --sarak-h2-size: 28px;
+  --sarak-h2-size: 28px;
+  --sarak-btn-border-radius: 8px;
+  --sarak-btn-border-radius: 8px;
+  --sarak-btn-radius-tl: 8px;
+  --sarak-btn-radius-tr: 8px;
+  --sarak-btn-radius-bl: 8px;
+  --sarak-btn-radius-br: 8px;
+  --sarak-btn-radius-t-l: 8px;
+  --sarak-btn-radius-tl: 8px;
+  --sarak-btn-radius-t-r: 8px;
+  --sarak-btn-radius-tr: 8px;
+  --sarak-btn-radius-b-l: 8px;
+  --sarak-btn-radius-bl: 8px;
+  --sarak-btn-radius-b-r: 8px;
+  --sarak-btn-radius-br: 8px;
+  --sarak-input-border-radius: 8px;
+  --sarak-input-border-radius: 8px;
+  --sarak-chat-bubble-radius: 10px;
+  --sarak-chat-radius: 10px;
+  --sarak-flow-node-radius: 10px;
+  --sarak-flow-radius: 10px;
+  --sarak-flow-node-radius: 10px;
+  --sarak-scroll-width: 4px;
+  --sarak-scroll-width: 4px;
+  --sarak-scroll-radius: 10px;
+  --sarak-scroll-radius: 10px;
+  --sarak-scroll-padding: 2px;
+  --sarak-scroll-padding: 2px;
+
+  }
+}
+@media (min-width: 1024px) {
+  .sarak-scope-r0 {
+  --sarak-layout-padding: 32px;
+  --sarak-layout-padding: 32px;
+  --sarak-border-radius: 12px;
+  --radius-theme: 12px;
+  --sarak-border-radius: 12px;
+  --border-radius: 12px;
+  --sarak-border-radius-sm: 6px;
+  --sarak-border-radius-sm: 6px;
+  --sarak-border-radius-md: 12px;
+  --sarak-border-radius-md: 12px;
+  --sarak-border-radius-lg: 20px;
+  --sarak-border-radius-lg: 20px;
+  --sarak-layout-gap: 24px;
+  --theme-gap: 24px;
+  --sarak-layout-gap: 24px;
+  --sarak-layout-gap-sm: 12px;
+  --sarak-layout-gap-sm: 12px;
+  --sarak-layout-gap-md: 24px;
+  --sarak-layout-gap-md: 24px;
+  --sarak-layout-gap-lg: 36px;
+  --sarak-layout-gap-lg: 36px;
+  --sarak-scrollbar-width: 6px;
+  --sarak-scrollbar-width: 6px;
+  --sarak-sidebar-width: 240px;
+  --sidebar-width: 240px;
+  --sarak-sidebar-width: 240px;
+  --sarak-sidebar-min-width: 200px;
+  --sidebar-min-width: 200px;
+  --sarak-sidebar-max-width: 450px;
+  --sidebar-max-width: 450px;
+  --sarak-topbar-height: 64px;
+  --topbar-height: 64px;
+  --sarak-topbar-height: 64px;
+  --theme-topbar-height: 64px;
+  --sarak-tab-gap: 8px;
+  --tab-gap: 8px;
+  --sarak-tab-gap: 8px;
+  --theme-tab-gap: 8px;
+  --sarak-tab-section-margin: 16px;
+  --tab-section-margin: 16px;
+  --sarak-tab-section-margin: 16px;
+  --theme-tab-section-margin: 16px;
+  --safe-area-padding: 16px;
+  --sarak-card-border-radius: 12px;
+  --radius-theme: 12px;
+  --sarak-card-radius: 12px;
+  --sarak-card-radius-tl: 12px;
+  --sarak-card-radius-tr: 12px;
+  --sarak-card-radius-bl: 12px;
+  --sarak-card-radius-br: 12px;
+  --sarak-card-radius-t-l: 12px;
+  --sarak-card-radius-tl: 12px;
+  --sarak-card-radius-t-r: 12px;
+  --sarak-card-radius-tr: 12px;
+  --sarak-card-radius-b-l: 12px;
+  --sarak-card-radius-bl: 12px;
+  --sarak-card-radius-b-r: 12px;
+  --sarak-card-radius-br: 12px;
+  --sarak-card-header-padding: 16px;
+  --sarak-card-header-padding: 16px;
+  --sarak-card-padding-md: 24px;
+  --sarak-card-padding-md: 24px;
+  --theme-gap: 24px;
+  --sarak-card-title-font-size: 20px;
+  --sarak-card-title-font-size: 20px;
+  --sarak-card-action-btn-border-radius: 8px;
+  --sarak-card-action-btn-radius: 8px;
+  --sarak-modal-border-radius: 16px;
+  --sarak-modal-border-radius: 16px;
+  --sarak-table-cell-padding: 12px;
+  --sarak-table-padding: 12px;
+  --sarak-h1-size: 48px;
+  --sarak-h1-size: 48px;
+  --sarak-h2-size: 32px;
+  --sarak-h2-size: 32px;
+  --sarak-btn-border-radius: 8px;
+  --sarak-btn-border-radius: 8px;
+  --sarak-btn-radius-tl: 8px;
+  --sarak-btn-radius-tr: 8px;
+  --sarak-btn-radius-bl: 8px;
+  --sarak-btn-radius-br: 8px;
+  --sarak-btn-radius-t-l: 8px;
+  --sarak-btn-radius-tl: 8px;
+  --sarak-btn-radius-t-r: 8px;
+  --sarak-btn-radius-tr: 8px;
+  --sarak-btn-radius-b-l: 8px;
+  --sarak-btn-radius-bl: 8px;
+  --sarak-btn-radius-b-r: 8px;
+  --sarak-btn-radius-br: 8px;
+  --sarak-input-border-radius: 8px;
+  --sarak-input-border-radius: 8px;
+  --sarak-chat-bubble-radius: 12px;
+  --sarak-chat-radius: 12px;
+  --sarak-flow-node-radius: 12px;
+  --sarak-flow-radius: 12px;
+  --sarak-flow-node-radius: 12px;
+  --sarak-scroll-width: 6px;
+  --sarak-scroll-width: 6px;
+  --sarak-scroll-radius: 10px;
+  --sarak-scroll-radius: 10px;
+  --sarak-scroll-padding: 2px;
+  --sarak-scroll-padding: 2px;
+
+  }
+}
+
+/* Escopos explícitos para o Gêmeo Digital (Twin Mode) */
+.sarak-scope-r0.sarak-device-smartphone, .sarak-scope-r0 .sarak-device-smartphone {
+  --sarak-layout-padding: 16px;
+  --sarak-layout-padding: 16px;
+  --sarak-border-radius: 8px;
+  --radius-theme: 8px;
+  --sarak-border-radius: 8px;
+  --border-radius: 8px;
+  --sarak-border-radius-sm: 4px;
+  --sarak-border-radius-sm: 4px;
+  --sarak-border-radius-md: 8px;
+  --sarak-border-radius-md: 8px;
+  --sarak-border-radius-lg: 12px;
+  --sarak-border-radius-lg: 12px;
+  --sarak-layout-gap: 16px;
+  --theme-gap: 16px;
+  --sarak-layout-gap: 16px;
+  --sarak-layout-gap-sm: 8px;
+  --sarak-layout-gap-sm: 8px;
+  --sarak-layout-gap-md: 16px;
+  --sarak-layout-gap-md: 16px;
+  --sarak-layout-gap-lg: 24px;
+  --sarak-layout-gap-lg: 24px;
+  --sarak-scrollbar-width: 4px;
+  --sarak-scrollbar-width: 4px;
+  --sarak-sidebar-width: 200px;
+  --sidebar-width: 200px;
+  --sarak-sidebar-width: 200px;
+  --sarak-sidebar-min-width: 150px;
+  --sidebar-min-width: 150px;
+  --sarak-sidebar-max-width: 280px;
+  --sidebar-max-width: 280px;
+  --sarak-topbar-height: 56px;
+  --topbar-height: 56px;
+  --sarak-topbar-height: 56px;
+  --theme-topbar-height: 56px;
+  --sarak-tab-gap: 4px;
+  --tab-gap: 4px;
+  --sarak-tab-gap: 4px;
+  --theme-tab-gap: 4px;
+  --sarak-tab-section-margin: 8px;
+  --tab-section-margin: 8px;
+  --sarak-tab-section-margin: 8px;
+  --theme-tab-section-margin: 8px;
+  --safe-area-padding: 8px;
+  --sarak-card-border-radius: 8px;
+  --radius-theme: 8px;
+  --sarak-card-radius: 8px;
+  --sarak-card-radius-tl: 8px;
+  --sarak-card-radius-tr: 8px;
+  --sarak-card-radius-bl: 8px;
+  --sarak-card-radius-br: 8px;
+  --sarak-card-radius-t-l: 8px;
+  --sarak-card-radius-tl: 8px;
+  --sarak-card-radius-t-r: 8px;
+  --sarak-card-radius-tr: 8px;
+  --sarak-card-radius-b-l: 8px;
+  --sarak-card-radius-bl: 8px;
+  --sarak-card-radius-b-r: 8px;
+  --sarak-card-radius-br: 8px;
+  --sarak-card-header-padding: 12px;
+  --sarak-card-header-padding: 12px;
+  --sarak-card-padding-md: 16px;
+  --sarak-card-padding-md: 16px;
+  --theme-gap: 16px;
+  --sarak-card-title-font-size: 16px;
+  --sarak-card-title-font-size: 16px;
+  --sarak-card-action-btn-border-radius: 6px;
+  --sarak-card-action-btn-radius: 6px;
+  --sarak-modal-border-radius: 12px;
+  --sarak-modal-border-radius: 12px;
+  --sarak-table-cell-padding: 8px;
+  --sarak-table-padding: 8px;
+  --sarak-h1-size: 32px;
+  --sarak-h1-size: 32px;
+  --sarak-h2-size: 24px;
+  --sarak-h2-size: 24px;
+  --sarak-btn-border-radius: 6px;
+  --sarak-btn-border-radius: 6px;
+  --sarak-btn-radius-tl: 6px;
+  --sarak-btn-radius-tr: 6px;
+  --sarak-btn-radius-bl: 6px;
+  --sarak-btn-radius-br: 6px;
+  --sarak-btn-radius-t-l: 6px;
+  --sarak-btn-radius-tl: 6px;
+  --sarak-btn-radius-t-r: 6px;
+  --sarak-btn-radius-tr: 6px;
+  --sarak-btn-radius-b-l: 6px;
+  --sarak-btn-radius-bl: 6px;
+  --sarak-btn-radius-b-r: 6px;
+  --sarak-btn-radius-br: 6px;
+  --sarak-input-border-radius: 6px;
+  --sarak-input-border-radius: 6px;
+  --sarak-chat-bubble-radius: 8px;
+  --sarak-chat-radius: 8px;
+  --sarak-flow-node-radius: 8px;
+  --sarak-flow-radius: 8px;
+  --sarak-flow-node-radius: 8px;
+  --sarak-scroll-width: 4px;
+  --sarak-scroll-width: 4px;
+  --sarak-scroll-radius: 8px;
+  --sarak-scroll-radius: 8px;
+  --sarak-scroll-padding: 0px;
+  --sarak-scroll-padding: 0px;
+
+}
+.sarak-scope-r0.sarak-device-tablet, .sarak-scope-r0 .sarak-device-tablet {
+  --sarak-layout-padding: 24px;
+  --sarak-layout-padding: 24px;
+  --sarak-border-radius: 10px;
+  --radius-theme: 10px;
+  --sarak-border-radius: 10px;
+  --border-radius: 10px;
+  --sarak-border-radius-sm: 6px;
+  --sarak-border-radius-sm: 6px;
+  --sarak-border-radius-md: 10px;
+  --sarak-border-radius-md: 10px;
+  --sarak-border-radius-lg: 16px;
+  --sarak-border-radius-lg: 16px;
+  --sarak-layout-gap: 20px;
+  --theme-gap: 20px;
+  --sarak-layout-gap: 20px;
+  --sarak-layout-gap-sm: 10px;
+  --sarak-layout-gap-sm: 10px;
+  --sarak-layout-gap-md: 20px;
+  --sarak-layout-gap-md: 20px;
+  --sarak-layout-gap-lg: 32px;
+  --sarak-layout-gap-lg: 32px;
+  --sarak-scrollbar-width: 4px;
+  --sarak-scrollbar-width: 4px;
+  --sarak-sidebar-width: 220px;
+  --sidebar-width: 220px;
+  --sarak-sidebar-width: 220px;
+  --sarak-sidebar-min-width: 180px;
+  --sidebar-min-width: 180px;
+  --sarak-sidebar-max-width: 350px;
+  --sidebar-max-width: 350px;
+  --sarak-topbar-height: 60px;
+  --topbar-height: 60px;
+  --sarak-topbar-height: 60px;
+  --theme-topbar-height: 60px;
+  --sarak-tab-gap: 6px;
+  --tab-gap: 6px;
+  --sarak-tab-gap: 6px;
+  --theme-tab-gap: 6px;
+  --sarak-tab-section-margin: 12px;
+  --tab-section-margin: 12px;
+  --sarak-tab-section-margin: 12px;
+  --theme-tab-section-margin: 12px;
+  --safe-area-padding: 12px;
+  --sarak-card-border-radius: 12px;
+  --radius-theme: 12px;
+  --sarak-card-radius: 12px;
+  --sarak-card-radius-tl: 12px;
+  --sarak-card-radius-tr: 12px;
+  --sarak-card-radius-bl: 12px;
+  --sarak-card-radius-br: 12px;
+  --sarak-card-radius-t-l: 12px;
+  --sarak-card-radius-tl: 12px;
+  --sarak-card-radius-t-r: 12px;
+  --sarak-card-radius-tr: 12px;
+  --sarak-card-radius-b-l: 12px;
+  --sarak-card-radius-bl: 12px;
+  --sarak-card-radius-b-r: 12px;
+  --sarak-card-radius-br: 12px;
+  --sarak-card-header-padding: 16px;
+  --sarak-card-header-padding: 16px;
+  --sarak-card-padding-md: 20px;
+  --sarak-card-padding-md: 20px;
+  --theme-gap: 20px;
+  --sarak-card-title-font-size: 18px;
+  --sarak-card-title-font-size: 18px;
+  --sarak-card-action-btn-border-radius: 8px;
+  --sarak-card-action-btn-radius: 8px;
+  --sarak-modal-border-radius: 16px;
+  --sarak-modal-border-radius: 16px;
+  --sarak-table-cell-padding: 10px;
+  --sarak-table-padding: 10px;
+  --sarak-h1-size: 40px;
+  --sarak-h1-size: 40px;
+  --sarak-h2-size: 28px;
+  --sarak-h2-size: 28px;
+  --sarak-btn-border-radius: 8px;
+  --sarak-btn-border-radius: 8px;
+  --sarak-btn-radius-tl: 8px;
+  --sarak-btn-radius-tr: 8px;
+  --sarak-btn-radius-bl: 8px;
+  --sarak-btn-radius-br: 8px;
+  --sarak-btn-radius-t-l: 8px;
+  --sarak-btn-radius-tl: 8px;
+  --sarak-btn-radius-t-r: 8px;
+  --sarak-btn-radius-tr: 8px;
+  --sarak-btn-radius-b-l: 8px;
+  --sarak-btn-radius-bl: 8px;
+  --sarak-btn-radius-b-r: 8px;
+  --sarak-btn-radius-br: 8px;
+  --sarak-input-border-radius: 8px;
+  --sarak-input-border-radius: 8px;
+  --sarak-chat-bubble-radius: 10px;
+  --sarak-chat-radius: 10px;
+  --sarak-flow-node-radius: 10px;
+  --sarak-flow-radius: 10px;
+  --sarak-flow-node-radius: 10px;
+  --sarak-scroll-width: 4px;
+  --sarak-scroll-width: 4px;
+  --sarak-scroll-radius: 10px;
+  --sarak-scroll-radius: 10px;
+  --sarak-scroll-padding: 2px;
+  --sarak-scroll-padding: 2px;
+
+}
+.sarak-scope-r0.sarak-device-desktop, .sarak-scope-r0 .sarak-device-desktop {
+  --sarak-layout-padding: 32px;
+  --sarak-layout-padding: 32px;
+  --sarak-border-radius: 12px;
+  --radius-theme: 12px;
+  --sarak-border-radius: 12px;
+  --border-radius: 12px;
+  --sarak-border-radius-sm: 6px;
+  --sarak-border-radius-sm: 6px;
+  --sarak-border-radius-md: 12px;
+  --sarak-border-radius-md: 12px;
+  --sarak-border-radius-lg: 20px;
+  --sarak-border-radius-lg: 20px;
+  --sarak-layout-gap: 24px;
+  --theme-gap: 24px;
+  --sarak-layout-gap: 24px;
+  --sarak-layout-gap-sm: 12px;
+  --sarak-layout-gap-sm: 12px;
+  --sarak-layout-gap-md: 24px;
+  --sarak-layout-gap-md: 24px;
+  --sarak-layout-gap-lg: 36px;
+  --sarak-layout-gap-lg: 36px;
+  --sarak-scrollbar-width: 6px;
+  --sarak-scrollbar-width: 6px;
+  --sarak-sidebar-width: 240px;
+  --sidebar-width: 240px;
+  --sarak-sidebar-width: 240px;
+  --sarak-sidebar-min-width: 200px;
+  --sidebar-min-width: 200px;
+  --sarak-sidebar-max-width: 450px;
+  --sidebar-max-width: 450px;
+  --sarak-topbar-height: 64px;
+  --topbar-height: 64px;
+  --sarak-topbar-height: 64px;
+  --theme-topbar-height: 64px;
+  --sarak-tab-gap: 8px;
+  --tab-gap: 8px;
+  --sarak-tab-gap: 8px;
+  --theme-tab-gap: 8px;
+  --sarak-tab-section-margin: 16px;
+  --tab-section-margin: 16px;
+  --sarak-tab-section-margin: 16px;
+  --theme-tab-section-margin: 16px;
+  --safe-area-padding: 16px;
+  --sarak-card-border-radius: 12px;
+  --radius-theme: 12px;
+  --sarak-card-radius: 12px;
+  --sarak-card-radius-tl: 12px;
+  --sarak-card-radius-tr: 12px;
+  --sarak-card-radius-bl: 12px;
+  --sarak-card-radius-br: 12px;
+  --sarak-card-radius-t-l: 12px;
+  --sarak-card-radius-tl: 12px;
+  --sarak-card-radius-t-r: 12px;
+  --sarak-card-radius-tr: 12px;
+  --sarak-card-radius-b-l: 12px;
+  --sarak-card-radius-bl: 12px;
+  --sarak-card-radius-b-r: 12px;
+  --sarak-card-radius-br: 12px;
+  --sarak-card-header-padding: 16px;
+  --sarak-card-header-padding: 16px;
+  --sarak-card-padding-md: 24px;
+  --sarak-card-padding-md: 24px;
+  --theme-gap: 24px;
+  --sarak-card-title-font-size: 20px;
+  --sarak-card-title-font-size: 20px;
+  --sarak-card-action-btn-border-radius: 8px;
+  --sarak-card-action-btn-radius: 8px;
+  --sarak-modal-border-radius: 16px;
+  --sarak-modal-border-radius: 16px;
+  --sarak-table-cell-padding: 12px;
+  --sarak-table-padding: 12px;
+  --sarak-h1-size: 48px;
+  --sarak-h1-size: 48px;
+  --sarak-h2-size: 32px;
+  --sarak-h2-size: 32px;
+  --sarak-btn-border-radius: 8px;
+  --sarak-btn-border-radius: 8px;
+  --sarak-btn-radius-tl: 8px;
+  --sarak-btn-radius-tr: 8px;
+  --sarak-btn-radius-bl: 8px;
+  --sarak-btn-radius-br: 8px;
+  --sarak-btn-radius-t-l: 8px;
+  --sarak-btn-radius-tl: 8px;
+  --sarak-btn-radius-t-r: 8px;
+  --sarak-btn-radius-tr: 8px;
+  --sarak-btn-radius-b-l: 8px;
+  --sarak-btn-radius-bl: 8px;
+  --sarak-btn-radius-b-r: 8px;
+  --sarak-btn-radius-br: 8px;
+  --sarak-input-border-radius: 8px;
+  --sarak-input-border-radius: 8px;
+  --sarak-chat-bubble-radius: 12px;
+  --sarak-chat-radius: 12px;
+  --sarak-flow-node-radius: 12px;
+  --sarak-flow-radius: 12px;
+  --sarak-flow-node-radius: 12px;
+  --sarak-scroll-width: 6px;
+  --sarak-scroll-width: 6px;
+  --sarak-scroll-radius: 10px;
+  --sarak-scroll-radius: 10px;
+  --sarak-scroll-padding: 2px;
+  --sarak-scroll-padding: 2px;
+
+}
+    </style>
+    <div
+      class="absolute inset-0 z-0 bg-[var(--sarak-bg-base)]"
+      style="background-color: var(--sarak-bg-base);"
+    />
+    <div
+      class="absolute inset-0 origin-top-left overflow-hidden z-10 flex text-[var(--theme-text)] font-sans selection:bg-[var(--theme-primary)] selection:text-white layout-sidebar bg-[var(--theme-body)]"
+      style="width: 105.26%; height: 105.26%; transform: scale(0.95);"
+    >
+      <aside
+        class="sarak-shell-sidebar flex-shrink-0 h-full transition-all duration-300 z-30 border-r flex flex-col shrink-0 relative z-[100] shadow-2xl overflow-hidden"
+        style="width: 240px; opacity: 1; visibility: visible; transition: width 0.4s cubic-bezier(0.16, 1, 0.3, 1), transform 0.4s ease; margin: var(--theme-tab-section-margin, 12px); border-radius: var(--radius-theme, 12px); height: calc(100vh - (var(--theme-tab-section-margin, 12px) * 2)); border-width: 1px; border-style: solid; background-color: var(--theme-sidebar-bg, var(--theme-sidebar)); border-color: var(--theme-border);"
+      >
+        <div
+          class="h-16 sarak-shell-header px-6 flex items-center border-b border-[var(--theme-border)] bg-[var(--theme-title)]/5 justify-between"
+        >
+          <div
+            class="flex items-center gap-3 w-full "
+          >
+            <div
+              class="w-8 h-8 rounded-[var(--radius-theme)] bg-gradient-to-br from-[var(--theme-primary)] to-[var(--theme-primary-rgb),0.5] flex items-center justify-center font-black text-xs text-[var(--theme-on-primary)] shrink-0"
+            >
+              S
+            </div>
+            <span
+              class="text-sm font-bold tracking-tighter opacity-80 text-[var(--theme-title)] truncate max-w-[120px]"
+            >
+              Sarak Preview
+            </span>
+          </div>
+          <button
+            class="p-1.5 hover:bg-[var(--theme-muted)]/10 rounded-md text-[var(--theme-muted)] hover:text-[var(--theme-title)] transition-colors"
+          >
+            <svg
+              class=""
+              fill="none"
+              height="16"
+              stroke="currentColor"
+              stroke-linecap="round"
+              stroke-linejoin="round"
+              stroke-width="2"
+              viewBox="0 0 24 24"
+              width="16"
+              xmlns="http://www.w3.org/2000/svg"
+            >
+              <path
+                d="m15 18-6-6 6-6"
+              />
+            </svg>
+          </button>
+        </div>
+        <div
+          class="flex-1 overflow-y-auto p-4 custom-scrollbar flex flex-col"
+          style="gap: var(--theme-tab-gap, undefinedpx);"
+        >
+          <div
+            class="px-1 mb-2 shrink-0"
+          >
+            <div
+              class="hidden md:flex items-center w-64 group relative"
+            >
+              <div
+                class="flex flex-col w-full w-full"
+                style="gap: var(--sx-spacing-xs);"
+              >
+                <div
+                  class="flex-1 flex flex-col relative w-full"
+                >
+                  <div
+                    class="relative w-full flex items-center"
+                  >
+                    <div
+                      class="absolute left-3 flex items-center pointer-events-none text-[var(--sarak-input-icon-color,rgba(255,255,255,0.5))] transition-colors group-focus-within:text-[var(--sarak-input-focus-border-color,var(--sx-color-primary-base))]"
+                    >
+                      <svg
+                        class="text-[var(--theme-muted)] group-focus-within:text-[var(--theme-primary)] transition-colors"
+                        fill="none"
+                        height="14"
+                        stroke="currentColor"
+                        stroke-linecap="round"
+                        stroke-linejoin="round"
+                        stroke-width="2"
+                        viewBox="0 0 24 24"
+                        width="14"
+                        xmlns="http://www.w3.org/2000/svg"
+                      >
+                        <circle
+                          cx="11"
+                          cy="11"
+                          r="8"
+                        />
+                        <path
+                          d="m21 21-4.3-4.3"
+                        />
+                      </svg>
+                    </div>
+                    <input
+                      class="block text-[var(--sarak-input-text-color,var(--sx-color-text-muted))] font-medium outline-none transition-all placeholder:text-[var(--sarak-input-text-color,var(--sx-color-text-muted))]/30 bg-[var(--sarak-input-bg,var(--sx-color-surface-base))] rounded-input py-4 pl-11 pr-4 w-full "
+                      id=":r1:"
+                      placeholder="Smart Search..."
+                      style="border: 1px solid var(--sarak-input-border-color, var(--sx-color-border-base));"
+                      value=""
+                    />
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+        <div
+          class="mt-auto space-y-1 p-2"
+        >
+          <div
+            class="relative"
+          >
+            <button
+              class="flex items-center gap-2 transition-all group w-full px-3 py-2.5 rounded-xl text-[var(--theme-muted)] hover:bg-[var(--theme-muted)]/10 hover:text-[var(--theme-title)]"
+            >
+              <svg
+                class="text-[var(--theme-muted)] group-hover:text-[var(--theme-primary)]"
+                fill="none"
+                height="18"
+                stroke="currentColor"
+                stroke-linecap="round"
+                stroke-linejoin="round"
+                stroke-width="2"
+                viewBox="0 0 24 24"
+                width="18"
+                xmlns="http://www.w3.org/2000/svg"
+              >
+                <circle
+                  cx="12"
+                  cy="12"
+                  r="10"
+                />
+                <line
+                  x1="2"
+                  x2="22"
+                  y1="12"
+                  y2="12"
+                />
+                <path
+                  d="M12 2a15.3 15.3 0 0 1 4 10 15.3 15.3 0 0 1-4 10 15.3 15.3 0 0 1-4-10 15.3 15.3 0 0 1 4-10z"
+                />
+              </svg>
+              <span
+                class="text-sm font-tab flex-1 text-left"
+              >
+                Language
+              </span>
+              <span
+                class="text-[10px] font-bold text-[var(--theme-primary)]"
+              >
+                PT
+              </span>
+            </button>
+          </div>
+          <button
+            class="w-full flex items-center gap-3 px-3 py-2.5 rounded-xl text-[var(--theme-muted)] hover:bg-[var(--theme-muted)]/10 hover:text-[var(--theme-title)] transition-all group"
+          >
+            <svg
+              class="text-[var(--theme-muted)] group-hover:text-[var(--theme-primary)]"
+              fill="none"
+              height="18"
+              stroke="currentColor"
+              stroke-linecap="round"
+              stroke-linejoin="round"
+              stroke-width="2"
+              viewBox="0 0 24 24"
+              width="18"
+              xmlns="http://www.w3.org/2000/svg"
+            >
+              <circle
+                cx="12"
+                cy="12"
+                r="4"
+              />
+              <path
+                d="M12 2v2"
+              />
+              <path
+                d="M12 20v2"
+              />
+              <path
+                d="m4.93 4.93 1.41 1.41"
+              />
+              <path
+                d="m17.66 17.66 1.41 1.41"
+              />
+              <path
+                d="M2 12h2"
+              />
+              <path
+                d="M20 12h2"
+              />
+              <path
+                d="m6.34 17.66-1.41 1.41"
+              />
+              <path
+                d="m19.07 4.93-1.41 1.41"
+              />
+            </svg>
+            <span
+              class="text-sm font-tab flex-1 text-left"
+            >
+              Light Mode
+            </span>
+          </button>
+          <button
+            class="w-full flex items-center gap-3 px-3 py-2.5 rounded-xl text-[var(--theme-muted)] hover:bg-[var(--theme-muted)]/10 hover:text-[var(--theme-title)] transition-all group "
+          >
+            <svg
+              class="text-[var(--theme-muted)] group-hover:text-[var(--theme-primary)]"
+              fill="none"
+              height="18"
+              stroke="currentColor"
+              stroke-linecap="round"
+              stroke-linejoin="round"
+              stroke-width="2"
+              viewBox="0 0 24 24"
+              width="18"
+              xmlns="http://www.w3.org/2000/svg"
+            >
+              <path
+                d="M6 8a6 6 0 0 1 12 0c0 7 3 9 3 9H3s3-2 3-9"
+              />
+              <path
+                d="M10.3 21a1.94 1.94 0 0 0 3.4 0"
+              />
+            </svg>
+            <span
+              class="text-sm font-tab flex-1 text-left"
+            >
+              Notifications
+            </span>
+            <div
+              class="w-1.5 h-1.5 bg-[var(--theme-primary)] rounded-full shadow-[0_0_5px_var(--theme-primary)]"
+            />
+          </button>
+        </div>
+        <div
+          class="p-4 border-t border-[var(--theme-border)] bg-[var(--theme-card)]/50 relative z-20 "
+        >
+          <div
+            class="flex items-center group justify-between w-full"
+          >
+            <div
+              class="flex items-center gap-3 "
+            >
+              <div
+                class="relative w-9 h-9 rounded-xl bg-[var(--theme-primary)]/10 border border-[var(--theme-primary)]/20 flex items-center justify-center text-[var(--theme-primary)] overflow-hidden"
+              >
+                <div
+                  class="absolute inset-0 bg-gradient-to-tr from-[var(--theme-primary)] to-transparent opacity-10"
+                />
+                <svg
+                  class=""
+                  fill="none"
+                  height="16"
+                  stroke="currentColor"
+                  stroke-linecap="round"
+                  stroke-linejoin="round"
+                  stroke-width="2"
+                  viewBox="0 0 24 24"
+                  width="16"
+                  xmlns="http://www.w3.org/2000/svg"
+                >
+                  <path
+                    d="M19 21v-2a4 4 0 0 0-4-4H9a4 4 0 0 0-4 4v2"
+                  />
+                  <circle
+                    cx="12"
+                    cy="7"
+                    r="4"
+                  />
+                </svg>
+              </div>
+              <div
+                class="flex flex-col overflow-hidden"
+              >
+                <span
+                  class="text-xs font-bold text-[var(--theme-title)]/90 leading-tight truncate"
+                >
+                  Sarak User
+                </span>
+                <div
+                  class="flex items-center gap-1.5"
+                >
+                  <svg
+                    class="text-[var(--theme-primary)]"
+                    fill="none"
+                    height="8"
+                    stroke="currentColor"
+                    stroke-linecap="round"
+                    stroke-linejoin="round"
+                    stroke-width="2"
+                    viewBox="0 0 24 24"
+                    width="8"
+                    xmlns="http://www.w3.org/2000/svg"
+                  >
+                    <path
+                      d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10"
+                    />
+                  </svg>
+                  <span
+                    class="text-[8px] text-[var(--theme-muted)] uppercase tracking-widest font-black"
+                  >
+                    User
+                  </span>
+                </div>
+              </div>
+            </div>
+            <button
+              class="p-2 text-[var(--theme-muted)] hover:text-[var(--theme-error)] hover:bg-[var(--theme-error-bg)] rounded-lg transition-all "
+              title="Logout"
+            >
+              <svg
+                class=""
+                fill="none"
+                height="14"
+                stroke="currentColor"
+                stroke-linecap="round"
+                stroke-linejoin="round"
+                stroke-width="2"
+                viewBox="0 0 24 24"
+                width="14"
+                xmlns="http://www.w3.org/2000/svg"
+              >
+                <path
+                  d="M9 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h4"
+                />
+                <polyline
+                  points="16 17 21 12 16 7"
+                />
+                <line
+                  x1="21"
+                  x2="9"
+                  y1="12"
+                  y2="12"
+                />
+              </svg>
+            </button>
+          </div>
+        </div>
+        <div
+          class="absolute top-0 right-0 w-1.5 h-full cursor-col-resize hover:bg-[var(--theme-primary)]/40 active:bg-[var(--theme-primary)] transition-all z-[1000]"
+          title="Arraste para redimensionar"
+        />
+      </aside>
+      <div
+        class="flex-1 flex flex-col h-full overflow-hidden relative bg-[var(--theme-body)]"
+      >
+        <main
+          class="flex-1 overflow-y-auto p-12 relative z-10 bg-transparent custom-scrollbar isolate "
+        >
+          <div
+            class="relative z-10"
+          >
+            <div>
+              Mock App
+            </div>
+          </div>
+        </main>
+      </div>
+    </div>
+  </div>
+</div>
+`;

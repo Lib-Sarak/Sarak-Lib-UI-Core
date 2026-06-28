@@ -4,8 +4,10 @@ import { CARD_PRESETS, ComponentPreset } from '../../../../core/Design/presets/c
 import { useDesignVariables } from '../../../../core/Design/hooks/useDesignVariables';
 import { Layout, Check, Sparkles } from 'lucide-react';
 
+import { SarakDesignState } from '../../../../core/Provider/types';
+
 interface CardsCatalogProps {
-    onApplyPreset: (presetDesign: Record<string, any>, isPartial?: boolean) => void;
+    onApplyPreset: (presetDesign: Partial<SarakDesignState>, isPartial?: boolean) => void;
     currentMode: string;
 }
 
@@ -84,11 +86,11 @@ const CardPresetPreview = ({ preset, index, onApply }: { preset: ComponentPreset
             onClick={onApply}
             className="group flex flex-col text-left rounded-2xl border border-theme-border overflow-hidden bg-theme-card hover:border-theme-primary hover:shadow-[0_10px_40px_-10px_rgba(var(--theme-primary-rgb),0.1)] transition-all duration-300"
         >
-            <div className="h-48 w-full relative flex items-center justify-center p-6 bg-[var(--sarak-surface-sunken, #0a0a0b)] overflow-hidden" {...attributes as any}>
+            <div className="h-48 w-full relative flex items-center justify-center p-6 bg-[var(--sarak-surface-sunken, #0a0a0b)] overflow-hidden" {...(attributes as React.HTMLAttributes<HTMLDivElement>)}>
                 <div className="absolute inset-0 bg-[radial-gradient(ellipse_at_center,rgba(255,255,255,0.05)_0%,transparent_70%)]" />
                 
                 {/* O Card Gigante de Preview */}
-                <div className="relative w-full max-w-[280px] h-32 flex flex-col p-4 shadow-2xl transition-transform group-hover:scale-105 duration-500 z-10" style={cardStyle as any}>
+                <div className="relative w-full max-w-[280px] h-32 flex flex-col p-4 shadow-2xl transition-transform group-hover:scale-105 duration-500 z-10" style={cardStyle as React.CSSProperties}>
                     {textureLayer}
                     
                     <div className="flex items-center gap-3 relative z-10">

@@ -1,9 +1,20 @@
-import { describe, it, expect } from 'vitest';
-import * as ComponentModule from '../ShortcutsTab';
+import React from 'react';
+import { render } from '@testing-library/react';
+import { describe, it, expect, vi } from 'vitest';
+import { ShortcutsTab } from '../ShortcutsTab';
+
+vi.mock('../../../../core/Provider/SarakUIProvider', () => ({
+    useSarakUI: vi.fn(() => ({
+        shortcuts: [{ id: '1', keys: ['Ctrl', 'S'], description: 'Save', category: 'General' }],
+        registeredActions: {},
+        updateShortcut: vi.fn(),
+        applyConfig: vi.fn()
+    }))
+}));
 
 describe('ShortcutsTab', () => {
-    it('should be defined and export its contents without crashing', () => {
-        expect(ComponentModule).toBeDefined();
-        // TODO: Injetar testes de montagem profunda caso o componente cresça em complexidade
+    it('matches baseline snapshot', () => {
+        const { asFragment } = render(<ShortcutsTab />);
+        expect(asFragment()).toMatchSnapshot();
     });
 });

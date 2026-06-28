@@ -4,8 +4,34 @@ import { DesignScope } from '../../../../core/Design/components/DesignScope';
 import { SidebarNav } from '../../../../core/Shell/Components/SidebarNav';
 import { TopbarNav } from '../../../../core/Shell/Components/TopbarNav';
 import { DockNav } from '../../../../core/Shell/Components/DockNav';
+import { DiscoveredModule } from '../../../../core/Discovery/types';
+import { SarakUIContextType } from '../../../../core/Provider/types';
+import { SarakDesignState } from '../../../../core/Provider/types';
+import { SarakTokenValue } from '../../../../core/Design/types';
 
-export const PreviewSystemRenderer: React.FC<any> = ({
+export interface PreviewSystemRendererProps {
+    useSystemDesign?: boolean;
+    sarak: SarakUIContextType;
+    tokens: Partial<SarakDesignState>;
+    isDualView?: boolean;
+    previewDevice: 'desktop' | 'tablet' | 'smartphone';
+    previewNavVisible: boolean;
+    setPreviewNavVisible: (v: boolean) => void;
+    isSidebar: boolean;
+    isDock: boolean;
+    isTopbar: boolean;
+    parentContext: SarakUIContextType;
+    activePreviewApp: string;
+    setActivePreviewApp: (app: string) => void;
+    onUpdateDraft: (key: string, value: SarakTokenValue) => void;
+    mockGroupedModules: Record<string, unknown[]>;
+    mockDiscoveredModules: unknown[];
+    startResizingSidebar: () => void;
+    startResizingTopbar: () => void;
+    apps: Record<string, React.ReactNode>;
+}
+
+export const PreviewSystemRenderer: React.FC<PreviewSystemRendererProps> = ({
     useSystemDesign = false,
     sarak,
     tokens,
@@ -75,22 +101,22 @@ export const PreviewSystemRenderer: React.FC<any> = ({
                         <SidebarNav
                             design={activeDesign}
                             brand={{ name: activeDesign.systemName || "Sarak Preview" }}
-                            user={parentContext?.options?.user || { displayName: 'Sarak User', primaryEmail: 'preview@sarak.io' }}
+                            user={(parentContext?.options as { user?: { displayName?: string; primaryEmail?: string } })?.user || { displayName: 'Sarak User', primaryEmail: 'preview@sarak.io' }}
                             logout={() => { }}
                             toggleNav={() => onUpdateDraft('isNavHidden', !activeDesign.isNavHidden)}
                             activeModuleId={activePreviewApp}
                             setActiveModuleId={setActivePreviewApp}
-                            groupedModules={mockGroupedModules}
+                            groupedModules={mockGroupedModules as unknown as Record<string, DiscoveredModule[]>}
                             setIsNavVisible={setPreviewNavVisible}
                             setIsSearchOpen={() => { }}
-                            startResizing={startResizingSidebar as any}
+                            startResizing={startResizingSidebar}
                         />
                     )}
 
                     {isDock && (
                         <DockNav
                             design={activeDesign}
-                            discoveredModules={mockDiscoveredModules}
+                            discoveredModules={mockDiscoveredModules as unknown as DiscoveredModule[]}
                             activeModuleId={activePreviewApp}
                             setActiveModuleId={setActivePreviewApp}
                             setIsSearchOpen={() => { }}
@@ -108,10 +134,10 @@ export const PreviewSystemRenderer: React.FC<any> = ({
                                 setIsSearchOpen={() => { }}
                                 activeModuleId={activePreviewApp}
                                 setActiveModuleId={setActivePreviewApp}
-                                discoveredModules={mockDiscoveredModules}
-                                user={parentContext?.options?.user || { displayName: 'Sarak User', primaryEmail: 'preview@sarak.io' }}
+                                discoveredModules={mockDiscoveredModules as unknown as DiscoveredModule[]}
+                                user={(parentContext?.options as { user?: { displayName?: string; primaryEmail?: string } })?.user || { displayName: 'Sarak User', primaryEmail: 'preview@sarak.io' }}
                                 logout={() => { }}
-                                startResizing={startResizingTopbar as any}
+                                startResizing={startResizingTopbar}
                             />
                         )}
 

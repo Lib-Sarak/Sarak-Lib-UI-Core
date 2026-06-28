@@ -1,9 +1,20 @@
-import { describe, it, expect } from 'vitest';
-import * as ComponentModule from '../LanguageTab';
+import React from 'react';
+import { render } from '@testing-library/react';
+import { describe, it, expect, vi } from 'vitest';
+import { LanguageTab } from '../LanguageTab';
+
+vi.mock('../../../../core/Provider/SarakUIProvider', () => ({
+    useSarakUI: vi.fn(() => ({
+        language: 'pt-BR',
+        enabledLanguages: ['pt-BR', 'en-US'],
+        availableLanguages: [{ id: 'pt-BR', name: 'Português' }, { id: 'en-US', name: 'English' }],
+        applyConfig: vi.fn()
+    }))
+}));
 
 describe('LanguageTab', () => {
-    it('should be defined and export its contents without crashing', () => {
-        expect(ComponentModule).toBeDefined();
-        // TODO: Injetar testes de montagem profunda caso o componente cresça em complexidade
+    it('matches baseline snapshot', () => {
+        const { asFragment } = render(<LanguageTab />);
+        expect(asFragment()).toMatchSnapshot();
     });
 });

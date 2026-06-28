@@ -5,20 +5,32 @@ import { Globe, Languages, Check, X, Search, Info, Plus } from 'lucide-react';
 import { motion, AnimatePresence } from 'framer-motion';
 import { SarakInput } from '../../../components/atomic/Inputs';
 
+interface LanguageDefinition {
+    id: string;
+    name?: string;
+    label?: string;
+}
+
+type SarakLanguageContext = ReturnType<typeof useSarakUI> & {
+    language?: string;
+    enabledLanguages?: string[];
+    availableLanguages?: LanguageDefinition[];
+};
+
 export const LanguageTab: React.FC = () => {
-    const sarak = useSarakUI();
+    const sarak = useSarakUI() as SarakLanguageContext;
     
     // Extração segura com fallbacks para modo standalone
-    const language = (sarak as any).language || 'pt-BR';
-    const enabledLanguages = (sarak as any).enabledLanguages || ['pt-BR'];
-    const availableLanguages = (sarak as any).availableLanguages || LANGUAGES;
+    const language = sarak.language || 'pt-BR';
+    const enabledLanguages = sarak.enabledLanguages || ['pt-BR'];
+    const availableLanguages = sarak.availableLanguages || LANGUAGES;
 
     const setLanguage = (val: string) => sarak.applyConfig({ language: val });
     const setEnabledLanguages = (val: string[]) => sarak.applyConfig({ enabledLanguages: val });
 
     const [searchQuery, setSearchQuery] = useState("");
 
-    const filteredLanguages = (availableLanguages || []).filter((lang: any) => {
+    const filteredLanguages = (availableLanguages || []).filter((lang: LanguageDefinition) => {
         if (!lang) return false;
         const name = (lang?.name || lang?.label || lang?.id || '').toString().toLowerCase();
         const query = (searchQuery || '').toLowerCase();
@@ -59,7 +71,7 @@ export const LanguageTab: React.FC = () => {
                         
                         <div className="flex items-center justify-between p-3 rounded-2xl bg-black/40 border border-white/5">
                             <span className="text-xs font-bold uppercase tracking-widest text-white/80">
-                                {availableLanguages.find((l: any) => l.id === language)?.name || language}
+                                {availableLanguages.find((l: LanguageDefinition) => l.id === language)?.name || language}
                             </span>
                             <div className="flex items-center gap-1.5 px-2 py-1 bg-emerald-500/10 border border-emerald-500/20 rounded-lg">
                                 <div className="w-1.5 h-1.5 bg-emerald-500 rounded-full animate-pulse" />
@@ -98,7 +110,7 @@ export const LanguageTab: React.FC = () => {
                 </div>
 
                 <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-3 overflow-y-auto custom-scrollbar pr-2 pb-8">
-                    {filteredLanguages.map((lang: any) => {
+                    {filteredLanguages.map((lang: LanguageDefinition) => {
                         const isActive = language === lang.id;
                         const isEnabled = enabledLanguages.includes(lang.id);
 

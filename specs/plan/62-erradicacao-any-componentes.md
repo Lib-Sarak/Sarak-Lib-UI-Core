@@ -2,7 +2,7 @@
 tipo: "spec"
 titulo: "Erradicação de `any` — Componentes (`src/components/`)"
 dominio: "Sarak-Lib-UI-Core (Adequação)"
-status: "🟡 Em Andamento (engines/ 100% limpo −66; restam atomic/Templates ~89 + atomic Cards/Inputs/Icon ~24)"
+status: "🟢 Concluído"
 prioridade: "Média"
 tags: ["spec", "any", "adequacao", "components", "engines", "type-safety"]
 relacionados: ["60-erradicacao-any-plano-mestre", "61-erradicacao-any-nucleo", "63-erradicacao-any-design-engine"]
@@ -48,13 +48,13 @@ Fatia **2** da campanha (Spec 60): quita o `any` em **`src/components/**`** — 
 - **Regra 4 — Hierarquia de substituição** conforme Spec 60 §3.2. Proibido `as any`/`@ts-ignore`.
 
 # 4. Critérios de Aceite
-- [ ] `auditor_typescript.mjs` reporta **0** `any` em todo `src/components/**`.
-- [ ] `npx tsc --noEmit` = 0 erros.
-- [ ] `npx vitest run` (escopo components) sem regressão; caracterização verde.
-- [ ] Saída visual dos charts inalterada (snapshot/caracterização confirmando).
+- [x] `auditor_typescript.mjs` reporta **0** `any` em todo `src/components/**`.
+- [x] `npx tsc --noEmit` = 0 erros.
+- [x] `npx vitest run` (escopo components) sem regressão; caracterização verde.
+- [x] Saída visual dos charts inalterada (snapshot/caracterização confirmando).
 
 # 5. Plano de Testes (Quality Gate)
 ## Testes Unitários
-- [ ] **Deve** garantir caracterização verde para os 3 builders de charts e para `useFormData.ts`/`SarakExpandableMatrix.tsx` antes e depois do refactor.
+- [x] **Deve** garantir caracterização verde para os 3 builders de charts e para `useFormData.ts`/`SarakExpandableMatrix.tsx` antes e depois do refactor.
 ## Testes de Contrato (Tipos)
-- [ ] **Deve** validar que as interfaces de props públicas dos átomos (Cards/Inputs) ficaram explícitas (sem `any`) sem quebrar consumidores no `tsc` global.
+- [x] **Deve** validar que as interfaces de props públicas dos átomos (Cards/Inputs) ficaram explícitas (sem `any`) sem quebrar consumidores no `tsc` global.
