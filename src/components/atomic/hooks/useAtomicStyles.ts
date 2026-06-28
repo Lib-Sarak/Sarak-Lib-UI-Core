@@ -1,12 +1,14 @@
 import React from 'react';
 
+import { SarakThemePayload } from '../../../core/Provider/types';
+
 /**
  * Hook para centralizar e abstrair o cálculo de estilos dinâmicos baseados no Design Engine.
  * Evita poluição visual nos componentes e respeita a paridade com CSS Variables.
  */
 export const useAtomicStyles = () => {
     const getButtonStyles = (
-        design: any, 
+        design: SarakThemePayload | undefined, 
         variant: string, 
         isHovered: boolean
     ): React.CSSProperties => {
@@ -69,7 +71,7 @@ export const useAtomicStyles = () => {
     };
 
     const getInputStyles = (
-        design: any, 
+        design: SarakThemePayload | undefined, 
         isFocused: boolean
     ): React.CSSProperties => {
         const borderType = design?.inputBorderType || 'solid';
@@ -124,7 +126,7 @@ export const useAtomicStyles = () => {
     };
 
     const getSwitchStyles = (
-        design: any,
+        design: SarakThemePayload | undefined,
         checked: boolean
     ) => {
         const activeBg = 'var(--sarak-switch-active-bg, var(--sx-color-primary-base))';

@@ -6,25 +6,27 @@ import { useSarakUI } from '../../../core/Provider/SarakUIProvider';
 import { SarakButton } from '../Buttons/SarakButton';
 import { useCardLayoutStyles } from './hooks/useCardLayoutStyles';
 
-interface SarakActionCardProps {
-    item: any;
-    mapping: any;
+import { SarakThemePayload } from '../../../core/Provider/types';
+
+interface SarakActionCardProps<TItem extends Record<string, unknown>> {
+    item: TItem;
+    mapping?: Record<string, string>;
     className?: string;
-    onAction?: (item: any) => void;
-    design?: any;
+    onAction?: (item: TItem) => void;
+    design?: SarakThemePayload;
     label?: string;
 }
 
-export const SarakActionCard: React.FC<SarakActionCardProps> = ({ item, mapping, className = '', onAction, design: localDesign, label }) => {
+export const SarakActionCard = <TItem extends Record<string, unknown>>({ item, mapping, className = '', onAction, design: localDesign, label }: SarakActionCardProps<TItem>) => {
     const globalUI = useSarakUI();
     const design = localDesign || globalUI.design;
     const layout = useCardLayoutStyles(design);
     const [isExpanded, setIsExpanded] = useState(false);
 
-    const getVal = (obj: any, path: string | undefined) => {
+    const getVal = (obj: Record<string, unknown>, path: string | undefined): unknown => {
         if (!path) return undefined;
         try {
-            return path.split('.').reduce((acc, part) => acc && acc[part], obj);
+            return path.split('.').reduce((acc: unknown, part: string) => (acc as Record<string, unknown>)?.[part], obj);
         } catch (e) { return undefined; }
     };
 
@@ -48,7 +50,7 @@ export const SarakActionCard: React.FC<SarakActionCardProps> = ({ item, mapping,
                 transitionDuration: 'var(--animation-speed, 0.4s)',
                 padding: 'var(--sarak-card-padding-md, 24px)'
             }}
-            data-sx-card-texture-type={(design.cardTextureType as string) || 'none'}
+            data-sx-card-texture-type={String(design.cardTextureType ?? 'none')}
             data-spotlight={Number(design.cardSpotlightOpacity) > 0 ? '1' : '0'}
             data-border-beam={design.borderBeamEnabled ? '1' : '0'}
             data-geometric={Number(design.cardGeometricCut) > 0 ? '1' : '0'}
@@ -70,15 +72,15 @@ export const SarakActionCard: React.FC<SarakActionCardProps> = ({ item, mapping,
                 <div className={layout.headerClass}>
                     <div className="flex flex-col flex-1 min-w-0">
                         <span className="text-[9px] font-black text-[var(--sx-color-primary-base)] uppercase tracking-[0.2em] mb-1">
-                            {subtitle}
+                            {String(subtitle)}
                         </span>
                         <h4 className="text-lg font-black text-[var(--sx-color-text-title)] tracking-tight group-hover:text-[var(--sx-color-primary-base)] transition-colors truncate">
-                            {title}
+                            {String(title ?? '')}
                         </h4>
                     </div>
                     <div className="bg-[var(--sx-color-surface-base)] border-[var(--sx-color-border-base)] p-2 shrink-0 rounded-lg">
                         {mapping?.icon && LucideIcons[mapping.icon as keyof typeof LucideIcons] ? (
-                            React.createElement(LucideIcons[mapping.icon as keyof typeof LucideIcons] as any, { 
+                            React.createElement(LucideIcons[mapping.icon as keyof typeof LucideIcons] as React.ElementType, { 
                                 size: 16, 
                                 className: "text-[var(--sx-color-text-muted)]" 
                             })
@@ -87,9 +89,9 @@ export const SarakActionCard: React.FC<SarakActionCardProps> = ({ item, mapping,
                 </div>
 
                 {/* Micro-Details */}
-                {description && (
+                {!!description && (
                     <p className="text-2xs text-[var(--sx-color-text-muted)] opacity-60 leading-relaxed line-clamp-2 mb-4">
-                        {description}
+                        {String(description)}
                     </p>
                 )}
 
@@ -146,7 +148,7 @@ export const SarakActionCard: React.FC<SarakActionCardProps> = ({ item, mapping,
                                         <span className="text-[8px] font-black text-[var(--sx-color-text-muted)] opacity-50 uppercase tracking-widest">Janela / Tokenizer</span>
                                         <span className="text-3xs font-black text-[var(--sx-color-text-muted)] uppercase truncate">
                                             {context ? `${(Number(context) / 1000)}k tokens` : 'Default'}
-                                            {tokenizer ? ` | ${tokenizer}` : ''}
+                                            {tokenizer ? ` | ${String(tokenizer)}` : ''}
                                         </span>
                                     </div>
                                 </div>

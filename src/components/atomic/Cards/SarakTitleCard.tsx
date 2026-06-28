@@ -5,23 +5,25 @@ import { Box } from 'lucide-react';
 import { useSarakUI } from '../../../core/Provider/SarakUIProvider';
 import { useCardLayoutStyles } from './hooks/useCardLayoutStyles';
 
-interface SarakTitleCardProps {
-    item: any;
-    mapping: any;
+import { SarakThemePayload } from '../../../core/Provider/types';
+
+interface SarakTitleCardProps<TItem extends Record<string, unknown>> {
+    item: TItem;
+    mapping?: Record<string, string>;
     className?: string;
-    design?: any;
+    design?: SarakThemePayload;
     label?: string;
 }
 
-export const SarakTitleCard: React.FC<SarakTitleCardProps> = ({ item, mapping, className = '', design: localDesign, label }) => {
+export const SarakTitleCard = <TItem extends Record<string, unknown>>({ item, mapping, className = '', design: localDesign, label }: SarakTitleCardProps<TItem>) => {
     const globalUI = useSarakUI();
     const design = localDesign || globalUI.design;
     const layout = useCardLayoutStyles(design);
 
-    const getVal = (obj: any, path: string | undefined) => {
+    const getVal = (obj: Record<string, unknown>, path: string | undefined): unknown => {
         if (!path) return undefined;
         try {
-            return path.split('.').reduce((acc, part) => acc && acc[part], obj);
+            return path.split('.').reduce((acc: unknown, part: string) => (acc as Record<string, unknown>)?.[part], obj);
         } catch (e) { return undefined; }
     };
 
@@ -49,7 +51,7 @@ export const SarakTitleCard: React.FC<SarakTitleCardProps> = ({ item, mapping, c
                 transitionDuration: 'var(--animation-speed, 0.4s)',
                 padding: 'var(--sarak-card-padding-md, 24px)'
             }}
-            data-sx-card-texture-type={(design.cardTextureType as string) || 'none'}
+            data-sx-card-texture-type={String(design.cardTextureType ?? 'none')}
             data-spotlight={Number(design.cardSpotlightOpacity) > 0 ? '1' : '0'}
             data-border-beam={design.borderBeamEnabled ? '1' : '0'}
             data-geometric={Number(design.cardGeometricCut) > 0 ? '1' : '0'}
@@ -71,18 +73,18 @@ export const SarakTitleCard: React.FC<SarakTitleCardProps> = ({ item, mapping, c
                 <div className={layout.headerClass}>
                     <div className="flex flex-col flex-1 min-w-0 pr-2">
                         <span className="text-[9px] font-black text-[var(--sx-color-primary-base)] uppercase tracking-[0.2em] mb-1">
-                            {subtitle}
+                            {String(subtitle)}
                         </span>
                         <h4 
                             className="text-[var(--sx-color-text-title)] tracking-tight group-hover:text-[var(--sx-color-primary-base)] transition-colors truncate"
                             style={{ 
                                 fontSize: 'var(--sarak-card-title-font-size, 20px)',
-                                fontWeight: 'var(--sarak-card-title-font-weight, 900)' as any,
+                                fontWeight: 'var(--sarak-card-title-font-weight, 900)' as React.CSSProperties['fontWeight'],
                                 letterSpacing: 'var(--sarak-card-title-letter-spacing, 0px)',
                                 color: 'var(--sarak-card-title-color, var(--theme-title, #ffffff))'
                             }}
                         >
-                            {title}
+                            {String(title ?? '')}
                         </h4>
                     </div>
 
@@ -95,7 +97,7 @@ export const SarakTitleCard: React.FC<SarakTitleCardProps> = ({ item, mapping, c
                         }}
                     >
                         {mapping?.icon && LucideIcons[mapping.icon as keyof typeof LucideIcons] ? (
-                            React.createElement(LucideIcons[mapping.icon as keyof typeof LucideIcons] as any, { 
+                            React.createElement(LucideIcons[mapping.icon as keyof typeof LucideIcons] as React.ElementType, { 
                                 size: 18, 
                                 className: "text-[var(--sx-color-primary-base)] group-hover:scale-110 transition-transform" 
                             })
@@ -106,18 +108,18 @@ export const SarakTitleCard: React.FC<SarakTitleCardProps> = ({ item, mapping, c
                 {/* Minimalist Specs */}
                 <div className={layout.footerClass}>
                     <div className="flex flex-col gap-3 w-full">
-                        {context && (
+                        {!!context && (
                         <div className="flex items-center justify-between text-3xs font-black uppercase text-white/40 tracking-wider">
                             <span>Contexto</span>
                             <span className="text-2xs font-mono text-[var(--sx-color-text-muted)]">
-                                {Number(context) >= 1000 ? `${(Number(context) / 1000)}k` : context} tokens
+                                {Number(context) >= 1000 ? `${(Number(context) / 1000)}k` : String(context)} tokens
                             </span>
                         </div>
                     )}
                     
-                    {inputCaps.length > 0 && (
+                    {(inputCaps as string[]).length > 0 && (
                         <div className="flex flex-wrap gap-1.5 pt-2 border-t border-[var(--sx-color-border-base)]/30">
-                            {inputCaps.slice(0, 3).map((cap: string) => (
+                            {(inputCaps as string[]).slice(0, 3).map((cap: string) => (
                                 <div 
                                     key={cap} 
                                     className="flex items-center gap-1 bg-[var(--sx-color-primary-surface)] text-[var(--sx-color-primary-base)] border border-[var(--sx-color-border-base)] text-3xs font-black uppercase px-2 py-0.5" 

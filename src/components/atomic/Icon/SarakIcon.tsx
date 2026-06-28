@@ -22,7 +22,7 @@ export const SarakIcon: React.FC<SarakIconProps> = ({ name, size = 24, className
 
     if (!ResolvedIcon) {
         // Fallback robusto para Lucide direto caso o icone nao esteja mapeado
-        const FallbackIcon = (LucideIcons as any)[name as string] || LucideAlertCircle;
+        const FallbackIcon = (LucideIcons as unknown as Record<string, React.ElementType>)[name as string] || LucideAlertCircle;
         const lucideStrokeMap: Record<string, number> = { thin: 1, light: 1.5, regular: 2, bold: 2.5, fill: 3, duotone: 2 };
         return <FallbackIcon size={size} className={className} strokeWidth={lucideStrokeMap[weight] || 2} color={color} style={style} onClick={onClick} />;
     }

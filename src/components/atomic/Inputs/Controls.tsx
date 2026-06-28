@@ -4,6 +4,22 @@ import { Sun, Moon, User, ChevronDown, KeyRound, LogOut } from 'lucide-react';
 import { useSarakUI } from '../../../core/Provider/SarakUIProvider';
 import { LANGUAGES as ALL_LANGUAGES } from '../../../core/Discovery/constants';
 
+export interface UserPayload {
+    email?: string;
+    [key: string]: unknown;
+}
+
+export interface ModuleConfig {
+    id: string;
+    label: string;
+    [key: string]: unknown;
+}
+
+export interface LanguageOption {
+    id: string;
+    label: string;
+}
+
 export const LanguageSelector = () => {
     const { design } = useSarakUI();
     const enabledLanguages = design?.enabledLanguages;
@@ -27,8 +43,8 @@ export const LanguageSelector = () => {
 
     // Filter enabled languages
     const activeLangs = (enabledLanguages || ['pt', 'en', 'es'])
-        .map((id: string) => ALL_LANGUAGES.find((l: any) => l.id === id))
-        .filter(Boolean) as any[];
+        .map((id: string) => ALL_LANGUAGES.find((l: LanguageOption) => l.id === id))
+        .filter(Boolean) as LanguageOption[];
 
     return (
         <div className="flex items-center gap-1 bg-[var(--sx-color-surface-base)] border border-[var(--sx-color-border-base)]-border rounded-xl px-2 py-1">
@@ -76,7 +92,7 @@ export const ThemeToggle = () => {
     );
 };
 
-export const UserMenu = ({ user, onPasswordModal, onLogout }: { user: any, onPasswordModal: () => void, onLogout: () => void }) => {
+export const UserMenu = ({ user, onPasswordModal, onLogout }: { user: UserPayload | null, onPasswordModal: () => void, onLogout: () => void }) => {
     const [isOpen, setIsOpen] = React.useState(false);
     const userName = user?.email?.split('@')[0] || 'User';
 
@@ -124,9 +140,9 @@ export const UserMenu = ({ user, onPasswordModal, onLogout }: { user: any, onPas
     );
 };
 
-export const ModuleSelector = ({ currentModule, setCurrentModule, modules = [] }: { currentModule: string, setCurrentModule: (id: string) => void, modules: any[] }) => (
+export const ModuleSelector = ({ currentModule, setCurrentModule, modules = [] }: { currentModule: string, setCurrentModule: (id: string) => void, modules: ModuleConfig[] }) => (
     <div className="flex items-center bg-theme-body/50 p-1 rounded-xl border border-[var(--sx-color-border-base)]-border">
-        {modules.map((mod: any) => (
+        {modules.map((mod: ModuleConfig) => (
             <button
                 key={mod.id}
                 onClick={() => setCurrentModule(mod.id)}

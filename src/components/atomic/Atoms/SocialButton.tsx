@@ -2,7 +2,9 @@ import React from 'react';
 import { clsx } from 'clsx';
 import { twMerge } from 'tailwind-merge';
 
-function cn(...inputs: any[]) {
+type ClassValue = string | false | null | undefined;
+
+function cn(...inputs: ClassValue[]) {
     return twMerge(clsx(inputs));
 }
 

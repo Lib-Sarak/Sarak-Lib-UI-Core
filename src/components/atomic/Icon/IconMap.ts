@@ -183,7 +183,9 @@ export type IconName =
     | 'Database' | 'List' | 'CheckCircle2' | 'Loader2' | 'Calendar' | 'Trash2'
     | 'Plus' | 'UploadCloud' | 'MoreVertical' | 'Image' | 'File' | 'Edit' | 'Eye' | 'UserPlus';
 
-export const IconMap: Record<IconName, { lucide: any, phosphor: any, tabler: any }> = {
+import React from 'react';
+
+export const IconMap: Record<IconName, { lucide: React.ElementType, phosphor: React.ElementType, tabler: React.ElementType }> = {
     AlertCircle: { lucide: LucideAlertCircle, phosphor: PhosphorAlertCircle, tabler: TablerAlertCircle },
     Check: { lucide: LucideCheck, phosphor: PhosphorCheck, tabler: TablerCheck },
     X: { lucide: LucideX, phosphor: PhosphorX, tabler: TablerX },

@@ -7,17 +7,19 @@ import { SarakInput } from '../Inputs/SarakInput';
 import { SarakSwitch } from '../Inputs/SarakSwitch';
 import { useCardLayoutStyles } from './hooks/useCardLayoutStyles';
 
-interface SarakSearchCardProps {
-    item: any;
-    mapping: any;
+import { SarakThemePayload } from '../../../core/Provider/types';
+
+interface SarakSearchCardProps<TItem extends Record<string, unknown>> {
+    item: TItem;
+    mapping?: Record<string, string>;
     className?: string;
     onSearchChange?: (text: string) => void;
     onToggleCapability?: (cap: string, active: boolean) => void;
-    design?: any;
+    design?: SarakThemePayload;
     label?: string;
 }
 
-export const SarakSearchCard: React.FC<SarakSearchCardProps> = ({ 
+export const SarakSearchCard = <TItem extends Record<string, unknown>>({ 
     item, 
     mapping, 
     className = '', 
@@ -25,7 +27,7 @@ export const SarakSearchCard: React.FC<SarakSearchCardProps> = ({
     onToggleCapability,
     design: propDesign,
     label
-}) => {
+}: SarakSearchCardProps<TItem>) => {
     const context = useSarakUI();
     const design = propDesign || context.design || {};
     const layout = useCardLayoutStyles(design);
@@ -64,7 +66,7 @@ export const SarakSearchCard: React.FC<SarakSearchCardProps> = ({
                 transitionDuration: 'var(--animation-speed, 0.4s)',
                 padding: 'var(--sarak-card-padding-md, 24px)'
             }}
-            data-sx-card-texture-type={(design.cardTextureType as string) || 'none'}
+            data-sx-card-texture-type={String(design.cardTextureType ?? 'none')}
             data-spotlight={Number(design.cardSpotlightOpacity) > 0 ? '1' : '0'}
             data-border-beam={design.borderBeamEnabled ? '1' : '0'}
             data-geometric={Number(design.cardGeometricCut) > 0 ? '1' : '0'}
@@ -73,7 +75,7 @@ export const SarakSearchCard: React.FC<SarakSearchCardProps> = ({
             <div className="absolute inset-0 z-0 spotlight-effect pointer-events-none opacity-0 group-hover:opacity-100 transition-opacity duration-500" />
             
             {/* Border Beam - lights up on focus or hover */}
-            {(design.cardSearchBorderBeamActive !== false && (focused || design.cardSearchBorderBeamActive !== false)) && (
+            {design.cardSearchBorderBeamActive !== false && (
                 <div className="border-beam-effect" style={{ opacity: focused ? 1 : 0.4 }} />
             )}
 

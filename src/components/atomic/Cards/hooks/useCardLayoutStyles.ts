@@ -14,12 +14,14 @@ const alignStrats: Record<string, { align: string; justify: string; footer: stri
     'left': { align: 'items-start text-left', justify: 'justify-between', footer: 'justify-start' }
 };
 
+import { SarakThemePayload } from '../../../../core/Provider/types';
+
 /**
  * Hook Controlador Estrutural (Camada 6)
  * Traduz tokens de layout (Direção, Posição de Imagem, Alinhamento) em classes Tailwind.
  * Mantém o JSX limpo e isento de lógica de decisão.
  */
-export const useCardLayoutStyles = (design: any): CardLayoutContext => {
+export const useCardLayoutStyles = (design: SarakThemePayload): CardLayoutContext => {
     return useMemo(() => {
         const direction = design?.cardLayoutDirection || 'column';
         const align = design?.cardTextAlign || 'left';

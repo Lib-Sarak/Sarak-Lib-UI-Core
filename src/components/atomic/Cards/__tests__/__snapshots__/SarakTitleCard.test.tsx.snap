@@ -1,0 +1,158 @@
+// Vitest Snapshot v1, https://vitest.dev/guide/snapshot.html
+
+exports[`SarakTitleCard (Characterization) > matches snapshot before any removal 1`] = `
+<DocumentFragment>
+  <div
+    class="fixed inset-0 pointer-events-none z-[9999] opacity-[var(--sarak-noise-opacity,0)] transition-opacity duration-1000"
+    style="mix-blend-mode: overlay; background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 200 200' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.65' numOctaves='3' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)'/%3E%3C/svg%3E"); background-size: 200px 200px; background-repeat: repeat;"
+  />
+  <style
+    id="sarak-sovereign-bridge"
+  >
+    
+            /* Sarak Sovereign Bridge - Dark Mode Hue Hijack */
+            body.dark .bg-zinc-950,
+            body.dark .bg-black\\/40,
+            body.dark .bg-zinc-950\\/40 {
+                background-color: var(--theme-card) !important;
+            }
+        
+  </style>
+  <div
+    class="mock-container sarak-card bg-[var(--sx-color-surface-base)] border-[var(--sx-color-border-base)] group transition-all relative overflow-hidden "
+    data-border-beam="0"
+    data-geometric="0"
+    data-spotlight="1"
+    data-sx-card-texture-type="none"
+    style="transition-duration: var(--animation-speed, 0.4s); padding: var(--sarak-card-padding-md, 24px); opacity: 0; transform: translateY(15px);"
+  >
+    <div
+      class="absolute inset-0 z-0 spotlight-effect pointer-events-none opacity-0 group-hover:opacity-100 transition-opacity duration-500"
+    />
+    <div
+      class="border-beam-effect"
+    />
+    <div
+      class="mock-content"
+    >
+      <div
+        class="mock-header"
+      >
+        <div
+          class="flex flex-col flex-1 min-w-0 pr-2"
+        >
+          <span
+            class="text-[9px] font-black text-[var(--sx-color-primary-base)] uppercase tracking-[0.2em] mb-1"
+          >
+            123
+          </span>
+          <h4
+            class="text-[var(--sx-color-text-title)] tracking-tight group-hover:text-[var(--sx-color-primary-base)] transition-colors truncate"
+            style="font-size: var(--sarak-card-title-font-size, 20px); font-weight: var(--sarak-card-title-font-weight, 900); letter-spacing: var(--sarak-card-title-letter-spacing, 0px); color: var(--sarak-card-title-color, var(--theme-title, #ffffff));"
+          >
+            Test Item
+          </h4>
+        </div>
+        <div
+          class="bg-[var(--sx-color-surface-base)] border-[var(--sx-color-border-base)] flex items-center justify-center p-3 relative shrink-0 transition-all group-hover:border-[var(--sx-color-primary-base)]"
+          style="border-radius: var(--sarak-grid-radius, 8px); box-shadow: 0 0 15px var(--sarak-card-title-icon-glow, rgba(0, 242, 255, 0.2));"
+        >
+          <svg
+            class="text-[var(--sx-color-primary-base)] group-hover:scale-110 transition-transform"
+            fill="none"
+            height="18"
+            stroke="currentColor"
+            stroke-linecap="round"
+            stroke-linejoin="round"
+            stroke-width="2"
+            viewBox="0 0 24 24"
+            width="18"
+            xmlns="http://www.w3.org/2000/svg"
+          >
+            <path
+              d="M22 12h-4l-3 9L9 3l-3 9H2"
+            />
+          </svg>
+        </div>
+      </div>
+      <div
+        class="mock-footer"
+      >
+        <div
+          class="flex flex-col gap-3 w-full"
+        >
+          <div
+            class="flex items-center justify-between text-3xs font-black uppercase text-white/40 tracking-wider"
+          >
+            <span>
+              Contexto
+            </span>
+            <span
+              class="text-2xs font-mono text-[var(--sx-color-text-muted)]"
+            >
+              5k tokens
+            </span>
+          </div>
+          <div
+            class="flex flex-wrap gap-1.5 pt-2 border-t border-[var(--sx-color-border-base)]/30"
+          >
+            <div
+              class="flex items-center gap-1 bg-[var(--sx-color-primary-surface)] text-[var(--sx-color-primary-base)] border border-[var(--sx-color-border-base)] text-3xs font-black uppercase px-2 py-0.5"
+              style="border-radius: var(--sarak-border-width, 4px);"
+            >
+              <svg
+                class="lucide lucide-eye"
+                fill="none"
+                height="10"
+                stroke="currentColor"
+                stroke-linecap="round"
+                stroke-linejoin="round"
+                stroke-width="2"
+                viewBox="0 0 24 24"
+                width="10"
+                xmlns="http://www.w3.org/2000/svg"
+              >
+                <path
+                  d="M2 12s3-7 10-7 10 7 10 7-3 7-10 7-10-7-10-7Z"
+                />
+                <circle
+                  cx="12"
+                  cy="12"
+                  r="3"
+                />
+              </svg>
+              <span>
+                vision
+              </span>
+            </div>
+            <div
+              class="flex items-center gap-1 bg-[var(--sx-color-primary-surface)] text-[var(--sx-color-primary-base)] border border-[var(--sx-color-border-base)] text-3xs font-black uppercase px-2 py-0.5"
+              style="border-radius: var(--sarak-border-width, 4px);"
+            >
+              <svg
+                class="lucide lucide-message-square"
+                fill="none"
+                height="10"
+                stroke="currentColor"
+                stroke-linecap="round"
+                stroke-linejoin="round"
+                stroke-width="2"
+                viewBox="0 0 24 24"
+                width="10"
+                xmlns="http://www.w3.org/2000/svg"
+              >
+                <path
+                  d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"
+                />
+              </svg>
+              <span>
+                chat
+              </span>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</DocumentFragment>
+`;

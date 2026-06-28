@@ -50,7 +50,7 @@ export const useStructuralStyles = () => {
         return {
             className: 'flex w-full',
             style: {
-                flexDirection: direction as any,
+                flexDirection: direction as React.CSSProperties['flexDirection'],
                 justifyContent: justify,
                 alignItems: align,
                 gap
