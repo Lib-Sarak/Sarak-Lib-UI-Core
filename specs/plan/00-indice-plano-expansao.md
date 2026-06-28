@@ -110,14 +110,14 @@ Mapa de navegação do diretório `specs/plan/`. O plano transforma a Sarak-Lib-
 ## Adequação (60–69) — campanha dedicada de erradicação de `any`
 | Nº | Spec | Papel |
 |---|---|---|
-| 60 | erradicacao-any-plano-mestre | **Mestre da campanha:** baseline, leis, gate por fatia, roteamento por risco |
-| 61 | erradicacao-any-nucleo | `src/core/**` (Provider · Shell · Design · Discovery) — ~134 |
-| 62 | erradicacao-any-componentes | `src/components/**` (atomic · engines) — ~179 |
-| 63 | erradicacao-any-design-engine | `src/features/DesignEngine/**` — ~165 |
-| 64 | erradicacao-any-constantes-e-fechamento | `src/constants/**` + varredura final → baseline **0** |
-| 65 | foundation-design-state | **Fundação transversal:** tipo `SarakDesignState`; destrava todos os sites `design:any` (61↔62↔63) |
+| [x] 60 | erradicacao-any-plano-mestre | **Mestre da campanha:** baseline quitado pela campanha 60–64 |
+| [x] 61 | erradicacao-any-nucleo | `src/core/**` (Provider · Shell · Design · Discovery) — ~134 |
+| [x] 62 | erradicacao-any-componentes | `src/components/**` (atomic · engines) — ~179 |
+| [x] 63 | erradicacao-any-design-engine | `src/features/DesignEngine/**` — ~165 |
+| [x] 64 | erradicacao-any-constantes-e-fechamento | `src/constants/**` + varredura final → baseline **0** |
+| [x] 65 | foundation-design-state | **Fundação transversal:** tipo `SarakDesignState`; destrava todos os sites `design:any` (61↔62↔63) |
 
-> Operacionaliza a **Regra 1 da Spec 50** (`any` → 0) como eixo próprio. Quando a campanha zerar o baseline, a Spec 50 apenas confirma o verde.
+> A **Regra 1 da Spec 50** (`any` → 0) está plenamente atendida e concluída com sucesso. Baseline em 0 absoluto.
 
 # 3. Ordem de Build e Grafo de Dependências
 A construção segue dependências reais (não a ordem numérica cega):

@@ -12,9 +12,9 @@ interface InputPresetPreviewProps {
 export const InputPresetPreview: React.FC<InputPresetPreviewProps> = ({ preset, index, onApply, currentMode }) => {
     const styles: React.CSSProperties = {};
     Object.entries(preset.design).forEach(([key, value]) => {
-        if (key === 'inputBorderRadius') styles.borderRadius = value;
-        if (key === 'inputBg') styles.backgroundColor = value;
-        if (key === 'inputBorderColor') styles.borderColor = value;
+        if (key === 'inputBorderRadius') styles.borderRadius = String(value);
+        if (key === 'inputBg') styles.backgroundColor = String(value);
+        if (key === 'inputBorderColor') styles.borderColor = String(value);
         if (key === 'inputBorderType') {
             const borderStyles: Record<string, () => void> = {
                 'none': () => { styles.borderWidth = '0px'; },
@@ -24,17 +24,17 @@ export const InputPresetPreview: React.FC<InputPresetPreviewProps> = ({ preset, 
                 }
             };
             
-            if (borderStyles[value]) {
-                borderStyles[value]();
+            if (borderStyles[String(value)]) {
+                borderStyles[String(value)]();
             } else {
-                styles.borderStyle = value;
+                styles.borderStyle = String(value);
                 styles.borderWidth = 'var(--sarak-border-base, 1px)';
             }
         }
-        if (key === 'inputShadow') styles.boxShadow = value;
-        if (key === 'inputBackdropBlur' && value > 0) {
-            styles.backdropFilter = `blur(${value}px)`;
-            styles.WebkitBackdropFilter = `blur(${value}px)`;
+        if (key === 'inputShadow') styles.boxShadow = String(value);
+        if (key === 'inputBackdropBlur' && Number(value) > 0) {
+            styles.backdropFilter = `blur(${Number(value)}px)`;
+            styles.WebkitBackdropFilter = `blur(${Number(value)}px)`;
         }
     });
 

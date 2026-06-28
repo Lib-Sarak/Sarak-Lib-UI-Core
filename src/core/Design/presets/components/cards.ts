@@ -1,8 +1,10 @@
+import type { SarakDesignState } from '../../../Provider/types';
+
 export interface ComponentPreset {
     id: string;
     name: string;
     description: string;
-    design: Record<string, any>;
+    design: Partial<SarakDesignState>;
 }
 
 export const CARD_PRESETS: ComponentPreset[] = [
@@ -11,11 +13,11 @@ export const CARD_PRESETS: ComponentPreset[] = [
         name: 'Glass Minimal',
         description: 'Translucent cards with subtle blur and light borders.',
         design: {
-            cardBorderRadius: '16px',
-            cardBorderWidth: '1px',
+            cardBorderRadius: 16,
+            cardBorderWidth: 1,
             cardBorderColor: 'var(--theme-border)',
             cardShadow: '0 4px 30px rgba(0, 0, 0, 0.1)',
-            cardBackdropBlur: '12px',
+            cardBackdropBlur: 12,
             cardTextureType: 'none',
         }
     },
@@ -24,15 +26,15 @@ export const CARD_PRESETS: ComponentPreset[] = [
         name: 'Cyberpunk Neon',
         description: 'Sharp edges with neon glow.',
         design: {
-            cardBorderRadius: '0px',
-            cardBorderWidth: '1px',
+            cardBorderRadius: 0,
+            cardBorderWidth: 1,
             cardBorderColor: 'var(--theme-primary-focus)',
             cardShadow: 'none',
             cardShadowSpread: 10,
             cardGlowColor: 'var(--theme-primary-focus)',
-            cardBackdropBlur: '4px',
+            cardBackdropBlur: 4,
             cardTextureType: 'grid',
-            cardClipPath: 'polygon(10px 0, 100% 0, 100% calc(100% - 10px), calc(100% - 10px) 100%, 0 100%, 0 10px)',
+            // cardClipPath: 'polygon(10px 0, 100% 0, 100% calc(100% - 10px), calc(100% - 10px) 100%, 0 100%, 0 10px)',
         }
     },
     {
@@ -40,11 +42,11 @@ export const CARD_PRESETS: ComponentPreset[] = [
         name: 'Industrial Brutalism',
         description: 'Thick borders and solid flat shadows.',
         design: {
-            cardBorderRadius: '4px',
-            cardBorderWidth: '3px',
+            cardBorderRadius: 4,
+            cardBorderWidth: 3,
             cardBorderColor: 'var(--theme-title)',
             cardShadow: '4px 4px 0px var(--theme-title)',
-            cardBackdropBlur: '0px',
+            cardBackdropBlur: 0,
             cardTextureType: 'none',
         }
     },
@@ -53,11 +55,11 @@ export const CARD_PRESETS: ComponentPreset[] = [
         name: 'Soft Neumorphic',
         description: 'Extruded soft interface shapes.',
         design: {
-            cardBorderRadius: '24px',
-            cardBorderWidth: '0px',
+            cardBorderRadius: 24,
+            cardBorderWidth: 0,
             cardBorderColor: 'transparent',
             cardShadow: '20px 20px 60px rgba(0,0,0,0.5), -20px -20px 60px rgba(255,255,255,0.05)',
-            cardBackdropBlur: '0px',
+            cardBackdropBlur: 0,
             cardTextureType: 'none',
         }
     },
@@ -66,11 +68,11 @@ export const CARD_PRESETS: ComponentPreset[] = [
         name: 'Apple Frosted',
         description: 'Heavy blur, classic iOS feeling.',
         design: {
-            cardBorderRadius: '20px',
-            cardBorderWidth: '1px',
+            cardBorderRadius: 20,
+            cardBorderWidth: 1,
             cardBorderColor: 'var(--theme-border)',
             cardShadow: '0 8px 32px rgba(0, 0, 0, 0.12)',
-            cardBackdropBlur: '24px',
+            cardBackdropBlur: 24,
             cardTextureType: 'none',
         }
     },
@@ -79,11 +81,11 @@ export const CARD_PRESETS: ComponentPreset[] = [
         name: 'Material Card',
         description: 'Standard elevation-based material design card.',
         design: {
-            cardBorderRadius: '8px',
-            cardBorderWidth: '0px',
+            cardBorderRadius: 8,
+            cardBorderWidth: 0,
             cardBorderColor: 'transparent',
             cardShadow: '0 4px 6px -1px rgba(0, 0, 0, 0.1), 0 2px 4px -1px rgba(0, 0, 0, 0.06)',
-            cardBackdropBlur: '0px',
+            cardBackdropBlur: 0,
             cardTextureType: 'none',
         }
     }

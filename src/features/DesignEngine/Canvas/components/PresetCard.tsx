@@ -2,17 +2,18 @@ import React from 'react';
 import { motion } from 'framer-motion';
 import { ThemePreset } from '../../../../core/Design/presets/themes';
 import { syncThemeWithMode } from '../../../../core/Design/presets/themes/color-engine';
+import type { SarakTokenValue } from '../../../../core/Design/types';
 import { useDesignVariables } from '../../../../core/Design/hooks/useDesignVariables';
 import { Layout, ArrowRight } from 'lucide-react';
 
 export const PresetCard = ({ theme, currentMode, onApply, index }: { theme: ThemePreset, currentMode: string, onApply: () => void, index: number }) => {
     // Calcula o design final na hora baseando-se no modo atual do sistema
-    const design = syncThemeWithMode(theme.design, currentMode as 'light' | 'dark');
+    const design = syncThemeWithMode(theme.design as Record<string, SarakTokenValue>, currentMode as 'light' | 'dark');
     const { variables, attributes } = useDesignVariables(design);
 
-    const primary = design.primaryColor || 'var(--sarak-accent, #3b82f6)';
-    const secondary = design.secondaryColor || 'var(--sarak-accent-alt, #8b5cf6)';
-    const bgBase = design.surfaceColor || 'var(--sarak-surface-dark, #000000)';
+    const primary = String(design.primaryColor || 'var(--sarak-accent, #3b82f6)');
+    const secondary = String(design.secondaryColor || 'var(--sarak-accent-alt, #8b5cf6)');
+    const bgBase = String(design.surfaceColor || 'var(--sarak-surface-dark, #000000)');
     const isLight = design.mode === 'light';
 
     const cardStyle = {
@@ -156,7 +157,7 @@ export const PresetCard = ({ theme, currentMode, onApply, index }: { theme: Them
 
                 <div className="flex items-center gap-2">
                     <div className="px-1.5 py-0.5 bg-theme-card rounded text-[8px] font-bold uppercase tracking-widest text-theme-muted flex items-center gap-1">
-                        <Layout size={8} /> {design.navigationStyle || 'sidebar'}
+                        <Layout size={8} /> {String(design.navigationStyle || 'sidebar')}
                     </div>
                     <div className="flex items-center gap-1 text-[9px] font-bold uppercase tracking-widest text-theme-primary opacity-0 -translate-x-2 group-hover:opacity-100 group-hover:translate-x-0 transition-all duration-300">
                         <ArrowRight size={12} />

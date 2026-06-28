@@ -2,6 +2,7 @@ import { describe, it, expect } from 'vitest';
 import { DESIGN_MANIFEST } from '../manifest';
 import * as colorEngine from '../utils/color-engine';
 import { vi } from 'vitest';
+import type { SarakTokenValue } from '../../Design/types';
 
 vi.mock('../utils/color-engine', () => ({
     computeColorVariants: vi.fn((v, fallback) => v || fallback)
@@ -33,7 +34,7 @@ describe('DESIGN_MANIFEST', () => {
             expect(transform).toBeDefined();
             // Because we mocked it to return v || fallback
             expect(transform?.('custom-color')).toBe('custom-color');
-            expect(transform?.(undefined)).toBeDefined(); // should return fallback
+            expect(transform?.(undefined as unknown as SarakTokenValue)).toBeDefined(); // should return fallback
         });
     });
 
@@ -48,7 +49,7 @@ describe('DESIGN_MANIFEST', () => {
         expect(DESIGN_MANIFEST.contrastCurve.transform?.('1.5')).toBe(1.5);
         expect(DESIGN_MANIFEST.contrastCurve.transform?.('invalid')).toBe(1.0);
         expect(DESIGN_MANIFEST.logoScale.transform?.('2.0')).toBe('2.0');
-        expect(DESIGN_MANIFEST.logoScale.transform?.(undefined)).toBe(1.0);
+        expect(DESIGN_MANIFEST.logoScale.transform?.(undefined as unknown as SarakTokenValue)).toBe(1.0);
         expect(DESIGN_MANIFEST.cardSpotlightOpacity.transform?.('0.5')).toBe(0.5);
         expect(DESIGN_MANIFEST.cardSpotlightOpacity.transform?.('invalid')).toBe(0);
         expect(DESIGN_MANIFEST.hapticIntensity.transform?.('0.05')).toBeCloseTo(0.95);
@@ -72,7 +73,7 @@ describe('DESIGN_MANIFEST', () => {
 
     it('should transform chartPalette correctly', () => {
         const transform = DESIGN_MANIFEST.chartPalette.transform!;
-        expect(transform(['#000', '#fff'])).toBe('#000,#fff');
+        expect(transform(['#000', '#fff'] as unknown as SarakTokenValue)).toBe('#000,#fff');
         expect(transform('#ff0000')).toBe('#ff0000');
     });
 
@@ -84,14 +85,14 @@ describe('DESIGN_MANIFEST', () => {
 
     it('should transform scaleRatio correctly', () => {
         const transform = DESIGN_MANIFEST.scaleRatio.transform!;
-        const result = transform('2.0');
+        const result = transform('2.0') as unknown as { ratio: number; gap: string; pad: string; margin: string; radius: string };
         expect(result.ratio).toBe(2);
         expect(result.gap).toBe('2.5rem');
         expect(result.pad).toBe('3rem');
         expect(result.margin).toBe('2rem');
         expect(result.radius).toBe('24px');
 
-        const resultInvalid = transform('invalid');
+        const resultInvalid = transform('invalid') as unknown as { ratio: number };
         expect(resultInvalid.ratio).toBe(1.0);
     });
 
@@ -116,12 +117,12 @@ describe('DESIGN_MANIFEST', () => {
 
     it('should transform fluidScaling correctly', () => {
         const transform = DESIGN_MANIFEST.fluidScaling.transform!;
-        const result = transform('2.0');
+        const result = transform('2.0') as unknown as { base: string; gap: string; padding: string };
         expect(result.base).toBe('clamp(12px, 1.6vw + 8px, 40px)');
         expect(result.gap).toBe('clamp(10px, 2vw + 4px, 64px)');
         expect(result.padding).toBe('clamp(16px, 3vw + 8px, 96px)');
 
-        const resultInvalid = transform('invalid');
+        const resultInvalid = transform('invalid') as unknown as { base: string };
         expect(resultInvalid.base).toBe('clamp(12px, 0.8vw + 8px, 20px)');
     });
 });

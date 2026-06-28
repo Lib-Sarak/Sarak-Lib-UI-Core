@@ -2,6 +2,7 @@ import React, { useState } from 'react';
 import { motion } from 'framer-motion';
 import { GLOBAL_THEMES, ThemePreset } from '../../../../core/Design/presets/themes';
 import { syncThemeWithMode } from '../../../../core/Design/presets/themes/color-engine';
+import type { SarakTokenValue } from '../../../../core/Design/types';
 import { useDesignVariables } from '../../../../core/Design/hooks/useDesignVariables';
 import { upgradeThemePayload } from '../../../../core/Design/master-map';
 import { Sparkles, ArrowRight, Layout, Moon, Sun } from 'lucide-react';
@@ -90,7 +91,7 @@ export const PresetsCatalog: React.FC<PresetsCatalogProps> = ({ onApplyPreset, o
                                 theme={theme}
                                 currentMode={currentMode}
                                 onApply={() => {
-                                    const payload = upgradeThemePayload({ ...theme.design, mode: currentMode });
+                                    const payload = upgradeThemePayload({ ...theme.design as Record<string, SarakTokenValue>, mode: currentMode });
                                     if (onApplyFullTheme) {
                                         onApplyFullTheme(payload);
                                     } else {

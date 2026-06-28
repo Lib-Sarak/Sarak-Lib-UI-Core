@@ -8,7 +8,13 @@ import {
     Brain, Fingerprint, Binary, Dna, Microscope, Bot
 } from 'lucide-react';
 
-export const ICON_PACKS: any = {
+export interface IconPack {
+    id: string;
+    name: string;
+    icons: Record<string, React.ReactNode>;
+}
+
+export const ICON_PACKS: Record<string, IconPack> = {
     none: {
         id: 'none',
         name: 'System Default',
@@ -107,7 +113,7 @@ export const ICON_PACKS: any = {
     }
 };
 
-export const EMOJI_SETS: any = Object.keys(ICON_PACKS).reduce((acc: any, key: string) => {
+export const EMOJI_SETS: Record<string, Record<string, React.ReactNode>> = Object.keys(ICON_PACKS).reduce((acc: Record<string, Record<string, React.ReactNode>>, key: string) => {
     acc[key] = ICON_PACKS[key].icons;
     return acc;
 }, {});

@@ -19,8 +19,8 @@ Spec de **fechamento do plano**: o que executar **depois** que as Ondas 0–6 es
 - **Regra 5 — Higiene e Entrega:** Remover harness/mocks temporários e dead code (skill `code-limpeza-projeto`); rodar o gate de pré-entrega (autoria/licença/documentação via `code-entrega`); confirmar o build `dist` (`tsup`) sem erro e os exports do `src/index.ts` limpos.
 
 # 3. Critérios de Aceite
-- [ ] Auditor de `any` = **0** (baseline quitado).
-- [ ] `run_audit.mjs` 100% verde (incl. a Conferência Funcional como 7º auditor).
+- [x] Auditor de `any` = **0** (baseline quitado).
+- [x] `run_audit.mjs` 100% verde (incl. a Conferência Funcional como 7º auditor).
 - [ ] README e `specs/specs/08` documentam a API do Renderer com exemplo de manifesto rodável.
 - [ ] `ui-integra-consumidor` reflete a ingestão de manifesto (interceptors + data store + registro de custom).
 - [ ] `npm run build` gera o `dist` sem erro; `src/index.ts` exporta apenas o contrato público.

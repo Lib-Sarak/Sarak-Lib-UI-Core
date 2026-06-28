@@ -1,5 +1,6 @@
 import { MASTER_DESIGN_MAP } from '../../master-map';
 import { shiftColorMode } from '../../../Provider/utils/color-engine';
+import type { SarakTokenValue } from '../../types';
 
 /**
  * Motor de Cores Semântico em Tempo de Execução (v11.3)
@@ -98,7 +99,7 @@ const EXPLICIT_BG_TOKENS = new Set([
 ]);
 
 // Extrai 100% dos tokens padrão do Sarak para Fallback
-const baseDefaults: Record<string, any> = {};
+const baseDefaults: Record<string, SarakTokenValue> = {};
 const colorTokens: Set<string> = new Set();
 const semanticRoles: Record<string, 'bg' | 'text' | 'border' | 'primary'> = {};
 
@@ -137,9 +138,9 @@ const resolveSemanticRole = (tokenId: string, idLower: string, fallback: 'bg' | 
  * Recebe um Rascunho (Draft) ou Base Theme e força as cores de acordo com o targetMode.
  * Utiliza o algoritmo HSL dinâmico para preservar a identidade (Hue/Saturation) do tema.
  */
-export const syncThemeWithMode = (draftTokens: Record<string, any>, targetMode: 'light' | 'dark'): Record<string, any> => {
+export const syncThemeWithMode = (draftTokens: Record<string, SarakTokenValue>, targetMode: 'light' | 'dark'): Record<string, SarakTokenValue> => {
     const merged = { ...baseDefaults, ...draftTokens };
-    const result: Record<string, any> = { ...merged, mode: targetMode };
+    const result: Record<string, SarakTokenValue> = { ...merged, mode: targetMode };
 
     colorTokens.forEach(tokenId => {
         const originalValue = merged[tokenId];
@@ -150,7 +151,7 @@ export const syncThemeWithMode = (draftTokens: Record<string, any>, targetMode: 
 
         semantic = resolveSemanticRole(tokenId, idLower, semantic);
 
-        result[tokenId] = shiftColorMode(originalValue, targetMode, semantic);
+        result[tokenId] = shiftColorMode(String(originalValue), targetMode, semantic);
     });
 
     // Ajustes Ópticos Específicos (v11.3)

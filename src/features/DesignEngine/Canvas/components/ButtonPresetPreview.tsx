@@ -14,12 +14,12 @@ export const ButtonPresetPreview: React.FC<ButtonPresetPreviewProps> = ({ preset
     
     // Leitura direta dos tokens do preset
     const d = preset.design;
-    const styleType = d.btnStyleType || 'matte';
-    const borderRadius = d.btnBorderRadius !== undefined ? d.btnBorderRadius : 'var(--sarak-spacing-sm, 8px)';
-    const glowColor = d.btnNeonGlowColor || 'rgba(0, 242, 255, 0.4)';
-    const blurAmount = d.btnBackdropBlur || 0;
-    const primaryBg = d.btnPrimaryBg || 'var(--theme-primary)';
-    const primaryText = d.btnPrimaryText || 'var(--theme-text)';
+    const styleType = String(d.btnStyleType || 'matte');
+    const borderRadius = d.btnBorderRadius !== undefined ? String(d.btnBorderRadius) : 'var(--sarak-spacing-sm, 8px)';
+    const glowColor = String(d.btnNeonGlowColor || 'rgba(0, 242, 255, 0.4)');
+    const blurAmount = Number(d.btnBackdropBlur || 0);
+    const primaryBg = String(d.btnPrimaryBg || 'var(--theme-primary)');
+    const primaryText = String(d.btnPrimaryText || 'var(--theme-text)');
 
     // Construir estilo dinâmico como o SarakButton
     const dynamicStyle: React.CSSProperties = {

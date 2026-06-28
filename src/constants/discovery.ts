@@ -1,3 +1,6 @@
+import type { FilterDescriptor } from '../core/Discovery/types';
+import type { SarakComponent } from '../core/Discovery/registry';
+
 /**
  * Sarak Discovery Tokens (v9.0 Industrial)
  * 
@@ -16,7 +19,7 @@ export interface VisualContract {
     endpoint: string;
     tab?: string; // Propriedade para agrupar contratos em abas (v6.1)
     mapping?: Record<string, string>;
-    filters?: any[]; // Configurações de filtro (v6.4)
+    filters?: FilterDescriptor[]; // Configurações de filtro (v6.4)
     actions?: Array<{
         label: string;
         endpoint: string;
@@ -36,7 +39,7 @@ export interface VisualContract {
 
     // Extension points (v10.0)
     component?: string;
-    config?: any;
+    config?: Record<string, unknown>;
 }
 
 export interface ModuleManifest {
@@ -53,6 +56,6 @@ export interface ModuleManifest {
 export interface DiscoveredModule extends ModuleManifest {
     status: 'online' | 'offline';
     baseUrl: string;
-    component?: any;
+    component?: SarakComponent | string;
     error?: string;
 }

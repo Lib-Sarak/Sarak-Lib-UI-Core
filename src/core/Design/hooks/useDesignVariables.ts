@@ -3,6 +3,7 @@ import { getAllDesignTokens } from '../master-map';
 import { BREAKPOINT_TABLET, BREAKPOINT_DESKTOP } from '../breakpoints';
 import { computeColorVariants, parseToRgba, rgbToHsl } from '../../../core/Provider/utils/color-engine';
 import { syncThemeWithMode } from '../presets/themes/color-engine';
+import type { SarakTokenValue } from '../types';
 
 /**
  * Helper para converter camelCase para kebab-case (ex: cardBorderRadius -> card-border-radius)
@@ -29,7 +30,7 @@ export const useDesignVariables = (
         // as cores sejam matematicamente forçadas a obedecer o targetMode (Claro/Escuro) 
         // antes de serem injetadas no DOM global.
         const targetMode = (rawDesign.mode as 'light' | 'dark') || 'dark';
-        const design = syncThemeWithMode(rawDesign, targetMode);
+        const design = syncThemeWithMode(rawDesign as Record<string, SarakTokenValue>, targetMode);
 
         const variables: Record<string, string> = {};
         const attributes: Record<string, string> = {};
@@ -97,7 +98,7 @@ export const useDesignVariables = (
                         // Gerador de Variantes Cromáticas (RGB, Hover, Active, Light)
                         if (token.generateVariants && token.type === 'color' && value && value !== 'transparent') {
                             try {
-                                const variants = computeColorVariants(value, anchorColor);
+                                const variants = computeColorVariants(String(value), anchorColor);
                                 variables[`${v}-rgb`] = variants.rgb;
                                 variables[`${v}-bg`] = variants.bg;
                                 variables[`${v}-border`] = variants.border;
@@ -121,7 +122,7 @@ export const useDesignVariables = (
                                 variables[`${autoVar}-50`] = variants[50];
                                 variables[`${autoVar}-hover`] = variants.hover;
                             } catch (e) {
-                                console.error(`[AtomicSync] Error for ${token.id}:`, e);
+                                Number(value) > 0 && console.error(`[AtomicSync] Error for ${token.id}:`, e);
                             }
                         }
                     });
@@ -166,7 +167,7 @@ export const useDesignVariables = (
             : 'rgba(0, 0, 0, 0)';
         variables['--sarak-vignette-blend-mode'] = isDark ? 'multiply' : 'normal';
 
-        if (design.cardGeometricCut && design.cardGeometricCut > 0) {
+        if (design.cardGeometricCut && Number(design.cardGeometricCut) > 0) {
             const cut = design.cardGeometricCut;
             variables['--sarak-card-clip-path'] = `polygon(${cut}px 0%, calc(100% - ${cut}px) 0%, 100% ${cut}px, 100% calc(100% - ${cut}px), calc(100% - ${cut}px) 100%, ${cut}px 100%, 0% calc(100% - ${cut}px), 0% ${cut}px)`;
         } else {

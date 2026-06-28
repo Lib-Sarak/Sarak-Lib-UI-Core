@@ -493,7 +493,7 @@ interface SarakUIProviderProps {
 declare const DESIGN_MANIFEST: Record<string, {
     vars?: string[];
     unit?: string;
-    transform?: (v: any) => any;
+    transform?: (v: SarakTokenValue) => string | number | Record<string, string | number>;
     attr?: string;
     classPrefix?: string;
 }>;
