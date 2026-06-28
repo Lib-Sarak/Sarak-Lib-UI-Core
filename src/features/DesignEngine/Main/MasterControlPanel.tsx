@@ -9,6 +9,8 @@ import { useSarakUI } from '../../../core/Provider/SarakUIProvider';
 import { useDesignDraft } from '../hooks/useDesignDraft';
 import { SarakInput } from '../../../components/atomic/Inputs';
 
+import { SarakTokenValue, DesignToken } from '../../../core/Design/types';
+
 /**
  * MasterControlPanel (v13.0) - A Planilha Mestra do Sarak UI
  * 
@@ -18,14 +20,14 @@ import { SarakInput } from '../../../components/atomic/Inputs';
 export const MasterControlPanel: React.FC = () => {
     const sarak = useSarakUI();
     const { draft, isDirty, isComponentDirty, updateDraft, handleApplyToSystem, resetToken } = useDesignDraft(sarak);
-    const draftRecord = draft as Record<string, any>;
+    const draftRecord = draft as Record<string, SarakTokenValue>;
     
     const [searchQuery, setSearchQuery] = useState('');
     const [activeCategory, setActiveCategory] = useState<string | null>(null);
 
     // 1. Processamento de Dados (Planilha)
     const allTokens = useMemo(() => {
-        const tokens: any[] = [];
+        const tokens: (DesignToken & { pilarName: string, pilarId: string })[] = [];
         MASTER_DESIGN_MAP.components.forEach(comp => {
             comp.tokens.forEach(token => {
                 tokens.push({
@@ -119,11 +121,11 @@ export const MasterControlPanel: React.FC = () => {
                                                 <div className="flex items-center gap-2 flex-1">
                                                     <div 
                                                         className="w-5 h-5 shrink-0 rounded border border-white/10" 
-                                                        style={{ backgroundColor: draftRecord[token.id] || token.defaultValue }} 
+                                                        style={{ backgroundColor: String(draftRecord[token.id] || token.defaultValue) }} 
                                                     />
                                                     <input 
                                                         type="text" 
-                                                        value={draftRecord[token.id] || token.defaultValue} 
+                                                        value={String(draftRecord[token.id] || token.defaultValue)} 
                                                         onChange={(e) => updateDraft(token.id, e.target.value)}
                                                         className="bg-transparent border-none text-[8px] font-mono text-white/40 focus:outline-none w-full"
                                                     />
@@ -136,22 +138,22 @@ export const MasterControlPanel: React.FC = () => {
                                                         min={token.constraints?.min ?? 0}
                                                         max={token.constraints?.max ?? 100}
                                                         step={token.constraints?.step ?? 1}
-                                                        value={draftRecord[token.id] ?? token.defaultValue}
+                                                        value={Number(draftRecord[token.id] ?? token.defaultValue)}
                                                         onChange={(e) => updateDraft(token.id, Number(e.target.value))}
                                                         className="flex-1 accent-[var(--theme-primary)] h-1 bg-white/10 rounded-lg appearance-none cursor-pointer"
                                                     />
                                                     <span className="text-[8px] font-black text-white/20 w-6 text-right">
-                                                        {draftRecord[token.id] ?? token.defaultValue}
+                                                        {String(draftRecord[token.id] ?? token.defaultValue)}
                                                     </span>
                                                 </div>
                                             )}
                                             {token.type === 'select' && (
                                                 <select 
-                                                    value={draftRecord[token.id] ?? token.defaultValue}
+                                                    value={String(draftRecord[token.id] ?? token.defaultValue)}
                                                     onChange={(e) => updateDraft(token.id, e.target.value)}
                                                     className="bg-white/5 border border-white/10 rounded-md py-1 px-2 text-[8px] font-black uppercase tracking-widest focus:outline-none w-full"
                                                 >
-                                                    {(token.constraints?.options || token.options || []).map((opt: any) => {
+                                                    {(token.constraints?.options || token.options || []).map((opt: { id?: string; value?: string; label?: string; name?: string } | string) => {
                                                         const optId = typeof opt === 'object' ? (opt.id !== undefined ? opt.id : (opt.value !== undefined ? opt.value : '')) : opt;
                                                         const optLabel = typeof opt === 'object' ? (opt.label || opt.name || optId) : opt;
                                                         return (
@@ -163,7 +165,7 @@ export const MasterControlPanel: React.FC = () => {
                                             {(token.type === 'text' || token.type === 'string') && (
                                                 <input 
                                                     type="text" 
-                                                    value={draftRecord[token.id] ?? token.defaultValue}
+                                                    value={String(draftRecord[token.id] ?? token.defaultValue)}
                                                     onChange={(e) => updateDraft(token.id, e.target.value)}
                                                     className="bg-white/5 border border-white/10 rounded-md py-1 px-2 text-[8px] font-bold focus:outline-none w-full"
                                                 />

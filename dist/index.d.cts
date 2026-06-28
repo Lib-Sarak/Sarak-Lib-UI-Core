@@ -7,6 +7,8 @@ type ResponsiveValue<T> = {
     tab: T;
     mob: T;
 };
+/** Espaço de valores que um token pode assumir (espelha SarakDesignTokens). */
+type SarakTokenValue = string | number | boolean | ResponsiveValue<string | number>;
 
 interface SarakDesignTokens {
     accentColor: string;
@@ -609,14 +611,14 @@ declare const SarakIcon: React__default.FC<SarakIconProps>;
  * useDesignDraft (v12.1 - Data-Driven)
  * Orquestrador de rascunhos com isolamento de sandbox.
  */
-declare const useDesignDraft: (sarak: any) => {
-    draft: any;
+declare const useDesignDraft: (sarak: SarakUIContextType) => {
+    draft: SarakDesignState;
     isDirty: boolean;
     isComponentDirty: (schemaId: string) => boolean;
-    updateDraft: (key: string, value: any) => void;
+    updateDraft: (key: string, value: SarakTokenValue) => void;
     resetComponent: (schemaIdOrSchemas: string | string[]) => void;
     resetToken: (tokenId: string) => void;
-    handleThemePreview: (presetDesign: Record<string, any>, presetKeyId?: string) => void;
+    handleThemePreview: (presetDesign: Partial<SarakDesignState>, presetKeyId?: string) => void;
     handleApplyToSystem: () => void;
     handleApplyComponent: (schemaId: string) => void;
     toast: {
@@ -1226,10 +1228,9 @@ interface ModalLayoutContext {
     closeButtonClass: string;
 }
 /**
- * Hook Controlador Estrutural (Camada 6) - Modais
- * Define como o Header (e botão de fechar) e o Footer (alinhamento de ações) se comportam.
+ * Hook Controlador Estrutural (Camada 6) - Modals
  */
-declare const useModalLayoutStyles: (design: any) => ModalLayoutContext;
+declare const useModalLayoutStyles: (design: SarakThemePayload) => ModalLayoutContext;
 
 interface SarakEmptyStateProps {
     type?: 'minimal' | 'abstract' | 'geometric';

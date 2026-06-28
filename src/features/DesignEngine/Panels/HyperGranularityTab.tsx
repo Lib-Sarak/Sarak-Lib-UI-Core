@@ -9,6 +9,7 @@ import {
 import { useSarakUI } from '../../../core/Provider/SarakUIProvider';
 import { useDesignDraft } from '../hooks/useDesignDraft';
 import { MASTER_DESIGN_MAP } from '../../../core/Design/master-map';
+import { SarakTokenValue, DesignToken } from '../../../core/Design/types';
 import { DynamicTokenControl } from '../components/DynamicTokenControl';
 import { CategoryLabel } from '../components/DesignControls';
 import { motion, AnimatePresence } from 'framer-motion';
@@ -18,7 +19,7 @@ import { PillarSelector } from './components/PillarSelector';
 /**
  * MAPEAR ÍCONES AOS COMPONENTES DO SCHEMA
  */
-const COMPONENT_ICONS: Record<string, any> = {
+const COMPONENT_ICONS: Record<string, React.ElementType> = {
     shell: Layout,
     identity: Fingerprint,
     typography: Type,
@@ -41,7 +42,7 @@ const COMPONENT_ICONS: Record<string, any> = {
 export const HyperGranularityTab: React.FC = () => {
     const sarak = useSarakUI();
     const { draft, updateDraft, handleApplyToSystem, resetComponent, resetToken, toast } = useDesignDraft(sarak);
-    const draftRecord = draft as Record<string, any>;
+    const draftRecord = draft as Record<string, SarakTokenValue>;
     
     const [activePillar, setActivePillar] = useState<string>('core');
     const [activeSection, setActiveSection] = useState<string | null>(null);
@@ -93,7 +94,7 @@ export const HyperGranularityTab: React.FC = () => {
                             if (!acc[cat]) acc[cat] = [];
                             acc[cat].push(token);
                             return acc;
-                        }, {} as Record<string, any[]>);
+                        }, {} as Record<string, DesignToken[]>);
 
                         return (
                             <div key={component.id} className="border-b border-white/5 last:border-0">

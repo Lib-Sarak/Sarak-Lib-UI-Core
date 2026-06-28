@@ -57,6 +57,6 @@ describe('useThemePreview', () => {
         });
 
         expect(result.current.config).toBeDefined();
-        expect((result.current.config as Record<string, any>).backgroundColor).toBe('#111');
+        expect((result.current.config as Record<string, unknown>).backgroundColor).toBe('#111');
     });
 });

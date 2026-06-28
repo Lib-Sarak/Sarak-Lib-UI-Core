@@ -1,5 +1,6 @@
-import { useMemo } from 'react';
+import React, { useMemo } from 'react';
 import { Shield, Type, Layout, MousePointer2, Activity, Cpu, Sparkles } from 'lucide-react';
+import { DesignToken } from '../../../../core/Design/types';
 
 import { MASTER_DESIGN_MAP } from '../../../../core/Design/master-map';
 import { TokenCatalog } from '../../../../core/Design/catalog';
@@ -8,7 +9,7 @@ import DesignPillars from '../../config/design-pillars.json';
 
 export function useThemeCustomizationData(searchQuery: string) {
     const pillars = useMemo(() => {
-        const IconMap: Record<string, any> = {
+        const IconMap: Record<string, React.ElementType> = {
             Shield, Type, Layout, MousePointer2, Activity, Cpu, Sparkles
         };
 
@@ -27,13 +28,15 @@ export function useThemeCustomizationData(searchQuery: string) {
 
     const dynamicEssentialTokens = useMemo(() => {
         if (!TokenCatalog) return new Set<string>();
-        return new Set(TokenCatalog.filter((t: any) => (t.importance || 0) >= 80).map((t: any) => t.tokenId));
+        // TokenCatalog vem de JSONs que usam tokenId e importance
+        interface CatalogToken { tokenId: string; importance?: number }
+        return new Set((TokenCatalog as unknown as CatalogToken[]).filter((t) => (t.importance || 0) >= 80).map((t) => t.tokenId));
     }, []);
 
     const catalogMap = useMemo(() => {
-        const map = new Map();
+        const map = new Map<string, DesignToken>();
         if (TokenCatalog) {
-            TokenCatalog.forEach((t: any) => map.set(t.tokenId, t));
+            (TokenCatalog as unknown as { tokenId: string }[]).forEach((t) => map.set(t.tokenId, t as unknown as DesignToken));
         }
         return map;
     }, []);
