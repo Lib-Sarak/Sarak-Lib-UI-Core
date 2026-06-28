@@ -3,8 +3,10 @@ import React from 'react';
 import { SarakUIProvider } from '../../../core/Provider/SarakUIProvider';
 import { PreviewCanvas } from '../../../features/DesignEngine/Canvas/PreviewCanvas';
 
+import type { SarakThemePayload } from '../../../core/Provider/types';
+
 // Configuração Básica do SarakUIProvider para os testes
-const mockConfig: any = {
+const mockConfig = {
     brand: { name: 'Test Brand', type: 'system' },
     design: {
         mode: 'light',
@@ -20,9 +22,9 @@ test.use({ viewport: { width: 1200, height: 800 } });
 test('Jornada 1: Boot do Motor Visual', async ({ mount }) => {
     // Monta o SarakUIProvider com o Canvas dentro
     const component = await mount(
-        <SarakUIProvider config={mockConfig}>
+        <SarakUIProvider config={mockConfig as unknown as SarakThemePayload}>
             <div style={{ padding: '2rem', background: 'var(--theme-base)', height: '100vh' }}>
-                <PreviewCanvas {...({} as any)} />
+                <PreviewCanvas {...({} as unknown as React.ComponentProps<typeof PreviewCanvas>)} />
             </div>
         </SarakUIProvider>
     );

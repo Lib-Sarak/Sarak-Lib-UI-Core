@@ -3,7 +3,7 @@ import { ChevronDown, RotateCcw } from 'lucide-react';
 import { motion, AnimatePresence } from 'framer-motion';
 
 export const CategoryLabel: React.FC<{ 
-    icon: any, 
+    icon: React.ElementType, 
     title: string, 
     index: number, 
     isOpen: boolean, 
@@ -90,7 +90,7 @@ export const CategoryLabel: React.FC<{
     </div>
 );
 
-export const Section: React.FC<{ id: string, icon: any, title: string, activeSection: string | null, onToggle: (id: string | null) => void, children: React.ReactNode }> = ({ id, icon: Icon, title, activeSection, onToggle, children }) => (
+export const Section: React.FC<{ id: string, icon: React.ElementType, title: string, activeSection: string | null, onToggle: (id: string | null) => void, children: React.ReactNode }> = ({ id, icon: Icon, title, activeSection, onToggle, children }) => (
     <div className="border-b border-[var(--theme-border)] last:border-0">
         <button onClick={() => onToggle(activeSection === id ? null : id)} className="w-full py-4 flex items-center justify-between hover:bg-[var(--theme-surface)] transition-all px-6 group">
             <div className="flex items-center gap-3">

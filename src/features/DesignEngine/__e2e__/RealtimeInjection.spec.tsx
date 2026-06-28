@@ -3,7 +3,10 @@ import React from 'react';
 import { SarakUIProvider } from '../../../core/Provider/SarakUIProvider';
 import { DesignScope } from '../../../core/Design/components/DesignScope';
 
-const mockTheme: any = {
+import type { SarakDesignState } from '../../../core/Provider/types';
+import type { SarakThemePayload } from '../../../core/Provider/types';
+
+const mockTheme: Partial<SarakDesignState> = {
     mode: 'light',
     navigationStyle: 'sidebar',
     borderRadius: 16,
@@ -14,8 +17,8 @@ test.use({ viewport: { width: 800, height: 600 } });
 
 test('Jornada 2: Injeção de CSS em Tempo Real no DOM (Chromium)', async ({ mount, page }) => {
     const component = await mount(
-        <SarakUIProvider config={{ brand: { name: 'Test' } } as any}>
-            <DesignScope design={mockTheme}>
+        <SarakUIProvider config={{ brand: { name: 'Test' } } as unknown as SarakThemePayload}>
+            <DesignScope design={mockTheme as SarakDesignState}>
                 <div data-testid="target-box" style={{ 
                     backgroundColor: 'var(--theme-primary)', 
                     borderRadius: 'var(--radius-theme)',

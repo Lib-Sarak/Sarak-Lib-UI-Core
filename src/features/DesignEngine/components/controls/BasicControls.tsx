@@ -2,7 +2,19 @@ import React from 'react';
 import { SarakSlider, SarakSwitch, SarakSelect, SarakInput } from '../../../../components/atomic/Inputs';
 import { HelpTooltip } from './HelpTooltip';
 
-export const SliderControl: React.FC<any> = ({ label, description, value, min = 0, max = 100, step = 1, onChange, suffix = '', unit = 'px' }) => (
+interface SliderControlProps {
+    label: string;
+    description?: string;
+    value: number | string | undefined | null;
+    min?: number;
+    max?: number;
+    step?: number;
+    onChange: (value: number) => void;
+    suffix?: string;
+    unit?: string;
+}
+
+export const SliderControl: React.FC<SliderControlProps> = ({ label, description, value, min = 0, max = 100, step = 1, onChange, suffix = '', unit = 'px' }) => (
     <div className="mb-3">
         <div className="flex justify-between items-center mb-1.5">
             <span className="text-[10px] font-black uppercase tracking-widest text-[var(--theme-muted)] flex items-center gap-1.5">
@@ -22,9 +34,16 @@ export const SliderControl: React.FC<any> = ({ label, description, value, min = 
     </div>
 );
 
-export const SwitchControl: React.FC<any> = ({ label, value, onChange, description }) => (
+interface SwitchControlProps {
+    label: string;
+    description?: string;
+    value: boolean | undefined | null;
+    onChange: (value: boolean) => void;
+}
+
+export const SwitchControl: React.FC<SwitchControlProps> = ({ label, value, onChange, description }) => (
     <SarakSwitch 
-        checked={value}
+        checked={!!value}
         onChange={(e) => onChange(e.target.checked)}
         label={
             <span className="text-[10px] font-black uppercase tracking-widest flex items-center gap-1.5">
@@ -35,7 +54,23 @@ export const SwitchControl: React.FC<any> = ({ label, value, onChange, descripti
     />
 );
 
-export const SelectControl: React.FC<any> = ({ label, description, options, value, onChange, isFont = false }) => (
+export interface SelectOption {
+    id?: string;
+    value?: string;
+    label?: string;
+    name?: string;
+}
+
+interface SelectControlProps {
+    label: string;
+    description?: string;
+    options: (string | SelectOption)[];
+    value: string | undefined | null;
+    onChange: (value: string) => void;
+    isFont?: boolean;
+}
+
+export const SelectControl: React.FC<SelectControlProps> = ({ label, description, options, value, onChange, isFont = false }) => (
     <div className="mb-3">
         <span className="text-[10px] font-black uppercase tracking-widest text-[var(--theme-muted)] flex items-center gap-1.5 mb-1.5">
             {label}
@@ -44,9 +79,9 @@ export const SelectControl: React.FC<any> = ({ label, description, options, valu
         <SarakSelect 
             value={value ?? ''} 
             onChange={(e) => onChange(e.target.value)}
-            style={isFont ? { fontFamily: value } : {}}
+            style={isFont ? { fontFamily: value || undefined } : {}}
         >
-            {(options || []).map((opt: any) => {
+            {(options || []).map((opt: string | SelectOption) => {
                 const optId = typeof opt === 'object' ? (opt.id !== undefined ? opt.id : (opt.value !== undefined ? opt.value : '')) : opt;
                 const optLabel = typeof opt === 'object' ? (opt.label || opt.name || optId) : opt;
                 return (
@@ -60,7 +95,16 @@ export const SelectControl: React.FC<any> = ({ label, description, options, valu
 );
 
 
-export const InputControl: React.FC<any> = ({ label, description, value, onChange, type = 'text', placeholder = '' }) => (
+interface InputControlProps {
+    label: string;
+    description?: string;
+    value: string | number | undefined | null;
+    onChange: (value: string | number) => void;
+    type?: string;
+    placeholder?: string;
+}
+
+export const InputControl: React.FC<InputControlProps> = ({ label, description, value, onChange, type = 'text', placeholder = '' }) => (
     <div className="mb-3">
         <div className="flex justify-between items-center mb-1.5">
             <span className="text-[10px] font-black uppercase tracking-widest text-[var(--theme-muted)] flex items-center gap-1.5">

@@ -1,5 +1,6 @@
 import { describe, it, expect, vi } from 'vitest';
 import { sanitizeCategory, buildDynamicGroups } from '../dynamic-categories';
+import type { ComponentSchema } from '../../../../core/Design/types';
 
 vi.mock('../../config/design-pillars.json', () => ({
     default: [
@@ -21,7 +22,7 @@ describe('dynamic-categories', () => {
                 id: 'base',
                 tokens: [{ id: 'token1' }, { id: 'token2' }, { id: 'token3' }]
             }
-        ];
+        ] as unknown as ComponentSchema[];
         
         const catalogJSON = [
             { tokenId: 'token1', categories: ['cores', 'tema'] },

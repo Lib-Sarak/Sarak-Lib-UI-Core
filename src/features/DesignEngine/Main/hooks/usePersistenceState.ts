@@ -16,7 +16,7 @@ export function usePersistenceState(uiBaseUrl: string, apiToken?: string) {
 
     const fetchActiveTheme = useCallback(async () => {
         try {
-            const headers: any = { 'Content-Type': 'application/json' };
+            const headers: Record<string, string> = { 'Content-Type': 'application/json' };
             if (apiToken) headers['Authorization'] = `Bearer ${apiToken}`;
             const res = await fetch(`${uiBaseUrl}/design`, { headers });
             if (!res.ok) return null;

@@ -4,6 +4,13 @@ import { Copy, Check, FileJson, Info, ExternalLink, Code, Terminal } from 'lucid
 
 import { useSarakUI } from '../../../core/Provider/SarakUIProvider';
 
+interface SarakThemeItem {
+    id: string;
+    name: string;
+    description?: string;
+    design: Record<string, unknown>; // The underlying system uses generic objects here often, but let's be more specific if possible. Actually, let's use Record<string, unknown>
+}
+
 /**
  * TemplatesTab (v13.0)
  * Exibe os temas híbridos (Scripts e Banco de Dados) para aplicação.
@@ -12,8 +19,8 @@ export const TemplatesTab: React.FC = () => {
     const [copiedId, setCopiedId] = useState<string | null>(null);
     const [appliedId, setAppliedId] = useState<string | null>(null);
     const sarak = useSarakUI();
-    const themes = sarak.allThemes || [];
-    const handleApply = async (theme: any) => {
+    const themes = (sarak.allThemes as unknown as SarakThemeItem[]) || [];
+    const handleApply = async (theme: SarakThemeItem) => {
         setAppliedId(theme.id);
         sarak.applyFullConfig(theme.design);
         // O consumer system intercepta através do onSave para persistir ou ativar no banco
@@ -21,7 +28,7 @@ export const TemplatesTab: React.FC = () => {
         setTimeout(() => setAppliedId(null), 2000);
     };
 
-    const handleCopy = (id: string, config: any) => {
+    const handleCopy = (id: string, config: Record<string, unknown>) => {
         navigator.clipboard.writeText(JSON.stringify(config, null, 2));
         setCopiedId(id);
         setTimeout(() => setCopiedId(null), 2000);
@@ -63,7 +70,7 @@ export const TemplatesTab: React.FC = () => {
 
             {/* Template Grid - Single Column */}
             <div className="flex flex-col gap-4">
-                {themes.map((template: any) => (
+                {themes.map((template: SarakThemeItem) => (
                     <div key={template.id} className="group bg-white/[0.02] border border-white/5 hover:border-white/10 p-5 rounded-2xl transition-all">
                         <div className="flex flex-col gap-3 mb-4">
                             <div>

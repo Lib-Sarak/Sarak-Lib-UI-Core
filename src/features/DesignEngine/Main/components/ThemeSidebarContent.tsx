@@ -5,13 +5,16 @@ import { ThemePillarsList } from './ThemePillarsList';
 import { TokenControl } from './TokenControl';
 import { MasterControlPanel } from '../MasterControlPanel';
 import { TemplatesTab } from '../TemplatesTab';
+import type { SarakDesignState, SarakUIContextType } from '../../../../core/Provider/types';
+import type { ComponentSchema, DesignToken, SarakTokenValue } from '../../../../core/Design/types';
+import type { ThemePillar } from './ThemePillarsList';
 
 interface ThemeSidebarContentProps {
     searchQuery: string;
-    filteredResults: any[];
-    catalogMap: Map<string, any>;
-    draft: any;
-    updateDraft: (id: string, val: any) => void;
+    filteredResults: DesignToken[];
+    catalogMap: Map<string, { name?: string; description?: string }>;
+    draft: SarakDesignState;
+    updateDraft: (id: string, val: SarakTokenValue) => void;
     previewDevice: string;
     viewMode: string;
     activePillarId: string | null;
@@ -21,10 +24,10 @@ interface ThemeSidebarContentProps {
     isComponentDirty: (id: string) => boolean;
     resetComponent: (id: string) => void;
     handleApplyComponent: (id: string) => void;
-    globalComponent: any;
-    sarak: any;
-    pillars: any[];
-    groupedStructure: any;
+    globalComponent: ComponentSchema | undefined;
+    sarak: SarakUIContextType;
+    pillars: ThemePillar[];
+    groupedStructure: Record<string, Record<string, DesignToken[]>>;
     isEssentialMode: boolean;
     dynamicEssentialTokens: Set<string>;
     setActivePreviewApp: (app: string) => void;
@@ -63,7 +66,7 @@ export const ThemeSidebarContent: React.FC<ThemeSidebarContentProps> = ({
                             const meta = catalogMap.get(token.id);
                             const enhancedToken = { ...token, label: meta?.name || token.label, description: meta?.description || token.description };
                             return (
-                                <TokenControl key={enhancedToken.id} token={enhancedToken} value={draft[enhancedToken.id]} onChange={(val) => updateDraft(enhancedToken.id, val)} previewDevice={previewDevice} />
+                                <TokenControl key={enhancedToken.id} token={enhancedToken as DesignToken} value={(draft as Record<string, SarakTokenValue>)[enhancedToken.id]} onChange={(val) => updateDraft(enhancedToken.id, val)} previewDevice={previewDevice} />
                             );
                         })}
                     </motion.div>

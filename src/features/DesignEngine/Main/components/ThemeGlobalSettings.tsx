@@ -3,6 +3,8 @@ import { motion, AnimatePresence } from 'framer-motion';
 import { Globe, Shield } from 'lucide-react';
 import { CategoryLabel, Section, InputControl, MediaUploaderControl } from '../../components/DesignControls';
 import { TokenControl } from './TokenControl';
+import type { SarakDesignState, SarakUIContextType } from '../../../../core/Provider/types';
+import type { ComponentSchema, DesignToken, SarakTokenValue } from '../../../../core/Design/types';
 
 interface ThemeGlobalSettingsProps {
     activePillarId: string | null;
@@ -12,12 +14,12 @@ interface ThemeGlobalSettingsProps {
     isDirty: boolean;
     onReset: () => void;
     onApply: () => void;
-    globalComponent: any;
-    catalogMap: Map<string, any>;
-    draft: any;
-    updateDraft: (id: string, val: any) => void;
+    globalComponent: ComponentSchema | undefined;
+    catalogMap: Map<string, { name?: string; description?: string }>;
+    draft: SarakDesignState;
+    updateDraft: (id: string, val: SarakTokenValue) => void;
     previewDevice: string;
-    sarak: any;
+    sarak: SarakUIContextType;
 }
 
 export const ThemeGlobalSettings: React.FC<ThemeGlobalSettingsProps> = ({
@@ -67,11 +69,11 @@ export const ThemeGlobalSettings: React.FC<ThemeGlobalSettingsProps> = ({
                                     onToggle={setActiveSectionId}
                                 >
                                     <div className="flex flex-col gap-4">
-                                        {globalComponent.tokens.map((token: any) => {
+                                        {globalComponent.tokens.map((token: DesignToken) => {
                                             const meta = catalogMap.get(token.id);
                                             const enhancedToken = { ...token, label: meta?.name || token.label, description: meta?.description || token.description };
                                             return (
-                                                <TokenControl key={enhancedToken.id} token={enhancedToken} value={draft[enhancedToken.id]} onChange={(val) => updateDraft(enhancedToken.id, val)} previewDevice={previewDevice} />
+                                                <TokenControl key={enhancedToken.id} token={enhancedToken as DesignToken} value={(draft as Record<string, SarakTokenValue>)[enhancedToken.id]} onChange={(val) => updateDraft(enhancedToken.id, val)} previewDevice={previewDevice} />
                                             );
                                         })}
                                     </div>
@@ -91,24 +93,24 @@ export const ThemeGlobalSettings: React.FC<ThemeGlobalSettingsProps> = ({
                                         <InputControl
                                             label="Nome da Empresa (Topo/Sidebar)"
                                             type="text"
-                                            value={sarak.branding.companyName || ''}
-                                            onChange={(val: string) => sarak.updateBranding!({ companyName: val })}
+                                            value={sarak.branding?.companyName || ''}
+                                            onChange={(val: string | number) => { if (sarak.updateBranding) sarak.updateBranding({ companyName: String(val) }); }}
                                         />
                                         <InputControl
                                             label="Nome no Login"
                                             type="text"
-                                            value={sarak.branding.loginName || ''}
-                                            onChange={(val: string) => sarak.updateBranding!({ loginName: val })}
+                                            value={sarak.branding?.loginName || ''}
+                                            onChange={(val: string | number) => { if (sarak.updateBranding) sarak.updateBranding({ loginName: String(val) }); }}
                                         />
                                         <InputControl
                                             label="Aba do Navegador"
-                                            value={sarak.branding.tabName || ''}
-                                            onChange={(val: string) => sarak.updateBranding!({ tabName: val })}
+                                            value={sarak.branding?.tabName || ''}
+                                            onChange={(val: string | number) => { if (sarak.updateBranding) sarak.updateBranding({ tabName: String(val) }); }}
                                         />
                                         <MediaUploaderControl
                                             label="Logotipo (Mídia Híbrida)"
-                                            value={sarak.branding.logoBase64 || null}
-                                            onChange={(val: string | null) => sarak.updateBranding!({ logoBase64: val })}
+                                            value={sarak.branding?.logoBase64 || null}
+                                            onChange={(val: string | null) => { if (sarak.updateBranding) sarak.updateBranding({ logoBase64: val }); }}
                                         />
                                     </div>
                                 </Section>

@@ -3,7 +3,14 @@ import { Loader2 } from 'lucide-react';
 import { useSarakUI } from '../../../../core/Provider/SarakUIProvider';
 import { HelpTooltip } from './HelpTooltip';
 
-export const MediaUploaderControl: React.FC<any> = ({ label, description, value, onChange }) => {
+interface MediaUploaderControlProps {
+    label: string;
+    description?: string;
+    value: string | null | undefined;
+    onChange: (value: string | null) => void;
+}
+
+export const MediaUploaderControl: React.FC<MediaUploaderControlProps> = ({ label, description, value, onChange }) => {
     const inputRef = React.useRef<HTMLInputElement>(null);
     const { onMediaUpload } = useSarakUI();
     const [isUploading, setIsUploading] = useState(false);

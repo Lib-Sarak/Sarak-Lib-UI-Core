@@ -1,11 +1,18 @@
 import React from 'react';
 import { HelpTooltip } from './HelpTooltip';
 
-export const ColorControl: React.FC<any> = ({ label, description, value, onChange }) => {
+interface ColorControlProps {
+    label: string;
+    description?: string;
+    value: string | undefined | null;
+    onChange: (value: string) => void;
+}
+
+export const ColorControl: React.FC<ColorControlProps> = ({ label, description, value, onChange }) => {
     const [localColor, setLocalColor] = React.useState(value || 'var(--sarak-default-color, #000000)');
 
     // Sincroniza localmente para evitar engasgos no draft
-    const sanitizeColor = (color: any) => {
+    const sanitizeColor = (color: unknown) => {
         if (typeof color !== 'string') return 'var(--sarak-default-color, #000000)';
         if (color.startsWith('#')) return color;
         if (color.startsWith('rgba')) {

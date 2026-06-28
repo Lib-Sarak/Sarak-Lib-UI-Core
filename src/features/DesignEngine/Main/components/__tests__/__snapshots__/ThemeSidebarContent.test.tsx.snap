@@ -1,0 +1,232 @@
+// Vitest Snapshot v1, https://vitest.dev/guide/snapshot.html
+
+exports[`ThemeSidebarContent > matches snapshot 1`] = `
+<div>
+  <div
+    class="flex-1 min-h-0 overflow-y-auto overflow-x-hidden custom-scrollbar-sidebar bg-[var(--theme-bg)]/30"
+  >
+    <div
+      class="pt-2 pb-20"
+      style="opacity: 0; transform: translateX(-10px);"
+    >
+      <div
+        class="border-b border-[var(--theme-border)] last:border-0"
+      >
+        <div
+          class="w-full flex border-y border-[var(--theme-border)] transition-all bg-[var(--theme-layer)]"
+        >
+          <div
+            class="flex-1 px-6 py-4 flex items-center justify-between group cursor-pointer outline-none focus:bg-[var(--theme-layer)]"
+            role="button"
+            tabindex="0"
+          >
+            <div
+              class="flex items-center gap-3"
+            >
+              <div
+                class="w-6 h-6 rounded-lg flex items-center justify-center font-black text-2xs transition-all relative bg-[var(--theme-primary)] text-white shadow-[0_0_15px_rgba(var(--theme-primary-rgb),0.3)]"
+              >
+                0
+              </div>
+              <div
+                class="flex items-center gap-2"
+              >
+                <svg
+                  class="transition-all text-[var(--theme-primary)]"
+                  fill="none"
+                  height="12"
+                  stroke="currentColor"
+                  stroke-linecap="round"
+                  stroke-linejoin="round"
+                  stroke-width="2"
+                  viewBox="0 0 24 24"
+                  width="12"
+                  xmlns="http://www.w3.org/2000/svg"
+                >
+                  <circle
+                    cx="12"
+                    cy="12"
+                    r="10"
+                  />
+                  <line
+                    x1="2"
+                    x2="22"
+                    y1="12"
+                    y2="12"
+                  />
+                  <path
+                    d="M12 2a15.3 15.3 0 0 1 4 10 15.3 15.3 0 0 1-4 10 15.3 15.3 0 0 1-4-10 15.3 15.3 0 0 1 4-10z"
+                  />
+                </svg>
+                <span
+                  class="text-2xs font-black uppercase tracking-[0.2em] transition-all text-[var(--theme-text)]"
+                >
+                  0. Configurações Globais (2)
+                </span>
+              </div>
+            </div>
+            <div
+              class="flex items-center gap-3"
+            >
+              <svg
+                class="transition-transform duration-300 rotate-180 text-[var(--theme-primary)]"
+                fill="none"
+                height="14"
+                stroke="currentColor"
+                stroke-linecap="round"
+                stroke-linejoin="round"
+                stroke-width="2"
+                viewBox="0 0 24 24"
+                width="14"
+                xmlns="http://www.w3.org/2000/svg"
+              >
+                <path
+                  d="m6 9 6 6 6-6"
+                />
+              </svg>
+            </div>
+          </div>
+        </div>
+        <div
+          class="overflow-hidden bg-[var(--theme-surface)]"
+          style="height: 0px; opacity: 0;"
+        >
+          <div
+            class="px-2 py-2 flex flex-col gap-1"
+          >
+            <div
+              class="border-b border-[var(--theme-border)] last:border-0"
+            >
+              <button
+                class="w-full py-4 flex items-center justify-between hover:bg-[var(--theme-surface)] transition-all px-6 group"
+              >
+                <div
+                  class="flex items-center gap-3"
+                >
+                  <div
+                    class="p-1.5 rounded-lg transition-all bg-[var(--theme-primary)] text-white"
+                  >
+                    <svg
+                      class="lucide lucide-globe"
+                      fill="none"
+                      height="14"
+                      stroke="currentColor"
+                      stroke-linecap="round"
+                      stroke-linejoin="round"
+                      stroke-width="2"
+                      viewBox="0 0 24 24"
+                      width="14"
+                      xmlns="http://www.w3.org/2000/svg"
+                    >
+                      <circle
+                        cx="12"
+                        cy="12"
+                        r="10"
+                      />
+                      <line
+                        x1="2"
+                        x2="22"
+                        y1="12"
+                        y2="12"
+                      />
+                      <path
+                        d="M12 2a15.3 15.3 0 0 1 4 10 15.3 15.3 0 0 1-4 10 15.3 15.3 0 0 1-4-10 15.3 15.3 0 0 1 4-10z"
+                      />
+                    </svg>
+                  </div>
+                  <span
+                    class="text-2xs font-black uppercase tracking-[0.2em] transition-all text-[var(--theme-text)]"
+                  >
+                    Preferências Globais (0)
+                  </span>
+                </div>
+                <svg
+                  class="transition-transform duration-300 rotate-180 text-[var(--theme-primary)]"
+                  fill="none"
+                  height="14"
+                  stroke="currentColor"
+                  stroke-linecap="round"
+                  stroke-linejoin="round"
+                  stroke-width="2"
+                  viewBox="0 0 24 24"
+                  width="14"
+                  xmlns="http://www.w3.org/2000/svg"
+                >
+                  <path
+                    d="m6 9 6 6 6-6"
+                  />
+                </svg>
+              </button>
+              <div
+                class="bg-[var(--theme-layer)] overflow-visible"
+                style="height: 0px; opacity: 0;"
+              >
+                <div
+                  class="p-6 pt-2"
+                >
+                  <div
+                    class="flex flex-col gap-4"
+                  />
+                </div>
+              </div>
+            </div>
+            <div
+              class="border-b border-[var(--theme-border)] last:border-0"
+            >
+              <button
+                class="w-full py-4 flex items-center justify-between hover:bg-[var(--theme-surface)] transition-all px-6 group"
+              >
+                <div
+                  class="flex items-center gap-3"
+                >
+                  <div
+                    class="p-1.5 rounded-lg transition-all bg-[var(--theme-layer)] text-[var(--theme-muted)] group-hover:text-[var(--theme-text)]"
+                  >
+                    <svg
+                      class="lucide lucide-shield"
+                      fill="none"
+                      height="14"
+                      stroke="currentColor"
+                      stroke-linecap="round"
+                      stroke-linejoin="round"
+                      stroke-width="2"
+                      viewBox="0 0 24 24"
+                      width="14"
+                      xmlns="http://www.w3.org/2000/svg"
+                    >
+                      <path
+                        d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10"
+                      />
+                    </svg>
+                  </div>
+                  <span
+                    class="text-2xs font-black uppercase tracking-[0.2em] transition-all text-[var(--theme-muted)] group-hover:text-[var(--theme-text)]"
+                  >
+                    Identidade da Empresa (4)
+                  </span>
+                </div>
+                <svg
+                  class="transition-transform duration-300 text-[var(--theme-muted)]"
+                  fill="none"
+                  height="14"
+                  stroke="currentColor"
+                  stroke-linecap="round"
+                  stroke-linejoin="round"
+                  stroke-width="2"
+                  viewBox="0 0 24 24"
+                  width="14"
+                  xmlns="http://www.w3.org/2000/svg"
+                >
+                  <path
+                    d="m6 9 6 6 6-6"
+                  />
+                </svg>
+              </button>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+`;

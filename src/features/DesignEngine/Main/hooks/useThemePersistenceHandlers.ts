@@ -2,7 +2,28 @@ import { useCallback } from 'react';
 import { useThemeActions } from './useThemeActions';
 import { SaveThemeAction } from '../components/SaveThemeModal';
 
-export function useThemePersistenceHandlers(props: any) {
+import type { SarakDesignState } from '../../../../core/Provider/types';
+
+export interface UseThemePersistenceHandlersProps {
+    uiBaseUrl: string;
+    apiToken?: string | null;
+    draft: SarakDesignState;
+    currentThemeId: string | null;
+    setCurrentThemeId: (id: string | null) => void;
+    currentThemeOrigin: 'script' | 'database';
+    setCurrentThemeOrigin: (origin: 'script' | 'database') => void;
+    currentThemeName: string;
+    setCurrentThemeName: (name: string) => void;
+    setIsSaveModalOpen: (open: boolean) => void;
+    setIsSaving: (saving: boolean) => void;
+    pendingApply: boolean;
+    setPendingApply: (pending: boolean) => void;
+    showToast: (type: 'success' | 'warning' | 'error', message: string) => void;
+    handleApplyToSystem: () => void;
+    isDirty: boolean;
+}
+
+export function useThemePersistenceHandlers(props: UseThemePersistenceHandlersProps) {
     const {
         uiBaseUrl, apiToken,
         draft,
@@ -14,7 +35,7 @@ export function useThemePersistenceHandlers(props: any) {
         showToast, handleApplyToSystem, isDirty
     } = props;
 
-    const { saveNewThemeAPI, updateThemeAPI, activateThemeAPI } = useThemeActions(uiBaseUrl, apiToken);
+    const { saveNewThemeAPI, updateThemeAPI, activateThemeAPI } = useThemeActions(uiBaseUrl, apiToken || undefined);
 
     const handleSaveTheme = useCallback(async (action: SaveThemeAction) => {
         if (action.type === 'CANCEL') {

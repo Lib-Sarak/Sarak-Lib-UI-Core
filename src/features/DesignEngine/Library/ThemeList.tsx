@@ -1,9 +1,15 @@
 import React from 'react';
 import { Check } from 'lucide-react';
 
+export interface ThemeListItem {
+    id: string;
+    name?: string;
+    [key: string]: unknown;
+}
+
 interface CompactThemeCardProps {
     id: string;
-    theme: any;
+    theme: ThemeListItem;
     isActive: boolean;
     isPreviewed: boolean;
     onApply: (id: string) => void;
@@ -39,8 +45,8 @@ const CompactThemeCard: React.FC<CompactThemeCardProps> = ({ id, theme, isActive
 };
 
 interface ThemeListProps {
-    layouts: any[];
-    customThemes: any[];
+    layouts: ThemeListItem[];
+    customThemes: ThemeListItem[];
     currentLayout: string;
     previewLayoutId: string;
     onPreview: (id: string) => void;
@@ -72,7 +78,7 @@ export const ThemeList: React.FC<ThemeListProps> = ({
                         <div className="flex-1 h-[1px] bg-white/5" />
                     </div>
                     <div className="grid grid-cols-1 gap-2">
-                        {advancedThemes.map((theme: any) => (
+                        {advancedThemes.map((theme: ThemeListItem) => (
                             <CompactThemeCard
                                 key={theme.id}
                                 id={theme.id}
@@ -94,7 +100,7 @@ export const ThemeList: React.FC<ThemeListProps> = ({
                         <div className="flex-1 h-[1px] bg-white/5" />
                     </div>
                     <div className="grid grid-cols-1 gap-2">
-                        {baseThemes.map((theme: any) => (
+                        {baseThemes.map((theme: ThemeListItem) => (
                             <CompactThemeCard
                                 key={theme.id}
                                 id={theme.id}

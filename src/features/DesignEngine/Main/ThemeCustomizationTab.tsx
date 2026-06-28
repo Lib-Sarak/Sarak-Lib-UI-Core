@@ -9,7 +9,8 @@ import {
 
 import { useSarakUI } from '../../../core/Provider/SarakUIProvider';
 import { PreviewCanvas } from '../Canvas/PreviewCanvas';
-import { SarakUIOptions, SarakUIContextType } from '../../../core/Provider/types';
+import type { SarakUIOptions, SarakUIContextType, SarakDesignState } from '../../../core/Provider/types';
+import type { DesignToken } from '../../../core/Design/types';
 
 import { MASTER_DESIGN_MAP } from '../../../core/Design/master-map';
 import { useThemeCustomizationData } from './hooks/useThemeCustomizationData';
@@ -78,6 +79,10 @@ export const ThemeCustomizationTab: React.FC = () => {
         handleThemePreview
     } = useDesignDraft(sarak);
 
+    const handleApplyToSystemWrapper = useCallback(() => {
+        handleApplyToSystem();
+    }, [handleApplyToSystem]);
+
     const { handleSaveTheme, handleApplyGlobalChanges } = useThemePersistenceHandlers({
         uiBaseUrl, apiToken,
         draft,
@@ -86,7 +91,8 @@ export const ThemeCustomizationTab: React.FC = () => {
         currentThemeName, setCurrentThemeName,
         setIsSaveModalOpen, setIsSaving,
         pendingApply, setPendingApply,
-        showToast, handleApplyToSystem, isDirty
+        showToast: (type: 'success' | 'warning' | 'error', message: string) => console.log(type, message),
+        handleApplyToSystem: handleApplyToSystemWrapper, isDirty
     });
 
     // Busca o tema ativo na API real ao montar, para não perder o estado após reload (F5)
@@ -102,7 +108,7 @@ export const ThemeCustomizationTab: React.FC = () => {
         loadActive();
     }, [fetchActiveTheme]);
 
-    const handleApplyFullTheme = useCallback((design: any) => {
+    const handleApplyFullTheme = useCallback((design: SarakDesignState & { systemName?: string }) => {
         // Quando um tema global é escolhido, rastreamos sua origem
         setCurrentThemeOrigin('script');
         setCurrentThemeId(null);
@@ -134,7 +140,7 @@ export const ThemeCustomizationTab: React.FC = () => {
     const handleInspectComponent = useCallback((schemaId: string) => {
         const foundPillar = Object.keys(groupedStructure).find(p =>
             Object.values(groupedStructure[p]).some(comps =>
-                (comps as any[]).some(c => c.id === schemaId)
+                (comps as DesignToken[]).some(c => c.id === schemaId)
             )
         );
         if (foundPillar) setActivePillarId(foundPillar);

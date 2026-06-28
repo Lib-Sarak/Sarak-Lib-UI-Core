@@ -66,14 +66,14 @@ export const ThemeSidebarHeader: React.FC<ThemeSidebarHeaderProps> = ({
 
             {/* Device Switcher (Responsive Engine) */}
             <div className="flex bg-[var(--theme-layer)] rounded-xl border border-[var(--theme-border)] p-1 mb-4">
-                {[
+                {([
                     { id: 'desktop', icon: Monitor, label: 'Desktop' },
                     { id: 'tablet', icon: Tablet, label: 'Tablet' },
                     { id: 'smartphone', icon: Smartphone, label: 'Mobile' }
-                ].map((device) => (
+                ] as const).map((device) => (
                     <SarakButton
                         key={device.id}
-                        onClick={() => setPreviewDevice(device.id as any)}
+                        onClick={() => setPreviewDevice(device.id)}
                         variant={previewDevice === device.id ? 'primary' : 'ghost'}
                         size="xs"
                         leftIcon={<device.icon size={12} />}

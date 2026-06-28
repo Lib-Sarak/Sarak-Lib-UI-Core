@@ -3,48 +3,52 @@ import { render, screen, fireEvent } from '@testing-library/react';
 import '@testing-library/jest-dom';
 import { describe, it, expect, vi, beforeEach } from 'vitest';
 import { TokenControl } from '../TokenControl';
+import type { DesignToken } from '../../../../../core/Design/types';
 
-vi.mock('../../../components/DesignControls', () => ({
-    ColorControl: ({ value, onChange, label }: any) => (
+vi.mock('../../../components/DesignControls', () => {
+    type MockControlProps = { value?: string | number | boolean; onChange: (v: unknown) => void; label?: string };
+    return {
+    ColorControl: ({ value, onChange, label }: MockControlProps) => (
         <div data-testid="color-control">
             <span>{label}</span>
-            <input data-testid="color-input" value={value || ''} onChange={(e) => onChange(e.target.value)} />
+            <input data-testid="color-input" value={String(value) || ''} onChange={(e) => onChange(e.target.value)} />
         </div>
     ),
-    SliderControl: ({ value, onChange, label }: any) => (
+    SliderControl: ({ value, onChange, label }: MockControlProps) => (
         <div data-testid="slider-control">
             <span>{label}</span>
-            <input data-testid="slider-input" type="number" value={value || 0} onChange={(e) => onChange(Number(e.target.value))} />
+            <input data-testid="slider-input" type="number" value={Number(value) || 0} onChange={(e) => onChange(Number(e.target.value))} />
         </div>
     ),
-    SelectControl: ({ value, onChange, label }: any) => (
+    SelectControl: ({ value, onChange, label }: MockControlProps) => (
         <div data-testid="select-control">
             <span>{label}</span>
-            <select data-testid="select-input" value={value || ''} onChange={(e) => onChange(e.target.value)}>
+            <select data-testid="select-input" value={String(value) || ''} onChange={(e) => onChange(e.target.value)}>
                 <option value="val1">Val1</option>
                 <option value="val2">Val2</option>
             </select>
         </div>
     ),
-    SwitchControl: ({ value, onChange, label }: any) => (
+    SwitchControl: ({ value, onChange, label }: MockControlProps) => (
         <div data-testid="switch-control">
             <span>{label}</span>
-            <input data-testid="switch-input" type="checkbox" checked={value || false} onChange={(e) => onChange(e.target.checked)} />
+            <input data-testid="switch-input" type="checkbox" checked={Boolean(value) || false} onChange={(e) => onChange(e.target.checked)} />
         </div>
     ),
-    InputControl: ({ value, onChange, label }: any) => (
+    InputControl: ({ value, onChange, label }: MockControlProps) => (
         <div data-testid="input-control">
             <span>{label}</span>
-            <input data-testid="input-input" value={value || ''} onChange={(e) => onChange(e.target.value)} />
+            <input data-testid="input-input" value={String(value) || ''} onChange={(e) => onChange(e.target.value)} />
         </div>
     ),
-    MediaUploaderControl: ({ value, onChange, label }: any) => (
+    MediaUploaderControl: ({ value, onChange, label }: MockControlProps) => (
         <div data-testid="media-control">
             <span>{label}</span>
             <button data-testid="media-btn" onClick={() => onChange('new-image.jpg')}>Upload</button>
         </div>
     )
-}));
+    };
+});
 
 describe('TokenControl', () => {
     const mockOnChange = vi.fn();
@@ -53,64 +57,59 @@ describe('TokenControl', () => {
         vi.clearAllMocks();
     });
 
-    it('retorna null se o tipo de token não for suportado', () => {
-        const { container } = render(
-            <TokenControl 
-                token={{ type: 'unknown_type', label: 'Unknown' }} 
-                value="test" 
-                onChange={mockOnChange} 
-            />
-        );
+    it('renderiza fallback caso o tipo do token não conste no registro', () => {
+        const tokenMock = { id: 'test-token', type: 'unknown_type', label: 'Unknown Token', isResponsive: false, defaultValue: '' };
+        const { container } = render(<TokenControl token={tokenMock as unknown as DesignToken} value="teste" onChange={mockOnChange} />);
         expect(container.firstChild).toBeNull();
     });
 
     it('renderiza o controle correto com base no tipo', () => {
         const { rerender } = render(
-            <TokenControl token={{ type: 'color', label: 'Cor' }} value="#000" onChange={mockOnChange} />
+            <TokenControl token={{ type: 'color', label: 'Cor' } as unknown as DesignToken} value="#000" onChange={mockOnChange} />
         );
         expect(screen.getByTestId('color-control')).toBeInTheDocument();
 
-        rerender(<TokenControl token={{ type: 'slider', label: 'Slider' }} value={10} onChange={mockOnChange} />);
+        rerender(<TokenControl token={{ type: 'slider', label: 'Slider' } as unknown as DesignToken} value={10} onChange={mockOnChange} />);
         expect(screen.getByTestId('slider-control')).toBeInTheDocument();
 
-        rerender(<TokenControl token={{ type: 'switch', label: 'Switch' }} value={true} onChange={mockOnChange} />);
+        rerender(<TokenControl token={{ type: 'switch', label: 'Switch' } as unknown as DesignToken} value={true} onChange={mockOnChange} />);
         expect(screen.getByTestId('switch-control')).toBeInTheDocument();
     });
 
     it('repassa a alteração de valor de forma simples se isResponsive for falso', () => {
-        render(<TokenControl token={{ type: 'input', label: 'Texto' }} value="old" onChange={mockOnChange} />);
+        render(<TokenControl token={{ type: 'input', label: 'Texto' } as unknown as DesignToken} value="old" onChange={mockOnChange} />);
         
         fireEvent.change(screen.getByTestId('input-input'), { target: { value: 'new' } });
         expect(mockOnChange).toHaveBeenCalledWith('new');
     });
 
-    it('manipula valores responsivos corretamente e extrai displayValue pela deviceKey', () => {
-        const responsiveToken = { type: 'color', label: 'Cor Resp', isResponsive: true };
+    it('atualiza apenas a chave correspondente do dispositivo em tokens responsivos (objeto existente)', () => {
+        const tokenResponsive = { type: 'text', label: 'Título Responsivo', isResponsive: true } as unknown as DesignToken;
         const responsiveValue = { desk: '#fff', tab: '#ccc', mob: '#000' };
 
         // Testa com previewDevice = 'desktop'
         const { rerender } = render(
-            <TokenControl token={responsiveToken} value={responsiveValue} onChange={mockOnChange} previewDevice="desktop" />
+            <TokenControl token={tokenResponsive} value={responsiveValue} onChange={mockOnChange} previewDevice="desktop" />
         );
-        expect(screen.getByTestId('color-input')).toHaveValue('#fff');
+        expect(screen.getByTestId('input-input')).toHaveValue('#fff');
 
-        fireEvent.change(screen.getByTestId('color-input'), { target: { value: '#eee' } });
+        fireEvent.change(screen.getByTestId('input-input'), { target: { value: '#eee' } });
         // Deve atualizar apenas o desk, mantendo o restante
         expect(mockOnChange).toHaveBeenCalledWith({ desk: '#eee', tab: '#ccc', mob: '#000' });
 
         // Testa com previewDevice = 'smartphone'
         rerender(
-            <TokenControl token={responsiveToken} value={responsiveValue} onChange={mockOnChange} previewDevice="smartphone" />
+            <TokenControl token={tokenResponsive} value={responsiveValue} onChange={mockOnChange} previewDevice="smartphone" />
         );
-        expect(screen.getByTestId('color-input')).toHaveValue('#000');
+        expect(screen.getByTestId('input-input')).toHaveValue('#000');
     });
 
-    it('faz fallback transformando valor simples em responsivo caso não seja objeto mas isResponsive seja true', () => {
-        const responsiveToken = { type: 'number', label: 'Number Resp', isResponsive: true };
-        const flatValue = 16; // Ainda não convertido para objeto {desk, tab, mob}
+    it('cria estrutura responsiva caso o valor ainda não seja objeto (migração)', () => {
+        const tokenResponsive = { type: 'number', label: 'Number Resp', isResponsive: true } as unknown as DesignToken;
+        const flatValue = 16; 
 
         render(
-            <TokenControl token={responsiveToken} value={flatValue} onChange={mockOnChange} previewDevice="tablet" />
+            <TokenControl token={tokenResponsive} value={flatValue} onChange={mockOnChange} previewDevice="tablet" />
         );
         
         // Eleve o displayValue que ainda é flat

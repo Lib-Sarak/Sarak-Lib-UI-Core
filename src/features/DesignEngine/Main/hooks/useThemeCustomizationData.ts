@@ -1,6 +1,6 @@
 import React, { useMemo } from 'react';
 import { Shield, Type, Layout, MousePointer2, Activity, Cpu, Sparkles } from 'lucide-react';
-import { DesignToken } from '../../../../core/Design/types';
+import { DesignToken, ComponentSchema } from '../../../../core/Design/types';
 
 import { MASTER_DESIGN_MAP } from '../../../../core/Design/master-map';
 import { TokenCatalog } from '../../../../core/Design/catalog';
@@ -23,7 +23,7 @@ export function useThemeCustomizationData(searchQuery: string) {
 
     const groupedStructure = useMemo(() => {
         if (!MASTER_DESIGN_MAP?.components || !TokenCatalog) return {};
-        return buildDynamicGroups(MASTER_DESIGN_MAP.components, TokenCatalog);
+        return buildDynamicGroups(MASTER_DESIGN_MAP.components as unknown as ComponentSchema[], TokenCatalog as unknown as { tokenId?: string, categories?: string[] }[]);
     }, []);
 
     const dynamicEssentialTokens = useMemo(() => {

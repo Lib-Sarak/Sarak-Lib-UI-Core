@@ -41,7 +41,7 @@ vi.mock('../TemplatesTab', () => ({
 }));
 
 vi.mock('../components/SaveThemeModal', () => ({
-    SaveThemeModal: ({ isOpen, onAction }: any) => (
+    SaveThemeModal: ({ isOpen, onAction }: { isOpen: boolean, onAction: (action: unknown) => void }) => (
         isOpen ? (
             <div data-testid="save-modal">
                 <button onClick={() => onAction({ type: 'CREATE_NEW', name: 'New Theme' })}>Save New</button>

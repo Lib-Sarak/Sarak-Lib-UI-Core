@@ -11,16 +11,18 @@ import { AtmosphereSchema } from '../../../core/Design/schema/atmosphere';
 import { ConfigSection } from './components/ConfigSection';
 
 const textureToken = AtmosphereSchema.tokens.find(t => t.id === 'texture');
-const TEXTURE_LIBRARY: { id: string; name: string; description: string }[] = textureToken?.options?.map((opt: any) => ({
-    id: opt.value,
+const TEXTURE_LIBRARY: { id: string; name: string; description: string }[] = textureToken?.options?.map((opt: { value?: string; id?: string; label: string }) => ({
+    id: opt.value || opt.id || '',
     name: opt.label,
     description: `Textura de padrão ${opt.label.toLowerCase()} para atmosfera industrial.`
 })) || [];
 
 
 
+import type { SarakDesignState } from '../../../core/Provider/types';
+
 interface ThemeEditorProps {
-    config: any;
+    config: SarakDesignState;
     onConfigChange: (key: string, value: string) => void;
     previewAnimationStyle: string;
     setPreviewAnimationStyle: (style: string) => void;
@@ -100,11 +102,11 @@ export const ThemeEditor: React.FC<ThemeEditorProps> = ({
                     <div className="space-y-3">
                         <div className="flex justify-between text-xs font-bold">
                             <span className="text-[var(--theme-muted)]">Corner Radius</span>
-                            <span className="text-[var(--theme-primary)] font-mono">{config['--radius-theme']}</span>
+                            <span className="text-[var(--theme-primary)] font-mono">{(config as Record<string, unknown>)['--radius-theme'] as string}</span>
                         </div>
                         <input
                             type="range" min="0" max="32" step="1"
-                            value={parseInt(config['--radius-theme']) || 0}
+                            value={parseInt((config as Record<string, unknown>)['--radius-theme'] as string) || 0}
                             onChange={(e) => onConfigChange('--radius-theme', `${e.target.value}px`)}
                             className="w-full accent-[var(--theme-primary)]"
                         />
@@ -113,11 +115,11 @@ export const ThemeEditor: React.FC<ThemeEditorProps> = ({
                     <div className="space-y-3">
                         <div className="flex justify-between text-xs font-bold">
                             <span className="text-[var(--theme-muted)]">Spacing (Gap)</span>
-                            <span className="text-[var(--theme-primary)] font-mono">{config['--theme-gap']}</span>
+                            <span className="text-[var(--theme-primary)] font-mono">{(config as Record<string, unknown>)['--theme-gap'] as string}</span>
                         </div>
                         <input
                             type="range" min="0" max="48" step="4"
-                            value={parseInt(config['--theme-gap']) || 0}
+                            value={parseInt((config as Record<string, unknown>)['--theme-gap'] as string) || 0}
                             onChange={(e) => onConfigChange('--theme-gap', `${e.target.value}px`)}
                             className="w-full accent-[var(--theme-primary)]"
                         />
@@ -156,11 +158,11 @@ export const ThemeEditor: React.FC<ThemeEditorProps> = ({
                     <div>
                         <span className="text-2xs font-bold text-[var(--theme-muted)] uppercase tracking-wider block mb-3">Heading Font</span>
                         <div className="grid grid-cols-1 gap-2">
-                            {THEME_FONTS.filter((f: any) => f.category === 'display' || f.category === 'serif' || f.category === 'sans').slice(0, 8).map((font: any) => (
+                            {THEME_FONTS.filter((f) => f.category === 'display' || f.category === 'serif' || f.category === 'sans').slice(0, 8).map((font) => (
                                 <button
                                     key={font.id}
                                     onClick={() => onConfigChange('--font-heading', font.value)}
-                                    className={`p-3 rounded-xl border text-left transition-all ${config['--font-heading'] === font.value ? 'border-[var(--theme-primary)] bg-[var(--theme-primary)]/10' : 'border-[var(--theme-border)]/50 hover:bg-[var(--theme-card)]'}`}
+                                    className={`p-3 rounded-xl border text-left transition-all ${(config as Record<string, unknown>)['--font-heading'] === font.value ? 'border-[var(--theme-primary)] bg-[var(--theme-primary)]/10' : 'border-[var(--theme-border)]/50 hover:bg-[var(--theme-card)]'}`}
                                 >
                                     <div style={{ fontFamily: font.value }} className="text-sm font-bold text-[var(--theme-title)]">{font.name}</div>
                                     <div className="text-2xs text-[var(--theme-muted)] opacity-60 uppercase mt-1">{font.category}</div>
@@ -184,7 +186,7 @@ export const ThemeEditor: React.FC<ThemeEditorProps> = ({
                         <button
                             key={tex.id}
                             onClick={() => onConfigChange('--bg-texture', tex.id)}
-                            className={`p-3 rounded-xl border flex flex-col gap-2 transition-all ${config['--bg-texture'] === tex.id ? 'border-[var(--theme-primary)] bg-[var(--theme-primary)]/10' : 'border-[var(--theme-border)]/50 hover:bg-[var(--theme-card)]'}`}
+                            className={`p-3 rounded-xl border flex flex-col gap-2 transition-all ${(config as Record<string, unknown>)['--bg-texture'] === tex.id ? 'border-[var(--theme-primary)] bg-[var(--theme-primary)]/10' : 'border-[var(--theme-border)]/50 hover:bg-[var(--theme-card)]'}`}
                         >
                             <span className="text-2xs font-bold text-[var(--theme-title)] uppercase">{tex.name}</span>
                             <span className="text-3xs text-[var(--theme-muted)] leading-tight">{tex.description}</span>
@@ -202,7 +204,7 @@ export const ThemeEditor: React.FC<ThemeEditorProps> = ({
                 onToggle={onToggleSection}
             >
                 <div className="space-y-3">
-                    {Object.entries((THEME_EFFECTS as any).page).map(([id, effect]: [string, any]) => (
+                    {Object.entries((THEME_EFFECTS as Record<string, Record<string, { name?: string; description?: string }>>).page || {}).map(([id, effect]) => (
                         <button
                             key={id}
                             onClick={() => setPreviewAnimationStyle(id)}
@@ -226,7 +228,7 @@ export const ThemeEditor: React.FC<ThemeEditorProps> = ({
                 onToggle={onToggleSection}
             >
                 <div className="grid grid-cols-2 gap-3">
-                    {Object.entries(EMOJI_SETS).map(([id, pack]: [string, any]) => (
+                    {Object.entries(EMOJI_SETS as Record<string, { dashboard: string }>).map(([id, pack]) => (
                         <button
                             key={id}
                             onClick={() => setPreviewEmojiSet(id)}

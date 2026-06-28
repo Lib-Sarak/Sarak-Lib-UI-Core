@@ -32,14 +32,18 @@ Object.entries(PILLAR_TO_CATEGORIES).forEach(([pillarId, cats]) => {
     cats.forEach(c => CATEGORY_TO_PILLAR[c] = pillarId);
 });
 
-// Algoritmo de Cruzamento Dinâmico (Folksonomia)
-// Retorna a estrutura: Record<PillarId, Record<Subcategoria, Token[]>>
-export const buildDynamicGroups = (masterTokens: any[], catalogJSON: any[]) => {
+import type { ComponentSchema, DesignToken } from '../../../core/Design/types';
+
+/**
+ * Constrói grupos lógicos ("Colors", "Typography", "Inputs") a partir do catálogo global e da estrutura de schemas mestre.
+ * A estrutura resultante é { "Pillar": { "Group": [Token] } }
+ */
+export const buildDynamicGroups = (masterTokens: ComponentSchema[], catalogJSON: { tokenId?: string, categories?: string[] }[]) => {
     // 1. Mapa de categorias sanitizadas por token
     const tokenCategoriesMap: Record<string, string[]> = {};
     
     catalogJSON.forEach(token => {
-        if (!token.categories || !Array.isArray(token.categories)) return;
+        if (!token.tokenId || !token.categories || !Array.isArray(token.categories)) return;
         
         const sanitized = token.categories.map((c: string) => sanitizeCategory(c));
         // Remove duplicatas (ex: se "cores" e "colors-and-atmosphere" virarem "Cores e Marca", fica só 1)
@@ -47,14 +51,15 @@ export const buildDynamicGroups = (masterTokens: any[], catalogJSON: any[]) => {
     });
 
     // 2. Estrutura base
-    const groups: Record<string, Record<string, any[]>> = {};
+    const groups: Record<string, Record<string, DesignToken[]>> = {};
     Object.keys(PILLAR_TO_CATEGORIES).forEach(p => groups[p] = {});
 
     // 3. Cruzamento
     masterTokens.forEach(masterToken => {
         if (masterToken.id === 'global') return; // Global é tratado separado na UI
 
-        masterToken.tokens.forEach((t: any) => {
+        masterToken.tokens.forEach((t: DesignToken) => {
+            let foundInCatalog: { tokenId?: string, categories?: string[] } | undefined;
             const myCategories = tokenCategoriesMap[t.id] || ['Especializado'];
             
             myCategories.forEach(mainCategory => {

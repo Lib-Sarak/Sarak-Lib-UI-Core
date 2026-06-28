@@ -27,7 +27,7 @@ describe('usePersistenceState', () => {
     });
 
     it('should return null if fetchActiveTheme fails', async () => {
-        (global.fetch as any).mockRejectedValueOnce(new Error('Network error'));
+        (global.fetch as ReturnType<typeof vi.fn>).mockRejectedValueOnce(new Error('Network error'));
         
         const { result } = renderHook(() => usePersistenceState('http://localhost/api'));
 
@@ -37,7 +37,7 @@ describe('usePersistenceState', () => {
 
     it('should return design payload on successful fetchActiveTheme', async () => {
         const mockDesign = { color: 'blue' };
-        (global.fetch as any).mockResolvedValueOnce({
+        (global.fetch as ReturnType<typeof vi.fn>).mockResolvedValueOnce({
             ok: true,
             json: async () => ({ data: { design: mockDesign } })
         });

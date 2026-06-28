@@ -2,10 +2,13 @@ import React from 'react';
 import { DesignToken } from '../../../core/Design/types';
 import { SliderControl, ColorControl, SwitchControl, SelectControl } from './DesignControls';
 
+import type { SarakDesignState } from '../../../core/Provider/types';
+import type { SarakTokenValue } from '../../../core/Design/types';
+
 interface DynamicTokenControlProps {
     token: DesignToken;
-    draft: any;
-    updateDraft: (key: string, value: any) => void;
+    draft: SarakDesignState;
+    updateDraft: (key: string, value: SarakTokenValue) => void;
 }
 
 /**
@@ -18,9 +21,11 @@ export const DynamicTokenControl: React.FC<DynamicTokenControlProps> = ({
     draft, 
     updateDraft 
 }) => {
-    const value = draft[token.id] !== undefined ? draft[token.id] : token.defaultValue;
+    const value = (draft as Record<string, SarakTokenValue>)[token.id] !== undefined 
+        ? (draft as Record<string, SarakTokenValue>)[token.id] 
+        : token.defaultValue;
 
-    const handleChange = (newValue: any) => {
+    const handleChange = (newValue: SarakTokenValue) => {
         updateDraft(token.id, newValue);
     };
 
@@ -30,7 +35,7 @@ export const DynamicTokenControl: React.FC<DynamicTokenControlProps> = ({
             return (
                 <SliderControl
                     label={token.label}
-                    value={value}
+                    value={value as number}
                     min={token.constraints?.min ?? 0}
                     max={token.constraints?.max ?? 100}
                     step={token.constraints?.step ?? 1}
@@ -43,7 +48,7 @@ export const DynamicTokenControl: React.FC<DynamicTokenControlProps> = ({
             return (
                 <ColorControl
                     label={token.label}
-                    value={value}
+                    value={value as string}
                     onChange={handleChange}
                 />
             );
@@ -63,7 +68,7 @@ export const DynamicTokenControl: React.FC<DynamicTokenControlProps> = ({
             return (
                 <SelectControl
                     label={token.label}
-                    value={value}
+                    value={value as string}
                     options={token.constraints?.options || token.options || []}
                     isFont={token.type === 'font'}
                     onChange={handleChange}
