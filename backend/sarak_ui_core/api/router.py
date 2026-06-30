@@ -138,12 +138,15 @@ def update_user_design(
         if hasattr(theme, key) and key not in ['id', 'created_at', 'updated_at', 'owner_id', 'system']:
             setattr(theme, key, value)
         elif key not in ['id', 'created_at', 'updated_at', 'owner_id', 'system']:
-            found_col = 'legacy_and_runtime' # fallback (Lixo de runtime/legacy)
+            is_valid_key = False
             for col, fields in THEME_MAPPING.items():
                 if key in fields and col in GRANULAR_COLUMNS:
-                    found_col = col
+                    granular_data[col][key] = value
+                    is_valid_key = True
                     break
-            granular_data[found_col][key] = value
+            
+            if not is_valid_key:
+                print(f"[SARAK UI CORE DEBUG] Regra 4: Chave '{key}' não encontrada no catálogo. Descartando.")
             
     from sqlalchemy.orm.attributes import flag_modified
     for col in GRANULAR_COLUMNS:
@@ -282,12 +285,16 @@ def _apply_design_to_theme(theme: CustomTheme, design: Dict[str, Any]):
         if hasattr(theme, key) and key not in ['id', 'created_at', 'updated_at', 'owner_id', 'system']:
             setattr(theme, key, value)
         elif key not in ['id', 'created_at', 'updated_at', 'owner_id', 'system']:
-            found_col = 'branding_config' # fallback
+            is_valid_key = False
             for col, fields in THEME_MAPPING.items():
                 if key in fields and col in GRANULAR_COLUMNS:
-                    found_col = col
+                    granular_data[col][key] = value
+                    is_valid_key = True
                     break
-            granular_data[found_col][key] = value
+            
+            if not is_valid_key:
+                # Regra 4: Descarta chave inválida silenciosamente
+                pass
             
     from sqlalchemy.orm.attributes import flag_modified
     for col in GRANULAR_COLUMNS:
