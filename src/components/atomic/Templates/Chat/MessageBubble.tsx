@@ -21,7 +21,7 @@ export const MessageBubble: React.FC<MessageBubbleProps> = ({ msg }) => {
   // Cantos arredondados dinâmicos e cores data-driven
   if (isUser) {
     bubbleStyle.borderRadius = 'var(--sarak-chat-radius, 12px) 0px var(--sarak-chat-radius, 12px) var(--sarak-chat-radius, 12px)';
-    bubbleStyle.backgroundColor = 'var(--sarak-chat-user-bg, var(var(--sarak-primary-color,#3b82f6)))';
+    bubbleStyle.backgroundColor = 'var(--sarak-chat-user-bg, var(--sarak-primary-color,#3b82f6))';
     bubbleStyle.borderColor = 'var(--theme-primary-border, transparent)';
   } else {
     bubbleStyle.borderRadius = '0px var(--sarak-chat-radius, 12px) var(--sarak-chat-radius, 12px) var(--sarak-chat-radius, 12px)';
@@ -38,8 +38,8 @@ export const MessageBubble: React.FC<MessageBubbleProps> = ({ msg }) => {
         bubbleStyle.color = 'var(--sarak-primary-color,#3b82f6)';
       },
       'glass': () => {
-        bubbleStyle.backgroundColor = 'var(--sarak-card-bg, var(var(--color-theme-card,#1e293b)))';
-        bubbleStyle.borderColor = 'var(--sarak-card-border-color, var(var(--border-color,#334155)))';
+        bubbleStyle.backgroundColor = 'var(--sarak-card-bg, var(--color-theme-card,#1e293b))';
+        bubbleStyle.borderColor = 'var(--sarak-card-border-color, var(--border-color,#334155))';
         bubbleStyle.backdropFilter = 'blur(var(--sarak-card-backdrop-blur, 10px))';
       }
     };

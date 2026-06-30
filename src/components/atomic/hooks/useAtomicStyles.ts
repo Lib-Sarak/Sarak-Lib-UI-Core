@@ -78,8 +78,8 @@ export const useAtomicStyles = () => {
         const shadowType = design?.inputShadow || 'none';
         const blurAmount = design?.inputBackdropBlur || 0;
         
-        const borderColor = 'var(--sarak-input-border-color, var(var(--border-color,#334155)))';
-        const focusColor = 'var(--sarak-input-focus-border-color, var(var(--sarak-primary-color,#3b82f6)))';
+        const borderColor = 'var(--sarak-input-border-color, var(--border-color,#334155))';
+        const focusColor = 'var(--sarak-input-focus-border-color, var(--sarak-primary-color,#3b82f6))';
 
         const dynamicStyle: React.CSSProperties = {};
         
@@ -129,7 +129,7 @@ export const useAtomicStyles = () => {
         design: SarakThemePayload | undefined,
         checked: boolean
     ) => {
-        const activeBg = 'var(--sarak-switch-active-bg, var(var(--sarak-primary-color,#3b82f6)))';
+        const activeBg = 'var(--sarak-switch-active-bg, var(--sarak-primary-color,#3b82f6))';
         const thumbBg = 'var(--sarak-switch-thumb, #ffffff)';
         const blurAmount = design?.switchBackdropBlur || 4;
         const styleType = design?.switchStyleType || 'tactile';

@@ -114,7 +114,7 @@ export const SarakRichText: React.FC<SarakRichTextProps> = ({
                     borderBottom: 'none',
                     borderTopLeftRadius: 'var(--sarak-card-radius,12px)',
                     borderTopRightRadius: 'var(--sarak-card-radius,12px)',
-                    background: 'var(--sarak-table-header-bg, var(var(--color-theme-card,#1e293b)))',
+                    background: 'var(--sarak-table-header-bg, var(--color-theme-card,#1e293b))',
                 }}
             >
                 {TOOLS.map((tool) => (
@@ -145,8 +145,8 @@ export const SarakRichText: React.FC<SarakRichTextProps> = ({
                     border: `1px solid ${error ? 'var(--sarak-input-error-color, #ff4d4f)' : 'var(--border-color,#334155)'}`,
                     borderBottomLeftRadius: 'var(--sarak-card-radius,12px)',
                     borderBottomRightRadius: 'var(--sarak-card-radius,12px)',
-                    background: 'var(--sarak-input-bg, var(var(--color-theme-card,#1e293b)))',
-                    color: 'var(--sarak-input-text-color, var(var(--text-muted,#94a3b8)))',
+                    background: 'var(--sarak-input-bg, var(--color-theme-card,#1e293b))',
+                    color: 'var(--sarak-input-text-color, var(--text-muted,#94a3b8))',
                     outline: 'none',
                     opacity: disabled ? 0.5 : 1,
                     cursor: disabled ? 'not-allowed' : 'text',

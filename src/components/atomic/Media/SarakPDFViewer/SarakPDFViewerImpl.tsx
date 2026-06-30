@@ -102,7 +102,7 @@ const SarakPDFViewerImpl: React.FC<SarakPDFViewerProps> = ({
                     gap: 'var(--sarak-layout-gap-sm,8px)',
                     padding: 'var(--sarak-layout-gap-sm,8px)',
                     borderBottom: '1px solid var(--border-color,#334155)',
-                    background: 'var(--sarak-table-header-bg, var(var(--color-theme-card,#1e293b)))',
+                    background: 'var(--sarak-table-header-bg, var(--color-theme-card,#1e293b))',
                 }}
             >
                 <div style={{ display: 'flex', alignItems: 'center', gap: 4 }}>

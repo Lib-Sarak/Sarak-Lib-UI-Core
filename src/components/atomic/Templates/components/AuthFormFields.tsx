@@ -82,7 +82,7 @@ export const AuthFormFields: React.FC<AuthFormFieldsProps> = ({
                                     onClick={() => setShowPassword(!showPassword)}
                                     icon={showPassword ? <EyeOff className="h-5 w-5" /> : <Eye className="h-5 w-5" />}
                                     variant="ghost"
-                                    className="text-[var(--sarak-input-icon-color,var(var(--text-muted,#94a3b8)))] hover:text-theme-text"
+                                    className="text-[var(--sarak-input-icon-color,var(--text-muted,#94a3b8))] hover:text-theme-text"
                                     style={{ padding: 'calc(var(--sarak-layout-gap-md,16px)*0.25)' }}
                                 />
                             ) : undefined}

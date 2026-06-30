@@ -22,7 +22,7 @@ export const SarakFallback: React.FC<SarakFallbackProps> = ({ type, nodeId }) =>
             data-sarak-fallback="true"
             className="px-3 py-2 rounded text-sm"
             style={{
-                color: 'var(--sx-color-error-base, var(var(--sarak-text-main,#ffffff)))',
+                color: 'var(--sx-color-error-base, var(--sarak-text-main,#ffffff))',
                 border: 'var(--sx-border-width-thin, thin) solid var(--sx-color-error-base, currentColor)',
                 background: 'var(--sx-color-error-surface, transparent)',
             }}

@@ -20,7 +20,7 @@ const range = (count: number, step = 1): number[] =>
     Array.from({ length: Math.ceil(count / step) }, (_, i) => i * step);
 
 const SELECT =
-    'rounded-input py-2 px-2 text-sm tabular-nums bg-[var(--sarak-input-bg,var(var(--color-theme-card,#1e293b)))] border border-[var(--sarak-input-border-color,var(var(--border-color,#334155)))] text-[var(--sarak-input-text-color,var(var(--text-muted,#94a3b8)))] outline-none focus:border-[var(--sarak-input-focus-border-color,var(var(--sarak-primary-color,#3b82f6)))]';
+    'rounded-input py-2 px-2 text-sm tabular-nums bg-[var(--sarak-input-bg,var(--color-theme-card,#1e293b))] border border-[var(--sarak-input-border-color,var(--border-color,#334155))] text-[var(--sarak-input-text-color,var(--text-muted,#94a3b8))] outline-none focus:border-[var(--sarak-input-focus-border-color,var(--sarak-primary-color,#3b82f6))]';
 
 /**
  * Componente Atômico: SarakTimePicker (Spec 11, Regra 1 — par temporal)

@@ -22,7 +22,7 @@ export const SarakTextarea: React.FC<SarakTextareaProps> = ({
     const { getInputStyles } = useAtomicStyles();
     const [isFocused, setIsFocused] = useState(false);
 
-    const baseClasses = 'block text-[var(--sarak-input-text-color,var(var(--text-muted,#94a3b8)))] font-medium outline-none transition-all placeholder:text-[var(--sarak-input-text-color,var(var(--text-muted,#94a3b8)))]/30 bg-[var(--sarak-input-bg,var(var(--color-theme-card,#1e293b)))]';
+    const baseClasses = 'block text-[var(--sarak-input-text-color,var(--text-muted,#94a3b8))] font-medium outline-none transition-all placeholder:text-[var(--sarak-input-text-color,var(--text-muted,#94a3b8))]/30 bg-[var(--sarak-input-bg,var(--color-theme-card,#1e293b))]';
     const shapeClasses = 'rounded-input p-4';
     
     const widthClass = fullWidth ? 'w-full' : '';

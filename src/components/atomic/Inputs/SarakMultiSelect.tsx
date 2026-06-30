@@ -23,7 +23,7 @@ export interface SarakMultiSelectProps {
 }
 
 const FIELD =
-    'flex flex-wrap items-center gap-1 w-full rounded-input py-2 px-3 bg-[var(--sarak-input-bg,var(var(--color-theme-card,#1e293b)))] border border-[var(--sarak-input-border-color,var(var(--border-color,#334155)))] focus-within:border-[var(--sarak-input-focus-border-color,var(var(--sarak-primary-color,#3b82f6)))] transition-colors';
+    'flex flex-wrap items-center gap-1 w-full rounded-input py-2 px-3 bg-[var(--sarak-input-bg,var(--color-theme-card,#1e293b))] border border-[var(--sarak-input-border-color,var(--border-color,#334155))] focus-within:border-[var(--sarak-input-focus-border-color,var(--sarak-primary-color,#3b82f6))] transition-colors';
 
 /**
  * Componente Atômico: SarakMultiSelect (Spec 11, Regra 2)
@@ -115,7 +115,7 @@ export const SarakMultiSelect: React.FC<SarakMultiSelectProps> = ({
                         onFocus={() => setOpen(true)}
                         onBlur={() => setTimeout(() => setOpen(false), 120)}
                         onKeyDown={handleKeyDown}
-                        className="flex-1 min-w-[6rem] bg-transparent outline-none text-[var(--sarak-input-text-color,var(var(--text-muted,#94a3b8)))]"
+                        className="flex-1 min-w-[6rem] bg-transparent outline-none text-[var(--sarak-input-text-color,var(--text-muted,#94a3b8))]"
                     />
                 </div>
 

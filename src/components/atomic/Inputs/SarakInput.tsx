@@ -40,7 +40,7 @@ export const SarakInput: React.FC<SarakInputProps> = ({
     const inputId = props.id ?? reactId;
     const errorId = `${inputId}-error`;
 
-    const baseClasses = 'block text-[var(--sarak-input-text-color,var(var(--text-muted,#94a3b8)))] font-medium outline-none transition-all placeholder:text-[var(--sarak-input-text-color,var(var(--text-muted,#94a3b8)))]/30 bg-[var(--sarak-input-bg,var(var(--color-theme-card,#1e293b)))]';
+    const baseClasses = 'block text-[var(--sarak-input-text-color,var(--text-muted,#94a3b8))] font-medium outline-none transition-all placeholder:text-[var(--sarak-input-text-color,var(--text-muted,#94a3b8))]/30 bg-[var(--sarak-input-bg,var(--color-theme-card,#1e293b))]';
     const shapeClasses = 'rounded-input py-4';
     
     const widthClass = fullWidth ? 'w-full' : '';
@@ -66,7 +66,7 @@ export const SarakInput: React.FC<SarakInputProps> = ({
             <div className="flex-1 flex flex-col relative w-full">
                 <div className="relative w-full flex items-center">
                     {hasIcon && (
-                        <div className={`${iconPositionClass} flex items-center pointer-events-none text-[var(--sarak-input-icon-color,rgba(255,255,255,0.5))] transition-colors group-focus-within:text-[var(--sarak-input-focus-border-color,var(var(--sarak-primary-color,#3b82f6)))]`}>
+                        <div className={`${iconPositionClass} flex items-center pointer-events-none text-[var(--sarak-input-icon-color,rgba(255,255,255,0.5))] transition-colors group-focus-within:text-[var(--sarak-input-focus-border-color,var(--sarak-primary-color,#3b82f6))]`}>
                             {activeIcon}
                         </div>
                     )}

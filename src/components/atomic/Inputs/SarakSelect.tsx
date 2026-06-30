@@ -23,7 +23,7 @@ export const SarakSelect: React.FC<SarakSelectProps> = ({
     const { getInputStyles } = useAtomicStyles();
     const [isFocused, setIsFocused] = useState(false);
 
-    const baseClasses = 'block text-[var(--sarak-input-text-color,var(var(--text-muted,#94a3b8)))] font-medium outline-none transition-all placeholder:text-[var(--sarak-input-text-color,var(var(--text-muted,#94a3b8)))]/30 bg-[var(--sarak-input-bg,var(var(--color-theme-card,#1e293b)))]';
+    const baseClasses = 'block text-[var(--sarak-input-text-color,var(--text-muted,#94a3b8))] font-medium outline-none transition-all placeholder:text-[var(--sarak-input-text-color,var(--text-muted,#94a3b8))]/30 bg-[var(--sarak-input-bg,var(--color-theme-card,#1e293b))]';
     const shapeClasses = 'rounded-input py-4 pl-4 pr-10 appearance-none';
     
     const widthClass = fullWidth ? 'w-full' : '';
@@ -48,7 +48,7 @@ export const SarakSelect: React.FC<SarakSelectProps> = ({
             </select>
             
             {/* Custom Caret */}
-            <div className="absolute inset-y-0 right-0 pr-4 flex items-center pointer-events-none text-[var(--sarak-input-icon-color,rgba(255,255,255,0.5))] transition-colors group-focus-within:text-[var(--sarak-input-focus-border-color,var(var(--sarak-primary-color,#3b82f6)))]">
+            <div className="absolute inset-y-0 right-0 pr-4 flex items-center pointer-events-none text-[var(--sarak-input-icon-color,rgba(255,255,255,0.5))] transition-colors group-focus-within:text-[var(--sarak-input-focus-border-color,var(--sarak-primary-color,#3b82f6))]">
                 <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                     <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M19 9l-7 7-7-7" />
                 </svg>

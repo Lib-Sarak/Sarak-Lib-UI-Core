@@ -21,7 +21,7 @@ export const SarakSlider: React.FC<SarakSliderProps> = ({
 }) => {
     const { design } = useSarakUI();
 
-    const activeColor = 'var(--sarak-switch-active-bg, var(var(--sarak-primary-color,#3b82f6)))';
+    const activeColor = 'var(--sarak-switch-active-bg, var(--sarak-primary-color,#3b82f6))';
     const trackColor = 'rgba(255, 255, 255, 0.1)';
 
     return (

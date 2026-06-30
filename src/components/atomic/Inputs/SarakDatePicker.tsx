@@ -113,7 +113,7 @@ export const SarakDatePicker: React.FC<SarakDatePickerProps> = ({
                     aria-invalid={error ? true : undefined}
                     aria-describedby={error ? errorId : undefined}
                     onClick={() => setOpen((prev) => !prev)}
-                    className={`flex items-center justify-between w-full rounded-input py-3 px-4 text-left text-sm bg-[var(--sarak-input-bg,var(var(--color-theme-card,#1e293b)))] border border-[var(--sarak-input-border-color,var(var(--border-color,#334155)))] ${disabled ? 'opacity-50 cursor-not-allowed' : 'cursor-pointer'}`}
+                    className={`flex items-center justify-between w-full rounded-input py-3 px-4 text-left text-sm bg-[var(--sarak-input-bg,var(--color-theme-card,#1e293b))] border border-[var(--sarak-input-border-color,var(--border-color,#334155))] ${disabled ? 'opacity-50 cursor-not-allowed' : 'cursor-pointer'}`}
                 >
                     <span className={start ? 'text-[var(--text-muted,#94a3b8)]' : 'text-[var(--text-muted,#94a3b8)]/50'}>
                         {display}

@@ -37,7 +37,7 @@ export interface SarakUploaderProps {
 const borderFor = (dragActive: boolean, dragReject: boolean, hasError: boolean): string => {
     if (dragReject || hasError) return 'var(--sarak-status-error-color,#ef4444)';
     if (dragActive) return 'var(--sarak-primary-color,#3b82f6)';
-    return 'var(--sarak-input-border-color, var(var(--border-color,#334155)))';
+    return 'var(--sarak-input-border-color, var(--border-color,#334155))';
 };
 
 /**
@@ -85,7 +85,7 @@ export const SarakUploader: React.FC<SarakUploaderProps> = ({
 
             <div
                 {...getRootProps()}
-                className={`flex flex-col items-center justify-center gap-2 w-full rounded-input py-8 px-4 text-center border-2 border-dashed transition-colors bg-[var(--sarak-input-bg,var(var(--color-theme-card,#1e293b)))] ${disabledClass}`}
+                className={`flex flex-col items-center justify-center gap-2 w-full rounded-input py-8 px-4 text-center border-2 border-dashed transition-colors bg-[var(--sarak-input-bg,var(--color-theme-card,#1e293b))] ${disabledClass}`}
                 style={{ borderColor: borderFor(isDragActive, isDragReject, !!error) }}
                 aria-disabled={disabled || undefined}
                 aria-invalid={error ? true : undefined}
