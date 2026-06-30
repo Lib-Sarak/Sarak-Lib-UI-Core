@@ -13,6 +13,9 @@ relacionados: ["20-correcao-hardcoded-base", "07-agente-llm-design-e-expansao-es
 
 Etapa 5: o **restante estrutural** — Navigation, Feedback, Media, Modals, UX, Buttons, Layouts e Atoms. Fecha as violações duras estruturais do módulo.
 
+> ## ⛔ DEPENDÊNCIA: Spec 30 (variáveis reais) primeiro
+> **Proibido `--sx-*`** (namespace fantasma — não resolve em runtime). Migre para **variáveis reais da engine + fallback** conforme a tabela de mapeamento da [[30-erradicacao-variaveis-fantasma]] (ex.: `var(--sarak-layout-gap-md, 16px)`; `calc(var(--sarak-layout-gap-md,16px) * fator)` para passos sem token). Ao fim, rode `auditor_ghostvars.mjs` → **0 fantasmas**.
+
 # 2. Escopo & Meta
 **Meta:** zerar as **~111 violações duras** dos arquivos abaixo. Use os hooks de domínio onde existirem (`useModalLayoutStyles`, `useTableLayoutStyles`, `useButtonLayoutStyles`).
 
@@ -41,10 +44,10 @@ Etapa 5: o **restante estrutural** — Navigation, Feedback, Media, Modals, UX, 
 1. **Baseline (ANTES):** rode `auditor_hardcoded.mjs` e preencha o **Snapshot Inicial** (§5).
 2. **Por arquivo (ciclo `code-adequacao`):**
    - **Caracterizar** o render atual.
-   - **Migrar duras** via hook adequado: Modais → `useModalLayoutStyles`; Botões → `useButtonLayoutStyles`; demais → `useStructuralStyles` (`getContainerStyles`/`getHeaderStyles`/`getFlexStyles`). Espaçamento → `var(--sx-spacing-*)`.
+   - **Migrar duras** via hook adequado: Modais → `useModalLayoutStyles`; Botões → `useButtonLayoutStyles`; demais → `useStructuralStyles` (`getContainerStyles`/`getHeaderStyles`/`getFlexStyles`). Espaçamento → **variável real + fallback** (ex.: `var(--sarak-layout-gap-md, 16px)`, Spec 30) — **nunca `--sx-*`**.
    - **Manter** `flex`, `relative`, `z-*`, alinhamento, `w-full/h-full` (deduzidos).
    - **Verificar verde:** testes + visual (atenção a overlays/portais em Modals e Toast).
-3. **Conferência (DEPOIS):** rode o auditor e preencha o **Snapshot Final** (§6).
+3. **Conferência (DEPOIS):** rode `auditor_hardcoded.mjs` **e** `auditor_ghostvars.mjs` (= 0 fantasmas) e preencha o **Snapshot Final** (§6).
 
 # 4. Checklist de Validação (Gate de Coerência — [[20-correcao-hardcoded-base]] §7)
 - [ ] **V1** — Duras do escopo zeradas; total do módulo diminuiu.

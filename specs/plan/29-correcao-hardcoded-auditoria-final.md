@@ -26,6 +26,7 @@ relacionados: ["20-correcao-hardcoded-base", "07-agente-llm-design-e-expansao-es
 
 # 4. Checklist de Validação (Gate Final)
 - [ ] `auditor_hardcoded.mjs`: **0 violações duras**.
+- [ ] `auditor_ghostvars.mjs`: **0 variáveis-fantasma** (allowlist vazia).
 - [ ] Valor `px/rem/em`: somente hairlines tolerados.
 - [ ] Baldes deduzidos estáveis/menores vs. baseline inicial da campanha.
 - [ ] `run_audit.mjs`: os 7 auditores verdes.

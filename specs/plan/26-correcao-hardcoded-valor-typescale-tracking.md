@@ -13,8 +13,11 @@ relacionados: ["20-correcao-hardcoded-base", "07-agente-llm-design-e-expansao-es
 
 Etapa 6: eliminar os **valores arbitrários de tipografia** nos átomos — `text-[Npx]`, `tracking-[Nem]`, `leading-[…]` — criando a escala tipográfica como token.
 
+> ## ⛔ DEPENDÊNCIA: Spec 30 (variáveis reais) primeiro
+> **Proibido `--sx-*`** (namespace fantasma — não resolve em runtime). Os tokens criados/consumidos devem ser **variáveis reais da engine + fallback** (`--sarak-*`/`--theme-*`), conforme a [[30-erradicacao-variaveis-fantasma]]. Ao fim, rode `auditor_ghostvars.mjs` → **0 fantasmas**.
+
 # 2. Escopo & Meta
-**Meta:** zerar os **~64** valores arbitrários de type-scale/tracking/leading em `src/components` (átomos), substituindo por tokens (`var(--sx-*)`).
+**Meta:** zerar os **~64** valores arbitrários de type-scale/tracking/leading em `src/components` (átomos), substituindo por tokens reais da engine (`var(--sarak-*, <valor>)`) — **nunca `--sx-*`**.
 
 **Natureza:** **Expansão** — a maioria não tem token equivalente (`--sx-text-9px` não existe). Cada token novo exige as 5 camadas + **HITL**.
 
@@ -22,9 +25,9 @@ Etapa 6: eliminar os **valores arbitrários de tipografia** nos átomos — `tex
 1. **Baseline (ANTES):** rode `auditor_hardcoded.mjs` e preencha o **Snapshot Inicial** (§5).
 2. **Consolidar a escala antes de migrar:** levante os tamanhos/trackings distintos usados (ex.: 7/8/9/10px) e proponha um conjunto fechado de tokens de type-scale — **HITL para aprovar** antes de propagar.
 3. **Para cada token aprovado:** criar via skill `ui-novo-componente` nas 5 camadas (Schema, MasterMap, `theme_table_mapping.json`, DesignEngine, Catálogo) — **nunca chave órfã**.
-4. **Migrar o consumo:** trocar `text-[9px]`/`tracking-[0.3em]` por `var(--sx-*)` nos átomos.
+4. **Migrar o consumo:** trocar `text-[9px]`/`tracking-[0.3em]` pelo token real criado (`var(--sarak-*, <valor>)`) — **nunca `--sx-*`**.
 5. **Verificar verde:** testes + visual (densidade/legibilidade do texto).
-6. **Conferência (DEPOIS):** rode o auditor e preencha o **Snapshot Final** (§6).
+6. **Conferência (DEPOIS):** rode `auditor_hardcoded.mjs` **e** `auditor_ghostvars.mjs` (= 0 fantasmas) e preencha o **Snapshot Final** (§6).
 
 # 4. Checklist de Validação (Gate de Coerência — [[20-correcao-hardcoded-base]] §7)
 - [ ] **V1** — Duras do módulo não aumentaram.

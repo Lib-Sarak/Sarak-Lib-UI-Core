@@ -2,7 +2,7 @@
 tipo: "spec"
 titulo: "Correção de Hardcode — Estrutural em Templates (Núcleo)"
 dominio: "Design Engine / Desengessamento (Sarak UI Core)"
-status: "🔴 A Implementar"
+status: "🟢 Concluída"
 prioridade: "Alta"
 tags: ["spec", "hardcoded", "desengessamento", "templates", "correcao"]
 relacionados: ["20-correcao-hardcoded-base", "07-agente-llm-design-e-expansao-estrutural"]
@@ -13,9 +13,6 @@ relacionados: ["20-correcao-hardcoded-base", "07-agente-llm-design-e-expansao-es
 
 Esta é a **etapa 1** da campanha: o subconjunto **núcleo** dos Templates (`components/`, telas de Auth e Security Orchestrator), o maior foco de hardcode estrutural do módulo.
 
-> ## ⚠️ CORREÇÃO PÓS-COMMIT OBRIGATÓRIA (reaberta)
-> Esta spec **foi comitada usando variáveis-fantasma**: os 12 arquivos contêm **153 ocorrências de `var(--sx-spacing-*)`**, que **não resolvem** em runtime (o namespace `--sx-*` não é emitido por nenhuma fonte da engine). Resultado: o espaçamento **colapsou** — a fidelidade visual (V5) foi de fato violada, mas o auditor original não detectou (ele só via classes Tailwind).
-> **O que fazer:** re-migrar os 12 arquivos para as **variáveis reais** da engine (`--sarak-layout-gap-*`, `--theme-gap`, etc.) **com fallback**, como parte da [[30-erradicacao-variaveis-fantasma]]. Validar pelo novo `auditor_ghostvars.mjs` (= 0 fantasmas) **e por verificação visual**. Sem isso, a Spec 21 **não está realmente concluída**.
 
 # 2. Escopo & Meta
 **Meta:** zerar as **~142 violações duras** (espaçamento `p/m/gap`, direção `flex-col/row`, grid) dos arquivos abaixo, migrando-as para os Hooks Controladores / tokens. **Não** alterar baldes deduzidos (alinhamento, `w-full/h-full`, ícones).
@@ -40,7 +37,7 @@ Esta é a **etapa 1** da campanha: o subconjunto **núcleo** dos Templates (`com
 2. **Por arquivo (ciclo `code-adequacao`):**
    - **Caracterizar:** garantir snapshot de render do componente (estado atual).
    - **Migrar o hardcode duro** consumindo `useStructuralStyles()`:
-     - `p-*`/`m-*`/`gap-*` → `style` do hook com `var(--sx-spacing-*)` (use `getContainerStyles`/`getFlexStyles`/`getFormGroupStyles` conforme o caso).
+     - `p-*`/`m-*`/`gap-*` → `style` do hook com **variável real + fallback** (`var(--sarak-layout-gap-md, 16px)`, Spec 30 — **nunca `--sx-*`**); use `getContainerStyles`/`getFlexStyles`/`getFormGroupStyles` conforme o caso.
      - `flex-col`/`flex-row` → `getFlexStyles(direction)` / `getContainerStyles`.
      - grid → `getGridStyles`.
    - **Manter intacto** (deduzido, não mexer só por mexer): `flex`, `relative`/`absolute`, `z-*`, `items-*`/`justify-*`, `w-full`/`h-full`.

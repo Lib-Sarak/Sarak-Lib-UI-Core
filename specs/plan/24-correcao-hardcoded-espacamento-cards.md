@@ -13,6 +13,9 @@ relacionados: ["20-correcao-hardcoded-base", "07-agente-llm-design-e-expansao-es
 
 Etapa 4: a família de **Cards**. Já existe o hook de domínio `useCardLayoutStyles` — esta etapa completa a migração dos resíduos.
 
+> ## ⛔ DEPENDÊNCIA: Spec 30 (variáveis reais) primeiro
+> **Proibido `--sx-*`** (namespace fantasma — não resolve em runtime). Migre para **variáveis reais da engine + fallback** conforme a tabela de mapeamento da [[30-erradicacao-variaveis-fantasma]] (ex.: `var(--sarak-layout-gap-md, 16px)`; `calc(var(--sarak-layout-gap-md,16px) * fator)` para passos sem token). Ao fim, rode `auditor_ghostvars.mjs` → **0 fantasmas**.
+
 # 2. Escopo & Meta
 **Meta:** zerar as **~65 violações duras** dos arquivos abaixo, reaproveitando `useCardLayoutStyles` / `getCardStyles`.
 
@@ -27,11 +30,11 @@ Etapa 4: a família de **Cards**. Já existe o hook de domínio `useCardLayoutSt
 1. **Baseline (ANTES):** rode `auditor_hardcoded.mjs` e preencha o **Snapshot Inicial** (§5).
 2. **Por arquivo (ciclo `code-adequacao`):**
    - **Caracterizar** o render atual.
-   - **Migrar duras** via `useCardLayoutStyles` (container/content/header/footer) e `useStructuralStyles().getCardStyles`; espaçamento → `var(--sx-spacing-*)`; direção → estratégias do hook de card.
+   - **Migrar duras** via `useCardLayoutStyles` (container/content/header/footer) e `useStructuralStyles().getCardStyles`; espaçamento → **variável real + fallback** (ex.: `var(--sarak-layout-gap-md, 16px)`, Spec 30) — **nunca `--sx-*`**; direção → estratégias do hook de card.
    - **Atenção aos resíduos:** estes arquivos já consomem o hook em parte; remova as classes estruturais que sobraram no JSX.
    - **Manter** `flex`, `relative`, `z-*`, alinhamento, `w-full/h-full` (deduzidos).
    - **Verificar verde:** testes + visual (estados expandido/colapsado).
-3. **Conferência (DEPOIS):** rode o auditor e preencha o **Snapshot Final** (§6).
+3. **Conferência (DEPOIS):** rode `auditor_hardcoded.mjs` **e** `auditor_ghostvars.mjs` (= 0 fantasmas) e preencha o **Snapshot Final** (§6).
 
 # 4. Checklist de Validação (Gate de Coerência — [[20-correcao-hardcoded-base]] §7)
 - [ ] **V1** — Duras do escopo zeradas; total do módulo diminuiu.

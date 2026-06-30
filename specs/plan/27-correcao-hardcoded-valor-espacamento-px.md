@@ -13,17 +13,20 @@ relacionados: ["20-correcao-hardcoded-base", "07-agente-llm-design-e-expansao-es
 
 Etapa 7: eliminar os demais valores `px/rem/em` arbitrários nos átomos — paddings/sizes arbitrários (`p-[..px]`, `h-[..px]`) e offsets de sombra — usando tokens de espaçamento já existentes.
 
+> ## ⛔ DEPENDÊNCIA: Spec 30 (variáveis reais) primeiro
+> **Proibido `--sx-*`** (namespace fantasma — não resolve em runtime). Migre para **variáveis reais da engine + fallback** conforme a tabela de mapeamento da [[30-erradicacao-variaveis-fantasma]] (ex.: `var(--sarak-layout-gap-md, 16px)`; `calc(...)` para passos sem token). Ao fim, rode `auditor_ghostvars.mjs` → **0 fantasmas**.
+
 # 2. Escopo & Meta
 **Meta:** zerar os **~59** valores `px/rem/em` arbitrários remanescentes em `src/components` (átomos), **exceto** hairlines `1px`/`2px` (tolerados/deduzidos).
 
 # 3. Instruções Detalhadas
 1. **Baseline (ANTES):** rode `auditor_hardcoded.mjs` e preencha o **Snapshot Inicial** (§5).
 2. **Para cada valor px/rem/em:**
-   - Espaçamento/size arbitrário → consumir token existente (`var(--sx-spacing-*)`). É **Configuração**.
+   - Espaçamento/size arbitrário → consumir token **real** existente + fallback (`var(--sarak-layout-gap-*, <px>)`, Spec 30) — **nunca `--sx-*`**. É **Configuração**.
    - Se faltar token de espaçamento adequado → criar via paridade 1:1:1:1:1 (Expansão pontual, HITL).
    - **Hairline `1px`/`2px`** (bordas, offsets de sombra) → **manter** (tolerado); registrar como deduzido.
    - **Verificar verde:** testes + visual.
-3. **Conferência (DEPOIS):** rode o auditor e preencha o **Snapshot Final** (§6).
+3. **Conferência (DEPOIS):** rode `auditor_hardcoded.mjs` **e** `auditor_ghostvars.mjs` (= 0 fantasmas) e preencha o **Snapshot Final** (§6).
 
 # 4. Checklist de Validação (Gate de Coerência — [[20-correcao-hardcoded-base]] §7)
 - [ ] **V1** — Duras do módulo não aumentaram.

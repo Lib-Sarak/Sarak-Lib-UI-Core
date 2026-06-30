@@ -13,6 +13,9 @@ relacionados: ["20-correcao-hardcoded-base", "07-agente-llm-design-e-expansao-es
 
 Etapa 8: eliminar os valores `px/rem/em` hardcoded em `src/features` e componentes não-atômicos (`components/Layout`, etc.). Reaproveita os tokens criados nas specs 26/27.
 
+> ## ⛔ DEPENDÊNCIA: Spec 30 (variáveis reais) primeiro
+> **Proibido `--sx-*`** (namespace fantasma — não resolve em runtime). Migre para **variáveis reais da engine + fallback** conforme a tabela de mapeamento da [[30-erradicacao-variaveis-fantasma]]. Ao fim, rode `auditor_ghostvars.mjs` → **0 fantasmas**.
+
 # 2. Escopo & Meta
 **Meta:** zerar os **~150** valores `px/rem/em` hardcoded fora dos átomos, **exceto** hairlines `1px`/`2px`.
 
@@ -21,11 +24,11 @@ Etapa 8: eliminar os valores `px/rem/em` hardcoded em `src/features` e component
 # 3. Instruções Detalhadas
 1. **Baseline (ANTES):** rode `auditor_hardcoded.mjs` e preencha o **Snapshot Inicial** (§5).
 2. **Para cada valor px/rem/em:**
-   - Reusar token existente (`var(--sx-*)`, incluindo os criados em 26/27).
+   - Reusar token **real** existente + fallback (`var(--sarak-*)`/`--theme-*`, incluindo os criados em 26/27) — **nunca `--sx-*`**.
    - Token novo somente se imprescindível, via paridade 1:1:1:1:1 (HITL).
    - **Hairline `1px`/`2px`** → manter (tolerado).
    - **Verificar verde:** testes + visual da feature.
-3. **Conferência (DEPOIS):** rode o auditor e preencha o **Snapshot Final** (§6).
+3. **Conferência (DEPOIS):** rode `auditor_hardcoded.mjs` **e** `auditor_ghostvars.mjs` (= 0 fantasmas) e preencha o **Snapshot Final** (§6).
 
 # 4. Checklist de Validação (Gate de Coerência — [[20-correcao-hardcoded-base]] §7)
 - [ ] **V1** — Duras do módulo não aumentaram.
