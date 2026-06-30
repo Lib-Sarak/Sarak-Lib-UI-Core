@@ -3,7 +3,7 @@
  *
  * Assume FORMAS declaradas (`shape`): `text` (barras finas), `circle` (avatar) e `rect`
  * (bloco). Mantém o uso original como estado `loading` da Fonte de Dados (linhas-fantasma)
- * por padrão. Zero Hardcode: cores/raio via `var(--sx-*)`; pulso via `animate-pulse`.
+ * por padrão. Zero Hardcode: cores/raio via `[--sarak-*]`; pulso via `animate-pulse`.
  */
 
 import React from 'react';
@@ -25,7 +25,7 @@ export interface SarakSkeletonProps {
 }
 
 const PULSE_BG =
-    'var(--sx-color-surface-muted, var(--sx-color-border-base, rgba(127,127,127,0.18)))';
+    'var(--border-color, rgba(127,127,127,0.18))';
 
 export const SarakSkeleton: React.FC<SarakSkeletonProps> = ({
     shape = 'text',
@@ -61,7 +61,7 @@ export const SarakSkeleton: React.FC<SarakSkeletonProps> = ({
                 style={{
                     width: width ?? '100%',
                     height: rowHeight,
-                    borderRadius: 'var(--sx-radius-md, 8px)',
+                    borderRadius: 'var(--sarak-card-radius,12px)',
                     background: PULSE_BG,
                 }}
             />
@@ -76,7 +76,7 @@ export const SarakSkeleton: React.FC<SarakSkeletonProps> = ({
                     className="animate-pulse w-full"
                     style={{
                         height: rowHeight,
-                        borderRadius: 'var(--sx-radius-sm, 4px)',
+                        borderRadius: '4px',
                         background: PULSE_BG,
                     }}
                 />

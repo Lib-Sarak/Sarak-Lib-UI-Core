@@ -75,9 +75,9 @@ const SarakToast: React.FC<{ entry: ToastEntry; onDismiss: (id: string) => void 
             style={{
                 minWidth: '15rem',
                 maxWidth: '22.5rem',
-                borderRadius: 'var(--sx-radius-md, 8px)',
-                background: 'var(--sx-color-surface-base, var(--theme-surface, #1a1a1a))',
-                color: 'var(--sx-color-text-base, var(--theme-text, #f5f5f5))',
+                borderRadius: 'var(--sarak-card-radius,12px)',
+                background: 'var(--color-theme-card,#1e293b))',
+                color: 'var(--sarak-text-main,#ffffff))',
                 borderLeft: `4px solid ${VARIANT_COLOR[entry.variant]}`,
             }}
         >
@@ -86,7 +86,7 @@ const SarakToast: React.FC<{ entry: ToastEntry; onDismiss: (id: string) => void 
                 type="button"
                 aria-label="Fechar notificação"
                 onClick={() => onDismiss(entry.id)}
-                style={{ color: 'var(--sx-color-text-muted, currentColor)', lineHeight: 1 }}
+                style={{ color: 'var(--text-muted,#94a3b8)', lineHeight: 1 }}
             >
                 ×
             </button>
@@ -152,9 +152,9 @@ export const SarakToastProvider: React.FC<{ children: React.ReactNode }> = ({ ch
                       aria-live="polite"
                       className="fixed flex flex-col gap-2 pointer-events-none"
                       style={{
-                          bottom: 'var(--sx-spacing-lg, 24px)',
-                          right: 'var(--sx-spacing-lg, 24px)',
-                          zIndex: 'var(--z-index-toast, 1100)' as React.CSSProperties['zIndex'],
+                          bottom: 'var(--sarak-layout-gap-lg,24px)',
+                          right: 'var(--sarak-layout-gap-lg,24px)',
+                          zIndex: 'var(--z-index-tooltip, 9000)' as React.CSSProperties['zIndex'],
                       }}
                   >
                       {toasts.map((entry) => (

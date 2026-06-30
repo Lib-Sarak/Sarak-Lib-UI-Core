@@ -23,7 +23,7 @@ test('Jornada 1: Boot do Motor Visual', async ({ mount }) => {
     // Monta o SarakUIProvider com o Canvas dentro
     const component = await mount(
         <SarakUIProvider config={mockConfig as unknown as SarakThemePayload}>
-            <div style={{ padding: '2rem', background: 'var(--theme-base)', height: '100vh' }}>
+            <div style={{ padding: '2rem', background: 'var(--color-theme-bg, #0a0a0c)', height: '100vh' }}>
                 <PreviewCanvas {...({} as unknown as React.ComponentProps<typeof PreviewCanvas>)} />
             </div>
         </SarakUIProvider>

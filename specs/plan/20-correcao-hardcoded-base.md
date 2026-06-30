@@ -15,7 +15,7 @@ Esta é a **spec-guia** da campanha de erradicação de hardcode da Metade B (de
 
 # 2. Missão e Escopo da Campanha
 Zerar o **hardcode duro** da base atômica, medido pelo `auditor_hardcoded.mjs`. As classes são tratadas em três níveis:
-- **Corrigir (reprova / dura):** espaçamento (`p`/`m`/`gap`), direção (`flex-col/row`), grid, e valores `px/rem/em`. Devem migrar para os Hooks Controladores e tokens (`var(--sx-spacing-*)`, etc.).
+- **Corrigir (reprova / dura):** espaçamento (`p`/`m`/`gap`), direção (`flex-col/row`), grid, e valores `px/rem/em`. Devem migrar para os Hooks Controladores e **variáveis reais da engine** (`--sarak-*` / `--theme-*`) **com fallback**. **PROIBIDO `--sx-*`** — é namespace **fantasma** (não resolve em runtime). Ver [[30-erradicacao-variaveis-fantasma]].
 - **Tolerado:** hairlines `1px`/`2px` (bordas e offsets de sombra) — deduzidos.
 - **Deduzido (não reprova):** ícones (`w-N`/`h-N`), `w-full`/`h-full` (o próprio hook os usa) e alinhamento (`items-`/`justify-`, micro-layout intrínseco). São **localizados e contados**, nunca invisíveis.
 
@@ -50,6 +50,7 @@ Antes de codar, carregue na janela de contexto:
 4. **Token novo só via Expansão 1:1:1:1:1:** se um valor não tiver token equivalente (ex.: type-scale), crie-o nas 5 camadas (skill `ui-novo-componente`) — nunca chave órfã.
 5. **Zero Any:** nenhuma tipagem afrouxada introduzida no caminho.
 6. **Um arquivo por vez:** mudanças pequenas e verificáveis.
+7. **Variável real, nunca fantasma:** todo `var(--…)` deve apontar para uma variável **emitida** pela engine (`--sarak-*`/`--theme-*` ou alias de `src/styles/*.css`), **com fallback**. `--sx-*` é proibido. Gate: `auditor_ghostvars.mjs` = 0.
 
 # 5. Metodologia de Execução
 Aplicar o ciclo da skill `code-adequacao` por arquivo:
@@ -75,7 +76,7 @@ A spec 21+ só é considerada **coerente e concluída** se TODAS as regras abaix
 - **V1 — Redução real:** as **violações duras** caíram pelo menos a meta declarada pela spec da vez, e **nunca aumentaram**.
 - **V2 — Anti-burla (sem regressão de baldes):** nenhum balde deduzido **aumentou** (ícones, `w-full/h-full`, alinhamento). Isso impede "esconder" um `p-4` transformando-o em `items-center` para fugir do gate.
 - **V3 — Valor estável ou menor:** o total de `px/rem/em` **não aumentou** (idealmente caiu, se a spec for de valor).
-- **V4 — Suite íntegra:** os outros 6 auditores do `run_audit.mjs` (TypeScript/Zero-Any, Paridade, CleanCode, Coverage, Arquitetura, Manifesto) **continuam verdes** — a correção não introduziu nenhuma nova quebra de regra do módulo.
+- **V4 — Suite íntegra:** os demais auditores do `run_audit.mjs` (TypeScript/Zero-Any, **Ghost-Vars**, Paridade, CleanCode, Coverage, Arquitetura, Manifesto) **continuam verdes** — a correção não introduziu nenhuma nova quebra. Em especial `auditor_ghostvars.mjs` **não pode aumentar** (idealmente cai a 0).
 - **V5 — Comportamento preservado:** testes de caracterização/snapshot verdes e verificação visual sem diferença perceptível.
 - **V6 — Sem desvio arquitetural:** nenhum componente novo; qualquer token novo respeita a paridade 1:1:1:1:1.
 

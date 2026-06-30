@@ -46,9 +46,9 @@ export const SarakTitleCard = <TItem extends Record<string, unknown>>({ item, ma
             initial={{ opacity: 0, y: 15 }}
             animate={{ opacity: 1, y: 0 }}
             whileHover={{ y: -4, scale: 1.01 }}
-            className={`${layout.containerClass} sarak-card bg-[var(--sx-color-surface-base)] border-[var(--sx-color-border-base)] group transition-all relative overflow-hidden ${className}`}
+            className={`${layout.containerClass} sarak-card bg-[var(--color-theme-card,#1e293b)] border-[var(--border-color,#334155)] group transition-all relative overflow-hidden ${className}`}
             style={{ 
-                transitionDuration: 'var(--animation-speed, 0.4s)',
+                transitionDuration: 'var(--duration-normal, 0.3s)',
                 padding: 'var(--sarak-card-padding-md, 24px)'
             }}
             data-sx-card-texture-type={String(design.cardTextureType ?? 'none')}
@@ -62,8 +62,8 @@ export const SarakTitleCard = <TItem extends Record<string, unknown>>({ item, ma
 
             {/* DRAFT BADGE (v6.3) */}
             {globalUI?.isDrafting && (
-                <div className="absolute top-2 left-4 z-40 pointer-events-none flex items-center gap-1.5 px-2 py-0.5 rounded bg-black/60 border border-[var(--sx-color-primary-base)]/20 text-[7px] font-black uppercase tracking-[0.2em] text-[var(--sx-color-primary-base)] shadow-[0_0_10px_rgba(0,242,255,0.05)]">
-                    <span className="w-1 h-1 rounded-full bg-[var(--sx-color-primary-base)] animate-pulse" />
+                <div className="absolute top-2 left-4 z-40 pointer-events-none flex items-center gap-1.5 px-2 py-0.5 rounded bg-black/60 border border-[var(--sarak-primary-color,#3b82f6)]/20 text-[7px] font-black uppercase tracking-[0.2em] text-[var(--sarak-primary-color,#3b82f6)] shadow-[0_0_10px_rgba(0,242,255,0.05)]">
+                    <span className="w-1 h-1 rounded-full bg-[var(--sarak-primary-color,#3b82f6)] animate-pulse" />
                     {label || "Card de Título"}
                 </div>
             )}
@@ -72,11 +72,11 @@ export const SarakTitleCard = <TItem extends Record<string, unknown>>({ item, ma
                 {/* Header Layout */}
                 <div className={layout.headerClass}>
                     <div className="flex flex-col flex-1 min-w-0 pr-2">
-                        <span className="text-[9px] font-black text-[var(--sx-color-primary-base)] uppercase tracking-[0.2em] mb-1">
+                        <span className="text-[9px] font-black text-[var(--sarak-primary-color,#3b82f6)] uppercase tracking-[0.2em] mb-1">
                             {String(subtitle)}
                         </span>
                         <h4 
-                            className="text-[var(--sx-color-text-title)] tracking-tight group-hover:text-[var(--sx-color-primary-base)] transition-colors truncate"
+                            className="text-[var(--color-theme-title,#ffffff)] tracking-tight group-hover:text-[var(--sarak-primary-color,#3b82f6)] transition-colors truncate"
                             style={{ 
                                 fontSize: 'var(--sarak-card-title-font-size, 20px)',
                                 fontWeight: 'var(--sarak-card-title-font-weight, 900)' as React.CSSProperties['fontWeight'],
@@ -90,18 +90,18 @@ export const SarakTitleCard = <TItem extends Record<string, unknown>>({ item, ma
 
                     {/* Glowing Icon Container */}
                     <div 
-                        className="bg-[var(--sx-color-surface-base)] border-[var(--sx-color-border-base)] flex items-center justify-center p-3 relative shrink-0 transition-all group-hover:border-[var(--sx-color-primary-base)]"
+                        className="bg-[var(--color-theme-card,#1e293b)] border-[var(--border-color,#334155)] flex items-center justify-center p-3 relative shrink-0 transition-all group-hover:border-[var(--sarak-primary-color,#3b82f6)]"
                         style={{ 
-                            borderRadius: 'var(--sarak-grid-radius, 8px)',
+                            borderRadius: 'var(--sarak-card-radius,12px)',
                             boxShadow: '0 0 15px var(--sarak-card-title-icon-glow, rgba(0, 242, 255, 0.2))'
                         }}
                     >
                         {mapping?.icon && LucideIcons[mapping.icon as keyof typeof LucideIcons] ? (
                             React.createElement(LucideIcons[mapping.icon as keyof typeof LucideIcons] as React.ElementType, { 
                                 size: 18, 
-                                className: "text-[var(--sx-color-primary-base)] group-hover:scale-110 transition-transform" 
+                                className: "text-[var(--sarak-primary-color,#3b82f6)] group-hover:scale-110 transition-transform" 
                             })
-                        ) : <Box size={18} className="text-[var(--sx-color-text-muted)]" />}
+                        ) : <Box size={18} className="text-[var(--text-muted,#94a3b8)]" />}
                     </div>
                 </div>
 
@@ -111,18 +111,18 @@ export const SarakTitleCard = <TItem extends Record<string, unknown>>({ item, ma
                         {!!context && (
                         <div className="flex items-center justify-between text-3xs font-black uppercase text-white/40 tracking-wider">
                             <span>Contexto</span>
-                            <span className="text-2xs font-mono text-[var(--sx-color-text-muted)]">
+                            <span className="text-2xs font-mono text-[var(--text-muted,#94a3b8)]">
                                 {Number(context) >= 1000 ? `${(Number(context) / 1000)}k` : String(context)} tokens
                             </span>
                         </div>
                     )}
                     
                     {(inputCaps as string[]).length > 0 && (
-                        <div className="flex flex-wrap gap-1.5 pt-2 border-t border-[var(--sx-color-border-base)]/30">
+                        <div className="flex flex-wrap gap-1.5 pt-2 border-t border-[var(--border-color,#334155)]/30">
                             {(inputCaps as string[]).slice(0, 3).map((cap: string) => (
                                 <div 
                                     key={cap} 
-                                    className="flex items-center gap-1 bg-[var(--sx-color-primary-surface)] text-[var(--sx-color-primary-base)] border border-[var(--sx-color-border-base)] text-3xs font-black uppercase px-2 py-0.5" 
+                                    className="flex items-center gap-1 bg-[var(--sarak-primary-color-bg,rgba(59,130,246,0.1))] text-[var(--sarak-primary-color,#3b82f6)] border border-[var(--border-color,#334155)] text-3xs font-black uppercase px-2 py-0.5" 
                                     style={{ borderRadius: 'var(--sarak-border-width, 4px)' }}
                                 >
                                     {getCapIcon(cap)}

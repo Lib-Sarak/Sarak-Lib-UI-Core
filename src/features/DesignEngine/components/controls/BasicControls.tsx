@@ -127,7 +127,7 @@ export const ToggleControl: React.FC<{ label: string, active: boolean, onClick: 
         className={`flex items-center justify-between p-3 rounded-lg border transition-all ${
             active 
                 ? 'bg-[var(--theme-primary)]/10 border-[var(--theme-primary)]/30 text-[var(--theme-primary)]' 
-                : 'bg-[var(--theme-layer)] border-[var(--theme-border)] text-[var(--theme-muted)] hover:bg-[var(--theme-border)]'
+                : 'bg-[var(--color-theme-card,#1e293b)] border-[var(--theme-border)] text-[var(--theme-muted)] hover:bg-[var(--theme-border)]'
         }`}
     >
         <span className="text-[10px] font-black uppercase tracking-wider">{label}</span>

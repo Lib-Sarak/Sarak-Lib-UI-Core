@@ -114,7 +114,7 @@ export const SarakModal: React.FC<SarakModalProps> = ({
                     {(title || !hideCloseButton) && (
                         <div className={clsx("px-6 py-4 border-b border-[var(--theme-border)] bg-black/10", headerClass)}>
                             {title && (
-                                <h2 className="text-lg font-bold text-[var(--theme-text)]">
+                                <h2 className="text-lg font-bold text-[var(--color-theme-title,#ffffff)]">
                                     {title}
                                 </h2>
                             )}

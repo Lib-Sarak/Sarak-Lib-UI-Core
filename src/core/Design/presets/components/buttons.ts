@@ -83,7 +83,7 @@ export const BUTTON_PRESETS: ComponentPreset[] = [
             btnStyleType: 'neumorphism',
             btnBorderRadius: 12,
             btnPrimaryBg: 'var(--theme-card)',
-            btnPrimaryText: 'var(--theme-text)',
+            btnPrimaryText: 'var(--color-theme-title,#ffffff)',
             btnBackdropBlur: 0
         }
     },

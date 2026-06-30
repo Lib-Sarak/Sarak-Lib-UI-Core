@@ -21,7 +21,7 @@ export const SarakDataEmpty: React.FC<SarakDataEmptyProps> = ({
             role="status"
             data-sarak-data-empty="true"
             className="flex items-center justify-center w-full py-6 text-sm"
-            style={{ color: 'var(--sx-color-text-muted, var(--sx-color-text-base, currentColor))' }}
+            style={{ color: 'var(--text-muted,#94a3b8))' }}
         >
             {message}
         </div>

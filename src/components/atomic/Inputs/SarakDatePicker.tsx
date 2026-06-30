@@ -100,7 +100,7 @@ export const SarakDatePicker: React.FC<SarakDatePickerProps> = ({
 
     return (
         <SarakFormGroup className={className} style={style}>
-            {label && <span className="text-sm font-medium text-[var(--sx-color-text-muted)]">{label}</span>}
+            {label && <span className="text-sm font-medium text-[var(--text-muted,#94a3b8)]">{label}</span>}
 
             <div className="relative w-full">
                 <button
@@ -113,12 +113,12 @@ export const SarakDatePicker: React.FC<SarakDatePickerProps> = ({
                     aria-invalid={error ? true : undefined}
                     aria-describedby={error ? errorId : undefined}
                     onClick={() => setOpen((prev) => !prev)}
-                    className={`flex items-center justify-between w-full rounded-input py-3 px-4 text-left text-sm bg-[var(--sarak-input-bg,var(--sx-color-surface-base))] border border-[var(--sarak-input-border-color,var(--sx-color-border-base))] ${disabled ? 'opacity-50 cursor-not-allowed' : 'cursor-pointer'}`}
+                    className={`flex items-center justify-between w-full rounded-input py-3 px-4 text-left text-sm bg-[var(--sarak-input-bg,var(var(--color-theme-card,#1e293b)))] border border-[var(--sarak-input-border-color,var(var(--border-color,#334155)))] ${disabled ? 'opacity-50 cursor-not-allowed' : 'cursor-pointer'}`}
                 >
-                    <span className={start ? 'text-[var(--sx-color-text-muted)]' : 'text-[var(--sx-color-text-muted)]/50'}>
+                    <span className={start ? 'text-[var(--text-muted,#94a3b8)]' : 'text-[var(--text-muted,#94a3b8)]/50'}>
                         {display}
                     </span>
-                    <svg className="w-4 h-4 text-[var(--sx-color-text-muted)]" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <svg className="w-4 h-4 text-[var(--text-muted,#94a3b8)]" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                         <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M8 7V3m8 4V3m-9 8h10M5 21h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z" />
                     </svg>
                 </button>
@@ -129,7 +129,7 @@ export const SarakDatePicker: React.FC<SarakDatePickerProps> = ({
                         role="dialog"
                         aria-label={label ?? 'Calendário'}
                         onKeyDown={handleTrap}
-                        className="absolute z-30 mt-1 p-3 rounded-input bg-[var(--sx-color-surface-base)] border border-[var(--sx-color-border-base)] shadow-xl"
+                        className="absolute z-30 mt-1 p-3 rounded-input bg-[var(--color-theme-card,#1e293b)] border border-[var(--border-color,#334155)] shadow-xl"
                     >
                         <CalendarPanel
                             mode={mode}

@@ -123,7 +123,7 @@ export const SarakSpotlight: React.FC<SarakSpotlightProps> = ({
                 role="dialog"
                 aria-modal="true"
                 aria-label="Command Palette"
-                className="w-full max-w-xl rounded-lg overflow-hidden border border-[var(--sx-color-border-base)] bg-[var(--sx-color-surface-base)] shadow-2xl"
+                className="w-full max-w-xl rounded-lg overflow-hidden border border-[var(--border-color,#334155)] bg-[var(--color-theme-card,#1e293b)] shadow-2xl"
                 onClick={(event) => event.stopPropagation()}
             >
                 <input
@@ -137,7 +137,7 @@ export const SarakSpotlight: React.FC<SarakSpotlightProps> = ({
                     }}
                     onKeyDown={onKeyDown}
                     aria-label="Campo de busca"
-                    className="w-full px-4 py-3 bg-transparent outline-none text-[var(--sx-color-text-main)] border-b border-[var(--sx-color-border-base)]"
+                    className="w-full px-4 py-3 bg-transparent outline-none text-[var(--sarak-text-main,#ffffff)] border-b border-[var(--border-color,#334155)]"
                 />
                 <ul role="listbox" className="max-h-80 overflow-y-auto py-1">
                     {results.map((item, index) => (
@@ -149,8 +149,8 @@ export const SarakSpotlight: React.FC<SarakSpotlightProps> = ({
                             onClick={() => choose(item)}
                             className={`flex items-center gap-3 px-4 py-2 cursor-pointer text-sm ${
                                 index === active
-                                    ? 'bg-[var(--sx-color-primary-base)] text-[var(--sx-color-surface-base)]'
-                                    : 'text-[var(--sx-color-text-main)]'
+                                    ? 'bg-[var(--sarak-primary-color,#3b82f6)] text-[var(--color-theme-card,#1e293b)]'
+                                    : 'text-[var(--sarak-text-main,#ffffff)]'
                             }`}
                         >
                             {item.icon}
@@ -158,7 +158,7 @@ export const SarakSpotlight: React.FC<SarakSpotlightProps> = ({
                         </li>
                     ))}
                     {results.length === 0 && (
-                        <li className="px-4 py-6 text-center text-sm text-[var(--sx-color-text-muted)]">
+                        <li className="px-4 py-6 text-center text-sm text-[var(--text-muted,#94a3b8)]">
                             Nenhum resultado
                         </li>
                     )}

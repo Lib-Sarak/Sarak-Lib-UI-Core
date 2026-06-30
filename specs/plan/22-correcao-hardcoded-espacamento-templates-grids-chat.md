@@ -13,8 +13,13 @@ relacionados: ["20-correcao-hardcoded-base", "07-agente-llm-design-e-expansao-es
 
 Etapa 2: o subconjunto de **Templates de raiz (grids, tabelas, stats) e o módulo de Chat**.
 
+> ## ⛔ DEPENDÊNCIA: executar a [[30-erradicacao-variaveis-fantasma]] primeiro
+> O namespace `--sx-*` é **fantasma** (não resolve). Esta spec **não pode** migrar para `var(--sx-spacing-*)` — esse era o erro da Spec 21. Use **somente variáveis reais da engine + fallback** (ver tabela na §3). Rode o `auditor_ghostvars.mjs` ao fim: **0 fantasmas**.
+>
+> **Carve-out de grids:** os `grid-cols-*` de `SarakStats` (2/lg:4), `SarakCardGrid` (1/md:2/xl:3) e `SarakCatalogGrid` (1/md:2/lg:3/xl:4) são **3 malhas distintas** sem token equivalente. Ficam **DEFERIDOS** para uma spec de Expansão paramétrica de grid-columns — **não** force `getGridStyles` (só tem col-12/auto-fit/masonry) nem reloc para string inline. O alvo de duras desta spec **exclui** esses grid-cols.
+
 # 2. Escopo & Meta
-**Meta:** zerar as **~120 violações duras** dos arquivos abaixo, migrando para Hooks/tokens. Não alterar baldes deduzidos.
+**Meta:** zerar as violações duras **de espaçamento/direção** dos arquivos abaixo (os `grid-cols` deferidos não contam), migrando para **variáveis reais + fallback**. Não alterar baldes deduzidos.
 
 | Arquivo | Duras (alvo) |
 |---|---:|
@@ -37,10 +42,15 @@ Etapa 2: o subconjunto de **Templates de raiz (grids, tabelas, stats) e o módul
 1. **Baseline (ANTES):** rode `auditor_hardcoded.mjs` e preencha o **Snapshot Inicial** (§5).
 2. **Por arquivo (ciclo `code-adequacao`):**
    - **Caracterizar** o render atual.
-   - **Migrar duras** via `useStructuralStyles()`: espaçamento → `getGridStyles`/`getFlexStyles` (`var(--sx-spacing-*)`); direção → `getFlexStyles`/`getContainerStyles`; grid → `getGridStyles`. Grids/tabelas usam preferencialmente `getGridStyles`.
+   - **Migrar duras para VARIÁVEIS REAIS + fallback** (jamais `--sx-*`). Escolha o token pela **semântica do contexto**:
+     - espaçamento/gap → `var(--theme-gap, <px>)` ou `var(--sarak-layout-gap-md, <px>)` (Chat/seções); derive valores via `calc()` quando preciso (padrão já usado no `SarakCardGrid`).
+     - direção (`flex-col/row`) → `getFlexStyles`/`getContainerStyles`.
+     - **Chat não é card:** não use `--sarak-card-padding-*` em ChatInput/MessageBubble; use tokens de layout/gap.
+     - **fallback obrigatório** em todo `var(--real, <valor-original-px>)` para preservar 1:1.
+   - **`grid-cols-*` → NÃO TOCAR** (carve-out deferido).
    - **Manter** `flex`, `relative`, `z-*`, alinhamento, `w-full/h-full` (deduzidos).
-   - **Verificar verde:** testes + visual.
-3. **Conferência (DEPOIS):** rode o auditor e preencha o **Snapshot Final** (§6).
+   - **Verificar verde:** testes + **visual obrigatório** (o auditor de hardcode não detecta var-fantasma).
+3. **Conferência (DEPOIS):** rode `auditor_hardcoded.mjs` **e** `auditor_ghostvars.mjs` (= 0 fantasmas) e preencha o **Snapshot Final** (§6).
 
 # 4. Checklist de Validação (Gate de Coerência — [[20-correcao-hardcoded-base]] §7)
 - [ ] **V1** — Duras do escopo zeradas; total do módulo diminuiu.

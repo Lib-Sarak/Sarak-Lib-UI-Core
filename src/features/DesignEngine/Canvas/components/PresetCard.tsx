@@ -11,24 +11,24 @@ export const PresetCard = ({ theme, currentMode, onApply, index }: { theme: Them
     const design = syncThemeWithMode(theme.design as Record<string, SarakTokenValue>, currentMode as 'light' | 'dark');
     const { variables, attributes } = useDesignVariables(design);
 
-    const primary = String(design.primaryColor || 'var(--sarak-accent, #3b82f6)');
-    const secondary = String(design.secondaryColor || 'var(--sarak-accent-alt, #8b5cf6)');
-    const bgBase = String(design.surfaceColor || 'var(--sarak-surface-dark, #000000)');
+    const primary = String(design.primaryColor || 'var(--color-theme-primary, #00f2ff)');
+    const secondary = String(design.secondaryColor || 'var(--color-theme-secondary, #7000ff)');
+    const bgBase = String(design.surfaceColor || 'var(--color-theme-bg, #0a0a0c)');
     const isLight = design.mode === 'light';
 
     const cardStyle = {
         backgroundColor: variables['--sarak-card-background-color'] || (isLight ? 'rgba(255,255,255,0.7)' : 'rgba(255,255,255,0.05)'),
-        borderTopWidth: variables['--sarak-card-border-top'] || variables['--sarak-card-border-width'] || 'var(--sarak-border-base, 1px)',
-        borderRightWidth: variables['--sarak-card-border-right'] || variables['--sarak-card-border-width'] || 'var(--sarak-border-base, 1px)',
-        borderBottomWidth: variables['--sarak-card-border-bottom'] || variables['--sarak-card-border-width'] || 'var(--sarak-border-base, 1px)',
-        borderLeftWidth: variables['--sarak-card-border-left'] || variables['--sarak-card-border-width'] || 'var(--sarak-border-base, 1px)',
+        borderTopWidth: variables['--sarak-card-border-top'] || variables['--sarak-card-border-width'] || 'var(--border-color,#334155)',
+        borderRightWidth: variables['--sarak-card-border-right'] || variables['--sarak-card-border-width'] || 'var(--border-color,#334155)',
+        borderBottomWidth: variables['--sarak-card-border-bottom'] || variables['--sarak-card-border-width'] || 'var(--border-color,#334155)',
+        borderLeftWidth: variables['--sarak-card-border-left'] || variables['--sarak-card-border-width'] || 'var(--border-color,#334155)',
         borderColor: variables['--sarak-card-border-color'] || (isLight ? 'rgba(0,0,0,0.1)' : 'rgba(255,255,255,0.1)'),
         borderStyle: variables['--sarak-border-style'] || 'solid',
-        borderTopLeftRadius: variables['--sarak-card-radius-t-l'] || variables['--sarak-card-border-radius'] || 'var(--sarak-spacing-md, 12px)',
-        borderTopRightRadius: variables['--sarak-card-radius-t-r'] || variables['--sarak-card-border-radius'] || 'var(--sarak-spacing-md, 12px)',
-        borderBottomRightRadius: variables['--sarak-card-radius-b-r'] || variables['--sarak-card-border-radius'] || 'var(--sarak-spacing-md, 12px)',
-        borderBottomLeftRadius: variables['--sarak-card-radius-b-l'] || variables['--sarak-card-border-radius'] || 'var(--sarak-spacing-md, 12px)',
-        backdropFilter: `blur(${variables['--sarak-card-backdrop-blur'] || 'var(--sarak-spacing-md, 12px)'})`,
+        borderTopLeftRadius: variables['--sarak-card-radius-t-l'] || variables['--sarak-card-border-radius'] || 'var(--sarak-layout-gap-md,16px)',
+        borderTopRightRadius: variables['--sarak-card-radius-t-r'] || variables['--sarak-card-border-radius'] || 'var(--sarak-layout-gap-md,16px)',
+        borderBottomRightRadius: variables['--sarak-card-radius-b-r'] || variables['--sarak-card-border-radius'] || 'var(--sarak-layout-gap-md,16px)',
+        borderBottomLeftRadius: variables['--sarak-card-radius-b-l'] || variables['--sarak-card-border-radius'] || 'var(--sarak-layout-gap-md,16px)',
+        backdropFilter: `blur(${variables['--sarak-card-backdrop-blur'] || 'var(--sarak-layout-gap-md,16px)'})`,
         boxShadow: design.cardShadow && design.cardShadow !== 'none'
             ? design.cardShadow
             : design.cardShadowSpread
@@ -42,7 +42,7 @@ export const PresetCard = ({ theme, currentMode, onApply, index }: { theme: Them
             className="absolute inset-0 pointer-events-none opacity-50"
             style={{
                 backgroundImage: design.cardTextureType === 'grid'
-                    ? 'linear-gradient(to right, rgba(255,255,255,0.05) var(--sarak-border-base, 1px), transparent var(--sarak-border-base, 1px)), linear-gradient(to bottom, rgba(255,255,255,0.05) var(--sarak-border-base, 1px), transparent var(--sarak-border-base, 1px))'
+                    ? 'linear-gradient(to right, rgba(255,255,255,0.05) var(--border-color,#334155), transparent var(--border-color,#334155)), linear-gradient(to bottom, rgba(255,255,255,0.05) var(--border-color,#334155), transparent var(--border-color,#334155))'
                     : design.cardTextureType === 'noise'
                         ? 'url("data:image/svg+xml,%3Csvg viewBox=%220 0 200 200%22 xmlns=%22http://www.w3.org/2000/svg%22%3E%3Cfilter id=%22noiseFilter%22%3E%3CfeTurbulence type=%22fractalNoise%22 baseFrequency=%220.65%22 numOctaves=%223%22 stitchTiles=%22stitch%22/%3E%3C/filter%3E%3Crect width=%22100%25%22 height=%22100%25%22 filter=%22url(%23noiseFilter)%22/%3E%3C/svg%3E")'
                         : 'none',
@@ -130,7 +130,7 @@ export const PresetCard = ({ theme, currentMode, onApply, index }: { theme: Them
                                 <div className="h-1.5 w-16 bg-white/20 rounded-full mb-auto relative z-10" />
                                 <div className="flex items-end justify-between gap-1 h-8 px-1 relative z-10 mt-2">
                                     {[40, 70, 30, 90, 50, 80, 60, 45].map((h, i) => (
-                                        <div key={i} className="w-full rounded-t-[var(--sarak-border-base, 1px)]" style={{ height: `${h}%`, backgroundColor: primary, opacity: 0.7 + (i * 0.03) }} />
+                                        <div key={i} className="w-full rounded-t-[var(--border-color,#334155)]" style={{ height: `${h}%`, backgroundColor: primary, opacity: 0.7 + (i * 0.03) }} />
                                     ))}
                                 </div>
                             </div>

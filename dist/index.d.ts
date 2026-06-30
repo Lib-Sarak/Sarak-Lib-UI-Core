@@ -1254,7 +1254,7 @@ declare const SarakBadge: React__default.FC<SarakBadgeProps>;
  *
  * Assume FORMAS declaradas (`shape`): `text` (barras finas), `circle` (avatar) e `rect`
  * (bloco). Mantém o uso original como estado `loading` da Fonte de Dados (linhas-fantasma)
- * por padrão. Zero Hardcode: cores/raio via `var(--sx-*)`; pulso via `animate-pulse`.
+ * por padrão. Zero Hardcode: cores/raio via `[--sarak-*]`; pulso via `animate-pulse`.
  */
 
 /** Forma do esqueleto. */
@@ -1412,7 +1412,7 @@ declare const SarakContextMenu: React__default.FC<SarakContextMenuProps>;
  *
  * Headless por design: não impõe markup de tabela nem cores próprias. Renderiza só
  * as linhas visíveis (60 FPS / 10k+ itens) e delega o conteúdo de cada linha ao
- * `renderRow`. Zero Hardcode: dimensões/efeitos via tokens `var(--sx-*)`.
+ * `renderRow`. Zero Hardcode: dimensões/efeitos via tokens `[--sarak-*]`.
  */
 
 interface SarakDataGridProps {
@@ -1527,7 +1527,7 @@ declare const SarakDataTable: React$1.LazyExoticComponent<typeof SarakDataTableI
  * `<SarakCard>` (Critério de Aceite 5). In-house em SVG puro: **zero dependência
  * nova** (as Ondas 7–9 não adicionam libs). Zero Hardcode: a cor da série herda dos
  * tokens globais — `--sarak-chart-primary` (Spec 12 / schema `data.ts`) com cascata
- * para `--sx-color-primary-base`. O traço usa `vector-effect: non-scaling-stroke`
+ * para `var(--sarak-primary-color,#3b82f6)`. O traço usa `vector-effect: non-scaling-stroke`
  * para permanecer nítido mesmo quando o SVG é esticado na largura do contêiner.
  */
 
@@ -1557,7 +1557,7 @@ declare const SarakSparkline: React__default.FC<SarakSparklineProps>;
  * serve a matriz RBAC) — sem duplicar a recursão. Suporta profundidade infinita e o
  * estado `lazyLoadingIcon` ativável via JSON (nó com `loading: true`), além de seleção
  * opcional por nó e callback de expansão para carregamento sob demanda. Zero dependência
- * nova; Zero Hardcode (estilos herdados dos átomos via tokens `var(--sx-*)`).
+ * nova; Zero Hardcode (estilos herdados dos átomos via tokens `[--sarak-*]`).
  */
 
 interface SarakTreeViewProps {
@@ -1621,7 +1621,7 @@ declare function SarakKanbanImpl<C extends KanbanCard>({ columns, onCardMove, re
  * SarakMarkdownRenderer (Spec 15, Regra 1) — implementação pesada (lazy).
  *
  * Ingere Markdown cru e o renderiza como elementos estilizados pelos tokens Sarak
- * (`var(--sx-*)`), com highlight de código atrelado ao modo (dark/light) do tema.
+ * (`[--sarak-*]`), com highlight de código atrelado ao modo (dark/light) do tema.
  * Segurança (Spec 40): NÃO usa `dangerouslySetInnerHTML` nem `rehype-raw` — HTML cru
  * no Markdown é tratado como texto literal (não executado); URLs passam por uma
  * allowlist de esquemas seguros (`javascript:`/`data:` viram href vazio).
@@ -1682,7 +1682,7 @@ type PdfSource = string | Uint8Array | ArrayBuffer;
  * Desenha as páginas do PDF em `<canvas>` via `pdfjs-dist` (peer), sem depender do
  * visualizador nativo bloqueado do navegador. O parse roda num Web Worker (fora da main
  * thread) — `GlobalWorkerOptions.workerSrc` é configurável pela prop `workerSrc`. A barra
- * de controles (zoom/página/download) é 100% estilizada por tokens (`var(--sx-*)`).
+ * de controles (zoom/página/download) é 100% estilizada por tokens (`[--sarak-*]`).
  *
  * A dependência pesada (`pdfjs-dist`) vive AQUI; o `index.ts` exporta isto via
  * `React.lazy`, mantendo-a fora do entry de quem não a usa.

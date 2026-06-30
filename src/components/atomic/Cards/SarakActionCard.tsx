@@ -45,9 +45,9 @@ export const SarakActionCard = <TItem extends Record<string, unknown>>({ item, m
         <motion.div 
             initial={{ opacity: 0, y: 15 }}
             animate={{ opacity: 1, y: 0 }}
-            className={`${layout.containerClass} sarak-card bg-[var(--sx-color-surface-base)] border-[var(--sx-color-border-base)] group transition-all relative overflow-hidden h-fit ${className}`}
+            className={`${layout.containerClass} sarak-card bg-[var(--color-theme-card,#1e293b)] border-[var(--border-color,#334155)] group transition-all relative overflow-hidden h-fit ${className}`}
             style={{ 
-                transitionDuration: 'var(--animation-speed, 0.4s)',
+                transitionDuration: 'var(--duration-normal, 0.3s)',
                 padding: 'var(--sarak-card-padding-md, 24px)'
             }}
             data-sx-card-texture-type={String(design.cardTextureType ?? 'none')}
@@ -61,8 +61,8 @@ export const SarakActionCard = <TItem extends Record<string, unknown>>({ item, m
 
             {/* DRAFT BADGE (v6.3) */}
             {globalUI?.isDrafting && (
-                <div className="absolute top-2 left-4 z-40 pointer-events-none flex items-center gap-1.5 px-2 py-0.5 rounded bg-black/60 border border-[var(--sx-color-primary-base)]/20 text-[7px] font-black uppercase tracking-[0.2em] text-[var(--sx-color-primary-base)] shadow-[0_0_10px_rgba(0,242,255,0.05)]">
-                    <span className="w-1 h-1 rounded-full bg-[var(--sx-color-primary-base)] animate-pulse" />
+                <div className="absolute top-2 left-4 z-40 pointer-events-none flex items-center gap-1.5 px-2 py-0.5 rounded bg-black/60 border border-[var(--sarak-primary-color,#3b82f6)]/20 text-[7px] font-black uppercase tracking-[0.2em] text-[var(--sarak-primary-color,#3b82f6)] shadow-[0_0_10px_rgba(0,242,255,0.05)]">
+                    <span className="w-1 h-1 rounded-full bg-[var(--sarak-primary-color,#3b82f6)] animate-pulse" />
                     {label || "Card de Interação"}
                 </div>
             )}
@@ -71,26 +71,26 @@ export const SarakActionCard = <TItem extends Record<string, unknown>>({ item, m
                 {/* Header Info */}
                 <div className={layout.headerClass}>
                     <div className="flex flex-col flex-1 min-w-0">
-                        <span className="text-[9px] font-black text-[var(--sx-color-primary-base)] uppercase tracking-[0.2em] mb-1">
+                        <span className="text-[9px] font-black text-[var(--sarak-primary-color,#3b82f6)] uppercase tracking-[0.2em] mb-1">
                             {String(subtitle)}
                         </span>
-                        <h4 className="text-lg font-black text-[var(--sx-color-text-title)] tracking-tight group-hover:text-[var(--sx-color-primary-base)] transition-colors truncate">
+                        <h4 className="text-lg font-black text-[var(--color-theme-title,#ffffff)] tracking-tight group-hover:text-[var(--sarak-primary-color,#3b82f6)] transition-colors truncate">
                             {String(title ?? '')}
                         </h4>
                     </div>
-                    <div className="bg-[var(--sx-color-surface-base)] border-[var(--sx-color-border-base)] p-2 shrink-0 rounded-lg">
+                    <div className="bg-[var(--color-theme-card,#1e293b)] border-[var(--border-color,#334155)] p-2 shrink-0 rounded-lg">
                         {mapping?.icon && LucideIcons[mapping.icon as keyof typeof LucideIcons] ? (
                             React.createElement(LucideIcons[mapping.icon as keyof typeof LucideIcons] as React.ElementType, { 
                                 size: 16, 
-                                className: "text-[var(--sx-color-text-muted)]" 
+                                className: "text-[var(--text-muted,#94a3b8)]" 
                             })
-                        ) : <Box size={16} className="text-[var(--sx-color-text-muted)]" />}
+                        ) : <Box size={16} className="text-[var(--text-muted,#94a3b8)]" />}
                     </div>
                 </div>
 
                 {/* Micro-Details */}
                 {!!description && (
-                    <p className="text-2xs text-[var(--sx-color-text-muted)] opacity-60 leading-relaxed line-clamp-2 mb-4">
+                    <p className="text-2xs text-[var(--text-muted,#94a3b8)] opacity-60 leading-relaxed line-clamp-2 mb-4">
                         {String(description)}
                     </p>
                 )}
@@ -111,13 +111,13 @@ export const SarakActionCard = <TItem extends Record<string, unknown>>({ item, m
                     <motion.button 
                         whileTap={{ scale: 0.95 }}
                         onClick={() => setIsExpanded(!isExpanded)}
-                        className="p-3 bg-[var(--sx-color-surface-base)] border-[var(--sx-color-border-base)] text-[var(--sx-color-text-muted)] hover:text-[var(--sx-color-primary-glow)] hover:border-[var(--theme-secondary-border)] rounded-[var(--sx-radius-md)] transition-all cursor-pointer flex items-center justify-center"
+                        className="p-3 bg-[var(--color-theme-card,#1e293b)] border-[var(--border-color,#334155)] text-[var(--text-muted,#94a3b8)] hover:text-[var(--sarak-shadow-glow,rgba(59,130,246,0.5))] hover:border-[var(--theme-secondary-border)] rounded-[var(--sarak-card-radius,12px)] transition-all cursor-pointer flex items-center justify-center"
                         style={{ 
-                            transitionDuration: 'var(--animation-speed, 0.3s)',
-                            borderRadius: design.btnBorderRadius !== undefined ? `${design.btnBorderRadius}px` : 'var(--sarak-grid-radius, 8px)'
+                            transitionDuration: 'var(--duration-normal, 0.3s)',
+                            borderRadius: design.btnBorderRadius !== undefined ? `${design.btnBorderRadius}px` : 'var(--sarak-card-radius,12px)'
                         }}
                     >
-                        <ChevronDown className={`w-3.5 h-3.5 transition-transform duration-300 ${isExpanded ? 'rotate-180 text-[var(--sx-color-primary-glow)]' : ''}`} />
+                        <ChevronDown className={`w-3.5 h-3.5 transition-transform duration-300 ${isExpanded ? 'rotate-180 text-[var(--sarak-shadow-glow,rgba(59,130,246,0.5))]' : ''}`} />
                     </motion.button>
                 </div>
 
@@ -130,23 +130,23 @@ export const SarakActionCard = <TItem extends Record<string, unknown>>({ item, m
                             exit={{ height: 0, opacity: 0 }}
                             className="overflow-hidden mt-3"
                         >
-                            <div className="flex flex-col gap-3 pt-3 border-t border-[var(--sx-color-border-base)]/30">
-                                <div className="grid grid-cols-2 gap-2 bg-theme-body/30 p-3 border border-[var(--sx-color-border-base)]/20" style={{ borderRadius: 'var(--sarak-grid-radius, 8px)' }}>
+                            <div className="flex flex-col gap-3 pt-3 border-t border-[var(--border-color,#334155)]/30">
+                                <div className="grid grid-cols-2 gap-2 bg-theme-body/30 p-3 border border-[var(--border-color,#334155)]/20" style={{ borderRadius: 'var(--sarak-card-radius,12px)' }}>
                                     <div className="flex flex-col">
-                                        <span className="text-[8px] font-black text-[var(--sx-color-text-muted)] opacity-50 uppercase tracking-widest">Custo In (1M)</span>
-                                        <span className="text-2xs font-mono text-[var(--sx-color-success-base)] font-bold">
+                                        <span className="text-[8px] font-black text-[var(--text-muted,#94a3b8)] opacity-50 uppercase tracking-widest">Custo In (1M)</span>
+                                        <span className="text-2xs font-mono text-[var(--sarak-status-success-color,#22c55e)] font-bold">
                                             {priceIn !== undefined ? `$${Number(priceIn).toFixed(4)}` : 'N/A'}
                                         </span>
                                     </div>
                                     <div className="flex flex-col">
-                                        <span className="text-[8px] font-black text-[var(--sx-color-text-muted)] opacity-50 uppercase tracking-widest">Custo Out (1M)</span>
-                                        <span className="text-2xs font-mono text-[var(--sx-color-danger-base)] font-bold">
+                                        <span className="text-[8px] font-black text-[var(--text-muted,#94a3b8)] opacity-50 uppercase tracking-widest">Custo Out (1M)</span>
+                                        <span className="text-2xs font-mono text-[var(--sarak-status-error-color,#ef4444)] font-bold">
                                             {priceOut !== undefined ? `$${Number(priceOut).toFixed(4)}` : 'N/A'}
                                         </span>
                                     </div>
-                                    <div className="flex flex-col col-span-2 pt-1.5 border-t border-[var(--sx-color-border-base)]/10">
-                                        <span className="text-[8px] font-black text-[var(--sx-color-text-muted)] opacity-50 uppercase tracking-widest">Janela / Tokenizer</span>
-                                        <span className="text-3xs font-black text-[var(--sx-color-text-muted)] uppercase truncate">
+                                    <div className="flex flex-col col-span-2 pt-1.5 border-t border-[var(--border-color,#334155)]/10">
+                                        <span className="text-[8px] font-black text-[var(--text-muted,#94a3b8)] opacity-50 uppercase tracking-widest">Janela / Tokenizer</span>
+                                        <span className="text-3xs font-black text-[var(--text-muted,#94a3b8)] uppercase truncate">
                                             {context ? `${(Number(context) / 1000)}k tokens` : 'Default'}
                                             {tokenizer ? ` | ${String(tokenizer)}` : ''}
                                         </span>

@@ -113,15 +113,15 @@ export const SarakCardGrid = <TData extends Record<string, unknown>>({ endpoint,
     const sideFilters = filters.filter(f => f.type === 'SELECT');
 
     return (
-        <div className="flex flex-col" style={{ gap: 'calc(var(--sarak-grid-gap) * 1.25)' }}>
+        <div className="flex flex-col" style={{ gap: 'calc(var(--sarak-layout-gap-md, 16px) * 1.25)' }}>
             {/* Header & Filter Section Core */}
-            <div className="flex flex-col" style={{ gap: 'var(--sx-spacing-md)' }}>
-                <div className="flex flex-col md:flex-row md:items-center justify-between" style={{ gap: 'var(--sx-spacing-md)' }}>
+            <div className="flex flex-col" style={{ gap: 'var(--sarak-layout-gap-md,16px)' }}>
+                <div className="flex flex-col md:flex-row md:items-center justify-between" style={{ gap: 'var(--sarak-layout-gap-md,16px)' }}>
                     <div>
-                        <h3 className="text-3xl font-black text-[var(--sx-color-text-title)] tracking-tighter" style={{ fontWeight: 'var(--heading-weight)' }}>{label || 'Explorar'}</h3>
-                        <p className="text-[var(--sx-color-text-muted)] opacity-40 text-2xs font-bold uppercase tracking-[0.3em] mt-1">Sintonizando {filteredData.length} unidades disponíveis</p>
+                        <h3 className="text-3xl font-black text-[var(--color-theme-title,#ffffff)] tracking-tighter" style={{ fontWeight: 'var(--sarak-h1-weight,700)' }}>{label || 'Explorar'}</h3>
+                        <p className="text-[var(--text-muted,#94a3b8)] opacity-40 text-2xs font-bold uppercase tracking-[0.3em] mt-1">Sintonizando {filteredData.length} unidades disponíveis</p>
                     </div>
-                    <div className="flex items-center" style={{ gap: 'calc(var(--sx-spacing-md) / 2)' }}>
+                    <div className="flex items-center" style={{ gap: 'calc(var(--sarak-layout-gap-md,16px) / 2)' }}>
                         <div className="w-full md:w-80">
                             <SarakInput 
                                 type="text" 
@@ -136,15 +136,15 @@ export const SarakCardGrid = <TData extends Record<string, unknown>>({ endpoint,
 
             {/* Dynamic Filters Bar */}
             {(mainFilter || sideFilters.length > 0) && (
-                <div className="flex flex-col pt-4 border-t border-[var(--sx-color-border-base)]" style={{ gap: 'calc(var(--sx-spacing-md) * 0.75)' }}>
+                <div className="flex flex-col pt-4 border-t border-[var(--border-color,#334155)]" style={{ gap: 'calc(var(--sarak-layout-gap-md,16px) * 0.75)' }}>
                     {mainFilter && (
-                        <div className="flex flex-wrap" style={{ gap: 'var(--sx-spacing-sm)' }}>
+                        <div className="flex flex-wrap" style={{ gap: 'var(--sarak-layout-gap-sm,8px)' }}>
                             {['all', ...(mainFilter.options || (mainFilter.dynamic ? getDynamicOptions(mainFilter.field) : [])).map(o => typeof o === 'string' ? o : o.value)].map(opt => (
                                 <SarakButton
                                     key={opt}
                                     onClick={() => setActiveFilters(prev => ({ ...prev, [mainFilter.id]: opt }))}
                                     variant={(activeFilters[mainFilter.id] || 'all') === opt ? 'primary' : 'secondary'}
-                                    className={(activeFilters[mainFilter.id] || 'all') === opt ? 'shadow-lg shadow-[var(--sx-color-primary-glow)]' : ''}
+                                    className={(activeFilters[mainFilter.id] || 'all') === opt ? 'shadow-lg shadow-[var(--sarak-shadow-glow,rgba(59,130,246,0.5))]' : ''}
                                 >
                                     {opt === 'all' ? `Todos (${mainFilter.label})` : opt}
                                 </SarakButton>
@@ -159,7 +159,7 @@ export const SarakCardGrid = <TData extends Record<string, unknown>>({ endpoint,
                                     <SarakSelect
                                         value={activeFilters[filter.id] || 'all'}
                                         onChange={(e) => setActiveFilters(prev => ({ ...prev, [filter.id]: e.target.value }))}
-                                        className="w-full text-2xs font-black text-[var(--sx-color-text-muted)] opacity-60 uppercase tracking-widest cursor-pointer"
+                                        className="w-full text-2xs font-black text-[var(--text-muted,#94a3b8)] opacity-60 uppercase tracking-widest cursor-pointer"
                                     >
                                         <option value="all">{filter.label}: Todos</option>
                                         {(filter.options || (filter.dynamic ? getDynamicOptions(filter.field) : [])).map(opt => {
@@ -177,10 +177,10 @@ export const SarakCardGrid = <TData extends Record<string, unknown>>({ endpoint,
             </div>
 
             {/* Grid de Cards Pro Core (v6.5) */}
-            <div className="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-3" style={{ gap: 'var(--sarak-grid-gap, 2rem)' }}>
+            <div className="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-3" style={{ gap: 'var(--sarak-layout-gap-md, 16px)' }}>
                 {loading ? (
                     [...Array(6)].map((_, i) => (
-                        <div key={i} className="h-80 bg-[var(--sx-color-surface-base)] border-[var(--sx-color-border-base)] animate-pulse" />
+                        <div key={i} className="h-80 bg-[var(--color-theme-card,#1e293b)] border-[var(--border-color,#334155)] animate-pulse" />
                     ))
                 ) : error ? (
                     <div className="col-span-full py-20 flex flex-col items-center justify-center text-center">

@@ -84,18 +84,18 @@ export const SarakTabs: React.FC<SarakTabsProps> = ({
                                 isDisabled && "opacity-50 cursor-not-allowed",
                                 // Variants
                                 variant === 'underlined' && [
-                                    "hover:text-[var(--theme-text)]",
+                                    "hover:text-[var(--color-theme-title,#ffffff)]",
                                     isActive ? "text-[var(--theme-primary)]" : "text-[var(--theme-muted)]"
                                 ],
                                 variant === 'pills' && [
                                     "rounded-lg z-10",
-                                    isActive ? "text-white" : "text-[var(--theme-muted)] hover:text-[var(--theme-text)]"
+                                    isActive ? "text-white" : "text-[var(--theme-muted)] hover:text-[var(--color-theme-title,#ffffff)]"
                                 ],
                                 variant === 'enclosed' && [
                                     "rounded-t-lg border-t border-x border-transparent",
                                     isActive 
-                                        ? "bg-[var(--theme-surface)] border-[var(--theme-border)] text-[var(--theme-text)] z-10" 
-                                        : "bg-black/10 text-[var(--theme-muted)] hover:text-[var(--theme-text)] hover:bg-black/20"
+                                        ? "bg-[var(--theme-surface)] border-[var(--theme-border)] text-[var(--color-theme-title,#ffffff)] z-10" 
+                                        : "bg-black/10 text-[var(--theme-muted)] hover:text-[var(--color-theme-title,#ffffff)] hover:bg-black/20"
                                 ]
                             )}
                         >

@@ -41,20 +41,20 @@ export const SarakIconButton: React.FC<SarakIconButtonProps> = ({
     const baseClasses = `inline-flex items-center justify-center transition-all focus:outline-none rounded-btn flex-shrink-0 ${sizeClasses[size]}`;
 
     // Computar cores base
-    const baseColor = variant === 'danger' ? 'var(--theme-danger, #ef4444)' : 'var(--sx-color-primary-base)';
-    const baseTextColor = variant === 'danger' ? 'var(--sarak-text-inverse, #ffffff)' : 'var(--sx-color-text-muted)';
+    const baseColor = variant === 'danger' ? 'var(--sarak-status-error-color,#ef4444)' : 'var(--sarak-primary-color,#3b82f6)';
+    const baseTextColor = variant === 'danger' ? 'var(--color-theme-on-primary, #020617)' : 'var(--text-muted,#94a3b8)';
     const localGlow = variant === 'danger' ? 'rgba(239, 68, 68, 0.5)' : glowColor;
 
     const getTailwindClasses = (v: string, st: string) => {
         const strats: Record<string, () => string> = {
             'primary': () => {
-                if (st === 'borderline') return 'border border-[var(--sx-color-primary-base)] bg-transparent hover:bg-[var(--sx-color-primary-base)] hover:text-[var(--sx-color-text-muted)] active:scale-[0.95] text-[var(--sx-color-primary-base)]';
-                const base = 'bg-[var(--sx-color-primary-base)] text-[var(--sx-color-text-muted)] hover:brightness-110 active:scale-[0.95]';
-                return st === 'matte' ? `${base} shadow-xl shadow-[var(--sx-color-primary-base)]/20` : base;
+                if (st === 'borderline') return 'border border-[var(--sarak-primary-color,#3b82f6)] bg-transparent hover:bg-[var(--sarak-primary-color,#3b82f6)] hover:text-[var(--text-muted,#94a3b8)] active:scale-[0.95] text-[var(--sarak-primary-color,#3b82f6)]';
+                const base = 'bg-[var(--sarak-primary-color,#3b82f6)] text-[var(--text-muted,#94a3b8)] hover:brightness-110 active:scale-[0.95]';
+                return st === 'matte' ? `${base} shadow-xl shadow-[var(--sarak-primary-color,#3b82f6)]/20` : base;
             },
-            'secondary': () => 'bg-[var(--sx-color-surface-base)] text-[var(--sx-color-text-muted)] hover:bg-[var(--sx-color-primary-base)] hover:text-[var(--sx-color-text-muted)] border border-[var(--sx-color-primary-base)]/20 active:scale-[0.95]',
-            'ghost': () => 'bg-transparent text-[var(--sx-color-primary-base)] hover:bg-white/5 active:scale-[0.98]',
-            'danger': () => 'bg-[var(--theme-danger,#ef4444)] text-white hover:brightness-110 shadow-lg shadow-[var(--theme-danger,#ef4444)]/20 active:scale-[0.95]'
+            'secondary': () => 'bg-[var(--color-theme-card,#1e293b)] text-[var(--text-muted,#94a3b8)] hover:bg-[var(--sarak-primary-color,#3b82f6)] hover:text-[var(--text-muted,#94a3b8)] border border-[var(--sarak-primary-color,#3b82f6)]/20 active:scale-[0.95]',
+            'ghost': () => 'bg-transparent text-[var(--sarak-primary-color,#3b82f6)] hover:bg-white/5 active:scale-[0.98]',
+            'danger': () => 'bg-[var(--sarak-status-error-color,#ef4444)] text-white hover:brightness-110 shadow-lg shadow-[var(--sarak-status-error-color,#ef4444)]/20 active:scale-[0.95]'
         };
         return strats[v] ? strats[v]() : '';
     };

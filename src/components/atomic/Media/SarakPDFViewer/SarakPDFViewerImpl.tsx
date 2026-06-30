@@ -4,7 +4,7 @@
  * Desenha as páginas do PDF em `<canvas>` via `pdfjs-dist` (peer), sem depender do
  * visualizador nativo bloqueado do navegador. O parse roda num Web Worker (fora da main
  * thread) — `GlobalWorkerOptions.workerSrc` é configurável pela prop `workerSrc`. A barra
- * de controles (zoom/página/download) é 100% estilizada por tokens (`var(--sx-*)`).
+ * de controles (zoom/página/download) é 100% estilizada por tokens (`[--sarak-*]`).
  *
  * A dependência pesada (`pdfjs-dist`) vive AQUI; o `index.ts` exporta isto via
  * `React.lazy`, mantendo-a fora do entry de quem não a usa.
@@ -76,7 +76,7 @@ const SarakPDFViewerImpl: React.FC<SarakPDFViewerProps> = ({
         }
     };
 
-    const controlBtn = 'flex items-center justify-center w-8 h-8 rounded-md text-[var(--sx-color-text-title)] hover:bg-[var(--sx-color-text-muted)]/10 disabled:opacity-40 disabled:cursor-not-allowed transition-colors';
+    const controlBtn = 'flex items-center justify-center w-8 h-8 rounded-md text-[var(--color-theme-title,#ffffff)] hover:bg-[var(--text-muted,#94a3b8)]/10 disabled:opacity-40 disabled:cursor-not-allowed transition-colors';
 
     return (
         <div
@@ -85,10 +85,10 @@ const SarakPDFViewerImpl: React.FC<SarakPDFViewerProps> = ({
             style={{
                 display: 'flex',
                 flexDirection: 'column',
-                border: '1px solid var(--sx-color-border-base)',
-                borderRadius: 'var(--sx-radius-md, 12px)',
+                border: '1px solid var(--border-color,#334155)',
+                borderRadius: 'var(--sarak-card-radius,12px)',
                 overflow: 'hidden',
-                background: 'var(--sx-color-surface-base)',
+                background: 'var(--color-theme-card,#1e293b)',
             }}
         >
             {/* Barra de controles superior (Spec 15, Critério de Aceite). */}
@@ -99,17 +99,17 @@ const SarakPDFViewerImpl: React.FC<SarakPDFViewerProps> = ({
                     display: 'flex',
                     alignItems: 'center',
                     justifyContent: 'space-between',
-                    gap: 'var(--sx-spacing-sm, 8px)',
-                    padding: 'var(--sx-spacing-sm, 8px)',
-                    borderBottom: '1px solid var(--sx-color-border-base)',
-                    background: 'var(--sarak-table-header-bg, var(--sx-color-surface-base))',
+                    gap: 'var(--sarak-layout-gap-sm,8px)',
+                    padding: 'var(--sarak-layout-gap-sm,8px)',
+                    borderBottom: '1px solid var(--border-color,#334155)',
+                    background: 'var(--sarak-table-header-bg, var(var(--color-theme-card,#1e293b)))',
                 }}
             >
                 <div style={{ display: 'flex', alignItems: 'center', gap: 4 }}>
                     <button type="button" aria-label="Diminuir zoom" className={controlBtn} onClick={() => zoomBy(-ZOOM_STEP)} disabled={scale <= ZOOM_MIN}>
                         <ZoomOut size={16} />
                     </button>
-                    <span style={{ minWidth: 44, textAlign: 'center', fontSize: 12, color: 'var(--sx-color-text-muted)' }}>
+                    <span style={{ minWidth: 44, textAlign: 'center', fontSize: 12, color: 'var(--text-muted,#94a3b8)' }}>
                         {Math.round(scale * 100)}%
                     </span>
                     <button type="button" aria-label="Aumentar zoom" className={controlBtn} onClick={() => zoomBy(ZOOM_STEP)} disabled={scale >= ZOOM_MAX}>
@@ -121,7 +121,7 @@ const SarakPDFViewerImpl: React.FC<SarakPDFViewerProps> = ({
                     <button type="button" aria-label="Página anterior" className={controlBtn} onClick={() => goTo(page - 1)} disabled={page <= 1}>
                         <ChevronLeft size={16} />
                     </button>
-                    <span aria-live="polite" style={{ fontSize: 12, color: 'var(--sx-color-text-muted)', minWidth: 64, textAlign: 'center' }}>
+                    <span aria-live="polite" style={{ fontSize: 12, color: 'var(--text-muted,#94a3b8)', minWidth: 64, textAlign: 'center' }}>
                         {total ? `${page} / ${total}` : '—'}
                     </span>
                     <button type="button" aria-label="Próxima página" className={controlBtn} onClick={() => goTo(page + 1)} disabled={page >= total}>
@@ -135,11 +135,11 @@ const SarakPDFViewerImpl: React.FC<SarakPDFViewerProps> = ({
             </div>
 
             {/* Área de renderização. */}
-            <div style={{ overflow: 'auto', padding: 'var(--sx-spacing-md, 16px)', display: 'flex', justifyContent: 'center', minHeight: 120 }}>
+            <div style={{ overflow: 'auto', padding: 'var(--sarak-layout-gap-md,16px)', display: 'flex', justifyContent: 'center', minHeight: 120 }}>
                 {error ? (
-                    <span role="alert" style={{ color: 'var(--sx-color-danger-base, #ff4d4f)', fontSize: 13 }}>{error}</span>
+                    <span role="alert" style={{ color: 'var(--sarak-status-error-color,#ef4444)', fontSize: 13 }}>{error}</span>
                 ) : loading ? (
-                    <span aria-live="polite" style={{ color: 'var(--sx-color-text-muted)', fontSize: 13 }}>Carregando documento…</span>
+                    <span aria-live="polite" style={{ color: 'var(--text-muted,#94a3b8)', fontSize: 13 }}>Carregando documento…</span>
                 ) : (
                     <canvas ref={canvasRef} data-sarak-pdf-canvas="true" />
                 )}

@@ -152,7 +152,7 @@ export const ThemeCustomizationTab: React.FC = () => {
         <div className="flex flex-1 h-screen max-h-screen bg-[var(--theme-bg)] overflow-hidden">
             {/* Sidebar de Configuração */}
             <div
-                className={`flex flex-col h-full max-h-full border-r border-[var(--theme-border)] bg-[var(--theme-card)] relative z-10 overflow-hidden shrink-0 w-[var(--engine-sidebar-width)] min-w-[280px] max-w-[600px] ${isResizingEngine ? 'transition-none' : 'transition-all duration-300'}`}
+                className={`flex flex-col h-full max-h-full border-r border-[var(--theme-border)] bg-[var(--theme-card)] relative z-10 overflow-hidden shrink-0 w-[var(--sarak-sidebar-w, 240px)] min-w-[280px] max-w-[600px] ${isResizingEngine ? 'transition-none' : 'transition-all duration-300'}`}
                 style={{ '--engine-sidebar-width': `${engineSidebarWidth}px` } as React.CSSProperties}
             >
                 <div onMouseDown={startResizingEngine} className="absolute right-0 top-0 w-1.5 h-full cursor-col-resize hover:bg-[var(--theme-primary)]/50 transition-colors z-50 active:bg-[var(--theme-primary)]" />
@@ -212,7 +212,7 @@ export const ThemeCustomizationTab: React.FC = () => {
                     setActivePreviewApp={setActivePreviewApp}
                     previewAnimationStyle={draft.animationStyle || sarak.animationStyle || 'standard'}
                     previewEmojiSet={draft.emojiSet || sarak.emojiSet || 'none'}
-                    previewPrimaryColor={draft.primaryColor || sarak.primaryColor || 'var(--sarak-accent, #3b82f6)'}
+                    previewPrimaryColor={draft.primaryColor || sarak.primaryColor || 'var(--color-theme-primary, #00f2ff)'}
                     draftTokens={draft}
                     activeCategory={activePillarId}
                     activeSectionId={activeSectionId}

@@ -40,7 +40,7 @@ const SarakFlowEngine: React.FC<SarakFlowEngineProps> = ({ nodes, edges, onConne
                 />
                 <Controls className="bg-white/5 border-white/10 text-white fill-white" />
                 <MiniMap 
-                    style={{ backgroundColor: 'rgba(0,0,0,0.5)', borderRadius: 'var(--sarak-spacing-md, 12px)' }}
+                    style={{ backgroundColor: 'rgba(0,0,0,0.5)', borderRadius: 'var(--sarak-layout-gap-md,16px)' }}
                     nodeColor={() => primaryColor}
                     maskColor="rgba(255,255,255,0.05)"
                 />

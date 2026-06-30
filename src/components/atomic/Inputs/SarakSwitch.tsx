@@ -58,8 +58,8 @@ export const SarakSwitch: React.FC<SarakSwitchProps> = ({
             
             {(label || description) && (
                 <div className={layoutStyles.textContainerClass}>
-                    {label && <span className="text-sm font-medium text-[var(--sx-color-text-muted)]">{label}</span>}
-                    {description && <span id={descId} className="text-xs text-[var(--sx-color-text-muted)]">{description}</span>}
+                    {label && <span className="text-sm font-medium text-[var(--text-muted,#94a3b8)]">{label}</span>}
+                    {description && <span id={descId} className="text-xs text-[var(--text-muted,#94a3b8)]">{description}</span>}
                 </div>
             )}
         </label>

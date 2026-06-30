@@ -46,7 +46,7 @@ export const SovereignThemeInjector: React.FC<SovereignThemeInjectorProps> = ({ 
                 body.light .text-slate-50, body.light .text-slate-100, body.light .text-slate-200, body.light .text-slate-300, body.light .text-slate-400, body.light .text-slate-500, body.light .text-slate-600,
                 body.light .text-gray-50, body.light .text-gray-100, body.light .text-gray-200, body.light .text-gray-300, body.light .text-gray-400, body.light .text-gray-500, body.light .text-gray-600,
                 body.light .text-neutral-50, body.light .text-neutral-100, body.light .text-neutral-200, body.light .text-neutral-300, body.light .text-neutral-400, body.light .text-neutral-500, body.light .text-neutral-600 {
-                    color: var(--theme-text) !important;
+                    color: var(--color-theme-title,#ffffff) !important;
                 }
 
                 body.light .text-white\\/5,

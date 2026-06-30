@@ -57,10 +57,10 @@ export const SarakCoreCard = <TItem extends Record<string, unknown>>({ item, map
         <motion.div 
             initial={{ opacity: 0, y: 20 }}
             animate={{ opacity: 1, y: 0 }}
-            className={`${rootFlex.className} sarak-card bg-[var(--sx-color-surface-base)] border-[var(--sx-color-border-base)] group transition-all h-fit relative overflow-hidden`}
+            className={`${rootFlex.className} sarak-card bg-[var(--color-theme-card,#1e293b)] border-[var(--border-color,#334155)] group transition-all h-fit relative overflow-hidden`}
             style={{ 
                 ...rootFlex.style,
-                transitionDuration: 'var(--animation-speed, 0.5s)',
+                transitionDuration: 'var(--duration-normal, 0.3s)',
                 padding: 'var(--sarak-card-padding-md)'
             }}
             data-sx-card-texture-type={(design.cardTextureType as string) || 'none'}
@@ -73,39 +73,39 @@ export const SarakCoreCard = <TItem extends Record<string, unknown>>({ item, map
             <div className="border-beam-effect" />
 
             
-            <div className="p-theme relative z-10" style={{ padding: 'var(--sx-spacing-lg)' }}>
+            <div className="p-theme relative z-10" style={{ padding: 'var(--sarak-layout-gap-lg,24px)' }}>
 
-                <div className="flex justify-between items-start" style={{ marginBottom: 'calc(var(--sx-spacing-md) / 1.5)' }}>
+                <div className="flex justify-between items-start" style={{ marginBottom: 'calc(var(--sarak-layout-gap-md,16px) / 1.5)' }}>
                     <div className={getFlexStyles('column', 'flex-start', 'stretch', '0').className} style={getFlexStyles('column', 'flex-start', 'stretch', '0').style}>
-                        <span className="text-2xs font-black text-[var(--sx-color-primary-base)] uppercase tracking-[0.2em]" style={{ marginBottom: 'var(--sx-spacing-xs)' }}>
+                        <span className="text-2xs font-black text-[var(--sarak-primary-color,#3b82f6)] uppercase tracking-[0.2em]" style={{ marginBottom: 'calc(var(--sarak-layout-gap-md,16px)*0.25)' }}>
                             {String(getVal(item, mapping?.subtitle) || 'Modelo')}
                         </span>
-                        <h4 className="text-xl font-black text-[var(--sx-color-text-title)] tracking-tight group-hover:text-[var(--sx-color-primary-base)] transition-colors">
+                        <h4 className="text-xl font-black text-[var(--color-theme-title,#ffffff)] tracking-tight group-hover:text-[var(--sarak-primary-color,#3b82f6)] transition-colors">
                             {String(getVal(item, mapping?.title) || '')}
                         </h4>
                     </div>
-                    <div className="bg-[var(--sx-color-surface-base)] border-[var(--sx-color-border-base)]" style={{ padding: 'calc(var(--sx-spacing-md) / 2)', borderRadius: 'var(--sx-radius-md)' }}>
+                    <div className="bg-[var(--color-theme-card,#1e293b)] border-[var(--border-color,#334155)]" style={{ padding: 'calc(var(--sarak-layout-gap-md,16px) / 2)', borderRadius: 'var(--sarak-card-radius,12px)' }}>
                         {mapping?.icon && LucideIcons[mapping.icon as keyof typeof LucideIcons] ? (
-                            React.createElement(LucideIcons[mapping.icon as keyof typeof LucideIcons] as React.ElementType, { size: 20, className: "text-[var(--sx-color-text-muted)]" })
-                        ) : <Box size={20} className="text-[var(--sx-color-text-muted)]" />}
+                            React.createElement(LucideIcons[mapping.icon as keyof typeof LucideIcons] as React.ElementType, { size: 20, className: "text-[var(--text-muted,#94a3b8)]" })
+                        ) : <Box size={20} className="text-[var(--text-muted,#94a3b8)]" />}
                     </div>
                 </div>
 
-                <div className={`${getFlexStyles('column', 'flex-start', 'stretch', 'var(--sx-spacing-md)').className}`} style={{ ...getFlexStyles('column', 'flex-start', 'stretch', 'var(--sx-spacing-md)').style, marginBottom: 'var(--sx-spacing-lg)' }}>
-                    <div className="flex flex-wrap" style={{ gap: 'var(--sx-spacing-sm)' }}>
-                        <span className="text-3xs font-black text-white/20 uppercase w-full" style={{ marginBottom: 'var(--sx-spacing-xs)' }}>Input Capacities</span>
+                <div className={`${getFlexStyles('column', 'flex-start', 'stretch', 'var(--sarak-layout-gap-md,16px)').className}`} style={{ ...getFlexStyles('column', 'flex-start', 'stretch', 'var(--sarak-layout-gap-md,16px)').style, marginBottom: 'var(--sarak-layout-gap-lg,24px)' }}>
+                    <div className="flex flex-wrap" style={{ gap: 'var(--sarak-layout-gap-sm,8px)' }}>
+                        <span className="text-3xs font-black text-white/20 uppercase w-full" style={{ marginBottom: 'calc(var(--sarak-layout-gap-md,16px)*0.25)' }}>Input Capacities</span>
                         {(inputCaps as string[]).map((cap: string) => (
-                            <div key={cap} className="flex items-center bg-[var(--sx-color-primary-surface)] text-[var(--sx-color-primary-base)] border border-[var(--sx-color-border-base)] text-2xs font-black uppercase" style={{ gap: 'var(--sx-spacing-xs)', padding: 'calc(var(--sx-spacing-md) / 4) calc(var(--sx-spacing-md) / 1.5)', borderRadius: 'var(--sx-radius-md)' }}>
+                            <div key={cap} className="flex items-center bg-[var(--sarak-primary-color-bg,rgba(59,130,246,0.1))] text-[var(--sarak-primary-color,#3b82f6)] border border-[var(--border-color,#334155)] text-2xs font-black uppercase" style={{ gap: 'calc(var(--sarak-layout-gap-md,16px)*0.25)', padding: 'calc(var(--sarak-layout-gap-md,16px) / 4) calc(var(--sarak-layout-gap-md,16px) / 1.5)', borderRadius: 'var(--sarak-card-radius,12px)' }}>
                                 {getCapIcon(cap)} {cap}
                             </div>
                         ))}
                     </div>
 
                     {(outputCaps as string[]).length > 0 && (
-                        <div className="flex flex-wrap" style={{ gap: 'var(--sx-spacing-sm)' }}>
-                            <span className="text-3xs font-black text-white/20 uppercase w-full" style={{ marginBottom: 'var(--sx-spacing-xs)' }}>Output Capacities</span>
+                        <div className="flex flex-wrap" style={{ gap: 'var(--sarak-layout-gap-sm,8px)' }}>
+                            <span className="text-3xs font-black text-white/20 uppercase w-full" style={{ marginBottom: 'calc(var(--sarak-layout-gap-md,16px)*0.25)' }}>Output Capacities</span>
                             {(outputCaps as string[]).map((cap: string) => (
-                                <div key={cap} className="flex items-center bg-[var(--sx-color-primary-surface)] text-[var(--sx-color-primary-base)] border border-[var(--sx-color-border-base)] text-2xs font-black uppercase" style={{ gap: 'var(--sx-spacing-xs)', padding: 'calc(var(--sx-spacing-md) / 4) calc(var(--sx-spacing-md) / 1.5)', borderRadius: 'var(--sx-radius-md)' }}>
+                                <div key={cap} className="flex items-center bg-[var(--sarak-primary-color-bg,rgba(59,130,246,0.1))] text-[var(--sarak-primary-color,#3b82f6)] border border-[var(--border-color,#334155)] text-2xs font-black uppercase" style={{ gap: 'calc(var(--sarak-layout-gap-md,16px)*0.25)', padding: 'calc(var(--sarak-layout-gap-md,16px) / 4) calc(var(--sarak-layout-gap-md,16px) / 1.5)', borderRadius: 'var(--sarak-card-radius,12px)' }}>
                                     {getCapIcon(cap)} {cap}
                                 </div>
                             ))}
@@ -113,28 +113,28 @@ export const SarakCoreCard = <TItem extends Record<string, unknown>>({ item, map
                     )}
                 </div>
 
-                <div className={`${getGridStyles('repeat(2, minmax(0, 1fr))', undefined, 'var(--sx-spacing-md)').className} border-t border-[var(--sx-color-border-base)]`} style={{ ...getGridStyles('repeat(2, minmax(0, 1fr))', undefined, 'var(--sx-spacing-md)').style, marginBottom: 'var(--sx-spacing-md)', paddingTop: 'calc(var(--sx-spacing-md) * 1.5)' }}>
+                <div className={`${getGridStyles('repeat(2, minmax(0, 1fr))', undefined, 'var(--sarak-layout-gap-md,16px)').className} border-t border-[var(--border-color,#334155)]`} style={{ ...getGridStyles('repeat(2, minmax(0, 1fr))', undefined, 'var(--sarak-layout-gap-md,16px)').style, marginBottom: 'var(--sarak-layout-gap-md,16px)', paddingTop: 'calc(var(--sarak-layout-gap-md,16px) * 1.5)' }}>
                     <div className={getFlexStyles('column', 'flex-start', 'stretch', '0').className} style={getFlexStyles('column', 'flex-start', 'stretch', '0').style}>
-                        <span className="text-3xs font-black text-[var(--sx-color-text-muted)] opacity-50 uppercase tracking-widest" style={{ marginBottom: 'var(--sx-spacing-xs)' }}>Custo In (1M)</span>
-                        <span className="text-sm font-mono text-[var(--sx-color-success-base)] font-bold">
+                        <span className="text-3xs font-black text-[var(--text-muted,#94a3b8)] opacity-50 uppercase tracking-widest" style={{ marginBottom: 'calc(var(--sarak-layout-gap-md,16px)*0.25)' }}>Custo In (1M)</span>
+                        <span className="text-sm font-mono text-[var(--sarak-status-success-color,#22c55e)] font-bold">
                             {priceIn !== undefined ? `$${Number(priceIn).toFixed(4)}` : 'N/A'}
                         </span>
                     </div>
                     <div className={getFlexStyles('column', 'flex-start', 'stretch', '0').className} style={getFlexStyles('column', 'flex-start', 'stretch', '0').style}>
-                        <span className="text-3xs font-black text-[var(--sx-color-text-muted)] opacity-50 uppercase tracking-widest" style={{ marginBottom: 'var(--sx-spacing-xs)' }}>Custo Out (1M)</span>
-                        <span className="text-sm font-mono text-[var(--sx-color-danger-base)] font-bold">
+                        <span className="text-3xs font-black text-[var(--text-muted,#94a3b8)] opacity-50 uppercase tracking-widest" style={{ marginBottom: 'calc(var(--sarak-layout-gap-md,16px)*0.25)' }}>Custo Out (1M)</span>
+                        <span className="text-sm font-mono text-[var(--sarak-status-error-color,#ef4444)] font-bold">
                             {priceOut !== undefined ? `$${Number(priceOut).toFixed(4)}` : 'N/A'}
                         </span>
                     </div>
                     <div className={getFlexStyles('column', 'flex-start', 'stretch', '0').className} style={{ ...getFlexStyles('column', 'flex-start', 'stretch', '0').style, gridColumn: 'span 2 / span 2' }}>
-                        <span className="text-3xs font-black text-[var(--sx-color-text-muted)] opacity-50 uppercase tracking-widest" style={{ marginBottom: 'var(--sx-spacing-xs)' }}>Janela de Contexto</span>
-                        <span className="text-2xs font-black text-[var(--sx-color-text-muted)] uppercase">
+                        <span className="text-3xs font-black text-[var(--text-muted,#94a3b8)] opacity-50 uppercase tracking-widest" style={{ marginBottom: 'calc(var(--sarak-layout-gap-md,16px)*0.25)' }}>Janela de Contexto</span>
+                        <span className="text-2xs font-black text-[var(--text-muted,#94a3b8)] uppercase">
                             {context ? `${(Number(context) / 1000)}k tokens` : 'Desconhecida'}
                         </span>
                     </div>
                 </div>
 
-                <div className="flex" style={{ gap: 'calc(var(--sx-spacing-md) / 2.5)' }}>
+                <div className="flex" style={{ gap: 'calc(var(--sarak-layout-gap-md,16px) / 2.5)' }}>
                     <SarakButton 
                         onClick={() => setIsExpanded(!isExpanded)}
                         variant="secondary"
@@ -158,17 +158,17 @@ export const SarakCoreCard = <TItem extends Record<string, unknown>>({ item, map
                             exit={{ height: 0, opacity: 0 }}
                             className="overflow-hidden"
                         >
-                            <div className={getFlexStyles('column', 'flex-start', 'stretch', 'calc(var(--sx-spacing-md) / 1.5)').className} style={{ ...getFlexStyles('column', 'flex-start', 'stretch', 'calc(var(--sx-spacing-md) / 1.5)').style, paddingTop: 'var(--sx-spacing-md)' }}>
+                            <div className={getFlexStyles('column', 'flex-start', 'stretch', 'calc(var(--sarak-layout-gap-md,16px) / 1.5)').className} style={{ ...getFlexStyles('column', 'flex-start', 'stretch', 'calc(var(--sarak-layout-gap-md,16px) / 1.5)').style, paddingTop: 'var(--sarak-layout-gap-md,16px)' }}>
                                 {!!description && (
-                                    <div className="bg-[var(--sx-color-surface-base)] border-[var(--sx-color-border-base)] rounded-[var(--sx-radius-md)]" style={{ padding: 'calc(var(--sx-spacing-md) * 1.5)' }}>
-                                        <span className="text-3xs font-black text-[var(--sx-color-primary-base)] uppercase block" style={{ marginBottom: 'var(--sx-spacing-sm)' }}>Descrição Técnica</span>
-                                        <p className="text-xs text-[var(--sx-color-text-muted)] opacity-70 leading-relaxed font-medium">{String(description)}</p>
+                                    <div className="bg-[var(--color-theme-card,#1e293b)] border-[var(--border-color,#334155)] rounded-[var(--sarak-card-radius,12px)]" style={{ padding: 'calc(var(--sarak-layout-gap-md,16px) * 1.5)' }}>
+                                        <span className="text-3xs font-black text-[var(--sarak-primary-color,#3b82f6)] uppercase block" style={{ marginBottom: 'var(--sarak-layout-gap-sm,8px)' }}>Descrição Técnica</span>
+                                        <p className="text-xs text-[var(--text-muted,#94a3b8)] opacity-70 leading-relaxed font-medium">{String(description)}</p>
                                     </div>
                                 )}
                                 {!!tokenizer && (
-                                    <div className="flex items-center justify-between bg-[var(--sx-color-surface-base)] border-[var(--sx-color-border-base)] rounded-[var(--sx-radius-md)]" style={{ padding: 'var(--sx-spacing-md) calc(var(--sx-spacing-md) * 1.5)' }}>
+                                    <div className="flex items-center justify-between bg-[var(--color-theme-card,#1e293b)] border-[var(--border-color,#334155)] rounded-[var(--sarak-card-radius,12px)]" style={{ padding: 'var(--sarak-layout-gap-md,16px) calc(var(--sarak-layout-gap-md,16px) * 1.5)' }}>
                                         <span className="text-3xs font-black text-white/30 uppercase">Tokenizer</span>
-                                        <span className="text-2xs font-mono text-[var(--sx-color-primary-base)]">{String(tokenizer)}</span>
+                                        <span className="text-2xs font-mono text-[var(--sarak-primary-color,#3b82f6)]">{String(tokenizer)}</span>
                                     </div>
                                 )}
                             </div>

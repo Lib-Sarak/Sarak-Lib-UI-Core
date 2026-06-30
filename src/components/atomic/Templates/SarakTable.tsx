@@ -59,7 +59,7 @@ export const SarakTable = <TData extends Record<string, unknown> = Record<string
 
     if (error) {
         return (
-            <div className={twMerge("p-10 rounded-3xl items-center border", containerLayout.className)} style={{ backgroundColor: 'var(--sx-color-danger-surface)', borderColor: 'var(--sx-color-danger-border)', color: 'var(--sx-color-danger-base)', gap: 'calc(var(--sx-spacing-md) / 2)' }}>
+            <div className={twMerge("p-10 rounded-3xl items-center border", containerLayout.className)} style={{ backgroundColor: 'var(--sarak-status-error-color-bg,rgba(239,68,68,0.1))', borderColor: 'var(--sarak-status-error-color-border,rgba(239,68,68,0.2))', color: 'var(--sarak-status-error-color,#ef4444)', gap: 'calc(var(--sarak-layout-gap-md,16px) / 2)' }}>
                 <AlertCircle size={24} />
                 <div>
                     <h4 className="font-bold">Erro ao carregar dados</h4>
@@ -78,8 +78,8 @@ export const SarakTable = <TData extends Record<string, unknown> = Record<string
                     <h3 
                         className={`font-black text-white tracking-tight ${density === 'spacious' ? 'text-2xl' : 'text-xl'}`} 
                         style={{ 
-                            fontWeight: 'var(--heading-weight)',
-                            color: role === 'primary' ? 'var(--sx-color-primary-base)' : 'white'
+                            fontWeight: 'var(--sarak-h1-weight,700)',
+                            color: role === 'primary' ? 'var(--sarak-primary-color,#3b82f6)' : 'white'
                         }}
                     >
                         {label || 'Listagem de Dados'}
@@ -87,7 +87,7 @@ export const SarakTable = <TData extends Record<string, unknown> = Record<string
                     <p className="text-white/30 text-xs">{filteredData.length} registros encontrados</p>
                 </div>
                 
-                <div className="flex items-center" style={{ gap: 'calc(var(--sx-spacing-md) / 3)' }}>
+                <div className="flex items-center" style={{ gap: 'calc(var(--sarak-layout-gap-md,16px) / 3)' }}>
                     <div className="w-full md:w-64">
                         <SarakInput 
                             type="text" 
@@ -106,11 +106,11 @@ export const SarakTable = <TData extends Record<string, unknown> = Record<string
             </div>
 
             {/* Container da Tabela com Glassmorphism */}
-            <div className="relative bg-[var(--sx-color-surface-base)] border-[var(--sx-color-border-base)] overflow-hidden rounded-[var(--sx-radius-md)]">
+            <div className="relative bg-[var(--color-theme-card,#1e293b)] border-[var(--border-color,#334155)] overflow-hidden rounded-[var(--sarak-card-radius,12px)]">
                 <div className="overflow-x-auto">
                     <table className="w-full text-left border-collapse">
                         <thead>
-                            <tr className="bg-white/5 border-b border-[var(--sx-color-border-base)]">
+                            <tr className="bg-white/5 border-b border-[var(--border-color,#334155)]">
                                 {columns.map(col => (
                                     <th 
                                         key={col} 
@@ -154,10 +154,10 @@ export const SarakTable = <TData extends Record<string, unknown> = Record<string
                                                 >
                                                     {typeof row[col] === 'boolean' ? (
                                                         <span 
-                                                            className="px-2 py-0.5 rounded-[var(--sx-radius-md)] text-2xs font-black uppercase"
+                                                            className="px-2 py-0.5 rounded-[var(--sarak-card-radius,12px)] text-2xs font-black uppercase"
                                                             style={{ 
-                                                                backgroundColor: row[col] ? 'var(--sx-color-success-surface)' : 'var(--sx-color-danger-surface)',
-                                                                color: row[col] ? 'var(--sx-color-success-base)' : 'var(--sx-color-danger-base)'
+                                                                backgroundColor: row[col] ? 'var(--sarak-status-success-color-bg,rgba(34,197,94,0.1))' : 'var(--sarak-status-error-color-bg,rgba(239,68,68,0.1))',
+                                                                color: row[col] ? 'var(--sarak-status-success-color,#22c55e)' : 'var(--sarak-status-error-color,#ef4444)'
                                                             }}
                                                         >
                                                             {row[col] ? 'Ativo' : 'Inativo'}
@@ -182,8 +182,8 @@ export const SarakTable = <TData extends Record<string, unknown> = Record<string
                 </div>
 
                 {filteredData.length === 0 && !loading && (
-                    <div className={twMerge("items-center justify-center text-center", containerLayout.className)} style={{ padding: 'calc(var(--sx-spacing-md) * 5)', gap: 'calc(var(--sx-spacing-md) / 2)' }}>
-                        <div className="inline-flex p-4 bg-[var(--sx-color-surface-base)] border-[var(--sx-color-border-base)] rounded-[var(--sx-radius-md)]">
+                    <div className={twMerge("items-center justify-center text-center", containerLayout.className)} style={{ padding: 'calc(var(--sarak-layout-gap-md,16px) * 5)', gap: 'calc(var(--sarak-layout-gap-md,16px) / 2)' }}>
+                        <div className="inline-flex p-4 bg-[var(--color-theme-card,#1e293b)] border-[var(--border-color,#334155)] rounded-[var(--sarak-card-radius,12px)]">
                             <AlertCircle className="text-white/10" size={32} />
                         </div>
                         <p className="text-white/20 text-xs font-black uppercase tracking-widest">Nenhum dado encontrado</p>

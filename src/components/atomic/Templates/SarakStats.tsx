@@ -52,19 +52,19 @@ export const SarakStats = <TData extends Record<string, unknown> = Record<string
     if (error) return null;
 
     return (
-        <div className="grid grid-cols-2 lg:grid-cols-4" style={{ gap: 'var(--sx-spacing-md)' }}>
+        <div className="grid grid-cols-2 lg:grid-cols-4" style={{ gap: 'var(--sarak-layout-gap-md,16px)' }}>
             {loading && !Object.keys(stats).length ? (
                 [...Array(4)].map((_, i) => (
-                    <div key={`skel-${i}`} className="bg-[var(--sx-color-surface-base)] border-[var(--sx-color-border-base)] animate-pulse rounded-[var(--sx-radius-md)]" style={{ height: 'calc(var(--sx-spacing-md) * 6)' }} />
+                    <div key={`skel-${i}`} className="bg-[var(--color-theme-card,#1e293b)] border-[var(--border-color,#334155)] animate-pulse rounded-[var(--sarak-card-radius,12px)]" style={{ height: 'calc(var(--sarak-layout-gap-md,16px) * 6)' }} />
                 ))
             ) : (
                 keys.map((key, idx) => (
                     <div
                         key={key}
-                        className="bg-[var(--sx-color-surface-base)] border-[var(--sx-color-border-base)] hover:bg-white/[0.04] transition-all group rounded-[var(--sx-radius-md)]"
-                        style={{ padding: 'var(--sx-spacing-md)', transitionDuration: 'var(--animation-speed, 0.5s)' }}
+                        className="bg-[var(--color-theme-card,#1e293b)] border-[var(--border-color,#334155)] hover:bg-white/[0.04] transition-all group rounded-[var(--sarak-card-radius,12px)]"
+                        style={{ padding: 'var(--sarak-layout-gap-md,16px)', transitionDuration: 'var(--duration-normal, 0.3s)' }}
                     >
-                        <span className="text-2xs text-white/30 font-black uppercase tracking-widest block transition-colors group-hover:text-[var(--sx-color-primary-base)]" style={{ marginBottom: 'calc(var(--sx-spacing-md) / 6)' }}>
+                        <span className="text-2xs text-white/30 font-black uppercase tracking-widest block transition-colors group-hover:text-[var(--sarak-primary-color,#3b82f6)]" style={{ marginBottom: 'calc(var(--sarak-layout-gap-md,16px) / 6)' }}>
                             {mapping ? mapping[key] : key.replace(/_/g, ' ')}
                         </span>
                         <div className="flex items-center justify-between">
@@ -73,7 +73,7 @@ export const SarakStats = <TData extends Record<string, unknown> = Record<string
                                 initial={{ opacity: 0.5, y: -5 }}
                                 animate={{ opacity: 1, y: 0 }}
                                 className="text-2xl font-black text-white tracking-tighter" 
-                                style={{ fontWeight: 'var(--heading-weight)' }}
+                                style={{ fontWeight: 'var(--sarak-h1-weight,700)' }}
                             >
                                 {String(renderValue(key) || '')}
                             </motion.span>
@@ -81,8 +81,8 @@ export const SarakStats = <TData extends Record<string, unknown> = Record<string
                                 const levels = ['primary', 'secondary', 'accent'];
                                 const level = levels[idx % levels.length];
                                 return (
-                                    <div className="rounded-[var(--sx-radius-md)] transition-colors" style={{ padding: 'calc(var(--sx-spacing-md) / 3)', backgroundColor: `var(--sx-color-primary-surface)`, transitionDuration: 'var(--animation-speed, 0.3s)' }}>
-                                        <Activity size={16} className="transition-colors" style={{ color: `var(--sx-color-primary-base)`, transitionDuration: 'var(--animation-speed, 0.3s)' }} />
+                                    <div className="rounded-[var(--sarak-card-radius,12px)] transition-colors" style={{ padding: 'calc(var(--sarak-layout-gap-md,16px) / 3)', backgroundColor: `var(--sarak-primary-color-bg,rgba(59,130,246,0.1))`, transitionDuration: 'var(--duration-normal, 0.3s)' }}>
+                                        <Activity size={16} className="transition-colors" style={{ color: `var(--sarak-primary-color,#3b82f6)`, transitionDuration: 'var(--duration-normal, 0.3s)' }} />
                                     </div>
                                 );
                             })()}

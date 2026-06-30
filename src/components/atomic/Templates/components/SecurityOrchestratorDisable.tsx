@@ -39,13 +39,13 @@ export const SecurityOrchestratorDisable: React.FC<SecurityOrchestratorDisablePr
         >
             <ShieldAlert className="text-red-500" size={48} />
             <div>
-                <div className="text-xs font-black uppercase tracking-widest text-[var(--sx-color-text-title)]" style={{ marginBottom: 'var(--sx-spacing-sm)' }}>Confirmar Desativação</div>
-                <p className="text-[10px] uppercase tracking-wider text-[var(--sx-color-text-muted)] max-w-xs">
+                <div className="text-xs font-black uppercase tracking-widest text-[var(--color-theme-title,#ffffff)]" style={{ marginBottom: 'var(--sarak-layout-gap-sm,8px)' }}>Confirmar Desativação</div>
+                <p className="text-[10px] uppercase tracking-wider text-[var(--text-muted,#94a3b8)] max-w-xs">
                     Por segurança, insira o código de 6 dígitos do seu app para remover a proteção de segundo fator.
                 </p>
             </div>
 
-            <div className={`w-full max-w-xs ${getFlexStyles('column', 'flex-start', 'stretch', 'var(--sx-spacing-md)').className}`} style={getFlexStyles('column', 'flex-start', 'stretch', 'var(--sx-spacing-md)').style}>
+            <div className={`w-full max-w-xs ${getFlexStyles('column', 'flex-start', 'stretch', 'var(--sarak-layout-gap-md,16px)').className}`} style={getFlexStyles('column', 'flex-start', 'stretch', 'var(--sarak-layout-gap-md,16px)').style}>
                 <SarakInput 
                     type="text" 
                     maxLength={6}
@@ -61,7 +61,7 @@ export const SecurityOrchestratorDisable: React.FC<SecurityOrchestratorDisablePr
                     <div className="text-[10px] uppercase font-black text-red-500 tracking-widest">{error}</div>
                 )}
 
-                <div className={getGridStyles('repeat(2, minmax(0, 1fr))', undefined, 'var(--sx-spacing-md)').className} style={getGridStyles('repeat(2, minmax(0, 1fr))', undefined, 'var(--sx-spacing-md)').style}>
+                <div className={getGridStyles('repeat(2, minmax(0, 1fr))', undefined, 'var(--sarak-layout-gap-md,16px)').className} style={getGridStyles('repeat(2, minmax(0, 1fr))', undefined, 'var(--sarak-layout-gap-md,16px)').style}>
                     <SarakButton 
                         onClick={() => setStep('STATUS')}
                         variant="secondary"

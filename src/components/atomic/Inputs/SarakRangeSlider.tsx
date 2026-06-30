@@ -22,8 +22,8 @@ export interface SarakRangeSliderProps
     onChange?: (value: RangeValue) => void;
 }
 
-const ACTIVE = 'var(--sarak-range-active-bg, var(--sx-color-primary-base))';
-const TRACK = 'var(--sarak-range-track-bg, rgba(255, 255, 255, 0.1))';
+const ACTIVE = 'var(--color-theme-primary, #00f2ff)))';
+const TRACK = 'var(--color-theme-border, rgba(255,255,255,0.1)))';
 
 const clamp = (n: number, lo: number, hi: number): number => Math.min(Math.max(n, lo), hi);
 const percent = (n: number, min: number, max: number): number =>
@@ -75,7 +75,7 @@ export const SarakRangeSlider: React.FC<SarakRangeSliderProps> = ({
     return (
         <SarakFormGroup className={`${disabledClass} ${className}`.trim()} style={style} {...props}>
             {label && (
-                <span className="text-2xs font-black uppercase tracking-widest text-[var(--sx-color-text-muted)]">
+                <span className="text-2xs font-black uppercase tracking-widest text-[var(--text-muted,#94a3b8)]">
                     {label}
                 </span>
             )}

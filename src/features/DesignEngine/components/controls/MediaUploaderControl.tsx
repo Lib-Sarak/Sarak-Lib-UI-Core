@@ -63,7 +63,7 @@ export const MediaUploaderControl: React.FC<MediaUploaderControlProps> = ({ labe
             <div className="flex items-center gap-3">
                 <div 
                     onClick={() => !isUploading && inputRef.current?.click()}
-                    className={`w-12 h-12 rounded-lg border border-dashed border-[var(--theme-border)] hover:border-[var(--theme-primary)] flex items-center justify-center bg-[var(--theme-layer)] cursor-pointer transition-all hover:bg-[var(--theme-border)] overflow-hidden shrink-0 relative ${isUploading ? 'opacity-50 pointer-events-none' : ''}`}
+                    className={`w-12 h-12 rounded-lg border border-dashed border-[var(--theme-border)] hover:border-[var(--theme-primary)] flex items-center justify-center bg-[var(--color-theme-card,#1e293b)] cursor-pointer transition-all hover:bg-[var(--theme-border)] overflow-hidden shrink-0 relative ${isUploading ? 'opacity-50 pointer-events-none' : ''}`}
                 >
                     {isUploading ? (
                         <Loader2 className="w-5 h-5 text-[var(--theme-primary)] animate-spin" />
@@ -81,7 +81,7 @@ export const MediaUploaderControl: React.FC<MediaUploaderControlProps> = ({ labe
                     <button 
                         onClick={() => !isUploading && inputRef.current?.click()}
                         disabled={isUploading}
-                        className={`text-[9px] font-bold uppercase tracking-wider px-3 py-2 bg-[var(--theme-layer)] hover:bg-[var(--theme-border)] rounded-md text-[var(--theme-text)] transition-all border border-[var(--theme-border)] shadow-sm ${isUploading ? 'opacity-50 cursor-not-allowed' : ''}`}
+                        className={`text-[9px] font-bold uppercase tracking-wider px-3 py-2 bg-[var(--color-theme-card,#1e293b)] hover:bg-[var(--theme-border)] rounded-md text-[var(--color-theme-title,#ffffff)] transition-all border border-[var(--theme-border)] shadow-sm ${isUploading ? 'opacity-50 cursor-not-allowed' : ''}`}
                     >
                         {isUploading ? 'Enviando...' : 'Fazer Upload'}
                     </button>

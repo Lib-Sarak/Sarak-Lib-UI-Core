@@ -73,7 +73,7 @@ export const PreviewSystemRenderer: React.FC<PreviewSystemRendererProps> = ({
                 />
 
                 <div
-                    className={`absolute inset-0 origin-top-left overflow-hidden z-10 flex text-[var(--theme-text)] font-sans selection:bg-[var(--theme-primary)] selection:text-white layout-${navStyle} ${activeDesign.globalBackgroundImageUrl ? 'bg-transparent' : 'bg-[var(--theme-body)]'}`}
+                    className={`absolute inset-0 origin-top-left overflow-hidden z-10 flex text-[var(--color-theme-title,#ffffff)] font-sans selection:bg-[var(--theme-primary)] selection:text-white layout-${navStyle} ${activeDesign.globalBackgroundImageUrl ? 'bg-transparent' : 'bg-[var(--theme-body)]'}`}
                     style={{
                         width: widthPercent,
                         height: heightPercent,

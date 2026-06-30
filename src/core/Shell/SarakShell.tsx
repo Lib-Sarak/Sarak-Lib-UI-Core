@@ -83,7 +83,7 @@ export const SarakShell: React.FC<SarakShellProps> = (props) => {
     const layoutClass = `layout-${design?.navigationStyle || 'sidebar'}`;
 
     return (
-        <div className={`${shellClass} ${isMobile ? '!flex-col' : ''} ${design.globalBackgroundImageUrl ? 'bg-transparent' : 'bg-[var(--theme-body)]'} text-[var(--theme-text)] font-sans selection:bg-[var(--theme-primary)] selection:text-[var(--theme-on-primary)] ${layoutClass}`}>
+        <div className={`${shellClass} ${isMobile ? '!flex-col' : ''} ${design.globalBackgroundImageUrl ? 'bg-transparent' : 'bg-[var(--theme-body)]'} text-[var(--color-theme-title,#ffffff)] font-sans selection:bg-[var(--theme-primary)] selection:text-[var(--theme-on-primary)] ${layoutClass}`}>
             
             {/* HOVER SENSORS (v6.2) */}
             {design.isAutoHideEnabled && !shell.isNavVisible && (

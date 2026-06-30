@@ -89,7 +89,7 @@ export const CalendarPanel: React.FC<CalendarPanelProps> = ({
         <div className="w-64">
             <div className="flex items-center justify-between mb-2">
                 <NavButton label="Mês anterior" onClick={() => setViewMonth(addMonths(viewMonth, -1))} dir="prev" />
-                <span className="text-sm font-bold capitalize text-[var(--sx-color-text-muted)]">
+                <span className="text-sm font-bold capitalize text-[var(--text-muted,#94a3b8)]">
                     {format(viewMonth, 'MMMM yyyy', { locale })}
                 </span>
                 <NavButton label="Próximo mês" onClick={() => setViewMonth(addMonths(viewMonth, 1))} dir="next" />
@@ -97,7 +97,7 @@ export const CalendarPanel: React.FC<CalendarPanelProps> = ({
 
             <div className="grid grid-cols-7 mb-1">
                 {weekdays.map((day, i) => (
-                    <span key={i} className="text-center text-2xs font-black uppercase text-[var(--sx-color-text-muted)]/50">
+                    <span key={i} className="text-center text-2xs font-black uppercase text-[var(--text-muted,#94a3b8)]/50">
                         {day}
                     </span>
                 ))}
@@ -119,10 +119,10 @@ export const CalendarPanel: React.FC<CalendarPanelProps> = ({
                             onFocus={() => setFocused(cell.date)}
                             className={[
                                 'h-8 w-8 rounded-md text-xs tabular-nums transition-colors',
-                                cell.outside ? 'text-[var(--sx-color-text-muted)]/30' : 'text-[var(--sx-color-text-muted)]',
-                                selected ? 'bg-[var(--sx-color-primary-base)] text-white font-bold' : '',
-                                between && !selected ? 'bg-[var(--sx-color-primary-base)]/20' : '',
-                                !selected ? 'hover:bg-[var(--sx-color-primary-base)]/10' : '',
+                                cell.outside ? 'text-[var(--text-muted,#94a3b8)]/30' : 'text-[var(--text-muted,#94a3b8)]',
+                                selected ? 'bg-[var(--sarak-primary-color,#3b82f6)] text-white font-bold' : '',
+                                between && !selected ? 'bg-[var(--sarak-primary-color,#3b82f6)]/20' : '',
+                                !selected ? 'hover:bg-[var(--sarak-primary-color,#3b82f6)]/10' : '',
                             ].join(' ')}
                         >
                             {cell.date.getDate()}
@@ -139,7 +139,7 @@ const NavButton: React.FC<{ label: string; dir: 'prev' | 'next'; onClick: () => 
         type="button"
         aria-label={label}
         onClick={onClick}
-        className="flex items-center justify-center w-7 h-7 rounded-md text-[var(--sx-color-text-muted)] hover:bg-[var(--sx-color-primary-base)]/10"
+        className="flex items-center justify-center w-7 h-7 rounded-md text-[var(--text-muted,#94a3b8)] hover:bg-[var(--sarak-primary-color,#3b82f6)]/10"
     >
         <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
             <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d={dir === 'prev' ? 'M15 19l-7-7 7-7' : 'M9 5l7 7-7 7'} />

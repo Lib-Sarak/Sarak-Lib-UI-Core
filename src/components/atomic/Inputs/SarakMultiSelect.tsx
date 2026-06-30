@@ -23,7 +23,7 @@ export interface SarakMultiSelectProps {
 }
 
 const FIELD =
-    'flex flex-wrap items-center gap-1 w-full rounded-input py-2 px-3 bg-[var(--sarak-input-bg,var(--sx-color-surface-base))] border border-[var(--sarak-input-border-color,var(--sx-color-border-base))] focus-within:border-[var(--sarak-input-focus-border-color,var(--sx-color-primary-base))] transition-colors';
+    'flex flex-wrap items-center gap-1 w-full rounded-input py-2 px-3 bg-[var(--sarak-input-bg,var(var(--color-theme-card,#1e293b)))] border border-[var(--sarak-input-border-color,var(var(--border-color,#334155)))] focus-within:border-[var(--sarak-input-focus-border-color,var(var(--sarak-primary-color,#3b82f6)))] transition-colors';
 
 /**
  * Componente Atômico: SarakMultiSelect (Spec 11, Regra 2)
@@ -91,7 +91,7 @@ export const SarakMultiSelect: React.FC<SarakMultiSelectProps> = ({
     return (
         <SarakFormGroup className={`${disabledClass} ${className}`.trim()} style={style}>
             {label && (
-                <span className="text-sm font-medium text-[var(--sx-color-text-muted)]">{label}</span>
+                <span className="text-sm font-medium text-[var(--text-muted,#94a3b8)]">{label}</span>
             )}
 
             <div className="relative w-full">
@@ -115,7 +115,7 @@ export const SarakMultiSelect: React.FC<SarakMultiSelectProps> = ({
                         onFocus={() => setOpen(true)}
                         onBlur={() => setTimeout(() => setOpen(false), 120)}
                         onKeyDown={handleKeyDown}
-                        className="flex-1 min-w-[6rem] bg-transparent outline-none text-[var(--sarak-input-text-color,var(--sx-color-text-muted))]"
+                        className="flex-1 min-w-[6rem] bg-transparent outline-none text-[var(--sarak-input-text-color,var(var(--text-muted,#94a3b8)))]"
                     />
                 </div>
 
@@ -123,7 +123,7 @@ export const SarakMultiSelect: React.FC<SarakMultiSelectProps> = ({
                     <ul
                         id={listId}
                         role="listbox"
-                        className="absolute z-20 mt-1 w-full max-h-56 overflow-auto rounded-input py-1 bg-[var(--sx-color-surface-base)] border border-[var(--sx-color-border-base)] shadow-lg"
+                        className="absolute z-20 mt-1 w-full max-h-56 overflow-auto rounded-input py-1 bg-[var(--color-theme-card,#1e293b)] border border-[var(--border-color,#334155)] shadow-lg"
                     >
                         {filtered.map((opt) => (
                             <li
@@ -132,7 +132,7 @@ export const SarakMultiSelect: React.FC<SarakMultiSelectProps> = ({
                                 aria-selected={false}
                                 // onMouseDown (não onClick) para selecionar antes do blur do input.
                                 onMouseDown={(e) => { e.preventDefault(); add(opt.value); }}
-                                className="px-3 py-2 cursor-pointer text-sm text-[var(--sx-color-text-muted)] hover:bg-[var(--sx-color-primary-base)]/10"
+                                className="px-3 py-2 cursor-pointer text-sm text-[var(--text-muted,#94a3b8)] hover:bg-[var(--sarak-primary-color,#3b82f6)]/10"
                             >
                                 {opt.label}
                             </li>
@@ -157,14 +157,14 @@ interface ChipProps {
 }
 
 const Chip: React.FC<ChipProps> = ({ label, disabled, onRemove }) => (
-    <span className="inline-flex items-center gap-1 rounded-full py-0.5 pl-2 pr-1 text-xs font-medium bg-[var(--sx-color-primary-base)]/15 text-[var(--sx-color-primary-base)]">
+    <span className="inline-flex items-center gap-1 rounded-full py-0.5 pl-2 pr-1 text-xs font-medium bg-[var(--sarak-primary-color,#3b82f6)]/15 text-[var(--sarak-primary-color,#3b82f6)]">
         {label}
         <button
             type="button"
             aria-label={`Remover ${label}`}
             disabled={disabled}
             onMouseDown={(e) => { e.preventDefault(); onRemove(); }}
-            className="flex items-center justify-center w-4 h-4 rounded-full hover:bg-[var(--sx-color-primary-base)]/30"
+            className="flex items-center justify-center w-4 h-4 rounded-full hover:bg-[var(--sarak-primary-color,#3b82f6)]/30"
         >
             <svg className="w-3 h-3" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                 <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M6 18L18 6M6 6l12 12" />

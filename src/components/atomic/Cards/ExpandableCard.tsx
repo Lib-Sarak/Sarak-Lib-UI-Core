@@ -37,7 +37,7 @@ export const ExpandableCard: React.FC<ExpandableCardProps> = ({
 
     return (
         <>
-            <div className={`${layout.containerClass} sarak-card bg-[var(--sx-color-surface-base)] border border-[var(--sx-color-border-base)]-border rounded-sarak shadow-lg relative group transition-sarak ${isExpanded ? 'opacity-0 pointer-events-none' : ''} ${className}`}>
+            <div className={`${layout.containerClass} sarak-card bg-[var(--color-theme-card,#1e293b)] border border-[var(--border-color,#334155)]-border rounded-sarak shadow-lg relative group transition-sarak ${isExpanded ? 'opacity-0 pointer-events-none' : ''} ${className}`}>
                 <div className={layout.contentClass}>
                 <div className={layout.headerClass}>
                     <h3 className="text-xs font-black text-theme-main uppercase tracking-widest flex items-center gap-2">
@@ -87,14 +87,14 @@ export const ExpandableCard: React.FC<ExpandableCardProps> = ({
                                         {helpButton && <div className="flex items-center">{helpButton}</div>}
                                         <button
                                             onClick={() => setIsExpanded(false)}
-                                            className="p-3 bg-[var(--sx-color-surface-base)] hover:bg-theme-primary/20 text-theme-primary border border-[var(--sx-color-border-base)]-border rounded-sarak transition-sarak shadow-lg cursor-pointer shrink-0 ml-2"
+                                            className="p-3 bg-[var(--color-theme-card,#1e293b)] hover:bg-theme-primary/20 text-theme-primary border border-[var(--border-color,#334155)]-border rounded-sarak transition-sarak shadow-lg cursor-pointer shrink-0 ml-2"
                                             title="Fechar"
                                         >
                                             <X className="w-5 h-5 sm:w-6 sm:h-6" />
                                         </button>
                                     </div>
                                 </div>
-                                <div className={`sarak-card flex-1 w-full relative flex flex-col min-h-0 bg-[var(--sx-color-surface-base)] rounded-sarak border border-[var(--sx-color-border-base)]-border shadow-lg ${contentClassName} p-[var(--sarak-card-padding-md,24px)]`}>
+                                <div className={`sarak-card flex-1 w-full relative flex flex-col min-h-0 bg-[var(--color-theme-card,#1e293b)] rounded-sarak border border-[var(--border-color,#334155)]-border shadow-lg ${contentClassName} p-[var(--sarak-card-padding-md,24px)]`}>
                                     {children}
                                 </div>
                             </motion.div>

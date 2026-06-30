@@ -33,7 +33,7 @@ export const ChatInput: React.FC<ChatInputProps> = ({
   showModelPicker, setShowModelPicker, modelSearch, setModelSearch,
   maxTokens, setMaxTokens, fileInputRef, handleFileSelect
 }) => (
-  <footer className="p-6 bg-gradient-to-t from-[var(--sx-color-surface-base)] via-transparent to-transparent">
+  <footer className="p-6 bg-gradient-to-t from-[var(--color-theme-card,#1e293b)] via-transparent to-transparent">
     <AnimatePresence>
       {attachments.length > 0 && (
         <motion.div 
@@ -44,14 +44,14 @@ export const ChatInput: React.FC<ChatInputProps> = ({
         >
           <div className="flex gap-2 py-1">
             {attachments.map((att, i) => (
-              <div key={i} className="flex items-center gap-2 px-3 py-2 bg-[var(--sx-color-primary-surface)] border border-[var(--sx-color-border-base)] rounded-xl relative group/att">
-                <FileIcon size={14} className="text-[var(--sx-color-primary-base)]" />
-                <span className="text-xs font-medium text-[var(--sx-color-text-title)] max-w-[150px] truncate">{att.name}</span>
+              <div key={i} className="flex items-center gap-2 px-3 py-2 bg-[var(--sarak-primary-color-bg,rgba(59,130,246,0.1))] border border-[var(--border-color,#334155)] rounded-xl relative group/att">
+                <FileIcon size={14} className="text-[var(--sarak-primary-color,#3b82f6)]" />
+                <span className="text-xs font-medium text-[var(--color-theme-title,#ffffff)] max-w-[150px] truncate">{att.name}</span>
                 <SarakIconButton 
                   onClick={() => removeAttachment(i)}
                   icon={<X size={12} />}
                   variant="ghost"
-                  className="ml-1 p-1 hover:bg-[var(--sx-color-danger-surface)] hover:text-[var(--sx-color-danger-base)]"
+                  className="ml-1 p-1 hover:bg-[var(--sarak-status-error-color-bg,rgba(239,68,68,0.1))] hover:text-[var(--sarak-status-error-color,#ef4444)]"
                 />
               </div>
             ))}
@@ -62,20 +62,20 @@ export const ChatInput: React.FC<ChatInputProps> = ({
 
     <div className="flex flex-col gap-4">
       {mode === 'manual' && (
-        <motion.div initial={{ opacity: 0, y: 10 }} animate={{ opacity: 1, y: 0 }} className="flex flex-wrap items-center" style={{ gap: 'var(--sx-spacing-md)' }}>
+        <motion.div initial={{ opacity: 0, y: 10 }} animate={{ opacity: 1, y: 0 }} className="flex flex-wrap items-center" style={{ gap: 'var(--sarak-layout-gap-md,16px)' }}>
           <div className="relative">
             <SarakButton 
               onClick={() => setShowModelPicker(!showModelPicker)}
               variant="outline"
               className="text-left shadow-lg"
-              style={{ gap: 'calc(var(--sx-spacing-md) / 1.5)' }}
+              style={{ gap: 'calc(var(--sarak-layout-gap-md,16px) / 1.5)' }}
             >
-               <Cpu size={18} className="text-[var(--sx-color-primary-base)]" />
+               <Cpu size={18} className="text-[var(--sarak-primary-color,#3b82f6)]" />
                <div className="flex flex-col">
-                  <span className="text-2xs text-[var(--sx-color-text-muted)] uppercase font-bold tracking-tight leading-none mb-1">Modelo Manual Ativo</span>
-                  <span className="text-xs font-semibold text-[var(--sx-color-text-title)]">{selectedRoute?.display_name || "Selecionar..."}</span>
+                  <span className="text-2xs text-[var(--text-muted,#94a3b8)] uppercase font-bold tracking-tight leading-none mb-1">Modelo Manual Ativo</span>
+                  <span className="text-xs font-semibold text-[var(--color-theme-title,#ffffff)]">{selectedRoute?.display_name || "Selecionar..."}</span>
                </div>
-               <ChevronDown size={14} className={`text-[var(--sx-color-text-muted)] transition-transform ${showModelPicker ? 'rotate-180' : ''}`} />
+               <ChevronDown size={14} className={`text-[var(--text-muted,#94a3b8)] transition-transform ${showModelPicker ? 'rotate-180' : ''}`} />
             </SarakButton>
 
             {showModelPicker && (
@@ -90,7 +90,7 @@ export const ChatInput: React.FC<ChatInputProps> = ({
             )}
           </div>
 
-          <div className="flex-1 min-w-[120px] bg-[var(--sx-color-surface-base)] border-[var(--sx-color-border-base)] px-4 py-2 flex flex-col justify-center">
+          <div className="flex-1 min-w-[120px] bg-[var(--color-theme-card,#1e293b)] border-[var(--border-color,#334155)] px-4 py-2 flex flex-col justify-center">
              <SarakSlider 
                min={128} max={16384} step={128} value={maxTokens} 
                onChange={(e) => setMaxTokens(parseInt(e.target.value))}
@@ -103,8 +103,8 @@ export const ChatInput: React.FC<ChatInputProps> = ({
       )}
 
       <div className="relative group/input">
-        <div className="absolute -inset-0.5 bg-gradient-to-r from-[var(--sx-color-primary-base)] to-[var(--sx-color-primary-glow)] rounded-[var(--sx-radius-md)] blur opacity-10 group-hover/input:opacity-25 transition-opacity" style={{ transitionDuration: 'var(--animation-speed, 0.5s)' }}></div>
-        <div className="relative flex items-center bg-[var(--sx-color-surface-base)] border-[var(--sx-color-border-base)] overflow-hidden shadow-sm pr-2 rounded-[var(--sx-radius-md)]">
+        <div className="absolute -inset-0.5 bg-gradient-to-r from-[var(--sarak-primary-color,#3b82f6)] to-[var(--sarak-shadow-glow,rgba(59,130,246,0.5))] rounded-[var(--sarak-card-radius,12px)] blur opacity-10 group-hover/input:opacity-25 transition-opacity" style={{ transitionDuration: 'var(--duration-normal, 0.3s)' }}></div>
+        <div className="relative flex items-center bg-[var(--color-theme-card,#1e293b)] border-[var(--border-color,#334155)] overflow-hidden shadow-sm pr-2 rounded-[var(--sarak-card-radius,12px)]">
           <input type="file" ref={fileInputRef} onChange={handleFileSelect} multiple accept="image/*" className="hidden" />
           
           <SarakIconButton 
@@ -130,14 +130,14 @@ export const ChatInput: React.FC<ChatInputProps> = ({
                 disabled={(!input.trim() && attachments.length === 0) || isLoading}
                 icon={<Send size={20} className="group-hover/btn:translate-x-0.5 group-hover/btn:-translate-y-0.5 transition-transform" />}
                 variant="primary"
-                className="shadow-lg shadow-[var(--sx-color-primary-glow)] group/btn"
+                className="shadow-lg shadow-[var(--sarak-shadow-glow,rgba(59,130,246,0.5))] group/btn"
               />
           </div>
         </div>
       </div>
     </div>
     
-    <p className="text-center text-2xs text-[var(--sx-color-text-muted)] mt-4 uppercase tracking-[0.3em] font-medium">
+    <p className="text-center text-2xs text-[var(--text-muted,#94a3b8)] mt-4 uppercase tracking-[0.3em] font-medium">
     </p>
   </footer>
 );

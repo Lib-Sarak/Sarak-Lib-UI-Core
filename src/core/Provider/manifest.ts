@@ -102,7 +102,7 @@ export const DESIGN_MANIFEST: Record<string, {
     subtitleFont: { vars: ['--font-subtitle', '--sarak-subtitle-font'] },
     tabFont: { vars: ['--font-tab', '--sarak-tab-font'] },
     bodyFont: { vars: ['--font-main', '--sarak-body-font'] },
-    headingWeight: { vars: ['--heading-weight', '--sarak-heading-weight'] },
+    headingWeight: { vars: ['var(--sarak-h1-weight,700)', '--sarak-heading-weight'] },
     headingLetterSpacing: {
         vars: ['--heading-spacing', '--sarak-heading-spacing'],
         transform: (v: SarakTokenValue) => transformHeadingLetterSpacing(String(v))

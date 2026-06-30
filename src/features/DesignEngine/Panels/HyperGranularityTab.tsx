@@ -51,7 +51,7 @@ export const HyperGranularityTab: React.FC = () => {
     const { pillarsWithDrafts, filteredComponents } = useSovereignSearch(draft, searchQuery, activePillar);
 
     return (
-        <div className="flex flex-col h-full animate-in fade-in slide-in-from-right-4 duration-500 overflow-hidden bg-[var(--sarak-panel-bg, #050505)]">
+        <div className="flex flex-col h-full animate-in fade-in slide-in-from-right-4 duration-500 overflow-hidden bg-[var(--color-theme-card,#1e293b)]">
             
             {/* HEADER: SEARCH & PILLARS */}
             <div className="pt-6 px-6 pb-2 border-b border-white/5 bg-black/40 backdrop-blur-md z-10 space-y-4">
@@ -167,7 +167,7 @@ export const HyperGranularityTab: React.FC = () => {
             </div>
 
             {/* ACTION FOOTER */}
-            <div className="absolute bottom-0 left-0 right-0 p-6 bg-gradient-to-t from-[var(--sarak-panel-bg, #050505)] via-[var(--sarak-panel-bg, #050505)]/95 to-transparent border-t border-white/5">
+            <div className="absolute bottom-0 left-0 right-0 p-6 bg-gradient-to-t from-[var(--color-theme-card,#1e293b)] via-[var(--color-theme-card,#1e293b)]/95 to-transparent border-t border-white/5">
                 <button 
                     onClick={handleApplyToSystem}
                     disabled={Object.keys(draft).length === 0}

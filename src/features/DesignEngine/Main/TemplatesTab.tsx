@@ -35,7 +35,7 @@ export const TemplatesTab: React.FC = () => {
     };
 
     return (
-        <div className="flex flex-col h-full bg-[var(--sarak-panel-bg, #080809)] text-white/90 p-5 overflow-y-auto custom-scrollbar">
+        <div className="flex flex-col h-full bg-[var(--color-theme-card,#1e293b)] text-white/90 p-5 overflow-y-auto custom-scrollbar">
             {/* Header */}
             <div className="mb-8">
                 <div className="text-xs font-black tracking-widest uppercase mb-1">

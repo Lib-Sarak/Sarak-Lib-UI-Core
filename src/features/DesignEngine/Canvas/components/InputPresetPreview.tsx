@@ -28,7 +28,7 @@ export const InputPresetPreview: React.FC<InputPresetPreviewProps> = ({ preset, 
                 borderStyles[String(value)]();
             } else {
                 styles.borderStyle = String(value);
-                styles.borderWidth = 'var(--sarak-border-base, 1px)';
+                styles.borderWidth = 'var(--border-color,#334155)';
             }
         }
         if (key === 'inputShadow') styles.boxShadow = String(value);
@@ -45,7 +45,7 @@ export const InputPresetPreview: React.FC<InputPresetPreviewProps> = ({ preset, 
             transition={{ delay: index * 0.05 }}
             onClick={onApply}
             className="group relative flex flex-col items-center justify-center p-6 rounded-2xl border border-theme-border overflow-hidden bg-[rgba(10,10,10,0.5)] hover:border-theme-primary hover:shadow-[0_10px_40px_-10px_rgba(var(--theme-primary-rgb),0.2)] transition-all duration-300"
-            style={{ minHeight: 'var(--sarak-preview-width, 180px)' }}
+            style={{ minHeight: '320px' }}
         >
             <div className="absolute inset-0 z-0 bg-[radial-gradient(ellipse_at_center,rgba(255,255,255,0.05)_0%,transparent_70%)] opacity-50"></div>
             
@@ -56,9 +56,9 @@ export const InputPresetPreview: React.FC<InputPresetPreviewProps> = ({ preset, 
                     readOnly
                     style={{
                         padding: '12px 16px',
-                        fontSize: 'var(--sarak-text-sm, 14px)',
+                        fontSize: 'var(--color-theme-text, #ffffff)',
                         width: '100%',
-                        color: 'var(--sarak-text-inverse, #ffffff)',
+                        color: 'var(--color-theme-on-primary, #020617)',
                         outline: 'none',
                         transition: 'all 0.2s ease',
                         ...styles

@@ -15,8 +15,8 @@ const FilterSelect: React.FC<FilterSelectProps> = ({ col, placeholder, filters, 
         onChange={(e: React.ChangeEvent<HTMLSelectElement>) => onChange(col, e.target.value)}
         className="w-full text-2xs text-slate-300 transition-all"
         style={{ 
-            padding: 'var(--sx-spacing-sm)', 
-            borderRadius: 'var(--sx-radius-md)' 
+            padding: 'var(--sarak-layout-gap-sm,8px)', 
+            borderRadius: 'var(--sarak-card-radius,12px)' 
         }}
     >
         <option value="">(All)</option>

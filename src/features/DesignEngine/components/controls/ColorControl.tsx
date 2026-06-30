@@ -9,11 +9,11 @@ interface ColorControlProps {
 }
 
 export const ColorControl: React.FC<ColorControlProps> = ({ label, description, value, onChange }) => {
-    const [localColor, setLocalColor] = React.useState(value || 'var(--sarak-default-color, #000000)');
+    const [localColor, setLocalColor] = React.useState(value || 'var(--sarak-text-main,#ffffff)');
 
     // Sincroniza localmente para evitar engasgos no draft
     const sanitizeColor = (color: unknown) => {
-        if (typeof color !== 'string') return 'var(--sarak-default-color, #000000)';
+        if (typeof color !== 'string') return 'var(--sarak-text-main,#ffffff)';
         if (color.startsWith('#')) return color;
         if (color.startsWith('rgba')) {
             const matches = color.match(/rgba?\((\d+),\s*(\d+),\s*(\d+)/);
@@ -24,16 +24,16 @@ export const ColorControl: React.FC<ColorControlProps> = ({ label, description, 
                 return `#${r}${g}${b}`;
             }
         }
-        if (color === 'transparent') return 'var(--sarak-default-color, #000000)';
-        return 'var(--sarak-default-color, #000000)';
+        if (color === 'transparent') return 'var(--sarak-text-main,#ffffff)';
+        return 'var(--sarak-text-main,#ffffff)';
     };
 
     React.useEffect(() => {
-        setLocalColor(value || 'var(--sarak-default-color, #000000)');
+        setLocalColor(value || 'var(--sarak-text-main,#ffffff)');
     }, [value]);
 
     return (
-        <div className="flex items-center justify-between p-3 rounded-xl bg-[var(--theme-layer)] border border-[var(--theme-border)] group transition-all hover:bg-[var(--theme-border)]">
+        <div className="flex items-center justify-between p-3 rounded-xl bg-[var(--color-theme-card,#1e293b)] border border-[var(--theme-border)] group transition-all hover:bg-[var(--theme-border)]">
             <div className="flex flex-col gap-0.5">
                 <span className="text-[10px] font-black uppercase tracking-widest text-[var(--theme-muted)] flex items-center gap-1.5">
                     {label}
@@ -42,7 +42,7 @@ export const ColorControl: React.FC<ColorControlProps> = ({ label, description, 
                 <span className="text-[9px] font-mono text-[var(--theme-muted)] uppercase">{localColor}</span>
             </div>
             <div className="flex items-center gap-3">
-                <div className="relative w-8 h-8 rounded-lg overflow-hidden border border-[var(--theme-border)] shadow-lg ring-1 ring-[var(--theme-layer)]">
+                <div className="relative w-8 h-8 rounded-lg overflow-hidden border border-[var(--theme-border)] shadow-lg ring-1 ring-[var(--color-theme-card,#1e293b)]">
                     <input 
                         type="color" 
                         value={sanitizeColor(localColor)} 

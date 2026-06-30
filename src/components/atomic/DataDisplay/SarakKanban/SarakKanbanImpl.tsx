@@ -4,7 +4,7 @@
  * DnD via API HTML5 NATIVA (`draggable` + `onDragOver`/`onDrop`) — **zero dependência
  * nova**. No `drop`, o modelo local é atualizado IMEDIATAMENTE (o card salta de coluna sem
  * recarregar — Critério de Aceite) e o `onCardMove` é emitido com origem→destino. Zero
- * Hardcode: superfícies, bordas e o realce de drag-over saem de tokens `var(--sx-*)`.
+ * Hardcode: superfícies, bordas e o realce de drag-over saem de tokens `[--sarak-*]`.
  */
 
 import React, { useEffect, useState } from 'react';
@@ -57,7 +57,7 @@ function SarakKanbanImpl<C extends KanbanCard>({
         <div
             data-sarak-kanban="true"
             className={className}
-            style={{ display: 'flex', gap: 'var(--sx-spacing-md, 16px)', alignItems: 'flex-start', overflowX: 'auto' }}
+            style={{ display: 'flex', gap: 'var(--sarak-layout-gap-md,16px)', alignItems: 'flex-start', overflowX: 'auto' }}
         >
             {board.map((column) => {
                 const isOver = io.over === column.id;
@@ -72,12 +72,12 @@ function SarakKanbanImpl<C extends KanbanCard>({
                         style={{
                             display: 'flex',
                             flexDirection: 'column',
-                            gap: 'var(--sx-spacing-sm, 8px)',
+                            gap: 'var(--sarak-layout-gap-sm,8px)',
                             minWidth: 260,
-                            padding: 'var(--sx-spacing-sm, 8px)',
-                            borderRadius: 'var(--sx-radius-md, 12px)',
-                            background: 'var(--sx-color-surface-base)',
-                            border: `1px solid ${isOver ? 'var(--sx-color-primary-base)' : 'var(--sx-color-border-base)'}`,
+                            padding: 'var(--sarak-layout-gap-sm,8px)',
+                            borderRadius: 'var(--sarak-card-radius,12px)',
+                            background: 'var(--color-theme-card,#1e293b)',
+                            border: `1px solid ${isOver ? 'var(--sarak-primary-color,#3b82f6)' : 'var(--border-color,#334155)'}`,
                             transition: 'border-color 120ms',
                         }}
                     >
@@ -91,11 +91,11 @@ function SarakKanbanImpl<C extends KanbanCard>({
                                 fontSize: 13,
                                 textTransform: 'uppercase',
                                 letterSpacing: '0.04em',
-                                color: 'var(--sx-color-text-title)',
+                                color: 'var(--color-theme-title,#ffffff)',
                             }}
                         >
                             <span>{column.title}</span>
-                            <span style={{ color: 'var(--sx-color-text-muted)' }}>{column.cards.length}</span>
+                            <span style={{ color: 'var(--text-muted,#94a3b8)' }}>{column.cards.length}</span>
                         </header>
 
                         {column.cards.map((card) => (
@@ -106,21 +106,21 @@ function SarakKanbanImpl<C extends KanbanCard>({
                                 onDragStart={() => setIo((s) => ({ ...s, drag: { cardId: card.id, fromColumn: column.id } }))}
                                 onDragEnd={() => setIo(IDLE)}
                                 style={{
-                                    padding: 'var(--sx-spacing-sm, 8px) var(--sx-spacing-md, 12px)',
-                                    borderRadius: 'var(--sx-radius-sm, 8px)',
-                                    background: 'var(--sx-color-surface-raised, var(--sx-color-surface-base))',
-                                    border: '1px solid var(--sx-color-border-base)',
+                                    padding: 'var(--sarak-layout-gap-sm,8px) var(--sarak-layout-gap-md,16px)',
+                                    borderRadius: '8px',
+                                    background: 'var(--color-theme-card,#1e293b)',
+                                    border: '1px solid var(--border-color,#334155)',
                                     cursor: 'grab',
                                     opacity: io.drag?.cardId === card.id ? 0.5 : 1,
                                 }}
                             >
                                 {renderCard ? renderCard(card, column.id) : (
                                     <div>
-                                        <div style={{ fontSize: 13, fontWeight: 600, color: 'var(--sx-color-text-title)' }}>
+                                        <div style={{ fontSize: 13, fontWeight: 600, color: 'var(--color-theme-title,#ffffff)' }}>
                                             {card.title ?? card.id}
                                         </div>
                                         {card.description && (
-                                            <div style={{ fontSize: 12, color: 'var(--sx-color-text-muted)', marginTop: 2 }}>
+                                            <div style={{ fontSize: 12, color: 'var(--text-muted,#94a3b8)', marginTop: 2 }}>
                                                 {card.description}
                                             </div>
                                         )}

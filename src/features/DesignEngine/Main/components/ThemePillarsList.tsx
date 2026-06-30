@@ -76,7 +76,7 @@ export const ThemePillarsList: React.FC<ThemePillarsListProps> = ({
                         />
                         <AnimatePresence>
                             {activePillarId === pillar.id && (
-                                <motion.div initial={{ height: 0, opacity: 0 }} animate={{ height: 'auto', opacity: 1 }} exit={{ height: 0, opacity: 0 }} className="overflow-hidden bg-[var(--theme-layer)]">
+                                <motion.div initial={{ height: 0, opacity: 0 }} animate={{ height: 'auto', opacity: 1 }} exit={{ height: 0, opacity: 0 }} className="overflow-hidden bg-[var(--color-theme-card,#1e293b)]">
                                     <div className="px-2 py-2 flex flex-col gap-1">
                                         {Object.entries(groupedStructure[pillar.id] || {}).map(([subcat, tokens]) => {
                                             const visibleTokens = (tokens as DesignToken[]).filter((token: DesignToken) => !isEssentialMode || dynamicEssentialTokens.has(token.id));

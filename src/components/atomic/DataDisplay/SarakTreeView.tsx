@@ -5,7 +5,7 @@
  * serve a matriz RBAC) — sem duplicar a recursão. Suporta profundidade infinita e o
  * estado `lazyLoadingIcon` ativável via JSON (nó com `loading: true`), além de seleção
  * opcional por nó e callback de expansão para carregamento sob demanda. Zero dependência
- * nova; Zero Hardcode (estilos herdados dos átomos via tokens `var(--sx-*)`).
+ * nova; Zero Hardcode (estilos herdados dos átomos via tokens `[--sarak-*]`).
  */
 
 import React, { useMemo } from 'react';
@@ -51,7 +51,7 @@ export const SarakTreeView: React.FC<SarakTreeViewProps> = ({
     const handleToggle = (_parentId: string, nodeId: string) => onSelect?.(nodeId);
 
     return (
-        <div data-sarak-treeview="true" role="tree" className={className} style={{ display: 'flex', flexDirection: 'column', gap: 'var(--sx-spacing-xs)' }}>
+        <div data-sarak-treeview="true" role="tree" className={className} style={{ display: 'flex', flexDirection: 'column', gap: 'calc(var(--sarak-layout-gap-md,16px)*0.25)' }}>
             {data.map((node) => (
                 <div role="treeitem" key={node.id}>
                     <RecursiveMatrixNode

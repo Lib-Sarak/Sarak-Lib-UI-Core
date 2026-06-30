@@ -119,7 +119,7 @@ export const SarakExpandableMatrix = <TData extends MatrixParentData>({
             style={{ 
                 ...containerLayout.style,
                 '--matrix-gap': 'var(--sarak-matrix-gap, 12px)',
-                gap: 'var(--matrix-gap)'
+                gap: 'var(--sarak-layout-gap-md, 16px)'
             } as React.CSSProperties}
         >
             <div className="w-full">
@@ -132,33 +132,33 @@ export const SarakExpandableMatrix = <TData extends MatrixParentData>({
                 />
             </div>
 
-            <div className={containerLayout.className} style={{ gap: 'var(--sx-spacing-xs)' }}>
+            <div className={containerLayout.className} style={{ gap: 'calc(var(--sarak-layout-gap-md,16px)*0.25)' }}>
                 {data.map((item) => (
                     <div 
                         key={item.id}
-                        className="sarak-card relative overflow-hidden border border-[var(--sx-color-border-base)] transition-all"
+                        className="sarak-card relative overflow-hidden border border-[var(--border-color,#334155)] transition-all"
                         style={{
                             backgroundColor: 'var(--sarak-matrix-item-bg, rgba(255,255,255,0.02))',
                             borderRadius: 'var(--sarak-matrix-radius, 12px)',
-                            borderColor: expandedId === item.id ? 'var(--sx-color-primary-base)' : 'var(--sarak-matrix-border-color, rgba(255,255,255,0.05))',
+                            borderColor: expandedId === item.id ? 'var(--sarak-primary-color,#3b82f6)' : 'var(--sarak-matrix-border-color, rgba(255,255,255,0.05))',
                             backdropFilter: 'blur(var(--sarak-matrix-blur, 10px))'
                         }}
                     >
                         <div 
                             onClick={() => toggleExpand(item.id)}
-                            className="flex items-center justify-between p-4 cursor-pointer hover:bg-[var(--sx-color-text-muted)]/5 transition-colors select-none"
+                            className="flex items-center justify-between p-4 cursor-pointer hover:bg-[var(--text-muted,#94a3b8)]/5 transition-colors select-none"
                         >
                             <div className="flex items-center gap-4">
                                 {renderItemHeader ? (
                                     renderItemHeader(item)
                                 ) : (
                                     <div className="flex items-center gap-3">
-                                        <div className="w-10 h-10 rounded-lg bg-[var(--sx-color-primary-surface)] flex items-center justify-center text-[var(--sx-color-primary-base)] border border-[var(--sx-color-border-base)]">
+                                        <div className="w-10 h-10 rounded-lg bg-[var(--sarak-primary-color-bg,rgba(59,130,246,0.1))] flex items-center justify-center text-[var(--sarak-primary-color,#3b82f6)] border border-[var(--border-color,#334155)]">
                                             <Shield size={20} />
                                         </div>
                                         <div>
-                                            <h4 className="text-sm font-bold text-[var(--sx-color-text-title)] uppercase tracking-tight">{item.name || item.id}</h4>
-                                            <p className="text-2xs text-[var(--sx-color-text-muted)]">{item.description || 'Configurações de acesso'}</p>
+                                            <h4 className="text-sm font-bold text-[var(--color-theme-title,#ffffff)] uppercase tracking-tight">{item.name || item.id}</h4>
+                                            <p className="text-2xs text-[var(--text-muted,#94a3b8)]">{item.description || 'Configurações de acesso'}</p>
                                         </div>
                                     </div>
                                 )}
@@ -166,7 +166,7 @@ export const SarakExpandableMatrix = <TData extends MatrixParentData>({
                             <div className="flex items-center gap-4">
                                 <motion.div
                                     animate={{ rotate: expandedId === item.id ? 180 : 0 }}
-                                    className="w-8 h-8 rounded-full flex items-center justify-center bg-[var(--sx-color-text-muted)]/10 text-[var(--sx-color-text-muted)]"
+                                    className="w-8 h-8 rounded-full flex items-center justify-center bg-[var(--text-muted,#94a3b8)]/10 text-[var(--text-muted,#94a3b8)]"
                                 >
                                     <ChevronDown size={16} />
                                 </motion.div>
@@ -182,7 +182,7 @@ export const SarakExpandableMatrix = <TData extends MatrixParentData>({
                                     transition={{ duration: 0.3, ease: 'circOut' }}
                                     className="overflow-hidden"
                                 >
-                                    <div className="p-4 pt-0 border-t border-[var(--sx-color-border-base)] bg-[var(--sx-color-surface-base)]/50">
+                                    <div className="p-4 pt-0 border-t border-[var(--border-color,#334155)] bg-[var(--color-theme-card,#1e293b)]/50">
                                         <div className="flex flex-col mt-4 gap-3">
                                             {filteredSubItems.map((subItem) => (
                                                 <RecursiveMatrixNode 
@@ -198,7 +198,7 @@ export const SarakExpandableMatrix = <TData extends MatrixParentData>({
                                             ))}
                                         </div>
                                         {filteredSubItems.length === 0 && (
-                                            <div className="py-8 flex flex-col items-center justify-center text-[var(--sx-color-text-muted)] italic">
+                                            <div className="py-8 flex flex-col items-center justify-center text-[var(--text-muted,#94a3b8)] italic">
                                                 <Info size={24} className="mb-2 opacity-50" />
                                                 <span className="text-xs">Nenhum item encontrado para o filtro aplicado.</span>
                                             </div>

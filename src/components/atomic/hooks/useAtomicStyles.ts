@@ -13,7 +13,7 @@ export const useAtomicStyles = () => {
         isHovered: boolean
     ): React.CSSProperties => {
         const styleType = design?.btnStyleType || 'matte';
-        const glowColor = design?.btnNeonGlowColor || 'var(--sx-color-primary-glow)';
+        const glowColor = design?.btnNeonGlowColor || 'var(--sarak-shadow-glow,rgba(59,130,246,0.5))';
         const blurAmount = design?.btnBackdropBlur || 0;
 
         const dynamicStyle: React.CSSProperties = {};
@@ -55,10 +55,10 @@ export const useAtomicStyles = () => {
                 dynamicStyle.backdropFilter = `blur(${blurAmount}px)`;
                 dynamicStyle.WebkitBackdropFilter = `blur(${blurAmount}px)`;
             }
-            dynamicStyle.border = 'var(--sarak-btn-border-frosted, 1px solid rgba(255,255,255,0.1))';
+            dynamicStyle.border = 'var(--color-theme-border, rgba(255,255,255,0.1)))';
             
             if (variant === 'primary' || variant === 'danger') {
-                dynamicStyle.boxShadow = 'var(--sarak-btn-shadow-frosted, 0 8px 32px 0 rgba(0, 0, 0, 0.3))';
+                dynamicStyle.boxShadow = 'var(--sarak-dynamic-shadow, 0 4px 12px rgba(0,0,0,0.1)))';
             }
             
             if (variant === 'secondary') {
@@ -78,8 +78,8 @@ export const useAtomicStyles = () => {
         const shadowType = design?.inputShadow || 'none';
         const blurAmount = design?.inputBackdropBlur || 0;
         
-        const borderColor = 'var(--sarak-input-border-color, var(--sx-color-border-base))';
-        const focusColor = 'var(--sarak-input-focus-border-color, var(--sx-color-primary-base))';
+        const borderColor = 'var(--sarak-input-border-color, var(var(--border-color,#334155)))';
+        const focusColor = 'var(--sarak-input-focus-border-color, var(var(--sarak-primary-color,#3b82f6)))';
 
         const dynamicStyle: React.CSSProperties = {};
         
@@ -102,14 +102,14 @@ export const useAtomicStyles = () => {
         executeBorder();
 
         if (isFocused && borderType !== 'underline' && borderType !== 'none') {
-            dynamicStyle.boxShadow = `var(--sarak-input-focus-ring, 0 0 0 2px ${focusColor}33)`;
+            dynamicStyle.boxShadow = `var(--color-theme-primary, #3b82f6)`;
         }
 
         if (shadowType === 'neumorphism') {
             if (!isFocused) {
-                dynamicStyle.boxShadow = 'var(--sarak-input-shadow-neumorphism, inset 5px 5px 10px rgba(0,0,0,0.5), inset -5px -5px 10px rgba(255,255,255,0.05))';
+                dynamicStyle.boxShadow = 'inset 2px 2px 5px rgba(0,0,0,0.2), inset -5px -5px 10px rgba(255,255,255,0.05))';
             } else {
-                dynamicStyle.boxShadow = `var(--sarak-input-shadow-neumorphism-focus, inset 2px 2px 5px rgba(0,0,0,0.5), inset -2px -2px 5px rgba(255,255,255,0.05)), var(--sarak-input-focus-ring, 0 0 0 2px ${focusColor}33)`;
+                dynamicStyle.boxShadow = `0 0 0 2px var(--color-theme-primary, #3b82f6), inset -2px -2px 5px rgba(255,255,255,0.05)), var(--color-theme-primary, #3b82f6)`;
             }
         } 
         
@@ -129,13 +129,13 @@ export const useAtomicStyles = () => {
         design: SarakThemePayload | undefined,
         checked: boolean
     ) => {
-        const activeBg = 'var(--sarak-switch-active-bg, var(--sx-color-primary-base))';
+        const activeBg = 'var(--sarak-switch-active-bg, var(var(--sarak-primary-color,#3b82f6)))';
         const thumbBg = 'var(--sarak-switch-thumb, #ffffff)';
         const blurAmount = design?.switchBackdropBlur || 4;
         const styleType = design?.switchStyleType || 'tactile';
 
         const trackStyle: React.CSSProperties = {
-            backgroundColor: checked ? activeBg : 'var(--sarak-switch-inactive-bg, rgba(255, 255, 255, 0.1))',
+            backgroundColor: checked ? activeBg : 'var(--color-theme-card, rgba(255,255,255,0.1)))',
         };
 
         if (blurAmount > 0) {
@@ -144,8 +144,8 @@ export const useAtomicStyles = () => {
         }
 
         if (styleType === 'glass') {
-            trackStyle.backgroundColor = checked ? activeBg : 'var(--sarak-switch-inactive-glass, rgba(255, 255, 255, 0.05))';
-            trackStyle.border = 'var(--sarak-switch-border-glass, 1px solid rgba(255, 255, 255, 0.1))';
+            trackStyle.backgroundColor = checked ? activeBg : 'var(--color-theme-card, rgba(255,255,255,0.1)))';
+            trackStyle.border = 'var(--color-theme-border, rgba(255,255,255,0.1)))';
         }
 
         const thumbStyle: React.CSSProperties = {

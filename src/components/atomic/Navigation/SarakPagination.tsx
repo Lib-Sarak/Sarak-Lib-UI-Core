@@ -64,7 +64,7 @@ export const SarakPagination: React.FC<SarakPaginationProps> = ({
         <nav className={`flex items-center gap-1 ${className}`} aria-label="Paginação">
             <button
                 type="button"
-                className={`${baseBtn} text-[var(--sx-color-text-muted)] hover:bg-[var(--sx-color-surface-base)]`}
+                className={`${baseBtn} text-[var(--text-muted,#94a3b8)] hover:bg-[var(--color-theme-card,#1e293b)]`}
                 onClick={() => go(current - 1)}
                 disabled={current <= 1}
                 aria-label="Página anterior"
@@ -76,7 +76,7 @@ export const SarakPagination: React.FC<SarakPaginationProps> = ({
                 token === 'ellipsis' ? (
                     <span
                         key={`ellipsis-${index}`}
-                        className="min-w-9 h-9 inline-flex items-center justify-center text-[var(--sx-color-text-muted)] select-none"
+                        className="min-w-9 h-9 inline-flex items-center justify-center text-[var(--text-muted,#94a3b8)] select-none"
                         aria-hidden="true"
                     >
                         …
@@ -88,8 +88,8 @@ export const SarakPagination: React.FC<SarakPaginationProps> = ({
                         aria-current={token === current ? 'page' : undefined}
                         className={`${baseBtn} ${
                             token === current
-                                ? 'bg-[var(--sx-color-primary-base)] text-[var(--sx-color-surface-base)]'
-                                : 'text-[var(--sx-color-text-muted)] hover:bg-[var(--sx-color-surface-base)]'
+                                ? 'bg-[var(--sarak-primary-color,#3b82f6)] text-[var(--color-theme-card,#1e293b)]'
+                                : 'text-[var(--text-muted,#94a3b8)] hover:bg-[var(--color-theme-card,#1e293b)]'
                         }`}
                         onClick={() => go(token)}
                     >
@@ -100,7 +100,7 @@ export const SarakPagination: React.FC<SarakPaginationProps> = ({
 
             <button
                 type="button"
-                className={`${baseBtn} text-[var(--sx-color-text-muted)] hover:bg-[var(--sx-color-surface-base)]`}
+                className={`${baseBtn} text-[var(--text-muted,#94a3b8)] hover:bg-[var(--color-theme-card,#1e293b)]`}
                 onClick={() => go(current + 1)}
                 disabled={current >= total}
                 aria-label="Próxima página"

@@ -8,7 +8,7 @@
  *
  * Headless por design: não impõe markup de tabela nem cores próprias. Renderiza só
  * as linhas visíveis (60 FPS / 10k+ itens) e delega o conteúdo de cada linha ao
- * `renderRow`. Zero Hardcode: dimensões/efeitos via tokens `var(--sx-*)`.
+ * `renderRow`. Zero Hardcode: dimensões/efeitos via tokens `[--sarak-*]`.
  */
 
 import React, { useRef } from 'react';

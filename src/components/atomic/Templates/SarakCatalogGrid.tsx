@@ -73,7 +73,7 @@ export const SarakCatalogGrid: React.FC<SarakCatalogGridProps> = ({
         return (
             <div className="flex flex-col items-center justify-center min-h-[40vh] space-y-6">
                 <div className="relative">
-                    <div className="w-16 h-16 border-4 border-[var(--sx-color-border-base)]-primary/10 border-t-theme-primary rounded-full animate-spin"></div>
+                    <div className="w-16 h-16 border-4 border-[var(--border-color,#334155)]-primary/10 border-t-theme-primary rounded-full animate-spin"></div>
                     <Database className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 text-theme-primary/40" size={24} />
                 </div>
                 <p className="text-theme-muted text-[10px] font-black uppercase tracking-[0.4em] animate-pulse">
@@ -84,9 +84,9 @@ export const SarakCatalogGrid: React.FC<SarakCatalogGridProps> = ({
     }
 
     return (
-        <div className={twMerge("pb-20 flex flex-col", containerLayout.className)} style={{ gap: 'calc(var(--sx-spacing-md) * 2.5)' }}>
+        <div className={twMerge("pb-20 flex flex-col", containerLayout.className)} style={{ gap: 'calc(var(--sarak-layout-gap-md,16px) * 2.5)' }}>
             {/* Header & Filter Section */}
-            <section className={twMerge("relative bg-[var(--sx-color-surface-base)] border border-[var(--sx-color-border-base)] rounded-[3rem] overflow-hidden", headerLayout.className)} style={{ padding: 'calc(var(--sx-spacing-md) * 2.5)' }}>
+            <section className={twMerge("relative bg-[var(--color-theme-card,#1e293b)] border border-[var(--border-color,#334155)] rounded-[3rem] overflow-hidden", headerLayout.className)} style={{ padding: 'calc(var(--sarak-layout-gap-md,16px) * 2.5)' }}>
                 <div className="absolute top-0 right-0 p-10 opacity-5 pointer-events-none">
                     <LayoutGrid size={240} />
                 </div>
@@ -108,7 +108,7 @@ export const SarakCatalogGrid: React.FC<SarakCatalogGridProps> = ({
                     </div>
 
                     <div className="flex flex-col" style={{ gap: headerLayout.style.gap }}>
-                        <div className="flex flex-col lg:flex-row" style={{ gap: 'calc(var(--sx-spacing-md) * 1.5)' }}>
+                        <div className="flex flex-col lg:flex-row" style={{ gap: 'calc(var(--sarak-layout-gap-md,16px) * 1.5)' }}>
                             <div className="flex-1">
                                 <SarakInput 
                                     type="text"
@@ -126,7 +126,7 @@ export const SarakCatalogGrid: React.FC<SarakCatalogGridProps> = ({
                                         onClick={() => setSelectedCategory(key)}
                                         variant={selectedCategory === key ? 'primary' : 'secondary'}
                                         className={selectedCategory === key ? "shadow-xl" : ""}
-                                        style={selectedCategory === key ? { boxShadow: '0 10px 20px -10px var(--sx-color-primary-glow)' } : {}}
+                                        style={selectedCategory === key ? { boxShadow: '0 10px 20px -10px var(--sarak-shadow-glow,rgba(59,130,246,0.5))' } : {}}
                                     >
                                         {label}
                                     </SarakButton>
@@ -134,7 +134,7 @@ export const SarakCatalogGrid: React.FC<SarakCatalogGridProps> = ({
                             </div>
                         </div>
 
-                        <div className="flex items-center justify-between pt-4 border-t border-[var(--sx-color-border-base)]-border">
+                        <div className="flex items-center justify-between pt-4 border-t border-[var(--border-color,#334155)]-border">
                             <div className="text-[10px] text-theme-muted font-bold uppercase tracking-widest">
                                 {filteredItems.length} Itens encontrados
                             </div>
@@ -164,7 +164,7 @@ export const SarakCatalogGrid: React.FC<SarakCatalogGridProps> = ({
                                         initial={{ opacity: 0, scale: 0.9 }}
                                         animate={{ opacity: 1, scale: 1 }}
                                         exit={{ opacity: 0, scale: 0.9 }}
-                                        className="bg-[var(--sx-color-surface-base)] border border-[var(--sx-color-border-base)]-border rounded-[2rem] p-6 hover:border-[var(--sx-color-border-base)]-primary/30 transition-all"
+                                        className="bg-[var(--color-theme-card,#1e293b)] border border-[var(--border-color,#334155)]-border rounded-[2rem] p-6 hover:border-[var(--border-color,#334155)]-primary/30 transition-all"
                                     >
                                         <h3 className="text-lg font-bold text-theme-text">{item.display_name}</h3>
                                         <p className="text-sm text-theme-muted mt-2">{item.organization}</p>
@@ -175,7 +175,7 @@ export const SarakCatalogGrid: React.FC<SarakCatalogGridProps> = ({
                     </AnimatePresence>
                 </div>
             ) : (
-                <div className="text-center py-20 border border-dashed border-[var(--sx-color-border-base)]-border rounded-[3rem]">
+                <div className="text-center py-20 border border-dashed border-[var(--border-color,#334155)]-border rounded-[3rem]">
                     <p className="text-theme-muted font-black uppercase tracking-widest">{emptyMessage}</p>
                 </div>
             )}

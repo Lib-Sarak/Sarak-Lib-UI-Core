@@ -20,7 +20,7 @@ const range = (count: number, step = 1): number[] =>
     Array.from({ length: Math.ceil(count / step) }, (_, i) => i * step);
 
 const SELECT =
-    'rounded-input py-2 px-2 text-sm tabular-nums bg-[var(--sarak-input-bg,var(--sx-color-surface-base))] border border-[var(--sarak-input-border-color,var(--sx-color-border-base))] text-[var(--sarak-input-text-color,var(--sx-color-text-muted))] outline-none focus:border-[var(--sarak-input-focus-border-color,var(--sx-color-primary-base))]';
+    'rounded-input py-2 px-2 text-sm tabular-nums bg-[var(--sarak-input-bg,var(var(--color-theme-card,#1e293b)))] border border-[var(--sarak-input-border-color,var(var(--border-color,#334155)))] text-[var(--sarak-input-text-color,var(var(--text-muted,#94a3b8)))] outline-none focus:border-[var(--sarak-input-focus-border-color,var(var(--sarak-primary-color,#3b82f6)))]';
 
 /**
  * Componente Atômico: SarakTimePicker (Spec 11, Regra 1 — par temporal)
@@ -57,7 +57,7 @@ export const SarakTimePicker: React.FC<SarakTimePickerProps> = ({
 
     return (
         <SarakFormGroup className={`${disabledClass} ${className}`.trim()} style={style}>
-            {label && <span className="text-sm font-medium text-[var(--sx-color-text-muted)]">{label}</span>}
+            {label && <span className="text-sm font-medium text-[var(--text-muted,#94a3b8)]">{label}</span>}
 
             <div className="flex items-center gap-2" role="group" aria-label={label ?? 'Horário'}>
                 <select
@@ -75,7 +75,7 @@ export const SarakTimePicker: React.FC<SarakTimePickerProps> = ({
                     ))}
                 </select>
 
-                <span className="font-bold text-[var(--sx-color-text-muted)]">:</span>
+                <span className="font-bold text-[var(--text-muted,#94a3b8)]">:</span>
 
                 <select
                     aria-label="Minuto"

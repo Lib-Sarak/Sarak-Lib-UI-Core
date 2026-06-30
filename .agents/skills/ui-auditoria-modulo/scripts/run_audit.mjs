@@ -24,6 +24,7 @@ function runScript(scriptName) {
 function main() {
   const scripts = [
     'auditor_hardcoded.mjs',
+    'auditor_ghostvars.mjs',
     'auditor_typescript.mjs',
     'auditor_coverage.mjs',
     'auditor_arquitetura.mjs',

@@ -26,10 +26,10 @@ const stateOf = (index: number, current: number): StepState =>
     index < current ? 'done' : index === current ? 'current' : 'todo';
 
 const markerClass: Record<StepState, string> = {
-    done: 'bg-[var(--sx-color-primary-base)] text-[var(--sx-color-surface-base)] border-[var(--sx-color-primary-base)]',
+    done: 'bg-[var(--sarak-primary-color,#3b82f6)] text-[var(--color-theme-card,#1e293b)] border-[var(--sarak-primary-color,#3b82f6)]',
     current:
-        'bg-[var(--sx-color-surface-base)] text-[var(--sx-color-primary-base)] border-[var(--sx-color-primary-base)] font-bold',
-    todo: 'bg-[var(--sx-color-surface-base)] text-[var(--sx-color-text-muted)] border-[var(--sx-color-border-base)]',
+        'bg-[var(--color-theme-card,#1e293b)] text-[var(--sarak-primary-color,#3b82f6)] border-[var(--sarak-primary-color,#3b82f6)] font-bold',
+    todo: 'bg-[var(--color-theme-card,#1e293b)] text-[var(--text-muted,#94a3b8)] border-[var(--border-color,#334155)]',
 };
 
 /**
@@ -71,7 +71,7 @@ export const SarakStepper: React.FC<SarakStepperProps> = ({
                                 <span
                                     className={`${
                                         isVertical ? 'w-px h-6 my-1' : 'h-px w-10 mx-2'
-                                    } ${state === 'done' ? 'bg-[var(--sx-color-primary-base)]' : 'bg-[var(--sx-color-border-base)]'}`}
+                                    } ${state === 'done' ? 'bg-[var(--sarak-primary-color,#3b82f6)]' : 'bg-[var(--border-color,#334155)]'}`}
                                     aria-hidden="true"
                                 />
                             )}
@@ -79,8 +79,8 @@ export const SarakStepper: React.FC<SarakStepperProps> = ({
                         <span
                             className={`text-xs ${isVertical ? '' : 'mt-1 max-w-24 truncate text-center'} ${
                                 state === 'todo'
-                                    ? 'text-[var(--sx-color-text-muted)]'
-                                    : 'text-[var(--sx-color-text-main)]'
+                                    ? 'text-[var(--text-muted,#94a3b8)]'
+                                    : 'text-[var(--sarak-text-main,#ffffff)]'
                             }`}
                             title={step.label}
                         >

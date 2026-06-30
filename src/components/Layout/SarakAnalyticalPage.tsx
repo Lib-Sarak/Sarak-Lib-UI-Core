@@ -38,11 +38,11 @@ export const SarakAnalyticalPage: React.FC<SarakAnalyticalPageProps> = ({
             <div className="flex flex-col w-full h-full relative">
                 {/* Mobile Header (Auto-generated Se houver navBar ou sidePanel para controlar) */}
                 {(navBar || sidePanel) && (
-                    <div className="flex items-center justify-between p-4 border-b border-[var(--sarak-border)] bg-[var(--sarak-bg-layer)] z-20 shrink-0">
+                    <div className="flex items-center justify-between p-4 border-b border-[var(--border-color,#334155)] bg-[var(--color-theme-card,#1e293b)] z-20 shrink-0">
                         {navBar ? (
                             <button 
                                 onClick={() => setIsMobileNavOpen(true)}
-                                className="p-2 rounded-lg bg-[var(--sarak-bg-layer)] hover:bg-[var(--sarak-bg-hover)] transition-colors"
+                                className="p-2 rounded-lg bg-[var(--color-theme-card,#1e293b)] hover:bg-[var(--color-theme-card, #1e293b)] transition-colors"
                             >
                                 <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><line x1="3" y1="12" x2="21" y2="12"></line><line x1="3" y1="6" x2="21" y2="6"></line><line x1="3" y1="18" x2="21" y2="18"></line></svg>
                             </button>
@@ -51,7 +51,7 @@ export const SarakAnalyticalPage: React.FC<SarakAnalyticalPageProps> = ({
                         {sidePanel && (
                             <button 
                                 onClick={() => setIsSidePanelOpen(true)}
-                                className="p-2 rounded-lg bg-[var(--sarak-bg-layer)] hover:bg-[var(--sarak-bg-hover)] transition-colors"
+                                className="p-2 rounded-lg bg-[var(--color-theme-card,#1e293b)] hover:bg-[var(--color-theme-card, #1e293b)] transition-colors"
                             >
                                 <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><circle cx="12" cy="12" r="1"></circle><circle cx="19" cy="12" r="1"></circle><circle cx="5" cy="12" r="1"></circle></svg>
                             </button>
@@ -64,7 +64,7 @@ export const SarakAnalyticalPage: React.FC<SarakAnalyticalPageProps> = ({
                     {mainContent}
                     {/* Se não for modo drawer, empilha o side panel no final */}
                     {!sidePanelAsDrawerOnMobile && sidePanel && (
-                        <div className="mt-8 border-t border-[var(--sarak-border)] pt-4">
+                        <div className="mt-8 border-t border-[var(--border-color,#334155)] pt-4">
                             {sidePanel}
                         </div>
                     )}
@@ -74,7 +74,7 @@ export const SarakAnalyticalPage: React.FC<SarakAnalyticalPageProps> = ({
                 {navBar && isMobileNavOpen && (
                     <div className="absolute inset-0 z-50 flex">
                         <div className="absolute inset-0 bg-black/50 backdrop-blur-sm" onClick={() => setIsMobileNavOpen(false)} />
-                        <div className="relative w-4/5 max-w-sm h-full bg-[var(--sarak-bg-base)] border-r border-[var(--sarak-border)] shadow-2xl p-4 overflow-y-auto animate-in slide-in-from-left">
+                        <div className="relative w-4/5 max-w-sm h-full bg-[var(--sarak-bg-base)] border-r border-[var(--border-color,#334155)] shadow-2xl p-4 overflow-y-auto animate-in slide-in-from-left">
                             <div className="flex justify-end mb-4">
                                 <button onClick={() => setIsMobileNavOpen(false)} className="p-2">✕</button>
                             </div>
@@ -87,7 +87,7 @@ export const SarakAnalyticalPage: React.FC<SarakAnalyticalPageProps> = ({
                 {sidePanel && sidePanelAsDrawerOnMobile && isSidePanelOpen && (
                     <div className="absolute inset-0 z-50 flex justify-end">
                         <div className="absolute inset-0 bg-black/50 backdrop-blur-sm" onClick={() => setIsSidePanelOpen(false)} />
-                        <div className="relative w-4/5 max-w-sm h-full bg-[var(--sarak-bg-base)] border-l border-[var(--sarak-border)] shadow-2xl p-4 overflow-y-auto animate-in slide-in-from-right">
+                        <div className="relative w-4/5 max-w-sm h-full bg-[var(--sarak-bg-base)] border-l border-[var(--border-color,#334155)] shadow-2xl p-4 overflow-y-auto animate-in slide-in-from-right">
                             <div className="flex justify-start mb-4">
                                 <button onClick={() => setIsSidePanelOpen(false)} className="p-2">✕</button>
                             </div>

@@ -99,7 +99,7 @@ export const SarakRichText: React.FC<SarakRichTextProps> = ({
         emit();
     };
 
-    const btn = 'flex items-center justify-center w-8 h-8 rounded-md text-[var(--sx-color-text-title)] hover:bg-[var(--sx-color-text-muted)]/10 disabled:opacity-40 transition-colors';
+    const btn = 'flex items-center justify-center w-8 h-8 rounded-md text-[var(--color-theme-title,#ffffff)] hover:bg-[var(--text-muted,#94a3b8)]/10 disabled:opacity-40 transition-colors';
 
     return (
         <div className={`relative ${className}`}>
@@ -110,11 +110,11 @@ export const SarakRichText: React.FC<SarakRichTextProps> = ({
                     display: 'flex',
                     gap: 2,
                     padding: 4,
-                    border: '1px solid var(--sx-color-border-base)',
+                    border: '1px solid var(--border-color,#334155)',
                     borderBottom: 'none',
-                    borderTopLeftRadius: 'var(--sx-radius-md, 8px)',
-                    borderTopRightRadius: 'var(--sx-radius-md, 8px)',
-                    background: 'var(--sarak-table-header-bg, var(--sx-color-surface-base))',
+                    borderTopLeftRadius: 'var(--sarak-card-radius,12px)',
+                    borderTopRightRadius: 'var(--sarak-card-radius,12px)',
+                    background: 'var(--sarak-table-header-bg, var(var(--color-theme-card,#1e293b)))',
                 }}
             >
                 {TOOLS.map((tool) => (
@@ -141,12 +141,12 @@ export const SarakRichText: React.FC<SarakRichTextProps> = ({
                 data-placeholder={placeholder}
                 style={{
                     minHeight: 120,
-                    padding: 'var(--sx-spacing-md, 12px)',
-                    border: `1px solid ${error ? 'var(--sarak-input-error-color, #ff4d4f)' : 'var(--sx-color-border-base)'}`,
-                    borderBottomLeftRadius: 'var(--sx-radius-md, 8px)',
-                    borderBottomRightRadius: 'var(--sx-radius-md, 8px)',
-                    background: 'var(--sarak-input-bg, var(--sx-color-surface-base))',
-                    color: 'var(--sarak-input-text-color, var(--sx-color-text-muted))',
+                    padding: 'var(--sarak-layout-gap-md,16px)',
+                    border: `1px solid ${error ? 'var(--sarak-input-error-color, #ff4d4f)' : 'var(--border-color,#334155)'}`,
+                    borderBottomLeftRadius: 'var(--sarak-card-radius,12px)',
+                    borderBottomRightRadius: 'var(--sarak-card-radius,12px)',
+                    background: 'var(--sarak-input-bg, var(var(--color-theme-card,#1e293b)))',
+                    color: 'var(--sarak-input-text-color, var(var(--text-muted,#94a3b8)))',
                     outline: 'none',
                     opacity: disabled ? 0.5 : 1,
                     cursor: disabled ? 'not-allowed' : 'text',

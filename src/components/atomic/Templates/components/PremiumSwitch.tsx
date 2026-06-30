@@ -5,9 +5,9 @@ export const PremiumSwitch: React.FC<{ checked: boolean; onChange: () => void }>
     <div 
         onClick={(e) => { e.stopPropagation(); onChange(); }}
         className={`w-9 h-5 rounded-full transition-all cursor-pointer flex items-center ${
-            checked ? 'bg-[var(--sx-color-primary-base)] shadow-[0_0_10px_rgba(var(--sx-color-primary-base),0.3)]' : 'bg-[var(--sx-color-text-muted)]/10'
+            checked ? 'bg-[var(--sarak-primary-color,#3b82f6)] shadow-[0_0_10px_rgba(var(--sarak-primary-color,#3b82f6),0.3)]' : 'bg-[var(--text-muted,#94a3b8)]/10'
         }`}
-        style={{ padding: 'calc(var(--sx-spacing-xs) / 2)' }}
+        style={{ padding: 'calc(calc(var(--sarak-layout-gap-md,16px)*0.25) / 2)' }}
     >
         <motion.div 
             layout

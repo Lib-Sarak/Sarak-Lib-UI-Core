@@ -24,18 +24,18 @@ export const SecurityOrchestratorStatus: React.FC<SecurityOrchestratorStatusProp
             key="status"
             variants={containerVariants}
             initial="hidden" animate="visible" exit="exit"
-            className={getFlexStyles('column', 'flex-start', 'stretch', 'var(--sx-spacing-lg)').className}
-            style={getFlexStyles('column', 'flex-start', 'stretch', 'var(--sx-spacing-lg)').style}
+            className={getFlexStyles('column', 'flex-start', 'stretch', 'var(--sarak-layout-gap-lg,24px)').className}
+            style={getFlexStyles('column', 'flex-start', 'stretch', 'var(--sarak-layout-gap-lg,24px)').style}
         >
-            <div className="flex items-center justify-between bg-[var(--sx-color-surface-base)]/40 border border-[var(--sx-color-border-base)] rounded-xl" style={{ padding: 'var(--sx-spacing-lg)' }}>
-                <div className="flex items-center" style={{ gap: 'var(--sx-spacing-md)' }}>
+            <div className="flex items-center justify-between bg-[var(--color-theme-card,#1e293b)]/40 border border-[var(--border-color,#334155)] rounded-xl" style={{ padding: 'var(--sarak-layout-gap-lg,24px)' }}>
+                <div className="flex items-center" style={{ gap: 'var(--sarak-layout-gap-md,16px)' }}>
                     {mfaStatus?.enabled ? (
                         <ShieldCheck className="text-emerald-500" size={32} />
                     ) : (
                         <ShieldAlert className="text-amber-500" size={32} />
                     )}
                     <div>
-                        <div className="text-xs font-black uppercase tracking-widest text-[var(--sx-color-text-title)]">Autenticação de Dois Fatores (2FA)</div>
+                        <div className="text-xs font-black uppercase tracking-widest text-[var(--color-theme-title,#ffffff)]">Autenticação de Dois Fatores (2FA)</div>
                         <div className="text-2xs uppercase tracking-widest font-bold opacity-50">
                             Status: {mfaStatus?.enabled ? 'Ativo e Protegido' : 'Desativado'}
                         </div>
@@ -59,7 +59,7 @@ export const SecurityOrchestratorStatus: React.FC<SecurityOrchestratorStatusProp
                 )}
             </div>
 
-            <div className="rounded-lg bg-amber-500/5 border border-amber-500/20 flex" style={{ padding: 'var(--sx-spacing-md)', gap: 'var(--sx-spacing-sm)' }}>
+            <div className="rounded-lg bg-amber-500/5 border border-amber-500/20 flex" style={{ padding: 'var(--sarak-layout-gap-md,16px)', gap: 'var(--sarak-layout-gap-sm,8px)' }}>
                 <AlertTriangle className="text-amber-500 shrink-0" size={16} />
                 <p className="text-[10px] text-amber-500/80 uppercase leading-relaxed font-medium">
                     A segurança do seu ecossistema depende de uma identidade forte. Recomendamos manter o MFA ativo em todos os módulos Sarak.

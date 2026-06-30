@@ -39,18 +39,18 @@ export const SecurityOrchestratorSetup: React.FC<SecurityOrchestratorSetupProps>
             className={twMerge(getFlexStyles('column', 'center', 'center').className, "text-center", layout.className)}
             style={{ gap: layout.style.gap }}
         >
-            <div className="text-xs font-black uppercase tracking-widest text-[var(--sx-color-text-title)]">Configuração de Segundo Fator</div>
+            <div className="text-xs font-black uppercase tracking-widest text-[var(--color-theme-title,#ffffff)]">Configuração de Segundo Fator</div>
             
-            <div className="bg-white rounded-2xl shadow-xl border-4 border-[var(--sx-color-primary-base)]/20" style={{ padding: 'var(--sx-spacing-md)' }}>
+            <div className="bg-white rounded-2xl shadow-xl border-4 border-[var(--sarak-primary-color,#3b82f6)]/20" style={{ padding: 'var(--sarak-layout-gap-md,16px)' }}>
                 {setupData?.provisioning_uri ? (
                     <img 
                         src={`https://api.qrserver.com/v1/create-qr-code/?size=${qrSize}x${qrSize}&data=${encodeURIComponent(String(setupData.provisioning_uri || ''))}`}
                         alt="MFA QR Code"
-                        style={{ width: 'var(--sarak-qr-size, 200px)', height: 'var(--sarak-qr-size, 200px)' }}
+                        style={{ width: '200px', height: '200px' }}
                     />
                 ) : (
                     <div 
-                        style={{ width: 'var(--sarak-qr-size, 200px)', height: 'var(--sarak-qr-size, 200px)' }}
+                        style={{ width: '200px', height: '200px' }}
                         className="flex items-center justify-center bg-gray-100"
                     >
                         <QrCode className="text-gray-300" size={48} />
@@ -58,13 +58,13 @@ export const SecurityOrchestratorSetup: React.FC<SecurityOrchestratorSetupProps>
                 )}
             </div>
 
-            <div className={`max-w-xs ${getFlexStyles('column', 'flex-start', 'stretch', 'var(--sx-spacing-sm)').className}`} style={getFlexStyles('column', 'flex-start', 'stretch', 'var(--sx-spacing-sm)').style}>
-                <p className="text-[10px] uppercase tracking-wider text-[var(--sx-color-text-muted)] leading-tight">
+            <div className={`max-w-xs ${getFlexStyles('column', 'flex-start', 'stretch', 'var(--sarak-layout-gap-sm,8px)').className}`} style={getFlexStyles('column', 'flex-start', 'stretch', 'var(--sarak-layout-gap-sm,8px)').style}>
+                <p className="text-[10px] uppercase tracking-wider text-[var(--text-muted,#94a3b8)] leading-tight">
                     Escaneie o código acima com seu app de autenticação (Google Authenticator, Authy, etc.) e insira o código de 6 dígitos abaixo.
                 </p>
             </div>
 
-            <div className={`w-full max-w-xs ${getFlexStyles('column', 'flex-start', 'stretch', 'var(--sx-spacing-md)').className}`} style={getFlexStyles('column', 'flex-start', 'stretch', 'var(--sx-spacing-md)').style}>
+            <div className={`w-full max-w-xs ${getFlexStyles('column', 'flex-start', 'stretch', 'var(--sarak-layout-gap-md,16px)').className}`} style={getFlexStyles('column', 'flex-start', 'stretch', 'var(--sarak-layout-gap-md,16px)').style}>
                 <SarakInput 
                     type="text" 
                     maxLength={6}
@@ -87,8 +87,8 @@ export const SecurityOrchestratorSetup: React.FC<SecurityOrchestratorSetupProps>
                     disabled={code.length !== 6 || isValidating}
                     variant="primary"
                     fullWidth
-                    className="shadow-xl shadow-[var(--sx-color-primary-base)]/20"
-                    style={{ paddingTop: 'var(--sx-spacing-md)', paddingBottom: 'var(--sx-spacing-md)' }}
+                    className="shadow-xl shadow-[var(--sarak-primary-color,#3b82f6)]/20"
+                    style={{ paddingTop: 'var(--sarak-layout-gap-md,16px)', paddingBottom: 'var(--sarak-layout-gap-md,16px)' }}
                 >
                     {isValidating ? 'Validando...' : 'Ativar Proteção'}
                 </SarakButton>

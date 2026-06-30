@@ -5,7 +5,7 @@
  * `<SarakCard>` (Critério de Aceite 5). In-house em SVG puro: **zero dependência
  * nova** (as Ondas 7–9 não adicionam libs). Zero Hardcode: a cor da série herda dos
  * tokens globais — `--sarak-chart-primary` (Spec 12 / schema `data.ts`) com cascata
- * para `--sx-color-primary-base`. O traço usa `vector-effect: non-scaling-stroke`
+ * para `var(--sarak-primary-color,#3b82f6)`. O traço usa `vector-effect: non-scaling-stroke`
  * para permanecer nítido mesmo quando o SVG é esticado na largura do contêiner.
  */
 
@@ -33,7 +33,7 @@ export interface SarakSparklineProps {
 /** Espaço de coordenadas horizontal fixo; o SVG escala para a largura real do pai. */
 const VIEW_W = 100;
 /** Cor da série: token de gráfico → primária global → fallback de segurança. */
-const SERIES_COLOR = 'var(--sarak-chart-primary, var(--sx-color-primary-base, #00f2ff))';
+const SERIES_COLOR = 'var(--sarak-chart-primary, var(var(--sarak-primary-color,#3b82f6), #00f2ff))';
 
 /** Normaliza cada valor para a coordenada Y (invertida) dentro da janela útil. */
 const toPoints = (data: number[], height: number, pad: number): Array<[number, number]> => {

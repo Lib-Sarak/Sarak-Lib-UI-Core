@@ -49,17 +49,17 @@ export const SarakSecurityOrchestrator: React.FC<SarakSecurityOrchestratorProps>
     };
 
     return (
-        <div className={twMerge(`w-full max-w-2xl mx-auto bg-[var(--sx-color-surface-base)] border-[var(--sx-color-border-base)] overflow-hidden shadow-2xl`, layout.className)} style={layout.style}>
+        <div className={twMerge(`w-full max-w-2xl mx-auto bg-[var(--color-theme-card,#1e293b)] border-[var(--border-color,#334155)] overflow-hidden shadow-2xl`, layout.className)} style={layout.style}>
             {/* Header */}
-            <div className="flex items-center border-b border-[var(--sx-color-border-base)]" style={{ paddingBottom: 'var(--sx-spacing-lg)', marginBottom: 'calc(var(--sx-spacing-md) * 2)', gap: layout.style.gap }}>
-                <div className="bg-[var(--sx-color-primary-base)]/10" style={{ borderRadius: 'calc(var(--sarak-border-radius-lg, 12px) * 0.75)', padding: 'var(--sx-spacing-md)' }}>
-                    <Shield className="text-[var(--sx-color-primary-base)]" size={24} />
+            <div className="flex items-center border-b border-[var(--border-color,#334155)]" style={{ paddingBottom: 'var(--sarak-layout-gap-lg,24px)', marginBottom: 'calc(var(--sarak-layout-gap-md,16px) * 2)', gap: layout.style.gap }}>
+                <div className="bg-[var(--sarak-primary-color,#3b82f6)]/10" style={{ borderRadius: 'calc(var(--sarak-border-radius-lg, 12px) * 0.75)', padding: 'var(--sarak-layout-gap-md,16px)' }}>
+                    <Shield className="text-[var(--sarak-primary-color,#3b82f6)]" size={24} />
                 </div>
                 <div>
-                    <h2 className="text-xl font-black uppercase tracking-[0.2em] text-[var(--sx-color-text-title)]">
+                    <h2 className="text-xl font-black uppercase tracking-[0.2em] text-[var(--color-theme-title,#ffffff)]">
                         {label || 'Orquestrador de Segurança'}
                     </h2>
-                    <p className="text-2xs uppercase tracking-widest text-[var(--sx-color-text-muted)] font-bold">
+                    <p className="text-2xs uppercase tracking-widest text-[var(--text-muted,#94a3b8)] font-bold">
                         Gestão de Identidade e Autenticação Multifator
                     </p>
                 </div>
@@ -72,10 +72,10 @@ export const SarakSecurityOrchestrator: React.FC<SarakSecurityOrchestratorProps>
                         variants={containerVariants}
                         initial="hidden" animate="visible" exit="exit"
                         className={twMerge(getFlexStyles('column', 'center', 'center').className, layout.className)}
-                        style={{ padding: 'var(--sx-spacing-3xl) 0', gap: layout.style.gap }}
+                        style={{ padding: 'calc(var(--sarak-layout-gap-md,16px)*3) 0', gap: layout.style.gap }}
                     >
-                        <RefreshCw className="animate-spin text-[var(--sx-color-primary-base)]" size={32} />
-                        <span className="text-2xs uppercase font-black tracking-[0.3em] text-[var(--sx-color-text-muted)]">Sincronizando Vault...</span>
+                        <RefreshCw className="animate-spin text-[var(--sarak-primary-color,#3b82f6)]" size={32} />
+                        <span className="text-2xs uppercase font-black tracking-[0.3em] text-[var(--text-muted,#94a3b8)]">Sincronizando Vault...</span>
                     </motion.div>
                 )}
 
@@ -121,14 +121,14 @@ export const SarakSecurityOrchestrator: React.FC<SarakSecurityOrchestratorProps>
                         variants={containerVariants}
                         initial="hidden" animate="visible" exit="exit"
                         className={twMerge(getFlexStyles('column', 'center', 'center').className, "text-center", layout.className)}
-                        style={{ padding: 'var(--sx-spacing-3xl) 0', gap: layout.style.gap }}
+                        style={{ padding: 'calc(var(--sarak-layout-gap-md,16px)*3) 0', gap: layout.style.gap }}
                     >
                         <div className="w-20 h-20 bg-emerald-500/10 rounded-full flex items-center justify-center border border-emerald-500/30">
                             <CheckCircle2 className="text-emerald-500" size={40} />
                         </div>
                         <div>
-                            <div className="text-lg font-black uppercase tracking-[0.2em] text-[var(--sx-color-text-title)]" style={{ marginBottom: 'var(--sx-spacing-sm)' }}>Operação Concluída</div>
-                            <p className="text-2xs uppercase tracking-widest text-[var(--sx-color-text-muted)] font-bold">
+                            <div className="text-lg font-black uppercase tracking-[0.2em] text-[var(--color-theme-title,#ffffff)]" style={{ marginBottom: 'var(--sarak-layout-gap-sm,8px)' }}>Operação Concluída</div>
+                            <p className="text-2xs uppercase tracking-widest text-[var(--text-muted,#94a3b8)] font-bold">
                                 O cofre de segurança foi atualizado com sucesso.
                             </p>
                         </div>
@@ -141,11 +141,11 @@ export const SarakSecurityOrchestrator: React.FC<SarakSecurityOrchestratorProps>
                         variants={containerVariants}
                         initial="hidden" animate="visible" exit="exit"
                         className={twMerge(getFlexStyles('column', 'center', 'center').className, "text-center", layout.className)}
-                        style={{ padding: 'var(--sx-spacing-3xl) 0', gap: layout.style.gap }}
+                        style={{ padding: 'calc(var(--sarak-layout-gap-md,16px)*3) 0', gap: layout.style.gap }}
                     >
                         <ShieldAlert className="text-red-500" size={48} />
                         <div>
-                            <div className="text-xs font-black uppercase tracking-widest text-red-500" style={{ marginBottom: 'var(--sx-spacing-sm)' }}>{error}</div>
+                            <div className="text-xs font-black uppercase tracking-widest text-red-500" style={{ marginBottom: 'var(--sarak-layout-gap-sm,8px)' }}>{error}</div>
                             <SarakButton 
                                 onClick={fetchStatus}
                                 variant="secondary"

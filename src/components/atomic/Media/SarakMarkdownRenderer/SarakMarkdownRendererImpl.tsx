@@ -2,7 +2,7 @@
  * SarakMarkdownRenderer (Spec 15, Regra 1) — implementação pesada (lazy).
  *
  * Ingere Markdown cru e o renderiza como elementos estilizados pelos tokens Sarak
- * (`var(--sx-*)`), com highlight de código atrelado ao modo (dark/light) do tema.
+ * (`[--sarak-*]`), com highlight de código atrelado ao modo (dark/light) do tema.
  * Segurança (Spec 40): NÃO usa `dangerouslySetInnerHTML` nem `rehype-raw` — HTML cru
  * no Markdown é tratado como texto literal (não executado); URLs passam por uma
  * allowlist de esquemas seguros (`javascript:`/`data:` viram href vazio).
@@ -38,23 +38,23 @@ const SarakMarkdownRendererImpl: React.FC<SarakMarkdownRendererProps> = ({ conte
     const codeStyle = isDark ? oneDark : oneLight;
 
     const components: MarkdownComponents = {
-        h1: ({ node: _n, ...p }: MdProps<'h1'>) => <h1 className="text-2xl font-bold mb-3 text-[var(--sx-color-text-main)]" {...p} />,
-        h2: ({ node: _n, ...p }: MdProps<'h2'>) => <h2 className="text-xl font-bold mb-2 text-[var(--sx-color-text-main)]" {...p} />,
-        h3: ({ node: _n, ...p }: MdProps<'h3'>) => <h3 className="text-lg font-semibold mb-2 text-[var(--sx-color-text-main)]" {...p} />,
-        p: ({ node: _n, ...p }: MdProps<'p'>) => <p className="mb-3 leading-relaxed text-[var(--sx-color-text-muted)]" {...p} />,
-        a: ({ node: _n, ...p }: MdProps<'a'>) => <a className="text-[var(--sx-color-primary-base)] underline" {...p} />,
-        ul: ({ node: _n, ...p }: MdProps<'ul'>) => <ul className="list-disc pl-6 mb-3 text-[var(--sx-color-text-muted)]" {...p} />,
-        ol: ({ node: _n, ...p }: MdProps<'ol'>) => <ol className="list-decimal pl-6 mb-3 text-[var(--sx-color-text-muted)]" {...p} />,
+        h1: ({ node: _n, ...p }: MdProps<'h1'>) => <h1 className="text-2xl font-bold mb-3 text-[var(--sarak-text-main,#ffffff)]" {...p} />,
+        h2: ({ node: _n, ...p }: MdProps<'h2'>) => <h2 className="text-xl font-bold mb-2 text-[var(--sarak-text-main,#ffffff)]" {...p} />,
+        h3: ({ node: _n, ...p }: MdProps<'h3'>) => <h3 className="text-lg font-semibold mb-2 text-[var(--sarak-text-main,#ffffff)]" {...p} />,
+        p: ({ node: _n, ...p }: MdProps<'p'>) => <p className="mb-3 leading-relaxed text-[var(--text-muted,#94a3b8)]" {...p} />,
+        a: ({ node: _n, ...p }: MdProps<'a'>) => <a className="text-[var(--sarak-primary-color,#3b82f6)] underline" {...p} />,
+        ul: ({ node: _n, ...p }: MdProps<'ul'>) => <ul className="list-disc pl-6 mb-3 text-[var(--text-muted,#94a3b8)]" {...p} />,
+        ol: ({ node: _n, ...p }: MdProps<'ol'>) => <ol className="list-decimal pl-6 mb-3 text-[var(--text-muted,#94a3b8)]" {...p} />,
         blockquote: ({ node: _n, ...p }: MdProps<'blockquote'>) => (
-            <blockquote className="border-l-2 border-[var(--sx-color-primary-base)] pl-4 italic mb-3 text-[var(--sx-color-text-muted)]" {...p} />
+            <blockquote className="border-l-2 border-[var(--sarak-primary-color,#3b82f6)] pl-4 italic mb-3 text-[var(--text-muted,#94a3b8)]" {...p} />
         ),
         table: ({ node: _n, ...p }: MdProps<'table'>) => (
             <div className="overflow-x-auto mb-3">
-                <table className="w-full border-collapse text-sm text-[var(--sx-color-text-muted)]" {...p} />
+                <table className="w-full border-collapse text-sm text-[var(--text-muted,#94a3b8)]" {...p} />
             </div>
         ),
-        th: ({ node: _n, ...p }: MdProps<'th'>) => <th className="border border-[var(--sx-color-border-base)] px-3 py-2 text-left font-semibold" {...p} />,
-        td: ({ node: _n, ...p }: MdProps<'td'>) => <td className="border border-[var(--sx-color-border-base)] px-3 py-2" {...p} />,
+        th: ({ node: _n, ...p }: MdProps<'th'>) => <th className="border border-[var(--border-color,#334155)] px-3 py-2 text-left font-semibold" {...p} />,
+        td: ({ node: _n, ...p }: MdProps<'td'>) => <td className="border border-[var(--border-color,#334155)] px-3 py-2" {...p} />,
         // Imagem larga nunca deforma o layout (Critério E2E: max-width 100%).
         img: ({ node: _n, alt, ...p }: MdProps<'img'>) => <img className="max-w-full h-auto rounded-md" alt={alt ?? ''} {...p} />,
         // `<pre>` vira fragmento para o highlighter (PreTag="div") não aninhar em `<pre>`.
@@ -70,7 +70,7 @@ const SarakMarkdownRendererImpl: React.FC<SarakMarkdownRendererProps> = ({ conte
                 );
             }
             return (
-                <code className="px-1.5 py-0.5 rounded bg-[var(--sx-color-surface-base)] text-[var(--sx-color-primary-base)] text-sm">
+                <code className="px-1.5 py-0.5 rounded bg-[var(--color-theme-card,#1e293b)] text-[var(--sarak-primary-color,#3b82f6)] text-sm">
                     {children}
                 </code>
             );

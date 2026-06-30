@@ -27,8 +27,8 @@ export const SarakTabs: React.FC<SarakTabsProps> = ({
     const { design } = useSarakUI();
     const [activeId, setActiveId] = useState(defaultActiveId || items[0]?.id);
 
-    const activeColor = design?.primaryColor || 'var(--sx-color-primary-base)';
-    const borderColor = 'var(--sx-color-border-base, rgba(255,255,255,0.1))';
+    const activeColor = design?.primaryColor || 'var(--sarak-primary-color,#3b82f6)';
+    const borderColor = 'var(--border-color,#334155))';
     const animFast = design?.animFast;
     const animDuration = typeof animFast === 'number' ? `${animFast}ms` : '200ms';
 

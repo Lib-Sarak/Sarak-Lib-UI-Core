@@ -18,7 +18,7 @@ export const useStructuralStyles = () => {
         gapOverride?: string
     ) => {
         const layoutType = (design?.layoutGridTemplate as string) || 'col-12';
-        const gap = gapOverride || design?.globalSectionGap || design?.layoutGap || 'var(--sx-spacing-md)';
+        const gap = gapOverride || design?.globalSectionGap || design?.layoutGap || 'var(--sarak-layout-gap-md, 16px)';
         
         const gridStrategies: Record<string, string> = {
             'col-12': 'grid w-full grid-cols-1 md:grid-cols-12',
@@ -46,7 +46,7 @@ export const useStructuralStyles = () => {
         align?: string,
         gapOverride?: string
     ) => {
-        const gap = gapOverride || design?.layoutGap || 'var(--sx-spacing-md)';
+        const gap = gapOverride || design?.layoutGap || 'var(--sarak-layout-gap-md, 16px)';
         return {
             className: 'flex w-full',
             style: {
@@ -71,9 +71,9 @@ export const useStructuralStyles = () => {
         };
 
         const densityStrategies: Record<string, string> = {
-            'tight': 'var(--sx-spacing-2xs)',
-            'relaxed': 'var(--sx-spacing-md)',
-            'comfortable': 'var(--sx-spacing-xs)'
+            'tight': 'calc(var(--sarak-layout-gap-md, 16px) * 0.125)',
+            'relaxed': 'var(--sarak-layout-gap-md, 16px)',
+            'comfortable': 'calc(var(--sarak-layout-gap-md, 16px) * 0.25)'
         };
 
         return {
@@ -142,7 +142,7 @@ export const useStructuralStyles = () => {
         return {
             containerClass: switchStrategies[switchPos] || switchStrategies['right'],
             textContainerClass: 'flex flex-col',
-            style: { gap: 'var(--sx-spacing-sm)' }
+            style: { gap: 'var(--sarak-layout-gap-sm, 8px)' }
         };
     };
 
@@ -170,7 +170,7 @@ export const useStructuralStyles = () => {
 
         return {
             className: `${flowClass} ${alignClass}`.trim(),
-            style: { gap: 'var(--sx-spacing-md)' }
+            style: { gap: 'var(--sarak-layout-gap-md, 16px)' }
         };
     };
 
@@ -188,7 +188,7 @@ export const useStructuralStyles = () => {
 
         return {
             className: headerClass.trim(),
-            style: { gap: 'calc(var(--sx-spacing-md) / 1.5)' }
+            style: { gap: 'calc(var(--sarak-layout-gap-md, 16px) / 1.5)' }
         };
     };
 

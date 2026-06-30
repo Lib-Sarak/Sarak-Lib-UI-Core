@@ -15,16 +15,16 @@ export const ButtonPresetPreview: React.FC<ButtonPresetPreviewProps> = ({ preset
     // Leitura direta dos tokens do preset
     const d = preset.design;
     const styleType = String(d.btnStyleType || 'matte');
-    const borderRadius = d.btnBorderRadius !== undefined ? String(d.btnBorderRadius) : 'var(--sarak-spacing-sm, 8px)';
+    const borderRadius = d.btnBorderRadius !== undefined ? String(d.btnBorderRadius) : 'var(--sarak-layout-gap-sm, 8px)';
     const glowColor = String(d.btnNeonGlowColor || 'rgba(0, 242, 255, 0.4)');
     const blurAmount = Number(d.btnBackdropBlur || 0);
     const primaryBg = String(d.btnPrimaryBg || 'var(--theme-primary)');
-    const primaryText = String(d.btnPrimaryText || 'var(--theme-text)');
+    const primaryText = String(d.btnPrimaryText || 'var(--color-theme-title,#ffffff)');
 
     // Construir estilo dinâmico como o SarakButton
     const dynamicStyle: React.CSSProperties = {
         padding: '12px 24px',
-        fontSize: 'var(--sarak-text-sm, 14px)',
+        fontSize: 'var(--color-theme-text, #ffffff)',
         fontWeight: '900',
         textTransform: 'uppercase',
         letterSpacing: '0.1em',
@@ -50,12 +50,12 @@ export const ButtonPresetPreview: React.FC<ButtonPresetPreviewProps> = ({ preset
             dynamicStyle.backdropFilter = `blur(${blurAmount}px)`;
             dynamicStyle.WebkitBackdropFilter = `blur(${blurAmount}px)`;
             dynamicStyle.border = '1px solid rgba(255,255,255,0.1)';
-            dynamicStyle.boxShadow = '0 var(--sarak-spacing-sm, 8px) 32px 0 rgba(0, 0, 0, 0.3)';
+            dynamicStyle.boxShadow = '0 var(--sarak-layout-gap-sm, 8px) 32px 0 rgba(0, 0, 0, 0.3)';
         },
         'borderline': () => {
             dynamicStyle.backgroundColor = isHovered ? primaryBg : 'transparent';
             dynamicStyle.border = `1px solid ${primaryBg}`;
-            dynamicStyle.color = isHovered ? 'var(--sarak-text-primary, #000000)' : primaryText;
+            dynamicStyle.color = isHovered ? 'var(--color-theme-primary, #00f2ff)' : primaryText;
         },
         'matte': () => {
             dynamicStyle.backgroundColor = primaryBg;
@@ -79,7 +79,7 @@ export const ButtonPresetPreview: React.FC<ButtonPresetPreviewProps> = ({ preset
             transition={{ delay: index * 0.05 }}
             onClick={onApply}
             className="group relative flex flex-col items-center justify-center p-6 rounded-2xl border border-theme-border overflow-hidden bg-[rgba(10,10,10,0.5)] hover:border-theme-primary transition-all duration-300"
-            style={{ minHeight: 'var(--sarak-preview-width, 180px)' }}
+            style={{ minHeight: '320px' }}
         >
             <div className="absolute inset-0 z-0 bg-[radial-gradient(ellipse_at_center,rgba(255,255,255,0.05)_0%,transparent_70%)] opacity-50"></div>
             

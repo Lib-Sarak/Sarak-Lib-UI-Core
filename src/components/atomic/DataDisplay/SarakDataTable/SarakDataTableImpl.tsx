@@ -8,7 +8,7 @@
  *
  * Entrega as três funções avançadas da Regra 2: pinned (sticky left/right), resize
  * (handle pointer-driven) e reorder (drag-and-drop nativo HTML5). Zero Hardcode: cores e
- * superfícies via `var(--sx-*)` / tokens de tabela (`--sarak-table-*`). Zero dependência nova.
+ * superfícies via `[--sarak-*]` / tokens de tabela (`--sarak-table-*`). Zero dependência nova.
  */
 
 import React, { useMemo, useRef, useState } from 'react';
@@ -118,8 +118,8 @@ function SarakDataTableImpl<T>({
         setDragId(null);
     };
 
-    const headerBg = 'var(--sarak-table-header-bg, var(--sx-color-surface-base))';
-    const cellBg = 'var(--sx-color-surface-base)';
+    const headerBg = 'var(--sarak-table-header-bg, var(var(--color-theme-card,#1e293b)))';
+    const cellBg = 'var(--color-theme-card,#1e293b)';
 
     return (
         <div
@@ -140,7 +140,7 @@ function SarakDataTableImpl<T>({
                         display: 'flex',
                         height: headerHeight,
                         background: headerBg,
-                        borderBottom: '1px solid var(--sarak-table-border, var(--sx-color-border-base))',
+                        borderBottom: '1px solid var(--sarak-table-border, var(var(--border-color,#334155)))',
                     }}
                 >
                     {ordered.map((column) => (
@@ -158,9 +158,9 @@ function SarakDataTableImpl<T>({
                                 flex: '0 0 auto',
                                 display: 'flex',
                                 alignItems: 'center',
-                                padding: '0 var(--sarak-table-padding, var(--sx-spacing-sm, 12px))',
+                                padding: '0 var(--sarak-table-padding, var(var(--sarak-layout-gap-sm,8px), 12px))',
                                 fontWeight: 600,
-                                color: 'var(--sx-color-text-title)',
+                                color: 'var(--color-theme-title,#ffffff)',
                                 cursor: 'grab',
                                 userSelect: 'none',
                                 opacity: dragId === column.id ? 0.5 : 1,
@@ -199,7 +199,7 @@ function SarakDataTableImpl<T>({
                                 display: 'flex',
                                 width: offsets.total,
                                 height: rowHeight,
-                                borderBottom: '1px solid var(--sarak-table-border, var(--sx-color-border-base))',
+                                borderBottom: '1px solid var(--sarak-table-border, var(var(--border-color,#334155)))',
                             }}
                         >
                             {ordered.map((column) => (
@@ -212,11 +212,11 @@ function SarakDataTableImpl<T>({
                                         flex: '0 0 auto',
                                         display: 'flex',
                                         alignItems: 'center',
-                                        padding: '0 var(--sarak-table-padding, var(--sx-spacing-sm, 12px))',
+                                        padding: '0 var(--sarak-table-padding, var(var(--sarak-layout-gap-sm,8px), 12px))',
                                         overflow: 'hidden',
                                         textOverflow: 'ellipsis',
                                         whiteSpace: 'nowrap',
-                                        color: 'var(--sx-color-text-base)',
+                                        color: 'var(--sarak-text-main,#ffffff)',
                                         ...pinnedStyle(column, offsets, cellBg),
                                     }}
                                 >
