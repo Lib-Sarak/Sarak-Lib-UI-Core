@@ -9,7 +9,9 @@ from pydantic import BaseModel
 logger = logging.getLogger(__name__)
 
 # --- CONFIGURAÇÃO DE SEGURANÇA SARAK (v5.5) ---
-JWT_SECRET_KEY = os.getenv("JWT_SECRET_KEY", "sarak_matrix_default_secret_key_2024")
+JWT_SECRET_KEY = os.getenv("JWT_SECRET_KEY")
+if not JWT_SECRET_KEY:
+    raise ValueError("A variável de ambiente JWT_SECRET_KEY não está configurada.")
 ALGORITHM = "HS256"
 
 @dataclass

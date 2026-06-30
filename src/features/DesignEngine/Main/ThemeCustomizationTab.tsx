@@ -91,7 +91,7 @@ export const ThemeCustomizationTab: React.FC = () => {
         currentThemeName, setCurrentThemeName,
         setIsSaveModalOpen, setIsSaving,
         pendingApply, setPendingApply,
-        showToast: (type: 'success' | 'warning' | 'error', message: string) => console.log(type, message),
+        showToast,
         handleApplyToSystem: handleApplyToSystemWrapper, isDirty
     });
 
