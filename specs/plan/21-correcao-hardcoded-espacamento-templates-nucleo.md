@@ -44,34 +44,34 @@ Esta é a **etapa 1** da campanha: o subconjunto **núcleo** dos Templates (`com
 3. **Conferência (DEPOIS):** rode o auditor de novo e preencha o **Snapshot Final** (§6).
 
 # 4. Checklist de Validação (Gate de Coerência — ver [[20-correcao-hardcoded-base]] §7)
-- [ ] **V1** — Violações duras no escopo zeradas; total de duras do módulo **diminuiu** (nunca aumentou).
-- [ ] **V2** — Nenhum balde deduzido aumentou (ícones / `w-full,h-full` / alinhamento) — anti-burla.
-- [ ] **V3** — Valor `px/rem/em` não aumentou.
-- [ ] **V4** — `run_audit.mjs`: os outros 6 auditores seguem verdes.
-- [ ] **V5** — Comportamento preservado (snapshot/caracterização verdes + visual sem diferença).
-- [ ] **V6** — Sem componente novo; token novo só via paridade 1:1:1:1:1.
+- [x] **V1** — Violações duras no escopo zeradas; total de duras do módulo **diminuiu** (nunca aumentou).
+- [x] **V2** — Nenhum balde deduzido aumentou (ícones / `w-full,h-full` / alinhamento) — anti-burla.
+- [x] **V3** — Valor `px/rem/em` não aumentou.
+- [x] **V4** — `run_audit.mjs`: os outros 6 auditores seguem verdes.
+- [x] **V5** — Comportamento preservado (snapshot/caracterização verdes + visual sem diferença).
+- [x] **V6** — Sem componente novo; token novo só via paridade 1:1:1:1:1.
 
 # 5. Snapshot Inicial (preencher ANTES)
 | Métrica | Valor |
 |---|---:|
-| Duras no escopo desta spec | _(esperado ~142)_ |
-| Duras — total do módulo | |
-| Deduzido — ícones | |
-| Deduzido — w-full/h-full | |
-| Deduzido — alinhamento | |
-| Valor px/rem/em — total | |
+| Duras no escopo desta spec | 142 |
+| Duras — total do módulo | 519 |
+| Deduzido — ícones | 190 |
+| Deduzido — w-full/h-full | 88 |
+| Deduzido — alinhamento | 271 |
+| Valor px/rem/em — total | 273 |
 
 # 6. Snapshot Final (preencher DEPOIS)
 | Métrica | Início | Fim | Δ |
 |---|---:|---:|---:|
-| Duras no escopo desta spec | | | |
-| Duras — total do módulo | | | |
-| Deduzido — ícones | | | |
-| Deduzido — w-full/h-full | | | |
-| Deduzido — alinhamento | | | |
-| Valor px/rem/em — total | | | |
+| Duras no escopo desta spec | 142 | 0 | -142 |
+| Duras — total do módulo | 519 | 377 | -142 |
+| Deduzido — ícones | 190 | 190 | 0 |
+| Deduzido — w-full/h-full | 88 | 85 | -3 |
+| Deduzido — alinhamento | 271 | 251 | -20 |
+| Valor px/rem/em — total | 273 | 268 | -5 |
 
 # 7. Critérios de Aceite
-- [ ] Todos os arquivos do §2 com **0 violações duras**.
-- [ ] Checklist V1–V6 integralmente marcado.
-- [ ] Snapshots Inicial e Final preenchidos e anexados.
+- [x] Todos os arquivos do §2 com **0 violações duras**.
+- [x] Checklist V1–V6 integralmente marcado.
+- [x] Snapshots Inicial e Final preenchidos e anexados.

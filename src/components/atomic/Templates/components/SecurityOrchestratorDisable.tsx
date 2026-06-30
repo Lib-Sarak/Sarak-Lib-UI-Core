@@ -4,6 +4,7 @@ import { ShieldAlert, Key } from 'lucide-react';
 import { SarakButton } from '../../Buttons';
 import { SarakInput } from '../../Inputs';
 import { twMerge } from 'tailwind-merge';
+import { useStructuralStyles } from '../../hooks/useStructuralStyles';
 
 interface SecurityOrchestratorDisableProps {
     code: string;
@@ -26,23 +27,25 @@ export const SecurityOrchestratorDisable: React.FC<SecurityOrchestratorDisablePr
     containerVariants,
     layout
 }) => {
+    const { getFlexStyles, getGridStyles } = useStructuralStyles();
+
     return (
         <motion.div 
             key="disable"
             variants={containerVariants}
             initial="hidden" animate="visible" exit="exit"
-            className={twMerge("flex flex-col items-center text-center", layout.className)}
+            className={twMerge(getFlexStyles('column', 'center', 'center').className, "text-center", layout.className)}
             style={{ gap: layout.style.gap }}
         >
             <ShieldAlert className="text-red-500" size={48} />
             <div>
-                <div className="text-xs font-black uppercase tracking-widest text-[var(--sx-color-text-title)] mb-2">Confirmar Desativação</div>
+                <div className="text-xs font-black uppercase tracking-widest text-[var(--sx-color-text-title)]" style={{ marginBottom: 'var(--sx-spacing-sm)' }}>Confirmar Desativação</div>
                 <p className="text-[10px] uppercase tracking-wider text-[var(--sx-color-text-muted)] max-w-xs">
                     Por segurança, insira o código de 6 dígitos do seu app para remover a proteção de segundo fator.
                 </p>
             </div>
 
-            <div className="w-full max-w-xs space-y-4">
+            <div className={`w-full max-w-xs ${getFlexStyles('column', 'flex-start', 'stretch', 'var(--sx-spacing-md)').className}`} style={getFlexStyles('column', 'flex-start', 'stretch', 'var(--sx-spacing-md)').style}>
                 <SarakInput 
                     type="text" 
                     maxLength={6}
@@ -58,7 +61,7 @@ export const SecurityOrchestratorDisable: React.FC<SecurityOrchestratorDisablePr
                     <div className="text-[10px] uppercase font-black text-red-500 tracking-widest">{error}</div>
                 )}
 
-                <div className="grid grid-cols-2 gap-4">
+                <div className={getGridStyles('repeat(2, minmax(0, 1fr))', undefined, 'var(--sx-spacing-md)').className} style={getGridStyles('repeat(2, minmax(0, 1fr))', undefined, 'var(--sx-spacing-md)').style}>
                     <SarakButton 
                         onClick={() => setStep('STATUS')}
                         variant="secondary"

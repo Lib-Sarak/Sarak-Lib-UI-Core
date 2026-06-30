@@ -4,6 +4,7 @@ import { QrCode, Key } from 'lucide-react';
 import { SarakButton } from '../../Buttons';
 import { SarakInput } from '../../Inputs';
 import { twMerge } from 'tailwind-merge';
+import { useStructuralStyles } from '../../hooks/useStructuralStyles';
 
 interface SecurityOrchestratorSetupProps {
     setupData: Record<string, unknown> | null;
@@ -28,17 +29,19 @@ export const SecurityOrchestratorSetup: React.FC<SecurityOrchestratorSetupProps>
     containerVariants,
     layout
 }) => {
+    const { getFlexStyles } = useStructuralStyles();
+
     return (
         <motion.div 
             key="setup"
             variants={containerVariants}
             initial="hidden" animate="visible" exit="exit"
-            className={twMerge("flex flex-col items-center text-center", layout.className)}
+            className={twMerge(getFlexStyles('column', 'center', 'center').className, "text-center", layout.className)}
             style={{ gap: layout.style.gap }}
         >
             <div className="text-xs font-black uppercase tracking-widest text-[var(--sx-color-text-title)]">Configuração de Segundo Fator</div>
             
-            <div className="p-4 bg-white rounded-2xl shadow-xl border-4 border-[var(--sx-color-primary-base)]/20">
+            <div className="bg-white rounded-2xl shadow-xl border-4 border-[var(--sx-color-primary-base)]/20" style={{ padding: 'var(--sx-spacing-md)' }}>
                 {setupData?.provisioning_uri ? (
                     <img 
                         src={`https://api.qrserver.com/v1/create-qr-code/?size=${qrSize}x${qrSize}&data=${encodeURIComponent(String(setupData.provisioning_uri || ''))}`}
@@ -55,13 +58,13 @@ export const SecurityOrchestratorSetup: React.FC<SecurityOrchestratorSetupProps>
                 )}
             </div>
 
-            <div className="max-w-xs space-y-2">
+            <div className={`max-w-xs ${getFlexStyles('column', 'flex-start', 'stretch', 'var(--sx-spacing-sm)').className}`} style={getFlexStyles('column', 'flex-start', 'stretch', 'var(--sx-spacing-sm)').style}>
                 <p className="text-[10px] uppercase tracking-wider text-[var(--sx-color-text-muted)] leading-tight">
                     Escaneie o código acima com seu app de autenticação (Google Authenticator, Authy, etc.) e insira o código de 6 dígitos abaixo.
                 </p>
             </div>
 
-            <div className="w-full max-w-xs space-y-4">
+            <div className={`w-full max-w-xs ${getFlexStyles('column', 'flex-start', 'stretch', 'var(--sx-spacing-md)').className}`} style={getFlexStyles('column', 'flex-start', 'stretch', 'var(--sx-spacing-md)').style}>
                 <SarakInput 
                     type="text" 
                     maxLength={6}
@@ -84,7 +87,8 @@ export const SecurityOrchestratorSetup: React.FC<SecurityOrchestratorSetupProps>
                     disabled={code.length !== 6 || isValidating}
                     variant="primary"
                     fullWidth
-                    className="py-4 shadow-xl shadow-[var(--sx-color-primary-base)]/20"
+                    className="shadow-xl shadow-[var(--sx-color-primary-base)]/20"
+                    style={{ paddingTop: 'var(--sx-spacing-md)', paddingBottom: 'var(--sx-spacing-md)' }}
                 >
                     {isValidating ? 'Validando...' : 'Ativar Proteção'}
                 </SarakButton>

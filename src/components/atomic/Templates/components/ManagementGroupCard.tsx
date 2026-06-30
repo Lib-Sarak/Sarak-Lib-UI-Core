@@ -124,7 +124,7 @@ export const ManagementGroupCard = <TItem extends Record<string, unknown>>({
                         );
                     })
                 ) : (
-                    <div className={twMerge("py-12 items-center justify-center text-center opacity-20", containerLayout.className)} style={{ gap: containerLayout.style?.gap, padding: 0 }}>
+                    <div className={twMerge("items-center justify-center text-center opacity-20", containerLayout.className)} style={{ gap: containerLayout.style?.gap, paddingTop: 'calc(var(--sx-spacing-xl) * 1.5)', paddingBottom: 'calc(var(--sx-spacing-xl) * 1.5)' }}>
                         <Settings2 className="w-10 h-10" />
                         <p className="text-2xs font-black uppercase tracking-[0.2em]">Offline</p>
                     </div>

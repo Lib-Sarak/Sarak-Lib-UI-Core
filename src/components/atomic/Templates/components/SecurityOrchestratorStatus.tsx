@@ -2,6 +2,7 @@ import React from 'react';
 import { motion, Variants } from 'framer-motion';
 import { ShieldCheck, ShieldAlert, AlertTriangle } from 'lucide-react';
 import { SarakButton } from '../../Buttons';
+import { useStructuralStyles } from '../../hooks/useStructuralStyles';
 
 interface SecurityOrchestratorStatusProps {
     mfaStatus: Record<string, unknown> | null;
@@ -16,15 +17,18 @@ export const SecurityOrchestratorStatus: React.FC<SecurityOrchestratorStatusProp
     setStep,
     startSetup
 }) => {
+    const { getFlexStyles } = useStructuralStyles();
+
     return (
         <motion.div 
             key="status"
             variants={containerVariants}
             initial="hidden" animate="visible" exit="exit"
-            className="space-y-6"
+            className={getFlexStyles('column', 'flex-start', 'stretch', 'var(--sx-spacing-lg)').className}
+            style={getFlexStyles('column', 'flex-start', 'stretch', 'var(--sx-spacing-lg)').style}
         >
-            <div className="flex items-center justify-between p-6 bg-[var(--sx-color-surface-base)]/40 border border-[var(--sx-color-border-base)] rounded-xl">
-                <div className="flex items-center gap-4">
+            <div className="flex items-center justify-between bg-[var(--sx-color-surface-base)]/40 border border-[var(--sx-color-border-base)] rounded-xl" style={{ padding: 'var(--sx-spacing-lg)' }}>
+                <div className="flex items-center" style={{ gap: 'var(--sx-spacing-md)' }}>
                     {mfaStatus?.enabled ? (
                         <ShieldCheck className="text-emerald-500" size={32} />
                     ) : (
@@ -55,7 +59,7 @@ export const SecurityOrchestratorStatus: React.FC<SecurityOrchestratorStatusProp
                 )}
             </div>
 
-            <div className="p-4 rounded-lg bg-amber-500/5 border border-amber-500/20 flex gap-3">
+            <div className="rounded-lg bg-amber-500/5 border border-amber-500/20 flex" style={{ padding: 'var(--sx-spacing-md)', gap: 'var(--sx-spacing-sm)' }}>
                 <AlertTriangle className="text-amber-500 shrink-0" size={16} />
                 <p className="text-[10px] text-amber-500/80 uppercase leading-relaxed font-medium">
                     A segurança do seu ecossistema depende de uma identidade forte. Recomendamos manter o MFA ativo em todos os módulos Sarak.

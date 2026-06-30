@@ -1,6 +1,7 @@
 import React from 'react';
 import { motion } from 'framer-motion';
 import { Cpu, ShieldCheck, Activity } from 'lucide-react';
+import { useStructuralStyles } from '../../hooks/useStructuralStyles';
 
 interface AuthHeroProps {
     branding?: {
@@ -10,8 +11,10 @@ interface AuthHeroProps {
 }
 
 export const AuthHero: React.FC<AuthHeroProps> = ({ branding }) => {
+    const { getFlexStyles } = useStructuralStyles();
+
     return (
-        <div className="hidden lg:flex lg:w-3/5 relative overflow-hidden bg-gradient-to-br from-theme-body via-theme-body to-theme-primary/20 items-center justify-center p-12">
+        <div className="hidden lg:flex lg:w-3/5 relative overflow-hidden bg-gradient-to-br from-theme-body via-theme-body to-theme-primary/20 items-center justify-center" style={{ padding: 'var(--sx-spacing-3xl)' }}>
             {/* Animated Decorative Background */}
             <div className="absolute inset-0 opacity-20">
                 <div className="absolute top-[-10%] left-[-10%] w-[40%] h-[40%] bg-theme-primary/20 rounded-full blur-[120px] animate-pulse"></div>
@@ -29,8 +32,8 @@ export const AuthHero: React.FC<AuthHeroProps> = ({ branding }) => {
             <div className="absolute inset-0" style={{ backgroundImage: 'radial-gradient(circle at 2px 2px, var(--sx-color-border-base) 1px, transparent 0)', backgroundSize: '40px 40px' }}></div>
 
             <div 
-                className="relative z-10 max-w-xl text-center flex flex-col items-center"
-                style={{ gap: 'var(--sarak-auth-gap, 2rem)' }}
+                className={`relative z-10 max-w-xl text-center ${getFlexStyles('column', 'center', 'center', 'var(--sarak-auth-gap, 2rem)').className}`}
+                style={getFlexStyles('column', 'center', 'center', 'var(--sarak-auth-gap, 2rem)').style}
             >
                 <motion.div
                     initial={{ opacity: 0, scale: 0.8, rotate: -10 }}
@@ -59,13 +62,14 @@ export const AuthHero: React.FC<AuthHeroProps> = ({ branding }) => {
                     initial={{ opacity: 0 }}
                     animate={{ opacity: 1 }}
                     transition={{ delay: 0.5, duration: 1 }}
-                    className="mt-12 flex gap-4"
+                    className={getFlexStyles('row', 'center', 'center', 'var(--sx-spacing-md)').className}
+                    style={{ ...getFlexStyles('row', 'center', 'center', 'var(--sx-spacing-md)').style, marginTop: 'var(--sx-spacing-3xl)' }}
                 >
-                    <div className="flex items-center gap-2 px-4 py-2 rounded-full sarak-glass bg-[var(--sx-color-surface-base)] border border-[var(--sx-color-border-base)]-border backdrop-blur-md">
+                    <div className="flex items-center rounded-full sarak-glass bg-[var(--sx-color-surface-base)] border border-[var(--sx-color-border-base)]-border backdrop-blur-md" style={{ padding: 'var(--sx-spacing-sm) var(--sx-spacing-md)', gap: 'var(--sx-spacing-sm)' }}>
                         <ShieldCheck className="w-4 h-4 text-theme-secondary" />
                         <span className="text-xs font-bold text-theme-muted uppercase tracking-widest">Secure</span>
                     </div>
-                    <div className="flex items-center gap-2 px-4 py-2 rounded-full sarak-glass bg-[var(--sx-color-surface-base)] border border-[var(--sx-color-border-base)]-border backdrop-blur-md">
+                    <div className="flex items-center rounded-full sarak-glass bg-[var(--sx-color-surface-base)] border border-[var(--sx-color-border-base)]-border backdrop-blur-md" style={{ padding: 'var(--sx-spacing-sm) var(--sx-spacing-md)', gap: 'var(--sx-spacing-sm)' }}>
                         <Activity className="w-4 h-4 text-theme-primary" />
                         <span className="text-xs font-bold text-theme-muted uppercase tracking-widest">Neural</span>
                     </div>

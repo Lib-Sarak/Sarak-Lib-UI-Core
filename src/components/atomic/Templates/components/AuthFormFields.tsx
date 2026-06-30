@@ -2,6 +2,7 @@ import React from 'react';
 import { User, Lock, Eye, EyeOff, ShieldCheck, ChevronRight } from 'lucide-react';
 import { SarakInput } from '../../Inputs';
 import { SarakButton, SarakIconButton } from '../../Buttons';
+import { useStructuralStyles } from '../../hooks/useStructuralStyles';
 
 interface AuthFormFieldsProps {
     mfaStep: boolean;
@@ -34,12 +35,14 @@ export const AuthFormFields: React.FC<AuthFormFieldsProps> = ({
     setMfaStep,
     onForgot
 }) => {
+    const { getFlexStyles } = useStructuralStyles();
+
     return (
         <>
             {!mfaStep ? (
                 <>
-                    <div className="space-y-1.5">
-                        <label className="text-xs font-bold text-theme-muted uppercase tracking-widest ml-1">E-mail de Acesso</label>
+                    <div className={getFlexStyles('column', 'flex-start', 'stretch', 'var(--sx-spacing-xs)').className} style={getFlexStyles('column', 'flex-start', 'stretch', 'var(--sx-spacing-xs)').style}>
+                        <label className="text-xs font-bold text-theme-muted uppercase tracking-widest" style={{ marginLeft: 'var(--sx-spacing-xs)' }}>E-mail de Acesso</label>
                         <SarakInput
                             type="email"
                             required
@@ -52,14 +55,15 @@ export const AuthFormFields: React.FC<AuthFormFieldsProps> = ({
                         />
                     </div>
 
-                    <div className="space-y-1.5">
-                        <div className="flex items-center justify-between px-1">
+                    <div className={getFlexStyles('column', 'flex-start', 'stretch', 'var(--sx-spacing-xs)').className} style={getFlexStyles('column', 'flex-start', 'stretch', 'var(--sx-spacing-xs)').style}>
+                        <div className="flex items-center justify-between" style={{ paddingLeft: 'var(--sx-spacing-xs)', paddingRight: 'var(--sx-spacing-xs)' }}>
                             <label className="text-xs font-bold text-theme-muted uppercase tracking-widest">Senha</label>
                             {!isRegistering && onForgot && (
                                 <SarakButton 
                                     onClick={onForgot}
                                     variant="ghost"
-                                    className="text-xs font-bold text-theme-primary px-0 py-0 h-auto hover:opacity-80"
+                                    className="text-xs font-bold text-theme-primary h-auto hover:opacity-80"
+                                    style={{ padding: 0 }}
                                 >
                                     Esqueceu?
                                 </SarakButton>
@@ -78,7 +82,8 @@ export const AuthFormFields: React.FC<AuthFormFieldsProps> = ({
                                     onClick={() => setShowPassword(!showPassword)}
                                     icon={showPassword ? <EyeOff className="h-5 w-5" /> : <Eye className="h-5 w-5" />}
                                     variant="ghost"
-                                    className="text-[var(--sarak-input-icon-color,var(--sx-color-text-muted))] hover:text-theme-text px-1 py-1"
+                                    className="text-[var(--sarak-input-icon-color,var(--sx-color-text-muted))] hover:text-theme-text"
+                                    style={{ padding: 'var(--sx-spacing-xs)' }}
                                 />
                             ) : undefined}
                             fullWidth
@@ -86,8 +91,8 @@ export const AuthFormFields: React.FC<AuthFormFieldsProps> = ({
                     </div>
                 </>
             ) : (
-                <div className="space-y-1.5">
-                    <label className="text-xs font-bold text-theme-muted uppercase tracking-widest ml-1">Código de Segurança</label>
+                <div className={getFlexStyles('column', 'flex-start', 'stretch', 'var(--sx-spacing-xs)').className} style={getFlexStyles('column', 'flex-start', 'stretch', 'var(--sx-spacing-xs)').style}>
+                    <label className="text-xs font-bold text-theme-muted uppercase tracking-widest" style={{ marginLeft: 'var(--sx-spacing-xs)' }}>Código de Segurança</label>
                     <SarakInput
                         type="text"
                         required
@@ -103,7 +108,8 @@ export const AuthFormFields: React.FC<AuthFormFieldsProps> = ({
                     <SarakButton 
                         onClick={() => setMfaStep(false)}
                         variant="ghost"
-                        className="text-xs font-bold text-theme-muted hover:text-theme-primary mt-2 px-0 h-auto"
+                        className="text-xs font-bold text-theme-muted hover:text-theme-primary h-auto"
+                        style={{ marginTop: 'var(--sx-spacing-sm)', paddingLeft: 0, paddingRight: 0 }}
                     >
                         ← Voltar para senha
                     </SarakButton>
@@ -115,7 +121,7 @@ export const AuthFormFields: React.FC<AuthFormFieldsProps> = ({
                 isLoading={isPending}
                 variant="primary"
                 fullWidth
-                className="mt-4"
+                style={{ marginTop: 'var(--sx-spacing-md)' }}
                 rightIcon={!isPending ? <ChevronRight className="w-4 h-4" /> : undefined}
             >
                 {mfaStep ? 'Confirmar Acesso' : (isRegistering ? 'Criar Minha Conta' : 'Acessar Sistema')}

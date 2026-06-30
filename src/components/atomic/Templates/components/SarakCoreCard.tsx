@@ -7,9 +7,11 @@ import { SarakTitleCard } from '../../Cards/SarakTitleCard';
 import { SarakActionCard } from '../../Cards/SarakActionCard';
 import { SarakSearchCard } from '../../Cards/SarakSearchCard';
 import { SarakButton, SarakIconButton } from '../../Buttons';
+import { useStructuralStyles } from '../../hooks/useStructuralStyles';
 
 export const SarakCoreCard = <TItem extends Record<string, unknown>>({ item, mapping, variant }: { item: TItem; mapping?: Record<string, string>; variant?: 'classic' | 'title' | 'action' | 'search' }) => {
     const { design } = useSarakUI();
+    const { getFlexStyles, getGridStyles } = useStructuralStyles();
     const [isExpanded, setIsExpanded] = useState(false);
 
     if (variant === 'title') {
@@ -49,12 +51,15 @@ export const SarakCoreCard = <TItem extends Record<string, unknown>>({ item, map
         }
     };
 
+    const rootFlex = getFlexStyles('column', 'flex-start', 'stretch', '0');
+
     return (
         <motion.div 
             initial={{ opacity: 0, y: 20 }}
             animate={{ opacity: 1, y: 0 }}
-            className="flex flex-col sarak-card bg-[var(--sx-color-surface-base)] border-[var(--sx-color-border-base)] group transition-all h-fit relative overflow-hidden"
+            className={`${rootFlex.className} sarak-card bg-[var(--sx-color-surface-base)] border-[var(--sx-color-border-base)] group transition-all h-fit relative overflow-hidden`}
             style={{ 
+                ...rootFlex.style,
                 transitionDuration: 'var(--animation-speed, 0.5s)',
                 padding: 'var(--sarak-card-padding-md)'
             }}
@@ -70,9 +75,9 @@ export const SarakCoreCard = <TItem extends Record<string, unknown>>({ item, map
             
             <div className="p-theme relative z-10" style={{ padding: 'var(--sx-spacing-lg)' }}>
 
-                <div className="flex justify-between items-start mb-6" style={{ marginBottom: 'calc(var(--sx-spacing-md) / 1.5)' }}>
-                    <div className="flex flex-col">
-                        <span className="text-2xs font-black text-[var(--sx-color-primary-base)] uppercase tracking-[0.2em] mb-1">
+                <div className="flex justify-between items-start" style={{ marginBottom: 'calc(var(--sx-spacing-md) / 1.5)' }}>
+                    <div className={getFlexStyles('column', 'flex-start', 'stretch', '0').className} style={getFlexStyles('column', 'flex-start', 'stretch', '0').style}>
+                        <span className="text-2xs font-black text-[var(--sx-color-primary-base)] uppercase tracking-[0.2em]" style={{ marginBottom: 'var(--sx-spacing-xs)' }}>
                             {String(getVal(item, mapping?.subtitle) || 'Modelo')}
                         </span>
                         <h4 className="text-xl font-black text-[var(--sx-color-text-title)] tracking-tight group-hover:text-[var(--sx-color-primary-base)] transition-colors">
@@ -86,21 +91,21 @@ export const SarakCoreCard = <TItem extends Record<string, unknown>>({ item, map
                     </div>
                 </div>
 
-                <div className="flex flex-col gap-4 mb-8">
-                    <div className="flex flex-wrap gap-2">
-                        <span className="text-3xs font-black text-white/20 uppercase w-full mb-1">Input Capacities</span>
+                <div className={`${getFlexStyles('column', 'flex-start', 'stretch', 'var(--sx-spacing-md)').className}`} style={{ ...getFlexStyles('column', 'flex-start', 'stretch', 'var(--sx-spacing-md)').style, marginBottom: 'var(--sx-spacing-lg)' }}>
+                    <div className="flex flex-wrap" style={{ gap: 'var(--sx-spacing-sm)' }}>
+                        <span className="text-3xs font-black text-white/20 uppercase w-full" style={{ marginBottom: 'var(--sx-spacing-xs)' }}>Input Capacities</span>
                         {(inputCaps as string[]).map((cap: string) => (
-                            <div key={cap} className="flex items-center gap-1.5 bg-[var(--sx-color-primary-surface)] text-[var(--sx-color-primary-base)] border border-[var(--sx-color-border-base)] text-2xs font-black uppercase" style={{ padding: 'calc(var(--sx-spacing-md) / 4) calc(var(--sx-spacing-md) / 1.5)', borderRadius: 'var(--sx-radius-md)' }}>
+                            <div key={cap} className="flex items-center bg-[var(--sx-color-primary-surface)] text-[var(--sx-color-primary-base)] border border-[var(--sx-color-border-base)] text-2xs font-black uppercase" style={{ gap: 'var(--sx-spacing-xs)', padding: 'calc(var(--sx-spacing-md) / 4) calc(var(--sx-spacing-md) / 1.5)', borderRadius: 'var(--sx-radius-md)' }}>
                                 {getCapIcon(cap)} {cap}
                             </div>
                         ))}
                     </div>
 
                     {(outputCaps as string[]).length > 0 && (
-                        <div className="flex flex-wrap gap-2">
-                            <span className="text-3xs font-black text-white/20 uppercase w-full mb-1">Output Capacities</span>
+                        <div className="flex flex-wrap" style={{ gap: 'var(--sx-spacing-sm)' }}>
+                            <span className="text-3xs font-black text-white/20 uppercase w-full" style={{ marginBottom: 'var(--sx-spacing-xs)' }}>Output Capacities</span>
                             {(outputCaps as string[]).map((cap: string) => (
-                                <div key={cap} className="flex items-center gap-1.5 bg-[var(--sx-color-primary-surface)] text-[var(--sx-color-primary-base)] border border-[var(--sx-color-border-base)] text-2xs font-black uppercase" style={{ padding: 'calc(var(--sx-spacing-md) / 4) calc(var(--sx-spacing-md) / 1.5)', borderRadius: 'var(--sx-radius-md)' }}>
+                                <div key={cap} className="flex items-center bg-[var(--sx-color-primary-surface)] text-[var(--sx-color-primary-base)] border border-[var(--sx-color-border-base)] text-2xs font-black uppercase" style={{ gap: 'var(--sx-spacing-xs)', padding: 'calc(var(--sx-spacing-md) / 4) calc(var(--sx-spacing-md) / 1.5)', borderRadius: 'var(--sx-radius-md)' }}>
                                     {getCapIcon(cap)} {cap}
                                 </div>
                             ))}
@@ -108,21 +113,21 @@ export const SarakCoreCard = <TItem extends Record<string, unknown>>({ item, map
                     )}
                 </div>
 
-                <div className="grid grid-cols-2 mb-8 pt-6 border-t border-[var(--sx-color-border-base)]" style={{ gap: 'var(--sx-spacing-md)', marginBottom: 'var(--sx-spacing-md)', marginTop: 'var(--sx-spacing-md)' }}>
-                    <div className="flex flex-col">
-                        <span className="text-3xs font-black text-[var(--sx-color-text-muted)] opacity-50 uppercase tracking-widest mb-1">Custo In (1M)</span>
+                <div className={`${getGridStyles('repeat(2, minmax(0, 1fr))', undefined, 'var(--sx-spacing-md)').className} border-t border-[var(--sx-color-border-base)]`} style={{ ...getGridStyles('repeat(2, minmax(0, 1fr))', undefined, 'var(--sx-spacing-md)').style, marginBottom: 'var(--sx-spacing-md)', paddingTop: 'calc(var(--sx-spacing-md) * 1.5)' }}>
+                    <div className={getFlexStyles('column', 'flex-start', 'stretch', '0').className} style={getFlexStyles('column', 'flex-start', 'stretch', '0').style}>
+                        <span className="text-3xs font-black text-[var(--sx-color-text-muted)] opacity-50 uppercase tracking-widest" style={{ marginBottom: 'var(--sx-spacing-xs)' }}>Custo In (1M)</span>
                         <span className="text-sm font-mono text-[var(--sx-color-success-base)] font-bold">
                             {priceIn !== undefined ? `$${Number(priceIn).toFixed(4)}` : 'N/A'}
                         </span>
                     </div>
-                    <div className="flex flex-col">
-                        <span className="text-3xs font-black text-[var(--sx-color-text-muted)] opacity-50 uppercase tracking-widest mb-1">Custo Out (1M)</span>
+                    <div className={getFlexStyles('column', 'flex-start', 'stretch', '0').className} style={getFlexStyles('column', 'flex-start', 'stretch', '0').style}>
+                        <span className="text-3xs font-black text-[var(--sx-color-text-muted)] opacity-50 uppercase tracking-widest" style={{ marginBottom: 'var(--sx-spacing-xs)' }}>Custo Out (1M)</span>
                         <span className="text-sm font-mono text-[var(--sx-color-danger-base)] font-bold">
                             {priceOut !== undefined ? `$${Number(priceOut).toFixed(4)}` : 'N/A'}
                         </span>
                     </div>
-                    <div className="flex flex-col col-span-2">
-                        <span className="text-3xs font-black text-[var(--sx-color-text-muted)] opacity-50 uppercase tracking-widest mb-1">Janela de Contexto</span>
+                    <div className={getFlexStyles('column', 'flex-start', 'stretch', '0').className} style={{ ...getFlexStyles('column', 'flex-start', 'stretch', '0').style, gridColumn: 'span 2 / span 2' }}>
+                        <span className="text-3xs font-black text-[var(--sx-color-text-muted)] opacity-50 uppercase tracking-widest" style={{ marginBottom: 'var(--sx-spacing-xs)' }}>Janela de Contexto</span>
                         <span className="text-2xs font-black text-[var(--sx-color-text-muted)] uppercase">
                             {context ? `${(Number(context) / 1000)}k tokens` : 'Desconhecida'}
                         </span>
@@ -153,15 +158,15 @@ export const SarakCoreCard = <TItem extends Record<string, unknown>>({ item, map
                             exit={{ height: 0, opacity: 0 }}
                             className="overflow-hidden"
                         >
-                            <div className="flex flex-col pt-8" style={{ gap: 'calc(var(--sx-spacing-md) / 1.5)', paddingTop: 'var(--sx-spacing-md)' }}>
+                            <div className={getFlexStyles('column', 'flex-start', 'stretch', 'calc(var(--sx-spacing-md) / 1.5)').className} style={{ ...getFlexStyles('column', 'flex-start', 'stretch', 'calc(var(--sx-spacing-md) / 1.5)').style, paddingTop: 'var(--sx-spacing-md)' }}>
                                 {!!description && (
-                                    <div className="p-6 bg-[var(--sx-color-surface-base)] border-[var(--sx-color-border-base)] rounded-[var(--sx-radius-md)]">
-                                        <span className="text-3xs font-black text-[var(--sx-color-primary-base)] uppercase mb-2 block">Descrição Técnica</span>
+                                    <div className="bg-[var(--sx-color-surface-base)] border-[var(--sx-color-border-base)] rounded-[var(--sx-radius-md)]" style={{ padding: 'calc(var(--sx-spacing-md) * 1.5)' }}>
+                                        <span className="text-3xs font-black text-[var(--sx-color-primary-base)] uppercase block" style={{ marginBottom: 'var(--sx-spacing-sm)' }}>Descrição Técnica</span>
                                         <p className="text-xs text-[var(--sx-color-text-muted)] opacity-70 leading-relaxed font-medium">{String(description)}</p>
                                     </div>
                                 )}
                                 {!!tokenizer && (
-                                    <div className="flex items-center justify-between px-6 py-4 bg-[var(--sx-color-surface-base)] border-[var(--sx-color-border-base)] rounded-[var(--sx-radius-md)]">
+                                    <div className="flex items-center justify-between bg-[var(--sx-color-surface-base)] border-[var(--sx-color-border-base)] rounded-[var(--sx-radius-md)]" style={{ padding: 'var(--sx-spacing-md) calc(var(--sx-spacing-md) * 1.5)' }}>
                                         <span className="text-3xs font-black text-white/30 uppercase">Tokenizer</span>
                                         <span className="text-2xs font-mono text-[var(--sx-color-primary-base)]">{String(tokenizer)}</span>
                                     </div>

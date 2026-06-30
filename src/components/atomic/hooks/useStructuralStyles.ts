@@ -54,7 +54,7 @@ export const useStructuralStyles = () => {
                 justifyContent: justify,
                 alignItems: align,
                 gap
-            }
+            } as React.CSSProperties
         };
     };
 
