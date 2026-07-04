@@ -18,28 +18,38 @@ export const ThemeToggle: React.FC = () => {
 
     return (
         <div className="relative group">
-            <button className="flex items-center gap-2 px-3 py-1.5 rounded-full bg-white/5 border border-white/10 hover:bg-white/10 transition-sarak">
+            <button
+                className="flex items-center rounded-full bg-white/5 border border-white/10 hover:bg-white/10 transition-sarak"
+                style={{ gap: 'var(--sarak-layout-gap-sm, 8px)', paddingInline: 'var(--sarak-layout-gap-sm, 8px)', paddingBlock: 'calc(var(--sarak-layout-gap-md, 16px) * 0.375)' }}
+            >
                 <Palette className="w-4 h-4 text-[var(--sarak-primary-color,#3b82f6)]" />
                 <span className="text-xs font-medium text-white/70">{currentLayoutName}</span>
                 <ChevronRight className="w-3 h-3 text-white/30 group-hover:rotate-90 transition-sarak" />
             </button>
-            
+
             {/* Dropdown de Temas */}
-            <div className="absolute right-0 top-full mt-2 w-64 max-h-[400px] overflow-y-auto bg-[var(--sarak-card-bg)] border border-[var(--sarak-card-border-color)] rounded-sarak shadow-2xl opacity-0 translate-y-2 pointer-events-none group-hover:opacity-100 group-hover:translate-y-0 group-hover:pointer-events-auto transition-sarak z-[100] p-2 custom-scrollbar">
-                <div className="text-2xs font-bold text-white/30 uppercase tracking-widest px-3 py-2 border-b border-white/5 mb-1">
+            <div
+                className="absolute right-0 top-full w-64 max-h-[400px] overflow-y-auto bg-[var(--sarak-card-bg)] border border-[var(--sarak-card-border-color)] rounded-sarak shadow-2xl opacity-0 translate-y-2 pointer-events-none group-hover:opacity-100 group-hover:translate-y-0 group-hover:pointer-events-auto transition-sarak z-[100] custom-scrollbar"
+                style={{ marginTop: 'var(--sarak-layout-gap-sm, 8px)', padding: 'var(--sarak-layout-gap-sm, 8px)' }}
+            >
+                <div
+                    className="text-2xs font-bold text-white/30 uppercase tracking-widest border-b border-white/5"
+                    style={{ paddingInline: 'var(--sarak-layout-gap-sm, 8px)', paddingBlock: 'var(--sarak-layout-gap-sm, 8px)', marginBottom: 'calc(var(--sarak-layout-gap-md, 16px) * 0.25)' }}
+                >
                     Layouts Premium Matrix
                 </div>
                 {layoutOptions.map((layout) => (
                     <button
                         key={layout.id}
                         onClick={() => setTheme(layout.id)}
-                        className={`w-full flex items-center justify-between px-3 py-2 rounded-lg text-sm transition-colors ${
-                            theme === layout.id 
-                            ? 'bg-[var(--sarak-primary-color-bg,rgba(59,130,246,0.1))] text-[var(--sarak-primary-color,#3b82f6)]' 
+                        className={`w-full flex items-center justify-between rounded-lg text-sm transition-colors ${
+                            theme === layout.id
+                            ? 'bg-[var(--sarak-primary-color-bg,rgba(59,130,246,0.1))] text-[var(--sarak-primary-color,#3b82f6)]'
                             : 'text-white/60 hover:bg-white/5 hover:text-white'
                         }`}
+                        style={{ paddingInline: 'var(--sarak-layout-gap-sm, 8px)', paddingBlock: 'var(--sarak-layout-gap-sm, 8px)' }}
                     >
-                        <div className="flex flex-col items-start">
+                        <div className="flex items-start" style={{ flexDirection: 'column' }}>
                             <span>{layout.name}</span>
                             <span className="text-2xs opacity-40 capitalize">{(layout.class || '').replace('layout-', '')} • {layout.animation}</span>
                         </div>

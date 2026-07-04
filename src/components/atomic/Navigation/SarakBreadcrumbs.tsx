@@ -27,12 +27,12 @@ export const SarakBreadcrumbs: React.FC<SarakBreadcrumbsProps> = ({
     onNavigate,
     className = '',
 }) => (
-    <nav className={`flex items-center flex-wrap gap-2 text-sm ${className}`} aria-label="Trilha de navegação">
+    <nav className={`flex items-center flex-wrap text-sm ${className}`} style={{ gap: 'var(--sarak-layout-gap-sm, 8px)' }} aria-label="Trilha de navegação">
         {items.map((item, index) => {
             const isLast = index === items.length - 1;
             const interactive = !isLast && Boolean(item.href);
             return (
-                <span key={`${item.label}-${index}`} className="inline-flex items-center gap-2">
+                <span key={`${item.label}-${index}`} className="inline-flex items-center" style={{ gap: 'var(--sarak-layout-gap-sm, 8px)' }}>
                     <span
                         role={interactive ? 'link' : undefined}
                         tabIndex={interactive ? 0 : undefined}
@@ -49,7 +49,8 @@ export const SarakBreadcrumbs: React.FC<SarakBreadcrumbsProps> = ({
                                   }
                                 : undefined
                         }
-                        className={`inline-flex items-center gap-1.5 ${
+                        style={{ gap: 'calc(var(--sarak-layout-gap-md, 16px) * 0.375)' }}
+                        className={`inline-flex items-center ${
                             isLast
                                 ? 'text-[var(--sarak-text-main,#ffffff)] font-medium'
                                 : 'text-[var(--text-muted,#94a3b8)]'

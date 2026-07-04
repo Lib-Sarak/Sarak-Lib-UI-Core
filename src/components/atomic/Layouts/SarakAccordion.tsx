@@ -53,16 +53,18 @@ export const SarakAccordion: React.FC<SarakAccordionProps> = ({
     }, [isOpen, animDuration]);
 
     return (
-        <div 
-            className={`flex flex-col border ${className}`} 
-            style={{ 
-                borderColor, 
-                borderRadius 
+        <div
+            className={`flex border ${className}`}
+            style={{
+                flexDirection: 'column',
+                borderColor,
+                borderRadius
             }}
         >
-            <button 
+            <button
                 type="button"
-                className="flex items-center justify-between w-full p-4 text-left focus:outline-none transition-colors hover:bg-white/5"
+                className="flex items-center justify-between w-full text-left focus:outline-none transition-colors hover:bg-white/5"
+                style={{ padding: 'var(--sarak-layout-gap-md, 16px)' }}
                 onClick={toggleOpen}
             >
                 <div className="flex-1">{title}</div>
@@ -85,7 +87,7 @@ export const SarakAccordion: React.FC<SarakAccordionProps> = ({
                     transitionTimingFunction: animEasing
                 }}
             >
-                <div ref={contentRef} className="p-4 border-t" style={{ borderColor }}>
+                <div ref={contentRef} className="border-t" style={{ padding: 'var(--sarak-layout-gap-md, 16px)', borderColor }}>
                     {children}
                 </div>
             </div>

@@ -62,7 +62,14 @@ export const SarakTitleCard = <TItem extends Record<string, unknown>>({ item, ma
 
             {/* DRAFT BADGE (v6.3) */}
             {globalUI?.isDrafting && (
-                <div className="absolute top-2 left-4 z-40 pointer-events-none flex items-center gap-1.5 px-2 py-0.5 rounded bg-black/60 border border-[var(--sarak-primary-color,#3b82f6)]/20 text-[7px] font-black uppercase tracking-[0.2em] text-[var(--sarak-primary-color,#3b82f6)] shadow-[0_0_10px_rgba(0,242,255,0.05)]">
+                <div
+                    className="absolute top-2 left-4 z-40 pointer-events-none flex items-center rounded bg-black/60 border border-[var(--sarak-primary-color,#3b82f6)]/20 text-[7px] font-black uppercase tracking-[0.2em] text-[var(--sarak-primary-color,#3b82f6)] shadow-[0_0_10px_rgba(0,242,255,0.05)]"
+                    style={{
+                        gap: 'calc(var(--sarak-layout-gap-md, 16px) * 0.375)',
+                        paddingInline: 'var(--sarak-layout-gap-sm, 8px)',
+                        paddingBlock: 'calc(var(--sarak-layout-gap-md, 16px) * 0.125)'
+                    }}
+                >
                     <span className="w-1 h-1 rounded-full bg-[var(--sarak-primary-color,#3b82f6)] animate-pulse" />
                     {label || "Card de Título"}
                 </div>
@@ -71,8 +78,8 @@ export const SarakTitleCard = <TItem extends Record<string, unknown>>({ item, ma
             <div className={layout.contentClass}>
                 {/* Header Layout */}
                 <div className={layout.headerClass}>
-                    <div className="flex flex-col flex-1 min-w-0 pr-2">
-                        <span className="text-[9px] font-black text-[var(--sarak-primary-color,#3b82f6)] uppercase tracking-[0.2em] mb-1">
+                    <div className="flex flex-1 min-w-0" style={{ flexDirection: 'column', paddingRight: 'var(--sarak-layout-gap-sm, 8px)' }}>
+                        <span className="text-[9px] font-black text-[var(--sarak-primary-color,#3b82f6)] uppercase tracking-[0.2em]" style={{ marginBottom: 'calc(var(--sarak-layout-gap-md, 16px) * 0.25)' }}>
                             {String(subtitle)}
                         </span>
                         <h4 
@@ -89,9 +96,10 @@ export const SarakTitleCard = <TItem extends Record<string, unknown>>({ item, ma
                     </div>
 
                     {/* Glowing Icon Container */}
-                    <div 
-                        className="bg-[var(--color-theme-card,#1e293b)] border-[var(--border-color,#334155)] flex items-center justify-center p-3 relative shrink-0 transition-all group-hover:border-[var(--sarak-primary-color,#3b82f6)]"
-                        style={{ 
+                    <div
+                        className="bg-[var(--color-theme-card,#1e293b)] border-[var(--border-color,#334155)] flex items-center justify-center relative shrink-0 transition-all group-hover:border-[var(--sarak-primary-color,#3b82f6)]"
+                        style={{
+                            padding: 'calc(var(--sarak-layout-gap-md, 16px) * 0.75)',
                             borderRadius: 'var(--sarak-card-radius,12px)',
                             boxShadow: '0 0 15px var(--sarak-card-title-icon-glow, rgba(0, 242, 255, 0.2))'
                         }}
@@ -107,7 +115,7 @@ export const SarakTitleCard = <TItem extends Record<string, unknown>>({ item, ma
 
                 {/* Minimalist Specs */}
                 <div className={layout.footerClass}>
-                    <div className="flex flex-col gap-3 w-full">
+                    <div className="flex w-full" style={{ flexDirection: 'column', gap: 'calc(var(--sarak-layout-gap-md, 16px) * 0.75)' }}>
                         {!!context && (
                         <div className="flex items-center justify-between text-3xs font-black uppercase text-white/40 tracking-wider">
                             <span>Contexto</span>
@@ -116,14 +124,22 @@ export const SarakTitleCard = <TItem extends Record<string, unknown>>({ item, ma
                             </span>
                         </div>
                     )}
-                    
+
                     {(inputCaps as string[]).length > 0 && (
-                        <div className="flex flex-wrap gap-1.5 pt-2 border-t border-[var(--border-color,#334155)]/30">
+                        <div
+                            className="flex flex-wrap border-t border-[var(--border-color,#334155)]/30"
+                            style={{ gap: 'calc(var(--sarak-layout-gap-md, 16px) * 0.375)', paddingTop: 'var(--sarak-layout-gap-sm, 8px)' }}
+                        >
                             {(inputCaps as string[]).slice(0, 3).map((cap: string) => (
-                                <div 
-                                    key={cap} 
-                                    className="flex items-center gap-1 bg-[var(--sarak-primary-color-bg,rgba(59,130,246,0.1))] text-[var(--sarak-primary-color,#3b82f6)] border border-[var(--border-color,#334155)] text-3xs font-black uppercase px-2 py-0.5" 
-                                    style={{ borderRadius: 'var(--sarak-border-width, 4px)' }}
+                                <div
+                                    key={cap}
+                                    className="flex items-center bg-[var(--sarak-primary-color-bg,rgba(59,130,246,0.1))] text-[var(--sarak-primary-color,#3b82f6)] border border-[var(--border-color,#334155)] text-3xs font-black uppercase"
+                                    style={{
+                                        gap: 'calc(var(--sarak-layout-gap-md, 16px) * 0.25)',
+                                        paddingInline: 'var(--sarak-layout-gap-sm, 8px)',
+                                        paddingBlock: 'calc(var(--sarak-layout-gap-md, 16px) * 0.125)',
+                                        borderRadius: 'var(--sarak-border-width, 4px)'
+                                    }}
                                 >
                                     {getCapIcon(cap)}
                                     <span>{cap}</span>

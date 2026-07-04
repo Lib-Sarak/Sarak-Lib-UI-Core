@@ -53,15 +53,20 @@ export const SarakTabs: React.FC<SarakTabsProps> = ({
     };
 
     return (
-        <div className={twMerge("w-full flex flex-col", className)}>
-            <div 
+        <div className={twMerge("w-full flex", className)} style={{ flexDirection: 'column' }}>
+            <div
                 className={twMerge(
                     "flex items-center",
-                    variant === 'underlined' && "border-b border-[var(--theme-border)] gap-6",
-                    variant === 'pills' && "gap-2 p-1 bg-black/10 rounded-xl",
-                    variant === 'enclosed' && "gap-1",
+                    variant === 'underlined' && "border-b border-[var(--theme-border)]",
+                    variant === 'pills' && "bg-black/10 rounded-xl",
                     listClassName
                 )}
+                style={
+                    variant === 'underlined' ? { gap: 'calc(var(--sarak-layout-gap-md, 16px) * 1.5)' }
+                    : variant === 'pills' ? { gap: 'var(--sarak-layout-gap-sm, 8px)', padding: 'calc(var(--sarak-layout-gap-md, 16px) * 0.25)' }
+                    : variant === 'enclosed' ? { gap: 'calc(var(--sarak-layout-gap-md, 16px) * 0.25)' }
+                    : undefined
+                }
                 role="tablist"
             >
                 {tabs.map((tab, index) => {
@@ -78,8 +83,9 @@ export const SarakTabs: React.FC<SarakTabsProps> = ({
                             tabIndex={isActive ? 0 : -1}
                             onKeyDown={(e) => handleKeyDown(e, index)}
                             onClick={() => !isDisabled && onChange(tab.id)}
+                            style={{ gap: 'var(--sarak-layout-gap-sm, 8px)', paddingBlock: 'calc(var(--sarak-layout-gap-md, 16px) * 0.625)', paddingInline: 'calc(var(--sarak-layout-gap-md, 16px) * 0.75)' }}
                             className={clsx(
-                                "relative flex items-center justify-center gap-2 py-2.5 px-3 text-sm font-bold transition-colors",
+                                "relative flex items-center justify-center text-sm font-bold transition-colors",
                                 fullWidth ? "flex-1" : "",
                                 isDisabled && "opacity-50 cursor-not-allowed",
                                 // Variants

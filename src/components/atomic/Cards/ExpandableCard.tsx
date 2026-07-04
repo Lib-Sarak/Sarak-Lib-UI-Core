@@ -40,15 +40,16 @@ export const ExpandableCard: React.FC<ExpandableCardProps> = ({
             <div className={`${layout.containerClass} sarak-card bg-[var(--color-theme-card,#1e293b)] border border-[var(--border-color,#334155)]-border rounded-sarak shadow-lg relative group transition-sarak ${isExpanded ? 'opacity-0 pointer-events-none' : ''} ${className}`}>
                 <div className={layout.contentClass}>
                 <div className={layout.headerClass}>
-                    <h3 className="text-xs font-black text-theme-main uppercase tracking-widest flex items-center gap-2">
+                    <h3 className="text-xs font-black text-theme-main uppercase tracking-widest flex items-center" style={{ gap: 'var(--sarak-layout-gap-sm, 8px)' }}>
                         {iconContent}
                         <span className="truncate">{title}</span>
                     </h3>
-                    <div className="flex items-center gap-2 shrink-0">
+                    <div className="flex items-center shrink-0" style={{ gap: 'var(--sarak-layout-gap-sm, 8px)' }}>
                         {helpButton}
                         <button
                             onClick={() => setIsExpanded(true)}
-                            className="p-1.5 text-theme-muted hover:text-theme-primary hover:bg-theme-primary/10 rounded-lg transition-sarak cursor-pointer"
+                            className="text-theme-muted hover:text-theme-primary hover:bg-theme-primary/10 rounded-lg transition-sarak cursor-pointer"
+                            style={{ padding: 'calc(var(--sarak-layout-gap-md, 16px) * 0.375)' }}
                             title="Expandir Tela Cheia"
                         >
                             <Maximize2 className="w-4 h-4" />
@@ -69,32 +70,44 @@ export const ExpandableCard: React.FC<ExpandableCardProps> = ({
                             animate={{ opacity: 1, backdropFilter: 'blur(var(--sarak-glass-blur, 12px))' }}
                             exit={{ opacity: 0, backdropFilter: 'blur(0px)' }}
                             transition={{ duration: 0.3 }}
-                            className="fixed inset-0 z-[99999] bg-theme-body flex flex-col"
+                            className="fixed inset-0 z-[99999] bg-theme-body flex"
+                            style={{ flexDirection: 'column' }}
                         >
+                            {/* Carve-out (mesmo precedente do grid-cols-7 de CalendarPanel/spec 23): passos
+                                responsivos de padding (sm:/lg:) não têm token paramétrico no engine — deferido,
+                                ver Notas de Execução da spec 24. */}
                             <motion.div
                                 initial={{ scale: 0.95, y: 20 }}
                                 animate={{ scale: 1, y: 0 }}
                                 exit={{ scale: 0.95, y: 20 }}
                                 transition={{ type: "spring", damping: 25, stiffness: 300 }}
-                                className="flex-1 w-full h-full mx-auto p-4 sm:p-6 lg:p-8 relative flex flex-col overflow-hidden"
+                                className="flex-1 w-full h-full mx-auto p-4 sm:p-6 lg:p-8 relative flex overflow-hidden"
+                                style={{ flexDirection: 'column' }}
                             >
-                                <div className="flex items-center justify-between mb-4 sm:mb-8 shrink-0 flex-wrap gap-4">
-                                    <h3 className="text-lg sm:text-2xl font-black text-theme-title uppercase tracking-widest flex items-center gap-3">
+                                <div
+                                    className="flex items-center justify-between shrink-0 flex-wrap mb-4 sm:mb-8"
+                                    style={{ gap: 'var(--sarak-layout-gap-md, 16px)' }}
+                                >
+                                    <h3 className="text-lg sm:text-2xl font-black text-theme-title uppercase tracking-widest flex items-center" style={{ gap: 'calc(var(--sarak-layout-gap-md, 16px) * 0.75)' }}>
                                         {iconContent}
                                         {title}
                                     </h3>
-                                    <div className="flex items-center gap-4 flex-wrap justify-end">
+                                    <div className="flex items-center flex-wrap justify-end" style={{ gap: 'var(--sarak-layout-gap-md, 16px)' }}>
                                         {helpButton && <div className="flex items-center">{helpButton}</div>}
                                         <button
                                             onClick={() => setIsExpanded(false)}
-                                            className="p-3 bg-[var(--color-theme-card,#1e293b)] hover:bg-theme-primary/20 text-theme-primary border border-[var(--border-color,#334155)]-border rounded-sarak transition-sarak shadow-lg cursor-pointer shrink-0 ml-2"
+                                            className="bg-[var(--color-theme-card,#1e293b)] hover:bg-theme-primary/20 text-theme-primary border border-[var(--border-color,#334155)]-border rounded-sarak transition-sarak shadow-lg cursor-pointer shrink-0"
+                                            style={{ padding: 'calc(var(--sarak-layout-gap-md, 16px) * 0.75)', marginLeft: 'var(--sarak-layout-gap-sm, 8px)' }}
                                             title="Fechar"
                                         >
                                             <X className="w-5 h-5 sm:w-6 sm:h-6" />
                                         </button>
                                     </div>
                                 </div>
-                                <div className={`sarak-card flex-1 w-full relative flex flex-col min-h-0 bg-[var(--color-theme-card,#1e293b)] rounded-sarak border border-[var(--border-color,#334155)]-border shadow-lg ${contentClassName} p-[var(--sarak-card-padding-md,24px)]`}>
+                                <div
+                                    className={`sarak-card flex-1 w-full relative flex min-h-0 bg-[var(--color-theme-card,#1e293b)] rounded-sarak border border-[var(--border-color,#334155)]-border shadow-lg ${contentClassName} p-[var(--sarak-card-padding-md,24px)]`}
+                                    style={{ flexDirection: 'column' }}
+                                >
                                     {children}
                                 </div>
                             </motion.div>

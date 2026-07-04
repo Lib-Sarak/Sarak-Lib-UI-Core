@@ -71,10 +71,13 @@ const SarakToast: React.FC<{ entry: ToastEntry; onDismiss: (id: string) => void 
             role="alert"
             data-sarak-toast="true"
             data-variant={entry.variant}
-            className="flex items-center gap-2 px-4 py-3 text-sm shadow-lg pointer-events-auto"
+            className="flex items-center text-sm shadow-lg pointer-events-auto"
             style={{
                 minWidth: '15rem',
                 maxWidth: '22.5rem',
+                gap: 'var(--sarak-layout-gap-sm, 8px)',
+                paddingInline: 'var(--sarak-layout-gap-md, 16px)',
+                paddingBlock: 'calc(var(--sarak-layout-gap-md, 16px) * 0.75)',
                 borderRadius: 'var(--sarak-card-radius,12px)',
                 background: 'var(--color-theme-card,#1e293b))',
                 color: 'var(--sarak-text-main,#ffffff))',
@@ -150,8 +153,10 @@ export const SarakToastProvider: React.FC<{ children: React.ReactNode }> = ({ ch
                   <div
                       data-sarak-toast-stack="true"
                       aria-live="polite"
-                      className="fixed flex flex-col gap-2 pointer-events-none"
+                      className="fixed flex pointer-events-none"
                       style={{
+                          flexDirection: 'column',
+                          gap: 'var(--sarak-layout-gap-sm, 8px)',
                           bottom: 'var(--sarak-layout-gap-lg,24px)',
                           right: 'var(--sarak-layout-gap-lg,24px)',
                           zIndex: 'var(--z-index-tooltip, 9000)' as React.CSSProperties['zIndex'],

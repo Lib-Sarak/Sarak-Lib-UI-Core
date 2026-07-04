@@ -19,12 +19,12 @@ exports[`SarakTitleCard (Characterization) > matches snapshot before any removal
         
   </style>
   <div
-    class="mock-container sarak-card bg-[var(--sx-color-surface-base)] border-[var(--sx-color-border-base)] group transition-all relative overflow-hidden "
+    class="mock-container sarak-card bg-[var(--color-theme-card,#1e293b)] border-[var(--border-color,#334155)] group transition-all relative overflow-hidden "
     data-border-beam="0"
     data-geometric="0"
     data-spotlight="1"
     data-sx-card-texture-type="none"
-    style="transition-duration: var(--animation-speed, 0.4s); padding: var(--sarak-card-padding-md, 24px); opacity: 0; transform: translateY(15px);"
+    style="transition-duration: var(--duration-normal, 0.3s); padding: var(--sarak-card-padding-md, 24px); opacity: 0; transform: translateY(15px);"
   >
     <div
       class="absolute inset-0 z-0 spotlight-effect pointer-events-none opacity-0 group-hover:opacity-100 transition-opacity duration-500"
@@ -39,26 +39,28 @@ exports[`SarakTitleCard (Characterization) > matches snapshot before any removal
         class="mock-header"
       >
         <div
-          class="flex flex-col flex-1 min-w-0 pr-2"
+          class="flex flex-1 min-w-0"
+          style="flex-direction: column; padding-right: var(--sarak-layout-gap-sm, 8px);"
         >
           <span
-            class="text-[9px] font-black text-[var(--sx-color-primary-base)] uppercase tracking-[0.2em] mb-1"
+            class="text-[9px] font-black text-[var(--sarak-primary-color,#3b82f6)] uppercase tracking-[0.2em]"
+            style="margin-bottom: calc(var(--sarak-layout-gap-md, 16px) * 0.25);"
           >
             123
           </span>
           <h4
-            class="text-[var(--sx-color-text-title)] tracking-tight group-hover:text-[var(--sx-color-primary-base)] transition-colors truncate"
+            class="text-[var(--color-theme-title,#ffffff)] tracking-tight group-hover:text-[var(--sarak-primary-color,#3b82f6)] transition-colors truncate"
             style="font-size: var(--sarak-card-title-font-size, 20px); font-weight: var(--sarak-card-title-font-weight, 900); letter-spacing: var(--sarak-card-title-letter-spacing, 0px); color: var(--sarak-card-title-color, var(--theme-title, #ffffff));"
           >
             Test Item
           </h4>
         </div>
         <div
-          class="bg-[var(--sx-color-surface-base)] border-[var(--sx-color-border-base)] flex items-center justify-center p-3 relative shrink-0 transition-all group-hover:border-[var(--sx-color-primary-base)]"
-          style="border-radius: var(--sarak-grid-radius, 8px); box-shadow: 0 0 15px var(--sarak-card-title-icon-glow, rgba(0, 242, 255, 0.2));"
+          class="bg-[var(--color-theme-card,#1e293b)] border-[var(--border-color,#334155)] flex items-center justify-center relative shrink-0 transition-all group-hover:border-[var(--sarak-primary-color,#3b82f6)]"
+          style="padding: calc(var(--sarak-layout-gap-md, 16px) * 0.75); border-radius: var(--sarak-card-radius,12px); box-shadow: 0 0 15px var(--sarak-card-title-icon-glow, rgba(0, 242, 255, 0.2));"
         >
           <svg
-            class="text-[var(--sx-color-primary-base)] group-hover:scale-110 transition-transform"
+            class="text-[var(--sarak-primary-color,#3b82f6)] group-hover:scale-110 transition-transform"
             fill="none"
             height="18"
             stroke="currentColor"
@@ -79,7 +81,8 @@ exports[`SarakTitleCard (Characterization) > matches snapshot before any removal
         class="mock-footer"
       >
         <div
-          class="flex flex-col gap-3 w-full"
+          class="flex w-full"
+          style="flex-direction: column; gap: calc(var(--sarak-layout-gap-md, 16px) * 0.75);"
         >
           <div
             class="flex items-center justify-between text-3xs font-black uppercase text-white/40 tracking-wider"
@@ -88,17 +91,18 @@ exports[`SarakTitleCard (Characterization) > matches snapshot before any removal
               Contexto
             </span>
             <span
-              class="text-2xs font-mono text-[var(--sx-color-text-muted)]"
+              class="text-2xs font-mono text-[var(--text-muted,#94a3b8)]"
             >
               5k tokens
             </span>
           </div>
           <div
-            class="flex flex-wrap gap-1.5 pt-2 border-t border-[var(--sx-color-border-base)]/30"
+            class="flex flex-wrap border-t border-[var(--border-color,#334155)]/30"
+            style="gap: calc(var(--sarak-layout-gap-md, 16px) * 0.375); padding-top: var(--sarak-layout-gap-sm, 8px);"
           >
             <div
-              class="flex items-center gap-1 bg-[var(--sx-color-primary-surface)] text-[var(--sx-color-primary-base)] border border-[var(--sx-color-border-base)] text-3xs font-black uppercase px-2 py-0.5"
-              style="border-radius: var(--sarak-border-width, 4px);"
+              class="flex items-center bg-[var(--sarak-primary-color-bg,rgba(59,130,246,0.1))] text-[var(--sarak-primary-color,#3b82f6)] border border-[var(--border-color,#334155)] text-3xs font-black uppercase"
+              style="gap: calc(var(--sarak-layout-gap-md, 16px) * 0.25); padding-inline: var(--sarak-layout-gap-sm, 8px); padding-block: calc(var(--sarak-layout-gap-md, 16px) * 0.125); border-radius: var(--sarak-border-width, 4px);"
             >
               <svg
                 class="lucide lucide-eye"
@@ -126,8 +130,8 @@ exports[`SarakTitleCard (Characterization) > matches snapshot before any removal
               </span>
             </div>
             <div
-              class="flex items-center gap-1 bg-[var(--sx-color-primary-surface)] text-[var(--sx-color-primary-base)] border border-[var(--sx-color-border-base)] text-3xs font-black uppercase px-2 py-0.5"
-              style="border-radius: var(--sarak-border-width, 4px);"
+              class="flex items-center bg-[var(--sarak-primary-color-bg,rgba(59,130,246,0.1))] text-[var(--sarak-primary-color,#3b82f6)] border border-[var(--border-color,#334155)] text-3xs font-black uppercase"
+              style="gap: calc(var(--sarak-layout-gap-md, 16px) * 0.25); padding-inline: var(--sarak-layout-gap-sm, 8px); padding-block: calc(var(--sarak-layout-gap-md, 16px) * 0.125); border-radius: var(--sarak-border-width, 4px);"
             >
               <svg
                 class="lucide lucide-message-square"

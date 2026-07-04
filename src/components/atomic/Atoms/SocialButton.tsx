@@ -54,15 +54,22 @@ export const SocialButton: React.FC<SocialButtonProps> = ({
             type="button"
             onClick={() => onClick?.(provider)}
             title={label || defaultLabel}
-            style={{ borderRadius: 'var(--radius-btn, 12px))' }}
+            style={{
+                borderRadius: 'var(--radius-btn, 12px))',
+                ...(hideLabel ? {} : {
+                    gap: 'var(--sarak-layout-gap-md, 16px)',
+                    paddingBlock: 'calc(var(--sarak-layout-gap-md, 16px) * 0.875)',
+                    paddingInline: 'var(--sarak-layout-gap-lg, 24px)'
+                })
+            }}
             className={cn(
                 "flex items-center transition-sarak group/soc active:scale-[0.97]",
                 "bg-[var(--color-theme-card, rgba(255,255,255,0.03))))]",
                 "text-[var(--color-theme-text, rgba(255,255,255,0.5)))]",
                 "border border-white/5 hover:border-white/10",
-                hideLabel 
-                    ? "w-12 h-12 justify-center" 
-                    : "w-full gap-4 py-3.5 px-6",
+                hideLabel
+                    ? "w-12 h-12 justify-center"
+                    : "w-full",
                 variant === 'sovereign' || designVariant === 'sovereign'
                     ? "shadow-xl shadow-[var(--sarak-primary-color,#3b82f6)]/20 hover:shadow-[var(--sarak-primary-color,#3b82f6)]/40 hover:-translate-y-0.5" 
                     : "hover:bg-white/[0.08] hover:text-white",
@@ -81,7 +88,7 @@ export const SocialButton: React.FC<SocialButtonProps> = ({
             </div>
             
             {!hideLabel && (
-                <div className="flex flex-col items-start gap-0.5">
+                <div className="flex items-start" style={{ flexDirection: 'column', gap: 'calc(var(--sarak-layout-gap-md, 16px) * 0.125)' }}>
                     <span className="text-[10px] font-black uppercase tracking-[0.25em] transition-all">
                         {label || defaultLabel}
                     </span>

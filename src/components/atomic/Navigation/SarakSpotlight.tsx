@@ -115,7 +115,8 @@ export const SarakSpotlight: React.FC<SarakSpotlightProps> = ({
 
     return (
         <div
-            className="fixed inset-0 z-[9999] flex items-start justify-center p-4 pt-[12vh] bg-black/50 backdrop-blur-sm"
+            className="fixed inset-0 z-[9999] flex items-start justify-center pt-[12vh] bg-black/50 backdrop-blur-sm"
+            style={{ paddingLeft: 'var(--sarak-layout-gap-md, 16px)', paddingRight: 'var(--sarak-layout-gap-md, 16px)', paddingBottom: 'var(--sarak-layout-gap-md, 16px)' }}
             role="presentation"
             onClick={() => setOpen(false)}
         >
@@ -137,9 +138,10 @@ export const SarakSpotlight: React.FC<SarakSpotlightProps> = ({
                     }}
                     onKeyDown={onKeyDown}
                     aria-label="Campo de busca"
-                    className="w-full px-4 py-3 bg-transparent outline-none text-[var(--sarak-text-main,#ffffff)] border-b border-[var(--border-color,#334155)]"
+                    className="w-full bg-transparent outline-none text-[var(--sarak-text-main,#ffffff)] border-b border-[var(--border-color,#334155)]"
+                    style={{ paddingInline: 'var(--sarak-layout-gap-md, 16px)', paddingBlock: 'calc(var(--sarak-layout-gap-md, 16px) * 0.75)' }}
                 />
-                <ul role="listbox" className="max-h-80 overflow-y-auto py-1">
+                <ul role="listbox" className="max-h-80 overflow-y-auto" style={{ paddingBlock: 'calc(var(--sarak-layout-gap-md, 16px) * 0.25)' }}>
                     {results.map((item, index) => (
                         <li
                             key={item.id}
@@ -147,18 +149,19 @@ export const SarakSpotlight: React.FC<SarakSpotlightProps> = ({
                             aria-selected={index === active}
                             onMouseEnter={() => setActiveIndex(index)}
                             onClick={() => choose(item)}
-                            className={`flex items-center gap-3 px-4 py-2 cursor-pointer text-sm ${
+                            className={`flex items-center cursor-pointer text-sm ${
                                 index === active
                                     ? 'bg-[var(--sarak-primary-color,#3b82f6)] text-[var(--color-theme-card,#1e293b)]'
                                     : 'text-[var(--sarak-text-main,#ffffff)]'
                             }`}
+                            style={{ gap: 'calc(var(--sarak-layout-gap-md, 16px) * 0.75)', paddingInline: 'var(--sarak-layout-gap-md, 16px)', paddingBlock: 'var(--sarak-layout-gap-sm, 8px)' }}
                         >
                             {item.icon}
                             {item.label}
                         </li>
                     ))}
                     {results.length === 0 && (
-                        <li className="px-4 py-6 text-center text-sm text-[var(--text-muted,#94a3b8)]">
+                        <li className="text-center text-sm text-[var(--text-muted,#94a3b8)]" style={{ paddingInline: 'var(--sarak-layout-gap-md, 16px)', paddingBlock: 'var(--sarak-layout-gap-lg, 24px)' }}>
                             Nenhum resultado
                         </li>
                     )}

@@ -47,8 +47,8 @@ export const SarakOverlayProvider: React.FC<{ children: React.ReactNode }> = ({ 
             </SarakModal>
 
             <SarakDrawer isOpen={isDrawer} onClose={close}>
-                <div className="p-6">
-                    {current?.title && <h2 className="text-lg font-bold mb-2">{current.title}</h2>}
+                <div style={{ padding: 'var(--sarak-layout-gap-lg, 24px)' }}>
+                    {current?.title && <h2 className="text-lg font-bold" style={{ marginBottom: 'var(--sarak-layout-gap-sm, 8px)' }}>{current.title}</h2>}
                     <p>{current?.message}</p>
                 </div>
             </SarakDrawer>

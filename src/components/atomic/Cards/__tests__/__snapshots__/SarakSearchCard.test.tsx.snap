@@ -19,12 +19,12 @@ exports[`SarakSearchCard (Characterization) > matches snapshot before any remova
         
   </style>
   <div
-    class="mock-container sarak-card bg-[var(--sx-color-surface-base)] border-[var(--sx-color-border-base)] relative overflow-hidden group transition-all h-fit "
+    class="mock-container sarak-card bg-[var(--color-theme-card,#1e293b)] border-[var(--border-color,#334155)] relative overflow-hidden group transition-all h-fit "
     data-border-beam="0"
     data-geometric="0"
     data-spotlight="1"
     data-sx-card-texture-type="none"
-    style="transition-duration: var(--animation-speed, 0.4s); padding: var(--sarak-card-padding-md, 24px); opacity: 0; transform: translateY(15px);"
+    style="transition-duration: var(--duration-normal, 0.3s); padding: var(--sarak-card-padding-md, 24px); opacity: 0; transform: translateY(15px);"
   >
     <div
       class="absolute inset-0 z-0 spotlight-effect pointer-events-none opacity-0 group-hover:opacity-100 transition-opacity duration-500"
@@ -40,15 +40,17 @@ exports[`SarakSearchCard (Characterization) > matches snapshot before any remova
         class="mock-header"
       >
         <div
-          class="flex flex-col"
+          class="flex"
+          style="flex-direction: column;"
         >
           <span
-            class="text-[9px] font-black text-[var(--sx-color-primary-base)] uppercase tracking-[0.2em] mb-1"
+            class="text-[9px] font-black text-[var(--sarak-primary-color,#3b82f6)] uppercase tracking-[0.2em]"
+            style="margin-bottom: calc(var(--sarak-layout-gap-md, 16px) * 0.25);"
           >
             Painel de Filtros
           </span>
           <h4
-            class="text-sm font-black text-[var(--sx-color-text-title)] tracking-tight"
+            class="text-sm font-black text-[var(--color-theme-title,#ffffff)] tracking-tight"
           >
             Busca de Capacidades
           </h4>
@@ -56,16 +58,17 @@ exports[`SarakSearchCard (Characterization) > matches snapshot before any remova
       </div>
       <div
         class="flex flex-col w-full w-full text-2xs font-semibold"
-        style="gap: var(--sx-spacing-xs);"
+        style="gap: calc(var(--sarak-layout-gap-md, 16px) * 0.25);"
       >
         <div
-          class="flex-1 flex flex-col relative w-full"
+          class="flex-1 flex relative w-full"
+          style="flex-direction: column;"
         >
           <div
             class="relative w-full flex items-center"
           >
             <div
-              class="absolute left-3 flex items-center pointer-events-none text-[var(--sarak-input-icon-color,rgba(255,255,255,0.5))] transition-colors group-focus-within:text-[var(--sarak-input-focus-border-color,var(--sx-color-primary-base))]"
+              class="absolute left-3 flex items-center pointer-events-none text-[var(--sarak-input-icon-color,rgba(255,255,255,0.5))] transition-colors group-focus-within:text-[var(--sarak-input-focus-border-color,var(--sarak-primary-color,#3b82f6))]"
             >
               <svg
                 class="w-3.5 h-3.5"
@@ -90,10 +93,10 @@ exports[`SarakSearchCard (Characterization) > matches snapshot before any remova
               </svg>
             </div>
             <input
-              class="block text-[var(--sarak-input-text-color,var(--sx-color-text-muted))] font-medium outline-none transition-all placeholder:text-[var(--sarak-input-text-color,var(--sx-color-text-muted))]/30 bg-[var(--sarak-input-bg,var(--sx-color-surface-base))] rounded-input py-4 pl-11 pr-4 w-full "
+              class="block text-[var(--sarak-input-text-color,var(--text-muted,#94a3b8))] font-medium outline-none transition-all placeholder:text-[var(--sarak-input-text-color,var(--text-muted,#94a3b8))]/30 bg-[var(--sarak-input-bg,var(--color-theme-card,#1e293b))] rounded-input py-4 pl-11 pr-4 w-full "
               id=":r0:"
               placeholder="Buscar modelo ou tech..."
-              style="border: 1px solid var(--sarak-input-border-color, var(--sx-color-border-base));"
+              style="border: 1px solid var(--sarak-input-border-color, var(--border-color,#334155));"
               value=""
             />
           </div>
@@ -103,21 +106,25 @@ exports[`SarakSearchCard (Characterization) > matches snapshot before any remova
         class="mock-footer"
       >
         <div
-          class="flex flex-col gap-2 pt-2 border-t border-[var(--sx-color-border-base)]/20 w-full"
+          class="flex border-t border-[var(--border-color,#334155)]/20 w-full"
+          style="flex-direction: column; gap: var(--sarak-layout-gap-sm, 8px); padding-top: var(--sarak-layout-gap-sm, 8px);"
         >
           <span
-            class="text-[8px] font-black text-white/20 uppercase tracking-widest mb-1"
+            class="text-[8px] font-black text-white/20 uppercase tracking-widest"
+            style="margin-bottom: calc(var(--sarak-layout-gap-md, 16px) * 0.25);"
           >
             Filtro de Abilities
           </span>
           <div
-            class="flex items-center justify-between p-2 hover:bg-white/5 border border-transparent hover:border-white/5 transition-all cursor-pointer rounded-lg"
+            class="flex items-center justify-between hover:bg-white/5 border border-transparent hover:border-white/5 transition-all cursor-pointer rounded-lg"
+            style="padding: var(--sarak-layout-gap-sm, 8px);"
           >
             <div
-              class="flex items-center gap-2"
+              class="flex items-center"
+              style="gap: var(--sarak-layout-gap-sm, 8px);"
             >
               <svg
-                class="text-[var(--sx-color-primary-base)]"
+                class="text-[var(--sarak-primary-color,#3b82f6)]"
                 fill="none"
                 height="12"
                 stroke="currentColor"
@@ -138,14 +145,14 @@ exports[`SarakSearchCard (Characterization) > matches snapshot before any remova
                 />
               </svg>
               <span
-                class="text-3xs font-black uppercase text-[var(--sx-color-text-muted)]"
+                class="text-3xs font-black uppercase text-[var(--text-muted,#94a3b8)]"
               >
                 Visão Computacional
               </span>
             </div>
             <label
               class="flex items-center cursor-pointer flex-row"
-              style="gap: var(--sx-spacing-sm);"
+              style="gap: var(--sarak-layout-gap-sm, 8px);"
             >
               <div
                 class="relative"
@@ -159,7 +166,7 @@ exports[`SarakSearchCard (Characterization) > matches snapshot before any remova
                 />
                 <div
                   class="block w-10 h-6 rounded-full transition-all duration-300 ease-in-out"
-                  style="background-color: var(--sarak-switch-active-bg, var(--sx-color-primary-base)); backdrop-filter: blur(4px);"
+                  style="background-color: var(--sarak-switch-active-bg, var(--sarak-primary-color,#3b82f6)); backdrop-filter: blur(4px);"
                 />
                 <div
                   class="absolute left-1 top-1 w-4 h-4 rounded-full transition-transform duration-300 ease-in-out shadow-sm"
@@ -169,13 +176,15 @@ exports[`SarakSearchCard (Characterization) > matches snapshot before any remova
             </label>
           </div>
           <div
-            class="flex items-center justify-between p-2 hover:bg-white/5 border border-transparent hover:border-white/5 transition-all cursor-pointer rounded-lg"
+            class="flex items-center justify-between hover:bg-white/5 border border-transparent hover:border-white/5 transition-all cursor-pointer rounded-lg"
+            style="padding: var(--sarak-layout-gap-sm, 8px);"
           >
             <div
-              class="flex items-center gap-2"
+              class="flex items-center"
+              style="gap: var(--sarak-layout-gap-sm, 8px);"
             >
               <svg
-                class="text-[var(--sx-color-primary-glow)]"
+                class="text-[var(--sarak-shadow-glow,rgba(59,130,246,0.5))]"
                 fill="none"
                 height="12"
                 stroke="currentColor"
@@ -202,14 +211,14 @@ exports[`SarakSearchCard (Characterization) > matches snapshot before any remova
                 />
               </svg>
               <span
-                class="text-3xs font-black uppercase text-[var(--sx-color-text-muted)]"
+                class="text-3xs font-black uppercase text-[var(--text-muted,#94a3b8)]"
               >
                 Navegação Web
               </span>
             </div>
             <label
               class="flex items-center cursor-pointer flex-row"
-              style="gap: var(--sx-spacing-sm);"
+              style="gap: var(--sarak-layout-gap-sm, 8px);"
             >
               <div
                 class="relative"
@@ -222,7 +231,7 @@ exports[`SarakSearchCard (Characterization) > matches snapshot before any remova
                 />
                 <div
                   class="block w-10 h-6 rounded-full transition-all duration-300 ease-in-out"
-                  style="background-color: var(--sarak-switch-inactive-bg, rgba(255, 255, 255, 0.1)); backdrop-filter: blur(4px);"
+                  style="background-color: var(--color-theme-card, rgba(255,255,255,0.1))); backdrop-filter: blur(4px);"
                 />
                 <div
                   class="absolute left-1 top-1 w-4 h-4 rounded-full transition-transform duration-300 ease-in-out shadow-sm"
@@ -232,13 +241,15 @@ exports[`SarakSearchCard (Characterization) > matches snapshot before any remova
             </label>
           </div>
           <div
-            class="flex items-center justify-between p-2 hover:bg-white/5 border border-transparent hover:border-white/5 transition-all cursor-pointer rounded-lg"
+            class="flex items-center justify-between hover:bg-white/5 border border-transparent hover:border-white/5 transition-all cursor-pointer rounded-lg"
+            style="padding: var(--sarak-layout-gap-sm, 8px);"
           >
             <div
-              class="flex items-center gap-2"
+              class="flex items-center"
+              style="gap: var(--sarak-layout-gap-sm, 8px);"
             >
               <svg
-                class="text-[var(--sx-color-primary-base)]"
+                class="text-[var(--sarak-primary-color,#3b82f6)]"
                 fill="none"
                 height="12"
                 stroke="currentColor"
@@ -254,14 +265,14 @@ exports[`SarakSearchCard (Characterization) > matches snapshot before any remova
                 />
               </svg>
               <span
-                class="text-3xs font-black uppercase text-[var(--sx-color-text-muted)]"
+                class="text-3xs font-black uppercase text-[var(--text-muted,#94a3b8)]"
               >
                 Modo Conversacional
               </span>
             </div>
             <label
               class="flex items-center cursor-pointer flex-row"
-              style="gap: var(--sx-spacing-sm);"
+              style="gap: var(--sarak-layout-gap-sm, 8px);"
             >
               <div
                 class="relative"
@@ -275,7 +286,7 @@ exports[`SarakSearchCard (Characterization) > matches snapshot before any remova
                 />
                 <div
                   class="block w-10 h-6 rounded-full transition-all duration-300 ease-in-out"
-                  style="background-color: var(--sarak-switch-active-bg, var(--sx-color-primary-base)); backdrop-filter: blur(4px);"
+                  style="background-color: var(--sarak-switch-active-bg, var(--sarak-primary-color,#3b82f6)); backdrop-filter: blur(4px);"
                 />
                 <div
                   class="absolute left-1 top-1 w-4 h-4 rounded-full transition-transform duration-300 ease-in-out shadow-sm"

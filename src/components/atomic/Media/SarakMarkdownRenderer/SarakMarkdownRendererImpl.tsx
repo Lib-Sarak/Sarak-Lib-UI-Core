@@ -37,24 +37,28 @@ const SarakMarkdownRendererImpl: React.FC<SarakMarkdownRendererProps> = ({ conte
     const isDark = (design?.mode ?? 'dark') !== 'light';
     const codeStyle = isDark ? oneDark : oneLight;
 
+    const mb3 = { marginBottom: 'calc(var(--sarak-layout-gap-md, 16px) * 0.75)' };
+    const mb2 = { marginBottom: 'var(--sarak-layout-gap-sm, 8px)' };
+    const cellPad = { paddingInline: 'calc(var(--sarak-layout-gap-md, 16px) * 0.75)', paddingBlock: 'var(--sarak-layout-gap-sm, 8px)' };
+
     const components: MarkdownComponents = {
-        h1: ({ node: _n, ...p }: MdProps<'h1'>) => <h1 className="text-2xl font-bold mb-3 text-[var(--sarak-text-main,#ffffff)]" {...p} />,
-        h2: ({ node: _n, ...p }: MdProps<'h2'>) => <h2 className="text-xl font-bold mb-2 text-[var(--sarak-text-main,#ffffff)]" {...p} />,
-        h3: ({ node: _n, ...p }: MdProps<'h3'>) => <h3 className="text-lg font-semibold mb-2 text-[var(--sarak-text-main,#ffffff)]" {...p} />,
-        p: ({ node: _n, ...p }: MdProps<'p'>) => <p className="mb-3 leading-relaxed text-[var(--text-muted,#94a3b8)]" {...p} />,
+        h1: ({ node: _n, ...p }: MdProps<'h1'>) => <h1 className="text-2xl font-bold text-[var(--sarak-text-main,#ffffff)]" style={mb3} {...p} />,
+        h2: ({ node: _n, ...p }: MdProps<'h2'>) => <h2 className="text-xl font-bold text-[var(--sarak-text-main,#ffffff)]" style={mb2} {...p} />,
+        h3: ({ node: _n, ...p }: MdProps<'h3'>) => <h3 className="text-lg font-semibold text-[var(--sarak-text-main,#ffffff)]" style={mb2} {...p} />,
+        p: ({ node: _n, ...p }: MdProps<'p'>) => <p className="leading-relaxed text-[var(--text-muted,#94a3b8)]" style={mb3} {...p} />,
         a: ({ node: _n, ...p }: MdProps<'a'>) => <a className="text-[var(--sarak-primary-color,#3b82f6)] underline" {...p} />,
-        ul: ({ node: _n, ...p }: MdProps<'ul'>) => <ul className="list-disc pl-6 mb-3 text-[var(--text-muted,#94a3b8)]" {...p} />,
-        ol: ({ node: _n, ...p }: MdProps<'ol'>) => <ol className="list-decimal pl-6 mb-3 text-[var(--text-muted,#94a3b8)]" {...p} />,
+        ul: ({ node: _n, ...p }: MdProps<'ul'>) => <ul className="list-disc text-[var(--text-muted,#94a3b8)]" style={{ ...mb3, paddingLeft: 'var(--sarak-layout-gap-lg, 24px)' }} {...p} />,
+        ol: ({ node: _n, ...p }: MdProps<'ol'>) => <ol className="list-decimal text-[var(--text-muted,#94a3b8)]" style={{ ...mb3, paddingLeft: 'var(--sarak-layout-gap-lg, 24px)' }} {...p} />,
         blockquote: ({ node: _n, ...p }: MdProps<'blockquote'>) => (
-            <blockquote className="border-l-2 border-[var(--sarak-primary-color,#3b82f6)] pl-4 italic mb-3 text-[var(--text-muted,#94a3b8)]" {...p} />
+            <blockquote className="border-l-2 border-[var(--sarak-primary-color,#3b82f6)] italic text-[var(--text-muted,#94a3b8)]" style={{ ...mb3, paddingLeft: 'var(--sarak-layout-gap-md, 16px)' }} {...p} />
         ),
         table: ({ node: _n, ...p }: MdProps<'table'>) => (
-            <div className="overflow-x-auto mb-3">
+            <div className="overflow-x-auto" style={mb3}>
                 <table className="w-full border-collapse text-sm text-[var(--text-muted,#94a3b8)]" {...p} />
             </div>
         ),
-        th: ({ node: _n, ...p }: MdProps<'th'>) => <th className="border border-[var(--border-color,#334155)] px-3 py-2 text-left font-semibold" {...p} />,
-        td: ({ node: _n, ...p }: MdProps<'td'>) => <td className="border border-[var(--border-color,#334155)] px-3 py-2" {...p} />,
+        th: ({ node: _n, ...p }: MdProps<'th'>) => <th className="border border-[var(--border-color,#334155)] text-left font-semibold" style={cellPad} {...p} />,
+        td: ({ node: _n, ...p }: MdProps<'td'>) => <td className="border border-[var(--border-color,#334155)]" style={cellPad} {...p} />,
         // Imagem larga nunca deforma o layout (Critério E2E: max-width 100%).
         img: ({ node: _n, alt, ...p }: MdProps<'img'>) => <img className="max-w-full h-auto rounded-md" alt={alt ?? ''} {...p} />,
         // `<pre>` vira fragmento para o highlighter (PreTag="div") não aninhar em `<pre>`.
@@ -64,13 +68,16 @@ const SarakMarkdownRendererImpl: React.FC<SarakMarkdownRendererProps> = ({ conte
             const text = String(children).replace(/\n$/, '');
             if (match) {
                 return (
-                    <SyntaxHighlighter language={match[1]} style={codeStyle} PreTag="div" className="rounded-md mb-3 text-sm">
+                    <SyntaxHighlighter language={match[1]} style={codeStyle} customStyle={mb3} PreTag="div" className="rounded-md text-sm">
                         {text}
                     </SyntaxHighlighter>
                 );
             }
             return (
-                <code className="px-1.5 py-0.5 rounded bg-[var(--color-theme-card,#1e293b)] text-[var(--sarak-primary-color,#3b82f6)] text-sm">
+                <code
+                    className="rounded bg-[var(--color-theme-card,#1e293b)] text-[var(--sarak-primary-color,#3b82f6)] text-sm"
+                    style={{ paddingInline: 'calc(var(--sarak-layout-gap-md, 16px) * 0.375)', paddingBlock: 'calc(var(--sarak-layout-gap-md, 16px) * 0.125)' }}
+                >
                     {children}
                 </code>
             );

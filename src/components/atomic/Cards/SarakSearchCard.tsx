@@ -81,19 +81,24 @@ export const SarakSearchCard = <TItem extends Record<string, unknown>>({
 
             {/* DRAFT BADGE (v6.3) */}
             {context?.isDrafting && (
-                <div className="absolute top-2 left-4 z-40 pointer-events-none flex items-center gap-1.5 px-2 py-0.5 rounded bg-black/60 border border-[var(--sarak-primary-color,#3b82f6)]/20 text-[7px] font-black uppercase tracking-[0.2em] text-[var(--sarak-primary-color,#3b82f6)] shadow-[0_0_10px_rgba(0,242,255,0.05)]">
+                <div
+                    className="absolute top-2 left-4 z-40 pointer-events-none flex items-center rounded bg-black/60 border border-[var(--sarak-primary-color,#3b82f6)]/20 text-[7px] font-black uppercase tracking-[0.2em] text-[var(--sarak-primary-color,#3b82f6)] shadow-[0_0_10px_rgba(0,242,255,0.05)]"
+                    style={{
+                        gap: 'calc(var(--sarak-layout-gap-md, 16px) * 0.375)',
+                        paddingInline: 'var(--sarak-layout-gap-sm, 8px)',
+                        paddingBlock: 'calc(var(--sarak-layout-gap-md, 16px) * 0.125)'
+                    }}
+                >
                     <span className="w-1 h-1 rounded-full bg-[var(--sarak-primary-color,#3b82f6)] animate-pulse" />
                     {label || "Card de Interação"}
                 </div>
             )}
 
-
-
             <div className={layout.contentClass}>
                 {/* Section Header */}
                 <div className={layout.headerClass}>
-                    <div className="flex flex-col">
-                        <span className="text-[9px] font-black text-[var(--sarak-primary-color,#3b82f6)] uppercase tracking-[0.2em] mb-1">
+                    <div className="flex" style={{ flexDirection: 'column' }}>
+                        <span className="text-[9px] font-black text-[var(--sarak-primary-color,#3b82f6)] uppercase tracking-[0.2em]" style={{ marginBottom: 'calc(var(--sarak-layout-gap-md, 16px) * 0.25)' }}>
                         Painel de Filtros
                     </span>
                     <h4 className="text-sm font-black text-[var(--color-theme-title,#ffffff)] tracking-tight">
@@ -116,15 +121,19 @@ export const SarakSearchCard = <TItem extends Record<string, unknown>>({
 
                 {/* Tactile toggles / Switch selector grid */}
                 <div className={layout.footerClass}>
-                    <div className="flex flex-col gap-2 pt-2 border-t border-[var(--border-color,#334155)]/20 w-full">
-                        <span className="text-[8px] font-black text-white/20 uppercase tracking-widest mb-1">Filtro de Abilities</span>
-                    
-                    {/* Vision Switch */}
-                    <div 
-                        onClick={() => handleToggle('vision')}
-                        className="flex items-center justify-between p-2 hover:bg-white/5 border border-transparent hover:border-white/5 transition-all cursor-pointer rounded-lg"
+                    <div
+                        className="flex border-t border-[var(--border-color,#334155)]/20 w-full"
+                        style={{ flexDirection: 'column', gap: 'var(--sarak-layout-gap-sm, 8px)', paddingTop: 'var(--sarak-layout-gap-sm, 8px)' }}
                     >
-                        <div className="flex items-center gap-2">
+                        <span className="text-[8px] font-black text-white/20 uppercase tracking-widest" style={{ marginBottom: 'calc(var(--sarak-layout-gap-md, 16px) * 0.25)' }}>Filtro de Abilities</span>
+
+                    {/* Vision Switch */}
+                    <div
+                        onClick={() => handleToggle('vision')}
+                        className="flex items-center justify-between hover:bg-white/5 border border-transparent hover:border-white/5 transition-all cursor-pointer rounded-lg"
+                        style={{ padding: 'var(--sarak-layout-gap-sm, 8px)' }}
+                    >
+                        <div className="flex items-center" style={{ gap: 'var(--sarak-layout-gap-sm, 8px)' }}>
                             <Eye size={12} className="text-[var(--sarak-primary-color,#3b82f6)]" />
                             <span className="text-3xs font-black uppercase text-[var(--text-muted,#94a3b8)]">Visão Computacional</span>
                         </div>
@@ -132,11 +141,12 @@ export const SarakSearchCard = <TItem extends Record<string, unknown>>({
                     </div>
 
                     {/* Web Switch */}
-                    <div 
+                    <div
                         onClick={() => handleToggle('web')}
-                        className="flex items-center justify-between p-2 hover:bg-white/5 border border-transparent hover:border-white/5 transition-all cursor-pointer rounded-lg"
+                        className="flex items-center justify-between hover:bg-white/5 border border-transparent hover:border-white/5 transition-all cursor-pointer rounded-lg"
+                        style={{ padding: 'var(--sarak-layout-gap-sm, 8px)' }}
                     >
-                        <div className="flex items-center gap-2">
+                        <div className="flex items-center" style={{ gap: 'var(--sarak-layout-gap-sm, 8px)' }}>
                             <Globe size={12} className="text-[var(--sarak-shadow-glow,rgba(59,130,246,0.5))]" />
                             <span className="text-3xs font-black uppercase text-[var(--text-muted,#94a3b8)]">Navegação Web</span>
                         </div>
@@ -144,11 +154,12 @@ export const SarakSearchCard = <TItem extends Record<string, unknown>>({
                     </div>
 
                     {/* Chat Switch */}
-                    <div 
+                    <div
                         onClick={() => handleToggle('chat')}
-                        className="flex items-center justify-between p-2 hover:bg-white/5 border border-transparent hover:border-white/5 transition-all cursor-pointer rounded-lg"
+                        className="flex items-center justify-between hover:bg-white/5 border border-transparent hover:border-white/5 transition-all cursor-pointer rounded-lg"
+                        style={{ padding: 'var(--sarak-layout-gap-sm, 8px)' }}
                     >
-                        <div className="flex items-center gap-2">
+                        <div className="flex items-center" style={{ gap: 'var(--sarak-layout-gap-sm, 8px)' }}>
                             <MessageSquare size={12} className="text-[var(--sarak-primary-color,#3b82f6)]" />
                             <span className="text-3xs font-black uppercase text-[var(--text-muted,#94a3b8)]">Modo Conversacional</span>
                         </div>

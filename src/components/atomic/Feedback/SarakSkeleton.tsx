@@ -69,7 +69,7 @@ export const SarakSkeleton: React.FC<SarakSkeletonProps> = ({
     }
 
     return (
-        <div {...common} data-shape="text" className="flex flex-col gap-2 w-full">
+        <div {...common} data-shape="text" className="flex w-full" style={{ flexDirection: 'column', gap: 'var(--sarak-layout-gap-sm, 8px)' }}>
             {Array.from({ length: Math.max(1, rows) }, (_v, index) => (
                 <div
                     key={index}

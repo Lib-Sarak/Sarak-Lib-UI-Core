@@ -61,7 +61,7 @@ export const SarakPagination: React.FC<SarakPaginationProps> = ({
     };
 
     return (
-        <nav className={`flex items-center gap-1 ${className}`} aria-label="Paginação">
+        <nav className={`flex items-center ${className}`} style={{ gap: 'calc(var(--sarak-layout-gap-md, 16px) * 0.25)' }} aria-label="Paginação">
             <button
                 type="button"
                 className={`${baseBtn} text-[var(--text-muted,#94a3b8)] hover:bg-[var(--color-theme-card,#1e293b)]`}

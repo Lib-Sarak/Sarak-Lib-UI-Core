@@ -60,20 +60,22 @@ export const SarakModal: React.FC<SarakModalProps> = ({
     const goBack = () => setStepIndex((i) => Math.max(i - 1, 0));
 
     const body = hasSteps ? steps[stepIndex] : children;
+    const wizardBtnStyle = { paddingInline: 'var(--sarak-layout-gap-sm, 8px)', paddingBlock: 'calc(var(--sarak-layout-gap-md, 16px) * 0.375)' };
     const wizardFooter = hasSteps ? (
         <div className="flex items-center justify-between w-full">
             <button
                 type="button"
                 onClick={goBack}
                 disabled={stepIndex === 0}
-                className="px-3 py-1.5 text-sm rounded-md disabled:opacity-50"
+                className="text-sm rounded-md disabled:opacity-50"
+                style={wizardBtnStyle}
             >
                 Voltar
             </button>
             <span className="text-xs text-[var(--theme-muted)]">
                 {stepIndex + 1} / {steps.length}
             </span>
-            <button type="button" onClick={advance} className="px-3 py-1.5 text-sm rounded-md">
+            <button type="button" onClick={advance} className="text-sm rounded-md" style={wizardBtnStyle}>
                 {stepIndex === lastStep ? 'Concluir' : 'Avançar'}
             </button>
         </div>
@@ -83,7 +85,7 @@ export const SarakModal: React.FC<SarakModalProps> = ({
 
     return (
         <AnimatePresence>
-            <div className="fixed inset-0 z-[var(--z-index-modal)] flex items-center justify-center p-4">
+            <div className="fixed inset-0 z-[var(--z-index-modal)] flex items-center justify-center" style={{ padding: 'var(--sarak-layout-gap-md, 16px)' }}>
                 {/* Overlay Backdrop */}
                 <motion.div 
                     initial={{ opacity: 0 }}
@@ -106,26 +108,31 @@ export const SarakModal: React.FC<SarakModalProps> = ({
                     role="dialog"
                     aria-modal="true"
                     className={twMerge(
-                        "relative w-full max-w-lg bg-[var(--theme-surface)] border border-[var(--theme-border)] rounded-[var(--radius-modal)] shadow-2xl overflow-hidden flex flex-col",
+                        "relative w-full max-w-lg bg-[var(--theme-surface)] border border-[var(--theme-border)] rounded-[var(--radius-modal)] shadow-2xl overflow-hidden flex",
                         className
                     )}
+                    style={{ flexDirection: 'column' }}
                 >
                     {/* Header */}
                     {(title || !hideCloseButton) && (
-                        <div className={clsx("px-6 py-4 border-b border-[var(--theme-border)] bg-black/10", headerClass)}>
+                        <div
+                            className={clsx("border-b border-[var(--theme-border)] bg-black/10", headerClass)}
+                            style={{ paddingInline: 'var(--sarak-layout-gap-lg, 24px)', paddingBlock: 'var(--sarak-layout-gap-md, 16px)' }}
+                        >
                             {title && (
                                 <h2 className="text-lg font-bold text-[var(--color-theme-title,#ffffff)]">
                                     {title}
                                 </h2>
                             )}
-                            
+
                             {!hideCloseButton && (
-                                <button 
+                                <button
                                     onClick={onClose}
                                     className={clsx(
-                                        "p-1.5 text-[var(--theme-muted)] hover:text-white transition-colors rounded-md hover:bg-white/10",
+                                        "text-[var(--theme-muted)] hover:text-white transition-colors rounded-md hover:bg-white/10",
                                         closeButtonClass
                                     )}
+                                    style={{ padding: 'calc(var(--sarak-layout-gap-md, 16px) * 0.375)' }}
                                     aria-label="Fechar modal"
                                 >
                                     <X size={18} />
@@ -135,13 +142,16 @@ export const SarakModal: React.FC<SarakModalProps> = ({
                     )}
 
                     {/* Body */}
-                    <div className="p-6 flex flex-col overflow-y-auto max-h-[70vh]">
+                    <div className="flex overflow-y-auto max-h-[70vh]" style={{ flexDirection: 'column', padding: 'var(--sarak-layout-gap-lg, 24px)' }}>
                         {body}
                     </div>
 
                     {/* Footer */}
                     {wizardFooter && (
-                        <div className={clsx("px-6 py-4 border-t border-[var(--theme-border)] bg-black/10", footerClass)}>
+                        <div
+                            className={clsx("border-t border-[var(--theme-border)] bg-black/10", footerClass)}
+                            style={{ paddingInline: 'var(--sarak-layout-gap-lg, 24px)', paddingBlock: 'var(--sarak-layout-gap-md, 16px)' }}
+                        >
                             {wizardFooter}
                         </div>
                     )}

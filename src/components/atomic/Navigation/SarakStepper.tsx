@@ -56,12 +56,11 @@ export const SarakStepper: React.FC<SarakStepperProps> = ({
                 return (
                     <li
                         key={`${step.label}-${index}`}
-                        className={`flex ${isVertical ? 'flex-row' : 'flex-col'} items-center ${
-                            isVertical ? 'gap-3' : 'shrink-0'
-                        }`}
+                        className={`flex items-center ${isVertical ? '' : 'shrink-0'}`}
+                        style={{ flexDirection: isVertical ? 'row' : 'column', gap: isVertical ? 'calc(var(--sarak-layout-gap-md, 16px) * 0.75)' : undefined }}
                         aria-current={state === 'current' ? 'step' : undefined}
                     >
-                        <div className={`flex ${isVertical ? 'flex-col' : 'flex-row'} items-center`}>
+                        <div className="flex items-center" style={{ flexDirection: isVertical ? 'column' : 'row' }}>
                             <span
                                 className={`w-8 h-8 inline-flex items-center justify-center rounded-full border text-sm transition-colors ${markerClass[state]}`}
                             >
@@ -70,18 +69,22 @@ export const SarakStepper: React.FC<SarakStepperProps> = ({
                             {!isLast && (
                                 <span
                                     className={`${
-                                        isVertical ? 'w-px h-6 my-1' : 'h-px w-10 mx-2'
+                                        isVertical ? 'w-px h-6' : 'h-px w-10'
                                     } ${state === 'done' ? 'bg-[var(--sarak-primary-color,#3b82f6)]' : 'bg-[var(--border-color,#334155)]'}`}
+                                    style={isVertical
+                                        ? { marginBlock: 'calc(var(--sarak-layout-gap-md, 16px) * 0.25)' }
+                                        : { marginInline: 'var(--sarak-layout-gap-sm, 8px)' }}
                                     aria-hidden="true"
                                 />
                             )}
                         </div>
                         <span
-                            className={`text-xs ${isVertical ? '' : 'mt-1 max-w-24 truncate text-center'} ${
+                            className={`text-xs ${isVertical ? '' : 'max-w-24 truncate text-center'} ${
                                 state === 'todo'
                                     ? 'text-[var(--text-muted,#94a3b8)]'
                                     : 'text-[var(--sarak-text-main,#ffffff)]'
                             }`}
+                            style={isVertical ? undefined : { marginTop: 'calc(var(--sarak-layout-gap-md, 16px) * 0.25)' }}
                             title={step.label}
                         >
                             {step.label}

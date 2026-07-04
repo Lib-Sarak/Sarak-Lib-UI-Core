@@ -30,13 +30,14 @@ export const SarakEmptyState: React.FC<SarakEmptyStateProps> = ({ type = 'abstra
                 variants={containerVariants}
                 initial="initial"
                 animate="animate"
-                className="flex flex-col items-center justify-center h-full opacity-20 grayscale"
+                className="flex items-center justify-center h-full opacity-20 grayscale"
+                style={{ flexDirection: 'column' }}
             >
-                <motion.div variants={itemVariants} className="mb-6 pointer-events-none">
+                <motion.div variants={itemVariants} className="pointer-events-none" style={{ marginBottom: 'var(--sarak-layout-gap-lg, 24px)' }}>
                     <Compass size={64} strokeWidth={1} />
                 </motion.div>
                 <motion.h2 variants={itemVariants} className="text-xl font-bold uppercase tracking-[0.5em]">{systemName || 'Sarak Lib'}</motion.h2>
-                <motion.p variants={itemVariants} className="text-2xs mt-2 uppercase tracking-widest italic">Waiting for System Interaction...</motion.p>
+                <motion.p variants={itemVariants} className="text-2xs uppercase tracking-widest italic" style={{ marginTop: 'var(--sarak-layout-gap-sm, 8px)' }}>Waiting for System Interaction...</motion.p>
             </motion.div>
         );
     }
@@ -47,7 +48,8 @@ export const SarakEmptyState: React.FC<SarakEmptyStateProps> = ({ type = 'abstra
                 variants={containerVariants}
                 initial="initial"
                 animate="animate"
-                className="relative w-full h-full flex flex-col items-center justify-center overflow-hidden"
+                className="relative w-full h-full flex items-center justify-center overflow-hidden"
+                style={{ flexDirection: 'column' }}
             >
                 <div className="absolute inset-0 opacity-[0.03]" 
                     style={{ 
@@ -66,11 +68,11 @@ export const SarakEmptyState: React.FC<SarakEmptyStateProps> = ({ type = 'abstra
                 </motion.div>
 
                 <div className="absolute z-10 text-center">
-                    <motion.div variants={itemVariants} className="text-[var(--sarak-primary-color,#3b82f6)] mb-6 mx-auto w-12 h-12 flex items-center justify-center">
+                    <motion.div variants={itemVariants} className="text-[var(--sarak-primary-color,#3b82f6)] mx-auto w-12 h-12 flex items-center justify-center" style={{ marginBottom: 'var(--sarak-layout-gap-lg, 24px)' }}>
                         <Box size={40} strokeWidth={1} />
                     </motion.div>
                     <motion.h2 variants={itemVariants} className="text-2xl font-black uppercase tracking-[0.8em] text-white/10 ml-[0.8em]">VOID</motion.h2>
-                    <motion.p variants={itemVariants} className="text-2xs mt-4 uppercase tracking-[0.2em] text-[var(--sarak-primary-color,#3b82f6)]/40 font-bold">Start a module in the toolbar</motion.p>
+                    <motion.p variants={itemVariants} className="text-2xs uppercase tracking-[0.2em] text-[var(--sarak-primary-color,#3b82f6)]/40 font-bold" style={{ marginTop: 'var(--sarak-layout-gap-md, 16px)' }}>Start a module in the toolbar</motion.p>
                 </div>
             </motion.div>
         );
@@ -82,7 +84,8 @@ export const SarakEmptyState: React.FC<SarakEmptyStateProps> = ({ type = 'abstra
             variants={containerVariants}
             initial="initial"
             animate="animate"
-            className="flex flex-col items-center justify-center h-full relative"
+            className="flex items-center justify-center h-full relative"
+            style={{ flexDirection: 'column' }}
         >
             <motion.div 
                 animate={{ 
@@ -93,8 +96,8 @@ export const SarakEmptyState: React.FC<SarakEmptyStateProps> = ({ type = 'abstra
                 className="absolute w-[300px] h-[300px] rounded-full bg-[var(--sarak-primary-color,#3b82f6)]/5 blur-[100px]"
             />
             
-            <motion.div variants={itemVariants} className="relative mb-8">
-                <div className="relative z-10 p-6 rounded-3xl bg-white/[0.02] border border-white/5 backdrop-blur-3xl shadow-2xl">
+            <motion.div variants={itemVariants} className="relative" style={{ marginBottom: 'calc(var(--sarak-layout-gap-md, 16px) * 2)' }}>
+                <div className="relative z-10 rounded-3xl bg-white/[0.02] border border-white/5 backdrop-blur-3xl shadow-2xl" style={{ padding: 'var(--sarak-layout-gap-lg, 24px)' }}>
                     <Sparkles size={48} className="text-[var(--sarak-primary-color,#3b82f6)] animate-pulse" />
                 </div>
                 <motion.div 
@@ -105,8 +108,8 @@ export const SarakEmptyState: React.FC<SarakEmptyStateProps> = ({ type = 'abstra
             </motion.div>
 
             <motion.div variants={itemVariants} className="text-center z-10">
-                <h2 className="text-sm font-black uppercase tracking-[0.4em] text-white/40 mb-2">Sarak Lib Core Engine</h2>
-                <div className="h-px w-12 bg-[var(--sarak-primary-color,#3b82f6)]/40 mx-auto mb-4" />
+                <h2 className="text-sm font-black uppercase tracking-[0.4em] text-white/40" style={{ marginBottom: 'var(--sarak-layout-gap-sm, 8px)' }}>Sarak Lib Core Engine</h2>
+                <div className="h-px w-12 bg-[var(--sarak-primary-color,#3b82f6)]/40 mx-auto" style={{ marginBottom: 'var(--sarak-layout-gap-md, 16px)' }} />
                 <p className="text-2xs text-white/20 uppercase tracking-widest max-w-[280px] leading-loose">
                     The ecosystem is in harmony. <br/>
                     No signal detected in the main viewport.
