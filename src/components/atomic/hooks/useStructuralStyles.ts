@@ -58,6 +58,19 @@ export const useStructuralStyles = () => {
         };
     };
 
+    // Empilha em coluna no mobile e vira linha a partir do breakpoint informado
+    // (variantes responsivas não são expressáveis via `style` inline puro).
+    const getResponsiveStackStyles = (
+        breakpoint: 'md' | 'lg' = 'md',
+        gapOverride?: string
+    ) => {
+        const gap = gapOverride || design?.layoutGap || 'var(--sarak-layout-gap-md, 16px)';
+        return {
+            className: `flex flex-col ${breakpoint}:flex-row`,
+            style: { gap } as React.CSSProperties
+        };
+    };
+
     // ==========================================
     // EIXO 2: FORMULÁRIOS E AGRUPAMENTOS
     // ==========================================
@@ -192,12 +205,13 @@ export const useStructuralStyles = () => {
         };
     };
 
-    return { 
-        getGridStyles, 
+    return {
+        getGridStyles,
         getFlexStyles,
-        getFormGroupStyles, 
-        getCardStyles, 
-        getInputIconStyles, 
+        getResponsiveStackStyles,
+        getFormGroupStyles,
+        getCardStyles,
+        getInputIconStyles,
         getSwitchLayoutStyles,
         getContainerStyles,
         getHeaderStyles

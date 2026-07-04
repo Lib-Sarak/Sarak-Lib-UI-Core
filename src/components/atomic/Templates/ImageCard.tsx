@@ -2,6 +2,7 @@ import React from 'react';
 import { motion } from 'framer-motion';
 import { useSarakUI } from '../../../core/Provider/SarakUIProvider';
 import { CardSchema } from '../../../core/Design/schema/cards';
+import { useStructuralStyles } from '../hooks/useStructuralStyles';
 
 export interface ImageCardProps {
     src: string;
@@ -23,11 +24,13 @@ export const ImageCard: React.FC<ImageCardProps> = ({
     onClick
 }) => {
     const { design } = useSarakUI();
-    
+    const { getFlexStyles } = useStructuralStyles();
+
     // Ler configs do design
     const overlayOpacity = design?.imageCardOverlayOpacity ?? 0.5;
     const hoverZoom = design?.imageCardHoverZoom ?? 1.05;
     const hoverStyle = design?.cardHoverStyle || 'lift';
+    const contentStack = getFlexStyles('column', undefined, undefined, '0px');
 
     return (
         <motion.div
@@ -66,11 +69,14 @@ export const ImageCard: React.FC<ImageCardProps> = ({
             />
 
             {/* Content Layer */}
-            <div className="relative z-10 p-6 flex flex-col h-full justify-end">
+            <div
+                className={`relative z-10 ${contentStack.className} h-full justify-end`}
+                style={{ ...contentStack.style, padding: 'var(--sarak-layout-gap-lg, 24px)' }}
+            >
                 {title && <h3 className="text-xl font-bold text-[var(--color-theme-title,#ffffff)]">{title}</h3>}
-                {subtitle && <p className="text-sm text-[var(--text-muted,#94a3b8)] mt-1">{subtitle}</p>}
-                
-                {children && <div className="mt-4">{children}</div>}
+                {subtitle && <p className="text-sm text-[var(--text-muted,#94a3b8)]" style={{ marginTop: 'calc(var(--sarak-layout-gap-md,16px) * 0.25)' }}>{subtitle}</p>}
+
+                {children && <div style={{ marginTop: 'var(--sarak-layout-gap-md, 16px)' }}>{children}</div>}
             </div>
 
             {/* Hover Glow Effect */}

@@ -54,10 +54,10 @@ export const MessageBubble: React.FC<MessageBubbleProps> = ({ msg }) => {
       animate={{ opacity: 1, y: 0 }}
       className={`flex ${msg.role === 'user' ? 'justify-end' : 'justify-start'}`}
     >
-      <div className={`max-w-[85%] flex flex-col ${msg.role === 'user' ? 'items-end' : 'items-start'}`} style={{ gap: 'calc(var(--sarak-layout-gap-md,16px) / 2)' }}>
-        <div className="flex items-center gap-2 px-1">
+      <div className={`max-w-[85%] flex ${msg.role === 'user' ? 'items-end' : 'items-start'}`} style={{ flexDirection: 'column', gap: 'calc(var(--sarak-layout-gap-md,16px) / 2)' }}>
+        <div className="flex items-center" style={{ gap: 'var(--sarak-layout-gap-sm, 8px)', paddingLeft: 'calc(var(--sarak-layout-gap-md,16px) * 0.25)', paddingRight: 'calc(var(--sarak-layout-gap-md,16px) * 0.25)' }}>
           {msg.role === 'assistant' ? (
-            <div className="flex items-center gap-2">
+            <div className="flex items-center" style={{ gap: 'var(--sarak-layout-gap-sm, 8px)' }}>
               <div className="w-5 h-5 rounded-full bg-[var(--sarak-primary-color,#3b82f6)] flex items-center justify-center">
                  <Bot size={12} className="text-[var(--sarak-primary-color,#3b82f6)]" />
               </div>
@@ -76,15 +76,15 @@ export const MessageBubble: React.FC<MessageBubbleProps> = ({ msg }) => {
         </div>
 
         {msg.metadata && (
-          <div className="flex flex-wrap gap-2 mt-1">
+          <div className="flex flex-wrap" style={{ gap: 'var(--sarak-layout-gap-sm, 8px)', marginTop: 'calc(var(--sarak-layout-gap-md,16px) * 0.25)' }}>
             {msg.metadata.model && (
-              <div className="flex items-center gap-1.5 px-2 py-0.5 bg-[var(--text-muted,#94a3b8)]/10 border border-[var(--border-color,#334155)] rounded-md text-2xs font-mono text-[var(--text-muted,#94a3b8)]">
+              <div className="flex items-center bg-[var(--text-muted,#94a3b8)]/10 border border-[var(--border-color,#334155)] rounded-md text-2xs font-mono text-[var(--text-muted,#94a3b8)]" style={{ gap: 'calc(var(--sarak-layout-gap-md,16px) * 0.375)', padding: 'calc(var(--sarak-layout-gap-md,16px) / 8) calc(var(--sarak-layout-gap-md,16px) / 2)' }}>
                 <Cpu size={10} className="text-[var(--sarak-primary-color,#3b82f6)]" />
                 {msg.metadata.model}
               </div>
             )}
             {msg.metadata.reasoning && (
-              <div className="flex items-center gap-1.5 px-2 py-0.5 bg-[var(--text-muted,#94a3b8)]/10 border border-[var(--border-color,#334155)] rounded-md text-2xs font-medium text-[var(--text-muted,#94a3b8)] italic">
+              <div className="flex items-center bg-[var(--text-muted,#94a3b8)]/10 border border-[var(--border-color,#334155)] rounded-md text-2xs font-medium text-[var(--text-muted,#94a3b8)] italic" style={{ gap: 'calc(var(--sarak-layout-gap-md,16px) * 0.375)', padding: 'calc(var(--sarak-layout-gap-md,16px) / 8) calc(var(--sarak-layout-gap-md,16px) / 2)' }}>
                 <Search size={10} />
                 {msg.metadata.reasoning}
               </div>

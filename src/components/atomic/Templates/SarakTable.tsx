@@ -59,12 +59,12 @@ export const SarakTable = <TData extends Record<string, unknown> = Record<string
 
     if (error) {
         return (
-            <div className={twMerge("p-10 rounded-3xl items-center border", containerLayout.className)} style={{ backgroundColor: 'var(--sarak-status-error-color-bg,rgba(239,68,68,0.1))', borderColor: 'var(--sarak-status-error-color-border,rgba(239,68,68,0.2))', color: 'var(--sarak-status-error-color,#ef4444)', gap: 'calc(var(--sarak-layout-gap-md,16px) / 2)' }}>
+            <div className={twMerge("rounded-3xl items-center border", containerLayout.className)} style={{ padding: 'calc(var(--sarak-layout-gap-md,16px) * 2.5)', backgroundColor: 'var(--sarak-status-error-color-bg,rgba(239,68,68,0.1))', borderColor: 'var(--sarak-status-error-color-border,rgba(239,68,68,0.2))', color: 'var(--sarak-status-error-color,#ef4444)', gap: 'calc(var(--sarak-layout-gap-md,16px) / 2)' }}>
                 <AlertCircle size={24} />
                 <div>
                     <h4 className="font-bold">Erro ao carregar dados</h4>
                     <p className="text-xs opacity-60">{error}</p>
-                    <SarakButton onClick={fetchData} variant="ghost" className="mt-2 text-2xs font-black uppercase tracking-widest hover:underline p-0">Tentar novamente</SarakButton>
+                    <SarakButton onClick={fetchData} variant="ghost" className="text-2xs font-black uppercase tracking-widest hover:underline" style={{ marginTop: 'var(--sarak-layout-gap-sm, 8px)', padding: 0 }}>Tentar novamente</SarakButton>
                 </div>
             </div>
         );
@@ -116,7 +116,7 @@ export const SarakTable = <TData extends Record<string, unknown> = Record<string
                                         key={col} 
                                         className={`text-2xs font-black text-white/30 uppercase tracking-[0.2em] ${cellDensityClass}`}
                                     >
-                                        <div className="flex items-center gap-2 cursor-pointer hover:text-white transition-colors">
+                                        <div className="flex items-center cursor-pointer hover:text-white transition-colors" style={{ gap: 'var(--sarak-layout-gap-sm, 8px)' }}>
                                             {columnLabels[col]}
                                             <ArrowUpDown size={10} />
                                         </div>
@@ -153,9 +153,10 @@ export const SarakTable = <TData extends Record<string, unknown> = Record<string
                                                     className={`text-white/70 font-medium ${density === 'compact' ? 'text-xs' : 'text-sm'} ${cellDensityClass}`}
                                                 >
                                                     {typeof row[col] === 'boolean' ? (
-                                                        <span 
-                                                            className="px-2 py-0.5 rounded-[var(--sarak-card-radius,12px)] text-2xs font-black uppercase"
-                                                            style={{ 
+                                                        <span
+                                                            className="rounded-[var(--sarak-card-radius,12px)] text-2xs font-black uppercase"
+                                                            style={{
+                                                                padding: 'calc(var(--sarak-layout-gap-md,16px) / 8) calc(var(--sarak-layout-gap-md,16px) / 2)',
                                                                 backgroundColor: row[col] ? 'var(--sarak-status-success-color-bg,rgba(34,197,94,0.1))' : 'var(--sarak-status-error-color-bg,rgba(239,68,68,0.1))',
                                                                 color: row[col] ? 'var(--sarak-status-success-color,#22c55e)' : 'var(--sarak-status-error-color,#ef4444)'
                                                             }}
@@ -183,7 +184,7 @@ export const SarakTable = <TData extends Record<string, unknown> = Record<string
 
                 {filteredData.length === 0 && !loading && (
                     <div className={twMerge("items-center justify-center text-center", containerLayout.className)} style={{ padding: 'calc(var(--sarak-layout-gap-md,16px) * 5)', gap: 'calc(var(--sarak-layout-gap-md,16px) / 2)' }}>
-                        <div className="inline-flex p-4 bg-[var(--color-theme-card,#1e293b)] border-[var(--border-color,#334155)] rounded-[var(--sarak-card-radius,12px)]">
+                        <div className="inline-flex bg-[var(--color-theme-card,#1e293b)] border-[var(--border-color,#334155)] rounded-[var(--sarak-card-radius,12px)]" style={{ padding: 'var(--sarak-layout-gap-md,16px)' }}>
                             <AlertCircle className="text-white/10" size={32} />
                         </div>
                         <p className="text-white/20 text-xs font-black uppercase tracking-widest">Nenhum dado encontrado</p>

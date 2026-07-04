@@ -70,8 +70,10 @@ export const SarakExpandableMatrix = <TData extends MatrixParentData>({
     renderItemHeader,
     manifest
 }: SarakExpandableMatrixProps<TData>) => {
-    const { getContainerStyles } = useStructuralStyles();
+    const { getContainerStyles, getFlexStyles } = useStructuralStyles();
     const containerLayout = getContainerStyles();
+    const subItemsStack = getFlexStyles('column', undefined, undefined, 'calc(var(--sarak-layout-gap-md,16px) * 0.75)');
+    const emptyStateStack = getFlexStyles('column', 'center', 'center', '0px');
 
     const [searchTerm, setSearchTerm] = useState('');
     const [expandedId, setExpandedId] = useState<string | null>(null);
@@ -144,15 +146,16 @@ export const SarakExpandableMatrix = <TData extends MatrixParentData>({
                             backdropFilter: 'blur(var(--sarak-matrix-blur, 10px))'
                         }}
                     >
-                        <div 
+                        <div
                             onClick={() => toggleExpand(item.id)}
-                            className="flex items-center justify-between p-4 cursor-pointer hover:bg-[var(--text-muted,#94a3b8)]/5 transition-colors select-none"
+                            className="flex items-center justify-between cursor-pointer hover:bg-[var(--text-muted,#94a3b8)]/5 transition-colors select-none"
+                            style={{ padding: 'var(--sarak-layout-gap-md,16px)' }}
                         >
-                            <div className="flex items-center gap-4">
+                            <div className="flex items-center" style={{ gap: 'var(--sarak-layout-gap-md,16px)' }}>
                                 {renderItemHeader ? (
                                     renderItemHeader(item)
                                 ) : (
-                                    <div className="flex items-center gap-3">
+                                    <div className="flex items-center" style={{ gap: 'calc(var(--sarak-layout-gap-md,16px) * 0.75)' }}>
                                         <div className="w-10 h-10 rounded-lg bg-[var(--sarak-primary-color-bg,rgba(59,130,246,0.1))] flex items-center justify-center text-[var(--sarak-primary-color,#3b82f6)] border border-[var(--border-color,#334155)]">
                                             <Shield size={20} />
                                         </div>
@@ -163,7 +166,7 @@ export const SarakExpandableMatrix = <TData extends MatrixParentData>({
                                     </div>
                                 )}
                             </div>
-                            <div className="flex items-center gap-4">
+                            <div className="flex items-center" style={{ gap: 'var(--sarak-layout-gap-md,16px)' }}>
                                 <motion.div
                                     animate={{ rotate: expandedId === item.id ? 180 : 0 }}
                                     className="w-8 h-8 rounded-full flex items-center justify-center bg-[var(--text-muted,#94a3b8)]/10 text-[var(--text-muted,#94a3b8)]"
@@ -182,8 +185,11 @@ export const SarakExpandableMatrix = <TData extends MatrixParentData>({
                                     transition={{ duration: 0.3, ease: 'circOut' }}
                                     className="overflow-hidden"
                                 >
-                                    <div className="p-4 pt-0 border-t border-[var(--border-color,#334155)] bg-[var(--color-theme-card,#1e293b)]/50">
-                                        <div className="flex flex-col mt-4 gap-3">
+                                    <div
+                                        className="border-t border-[var(--border-color,#334155)] bg-[var(--color-theme-card,#1e293b)]/50"
+                                        style={{ padding: '0 var(--sarak-layout-gap-md,16px) var(--sarak-layout-gap-md,16px) var(--sarak-layout-gap-md,16px)' }}
+                                    >
+                                        <div className={subItemsStack.className} style={{ ...subItemsStack.style, marginTop: 'var(--sarak-layout-gap-md,16px)' }}>
                                             {filteredSubItems.map((subItem) => (
                                                 <RecursiveMatrixNode 
                                                     key={subItem.id}
@@ -198,8 +204,8 @@ export const SarakExpandableMatrix = <TData extends MatrixParentData>({
                                             ))}
                                         </div>
                                         {filteredSubItems.length === 0 && (
-                                            <div className="py-8 flex flex-col items-center justify-center text-[var(--text-muted,#94a3b8)] italic">
-                                                <Info size={24} className="mb-2 opacity-50" />
+                                            <div className={`${emptyStateStack.className} text-[var(--text-muted,#94a3b8)] italic`} style={{ ...emptyStateStack.style, paddingTop: 'calc(var(--sarak-layout-gap-md,16px) * 2)', paddingBottom: 'calc(var(--sarak-layout-gap-md,16px) * 2)' }}>
+                                                <Info size={24} className="opacity-50" style={{ marginBottom: 'var(--sarak-layout-gap-sm, 8px)' }} />
                                                 <span className="text-xs">Nenhum item encontrado para o filtro aplicado.</span>
                                             </div>
                                         )}

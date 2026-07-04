@@ -16,7 +16,11 @@ vi.mock('../hooks/useChartData', () => ({
 
 vi.mock('../../hooks/useStructuralStyles', () => ({
     useStructuralStyles: vi.fn(() => ({
-        getContainerStyles: () => ({ className: 'mocked-container', style: {} })
+        getContainerStyles: () => ({ className: 'mocked-container', style: {} }),
+        getFlexStyles: (direction?: string, justify?: string, align?: string, gapOverride?: string) => ({
+            className: 'flex w-full',
+            style: { flexDirection: direction, justifyContent: justify, alignItems: align, gap: gapOverride }
+        })
     }))
 }));
 

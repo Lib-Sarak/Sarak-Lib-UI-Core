@@ -31,8 +31,9 @@ export const SarakChart: React.FC<SarakChartProps> = ({ endpoint, label, mapping
     const { data, loading, error } = useChartData<ChartDatum>(endpoint);
 
     const maxValue = Math.max(...data.map((d) => (d.tokens as number) || (d.value as number) || 0), 1);
-    const { getContainerStyles } = useStructuralStyles();
+    const { getContainerStyles, getFlexStyles } = useStructuralStyles();
     const containerLayout = getContainerStyles();
+    const barStack = getFlexStyles('column', undefined, undefined, '0px');
 
     return (
         <div className={twMerge("bg-[var(--color-theme-card,#1e293b)] border-[var(--border-color,#334155)] relative overflow-hidden group rounded-[var(--sarak-card-radius,12px)]", containerLayout.className)} style={containerLayout.style}>
@@ -65,8 +66,8 @@ export const SarakChart: React.FC<SarakChartProps> = ({ endpoint, label, mapping
                         const val = (item.tokens as number) || (item.value as number) || 0;
                         const height = (val / maxValue) * 100;
                         return (
-                            <div key={idx} className="flex-1 flex flex-col items-center group/item h-full justify-end">
-                                    <motion.div 
+                            <div key={idx} className={`flex-1 ${barStack.className} items-center group/item h-full justify-end`} style={barStack.style}>
+                                    <motion.div
                                         initial={{ height: 0 }}
                                         animate={{ height: `${Math.max(height, 5)}%` }}
                                         transition={{ 
@@ -77,11 +78,14 @@ export const SarakChart: React.FC<SarakChartProps> = ({ endpoint, label, mapping
                                         className="w-full bg-gradient-to-t from-[var(--sarak-shadow-glow,rgba(59,130,246,0.5))] to-[var(--sarak-primary-color,#3b82f6)] rounded-t-lg group-hover/item:brightness-125 transition-all relative"
                                         style={{ transitionDuration: 'var(--duration-normal, 0.3s)' }}
                                     >
-                                        <div className="absolute -top-10 left-1/2 -translate-x-1/2 bg-[var(--color-theme-title,#ffffff)] text-[var(--color-theme-card,#1e293b)] text-2xs font-black px-2 py-1 rounded shadow-2xl opacity-0 group-hover/item:opacity-100 pointer-events-none transition-opacity whitespace-nowrap z-30">
+                                        <div
+                                            className="absolute -top-10 left-1/2 -translate-x-1/2 bg-[var(--color-theme-title,#ffffff)] text-[var(--color-theme-card,#1e293b)] text-2xs font-black rounded shadow-2xl opacity-0 group-hover/item:opacity-100 pointer-events-none transition-opacity whitespace-nowrap z-30"
+                                            style={{ padding: 'calc(var(--sarak-layout-gap-md,16px) * 0.25) var(--sarak-layout-gap-sm, 8px)' }}
+                                        >
                                             {val.toLocaleString()}
                                         </div>
                                     </motion.div>
-                                <div className="text-[7px] font-bold text-[var(--text-muted,#94a3b8)] uppercase mt-3 rotate-45 origin-left hidden lg:block">
+                                <div className="text-[7px] font-bold text-[var(--text-muted,#94a3b8)] uppercase rotate-45 origin-left hidden lg:block" style={{ marginTop: 'calc(var(--sarak-layout-gap-md,16px) * 0.75)' }}>
                                    {item.date ? String(item.date).split('-').slice(1).join('/') : ''}
                                 </div>
                             </div>

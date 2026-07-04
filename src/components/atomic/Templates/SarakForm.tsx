@@ -63,7 +63,7 @@ export const SarakForm = <TData extends Record<string, unknown> = Record<string,
             {/* Header Area */}
             <div className="flex items-center justify-between relative z-10" style={{ marginBottom: 'calc(var(--sarak-layout-gap-md,16px) * 1.5)' }}>
                 <div className="flex items-center" style={{ gap: 'calc(var(--sarak-layout-gap-md,16px) / 2)' }}>
-                    <div className="p-3 bg-[var(--sarak-primary-color-bg,rgba(59,130,246,0.1))] rounded-2xl border border-[var(--border-color,#334155)]" style={{ padding: 'calc(var(--sarak-layout-gap-md,16px) / 2)' }}>
+                    <div className="bg-[var(--sarak-primary-color-bg,rgba(59,130,246,0.1))] rounded-2xl border border-[var(--border-color,#334155)]" style={{ padding: 'calc(var(--sarak-layout-gap-md,16px) / 2)' }}>
                         <Settings size={20} className="text-[var(--sarak-primary-color,#3b82f6)]" />
                     </div>
                     <div>
@@ -80,7 +80,7 @@ export const SarakForm = <TData extends Record<string, unknown> = Record<string,
             <SarakGrid className="relative z-10" style={{ marginBottom: 'calc(var(--sarak-layout-gap-md,16px) * 1.5)' }}>
                 {fields.map((key) => (
                     <SarakFormGroup key={key}>
-                        <label className="text-2xs font-black text-white/30 uppercase tracking-widest pl-1 block">
+                        <label className="text-2xs font-black text-white/30 uppercase tracking-widest block" style={{ paddingLeft: 'calc(var(--sarak-layout-gap-md,16px) * 0.25)' }}>
                             {mapping ? mapping[key] : key.replace(/_/g, ' ')}
                         </label>
                         <SarakInput

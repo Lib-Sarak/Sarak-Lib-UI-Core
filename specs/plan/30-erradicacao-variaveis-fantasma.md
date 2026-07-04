@@ -2,7 +2,7 @@
 tipo: "spec"
 titulo: "Erradicação de Variáveis-Fantasma (--sx-*)"
 dominio: "Design Engine / Desengessamento (Sarak UI Core)"
-status: "🔴 A Implementar"
+status: "🟢 Concluída"
 prioridade: "Máxima"
 tags: ["spec", "hardcoded", "css-vars", "fantasma", "foundation", "correcao"]
 relacionados: ["20-correcao-hardcoded-base", "07-agente-llm-design-e-expansao-estrutural", "04-paridade-cinco-camadas"]

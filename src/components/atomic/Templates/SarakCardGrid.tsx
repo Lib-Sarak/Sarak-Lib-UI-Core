@@ -19,6 +19,7 @@ import { SarakSearchCard } from '../Cards/SarakSearchCard';
 import { SarakInput, SarakSelect } from '../Inputs';
 import { SarakButton, SarakIconButton } from '../Buttons';
 import { SarakCoreCard } from './components/SarakCoreCard';
+import { useStructuralStyles } from '../hooks/useStructuralStyles';
 
 interface FilterConfig {
     id: string;
@@ -61,6 +62,12 @@ export const SarakCardGrid = <TData extends Record<string, unknown>>({ endpoint,
     const { design } = useSarakUI();
     const activeVariant = variant || design.cardVariant || 'classic';
     const { data, loading, error, search, activeFilters, setSearch, setActiveFilters } = useCardGridState<TData>(endpoint);
+    const { getFlexStyles, getResponsiveStackStyles } = useStructuralStyles();
+    const outerStack = getFlexStyles('column', undefined, undefined, 'calc(var(--sarak-layout-gap-md, 16px) * 1.25)');
+    const headerBlockStack = getFlexStyles('column', undefined, undefined, 'var(--sarak-layout-gap-md,16px)');
+    const headerRow = getResponsiveStackStyles('md', 'var(--sarak-layout-gap-md,16px)');
+    const filtersBarStack = getFlexStyles('column', undefined, undefined, 'calc(var(--sarak-layout-gap-md,16px) * 0.75)');
+    const emptyStateStack = getFlexStyles('column', 'center', 'center', '0px');
 
     // Utility for nested path resolution
     const getVal = (obj: TData, path: string | undefined): unknown => {
@@ -113,13 +120,13 @@ export const SarakCardGrid = <TData extends Record<string, unknown>>({ endpoint,
     const sideFilters = filters.filter(f => f.type === 'SELECT');
 
     return (
-        <div className="flex flex-col" style={{ gap: 'calc(var(--sarak-layout-gap-md, 16px) * 1.25)' }}>
+        <div className={outerStack.className} style={outerStack.style}>
             {/* Header & Filter Section Core */}
-            <div className="flex flex-col" style={{ gap: 'var(--sarak-layout-gap-md,16px)' }}>
-                <div className="flex flex-col md:flex-row md:items-center justify-between" style={{ gap: 'var(--sarak-layout-gap-md,16px)' }}>
+            <div className={headerBlockStack.className} style={headerBlockStack.style}>
+                <div className={`${headerRow.className} md:items-center justify-between`} style={headerRow.style}>
                     <div>
                         <h3 className="text-3xl font-black text-[var(--color-theme-title,#ffffff)] tracking-tighter" style={{ fontWeight: 'var(--sarak-h1-weight,700)' }}>{label || 'Explorar'}</h3>
-                        <p className="text-[var(--text-muted,#94a3b8)] opacity-40 text-2xs font-bold uppercase tracking-[0.3em] mt-1">Sintonizando {filteredData.length} unidades disponíveis</p>
+                        <p className="text-[var(--text-muted,#94a3b8)] opacity-40 text-2xs font-bold uppercase tracking-[0.3em]" style={{ marginTop: 'calc(var(--sarak-layout-gap-md,16px) * 0.25)' }}>Sintonizando {filteredData.length} unidades disponíveis</p>
                     </div>
                     <div className="flex items-center" style={{ gap: 'calc(var(--sarak-layout-gap-md,16px) / 2)' }}>
                         <div className="w-full md:w-80">
@@ -136,7 +143,7 @@ export const SarakCardGrid = <TData extends Record<string, unknown>>({ endpoint,
 
             {/* Dynamic Filters Bar */}
             {(mainFilter || sideFilters.length > 0) && (
-                <div className="flex flex-col pt-4 border-t border-[var(--border-color,#334155)]" style={{ gap: 'calc(var(--sarak-layout-gap-md,16px) * 0.75)' }}>
+                <div className={`${filtersBarStack.className} border-t border-[var(--border-color,#334155)]`} style={{ ...filtersBarStack.style, paddingTop: 'var(--sarak-layout-gap-md,16px)' }}>
                     {mainFilter && (
                         <div className="flex flex-wrap" style={{ gap: 'var(--sarak-layout-gap-sm,8px)' }}>
                             {['all', ...(mainFilter.options || (mainFilter.dynamic ? getDynamicOptions(mainFilter.field) : [])).map(o => typeof o === 'string' ? o : o.value)].map(opt => (
@@ -153,7 +160,7 @@ export const SarakCardGrid = <TData extends Record<string, unknown>>({ endpoint,
                     )}
 
                     {sideFilters.length > 0 && (
-                        <div className="flex flex-wrap" style={{ gap: '1rem' }}>
+                        <div className="flex flex-wrap" style={{ gap: 'var(--sarak-layout-gap-md, 16px)' }}>
                             {sideFilters.map(filter => (
                                 <div key={filter.id} className="relative group min-w-[160px]">
                                     <SarakSelect
@@ -183,15 +190,15 @@ export const SarakCardGrid = <TData extends Record<string, unknown>>({ endpoint,
                         <div key={i} className="h-80 bg-[var(--color-theme-card,#1e293b)] border-[var(--border-color,#334155)] animate-pulse" />
                     ))
                 ) : error ? (
-                    <div className="col-span-full py-20 flex flex-col items-center justify-center text-center">
-                        <AlertCircle className="w-12 h-12 text-rose-500/50 mb-4" />
-                        <h4 className="text-xl font-bold text-white mb-2">Falha na Sincronização</h4>
+                    <div className={`col-span-full ${emptyStateStack.className} text-center`} style={{ ...emptyStateStack.style, paddingTop: 'calc(var(--sarak-layout-gap-md,16px) * 5)', paddingBottom: 'calc(var(--sarak-layout-gap-md,16px) * 5)' }}>
+                        <AlertCircle className="w-12 h-12 text-rose-500/50" style={{ marginBottom: 'var(--sarak-layout-gap-md,16px)' }} />
+                        <h4 className="text-xl font-bold text-white" style={{ marginBottom: 'var(--sarak-layout-gap-sm, 8px)' }}>Falha na Sincronização</h4>
                         <p className="text-white/30 text-xs uppercase tracking-widest">{error}</p>
                     </div>
                 ) : filteredData.length === 0 ? (
-                    <div className="col-span-full py-20 flex flex-col items-center justify-center text-center">
-                        <XCircle className="w-12 h-12 text-white/10 mb-4" />
-                        <h4 className="text-xl font-bold text-white mb-2">Nenhum Registro</h4>
+                    <div className={`col-span-full ${emptyStateStack.className} text-center`} style={{ ...emptyStateStack.style, paddingTop: 'calc(var(--sarak-layout-gap-md,16px) * 5)', paddingBottom: 'calc(var(--sarak-layout-gap-md,16px) * 5)' }}>
+                        <XCircle className="w-12 h-12 text-white/10" style={{ marginBottom: 'var(--sarak-layout-gap-md,16px)' }} />
+                        <h4 className="text-xl font-bold text-white" style={{ marginBottom: 'var(--sarak-layout-gap-sm, 8px)' }}>Nenhum Registro</h4>
                         <p className="text-white/30 text-xs uppercase tracking-widest">Ajuste os filtros ou a pesquisa</p>
                     </div>
                 ) : (

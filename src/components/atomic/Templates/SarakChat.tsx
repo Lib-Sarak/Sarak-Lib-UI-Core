@@ -4,6 +4,7 @@ import { ChatHeader } from './Chat/ChatHeader';
 import { MessageList } from './Chat/MessageList';
 import { ChatInput } from './Chat/ChatInput';
 import { useSarakUI } from '../../../core/Provider/SarakUIProvider';
+import { useStructuralStyles } from '../hooks/useStructuralStyles';
 
 interface SarakChatProps {
   endpoint: string;
@@ -21,14 +22,17 @@ export const SarakChat: React.FC<SarakChatProps> = ({
 }) => {
   const chat = useSarakChat(endpoint, modelsEndpoint);
   const { design } = useSarakUI();
+  const { getFlexStyles } = useStructuralStyles();
   const cardTextureType = design?.cardTextureType || 'none';
+  const stack = getFlexStyles('column', undefined, undefined, '0px');
 
   return (
-    <div 
-      className="sarak-card flex flex-col h-full min-h-0 group/chat transition-all !p-0" 
+    <div
+      className={`sarak-card ${stack.className} h-full min-h-0 group/chat transition-all !p-0`}
       data-sx-card-texture-type={cardTextureType}
-      style={{ 
-        transitionDuration: 'var(--sarak-chat-anim-speed, 0.05s)' 
+      style={{
+        ...stack.style,
+        transitionDuration: 'var(--sarak-chat-anim-speed, 0.05s)'
       }}
     >
       <ChatHeader 
