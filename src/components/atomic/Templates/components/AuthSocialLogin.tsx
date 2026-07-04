@@ -22,7 +22,7 @@ export const AuthSocialLogin: React.FC<AuthSocialLoginProps> = ({ socialConfig, 
                 <div className="absolute inset-0 flex items-center">
                     <div className="w-full border-t border-white/5"></div>
                 </div>
-                <span className="relative bg-theme-body text-[8px] font-black text-theme-muted uppercase tracking-[0.3em]" style={{ paddingLeft: 'var(--sarak-layout-gap-md,16px)', paddingRight: 'var(--sarak-layout-gap-md,16px)' }}>Ou continue com</span>
+                <span className="relative bg-theme-body font-black text-theme-muted uppercase" style={{ paddingLeft: 'var(--sarak-layout-gap-md,16px)', paddingRight: 'var(--sarak-layout-gap-md,16px)', fontSize: 'var(--sarak-type-scale-tiny, 8px)', letterSpacing: 'var(--sarak-tracking-wide, 0.3em)' }}>Ou continue com</span>
             </div>
 
             <div className={getGridStyles(socialConfig.display === 'compact' ? 'repeat(4, minmax(0, 1fr))' : 'repeat(1, minmax(0, 1fr))', undefined, 'var(--sarak-layout-gap-sm,8px)').className} style={getGridStyles(socialConfig.display === 'compact' ? 'repeat(4, minmax(0, 1fr))' : 'repeat(1, minmax(0, 1fr))', undefined, 'var(--sarak-layout-gap-sm,8px)').style}>

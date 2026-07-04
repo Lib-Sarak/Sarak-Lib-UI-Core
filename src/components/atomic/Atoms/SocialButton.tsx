@@ -89,13 +89,16 @@ export const SocialButton: React.FC<SocialButtonProps> = ({
             
             {!hideLabel && (
                 <div className="flex items-start" style={{ flexDirection: 'column', gap: 'calc(var(--sarak-layout-gap-md, 16px) * 0.125)' }}>
-                    <span className="text-[10px] font-black uppercase tracking-[0.25em] transition-all">
+                    <span className="font-black uppercase transition-all" style={{ fontSize: 'var(--sarak-type-scale2xs, 10px)', letterSpacing: 'var(--sarak-tracking-snug, 0.25em)' }}>
                         {label || defaultLabel}
                     </span>
-                    <span className={cn(
-                        "text-[7px] font-bold uppercase tracking-widest opacity-30",
-                        variant === 'sovereign' ? "text-white" : "text-[var(--sarak-primary-color,#3b82f6)]"
-                    )}>
+                    <span
+                        className={cn(
+                            "font-bold uppercase tracking-widest opacity-30",
+                            variant === 'sovereign' ? "text-white" : "text-[var(--sarak-primary-color,#3b82f6)]"
+                        )}
+                        style={{ fontSize: 'var(--sarak-type-scale-micro, 7px)' }}
+                    >
                         Sovereign SSO Protocol
                     </span>
                 </div>

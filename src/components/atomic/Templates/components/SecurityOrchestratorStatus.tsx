@@ -61,7 +61,7 @@ export const SecurityOrchestratorStatus: React.FC<SecurityOrchestratorStatusProp
 
             <div className="rounded-lg bg-amber-500/5 border border-amber-500/20 flex" style={{ padding: 'var(--sarak-layout-gap-md,16px)', gap: 'var(--sarak-layout-gap-sm,8px)' }}>
                 <AlertTriangle className="text-amber-500 shrink-0" size={16} />
-                <p className="text-[10px] text-amber-500/80 uppercase leading-relaxed font-medium">
+                <p className="text-amber-500/80 uppercase leading-relaxed font-medium" style={{ fontSize: 'var(--sarak-type-scale2xs, 10px)' }}>
                     A segurança do seu ecossistema depende de uma identidade forte. Recomendamos manter o MFA ativo em todos os módulos Sarak.
                 </p>
             </div>

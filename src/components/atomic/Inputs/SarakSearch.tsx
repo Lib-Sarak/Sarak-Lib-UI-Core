@@ -76,7 +76,7 @@ export const SarakSearch: React.FC<SarakSearchProps> = ({ isOpen, onClose }) => 
                             className="flex items-center rounded-[calc(var(--radius-theme)*0.5)] bg-[var(--sarak-primary-color,#3b82f6)]/10 border border-[var(--sarak-primary-color,#3b82f6)]/20 text-2xs text-[var(--sarak-primary-color,#3b82f6)] font-bold uppercase tracking-widest"
                             style={{ gap: 'calc(var(--sarak-layout-gap-md,16px) * 0.375)', padding: 'calc(var(--sarak-layout-gap-md,16px) * 0.25) var(--sarak-layout-gap-sm, 8px)' }}
                         >
-                            <span className="text-[12px]"><Command size={10} /></span>
+                            <span style={{ fontSize: 'var(--sarak-type-scale-caption, 12px)' }}><Command size={10} /></span>
                             <span>K</span>
                         </div>
                     </div>
@@ -85,7 +85,7 @@ export const SarakSearch: React.FC<SarakSearchProps> = ({ isOpen, onClose }) => 
                     <div className="max-h-[60vh] overflow-y-auto custom-scrollbar" style={{ padding: 'var(--sarak-layout-gap-sm, 8px)' }}>
                         {filteredModules.length > 0 ? (
                             <div style={{ paddingTop: 'var(--sarak-layout-gap-sm, 8px)', paddingBottom: 'var(--sarak-layout-gap-sm, 8px)' }}>
-                                <h4 className="text-2xs font-black uppercase tracking-[0.2em] text-[var(--text-muted,#94a3b8)]" style={{ paddingLeft: 'var(--sarak-layout-gap-md,16px)', paddingRight: 'var(--sarak-layout-gap-md,16px)', marginBottom: 'var(--sarak-layout-gap-sm, 8px)' }}>Available Tools</h4>
+                                <h4 className="text-2xs font-black uppercase text-[var(--text-muted,#94a3b8)]" style={{ paddingLeft: 'var(--sarak-layout-gap-md,16px)', paddingRight: 'var(--sarak-layout-gap-md,16px)', marginBottom: 'var(--sarak-layout-gap-sm, 8px)', letterSpacing: 'var(--sarak-tracking-tight, 0.2em)' }}>Available Tools</h4>
                                 {filteredModules.map(mod => (
                                     <div
                                         key={mod.id}

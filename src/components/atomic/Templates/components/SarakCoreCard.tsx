@@ -77,7 +77,7 @@ export const SarakCoreCard = <TItem extends Record<string, unknown>>({ item, map
 
                 <div className="flex justify-between items-start" style={{ marginBottom: 'calc(var(--sarak-layout-gap-md,16px) / 1.5)' }}>
                     <div className={getFlexStyles('column', 'flex-start', 'stretch', '0').className} style={getFlexStyles('column', 'flex-start', 'stretch', '0').style}>
-                        <span className="text-2xs font-black text-[var(--sarak-primary-color,#3b82f6)] uppercase tracking-[0.2em]" style={{ marginBottom: 'calc(var(--sarak-layout-gap-md,16px)*0.25)' }}>
+                        <span className="text-2xs font-black text-[var(--sarak-primary-color,#3b82f6)] uppercase" style={{ marginBottom: 'calc(var(--sarak-layout-gap-md,16px)*0.25)', letterSpacing: 'var(--sarak-tracking-tight, 0.2em)' }}>
                             {String(getVal(item, mapping?.subtitle) || 'Modelo')}
                         </span>
                         <h4 className="text-xl font-black text-[var(--color-theme-title,#ffffff)] tracking-tight group-hover:text-[var(--sarak-primary-color,#3b82f6)] transition-colors">

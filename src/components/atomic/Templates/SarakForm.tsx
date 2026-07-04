@@ -68,7 +68,7 @@ export const SarakForm = <TData extends Record<string, unknown> = Record<string,
                     </div>
                     <div>
                         <h3 className="text-2xl font-black text-white tracking-tight" style={{ fontWeight: 'var(--sarak-h1-weight,700)' }}>{label}</h3>
-                        <p className="text-2xs font-bold text-white/20 uppercase tracking-[0.2em]">Painel de Controle Atômico</p>
+                        <p className="text-2xs font-bold text-white/20 uppercase" style={{ letterSpacing: 'var(--sarak-tracking-tight, 0.2em)' }}>Painel de Controle Atômico</p>
                     </div>
                 </div>
                 <div className="flex items-center bg-[var(--sarak-status-success-color-bg,rgba(34,197,94,0.1))] rounded-xl border border-[var(--sarak-status-success-color-border,rgba(34,197,94,0.2))] text-[var(--sarak-status-success-color,#22c55e)] text-2xs font-black uppercase tracking-widest" style={{ gap: 'calc(var(--sarak-layout-gap-md,16px) / 4)', padding: 'calc(var(--sarak-layout-gap-md,16px) / 3) calc(var(--sarak-layout-gap-md,16px) / 1.5)' }}>

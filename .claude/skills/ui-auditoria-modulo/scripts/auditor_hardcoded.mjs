@@ -15,6 +15,15 @@ const VALUE_SCOPE = ['src/components', 'src/features'];
 // legitimamente, por isso não entram aqui. Amplie esta lista se a política mudar.
 const STRUCTURAL_SCOPE = ['src/components/atomic'];
 
+// NOTA (ponto cego conhecido): `collectFiles` só coleta arquivos `.tsx` (ver extFilter
+// abaixo). Hooks Camada 6 em `.ts puro` (ex.: useModalLayoutStyles.ts, useCardLayoutStyles.ts,
+// useStructuralStyles.ts) NUNCA são varridos por nenhum dos dois detectores, mesmo quando
+// contêm Tailwind/valor hardcoded de verdade (ex.: `mb-4`/`mt-6 gap-3` dentro do próprio
+// useModalLayoutStyles.ts). Isso tem sido tratado como aceitável ao longo da campanha
+// (specs 21-26) porque o hook é o destino correto da migração — mas hoje é um efeito
+// colateral do filtro de extensão, não uma isenção documentada. Se um dia isso for uma
+// política deliberada, mova esse comentário para perto de `extFilter` e explicite lá.
+
 // Funções utilitárias que recebem classes Tailwind como argumento (além de className).
 const CLASS_HELPERS = new Set(['cn', 'clsx', 'classnames', 'classNames', 'twMerge', 'cva', 'tw']);
 
@@ -121,6 +130,20 @@ function gatherClassText(node, seen, sink) {
   // (string literal, template sem substituição e os trechos de template literal).
   // `seen` deduplica por posição: um mesmo literal pode ser alcançado tanto pelo
   // atributo className quanto pela chamada cn()/clsx() aninhada nele.
+  //
+  // NOTA (ponto cego conhecido): esta função só é chamada a partir do initializer de um
+  // atributo className/class ou dos argumentos de um CLASS_HELPER — ela não faz resolução
+  // de variável. Uma classe Tailwind hardcoded que mora numa `const` separada e é só
+  // *referenciada* por identificador dentro do className (ex.: `const container = isVertical
+  // ? 'flex flex-col gap-1' : '...'` usado como `${container}`) é invisível para o detector
+  // ESTRUTURAL, porque um Identifier não tem filhos literais para `ts.forEachChild` descer.
+  // Confirmado nas specs 23/25 (Stepper.container, Pagination.baseBtn) — é um vetor de
+  // evasão real (mover hardcode para uma const "esconde" do gate sem migrar de verdade),
+  // aceito até agora porque não foi usado com essa intenção. O detector de VALOR (hex/px/
+  // rem/em, função checkValueHardcoded acima) NÃO tem essa isenção: ele varre toda string
+  // literal do arquivo, dentro ou fora de className, independente de const/identificador
+  // (confirmado na spec 26 — SarakBadge.tsx flagrou `text-[10px]` dentro de um objeto
+  // `sizeClasses` que não estava em JSX nenhum).
   if (!node) return;
   if (ts.isStringLiteralLike(node) || ts.isTemplateLiteralToken(node)) {
     const key = node.getStart();

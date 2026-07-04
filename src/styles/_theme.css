@@ -50,6 +50,11 @@
   /* --- 4. TIPOGRAFIA --- */
   --font-sarak-heading: var(--font-heading, 'Outfit', sans-serif);
   --font-sarak-body: var(--font-main, 'Inter', sans-serif);
+
+  /* Spec 26a: text-2xs/text-3xs eram no-ops (sem font-size real) — reaproveita
+     os tokens de type-scale criados na spec 26 (paridade 1:1:1:1:1). */
+  --text-3xs: var(--sarak-type-scale3xs, 9px);
+  --text-2xs: var(--sarak-type-scale2xs, 10px);
   
   /* --- 7. SCROLLBARS --- */
   --scroll-w: var(--sarak-scroll-width, 6px);

@@ -56,7 +56,7 @@ export const SarakSecurityOrchestrator: React.FC<SarakSecurityOrchestratorProps>
                     <Shield className="text-[var(--sarak-primary-color,#3b82f6)]" size={24} />
                 </div>
                 <div>
-                    <h2 className="text-xl font-black uppercase tracking-[0.2em] text-[var(--color-theme-title,#ffffff)]">
+                    <h2 className="text-xl font-black uppercase text-[var(--color-theme-title,#ffffff)]" style={{ letterSpacing: 'var(--sarak-tracking-tight, 0.2em)' }}>
                         {label || 'Orquestrador de Segurança'}
                     </h2>
                     <p className="text-2xs uppercase tracking-widest text-[var(--text-muted,#94a3b8)] font-bold">
@@ -75,7 +75,7 @@ export const SarakSecurityOrchestrator: React.FC<SarakSecurityOrchestratorProps>
                         style={{ padding: 'calc(var(--sarak-layout-gap-md,16px)*3) 0', gap: layout.style.gap }}
                     >
                         <RefreshCw className="animate-spin text-[var(--sarak-primary-color,#3b82f6)]" size={32} />
-                        <span className="text-2xs uppercase font-black tracking-[0.3em] text-[var(--text-muted,#94a3b8)]">Sincronizando Vault...</span>
+                        <span className="text-2xs uppercase font-black text-[var(--text-muted,#94a3b8)]" style={{ letterSpacing: 'var(--sarak-tracking-wide, 0.3em)' }}>Sincronizando Vault...</span>
                     </motion.div>
                 )}
 
@@ -127,7 +127,7 @@ export const SarakSecurityOrchestrator: React.FC<SarakSecurityOrchestratorProps>
                             <CheckCircle2 className="text-emerald-500" size={40} />
                         </div>
                         <div>
-                            <div className="text-lg font-black uppercase tracking-[0.2em] text-[var(--color-theme-title,#ffffff)]" style={{ marginBottom: 'var(--sarak-layout-gap-sm,8px)' }}>Operação Concluída</div>
+                            <div className="text-lg font-black uppercase text-[var(--color-theme-title,#ffffff)]" style={{ marginBottom: 'var(--sarak-layout-gap-sm,8px)', letterSpacing: 'var(--sarak-tracking-tight, 0.2em)' }}>Operação Concluída</div>
                             <p className="text-2xs uppercase tracking-widest text-[var(--text-muted,#94a3b8)] font-bold">
                                 O cofre de segurança foi atualizado com sucesso.
                             </p>

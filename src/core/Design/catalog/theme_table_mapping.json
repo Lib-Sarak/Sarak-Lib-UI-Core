@@ -120,7 +120,18 @@
     "bodyWeight",
     "headingTransform",
     "textSmoothing",
-    "textGlowIntensity"
+    "textGlowIntensity",
+    "typeScaleMicro",
+    "typeScaleTiny",
+    "typeScale3xs",
+    "typeScale2xs",
+    "typeScaleCaption",
+    "trackingTight",
+    "trackingSnug",
+    "trackingWide",
+    "trackingWider",
+    "trackingWidest",
+    "trackingUltra"
   ],
   "layout_and_navigation": [
     "isNavHidden",

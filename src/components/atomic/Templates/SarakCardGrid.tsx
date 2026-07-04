@@ -126,7 +126,7 @@ export const SarakCardGrid = <TData extends Record<string, unknown>>({ endpoint,
                 <div className={`${headerRow.className} md:items-center justify-between`} style={headerRow.style}>
                     <div>
                         <h3 className="text-3xl font-black text-[var(--color-theme-title,#ffffff)] tracking-tighter" style={{ fontWeight: 'var(--sarak-h1-weight,700)' }}>{label || 'Explorar'}</h3>
-                        <p className="text-[var(--text-muted,#94a3b8)] opacity-40 text-2xs font-bold uppercase tracking-[0.3em]" style={{ marginTop: 'calc(var(--sarak-layout-gap-md,16px) * 0.25)' }}>Sintonizando {filteredData.length} unidades disponíveis</p>
+                        <p className="text-[var(--text-muted,#94a3b8)] opacity-40 text-2xs font-bold uppercase" style={{ marginTop: 'calc(var(--sarak-layout-gap-md,16px) * 0.25)', letterSpacing: 'var(--sarak-tracking-wide, 0.3em)' }}>Sintonizando {filteredData.length} unidades disponíveis</p>
                     </div>
                     <div className="flex items-center" style={{ gap: 'calc(var(--sarak-layout-gap-md,16px) / 2)' }}>
                         <div className="w-full md:w-80">

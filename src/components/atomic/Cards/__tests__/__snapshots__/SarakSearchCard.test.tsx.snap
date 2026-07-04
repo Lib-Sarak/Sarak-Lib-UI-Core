@@ -44,8 +44,8 @@ exports[`SarakSearchCard (Characterization) > matches snapshot before any remova
           style="flex-direction: column;"
         >
           <span
-            class="text-[9px] font-black text-[var(--sarak-primary-color,#3b82f6)] uppercase tracking-[0.2em]"
-            style="margin-bottom: calc(var(--sarak-layout-gap-md, 16px) * 0.25);"
+            class="font-black text-[var(--sarak-primary-color,#3b82f6)] uppercase"
+            style="margin-bottom: calc(var(--sarak-layout-gap-md, 16px) * 0.25); font-size: var(--sarak-type-scale3xs, 9px); letter-spacing: var(--sarak-tracking-tight, 0.2em);"
           >
             Painel de Filtros
           </span>
@@ -110,8 +110,8 @@ exports[`SarakSearchCard (Characterization) > matches snapshot before any remova
           style="flex-direction: column; gap: var(--sarak-layout-gap-sm, 8px); padding-top: var(--sarak-layout-gap-sm, 8px);"
         >
           <span
-            class="text-[8px] font-black text-white/20 uppercase tracking-widest"
-            style="margin-bottom: calc(var(--sarak-layout-gap-md, 16px) * 0.25);"
+            class="font-black text-white/20 uppercase tracking-widest"
+            style="margin-bottom: calc(var(--sarak-layout-gap-md, 16px) * 0.25); font-size: var(--sarak-type-scale-tiny, 8px);"
           >
             Filtro de Abilities
           </span>

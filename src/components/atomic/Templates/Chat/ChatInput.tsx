@@ -146,7 +146,7 @@ export const ChatInput: React.FC<ChatInputProps> = ({
       </div>
     </div>
     
-    <p className="text-center text-2xs text-[var(--text-muted,#94a3b8)] uppercase tracking-[0.3em] font-medium" style={{ marginTop: 'var(--sarak-layout-gap-md,16px)' }}>
+    <p className="text-center text-2xs text-[var(--text-muted,#94a3b8)] uppercase font-medium" style={{ marginTop: 'var(--sarak-layout-gap-md,16px)', letterSpacing: 'var(--sarak-tracking-wide, 0.3em)' }}>
     </p>
   </footer>
   );

@@ -231,6 +231,107 @@ export const TypographySchema: ComponentSchema = {
             constraints: { min: 0, max: 1, step: 0.05 },
             defaultValue: 0,
             cssVars: ['--sarak-text-glow']
+        },
+
+        // --- MICRO TYPE-SCALE (Spec 26: rótulos, badges, legendas) ---
+        {
+            id: 'typeScaleMicro',
+            label: 'Escala Micro (7px)',
+            type: 'slider',
+            unit: 'px',
+            constraints: { min: 6, max: 10 },
+            defaultValue: 7,
+            cssVars: ['--sarak-type-scale-micro']
+        },
+        {
+            id: 'typeScaleTiny',
+            label: 'Escala Tiny (8px)',
+            type: 'slider',
+            unit: 'px',
+            constraints: { min: 6, max: 12 },
+            defaultValue: 8,
+            cssVars: ['--sarak-type-scale-tiny']
+        },
+        {
+            id: 'typeScale3xs',
+            label: 'Escala 3XS (9px)',
+            type: 'slider',
+            unit: 'px',
+            constraints: { min: 6, max: 12 },
+            defaultValue: 9,
+            cssVars: ['--sarak-type-scale3xs']
+        },
+        {
+            id: 'typeScale2xs',
+            label: 'Escala 2XS (10px)',
+            type: 'slider',
+            unit: 'px',
+            constraints: { min: 8, max: 14 },
+            defaultValue: 10,
+            cssVars: ['--sarak-type-scale2xs']
+        },
+        {
+            id: 'typeScaleCaption',
+            label: 'Escala Caption (12px)',
+            type: 'slider',
+            unit: 'px',
+            constraints: { min: 10, max: 16 },
+            defaultValue: 12,
+            cssVars: ['--sarak-type-scale-caption']
+        },
+        {
+            id: 'trackingTight',
+            label: 'Tracking Tight (0.2em)',
+            type: 'slider',
+            unit: 'em',
+            constraints: { min: 0, max: 1, step: 0.05 },
+            defaultValue: 0.2,
+            cssVars: ['--sarak-tracking-tight']
+        },
+        {
+            id: 'trackingSnug',
+            label: 'Tracking Snug (0.25em)',
+            type: 'slider',
+            unit: 'em',
+            constraints: { min: 0, max: 1, step: 0.05 },
+            defaultValue: 0.25,
+            cssVars: ['--sarak-tracking-snug']
+        },
+        {
+            id: 'trackingWide',
+            label: 'Tracking Wide (0.3em)',
+            type: 'slider',
+            unit: 'em',
+            constraints: { min: 0, max: 1, step: 0.05 },
+            defaultValue: 0.3,
+            cssVars: ['--sarak-tracking-wide']
+        },
+        {
+            id: 'trackingWider',
+            label: 'Tracking Wider (0.4em)',
+            type: 'slider',
+            unit: 'em',
+            constraints: { min: 0, max: 1, step: 0.05 },
+            defaultValue: 0.4,
+            cssVars: ['--sarak-tracking-wider']
+        },
+        {
+            id: 'trackingWidest',
+            label: 'Tracking Widest (0.5em)',
+            type: 'slider',
+            unit: 'em',
+            constraints: { min: 0, max: 1, step: 0.05 },
+            defaultValue: 0.5,
+            cssVars: ['--sarak-tracking-widest']
+        },
+        {
+            id: 'trackingUltra',
+            label: 'Tracking Ultra (0.8em)',
+            type: 'slider',
+            unit: 'em',
+            constraints: { min: 0, max: 1, step: 0.05 },
+            defaultValue: 0.8,
+            cssVars: ['--sarak-tracking-ultra']
         }
     ]
 };

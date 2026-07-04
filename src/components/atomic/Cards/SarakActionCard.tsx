@@ -64,11 +64,13 @@ export const SarakActionCard = <TItem extends Record<string, unknown>>({ item, m
             {/* DRAFT BADGE (v6.3) */}
             {globalUI?.isDrafting && (
                 <div
-                    className="absolute top-2 left-4 z-40 pointer-events-none flex items-center rounded bg-black/60 border border-[var(--sarak-primary-color,#3b82f6)]/20 text-[7px] font-black uppercase tracking-[0.2em] text-[var(--sarak-primary-color,#3b82f6)] shadow-[0_0_10px_rgba(0,242,255,0.05)]"
+                    className="absolute top-2 left-4 z-40 pointer-events-none flex items-center rounded bg-black/60 border border-[var(--sarak-primary-color,#3b82f6)]/20 font-black uppercase text-[var(--sarak-primary-color,#3b82f6)] shadow-[0_0_10px_rgba(0,242,255,0.05)]"
                     style={{
                         gap: 'calc(var(--sarak-layout-gap-md, 16px) * 0.375)',
                         paddingInline: 'var(--sarak-layout-gap-sm, 8px)',
-                        paddingBlock: 'calc(var(--sarak-layout-gap-md, 16px) * 0.125)'
+                        paddingBlock: 'calc(var(--sarak-layout-gap-md, 16px) * 0.125)',
+                        fontSize: 'var(--sarak-type-scale-micro, 7px)',
+                        letterSpacing: 'var(--sarak-tracking-tight, 0.2em)'
                     }}
                 >
                     <span className="w-1 h-1 rounded-full bg-[var(--sarak-primary-color,#3b82f6)] animate-pulse" />
@@ -80,7 +82,7 @@ export const SarakActionCard = <TItem extends Record<string, unknown>>({ item, m
                 {/* Header Info */}
                 <div className={layout.headerClass}>
                     <div className="flex flex-1 min-w-0" style={{ flexDirection: 'column' }}>
-                        <span className="text-[9px] font-black text-[var(--sarak-primary-color,#3b82f6)] uppercase tracking-[0.2em]" style={{ marginBottom: 'calc(var(--sarak-layout-gap-md, 16px) * 0.25)' }}>
+                        <span className="font-black text-[var(--sarak-primary-color,#3b82f6)] uppercase" style={{ marginBottom: 'calc(var(--sarak-layout-gap-md, 16px) * 0.25)', fontSize: 'var(--sarak-type-scale3xs, 9px)', letterSpacing: 'var(--sarak-tracking-tight, 0.2em)' }}>
                             {String(subtitle)}
                         </span>
                         <h4 className="text-lg font-black text-[var(--color-theme-title,#ffffff)] tracking-tight group-hover:text-[var(--sarak-primary-color,#3b82f6)] transition-colors truncate">
@@ -150,13 +152,13 @@ export const SarakActionCard = <TItem extends Record<string, unknown>>({ item, m
                                     style={{ ...getGridStyles('repeat(2, minmax(0, 1fr))', undefined, 'var(--sarak-layout-gap-sm, 8px)').style, padding: 'calc(var(--sarak-layout-gap-md, 16px) * 0.75)', borderRadius: 'var(--sarak-card-radius,12px)' }}
                                 >
                                     <div className={getFlexStyles('column', 'flex-start', 'stretch', '0').className} style={getFlexStyles('column', 'flex-start', 'stretch', '0').style}>
-                                        <span className="text-[8px] font-black text-[var(--text-muted,#94a3b8)] opacity-50 uppercase tracking-widest">Custo In (1M)</span>
+                                        <span className="font-black text-[var(--text-muted,#94a3b8)] opacity-50 uppercase tracking-widest" style={{ fontSize: 'var(--sarak-type-scale-tiny, 8px)' }}>Custo In (1M)</span>
                                         <span className="text-2xs font-mono text-[var(--sarak-status-success-color,#22c55e)] font-bold">
                                             {priceIn !== undefined ? `$${Number(priceIn).toFixed(4)}` : 'N/A'}
                                         </span>
                                     </div>
                                     <div className={getFlexStyles('column', 'flex-start', 'stretch', '0').className} style={getFlexStyles('column', 'flex-start', 'stretch', '0').style}>
-                                        <span className="text-[8px] font-black text-[var(--text-muted,#94a3b8)] opacity-50 uppercase tracking-widest">Custo Out (1M)</span>
+                                        <span className="font-black text-[var(--text-muted,#94a3b8)] opacity-50 uppercase tracking-widest" style={{ fontSize: 'var(--sarak-type-scale-tiny, 8px)' }}>Custo Out (1M)</span>
                                         <span className="text-2xs font-mono text-[var(--sarak-status-error-color,#ef4444)] font-bold">
                                             {priceOut !== undefined ? `$${Number(priceOut).toFixed(4)}` : 'N/A'}
                                         </span>
@@ -165,7 +167,7 @@ export const SarakActionCard = <TItem extends Record<string, unknown>>({ item, m
                                         className={`${getFlexStyles('column', 'flex-start', 'stretch', '0').className} border-t border-[var(--border-color,#334155)]/10`}
                                         style={{ ...getFlexStyles('column', 'flex-start', 'stretch', '0').style, gridColumn: 'span 2 / span 2', paddingTop: 'calc(var(--sarak-layout-gap-md, 16px) * 0.375)' }}
                                     >
-                                        <span className="text-[8px] font-black text-[var(--text-muted,#94a3b8)] opacity-50 uppercase tracking-widest">Janela / Tokenizer</span>
+                                        <span className="font-black text-[var(--text-muted,#94a3b8)] opacity-50 uppercase tracking-widest" style={{ fontSize: 'var(--sarak-type-scale-tiny, 8px)' }}>Janela / Tokenizer</span>
                                         <span className="text-3xs font-black text-[var(--text-muted,#94a3b8)] uppercase truncate">
                                             {context ? `${(Number(context) / 1000)}k tokens` : 'Default'}
                                             {tokenizer ? ` | ${String(tokenizer)}` : ''}

@@ -59,7 +59,7 @@ export const SecurityOrchestratorSetup: React.FC<SecurityOrchestratorSetupProps>
             </div>
 
             <div className={`max-w-xs ${getFlexStyles('column', 'flex-start', 'stretch', 'var(--sarak-layout-gap-sm,8px)').className}`} style={getFlexStyles('column', 'flex-start', 'stretch', 'var(--sarak-layout-gap-sm,8px)').style}>
-                <p className="text-[10px] uppercase tracking-wider text-[var(--text-muted,#94a3b8)] leading-tight">
+                <p className="uppercase tracking-wider text-[var(--text-muted,#94a3b8)] leading-tight" style={{ fontSize: 'var(--sarak-type-scale2xs, 10px)' }}>
                     Escaneie o código acima com seu app de autenticação (Google Authenticator, Authy, etc.) e insira o código de 6 dígitos abaixo.
                 </p>
             </div>
@@ -72,12 +72,13 @@ export const SecurityOrchestratorSetup: React.FC<SecurityOrchestratorSetupProps>
                     onChange={(e) => setCode(e.target.value.replace(/\D/g, ''))}
                     placeholder="000000"
                     leftIcon={<Key size={16} />}
-                    className="text-center text-xl font-black tracking-[0.5em]"
+                    className="text-center text-xl font-black"
+                    style={{ letterSpacing: 'var(--sarak-tracking-widest, 0.5em)' }}
                     fullWidth
                 />
 
                 {error && (
-                    <motion.div initial={{ opacity: 0 }} animate={{ opacity: 1 }} className="text-[10px] uppercase font-black text-red-500 tracking-widest">
+                    <motion.div initial={{ opacity: 0 }} animate={{ opacity: 1 }} className="uppercase font-black text-red-500 tracking-widest" style={{ fontSize: 'var(--sarak-type-scale2xs, 10px)' }}>
                         {error}
                     </motion.div>
                 )}

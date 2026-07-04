@@ -82,11 +82,13 @@ export const SarakSearchCard = <TItem extends Record<string, unknown>>({
             {/* DRAFT BADGE (v6.3) */}
             {context?.isDrafting && (
                 <div
-                    className="absolute top-2 left-4 z-40 pointer-events-none flex items-center rounded bg-black/60 border border-[var(--sarak-primary-color,#3b82f6)]/20 text-[7px] font-black uppercase tracking-[0.2em] text-[var(--sarak-primary-color,#3b82f6)] shadow-[0_0_10px_rgba(0,242,255,0.05)]"
+                    className="absolute top-2 left-4 z-40 pointer-events-none flex items-center rounded bg-black/60 border border-[var(--sarak-primary-color,#3b82f6)]/20 font-black uppercase text-[var(--sarak-primary-color,#3b82f6)] shadow-[0_0_10px_rgba(0,242,255,0.05)]"
                     style={{
                         gap: 'calc(var(--sarak-layout-gap-md, 16px) * 0.375)',
                         paddingInline: 'var(--sarak-layout-gap-sm, 8px)',
-                        paddingBlock: 'calc(var(--sarak-layout-gap-md, 16px) * 0.125)'
+                        paddingBlock: 'calc(var(--sarak-layout-gap-md, 16px) * 0.125)',
+                        fontSize: 'var(--sarak-type-scale-micro, 7px)',
+                        letterSpacing: 'var(--sarak-tracking-tight, 0.2em)'
                     }}
                 >
                     <span className="w-1 h-1 rounded-full bg-[var(--sarak-primary-color,#3b82f6)] animate-pulse" />
@@ -98,7 +100,7 @@ export const SarakSearchCard = <TItem extends Record<string, unknown>>({
                 {/* Section Header */}
                 <div className={layout.headerClass}>
                     <div className="flex" style={{ flexDirection: 'column' }}>
-                        <span className="text-[9px] font-black text-[var(--sarak-primary-color,#3b82f6)] uppercase tracking-[0.2em]" style={{ marginBottom: 'calc(var(--sarak-layout-gap-md, 16px) * 0.25)' }}>
+                        <span className="font-black text-[var(--sarak-primary-color,#3b82f6)] uppercase" style={{ marginBottom: 'calc(var(--sarak-layout-gap-md, 16px) * 0.25)', fontSize: 'var(--sarak-type-scale3xs, 9px)', letterSpacing: 'var(--sarak-tracking-tight, 0.2em)' }}>
                         Painel de Filtros
                     </span>
                     <h4 className="text-sm font-black text-[var(--color-theme-title,#ffffff)] tracking-tight">
@@ -125,7 +127,7 @@ export const SarakSearchCard = <TItem extends Record<string, unknown>>({
                         className="flex border-t border-[var(--border-color,#334155)]/20 w-full"
                         style={{ flexDirection: 'column', gap: 'var(--sarak-layout-gap-sm, 8px)', paddingTop: 'var(--sarak-layout-gap-sm, 8px)' }}
                     >
-                        <span className="text-[8px] font-black text-white/20 uppercase tracking-widest" style={{ marginBottom: 'calc(var(--sarak-layout-gap-md, 16px) * 0.25)' }}>Filtro de Abilities</span>
+                        <span className="font-black text-white/20 uppercase tracking-widest" style={{ marginBottom: 'calc(var(--sarak-layout-gap-md, 16px) * 0.25)', fontSize: 'var(--sarak-type-scale-tiny, 8px)' }}>Filtro de Abilities</span>
 
                     {/* Vision Switch */}
                     <div

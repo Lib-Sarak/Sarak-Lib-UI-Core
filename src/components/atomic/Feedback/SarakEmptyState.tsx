@@ -36,7 +36,7 @@ export const SarakEmptyState: React.FC<SarakEmptyStateProps> = ({ type = 'abstra
                 <motion.div variants={itemVariants} className="pointer-events-none" style={{ marginBottom: 'var(--sarak-layout-gap-lg, 24px)' }}>
                     <Compass size={64} strokeWidth={1} />
                 </motion.div>
-                <motion.h2 variants={itemVariants} className="text-xl font-bold uppercase tracking-[0.5em]">{systemName || 'Sarak Lib'}</motion.h2>
+                <motion.h2 variants={itemVariants} className="text-xl font-bold uppercase" style={{ letterSpacing: 'var(--sarak-tracking-widest, 0.5em)' }}>{systemName || 'Sarak Lib'}</motion.h2>
                 <motion.p variants={itemVariants} className="text-2xs uppercase tracking-widest italic" style={{ marginTop: 'var(--sarak-layout-gap-sm, 8px)' }}>Waiting for System Interaction...</motion.p>
             </motion.div>
         );
@@ -71,8 +71,8 @@ export const SarakEmptyState: React.FC<SarakEmptyStateProps> = ({ type = 'abstra
                     <motion.div variants={itemVariants} className="text-[var(--sarak-primary-color,#3b82f6)] mx-auto w-12 h-12 flex items-center justify-center" style={{ marginBottom: 'var(--sarak-layout-gap-lg, 24px)' }}>
                         <Box size={40} strokeWidth={1} />
                     </motion.div>
-                    <motion.h2 variants={itemVariants} className="text-2xl font-black uppercase tracking-[0.8em] text-white/10 ml-[0.8em]">VOID</motion.h2>
-                    <motion.p variants={itemVariants} className="text-2xs uppercase tracking-[0.2em] text-[var(--sarak-primary-color,#3b82f6)]/40 font-bold" style={{ marginTop: 'var(--sarak-layout-gap-md, 16px)' }}>Start a module in the toolbar</motion.p>
+                    <motion.h2 variants={itemVariants} className="text-2xl font-black uppercase text-white/10 ml-[0.8em]" style={{ letterSpacing: 'var(--sarak-tracking-ultra, 0.8em)' }}>VOID</motion.h2>
+                    <motion.p variants={itemVariants} className="text-2xs uppercase text-[var(--sarak-primary-color,#3b82f6)]/40 font-bold" style={{ marginTop: 'var(--sarak-layout-gap-md, 16px)', letterSpacing: 'var(--sarak-tracking-tight, 0.2em)' }}>Start a module in the toolbar</motion.p>
                 </div>
             </motion.div>
         );
@@ -108,7 +108,7 @@ export const SarakEmptyState: React.FC<SarakEmptyStateProps> = ({ type = 'abstra
             </motion.div>
 
             <motion.div variants={itemVariants} className="text-center z-10">
-                <h2 className="text-sm font-black uppercase tracking-[0.4em] text-white/40" style={{ marginBottom: 'var(--sarak-layout-gap-sm, 8px)' }}>Sarak Lib Core Engine</h2>
+                <h2 className="text-sm font-black uppercase text-white/40" style={{ marginBottom: 'var(--sarak-layout-gap-sm, 8px)', letterSpacing: 'var(--sarak-tracking-wider, 0.4em)' }}>Sarak Lib Core Engine</h2>
                 <div className="h-px w-12 bg-[var(--sarak-primary-color,#3b82f6)]/40 mx-auto" style={{ marginBottom: 'var(--sarak-layout-gap-md, 16px)' }} />
                 <p className="text-2xs text-white/20 uppercase tracking-widest max-w-[280px] leading-loose">
                     The ecosystem is in harmony. <br/>

@@ -63,11 +63,13 @@ export const SarakTitleCard = <TItem extends Record<string, unknown>>({ item, ma
             {/* DRAFT BADGE (v6.3) */}
             {globalUI?.isDrafting && (
                 <div
-                    className="absolute top-2 left-4 z-40 pointer-events-none flex items-center rounded bg-black/60 border border-[var(--sarak-primary-color,#3b82f6)]/20 text-[7px] font-black uppercase tracking-[0.2em] text-[var(--sarak-primary-color,#3b82f6)] shadow-[0_0_10px_rgba(0,242,255,0.05)]"
+                    className="absolute top-2 left-4 z-40 pointer-events-none flex items-center rounded bg-black/60 border border-[var(--sarak-primary-color,#3b82f6)]/20 font-black uppercase text-[var(--sarak-primary-color,#3b82f6)] shadow-[0_0_10px_rgba(0,242,255,0.05)]"
                     style={{
                         gap: 'calc(var(--sarak-layout-gap-md, 16px) * 0.375)',
                         paddingInline: 'var(--sarak-layout-gap-sm, 8px)',
-                        paddingBlock: 'calc(var(--sarak-layout-gap-md, 16px) * 0.125)'
+                        paddingBlock: 'calc(var(--sarak-layout-gap-md, 16px) * 0.125)',
+                        fontSize: 'var(--sarak-type-scale-micro, 7px)',
+                        letterSpacing: 'var(--sarak-tracking-tight, 0.2em)'
                     }}
                 >
                     <span className="w-1 h-1 rounded-full bg-[var(--sarak-primary-color,#3b82f6)] animate-pulse" />
@@ -79,7 +81,7 @@ export const SarakTitleCard = <TItem extends Record<string, unknown>>({ item, ma
                 {/* Header Layout */}
                 <div className={layout.headerClass}>
                     <div className="flex flex-1 min-w-0" style={{ flexDirection: 'column', paddingRight: 'var(--sarak-layout-gap-sm, 8px)' }}>
-                        <span className="text-[9px] font-black text-[var(--sarak-primary-color,#3b82f6)] uppercase tracking-[0.2em]" style={{ marginBottom: 'calc(var(--sarak-layout-gap-md, 16px) * 0.25)' }}>
+                        <span className="font-black text-[var(--sarak-primary-color,#3b82f6)] uppercase" style={{ marginBottom: 'calc(var(--sarak-layout-gap-md, 16px) * 0.25)', fontSize: 'var(--sarak-type-scale3xs, 9px)', letterSpacing: 'var(--sarak-tracking-tight, 0.2em)' }}>
                             {String(subtitle)}
                         </span>
                         <h4 

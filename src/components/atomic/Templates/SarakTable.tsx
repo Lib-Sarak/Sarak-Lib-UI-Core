@@ -112,9 +112,10 @@ export const SarakTable = <TData extends Record<string, unknown> = Record<string
                         <thead>
                             <tr className="bg-white/5 border-b border-[var(--border-color,#334155)]">
                                 {columns.map(col => (
-                                    <th 
-                                        key={col} 
-                                        className={`text-2xs font-black text-white/30 uppercase tracking-[0.2em] ${cellDensityClass}`}
+                                    <th
+                                        key={col}
+                                        className={`text-2xs font-black text-white/30 uppercase ${cellDensityClass}`}
+                                        style={{ letterSpacing: 'var(--sarak-tracking-tight, 0.2em)' }}
                                     >
                                         <div className="flex items-center cursor-pointer hover:text-white transition-colors" style={{ gap: 'var(--sarak-layout-gap-sm, 8px)' }}>
                                             {columnLabels[col]}

@@ -101,7 +101,8 @@ export const AuthFormFields: React.FC<AuthFormFieldsProps> = ({
                         onChange={(e) => setMfaCode?.(e.target.value.replace(/\D/g, ''))}
                         placeholder="000000"
                         autoFocus
-                        className="text-center text-2xl tracking-[0.5em]"
+                        className="text-center text-2xl"
+                        style={{ letterSpacing: 'var(--sarak-tracking-widest, 0.5em)' }}
                         leftIcon={<ShieldCheck className="h-5 w-5" />}
                         fullWidth
                     />

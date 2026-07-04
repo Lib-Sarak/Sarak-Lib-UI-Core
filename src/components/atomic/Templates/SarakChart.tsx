@@ -59,7 +59,7 @@ export const SarakChart: React.FC<SarakChartProps> = ({ endpoint, label, mapping
             <div className="h-48 flex items-end justify-between relative z-10" style={{ gap: 'calc(var(--sarak-layout-gap-md,16px) / 4)' }}>
                 {loading ? (
                     <div className="w-full h-full flex items-center justify-center border border-dashed border-white/5 rounded-3xl opacity-20">
-                        <span className="text-2xs font-black uppercase tracking-[0.3em] animate-pulse">Sincronizando Datastream...</span>
+                        <span className="text-2xs font-black uppercase animate-pulse" style={{ letterSpacing: 'var(--sarak-tracking-wide, 0.3em)' }}>Sincronizando Datastream...</span>
                     </div>
                 ) : data.length > 0 ? (
                     data.map((item, idx) => {
@@ -85,7 +85,7 @@ export const SarakChart: React.FC<SarakChartProps> = ({ endpoint, label, mapping
                                             {val.toLocaleString()}
                                         </div>
                                     </motion.div>
-                                <div className="text-[7px] font-bold text-[var(--text-muted,#94a3b8)] uppercase rotate-45 origin-left hidden lg:block" style={{ marginTop: 'calc(var(--sarak-layout-gap-md,16px) * 0.75)' }}>
+                                <div className="font-bold text-[var(--text-muted,#94a3b8)] uppercase rotate-45 origin-left hidden lg:block" style={{ marginTop: 'calc(var(--sarak-layout-gap-md,16px) * 0.75)', fontSize: 'var(--sarak-type-scale-micro, 7px)' }}>
                                    {item.date ? String(item.date).split('-').slice(1).join('/') : ''}
                                 </div>
                             </div>
@@ -93,7 +93,7 @@ export const SarakChart: React.FC<SarakChartProps> = ({ endpoint, label, mapping
                     })
                 ) : (
                     <div className="w-full h-full flex items-center justify-center border border-dashed border-white/5 rounded-3xl opacity-20">
-                        <span className="text-2xs font-black uppercase tracking-[0.3em]">Aguardando Dados Históricos</span>
+                        <span className="text-2xs font-black uppercase" style={{ letterSpacing: 'var(--sarak-tracking-wide, 0.3em)' }}>Aguardando Dados Históricos</span>
                     </div>
                 )}
             </div>

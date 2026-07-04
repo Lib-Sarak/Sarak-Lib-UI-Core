@@ -50,7 +50,7 @@ export const ManagementGroupCard = <TItem extends Record<string, unknown>>({
                     <div className="rounded-[var(--sarak-card-radius,12px)]" style={{ padding: 'calc(var(--sarak-layout-gap-md,16px) / 2.5)', borderRadius: 'var(--sarak-card-radius,12px)', backgroundColor: isConfigured ? 'var(--sarak-shadow-glow,rgba(59,130,246,0.5))' : 'rgba(255,255,255,0.05)', color: isConfigured ? 'var(--sarak-primary-color,#3b82f6)' : 'rgba(255,255,255,0.2)' }}>
                         <Cloud className="w-4 h-4" />
                     </div>
-                    <h3 className="font-black text-white uppercase text-xs tracking-[0.2em]">{groupName}</h3>
+                    <h3 className="font-black text-white uppercase text-xs" style={{ letterSpacing: 'var(--sarak-tracking-tight, 0.2em)' }}>{groupName}</h3>
                 </div>
                 <div className="flex" style={{ gap: 'calc(var(--sarak-layout-gap-md,16px) / 6)' }}>
                     {groupActions.map(action => (
@@ -126,7 +126,7 @@ export const ManagementGroupCard = <TItem extends Record<string, unknown>>({
                 ) : (
                     <div className={twMerge("items-center justify-center text-center opacity-20", containerLayout.className)} style={{ gap: containerLayout.style?.gap, paddingTop: 'calc(calc(var(--sarak-layout-gap-md,16px)*2) * 1.5)', paddingBottom: 'calc(calc(var(--sarak-layout-gap-md,16px)*2) * 1.5)' }}>
                         <Settings2 className="w-10 h-10" />
-                        <p className="text-2xs font-black uppercase tracking-[0.2em]">Offline</p>
+                        <p className="text-2xs font-black uppercase" style={{ letterSpacing: 'var(--sarak-tracking-tight, 0.2em)' }}>Offline</p>
                     </div>
                 )}
             </div>

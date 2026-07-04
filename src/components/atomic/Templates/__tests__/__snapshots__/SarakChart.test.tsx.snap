@@ -100,8 +100,8 @@ exports[`SarakChart > matches snapshot to ensure no layout regressions during ty
           </div>
         </div>
         <div
-          class="text-[7px] font-bold text-[var(--text-muted,#94a3b8)] uppercase rotate-45 origin-left hidden lg:block"
-          style="margin-top: calc(var(--sarak-layout-gap-md,16px) * 0.75);"
+          class="font-bold text-[var(--text-muted,#94a3b8)] uppercase rotate-45 origin-left hidden lg:block"
+          style="margin-top: calc(var(--sarak-layout-gap-md,16px) * 0.75); font-size: var(--sarak-type-scale-micro, 7px);"
         >
           01/01
         </div>
@@ -122,8 +122,8 @@ exports[`SarakChart > matches snapshot to ensure no layout regressions during ty
           </div>
         </div>
         <div
-          class="text-[7px] font-bold text-[var(--text-muted,#94a3b8)] uppercase rotate-45 origin-left hidden lg:block"
-          style="margin-top: calc(var(--sarak-layout-gap-md,16px) * 0.75);"
+          class="font-bold text-[var(--text-muted,#94a3b8)] uppercase rotate-45 origin-left hidden lg:block"
+          style="margin-top: calc(var(--sarak-layout-gap-md,16px) * 0.75); font-size: var(--sarak-type-scale-micro, 7px);"
         >
           01/02
         </div>

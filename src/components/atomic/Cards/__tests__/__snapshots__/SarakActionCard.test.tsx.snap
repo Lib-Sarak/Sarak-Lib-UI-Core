@@ -43,8 +43,8 @@ exports[`SarakActionCard (Characterization) > matches snapshot before any remova
           style="flex-direction: column;"
         >
           <span
-            class="text-[9px] font-black text-[var(--sarak-primary-color,#3b82f6)] uppercase tracking-[0.2em]"
-            style="margin-bottom: calc(var(--sarak-layout-gap-md, 16px) * 0.25);"
+            class="font-black text-[var(--sarak-primary-color,#3b82f6)] uppercase"
+            style="margin-bottom: calc(var(--sarak-layout-gap-md, 16px) * 0.25); font-size: var(--sarak-type-scale3xs, 9px); letter-spacing: var(--sarak-tracking-tight, 0.2em);"
           >
             123
           </span>

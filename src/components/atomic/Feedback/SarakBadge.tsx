@@ -21,6 +21,7 @@ export const SarakBadge: React.FC<SarakBadgeProps> = ({
     pill = false,
     soft = true,
     className,
+    style,
     ...props
 }) => {
     // Base styles
@@ -28,10 +29,12 @@ export const SarakBadge: React.FC<SarakBadgeProps> = ({
 
     // Size variants
     const sizeClasses = {
-        sm: "px-1.5 py-0.5 text-[10px]",
+        sm: "px-1.5 py-0.5",
         md: "px-2 py-1 text-xs",
         lg: "px-3 py-1.5 text-sm",
     };
+
+    const sizeStyle: React.CSSProperties = size === 'sm' ? { fontSize: 'var(--sarak-type-scale2xs, 10px)' } : {};
 
     // Shape
     const shapeClasses = pill ? "rounded-full" : "rounded-md";
@@ -70,7 +73,7 @@ export const SarakBadge: React.FC<SarakBadgeProps> = ({
     };
 
     return (
-        <span 
+        <span
             className={twMerge(
                 baseClasses,
                 sizeClasses[size],
@@ -78,6 +81,7 @@ export const SarakBadge: React.FC<SarakBadgeProps> = ({
                 variantClasses[variant],
                 className
             )}
+            style={{ ...sizeStyle, ...style }}
             {...props}
         >
             {children}
