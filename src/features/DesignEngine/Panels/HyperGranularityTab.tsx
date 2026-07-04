@@ -62,7 +62,7 @@ export const HyperGranularityTab: React.FC = () => {
                         placeholder="Busca universal em 200+ tokens..."
                         value={searchQuery}
                         onChange={(e) => setSearchQuery(e.target.value)}
-                        className="w-full bg-white/5 border border-white/10 rounded-xl py-2 pl-10 pr-4 text-[10px] font-bold focus:border-[var(--theme-primary)]/50 focus:outline-none transition-all text-white placeholder:text-white/20"
+                        className="w-full bg-white/5 border border-white/10 rounded-xl py-2 pl-10 pr-4 text-[var(--sarak-type-scale2xs,10px)] font-bold focus:border-[var(--theme-primary)]/50 focus:outline-none transition-all text-white placeholder:text-white/20"
                     />
                     {searchQuery && (
                         <button onClick={() => setSearchQuery('')} className="absolute right-3 top-1/2 -translate-y-1/2 text-white/20 hover:text-white">
@@ -120,7 +120,7 @@ export const HyperGranularityTab: React.FC = () => {
                                                     <div key={cat} className="space-y-4">
                                                         <div className="flex items-center gap-2 mb-2">
                                                             <div className="w-1 h-3 bg-[var(--theme-primary)]/40 rounded-full" />
-                                                            <span className="text-[10px] font-black uppercase tracking-widest text-white/30">{cat}</span>
+                                                            <span className="text-[var(--sarak-type-scale2xs,10px)] font-black uppercase tracking-widest text-white/30">{cat}</span>
                                                         </div>
                                                         <div className="space-y-4">
                                                             {tokens.map(token => {
@@ -161,7 +161,7 @@ export const HyperGranularityTab: React.FC = () => {
                             <Search size={24} className="text-white/10" />
                         </div>
                         <h3 className="text-xs font-black uppercase text-white/40 tracking-widest">Nenhum token encontrado</h3>
-                        <p className="text-[10px] text-white/20 mt-1 uppercase italic">Aumente a abrangência da busca</p>
+                        <p className="text-[var(--sarak-type-scale2xs,10px)] text-white/20 mt-1 uppercase italic">Aumente a abrangência da busca</p>
                     </div>
                 )}
             </div>
@@ -178,12 +178,12 @@ export const HyperGranularityTab: React.FC = () => {
                     }`}
                 >
                     <Check size={16} className={Object.keys(draft).length > 0 ? 'group-hover:scale-110 transition-transform' : ''} />
-                    <span className="text-xs tracking-[0.2em]">Aplicar Soberania</span>
+                    <span className="text-xs tracking-[var(--sarak-tracking-tight,0.2em)]">Aplicar Soberania</span>
                 </button>
                 
                 <div className="mt-4 flex items-center justify-center gap-2">
                     <div className={`w-1.5 h-1.5 rounded-full ${Object.keys(draft).length > 0 ? 'bg-orange-500 animate-pulse' : 'bg-green-500'}`} />
-                    <span className="text-[9px] font-black uppercase tracking-widest text-white/20">
+                    <span className="text-[var(--sarak-type-scale3xs,9px)] font-black uppercase tracking-widest text-white/20">
                         {Object.keys(draft).length > 0 ? 'Sessão com Alterações Pendentes' : 'Sarak Sovereign UI v12.0'}
                     </span>
                 </div>
@@ -206,7 +206,7 @@ export const HyperGranularityTab: React.FC = () => {
                             <div className={`p-1.5 rounded-lg ${toast.type === 'success' ? 'bg-green-500/20' : 'bg-orange-500/20'}`}>
                                 {toast.type === 'success' ? <Check size={14} /> : <Filter size={14} />}
                             </div>
-                            <span className="text-[10px] font-bold uppercase tracking-wider">{toast.message}</span>
+                            <span className="text-[var(--sarak-type-scale2xs,10px)] font-bold uppercase tracking-wider">{toast.message}</span>
                         </div>
                     </motion.div>
                 )}

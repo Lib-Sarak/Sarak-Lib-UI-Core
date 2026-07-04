@@ -26,7 +26,7 @@ export const PaletteSelector: React.FC = () => {
                 <span className="text-xs font-semibold uppercase tracking-wider text-theme-title opacity-70">
                     Paletas Industriais
                 </span>
-                <span className="text-[10px] font-medium px-2 py-0.5 rounded-full bg-theme-primary/10 text-theme-primary border border-theme-primary/20">
+                <span className="text-[var(--sarak-type-scale2xs,10px)] font-medium px-2 py-0.5 rounded-full bg-theme-primary/10 text-theme-primary border border-theme-primary/20">
                     v9.0 Multi-Preset
                 </span>
             </div>
@@ -83,7 +83,7 @@ export const PaletteSelector: React.FC = () => {
                 ))}
             </div>
             
-            <p className="text-[10px] text-theme-muted italic">
+            <p className="text-[var(--sarak-type-scale2xs,10px)] text-theme-muted italic">
                 * As cores são injetadas dinamicamente em variáveis hierárquicas no root.
             </p>
         </div>

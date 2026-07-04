@@ -91,7 +91,7 @@ export const SaveThemeModal: React.FC<SaveThemeModalProps> = ({
                                     Precisamos salvar suas alterações como um <strong>Novo Tema</strong> no seu banco de dados.
                                 </p>
                                 <div className="mt-2 flex flex-col gap-1.5">
-                                    <label className="text-[10px] font-bold text-[var(--color-theme-title,#ffffff)] uppercase tracking-widest">Nome do Novo Tema</label>
+                                    <label className="text-[var(--sarak-type-scale2xs,10px)] font-bold text-[var(--color-theme-title,#ffffff)] uppercase tracking-widest">Nome do Novo Tema</label>
                                     <SarakInput 
                                         value={newName}
                                         onChange={(e) => setNewName(e.target.value)}
@@ -117,13 +117,13 @@ export const SaveThemeModal: React.FC<SaveThemeModalProps> = ({
                                         <Save size={18} className="text-[var(--theme-muted)] group-hover:text-[var(--theme-primary)] transition-colors" />
                                         <div className="flex flex-col">
                                             <span className="text-sm font-bold text-[var(--color-theme-title,#ffffff)]">Atualizar Tema Atual</span>
-                                            <span className="text-[10px] text-[var(--theme-muted)]">Sobrescreve o payload no banco de dados</span>
+                                            <span className="text-[var(--sarak-type-scale2xs,10px)] text-[var(--theme-muted)]">Sobrescreve o payload no banco de dados</span>
                                         </div>
                                     </button>
 
                                     <div className="relative py-2 flex items-center justify-center">
                                         <div className="absolute inset-x-0 h-px bg-[var(--theme-border)]" />
-                                        <span className="relative bg-[var(--theme-surface)] px-2 text-[10px] font-bold text-[var(--theme-muted)] uppercase">OU</span>
+                                        <span className="relative bg-[var(--theme-surface)] px-2 text-[var(--sarak-type-scale2xs,10px)] font-bold text-[var(--theme-muted)] uppercase">OU</span>
                                     </div>
 
                                     <div className="flex flex-col gap-2">

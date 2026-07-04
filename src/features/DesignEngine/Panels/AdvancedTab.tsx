@@ -98,7 +98,7 @@ export const AdvancedTab: React.FC = () => {
                             ) : (
                                 <RefreshCw className="w-4 h-4 group-hover:rotate-180 transition-transform duration-500" />
                             )}
-                            <span className="text-2xs font-black uppercase tracking-[0.2em]">Restaurar Padrões</span>
+                            <span className="text-2xs font-black uppercase tracking-[var(--sarak-tracking-tight,0.2em)]">Restaurar Padrões</span>
                         </button>
 
                         <div className="text-center">

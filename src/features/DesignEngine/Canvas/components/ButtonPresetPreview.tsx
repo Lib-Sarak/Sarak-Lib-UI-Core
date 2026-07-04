@@ -23,11 +23,11 @@ export const ButtonPresetPreview: React.FC<ButtonPresetPreviewProps> = ({ preset
 
     // Construir estilo dinâmico como o SarakButton
     const dynamicStyle: React.CSSProperties = {
-        padding: '12px 24px',
+        padding: 'var(--sarak-preset-preview-padding-y, 12px) var(--sarak-layout-gap-lg, 24px)',
         fontSize: 'var(--color-theme-text, #ffffff)',
         fontWeight: '900',
         textTransform: 'uppercase',
-        letterSpacing: '0.1em',
+        letterSpacing: 'var(--sarak-tracking-subtle, 0.1em)',
         cursor: 'pointer',
         transition: 'all 0.2s ease',
         display: 'flex',
@@ -40,9 +40,9 @@ export const ButtonPresetPreview: React.FC<ButtonPresetPreviewProps> = ({ preset
     const applyStyles: Record<string, () => void> = {
         'neon': () => {
             dynamicStyle.backgroundColor = primaryBg;
-            dynamicStyle.boxShadow = isHovered 
-                ? `0 0 20px ${glowColor}, inset 0 0 10px ${glowColor}`
-                : `0 0 10px ${glowColor}`;
+            dynamicStyle.boxShadow = isHovered
+                ? `0 0 var(--sarak-preset-glow-shadow-blur, 20px) ${glowColor}, inset 0 0 var(--sarak-preset-card-shadow-blur, 10px) ${glowColor}`
+                : `0 0 var(--sarak-preset-card-shadow-blur, 10px) ${glowColor}`;
             dynamicStyle.border = `1px solid ${glowColor}`;
         },
         'frosted': () => {
@@ -50,7 +50,7 @@ export const ButtonPresetPreview: React.FC<ButtonPresetPreviewProps> = ({ preset
             dynamicStyle.backdropFilter = `blur(${blurAmount}px)`;
             dynamicStyle.WebkitBackdropFilter = `blur(${blurAmount}px)`;
             dynamicStyle.border = '1px solid rgba(255,255,255,0.1)';
-            dynamicStyle.boxShadow = '0 var(--sarak-layout-gap-sm, 8px) 32px 0 rgba(0, 0, 0, 0.3)';
+            dynamicStyle.boxShadow = '0 var(--sarak-layout-gap-sm, 8px) var(--sarak-preset-glow-shadow-blur-lg, 32px) 0 rgba(0, 0, 0, 0.3)';
         },
         'borderline': () => {
             dynamicStyle.backgroundColor = isHovered ? primaryBg : 'transparent';
@@ -59,7 +59,7 @@ export const ButtonPresetPreview: React.FC<ButtonPresetPreviewProps> = ({ preset
         },
         'matte': () => {
             dynamicStyle.backgroundColor = primaryBg;
-            dynamicStyle.boxShadow = `0 10px 15px -3px rgba(0,0,0,0.2), 0 4px 6px -4px rgba(0,0,0,0.2)`;
+            dynamicStyle.boxShadow = `0 var(--sarak-preset-card-hover-shadow-offset-y, 10px) var(--sarak-preset-matte-shadow-blur1, 15px) calc(var(--sarak-preset-matte-shadow-spread1, 3px) * -1) rgba(0,0,0,0.2), 0 var(--sarak-preset-matte-shadow-offset-y2, 4px) var(--sarak-preset-matte-shadow-blur2, 6px) calc(var(--sarak-preset-matte-shadow-spread2, 4px) * -1) rgba(0,0,0,0.2)`;
             dynamicStyle.border = 'none';
         }
     };
@@ -79,7 +79,7 @@ export const ButtonPresetPreview: React.FC<ButtonPresetPreviewProps> = ({ preset
             transition={{ delay: index * 0.05 }}
             onClick={onApply}
             className="group relative flex flex-col items-center justify-center p-6 rounded-2xl border border-theme-border overflow-hidden bg-[rgba(10,10,10,0.5)] hover:border-theme-primary transition-all duration-300"
-            style={{ minHeight: '320px' }}
+            style={{ minHeight: 'var(--sarak-preset-preview-min-height, 320px)' }}
         >
             <div className="absolute inset-0 z-0 bg-[radial-gradient(ellipse_at_center,rgba(255,255,255,0.05)_0%,transparent_70%)] opacity-50"></div>
             
@@ -95,7 +95,7 @@ export const ButtonPresetPreview: React.FC<ButtonPresetPreviewProps> = ({ preset
 
             <div className="absolute bottom-0 left-0 w-full p-4 bg-black/40 backdrop-blur-md border-t border-white/5 z-20 text-left">
                 <h3 className="text-xs font-black text-white uppercase tracking-wider">{preset.name}</h3>
-                <p className="text-[9px] text-white/50 mt-1 uppercase tracking-widest leading-relaxed">{preset.description}</p>
+                <p className="text-[var(--sarak-type-scale3xs,9px)] text-white/50 mt-1 uppercase tracking-widest leading-relaxed">{preset.description}</p>
             </div>
         </motion.button>
     );

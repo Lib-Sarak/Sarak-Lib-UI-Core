@@ -20,8 +20,8 @@ export const CardsCatalog: React.FC<CardsCatalogProps> = ({ onApplyPreset }) => 
                         <Layout size={18} className="text-theme-primary" />
                     </div>
                     <div className="flex flex-col">
-                        <span className="text-xs font-black uppercase text-theme-text tracking-[0.3em]">Design Intelligence Catalog</span>
-                        <span className="text-[9px] font-bold text-theme-primary uppercase tracking-widest mt-0.5">
+                        <span className="text-xs font-black uppercase text-theme-text tracking-[var(--sarak-tracking-wide,0.3em)]">Design Intelligence Catalog</span>
+                        <span className="text-[var(--sarak-type-scale3xs,9px)] font-bold text-theme-primary uppercase tracking-widest mt-0.5">
                             Pilar: Cards & Surfaces
                         </span>
                     </div>
@@ -59,8 +59,8 @@ const CardPresetPreview = ({ preset, index, onApply }: { preset: ComponentPreset
         boxShadow: preset.design.cardShadow && preset.design.cardShadow !== 'none' 
             ? preset.design.cardShadow 
             : preset.design.cardShadowSpread 
-                ? `0 4px ${preset.design.cardShadowSpread}px -2px ${preset.design.cardGlowColor || 'rgba(0,0,0,0.5)'}`
-                : '0 4px 10px -2px rgba(0,0,0,0.5)',
+                ? `0 var(--sarak-preset-card-shadow-offset-y, 4px) ${preset.design.cardShadowSpread}px -2px ${preset.design.cardGlowColor || 'rgba(0,0,0,0.5)'}`
+                : '0 var(--sarak-preset-card-shadow-offset-y, 4px) var(--sarak-preset-card-shadow-blur, 10px) -2px rgba(0,0,0,0.5)',
         clipPath: variables['--sarak-card-clip-path']
     };
 
@@ -73,7 +73,7 @@ const CardPresetPreview = ({ preset, index, onApply }: { preset: ComponentPreset
                     : preset.design.cardTextureType === 'noise' 
                         ? 'url("data:image/svg+xml,%3Csvg viewBox=%220 0 200 200%22 xmlns=%22http://www.w3.org/2000/svg%22%3E%3Cfilter id=%22noiseFilter%22%3E%3CfeTurbulence type=%22fractalNoise%22 baseFrequency=%220.65%22 numOctaves=%223%22 stitchTiles=%22stitch%22/%3E%3C/filter%3E%3Crect width=%22100%25%22 height=%22100%25%22 filter=%22url(%23noiseFilter)%22/%3E%3C/svg%3E")'
                         : 'none',
-                backgroundSize: preset.design.cardTextureType === 'grid' ? '8px 8px' : 'auto'
+                backgroundSize: preset.design.cardTextureType === 'grid' ? 'var(--sarak-preset-grid-texture-size, 8px) var(--sarak-preset-grid-texture-size, 8px)' : 'auto'
             }}
         />
     ) : null;
@@ -90,7 +90,7 @@ const CardPresetPreview = ({ preset, index, onApply }: { preset: ComponentPreset
                 <div className="absolute inset-0 bg-[radial-gradient(ellipse_at_center,rgba(255,255,255,0.05)_0%,transparent_70%)]" />
                 
                 {/* O Card Gigante de Preview */}
-                <div className="relative w-full max-w-[280px] h-32 flex flex-col p-4 shadow-2xl transition-transform group-hover:scale-105 duration-500 z-10" style={cardStyle as React.CSSProperties}>
+                <div className="relative w-full max-w-[var(--sarak-preset-mini-card-max-width,280px)] h-32 flex flex-col p-4 shadow-2xl transition-transform group-hover:scale-105 duration-500 z-10" style={cardStyle as React.CSSProperties}>
                     {textureLayer}
                     
                     <div className="flex items-center gap-3 relative z-10">

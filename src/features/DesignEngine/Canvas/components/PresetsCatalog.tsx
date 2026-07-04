@@ -52,8 +52,8 @@ export const PresetsCatalog: React.FC<PresetsCatalogProps> = ({ onApplyPreset, o
                         <Sparkles size={18} className="text-theme-primary" />
                     </div>
                     <div className="flex flex-col">
-                        <span className="text-xs font-black uppercase text-theme-text tracking-[0.3em]">Design Intelligence Catalog</span>
-                        <span className="text-[9px] font-bold text-theme-primary uppercase tracking-widest mt-0.5">
+                        <span className="text-xs font-black uppercase text-theme-text tracking-[var(--sarak-tracking-wide,0.3em)]">Design Intelligence Catalog</span>
+                        <span className="text-[var(--sarak-type-scale3xs,9px)] font-bold text-theme-primary uppercase tracking-widest mt-0.5">
                             Catálogo de Presets
                         </span>
                     </div>
@@ -62,19 +62,19 @@ export const PresetsCatalog: React.FC<PresetsCatalogProps> = ({ onApplyPreset, o
                 <div className="flex items-center gap-2 p-1 bg-black/20 rounded-xl border border-theme-border">
                     <button
                         onClick={() => setActiveTab('globals')}
-                        className={`px-4 py-2 rounded-lg text-[10px] font-black uppercase tracking-widest transition-all ${activeTab === 'globals' ? 'bg-theme-primary text-white shadow-lg' : 'text-theme-muted hover:text-white hover:bg-white/5'}`}
+                        className={`px-4 py-2 rounded-lg text-[var(--sarak-type-scale2xs,10px)] font-black uppercase tracking-widest transition-all ${activeTab === 'globals' ? 'bg-theme-primary text-white shadow-lg' : 'text-theme-muted hover:text-white hover:bg-white/5'}`}
                     >
                         Globais
                     </button>
                     <button
                         onClick={() => setActiveTab('buttons')}
-                        className={`px-4 py-2 rounded-lg text-[10px] font-black uppercase tracking-widest transition-all ${activeTab === 'buttons' ? 'bg-theme-primary text-white shadow-lg' : 'text-theme-muted hover:text-white hover:bg-white/5'}`}
+                        className={`px-4 py-2 rounded-lg text-[var(--sarak-type-scale2xs,10px)] font-black uppercase tracking-widest transition-all ${activeTab === 'buttons' ? 'bg-theme-primary text-white shadow-lg' : 'text-theme-muted hover:text-white hover:bg-white/5'}`}
                     >
                         Botões
                     </button>
                     <button
                         onClick={() => setActiveTab('inputs')}
-                        className={`px-4 py-2 rounded-lg text-[10px] font-black uppercase tracking-widest transition-all ${activeTab === 'inputs' ? 'bg-theme-primary text-white shadow-lg' : 'text-theme-muted hover:text-white hover:bg-white/5'}`}
+                        className={`px-4 py-2 rounded-lg text-[var(--sarak-type-scale2xs,10px)] font-black uppercase tracking-widest transition-all ${activeTab === 'inputs' ? 'bg-theme-primary text-white shadow-lg' : 'text-theme-muted hover:text-white hover:bg-white/5'}`}
                     >
                         Inputs
                     </button>

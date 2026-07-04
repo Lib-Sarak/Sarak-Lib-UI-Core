@@ -52,12 +52,12 @@ exports[`CardsCatalog > renderiza o título do catálogo e faz snapshot 1`] = `
           class="flex flex-col"
         >
           <span
-            class="text-xs font-black uppercase text-theme-text tracking-[0.3em]"
+            class="text-xs font-black uppercase text-theme-text tracking-[var(--sarak-tracking-wide,0.3em)]"
           >
             Design Intelligence Catalog
           </span>
           <span
-            class="text-[9px] font-bold text-theme-primary uppercase tracking-widest mt-0.5"
+            class="text-[var(--sarak-type-scale3xs,9px)] font-bold text-theme-primary uppercase tracking-widest mt-0.5"
           >
             Pilar: Cards & Surfaces
           </span>
@@ -77,14 +77,14 @@ exports[`CardsCatalog > renderiza o título do catálogo e faz snapshot 1`] = `
           transition="[object Object]"
         >
           <div
-            class="h-48 w-full relative flex items-center justify-center p-6 bg-[var(--sarak-surface-sunken, #0a0a0b)] overflow-hidden"
+            class="h-48 w-full relative flex items-center justify-center p-6 bg-[var(--color-theme-bg, #0a0a0c)] overflow-hidden"
           >
             <div
               class="absolute inset-0 bg-[radial-gradient(ellipse_at_center,rgba(255,255,255,0.05)_0%,transparent_70%)]"
             />
             <div
-              class="relative w-full max-w-[280px] h-32 flex flex-col p-4 shadow-2xl transition-transform group-hover:scale-105 duration-500 z-10"
-              style="background-color: rgba(255, 255, 255, 0.05); border-top-width: var(--sarak-border-base, 1px); border-right-width: var(--sarak-border-base, 1px); border-bottom-width: var(--sarak-border-base, 1px); border-left-width: var(--sarak-border-base, 1px); border-color: rgba(255, 255, 255, 0.1); border-style: solid; border-top-left-radius: var(--sarak-spacing-md, 12px); border-top-right-radius: var(--sarak-spacing-md, 12px); border-bottom-right-radius: var(--sarak-spacing-md, 12px); border-bottom-left-radius: var(--sarak-spacing-md, 12px); backdrop-filter: blur(var(--sarak-spacing-md, 12px)); box-shadow: 0 4px 30px rgba(0, 0, 0, 0.1);"
+              class="relative w-full max-w-[var(--sarak-preset-mini-card-max-width,280px)] h-32 flex flex-col p-4 shadow-2xl transition-transform group-hover:scale-105 duration-500 z-10"
+              style="background-color: rgba(255, 255, 255, 0.05); border-top-width: var(--border-color,#334155); border-right-width: var(--border-color,#334155); border-bottom-width: var(--border-color,#334155); border-left-width: var(--border-color,#334155); border-color: rgba(255, 255, 255, 0.1); border-style: solid; border-top-left-radius: var(--sarak-layout-gap-md,16px); border-top-right-radius: var(--sarak-layout-gap-md,16px); border-bottom-right-radius: var(--sarak-layout-gap-md,16px); border-bottom-left-radius: var(--sarak-layout-gap-md,16px); backdrop-filter: blur(var(--sarak-layout-gap-md,16px)); box-shadow: 0 4px 30px rgba(0, 0, 0, 0.1);"
             >
               <div
                 class="flex items-center gap-3 relative z-10"
@@ -177,18 +177,18 @@ exports[`CardsCatalog > renderiza o título do catálogo e faz snapshot 1`] = `
           transition="[object Object]"
         >
           <div
-            class="h-48 w-full relative flex items-center justify-center p-6 bg-[var(--sarak-surface-sunken, #0a0a0b)] overflow-hidden"
+            class="h-48 w-full relative flex items-center justify-center p-6 bg-[var(--color-theme-bg, #0a0a0c)] overflow-hidden"
           >
             <div
               class="absolute inset-0 bg-[radial-gradient(ellipse_at_center,rgba(255,255,255,0.05)_0%,transparent_70%)]"
             />
             <div
-              class="relative w-full max-w-[280px] h-32 flex flex-col p-4 shadow-2xl transition-transform group-hover:scale-105 duration-500 z-10"
-              style="background-color: rgba(255, 255, 255, 0.05); border-top-width: var(--sarak-border-base, 1px); border-right-width: var(--sarak-border-base, 1px); border-bottom-width: var(--sarak-border-base, 1px); border-left-width: var(--sarak-border-base, 1px); border-color: rgba(255, 255, 255, 0.1); border-style: solid; border-top-left-radius: var(--sarak-spacing-md, 12px); border-top-right-radius: var(--sarak-spacing-md, 12px); border-bottom-right-radius: var(--sarak-spacing-md, 12px); border-bottom-left-radius: var(--sarak-spacing-md, 12px); backdrop-filter: blur(var(--sarak-spacing-md, 12px)); box-shadow: 0 4px 10px -2px var(--theme-primary-focus);"
+              class="relative w-full max-w-[var(--sarak-preset-mini-card-max-width,280px)] h-32 flex flex-col p-4 shadow-2xl transition-transform group-hover:scale-105 duration-500 z-10"
+              style="background-color: rgba(255, 255, 255, 0.05); border-top-width: var(--border-color,#334155); border-right-width: var(--border-color,#334155); border-bottom-width: var(--border-color,#334155); border-left-width: var(--border-color,#334155); border-color: rgba(255, 255, 255, 0.1); border-style: solid; border-top-left-radius: var(--sarak-layout-gap-md,16px); border-top-right-radius: var(--sarak-layout-gap-md,16px); border-bottom-right-radius: var(--sarak-layout-gap-md,16px); border-bottom-left-radius: var(--sarak-layout-gap-md,16px); backdrop-filter: blur(var(--sarak-layout-gap-md,16px)); box-shadow: 0 var(--sarak-preset-card-shadow-offset-y, 4px) 10px -2px var(--theme-primary-focus);"
             >
               <div
                 class="absolute inset-0 pointer-events-none opacity-50"
-                style="background-image: linear-gradient(to right, rgba(255,255,255,0.05) var(--sarak-border-base, 1px), transparent var(--sarak-border-base, 1px)), linear-gradient(to bottom, rgba(255,255,255,0.05) var(--sarak-border-base, 1px), transparent var(--sarak-border-base, 1px)); background-size: 8px 8px;"
+                style="background-image: linear-gradient(to right, rgba(255,255,255,0.05) var(--border-color,#334155), transparent var(--border-color,#334155)), linear-gradient(to bottom, rgba(255,255,255,0.05) var(--border-color,#334155), transparent var(--border-color,#334155)); background-size: var(--sarak-preset-grid-texture-size, 8px) var(--sarak-preset-grid-texture-size, 8px);"
               />
               <div
                 class="flex items-center gap-3 relative z-10"
@@ -281,14 +281,14 @@ exports[`CardsCatalog > renderiza o título do catálogo e faz snapshot 1`] = `
           transition="[object Object]"
         >
           <div
-            class="h-48 w-full relative flex items-center justify-center p-6 bg-[var(--sarak-surface-sunken, #0a0a0b)] overflow-hidden"
+            class="h-48 w-full relative flex items-center justify-center p-6 bg-[var(--color-theme-bg, #0a0a0c)] overflow-hidden"
           >
             <div
               class="absolute inset-0 bg-[radial-gradient(ellipse_at_center,rgba(255,255,255,0.05)_0%,transparent_70%)]"
             />
             <div
-              class="relative w-full max-w-[280px] h-32 flex flex-col p-4 shadow-2xl transition-transform group-hover:scale-105 duration-500 z-10"
-              style="background-color: rgba(255, 255, 255, 0.05); border-top-width: var(--sarak-border-base, 1px); border-right-width: var(--sarak-border-base, 1px); border-bottom-width: var(--sarak-border-base, 1px); border-left-width: var(--sarak-border-base, 1px); border-color: rgba(255, 255, 255, 0.1); border-style: solid; border-top-left-radius: var(--sarak-spacing-md, 12px); border-top-right-radius: var(--sarak-spacing-md, 12px); border-bottom-right-radius: var(--sarak-spacing-md, 12px); border-bottom-left-radius: var(--sarak-spacing-md, 12px); backdrop-filter: blur(var(--sarak-spacing-md, 12px)); box-shadow: 4px 4px 0px var(--theme-title);"
+              class="relative w-full max-w-[var(--sarak-preset-mini-card-max-width,280px)] h-32 flex flex-col p-4 shadow-2xl transition-transform group-hover:scale-105 duration-500 z-10"
+              style="background-color: rgba(255, 255, 255, 0.05); border-top-width: var(--border-color,#334155); border-right-width: var(--border-color,#334155); border-bottom-width: var(--border-color,#334155); border-left-width: var(--border-color,#334155); border-color: rgba(255, 255, 255, 0.1); border-style: solid; border-top-left-radius: var(--sarak-layout-gap-md,16px); border-top-right-radius: var(--sarak-layout-gap-md,16px); border-bottom-right-radius: var(--sarak-layout-gap-md,16px); border-bottom-left-radius: var(--sarak-layout-gap-md,16px); backdrop-filter: blur(var(--sarak-layout-gap-md,16px)); box-shadow: 4px 4px 0px var(--theme-title);"
             >
               <div
                 class="flex items-center gap-3 relative z-10"
@@ -381,14 +381,14 @@ exports[`CardsCatalog > renderiza o título do catálogo e faz snapshot 1`] = `
           transition="[object Object]"
         >
           <div
-            class="h-48 w-full relative flex items-center justify-center p-6 bg-[var(--sarak-surface-sunken, #0a0a0b)] overflow-hidden"
+            class="h-48 w-full relative flex items-center justify-center p-6 bg-[var(--color-theme-bg, #0a0a0c)] overflow-hidden"
           >
             <div
               class="absolute inset-0 bg-[radial-gradient(ellipse_at_center,rgba(255,255,255,0.05)_0%,transparent_70%)]"
             />
             <div
-              class="relative w-full max-w-[280px] h-32 flex flex-col p-4 shadow-2xl transition-transform group-hover:scale-105 duration-500 z-10"
-              style="background-color: rgba(255, 255, 255, 0.05); border-top-width: var(--sarak-border-base, 1px); border-right-width: var(--sarak-border-base, 1px); border-bottom-width: var(--sarak-border-base, 1px); border-left-width: var(--sarak-border-base, 1px); border-color: rgba(255, 255, 255, 0.1); border-style: solid; border-top-left-radius: var(--sarak-spacing-md, 12px); border-top-right-radius: var(--sarak-spacing-md, 12px); border-bottom-right-radius: var(--sarak-spacing-md, 12px); border-bottom-left-radius: var(--sarak-spacing-md, 12px); backdrop-filter: blur(var(--sarak-spacing-md, 12px)); box-shadow: 20px 20px 60px rgba(0,0,0,0.5), -20px -20px 60px rgba(255,255,255,0.05);"
+              class="relative w-full max-w-[var(--sarak-preset-mini-card-max-width,280px)] h-32 flex flex-col p-4 shadow-2xl transition-transform group-hover:scale-105 duration-500 z-10"
+              style="background-color: rgba(255, 255, 255, 0.05); border-top-width: var(--border-color,#334155); border-right-width: var(--border-color,#334155); border-bottom-width: var(--border-color,#334155); border-left-width: var(--border-color,#334155); border-color: rgba(255, 255, 255, 0.1); border-style: solid; border-top-left-radius: var(--sarak-layout-gap-md,16px); border-top-right-radius: var(--sarak-layout-gap-md,16px); border-bottom-right-radius: var(--sarak-layout-gap-md,16px); border-bottom-left-radius: var(--sarak-layout-gap-md,16px); backdrop-filter: blur(var(--sarak-layout-gap-md,16px)); box-shadow: 20px 20px 60px rgba(0,0,0,0.5), -20px -20px 60px rgba(255,255,255,0.05);"
             >
               <div
                 class="flex items-center gap-3 relative z-10"
@@ -481,14 +481,14 @@ exports[`CardsCatalog > renderiza o título do catálogo e faz snapshot 1`] = `
           transition="[object Object]"
         >
           <div
-            class="h-48 w-full relative flex items-center justify-center p-6 bg-[var(--sarak-surface-sunken, #0a0a0b)] overflow-hidden"
+            class="h-48 w-full relative flex items-center justify-center p-6 bg-[var(--color-theme-bg, #0a0a0c)] overflow-hidden"
           >
             <div
               class="absolute inset-0 bg-[radial-gradient(ellipse_at_center,rgba(255,255,255,0.05)_0%,transparent_70%)]"
             />
             <div
-              class="relative w-full max-w-[280px] h-32 flex flex-col p-4 shadow-2xl transition-transform group-hover:scale-105 duration-500 z-10"
-              style="background-color: rgba(255, 255, 255, 0.05); border-top-width: var(--sarak-border-base, 1px); border-right-width: var(--sarak-border-base, 1px); border-bottom-width: var(--sarak-border-base, 1px); border-left-width: var(--sarak-border-base, 1px); border-color: rgba(255, 255, 255, 0.1); border-style: solid; border-top-left-radius: var(--sarak-spacing-md, 12px); border-top-right-radius: var(--sarak-spacing-md, 12px); border-bottom-right-radius: var(--sarak-spacing-md, 12px); border-bottom-left-radius: var(--sarak-spacing-md, 12px); backdrop-filter: blur(var(--sarak-spacing-md, 12px)); box-shadow: 0 8px 32px rgba(0, 0, 0, 0.12);"
+              class="relative w-full max-w-[var(--sarak-preset-mini-card-max-width,280px)] h-32 flex flex-col p-4 shadow-2xl transition-transform group-hover:scale-105 duration-500 z-10"
+              style="background-color: rgba(255, 255, 255, 0.05); border-top-width: var(--border-color,#334155); border-right-width: var(--border-color,#334155); border-bottom-width: var(--border-color,#334155); border-left-width: var(--border-color,#334155); border-color: rgba(255, 255, 255, 0.1); border-style: solid; border-top-left-radius: var(--sarak-layout-gap-md,16px); border-top-right-radius: var(--sarak-layout-gap-md,16px); border-bottom-right-radius: var(--sarak-layout-gap-md,16px); border-bottom-left-radius: var(--sarak-layout-gap-md,16px); backdrop-filter: blur(var(--sarak-layout-gap-md,16px)); box-shadow: 0 8px 32px rgba(0, 0, 0, 0.12);"
             >
               <div
                 class="flex items-center gap-3 relative z-10"
@@ -581,14 +581,14 @@ exports[`CardsCatalog > renderiza o título do catálogo e faz snapshot 1`] = `
           transition="[object Object]"
         >
           <div
-            class="h-48 w-full relative flex items-center justify-center p-6 bg-[var(--sarak-surface-sunken, #0a0a0b)] overflow-hidden"
+            class="h-48 w-full relative flex items-center justify-center p-6 bg-[var(--color-theme-bg, #0a0a0c)] overflow-hidden"
           >
             <div
               class="absolute inset-0 bg-[radial-gradient(ellipse_at_center,rgba(255,255,255,0.05)_0%,transparent_70%)]"
             />
             <div
-              class="relative w-full max-w-[280px] h-32 flex flex-col p-4 shadow-2xl transition-transform group-hover:scale-105 duration-500 z-10"
-              style="background-color: rgba(255, 255, 255, 0.05); border-top-width: var(--sarak-border-base, 1px); border-right-width: var(--sarak-border-base, 1px); border-bottom-width: var(--sarak-border-base, 1px); border-left-width: var(--sarak-border-base, 1px); border-color: rgba(255, 255, 255, 0.1); border-style: solid; border-top-left-radius: var(--sarak-spacing-md, 12px); border-top-right-radius: var(--sarak-spacing-md, 12px); border-bottom-right-radius: var(--sarak-spacing-md, 12px); border-bottom-left-radius: var(--sarak-spacing-md, 12px); backdrop-filter: blur(var(--sarak-spacing-md, 12px)); box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1), 0 2px 4px -1px rgba(0, 0, 0, 0.06);"
+              class="relative w-full max-w-[var(--sarak-preset-mini-card-max-width,280px)] h-32 flex flex-col p-4 shadow-2xl transition-transform group-hover:scale-105 duration-500 z-10"
+              style="background-color: rgba(255, 255, 255, 0.05); border-top-width: var(--border-color,#334155); border-right-width: var(--border-color,#334155); border-bottom-width: var(--border-color,#334155); border-left-width: var(--border-color,#334155); border-color: rgba(255, 255, 255, 0.1); border-style: solid; border-top-left-radius: var(--sarak-layout-gap-md,16px); border-top-right-radius: var(--sarak-layout-gap-md,16px); border-bottom-right-radius: var(--sarak-layout-gap-md,16px); border-bottom-left-radius: var(--sarak-layout-gap-md,16px); backdrop-filter: blur(var(--sarak-layout-gap-md,16px)); box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1), 0 2px 4px -1px rgba(0, 0, 0, 0.06);"
             >
               <div
                 class="flex items-center gap-3 relative z-10"

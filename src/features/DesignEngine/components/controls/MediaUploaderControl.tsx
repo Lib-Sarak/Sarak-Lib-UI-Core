@@ -55,7 +55,7 @@ export const MediaUploaderControl: React.FC<MediaUploaderControlProps> = ({ labe
     return (
         <div className="mb-3">
             <div className="flex justify-between items-center mb-1.5">
-                <span className="text-[10px] font-black uppercase tracking-widest text-[var(--theme-muted)] flex items-center gap-1.5">
+                <span className="text-[var(--sarak-type-scale2xs,10px)] font-black uppercase tracking-widest text-[var(--theme-muted)] flex items-center gap-1.5">
                     {label}
                     <HelpTooltip label={label} description={description} />
                 </span>
@@ -74,21 +74,21 @@ export const MediaUploaderControl: React.FC<MediaUploaderControlProps> = ({ labe
                             <img src={rawValue} alt="Preview" className="w-full h-full object-contain p-1" />
                         )
                     ) : (
-                        <div className="text-[20px] font-light text-[var(--theme-muted)]">+</div>
+                        <div className="text-[var(--sarak-type-scale-xl,20px)] font-light text-[var(--theme-muted)]">+</div>
                     )}
                 </div>
                 <div className="flex-1 flex items-center gap-2">
                     <button 
                         onClick={() => !isUploading && inputRef.current?.click()}
                         disabled={isUploading}
-                        className={`text-[9px] font-bold uppercase tracking-wider px-3 py-2 bg-[var(--color-theme-card,#1e293b)] hover:bg-[var(--theme-border)] rounded-md text-[var(--color-theme-title,#ffffff)] transition-all border border-[var(--theme-border)] shadow-sm ${isUploading ? 'opacity-50 cursor-not-allowed' : ''}`}
+                        className={`text-[var(--sarak-type-scale3xs,9px)] font-bold uppercase tracking-wider px-3 py-2 bg-[var(--color-theme-card,#1e293b)] hover:bg-[var(--theme-border)] rounded-md text-[var(--color-theme-title,#ffffff)] transition-all border border-[var(--theme-border)] shadow-sm ${isUploading ? 'opacity-50 cursor-not-allowed' : ''}`}
                     >
                         {isUploading ? 'Enviando...' : 'Fazer Upload'}
                     </button>
                     {rawValue && !isUploading && (
                         <button 
                             onClick={() => onChange(null)}
-                            className="text-[9px] font-bold uppercase tracking-wider px-3 py-2 hover:bg-amber-500/10 hover:text-amber-500 rounded-md text-[var(--theme-muted)] transition-all"
+                            className="text-[var(--sarak-type-scale3xs,9px)] font-bold uppercase tracking-wider px-3 py-2 hover:bg-amber-500/10 hover:text-amber-500 rounded-md text-[var(--theme-muted)] transition-all"
                         >
                             Remover
                         </button>

@@ -32,7 +32,7 @@ exports[`EngineCustomizationTab > matches baseline snapshot 1`] = `
           </svg>
         </div>
         <h3
-          class="text-xs font-black uppercase tracking-[0.2em] italic text-white/90"
+          class="text-xs font-black uppercase tracking-[var(--sarak-tracking-tight,0.2em)] italic text-white/90"
         >
           Chat Engine
         </h3>
@@ -51,7 +51,7 @@ exports[`EngineCustomizationTab > matches baseline snapshot 1`] = `
               class="relative inline-flex items-center"
             >
               <button
-                class="text-[var(--theme-muted)] hover:text-[var(--theme-primary)] transition-colors focus:outline-none p-1 rounded-full hover:bg-[var(--theme-layer)] cursor-help"
+                class="text-[var(--theme-muted)] hover:text-[var(--theme-primary)] transition-colors focus:outline-none p-1 rounded-full hover:bg-[var(--color-theme-card,#1e293b)] cursor-help"
               >
                 <svg
                   class="lucide lucide-help-circle"
@@ -115,13 +115,13 @@ exports[`EngineCustomizationTab > matches baseline snapshot 1`] = `
             </div>
             <div
               class="flex flex-col w-full"
-              style="gap: var(--sx-spacing-xs);"
+              style="gap: calc(var(--sarak-layout-gap-md, 16px) * 0.25);"
             >
               <div
-                class="flex justify-between items-center w-full text-2xs font-black uppercase tracking-widest text-[var(--sx-color-text-muted)]"
+                class="flex justify-between items-center w-full text-2xs font-black uppercase tracking-widest text-[var(--text-muted,#94a3b8)]"
               >
                 <span
-                  style="color: var(--sarak-switch-active-bg, var(--sx-color-primary-base));"
+                  style="color: var(--sarak-switch-active-bg, var(--sarak-primary-color,#3b82f6));"
                 >
                   0.05s
                 </span>
@@ -132,7 +132,7 @@ exports[`EngineCustomizationTab > matches baseline snapshot 1`] = `
                 max="0.5"
                 min="0"
                 step="0.01"
-                style="background-color: rgba(255, 255, 255, 0.1); accent-color: var(--sarak-switch-active-bg, var(--sx-color-primary-base));"
+                style="background-color: rgba(255, 255, 255, 0.1); accent-color: var(--sarak-switch-active-bg, var(--sarak-primary-color,#3b82f6));"
                 type="range"
                 value="0.05"
               />
@@ -192,7 +192,7 @@ exports[`EngineCustomizationTab > matches baseline snapshot 1`] = `
           </svg>
         </div>
         <h3
-          class="text-xs font-black uppercase tracking-[0.2em] italic text-white/90"
+          class="text-xs font-black uppercase tracking-[var(--sarak-tracking-tight,0.2em)] italic text-white/90"
         >
           Flow Engine
         </h3>
@@ -211,7 +211,7 @@ exports[`EngineCustomizationTab > matches baseline snapshot 1`] = `
               class="relative inline-flex items-center"
             >
               <button
-                class="text-[var(--theme-muted)] hover:text-[var(--theme-primary)] transition-colors focus:outline-none p-1 rounded-full hover:bg-[var(--theme-layer)] cursor-help"
+                class="text-[var(--theme-muted)] hover:text-[var(--theme-primary)] transition-colors focus:outline-none p-1 rounded-full hover:bg-[var(--color-theme-card,#1e293b)] cursor-help"
               >
                 <svg
                   class="lucide lucide-help-circle"
@@ -267,13 +267,13 @@ exports[`EngineCustomizationTab > matches baseline snapshot 1`] = `
           </div>
           <div
             class="flex flex-col w-full"
-            style="gap: var(--sx-spacing-xs);"
+            style="gap: calc(var(--sarak-layout-gap-md, 16px) * 0.25);"
           >
             <div
-              class="flex justify-between items-center w-full text-2xs font-black uppercase tracking-widest text-[var(--sx-color-text-muted)]"
+              class="flex justify-between items-center w-full text-2xs font-black uppercase tracking-widest text-[var(--text-muted,#94a3b8)]"
             >
               <span
-                style="color: var(--sarak-switch-active-bg, var(--sx-color-primary-base));"
+                style="color: var(--sarak-switch-active-bg, var(--sarak-primary-color,#3b82f6));"
               >
                 12px
               </span>
@@ -284,7 +284,7 @@ exports[`EngineCustomizationTab > matches baseline snapshot 1`] = `
               max="40"
               min="0"
               step="1"
-              style="background-color: rgba(255, 255, 255, 0.1); accent-color: var(--sarak-switch-active-bg, var(--sx-color-primary-base));"
+              style="background-color: rgba(255, 255, 255, 0.1); accent-color: var(--sarak-switch-active-bg, var(--sarak-primary-color,#3b82f6));"
               type="range"
               value="12"
             />
@@ -334,7 +334,7 @@ exports[`EngineCustomizationTab > matches baseline snapshot 1`] = `
           </svg>
         </div>
         <h3
-          class="text-xs font-black uppercase tracking-[0.2em] italic text-white/90"
+          class="text-xs font-black uppercase tracking-[var(--sarak-tracking-tight,0.2em)] italic text-white/90"
         >
           Chart Engine
         </h3>
@@ -353,7 +353,7 @@ exports[`EngineCustomizationTab > matches baseline snapshot 1`] = `
               class="relative inline-flex items-center"
             >
               <button
-                class="text-[var(--theme-muted)] hover:text-[var(--theme-primary)] transition-colors focus:outline-none p-1 rounded-full hover:bg-[var(--theme-layer)] cursor-help"
+                class="text-[var(--theme-muted)] hover:text-[var(--theme-primary)] transition-colors focus:outline-none p-1 rounded-full hover:bg-[var(--color-theme-card,#1e293b)] cursor-help"
               >
                 <svg
                   class="lucide lucide-help-circle"
@@ -429,14 +429,14 @@ exports[`EngineCustomizationTab > matches baseline snapshot 1`] = `
             class="flex flex-col gap-0.5"
           >
             <span
-              class="text-[10px] font-black uppercase tracking-widest text-white/50 flex items-center gap-1.5"
+              class="text-[var(--sarak-type-scale2xs,10px)] font-black uppercase tracking-widest text-white/50 flex items-center gap-1.5"
             >
               Mostrar Grid de Fundo
               <div
                 class="relative inline-flex items-center"
               >
                 <button
-                  class="text-[var(--theme-muted)] hover:text-[var(--theme-primary)] transition-colors focus:outline-none p-1 rounded-full hover:bg-[var(--theme-layer)] cursor-help"
+                  class="text-[var(--theme-muted)] hover:text-[var(--theme-primary)] transition-colors focus:outline-none p-1 rounded-full hover:bg-[var(--color-theme-card,#1e293b)] cursor-help"
                 >
                   <svg
                     class="lucide lucide-help-circle"
@@ -473,7 +473,7 @@ exports[`EngineCustomizationTab > matches baseline snapshot 1`] = `
           </div>
           <label
             class="flex items-center cursor-pointer flex-row"
-            style="gap: var(--sx-spacing-sm);"
+            style="gap: var(--sarak-layout-gap-sm, 8px);"
           >
             <div
               class="relative"
@@ -487,7 +487,7 @@ exports[`EngineCustomizationTab > matches baseline snapshot 1`] = `
               />
               <div
                 class="block w-10 h-6 rounded-full transition-all duration-300 ease-in-out"
-                style="background-color: var(--sarak-switch-active-bg, var(--sx-color-primary-base)); backdrop-filter: blur(4px);"
+                style="background-color: var(--sarak-switch-active-bg, var(--sarak-primary-color,#3b82f6)); backdrop-filter: blur(4px);"
               />
               <div
                 class="absolute left-1 top-1 w-4 h-4 rounded-full transition-transform duration-300 ease-in-out shadow-sm"
@@ -542,7 +542,7 @@ exports[`EngineCustomizationTab > matches baseline snapshot 1`] = `
         class="p-4 rounded-2xl bg-indigo-500/10 border border-indigo-500/20 text-center"
       >
         <span
-          class="text-3xs font-black uppercase tracking-[0.4em] text-indigo-400/60"
+          class="text-3xs font-black uppercase tracking-[var(--sarak-tracking-wider,0.4em)] text-indigo-400/60"
         >
           Sovereign Engine v7.0
         </span>

@@ -35,7 +35,7 @@ export const ThemeSidebarHeader: React.FC<ThemeSidebarHeaderProps> = ({
                     <div className="w-7 h-7 rounded-lg bg-[var(--theme-primary)] flex items-center justify-center">
                         <Zap className="text-white w-3.5 h-3.5" />
                     </div>
-                    <div className="text-[10px] font-black text-[var(--color-theme-title,#ffffff)] tracking-tight uppercase">
+                    <div className="text-[var(--sarak-type-scale2xs,10px)] font-black text-[var(--color-theme-title,#ffffff)] tracking-tight uppercase">
                         Design Engine <span className="text-[var(--theme-primary)] ml-0.5 opacity-50">v14.0</span>
                     </div>
                 </div>
@@ -59,7 +59,7 @@ export const ThemeSidebarHeader: React.FC<ThemeSidebarHeaderProps> = ({
                         size="xs"
                         title={isDirty ? "Você possui alterações não salvas" : "Nenhuma alteração"}
                     >
-                        <span className="text-[10px] font-black uppercase tracking-widest">{isDirty ? 'Salvar' : 'Salvo'}</span>
+                        <span className="text-[var(--sarak-type-scale2xs,10px)] font-black uppercase tracking-widest">{isDirty ? 'Salvar' : 'Salvo'}</span>
                     </SarakButton>
                 </div>
             </div>
@@ -93,7 +93,7 @@ export const ThemeSidebarHeader: React.FC<ThemeSidebarHeaderProps> = ({
                         placeholder="BUSCAR TOKEN..."
                         value={searchQuery}
                         onChange={(e) => setSearchQuery(e.target.value)}
-                        className="w-full bg-[var(--theme-surface)] border border-[var(--theme-border)] rounded-xl py-2.5 pl-9 pr-4 text-[9px] font-black tracking-widest uppercase focus:outline-none focus:border-[var(--theme-primary)]/50 transition-all text-[var(--color-theme-title,#ffffff)] placeholder:text-[var(--theme-muted)]"
+                        className="w-full bg-[var(--theme-surface)] border border-[var(--theme-border)] rounded-xl py-2.5 pl-9 pr-4 text-[var(--sarak-type-scale3xs,9px)] font-black tracking-widest uppercase focus:outline-none focus:border-[var(--theme-primary)]/50 transition-all text-[var(--color-theme-title,#ffffff)] placeholder:text-[var(--theme-muted)]"
                     />
                 </div>
                 <div className="flex items-center justify-between">
@@ -107,7 +107,7 @@ export const ThemeSidebarHeader: React.FC<ThemeSidebarHeaderProps> = ({
                         <div className={`w-6 h-3 rounded-full relative transition-all ${!isEssentialMode ? 'bg-[var(--theme-primary)]' : 'bg-[var(--theme-border)]'}`}>
                             <div className={`absolute top-0.5 w-2 h-2 rounded-full bg-[var(--color-theme-title,#ffffff)] transition-all ${!isEssentialMode ? 'left-3.5' : 'left-0.5'}`} />
                         </div>
-                        <span className="text-[9px] font-black uppercase tracking-widest text-[var(--theme-muted)] group-hover:text-[var(--color-theme-title,#ffffff)]">Modo Avançado (Hyper-Granular)</span>
+                        <span className="text-[var(--sarak-type-scale3xs,9px)] font-black uppercase tracking-widest text-[var(--theme-muted)] group-hover:text-[var(--color-theme-title,#ffffff)]">Modo Avançado (Hyper-Granular)</span>
                     </label>
 
                     <label
@@ -120,7 +120,7 @@ export const ThemeSidebarHeader: React.FC<ThemeSidebarHeaderProps> = ({
                         <div className={`w-6 h-3 rounded-full relative transition-all ${isPreviewStacked ? 'bg-[var(--theme-primary)]' : 'bg-[var(--theme-border)]'}`}>
                             <div className={`absolute top-0.5 w-2 h-2 rounded-full bg-[var(--color-theme-title,#ffffff)] transition-all ${isPreviewStacked ? 'left-3.5' : 'left-0.5'}`} />
                         </div>
-                        <span className="text-[9px] font-black uppercase tracking-widest text-[var(--theme-muted)] group-hover:text-[var(--color-theme-title,#ffffff)]">Empilhar Previews</span>
+                        <span className="text-[var(--sarak-type-scale3xs,9px)] font-black uppercase tracking-widest text-[var(--theme-muted)] group-hover:text-[var(--color-theme-title,#ffffff)]">Empilhar Previews</span>
                     </label>
                 </div>
             </div>

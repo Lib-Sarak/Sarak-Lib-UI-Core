@@ -332,6 +332,44 @@ export const TypographySchema: ComponentSchema = {
             constraints: { min: 0, max: 1, step: 0.05 },
             defaultValue: 0.8,
             cssVars: ['--sarak-tracking-ultra']
+        },
+
+        // --- EXTENSÃO DA MICRO TYPE-SCALE (Spec 28: features/DesignEngine) ---
+        {
+            id: 'trackingSubtle',
+            label: 'Tracking Subtle (0.1em)',
+            type: 'slider',
+            unit: 'em',
+            constraints: { min: 0, max: 1, step: 0.05 },
+            defaultValue: 0.1,
+            cssVars: ['--sarak-tracking-subtle']
+        },
+        {
+            id: 'typeScaleXs',
+            label: 'Escala XS (11px)',
+            type: 'slider',
+            unit: 'px',
+            constraints: { min: 8, max: 14 },
+            defaultValue: 11,
+            cssVars: ['--sarak-type-scale-xs']
+        },
+        {
+            id: 'typeScaleXl',
+            label: 'Escala XL (20px)',
+            type: 'slider',
+            unit: 'px',
+            constraints: { min: 14, max: 28 },
+            defaultValue: 20,
+            cssVars: ['--sarak-type-scale-xl']
+        },
+        {
+            id: 'typeScaleDisplay',
+            label: 'Escala Display (10rem)',
+            type: 'slider',
+            unit: 'rem',
+            constraints: { min: 4, max: 16, step: 0.5 },
+            defaultValue: 10,
+            cssVars: ['--sarak-type-scale-display']
         }
     ]
 };

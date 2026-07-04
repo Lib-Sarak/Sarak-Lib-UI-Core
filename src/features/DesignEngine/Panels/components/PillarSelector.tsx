@@ -51,7 +51,7 @@ export const PillarSelector: React.FC<PillarSelectorProps> = ({
                                 title={pillar.label}
                             >
                                 <Icon size={14} strokeWidth={isActive ? 3 : 2} />
-                                <span className="text-[8px] font-black uppercase tracking-tighter">{pillar.label}</span>
+                                <span className="text-[var(--sarak-type-scale-tiny,8px)] font-black uppercase tracking-tighter">{pillar.label}</span>
                                 
                                 {hasDraft && (
                                     <button 
@@ -71,7 +71,7 @@ export const PillarSelector: React.FC<PillarSelectorProps> = ({
                 </motion.div>
             ) : (
                 <div className="flex items-center gap-2 py-2">
-                    <span className="text-[10px] font-black uppercase text-[var(--theme-primary)] bg-[var(--theme-primary)]/10 px-2 py-0.5 rounded-full">
+                    <span className="text-[var(--sarak-type-scale2xs,10px)] font-black uppercase text-[var(--theme-primary)] bg-[var(--theme-primary)]/10 px-2 py-0.5 rounded-full">
                         {filteredComponentsLength} Categorias em foco
                     </span>
                 </div>

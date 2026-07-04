@@ -29,14 +29,14 @@ const CompactThemeCard: React.FC<CompactThemeCardProps> = ({ id, theme, isActive
         >
             <div className="flex items-center gap-3">
                 <div className={`w-2 h-2 rounded-full transition-all ${isActive ? 'bg-[var(--theme-primary)] animate-pulse' : 'bg-white/10'}`} />
-                <span className="text-[11px] font-black uppercase tracking-[0.2em]">
+                <span className="text-[var(--sarak-type-scale-xs,11px)] font-black uppercase tracking-[var(--sarak-tracking-tight,0.2em)]">
                     {theme.name || id}
                 </span>
             </div>
             {isActive ? (
                 <Check size={14} className="text-[var(--theme-primary)]" />
             ) : (
-                <span className="text-[9px] font-black uppercase tracking-widest opacity-0 group-hover:opacity-40 transition-opacity">
+                <span className="text-[var(--sarak-type-scale3xs,9px)] font-black uppercase tracking-widest opacity-0 group-hover:opacity-40 transition-opacity">
                     {isPreviewed ? 'Selected' : 'Select Project'}
                 </span>
             )}
@@ -74,7 +74,7 @@ export const ThemeList: React.FC<ThemeListProps> = ({
             {advancedThemes.length > 0 && (
                 <div className="space-y-3">
                     <div className="flex items-center gap-3 px-2 mb-4">
-                        <span className="text-[9px] font-black uppercase tracking-[0.4em] text-white/20 italic">High Performance Models</span>
+                        <span className="text-[var(--sarak-type-scale3xs,9px)] font-black uppercase tracking-[var(--sarak-tracking-wider,0.4em)] text-white/20 italic">High Performance Models</span>
                         <div className="flex-1 h-[1px] bg-white/5" />
                     </div>
                     <div className="grid grid-cols-1 gap-2">
@@ -96,7 +96,7 @@ export const ThemeList: React.FC<ThemeListProps> = ({
             {baseThemes.length > 0 && (
                 <div className="space-y-3">
                     <div className="flex items-center gap-3 px-2 mb-4">
-                        <span className="text-[9px] font-black uppercase tracking-[0.4em] text-white/20 italic">Sovereign Essentials</span>
+                        <span className="text-[var(--sarak-type-scale3xs,9px)] font-black uppercase tracking-[var(--sarak-tracking-wider,0.4em)] text-white/20 italic">Sovereign Essentials</span>
                         <div className="flex-1 h-[1px] bg-white/5" />
                     </div>
                     <div className="grid grid-cols-1 gap-2">

@@ -13,10 +13,10 @@ exports[`ThemeSidebarContent > matches snapshot 1`] = `
         class="border-b border-[var(--theme-border)] last:border-0"
       >
         <div
-          class="w-full flex border-y border-[var(--theme-border)] transition-all bg-[var(--theme-layer)]"
+          class="w-full flex border-y border-[var(--theme-border)] transition-all bg-[var(--color-theme-card,#1e293b)]"
         >
           <div
-            class="flex-1 px-6 py-4 flex items-center justify-between group cursor-pointer outline-none focus:bg-[var(--theme-layer)]"
+            class="flex-1 px-6 py-4 flex items-center justify-between group cursor-pointer outline-none focus:bg-[var(--color-theme-card,#1e293b)]"
             role="button"
             tabindex="0"
           >
@@ -59,7 +59,7 @@ exports[`ThemeSidebarContent > matches snapshot 1`] = `
                   />
                 </svg>
                 <span
-                  class="text-2xs font-black uppercase tracking-[0.2em] transition-all text-[var(--theme-text)]"
+                  class="text-2xs font-black uppercase tracking-[var(--sarak-tracking-tight,0.2em)] transition-all text-[var(--color-theme-title,#ffffff)]"
                 >
                   0. Configurações Globais (2)
                 </span>
@@ -135,7 +135,7 @@ exports[`ThemeSidebarContent > matches snapshot 1`] = `
                     </svg>
                   </div>
                   <span
-                    class="text-2xs font-black uppercase tracking-[0.2em] transition-all text-[var(--theme-text)]"
+                    class="text-2xs font-black uppercase tracking-[var(--sarak-tracking-tight,0.2em)] transition-all text-[var(--color-theme-title,#ffffff)]"
                   >
                     Preferências Globais (0)
                   </span>
@@ -158,7 +158,7 @@ exports[`ThemeSidebarContent > matches snapshot 1`] = `
                 </svg>
               </button>
               <div
-                class="bg-[var(--theme-layer)] overflow-visible"
+                class="bg-[var(--color-theme-card,#1e293b)] overflow-visible"
                 style="height: 0px; opacity: 0;"
               >
                 <div
@@ -180,7 +180,7 @@ exports[`ThemeSidebarContent > matches snapshot 1`] = `
                   class="flex items-center gap-3"
                 >
                   <div
-                    class="p-1.5 rounded-lg transition-all bg-[var(--theme-layer)] text-[var(--theme-muted)] group-hover:text-[var(--theme-text)]"
+                    class="p-1.5 rounded-lg transition-all bg-[var(--color-theme-card,#1e293b)] text-[var(--theme-muted)] group-hover:text-[var(--color-theme-title,#ffffff)]"
                   >
                     <svg
                       class="lucide lucide-shield"
@@ -200,7 +200,7 @@ exports[`ThemeSidebarContent > matches snapshot 1`] = `
                     </svg>
                   </div>
                   <span
-                    class="text-2xs font-black uppercase tracking-[0.2em] transition-all text-[var(--theme-muted)] group-hover:text-[var(--theme-text)]"
+                    class="text-2xs font-black uppercase tracking-[var(--sarak-tracking-tight,0.2em)] transition-all text-[var(--theme-muted)] group-hover:text-[var(--color-theme-title,#ffffff)]"
                   >
                     Identidade da Empresa (4)
                   </span>

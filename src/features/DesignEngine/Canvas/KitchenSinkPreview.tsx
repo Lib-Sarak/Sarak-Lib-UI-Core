@@ -66,7 +66,7 @@ export const KitchenSinkPreview: React.FC = () => {
                             </div>
                             <div className="w-24 space-y-2">
                                 <label className="text-2xs font-bold uppercase text-[var(--theme-muted)]">Toggle</label>
-                                <div className="h-[46px] flex items-center justify-center bg-black/20 border border-theme rounded-theme">
+                                <div className="h-[var(--sarak-control-height-toggle,46px)] flex items-center justify-center bg-black/20 border border-theme rounded-theme">
                                     <SarakSwitch checked={true} onChange={() => {}} />
                                 </div>
                             </div>
@@ -147,7 +147,7 @@ export const KitchenSinkPreview: React.FC = () => {
                                             </span>
                                         </td>
                                         <td className="px-6 py-4">
-                                            <div className="w-full max-w-[100px] h-1.5 bg-white/5 rounded-full overflow-hidden">
+                                            <div className="w-full max-w-[var(--sarak-progress-bar-max-width,100px)] h-1.5 bg-white/5 rounded-full overflow-hidden">
                                                 <div className="h-full bg-[var(--theme-primary)] rounded-full" style={{ width: `${30 * i}%` }} />
                                             </div>
                                         </td>
@@ -212,7 +212,7 @@ export const KitchenSinkPreview: React.FC = () => {
                     </div>
                     
                     <div className="grid grid-cols-1 gap-4">
-                        <div className="bg-theme-card rounded-theme border-theme p-6 group hover:translate-y-[-4px] transition-all relative overflow-hidden shadow-theme">
+                        <div className="bg-theme-card rounded-theme border-theme p-6 group hover:translate-y-[calc(var(--sarak-card-hover-lift,4px)*-1)] transition-all relative overflow-hidden shadow-theme">
                             <div className="spotlight-effect" />
                             {/* Spotlight effect placeholder */}
 

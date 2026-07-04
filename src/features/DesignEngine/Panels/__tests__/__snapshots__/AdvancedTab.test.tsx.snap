@@ -380,7 +380,7 @@ exports[`AdvancedTab > matches baseline snapshot 1`] = `
               />
             </svg>
             <span
-              class="text-2xs font-black uppercase tracking-[0.2em]"
+              class="text-2xs font-black uppercase tracking-[var(--sarak-tracking-tight,0.2em)]"
             >
               Restaurar Padrões
             </span>

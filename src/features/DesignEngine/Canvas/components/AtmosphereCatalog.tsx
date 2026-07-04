@@ -23,8 +23,8 @@ export const AtmosphereCatalog: React.FC<AtmosphereCatalogProps> = ({ onApplyPre
                         <Layers size={18} className="text-theme-primary" />
                     </div>
                     <div className="flex flex-col">
-                        <span className="text-xs font-black uppercase text-theme-text tracking-[0.3em]">Design Intelligence Catalog</span>
-                        <span className="text-[9px] font-bold text-theme-primary uppercase tracking-widest mt-0.5">
+                        <span className="text-xs font-black uppercase text-theme-text tracking-[var(--sarak-tracking-wide,0.3em)]">Design Intelligence Catalog</span>
+                        <span className="text-[var(--sarak-type-scale3xs,9px)] font-bold text-theme-primary uppercase tracking-widest mt-0.5">
                             Pilar: Atmosphere & Textures
                         </span>
                     </div>
@@ -34,14 +34,14 @@ export const AtmosphereCatalog: React.FC<AtmosphereCatalogProps> = ({ onApplyPre
                     <div className="flex items-center gap-2 p-1 bg-black/20 rounded-xl border border-theme-border">
                         <button
                             onClick={() => setActiveTab('media')}
-                            className={`px-4 py-2 rounded-lg text-[10px] font-black uppercase tracking-widest transition-all flex items-center gap-2 ${activeTab === 'media' ? 'bg-theme-primary text-white shadow-lg' : 'text-theme-muted hover:text-white hover:bg-white/5'}`}
+                            className={`px-4 py-2 rounded-lg text-[var(--sarak-type-scale2xs,10px)] font-black uppercase tracking-widest transition-all flex items-center gap-2 ${activeTab === 'media' ? 'bg-theme-primary text-white shadow-lg' : 'text-theme-muted hover:text-white hover:bg-white/5'}`}
                         >
                             <Video size={12} />
                             Mídia Base
                         </button>
                         <button
                             onClick={() => setActiveTab('textures')}
-                            className={`px-4 py-2 rounded-lg text-[10px] font-black uppercase tracking-widest transition-all flex items-center gap-2 ${activeTab === 'textures' ? 'bg-theme-primary text-white shadow-lg' : 'text-theme-muted hover:text-white hover:bg-white/5'}`}
+                            className={`px-4 py-2 rounded-lg text-[var(--sarak-type-scale2xs,10px)] font-black uppercase tracking-widest transition-all flex items-center gap-2 ${activeTab === 'textures' ? 'bg-theme-primary text-white shadow-lg' : 'text-theme-muted hover:text-white hover:bg-white/5'}`}
                         >
                             <Grid size={12} />
                             Texturas
@@ -49,7 +49,7 @@ export const AtmosphereCatalog: React.FC<AtmosphereCatalogProps> = ({ onApplyPre
                     </div>
 
                     <div className="flex items-center gap-3 px-4 py-2 bg-black/20 rounded-xl border border-theme-border">
-                        <span className="text-[10px] font-black text-theme-text uppercase tracking-widest">Opacidade</span>
+                        <span className="text-[var(--sarak-type-scale2xs,10px)] font-black text-theme-text uppercase tracking-widest">Opacidade</span>
                         <input
                             key={activeTab}
                             type="range"
@@ -124,9 +124,9 @@ const AtmospherePresetPreview = ({ preset, index, onApply, currentMode }: { pres
 
                 <div className="absolute bottom-0 left-0 w-full p-6 z-20">
                     <div className="flex items-center gap-3 mb-2">
-                        {isVideo && <span className="px-2 py-1 rounded bg-blue-500/20 border border-blue-500/50 text-blue-400 text-[10px] font-bold uppercase tracking-wider backdrop-blur-md">Live Media</span>}
-                        {isImage && <span className="px-2 py-1 rounded bg-purple-500/20 border border-purple-500/50 text-purple-400 text-[10px] font-bold uppercase tracking-wider backdrop-blur-md">Static Image</span>}
-                        {!isVideo && !isImage && <span className="px-2 py-1 rounded bg-neutral-500/20 border border-neutral-500/50 text-neutral-400 text-[10px] font-bold uppercase tracking-wider backdrop-blur-md">Solid Void</span>}
+                        {isVideo && <span className="px-2 py-1 rounded bg-blue-500/20 border border-blue-500/50 text-blue-400 text-[var(--sarak-type-scale2xs,10px)] font-bold uppercase tracking-wider backdrop-blur-md">Live Media</span>}
+                        {isImage && <span className="px-2 py-1 rounded bg-purple-500/20 border border-purple-500/50 text-purple-400 text-[var(--sarak-type-scale2xs,10px)] font-bold uppercase tracking-wider backdrop-blur-md">Static Image</span>}
+                        {!isVideo && !isImage && <span className="px-2 py-1 rounded bg-neutral-500/20 border border-neutral-500/50 text-neutral-400 text-[var(--sarak-type-scale2xs,10px)] font-bold uppercase tracking-wider backdrop-blur-md">Solid Void</span>}
                     </div>
                     <h3 className="text-xl font-black text-white uppercase tracking-wider drop-shadow-lg">{preset.name}</h3>
                     <p className="text-sm text-white/70 mt-1 max-w-lg drop-shadow-md">{preset.description}</p>

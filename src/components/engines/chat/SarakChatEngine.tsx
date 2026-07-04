@@ -53,7 +53,7 @@ const SarakChatEngine: React.FC<SarakChatEngineProps> = ({
 
     return (
         <div 
-            className="sarak-card flex flex-col h-full min-h-[500px] !p-0 overflow-hidden"
+            className="sarak-card flex flex-col h-full min-h-[var(--sarak-engine-min-h-lg,500px)] !p-0 overflow-hidden"
             data-sx-card-texture-type={cardTextureType}
             style={{
                 transitionDuration: 'var(--sarak-chat-anim-speed, 0.05s)'
@@ -109,7 +109,7 @@ const SarakChatEngine: React.FC<SarakChatEngineProps> = ({
                                 glass: () => {
                                     bubbleStyle.backgroundColor = 'rgba(0, 0, 0, 0.4)';
                                     bubbleStyle.borderColor = 'rgba(255, 255, 255, 0.05)';
-                                    bubbleStyle.backdropFilter = 'blur(12px)';
+                                    bubbleStyle.backdropFilter = 'blur(var(--sarak-chat-bubble-blur, 12px))';
                                     bubbleStyle.color = 'rgba(255, 255, 255, 0.9)';
                                 }
                             };

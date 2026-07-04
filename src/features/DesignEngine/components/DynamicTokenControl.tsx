@@ -78,7 +78,7 @@ export const DynamicTokenControl: React.FC<DynamicTokenControlProps> = ({
         default:
             return (
                 <div className="p-2 border border-dashed border-white/10 rounded opacity-50">
-                    <span className="text-[10px] text-white/40 uppercase">Tipo não suportado: {token.type}</span>
+                    <span className="text-[var(--sarak-type-scale2xs,10px)] text-white/40 uppercase">Tipo não suportado: {token.type}</span>
                 </div>
             );
     }

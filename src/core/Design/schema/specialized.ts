@@ -167,6 +167,160 @@ export const SpecializedSchema: ComponentSchema = {
             constraints: { min: 0, max: 250 },
             defaultValue: 120,
             cssVars: ['--sarak-auth-hero-orb-blur']
+        },
+
+        // --- ENGINES: PLACEHOLDERS DE ALTURA MÍNIMA (Spec 28) ---
+        {
+            id: 'chartEngineMinHeight',
+            label: 'Engine de Gráficos: Altura Mínima',
+            type: 'slider',
+            unit: 'px',
+            constraints: { min: 100, max: 400 },
+            defaultValue: 180,
+            cssVars: ['--sarak-chart-engine-min-h']
+        },
+        {
+            id: 'engineMinHeightLg',
+            label: 'Engines: Altura Mínima (Grande)',
+            type: 'slider',
+            unit: 'px',
+            constraints: { min: 200, max: 800 },
+            defaultValue: 500,
+            cssVars: ['--sarak-engine-min-h-lg']
+        },
+        {
+            id: 'engineMinHeightSm',
+            label: 'Engines: Altura Mínima (Pequena)',
+            type: 'slider',
+            unit: 'px',
+            constraints: { min: 100, max: 500 },
+            defaultValue: 300,
+            cssVars: ['--sarak-engine-min-h-sm']
+        },
+
+        // --- CHAT ENGINE (Spec 28) ---
+        {
+            id: 'chatBubbleGlassBlur',
+            label: 'Chat Engine: Desfoque de Vidro da Bolha',
+            type: 'slider',
+            unit: 'px',
+            constraints: { min: 0, max: 30 },
+            defaultValue: 12,
+            cssVars: ['--sarak-chat-bubble-blur']
+        },
+
+        // --- FLOW ENGINE (Spec 28) ---
+        {
+            id: 'flowNodePadding',
+            label: 'Flow Engine: Padding do Nó',
+            type: 'slider',
+            unit: 'px',
+            constraints: { min: 0, max: 24 },
+            defaultValue: 10,
+            cssVars: ['--sarak-flow-node-padding']
+        },
+        {
+            id: 'flowNodeBlur',
+            label: 'Flow Engine: Desfoque do Nó',
+            type: 'slider',
+            unit: 'px',
+            constraints: { min: 0, max: 20 },
+            defaultValue: 5,
+            cssVars: ['--sarak-flow-node-blur']
+        },
+        {
+            id: 'flowHandleSize',
+            label: 'Flow Engine: Tamanho do Handle',
+            type: 'slider',
+            unit: 'px',
+            constraints: { min: 4, max: 16 },
+            defaultValue: 8,
+            cssVars: ['--sarak-flow-handle-size']
+        },
+
+        // --- VISUAL ENGINE (Spec 28) ---
+        {
+            id: 'visualPerspective',
+            label: 'Visual Engine: Perspectiva 3D',
+            type: 'slider',
+            unit: 'px',
+            constraints: { min: 400, max: 2000 },
+            defaultValue: 1024,
+            cssVars: ['--sarak-visual-perspective']
+        },
+        {
+            id: 'visualTranslateOffsetSm',
+            label: 'Visual Engine: Offset de Translação (Pequeno)',
+            type: 'slider',
+            unit: 'px',
+            constraints: { min: 0, max: 60 },
+            defaultValue: 20,
+            cssVars: ['--sarak-visual-translate-offset-sm']
+        },
+        {
+            id: 'visualTranslateZMd',
+            label: 'Visual Engine: Translação Z (Médio)',
+            type: 'slider',
+            unit: 'px',
+            constraints: { min: 0, max: 100 },
+            defaultValue: 40,
+            cssVars: ['--sarak-visual-translate-z-md']
+        },
+        {
+            id: 'visualDotGridSize',
+            label: 'Visual Engine: Tamanho da Grade de Pontos',
+            type: 'slider',
+            unit: 'px',
+            constraints: { min: 5, max: 40 },
+            defaultValue: 15,
+            cssVars: ['--sarak-visual-dot-grid-size']
+        },
+        {
+            id: 'visualOrbBlur',
+            label: 'Visual Engine: Desfoque do Orb',
+            type: 'slider',
+            unit: 'px',
+            constraints: { min: 0, max: 150 },
+            defaultValue: 60,
+            cssVars: ['--sarak-visual-orb-blur']
+        },
+
+        // --- DESIGN ENGINE: PAINEL LATERAL DA FERRAMENTA (Spec 28) ---
+        {
+            id: 'designEngineSidebarMinWidth',
+            label: 'Design Engine: Largura Mínima do Painel',
+            type: 'slider',
+            unit: 'px',
+            constraints: { min: 200, max: 400 },
+            defaultValue: 280,
+            cssVars: ['--sarak-design-engine-sidebar-min-w']
+        },
+        {
+            id: 'designEngineSidebarMaxWidth',
+            label: 'Design Engine: Largura Máxima do Painel',
+            type: 'slider',
+            unit: 'px',
+            constraints: { min: 400, max: 900 },
+            defaultValue: 600,
+            cssVars: ['--sarak-design-engine-sidebar-max-w']
+        },
+        {
+            id: 'layoutPreviewMaxH',
+            label: 'Design Engine: Altura Máxima do Preview de Código',
+            type: 'slider',
+            unit: 'px',
+            constraints: { min: 40, max: 300 },
+            defaultValue: 120,
+            cssVars: ['--sarak-layout-preview-max-h']
+        },
+        {
+            id: 'kbdMinWidth',
+            label: 'Design Engine: Largura Mínima da Tecla (Kbd)',
+            type: 'slider',
+            unit: 'px',
+            constraints: { min: 16, max: 48 },
+            defaultValue: 28,
+            cssVars: ['--sarak-kbd-min-w']
         }
     ]
 };

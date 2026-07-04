@@ -134,16 +134,16 @@ export const PreviewCanvas: React.FC<PreviewCanvasProps> = ({
                         <>
                             {/* Live Draft Preview (Gêmeo Digital) */}
                             <div
-                                className={`relative shrink-0 overflow-hidden bg-[var(--theme-surface)] transition-all duration-500 flex flex-col group min-h-[300px] w-[375px] h-[812px] max-w-full max-h-[812px] ${getDeviceHeightClass()} ${getDeviceFrameStyles()} ${previewDevice === 'desktop' ? 'resize' : 'resize-none'}`}
+                                className={`relative shrink-0 overflow-hidden bg-[var(--theme-surface)] transition-all duration-500 flex flex-col group min-h-[var(--sarak-engine-min-h-sm,300px)] w-[var(--sarak-device-phone-width,375px)] h-[var(--sarak-device-phone-height,812px)] max-w-full max-h-[var(--sarak-device-phone-height,812px)] ${getDeviceHeightClass()} ${getDeviceFrameStyles()} ${previewDevice === 'desktop' ? 'resize' : 'resize-none'}`}
                                 style={{
                                     '--device-width': previewDevice === 'desktop' ? (isPreviewStacked ? '100%' : '50%') : targetWidth,
-                                    '--device-height': previewDevice === 'smartphone' ? '812px' : previewDevice === 'tablet' ? '1024px' : 'auto',
+                                    '--device-height': previewDevice === 'smartphone' ? 'var(--sarak-device-phone-height, 812px)' : previewDevice === 'tablet' ? 'var(--sarak-device-tablet-height, 1024px)' : 'auto',
                                     '--device-max-height': previewDevice !== 'desktop' ? '90vh' : 'none'
                                 } as React.CSSProperties}
                             >
                                 {/* Hardware Mockup Extras (Notch, Camera) */}
                                 {previewDevice === 'smartphone' && (
-                                    <div className="absolute top-0 left-1/2 -translate-x-1/2 w-32 h-6 bg-[var(--color-theme-card,#1e293b)] rounded-b-[1rem] z-[1000] flex items-center justify-center gap-2">
+                                    <div className="absolute top-0 left-1/2 -translate-x-1/2 w-32 h-6 bg-[var(--color-theme-card,#1e293b)] rounded-b-[var(--sarak-device-phone-notch-radius,1rem)] z-[1000] flex items-center justify-center gap-2">
                                         <div className="w-12 h-1.5 rounded-full bg-black/50"></div>
                                         <div className="w-2 h-2 rounded-full bg-[var(--color-theme-card, #000000)] shadow-inner border border-white/5"></div>
                                     </div>
@@ -165,7 +165,7 @@ export const PreviewCanvas: React.FC<PreviewCanvasProps> = ({
                                 </button>
                                 {/* Overlay visually when inspecting */}
                                 {isInspecting && (
-                                    <div className="absolute inset-0 z-[9998] bg-[var(--theme-primary)]/5 cursor-crosshair pointer-events-none border-2 border-[var(--theme-primary)]/50 rounded-[2rem]">
+                                    <div className="absolute inset-0 z-[9998] bg-[var(--theme-primary)]/5 cursor-crosshair pointer-events-none border-2 border-[var(--theme-primary)]/50 rounded-[var(--sarak-device-frame-radius,2rem)]">
                                         <div className="absolute top-8 left-1/2 -translate-x-1/2 px-4 py-2 bg-black/80 backdrop-blur border border-[var(--theme-primary)]/50 rounded-full text-white text-xs font-bold flex items-center gap-2 shadow-[0_0_20px_rgba(var(--theme-primary-rgb),0.3)]">
                                             <div className="w-2 h-2 rounded-full bg-[var(--theme-primary)] animate-ping" />
                                             Clique em um componente para inspecionar
@@ -176,7 +176,7 @@ export const PreviewCanvas: React.FC<PreviewCanvasProps> = ({
                                 <div className={`flex-1 relative sarak-device-${previewDevice} w-full h-full`}>
                                     {/* Watermark */}
                                     <div className="absolute inset-0 flex items-center justify-center pointer-events-none opacity-[0.02]">
-                                        <span className="text-[10rem] font-black text-white uppercase tracking-[0.2em] -rotate-12 select-none">SARAK TWIN</span>
+                                        <span className="text-[var(--sarak-type-scale-display,10rem)] font-black text-white uppercase tracking-[var(--sarak-tracking-tight,0.2em)] -rotate-12 select-none">SARAK TWIN</span>
                                     </div>
                                     {renderSystemContent(false)}
                                 </div>
@@ -184,7 +184,7 @@ export const PreviewCanvas: React.FC<PreviewCanvasProps> = ({
 
 
                             {/* Catalog Preview (Engine Controls) */}
-                            <div className={`relative flex-auto shrink-0 rounded-[2rem] border border-theme-border shadow-theme overflow-hidden bg-theme-card transition-colors duration-500 flex flex-col min-h-[300px] min-w-[250px] resize ${isPreviewStacked ? 'w-full h-[45vh]' : 'w-1/2 h-full'}`}>
+                            <div className={`relative flex-auto shrink-0 rounded-[var(--sarak-device-frame-radius,2rem)] border border-theme-border shadow-theme overflow-hidden bg-theme-card transition-colors duration-500 flex flex-col min-h-[var(--sarak-engine-min-h-sm,300px)] min-w-[var(--sarak-device-desktop-min-width,250px)] resize ${isPreviewStacked ? 'w-full h-[45vh]' : 'w-1/2 h-full'}`}>
                                 <PresetsCatalog
                                     onApplyPreset={handleApplyPreset}
                                     onApplyFullTheme={onApplyFullTheme}
@@ -195,7 +195,7 @@ export const PreviewCanvas: React.FC<PreviewCanvasProps> = ({
                         </>
                     ) : (
                         <div
-                            className="relative h-full rounded-2xl border border-[var(--theme-border)] shadow-theme overflow-hidden bg-[var(--theme-surface)] transition-all duration-500 mx-auto w-[375px] max-w-full"
+                            className="relative h-full rounded-2xl border border-[var(--theme-border)] shadow-theme overflow-hidden bg-[var(--theme-surface)] transition-all duration-500 mx-auto w-[var(--sarak-device-phone-width,375px)] max-w-full"
                             style={{ '--target-width': targetWidth } as React.CSSProperties}
                         >
                             {renderSystemContent()}

@@ -16,7 +16,7 @@ export const LazyEngineWrapper: React.FC<LazyEngineWrapperProps> = ({ children, 
     const { primaryColor } = design || {};
 
     const DefaultFallback = (
-        <div className="w-full h-full min-h-[300px] flex flex-col items-center justify-center bg-[var(--theme-card)]/20 rounded-[var(--radius-theme)] border border-[var(--theme-border)] relative overflow-hidden">
+        <div className="w-full h-full min-h-[var(--sarak-engine-min-h-sm,300px)] flex flex-col items-center justify-center bg-[var(--theme-card)]/20 rounded-[var(--radius-theme)] border border-[var(--theme-border)] relative overflow-hidden">
             <motion.div 
                 animate={{ 
                     opacity: [0.3, 0.6, 0.3],
@@ -26,7 +26,7 @@ export const LazyEngineWrapper: React.FC<LazyEngineWrapperProps> = ({ children, 
                 className="flex flex-col items-center"
             >
                 <div className="w-12 h-12 rounded-full border-2 border-t-[var(--theme-primary)] border-[var(--theme-border)] animate-spin mb-4" />
-                <span className="text-2xs font-black uppercase tracking-[0.3em] text-[var(--theme-muted)] animate-pulse">Initializing Engine...</span>
+                <span className="text-2xs font-black uppercase tracking-[var(--sarak-tracking-wide,0.3em)] text-[var(--theme-muted)] animate-pulse">Initializing Engine...</span>
             </motion.div>
             
             {/* Background Glow */}

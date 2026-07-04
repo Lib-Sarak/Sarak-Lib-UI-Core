@@ -37,7 +37,7 @@ export const CategoryLabel: React.FC<{
             </div>
             <div className="flex items-center gap-2">
                 <Icon size={12} className={`transition-all ${isOpen ? 'text-[var(--theme-primary)]' : 'text-[var(--theme-muted)]'}`} />
-                <span className={`text-2xs font-black uppercase tracking-[0.2em] transition-all ${isOpen ? 'text-[var(--color-theme-title,#ffffff)]' : 'text-[var(--theme-muted)]'}`}>{title}</span>
+                <span className={`text-2xs font-black uppercase tracking-[var(--sarak-tracking-tight,0.2em)] transition-all ${isOpen ? 'text-[var(--color-theme-title,#ffffff)]' : 'text-[var(--theme-muted)]'}`}>{title}</span>
             </div>
         </div>
         <div className="flex items-center gap-3">
@@ -61,7 +61,7 @@ export const CategoryLabel: React.FC<{
                             exit={{ scale: 0, opacity: 0 }}
                             onClick={(e) => { e.stopPropagation(); onApply?.(); }}
                             title={`Aplicar apenas o pilar ${title} ao sistema`}
-                            className="px-3 py-1.5 rounded-lg bg-[var(--theme-primary)]/10 text-[var(--theme-primary)] hover:bg-[var(--theme-primary)] hover:text-white text-[9px] font-black uppercase tracking-tighter transition-all active:scale-95 flex items-center gap-1.5"
+                            className="px-3 py-1.5 rounded-lg bg-[var(--theme-primary)]/10 text-[var(--theme-primary)] hover:bg-[var(--theme-primary)] hover:text-white text-[var(--sarak-type-scale3xs,9px)] font-black uppercase tracking-tighter transition-all active:scale-95 flex items-center gap-1.5"
                         >
                             <span>Commit {title}</span>
                         </motion.button>
@@ -95,7 +95,7 @@ export const Section: React.FC<{ id: string, icon: React.ElementType, title: str
         <button onClick={() => onToggle(activeSection === id ? null : id)} className="w-full py-4 flex items-center justify-between hover:bg-[var(--theme-surface)] transition-all px-6 group">
             <div className="flex items-center gap-3">
                 <div className={`p-1.5 rounded-lg transition-all ${activeSection === id ? 'bg-[var(--theme-primary)] text-white' : 'bg-[var(--color-theme-card,#1e293b)] text-[var(--theme-muted)] group-hover:text-[var(--color-theme-title,#ffffff)]'}`}><Icon size={14} /></div>
-                <span className={`text-2xs font-black uppercase tracking-[0.2em] transition-all ${activeSection === id ? 'text-[var(--color-theme-title,#ffffff)]' : 'text-[var(--theme-muted)] group-hover:text-[var(--color-theme-title,#ffffff)]'}`}>{title}</span>
+                <span className={`text-2xs font-black uppercase tracking-[var(--sarak-tracking-tight,0.2em)] transition-all ${activeSection === id ? 'text-[var(--color-theme-title,#ffffff)]' : 'text-[var(--theme-muted)] group-hover:text-[var(--color-theme-title,#ffffff)]'}`}>{title}</span>
             </div>
             <ChevronDown size={14} className={`transition-transform duration-300 ${activeSection === id ? 'rotate-180 text-[var(--theme-primary)]' : 'text-[var(--theme-muted)]'}`} />
         </button>

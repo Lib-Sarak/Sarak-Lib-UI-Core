@@ -24,10 +24,10 @@ export const CustomizationPanel: React.FC = () => {
                         Central de Comando
                     </div>
                     <div className="flex gap-2">
-                        <div className="px-3 py-1 rounded-full bg-red-500/20 border border-red-500/30 text-[10px] font-black text-red-400 uppercase tracking-widest animate-pulse">
+                        <div className="px-3 py-1 rounded-full bg-red-500/20 border border-red-500/30 text-[var(--sarak-type-scale2xs,10px)] font-black text-red-400 uppercase tracking-widest animate-pulse">
                             v13.9 - AUDIT ACTIVE
                         </div>
-                        <div className="px-3 py-1 rounded-full bg-blue-500/10 border border-blue-500/20 text-[10px] font-black text-blue-400 uppercase tracking-widest">
+                        <div className="px-3 py-1 rounded-full bg-blue-500/10 border border-blue-500/20 text-[var(--sarak-type-scale2xs,10px)] font-black text-blue-400 uppercase tracking-widest">
                             v12.0 Sovereign
                         </div>
                     </div>

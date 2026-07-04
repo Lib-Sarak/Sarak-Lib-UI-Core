@@ -13,16 +13,17 @@ exports[`ShortcutsTab > matches baseline snapshot 1`] = `
       >
         <div
           class="flex flex-col w-full"
-          style="gap: var(--sx-spacing-xs);"
+          style="gap: calc(var(--sarak-layout-gap-md, 16px) * 0.25);"
         >
           <div
-            class="flex-1 flex flex-col relative w-full"
+            class="flex-1 flex relative w-full"
+            style="flex-direction: column;"
           >
             <div
               class="relative w-full flex items-center"
             >
               <div
-                class="absolute left-3 flex items-center pointer-events-none text-[var(--sarak-input-icon-color,rgba(255,255,255,0.5))] transition-colors group-focus-within:text-[var(--sarak-input-focus-border-color,var(--sx-color-primary-base))]"
+                class="absolute left-3 flex items-center pointer-events-none text-[var(--sarak-input-icon-color,rgba(255,255,255,0.5))] transition-colors group-focus-within:text-[var(--sarak-input-focus-border-color,var(--sarak-primary-color,#3b82f6))]"
               >
                 <svg
                   class="w-4 h-4"
@@ -47,10 +48,10 @@ exports[`ShortcutsTab > matches baseline snapshot 1`] = `
                 </svg>
               </div>
               <input
-                class="block text-[var(--sarak-input-text-color,var(--sx-color-text-muted))] font-medium outline-none transition-all placeholder:text-[var(--sarak-input-text-color,var(--sx-color-text-muted))]/30 bg-[var(--sarak-input-bg,var(--sx-color-surface-base))] rounded-input py-4 pl-11 pr-4 w-full "
+                class="block text-[var(--sarak-input-text-color,var(--text-muted,#94a3b8))] font-medium outline-none transition-all placeholder:text-[var(--sarak-input-text-color,var(--text-muted,#94a3b8))]/30 bg-[var(--sarak-input-bg,var(--color-theme-card,#1e293b))] rounded-input py-4 pl-11 pr-4 w-full "
                 id=":r0:"
                 placeholder="Buscar ação ou categoria..."
-                style="border: 1px solid var(--sarak-input-border-color, var(--sx-color-border-base));"
+                style="border: 1px solid var(--sarak-input-border-color, var(--border-color,#334155));"
                 value=""
               />
             </div>
@@ -93,7 +94,7 @@ exports[`ShortcutsTab > matches baseline snapshot 1`] = `
             />
           </svg>
           <h3
-            class="text-2xs font-black uppercase tracking-[0.2em] text-white/30 italic"
+            class="text-2xs font-black uppercase tracking-[var(--sarak-tracking-tight,0.2em)] text-white/30 italic"
           >
             General
           </h3>
@@ -125,7 +126,7 @@ exports[`ShortcutsTab > matches baseline snapshot 1`] = `
                 class="flex items-center gap-1.5"
               >
                 <kbd
-                  class="px-2 py-1.5 bg-black/40 text-2xs font-black font-mono rounded-lg border shadow-sm uppercase tracking-widest inline-flex items-center justify-center min-w-[28px] transition-all border-white/10 text-white/60"
+                  class="px-2 py-1.5 bg-black/40 text-2xs font-black font-mono rounded-lg border shadow-sm uppercase tracking-widest inline-flex items-center justify-center min-w-[var(--sarak-kbd-min-w,28px)] transition-all border-white/10 text-white/60"
                 >
                   Ctrl
                 </kbd>
@@ -135,7 +136,7 @@ exports[`ShortcutsTab > matches baseline snapshot 1`] = `
                   +
                 </span>
                 <kbd
-                  class="px-2 py-1.5 bg-black/40 text-2xs font-black font-mono rounded-lg border shadow-sm uppercase tracking-widest inline-flex items-center justify-center min-w-[28px] transition-all border-white/10 text-white/60"
+                  class="px-2 py-1.5 bg-black/40 text-2xs font-black font-mono rounded-lg border shadow-sm uppercase tracking-widest inline-flex items-center justify-center min-w-[var(--sarak-kbd-min-w,28px)] transition-all border-white/10 text-white/60"
                 >
                   S
                 </kbd>
@@ -180,7 +181,7 @@ exports[`ShortcutsTab > matches baseline snapshot 1`] = `
       >
         Pressione 
         <kbd
-          class="px-2 py-1.5 bg-black/40 text-2xs font-black font-mono rounded-lg border shadow-sm uppercase tracking-widest inline-flex items-center justify-center min-w-[28px] transition-all border-white/10 text-white/60"
+          class="px-2 py-1.5 bg-black/40 text-2xs font-black font-mono rounded-lg border shadow-sm uppercase tracking-widest inline-flex items-center justify-center min-w-[var(--sarak-kbd-min-w,28px)] transition-all border-white/10 text-white/60"
         >
           ESC
         </kbd>

@@ -61,7 +61,7 @@ export const ThemeSidebarContent: React.FC<ThemeSidebarContentProps> = ({
             <AnimatePresence mode="wait">
                 {searchQuery ? (
                     <motion.div key="search" initial={{ opacity: 0 }} animate={{ opacity: 1 }} className="p-6 space-y-6">
-                        <div className="text-[8px] font-black text-[var(--theme-muted)] uppercase tracking-widest mb-4">Resultados da Busca</div>
+                        <div className="text-[var(--sarak-type-scale-tiny,8px)] font-black text-[var(--theme-muted)] uppercase tracking-widest mb-4">Resultados da Busca</div>
                         {filteredResults?.map(token => {
                             const meta = catalogMap.get(token.id);
                             const enhancedToken = { ...token, label: meta?.name || token.label, description: meta?.description || token.description };

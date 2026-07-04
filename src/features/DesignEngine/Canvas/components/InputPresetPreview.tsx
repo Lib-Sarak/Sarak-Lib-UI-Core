@@ -45,7 +45,7 @@ export const InputPresetPreview: React.FC<InputPresetPreviewProps> = ({ preset, 
             transition={{ delay: index * 0.05 }}
             onClick={onApply}
             className="group relative flex flex-col items-center justify-center p-6 rounded-2xl border border-theme-border overflow-hidden bg-[rgba(10,10,10,0.5)] hover:border-theme-primary hover:shadow-[0_10px_40px_-10px_rgba(var(--theme-primary-rgb),0.2)] transition-all duration-300"
-            style={{ minHeight: '320px' }}
+            style={{ minHeight: 'var(--sarak-preset-preview-min-height, 320px)' }}
         >
             <div className="absolute inset-0 z-0 bg-[radial-gradient(ellipse_at_center,rgba(255,255,255,0.05)_0%,transparent_70%)] opacity-50"></div>
             
@@ -55,7 +55,7 @@ export const InputPresetPreview: React.FC<InputPresetPreviewProps> = ({ preset, 
                     placeholder="Type here..."
                     readOnly
                     style={{
-                        padding: '12px 16px',
+                        padding: 'var(--sarak-preset-preview-padding-y, 12px) var(--sarak-layout-gap-md, 16px)',
                         fontSize: 'var(--color-theme-text, #ffffff)',
                         width: '100%',
                         color: 'var(--color-theme-on-primary, #020617)',
@@ -69,7 +69,7 @@ export const InputPresetPreview: React.FC<InputPresetPreviewProps> = ({ preset, 
 
             <div className="absolute bottom-0 left-0 w-full p-4 bg-black/40 backdrop-blur-md border-t border-white/5 z-20 text-left">
                 <h3 className="text-xs font-black text-white uppercase tracking-wider">{preset.name}</h3>
-                <p className="text-[9px] text-white/50 mt-1 uppercase tracking-widest leading-relaxed">{preset.description}</p>
+                <p className="text-[var(--sarak-type-scale3xs,9px)] text-white/50 mt-1 uppercase tracking-widest leading-relaxed">{preset.description}</p>
             </div>
         </motion.button>
     );

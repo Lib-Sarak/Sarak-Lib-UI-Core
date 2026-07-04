@@ -19,16 +19,16 @@ const SarakVisualEngine: React.FC<SarakVisualEngineProps> = ({ type, tokens }) =
                             animate={{ rotateY: 360 }}
                             transition={{ duration: 15, repeat: Infinity, ease: "linear" }}
                             className="relative w-48 h-32"
-                            style={{ perspective: '1024px', transformStyle: 'preserve-3d' }}
+                            style={{ perspective: 'var(--sarak-visual-perspective, 1024px)', transformStyle: 'preserve-3d' }}
                         >
-                            <div className="absolute inset-0 bg-gradient-to-r from-white/10 to-white/5 border border-white/20 rounded-xl" style={{ transform: 'translateZ(20px)' }}>
+                            <div className="absolute inset-0 bg-gradient-to-r from-white/10 to-white/5 border border-white/20 rounded-xl" style={{ transform: 'translateZ(var(--sarak-visual-translate-offset-sm, 20px))' }}>
                                 <div className="absolute inset-0 flex flex-col justify-between p-2">
                                     {[...Array(12)].map((_, i) => (
                                         <div key={i} className="h-[1px] w-full bg-white/10" />
                                     ))}
                                 </div>
                             </div>
-                            <div className="absolute -top-4 left-1/4 w-16 h-8 bg-white/10 border border-white/20 rounded-md" style={{ transform: 'translateZ(40px)' }} />
+                            <div className="absolute -top-4 left-1/4 w-16 h-8 bg-white/10 border border-white/20 rounded-md" style={{ transform: 'translateZ(var(--sarak-visual-translate-z-md, 40px))' }} />
                             <div className="absolute top-1/2 -right-8 -translate-y-1/2 w-16 h-6 bg-gradient-to-b from-white/20 to-white/5 border border-white/20 rounded-sm" />
                             <motion.div 
                                 animate={{ opacity: [0.2, 0.8, 0.2] }}
@@ -46,11 +46,11 @@ const SarakVisualEngine: React.FC<SarakVisualEngineProps> = ({ type, tokens }) =
                             className="absolute inset-0 opacity-10" 
                             style={{ 
                                 backgroundImage: `linear-gradient(${primaryColor} 1px, transparent 1px), linear-gradient(90deg, ${primaryColor} 1px, transparent 1px)`,
-                                backgroundSize: '15px 15px',
+                                backgroundSize: 'var(--sarak-visual-dot-grid-size, 15px) var(--sarak-visual-dot-grid-size, 15px)',
                                 transform: 'rotateX(60deg) rotateZ(45deg) scale(3)',
                             }} 
                         />
-                        <div className="relative w-full h-full flex items-center justify-center" style={{ transform: 'scale(0.8) translateY(20px)' }}>
+                        <div className="relative w-full h-full flex items-center justify-center" style={{ transform: 'scale(0.8) translateY(var(--sarak-visual-translate-offset-sm, 20px))' }}>
                             <div className="grid grid-cols-4 gap-4">
                                 {[...Array(12)].map((_, i) => (
                                     <div key={i} className={`w-10 h-12 border border-white/10 rounded relative ${i % 5 === 0 ? 'bg-red-500/10 border-red-500/30' : 'bg-white/5'}`}>
@@ -100,7 +100,7 @@ const SarakVisualEngine: React.FC<SarakVisualEngineProps> = ({ type, tokens }) =
                             ))}
                         </div>
                         <div className="absolute inset-0 flex items-center justify-center pointer-events-none">
-                            <span className="text-[8px] font-black text-white/20 uppercase tracking-[0.5em]">High Density Scan</span>
+                            <span className="text-[var(--sarak-type-scale-tiny,8px)] font-black text-white/20 uppercase tracking-[var(--sarak-tracking-widest,0.5em)]">High Density Scan</span>
                         </div>
                     </div>
                 );
@@ -117,7 +117,7 @@ const SarakVisualEngine: React.FC<SarakVisualEngineProps> = ({ type, tokens }) =
                         <motion.div 
                             animate={{ x: [-100, 300], y: [-50, 200] }}
                             transition={{ duration: 10, repeat: Infinity, repeatType: 'reverse' }}
-                            className="absolute w-32 h-32 bg-[var(--theme-primary)]/20 blur-[60px] rounded-full"
+                            className="absolute w-32 h-32 bg-[var(--theme-primary)]/20 blur-[var(--sarak-visual-orb-blur,60px)] rounded-full"
                         />
                     </div>
                 );
@@ -154,7 +154,7 @@ const SarakVisualEngine: React.FC<SarakVisualEngineProps> = ({ type, tokens }) =
 
             default:
                 return (
-                    <div className="w-full h-full flex items-center justify-center text-white/20 uppercase font-black text-[10px] tracking-widest bg-black/40">
+                    <div className="w-full h-full flex items-center justify-center text-white/20 uppercase font-black text-[var(--sarak-type-scale2xs,10px)] tracking-widest bg-black/40">
                         {type} technical view
                     </div>
                 );

@@ -27,7 +27,7 @@ export const EngineCustomizationTab: React.FC = () => {
                 <div className="p-2 rounded-lg bg-[var(--theme-primary)]/10 text-[var(--theme-primary)]">
                     <Icon size={16} />
                 </div>
-                <h3 className="text-xs font-black uppercase tracking-[0.2em] italic text-white/90">{title}</h3>
+                <h3 className="text-xs font-black uppercase tracking-[var(--sarak-tracking-tight,0.2em)] italic text-white/90">{title}</h3>
             </div>
             <div className="space-y-6">{children}</div>
         </div>
@@ -137,7 +137,7 @@ export const EngineCustomizationTab: React.FC = () => {
 
                 <div className="flex items-center justify-between p-4 rounded-2xl bg-white/5 border border-white/10 group">
                     <div className="flex flex-col gap-0.5">
-                        <span className="text-[10px] font-black uppercase tracking-widest text-white/50 flex items-center gap-1.5">
+                        <span className="text-[var(--sarak-type-scale2xs,10px)] font-black uppercase tracking-widest text-white/50 flex items-center gap-1.5">
                             Mostrar Grid de Fundo
                             <HelpTooltip label="Mostrar Grid de Fundo" description="Ativa ou desativa a visualização das linhas de referência nos gráficos (Chart Engine)." />
                         </span>
@@ -159,7 +159,7 @@ export const EngineCustomizationTab: React.FC = () => {
 
             <div className="p-8 mt-auto">
                 <div className="p-4 rounded-2xl bg-indigo-500/10 border border-indigo-500/20 text-center">
-                    <span className="text-3xs font-black uppercase tracking-[0.4em] text-indigo-400/60">Sovereign Engine v7.0</span>
+                    <span className="text-3xs font-black uppercase tracking-[var(--sarak-tracking-wider,0.4em)] text-indigo-400/60">Sovereign Engine v7.0</span>
                 </div>
             </div>
         </div>

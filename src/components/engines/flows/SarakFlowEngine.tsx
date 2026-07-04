@@ -24,7 +24,7 @@ const SarakFlowEngine: React.FC<SarakFlowEngineProps> = ({ nodes, edges, onConne
     const { primaryColor, mode, flowGridStyle, flowNodeRadius } = design || {};
 
     return (
-        <div className="w-full h-full min-h-[500px] bg-[var(--theme-card)]/10 rounded-[var(--radius-theme)] border border-white/5 overflow-hidden relative">
+        <div className="w-full h-full min-h-[var(--sarak-engine-min-h-lg,500px)] bg-[var(--theme-card)]/10 rounded-[var(--radius-theme)] border border-white/5 overflow-hidden relative">
             <ReactFlow
                 nodes={nodes}
                 edges={edges}
@@ -51,17 +51,17 @@ const SarakFlowEngine: React.FC<SarakFlowEngineProps> = ({ nodes, edges, onConne
 
             <style>{`
                 .react-flow__node {
-                    border-radius: ${flowNodeRadius || 12}px;
+                    border-radius: var(--sarak-flow-node-radius, ${flowNodeRadius || 12}px);
                     background: rgba(15, 15, 20, 0.8);
                     border: 1px solid rgba(255, 255, 255, 0.1);
                     color: white;
-                    font-size: 11px;
-                    padding: 10px;
-                    backdrop-filter: blur(5px);
+                    font-size: var(--sarak-type-scale-xs, 11px);
+                    padding: var(--sarak-flow-node-padding, 10px);
+                    backdrop-filter: blur(var(--sarak-flow-node-blur, 5px));
                 }
                 .react-flow__handle {
-                    width: 8px;
-                    height: 8px;
+                    width: var(--sarak-flow-handle-size, 8px);
+                    height: var(--sarak-flow-handle-size, 8px);
                     background: ${primaryColor};
                     border: 2px solid white;
                 }

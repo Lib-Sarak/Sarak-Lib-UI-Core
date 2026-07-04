@@ -41,12 +41,12 @@ exports[`AtmosphereCatalog > renderiza os títulos e abas do catálogo 1`] = `
           class="flex flex-col"
         >
           <span
-            class="text-xs font-black uppercase text-theme-text tracking-[0.3em]"
+            class="text-xs font-black uppercase text-theme-text tracking-[var(--sarak-tracking-wide,0.3em)]"
           >
             Design Intelligence Catalog
           </span>
           <span
-            class="text-[9px] font-bold text-theme-primary uppercase tracking-widest mt-0.5"
+            class="text-[var(--sarak-type-scale3xs,9px)] font-bold text-theme-primary uppercase tracking-widest mt-0.5"
           >
             Pilar: Atmosphere & Textures
           </span>
@@ -59,7 +59,7 @@ exports[`AtmosphereCatalog > renderiza os títulos e abas do catálogo 1`] = `
           class="flex items-center gap-2 p-1 bg-black/20 rounded-xl border border-theme-border"
         >
           <button
-            class="px-4 py-2 rounded-lg text-[10px] font-black uppercase tracking-widest transition-all flex items-center gap-2 bg-theme-primary text-white shadow-lg"
+            class="px-4 py-2 rounded-lg text-[var(--sarak-type-scale2xs,10px)] font-black uppercase tracking-widest transition-all flex items-center gap-2 bg-theme-primary text-white shadow-lg"
           >
             <svg
               class="lucide lucide-video"
@@ -88,7 +88,7 @@ exports[`AtmosphereCatalog > renderiza os títulos e abas do catálogo 1`] = `
             Mídia Base
           </button>
           <button
-            class="px-4 py-2 rounded-lg text-[10px] font-black uppercase tracking-widest transition-all flex items-center gap-2 text-theme-muted hover:text-white hover:bg-white/5"
+            class="px-4 py-2 rounded-lg text-[var(--sarak-type-scale2xs,10px)] font-black uppercase tracking-widest transition-all flex items-center gap-2 text-theme-muted hover:text-white hover:bg-white/5"
           >
             <svg
               class="lucide lucide-grid3x3"
@@ -129,7 +129,7 @@ exports[`AtmosphereCatalog > renderiza os títulos e abas do catálogo 1`] = `
           class="flex items-center gap-3 px-4 py-2 bg-black/20 rounded-xl border border-theme-border"
         >
           <span
-            class="text-[10px] font-black text-theme-text uppercase tracking-widest"
+            class="text-[var(--sarak-type-scale2xs,10px)] font-black text-theme-text uppercase tracking-widest"
           >
             Opacidade
           </span>
@@ -200,7 +200,7 @@ exports[`AtmosphereCatalog > renderiza os títulos e abas do catálogo 1`] = `
                 class="flex items-center gap-3 mb-2"
               >
                 <span
-                  class="px-2 py-1 rounded bg-neutral-500/20 border border-neutral-500/50 text-neutral-400 text-[10px] font-bold uppercase tracking-wider backdrop-blur-md"
+                  class="px-2 py-1 rounded bg-neutral-500/20 border border-neutral-500/50 text-neutral-400 text-[var(--sarak-type-scale2xs,10px)] font-bold uppercase tracking-wider backdrop-blur-md"
                 >
                   Solid Void
                 </span>
@@ -277,7 +277,7 @@ exports[`AtmosphereCatalog > renderiza os títulos e abas do catálogo 1`] = `
                 class="flex items-center gap-3 mb-2"
               >
                 <span
-                  class="px-2 py-1 rounded bg-blue-500/20 border border-blue-500/50 text-blue-400 text-[10px] font-bold uppercase tracking-wider backdrop-blur-md"
+                  class="px-2 py-1 rounded bg-blue-500/20 border border-blue-500/50 text-blue-400 text-[var(--sarak-type-scale2xs,10px)] font-bold uppercase tracking-wider backdrop-blur-md"
                 >
                   Live Media
                 </span>
@@ -363,7 +363,7 @@ exports[`AtmosphereCatalog > renderiza os títulos e abas do catálogo 1`] = `
                 class="flex items-center gap-3 mb-2"
               >
                 <span
-                  class="px-2 py-1 rounded bg-purple-500/20 border border-purple-500/50 text-purple-400 text-[10px] font-bold uppercase tracking-wider backdrop-blur-md"
+                  class="px-2 py-1 rounded bg-purple-500/20 border border-purple-500/50 text-purple-400 text-[var(--sarak-type-scale2xs,10px)] font-bold uppercase tracking-wider backdrop-blur-md"
                 >
                   Static Image
                 </span>
@@ -449,7 +449,7 @@ exports[`AtmosphereCatalog > renderiza os títulos e abas do catálogo 1`] = `
                 class="flex items-center gap-3 mb-2"
               >
                 <span
-                  class="px-2 py-1 rounded bg-purple-500/20 border border-purple-500/50 text-purple-400 text-[10px] font-bold uppercase tracking-wider backdrop-blur-md"
+                  class="px-2 py-1 rounded bg-purple-500/20 border border-purple-500/50 text-purple-400 text-[var(--sarak-type-scale2xs,10px)] font-bold uppercase tracking-wider backdrop-blur-md"
                 >
                   Static Image
                 </span>
@@ -535,7 +535,7 @@ exports[`AtmosphereCatalog > renderiza os títulos e abas do catálogo 1`] = `
                 class="flex items-center gap-3 mb-2"
               >
                 <span
-                  class="px-2 py-1 rounded bg-purple-500/20 border border-purple-500/50 text-purple-400 text-[10px] font-bold uppercase tracking-wider backdrop-blur-md"
+                  class="px-2 py-1 rounded bg-purple-500/20 border border-purple-500/50 text-purple-400 text-[var(--sarak-type-scale2xs,10px)] font-bold uppercase tracking-wider backdrop-blur-md"
                 >
                   Static Image
                 </span>

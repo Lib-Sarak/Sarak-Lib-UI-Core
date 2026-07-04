@@ -41,7 +41,7 @@ export const TemplatesTab: React.FC = () => {
                 <div className="text-xs font-black tracking-widest uppercase mb-1">
                     Templates & <span className="text-[var(--theme-primary)]">Manifest</span>
                 </div>
-                <p className="text-[8px] text-white/30 font-medium uppercase tracking-[0.2em]">
+                <p className="text-[var(--sarak-type-scale-tiny,8px)] text-white/30 font-medium uppercase tracking-[var(--sarak-tracking-tight,0.2em)]">
                     Integração Host
                 </p>
             </div>
@@ -51,7 +51,7 @@ export const TemplatesTab: React.FC = () => {
                 <div className="bg-white/5 border border-white/10 p-4 rounded-xl">
                     <div className="flex items-center gap-2 mb-3 text-[var(--theme-primary)]">
                         <Terminal size={14} />
-                        <div className="text-[9px] font-black uppercase tracking-widest">Guia Rápido</div>
+                        <div className="text-[var(--sarak-type-scale3xs,9px)] font-black uppercase tracking-widest">Guia Rápido</div>
                     </div>
                     <ul className="space-y-2">
                         {[
@@ -59,7 +59,7 @@ export const TemplatesTab: React.FC = () => {
                             'Passe para o DesignProvider.',
                             'Use a classe .sarak-design-scope.'
                         ].map((item, i) => (
-                            <li key={i} className="flex gap-2 text-[9px] text-white/40 font-medium">
+                            <li key={i} className="flex gap-2 text-[var(--sarak-type-scale3xs,9px)] text-white/40 font-medium">
                                 <span className="text-[var(--theme-primary)] font-black">{i + 1}.</span>
                                 {item}
                             </li>
@@ -76,14 +76,14 @@ export const TemplatesTab: React.FC = () => {
                             <div>
                                 <div className="flex items-center gap-2 mb-1">
                                     <FileJson size={12} className="text-[var(--theme-primary)]" />
-                                    <div className="text-[10px] font-black uppercase tracking-tight">{template.name}</div>
+                                    <div className="text-[var(--sarak-type-scale2xs,10px)] font-black uppercase tracking-tight">{template.name}</div>
                                 </div>
-                                <p className="text-[9px] text-white/30">{template.description || 'Tema customizado.'}</p>
+                                <p className="text-[var(--sarak-type-scale3xs,9px)] text-white/30">{template.description || 'Tema customizado.'}</p>
                             </div>
                             <div className="flex gap-2">
                                 <button 
                                     onClick={() => handleApply(template)}
-                                    className={`flex items-center justify-center gap-2 px-4 py-2 rounded-lg text-[9px] font-black uppercase tracking-widest transition-all flex-1 ${
+                                    className={`flex items-center justify-center gap-2 px-4 py-2 rounded-lg text-[var(--sarak-type-scale3xs,9px)] font-black uppercase tracking-widest transition-all flex-1 ${
                                         appliedId === template.id 
                                         ? 'bg-emerald-500 text-white' 
                                         : 'bg-[var(--theme-primary)] hover:bg-[var(--theme-primary)]/80 text-black'
@@ -94,7 +94,7 @@ export const TemplatesTab: React.FC = () => {
                                 </button>
                                 <button 
                                     onClick={() => handleCopy(template.id, template.design)}
-                                    className={`flex items-center justify-center gap-2 px-4 py-2 rounded-lg text-[9px] font-black uppercase tracking-widest transition-all ${
+                                    className={`flex items-center justify-center gap-2 px-4 py-2 rounded-lg text-[var(--sarak-type-scale3xs,9px)] font-black uppercase tracking-widest transition-all ${
                                         copiedId === template.id 
                                         ? 'bg-emerald-500/20 text-emerald-400 border-emerald-500/50' 
                                         : 'bg-white/5 hover:bg-white/10 text-white/40 hover:text-white border border-white/5'
@@ -106,7 +106,7 @@ export const TemplatesTab: React.FC = () => {
                         </div>
 
                         <div className="relative">
-                            <pre className="bg-black/40 rounded-xl p-4 text-[8px] font-mono text-white/20 overflow-x-auto border border-white/5 max-h-[120px] custom-scrollbar">
+                            <pre className="bg-black/40 rounded-xl p-4 text-[var(--sarak-type-scale-tiny,8px)] font-mono text-white/20 overflow-x-auto border border-white/5 max-h-[var(--sarak-layout-preview-max-h,120px)] custom-scrollbar">
                                 {JSON.stringify(template.design, null, 2)}
                             </pre>
                         </div>
@@ -117,14 +117,14 @@ export const TemplatesTab: React.FC = () => {
             {/* External Links */}
             <div className="mt-8 pt-8 border-t border-white/5 flex flex-col gap-4">
                 <div className="flex items-center gap-4">
-                    <a href="#" className="flex items-center gap-2 text-[9px] font-black uppercase tracking-widest text-white/20 hover:text-[var(--theme-primary)] transition-all">
+                    <a href="#" className="flex items-center gap-2 text-[var(--sarak-type-scale3xs,9px)] font-black uppercase tracking-widest text-white/20 hover:text-[var(--theme-primary)] transition-all">
                         <Code size={10} /> Docs
                     </a>
-                    <a href="#" className="flex items-center gap-2 text-[9px] font-black uppercase tracking-widest text-white/20 hover:text-[var(--theme-primary)] transition-all">
+                    <a href="#" className="flex items-center gap-2 text-[var(--sarak-type-scale3xs,9px)] font-black uppercase tracking-widest text-white/20 hover:text-[var(--theme-primary)] transition-all">
                         <ExternalLink size={10} /> GitHub
                     </a>
                 </div>
-                <span className="text-[8px] font-black uppercase tracking-[0.3em] text-white/10">Sarak v13.0</span>
+                <span className="text-[var(--sarak-type-scale-tiny,8px)] font-black uppercase tracking-[var(--sarak-tracking-wide,0.3em)] text-white/10">Sarak v13.0</span>
             </div>
         </div>
     );

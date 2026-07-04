@@ -558,6 +558,237 @@ export const CardSchema: ComponentSchema = {
             constraints: { min: 0, max: 4, step: 0.25 },
             defaultValue: 2,
             cssVars: ['--sarak-catalog-item-radius']
+        },
+
+        // --- DESIGN ENGINE CANVAS: SOMBRAS DE PREVIEW DE PRESET (Spec 28) ---
+        {
+            id: 'presetCardHoverShadowOffsetY',
+            label: 'Preview de Preset: Sombra de Hover — Offset Y',
+            type: 'slider',
+            unit: 'px',
+            constraints: { min: 0, max: 30 },
+            defaultValue: 10,
+            cssVars: ['--sarak-preset-card-hover-shadow-offset-y']
+        },
+        {
+            id: 'presetCardHoverShadowBlur',
+            label: 'Preview de Preset: Sombra de Hover — Desfoque',
+            type: 'slider',
+            unit: 'px',
+            constraints: { min: 0, max: 80 },
+            defaultValue: 40,
+            cssVars: ['--sarak-preset-card-hover-shadow-blur']
+        },
+        {
+            id: 'presetCardHoverShadowSpread',
+            label: 'Preview de Preset: Sombra de Hover — Espalhamento',
+            type: 'slider',
+            unit: 'px',
+            constraints: { min: 0, max: 30 },
+            defaultValue: 10,
+            cssVars: ['--sarak-preset-card-hover-shadow-spread']
+        },
+        {
+            id: 'presetGlowShadowBlur',
+            label: 'Preview de Preset: Glow Simples — Desfoque',
+            type: 'slider',
+            unit: 'px',
+            constraints: { min: 0, max: 40 },
+            defaultValue: 20,
+            cssVars: ['--sarak-preset-glow-shadow-blur']
+        },
+        {
+            id: 'presetGlowShadowBlurLg',
+            label: 'Preview de Preset: Glow Simples — Desfoque Grande',
+            type: 'slider',
+            unit: 'px',
+            constraints: { min: 0, max: 60 },
+            defaultValue: 32,
+            cssVars: ['--sarak-preset-glow-shadow-blur-lg']
+        },
+        {
+            id: 'presetPreviewPaddingY',
+            label: 'Preview de Preset: Padding Vertical',
+            type: 'slider',
+            unit: 'px',
+            constraints: { min: 0, max: 24 },
+            defaultValue: 12,
+            cssVars: ['--sarak-preset-preview-padding-y']
+        },
+        {
+            id: 'presetMatteShadowBlur1',
+            label: 'Preview de Preset: Sombra Matte — Desfoque 1',
+            type: 'slider',
+            unit: 'px',
+            constraints: { min: 0, max: 30 },
+            defaultValue: 15,
+            cssVars: ['--sarak-preset-matte-shadow-blur1']
+        },
+        {
+            id: 'presetMatteShadowSpread1',
+            label: 'Preview de Preset: Sombra Matte — Espalhamento 1',
+            type: 'slider',
+            unit: 'px',
+            constraints: { min: 0, max: 10 },
+            defaultValue: 3,
+            cssVars: ['--sarak-preset-matte-shadow-spread1']
+        },
+        {
+            id: 'presetMatteShadowOffsetY2',
+            label: 'Preview de Preset: Sombra Matte — Offset Y 2',
+            type: 'slider',
+            unit: 'px',
+            constraints: { min: 0, max: 10 },
+            defaultValue: 4,
+            cssVars: ['--sarak-preset-matte-shadow-offset-y2']
+        },
+        {
+            id: 'presetMatteShadowBlur2',
+            label: 'Preview de Preset: Sombra Matte — Desfoque 2',
+            type: 'slider',
+            unit: 'px',
+            constraints: { min: 0, max: 12 },
+            defaultValue: 6,
+            cssVars: ['--sarak-preset-matte-shadow-blur2']
+        },
+        {
+            id: 'presetMatteShadowSpread2',
+            label: 'Preview de Preset: Sombra Matte — Espalhamento 2',
+            type: 'slider',
+            unit: 'px',
+            constraints: { min: 0, max: 10 },
+            defaultValue: 4,
+            cssVars: ['--sarak-preset-matte-shadow-spread2']
+        },
+        {
+            id: 'presetPreviewMinHeight',
+            label: 'Preview de Preset: Altura Mínima',
+            type: 'slider',
+            unit: 'px',
+            constraints: { min: 100, max: 500 },
+            defaultValue: 320,
+            cssVars: ['--sarak-preset-preview-min-height']
+        },
+        {
+            id: 'presetMiniCardMaxWidth',
+            label: 'Preview de Preset: Largura Máxima do Mini-Card',
+            type: 'slider',
+            unit: 'px',
+            constraints: { min: 100, max: 400 },
+            defaultValue: 280,
+            cssVars: ['--sarak-preset-mini-card-max-width']
+        },
+        {
+            id: 'presetCardShadowOffsetY',
+            label: 'Preview de Preset: Sombra do Card — Offset Y',
+            type: 'slider',
+            unit: 'px',
+            constraints: { min: 0, max: 10 },
+            defaultValue: 4,
+            cssVars: ['--sarak-preset-card-shadow-offset-y']
+        },
+        {
+            id: 'presetCardShadowBlur',
+            label: 'Preview de Preset: Sombra do Card — Desfoque',
+            type: 'slider',
+            unit: 'px',
+            constraints: { min: 0, max: 20 },
+            defaultValue: 10,
+            cssVars: ['--sarak-preset-card-shadow-blur']
+        },
+        {
+            id: 'presetGridTextureSize',
+            label: 'Preview de Preset: Tamanho da Textura de Grade',
+            type: 'slider',
+            unit: 'px',
+            constraints: { min: 4, max: 20 },
+            defaultValue: 8,
+            cssVars: ['--sarak-preset-grid-texture-size']
+        },
+
+        // --- DESIGN ENGINE CANVAS: KITCHEN SINK PREVIEW (Spec 28) ---
+        {
+            id: 'controlHeightToggle',
+            label: 'Kitchen Sink: Altura do Toggle',
+            type: 'slider',
+            unit: 'px',
+            constraints: { min: 24, max: 64 },
+            defaultValue: 46,
+            cssVars: ['--sarak-control-height-toggle']
+        },
+        {
+            id: 'progressBarMaxWidth',
+            label: 'Kitchen Sink: Largura Máxima da Barra de Progresso',
+            type: 'slider',
+            unit: 'px',
+            constraints: { min: 40, max: 300 },
+            defaultValue: 100,
+            cssVars: ['--sarak-progress-bar-max-width']
+        },
+        {
+            id: 'cardHoverLift',
+            label: 'Kitchen Sink: Elevação no Hover',
+            type: 'slider',
+            unit: 'px',
+            constraints: { min: 0, max: 12 },
+            defaultValue: 4,
+            cssVars: ['--sarak-card-hover-lift']
+        },
+
+        // --- DESIGN ENGINE CANVAS: PREVIEW CANVAS (MOCKUP DE DISPOSITIVO) (Spec 28) ---
+        {
+            id: 'devicePhoneWidth',
+            label: 'Preview Canvas: Largura do Telefone',
+            type: 'slider',
+            unit: 'px',
+            constraints: { min: 300, max: 450 },
+            defaultValue: 375,
+            cssVars: ['--sarak-device-phone-width']
+        },
+        {
+            id: 'devicePhoneHeight',
+            label: 'Preview Canvas: Altura do Telefone',
+            type: 'slider',
+            unit: 'px',
+            constraints: { min: 600, max: 1000 },
+            defaultValue: 812,
+            cssVars: ['--sarak-device-phone-height']
+        },
+        {
+            id: 'deviceTabletHeight',
+            label: 'Preview Canvas: Altura do Tablet',
+            type: 'slider',
+            unit: 'px',
+            constraints: { min: 700, max: 1400 },
+            defaultValue: 1024,
+            cssVars: ['--sarak-device-tablet-height']
+        },
+        {
+            id: 'devicePhoneNotchRadius',
+            label: 'Preview Canvas: Arredondamento do Notch',
+            type: 'slider',
+            unit: 'rem',
+            constraints: { min: 0, max: 3, step: 0.25 },
+            defaultValue: 1,
+            cssVars: ['--sarak-device-phone-notch-radius']
+        },
+        {
+            id: 'deviceFrameRadius',
+            label: 'Preview Canvas: Arredondamento da Moldura',
+            type: 'slider',
+            unit: 'rem',
+            constraints: { min: 0, max: 4, step: 0.25 },
+            defaultValue: 2,
+            cssVars: ['--sarak-device-frame-radius']
+        },
+        {
+            id: 'deviceDesktopMinWidth',
+            label: 'Preview Canvas: Largura Mínima do Desktop',
+            type: 'slider',
+            unit: 'px',
+            constraints: { min: 150, max: 400 },
+            defaultValue: 250,
+            cssVars: ['--sarak-device-desktop-min-width']
         }
     ]
 };

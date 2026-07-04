@@ -32,8 +32,8 @@ export const PresetCard = ({ theme, currentMode, onApply, index }: { theme: Them
         boxShadow: design.cardShadow && design.cardShadow !== 'none'
             ? design.cardShadow
             : design.cardShadowSpread
-                ? `0 4px ${design.cardShadowSpread}px -2px ${design.cardGlowColor || 'rgba(0,0,0,0.5)'}`
-                : '0 4px 10px -2px rgba(0,0,0,0.5)',
+                ? `0 var(--sarak-preset-card-shadow-offset-y, 4px) ${design.cardShadowSpread}px -2px ${design.cardGlowColor || 'rgba(0,0,0,0.5)'}`
+                : '0 var(--sarak-preset-card-shadow-offset-y, 4px) var(--sarak-preset-card-shadow-blur, 10px) -2px rgba(0,0,0,0.5)',
         clipPath: variables['--sarak-card-clip-path']
     };
 
@@ -46,7 +46,7 @@ export const PresetCard = ({ theme, currentMode, onApply, index }: { theme: Them
                     : design.cardTextureType === 'noise'
                         ? 'url("data:image/svg+xml,%3Csvg viewBox=%220 0 200 200%22 xmlns=%22http://www.w3.org/2000/svg%22%3E%3Cfilter id=%22noiseFilter%22%3E%3CfeTurbulence type=%22fractalNoise%22 baseFrequency=%220.65%22 numOctaves=%223%22 stitchTiles=%22stitch%22/%3E%3C/filter%3E%3Crect width=%22100%25%22 height=%22100%25%22 filter=%22url(%23noiseFilter)%22/%3E%3C/svg%3E")'
                         : 'none',
-                backgroundSize: design.cardTextureType === 'grid' ? '8px 8px' : 'auto'
+                backgroundSize: design.cardTextureType === 'grid' ? 'var(--sarak-preset-grid-texture-size, 8px) var(--sarak-preset-grid-texture-size, 8px)' : 'auto'
             }}
         />
     ) : null;
@@ -156,10 +156,10 @@ export const PresetCard = ({ theme, currentMode, onApply, index }: { theme: Them
                 </h3>
 
                 <div className="flex items-center gap-2">
-                    <div className="px-1.5 py-0.5 bg-theme-card rounded text-[8px] font-bold uppercase tracking-widest text-theme-muted flex items-center gap-1">
+                    <div className="px-1.5 py-0.5 bg-theme-card rounded text-[var(--sarak-type-scale-tiny,8px)] font-bold uppercase tracking-widest text-theme-muted flex items-center gap-1">
                         <Layout size={8} /> {String(design.navigationStyle || 'sidebar')}
                     </div>
-                    <div className="flex items-center gap-1 text-[9px] font-bold uppercase tracking-widest text-theme-primary opacity-0 -translate-x-2 group-hover:opacity-100 group-hover:translate-x-0 transition-all duration-300">
+                    <div className="flex items-center gap-1 text-[var(--sarak-type-scale3xs,9px)] font-bold uppercase tracking-widest text-theme-primary opacity-0 -translate-x-2 group-hover:opacity-100 group-hover:translate-x-0 transition-all duration-300">
                         <ArrowRight size={12} />
                     </div>
                 </div>

@@ -35,11 +35,11 @@ export const ColorControl: React.FC<ColorControlProps> = ({ label, description, 
     return (
         <div className="flex items-center justify-between p-3 rounded-xl bg-[var(--color-theme-card,#1e293b)] border border-[var(--theme-border)] group transition-all hover:bg-[var(--theme-border)]">
             <div className="flex flex-col gap-0.5">
-                <span className="text-[10px] font-black uppercase tracking-widest text-[var(--theme-muted)] flex items-center gap-1.5">
+                <span className="text-[var(--sarak-type-scale2xs,10px)] font-black uppercase tracking-widest text-[var(--theme-muted)] flex items-center gap-1.5">
                     {label}
                     <HelpTooltip label={label} description={description} />
                 </span>
-                <span className="text-[9px] font-mono text-[var(--theme-muted)] uppercase">{localColor}</span>
+                <span className="text-[var(--sarak-type-scale3xs,9px)] font-mono text-[var(--theme-muted)] uppercase">{localColor}</span>
             </div>
             <div className="flex items-center gap-3">
                 <div className="relative w-8 h-8 rounded-lg overflow-hidden border border-[var(--theme-border)] shadow-lg ring-1 ring-[var(--color-theme-card,#1e293b)]">

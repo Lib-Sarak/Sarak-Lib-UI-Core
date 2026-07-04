@@ -5,7 +5,7 @@ import { SarakInput } from '../../../components/atomic/Inputs';
 import { useShortcutsManager, ShortcutItem } from './hooks/useShortcutsManager';
 
 const Kbd = ({ children, isEditing = false }: { children: React.ReactNode, isEditing?: boolean }) => (
-    <kbd className={`px-2 py-1.5 bg-black/40 text-2xs font-black font-mono rounded-lg border shadow-sm uppercase tracking-widest inline-flex items-center justify-center min-w-[28px] transition-all ${isEditing ? 'border-blue-500 text-blue-400 animate-pulse bg-blue-500/10' : 'border-white/10 text-white/60'}`}>
+    <kbd className={`px-2 py-1.5 bg-black/40 text-2xs font-black font-mono rounded-lg border shadow-sm uppercase tracking-widest inline-flex items-center justify-center min-w-[var(--sarak-kbd-min-w,28px)] transition-all ${isEditing ? 'border-blue-500 text-blue-400 animate-pulse bg-blue-500/10' : 'border-white/10 text-white/60'}`}>
         {children}
     </kbd>
 );
@@ -60,7 +60,7 @@ export const ShortcutsTab: React.FC = () => {
                     <div key={cat} className="space-y-4">
                         <div className="flex items-center gap-3">
                             <Filter className="w-3.5 h-3.5 text-white/20" />
-                            <h3 className="text-2xs font-black uppercase tracking-[0.2em] text-white/30 italic">{cat}</h3>
+                            <h3 className="text-2xs font-black uppercase tracking-[var(--sarak-tracking-tight,0.2em)] text-white/30 italic">{cat}</h3>
                         </div>
                         
                         <div className="grid grid-cols-1 gap-2">

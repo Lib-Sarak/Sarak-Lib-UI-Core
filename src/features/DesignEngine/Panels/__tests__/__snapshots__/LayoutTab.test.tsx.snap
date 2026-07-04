@@ -377,13 +377,13 @@ exports[`LayoutTab > matches baseline snapshot 1`] = `
           </div>
           <div
             class="flex flex-col w-full"
-            style="gap: var(--sx-spacing-xs);"
+            style="gap: calc(var(--sarak-layout-gap-md, 16px) * 0.25);"
           >
             <div
-              class="flex justify-between items-center w-full text-2xs font-black uppercase tracking-widest text-[var(--sx-color-text-muted)]"
+              class="flex justify-between items-center w-full text-2xs font-black uppercase tracking-widest text-[var(--text-muted,#94a3b8)]"
             >
               <span
-                style="color: var(--sarak-switch-active-bg, var(--sx-color-primary-base));"
+                style="color: var(--sarak-switch-active-bg, var(--sarak-primary-color,#3b82f6));"
               >
                 260px
               </span>
@@ -394,7 +394,7 @@ exports[`LayoutTab > matches baseline snapshot 1`] = `
               max="400"
               min="200"
               step="5"
-              style="background-color: rgba(255, 255, 255, 0.1); accent-color: var(--sarak-switch-active-bg, var(--sx-color-primary-base));"
+              style="background-color: rgba(255, 255, 255, 0.1); accent-color: var(--sarak-switch-active-bg, var(--sarak-primary-color,#3b82f6));"
               type="range"
               value="260"
             />
@@ -450,7 +450,7 @@ exports[`LayoutTab > matches baseline snapshot 1`] = `
               class="space-y-2"
             >
               <label
-                class="text-2xs font-black uppercase tracking-[0.2em] text-white/30 ml-2"
+                class="text-2xs font-black uppercase tracking-[var(--sarak-tracking-tight,0.2em)] text-white/30 ml-2"
               >
                 Heading Font
               </label>
@@ -458,8 +458,8 @@ exports[`LayoutTab > matches baseline snapshot 1`] = `
                 class="relative group "
               >
                 <select
-                  class="block text-[var(--sarak-input-text-color,var(--sx-color-text-muted))] font-medium outline-none transition-all placeholder:text-[var(--sarak-input-text-color,var(--sx-color-text-muted))]/30 bg-[var(--sarak-input-bg,var(--sx-color-surface-base))] rounded-input py-4 pl-4 pr-10 appearance-none   "
-                  style="border: 1px solid var(--sarak-input-border-color, var(--sx-color-border-base));"
+                  class="block text-[var(--sarak-input-text-color,var(--text-muted,#94a3b8))] font-medium outline-none transition-all placeholder:text-[var(--sarak-input-text-color,var(--text-muted,#94a3b8))]/30 bg-[var(--sarak-input-bg,var(--color-theme-card,#1e293b))] rounded-input py-4 pl-4 pr-10 appearance-none   "
+                  style="border: 1px solid var(--sarak-input-border-color, var(--border-color,#334155));"
                 >
                   <option
                     value=""
@@ -478,7 +478,8 @@ exports[`LayoutTab > matches baseline snapshot 1`] = `
                   </option>
                 </select>
                 <div
-                  class="absolute inset-y-0 right-0 pr-4 flex items-center pointer-events-none text-[var(--sarak-input-icon-color,rgba(255,255,255,0.5))] transition-colors group-focus-within:text-[var(--sarak-input-focus-border-color,var(--sx-color-primary-base))]"
+                  class="absolute inset-y-0 right-0 flex items-center pointer-events-none text-[var(--sarak-input-icon-color,rgba(255,255,255,0.5))] transition-colors group-focus-within:text-[var(--sarak-input-focus-border-color,var(--sarak-primary-color,#3b82f6))]"
+                  style="padding-right: var(--sarak-layout-gap-md,16px);"
                 >
                   <svg
                     class="w-4 h-4"
@@ -500,7 +501,7 @@ exports[`LayoutTab > matches baseline snapshot 1`] = `
               class="space-y-2"
             >
               <label
-                class="text-2xs font-black uppercase tracking-[0.2em] text-white/30 ml-2"
+                class="text-2xs font-black uppercase tracking-[var(--sarak-tracking-tight,0.2em)] text-white/30 ml-2"
               >
                 Body Font
               </label>
@@ -508,8 +509,8 @@ exports[`LayoutTab > matches baseline snapshot 1`] = `
                 class="relative group "
               >
                 <select
-                  class="block text-[var(--sarak-input-text-color,var(--sx-color-text-muted))] font-medium outline-none transition-all placeholder:text-[var(--sarak-input-text-color,var(--sx-color-text-muted))]/30 bg-[var(--sarak-input-bg,var(--sx-color-surface-base))] rounded-input py-4 pl-4 pr-10 appearance-none   "
-                  style="border: 1px solid var(--sarak-input-border-color, var(--sx-color-border-base));"
+                  class="block text-[var(--sarak-input-text-color,var(--text-muted,#94a3b8))] font-medium outline-none transition-all placeholder:text-[var(--sarak-input-text-color,var(--text-muted,#94a3b8))]/30 bg-[var(--sarak-input-bg,var(--color-theme-card,#1e293b))] rounded-input py-4 pl-4 pr-10 appearance-none   "
+                  style="border: 1px solid var(--sarak-input-border-color, var(--border-color,#334155));"
                 >
                   <option
                     value=""
@@ -528,7 +529,8 @@ exports[`LayoutTab > matches baseline snapshot 1`] = `
                   </option>
                 </select>
                 <div
-                  class="absolute inset-y-0 right-0 pr-4 flex items-center pointer-events-none text-[var(--sarak-input-icon-color,rgba(255,255,255,0.5))] transition-colors group-focus-within:text-[var(--sarak-input-focus-border-color,var(--sx-color-primary-base))]"
+                  class="absolute inset-y-0 right-0 flex items-center pointer-events-none text-[var(--sarak-input-icon-color,rgba(255,255,255,0.5))] transition-colors group-focus-within:text-[var(--sarak-input-focus-border-color,var(--sarak-primary-color,#3b82f6))]"
+                  style="padding-right: var(--sarak-layout-gap-md,16px);"
                 >
                   <svg
                     class="w-4 h-4"

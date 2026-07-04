@@ -20,8 +20,8 @@ export const TypographyCatalog: React.FC<TypographyCatalogProps> = ({ onApplyPre
                         <Type size={18} className="text-theme-primary" />
                     </div>
                     <div className="flex flex-col">
-                        <span className="text-xs font-black uppercase text-theme-text tracking-[0.3em]">Design Intelligence Catalog</span>
-                        <span className="text-[9px] font-bold text-theme-primary uppercase tracking-widest mt-0.5">
+                        <span className="text-xs font-black uppercase text-theme-text tracking-[var(--sarak-tracking-wide,0.3em)]">Design Intelligence Catalog</span>
+                        <span className="text-[var(--sarak-type-scale3xs,9px)] font-bold text-theme-primary uppercase tracking-widest mt-0.5">
                             Pilar: Typography & Fonts
                         </span>
                     </div>

@@ -105,7 +105,7 @@ const SarakChartEngine: React.FC<SarakChartEngineProps> = ({ type, data, config 
 
     // --- Legacy Recharts Fallback ---
     return (
-        <div className="w-full h-full min-h-[180px] p-2">
+        <div className="w-full h-full min-h-[var(--sarak-chart-engine-min-h,180px)] p-2">
             <ResponsiveContainer width="100%" height="100%">
                 {type === 'bar' ? (
                     <BarChart data={data}>

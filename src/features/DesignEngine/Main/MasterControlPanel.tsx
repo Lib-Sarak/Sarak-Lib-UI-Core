@@ -59,7 +59,7 @@ export const MasterControlPanel: React.FC = () => {
             {/* Header de Gestão - Compacto para Sidebar */}
             <div className="p-4 border-b border-white/5 bg-black/40">
                 <div className="flex items-center justify-between mb-4">
-                    <div className="text-[10px] font-black tracking-widest uppercase text-white/30">
+                    <div className="text-[var(--sarak-type-scale2xs,10px)] font-black tracking-widest uppercase text-white/30">
                         Catálogo de <span className="text-[var(--theme-primary)]">Tokens</span>
                     </div>
                 </div>
@@ -77,7 +77,7 @@ export const MasterControlPanel: React.FC = () => {
                     <div className="flex gap-2 overflow-x-auto pb-1 no-scrollbar">
                         <button 
                             onClick={() => setActiveCategory(null)}
-                            className={`px-3 py-2 rounded-lg text-[8px] font-black uppercase tracking-widest transition-all whitespace-nowrap border ${!activeCategory ? 'bg-white/10 border-white/10 text-white' : 'bg-transparent border-white/5 text-white/20 hover:bg-white/5'}`}
+                            className={`px-3 py-2 rounded-lg text-[var(--sarak-type-scale-tiny,8px)] font-black uppercase tracking-widest transition-all whitespace-nowrap border ${!activeCategory ? 'bg-white/10 border-white/10 text-white' : 'bg-transparent border-white/5 text-white/20 hover:bg-white/5'}`}
                         >
                             Todos
                         </button>
@@ -85,7 +85,7 @@ export const MasterControlPanel: React.FC = () => {
                             <button 
                                 key={cat.id}
                                 onClick={() => setActiveCategory(cat.id)}
-                                className={`px-3 py-2 rounded-lg text-[8px] font-black uppercase tracking-widest transition-all whitespace-nowrap border ${activeCategory === cat.id ? 'bg-white/10 border-white/10 text-white' : 'bg-transparent border-white/5 text-white/20 hover:bg-white/5'}`}
+                                className={`px-3 py-2 rounded-lg text-[var(--sarak-type-scale-tiny,8px)] font-black uppercase tracking-widest transition-all whitespace-nowrap border ${activeCategory === cat.id ? 'bg-white/10 border-white/10 text-white' : 'bg-transparent border-white/5 text-white/20 hover:bg-white/5'}`}
                             >
                                 {cat.label}
                             </button>
@@ -100,9 +100,9 @@ export const MasterControlPanel: React.FC = () => {
                     <table className="w-full text-left border-collapse table-fixed">
                         <thead>
                             <tr className="bg-white/5 border-b border-white/5">
-                                <th className="px-3 py-3 text-[8px] font-black uppercase tracking-widest text-white/20 w-[45%]">Token</th>
-                                <th className="px-3 py-3 text-[8px] font-black uppercase tracking-widest text-white/20 w-[40%]">Valor</th>
-                                <th className="px-3 py-3 text-[8px] font-black uppercase tracking-widest text-white/20 w-[15%] text-right"></th>
+                                <th className="px-3 py-3 text-[var(--sarak-type-scale-tiny,8px)] font-black uppercase tracking-widest text-white/20 w-[45%]">Token</th>
+                                <th className="px-3 py-3 text-[var(--sarak-type-scale-tiny,8px)] font-black uppercase tracking-widest text-white/20 w-[40%]">Valor</th>
+                                <th className="px-3 py-3 text-[var(--sarak-type-scale-tiny,8px)] font-black uppercase tracking-widest text-white/20 w-[15%] text-right"></th>
                             </tr>
                         </thead>
                         <tbody>
@@ -110,8 +110,8 @@ export const MasterControlPanel: React.FC = () => {
                                 <tr key={token.id} className={`border-b border-white/5 hover:bg-white/[0.02] transition-colors ${idx % 2 === 0 ? 'bg-black/10' : 'bg-transparent'}`}>
                                     <td className="px-3 py-3 overflow-hidden">
                                         <div className="flex flex-col gap-0.5">
-                                            <span className="text-[9px] font-black uppercase tracking-tight truncate">{token.label}</span>
-                                            <code className="text-[7px] text-white/10 font-mono tracking-tighter truncate">{token.id}</code>
+                                            <span className="text-[var(--sarak-type-scale3xs,9px)] font-black uppercase tracking-tight truncate">{token.label}</span>
+                                            <code className="text-[var(--sarak-type-scale-micro,7px)] text-white/10 font-mono tracking-tighter truncate">{token.id}</code>
                                         </div>
                                     </td>
                                     <td className="px-3 py-3">
@@ -127,7 +127,7 @@ export const MasterControlPanel: React.FC = () => {
                                                         type="text" 
                                                         value={String(draftRecord[token.id] || token.defaultValue)} 
                                                         onChange={(e) => updateDraft(token.id, e.target.value)}
-                                                        className="bg-transparent border-none text-[8px] font-mono text-white/40 focus:outline-none w-full"
+                                                        className="bg-transparent border-none text-[var(--sarak-type-scale-tiny,8px)] font-mono text-white/40 focus:outline-none w-full"
                                                     />
                                                 </div>
                                             )}
@@ -142,7 +142,7 @@ export const MasterControlPanel: React.FC = () => {
                                                         onChange={(e) => updateDraft(token.id, Number(e.target.value))}
                                                         className="flex-1 accent-[var(--theme-primary)] h-1 bg-white/10 rounded-lg appearance-none cursor-pointer"
                                                     />
-                                                    <span className="text-[8px] font-black text-white/20 w-6 text-right">
+                                                    <span className="text-[var(--sarak-type-scale-tiny,8px)] font-black text-white/20 w-6 text-right">
                                                         {String(draftRecord[token.id] ?? token.defaultValue)}
                                                     </span>
                                                 </div>
@@ -151,7 +151,7 @@ export const MasterControlPanel: React.FC = () => {
                                                 <select 
                                                     value={String(draftRecord[token.id] ?? token.defaultValue)}
                                                     onChange={(e) => updateDraft(token.id, e.target.value)}
-                                                    className="bg-white/5 border border-white/10 rounded-md py-1 px-2 text-[8px] font-black uppercase tracking-widest focus:outline-none w-full"
+                                                    className="bg-white/5 border border-white/10 rounded-md py-1 px-2 text-[var(--sarak-type-scale-tiny,8px)] font-black uppercase tracking-widest focus:outline-none w-full"
                                                 >
                                                     {(token.constraints?.options || token.options || []).map((opt: { id?: string; value?: string; label?: string; name?: string } | string) => {
                                                         const optId = typeof opt === 'object' ? (opt.id !== undefined ? opt.id : (opt.value !== undefined ? opt.value : '')) : opt;
@@ -167,7 +167,7 @@ export const MasterControlPanel: React.FC = () => {
                                                     type="text" 
                                                     value={String(draftRecord[token.id] ?? token.defaultValue)}
                                                     onChange={(e) => updateDraft(token.id, e.target.value)}
-                                                    className="bg-white/5 border border-white/10 rounded-md py-1 px-2 text-[8px] font-bold focus:outline-none w-full"
+                                                    className="bg-white/5 border border-white/10 rounded-md py-1 px-2 text-[var(--sarak-type-scale-tiny,8px)] font-bold focus:outline-none w-full"
                                                 />
                                             )}
                                             {token.type === 'boolean' && (
@@ -201,14 +201,14 @@ export const MasterControlPanel: React.FC = () => {
                     display: none;
                 }
                 .custom-scrollbar::-webkit-scrollbar {
-                    width: 6px;
+                    width: var(--sarak-scroll-width, 6px);
                 }
                 .custom-scrollbar::-webkit-scrollbar-track {
                     background: transparent;
                 }
                 .custom-scrollbar::-webkit-scrollbar-thumb {
                     background: rgba(255, 255, 255, 0.05);
-                    border-radius: 10px;
+                    border-radius: var(--sarak-scroll-radius, 10px);
                 }
                 .custom-scrollbar::-webkit-scrollbar-thumb:hover {
                     background: rgba(255, 255, 255, 0.1);
