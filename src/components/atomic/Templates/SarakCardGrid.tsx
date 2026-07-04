@@ -162,7 +162,7 @@ export const SarakCardGrid = <TData extends Record<string, unknown>>({ endpoint,
                     {sideFilters.length > 0 && (
                         <div className="flex flex-wrap" style={{ gap: 'var(--sarak-layout-gap-md, 16px)' }}>
                             {sideFilters.map(filter => (
-                                <div key={filter.id} className="relative group min-w-[160px]">
+                                <div key={filter.id} className="relative group min-w-[var(--sarak-catalog-filter-min-width,160px)]">
                                     <SarakSelect
                                         value={activeFilters[filter.id] || 'all'}
                                         onChange={(e) => setActiveFilters(prev => ({ ...prev, [filter.id]: e.target.value }))}

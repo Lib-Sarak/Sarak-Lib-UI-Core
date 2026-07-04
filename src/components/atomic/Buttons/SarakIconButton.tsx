@@ -69,21 +69,25 @@ export const SarakIconButton: React.FC<SarakIconButtonProps> = ({
     const applyDynamicStyles = () => {
         const neonStyles: Record<string, () => void> = {
             'primary': () => {
-                dynamicStyle.boxShadow = isHovered ? `0 0 12px ${localGlow}, inset 0 0 5px ${localGlow}` : `0 0 5px ${localGlow}`;
+                dynamicStyle.boxShadow = isHovered
+                    ? `0 0 var(--sarak-icon-button-glow-blur-lg, 12px) ${localGlow}, inset 0 0 var(--sarak-icon-button-glow-blur-sm, 5px) ${localGlow}`
+                    : `0 0 var(--sarak-icon-button-glow-blur-sm, 5px) ${localGlow}`;
                 dynamicStyle.border = `1px solid ${localGlow}`;
             },
             'danger': () => {
-                dynamicStyle.boxShadow = isHovered ? `0 0 12px ${localGlow}, inset 0 0 5px ${localGlow}` : `0 0 5px ${localGlow}`;
+                dynamicStyle.boxShadow = isHovered
+                    ? `0 0 var(--sarak-icon-button-glow-blur-lg, 12px) ${localGlow}, inset 0 0 var(--sarak-icon-button-glow-blur-sm, 5px) ${localGlow}`
+                    : `0 0 var(--sarak-icon-button-glow-blur-sm, 5px) ${localGlow}`;
                 dynamicStyle.border = `1px solid ${localGlow}`;
             },
             'secondary': () => {
-                dynamicStyle.boxShadow = isHovered ? `0 0 8px ${localGlow}` : 'none';
+                dynamicStyle.boxShadow = isHovered ? `0 0 var(--sarak-icon-button-glow-blur-md, 8px) ${localGlow}` : 'none';
                 dynamicStyle.border = `1px solid ${localGlow}`;
                 dynamicStyle.backgroundColor = `rgba(0,0,0,0.4)`;
             },
             'ghost': () => {
-                dynamicStyle.boxShadow = isHovered ? `0 0 8px ${localGlow}` : 'none';
-                if (isHovered) dynamicStyle.textShadow = `0 0 5px ${localGlow}`;
+                dynamicStyle.boxShadow = isHovered ? `0 0 var(--sarak-icon-button-glow-blur-md, 8px) ${localGlow}` : 'none';
+                if (isHovered) dynamicStyle.textShadow = `0 0 var(--sarak-icon-button-glow-blur-sm, 5px) ${localGlow}`;
             }
         };
 
@@ -92,13 +96,13 @@ export const SarakIconButton: React.FC<SarakIconButtonProps> = ({
                 dynamicStyle.backdropFilter = `blur(${blurAmount}px)`;
                 dynamicStyle.WebkitBackdropFilter = `blur(${blurAmount}px)`;
                 dynamicStyle.border = '1px solid rgba(255,255,255,0.1)';
-                dynamicStyle.boxShadow = '0 4px 16px 0 rgba(0, 0, 0, 0.3)';
+                dynamicStyle.boxShadow = '0 var(--sarak-icon-button-frosted-shadow-offset-y, 4px) var(--sarak-icon-button-frosted-shadow-blur, 16px) 0 rgba(0, 0, 0, 0.3)';
             },
             'danger': () => {
                 dynamicStyle.backdropFilter = `blur(${blurAmount}px)`;
                 dynamicStyle.WebkitBackdropFilter = `blur(${blurAmount}px)`;
                 dynamicStyle.border = '1px solid rgba(255,255,255,0.1)';
-                dynamicStyle.boxShadow = '0 4px 16px 0 rgba(0, 0, 0, 0.3)';
+                dynamicStyle.boxShadow = '0 var(--sarak-icon-button-frosted-shadow-offset-y, 4px) var(--sarak-icon-button-frosted-shadow-blur, 16px) 0 rgba(0, 0, 0, 0.3)';
             },
             'secondary': () => {
                 dynamicStyle.backdropFilter = `blur(${blurAmount}px)`;

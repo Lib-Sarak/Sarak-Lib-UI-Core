@@ -46,11 +46,11 @@ export const SecurityOrchestratorSetup: React.FC<SecurityOrchestratorSetupProps>
                     <img 
                         src={`https://api.qrserver.com/v1/create-qr-code/?size=${qrSize}x${qrSize}&data=${encodeURIComponent(String(setupData.provisioning_uri || ''))}`}
                         alt="MFA QR Code"
-                        style={{ width: '200px', height: '200px' }}
+                        style={{ width: 'var(--sarak-mfa-qr-code-size, 200px)', height: 'var(--sarak-mfa-qr-code-size, 200px)' }}
                     />
                 ) : (
-                    <div 
-                        style={{ width: '200px', height: '200px' }}
+                    <div
+                        style={{ width: 'var(--sarak-mfa-qr-code-size, 200px)', height: 'var(--sarak-mfa-qr-code-size, 200px)' }}
                         className="flex items-center justify-center bg-gray-100"
                     >
                         <QrCode className="text-gray-300" size={48} />

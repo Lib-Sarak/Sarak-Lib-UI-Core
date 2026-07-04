@@ -57,6 +57,15 @@ export const CardTitleSchema: ComponentSchema = {
             type: 'color',
             defaultValue: 'rgba(0, 242, 255, 0.2)',
             cssVars: ['--sarak-card-title-icon-glow']
+        },
+        {
+            id: 'cardTitleIconGlowBlur',
+            label: 'Desfoque do Brilho do Ícone do Título',
+            type: 'slider',
+            unit: 'px',
+            constraints: { min: 0, max: 40 },
+            defaultValue: 15,
+            cssVars: ['--sarak-card-title-icon-glow-blur']
         }
     ]
 };

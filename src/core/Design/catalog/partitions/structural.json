@@ -307,5 +307,35 @@
       "space-between"
     ],
     "relatedTokens": []
+  },
+  {
+    "tokenId": "splitPaneMinWidth",
+    "name": "Split Pane: Largura Mínima do Painel Secundário",
+    "description": "Largura mínima do painel à direita do divisor redimensionável do SarakSplitPane.",
+    "type": "number",
+    "importance": 40,
+    "categories": [
+      "estrutura",
+      "layout"
+    ],
+    "tags": [
+      "split-pane",
+      "min-width",
+      "resizable"
+    ],
+    "databaseColumn": "structural",
+    "schemaOrigin": "structural.ts",
+    "digitalTwins": [
+      "SarakSplitPane"
+    ],
+    "cssVariables": [
+      "--sarak-split-pane-min-width"
+    ],
+    "allowedValues": {
+      "min": 40,
+      "max": 400,
+      "step": 10
+    },
+    "relatedTokens": []
   }
 ]

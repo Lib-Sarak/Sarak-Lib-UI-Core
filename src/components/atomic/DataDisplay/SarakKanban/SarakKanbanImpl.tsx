@@ -86,11 +86,11 @@ function SarakKanbanImpl<C extends KanbanCard>({
                                 display: 'flex',
                                 justifyContent: 'space-between',
                                 alignItems: 'center',
-                                padding: '4px 8px',
+                                padding: 'var(--sarak-kanban-header-padding-y, 4px) var(--sarak-layout-gap-sm, 8px)',
                                 fontWeight: 600,
                                 fontSize: 13,
                                 textTransform: 'uppercase',
-                                letterSpacing: '0.04em',
+                                letterSpacing: 'var(--sarak-kanban-header-tracking, 0.04em)',
                                 color: 'var(--color-theme-title,#ffffff)',
                             }}
                         >
@@ -107,7 +107,7 @@ function SarakKanbanImpl<C extends KanbanCard>({
                                 onDragEnd={() => setIo(IDLE)}
                                 style={{
                                     padding: 'var(--sarak-layout-gap-sm,8px) var(--sarak-layout-gap-md,16px)',
-                                    borderRadius: '8px',
+                                    borderRadius: 'var(--sarak-kanban-card-radius, 8px)',
                                     background: 'var(--color-theme-card,#1e293b)',
                                     border: '1px solid var(--border-color,#334155)',
                                     cursor: 'grab',

@@ -43,7 +43,7 @@ export const ImageCard: React.FC<ImageCardProps> = ({
                 borderStyle: 'solid',
                 borderColor: 'var(--sarak-card-border-color, rgba(255,255,255,0.1))',
                 backgroundColor: 'var(--sarak-card-bg)',
-                boxShadow: hoverStyle === 'glow-only' ? 'none' : '0 10px 30px -10px rgba(0,0,0,0.5)',
+                boxShadow: hoverStyle === 'glow-only' ? 'none' : '0 var(--sarak-image-card-shadow-offset-y, 10px) var(--sarak-image-card-shadow-blur, 30px) calc(var(--sarak-image-card-shadow-spread, 10px) * -1) rgba(0,0,0,0.5)',
             }}
         >
             {/* Background Image Layer */}
@@ -82,7 +82,7 @@ export const ImageCard: React.FC<ImageCardProps> = ({
             {/* Hover Glow Effect */}
             <div className="absolute inset-0 opacity-0 group-hover:opacity-100 transition-opacity duration-500 pointer-events-none"
                  style={{
-                     boxShadow: `inset 0 0 40px var(--sarak-card-glow-color, rgba(0,242,255,0.1))`
+                     boxShadow: `inset 0 0 var(--sarak-image-card-glow-blur, 40px) var(--sarak-card-glow-color, rgba(0,242,255,0.1))`
                  }}
             />
         </motion.div>

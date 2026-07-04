@@ -17,8 +17,8 @@ export const AuthHero: React.FC<AuthHeroProps> = ({ branding }) => {
         <div className="hidden lg:flex lg:w-3/5 relative overflow-hidden bg-gradient-to-br from-theme-body via-theme-body to-theme-primary/20 items-center justify-center" style={{ padding: 'calc(var(--sarak-layout-gap-md,16px)*3)' }}>
             {/* Animated Decorative Background */}
             <div className="absolute inset-0 opacity-20">
-                <div className="absolute top-[-10%] left-[-10%] w-[40%] h-[40%] bg-theme-primary/20 rounded-full blur-[120px] animate-pulse"></div>
-                <div className="absolute bottom-[-10%] right-[-10%] w-[50%] h-[50%] bg-theme-secondary/10 rounded-full blur-[120px] animate-pulse [animation-delay:2s]"></div>
+                <div className="absolute top-[-10%] left-[-10%] w-[40%] h-[40%] bg-theme-primary/20 rounded-full blur-[var(--sarak-auth-hero-orb-blur,120px)] animate-pulse"></div>
+                <div className="absolute bottom-[-10%] right-[-10%] w-[50%] h-[50%] bg-theme-secondary/10 rounded-full blur-[var(--sarak-auth-hero-orb-blur,120px)] animate-pulse [animation-delay:2s]"></div>
             </div>
 
             {/* Visual Grid */}
@@ -29,7 +29,7 @@ export const AuthHero: React.FC<AuthHeroProps> = ({ branding }) => {
                     display: '1'
                 }}
             ></div>
-            <div className="absolute inset-0" style={{ backgroundImage: 'radial-gradient(circle at 2px 2px, var(--border-color,#334155) 1px, transparent 0)', backgroundSize: '40px 40px' }}></div>
+            <div className="absolute inset-0" style={{ backgroundImage: 'radial-gradient(circle at var(--sarak-dot-grid-dot-offset, 2px) var(--sarak-dot-grid-dot-offset, 2px), var(--border-color,#334155) var(--sarak-dot-grid-dot-size, 1px), transparent 0)', backgroundSize: 'var(--sarak-dot-grid-tile-size, 40px) var(--sarak-dot-grid-tile-size, 40px)' }}></div>
 
             <div 
                 className={`relative z-10 max-w-xl text-center ${getFlexStyles('column', 'center', 'center', 'var(--sarak-layout-gap-md, 16px)').className}`}

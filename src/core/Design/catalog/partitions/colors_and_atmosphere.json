@@ -1802,6 +1802,37 @@
     "relatedTokens": []
   },
   {
+    "tokenId": "statusGlowBlur",
+    "name": "Desfoque do Glow de Status",
+    "description": "Raio de desfoque do glow exibido atrás do indicador de status ativo (ex.: bolinha de conexão do ManagementGroupCard).",
+    "type": "number",
+    "importance": 40,
+    "categories": [
+      "efeitos",
+      "status",
+      "colors-and-atmosphere"
+    ],
+    "tags": [
+      "status",
+      "glow",
+      "blur"
+    ],
+    "databaseColumn": "colors_and_atmosphere",
+    "schemaOrigin": "status.ts",
+    "digitalTwins": [
+      "ManagementGroupCard"
+    ],
+    "cssVariables": [
+      "--sarak-status-glow-blur"
+    ],
+    "allowedValues": {
+      "min": 0,
+      "max": 24,
+      "step": 1
+    },
+    "relatedTokens": []
+  },
+  {
     "tokenId": "globalBackgroundImageUrl",
     "name": "URL da Imagem de Fundo",
     "description": "Caminho da imagem de fundo global (pode ser arquivo ou base64).",

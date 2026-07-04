@@ -151,6 +151,17 @@ export const StructuralSchema: ComponentSchema = {
             },
             defaultValue: 'right',
             cssVars: ['--sarak-switch-label-position']
+        },
+
+        // --- SPLIT PANE (Spec 27) ---
+        {
+            id: 'splitPaneMinWidth',
+            label: 'Split Pane: Largura Mínima do Painel Secundário',
+            type: 'slider',
+            unit: 'px',
+            constraints: { min: 40, max: 400 },
+            defaultValue: 100,
+            cssVars: ['--sarak-split-pane-min-width']
         }
     ]
 };

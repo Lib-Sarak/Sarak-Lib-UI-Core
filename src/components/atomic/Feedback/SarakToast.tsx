@@ -73,15 +73,15 @@ const SarakToast: React.FC<{ entry: ToastEntry; onDismiss: (id: string) => void 
             data-variant={entry.variant}
             className="flex items-center text-sm shadow-lg pointer-events-auto"
             style={{
-                minWidth: '15rem',
-                maxWidth: '22.5rem',
+                minWidth: 'var(--sarak-toast-min-width, 15rem)',
+                maxWidth: 'var(--sarak-toast-max-width, 22.5rem)',
                 gap: 'var(--sarak-layout-gap-sm, 8px)',
                 paddingInline: 'var(--sarak-layout-gap-md, 16px)',
                 paddingBlock: 'calc(var(--sarak-layout-gap-md, 16px) * 0.75)',
                 borderRadius: 'var(--sarak-card-radius,12px)',
                 background: 'var(--color-theme-card,#1e293b))',
                 color: 'var(--sarak-text-main,#ffffff))',
-                borderLeft: `4px solid ${VARIANT_COLOR[entry.variant]}`,
+                borderLeft: `var(--sarak-toast-accent-width, 4px) solid ${VARIANT_COLOR[entry.variant]}`,
             }}
         >
             <span className="flex-1">{entry.message}</span>

@@ -173,6 +173,93 @@ export const ButtonsSchema: ComponentSchema = {
             constraints: { min: 0, max: 30 },
             defaultValue: 8,
             cssVars: ['--sarak-btn-backdrop-blur']
+        },
+
+        // --- GLOW DO ICON BUTTON (Spec 27) ---
+        {
+            id: 'iconButtonGlowBlurSm',
+            label: 'Glow do Icon Button: Desfoque Pequeno',
+            type: 'slider',
+            unit: 'px',
+            constraints: { min: 0, max: 30 },
+            defaultValue: 5,
+            cssVars: ['--sarak-icon-button-glow-blur-sm']
+        },
+        {
+            id: 'iconButtonGlowBlurMd',
+            label: 'Glow do Icon Button: Desfoque Médio',
+            type: 'slider',
+            unit: 'px',
+            constraints: { min: 0, max: 30 },
+            defaultValue: 8,
+            cssVars: ['--sarak-icon-button-glow-blur-md']
+        },
+        {
+            id: 'iconButtonGlowBlurLg',
+            label: 'Glow do Icon Button: Desfoque Grande',
+            type: 'slider',
+            unit: 'px',
+            constraints: { min: 0, max: 40 },
+            defaultValue: 12,
+            cssVars: ['--sarak-icon-button-glow-blur-lg']
+        },
+        {
+            id: 'iconButtonFrostedShadowOffsetY',
+            label: 'Sombra Frosted do Icon Button: Offset Y',
+            type: 'slider',
+            unit: 'px',
+            constraints: { min: 0, max: 20 },
+            defaultValue: 4,
+            cssVars: ['--sarak-icon-button-frosted-shadow-offset-y']
+        },
+        {
+            id: 'iconButtonFrostedShadowBlur',
+            label: 'Sombra Frosted do Icon Button: Desfoque',
+            type: 'slider',
+            unit: 'px',
+            constraints: { min: 0, max: 40 },
+            defaultValue: 16,
+            cssVars: ['--sarak-icon-button-frosted-shadow-blur']
+        },
+
+        // --- DROPDOWN DO THEME TOGGLE (Spec 27) ---
+        {
+            id: 'themeDropdownMaxHeight',
+            label: 'Altura Máxima do Dropdown de Temas',
+            type: 'slider',
+            unit: 'px',
+            constraints: { min: 200, max: 800 },
+            defaultValue: 400,
+            cssVars: ['--sarak-theme-dropdown-max-height']
+        },
+
+        // --- SOMBRA DE AÇÃO (GLOW) COMPARTILHADA (Spec 27 — Catalog/Form/Management Grid) ---
+        {
+            id: 'actionGlowShadowOffsetY',
+            label: 'Sombra de Ação: Offset Y',
+            type: 'slider',
+            unit: 'px',
+            constraints: { min: 0, max: 40 },
+            defaultValue: 10,
+            cssVars: ['--sarak-action-glow-shadow-offset-y']
+        },
+        {
+            id: 'actionGlowShadowBlur',
+            label: 'Sombra de Ação: Desfoque',
+            type: 'slider',
+            unit: 'px',
+            constraints: { min: 0, max: 60 },
+            defaultValue: 20,
+            cssVars: ['--sarak-action-glow-shadow-blur']
+        },
+        {
+            id: 'actionGlowShadowSpread',
+            label: 'Sombra de Ação: Espalhamento',
+            type: 'slider',
+            unit: 'px',
+            constraints: { min: 0, max: 40 },
+            defaultValue: 10,
+            cssVars: ['--sarak-action-glow-shadow-spread']
         }
     ]
 };

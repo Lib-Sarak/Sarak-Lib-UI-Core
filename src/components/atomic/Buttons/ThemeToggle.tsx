@@ -29,8 +29,8 @@ export const ThemeToggle: React.FC = () => {
 
             {/* Dropdown de Temas */}
             <div
-                className="absolute right-0 top-full w-64 max-h-[400px] overflow-y-auto bg-[var(--sarak-card-bg)] border border-[var(--sarak-card-border-color)] rounded-sarak shadow-2xl opacity-0 translate-y-2 pointer-events-none group-hover:opacity-100 group-hover:translate-y-0 group-hover:pointer-events-auto transition-sarak z-[100] custom-scrollbar"
-                style={{ marginTop: 'var(--sarak-layout-gap-sm, 8px)', padding: 'var(--sarak-layout-gap-sm, 8px)' }}
+                className="absolute right-0 top-full w-64 overflow-y-auto bg-[var(--sarak-card-bg)] border border-[var(--sarak-card-border-color)] rounded-sarak shadow-2xl opacity-0 translate-y-2 pointer-events-none group-hover:opacity-100 group-hover:translate-y-0 group-hover:pointer-events-auto transition-sarak z-[100] custom-scrollbar"
+                style={{ marginTop: 'var(--sarak-layout-gap-sm, 8px)', padding: 'var(--sarak-layout-gap-sm, 8px)', maxHeight: 'var(--sarak-theme-dropdown-max-height, 400px)' }}
             >
                 <div
                     className="text-2xs font-bold text-white/30 uppercase tracking-widest border-b border-white/5"

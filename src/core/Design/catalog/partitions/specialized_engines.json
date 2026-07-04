@@ -447,5 +447,35 @@
     "relatedTokens": [
       "matrixItemBg"
     ]
+  },
+  {
+    "tokenId": "chatAttachmentNameMaxWidth",
+    "name": "Chat Input: Largura Máxima do Nome do Anexo",
+    "description": "Largura máxima antes do truncamento do nome de arquivo anexado no ChatInput.",
+    "type": "number",
+    "importance": 30,
+    "categories": ["layout", "chat", "specialized-engines"],
+    "tags": ["chat-input", "attachment", "max-width"],
+    "databaseColumn": "specialized_engines",
+    "schemaOrigin": "chat.ts",
+    "digitalTwins": ["ChatInput"],
+    "cssVariables": ["--sarak-chat-attachment-name-max-width"],
+    "allowedValues": { "min": 60, "max": 300, "step": 10 },
+    "relatedTokens": ["chatTokenSliderMinWidth"]
+  },
+  {
+    "tokenId": "chatTokenSliderMinWidth",
+    "name": "Chat Input: Largura Mínima do Slider de Tokens",
+    "description": "Largura mínima do container do slider de limite de tokens no modo manual do ChatInput.",
+    "type": "number",
+    "importance": 30,
+    "categories": ["layout", "chat", "specialized-engines"],
+    "tags": ["chat-input", "slider", "min-width"],
+    "databaseColumn": "specialized_engines",
+    "schemaOrigin": "chat.ts",
+    "digitalTwins": ["ChatInput"],
+    "cssVariables": ["--sarak-chat-token-slider-min-width"],
+    "allowedValues": { "min": 60, "max": 300, "step": 10 },
+    "relatedTokens": ["chatAttachmentNameMaxWidth"]
   }
 ]

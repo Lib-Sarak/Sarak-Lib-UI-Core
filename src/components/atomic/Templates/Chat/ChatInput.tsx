@@ -54,7 +54,7 @@ export const ChatInput: React.FC<ChatInputProps> = ({
             {attachments.map((att, i) => (
               <div key={i} className="flex items-center bg-[var(--sarak-primary-color-bg,rgba(59,130,246,0.1))] border border-[var(--border-color,#334155)] rounded-xl relative group/att" style={{ gap: 'var(--sarak-layout-gap-sm, 8px)', padding: 'var(--sarak-layout-gap-sm, 8px) calc(var(--sarak-layout-gap-md,16px) * 0.75)' }}>
                 <FileIcon size={14} className="text-[var(--sarak-primary-color,#3b82f6)]" />
-                <span className="text-xs font-medium text-[var(--color-theme-title,#ffffff)] max-w-[150px] truncate">{att.name}</span>
+                <span className="text-xs font-medium text-[var(--color-theme-title,#ffffff)] max-w-[var(--sarak-chat-attachment-name-max-width,150px)] truncate">{att.name}</span>
                 <SarakIconButton
                   onClick={() => removeAttachment(i)}
                   icon={<X size={12} />}
@@ -99,7 +99,7 @@ export const ChatInput: React.FC<ChatInputProps> = ({
             )}
           </div>
 
-          <div className={`flex-1 min-w-[120px] bg-[var(--color-theme-card,#1e293b)] border-[var(--border-color,#334155)] ${tokenSliderStack.className}`} style={{ ...tokenSliderStack.style, padding: 'var(--sarak-layout-gap-sm, 8px) var(--sarak-layout-gap-md,16px)' }}>
+          <div className={`flex-1 min-w-[var(--sarak-chat-token-slider-min-width,120px)] bg-[var(--color-theme-card,#1e293b)] border-[var(--border-color,#334155)] ${tokenSliderStack.className}`} style={{ ...tokenSliderStack.style, padding: 'var(--sarak-layout-gap-sm, 8px) var(--sarak-layout-gap-md,16px)' }}>
              <SarakSlider 
                min={128} max={16384} step={128} value={maxTokens} 
                onChange={(e) => setMaxTokens(parseInt(e.target.value))}

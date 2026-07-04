@@ -118,7 +118,7 @@ export const SarakForm = <TData extends Record<string, unknown> = Record<string,
                     onClick={handleSave}
                     disabled={saving}
                     className="shadow-xl"
-                    style={{ boxShadow: '0 10px 20px -10px var(--sarak-shadow-glow,rgba(59,130,246,0.5))' }}
+                    style={{ boxShadow: '0 var(--sarak-action-glow-shadow-offset-y, 10px) var(--sarak-action-glow-shadow-blur, 20px) calc(var(--sarak-action-glow-shadow-spread, 10px) * -1) var(--sarak-shadow-glow,rgba(59,130,246,0.5))' }}
                 >
                     {saving ? (
                         <div className="w-4 h-4 border-2 border-white/30 border-t-white rounded-full animate-spin" />

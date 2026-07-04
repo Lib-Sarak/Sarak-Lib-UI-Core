@@ -451,6 +451,113 @@ export const CardSchema: ComponentSchema = {
             constraints: { min: 1, max: 1.5, step: 0.01 },
             defaultValue: 1.05,
             cssVars: ['--sarak-image-card-hover-zoom']
+        },
+        {
+            id: 'imageCardShadowOffsetY',
+            label: 'Sombra do Image Card: Offset Y',
+            type: 'slider',
+            unit: 'px',
+            constraints: { min: 0, max: 30 },
+            defaultValue: 10,
+            cssVars: ['--sarak-image-card-shadow-offset-y']
+        },
+        {
+            id: 'imageCardShadowBlur',
+            label: 'Sombra do Image Card: Desfoque',
+            type: 'slider',
+            unit: 'px',
+            constraints: { min: 0, max: 60 },
+            defaultValue: 30,
+            cssVars: ['--sarak-image-card-shadow-blur']
+        },
+        {
+            id: 'imageCardShadowSpread',
+            label: 'Sombra do Image Card: Espalhamento',
+            type: 'slider',
+            unit: 'px',
+            constraints: { min: 0, max: 30 },
+            defaultValue: 10,
+            cssVars: ['--sarak-image-card-shadow-spread']
+        },
+        {
+            id: 'imageCardGlowBlur',
+            label: 'Image Card: Desfoque do Glow Interno',
+            type: 'slider',
+            unit: 'px',
+            constraints: { min: 0, max: 80 },
+            defaultValue: 40,
+            cssVars: ['--sarak-image-card-glow-blur']
+        },
+
+        // --- TEMPLATES: MANAGEMENT GROUP CARD (Spec 27) ---
+        {
+            id: 'managementGroupListMaxHeight',
+            label: 'Management Group: Altura Máxima da Lista',
+            type: 'slider',
+            unit: 'px',
+            constraints: { min: 100, max: 800 },
+            defaultValue: 340,
+            cssVars: ['--sarak-management-group-list-max-height']
+        },
+        {
+            id: 'managementGroupDescMaxWidth',
+            label: 'Management Group: Largura Máxima da Descrição',
+            type: 'slider',
+            unit: 'px',
+            constraints: { min: 60, max: 400 },
+            defaultValue: 140,
+            cssVars: ['--sarak-management-group-desc-max-width']
+        },
+
+        // --- TEMPLATES: RECURSIVE MATRIX NODE (Spec 27) ---
+        {
+            id: 'matrixNodeMinWidth',
+            label: 'Matrix Node: Largura Mínima',
+            type: 'slider',
+            unit: 'px',
+            constraints: { min: 60, max: 400 },
+            defaultValue: 140,
+            cssVars: ['--sarak-matrix-node-min-width']
+        },
+
+        // --- TEMPLATES: SECURITY / MFA (Spec 27) ---
+        {
+            id: 'mfaQrCodeSize',
+            label: 'MFA: Tamanho do QR Code',
+            type: 'slider',
+            unit: 'px',
+            constraints: { min: 100, max: 400 },
+            defaultValue: 200,
+            cssVars: ['--sarak-mfa-qr-code-size']
+        },
+
+        // --- TEMPLATES: CATALOG / CARD GRID (Spec 27) ---
+        {
+            id: 'catalogFilterMinWidth',
+            label: 'Catálogo: Largura Mínima do Filtro',
+            type: 'slider',
+            unit: 'px',
+            constraints: { min: 80, max: 320 },
+            defaultValue: 160,
+            cssVars: ['--sarak-catalog-filter-min-width']
+        },
+        {
+            id: 'catalogSectionRadius',
+            label: 'Catálogo: Arredondamento da Seção',
+            type: 'slider',
+            unit: 'rem',
+            constraints: { min: 0, max: 4, step: 0.25 },
+            defaultValue: 3,
+            cssVars: ['--sarak-catalog-section-radius']
+        },
+        {
+            id: 'catalogItemRadius',
+            label: 'Catálogo: Arredondamento do Item',
+            type: 'slider',
+            unit: 'rem',
+            constraints: { min: 0, max: 4, step: 0.25 },
+            defaultValue: 2,
+            cssVars: ['--sarak-catalog-item-radius']
         }
     ]
 };

@@ -65,7 +65,7 @@ export const ManagementGroupCard = <TItem extends Record<string, unknown>>({
                 </div>
             </div>
 
-            <div className={twMerge("flex-1 max-h-[340px] overflow-y-auto custom-scrollbar", containerLayout.className)} style={{ padding: 'var(--sarak-layout-gap-md,16px)', gap: containerLayout.style?.gap }}>
+            <div className={twMerge("flex-1 max-h-[var(--sarak-management-group-list-max-height,340px)] overflow-y-auto custom-scrollbar", containerLayout.className)} style={{ padding: 'var(--sarak-layout-gap-md,16px)', gap: containerLayout.style?.gap }}>
                 {isConfigured ? (
                     items.map((item: TItem) => {
                         const itemId = String(getVal(item, mapping.id) || '');
@@ -83,7 +83,7 @@ export const ManagementGroupCard = <TItem extends Record<string, unknown>>({
                                 <div className="flex justify-between items-start" style={{ marginBottom: 'calc(var(--sarak-layout-gap-md,16px) / 3)' }}>
                                     <div className={twMerge("truncate", containerLayout.className)} style={{ padding: 0, gap: 'calc(var(--sarak-layout-gap-md,16px) / 4)' }}>
                                         <span className="text-2xs font-black uppercase tracking-widest" style={{ color: 'var(--sarak-primary-color,#3b82f6)' }}>{String(getVal(item, mapping.title) || '')}</span>
-                                        <span className="text-2xs font-mono text-white/30 truncate max-w-[140px]">
+                                        <span className="text-2xs font-mono text-white/30 truncate max-w-[var(--sarak-management-group-desc-max-width,140px)]">
                                             {String(getVal(item, mapping.description || '') || '') || '************'}
                                         </span>
                                     </div>
@@ -101,7 +101,7 @@ export const ManagementGroupCard = <TItem extends Record<string, unknown>>({
                                             className="w-1.5 h-1.5 rounded-full" 
                                             style={{ 
                                                 backgroundColor: status === 'active' ? 'var(--sarak-status-success-color,#22c55e)' : status === 'error' ? 'var(--sarak-status-error-color,#ef4444)' : 'rgba(156, 163, 175, 0.5)',
-                                                boxShadow: status === 'active' ? '0 0 8px var(--sarak-status-success-color,#22c55e)' : 'none'
+                                                boxShadow: status === 'active' ? '0 0 var(--sarak-status-glow-blur, 8px) var(--sarak-status-success-color,#22c55e)' : 'none'
                                             }} 
                                         />
                                         <span className="text-3xs font-black text-white/40 uppercase tracking-tighter">

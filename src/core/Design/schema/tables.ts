@@ -79,6 +79,35 @@ export const TablesSchema: ComponentSchema = {
             type: 'color',
             defaultValue: 'rgba(255, 255, 255, 0.05)',
             cssVars: ['--sarak-table-border']
+        },
+
+        // --- KANBAN (Spec 27) ---
+        {
+            id: 'kanbanHeaderPaddingY',
+            label: 'Kanban: Padding Vertical do Cabeçalho da Coluna',
+            type: 'slider',
+            unit: 'px',
+            constraints: { min: 0, max: 16 },
+            defaultValue: 4,
+            cssVars: ['--sarak-kanban-header-padding-y']
+        },
+        {
+            id: 'kanbanHeaderTracking',
+            label: 'Kanban: Tracking do Cabeçalho da Coluna',
+            type: 'slider',
+            unit: 'em',
+            constraints: { min: 0, max: 1, step: 0.01 },
+            defaultValue: 0.04,
+            cssVars: ['--sarak-kanban-header-tracking']
+        },
+        {
+            id: 'kanbanCardRadius',
+            label: 'Kanban: Arredondamento do Card',
+            type: 'slider',
+            unit: 'px',
+            constraints: { min: 0, max: 24 },
+            defaultValue: 8,
+            cssVars: ['--sarak-kanban-card-radius']
         }
     ]
 };

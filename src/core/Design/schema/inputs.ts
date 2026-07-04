@@ -129,6 +129,28 @@ export const InputsSchema: ComponentSchema = {
             type: 'color',
             defaultValue: '#52c41a',
             cssVars: ['--sarak-input-success-color']
+        },
+
+        // --- MULTI-SELECT (Spec 27) ---
+        {
+            id: 'multiSelectInputMinWidth',
+            label: 'Multi-Select: Largura Mínima do Input Interno',
+            type: 'slider',
+            unit: 'rem',
+            constraints: { min: 2, max: 16 },
+            defaultValue: 6,
+            cssVars: ['--sarak-multi-select-input-min-width']
+        },
+
+        // --- COMMAND SEARCH / PALETTE (Spec 27) ---
+        {
+            id: 'searchBackdropBlur',
+            label: 'Search Palette: Desfoque do Backdrop',
+            type: 'slider',
+            unit: 'px',
+            constraints: { min: 0, max: 30 },
+            defaultValue: 8,
+            cssVars: ['--sarak-search-backdrop-blur']
         }
     ]
 };

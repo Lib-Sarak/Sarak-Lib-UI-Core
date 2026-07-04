@@ -89,7 +89,7 @@ export const SarakCatalogGrid: React.FC<SarakCatalogGridProps> = ({
     return (
         <div className={twMerge(containerLayout.className)} style={{ ...containerLayout.style, paddingBottom: 'calc(var(--sarak-layout-gap-md,16px) * 5)', gap: 'calc(var(--sarak-layout-gap-md,16px) * 2.5)' }}>
             {/* Header & Filter Section */}
-            <section className={twMerge("relative bg-[var(--color-theme-card,#1e293b)] border border-[var(--border-color,#334155)] rounded-[3rem] overflow-hidden", headerLayout.className)} style={{ padding: 'calc(var(--sarak-layout-gap-md,16px) * 2.5)' }}>
+            <section className={twMerge("relative bg-[var(--color-theme-card,#1e293b)] border border-[var(--border-color,#334155)] rounded-[var(--sarak-catalog-section-radius,3rem)] overflow-hidden", headerLayout.className)} style={{ padding: 'calc(var(--sarak-layout-gap-md,16px) * 2.5)' }}>
                 <div className="absolute top-0 right-0 opacity-5 pointer-events-none" style={{ padding: 'calc(var(--sarak-layout-gap-md,16px) * 2.5)' }}>
                     <LayoutGrid size={240} />
                 </div>
@@ -129,7 +129,7 @@ export const SarakCatalogGrid: React.FC<SarakCatalogGridProps> = ({
                                         onClick={() => setSelectedCategory(key)}
                                         variant={selectedCategory === key ? 'primary' : 'secondary'}
                                         className={selectedCategory === key ? "shadow-xl" : ""}
-                                        style={selectedCategory === key ? { boxShadow: '0 10px 20px -10px var(--sarak-shadow-glow,rgba(59,130,246,0.5))' } : {}}
+                                        style={selectedCategory === key ? { boxShadow: '0 var(--sarak-action-glow-shadow-offset-y, 10px) var(--sarak-action-glow-shadow-blur, 20px) calc(var(--sarak-action-glow-shadow-spread, 10px) * -1) var(--sarak-shadow-glow,rgba(59,130,246,0.5))' } : {}}
                                     >
                                         {label}
                                     </SarakButton>
@@ -167,7 +167,7 @@ export const SarakCatalogGrid: React.FC<SarakCatalogGridProps> = ({
                                         initial={{ opacity: 0, scale: 0.9 }}
                                         animate={{ opacity: 1, scale: 1 }}
                                         exit={{ opacity: 0, scale: 0.9 }}
-                                        className="bg-[var(--color-theme-card,#1e293b)] border border-[var(--border-color,#334155)]-border rounded-[2rem] hover:border-[var(--border-color,#334155)]-primary/30 transition-all"
+                                        className="bg-[var(--color-theme-card,#1e293b)] border border-[var(--border-color,#334155)]-border rounded-[var(--sarak-catalog-item-radius,2rem)] hover:border-[var(--border-color,#334155)]-primary/30 transition-all"
                                         style={{ padding: 'var(--sarak-layout-gap-lg, 24px)' }}
                                     >
                                         <h3 className="text-lg font-bold text-theme-text">{item.display_name}</h3>
@@ -179,7 +179,7 @@ export const SarakCatalogGrid: React.FC<SarakCatalogGridProps> = ({
                     </AnimatePresence>
                 </div>
             ) : (
-                <div className="text-center border border-dashed border-[var(--border-color,#334155)]-border rounded-[3rem]" style={{ paddingTop: 'calc(var(--sarak-layout-gap-md,16px) * 5)', paddingBottom: 'calc(var(--sarak-layout-gap-md,16px) * 5)' }}>
+                <div className="text-center border border-dashed border-[var(--border-color,#334155)]-border rounded-[var(--sarak-catalog-section-radius,3rem)]" style={{ paddingTop: 'calc(var(--sarak-layout-gap-md,16px) * 5)', paddingBottom: 'calc(var(--sarak-layout-gap-md,16px) * 5)' }}>
                     <p className="text-theme-muted font-black uppercase tracking-widest">{emptyMessage}</p>
                 </div>
             )}

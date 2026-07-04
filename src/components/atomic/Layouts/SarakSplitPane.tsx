@@ -84,7 +84,7 @@ export const SarakSplitPane: React.FC<SarakSplitPaneProps> = ({
                 />
             </div>
             
-            <div className="flex-1 h-full overflow-auto min-w-[100px]">
+            <div className="flex-1 h-full overflow-auto min-w-[var(--sarak-split-pane-min-width,100px)]">
                 {rightPane}
             </div>
         </div>

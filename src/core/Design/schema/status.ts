@@ -48,6 +48,15 @@ export const StatusSchema: ComponentSchema = {
             constraints: { min: 0, max: 20 },
             defaultValue: 99,
             cssVars: ['--sarak-badge-radius']
+        },
+        {
+            id: 'statusGlowBlur',
+            label: 'Desfoque do Glow de Status',
+            type: 'slider',
+            unit: 'px',
+            constraints: { min: 0, max: 24 },
+            defaultValue: 8,
+            cssVars: ['--sarak-status-glow-blur']
         }
     ]
 };

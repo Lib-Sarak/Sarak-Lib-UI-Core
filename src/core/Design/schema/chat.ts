@@ -45,6 +45,26 @@ export const ChatSchema: ComponentSchema = {
             constraints: { min: 0, max: 0.5, step: 0.01 },
             defaultValue: 0.05,
             cssVars: ['--sarak-chat-anim-speed']
+        },
+
+        // --- CHAT INPUT (Spec 27) ---
+        {
+            id: 'chatAttachmentNameMaxWidth',
+            label: 'Chat Input: Largura Máxima do Nome do Anexo',
+            type: 'slider',
+            unit: 'px',
+            constraints: { min: 60, max: 300 },
+            defaultValue: 150,
+            cssVars: ['--sarak-chat-attachment-name-max-width']
+        },
+        {
+            id: 'chatTokenSliderMinWidth',
+            label: 'Chat Input: Largura Mínima do Slider de Tokens',
+            type: 'slider',
+            unit: 'px',
+            constraints: { min: 60, max: 300 },
+            defaultValue: 120,
+            cssVars: ['--sarak-chat-token-slider-min-width']
         }
     ]
 };

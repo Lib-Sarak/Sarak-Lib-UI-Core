@@ -101,7 +101,7 @@ export const RecursiveMatrixNode: React.FC<RecursiveMatrixNodeProps> = ({
             <div
                 onClick={() => onToggle(parentId, item.id)}
                 style={{ ...switchFlex.style, padding: 'var(--sarak-layout-gap-sm,8px) var(--sarak-layout-gap-md,16px)' }}
-                className={`${switchFlex.className} rounded-lg border border-[var(--border-color,#334155)] bg-[var(--color-theme-card,#1e293b)]/40 hover:bg-[var(--text-muted,#94a3b8)]/5 transition-all cursor-pointer select-none min-w-[140px] flex-grow ${
+                className={`${switchFlex.className} rounded-lg border border-[var(--border-color,#334155)] bg-[var(--color-theme-card,#1e293b)]/40 hover:bg-[var(--text-muted,#94a3b8)]/5 transition-all cursor-pointer select-none min-w-[var(--sarak-matrix-node-min-width,140px)] flex-grow ${
                     isActive ? 'border-[var(--border-color,#334155)] bg-[var(--sarak-primary-color-bg,rgba(59,130,246,0.1))]/5' : ''
                 }`}
             >

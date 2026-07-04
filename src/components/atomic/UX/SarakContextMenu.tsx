@@ -88,11 +88,11 @@ export const SarakContextMenu: React.FC<SarakContextMenuProps> = ({
                 paddingBlock: 'calc(var(--sarak-layout-gap-md, 16px) * 0.25)',
                 top: coords.y,
                 left: coords.x,
-                minWidth: '10rem',
+                minWidth: 'var(--sarak-context-menu-min-width, 10rem)',
                 borderRadius: 'var(--sarak-card-radius,12px)',
-                background: 'var(--color-theme-card,#1e293b))',
-                color: 'var(--sarak-text-main,#ffffff))',
-                border: '1px solid var(--border-color,#334155)))',
+                background: 'var(--color-theme-card,#1e293b)',
+                color: 'var(--sarak-text-main,#ffffff)',
+                border: '1px solid var(--border-color,#334155)',
                 zIndex: 'var(--z-index-tooltip, 9000)' as React.CSSProperties['zIndex'],
             }}
         >

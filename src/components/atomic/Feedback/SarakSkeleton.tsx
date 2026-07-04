@@ -30,8 +30,8 @@ const PULSE_BG =
 export const SarakSkeleton: React.FC<SarakSkeletonProps> = ({
     shape = 'text',
     rows = 3,
-    rowHeight = '1rem',
-    size = '2.5rem',
+    rowHeight = 'var(--sarak-skeleton-row-height, 1rem)',
+    size = 'var(--sarak-skeleton-circle-size, 2.5rem)',
     width,
 }) => {
     const common = {
@@ -76,7 +76,7 @@ export const SarakSkeleton: React.FC<SarakSkeletonProps> = ({
                     className="animate-pulse w-full"
                     style={{
                         height: rowHeight,
-                        borderRadius: '4px',
+                        borderRadius: 'var(--sarak-skeleton-row-radius, 4px)',
                         background: PULSE_BG,
                     }}
                 />

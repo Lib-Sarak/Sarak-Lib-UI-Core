@@ -38,7 +38,7 @@ export const SarakChart: React.FC<SarakChartProps> = ({ endpoint, label, mapping
     return (
         <div className={twMerge("bg-[var(--color-theme-card,#1e293b)] border-[var(--border-color,#334155)] relative overflow-hidden group rounded-[var(--sarak-card-radius,12px)]", containerLayout.className)} style={containerLayout.style}>
             {/* Contextual Glow Header */}
-            <div className="absolute top-0 right-0 w-64 h-64 bg-[var(--sarak-primary-color-bg,rgba(59,130,246,0.1))] blur-[100px] pointer-events-none" />
+            <div className="absolute top-0 right-0 w-64 h-64 bg-[var(--sarak-primary-color-bg,rgba(59,130,246,0.1))] blur-[var(--sarak-empty-state-orb-blur,100px)] pointer-events-none" />
 
             <div className="flex items-center justify-between relative z-10">
                 <div className="flex items-center" style={{ gap: 'calc(var(--sarak-layout-gap-md,16px) / 2)' }}>

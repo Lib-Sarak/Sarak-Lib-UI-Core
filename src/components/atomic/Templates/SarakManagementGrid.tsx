@@ -134,7 +134,7 @@ export const SarakManagementGrid = <TItem extends Record<string, unknown> = Reco
                                 key={action.label}
                                 onClick={() => handleAction(action.action)}
                                 className="shadow-lg"
-                                style={{ boxShadow: '0 10px 20px -10px var(--sarak-shadow-glow,rgba(59,130,246,0.5))' }}
+                                style={{ boxShadow: '0 var(--sarak-action-glow-shadow-offset-y, 10px) var(--sarak-action-glow-shadow-blur, 20px) calc(var(--sarak-action-glow-shadow-spread, 10px) * -1) var(--sarak-shadow-glow,rgba(59,130,246,0.5))' }}
                             >
                                 <Plus size={16} />
                                 {action.label}

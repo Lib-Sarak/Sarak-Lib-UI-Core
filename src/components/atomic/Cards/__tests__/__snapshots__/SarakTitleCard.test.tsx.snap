@@ -57,7 +57,7 @@ exports[`SarakTitleCard (Characterization) > matches snapshot before any removal
         </div>
         <div
           class="bg-[var(--color-theme-card,#1e293b)] border-[var(--border-color,#334155)] flex items-center justify-center relative shrink-0 transition-all group-hover:border-[var(--sarak-primary-color,#3b82f6)]"
-          style="padding: calc(var(--sarak-layout-gap-md, 16px) * 0.75); border-radius: var(--sarak-card-radius,12px); box-shadow: 0 0 15px var(--sarak-card-title-icon-glow, rgba(0, 242, 255, 0.2));"
+          style="padding: calc(var(--sarak-layout-gap-md, 16px) * 0.75); border-radius: var(--sarak-card-radius,12px); box-shadow: 0 0 var(--sarak-card-title-icon-glow-blur, 15px) var(--sarak-card-title-icon-glow, rgba(0, 242, 255, 0.2));"
         >
           <svg
             class="text-[var(--sarak-primary-color,#3b82f6)] group-hover:scale-110 transition-transform"

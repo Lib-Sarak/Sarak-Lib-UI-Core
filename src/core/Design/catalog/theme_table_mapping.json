@@ -97,6 +97,7 @@
     "statusWarningColor",
     "statusInfoColor",
     "badgeRadius",
+    "statusGlowBlur",
     "globalBackgroundImageUrl",
     "globalBackgroundBlur",
     "globalBackgroundBlendMode",
@@ -227,7 +228,25 @@
     "inputShadow",
     "inputIconColor",
     "inputErrorColor",
-    "inputSuccessColor"
+    "inputSuccessColor",
+    "iconButtonGlowBlurSm",
+    "iconButtonGlowBlurMd",
+    "iconButtonGlowBlurLg",
+    "iconButtonFrostedShadowOffsetY",
+    "iconButtonFrostedShadowBlur",
+    "themeDropdownMaxHeight",
+    "actionGlowShadowOffsetY",
+    "actionGlowShadowBlur",
+    "actionGlowShadowSpread",
+    "kanbanHeaderPaddingY",
+    "kanbanHeaderTracking",
+    "kanbanCardRadius",
+    "toastMinWidth",
+    "toastMaxWidth",
+    "toastAccentWidth",
+    "contextMenuMinWidth",
+    "multiSelectInputMinWidth",
+    "searchBackdropBlur"
   ],
   "cards_engine": [
     "cardLayoutDirection",
@@ -285,7 +304,19 @@
     "cardSearchBgFocus",
     "cardSearchBorderBeamActive",
     "cardSearchPlaceholderColor",
-    "cardSearchTextFocusColor"
+    "cardSearchTextFocusColor",
+    "cardTitleIconGlowBlur",
+    "imageCardShadowOffsetY",
+    "imageCardShadowBlur",
+    "imageCardShadowSpread",
+    "imageCardGlowBlur",
+    "managementGroupListMaxHeight",
+    "managementGroupDescMaxWidth",
+    "matrixNodeMinWidth",
+    "mfaQrCodeSize",
+    "catalogFilterMinWidth",
+    "catalogSectionRadius",
+    "catalogItemRadius"
   ],
   "data_and_charts": [
     "chartColorPalette",
@@ -298,7 +329,20 @@
     "aiPanelBg",
     "aiGlowColor",
     "flowNodeRadius",
-    "flowGridStyle"
+    "flowGridStyle",
+    "dotGridDotOffset",
+    "dotGridDotSize",
+    "dotGridTileSize",
+    "emptyStateOrbOuter",
+    "emptyStateOrbInner",
+    "emptyStateOrbBlur",
+    "emptyStateVoidLetterOffset",
+    "emptyStateRingRadius",
+    "emptyStateCaptionMaxWidth",
+    "skeletonRowHeight",
+    "skeletonCircleSize",
+    "skeletonRowRadius",
+    "authHeroOrbBlur"
   ],
   "motion_and_animation": [
     "animInstant",
@@ -333,7 +377,9 @@
     "matrixItemBg",
     "matrixBorderColor",
     "matrixSearchBg",
-    "matrixBlur"
+    "matrixBlur",
+    "chatAttachmentNameMaxWidth",
+    "chatTokenSliderMinWidth"
   ],
   "structural": [
     "breakpointTablet",
@@ -345,6 +391,7 @@
     "headerAlignment",
     "formLabelPosition",
     "formFieldDensity",
-    "switchLabelPosition"
+    "switchLabelPosition",
+    "splitPaneMinWidth"
   ]
 }

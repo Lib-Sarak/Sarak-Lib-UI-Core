@@ -76,6 +76,46 @@ export const OverlaysSchema: ComponentSchema = {
             constraints: { min: 0, max: 12 },
             defaultValue: 4,
             cssVars: ['--sarak-tooltip-radius']
+        },
+
+        // --- TOAST (Spec 27) ---
+        {
+            id: 'toastMinWidth',
+            label: 'Toast: Largura Mínima',
+            type: 'slider',
+            unit: 'rem',
+            constraints: { min: 8, max: 30 },
+            defaultValue: 15,
+            cssVars: ['--sarak-toast-min-width']
+        },
+        {
+            id: 'toastMaxWidth',
+            label: 'Toast: Largura Máxima',
+            type: 'slider',
+            unit: 'rem',
+            constraints: { min: 8, max: 40 },
+            defaultValue: 22.5,
+            cssVars: ['--sarak-toast-max-width']
+        },
+        {
+            id: 'toastAccentWidth',
+            label: 'Toast: Largura da Borda de Destaque',
+            type: 'slider',
+            unit: 'px',
+            constraints: { min: 0, max: 12 },
+            defaultValue: 4,
+            cssVars: ['--sarak-toast-accent-width']
+        },
+
+        // --- CONTEXT MENU (Spec 27) ---
+        {
+            id: 'contextMenuMinWidth',
+            label: 'Context Menu: Largura Mínima',
+            type: 'slider',
+            unit: 'rem',
+            constraints: { min: 4, max: 20 },
+            defaultValue: 10,
+            cssVars: ['--sarak-context-menu-min-width']
         }
     ]
 };

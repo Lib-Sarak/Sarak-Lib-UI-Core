@@ -115,7 +115,7 @@ export const SarakMultiSelect: React.FC<SarakMultiSelectProps> = ({
                         onFocus={() => setOpen(true)}
                         onBlur={() => setTimeout(() => setOpen(false), 120)}
                         onKeyDown={handleKeyDown}
-                        className="flex-1 min-w-[6rem] bg-transparent outline-none text-[var(--sarak-input-text-color,var(--text-muted,#94a3b8))]"
+                        className="flex-1 min-w-[var(--sarak-multi-select-input-min-width,6rem)] bg-transparent outline-none text-[var(--sarak-input-text-color,var(--text-muted,#94a3b8))]"
                     />
                 </div>
 

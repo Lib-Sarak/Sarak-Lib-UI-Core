@@ -6,7 +6,7 @@ exports[`SarakChart > matches snapshot to ensure no layout regressions during ty
     class="bg-[var(--color-theme-card,#1e293b)] border-[var(--border-color,#334155)] relative overflow-hidden group rounded-[var(--sarak-card-radius,12px)] mocked-container"
   >
     <div
-      class="absolute top-0 right-0 w-64 h-64 bg-[var(--sarak-primary-color-bg,rgba(59,130,246,0.1))] blur-[100px] pointer-events-none"
+      class="absolute top-0 right-0 w-64 h-64 bg-[var(--sarak-primary-color-bg,rgba(59,130,246,0.1))] blur-[var(--sarak-empty-state-orb-blur,100px)] pointer-events-none"
     />
     <div
       class="flex items-center justify-between relative z-10"

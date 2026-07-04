@@ -103,7 +103,7 @@ export const SarakTitleCard = <TItem extends Record<string, unknown>>({ item, ma
                         style={{
                             padding: 'calc(var(--sarak-layout-gap-md, 16px) * 0.75)',
                             borderRadius: 'var(--sarak-card-radius,12px)',
-                            boxShadow: '0 0 15px var(--sarak-card-title-icon-glow, rgba(0, 242, 255, 0.2))'
+                            boxShadow: '0 0 var(--sarak-card-title-icon-glow-blur, 15px) var(--sarak-card-title-icon-glow, rgba(0, 242, 255, 0.2))'
                         }}
                     >
                         {mapping?.icon && LucideIcons[mapping.icon as keyof typeof LucideIcons] ? (

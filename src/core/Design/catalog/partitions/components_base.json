@@ -1311,5 +1311,131 @@
     "cssVars": [
       "--sarak-input-success-color"
     ]
+  },
+  {
+    "tokenId": "iconButtonGlowBlurSm",
+    "label": "Glow do Icon Button: Desfoque Pequeno",
+    "type": "number",
+    "defaultValue": 5,
+    "cssVars": ["--sarak-icon-button-glow-blur-sm"]
+  },
+  {
+    "tokenId": "iconButtonGlowBlurMd",
+    "label": "Glow do Icon Button: Desfoque Médio",
+    "type": "number",
+    "defaultValue": 8,
+    "cssVars": ["--sarak-icon-button-glow-blur-md"]
+  },
+  {
+    "tokenId": "iconButtonGlowBlurLg",
+    "label": "Glow do Icon Button: Desfoque Grande",
+    "type": "number",
+    "defaultValue": 12,
+    "cssVars": ["--sarak-icon-button-glow-blur-lg"]
+  },
+  {
+    "tokenId": "iconButtonFrostedShadowOffsetY",
+    "label": "Sombra Frosted do Icon Button: Offset Y",
+    "type": "number",
+    "defaultValue": 4,
+    "cssVars": ["--sarak-icon-button-frosted-shadow-offset-y"]
+  },
+  {
+    "tokenId": "iconButtonFrostedShadowBlur",
+    "label": "Sombra Frosted do Icon Button: Desfoque",
+    "type": "number",
+    "defaultValue": 16,
+    "cssVars": ["--sarak-icon-button-frosted-shadow-blur"]
+  },
+  {
+    "tokenId": "themeDropdownMaxHeight",
+    "label": "Altura Máxima do Dropdown de Temas",
+    "type": "number",
+    "defaultValue": 400,
+    "cssVars": ["--sarak-theme-dropdown-max-height"]
+  },
+  {
+    "tokenId": "actionGlowShadowOffsetY",
+    "label": "Sombra de Ação: Offset Y",
+    "type": "number",
+    "defaultValue": 10,
+    "cssVars": ["--sarak-action-glow-shadow-offset-y"]
+  },
+  {
+    "tokenId": "actionGlowShadowBlur",
+    "label": "Sombra de Ação: Desfoque",
+    "type": "number",
+    "defaultValue": 20,
+    "cssVars": ["--sarak-action-glow-shadow-blur"]
+  },
+  {
+    "tokenId": "actionGlowShadowSpread",
+    "label": "Sombra de Ação: Espalhamento",
+    "type": "number",
+    "defaultValue": 10,
+    "cssVars": ["--sarak-action-glow-shadow-spread"]
+  },
+  {
+    "tokenId": "kanbanHeaderPaddingY",
+    "label": "Kanban: Padding Vertical do Cabeçalho da Coluna",
+    "type": "number",
+    "defaultValue": 4,
+    "cssVars": ["--sarak-kanban-header-padding-y"]
+  },
+  {
+    "tokenId": "kanbanHeaderTracking",
+    "label": "Kanban: Tracking do Cabeçalho da Coluna",
+    "type": "number",
+    "defaultValue": 0.04,
+    "cssVars": ["--sarak-kanban-header-tracking"]
+  },
+  {
+    "tokenId": "kanbanCardRadius",
+    "label": "Kanban: Arredondamento do Card",
+    "type": "number",
+    "defaultValue": 8,
+    "cssVars": ["--sarak-kanban-card-radius"]
+  },
+  {
+    "tokenId": "toastMinWidth",
+    "label": "Toast: Largura Mínima",
+    "type": "number",
+    "defaultValue": 15,
+    "cssVars": ["--sarak-toast-min-width"]
+  },
+  {
+    "tokenId": "toastMaxWidth",
+    "label": "Toast: Largura Máxima",
+    "type": "number",
+    "defaultValue": 22.5,
+    "cssVars": ["--sarak-toast-max-width"]
+  },
+  {
+    "tokenId": "toastAccentWidth",
+    "label": "Toast: Largura da Borda de Destaque",
+    "type": "number",
+    "defaultValue": 4,
+    "cssVars": ["--sarak-toast-accent-width"]
+  },
+  {
+    "tokenId": "contextMenuMinWidth",
+    "label": "Context Menu: Largura Mínima",
+    "type": "number",
+    "defaultValue": 10,
+    "cssVars": ["--sarak-context-menu-min-width"]
+  },
+  {
+    "tokenId": "multiSelectInputMinWidth",
+    "label": "Multi-Select: Largura Mínima do Input Interno",
+    "type": "number",
+    "defaultValue": 6,
+    "cssVars": ["--sarak-multi-select-input-min-width"]
+  },
+  {
+    "tokenId": "searchBackdropBlur",
+    "label": "Search Palette: Desfoque do Backdrop",
+    "type": "number",
+    "defaultValue": 8,
+    "cssVars": ["--sarak-search-backdrop-blur"]
   }
 ]
