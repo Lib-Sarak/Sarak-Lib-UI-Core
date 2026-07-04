@@ -48,14 +48,14 @@ export const SarakSelect: React.FC<SarakSelectProps> = ({
             </select>
             
             {/* Custom Caret */}
-            <div className="absolute inset-y-0 right-0 pr-4 flex items-center pointer-events-none text-[var(--sarak-input-icon-color,rgba(255,255,255,0.5))] transition-colors group-focus-within:text-[var(--sarak-input-focus-border-color,var(--sarak-primary-color,#3b82f6))]">
+            <div className="absolute inset-y-0 right-0 flex items-center pointer-events-none text-[var(--sarak-input-icon-color,rgba(255,255,255,0.5))] transition-colors group-focus-within:text-[var(--sarak-input-focus-border-color,var(--sarak-primary-color,#3b82f6))]" style={{ paddingRight: 'var(--sarak-layout-gap-md,16px)' }}>
                 <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                     <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M19 9l-7 7-7-7" />
                 </svg>
             </div>
 
             {error && (
-                <p className="mt-2 text-sm text-[var(--sarak-input-error-color,#ff4d4f)]">
+                <p className="text-sm text-[var(--sarak-input-error-color,#ff4d4f)]" style={{ marginTop: 'var(--sarak-layout-gap-sm, 8px)' }}>
                     {error}
                 </p>
             )}

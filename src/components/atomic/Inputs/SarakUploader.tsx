@@ -85,8 +85,13 @@ export const SarakUploader: React.FC<SarakUploaderProps> = ({
 
             <div
                 {...getRootProps()}
-                className={`flex flex-col items-center justify-center gap-2 w-full rounded-input py-8 px-4 text-center border-2 border-dashed transition-colors bg-[var(--sarak-input-bg,var(--color-theme-card,#1e293b))] ${disabledClass}`}
-                style={{ borderColor: borderFor(isDragActive, isDragReject, !!error) }}
+                className={`flex items-center justify-center w-full rounded-input text-center border-2 border-dashed transition-colors bg-[var(--sarak-input-bg,var(--color-theme-card,#1e293b))] ${disabledClass}`}
+                style={{
+                    flexDirection: 'column',
+                    gap: 'var(--sarak-layout-gap-sm, 8px)',
+                    padding: 'calc(var(--sarak-layout-gap-md,16px) * 2) var(--sarak-layout-gap-md,16px)',
+                    borderColor: borderFor(isDragActive, isDragReject, !!error)
+                }}
                 aria-disabled={disabled || undefined}
                 aria-invalid={error ? true : undefined}
             >
@@ -101,7 +106,7 @@ export const SarakUploader: React.FC<SarakUploaderProps> = ({
             </div>
 
             {error && (
-                <p className="mt-1 text-sm text-[var(--sarak-input-error-color,#ff4d4f)]">{error}</p>
+                <p className="text-sm text-[var(--sarak-input-error-color,#ff4d4f)]" style={{ marginTop: 'calc(var(--sarak-layout-gap-md,16px) * 0.25)' }}>{error}</p>
             )}
         </SarakFormGroup>
     );

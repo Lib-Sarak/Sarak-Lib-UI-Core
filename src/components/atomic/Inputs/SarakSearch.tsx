@@ -42,7 +42,7 @@ export const SarakSearch: React.FC<SarakSearchProps> = ({ isOpen, onClose }) => 
 
     return (
         <AnimatePresence>
-            <div className="fixed inset-0 z-[600] flex items-start justify-center pt-[10vh] px-4">
+            <div className="fixed inset-0 z-[600] flex items-start justify-center pt-[10vh]" style={{ paddingLeft: 'var(--sarak-layout-gap-md,16px)', paddingRight: 'var(--sarak-layout-gap-md,16px)' }}>
                 {/* Backdrop */}
                 <motion.div 
                     initial={{ opacity: 0 }}
@@ -60,7 +60,10 @@ export const SarakSearch: React.FC<SarakSearchProps> = ({ isOpen, onClose }) => 
                     className={`relative w-full ${searchStyle === 'minimal' ? 'max-w-lg mt-[5vh]' : 'max-w-2xl mt-[10vh]'} bg-[var(--color-theme-card,#1e293b)] border border-[var(--border-color,#334155)] rounded-[var(--radius-theme)] shadow-[var(--dynamic-shadow)] overflow-hidden`}
                 >
                     {/* Input Area */}
-                    <div className="flex items-center gap-4 px-6 py-5 border-b border-[var(--border-color,#334155)] bg-[var(--color-theme-title,#ffffff)]/[0.02]">
+                    <div
+                        className="flex items-center border-b border-[var(--border-color,#334155)] bg-[var(--color-theme-title,#ffffff)]/[0.02]"
+                        style={{ gap: 'var(--sarak-layout-gap-md,16px)', padding: 'calc(var(--sarak-layout-gap-md,16px) * 1.25) var(--sarak-layout-gap-lg, 24px)' }}
+                    >
                         <Search className="w-5 h-5 text-[var(--text-muted,#94a3b8)]" />
                         <input 
                             ref={inputRef}
@@ -69,27 +72,31 @@ export const SarakSearch: React.FC<SarakSearchProps> = ({ isOpen, onClose }) => 
                             placeholder="Search tool, record or configuration..."
                             className="flex-1 bg-transparent border-none outline-none text-[var(--color-theme-title,#ffffff)] text-lg placeholder:text-[var(--text-muted,#94a3b8)] font-medium"
                         />
-                        <div className="flex items-center gap-1.5 px-2 py-1 rounded-[calc(var(--radius-theme)*0.5)] bg-[var(--sarak-primary-color,#3b82f6)]/10 border border-[var(--sarak-primary-color,#3b82f6)]/20 text-2xs text-[var(--sarak-primary-color,#3b82f6)] font-bold uppercase tracking-widest">
+                        <div
+                            className="flex items-center rounded-[calc(var(--radius-theme)*0.5)] bg-[var(--sarak-primary-color,#3b82f6)]/10 border border-[var(--sarak-primary-color,#3b82f6)]/20 text-2xs text-[var(--sarak-primary-color,#3b82f6)] font-bold uppercase tracking-widest"
+                            style={{ gap: 'calc(var(--sarak-layout-gap-md,16px) * 0.375)', padding: 'calc(var(--sarak-layout-gap-md,16px) * 0.25) var(--sarak-layout-gap-sm, 8px)' }}
+                        >
                             <span className="text-[12px]"><Command size={10} /></span>
                             <span>K</span>
                         </div>
                     </div>
 
                     {/* Results Area */}
-                    <div className="max-h-[60vh] overflow-y-auto custom-scrollbar p-2">
+                    <div className="max-h-[60vh] overflow-y-auto custom-scrollbar" style={{ padding: 'var(--sarak-layout-gap-sm, 8px)' }}>
                         {filteredModules.length > 0 ? (
-                            <div className="py-2">
-                                <h4 className="text-2xs font-black uppercase tracking-[0.2em] text-[var(--text-muted,#94a3b8)] px-4 mb-2">Available Tools</h4>
+                            <div style={{ paddingTop: 'var(--sarak-layout-gap-sm, 8px)', paddingBottom: 'var(--sarak-layout-gap-sm, 8px)' }}>
+                                <h4 className="text-2xs font-black uppercase tracking-[0.2em] text-[var(--text-muted,#94a3b8)]" style={{ paddingLeft: 'var(--sarak-layout-gap-md,16px)', paddingRight: 'var(--sarak-layout-gap-md,16px)', marginBottom: 'var(--sarak-layout-gap-sm, 8px)' }}>Available Tools</h4>
                                 {filteredModules.map(mod => (
-                                    <div 
+                                    <div
                                         key={mod.id}
-                                        className="group h-14 px-4 flex items-center justify-between rounded-[calc(var(--radius-theme)*0.8)] hover:bg-[var(--sarak-primary-color,#3b82f6)]/5 transition-all cursor-pointer"
+                                        className="group h-14 flex items-center justify-between rounded-[calc(var(--radius-theme)*0.8)] hover:bg-[var(--sarak-primary-color,#3b82f6)]/5 transition-all cursor-pointer"
+                                        style={{ paddingLeft: 'var(--sarak-layout-gap-md,16px)', paddingRight: 'var(--sarak-layout-gap-md,16px)' }}
                                     >
-                                        <div className="flex items-center gap-4">
+                                        <div className="flex items-center" style={{ gap: 'var(--sarak-layout-gap-md,16px)' }}>
                                             <div className="w-9 h-9 rounded-[calc(var(--radius-theme)*0.5)] bg-[var(--color-theme-card,#1e293b)] flex items-center justify-center text-[var(--text-muted,#94a3b8)] group-hover:text-[var(--sarak-primary-color,#3b82f6)] group-hover:bg-[var(--sarak-primary-color,#3b82f6)]/10 transition-all border border-[var(--border-color,#334155)]">
                                                 <Command size={16} />
                                             </div>
-                                            <div className="flex flex-col">
+                                            <div className="flex" style={{ flexDirection: 'column' }}>
                                                 <span className="text-sm font-bold text-[var(--color-theme-title,#ffffff)]/80 group-hover:text-[var(--sarak-primary-color,#3b82f6)]">{mod.label}</span>
                                                 <span className="text-2xs text-[var(--text-muted,#94a3b8)] uppercase tracking-widest">{mod.category || 'Module'}</span>
                                             </div>
@@ -99,22 +106,25 @@ export const SarakSearch: React.FC<SarakSearchProps> = ({ isOpen, onClose }) => 
                                 ))}
                             </div>
                         ) : (
-                            <div className="py-20 flex flex-col items-center justify-center text-center opacity-20">
-                                <Search className="w-12 h-12 mb-4 text-[var(--color-theme-title,#ffffff)]" />
+                            <div className="flex items-center justify-center text-center opacity-20" style={{ flexDirection: 'column', paddingTop: 'calc(var(--sarak-layout-gap-md,16px) * 5)', paddingBottom: 'calc(var(--sarak-layout-gap-md,16px) * 5)' }}>
+                                <Search className="w-12 h-12 text-[var(--color-theme-title,#ffffff)]" style={{ marginBottom: 'var(--sarak-layout-gap-md,16px)' }} />
                                 <span className="text-sm font-black uppercase tracking-widest text-[var(--color-theme-title,#ffffff)]">No results for "{query}"</span>
                             </div>
                         )}
                     </div>
 
                     {/* Footer Area */}
-                    <div className="bg-[var(--color-theme-card,#1e293b)]/40 border-t border-[var(--border-color,#334155)] px-6 py-3 flex items-center justify-between">
-                        <div className="flex gap-4">
-                            <div className="flex items-center gap-1.5 text-2xs font-bold text-[var(--text-muted,#94a3b8)] uppercase tracking-widest">
-                                <span className="px-1.5 py-0.5 rounded bg-[var(--color-theme-card,#1e293b)] border border-[var(--border-color,#334155)]">ESC</span>
+                    <div
+                        className="bg-[var(--color-theme-card,#1e293b)]/40 border-t border-[var(--border-color,#334155)] flex items-center justify-between"
+                        style={{ padding: 'calc(var(--sarak-layout-gap-md,16px) * 0.75) var(--sarak-layout-gap-lg, 24px)' }}
+                    >
+                        <div className="flex" style={{ gap: 'var(--sarak-layout-gap-md,16px)' }}>
+                            <div className="flex items-center text-2xs font-bold text-[var(--text-muted,#94a3b8)] uppercase tracking-widest" style={{ gap: 'calc(var(--sarak-layout-gap-md,16px) * 0.375)' }}>
+                                <span className="rounded bg-[var(--color-theme-card,#1e293b)] border border-[var(--border-color,#334155)]" style={{ padding: 'calc(var(--sarak-layout-gap-md,16px) * 0.125) calc(var(--sarak-layout-gap-md,16px) * 0.375)' }}>ESC</span>
                                 <span>Close</span>
                             </div>
-                            <div className="flex items-center gap-1.5 text-2xs font-bold text-[var(--text-muted,#94a3b8)] uppercase tracking-widest">
-                                <span className="px-1.5 py-0.5 rounded bg-[var(--color-theme-card,#1e293b)] border border-[var(--border-color,#334155)]">↑↓</span>
+                            <div className="flex items-center text-2xs font-bold text-[var(--text-muted,#94a3b8)] uppercase tracking-widest" style={{ gap: 'calc(var(--sarak-layout-gap-md,16px) * 0.375)' }}>
+                                <span className="rounded bg-[var(--color-theme-card,#1e293b)] border border-[var(--border-color,#334155)]" style={{ padding: 'calc(var(--sarak-layout-gap-md,16px) * 0.125) calc(var(--sarak-layout-gap-md,16px) * 0.375)' }}>↑↓</span>
                                 <span>Navigate</span>
                             </div>
                         </div>

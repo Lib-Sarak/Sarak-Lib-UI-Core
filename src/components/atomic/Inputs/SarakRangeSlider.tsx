@@ -123,7 +123,7 @@ export const SarakRangeSlider: React.FC<SarakRangeSliderProps> = ({
             </div>
 
             {error && (
-                <p id={errorId} className="mt-1 text-sm text-[var(--sarak-input-error-color,#ff4d4f)]">
+                <p id={errorId} className="text-sm text-[var(--sarak-input-error-color,#ff4d4f)]" style={{ marginTop: 'calc(var(--sarak-layout-gap-md,16px) * 0.25)' }}>
                     {error}
                 </p>
             )}

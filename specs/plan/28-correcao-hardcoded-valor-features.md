@@ -13,8 +13,7 @@ relacionados: ["20-correcao-hardcoded-base", "07-agente-llm-design-e-expansao-es
 
 Etapa 8: eliminar os valores `px/rem/em` hardcoded em `src/features` e componentes não-atômicos (`components/Layout`, etc.). Reaproveita os tokens criados nas specs 26/27.
 
-> ## ⛔ DEPENDÊNCIA: Spec 30 (variáveis reais) primeiro
-> **Proibido `--sx-*`** (namespace fantasma — não resolve em runtime). Migre para **variáveis reais da engine + fallback** conforme a tabela de mapeamento da [[30-erradicacao-variaveis-fantasma]]. Ao fim, rode `auditor_ghostvars.mjs` → **0 fantasmas**.
+> **Proibido `--sx-*`** — use variáveis reais + fallback. Ao fim, `auditor_ghostvars.mjs` → **0 fantasmas**.
 
 # 2. Escopo & Meta
 **Meta:** zerar os **~150** valores `px/rem/em` hardcoded fora dos átomos, **exceto** hairlines `1px`/`2px`.

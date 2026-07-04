@@ -44,7 +44,7 @@ export const SarakTextarea: React.FC<SarakTextareaProps> = ({
                 {...props}
             />
             {error && (
-                <p className="mt-2 text-sm text-[var(--sarak-input-error-color,#ff4d4f)]">
+                <p className="text-sm text-[var(--sarak-input-error-color,#ff4d4f)]" style={{ marginTop: 'var(--sarak-layout-gap-sm, 8px)' }}>
                     {error}
                 </p>
             )}

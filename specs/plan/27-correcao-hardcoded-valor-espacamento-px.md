@@ -13,8 +13,7 @@ relacionados: ["20-correcao-hardcoded-base", "07-agente-llm-design-e-expansao-es
 
 Etapa 7: eliminar os demais valores `px/rem/em` arbitrários nos átomos — paddings/sizes arbitrários (`p-[..px]`, `h-[..px]`) e offsets de sombra — usando tokens de espaçamento já existentes.
 
-> ## ⛔ DEPENDÊNCIA: Spec 30 (variáveis reais) primeiro
-> **Proibido `--sx-*`** (namespace fantasma — não resolve em runtime). Migre para **variáveis reais da engine + fallback** conforme a tabela de mapeamento da [[30-erradicacao-variaveis-fantasma]] (ex.: `var(--sarak-layout-gap-md, 16px)`; `calc(...)` para passos sem token). Ao fim, rode `auditor_ghostvars.mjs` → **0 fantasmas**.
+> **Proibido `--sx-*`** — use variáveis reais + fallback (ex.: `var(--sarak-layout-gap-md, 16px)`; `calc(...)` para passos sem token). Ao fim, `auditor_ghostvars.mjs` → **0 fantasmas**.
 
 # 2. Escopo & Meta
 **Meta:** zerar os **~59** valores `px/rem/em` arbitrários remanescentes em `src/components` (átomos), **exceto** hairlines `1px`/`2px` (tolerados/deduzidos).

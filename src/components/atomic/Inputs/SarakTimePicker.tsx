@@ -59,7 +59,7 @@ export const SarakTimePicker: React.FC<SarakTimePickerProps> = ({
         <SarakFormGroup className={`${disabledClass} ${className}`.trim()} style={style}>
             {label && <span className="text-sm font-medium text-[var(--text-muted,#94a3b8)]">{label}</span>}
 
-            <div className="flex items-center gap-2" role="group" aria-label={label ?? 'Horário'}>
+            <div className="flex items-center" style={{ gap: 'var(--sarak-layout-gap-sm, 8px)' }} role="group" aria-label={label ?? 'Horário'}>
                 <select
                     aria-label="Hora"
                     aria-invalid={error ? true : undefined}
@@ -92,7 +92,7 @@ export const SarakTimePicker: React.FC<SarakTimePickerProps> = ({
             </div>
 
             {error && (
-                <p id={errorId} className="mt-1 text-sm text-[var(--sarak-input-error-color,#ff4d4f)]">{error}</p>
+                <p id={errorId} className="text-sm text-[var(--sarak-input-error-color,#ff4d4f)]" style={{ marginTop: 'calc(var(--sarak-layout-gap-md,16px) * 0.25)' }}>{error}</p>
             )}
         </SarakFormGroup>
     );

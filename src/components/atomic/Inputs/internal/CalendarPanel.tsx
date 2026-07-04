@@ -87,7 +87,7 @@ export const CalendarPanel: React.FC<CalendarPanelProps> = ({
 
     return (
         <div className="w-64">
-            <div className="flex items-center justify-between mb-2">
+            <div className="flex items-center justify-between" style={{ marginBottom: 'var(--sarak-layout-gap-sm, 8px)' }}>
                 <NavButton label="Mês anterior" onClick={() => setViewMonth(addMonths(viewMonth, -1))} dir="prev" />
                 <span className="text-sm font-bold capitalize text-[var(--text-muted,#94a3b8)]">
                     {format(viewMonth, 'MMMM yyyy', { locale })}
@@ -95,7 +95,7 @@ export const CalendarPanel: React.FC<CalendarPanelProps> = ({
                 <NavButton label="Próximo mês" onClick={() => setViewMonth(addMonths(viewMonth, 1))} dir="next" />
             </div>
 
-            <div className="grid grid-cols-7 mb-1">
+            <div className="grid grid-cols-7" style={{ marginBottom: 'calc(var(--sarak-layout-gap-md,16px) * 0.25)' }}>
                 {weekdays.map((day, i) => (
                     <span key={i} className="text-center text-2xs font-black uppercase text-[var(--text-muted,#94a3b8)]/50">
                         {day}
@@ -103,7 +103,7 @@ export const CalendarPanel: React.FC<CalendarPanelProps> = ({
                 ))}
             </div>
 
-            <div ref={gridRef} role="grid" onKeyDown={handleKeyDown} className="grid grid-cols-7 gap-0.5">
+            <div ref={gridRef} role="grid" onKeyDown={handleKeyDown} className="grid grid-cols-7" style={{ gap: 'calc(var(--sarak-layout-gap-md,16px) * 0.125)' }}>
                 {weeks.flat().map((cell) => {
                     const selected = isSelected(cell.date);
                     const between = inRange(cell.date);

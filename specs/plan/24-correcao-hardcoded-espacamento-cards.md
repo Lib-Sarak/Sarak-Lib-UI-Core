@@ -13,8 +13,7 @@ relacionados: ["20-correcao-hardcoded-base", "07-agente-llm-design-e-expansao-es
 
 Etapa 4: a família de **Cards**. Já existe o hook de domínio `useCardLayoutStyles` — esta etapa completa a migração dos resíduos.
 
-> ## ⛔ DEPENDÊNCIA: Spec 30 (variáveis reais) primeiro
-> **Proibido `--sx-*`** (namespace fantasma — não resolve em runtime). Migre para **variáveis reais da engine + fallback** conforme a tabela de mapeamento da [[30-erradicacao-variaveis-fantasma]] (ex.: `var(--sarak-layout-gap-md, 16px)`; `calc(var(--sarak-layout-gap-md,16px) * fator)` para passos sem token). Ao fim, rode `auditor_ghostvars.mjs` → **0 fantasmas**.
+> **Proibido `--sx-*`** — use variáveis reais + fallback (ex.: `var(--sarak-layout-gap-md, 16px)`; `calc(...)` para passos sem token). Ao fim, `auditor_ghostvars.mjs` → **0 fantasmas**.
 
 # 2. Escopo & Meta
 **Meta:** zerar as **~65 violações duras** dos arquivos abaixo, reaproveitando `useCardLayoutStyles` / `getCardStyles`.

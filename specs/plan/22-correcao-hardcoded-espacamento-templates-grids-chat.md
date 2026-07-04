@@ -13,9 +13,6 @@ relacionados: ["20-correcao-hardcoded-base", "07-agente-llm-design-e-expansao-es
 
 Etapa 2: o subconjunto de **Templates de raiz (grids, tabelas, stats) e o módulo de Chat**.
 
-> ## ⛔ DEPENDÊNCIA: executar a [[30-erradicacao-variaveis-fantasma]] primeiro
-> O namespace `--sx-*` é **fantasma** (não resolve). Esta spec **não pode** migrar para `var(--sx-spacing-*)` — esse era o erro da Spec 21. Use **somente variáveis reais da engine + fallback** (ver tabela na §3). Rode o `auditor_ghostvars.mjs` ao fim: **0 fantasmas**.
->
 > **Carve-out de grids:** os `grid-cols-*` de `SarakStats` (2/lg:4), `SarakCardGrid` (1/md:2/xl:3) e `SarakCatalogGrid` (1/md:2/lg:3/xl:4) são **3 malhas distintas** sem token equivalente. Ficam **DEFERIDOS** para uma spec de Expansão paramétrica de grid-columns — **não** force `getGridStyles` (só tem col-12/auto-fit/masonry) nem reloc para string inline. O alvo de duras desta spec **exclui** esses grid-cols.
 
 # 2. Escopo & Meta

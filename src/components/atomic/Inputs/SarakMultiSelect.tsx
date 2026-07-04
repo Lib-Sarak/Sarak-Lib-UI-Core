@@ -123,7 +123,8 @@ export const SarakMultiSelect: React.FC<SarakMultiSelectProps> = ({
                     <ul
                         id={listId}
                         role="listbox"
-                        className="absolute z-20 mt-1 w-full max-h-56 overflow-auto rounded-input py-1 bg-[var(--color-theme-card,#1e293b)] border border-[var(--border-color,#334155)] shadow-lg"
+                        className="absolute z-20 w-full max-h-56 overflow-auto rounded-input bg-[var(--color-theme-card,#1e293b)] border border-[var(--border-color,#334155)] shadow-lg"
+                        style={{ marginTop: 'calc(var(--sarak-layout-gap-md,16px) * 0.25)', paddingTop: 'calc(var(--sarak-layout-gap-md,16px) * 0.25)', paddingBottom: 'calc(var(--sarak-layout-gap-md,16px) * 0.25)' }}
                     >
                         {filtered.map((opt) => (
                             <li
@@ -132,7 +133,8 @@ export const SarakMultiSelect: React.FC<SarakMultiSelectProps> = ({
                                 aria-selected={false}
                                 // onMouseDown (não onClick) para selecionar antes do blur do input.
                                 onMouseDown={(e) => { e.preventDefault(); add(opt.value); }}
-                                className="px-3 py-2 cursor-pointer text-sm text-[var(--text-muted,#94a3b8)] hover:bg-[var(--sarak-primary-color,#3b82f6)]/10"
+                                className="cursor-pointer text-sm text-[var(--text-muted,#94a3b8)] hover:bg-[var(--sarak-primary-color,#3b82f6)]/10"
+                                style={{ padding: 'var(--sarak-layout-gap-sm, 8px) calc(var(--sarak-layout-gap-md,16px) * 0.75)' }}
                             >
                                 {opt.label}
                             </li>
@@ -142,7 +144,7 @@ export const SarakMultiSelect: React.FC<SarakMultiSelectProps> = ({
             </div>
 
             {error && (
-                <p id={errorId} className="mt-1 text-sm text-[var(--sarak-input-error-color,#ff4d4f)]">
+                <p id={errorId} className="text-sm text-[var(--sarak-input-error-color,#ff4d4f)]" style={{ marginTop: 'calc(var(--sarak-layout-gap-md,16px) * 0.25)' }}>
                     {error}
                 </p>
             )}
@@ -157,7 +159,16 @@ interface ChipProps {
 }
 
 const Chip: React.FC<ChipProps> = ({ label, disabled, onRemove }) => (
-    <span className="inline-flex items-center gap-1 rounded-full py-0.5 pl-2 pr-1 text-xs font-medium bg-[var(--sarak-primary-color,#3b82f6)]/15 text-[var(--sarak-primary-color,#3b82f6)]">
+    <span
+        className="inline-flex items-center rounded-full text-xs font-medium bg-[var(--sarak-primary-color,#3b82f6)]/15 text-[var(--sarak-primary-color,#3b82f6)]"
+        style={{
+            gap: 'calc(var(--sarak-layout-gap-md,16px) * 0.25)',
+            paddingTop: 'calc(var(--sarak-layout-gap-md,16px) * 0.125)',
+            paddingBottom: 'calc(var(--sarak-layout-gap-md,16px) * 0.125)',
+            paddingLeft: 'var(--sarak-layout-gap-sm, 8px)',
+            paddingRight: 'calc(var(--sarak-layout-gap-md,16px) * 0.25)'
+        }}
+    >
         {label}
         <button
             type="button"

@@ -113,7 +113,8 @@ export const SarakDatePicker: React.FC<SarakDatePickerProps> = ({
                     aria-invalid={error ? true : undefined}
                     aria-describedby={error ? errorId : undefined}
                     onClick={() => setOpen((prev) => !prev)}
-                    className={`flex items-center justify-between w-full rounded-input py-3 px-4 text-left text-sm bg-[var(--sarak-input-bg,var(--color-theme-card,#1e293b))] border border-[var(--sarak-input-border-color,var(--border-color,#334155))] ${disabled ? 'opacity-50 cursor-not-allowed' : 'cursor-pointer'}`}
+                    className={`flex items-center justify-between w-full rounded-input text-left text-sm bg-[var(--sarak-input-bg,var(--color-theme-card,#1e293b))] border border-[var(--sarak-input-border-color,var(--border-color,#334155))] ${disabled ? 'opacity-50 cursor-not-allowed' : 'cursor-pointer'}`}
+                    style={{ padding: 'calc(var(--sarak-layout-gap-md,16px) * 0.75) var(--sarak-layout-gap-md,16px)' }}
                 >
                     <span className={start ? 'text-[var(--text-muted,#94a3b8)]' : 'text-[var(--text-muted,#94a3b8)]/50'}>
                         {display}
@@ -129,7 +130,8 @@ export const SarakDatePicker: React.FC<SarakDatePickerProps> = ({
                         role="dialog"
                         aria-label={label ?? 'Calendário'}
                         onKeyDown={handleTrap}
-                        className="absolute z-30 mt-1 p-3 rounded-input bg-[var(--color-theme-card,#1e293b)] border border-[var(--border-color,#334155)] shadow-xl"
+                        className="absolute z-30 rounded-input bg-[var(--color-theme-card,#1e293b)] border border-[var(--border-color,#334155)] shadow-xl"
+                        style={{ marginTop: 'calc(var(--sarak-layout-gap-md,16px) * 0.25)', padding: 'calc(var(--sarak-layout-gap-md,16px) * 0.75)' }}
                     >
                         <CalendarPanel
                             mode={mode}
@@ -144,7 +146,7 @@ export const SarakDatePicker: React.FC<SarakDatePickerProps> = ({
             </div>
 
             {error && (
-                <p id={errorId} className="mt-1 text-sm text-[var(--sarak-input-error-color,#ff4d4f)]">{error}</p>
+                <p id={errorId} className="text-sm text-[var(--sarak-input-error-color,#ff4d4f)]" style={{ marginTop: 'calc(var(--sarak-layout-gap-md,16px) * 0.25)' }}>{error}</p>
             )}
         </SarakFormGroup>
     );

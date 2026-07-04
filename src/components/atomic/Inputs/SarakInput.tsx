@@ -63,7 +63,7 @@ export const SarakInput: React.FC<SarakInputProps> = ({
         <SarakFormGroup className={`${widthClass} ${className}`}>
             {label && <label htmlFor={inputId} className="text-sm font-medium">{label}</label>}
             
-            <div className="flex-1 flex flex-col relative w-full">
+            <div className="flex-1 flex relative w-full" style={{ flexDirection: 'column' }}>
                 <div className="relative w-full flex items-center">
                     {hasIcon && (
                         <div className={`${iconPositionClass} flex items-center pointer-events-none text-[var(--sarak-input-icon-color,rgba(255,255,255,0.5))] transition-colors group-focus-within:text-[var(--sarak-input-focus-border-color,var(--sarak-primary-color,#3b82f6))]`}>
@@ -85,7 +85,7 @@ export const SarakInput: React.FC<SarakInputProps> = ({
                 </div>
 
                 {error && (
-                    <p id={errorId} className="mt-1 text-sm text-[var(--sarak-input-error-color,#ff4d4f)]">
+                    <p id={errorId} className="text-sm text-[var(--sarak-input-error-color,#ff4d4f)]" style={{ marginTop: 'calc(var(--sarak-layout-gap-md,16px) * 0.25)' }}>
                         {error}
                     </p>
                 )}

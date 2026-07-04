@@ -154,7 +154,7 @@ export const SarakRichText: React.FC<SarakRichTextProps> = ({
             />
 
             {error && (
-                <p className="mt-2 text-sm text-[var(--sarak-input-error-color,#ff4d4f)]">{error}</p>
+                <p className="text-sm text-[var(--sarak-input-error-color,#ff4d4f)]" style={{ marginTop: 'var(--sarak-layout-gap-sm, 8px)' }}>{error}</p>
             )}
         </div>
     );

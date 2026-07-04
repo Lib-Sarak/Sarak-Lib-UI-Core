@@ -13,8 +13,7 @@ relacionados: ["20-correcao-hardcoded-base", "07-agente-llm-design-e-expansao-es
 
 Etapa 5: o **restante estrutural** — Navigation, Feedback, Media, Modals, UX, Buttons, Layouts e Atoms. Fecha as violações duras estruturais do módulo.
 
-> ## ⛔ DEPENDÊNCIA: Spec 30 (variáveis reais) primeiro
-> **Proibido `--sx-*`** (namespace fantasma — não resolve em runtime). Migre para **variáveis reais da engine + fallback** conforme a tabela de mapeamento da [[30-erradicacao-variaveis-fantasma]] (ex.: `var(--sarak-layout-gap-md, 16px)`; `calc(var(--sarak-layout-gap-md,16px) * fator)` para passos sem token). Ao fim, rode `auditor_ghostvars.mjs` → **0 fantasmas**.
+> **Proibido `--sx-*`** — use variáveis reais + fallback (ex.: `var(--sarak-layout-gap-md, 16px)`; `calc(...)` para passos sem token). Ao fim, `auditor_ghostvars.mjs` → **0 fantasmas**.
 
 # 2. Escopo & Meta
 **Meta:** zerar as **~111 violações duras** dos arquivos abaixo. Use os hooks de domínio onde existirem (`useModalLayoutStyles`, `useTableLayoutStyles`, `useButtonLayoutStyles`).

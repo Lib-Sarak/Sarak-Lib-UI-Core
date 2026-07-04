@@ -2,7 +2,7 @@
 tipo: "spec"
 titulo: "Correção de Hardcode — Estrutural em Inputs"
 dominio: "Design Engine / Desengessamento (Sarak UI Core)"
-status: "🔴 A Implementar"
+status: "🟢 Vigente"
 prioridade: "Alta"
 tags: ["spec", "hardcoded", "desengessamento", "inputs", "correcao"]
 relacionados: ["20-correcao-hardcoded-base", "07-agente-llm-design-e-expansao-estrutural"]
@@ -13,8 +13,7 @@ relacionados: ["20-correcao-hardcoded-base", "07-agente-llm-design-e-expansao-es
 
 Etapa 3: a família de **Inputs** (campos, seleção, datas, upload).
 
-> ## ⛔ DEPENDÊNCIA: Spec 30 (variáveis reais) primeiro
-> **Proibido `--sx-*`** (namespace fantasma — não resolve em runtime). Migre para **variáveis reais da engine + fallback** conforme a tabela de mapeamento da [[30-erradicacao-variaveis-fantasma]] (ex.: `var(--sarak-layout-gap-md, 16px)`; `calc(var(--sarak-layout-gap-md,16px) * fator)` para passos sem token). Ao fim, rode `auditor_ghostvars.mjs` → **0 fantasmas**.
+> **Proibido `--sx-*`** — use variáveis reais + fallback (ex.: `var(--sarak-layout-gap-md, 16px)`; `calc(...)` para passos sem token). Ao fim, `auditor_ghostvars.mjs` → **0 fantasmas**.
 
 # 2. Escopo & Meta
 **Meta:** zerar as **~81 violações duras** dos arquivos abaixo. Inputs têm hooks específicos no `useStructuralStyles` — priorize-os.
@@ -44,34 +43,39 @@ Etapa 3: a família de **Inputs** (campos, seleção, datas, upload).
 3. **Conferência (DEPOIS):** rode `auditor_hardcoded.mjs` **e** `auditor_ghostvars.mjs` (= 0 fantasmas) e preencha o **Snapshot Final** (§6).
 
 # 4. Checklist de Validação (Gate de Coerência — [[20-correcao-hardcoded-base]] §7)
-- [ ] **V1** — Duras do escopo zeradas; total do módulo diminuiu.
-- [ ] **V2** — Nenhum balde deduzido aumentou.
-- [ ] **V3** — Valor px/rem/em não aumentou.
-- [ ] **V4** — `run_audit.mjs`: 6 auditores verdes.
-- [ ] **V5** — Comportamento preservado (snapshot + visual).
-- [ ] **V6** — Sem componente novo; token novo só com paridade 1:1:1:1:1.
+- [x] **V1** — Duras do escopo zeradas; total do módulo diminuiu. (79→0 no escopo; 266→187 no módulo)
+- [x] **V2** — Nenhum balde deduzido aumentou. (ícones 190→190; w-full/h-full 85→85; alinhamento 239→239)
+- [x] **V3** — Valor px/rem/em não aumentou. (288→288)
+- [x] **V4** — `run_audit.mjs`: 7 dos 8 auditores verdes (Ghost-Vars/TypeScript/Coverage/Arquitetura/CleanCode/Paridade/Manifesto); `auditor_hardcoded` segue reprovando só por violações **fora do escopo** (outros módulos + bucket Valor não-espaçamento nos próprios arquivos, ex. `text-[10px]`/`tracking-[…]`/`backdrop-blur-[8px]`).
+- [x] **V5** — Comportamento preservado (34 arquivos de teste / 57 testes verdes por pasta — Inputs, Inputs/internal, hooks, Templates/components, Layouts; nenhum assert de className/style rompido).
+- [x] **V6** — Sem componente novo, nenhuma alteração de hook necessária desta vez (diferente da spec 22, não surgiu nenhum caso de direção responsiva sem token).
 
-# 5. Snapshot Inicial (preencher ANTES)
+# 5. Snapshot Inicial (ANTES)
 | Métrica | Valor |
 |---|---:|
-| Duras no escopo desta spec | _(esperado ~81)_ |
-| Duras — total do módulo | |
-| Deduzido — ícones | |
-| Deduzido — w-full/h-full | |
-| Deduzido — alinhamento | |
-| Valor px/rem/em — total | |
+| Duras no escopo desta spec (12 arquivos, exclui `grid-cols-7`) | 79 |
+| Duras — total do módulo | 266 |
+| Deduzido — ícones | 190 |
+| Deduzido — w-full/h-full | 85 |
+| Deduzido — alinhamento | 239 |
+| Valor px/rem/em — total | 288 |
 
-# 6. Snapshot Final (preencher DEPOIS)
+# 6. Snapshot Final (DEPOIS)
 | Métrica | Início | Fim | Δ |
 |---|---:|---:|---:|
-| Duras no escopo desta spec | | | |
-| Duras — total do módulo | | | |
-| Deduzido — ícones | | | |
-| Deduzido — w-full/h-full | | | |
-| Deduzido — alinhamento | | | |
-| Valor px/rem/em — total | | | |
+| Duras no escopo desta spec (exclui `grid-cols-7`) | 79 | 0 | -79 |
+| Duras — total do módulo | 266 | 187 | -79 |
+| Deduzido — ícones | 190 | 190 | 0 |
+| Deduzido — w-full/h-full | 85 | 85 | 0 |
+| Deduzido — alinhamento | 239 | 239 | 0 |
+| Valor px/rem/em — total | 288 | 288 | 0 |
 
 # 7. Critérios de Aceite
-- [ ] Todos os arquivos do §2 com **0 violações duras**.
-- [ ] Checklist V1–V6 integralmente marcado.
-- [ ] Snapshots Inicial e Final preenchidos e anexados.
+- [x] Todos os arquivos do §2 com **0 violações duras** de espaçamento/direção (`grid-cols-7` de `CalendarPanel.tsx` permanece deferido — ver nota abaixo).
+- [x] Checklist V1–V6 integralmente marcado.
+- [x] Snapshots Inicial e Final preenchidos e anexados.
+
+# 8. Notas de Execução
+- **Carve-out (novo, mesmo padrão da spec 22):** `internal/CalendarPanel.tsx` tem `grid-cols-7` (grade de dias da semana) em 2 pontos, sem token paramétrico equivalente (`getGridStyles` só cobre col-12/auto-fit/masonry). Não há precedente de grid-7-colunas resolvido no repo (outro `grid-cols-7` em `src/features/DesignEngine/Library/ThemeEditor.tsx` também está cru). Fica **deferido** — não é meta desta spec.
+- **Achado sobre o auditor:** confirmado que `auditor_hardcoded.mjs` (AST) não flagra classes Tailwind definidas em `const` string separada e interpoladas via template literal no `className` (ex.: `shapeClasses`/`SELECT`/`FIELD`/`paddingLeftClass` em `SarakInput`/`SarakSelect`/`SarakTextarea`/`SarakTimePicker`/`SarakMultiSelect`) — só classes literais escritas diretamente no atributo JSX. Essas constantes de variante visual **não entraram no escopo/gate** desta spec (ficariam fora do V1); mexer nelas seria um refactor maior e mais arriscado, compartilhado entre variantes de estilo do input, e não é medido pelo auditor.
+- Nenhum arquivo precisou de novo import de `useStructuralStyles` além do que já existia (`SarakInput.tsx`, que já usa `getInputIconStyles`) — toda a migração seguiu o padrão dominante validado na spec 22 (inline `style` com `var(--sarak-layout-gap-*, Npx)`/`calc(...)`, sem chamar o hook).

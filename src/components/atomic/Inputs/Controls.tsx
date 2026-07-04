@@ -47,13 +47,17 @@ export const LanguageSelector = () => {
         .filter(Boolean) as LanguageOption[];
 
     return (
-        <div className="flex items-center gap-1 bg-[var(--color-theme-card,#1e293b)] border border-[var(--border-color,#334155)]-border rounded-xl px-2 py-1">
+        <div
+            className="flex items-center bg-[var(--color-theme-card,#1e293b)] border border-[var(--border-color,#334155)]-border rounded-xl"
+            style={{ gap: 'calc(var(--sarak-layout-gap-md,16px) * 0.25)', padding: 'calc(var(--sarak-layout-gap-md,16px) * 0.25) var(--sarak-layout-gap-sm, 8px)' }}
+        >
             {activeLangs.map(l => (
                 <button
                     key={l.id}
                     onClick={() => handleLangChange(l.id)}
-                    className={`px-1.5 py-1 text-2xs font-bold transition-all hover:text-theme-primary ${current === l.id ? 'text-theme-primary' : 'text-theme-muted'
+                    className={`text-2xs font-bold transition-all hover:text-theme-primary ${current === l.id ? 'text-theme-primary' : 'text-theme-muted'
                         }`}
+                    style={{ padding: 'calc(var(--sarak-layout-gap-md,16px) * 0.25) calc(var(--sarak-layout-gap-md,16px) * 0.375)' }}
                 >
                     {l.label}
                 </button>
@@ -67,14 +71,15 @@ export const ThemeToggle = () => {
     const mode = design?.mode || 'dark';
     const toggleMode = () => applyConfig({ mode: mode === 'dark' ? 'light' : 'dark' });
     return (
-        <div className="flex items-center gap-2">
+        <div className="flex items-center" style={{ gap: 'var(--sarak-layout-gap-sm, 8px)' }}>
             <LanguageSelector />
             <button
                 onClick={toggleMode}
                 data-action-id="ui:theme_toggle_btn"
                 data-action-name="Toggle Brightness (Bar)"
                 data-action-category="Interface"
-                className="p-2.5 rounded-xl bg-[var(--color-theme-card,#1e293b)] border border-[var(--border-color,#334155)]-border text-theme-muted hover:text-theme-primary transition-all group overflow-hidden relative"
+                className="rounded-xl bg-[var(--color-theme-card,#1e293b)] border border-[var(--border-color,#334155)]-border text-theme-muted hover:text-theme-primary transition-all group overflow-hidden relative"
+                style={{ padding: 'calc(var(--sarak-layout-gap-md,16px) * 0.625)' }}
             >
                 <AnimatePresence mode="wait" initial={false}>
                     <motion.div
@@ -100,7 +105,8 @@ export const UserMenu = ({ user, onPasswordModal, onLogout }: { user: UserPayloa
         <div className="relative">
             <button
                 onClick={() => setIsOpen(!isOpen)}
-                className="flex items-center gap-3 px-3 py-2 rounded-xl hover:bg-theme-primary/5 transition-colors group"
+                className="flex items-center rounded-xl hover:bg-theme-primary/5 transition-colors group"
+                style={{ gap: 'calc(var(--sarak-layout-gap-md,16px) * 0.75)', padding: 'var(--sarak-layout-gap-sm, 8px) calc(var(--sarak-layout-gap-md,16px) * 0.75)' }}
             >
                 <span className="text-xs font-bold text-theme-muted group-hover:text-theme-primary transition-all hidden sm:block uppercase tracking-widest">
                     {userName}
@@ -119,15 +125,16 @@ export const UserMenu = ({ user, onPasswordModal, onLogout }: { user: UserPayloa
                             initial={{ opacity: 0, y: -10, scale: 0.95 }}
                             animate={{ opacity: 1, y: 0, scale: 1 }}
                             exit={{ opacity: 0, y: -10, scale: 0.95 }}
-                            className="absolute right-0 bottom-full mb-2 w-48 bg-[var(--color-theme-card,#1e293b)] border border-[var(--border-color,#334155)]-border rounded-xl shadow-2xl z-50 overflow-hidden"
+                            className="absolute right-0 bottom-full w-48 bg-[var(--color-theme-card,#1e293b)] border border-[var(--border-color,#334155)]-border rounded-xl shadow-2xl z-50 overflow-hidden"
+                            style={{ marginBottom: 'var(--sarak-layout-gap-sm, 8px)' }}
                         >
-                            <div className="p-1">
-                                <button onClick={() => { setIsOpen(false); onPasswordModal(); }} className="w-full flex items-center gap-3 px-3 py-2.5 text-sm text-theme-main hover:bg-theme-primary/10 rounded-lg transition-colors text-left">
+                            <div style={{ padding: 'calc(var(--sarak-layout-gap-md,16px) * 0.25)' }}>
+                                <button onClick={() => { setIsOpen(false); onPasswordModal(); }} className="w-full flex items-center text-sm text-theme-main hover:bg-theme-primary/10 rounded-lg transition-colors text-left" style={{ gap: 'calc(var(--sarak-layout-gap-md,16px) * 0.75)', padding: 'calc(var(--sarak-layout-gap-md,16px) * 0.625) calc(var(--sarak-layout-gap-md,16px) * 0.75)' }}>
                                     <KeyRound className="w-4 h-4 opacity-50" />
                                     <span>Change Password</span>
                                 </button>
-                                <div className="h-px bg-theme-border my-1"></div>
-                                <button onClick={() => { setIsOpen(false); onLogout(); }} className="w-full flex items-center gap-3 px-3 py-2.5 text-sm text-rose-500 hover:bg-rose-500/10 rounded-lg transition-colors text-left font-bold">
+                                <div className="h-px bg-theme-border" style={{ marginTop: 'calc(var(--sarak-layout-gap-md,16px) * 0.25)', marginBottom: 'calc(var(--sarak-layout-gap-md,16px) * 0.25)' }}></div>
+                                <button onClick={() => { setIsOpen(false); onLogout(); }} className="w-full flex items-center text-sm text-rose-500 hover:bg-rose-500/10 rounded-lg transition-colors text-left font-bold" style={{ gap: 'calc(var(--sarak-layout-gap-md,16px) * 0.75)', padding: 'calc(var(--sarak-layout-gap-md,16px) * 0.625) calc(var(--sarak-layout-gap-md,16px) * 0.75)' }}>
                                     <LogOut className="w-4 h-4" />
                                     <span>Log Out</span>
                                 </button>
@@ -141,15 +148,16 @@ export const UserMenu = ({ user, onPasswordModal, onLogout }: { user: UserPayloa
 };
 
 export const ModuleSelector = ({ currentModule, setCurrentModule, modules = [] }: { currentModule: string, setCurrentModule: (id: string) => void, modules: ModuleConfig[] }) => (
-    <div className="flex items-center bg-theme-body/50 p-1 rounded-xl border border-[var(--border-color,#334155)]-border">
+    <div className="flex items-center bg-theme-body/50 rounded-xl border border-[var(--border-color,#334155)]-border" style={{ padding: 'calc(var(--sarak-layout-gap-md,16px) * 0.25)' }}>
         {modules.map((mod: ModuleConfig) => (
             <button
                 key={mod.id}
                 onClick={() => setCurrentModule(mod.id)}
-                className={`flex-grow px-3 py-1.5 rounded-lg text-2xs font-black transition-all duration-300 uppercase tracking-widest ${currentModule === mod.id
+                className={`flex-grow rounded-lg text-2xs font-black transition-all duration-300 uppercase tracking-widest ${currentModule === mod.id
                     ? "bg-theme-primary text-white shadow-lg"
                     : "text-theme-muted hover:text-theme-title hover:bg-theme-primary/5"
                     }`}
+                style={{ padding: 'calc(var(--sarak-layout-gap-md,16px) * 0.375) calc(var(--sarak-layout-gap-md,16px) * 0.75)' }}
             >
                 {mod.label}
             </button>

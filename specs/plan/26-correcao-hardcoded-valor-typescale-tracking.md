@@ -13,8 +13,7 @@ relacionados: ["20-correcao-hardcoded-base", "07-agente-llm-design-e-expansao-es
 
 Etapa 6: eliminar os **valores arbitrários de tipografia** nos átomos — `text-[Npx]`, `tracking-[Nem]`, `leading-[…]` — criando a escala tipográfica como token.
 
-> ## ⛔ DEPENDÊNCIA: Spec 30 (variáveis reais) primeiro
-> **Proibido `--sx-*`** (namespace fantasma — não resolve em runtime). Os tokens criados/consumidos devem ser **variáveis reais da engine + fallback** (`--sarak-*`/`--theme-*`), conforme a [[30-erradicacao-variaveis-fantasma]]. Ao fim, rode `auditor_ghostvars.mjs` → **0 fantasmas**.
+> **Proibido `--sx-*`** — tokens criados/consumidos devem ser variáveis reais + fallback (`--sarak-*`/`--theme-*`). Ao fim, `auditor_ghostvars.mjs` → **0 fantasmas**.
 
 # 2. Escopo & Meta
 **Meta:** zerar os **~64** valores arbitrários de type-scale/tracking/leading em `src/components` (átomos), substituindo por tokens reais da engine (`var(--sarak-*, <valor>)`) — **nunca `--sx-*`**.
