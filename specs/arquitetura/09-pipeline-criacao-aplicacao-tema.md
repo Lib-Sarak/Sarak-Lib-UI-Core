@@ -8,7 +8,12 @@ relacionados: ["01-arquitetura-motor-tema-design-engine", "04-paridade-cinco-cam
 ---
 
 # 1. Propósito e Princípio Fundamental
-Documentar, em detalhe suficiente para um Agente LLM operar sem ambiguidade, o pipeline **completo** que uma alteração de tema percorre: do payload de entrada até o pixel na tela.
+Explicar o **mecanismo data-driven** da Sarak UI Core na prática, respondendo 3 perguntas objetivas:
+1. **O que compõe o layout** (tokens, componentes, chaves estruturais) — Seção 2.
+2. **Onde cada configuração está e o que significa** (o mapa: schema TS → catálogo → coluna do banco) — Seção 2.3.
+3. **Como aplicar, criar ou alterar** (o pipeline payload → validação → persistência → DOM) — Seções 3-8.
+
+**Nota de escopo:** esta spec **não é o contrato comportamental do Agente LLM**. Ela é o explicador do sistema e o mapa de onde cada coisa vive — qualquer agente (ou humano) que precise mudar algo consulta esta spec para saber *onde* e *como*. Decisões específicas de comportamento do agente (tratamento de erro, formato do endpoint de geração) pertencem a `specs/plan/07-agente-llm-design-e-expansao-estrutural.md` e são apenas referenciadas aqui, nunca resolvidas aqui.
 
 **Princípio fundamental:** "criar um tema", "editar um tema" e "gerar um layout via IA" são **a mesma operação primitiva** — gravar um objeto plano `{ chave: valor }`. Não existe verbo especial para layout vs cor. A única coisa que muda entre uma chave de cor e uma chave estrutural (ex: `cardLayoutDirection`) é **em qual coluna do banco ela cai** e **como o frontend a consome depois** — nunca o formato do payload, nunca o endpoint, nunca a validação. Toda a "inteligência" está no dicionário (Seção 2), não na operação.
 
@@ -50,6 +55,26 @@ Ao contrário do valor, o conjunto de chaves estruturais é **pequeno e fechado*
 
 **Nota de comportamento (não é bug a corrigir aqui):** todo token `type: 'select'` — estrutural ou não — recebe automaticamente um `var(--sarak-<kebab-id>)` e um atributo `data-sx-<kebab-id>` via `useDesignVariables` (Seção 7), mesmo quando ninguém consome essa CSS var (o Hook Controlador lê o valor bruto do `design`, não a variável CSS). É uma emissão redundante e inofensiva, não uma segunda via de verdade.
 
+## 2.3 Mapa de Domínios (onde cada configuração vive)
+Os 28 Schemas TS (`src/core/Design/schema/*.ts`) se agrupam em 13 colunas do banco (Seção 5), via `theme_table_mapping.json`. Esta tabela é o índice: para saber onde mexer para mudar algo, ache o domínio.
+
+| Coluna do Banco | Schemas TS de origem | Domínio (o que governa) |
+|---|---|---|
+| `mode`, `navigation_style`, `body_size` | `global.ts` | Globais de topo: modo claro/escuro, estilo de navegação, tamanho base de fonte |
+| `branding_config` | `branding.ts`, `system.ts` | Identidade visual, layout global, densidade, bordas, ícones, scrollbar |
+| `colors_and_atmosphere` | `colors.ts`, `atmosphere.ts`, `status.ts`, `media.ts` (+ parte de `system.ts`) | Paleta de cores, atmosfera visual, cores de status, mídia de fundo |
+| `typography` | `typography.ts` | Fontes, escala tipográfica, tracking |
+| `layout_and_navigation` | `navigation.ts`, `scrollbars.ts`, `layers.ts` | Navegação, scrollbars, z-index/camadas |
+| `components_base` | `inputs.ts`, `overlays.ts`, `buttons.ts`, `tables.ts`, `switches.ts` | Átomos base: inputs, modais, botões, tabelas, switches |
+| `cards_engine` | `cards.ts`, `card-title.ts`, `card-action.ts`, `card-search.ts` (+ parte de `colors.ts`) | Toda a família de Cards |
+| `data_and_charts` | `data.ts`, `specialized.ts` | DataGrids, gráficos, engines especializados de dados |
+| `motion_and_animation` | `animations.ts`, `motion.ts` | Curvas de animação, transições |
+| `specialized_engines` | `chat.ts`, `engineering.ts`, `advanced.ts` (+ parte de `layers.ts`) | Chat Engine, Flow Engine, avançado |
+| `structural` | `structural.ts` | Grid macro, fluxo global, alinhamento de header/form/switch, breakpoints |
+| `legacy_and_runtime` | — (sem schema próprio) | Escape para chaves em transição/depreciadas |
+
+Regra de leitura: um schema pode alimentar mais de uma coluna quando cobre mais de um domínio (ex: `system.ts` contribui para `branding_config` e `colors_and_atmosphere`); nesse caso, o `schemaOrigin` de cada token na partição JSON (Seção 2) desambigua token a token.
+
 # 3. O Payload de Entrada (o "verbo único")
 Dois formatos aceitos pela API (Seção 6), ambos **um objeto plano de chaves→valores**, sem qualquer distinção de formato entre chave de Valor e Estrutural:
 - `POST/PUT /themes` (`ThemeCreateUpdate`): `{ name: string, design: { <chave>: <valor>, ... }, is_active?: boolean }` — cria ou substitui um tema completo.
@@ -66,12 +91,12 @@ Algoritmo hoje implementado em `backend/sarak_ui_core/api/router.py` (`_apply_de
 2. Senão, varre `THEME_MAPPING` (carregado de `theme_table_mapping.json` no boot do router) procurando em qual partição/coluna JSONB a chave pertence.
 3. Se não encontra em nenhuma → **descarta silenciosamente** (log de debug `"Regra 4: Chave '{key}' não encontrada no catálogo. Descartando."`, sem erro retornado ao cliente).
 
-**Decisão pendente para o Agente LLM (herdada de `specs/plan/07-agente-llm-design-e-expansao-estrutural.md` §6):** descarte silencioso é aceitável para o painel humano (o usuário vê o resultado e corrige visualmente), mas é inadequado para um agente autônomo — ele precisa de sinal explícito para corrigir o próprio erro. Esta spec **não resolve** essa pendência; só a localiza com precisão: o ponto de código é `router.py`, função `_apply_design_to_theme`, e a decisão é entre (a) resposta `422` quando `design` contém ao menos uma chave inválida, ou (b) endpoint dedicado do agente que faz auto-healing antes de persistir. Ver `08-gate-auditoria-hardcode-e-variaveis` para o paralelo do lado frontend (`auditor_ghostvars.mjs`).
+**Fora de escopo desta spec (comportamento do Agente):** descarte silencioso é aceitável para o painel humano (o usuário vê o resultado e corrige visualmente), mas o tratamento adequado para um agente autônomo (422 explícito vs auto-healing) é uma decisão de comportamento, não de mecanismo — rastreada em `specs/plan/07-agente-llm-design-e-expansao-estrutural.md` §6. Esta spec só localiza o ponto de código exato (`router.py`, função `_apply_design_to_theme`) para quem for implementar essa decisão. Ver `08-gate-auditoria-hardcode-e-variaveis` para o paralelo do lado frontend (`auditor_ghostvars.mjs`).
 
 # 5. Persistência (estrutura real da tabela)
 Tabela `ui_core.custom_themes` (`backend/sarak_ui_core/core/models.py`, classe `CustomTheme`):
 - **Colunas top-level:** `mode`, `navigation_style`, `body_size`, `is_active`, `is_public`, `owner_id`, `system`.
-- **Colunas JSONB granulares** (uma por partição do catálogo): `branding_config`, `colors_and_atmosphere`, `typography`, `layout_and_navigation`, `components_base`, `cards_engine`, `data_and_charts`, `motion_and_animation`, `specialized_engines`, `legacy_and_runtime`.
+- **Colunas JSONB granulares** (uma por partição do catálogo, ver Mapa de Domínios em 2.3): `branding_config`, `colors_and_atmosphere`, `typography`, `layout_and_navigation`, `components_base`, `cards_engine`, `data_and_charts`, `motion_and_animation`, `specialized_engines`, `structural`, `legacy_and_runtime`.
 - **Regra de tema ativo:** `is_active=True` é exclusivo por `(owner_id, system)` — ativar um tema desativa automaticamente o anterior (`update({"is_active": False})` antes de setar o novo).
 - `legacy_and_runtime`: coluna de escape para chaves em transição/depreciadas sem partição própria.
 
@@ -86,7 +111,7 @@ Tabela `ui_core.custom_themes` (`backend/sarak_ui_core/core/models.py`, classe `
 | `PUT /themes/{id}/activate` | — | Só ativa (desativando os demais); não altera `design`. |
 | `DELETE /themes/{id}` | — | Remove o registro. |
 
-**Formato de saída (`to_dict()`, `models.py`):** achata todas as colunas JSONB de volta num único objeto `design`, na ordem `branding_config → colors_and_atmosphere → typography → layout_and_navigation → components_base → cards_engine → data_and_charts → motion_and_animation → specialized_engines → legacy_and_runtime` (chaves depois na lista sobrescrevem em caso de colisão — não deveria ocorrer, dado que cada chave pertence a exatamente 1 partição por definição do dicionário).
+**Formato de saída (`to_dict()`, `models.py`):** achata todas as colunas JSONB de volta num único objeto `design`, na ordem `branding_config → colors_and_atmosphere → typography → layout_and_navigation → components_base → cards_engine → data_and_charts → motion_and_animation → specialized_engines → structural → legacy_and_runtime` (chaves depois na lista sobrescrevem em caso de colisão — não deveria ocorrer, dado que cada chave pertence a exatamente 1 partição por definição do dicionário).
 
 # 7. Distribuição / Aplicação no Frontend (como o valor vira tela)
 O objeto `design` plano de `to_dict()` é exatamente o `rawDesign` consumido por `useDesignVariables` (`src/core/Design/hooks/useDesignVariables.ts`). A partir daí, as duas alavancas divergem:
@@ -123,6 +148,10 @@ Payload: `{ "design": { "cardLayoutDirection": "row", "cardTextAlign": "center" 
 # 10. Critérios de Aceite
 - [x] Toda chave estrutural existente está marcada com `structuralConsumer` no Schema TS e `consumerHook` na partição JSON (Seção 2.2).
 - [x] `getStructuralTokens()` retorna exatamente o conjunto fechado da Seção 2.2.
+- [x] O Mapa de Domínios (Seção 2.3) cobre as 13 colunas do banco e os 28 schemas de origem.
 - [x] O contrato REST (Seção 6) reflete 1:1 os endpoints implementados em `router.py`.
-- [ ] **Pendente:** decisão sobre o comportamento de chave inválida para o Agente LLM (422 explícito vs auto-healing) — Seção 4.
-- [ ] **Pendente:** endpoint dedicado `POST /api/themes/generate` (ou reuso de `/chat`) para o Agente LLM, conforme `specs/plan/07-agente-llm-design-e-expansao-estrutural.md` §6/§7.4.
+- [x] Bug do bucket `structural` sem coluna no banco corrigido (coluna adicionada em `models.py`, `GRANULAR_COLUMNS` em `router.py`, self-healing em `database.py`/`001_init_ui_schema.sql`) — os 11 tokens do bucket persistem corretamente.
+
+**Fora de escopo (rastreado em `specs/plan/07-agente-llm-design-e-expansao-estrutural.md`, não desta spec):**
+- Decisão sobre o comportamento de chave inválida para o Agente LLM (422 explícito vs auto-healing) — Seção 4.
+- Endpoint dedicado `POST /api/themes/generate` (ou reuso de `/chat`) para o Agente LLM.

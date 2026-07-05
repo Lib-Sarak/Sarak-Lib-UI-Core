@@ -29,7 +29,8 @@ CREATE TABLE IF NOT EXISTS "ui_core"."custom_themes" (
     data_and_charts JSONB DEFAULT '{}'::jsonb,
     motion_and_animation JSONB DEFAULT '{}'::jsonb,
     specialized_engines JSONB DEFAULT '{}'::jsonb,
-    
+    structural JSONB DEFAULT '{}'::jsonb,
+
     created_at TIMESTAMP WITH TIME ZONE DEFAULT NOW(),
     updated_at TIMESTAMP WITH TIME ZONE DEFAULT NOW()
 );
@@ -43,6 +44,7 @@ BEGIN
     ) THEN
         ALTER TABLE "ui_core"."custom_themes" ADD COLUMN IF NOT EXISTS system VARCHAR(50) DEFAULT 'global';
         ALTER TABLE "ui_core"."custom_themes" ADD COLUMN IF NOT EXISTS is_active BOOLEAN DEFAULT false;
+        ALTER TABLE "ui_core"."custom_themes" ADD COLUMN IF NOT EXISTS structural JSONB DEFAULT '{}'::jsonb;
     END IF;
 END $$;
 

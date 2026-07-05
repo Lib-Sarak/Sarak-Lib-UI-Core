@@ -44,6 +44,7 @@ def setup_ui_db(ext_engine=None):
             # Self-healing isolado para custom_themes
             conn.execute(text("ALTER TABLE ui_core.custom_themes ADD COLUMN IF NOT EXISTS system VARCHAR(50) DEFAULT 'global'"))
             conn.execute(text("ALTER TABLE ui_core.custom_themes ADD COLUMN IF NOT EXISTS is_active BOOLEAN DEFAULT false"))
+            conn.execute(text("ALTER TABLE ui_core.custom_themes ADD COLUMN IF NOT EXISTS structural JSONB DEFAULT '{}'::jsonb"))
             conn.commit()
         except Exception as e:
             conn.rollback()

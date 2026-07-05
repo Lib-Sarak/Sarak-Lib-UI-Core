@@ -121,10 +121,10 @@ def update_user_design(
     
     # Merge lógico: iteramos os campos e atualizamos
     GRANULAR_COLUMNS = [
-        'branding_config', 'colors_and_atmosphere', 'typography', 
-        'layout_and_navigation', 'components_base', 'cards_engine', 
+        'branding_config', 'colors_and_atmosphere', 'typography',
+        'layout_and_navigation', 'components_base', 'cards_engine',
         'data_and_charts', 'motion_and_animation', 'specialized_engines',
-        'legacy_and_runtime'
+        'structural', 'legacy_and_runtime'
     ]
     
     granular_data = {}
@@ -271,9 +271,10 @@ def list_themes(
 
 def _apply_design_to_theme(theme: CustomTheme, design: Dict[str, Any]):
     GRANULAR_COLUMNS = [
-        'branding_config', 'colors_and_atmosphere', 'typography', 
-        'layout_and_navigation', 'components_base', 'cards_engine', 
-        'data_and_charts', 'motion_and_animation', 'specialized_engines'
+        'branding_config', 'colors_and_atmosphere', 'typography',
+        'layout_and_navigation', 'components_base', 'cards_engine',
+        'data_and_charts', 'motion_and_animation', 'specialized_engines',
+        'structural'
     ]
     
     granular_data = {}

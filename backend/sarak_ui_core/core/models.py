@@ -59,6 +59,7 @@ class CustomTheme(Base):
     data_and_charts = Column(MutableDict.as_mutable(JSON), default={})
     motion_and_animation = Column(MutableDict.as_mutable(JSON), default={})
     specialized_engines = Column(MutableDict.as_mutable(JSON), default={})
+    structural = Column(MutableDict.as_mutable(JSON), default={})
     legacy_and_runtime = Column(MutableDict.as_mutable(JSON), default={})
     
     created_at = Column(DateTime(timezone=True), server_default=func.now())
@@ -87,6 +88,7 @@ class CustomTheme(Base):
                 **self.data_and_charts,
                 **self.motion_and_animation,
                 **self.specialized_engines,
+                **self.structural,
                 **self.legacy_and_runtime
             }
         }
