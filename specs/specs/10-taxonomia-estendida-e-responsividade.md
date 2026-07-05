@@ -23,12 +23,12 @@ Este documento absorve o conhecimento gerado durante as expansões do Motor Gen�
 - **Pickers (Date e Time):** Suportam alcance (*range*) e formatação de localização repassada via JSON.
 - **Multiselect (Tags):** Possuem *autocomplete* interno sem perder o foco na digitação.
 - **Rich Text (WYSIWYG):** Blindados, sem permissão de injeção de `<script>` ou `<style>`. As saídas passam pelo sanitizador da Engine.
-- **Uploaders:** Feedback visual restrito aos tokens semânticos (ex: bordas mapeando `--sx-color-primary` ao arrastar arquivos).
+- **Uploaders:** Feedback visual restrito aos tokens semânticos (ex: bordas mapeando `--sarak-color-primary` ao arrastar arquivos).
 
 ## 2.3 DataGrids, Kanban e Visualização
 - **`<SarakDataGrid>`:** Emprega *virtual scrolling* (windowing). Independentemente de receber 100 mil registros no JSON, a UI monta apenas os visíveis no DOM real a 60 FPS. Suporta Pinned Columns preservando sticky state.
 - **`<SarakKanban>`:** Utiliza DnD HTML5 Nativo zero-dep. O "drop" move o card e dispara eventos de mutação para o Dispatcher.
-- **Gráficos e Sparklines:** Cores primárias/secundárias (SVG/ECharts) herdam estritamente das variáveis CSS do Design Engine `var(--sx-color-primary-*)`.
+- **Gráficos e Sparklines:** Cores primárias/secundárias (SVG/ECharts) herdam estritamente das variáveis CSS do Design Engine `var(--sarak-color-primary-*)`.
 
 ## 2.4 Mídia, Navegação e Feedback
 - **Renderizadores Dedicados:** Interpretadores de Markdown garantindo syntax highlighting sem quebrar o CSS global. Modais multi-step (wizards), Breadcrumbs e Command Palettes (Spotlight) injetados via tokens.
@@ -43,7 +43,7 @@ A responsividade na Sarak não reside mais em arquivos CSS obscuros via `@media`
 
 # 4. Plano de Testes (Quality Gate)
 ## Unitários
-- [x] O `SarakFlex` converte propriedades JSON em estilos CSS usando tokens (ex: `spacing-md` vira `gap: var(--sx-spacing-md)`).
+- [x] O `SarakFlex` converte propriedades JSON em estilos CSS usando tokens (ex: `spacing-md` vira `gap: var(--sarak-spacing-md, 16px)`).
 - [x] DataGrids renderizam corretamente o *windowing*, criando no máximo os `N` elementos visíveis.
 - [x] O avaliador da diretiva `responsive` mescla (merge) as propriedades base com as da camada de breakpoint apropriado sem mutar o objeto original.
 ## Contrato/API

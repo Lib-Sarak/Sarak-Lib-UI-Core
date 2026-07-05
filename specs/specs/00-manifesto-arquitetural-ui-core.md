@@ -26,7 +26,7 @@ O cérebro do sistema. Aqui residem o `SarakUIProvider`, o `DesignEngine` e o Ca
 A fundação visual. Esta pasta abriga blocos puros que não sabem de onde seus dados vêm. Eles extraem os tokens globais injetados pelo Core usando o hook `useDesignManager`.
 - **Átomos:** Botões, Inputs, Typografia.
 - **Templates:** SarakCardGrid, SarakForm, SarakAuthScreen. Moldes avançados sem lógica de negócio.
-> **Regra Mestra do Atomic:** NUNCA utilize dados hardcoded (ex: `w-4`). Tudo deve mapear variáveis expostas pelo DesignEngine (`w-[var(--sx-spacing))]`).
+> **Regra Mestra do Atomic:** NUNCA utilize dados hardcoded (ex: `w-4`). Tudo deve mapear variáveis reais expostas pelo DesignEngine, sempre com fallback (`w-[var(--sarak-spacing-md,1rem)]`). Namespace `--sx-*` é proibido (variável-fantasma).
 
 ### Camada 3: Features / Módulos de Lógica (`src/features/`)
 Os casos de uso inteligentes. Enquanto `atomic` tem os componentes puramente visuais, `features` abriga os blocos que interagem com o usuário, chamam APIs (ou simulam estados avançados) e disparam eventos (Redux, Zustand).

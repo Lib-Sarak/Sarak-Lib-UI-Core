@@ -17,7 +17,7 @@ Esta spec define as regras imutáveis para construção, manutenção e consumo 
 - **Features / Módulos (`src/features/`):** "Organismos funcionais" que compõem átomos + lógica (Context/Redux) + negócio.
 
 # 2. Regras de Negócio
-- **Regra 1 (Ausência de Hardcode):** Sob NENHUMA hipótese um componente pode ter configurações rígidas em classes ou inline styles (exceto `flex`, etc). Tudo deve mapear variáveis (`bg-[var(--sx-variavel)]`).
+- **Regra 1 (Ausência de Hardcode):** Sob NENHUMA hipótese um componente pode ter configurações rígidas em classes ou inline styles (exceto `flex`, etc). Tudo deve mapear variáveis reais, sempre com fallback (`bg-[var(--sarak-variavel,<valor>)]`). Namespace `--sx-*` é proibido (variável-fantasma; gate `auditor_ghostvars.mjs` = 0).
 - **Regra 2 (Paridade 1:1:1:1:1):** Todo Token deve nascer no `Schema`, `MasterMap`, `Database`, `DesignEngine` e `Catalog JSON`. Nunca crie tokens soltos.
 - **Regra 3 (Herança Passiva):** Átomos não injetam `<SarakUIProvider>`. Eles pressupõem a existência da árvore superior.
 - **Regra 4 (Proibição de HTML Nativo e Dogfooding):** É terminantemente proibido o uso de `<button>`, `<input>`, `<select>` puros. Deve-se usar `<SarakButton>`, `<SarakInput>`. O próprio Design Engine obedece a isso (Dogfooding).
@@ -39,7 +39,7 @@ Esta spec define as regras imutáveis para construção, manutenção e consumo 
 - **Tipografia Restrita (`<SarakLabel>`, `<SarakText>`):** Consomem estritamente a escala definida no motor, banindo o uso de classes de fonte avulsas.
 
 # 4. Critérios de Aceite
-- [x] Átomos usam apenas propriedades iniciadas com `--sx-`.
+- [x] Átomos usam apenas propriedades reais iniciadas com `--sarak-` ou `--theme-`, nunca `--sx-` (variável-fantasma — ver [[08-gate-auditoria-hardcode-e-variaveis]]).
 - [x] Alterações no `MASTER_DESIGN_MAP` refletem instantaneamente nos átomos.
 - [x] Exportam Props via interface Typescript para auto-complete.
 

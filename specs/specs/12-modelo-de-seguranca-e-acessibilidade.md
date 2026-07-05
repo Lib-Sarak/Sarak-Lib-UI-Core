@@ -40,14 +40,14 @@ Como uma UI Core Agnostica, a Sarak é a base estrutural para qualquer software,
 # 4. Isolamento de Tema (DesignScope Bridge)
 A injeção de tokens não pode afetar sistemas alheios caso a Sarak seja utilizada como um Widget (Micro-frontend) numa aplicação React existente.
 
-- **Fronteira CSS (Scoped Styles):** Os tokens injetados (`--sx-color-*`) são definidos numa raiz específica do wrapper `SarakUIProvider` ou `DesignScope`, e não no `:root` global, garantindo que não colidam com bibliotecas como TailwindCSS nativa do projeto hospedeiro.
+- **Fronteira CSS (Scoped Styles):** Os tokens injetados (`--sarak-color-*`) são definidos numa raiz específica do wrapper `SarakUIProvider` ou `DesignScope`, e não no `:root` global, garantindo que não colidam com bibliotecas como TailwindCSS nativa do projeto hospedeiro.
 - **Vazamento Bloqueado:** Componentes da camada atômica não utilizam seletores de classe globais sujos (ex: `.btn { color: red }`). Todo estilo advém da extração das *CSS custom properties* que são injetadas estritamente no escopo da árvore gerenciada.
 
 # 5. Plano de Testes (Quality Gate)
 ## Unitários
 - [x] Passar strings com `<img src=x onerror=alert(1)>` num renderizador de texto deve resultar na completa neutralização do atributo `onerror`.
 - [x] O *Safe Evaluator* deve lançar uma exceção de segurança (`ErrorBoundary` acionado) se o JSON tentar chamar `window.location`.
-- [x] Todo componente focado pelo teclado ativa os delineadores visuais definidos no token `--sx-ring-focus`.
+- [x] Todo componente focado pelo teclado ativa os delineadores visuais definidos no token `--sarak-ring-focus`.
 ## Contrato/API
 - N/A. (A barreira contra ataques ocorre antes de interagir com APIs).
 ## E2E

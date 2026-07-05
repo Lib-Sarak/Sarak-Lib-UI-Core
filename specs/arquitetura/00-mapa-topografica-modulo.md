@@ -75,7 +75,7 @@ A base de código utiliza um vocabulário padronizado para evitar ambiguidades:
 | **Componentes React** | `PascalCase` com prefixo `Sarak` opcional para peças core. | `SarakButton.tsx`, `ThemeEditor.tsx` |
 | **Hooks React** | `camelCase` começando com `use`. | `useAtomicStyles.ts`, `useThemeActions.ts` |
 | **Arquivos de Utils/Helpers** | `kebab-case`. | `dynamic-categories.ts`, `run_audit.mjs` |
-| **Tokens de Design (CSS)** | Variáveis sempre prefixadas com `--sx-`. | `--sx-color-primary-base`, `--sx-radius-md` |
+| **Tokens de Design (CSS)** | Variáveis reais emitidas pela engine, sempre `--sarak-*` ou `--theme-*`, **sempre com fallback**. Namespace `--sx-*` é proibido (fantasma — não resolve em runtime; gate `auditor_ghostvars.mjs` = 0). | `--sarak-color-primary-base`, `--sarak-radius-md` |
 | **Propriedades Estruturais (TS)** | `camelCase`. | `cardLayoutDirection`, `btnBorderRadius` |
 
 ---
@@ -86,7 +86,7 @@ A engrenagem do módulo funciona num paradigma rígido apelidado de **Paridade 1
 
 1. **A Semente (Schema):** Toda nova propriedade nasce primeiro tipada em `src/core/Design/schema/*.ts`.
 2. **O Mapa (Catalog):** O token é então registrado em `theme_table_mapping.json` para ser lido pelo banco e pelo Agente LLM.
-3. **O Motor (Provider):** O `ThemePayload` baixado é convertido em dezenas de `CSS Variables` (`--sx-alguma-coisa`) pelo Provider Central.
+3. **O Motor (Provider):** O `ThemePayload` baixado é convertido em dezenas de `CSS Variables` (`--sarak-alguma-coisa` / `--theme-alguma-coisa`) pelo Provider Central.
 4. **O Controlador (Hook):** O componente atômico possui um hook interno (`useComponentStyles`) que amarra o Tailwind a essas CSS Variables de maneira condicional.
 5. **O Retrato (JSX):** O componente burro simplesmente renderiza `<div className={layout.containerClass}>`, abdicando do controle geométrico a favor do motor.
 

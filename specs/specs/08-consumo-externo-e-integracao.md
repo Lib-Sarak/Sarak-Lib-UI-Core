@@ -23,7 +23,7 @@ Agentes locais ou rotas Node.js externas não renderizam componentes visuais (Re
 Sistemas backend Python devem consultar os dados gerados em `dist/catalog/` ou consumir endpoints Node que utilizam as funções expostas do motor.
 
 ## 5. Prevenção de Colisão (Prefixing)
-Todos os tokens expostos pela biblioteca utilizam o prefixo estrito `--sx-` nas suas variáveis CSS nativas (ex: `--sx-color-background-base`). 
+Todos os tokens expostos pela biblioteca utilizam os prefixos reais `--sarak-*`/`--theme-*` nas suas variáveis CSS nativas (ex: `--sarak-color-background-base`), sempre emitidos com fallback. O namespace `--sx-*` é proibido (variável-fantasma — não é emitido por nenhuma fonte da engine).
 Esta regra existe para garantir que o consumidor (ex: Tailwind nativo do Site Earendel) não sofra colisão e sobreponha indevidamente as regras fundamentais do motor Sarak.
 
 ## 6. Fronteira de Confiança (Spec 40 — Segurança)

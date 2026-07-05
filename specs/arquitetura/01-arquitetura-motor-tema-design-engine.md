@@ -12,7 +12,7 @@ O **Sarak-Lib-UI-Core** (e seu submódulo Design Engine) atua como o sistema ner
 
 # 2. Stack e Ferramentas
 - **Linguagem:** TypeScript / React (v18+)
-- **Estilização Dinâmica:** TailwindCSS (v4) / Inline CSS Variables Injection (`var(--sx-...)`)
+- **Estilização Dinâmica:** TailwindCSS (v4) / Inline CSS Variables Injection (`var(--sarak-..., <fallback>)` / `var(--theme-..., <fallback>)`)
 - **Gestão de Estado:** React Context API (`SarakUIProvider`)
 - **Dicionário de Tokens:** Typescript Objects (`MASTER_DESIGN_MAP`, `TokenCatalog`)
 - **Complementos Visuais:** Framer Motion (Animações), Echarts/Recharts (Gráficos), ReactFlow/Lucide (Nodal/Ícones)
@@ -24,7 +24,7 @@ A arquitetura de renderização e do motor é dividida nas seguintes camadas ope
 |---|---|---|
 | **1. Base de Conhecimento** | Banco / `MASTER_DESIGN_MAP` | JSON com presets e catálogo de tokens. Nenhum átomo usa hexadecimais puros. |
 | **2. Máquina de Injeção** | `SarakUIProvider` | Intercepta o estado do design e converte JSON em CSS embutido no objeto `style` da raiz do HTML/DOM. |
-| **3. UI Components** | Componentes React | Consomem **exclusivamente** as CSS variables via classes Tailwind (ex: `bg-[var(--sx-theme-primary)]`). Nenhuma cor ou margem é chumbada. |
+| **3. UI Components** | Componentes React | Consomem **exclusivamente** as CSS variables reais via classes Tailwind, sempre com fallback (ex: `bg-[var(--sarak-theme-primary,#000)]`). Nenhuma cor ou margem é chumbada. Namespace `--sx-*` é proibido (variável-fantasma; gate `auditor_ghostvars.mjs` = 0). |
 | **4. Escopo de Sandboxing** | `<DesignScope>` | Atua como um micro-provider para simulações (Preview), injetando variáveis localmente para múltiplas interfaces sem sujar o tema da página hospedeira. |
 
 > A violação do passo 3 por qualquer desenvolvedor (ex: `style={{ color: '#000' }}`) quebra o contrato de renderização dual-theme e personalização de marca.

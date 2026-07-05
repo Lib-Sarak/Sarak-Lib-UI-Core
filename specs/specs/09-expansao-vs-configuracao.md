@@ -32,7 +32,7 @@ A Expansão ocorre quando o design exige uma propriedade, um modificador ou um c
   1. **Schema TS:** Definir a tipagem em TypeScript.
   2. **MasterMap:** Mapear a propriedade no dicionário da Engine.
   3. **Catálogo JSON:** Inserir a nova chave na partição JSON correta e no `theme_table_mapping.json`.
-  4. **Componente Atômico:** Atualizar o arquivo `.tsx` (ex: `Button.tsx`) para consumir a nova variável (ex: `bg-[var(--sx-new-property))]`).
+  4. **Componente Atômico:** Atualizar o arquivo `.tsx` (ex: `Button.tsx`) para consumir a nova variável real + fallback (ex: `bg-[var(--sarak-new-property,<valor>)]`).
   5. **Lógica Interna:** Se aplicável, atualizar o construtor dinâmico no `DesignEngine`.
 
 # 3. Árvore de Decisão Rápida
