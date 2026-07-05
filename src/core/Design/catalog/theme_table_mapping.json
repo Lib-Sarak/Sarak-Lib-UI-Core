@@ -336,6 +336,7 @@
     "presetMiniCardMaxWidth",
     "presetCardShadowOffsetY",
     "presetCardShadowBlur",
+    "presetCardShadowSpread",
     "presetGridTextureSize",
     "controlHeightToggle",
     "progressBarMaxWidth",

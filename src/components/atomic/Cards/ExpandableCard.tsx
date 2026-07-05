@@ -5,6 +5,7 @@ import { motion, AnimatePresence } from 'framer-motion';
 import { useSarakUI } from '../../../core/Provider/SarakUIProvider';
 import { useCardLayoutStyles } from './hooks/useCardLayoutStyles';
 import { useExpandableCard } from './hooks/useExpandableCard';
+import { useStructuralStyles } from '../hooks/useStructuralStyles';
 
 interface ExpandableCardProps {
     title: string;
@@ -29,6 +30,9 @@ export const ExpandableCard: React.FC<ExpandableCardProps> = ({
     const design = globalUI.design;
     const layout = useCardLayoutStyles(design);
     const { isExpanded, setIsExpanded, mounted } = useExpandableCard();
+    const { getResponsiveSpacingStyles } = useStructuralStyles();
+    const bodyPadding = getResponsiveSpacingStyles('expandableCardBody');
+    const headerMargin = getResponsiveSpacingStyles('expandableCardHeader');
 
     // Dynamic height based on global font scale factor, ensuring it scales up
     const dynamicStyle = {
@@ -73,19 +77,16 @@ export const ExpandableCard: React.FC<ExpandableCardProps> = ({
                             className="fixed inset-0 z-[99999] bg-theme-body flex"
                             style={{ flexDirection: 'column' }}
                         >
-                            {/* Carve-out (mesmo precedente do grid-cols-7 de CalendarPanel/spec 23): passos
-                                responsivos de padding (sm:/lg:) não têm token paramétrico no engine — deferido,
-                                ver Notas de Execução da spec 24. */}
                             <motion.div
                                 initial={{ scale: 0.95, y: 20 }}
                                 animate={{ scale: 1, y: 0 }}
                                 exit={{ scale: 0.95, y: 20 }}
                                 transition={{ type: "spring", damping: 25, stiffness: 300 }}
-                                className="flex-1 w-full h-full mx-auto p-4 sm:p-6 lg:p-8 relative flex overflow-hidden"
+                                className={`flex-1 w-full h-full mx-auto ${bodyPadding.className} relative flex overflow-hidden`}
                                 style={{ flexDirection: 'column' }}
                             >
                                 <div
-                                    className="flex items-center justify-between shrink-0 flex-wrap mb-4 sm:mb-8"
+                                    className={`flex items-center justify-between shrink-0 flex-wrap ${headerMargin.className}`}
                                     style={{ gap: 'var(--sarak-layout-gap-md, 16px)' }}
                                 >
                                     <h3 className="text-lg sm:text-2xl font-black text-theme-title uppercase tracking-widest flex items-center" style={{ gap: 'calc(var(--sarak-layout-gap-md, 16px) * 0.75)' }}>

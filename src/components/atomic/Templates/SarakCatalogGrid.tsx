@@ -59,7 +59,7 @@ export const SarakCatalogGrid: React.FC<SarakCatalogGridProps> = ({
     const { getContainerStyles, getHeaderStyles, getGridStyles, getFlexStyles, getResponsiveStackStyles } = useStructuralStyles();
     const containerLayout = getContainerStyles();
     const headerLayout = getHeaderStyles();
-    const gridLayout = getGridStyles();
+    const gridLayout = getGridStyles(undefined, undefined, undefined, 'catalogStandard');
     const loadingStack = getFlexStyles('column', 'center', 'center', 'var(--sarak-layout-gap-lg, 24px)');
     const innerStack = getFlexStyles('column', undefined, undefined, headerLayout.style.gap as string);
     const searchRow = getResponsiveStackStyles('lg', 'calc(var(--sarak-layout-gap-md,16px) * 1.5)');
@@ -157,7 +157,7 @@ export const SarakCatalogGrid: React.FC<SarakCatalogGridProps> = ({
 
             {/* Catalog Grid */}
             {filteredItems.length > 0 ? (
-                <div className={twMerge(gridLayout.className, "grid-cols-1 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4")} style={gridLayout.style}>
+                <div className={gridLayout.className} style={gridLayout.style}>
                     <AnimatePresence mode="popLayout">
                         {filteredItems.map((item) => (
                             <div key={item.id}>

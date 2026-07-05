@@ -8,6 +8,7 @@ import {
     AlertCircle
 } from 'lucide-react';
 import { useSarakStatsData } from './hooks/useSarakStatsData';
+import { useStructuralStyles } from '../hooks/useStructuralStyles';
 
 interface SarakStatsProps<TData extends Record<string, unknown>> {
     endpoint?: string;
@@ -27,6 +28,8 @@ interface SarakStatsProps<TData extends Record<string, unknown>> {
  */
 export const SarakStats = <TData extends Record<string, unknown> = Record<string, unknown>>({ endpoint, data, label, mapping }: SarakStatsProps<TData>) => {
     const { stats, loading, error } = useSarakStatsData<TData>(endpoint, data);
+    const { getGridStyles } = useStructuralStyles();
+    const statsGrid = getGridStyles(undefined, undefined, 'var(--sarak-layout-gap-md,16px)', 'statsStandard');
 
     // Lógica de Agregação Sarak v6.5 (Se for array, resumimos)
     const renderValue = (key: string) => {
@@ -52,7 +55,7 @@ export const SarakStats = <TData extends Record<string, unknown> = Record<string
     if (error) return null;
 
     return (
-        <div className="grid grid-cols-2 lg:grid-cols-4" style={{ gap: 'var(--sarak-layout-gap-md,16px)' }}>
+        <div className={statsGrid.className} style={statsGrid.style}>
             {loading && !Object.keys(stats).length ? (
                 [...Array(4)].map((_, i) => (
                     <div key={`skel-${i}`} className="bg-[var(--color-theme-card,#1e293b)] border-[var(--border-color,#334155)] animate-pulse rounded-[var(--sarak-card-radius,12px)]" style={{ height: 'calc(var(--sarak-layout-gap-md,16px) * 6)' }} />

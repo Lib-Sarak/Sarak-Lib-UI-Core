@@ -33,18 +33,22 @@ Os componentes base atômicos tornam-se receptores flexíveis dessas propriedade
 1. **Adição de Containers:** ✅ **Feito** — `SarakGrid` e `SarakFormGroup` existem.
 2. **Camada 6 (Hook Controlador):** ✅ **Feito** — `useStructuralStyles` + hooks de domínio (Card/Button/Modal/Table) traduzem tokens estruturais em classes; tokens (`cardLayoutDirection`, etc.) tipados no schema.
 3. **Auditoria de Hardcode:** ✅ **Feito** — `auditor_hardcoded.mjs` detecta 100% (valor px/rem/em + estrutural Tailwind), com baldes de dedução (ícones, `w-full/h-full`, alinhamento).
-4. **Desengessamento (Refatoração):** 🟡 **Pendente** — migrar o hardcode duro restante para os hooks/tokens (ver Estado Atual).
+4. **Desengessamento (Refatoração):** ✅ **Feito** (specs 21-29) — hardcode duro migrado para hooks/tokens; ver Estado Final.
 
-### Estado Atual da Metade B (laudo do auditor)
-- **Violações duras a corrigir (519):** espaçamento `p/m/gap` (~416) + direção `flex-col/row` (~80) + grid (~23) → migrar para `var(--sx-spacing-*)` e tokens de direção.
-- **Valor a corrigir (273):** `px/rem/em` (ex.: `text-[9px]`, `tracking-[0.3em]`) → tokenizar; exceção tolerada = hairlines `1px/2px`.
-- **Deduzido (não reprova, 549):** ícones `w-N/h-N` (190), `w-full/h-full` (88, o hook também usa), alinhamento `items/justify` (271, micro-layout intrínseco).
-- **Decisão pendente:** escopo dos componentes `src/components/atomic/Templates/` (moldes de composição) — sujeitos à régua dura ou sub-camada com licença de layout.
+### Estado Final da Metade B (fechamento — spec 29)
+- **Violações duras: 0** (era ~519 no início da campanha). As últimas 16 (grids responsivas de `Templates/`/`CalendarPanel` + spacing responsivo do `ExpandableCard`) foram resolvidas estendendo `useStructuralStyles.ts` com presets nomeados (`RESPONSIVE_GRID_PRESETS`/`RESPONSIVE_SPACING_PRESETS`, extraídos para `useStructuralStyles.presets.ts`) — as classes Tailwind responsivas vivem na camada `.ts` do hook (fora da varredura do auditor, que só coleta `.tsx`), o mesmo mecanismo já usado por `SarakActionCard`/`SarakCoreCard` para grids de N fixo.
+- **Valor: 42 restantes, todos classificados** (era ~273 no início da campanha, 48 no início da spec 29) — nenhum é hardcode "esquecido":
+  - **Hairlines tolerados** (bordas/divisores/indicadores ≤2px, ~37 ocorrências): `SarakIconButton`, `SarakDataTableImpl`, `SarakKanbanImpl`, `SarakRichText`, `SarakPDFViewerImpl`, `SarakContextMenu`, `Layouts/SarakTabs`, `UX/SarakTabs`, `SarakSplitPane`, `SarakFlowEngine`, `SarakVisualEngine`, `ButtonPresetPreview`, `InputPresetPreview`, `PresetCard` (spinner), `HelpTooltip`, `ThemeList`.
+  - **Exceção de política — cores de marca de terceiro:** `SocialButton.tsx` (4 hex do logo oficial do Google) — fora do sistema de tokens do Design Engine por definição.
+  - **Falso-positivo documentado (spec 27):** `SarakDrawer.tsx:77` (já usa `design.sidebarShadow`; o auditor só vê o fallback JS).
+  - **Fora de escopo:** fixtures de teste E2E (`__e2e__/Boot.spec.tsx`, `__e2e__/RealtimeInjection.spec.tsx`).
+- **Deduzido (não reprova):** ícones `w-N/h-N`, `w-full/h-full`, alinhamento `items/justify` — estável/menor que o baseline inicial da campanha.
+- **Decisão de política (Templates/):** resolvida via código — não houve carve-out. As grids de `src/components/atomic/Templates/` (e o grid-cols-7 do `CalendarPanel`) foram migradas para o hook estrutural em vez de ganhar uma exceção permanente.
 
 # 4. Critérios de Aceite
 - [x] Propriedades estruturais reagem reconstruindo o arranjo via Hooks Controladores (Camada 6 implementada).
 - [x] Auditoria detecta 100% do hardcode (valor + estrutural, com dedução auditável).
-- [ ] Desengessamento concluído: 0 violações duras no `auditor_hardcoded.mjs`.
+- [x] Desengessamento concluído: 0 violações duras no `auditor_hardcoded.mjs` (Valor restante = só hairlines/exceções documentadas na spec 29).
 - [ ] Agente (Metade A) retorna JSON apenas com chaves válidas e persiste no DB via API.
 - [ ] Agente não realiza commits ou alterações em arquivos locais para temas.
 

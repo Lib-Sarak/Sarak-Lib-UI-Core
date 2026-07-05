@@ -697,6 +697,15 @@ export const CardSchema: ComponentSchema = {
             cssVars: ['--sarak-preset-card-shadow-blur']
         },
         {
+            id: 'presetCardShadowSpread',
+            label: 'Preview de Preset: Sombra do Card — Espalhamento (negativo)',
+            type: 'slider',
+            unit: 'px',
+            constraints: { min: 0, max: 10 },
+            defaultValue: 2,
+            cssVars: ['--sarak-preset-card-shadow-spread']
+        },
+        {
             id: 'presetGridTextureSize',
             label: 'Preview de Preset: Tamanho da Textura de Grade',
             type: 'slider',

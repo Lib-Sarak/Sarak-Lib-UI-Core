@@ -2133,7 +2133,7 @@
     "digitalTwins": ["CardsCatalog", "PresetCard"],
     "cssVariables": ["--sarak-preset-card-shadow-offset-y"],
     "allowedValues": { "min": 0, "max": 10, "step": 1 },
-    "relatedTokens": ["presetCardShadowBlur"]
+    "relatedTokens": ["presetCardShadowBlur", "presetCardShadowSpread"]
   },
   {
     "tokenId": "presetCardShadowBlur",
@@ -2148,7 +2148,22 @@
     "digitalTwins": ["CardsCatalog", "PresetCard"],
     "cssVariables": ["--sarak-preset-card-shadow-blur"],
     "allowedValues": { "min": 0, "max": 20, "step": 1 },
-    "relatedTokens": ["presetCardShadowOffsetY"]
+    "relatedTokens": ["presetCardShadowOffsetY", "presetCardShadowSpread"]
+  },
+  {
+    "tokenId": "presetCardShadowSpread",
+    "name": "Preview de Preset: Sombra do Card — Espalhamento (negativo)",
+    "description": "Magnitude do espalhamento (spread) negativo da sombra padrão de card duplicada em CardsCatalog/PresetCard; aplicado via calc(var(...) * -1).",
+    "type": "number",
+    "importance": 20,
+    "categories": ["cards", "efeitos", "cards-engine"],
+    "tags": ["preset-preview", "shadow", "design-engine"],
+    "databaseColumn": "cards_engine",
+    "schemaOrigin": "cards.ts",
+    "digitalTwins": ["CardsCatalog", "PresetCard"],
+    "cssVariables": ["--sarak-preset-card-shadow-spread"],
+    "allowedValues": { "min": 0, "max": 10, "step": 1 },
+    "relatedTokens": ["presetCardShadowOffsetY", "presetCardShadowBlur"]
   },
   {
     "tokenId": "presetGridTextureSize",

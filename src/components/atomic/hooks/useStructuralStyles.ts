@@ -1,9 +1,15 @@
 import React from 'react';
 import { useSarakUI } from '../../../core/Provider/SarakUIProvider';
+import {
+    RESPONSIVE_GRID_PRESETS,
+    RESPONSIVE_SPACING_PRESETS,
+    type ResponsiveGridPreset,
+    type ResponsiveSpacingPreset
+} from './useStructuralStyles.presets';
 
 /**
  * Hook Controlador Estrutural (Fase 2 da Expansão).
- * Centraliza a leitura dos tokens de layout (Geometria) do Banco de Dados e 
+ * Centraliza a leitura dos tokens de layout (Geometria) do Banco de Dados e
  * os traduz para classes utilitárias ou variáveis CSS inline, removendo o hardcode do JSX.
  */
 export const useStructuralStyles = () => {
@@ -15,11 +21,19 @@ export const useStructuralStyles = () => {
     const getGridStyles = (
         templateColumns?: string,
         templateAreas?: string,
-        gapOverride?: string
+        gapOverride?: string,
+        responsivePreset?: ResponsiveGridPreset
     ) => {
         const layoutType = (design?.layoutGridTemplate as string) || 'col-12';
         const gap = gapOverride || design?.globalSectionGap || design?.layoutGap || 'var(--sarak-layout-gap-md, 16px)';
-        
+
+        if (responsivePreset) {
+            return {
+                className: `grid w-full ${RESPONSIVE_GRID_PRESETS[responsivePreset]}`,
+                style: { gap } as React.CSSProperties
+            };
+        }
+
         const gridStrategies: Record<string, string> = {
             'col-12': 'grid w-full grid-cols-1 md:grid-cols-12',
             'auto-fit': 'grid w-full grid-cols-[repeat(auto-fit,minmax(280px,1fr))]',
@@ -31,12 +45,18 @@ export const useStructuralStyles = () => {
 
         return {
             className,
-            style: { 
-                gap, 
+            style: {
+                gap,
                 columnGap: layoutType === 'masonry' && !hasCustomTemplate ? gap : undefined,
                 gridTemplateColumns: templateColumns,
                 gridTemplateAreas: templateAreas
             } as React.CSSProperties
+        };
+    };
+
+    const getResponsiveSpacingStyles = (preset: ResponsiveSpacingPreset) => {
+        return {
+            className: RESPONSIVE_SPACING_PRESETS[preset]
         };
     };
 
@@ -209,6 +229,7 @@ export const useStructuralStyles = () => {
         getGridStyles,
         getFlexStyles,
         getResponsiveStackStyles,
+        getResponsiveSpacingStyles,
         getFormGroupStyles,
         getCardStyles,
         getInputIconStyles,

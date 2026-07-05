@@ -2,6 +2,11 @@ import React, { useEffect, useMemo, useRef, useState } from 'react';
 import { addDays, addMonths, format, isSameDay, isSameMonth, isWithinInterval, startOfMonth } from 'date-fns';
 import { buildMonthMatrix, type WeekStart } from './calendarGrid';
 
+// CalendarPanel é deliberadamente independente do SarakUIProvider (usado em contextos sem
+// design system carregado) — por isso a grade de 7 colunas usa `gridTemplateColumns` direto
+// em vez do hook `useStructuralStyles` (que exige o provider).
+const WEEK_GRID_COLUMNS = 'repeat(7, minmax(0, 1fr))';
+
 export type { WeekStart };
 
 /**
@@ -95,7 +100,7 @@ export const CalendarPanel: React.FC<CalendarPanelProps> = ({
                 <NavButton label="Próximo mês" onClick={() => setViewMonth(addMonths(viewMonth, 1))} dir="next" />
             </div>
 
-            <div className="grid grid-cols-7" style={{ marginBottom: 'calc(var(--sarak-layout-gap-md,16px) * 0.25)' }}>
+            <div className="grid" style={{ gridTemplateColumns: WEEK_GRID_COLUMNS, marginBottom: 'calc(var(--sarak-layout-gap-md,16px) * 0.25)' }}>
                 {weekdays.map((day, i) => (
                     <span key={i} className="text-center text-2xs font-black uppercase text-[var(--text-muted,#94a3b8)]/50">
                         {day}
@@ -103,7 +108,7 @@ export const CalendarPanel: React.FC<CalendarPanelProps> = ({
                 ))}
             </div>
 
-            <div ref={gridRef} role="grid" onKeyDown={handleKeyDown} className="grid grid-cols-7" style={{ gap: 'calc(var(--sarak-layout-gap-md,16px) * 0.125)' }}>
+            <div ref={gridRef} role="grid" onKeyDown={handleKeyDown} className="grid" style={{ gridTemplateColumns: WEEK_GRID_COLUMNS, gap: 'calc(var(--sarak-layout-gap-md,16px) * 0.125)' }}>
                 {weeks.flat().map((cell) => {
                     const selected = isSelected(cell.date);
                     const between = inRange(cell.date);

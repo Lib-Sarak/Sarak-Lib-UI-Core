@@ -32,8 +32,8 @@ export const PresetCard = ({ theme, currentMode, onApply, index }: { theme: Them
         boxShadow: design.cardShadow && design.cardShadow !== 'none'
             ? design.cardShadow
             : design.cardShadowSpread
-                ? `0 var(--sarak-preset-card-shadow-offset-y, 4px) ${design.cardShadowSpread}px -2px ${design.cardGlowColor || 'rgba(0,0,0,0.5)'}`
-                : '0 var(--sarak-preset-card-shadow-offset-y, 4px) var(--sarak-preset-card-shadow-blur, 10px) -2px rgba(0,0,0,0.5)',
+                ? `0 var(--sarak-preset-card-shadow-offset-y, 4px) ${design.cardShadowSpread}px calc(var(--sarak-preset-card-shadow-spread, 2px) * -1) ${design.cardGlowColor || 'rgba(0,0,0,0.5)'}`
+                : '0 var(--sarak-preset-card-shadow-offset-y, 4px) var(--sarak-preset-card-shadow-blur, 10px) calc(var(--sarak-preset-card-shadow-spread, 2px) * -1) rgba(0,0,0,0.5)',
         clipPath: variables['--sarak-card-clip-path']
     };
 

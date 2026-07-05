@@ -62,12 +62,13 @@ export const SarakCardGrid = <TData extends Record<string, unknown>>({ endpoint,
     const { design } = useSarakUI();
     const activeVariant = variant || design.cardVariant || 'classic';
     const { data, loading, error, search, activeFilters, setSearch, setActiveFilters } = useCardGridState<TData>(endpoint);
-    const { getFlexStyles, getResponsiveStackStyles } = useStructuralStyles();
+    const { getFlexStyles, getResponsiveStackStyles, getGridStyles } = useStructuralStyles();
     const outerStack = getFlexStyles('column', undefined, undefined, 'calc(var(--sarak-layout-gap-md, 16px) * 1.25)');
     const headerBlockStack = getFlexStyles('column', undefined, undefined, 'var(--sarak-layout-gap-md,16px)');
     const headerRow = getResponsiveStackStyles('md', 'var(--sarak-layout-gap-md,16px)');
     const filtersBarStack = getFlexStyles('column', undefined, undefined, 'calc(var(--sarak-layout-gap-md,16px) * 0.75)');
     const emptyStateStack = getFlexStyles('column', 'center', 'center', '0px');
+    const cardsGrid = getGridStyles(undefined, undefined, 'var(--sarak-layout-gap-md, 16px)', 'cardsStandard');
 
     // Utility for nested path resolution
     const getVal = (obj: TData, path: string | undefined): unknown => {
@@ -184,7 +185,7 @@ export const SarakCardGrid = <TData extends Record<string, unknown>>({ endpoint,
             </div>
 
             {/* Grid de Cards Pro Core (v6.5) */}
-            <div className="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-3" style={{ gap: 'var(--sarak-layout-gap-md, 16px)' }}>
+            <div className={cardsGrid.className} style={cardsGrid.style}>
                 {loading ? (
                     [...Array(6)].map((_, i) => (
                         <div key={i} className="h-80 bg-[var(--color-theme-card,#1e293b)] border-[var(--border-color,#334155)] animate-pulse" />

@@ -45,7 +45,7 @@ const SarakVisualEngine: React.FC<SarakVisualEngineProps> = ({ type, tokens }) =
                         <div 
                             className="absolute inset-0 opacity-10" 
                             style={{ 
-                                backgroundImage: `linear-gradient(${primaryColor} 1px, transparent 1px), linear-gradient(90deg, ${primaryColor} 1px, transparent 1px)`,
+                                backgroundImage: `linear-gradient(${primaryColor} var(--sarak-dot-grid-dot-size, 1px), transparent var(--sarak-dot-grid-dot-size, 1px)), linear-gradient(90deg, ${primaryColor} var(--sarak-dot-grid-dot-size, 1px), transparent var(--sarak-dot-grid-dot-size, 1px))`,
                                 backgroundSize: 'var(--sarak-visual-dot-grid-size, 15px) var(--sarak-visual-dot-grid-size, 15px)',
                                 transform: 'rotateX(60deg) rotateZ(45deg) scale(3)',
                             }} 
