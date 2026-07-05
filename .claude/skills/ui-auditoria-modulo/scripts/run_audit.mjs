@@ -30,7 +30,8 @@ function main() {
     'auditor_arquitetura.mjs',
     'auditor_cleancode.mjs',
     'auditor_paridade.mjs',
-    'auditor_manifesto.mjs'
+    'auditor_manifesto.mjs',
+    'auditor_presets.mjs'
   ];
   
   let totalFailures = 0;

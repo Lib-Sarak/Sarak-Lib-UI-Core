@@ -27,6 +27,7 @@ import { LayersSchema } from './schema/layers';
 import { AdvancedSchema } from './schema/advanced';
 import { MediaSchema } from './schema/media';
 import { StructuralSchema } from './schema/structural';
+import themeTableMapping from './catalog/theme_table_mapping.json';
 
 /**
  * MASTER DESIGN MAP (v13.0 - Atomic Granularity)
@@ -92,6 +93,49 @@ export const getDefaultDesignState = () => {
         state[token.id] = token.defaultValue;
     });
     return state;
+};
+
+/**
+ * Mapa de Domínios (spec 09 §2.3): agrupa tokens nas duas granularidades usadas
+ * por Presets/Temas — por Schema (`bySchema`, ex: "cards", "buttons", escopo fino
+ * de um preset de componente) e por Coluna do Banco (`byColumn`, ex: "cards_engine",
+ * escopo de persistência, pode agrupar >1 schema). Fonte viva; nunca copiar este
+ * resultado para fora do código.
+ */
+export const getDomainMap = () => {
+    const bySchema: Record<string, { label: string; tokenIds: string[] }> = {};
+    MASTER_DESIGN_MAP.components.forEach(schema => {
+        bySchema[schema.id] = {
+            label: schema.label,
+            tokenIds: schema.tokens.map(token => token.id)
+        };
+    });
+
+    const byColumn: Record<string, string[]> = { ...(themeTableMapping as Record<string, string[]>) };
+
+    return { bySchema, byColumn };
+};
+
+/**
+ * Gabarito Dinâmico (spec 09): devolve o scaffold de valores-padrão vivo, fatiado
+ * por domínio (id de Schema OU coluna do banco, ver `getDomainMap`). Sem argumento,
+ * devolve o scaffold completo (equivalente a um Tema). É a fonte que qualquer
+ * Preset/Tema/Agente deve consultar para saber quais chaves preencher — nunca uma
+ * cópia estática (ex: `masterTemplate` hardcoded).
+ */
+export const getScaffold = (domain?: string): Record<string, SarakTokenValue> => {
+    const fullState = getDefaultDesignState();
+    if (!domain) return fullState;
+
+    const { bySchema, byColumn } = getDomainMap();
+    const tokenIds = byColumn[domain] || bySchema[domain]?.tokenIds;
+    if (!tokenIds) return {};
+
+    const scaffold: Record<string, SarakTokenValue> = {};
+    tokenIds.forEach(id => {
+        if (id in fullState) scaffold[id] = fullState[id];
+    });
+    return scaffold;
 };
 
 /**
