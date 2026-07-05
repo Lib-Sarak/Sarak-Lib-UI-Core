@@ -36,7 +36,7 @@ Esta spec define as regras imutáveis para construção, manutenção e consumo 
 ## 3.2 Micro-Inputs e Superfícies
 - **Controles Binários e Seleções (`<SarakSelect>`, `<SarakCheckbox>`, `<SarakRadio>`, `<SarakToggleSwitch>`):** Abstrações reativas que materializam transições vetoriais (movimento e brilhos neon).
 - **Superfícies Universais (`<SarakSurface>`):** Invólucro fundamental de Cards, Modais. Controla cortes, blurs e ruídos.
-- **Tipografia Restrita (`<SarakLabel>`, `<SarakText>`):** Consomem estritamente a escala definida no motor, banindo o uso de classes de fonte avulsas.
+- **Tipografia Restrita (`<SarakLabel>`, `<SarakText>`):** Consomem estritamente a escala definida no motor, banindo o uso de classes de fonte avulsas. A escala de type-scale/tracking é um conjunto **fechado** de tokens reais (5 tamanhos 7-12px + 6 trackings 0.2-0.8em, em `src/core/Design/schema/typography.ts`) — é **proibido** `text-[Npx]`/`tracking-[Nem]`/`leading-[…]` arbitrário; qualquer necessidade fora da escala é Expansão (novo token), nunca valor solto. As classes utilitárias `text-2xs`/`text-3xs` resolvem para os tokens reais dessa escala (`--sarak-type-scale2xs`/`--sarak-type-scale3xs`, definidos em `@theme` de `src/styles/_theme.css`) — historicamente eram órfãs (sem definição real no Tailwind, no-op silencioso), bug corrigido e fechado.
 
 # 4. Critérios de Aceite
 - [x] Átomos usam apenas propriedades reais iniciadas com `--sarak-` ou `--theme-`, nunca `--sx-` (variável-fantasma — ver [[08-gate-auditoria-hardcode-e-variaveis]]).
