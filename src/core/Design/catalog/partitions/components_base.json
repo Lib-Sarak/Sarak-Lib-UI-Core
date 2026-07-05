@@ -27,7 +27,8 @@
     "digitalTwins": ["SarakInput"],
     "cssVariables": [],
     "allowedValues": ["left", "right"],
-    "relatedTokens": []
+    "relatedTokens": [],
+    "consumerHook": ["useStructuralStyles.getInputIconStyles"]
   },
   {
     "tokenId": "modalActionAlignment",
@@ -42,7 +43,8 @@
     "digitalTwins": ["SarakModal"],
     "cssVariables": [],
     "allowedValues": ["left", "center", "right", "stretch"],
-    "relatedTokens": []
+    "relatedTokens": [],
+    "consumerHook": ["useModalLayoutStyles"]
   },
   {
     "tokenId": "modalHeaderStyle",
@@ -57,7 +59,8 @@
     "digitalTwins": ["SarakModal"],
     "cssVariables": [],
     "allowedValues": ["inline", "stacked", "floating"],
-    "relatedTokens": []
+    "relatedTokens": [],
+    "consumerHook": ["useModalLayoutStyles"]
   },
   {
     "tokenId": "buttonIconPosition",
@@ -72,7 +75,8 @@
     "digitalTwins": ["SarakButton"],
     "cssVariables": [],
     "allowedValues": ["left", "right"],
-    "relatedTokens": []
+    "relatedTokens": [],
+    "consumerHook": ["useButtonLayoutStyles"]
   },
   {
     "tokenId": "buttonWidthStrategy",
@@ -102,7 +106,8 @@
     "digitalTwins": ["SarakTable"],
     "cssVariables": [],
     "allowedValues": ["compact", "comfortable", "spacious"],
-    "relatedTokens": ["tableCellPadding"]
+    "relatedTokens": ["tableCellPadding"],
+    "consumerHook": ["useTableLayoutStyles"]
   },
   {
     "tokenId": "tableActionPosition",
@@ -117,7 +122,8 @@
     "digitalTwins": ["SarakTable"],
     "cssVariables": [],
     "allowedValues": ["left", "right"],
-    "relatedTokens": []
+    "relatedTokens": [],
+    "consumerHook": ["useTableLayoutStyles"]
   },
   {
     "tokenId": "modalOverlayColor",

@@ -359,7 +359,8 @@ export const CardSchema: ComponentSchema = {
                 ]
             },
             defaultValue: 'column',
-            cssVars: ['--sarak-card-layout-direction']
+            cssVars: ['--sarak-card-layout-direction'],
+            structuralConsumer: ['useCardLayoutStyles']
         },
         {
             id: 'cardImagePosition',
@@ -374,7 +375,8 @@ export const CardSchema: ComponentSchema = {
                 ]
             },
             defaultValue: 'top',
-            cssVars: ['--sarak-card-image-position']
+            cssVars: ['--sarak-card-image-position'],
+            structuralConsumer: ['useCardLayoutStyles', 'useStructuralStyles.getCardStyles']
         },
         {
             id: 'cardTextAlign',
@@ -388,7 +390,8 @@ export const CardSchema: ComponentSchema = {
                 ]
             },
             defaultValue: 'left',
-            cssVars: ['--sarak-card-text-align']
+            cssVars: ['--sarak-card-text-align'],
+            structuralConsumer: ['useCardLayoutStyles']
         },
         {
             id: 'cardContentAlignment',
@@ -402,7 +405,8 @@ export const CardSchema: ComponentSchema = {
                 ]
             },
             defaultValue: 'start',
-            cssVars: ['--sarak-card-content-alignment']
+            cssVars: ['--sarak-card-content-alignment'],
+            structuralConsumer: ['useStructuralStyles.getCardStyles']
         },
         {
             id: 'cardShadow',

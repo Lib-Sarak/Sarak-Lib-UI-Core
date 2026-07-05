@@ -88,7 +88,8 @@
     ],
     "relatedTokens": [
       "globalSectionGap"
-    ]
+    ],
+    "consumerHook": ["useStructuralStyles.getGridStyles"]
   },
   {
     "tokenId": "globalSectionGap",
@@ -147,7 +148,8 @@
     ],
     "relatedTokens": [
       "globalFlowAlign"
-    ]
+    ],
+    "consumerHook": ["useStructuralStyles.getContainerStyles"]
   },
   {
     "tokenId": "globalFlowAlign",
@@ -181,7 +183,8 @@
     ],
     "relatedTokens": [
       "globalFlowDirection"
-    ]
+    ],
+    "consumerHook": ["useStructuralStyles.getContainerStyles"]
   },
   {
     "tokenId": "headerAlignment",
@@ -212,7 +215,8 @@
       "center",
       "start"
     ],
-    "relatedTokens": []
+    "relatedTokens": [],
+    "consumerHook": ["useStructuralStyles.getHeaderStyles"]
   },
   {
     "tokenId": "formLabelPosition",
@@ -243,7 +247,8 @@
     ],
     "relatedTokens": [
       "formFieldDensity"
-    ]
+    ],
+    "consumerHook": ["useStructuralStyles.getFormGroupStyles"]
   },
   {
     "tokenId": "formFieldDensity",
@@ -276,7 +281,8 @@
     ],
     "relatedTokens": [
       "formLabelPosition"
-    ]
+    ],
+    "consumerHook": ["useStructuralStyles.getFormGroupStyles"]
   },
   {
     "tokenId": "switchLabelPosition",
@@ -306,7 +312,8 @@
       "left",
       "space-between"
     ],
-    "relatedTokens": []
+    "relatedTokens": [],
+    "consumerHook": ["useStructuralStyles.getSwitchLayoutStyles"]
   },
   {
     "tokenId": "splitPaneMinWidth",

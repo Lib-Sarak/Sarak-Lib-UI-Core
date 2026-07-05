@@ -19,7 +19,8 @@ export const TablesSchema: ComponentSchema = {
                     { id: 'spacious', value: 'spacious', label: 'Espaçosa' }
                 ]
             },
-            defaultValue: 'comfortable'
+            defaultValue: 'comfortable',
+            structuralConsumer: ['useTableLayoutStyles']
         },
         {
             id: 'tableActionPosition',
@@ -31,7 +32,8 @@ export const TablesSchema: ComponentSchema = {
                     { id: 'right', value: 'right', label: 'Direita' }
                 ]
             },
-            defaultValue: 'right'
+            defaultValue: 'right',
+            structuralConsumer: ['useTableLayoutStyles']
         },
         {
             id: 'tableHeaderBg',

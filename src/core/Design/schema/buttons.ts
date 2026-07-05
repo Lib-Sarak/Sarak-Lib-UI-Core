@@ -18,7 +18,8 @@ export const ButtonsSchema: ComponentSchema = {
                     { id: 'right', value: 'right', label: 'Direita' }
                 ]
             },
-            defaultValue: 'left'
+            defaultValue: 'left',
+            structuralConsumer: ['useButtonLayoutStyles']
         },
         {
             id: 'buttonWidthStrategy',

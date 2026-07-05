@@ -39,6 +39,13 @@ export interface DesignToken {
     defaultValue: SarakTokenValue;
     legacyValue?: SarakTokenValue; // Valor estático imutável que este token assume para temas/presets antigos que não o possuem
     description?: string;
+    /**
+     * Presença = token Estrutural (Alavanca 2): o valor não é injetado como CSS Variable,
+     * é lido em JS por um Hook Controlador (Camada 6) que decide className/style (ex: direção,
+     * posição, alinhamento). Lista os hooks/métodos consumidores (ex: ['useCardLayoutStyles']).
+     * Ausência = token de Valor (Alavanca 1, default): consumido via `var(--sarak-*, fallback)`.
+     */
+    structuralConsumer?: string[];
 }
 
 export interface ComponentSchema {

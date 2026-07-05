@@ -30,7 +30,8 @@ export const InputsSchema: ComponentSchema = {
                     { id: 'right', value: 'right', label: 'Direita' }
                 ]
             },
-            defaultValue: 'left'
+            defaultValue: 'left',
+            structuralConsumer: ['useStructuralStyles.getInputIconStyles']
         },
         {
             id: 'inputBorderRadius',

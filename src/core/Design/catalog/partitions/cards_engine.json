@@ -30,7 +30,8 @@
     "relatedTokens": [
       "cardImagePosition",
       "cardTextAlign"
-    ]
+    ],
+    "consumerHook": ["useCardLayoutStyles"]
   },
   {
     "tokenId": "cardImagePosition",
@@ -64,7 +65,8 @@
     ],
     "relatedTokens": [
       "cardLayoutDirection"
-    ]
+    ],
+    "consumerHook": ["useCardLayoutStyles", "useStructuralStyles.getCardStyles"]
   },
   {
     "tokenId": "cardTextAlign",
@@ -96,7 +98,8 @@
     ],
     "relatedTokens": [
       "cardLayoutDirection"
-    ]
+    ],
+    "consumerHook": ["useCardLayoutStyles"]
   },
   {
     "tokenId": "cardBorderRadius",
@@ -1687,7 +1690,8 @@
     ],
     "relatedTokens": [
       "cardTextAlign"
-    ]
+    ],
+    "consumerHook": ["useStructuralStyles.getCardStyles"]
   },
   {
     "tokenId": "cardShadow",

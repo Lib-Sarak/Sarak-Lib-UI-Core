@@ -75,6 +75,15 @@ export const getAllDesignTokens = () => {
 };
 
 /**
+ * Catálogo de Chaves Estruturais (Alavanca 2): tokens cujo valor não é injetado como
+ * CSS Variable, é lido em JS por um Hook Controlador (Camada 6) que decide className/style.
+ * Fonte única e viva — nunca copiar esta lista para fora do código (spec 09).
+ */
+export const getStructuralTokens = () => {
+    return getAllDesignTokens().filter(token => !!token.structuralConsumer && token.structuralConsumer.length > 0);
+};
+
+/**
  * Helper para obter os valores padrão de todos os tokens.
  */
 export const getDefaultDesignState = () => {

@@ -20,7 +20,8 @@ export const OverlaysSchema: ComponentSchema = {
                     { id: 'stretch', value: 'stretch', label: 'Largura Total' }
                 ]
             },
-            defaultValue: 'right'
+            defaultValue: 'right',
+            structuralConsumer: ['useModalLayoutStyles']
         },
         {
             id: 'modalHeaderStyle',
@@ -33,7 +34,8 @@ export const OverlaysSchema: ComponentSchema = {
                     { id: 'floating', value: 'floating', label: 'Flutuante (X fora)' }
                 ]
             },
-            defaultValue: 'inline'
+            defaultValue: 'inline',
+            structuralConsumer: ['useModalLayoutStyles']
         },
         {
             id: 'modalOverlayColor',

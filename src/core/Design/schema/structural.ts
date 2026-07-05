@@ -50,7 +50,8 @@ export const StructuralSchema: ComponentSchema = {
                 ]
             },
             defaultValue: 'col-12',
-            cssVars: ['--sarak-layout-grid-template']
+            cssVars: ['--sarak-layout-grid-template'],
+            structuralConsumer: ['useStructuralStyles.getGridStyles']
         },
         {
             id: 'globalSectionGap',
@@ -74,7 +75,8 @@ export const StructuralSchema: ComponentSchema = {
                 ]
             },
             defaultValue: 'column',
-            cssVars: ['--sarak-global-flow-direction']
+            cssVars: ['--sarak-global-flow-direction'],
+            structuralConsumer: ['useStructuralStyles.getContainerStyles']
         },
         {
             id: 'globalFlowAlign',
@@ -89,7 +91,8 @@ export const StructuralSchema: ComponentSchema = {
                 ]
             },
             defaultValue: 'stretch',
-            cssVars: ['--sarak-global-flow-align']
+            cssVars: ['--sarak-global-flow-align'],
+            structuralConsumer: ['useStructuralStyles.getContainerStyles']
         },
 
         // --- HEADER ---
@@ -105,7 +108,8 @@ export const StructuralSchema: ComponentSchema = {
                 ]
             },
             defaultValue: 'space-between',
-            cssVars: ['--sarak-header-alignment']
+            cssVars: ['--sarak-header-alignment'],
+            structuralConsumer: ['useStructuralStyles.getHeaderStyles']
         },
 
         // --- FORMULÁRIOS ---
@@ -120,7 +124,8 @@ export const StructuralSchema: ComponentSchema = {
                 ]
             },
             defaultValue: 'top',
-            cssVars: ['--sarak-form-label-position']
+            cssVars: ['--sarak-form-label-position'],
+            structuralConsumer: ['useStructuralStyles.getFormGroupStyles']
         },
         {
             id: 'formFieldDensity',
@@ -134,7 +139,8 @@ export const StructuralSchema: ComponentSchema = {
                 ]
             },
             defaultValue: 'comfortable',
-            cssVars: ['--sarak-form-field-density']
+            cssVars: ['--sarak-form-field-density'],
+            structuralConsumer: ['useStructuralStyles.getFormGroupStyles']
         },
 
         // --- SWITCHES / CHECKBOXES ---
@@ -150,7 +156,8 @@ export const StructuralSchema: ComponentSchema = {
                 ]
             },
             defaultValue: 'right',
-            cssVars: ['--sarak-switch-label-position']
+            cssVars: ['--sarak-switch-label-position'],
+            structuralConsumer: ['useStructuralStyles.getSwitchLayoutStyles']
         },
 
         // --- SPLIT PANE (Spec 27) ---
