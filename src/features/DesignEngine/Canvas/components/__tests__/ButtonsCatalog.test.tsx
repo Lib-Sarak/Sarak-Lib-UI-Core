@@ -12,7 +12,7 @@ vi.mock('framer-motion', async () => {
 describe('ButtonsCatalog', () => {
     it('renderiza a aba Curados por padrão', () => {
         render(<ButtonsCatalog onApplyPreset={vi.fn()} currentMode="dark" />);
-        expect(screen.getAllByText('Minimal Solid')[0]).toBeInTheDocument();
+        expect(screen.getAllByText('Industrial Matte')[0]).toBeInTheDocument();
     });
 
     it('troca para a camada automática Por Estilo e cobre o gap do borderline', () => {

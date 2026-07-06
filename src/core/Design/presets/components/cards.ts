@@ -12,80 +12,84 @@ export const CARD_PRESETS: ComponentPreset[] = [
     {
         id: 'card-glass-minimal',
         name: 'Glass Minimal',
-        description: 'Translucent cards with subtle blur and light borders.',
+        description: 'Vidro translúcido, blur leve, borda quase invisível.',
         design: {
-            cardBorderRadius: 16,
+            cardBackgroundColor: 'rgba(255,255,255,0.04)',
+            cardBackdropBlur: 16,
             cardBorderWidth: 1,
-            cardBorderColor: 'var(--theme-border)',
-            cardShadow: '0 4px 30px rgba(0, 0, 0, 0.1)',
-            cardBackdropBlur: 12,
+            cardBorderColor: 'rgba(255,255,255,0.08)',
+            cardBorderRadius: 16,
+            cardShadow: '0 8px 32px rgba(0,0,0,0.12)',
+            cardTextureType: 'none',
+        }
+    },
+    {
+        id: 'card-claymorphism',
+        name: 'Claymorphism',
+        description: 'Massinha: super arredondado, sem borda, volume por glow interno + sombra externa.',
+        design: {
+            cardBorderRadius: 32,
+            cardBorderWidth: 0,
+            cardInnerGlowColor: 'rgba(255,255,255,0.15)',
+            cardInnerGlowWidth: 8,
+            cardBackdropBlur: 0,
+            cardShadow: '12px 12px 24px rgba(0,0,0,0.35)',
+            cardTextureType: 'none',
+        }
+    },
+    {
+        id: 'card-retro-os',
+        name: 'Retro OS',
+        description: 'Anos 90: cantos duros, borda cinza chanfrada, sem blur, sem sombra.',
+        design: {
+            cardBorderRadius: 0,
+            cardBorderWidth: 2,
+            cardBorderColor: '#9ca3af',
+            cardBorderTop: 4,
+            cardBackdropBlur: 0,
+            cardShadow: 'none',
             cardTextureType: 'none',
         }
     },
     {
         id: 'card-cyberpunk-neon',
         name: 'Cyberpunk Neon',
-        description: 'Sharp edges with neon glow.',
+        description: 'Bordas afiadas, glow neon forte, textura de grid técnico.',
         design: {
             cardBorderRadius: 0,
             cardBorderWidth: 1,
             cardBorderColor: 'var(--theme-primary-focus)',
-            cardShadow: 'none',
-            cardShadowSpread: 10,
             cardGlowColor: 'var(--theme-primary-focus)',
+            cardGlowIntensity: 0.6,
+            cardShadowSpread: 20,
             cardBackdropBlur: 4,
             cardTextureType: 'grid',
-            // cardClipPath: 'polygon(10px 0, 100% 0, 100% calc(100% - 10px), calc(100% - 10px) 100%, 0 100%, 0 10px)',
+        }
+    },
+    {
+        id: 'card-holographic-hud',
+        name: 'Holographic HUD',
+        description: 'Sci-fi ultra transparente: blur pesado, spotlight, feixe de borda animado.',
+        design: {
+            cardBackgroundColor: 'rgba(255,255,255,0.02)',
+            cardBackdropBlur: 32,
+            cardBorderWidth: 1,
+            cardBorderColor: 'rgba(0,242,255,0.25)',
+            borderBeamEnabled: true,
+            cardSpotlightOpacity: 0.25,
+            cardGlowColor: 'rgba(0,242,255,0.08)',
+            cardTextureType: 'none',
         }
     },
     {
         id: 'card-industrial-brutalist',
         name: 'Industrial Brutalism',
-        description: 'Thick borders and solid flat shadows.',
+        description: 'Bordas grossas, sombra sólida deslocada, zero blur.',
         design: {
             cardBorderRadius: 4,
             cardBorderWidth: 3,
             cardBorderColor: 'var(--theme-title)',
             cardShadow: '4px 4px 0px var(--theme-title)',
-            cardBackdropBlur: 0,
-            cardTextureType: 'none',
-        }
-    },
-    {
-        id: 'card-soft-neumorphic',
-        name: 'Soft Neumorphic',
-        description: 'Extruded soft interface shapes.',
-        design: {
-            cardBorderRadius: 24,
-            cardBorderWidth: 0,
-            cardBorderColor: 'transparent',
-            cardShadow: '20px 20px 60px rgba(0,0,0,0.5), -20px -20px 60px rgba(255,255,255,0.05)',
-            cardBackdropBlur: 0,
-            cardTextureType: 'none',
-        }
-    },
-    {
-        id: 'card-apple-frosted',
-        name: 'Apple Frosted',
-        description: 'Heavy blur, classic iOS feeling.',
-        design: {
-            cardBorderRadius: 20,
-            cardBorderWidth: 1,
-            cardBorderColor: 'var(--theme-border)',
-            cardShadow: '0 8px 32px rgba(0, 0, 0, 0.12)',
-            cardBackdropBlur: 24,
-            cardTextureType: 'none',
-        }
-    },
-    {
-        id: 'card-material',
-        name: 'Material Card',
-        description: 'Standard elevation-based material design card.',
-        design: {
-            cardBorderRadius: 8,
-            cardBorderWidth: 0,
-            cardBorderColor: 'transparent',
-            cardShadow: '0 4px 6px -1px rgba(0, 0, 0, 0.1), 0 2px 4px -1px rgba(0, 0, 0, 0.06)',
             cardBackdropBlur: 0,
             cardTextureType: 'none',
         }

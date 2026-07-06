@@ -97,7 +97,7 @@ exports[`CardsCatalog > renderiza a aba Curados por padrão e faz snapshot 1`] =
           <div
             class="sarak-card relative w-full max-w-[var(--sarak-preset-mini-card-max-width,280px)] h-32 flex flex-col p-4 shadow-2xl transition-transform group-hover:scale-105 duration-500 z-10"
             data-sx-card-texture-type="none"
-            style="background-color: rgba(255, 255, 255, 0.05); border-top-width: var(--border-color,#334155); border-right-width: var(--border-color,#334155); border-bottom-width: var(--border-color,#334155); border-left-width: var(--border-color,#334155); border-color: rgba(255, 255, 255, 0.1); border-style: solid; border-top-left-radius: var(--sarak-layout-gap-md,16px); border-top-right-radius: var(--sarak-layout-gap-md,16px); border-bottom-right-radius: var(--sarak-layout-gap-md,16px); border-bottom-left-radius: var(--sarak-layout-gap-md,16px); backdrop-filter: blur(var(--sarak-layout-gap-md,16px)); box-shadow: 0 4px 30px rgba(0, 0, 0, 0.1);"
+            style="background-color: rgba(255, 255, 255, 0.05); border-top-width: var(--border-color,#334155); border-right-width: var(--border-color,#334155); border-bottom-width: var(--border-color,#334155); border-left-width: var(--border-color,#334155); border-color: rgba(255, 255, 255, 0.1); border-style: solid; border-top-left-radius: var(--sarak-layout-gap-md,16px); border-top-right-radius: var(--sarak-layout-gap-md,16px); border-bottom-right-radius: var(--sarak-layout-gap-md,16px); border-bottom-left-radius: var(--sarak-layout-gap-md,16px); backdrop-filter: blur(var(--sarak-layout-gap-md,16px)); box-shadow: 0 8px 32px rgba(0,0,0,0.12);"
           >
             <div
               class="flex items-center gap-3 relative z-10"
@@ -179,7 +179,209 @@ exports[`CardsCatalog > renderiza a aba Curados por padrão e faz snapshot 1`] =
           <p
             class="text-xs text-theme-muted mt-1"
           >
-            Translucent cards with subtle blur and light borders.
+            Vidro translúcido, blur leve, borda quase invisível.
+          </p>
+        </div>
+      </button>
+      <button
+        animate="[object Object]"
+        class="group flex flex-col text-left rounded-2xl border border-theme-border overflow-hidden bg-theme-card hover:border-theme-primary hover:shadow-[0_10px_40px_-10px_rgba(var(--theme-primary-rgb),0.1)] transition-all duration-300"
+        initial="[object Object]"
+        transition="[object Object]"
+      >
+        <div
+          class="h-48 w-full relative flex items-center justify-center p-6 bg-[var(--color-theme-bg, #0a0a0c)] overflow-hidden"
+        >
+          <div
+            class="absolute inset-0 bg-[radial-gradient(ellipse_at_center,rgba(255,255,255,0.05)_0%,transparent_70%)]"
+          />
+          <div
+            class="sarak-card relative w-full max-w-[var(--sarak-preset-mini-card-max-width,280px)] h-32 flex flex-col p-4 shadow-2xl transition-transform group-hover:scale-105 duration-500 z-10"
+            data-sx-card-texture-type="none"
+            style="background-color: rgba(255, 255, 255, 0.05); border-top-width: var(--border-color,#334155); border-right-width: var(--border-color,#334155); border-bottom-width: var(--border-color,#334155); border-left-width: var(--border-color,#334155); border-color: rgba(255, 255, 255, 0.1); border-style: solid; border-top-left-radius: var(--sarak-layout-gap-md,16px); border-top-right-radius: var(--sarak-layout-gap-md,16px); border-bottom-right-radius: var(--sarak-layout-gap-md,16px); border-bottom-left-radius: var(--sarak-layout-gap-md,16px); backdrop-filter: blur(var(--sarak-layout-gap-md,16px)); box-shadow: 12px 12px 24px rgba(0,0,0,0.35);"
+          >
+            <div
+              class="flex items-center gap-3 relative z-10"
+            >
+              <div
+                class="w-10 h-10 rounded-full bg-white/10 flex items-center justify-center"
+              >
+                <svg
+                  class="text-white/50"
+                  fill="none"
+                  height="16"
+                  stroke="currentColor"
+                  stroke-linecap="round"
+                  stroke-linejoin="round"
+                  stroke-width="2"
+                  viewBox="0 0 24 24"
+                  width="16"
+                  xmlns="http://www.w3.org/2000/svg"
+                >
+                  <path
+                    d="m12 3-1.912 5.813a2 2 0 0 1-1.275 1.275L3 12l5.813 1.912a2 2 0 0 1 1.275 1.275L12 21l1.912-5.813a2 2 0 0 1 1.275-1.275L21 12l-5.813-1.912a2 2 0 0 1-1.275-1.275L12 3Z"
+                  />
+                  <path
+                    d="M5 3v4"
+                  />
+                  <path
+                    d="M19 17v4"
+                  />
+                  <path
+                    d="M3 5h4"
+                  />
+                  <path
+                    d="M17 19h4"
+                  />
+                </svg>
+              </div>
+              <div
+                class="flex flex-col gap-1.5 flex-1"
+              >
+                <div
+                  class="h-2 w-3/4 bg-white/40 rounded-full"
+                />
+                <div
+                  class="h-1.5 w-1/2 bg-white/20 rounded-full"
+                />
+              </div>
+            </div>
+            <div
+              class="mt-auto relative z-10 flex flex-col gap-2"
+            >
+              <div
+                class="h-1 w-full bg-white/10 rounded-full overflow-hidden"
+              >
+                <div
+                  class="h-full w-2/3 bg-white/40 rounded-full"
+                />
+              </div>
+              <div
+                class="flex justify-between items-center"
+              >
+                <div
+                  class="h-1.5 w-1/4 bg-white/20 rounded-full"
+                />
+                <div
+                  class="h-1.5 w-1/4 bg-white/20 rounded-full"
+                />
+              </div>
+            </div>
+          </div>
+        </div>
+        <div
+          class="p-4 bg-theme-sidebar"
+        >
+          <h3
+            class="text-sm font-bold text-theme-text uppercase tracking-wider"
+          >
+            Claymorphism
+          </h3>
+          <p
+            class="text-xs text-theme-muted mt-1"
+          >
+            Massinha: super arredondado, sem borda, volume por glow interno + sombra externa.
+          </p>
+        </div>
+      </button>
+      <button
+        animate="[object Object]"
+        class="group flex flex-col text-left rounded-2xl border border-theme-border overflow-hidden bg-theme-card hover:border-theme-primary hover:shadow-[0_10px_40px_-10px_rgba(var(--theme-primary-rgb),0.1)] transition-all duration-300"
+        initial="[object Object]"
+        transition="[object Object]"
+      >
+        <div
+          class="h-48 w-full relative flex items-center justify-center p-6 bg-[var(--color-theme-bg, #0a0a0c)] overflow-hidden"
+        >
+          <div
+            class="absolute inset-0 bg-[radial-gradient(ellipse_at_center,rgba(255,255,255,0.05)_0%,transparent_70%)]"
+          />
+          <div
+            class="sarak-card relative w-full max-w-[var(--sarak-preset-mini-card-max-width,280px)] h-32 flex flex-col p-4 shadow-2xl transition-transform group-hover:scale-105 duration-500 z-10"
+            data-sx-card-texture-type="none"
+            style="background-color: rgba(255, 255, 255, 0.05); border-top-width: var(--border-color,#334155); border-right-width: var(--border-color,#334155); border-bottom-width: var(--border-color,#334155); border-left-width: var(--border-color,#334155); border-color: rgba(255, 255, 255, 0.1); border-style: solid; border-top-left-radius: var(--sarak-layout-gap-md,16px); border-top-right-radius: var(--sarak-layout-gap-md,16px); border-bottom-right-radius: var(--sarak-layout-gap-md,16px); border-bottom-left-radius: var(--sarak-layout-gap-md,16px); backdrop-filter: blur(var(--sarak-layout-gap-md,16px)); box-shadow: 0 var(--sarak-preset-card-shadow-offset-y, 4px) var(--sarak-preset-card-shadow-blur, 10px) calc(var(--sarak-preset-card-shadow-spread, 2px) * -1) rgba(0,0,0,0.5);"
+          >
+            <div
+              class="flex items-center gap-3 relative z-10"
+            >
+              <div
+                class="w-10 h-10 rounded-full bg-white/10 flex items-center justify-center"
+              >
+                <svg
+                  class="text-white/50"
+                  fill="none"
+                  height="16"
+                  stroke="currentColor"
+                  stroke-linecap="round"
+                  stroke-linejoin="round"
+                  stroke-width="2"
+                  viewBox="0 0 24 24"
+                  width="16"
+                  xmlns="http://www.w3.org/2000/svg"
+                >
+                  <path
+                    d="m12 3-1.912 5.813a2 2 0 0 1-1.275 1.275L3 12l5.813 1.912a2 2 0 0 1 1.275 1.275L12 21l1.912-5.813a2 2 0 0 1 1.275-1.275L21 12l-5.813-1.912a2 2 0 0 1-1.275-1.275L12 3Z"
+                  />
+                  <path
+                    d="M5 3v4"
+                  />
+                  <path
+                    d="M19 17v4"
+                  />
+                  <path
+                    d="M3 5h4"
+                  />
+                  <path
+                    d="M17 19h4"
+                  />
+                </svg>
+              </div>
+              <div
+                class="flex flex-col gap-1.5 flex-1"
+              >
+                <div
+                  class="h-2 w-3/4 bg-white/40 rounded-full"
+                />
+                <div
+                  class="h-1.5 w-1/2 bg-white/20 rounded-full"
+                />
+              </div>
+            </div>
+            <div
+              class="mt-auto relative z-10 flex flex-col gap-2"
+            >
+              <div
+                class="h-1 w-full bg-white/10 rounded-full overflow-hidden"
+              >
+                <div
+                  class="h-full w-2/3 bg-white/40 rounded-full"
+                />
+              </div>
+              <div
+                class="flex justify-between items-center"
+              >
+                <div
+                  class="h-1.5 w-1/4 bg-white/20 rounded-full"
+                />
+                <div
+                  class="h-1.5 w-1/4 bg-white/20 rounded-full"
+                />
+              </div>
+            </div>
+          </div>
+        </div>
+        <div
+          class="p-4 bg-theme-sidebar"
+        >
+          <h3
+            class="text-sm font-bold text-theme-text uppercase tracking-wider"
+          >
+            Retro OS
+          </h3>
+          <p
+            class="text-xs text-theme-muted mt-1"
+          >
+            Anos 90: cantos duros, borda cinza chanfrada, sem blur, sem sombra.
           </p>
         </div>
       </button>
@@ -198,7 +400,7 @@ exports[`CardsCatalog > renderiza a aba Curados por padrão e faz snapshot 1`] =
           <div
             class="sarak-card relative w-full max-w-[var(--sarak-preset-mini-card-max-width,280px)] h-32 flex flex-col p-4 shadow-2xl transition-transform group-hover:scale-105 duration-500 z-10"
             data-sx-card-texture-type="grid"
-            style="background-color: rgba(255, 255, 255, 0.05); border-top-width: var(--border-color,#334155); border-right-width: var(--border-color,#334155); border-bottom-width: var(--border-color,#334155); border-left-width: var(--border-color,#334155); border-color: rgba(255, 255, 255, 0.1); border-style: solid; border-top-left-radius: var(--sarak-layout-gap-md,16px); border-top-right-radius: var(--sarak-layout-gap-md,16px); border-bottom-right-radius: var(--sarak-layout-gap-md,16px); border-bottom-left-radius: var(--sarak-layout-gap-md,16px); backdrop-filter: blur(var(--sarak-layout-gap-md,16px)); box-shadow: 0 var(--sarak-preset-card-shadow-offset-y, 4px) 10px calc(var(--sarak-preset-card-shadow-spread, 2px) * -1) var(--theme-primary-focus);"
+            style="background-color: rgba(255, 255, 255, 0.05); border-top-width: var(--border-color,#334155); border-right-width: var(--border-color,#334155); border-bottom-width: var(--border-color,#334155); border-left-width: var(--border-color,#334155); border-color: rgba(255, 255, 255, 0.1); border-style: solid; border-top-left-radius: var(--sarak-layout-gap-md,16px); border-top-right-radius: var(--sarak-layout-gap-md,16px); border-bottom-right-radius: var(--sarak-layout-gap-md,16px); border-bottom-left-radius: var(--sarak-layout-gap-md,16px); backdrop-filter: blur(var(--sarak-layout-gap-md,16px)); box-shadow: 0 var(--sarak-preset-card-shadow-offset-y, 4px) 20px calc(var(--sarak-preset-card-shadow-spread, 2px) * -1) var(--theme-primary-focus);"
           >
             <div
               class="flex items-center gap-3 relative z-10"
@@ -280,7 +482,108 @@ exports[`CardsCatalog > renderiza a aba Curados por padrão e faz snapshot 1`] =
           <p
             class="text-xs text-theme-muted mt-1"
           >
-            Sharp edges with neon glow.
+            Bordas afiadas, glow neon forte, textura de grid técnico.
+          </p>
+        </div>
+      </button>
+      <button
+        animate="[object Object]"
+        class="group flex flex-col text-left rounded-2xl border border-theme-border overflow-hidden bg-theme-card hover:border-theme-primary hover:shadow-[0_10px_40px_-10px_rgba(var(--theme-primary-rgb),0.1)] transition-all duration-300"
+        initial="[object Object]"
+        transition="[object Object]"
+      >
+        <div
+          class="h-48 w-full relative flex items-center justify-center p-6 bg-[var(--color-theme-bg, #0a0a0c)] overflow-hidden"
+        >
+          <div
+            class="absolute inset-0 bg-[radial-gradient(ellipse_at_center,rgba(255,255,255,0.05)_0%,transparent_70%)]"
+          />
+          <div
+            class="sarak-card relative w-full max-w-[var(--sarak-preset-mini-card-max-width,280px)] h-32 flex flex-col p-4 shadow-2xl transition-transform group-hover:scale-105 duration-500 z-10"
+            data-sx-card-texture-type="none"
+            style="background-color: rgba(255, 255, 255, 0.05); border-top-width: var(--border-color,#334155); border-right-width: var(--border-color,#334155); border-bottom-width: var(--border-color,#334155); border-left-width: var(--border-color,#334155); border-color: rgba(255, 255, 255, 0.1); border-style: solid; border-top-left-radius: var(--sarak-layout-gap-md,16px); border-top-right-radius: var(--sarak-layout-gap-md,16px); border-bottom-right-radius: var(--sarak-layout-gap-md,16px); border-bottom-left-radius: var(--sarak-layout-gap-md,16px); backdrop-filter: blur(var(--sarak-layout-gap-md,16px)); box-shadow: 0 var(--sarak-preset-card-shadow-offset-y, 4px) var(--sarak-preset-card-shadow-blur, 10px) calc(var(--sarak-preset-card-shadow-spread, 2px) * -1) rgba(0,0,0,0.5);"
+          >
+            <div
+              class="flex items-center gap-3 relative z-10"
+            >
+              <div
+                class="w-10 h-10 rounded-full bg-white/10 flex items-center justify-center"
+              >
+                <svg
+                  class="text-white/50"
+                  fill="none"
+                  height="16"
+                  stroke="currentColor"
+                  stroke-linecap="round"
+                  stroke-linejoin="round"
+                  stroke-width="2"
+                  viewBox="0 0 24 24"
+                  width="16"
+                  xmlns="http://www.w3.org/2000/svg"
+                >
+                  <path
+                    d="m12 3-1.912 5.813a2 2 0 0 1-1.275 1.275L3 12l5.813 1.912a2 2 0 0 1 1.275 1.275L12 21l1.912-5.813a2 2 0 0 1 1.275-1.275L21 12l-5.813-1.912a2 2 0 0 1-1.275-1.275L12 3Z"
+                  />
+                  <path
+                    d="M5 3v4"
+                  />
+                  <path
+                    d="M19 17v4"
+                  />
+                  <path
+                    d="M3 5h4"
+                  />
+                  <path
+                    d="M17 19h4"
+                  />
+                </svg>
+              </div>
+              <div
+                class="flex flex-col gap-1.5 flex-1"
+              >
+                <div
+                  class="h-2 w-3/4 bg-white/40 rounded-full"
+                />
+                <div
+                  class="h-1.5 w-1/2 bg-white/20 rounded-full"
+                />
+              </div>
+            </div>
+            <div
+              class="mt-auto relative z-10 flex flex-col gap-2"
+            >
+              <div
+                class="h-1 w-full bg-white/10 rounded-full overflow-hidden"
+              >
+                <div
+                  class="h-full w-2/3 bg-white/40 rounded-full"
+                />
+              </div>
+              <div
+                class="flex justify-between items-center"
+              >
+                <div
+                  class="h-1.5 w-1/4 bg-white/20 rounded-full"
+                />
+                <div
+                  class="h-1.5 w-1/4 bg-white/20 rounded-full"
+                />
+              </div>
+            </div>
+          </div>
+        </div>
+        <div
+          class="p-4 bg-theme-sidebar"
+        >
+          <h3
+            class="text-sm font-bold text-theme-text uppercase tracking-wider"
+          >
+            Holographic HUD
+          </h3>
+          <p
+            class="text-xs text-theme-muted mt-1"
+          >
+            Sci-fi ultra transparente: blur pesado, spotlight, feixe de borda animado.
           </p>
         </div>
       </button>
@@ -381,310 +684,7 @@ exports[`CardsCatalog > renderiza a aba Curados por padrão e faz snapshot 1`] =
           <p
             class="text-xs text-theme-muted mt-1"
           >
-            Thick borders and solid flat shadows.
-          </p>
-        </div>
-      </button>
-      <button
-        animate="[object Object]"
-        class="group flex flex-col text-left rounded-2xl border border-theme-border overflow-hidden bg-theme-card hover:border-theme-primary hover:shadow-[0_10px_40px_-10px_rgba(var(--theme-primary-rgb),0.1)] transition-all duration-300"
-        initial="[object Object]"
-        transition="[object Object]"
-      >
-        <div
-          class="h-48 w-full relative flex items-center justify-center p-6 bg-[var(--color-theme-bg, #0a0a0c)] overflow-hidden"
-        >
-          <div
-            class="absolute inset-0 bg-[radial-gradient(ellipse_at_center,rgba(255,255,255,0.05)_0%,transparent_70%)]"
-          />
-          <div
-            class="sarak-card relative w-full max-w-[var(--sarak-preset-mini-card-max-width,280px)] h-32 flex flex-col p-4 shadow-2xl transition-transform group-hover:scale-105 duration-500 z-10"
-            data-sx-card-texture-type="none"
-            style="background-color: rgba(255, 255, 255, 0.05); border-top-width: var(--border-color,#334155); border-right-width: var(--border-color,#334155); border-bottom-width: var(--border-color,#334155); border-left-width: var(--border-color,#334155); border-color: rgba(255, 255, 255, 0.1); border-style: solid; border-top-left-radius: var(--sarak-layout-gap-md,16px); border-top-right-radius: var(--sarak-layout-gap-md,16px); border-bottom-right-radius: var(--sarak-layout-gap-md,16px); border-bottom-left-radius: var(--sarak-layout-gap-md,16px); backdrop-filter: blur(var(--sarak-layout-gap-md,16px)); box-shadow: 20px 20px 60px rgba(0,0,0,0.5), -20px -20px 60px rgba(255,255,255,0.05);"
-          >
-            <div
-              class="flex items-center gap-3 relative z-10"
-            >
-              <div
-                class="w-10 h-10 rounded-full bg-white/10 flex items-center justify-center"
-              >
-                <svg
-                  class="text-white/50"
-                  fill="none"
-                  height="16"
-                  stroke="currentColor"
-                  stroke-linecap="round"
-                  stroke-linejoin="round"
-                  stroke-width="2"
-                  viewBox="0 0 24 24"
-                  width="16"
-                  xmlns="http://www.w3.org/2000/svg"
-                >
-                  <path
-                    d="m12 3-1.912 5.813a2 2 0 0 1-1.275 1.275L3 12l5.813 1.912a2 2 0 0 1 1.275 1.275L12 21l1.912-5.813a2 2 0 0 1 1.275-1.275L21 12l-5.813-1.912a2 2 0 0 1-1.275-1.275L12 3Z"
-                  />
-                  <path
-                    d="M5 3v4"
-                  />
-                  <path
-                    d="M19 17v4"
-                  />
-                  <path
-                    d="M3 5h4"
-                  />
-                  <path
-                    d="M17 19h4"
-                  />
-                </svg>
-              </div>
-              <div
-                class="flex flex-col gap-1.5 flex-1"
-              >
-                <div
-                  class="h-2 w-3/4 bg-white/40 rounded-full"
-                />
-                <div
-                  class="h-1.5 w-1/2 bg-white/20 rounded-full"
-                />
-              </div>
-            </div>
-            <div
-              class="mt-auto relative z-10 flex flex-col gap-2"
-            >
-              <div
-                class="h-1 w-full bg-white/10 rounded-full overflow-hidden"
-              >
-                <div
-                  class="h-full w-2/3 bg-white/40 rounded-full"
-                />
-              </div>
-              <div
-                class="flex justify-between items-center"
-              >
-                <div
-                  class="h-1.5 w-1/4 bg-white/20 rounded-full"
-                />
-                <div
-                  class="h-1.5 w-1/4 bg-white/20 rounded-full"
-                />
-              </div>
-            </div>
-          </div>
-        </div>
-        <div
-          class="p-4 bg-theme-sidebar"
-        >
-          <h3
-            class="text-sm font-bold text-theme-text uppercase tracking-wider"
-          >
-            Soft Neumorphic
-          </h3>
-          <p
-            class="text-xs text-theme-muted mt-1"
-          >
-            Extruded soft interface shapes.
-          </p>
-        </div>
-      </button>
-      <button
-        animate="[object Object]"
-        class="group flex flex-col text-left rounded-2xl border border-theme-border overflow-hidden bg-theme-card hover:border-theme-primary hover:shadow-[0_10px_40px_-10px_rgba(var(--theme-primary-rgb),0.1)] transition-all duration-300"
-        initial="[object Object]"
-        transition="[object Object]"
-      >
-        <div
-          class="h-48 w-full relative flex items-center justify-center p-6 bg-[var(--color-theme-bg, #0a0a0c)] overflow-hidden"
-        >
-          <div
-            class="absolute inset-0 bg-[radial-gradient(ellipse_at_center,rgba(255,255,255,0.05)_0%,transparent_70%)]"
-          />
-          <div
-            class="sarak-card relative w-full max-w-[var(--sarak-preset-mini-card-max-width,280px)] h-32 flex flex-col p-4 shadow-2xl transition-transform group-hover:scale-105 duration-500 z-10"
-            data-sx-card-texture-type="none"
-            style="background-color: rgba(255, 255, 255, 0.05); border-top-width: var(--border-color,#334155); border-right-width: var(--border-color,#334155); border-bottom-width: var(--border-color,#334155); border-left-width: var(--border-color,#334155); border-color: rgba(255, 255, 255, 0.1); border-style: solid; border-top-left-radius: var(--sarak-layout-gap-md,16px); border-top-right-radius: var(--sarak-layout-gap-md,16px); border-bottom-right-radius: var(--sarak-layout-gap-md,16px); border-bottom-left-radius: var(--sarak-layout-gap-md,16px); backdrop-filter: blur(var(--sarak-layout-gap-md,16px)); box-shadow: 0 8px 32px rgba(0, 0, 0, 0.12);"
-          >
-            <div
-              class="flex items-center gap-3 relative z-10"
-            >
-              <div
-                class="w-10 h-10 rounded-full bg-white/10 flex items-center justify-center"
-              >
-                <svg
-                  class="text-white/50"
-                  fill="none"
-                  height="16"
-                  stroke="currentColor"
-                  stroke-linecap="round"
-                  stroke-linejoin="round"
-                  stroke-width="2"
-                  viewBox="0 0 24 24"
-                  width="16"
-                  xmlns="http://www.w3.org/2000/svg"
-                >
-                  <path
-                    d="m12 3-1.912 5.813a2 2 0 0 1-1.275 1.275L3 12l5.813 1.912a2 2 0 0 1 1.275 1.275L12 21l1.912-5.813a2 2 0 0 1 1.275-1.275L21 12l-5.813-1.912a2 2 0 0 1-1.275-1.275L12 3Z"
-                  />
-                  <path
-                    d="M5 3v4"
-                  />
-                  <path
-                    d="M19 17v4"
-                  />
-                  <path
-                    d="M3 5h4"
-                  />
-                  <path
-                    d="M17 19h4"
-                  />
-                </svg>
-              </div>
-              <div
-                class="flex flex-col gap-1.5 flex-1"
-              >
-                <div
-                  class="h-2 w-3/4 bg-white/40 rounded-full"
-                />
-                <div
-                  class="h-1.5 w-1/2 bg-white/20 rounded-full"
-                />
-              </div>
-            </div>
-            <div
-              class="mt-auto relative z-10 flex flex-col gap-2"
-            >
-              <div
-                class="h-1 w-full bg-white/10 rounded-full overflow-hidden"
-              >
-                <div
-                  class="h-full w-2/3 bg-white/40 rounded-full"
-                />
-              </div>
-              <div
-                class="flex justify-between items-center"
-              >
-                <div
-                  class="h-1.5 w-1/4 bg-white/20 rounded-full"
-                />
-                <div
-                  class="h-1.5 w-1/4 bg-white/20 rounded-full"
-                />
-              </div>
-            </div>
-          </div>
-        </div>
-        <div
-          class="p-4 bg-theme-sidebar"
-        >
-          <h3
-            class="text-sm font-bold text-theme-text uppercase tracking-wider"
-          >
-            Apple Frosted
-          </h3>
-          <p
-            class="text-xs text-theme-muted mt-1"
-          >
-            Heavy blur, classic iOS feeling.
-          </p>
-        </div>
-      </button>
-      <button
-        animate="[object Object]"
-        class="group flex flex-col text-left rounded-2xl border border-theme-border overflow-hidden bg-theme-card hover:border-theme-primary hover:shadow-[0_10px_40px_-10px_rgba(var(--theme-primary-rgb),0.1)] transition-all duration-300"
-        initial="[object Object]"
-        transition="[object Object]"
-      >
-        <div
-          class="h-48 w-full relative flex items-center justify-center p-6 bg-[var(--color-theme-bg, #0a0a0c)] overflow-hidden"
-        >
-          <div
-            class="absolute inset-0 bg-[radial-gradient(ellipse_at_center,rgba(255,255,255,0.05)_0%,transparent_70%)]"
-          />
-          <div
-            class="sarak-card relative w-full max-w-[var(--sarak-preset-mini-card-max-width,280px)] h-32 flex flex-col p-4 shadow-2xl transition-transform group-hover:scale-105 duration-500 z-10"
-            data-sx-card-texture-type="none"
-            style="background-color: rgba(255, 255, 255, 0.05); border-top-width: var(--border-color,#334155); border-right-width: var(--border-color,#334155); border-bottom-width: var(--border-color,#334155); border-left-width: var(--border-color,#334155); border-color: rgba(255, 255, 255, 0.1); border-style: solid; border-top-left-radius: var(--sarak-layout-gap-md,16px); border-top-right-radius: var(--sarak-layout-gap-md,16px); border-bottom-right-radius: var(--sarak-layout-gap-md,16px); border-bottom-left-radius: var(--sarak-layout-gap-md,16px); backdrop-filter: blur(var(--sarak-layout-gap-md,16px)); box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1), 0 2px 4px -1px rgba(0, 0, 0, 0.06);"
-          >
-            <div
-              class="flex items-center gap-3 relative z-10"
-            >
-              <div
-                class="w-10 h-10 rounded-full bg-white/10 flex items-center justify-center"
-              >
-                <svg
-                  class="text-white/50"
-                  fill="none"
-                  height="16"
-                  stroke="currentColor"
-                  stroke-linecap="round"
-                  stroke-linejoin="round"
-                  stroke-width="2"
-                  viewBox="0 0 24 24"
-                  width="16"
-                  xmlns="http://www.w3.org/2000/svg"
-                >
-                  <path
-                    d="m12 3-1.912 5.813a2 2 0 0 1-1.275 1.275L3 12l5.813 1.912a2 2 0 0 1 1.275 1.275L12 21l1.912-5.813a2 2 0 0 1 1.275-1.275L21 12l-5.813-1.912a2 2 0 0 1-1.275-1.275L12 3Z"
-                  />
-                  <path
-                    d="M5 3v4"
-                  />
-                  <path
-                    d="M19 17v4"
-                  />
-                  <path
-                    d="M3 5h4"
-                  />
-                  <path
-                    d="M17 19h4"
-                  />
-                </svg>
-              </div>
-              <div
-                class="flex flex-col gap-1.5 flex-1"
-              >
-                <div
-                  class="h-2 w-3/4 bg-white/40 rounded-full"
-                />
-                <div
-                  class="h-1.5 w-1/2 bg-white/20 rounded-full"
-                />
-              </div>
-            </div>
-            <div
-              class="mt-auto relative z-10 flex flex-col gap-2"
-            >
-              <div
-                class="h-1 w-full bg-white/10 rounded-full overflow-hidden"
-              >
-                <div
-                  class="h-full w-2/3 bg-white/40 rounded-full"
-                />
-              </div>
-              <div
-                class="flex justify-between items-center"
-              >
-                <div
-                  class="h-1.5 w-1/4 bg-white/20 rounded-full"
-                />
-                <div
-                  class="h-1.5 w-1/4 bg-white/20 rounded-full"
-                />
-              </div>
-            </div>
-          </div>
-        </div>
-        <div
-          class="p-4 bg-theme-sidebar"
-        >
-          <h3
-            class="text-sm font-bold text-theme-text uppercase tracking-wider"
-          >
-            Material Card
-          </h3>
-          <p
-            class="text-xs text-theme-muted mt-1"
-          >
-            Standard elevation-based material design card.
+            Bordas grossas, sombra sólida deslocada, zero blur.
           </p>
         </div>
       </button>

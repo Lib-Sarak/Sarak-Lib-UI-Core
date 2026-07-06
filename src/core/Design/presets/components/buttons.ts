@@ -3,113 +3,63 @@ import { BUTTON_STYLE_OPTIONS } from '../../schema/buttons';
 
 export const BUTTON_PRESETS: ComponentPreset[] = [
     {
-        id: 'btn-minimal',
-        name: 'Minimal Solid',
-        description: 'A solid, unembellished button with slight rounding.',
+        id: 'btn-industrial-matte',
+        name: 'Industrial Matte',
+        description: 'CTA sólido, discreto, cantos levemente arredondados.',
         design: {
             btnStyleType: 'matte',
-            btnBorderRadius: 4,
+            btnBorderRadius: 6,
             btnPrimaryBg: 'var(--theme-primary)',
-            btnPrimaryText: 'var(--theme-on-primary)',
-            btnBackdropBlur: 0
+            btnPrimaryText: 'var(--theme-on-primary)'
         }
     },
     {
-        id: 'btn-neon-glow',
-        name: 'Neon Glow',
-        description: 'Cyberpunk style with glowing borders.',
+        id: 'btn-neon-pulse',
+        name: 'Neon Pulse',
+        description: 'Sem preenchimento, glow pulsante rápido em volta.',
         design: {
             btnStyleType: 'neon',
             btnBorderRadius: 0,
-            btnPrimaryBg: 'transparent',
-            btnPrimaryText: 'var(--theme-primary-focus)',
-            btnNeonGlowColor: 'var(--theme-primary-focus)',
-            btnNeonPulseSpeed: 1.0,
-            btnBackdropBlur: 0
+            btnNeonGlowColor: 'rgba(0,242,255,0.5)',
+            btnNeonPulseSpeed: 0.8
         }
     },
     {
         id: 'btn-frosted-glass',
         name: 'Frosted Glass',
-        description: 'Translucent background with background blur.',
-        design: {
-            btnStyleType: 'frosted',
-            btnBorderRadius: 12,
-            btnPrimaryBg: 'var(--theme-card)',
-            btnPrimaryText: 'var(--theme-title)',
-            btnBackdropBlur: 16
-        }
-    },
-    {
-        id: 'btn-brutalism',
-        name: 'Brutalism',
-        description: 'High contrast, matte finish with sharp edges.',
-        design: {
-            btnStyleType: 'matte',
-            btnBorderRadius: 0,
-            btnPrimaryBg: 'var(--theme-title)',
-            btnPrimaryText: 'var(--theme-background)',
-            btnBackdropBlur: 0
-        }
-    },
-    {
-        id: 'btn-material',
-        name: 'Material Design',
-        description: 'Classic Material Design look with subtle shadow and rounded corners.',
-        design: {
-            btnStyleType: 'matte',
-            btnBorderRadius: 4,
-            btnPrimaryBg: 'var(--theme-primary)',
-            btnPrimaryText: 'var(--theme-on-primary)',
-            btnBackdropBlur: 0
-        }
-    },
-    {
-        id: 'btn-apple-glass',
-        name: 'Apple Glassmorphism',
-        description: 'High blur, translucent white background similar to macOS/iOS.',
+        description: 'Fundo translúcido, blur pesado, cantos suaves.',
         design: {
             btnStyleType: 'frosted',
             btnBorderRadius: 16,
-            btnPrimaryBg: 'var(--theme-card)',
-            btnPrimaryText: 'var(--theme-title)',
             btnBackdropBlur: 24
         }
     },
     {
-        id: 'btn-neumorphism',
-        name: 'Neumorphism',
-        description: 'Soft extruded plastic look, blending with the background.',
+        id: 'btn-hollow-borderline',
+        name: 'Hollow Borderline',
+        description: 'Só borda e texto, preenche no hover — minimalista.',
         design: {
-            btnStyleType: 'neumorphism',
-            btnBorderRadius: 12,
-            btnPrimaryBg: 'var(--theme-card)',
-            btnPrimaryText: 'var(--color-theme-title,#ffffff)',
-            btnBackdropBlur: 0
+            btnStyleType: 'borderline',
+            btnBorderRadius: 8,
+            btnPrimaryBg: 'var(--theme-primary)'
         }
     },
     {
-        id: 'btn-wireframe',
-        name: 'Wireframe',
-        description: 'No background, thin solid border, for schematic looks.',
+        id: 'btn-cyberpunk-wireframe',
+        name: 'Cyberpunk Wireframe',
+        description: 'Esquemático: sem fundo, borda fina, cantos retos.',
         design: {
             btnStyleType: 'cyberpunk',
-            btnBorderRadius: 0,
-            btnPrimaryBg: 'transparent',
-            btnPrimaryText: 'var(--theme-primary)',
-            btnBackdropBlur: 0
+            btnBorderRadius: 0
         }
     },
     {
-        id: 'btn-soft-ui',
-        name: 'Soft UI',
-        description: 'Extremely rounded, soft background colors with subtle contrast.',
+        id: 'btn-neumorphism-soft',
+        name: 'Neumorphism Soft',
+        description: 'Plástico extrudado, super arredondado, quase sem contraste.',
         design: {
-            btnStyleType: 'matte',
-            btnBorderRadius: 9999,
-            btnPrimaryBg: 'var(--theme-primary)',
-            btnPrimaryText: 'var(--theme-on-primary)',
-            btnBackdropBlur: 0
+            btnStyleType: 'neumorphism',
+            btnBorderRadius: 20
         }
     }
 ];
