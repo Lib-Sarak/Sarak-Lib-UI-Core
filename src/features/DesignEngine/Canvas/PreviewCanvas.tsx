@@ -27,7 +27,6 @@ interface PreviewCanvasProps {
     previewPrimaryColor: string;
     mode: string;
     draftTokens: Partial<SarakDesignState>;
-    activeCategory: string | null;
     activeSectionId?: string | null;
     onUpdateDraft: (key: string, value: SarakTokenValue) => void;
     isDualView?: boolean;
@@ -49,7 +48,6 @@ export const PreviewCanvas: React.FC<PreviewCanvasProps> = ({
     previewPrimaryColor,
     mode,
     draftTokens,
-    activeCategory,
     activeSectionId,
     onUpdateDraft,
     isDualView,
@@ -191,7 +189,6 @@ export const PreviewCanvas: React.FC<PreviewCanvasProps> = ({
                                 <PresetsCatalog
                                     onApplyPreset={handleApplyPreset}
                                     onApplyFullTheme={onApplyFullTheme}
-                                    activeCategory={activeCategory}
                                     currentMode={mode}
                                 />
                             </div>

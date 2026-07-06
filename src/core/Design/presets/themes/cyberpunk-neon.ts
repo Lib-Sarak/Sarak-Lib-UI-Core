@@ -1,4 +1,4 @@
-import { ThemePreset } from '../index';
+import { ThemePreset } from './index';
 
 export const cyberpunkneonTheme: ThemePreset = {
     id: 'cyberpunk-neon',

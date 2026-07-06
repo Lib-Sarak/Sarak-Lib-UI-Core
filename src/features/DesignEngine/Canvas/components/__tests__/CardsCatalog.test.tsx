@@ -1,5 +1,5 @@
 import React from 'react';
-import { render, screen } from '@testing-library/react';
+import { render, screen, fireEvent } from '@testing-library/react';
 import '@testing-library/jest-dom';
 import { describe, it, expect, vi } from 'vitest';
 import { CardsCatalog } from '../CardsCatalog';
@@ -14,9 +14,15 @@ vi.mock('framer-motion', async () => {
 });
 
 describe('CardsCatalog', () => {
-    it('renderiza o título do catálogo e faz snapshot', () => {
+    it('renderiza a aba Curados por padrão e faz snapshot', () => {
         const { container } = render(<CardsCatalog onApplyPreset={vi.fn()} currentMode="dark" />);
-        expect(screen.getByText('Pilar: Cards & Surfaces')).toBeInTheDocument();
+        expect(screen.getByText('Glass Minimal')).toBeInTheDocument();
         expect(container).toMatchSnapshot();
+    });
+
+    it('troca para a camada automática de Texturas ao clicar na sub-aba', () => {
+        render(<CardsCatalog onApplyPreset={vi.fn()} currentMode="dark" />);
+        fireEvent.click(screen.getByRole('button', { name: /Texturas/i }));
+        expect(screen.getByText('Grid Técnico')).toBeInTheDocument();
     });
 });

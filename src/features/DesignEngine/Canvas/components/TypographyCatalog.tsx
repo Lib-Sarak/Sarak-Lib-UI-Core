@@ -2,7 +2,6 @@ import React from 'react';
 import { motion } from 'framer-motion';
 import { TYPOGRAPHY_PRESETS } from '../../../../core/Design/presets/components/typography';
 import { ComponentPreset } from '../../../../core/Design/presets/components/cards';
-import { Type } from 'lucide-react';
 
 import { SarakDesignState } from '../../../../core/Provider/types';
 
@@ -13,28 +12,10 @@ interface TypographyCatalogProps {
 
 export const TypographyCatalog: React.FC<TypographyCatalogProps> = ({ onApplyPreset }) => {
     return (
-        <div className="w-full h-full flex flex-col relative bg-theme-bg">
-            <div className="px-8 py-5 border-b border-theme-border flex items-center justify-between bg-theme-sidebar backdrop-blur-md sticky top-0 z-10">
-                <div className="flex items-center gap-4">
-                    <div className="p-2.5 bg-theme-primary/10 rounded-xl border border-theme-primary/20">
-                        <Type size={18} className="text-theme-primary" />
-                    </div>
-                    <div className="flex flex-col">
-                        <span className="text-xs font-black uppercase text-theme-text tracking-[var(--sarak-tracking-wide,0.3em)]">Design Intelligence Catalog</span>
-                        <span className="text-[var(--sarak-type-scale3xs,9px)] font-bold text-theme-primary uppercase tracking-widest mt-0.5">
-                            Pilar: Typography & Fonts
-                        </span>
-                    </div>
-                </div>
-            </div>
-
-            <div className="flex-1 overflow-y-auto custom-scrollbar p-6">
-                <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-                    {TYPOGRAPHY_PRESETS.map((preset, i) => (
-                        <TypographyPresetPreview key={preset.id} preset={preset} index={i} onApply={() => onApplyPreset(preset.design, true)} />
-                    ))}
-                </div>
-            </div>
+        <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+            {TYPOGRAPHY_PRESETS.map((preset, i) => (
+                <TypographyPresetPreview key={preset.id} preset={preset} index={i} onApply={() => onApplyPreset(preset.design, true)} />
+            ))}
         </div>
     );
 };

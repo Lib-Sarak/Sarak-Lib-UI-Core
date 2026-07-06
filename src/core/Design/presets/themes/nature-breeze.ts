@@ -1,4 +1,4 @@
-import { ThemePreset } from '../index';
+import { ThemePreset } from './index';
 
 export const naturebreezeTheme: ThemePreset = {
     id: 'nature-breeze',

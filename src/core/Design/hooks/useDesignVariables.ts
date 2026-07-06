@@ -141,7 +141,7 @@ export const useDesignVariables = (
             ['--text-muted', variables['--sarak-text-muted'] || variables['--theme-text-muted']],
             ['--text-secondary', variables['--sarak-text-sec']],
             ['--bg-body', variables['--sarak-bg-body'] || variables['--theme-body']],
-            ['var(--color-theme-card,#1e293b)', variables['--sarak-card-bg'] || variables['--theme-card']],
+            ['--color-theme-card', variables['--sarak-card-bg'] || variables['--theme-card']],
             ['--bg-sidebar', variables['--sarak-sidebar-bg'] || variables['--theme-sidebar-bg']],
             ['--border-color', variables['--sarak-card-border-color'] || variables['--theme-border']],
             ['--primary-color', variables['--sarak-primary-color'] || variables['--theme-primary']],
@@ -160,7 +160,7 @@ export const useDesignVariables = (
         const { r, g, b } = parseToRgba(primaryColor);
         const [, , primaryLightness] = rgbToHsl(r, g, b);
 
-        variables['var(--color-theme-title,#ffffff)'] = variables['--text-main'] || (isDark ? '#ffffff' : '#0f172a');
+        variables['--color-theme-title'] = variables['--text-main'] || (isDark ? '#ffffff' : '#0f172a');
         variables['--theme-on-primary'] = primaryLightness > 55 ? '#020617' : '#ffffff';
         variables['--sarak-vignette-color'] = isDark
             ? `rgba(0, 0, 0, ${design.vignetteOpacity ?? 0.3})`

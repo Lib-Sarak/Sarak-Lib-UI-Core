@@ -46,17 +46,6 @@ export interface ThemePreset {
     design: Record<string, unknown>;
 }
 
-export * from './stellar-nebula';
-export * from './crystal-glass';
-export * from './holographic-glass';
-
-// Novos Temas de Extremo Layout (Data-Driven)
-export * from './minimalist-airy';
-export * from './data-terminal';
-export * from './neumorphic-mobile';
-export * from './industrial-dashboard';
-export * from './asymmetric-editorial';
-
 import { sarakSovereignTheme } from './sarak-sovereign';
 import { crystalGlassTheme } from './crystal-glass';
 import { cyberpunkneonTheme } from './cyberpunk-neon';

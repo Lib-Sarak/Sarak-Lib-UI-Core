@@ -1,4 +1,4 @@
-import { ThemePreset } from '../index';
+import { ThemePreset } from './index';
 
 export const neobrutalismTheme: ThemePreset = {
     id: 'neo-brutalism',

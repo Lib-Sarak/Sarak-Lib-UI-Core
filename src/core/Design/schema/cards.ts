@@ -1,4 +1,5 @@
 import { ComponentSchema } from '../types';
+import { TEXTURE_OPTIONS } from './atmosphere';
 
 /**
  * Mapeamento 100% Atômico: Cards & Superfícies (v12.0)
@@ -184,49 +185,7 @@ export const CardSchema: ComponentSchema = {
             label: 'Textura da Superfície',
             type: 'select',
             constraints: {
-                options: [
-                    { id: 'none', value: 'none', label: 'Nenhuma' },
-                    { id: 'grid', value: 'grid', label: 'Grid Técnico' },
-                    { id: 'dots', value: 'dots', label: 'Pontos (Dotted)' },
-                    { id: 'noise', value: 'noise', label: 'Ruído Analógico' },
-                    { id: 'grain', value: 'grain', label: 'Grão Fotográfico' },
-                    { id: 'mesh', value: 'mesh', label: 'Mesh Orgânico' },
-                    { id: 'waves', value: 'waves', label: 'Ondas Senoidais' },
-                    { id: 'squares', value: 'squares', label: 'Quadrados Industriais' },
-                    { id: 'stripes', value: 'stripes', label: 'Listras Militares' },
-                    { id: 'topo', value: 'topo', label: 'Topografia' },
-                    { id: 'diamond', value: 'diamond', label: 'Diamante' },
-                    { id: 'prestige', value: 'prestige', label: 'Prestige' },
-                    { id: 'carbon', value: 'carbon', label: 'Fibra de Carbono' },
-                    { id: 'brushed', value: 'brushed', label: 'Metal Escovado' },
-                    { id: 'frosted', value: 'frosted', label: 'Vidro Fosco (Frosted)' },
-                    { id: 'circuit', value: 'circuit', label: 'Circuitos (Classic)' },
-                    { id: 'paper', value: 'paper', label: 'Papel Craft' },
-                    { id: 'scanlines', value: 'scanlines', label: 'Scanlines (CRT)' },
-                    { id: 'hexagon', value: 'hexagon', label: 'Hexagonais (Céptico)' },
-                    { id: 'silk', value: 'silk', label: 'Seda Líquida' },
-                    { id: 'blueprint', value: 'blueprint', label: 'Blueprint (Cianótipo)' },
-                    { id: 'aurora', value: 'aurora', label: 'Aurora Boreal' },
-                    { id: 'stars', value: 'stars', label: 'Campo Estelar' },
-                    { id: 'honeycomb', value: 'honeycomb', label: 'Favo de Mel' },
-                    { id: 'isometric', value: 'isometric', label: 'Projeção Isométrica' },
-                    { id: 'radar', value: 'radar', label: 'Radar Tático' },
-                    { id: 'crosshatch', value: 'crosshatch', label: 'Crosshatch' },
-                    { id: 'micro-dots', value: 'micro-dots', label: 'Micro-Pontos' },
-                    { id: 'pinstripes', value: 'pinstripes', label: 'Pinstripes' },
-                    { id: 'constellation', value: 'constellation', label: 'Constelação' },
-                    { id: 'circuit-pro', value: 'circuit-pro', label: 'Circuitos (Pro)' },
-                    { id: 'carbon-tech', value: 'carbon-tech', label: 'Carbon Tech' },
-                    { id: 'topo-deep', value: 'topo-deep', label: 'Topografia Profunda' },
-                    { id: 'prism-mesh', value: 'prism-mesh', label: 'Prism Mesh' },
-                    { id: 'cyber-binary', value: 'cyber-binary', label: 'Código Binário' },
-                    { id: 'blueprint-pro', value: 'blueprint-pro', label: 'Blueprint Pro' },
-                    { id: 'wave-pulse', value: 'wave-pulse', label: 'Pulso de Onda' },
-                    { id: 'wood', value: 'wood', label: 'Madeira (Organic)' },
-                    { id: 'stucco', value: 'stucco', label: 'Stucco (Parede)' },
-                    { id: 'fluid', value: 'fluid', label: 'Fluido Dinâmico' },
-                    { id: 'nebula', value: 'nebula', label: 'Nebulosa' }
-                ]
+                options: TEXTURE_OPTIONS
             },
             defaultValue: 'none',
             cssVars: ['--sarak-card-texture-type']

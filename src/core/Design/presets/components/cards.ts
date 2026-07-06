@@ -1,4 +1,5 @@
 import type { SarakDesignState } from '../../../Provider/types';
+import { TEXTURE_OPTIONS } from '../../schema/atmosphere';
 
 export interface ComponentPreset {
     id: string;
@@ -90,3 +91,13 @@ export const CARD_PRESETS: ComponentPreset[] = [
         }
     }
 ];
+
+// Presets gerados dinamicamente a partir das texturas do Schema (1:1 Paridade com atmosphere.ts)
+export const CARD_TEXTURE_PRESETS: ComponentPreset[] = TEXTURE_OPTIONS.map(texture => ({
+    id: `card-tex-${texture.value}`,
+    name: texture.label,
+    description: `Card com a textura de superfície ${texture.label}.`,
+    design: {
+        cardTextureType: texture.value
+    }
+}));

@@ -16,62 +16,46 @@ export const AtmosphereCatalog: React.FC<AtmosphereCatalogProps> = ({ onApplyPre
     const [activeTab, setActiveTab] = useState<'media' | 'textures'>('media');
 
     return (
-        <div className="w-full h-full flex flex-col relative bg-theme-bg">
-            <div className="px-8 py-5 border-b border-theme-border flex items-center justify-between bg-theme-sidebar backdrop-blur-md sticky top-0 z-10">
-                <div className="flex items-center gap-4">
-                    <div className="p-2.5 bg-theme-primary/10 rounded-xl border border-theme-primary/20">
-                        <Layers size={18} className="text-theme-primary" />
-                    </div>
-                    <div className="flex flex-col">
-                        <span className="text-xs font-black uppercase text-theme-text tracking-[var(--sarak-tracking-wide,0.3em)]">Design Intelligence Catalog</span>
-                        <span className="text-[var(--sarak-type-scale3xs,9px)] font-bold text-theme-primary uppercase tracking-widest mt-0.5">
-                            Pilar: Atmosphere & Textures
-                        </span>
-                    </div>
+        <div className="flex flex-col gap-6">
+            <div className="flex items-center justify-between gap-4">
+                <div className="flex items-center gap-2 p-1 bg-black/20 rounded-xl border border-theme-border">
+                    <button
+                        onClick={() => setActiveTab('media')}
+                        className={`px-4 py-2 rounded-lg text-[var(--sarak-type-scale2xs,10px)] font-black uppercase tracking-widest transition-all flex items-center gap-2 ${activeTab === 'media' ? 'bg-theme-primary text-white shadow-lg' : 'text-theme-muted hover:text-white hover:bg-white/5'}`}
+                    >
+                        <Video size={12} />
+                        Mídia Base
+                    </button>
+                    <button
+                        onClick={() => setActiveTab('textures')}
+                        className={`px-4 py-2 rounded-lg text-[var(--sarak-type-scale2xs,10px)] font-black uppercase tracking-widest transition-all flex items-center gap-2 ${activeTab === 'textures' ? 'bg-theme-primary text-white shadow-lg' : 'text-theme-muted hover:text-white hover:bg-white/5'}`}
+                    >
+                        <Grid size={12} />
+                        Texturas
+                    </button>
                 </div>
 
-                <div className="flex items-center gap-4">
-                    <div className="flex items-center gap-2 p-1 bg-black/20 rounded-xl border border-theme-border">
-                        <button
-                            onClick={() => setActiveTab('media')}
-                            className={`px-4 py-2 rounded-lg text-[var(--sarak-type-scale2xs,10px)] font-black uppercase tracking-widest transition-all flex items-center gap-2 ${activeTab === 'media' ? 'bg-theme-primary text-white shadow-lg' : 'text-theme-muted hover:text-white hover:bg-white/5'}`}
-                        >
-                            <Video size={12} />
-                            Mídia Base
-                        </button>
-                        <button
-                            onClick={() => setActiveTab('textures')}
-                            className={`px-4 py-2 rounded-lg text-[var(--sarak-type-scale2xs,10px)] font-black uppercase tracking-widest transition-all flex items-center gap-2 ${activeTab === 'textures' ? 'bg-theme-primary text-white shadow-lg' : 'text-theme-muted hover:text-white hover:bg-white/5'}`}
-                        >
-                            <Grid size={12} />
-                            Texturas
-                        </button>
-                    </div>
-
-                    <div className="flex items-center gap-3 px-4 py-2 bg-black/20 rounded-xl border border-theme-border">
-                        <span className="text-[var(--sarak-type-scale2xs,10px)] font-black text-theme-text uppercase tracking-widest">Opacidade</span>
-                        <input
-                            key={activeTab}
-                            type="range"
-                            min="0" max="1" step="0.01"
-                            defaultValue={activeTab === 'textures' ? 0.08 : 1}
-                            onChange={(e) => onApplyPreset(
-                                activeTab === 'textures'
-                                    ? { textureOpacity: parseFloat(e.target.value) }
-                                    : { globalBackgroundOpacity: parseFloat(e.target.value) }
-                                , true)}
-                            className="w-32 accent-[var(--theme-primary)] cursor-pointer"
-                        />
-                    </div>
+                <div className="flex items-center gap-3 px-4 py-2 bg-black/20 rounded-xl border border-theme-border">
+                    <span className="text-[var(--sarak-type-scale2xs,10px)] font-black text-theme-text uppercase tracking-widest">Opacidade</span>
+                    <input
+                        key={activeTab}
+                        type="range"
+                        min="0" max="1" step="0.01"
+                        defaultValue={activeTab === 'textures' ? 0.08 : 1}
+                        onChange={(e) => onApplyPreset(
+                            activeTab === 'textures'
+                                ? { textureOpacity: parseFloat(e.target.value) }
+                                : { globalBackgroundOpacity: parseFloat(e.target.value) }
+                            , true)}
+                        className="w-32 accent-[var(--theme-primary)] cursor-pointer"
+                    />
                 </div>
             </div>
 
-            <div className="flex-1 overflow-y-auto custom-scrollbar p-6">
-                <div className="grid grid-cols-1 gap-6">
-                    {(activeTab === 'media' ? MEDIA_PRESETS : TEXTURE_PRESETS).map((preset, i) => (
-                        <AtmospherePresetPreview key={preset.id} preset={preset} index={i} currentMode={currentMode} onApply={() => onApplyPreset(preset.design, true)} />
-                    ))}
-                </div>
+            <div className="grid grid-cols-1 gap-6">
+                {(activeTab === 'media' ? MEDIA_PRESETS : TEXTURE_PRESETS).map((preset, i) => (
+                    <AtmospherePresetPreview key={preset.id} preset={preset} index={i} currentMode={currentMode} onApply={() => onApplyPreset(preset.design, true)} />
+                ))}
             </div>
         </div>
     );

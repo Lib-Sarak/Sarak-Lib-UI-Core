@@ -1,5 +1,14 @@
 import { ComponentSchema } from '../types';
 
+export const BUTTON_STYLE_OPTIONS = [
+    { id: 'matte', value: 'matte', label: 'Industrial Matte' },
+    { id: 'neon', value: 'neon', label: 'Cyber Neon Glow' },
+    { id: 'frosted', value: 'frosted', label: 'Glassmorphism Frosted' },
+    { id: 'borderline', value: 'borderline', label: 'Minimalist Borderline' },
+    { id: 'cyberpunk', value: 'cyberpunk', label: 'Cyberpunk Wireframe' },
+    { id: 'neumorphism', value: 'neumorphism', label: 'Neumorphism Soft' }
+];
+
 /**
  * SCHEMA: BOTÕES & AÇÕES
  * Governa a anatomia, estados e estilos de todos os elementos clicáveis.
@@ -138,14 +147,7 @@ export const ButtonsSchema: ComponentSchema = {
             label: 'Estilo do Botão',
             type: 'select',
             constraints: {
-                options: [
-                    { id: 'matte', value: 'matte', label: 'Industrial Matte' },
-                    { id: 'neon', value: 'neon', label: 'Cyber Neon Glow' },
-                    { id: 'frosted', value: 'frosted', label: 'Glassmorphism Frosted' },
-                    { id: 'borderline', value: 'borderline', label: 'Minimalist Borderline' },
-                    { id: 'cyberpunk', value: 'cyberpunk', label: 'Cyberpunk Wireframe' },
-                    { id: 'neumorphism', value: 'neumorphism', label: 'Neumorphism Soft' }
-                ]
+                options: BUTTON_STYLE_OPTIONS
             },
             defaultValue: 'matte',
             cssVars: ['--sarak-btn-style-type']

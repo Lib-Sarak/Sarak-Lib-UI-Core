@@ -1,4 +1,5 @@
 import { ComponentPreset } from './cards';
+import { BUTTON_STYLE_OPTIONS } from '../../schema/buttons';
 
 export const BUTTON_PRESETS: ComponentPreset[] = [
     {
@@ -112,3 +113,13 @@ export const BUTTON_PRESETS: ComponentPreset[] = [
         }
     }
 ];
+
+// Presets gerados dinamicamente a partir dos estilos do Schema (1:1 Paridade com buttons.ts)
+export const BUTTON_STYLE_PRESETS: ComponentPreset[] = BUTTON_STYLE_OPTIONS.map(style => ({
+    id: `btn-style-${style.value}`,
+    name: style.label,
+    description: `Botão utilizando o estilo ${style.label}.`,
+    design: {
+        btnStyleType: style.value
+    }
+}));

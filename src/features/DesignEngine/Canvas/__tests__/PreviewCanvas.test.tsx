@@ -41,7 +41,6 @@ describe('PreviewCanvas - Refatoração Data-Driven', () => {
                 previewPrimaryColor="#000"
                 mode="light"
                 draftTokens={{ sidebarWidth: 250 }}
-                activeCategory="colors"
                 onUpdateDraft={() => {}}
                 sarak={{} as unknown as SarakUIContextType}
                 isDualView={true}

@@ -1,8 +1,8 @@
-import React from 'react';
+import React, { useState } from 'react';
 import { motion } from 'framer-motion';
-import { CARD_PRESETS, ComponentPreset } from '../../../../core/Design/presets/components/cards';
+import { CARD_PRESETS, CARD_TEXTURE_PRESETS, ComponentPreset } from '../../../../core/Design/presets/components/cards';
 import { useDesignVariables } from '../../../../core/Design/hooks/useDesignVariables';
-import { Layout, Check, Sparkles } from 'lucide-react';
+import { Sparkles, Grid } from 'lucide-react';
 
 import { SarakDesignState } from '../../../../core/Provider/types';
 
@@ -12,28 +12,32 @@ interface CardsCatalogProps {
 }
 
 export const CardsCatalog: React.FC<CardsCatalogProps> = ({ onApplyPreset }) => {
+    const [activeTab, setActiveTab] = useState<'curated' | 'textures'>('curated');
+    const presets = activeTab === 'curated' ? CARD_PRESETS : CARD_TEXTURE_PRESETS;
+
     return (
-        <div className="w-full h-full flex flex-col relative bg-theme-bg">
-            <div className="px-8 py-5 border-b border-theme-border flex items-center justify-between bg-theme-sidebar backdrop-blur-md sticky top-0 z-10">
-                <div className="flex items-center gap-4">
-                    <div className="p-2.5 bg-theme-primary/10 rounded-xl border border-theme-primary/20">
-                        <Layout size={18} className="text-theme-primary" />
-                    </div>
-                    <div className="flex flex-col">
-                        <span className="text-xs font-black uppercase text-theme-text tracking-[var(--sarak-tracking-wide,0.3em)]">Design Intelligence Catalog</span>
-                        <span className="text-[var(--sarak-type-scale3xs,9px)] font-bold text-theme-primary uppercase tracking-widest mt-0.5">
-                            Pilar: Cards & Surfaces
-                        </span>
-                    </div>
-                </div>
+        <div className="flex flex-col gap-6">
+            <div className="flex items-center gap-2 p-1 bg-black/20 rounded-xl border border-theme-border w-fit">
+                <button
+                    onClick={() => setActiveTab('curated')}
+                    className={`px-4 py-2 rounded-lg text-[var(--sarak-type-scale2xs,10px)] font-black uppercase tracking-widest transition-all flex items-center gap-2 ${activeTab === 'curated' ? 'bg-theme-primary text-white shadow-lg' : 'text-theme-muted hover:text-white hover:bg-white/5'}`}
+                >
+                    <Sparkles size={12} />
+                    Curados
+                </button>
+                <button
+                    onClick={() => setActiveTab('textures')}
+                    className={`px-4 py-2 rounded-lg text-[var(--sarak-type-scale2xs,10px)] font-black uppercase tracking-widest transition-all flex items-center gap-2 ${activeTab === 'textures' ? 'bg-theme-primary text-white shadow-lg' : 'text-theme-muted hover:text-white hover:bg-white/5'}`}
+                >
+                    <Grid size={12} />
+                    Texturas
+                </button>
             </div>
 
-            <div className="flex-1 overflow-y-auto custom-scrollbar p-6">
-                <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-                    {CARD_PRESETS.map((preset, i) => (
-                        <CardPresetPreview key={preset.id} preset={preset} index={i} onApply={() => onApplyPreset(preset.design, true)} />
-                    ))}
-                </div>
+            <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+                {presets.map((preset, i) => (
+                    <CardPresetPreview key={preset.id} preset={preset} index={i} onApply={() => onApplyPreset(preset.design, true)} />
+                ))}
             </div>
         </div>
     );
@@ -56,27 +60,13 @@ const CardPresetPreview = ({ preset, index, onApply }: { preset: ComponentPreset
         borderBottomRightRadius: variables['--sarak-card-radius-b-r'] || variables['--sarak-card-border-radius'] || 'var(--sarak-layout-gap-md,16px)',
         borderBottomLeftRadius: variables['--sarak-card-radius-b-l'] || variables['--sarak-card-border-radius'] || 'var(--sarak-layout-gap-md,16px)',
         backdropFilter: `blur(${variables['--sarak-card-backdrop-blur'] || 'var(--sarak-layout-gap-md,16px)'})`,
-        boxShadow: preset.design.cardShadow && preset.design.cardShadow !== 'none' 
-            ? preset.design.cardShadow 
-            : preset.design.cardShadowSpread 
+        boxShadow: preset.design.cardShadow && preset.design.cardShadow !== 'none'
+            ? preset.design.cardShadow
+            : preset.design.cardShadowSpread
                 ? `0 var(--sarak-preset-card-shadow-offset-y, 4px) ${preset.design.cardShadowSpread}px calc(var(--sarak-preset-card-shadow-spread, 2px) * -1) ${preset.design.cardGlowColor || 'rgba(0,0,0,0.5)'}`
                 : '0 var(--sarak-preset-card-shadow-offset-y, 4px) var(--sarak-preset-card-shadow-blur, 10px) calc(var(--sarak-preset-card-shadow-spread, 2px) * -1) rgba(0,0,0,0.5)',
         clipPath: variables['--sarak-card-clip-path']
     };
-
-    const textureLayer = preset.design.cardTextureType && preset.design.cardTextureType !== 'none' ? (
-        <div 
-            className="absolute inset-0 pointer-events-none opacity-50"
-            style={{
-                backgroundImage: preset.design.cardTextureType === 'grid' 
-                    ? 'linear-gradient(to right, rgba(255,255,255,0.05) var(--border-color,#334155), transparent var(--border-color,#334155)), linear-gradient(to bottom, rgba(255,255,255,0.05) var(--border-color,#334155), transparent var(--border-color,#334155))'
-                    : preset.design.cardTextureType === 'noise' 
-                        ? 'url("data:image/svg+xml,%3Csvg viewBox=%220 0 200 200%22 xmlns=%22http://www.w3.org/2000/svg%22%3E%3Cfilter id=%22noiseFilter%22%3E%3CfeTurbulence type=%22fractalNoise%22 baseFrequency=%220.65%22 numOctaves=%223%22 stitchTiles=%22stitch%22/%3E%3C/filter%3E%3Crect width=%22100%25%22 height=%22100%25%22 filter=%22url(%23noiseFilter)%22/%3E%3C/svg%3E")'
-                        : 'none',
-                backgroundSize: preset.design.cardTextureType === 'grid' ? 'var(--sarak-preset-grid-texture-size, 8px) var(--sarak-preset-grid-texture-size, 8px)' : 'auto'
-            }}
-        />
-    ) : null;
 
     return (
         <motion.button
@@ -88,11 +78,13 @@ const CardPresetPreview = ({ preset, index, onApply }: { preset: ComponentPreset
         >
             <div className="h-48 w-full relative flex items-center justify-center p-6 bg-[var(--color-theme-bg, #0a0a0c)] overflow-hidden" {...(attributes as React.HTMLAttributes<HTMLDivElement>)}>
                 <div className="absolute inset-0 bg-[radial-gradient(ellipse_at_center,rgba(255,255,255,0.05)_0%,transparent_70%)]" />
-                
-                {/* O Card Gigante de Preview */}
-                <div className="relative w-full max-w-[var(--sarak-preset-mini-card-max-width,280px)] h-32 flex flex-col p-4 shadow-2xl transition-transform group-hover:scale-105 duration-500 z-10" style={cardStyle as React.CSSProperties}>
-                    {textureLayer}
-                    
+
+                {/* O Card Gigante de Preview — data-sx-card-texture-type delega a renderização real da textura para o mesmo CSS de produção (src/styles/_atmosphere.css), em vez de reimplementar em JS */}
+                <div
+                    className="sarak-card relative w-full max-w-[var(--sarak-preset-mini-card-max-width,280px)] h-32 flex flex-col p-4 shadow-2xl transition-transform group-hover:scale-105 duration-500 z-10"
+                    data-sx-card-texture-type={String(preset.design.cardTextureType ?? 'none')}
+                    style={cardStyle as React.CSSProperties}
+                >
                     <div className="flex items-center gap-3 relative z-10">
                         <div className="w-10 h-10 rounded-full bg-white/10 flex items-center justify-center">
                             <Sparkles size={16} className="text-white/50" />
@@ -102,7 +94,7 @@ const CardPresetPreview = ({ preset, index, onApply }: { preset: ComponentPreset
                             <div className="h-1.5 w-1/2 bg-white/20 rounded-full" />
                         </div>
                     </div>
-                    
+
                     <div className="mt-auto relative z-10 flex flex-col gap-2">
                         <div className="h-1 w-full bg-white/10 rounded-full overflow-hidden">
                             <div className="h-full w-2/3 bg-white/40 rounded-full" />

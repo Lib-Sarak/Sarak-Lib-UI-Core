@@ -1,18 +1,13 @@
 import React, { useState } from 'react';
-import { motion } from 'framer-motion';
-import { GLOBAL_THEMES, ThemePreset } from '../../../../core/Design/presets/themes';
-import { syncThemeWithMode } from '../../../../core/Design/presets/themes/color-engine';
+import { GLOBAL_THEMES } from '../../../../core/Design/presets/themes';
 import type { SarakTokenValue } from '../../../../core/Design/types';
-import { useDesignVariables } from '../../../../core/Design/hooks/useDesignVariables';
 import { upgradeThemePayload } from '../../../../core/Design/master-map';
-import { Sparkles, ArrowRight, Layout, Moon, Sun } from 'lucide-react';
+import { Sparkles, Layout, Type, Layers, MousePointer2, Keyboard } from 'lucide-react';
 import { CardsCatalog } from './CardsCatalog';
 import { AtmosphereCatalog } from './AtmosphereCatalog';
 import { TypographyCatalog } from './TypographyCatalog';
-import { BUTTON_PRESETS } from '../../../../core/Design/presets/components/buttons';
-import { INPUT_PRESETS } from '../../../../core/Design/presets/components/inputs';
-import { ButtonPresetPreview } from './ButtonPresetPreview';
-import { InputPresetPreview } from './InputPresetPreview';
+import { ButtonsCatalog } from './ButtonsCatalog';
+import { InputsCatalog } from './InputsCatalog';
 import { PresetCard } from './PresetCard';
 
 import { SarakDesignState } from '../../../../core/Provider/types';
@@ -20,33 +15,27 @@ import { SarakDesignState } from '../../../../core/Provider/types';
 interface PresetsCatalogProps {
     onApplyPreset: (presetDesign: Partial<SarakDesignState>, isPartial?: boolean) => void;
     onApplyFullTheme?: (design: Partial<SarakDesignState>) => void;
-    activeCategory: string | null;
     currentMode: string;
 }
 
-export const PresetsCatalog: React.FC<PresetsCatalogProps> = ({ onApplyPreset, onApplyFullTheme, activeCategory, currentMode }) => {
-    const [activeTab, setActiveTab] = useState<'globals' | 'buttons' | 'inputs'>('globals');
+type PresetTab = 'globals' | 'cards' | 'typography' | 'atmosphere' | 'buttons' | 'inputs';
 
-    // Roteamento Modular de Presets
-    if (activeCategory === 'navigation') {
-        return <CardsCatalog onApplyPreset={onApplyPreset} currentMode={currentMode} />;
-    }
+const TABS: { id: PresetTab; label: string; icon: React.ElementType }[] = [
+    { id: 'globals', label: 'Globais', icon: Sparkles },
+    { id: 'cards', label: 'Cards', icon: Layout },
+    { id: 'typography', label: 'Typography', icon: Type },
+    { id: 'atmosphere', label: 'Atmosphere', icon: Layers },
+    { id: 'buttons', label: 'Buttons', icon: MousePointer2 },
+    { id: 'inputs', label: 'Inputs', icon: Keyboard },
+];
 
-    if (activeCategory === 'surfaces') {
-        return <AtmosphereCatalog onApplyPreset={onApplyPreset} currentMode={currentMode} />;
-    }
-
-    if (activeCategory === 'typography') {
-        return <TypographyCatalog onApplyPreset={onApplyPreset} currentMode={currentMode} />;
-    }
-
-    // Fallback: Temas Globais ou Componentes Individuais
-    const themes = GLOBAL_THEMES;
+export const PresetsCatalog: React.FC<PresetsCatalogProps> = ({ onApplyPreset, onApplyFullTheme, currentMode }) => {
+    const [activeTab, setActiveTab] = useState<PresetTab>('globals');
 
     return (
         <div className="w-full h-full flex flex-col relative bg-theme-bg">
-            {/* Header com Tabs */}
-            <div className="px-8 py-5 border-b border-theme-border flex items-center justify-between bg-theme-sidebar backdrop-blur-md sticky top-0 z-10">
+            {/* Header com navegação própria por Categoria de Preset (Schema), independente do Pilar do painel humano */}
+            <div className="px-8 py-5 border-b border-theme-border flex items-center justify-between bg-theme-sidebar backdrop-blur-md sticky top-0 z-10 flex-wrap gap-4">
                 <div className="flex items-center gap-4">
                     <div className="p-2.5 bg-theme-primary/10 rounded-xl border border-theme-primary/20 shadow-[0_0_20px_rgba(var(--theme-primary-rgb),0.2)]">
                         <Sparkles size={18} className="text-theme-primary" />
@@ -54,38 +43,29 @@ export const PresetsCatalog: React.FC<PresetsCatalogProps> = ({ onApplyPreset, o
                     <div className="flex flex-col">
                         <span className="text-xs font-black uppercase text-theme-text tracking-[var(--sarak-tracking-wide,0.3em)]">Design Intelligence Catalog</span>
                         <span className="text-[var(--sarak-type-scale3xs,9px)] font-bold text-theme-primary uppercase tracking-widest mt-0.5">
-                            Catálogo de Presets
+                            Categoria: {TABS.find(tab => tab.id === activeTab)?.label}
                         </span>
                     </div>
                 </div>
 
-                <div className="flex items-center gap-2 p-1 bg-black/20 rounded-xl border border-theme-border">
-                    <button
-                        onClick={() => setActiveTab('globals')}
-                        className={`px-4 py-2 rounded-lg text-[var(--sarak-type-scale2xs,10px)] font-black uppercase tracking-widest transition-all ${activeTab === 'globals' ? 'bg-theme-primary text-white shadow-lg' : 'text-theme-muted hover:text-white hover:bg-white/5'}`}
-                    >
-                        Globais
-                    </button>
-                    <button
-                        onClick={() => setActiveTab('buttons')}
-                        className={`px-4 py-2 rounded-lg text-[var(--sarak-type-scale2xs,10px)] font-black uppercase tracking-widest transition-all ${activeTab === 'buttons' ? 'bg-theme-primary text-white shadow-lg' : 'text-theme-muted hover:text-white hover:bg-white/5'}`}
-                    >
-                        Botões
-                    </button>
-                    <button
-                        onClick={() => setActiveTab('inputs')}
-                        className={`px-4 py-2 rounded-lg text-[var(--sarak-type-scale2xs,10px)] font-black uppercase tracking-widest transition-all ${activeTab === 'inputs' ? 'bg-theme-primary text-white shadow-lg' : 'text-theme-muted hover:text-white hover:bg-white/5'}`}
-                    >
-                        Inputs
-                    </button>
+                <div className="flex items-center gap-2 p-1 bg-black/20 rounded-xl border border-theme-border flex-wrap">
+                    {TABS.map(tab => (
+                        <button
+                            key={tab.id}
+                            onClick={() => setActiveTab(tab.id)}
+                            className={`px-4 py-2 rounded-lg text-[var(--sarak-type-scale2xs,10px)] font-black uppercase tracking-widest transition-all ${activeTab === tab.id ? 'bg-theme-primary text-white shadow-lg' : 'text-theme-muted hover:text-white hover:bg-white/5'}`}
+                        >
+                            {tab.label}
+                        </button>
+                    ))}
                 </div>
             </div>
 
-            {/* Presets Grid */}
+            {/* Presets Body */}
             <div className="flex-1 overflow-y-auto custom-scrollbar p-6 bg-[radial-gradient(ellipse_at_top_right,rgba(var(--theme-primary-rgb),0.03)_0%,transparent_50%)]">
                 {activeTab === 'globals' && (
                     <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-                        {themes.map((theme, i) => (
+                        {GLOBAL_THEMES.map((theme, i) => (
                             <PresetCard
                                 key={theme.id}
                                 theme={theme}
@@ -104,36 +84,12 @@ export const PresetsCatalog: React.FC<PresetsCatalogProps> = ({ onApplyPreset, o
                     </div>
                 )}
 
-                {activeTab === 'buttons' && (
-                    <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
-                        {BUTTON_PRESETS.map((preset, i) => (
-                            <ButtonPresetPreview 
-                                key={preset.id} 
-                                preset={preset} 
-                                index={i} 
-                                currentMode={currentMode} 
-                                onApply={() => onApplyPreset(preset.design, true)} 
-                            />
-                        ))}
-                    </div>
-                )}
-
-                {activeTab === 'inputs' && (
-                    <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
-                        {INPUT_PRESETS.map((preset, i) => (
-                            <InputPresetPreview 
-                                key={preset.id} 
-                                preset={preset} 
-                                index={i} 
-                                currentMode={currentMode} 
-                                onApply={() => onApplyPreset(preset.design, true)} 
-                            />
-                        ))}
-                    </div>
-                )}
+                {activeTab === 'cards' && <CardsCatalog onApplyPreset={onApplyPreset} currentMode={currentMode} />}
+                {activeTab === 'typography' && <TypographyCatalog onApplyPreset={onApplyPreset} currentMode={currentMode} />}
+                {activeTab === 'atmosphere' && <AtmosphereCatalog onApplyPreset={onApplyPreset} currentMode={currentMode} />}
+                {activeTab === 'buttons' && <ButtonsCatalog onApplyPreset={onApplyPreset} currentMode={currentMode} />}
+                {activeTab === 'inputs' && <InputsCatalog onApplyPreset={onApplyPreset} currentMode={currentMode} />}
             </div>
         </div>
     );
 };
-
-

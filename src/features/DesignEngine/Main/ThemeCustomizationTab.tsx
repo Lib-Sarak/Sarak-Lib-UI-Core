@@ -214,7 +214,6 @@ export const ThemeCustomizationTab: React.FC = () => {
                     previewEmojiSet={draft.emojiSet || sarak.emojiSet || 'none'}
                     previewPrimaryColor={draft.primaryColor || sarak.primaryColor || 'var(--color-theme-primary, #00f2ff)'}
                     draftTokens={draft}
-                    activeCategory={activePillarId}
                     activeSectionId={activeSectionId}
                     isDualView={viewMode === 'preview'}
                     isPreviewStacked={isPreviewStacked}
