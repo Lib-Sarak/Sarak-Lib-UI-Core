@@ -5,7 +5,7 @@ import { SarakButton } from '../../../../../components/atomic/Buttons/SarakButto
 
 export const DashboardSidePanel = ({ variables, textureType }: any) => {
     return (
-        <SmartCard variables={variables} textureType={textureType} className="h-[420px] lg:h-full w-full !p-5 @md:!p-6" label="Card de Texto (Logs)">
+        <SmartCard variables={variables} textureType={textureType} className="h-[420px] @lg:h-full w-full !p-5 @md:!p-6" label="Card de Texto (Logs)">
             <div className="flex justify-between items-center mb-4">
                 <h3 className="text-xs font-bold uppercase tracking-widest text-slate-400">Live Activity</h3>
                 <SarakIcon name="Clock" size={14} className="text-slate-600" />

@@ -51,7 +51,7 @@ describe('PreviewCanvas - Refatoração Data-Driven', () => {
         );
 
         // A div externa do Preview deve conter o css variable --device-width em vez de width explícito
-        const deviceWrapper = container.querySelector('[class*="w-[var(--device-width)]"]');
+        const deviceWrapper = container.querySelector('[class*="w-[var(--device-width,375px)]"]');
         expect(deviceWrapper).not.toBeNull();
         if (deviceWrapper) {
             const style = deviceWrapper.getAttribute('style') || '';

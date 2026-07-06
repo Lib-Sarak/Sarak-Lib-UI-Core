@@ -95,6 +95,7 @@ export const PreviewCanvas: React.FC<PreviewCanvasProps> = ({
     const apps = usePreviewApps(tokens, config, previewAnimationStyle);
     const { mockDiscoveredModules, mockGroupedModules } = useMockModules();
     const [previewNavVisible, setPreviewNavVisible] = React.useState(true);
+    const [previewMobileNavOpen, setPreviewMobileNavOpen] = React.useState(false);
 
     const renderSystemContent = (useSystemDesign = false) => {
         const activeDesign = useSystemDesign ? (sarak?.design || {}) : tokens;
@@ -108,6 +109,8 @@ export const PreviewCanvas: React.FC<PreviewCanvasProps> = ({
                 previewDevice={previewDevice}
                 previewNavVisible={previewNavVisible}
                 setPreviewNavVisible={setPreviewNavVisible}
+                previewMobileNavOpen={previewMobileNavOpen}
+                setPreviewMobileNavOpen={setPreviewMobileNavOpen}
                 isSidebar={navStyle === 'sidebar'}
                 isDock={navStyle === 'dock'}
                 isTopbar={navStyle === 'topbar'}
@@ -129,12 +132,12 @@ export const PreviewCanvas: React.FC<PreviewCanvasProps> = ({
     return (
         <DesignScope design={{ ...tokens, globalBackgroundImageUrl: undefined }} className="w-full h-full flex flex-col relative overflow-auto bg-[var(--color-theme-bg, #0a0a0c)] p-0 custom-scrollbar">
             <UIContext.Provider value={previewContextValue as SarakUIContextType}>
-                <div className={`flex gap-6 p-6 items-stretch overflow-visible ${isPreviewStacked ? 'flex-col min-w-full min-h-full w-fit h-fit items-center' : 'flex-col xl:flex-row min-w-full min-h-full w-fit h-fit justify-center'}`}>
+                <div className={`flex-1 w-full h-full flex gap-6 p-6 items-stretch overflow-visible ${isPreviewStacked ? 'flex-col items-center' : 'flex-col xl:flex-row justify-center'}`}>
                     {isDualView ? (
                         <>
                             {/* Live Draft Preview (Gêmeo Digital) */}
                             <div
-                                className={`relative shrink-0 overflow-hidden bg-[var(--theme-surface)] transition-all duration-500 flex flex-col group min-h-[var(--sarak-engine-min-h-sm,300px)] w-[var(--sarak-device-phone-width,375px)] h-[var(--sarak-device-phone-height,812px)] max-w-full max-h-[var(--sarak-device-phone-height,812px)] ${getDeviceHeightClass()} ${getDeviceFrameStyles()} ${previewDevice === 'desktop' ? 'resize' : 'resize-none'}`}
+                                className={`relative shrink-0 overflow-hidden bg-[var(--theme-surface)] transition-all duration-500 flex flex-col group min-h-[var(--sarak-engine-min-h-sm,300px)] w-[var(--device-width,375px)] h-[var(--device-height,812px)] max-w-full max-h-[var(--device-max-height,812px)] ${getDeviceHeightClass()} ${getDeviceFrameStyles()} ${previewDevice === 'desktop' ? 'resize' : 'resize-none'}`}
                                 style={{
                                     '--device-width': previewDevice === 'desktop' ? (isPreviewStacked ? '100%' : '50%') : targetWidth,
                                     '--device-height': previewDevice === 'smartphone' ? 'var(--sarak-device-phone-height, 812px)' : previewDevice === 'tablet' ? 'var(--sarak-device-tablet-height, 1024px)' : 'auto',
@@ -195,7 +198,7 @@ export const PreviewCanvas: React.FC<PreviewCanvasProps> = ({
                         </>
                     ) : (
                         <div
-                            className="relative h-full rounded-2xl border border-[var(--theme-border)] shadow-theme overflow-hidden bg-[var(--theme-surface)] transition-all duration-500 mx-auto w-[var(--sarak-device-phone-width,375px)] max-w-full"
+                            className="relative h-full rounded-2xl border border-[var(--theme-border)] shadow-theme overflow-hidden bg-[var(--theme-surface)] transition-all duration-500 mx-auto w-[var(--target-width,375px)] max-w-full"
                             style={{ '--target-width': targetWidth } as React.CSSProperties}
                         >
                             {renderSystemContent()}

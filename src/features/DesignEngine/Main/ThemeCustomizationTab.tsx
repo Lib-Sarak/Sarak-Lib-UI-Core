@@ -152,7 +152,7 @@ export const ThemeCustomizationTab: React.FC = () => {
         <div className="flex flex-1 h-screen max-h-screen bg-[var(--theme-bg)] overflow-hidden">
             {/* Sidebar de Configuração */}
             <div
-                className={`flex flex-col h-full max-h-full border-r border-[var(--theme-border)] bg-[var(--theme-card)] relative z-10 overflow-hidden shrink-0 w-[var(--sarak-sidebar-w, 240px)] min-w-[var(--sarak-design-engine-sidebar-min-w,280px)] max-w-[var(--sarak-design-engine-sidebar-max-w,600px)] ${isResizingEngine ? 'transition-none' : 'transition-all duration-300'}`}
+                className={`flex flex-col h-full max-h-full border-r border-[var(--theme-border)] bg-[var(--theme-card)] relative z-10 overflow-hidden shrink-0 w-[var(--engine-sidebar-width, 320px)] min-w-[var(--sarak-design-engine-sidebar-min-w,280px)] max-w-[var(--sarak-design-engine-sidebar-max-w,600px)] ${isResizingEngine ? 'transition-none' : 'transition-all duration-300'}`}
                 style={{ '--engine-sidebar-width': `${engineSidebarWidth}px` } as React.CSSProperties}
             >
                 <div onMouseDown={startResizingEngine} className="absolute right-0 top-0 w-1.5 h-full cursor-col-resize hover:bg-[var(--theme-primary)]/50 transition-colors z-50 active:bg-[var(--theme-primary)]" />

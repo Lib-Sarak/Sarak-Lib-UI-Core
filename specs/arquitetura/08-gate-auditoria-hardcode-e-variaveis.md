@@ -11,8 +11,8 @@ relacionados: ["01-arquitetura-motor-tema-design-engine", "04-paridade-cinco-cam
 Consolida como padrão permanente os dois gates automatizados que protegem a Sarak-Lib-UI-Core contra a reintrodução de dois defeitos estruturais já erradicados da base: **hardcode geométrico/de valor** (Tailwind/CSS chumbado) e **variáveis-fantasma** (`var(--x)` consumido sem fonte emissora real). Qualquer refactor estrutural futuro nos componentes atômicos deve satisfazer os dois gates descritos aqui antes de ser considerado concluído.
 
 # 2. Stack e Ferramentas
-- `scripts/auditor_hardcoded.mjs` — detector AST de hardcode (valor + estrutural), registrado em `run_audit.mjs`.
-- `scripts/auditor_ghostvars.mjs` — detector de variáveis-fantasma, cruza todo `var(--x)` consumido contra o registro real de variáveis emitidas (`useDesignVariables.ts`, schemas via `cssVars`, aliases de `src/styles/*.css`).
+- `.agents/skills/ui-auditoria-modulo/scripts/auditor_hardcoded.mjs` — detector AST de hardcode (valor + estrutural), registrado em `run_audit.mjs`.
+- `.agents/skills/ui-auditoria-modulo/scripts/auditor_ghostvars.mjs` — detector de variáveis-fantasma, cruza todo `var(--x)` consumido contra o registro real de variáveis emitidas (`useDesignVariables.ts`, schemas via `cssVars`, aliases de `src/styles/*.css`).
 - Hooks Controladores da Camada 6 (`useStructuralStyles` + hooks de domínio) como destino de migração de todo hardcode estrutural.
 
 # 3. Gate 1 — Hardcode (`auditor_hardcoded.mjs`)

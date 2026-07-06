@@ -29,6 +29,8 @@ describe('PreviewSystemRenderer', () => {
                     previewDevice="desktop"
                     previewNavVisible={true}
                     setPreviewNavVisible={() => {}}
+                    previewMobileNavOpen={false}
+                    setPreviewMobileNavOpen={() => {}}
                     isSidebar={true}
                     isDock={false}
                     isTopbar={false}

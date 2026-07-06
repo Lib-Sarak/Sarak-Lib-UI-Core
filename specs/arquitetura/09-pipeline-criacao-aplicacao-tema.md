@@ -75,6 +75,14 @@ Os 28 Schemas TS (`src/core/Design/schema/*.ts`) se agrupam em 13 colunas do ban
 
 Regra de leitura: um schema pode alimentar mais de uma coluna quando cobre mais de um domínio (ex: `system.ts` contribui para `branding_config` e `colors_and_atmosphere`); nesse caso, o `schemaOrigin` de cada token na partição JSON (Seção 2) desambigua token a token.
 
+## 2.4 Consulta e Validação Programática (Preset = fatia, Tema = tudo)
+Um **Preset** e um **Tema** são a mesma primitiva do payload (Seção 3) — a única diferença é a amplitude: um preset preenche a fatia de 1 domínio (ex: só `cards_engine`), um tema preenche todos. As funções abaixo são a implementação viva dessa ideia — nunca copiar o resultado delas para um arquivo estático:
+
+- **`getDomainMap()`** (`src/core/Design/master-map.ts`) — devolve o Mapa de Domínios da Seção 2.3 como dado consultável, em 2 granularidades: `bySchema` (por `ComponentSchema.id`, ex: `'cards'`, `'buttons'` — escopo fino de um preset de componente) e `byColumn` (por coluna do banco, ex: `'cards_engine'` — escopo de um tema completo, lido direto de `theme_table_mapping.json`).
+- **`getScaffold(domain?)`** (`master-map.ts`) — o Gabarito Dinâmico: sem argumento, devolve o scaffold completo (`{tokenId: defaultValue}` das ~408 chaves reais, equivalente a um Tema vazio); com um domínio (schema ou coluna), devolve só a fatia correspondente (equivalente a um Preset vazio daquele componente). Substitui qualquer cópia estática de "template mestre".
+- **`auditor_presets.mjs`** / `verify_presets.ts` (`.agents/skills/ui-auditoria-modulo/scripts/`, registrado em `run_audit.mjs`) — importa os Temas (`GLOBAL_THEMES`) e Presets de componente reais e compara suas chaves contra `getScaffold()` vivo; reprova se encontrar **chave órfã** (existe no arquivo, não existe mais no dicionário) — é o gate que impede o drift já documentado (13 chaves órfãs encontradas em 16 dos 18 temas existentes na auditoria inicial).
+- **`scripts/generate_themes.ts`** — gerador de novos arquivos de tema que consome `getScaffold()` ao vivo como base (em vez de um `masterTemplate` hardcoded), mesclando com os `overrides` específicos de cada tema antes de escrever o arquivo `.ts` final.
+
 # 3. O Payload de Entrada (o "verbo único")
 Dois formatos aceitos pela API (Seção 6), ambos **um objeto plano de chaves→valores**, sem qualquer distinção de formato entre chave de Valor e Estrutural:
 - `POST/PUT /themes` (`ThemeCreateUpdate`): `{ name: string, design: { <chave>: <valor>, ... }, is_active?: boolean }` — cria ou substitui um tema completo.
@@ -151,6 +159,9 @@ Payload: `{ "design": { "cardLayoutDirection": "row", "cardTextAlign": "center" 
 - [x] O Mapa de Domínios (Seção 2.3) cobre as 13 colunas do banco e os 28 schemas de origem.
 - [x] O contrato REST (Seção 6) reflete 1:1 os endpoints implementados em `router.py`.
 - [x] Bug do bucket `structural` sem coluna no banco corrigido (coluna adicionada em `models.py`, `GRANULAR_COLUMNS` em `router.py`, self-healing em `database.py`/`001_init_ui_schema.sql`) — os 11 tokens do bucket persistem corretamente.
+- [x] `getDomainMap()`/`getScaffold()` implementados e validados em runtime (Seção 2.4).
+- [x] `auditor_presets.mjs` registrado em `run_audit.mjs`, detecta corretamente o drift real existente (13 chaves órfãs / 16 temas).
+- [x] `scripts/generate_themes.ts` consome `getScaffold()` ao vivo, sem cópia estática.
 
 **Fora de escopo (rastreado em `specs/plan/07-agente-llm-design-e-expansao-estrutural.md`, não desta spec):**
 - Decisão sobre o comportamento de chave inválida para o Agente LLM (422 explícito vs auto-healing) — Seção 4.
