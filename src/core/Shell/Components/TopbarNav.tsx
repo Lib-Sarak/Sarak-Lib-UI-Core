@@ -2,6 +2,7 @@ import React from 'react';
 import { SarakIcon } from '../../../components/atomic/Icon/SarakIcon';
 import { DiscoveredModule } from '../../../core/Discovery/types';
 import { SarakDesignState } from '../../../core/Provider/types';
+import { BREAKPOINT_DESKTOP } from '../../../core/Design/breakpoints';
 import { ShellUser } from './types';
 import { ShellSearchWidget } from './ShellSearchWidget';
 import { ShellUserWidget } from './ShellUserWidget';
@@ -107,7 +108,7 @@ export const TopbarNav: React.FC<TopbarNavProps> = ({
 
                     {isTopbar && (
                         <nav
-                            className="hidden lg:flex flex-1 items-center gap-1 overflow-x-auto custom-scrollbar-hide mx-4"
+                            className={`hidden @min-[${BREAKPOINT_DESKTOP}px]:flex flex-1 items-center gap-1 overflow-x-auto custom-scrollbar-hide mx-4`}
                             style={{
                                 justifyContent: discoveredModules.length > 6 ? 'flex-start' : 'center',
                             }}

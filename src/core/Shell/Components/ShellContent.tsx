@@ -9,6 +9,7 @@ import { DynamicRenderer } from '../../Discovery/DynamicRenderer';
 import { SarakEmptyState } from '../../../components/atomic/Feedback/SarakEmptyState';
 import { UIContext } from '../../Provider/SarakUIProvider';
 import { useShellLayoutStyles } from '../hooks/useShellLayoutStyles';
+import { BREAKPOINT_DESKTOP } from '../../Design/breakpoints';
 
 interface ShellContentProps {
     activeModule: DiscoveredModule | undefined;
@@ -34,7 +35,7 @@ export const ShellContent: React.FC<ShellContentProps> = ({
     return (
         <main className={`${mainContentClass} custom-scrollbar isolate ${texture !== 'none' ? 'texture-active' : 'bg-[var(--theme-body)]'}`} data-sx-texture={texture}>
 
-            <div className="flex-1 flex flex-col relative w-full pt-8 lg:pt-12 z-10 transition-all duration-500 min-h-0" style={{ gap: `var(--theme-gap, ${layoutGap}px)`, padding: `var(--safe-area-padding, 0)` }}>
+            <div className={`flex-1 flex flex-col relative w-full pt-8 @min-[${BREAKPOINT_DESKTOP}px]:pt-12 z-10 transition-all duration-500 min-h-0`} style={{ gap: `var(--theme-gap, ${layoutGap}px)`, padding: `var(--safe-area-padding, 0)` }}>
                 <AnimatePresence mode="wait">
                     {activeModule ? (
                         <motion.div 
@@ -50,7 +51,7 @@ export const ShellContent: React.FC<ShellContentProps> = ({
                                         <div className="p-2 rounded-[var(--radius-theme)] bg-[var(--theme-primary)]/10 border border-[var(--theme-primary)]/20 shadow-[0_0_15px_rgba(var(--theme-primary-rgb),0.1)]"><IconRenderer name={activeModule.icon} size={20} /></div>
                                         <span className="text-2xs font-black uppercase tracking-[0.4em] italic opacity-60 text-[var(--theme-muted)]">{activeModule.category || 'Module'}</span>
                                     </div>
-                                    <h1 className="text-4xl lg:text-5xl font-black tracking-tighter text-[var(--theme-title)] uppercase">{activeModule.label}</h1>
+                                    <h1 className={`text-4xl @min-[${BREAKPOINT_DESKTOP}px]:text-5xl font-black tracking-tighter text-[var(--theme-title)] uppercase`}>{activeModule.label}</h1>
                                 </div>
                             </header>
 

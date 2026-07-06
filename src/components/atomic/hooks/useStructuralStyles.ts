@@ -1,5 +1,6 @@
 import React from 'react';
 import { useSarakUI } from '../../../core/Provider/SarakUIProvider';
+import { BREAKPOINT_TABLET, BREAKPOINT_DESKTOP } from '../../../core/Design/breakpoints';
 import {
     RESPONSIVE_GRID_PRESETS,
     RESPONSIVE_SPACING_PRESETS,
@@ -35,9 +36,9 @@ export const useStructuralStyles = () => {
         }
 
         const gridStrategies: Record<string, string> = {
-            'col-12': 'grid w-full grid-cols-1 md:grid-cols-12',
+            'col-12': `grid w-full grid-cols-1 @min-[${BREAKPOINT_TABLET}px]:grid-cols-12`,
             'auto-fit': 'grid w-full grid-cols-[repeat(auto-fit,minmax(280px,1fr))]',
-            'masonry': 'columns-1 md:columns-2 lg:columns-3 w-full'
+            'masonry': `columns-1 @min-[${BREAKPOINT_TABLET}px]:columns-2 @min-[${BREAKPOINT_DESKTOP}px]:columns-3 w-full`
         };
 
         const hasCustomTemplate = !!templateColumns || !!templateAreas;
@@ -80,13 +81,18 @@ export const useStructuralStyles = () => {
 
     // Empilha em coluna no mobile e vira linha a partir do breakpoint informado
     // (variantes responsivas não são expressáveis via `style` inline puro).
+    const stackBreakpoints: Record<'md' | 'lg', number> = {
+        md: BREAKPOINT_TABLET,
+        lg: BREAKPOINT_DESKTOP
+    };
+
     const getResponsiveStackStyles = (
         breakpoint: 'md' | 'lg' = 'md',
         gapOverride?: string
     ) => {
         const gap = gapOverride || design?.layoutGap || 'var(--sarak-layout-gap-md, 16px)';
         return {
-            className: `flex flex-col ${breakpoint}:flex-row`,
+            className: `flex flex-col @min-[${stackBreakpoints[breakpoint]}px]:flex-row`,
             style: { gap } as React.CSSProperties
         };
     };
@@ -217,7 +223,7 @@ export const useStructuralStyles = () => {
         };
 
         const alignClass = alignStrategies[align] || alignStrategies['space-between'];
-        const headerClass = `flex flex-col md:flex-row md:items-center w-full ${alignClass}`;
+        const headerClass = `flex flex-col @min-[${BREAKPOINT_TABLET}px]:flex-row @min-[${BREAKPOINT_TABLET}px]:items-center w-full ${alignClass}`;
 
         return {
             className: headerClass.trim(),

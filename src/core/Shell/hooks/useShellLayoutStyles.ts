@@ -1,5 +1,6 @@
 import { useMemo } from 'react';
 import { SarakDesignState } from '../../Provider/types';
+import { BREAKPOINT_DESKTOP } from '../../Design/breakpoints';
 
 export interface ShellLayoutContext {
     shellClass: string;
@@ -26,8 +27,10 @@ const topbarStrategies: Record<string, string> = {
     'relative': 'relative'
 };
 
+const BP_SM = 640;
+
 const contentStrategies: Record<string, string> = {
-    'center': 'max-w-7xl mx-auto w-full px-4 sm:px-6 lg:px-8',
+    'center': `max-w-7xl mx-auto w-full px-4 @min-[${BP_SM}px]:px-6 @min-[${BREAKPOINT_DESKTOP}px]:px-8`,
     'stretch': 'w-full'
 };
 
