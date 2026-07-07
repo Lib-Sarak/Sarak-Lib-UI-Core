@@ -53,3 +53,9 @@ _deep_seeder_check.py
 .idea/
 .DS_Store
 Thumbs.db
+
+# Auditorias Sarak e Dumps (Lixo de Agentes)
+audit*.txt
+commit*.txt
+orphans.txt
+registry_dump.json
