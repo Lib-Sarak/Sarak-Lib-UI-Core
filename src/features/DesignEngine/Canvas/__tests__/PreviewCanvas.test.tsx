@@ -27,10 +27,10 @@ import { SarakUIProvider } from '../../../../core/Provider/SarakUIProvider';
 import { SarakUIContextType } from '../../../../core/Provider/types';
 
 describe('PreviewCanvas - Refatoração Data-Driven', () => {
-    it('deve usar variaveis CSS injetadas no style em vez de inline widths', () => {
+    it('deve usar propriedades de estilo reais (width/height) em vez de custom properties fantasma', () => {
         const { container } = render(
             <SarakUIProvider>
-                <PreviewCanvas 
+                <PreviewCanvas
                 previewDevice="desktop"
                 previewLayoutId="test"
                 activePreviewApp="dashboard"
@@ -49,15 +49,16 @@ describe('PreviewCanvas - Refatoração Data-Driven', () => {
             </SarakUIProvider>
         );
 
-        // A div externa do Preview deve conter o css variable --device-width em vez de width explícito
-        const deviceWrapper = container.querySelector('[class*="w-[var(--device-width,375px)]"]');
+        // A div externa do Preview deve setar width/height como propriedades reais do style,
+        // não mais via custom property fantasma (--device-width) que a engine nunca emitia.
+        const deviceWrapper = container.querySelector('[class*="min-h-[var(--sarak-engine-min-h-sm,300px)]"]');
         expect(deviceWrapper).not.toBeNull();
         if (deviceWrapper) {
             const style = deviceWrapper.getAttribute('style') || '';
-            expect(style).toContain('--device-width');
-            expect(style).not.toMatch(/(^|;)\s*width:\s*50%/i); // Não deve ter "width: 50%" como propriedade CSS direta
+            expect(style).toContain('width');
+            expect(style).not.toContain('--device-width');
         }
-        
+
         expect(container).toMatchSnapshot();
     }, 15000);
 });

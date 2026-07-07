@@ -167,7 +167,6 @@ export const stellarNebulaTheme: ThemePreset = {
         inputBorderColor: 'rgba(255, 255, 255, 0.1)',
         inputFocusBorderColor: '#8b5cf6',
         inputTextColor: '#ffffff',
-        inputRadius: 8,
         zIndexBase: 1,
         zIndexSidebar: 500,
         zIndexTooltip: 9000,

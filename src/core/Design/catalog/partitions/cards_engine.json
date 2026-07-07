@@ -2125,6 +2125,21 @@
     "relatedTokens": []
   },
   {
+    "tokenId": "presetMiniCardHeight",
+    "name": "Preview de Preset: Altura do Mini-Card",
+    "description": "Altura do mini-card de preview dentro do CardsCatalog.",
+    "type": "number",
+    "importance": 25,
+    "categories": ["cards", "layout", "cards-engine"],
+    "tags": ["preset-preview", "height", "design-engine"],
+    "databaseColumn": "cards_engine",
+    "schemaOrigin": "cards.ts",
+    "digitalTwins": ["CardsCatalog"],
+    "cssVariables": ["--sarak-preset-mini-card-height"],
+    "allowedValues": { "min": 60, "max": 300, "step": 10 },
+    "relatedTokens": ["presetMiniCardMaxWidth"]
+  },
+  {
     "tokenId": "presetCardShadowOffsetY",
     "name": "Preview de Preset: Sombra do Card — Offset Y",
     "description": "Offset vertical da sombra padrão de card duplicada em CardsCatalog/PresetCard.",

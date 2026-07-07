@@ -157,7 +157,6 @@ export const minimalistAiry: ThemePreset = {
         inputBorderColor: '#cbd5e1',
         inputFocusBorderColor: '#3b82f6',
         inputTextColor: '#0f172a',
-        inputRadius: 8,
         zIndexBase: 1,
         zIndexSidebar: 50,
         zIndexTooltip: 100,

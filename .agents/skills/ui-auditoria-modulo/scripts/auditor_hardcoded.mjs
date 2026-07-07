@@ -27,6 +27,24 @@ const STRUCTURAL_SCOPE = ['src/components/atomic'];
 // Funções utilitárias que recebem classes Tailwind como argumento (além de className).
 const CLASS_HELPERS = new Set(['cn', 'clsx', 'classnames', 'classNames', 'twMerge', 'cva', 'tw']);
 
+// Allowlist NARROW do detector de VALOR: só exceções reais e documentadas, uma por linha,
+// chaveadas por `${caminhoRelativoDoArquivo}::${literalExato}`. Espelha o mecanismo já
+// existente em auditor_ghostvars.mjs (ALLOWLIST). NUNCA usar para mascarar hardcode real —
+// cada entrada precisa de uma razão de negócio que a Configuração (var+fallback) não resolve.
+const VALUE_ALLOWLIST = new Set([
+  // Cores oficiais da marca Google (G-logo, 4 cores fixas por guideline de marca — não são
+  // tema, então não devem virar var(--sarak-*): isso implicaria falsamente que são customizáveis).
+  'src/components/atomic/Atoms/SocialButton.tsx::#4285F4',
+  'src/components/atomic/Atoms/SocialButton.tsx::#34A853',
+  'src/components/atomic/Atoms/SocialButton.tsx::#FBBC05',
+  'src/components/atomic/Atoms/SocialButton.tsx::#EA4335',
+  // Fixtures de teste E2E (Playwright CT): valor arbitrário usado para provar que a injeção
+  // de CSS via var() reflete o dado bruto no DOM — não é estilo de componente, não é tema.
+  'src/features/DesignEngine/__e2e__/RealtimeInjection.spec.tsx::#ff0000',
+  'src/features/DesignEngine/__e2e__/RealtimeInjection.spec.tsx::20px',
+  'src/features/DesignEngine/__e2e__/Boot.spec.tsx::2rem',
+]);
+
 // Classificação por BALDE. Toda classe estrutural é LOCALIZADA e contabilizada.
 // - Baldes DUROS (reprovam): devem migrar para o Hook Controlador / tokens.
 // - Baldes DEDUZIDOS (não reprovam): localizados, contados e subtraídos do total,
@@ -103,10 +121,14 @@ function sanitizeFallbacks(text) {
     .replace(/var\([^,]+,\s*[0-9.]+(?:px|rem|em)\s*\)/gi, '');
 }
 
-function checkValueHardcoded(sourceFile) {
+function checkValueHardcoded(sourceFile, relFilePath) {
   const violations = [];
   function visit(node) {
     if (ts.isStringLiteralLike(node) || ts.isTemplateLiteralToken(node)) {
+      if (VALUE_ALLOWLIST.has(`${relFilePath}::${node.text}`)) {
+        ts.forEachChild(node, visit);
+        return;
+      }
       const text = sanitizeFallbacks(node.text || '');
       if (HEX_RE.test(text)) {
         violations.push(`Line ${lineOf(sourceFile, node)}: Cor hex hardcoded -> ${node.text}`);
@@ -206,7 +228,8 @@ let valueTotal = 0;
 console.log('\n### VALOR (hex / px / rem / em) — todas as camadas');
 for (const file of valueFiles) {
   const sf = parse(file);
-  const violations = checkValueHardcoded(sf);
+  const relPath = path.relative(process.cwd(), file).split(path.sep).join('/');
+  const violations = checkValueHardcoded(sf, relPath);
   if (violations.length > 0) {
     console.log(`\n[FAIL] ${path.relative(process.cwd(), file)}`);
     violations.forEach((v) => console.log(`  - ${v}`));

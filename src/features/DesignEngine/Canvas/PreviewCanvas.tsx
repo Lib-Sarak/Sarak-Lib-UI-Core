@@ -135,11 +135,11 @@ export const PreviewCanvas: React.FC<PreviewCanvasProps> = ({
                         <>
                             {/* Live Draft Preview (Gêmeo Digital) */}
                             <div
-                                className={`relative shrink-0 overflow-hidden bg-[var(--theme-surface)] transition-all duration-500 flex flex-col group min-h-[var(--sarak-engine-min-h-sm,300px)] w-[var(--device-width,375px)] h-[var(--device-height,812px)] max-w-full max-h-[var(--device-max-height,812px)] ${getDeviceHeightClass()} ${getDeviceFrameStyles()} ${previewDevice === 'desktop' ? 'resize' : 'resize-none'}`}
+                                className={`relative shrink-0 overflow-hidden bg-[var(--theme-surface)] transition-all duration-500 flex flex-col group min-h-[var(--sarak-engine-min-h-sm,300px)] max-w-full ${getDeviceHeightClass()} ${getDeviceFrameStyles()} ${previewDevice === 'desktop' ? 'resize' : 'resize-none'}`}
                                 style={{
-                                    '--device-width': previewDevice === 'desktop' ? (isPreviewStacked ? '100%' : '50%') : targetWidth,
-                                    '--device-height': previewDevice === 'smartphone' ? 'var(--sarak-device-phone-height, 812px)' : previewDevice === 'tablet' ? 'var(--sarak-device-tablet-height, 1024px)' : 'auto',
-                                    '--device-max-height': previewDevice !== 'desktop' ? '90vh' : 'none'
+                                    width: previewDevice === 'desktop' ? (isPreviewStacked ? '100%' : '50%') : targetWidth,
+                                    height: previewDevice === 'smartphone' ? 'var(--sarak-device-phone-height, 812px)' : previewDevice === 'tablet' ? 'var(--sarak-device-tablet-height, 1024px)' : 'auto',
+                                    maxHeight: previewDevice !== 'desktop' ? '90vh' : 'none'
                                 } as React.CSSProperties}
                             >
                                 {/* Hardware Mockup Extras (Notch, Camera) */}
@@ -195,8 +195,8 @@ export const PreviewCanvas: React.FC<PreviewCanvasProps> = ({
                         </>
                     ) : (
                         <div
-                            className="relative h-full rounded-2xl border border-[var(--theme-border)] shadow-theme overflow-hidden bg-[var(--theme-surface)] transition-all duration-500 mx-auto w-[var(--target-width,375px)] max-w-full"
-                            style={{ '--target-width': targetWidth } as React.CSSProperties}
+                            className="relative h-full rounded-2xl border border-[var(--theme-border)] shadow-theme overflow-hidden bg-[var(--theme-surface)] transition-all duration-500 mx-auto max-w-full"
+                            style={{ width: targetWidth } as React.CSSProperties}
                         >
                             {renderSystemContent()}
                         </div>

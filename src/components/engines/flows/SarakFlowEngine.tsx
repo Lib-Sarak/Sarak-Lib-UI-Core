@@ -53,7 +53,7 @@ const SarakFlowEngine: React.FC<SarakFlowEngineProps> = ({ nodes, edges, onConne
                 .react-flow__node {
                     border-radius: var(--sarak-flow-node-radius, ${flowNodeRadius || 12}px);
                     background: rgba(15, 15, 20, 0.8);
-                    border: 1px solid rgba(255, 255, 255, 0.1);
+                    border: var(--sarak-border-width, 1px) solid rgba(255, 255, 255, 0.1);
                     color: white;
                     font-size: var(--sarak-type-scale-xs, 11px);
                     padding: var(--sarak-flow-node-padding, 10px);
@@ -63,7 +63,7 @@ const SarakFlowEngine: React.FC<SarakFlowEngineProps> = ({ nodes, edges, onConne
                     width: var(--sarak-flow-handle-size, 8px);
                     height: var(--sarak-flow-handle-size, 8px);
                     background: ${primaryColor};
-                    border: 2px solid white;
+                    border: var(--sarak-border-width, 2px) solid white;
                 }
                 .react-flow__edge-path {
                     stroke: rgba(255, 255, 255, 0.2);

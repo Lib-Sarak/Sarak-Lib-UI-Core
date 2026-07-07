@@ -24,7 +24,7 @@ const SarakVisualEngine: React.FC<SarakVisualEngineProps> = ({ type, tokens }) =
                             <div className="absolute inset-0 bg-gradient-to-r from-white/10 to-white/5 border border-white/20 rounded-xl" style={{ transform: 'translateZ(var(--sarak-visual-translate-offset-sm, 20px))' }}>
                                 <div className="absolute inset-0 flex flex-col justify-between p-2">
                                     {[...Array(12)].map((_, i) => (
-                                        <div key={i} className="h-[1px] w-full bg-white/10" />
+                                        <div key={i} className="h-[length:var(--sarak-border-width,1px)] w-full bg-white/10" />
                                     ))}
                                 </div>
                             </div>
@@ -111,7 +111,7 @@ const SarakVisualEngine: React.FC<SarakVisualEngineProps> = ({ type, tokens }) =
                         <div className="absolute inset-0 flex flex-wrap">
                             {[...Array(400)].map((_, i) => {
                                 const opacity = Math.sin(i * 0.1) * 0.2 + 0.1;
-                                return <div key={i} className="w-[5%] h-[5%] border-[0.5px] border-white/5" style={{ opacity }} />;
+                                return <div key={i} className="w-[5%] h-[5%] border-[length:var(--sarak-border-width,0.5px)] border-white/5" style={{ opacity }} />;
                             })}
                         </div>
                         <motion.div 

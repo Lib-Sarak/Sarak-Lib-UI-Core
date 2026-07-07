@@ -157,7 +157,6 @@ export const asymmetricEditorial: ThemePreset = {
         inputBorderColor: '#000000',
         inputFocusBorderColor: '#000000',
         inputTextColor: '#000000',
-        inputRadius: 0,
         zIndexBase: 1,
         zIndexSidebar: 50,
         zIndexTooltip: 100,

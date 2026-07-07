@@ -59,7 +59,7 @@ export const SarakTabs: React.FC<SarakTabsProps> = ({
                             tabIndex={isActive ? 0 : -1}
                             onClick={() => setActiveId(item.id)}
                             className={`text-sm font-medium transition-colors focus:outline-none focus:bg-white/5 hover:bg-white/5 ${
-                                isHorizontal ? 'border-b-2 -mb-[1px]' : 'border-r-2 -mr-[1px] text-left'
+                                isHorizontal ? 'border-b-2 -mb-[length:var(--sarak-border-width,1px)]' : 'border-r-2 -mr-[length:var(--sarak-border-width,1px)] text-left'
                             }`}
                             style={{
                                 borderColor: isActive ? activeColor : 'transparent',

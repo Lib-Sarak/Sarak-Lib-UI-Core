@@ -17,9 +17,9 @@ export const InputPresetPreview: React.FC<InputPresetPreviewProps> = ({ preset, 
         if (key === 'inputBorderColor') styles.borderColor = String(value);
         if (key === 'inputBorderType') {
             const borderStyles: Record<string, () => void> = {
-                'none': () => { styles.borderWidth = '0px'; },
+                'none': () => { styles.borderWidth = 0; },
                 'underline': () => {
-                    styles.borderWidth = '0px 0px 2px 0px';
+                    styles.borderWidth = '0 0 var(--sarak-border-width, 2px) 0';
                     styles.borderStyle = 'solid';
                 }
             };

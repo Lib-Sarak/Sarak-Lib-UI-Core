@@ -10,10 +10,6 @@ export const industrialTerminalTheme: ThemePreset = {
         bodySize: '13px',
         iconFamily: 'tabler',
         iconWeight: 'regular',
-        systemName: 'SARAK_TERMINAL',
-        logoUrl: '',
-        logoMinimalUrl: '',
-        logoScale: 100,
         identityAlignment: 'left',
         identityPadding: 20,
         identityFontFamily: 'JetBrains Mono',
@@ -265,12 +261,5 @@ export const industrialTerminalTheme: ThemePreset = {
         matrixBorderColor: '#333333',
         matrixSearchBg: '#0a0a0a',
         matrixBlur: 0,
-        fontHeading: "'JetBrains Mono', monospace",
-        radiusTheme: '0px',
-        buttonRadius: '0px',
-        cardRadius: '0px',
-        themeGap: '16px',
-        motionSpeedBase: 0,
-        pageTransition: 'none'
     }
 };

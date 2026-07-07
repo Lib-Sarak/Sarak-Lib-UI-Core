@@ -117,7 +117,7 @@ export const PresetCard = ({ theme, currentMode, onApply, index }: { theme: Them
                             {/* Card 3: Status */}
                             <div className="flex-1 relative overflow-hidden flex flex-col p-2 justify-center items-center shadow-xl transition-all" style={cardStyle as React.CSSProperties}>
                                 {textureLayer}
-                                <div className="w-6 h-6 rounded-full border-[2px] border-t-transparent relative z-10" style={{ borderColor: `${secondary} transparent ${secondary} ${secondary}` }} />
+                                <div className="w-6 h-6 rounded-full border-[length:var(--sarak-border-width,2px)] border-t-transparent relative z-10" style={{ borderColor: `${secondary} transparent ${secondary} ${secondary}` }} />
                             </div>
                         </div>
 

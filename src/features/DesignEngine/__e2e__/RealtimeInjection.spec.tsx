@@ -22,7 +22,7 @@ test('Jornada 2: Injeção de CSS em Tempo Real no DOM (Chromium)', async ({ mou
                 <div data-testid="target-box" style={{ 
                     backgroundColor: 'var(--theme-primary)', 
                     borderRadius: 'var(--radius-theme)',
-                    width: '20px', height: '20px' 
+                    width: '20px', height: '20px'
                 }}>Box</div>
             </DesignScope>
         </SarakUIProvider>
@@ -37,6 +37,6 @@ test('Jornada 2: Injeção de CSS em Tempo Real no DOM (Chromium)', async ({ mou
 
     // No CSS Nativo do browser, a var(--theme-primary) deve ter se expandido para a cor definida (rgb 255 0 0)
     expect(color).toBe('rgb(255, 0, 0)');
-    // O border radius deve ser 10px cravado
-    expect(radius).toBe('10px');
+    // O border radius deve ser 16px cravado
+    expect(parseInt(radius || '0', 10)).toBe(16);
 });

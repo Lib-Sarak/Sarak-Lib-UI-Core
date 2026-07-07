@@ -10,10 +10,6 @@ export const synthwaveRetroTheme: ThemePreset = {
         bodySize: '14px',
         iconFamily: 'phosphor',
         iconWeight: 'fill',
-        systemName: 'Synth OS',
-        logoUrl: '',
-        logoMinimalUrl: '',
-        logoScale: 100,
         identityAlignment: 'center',
         identityPadding: 24,
         identityFontFamily: 'JetBrains Mono',
@@ -264,12 +260,5 @@ export const synthwaveRetroTheme: ThemePreset = {
         matrixBorderColor: '#00ffff',
         matrixSearchBg: '#090014',
         matrixBlur: 0,
-        fontHeading: "'JetBrains Mono', monospace",
-        radiusTheme: '0px',
-        buttonRadius: '0px',
-        cardRadius: '0px',
-        themeGap: '32px',
-        motionSpeedBase: 200,
-        pageTransition: 'none'
     }
 };

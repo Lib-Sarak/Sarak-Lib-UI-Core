@@ -157,7 +157,6 @@ export const industrialDashboard: ThemePreset = {
         inputBorderColor: '#3f3f46',
         inputFocusBorderColor: '#eab308',
         inputTextColor: '#f4f4f5',
-        inputRadius: 4,
         zIndexBase: 1,
         zIndexSidebar: 50,
         zIndexTooltip: 100,

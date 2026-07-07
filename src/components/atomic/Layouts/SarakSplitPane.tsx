@@ -75,11 +75,11 @@ export const SarakSplitPane: React.FC<SarakSplitPaneProps> = ({
                 onMouseDown={handleMouseDown}
             >
                 <div 
-                    className="absolute inset-y-0 left-1/2 -translate-x-1/2 w-[2px] transition-colors"
+                    className="absolute inset-y-0 left-1/2 -translate-x-1/2 w-[length:var(--sarak-border-width,2px)] transition-colors"
                     style={{ backgroundColor: 'var(--border-color, rgba(255,255,255,0.1))' }}
                 />
                 <div 
-                    className="absolute inset-y-0 left-1/2 -translate-x-1/2 w-[2px] opacity-0 group-hover:opacity-100 transition-opacity"
+                    className="absolute inset-y-0 left-1/2 -translate-x-1/2 w-[length:var(--sarak-border-width,2px)] opacity-0 group-hover:opacity-100 transition-opacity"
                     style={{ backgroundColor: accentColor }}
                 />
             </div>

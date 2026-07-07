@@ -642,6 +642,15 @@ export const CardSchema: ComponentSchema = {
             cssVars: ['--sarak-preset-mini-card-max-width']
         },
         {
+            id: 'presetMiniCardHeight',
+            label: 'Preview de Preset: Altura do Mini-Card',
+            type: 'slider',
+            unit: 'px',
+            constraints: { min: 60, max: 300 },
+            defaultValue: 128,
+            cssVars: ['--sarak-preset-mini-card-height']
+        },
+        {
             id: 'presetCardShadowOffsetY',
             label: 'Preview de Preset: Sombra do Card — Offset Y',
             type: 'slider',

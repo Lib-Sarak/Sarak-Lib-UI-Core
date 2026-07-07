@@ -157,7 +157,6 @@ export const dataTerminal: ThemePreset = {
         inputBorderColor: '#27272a',
         inputFocusBorderColor: '#06b6d4',
         inputTextColor: '#06b6d4',
-        inputRadius: 0,
         zIndexBase: 1,
         zIndexSidebar: 50,
         zIndexTooltip: 100,

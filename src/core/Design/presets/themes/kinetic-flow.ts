@@ -167,7 +167,6 @@ export const kineticFlowTheme: ThemePreset = {
         inputBorderColor: 'rgba(255, 0, 85, 0.2)',
         inputFocusBorderColor: '#ff0055',
         inputTextColor: '#ffffff',
-        inputRadius: 0,
         zIndexBase: 1,
         zIndexSidebar: 500,
         zIndexTooltip: 9000,

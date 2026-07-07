@@ -157,7 +157,6 @@ export const neumorphicMobile: ThemePreset = {
         inputBorderColor: 'transparent',
         inputFocusBorderColor: '#ffb3c6',
         inputTextColor: '#0f172a',
-        inputRadius: 24,
         zIndexBase: 1,
         zIndexSidebar: 50,
         zIndexTooltip: 100,

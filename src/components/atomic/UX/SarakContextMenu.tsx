@@ -92,7 +92,7 @@ export const SarakContextMenu: React.FC<SarakContextMenuProps> = ({
                 borderRadius: 'var(--sarak-card-radius,12px)',
                 background: 'var(--color-theme-card,#1e293b)',
                 color: 'var(--sarak-text-main,#ffffff)',
-                border: '1px solid var(--border-color,#334155)',
+                border: 'var(--sarak-border-width, 1px) solid var(--border-color,#334155)',
                 zIndex: 'var(--z-index-tooltip, 9000)' as React.CSSProperties['zIndex'],
             }}
         >

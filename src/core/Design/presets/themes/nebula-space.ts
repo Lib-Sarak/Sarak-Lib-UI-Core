@@ -10,10 +10,6 @@ export const nebulaSpaceTheme: ThemePreset = {
         bodySize: '13px',
         iconFamily: 'phosphor',
         iconWeight: 'duotone',
-        systemName: 'Nebula OS',
-        logoUrl: '',
-        logoMinimalUrl: '',
-        logoScale: 100,
         identityAlignment: 'left',
         identityPadding: 16,
         identityFontFamily: 'Inter',
@@ -277,13 +273,5 @@ export const nebulaSpaceTheme: ThemePreset = {
         globalBackgroundBlur: 4,
         globalBackgroundBlendMode: 'screen',
         globalBackgroundOpacity: 0.25,
-        bgBase: '#020205',
-        fontHeading: "'Outfit', sans-serif",
-        radiusTheme: '16px',
-        buttonRadius: '12px',
-        cardRadius: '24px',
-        themeGap: '12px',
-        motionSpeedBase: 500,
-        pageTransition: 'zoom'
     }
 };

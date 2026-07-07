@@ -28,7 +28,7 @@ export const HelpTooltip: React.FC<{ label: string, description?: string }> = ({
                                 <div className="w-1.5 h-1.5 rounded-full bg-[var(--theme-primary)] shadow-[0_0_8px_var(--theme-primary)]" />
                                 <span className="text-[var(--sarak-type-scale2xs,10px)] font-black uppercase text-[var(--color-theme-title,#ffffff)] tracking-[var(--sarak-tracking-tight,0.2em)]">{label}</span>
                             </div>
-                            <div className="h-[1px] w-full bg-[var(--theme-border)]" />
+                            <div className="h-[length:var(--sarak-border-width,1px)] w-full bg-[var(--theme-border)]" />
                             <p className="text-[var(--sarak-type-scale2xs,10px)] text-[var(--theme-muted)] leading-relaxed uppercase font-medium">
                                 {description || `Configuração granular para o parâmetro ${label.toLowerCase()} no ecossistema Sarak UI.`}
                             </p>

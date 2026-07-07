@@ -96,7 +96,7 @@ exports[`CardsCatalog > renderiza a aba Curados por padrão e faz snapshot 1`] =
           />
           <div
             class="sarak-design-scope sarak-scope-r0 dark sarak-card relative flex flex-col p-4 shadow-2xl transition-transform group-hover:scale-105 duration-500 z-10"
-            style="width: 100%; height: 8rem; max-width: var(--sarak-preset-mini-card-max-width,280px); position: relative;"
+            style="width: 100%; height: var(--sarak-preset-mini-card-height,128px); max-width: var(--sarak-preset-mini-card-max-width,280px); position: relative;"
           >
             <div
               class="flex items-center gap-3 relative z-10"
@@ -196,7 +196,7 @@ exports[`CardsCatalog > renderiza a aba Curados por padrão e faz snapshot 1`] =
           />
           <div
             class="sarak-design-scope sarak-scope-r1 dark sarak-card relative flex flex-col p-4 shadow-2xl transition-transform group-hover:scale-105 duration-500 z-10"
-            style="width: 100%; height: 8rem; max-width: var(--sarak-preset-mini-card-max-width,280px); position: relative;"
+            style="width: 100%; height: var(--sarak-preset-mini-card-height,128px); max-width: var(--sarak-preset-mini-card-max-width,280px); position: relative;"
           >
             <div
               class="flex items-center gap-3 relative z-10"
@@ -296,7 +296,7 @@ exports[`CardsCatalog > renderiza a aba Curados por padrão e faz snapshot 1`] =
           />
           <div
             class="sarak-design-scope sarak-scope-r2 dark sarak-card relative flex flex-col p-4 shadow-2xl transition-transform group-hover:scale-105 duration-500 z-10"
-            style="width: 100%; height: 8rem; max-width: var(--sarak-preset-mini-card-max-width,280px); position: relative;"
+            style="width: 100%; height: var(--sarak-preset-mini-card-height,128px); max-width: var(--sarak-preset-mini-card-max-width,280px); position: relative;"
           >
             <div
               class="flex items-center gap-3 relative z-10"
@@ -396,7 +396,7 @@ exports[`CardsCatalog > renderiza a aba Curados por padrão e faz snapshot 1`] =
           />
           <div
             class="sarak-design-scope sarak-scope-r3 dark sarak-card relative flex flex-col p-4 shadow-2xl transition-transform group-hover:scale-105 duration-500 z-10"
-            style="width: 100%; height: 8rem; max-width: var(--sarak-preset-mini-card-max-width,280px); position: relative;"
+            style="width: 100%; height: var(--sarak-preset-mini-card-height,128px); max-width: var(--sarak-preset-mini-card-max-width,280px); position: relative;"
           >
             <div
               class="flex items-center gap-3 relative z-10"
@@ -496,7 +496,7 @@ exports[`CardsCatalog > renderiza a aba Curados por padrão e faz snapshot 1`] =
           />
           <div
             class="sarak-design-scope sarak-scope-r4 dark sarak-card relative flex flex-col p-4 shadow-2xl transition-transform group-hover:scale-105 duration-500 z-10"
-            style="width: 100%; height: 8rem; max-width: var(--sarak-preset-mini-card-max-width,280px); position: relative;"
+            style="width: 100%; height: var(--sarak-preset-mini-card-height,128px); max-width: var(--sarak-preset-mini-card-max-width,280px); position: relative;"
           >
             <div
               class="flex items-center gap-3 relative z-10"
@@ -596,7 +596,7 @@ exports[`CardsCatalog > renderiza a aba Curados por padrão e faz snapshot 1`] =
           />
           <div
             class="sarak-design-scope sarak-scope-r5 dark sarak-card relative flex flex-col p-4 shadow-2xl transition-transform group-hover:scale-105 duration-500 z-10"
-            style="width: 100%; height: 8rem; max-width: var(--sarak-preset-mini-card-max-width,280px); position: relative;"
+            style="width: 100%; height: var(--sarak-preset-mini-card-height,128px); max-width: var(--sarak-preset-mini-card-max-width,280px); position: relative;"
           >
             <div
               class="flex items-center gap-3 relative z-10"
@@ -696,7 +696,7 @@ exports[`CardsCatalog > renderiza a aba Curados por padrão e faz snapshot 1`] =
           />
           <div
             class="sarak-design-scope sarak-scope-r6 dark sarak-card relative flex flex-col p-4 shadow-2xl transition-transform group-hover:scale-105 duration-500 z-10"
-            style="width: 100%; height: 8rem; max-width: var(--sarak-preset-mini-card-max-width,280px); position: relative;"
+            style="width: 100%; height: var(--sarak-preset-mini-card-height,128px); max-width: var(--sarak-preset-mini-card-max-width,280px); position: relative;"
           >
             <div
               class="flex items-center gap-3 relative z-10"
@@ -796,7 +796,7 @@ exports[`CardsCatalog > renderiza a aba Curados por padrão e faz snapshot 1`] =
           />
           <div
             class="sarak-design-scope sarak-scope-r7 dark sarak-card relative flex flex-col p-4 shadow-2xl transition-transform group-hover:scale-105 duration-500 z-10"
-            style="width: 100%; height: 8rem; max-width: var(--sarak-preset-mini-card-max-width,280px); position: relative;"
+            style="width: 100%; height: var(--sarak-preset-mini-card-height,128px); max-width: var(--sarak-preset-mini-card-max-width,280px); position: relative;"
           >
             <div
               class="flex items-center gap-3 relative z-10"
@@ -896,7 +896,7 @@ exports[`CardsCatalog > renderiza a aba Curados por padrão e faz snapshot 1`] =
           />
           <div
             class="sarak-design-scope sarak-scope-r8 dark sarak-card relative flex flex-col p-4 shadow-2xl transition-transform group-hover:scale-105 duration-500 z-10"
-            style="width: 100%; height: 8rem; max-width: var(--sarak-preset-mini-card-max-width,280px); position: relative;"
+            style="width: 100%; height: var(--sarak-preset-mini-card-height,128px); max-width: var(--sarak-preset-mini-card-max-width,280px); position: relative;"
           >
             <div
               class="flex items-center gap-3 relative z-10"
@@ -996,7 +996,7 @@ exports[`CardsCatalog > renderiza a aba Curados por padrão e faz snapshot 1`] =
           />
           <div
             class="sarak-design-scope sarak-scope-r9 dark sarak-card relative flex flex-col p-4 shadow-2xl transition-transform group-hover:scale-105 duration-500 z-10"
-            style="width: 100%; height: 8rem; max-width: var(--sarak-preset-mini-card-max-width,280px); position: relative;"
+            style="width: 100%; height: var(--sarak-preset-mini-card-height,128px); max-width: var(--sarak-preset-mini-card-max-width,280px); position: relative;"
           >
             <div
               class="flex items-center gap-3 relative z-10"
@@ -1096,7 +1096,7 @@ exports[`CardsCatalog > renderiza a aba Curados por padrão e faz snapshot 1`] =
           />
           <div
             class="sarak-design-scope sarak-scope-ra dark sarak-card relative flex flex-col p-4 shadow-2xl transition-transform group-hover:scale-105 duration-500 z-10"
-            style="width: 100%; height: 8rem; max-width: var(--sarak-preset-mini-card-max-width,280px); position: relative;"
+            style="width: 100%; height: var(--sarak-preset-mini-card-height,128px); max-width: var(--sarak-preset-mini-card-max-width,280px); position: relative;"
           >
             <div
               class="flex items-center gap-3 relative z-10"
@@ -1196,7 +1196,7 @@ exports[`CardsCatalog > renderiza a aba Curados por padrão e faz snapshot 1`] =
           />
           <div
             class="sarak-design-scope sarak-scope-rb dark sarak-card relative flex flex-col p-4 shadow-2xl transition-transform group-hover:scale-105 duration-500 z-10"
-            style="width: 100%; height: 8rem; max-width: var(--sarak-preset-mini-card-max-width,280px); position: relative;"
+            style="width: 100%; height: var(--sarak-preset-mini-card-height,128px); max-width: var(--sarak-preset-mini-card-max-width,280px); position: relative;"
           >
             <div
               class="flex items-center gap-3 relative z-10"

@@ -110,7 +110,7 @@ export const SarakRichText: React.FC<SarakRichTextProps> = ({
                     display: 'flex',
                     gap: 2,
                     padding: 4,
-                    border: '1px solid var(--border-color,#334155)',
+                    border: 'var(--sarak-border-width, 1px) solid var(--border-color,#334155)',
                     borderBottom: 'none',
                     borderTopLeftRadius: 'var(--sarak-card-radius,12px)',
                     borderTopRightRadius: 'var(--sarak-card-radius,12px)',
@@ -142,7 +142,7 @@ export const SarakRichText: React.FC<SarakRichTextProps> = ({
                 style={{
                     minHeight: 120,
                     padding: 'var(--sarak-layout-gap-md,16px)',
-                    border: `1px solid ${error ? 'var(--sarak-input-error-color, #ff4d4f)' : 'var(--border-color,#334155)'}`,
+                    border: `var(--sarak-border-width, 1px) solid ${error ? 'var(--sarak-input-error-color, #ff4d4f)' : 'var(--border-color,#334155)'}`,
                     borderBottomLeftRadius: 'var(--sarak-card-radius,12px)',
                     borderBottomRightRadius: 'var(--sarak-card-radius,12px)',
                     background: 'var(--sarak-input-bg, var(--color-theme-card,#1e293b))',

@@ -192,7 +192,7 @@ exports[`PresetsCatalog > renderiza a aba Globais por padrão, independente de q
                     style="background-color: rgba(255, 255, 255, 0.05); border-top-width: var(--border-color,#334155); border-right-width: var(--border-color,#334155); border-bottom-width: var(--border-color,#334155); border-left-width: var(--border-color,#334155); border-color: rgba(255, 255, 255, 0.1); border-style: solid; border-top-left-radius: var(--sarak-layout-gap-md,16px); border-top-right-radius: var(--sarak-layout-gap-md,16px); border-bottom-right-radius: var(--sarak-layout-gap-md,16px); border-bottom-left-radius: var(--sarak-layout-gap-md,16px); backdrop-filter: blur(var(--sarak-layout-gap-md,16px)); box-shadow: 0 var(--sarak-preset-card-shadow-offset-y, 4px) 20px calc(var(--sarak-preset-card-shadow-spread, 2px) * -1) #00f2ff0d;"
                   >
                     <div
-                      class="w-6 h-6 rounded-full border-[2px] border-t-transparent relative z-10"
+                      class="w-6 h-6 rounded-full border-[length:var(--sarak-border-width,2px)] border-t-transparent relative z-10"
                       style="border-color: rgb(112, 0, 255) transparent rgb(112, 0, 255) rgb(112, 0, 255);"
                     />
                   </div>
@@ -436,7 +436,7 @@ exports[`PresetsCatalog > renderiza a aba Globais por padrão, independente de q
                     style="background-color: rgba(255, 255, 255, 0.05); border-top-width: var(--border-color,#334155); border-right-width: var(--border-color,#334155); border-bottom-width: var(--border-color,#334155); border-left-width: var(--border-color,#334155); border-color: rgba(255, 255, 255, 0.1); border-style: solid; border-top-left-radius: var(--sarak-layout-gap-md,16px); border-top-right-radius: var(--sarak-layout-gap-md,16px); border-bottom-right-radius: var(--sarak-layout-gap-md,16px); border-bottom-left-radius: var(--sarak-layout-gap-md,16px); backdrop-filter: blur(var(--sarak-layout-gap-md,16px)); box-shadow: 0 var(--sarak-preset-card-shadow-offset-y, 4px) 20px calc(var(--sarak-preset-card-shadow-spread, 2px) * -1) #00f2ff0d;"
                   >
                     <div
-                      class="w-6 h-6 rounded-full border-[2px] border-t-transparent relative z-10"
+                      class="w-6 h-6 rounded-full border-[length:var(--sarak-border-width,2px)] border-t-transparent relative z-10"
                       style="border-color: rgb(112, 0, 255) transparent rgb(112, 0, 255) rgb(112, 0, 255);"
                     />
                   </div>
@@ -692,7 +692,7 @@ exports[`PresetsCatalog > renderiza a aba Globais por padrão, independente de q
                       style="background-image: linear-gradient(to right, rgba(255,255,255,0.05) var(--border-color,#334155), transparent var(--border-color,#334155)), linear-gradient(to bottom, rgba(255,255,255,0.05) var(--border-color,#334155), transparent var(--border-color,#334155)); background-size: var(--sarak-preset-grid-texture-size, 8px) var(--sarak-preset-grid-texture-size, 8px);"
                     />
                     <div
-                      class="w-6 h-6 rounded-full border-[2px] border-t-transparent relative z-10"
+                      class="w-6 h-6 rounded-full border-[length:var(--sarak-border-width,2px)] border-t-transparent relative z-10"
                       style="border-color: rgb(255, 0, 255) transparent rgb(255, 0, 255) rgb(255, 0, 255);"
                     />
                   </div>
@@ -956,7 +956,7 @@ exports[`PresetsCatalog > renderiza a aba Globais por padrão, independente de q
                       style="background-image: url("data:image/svg+xml,%3Csvg viewBox=%220 0 200 200%22 xmlns=%22http://www.w3.org/2000/svg%22%3E%3Cfilter id=%22noiseFilter%22%3E%3CfeTurbulence type=%22fractalNoise%22 baseFrequency=%220.65%22 numOctaves=%223%22 stitchTiles=%22stitch%22/%3E%3C/filter%3E%3Crect width=%22100%25%22 height=%22100%25%22 filter=%22url(%23noiseFilter)%22/%3E%3C/svg%3E"); background-size: auto;"
                     />
                     <div
-                      class="w-6 h-6 rounded-full border-[2px] border-t-transparent relative z-10"
+                      class="w-6 h-6 rounded-full border-[length:var(--sarak-border-width,2px)] border-t-transparent relative z-10"
                       style="border-color: rgb(255, 0, 255) transparent rgb(255, 0, 255) rgb(255, 0, 255);"
                     />
                   </div>
@@ -1220,7 +1220,7 @@ exports[`PresetsCatalog > renderiza a aba Globais por padrão, independente de q
                       style="background-image: linear-gradient(to right, rgba(255,255,255,0.05) var(--border-color,#334155), transparent var(--border-color,#334155)), linear-gradient(to bottom, rgba(255,255,255,0.05) var(--border-color,#334155), transparent var(--border-color,#334155)); background-size: var(--sarak-preset-grid-texture-size, 8px) var(--sarak-preset-grid-texture-size, 8px);"
                     />
                     <div
-                      class="w-6 h-6 rounded-full border-[2px] border-t-transparent relative z-10"
+                      class="w-6 h-6 rounded-full border-[length:var(--sarak-border-width,2px)] border-t-transparent relative z-10"
                       style="border-color: rgb(230, 137, 0) transparent rgb(230, 137, 0) rgb(230, 137, 0);"
                     />
                   </div>
@@ -1484,7 +1484,7 @@ exports[`PresetsCatalog > renderiza a aba Globais por padrão, independente de q
                       style="background-image: url("data:image/svg+xml,%3Csvg viewBox=%220 0 200 200%22 xmlns=%22http://www.w3.org/2000/svg%22%3E%3Cfilter id=%22noiseFilter%22%3E%3CfeTurbulence type=%22fractalNoise%22 baseFrequency=%220.65%22 numOctaves=%223%22 stitchTiles=%22stitch%22/%3E%3C/filter%3E%3Crect width=%22100%25%22 height=%22100%25%22 filter=%22url(%23noiseFilter)%22/%3E%3C/svg%3E"); background-size: auto;"
                     />
                     <div
-                      class="w-6 h-6 rounded-full border-[2px] border-t-transparent relative z-10"
+                      class="w-6 h-6 rounded-full border-[length:var(--sarak-border-width,2px)] border-t-transparent relative z-10"
                       style="border-color: rgb(251, 192, 45) transparent rgb(251, 192, 45) rgb(251, 192, 45);"
                     />
                   </div>
@@ -1736,7 +1736,7 @@ exports[`PresetsCatalog > renderiza a aba Globais por padrão, independente de q
                     style="background-color: rgba(255, 255, 255, 0.05); border-top-width: var(--border-color,#334155); border-right-width: var(--border-color,#334155); border-bottom-width: var(--border-color,#334155); border-left-width: var(--border-color,#334155); border-color: rgba(255, 255, 255, 0.1); border-style: solid; border-top-left-radius: var(--sarak-layout-gap-md,16px); border-top-right-radius: var(--sarak-layout-gap-md,16px); border-bottom-right-radius: var(--sarak-layout-gap-md,16px); border-bottom-left-radius: var(--sarak-layout-gap-md,16px); backdrop-filter: blur(var(--sarak-layout-gap-md,16px)); box-shadow: 8px 8px 0px #000000;"
                   >
                     <div
-                      class="w-6 h-6 rounded-full border-[2px] border-t-transparent relative z-10"
+                      class="w-6 h-6 rounded-full border-[length:var(--sarak-border-width,2px)] border-t-transparent relative z-10"
                       style="border-color: rgb(255, 255, 0) transparent rgb(255, 255, 0) rgb(255, 255, 0);"
                     />
                   </div>
@@ -1992,7 +1992,7 @@ exports[`PresetsCatalog > renderiza a aba Globais por padrão, independente de q
                       style="background-image: linear-gradient(to right, rgba(255,255,255,0.05) var(--border-color,#334155), transparent var(--border-color,#334155)), linear-gradient(to bottom, rgba(255,255,255,0.05) var(--border-color,#334155), transparent var(--border-color,#334155)); background-size: var(--sarak-preset-grid-texture-size, 8px) var(--sarak-preset-grid-texture-size, 8px);"
                     />
                     <div
-                      class="w-6 h-6 rounded-full border-[2px] border-t-transparent relative z-10"
+                      class="w-6 h-6 rounded-full border-[length:var(--sarak-border-width,2px)] border-t-transparent relative z-10"
                       style="border-color: rgb(0, 255, 255) transparent rgb(0, 255, 255) rgb(0, 255, 255);"
                     />
                   </div>
@@ -2244,7 +2244,7 @@ exports[`PresetsCatalog > renderiza a aba Globais por padrão, independente de q
                     style="background-color: rgba(255, 255, 255, 0.05); border-top-width: var(--border-color,#334155); border-right-width: var(--border-color,#334155); border-bottom-width: var(--border-color,#334155); border-left-width: var(--border-color,#334155); border-color: rgba(255, 255, 255, 0.1); border-style: solid; border-top-left-radius: var(--sarak-layout-gap-md,16px); border-top-right-radius: var(--sarak-layout-gap-md,16px); border-bottom-right-radius: var(--sarak-layout-gap-md,16px); border-bottom-left-radius: var(--sarak-layout-gap-md,16px); backdrop-filter: blur(var(--sarak-layout-gap-md,16px)); box-shadow: 0 var(--sarak-preset-card-shadow-offset-y, 4px) 20px calc(var(--sarak-preset-card-shadow-spread, 2px) * -1) #ff007f0d;"
                   >
                     <div
-                      class="w-6 h-6 rounded-full border-[2px] border-t-transparent relative z-10"
+                      class="w-6 h-6 rounded-full border-[length:var(--sarak-border-width,2px)] border-t-transparent relative z-10"
                       style="border-color: rgb(0, 229, 255) transparent rgb(0, 229, 255) rgb(0, 229, 255);"
                     />
                   </div>
@@ -2500,7 +2500,7 @@ exports[`PresetsCatalog > renderiza a aba Globais por padrão, independente de q
                       style="background-image: none; background-size: auto;"
                     />
                     <div
-                      class="w-6 h-6 rounded-full border-[2px] border-t-transparent relative z-10"
+                      class="w-6 h-6 rounded-full border-[length:var(--sarak-border-width,2px)] border-t-transparent relative z-10"
                       style="border-color: rgb(230, 171, 0) transparent rgb(230, 171, 0) rgb(230, 171, 0);"
                     />
                   </div>
@@ -2764,7 +2764,7 @@ exports[`PresetsCatalog > renderiza a aba Globais por padrão, independente de q
                       style="background-image: url("data:image/svg+xml,%3Csvg viewBox=%220 0 200 200%22 xmlns=%22http://www.w3.org/2000/svg%22%3E%3Cfilter id=%22noiseFilter%22%3E%3CfeTurbulence type=%22fractalNoise%22 baseFrequency=%220.65%22 numOctaves=%223%22 stitchTiles=%22stitch%22/%3E%3C/filter%3E%3Crect width=%22100%25%22 height=%22100%25%22 filter=%22url(%23noiseFilter)%22/%3E%3C/svg%3E"); background-size: auto;"
                     />
                     <div
-                      class="w-6 h-6 rounded-full border-[2px] border-t-transparent relative z-10"
+                      class="w-6 h-6 rounded-full border-[length:var(--sarak-border-width,2px)] border-t-transparent relative z-10"
                       style="border-color: rgb(236, 72, 153) transparent rgb(236, 72, 153) rgb(236, 72, 153);"
                     />
                   </div>
@@ -3028,7 +3028,7 @@ exports[`PresetsCatalog > renderiza a aba Globais por padrão, independente de q
                       style="background-image: none; background-size: auto;"
                     />
                     <div
-                      class="w-6 h-6 rounded-full border-[2px] border-t-transparent relative z-10"
+                      class="w-6 h-6 rounded-full border-[length:var(--sarak-border-width,2px)] border-t-transparent relative z-10"
                       style="border-color: rgb(0, 255, 204) transparent rgb(0, 255, 204) rgb(0, 255, 204);"
                     />
                   </div>
@@ -3280,7 +3280,7 @@ exports[`PresetsCatalog > renderiza a aba Globais por padrão, independente de q
                     style="background-color: rgba(255, 255, 255, 0.05); border-top-width: var(--border-color,#334155); border-right-width: var(--border-color,#334155); border-bottom-width: var(--border-color,#334155); border-left-width: var(--border-color,#334155); border-color: rgba(255, 255, 255, 0.1); border-style: solid; border-top-left-radius: var(--sarak-layout-gap-md,16px); border-top-right-radius: var(--sarak-layout-gap-md,16px); border-bottom-right-radius: var(--sarak-layout-gap-md,16px); border-bottom-left-radius: var(--sarak-layout-gap-md,16px); backdrop-filter: blur(var(--sarak-layout-gap-md,16px)); box-shadow: 0 var(--sarak-preset-card-shadow-offset-y, 4px) 20px calc(var(--sarak-preset-card-shadow-spread, 2px) * -1) #00f2ff0d;"
                   >
                     <div
-                      class="w-6 h-6 rounded-full border-[2px] border-t-transparent relative z-10"
+                      class="w-6 h-6 rounded-full border-[length:var(--sarak-border-width,2px)] border-t-transparent relative z-10"
                       style="border-color: rgb(0, 255, 255) transparent rgb(0, 255, 255) rgb(0, 255, 255);"
                     />
                   </div>
@@ -3524,7 +3524,7 @@ exports[`PresetsCatalog > renderiza a aba Globais por padrão, independente de q
                     style="background-color: rgba(255, 255, 255, 0.05); border-top-width: var(--border-color,#334155); border-right-width: var(--border-color,#334155); border-bottom-width: var(--border-color,#334155); border-left-width: var(--border-color,#334155); border-color: rgba(255, 255, 255, 0.1); border-style: solid; border-top-left-radius: var(--sarak-layout-gap-md,16px); border-top-right-radius: var(--sarak-layout-gap-md,16px); border-bottom-right-radius: var(--sarak-layout-gap-md,16px); border-bottom-left-radius: var(--sarak-layout-gap-md,16px); backdrop-filter: blur(var(--sarak-layout-gap-md,16px)); box-shadow: 0 var(--sarak-preset-card-shadow-offset-y, 4px) var(--sarak-preset-card-shadow-blur, 10px) calc(var(--sarak-preset-card-shadow-spread, 2px) * -1) rgba(0,0,0,0.5);"
                   >
                     <div
-                      class="w-6 h-6 rounded-full border-[2px] border-t-transparent relative z-10"
+                      class="w-6 h-6 rounded-full border-[length:var(--sarak-border-width,2px)] border-t-transparent relative z-10"
                       style="border-color: rgb(99, 112, 131) transparent rgb(99, 112, 131) rgb(99, 112, 131);"
                     />
                   </div>
@@ -3768,7 +3768,7 @@ exports[`PresetsCatalog > renderiza a aba Globais por padrão, independente de q
                     style="background-color: rgba(255, 255, 255, 0.05); border-top-width: var(--border-color,#334155); border-right-width: var(--border-color,#334155); border-bottom-width: var(--border-color,#334155); border-left-width: var(--border-color,#334155); border-color: rgba(255, 255, 255, 0.1); border-style: solid; border-top-left-radius: var(--sarak-layout-gap-md,16px); border-top-right-radius: var(--sarak-layout-gap-md,16px); border-bottom-right-radius: var(--sarak-layout-gap-md,16px); border-bottom-left-radius: var(--sarak-layout-gap-md,16px); backdrop-filter: blur(var(--sarak-layout-gap-md,16px)); box-shadow: 0 var(--sarak-preset-card-shadow-offset-y, 4px) var(--sarak-preset-card-shadow-blur, 10px) calc(var(--sarak-preset-card-shadow-spread, 2px) * -1) rgba(0,0,0,0.5);"
                   >
                     <div
-                      class="w-6 h-6 rounded-full border-[2px] border-t-transparent relative z-10"
+                      class="w-6 h-6 rounded-full border-[length:var(--sarak-border-width,2px)] border-t-transparent relative z-10"
                       style="border-color: rgb(161, 161, 170) transparent rgb(161, 161, 170) rgb(161, 161, 170);"
                     />
                   </div>
@@ -4012,7 +4012,7 @@ exports[`PresetsCatalog > renderiza a aba Globais por padrão, independente de q
                     style="background-color: rgba(255, 255, 255, 0.05); border-top-width: var(--border-color,#334155); border-right-width: var(--border-color,#334155); border-bottom-width: var(--border-color,#334155); border-left-width: var(--border-color,#334155); border-color: rgba(255, 255, 255, 0.1); border-style: solid; border-top-left-radius: var(--sarak-layout-gap-md,16px); border-top-right-radius: var(--sarak-layout-gap-md,16px); border-bottom-right-radius: var(--sarak-layout-gap-md,16px); border-bottom-left-radius: var(--sarak-layout-gap-md,16px); backdrop-filter: blur(var(--sarak-layout-gap-md,16px)); box-shadow: 0 var(--sarak-preset-card-shadow-offset-y, 4px) var(--sarak-preset-card-shadow-blur, 10px) calc(var(--sarak-preset-card-shadow-spread, 2px) * -1) rgba(0,0,0,0.5);"
                   >
                     <div
-                      class="w-6 h-6 rounded-full border-[2px] border-t-transparent relative z-10"
+                      class="w-6 h-6 rounded-full border-[length:var(--sarak-border-width,2px)] border-t-transparent relative z-10"
                       style="border-color: rgb(147, 161, 161) transparent rgb(147, 161, 161) rgb(147, 161, 161);"
                     />
                   </div>
@@ -4256,7 +4256,7 @@ exports[`PresetsCatalog > renderiza a aba Globais por padrão, independente de q
                     style="background-color: rgba(255, 255, 255, 0.05); border-top-width: var(--border-color,#334155); border-right-width: var(--border-color,#334155); border-bottom-width: var(--border-color,#334155); border-left-width: var(--border-color,#334155); border-color: rgba(255, 255, 255, 0.1); border-style: solid; border-top-left-radius: var(--sarak-layout-gap-md,16px); border-top-right-radius: var(--sarak-layout-gap-md,16px); border-bottom-right-radius: var(--sarak-layout-gap-md,16px); border-bottom-left-radius: var(--sarak-layout-gap-md,16px); backdrop-filter: blur(var(--sarak-layout-gap-md,16px)); box-shadow: 0 var(--sarak-preset-card-shadow-offset-y, 4px) var(--sarak-preset-card-shadow-blur, 10px) calc(var(--sarak-preset-card-shadow-spread, 2px) * -1) rgba(0,0,0,0.5);"
                   >
                     <div
-                      class="w-6 h-6 rounded-full border-[2px] border-t-transparent relative z-10"
+                      class="w-6 h-6 rounded-full border-[length:var(--sarak-border-width,2px)] border-t-transparent relative z-10"
                       style="border-color: rgb(249, 115, 22) transparent rgb(249, 115, 22) rgb(249, 115, 22);"
                     />
                   </div>
@@ -4500,7 +4500,7 @@ exports[`PresetsCatalog > renderiza a aba Globais por padrão, independente de q
                     style="background-color: rgba(255, 255, 255, 0.05); border-top-width: var(--border-color,#334155); border-right-width: var(--border-color,#334155); border-bottom-width: var(--border-color,#334155); border-left-width: var(--border-color,#334155); border-color: rgba(255, 255, 255, 0.1); border-style: solid; border-top-left-radius: var(--sarak-layout-gap-md,16px); border-top-right-radius: var(--sarak-layout-gap-md,16px); border-bottom-right-radius: var(--sarak-layout-gap-md,16px); border-bottom-left-radius: var(--sarak-layout-gap-md,16px); backdrop-filter: blur(var(--sarak-layout-gap-md,16px)); box-shadow: 0 var(--sarak-preset-card-shadow-offset-y, 4px) 8px calc(var(--sarak-preset-card-shadow-spread, 2px) * -1) transparent;"
                   >
                     <div
-                      class="w-6 h-6 rounded-full border-[2px] border-t-transparent relative z-10"
+                      class="w-6 h-6 rounded-full border-[length:var(--sarak-border-width,2px)] border-t-transparent relative z-10"
                       style="border-color: rgb(115, 115, 115) transparent rgb(115, 115, 115) rgb(115, 115, 115);"
                     />
                   </div>

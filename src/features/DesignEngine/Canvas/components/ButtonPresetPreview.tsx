@@ -43,18 +43,18 @@ export const ButtonPresetPreview: React.FC<ButtonPresetPreviewProps> = ({ preset
             dynamicStyle.boxShadow = isHovered
                 ? `0 0 var(--sarak-preset-glow-shadow-blur, 20px) ${glowColor}, inset 0 0 var(--sarak-preset-card-shadow-blur, 10px) ${glowColor}`
                 : `0 0 var(--sarak-preset-card-shadow-blur, 10px) ${glowColor}`;
-            dynamicStyle.border = `1px solid ${glowColor}`;
+            dynamicStyle.border = `var(--sarak-border-width, 1px) solid ${glowColor}`;
         },
         'frosted': () => {
             dynamicStyle.backgroundColor = primaryBg;
             dynamicStyle.backdropFilter = `blur(${blurAmount}px)`;
             dynamicStyle.WebkitBackdropFilter = `blur(${blurAmount}px)`;
-            dynamicStyle.border = '1px solid rgba(255,255,255,0.1)';
+            dynamicStyle.border = 'var(--sarak-border-width, 1px) solid rgba(255,255,255,0.1)';
             dynamicStyle.boxShadow = '0 var(--sarak-layout-gap-sm, 8px) var(--sarak-preset-glow-shadow-blur-lg, 32px) 0 rgba(0, 0, 0, 0.3)';
         },
         'borderline': () => {
             dynamicStyle.backgroundColor = isHovered ? primaryBg : 'transparent';
-            dynamicStyle.border = `1px solid ${primaryBg}`;
+            dynamicStyle.border = `var(--sarak-border-width, 1px) solid ${primaryBg}`;
             dynamicStyle.color = isHovered ? 'var(--color-theme-primary, #00f2ff)' : primaryText;
         },
         'matte': () => {

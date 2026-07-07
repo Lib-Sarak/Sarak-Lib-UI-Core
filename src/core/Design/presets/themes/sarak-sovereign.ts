@@ -10,10 +10,6 @@ export const sarakSovereignTheme: ThemePreset = {
         bodySize: '14px',
         iconFamily: 'phosphor',
         iconWeight: 'fill',
-        systemName: 'Sarak OS',
-        logoUrl: '',
-        logoMinimalUrl: '',
-        logoScale: 100,
         identityAlignment: 'left',
         identityPadding: 16,
         identityFontFamily: 'Inter',
@@ -264,12 +260,5 @@ export const sarakSovereignTheme: ThemePreset = {
         matrixBorderColor: 'rgba(255, 255, 255, 0.05)',
         matrixSearchBg: 'rgba(255, 255, 255, 0.05)',
         matrixBlur: 10,
-        fontHeading: "'Inter', sans-serif",
-        radiusTheme: '12px',
-        buttonRadius: '8px',
-        cardRadius: '16px',
-        themeGap: '16px',
-        motionSpeedBase: 300,
-        pageTransition: 'fade'
     }
 };

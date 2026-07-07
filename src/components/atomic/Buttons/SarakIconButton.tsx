@@ -72,17 +72,17 @@ export const SarakIconButton: React.FC<SarakIconButtonProps> = ({
                 dynamicStyle.boxShadow = isHovered
                     ? `0 0 var(--sarak-icon-button-glow-blur-lg, 12px) ${localGlow}, inset 0 0 var(--sarak-icon-button-glow-blur-sm, 5px) ${localGlow}`
                     : `0 0 var(--sarak-icon-button-glow-blur-sm, 5px) ${localGlow}`;
-                dynamicStyle.border = `1px solid ${localGlow}`;
+                dynamicStyle.border = `var(--sarak-border-width, 1px) solid ${localGlow}`;
             },
             'danger': () => {
                 dynamicStyle.boxShadow = isHovered
                     ? `0 0 var(--sarak-icon-button-glow-blur-lg, 12px) ${localGlow}, inset 0 0 var(--sarak-icon-button-glow-blur-sm, 5px) ${localGlow}`
                     : `0 0 var(--sarak-icon-button-glow-blur-sm, 5px) ${localGlow}`;
-                dynamicStyle.border = `1px solid ${localGlow}`;
+                dynamicStyle.border = `var(--sarak-border-width, 1px) solid ${localGlow}`;
             },
             'secondary': () => {
                 dynamicStyle.boxShadow = isHovered ? `0 0 var(--sarak-icon-button-glow-blur-md, 8px) ${localGlow}` : 'none';
-                dynamicStyle.border = `1px solid ${localGlow}`;
+                dynamicStyle.border = `var(--sarak-border-width, 1px) solid ${localGlow}`;
                 dynamicStyle.backgroundColor = `rgba(0,0,0,0.4)`;
             },
             'ghost': () => {
@@ -95,19 +95,19 @@ export const SarakIconButton: React.FC<SarakIconButtonProps> = ({
             'primary': () => {
                 dynamicStyle.backdropFilter = `blur(${blurAmount}px)`;
                 dynamicStyle.WebkitBackdropFilter = `blur(${blurAmount}px)`;
-                dynamicStyle.border = '1px solid rgba(255,255,255,0.1)';
+                dynamicStyle.border = 'var(--sarak-border-width, 1px) solid rgba(255,255,255,0.1)';
                 dynamicStyle.boxShadow = '0 var(--sarak-icon-button-frosted-shadow-offset-y, 4px) var(--sarak-icon-button-frosted-shadow-blur, 16px) 0 rgba(0, 0, 0, 0.3)';
             },
             'danger': () => {
                 dynamicStyle.backdropFilter = `blur(${blurAmount}px)`;
                 dynamicStyle.WebkitBackdropFilter = `blur(${blurAmount}px)`;
-                dynamicStyle.border = '1px solid rgba(255,255,255,0.1)';
+                dynamicStyle.border = 'var(--sarak-border-width, 1px) solid rgba(255,255,255,0.1)';
                 dynamicStyle.boxShadow = '0 var(--sarak-icon-button-frosted-shadow-offset-y, 4px) var(--sarak-icon-button-frosted-shadow-blur, 16px) 0 rgba(0, 0, 0, 0.3)';
             },
             'secondary': () => {
                 dynamicStyle.backdropFilter = `blur(${blurAmount}px)`;
                 dynamicStyle.WebkitBackdropFilter = `blur(${blurAmount}px)`;
-                dynamicStyle.border = '1px solid rgba(255,255,255,0.1)';
+                dynamicStyle.border = 'var(--sarak-border-width, 1px) solid rgba(255,255,255,0.1)';
                 dynamicStyle.backgroundColor = 'rgba(255,255,255,0.05)';
             }
         };

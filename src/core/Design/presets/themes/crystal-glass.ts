@@ -10,10 +10,6 @@ export const crystalGlassTheme: ThemePreset = {
         bodySize: '16px',
         iconFamily: 'lucide',
         iconWeight: 'regular',
-        systemName: 'Sarak OS',
-        logoUrl: '',
-        logoMinimalUrl: '',
-        logoScale: 100,
         identityAlignment: 'left',
         identityPadding: 16,
         identityFontFamily: 'Inter',
@@ -264,12 +260,5 @@ export const crystalGlassTheme: ThemePreset = {
         matrixBorderColor: 'rgba(255, 255, 255, 0.05)',
         matrixSearchBg: 'rgba(255, 255, 255, 0.05)',
         matrixBlur: 10,
-        fontHeading: "'Outfit', sans-serif",
-        radiusTheme: '24px',
-        buttonRadius: '9999px',
-        cardRadius: '32px',
-        themeGap: '24px',
-        motionSpeedBase: 400,
-        pageTransition: 'scale'
     }
 };

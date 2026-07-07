@@ -10,10 +10,6 @@ export const holographicGlassTheme: ThemePreset = {
         bodySize: '15px',
         iconFamily: 'tabler',
         iconWeight: 'thin',
-        systemName: 'Holo OS',
-        logoUrl: '',
-        logoMinimalUrl: '',
-        logoScale: 100,
         identityAlignment: 'center',
         identityPadding: 16,
         identityFontFamily: 'Inter',
@@ -265,12 +261,5 @@ export const holographicGlassTheme: ThemePreset = {
         matrixBorderColor: 'rgba(0, 255, 255, 0.1)',
         matrixSearchBg: 'rgba(10, 15, 40, 0.5)',
         matrixBlur: 40,
-        fontHeading: "'Inter', sans-serif",
-        radiusTheme: '24px',
-        buttonRadius: '20px',
-        cardRadius: '30px',
-        themeGap: '32px',
-        motionSpeedBase: 500,
-        pageTransition: 'fade'
     }
 };

@@ -140,7 +140,7 @@ function SarakDataTableImpl<T>({
                         display: 'flex',
                         height: headerHeight,
                         background: headerBg,
-                        borderBottom: '1px solid var(--sarak-table-border, var(--border-color,#334155))',
+                        borderBottom: 'var(--sarak-border-width, 1px) solid var(--sarak-table-border, var(--border-color,#334155))',
                     }}
                 >
                     {ordered.map((column) => (
@@ -199,7 +199,7 @@ function SarakDataTableImpl<T>({
                                 display: 'flex',
                                 width: offsets.total,
                                 height: rowHeight,
-                                borderBottom: '1px solid var(--sarak-table-border, var(--border-color,#334155))',
+                                borderBottom: 'var(--sarak-border-width, 1px) solid var(--sarak-table-border, var(--border-color,#334155))',
                             }}
                         >
                             {ordered.map((column) => (

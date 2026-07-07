@@ -77,7 +77,7 @@ function SarakKanbanImpl<C extends KanbanCard>({
                             padding: 'var(--sarak-layout-gap-sm,8px)',
                             borderRadius: 'var(--sarak-card-radius,12px)',
                             background: 'var(--color-theme-card,#1e293b)',
-                            border: `1px solid ${isOver ? 'var(--sarak-primary-color,#3b82f6)' : 'var(--border-color,#334155)'}`,
+                            border: `var(--sarak-border-width, 1px) solid ${isOver ? 'var(--sarak-primary-color,#3b82f6)' : 'var(--border-color,#334155)'}`,
                             transition: 'border-color 120ms',
                         }}
                     >
@@ -109,7 +109,7 @@ function SarakKanbanImpl<C extends KanbanCard>({
                                     padding: 'var(--sarak-layout-gap-sm,8px) var(--sarak-layout-gap-md,16px)',
                                     borderRadius: 'var(--sarak-kanban-card-radius, 8px)',
                                     background: 'var(--color-theme-card,#1e293b)',
-                                    border: '1px solid var(--border-color,#334155)',
+                                    border: 'var(--sarak-border-width, 1px) solid var(--border-color,#334155)',
                                     cursor: 'grab',
                                     opacity: io.drag?.cardId === card.id ? 0.5 : 1,
                                 }}

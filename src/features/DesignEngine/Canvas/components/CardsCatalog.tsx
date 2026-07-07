@@ -59,7 +59,7 @@ const CardPresetPreview = ({ preset, index, onApply }: { preset: ComponentPreset
                     Escopamos as CSS custom properties do preset via DesignScope (mesmo mecanismo
                     de produção) em vez de montar um `style` inline com valores finais: o CSS real
                     de `.sarak-card` (incl. o "Nuclear Sovereignty Reset" de _atmosphere.css, que lê
-                    var(--sarak-card-*) com !important a partir de QUALQUER ancestral com
+                    as variáveis --sarak-card-* com !important a partir de QUALQUER ancestral com
                     data-sx-texture — sempre presente no app real via SarakShell) consome essas
                     variáveis diretamente. Sobrescrever a propriedade final perde a briga de
                     especificidade; escopar a variável que a regra já lê, não.
@@ -67,7 +67,7 @@ const CardPresetPreview = ({ preset, index, onApply }: { preset: ComponentPreset
                 <DesignScope
                     design={{ mode: 'dark', ...preset.design } as SarakDesignState}
                     className="sarak-card relative flex flex-col p-4 shadow-2xl transition-transform group-hover:scale-105 duration-500 z-10"
-                    style={{ width: '100%', height: '8rem', maxWidth: 'var(--sarak-preset-mini-card-max-width,280px)' }}
+                    style={{ width: '100%', height: 'var(--sarak-preset-mini-card-height,128px)', maxWidth: 'var(--sarak-preset-mini-card-max-width,280px)' }}
                 >
                     <div className="flex items-center gap-3 relative z-10">
                         <div className="w-10 h-10 rounded-full bg-white/10 flex items-center justify-center">
