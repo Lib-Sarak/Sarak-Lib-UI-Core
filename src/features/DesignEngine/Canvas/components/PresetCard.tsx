@@ -9,7 +9,7 @@ import { Layout, ArrowRight } from 'lucide-react';
 export const PresetCard = ({ theme, currentMode, onApply, index }: { theme: ThemePreset, currentMode: string, onApply: () => void, index: number }) => {
     // Calcula o design final na hora baseando-se no modo atual do sistema
     const design = syncThemeWithMode(theme.design as Record<string, SarakTokenValue>, currentMode as 'light' | 'dark');
-    const { variables, attributes } = useDesignVariables(design);
+    const { variables } = useDesignVariables(design);
 
     const primary = String(design.primaryColor || 'var(--color-theme-primary, #00f2ff)');
     const secondary = String(design.secondaryColor || 'var(--color-theme-secondary, #7000ff)');
@@ -63,7 +63,6 @@ export const PresetCard = ({ theme, currentMode, onApply, index }: { theme: Them
             <div
                 className="h-48 w-full relative flex transition-colors overflow-hidden"
                 style={{ backgroundColor: bgBase, ...(variables as React.CSSProperties) }}
-                {...(attributes as React.HTMLAttributes<HTMLDivElement>)}
             >
                 {/* Mini Shell Navigation */}
                 {design.navigationStyle === 'sidebar' ? (

@@ -93,6 +93,86 @@ export const CARD_PRESETS: ComponentPreset[] = [
             cardBackdropBlur: 0,
             cardTextureType: 'none',
         }
+    },
+    {
+        id: 'card-geometric-cut',
+        name: 'Geometric Cut',
+        description: 'Chanfro geométrico nos cantos, matte, sem blur — silhueta octogonal.',
+        design: {
+            cardGeometricCut: 24,
+            cardBorderRadius: 0,
+            cardBorderWidth: 1,
+            cardBackdropBlur: 0,
+            cardShadow: 'none',
+            cardTextureType: 'none',
+        }
+    },
+    {
+        id: 'card-asymmetric-accent',
+        name: 'Asymmetric Accent',
+        description: 'Barra de destaque só no topo, resto sem borda — flat com acento de cor.',
+        design: {
+            cardBorderTop: 4,
+            cardBorderBottom: 0,
+            cardBorderLeft: 0,
+            cardBorderRight: 0,
+            cardBorderColor: 'var(--theme-primary)',
+            cardBorderRadius: 8,
+            cardBackdropBlur: 0,
+            cardShadow: 'none',
+        }
+    },
+    {
+        id: 'card-carbon-tech',
+        name: 'Carbon Tech',
+        description: 'Textura de fibra de carbono, borda técnica sutil, sem glow espalhado.',
+        design: {
+            cardTextureType: 'carbon-tech',
+            cardBorderRadius: 6,
+            cardBorderWidth: 1,
+            cardBorderColor: 'rgba(0,242,255,0.15)',
+            cardBackdropBlur: 0,
+            cardShadow: 'none',
+        }
+    },
+    {
+        id: 'card-organic-craft',
+        name: 'Organic Craft',
+        description: 'Textura de madeira, radius suave, tom quente — o oposto do synth/tech.',
+        design: {
+            cardTextureType: 'wood',
+            cardBorderRadius: 20,
+            cardBorderWidth: 1,
+            cardBorderColor: 'rgba(180,140,90,0.3)',
+            cardBackdropBlur: 0,
+            cardShadow: '0 4px 16px rgba(0,0,0,0.15)',
+        }
+    },
+    {
+        id: 'card-floating-lift',
+        name: 'Floating Lift',
+        description: 'Foco em movimento: elevação forte no hover, glow crescente, quase sem sombra em repouso.',
+        design: {
+            cardHoverTranslate: -12,
+            cardHoverGlowIncrease: 0.5,
+            cardBorderRadius: 14,
+            cardBorderWidth: 0,
+            cardShadow: '0 2px 8px rgba(0,0,0,0.1)',
+            cardBackdropBlur: 0,
+        }
+    },
+    {
+        id: 'card-scanline-crt',
+        name: 'Scanline CRT',
+        description: 'Monitor CRT: scanlines, cantos retos, verde-fósforo.',
+        design: {
+            cardTextureType: 'scanlines',
+            cardBorderRadius: 0,
+            cardBorderWidth: 1,
+            cardBorderColor: 'rgba(0,255,120,0.3)',
+            cardBackdropBlur: 0,
+            cardShadow: 'none',
+        }
     }
 ];
 

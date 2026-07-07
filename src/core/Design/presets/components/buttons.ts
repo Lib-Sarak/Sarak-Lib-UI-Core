@@ -61,6 +61,70 @@ export const BUTTON_PRESETS: ComponentPreset[] = [
             btnStyleType: 'neumorphism',
             btnBorderRadius: 20
         }
+    },
+    {
+        id: 'btn-sharp-tag',
+        name: 'Sharp Tag',
+        description: 'Só um canto arredondado — silhueta de etiqueta/ribbon.',
+        design: {
+            btnStyleType: 'matte',
+            btnRadiusTL: 16,
+            btnRadiusTR: 0,
+            btnRadiusBL: 0,
+            btnRadiusBR: 0
+        }
+    },
+    {
+        id: 'btn-neon-slow-breathe',
+        name: 'Neon Slow Breathe',
+        description: 'Glow lento e suave, formato pílula — clima diferente do Neon Pulse.',
+        design: {
+            btnStyleType: 'neon',
+            btnBorderRadius: 999,
+            btnNeonGlowColor: 'rgba(255,0,180,0.4)',
+            btnNeonPulseSpeed: 3.0
+        }
+    },
+    {
+        id: 'btn-frosted-deep-pill',
+        name: 'Frosted Deep Pill',
+        description: 'Pílula total com blur extremo — mais radical que o Frosted Glass.',
+        design: {
+            btnStyleType: 'frosted',
+            btnBorderRadius: 999,
+            btnBackdropBlur: 30
+        }
+    },
+    {
+        id: 'btn-bouncy',
+        name: 'Bouncy',
+        description: 'Escala dramática no hover/clique — feedback tátil e mola.',
+        design: {
+            btnStyleType: 'matte',
+            btnBorderRadius: 6,
+            btnHoverScale: 1.1,
+            btnActiveScale: 0.9
+        }
+    },
+    {
+        id: 'btn-ghost-ink',
+        name: 'Ghost Ink',
+        description: 'Borderline com preenchimento escuro no hover, cantos retos.',
+        design: {
+            btnStyleType: 'borderline',
+            btnBorderRadius: 4,
+            btnGhostHoverBg: 'rgba(0,0,0,0.4)'
+        }
+    },
+    {
+        id: 'btn-full-block',
+        name: 'Full Block CTA',
+        description: 'Largura total — CTA de bloco para formulários/mobile.',
+        design: {
+            btnStyleType: 'matte',
+            btnBorderRadius: 12,
+            buttonWidthStrategy: 'full'
+        }
     }
 ];
 

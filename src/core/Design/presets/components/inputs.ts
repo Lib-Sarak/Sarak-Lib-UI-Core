@@ -69,5 +69,71 @@ export const INPUT_PRESETS: ComponentPreset[] = [
             inputBg: 'var(--theme-background)',
             inputBorderColor: 'var(--theme-title)',
         }
+    },
+    {
+        id: 'input-neumorphic-press',
+        name: 'Neumorphic Press',
+        description: 'Extrusão suave (neumorphism real) — diferente do Inset industrial.',
+        design: {
+            inputBorderType: 'none',
+            inputBorderRadius: 14,
+            inputBg: 'var(--theme-card)',
+            inputShadow: '6px 6px 12px rgba(0,0,0,0.4), -6px -6px 12px rgba(255,255,255,0.04)',
+        }
+    },
+    {
+        id: 'input-cyberpunk-glow-line',
+        name: 'Cyberpunk Glow Line',
+        description: 'Underline com glow sutil em repouso — vizinho neon do Classic Underline.',
+        design: {
+            inputBorderType: 'underline',
+            inputBg: '#050505',
+            inputBorderColor: 'var(--theme-primary-focus)',
+            inputFocusBorderColor: 'var(--theme-primary-focus)',
+            inputShadow: '0 2px 8px var(--theme-primary-focus)',
+        }
+    },
+    {
+        id: 'input-paper-craft',
+        name: 'Paper Craft',
+        description: 'Tom quente, borda fina, radius generoso — orgânico.',
+        design: {
+            inputBorderType: 'solid',
+            inputBorderRadius: 12,
+            inputBg: 'rgba(180,140,90,0.06)',
+            inputBorderColor: 'rgba(180,140,90,0.25)',
+        }
+    },
+    {
+        id: 'input-dense-compact',
+        name: 'Dense Compact',
+        description: 'Padding e radius mínimos — utilitário, alta densidade.',
+        design: {
+            inputBorderType: 'solid',
+            inputPadding: 6,
+            inputBorderRadius: 4,
+        }
+    },
+    {
+        id: 'input-spacious-airy',
+        name: 'Spacious Airy',
+        description: 'Padding e radius generosos — o oposto do Dense Compact.',
+        design: {
+            inputBorderType: 'solid',
+            inputPadding: 20,
+            inputBorderRadius: 16,
+            inputBg: 'rgba(255,255,255,0.03)',
+        }
+    },
+    {
+        id: 'input-alert-ring',
+        name: 'Alert Ring',
+        description: 'Acento na cor de erro — variante para formulários de alerta.',
+        design: {
+            inputBorderType: 'solid',
+            inputBorderRadius: 8,
+            inputBorderColor: 'var(--sarak-input-error-color, #ff4d4f)',
+            inputFocusBorderColor: 'var(--sarak-input-error-color, #ff4d4f)',
+        }
     }
 ];
