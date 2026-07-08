@@ -1,0 +1,35 @@
+{
+  "provider": "groq",
+  "model": "mixtral-8x7b-32768",
+  "temperature": 0.7,
+  "max_tokens": 1000,
+  "capabilities": {
+    "input_modalities": ["text"],
+    "output_format": "text"
+  },
+  "vectorization": {
+    "top_k": 4,
+    "similarity_threshold": 0.7
+  },
+  "database": {
+    "table_history": "chat_history",
+    "table_leads": "leads",
+    "table_triggers": "trigger_events",
+    "table_knowledge": "knowledge_embeddings"
+  },
+  "triggers": {
+    "LEAD": {
+      "pattern": "\\[LEAD:\\s*([^,\\]]*?)\\s*,\\s*([^,\\]]*?)\\s*,\\s*([^,\\]]*?)\\s*,\\s*([^,\\]]*?)\\s*\\]",
+      "fields": ["name", "email", "phone", "service"]
+    },
+    "APPOINTMENT": {
+      "pattern": "\\[APPOINTMENT:\\s*([^\\]]+)\\]",
+      "fields": ["details"]
+    },
+    "HANDOFF": {
+      "pattern": "\\[HANDOFF:\\s*([^\\]]+)\\]",
+      "fields": ["reason"]
+    }
+  }
+}
+

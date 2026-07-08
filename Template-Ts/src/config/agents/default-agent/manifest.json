@@ -1,0 +1,27 @@
+{
+  "agentId": "default-agent",
+  "theme": {
+    "primaryColor": "#0f172a",
+    "secondaryColor": "#3b82f6",
+    "fontFamily": "Inter, sans-serif",
+    "avatarUrl": "https://images.unsplash.com/photo-1618005182384-a83a8bd57fbe?q=80&w=256&auto=format&fit=crop",
+    "mode": "dark"
+  },
+  "ui": {
+    "title": "Assistente Virtual",
+    "subtitle": "Online - Pronto para ajudar",
+    "placeholderText": "Digite sua dúvida aqui...",
+    "quickReplies": [
+      {
+        "label": "Agendar Reunião",
+        "action": "trigger_intent",
+        "payload": "[APPOINTMENT]"
+      },
+      {
+        "label": "Nossos Serviços",
+        "action": "send_message",
+        "payload": "Quais são os serviços de IA que vocês oferecem?"
+      }
+    ]
+  }
+}

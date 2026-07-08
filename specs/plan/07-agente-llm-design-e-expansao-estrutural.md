@@ -2,7 +2,7 @@
 tipo: "spec"
 titulo: "Agente LLM: Operador de Design e Expansão Estrutural"
 dominio: "Design Engine (Sarak UI Core)"
-status: "🟢 Vigente"
+status: "🔴 Planejamento Inicial"
 prioridade: "Alta"
 tags: ["spec", "ai-agent", "design-system", "data-driven", "database-only", "architecture", "layout-engine"]
 relacionados: ["03-padrao-e-taxonomia-biblioteca-atomica"]
