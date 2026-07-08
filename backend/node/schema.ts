@@ -60,4 +60,28 @@ CREATE TABLE IF NOT EXISTS "ui_core"."system_branding" (
     updated_at TIMESTAMP WITH TIME ZONE DEFAULT NOW(),
     UNIQUE(system, owner_id)
 );
+
+-- 4. Tabelas do Agente LLM (Design Operator)
+CREATE TABLE IF NOT EXISTS "ui_core"."sarak_ui_design_agent_conversations" (
+    id UUID PRIMARY KEY DEFAULT gen_random_uuid(),
+    session_id VARCHAR(255) NOT NULL,
+    role VARCHAR(50) NOT NULL CHECK (role IN ('user', 'assistant', 'system')),
+    content TEXT NOT NULL,
+    created_at TIMESTAMP WITH TIME ZONE DEFAULT NOW()
+);
+
+CREATE INDEX IF NOT EXISTS idx_sarak_ui_design_agent_conversations_session 
+ON "ui_core"."sarak_ui_design_agent_conversations" (session_id);
+
+CREATE TABLE IF NOT EXISTS "ui_core"."sarak_ui_design_agent_artifacts" (
+    id UUID PRIMARY KEY DEFAULT gen_random_uuid(),
+    session_id VARCHAR(255) NOT NULL,
+    artifact_type VARCHAR(50) NOT NULL CHECK (artifact_type IN ('theme', 'preset')),
+    payload JSONB NOT NULL,
+    created_at TIMESTAMP WITH TIME ZONE DEFAULT NOW()
+);
+
+CREATE INDEX IF NOT EXISTS idx_sarak_ui_design_agent_artifacts_session 
+ON "ui_core"."sarak_ui_design_agent_artifacts" (session_id);
+
 `;

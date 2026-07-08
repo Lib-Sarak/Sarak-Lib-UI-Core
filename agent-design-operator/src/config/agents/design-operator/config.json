@@ -1,0 +1,14 @@
+{
+  "agent_id": "design-operator",
+  "name": "Design Operator",
+  "description": "Responsável por configurar temas e propriedades estruturais via manipulação JSON",
+  "llm_config": {
+    "temperature": 0.1,
+    "model": "gpt-4o",
+    "structured_output": true
+  },
+  "rag_config": {
+    "enabled": true,
+    "mode": "dynamic_catalog"
+  }
+}
