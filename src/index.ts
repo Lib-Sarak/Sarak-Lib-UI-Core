@@ -7,6 +7,14 @@
 
 // Theme Engine and Constants
 export { default as SarakUIProvider, useSarakUI } from './core/Provider/SarakUIProvider';
+// Contrato do Design Agent (Spec 08 §6.2) — o consumidor implementa `sendPrompt` e injeta
+// via `SarakUIOptions.designAgent`; a lib nunca chama rede diretamente.
+export type {
+    DesignAgentPromptInput,
+    DesignAgentPromptResult,
+    DesignAgentComponentPreset,
+    DesignAgentSendPrompt,
+} from './core/Provider/types';
 export { DesignScope } from './core/Design/components/DesignScope';
 export { default as ThemeToggle } from './components/atomic/Buttons/ThemeToggle';
 

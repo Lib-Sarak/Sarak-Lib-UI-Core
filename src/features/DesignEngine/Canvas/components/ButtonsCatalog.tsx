@@ -4,15 +4,18 @@ import { ButtonPresetPreview } from './ButtonPresetPreview';
 import { Sparkles, MousePointer2 } from 'lucide-react';
 
 import { SarakDesignState } from '../../../../core/Provider/types';
+import { ComponentPreset } from '../../../../core/Design/presets/components/cards';
 
 interface ButtonsCatalogProps {
     onApplyPreset: (presetDesign: Partial<SarakDesignState>, isPartial?: boolean) => void;
     currentMode: string;
+    /** Sugestões geradas pelo Design Agent nesta sessão (nunca persistidas). */
+    sessionPresets?: ComponentPreset[];
 }
 
-export const ButtonsCatalog: React.FC<ButtonsCatalogProps> = ({ onApplyPreset, currentMode }) => {
+export const ButtonsCatalog: React.FC<ButtonsCatalogProps> = ({ onApplyPreset, currentMode, sessionPresets = [] }) => {
     const [activeTab, setActiveTab] = useState<'curated' | 'styles'>('curated');
-    const presets = activeTab === 'curated' ? BUTTON_PRESETS : BUTTON_STYLE_PRESETS;
+    const presets = activeTab === 'curated' ? [...sessionPresets, ...BUTTON_PRESETS] : BUTTON_STYLE_PRESETS;
 
     return (
         <div className="flex flex-col gap-6">

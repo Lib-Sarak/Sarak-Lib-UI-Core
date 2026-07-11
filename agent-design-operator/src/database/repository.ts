@@ -82,8 +82,3 @@ export class AgentRepository {
 }
 
 export const agentRepository = new AgentRepository();
-
-// Auto-inicialização caso o agente rode de forma isolada
-agentRepository.initDatabase().catch(err => {
-  console.error('[Repository] Erro fatal na auto-inicialização das tabelas:', err);
-});

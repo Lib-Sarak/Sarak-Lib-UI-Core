@@ -2,13 +2,18 @@
   "agent_id": "design-operator",
   "name": "Design Operator",
   "description": "Responsável por configurar temas e propriedades estruturais via manipulação JSON",
-  "llm_config": {
-    "temperature": 0.1,
-    "model": "gpt-4o",
-    "structured_output": true
+  "provider": "groq",
+  "model": "openai/gpt-oss-20b",
+  "temperature": 0.1,
+  "max_tokens": 2000,
+  "capabilities": {
+    "input_modalities": ["text"],
+    "output_format": "text"
   },
-  "rag_config": {
-    "enabled": true,
-    "mode": "dynamic_catalog"
+  "triggers": {
+    "THEME_UPDATE": {
+      "pattern": "\\[THEME_UPDATE:\\s*(\\{[\\s\\S]*?\\})\\s*\\]",
+      "fields": ["payload"]
+    }
   }
 }

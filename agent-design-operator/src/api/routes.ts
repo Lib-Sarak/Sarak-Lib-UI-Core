@@ -1,48 +1,80 @@
 import { Router, Request, Response } from 'express';
 import { processThemeUpdate } from '../toolbox/theme_writer.js';
+import { buildCatalogPromptBlock } from '../toolbox/catalog_prompt.js';
 import { agentRepository } from '../database/repository.js';
+import { loadAgentAssets } from '../utils/file_loader.js';
+import { GLOBAL_SYSTEM_CONSTRAINTS } from '../config/shared/global_prompts.js';
+import { ProviderFactory } from '../core/providers/provider_factory.js';
+import { TriggerExtractor } from '../core/parser/trigger_extractor.js';
+import { InputValidator, SecurityViolationError } from '../core/security/input_validator.js';
 
 export const routes = Router();
 
-routes.post('/themes/generate', async (req: Request, res: Response) => {
+const DESIGN_AGENT_ID = 'design-operator';
+
+routes.post('/prompt', async (req: Request, res: Response) => {
   try {
     const { prompt, session_id } = req.body;
-    
+
     if (!prompt || !session_id) {
       return res.status(400).json({ error: 'Faltam campos (prompt ou session_id) no corpo da requisição.' });
     }
 
-    // Salva a intenção do usuário no BD do agente
+    InputValidator.sanitizeInput(prompt);
+
+    const [config, identity, , , rules] = loadAgentAssets(DESIGN_AGENT_ID);
+
+    const systemPrompt =
+      `${GLOBAL_SYSTEM_CONSTRAINTS}\n\n` +
+      `[AGENT IDENTITY]\n${identity}\n\n` +
+      `${buildCatalogPromptBlock()}\n\n` +
+      `[STRICT GUARDRAILS]\n${rules}`;
+
+    const history = await agentRepository.getConversationHistory(session_id);
+    const formattedHistory = history.map((msg: { role: string; content: string }) => ({ role: msg.role, content: msg.content }));
+
     await agentRepository.saveMessage(session_id, 'user', prompt);
 
-    /* 
-      Aqui invocaríamos o motor LLM do Template-Ts:
-      const llmOutput = await llmEngine.invoke(prompt, config);
-    */
-    
-    // Simulação do parse do LLM extraído da tag [THEME_UPDATE]:
-    const mockLlmOutput = {
-      "cardLayoutDirection": "row",
-      "--sx-color-primary": "#123456"
-    };
+    const provider = ProviderFactory.getProvider(config.provider);
+    const rawResponse = await provider.generateResponse(
+      systemPrompt,
+      [...formattedHistory, { role: 'user', content: prompt }],
+      config.temperature,
+      config.max_tokens,
+      config.model
+    );
 
-    // A Toolbox Action intercepta, valida (Anti-Alucinação) e persiste no UI-Core
-    await processThemeUpdate(mockLlmOutput, session_id);
+    const [cleanMessage, actions] = TriggerExtractor.extractTriggers(rawResponse, config.triggers);
+    await agentRepository.saveMessage(session_id, 'assistant', cleanMessage);
 
-    // Salva a resposta da LLM
-    await agentRepository.saveMessage(session_id, 'assistant', JSON.stringify(mockLlmOutput));
-
-    return res.status(200).json({ 
-      success: true, 
-      message: 'Tema gerado pelo Agente e sincronizado com a UI-Core',
-      applied_payload: mockLlmOutput 
-    });
-    
-  } catch (error: any) {
-    if (error.message.includes('SECURITY_VIOLATION')) {
-      // Retorna 422 para sinalizar a quebra de contrato. No futuro, isso aciona Auto-Healing.
-      return res.status(422).json({ error: 'LLM alucinou chaves inválidas', details: error.message });
+    const themeUpdateAction = actions.find(action => action.type === 'THEME_UPDATE');
+    if (!themeUpdateAction) {
+      return res.status(200).json({ success: true, message: cleanMessage });
     }
-    return res.status(500).json({ error: 'Erro interno', details: error.message });
+
+    let rawPayload: Record<string, unknown>;
+    try {
+      rawPayload = JSON.parse(themeUpdateAction.data.payload);
+    } catch {
+      return res.status(422).json({ error: 'O agente emitiu um [THEME_UPDATE] com JSON inválido.', message: cleanMessage });
+    }
+
+    const validatedPayload = await processThemeUpdate(rawPayload, session_id);
+
+    return res.status(200).json({
+      success: true,
+      message: cleanMessage,
+      payload: validatedPayload,
+    });
+
+  } catch (error: unknown) {
+    if (error instanceof SecurityViolationError) {
+      return res.status(400).json({ error: error.message });
+    }
+    const message = error instanceof Error ? error.message : 'Erro interno desconhecido.';
+    if (message.includes('SECURITY_VIOLATION')) {
+      return res.status(422).json({ error: 'LLM sugeriu um valor fora do catálogo (alucinação detectada).', details: message });
+    }
+    return res.status(500).json({ error: 'Erro interno', details: message });
   }
 });

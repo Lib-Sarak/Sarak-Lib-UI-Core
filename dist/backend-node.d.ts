@@ -30,4 +30,30 @@ declare function createBrandingApiHandler(options: BrandingApiOptions): {
     POST(req: Request): Promise<Response>;
 };
 
-export { type DesignApiOptions, createBrandingApiHandler, createDesignApiHandler, setupUIDatabase };
+/**
+ * Sarak Industrial Design Schema (v11.0)
+ *
+ * Define o contrato para mapeamento de 100% das funcionalidades e componentes.
+ */
+type TokenValueType = 'number' | 'color' | 'string' | 'boolean' | 'select' | 'slider' | 'font' | 'text' | 'image' | 'file';
+
+interface DesignCatalogToken {
+    id: string;
+    type: TokenValueType;
+    options?: {
+        value?: string;
+        id?: string;
+        label: string;
+    }[];
+    min?: number;
+    max?: number;
+}
+/**
+ * Catálogo real de tokens configuráveis (Schema/MasterMap — mesma SSOT da paridade
+ * 1:1:1:1:1), para consumo por backends Node externos (ex: agent-design-operator)
+ * que precisam garantir que um payload gerado por IA só preenche valores de chaves
+ * que já existem no sistema — nunca inventa chave nova (Spec 08 §4, Spec 09).
+ */
+declare function getDesignCatalog(): DesignCatalogToken[];
+
+export { type DesignApiOptions, type DesignCatalogToken, createBrandingApiHandler, createDesignApiHandler, getDesignCatalog, setupUIDatabase };

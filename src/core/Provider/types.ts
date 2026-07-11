@@ -36,6 +36,33 @@ export interface ThemeEntry {
     design?: Record<string, unknown>;
 }
 
+/**
+ * Contrato do Design Agent (chat de preenchimento de valores no Design Engine).
+ * A Sarak nunca chama rede diretamente (Regra da Spec 08 §6.2): o importador injeta
+ * `sendPrompt` via `SarakUIOptions.designAgent`, faz a chamada ao backend do agente
+ * e devolve o resultado já no formato abaixo.
+ */
+export interface DesignAgentPromptInput {
+    prompt: string;
+    draftTokens: Partial<SarakDesignState>;
+}
+
+/** Um bundle de valores existentes para UMA categoria de preset (Cards, Buttons, etc). */
+export interface DesignAgentComponentPreset {
+    category: string;
+    design: Partial<SarakDesignState>;
+}
+
+export interface DesignAgentPromptResult {
+    message: string;
+    /** Patch de tema completo — aplicado como rascunho ao vivo (Preset 1). */
+    themePatch?: Partial<SarakDesignState>;
+    /** Presets por componente — somem no catálogo de sessão (Preset 2). */
+    componentPresets?: DesignAgentComponentPreset[];
+}
+
+export type DesignAgentSendPrompt = (input: DesignAgentPromptInput) => Promise<DesignAgentPromptResult>;
+
 /** Assinatura do setter do design-state (valor ou updater functional). */
 export type SetDesign = (
     updater: SarakDesignState | ((prev: SarakDesignState) => SarakDesignState),
@@ -141,6 +168,10 @@ export interface SarakUIOptions {
         defaultTheme?: string;
         defaultModuleId?: string;
         extraTokens?: Record<string, unknown>;
+    };
+    /** Canal único de rede do Design Agent (Spec 08 §6.2) — a lib nunca faz fetch direto. */
+    designAgent?: {
+        sendPrompt: DesignAgentSendPrompt;
     };
 }
 

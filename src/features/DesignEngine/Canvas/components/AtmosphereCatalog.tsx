@@ -10,9 +10,11 @@ import { SarakDesignState } from '../../../../core/Provider/types';
 interface AtmosphereCatalogProps {
     onApplyPreset: (presetDesign: Partial<SarakDesignState>, isPartial?: boolean) => void;
     currentMode: string;
+    /** Sugestões geradas pelo Design Agent nesta sessão (nunca persistidas). */
+    sessionPresets?: ComponentPreset[];
 }
 
-export const AtmosphereCatalog: React.FC<AtmosphereCatalogProps> = ({ onApplyPreset, currentMode }) => {
+export const AtmosphereCatalog: React.FC<AtmosphereCatalogProps> = ({ onApplyPreset, currentMode, sessionPresets = [] }) => {
     const [activeTab, setActiveTab] = useState<'media' | 'textures'>('media');
 
     return (
@@ -53,7 +55,7 @@ export const AtmosphereCatalog: React.FC<AtmosphereCatalogProps> = ({ onApplyPre
             </div>
 
             <div className="grid grid-cols-1 gap-6">
-                {(activeTab === 'media' ? MEDIA_PRESETS : TEXTURE_PRESETS).map((preset, i) => (
+                {(activeTab === 'media' ? [...sessionPresets, ...MEDIA_PRESETS] : TEXTURE_PRESETS).map((preset, i) => (
                     <AtmospherePresetPreview key={preset.id} preset={preset} index={i} currentMode={currentMode} onApply={() => onApplyPreset(preset.design, true)} />
                 ))}
             </div>
