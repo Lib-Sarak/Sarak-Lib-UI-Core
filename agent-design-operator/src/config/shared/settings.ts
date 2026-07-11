@@ -27,6 +27,14 @@ class Settings {
     public readonly EMBEDDINGS_API_KEY: string;
     public readonly API_AUTH_KEYS: string[];
 
+    // Escolha de Provider/Modelo do Design Agent: SEMPRE do sistema importador.
+    // O módulo (agent-design-operator) nunca decide isso por conta própria — sem
+    // fallback aqui de propósito; a rota falha explicitamente se não vier definido.
+    public readonly DESIGN_AGENT_LLM_PROVIDER: string;
+    public readonly DESIGN_AGENT_LLM_MODEL: string;
+    public readonly DESIGN_AGENT_LLM_TEMPERATURE: number;
+    public readonly DESIGN_AGENT_LLM_MAX_TOKENS: number;
+
     // Dynamic Fallback Defaults (Zero Hardcoding)
     public readonly GLOBAL_DEFAULTS: Record<string, any>;
 
@@ -46,6 +54,11 @@ class Settings {
         this.OPENROUTER_TITLE = process.env.OPENROUTER_TITLE || 'AI Agent Factory';
         this.EMBEDDINGS_API_KEY = process.env.EMBEDDINGS_API_KEY || '';
         this.API_AUTH_KEYS = (process.env.API_AUTH_KEYS || '').split(',').map(k => k.trim()).filter(k => k.length > 0);
+
+        this.DESIGN_AGENT_LLM_PROVIDER = process.env.DESIGN_AGENT_LLM_PROVIDER || '';
+        this.DESIGN_AGENT_LLM_MODEL = process.env.DESIGN_AGENT_LLM_MODEL || '';
+        this.DESIGN_AGENT_LLM_TEMPERATURE = process.env.DESIGN_AGENT_LLM_TEMPERATURE ? parseFloat(process.env.DESIGN_AGENT_LLM_TEMPERATURE) : 0.2;
+        this.DESIGN_AGENT_LLM_MAX_TOKENS = process.env.DESIGN_AGENT_LLM_MAX_TOKENS ? parseInt(process.env.DESIGN_AGENT_LLM_MAX_TOKENS, 10) : 2000;
 
         // Dynamic Fallback Defaults (Zero Hardcoding)
         this.GLOBAL_DEFAULTS = this._loadGlobalDefaults();

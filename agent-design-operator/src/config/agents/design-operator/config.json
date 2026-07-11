@@ -2,10 +2,6 @@
   "agent_id": "design-operator",
   "name": "Design Operator",
   "description": "Responsável por configurar temas e propriedades estruturais via manipulação JSON",
-  "provider": "groq",
-  "model": "openai/gpt-oss-20b",
-  "temperature": 0.1,
-  "max_tokens": 2000,
   "capabilities": {
     "input_modalities": ["text"],
     "output_format": "text"

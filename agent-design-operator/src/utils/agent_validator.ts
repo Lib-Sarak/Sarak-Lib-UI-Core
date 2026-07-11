@@ -81,13 +81,13 @@ export class AgentValidator {
     }
 
     private static _validateConfigStructure(config: any, agentId: string): void {
-        // Required Keys
-        for (const reqKey of ['provider', 'model']) {
-            if (!(reqKey in config)) {
-                throw new Error(`Validation error in config.json for agent '${agentId}': Missing required property '${reqKey}'`);
-            }
-            if (typeof config[reqKey] !== 'string' || !config[reqKey].trim()) {
-                throw new Error(`Validation error in config.json for agent '${agentId}': Property '${reqKey}' must be a non-empty string`);
+        // 'provider'/'model' são OPCIONAIS aqui de propósito: a escolha de LLM é
+        // responsabilidade do sistema importador (variáveis DESIGN_AGENT_LLM_*),
+        // não do agente versionado dentro do módulo. Se vierem definidos no
+        // config.json mesmo assim, validamos o tipo — só não exigimos presença.
+        for (const optKey of ['provider', 'model']) {
+            if (optKey in config && (typeof config[optKey] !== 'string' || !config[optKey].trim())) {
+                throw new Error(`Validation error in config.json for agent '${agentId}': Property '${optKey}' must be a non-empty string`);
             }
         }
 

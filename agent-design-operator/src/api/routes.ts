@@ -4,6 +4,7 @@ import { buildCatalogPromptBlock } from '../toolbox/catalog_prompt.js';
 import { agentRepository } from '../database/repository.js';
 import { loadAgentAssets } from '../utils/file_loader.js';
 import { GLOBAL_SYSTEM_CONSTRAINTS } from '../config/shared/global_prompts.js';
+import { settings } from '../config/shared/settings.js';
 import { ProviderFactory } from '../core/providers/provider_factory.js';
 import { TriggerExtractor } from '../core/parser/trigger_extractor.js';
 import { InputValidator, SecurityViolationError } from '../core/security/input_validator.js';
@@ -22,6 +23,12 @@ routes.post('/prompt', async (req: Request, res: Response) => {
 
     InputValidator.sanitizeInput(prompt);
 
+    if (!settings.DESIGN_AGENT_LLM_PROVIDER || !settings.DESIGN_AGENT_LLM_MODEL) {
+      return res.status(500).json({
+        error: 'Design Agent sem provider/model configurados. O sistema importador precisa definir DESIGN_AGENT_LLM_PROVIDER e DESIGN_AGENT_LLM_MODEL no ambiente — o módulo não escolhe isso sozinho.',
+      });
+    }
+
     const [config, identity, , , rules] = loadAgentAssets(DESIGN_AGENT_ID);
 
     const systemPrompt =
@@ -35,13 +42,13 @@ routes.post('/prompt', async (req: Request, res: Response) => {
 
     await agentRepository.saveMessage(session_id, 'user', prompt);
 
-    const provider = ProviderFactory.getProvider(config.provider);
+    const provider = ProviderFactory.getProvider(settings.DESIGN_AGENT_LLM_PROVIDER);
     const rawResponse = await provider.generateResponse(
       systemPrompt,
       [...formattedHistory, { role: 'user', content: prompt }],
-      config.temperature,
-      config.max_tokens,
-      config.model
+      settings.DESIGN_AGENT_LLM_TEMPERATURE,
+      settings.DESIGN_AGENT_LLM_MAX_TOKENS,
+      settings.DESIGN_AGENT_LLM_MODEL
     );
 
     const [cleanMessage, actions] = TriggerExtractor.extractTriggers(rawResponse, config.triggers);
