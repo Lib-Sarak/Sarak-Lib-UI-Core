@@ -40,3 +40,107 @@ Testado em produção real: o Design Agent às vezes responde no chat com o JSON
 ## Testes E2E (Integração)
 - [ ] Fluxo feliz: pedido simples de alteração de cor → `message` é uma confirmação textual curta, `payload` chega separadamente e aplica no Preset 1/2.
 - [ ] Fluxo de estresse: pedido de "tema totalmente diferente" (payload grande) → mesmo que a Chamada B precise de mais tokens, o resultado nunca vaza JSON parcial no chat (ou aplica corretamente, ou cai no fallback da Regra 4).
+
+# 5. Prompts Exatos (copie e adapte, não escreva do zero)
+
+## 5.1. Chamada A — "chat"
+
+```
+${GLOBAL_SYSTEM_CONSTRAINTS}
+
+[AGENT IDENTITY]
+${identity}
+
+[REGRA ABSOLUTA DESTA CHAMADA]
+Você está respondendo SOMENTE o texto que o usuário vai ler no chat. É TERMINANTEMENTE PROIBIDO:
+- Incluir qualquer JSON, chave de configuração, ou valor de token na sua resposta.
+- Usar colchetes `[` `]` ou chaves `{` `}` na resposta.
+- Listar nomes de propriedades técnicas (ex: "primaryColor", "cardBorderRadius").
+
+Responda em 1-3 frases, tom natural, confirmando o que você entendeu do pedido e o que você
+está aplicando (sem detalhar valores técnicos). Se o pedido não fizer sentido ou não puder ser
+atendido, explique brevemente por quê — ainda sem JSON.
+
+[STRICT GUARDRAILS]
+${rules}
+```
+- `temperature`: pode usar o valor padrão do provider (mais natural).
+- `history`: mesmo histórico de conversa das chamadas anteriores (`agentRepository.getConversationHistory`).
+
+## 5.2. Chamada B — "ação"
+
+```
+${GLOBAL_SYSTEM_CONSTRAINTS}
+
+[AGENT IDENTITY]
+${identity}
+
+[REGRA ABSOLUTA DESTA CHAMADA]
+Sua resposta é consumida por um parser JSON, NUNCA por um humano. É TERMINANTEMENTE PROIBIDO:
+- Escrever qualquer texto fora do JSON (sem saudação, sem explicação, sem markdown ```).
+- Inventar uma chave que não está na lista de "TOKENS DISPONÍVEIS" abaixo.
+- Devolver um objeto vazio {} se não houver nenhuma alteração a fazer — nesse caso devolva
+  literalmente a string "NENHUMA_ALTERACAO" (sem JSON).
+
+Sua resposta deve ser SOMENTE um objeto JSON válido, no formato:
+{"nomeDoToken1": valor1, "nomeDoToken2": valor2}
+
+Use SÓ chaves da lista abaixo. Cada uma mostra o tipo esperado do valor.
+
+[TOKENS DISPONÍVEIS]
+${retrieveRelevantTokens(userPrompt)}  // ver spec 02 — resultado do retrieval semântico, não o catálogo inteiro
+
+[STRICT GUARDRAILS]
+${rules}
+```
+- `temperature`: baixa (0.0-0.2) — determinismo, não criatividade.
+- `history`: **não** inclua o histórico completo de chat aqui — só o pedido atual do usuário. Histórico de conversa é contexto pra "chat", não pra "extração de valores" (reduz tokens e ruído).
+
+# 6. Pseudocódigo de Orquestração (`routes.ts`)
+
+```ts
+// agent-design-operator/src/api/routes.ts
+routes.post('/prompt', async (req, res) => {
+  const { prompt, session_id } = req.body;
+  // ... validações de sempre (campos obrigatórios, InputValidator.sanitizeInput) ...
+
+  const relevantTokens = await retrieveRelevantTokens(prompt, embeddingsProviderName); // spec 02
+
+  const [chatResult, actionResult] = await Promise.all([
+    provider.generateResponse(buildChatPrompt(identity, rules), history, temp, maxTokens, model),
+    provider.generateResponse(buildActionPrompt(identity, rules, relevantTokens), [{ role: 'user', content: prompt }], 0.1, maxTokens, model),
+  ]);
+
+  await agentRepository.saveMessage(session_id, 'user', prompt);
+  await agentRepository.saveMessage(session_id, 'assistant', chatResult);
+
+  // Chamada B pode devolver: "NENHUMA_ALTERACAO", JSON válido, ou lixo/inválido — os 3 casos:
+  if (actionResult.trim() === 'NENHUMA_ALTERACAO') {
+    return res.status(200).json({ success: true, message: chatResult });
+  }
+
+  let rawPayload;
+  try {
+    rawPayload = JSON.parse(actionResult);
+  } catch {
+    // Regra 4: fallback amigável, NUNCA devolve actionResult cru
+    return res.status(200).json({
+      success: true,
+      message: `${chatResult}\n\n(não consegui aplicar as alterações — pode tentar reformular?)`,
+    });
+  }
+
+  try {
+    const validatedPayload = await processThemeUpdate(rawPayload, session_id); // ThemeValidator por dentro
+    return res.status(200).json({ success: true, message: chatResult, payload: validatedPayload });
+  } catch (validationError) {
+    // mesma Regra 4 — validação falhou, não devolve o payload rejeitado
+    return res.status(200).json({
+      success: true,
+      message: `${chatResult}\n\n(não consegui aplicar as alterações — pode tentar reformular?)`,
+    });
+  }
+});
+```
+
+**Ponto crítico de implementação:** repare que mesmo quando a Chamada B falha (JSON inválido ou reprovado na validação), a resposta ainda é **200 com `success: true`** e a `message` da Chamada A — o usuário sempre recebe uma resposta em linguagem natural coerente, nunca um erro técnico cru nem o payload malformado. Isso é o que a Regra 4 da Seção 2 exige.

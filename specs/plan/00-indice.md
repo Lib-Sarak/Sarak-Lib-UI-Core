@@ -33,7 +33,7 @@ Esta é a ordem real recomendada — siga de cima pra baixo, um item por vez. As
 2. [ ] **[01 - Auditoria de Cobertura de Componentes](./01-auditoria-cobertura-componentes.md)** — fundação de conteúdo pra 02/04.
 3. [ ] **[02 - Mapeamento Semântico e RAG do Catálogo](./02-mapeamento-semantico-rag-catalogo.md)** — depende da 01.
 4. [ ] **[04 - Multi-Preset Diversificado por Eixo](./04-multi-preset-diversificado.md)** — depende da 02.
-5. [ ] **[05 - Ingestão Multimodal via Conversão Unificada para HTML](./05-ingestao-multimodal-html.md)** — maior esforço isolado; tem pendência HITL em aberto (Seção 5 da spec) antes de virar execução.
+5. [ ] **[05 - Ingestão Multimodal via Conversão Unificada para HTML](./05-ingestao-multimodal-html.md)** — maior esforço isolado; ferramenta de conversão (LibreOffice headless) já decidida na Seção 5 da spec, pode executar direto.
 6. [ ] **[06 - Pipeline de Visão em 2 Estágios](./06-pipeline-visao-dois-estagios.md)** — depende da 05 (imagens extraídas de link/PDF/PPT) e da 02 (retrieval).
 7. [ ] **[07 - Agente LLM: Operador de Design e Expansão Estrutural](./07-agente-llm-design-e-expansao-estrutural.md)** — fechamento/guarda-chuva: só marca 🟢 quando as pendências das specs 03/02 nela referenciadas estiverem cobertas pelos itens 1-6.
 8. [ ] **[10 - Responsividade e Isolamento de Viewport no Gêmeo Digital](./10-responsividade-gemeo-digital.md)**
@@ -48,7 +48,7 @@ Estas 7 specs formam um sub-plano coeso (evolução do Design Agent):
 - **03 primeiro** — pura correção de arquitetura, desbloqueia confiabilidade, independe de conteúdo novo.
 - **01 → 02** — fundação de conteúdo (sem elas, a spec 04 produziria diversificação artificial).
 - **04** — depende da 02.
-- **05 → 06** — maior esforço isolado do sub-plano (spec 05 toca segurança/SSRF e introduz dependência de infra nova — tem pendência de decisão HITL em aberto), mais seguras por último.
+- **05 → 06** — maior esforço isolado do sub-plano (spec 05 toca segurança/SSRF e introduz dependência de infra nova — LibreOffice headless, já decidida), mais seguras por último.
 - **07** — spec guarda-chuva/já parcialmente implementada (arquitetura base do agente, Camada 6 estrutural). As pendências que restam nela são cobertas pelas specs 01-06.
 
 ## Nível 1: Alta Complexidade (Arquitetura e Refatoração Estrutural)

@@ -35,3 +35,58 @@ Pedidos plurais ("crie vários presets de cards com bordas e efeitos diferentes"
 
 ## Testes E2E (Integração)
 - [ ] Fluxo feliz: "mostre 3 presets de cards com texturas diferentes" → 3 cards aparecem na aba "Cards" da Preview 2, visivelmente distintos entre si (não só tonalidade de cor).
+
+# 5. Heurística de Detecção de Pedido Plural (lista exata)
+
+Implemente como checagem simples de substring (case-insensitive, sem acento — normalize o texto antes) contra esta lista. Não é NLP — é um filtro rápido que decide se a Chamada B (spec 03) recebe a instrução de gerar variações em vez de um único patch.
+
+```ts
+const PLURAL_REQUEST_KEYWORDS = [
+  'vários', 'varios', 'algumas opções', 'algumas opcoes', 'diferentes opções',
+  'mostre todas', 'mostrar todas', 'todas as texturas', 'todas as fontes',
+  'algumas variações', 'algumas variacoes', 'opções de', 'opcoes de',
+  'alguns exemplos', 'me dê opções', 'me de opcoes', 'compare',
+];
+
+function isPluralRequest(userPrompt: string): boolean {
+  const normalized = userPrompt.toLowerCase().normalize('NFD').replace(/[̀-ͯ]/g, '');
+  return PLURAL_REQUEST_KEYWORDS.some(kw => normalized.includes(kw.normalize('NFD').replace(/[̀-ͯ]/g, '')));
+}
+```
+
+Falso-negativo (pedido plural não detectado) é aceitável — o agente simplesmente gera 1 variação, comportamento padrão. Falso-positivo é mais custoso (gera N chamadas quando bastava 1) mas não é incorreto — mantenha a lista enxuta, não tente cobrir 100% dos casos.
+
+# 6. Prompt Adicional pra Chamada B (quando `isPluralRequest` = true)
+
+Anexe isto ao prompt da Chamada B (spec 03, Seção 5.2), logo antes de `[TOKENS DISPONÍVEIS]`:
+
+```
+[MODO MÚLTIPLAS VARIAÇÕES]
+O usuário pediu várias opções. Gere entre 2 e 6 variações distintas (nunca mais que 6 — Regra 5).
+Cada variação DEVE ter um eixo visual dominante diferente das outras (cor, geometria, elevação,
+textura, densidade ou movimento — os eixos dos tokens disponíveis abaixo indicam a qual eixo cada
+um pertence). NÃO gere variações que só mudam a cor — isso é o erro mais comum, evite-o
+ativamente. Responda no formato:
+
+{"componentPresets": [
+  {"category": "cards", "design": {"tokenA": valor}},
+  {"category": "cards", "design": {"tokenB": valor}}
+]}
+
+em vez do formato de patch único ({"tokenX": valor}).
+```
+
+## Exemplo completo (pedido → saída esperada)
+
+**Pedido:** "crie 3 presets de cards com bordas e efeitos diferentes"
+
+**Saída esperada da Chamada B** (note que cada entrada varia um eixo dominante — geometria, elevação, textura — não só cor):
+```json
+{"componentPresets": [
+  {"category": "cards", "design": {"cardBorderRadius": 24, "cardBorderWidth": 0}},
+  {"category": "cards", "design": {"cardShadowBlur": 40, "cardShadowSpread": 8, "cardGlowColor": "rgba(0,242,255,0.3)"}},
+  {"category": "cards", "design": {"cardTextureType": "grid", "cardTextureOpacity": 0.08}}
+]}
+```
+
+`category: "cards"` mapeia direto pra aba "Cards" de `PresetsCatalog` — usar sempre os nomes de categoria já existentes (`cards`, `buttons`, `inputs`, `typography`, `atmosphere` — ver Regra 3 da Seção 2).
