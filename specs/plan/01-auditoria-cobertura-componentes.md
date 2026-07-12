@@ -2,7 +2,7 @@
 tipo: "spec"
 titulo: "Auditoria de Cobertura de Componentes (Átomos, Funcionais e Layout)"
 dominio: "Design Engine (Sarak UI Core)"
-status: "🔴 A Implementar"
+status: "🟡 Em Progresso"
 prioridade: "Alta"
 tags: ["spec", "ai-agent", "design-system", "auditoria", "cobertura", "paridade"]
 relacionados: ["06-presets-engine", "03-padrao-e-taxonomia-biblioteca-atomica", "07-agente-llm-design-e-expansao-estrutural", "02-mapeamento-semantico-rag-catalogo"]
@@ -18,10 +18,10 @@ O Design Agent só consegue personalizar granularmente um componente se existir 
 - **Regra 4 (Priorização por família rasa primeiro):** a spec 06 já indica as 3 famílias mais rasas (`inputs`, `tables`, `navigation`) — a auditoria confirma/expande essa lista e prioriza o backlog por elas antes de families já ricas (`cards`, `atmosphere`).
 
 # 3. Critérios de Aceite
-- [ ] Cada uma das 28 famílias de schema (`src/core/Design/schema/*.ts`) tem um relatório de gap (lista de propriedades visuais sem token, ou "nenhum gap encontrado").
-- [ ] O backlog resultante está priorizado (ex.: rascunho de tabela como a da spec 06, com "Por que é complexo/prioritário").
-- [ ] Componentes funcionais/layout (Templates, Modals, Navigation, Shell) também auditados, não só átomos puros.
-- [ ] Backlog entregue em formato consumível pela skill `ui-novo-componente` (uma entrada por token candidato, com componente de origem e justificativa).
+- [x] Cada uma das 28 famílias de schema (`src/core/Design/schema/*.ts`) tem um relatório de gap (lista de propriedades visuais sem token, ou "nenhum gap encontrado") — ver `backlog_cobertura.md` v2, Parte 2.
+- [x] O backlog resultante está priorizado (Parte 3 — "Resumo de Prioridade Alta", 10 itens ordenados) e cada entrada tem sua própria "Prioridade: Alta/Média/Baixa".
+- [x] Componentes funcionais/layout (Templates, Modals, Navigation, Shell) também auditados, não só átomos puros — famílias `navigation`, `overlays`, `layers`, `global`, `structural` cobrem `SidebarNav`/`TopbarNav`/`DockNav`/`SarakShell`/`SarakModal`/`DesignScope` diretamente.
+- [x] Backlog entregue em formato consumível pela skill `ui-novo-componente` (formato da Seção 6, uma entrada por gap, com componente de origem, evidência arquivo:linha e token candidato).
 
 # 4. Plano de Testes (Quality Gate)
 
@@ -35,8 +35,8 @@ O Design Agent só consegue personalizar granularmente um componente se existir 
 - *N/A* — rotina de auditoria estática, sem jornada de usuário na interface.
 
 ## Verificação do Próprio Backlog
-- [ ] **Deve** cada item do backlog apontar um componente real (caminho de arquivo) e a propriedade visual observável que hoje não é configurável via token.
-- [ ] **Deve** o backlog ser revisado manualmente (HITL) antes de virar tarefas de `ui-novo-componente` — evita token especulativo sem uso real comprovado no componente.
+- [x] **Deve** cada item do backlog apontar um componente real (caminho de arquivo) e a propriedade visual observável que hoje não é configurável via token — todas as entradas citam arquivo:linha; amostra reconferida manualmente nesta execução (`SidebarNav.tsx:83,142`, `SarakTable.tsx:109,113,117,136,149`, `navigation.ts:78-82`, `manifest.ts:200,202`, `tables.ts:39-84`).
+- [ ] **Pendente.** **Deve** o backlog ser revisado manualmente (HITL) antes de virar tarefas de `ui-novo-componente` — esta é a revisão que ainda falta: o conteúdo está pronto e verificado por amostragem, mas a revisão humana formal do documento completo (item por item) ainda não ocorreu nesta execução.
 
 # 5. Metodologia (siga esta ordem exata, família por família)
 

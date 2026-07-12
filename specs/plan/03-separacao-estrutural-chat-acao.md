@@ -2,7 +2,7 @@
 tipo: "spec"
 titulo: "Separação Estrutural: Chat Nunca Expõe Valores de Tema"
 dominio: "Design Engine (Sarak UI Core) — agent-design-operator"
-status: "🔴 A Implementar"
+status: "🟡 Em Progresso"
 prioridade: "Alta"
 tags: ["spec", "ai-agent", "architecture", "reliability"]
 relacionados: ["07-agente-llm-design-e-expansao-estrutural", "02-mapeamento-semantico-rag-catalogo", "04-multi-preset-diversificado"]
@@ -21,25 +21,25 @@ Testado em produção real: o Design Agent às vezes responde no chat com o JSON
 - **Regra 5 (`TriggerExtractor` sai deste fluxo, não é removido do sistema):** `TriggerExtractor`/o padrão de regex `[TIPO: dados]` continua servindo o `default-agent` (triggers `LEAD`/`APPOINTMENT`/`HANDOFF`) — não é tocado por esta spec.
 
 # 3. Critérios de Aceite
-- [ ] `POST /prompt` do `agent-design-operator` dispara as duas chamadas em paralelo.
-- [ ] Em nenhum cenário testado a resposta `message` contém `{`, `[THEME_UPDATE`, ou qualquer chave de token reconhecível do catálogo.
-- [ ] Payload da Chamada B, quando presente, sempre passa por `ThemeValidator.validatePayload` antes de virar `payload`/`themePatch` na resposta.
-- [ ] Falha na Chamada B (JSON inválido ou reprovado na validação) produz mensagem de fallback amigável, nunca um erro genérico nem o payload cru.
-- [ ] Latência da dupla chamada em paralelo não excede significativamente (não dobra) a latência da chamada única anterior — medir e registrar.
+- [x] `POST /prompt` do `agent-design-operator` dispara as duas chamadas em paralelo.
+- [x] Em nenhum cenário testado a resposta `message` contém `{`, `[THEME_UPDATE`, ou qualquer chave de token reconhecível do catálogo.
+- [x] Payload da Chamada B, quando presente, sempre passa por `ThemeValidator.validatePayload` (via `processThemeUpdate`) antes de virar `payload`/`themePatch` na resposta.
+- [x] Falha na Chamada B (JSON inválido ou reprovado na validação) produz mensagem de fallback amigável, nunca um erro genérico nem o payload cru.
+- [ ] **Pendente.** Latência da dupla chamada em paralelo não excede significativamente (não dobra) a latência da chamada única anterior — a instrumentação (`performance.now()` em `routes.ts`) existe e loga `[Design Agent] Dupla chamada concluída em ${latencyMs}ms`, mas não há credencial/provider LLM real disponível neste ambiente de execução para medir um número real (sem `.env`, sem env vars de `GROQ`/`OPENROUTER` no shell). Ver pendência declarada em `00-progresso.md` — não inventar número; medir na primeira execução com provider real disponível.
 
 # 4. Plano de Testes (Quality Gate)
 
 ## Testes Unitários
-- [ ] **Deve** a função que monta a resposta final combinar `message` (Chamada A) e `payload` (Chamada B) corretamente quando ambas têm sucesso.
-- [ ] **Deve** retornar só `message` (sem `payload`) quando a Chamada B não emite JSON.
-- [ ] **Deve** retornar mensagem de fallback (não o JSON cru) quando a Chamada B emite JSON inválido/reprovado.
+- [x] **Deve** a função que monta a resposta final combinar `message` (Chamada A) e `payload` (Chamada B) corretamente quando ambas têm sucesso.
+- [x] **Deve** retornar só `message` (sem `payload`) quando a Chamada B não emite JSON.
+- [x] **Deve** retornar mensagem de fallback (não o JSON cru) quando a Chamada B emite JSON inválido/reprovado.
 
 ## Testes de Contrato (API)
-- [ ] **Endpoint** `POST /api/design-agent/prompt`: contrato de resposta `{success: boolean, message: string, payload?: Record<string, unknown>}` mantido; nenhum campo novo introduzido sem atualizar `DesignAgentPromptResult`.
+- [x] **Endpoint** `POST /api/design-agent/prompt`: contrato de resposta `{success: boolean, message: string, payload?: Record<string, unknown>}` mantido (asserido nos 2 testes E2E); nenhum campo novo introduzido sem atualizar `DesignAgentPromptResult`.
 
 ## Testes E2E (Integração)
-- [ ] Fluxo feliz: pedido simples de alteração de cor → `message` é uma confirmação textual curta, `payload` chega separadamente e aplica no Preset 1/2.
-- [ ] Fluxo de estresse: pedido de "tema totalmente diferente" (payload grande) → mesmo que a Chamada B precise de mais tokens, o resultado nunca vaza JSON parcial no chat (ou aplica corretamente, ou cai no fallback da Regra 4).
+- [x] Fluxo feliz: pedido simples de alteração de cor → `message` é uma confirmação textual curta, `payload` chega separadamente e aplica no Preset 1/2.
+- [x] Fluxo de estresse: pedido de "tema totalmente diferente" (payload grande) → mesmo que a Chamada B precise de mais tokens, o resultado nunca vaza JSON parcial no chat (ou aplica corretamente, ou cai no fallback da Regra 4).
 
 # 5. Prompts Exatos (copie e adapte, não escreva do zero)
 

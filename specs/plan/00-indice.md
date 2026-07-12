@@ -29,14 +29,14 @@ Este guia define a ordem recomendada para a implementação das especificações
 
 Esta é a ordem real recomendada — siga de cima pra baixo, um item por vez. As seções "Nível X" logo abaixo dão o *porquê* de cada um, mas a numeração aqui é a que vale.
 
-1. [ ] **[03 - Separação Estrutural: Chat Nunca Expõe Valores](./03-separacao-estrutural-chat-acao.md)** — pura correção de arquitetura, desbloqueia confiabilidade, independe de conteúdo novo.
-2. [ ] **[01 - Auditoria de Cobertura de Componentes](./01-auditoria-cobertura-componentes.md)** — fundação de conteúdo pra 02/04.
+1. [~] **[03 - Separação Estrutural: Chat Nunca Expõe Valores](./03-separacao-estrutural-chat-acao.md)** — pura correção de arquitetura, desbloqueia confiabilidade, independe de conteúdo novo. Falta só o Critério 5 (latência real medida contra provider LLM — sem credencial disponível no ambiente de execução).
+2. [~] **[01 - Auditoria de Cobertura de Componentes](./01-auditoria-cobertura-componentes.md)** — fundação de conteúdo pra 02/04. Backlog refeito (28/28 famílias, ghost vars revalidadas); falta só a revisão HITL formal do documento antes de virar tarefas de `ui-novo-componente`.
 3. [ ] **[02 - Mapeamento Semântico e RAG do Catálogo](./02-mapeamento-semantico-rag-catalogo.md)** — depende da 01.
 4. [ ] **[04 - Multi-Preset Diversificado por Eixo](./04-multi-preset-diversificado.md)** — depende da 02.
 5. [ ] **[05 - Ingestão Multimodal via Conversão Unificada para HTML](./05-ingestao-multimodal-html.md)** — maior esforço isolado; ferramenta de conversão (LibreOffice headless) já decidida na Seção 5 da spec, pode executar direto.
 6. [ ] **[06 - Pipeline de Visão em 2 Estágios](./06-pipeline-visao-dois-estagios.md)** — depende da 05 (imagens extraídas de link/PDF/PPT) e da 02 (retrieval).
 7. [ ] **[07 - Agente LLM: Operador de Design e Expansão Estrutural](./07-agente-llm-design-e-expansao-estrutural.md)** — fechamento/guarda-chuva: só marca 🟢 quando as pendências das specs 03/02 nela referenciadas estiverem cobertas pelos itens 1-6.
-8. [ ] **[10 - Responsividade e Isolamento de Viewport no Gêmeo Digital](./10-responsividade-gemeo-digital.md)**
+8. [ ] **[10 - Responsividade e Isolamento de Viewport no Gêmeo Digital](./10-responsividade-gemeo-digital.md)** — Tier A (3 bugs originais) já reverificado como corrigido nesta rodada; só falta o Tier B (Container Queries reais, Seção 8 da spec).
 9. [ ] **[13 - Revisão e Gestão de Brand (Logo, Cores e Brandbook)](./13-revisao-e-upload-de-brand.md)**
 10. [ ] **[11 - Enriquecimento de Presets Modulares e Diversidade Visual](./11-enriquecimento-presets-visuais.md)**
 11. [ ] **[12 - Expansão e Hospedagem de Mídias de Atmosfera](./12-expansao-midias-atmosfera.md)**
@@ -65,7 +65,7 @@ Estas 7 specs formam um sub-plano coeso (evolução do Design Agent):
 - **Por que é complexo:** Depende de um fluxo obrigatório de Human-in-the-Loop (HITL) e a expansão considerável da base de dados e tipagens (TS) para suportar diversos presets estéticos complexos e radicais.
 
 **[12 - Expansão e Hospedagem de Mídias de Atmosfera](./12-expansao-midias-atmosfera.md)**
-- **Por que é complexo:** Requer setup de infraestrutura externa (Object Storage via Supabase/S3), rotinas de otimização pesada de mídias (conversão para WebP/WebM, controle de tamanho e loop) e conexão dessas URLs geradas com o catálogo da biblioteca.
+- **Por que é complexo:** Requer setup de infraestrutura externa (Supabase Storage, já decidido na Seção 4 da spec), rotinas de otimização pesada de mídias (conversão para WebP/WebM, controle de tamanho e loop) e conexão dessas URLs geradas com o catálogo da biblioteca.
 
 ## Nível 3: Baixa Complexidade (Condicionais e Débito Técnico)
 
@@ -73,4 +73,4 @@ Estas 7 specs formam um sub-plano coeso (evolução do Design Agent):
 - **Por que é simples:** Trata-se de uma melhoria pontual de Inversão de Controle, passando a exigir uma prop (`showDesignEngineTab`) no `SarakUIProvider` para renderizar condicionalmente a aba de navegação.
 
 **[15 - Revisão e Limpeza de Marcadores TODO](./15-revisao-marcadores-todo.md)**
-- **Por que é simples:** É uma tarefa puramente operacional de varredura de débito técnico. Consiste em validar 233 marcações `TODO`, deletar arquivos órfãos e converter itens necessários em *skipped tests* vinculados ao Jira/Backlog.
+- **Por que é simples:** É uma tarefa puramente operacional de varredura de débito técnico. A contagem original (233) está desatualizada — recontagem feita na Seção 1 da spec aponta 120 ocorrências reais hoje, quase todas (118) só 2 templates repetidos de scaffold de teste.

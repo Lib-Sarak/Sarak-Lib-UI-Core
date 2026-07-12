@@ -113,3 +113,19 @@ Estéticas propostas como ponto de partida para uma futura rodada de triagem HIT
 - [ ] Preview de qualquer preset (Seção 4) nunca escreve em `:root`/`DesignInjector`.
 - [ ] Nenhum conteúdo novo de preset (Seção 8) foi injetado sem o fluxo HITL da Seção 7.
 - [ ] Nenhuma lista de opções de enum usada por uma camada automática (Seção 3) está duplicada em mais de 1 arquivo de Schema — sempre importada da fonte canônica (`TEXTURE_OPTIONS`, `BUTTON_STYLE_OPTIONS` etc.).
+
+# 10. Plano de Testes (Quality Gate)
+
+Esta spec já documenta o mecanismo como majoritariamente implementado (Seções 2-6, "já está implementado" conforme Seção 7). O plano de testes abaixo cobre principalmente o **conteúdo novo** (Seção 8, quando aprovado via HITL) e os pontos de regressão mais prováveis.
+
+## Testes Unitários
+- [ ] **Deve** cada `ComponentPreset` novo (Seção 8, pós-HITL) ter `design` restrito às chaves do Schema TS da sua categoria (nenhuma chave de `cards.ts` dentro de um preset em `buttons.ts`, por exemplo) — validação manual/script, já que o tipo `Partial<SarakDesignState>` não impede isso em compile-time (Seção 2).
+- [ ] **Deve** a camada automática (Seção 3) de cada categoria gerar exatamente 1 preset por opção de enum, sem duplicar nem pular nenhuma `constraints.options`.
+
+## Testes de Contrato (API)
+- *N/A* — `onApplyPreset`/`onApplyFullTheme` reaproveitam o mesmo `POST /design` já coberto pelos testes da spec `09-pipeline-criacao-aplicacao-tema.md`; não há endpoint novo aqui.
+
+## Testes E2E (Integração)
+- [ ] Aplicar um preset de qualquer uma das 5 categorias (Seção 5) e confirmar que só as chaves daquele domínio mudam no tema ativo — nenhuma chave global/de outra categoria é sobrescrita (Merge Parcial, Seção 2).
+- [ ] Preview (hover/seleção) de um preset em qualquer categoria nunca altera `:root`/o tema ativo do usuário — só o card local (Seção 4).
+- [ ] Trocar de Pilar no painel humano não altera a aba ativa do catálogo de presets, e vice-versa (Seção 6).

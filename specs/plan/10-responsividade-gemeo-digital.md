@@ -82,3 +82,56 @@ Só que a classe que define a largura visível lê `var(--sarak-sidebar-w, 240px
 | 3 | `styles/_theme.css` | 27 | Definição global de `--sarak-sidebar-w`, alheia ao hook de resize |
 
 *(O plano de correção passo-a-passo será derivado desta spec na próxima etapa.)*
+
+# 7. Re-verificação (feita antes de executar — resultado: Tier A confirmado corrigido)
+
+O `status` no frontmatter já dizia "Tier A Corrigido" — reverifiquei linha por linha contra o código atual antes de escrever esta seção, porque `PreviewCanvas.tsx` foi refatorado depois que esta spec foi escrita (extração de `LiveDraftPreviewFrame.tsx`, sessão de correção do Design Agent) e os `arquivo:linha` da Seção 6 estão desatualizados. Resultado da reverificação:
+
+- **Problema 1 (largura não lida) — confirmado corrigido.** `LiveDraftPreviewFrame.tsx` (novo arquivo, substitui o trecho que era `PreviewCanvas.tsx:137-142`) já usa `style={{ width: ... : targetWidth }}`; o branch não-DualView (`PreviewCanvas.tsx:170`) também usa `style={{ width: targetWidth }}`. Nenhum dos dois lê mais uma classe hardcoded.
+- **Problema 2 (Stage encolhe com o Frame) — confirmado corrigido.** `PreviewCanvas.tsx:138` hoje é `flex-1 w-full min-h-0 flex gap-6 ...` — sem `w-fit h-fit`.
+- **Problema 3 (variável CSS divergente no resize da sidebar) — confirmado corrigido, por uma via diferente da esperada.** `ThemeCustomizationTab.tsx:156` hoje aplica `style={{ width: `${engineSidebarWidth}px` }}` diretamente — não passa mais por nenhuma CSS var intermediária, então a divergência de nome (`--engine-sidebar-width` vs `--sarak-sidebar-w`) deixou de existir.
+
+**Conclusão prática: não há nada a corrigir no Tier A.** Se ao reexecutar esta spec o comportamento visual (frame não muda de tamanho, sidebar não redimensiona) ainda estiver quebrado, o bug é NOVO — re-diagnostique do zero em vez de aplicar as correções antigas desta spec, que não se aplicam mais ao código atual.
+
+# 8. Tier B (único trabalho real restante) — Container Queries de Verdade
+
+## 8.1. Estado atual (por que funciona parcialmente sem Container Query real)
+`useDesignVariables.ts:177-202` emite, para o mesmo bloco de CSS responsivo, **duas estratégias em paralelo**: `@media (min-width: ...)` (reage ao viewport real do navegador) **e** seletores de classe estáticos `.sarak-device-smartphone`/`.sarak-device-tablet`/`.sarak-device-desktop` (aplicam o CSS daquele breakpoint sempre que a classe está presente, **independente do tamanho real do container**). É essa segunda estratégia que hoje faz o Gêmeo Digital parecer "reagir" ao dispositivo selecionado — não é Container Query real, é uma simulação por classe fixa.
+
+**Isso já é funcionalmente aceitável para o caso de uso atual** (3 tamanhos fixos, sempre correspondendo 1:1 à seleção do usuário). Tier B é uma melhoria de corretude arquitetural (usar o mecanismo certo do CSS pra isolamento de container), não a correção de um bug visível ao usuário — priorize de acordo.
+
+## 8.2. Proposta concreta
+Adicionar um terceiro bloco em `responsiveCSS` usando `@container` de verdade, com o Frame (`LiveDraftPreviewFrame.tsx`) declarando `container-type: inline-size` (via a mesma classe `@container` já aplicada e hoje órfã em `PreviewSystemRenderer.tsx:67`):
+
+```ts
+// useDesignVariables.ts — adicionar ao template de responsiveCSS existente, sem remover os blocos @media/classe
+`
+@container sarak-device (min-width: ${bpTablet}px) {
+  ${scopeSelector} {
+${responsiveCssTab}
+  }
+}
+@container sarak-device (min-width: ${bpDesktop}px) {
+  ${scopeSelector} {
+${responsiveCssDesk}
+  }
+}
+`
+```
+`sarak-device` é o nome do container já declarado pela classe `@container sarak-device-${previewDevice}` — confirme o nome exato do container-name gerado por essa classe Tailwind antes de escrever a regra (pode ser necessário ajustar a sintaxe do plugin `@tailwindcss/container-queries` usado no projeto).
+
+## 8.3. Critérios de Aceite
+- [ ] Existe pelo menos uma regra `@container` real no CSS gerado (não só `@media`/seletor de classe).
+- [ ] Redimensionar o **container** (não a janela do navegador) muda o layout do conteúdo dentro do Gêmeo Digital — teste isolando o Frame numa área menor que o viewport todo.
+- [ ] Os 3 mecanismos (`@media`, classe `.sarak-device-*`, `@container`) não geram conflito visual quando coexistem (a especificidade/ordem CSS precisa ser verificada).
+
+## 8.4. Plano de Testes (Quality Gate)
+
+### Testes Unitários
+- [ ] **Deve** `useDesignVariables` incluir o bloco `@container` no `responsiveCSS` retornado quando os breakpoints estão configurados.
+
+### Testes de Contrato (API)
+- *N/A* — sem I/O de rede.
+
+### Testes E2E (Integração)
+- [ ] Redimensionar manualmente o painel "Catalog Preview" (que já tem `resize` habilitado, `PreviewCanvas.tsx:156`) e confirmar visualmente que o conteúdo dentro do Frame reage ao novo tamanho do container, não só ao dispositivo selecionado.

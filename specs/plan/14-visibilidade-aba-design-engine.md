@@ -51,3 +51,64 @@ Dentro do repositório da Sarak UI Core, o componente responsável por renderiza
 - [ ] Quando a propriedade for `false` (ou não for passada, dependendo do fallback padrão decidido), a aba de Design desaparece completamente da UI.
 - [ ] O sistema consumidor consegue alternar essa visibilidade dinamicamente (ex: ativando via uma flag no painel de controle deles).
 - [ ] O bundle final continua contendo a aba para garantir que ela apareça instantaneamente se o estado mudar para `true`.
+
+# 5. Mecanismo Real de Integração (não é um "Sidebar" genérico — use isto)
+
+A aba do Design Engine não é um item de nav hardcoded — ela é um **módulo descoberto dinamicamente**. `src/index.ts` já faz `registerLocalComponent('mx-customization', CustomizationPanel)` e `registerLocalComponent('personalization', CustomizationPanel)`. A lista de módulos visíveis (inclusive a navegação que os exibe) vem de `useModuleDiscovery` (`src/shared/hooks/useModuleDiscovery.ts`), que **já tem um mecanismo de filtro** — `DEMO_BLACKLIST`, baseado em `design?.moduleBlacklist !== 'none'` (linhas 26-30). A solução mais simples e consistente com o padrão já existente é **estender esse mesmo filtro**, não criar um segundo mecanismo de visibilidade em paralelo.
+
+## 5.1. Decisão de Default (resolvida — pode executar)
+`showDesignEngineTab` deve ter **default `true`** (não `false`). Motivo: o `Sarak-MyService` (consumidor real já em produção nesta base) hoje não passa essa prop e espera ver a aba — um default `false` quebraria silenciosamente esse comportamento existente para qualquer consumidor que ainda não tenha migrado. Quem precisa esconder (a ameaça real descrita na Seção 1: usuário final não deve ver a aba) passa `false` explicitamente para os papéis não-admin.
+
+## 5.2. Código de Referência
+
+```ts
+// src/core/Provider/types.ts — adicionar em SarakUIOptions (mesmo nível de designAgent, persistence, etc.)
+export interface SarakUIOptions {
+    // ... campos existentes ...
+    showDesignEngineTab?: boolean; // default true — ver Seção 5.1 desta spec
+}
+```
+
+```ts
+// src/shared/hooks/useModuleDiscovery.ts — estender o filtro já existente, não criar um novo
+export const useModuleDiscovery = (isEnabled: boolean = true) => {
+    const { registeredModules, isHydrated, design, options } = useSarakUI(); // + options
+
+    const formattedModules = useMemo(() => {
+        if (!isHydrated) return [];
+
+        const all = getRegisteredModules();
+        const displayModules = (all.length > 0 ? all : registeredModules) as Partial<DiscoveredModule>[];
+
+        const isStandardMode = design?.moduleBlacklist !== 'none';
+        const DEMO_BLACKLIST = isStandardMode ? ['grid-system', 'blueprint-test', 'demo-ui', 'debug-module'] : [];
+
+        // NOVO: esconde o Design Engine quando explicitamente desativado — default true (Seção 5.1)
+        const showDesignEngine = options?.showDesignEngineTab !== false;
+        const DESIGN_ENGINE_IDS = ['mx-customization', 'personalization'];
+
+        return displayModules
+            .filter((mod) => mod.id && !DEMO_BLACKLIST.includes(mod.id))
+            .filter((mod) => showDesignEngine || !DESIGN_ENGINE_IDS.includes(mod.id!)) // NOVO
+            .sort((a, b) => (b.priority || 0) - (a.priority || 0))
+            // ... resto inalterado ...
+    }, [registeredModules, isHydrated, design?.moduleBlacklist, options?.showDesignEngineTab]); // + dependência nova
+
+    // ... resto inalterado ...
+};
+```
+
+Isso automaticamente esconde a aba de qualquer navegação que já consome `useModuleDiscovery` (é a fonte única da lista de módulos) — não precisa alterar `SarakShell`/`useSarakShell.ts` separadamente, eles já consomem o resultado filtrado.
+
+# 6. Plano de Testes (Quality Gate)
+
+## Testes Unitários
+- [ ] **Deve** `useModuleDiscovery` incluir `mx-customization`/`personalization` na lista quando `options.showDesignEngineTab` é `true` ou `undefined` (default).
+- [ ] **Deve** `useModuleDiscovery` excluir `mx-customization`/`personalization` quando `options.showDesignEngineTab` é `false`, mantendo todos os outros módulos.
+
+## Testes de Contrato (API)
+- *N/A* — mudança de tipo em `SarakUIOptions`, sem I/O de rede.
+
+## Testes E2E (Integração)
+- [ ] Fluxo feliz: `SarakUIProvider` sem `showDesignEngineTab` → aba aparece normalmente (comportamento atual preservado).
+- [ ] Fluxo de ocultação: `SarakUIProvider options={{ showDesignEngineTab: false }}` → aba não aparece em nenhuma navegação, e a rota `/mx-customization` (se acessada diretamente por URL) não deveria renderizar o painel — validar esse caso extra, não só a ausência do item de nav.
