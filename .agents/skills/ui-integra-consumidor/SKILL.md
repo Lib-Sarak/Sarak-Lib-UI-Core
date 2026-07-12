@@ -14,8 +14,17 @@ Skill responsável pela instalação plug-and-play do Motor Declarativo (Sarak-L
 
 ## Workflow
 
-1. **Identificação do Ecossistema (HITL)**
-   - **Ação:** Pergunte qual é a stack do projeto consumidor (Ex: Next.js/React, Vite, etc).
+1. **Entrevista de Instalação (HITL) — faça TODAS estas perguntas ANTES de tocar em qualquer arquivo**
+   - **Stack do consumidor:** qual o framework/host (Next.js/React, Vite, Remix, etc.) e o backend, se houver (Node, Python/FastAPI, PHP)? Isso decide como o Design Agent é acoplado na Etapa 5.
+   - **Design Agent (chat de IA) — incluir ou não?** Pergunte explicitamente: *"Quer habilitar o chat do Design Agent (a IA que gera e ajusta o tema por linguagem natural)?"*
+     - Deixe claro que é **100% opcional e desacoplado**: `agent-design-operator` **não** é dependência de `@sarak/lib-ui-core` (importar a UI nunca o baixa), e `options.designAgent` é opcional. Sem ele, a UI funciona por inteiro — só o `DesignAgentChatCard` aparece como "Não configurado", sem tentar nenhum fetch.
+     - **Se NÃO:** pule a Etapa 5 inteira — nenhuma infra de IA, nenhuma env var de LLM, nenhum microsserviço.
+     - **Se SIM:** faça as perguntas de follow-up abaixo.
+   - **(Só se for incluir o agente) Perguntas de follow-up:**
+     - **Modo de deploy do agente:** acoplado ao backend Node do próprio consumidor (via `initDesignAgent()`) ou microsserviço Node isolado (porta 4000)? Backend Python/PHP força o microsserviço.
+     - **Provider/model de LLM:** o agente exige `DESIGN_AGENT_LLM_PROVIDER` e `DESIGN_AGENT_LLM_MODEL` no ambiente do agente — o módulo não escolhe sozinho. Confirme que o usuário tem essas credenciais.
+     - **Persistência do agente:** precisa de `DATABASE_URL` (histórico de conversa/temas). Confirme o banco.
+   - **Banco de dados da UI (sempre, com ou sem agente):** o Design Engine persiste temas. Confirme `DATABASE_URL` e o uso de `setupUIDatabase` (ver `references/examples.md`).
 2. **Criação da Pasta Sarak-Engine (Isolamento)**
    - **Ferramenta:** `run_command`
    - **Ação:** Crie o diretório dedicado `Sarak-Engine/` na raiz do consumidor, que isolará os proxies, a store local e instâncias da biblioteca.
@@ -24,11 +33,15 @@ Skill responsável pela instalação plug-and-play do Motor Declarativo (Sarak-L
    - **Ação:** Configure o `networkInterceptor` (para injetar tokens JWT e cookies em chamadas de API geradas pela Sarak) e o `routerInterceptor` (para conectar o router do framework cliente, ex: `useRouter` do Next.js).
 4. **Injeção do Manifest Renderer**
    - **Ação:** Substitua o conteúdo estático da página/layout raiz ou crie um Ponto de Entrada base injetando o componente mestre: `<SarakManifestRenderer payload={jsonDaPagina} dataStore={store} networkInterceptor={apiHandler} routerInterceptor={routeHandler} />`.
-5. **Integração do Design Agent (canal `designAgent`, nunca fetch direto)**
-   - A Sarak nunca chama rede diretamente (Spec 08 §6.2) — o chat do Design Agent (`DesignAgentChatCard`) só funciona se o consumidor injetar `options.designAgent.sendPrompt` no `SarakUIProvider`. Sem isso, o card mostra "Não configurado" e não tenta nenhum fetch.
+5. **Integração do Design Agent (SÓ se o usuário optou por incluir na Etapa 1)**
+   - Se o usuário respondeu "não" na Etapa 1, **NÃO execute esta etapa** — a integração termina na Etapa 4.
+   - A Sarak nunca chama rede diretamente (Spec 08 §6.2) — o chat (`DesignAgentChatCard`) só funciona se o consumidor injetar `options.designAgent.sendPrompt` no `SarakUIProvider`. Sem isso, o card mostra "Não configurado" e não tenta nenhum fetch.
    - **Ação:** Implemente `sendPrompt: (input: DesignAgentPromptInput) => Promise<DesignAgentPromptResult>` (tipos exportados por `@sarak/lib-ui-core`) chamando o backend `agent-design-operator` a partir do SEU servidor (nunca do browser direto, para não expor credenciais):
-     - **Se o backend consumidor for Node.js (Next.js/Express/Fastify):** importe e acople a rota da IA diretamente na API nativa usando `initDesignAgent()` (da pasta `agent-design-operator` da Sarak-Lib-UI-Core), e implemente `sendPrompt` chamando essa rota interna.
-     - **Se o backend consumidor for Python (FastAPI/Django) ou PHP:** o agente da IA roda como um microsserviço Node isolado (porta 4000). `sendPrompt` (implementado no seu backend, não no browser) faz a chamada HTTP para esse microsserviço e devolve `{ message, themePatch }` no formato esperado.
+     - **Node.js (Next.js/Express/Fastify):** `initDesignAgent()` (de `agent-design-operator`) retorna um Router Express já pronto (inicializa banco + carrega o catálogo). Acople-o na sua API e chame essa rota interna no `sendPrompt`.
+     - **Python (FastAPI/Django) ou PHP:** rode o agente como microsserviço Node isolado (porta 4000); o `sendPrompt` (no seu backend, não no browser) faz a chamada HTTP para ele.
+   - **⚠️ O `sendPrompt` é um ADAPTADOR — os formatos do agente e do Provider NÃO são iguais, é obrigatório traduzir os dois lados:**
+     - **Entrada:** a UI te entrega `{ prompt, draftTokens }` (`DesignAgentPromptInput`). A rota `POST /prompt` do agente espera `{ prompt, session_id, mode?, base_theme? }` — **você** gera o `session_id` (por usuário/sessão). `mode: 'create' | 'patch'` e `base_theme` são opcionais e definidos no seu backend (não vêm no tipo público): use `mode: 'patch'` + `base_theme` (o tema atual completo) quando for alteração de um tema já existente; senão omita (default `create`).
+     - **Saída:** a rota devolve `{ success, message, payload? }`. Mapeie para o contrato do Provider: `message` → `message`, **`payload` → `themePatch`** (nomes diferentes!). A `message` já vem pronta em linguagem natural — incluindo o aviso de fatias que não aplicaram — repasse como está. (O contrato público também aceita `componentPresets?`, hoje não emitido pela rota — deixe indefinido.)
    - **Ação:** Injete o resultado no Provider: `<SarakUIProvider options={{ designAgent: { sendPrompt } }}>`.
 6. **Handoff (Ponto de Transição)**
    - **Ação:** Após a infraestrutura base estar acoplada e renderizando com sucesso um manifesto vazio ou de teste (fallback), informe ao usuário que a integração arquitetural terminou.
