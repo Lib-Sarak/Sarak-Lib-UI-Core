@@ -12,11 +12,11 @@ export const THEME_FONTS = [
     { value: "'Syne', sans-serif", name: "Syne", category: "Sans-Serif" },
     { value: "'Archivo', sans-serif", name: "Archivo", category: "Sans-Serif" },
     { value: "system-ui, -apple-system, sans-serif", name: "System Default", category: "Sans-Serif" },
-    
+
     // Display & Impact
     { value: "'Unbounded', display", name: "Unbounded", category: "Display" },
     { value: "'Bebas Neue', display", name: "Bebas Neue", category: "Display" },
-    
+
     // Serifadas
     { value: "'Playfair Display', serif", name: "Playfair Display", category: "Serif" },
     { value: "'Fraunces', serif", name: "Fraunces", category: "Serif" },
@@ -45,6 +45,8 @@ export const TypographySchema: ComponentSchema = {
             id: 'headingFont',
             label: 'Fonte de Títulos',
             type: 'font',
+            description: 'Família tipográfica usada em títulos (H1/H2) — pode ser diferente da fonte do corpo para criar contraste hierárquico (ex. uma Display/Serif de impacto para títulos + Sans-Serif neutra para o corpo).',
+            axis: 'texture',
             constraints: {
                 options: FONT_OPTIONS
             },
@@ -55,6 +57,8 @@ export const TypographySchema: ComponentSchema = {
             id: 'bodyFont',
             label: 'Fonte de Corpo',
             type: 'font',
+            description: 'Família tipográfica usada no corpo de texto geral — deve priorizar legibilidade em blocos longos de texto acima de expressividade estética.',
+            axis: 'texture',
             constraints: {
                 options: FONT_OPTIONS
             },
@@ -65,6 +69,8 @@ export const TypographySchema: ComponentSchema = {
             id: 'monoFont',
             label: 'Fonte Mono (Dados)',
             type: 'font',
+            description: 'Família tipográfica monoespaçada usada para dados tabulares, código e valores numéricos — garante alinhamento vertical perfeito entre dígitos/caracteres.',
+            axis: 'texture',
             constraints: {
                 options: FONT_OPTIONS
             },
@@ -77,6 +83,8 @@ export const TypographySchema: ComponentSchema = {
             id: 'textColorMaster',
             label: 'Texto Principal',
             type: 'color',
+            description: 'Cor de texto padrão usada na maioria do conteúdo — deve ter o maior contraste possível contra o fundo, já que é a cor mais lida em toda a interface.',
+            axis: 'color',
             defaultValue: '#ffffff',
             cssVars: ['--sarak-text-main', '--theme-title', '--theme-text-primary']
         },
@@ -84,6 +92,8 @@ export const TypographySchema: ComponentSchema = {
             id: 'textColorSecondary',
             label: 'Texto Secundário',
             type: 'color',
+            description: 'Cor de texto de menor ênfase (ex. descrições, metadados) — contraste reduzido em relação a `textColorMaster` para criar hierarquia visual sem sacrificar legibilidade.',
+            axis: 'color',
             defaultValue: 'rgba(255, 255, 255, 0.7)',
             cssVars: ['--sarak-text-sec']
         },
@@ -91,6 +101,8 @@ export const TypographySchema: ComponentSchema = {
             id: 'textColorMuted',
             label: 'Texto Mudo / Hint',
             type: 'color',
+            description: 'Cor de texto para dicas/placeholders/informação de menor importância — o nível mais baixo de contraste da escala de texto. Use com moderação para não comprometer acessibilidade (WCAG).',
+            axis: 'color',
             defaultValue: 'rgba(255, 255, 255, 0.4)',
             cssVars: ['--sarak-text-muted', '--theme-muted', '--theme-text-muted']
         },
@@ -100,6 +112,8 @@ export const TypographySchema: ComponentSchema = {
             id: 'h1Size',
             label: 'Tamanho (H1)',
             type: 'slider',
+            description: 'Tamanho da fonte do título de maior hierarquia (H1), em pixels, com valores independentes por breakpoint. É o elemento tipográfico mais impactante da tela — usado para o título principal de uma página/seção.',
+            axis: 'density',
             isResponsive: true, // FLAG DE RESPONSIVIDADE!
             unit: 'px',
             constraints: { min: 20, max: 120 },
@@ -111,6 +125,8 @@ export const TypographySchema: ComponentSchema = {
             id: 'h1Weight',
             label: 'Peso (H1)',
             type: 'select',
+            description: 'Peso (espessura) da fonte do H1. Black/Bold dão máximo impacto visual (comum em hero sections); Light/Regular produzem um clima mais editorial/discreto.',
+            axis: 'density',
             constraints: {
                 options: [
                     { id: '300', label: 'Light' },
@@ -127,6 +143,8 @@ export const TypographySchema: ComponentSchema = {
             id: 'h1LineHeight',
             label: 'Altura da Linha (H1)',
             type: 'slider',
+            description: 'Altura de linha do H1 (multiplicador do tamanho da fonte). Valores próximos de 1 deixam o título mais compacto/denso (comum em títulos grandes de uma única linha); valores maiores dão mais respiro entre linhas quando o título quebra.',
+            axis: 'density',
             constraints: { min: 0.8, max: 2, step: 0.05 },
             defaultValue: 1.1,
             cssVars: ['--sarak-h1-lh']
@@ -135,6 +153,8 @@ export const TypographySchema: ComponentSchema = {
             id: 'h1LetterSpacing',
             label: 'Espaçamento (H1)',
             type: 'slider',
+            description: 'Espaçamento entre caracteres do H1, em pixels. Valores negativos (comum em títulos grandes/Black) aproximam as letras para um visual mais compacto/impactante; valores positivos as afastam.',
+            axis: 'density',
             unit: 'px',
             constraints: { min: -5, max: 10, step: 0.5 },
             defaultValue: -1,
@@ -146,6 +166,8 @@ export const TypographySchema: ComponentSchema = {
             id: 'h2Size',
             label: 'Tamanho (H2)',
             type: 'slider',
+            description: 'Tamanho da fonte de títulos de seção (H2), em pixels, com valores independentes por breakpoint — segundo nível da hierarquia tipográfica, abaixo do H1.',
+            axis: 'density',
             isResponsive: true, // FLAG DE RESPONSIVIDADE!
             unit: 'px',
             constraints: { min: 18, max: 80 },
@@ -157,6 +179,8 @@ export const TypographySchema: ComponentSchema = {
             id: 'h2Weight',
             label: 'Peso (H2)',
             type: 'select',
+            description: 'Peso (espessura) da fonte do H2 — geralmente um passo abaixo do peso do H1 para reforçar a hierarquia entre os dois níveis de título.',
+            axis: 'density',
             constraints: {
                 options: [
                     { id: '300', label: 'Light' },
@@ -172,6 +196,8 @@ export const TypographySchema: ComponentSchema = {
             id: 'h2LineHeight',
             label: 'Altura da Linha (H2)',
             type: 'slider',
+            description: 'Altura de linha do H2 (multiplicador do tamanho da fonte) — controla o respiro vertical de títulos de seção que quebram em múltiplas linhas.',
+            axis: 'density',
             constraints: { min: 0.8, max: 2, step: 0.05 },
             defaultValue: 1.2,
             cssVars: ['--sarak-h2-lh']
@@ -183,6 +209,8 @@ export const TypographySchema: ComponentSchema = {
             id: 'bodyLineHeight',
             label: 'Altura da Linha (Corpo)',
             type: 'slider',
+            description: 'Altura de linha do texto de corpo (multiplicador do tamanho da fonte) — o fator mais importante para legibilidade de blocos longos de texto. Valores muito baixos (<1.3) dificultam a leitura de parágrafos.',
+            axis: 'density',
             constraints: { min: 1, max: 2.5, step: 0.1 },
             defaultValue: 1.6,
             cssVars: ['--sarak-body-lh', '--sarak-line-height']
@@ -191,6 +219,8 @@ export const TypographySchema: ComponentSchema = {
             id: 'bodyWeight',
             label: 'Peso do Corpo',
             type: 'select',
+            description: 'Peso (espessura) da fonte do texto de corpo — Regular é o padrão universal de legibilidade; Medium dá um pouco mais de presença sem comprometer a leitura de parágrafos longos.',
+            axis: 'density',
             constraints: {
                 options: [
                     { id: '300', label: 'Light' },
@@ -207,6 +237,8 @@ export const TypographySchema: ComponentSchema = {
             id: 'headingTransform',
             label: 'Transformação de Títulos',
             type: 'select',
+            description: 'Transformação de caixa aplicada aos títulos — UPPERCASE dá um clima mais técnico/institucional (comum em labels/eyebrows), Capitalize é mais editorial, Normal preserva a digitação original.',
+            axis: 'texture',
             constraints: {
                 options: [
                     { id: 'none', label: 'Normal' },
@@ -221,6 +253,7 @@ export const TypographySchema: ComponentSchema = {
             id: 'textSmoothing',
             label: 'Suavização (Smoothing)',
             type: 'boolean',
+            description: 'Liga/desliga o antialiasing de fonte (`-webkit-font-smoothing`) — mantenha ativo na maioria dos casos; só desative para depurar problemas de renderização de fonte em telas específicas.',
             defaultValue: true,
             cssVars: ['--sarak-text-smoothing']
         },
@@ -228,6 +261,8 @@ export const TypographySchema: ComponentSchema = {
             id: 'textGlowIntensity',
             label: 'Intensidade de Glow (H1)',
             type: 'slider',
+            description: 'Intensidade de um brilho (text-shadow glow) aplicado ao H1 — 0 desativa o efeito; valores altos dão um clima neon/cyberpunk ao título principal. Use com moderação em temas mais sóbrios.',
+            axis: 'elevation',
             constraints: { min: 0, max: 1, step: 0.05 },
             defaultValue: 0,
             cssVars: ['--sarak-text-glow']
@@ -238,6 +273,8 @@ export const TypographySchema: ComponentSchema = {
             id: 'typeScaleMicro',
             label: 'Escala Micro (7px)',
             type: 'slider',
+            description: 'Tamanho de fonte da escala tipográfica mais miúda do sistema (7px por padrão) — reservado para rótulos extremamente pequenos onde espaço é crítico (ex. tags densas). Use com cautela para não comprometer legibilidade/acessibilidade.',
+            axis: 'density',
             unit: 'px',
             constraints: { min: 6, max: 10 },
             defaultValue: 7,
@@ -247,6 +284,8 @@ export const TypographySchema: ComponentSchema = {
             id: 'typeScaleTiny',
             label: 'Escala Tiny (8px)',
             type: 'slider',
+            description: 'Tamanho de fonte da escala "tiny" (8px por padrão) — usado em badges/legendas muito pequenas.',
+            axis: 'density',
             unit: 'px',
             constraints: { min: 6, max: 12 },
             defaultValue: 8,
@@ -256,6 +295,8 @@ export const TypographySchema: ComponentSchema = {
             id: 'typeScale3xs',
             label: 'Escala 3XS (9px)',
             type: 'slider',
+            description: 'Tamanho de fonte da escala "3XS" (9px por padrão) — degrau intermediário entre `typeScaleTiny` e `typeScale2xs` na micro-escala de rótulos/badges.',
+            axis: 'density',
             unit: 'px',
             constraints: { min: 6, max: 12 },
             defaultValue: 9,
@@ -265,6 +306,8 @@ export const TypographySchema: ComponentSchema = {
             id: 'typeScale2xs',
             label: 'Escala 2XS (10px)',
             type: 'slider',
+            description: 'Tamanho de fonte da escala "2XS" (10px por padrão) — usado em rótulos pequenos e metadados secundários.',
+            axis: 'density',
             unit: 'px',
             constraints: { min: 8, max: 14 },
             defaultValue: 10,
@@ -274,6 +317,8 @@ export const TypographySchema: ComponentSchema = {
             id: 'typeScaleCaption',
             label: 'Escala Caption (12px)',
             type: 'slider',
+            description: 'Tamanho de fonte da escala "caption" (12px por padrão) — usado em legendas de imagens, notas de rodapé e texto auxiliar.',
+            axis: 'density',
             unit: 'px',
             constraints: { min: 10, max: 16 },
             defaultValue: 12,
@@ -283,6 +328,8 @@ export const TypographySchema: ComponentSchema = {
             id: 'trackingTight',
             label: 'Tracking Tight (0.2em)',
             type: 'slider',
+            description: 'Espaçamento entre caracteres (tracking) da escala "tight", em `em` — usado em textos maiúsculos pequenos onde é preciso alguma abertura sem exagerar (ex. labels de badge).',
+            axis: 'density',
             unit: 'em',
             constraints: { min: 0, max: 1, step: 0.05 },
             defaultValue: 0.2,
@@ -292,6 +339,8 @@ export const TypographySchema: ComponentSchema = {
             id: 'trackingSnug',
             label: 'Tracking Snug (0.25em)',
             type: 'slider',
+            description: 'Espaçamento entre caracteres (tracking) da escala "snug", em `em` — um degrau acima de `trackingTight` na progressão de tracking usada em textos maiúsculos pequenos.',
+            axis: 'density',
             unit: 'em',
             constraints: { min: 0, max: 1, step: 0.05 },
             defaultValue: 0.25,
@@ -301,6 +350,8 @@ export const TypographySchema: ComponentSchema = {
             id: 'trackingWide',
             label: 'Tracking Wide (0.3em)',
             type: 'slider',
+            description: 'Espaçamento entre caracteres (tracking) da escala "wide", em `em` — dá um clima mais editorial/label a textos maiúsculos curtos (ex. eyebrows, tags de categoria).',
+            axis: 'density',
             unit: 'em',
             constraints: { min: 0, max: 1, step: 0.05 },
             defaultValue: 0.3,
@@ -310,6 +361,8 @@ export const TypographySchema: ComponentSchema = {
             id: 'trackingWider',
             label: 'Tracking Wider (0.4em)',
             type: 'slider',
+            description: 'Espaçamento entre caracteres (tracking) da escala "wider", em `em` — mais espaçado que `trackingWide`, para textos maiúsculos curtos que precisam de bastante destaque/respiro.',
+            axis: 'density',
             unit: 'em',
             constraints: { min: 0, max: 1, step: 0.05 },
             defaultValue: 0.4,
@@ -319,6 +372,8 @@ export const TypographySchema: ComponentSchema = {
             id: 'trackingWidest',
             label: 'Tracking Widest (0.5em)',
             type: 'slider',
+            description: 'Espaçamento entre caracteres (tracking) da escala "widest", em `em` — o mais espaçado da progressão comum, usado só em textos muito curtos (1-2 palavras) por questão de legibilidade.',
+            axis: 'density',
             unit: 'em',
             constraints: { min: 0, max: 1, step: 0.05 },
             defaultValue: 0.5,
@@ -328,6 +383,8 @@ export const TypographySchema: ComponentSchema = {
             id: 'trackingUltra',
             label: 'Tracking Ultra (0.8em)',
             type: 'slider',
+            description: 'Espaçamento entre caracteres (tracking) extremo, em `em` — reservado para efeitos tipográficos muito específicos (ex. uma única palavra/sigla espaçada como elemento decorativo).',
+            axis: 'density',
             unit: 'em',
             constraints: { min: 0, max: 1, step: 0.05 },
             defaultValue: 0.8,
@@ -339,6 +396,8 @@ export const TypographySchema: ComponentSchema = {
             id: 'trackingSubtle',
             label: 'Tracking Subtle (0.1em)',
             type: 'slider',
+            description: 'Espaçamento entre caracteres (tracking) mais discreto da escala, em `em` — abertura sutil, quase imperceptível, para textos que precisam de só um leve refinamento.',
+            axis: 'density',
             unit: 'em',
             constraints: { min: 0, max: 1, step: 0.05 },
             defaultValue: 0.1,
@@ -348,6 +407,8 @@ export const TypographySchema: ComponentSchema = {
             id: 'typeScaleXs',
             label: 'Escala XS (11px)',
             type: 'slider',
+            description: 'Tamanho de fonte da escala "XS" (11px por padrão) — degrau entre `typeScaleCaption` e o tamanho base do corpo.',
+            axis: 'density',
             unit: 'px',
             constraints: { min: 8, max: 14 },
             defaultValue: 11,
@@ -357,6 +418,8 @@ export const TypographySchema: ComponentSchema = {
             id: 'typeScaleXl',
             label: 'Escala XL (20px)',
             type: 'slider',
+            description: 'Tamanho de fonte da escala "XL" (20px por padrão) — usado em texto de destaque que não chega a ser um título (ex. lead paragraph, subtítulo de card).',
+            axis: 'density',
             unit: 'px',
             constraints: { min: 14, max: 28 },
             defaultValue: 20,
@@ -366,6 +429,8 @@ export const TypographySchema: ComponentSchema = {
             id: 'typeScaleDisplay',
             label: 'Escala Display (10rem)',
             type: 'slider',
+            description: 'Tamanho de fonte "display", em `rem` — o maior da escala tipográfica, reservado para números/palavras de impacto extremo (ex. um contador gigante, hero numérico).',
+            axis: 'density',
             unit: 'rem',
             constraints: { min: 4, max: 16, step: 0.5 },
             defaultValue: 10,

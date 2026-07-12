@@ -1,4 +1,5 @@
 import { getDesignCatalog, DesignCatalogToken } from '@sarak/lib-ui-core/backend/node';
+import { deduplicateById } from '../config/shared/theme_slices.js';
 
 export class ThemeValidator {
   private catalog: Map<string, DesignCatalogToken> = new Map();
@@ -8,11 +9,23 @@ export class ThemeValidator {
    * SSOT validada pela paridade 1:1:1:1:1), pelo canal Node sancionado (Spec 08 §4).
    * Nunca uma allowlist estática: o catálogo muda quando a lib expande, o agente
    * precisa refletir isso sem exigir deploy manual.
+   *
+   * `deduplicateById` (compartilhada com `deduplicateScaffoldById` em
+   * `theme_slices.ts`) resolve os `id`s que existem em duas famílias ao mesmo
+   * tempo — sem isso, um `Map` ingênuo manteria a ÚLTIMA ocorrência enquanto
+   * o gabarito que preenche cada fatia mantém a PRIMEIRA, e as duas pontas
+   * discordariam sobre o domínio válido de um id duplicado (achado real:
+   * `zIndexModal`, ver docblock de `deduplicateById`).
    */
   async loadDynamicCatalog(): Promise<void> {
-    const tokens = getDesignCatalog();
+    const tokens = deduplicateById(getDesignCatalog());
     this.catalog = new Map(tokens.map(token => [token.id, token]));
     console.log(`[Validator] Loaded ${this.catalog.size} tokens from UI-Core Catalog.`);
+  }
+
+  /** Exposto pra testes/diagnóstico — o token que o validador de fato aplica para `id`. */
+  getToken(id: string): DesignCatalogToken | undefined {
+    return this.catalog.get(id);
   }
 
   /**

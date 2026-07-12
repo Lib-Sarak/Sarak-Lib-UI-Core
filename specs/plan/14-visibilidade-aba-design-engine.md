@@ -16,6 +16,8 @@ Atualmente, quando o sistema consumidor (ex: Site Earendel ou outro painel) impo
 
 Em um ambiente de produção real, apenas usuários administradores (ou desenvolvedores) devem ter acesso à aba do Design Engine. Para o usuário final padrão, ela deve ser completamente invisível.
 
+> **Correção de escopo (revisão):** o mecanismo desenvolvido na Seção 5 desta spec (filtro em `useModuleDiscovery`) resolve **apenas** a visibilidade do item de navegação — é Inversão de Controle/UX, não controle de acesso. `registerLocalComponent('mx-customization', CustomizationPanel)` continua registrado independentemente do filtro; se o sistema consumidor expõe alguma rota que resolve `mx-customization` diretamente (fora da lista filtrada de `useModuleDiscovery`), o painel ainda renderiza para quem digitar essa rota na URL. Ou o requisito desta spec é só cosmético ("esconder do menu para quem não deveria ver por padrão", e este mecanismo já resolve isso sozinho), ou é de fato bloquear acesso — e nesse caso o mecanismo da Seção 5 é necessário mas **não suficiente** sozinho; falta um segundo mecanismo (route guard no lado do consumidor, ou não registrar o componente quando a flag for `false`) fora do escopo desta versão da spec. Ver Seção 5.3.
+
 # 2. Desafio Arquitetural
 
 Precisamos garantir que a Aba do Design Engine esteja **sempre presente e disponível** no bundle quando o módulo for baixado (permitindo que o sistema ative-a quando necessário), mas com o controle de visibilidade estritamente nas mãos da aplicação consumidora (Inversão de Controle).
@@ -56,8 +58,10 @@ Dentro do repositório da Sarak UI Core, o componente responsável por renderiza
 
 A aba do Design Engine não é um item de nav hardcoded — ela é um **módulo descoberto dinamicamente**. `src/index.ts` já faz `registerLocalComponent('mx-customization', CustomizationPanel)` e `registerLocalComponent('personalization', CustomizationPanel)`. A lista de módulos visíveis (inclusive a navegação que os exibe) vem de `useModuleDiscovery` (`src/shared/hooks/useModuleDiscovery.ts`), que **já tem um mecanismo de filtro** — `DEMO_BLACKLIST`, baseado em `design?.moduleBlacklist !== 'none'` (linhas 26-30). A solução mais simples e consistente com o padrão já existente é **estender esse mesmo filtro**, não criar um segundo mecanismo de visibilidade em paralelo.
 
-## 5.1. Decisão de Default (resolvida — pode executar)
-`showDesignEngineTab` deve ter **default `true`** (não `false`). Motivo: o `Sarak-MyService` (consumidor real já em produção nesta base) hoje não passa essa prop e espera ver a aba — um default `false` quebraria silenciosamente esse comportamento existente para qualquer consumidor que ainda não tenha migrado. Quem precisa esconder (a ameaça real descrita na Seção 1: usuário final não deve ver a aba) passa `false` explicitamente para os papéis não-admin.
+## 5.1. Decisão de Default (proposta — pendente de HITL)
+`showDesignEngineTab` deve ter **default `true`** (não `false`). Motivo: o `Sarak-MyService` (consumidor real já em produção nesta base) hoje não passa essa prop e espera ver a aba — um default `false` quebraria silenciosamente esse comportamento existente para qualquer consumidor que ainda não tenha migrado. Quem precisa esconder (ocultar o item de navegação — ver ressalva da Seção 1 sobre o que este mecanismo cobre e o que não cobre) passa `false` explicitamente para os papéis não-admin.
+
+**Esta é uma decisão de produto com impacto em consumidor de produção (`Sarak-MyService`), não uma decisão técnica neutra — precisa ser confirmada por um humano antes da execução, não carimbada como resolvida por quem planeja ou implementa a spec.** O raciocínio (não quebrar consumidor existente) é sólido, mas o carimbo de "resolvida" é indevido nesta etapa.
 
 ## 5.2. Código de Referência
 
@@ -99,6 +103,9 @@ export const useModuleDiscovery = (isEnabled: boolean = true) => {
 ```
 
 Isso automaticamente esconde a aba de qualquer navegação que já consome `useModuleDiscovery` (é a fonte única da lista de módulos) — não precisa alterar `SarakShell`/`useSarakShell.ts` separadamente, eles já consomem o resultado filtrado.
+
+## 5.3. Limitação Conhecida (não resolvida por este mecanismo)
+O filtro da Seção 5.2 muda só o que `useModuleDiscovery` retorna — ou seja, o que aparece nos menus de navegação que consomem esse hook. Ele **não** desregistra `mx-customization`/`personalization` do `registerLocalComponent`, e não impede a renderização caso alguma rota resolva esse componente diretamente pelo ID, fora da lista filtrada (esse é exatamente o caso extra já apontado no teste E2E da Seção 6: "a rota, se acessada diretamente por URL, não deveria renderizar o painel — validar esse caso extra"). Este teste está listado mas **o código de referência da Seção 5.2 não o resolve** — falta investigar como o roteamento do sistema consumidor resolve `mx-customization` (via `SarakManifestRenderer`/registry direto ou via a lista já filtrada) antes de marcar esta spec como implementável de ponta a ponta. Se a investigação confirmar que a resolução de rota não passa pelo filtro, um segundo mecanismo (route guard, ou gate no próprio registro do componente) precisa ser desenhado — está fora do escopo do que a Seção 5.2 cobre hoje.
 
 # 6. Plano de Testes (Quality Gate)
 

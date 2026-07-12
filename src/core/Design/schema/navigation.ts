@@ -13,6 +13,7 @@ export const NavigationSchema: ComponentSchema = {
             id: 'isNavHidden',
             label: 'Ocultar Navegação',
             type: 'boolean',
+            description: 'Quando ativo, remove completamente a navegação (sidebar/topbar/dock) da tela — usado para telas de foco total (ex. apresentação, modo tela cheia de um editor).',
             defaultValue: false,
             cssVars: ['--is-nav-hidden']
         },
@@ -21,6 +22,8 @@ export const NavigationSchema: ComponentSchema = {
             id: 'sidebarPosition',
             label: 'Posição da Sidebar',
             type: 'select',
+            description: 'Lado da tela onde a sidebar é ancorada quando `navigationStyle` é \'sidebar\' — Esquerda é a convenção ocidental padrão; Flutuante a destaca do restante do layout com espaçamento ao redor.',
+            axis: 'geometry',
             constraints: {
                 options: [
                     { id: 'left', value: 'left', label: 'Esquerda' },
@@ -34,6 +37,8 @@ export const NavigationSchema: ComponentSchema = {
             id: 'sidebarWidth',
             label: 'Largura da Sidebar',
             type: 'slider',
+            description: 'Largura padrão da sidebar, em pixels, com valores independentes por breakpoint. Sidebars mais largas cabem mais texto/hierarquia; mais estreitas favorecem espaço para o conteúdo principal.',
+            axis: 'geometry',
             isResponsive: true,
             unit: 'px',
             constraints: { min: 200, max: 400 },
@@ -44,6 +49,8 @@ export const NavigationSchema: ComponentSchema = {
             id: 'sidebarMinWidth',
             label: 'Largura Mínima da Sidebar',
             type: 'slider',
+            description: 'Largura mínima, em pixels, que a sidebar pode atingir quando redimensionável pelo usuário — evita que ela colapse a ponto de truncar o conteúdo de forma ilegível.',
+            axis: 'geometry',
             isResponsive: true,
             unit: 'px',
             constraints: { min: 150, max: 300 },
@@ -54,6 +61,8 @@ export const NavigationSchema: ComponentSchema = {
             id: 'sidebarMaxWidth',
             label: 'Largura Máxima da Sidebar',
             type: 'slider',
+            description: 'Largura máxima, em pixels, que a sidebar pode atingir quando redimensionável pelo usuário.',
+            axis: 'geometry',
             isResponsive: true,
             unit: 'px',
             constraints: { min: 300, max: 600 },
@@ -64,6 +73,8 @@ export const NavigationSchema: ComponentSchema = {
             id: 'sidebarColor',
             label: 'Cor da Sidebar (Fundo)',
             type: 'color',
+            description: 'Cor de fundo da sidebar — costuma diferenciar-se levemente do fundo geral da aplicação para demarcar a área de navegação.',
+            axis: 'color',
             defaultValue: '#000000',
             cssVars: ['--theme-sidebar-bg', '--sarak-sidebar-bg']
         },
@@ -71,6 +82,8 @@ export const NavigationSchema: ComponentSchema = {
             id: 'sidebarHoverColor',
             label: 'Hover da Sidebar',
             type: 'color',
+            description: 'Cor de fundo de um item de menu da sidebar ao passar o mouse — sinaliza que o item é clicável antes de ser selecionado.',
+            axis: 'color',
             defaultValue: 'transparent',
             cssVars: ['--sarak-sidebar-hover-color']
         },
@@ -78,6 +91,8 @@ export const NavigationSchema: ComponentSchema = {
             id: 'sidebarActiveColor',
             label: 'Ativo da Sidebar',
             type: 'color',
+            description: 'Cor de fundo do item de menu atualmente selecionado na sidebar — deve ter contraste claro em relação a `sidebarHoverColor` e ao restante dos itens, para indicar a localização atual do usuário.',
+            axis: 'color',
             defaultValue: 'transparent',
             cssVars: ['--sarak-sidebar-active-color']
         },
@@ -85,6 +100,8 @@ export const NavigationSchema: ComponentSchema = {
             id: 'sidebarNoiseOpacity',
             label: 'Opacidade do Ruído (Sidebar)',
             type: 'slider',
+            description: 'Opacidade de uma textura de ruído/grão sobreposta ao fundo da sidebar — em 0 fica imperceptível; valores altos dão um clima mais texturizado/analógico à navegação.',
+            axis: 'texture',
             constraints: { min: 0, max: 1, step: 0.05 },
             defaultValue: 0,
             cssVars: ['--sarak-sidebar-noise-opacity']
@@ -94,6 +111,8 @@ export const NavigationSchema: ComponentSchema = {
             id: 'navbarLayout',
             label: 'Comportamento da Topbar',
             type: 'select',
+            description: 'Comportamento de scroll da topbar quando `navigationStyle` é \'topbar\': Fixo no Topo (sempre visível), Rola com o conteúdo (some ao rolar) ou Oculta (nunca exibida).',
+            axis: 'geometry',
             constraints: {
                 options: [
                     { id: 'sticky', value: 'sticky', label: 'Fixo no Topo' },
@@ -107,6 +126,8 @@ export const NavigationSchema: ComponentSchema = {
             id: 'topbarHeight',
             label: 'Altura da Topbar',
             type: 'slider',
+            description: 'Altura da barra de navegação superior, em pixels, com valores independentes por breakpoint. Alturas maiores dão mais espaço para itens de menu/busca; menores maximizam a área útil de conteúdo.',
+            axis: 'geometry',
             isResponsive: true,
             unit: 'px',
             constraints: { min: 48, max: 100 },
@@ -117,6 +138,8 @@ export const NavigationSchema: ComponentSchema = {
             id: 'topbarColor',
             label: 'Cor da Topbar (Fundo)',
             type: 'color',
+            description: 'Cor de fundo da barra de navegação superior — costuma diferenciar-se levemente do fundo geral da aplicação.',
+            axis: 'color',
             defaultValue: '#000000',
             cssVars: ['--theme-topbar-bg', '--sarak-topbar-bg']
         },
@@ -124,6 +147,8 @@ export const NavigationSchema: ComponentSchema = {
             id: 'topbarHoverColor',
             label: 'Hover da Topbar',
             type: 'color',
+            description: 'Cor de fundo de um item de menu da topbar ao passar o mouse.',
+            axis: 'color',
             defaultValue: 'transparent',
             cssVars: ['--sarak-topbar-hover-color']
         },
@@ -131,6 +156,8 @@ export const NavigationSchema: ComponentSchema = {
             id: 'topbarActiveColor',
             label: 'Ativo da Topbar',
             type: 'color',
+            description: 'Cor de fundo do item de menu atualmente selecionado na topbar — deve ter contraste claro em relação a `topbarHoverColor`.',
+            axis: 'color',
             defaultValue: 'transparent',
             cssVars: ['--sarak-topbar-active-color']
         },
@@ -138,6 +165,8 @@ export const NavigationSchema: ComponentSchema = {
             id: 'topbarNoiseOpacity',
             label: 'Opacidade do Ruído (Topbar)',
             type: 'slider',
+            description: 'Opacidade de uma textura de ruído/grão sobreposta ao fundo da topbar — mesmo conceito de `sidebarNoiseOpacity`, aplicado à barra superior.',
+            axis: 'texture',
             constraints: { min: 0, max: 1, step: 0.05 },
             defaultValue: 0,
             cssVars: ['--sarak-topbar-noise-opacity']
@@ -146,6 +175,8 @@ export const NavigationSchema: ComponentSchema = {
             id: 'topbarTitleColor',
             label: 'Cor do Título (Topbar)',
             type: 'color',
+            description: 'Cor do texto de título/breadcrumb exibido na topbar — deve manter contraste alto contra `topbarColor`.',
+            axis: 'color',
             defaultValue: '#ffffff',
             cssVars: ['--sarak-topbar-title-color']
         },
@@ -154,6 +185,8 @@ export const NavigationSchema: ComponentSchema = {
             id: 'contentAlignment',
             label: 'Alinhamento do Conteúdo',
             type: 'select',
+            description: 'Alinhamento horizontal do conteúdo principal em relação à largura da tela — Largura Total ocupa todo o espaço disponível; Centralizado limita e centraliza o conteúdo (útil com `maxContentWidth`).',
+            axis: 'geometry',
             constraints: {
                 options: [
                     { id: 'stretch', value: 'stretch', label: 'Largura Total' },
@@ -166,6 +199,8 @@ export const NavigationSchema: ComponentSchema = {
             id: 'tabGap',
             label: 'Espaço entre Abas',
             type: 'slider',
+            description: 'Espaçamento, em pixels, entre abas de navegação (ex. dentro da topbar ou de um grupo de tabs), com valores independentes por breakpoint.',
+            axis: 'geometry',
             isResponsive: true,
             unit: 'px',
             constraints: { min: 0, max: 24 },
@@ -176,6 +211,8 @@ export const NavigationSchema: ComponentSchema = {
             id: 'tabSectionMargin',
             label: 'Margem da Seção de Abas',
             type: 'slider',
+            description: 'Margem externa da seção de abas em relação aos elementos vizinhos, em pixels, com valores independentes por breakpoint — também usada como referência de área segura (`--safe-area-padding`) em dispositivos com notch/gestos.',
+            axis: 'geometry',
             isResponsive: true,
             unit: 'px',
             constraints: { min: 0, max: 48 },
@@ -187,6 +224,8 @@ export const NavigationSchema: ComponentSchema = {
             id: 'navItemActiveColor',
             label: 'Cor do Item Ativo',
             type: 'color',
+            description: 'Cor de texto/ícone do item de menu atualmente selecionado — normalmente espelha a cor primária do sistema para reforçar onde o usuário está.',
+            axis: 'color',
             defaultValue: '#00f2ff',
             cssVars: ['--sarak-nav-active-color', '--theme-primary']
         },
@@ -194,6 +233,8 @@ export const NavigationSchema: ComponentSchema = {
             id: 'navActiveMarkerColor',
             label: 'Cor do Marcador Ativo',
             type: 'color',
+            description: 'Cor do indicador visual (barra/ponto) que marca qual item de menu está ativo — separado da cor do texto do item para permitir combinações independentes.',
+            axis: 'color',
             defaultValue: '#00f2ff',
             cssVars: ['--sarak-nav-marker-color']
         },
@@ -201,6 +242,8 @@ export const NavigationSchema: ComponentSchema = {
             id: 'navActiveMarkerGlow',
             label: 'Brilho do Marcador',
             type: 'slider',
+            description: 'Intensidade do brilho (glow) ao redor do marcador de item ativo — 0 remove o efeito; valores altos dão mais destaque ao indicador de seleção.',
+            axis: 'elevation',
             constraints: { min: 0, max: 20 },
             defaultValue: 10,
             cssVars: ['--sarak-nav-marker-glow']
@@ -210,6 +253,8 @@ export const NavigationSchema: ComponentSchema = {
             id: 'sidebarBlur',
             label: 'Backdrop Blur (Sidebar)',
             type: 'slider',
+            description: 'Intensidade do desfoque de fundo da sidebar — só produz efeito visível quando a sidebar tem fundo translúcido, criando um clima de vidro fosco sobre o conteúdo atrás dela.',
+            axis: 'elevation',
             unit: 'px',
             constraints: { min: 0, max: 50 },
             defaultValue: 10,
@@ -219,6 +264,8 @@ export const NavigationSchema: ComponentSchema = {
             id: 'sidebarShadow',
             label: 'Sombra da Sidebar',
             type: 'text',
+            description: 'Definição CSS completa de `box-shadow` da sidebar — separa visualmente a navegação do conteúdo principal com uma sombra projetada lateralmente.',
+            axis: 'elevation',
             defaultValue: '10px 0 30px rgba(0,0,0,0.5)',
         },
         // --- PESQUISA (SEARCH BAR) ---
@@ -226,6 +273,8 @@ export const NavigationSchema: ComponentSchema = {
             id: 'searchPositionTopbar',
             label: 'Posição Pesquisa (Topbar)',
             type: 'select',
+            description: 'Posição do campo de busca dentro da topbar — Esquerda/Centro/Direita posicionam o campo, Oculta remove a busca da topbar (pode ainda existir via atalho de teclado/paleta de comando).',
+            axis: 'geometry',
             constraints: {
                 options: [
                     { id: 'left', value: 'left', label: 'Esquerda' },
@@ -240,6 +289,8 @@ export const NavigationSchema: ComponentSchema = {
             id: 'searchPositionSidebar',
             label: 'Posição Pesquisa (Sidebar)',
             type: 'select',
+            description: 'Posição do campo de busca dentro da sidebar — Topo/Rodapé posicionam o campo, Oculta remove a busca da sidebar.',
+            axis: 'geometry',
             constraints: {
                 options: [
                     { id: 'top', value: 'top', label: 'Topo' },
