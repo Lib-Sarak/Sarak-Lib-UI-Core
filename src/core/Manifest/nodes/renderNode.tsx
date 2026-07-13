@@ -7,7 +7,7 @@
 
 import React, { useContext, useMemo } from 'react';
 import type { ManifestNode } from '../types';
-import { SarakFallback } from '../Registry/Fallback';
+import { SarakFallback, SarakErrorFallback } from '../Registry/Fallback';
 import type { StateRecord } from '../DataStore/resolvePath';
 import { evaluateCondition } from '../Conditional/evaluateCondition';
 import { expandRenderFor, VIRTUALIZE_THRESHOLD } from '../RenderFor/expandRenderFor';
@@ -35,6 +35,7 @@ const renderNodeFallback = (
     path: string,
     scope: StateRecord,
     ctx: NodeRenderContext,
+    error: Error,
 ): React.ReactNode => {
     if (ctx.fallbackErrorUI) {
         return (
@@ -46,7 +47,7 @@ const renderNodeFallback = (
             />
         );
     }
-    return <SarakFallback type="ErroDeRenderizacao" nodeId={node.id ?? path} />;
+    return <SarakErrorFallback error={error} nodeId={node.id ?? path} />;
 };
 
 /**
@@ -212,7 +213,7 @@ export const ManifestNodeRenderer: React.FC<NodeRendererProps> = ({ node, path, 
     return (
         <SarakErrorBoundary
             nodeId={node.id ?? path}
-            renderFallback={() => renderNodeFallback(node, path, scope, childCtx)}
+            renderFallback={(error) => renderNodeFallback(node, path, scope, childCtx, error)}
         >
             <ManifestNodePipeline node={node} path={path} scope={scope} ctx={childCtx} />
         </SarakErrorBoundary>

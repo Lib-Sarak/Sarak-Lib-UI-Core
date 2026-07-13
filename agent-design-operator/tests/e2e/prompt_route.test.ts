@@ -226,4 +226,64 @@ describe('POST /prompt E2E (Brief → (Chat ‖ 6 fatias) → merge → validate
     expect(Object.keys(getData().payload!).length).toBe(scaffold.length);
     expect(getData().message).not.toContain('não puderam ser ajustadas'); // nenhuma fatia falhou
   });
+
+  it('BUG C — guard de saída: se a Chamada A (chat) desobedecer o prompt e vazar [THEME_UPDATE]/JSON cru, a "message" final NUNCA pode conter isso (defesa em profundidade do Critério 2 da Spec 03)', async () => {
+    const req = {
+      body: { prompt: 'crie um tema para mim', session_id: 'test-session-e2e-6' }
+    } as unknown as Request;
+    const { res, getStatus, getData } = createMockRes();
+
+    // Simula um modelo fraco desobedecendo a Chamada A e emitindo o formato
+    // morto pela Spec 03 — exatamente o sintoma relatado em produção (Bug A/C).
+    const { provider } = buildRoutedProviderMock({
+      chatText: 'Criei um tema para você [THEME_UPDATE: {"primaryColor": "#000000", "cardBorderRadius": 4}]',
+      sliceResponses: { foundations: '{"primaryColor": "#00f2ff"}' },
+    });
+    vi.spyOn(providerFactory.ProviderFactory, 'getProvider').mockReturnValue(provider);
+
+    const postRoute = findPromptRoute();
+    await postRoute!.route.stack[0].handle(req, res as unknown as Response, () => {});
+
+    expect(getStatus()).toBe(200);
+    expect(getData().message).not.toContain('[THEME_UPDATE');
+    expect(getData().message).not.toContain('{');
+    expect(getData().message).not.toContain('}');
+    expect(getData().message).not.toContain('primaryColor');
+    // O guard só limpa o CHAT — o payload real (vindo das fatias, já validado)
+    // continua chegando normalmente ao usuário pelo campo `payload`.
+    expect(getData().payload).toEqual({ primaryColor: '#00f2ff' });
+  });
+
+  it('BUG B — falha ao gerar o Design Brief nunca pode virar 500: produz 200 com mensagem graciosa (Regra 4 da Spec 03)', async () => {
+    const req = {
+      body: { prompt: 'analise meu site e replique o estilo', session_id: 'test-session-e2e-7' }
+    } as unknown as Request;
+    const { res, getStatus, getData } = createMockRes();
+
+    // Provider devolve string vazia pro Brief — `generateDesignBrief` lança
+    // ('Design Brief vazio...'). Simula tanto um hiccup real do provider
+    // quanto (indiretamente) um pedido que dependeria de ler referência
+    // externa, que `rules.md` agora instrui o modelo a recusar em prosa —
+    // mas se o modelo ainda assim devolver algo inutilizável, a rota não
+    // pode quebrar.
+    const generateResponseMock = vi.fn().mockImplementation(async (systemPrompt: string) => {
+      if (systemPrompt.includes('intérprete de intenção visual')) return '   ';
+      throw new Error('[test] Não deveria chamar Chat/fatias quando o Brief falha.');
+    });
+    const provider: ProviderInterface = { generateResponse: generateResponseMock };
+    vi.spyOn(providerFactory.ProviderFactory, 'getProvider').mockReturnValue(provider);
+
+    const postRoute = findPromptRoute();
+    await postRoute!.route.stack[0].handle(req, res as unknown as Response, () => {});
+
+    expect(getStatus()).toBe(200);
+    expect(getData().success).toBe(true);
+    expect(getData().payload).toBeUndefined();
+    expect(getData().message).not.toContain('{');
+    expect(getData().message).not.toContain('500');
+    expect(getData().message).not.toContain('Error');
+    expect(getData().message.length).toBeGreaterThan(0);
+    // Curto-circuita antes de Chat/fatias — só a chamada do Brief acontece.
+    expect(generateResponseMock).toHaveBeenCalledTimes(1);
+  });
 });

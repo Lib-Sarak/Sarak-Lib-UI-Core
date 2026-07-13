@@ -15,23 +15,26 @@ import React from 'react';
 export interface SarakErrorBoundaryProps {
     /** `id`/path do nó protegido — usado no log de diagnóstico (Regra 4). */
     nodeId: string;
-    /** Tela de recuperação a renderizar quando a sub-árvore quebra (Regra 2). */
-    renderFallback: () => React.ReactNode;
+    /** Tela de recuperação a renderizar quando a sub-árvore quebra (Regra 2). Recebe o
+     * `Error` real capturado, para que o fallback possa exibir a causa em vez de um
+     * texto genérico de "componente desconhecido". */
+    renderFallback: (error: Error) => React.ReactNode;
     children: React.ReactNode;
 }
 
 interface SarakErrorBoundaryState {
     hasError: boolean;
+    error: Error | null;
 }
 
 export class SarakErrorBoundary extends React.Component<
     SarakErrorBoundaryProps,
     SarakErrorBoundaryState
 > {
-    state: SarakErrorBoundaryState = { hasError: false };
+    state: SarakErrorBoundaryState = { hasError: false, error: null };
 
-    static getDerivedStateFromError(): SarakErrorBoundaryState {
-        return { hasError: true };
+    static getDerivedStateFromError(error: Error): SarakErrorBoundaryState {
+        return { hasError: true, error };
     }
 
     componentDidCatch(error: Error, info: React.ErrorInfo): void {
@@ -44,7 +47,7 @@ export class SarakErrorBoundary extends React.Component<
 
     render(): React.ReactNode {
         if (this.state.hasError) {
-            return this.props.renderFallback();
+            return this.props.renderFallback(this.state.error ?? new Error('Erro desconhecido.'));
         }
         return this.props.children;
     }

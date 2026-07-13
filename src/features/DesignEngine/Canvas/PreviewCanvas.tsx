@@ -182,8 +182,14 @@ export const PreviewCanvas: React.FC<PreviewCanvasProps> = ({
                     </div>
 
                     {/* Linha Inferior: Sarak Design Agent Chat (Visível no modo DualView/Preview) */}
+                    {/* Altura FIXA (não só min-h): isola o card do fluxo de tamanho dos
+                        previews acima. Sem isso, o `h-full` interno do DesignAgentChatCard
+                        não tinha altura definida pra resolver contra, a lista de mensagens
+                        crescia com o conteúdo (o scroll interno nunca ativava), e o card
+                        inteiro empurrava a linha de previews (flex-1 min-h-0) pra fora do
+                        espaço disponível — bug de produção. */}
                     {isDualView && (
-                        <div className="w-full shrink-0 min-h-[var(--sarak-engine-min-h-sm,300px)] transition-all">
+                        <div className="w-full shrink-0 h-[var(--sarak-engine-min-h-sm,300px)] transition-all">
                             <DesignAgentChatCard
                                 draftTokens={tokens}
                                 onApplyFullTheme={onApplyFullTheme || (() => {})}

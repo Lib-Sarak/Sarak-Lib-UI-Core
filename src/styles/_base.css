@@ -1,3 +1,10 @@
+:root {
+  /* Sentinela estático (não-dinâmico) usado pelo SarakUIProvider para detectar em
+     runtime se este stylesheet foi de fato carregado pelo consumidor — independe
+     das variáveis de tema, que o próprio Provider injeta via JS em qualquer caso. */
+  --sarak-ui-core-css-loaded: 1;
+}
+
 html {
   font-size: var(--theme-font-size-base, 14px);
 }

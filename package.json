@@ -10,7 +10,7 @@
     "scripts": {
         "build:css": "npx @tailwindcss/cli -i ./src/styles/sarak-base.css -o ./dist/sarak.css --minify",
         "build:js": "tsup src/index.ts --format esm,cjs --shims --dts --clean --minify --external react,react-dom,framer-motion,lucide-react,recharts,echarts-for-react,echarts,reactflow,react-grid-layout,react-markdown,react-syntax-highlighter,react-dropzone,pdfjs-dist,clsx,tailwind-merge,date-fns,pg,@tanstack/react-virtual && tsup backend/node/backend-node.ts --format esm,cjs --shims --dts --minify --external pg",
-        "build": "npm run build:js && npm run build:css",
+        "build": "npm run build:js && npm run build:css && node scripts/inject-css.mjs",
         "prepublishOnly": "npm run build",
         "test-ct": "playwright test -c playwright-ct.config.ts"
     },

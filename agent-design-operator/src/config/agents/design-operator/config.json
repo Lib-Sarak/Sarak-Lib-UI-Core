@@ -5,11 +5,5 @@
   "capabilities": {
     "input_modalities": ["text"],
     "output_format": "text"
-  },
-  "triggers": {
-    "THEME_UPDATE": {
-      "pattern": "\\[THEME_UPDATE:\\s*(\\{[\\s\\S]*?\\})\\s*\\]",
-      "fields": ["payload"]
-    }
   }
 }

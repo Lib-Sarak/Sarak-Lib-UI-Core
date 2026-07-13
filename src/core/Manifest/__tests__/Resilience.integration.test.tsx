@@ -49,6 +49,38 @@ describe('Spec 27 — Isolamento de falhas (Error Boundaries)', () => {
         expect(screen.getByText('Ops, falha ao carregar')).toBeInTheDocument();
     });
 
+    it('sem fallbackErrorUI: mostra a mensagem real do erro, não "Componente desconhecido" (regressão)', () => {
+        vi.spyOn(console, 'error').mockImplementation(() => undefined);
+        vi.spyOn(console, 'warn').mockImplementation(() => undefined);
+
+        const registry = createComponentRegistry();
+        registry.register('Safe', Safe);
+        registry.register('Boom', Boom);
+
+        // Nó SEM `fallbackErrorUI`: cai no fallback padrão. Antes desta correção, um
+        // erro real de render era mascarado como `Componente desconhecido:
+        // "ErroDeRenderizacao"` — indistinguível de um typo de `type` no manifesto.
+        const manifest: ManifestRoot = {
+            schemaVersion: 1,
+            type: 'SarakFlex',
+            children: [{ type: 'Boom', id: 'b' }],
+        };
+
+        const { container } = render(
+            <SarakUIProvider>
+                <SarakManifestRenderer manifest={manifest} registry={registry} />
+            </SarakUIProvider>,
+        );
+
+        // Query pelo container do fallback (não por texto — a mensagem também aparece
+        // no stack técnico colapsável, gerando múltiplos matches de texto).
+        const errorFallback = container.querySelector('[data-sarak-error-fallback="true"]');
+        expect(errorFallback).not.toBeNull();
+        expect(errorFallback?.textContent).toContain('explosão fatal no card');
+        expect(screen.queryByText(/Componente desconhecido/)).not.toBeInTheDocument();
+        expect(screen.queryByText(/^ErroDeRenderizacao$/)).not.toBeInTheDocument();
+    });
+
     it('api_call que rejeita dispara onError sem quebrar a árvore (Critério 27.2)', async () => {
         const interceptor = vi.fn(async () => {
             throw new Error('CORS');

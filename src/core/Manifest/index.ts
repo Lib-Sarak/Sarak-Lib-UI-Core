@@ -82,6 +82,7 @@ export {
 } from './Registry/ComponentRegistry';
 export { NATIVE_COMPONENTS, type NativeComponentType } from './Registry/nativeComponents';
 export { SarakFallback, type SarakFallbackProps } from './Registry/Fallback';
+export { SarakErrorFallback, type SarakErrorFallbackProps } from './Registry/Fallback';
 
 // Spec 24 — Data Binding e Pipes
 export {

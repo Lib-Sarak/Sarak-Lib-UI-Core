@@ -1,6 +1,14 @@
 import React, { ReactNode, useEffect, useMemo, useContext, createContext } from 'react';
-import '../../styles/sarak-base.css';
 import { NoiseOverlay } from '../../effects/NoiseOverlay';
+import { injectSarakStyles } from './injectStyles';
+import { SARAK_CSS } from './__sarakCss';
+
+// Injeção automática de CSS (Spec 08 §2 — Instalação Zero-Config): roda uma vez, no
+// carregamento do módulo, ANTES de qualquer instância do Provider montar — evita
+// flash de conteúdo sem estilo mesmo no primeiro render. `SARAK_CSS` é o placeholder
+// em dev/teste (rodando de `src/`) e o CSS compilado real no bundle publicado
+// (substituído por scripts/inject-css.mjs no postbuild).
+injectSarakStyles(SARAK_CSS);
 
 // Novos Módulos Refatorados
 import { SarakUIContextType, SarakUIOptions, SarakUIProviderProps, SarakThemePayload, ThemeEntry } from './types';
@@ -99,6 +107,24 @@ export const SarakUIProvider: React.FC<SarakUIProviderProps> = ({
 
     // 4. Efeitos Colaterais (Fontes, Título, Ícone)
     useSarakUIEffects(branding);
+
+    // 4.5 Auto-diagnóstico (dev-only): a injeção automática de CSS (postbuild) pode
+    // falhar por cache de build antigo, bundler removendo "CSS não usado" ou SSR
+    // atípico — avisa em vez de deixar o consumidor debugar um app sem estilo.
+    useEffect(() => {
+        if (process.env.NODE_ENV === 'production') return;
+        const loaded = getComputedStyle(document.documentElement)
+            .getPropertyValue('--sarak-ui-core-css-loaded')
+            .trim();
+        if (!loaded) {
+            console.error(
+                '[Sarak] CSS não detectado. A injeção automática deveria ter carregado o ' +
+                'stylesheet ao importar "@sarak/lib-ui-core" — se isso falhou (ex.: bundler ' +
+                'fazendo tree-shaking do side-effect), importe manualmente ' +
+                '"@sarak/lib-ui-core/dist/sarak.css" no entry point da aplicação.',
+            );
+        }
+    }, []);
 
     // 6. Valor do Contexto (Memorizado)
     const uiContextValue = useMemo(() => ({
