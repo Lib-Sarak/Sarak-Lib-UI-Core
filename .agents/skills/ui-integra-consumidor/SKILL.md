@@ -1,6 +1,6 @@
 ---
 name: ui-integra-consumidor
-description: Instala e acopla o motor SarakManifestRenderer num sistema consumidor (Next.js/React/FastAPI). Configura Interceptors e DataStore. Use ao iniciar a infraestrutura do front-end com a Lib. NÃO acione proativamente.
+description: Instala e acopla o motor SarakManifestRenderer (@sarak/lib-ui-core) num sistema consumidor (Next.js/React/FastAPI), do zero — npm install, peerDependencies, SarakUIProvider, DataStore e Interceptors. Use quando o usuário pedir para baixar/instalar/importar a biblioteca Sarak UI (ex.: "baixe a biblioteca Sarak-UI <link>, ela será responsável por toda a renderização do sistema"), iniciar a infraestrutura do front-end com a Lib, ou plugar o motor de renderização declarativa num projeto novo. NÃO acione proativamente.
 ---
 
 # Skill: Integrar Consumidor (Infraestrutura)

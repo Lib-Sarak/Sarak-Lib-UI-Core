@@ -7,12 +7,16 @@ A Sarak UI Core não permite "Deep Imports" por consumidores externos (ex: `impo
 - O que estiver em `src/index.ts` é garantido pela retrocompatibilidade (Contrato).
 - O que não estiver em `src/index.ts` é considerado módulo interno e pode mudar a qualquer momento sem aviso prévio.
 
-## 2. Injeção de Estilos (CSS)
-Sistemas consumidores **devem** importar o CSS global compilado da Sarak UI Core no seu ponto de entrada (ex: `_app.tsx` ou `layout.tsx`).
+## 2. Injeção de Estilos (CSS) — Automática
+O `SarakUIProvider` injeta o stylesheet compilado da Sarak UI Core sozinho, em runtime, assim que o módulo é importado (um `<style id="sarak-ui-core-styles">` no `<head>`, gerado pelo build via `scripts/inject-css.mjs` — placeholder `SARAK_CSS` de `src/core/Provider/__sarakCss.ts` substituído pelo CSS real de `dist/sarak.css`). **Nenhum import manual de CSS é necessário** para o caso comum (SPA/Vite/CRA).
+
+Sem este mecanismo, os componentes não teriam forma geométrica, pois o Tailwind interno não seria processado no consumidor — por isso ele é parte do contrato público, não uma conveniência opcional.
+
+**Exceção (SSR/Next.js):** a injeção via JS só ocorre depois que o bundle do cliente executa, o que pode gerar um flash de conteúdo sem estilo (FOUC) durante SSR. Para evitar isso, o consumidor PODE, opcionalmente, importar o CSS manualmente no ponto de entrada renderizado no servidor:
 ```tsx
-import '@sarak/lib-ui-core/dist/sarak.css';
+import '@sarak/lib-ui-core/dist/sarak.css'; // opcional: só para SSR sem FOUC
 ```
-A Engine de Temas depende puramente destas variáveis CSS para realizar trocas visuais dinâmicas em tempo de execução sem afetar a árvore do DOM. Sem este arquivo, os componentes não terão forma geométrica, pois o Tailwind interno não será processado no consumidor.
+Se a injeção automática falhar por qualquer motivo (ex.: bundler removendo o side-effect via tree-shaking agressivo), o `SarakUIProvider` avisa via `console.error` em desenvolvimento, apontando esse mesmo import manual como correção.
 
 ## 3. O SarakUIProvider é Obrigatório
 O consumidor nunca deve tentar invocar componentes atômicos complexos que dependam de variáveis dinâmicas (quase todos) sem abraçar a árvore do React com o `SarakUIProvider`.

@@ -25,10 +25,10 @@ Este arquivo é auto-gerado. Ele lista todas as regras de negócio deste projeto
 - **ui-criar-tema**: Orquestra a geração autônoma e paramétrica de temas completos (ThemePresets) para a Sarak UI Core. Use ao configurar esquemas globais de cores e atmosferas. NÃO acione proativamente.
   - *Caminho*: `.agents/skills/ui-criar-tema/SKILL.md`
 
-- **ui-integra-consumidor**: Instala e acopla o motor SarakManifestRenderer num sistema consumidor (Next.js/React/FastAPI). Configura Interceptors e DataStore. Use ao iniciar a infraestrutura do front-end com a Lib. NÃO acione proativamente.
+- **ui-integra-consumidor**: Instala e acopla o motor SarakManifestRenderer (@sarak/lib-ui-core) num sistema consumidor (Next.js/React/FastAPI), do zero — npm install, peerDependencies, SarakUIProvider, DataStore e Interceptors. Use quando o usuário pedir para baixar/instalar/importar a biblioteca Sarak UI (ex.: "baixe a biblioteca Sarak-UI <link>, ela será responsável por toda a renderização do sistema"), iniciar a infraestrutura do front-end com a Lib, ou plugar o motor de renderização declarativa num projeto novo. NÃO acione proativamente.
   - *Caminho*: `.agents/skills/ui-integra-consumidor/SKILL.md`
 
-- **ui-integra-escrever-manifesto**: Ensina a compor telas, componentes e lógicas construindo arquivos JSON válidos para o SarakManifestRenderer. Use ao criar ou editar páginas de interface no consumidor. NÃO acione proativamente.
+- **ui-integra-escrever-manifesto**: Ensina a compor telas, componentes e lógicas construindo arquivos JSON válidos para o SarakManifestRenderer. Use ao criar ou editar páginas de interface num consumidor que já importou @sarak/lib-ui-core, ou logo após rodar a skill ui-integra-consumidor (Handoff). NÃO acione proativamente.
   - *Caminho*: `.agents/skills/ui-integra-escrever-manifesto/SKILL.md`
 
 - **ui-novo-componente**: Orquestra a adição de novos componentes atômicos à UI Core garantindo a paridade 1:1:1:1:1. Use ao adicionar um token ou componente base ao sistema. NÃO acione proativamente.

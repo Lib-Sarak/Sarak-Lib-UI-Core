@@ -30,7 +30,7 @@ O motor depende de uma árvore de estado local reativa (conceito análogo a Redu
 - **Avaliador Condicional (Safe Eval):** Responsável por diretivas como `renderIf` ou `disabledIf`. Toda expressão injetada (ex: `"{{role}} === 'ADMIN'"`) roda num ambiente isolado, bloqueando acesso imperativo (como invocar `window` ou `alert`).
 
 ## 2.4 Barramento e Eventos (Dispatcher)
-- **Central Dispatcher:** As chaves `onClick`, `onSubmit` mapeiam para arrays de `Action`. A Engine possui handlers nativos para `api_call` (via fetch dinâmico), `navigate` (alteração de rota via adaptador importado), `mutate_state` e `trigger_toast`.
+- **Central Dispatcher:** A chave `actions` de um nó é um **array plano** de `Action` (`ActionList`) — não um objeto mapeando nomes de evento (`onClick`/`onSubmit`) para arrays. A própria Engine decide qual evento do DOM dispara a cadeia (`onClick` em botões, `onChange` em campos com `model`), com base na natureza do nó, não numa chave declarada no JSON. A Engine possui handlers nativos para `api_call` (via fetch dinâmico — os campos `endpoint`/`method`/`body`/`params` vivem dentro de `payload`, ex.: `{"type": "api_call", "payload": {"endpoint": "/x", "method": "POST"}}`), `navigate` (alteração de rota via adaptador importado), `mutate_state` e `trigger_toast`.
 - **Tratamento de Erros e Error Boundaries:** Se uma requisição de `api_call` falhar, ou uma subárvore quebrar, a Engine entra em *Fallback* visual isolado, ou dispara a diretiva `onError` presente no JSON.
 
 # 3. Contratos e Composição Shell
