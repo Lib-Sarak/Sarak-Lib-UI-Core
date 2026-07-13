@@ -9,7 +9,7 @@
     "types": "./dist/index.d.ts",
     "scripts": {
         "build:css": "npx @tailwindcss/cli -i ./src/styles/sarak-base.css -o ./dist/sarak.css --minify",
-        "build:js": "tsup src/index.ts --format esm,cjs --shims --dts --clean --minify --external react,react-dom,framer-motion,lucide-react,recharts,echarts-for-react,echarts,reactflow,react-grid-layout,react-markdown,react-syntax-highlighter,react-dropzone,pdfjs-dist,clsx,tailwind-merge,date-fns,pg,@tanstack/react-virtual && tsup backend/node/backend-node.ts --format esm,cjs --shims --dts --minify --external pg",
+        "build:js": "tsup src/index.ts --format esm,cjs --shims --dts --clean --minify --external react,react-dom,framer-motion,lucide-react,recharts,echarts-for-react,echarts,reactflow,react-grid-layout,react-markdown,react-syntax-highlighter,react-dropzone,pdfjs-dist,clsx,tailwind-merge,date-fns,pg,@tanstack/react-virtual && tsup backend/node/backend-node.ts --format esm,cjs --shims --dts --minify --external pg,better-sqlite3",
         "build": "npm run build:js && npm run build:css && node scripts/inject-css.mjs",
         "prepublishOnly": "npm run build",
         "test-ct": "playwright test -c playwright-ct.config.ts"
@@ -41,6 +41,7 @@
     "peerDependencies": {
         "@tanstack/react-virtual": ">=3.0.0",
         "axios": "^1.6.0",
+        "better-sqlite3": ">=9.0.0",
         "clsx": ">=2.1.0",
         "date-fns": ">=3.3.0",
         "echarts": ">=5.5.0",
@@ -69,11 +70,13 @@
         "@testing-library/jest-dom": "^6.9.1",
         "@testing-library/react": "^16.3.2",
         "@testing-library/user-event": "^14.6.1",
+        "@types/better-sqlite3": "^7.6.13",
         "@types/pg": "^8.20.0",
         "@types/react": "^18.0.0",
         "@types/react-dom": "^18.0.0",
         "@types/react-syntax-highlighter": "^15.5.11",
         "@vitest/coverage-v8": "^4.1.8",
+        "better-sqlite3": "^12.11.1",
         "clsx": "^2.1.0",
         "date-fns": "^3.3.0",
         "echarts": "^5.5.0",

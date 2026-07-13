@@ -1,9 +1,13 @@
 /**
  * Conecta ao banco de dados do sistema e executa a migração nativa do Sarak UI Core.
  * Este script cria a tabela `custom_themes` e aplica o self-healing necessário
- * em esquemas Node.js (ex: Next.js).
+ * em esquemas Node.js (ex: Next.js). Detecta o dialeto pela própria `connectionString`
+ * (Regra "zero-config" — Spec 08 §2): prefixo `postgres://`/`postgresql://` usa
+ * PostgreSQL via `pg`; qualquer outro valor (caminho de arquivo, `:memory:`) usa
+ * SQLite via `better-sqlite3`.
  *
- * @param connectionString A URL do PostgreSQL (ex: postgresql://user:pass@localhost:5432/db)
+ * @param connectionString URL do PostgreSQL (ex: postgresql://localhost:5432/meubanco)
+ *   ou caminho de arquivo/`:memory:` para SQLite (ex: `./database.sqlite`).
  */
 declare function setupUIDatabase(connectionString: string): Promise<void>;
 
@@ -13,7 +17,8 @@ interface DesignApiOptions {
     getUserId?: (req: Request) => Promise<string | null> | string | null;
 }
 /**
- * Retorna os Handlers (GET/POST) prontos para o App Router do Next.js.
+ * Retorna os Handlers (GET/POST) prontos para o App Router do Next.js. Detecta o
+ * dialeto (Postgres/SQLite) pela `connectionString` (Spec 08 §2 — zero-config).
  */
 declare function createDesignApiHandler(options: DesignApiOptions): {
     GET(req: Request): Promise<Response>;
@@ -25,6 +30,10 @@ interface BrandingApiOptions {
     systemName?: string;
     getUserId?: (req: Request) => Promise<string | null> | string | null;
 }
+/**
+ * Retorna os Handlers (GET/POST) prontos para o App Router do Next.js. Detecta o
+ * dialeto (Postgres/SQLite) pela `connectionString` (Spec 08 §2 — zero-config).
+ */
 declare function createBrandingApiHandler(options: BrandingApiOptions): {
     GET(req: Request): Promise<Response>;
     POST(req: Request): Promise<Response>;
