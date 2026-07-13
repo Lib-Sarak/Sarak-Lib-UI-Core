@@ -17,6 +17,8 @@ export type {
 } from './core/Provider/types';
 export { DesignScope } from './core/Design/components/DesignScope';
 export { default as ThemeToggle } from './components/atomic/Buttons/ThemeToggle';
+export * from './components/atomic/Buttons/SarakButton';
+export * from './components/atomic/Buttons/SarakIconButton';
 
 
 // Layout Components and Plug & Play UI

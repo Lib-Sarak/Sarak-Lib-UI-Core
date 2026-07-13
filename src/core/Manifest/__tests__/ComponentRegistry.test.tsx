@@ -38,6 +38,33 @@ describe('Spec 22 — ComponentRegistry', () => {
         }
     });
 
+    it('deve resolver os átomos fundamentais (Botão/Texto/Ícone/Cards/Templates) como nativos (regressão)', () => {
+        // Regressão: `SarakButton`/`SarakTypography` caíam no fallback ("Componente
+        // desconhecido") porque nunca tinham sido registrados aqui, apesar de existirem
+        // no código-fonte e/ou serem exportados publicamente.
+        const registry = createComponentRegistry();
+        const atomosFundamentais = [
+            'SarakButton',
+            'SarakIconButton',
+            'SarakTypography',
+            'SarakIcon',
+            'SarakSearch',
+            'ExpandableCard',
+            'SarakActionCard',
+            'SarakEmptyState',
+            'SarakBadge',
+            'SarakTable',
+            'SarakForm',
+            'SarakChart',
+            'SarakAuthScreen',
+        ] as const;
+        for (const type of atomosFundamentais) {
+            const { isFallback, Component } = registry.resolve(type);
+            expect(isFallback).toBe(false);
+            expect(Component).toBe(NATIVE_COMPONENTS[type]);
+        }
+    });
+
     it('deve devolver o fallback (sem lançar) para type desconhecido e logar o nó culpado', () => {
         const registry = createComponentRegistry();
         const warn = vi.spyOn(console, 'warn').mockImplementation(() => undefined);

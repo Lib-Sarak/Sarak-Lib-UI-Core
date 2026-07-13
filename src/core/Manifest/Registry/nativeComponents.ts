@@ -53,6 +53,41 @@ import {
     SarakLightbox,
     SarakPDFViewer,
 } from '../../../components/atomic/Media';
+import { SarakButton, SarakIconButton } from '../../../components/atomic/Buttons';
+import { SocialButton, SarakTypography } from '../../../components/atomic/Atoms';
+import { SarakIcon } from '../../../components/atomic/Icon/SarakIcon';
+import { SarakSearch } from '../../../components/atomic/Inputs/SarakSearch';
+import { ExpandableCard } from '../../../components/atomic/Cards/ExpandableCard';
+import { SarakActionCard } from '../../../components/atomic/Cards/SarakActionCard';
+import { SarakSearchCard } from '../../../components/atomic/Cards/SarakSearchCard';
+import { SarakTitleCard } from '../../../components/atomic/Cards/SarakTitleCard';
+import { SarakEmptyState, SarakBadge } from '../../../components/atomic/Feedback';
+import FilterSelect from '../../../components/atomic/Templates/FilterSelect';
+import HelpButton from '../../../components/atomic/Templates/HelpButton';
+import {
+    SarakTable,
+    SarakCardGrid,
+    SarakStats,
+    SarakChart,
+    SarakForm,
+    SarakManagementGrid,
+    SarakChat,
+    SarakSecurityOrchestrator,
+    SarakAuthScreen,
+    SarakCatalogGrid,
+    SarakExpandableMatrix,
+} from '../../../components/atomic/Templates';
+import type { ComponentType } from 'react';
+
+/**
+ * Tipo largo usado só para os componentes cuja interface de Props não é reexportada
+ * publicamente pelo módulo de origem — sem isso, o bundler de `.d.ts` (tsup) falha
+ * (TS4023: "has or is using name 'XProps' ... but cannot be named") por não conseguir
+ * nomear o tipo inferido no arquivo de declaração. Não afeta `NativeComponentType`
+ * (deriva das CHAVES do objeto abaixo, nunca do tipo de valor).
+ */
+type AnyManifestComponent = ComponentType<Record<string, unknown>>;
+const widen = (component: unknown): AnyManifestComponent => component as AnyManifestComponent;
 
 /**
  * Registro nativo. `as const` em conjunto com `satisfies` mantém a inferência das
@@ -114,6 +149,37 @@ export const NATIVE_COMPONENTS = {
     SarakMarkdownRenderer,
     SarakLightbox,
     SarakPDFViewer,
+    // Átomos fundamentais (Botão/Texto/Ícone/Busca) — antes exportados publicamente
+    // ou existentes no código-fonte, mas nunca resolvíveis via `type` no manifesto.
+    SarakButton,
+    SarakIconButton,
+    SocialButton: widen(SocialButton),
+    SarakTypography,
+    SarakIcon,
+    SarakSearch: widen(SarakSearch),
+    // Cards (Spec 03).
+    ExpandableCard: widen(ExpandableCard),
+    SarakActionCard: widen(SarakActionCard),
+    SarakSearchCard: widen(SarakSearchCard),
+    SarakTitleCard: widen(SarakTitleCard),
+    // Feedback adicional (badges/empty states — Skeleton/DataEmpty já registrados acima).
+    SarakEmptyState: widen(SarakEmptyState),
+    SarakBadge,
+    // Templates — "Moldes avançados sem lógica de negócio" (Spec 00), 100% orientados
+    // a props/dados, portanto legitimamente resolvíveis via manifesto.
+    FilterSelect: widen(FilterSelect),
+    HelpButton,
+    SarakTable: widen(SarakTable),
+    SarakCardGrid: widen(SarakCardGrid),
+    SarakStats: widen(SarakStats),
+    SarakChart: widen(SarakChart),
+    SarakForm: widen(SarakForm),
+    SarakManagementGrid: widen(SarakManagementGrid),
+    SarakChat: widen(SarakChat),
+    SarakSecurityOrchestrator: widen(SarakSecurityOrchestrator),
+    SarakAuthScreen,
+    SarakCatalogGrid: widen(SarakCatalogGrid),
+    SarakExpandableMatrix,
 } as const;
 
 /** União dos `type` nativos oficiais — fonte do `ComponentType` (Spec 22, Regra 1). */
