@@ -164,3 +164,7 @@ export {
     default as SarakManifestRendererDefault,
     type SarakManifestRendererProps,
 } from './SarakManifestRenderer';
+
+// Spec 08 §3.1 — Manifesto-starter oficial (shell + navegação + Design Engine).
+// O mesmo conteúdo é distribuído como arquivo em `templates/app-starter.manifest.json`.
+export { SARAK_STARTER_MANIFEST } from './templates/starter';

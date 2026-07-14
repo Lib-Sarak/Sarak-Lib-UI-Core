@@ -38,7 +38,9 @@ Skill responsável pela instalação plug-and-play do Motor Declarativo (Sarak-L
 4. **Instanciação da DataStore e Interceptors**
    - **Ação:** Crie o arquivo de inicialização exportando uma instância isolada de `SarakDataStore`.
    - **Ação:** Configure o `networkInterceptor` (para injetar tokens JWT e cookies em chamadas de API geradas pela Sarak) e o `routerInterceptor` (para conectar o router do framework cliente, ex: `useRouter` do Next.js).
-5. **Injeção do Manifest Renderer**
+5. **Injeção do Manifest Renderer (a partir do TEMPLATE oficial)**
+   - **Ação:** Copie o manifesto-starter distribuído pela lib — `node_modules/@sarak/lib-ui-core/templates/app-starter.manifest.json` — para o projeto do consumidor (ex.: `src/manifests/app.manifest.json`). Ele já traz shell + `SarakShellNav` + rota inicial + **a rota `/design` com o `CustomizationPanel` (Design Engine)**. Alternativa por import: `import { SARAK_STARTER_MANIFEST } from '@sarak/lib-ui-core'`.
+   - **Regra do Design Engine:** a rota `/design` e o item "Design Engine" do menu fazem parte do contrato de instalação — todo consumidor nasce com a personalização visual carregada. NÃO os remova ao editar o manifesto; apenas acrescente as rotas do sistema.
    - **Ação:** Substitua o conteúdo estático da página/layout raiz ou crie um Ponto de Entrada base injetando o componente mestre: `<SarakManifestRenderer payload={jsonDaPagina} dataStore={store} networkInterceptor={apiHandler} routerInterceptor={routeHandler} route={rotaAtiva} />`, envolto por `<SarakUIProvider>`.
    - **`route` (app multi-página):** informe a rota ativa (do router do host) — o manifesto reage via `shell`/`routes` e o binding reservado `{{$route}}` (estado ativo da navegação). O host é dono da URL; a Sarak apenas reage.
    - **`manifestLoader` (opcional):** se o manifesto declarar rotas lazy (`"routes": { "/x": { "lazy": "id" } }`), injete `manifestLoader={(id) => Promise<nóJSON>}` (fetch do seu backend, import de arquivo, etc.). Sem loader, a rota lazy degrada para um Fallback visível.

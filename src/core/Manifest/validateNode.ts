@@ -94,7 +94,10 @@ const validateSingleNode = (
     }
 
     // Regra 3: toda chave de topo deve ser estrutural OU diretiva reservada conhecida.
+    // Exceção documental: `$comment` (convenção do JSON-Schema) é anotação de autor —
+    // ignorada pelo motor, permitida em qualquer nó (manifesto é JSON editado à mão).
     for (const key of Object.keys(node)) {
+        if (key === '$comment') continue;
         if (isStructuralKey(key) || isReservedDirective(key)) continue;
         errors.push({
             path,

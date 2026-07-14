@@ -20,6 +20,7 @@ O catálogo oficial de `type`s, props, ações, pipes e diretivas é **GERADO do
 
 ## Workflow (Composição do JSON)
 
+0. **Parta do template oficial** — a lib distribui `templates/app-starter.manifest.json` (também exportado como `SARAK_STARTER_MANIFEST`): shell + `SarakShellNav` + rota inicial + rota `/design` com o `CustomizationPanel`. Edite/acrescente rotas a partir dele. **A rota `/design` (Design Engine) é contrato de instalação — não a remova.** Anotações são permitidas em qualquer nó via chave `$comment` (ignorada pelo motor).
 1. **A Raiz do Nó (ManifestNode)**
    - Todo JSON começa com um nó. A chave obrigatória é `type` (ex.: `"type": "SarakGrid"`). O array `children` aninha sub-nós.
    - **Conteúdo textual:** `"props": { "children": "texto" }` renderiza o texto (interpolável). `children` estruturais (array de nós) têm prioridade sobre `props.children`.
