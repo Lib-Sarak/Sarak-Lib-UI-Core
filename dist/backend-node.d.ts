@@ -40,6 +40,45 @@ declare function createBrandingApiHandler(options: BrandingApiOptions): {
 };
 
 /**
+ * Adaptador Express/Connect da persistência de UI (Spec 08 §3.1 — Instalação Completa).
+ *
+ * Os handlers oficiais (`createDesignApiHandler`/`createBrandingApiHandler`) falam o
+ * padrão Web (`Request`/`Response`, formato App Router do Next.js). Consumidores
+ * Express/Fastify/Node puro usam ESTE adaptador — uma linha:
+ *
+ *   app.use(createSarakUIExpressMiddleware({ connectionString: './database.sqlite' }));
+ *
+ * Ele atende `GET/POST <basePath>/design` e `GET/POST <basePath>/branding`
+ * (default `/api/ui` — o mesmo `DEFAULT_UI_BASE_URL` que o SarakUIProvider chama),
+ * sem depender do pacote `express` (assinatura connect-style estrutural).
+ */
+
+/** Forma mínima do request Node/Express (estrutural — sem dependência de tipos). */
+interface NodeRequestLike {
+    method?: string;
+    url?: string;
+    originalUrl?: string;
+    headers: Record<string, string | string[] | undefined>;
+    /** Corpo já parseado por `express.json()`; ausente em GET. */
+    body?: unknown;
+}
+/** Forma mínima do response Node/Express. */
+interface NodeResponseLike {
+    statusCode: number;
+    setHeader(name: string, value: string): void;
+    end(chunk?: string): void;
+}
+interface SarakUIMiddlewareOptions extends DesignApiOptions {
+    /** Prefixo dos endpoints de UI (default: `/api/ui` — o que o Provider chama). */
+    basePath?: string;
+}
+/**
+ * Middleware connect-style com os endpoints de persistência do Design Engine.
+ * Rotas fora do `basePath` seguem para o próximo handler (`next()`).
+ */
+declare function createSarakUIExpressMiddleware(options: SarakUIMiddlewareOptions): (req: NodeRequestLike, res: NodeResponseLike, next: () => void) => Promise<void>;
+
+/**
  * Sarak Industrial Design Schema (v11.0)
  *
  * Define o contrato para mapeamento de 100% das funcionalidades e componentes.
@@ -95,4 +134,4 @@ declare function getDesignCatalog(): DesignCatalogToken[];
  */
 declare function getDesignScaffold(): DesignScaffoldToken[];
 
-export { type DesignApiOptions, type DesignCatalogToken, type DesignScaffoldToken, createBrandingApiHandler, createDesignApiHandler, getDesignCatalog, getDesignScaffold, setupUIDatabase };
+export { type DesignApiOptions, type DesignCatalogToken, type DesignScaffoldToken, type SarakUIMiddlewareOptions, createBrandingApiHandler, createDesignApiHandler, createSarakUIExpressMiddleware, getDesignCatalog, getDesignScaffold, setupUIDatabase };

@@ -13,12 +13,14 @@ npm install framer-motion lucide-react recharts echarts echarts-for-react reactf
 ```tsx
 import ReactDOM from 'react-dom/client';
 import { SarakUIProvider, SarakManifestRendererDefault, createSarakDataStore } from '@sarak/lib-ui-core';
+import appManifest from './manifests/app.manifest.json'; // cópia de templates/app-starter.manifest.json
 
-const store = createSarakDataStore({ initialState: {} });
+// O argumento É o estado inicial (chaves que os bindings {{...}} leem).
+const store = createSarakDataStore({ feedbackMessage: '' });
 
 ReactDOM.createRoot(document.getElementById('root')!).render(
     <SarakUIProvider>
-        <SarakManifestRendererDefault payload={meuManifesto} dataStore={store} />
+        <SarakManifestRendererDefault payload={appManifest} dataStore={store} route={window.location.pathname} />
     </SarakUIProvider>,
 );
 ```
@@ -36,14 +38,15 @@ import { SarakUIProvider } from '@sarak/lib-ui-core';
 
 **Por que isso é correto:** a injeção automática (runtime, via JS) só acontece depois que o bundle do cliente executa — em SSR isso significa um instante sem estilo até a hidratação. Importar o CSS manualmente no `layout.tsx` server-side elimina esse flash. Essa é a ÚNICA situação em que o import manual de CSS é recomendado — no caso comum (SPA), não faça isso.
 
-## Exemplo Bom (Design Engine)
+## Exemplo Bom (Design Engine — Next.js)
 **Situação:** O Agente detectou que o projeto é um frontend Next.js sem backend Python separado.
 
 **Antes:** O projeto não tinha a Sarak UI instalada. O banco de dados precisava das tabelas do Design Engine.
 
 **Depois (instrumentation.ts):**
 ```typescript
-import { setupUIDatabase } from '@sarak/lib-ui-core/backend/node/database';
+// O subpath exportado é `backend/node` (o deep-import `backend/node/database` NÃO existe no exports map).
+import { setupUIDatabase } from '@sarak/lib-ui-core/backend/node';
 
 export async function register() {
     if (process.env.NEXT_RUNTIME === 'nodejs' && process.env.DATABASE_URL) {
@@ -53,7 +56,26 @@ export async function register() {
 }
 ```
 
-**Por que isso é correto:** Ele delega a criação do schema e das tabelas `custom_themes` completamente para a ponte oficial `bridge-node`, sem precisar rodar queries `.sql` avulsas na aplicação.
+**Por que isso é correto:** Ele delega a criação do schema e das tabelas `custom_themes` completamente para a ponte oficial `bridge-node`, sem precisar rodar queries `.sql` avulsas na aplicação. Os handlers de rota (`createDesignApiHandler`/`createBrandingApiHandler`) já saem no formato do App Router.
+
+## Exemplo Bom (Design Engine — Express/Node puro)
+**Situação:** O consumidor tem um backend Express (ex.: SQLite local) e quer a persistência de temas do Design Engine sem escrever adaptação de rota.
+
+```typescript
+import express from 'express';
+import { setupUIDatabase, createSarakUIExpressMiddleware } from '@sarak/lib-ui-core/backend/node';
+
+const app = express();
+app.use(express.json());
+
+// 1. Schema/tabelas do Design Engine (Postgres ou SQLite — dialeto auto-detectado).
+setupUIDatabase('./database.sqlite');
+
+// 2. Endpoints que o SarakUIProvider chama (GET/POST /api/ui/design e /api/ui/branding).
+app.use(createSarakUIExpressMiddleware({ connectionString: './database.sqlite' }));
+```
+
+**Por que isso é correto:** duas linhas entregam exatamente o contrato que o frontend espera (`DEFAULT_UI_BASE_URL = /api/ui`) — sem o consumidor traduzir `Request`/`Response` Web para Express à mão.
 
 ## Exemplo Ruim
 **Situação:** O Agente tentou instalar o Sarak UI Core.
