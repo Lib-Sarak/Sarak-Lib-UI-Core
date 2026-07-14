@@ -12,6 +12,14 @@ export interface SarakTypographyProps extends React.HTMLAttributes<HTMLElement> 
     as?: React.ElementType;
     /** Sobrepõe `--sarak-h-transform` só para esta instância. */
     transform?: 'none' | 'uppercase' | 'capitalize';
+    /**
+     * Texto via prop (string), pensado para uso via manifesto (Spec 22/24): o motor
+     * de Manifesto só entrega `children` como nós filhos aninhados, nunca como string
+     * crua — `content` é o canal de texto que `props.content` (com interpolação
+     * `{{...}}` já resolvida em `LeafNode`) alimenta. Tem prioridade sobre `children`
+     * quando ambos são passados.
+     */
+    content?: string;
     children?: React.ReactNode;
 }
 
@@ -84,6 +92,7 @@ export const SarakTypography: React.FC<SarakTypographyProps> = ({
     transform,
     className = '',
     style,
+    content,
     children,
     ...props
 }) => {
@@ -100,7 +109,7 @@ export const SarakTypography: React.FC<SarakTypographyProps> = ({
 
     return (
         <Tag className={className} style={computedStyle} {...props}>
-            {children}
+            {content ?? children}
         </Tag>
     );
 };

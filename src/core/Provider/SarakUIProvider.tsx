@@ -23,6 +23,8 @@ import { SovereignThemeInjector } from './components/SovereignThemeInjector';
 import { SarakBackgroundRenderer } from '../Design/components/SarakBackgroundRenderer';
 import { GLOBAL_THEMES } from '../Design/presets/themes/index';
 import { DeviceProvider } from './DeviceProvider';
+import { SarakToastProvider } from '../../components/atomic/Feedback/SarakToast';
+import { SarakOverlayProvider } from '../../components/atomic/Modals/SarakOverlayProvider';
 
 // Re-exports para manter compatibilidade com arquivos que importam do Provider
 export * from './types';
@@ -184,7 +186,14 @@ export const SarakUIProvider: React.FC<SarakUIProviderProps> = ({
                     mode={design?.mode as 'light' | 'dark' | undefined}
                 />
 
-                {shouldRenderChildren ? children : null}
+                {/* Zero-config (Spec 08 §2): os hosts de feedback do Dispatcher
+                    (trigger_toast / open_modal / open_drawer — Spec 25) já nascem
+                    montados — o consumidor não precisa (nem deve) montá-los à mão. */}
+                {shouldRenderChildren ? (
+                    <SarakToastProvider>
+                        <SarakOverlayProvider>{children}</SarakOverlayProvider>
+                    </SarakToastProvider>
+                ) : null}
             </UIContext.Provider>
         </DeviceProvider>
     );

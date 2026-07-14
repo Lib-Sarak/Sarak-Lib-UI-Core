@@ -16,9 +16,12 @@ Atua como um Linter estático e Gatekeeper de Segurança para os JSONs da Engine
 
 Ao ser instruído para auditar um Manifesto JSON, siga a sequência:
 
-1. **Validação Estrutural (Schema e Nós)**
-   - Cheque se todo objeto de interface (Nó) do JSON possui a propriedade mandatória `type`.
-   - No bloco de `actions`, assegure-se de que os tipos listados são nativos e suportados pelo Dispatcher da Sarak (ex: `api_call`, `mutate_state`, `navigate`, `trigger_toast`). Tipos inventados travarão a página.
+1. **Validação Estrutural (Schema e Nós) — contra o catálogo GERADO**
+   - Carregue `docs/manifest-catalog.json` (na lib ou em `node_modules/@sarak/lib-ui-core/docs/`) — ele é derivado do código e lista todos os `type`s, props, ações, pipes e diretivas válidos.
+   - Cheque se todo objeto de interface (Nó) do JSON possui a propriedade mandatória `type` **e se o valor existe em `components` do catálogo** (fora dele = Fallback garantido).
+   - Confira cada prop do nó contra as props do catálogo para aquele `type` (prop inexistente é ignorada em silêncio — reporte como WARNING).
+   - No bloco de `actions`, assegure-se de que os tipos listados existem em `actions` do catálogo (ex.: `api_call`, `mutate_state`, `navigate`, `trigger_toast`, `open_modal`). Em `api_call`, o corpo é `payload.params` — a chave `body` NÃO existe (CRITICAL se aparecer).
+   - Pipes usados em `{{ | }}` devem existir em `pipes` do catálogo; diretivas de nó devem existir em `directives`.
 2. **Segurança do Safe Evaluator (Crítico)**
    - Vasculhe cirurgicamente os blocos `"{{ }}"` buscando por strings proibidas que representem injeção de script.
    - **Bloqueio Imediato:** Qualquer presença de `<script>`, `<style>`, ou tentativas de invocar `window.*` e `document.*` dentro das condicionais ou pipes do JSON deve ser vetada. A Engine exige que o JSON seja burro e dependa apenas da DataStore.

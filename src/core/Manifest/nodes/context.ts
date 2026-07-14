@@ -13,6 +13,12 @@ import type { NetworkInterceptor } from '../DataSource/useDataSource';
 import type { NavigateFn, OverlayController } from '../Dispatcher';
 import type { ToastController } from '../../../components/atomic/Feedback/SarakToast';
 
+/**
+ * Carregador de manifesto injetado pelo importador (Spec 33, alvo lazy de rota):
+ * dado o id declarado em `routes: { "/x": { lazy: "id" } }`, devolve a subárvore.
+ */
+export type ManifestLoaderFn = (id: string) => Promise<ManifestNode>;
+
 /** Contexto compartilhado por toda a árvore durante uma renderização. */
 export interface NodeRenderContext {
     registry: ComponentRegistry;
@@ -26,6 +32,8 @@ export interface NodeRenderContext {
     overlay?: OverlayController;
     /** Rota ativa informada pelo host (Spec 33, Regra 3): a Sarak reage, não controla a URL. */
     route?: string;
+    /** Carregador de subárvores lazy de rota (Spec 33) — injetado pelo importador. */
+    manifestLoader?: ManifestLoaderFn;
     /** Tela de recuperação global renderizada pelos Error Boundaries (Spec 27, Regra 2). */
     fallbackErrorUI?: ManifestNode;
     /**

@@ -16,7 +16,8 @@ describe('Spec 12 (Onda 9) — SarakSparkline: micro-gráfico sem eixos', () => 
         const { container } = render(<SarakSparkline data={[1, 2, 3]} />);
         const stroke = container.querySelector('polyline')!.getAttribute('stroke')!;
         expect(stroke).toContain('--sarak-chart-primary');
-        expect(stroke).toContain('--sx-color-primary-base');
+        // Fallback encadeado no namespace oficial --sarak-* (Spec 00: `--sx-*` é proibido).
+        expect(stroke).toContain('--sarak-primary-color');
     });
 
     it('renderiza uma barra por valor na variante bar', () => {

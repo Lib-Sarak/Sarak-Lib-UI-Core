@@ -147,7 +147,12 @@ export const DESIGN_MANIFEST: Record<string, {
     systemName: { attr: 'data-system-name' },
     logoUrl: { attr: 'data-logo-url' },
     logoDarkUrl: { attr: 'data-logo-dark' },
-    logoScale: { vars: ['--logo-scale'], transform: (v: SarakTokenValue) => String(v) || '1.0' },
+    // `String(undefined)` é "undefined" (truthy) — o fallback via `||` nunca disparava
+    // e a var CSS recebia a string "undefined". Ausência real (null/undefined/'') → 1.0.
+    logoScale: {
+        vars: ['--logo-scale'],
+        transform: (v: SarakTokenValue) => (v == null || String(v).trim() === '' ? 1.0 : String(v)),
+    },
     logoPosition: { attr: 'data-logo-position' },
     interfaceElasticity: { vars: ['--sarak-elasticity'] },
     isSplitViewEnabled: { attr: 'data-split-view' },

@@ -47,6 +47,7 @@ import {
     SarakStepper,
     SarakBreadcrumbs,
     SarakPagination,
+    SarakShellNav,
 } from '../../../components/atomic/Navigation';
 import {
     SarakMarkdownRenderer,
@@ -76,8 +77,12 @@ import {
     SarakAuthScreen,
     SarakCatalogGrid,
     SarakExpandableMatrix,
+    ImageCard,
+    SarakPageTransition,
 } from '../../../components/atomic/Templates';
-import type { ComponentType } from 'react';
+import { SarakAnalyticalPage } from '../../../components/Layout/SarakAnalyticalPage';
+import { SarakHidden } from '../../../components/Layout/SarakHidden';
+import { lazy, type ComponentType } from 'react';
 
 /**
  * Tipo largo usado só para os componentes cuja interface de Props não é reexportada
@@ -88,6 +93,21 @@ import type { ComponentType } from 'react';
  */
 type AnyManifestComponent = ComponentType<Record<string, unknown>>;
 const widen = (component: unknown): AnyManifestComponent => component as AnyManifestComponent;
+
+/**
+ * Painel do Design Engine (Spec 01) — o ÚNICO type nativo servido pela Camada 3
+ * (`features/`). Entra via `React.lazy` (Regra 5): o Registry (Camada 1, ponto de
+ * composição oficial — Spec 00 §2) só referencia o módulo de features por import
+ * dinâmico, então o bloco pesado do DesignEngine não entra no caminho crítico do
+ * bundle nem cria ciclo em runtime. O LeafNode o isola num `<Suspense>` local
+ * (HEAVY_LAZY). Os ids legados do Discovery ('mx-customization'/'personalization')
+ * continuam registrados em `src/index.ts` — o gate de paridade cobra essa equivalência.
+ */
+const CustomizationPanel = lazy(() =>
+    import('../../../features/DesignEngine/Library/CustomizationPanel').then((mod) => ({
+        default: mod.CustomizationPanel,
+    })),
+);
 
 /**
  * Registro nativo. `as const` em conjunto com `satisfies` mantém a inferência das
@@ -143,6 +163,9 @@ export const NATIVE_COMPONENTS = {
     SarakStepper,
     SarakBreadcrumbs,
     SarakPagination,
+    // Navegação de shell guiada por dados (Spec 33): menu com grupos + estado ativo.
+    // Par canônico no manifesto: `activeRoute: "{{$route}}"` + ação navigate `{{$event}}`.
+    SarakShellNav: widen(SarakShellNav),
     // Renderizadores de mídia (Spec 15). Markdown + PDFViewer são PESADOS (react-markdown,
     // pdfjs-dist) → `React.lazy`; o LeafNode os envolve num <Suspense> localizado (HEAVY_LAZY).
     // Lightbox é leve (overlay in-house) → SEM lazy.
@@ -180,6 +203,14 @@ export const NATIVE_COMPONENTS = {
     SarakAuthScreen,
     SarakCatalogGrid: widen(SarakCatalogGrid),
     SarakExpandableMatrix,
+    ImageCard: widen(ImageCard),
+    SarakPageTransition: widen(SarakPageTransition),
+    // Fôrmas de página e utilitário de dispositivo (components/Layout). As regiões
+    // ReactNode (navBar/mainContent/sidePanel) são alimentadas via `slots` do nó.
+    SarakAnalyticalPage: widen(SarakAnalyticalPage),
+    SarakHidden: widen(SarakHidden),
+    // Painel do Design Engine (Spec 01) — Camada 3 via React.lazy (ver acima).
+    CustomizationPanel,
 } as const;
 
 /** União dos `type` nativos oficiais — fonte do `ComponentType` (Spec 22, Regra 1). */

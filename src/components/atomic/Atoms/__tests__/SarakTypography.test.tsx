@@ -41,4 +41,12 @@ describe('SarakTypography', () => {
         const el = screen.getByTestId('muted-text');
         expect(el.style.color).toContain('--sarak-text-muted');
     });
+
+    it('`content` (canal de manifesto) tem prioridade sobre `children`', () => {
+        // O Manifest Engine só entrega texto via prop (Spec 22/24) — `children` nunca
+        // chega como string crua nesse caminho (só como nós filhos aninhados).
+        render(<SarakTypography content="Do manifesto">Do TSX direto</SarakTypography>);
+        expect(screen.getByText('Do manifesto')).toBeInTheDocument();
+        expect(screen.queryByText('Do TSX direto')).not.toBeInTheDocument();
+    });
 });

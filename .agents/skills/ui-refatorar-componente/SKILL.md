@@ -21,17 +21,20 @@ Esta skill deve ser acionada SEMPRE que o usuário solicitar a alteração da ti
    - Antes de remover qualquer propriedade do Schema, mapeie via `grep_search` se algum componente em `src/components/atomic/` ou `src/features/` ainda consome este token.
    - Caso encontre, exija que o usuário autorize a remoção ou refatoração do código consumidor antes de prosseguir.
 
-2. **Refatoração nas 5 Camadas (A Purga)**
+2. **Refatoração nas 6 Camadas (A Purga)**
    - **Ação:** O agente deve remover ou atualizar a chave simultaneamente em:
      1. **Schema:** A interface TypeScript (`types.ts` ou MasterMap schemas).
      2. **MasterMap:** A definição estrita do dicionário.
      3. **Banco de Dados:** O arquivo de migração/espelho `theme_table_mapping.json`.
      4. **Gêmeo Digital:** As lógicas do motor `DesignEngine` se houver reflexos estritos.
      5. **Catálogo JSON:** As partições JSON (`partitions/`) base do catálogo.
+     6. **Registry do Manifesto:** ao deletar/renomear um COMPONENTE, remova/renomeie a entrada no `NATIVE_COMPONENTS` (`src/core/Manifest/Registry/nativeComponents.ts`) ou em `manifestExclusions.ts` — renomear sem migrar o `type` quebra silenciosamente todos os manifestos dos consumidores; trate rename de `type` como BREAKING CHANGE documentado.
 
 3. **Validação de Integridade (Paridade)**
    - **Ação:** Assim como na criação, a refatoração exige auditoria. Rode a verificação de paridade para garantir que o token removido não ficou para trás em algum dos dicionários do banco de dados (gerando dados órfãos).
    - Execute o script via CLI: `node .agents/skills/ui-auditoria-modulo/scripts/auditor_paridade.mjs`.
+   - Execute o gate do Registry: `npx vitest run src/core/Manifest/__tests__/RegistryParity.test.tsx`.
+   - Regenere o catálogo dinâmico: `npm run catalog` (o build falha via `catalog:check` se defasado) e commite.
 
 4. **Finalização**
    - Informe o usuário sobre os arquivos alterados e entregue o laudo do `auditor_paridade` aprovando a mudança.
@@ -42,5 +45,6 @@ Esta skill deve ser acionada SEMPRE que o usuário solicitar a alteração da ti
 
 ## Checklist
 - [ ] Mapeou os consumidores do token no código atual?
-- [ ] Aplicou a alteração nas 5 camadas de dados e schemas?
+- [ ] Aplicou a alteração nas 6 camadas de dados e schemas (incluindo Registry/exclusões)?
 - [ ] Executou o `auditor_paridade.mjs` com zero falhas?
+- [ ] Gate `RegistryParity.test.tsx` verde e catálogo regenerado (`npm run catalog`)?

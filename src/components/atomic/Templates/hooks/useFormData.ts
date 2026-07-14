@@ -1,4 +1,4 @@
-import { useEffect, useReducer } from 'react';
+import { useEffect, useReducer, useRef } from 'react';
 import api from '../../../../shared/services/api';
 
 type State<T> = {
@@ -61,6 +61,14 @@ export const useFormData = <T extends Record<string, unknown>>(
         status: null
     });
 
+    // `initialData`/`mapping` são valores INICIAIS: lidos via ref, FORA das deps do
+    // efeito. Com eles nas deps, um literal inline (`initialData={{}}`) re-criado a
+    // cada render disparava o efeito de novo → refetch infinito em modo edit
+    // (loop de render + chamadas à API sem fim — era o vazamento que derrubava a
+    // suíte inteira por OOM e martelaria a API do consumidor em produção).
+    const initialDataRef = useRef(initialData);
+    const mappingRef = useRef(mapping);
+
     useEffect(() => {
         const fetchData = async () => {
             try {
@@ -77,13 +85,14 @@ export const useFormData = <T extends Record<string, unknown>>(
             fetchData();
         } else {
             // Em modo create, garantir que campos definidos no mapping existam no formData
-            if (mapping) {
-                const base: T = { ...initialData };
-                Object.keys(mapping).forEach(k => { if (base[k] === undefined) (base as Record<string, unknown>)[k] = ''; });
+            const mapKeys = mappingRef.current;
+            if (mapKeys) {
+                const base: T = { ...initialDataRef.current };
+                Object.keys(mapKeys).forEach(k => { if (base[k] === undefined) (base as Record<string, unknown>)[k] = ''; });
                 dispatch({ type: 'SET_FORM_DATA', payload: base });
             }
         }
-    }, [endpoint, mode, initialData, mapping]);
+    }, [endpoint, mode]);
 
     const handleChange = (key: string, value: unknown) => {
         dispatch({ type: 'UPDATE_FIELD', key, value });

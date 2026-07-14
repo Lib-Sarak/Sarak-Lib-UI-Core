@@ -35,6 +35,7 @@ const HEAVY_LAZY: ReadonlySet<string> = new Set([
     'SarakDataTable',
     'SarakMarkdownRenderer',
     'SarakPDFViewer',
+    'CustomizationPanel',
 ]);
 
 /** Maior `debounce`/`throttle` declarado entre as ações do nó (Spec 25, Regra 3). */
@@ -84,8 +85,11 @@ export const LeafNode: React.FC<NodeRendererProps> = ({ node, path, scope, ctx }
     );
 
     // Closure sempre atual (lê scope/global frescos) por trás de uma identidade estável.
-    const latest = useRef<() => void>(() => undefined);
-    latest.current = (): void => {
+    // Recebe o valor emitido pelo evento (`onChange(value)`) e o expõe às ações como
+    // `{{$event}}` — é o que permite a um átomo data-driven (ex.: SarakShellNav) dizer
+    // ao Dispatcher QUAL item foi acionado, 100% via JSON (Spec 25, extensão $event).
+    const latest = useRef<(eventValue?: unknown) => void>(() => undefined);
+    latest.current = (eventValue?: unknown): void => {
         if (!actions || actions.length === 0) return;
         const dispatchCtx: DispatchContext = {
             store: ctx.store,
@@ -94,14 +98,15 @@ export const LeafNode: React.FC<NodeRendererProps> = ({ node, path, scope, ctx }
             navigate: ctx.navigate,
             overlay: ctx.overlay,
             form: formScope ?? undefined,
-            scope,
+            scope: eventValue === undefined ? scope : { ...scope, $event: eventValue },
             global: ctx.global,
         };
         void runActions(actions, dispatchCtx, onError);
     };
 
-    const runner = useMemo<() => void>(() => {
-        let handler: () => void = () => latest.current();
+    const runner = useMemo<(eventValue?: unknown) => void>(() => {
+        let handler: (eventValue?: unknown) => void = (eventValue?: unknown) =>
+            latest.current(eventValue);
         if (throttleMs > 0) handler = throttle(handler, throttleMs);
         if (debounceMs > 0) handler = debounce(handler, debounceMs);
         return handler;
@@ -158,13 +163,15 @@ export const LeafNode: React.FC<NodeRendererProps> = ({ node, path, scope, ctx }
     }
 
     // onChange: escreve o valor de volta (model) e/ou dispara as ações (Dispatcher).
+    // O valor coerido do evento segue junto para as ações como `{{$event}}`.
     if (modelPath || actionRunner) {
         finalProps.onChange = (event: unknown): void => {
+            const value = coerceEventValue(event);
             if (modelPath && !isDisabled) {
-                ctx.store?.set(modelPath, coerceEventValue(event));
+                ctx.store?.set(modelPath, value);
                 formScope?.markDirty(modelPath);
             }
-            actionRunner?.();
+            actionRunner?.(value);
         };
     }
 
@@ -175,20 +182,43 @@ export const LeafNode: React.FC<NodeRendererProps> = ({ node, path, scope, ctx }
         };
     }
 
-    // Clique (botões) dispara a cadeia do Dispatcher.
+    // Clique (botões) dispara a cadeia do Dispatcher. O MouseEvent do React é
+    // descartado de propósito: clique não carrega valor, logo não produz `$event`.
     if (actionRunner) {
-        finalProps.onClick = actionRunner;
+        finalProps.onClick = (): void => actionRunner();
     }
 
-    const children = node.children?.map((child, index) => (
-        <ManifestNodeRenderer
-            key={`${path}.children[${index}]`}
-            node={child}
-            path={`${path}.children[${index}]`}
-            scope={scope}
-            ctx={ctx}
-        />
-    ));
+    // `children` estruturais (nós) têm prioridade; sem eles, `props.children` (texto
+    // interpolado do JSON) é o conteúdo. Sem este fallback o JSX abaixo SEMPRE
+    // sobrescreveria `finalProps.children` com `undefined` — era o bug que fazia
+    // `"props": { "children": "texto" }` renderizar vazio em silêncio.
+    const children: React.ReactNode =
+        node.children?.map((child, index) => (
+            <ManifestNodeRenderer
+                key={`${path}.children[${index}]`}
+                node={child}
+                path={`${path}.children[${index}]`}
+                scope={scope}
+                ctx={ctx}
+            />
+        )) ?? (finalProps.children as React.ReactNode);
+
+    // Slots nomeados (Spec 20, Regra 6): cada slot vira uma prop ReactNode do átomo
+    // (ex.: `slots.sidePanel` → prop `sidePanel`). É o que permite manifestar moldes
+    // que recebem regiões nomeadas (SarakAnalyticalPage, headers de card, etc.).
+    if (node.slots) {
+        for (const [slotName, slotNode] of Object.entries(node.slots)) {
+            finalProps[slotName] = (
+                <ManifestNodeRenderer
+                    key={`${path}.slots.${slotName}`}
+                    node={slotNode}
+                    path={`${path}.slots.${slotName}`}
+                    scope={scope}
+                    ctx={ctx}
+                />
+            );
+        }
+    }
 
     const element = <Component {...finalProps}>{children}</Component>;
 

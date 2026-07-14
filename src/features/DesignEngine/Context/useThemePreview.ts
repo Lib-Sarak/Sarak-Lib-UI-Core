@@ -45,8 +45,16 @@ export const useThemePreview = (
         themeName: ""
     });
 
+    // Bailout: se nenhum valor muda de fato, devolve `prev` (React não re-renderiza).
+    // Sem isso, o efeito de sync abaixo (que depende de `customThemes`/`layouts`,
+    // objetos frequentemente re-criados pelo chamador a cada render) entrava em
+    // loop infinito de render — mesmo padrão do bug do useFormData.
     const updateState = useCallback((updates: Partial<ThemePreviewState>) => {
-        setState(prev => ({ ...prev, ...updates }));
+        setState(prev => {
+            const keys = Object.keys(updates) as Array<keyof ThemePreviewState>;
+            const changed = keys.some((key) => prev[key] !== updates[key]);
+            return changed ? { ...prev, ...updates } : prev;
+        });
     }, []);
 
     // Sync local preview with the selected theme from list

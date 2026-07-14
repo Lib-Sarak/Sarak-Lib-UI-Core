@@ -39,7 +39,11 @@ Skill responsável pela instalação plug-and-play do Motor Declarativo (Sarak-L
    - **Ação:** Crie o arquivo de inicialização exportando uma instância isolada de `SarakDataStore`.
    - **Ação:** Configure o `networkInterceptor` (para injetar tokens JWT e cookies em chamadas de API geradas pela Sarak) e o `routerInterceptor` (para conectar o router do framework cliente, ex: `useRouter` do Next.js).
 5. **Injeção do Manifest Renderer**
-   - **Ação:** Substitua o conteúdo estático da página/layout raiz ou crie um Ponto de Entrada base injetando o componente mestre: `<SarakManifestRenderer payload={jsonDaPagina} dataStore={store} networkInterceptor={apiHandler} routerInterceptor={routeHandler} />`, envolto por `<SarakUIProvider>`.
+   - **Ação:** Substitua o conteúdo estático da página/layout raiz ou crie um Ponto de Entrada base injetando o componente mestre: `<SarakManifestRenderer payload={jsonDaPagina} dataStore={store} networkInterceptor={apiHandler} routerInterceptor={routeHandler} route={rotaAtiva} />`, envolto por `<SarakUIProvider>`.
+   - **`route` (app multi-página):** informe a rota ativa (do router do host) — o manifesto reage via `shell`/`routes` e o binding reservado `{{$route}}` (estado ativo da navegação). O host é dono da URL; a Sarak apenas reage.
+   - **`manifestLoader` (opcional):** se o manifesto declarar rotas lazy (`"routes": { "/x": { "lazy": "id" } }`), injete `manifestLoader={(id) => Promise<nóJSON>}` (fetch do seu backend, import de arquivo, etc.). Sem loader, a rota lazy degrada para um Fallback visível.
+   - **Feedback é zero-config:** `trigger_toast`/`open_modal`/`open_drawer` do manifesto já funcionam — o `SarakUIProvider` monta os hosts de toast/overlay sozinho. NÃO monte `SarakToastProvider`/`SarakOverlayProvider` manualmente.
+   - **Design Engine via manifesto:** o painel de personalização é um `type` nativo — inclua uma rota com `{ "type": "CustomizationPanel" }` (e um item no `SarakShellNav`) para entregar a personalização visual completa ao usuário final. A persistência de temas usa o banco configurado na Etapa 1 (`setupUIDatabase`).
    - **CSS é automático:** importar `SarakUIProvider` já injeta o stylesheet completo em runtime (um `<style id="sarak-ui-core-styles">` no `<head>`) — nenhum import manual de CSS é necessário para o caso comum (SPA/Vite/CRA).
    - **Exceção (SSR/Next.js, opcional):** se quiser o CSS já presente no HTML gerado pelo servidor (evita um flash de conteúdo sem estilo no primeiro paint), importe manualmente `import '@sarak/lib-ui-core/dist/sarak.css';` no `layout.tsx`/`_app.tsx`. Isso é uma otimização, não um requisito — sem ele a UI funciona e se estiliza assim que o JS roda no cliente.
    - **Se, mesmo assim, a tela renderizar sem estilo:** o `SarakUIProvider` loga `console.error('[Sarak] CSS não detectado...')` em desenvolvimento quando a injeção automática falha (ex.: bundler removendo o side-effect via tree-shaking agressivo) — confira o console antes de investigar mais fundo.
@@ -55,7 +59,7 @@ Skill responsável pela instalação plug-and-play do Motor Declarativo (Sarak-L
    - **Ação:** Injete o resultado no Provider: `<SarakUIProvider options={{ designAgent: { sendPrompt } }}>`.
 7. **Handoff (Ponto de Transição)**
    - **Ação:** Após a infraestrutura base estar acoplada e renderizando com sucesso um manifesto vazio ou de teste (fallback), informe ao usuário que a integração arquitetural terminou.
-   - **Próximo Passo Obrigatório:** Oriente o usuário (ou você mesmo no próximo turno) a invocar a skill **`ui-integra-escrever-manifesto`** para começar, de fato, a construir as telas (escrever o JSON).
+   - **Próximo Passo Obrigatório:** Oriente o usuário (ou você mesmo no próximo turno) a invocar a skill **`ui-integra-escrever-manifesto`** para começar, de fato, a construir as telas (escrever o JSON) — ela usa o catálogo GERADO `node_modules/@sarak/lib-ui-core/docs/manifest-catalog.md` como fonte da verdade de `type`s e props.
 
 ## Regras (SRP - Responsabilidade Única)
 - **NÃO** ensine ou tente montar telas, formulários ou laços de repetição (`renderFor`) nesta skill. O foco aqui é estrito: DevOps e Infraestrutura Front-end.
@@ -63,4 +67,5 @@ Skill responsável pela instalação plug-and-play do Motor Declarativo (Sarak-L
 
 ## Referências
 - Spec 11 (`11-engine-declarativa-e-manifestos.md`) da Biblioteca Core.
+- `docs/manifest-catalog.md` (no pacote) — catálogo gerado de types/props/ações/pipes/diretivas.
 - `references/examples.md` — Exemplos práticos do padrão de injeção de dependência e integração do Renderer.

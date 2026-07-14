@@ -22,6 +22,14 @@ Se a injeção automática falhar por qualquer motivo (ex.: bundler removendo o 
 O consumidor nunca deve tentar invocar componentes atômicos complexos que dependam de variáveis dinâmicas (quase todos) sem abraçar a árvore do React com o `SarakUIProvider`.
 O Provider é o único canal aprovado para estabelecer o estado de UI. Qualquer tentativa de aplicar design tokens puramente via strings (ignorando o Provider) resultará num sistema quebradiço.
 
+**Zero-config de feedback:** o Provider monta automaticamente os hosts de toast e overlay (`SarakToastProvider`/`SarakOverlayProvider`) — as ações declarativas `trigger_toast`, `open_modal` e `open_drawer` funcionam na instalação canônica sem nenhum passo extra. O consumidor NÃO deve montá-los manualmente.
+
+## 3.1 Contrato de Alcançabilidade (Instalação Completa)
+A instalação plug-and-play é um CONTRATO verificado por gates automatizados na própria lib:
+- **Gate de paridade do Registry** (`src/core/Manifest/__tests__/RegistryParity.test.tsx`): todo componente público/atômico é resolvível via `"type"` no manifesto ou excluído com motivo declarado (`manifestExclusions.ts`); ids legados do Discovery exigem `type` equivalente. Silêncio = build vermelho.
+- **Catálogo gerado** (`docs/manifest-catalog.{json,md}` — `npm run catalog`, conferido no build por `catalog:check`): a lista oficial de types, props, ações, pipes e diretivas disponível ao consumidor. As skills de integração leem DESTE catálogo, nunca de memória.
+- Shell, navegação (`SarakShellNav` + bindings reservados `{{$route}}`/`{{$event}}`), rotas (inclusive lazy via `manifestLoader`) e o painel do Design Engine (`CustomizationPanel`) são todos alcançáveis por JSON — zero código React do lado do consumidor.
+
 ## 4. Integração com Python (FastAPI/Scripts)
 Agentes locais ou rotas Node.js externas não renderizam componentes visuais (React), porém podem interagir com as funções exportadas em `backend/node/backend-node.ts` (ex: acessar chaves do catálogo, extrair definições JSON de Design Systems para alimentar APIs LLMs, etc).
 Sistemas backend Python devem consultar os dados gerados em `dist/catalog/` ou consumir endpoints Node que utilizam as funções expostas do motor.

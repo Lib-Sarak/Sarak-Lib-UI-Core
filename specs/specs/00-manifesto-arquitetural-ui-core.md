@@ -32,7 +32,10 @@ A fundação visual. Esta pasta abriga blocos puros que não sabem de onde seus 
 Os casos de uso inteligentes. Enquanto `atomic` tem os componentes puramente visuais, `features` abriga os blocos que interagem com o usuário, chamam APIs (ou simulam estados avançados) e disparam eventos (Redux, Zustand).
 - Exemplo: `DesignEngine/Panels` possui regras reais de state management, salvamento em banco e lógica de troca de contexto, logo, pertence à `features`.
 
+### O Registry do Manifesto é o Ponto de Composição Oficial
+O `NATIVE_COMPONENTS` (`src/core/Manifest/Registry/nativeComponents.ts`, Camada 1) é o ÚNICO lugar autorizado a costurar as camadas para o motor declarativo: referencia a Camada 2 por import direto e, excepcionalmente, módulos da Camada 3 elegíveis a manifesto **somente via `React.lazy`** (ex.: `CustomizationPanel`) — o bloco pesado fica fora do caminho crítico e não há ciclo em runtime. Nenhum outro arquivo do `core/` pode importar `features/`.
+
 ## 3. Diretriz de Contrato e Tipagem Estrita (Zero Any Absoluto)
 A biblioteca atua sob a **Lei do "Zero Any"**, solidificada após a extensa Campanha de Erradicação. O uso de `any` ou `Record<string, unknown>` para burlar tipagem dinâmica é terminantemente proibido em toda a base. 
 O sistema exige tipagem determinística até nas fronteiras dinâmicas (utilizando `SarakDesignState`, *Type Guards* e genéricos restritos).
-A paridade entre Schema (TS), MasterMap (Motor), Banco de Dados, Lógica da Engine e JSON do Catálogo deve ser mantida sempre em **1:1:1:1:1**.
+A paridade entre Schema (TS), MasterMap (Motor), Banco de Dados, Lógica da Engine, JSON do Catálogo e **Registry do Manifesto** deve ser mantida sempre em **1:1:1:1:1:1** — a 6ª camada (alcançabilidade via `"type"`) é cobrada automaticamente pelo gate `RegistryParity.test.tsx` e pelo catálogo gerado (`npm run catalog` / `catalog:check` no build): componente sem registro e sem exclusão declarada derruba o build.

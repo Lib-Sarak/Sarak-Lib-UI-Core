@@ -81,6 +81,14 @@ export const getLocalComponent = (id: string): SarakComponent | undefined => {
 };
 
 /**
+ * Lista os IDs de componentes locais registrados. Usado pelo gate de paridade
+ * (RegistryParity) para cobrar equivalente manifestável de cada id legado da lib.
+ */
+export const getLocalComponentIds = (): string[] => {
+    return Array.from(localComponents.keys());
+};
+
+/**
  * Validates a Sarak module manifest for industrial standards (v9.5).
  */
 const validateSarakModule = (manifest: SarakModule) => {

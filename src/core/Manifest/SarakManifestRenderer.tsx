@@ -22,7 +22,7 @@ import type { NetworkInterceptor } from './DataSource/useDataSource';
 import type { NavigateFn } from './Dispatcher';
 import { ManifestNodeRenderer } from './nodes/renderNode';
 import { ShellRouterNode } from './nodes/ShellRouterNode';
-import { EMPTY_STATE, type NodeRenderContext } from './nodes/context';
+import { EMPTY_STATE, type ManifestLoaderFn, type NodeRenderContext } from './nodes/context';
 import { SarakSkeleton } from '../../components/atomic/Feedback/SarakSkeleton';
 import { useToast } from '../../components/atomic/Feedback/SarakToast';
 import { useOverlay } from '../../components/atomic/Modals/SarakOverlayProvider';
@@ -50,8 +50,16 @@ export interface SarakManifestRendererProps {
     /**
      * Rota ativa informada pelo host (Spec 33, Regra 3): a Sarak reage e resolve qual
      * subárvore de `routes` monta na região `content` — NUNCA controla a URL diretamente.
+     * Também é exposta ao binding como `{{$route}}` (chave reservada do escopo global),
+     * permitindo destacar o item ativo de navegação 100% via JSON.
      */
     route?: string;
+    /**
+     * Carregador de subárvores lazy (Spec 33): resolve `routes: { "/x": { lazy: "id" } }`
+     * buscando o manifesto da rota sob demanda (rede/arquivo — decisão do importador).
+     * Sem ele, um alvo lazy degrada para o Fallback visível (nunca silencioso).
+     */
+    manifestLoader?: ManifestLoaderFn;
     /**
      * Tela de recuperação global (Spec 27, Regra 2). Override do importador; se ausente,
      * usa a chave `fallbackErrorUI` do próprio manifesto.
@@ -73,6 +81,7 @@ export const SarakManifestRenderer: React.FC<SarakManifestRendererProps> = ({
     routerInterceptor,
     onNavigate,
     route,
+    manifestLoader,
     fallbackErrorUI,
 }) => {
     const snapshot = useSyncExternalStore(
@@ -80,6 +89,14 @@ export const SarakManifestRenderer: React.FC<SarakManifestRendererProps> = ({
             dataStore ? dataStore.subscribe((s) => s, onChange) : () => undefined,
         () => (dataStore ? dataStore.getSnapshot() : EMPTY_STATE),
         () => (dataStore ? dataStore.getSnapshot() : EMPTY_STATE),
+    );
+
+    // `$route` é chave RESERVADA do escopo global de binding (Spec 33): reflete a rota
+    // ativa do host para `{{$route}}`/`renderIf` — o valor do motor prevalece sobre
+    // qualquer chave homônima gravada no DataStore.
+    const globalScope = React.useMemo<Record<string, unknown>>(
+        () => ({ ...(snapshot ?? EMPTY_STATE), $route: route ?? '' }),
+        [snapshot, route],
     );
 
     // Capacidades de feedback do Dispatcher (Spec 25). Degradam a no-op fora dos
@@ -112,9 +129,10 @@ export const SarakManifestRenderer: React.FC<SarakManifestRendererProps> = ({
         registry,
         store: dataStore,
         interceptor: networkInterceptor,
-        global: snapshot ?? EMPTY_STATE,
+        global: globalScope,
         navigate,
         route,
+        manifestLoader,
         toast,
         overlay,
         fallbackErrorUI: rootFallback,
