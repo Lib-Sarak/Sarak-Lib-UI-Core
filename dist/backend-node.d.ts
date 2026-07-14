@@ -18,7 +18,7 @@ interface DesignApiOptions {
 }
 /**
  * Retorna os Handlers (GET/POST) prontos para o App Router do Next.js. Detecta o
- * dialeto (Postgres/SQLite) pela `connectionString` (Spec 08 §2 — zero-config).
+ * dialeto (Postgres/SQLite) pela `connectionString` (Spec 08 Â§2 â€” zero-config).
  */
 declare function createDesignApiHandler(options: DesignApiOptions): {
     GET(req: Request): Promise<Response>;
@@ -72,11 +72,31 @@ interface SarakUIMiddlewareOptions extends DesignApiOptions {
     /** Prefixo dos endpoints de UI (default: `/api/ui` — o que o Provider chama). */
     basePath?: string;
 }
-/**
- * Middleware connect-style com os endpoints de persistência do Design Engine.
- * Rotas fora do `basePath` seguem para o próximo handler (`next()`).
- */
 declare function createSarakUIExpressMiddleware(options: SarakUIMiddlewareOptions): (req: NodeRequestLike, res: NodeResponseLike, next: () => void) => Promise<void>;
+
+/**
+ * API de Temas Nomeados do Design Engine (Spec 01 ↔ Spec 08 §3.1).
+ *
+ * O frontend (`useThemeActions`) fala com TRÊS rotas que até aqui nunca tiveram
+ * implementação na ponte Node (salvar tema novo no painel dava 404 silencioso):
+ *   POST {base}/themes                → cria tema nomeado ({ design, name, is_active })
+ *   PUT  {base}/themes/:id            → atualiza design/nome/ativação do tema
+ *   PUT  {base}/themes/:id/activate   → ativa o tema (desativa os demais do escopo)
+ *
+ * Mesma tabela `custom_themes` do handler de design (Postgres/SQLite auto-detectado);
+ * reusa os helpers oficiais de `api.ts` (merge granular + normalização + shape).
+ */
+
+/**
+ * Handlers dos temas nomeados. `POST` cria; `PUT` atualiza; `ACTIVATE` ativa —
+ * os dois últimos recebem o `themeId` extraído da rota pelo host (Next.js dynamic
+ * route ou o middleware Express oficial).
+ */
+declare function createThemesApiHandler(options: DesignApiOptions): {
+    POST(req: Request): Promise<Response>;
+    PUT(req: Request, themeId: string): Promise<Response>;
+    ACTIVATE(req: Request, themeId: string): Promise<Response>;
+};
 
 /**
  * Sarak Industrial Design Schema (v11.0)
@@ -134,4 +154,4 @@ declare function getDesignCatalog(): DesignCatalogToken[];
  */
 declare function getDesignScaffold(): DesignScaffoldToken[];
 
-export { type DesignApiOptions, type DesignCatalogToken, type DesignScaffoldToken, type SarakUIMiddlewareOptions, createBrandingApiHandler, createDesignApiHandler, createSarakUIExpressMiddleware, getDesignCatalog, getDesignScaffold, setupUIDatabase };
+export { type DesignApiOptions, type DesignCatalogToken, type DesignScaffoldToken, type SarakUIMiddlewareOptions, createBrandingApiHandler, createDesignApiHandler, createSarakUIExpressMiddleware, createThemesApiHandler, getDesignCatalog, getDesignScaffold, setupUIDatabase };

@@ -14,6 +14,7 @@
 
 import { createDesignApiHandler, type DesignApiOptions } from './api';
 import { createBrandingApiHandler } from './branding';
+import { createThemesApiHandler } from './themes';
 
 /** Forma mínima do request Node/Express (estrutural — sem dependência de tipos). */
 interface NodeRequestLike {
@@ -61,27 +62,51 @@ const toWebRequest = (req: NodeRequestLike, path: string, method: string): Reque
  * Middleware connect-style com os endpoints de persistência do Design Engine.
  * Rotas fora do `basePath` seguem para o próximo handler (`next()`).
  */
+/** Rota de temas: `/themes` (POST), `/themes/:id` (PUT), `/themes/:id/activate` (PUT). */
+const THEME_ROUTE_RE = /^\/themes(?:\/([^/]+)(\/activate)?)?$/;
+
 export function createSarakUIExpressMiddleware(options: SarakUIMiddlewareOptions) {
     const basePath = options.basePath ?? DEFAULT_BASE_PATH;
     const design = createDesignApiHandler(options);
     const branding = createBrandingApiHandler(options);
+    const themes = createThemesApiHandler(options);
+
+    const resolveThemesHandler = (
+        subPath: string,
+        method: string,
+    ): ((webReq: Request) => Promise<Response>) | null => {
+        const match = subPath.match(THEME_ROUTE_RE);
+        if (!match) return null;
+        const [, themeId, isActivate] = match;
+        if (!themeId) return method === 'POST' ? (webReq) => themes.POST(webReq) : null;
+        if (method !== 'PUT') return null;
+        return isActivate
+            ? (webReq) => themes.ACTIVATE(webReq, themeId)
+            : (webReq) => themes.PUT(webReq, themeId);
+    };
 
     return async (req: NodeRequestLike, res: NodeResponseLike, next: () => void): Promise<void> => {
         const path = (req.originalUrl ?? req.url ?? '').split('?')[0];
         if (!path.startsWith(basePath)) return next();
 
         const subPath = path.slice(basePath.length) || '/';
-        const pair = subPath === '/design' ? design : subPath === '/branding' ? branding : null;
-        if (!pair) return next();
-
         const method = (req.method ?? 'GET').toUpperCase();
-        const handler = method === 'GET' ? pair.GET : method === 'POST' ? pair.POST : null;
-        if (!handler) {
-            res.statusCode = 405;
-            res.setHeader('Allow', 'GET, POST');
-            res.end();
-            return;
+
+        let handler: ((webReq: Request) => Promise<Response>) | null = null;
+        const pair = subPath === '/design' ? design : subPath === '/branding' ? branding : null;
+        if (pair) {
+            const selected = method === 'GET' ? pair.GET : method === 'POST' ? pair.POST : null;
+            if (!selected) {
+                res.statusCode = 405;
+                res.setHeader('Allow', 'GET, POST');
+                res.end();
+                return;
+            }
+            handler = (webReq) => selected(webReq);
+        } else {
+            handler = resolveThemesHandler(subPath, method);
         }
+        if (!handler) return next();
 
         const webResponse = await handler(toWebRequest(req, path, method));
         res.statusCode = webResponse.status;

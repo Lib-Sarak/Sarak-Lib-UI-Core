@@ -1,4 +1,4 @@
-import { Client } from 'pg';
+﻿import { Client } from 'pg';
 import Database from 'better-sqlite3';
 import { randomUUID } from 'node:crypto';
 import { resolveDialect } from './dialect';
@@ -11,7 +11,7 @@ export interface DesignApiOptions {
     getUserId?: (req: Request) => Promise<string | null> | string | null;
 }
 
-const GRANULAR_COLUMNS = [
+export const GRANULAR_COLUMNS = [
     'branding_config',
     'colors_and_atmosphere',
     'typography',
@@ -25,7 +25,7 @@ const GRANULAR_COLUMNS = [
 
 const TOP_LEVEL_COLUMNS = ['mode', 'navigation_style', 'body_size'];
 
-interface ThemeRow {
+export interface ThemeRow {
     id: string;
     name: string;
     description: string | null;
@@ -36,8 +36,8 @@ interface ThemeRow {
     [key: string]: unknown;
 }
 
-/** Lógica pura (dialeto-agnóstica): flatten das colunas granulares + top-level. */
-const flattenTheme = (theme: ThemeRow): Record<string, unknown> => {
+/** LÃ³gica pura (dialeto-agnÃ³stica): flatten das colunas granulares + top-level. */
+export const flattenTheme = (theme: ThemeRow): Record<string, unknown> => {
     const designFlat: Record<string, unknown> = {};
     for (const col of TOP_LEVEL_COLUMNS) {
         if (theme[col] !== undefined && theme[col] !== null) designFlat[col] = theme[col];
@@ -49,7 +49,7 @@ const flattenTheme = (theme: ThemeRow): Record<string, unknown> => {
     return designFlat;
 };
 
-const buildResponseData = (theme: ThemeRow) => ({
+export const buildResponseData = (theme: ThemeRow) => ({
     id: theme.id,
     name: theme.name,
     description: theme.description,
@@ -60,7 +60,7 @@ const buildResponseData = (theme: ThemeRow) => ({
     design: flattenTheme(theme),
 });
 
-const jsonResponse = (data: unknown, status = 200): Response =>
+export const jsonResponse = (data: unknown, status = 200): Response =>
     new Response(JSON.stringify(data), { status, headers: { 'Content-Type': 'application/json' } });
 
 const resolveGranularColumn = (key: string): string => {
@@ -70,8 +70,8 @@ const resolveGranularColumn = (key: string): string => {
     return 'branding_config';
 };
 
-/** Merge de updates (top-level + granular) a partir do design recebido — dialeto-agnóstico. */
-const mergeUpdates = (
+/** Merge de updates (top-level + granular) a partir do design recebido â€” dialeto-agnÃ³stico. */
+export const mergeUpdates = (
     updateDesign: Record<string, unknown>,
     currentTheme: Partial<ThemeRow>,
 ): Record<string, unknown> => {
@@ -93,7 +93,7 @@ const mergeUpdates = (
     return updates;
 };
 
-const resolveUserId = async (
+export const resolveUserId = async (
     options: DesignApiOptions,
     req: Request,
 ): Promise<string | null> => {
@@ -103,11 +103,11 @@ const resolveUserId = async (
 };
 
 // ---------------------------------------------------------------------------
-// SQLite (better-sqlite3) — síncrono, linhas normalizadas pra bater com o shape
-// que o driver `pg` já devolve (JSONB auto-parseado, boolean nativo).
+// SQLite (better-sqlite3) â€” sÃ­ncrono, linhas normalizadas pra bater com o shape
+// que o driver `pg` jÃ¡ devolve (JSONB auto-parseado, boolean nativo).
 // ---------------------------------------------------------------------------
 
-const normalizeSqliteRow = (row: Record<string, unknown> | undefined): ThemeRow | undefined => {
+export const normalizeSqliteRow = (row: Record<string, unknown> | undefined): ThemeRow | undefined => {
     if (!row) return undefined;
     const normalized: Record<string, unknown> = { ...row };
     for (const col of GRANULAR_COLUMNS) {
@@ -195,7 +195,7 @@ const handleSqlitePost = async (
 
 /**
  * Retorna os Handlers (GET/POST) prontos para o App Router do Next.js. Detecta o
- * dialeto (Postgres/SQLite) pela `connectionString` (Spec 08 §2 — zero-config).
+ * dialeto (Postgres/SQLite) pela `connectionString` (Spec 08 Â§2 â€” zero-config).
  */
 export function createDesignApiHandler(options: DesignApiOptions) {
     const system = options.systemName || 'global';
