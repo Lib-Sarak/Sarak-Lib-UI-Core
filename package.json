@@ -16,6 +16,11 @@
         "prepublishOnly": "npm run build",
         "test-ct": "playwright test -c playwright-ct.config.ts"
     },
+    "typesVersions": {
+        "*": {
+            "backend/node": ["./dist/backend-node.d.ts"]
+        }
+    },
     "exports": {
         ".": {
             "types": "./dist/index.d.ts",

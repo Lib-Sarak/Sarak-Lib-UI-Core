@@ -20,7 +20,7 @@ Garantir o processamento assíncrono e não-bloqueante para varreduras de inteli
 A mecânica ocorre da seguinte maneira:
 
 1. **Amostragem Híbrida**: A imagem base fornecida no provedor (se não for vídeo) é pintada em um Canvas off-screen minúsculo (50x50px) usando a instrução `willReadFrequently` para máxima performance de memória.
-2. **Transferência de Buffer (Web Worker)**: O `useMediaLuminance` envia os dados binários (`imageData.data.buffer`) de forma transferível (`Transferable Objects`) via PostMessage para o `luminance.worker.ts`. Isso copia os bytes instantaneamente para fora do UI Thread.
+2. **Transferência de Buffer (Web Worker INLINE)**: O `useMediaLuminance` envia os dados binários (`imageData.data.buffer`) de forma transferível (`Transferable Objects`) via PostMessage para um Worker **inline via Blob URL** (fonte embutida no próprio hook). Isso copia os bytes instantaneamente para fora do UI Thread. *Nota de distribuição:* o worker é Blob (não arquivo) de propósito — o padrão `new Worker(new URL('./arquivo', import.meta.url))` é resolvido estaticamente pelo bundler do CONSUMIDOR e quebrava o `vite build` de quem importa a lib (o arquivo não existe no `dist/` publicado).
 3. **Cálculo de HSP**: O Worker aplica a equação matemática (Highly Sensitive Perceived luminance): `Math.sqrt(0.299*R² + 0.587*G² + 0.114*B²)`. Baseado no limite matemático (127.5), a imagem é classificada como 'light' ou 'dark'.
 4. **Resiliência e Fallbacks**:
    - Timeout: O hook lança um gatilho simulado (500ms max). Se o Worker demorar, trava ou falhar, a operação é revertida para JS sincrono para não deixar o usuário pendurado.

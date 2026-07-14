@@ -1,5 +1,43 @@
 import { useState, useEffect } from 'react';
 
+/**
+ * Worker de luminância INLINE (Blob) — Spec arquitetura 02 (processamento híbrido).
+ * O padrão `new Worker(new URL('./arquivo.ts', import.meta.url))` é resolvido
+ * ESTATICAMENTE pelo bundler do CONSUMIDOR (Vite/rolldown tenta empacotar o arquivo,
+ * que não existe no `dist/` publicado) e quebrava o `vite build` de quem importa a
+ * lib. O Blob URL não tem arquivo para resolver: funciona em qualquer bundler e o
+ * cálculo continua fora da UI thread. Se o ambiente bloquear Blob workers (CSP), o
+ * try/catch abaixo cai no fallback síncrono.
+ */
+const LUMINANCE_WORKER_SOURCE = `
+self.onmessage = function (e) {
+    var data = new Uint8ClampedArray(e.data.imageData);
+    var r = 0, g = 0, b = 0;
+    for (var i = 0, l = data.length; i < l; i += 4) {
+        r += data[i];
+        g += data[i + 1];
+        b += data[i + 2];
+    }
+    var pixelCount = data.length / 4;
+    r = r / pixelCount;
+    g = g / pixelCount;
+    b = b / pixelCount;
+    var hsp = Math.sqrt(0.299 * (r * r) + 0.587 * (g * g) + 0.114 * (b * b));
+    self.postMessage({ luminance: hsp > 127.5 ? 'light' : 'dark' });
+};
+`;
+
+const createLuminanceWorker = (): Worker => {
+    const blob = new Blob([LUMINANCE_WORKER_SOURCE], { type: 'application/javascript' });
+    const blobUrl = URL.createObjectURL(blob);
+    try {
+        return new Worker(blobUrl);
+    } finally {
+        // O worker já foi instanciado a partir do Blob; a URL pode ser liberada.
+        URL.revokeObjectURL(blobUrl);
+    }
+};
+
 // Fallback nativo
 const calculateLuminanceSync = (data: Uint8ClampedArray) => {
     let r = 0, g = 0, b = 0;
@@ -49,8 +87,8 @@ export const useMediaLuminance = (url: string | undefined, isVideo: boolean) => 
                 // Try using Web Worker first
                 if (window.Worker) {
                     try {
-                        // Tentar criar o worker usando URL
-                        worker = new Worker(new URL('../workers/luminance.worker.ts', import.meta.url), { type: 'module' });
+                        // Worker inline via Blob (ver LUMINANCE_WORKER_SOURCE acima).
+                        worker = createLuminanceWorker();
                         
                         // Fallback em caso de timeout
                         timeoutId = setTimeout(() => {
