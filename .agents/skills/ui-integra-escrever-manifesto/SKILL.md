@@ -84,7 +84,8 @@ O catálogo oficial de `type`s, props, ações, pipes e diretivas é **GERADO do
    - `theme` / `aria` — escopo de tema (DesignScope) e atributos de acessibilidade como dado.
 
 ## Regras de Ouro e Segurança
-- **Proibição do TSX:** telas não misturam componentes React no código do consumidor. Tudo é JSON.
+- **Proibição do TSX (front fora do manifesto é DEFEITO):** telas não misturam componentes React no código do consumidor. Tudo é JSON. Os ÚNICOS arquivos de front permitidos no consumidor são o plumbing do contrato (Spec 30): entry point com `SarakUIProvider`+`SarakManifestRenderer`, DataStore e os 2 interceptors — nada além disso. Criar componente/tela/CSS React no consumidor para "completar" a UI é violação do contrato de instalação.
+- **Faltou componente? O caminho é a LIB, nunca o consumidor:** se a tela pede um `type` que não existe no catálogo, NÃO escreva React local — a demanda vai para a Sarak-Lib-UI-Core via skill `ui-novo-componente` (o gate de paridade garante que ele nasce manifestável). Para componente de negócio específico do consumidor (exceção rara e justificada), use `registerComponent(type, Componente)` da lib e siga renderizando pelo motor.
 - **Isolamento de Escopo (No-Eval):** expressões `{{ }}` rodam em ambiente restrito. **Nunca** tente acessar `window`, `document` ou funções globais no JSON.
 - **Catálogo primeiro:** antes de entregar a tela, confira cada `type` e prop contra `docs/manifest-catalog.md`; depois valide com a skill `ui-auditoria-manifesto`.
 

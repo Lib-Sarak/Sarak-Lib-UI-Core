@@ -50,7 +50,7 @@ Skill responsável pela instalação plug-and-play do Motor Declarativo (Sarak-L
    - **Exceção (SSR/Next.js, opcional):** se quiser o CSS já presente no HTML gerado pelo servidor (evita um flash de conteúdo sem estilo no primeiro paint), importe manualmente `import '@sarak/lib-ui-core/dist/sarak.css';` no `layout.tsx`/`_app.tsx`. Isso é uma otimização, não um requisito — sem ele a UI funciona e se estiliza assim que o JS roda no cliente.
    - **Se, mesmo assim, a tela renderizar sem estilo:** o `SarakUIProvider` loga `console.error('[Sarak] CSS não detectado...')` em desenvolvimento quando a injeção automática falha (ex.: bundler removendo o side-effect via tree-shaking agressivo) — confira o console antes de investigar mais fundo.
 6. **Integração do Design Agent (SÓ se o usuário optou por incluir na Etapa 1)**
-   - Se o usuário respondeu "não" na Etapa 1, **NÃO execute esta etapa** — a integração termina na Etapa 5.
+   - Se o usuário respondeu "não" na Etapa 1, **NÃO execute esta etapa** — pule direto para a Etapa 7.
    - A Sarak nunca chama rede diretamente (Spec 08 §6.2) — o chat (`DesignAgentChatCard`) só funciona se o consumidor injetar `options.designAgent.sendPrompt` no `SarakUIProvider`. Sem isso, o card mostra "Não configurado" e não tenta nenhum fetch.
    - **Ação:** Implemente `sendPrompt: (input: DesignAgentPromptInput) => Promise<DesignAgentPromptResult>` (tipos exportados por `@sarak/lib-ui-core`) chamando o backend `agent-design-operator` a partir do SEU servidor (nunca do browser direto, para não expor credenciais):
      - **Node.js (Next.js/Express/Fastify):** `initDesignAgent()` (de `agent-design-operator`) retorna um Router Express já pronto (inicializa banco + carrega o catálogo). Acople-o na sua API e chame essa rota interna no `sendPrompt`.
@@ -59,15 +59,38 @@ Skill responsável pela instalação plug-and-play do Motor Declarativo (Sarak-L
      - **Entrada:** a UI te entrega `{ prompt, draftTokens }` (`DesignAgentPromptInput`). A rota `POST /prompt` do agente espera `{ prompt, session_id, mode?, base_theme? }` — **você** gera o `session_id` (por usuário/sessão). `mode: 'create' | 'patch'` e `base_theme` são opcionais e definidos no seu backend (não vêm no tipo público): use `mode: 'patch'` + `base_theme` (o tema atual completo) quando for alteração de um tema já existente; senão omita (default `create`).
      - **Saída:** a rota devolve `{ success, message, payload? }`. Mapeie para o contrato do Provider: `message` → `message`, **`payload` → `themePatch`** (nomes diferentes!). A `message` já vem pronta em linguagem natural — incluindo o aviso de fatias que não aplicaram — repasse como está. (O contrato público também aceita `componentPresets?`, hoje não emitido pela rota — deixe indefinido.)
    - **Ação:** Injete o resultado no Provider: `<SarakUIProvider options={{ designAgent: { sendPrompt } }}>`.
-7. **Handoff (Ponto de Transição)**
-   - **Ação:** Após a infraestrutura base estar acoplada e renderizando com sucesso um manifesto vazio ou de teste (fallback), informe ao usuário que a integração arquitetural terminou.
-   - **Próximo Passo Obrigatório:** Oriente o usuário (ou você mesmo no próximo turno) a invocar a skill **`ui-integra-escrever-manifesto`** para começar, de fato, a construir as telas (escrever o JSON) — ela usa o catálogo GERADO `node_modules/@sarak/lib-ui-core/docs/manifest-catalog.md` como fonte da verdade de `type`s e props.
+7. **Instalação das Skills de Consumo no repositório consumidor (OBRIGATÓRIA)**
+   - O pacote embarca as próprias instruções: `node_modules/@sarak/lib-ui-core/.agents/skills/`. O agente do consumidor NÃO descobre skills dentro de `node_modules` — por isso esta etapa as instala no repositório dele.
+   - **Ação:** Copie estas 2 skills para o `.agents/skills/` do consumidor (e espelhe em `.claude/skills/` se a estrutura existir):
+     - `ui-integra-escrever-manifesto` — como compor telas 100% JSON (impede o erro clássico de escrever front fora do manifesto).
+     - `ui-auditoria-manifesto` — validação estática do JSON contra o catálogo.
+   - Exemplo (PowerShell): `Copy-Item node_modules/@sarak/lib-ui-core/.agents/skills/ui-integra-escrever-manifesto .agents/skills/ -Recurse -Force` (idem para a outra).
+   - Se o consumidor tiver hook de auto-indexação do `.agents`, rode-o; senão, adicione as 2 entradas ao índice manualmente.
+   - **Regra de atualização:** ao atualizar a lib (`npm update`), re-copie as skills — elas evoluem junto com o catálogo.
+8. **Handoff (Ponto de Transição)**
+   - **Ação:** Após a infraestrutura base estar acoplada e renderizando com sucesso o manifesto do template, informe ao usuário que a integração arquitetural terminou.
+   - **Próximo Passo Obrigatório:** Oriente o usuário (ou você mesmo no próximo turno) a invocar a skill **`ui-integra-escrever-manifesto`** (agora instalada no repositório do consumidor) para construir as telas — ela usa o catálogo GERADO `node_modules/@sarak/lib-ui-core/docs/manifest-catalog.md` como fonte da verdade de `type`s e props.
 
 ## Regras (SRP - Responsabilidade Única)
 - **NÃO** ensine ou tente montar telas, formulários ou laços de repetição (`renderFor`) nesta skill. O foco aqui é estrito: DevOps e Infraestrutura Front-end.
 - **SEMPRE** garanta que o componente importado nas rotas seja o Renderizador Mestre, bloqueando a importação direta de componentes atômicos isolados pelo desenvolvedor (garantindo que tudo passe pelo JSON).
 
 ## Referências
-- Spec 11 (`11-engine-declarativa-e-manifestos.md`) da Biblioteca Core.
-- `docs/manifest-catalog.md` (no pacote) — catálogo gerado de types/props/ações/pipes/diretivas.
-- `references/examples.md` — Exemplos práticos do padrão de injeção de dependência e integração do Renderer.
+**Artefatos do pacote (`node_modules/@sarak/lib-ui-core/`):**
+- `templates/app-starter.manifest.json` — manifesto inicial oficial (shell + nav + rota `/design` do Design Engine). Também exportado como `SARAK_STARTER_MANIFEST`.
+- `docs/manifest-catalog.md` / `.json` — catálogo GERADO de types/props/ações/pipes/diretivas (fonte da verdade; nunca escreva manifesto de memória).
+- Exports de backend (`@sarak/lib-ui-core/backend/node`): `setupUIDatabase`, `createSarakUIExpressMiddleware` (Express/Node: 1 linha = `/api/ui/design|branding|themes`), `createDesignApiHandler`/`createBrandingApiHandler`/`createThemesApiHandler` (Next.js App Router).
+
+**Skills (ordem do fluxo):**
+- `ui-contexto-repositorio` — ambientação (se estiver trabalhando NA lib).
+- **Esta skill** → instala a infraestrutura.
+- `ui-integra-escrever-manifesto` — handoff obrigatório: compor as telas JSON.
+- `ui-auditoria-manifesto` — validar o JSON contra o catálogo antes de entregar.
+
+**Specs da Biblioteca Core:**
+- Spec 08 (`08-consumo-externo-e-integracao.md`) — contrato de consumo: CSS automático, Provider obrigatório, §3.1 alcançabilidade/template, fronteira de confiança (interceptors).
+- Spec 11 (`11-engine-declarativa-e-manifestos.md`) — gramática do manifesto/Registry/Dispatcher/shell+routes.
+- Spec 01 (`01-painel-customizacao-temas.md`) — Design Engine (Regra 0: alcance via `{"type": "CustomizationPanel"}`).
+- `references/examples.md` — exemplos práticos por stack (SPA/Vite, Next.js SSR, Express) incluindo persistência de temas.
+
+**Ambiente (lições de instalação real):** `ts-node-dev` exige `typescript@^5` (v7 crasha); portas 3000/5173 ocupadas por processos node antigos causam teste contra código velho — libere-as antes de subir o dev.
