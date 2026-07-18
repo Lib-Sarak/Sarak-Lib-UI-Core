@@ -2,6 +2,40 @@
 
 Este manifesto estabelece as regras e o contrato de uso da biblioteca **Sarak-Lib-UI-Core** quando incorporada por sistemas externos, como o Site Earendel (Next.js), Agentes Locais ou backends em Python.
 
+## 0. Modos de Consumo (App vs. Embarcado)
+
+A biblioteca atende **dois** modos de consumo. O modo é declarado em `SarakUIOptions.mode` e o default é `'app'` — consumidores existentes não precisam mudar nada.
+
+| | **Modo App** (`mode: 'app'`, default) | **Modo Embarcado** (`mode: 'embedded'`) |
+|---|---|---|
+| **Cenário** | O sistema NASCE com a lib; 100% da interface vem do manifesto | O sistema JÁ tem frontend próprio; a lib renderiza ilhas por rota/região |
+| **Papel do Provider** | Dono da página | Cidadão da página |
+| **CSS** | `dist/sarak.css` injetado automaticamente no `<head>` ao importar o módulo (§2) | `dist/sarak-scoped.css`, importado pelo consumidor; preflight e utilities confinados a `.sarak-scope` |
+| **Design tokens** | Vars e `data-*` no `document.documentElement` + `body` | Vars e `data-*` no container da ilha (mesmo mecanismo do `DesignScope`) |
+| **`document.title` / favicon** | Sincronizados com `systemName`/branding | **Intocados** — são do host |
+| **Fontes globais** | Injetadas no `<head>` | Não injetadas (a ilha herda a tipografia do host); opt-in via `embedded.injectGlobalFonts` |
+| **`NoiseOverlay` / mídia de fundo global** | Renderizados sobre o viewport | Não renderizados (cobririam o front do host) |
+| **Sequestro do `SovereignThemeInjector`** | Ancorado em `body.light`/`body.dark` | Ancorado em `.sarak-scope` (não repinta as classes Tailwind do host) |
+| **Toasts / overlays** | Portal em `document.body` | Portal em `document.body` **+ classe de escopo** — continuam estilizados fora da árvore da ilha |
+
+### 0.1 Instalação do Modo Embarcado
+```tsx
+import '@sarak/lib-ui-core/dist/sarak-scoped.css'; // obrigatório (substitui a injeção automática)
+
+<SarakUIProvider options={{ mode: 'embedded' }}>
+    <SarakManifestRenderer payload={ilha} dataStore={store} route={rotaAtiva} />
+</SarakUIProvider>
+```
+O Provider materializa um `<div class="sarak-scope">` ao redor dos filhos: é ele que ancora o CSS e recebe os tokens.
+
+**Anti-flash (recomendado):** marque o documento com `<html data-sarak-ui-mode="embedded">`. A injeção automática de CSS roda na IMPORTAÇÃO do módulo, antes de qualquer Provider montar; com a marcação ela nem acontece. Sem ela o Provider remove o stylesheet global ao montar (avisando no console em dev), mas pode haver um flash do host re-estilizado antes disso.
+
+### 0.2 Limites declarados
+- **N Renderers sob 1 Provider embarcado** é o padrão suportado (cada um com seu `dataStore`).
+- **N Providers embarcados na mesma página está FORA do suporte** — disputariam a mesma classe de escopo e o mesmo stylesheet.
+- A variante escopada é gerada no build (`npm run build:css:scoped` → `scripts/build-scoped-css.mjs`), que reescreve os seletores de `dist/sarak.css` sobre a AST do lightningcss. `@keyframes`, `@font-face` e `@property` permanecem globais de propósito: são registros sem seletor e não alteram nenhum elemento do host.
+- **Gates:** `src/core/Provider/__tests__/EmbeddedMode.test.tsx` (não-vazamento no DOM), `scopeCss.test.ts` (confinamento dos seletores) e `src/core/Provider/__e2e__/EmbeddedNoLeak.spec.tsx` (não-vazamento bidirecional em Chromium — exige `npm run build` antes).
+
 ## 1. Exportação Estrita (O Contrato Público)
 A Sarak UI Core não permite "Deep Imports" por consumidores externos (ex: `import Button from 'sarak-lib-ui-core/src/components/atomic/Button'`). Toda a exportação da biblioteca é mediada através do arquivo `src/index.ts`.
 - O que estiver em `src/index.ts` é garantido pela retrocompatibilidade (Contrato).

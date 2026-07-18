@@ -22,6 +22,7 @@ import React, {
     useState,
 } from 'react';
 import { createPortal } from 'react-dom';
+import { SarakPortalScope } from '../../../core/Provider/components/SarakPortalScope';
 
 /** Variantes semânticas, mapeadas 1:1 ao Status Schema. */
 export type ToastVariant = 'success' | 'error' | 'warning' | 'info';
@@ -150,6 +151,7 @@ export const SarakToastProvider: React.FC<{ children: React.ReactNode }> = ({ ch
     const stack =
         typeof document !== 'undefined'
             ? createPortal(
+                  <SarakPortalScope>
                   <div
                       data-sarak-toast-stack="true"
                       aria-live="polite"
@@ -165,7 +167,8 @@ export const SarakToastProvider: React.FC<{ children: React.ReactNode }> = ({ ch
                       {toasts.map((entry) => (
                           <SarakToast key={entry.id} entry={entry} onDismiss={dismiss} />
                       ))}
-                  </div>,
+                  </div>
+                  </SarakPortalScope>,
                   document.body,
               )
             : null;

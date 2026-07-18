@@ -1,5 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import { createPortal } from 'react-dom';
+import { SarakPortalScope } from '../../../core/Provider/components/SarakPortalScope';
 import { Maximize2, Minimize2, X } from 'lucide-react';
 import { motion, AnimatePresence } from 'framer-motion';
 import { useSarakUI } from '../../../core/Provider/SarakUIProvider';
@@ -67,6 +68,7 @@ export const ExpandableCard: React.FC<ExpandableCardProps> = ({
             </div>
 
             {mounted && createPortal(
+                <SarakPortalScope>
                 <AnimatePresence>
                     {isExpanded && (
                         <motion.div
@@ -114,7 +116,8 @@ export const ExpandableCard: React.FC<ExpandableCardProps> = ({
                             </motion.div>
                         </motion.div>
                     )}
-                </AnimatePresence>,
+                </AnimatePresence>
+                </SarakPortalScope>,
                 document.body
             )}
         </>

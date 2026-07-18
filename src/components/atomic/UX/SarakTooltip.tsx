@@ -11,6 +11,7 @@
 
 import React, { useCallback, useLayoutEffect, useRef, useState } from 'react';
 import { createPortal } from 'react-dom';
+import { SarakPortalScope } from '../../../core/Provider/components/SarakPortalScope';
 import { motion, AnimatePresence } from 'framer-motion';
 import { twMerge } from 'tailwind-merge';
 
@@ -136,6 +137,7 @@ export const SarakTooltip: React.FC<SarakTooltipProps> = ({
     const tooltipPortal =
         isVisible && typeof document !== 'undefined'
             ? createPortal(
+                  <SarakPortalScope>
                   <AnimatePresence>
                       <motion.div
                           ref={tipRef}
@@ -162,7 +164,8 @@ export const SarakTooltip: React.FC<SarakTooltipProps> = ({
                       >
                           {content}
                       </motion.div>
-                  </AnimatePresence>,
+                  </AnimatePresence>
+                  </SarakPortalScope>,
                   document.body,
               )
             : null;

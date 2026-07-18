@@ -1,4 +1,4 @@
-import React, { ReactNode, useEffect, useMemo, useContext, createContext } from 'react';
+import React, { ReactNode, useMemo, useState, useContext, createContext } from 'react';
 import { NoiseOverlay } from '../../effects/NoiseOverlay';
 import { injectSarakStyles } from './injectStyles';
 import { SARAK_CSS } from './__sarakCss';
@@ -18,7 +18,10 @@ import { useDesignManager } from './hooks/useDesignManager';
 import { useBrandingManager } from './hooks/useBrandingManager';
 import { useSarakUIEffects } from './hooks/useSarakUIEffects';
 import { useSarakDrafting } from './hooks/useSarakDrafting';
+import { useSarakStylesheetGuard } from './hooks/useSarakStylesheetGuard';
 import { DesignInjector } from './components/DesignInjector';
+import { SarakScopeRoot } from './components/SarakScopeRoot';
+import { resolveSarakUIMode } from './scope';
 import { SovereignThemeInjector } from './components/SovereignThemeInjector';
 import { SarakBackgroundRenderer } from '../Design/components/SarakBackgroundRenderer';
 import { GLOBAL_THEMES } from '../Design/presets/themes/index';
@@ -83,6 +86,13 @@ export const SarakUIProvider: React.FC<SarakUIProviderProps> = ({
     activeThemeId,
     onMediaUpload
 }) => {
+    // 0. Modo de consumo (Spec 24): `app` (default, dono da página) vs `embedded`
+    //    (ilha sobre um front existente). O container da ilha chega por callback ref
+    //    com estado, para que o DesignInjector re-renderize quando ele existir.
+    const mode = resolveSarakUIMode(options);
+    const [scopeElement, setScopeElement] = useState<HTMLElement | null>(null);
+    const isEmbedded = mode === 'embedded';
+
     // 1. Gerenciamento do Registro e Discovery
     const { registeredModules, isHydrated } = useRegistryManager(options);
 
@@ -107,26 +117,12 @@ export const SarakUIProvider: React.FC<SarakUIProviderProps> = ({
     // 3. Gerenciamento de Rascunho (Live Preview)
     const drafting = useSarakDrafting(design, applyConfig, applyFullConfig);
 
-    // 4. Efeitos Colaterais (Fontes, Título, Ícone)
-    useSarakUIEffects(branding);
+    // 4. Efeitos Colaterais globais (Fontes, Título, Ícone) — inertes no Modo Embarcado
+    useSarakUIEffects(branding, mode, options?.embedded?.injectGlobalFonts);
 
-    // 4.5 Auto-diagnóstico (dev-only): a injeção automática de CSS (postbuild) pode
-    // falhar por cache de build antigo, bundler removendo "CSS não usado" ou SSR
-    // atípico — avisa em vez de deixar o consumidor debugar um app sem estilo.
-    useEffect(() => {
-        if (process.env.NODE_ENV === 'production') return;
-        const loaded = getComputedStyle(document.documentElement)
-            .getPropertyValue('--sarak-ui-core-css-loaded')
-            .trim();
-        if (!loaded) {
-            console.error(
-                '[Sarak] CSS não detectado. A injeção automática deveria ter carregado o ' +
-                'stylesheet ao importar "@sarak/lib-ui-core" — se isso falhou (ex.: bundler ' +
-                'fazendo tree-shaking do side-effect), importe manualmente ' +
-                '"@sarak/lib-ui-core/dist/sarak.css" no entry point da aplicação.',
-            );
-        }
-    }, []);
+    // 4.5 Guarda do stylesheet: confere a injeção automática (Modo App) e desfaz o
+    //     CSS global quando a ilha é embarcada (Spec 24).
+    useSarakStylesheetGuard(mode, scopeElement);
 
     // 6. Valor do Contexto (Memorizado)
     const uiContextValue = useMemo(() => ({
@@ -169,31 +165,42 @@ export const SarakUIProvider: React.FC<SarakUIProviderProps> = ({
     return (
         <DeviceProvider>
             <UIContext.Provider value={uiContextValue}>
-                <DesignInjector 
-                    design={design} 
-                    isDrafting={drafting.isDrafting} 
-                />
-                <NoiseOverlay />
-                <SovereignThemeInjector design={design} manifest={options?.manifest} />
-                
-                {/* Aplicação Global da Mídia de Fundo do Sistema */}
-                <SarakBackgroundRenderer 
-                    imageUrl={design?.globalBackgroundImageUrl}
-                    opacity={design?.globalBackgroundOpacity}
-                    blur={design?.globalBackgroundBlur}
-                    blendMode={design?.globalBackgroundBlendMode}
-                    isFixed={true}
-                    mode={design?.mode as 'light' | 'dark' | undefined}
-                />
+                <SarakScopeRoot mode={mode} onScopeElement={setScopeElement}>
+                    <DesignInjector
+                        design={design}
+                        isDrafting={drafting.isDrafting}
+                        mode={mode}
+                        scopeElement={scopeElement}
+                    />
+                    {/* Overlays de PÁGINA INTEIRA: só no Modo App. No Embarcado eles
+                        cobririam o front do host (Spec 24 §2.1).
 
-                {/* Zero-config (Spec 08 §2): os hosts de feedback do Dispatcher
-                    (trigger_toast / open_modal / open_drawer — Spec 25) já nascem
-                    montados — o consumidor não precisa (nem deve) montá-los à mão. */}
-                {shouldRenderChildren ? (
-                    <SarakToastProvider>
-                        <SarakOverlayProvider>{children}</SarakOverlayProvider>
-                    </SarakToastProvider>
-                ) : null}
+                        A ORDEM destes irmãos é a mesma de antes da Spec 24: no Modo App
+                        a árvore renderizada tem de sair byte-a-byte igual (há snapshots
+                        de Cards que a cobrem). A spec só REMOVE nós no ramo embarcado —
+                        nunca reordena. */}
+                    {!isEmbedded && <NoiseOverlay />}
+                    <SovereignThemeInjector design={design} manifest={options?.manifest} mode={mode} />
+                    {!isEmbedded && (
+                        <SarakBackgroundRenderer
+                            imageUrl={design?.globalBackgroundImageUrl}
+                            opacity={design?.globalBackgroundOpacity}
+                            blur={design?.globalBackgroundBlur}
+                            blendMode={design?.globalBackgroundBlendMode}
+                            isFixed={true}
+                            mode={design?.mode as 'light' | 'dark' | undefined}
+                        />
+                    )}
+
+                    {/* Zero-config (Spec 08 §2): os hosts de feedback do Dispatcher
+                        (trigger_toast / open_modal / open_drawer — Spec 25) já nascem
+                        montados — o consumidor não precisa (nem deve) montá-los à mão. */}
+                    {shouldRenderChildren ? (
+                        <SarakToastProvider>
+                            <SarakOverlayProvider>{children}</SarakOverlayProvider>
+                        </SarakToastProvider>
+                    ) : null}
+                </SarakScopeRoot>
             </UIContext.Provider>
         </DeviceProvider>
     );

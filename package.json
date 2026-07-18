@@ -10,7 +10,8 @@
     "scripts": {
         "build:css": "npx @tailwindcss/cli -i ./src/styles/sarak-base.css -o ./dist/sarak.css --minify",
         "build:js": "tsup src/index.ts --format esm,cjs --shims --dts --clean --minify --external react,react-dom,framer-motion,lucide-react,recharts,echarts-for-react,echarts,reactflow,react-grid-layout,react-markdown,react-syntax-highlighter,react-dropzone,pdfjs-dist,clsx,tailwind-merge,date-fns,pg,@tanstack/react-virtual && tsup backend/node/backend-node.ts --format esm,cjs --shims --dts --minify --external pg,better-sqlite3",
-        "build": "npm run catalog:check && npm run build:js && npm run build:css && node scripts/inject-css.mjs",
+        "build:css:scoped": "node scripts/build-scoped-css.mjs",
+        "build": "npm run catalog:check && npm run build:js && npm run build:css && npm run build:css:scoped && node scripts/inject-css.mjs",
         "catalog": "node scripts/generate-manifest-catalog.mjs",
         "catalog:check": "node scripts/generate-manifest-catalog.mjs --check",
         "prepublishOnly": "npm run build",
@@ -29,6 +30,8 @@
         },
         "./sarak.css": "./dist/sarak.css",
         "./dist/sarak.css": "./dist/sarak.css",
+        "./sarak-scoped.css": "./dist/sarak-scoped.css",
+        "./dist/sarak-scoped.css": "./dist/sarak-scoped.css",
         "./sarak-base.css": {
             "style": "./src/styles/sarak-base.css",
             "import": "./src/styles/sarak-base.css",
@@ -90,6 +93,7 @@
         "echarts-for-react": "^3.0.2",
         "framer-motion": "^11.0.0",
         "jsdom": "^29.1.1",
+        "lightningcss": "^1.32.0",
         "lucide-react": "^0.284.0",
         "pdfjs-dist": "^6.0.227",
         "react": "^18.0.0",

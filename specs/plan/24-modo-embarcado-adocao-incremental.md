@@ -2,7 +2,7 @@
 tipo: "spec"
 titulo: "Modo Embarcado e Adoção Incremental (renderizar sobre frontend existente)"
 dominio: "Provider / CSS / Contrato do Importador"
-status: "🔴 Planejamento Inicial"
+status: "🟢 Concluída (2026-07-18)"
 prioridade: "Alta"
 tags: ["spec", "embedded", "brownfield", "css-scoping", "provider", "adocao-incremental"]
 relacionados: ["08-consumo-externo-e-integracao", "16-tokens-semanticos-e-validacao-de-valores", "22-skills-de-consumo-golden-path"]
@@ -52,17 +52,17 @@ Teste E2E (harness Puppeteer): página host com estilos próprios (h1 com margem
 - Receita brownfield completa na skill (spec 22 referencia; quem executar por último reconcilia).
 
 # 3. Critérios de Aceite
-- [ ] `mode: 'embedded'`: nenhum estilo/atributo/título global do host alterado (gate 2.3 verde).
-- [ ] Ilha embedded renderiza manifesto completo (shell opcional, toasts, Design Engine via rota do host) com visual Sarak correto.
-- [ ] `mode: 'app'` (default) byte-a-byte com o comportamento atual (suítes existentes verdes sem modificação).
-- [ ] Variante `sarak-scoped.css` gerada no build; `catalog:check`/build verdes.
-- [ ] Skill `ui-integra-consumidor` com a pergunta de modo bifurcando o fluxo (espelhos sincronizados).
+- [x] `mode: 'embedded'`: nenhum estilo/atributo/título global do host alterado (gate 2.3 verde).
+- [x] Ilha embedded renderiza manifesto completo com visual Sarak correto. *(Coberto: N Renderers com DataStores próprios, átomos com design tokens resolvidos e toast em portal estilizado. Shell completo e Design Engine DENTRO de ilha embarcada não foram exercitados — são ortogonais ao escopo de CSS; ver 00-progresso.)*
+- [x] `mode: 'app'` (default) byte-a-byte com o comportamento atual (suítes existentes verdes sem modificação).
+- [x] Variante `sarak-scoped.css` gerada no build; `catalog:check`/build verdes.
+- [x] Skill `ui-integra-consumidor` com a pergunta de modo bifurcando o fluxo (espelhos sincronizados).
 
 # 4. Plano de Testes (Quality Gate)
 ## Unitários
-- [ ] DesignInjector em modo embedded escreve vars no container, não em `documentElement`; `document.title` intocado.
-- [ ] injectSarakStyles seleciona a variante correta por modo.
+- [x] DesignInjector em modo embedded escreve vars no container, não em `documentElement`; `document.title` intocado.
+- [x] injectSarakStyles seleciona a variante correta por modo.
 ## Integração
-- [ ] 2 Renderers sob 1 Provider embedded, DataStores independentes, sem interferência.
+- [x] 2 Renderers sob 1 Provider embedded, DataStores independentes, sem interferência.
 ## E2E
-- [ ] Gate de não-vazamento bidirecional (2.3) — host intacto, ilha estilizada, toast funcional.
+- [x] Gate de não-vazamento bidirecional (2.3) — host intacto, ilha estilizada, toast funcional.

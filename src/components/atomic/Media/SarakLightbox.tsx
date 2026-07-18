@@ -9,6 +9,7 @@
 
 import React, { useCallback, useEffect, useState } from 'react';
 import { createPortal } from 'react-dom';
+import { SarakPortalScope } from '../../../core/Provider/components/SarakPortalScope';
 import { useFocusTrap } from '../Modals/hooks/useFocusTrap';
 
 export interface LightboxImage {
@@ -116,5 +117,7 @@ export const SarakLightbox: React.FC<SarakLightboxProps> = ({
         </div>
     );
 
-    return typeof document !== 'undefined' ? createPortal(overlay, document.body) : overlay;
+    return typeof document !== 'undefined'
+        ? createPortal(<SarakPortalScope>{overlay}</SarakPortalScope>, document.body)
+        : overlay;
 };

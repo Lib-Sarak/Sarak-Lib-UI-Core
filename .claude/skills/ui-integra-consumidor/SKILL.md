@@ -16,8 +16,9 @@ Skill responsável pela instalação plug-and-play do Motor Declarativo (Sarak-L
 
 1. **Entrevista de Instalação (HITL) — faça TODAS estas perguntas ANTES de tocar em qualquer arquivo**
    - **PRIMEIRA PERGUNTA — Modo de renderização:** *"O módulo vai renderizar um sistema NOVO (interface 100% via manifesto — Modo App) ou vai renderizar SOBRE um frontend que JÁ EXISTE (Modo Embarcado — ilhas de manifesto dentro do front atual)?"*
-     - **Modo App:** siga o fluxo normal desta skill (template starter, shell/routes — o Provider+Renderer são a raiz da aplicação).
-     - **Modo Embarcado:** ⚠️ o suporte formal (Provider com `mode: 'embedded'`, CSS escopado) está especificado em `specs/plan/24-modo-embarcado-adocao-incremental.md` e **ainda não foi implementado**. Enquanto isso, seja honesto com o usuário: montar o `SarakUIProvider` numa página existente hoje injeta CSS global com reset (re-estiliza o front do host), sobrescreve `document.title` e monta overlays de página inteira. Alternativa provisória aceitável: adotar a lib em rota(s) DEDICADA(s) do host (a rota inteira é Sarak — os vazamentos ficam confinados às telas novas), nunca como ilha dentro de página legada estilizada. Registre a escolha do usuário.
+     - **Modo App:** siga o fluxo normal desta skill (template starter, shell/routes — o Provider+Renderer são a raiz da aplicação). É o default: `options` sem `mode`.
+     - **Modo Embarcado:** suportado (Spec 24). O Provider vira um CIDADÃO da página em vez de dono dela: `options={{ mode: 'embedded' }}`. Nada fora do container da ilha é tocado — nem `document.title`, nem `:root`, nem overlays de página inteira, nem as fontes globais. Exige **CSS escopado** e tem **1 passo extra de instalação** (Etapa 5-B). Registre a escolha do usuário: ela muda as Etapas 2 (CSS), 5 (montagem) e o critério de aceite.
+     - **Se Embarcado, pergunte também:** *"A adoção começa por quais rotas/regiões do front atual?"* — a migração é incremental: 1 ilha → mais rotas → shell completo → (opcional) virar Modo App. Registre o alvo inicial.
    - **Stack do consumidor:** qual o framework/host (Next.js/React, Vite, Remix, etc.) e o backend, se houver (Node, Python/FastAPI, PHP)? Isso decide como o Design Agent é acoplado na Etapa 6.
    - **Design Agent (chat de IA) — incluir ou não?** Pergunte explicitamente: *"Quer habilitar o chat do Design Agent (a IA que gera e ajusta o tema por linguagem natural)?"*
      - Deixe claro que é **100% opcional e desacoplado**: `agent-design-operator` **não** é dependência de `@sarak/lib-ui-core` (importar a UI nunca o baixa), e `options.designAgent` é opcional. Sem ele, a UI funciona por inteiro — só o `DesignAgentChatCard` aparece como "Não configurado", sem tentar nenhum fetch.
@@ -34,7 +35,8 @@ Skill responsável pela instalação plug-and-play do Motor Declarativo (Sarak-L
      npm install framer-motion lucide-react recharts echarts echarts-for-react reactflow react-grid-layout react-markdown react-syntax-highlighter react-dropzone pdfjs-dist clsx tailwind-merge date-fns @tanstack/react-virtual axios pg tailwindcss
      ```
    - **NÃO** presuma que o `npm install` da lib traz essas dependências sozinho — são `peerDependencies` (o npm 7+ até auto-instala em `node_modules`, mas SEM registrar no `package.json` do consumidor; isso é frágil e não reproduzível em `npm ci`/lockfile estrito). Declare-as explicitamente.
-   - **CSS:** não é preciso importar nenhum arquivo `.css` manualmente — a lib injeta seu stylesheet automaticamente ao ser importada (ver Etapa 5). Só monte o `<SarakUIProvider>`.
+   - **CSS (Modo App):** não é preciso importar nenhum arquivo `.css` manualmente — a lib injeta seu stylesheet automaticamente ao ser importada (ver Etapa 5). Só monte o `<SarakUIProvider>`.
+   - **CSS (Modo Embarcado):** a injeção automática é do stylesheet GLOBAL e re-estilizaria o front do host — no Modo Embarcado ela é desligada e o CSS vem da variante escopada, importada à mão (Etapa 5-B). Não pule esse passo: sem ele a ilha renderiza sem estilo nenhum.
 3. **Criação da Pasta Sarak-Engine (Isolamento)**
    - **Ferramenta:** `run_command`
    - **Ação:** Crie o diretório dedicado `Sarak-Engine/` na raiz do consumidor, que isolará os proxies, a store local e instâncias da biblioteca.
@@ -52,6 +54,29 @@ Skill responsável pela instalação plug-and-play do Motor Declarativo (Sarak-L
    - **CSS é automático:** importar `SarakUIProvider` já injeta o stylesheet completo em runtime (um `<style id="sarak-ui-core-styles">` no `<head>`) — nenhum import manual de CSS é necessário para o caso comum (SPA/Vite/CRA).
    - **Exceção (SSR/Next.js, opcional):** se quiser o CSS já presente no HTML gerado pelo servidor (evita um flash de conteúdo sem estilo no primeiro paint), importe manualmente `import '@sarak/lib-ui-core/dist/sarak.css';` no `layout.tsx`/`_app.tsx`. Isso é uma otimização, não um requisito — sem ele a UI funciona e se estiliza assim que o JS roda no cliente.
    - **Se, mesmo assim, a tela renderizar sem estilo:** o `SarakUIProvider` loga `console.error('[Sarak] CSS não detectado...')` em desenvolvimento quando a injeção automática falha (ex.: bundler removendo o side-effect via tree-shaking agressivo) — confira o console antes de investigar mais fundo.
+5-B. **Montagem da Ilha (SÓ no Modo Embarcado)**
+   - **Ação (CSS escopado):** importe a variante escopada UMA vez, no entry point do host:
+     ```ts
+     import '@sarak/lib-ui-core/dist/sarak-scoped.css';
+     ```
+     Ela é idêntica ao stylesheet normal, porém com preflight e utilities confinados ao seletor `.sarak-scope`. **Nunca** importe `dist/sarak.css` num consumidor embarcado: é justamente o reset global que repinta os `h1`/`button`/`input` do host.
+   - **Ação (marcação anti-flash, recomendada):** adicione `data-sarak-ui-mode="embedded"` no `<html>` do host (`index.html`, `app/layout.tsx`, template do servidor):
+     ```html
+     <html data-sarak-ui-mode="embedded">
+     ```
+     A injeção automática de CSS roda na IMPORTAÇÃO do módulo, antes de qualquer Provider montar. Com a marcação, ela nem acontece. Sem ela o Provider ainda remove o CSS global ao montar (e avisa no console em dev), mas pode haver um flash do host re-estilizado no meio do caminho.
+   - **Ação (Provider):** monte a ilha no ponto do front existente onde ela deve aparecer:
+     ```tsx
+     <SarakUIProvider options={{ mode: 'embedded' }}>
+         <SarakManifestRenderer payload={jsonDaIlha} dataStore={store} route={rotaAtiva} />
+     </SarakUIProvider>
+     ```
+     O Provider renderiza um `<div class="sarak-scope">` ao redor dos filhos — é ele que ancora o CSS e recebe os design tokens.
+   - **Múltiplas ilhas:** use **N `SarakManifestRenderer` sob 1 Provider embarcado** (cada Renderer com seu próprio `dataStore`). **N Providers na mesma página está FORA do suporte** — eles disputariam a mesma classe de escopo e o mesmo stylesheet.
+   - **O que muda vs. Modo App (esperado, não é bug):** o título e o favicon da aba continuam sendo do host; as fontes do Google NÃO são injetadas (a ilha herda a tipografia do host — para forçar, use `options={{ mode: 'embedded', embedded: { injectGlobalFonts: true } }}`); `NoiseOverlay` e a mídia de fundo global do Design Engine não são renderizados (cobririam a página do host).
+   - **Feedback continua zero-config:** toasts/modais/drawers vão para portal em `document.body` e recebem a classe de escopo automaticamente — nada a fazer.
+   - **Verificação obrigatória antes de declarar pronto:** abra a página do host e confira, nesta ordem: (1) o front existente está visualmente IDÊNTICO ao de antes (títulos, botões, espaçamentos); (2) o título da aba não mudou; (3) dentro da ilha os componentes Sarak estão estilizados (não "crus"); (4) um `trigger_toast` do manifesto renderiza estilizado. Se (3) falhar, quase sempre é o import da Etapa 5-B faltando ou o `dist/sarak.css` importado por engano.
+
 6. **Integração do Design Agent (SÓ se o usuário optou por incluir na Etapa 1)**
    - Se o usuário respondeu "não" na Etapa 1, **NÃO execute esta etapa** — pule direto para a Etapa 7.
    - A Sarak nunca chama rede diretamente (Spec 08 §6.2) — o chat (`DesignAgentChatCard`) só funciona se o consumidor injetar `options.designAgent.sendPrompt` no `SarakUIProvider`. Sem isso, o card mostra "Não configurado" e não tenta nenhum fetch.
@@ -91,7 +116,7 @@ Skill responsável pela instalação plug-and-play do Motor Declarativo (Sarak-L
 - `ui-auditoria-manifesto` — validar o JSON contra o catálogo antes de entregar.
 
 **Specs da Biblioteca Core:**
-- Spec 08 (`08-consumo-externo-e-integracao.md`) — contrato de consumo: CSS automático, Provider obrigatório, §3.1 alcançabilidade/template, fronteira de confiança (interceptors).
+- Spec 08 (`08-consumo-externo-e-integracao.md`) — contrato de consumo: **§0 Modos de Consumo (App vs Embarcado)**, CSS automático, Provider obrigatório, §3.1 alcançabilidade/template, fronteira de confiança (interceptors).
 - Spec 11 (`11-engine-declarativa-e-manifestos.md`) — gramática do manifesto/Registry/Dispatcher/shell+routes.
 - Spec 01 (`01-painel-customizacao-temas.md`) — Design Engine (Regra 0: alcance via `{"type": "CustomizationPanel"}`).
 - `references/examples.md` — exemplos práticos por stack (SPA/Vite, Next.js SSR, Express) incluindo persistência de temas.

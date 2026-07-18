@@ -144,8 +144,27 @@ interface SarakThemePayloadExtras {
     availableLanguages?: string[];
 }
 
+/**
+ * Modo de consumo da biblioteca (Spec 24).
+ * - `app`: o sistema nasce com a lib; o Provider é dono da página (default).
+ * - `embedded`: a lib renderiza uma ilha sobre um frontend existente, sem tocar
+ *   em nada fora do seu container.
+ */
+export type SarakUIMode = 'app' | 'embedded';
+
 export interface SarakUIOptions {
     token?: string;
+    /** Modo de consumo (Spec 24). Default `'app'` — zero breaking change. */
+    mode?: SarakUIMode;
+    /** Ajustes válidos apenas em `mode: 'embedded'`. */
+    embedded?: {
+        /**
+         * Opt-in explícito para injetar as fontes do Google no `<head>` do host.
+         * Default `false`: no Modo Embarcado a ilha herda as fontes do host, e a lib
+         * não escreve `<link>`/`@import` global sem permissão.
+         */
+        injectGlobalFonts?: boolean;
+    };
     endpoints?: {
         baseUrl?: string;
         designPath?: string;

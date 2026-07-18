@@ -1,5 +1,6 @@
 import React, { useEffect, useState } from 'react';
 import { createPortal } from 'react-dom';
+import { SarakPortalScope } from '../../../core/Provider/components/SarakPortalScope';
 import { useSarakUI } from '../../../core/Provider/SarakUIProvider';
 import { useFocusTrap } from './hooks/useFocusTrap';
 
@@ -127,7 +128,7 @@ export const SarakDrawer: React.FC<SarakDrawerProps> = ({
 
     // Usa portal para renderizar no topo do DOM se possível
     if (typeof document !== 'undefined') {
-        return createPortal(drawerElement, document.body);
+        return createPortal(<SarakPortalScope>{drawerElement}</SarakPortalScope>, document.body);
     }
 
     return drawerElement;

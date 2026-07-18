@@ -11,6 +11,7 @@
 
 import React, { useEffect, useLayoutEffect, useRef, useState } from 'react';
 import { createPortal } from 'react-dom';
+import { SarakPortalScope } from '../../../core/Provider/components/SarakPortalScope';
 
 export interface ContextMenuPosition {
     x: number;
@@ -78,6 +79,7 @@ export const SarakContextMenu: React.FC<SarakContextMenuProps> = ({
     if (!isOpen || typeof document === 'undefined') return null;
 
     return createPortal(
+        <SarakPortalScope>
         <div
             ref={menuRef}
             role="menu"
@@ -97,7 +99,8 @@ export const SarakContextMenu: React.FC<SarakContextMenuProps> = ({
             }}
         >
             {children}
-        </div>,
+        </div>
+        </SarakPortalScope>,
         document.body,
     );
 };

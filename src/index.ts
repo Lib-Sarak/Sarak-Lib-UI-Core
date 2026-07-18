@@ -15,6 +15,9 @@ export type {
     DesignAgentComponentPreset,
     DesignAgentSendPrompt,
 } from './core/Provider/types';
+// Modo de consumo (Spec 24): `app` (default) vs `embedded` (ilha sobre front existente).
+export type { SarakUIMode } from './core/Provider/types';
+export { SARAK_SCOPE_CLASS, SARAK_MODE_ATTRIBUTE } from './core/Provider/scope';
 export { DesignScope } from './core/Design/components/DesignScope';
 export { default as ThemeToggle } from './components/atomic/Buttons/ThemeToggle';
 export * from './components/atomic/Buttons/SarakButton';
