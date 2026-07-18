@@ -15,6 +15,83 @@
 
 `slots` · `renderFor` · `bindings` · `actions` · `onError` · `renderIf` · `disabledIf` · `persistState` · `validation` · `source` · `model` · `form` · `responsive` · `shell` · `routes` · `theme` · `aria`
 
+## Tokens e valores permitidos
+
+> Valores que o manifesto pode usar. Fora desta lista, o motor AVISA (`console.warn` com sugestão) e cai no default do Design Engine — **não invente tokens** (`spacing-xxl`, `--sarak-color-surface` e afins não existem).
+
+### Espaçamento semântico (`gap`, `padding`)
+
+Traduzidos pelo resolutor oficial (`resolveToken`, Spec 16). Qualquer comprimento CSS válido também passa direto: `16px`, `1rem`, `0`, `var(--x, 16px)`, `calc(...)`.
+
+| Token | Traduz para |
+| --- | --- |
+| `spacing-xs` | `calc(var(--sarak-layout-gap-sm, 8px) * 0.5)` |
+| `spacing-sm` | `var(--sarak-layout-gap-sm, 8px)` |
+| `spacing-md` | `var(--sarak-layout-gap-md, 16px)` |
+| `spacing-lg` | `var(--sarak-layout-gap-lg, 24px)` |
+| `spacing-xl` | `calc(var(--sarak-layout-gap-lg, 24px) * 1.5)` |
+
+### Variantes literais por componente
+
+| Componente | Prop | Valores aceitos |
+| --- | --- | --- |
+| `SarakFlex` | `direction` | `row` · `column` · `row-reverse` · `column-reverse` |
+| `SarakFlex` | `justify` | `flex-start` · `flex-end` · `center` · `space-between` · `space-around` · `space-evenly` |
+| `SarakFlex` | `align` | `stretch` · `flex-start` · `flex-end` · `center` · `baseline` |
+| `SarakTabs` | `alignment` | `horizontal` · `vertical` |
+| `SarakDrawer` | `direction` | `left` · `right` · `top` · `bottom` |
+| `SarakDatePicker` | `mode` | `single` · `range` |
+| `SarakShellNav` | `orientation` | `vertical` · `horizontal` · `auto` |
+| `SarakButton` | `variant` | `primary` · `secondary` · `ghost` · `danger` · `success` · `outline` |
+| `SarakButton` | `size` | `xs` · `sm` · `md` · `lg` |
+| `SarakIconButton` | `variant` | `primary` · `secondary` · `ghost` · `danger` |
+| `SarakIconButton` | `size` | `xs` · `sm` · `md` · `lg` |
+| `SocialButton` | `provider` | `google` · `github` |
+| `SocialButton` | `variant` | `glass` · `sovereign` |
+| `SarakTypography` | `transform` | `none` · `uppercase` · `capitalize` |
+| `SarakEmptyState` | `type` | `minimal` · `abstract` · `geometric` |
+| `SarakTable` | `role` | `primary` · `secondary` · `neutral` · `accent` |
+| `SarakTable` | `density` | `compact` · `standard` · `spacious` |
+| `SarakTable` | `importance` | `hero` · `base` · `subtle` |
+| `SarakCardGrid` | `role` | `primary` · `secondary` · `neutral` · `accent` |
+| `SarakCardGrid` | `density` | `compact` · `standard` · `spacious` |
+| `SarakCardGrid` | `importance` | `hero` · `base` · `subtle` |
+| `SarakCardGrid` | `variant` | `classic` · `title` · `action` · `search` |
+| `SarakStats` | `role` | `primary` · `secondary` · `neutral` · `accent` |
+| `SarakStats` | `density` | `compact` · `standard` · `spacious` |
+| `SarakStats` | `importance` | `hero` · `base` · `subtle` |
+| `SarakChart` | `role` | `primary` · `secondary` · `neutral` · `accent` |
+| `SarakChart` | `density` | `compact` · `standard` · `spacious` |
+| `SarakChart` | `importance` | `hero` · `base` · `subtle` |
+| `SarakForm` | `mode` | `create` · `edit` |
+| `SarakForm` | `actions` | `POST` · `PATCH` · `DELETE` |
+| `SarakForm` | `role` | `primary` · `secondary` · `neutral` · `accent` |
+| `SarakForm` | `density` | `compact` · `standard` · `spacious` |
+| `SarakForm` | `importance` | `hero` · `base` · `subtle` |
+| `SarakManagementGrid` | `groupActions` | `plus` · `settings` |
+| `SarakManagementGrid` | `role` | `primary` · `secondary` · `neutral` · `accent` |
+| `SarakManagementGrid` | `density` | `compact` · `standard` · `spacious` |
+| `SarakManagementGrid` | `importance` | `hero` · `base` · `subtle` |
+| `SarakChat` | `role` | `primary` · `secondary` · `neutral` · `accent` |
+| `SarakChat` | `density` | `compact` · `standard` · `spacious` |
+| `SarakChat` | `importance` | `hero` · `base` · `subtle` |
+| `SarakSecurityOrchestrator` | `role` | `primary` · `secondary` · `neutral` · `accent` |
+| `SarakSecurityOrchestrator` | `density` | `compact` · `standard` · `spacious` |
+| `SarakSecurityOrchestrator` | `importance` | `hero` · `base` · `subtle` |
+| `SarakAuthScreen` | `socialConfig` | `compact` · `full` · `glass` · `sovereign` |
+| `SarakAuthScreen` | `role` | `primary` · `secondary` · `neutral` · `accent` |
+| `SarakAuthScreen` | `density` | `compact` · `standard` · `spacious` |
+| `SarakAuthScreen` | `importance` | `hero` · `base` · `subtle` |
+| `SarakCatalogGrid` | `role` | `primary` · `secondary` · `neutral` · `accent` |
+| `SarakCatalogGrid` | `density` | `compact` · `standard` · `spacious` |
+| `SarakCatalogGrid` | `importance` | `hero` · `base` · `subtle` |
+
+### CSS Variables públicas (namespace `--sarak-*`)
+
+Vars REAIS emitidas pelo Design Engine. Use SEMPRE com fallback — `var(--sarak-x, valor)`. Nomes fora desta lista (`--sarak-color-border`, `--sarak-color-surface`, …) NÃO existem e não pintam nada.
+
+`--sarak-accent-color` · `--sarak-animation-speed` · `--sarak-bg-opacity` · `--sarak-body-font` · `--sarak-border-radius` · `--sarak-border-radius-lg` · `--sarak-border-radius-md` · `--sarak-border-radius-sm` · `--sarak-border-style` · `--sarak-border-type` · `--sarak-border-width` · `--sarak-button-active-color` · `--sarak-button-bg` · `--sarak-button-hover` · `--sarak-button-padding` · `--sarak-button-radius` · `--sarak-card-active-color` · `--sarak-card-bg` · `--sarak-card-border` · `--sarak-card-hover-color` · `--sarak-card-noise-opacity` · `--sarak-card-padding-lg` · `--sarak-card-padding-md` · `--sarak-card-padding-sm` · `--sarak-card-radius` · `--sarak-card-shadow-intensity` · `--sarak-chart-thickness` · `--sarak-chat-anim-speed` · `--sarak-chat-bubble` · `--sarak-color-depth` · `--sarak-color-variation` · `--sarak-contrast-curve` · `--sarak-elasticity` · `--sarak-error-color` · `--sarak-flow-grid` · `--sarak-flow-radius` · `--sarak-fluid-scale` · `--sarak-font-scale` · `--sarak-font-size` · `--sarak-font-size-base` · `--sarak-glass-blur` · `--sarak-glass-opacity` · `--sarak-glass-saturation` · `--sarak-haptic-scale` · `--sarak-heading-font` · `--sarak-heading-spacing` · `--sarak-heading-weight` · `--sarak-icon-stroke` · `--sarak-input-border-width` · `--sarak-input-style` · `--sarak-layered-shadows` · `--sarak-layout` · `--sarak-layout-density` · `--sarak-layout-gap` · `--sarak-layout-gap-lg` · `--sarak-layout-gap-md` · `--sarak-layout-gap-sm` · `--sarak-line-height` · `--sarak-max-width` · `--sarak-mode` · `--sarak-nav-style` · `--sarak-navigation-style` · `--sarak-noise-opacity` · `--sarak-palette` · `--sarak-primary-color` · `--sarak-scale-ratio` · `--sarak-scrollbar-width` · `--sarak-secondary-color` · `--sarak-security-glow` · `--sarak-security-pulse` · `--sarak-shadow-intensity` · `--sarak-sidebar-active-color` · `--sarak-sidebar-bg` · `--sarak-sidebar-hover-color` · `--sarak-sidebar-noise-opacity` · `--sarak-sidebar-width` · `--sarak-subtitle-font` · `--sarak-success-color` · `--sarak-surface` · `--sarak-surface-color` · `--sarak-surface-intensity` · `--sarak-system-tone` · `--sarak-tab-font` · `--sarak-tab-gap` · `--sarak-tab-section-margin` · `--sarak-tabular-nums` · `--sarak-tertiary-color` · `--sarak-texture` · `--sarak-texture-color` · `--sarak-texture-opacity` · `--sarak-title-color` · `--sarak-topbar-active-color` · `--sarak-topbar-bg` · `--sarak-topbar-height` · `--sarak-topbar-hover-color` · `--sarak-topbar-noise-opacity` · `--sarak-warning-color`
+
 ## Componentes resolvíveis via `"type"` (66)
 
 ### SarakFlex
@@ -88,6 +165,7 @@ Props (`SarakFormGroupProps` — `src/components/atomic/Layouts/SarakFormGroup.t
 | Prop | Tipo | Obrigatória | Descrição |
 | --- | --- | --- | --- |
 | `children` | `React.ReactNode` | sim |  |
+| `gap` | `string` | não | Espaçamento entre label e campo — token semântico (`spacing-md`) ou CSS válido. |
 
 Estende: `React.HTMLAttributes<HTMLDivElement>`
 
@@ -455,6 +533,7 @@ Props (`SarakShellNavProps` — `src/components/atomic/Navigation/SarakShellNav.
 | `brand` | `{ name?: string; logoUrl?: string }` | não | Identidade exibida no topo do menu. |
 | `onNavigate` | `(route: string) => void` | não | Caminho TSX: callback direto. No manifesto a navegação sai por `onChange`. |
 | `onChange` | `(route: string) => void` | não | Caminho manifesto: a Engine injeta este handler e roda as `actions`. |
+| `orientation` | `'vertical' \| 'horizontal' \| 'auto'` | não | Orientação do menu (Spec 18). `'auto'` (default) segue o Design Engine: `design.navigationStyle === 'topbar'` → horizontal; qualquer outro → vertical. `'dock'`/`'glass'` do shell legado ficam fora desta spec (tratados como vertical). |
 | `className` | `string` | não |  |
 
 ### SarakMarkdownRenderer

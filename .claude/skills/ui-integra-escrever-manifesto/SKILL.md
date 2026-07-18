@@ -51,7 +51,7 @@ O catálogo oficial de `type`s, props, ações, pipes e diretivas é **GERADO do
    - `{{$event}}` — valor emitido pelo componente no evento que disparou as `actions` (ex.: a rota clicada no `SarakShellNav`, o valor digitado num input). Disponível SÓ dentro de `actions`.
 5. **Motores de Lógica (Control Flow)**
    - **Condicionais:** `"renderIf": "{{user.isLogged}}"` (Safe Evaluator — sem acesso a `window`/globais). `disabledIf` desabilita sem remover.
-   - **Repetição:** `"renderFor": "{{minhaLista}}"` — clona a subárvore com escopo local `{{item}}`/`{{index}}`.
+   - **Repetição:** `"renderFor": { "source": "{{minhaLista}}" }` — clona a subárvore com escopo local `{{item}}`/`{{index}}` (é um OBJETO com `source`, não uma string crua).
 6. **Data Binding & Pipes**
    - `"label": "Olá, {{user.name | capitalize}}!"` — pipes após `|` (lista oficial no catálogo). Fallback: `{{valor || 'padrão'}}`.
    - **Formulários:** `model: { "path": "form.campo" }` faz two-way binding; `validation: [...]` valida (erros aparecem após touch/submit); `form` agrupa o escopo.

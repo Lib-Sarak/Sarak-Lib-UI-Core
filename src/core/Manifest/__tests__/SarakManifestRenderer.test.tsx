@@ -87,13 +87,15 @@ describe('Spec 30 (mínima) — SarakManifestRenderer (E2E da fundação)', () =
         expect(screen.getByRole('alert')).toHaveTextContent('NaoExiste');
     });
 
-    it('deve acionar fallback de Manifesto Inválido sem schemaVersion compatível', () => {
+    it('deve acionar a tela DX de Manifesto Inválido sem schemaVersion compatível (Spec 17)', () => {
         vi.spyOn(console, 'warn').mockImplementation(() => undefined);
+        vi.spyOn(console, 'error').mockImplementation(() => undefined);
         const manifest = { type: 'SarakFlex' } as unknown as ManifestRoot;
 
         renderWithProvider(<SarakManifestRenderer manifest={manifest} />);
 
-        expect(screen.getByRole('alert')).toHaveTextContent('ManifestoInvalido');
+        expect(screen.getByRole('alert')).toHaveTextContent('Manifesto inválido');
+        expect(screen.getByRole('alert')).toHaveTextContent(/schemaVersion/);
     });
 
     it('deve aceitar um dataStore injetado e renderizar a árvore (plumbing reativo)', () => {

@@ -2,6 +2,7 @@ import React from 'react';
 import { render, screen, fireEvent } from '@testing-library/react';
 import { describe, it, expect, vi } from 'vitest';
 import { SarakShellNav, type ShellNavItem } from '../SarakShellNav';
+import { DesignOverrideContext } from '../../../../core/Provider/SarakUIProvider';
 
 const ITEMS: ShellNavItem[] = [
     { label: 'Contratos', route: '/contratos' },
@@ -37,5 +38,38 @@ describe('SarakShellNav — navegação de shell guiada por dados (Spec 33)', ()
     it('não quebra com lista vazia', () => {
         render(<SarakShellNav items={[]} />);
         expect(screen.getByRole('navigation')).toBeInTheDocument();
+    });
+
+    describe('orientation (Spec 18)', () => {
+        it('default (sem Provider) é vertical — flexDirection column', () => {
+            render(<SarakShellNav items={ITEMS} />);
+            expect(screen.getByRole('navigation').style.flexDirection).toBe('column');
+        });
+
+        it('orientation="horizontal" põe o menu em linha (flexDirection row)', () => {
+            render(<SarakShellNav items={ITEMS} orientation="horizontal" />);
+            const nav = screen.getByRole('navigation');
+            expect(nav.style.flexDirection).toBe('row');
+            // Itens continuam presentes e clicáveis.
+            expect(screen.getByRole('button', { name: 'Contratos' })).toBeInTheDocument();
+        });
+
+        it('auto + design.navigationStyle="topbar" → horizontal (paridade MyService)', () => {
+            render(
+                <DesignOverrideContext.Provider value={{ navigationStyle: 'topbar' }}>
+                    <SarakShellNav items={ITEMS} orientation="auto" />
+                </DesignOverrideContext.Provider>,
+            );
+            expect(screen.getByRole('navigation').style.flexDirection).toBe('row');
+        });
+
+        it('auto + navigationStyle desconhecido (dock) → vertical (fora do escopo)', () => {
+            render(
+                <DesignOverrideContext.Provider value={{ navigationStyle: 'dock' }}>
+                    <SarakShellNav items={ITEMS} orientation="auto" />
+                </DesignOverrideContext.Provider>,
+            );
+            expect(screen.getByRole('navigation').style.flexDirection).toBe('column');
+        });
     });
 });

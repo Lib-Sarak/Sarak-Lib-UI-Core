@@ -1,5 +1,6 @@
 import React from 'react';
 import { SarakIcon } from '../Icon/SarakIcon';
+import { UIContext, DesignOverrideContext } from '../../../core/Provider/SarakUIProvider';
 
 /**
  * SarakShellNav — Navegação de shell 100% orientada a dados (Spec 33 + Spec 14)
@@ -36,8 +37,28 @@ export interface SarakShellNavProps {
     onNavigate?: (route: string) => void;
     /** Caminho manifesto: a Engine injeta este handler e roda as `actions`. */
     onChange?: (route: string) => void;
+    /**
+     * Orientação do menu (Spec 18). `'auto'` (default) segue o Design Engine:
+     * `design.navigationStyle === 'topbar'` → horizontal; qualquer outro → vertical.
+     * `'dock'`/`'glass'` do shell legado ficam fora desta spec (tratados como vertical).
+     */
+    orientation?: 'vertical' | 'horizontal' | 'auto';
     className?: string;
 }
+
+/**
+ * Lê `navigationStyle` do Design Engine SEM exigir o Provider: acessa os contextos
+ * direto (draft de override tem prioridade sobre o persistido) e degrada a `undefined`
+ * quando renderizado fora do `SarakUIProvider` — o `orientation="auto"` então cai em
+ * vertical, mantendo o átomo utilizável isoladamente.
+ */
+const useNavigationStyle = (): string | undefined => {
+    const context = React.useContext(UIContext);
+    const override = React.useContext(DesignOverrideContext);
+    const design = (override ?? context?.design) as { navigationStyle?: unknown } | null | undefined;
+    const value = design?.navigationStyle;
+    return typeof value === 'string' ? value : undefined;
+};
 
 /** Agrupa preservando a ordem de aparição das categorias ('' = grupo raiz). */
 const groupByCategory = (items: ShellNavItem[]): Map<string, ShellNavItem[]> => {
@@ -57,13 +78,14 @@ const groupByCategory = (items: ShellNavItem[]): Map<string, ShellNavItem[]> => 
 const NavEntry: React.FC<{
     item: ShellNavItem;
     isActive: boolean;
+    horizontal: boolean;
     onSelect: (route: string) => void;
-}> = ({ item, isActive, onSelect }) => (
+}> = ({ item, isActive, horizontal, onSelect }) => (
     <button
         type="button"
         onClick={() => onSelect(item.route)}
         aria-current={isActive ? 'page' : undefined}
-        className={`w-full flex items-center text-left rounded-[var(--sarak-button-radius,8px)] transition-sarak cursor-pointer ${
+        className={`${horizontal ? 'shrink-0' : 'w-full'} flex items-center text-left rounded-[var(--sarak-button-radius,8px)] transition-sarak cursor-pointer ${
             isActive
                 ? 'bg-[var(--sarak-primary-color,#3b82f6)]/15 text-[var(--sarak-primary-color,#3b82f6)] font-medium'
                 : 'text-[var(--text-muted,#94a3b8)] hover:text-[var(--sarak-text-main,#ffffff)] hover:bg-[var(--sarak-card-bg,rgba(255,255,255,0.04))]'
@@ -86,8 +108,16 @@ export const SarakShellNav: React.FC<SarakShellNavProps> = ({
     brand,
     onNavigate,
     onChange,
+    orientation = 'auto',
     className = '',
 }) => {
+    const navigationStyle = useNavigationStyle();
+    // `auto` segue o Design Engine: só `topbar` vira horizontal (dock/glass = vertical).
+    const resolved = orientation === 'auto'
+        ? (navigationStyle === 'topbar' ? 'horizontal' : 'vertical')
+        : orientation;
+    const horizontal = resolved === 'horizontal';
+
     const select = (route: string): void => {
         onNavigate?.(route);
         onChange?.(route);
@@ -98,15 +128,20 @@ export const SarakShellNav: React.FC<SarakShellNavProps> = ({
     return (
         <nav
             aria-label="Navegação principal"
-            className={`flex flex-col h-full min-h-0 overflow-y-auto ${className}`}
-            style={{ gap: 'var(--sarak-layout-gap-sm, 8px)', padding: 'var(--sarak-layout-gap-md, 16px)' }}
+            className={`flex ${horizontal ? 'items-center overflow-x-auto shrink-0' : 'h-full min-h-0 overflow-y-auto'} ${className}`}
+            style={{
+                flexDirection: horizontal ? 'row' : 'column',
+                gap: 'var(--sarak-layout-gap-sm, 8px)',
+                padding: 'var(--sarak-layout-gap-md, 16px)',
+            }}
         >
             {brand && (brand.name || brand.logoUrl) ? (
                 <div
                     className="flex items-center shrink-0"
                     style={{
                         gap: 'var(--sarak-layout-gap-sm, 8px)',
-                        marginBottom: 'var(--sarak-layout-gap-md, 16px)',
+                        marginBottom: horizontal ? undefined : 'var(--sarak-layout-gap-md, 16px)',
+                        marginInlineEnd: horizontal ? 'var(--sarak-layout-gap-md, 16px)' : undefined,
                     }}
                 >
                     {brand.logoUrl ? (
@@ -125,25 +160,45 @@ export const SarakShellNav: React.FC<SarakShellNavProps> = ({
                 </div>
             ) : null}
 
-            {Array.from(groups.entries()).map(([category, groupItems]) => (
-                <div key={category || 'raiz'} className="flex flex-col" style={{ gap: 'calc(var(--sarak-layout-gap-sm, 8px) * 0.5)' }}>
-                    {category ? (
-                        <div
-                            className="text-2xs font-bold uppercase tracking-widest text-[var(--text-muted,#94a3b8)] opacity-70 select-none"
-                            style={{ paddingInline: 'var(--sarak-layout-gap-sm, 8px)', marginTop: 'var(--sarak-layout-gap-sm, 8px)' }}
-                        >
-                            {category}
-                        </div>
-                    ) : null}
-                    {groupItems.map((item) => (
-                        <NavEntry
-                            key={item.route}
-                            item={item}
-                            isActive={item.route === activeRoute}
-                            onSelect={select}
+            {Array.from(groups.entries()).map(([category, groupItems], index) => (
+                <React.Fragment key={category || 'raiz'}>
+                    {horizontal && index > 0 ? (
+                        // Grupos viram separadores na horizontal (o rótulo de categoria some).
+                        <span
+                            aria-hidden="true"
+                            className="self-stretch shrink-0"
+                            style={{ width: 'var(--sarak-border-width, thin)', background: 'var(--sarak-card-border-color, rgba(255,255,255,0.1))' }}
                         />
-                    ))}
-                </div>
+                    ) : null}
+                    <div
+                        className="flex"
+                        style={{
+                            flexDirection: horizontal ? 'row' : 'column',
+                            alignItems: horizontal ? 'center' : undefined,
+                            gap: horizontal
+                                ? 'var(--sarak-layout-gap-sm, 8px)'
+                                : 'calc(var(--sarak-layout-gap-sm, 8px) * 0.5)',
+                        }}
+                    >
+                        {category && !horizontal ? (
+                            <div
+                                className="text-2xs font-bold uppercase tracking-widest text-[var(--text-muted,#94a3b8)] opacity-70 select-none"
+                                style={{ paddingInline: 'var(--sarak-layout-gap-sm, 8px)', marginTop: 'var(--sarak-layout-gap-sm, 8px)' }}
+                            >
+                                {category}
+                            </div>
+                        ) : null}
+                        {groupItems.map((item) => (
+                            <NavEntry
+                                key={item.route}
+                                item={item}
+                                isActive={item.route === activeRoute}
+                                horizontal={horizontal}
+                                onSelect={select}
+                            />
+                        ))}
+                    </div>
+                </React.Fragment>
             ))}
         </nav>
     );

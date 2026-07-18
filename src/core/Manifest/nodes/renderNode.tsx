@@ -17,6 +17,7 @@ import { createFormScope } from '../Form/formScope';
 import { FormScopeContext } from '../Form/context';
 import { resolveTheme } from '../Theme/resolveTheme';
 import { LeafNode } from './LeafNode';
+import { sanitizeDirectives, emitDirectiveWarnings } from './sanitizeDirectives';
 import type { NodeRenderContext, NodeRendererProps } from './context';
 import { SarakDataGrid } from '../../../components/atomic/DataDisplay/SarakDataGrid';
 import { SarakSkeleton } from '../../../components/atomic/Feedback/SarakSkeleton';
@@ -128,7 +129,16 @@ const ThemeNode: React.FC<NodeRendererProps> = ({ node, path, scope, ctx }) => {
  * Pipeline de diretivas de um nó (Specs 26/42/31/23/32/22). Separado do wrapper de Error
  * Boundary para que uma falha aqui seja capturada e isolada (Spec 27, Regra 1).
  */
-const ManifestNodePipeline: React.FC<NodeRendererProps> = ({ node, path, scope, ctx }) => {
+const ManifestNodePipeline: React.FC<NodeRendererProps> = ({ node: rawNode, path, scope, ctx }) => {
+    // Resiliência leniente (Spec 17): diretiva mal formatada (erro de AUTORIA) é
+    // IGNORADA + avisada (deduplicada por nó), em vez de estourar em runtime e
+    // derrubar o container. O restante do pipeline opera sobre o nó já higienizado.
+    const { node, warnings } = useMemo(
+        () => sanitizeDirectives(rawNode, rawNode.id ?? path),
+        [rawNode, path],
+    );
+    if (warnings.length > 0) emitDirectiveWarnings(warnings);
+
     // 0. Avaliação condicional (Spec 26, Regra 2): `renderIf` falso suprime o nó
     // ANTES de qualquer trabalho (fonte/loop/render) — o nó sequer monta no DOM.
     if (node.renderIf !== undefined && !evaluateCondition(node.renderIf, scope, ctx.global)) {

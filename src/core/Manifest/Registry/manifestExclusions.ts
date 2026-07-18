@@ -25,6 +25,8 @@ export const MANIFEST_EXCLUSIONS: Readonly<Record<string, string>> = {
     SarakErrorBoundary: 'Infra de resiliência por nó (Spec 27) — aplicada pelo renderNode.',
     SarakFallback: 'Fallback de type desconhecido (Spec 22, Regra 2) — uso interno do motor.',
     SarakErrorFallback: 'Tela de recuperação padrão (Spec 27) — uso interno do motor.',
+    SarakMissingManifestScreen: 'Tela DX de payload ausente (Spec 17) — renderizada pelo próprio motor.',
+    SarakInvalidManifestScreen: 'Tela DX de payload inválido (Spec 17) — renderizada pelo próprio motor.',
     DesignScope: 'Aplicado internamente pela diretiva `theme` do nó (Onda 6) — não por `type`.',
 
     // --- Sistema legado (Spec 04 — Shell/Discovery). Consumidores novos usam shell/routes ---

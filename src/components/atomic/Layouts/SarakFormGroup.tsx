@@ -3,6 +3,8 @@ import { useStructuralStyles } from '../hooks/useStructuralStyles';
 
 export interface SarakFormGroupProps extends React.HTMLAttributes<HTMLDivElement> {
     children: React.ReactNode;
+    /** Espaçamento entre label e campo — token semântico (`spacing-md`) ou CSS válido. */
+    gap?: string;
 }
 
 /**
@@ -11,9 +13,9 @@ export interface SarakFormGroupProps extends React.HTMLAttributes<HTMLDivElement
  * "Form Label Position" e "Form Density" do Design Engine para rearranjar
  * a estrutura sem que o desenvolvedor altere o JSX.
  */
-export const SarakFormGroup: React.FC<SarakFormGroupProps> = ({ children, className = '', style, ...props }) => {
+export const SarakFormGroup: React.FC<SarakFormGroupProps> = ({ children, className = '', style, gap, ...props }) => {
     const { getFormGroupStyles } = useStructuralStyles();
-    const structuralStyles = getFormGroupStyles();
+    const structuralStyles = getFormGroupStyles(gap);
 
     return (
         <div 

@@ -19,6 +19,7 @@
       ]
     },
     "sidebar": {
+      "$comment": "orientation é 'auto' por padrão (Spec 18): quando o Design Engine define navigationStyle='topbar', este menu vira horizontal — mova-o para shell.topbar sem mudar mais nada. dock/glass do shell legado ainda não são suportados.",
       "type": "SarakShellNav",
       "props": {
         "brand": { "name": "Sarak" },

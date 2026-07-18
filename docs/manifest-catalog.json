@@ -194,6 +194,12 @@
           "type": "React.ReactNode",
           "optional": false,
           "doc": ""
+        },
+        {
+          "name": "gap",
+          "type": "string",
+          "optional": true,
+          "doc": "Espaçamento entre label e campo — token semântico (`spacing-md`) ou CSS válido."
         }
       ]
     },
@@ -1346,6 +1352,12 @@
           "type": "(route: string) => void",
           "optional": true,
           "doc": "Caminho manifesto: a Engine injeta este handler e roda as `actions`."
+        },
+        {
+          "name": "orientation",
+          "type": "'vertical' | 'horizontal' | 'auto'",
+          "optional": true,
+          "doc": "Orientação do menu (Spec 18). `'auto'` (default) segue o Design Engine: `design.navigationStyle === 'topbar'` → horizontal; qualquer outro → vertical. `'dock'`/`'glass'` do shell legado ficam fora desta spec (tratados como vertical)."
         },
         {
           "name": "className",
@@ -2758,5 +2770,584 @@
     "routes",
     "theme",
     "aria"
-  ]
+  ],
+  "tokens": {
+    "spacing": {
+      "spacing-xs": "calc(var(--sarak-layout-gap-sm, 8px) * 0.5)",
+      "spacing-sm": "var(--sarak-layout-gap-sm, 8px)",
+      "spacing-md": "var(--sarak-layout-gap-md, 16px)",
+      "spacing-lg": "var(--sarak-layout-gap-lg, 24px)",
+      "spacing-xl": "calc(var(--sarak-layout-gap-lg, 24px) * 1.5)"
+    },
+    "variants": [
+      {
+        "component": "SarakFlex",
+        "prop": "direction",
+        "values": [
+          "row",
+          "column",
+          "row-reverse",
+          "column-reverse"
+        ]
+      },
+      {
+        "component": "SarakFlex",
+        "prop": "justify",
+        "values": [
+          "flex-start",
+          "flex-end",
+          "center",
+          "space-between",
+          "space-around",
+          "space-evenly"
+        ]
+      },
+      {
+        "component": "SarakFlex",
+        "prop": "align",
+        "values": [
+          "stretch",
+          "flex-start",
+          "flex-end",
+          "center",
+          "baseline"
+        ]
+      },
+      {
+        "component": "SarakTabs",
+        "prop": "alignment",
+        "values": [
+          "horizontal",
+          "vertical"
+        ]
+      },
+      {
+        "component": "SarakDrawer",
+        "prop": "direction",
+        "values": [
+          "left",
+          "right",
+          "top",
+          "bottom"
+        ]
+      },
+      {
+        "component": "SarakDatePicker",
+        "prop": "mode",
+        "values": [
+          "single",
+          "range"
+        ]
+      },
+      {
+        "component": "SarakShellNav",
+        "prop": "orientation",
+        "values": [
+          "vertical",
+          "horizontal",
+          "auto"
+        ]
+      },
+      {
+        "component": "SarakButton",
+        "prop": "variant",
+        "values": [
+          "primary",
+          "secondary",
+          "ghost",
+          "danger",
+          "success",
+          "outline"
+        ]
+      },
+      {
+        "component": "SarakButton",
+        "prop": "size",
+        "values": [
+          "xs",
+          "sm",
+          "md",
+          "lg"
+        ]
+      },
+      {
+        "component": "SarakIconButton",
+        "prop": "variant",
+        "values": [
+          "primary",
+          "secondary",
+          "ghost",
+          "danger"
+        ]
+      },
+      {
+        "component": "SarakIconButton",
+        "prop": "size",
+        "values": [
+          "xs",
+          "sm",
+          "md",
+          "lg"
+        ]
+      },
+      {
+        "component": "SocialButton",
+        "prop": "provider",
+        "values": [
+          "google",
+          "github"
+        ]
+      },
+      {
+        "component": "SocialButton",
+        "prop": "variant",
+        "values": [
+          "glass",
+          "sovereign"
+        ]
+      },
+      {
+        "component": "SarakTypography",
+        "prop": "transform",
+        "values": [
+          "none",
+          "uppercase",
+          "capitalize"
+        ]
+      },
+      {
+        "component": "SarakEmptyState",
+        "prop": "type",
+        "values": [
+          "minimal",
+          "abstract",
+          "geometric"
+        ]
+      },
+      {
+        "component": "SarakTable",
+        "prop": "role",
+        "values": [
+          "primary",
+          "secondary",
+          "neutral",
+          "accent"
+        ]
+      },
+      {
+        "component": "SarakTable",
+        "prop": "density",
+        "values": [
+          "compact",
+          "standard",
+          "spacious"
+        ]
+      },
+      {
+        "component": "SarakTable",
+        "prop": "importance",
+        "values": [
+          "hero",
+          "base",
+          "subtle"
+        ]
+      },
+      {
+        "component": "SarakCardGrid",
+        "prop": "role",
+        "values": [
+          "primary",
+          "secondary",
+          "neutral",
+          "accent"
+        ]
+      },
+      {
+        "component": "SarakCardGrid",
+        "prop": "density",
+        "values": [
+          "compact",
+          "standard",
+          "spacious"
+        ]
+      },
+      {
+        "component": "SarakCardGrid",
+        "prop": "importance",
+        "values": [
+          "hero",
+          "base",
+          "subtle"
+        ]
+      },
+      {
+        "component": "SarakCardGrid",
+        "prop": "variant",
+        "values": [
+          "classic",
+          "title",
+          "action",
+          "search"
+        ]
+      },
+      {
+        "component": "SarakStats",
+        "prop": "role",
+        "values": [
+          "primary",
+          "secondary",
+          "neutral",
+          "accent"
+        ]
+      },
+      {
+        "component": "SarakStats",
+        "prop": "density",
+        "values": [
+          "compact",
+          "standard",
+          "spacious"
+        ]
+      },
+      {
+        "component": "SarakStats",
+        "prop": "importance",
+        "values": [
+          "hero",
+          "base",
+          "subtle"
+        ]
+      },
+      {
+        "component": "SarakChart",
+        "prop": "role",
+        "values": [
+          "primary",
+          "secondary",
+          "neutral",
+          "accent"
+        ]
+      },
+      {
+        "component": "SarakChart",
+        "prop": "density",
+        "values": [
+          "compact",
+          "standard",
+          "spacious"
+        ]
+      },
+      {
+        "component": "SarakChart",
+        "prop": "importance",
+        "values": [
+          "hero",
+          "base",
+          "subtle"
+        ]
+      },
+      {
+        "component": "SarakForm",
+        "prop": "mode",
+        "values": [
+          "create",
+          "edit"
+        ]
+      },
+      {
+        "component": "SarakForm",
+        "prop": "actions",
+        "values": [
+          "POST",
+          "PATCH",
+          "DELETE"
+        ]
+      },
+      {
+        "component": "SarakForm",
+        "prop": "role",
+        "values": [
+          "primary",
+          "secondary",
+          "neutral",
+          "accent"
+        ]
+      },
+      {
+        "component": "SarakForm",
+        "prop": "density",
+        "values": [
+          "compact",
+          "standard",
+          "spacious"
+        ]
+      },
+      {
+        "component": "SarakForm",
+        "prop": "importance",
+        "values": [
+          "hero",
+          "base",
+          "subtle"
+        ]
+      },
+      {
+        "component": "SarakManagementGrid",
+        "prop": "groupActions",
+        "values": [
+          "plus",
+          "settings"
+        ]
+      },
+      {
+        "component": "SarakManagementGrid",
+        "prop": "role",
+        "values": [
+          "primary",
+          "secondary",
+          "neutral",
+          "accent"
+        ]
+      },
+      {
+        "component": "SarakManagementGrid",
+        "prop": "density",
+        "values": [
+          "compact",
+          "standard",
+          "spacious"
+        ]
+      },
+      {
+        "component": "SarakManagementGrid",
+        "prop": "importance",
+        "values": [
+          "hero",
+          "base",
+          "subtle"
+        ]
+      },
+      {
+        "component": "SarakChat",
+        "prop": "role",
+        "values": [
+          "primary",
+          "secondary",
+          "neutral",
+          "accent"
+        ]
+      },
+      {
+        "component": "SarakChat",
+        "prop": "density",
+        "values": [
+          "compact",
+          "standard",
+          "spacious"
+        ]
+      },
+      {
+        "component": "SarakChat",
+        "prop": "importance",
+        "values": [
+          "hero",
+          "base",
+          "subtle"
+        ]
+      },
+      {
+        "component": "SarakSecurityOrchestrator",
+        "prop": "role",
+        "values": [
+          "primary",
+          "secondary",
+          "neutral",
+          "accent"
+        ]
+      },
+      {
+        "component": "SarakSecurityOrchestrator",
+        "prop": "density",
+        "values": [
+          "compact",
+          "standard",
+          "spacious"
+        ]
+      },
+      {
+        "component": "SarakSecurityOrchestrator",
+        "prop": "importance",
+        "values": [
+          "hero",
+          "base",
+          "subtle"
+        ]
+      },
+      {
+        "component": "SarakAuthScreen",
+        "prop": "socialConfig",
+        "values": [
+          "compact",
+          "full",
+          "glass",
+          "sovereign"
+        ]
+      },
+      {
+        "component": "SarakAuthScreen",
+        "prop": "role",
+        "values": [
+          "primary",
+          "secondary",
+          "neutral",
+          "accent"
+        ]
+      },
+      {
+        "component": "SarakAuthScreen",
+        "prop": "density",
+        "values": [
+          "compact",
+          "standard",
+          "spacious"
+        ]
+      },
+      {
+        "component": "SarakAuthScreen",
+        "prop": "importance",
+        "values": [
+          "hero",
+          "base",
+          "subtle"
+        ]
+      },
+      {
+        "component": "SarakCatalogGrid",
+        "prop": "role",
+        "values": [
+          "primary",
+          "secondary",
+          "neutral",
+          "accent"
+        ]
+      },
+      {
+        "component": "SarakCatalogGrid",
+        "prop": "density",
+        "values": [
+          "compact",
+          "standard",
+          "spacious"
+        ]
+      },
+      {
+        "component": "SarakCatalogGrid",
+        "prop": "importance",
+        "values": [
+          "hero",
+          "base",
+          "subtle"
+        ]
+      }
+    ],
+    "cssVars": [
+      "--sarak-accent-color",
+      "--sarak-animation-speed",
+      "--sarak-bg-opacity",
+      "--sarak-body-font",
+      "--sarak-border-radius",
+      "--sarak-border-radius-lg",
+      "--sarak-border-radius-md",
+      "--sarak-border-radius-sm",
+      "--sarak-border-style",
+      "--sarak-border-type",
+      "--sarak-border-width",
+      "--sarak-button-active-color",
+      "--sarak-button-bg",
+      "--sarak-button-hover",
+      "--sarak-button-padding",
+      "--sarak-button-radius",
+      "--sarak-card-active-color",
+      "--sarak-card-bg",
+      "--sarak-card-border",
+      "--sarak-card-hover-color",
+      "--sarak-card-noise-opacity",
+      "--sarak-card-padding-lg",
+      "--sarak-card-padding-md",
+      "--sarak-card-padding-sm",
+      "--sarak-card-radius",
+      "--sarak-card-shadow-intensity",
+      "--sarak-chart-thickness",
+      "--sarak-chat-anim-speed",
+      "--sarak-chat-bubble",
+      "--sarak-color-depth",
+      "--sarak-color-variation",
+      "--sarak-contrast-curve",
+      "--sarak-elasticity",
+      "--sarak-error-color",
+      "--sarak-flow-grid",
+      "--sarak-flow-radius",
+      "--sarak-fluid-scale",
+      "--sarak-font-scale",
+      "--sarak-font-size",
+      "--sarak-font-size-base",
+      "--sarak-glass-blur",
+      "--sarak-glass-opacity",
+      "--sarak-glass-saturation",
+      "--sarak-haptic-scale",
+      "--sarak-heading-font",
+      "--sarak-heading-spacing",
+      "--sarak-heading-weight",
+      "--sarak-icon-stroke",
+      "--sarak-input-border-width",
+      "--sarak-input-style",
+      "--sarak-layered-shadows",
+      "--sarak-layout",
+      "--sarak-layout-density",
+      "--sarak-layout-gap",
+      "--sarak-layout-gap-lg",
+      "--sarak-layout-gap-md",
+      "--sarak-layout-gap-sm",
+      "--sarak-line-height",
+      "--sarak-max-width",
+      "--sarak-mode",
+      "--sarak-nav-style",
+      "--sarak-navigation-style",
+      "--sarak-noise-opacity",
+      "--sarak-palette",
+      "--sarak-primary-color",
+      "--sarak-scale-ratio",
+      "--sarak-scrollbar-width",
+      "--sarak-secondary-color",
+      "--sarak-security-glow",
+      "--sarak-security-pulse",
+      "--sarak-shadow-intensity",
+      "--sarak-sidebar-active-color",
+      "--sarak-sidebar-bg",
+      "--sarak-sidebar-hover-color",
+      "--sarak-sidebar-noise-opacity",
+      "--sarak-sidebar-width",
+      "--sarak-subtitle-font",
+      "--sarak-success-color",
+      "--sarak-surface",
+      "--sarak-surface-color",
+      "--sarak-surface-intensity",
+      "--sarak-system-tone",
+      "--sarak-tab-font",
+      "--sarak-tab-gap",
+      "--sarak-tab-section-margin",
+      "--sarak-tabular-nums",
+      "--sarak-tertiary-color",
+      "--sarak-texture",
+      "--sarak-texture-color",
+      "--sarak-texture-opacity",
+      "--sarak-title-color",
+      "--sarak-topbar-active-color",
+      "--sarak-topbar-bg",
+      "--sarak-topbar-height",
+      "--sarak-topbar-hover-color",
+      "--sarak-topbar-noise-opacity",
+      "--sarak-warning-color"
+    ]
+  }
 }

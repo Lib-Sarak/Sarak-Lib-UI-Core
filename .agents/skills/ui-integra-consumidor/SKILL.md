@@ -15,6 +15,9 @@ Skill responsável pela instalação plug-and-play do Motor Declarativo (Sarak-L
 ## Workflow
 
 1. **Entrevista de Instalação (HITL) — faça TODAS estas perguntas ANTES de tocar em qualquer arquivo**
+   - **PRIMEIRA PERGUNTA — Modo de renderização:** *"O módulo vai renderizar um sistema NOVO (interface 100% via manifesto — Modo App) ou vai renderizar SOBRE um frontend que JÁ EXISTE (Modo Embarcado — ilhas de manifesto dentro do front atual)?"*
+     - **Modo App:** siga o fluxo normal desta skill (template starter, shell/routes — o Provider+Renderer são a raiz da aplicação).
+     - **Modo Embarcado:** ⚠️ o suporte formal (Provider com `mode: 'embedded'`, CSS escopado) está especificado em `specs/plan/24-modo-embarcado-adocao-incremental.md` e **ainda não foi implementado**. Enquanto isso, seja honesto com o usuário: montar o `SarakUIProvider` numa página existente hoje injeta CSS global com reset (re-estiliza o front do host), sobrescreve `document.title` e monta overlays de página inteira. Alternativa provisória aceitável: adotar a lib em rota(s) DEDICADA(s) do host (a rota inteira é Sarak — os vazamentos ficam confinados às telas novas), nunca como ilha dentro de página legada estilizada. Registre a escolha do usuário.
    - **Stack do consumidor:** qual o framework/host (Next.js/React, Vite, Remix, etc.) e o backend, se houver (Node, Python/FastAPI, PHP)? Isso decide como o Design Agent é acoplado na Etapa 6.
    - **Design Agent (chat de IA) — incluir ou não?** Pergunte explicitamente: *"Quer habilitar o chat do Design Agent (a IA que gera e ajusta o tema por linguagem natural)?"*
      - Deixe claro que é **100% opcional e desacoplado**: `agent-design-operator` **não** é dependência de `@sarak/lib-ui-core` (importar a UI nunca o baixa), e `options.designAgent` é opcional. Sem ele, a UI funciona por inteiro — só o `DesignAgentChatCard` aparece como "Não configurado", sem tentar nenhum fetch.

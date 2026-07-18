@@ -84,6 +84,20 @@ export { NATIVE_COMPONENTS, type NativeComponentType } from './Registry/nativeCo
 export { SarakFallback, type SarakFallbackProps } from './Registry/Fallback';
 export { SarakErrorFallback, type SarakErrorFallbackProps } from './Registry/Fallback';
 
+// Spec 17 — Telas DX da raiz (payload ausente/inválido) e resiliência por diretiva.
+export {
+    SarakMissingManifestScreen,
+    SarakInvalidManifestScreen,
+    type SarakInvalidManifestScreenProps,
+} from './Registry/InvalidManifestScreen';
+export {
+    sanitizeDirectives,
+    emitDirectiveWarnings,
+    resetDirectiveWarnings,
+    type DirectiveWarning,
+    type SanitizeResult,
+} from './nodes/sanitizeDirectives';
+
 // Spec 24 — Data Binding e Pipes
 export {
     interpolate,
@@ -168,3 +182,14 @@ export {
 // Spec 08 §3.1 — Manifesto-starter oficial (shell + navegação + Design Engine).
 // O mesmo conteúdo é distribuído como arquivo em `templates/app-starter.manifest.json`.
 export { SARAK_STARTER_MANIFEST } from './templates/starter';
+
+// Spec 16 — Resolutor oficial de tokens semânticos de espaçamento.
+export {
+    SPACING_TOKENS,
+    SPACING_TOKEN_NAMES,
+    isPassthroughCss,
+    isResolvableSpacing,
+    resolveToken,
+    resetTokenWarnings,
+    type ResolveTokenOptions,
+} from './Tokens';

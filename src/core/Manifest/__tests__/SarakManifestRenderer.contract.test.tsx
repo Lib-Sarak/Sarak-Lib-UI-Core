@@ -41,10 +41,11 @@ describe('Spec 30 — Contrato do Importador', () => {
         expect(routerInterceptor).toHaveBeenCalledWith('/destino', expect.objectContaining({ to: '/destino' }));
     });
 
-    it('payload malformado → Error Boundary base + "Manifesto de UI Inválido" no console (Regra 3)', () => {
+    it('payload malformado → tela DX "Manifesto inválido" + erros no console (Spec 17, Regra 3)', () => {
         const error = vi.spyOn(console, 'error').mockImplementation(() => undefined);
-        render(<SarakManifestRenderer payload={{ semVersao: true }} registry={makeRegistry()} />);
-        expect(error).toHaveBeenCalledWith('[Sarak] Manifesto de UI Inválido:', expect.any(String));
+        const { container } = render(<SarakManifestRenderer payload={{ semVersao: true }} registry={makeRegistry()} />);
+        expect(error).toHaveBeenCalledWith(expect.stringContaining('Manifesto de UI inválido'), expect.any(Array));
+        expect(container.querySelector('[data-sarak-invalid-manifest="true"]')).not.toBeNull();
     });
 
     it('api_call sem networkInterceptor levanta aviso em desenvolvimento (Plano de Testes)', async () => {

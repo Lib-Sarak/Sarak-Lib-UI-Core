@@ -15,7 +15,10 @@ import {
     defaultComponentRegistry,
     type ComponentRegistry,
 } from './Registry/ComponentRegistry';
-import { SarakFallback } from './Registry/Fallback';
+import {
+    SarakMissingManifestScreen,
+    SarakInvalidManifestScreen,
+} from './Registry/InvalidManifestScreen';
 import type { SarakDataStore } from './DataStore/SarakDataStore';
 import type { StateRecord } from './DataStore/resolvePath';
 import type { NetworkInterceptor } from './DataSource/useDataSource';
@@ -109,16 +112,21 @@ export const SarakManifestRenderer: React.FC<SarakManifestRendererProps> = ({
     const source = payload ?? manifest;
     const navigate = routerInterceptor ?? onNavigate;
 
+    // Tela DX (Spec 17, §2.2): payload AUSENTE tem mensagem própria (o dev esqueceu a
+    // prop) — antes caía no fallback enganoso "Componente desconhecido: ManifestoInvalido".
+    if (source === undefined || source === null) {
+        console.error('[Sarak] Manifesto não fornecido: passe a prop `payload` ao <SarakManifestRenderer>.');
+        return <SarakMissingManifestScreen />;
+    }
+
     const validation = validateManifestRoot(source);
     if (!validation.valid) {
-        // Regra 3: payload malformado → Error Boundary base + aviso explícito no console.
-        console.error('[Sarak] Manifesto de UI Inválido:', validation.errors[0]?.message ?? 'estrutura inválida');
-        return (
-            <SarakFallback
-                type="ManifestoInvalido"
-                nodeId={validation.errors[0]?.message}
-            />
+        // Tela DX (Spec 17, §2.2): payload inválido lista TODOS os erros com path.
+        console.error(
+            `[Sarak] Manifesto de UI inválido: ${validation.errors.length} erro(s).`,
+            validation.errors,
         );
+        return <SarakInvalidManifestScreen errors={validation.errors} />;
     }
 
     // Tela de recuperação (Spec 27, Regra 2): override do importador tem prioridade;

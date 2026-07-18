@@ -134,7 +134,22 @@ export const ShellRouterNode: React.FC<{ root: ManifestRoot; ctx: NodeRenderCont
 
     return (
         <div className="sarak-shell flex flex-col h-full min-h-0 w-full">
-            {renderRegion(shell?.topbar, 'topbar')}
+            {shell?.topbar ? (
+                // Chrome de tokens da topbar (Spec 18): consome as vars que o Design
+                // Engine já emite (`--sarak-topbar-height`/`--sarak-topbar-bg`), fechando
+                // a paridade com o `TopbarNav` do shell legado — personalizar a topbar no
+                // painel reflete AO VIVO. O conteúdo declarado no manifesto vai DENTRO.
+                <header
+                    className="sarak-shell-topbar flex items-center shrink-0 w-full"
+                    style={{
+                        minHeight: 'var(--sarak-topbar-height, 64px)',
+                        background: 'var(--sarak-topbar-bg, transparent)',
+                        borderBottom: 'var(--sarak-border-width, thin) solid var(--sarak-card-border-color, transparent)',
+                    }}
+                >
+                    {renderRegion(shell.topbar, 'topbar')}
+                </header>
+            ) : null}
             <div className="sarak-shell-body flex flex-1 min-h-0 w-full">
                 {shell?.sidebar ? (
                     // Região persistente com largura própria (reusa os tokens reais do
@@ -148,6 +163,8 @@ export const ShellRouterNode: React.FC<{ root: ManifestRoot; ctx: NodeRenderCont
                             width: 'var(--sarak-sidebar-width, 240px)',
                             minWidth: 'var(--sarak-sidebar-min-width, 200px)',
                             maxWidth: 'var(--sarak-sidebar-max-width, 450px)',
+                            // Chrome de tokens da sidebar (Spec 18): consome `--sarak-sidebar-bg`.
+                            background: 'var(--sarak-sidebar-bg, transparent)',
                         }}
                     >
                         {renderRegion(shell.sidebar, 'sidebar')}

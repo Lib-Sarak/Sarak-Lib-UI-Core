@@ -168,6 +168,68 @@ const collectDirectives = () => {
     return [...block[1].matchAll(/'([^']+)'/g)].map((match) => match[1]);
 };
 
+/** Mapa SPACING_TOKENS do resolutor (Spec 16) — fonte ÚNICA dos tokens de espaçamento. */
+const collectSpacingTokens = () => {
+    const source = parse('core/Manifest/Tokens/resolveToken.ts');
+    const tokens = {};
+    const visit = (node) => {
+        if (
+            ts.isVariableDeclaration(node) &&
+            node.name.getText() === 'SPACING_TOKENS' &&
+            node.initializer &&
+            ts.isObjectLiteralExpression(node.initializer)
+        ) {
+            for (const prop of node.initializer.properties) {
+                if (ts.isPropertyAssignment(prop) && ts.isStringLiteral(prop.initializer)) {
+                    const name = ts.isStringLiteral(prop.name) ? prop.name.text : prop.name.getText();
+                    tokens[name] = prop.initializer.text;
+                }
+            }
+        }
+        ts.forEachChild(node, visit);
+    };
+    visit(source);
+    return tokens;
+};
+
+/** CSS Variables públicas reais (namespace `--sarak-*`) emitidas pelo DESIGN_MANIFEST (Spec 16). */
+const collectPublicCssVars = () => {
+    const source = parse('core/Provider/manifest.ts');
+    const vars = new Set();
+    const visit = (node) => {
+        if (
+            ts.isPropertyAssignment(node) &&
+            node.name.getText() === 'vars' &&
+            ts.isArrayLiteralExpression(node.initializer)
+        ) {
+            for (const element of node.initializer.elements) {
+                if (ts.isStringLiteral(element) && element.text.startsWith('--sarak-')) {
+                    vars.add(element.text);
+                }
+            }
+        }
+        ts.forEachChild(node, visit);
+    };
+    visit(source);
+    return [...vars].sort();
+};
+
+/** Props tipadas por união de literais string (variants) já extraídas por AST. */
+const collectVariantUnions = (components) => {
+    const out = [];
+    for (const [type, info] of Object.entries(components)) {
+        for (const prop of info.props ?? []) {
+            // Ignora tipos-função (ex.: `onClick`): os literais ali são argumentos, não variantes.
+            if (prop.type.includes('=>')) continue;
+            const literals = [...prop.type.matchAll(/'([^']*)'/g)].map((match) => match[1]);
+            if (literals.length >= 2) {
+                out.push({ component: type, prop: prop.name, values: literals });
+            }
+        }
+    }
+    return out;
+};
+
 const buildCatalog = () => {
     const propsIndex = buildPropsIndex();
     const components = {};
@@ -185,7 +247,51 @@ const buildCatalog = () => {
         actions: collectActions(),
         pipes: collectPipes(),
         directives: collectDirectives(),
+        tokens: {
+            spacing: collectSpacingTokens(),
+            variants: collectVariantUnions(components),
+            cssVars: collectPublicCssVars(),
+        },
     };
+};
+
+/** Seção "Tokens e valores permitidos" (Spec 16) — o que o manifesto pode usar em medidas. */
+const renderTokensSection = (tokens) => {
+    const lines = [
+        '## Tokens e valores permitidos',
+        '',
+        '> Valores que o manifesto pode usar. Fora desta lista, o motor AVISA (`console.warn` com sugestão) e cai no default do Design Engine — **não invente tokens** (`spacing-xxl`, `--sarak-color-surface` e afins não existem).',
+        '',
+        '### Espaçamento semântico (`gap`, `padding`)',
+        '',
+        'Traduzidos pelo resolutor oficial (`resolveToken`, Spec 16). Qualquer comprimento CSS válido também passa direto: `16px`, `1rem`, `0`, `var(--x, 16px)`, `calc(...)`.',
+        '',
+        '| Token | Traduz para |',
+        '| --- | --- |',
+    ];
+    for (const [name, value] of Object.entries(tokens.spacing)) {
+        lines.push(`| \`${name}\` | \`${value}\` |`);
+    }
+    lines.push('', '### Variantes literais por componente', '');
+    if (tokens.variants.length === 0) {
+        lines.push('_Nenhuma união literal exposta pelas props._');
+    } else {
+        lines.push('| Componente | Prop | Valores aceitos |', '| --- | --- | --- |');
+        for (const variant of tokens.variants) {
+            const values = variant.values.map((value) => `\`${value}\``).join(' · ');
+            lines.push(`| \`${variant.component}\` | \`${variant.prop}\` | ${values} |`);
+        }
+    }
+    lines.push(
+        '',
+        '### CSS Variables públicas (namespace `--sarak-*`)',
+        '',
+        'Vars REAIS emitidas pelo Design Engine. Use SEMPRE com fallback — `var(--sarak-x, valor)`. Nomes fora desta lista (`--sarak-color-border`, `--sarak-color-surface`, …) NÃO existem e não pintam nada.',
+        '',
+        tokens.cssVars.map((cssVar) => `\`${cssVar}\``).join(' · '),
+        '',
+    );
+    return lines;
 };
 
 const renderMarkdown = (catalog) => {
@@ -207,6 +313,7 @@ const renderMarkdown = (catalog) => {
         '',
         catalog.directives.map((d) => `\`${d}\``).join(' · '),
         '',
+        ...renderTokensSection(catalog.tokens),
         `## Componentes resolvíveis via \`"type"\` (${Object.keys(catalog.components).length})`,
         '',
     ];

@@ -7,6 +7,7 @@ import {
     type ResponsiveGridPreset,
     type ResponsiveSpacingPreset
 } from './useStructuralStyles.presets';
+import { resolveGap } from './useStructuralStyles.gap';
 
 /**
  * Hook Controlador Estrutural (Fase 2 da Expansão).
@@ -26,7 +27,7 @@ export const useStructuralStyles = () => {
         responsivePreset?: ResponsiveGridPreset
     ) => {
         const layoutType = (design?.layoutGridTemplate as string) || 'col-12';
-        const gap = gapOverride || design?.globalSectionGap || design?.layoutGap || 'var(--sarak-layout-gap-md, 16px)';
+        const gap = resolveGap(gapOverride, design?.globalSectionGap || design?.layoutGap || 'var(--sarak-layout-gap-md, 16px)', 'SarakGrid');
 
         if (responsivePreset) {
             return {
@@ -67,7 +68,7 @@ export const useStructuralStyles = () => {
         align?: string,
         gapOverride?: string
     ) => {
-        const gap = gapOverride || design?.layoutGap || 'var(--sarak-layout-gap-md, 16px)';
+        const gap = resolveGap(gapOverride, design?.layoutGap || 'var(--sarak-layout-gap-md, 16px)', 'SarakFlex');
         return {
             className: 'flex w-full',
             style: {
@@ -90,7 +91,7 @@ export const useStructuralStyles = () => {
         breakpoint: 'md' | 'lg' = 'md',
         gapOverride?: string
     ) => {
-        const gap = gapOverride || design?.layoutGap || 'var(--sarak-layout-gap-md, 16px)';
+        const gap = resolveGap(gapOverride, design?.layoutGap || 'var(--sarak-layout-gap-md, 16px)', 'SarakStack');
         return {
             className: `flex flex-col @min-[${stackBreakpoints[breakpoint]}px]:flex-row`,
             style: { gap } as React.CSSProperties
@@ -100,7 +101,7 @@ export const useStructuralStyles = () => {
     // ==========================================
     // EIXO 2: FORMULÁRIOS E AGRUPAMENTOS
     // ==========================================
-    const getFormGroupStyles = () => {
+    const getFormGroupStyles = (gapOverride?: string) => {
         const labelPos = (design?.formLabelPosition as string) || 'top';
         const density = (design?.formFieldDensity as string) || 'comfortable';
 
@@ -115,9 +116,11 @@ export const useStructuralStyles = () => {
             'comfortable': 'calc(var(--sarak-layout-gap-md, 16px) * 0.25)'
         };
 
+        const gap = resolveGap(gapOverride, densityStrategies[density] || densityStrategies['comfortable'], 'SarakFormGroup');
+
         return {
             className: labelStrategies[labelPos] || labelStrategies['top'],
-            style: { gap: densityStrategies[density] || densityStrategies['comfortable'] }
+            style: { gap }
         };
     };
 

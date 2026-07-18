@@ -2316,6 +2316,8 @@ interface SarakGridProps extends React__default.HTMLAttributes<HTMLDivElement> {
 
 interface SarakFormGroupProps extends React__default.HTMLAttributes<HTMLDivElement> {
     children: React__default.ReactNode;
+    /** Espaçamento entre label e campo — token semântico (`spacing-md`) ou CSS válido. */
+    gap?: string;
 }
 
 interface SarakFlexProps extends React__default.HTMLAttributes<HTMLDivElement> {
@@ -2530,6 +2532,59 @@ interface SarakErrorFallbackProps {
  * Stack técnico só em desenvolvimento (produção mostra apenas a mensagem).
  */
 declare const SarakErrorFallback: React__default.FC<SarakErrorFallbackProps>;
+
+/** `payload`/`manifest` ausente (undefined/null): instrui a passar a prop + template. */
+declare const SarakMissingManifestScreen: React__default.FC;
+/** Props da tela de manifesto inválido: a lista completa de erros de validação. */
+interface SarakInvalidManifestScreenProps {
+    /** Todos os `ManifestValidationError` (path + mensagem) — nunca só o primeiro. */
+    errors: ManifestValidationError[];
+}
+/**
+ * Payload inválido: lista TODOS os erros (path + mensagem) em dev; em produção mostra
+ * um resumo sóbrio (nunca em branco). Distinta de `SarakFallback` (type desconhecido).
+ */
+declare const SarakInvalidManifestScreen: React__default.FC<SarakInvalidManifestScreenProps>;
+
+/**
+ * Resiliência leniente por diretiva (Spec 17, §2.1).
+ *
+ * Erro de AUTORIA no manifesto (ex.: `"actions": { "onClick": [...] }` — objeto no
+ * lugar do array) NÃO é falha de runtime: não deve derrubar o container. Esta função
+ * PURA valida o FORMATO de cada diretiva reservada e, quando o autor errou, IGNORA a
+ * diretiva (devolve o nó sem ela) e produz um aviso estruturado com o exemplo correto.
+ * O motor então renderiza o nó normalmente (degrada em vez de explodir).
+ *
+ * Fonte da verdade dos formatos: `directives.ts` (nomes) + `types.ts` (shapes).
+ * NÃO afrouxa segurança: só reclassifica erro de autoria de diretiva — Safe Eval,
+ * sanitizeHtml e limites anti-DoS seguem intactos (§2.3).
+ */
+
+/** Aviso de uma diretiva ignorada, com chave estável de deduplicação por nó. */
+interface DirectiveWarning {
+    /** Chave de dedupe: `${ref}:${directive}` (ref = id|path do nó). */
+    key: string;
+    /** Nome da diretiva removida. */
+    directive: DirectiveName;
+    /** Mensagem pronta para `console.warn`. */
+    message: string;
+}
+/** Resultado da higienização: o nó (limpo, se preciso) e os avisos gerados. */
+interface SanitizeResult {
+    node: ManifestNode;
+    warnings: DirectiveWarning[];
+}
+/**
+ * Devolve o nó com toda diretiva MAL FORMATADA removida + os avisos correspondentes.
+ * Diretivas válidas (e nós sem diretivas) passam intactos — o nó original é reusado
+ * sem cópia quando nada precisa ser removido (barato no caminho feliz).
+ * `ref` é o identificador do nó (id, senão path) usado na mensagem e no dedupe.
+ */
+declare const sanitizeDirectives: (node: ManifestNode, ref: string) => SanitizeResult;
+/** Reseta o cache de avisos de diretiva (uso em testes). */
+declare const resetDirectiveWarnings: () => void;
+/** Emite cada aviso no console UMA vez (deduplicado pela `key` estável do nó). */
+declare const emitDirectiveWarnings: (warnings: DirectiveWarning[]) => void;
 
 /**
  * Motor de Interpolação / Data Binding (Spec 24 — Regras 1, 3, 4)
@@ -3066,6 +3121,53 @@ declare const SarakManifestRenderer: React__default.FC<SarakManifestRendererProp
 declare const SARAK_STARTER_MANIFEST: ManifestRoot;
 
 /**
+ * Resolutor oficial de tokens semânticos do manifesto (Spec 16).
+ *
+ * O manifesto JSON descreve medidas de espaçamento com tokens semânticos
+ * (`"gap": "spacing-md"`). Antes desta camada, os átomos estruturais jogavam a
+ * string CRUA no CSS (`gap: spacing-md`) — inválida e descartada em silêncio pelo
+ * browser. Este módulo é a fonte ÚNICA que traduz token → CSS Variable, deixa
+ * passar CSS já válido e AVISA (com sugestão) quando o autor inventa um valor,
+ * degradando para o default do Design Engine em vez de quebrar a tela.
+ *
+ * As `px` abaixo são apenas FALLBACKS dentro de `var(--x, N)` — o mesmo padrão
+ * canônico já emitido por `src/core/Provider/manifest.ts`; a fonte real do valor
+ * continua sendo a CSS Variable do tema.
+ */
+/**
+ * Mapa oficial dos tokens de espaçamento → CSS Variable (com fallback).
+ * FONTE ÚNICA: também consumida pelo gerador do catálogo (seção "Tokens e
+ * valores permitidos"). Manter os valores atrelados às vars `--sarak-layout-gap-*`.
+ */
+declare const SPACING_TOKENS: Readonly<Record<string, string>>;
+/** Nomes dos tokens de espaçamento válidos (ordem de declaração). */
+declare const SPACING_TOKEN_NAMES: readonly string[];
+/**
+ * `true` quando o valor já é CSS válido de comprimento (function com fallback,
+ * literal com unidade, ou o `0` adimensional) e deve passar sem tradução.
+ */
+declare const isPassthroughCss: (value: string) => boolean;
+/** `true` quando o valor é um token semântico conhecido OU CSS já resolvível. */
+declare const isResolvableSpacing: (value: unknown) => boolean;
+/** Reseta o cache de avisos (uso em testes). */
+declare const resetTokenWarnings: () => void;
+/** Contexto opcional para enriquecer o aviso de valor inválido. */
+interface ResolveTokenOptions {
+    /** Nome do átomo que recebeu o valor (ex.: `SarakFlex`). */
+    atom?: string;
+    /** Nome da prop (ex.: `gap`). */
+    prop?: string;
+    /** Valor CSS usado quando o token é inválido/ausente (default do Design Engine). */
+    fallback?: string;
+}
+/**
+ * Traduz uma medida do manifesto para CSS aplicável.
+ * Ordem: token semântico conhecido → CSS válido (passthrough) → aviso + fallback.
+ * `undefined`/vazio devolve o `fallback` sem avisar (ausência é legítima).
+ */
+declare const resolveToken: (value: string | number | undefined | null, options?: ResolveTokenOptions) => string | undefined;
+
+/**
  * Sarak Registry (v5.5)
  *
  * Local manager for registered modules to avoid dependency on lib-shared.
@@ -3230,4 +3332,4 @@ interface SarakRouterState {
  */
 declare function useSarakRouter(basePath?: string): SarakRouterState;
 
-export { ACTION_HANDLERS, type Accept, type ActionHandler, type ActionList, type AriaDirective, type BadgeSize, type BadgeVariant, type BindingExpression, type CardMove, type ComponentRegistry, type ComponentResolution, type ComponentType, type ConditionExpression, ConditionSyntaxError, type ContextMenuPosition, CustomizationPanel, DEFAULT_COLUMN_WIDTH, DESIGN_MANIFEST, DIRECTIVE_OWNERS, type DataNodeState, type DataSourceController, type DataSourceDirective, type DataSourceMethod, type DataSourceStates, type DatePickerValue, type DesignAgentComponentPreset, type DesignAgentPromptInput, type DesignAgentPromptResult, type DesignAgentSendPrompt, DesignScope, DeviceProvider, type DeviceType, type DirectiveName, type DiscoveredModule, type DispatchContext, DynamicRenderer, ExpandableCard, type ExpandedNode, FORM_META_KEY, type FileRejection, type FilterDescriptor, type FormModelDirective, type FormResetTrigger, type FormScope, FormScopeContext, type FormScopeDirective, type FormStore, IconMap, type IconName, ImageCard, type ImageCardProps, type KanbanCard, type KanbanColumn, type LanguageOption, LanguageSelector, type LightboxImage, MIN_COLUMN_WIDTH, type ManifestAction, type ManifestComponent, type ManifestComponentProps, type ManifestNode, type ManifestProps, type ManifestRoot, type ManifestValidationError, type ManifestValidationResult, type ManifestValue, type MatrixNodeConfig, type MatrixParentData, type MatrixTreeNode, type ModalLayoutContext, type ModuleConfig, type ModuleManifest, ModuleSelector, type MultiSelectOption, NATIVE_COMPONENTS, type NativeComponentType, type NavigateFn, type NetworkInterceptor, type NetworkRequest, type NodeParts, type OverlayController, type OverlayRequest, type PersistDirective, type Pipe, RESERVED_DIRECTIVES, type RangeValue, type RenderForDirective, type RenderForResult, type ResponsiveDirective, type RouteMap, type RouteTarget, SARAK_STARTER_MANIFEST, STORAGE_NAMESPACE, STRUCTURAL_KEYS, SUPPORTED_SCHEMA_VERSION, SarakAnalyticalPage, type SarakAnalyticalPageProps, SarakAuthScreen, type SarakAuthScreenProps, SarakBadge, type SarakBadgeProps, SarakButton, type SarakButtonProps, SarakCardGrid, SarakCatalogGrid, SarakChart, SarakChartEngine, SarakChat, type SarakColumn, type SarakComponent, type SarakComponentProps, SarakContextMenu, type SarakContextMenuProps, SarakDataEmpty, type SarakDataEmptyProps, SarakDataGrid, SarakDataGridImpl, type SarakDataGridProps, type SarakDataStore, SarakDataTable, SarakDataTableImpl, type SarakDataTableProps, SarakDatePicker, type SarakDatePickerProps, SarakDrawer, type SarakDrawerProps, SarakEmptyState, SarakErrorBoundary, type SarakErrorBoundaryProps, SarakErrorFallback, type SarakErrorFallbackProps, SarakExpandableMatrix, type SarakExpandableMatrixProps, SarakFallback, type SarakFallbackProps, SarakForm, SarakHidden, SarakIcon, SarakIconButton, type SarakIconButtonProps, type SarakIconProps, SarakKanbanImpl as SarakKanban, type SarakKanbanProps, SarakLightbox, type SarakLightboxProps, SarakManagementGrid, SarakManifestRenderer, SarakManifestRenderer as SarakManifestRendererDefault, type SarakManifestRendererProps, SarakMarkdownRenderer, type SarakMarkdownRendererProps, type SarakMatrixManifest, SarakModal, type SarakModalProps, type SarakModule, SarakMultiSelect, type SarakMultiSelectProps, type SarakOverlayController, SarakOverlayProvider, type SarakOverlayRequest, SarakPDFViewer, type SarakPDFViewerProps, SarakPageTransition, type SarakPageTransitionProps, SarakRangeSlider, type SarakRangeSliderProps, SarakRichText, type SarakRichTextProps, type SarakRouterState, SarakSecurityOrchestrator, SarakShell, SarakSkeleton, type SarakSkeletonProps, SarakSparkline, type SarakSparklineProps, SarakStats, type SarakTabItem, SarakTable, SarakTabs, type SarakTabsProps$1 as SarakTabsProps, SarakTimePicker, type SarakTimePickerProps, SarakToastProvider, SarakTooltip, type SarakTooltipProps, SarakTreeView, type SarakTreeViewProps, SarakTypography, type SarakTypographyColor, type SarakTypographyProps, type SarakTypographyVariant, SarakUIProvider, SarakUploader, type SarakUploaderProps, type Selector, type ShellDirective, type SkeletonShape, type SlotMap, SocialButton, type SparklineVariant, type StateRecord, SubmitBlockedError, type ThemeDirective, ThemeToggle, type ToastController, type ToastOptions, type ToastVariant, type TooltipPosition, UserMenu, type UserPayload, VIRTUALIZE_THRESHOLD, type ValidationError, type ValidationRule, type ValidationRuleName, type ValidationSchema, type ValidationTypeName, type VisualContract, type VisualContractType, coerceEventValue, computeOffsets, createComponentRegistry, createFormScope, createSarakDataStore, debounce, defaultComponentRegistry, evaluateCondition, expandRenderFor, firstErrorMessage, getByPath, getLocalComponent, getLocalComponentIds, getPipe, getRegisteredModules, getSarakModule, hasPipe, interpolate, interpolateProps, isReservedDirective, isStructuralKey, moveCard, namespacedKey, readPersisted, registerComponent, registerLocalComponent, registerPipe, registerSarakModule, removePersisted, reorder, resolveBinding, resolveComponent, resolveExpression, resolveModelValue, resolveScopedPath, runActions, sanitizeRichText, separateNodeParts, setByPath, subscribeStorage, subscribeToRegistry, throttle, useDataSource, useDesignDraft, useFormScope, useModalLayoutStyles, useModuleDiscovery, useOverlay, usePersistedSlice, useSarakDevice, useSarakRouter, useSarakUI, useToast, validateManifestNode, validateManifestRoot, validateValue, widthOf, writePersisted };
+export { ACTION_HANDLERS, type Accept, type ActionHandler, type ActionList, type AriaDirective, type BadgeSize, type BadgeVariant, type BindingExpression, type CardMove, type ComponentRegistry, type ComponentResolution, type ComponentType, type ConditionExpression, ConditionSyntaxError, type ContextMenuPosition, CustomizationPanel, DEFAULT_COLUMN_WIDTH, DESIGN_MANIFEST, DIRECTIVE_OWNERS, type DataNodeState, type DataSourceController, type DataSourceDirective, type DataSourceMethod, type DataSourceStates, type DatePickerValue, type DesignAgentComponentPreset, type DesignAgentPromptInput, type DesignAgentPromptResult, type DesignAgentSendPrompt, DesignScope, DeviceProvider, type DeviceType, type DirectiveName, type DirectiveWarning, type DiscoveredModule, type DispatchContext, DynamicRenderer, ExpandableCard, type ExpandedNode, FORM_META_KEY, type FileRejection, type FilterDescriptor, type FormModelDirective, type FormResetTrigger, type FormScope, FormScopeContext, type FormScopeDirective, type FormStore, IconMap, type IconName, ImageCard, type ImageCardProps, type KanbanCard, type KanbanColumn, type LanguageOption, LanguageSelector, type LightboxImage, MIN_COLUMN_WIDTH, type ManifestAction, type ManifestComponent, type ManifestComponentProps, type ManifestNode, type ManifestProps, type ManifestRoot, type ManifestValidationError, type ManifestValidationResult, type ManifestValue, type MatrixNodeConfig, type MatrixParentData, type MatrixTreeNode, type ModalLayoutContext, type ModuleConfig, type ModuleManifest, ModuleSelector, type MultiSelectOption, NATIVE_COMPONENTS, type NativeComponentType, type NavigateFn, type NetworkInterceptor, type NetworkRequest, type NodeParts, type OverlayController, type OverlayRequest, type PersistDirective, type Pipe, RESERVED_DIRECTIVES, type RangeValue, type RenderForDirective, type RenderForResult, type ResolveTokenOptions, type ResponsiveDirective, type RouteMap, type RouteTarget, SARAK_STARTER_MANIFEST, SPACING_TOKENS, SPACING_TOKEN_NAMES, STORAGE_NAMESPACE, STRUCTURAL_KEYS, SUPPORTED_SCHEMA_VERSION, type SanitizeResult, SarakAnalyticalPage, type SarakAnalyticalPageProps, SarakAuthScreen, type SarakAuthScreenProps, SarakBadge, type SarakBadgeProps, SarakButton, type SarakButtonProps, SarakCardGrid, SarakCatalogGrid, SarakChart, SarakChartEngine, SarakChat, type SarakColumn, type SarakComponent, type SarakComponentProps, SarakContextMenu, type SarakContextMenuProps, SarakDataEmpty, type SarakDataEmptyProps, SarakDataGrid, SarakDataGridImpl, type SarakDataGridProps, type SarakDataStore, SarakDataTable, SarakDataTableImpl, type SarakDataTableProps, SarakDatePicker, type SarakDatePickerProps, SarakDrawer, type SarakDrawerProps, SarakEmptyState, SarakErrorBoundary, type SarakErrorBoundaryProps, SarakErrorFallback, type SarakErrorFallbackProps, SarakExpandableMatrix, type SarakExpandableMatrixProps, SarakFallback, type SarakFallbackProps, SarakForm, SarakHidden, SarakIcon, SarakIconButton, type SarakIconButtonProps, type SarakIconProps, SarakInvalidManifestScreen, type SarakInvalidManifestScreenProps, SarakKanbanImpl as SarakKanban, type SarakKanbanProps, SarakLightbox, type SarakLightboxProps, SarakManagementGrid, SarakManifestRenderer, SarakManifestRenderer as SarakManifestRendererDefault, type SarakManifestRendererProps, SarakMarkdownRenderer, type SarakMarkdownRendererProps, type SarakMatrixManifest, SarakMissingManifestScreen, SarakModal, type SarakModalProps, type SarakModule, SarakMultiSelect, type SarakMultiSelectProps, type SarakOverlayController, SarakOverlayProvider, type SarakOverlayRequest, SarakPDFViewer, type SarakPDFViewerProps, SarakPageTransition, type SarakPageTransitionProps, SarakRangeSlider, type SarakRangeSliderProps, SarakRichText, type SarakRichTextProps, type SarakRouterState, SarakSecurityOrchestrator, SarakShell, SarakSkeleton, type SarakSkeletonProps, SarakSparkline, type SarakSparklineProps, SarakStats, type SarakTabItem, SarakTable, SarakTabs, type SarakTabsProps$1 as SarakTabsProps, SarakTimePicker, type SarakTimePickerProps, SarakToastProvider, SarakTooltip, type SarakTooltipProps, SarakTreeView, type SarakTreeViewProps, SarakTypography, type SarakTypographyColor, type SarakTypographyProps, type SarakTypographyVariant, SarakUIProvider, SarakUploader, type SarakUploaderProps, type Selector, type ShellDirective, type SkeletonShape, type SlotMap, SocialButton, type SparklineVariant, type StateRecord, SubmitBlockedError, type ThemeDirective, ThemeToggle, type ToastController, type ToastOptions, type ToastVariant, type TooltipPosition, UserMenu, type UserPayload, VIRTUALIZE_THRESHOLD, type ValidationError, type ValidationRule, type ValidationRuleName, type ValidationSchema, type ValidationTypeName, type VisualContract, type VisualContractType, coerceEventValue, computeOffsets, createComponentRegistry, createFormScope, createSarakDataStore, debounce, defaultComponentRegistry, emitDirectiveWarnings, evaluateCondition, expandRenderFor, firstErrorMessage, getByPath, getLocalComponent, getLocalComponentIds, getPipe, getRegisteredModules, getSarakModule, hasPipe, interpolate, interpolateProps, isPassthroughCss, isReservedDirective, isResolvableSpacing, isStructuralKey, moveCard, namespacedKey, readPersisted, registerComponent, registerLocalComponent, registerPipe, registerSarakModule, removePersisted, reorder, resetDirectiveWarnings, resetTokenWarnings, resolveBinding, resolveComponent, resolveExpression, resolveModelValue, resolveScopedPath, resolveToken, runActions, sanitizeDirectives, sanitizeRichText, separateNodeParts, setByPath, subscribeStorage, subscribeToRegistry, throttle, useDataSource, useDesignDraft, useFormScope, useModalLayoutStyles, useModuleDiscovery, useOverlay, usePersistedSlice, useSarakDevice, useSarakRouter, useSarakUI, useToast, validateManifestNode, validateManifestRoot, validateValue, widthOf, writePersisted };

@@ -5,6 +5,7 @@ import { SarakManifestRenderer } from '../SarakManifestRenderer';
 import { createComponentRegistry } from '../Registry/ComponentRegistry';
 import { createSarakDataStore } from '../DataStore/SarakDataStore';
 import { namespacedKey } from '../Storage/safeStorage';
+import { resetDirectiveWarnings } from '../nodes/sanitizeDirectives';
 import { SarakUIProvider } from '../../Provider/SarakUIProvider';
 import { SarakToastProvider } from '../../../components/atomic/Feedback/SarakToast';
 import type { ManifestRoot } from '../types';
@@ -14,6 +15,7 @@ const Boom: React.FC = () => {
     throw new Error('explosão fatal no card');
 };
 const Btn: React.FC<{ children?: React.ReactNode }> = (props) => <button {...props} />;
+const Box: React.FC<{ children?: React.ReactNode }> = ({ children }) => <div>{children}</div>;
 
 describe('Spec 27 — Isolamento de falhas (Error Boundaries)', () => {
     afterEach(() => vi.restoreAllMocks());
@@ -113,6 +115,71 @@ describe('Spec 27 — Isolamento de falhas (Error Boundaries)', () => {
         await waitFor(() => expect(screen.getByText('Falha de rede')).toBeInTheDocument());
         // O botão (árvore) continua montado.
         expect(screen.getByTestId('go')).toBeInTheDocument();
+    });
+});
+
+describe('Spec 17 — Resiliência leniente por diretiva + DX de erros', () => {
+    afterEach(() => {
+        resetDirectiveWarnings();
+        vi.restoreAllMocks();
+    });
+
+    it('`actions` como objeto num botão: rota renderiza irmãos e o botão, SEM cartão de erro + warn (Critério 17.1)', () => {
+        const warn = vi.spyOn(console, 'warn').mockImplementation(() => undefined);
+        const registry = createComponentRegistry();
+        registry.register('Box', Box);
+        registry.register('Safe', Safe);
+        registry.register('Btn', Btn);
+
+        const manifest: ManifestRoot = {
+            schemaVersion: 1,
+            type: 'Box',
+            children: [
+                { type: 'Safe', props: { label: 'Irmão OK' } },
+                {
+                    type: 'Btn',
+                    id: 'bad',
+                    props: { children: 'Clique' },
+                    actions: { onClick: [] } as unknown as ManifestRoot['actions'],
+                },
+            ],
+        };
+
+        const { container } = render(
+            <SarakUIProvider>
+                <SarakManifestRenderer manifest={manifest} registry={registry} />
+            </SarakUIProvider>,
+        );
+
+        expect(screen.getByText('Irmão OK')).toBeInTheDocument();
+        expect(screen.getByText('Clique')).toBeInTheDocument();
+        expect(container.querySelector('[data-sarak-error-fallback="true"]')).toBeNull();
+        expect(warn).toHaveBeenCalled();
+        expect(warn.mock.calls.flat().join(' ')).toContain('"actions"');
+    });
+
+    it('sem payload: tela "Manifesto não fornecido" com instrução do template (Critério 17.3)', () => {
+        vi.spyOn(console, 'error').mockImplementation(() => undefined);
+        render(
+            <SarakUIProvider>
+                <SarakManifestRenderer />
+            </SarakUIProvider>,
+        );
+        expect(screen.getByText('Manifesto não fornecido')).toBeInTheDocument();
+        expect(screen.getByText(/templates\/app-starter\.manifest\.json/)).toBeInTheDocument();
+    });
+
+    it('payload inválido: tela "Manifesto inválido" lista os erros com path (Critério 17.4)', () => {
+        vi.spyOn(console, 'error').mockImplementation(() => undefined);
+        const { container } = render(
+            <SarakUIProvider>
+                <SarakManifestRenderer payload={'não é um manifesto' as unknown} />
+            </SarakUIProvider>,
+        );
+        expect(screen.getByText('Manifesto inválido')).toBeInTheDocument();
+        expect(container.querySelector('[data-sarak-invalid-manifest="true"]')).not.toBeNull();
+        expect(container.querySelectorAll('li').length).toBeGreaterThan(0);
+        expect(screen.queryByText(/Componente desconhecido/)).not.toBeInTheDocument();
     });
 });
 

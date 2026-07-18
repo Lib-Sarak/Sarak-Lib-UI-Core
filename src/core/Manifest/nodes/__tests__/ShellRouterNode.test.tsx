@@ -92,6 +92,33 @@ describe('Spec 33 — App-Shell + Rotas como dado', () => {
         expect(screen.queryByTestId('page-a')).not.toBeInTheDocument();
     });
 
+    it('topbar ganha chrome de tokens (<header> com altura/cor) e a sidebar background (Spec 18)', () => {
+        const { container } = render(
+            <SarakManifestRenderer manifest={appManifest()} registry={makeRegistry()} route="/a" />,
+        );
+
+        const header = container.querySelector('header.sarak-shell-topbar');
+        expect(header, 'a topbar deve ter chrome <header> próprio').not.toBeNull();
+        // O conteúdo declarado no manifesto renderiza DENTRO do chrome.
+        expect(header?.contains(screen.getByTestId('topbar'))).toBe(true);
+        const headerStyle = header?.getAttribute('style') ?? '';
+        expect(headerStyle).toContain('--sarak-topbar-height');
+        expect(headerStyle).toContain('--sarak-topbar-bg');
+
+        const aside = container.querySelector('aside.sarak-shell-sidebar');
+        expect(aside?.getAttribute('style') ?? '').toContain('--sarak-sidebar-bg');
+    });
+
+    it('sem topbar declarada, nenhum <header> de chrome é renderizado', () => {
+        const manifest = appManifest();
+        delete manifest.shell!.topbar;
+        const { container } = render(
+            <SarakManifestRenderer manifest={manifest} registry={makeRegistry()} route="/a" />,
+        );
+        expect(container.querySelector('header.sarak-shell-topbar')).toBeNull();
+        expect(screen.getByTestId('page-a')).toBeInTheDocument();
+    });
+
     it('estado de shell vivo (DataStore) sobrevive à troca de página', () => {
         const store = createSarakDataStore({ collapsed: 'recolhida' });
         const manifest = appManifest();
