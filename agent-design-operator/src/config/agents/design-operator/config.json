@@ -1,9 +1,0 @@
-{
-  "agent_id": "design-operator",
-  "name": "Design Operator",
-  "description": "Responsável por configurar temas e propriedades estruturais via manipulação JSON",
-  "capabilities": {
-    "input_modalities": ["text"],
-    "output_format": "text"
-  }
-}
