@@ -87,3 +87,50 @@ O `SarakManifestRenderer` **executa um manifesto JSON autorado por usuário ou I
 - **Roteamento:** o `routerInterceptor`/`NavigateFn` é responsabilidade do importador (ex.: o router do Next.js). A Sarak reage à rota, não controla a URL.
 - **Design Agent (`SarakUIOptions.designAgent`):** o chat de IA do Design Engine (`DesignAgentChatCard`) segue a mesma regra — é proibido `fetch`/URL fixa embutida no componente. O importador injeta `options.designAgent.sendPrompt: (input: DesignAgentPromptInput) => Promise<DesignAgentPromptResult>` no `SarakUIProvider`; sem essa função configurada, o card informa "Não configurado" e não tenta rede nenhuma. `sendPrompt` roda no servidor do consumidor (nunca no browser direto) e é quem decide como falar com o backend `agent-design-operator` (acoplado na mesma API Node ou como microsserviço à parte).
 - **Validação de origem do manifesto:** garantir que o JSON vem de uma fonte legítima e aplicar CSP/CORS no nível do app — a sanitização da Sarak é defesa em profundidade, não substitui o controle de origem.
+
+### 6.2-b Autenticação é porta (Spec 20)
+A lib **não autentica ninguém** — o mesmo princípio da porta de persistência (Spec 19), aplicado à identidade. Ela **renderiza** a tela de login (`SarakAuthScreen`, `type` nativo) e entrega credenciais ao host por um canal declarativo; o provider de auth (backend próprio, Supabase Auth, Cognito, Keycloak, JWT caseiro…) é 100% decisão do consumidor.
+
+**`SarakAuthScreen` é autocontido:** nenhum callback é obrigatório. Campos (`username`/`password`/`mfaCode`) e alternância de modo (`isRegistering`/`mfaStep`) vivem em estado interno por padrão — controláveis via prop quando o host quiser (ex.: `mfaStep: "{{auth.mfaRequired}}"` lido do DataStore). O único canal que o manifesto precisa injetar é `actions` (a Engine liga `onChange` automaticamente — mesmo mecanismo do `SarakShellNav`): toda interação de negócio (submit, social login, "esqueci a senha", master login, alternar registro) emite um evento estruturado `{{$event}} = { intent, username?, password?, mfaCode?, isRegistering?, provider? }`.
+
+**Receita canônica (login → sessão → rota protegida → logout):**
+```json
+{
+  "schemaVersion": 1,
+  "type": "SarakFlex",
+  "children": [
+    {
+      "type": "SarakAuthScreen",
+      "renderIf": "!{{session.isLogged}}",
+      "props": { "error": "{{session.error}}" },
+      "actions": [
+        { "type": "api_call", "payload": { "endpoint": "/auth/login", "method": "POST", "params": "{{$event}}", "into": "session" } }
+      ],
+      "onError": [
+        { "type": "mutate_state", "payload": { "path": "session.error", "value": "Credenciais inválidas" } }
+      ]
+    },
+    {
+      "type": "SarakFlex",
+      "renderIf": "{{session.isLogged}}",
+      "children": [
+        { "type": "SarakButton", "props": { "children": "Sair" },
+          "actions": [
+            { "type": "mutate_state", "payload": { "path": "session", "value": { "isLogged": false } } },
+            { "type": "navigate", "payload": { "to": "/login" } }
+          ]
+        }
+      ]
+    }
+  ]
+}
+```
+- O `api_call` de login sobe `$event` inteiro (`params`) para o endpoint que o HOST decide; a resposta cai em `session` via `into` — é lá que o host escolhe guardar `token`/`isLogged`/o que quiser (a Sarak só faz o merge no DataStore, nunca inspeciona o shape).
+- `renderIf`/`{{session.isLogged}}` reage à mudança de estado automaticamente (sem shell/rotas — funciona igual com `shell`+`routes` reais, gateando qual rota monta).
+- **Sessão autenticada em requisições subsequentes:** o `networkInterceptor` do host injeta `Authorization` a partir de onde quer que tenha guardado o token (variável de módulo, cookie httpOnly lido no servidor, etc. — nunca é a Sarak quem decide isso).
+- **401 → redirect:** trate isso DENTRO do `networkInterceptor` (ele é só uma função) — em caso de 401, o host chama seu próprio `routerInterceptor`/limpa a sessão antes de rejeitar a promise. A Sarak não sabe o que é um 401; só recebe o erro e roda `onError`/`disabledIf`, como qualquer outra falha de rede.
+- **Logout declarativo:** `mutate_state` zera a fatia da sessão + `navigate` pede o redirect — o host decide o que "zerar sessão" significa de verdade (revogar no backend, limpar cookie, etc.) reagindo à própria action de `navigate`/observando o DataStore.
+
+**Gate anti-acoplamento (Spec 20 §2.3):** `src/` nunca importa SDK de provider de auth nem lê token de storage diretamente — verificado por `AuthCouplingGate.test.ts`. Achado real corrigido nesta spec: dois hooks legados (`shared/services/api.ts`, `Chat/useSarakChat.ts`) liam `localStorage` num esquema de chaves fixo (`${system}_token`/`sarak_token`/`auth_token`) — arquitetura "Sarak Matrix" anterior ao contrato `networkInterceptor`, removida.
+
+**Nota de migração (breaking change silencioso):** consumidores que dependiam dessa injeção automática (`${system}_token`/`sarak_token`/`auth_token`) devem passar a compor o header `Authorization` no próprio host — interceptor axios próprio (se ainda usam `shared/services/api.ts`/`useSarakChat.ts` diretamente) ou `networkInterceptor` (caminho declarativo). Sem esse ajuste, endpoints que exigem auth nesses templates passam a responder 401 sem aviso. Impacto conhecido: **Sarak-MyService**.

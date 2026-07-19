@@ -2,7 +2,7 @@
 tipo: "spec"
 titulo: "Porta de Persistência de UI (Storage Agnóstico + Contrato REST)"
 dominio: "Backend Bridge / Arquitetura de Portas"
-status: "🔴 Planejamento Inicial"
+status: "🟢 Concluída (2026-07-18)"
 prioridade: "Máxima"
 tags: ["spec", "backend", "persistencia", "porta", "storage", "schema"]
 relacionados: ["08-consumo-externo-e-integracao", "01-painel-customizacao-temas"]
@@ -48,18 +48,18 @@ export interface UIStorageAdapter {
 - Sem breaking change: `connectionString` puro continua funcionando com defaults atuais.
 
 # 3. Critérios de Aceite
-- [ ] `createSarakUIExpressMiddleware({ connectionString, schema: 'MeuSchema' })` cria/consulta tabelas no schema informado (PG) — sem patch em node_modules.
-- [ ] `createSarakUIExpressMiddleware({ storage: meuAdapter })` funciona sem nenhuma connectionString (adapter fake em teste).
-- [ ] Exemplo Supabase documentado compila e cobre as 7 operações (validação por teste de tipo, sem rede).
-- [ ] `docs/ui-storage-contract.md` publica estruturas + 5 endpoints; teste de contrato verde contra os adapters de referência.
-- [ ] Suítes `backend/node/__tests__/` existentes verdes (refactor sem mudança de comportamento).
+- [x] `createSarakUIExpressMiddleware({ connectionString, schema: 'MeuSchema' })` cria/consulta tabelas no schema informado (PG) — sem patch em node_modules.
+- [x] `createSarakUIExpressMiddleware({ storage: meuAdapter })` funciona sem nenhuma connectionString (adapter fake em teste).
+- [x] Exemplo Supabase documentado compila e cobre as 7 operações (validação por teste de tipo, sem rede).
+- [x] `docs/ui-storage-contract.md` publica estruturas + 5 endpoints; teste de contrato verde contra os adapters de referência.
+- [x] Suítes `backend/node/__tests__/` existentes verdes (refactor sem mudança de comportamento).
 
 # 4. Plano de Testes (Quality Gate)
 ## Unitários
-- [ ] Adapter fake (memória) → middleware atende os 5 endpoints corretamente.
-- [ ] Sanitização de `schema`/`tablePrefix` rejeita identificadores inválidos (`"a";DROP`).
+- [x] Adapter fake (memória) → middleware atende os 5 endpoints corretamente.
+- [x] Sanitização de `schema`/`tablePrefix` rejeita identificadores inválidos (`"a";DROP`).
 ## Contrato
-- [ ] Shapes de request/response dos handlers = documento (teste que compara campos).
+- [x] Shapes de request/response dos handlers = documento (teste que compara campos).
 ## Integração
-- [ ] SQLite de referência: fluxo completo criar→ativar→get ativo com `tablePrefix` custom.
-- [ ] PG (se ambiente disponível) com `schema` custom — senão, queries geradas assertadas por snapshot.
+- [x] SQLite de referência: fluxo completo criar→ativar→get ativo com `tablePrefix` custom.
+- [x] PG (se ambiente disponível) com `schema` custom — senão, queries geradas assertadas por snapshot.

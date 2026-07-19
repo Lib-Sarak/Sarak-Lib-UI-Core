@@ -2362,37 +2362,37 @@
         {
           "name": "isRegistering",
           "type": "boolean",
-          "optional": false,
+          "optional": true,
           "doc": ""
         },
         {
           "name": "setIsRegistering",
           "type": "(val: boolean) => void",
-          "optional": false,
+          "optional": true,
           "doc": ""
         },
         {
           "name": "mfaStep",
           "type": "boolean",
-          "optional": false,
+          "optional": true,
           "doc": ""
         },
         {
           "name": "setMfaStep",
           "type": "(val: boolean) => void",
-          "optional": false,
+          "optional": true,
           "doc": ""
         },
         {
           "name": "username",
           "type": "string",
-          "optional": false,
+          "optional": true,
           "doc": ""
         },
         {
           "name": "setUsername",
           "type": "(val: string) => void",
-          "optional": false,
+          "optional": true,
           "doc": ""
         },
         {
@@ -2446,7 +2446,7 @@
         {
           "name": "onSubmit",
           "type": "(e: React.FormEvent) => void",
-          "optional": false,
+          "optional": true,
           "doc": ""
         },
         {
@@ -2472,6 +2472,12 @@
           "type": "() => void",
           "optional": true,
           "doc": ""
+        },
+        {
+          "name": "onChange",
+          "type": "(event: SarakAuthScreenEvent) => void",
+          "optional": true,
+          "doc": "Canal declarativo único — ver `SarakAuthScreenEvent`. Dispara em toda interação de negócio."
         },
         {
           "name": "role",

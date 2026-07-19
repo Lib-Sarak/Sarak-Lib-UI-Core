@@ -43,8 +43,8 @@
 
 ### Fase 2 — Portas de infraestrutura (a lib declara contratos, não escolhe infra)
 
-5. [ ] **[19 - Porta de Persistência de UI](./19-porta-de-persistencia-ui.md)** — a lib declara só a estrutura das suas tabelas e operações; `schema`/`tablePrefix` configuráveis (fim do `ui_core` imposto); interface `UIStorageAdapter` (pg/sqlite = implementações de referência; Supabase/Firebase/etc. = exemplos documentados); contrato REST dos 5 endpoints documentado para backend em qualquer linguagem.
-6. [ ] **[20 - Fronteira de Autenticação](./20-fronteira-de-autenticacao.md)** — a lib só RENDERIZA a tela de login (`SarakAuthScreen` 100% manifestável); token/sessão/provider são do host via interceptors; receita canônica documentada; gate anti-acoplamento.
+5. [x] **[19 - Porta de Persistência de UI](./19-porta-de-persistencia-ui.md)** — a lib declara só a estrutura das suas tabelas e operações; `schema`/`tablePrefix` configuráveis (fim do `ui_core` imposto); interface `UIStorageAdapter` (pg/sqlite = implementações de referência; Supabase/Firebase/etc. = exemplos documentados); contrato REST dos 5 endpoints documentado para backend em qualquer linguagem. ✅ **Concluída (2026-07-18).**
+6. [x] **[20 - Fronteira de Autenticação](./20-fronteira-de-autenticacao.md)** — a lib só RENDERIZA a tela de login (`SarakAuthScreen` 100% manifestável); token/sessão/provider são do host via interceptors; receita canônica documentada; gate anti-acoplamento. ✅ **Concluída (2026-07-19).**
 
 ### Fase 3 — Redução de escopo e camada de instrução/instalação
 

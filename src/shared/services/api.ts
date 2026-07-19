@@ -1,6 +1,16 @@
-import axios, { InternalAxiosRequestConfig, AxiosResponse, AxiosError } from 'axios';
+import axios, { InternalAxiosRequestConfig } from 'axios';
 
-// Instância base padrão
+/**
+ * Instância base para os hooks de dados dos templates pesados (SarakTable/SarakChart/
+ * SarakForm/SarakManagementGrid/SarakSecurityOrchestrator — ver `hooks/useXxxData.ts`).
+ *
+ * Fronteira de Confiança (Spec 08 §6.2 / Spec 20 §2.1): a Sarak NUNCA lê nem escreve
+ * token de autenticação — só o host sabe onde ele vive. Este cliente não injeta
+ * `Authorization` sozinho; se o host precisa de requisições autenticadas aqui, deve
+ * compor o cabeçalho no ponto de chamada (fora desta lib) ou, no caminho declarativo
+ * (manifesto), usar `networkInterceptor` — o único canal de rede que recebe auth do
+ * importador (Regra 5).
+ */
 const api = axios.create({
     headers: {
         'Content-Type': 'application/json',
@@ -9,36 +19,9 @@ const api = axios.create({
 
 api.interceptors.request.use((config: InternalAxiosRequestConfig) => {
     // Mantemos a baseURL unificada '/api' para que o Vite Proxy gerencie.
-    // Se o sistema estiver em modo legado multiserviço, as variáveis env cuidariam disso,
-    // mas no Sarak Matrix Full, tudo flui pelo Gateway.
     config.baseURL = '/api';
-    
-    // Suporte a Multi-Tenancy (Sovereignty v6.0)
-    // Busca o token baseado no identificador do sistema atual para evitar colisão entre microsserviços
-    const system = (window as Window & { __SARAK_SYSTEM__?: string }).__SARAK_SYSTEM__ || 'global';
-    const token = localStorage.getItem(`${system}_token`) || 
-                  localStorage.getItem('sarak_token') || 
-                  localStorage.getItem('auth_token');
-
-    if (token) {
-        config.headers.Authorization = `Bearer ${token}`;
-    }
     return config;
 });
-
-api.interceptors.response.use(
-    (response: AxiosResponse) => response,
-    (error: AxiosError) => {
-        if (error.response?.status === 401) {
-            // 401 Unauthorized detected. Wiping tokens.
-            const system = (window as Window & { __SARAK_SYSTEM__?: string }).__SARAK_SYSTEM__ || 'global';
-            localStorage.removeItem(`${system}_token`);
-            localStorage.removeItem('sarak_token');
-            sessionStorage.removeItem('auth_token');
-        }
-        return Promise.reject(error);
-    }
-);
 
 export interface ApiKeyStatus {
     service: string;

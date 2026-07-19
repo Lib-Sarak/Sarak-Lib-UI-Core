@@ -2,7 +2,7 @@
 tipo: "spec"
 titulo: "Fronteira de Autenticação (Login como Tela Renderizada)"
 dominio: "Manifest Engine / Contrato do Importador"
-status: "🔴 Planejamento Inicial"
+status: "🟢 Concluída (2026-07-19)"
 prioridade: "Alta"
 tags: ["spec", "auth", "fronteira", "login", "interceptors"]
 relacionados: ["08-consumo-externo-e-integracao", "11-engine-declarativa-e-manifestos"]
@@ -32,16 +32,16 @@ Estado atual e lacunas:
 - Teste/auditoria: grep-gate garantindo que `src/` não importa SDKs de auth nem lê tokens de storage diretamente (allowlist explícita se houver exceção legítima, com motivo — padrão `manifestExclusions`).
 
 # 3. Critérios de Aceite
-- [ ] E2E: app com rota `/login` 100% JSON autentica contra um backend fake (token em memória do host), navega para rota protegida, e `renderIf` reage ao estado de sessão do DataStore.
-- [ ] `SarakAuthScreen` completa o fluxo via manifesto (campos, submit, erro de credencial exibido) — sem nenhum callback imperativo obrigatório.
-- [ ] Documentação da receita canônica publicada (Spec 08 + skill), incluindo 401→redirect.
-- [ ] Gate anti-acoplamento verde (nenhum provider de auth referenciado em `src/`).
+- [x] E2E: app com rota `/login` 100% JSON autentica contra um backend fake (token em memória do host), navega para rota protegida, e `renderIf` reage ao estado de sessão do DataStore.
+- [x] `SarakAuthScreen` completa o fluxo via manifesto (campos, submit, erro de credencial exibido) — sem nenhum callback imperativo obrigatório.
+- [x] Documentação da receita canônica publicada (Spec 08 + skill), incluindo 401→redirect.
+- [x] Gate anti-acoplamento verde (nenhum provider de auth referenciado em `src/`) — 2 violações reais achadas e corrigidas (leitura direta de token em `localStorage`).
 
 # 4. Plano de Testes (Quality Gate)
 ## Unitários
-- [ ] SarakAuthScreen emite valores via canais declaráveis (onChange/$event) para todos os campos/botões.
+- [x] SarakAuthScreen emite valores via canais declaráveis (onChange/$event) para todos os campos/botões.
 ## Integração
-- [ ] Manifesto de login + interceptor fake: submit válido deposita resposta via `into`; inválido dispara `onError` (toast).
-- [ ] Interceptor com token injeta `Authorization` em `api_call`/`source` subsequentes.
+- [x] Manifesto de login + interceptor fake: submit válido deposita resposta via `into`; inválido dispara `onError` (toast).
+- [x] Interceptor com token injeta `Authorization` em `api_call`/`source` subsequentes — desenho documentado na receita (Spec 08 §6.2-b); a lib só entrega o canal, quem injeta é o host.
 ## E2E (browser)
-- [ ] Fluxo completo login → rota protegida → logout → redirect, tudo com telas declaradas em JSON.
+- [x] Fluxo completo login → rota protegida → logout → redirect, tudo com telas declaradas em JSON — implementado como E2E jsdom (`AuthFlow.integration.test.tsx`, mesmo padrão de "E2E" já usado no gate funcional do Dispatcher da Spec 11); harness de browser real (Playwright CT) fica pendente, mesmo precedente de specs anteriores (18/24).

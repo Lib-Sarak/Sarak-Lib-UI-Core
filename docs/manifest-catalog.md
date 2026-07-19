@@ -861,12 +861,12 @@ Props (`SarakAuthScreenProps` — `src/components/atomic/Templates/SarakAuthScre
 | Prop | Tipo | Obrigatória | Descrição |
 | --- | --- | --- | --- |
 | `branding` | `{ name: string; logo?: string; }` | não |  |
-| `isRegistering` | `boolean` | sim |  |
-| `setIsRegistering` | `(val: boolean) => void` | sim |  |
-| `mfaStep` | `boolean` | sim |  |
-| `setMfaStep` | `(val: boolean) => void` | sim |  |
-| `username` | `string` | sim |  |
-| `setUsername` | `(val: string) => void` | sim |  |
+| `isRegistering` | `boolean` | não |  |
+| `setIsRegistering` | `(val: boolean) => void` | não |  |
+| `mfaStep` | `boolean` | não |  |
+| `setMfaStep` | `(val: boolean) => void` | não |  |
+| `username` | `string` | não |  |
+| `setUsername` | `(val: string) => void` | não |  |
 | `password` | `string` | não |  |
 | `setPassword` | `(val: string) => void` | não |  |
 | `mfaCode` | `string` | não |  |
@@ -875,11 +875,12 @@ Props (`SarakAuthScreenProps` — `src/components/atomic/Templates/SarakAuthScre
 | `setShowPassword` | `(val: boolean) => void` | não |  |
 | `error` | `string` | não |  |
 | `isPending` | `boolean` | não |  |
-| `onSubmit` | `(e: React.FormEvent) => void` | sim |  |
+| `onSubmit` | `(e: React.FormEvent) => void` | não |  |
 | `onSocialLogin` | `(provider: string) => void` | não |  |
 | `socialConfig` | `{ enabled: boolean; display: 'compact' \| 'full'; providers: Array<{ id: string; variant: 'glass' \| 'sovereign' }>; }` | não |  |
 | `onForgot` | `() => void` | não |  |
 | `onMasterLogin` | `() => void` | não |  |
+| `onChange` | `(event: SarakAuthScreenEvent) => void` | não | Canal declarativo único — ver `SarakAuthScreenEvent`. Dispara em toda interação de negócio. |
 | `role` | `'primary' \| 'secondary' \| 'neutral' \| 'accent'` | não |  |
 | `density` | `'compact' \| 'standard' \| 'spacious'` | não |  |
 | `importance` | `'hero' \| 'base' \| 'subtle'` | não |  |

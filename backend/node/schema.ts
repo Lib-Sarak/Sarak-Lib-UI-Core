@@ -1,12 +1,26 @@
-export const INIT_UI_SCHEMA_SQL = `
+import { sanitizeIdentifier } from './identifiers';
+
+/** Schema Postgres default quando o consumidor não configura `options.schema`. */
+export const DEFAULT_PG_SCHEMA = 'ui_core';
+
+/**
+ * Gera o SQL de inicialização do schema Postgres com o nome de schema informado
+ * (sanitizado — Spec 19 §2.1: identificador nunca é concatenado sem validação).
+ * Fim do `"ui_core"` fixo — consumidores com regra de schema próprio (ex.: caso
+ * real `"ERP-Iarendel"`) deixam de precisar patchear `node_modules`.
+ */
+export function buildInitUiSchemaSql(schema: string = DEFAULT_PG_SCHEMA): string {
+    const s = sanitizeIdentifier(schema, 'schema');
+
+    return `
 -- 001_init_ui_schema.sql
 -- Este script é fornecido pelo Sarak-Lib-UI-Core para que os sistemas consumidores
 -- (Earendel, MyService, etc.) possam inicializar a tabela de temas do Design Engine.
 
-CREATE SCHEMA IF NOT EXISTS "ui_core";
+CREATE SCHEMA IF NOT EXISTS "${s}";
 
 -- 1. Cria a tabela de Custom Themes
-CREATE TABLE IF NOT EXISTS "ui_core"."custom_themes" (
+CREATE TABLE IF NOT EXISTS "${s}"."custom_themes" (
     id UUID PRIMARY KEY DEFAULT gen_random_uuid(),
     name VARCHAR(255) NOT NULL,
     description TEXT,
@@ -14,12 +28,12 @@ CREATE TABLE IF NOT EXISTS "ui_core"."custom_themes" (
     owner_id UUID, -- Referência opcional para o tenant/usuário
     is_public BOOLEAN DEFAULT false,
     is_active BOOLEAN DEFAULT false, -- Aponta se este é o tema ativo atual
-    
+
     -- Top-Level Globals
     mode VARCHAR(50) DEFAULT 'dark',
     navigation_style VARCHAR(50) DEFAULT 'sidebar',
     body_size VARCHAR(50) DEFAULT '14px',
-    
+
     -- Colunas JSONB Granulares (Mapeadas automaticamente via gerador)
     branding_config JSONB DEFAULT '{}'::jsonb,
     colors_and_atmosphere JSONB DEFAULT '{}'::jsonb,
@@ -30,7 +44,7 @@ CREATE TABLE IF NOT EXISTS "ui_core"."custom_themes" (
     data_and_charts JSONB DEFAULT '{}'::jsonb,
     motion_and_animation JSONB DEFAULT '{}'::jsonb,
     specialized_engines JSONB DEFAULT '{}'::jsonb,
-    
+
     created_at TIMESTAMP WITH TIME ZONE DEFAULT NOW(),
     updated_at TIMESTAMP WITH TIME ZONE DEFAULT NOW()
 );
@@ -39,16 +53,16 @@ CREATE TABLE IF NOT EXISTS "ui_core"."custom_themes" (
 DO $$
 BEGIN
     IF EXISTS (
-        SELECT FROM information_schema.tables 
-        WHERE  table_schema = 'ui_core' AND table_name = 'custom_themes'
+        SELECT FROM information_schema.tables
+        WHERE  table_schema = '${s}' AND table_name = 'custom_themes'
     ) THEN
-        ALTER TABLE "ui_core"."custom_themes" ADD COLUMN IF NOT EXISTS system VARCHAR(50) DEFAULT 'global';
-        ALTER TABLE "ui_core"."custom_themes" ADD COLUMN IF NOT EXISTS is_active BOOLEAN DEFAULT false;
+        ALTER TABLE "${s}"."custom_themes" ADD COLUMN IF NOT EXISTS system VARCHAR(50) DEFAULT 'global';
+        ALTER TABLE "${s}"."custom_themes" ADD COLUMN IF NOT EXISTS is_active BOOLEAN DEFAULT false;
     END IF;
 END $$;
 
 -- 3. Cria a tabela isolada de Branding (Identidade Corporativa)
-CREATE TABLE IF NOT EXISTS "ui_core"."system_branding" (
+CREATE TABLE IF NOT EXISTS "${s}"."system_branding" (
     id UUID PRIMARY KEY DEFAULT gen_random_uuid(),
     system VARCHAR(50) DEFAULT 'global',
     owner_id UUID, -- Referência opcional para o tenant/usuário
@@ -62,7 +76,7 @@ CREATE TABLE IF NOT EXISTS "ui_core"."system_branding" (
 );
 
 -- 4. Tabelas do Agente LLM (Design Operator)
-CREATE TABLE IF NOT EXISTS "ui_core"."sarak_ui_design_agent_conversations" (
+CREATE TABLE IF NOT EXISTS "${s}"."sarak_ui_design_agent_conversations" (
     id UUID PRIMARY KEY DEFAULT gen_random_uuid(),
     session_id VARCHAR(255) NOT NULL,
     role VARCHAR(50) NOT NULL CHECK (role IN ('user', 'assistant', 'system')),
@@ -70,10 +84,10 @@ CREATE TABLE IF NOT EXISTS "ui_core"."sarak_ui_design_agent_conversations" (
     created_at TIMESTAMP WITH TIME ZONE DEFAULT NOW()
 );
 
-CREATE INDEX IF NOT EXISTS idx_sarak_ui_design_agent_conversations_session 
-ON "ui_core"."sarak_ui_design_agent_conversations" (session_id);
+CREATE INDEX IF NOT EXISTS idx_sarak_ui_design_agent_conversations_session
+ON "${s}"."sarak_ui_design_agent_conversations" (session_id);
 
-CREATE TABLE IF NOT EXISTS "ui_core"."sarak_ui_design_agent_artifacts" (
+CREATE TABLE IF NOT EXISTS "${s}"."sarak_ui_design_agent_artifacts" (
     id UUID PRIMARY KEY DEFAULT gen_random_uuid(),
     session_id VARCHAR(255) NOT NULL,
     artifact_type VARCHAR(50) NOT NULL CHECK (artifact_type IN ('theme', 'preset')),
@@ -81,7 +95,8 @@ CREATE TABLE IF NOT EXISTS "ui_core"."sarak_ui_design_agent_artifacts" (
     created_at TIMESTAMP WITH TIME ZONE DEFAULT NOW()
 );
 
-CREATE INDEX IF NOT EXISTS idx_sarak_ui_design_agent_artifacts_session 
-ON "ui_core"."sarak_ui_design_agent_artifacts" (session_id);
+CREATE INDEX IF NOT EXISTS idx_sarak_ui_design_agent_artifacts_session
+ON "${s}"."sarak_ui_design_agent_artifacts" (session_id);
 
 `;
+}

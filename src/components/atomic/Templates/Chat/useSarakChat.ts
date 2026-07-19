@@ -27,16 +27,9 @@ export const useSarakChat = (endpoint: string, modelsEndpoint?: string) => {
     const fetchModels = async () => {
       if (!modelsEndpoint) return;
       try {
-        const system = (window as typeof window & { __SARAK_SYSTEM__?: string }).__SARAK_SYSTEM__ || 'global';
-        const token = localStorage.getItem(`${system}_token`) || 
-                      localStorage.getItem('sarak_token') || 
-                      localStorage.getItem('auth_token');
-
-        const res = await fetch(`/api${modelsEndpoint}`, {
-          headers: {
-            'Authorization': token ? `Bearer ${token}` : ''
-          }
-        });
+        // Fronteira de Confiança (Spec 08 §6.2 / Spec 20 §2.1): a Sarak nunca lê token
+        // de storage. Requisição autenticada é responsabilidade do host.
+        const res = await fetch(`/api${modelsEndpoint}`);
         if (res.ok) {
           const data = await res.json();
           updateState({
@@ -116,16 +109,12 @@ export const useSarakChat = (endpoint: string, modelsEndpoint?: string) => {
       }
       updateState({ isProcessingFiles: false, attachments: [] });
 
-      const system = (window as typeof window & { __SARAK_SYSTEM__?: string }).__SARAK_SYSTEM__ || 'global';
-      const token = localStorage.getItem(`${system}_token`) || 
-                    localStorage.getItem('sarak_token') || 
-                    localStorage.getItem('auth_token');
-
+      // Fronteira de Confiança (Spec 08 §6.2 / Spec 20 §2.1): a Sarak nunca lê token
+      // de storage. Requisição autenticada é responsabilidade do host.
       const response = await fetch(`/api${endpoint}`, {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
-          'Authorization': token ? `Bearer ${token}` : ''
         },
         body: JSON.stringify({
           blocks: blocks,

@@ -82,6 +82,20 @@ O catálogo oficial de `type`s, props, ações, pipes e diretivas é **GERADO do
    - `persistState: { "key": "..." }` — sincroniza a fatia com o localStorage (Spec 28).
    - `responsive: { "md": {...}, "lg": {...} }` — sobreposição de props por breakpoint (Spec 16).
    - `theme` / `aria` — escopo de tema (DesignScope) e atributos de acessibilidade como dado.
+9. **Autenticação é porta (Spec 20)** — a lib nunca autentica; só renderiza. `SarakAuthScreen` (`type` nativo) é autocontido — nenhum callback obrigatório, campos vivem em estado interno. `actions` + a Engine ligam `onChange` automaticamente (mesmo mecanismo do `SarakShellNav`): toda interação (submit/social/forgot/masterLogin/toggleRegister) emite `{{$event}} = { intent, username?, password?, mfaCode?, isRegistering?, provider? }`.
+   ```json
+   {
+     "type": "SarakAuthScreen",
+     "renderIf": "!{{session.isLogged}}",
+     "props": { "error": "{{session.error}}" },
+     "actions": [
+       { "type": "api_call", "payload": { "endpoint": "/auth/login", "method": "POST", "params": "{{$event}}", "into": "session" } }
+     ],
+     "onError": [{ "type": "mutate_state", "payload": { "path": "session.error", "value": "Credenciais inválidas" } }]
+   }
+   ```
+   - A resposta do login cai em `session` via `into` (o HOST decide o shape — token, flags, o que for); `renderIf: "{{session.isLogged}}"` gateia a rota protegida. Logout: `mutate_state` (zera a sessão) + `navigate` (pede o redirect) — dois `actions` num botão comum.
+   - Sessão autenticada em chamadas seguintes e 401→redirect são resolvidos DENTRO do `networkInterceptor` do host (é só uma função) — a Sarak não sabe o que é um token nem um 401. Receita completa com exemplo de shell+rotas: Spec 08 §6.2-b.
 
 ## Regras de Ouro e Segurança
 - **Proibição do TSX (front fora do manifesto é DEFEITO):** telas não misturam componentes React no código do consumidor. Tudo é JSON. Os ÚNICOS arquivos de front permitidos no consumidor são o plumbing do contrato (Spec 30): entry point com `SarakUIProvider`+`SarakManifestRenderer`, DataStore e os 2 interceptors — nada além disso. Criar componente/tela/CSS React no consumidor para "completar" a UI é violação do contrato de instalação.
@@ -93,3 +107,4 @@ O catálogo oficial de `type`s, props, ações, pipes e diretivas é **GERADO do
 - `docs/manifest-catalog.md` / `docs/manifest-catalog.json` — catálogo GERADO (types, props, ações, pipes, diretivas).
 - Spec 11 (`11-engine-declarativa-e-manifestos.md`) — gramática estrita do manifesto.
 - Spec 12 (`12-modelo-de-seguranca-e-acessibilidade.md`) — Safe Eval, sanitização, aria.
+- Spec 08 §6.2-b (`08-consumo-externo-e-integracao.md`) — receita canônica de autenticação (login/sessão/401/logout).
