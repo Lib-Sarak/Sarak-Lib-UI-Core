@@ -1,7 +1,6 @@
 import React from 'react';
 import { UIContext, useSarakUI } from '../../../core/Provider/SarakUIProvider';
 import { PresetsCatalog } from './components/PresetsCatalog';
-import { DesignAgentChatCard } from './components/DesignAgentChatCard';
 import { LiveDraftPreviewFrame } from './components/LiveDraftPreviewFrame';
 
 import { DesignScope } from '../../../core/Design/components/DesignScope';
@@ -11,7 +10,6 @@ import { usePreviewApps } from './hooks/usePreviewApps';
 import { useInspector } from './hooks/useInspector';
 import { useDeviceStyles } from './hooks/useDeviceStyles';
 import { usePreviewContextValue, useApplyPreset } from './hooks/useDesignOperations';
-import { useAgentGeneratedPresets } from './hooks/useAgentGeneratedPresets';
 import { PreviewSystemRenderer } from './components/PreviewSystemRenderer';
 import { SarakUIOptions, SarakUIContextType } from '../../../core/Provider/types';
 import { SarakDesignState } from '../../../core/Provider/types';
@@ -59,7 +57,6 @@ export const PreviewCanvas: React.FC<PreviewCanvasProps> = ({
     onApplyFullTheme
 }) => {
     const handleApplyPreset = useApplyPreset(onUpdateDraft, onApplyFullTheme);
-    const agentPresets = useAgentGeneratedPresets();
 
     const parentContext = useSarakUI();
     const tokens = React.useMemo(() => ({ ...draftTokens }), [draftTokens]);
@@ -159,8 +156,6 @@ export const PreviewCanvas: React.FC<PreviewCanvasProps> = ({
                                     onApplyFullTheme={onApplyFullTheme}
                                     currentMode={mode}
                                     sarak={sarak}
-                                    sessionThemes={agentPresets.themes}
-                                    sessionPresetsByCategory={agentPresets.presetsByCategory}
                                 />
                             </div>
                         </>
@@ -180,24 +175,6 @@ export const PreviewCanvas: React.FC<PreviewCanvasProps> = ({
                         <div className="fixed inset-0 z-[9999] cursor-row-resize pointer-events-auto" />
                     )}
                     </div>
-
-                    {/* Linha Inferior: Sarak Design Agent Chat (Visível no modo DualView/Preview) */}
-                    {/* Altura FIXA (não só min-h): isola o card do fluxo de tamanho dos
-                        previews acima. Sem isso, o `h-full` interno do DesignAgentChatCard
-                        não tinha altura definida pra resolver contra, a lista de mensagens
-                        crescia com o conteúdo (o scroll interno nunca ativava), e o card
-                        inteiro empurrava a linha de previews (flex-1 min-h-0) pra fora do
-                        espaço disponível — bug de produção. */}
-                    {isDualView && (
-                        <div className="w-full shrink-0 h-[var(--sarak-engine-min-h-sm,300px)] transition-all">
-                            <DesignAgentChatCard
-                                draftTokens={tokens}
-                                onApplyFullTheme={onApplyFullTheme || (() => {})}
-                                onAgentTheme={agentPresets.addTheme}
-                                onAgentComponentPresets={agentPresets.addComponentPresets}
-                            />
-                        </div>
-                    )}
                 </div>
             </UIContext.Provider>
 

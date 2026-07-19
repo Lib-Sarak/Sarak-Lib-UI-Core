@@ -48,15 +48,15 @@
 
 ### Fase 3 — Redução de escopo e camada de instrução/instalação
 
-7. [ ] **[23 - Remoção do Design Agent](./23-remocao-design-agent.md)** — remove o agente LLM embarcado (`agent-design-operator/`, ~131 arquivos) e toda a superfície na lib (chat card, hooks, `options.designAgent`, tipos públicos, etapas de skill). **BREAKING CHANGE** (o MyService injeta `designAgent`) e **2 decisões HITL** (destino do código; manter ou não porta futura). Executar ANTES da 21/22 (a 23 e a 22 editam a skill `ui-integra-consumidor` — nesta ordem não há reconciliação).
+7. [x] **[23 - Remoção do Design Agent](./23-remocao-design-agent.md)** — remove o agente LLM embarcado (`agent-design-operator/`, ~131 arquivos) e toda a superfície na lib (chat card, hooks, `options.designAgent`, tipos públicos, etapas de skill). **BREAKING CHANGE** (o MyService injeta `designAgent`) e **2 decisões HITL** (destino do código; manter ou não porta futura). Executar ANTES da 21/22 (a 23 e a 22 editam a skill `ui-integra-consumidor` — nesta ordem não há reconciliação). ✅ **Concluída (2026-07-19).**
 8. [ ] **[21 - Scaffolder Init](./21-scaffolder-init.md)** + **[22 - Skills de Consumo: Golden Path](./22-skills-de-consumo-golden-path.md)** — **executar em CONJUNTO, nesta ordem** (prompt único P8): o `npx @sarak/lib-ui-core init` gera o boilerplate completo (modo App/Embarcado, Vite+Express monolítico / Next / frontend-only, peerDeps gravadas, skills copiadas) e em seguida as 3 skills de consumo passam a orquestrá-lo (Golden Path, anti-workspace, `source` com states, regra dura de tokens, linguagem de portas). Dependem de 16/19/20/24.
 
 ---
 
 ## Backlog arquivado (NÃO executar sem decisão explícita do mantenedor)
 
-### Sub-plano "Design Agent" (specs 01-07) — CANCELADO pela spec 23
-As specs `01` a `07` evoluíam o agente LLM de temas, que a spec 23 remove da biblioteca. **Não execute 04/05/06/07** (pendentes); 01/02/03 já foram total/parcialmente executadas (histórico em `00-progresso.md`). Ao executar a 23, marque o frontmatter das 7 como `⚫ Cancelada (plan/23)`. Os arquivos ficam como histórico. Nota de numeração: a spec 16 ORIGINAL desse sub-plano foi absorvida pela 02 e o arquivo removido — o número 16 foi reutilizado pela Fase 1 (arquivo novo e independente).
+### Sub-plano "Design Agent" (specs 01-07) — CANCELADO pela spec 23 (executada)
+As specs `01` a `07` evoluíam o agente LLM de temas, removido da biblioteca pela spec 23 (2026-07-19). **Estado real dos arquivos:** `02-mapeamento-semantico-rag-catalogo.md`, `03-separacao-estrutural-chat-acao.md`, `04-multi-preset-diversificado.md`, `05-ingestao-multimodal-html.md`, `06-pipeline-visao-dois-estagios.md` e `07-agente-llm-design-e-expansao-estrutural.md` **já não existem** neste repositório — foram apagados no commit `b8447cb` (bundle acidental numa spec não relacionada, Spec 17), antes mesmo da 23 ser escrita; não há o que marcar/cancelar neles. Só **`01-auditoria-cobertura-componentes.md`** sobreviveu e teve o frontmatter marcado `⚫ Cancelada (plan/23)` (o `git log` continua sendo a fonte do histórico integral). Nota de numeração: a spec 16 ORIGINAL desse sub-plano foi absorvida pela 02 e o arquivo removido — o número 16 foi reutilizado pela Fase 1 (arquivo novo e independente).
 
 ### Backlog secundário (specs 10-15) — despriorizado; reavaliar após as Fases 1-3
 - **[10 - Responsividade no Gêmeo Digital](./10-responsividade-gemeo-digital.md)** — Tier A corrigido; falta só Tier B (Container Queries reais).

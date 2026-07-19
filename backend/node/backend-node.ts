@@ -7,8 +7,6 @@ export type { BrandingApiOptions } from './branding';
 export { createSarakUIExpressMiddleware } from './expressAdapter';
 export type { SarakUIMiddlewareOptions } from './expressAdapter';
 export { createThemesApiHandler } from './themes';
-export { getDesignCatalog, getDesignScaffold } from './catalog';
-export type { DesignCatalogToken, DesignScaffoldToken } from './catalog';
 
 // Porta de Persistência de UI (Spec 19) — a interface que qualquer storage
 // (adapter próprio ou de referência) implementa, e as implementações de

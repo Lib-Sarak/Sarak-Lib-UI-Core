@@ -60,28 +60,6 @@ CREATE TABLE IF NOT EXISTS ${p}system_branding (
     updated_at TEXT DEFAULT CURRENT_TIMESTAMP,
     UNIQUE(system, owner_id)
 );
-
-CREATE TABLE IF NOT EXISTS ${p}design_agent_conversations (
-    id TEXT PRIMARY KEY,
-    session_id TEXT NOT NULL,
-    role TEXT NOT NULL CHECK (role IN ('user', 'assistant', 'system')),
-    content TEXT NOT NULL,
-    created_at TEXT DEFAULT CURRENT_TIMESTAMP
-);
-
-CREATE INDEX IF NOT EXISTS idx_${p}design_agent_conversations_session
-ON ${p}design_agent_conversations (session_id);
-
-CREATE TABLE IF NOT EXISTS ${p}design_agent_artifacts (
-    id TEXT PRIMARY KEY,
-    session_id TEXT NOT NULL,
-    artifact_type TEXT NOT NULL CHECK (artifact_type IN ('theme', 'preset')),
-    payload TEXT NOT NULL,
-    created_at TEXT DEFAULT CURRENT_TIMESTAMP
-);
-
-CREATE INDEX IF NOT EXISTS idx_${p}design_agent_artifacts_session
-ON ${p}design_agent_artifacts (session_id);
 `;
 }
 

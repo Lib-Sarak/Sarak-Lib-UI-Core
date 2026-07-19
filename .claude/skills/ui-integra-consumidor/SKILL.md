@@ -19,16 +19,7 @@ Skill responsável pela instalação plug-and-play do Motor Declarativo (Sarak-L
      - **Modo App:** siga o fluxo normal desta skill (template starter, shell/routes — o Provider+Renderer são a raiz da aplicação). É o default: `options` sem `mode`.
      - **Modo Embarcado:** suportado (Spec 24). O Provider vira um CIDADÃO da página em vez de dono dela: `options={{ mode: 'embedded' }}`. Nada fora do container da ilha é tocado — nem `document.title`, nem `:root`, nem overlays de página inteira, nem as fontes globais. Exige **CSS escopado** e tem **1 passo extra de instalação** (Etapa 5-B). Registre a escolha do usuário: ela muda as Etapas 2 (CSS), 5 (montagem) e o critério de aceite.
      - **Se Embarcado, pergunte também:** *"A adoção começa por quais rotas/regiões do front atual?"* — a migração é incremental: 1 ilha → mais rotas → shell completo → (opcional) virar Modo App. Registre o alvo inicial.
-   - **Stack do consumidor:** qual o framework/host (Next.js/React, Vite, Remix, etc.) e o backend, se houver (Node, Python/FastAPI, PHP)? Isso decide como o Design Agent é acoplado na Etapa 6.
-   - **Design Agent (chat de IA) — incluir ou não?** Pergunte explicitamente: *"Quer habilitar o chat do Design Agent (a IA que gera e ajusta o tema por linguagem natural)?"*
-     - Deixe claro que é **100% opcional e desacoplado**: `agent-design-operator` **não** é dependência de `@sarak/lib-ui-core` (importar a UI nunca o baixa), e `options.designAgent` é opcional. Sem ele, a UI funciona por inteiro — só o `DesignAgentChatCard` aparece como "Não configurado", sem tentar nenhum fetch.
-     - **Se NÃO:** pule a Etapa 6 inteira — nenhuma infra de IA, nenhuma env var de LLM, nenhum microsserviço.
-     - **Se SIM:** faça as perguntas de follow-up abaixo.
-   - **(Só se for incluir o agente) Perguntas de follow-up:**
-     - **Modo de deploy do agente:** acoplado ao backend Node do próprio consumidor (via `initDesignAgent()`) ou microsserviço Node isolado (porta 4000)? Backend Python/PHP força o microsserviço.
-     - **Provider/model de LLM:** o agente exige `DESIGN_AGENT_LLM_PROVIDER` e `DESIGN_AGENT_LLM_MODEL` no ambiente do agente — o módulo não escolhe sozinho. Confirme que o usuário tem essas credenciais.
-     - **Persistência do agente:** precisa de `DATABASE_URL` (histórico de conversa/temas). Confirme o banco.
-   - **Banco de dados da UI (sempre, com ou sem agente):** o Design Engine persiste temas via `setupUIDatabase(connectionString)`. Suporta **Postgres** (`postgresql://...`) e **SQLite** (caminho de arquivo, ex.: `./database.sqlite`, ou `:memory:`) — o dialeto é detectado automaticamente pela própria connection string, sem parâmetro extra. Confirme com o usuário qual banco o projeto já usa e passe a connection string correspondente (ver `references/examples.md`). Se o projeto não tiver banco algum, é aceitável pular esta etapa — o Design Engine funciona sem persistência (fica em memória/local-storage).
+   - **Banco de dados da UI:** o Design Engine persiste temas via `setupUIDatabase(connectionString)`. Suporta **Postgres** (`postgresql://...`) e **SQLite** (caminho de arquivo, ex.: `./database.sqlite`, ou `:memory:`) — o dialeto é detectado automaticamente pela própria connection string, sem parâmetro extra. Confirme com o usuário qual banco o projeto já usa e passe a connection string correspondente (ver `references/examples.md`). Se o projeto não tiver banco algum, é aceitável pular esta etapa — o Design Engine funciona sem persistência (fica em memória/local-storage).
 2. **Instalação de Dependências**
    - **Ação:** Rode `npm install @sarak/lib-ui-core` (github install: `npm install github:Lib-Sarak/Sarak-Lib-UI-Core`) — depois instale TODAS as `peerDependencies` na mesma tacada, mesmo as que parecerem opcionais (a lib as usa internamente em componentes resolvíveis via manifesto; faltar uma quebra silenciosamente só quando aquele componente específico é usado):
      ```bash
@@ -77,17 +68,7 @@ Skill responsável pela instalação plug-and-play do Motor Declarativo (Sarak-L
    - **Feedback continua zero-config:** toasts/modais/drawers vão para portal em `document.body` e recebem a classe de escopo automaticamente — nada a fazer.
    - **Verificação obrigatória antes de declarar pronto:** abra a página do host e confira, nesta ordem: (1) o front existente está visualmente IDÊNTICO ao de antes (títulos, botões, espaçamentos); (2) o título da aba não mudou; (3) dentro da ilha os componentes Sarak estão estilizados (não "crus"); (4) um `trigger_toast` do manifesto renderiza estilizado. Se (3) falhar, quase sempre é o import da Etapa 5-B faltando ou o `dist/sarak.css` importado por engano.
 
-6. **Integração do Design Agent (SÓ se o usuário optou por incluir na Etapa 1)**
-   - Se o usuário respondeu "não" na Etapa 1, **NÃO execute esta etapa** — pule direto para a Etapa 7.
-   - A Sarak nunca chama rede diretamente (Spec 08 §6.2) — o chat (`DesignAgentChatCard`) só funciona se o consumidor injetar `options.designAgent.sendPrompt` no `SarakUIProvider`. Sem isso, o card mostra "Não configurado" e não tenta nenhum fetch.
-   - **Ação:** Implemente `sendPrompt: (input: DesignAgentPromptInput) => Promise<DesignAgentPromptResult>` (tipos exportados por `@sarak/lib-ui-core`) chamando o backend `agent-design-operator` a partir do SEU servidor (nunca do browser direto, para não expor credenciais):
-     - **Node.js (Next.js/Express/Fastify):** `initDesignAgent()` (de `agent-design-operator`) retorna um Router Express já pronto (inicializa banco + carrega o catálogo). Acople-o na sua API e chame essa rota interna no `sendPrompt`.
-     - **Python (FastAPI/Django) ou PHP:** rode o agente como microsserviço Node isolado (porta 4000); o `sendPrompt` (no seu backend, não no browser) faz a chamada HTTP para ele.
-   - **⚠️ O `sendPrompt` é um ADAPTADOR — os formatos do agente e do Provider NÃO são iguais, é obrigatório traduzir os dois lados:**
-     - **Entrada:** a UI te entrega `{ prompt, draftTokens }` (`DesignAgentPromptInput`). A rota `POST /prompt` do agente espera `{ prompt, session_id, mode?, base_theme? }` — **você** gera o `session_id` (por usuário/sessão). `mode: 'create' | 'patch'` e `base_theme` são opcionais e definidos no seu backend (não vêm no tipo público): use `mode: 'patch'` + `base_theme` (o tema atual completo) quando for alteração de um tema já existente; senão omita (default `create`).
-     - **Saída:** a rota devolve `{ success, message, payload? }`. Mapeie para o contrato do Provider: `message` → `message`, **`payload` → `themePatch`** (nomes diferentes!). A `message` já vem pronta em linguagem natural — incluindo o aviso de fatias que não aplicaram — repasse como está. (O contrato público também aceita `componentPresets?`, hoje não emitido pela rota — deixe indefinido.)
-   - **Ação:** Injete o resultado no Provider: `<SarakUIProvider options={{ designAgent: { sendPrompt } }}>`.
-7. **Instalação das Skills de Consumo no repositório consumidor (OBRIGATÓRIA)**
+6. **Instalação das Skills de Consumo no repositório consumidor (OBRIGATÓRIA)**
    - O pacote embarca as próprias instruções: `node_modules/@sarak/lib-ui-core/.agents/skills/`. O agente do consumidor NÃO descobre skills dentro de `node_modules` — por isso esta etapa as instala no repositório dele.
    - **Ação:** Copie estas 2 skills para o `.agents/skills/` do consumidor (e espelhe em `.claude/skills/` se a estrutura existir):
      - `ui-integra-escrever-manifesto` — como compor telas 100% JSON (impede o erro clássico de escrever front fora do manifesto).
@@ -95,7 +76,7 @@ Skill responsável pela instalação plug-and-play do Motor Declarativo (Sarak-L
    - Exemplo (PowerShell): `Copy-Item node_modules/@sarak/lib-ui-core/.agents/skills/ui-integra-escrever-manifesto .agents/skills/ -Recurse -Force` (idem para a outra).
    - Se o consumidor tiver hook de auto-indexação do `.agents`, rode-o; senão, adicione as 2 entradas ao índice manualmente.
    - **Regra de atualização:** ao atualizar a lib (`npm update`), re-copie as skills — elas evoluem junto com o catálogo.
-8. **Handoff (Ponto de Transição)**
+7. **Handoff (Ponto de Transição)**
    - **Ação:** Após a infraestrutura base estar acoplada e renderizando com sucesso o manifesto do template, informe ao usuário que a integração arquitetural terminou.
    - **Próximo Passo Obrigatório:** Oriente o usuário (ou você mesmo no próximo turno) a invocar a skill **`ui-integra-escrever-manifesto`** (agora instalada no repositório do consumidor) para construir as telas — ela usa o catálogo GERADO `node_modules/@sarak/lib-ui-core/docs/manifest-catalog.md` como fonte da verdade de `type`s e props.
 

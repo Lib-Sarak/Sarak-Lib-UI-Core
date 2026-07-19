@@ -2,7 +2,7 @@
 tipo: "spec"
 titulo: "Auditoria de Cobertura de Componentes (Átomos, Funcionais e Layout)"
 dominio: "Design Engine (Sarak UI Core)"
-status: "🟡 Em Progresso"
+status: "⚫ Cancelada (plan/23)"
 prioridade: "Alta"
 tags: ["spec", "ai-agent", "design-system", "auditoria", "cobertura", "paridade"]
 relacionados: ["06-presets-engine", "03-padrao-e-taxonomia-biblioteca-atomica", "07-agente-llm-design-e-expansao-estrutural", "02-mapeamento-semantico-rag-catalogo"]

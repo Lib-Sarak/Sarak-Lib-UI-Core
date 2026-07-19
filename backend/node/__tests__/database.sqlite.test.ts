@@ -22,7 +22,7 @@ afterEach(() => {
 });
 
 describe('setupUIDatabase (SQLite)', () => {
-    it('cria as 4 tabelas do schema ui_core num arquivo', async () => {
+    it('cria as 2 tabelas do schema ui_core num arquivo', async () => {
         const path = tmpPath('.tmp-setup-test.sqlite');
         await setupUIDatabase(path);
 
@@ -32,8 +32,6 @@ describe('setupUIDatabase (SQLite)', () => {
 
         expect(tables).toContain('ui_core_custom_themes');
         expect(tables).toContain('ui_core_system_branding');
-        expect(tables).toContain('ui_core_design_agent_conversations');
-        expect(tables).toContain('ui_core_design_agent_artifacts');
     });
 
     it('self-healing roda duas vezes seguidas sem quebrar', async () => {

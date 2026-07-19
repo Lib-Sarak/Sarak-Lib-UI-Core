@@ -9,13 +9,11 @@ import { SarakDesignState } from '../../../../core/Provider/types';
 interface CardsCatalogProps {
     onApplyPreset: (presetDesign: Partial<SarakDesignState>, isPartial?: boolean) => void;
     currentMode: string;
-    /** Sugestões geradas pelo Design Agent nesta sessão (nunca persistidas). */
-    sessionPresets?: ComponentPreset[];
 }
 
-export const CardsCatalog: React.FC<CardsCatalogProps> = ({ onApplyPreset, sessionPresets = [] }) => {
+export const CardsCatalog: React.FC<CardsCatalogProps> = ({ onApplyPreset }) => {
     const [activeTab, setActiveTab] = useState<'curated' | 'textures'>('curated');
-    const presets = activeTab === 'curated' ? [...sessionPresets, ...CARD_PRESETS] : CARD_TEXTURE_PRESETS;
+    const presets = activeTab === 'curated' ? CARD_PRESETS : CARD_TEXTURE_PRESETS;
 
     return (
         <div className="flex flex-col gap-6">

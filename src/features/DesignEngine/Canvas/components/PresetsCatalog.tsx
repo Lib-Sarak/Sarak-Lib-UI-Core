@@ -11,8 +11,6 @@ import { InputsCatalog } from './InputsCatalog';
 import { PresetCard } from './PresetCard';
 
 import { SarakDesignState, SarakUIContextType } from '../../../../core/Provider/types';
-import { ComponentPreset } from '../../../../core/Design/presets/components/cards';
-import { AgentPresetEntry } from '../hooks/useAgentGeneratedPresets';
 
 interface PresetsCatalogProps {
     onApplyPreset: (presetDesign: Partial<SarakDesignState>, isPartial?: boolean) => void;
@@ -20,10 +18,6 @@ interface PresetsCatalogProps {
     currentMode: string;
     /** Contexto do Provider — usado para ler `allThemes` (GLOBAL_THEMES + custom_themes do banco). */
     sarak?: SarakUIContextType;
-    /** Temas sugeridos pelo Design Agent nesta sessão (nunca persistidos — Preset 2). */
-    sessionThemes?: AgentPresetEntry[];
-    /** Presets por componente sugeridos pelo Design Agent nesta sessão, por categoria. */
-    sessionPresetsByCategory?: Record<string, ComponentPreset[]>;
 }
 
 type PresetTab = 'globals' | 'cards' | 'typography' | 'atmosphere' | 'buttons' | 'inputs';
@@ -42,15 +36,12 @@ export const PresetsCatalog: React.FC<PresetsCatalogProps> = ({
     onApplyFullTheme,
     currentMode,
     sarak,
-    sessionThemes = [],
-    sessionPresetsByCategory = {},
 }) => {
     const [activeTab, setActiveTab] = useState<PresetTab>('globals');
 
     // `sarak.allThemes` já é GLOBAL_THEMES + custom_themes do banco (SarakUIProvider.tsx).
     // Sem `sarak`, cai para o import estático (uso isolado/testes).
-    const baseThemes = (sarak?.allThemes as ThemePreset[] | undefined) ?? GLOBAL_THEMES;
-    const globalThemes = [...sessionThemes, ...baseThemes] as unknown as ThemePreset[];
+    const globalThemes = (sarak?.allThemes as ThemePreset[] | undefined) ?? GLOBAL_THEMES;
 
     return (
         <div className="w-full h-full flex flex-col relative bg-theme-bg">
@@ -104,11 +95,11 @@ export const PresetsCatalog: React.FC<PresetsCatalogProps> = ({
                     </div>
                 )}
 
-                {activeTab === 'cards' && <CardsCatalog onApplyPreset={onApplyPreset} currentMode={currentMode} sessionPresets={sessionPresetsByCategory.cards} />}
-                {activeTab === 'typography' && <TypographyCatalog onApplyPreset={onApplyPreset} currentMode={currentMode} sessionPresets={sessionPresetsByCategory.typography} />}
-                {activeTab === 'atmosphere' && <AtmosphereCatalog onApplyPreset={onApplyPreset} currentMode={currentMode} sessionPresets={sessionPresetsByCategory.atmosphere} />}
-                {activeTab === 'buttons' && <ButtonsCatalog onApplyPreset={onApplyPreset} currentMode={currentMode} sessionPresets={sessionPresetsByCategory.buttons} />}
-                {activeTab === 'inputs' && <InputsCatalog onApplyPreset={onApplyPreset} currentMode={currentMode} sessionPresets={sessionPresetsByCategory.inputs} />}
+                {activeTab === 'cards' && <CardsCatalog onApplyPreset={onApplyPreset} currentMode={currentMode} />}
+                {activeTab === 'typography' && <TypographyCatalog onApplyPreset={onApplyPreset} currentMode={currentMode} />}
+                {activeTab === 'atmosphere' && <AtmosphereCatalog onApplyPreset={onApplyPreset} currentMode={currentMode} />}
+                {activeTab === 'buttons' && <ButtonsCatalog onApplyPreset={onApplyPreset} currentMode={currentMode} />}
+                {activeTab === 'inputs' && <InputsCatalog onApplyPreset={onApplyPreset} currentMode={currentMode} />}
             </div>
         </div>
     );

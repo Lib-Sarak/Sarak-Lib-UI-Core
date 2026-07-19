@@ -85,7 +85,7 @@ O `SarakManifestRenderer` **executa um manifesto JSON autorado por usuário ou I
 ### 6.2 O que o importador DEVE prover (do lado do consumidor)
 - **Autenticação e segredos:** a Sarak **nunca** embute tokens nem chama a rede diretamente. O `networkInterceptor` é o canal de rede do `SarakManifestRenderer` — o importador injeta auth (headers/cookies), faz a chamada e devolve os dados.
 - **Roteamento:** o `routerInterceptor`/`NavigateFn` é responsabilidade do importador (ex.: o router do Next.js). A Sarak reage à rota, não controla a URL.
-- **Design Agent (`SarakUIOptions.designAgent`):** o chat de IA do Design Engine (`DesignAgentChatCard`) segue a mesma regra — é proibido `fetch`/URL fixa embutida no componente. O importador injeta `options.designAgent.sendPrompt: (input: DesignAgentPromptInput) => Promise<DesignAgentPromptResult>` no `SarakUIProvider`; sem essa função configurada, o card informa "Não configurado" e não tenta rede nenhuma. `sendPrompt` roda no servidor do consumidor (nunca no browser direto) e é quem decide como falar com o backend `agent-design-operator` (acoplado na mesma API Node ou como microsserviço à parte).
+- **Design Agent — removido (Spec 23):** o chat de IA do Design Engine (`options.designAgent`/`DesignAgentChatCard`/`agent-design-operator`) saiu da biblioteca; deixou de ser contrato público.
 - **Validação de origem do manifesto:** garantir que o JSON vem de uma fonte legítima e aplicar CSP/CORS no nível do app — a sanitização da Sarak é defesa em profundidade, não substitui o controle de origem.
 
 ### 6.2-b Autenticação é porta (Spec 20)

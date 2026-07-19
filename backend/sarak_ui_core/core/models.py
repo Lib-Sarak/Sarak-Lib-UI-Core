@@ -92,30 +92,3 @@ class CustomTheme(Base):
                 **self.legacy_and_runtime
             }
         }
-
-class DesignAgentConversation(Base):
-    """
-    Tabela para armazenar o histórico de conversas do Agente de Design.
-    """
-    __tablename__ = "sarak_ui_design_agent_conversations"
-    __table_args__ = {"schema": "ui_core"}
-
-    id = Column(UUID(as_uuid=True), primary_key=True, default=uuid.uuid4, index=True)
-    session_id = Column(String(255), nullable=False, index=True)
-    role = Column(String(50), nullable=False) # 'user', 'assistant', 'system'
-    from sqlalchemy.dialects.postgresql import TEXT
-    content = Column(TEXT, nullable=False)
-    created_at = Column(DateTime(timezone=True), server_default=func.now())
-
-class DesignAgentArtifact(Base):
-    """
-    Tabela para armazenar os payloads validados (temas/presets) gerados pelo Agente.
-    """
-    __tablename__ = "sarak_ui_design_agent_artifacts"
-    __table_args__ = {"schema": "ui_core"}
-
-    id = Column(UUID(as_uuid=True), primary_key=True, default=uuid.uuid4, index=True)
-    session_id = Column(String(255), nullable=False, index=True)
-    artifact_type = Column(String(50), nullable=False) # 'theme', 'preset'
-    payload = Column(MutableDict.as_mutable(JSON), nullable=False)
-    created_at = Column(DateTime(timezone=True), server_default=func.now())

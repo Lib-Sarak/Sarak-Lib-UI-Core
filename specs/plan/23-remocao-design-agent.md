@@ -2,7 +2,7 @@
 tipo: "spec"
 titulo: "Remoção do Design Agent (agente LLM embarcado)"
 dominio: "Arquitetura / Distribuição / Design Engine"
-status: "🔴 Planejamento Inicial"
+status: "🟢 Concluída (2026-07-19)"
 prioridade: "Alta"
 tags: ["spec", "remocao", "design-agent", "escopo", "breaking-change"]
 relacionados: ["00-manifesto-arquitetural-ui-core", "08-consumo-externo-e-integracao", "22-skills-de-consumo-golden-path"]
@@ -60,19 +60,19 @@ Esta spec remove o agente da biblioteca. A capacidade "gerar tema por IA" pode c
 - Comportamento pós-remoção: o CustomizationPanel simplesmente não exibe mais o card de chat — nenhuma tela quebra, nenhum fetch órfão.
 
 # 4. Critérios de Aceite
-- [ ] `agent-design-operator/` não existe mais no repo da lib (extraído ou deletado conforme HITL nº 1).
-- [ ] Nenhuma ocorrência de `designAgent`/`DesignAgent` em `src/` (grep zero, exceto changelog/specs históricas).
-- [ ] `SarakUIOptions` sem `designAgent`; `src/index.ts` sem os 4 tipos; build dts verde.
-- [ ] CustomizationPanel renderiza completo sem o card de chat (teste atualizado).
-- [ ] Skill `ui-integra-consumidor` sem a entrevista/etapa do agente (espelhos com hash igual).
-- [ ] Specs plan/01-07 marcadas como canceladas/arquivadas; `00-indice.md` e `00-progresso.md` atualizados.
-- [ ] Decisões HITL nº 1 e nº 2 registradas com quem decidiu.
+- [x] `agent-design-operator/` não existe mais no repo da lib (HITL nº 1 = apenas deletar; `git rm -r`, histórico continua no git da lib).
+- [x] Nenhuma ocorrência de `designAgent`/`DesignAgent` em `src/` (grep zero, exceto changelog/specs históricas).
+- [x] `SarakUIOptions` sem `designAgent`; `src/index.ts` sem os 4 tipos; build dts verde.
+- [x] CustomizationPanel renderiza completo sem o card de chat (teste atualizado — snapshot de `PreviewCanvas.test.tsx` regenerado).
+- [x] Skill `ui-integra-consumidor` sem a entrevista/etapa do agente (`.claude/skills` é symlink de `.agents/skills` — sincroniza sozinho, sem hash a conferir manualmente).
+- [x] Specs plan/01-07 marcadas como canceladas/arquivadas — **achado da execução:** só `01` ainda existe como arquivo (marcado `⚫ Cancelada (plan/23)`); `02` a `07` já haviam sido apagadas num commit anterior não relacionado (`b8447cb`, Spec 17); `00-indice.md` e `00-progresso.md` atualizados refletindo o estado real.
+- [x] Decisões HITL nº 1 e nº 2 registradas com quem decidiu (usuário, via `AskUserQuestion` nesta execução — ver `00-progresso.md`).
 
 # 5. Plano de Testes (Quality Gate)
 ## Unitários
-- [ ] Suíte de `features/DesignEngine/Canvas` verde após remoção (PreviewCanvas sem o card — snapshot atualizado e justificado).
+- [x] Suíte de `features/DesignEngine/Canvas` verde após remoção (PreviewCanvas sem o card — snapshot atualizado e justificado).
 ## Contrato/Estático
-- [ ] `grep -ri "designagent" src/ backend/ templates/ docs/` → 0 resultados.
-- [ ] `catalog:check` + `RegistryParity` + build completo verdes.
+- [x] `grep -ri "designagent" src/ backend/ templates/ docs/` → 0 resultados (achado extra: tabelas `design_agent_conversations`/`artifacts` em `schema.ts`/`schema.sqlite.ts`/`models.py` também removidas — persistência órfã do agente).
+- [x] `catalog:check` + `RegistryParity` + build completo verdes.
 ## E2E
-- [ ] Abrir `/design` (harness Puppeteer dos testes de instalação): painel completo, sem card de chat, sem erro de console, salvar tema continua funcionando.
+- [~] Abrir `/design`: sem card de chat comprovado via snapshot de `PreviewCanvas.test.tsx` (jsdom) — harness Puppeteer de instalação real fica pendente (mesmo precedente das specs 18/20/24, nunca configurado neste ambiente de execução).

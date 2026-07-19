@@ -175,62 +175,6 @@ declare function createThemesApiHandler(options: DesignApiOptions): {
     ACTIVATE(req: Request, themeId: string): Promise<Response>;
 };
 
-/**
- * Sarak Industrial Design Schema (v11.0)
- *
- * Define o contrato para mapeamento de 100% das funcionalidades e componentes.
- */
-type TokenValueType = 'number' | 'color' | 'string' | 'boolean' | 'select' | 'slider' | 'font' | 'text' | 'image' | 'file';
-type ResponsiveValue<T> = {
-    desk: T;
-    tab: T;
-    mob: T;
-};
-/** Espaço de valores que um token pode assumir (espelha SarakDesignTokens). */
-type SarakTokenValue = string | number | boolean | ResponsiveValue<string | number>;
-
-interface DesignCatalogToken {
-    id: string;
-    label: string;
-    type: TokenValueType;
-    description?: string;
-    axis?: 'color' | 'geometry' | 'elevation' | 'texture' | 'density' | 'motion';
-    options?: {
-        value?: string;
-        id?: string;
-        label: string;
-    }[];
-    min?: number;
-    max?: number;
-}
-interface DesignScaffoldToken extends DesignCatalogToken {
-    /** id do `ComponentSchema` de origem (ex: 'buttons', 'cards') — a "família" do token. */
-    schemaId: string;
-    /** Valor padrão real do gabarito (mesma fonte de `getScaffold()`), usado no modo `create`. */
-    defaultValue: SarakTokenValue;
-}
-/**
- * Catálogo real de tokens configuráveis (Schema/MasterMap — mesma SSOT da paridade
- * 1:1:1:1:1), para consumo por backends Node externos (ex: agent-design-operator)
- * que precisam garantir que um payload gerado por IA só preenche valores de chaves
- * que já existem no sistema — nunca inventa chave nova (Spec 08 §4, Spec 09).
- *
- * A partir da Spec 02, também expõe `label`/`description`/`axis` — insumo do
- * pipeline de indexação semântica (RAG) do Design Agent, que precisa do texto
- * humano de cada token para gerar embeddings, não só o formato do valor.
- */
-declare function getDesignCatalog(): DesignCatalogToken[];
-/**
- * Gabarito completo do tema (Spec 02, revisão pós-incidente de produção) — mesma
- * SSOT de `getScaffold()` (`src/core/Design/master-map.ts`), mas com a metadata
- * humana (`label`/`description`/`axis`) e o `schemaId` (família de origem) que o
- * pipeline de preenchimento fatiado do `agent-design-operator` precisa pra
- * agrupar as ~416 chaves em fatias por família sem duplicar a lista em nenhum
- * outro lugar (paridade 1:1:1:1:1 — a família é sempre lida de `MASTER_DESIGN_MAP`,
- * nunca hardcoded no consumidor).
- */
-declare function getDesignScaffold(): DesignScaffoldToken[];
-
 interface PostgresStorageAdapterOptions {
     connectionString: string;
     schema?: string;
@@ -243,4 +187,4 @@ interface SqliteStorageAdapterOptions {
 }
 declare function createSqliteStorageAdapter(options: SqliteStorageAdapterOptions): UIStorageAdapter;
 
-export { type BrandingApiOptions, type DesignApiOptions, type DesignCatalogToken, type DesignScaffoldToken, type PostgresStorageAdapterOptions, type SarakUIMiddlewareOptions, type SetupUIDatabaseOptions, type SqliteStorageAdapterOptions, type UIBranding, type UIPersistenceOptions, type UIStorageAdapter, type UIStorageScope, type UITheme, type UIThemeCreateInput, type UIThemeUpdateInput, createBrandingApiHandler, createDesignApiHandler, createPostgresStorageAdapter, createSarakUIExpressMiddleware, createSqliteStorageAdapter, createThemesApiHandler, getDesignCatalog, getDesignScaffold, setupUIDatabase };
+export { type BrandingApiOptions, type DesignApiOptions, type PostgresStorageAdapterOptions, type SarakUIMiddlewareOptions, type SetupUIDatabaseOptions, type SqliteStorageAdapterOptions, type UIBranding, type UIPersistenceOptions, type UIStorageAdapter, type UIStorageScope, type UITheme, type UIThemeCreateInput, type UIThemeUpdateInput, createBrandingApiHandler, createDesignApiHandler, createPostgresStorageAdapter, createSarakUIExpressMiddleware, createSqliteStorageAdapter, createThemesApiHandler, setupUIDatabase };

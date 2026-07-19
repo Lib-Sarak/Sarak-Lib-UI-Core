@@ -7,14 +7,6 @@
 
 // Theme Engine and Constants
 export { default as SarakUIProvider, useSarakUI } from './core/Provider/SarakUIProvider';
-// Contrato do Design Agent (Spec 08 §6.2) — o consumidor implementa `sendPrompt` e injeta
-// via `SarakUIOptions.designAgent`; a lib nunca chama rede diretamente.
-export type {
-    DesignAgentPromptInput,
-    DesignAgentPromptResult,
-    DesignAgentComponentPreset,
-    DesignAgentSendPrompt,
-} from './core/Provider/types';
 // Modo de consumo (Spec 24): `app` (default) vs `embedded` (ilha sobre front existente).
 export type { SarakUIMode } from './core/Provider/types';
 export { SARAK_SCOPE_CLASS, SARAK_MODE_ATTRIBUTE } from './core/Provider/scope';
