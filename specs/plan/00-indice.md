@@ -53,7 +53,7 @@
 
 ### Fase 4 — Selo da Onda (teste de aceitação em consumidor real)
 
-9. [ ] **[25 - Limpeza dos Testes Práticos](./25-limpeza-testes-praticos.md)** — remoção COMPLETA dos artefatos da Sarak-UI do consumidor de teste `Earendel/ERP` (frontend improvisado, adapter manual, skill copiada), preservando 100% do negócio do ERP; 3 decisões HITL (.env / schema remoto / commit). Prompt **P9**.
+9. [x] **[25 - Limpeza dos Testes Práticos](./25-limpeza-testes-praticos.md)** — remoção COMPLETA dos artefatos da Sarak-UI do consumidor de teste `Earendel/ERP` (frontend improvisado, adapter manual, skill copiada), preservando 100% do negócio do ERP; 3 decisões HITL (.env / schema remoto / commit). Prompt **P9**. ✅ **Concluída (2026-07-20).**
 10. [ ] **[26 - Instalação Teste (Selo da Onda)](./26-instalacao-teste.md)** — importar a Sarak-UI no ERP limpo com o objetivo de **TESTAR a instalação, não só instalar**: agente EXTERNO sem contexto, só caminho oficial (`init` + skills + catálogo), **contornos proibidos** (obstáculo se REGISTRA, não se contorna), matriz de medição **M1-M10** com evidências + `RELATORIO-INSTALACAO-UI.md` com veredito 0-10. Selo concedido se M1-M10 = PASS; senão, os achados viram a próxima rodada de correção e o teste se repete. Prompt **P10**.
 
 ---

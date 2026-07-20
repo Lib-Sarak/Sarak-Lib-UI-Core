@@ -2,7 +2,7 @@
 tipo: "spec"
 titulo: "Limpeza dos Testes Práticos (remoção completa do módulo UI do ERP)"
 dominio: "Operação em consumidor de teste / Preparação do Selo da Onda"
-status: "🔴 A Implementar"
+status: "🟢 Concluída"
 prioridade: "Alta"
 tags: ["spec", "limpeza", "teste-pratico", "erp", "selo-da-onda"]
 relacionados: ["21-scaffolder-init", "22-skills-de-consumo-golden-path", "08-consumo-externo-e-integracao"]
@@ -42,13 +42,13 @@ O sistema `C:\Users\Igor\Desktop\Sarak\X - Trabalho\Code\Earendel\ERP` foi usado
 5. Registrar no `00-progresso.md` da LIB (este repositório) a entrada da limpeza: o que foi removido, decisões HITL tomadas, e que o ERP está pronto para o Selo da Onda (prompt P10).
 
 # 4. Critérios de Aceite
-- [ ] `frontend/` não existe mais no ERP; grep por `@sarak` na raiz (fora de `.git`) → 0 código vivo.
-- [ ] Skills de negócio do ERP intactas; APENAS `ui-integra-escrever-manifesto` removida de `.agents/skills` (e `.claude/skills`, se existia).
-- [ ] Nenhum arquivo da lista 2.2 modificado (git status limpo fora das remoções).
-- [ ] 3 decisões HITL registradas (env / banco remoto / commit) com a escolha do usuário.
-- [ ] Entrada no `00-progresso.md` da lib + este frontmatter atualizado para 🟢.
+- [x] `frontend/` não existe mais no ERP; grep por `@sarak` na raiz (fora de `.git`) → 0 código vivo (grep restrito a `@sarak/lib-ui-core|SarakManifestRenderer|SarakUIProvider|manifest-catalog` → zero; ocorrências genéricas de "Sarak" remanescentes são o nome do ecossistema/empresa, não da lib UI).
+- [x] Skills de negócio do ERP intactas; APENAS `ui-integra-escrever-manifesto` removida de `.agents/skills` (`.claude/skills` não existia no ERP — nada a remover ali).
+- [x] Nenhum arquivo da lista 2.2 modificado (git status limpo fora das remoções + o achado extra do inventário vivo, `node_modules/` da raiz, HITL-aprovado).
+- [x] 3 decisões HITL registradas (env: remover só `DATABASE_URL` / banco remoto: não dropar agora / commit: usuário commita) com a escolha do usuário.
+- [x] Entrada no `00-progresso.md` da lib + este frontmatter atualizado para 🟢.
 
 # 5. Plano de Testes (Quality Gate)
-- [ ] `git status` do ERP contém somente deleções dos paths de 2.1 (+ eventuais linhas do `.env` autorizadas).
-- [ ] Grep de resíduo (passo 3.4) documentado no relatório com saída literal.
-- [ ] Scripts de negócio sobrevivem: `python extract_layout.py --help` (ou execução equivalente inócua) não quebra por ausência de nada removido.
+- [x] `git status` do ERP contém somente deleções dos paths de 2.1 (+ a linha `DATABASE_URL` do `.env`, autorizada).
+- [x] Grep de resíduo (passo 3.4) documentado no relatório com saída literal (ver `00-progresso.md`, entrada 2026-07-20).
+- [x] Scripts de negócio sobrevivem: `python extract_layout.py` executou sem quebrar por ausência de nada removido.
