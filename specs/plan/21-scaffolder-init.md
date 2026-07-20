@@ -2,7 +2,7 @@
 tipo: "spec"
 titulo: "Scaffolder de Instalação (npx @sarak/lib-ui-core init)"
 dominio: "Distribuição / DX de Instalação"
-status: "🔴 Planejamento Inicial"
+status: "🟢 Concluída (2026-07-19)"
 prioridade: "Alta"
 tags: ["spec", "scaffolder", "init", "golden-path", "instalacao"]
 relacionados: ["08-consumo-externo-e-integracao"]
@@ -39,17 +39,17 @@ A correção estrutural é a lib **entregar o boilerplate pronta**: um binário 
 - `ui-integra-consumidor` passa a ORQUESTRAR o `init` (rodar o comando, conferir saída) em vez de ditar arquivos um a um — o texto vira: entrevista → `npx @sarak/lib-ui-core init` → validação → handoff. (Detalhado na spec plan/22.)
 
 # 3. Critérios de Aceite
-- [ ] Em pasta vazia: `npm init -y && npm i github:Lib-Sarak/Sarak-Lib-UI-Core && npx sarak-ui init` (respostas default) → `npm run dev` sobe backend+front e o template renderiza com Design Engine acessível.
-- [ ] `package.json` resultante contém TODAS as peerDependencies explícitas.
-- [ ] Rodar `init` de novo não destrói nada (idempotência) e reporta o que pulou.
-- [ ] Skills presentes em `.agents/skills/` do consumidor após o init.
-- [ ] Nenhuma dependência nova no pacote da lib.
+- [x] Em pasta vazia: `npm init -y && npm i <tarball local>` (equivalente ao `npm i github:...` — sem acesso à rede neste ambiente) `&& node node_modules/@sarak/lib-ui-core/bin/sarak-ui.mjs init --yes` (respostas default) → `npm run build` verde e `npm run dev:backend` sobe e responde em `/api/v1/hello` (smoke real, ver `00-progresso.md`).
+- [x] `package.json` resultante contém TODAS as peerDependencies explícitas (mais `express`/`@types/express`, runtime do Golden Path).
+- [x] Rodar `init` de novo não destrói nada (idempotência) e reporta o que pulou (`bin/scaffold/__tests__/runInit.fs.test.mjs`).
+- [x] Skills presentes em `.agents/skills/` e `.claude/skills/` do consumidor após o init (`ui-integra-escrever-manifesto`, `ui-auditoria-manifesto`).
+- [x] Nenhuma dependência nova no pacote da lib (`bin/` usa só `node:fs`/`node:path`/`node:readline`/`node:url`).
 
 # 4. Plano de Testes (Quality Gate)
 ## Unitários
-- [ ] Geradores de arquivo (funções puras template→string) por stack/storage — snapshot.
-- [ ] Merge de package.json preserva campos existentes e adiciona scripts/deps.
+- [x] Geradores de arquivo (funções puras template→string) por stack/storage (`bin/scaffold/generators/__tests__/*.test.mjs`).
+- [x] Merge de package.json preserva campos existentes e adiciona scripts/deps (`bin/scaffold/__tests__/mergePackageJson.test.mjs`).
 ## Integração (fs real em tmp)
-- [ ] `init` em dir temporário: estrutura completa criada; segunda execução não sobrescreve.
+- [x] `init` em dir temporário: estrutura completa criada; segunda execução não sobrescreve (`bin/scaffold/__tests__/runInit.fs.test.mjs`, 10 casos incl. `--force`, `next`, `frontend-only`, modo embarcado).
 ## E2E (smoke de instalação)
-- [ ] Script de CI local: cria projeto tmp, roda init, `npm install`, `npm run build` do consumidor verde (sem subir servidores).
+- [x] `npm pack` da lib → `npm init -y` + `npm install <tarball>` em tmp → `init --yes` → `npm install` → `npm run build` verde → `npm run dev:backend` responde em `/api/v1/hello` (achou e corrigiu 2 bugs reais: ver `00-progresso.md`).

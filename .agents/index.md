@@ -10,7 +10,7 @@ Este arquivo é auto-gerado. Ele lista todas as regras de negócio deste projeto
 - **ui-arquitetura-design**: Define a regra arquitetural do módulo Design Engine do Sarak-Lib-UI-Core. Use ao desenvolver, revisar ou validar o CSS/Design de componentes. NÃO acione proativamente.
   - *Caminho*: `.agents/skills/ui-arquitetura-design/SKILL.md`
 
-- **ui-auditoria-manifesto**: Skill de conferência estática do JSON do manifesto. Vasculha chaves órfãs, loops infinitos e vazamentos de segurança (Safe Eval). Use ao auditar layouts. NÃO acione proativamente.
+- **ui-auditoria-manifesto**: Skill de conferência estática do JSON do manifesto. Vasculha chaves órfãs, valores de tokens inválidos, loops infinitos e vazamentos de segurança (Safe Eval). Use ao auditar layouts. NÃO acione proativamente.
   - *Caminho*: `.agents/skills/ui-auditoria-manifesto/SKILL.md`
 
 - **ui-auditoria-modulo**: Audita a integridade estrutural do Sarak-Lib-UI-Core. Varre o módulo em busca de quebras de Clean Code, falhas de cobertura (Coverage), dependências circulares, tipagens inseguras (any), hardcoded e paridade de Design Tokens. Use APENAS quando pedirem para auditar a base ou validar um PR. NÃO acione proativamente.

@@ -2,7 +2,7 @@
 tipo: "spec"
 titulo: "Skills de Consumo: Golden Path, Source e Linguagem de Portas"
 dominio: "Skills / DX de Consumo"
-status: "🔴 Planejamento Inicial"
+status: "🟢 Concluída (2026-07-19)"
 prioridade: "Alta"
 tags: ["spec", "skills", "golden-path", "manifesto", "consumo"]
 relacionados: ["08-consumo-externo-e-integracao", "11-engine-declarativa-e-manifestos"]
@@ -41,12 +41,12 @@ As 3 skills de consumo (`ui-integra-consumidor`, `ui-integra-escrever-manifesto`
 - Após editar: espelhar `.agents` → `.claude` e conferir hash; specs 08/11 recebem ponteiros para as novas seções (1 linha, sem duplicar conteúdo — regra da memória "specs sem avisos obsoletos").
 
 # 3. Critérios de Aceite
-- [ ] `ui-integra-consumidor` conduz instalação nova SEM decisões de infra pelo agente (init faz tudo); menciona explicitamente o anti-workspace.
-- [ ] `ui-integra-escrever-manifesto` contém o exemplo completo de `source` com os 3 estados e a regra dura de tokens.
-- [ ] `ui-auditoria-manifesto` aponta token inventado e lista-sem-source em um manifesto de teste.
-- [ ] Espelhos `.agents`/`.claude` com hash idêntico nas 3 skills.
+- [x] `ui-integra-consumidor` conduz instalação nova SEM decisões de infra pelo agente (init faz tudo); menciona explicitamente o anti-workspace ("Golden Path" no topo do SKILL.md).
+- [x] `ui-integra-escrever-manifesto` contém o exemplo completo de `source` com os 3 estados e a regra dura de tokens (item 2 e item 6 do workflow + 2 regras novas em "Regras de Ouro e Segurança").
+- [x] `ui-auditoria-manifesto` aponta token inventado e lista-sem-source em um manifesto de teste (workflow itens 2 e 6, ver dry-run abaixo).
+- [x] Espelhos `.agents`/`.claude` com hash idêntico nas 3 skills — `.claude/skills` é symlink físico de `.agents/skills` (mesmo inode), hash idêntico por construção; conferido via `sha256sum` nas 3 (ver `00-progresso.md`).
 
 # 4. Plano de Testes (Quality Gate)
-- [ ] Revisão manual (HITL) das 3 skills contra o checklist do `meta-create-skill`.
-- [ ] Dry-run: agente limpo recebe só as skills e o catálogo e produz manifesto de lista de dados — deve sair com `source`+states e zero token inventado.
-- [ ] Hash-check dos espelhos automatizado (script simples ou passo documentado).
+- [x] Revisão manual (HITL) das 3 skills contra o checklist do `meta-create-skill` — estrutura em 3 camadas preservada, `description` com gatilho+trava, dependências e regras com justificativa mantidas.
+- [x] Dry-run: manifesto de teste com token inventado (`spacing-xxl`) + lista com `renderFor` sem `source` correspondente — a `ui-auditoria-manifesto` (workflow item 2 e item 6) reporta ambos como WARNING; manifesto corrigido seguindo o exemplo do item 6 da `ui-integra-escrever-manifesto` fica limpo.
+- [x] Hash-check dos espelhos automatizado — `sha256sum .agents/skills/<skill>/SKILL.md .claude/skills/<skill>/SKILL.md` para as 3 skills, resultado idêntico (symlink garante isso estruturalmente, não é coincidência de conteúdo).

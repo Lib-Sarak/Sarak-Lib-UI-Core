@@ -27,6 +27,7 @@ O catálogo oficial de `type`s, props, ações, pipes e diretivas é **GERADO do
    - **Slots nomeados:** componentes com regiões ReactNode (ex.: `SarakAnalyticalPage` com `navBar`/`mainContent`/`sidePanel`, `SarakSplitPane` com `leftPane`/`rightPane`) são preenchidos via `"slots": { "nomeDaRegiao": { ...nó... } }` — cada slot vira a prop homônima.
 2. **Propriedades Visuais (Props)**
    - Estilo entra em `"props": {}` usando apenas tokens de design válidos (ex.: `"gap": "spacing-md"`). **Jamais** valores hardcoded (`15px`, `#FF0000`).
+   - **Regra dura de tokens:** use SOMENTE valores listados na seção **"Tokens e valores permitidos"** de `docs/manifest-catalog.md` (espaçamento `spacing-*`, variantes por componente, CSS vars públicas `--sarak-*`). Token/variant/var inventado (ex.: `--sarak-color-border`, `spacing-xs` fora do mapa, `variant: "h4"` que não existe) **não quebra a tela, mas também não aplica** — o resolutor emite `console.warn` e cai no fallback do Design Engine. Antes de escrever qualquer valor de `props`, confira-o contra o catálogo; nunca "invente por analogia" (foi assim que nasceram `--sarak-color-border`/`spacing-xxl`/`variant: h4`, todos inexistentes, num teste real de instalação).
 3. **App completo: `shell` + `routes` (Spec 33)**
    - Um app multi-página declara na raiz: `"shell": { "topbar": {...}, "sidebar": {...}, "content": "<slot-rotas>" }` e `"routes": { "/rota": { ...nó... } }`. O host injeta a rota ativa via prop `route` do Renderer; o shell NÃO remonta na troca de rota.
    - **Navegação pronta:** use `SarakShellNav` na sidebar — menu com grupos, marca e estado ativo, 100% dados:
@@ -55,7 +56,37 @@ O catálogo oficial de `type`s, props, ações, pipes e diretivas é **GERADO do
 6. **Data Binding & Pipes**
    - `"label": "Olá, {{user.name | capitalize}}!"` — pipes após `|` (lista oficial no catálogo). Fallback: `{{valor || 'padrão'}}`.
    - **Formulários:** `model: { "path": "form.campo" }` faz two-way binding; `validation: [...]` valida (erros aparecem após touch/submit); `form` agrupa o escopo.
-   - **Fonte de dados:** `source: { "endpoint": "/api/x" }` hidrata o estado antes de renderizar (passa pelo `networkInterceptor` do host).
+   - **Fonte de dados — lista auto-carregada é o padrão OBRIGATÓRIO (nunca "botão Carregar"):** `source: { "endpoint": "/api/x", "into": "chave" }` hidrata o estado ANTES de renderizar (passa pelo `networkInterceptor` do host) e expõe o ciclo `loading`/`empty`/`error` via `states` — sempre declare os 3, nunca deixe o usuário acionar a carga manualmente. Exemplo completo (lista de dados — o padrão para toda tela que lista algo vindo de API):
+     ```json
+     {
+       "type": "SarakFlex",
+       "props": { "direction": "column", "gap": "spacing-md" },
+       "source": {
+         "endpoint": "/api/contratos",
+         "method": "GET",
+         "into": "contratos",
+         "states": {
+           "loading": { "type": "SarakSkeleton", "props": { "shape": "text", "rows": 4 } },
+           "empty": { "type": "SarakDataEmpty", "props": { "message": "Nenhum contrato encontrado." } },
+           "error": {
+             "type": "SarakTypography",
+             "props": { "variant": "body", "color": "secondary", "content": "Não foi possível carregar os contratos." }
+           }
+         }
+       },
+       "children": [
+         {
+           "type": "SarakFlex",
+           "renderFor": { "source": "{{contratos}}" },
+           "props": { "direction": "column", "gap": "spacing-sm" },
+           "children": [
+             { "type": "SarakTypography", "props": { "variant": "body", "content": "{{item.nome}}" } }
+           ]
+         }
+       ]
+     }
+     ```
+     `into: "contratos"` deposita o resultado no DataStore; o `renderFor` consome exatamente essa chave. Os 3 nós de `states` são o que a Engine mostra durante cada fase — sem eles, a Engine usa um Skeleton/Fallback mínimo genérico (aceitável só em protótipo, nunca em tela final).
 7. **Eventos e Ações (Dispatcher)**
    - Interações são declaradas em `"actions": []` — **array plano**, nunca objeto com chaves de evento. A Engine decide o gatilho (`onClick` em botões, `onChange` em campos com `model`/componentes emissores).
    - Catálogo oficial de ações (gerado): `api_call`, `mutate_state`, `navigate`, `trigger_toast`, `open_modal`, `open_drawer`, `close_modal`, `close_drawer`, `close_overlay`.
@@ -76,6 +107,15 @@ O catálogo oficial de `type`s, props, ações, pipes e diretivas é **GERADO do
      ```json
      // ❌ ERRADO: "body" em vez de "params" — o Dispatcher nunca lê "body", a API recebe {} vazio
      "actions": [{ "type": "api_call", "payload": { "endpoint": "/api/save", "method": "POST", "body": "{{formState}}" } }]
+     ```
+     ```json
+     // ❌ ERRADO: botão "Carregar" + renderIf manual em vez de `source` com states — o padrão
+     // OBRIGATÓRIO para listas é carga automática (item 6), nunca um clique para popular a tela.
+     {
+       "type": "SarakButton",
+       "props": { "children": "Carregar contratos" },
+       "actions": [{ "type": "api_call", "payload": { "endpoint": "/api/contratos", "into": "contratos" } }]
+     }
      ```
 8. **Resiliência e persistência**
    - `onError: [...]` — cadeia disparada quando uma ação falha; `fallbackErrorUI` na raiz — tela de recuperação global (Spec 27).
@@ -102,6 +142,8 @@ O catálogo oficial de `type`s, props, ações, pipes e diretivas é **GERADO do
 - **Faltou componente? O caminho é a LIB, nunca o consumidor:** se a tela pede um `type` que não existe no catálogo, NÃO escreva React local — a demanda vai para a Sarak-Lib-UI-Core via skill `ui-novo-componente` (o gate de paridade garante que ele nasce manifestável). Para componente de negócio específico do consumidor (exceção rara e justificada), use `registerComponent(type, Componente)` da lib e siga renderizando pelo motor.
 - **Isolamento de Escopo (No-Eval):** expressões `{{ }}` rodam em ambiente restrito. **Nunca** tente acessar `window`, `document` ou funções globais no JSON.
 - **Catálogo primeiro:** antes de entregar a tela, confira cada `type` e prop contra `docs/manifest-catalog.md`; depois valide com a skill `ui-auditoria-manifesto`.
+- **Só tokens do catálogo (regra dura, item 2):** todo valor de espaçamento/variant/CSS var vem da seção "Tokens e valores permitidos" — nunca por analogia ("parece que existe `spacing-xxl`"). Um valor fora da lista não quebra a build; degrada em silêncio (warn + fallback), o que é pior — a tela "funciona" com o token errado sem avisar visualmente.
+- **Lista de dados sempre com `source`+`states` (regra dura, item 6):** nenhuma tela de listagem nasce com botão "Carregar"/"Buscar" manual — carga automática com os 3 estados é o único padrão aceito para telas finais.
 
 ## Referências
 - `docs/manifest-catalog.md` / `docs/manifest-catalog.json` — catálogo GERADO (types, props, ações, pipes, diretivas).

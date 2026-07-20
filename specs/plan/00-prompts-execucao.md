@@ -135,3 +135,54 @@ Parte 2 (spec 22): atualizar as 3 skills — ui-integra-consumidor orquestra o i
 
 Ao terminar: smoke do init verde; `npm run build` da lib verde; dry-run descrito na spec 22 (agente limpo + skills + catálogo → manifesto com source/states e zero token inventado); `run_audit.mjs` 0 falhas; frontmatter + checkboxes + UMA entrada no progresso cobrindo as duas specs.
 ```
+
+
+---
+
+## P9 — Spec 25: Limpeza dos Testes Práticos (remoção do módulo UI do ERP)
+
+```
+Execute a spec `specs/plan/25-limpeza-testes-praticos.md` da Sarak-Lib-UI-Core.
+
+Preparação obrigatória, nesta ordem: (1) leia `specs/plan/00-indice.md` e `specs/plan/00-progresso.md` da lib; (2) leia a spec 25 INTEIRA — ela contém o inventário exato do que remover e do que é PROIBIDO tocar no repositório-alvo `C:\Users\Igor\Desktop\Sarak\X - Trabalho\Code\Earendel\ERP`.
+
+Regras inegociáveis: esta operação REMOVE artefatos da Sarak-UI de um consumidor de teste — nada do NEGÓCIO do ERP (Modulos/, specs/, scripts Python, SQLs de negócio, .env, skills de negócio em .agents/) pode ser modificado. Faça o inventário VIVO (grep por "sarak" fora de node_modules/.git) antes de deletar qualquer coisa e compare com a tabela 2.1 da spec. Resolva as 3 decisões HITL da seção 2.3 com o usuário ANTES de agir (linhas do .env; limpeza do schema ui_core no Supabase remoto; quem faz o commit).
+
+Ao terminar: verificação de integridade da seção 3.4 (git status só com as remoções esperadas + grep de resíduo com saída literal no relatório), entrada no `00-progresso.md` da LIB, frontmatter da spec 🟢. NÃO commite sem autorização explícita.
+```
+
+---
+
+## P10 — Spec 26: Instalação Teste / SELO DA ONDA (AGENTE EXTERNO)
+
+> Materializa a spec `specs/plan/26-instalacao-teste.md` (protocolo + matriz de medição M1-M10). Deve ser executado por um agente SEM nenhum contexto desta base (outra conversa/outro agente), DEPOIS da limpeza do P9. **O objetivo NÃO é instalar — é TESTAR a instalação**: o produto principal é o RELATÓRIO honesto; obstáculo se registra, não se contorna.
+
+```
+Você vai instalar a biblioteca Sarak-UI (@sarak/lib-ui-core) DO ZERO no sistema `C:\Users\Igor\Desktop\Sarak\X - Trabalho\Code\Earendel\ERP` e produzir um relatório de avaliação da experiência. Contexto mínimo: o ERP Earendel é um sistema de gestão (módulos de Propostas, Contratos e Projetos, banco Supabase, scripts Python de negócio) que hoje NÃO tem frontend — a Sarak-UI será responsável por TODA a renderização, via manifestos JSON.
+
+REGRAS DO TESTE (inegociáveis):
+1. Use SOMENTE o caminho oficial da biblioteca: `npm install github:Lib-Sarak/Sarak-Lib-UI-Core` e depois `npx @sarak/lib-ui-core init` (o scaffolder faz a entrevista: modo/stack/storage — em caso de dúvida, use os defaults do Golden Path). Após o init, siga as skills que ele instala em `.agents/skills/` (`ui-integra-consumidor` → `ui-integra-escrever-manifesto` → `ui-auditoria-manifesto`) e o catálogo `node_modules/@sarak/lib-ui-core/docs/manifest-catalog.md`.
+2. É PROIBIDO: modificar qualquer arquivo dentro de `node_modules/@sarak/lib-ui-core`; criar patch/postinstall sobre a lib; escrever componente React de interface no consumidor (só o plumbing que o init gera: Provider/Renderer/interceptors/store). Se algo só funcionar com um contorno desses, NÃO aplique o contorno — registre o problema no relatório e siga para o próximo item. O teste mede a BIBLIOTECA, não a sua habilidade de contorná-la.
+3. Não leia o código-fonte da lib para descobrir como usá-la — use apenas skills, catálogo, templates e mensagens de erro/warns. Se a instrução fornecida não bastar, isso É um achado para o relatório.
+
+O QUE CONSTRUIR (critério de sucesso funcional):
+- App Modo App com shell + navegação (Início, Propostas, Contratos, Projetos, Design Engine) partindo do template starter.
+- Pelo menos UMA tela de lista real com carga automática (`source` com states loading/empty/error + `renderFor`) consumindo um endpoint do backend gerado pelo init (pode ser dado de exemplo servido pelo server.ts; integração real com o Supabase do ERP é bônus, não requisito).
+- UM formulário com validação + `api_call` + toasts de sucesso/erro.
+- Design Engine acessível em `/design`, com personalização aplicando ao vivo (ex.: cor da topbar) e tema salvo persistindo após reload (use o storage escolhido na entrevista do init).
+- Um teste PROPOSITAL de erro de autoria (ex.: um token de espaçamento inventado e um `"actions"` como objeto num nó de rascunho): a tela deve continuar de pé e o console deve ensinar a correção — registre o comportamento observado.
+- Validação real: `npm run dev` com backend+frontend de pé, telas conferidas no browser, `npm run build` do consumidor verde.
+
+RELATÓRIO OBRIGATÓRIO (entregável principal) — salve como `RELATORIO-INSTALACAO-UI.md` na raiz do ERP e reproduza o conteúdo integral na conversa:
+1. Ambiente (SO, Node, npm) e tempo total aproximado.
+2. Passo a passo executado (comandos reais, na ordem).
+3. O que funcionou DE PRIMEIRA, sem intervenção.
+4. PROBLEMAS, um a um: sintoma exato (mensagem/print), onde apareceu (init/skill/catálogo/motor/build), se bloqueou ou só atrapalhou, e o que você fez (registrou e seguiu / parou o item).
+5. Avaliação das instruções: as skills e o catálogo bastaram? Onde você precisou adivinhar?
+6. Contornos que teriam sido necessários (e que a regra 2 proibiu) — cada um é uma falha da biblioteca a corrigir.
+7. MATRIZ DE MEDIÇÃO M1-M10 — preencha cada item com PASS/PARCIAL/FAIL + evidência (mensagem/saída literal):
+   M1 init gera projeto completo em 1 comando · M2 install+dev sobem sem ajuste manual · M3 telas do template corretas de primeira · M4 erro de autoria proposital não derruba a tela e o warn ensina · M5 lista com source+states funciona pelo exemplo da skill · M6 formulário completo (validação barra submit; toasts) · M7 topbar personalizada reflete ao vivo · M8 tema persiste após reload · M9 skills+catálogo bastaram (zero leitura do código-fonte da lib) · M10 zero contorno necessário.
+8. Veredito final: a instalação foi efetivamente plug-and-play? Nota 0-10 com justificativa, e as 3 melhorias que você mais sentiria falta.
+
+NÃO corrija a biblioteca, NÃO abra specs dela, NÃO commite nada sem autorização do usuário.
+```
