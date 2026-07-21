@@ -4,6 +4,7 @@ import { describe, it, expect, vi } from 'vitest';
 import { SarakManifestRenderer } from '../../SarakManifestRenderer';
 import { createComponentRegistry, type ComponentRegistry } from '../../Registry/ComponentRegistry';
 import { createSarakDataStore } from '../../DataStore/SarakDataStore';
+import { DesignOverrideContext } from '../../../Provider/SarakUIProvider';
 import type { ManifestRoot } from '../../types';
 
 const Pass: React.FC<{ children?: React.ReactNode }> = (props) => <div {...props} />;
@@ -136,5 +137,55 @@ describe('Spec 33 — App-Shell + Rotas como dado', () => {
         );
         // A sidebar permaneceu montada → seu estado vivo continua refletido.
         expect(screen.getByTestId('sidebar-state')).toHaveAttribute('title', 'recolhida');
+    });
+});
+
+describe('Spec 27 — Paridade de navigationStyle no ShellRouterNode', () => {
+    it("navigationStyle 'topbar': a região sidebar NÃO recebe largura fixa — vira faixa cheia", () => {
+        const { container } = render(
+            <DesignOverrideContext.Provider value={{ navigationStyle: 'topbar' }}>
+                <SarakManifestRenderer manifest={appManifest()} registry={makeRegistry()} route="/a" />
+            </DesignOverrideContext.Provider>,
+        );
+        // Nenhum <aside> de largura fixa — a região vira <div> de largura cheia.
+        expect(container.querySelector('aside.sarak-shell-sidebar')).toBeNull();
+        const region = container.querySelector('.sarak-shell-sidebar--full-width');
+        expect(region).not.toBeNull();
+        expect(region?.getAttribute('style') ?? '').not.toContain('--sarak-sidebar-width');
+        expect(region?.getAttribute('style') ?? '').toContain('--sarak-sidebar-bg');
+        // O corpo do shell empilha em coluna (faixa acima do conteúdo).
+        expect(container.querySelector('.sarak-shell-body')?.className).toContain('flex-col');
+        expect(screen.getByTestId('sidebar')).toBeInTheDocument();
+    });
+
+    it("navigationStyle 'sidebar' (ou ausente): comportamento IDÊNTICO ao atual — <aside> fixo", () => {
+        const { container } = render(
+            <DesignOverrideContext.Provider value={{ navigationStyle: 'sidebar' }}>
+                <SarakManifestRenderer manifest={appManifest()} registry={makeRegistry()} route="/a" />
+            </DesignOverrideContext.Provider>,
+        );
+        const aside = container.querySelector('aside.sarak-shell-sidebar');
+        expect(aside).not.toBeNull();
+        expect(aside?.getAttribute('style') ?? '').toContain('--sarak-sidebar-width');
+        expect(container.querySelector('.sarak-shell-sidebar--full-width')).toBeNull();
+        expect(container.querySelector('.sarak-shell-body')?.className).toContain('flex-row');
+    });
+
+    it("navigationStyle desconhecido ('dock'/'glass', fora do escopo): cai no default vertical", () => {
+        const { container } = render(
+            <DesignOverrideContext.Provider value={{ navigationStyle: 'dock' }}>
+                <SarakManifestRenderer manifest={appManifest()} registry={makeRegistry()} route="/a" />
+            </DesignOverrideContext.Provider>,
+        );
+        expect(container.querySelector('aside.sarak-shell-sidebar')).not.toBeNull();
+        expect(container.querySelector('.sarak-shell-sidebar--full-width')).toBeNull();
+    });
+
+    it('sem Provider/override (ausente): mantém o <aside> fixo — nenhuma regressão da Spec 18', () => {
+        const { container } = render(
+            <SarakManifestRenderer manifest={appManifest()} registry={makeRegistry()} route="/a" />,
+        );
+        expect(container.querySelector('aside.sarak-shell-sidebar')).not.toBeNull();
+        expect(container.querySelector('.sarak-shell-sidebar--full-width')).toBeNull();
     });
 });

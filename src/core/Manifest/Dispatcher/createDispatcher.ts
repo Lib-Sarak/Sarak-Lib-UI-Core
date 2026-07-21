@@ -20,18 +20,9 @@ import type { DataSourceMethod } from '../types';
 import type { ToastController, ToastVariant } from '../../../components/atomic/Feedback/SarakToast';
 import type { FormScope } from '../Form/formScope';
 import { interpolate, interpolateProps } from '../Binding/interpolate';
+import { isSubmitAction, resolveSubmitPayload, SubmitBlockedError } from './submitGate';
 
-/**
- * Sinaliza que um `api_call` com `submit: true` foi BARRADO pela Validação (Spec 29,
- * Regra 2). `runActions` o reconhece e interrompe a cadeia SILENCIOSAMENTE — sem
- * disparar `onError` (diferente de uma falha de rede real).
- */
-export class SubmitBlockedError extends Error {
-    constructor(message = 'Submit bloqueado por validação.') {
-        super(message);
-        this.name = 'SubmitBlockedError';
-    }
-}
+export { SubmitBlockedError } from './submitGate';
 
 /** Pedido de overlay imperativo (open_modal/open_drawer). */
 export interface OverlayRequest {
@@ -81,17 +72,9 @@ const resolvePayload = (action: ManifestAction, ctx: DispatchContext): ManifestP
 // ---------------------------------------------------------------------------
 
 const apiCall: ActionHandler = async (action, ctx) => {
-    // Submit de formulário (Spec 29, Regra 2 + Spec 32, Regra 3): marca a tentativa
+    // Submit de formulário (Spec 28/29, Regra 2 + Spec 32, Regra 3): marca a tentativa
     // (campos passam a exibir erro) e BARRA silenciosamente se a Validação acusar erro.
-    let submitPayload: ManifestProps | undefined;
-    if (action.submit && ctx.form) {
-        ctx.form.markSubmitAttempted();
-        if (ctx.form.hasErrors()) {
-            throw new SubmitBlockedError();
-        }
-        // Monta o payload a partir dos `model` do form-escopo (estrutura aninhada).
-        submitPayload = ctx.form.buildPayload() as ManifestProps;
-    }
+    const submitPayload = resolveSubmitPayload(action, ctx);
 
     if (!ctx.interceptor) {
         // Spec 30, Regra 2: o importador não injetou o `networkInterceptor`. Avisa em
@@ -114,7 +97,7 @@ const apiCall: ActionHandler = async (action, ctx) => {
     const into = asString(payload.into);
     if (into && ctx.store) ctx.store.set(into, data);
     // Sucesso do submit: dispara o reset declarativo (Spec 32, Regra 4 — `resetOn`).
-    if (action.submit && ctx.form) ctx.form.reset();
+    if (isSubmitAction(action) && ctx.form) ctx.form.reset();
 };
 
 const mutateState: ActionHandler = (action, ctx) => {

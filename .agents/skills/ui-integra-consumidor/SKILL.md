@@ -40,14 +40,15 @@ escreve arquivo de infraestrutura à mão** (isso é o que causava a adivinhaç�
      3. **`UIStorageAdapter` customizado** (Supabase/Firebase/API própria) — bypassa pg/sqlite por completo; ver `docs/examples/storage-supabase.md`. Fora do alcance do `init` (o consumidor escreve o adapter e passa `{ storage: meuAdapter }` na chamada gerada pelo stub).
    - **Portas** do backend/frontend (default 3000/5173) — só relevante para `vite-express`.
 2. **Instalação de Dependências + scaffolder oficial**
-   - **Ação:** `npm install @sarak/lib-ui-core` (github install: `npm install github:Lib-Sarak/Sarak-Lib-UI-Core`).
+   - **Ação OBRIGATÓRIA antes de qualquer `npm install`: garanta um `package.json` na RAIZ do diretório-alvo.** Rode `npm init -y` se ele não existir (confira com `Test-Path package.json` / `ls package.json` primeiro). **Por quê:** sem `package.json` local, `npm install github:...` sobe a árvore de diretórios até achar um `package.json` ancestral e instala LÁ — silenciosamente, sem erro nem aviso, poluindo um projeto alheio (achado real de um teste de instalação: instalou 289 pacotes no `package.json` de um projeto não relacionado do usuário). Nunca pule este passo, mesmo em diretório aparentemente vazio.
+   - **Ação:** `npm install @sarak/lib-ui-core` (github install: `npm install github:Lib-Sarak/Sarak-Lib-UI-Core`) — SÓ depois de confirmar o `package.json` do passo anterior.
    - **Ação:** rode o scaffolder com as respostas da Etapa 1, via flags (não repita a entrevista por prompt interativo — passe tudo resolvido):
      ```bash
      npx sarak-ui init --mode app --stack vite-express --storage sqlite --backend-port 3000 --frontend-port 5173
      # antes de publicado no registro/sem link simbólico do bin, equivalente:
      node node_modules/@sarak/lib-ui-core/bin/sarak-ui.mjs init --mode app --stack vite-express --storage sqlite
      ```
-     Flags: `--mode` (`app`|`embedded`), `--stack` (`vite-express`|`next`|`frontend-only`), `--storage` (`sqlite`|`postgres`|`custom`), `--schema` (só com `postgres`), `--backend-port`, `--frontend-port`, `--force` (sobrescreve arquivo existente), `--yes` (aceita todos os defaults do Golden Path sem perguntar nada — útil só quando a Etapa 1 já foi 100% Golden Path).
+     Flags: `--mode` (`app`|`embedded`), `--stack` (`vite-express`|`next`|`frontend-only`), `--storage` (`sqlite`|`postgres`|`custom`), `--schema` (só com `postgres`), `--backend-port`, `--frontend-port`, `--force` (sobrescreve arquivo existente), `--yes` (aceita todos os defaults do Golden Path sem perguntar nada — útil só quando a Etapa 1 já foi 100% Golden Path), `--help`/`-h` (lista todas as flags com defaults e exemplos, sai com `exit 0`). **Você (agente) roda num terminal sem TTY** — sempre passe `--yes` OU todas as flags (`--mode`/`--stack`/`--storage`/`--backend-port`/`--frontend-port`); sem isso o `init` falha alto com `exit 1` e mensagem instrutiva (nunca mais um `exit 0` mudo sem escrever nada).
    - **O que o `init` garante sozinho** (Spec 21 — não repita nenhum destes passos à mão):
      - **TODAS as peerDependencies gravadas** no `package.json` do consumidor (nunca confie no auto-install do npm 7+, que instala em `node_modules` mas não registra — irreproduzível em `npm ci`).
      - `typescript` travado em `^5` (**nunca** `^7` — incompatível com `ts-node-dev`).

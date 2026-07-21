@@ -1,6 +1,6 @@
 import React from 'react';
 import { SarakIcon } from '../Icon/SarakIcon';
-import { UIContext, DesignOverrideContext } from '../../../core/Provider/SarakUIProvider';
+import { useNavigationStyle } from '../../../core/Provider/useNavigationStyle';
 
 /**
  * SarakShellNav — Navegação de shell 100% orientada a dados (Spec 33 + Spec 14)
@@ -45,20 +45,6 @@ export interface SarakShellNavProps {
     orientation?: 'vertical' | 'horizontal' | 'auto';
     className?: string;
 }
-
-/**
- * Lê `navigationStyle` do Design Engine SEM exigir o Provider: acessa os contextos
- * direto (draft de override tem prioridade sobre o persistido) e degrada a `undefined`
- * quando renderizado fora do `SarakUIProvider` — o `orientation="auto"` então cai em
- * vertical, mantendo o átomo utilizável isoladamente.
- */
-const useNavigationStyle = (): string | undefined => {
-    const context = React.useContext(UIContext);
-    const override = React.useContext(DesignOverrideContext);
-    const design = (override ?? context?.design) as { navigationStyle?: unknown } | null | undefined;
-    const value = design?.navigationStyle;
-    return typeof value === 'string' ? value : undefined;
-};
 
 /** Agrupa preservando a ordem de aparição das categorias ('' = grupo raiz). */
 const groupByCategory = (items: ShellNavItem[]): Map<string, ShellNavItem[]> => {

@@ -17,7 +17,24 @@ import type { ManifestNode, ManifestRoot, RouteMap, RouteTarget } from '../types
 import { ManifestNodeRenderer } from './renderNode';
 import { SarakFallback } from '../Registry/Fallback';
 import { SarakSkeleton } from '../../../components/atomic/Feedback/SarakSkeleton';
+import { useNavigationStyle } from '../../Provider/useNavigationStyle';
 import { EMPTY_STATE, type NodeRenderContext } from './context';
+
+type SidebarRegionChrome = 'fixed-width' | 'full-width';
+
+/**
+ * Mapa estilo→chrome da região `shell.sidebar` (Spec 27 §2.2): ponto de extensão
+ * explícito para `dock`/`glass` no futuro — hoje só `topbar` sai do default vertical
+ * (`fixed-width`), replicando os ramos mutuamente exclusivos do Shell legado
+ * (`SarakShell.tsx`, `isTopbar`/`isDock`/`isGlass`/`isSidebar`). Qualquer valor
+ * ausente/desconhecido (incl. `dock`/`glass`, fora do escopo desta spec) cai no default.
+ */
+const SIDEBAR_REGION_CHROME: Readonly<Record<string, SidebarRegionChrome>> = {
+    topbar: 'full-width',
+};
+
+const resolveSidebarRegionChrome = (navigationStyle: string | undefined): SidebarRegionChrome =>
+    (navigationStyle && SIDEBAR_REGION_CHROME[navigationStyle]) || 'fixed-width';
 
 /** Alvo lazy `{ lazy: id }` vs subárvore inline. */
 const isLazyTarget = (target: RouteTarget): target is { lazy: string } =>
@@ -101,6 +118,13 @@ export const ShellRouterNode: React.FC<{ root: ManifestRoot; ctx: NodeRenderCont
     // Cache de subárvores lazy carregadas (id → nó), estável entre trocas de rota.
     const lazyCache = React.useRef<Map<string, ManifestNode>>(new Map());
 
+    // Realocação de região por navigationStyle (Spec 27): mesma fonte de leitura do
+    // SarakShellNav — evita drift entre quem decide a ORIENTAÇÃO do menu e quem decide
+    // o CHROME da região que o hospeda.
+    const navigationStyle = useNavigationStyle();
+    const sidebarChrome = resolveSidebarRegionChrome(navigationStyle);
+    const isFullWidthSidebar = sidebarChrome === 'full-width';
+
     const renderRegion = (node: ManifestNode | undefined, key: string): React.ReactNode =>
         node ? (
             <ManifestNodeRenderer node={node} path={`root.shell.${key}`} scope={EMPTY_STATE} ctx={ctx} />
@@ -150,25 +174,42 @@ export const ShellRouterNode: React.FC<{ root: ManifestRoot; ctx: NodeRenderCont
                     {renderRegion(shell.topbar, 'topbar')}
                 </header>
             ) : null}
-            <div className="sarak-shell-body flex flex-1 min-h-0 w-full">
+            <div
+                className={`sarak-shell-body flex ${isFullWidthSidebar ? 'flex-col' : 'flex-row'} flex-1 min-h-0 w-full`}
+            >
                 {shell?.sidebar ? (
-                    // Região persistente com largura própria (reusa os tokens reais do
-                    // Design Engine — Spec 04): impede que um filho `w-full` (ex.: um
-                    // `SarakFlex` usado como sidebar) tome 100% da LINHA e zere o espaço
-                    // do conteúdo — `flex-shrink: 0` trava a largura mesmo se o conteúdo
-                    // interno tentar esticar.
-                    <aside
-                        className="sarak-shell-sidebar shrink-0 overflow-y-auto"
-                        style={{
-                            width: 'var(--sarak-sidebar-width, 240px)',
-                            minWidth: 'var(--sarak-sidebar-min-width, 200px)',
-                            maxWidth: 'var(--sarak-sidebar-max-width, 450px)',
-                            // Chrome de tokens da sidebar (Spec 18): consome `--sarak-sidebar-bg`.
-                            background: 'var(--sarak-sidebar-bg, transparent)',
-                        }}
-                    >
-                        {renderRegion(shell.sidebar, 'sidebar')}
-                    </aside>
+                    isFullWidthSidebar ? (
+                        // navigationStyle horizontal (Spec 27): a região NÃO vira coluna
+                        // fixa — replica o `<TopbarNav>` do Shell legado como faixa de
+                        // largura cheia, empilhada acima do corpo (`flex-shrink: 0` trava
+                        // a ALTURA própria do conteúdo em vez da largura de 240px).
+                        <div
+                            className="sarak-shell-sidebar sarak-shell-sidebar--full-width shrink-0 w-full overflow-x-auto"
+                            style={{
+                                background: 'var(--sarak-sidebar-bg, transparent)',
+                            }}
+                        >
+                            {renderRegion(shell.sidebar, 'sidebar')}
+                        </div>
+                    ) : (
+                        // Região persistente com largura própria (reusa os tokens reais do
+                        // Design Engine — Spec 04): impede que um filho `w-full` (ex.: um
+                        // `SarakFlex` usado como sidebar) tome 100% da LINHA e zere o espaço
+                        // do conteúdo — `flex-shrink: 0` trava a largura mesmo se o conteúdo
+                        // interno tentar esticar.
+                        <aside
+                            className="sarak-shell-sidebar shrink-0 overflow-y-auto"
+                            style={{
+                                width: 'var(--sarak-sidebar-width, 240px)',
+                                minWidth: 'var(--sarak-sidebar-min-width, 200px)',
+                                maxWidth: 'var(--sarak-sidebar-max-width, 450px)',
+                                // Chrome de tokens da sidebar (Spec 18): consome `--sarak-sidebar-bg`.
+                                background: 'var(--sarak-sidebar-bg, transparent)',
+                            }}
+                        >
+                            {renderRegion(shell.sidebar, 'sidebar')}
+                        </aside>
+                    )
                 ) : null}
                 <main className="sarak-shell-content flex-1 min-w-0 min-h-0">{renderContent()}</main>
             </div>

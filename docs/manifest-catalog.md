@@ -15,6 +15,20 @@
 
 `slots` · `renderFor` · `bindings` · `actions` · `onError` · `renderIf` · `disabledIf` · `persistState` · `validation` · `source` · `model` · `form` · `responsive` · `shell` · `routes` · `theme` · `aria`
 
+## Regras de `validation` (schema de campo)
+
+> Cada item de `"validation": [...]` é `{ "rule": "...", "value"?: ..., "message"?: "..." }`. `rule` fora desta lista, ou faltando `value` quando exigido, gera `console.warn` e a regra é IGNORADA (as demais regras do campo continuam validando).
+
+| `rule` | Exige `value`? | `value` esperado | Exemplo |
+| --- | --- | --- | --- |
+| `required` | não | nenhum (dispensa `value`) | `{ "rule": "required" }` |
+| `minLength` | sim | número — comprimento mínimo | `{ "rule": "minLength", "value": 3 }` |
+| `maxLength` | sim | número — comprimento máximo | `{ "rule": "maxLength", "value": 120 }` |
+| `pattern` | sim | string — fonte de um regex | `{ "rule": "pattern", "value": "^[0-9]{5}(-[0-9]{4})?$" }` |
+| `type` | sim | "email" \| "url" \| "numero" | `{ "rule": "type", "value": "email" }` |
+
+`message` (opcional, em todas): string custom exibida quando a regra falha; sem ela, usa o default em pt-BR.
+
 ## Tokens e valores permitidos
 
 > Valores que o manifesto pode usar. Fora desta lista, o motor AVISA (`console.warn` com sugestão) e cai no default do Design Engine — **não invente tokens** (`spacing-xxl`, `--sarak-color-surface` e afins não existem).

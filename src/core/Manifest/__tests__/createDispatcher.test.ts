@@ -3,8 +3,27 @@ import { runActions, type DispatchContext } from '../Dispatcher/createDispatcher
 import { createSarakDataStore } from '../DataStore/SarakDataStore';
 import type { NetworkRequest } from '../DataSource/useDataSource';
 import type { ActionList } from '../types';
+import type { FormScope } from '../Form/formScope';
 
 const EMPTY_SCOPE = {} as Record<string, unknown>;
+
+/** Fake mínimo de `FormScope` (Spec 28) — só os métodos que o Dispatcher toca. */
+const fakeFormScope = (overrides: Partial<FormScope> = {}): FormScope => ({
+    id: 'test-form',
+    registerField: () => () => undefined,
+    markDirty: () => undefined,
+    markTouched: () => undefined,
+    isTouched: () => false,
+    validate: () => ({}),
+    hasErrors: () => false,
+    buildPayload: () => ({}),
+    reset: () => undefined,
+    markSubmitAttempted: () => undefined,
+    submitAttempted: false,
+    isDirty: false,
+    subscribe: () => () => undefined,
+    ...overrides,
+});
 
 afterEach(() => vi.restoreAllMocks());
 
@@ -121,5 +140,78 @@ describe('Spec 25 — Sequência e bloqueio (Regra 2 + Critérios 1 e 2)', () =>
         );
         expect(warn).toHaveBeenCalled();
         expect(navigate).toHaveBeenCalledWith('/x', expect.anything());
+    });
+});
+
+describe('Spec 28 — Gate de submit à prova de erro de autoria', () => {
+    it('action.submit=true + form com erro → SubmitBlockedError silencioso, interceptor NUNCA chamado', async () => {
+        const interceptor = vi.fn(async () => ({ ok: true }));
+        const form = fakeFormScope({ hasErrors: () => true });
+        const ctx: DispatchContext = { interceptor, form, scope: EMPTY_SCOPE, global: {} };
+
+        await runActions([{ type: 'api_call', submit: true, payload: { endpoint: '/save' } }], ctx);
+
+        expect(interceptor).not.toHaveBeenCalled();
+    });
+
+    it('leniência: payload.submit=true (alias) + form com erro → bloqueia igual a action.submit (Regra 2.1)', async () => {
+        const interceptor = vi.fn(async () => ({ ok: true }));
+        const form = fakeFormScope({ hasErrors: () => true });
+        const ctx: DispatchContext = { interceptor, form, scope: EMPTY_SCOPE, global: {} };
+
+        await runActions([{ type: 'api_call', payload: { endpoint: '/save', submit: true } }], ctx);
+
+        expect(interceptor).not.toHaveBeenCalled();
+    });
+
+    it('payload.submit=true (alias) + form válido → dispara normalmente e usa o payload montado do form', async () => {
+        const interceptor = vi.fn(async () => ({ ok: true }));
+        const resetSpy = vi.fn();
+        const form = fakeFormScope({
+            hasErrors: () => false,
+            buildPayload: () => ({ nome: 'Ana' }),
+            reset: resetSpy,
+        });
+        const ctx: DispatchContext = { interceptor, form, scope: EMPTY_SCOPE, global: {} };
+
+        await runActions([{ type: 'api_call', payload: { endpoint: '/save', submit: true } }], ctx);
+
+        expect(interceptor).toHaveBeenCalledWith(expect.objectContaining({ params: { nome: 'Ana' } }));
+        expect(resetSpy).toHaveBeenCalledTimes(1);
+    });
+
+    it('api_call SEM submit dentro de form-escopo COM erro → warn + BLOQUEIA (correção central do M6, §2.2)', async () => {
+        const warn = vi.spyOn(console, 'warn').mockImplementation(() => undefined);
+        const interceptor = vi.fn(async () => ({ ok: true }));
+        const form = fakeFormScope({ hasErrors: () => true });
+        const ctx: DispatchContext = { interceptor, form, scope: EMPTY_SCOPE, global: {} };
+
+        await runActions([{ type: 'api_call', payload: { endpoint: '/save', params: '{{form}}' } }], ctx);
+
+        expect(interceptor).not.toHaveBeenCalled();
+        expect(warn).toHaveBeenCalledWith(expect.stringContaining('SEM "submit": true'));
+    });
+
+    it('api_call SEM submit dentro de form-escopo SEM erro → passa normal (nenhum warn/bloqueio)', async () => {
+        const warn = vi.spyOn(console, 'warn').mockImplementation(() => undefined);
+        const interceptor = vi.fn(async () => ({ ok: true }));
+        const form = fakeFormScope({ hasErrors: () => false });
+        const ctx: DispatchContext = { interceptor, form, scope: EMPTY_SCOPE, global: {} };
+
+        await runActions([{ type: 'api_call', payload: { endpoint: '/save' } }], ctx);
+
+        expect(interceptor).toHaveBeenCalledTimes(1);
+        expect(warn).not.toHaveBeenCalled();
+    });
+
+    it('submit=true SEM form-escopo ativo → warn, mas segue (nada para bloquear, §2.2)', async () => {
+        const warn = vi.spyOn(console, 'warn').mockImplementation(() => undefined);
+        const interceptor = vi.fn(async () => ({ ok: true }));
+        const ctx: DispatchContext = { interceptor, scope: EMPTY_SCOPE, global: {} };
+
+        await runActions([{ type: 'api_call', submit: true, payload: { endpoint: '/save' } }], ctx);
+
+        expect(interceptor).toHaveBeenCalledTimes(1);
+        expect(warn).toHaveBeenCalledWith(expect.stringContaining('nenhum form-escopo ativo'));
     });
 });

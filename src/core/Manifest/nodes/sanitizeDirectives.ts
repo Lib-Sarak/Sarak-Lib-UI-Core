@@ -13,7 +13,8 @@
  */
 
 import { RESERVED_DIRECTIVES, type DirectiveName } from '../directives';
-import type { ManifestNode } from '../types';
+import type { ManifestNode, ValidationRuleName } from '../types';
+import { VALIDATION_RULE_SHAPES, VALIDATION_TYPE_NAMES } from '../Form/validationRuleShapes';
 
 /** Aviso de uma diretiva ignorada, com chave estável de deduplicação por nó. */
 export interface DirectiveWarning {
@@ -67,6 +68,74 @@ const DIRECTIVE_SHAPES: Readonly<Record<DirectiveName, DirectiveShape>> = {
     aria: { valid: isObject, expected: 'objeto (mapa aria)', example: '"aria": { "label": "Fechar" }' },
 };
 
+/** True se `value` é um número finito, aceitando string numérica (mesma coerção do `validate.ts`). */
+const isFiniteNumeric = (value: unknown): boolean =>
+    typeof value === 'number'
+        ? Number.isFinite(value)
+        : typeof value === 'string' && value.trim().length > 0 && Number.isFinite(Number(value));
+
+/** Valida o `value` de uma regra CONHECIDA contra o shape esperado (Spec 28 §2.3). */
+const isValidRuleValue = (ruleName: ValidationRuleName, value: unknown): boolean => {
+    switch (ruleName) {
+        case 'minLength':
+        case 'maxLength':
+            return isFiniteNumeric(value);
+        case 'pattern':
+            return typeof value === 'string' && value.length > 0;
+        case 'type':
+            return typeof value === 'string' && (VALIDATION_TYPE_NAMES as readonly string[]).includes(value);
+        case 'required':
+        default:
+            return true;
+    }
+};
+
+/**
+ * Sanitiza os ITENS de `validation` (Spec 28 §2.3): diferente das demais diretivas, um
+ * item malformado NÃO descarta o array inteiro — só a regra culpada é removida (as
+ * demais regras do mesmo campo continuam validando normalmente). Chamada só quando o
+ * `validation` já passou pelo shape genérico (é um array) — nunca antes.
+ */
+const sanitizeValidationRules = (
+    rules: unknown[],
+    ref: string,
+): { rules: unknown[]; warnings: DirectiveWarning[] } => {
+    const warnings: DirectiveWarning[] = [];
+    const kept: unknown[] = [];
+
+    rules.forEach((rule, index) => {
+        const ruleName = isObject(rule) ? rule.rule : undefined;
+        if (typeof ruleName !== 'string' || !(ruleName in VALIDATION_RULE_SHAPES)) {
+            warnings.push({
+                key: `${ref}:validation[${index}]`,
+                directive: 'validation',
+                message:
+                    `[Sarak:Manifest] nó "${ref}": item ${index} de "validation" tem "rule" desconhecida/ausente ` +
+                    `(recebido ${JSON.stringify(ruleName)}). Regras aceitas: required, minLength, maxLength, ` +
+                    `pattern, type. Ex.: ${VALIDATION_RULE_SHAPES.required.example}`,
+            });
+            return;
+        }
+
+        const shape = VALIDATION_RULE_SHAPES[ruleName as ValidationRuleName];
+        const value = (rule as Record<string, unknown>).value;
+        if (shape.requiresValue && !isValidRuleValue(ruleName as ValidationRuleName, value)) {
+            warnings.push({
+                key: `${ref}:validation[${index}]`,
+                directive: 'validation',
+                message:
+                    `[Sarak:Manifest] nó "${ref}": item ${index} de "validation" (rule "${ruleName}") tem ` +
+                    `"value" ausente/inválido (esperado ${shape.valueHint}). Ex.: ${shape.example}`,
+            });
+            return;
+        }
+
+        kept.push(rule);
+    });
+
+    return { rules: kept, warnings };
+};
+
 /**
  * Devolve o nó com toda diretiva MAL FORMATADA removida + os avisos correspondentes.
  * Diretivas válidas (e nós sem diretivas) passam intactos — o nó original é reusado
@@ -94,6 +163,18 @@ export const sanitizeDirectives = (node: ManifestNode, ref: string): SanitizeRes
                 `(esperado ${shape.expected}, recebido ${typeName(value)}). ` +
                 `Diretiva ignorada. Ex. correto: ${shape.example}`,
         });
+    }
+
+    // Validação de ITEM dentro de `validation` (Spec 28 §2.3): só roda se o array em si
+    // já é válido (senão o laço acima já removeu a diretiva inteira e avisou sobre isso).
+    const rawValidation = (node as unknown as Record<string, unknown>).validation;
+    if (Array.isArray(rawValidation)) {
+        const { rules, warnings: ruleWarnings } = sanitizeValidationRules(rawValidation, ref);
+        if (ruleWarnings.length > 0) {
+            if (!cleaned) cleaned = { ...node };
+            (cleaned as unknown as Record<string, unknown>).validation = rules;
+            warnings.push(...ruleWarnings);
+        }
     }
 
     return { node: cleaned ?? node, warnings };

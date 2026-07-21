@@ -7,6 +7,29 @@
 import readline from 'node:readline';
 import { DEFAULT_BACKEND_PORT, DEFAULT_FRONTEND_PORT, DEFAULT_STACK, DEFAULT_STORAGE, DEFAULT_MODE } from './constants.mjs';
 
+/** Campos que a entrevista precisa resolver — via flag, `--yes`, ou pergunta interativa. */
+const REQUIRED_ANSWER_FLAGS = ['mode', 'stack', 'storage', 'backendPort', 'frontendPort'];
+
+const flagNameToCliFlag = (flagName) => `--${flagName.replace(/([A-Z])/g, '-$1').toLowerCase()}`;
+
+/**
+ * Guard de TTY (Spec 29 §2.2): sem terminal interativo, `rl.question` nunca recebe uma
+ * linha (EOF imediato) e a Promise de `ask()` fica pendurada — o processo às vezes
+ * termina em `exit 0` sem escrever nada, mudo (achado real do Selo). Falha em voz alta
+ * ANTES de abrir o `readline` sempre que faltar TTY e faltar `--yes`/flag suficiente.
+ */
+export function assertInteractionIsPossible({ flags, isTTY }) {
+    if (isTTY || flags.yes) return;
+    const missing = REQUIRED_ANSWER_FLAGS.filter((flagName) => flags[flagName] === undefined);
+    if (missing.length === 0) return;
+    const missingCliFlags = missing.map(flagNameToCliFlag).join(', ');
+    throw new Error(
+        `[sarak-ui init] Terminal não interativo (sem TTY) e faltam flags: ${missingCliFlags}. ` +
+        'Passe "--yes" (aceita os defaults do Golden Path) ou informe todas as flags. ' +
+        'Rode "npx @sarak/lib-ui-core init --help" para ver a lista completa.',
+    );
+}
+
 function ask({ rl, question, defaultValue }) {
     return new Promise((resolve) => {
         rl.question(`${question} [${defaultValue}]: `, (answer) => {
@@ -23,6 +46,7 @@ async function resolveField({ rl, flags, flagName, question, defaultValue, useDe
 
 /** Pergunta modo/stack/storage/portas; flags/`--yes` pulam a pergunta correspondente. */
 export async function collectAnswers({ flags = {}, input = process.stdin, output = process.stdout } = {}) {
+    assertInteractionIsPossible({ flags, isTTY: Boolean(input.isTTY) });
     const rl = readline.createInterface({ input, output });
     const useDefaults = Boolean(flags.yes);
 

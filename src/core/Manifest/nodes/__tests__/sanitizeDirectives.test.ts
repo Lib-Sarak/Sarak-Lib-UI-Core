@@ -76,6 +76,64 @@ describe('sanitizeDirectives (Spec 17, §2.1)', () => {
     });
 });
 
+describe('sanitizeDirectives — itens de `validation` (Spec 28 §2.3)', () => {
+    it('regra com `rule` desconhecida é removida do array (as demais permanecem) + warn', () => {
+        const node: ManifestNode = {
+            type: 'SarakInput',
+            validation: [{ rule: 'required' }, { rule: 'nao-existe' } as never],
+        };
+        const result = sanitizeDirectives(node, 'campo');
+        expect(result.node.validation).toEqual([{ rule: 'required' }]);
+        expect(result.warnings).toHaveLength(1);
+        expect(result.warnings[0].directive).toBe('validation');
+        expect(result.warnings[0].message).toContain('rule" desconhecida/ausente');
+    });
+
+    it('minLength/maxLength sem `value` numérico é removida + warn com o shape esperado', () => {
+        const node: ManifestNode = {
+            type: 'SarakInput',
+            validation: [{ rule: 'minLength' } as never, { rule: 'maxLength', value: 'abc' } as never],
+        };
+        const result = sanitizeDirectives(node, 'campo');
+        expect(result.node.validation).toEqual([]);
+        expect(result.warnings).toHaveLength(2);
+        expect(result.warnings[0].message).toContain('"value" ausente/inválido');
+    });
+
+    it('pattern sem `value` string / type com `value` fora de email|url|numero são removidos', () => {
+        const node: ManifestNode = {
+            type: 'SarakInput',
+            validation: [{ rule: 'pattern' } as never, { rule: 'type', value: 'cpf' } as never],
+        };
+        const result = sanitizeDirectives(node, 'campo');
+        expect(result.node.validation).toEqual([]);
+        expect(result.warnings).toHaveLength(2);
+    });
+
+    it('array de `validation` 100% válido passa intacto, sem warning', () => {
+        const node: ManifestNode = {
+            type: 'SarakInput',
+            validation: [
+                { rule: 'required' },
+                { rule: 'minLength', value: 3 },
+                { rule: 'pattern', value: '^[0-9]+$' },
+                { rule: 'type', value: 'email' },
+            ],
+        };
+        const result = sanitizeDirectives(node, 'campo');
+        expect(result.node).toBe(node);
+        expect(result.warnings).toEqual([]);
+    });
+
+    it('`validation` não-array continua removendo a diretiva INTEIRA (comportamento pré-existente, não regride)', () => {
+        const node = { type: 'SarakInput', validation: {} as unknown as ManifestNode['validation'] } as ManifestNode;
+        const result = sanitizeDirectives(node, 'campo');
+        expect(result.node.validation).toBeUndefined();
+        expect(result.warnings).toHaveLength(1);
+        expect(result.warnings[0].message).toContain('esperado array de regras');
+    });
+});
+
 describe('emitDirectiveWarnings — dedupe por nó (Spec 17, §2.1)', () => {
     let warn: ReturnType<typeof vi.spyOn>;
     beforeEach(() => {

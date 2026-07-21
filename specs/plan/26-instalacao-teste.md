@@ -2,7 +2,7 @@
 tipo: "spec"
 titulo: "Instalação Teste (Selo da Onda — importar a Sarak-UI no ERP e TESTAR a instalação)"
 dominio: "Teste de aceitação em consumidor real / Qualidade da instalação"
-status: "🔴 A Implementar"
+status: "🟡 Executada — Selo Negado (aguardando rodada de correção)"
 prioridade: "Máxima"
 tags: ["spec", "teste-de-aceitacao", "instalacao", "erp", "selo-da-onda", "plug-and-play"]
 relacionados: ["25-limpeza-testes-praticos", "21-scaffolder-init", "22-skills-de-consumo-golden-path", "08-consumo-externo-e-integracao"]
@@ -54,16 +54,16 @@ Cada item recebe **PASS / PARCIAL / FAIL** no relatório, com evidência (mensag
 `RELATORIO-INSTALACAO-UI.md` na raiz do ERP + reproduzido na conversa, com: (1) ambiente e tempo; (2) passo a passo real; (3) o que funcionou de primeira; (4) problemas um a um (sintoma exato, onde, bloqueou?, o que fez); (5) avaliação das instruções (onde precisou adivinhar); (6) contornos que teriam sido necessários; (7) **matriz M1-M10 preenchida com evidências**; (8) veredito plug-and-play **0-10** justificado + 3 melhorias mais sentidas.
 
 # 5. Critérios de Aceite (desta spec — meta-nível)
-- [ ] Pré-condição verificada (ERP limpo, spec 25 🟢).
-- [ ] Teste executado por agente externo via P10, sem violação das regras 2.2 (violação declarada = teste inválido, repetir).
-- [ ] Relatório entregue completo, com a matriz M1-M10 preenchida com evidências.
-- [ ] **Triagem dos achados registrada no `00-progresso.md` da lib:** cada FAIL/PARCIAL vira item classificado (bug de lib / lacuna de skill-catálogo / lacuna do init) com destino (correção direta, nova spec, ou aceito com justificativa).
-- [ ] **Selo da Onda:** concedido se M1-M10 = PASS (PARCIALs aceitos só com justificativa registrada). Caso contrário, a onda ganha uma rodada de correção e o teste se repete após ela.
+- [x] Pré-condição verificada (ERP limpo, spec 25 🟢).
+- [x] Teste executado por agente externo via P10, sem violação das regras 2.2 (confirmado no relatório: zero modificação em `node_modules/@sarak/*`, zero componente React de UI no consumidor, zero leitura do código-fonte da lib).
+- [x] Relatório entregue completo (`Earendel/ERP/RELATORIO-INSTALACAO-UI.md`), com a matriz M1-M10 preenchida com evidências.
+- [x] **Triagem dos achados registrada no `00-progresso.md` da lib** (entrada 2026-07-20): cada FAIL/PARCIAL classificado (bug de lib / lacuna de skill-catálogo) com destino.
+- [ ] **Selo da Onda:** **NÃO concedido** — matriz fechou M1 PARCIAL · M2 FAIL · M3 PASS · M4 PASS · M5 PASS · M6 FAIL · M7 PASS · M8 PASS · M9 PARCIAL · M10 PASS (nota 6,5/10). A onda ganha uma rodada de correção (ver triagem no `00-progresso.md`) e o teste se repete após ela.
 
 # 6. Pós-teste
 - Selo concedido → registrar na memória do projeto + índice (onda encerrada); o ERP segue como consumidor real de referência.
 - Selo negado → os achados são a matéria-prima da próxima rodada (mesmo ciclo: specs → execução → revisão → re-teste). Não corrigir "no calor" dentro do próprio teste — a separação medição/correção é o que mantém o relatório honesto.
 
 # 7. Plano de Testes (Quality Gate)
-- [ ] O próprio teste É o gate (matriz M1-M10 com evidências).
-- [ ] Verificação de integridade do teste: git do ERP sem nenhuma modificação em `node_modules/@sarak/*`; grep confirma ausência de patch; nenhum `.tsx` de UI criado fora do plumbing do init.
+- [x] O próprio teste É o gate (matriz M1-M10 com evidências, ver relatório e triagem no `00-progresso.md`).
+- [x] Verificação de integridade do teste: confirmado no relatório do executor — zero modificação em `node_modules/@sarak/*`, zero patch, nenhum `.tsx` de UI criado fora do plumbing do `init`.

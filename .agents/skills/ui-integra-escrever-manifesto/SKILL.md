@@ -47,6 +47,7 @@ O catálogo oficial de `type`s, props, ações, pipes e diretivas é **GERADO do
      ```
    - **Rota lazy:** `"routes": { "/pesada": { "lazy": "id-da-pagina" } }` — o host precisa injetar `manifestLoader={(id) => Promise<nó>}` no Renderer (ver ui-integra-consumidor). Sem loader, degrada para Fallback visível.
    - **Painel de personalização (Design Engine):** é um `type` como outro qualquer — `{ "type": "CustomizationPanel" }` numa rota (ex.: `/design`) entrega o painel completo.
+   - **Temas padrão da biblioteca são READ-ONLY — personalizar exige "Salvar como Novo Tema" (esperado, não é bug):** os temas embutidos (origem `script`) não podem ser sobrescritos. Editar cores/tokens de um tema padrão e clicar em "Aplicar Alterações Globais" **não aplica nada visualmente ainda** — em vez disso abre um modal "Salvar Novo Tema" (também dispara para qualquer tema com alterações não salvas, `isDirty`). Só depois de nomear e confirmar o novo tema (banco de dados) é que ele passa a existir e pode ser ativado/aplicado. Avise o usuário deste passo ANTES de personalizar um tema padrão — descobrir o modal por exploração cega foi um achado real de teste de instalação.
 4. **Bindings reservados**
    - `{{$route}}` — rota ativa injetada pelo host (para estado ativo de navegação, breadcrumbs, `renderIf` por rota).
    - `{{$event}}` — valor emitido pelo componente no evento que disparou as `actions` (ex.: a rota clicada no `SarakShellNav`, o valor digitado num input). Disponível SÓ dentro de `actions`.
@@ -56,6 +57,40 @@ O catálogo oficial de `type`s, props, ações, pipes e diretivas é **GERADO do
 6. **Data Binding & Pipes**
    - `"label": "Olá, {{user.name | capitalize}}!"` — pipes após `|` (lista oficial no catálogo). Fallback: `{{valor || 'padrão'}}`.
    - **Formulários:** `model: { "path": "form.campo" }` faz two-way binding; `validation: [...]` valida (erros aparecem após touch/submit); `form` agrupa o escopo.
+   - **O exemplo que BARRA o submit (padrão canônico, Spec 28)** — três peças têm que estar juntas para o gate de validação funcionar: um nó com `form: { "id": "..." }` envolvendo os campos, cada campo com `model.path` **e** `validation`, e o botão de submit com `"submit": true` **no topo da ação** `api_call` (o motor também aceita `payload.submit` como alias — leniente por causa de um erro real de autoria — mas o topo é o lugar canônico e o que os exemplos usam):
+     ```json
+     {
+       "type": "SarakFlex",
+       "form": { "id": "cadastro", "resetOn": "submitSuccess" },
+       "props": { "direction": "column", "gap": "spacing-md" },
+       "children": [
+         {
+           "type": "SarakInput",
+           "model": { "path": "cliente.nome" },
+           "validation": [
+             { "rule": "required", "message": "Informe o nome." },
+             { "rule": "minLength", "value": 3 }
+           ],
+           "props": { "label": "Nome" }
+         },
+         {
+           "type": "SarakButton",
+           "props": { "children": "Salvar" },
+           "actions": [
+             { "type": "api_call", "submit": true, "payload": { "endpoint": "/api/clientes", "method": "POST" } },
+             { "type": "trigger_toast", "payload": { "message": "Salvo!", "variant": "success" } }
+           ]
+         }
+       ]
+     }
+     ```
+     Com `"submit": true`, o payload do `api_call` vem AUTOMATICAMENTE dos `model` do form-escopo — **não passe `params` à mão** aqui. Se algum campo estiver inválido, o motor BARRA o envio (nenhum `api_call` dispara), revela os erros nos campos e nada é enviado — nenhum toast de sucesso falso. Contraste com o exemplo `params: "{{form}}"` do item 7 (Eventos e Ações): aquele NÃO valida (lê o estado cru); use-o só quando o form não tem NENHUM campo com `validation`.
+   - **Shape de uma regra de `validation`** (tabela completa e sempre atual: seção "Regras de `validation`" de `docs/manifest-catalog.md`):
+     - `{ "rule": "required" }` — dispensa `value`.
+     - `{ "rule": "minLength", "value": 3 }` / `{ "rule": "maxLength", "value": 120 }` — `value` numérico.
+     - `{ "rule": "pattern", "value": "^[0-9]{5}$" }` — `value` é a fonte de um regex.
+     - `{ "rule": "type", "value": "email" }` — `value` é `"email" | "url" | "numero"`.
+     - Todas aceitam `"message": "..."` opcional (custom); sem ela, usa o default em pt-BR. `rule` desconhecida ou `value` ausente/inválido para a regra gera `console.warn` com o exemplo correto e a regra é IGNORADA (não derruba a tela — as demais regras do mesmo campo continuam validando).
    - **Fonte de dados — lista auto-carregada é o padrão OBRIGATÓRIO (nunca "botão Carregar"):** `source: { "endpoint": "/api/x", "into": "chave" }` hidrata o estado ANTES de renderizar (passa pelo `networkInterceptor` do host) e expõe o ciclo `loading`/`empty`/`error` via `states` — sempre declare os 3, nunca deixe o usuário acionar a carga manualmente. Exemplo completo (lista de dados — o padrão para toda tela que lista algo vindo de API):
      ```json
      {
@@ -91,14 +126,15 @@ O catálogo oficial de `type`s, props, ações, pipes e diretivas é **GERADO do
    - Interações são declaradas em `"actions": []` — **array plano**, nunca objeto com chaves de evento. A Engine decide o gatilho (`onClick` em botões, `onChange` em campos com `model`/componentes emissores).
    - Catálogo oficial de ações (gerado): `api_call`, `mutate_state`, `navigate`, `trigger_toast`, `open_modal`, `open_drawer`, `close_modal`, `close_drawer`, `close_overlay`.
    - **Feedback é zero-config:** `trigger_toast`/`open_modal`/`open_drawer` funcionam sem nenhum Provider extra — o `SarakUIProvider` monta os hosts sozinho.
-   - `api_call` só lê `endpoint`/`method`/`params` de dentro de `payload`. **O corpo é `params`, não `body`** (`body` não existe e é ignorado). Com `"submit": true`, o payload vem dos `model` do form e a validação BARRA o envio se houver erro.
-   - Exemplo (salvar e avisar):
+   - `api_call` só lê `endpoint`/`method`/`params` de dentro de `payload`. **O corpo é `params`, não `body`** (`body` não existe e é ignorado). Com `"submit": true` (no topo da ação, ou `payload.submit` como alias), o payload vem dos `model` do form e a validação BARRA o envio se houver erro — ver o exemplo canônico completo no item 6 (Formulários).
+   - Exemplo (salvar e avisar) — **SEM validação de formulário** (não usa `submit`/form-escopo; `params: "{{form}}"` lê o estado cru tal como está, mesmo com campos vazios):
      ```json
      "actions": [
        { "type": "api_call", "payload": { "endpoint": "/api/save", "method": "POST", "params": "{{form}}" } },
        { "type": "trigger_toast", "payload": { "message": "Salvo com sucesso!", "variant": "success" } }
      ]
      ```
+     **Use isto SÓ quando o form não tem nenhum campo com `validation`.** Para qualquer formulário com `validation`, use o exemplo canônico do item 6 (`"submit": true` + sem `params` manual) — é o único jeito que barra o envio inválido. Se um `api_call` disparar dentro de um form-escopo com erro SEM `submit` reconhecido, o motor agora BLOQUEIA a chamada e avisa no console (deixou de ser silencioso).
    - **Erros comuns a evitar** (schemas que já causaram falha real — sem erro visível):
      ```json
      // ❌ ERRADO: "actions" como objeto, endpoint/method soltos
@@ -116,6 +152,12 @@ O catálogo oficial de `type`s, props, ações, pipes e diretivas é **GERADO do
        "props": { "children": "Carregar contratos" },
        "actions": [{ "type": "api_call", "payload": { "endpoint": "/api/contratos", "into": "contratos" } }]
      }
+     ```
+     ```json
+     // ❌ ERRADO: form COM `validation` usando `params: "{{form}}"` sem "submit" reconhecido — o
+     // motor BLOQUEIA a chamada e avisa no console (deixou de ser silencioso), mas o certo aqui
+     // é o exemplo canônico do item 6: "submit": true no topo da ação, sem `params` manual.
+     "actions": [{ "type": "api_call", "payload": { "endpoint": "/api/save", "method": "POST", "params": "{{form}}" } }]
      ```
 8. **Resiliência e persistência**
    - `onError: [...]` — cadeia disparada quando uma ação falha; `fallbackErrorUI` na raiz — tela de recuperação global (Spec 27).
@@ -144,6 +186,7 @@ O catálogo oficial de `type`s, props, ações, pipes e diretivas é **GERADO do
 - **Catálogo primeiro:** antes de entregar a tela, confira cada `type` e prop contra `docs/manifest-catalog.md`; depois valide com a skill `ui-auditoria-manifesto`.
 - **Só tokens do catálogo (regra dura, item 2):** todo valor de espaçamento/variant/CSS var vem da seção "Tokens e valores permitidos" — nunca por analogia ("parece que existe `spacing-xxl`"). Um valor fora da lista não quebra a build; degrada em silêncio (warn + fallback), o que é pior — a tela "funciona" com o token errado sem avisar visualmente.
 - **Lista de dados sempre com `source`+`states` (regra dura, item 6):** nenhuma tela de listagem nasce com botão "Carregar"/"Buscar" manual — carga automática com os 3 estados é o único padrão aceito para telas finais.
+- **Formulário com `validation`, sempre `submit: true` (regra dura, item 6, Spec 28):** nunca use `params` manual (`"{{form}}"` ou individual) num formulário que tem algum campo com `validation` — o motor BLOQUEIA e avisa no console se um `api_call` disparar dentro de um form-escopo com erro sem `submit` reconhecido. `"submit": true` no topo da ação (aceito também em `payload.submit`) é o único caminho que valida antes de enviar e monta o payload automaticamente dos `model`.
 
 ## Referências
 - `docs/manifest-catalog.md` / `docs/manifest-catalog.json` — catálogo GERADO (types, props, ações, pipes, diretivas).

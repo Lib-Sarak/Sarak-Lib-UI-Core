@@ -1,0 +1,79 @@
+// Gate de empacotamento (Spec 29 §2.1/2.4): roda `npm pack --dry-run --json` sobre o
+// pacote já buildado e confere a allowlist do campo `files`. Falha se o tarball trouxer
+// código-fonte/config de teste (achado 4 do Selo) OU se faltar algo que o `init`
+// (`bin/scaffold/context.mjs` → `skillsSourceDir`/`templates/`) precisa ler do pacote
+// instalado — sem isso o `init` do consumidor não acha as skills nem o manifesto starter.
+import { execSync } from 'node:child_process';
+
+const FORBIDDEN_PREFIXES = [
+    'src/', // exceto o único arquivo permitido abaixo (export "./sarak-base.css")
+    'specs/',
+    'playwright/',
+    '__snapshots__/',
+    'Template-Ts/',
+];
+
+const FORBIDDEN_EXACT_OR_SUFFIX = [
+    'vitest.config.ts',
+    '.test.mjs',
+    '.test.ts',
+    '.test.tsx',
+];
+
+const ALLOWED_SRC_FILE = 'src/styles/sarak-base.css';
+
+const REQUIRED_PATHS = [
+    'dist/index.js',
+    'dist/index.cjs',
+    'dist/index.d.ts',
+    'dist/backend-node.js',
+    'dist/backend-node.cjs',
+    'dist/backend-node.d.ts',
+    'dist/sarak.css',
+    'bin/sarak-ui.mjs',
+    'bin/scaffold/context.mjs',
+    'bin/scaffold/runInit.mjs',
+    'docs/manifest-catalog.md',
+    'docs/manifest-catalog.json',
+    'templates/app-starter.manifest.json',
+    // As 2 skills que `SKILLS_TO_COPY` (bin/scaffold/constants.mjs) copia no `init` —
+    // sem elas no tarball, o `init` do consumidor não encontra o que copiar.
+    '.agents/skills/ui-integra-escrever-manifesto/SKILL.md',
+    '.agents/skills/ui-auditoria-manifesto/SKILL.md',
+];
+
+function isForbidden(filePath) {
+    if (filePath === ALLOWED_SRC_FILE) return false;
+    if (FORBIDDEN_PREFIXES.some((prefix) => filePath.startsWith(prefix))) return true;
+    return FORBIDDEN_EXACT_OR_SUFFIX.some((suffix) => filePath.endsWith(suffix));
+}
+
+function main() {
+    // Comando fixo (sem input externo) — `execSync` via shell resolve o shim `npm.cmd`
+    // do Windows sem o aviso de depreciação de `execFileSync(..., { shell: true })`.
+    const raw = execSync('npm pack --dry-run --json', { encoding: 'utf8' });
+    const [{ files }] = JSON.parse(raw);
+    const paths = files.map((f) => f.path);
+    const pathSet = new Set(paths);
+
+    const forbiddenFound = paths.filter(isForbidden);
+    const missingRequired = REQUIRED_PATHS.filter((p) => !pathSet.has(p));
+
+    if (forbiddenFound.length > 0) {
+        console.error(`[check-package-contents] ${forbiddenFound.length} arquivo(s) proibido(s) no tarball:`);
+        for (const p of forbiddenFound) console.error(`  - ${p}`);
+    }
+    if (missingRequired.length > 0) {
+        console.error(`[check-package-contents] ${missingRequired.length} arquivo(s) obrigatório(s) AUSENTE(S) do tarball:`);
+        for (const p of missingRequired) console.error(`  - ${p}`);
+    }
+
+    if (forbiddenFound.length > 0 || missingRequired.length > 0) {
+        process.exitCode = 1;
+        return;
+    }
+
+    console.log(`[check-package-contents] OK — ${paths.length} arquivos no tarball, allowlist respeitada.`);
+}
+
+main();

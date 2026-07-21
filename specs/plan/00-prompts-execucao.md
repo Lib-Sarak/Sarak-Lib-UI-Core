@@ -1,4 +1,4 @@
-# Prompts de Execução — Onda "Renderizador Genérico" (specs 16-24)
+# Prompts de Execução — Onda "Renderizador Genérico" (specs 16-24 + Fase 5 de correção pós-Selo, specs 27-30)
 
 Cada bloco abaixo é um prompt COMPLETO para iniciar a execução de uma spec **numa conversa nova** (agente sem contexto anterior). Copie e cole o bloco inteiro. A ordem dos prompts é a ordem de execução do roteiro (`00-indice.md`). Specs agrupáveis têm prompt único (P8).
 
@@ -185,4 +185,137 @@ RELATÓRIO OBRIGATÓRIO (entregável principal) — salve como `RELATORIO-INSTAL
 8. Veredito final: a instalação foi efetivamente plug-and-play? Nota 0-10 com justificativa, e as 3 melhorias que você mais sentiria falta.
 
 NÃO corrija a biblioteca, NÃO abra specs dela, NÃO commite nada sem autorização do usuário.
+```
+
+---
+
+# Fase 5 — Correção pós-Selo (P11-P16)
+
+> Rodada de correção dos achados do Selo negado (`RELATORIO-SELO-ONDA-ACHADOS.md` + triagem da Spec 26 no `00-progresso.md`). Ordem: P11 e P12 (os dois FAIL/críticos) → P13 (robustez de instalação) → **P14 (desinstalar o ERP)** → **P15 (re-Selo)** → P16 (polimento, não bloqueante). Cada correção de código segue o mesmo ciclo da onda: spec → execução → revisão independente → re-teste. **A validação final é o re-teste real (P15), não a suíte unitária.**
+>
+> **O ciclo do re-Selo é de dois passos:** desinstalar (P14) e reinstalar do zero medindo (P15). O ERP hoje tem a instalação completa da rodada 1 na raiz — pular o P14 faria o teste medir uma instalação sobre a outra.
+
+## P11 — Spec 27: Paridade de navigationStyle no Shell
+
+```
+Execute a spec `specs/plan/27-paridade-navigationstyle-shell.md` da Sarak-Lib-UI-Core.
+
+Preparação obrigatória, nesta ordem: (1) acione a skill `ui-contexto-repositorio`; (2) leia `specs/plan/00-indice.md` e `specs/plan/00-progresso.md`; (3) leia a spec 27 inteira; (4) leia as relacionadas `specs/plan/18-shell-consome-design-engine.md` (a base que esta corrige) e `specs/specs/04-estrutura-shell-discovery.md` (o shell LEGADO — referência de paridade). Skills de execução: `ui-arquitetura-design` e `sarak:padrao-typescript`.
+
+Contexto essencial: `navigationStyle: "topbar"` no Design Engine quebra a navegação — `SarakShellNav` vira horizontal (`src/components/atomic/Navigation/SarakShellNav.tsx:114-119`) mas o `ShellRouterNode` (`src/core/Manifest/nodes/ShellRouterNode.tsx:154-172`) SEMPRE envolve a região sidebar num `<aside>` de 240px fixos, independentemente do estilo. O Shell legado (`src/core/Shell/SarakShell.tsx:78-194`) já trata isso com ramos mutuamente exclusivos (`isTopbar`/`isSidebar`/...). É item de PARIDADE: o `Sarak-MyService` usa `navigationStyle: "topbar"` em produção e quebraria ao migrar pro motor novo.
+
+Entregue: helper compartilhado de leitura de `navigationStyle` (fonte única entre `ShellRouterNode` e `SarakShellNav` — não duplicar a leitura do contexto); `ShellRouterNode` realoca a região sidebar para faixa de largura CHEIA quando `navigationStyle` é `topbar` (horizontal), mantendo o `<aside>` fixo quando `sidebar`/ausente; zero hardcode (`var(--sarak-*, fallback)`, sem `--sx-*`, sem token órfão); `dock`/`glass` FORA do escopo (default vertical). Testes conforme o plano, incluindo o E2E browser de topbar full-width (jsdom não computa `var()`).
+
+Ao terminar: suítes de `src/core/Manifest` e `src/components/atomic/Navigation` verdes; gates `RegistryParity`/`catalog:check`/`npm run build` verdes; `run_audit.mjs` 0 falhas; frontmatter da spec + checkbox (item 11) no `00-indice.md` + entrada no `00-progresso.md`. A validação definitiva de topbar é o re-Selo (P15), não só o unitário.
+```
+
+---
+
+## P12 — Spec 28: Gate de Submit à prova de erro de autoria
+
+```
+Execute a spec `specs/plan/28-gate-submit-validacao.md` da Sarak-Lib-UI-Core.
+
+Preparação obrigatória, nesta ordem: (1) acione a skill `ui-contexto-repositorio`; (2) leia `specs/plan/00-indice.md` e `specs/plan/00-progresso.md`; (3) leia a spec 28 inteira; (4) leia as relacionadas `specs/plan/17-resiliencia-leniente-e-dx-de-erros.md` (a postura de degradar-com-warn) e as definitivas `specs/specs/29`/`32`/`25` (validação/binding/dispatcher). Skills de execução: `sarak:padrao-typescript` e, ao editar a skill, `meta-create-skill`.
+
+Contexto essencial (a triagem supôs a causa ERRADA — leia o diagnóstico refinado da spec): o gate de submit EXISTE e funciona (`src/core/Manifest/Dispatcher/createDispatcher.ts:87-94` — `action.submit && ctx.form` → `SubmitBlockedError`). O bug é degradação SILENCIOSA: o gate só dispara com `submit` no TOPO da ação (`types.ts:58`), com `form: { id }` no escopo (`LeafNode.tsx:100`) e campos com `model`+`validation` (`LeafNode.tsx:72-75`) — e nada avisa quando falha. O executor escreveu `payload: { submit: true }` e a skill só tem o exemplo `params: "{{form}}"` que NÃO valida; não há exemplo do form que barra nem shape de `validation` documentado (M9).
+
+Entregue: (a) leniência — aceitar `payload.submit` como alias de `action.submit`; (b) `console.warn` defensivo quando um `api_call` envia um form-escopo COM erros sem ser submit (decidir com o mantenedor se barra incondicionalmente) e quando `submit:true` sem form-escopo; (c) warn de shape inválido de `validation` no pipeline de `sanitizeDirectives`; (d) skill `ui-integra-escrever-manifesto` com o exemplo COMPLETO do form que barra (form-escopo + model + validation + `submit:true` no topo) e o shape de `validation` por `rule`; catálogo regenerado com a seção de `validation`. Espelhar `.agents`→`.claude` (hash igual). NÃO afrouxe segurança.
+
+Ao terminar: suítes de `src/core/Manifest` (incl. `Form.integration` e Dispatcher) verdes; gates `RegistryParity`/`catalog:check`/`npm run build` verdes; `run_audit.mjs` 0 falhas; frontmatter + checkbox (item 12) + entrada no progresso. A prova de que M6/M9 voltaram a PASS é o re-Selo (P15).
+```
+
+---
+
+## P13 — Spec 29: Robustez da primeira instalação
+
+```
+Execute a spec `specs/plan/29-robustez-instalacao-pacote.md` da Sarak-Lib-UI-Core.
+
+Preparação obrigatória, nesta ordem: (1) acione a skill `ui-contexto-repositorio`; (2) leia `specs/plan/00-indice.md` e `specs/plan/00-progresso.md`; (3) leia a spec 29 inteira; (4) leia as relacionadas `specs/plan/21-scaffolder-init.md` e `specs/plan/22-skills-de-consumo-golden-path.md`. Skills de execução: `sarak:padrao-typescript` (o bin) e `meta-create-skill` (as skills). ANTES de fechar o `files`, mapeie exatamente o que `runInit`/`copySkills` lê do pacote instalado (`bin/scaffold/context.mjs` → `skillsSourceDir`), senão o `init` do consumidor não acha as skills.
+
+Contexto essencial: (achado 4) `package.json` sem `files`/`.npmignore` → `npm install github:...` copia `src/`/`specs/`/`playwright/` inteiros pro `node_modules`; (achado 3) `bin/sarak-ui.mjs:44-50` não tem `--help` real e `bin/scaffold/prompts.mjs:25-27` abre `readline` sem guard de TTY (sem TTY e sem `--yes` → exit 0 mudo, zero arquivos); (achado 2) skill `ui-integra-consumidor:42-43` manda `npm install github:` sem garantir `package.json` antes (npm sobe a árvore e polui um ancestral); (achado 5) fluxo "tema padrão read-only → salvar novo tema" não documentado.
+
+Entregue: campo `files` no `package.json` da lib (allowlist: `dist/`,`bin/`,`backend/`,`docs/manifest-catalog.*`,`templates/` + o que o init copia) validado por `npm pack`; `--help`/`-h` real no `bin/sarak-ui.mjs` (exit 0, todas as flags) + guard `process.stdin.isTTY` (sem TTY e sem `--yes`/flags → exit 1 com instrução, nunca exit 0 mudo); skill `ui-integra-consumidor` com passo "garanta `package.json` (npm init -y) antes do `npm install github:`" + o fluxo de salvar novo tema documentado; espelhos `.agents`→`.claude` com hash igual. Testes conforme o plano (smoke do init com flags continua verde).
+
+Ao terminar: smoke do `init` verde; `npm run build` verde; checagem do tarball (`npm pack --dry-run`) sem `src/`/`specs/`; gates + `run_audit.mjs` 0 falhas; frontmatter + checkbox (item 13) + entrada no progresso.
+```
+
+---
+
+## P14 — Spec 31: Limpeza da Rodada 2 (desinstalar a Sarak-UI do ERP)
+
+> Pré-requisito do re-Selo. **NÃO reuse o P9/Spec 25** — o inventário daquela spec aponta para `frontend/`, pasta que não existe mais; a rodada 1 instalou na RAIZ do ERP.
+
+```
+Execute a spec `specs/plan/31-limpeza-rodada2-erp.md` da Sarak-Lib-UI-Core.
+
+Preparação obrigatória, nesta ordem: (1) leia `specs/plan/00-indice.md` e `specs/plan/00-progresso.md` da lib; (2) leia a spec 31 INTEIRA — ela contém o inventário exato do que remover e do que é PROIBIDO tocar no repositório-alvo `C:\Users\Igor\Desktop\Sarak\X - Trabalho\Code\Earendel\ERP`; (3) leia a `specs/plan/25-limpeza-testes-praticos.md` APENAS como referência histórica da rodada 1 — o inventário dela (pasta `frontend/`) está OBSOLETO e não descreve a instalação atual.
+
+Contexto essencial: o ERP recebeu, na rodada 1 do Selo, uma instalação COMPLETA da Sarak-UI via `npx @sarak/lib-ui-core init` — na RAIZ do repositório (não em `frontend/`). Ela precisa sair inteira antes do re-Selo, senão o teste mede uma instalação sobre a outra. Pegada real (verificada 2026-07-20): `src/` (main.tsx, Sarak-Engine/, manifests/, server.ts), `package.json`, `package-lock.json`, `node_modules/`, `dist/`, `index.html`, `vite.config.ts`, `tsconfig.json`, `tsconfig.server.json`, `database.sqlite`, e as skills de UI copiadas para `.agents/skills/` E `.claude/skills/` (`ui-integra-escrever-manifesto`, `ui-auditoria-manifesto`).
+
+Regras inegociáveis: esta operação REMOVE artefatos da Sarak-UI de um consumidor de teste — nada do NEGÓCIO do ERP pode ser modificado (`Modulos/`, `specs/`, `.githooks/`, `CLAUDE.md`, `.env`, scripts Python, SQLs de negócio, o PDF de template, e as 8 skills de negócio em `.agents/skills/`). Faça o INVENTÁRIO VIVO (listar a raiz + grep por "sarak" fora de node_modules/.git) ANTES de deletar e compare com a tabela 2.1 da spec — a pegada muda conforme as respostas do `init`. Rode `git status`/`git ls-files` para separar o que é tracked (precisa `git rm --cached`) do que é só disco. Resolva as 5 decisões HITL da seção 2.3 com o usuário ANTES de agir (package.json híbrido — recomendação é remover por completo, pois o re-Selo precisa medir a instalação num diretório SEM package.json; database.sqlite; schema ui_core remoto; linhas do .env; quem commita).
+
+O relatório da rodada 1 já está arquivado nesta lib (`specs/plan/RELATORIO-INSTALACAO-UI-rodada1.md`) — pode remover o `RELATORIO-INSTALACAO-UI.md` do ERP.
+
+Ao terminar: verificação de integridade da seção 3 passo 5 (git status só com as remoções esperadas + grep de resíduo com SAÍDA LITERAL + um script Python de negócio executando); entrada no `00-progresso.md` da LIB; frontmatter da spec 🟢; checkbox item 14 no `00-indice.md`. NÃO commite sem autorização explícita.
+```
+
+---
+
+## P15 — Re-Selo da Onda (2ª execução da Spec 26, AGENTE EXTERNO)
+
+> Só dispare DEPOIS de P11+P12+P13 executadas E revisadas (código lido, gates re-rodados) **e** do P14 (limpeza) concluído. Reinstala o ERP do zero e repete o Selo. Mesmas regras do P10 (agente sem contexto, só caminho oficial, contornos proibidos, matriz M1-M10). Antes de disparar: confirme que `origin/main` da lib está sincronizado com as correções (o `init`/pacote testado tem que ser o corrigido) e que o ERP está limpo (gate de prontidão da Spec 31).
+
+```
+Você vai REINSTALAR a biblioteca Sarak-UI (@sarak/lib-ui-core) DO ZERO no sistema `C:\Users\Igor\Desktop\Sarak\X - Trabalho\Code\Earendel\ERP` e produzir um relatório de avaliação da experiência. Esta é a SEGUNDA rodada do Selo da Onda: a primeira (2026-07-20) foi NEGADA (nota 6,5/10) e uma rodada de correção (specs 27/28/29) foi executada desde então — seu teste mede se as correções realmente fecharam os achados. Contexto mínimo: o ERP Earendel é um sistema de gestão (módulos de Propostas, Contratos e Projetos, banco Supabase, scripts Python de negócio) que hoje NÃO tem frontend — a Sarak-UI será responsável por TODA a renderização, via manifestos JSON. NÃO leia o relatório anterior nem as specs de correção: você é um agente externo sem contexto da lib; o teste mede a instalação como um consumidor novo a vê.
+
+REGRAS DO TESTE (inegociáveis):
+1. Use SOMENTE o caminho oficial da biblioteca: garanta um `package.json` na raiz do diretório-alvo (se não existir, `npm init -y` primeiro), depois `npm install github:Lib-Sarak/Sarak-Lib-UI-Core` e depois `npx @sarak/lib-ui-core init` (o scaffolder faz a entrevista: modo/stack/storage — em caso de dúvida, use os defaults do Golden Path, ou `--help` para ver as flags). Após o init, siga as skills que ele instala em `.agents/skills/` (`ui-integra-consumidor` → `ui-integra-escrever-manifesto` → `ui-auditoria-manifesto`) e o catálogo `node_modules/@sarak/lib-ui-core/docs/manifest-catalog.md`.
+2. É PROIBIDO: modificar qualquer arquivo dentro de `node_modules/@sarak/lib-ui-core`; criar patch/postinstall sobre a lib; escrever componente React de interface no consumidor (só o plumbing que o init gera: Provider/Renderer/interceptors/store). Se algo só funcionar com um contorno desses, NÃO aplique o contorno — registre o problema no relatório e siga para o próximo item. O teste mede a BIBLIOTECA, não a sua habilidade de contorná-la.
+3. Não leia o código-fonte da lib para descobrir como usá-la — use apenas skills, catálogo, templates e mensagens de erro/warns. Se a instrução fornecida não bastar, isso É um achado para o relatório.
+
+O QUE CONSTRUIR (critério de sucesso funcional):
+- App Modo App com shell + navegação (Início, Propostas, Contratos, Projetos, Design Engine) partindo do template starter.
+- Pelo menos UMA tela de lista real com carga automática (`source` com states loading/empty/error + `renderFor`) consumindo um endpoint do backend gerado pelo init (pode ser dado de exemplo servido pelo server.ts; integração real com o Supabase do ERP é bônus, não requisito).
+- UM formulário com validação + `api_call` + toasts de sucesso/erro.
+- PELO MENOS UMA tela com grid e/ou cards (não só empilhamento flex) — a rodada anterior só exercitou flex+form+lista e deixou essa lacuna de cobertura; force grid/`SarakCard` desta vez.
+- Design Engine acessível em `/design`, com personalização aplicando ao vivo (ex.: cor da topbar) e tema salvo persistindo após reload (use o storage escolhido na entrevista do init).
+- Um teste PROPOSITAL de erro de autoria (ex.: um token de espaçamento inventado e um `"actions"` como objeto num nó de rascunho): a tela deve continuar de pé e o console deve ensinar a correção — registre o comportamento observado.
+- Validação real: `npm run dev` com backend+frontend de pé, telas conferidas no browser, `npm run build` do consumidor verde.
+
+FOCO DE REGRESSÃO (os itens que falharam/atritaram na rodada anterior — teste cada um explicitamente e registre a evidência):
+- M6 (validação): o formulário com `validation` DEVE barrar o submit vazio — nenhum registro vazio persistido, nenhum toast de sucesso, os campos revelam o erro. Teste também com `curl` no endpoint que NÃO há registro vazio criado.
+- M7 (navegação): ative `navigationStyle: "topbar"` no Design Engine e confirme que a navegação ocupa a largura CHEIA com TODOS os itens visíveis — não uma faixa horizontal estreita e cortada. Personalizar um tema padrão pode abrir um modal de "salvar novo tema": registre se a skill/catálogo avisaram sobre isso.
+- M1/M2 (instalação): descubra as flags do `init` via `--help` (não por acidente); ao instalar, confirme que o `package.json`/`node_modules` foram criados NO diretório do ERP e que NENHUM projeto ancestral (ex.: `C:\Users\Igor\`) foi poluído.
+- M9 (empacotamento): confirme que `node_modules/@sarak/lib-ui-core` NÃO contém `src/`/`specs/`/`playwright/` (só `dist/`/`bin/`/`backend/`/`docs/`/`templates/` e o necessário).
+
+RELATÓRIO OBRIGATÓRIO (entregável principal) — salve como `RELATORIO-INSTALACAO-UI.md` na raiz do ERP (sobrescrevendo a versão anterior) e reproduza o conteúdo integral na conversa:
+1. Ambiente (SO, Node, npm) e tempo total aproximado.
+2. Passo a passo executado (comandos reais, na ordem).
+3. O que funcionou DE PRIMEIRA, sem intervenção.
+4. PROBLEMAS, um a um: sintoma exato (mensagem/print), onde apareceu (init/skill/catálogo/motor/build), se bloqueou ou só atrapalhou, e o que você fez (registrou e seguiu / parou o item).
+5. Avaliação das instruções: as skills e o catálogo bastaram? Onde você precisou adivinhar?
+6. Contornos que teriam sido necessários (e que a regra 2 proibiu) — cada um é uma falha da biblioteca a corrigir.
+7. MATRIZ DE MEDIÇÃO M1-M10 — preencha cada item com PASS/PARCIAL/FAIL + evidência (mensagem/saída literal):
+   M1 init gera projeto completo em 1 comando · M2 install+dev sobem sem ajuste manual (e sem poluir diretório ancestral) · M3 telas do template corretas de primeira · M4 erro de autoria proposital não derruba a tela e o warn ensina · M5 lista com source+states funciona pelo exemplo da skill · M6 formulário completo (validação barra submit; toasts) · M7 topbar/navigationStyle personalizada reflete ao vivo sem quebrar o layout · M8 tema persiste após reload · M9 skills+catálogo bastaram (zero leitura do código-fonte da lib; pacote sem o fonte) · M10 zero contorno necessário.
+8. Veredito final: a instalação foi efetivamente plug-and-play? Nota 0-10 com justificativa, e as 3 melhorias que você mais sentiria falta.
+
+NÃO corrija a biblioteca, NÃO abra specs dela, NÃO commite nada sem autorização do usuário.
+```
+
+---
+
+## P16 — Spec 30: Polimento pós-Selo (baixa prioridade — SÓ depois do re-Selo)
+
+```
+Execute a spec `specs/plan/30-polimento-pos-selo.md` da Sarak-Lib-UI-Core. NÃO execute antes do re-Selo (P15) — é polimento não-bloqueante.
+
+Preparação obrigatória, nesta ordem: (1) acione a skill `ui-contexto-repositorio`; (2) leia `specs/plan/00-indice.md` e `specs/plan/00-progresso.md`; (3) leia a spec 30 inteira. Skills de execução: `sarak:padrao-typescript` e `sarak:otimizacao-nivel-1` (para o bundle — medir antes/depois).
+
+Contexto essencial (observações não-bloqueantes do Selo): (6) `renderFor` avisa "item sem id/uuid" por item quando a chave natural é outra (`hash`); (7) bundle de app mínimo em 3,9 MB / 992 KB gzip sem code-splitting visível (pesados já são `React.lazy` no `LeafNode`); (8) `input[type=color]` do CustomizationPanel recebe `var(...)` cru e o Chrome reclama.
+
+Entregue: `renderFor` reconhece chave natural (`hash`/`key`/`slug`, idealmente declarável) e deduplica o warn; investigação e melhora do code-splitting no template do `init` (baseline 3,9 MB / 992 KB gzip, medir depois); input color recebe hex resolvido. Se abrir campo novo no `renderFor`, regenere o catálogo e mantenha a paridade. Testes conforme o plano.
+
+Ao terminar: gates `RegistryParity`/`catalog:check`/`npm run build` verdes; `run_audit.mjs` 0 falhas; frontmatter + checkbox (item 15) + entrada no progresso com os números de bundle antes/depois.
 ```

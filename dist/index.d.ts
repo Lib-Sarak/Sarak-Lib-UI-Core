@@ -2871,6 +2871,30 @@ interface FormScope {
 declare const createFormScope: (id: string, store?: FormStore) => FormScope;
 
 /**
+ * Gate de Submit à Prova de Erro de Autoria (Spec 28 §2.2 + Spec 29/32)
+ *
+ * Extraído de `createDispatcher.ts` para manter o arquivo abaixo do limite de linhas
+ * (MAX_LINES=250, `ui-auditoria-modulo`) — mesma responsabilidade única: decidir se um
+ * `api_call` pode seguir, montar o payload de submit e bloquear silenciosamente quando a
+ * Validação (ou uma tentativa de burlá-la em silêncio) o exigir.
+ *
+ * Zero Any: `DispatchContext`/`ManifestAction`/`ManifestProps` são só tipo (`import
+ * type`) — o ciclo de módulo com `createDispatcher.ts` é só de tipagem, apagado no
+ * build (nunca vira dependência circular em runtime).
+ */
+
+/**
+ * Sinaliza que um `api_call` foi BARRADO pela Validação — seja um submit reconhecido
+ * com erro (Spec 29, Regra 2), seja um `api_call` dentro de um form-escopo com erro que
+ * NÃO foi marcado como submit (Spec 28 §2.2, defesa contra burlar o gate em silêncio).
+ * `runActions` reconhece a classe e interrompe a cadeia SILENCIOSAMENTE — sem disparar
+ * `onError` (diferente de uma falha de rede real).
+ */
+declare class SubmitBlockedError extends Error {
+    constructor(message?: string);
+}
+
+/**
  * Dispatcher Central de Eventos e Ações (Spec 25)
  *
  * Medula da interatividade: traduz a diretiva declarativa `actions: []` num pipeline
@@ -2884,14 +2908,6 @@ declare const createFormScope: (id: string, store?: FormStore) => FormScope;
  * Zero Any: payloads são `ManifestProps`; as fronteiras dinâmicas são `unknown`.
  */
 
-/**
- * Sinaliza que um `api_call` com `submit: true` foi BARRADO pela Validação (Spec 29,
- * Regra 2). `runActions` o reconhece e interrompe a cadeia SILENCIOSAMENTE — sem
- * disparar `onError` (diferente de uma falha de rede real).
- */
-declare class SubmitBlockedError extends Error {
-    constructor(message?: string);
-}
 /** Pedido de overlay imperativo (open_modal/open_drawer). */
 interface OverlayRequest {
     kind: 'modal' | 'drawer';

@@ -192,6 +192,42 @@ const collectSpacingTokens = () => {
     return tokens;
 };
 
+/** Mapa VALIDATION_RULE_SHAPES (Spec 28) — fonte ÚNICA do shape de cada regra de `validation`. */
+const collectValidationRuleShapes = () => {
+    const source = parse('core/Manifest/Form/validationRuleShapes.ts');
+    const shapes = {};
+    const visit = (node) => {
+        if (
+            ts.isVariableDeclaration(node) &&
+            node.name.getText() === 'VALIDATION_RULE_SHAPES' &&
+            node.initializer
+        ) {
+            let literal = node.initializer;
+            while (ts.isAsExpression(literal) || ts.isSatisfiesExpression(literal)) {
+                literal = literal.expression;
+            }
+            if (ts.isObjectLiteralExpression(literal)) {
+                for (const prop of literal.properties) {
+                    if (!ts.isPropertyAssignment(prop) || !ts.isObjectLiteralExpression(prop.initializer)) continue;
+                    const ruleName = prop.name.getText().replace(/^['"]|['"]$/g, '');
+                    const entry = {};
+                    for (const field of prop.initializer.properties) {
+                        if (!ts.isPropertyAssignment(field)) continue;
+                        const fieldName = field.name.getText();
+                        if (ts.isStringLiteral(field.initializer)) entry[fieldName] = field.initializer.text;
+                        else if (field.initializer.kind === ts.SyntaxKind.TrueKeyword) entry[fieldName] = true;
+                        else if (field.initializer.kind === ts.SyntaxKind.FalseKeyword) entry[fieldName] = false;
+                    }
+                    shapes[ruleName] = entry;
+                }
+            }
+        }
+        ts.forEachChild(node, visit);
+    };
+    visit(source);
+    return shapes;
+};
+
 /** CSS Variables públicas reais (namespace `--sarak-*`) emitidas pelo DESIGN_MANIFEST (Spec 16). */
 const collectPublicCssVars = () => {
     const source = parse('core/Provider/manifest.ts');
@@ -247,12 +283,33 @@ const buildCatalog = () => {
         actions: collectActions(),
         pipes: collectPipes(),
         directives: collectDirectives(),
+        validationRules: collectValidationRuleShapes(),
         tokens: {
             spacing: collectSpacingTokens(),
             variants: collectVariantUnions(components),
             cssVars: collectPublicCssVars(),
         },
     };
+};
+
+/** Seção "Regras de `validation`" (Spec 28 §2.4) — shape/exemplo de cada `rule` aceita. */
+const renderValidationRulesSection = (validationRules) => {
+    const lines = [
+        '## Regras de `validation` (schema de campo)',
+        '',
+        '> Cada item de `"validation": [...]` é `{ "rule": "...", "value"?: ..., "message"?: "..." }`. ' +
+            '`rule` fora desta lista, ou faltando `value` quando exigido, gera `console.warn` e a regra é ' +
+            'IGNORADA (as demais regras do campo continuam validando).',
+        '',
+        '| `rule` | Exige `value`? | `value` esperado | Exemplo |',
+        '| --- | --- | --- | --- |',
+    ];
+    for (const [rule, shape] of Object.entries(validationRules)) {
+        const valueHint = shape.valueHint.replace(/\|/g, '\\|');
+        lines.push(`| \`${rule}\` | ${shape.requiresValue ? 'sim' : 'não'} | ${valueHint} | \`${shape.example}\` |`);
+    }
+    lines.push('', '`message` (opcional, em todas): string custom exibida quando a regra falha; sem ela, usa o default em pt-BR.', '');
+    return lines;
 };
 
 /** Seção "Tokens e valores permitidos" (Spec 16) — o que o manifesto pode usar em medidas. */
@@ -313,6 +370,7 @@ const renderMarkdown = (catalog) => {
         '',
         catalog.directives.map((d) => `\`${d}\``).join(' · '),
         '',
+        ...renderValidationRulesSection(catalog.validationRules),
         ...renderTokensSection(catalog.tokens),
         `## Componentes resolvíveis via \`"type"\` (${Object.keys(catalog.components).length})`,
         '',
