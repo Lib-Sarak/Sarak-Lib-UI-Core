@@ -79,6 +79,31 @@ describe('Spec 23 — Geração de keys (Regra 3)', () => {
         expect(warn).toHaveBeenCalled();
         warn.mockRestore();
     });
+
+    it('deve reconhecer key/hash/slug como chaves naturais estáveis, sem avisar (Spec 40 §2.1)', () => {
+        const warn = vi.spyOn(console, 'warn').mockImplementation(() => undefined);
+        const node: ManifestNode = { type: 'SarakCard', renderFor: { source: '{{x}}' } };
+        const result = expandRenderFor(node, EMPTY_SCOPE, {
+            x: [{ hash: 'h1' }, { slug: 's2' }, { key: 'k3' }],
+        });
+        expect(result.items[0].key).toBe('h1');
+        expect(result.items[1].key).toBe('s2');
+        expect(result.items[2].key).toBe('k3');
+        expect(warn).not.toHaveBeenCalled();
+        warn.mockRestore();
+    });
+
+    it('deve deduplicar o aviso — UMA vez por lista, não por item', () => {
+        const warn = vi.spyOn(console, 'warn').mockImplementation(() => undefined);
+        const node: ManifestNode = { type: 'SarakCard', id: 'lista-x', renderFor: { source: '{{x}}' } };
+        const result = expandRenderFor(node, EMPTY_SCOPE, {
+            x: [{ nome: 'a' }, { nome: 'b' }, { nome: 'c' }],
+        });
+        expect(result.items.map((i) => i.key)).toEqual(['0', '1', '2']);
+        expect(warn).toHaveBeenCalledTimes(1);
+        expect(warn.mock.calls[0][0]).toContain('3 de 3 item(ns)');
+        warn.mockRestore();
+    });
 });
 
 describe('Spec 23 — Fonte inválida (Regra 2: erro capturável)', () => {

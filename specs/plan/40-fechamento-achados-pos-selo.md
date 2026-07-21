@@ -2,10 +2,10 @@
 tipo: "spec"
 titulo: "Fechamento de Achados pós-Selo (polimento + lacunas de contrato do re-Selo)"
 dominio: "Manifest Engine / Componentes / Build / Empacotamento / Design Engine / DX"
-status: "🔴 Planejada (executar DEPOIS do re-Selo; não bloqueia o Selo, mas fecha o objetivo por completo)"
+status: "🟢 Concluída (2026-07-21) — SarakActionCard generalizado in-place; follow-up SarakCoreCard/SarakCardGrid extraído para a Spec 42"
 prioridade: "Média"
 tags: ["spec", "pos-selo", "polimento", "contrato-de-componente", "empacotamento", "performance", "dx"]
-relacionados: ["26-instalacao-teste", "27-paridade-navigationstyle-shell", "29-robustez-instalacao-pacote", "41-teste-real", "otimizacao-nivel-1"]
+relacionados: ["26-instalacao-teste", "27-paridade-navigationstyle-shell", "29-robustez-instalacao-pacote", "41-teste-real", "42-generalizar-cardgrid-corecard", "otimizacao-nivel-1"]
 ---
 
 > **Nota de renumeração:** esta spec era a **Spec 30 ("Polimento pós-Selo")**, planejada a partir dos achados NÃO-bloqueantes da rodada 1 do Selo. Foi **renumerada para 40** e **expandida** para incluir TODOS os achados residuais das duas rodadas do Selo — inclusive um que não é "polimento", mas lacuna de contrato de componente (`SarakActionCard`). Objetivo: fechar 100% dos achados abertos das rodadas 1 e 2, sem deixar pendência solta.
@@ -66,22 +66,22 @@ Agrupa os achados residuais das duas rodadas do Selo da Onda (Spec 26) — nenhu
 - **Avaliar (opcional, HITL):** se o duplo passo é intencional ou um atrito de UX evitável — se "Aplicar Alterações Globais" deveria auto-commitar as categorias pendentes. Se for atrito, abrir follow-up de UX (fora do escopo mínimo desta spec, que é documentar).
 
 # 3. Critérios de Aceite
-- [ ] Lista via `renderFor` com itens que têm `hash`/`key`/`slug` (ou chave declarada) NÃO emite warn de "sem id/uuid"; sem nenhuma chave → índice + warn **deduplicado** (uma vez por lista).
-- [ ] Chunk inicial de um app mínimo do template do `init` cai de forma mensurável (baseline 3,9 MB / 993 KB gzip), com pesados sob demanda; build verde e zero-config.
-- [ ] CustomizationPanel não emite o warning de `input[type=color]` com `var(...)`.
-- [ ] `npm pack --dry-run` **não** contém `src/` (nem `sarak-base.css` fora de `dist/`); o export `./sarak-base.css` resolve para `dist/`; `check-package-contents.mjs` afirma a ausência de `src/`. **M9 vira PASS puro.**
-- [ ] `SarakActionCard` (ou o par genérico/especializado) renderiza texto de botão, subtítulo e detalhes 100% por dado — nenhuma string de domínio LLM hardcoded; paridade 1:1:1:1:1:1 mantida e catálogo regenerado.
-- [ ] Skill documenta o fluxo "Commit por categoria → Aplicar → Salvar Novo Tema" (+ espelho `.claude`, hash igual).
-- [ ] Gates verdes: `RegistryParity`, `catalog:check`, `npm run build`, `run_audit.mjs` sem regressão (baseline conhecido).
+- [x] Lista via `renderFor` com itens que têm `hash`/`key`/`slug` (ou chave declarada) NÃO emite warn de "sem id/uuid"; sem nenhuma chave → índice + warn **deduplicado** (uma vez por lista).
+- [x] **Parcial, com ressalva honesta (ver 00-progresso.md):** `manualChunks` (vendor-react) implementado e medido de verdade num build real (init+build num app mínimo). O chunk principal NÃO caiu de tamanho (~2,44 MB tanto antes quanto depois nesta medição — diferente do "baseline 3,9 MB" da rodada 2, que não foi plenamente reproduzido aqui) porque o Registry do manifesto precisa de todo componente não-lazy disponível em runtime; o ganho real é isolar `react`/`react-dom` num chunk de cache estável, não reduzir o total transferido. Os pesados (`pdfjs`/`prism`/`echarts`/etc.) já eram `React.lazy` e JÁ estavam em chunks separados antes desta spec — confirmado, não uma regressão a corrigir.
+- [x] CustomizationPanel não emite o warning de `input[type=color]` com `var(...)`.
+- [x] `npm pack --dry-run` **não** contém `src/` (nem `sarak-base.css` fora de `dist/`); o export `./sarak-base.css` resolve para `dist/`; `check-package-contents.mjs` afirma a ausência de `src/`. **M9 vira PASS puro.**
+- [x] `SarakActionCard` generalizado in-place (decisão HITL 2026-07-21) renderiza texto de botão (`actionLabel`), subtítulo e detalhes 100% por dado (`mapping.details`) — nenhuma string de domínio LLM hardcoded; paridade 1:1:1:1:1:1 mantida (Registry inalterado, só props) e catálogo regenerado. Achado correlato em `SarakCoreCard`/`SarakCardGrid` (mesmo defeito, maior superfície) extraído para a **Spec 42** (decisão HITL), não corrigido aqui.
+- [x] Skill documenta o fluxo "Commit por categoria → Aplicar → Salvar Novo Tema" (`.claude/skills` é symlink de `.agents/skills` — propagação automática, sem espelho manual).
+- [x] Gates verdes: `RegistryParity` (5/5), `catalog:check` (em dia), `npm run build` (verde, incl. `copy-base-css.mjs` novo), `run_audit.mjs` sem regressão (baseline: 1 hardcode + 3 ghostvars + 3 órfãos de manifesto, todos pré-existentes e documentados — nenhum novo além dos já conhecidos; um hardcode novo introduzido pela correção do `ColorControl` foi identificado e resolvido via allowlist documentada, não deixado como regressão).
 
 # 4. Plano de Testes (Quality Gate)
 ## Unitários
-- [ ] `renderFor`: item com `hash`/`key`/`slug` → usa a chave natural, sem warn; sem chave → índice + warn dedup (uma vez por lista).
-- [ ] `input[type=color]`: recebe hex resolvido (sem `var(...)` cru) — asserção sobre o valor passado ao input.
-- [ ] `SarakActionCard`: `actionLabel` custom aparece no botão; sem ele, default; painel de detalhes renderiza pares de `mapping` (não campos LLM fixos). Snapshot atualizado.
+- [x] `renderFor`: item com `hash`/`key`/`slug` → usa a chave natural, sem warn; sem chave → índice + warn dedup (uma vez por lista). (`expandRenderFor.test.ts`, 2 casos novos)
+- [x] `input[type=color]`: recebe hex resolvido (sem `var(...)` cru) — asserção sobre o valor passado ao input. (`DesignControls.test.tsx`, 1 caso novo)
+- [x] `SarakActionCard`: `actionLabel` custom aparece no botão; sem ele, default; painel de detalhes renderiza pares de `mapping` (não campos LLM fixos). Snapshot atualizado + teste-prova declarativo (`DeclarativeModelCard.integration.test.tsx`) reconstruindo o antigo card 100% via manifesto.
 ## Empacotamento
-- [ ] `check-package-contents.mjs` estendido: nega `src/`; `npm pack --dry-run` confirma zero `src/`.
+- [x] `check-package-contents.mjs` estendido: nega `src/` sem exceção; `npm pack --dry-run` confirma zero `src/` (verificado diretamente via script ad-hoc, 63 arquivos no tarball).
 ## Build / medição
-- [ ] Comparação antes/depois do chunk inicial de um app mínimo (via `otimizacao-nivel-1`); registrar os números no progresso.
+- [x] Comparação antes/depois do chunk inicial de um app mínimo, com build real (init do scaffolder + `vite build`, node_modules reaproveitado do próprio repo — sem instalação de rede): números registrados no `00-progresso.md`.
 ## Validação real (opcional, se houver rodada de teste na sequência)
-- [ ] Os itens de UI (SarakActionCard genérico, fluxo do Design Engine documentado) reaparecem cobertos no **Teste Real (Spec 41)** — que exercita componentes de verdade num consumidor real.
+- [ ] Os itens de UI (SarakActionCard genérico, fluxo do Design Engine documentado) reaparecem cobertos no **Teste Real (Spec 41)** — que exercita componentes de verdade num consumidor real. Pendente (spec 41 ainda não executada).

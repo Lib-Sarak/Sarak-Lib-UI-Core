@@ -1,0 +1,97 @@
+/* 2. GLOBAL REACITIVITY BRIDGE (Sovereignty v8.5) */
+[class*="border"] { border-style: var(--border-style, solid); }
+
+/* --- CONTRACT UTILITIES (v8.5) --- */
+.rounded-theme { border-radius: var(--radius-theme, 12px) !important; }
+.border-theme { 
+    border-width: var(--theme-border-width, 1px) !important;
+    border-style: var(--border-style, solid) !important;
+    border-color: var(--theme-border) !important; 
+}
+.shadow-theme { 
+    box-shadow: var(--dynamic-shadow) !important; 
+    opacity: calc(0.3 + (var(--shadow-intensity, 0.5) * 0.7));
+}
+.divide-theme > * + * { border-color: var(--theme-border) !important; }
+.border-t-theme { border-top: var(--theme-border-width, 1px) var(--border-style, solid) var(--theme-border) !important; }
+.border-b-theme { border-bottom: var(--theme-border-width, 1px) var(--border-style, solid) var(--theme-border) !important; }
+
+/* 1.1 TRANSITION UTILITIES (v8.5) */
+.transition-sarak {
+    transition: all var(--animation-speed, 0.4s) var(--ease-sarak-cubic) !important;
+}
+
+/* Layout Utilities */
+.p-theme { padding: var(--theme-pad, 1.5rem); }
+.gap-theme { gap: var(--theme-gap, 20px); }
+
+/* Sincronização de Geometria Atômica em Botões e Inputs */
+button:not(.p-0) {
+    border-radius: var(--sarak-btn-radius-tl, var(--sarak-btn-border-radius, 8px)) 
+                   var(--sarak-btn-radius-tr, var(--sarak-btn-border-radius, 8px)) 
+                   var(--sarak-btn-radius-br, var(--sarak-btn-border-radius, 8px)) 
+                   var(--sarak-btn-radius-bl, var(--sarak-btn-border-radius, 8px));
+    transition: all 0.2s var(--ease-sarak-cubic);
+}
+
+input, select, textarea {
+    border-radius: var(--sarak-input-border-radius, 8px);
+    transition: all 0.2s var(--ease-sarak-cubic);
+}
+
+button:hover:not(.p-0) {
+    background-color: var(--sarak-button-hover, var(--theme-primary-hover));
+    transform: translateY(-1px) scale(var(--sarak-btn-hover-scale, 1.02));
+}
+
+button:active:not(.p-0),
+.bg-theme-card:active {
+    background-color: var(--sarak-button-active, var(--theme-primary-active));
+    transform: translateY(0) scale(var(--sarak-btn-active-scale, 0.98)) !important;
+    transition: transform 0.1s var(--ease-sarak-fluid);
+}
+
+button:focus-visible {
+    outline: 2px solid var(--theme-texture-color, var(--theme-primary));
+    outline-offset: 2px;
+    box-shadow: 0 0 0 4px var(--theme-primary-focus);
+}
+
+/* Geometric Modifier */
+body.is-geometric .bg-theme-card,
+body.is-geometric .sarak-shell-sidebar,
+body.is-geometric .sarak-shell-header,
+.preview-container[data-geometric="1"] .bg-theme-card,
+[data-geometric="1"] .bg-theme-card,
+.bg-theme-card[data-geometric="1"] {
+    clip-path: polygon(0 0, 100% 0, 100% calc(100% - 15px), calc(100% - 15px) 100%, 0 100%) !important;
+}
+
+/* SarakRangeSlider (Spec 11) — dois ranges sobrepostos: o input ignora o ponteiro
+   (pointer-events:none na classe via Tailwind), mas o THUMB volta a captá-lo para
+   permitir o arraste de cada extremo do intervalo independentemente. */
+.sarak-range-thumb::-webkit-slider-thumb {
+    pointer-events: auto;
+    -webkit-appearance: none;
+    appearance: none;
+    width: 16px;
+    height: 16px;
+    border-radius: 9999px;
+    background: var(--sarak-range-active-bg, var(--sx-color-primary-base));
+    cursor: pointer;
+}
+.sarak-range-thumb::-moz-range-thumb {
+    pointer-events: auto;
+    width: 16px;
+    height: 16px;
+    border: none;
+    border-radius: 9999px;
+    background: var(--sarak-range-active-bg, var(--sx-color-primary-base));
+    cursor: pointer;
+}
+
+/* Scrollbars customizadas (refatoração Data-Driven) */
+.custom-scrollbar-sidebar::-webkit-scrollbar { width: 4px; }
+.custom-scrollbar-sidebar::-webkit-scrollbar-track { background: transparent; }
+.custom-scrollbar-sidebar::-webkit-scrollbar-thumb { background: rgba(255,255,255,0.05); border-radius: 10px; }
+.custom-scrollbar-sidebar::-webkit-scrollbar-thumb:hover { background: var(--theme-primary); }

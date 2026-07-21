@@ -45,27 +45,37 @@ export const VIRTUALIZE_THRESHOLD = 100;
  */
 export const MAX_RENDERFOR_ITEMS = 10_000;
 
+/**
+ * Convenções de chave natural reconhecidas automaticamente, em ordem de prioridade,
+ * quando o manifesto não declara `keyBy` (Spec 40 §2.1 — achado 6 do Selo: `hash`
+ * é tão comum quanto `id`/`uuid` em dados reais).
+ */
+const NATURAL_KEY_CANDIDATES = ['id', 'uuid', 'key', 'hash', 'slug'] as const;
+
+interface ExtractedKey {
+    key: string;
+    /** Regra 3: nenhuma chave estável encontrada — caiu para o índice posicional. */
+    usedIndexFallback: boolean;
+}
+
 const extractKey = (
     item: unknown,
     index: number,
     keyBy: string | undefined,
-    nodeId: string | undefined,
-): string => {
+): ExtractedKey => {
     if (keyBy) {
         const byPath = getByPath(item, keyBy);
-        if (byPath !== undefined && byPath !== null) return String(byPath);
+        if (byPath !== undefined && byPath !== null) return { key: String(byPath), usedIndexFallback: false };
     }
     if (item !== null && typeof item === 'object') {
         const record = item as Record<string, unknown>;
-        if (record.id !== undefined && record.id !== null) return String(record.id);
-        if (record.uuid !== undefined && record.uuid !== null) return String(record.uuid);
+        for (const candidate of NATURAL_KEY_CANDIDATES) {
+            const value = record[candidate];
+            if (value !== undefined && value !== null) return { key: String(value), usedIndexFallback: false };
+        }
     }
-    // Regra 3: chave ausente — fallback para índice, com aviso (reconciliação menos estável).
-    console.warn(
-        `[Sarak:renderFor] item sem id/uuid${nodeId ? ` no nó "${nodeId}"` : ''}; ` +
-        `usando índice ${index} como key.`,
-    );
-    return String(index);
+    // Regra 3: chave ausente — fallback para índice (reconciliação menos estável).
+    return { key: String(index), usedIndexFallback: true };
 };
 
 /**
@@ -110,11 +120,25 @@ export const expandRenderFor = (
         );
     }
 
-    const items: ExpandedNode[] = bounded.map((item, index) => ({
-        node: baseNode,
-        scope: { ...scope, [asName]: item, [indexName]: index },
-        key: extractKey(item, index, directive.keyBy, node.id),
-    }));
+    let indexFallbackCount = 0;
+    const items: ExpandedNode[] = bounded.map((item, index) => {
+        const extracted = extractKey(item, index, directive.keyBy);
+        if (extracted.usedIndexFallback) indexFallbackCount += 1;
+        return {
+            node: baseNode,
+            scope: { ...scope, [asName]: item, [indexName]: index },
+            key: extracted.key,
+        };
+    });
+
+    // Regra 3: aviso DEDUPLICADO — uma vez por lista, não por item (Spec 40 §2.1).
+    if (indexFallbackCount > 0) {
+        console.warn(
+            `[Sarak:renderFor] ${indexFallbackCount} de ${bounded.length} item(ns) sem chave estável ` +
+            `(${NATURAL_KEY_CANDIDATES.join('/')})${node.id ? ` no nó "${node.id}"` : ''}; ` +
+            `usando índice como key. Declare "renderFor.keyBy" no manifesto se a chave tiver outro nome.`,
+        );
+    }
 
     return { ok: true, items };
 };

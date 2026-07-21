@@ -9,6 +9,12 @@ import { useStructuralStyles } from '../hooks/useStructuralStyles';
 
 import { SarakThemePayload } from '../../../core/Provider/types';
 
+/** Um par rótulo/valor genérico do painel expansível (Spec 40 §2.5 — dirigido por `mapping.details`). */
+interface SarakActionCardDetail {
+    label: string;
+    value: unknown;
+}
+
 interface SarakActionCardProps<TItem extends Record<string, unknown>> {
     item: TItem;
     mapping?: Record<string, string>;
@@ -16,9 +22,11 @@ interface SarakActionCardProps<TItem extends Record<string, unknown>> {
     onAction?: (item: TItem) => void;
     design?: SarakThemePayload;
     label?: string;
+    /** Texto do botão de ação principal (default: "Executar"). */
+    actionLabel?: string;
 }
 
-export const SarakActionCard = <TItem extends Record<string, unknown>>({ item, mapping, className = '', onAction, design: localDesign, label }: SarakActionCardProps<TItem>) => {
+export const SarakActionCard = <TItem extends Record<string, unknown>>({ item, mapping, className = '', onAction, design: localDesign, label, actionLabel = 'Executar' }: SarakActionCardProps<TItem>) => {
     const globalUI = useSarakUI();
     const design = localDesign || globalUI.design;
     const layout = useCardLayoutStyles(design);
@@ -32,13 +40,20 @@ export const SarakActionCard = <TItem extends Record<string, unknown>>({ item, m
         } catch (e) { return undefined; }
     };
 
-    const priceIn = getVal(item, mapping?.price_in || mapping?.price);
-    const priceOut = getVal(item, mapping?.price_out);
-    const context = getVal(item, mapping?.context);
     const description = getVal(item, mapping?.description);
-    const tokenizer = getVal(item, mapping?.tokenizer);
-    const subtitle = getVal(item, mapping?.subtitle) || 'Modelo';
+    const subtitle = getVal(item, mapping?.subtitle) ?? '';
     const title = getVal(item, mapping?.title);
+
+    // Painel de detalhes 100% dirigido por dado: `mapping.details` aponta para um
+    // campo do item contendo um array de pares { label, value } já formatados pelo
+    // consumidor (a Sarak não faz aritmética/formatação de domínio — Spec 40 §2.5).
+    const rawDetails = getVal(item, mapping?.details);
+    const details: SarakActionCardDetail[] = Array.isArray(rawDetails)
+        ? rawDetails.filter(
+              (entry): entry is SarakActionCardDetail =>
+                  !!entry && typeof entry === 'object' && 'label' in entry && 'value' in entry,
+          )
+        : [];
 
     // Get Configurations based on design state
     const clickScale = design.cardActionClickScale !== undefined ? Number(design.cardActionClickScale) : 0.96;
@@ -115,7 +130,7 @@ export const SarakActionCard = <TItem extends Record<string, unknown>>({ item, m
                         rightIcon={<ExternalLink size={10} className="stroke-[3]" />}
                         className="flex-1 text-3xs font-black uppercase tracking-widest"
                     >
-                        Executar
+                        {actionLabel}
                     </SarakButton>
 
                     {/* Expander Trigger */}
@@ -147,33 +162,31 @@ export const SarakActionCard = <TItem extends Record<string, unknown>>({ item, m
                                 className="flex border-t border-[var(--border-color,#334155)]/30"
                                 style={{ flexDirection: 'column', gap: 'calc(var(--sarak-layout-gap-md, 16px) * 0.75)', paddingTop: 'calc(var(--sarak-layout-gap-md, 16px) * 0.75)' }}
                             >
-                                <div
-                                    className={`${getGridStyles('repeat(2, minmax(0, 1fr))', undefined, 'var(--sarak-layout-gap-sm, 8px)').className} bg-theme-body/30 border border-[var(--border-color,#334155)]/20`}
-                                    style={{ ...getGridStyles('repeat(2, minmax(0, 1fr))', undefined, 'var(--sarak-layout-gap-sm, 8px)').style, padding: 'calc(var(--sarak-layout-gap-md, 16px) * 0.75)', borderRadius: 'var(--sarak-card-radius,12px)' }}
-                                >
-                                    <div className={getFlexStyles('column', 'flex-start', 'stretch', '0').className} style={getFlexStyles('column', 'flex-start', 'stretch', '0').style}>
-                                        <span className="font-black text-[var(--text-muted,#94a3b8)] opacity-50 uppercase tracking-widest" style={{ fontSize: 'var(--sarak-type-scale-tiny, 8px)' }}>Custo In (1M)</span>
-                                        <span className="text-2xs font-mono text-[var(--sarak-status-success-color,#22c55e)] font-bold">
-                                            {priceIn !== undefined ? `$${Number(priceIn).toFixed(4)}` : 'N/A'}
-                                        </span>
-                                    </div>
-                                    <div className={getFlexStyles('column', 'flex-start', 'stretch', '0').className} style={getFlexStyles('column', 'flex-start', 'stretch', '0').style}>
-                                        <span className="font-black text-[var(--text-muted,#94a3b8)] opacity-50 uppercase tracking-widest" style={{ fontSize: 'var(--sarak-type-scale-tiny, 8px)' }}>Custo Out (1M)</span>
-                                        <span className="text-2xs font-mono text-[var(--sarak-status-error-color,#ef4444)] font-bold">
-                                            {priceOut !== undefined ? `$${Number(priceOut).toFixed(4)}` : 'N/A'}
-                                        </span>
-                                    </div>
+                                {details.length > 0 && (
                                     <div
-                                        className={`${getFlexStyles('column', 'flex-start', 'stretch', '0').className} border-t border-[var(--border-color,#334155)]/10`}
-                                        style={{ ...getFlexStyles('column', 'flex-start', 'stretch', '0').style, gridColumn: 'span 2 / span 2', paddingTop: 'calc(var(--sarak-layout-gap-md, 16px) * 0.375)' }}
+                                        className={`${getGridStyles('repeat(2, minmax(0, 1fr))', undefined, 'var(--sarak-layout-gap-sm, 8px)').className} bg-theme-body/30 border border-[var(--border-color,#334155)]/20`}
+                                        style={{ ...getGridStyles('repeat(2, minmax(0, 1fr))', undefined, 'var(--sarak-layout-gap-sm, 8px)').style, padding: 'calc(var(--sarak-layout-gap-md, 16px) * 0.75)', borderRadius: 'var(--sarak-card-radius,12px)' }}
                                     >
-                                        <span className="font-black text-[var(--text-muted,#94a3b8)] opacity-50 uppercase tracking-widest" style={{ fontSize: 'var(--sarak-type-scale-tiny, 8px)' }}>Janela / Tokenizer</span>
-                                        <span className="text-3xs font-black text-[var(--text-muted,#94a3b8)] uppercase truncate">
-                                            {context ? `${(Number(context) / 1000)}k tokens` : 'Default'}
-                                            {tokenizer ? ` | ${String(tokenizer)}` : ''}
-                                        </span>
+                                        {details.map((detail, index) => {
+                                            const isLastOdd = details.length % 2 === 1 && index === details.length - 1;
+                                            return (
+                                                <div
+                                                    key={`${detail.label}-${index}`}
+                                                    className={getFlexStyles('column', 'flex-start', 'stretch', '0').className}
+                                                    style={{
+                                                        ...getFlexStyles('column', 'flex-start', 'stretch', '0').style,
+                                                        gridColumn: isLastOdd ? 'span 2 / span 2' : undefined,
+                                                    }}
+                                                >
+                                                    <span className="font-black text-[var(--text-muted,#94a3b8)] opacity-50 uppercase tracking-widest" style={{ fontSize: 'var(--sarak-type-scale-tiny, 8px)' }}>{detail.label}</span>
+                                                    <span className="text-2xs font-mono text-[var(--text-muted,#94a3b8)] font-bold truncate">
+                                                        {String(detail.value)}
+                                                    </span>
+                                                </div>
+                                            );
+                                        })}
                                     </div>
-                                </div>
+                                )}
                             </div>
                         </motion.div>
                     )}

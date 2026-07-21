@@ -38,6 +38,18 @@ describe('DesignControls', () => {
         expect(onChange).toHaveBeenCalledWith('#00ff00');
     });
 
+    it('ColorControl sem value nunca entrega var(...) cru ao input nativo (Spec 40 §2.3)', () => {
+        const onChange = vi.fn();
+        const { container } = customRender(
+            <ColorControl label="Cor Sem Valor" value={undefined} onChange={onChange} />
+        );
+
+        const colorInput = container.querySelector('input[type="color"]') as HTMLInputElement;
+        expect(colorInput).toBeInTheDocument();
+        expect(colorInput.value.startsWith('#')).toBe(true);
+        expect(colorInput.value).not.toContain('var(');
+    });
+
     it('renderiza SwitchControl e reage a cliques', () => {
         const onChange = vi.fn();
         const { container } = customRender(

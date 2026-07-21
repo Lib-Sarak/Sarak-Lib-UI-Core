@@ -1769,6 +1769,12 @@
           "type": "string",
           "optional": true,
           "doc": ""
+        },
+        {
+          "name": "actionLabel",
+          "type": "string",
+          "optional": true,
+          "doc": "Texto do botão de ação principal (default: \"Executar\")."
         }
       ]
     },

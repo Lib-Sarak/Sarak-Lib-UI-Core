@@ -339,3 +339,23 @@ Construa, por módulo (Propostas/Contratos/Projetos): listagem real via `source`
 
 Entregue: `RELATORIO-TESTE-REAL.md` na raiz do ERP + na conversa, com as telas reais por módulo (evidência de dado real + persistência via curl/consulta), a LISTA de defeitos da lib corrigidos na fonte (sintoma→causa→correção), o diff do ERP provando que só o `manifest.json` mudou (R4), e a matriz R1-R7. `npm run build` do ERP verde. Entrada no `00-progresso.md` da lib. NÃO commite sem autorização.
 ```
+
+---
+
+## P18 — Spec 42: Generalizar SarakCoreCard / SarakCardGrid (follow-up da Spec 40)
+
+> Follow-up da Spec 40 (decisão HITL de 2026-07-21): não bloqueia nenhum Selo, mas fecha a mesma classe de defeito (domínio LLM embutido) que sobrou fora do escopo nomeado da 40. Pode rodar a qualquer momento depois da Spec 40 — sem dependência do re-Selo/Teste Real.
+
+```
+Execute a spec `specs/plan/42-generalizar-cardgrid-corecard.md` da Sarak-Lib-UI-Core.
+
+Preparação obrigatória, nesta ordem: (1) acione a skill `ui-contexto-repositorio`; (2) leia `specs/plan/00-indice.md` e `specs/plan/00-progresso.md`; (3) leia a spec 42 inteira; (4) leia a relacionada `specs/plan/40-fechamento-achados-pos-selo.md` (o precedente direto — mesma solução aplicada ao `SarakActionCard`) e a entrada de 2026-07-21 no `00-progresso.md` (as 4 decisões HITL que criaram esta spec). Skills de execução: `sarak:padrao-typescript` e `ui-refatorar-componente` (o tipo público `SarakCardGridProps.mapping` perde campos — paridade/quebra de contrato).
+
+Contexto essencial: `SarakCoreCard` (`src/components/atomic/Templates/components/SarakCoreCard.tsx`) é a variante `"classic"` — a DEFAULT de `SarakCardGrid` — e tem o mesmo domínio de catálogo de modelos LLM que o `SarakActionCard` tinha antes da Spec 40: painel fixo "Custo In/Out (1M)" e "Janela de Contexto" com aritmética embutida (`Number(context)/1000`), bloco "Tokenizer", default de subtitle `'Modelo'`. Pior: a interface pública `SarakCardGridProps.mapping` (`SarakCardGrid.tsx` linhas 36-47) declara `price_in?`/`price_out?`/`context?` NO TIPO, já publicado no catálogo (`docs/manifest-catalog.md`, seção `SarakCardGrid`) — removê-los é BREAKING CHANGE de contrato tipado, não só de comportamento.
+
+Ordem obrigatória: (1) criar `SarakCoreCard.test.tsx` (caracterização do comportamento ATUAL, snapshot) ANTES de tocar no componente; (2) só então generalizar o painel de detalhes para `mapping.details` (mesmo modelo da Spec 40 — array de pares `{label, value}` pré-formatados pelo consumidor, sem aritmética de domínio na Sarak); (3) remover `price_in`/`price_out`/`context` do tipo `SarakCardGridProps.mapping`; (4) escrever nota de migração (antes/depois) e remover a nota temporária que a Spec 40 deixou no catálogo/skill sobre esta pendência.
+
+Entregue: os 4 itens da seção 2 da spec (2.1 a 2.4); `SarakCardGrid.test.tsx` com fixtures migradas para `details`; catálogo regenerado (a seção `SarakCardGrid` reflete o tipo novo); nota de migração documentada.
+
+Ao terminar: gates `RegistryParity`/`catalog:check`/`npm run build` verdes; `run_audit.mjs` sem regressão (baseline conhecido); suítes de `src/components/atomic/Templates` verdes; frontmatter da spec 42 + checkbox (item 18) no `00-indice.md` + entrada no `00-progresso.md`.
+```

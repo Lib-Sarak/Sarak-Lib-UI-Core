@@ -1,6 +1,6 @@
 // Vitest Snapshot v1, https://vitest.dev/guide/snapshot.html
 
-exports[`SarakActionCard (Characterization) > matches snapshot before any removal 1`] = `
+exports[`SarakActionCard (Spec 40 §2.5 — card genérico, sem domínio embutido) > matches snapshot com dados neutros (sem domínio LLM) 1`] = `
 <DocumentFragment>
   <div
     class="fixed inset-0 pointer-events-none z-[9999] opacity-[var(--sarak-noise-opacity,0)] transition-opacity duration-1000"
@@ -51,7 +51,7 @@ exports[`SarakActionCard (Characterization) > matches snapshot before any remova
           <h4
             class="text-lg font-black text-[var(--color-theme-title,#ffffff)] tracking-tight group-hover:text-[var(--sarak-primary-color,#3b82f6)] transition-colors truncate"
           >
-            Action Item
+            Contrato #123
           </h4>
         </div>
         <div
@@ -80,7 +80,7 @@ exports[`SarakActionCard (Characterization) > matches snapshot before any remova
         class="text-2xs text-[var(--text-muted,#94a3b8)] opacity-60 leading-relaxed line-clamp-2"
         style="margin-bottom: var(--sarak-layout-gap-md, 16px);"
       >
-        Action description
+        Contrato em fase de revisão jurídica.
       </p>
       <div
         class="mock-footer"

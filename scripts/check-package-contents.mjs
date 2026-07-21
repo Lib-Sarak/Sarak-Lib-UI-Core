@@ -1,12 +1,14 @@
-// Gate de empacotamento (Spec 29 §2.1/2.4): roda `npm pack --dry-run --json` sobre o
-// pacote já buildado e confere a allowlist do campo `files`. Falha se o tarball trouxer
-// código-fonte/config de teste (achado 4 do Selo) OU se faltar algo que o `init`
-// (`bin/scaffold/context.mjs` → `skillsSourceDir`/`templates/`) precisa ler do pacote
-// instalado — sem isso o `init` do consumidor não acha as skills nem o manifesto starter.
+// Gate de empacotamento (Spec 29 §2.1/2.4, Spec 40 §2.4): roda `npm pack --dry-run
+// --json` sobre o pacote já buildado e confere a allowlist do campo `files`. Falha se
+// o tarball trouxer código-fonte/config de teste (achado 4 do Selo) OU se faltar algo
+// que o `init` (`bin/scaffold/context.mjs` → `skillsSourceDir`/`templates/`) precisa
+// ler do pacote instalado — sem isso o `init` do consumidor não acha as skills nem o
+// manifesto starter. `src/` é proibido SEM EXCEÇÃO (Spec 40 §2.4 fechou o M9 PARCIAL
+// do re-Selo — o export "./sarak-base.css" agora resolve para `dist/styles/`).
 import { execSync } from 'node:child_process';
 
 const FORBIDDEN_PREFIXES = [
-    'src/', // exceto o único arquivo permitido abaixo (export "./sarak-base.css")
+    'src/',
     'specs/',
     'playwright/',
     '__snapshots__/',
@@ -20,8 +22,6 @@ const FORBIDDEN_EXACT_OR_SUFFIX = [
     '.test.tsx',
 ];
 
-const ALLOWED_SRC_FILE = 'src/styles/sarak-base.css';
-
 const REQUIRED_PATHS = [
     'dist/index.js',
     'dist/index.cjs',
@@ -30,6 +30,7 @@ const REQUIRED_PATHS = [
     'dist/backend-node.cjs',
     'dist/backend-node.d.ts',
     'dist/sarak.css',
+    'dist/styles/sarak-base.css',
     'bin/sarak-ui.mjs',
     'bin/scaffold/context.mjs',
     'bin/scaffold/runInit.mjs',
@@ -43,7 +44,6 @@ const REQUIRED_PATHS = [
 ];
 
 function isForbidden(filePath) {
-    if (filePath === ALLOWED_SRC_FILE) return false;
     if (FORBIDDEN_PREFIXES.some((prefix) => filePath.startsWith(prefix))) return true;
     return FORBIDDEN_EXACT_OR_SUFFIX.some((suffix) => filePath.endsWith(suffix));
 }

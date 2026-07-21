@@ -43,6 +43,11 @@ const VALUE_ALLOWLIST = new Set([
   'src/features/DesignEngine/__e2e__/RealtimeInjection.spec.tsx::#ff0000',
   'src/features/DesignEngine/__e2e__/RealtimeInjection.spec.tsx::20px',
   'src/features/DesignEngine/__e2e__/Boot.spec.tsx::2rem',
+  // Fallback do <input type="color"> nativo (Spec 40 §2.3): o atributo `value` do input
+  // HTML só aceita hex literal — `var(--x, fallback)` quebra o input com o warning nativo
+  // do Chrome que esta spec corrigiu. Configuração (var+fallback) não resolve aqui por
+  // definição do próprio elemento DOM, não é valor de tema/estilo.
+  'src/features/DesignEngine/components/controls/ColorControl.tsx::#ffffff',
 ]);
 
 // Classificação por BALDE. Toda classe estrutural é LOCALIZADA e contabilizada.

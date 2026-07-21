@@ -1,0 +1,56 @@
+/* Typography Personalities */
+h1, h2, h3, h4, h5, h6 {
+    font-family: var(--font-heading, 'Inter', sans-serif);
+    color: var(--text-title, var(--theme-title, #ffffff));
+    transition: all 0.4s ease;
+}
+
+h1 { 
+    font-size: var(--sarak-h1-size, 48px); 
+    font-weight: var(--sarak-h1-weight, 900);
+    line-height: var(--sarak-h1-lh, 1.1);
+    letter-spacing: var(--sarak-h1-ls, -1px);
+    text-transform: var(--sarak-h-transform, none);
+    text-shadow: 0 0 calc(var(--sarak-text-glow, 0) * 20px) var(--theme-primary);
+}
+
+h2 { 
+    font-size: var(--sarak-h2-size, 32px); 
+    font-weight: var(--sarak-h2-weight, 700);
+    line-height: var(--sarak-h2-lh, 1.2);
+    text-transform: var(--sarak-h-transform, none);
+}
+
+h3 { 
+    font-size: var(--sarak-h3-size, 24px); 
+    font-weight: var(--sarak-h2-weight, 600);
+}
+
+body {
+    font-size: var(--sarak-body-size, 14px);
+    font-weight: var(--sarak-body-weight, 400);
+    line-height: var(--sarak-body-lh, 1.6);
+}
+
+h3, h4 { font-family: var(--font-subtitle, var(--font-heading)); }
+
+.font-tab { font-family: var(--font-tab, var(--font-heading)); }
+
+/* Sincronização de Tipografia Dinâmica */
+h1, h2, h3 { font-family: var(--font-heading) !important; }
+body, span, p, div { font-family: var(--font-main); }
+
+/* Atomic Font Scaling Integration */
+[data-font-scale="pp"] { --sarak-font-size: 10px; --font-size-factor: 0.7; }
+[data-font-scale="p"]  { --sarak-font-size: 12px; --font-size-factor: 0.85; }
+[data-font-scale="m"]  { --sarak-font-size: 14px; --font-size-factor: 1.0; }
+[data-font-scale="g"]  { --sarak-font-size: 16px; --font-size-factor: 1.25; }
+[data-font-scale="gg"] { --sarak-font-size: 20px; --font-size-factor: 1.5; }
+
+/* Tabular Numbers Enforcement */
+[data-tabular-nums="tabular-nums"],
+[data-tabular-nums="true"],
+.tabular-nums {
+    font-variant-numeric: tabular-nums !important;
+    font-feature-settings: "tnum" 1 !important;
+}
