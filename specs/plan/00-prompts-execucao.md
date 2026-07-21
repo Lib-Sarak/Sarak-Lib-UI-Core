@@ -189,11 +189,13 @@ NÃO corrija a biblioteca, NÃO abra specs dela, NÃO commite nada sem autoriza�
 
 ---
 
-# Fase 5 — Correção pós-Selo (P11-P16)
+# Fase 5 — Correção pós-Selo + Teste Real (P11-P17)
 
-> Rodada de correção dos achados do Selo negado (`RELATORIO-SELO-ONDA-ACHADOS.md` + triagem da Spec 26 no `00-progresso.md`). Ordem: P11 e P12 (os dois FAIL/críticos) → P13 (robustez de instalação) → **P14 (desinstalar o ERP)** → **P15 (re-Selo)** → P16 (polimento, não bloqueante). Cada correção de código segue o mesmo ciclo da onda: spec → execução → revisão independente → re-teste. **A validação final é o re-teste real (P15), não a suíte unitária.**
+> Rodada de correção dos achados do Selo negado (`RELATORIO-SELO-ONDA-ACHADOS.md` + triagem da Spec 26 no `00-progresso.md`). Ordem: P11 e P12 (os dois FAIL/críticos) → P13 (robustez de instalação) → **P14 (desinstalar o ERP)** → **P15 (re-Selo)** → **P16 (Spec 40, fechamento dos achados residuais)** → **P17 (Spec 41, Teste Real — funcionalidades reais)**. Cada correção de código segue o mesmo ciclo da onda: spec → execução → revisão independente → re-teste. **A validação final é o re-teste real (P15/P17), não a suíte unitária.**
 >
 > **O ciclo do re-Selo é de dois passos:** desinstalar (P14) e reinstalar do zero medindo (P15). O ERP hoje tem a instalação completa da rodada 1 na raiz — pular o P14 faria o teste medir uma instalação sobre a outra.
+>
+> **P16 vs P17:** o P16 (Spec 40) fecha os achados residuais das rodadas 1/2 (polimento + `SarakActionCard` genérico + empacotamento). O P17 (Spec 41) é a **2ª parte do teste real**: implementar as funcionalidades REAIS do ERP 100% via manifesto, corrigindo lacunas NA FONTE — não é medição de instalação, é prova de produção.
 
 ## P11 — Spec 27: Paridade de navigationStyle no Shell
 
@@ -306,16 +308,34 @@ NÃO corrija a biblioteca, NÃO abra specs dela, NÃO commite nada sem autoriza�
 
 ---
 
-## P16 — Spec 30: Polimento pós-Selo (baixa prioridade — SÓ depois do re-Selo)
+## P16 — Spec 40: Fechamento de Achados pós-Selo (era a Spec 30, renumerada e expandida — SÓ depois do re-Selo)
 
 ```
-Execute a spec `specs/plan/30-polimento-pos-selo.md` da Sarak-Lib-UI-Core. NÃO execute antes do re-Selo (P15) — é polimento não-bloqueante.
+Execute a spec `specs/plan/40-fechamento-achados-pos-selo.md` da Sarak-Lib-UI-Core. NÃO execute antes do re-Selo (P15). Fecha TODOS os achados residuais das rodadas 1 e 2 do Selo — não bloqueia o Selo, mas fecha o objetivo por completo.
 
-Preparação obrigatória, nesta ordem: (1) acione a skill `ui-contexto-repositorio`; (2) leia `specs/plan/00-indice.md` e `specs/plan/00-progresso.md`; (3) leia a spec 30 inteira. Skills de execução: `sarak:padrao-typescript` e `sarak:otimizacao-nivel-1` (para o bundle — medir antes/depois).
+Preparação obrigatória, nesta ordem: (1) acione a skill `ui-contexto-repositorio`; (2) leia `specs/plan/00-indice.md` e `specs/plan/00-progresso.md`; (3) leia a spec 40 inteira; (4) leia os dois relatórios de origem `specs/plan/RELATORIO-INSTALACAO-UI-rodada1.md` e `RELATORIO-INSTALACAO-UI-rodada2.md`. Skills de execução: `sarak:padrao-typescript`, `sarak:otimizacao-nivel-1` (bundle — medir antes/depois) e `ui-refatorar-componente` (para o `SarakActionCard`, que muda assinatura de props — paridade 1:1:1:1:1:1).
 
-Contexto essencial (observações não-bloqueantes do Selo): (6) `renderFor` avisa "item sem id/uuid" por item quando a chave natural é outra (`hash`); (7) bundle de app mínimo em 3,9 MB / 992 KB gzip sem code-splitting visível (pesados já são `React.lazy` no `LeafNode`); (8) `input[type=color]` do CustomizationPanel recebe `var(...)` cru e o Chrome reclama.
+Contexto essencial: seis frentes. (6) `renderFor` avisa "item sem id/uuid" por item quando a chave natural é outra (`hash`); (7) bundle de app mínimo em 3,9 MB / 993 KB gzip sem code-splitting (pesados já são `React.lazy` no `LeafNode`) — incluir `manualChunks` no `vite.config.ts` do `init`; (8) `input[type=color]` do CustomizationPanel recebe `var(...)` cru; (M9) o pacote ainda tem `src/styles/sarak-base.css` — mover para `dist/` e reapontar o export `./sarak-base.css` (zera `src/` do pacote, M9 vira PASS puro); (Problema 4) `SarakActionCard` (`src/components/atomic/Cards/SarakActionCard.tsx`) é um card de LLM com botão "Executar" HARDCODED (linha 118), subtitle "Modelo" e painel de custo de tokens fixo — generalizar (props/mapping) ou separar em card especializado, + varrer strings de UI hardcoded em `atomic/`; (Problema 1) documentar o fluxo do Design Engine "Commit por categoria → Aplicar Alterações Globais → modal Salvar Novo Tema".
 
-Entregue: `renderFor` reconhece chave natural (`hash`/`key`/`slug`, idealmente declarável) e deduplica o warn; investigação e melhora do code-splitting no template do `init` (baseline 3,9 MB / 992 KB gzip, medir depois); input color recebe hex resolvido. Se abrir campo novo no `renderFor`, regenere o catálogo e mantenha a paridade. Testes conforme o plano.
+Entregue: os 6 itens da seção 2 da spec (2.1 a 2.6), cada um com seu teste; `check-package-contents.mjs` estendido para negar `src/`; catálogo regenerado (SarakActionCard/renderFor); skill do fluxo do Design Engine (espelho `.claude`, hash igual). Confirme com o mantenedor (HITL) a decisão do `SarakActionCard` (generalizar in-place vs. card especializado separado).
 
-Ao terminar: gates `RegistryParity`/`catalog:check`/`npm run build` verdes; `run_audit.mjs` 0 falhas; frontmatter + checkbox (item 15) + entrada no progresso com os números de bundle antes/depois.
+Ao terminar: gates `RegistryParity`/`catalog:check`/`npm run build` verdes; `run_audit.mjs` sem regressão (baseline conhecido); `npm pack --dry-run` sem `src/`; frontmatter + checkbox (item 16) + entrada no progresso com os números de bundle antes/depois e a decisão HITL do card.
+```
+
+---
+
+## P17 — Spec 41: Teste Real (2ª parte do teste — funcionalidades reais do ERP via manifesto)
+
+> Só dispare DEPOIS do re-Selo (P15) concedido E da Spec 40 (P16) executada. Diferente do re-Selo (que MEDE a instalação), aqui se CONSTRÓI as funcionalidades reais do ERP e se CORRIGE na fonte toda lacuna da lib. O importador só mexe no manifesto.
+
+```
+Execute a spec `specs/plan/41-teste-real.md` da Sarak-Lib-UI-Core. É a 2ª parte do teste em consumidor real: implementar as funcionalidades REAIS do ERP Earendel (`C:\Users\Igor\Desktop\Sarak\X - Trabalho\Code\Earendel\ERP`) — Propostas, Contratos, Projetos — com conexões REAIS (Supabase do ERP), 100% via manifesto JSON.
+
+Preparação obrigatória: (1) acione a skill `ui-contexto-repositorio`; (2) leia `specs/plan/00-indice.md`, `00-progresso.md` e a spec 41 INTEIRA; (3) leia as skills de consumo `ui-integra-escrever-manifesto` e `ui-auditoria-manifesto` e o catálogo `docs/manifest-catalog.md`. Pré-condições: re-Selo concedido (P15) e Spec 40 executada (P16) — se faltar, PARE e avise.
+
+REGRA DE OURO (o que esta spec mede): no ERP, APENAS o `manifest.json` pode ser alterado para construir a UI — ZERO componente/tela/CSS React no importador. Se a UI precisa de algo que o manifesto não entrega, o problema é da BIBLIOTECA e se corrige NA FONTE (Sarak-Lib-UI-Core), com o ciclo da onda (spec/fix + gates verdes + catálogo/rebuild + reinstala no ERP) — NUNCA se adapta o ERP. A porta de dados (interceptor/backend) pode ser CONFIGURADA para apontar ao Supabase real do ERP (é plumbing de contrato, não UI); se conectar dado real exigir mais que configurar a porta, isso é um achado sobre a ergonomia da porta.
+
+Construa, por módulo (Propostas/Contratos/Projetos): listagem real via `source` sobre dado real (Supabase), detalhe/leitura, formulário real (create/edit) que GRAVA de verdade com validação barrando inválidos, e ≥1 composição densa real (grid/cards/tabela). Ciclo: montar no manifesto → rodar → se lacuna do autor, corrige o manifesto; se lacuna da lib, corrige na fonte e retoma.
+
+Entregue: `RELATORIO-TESTE-REAL.md` na raiz do ERP + na conversa, com as telas reais por módulo (evidência de dado real + persistência via curl/consulta), a LISTA de defeitos da lib corrigidos na fonte (sintoma→causa→correção), o diff do ERP provando que só o `manifest.json` mudou (R4), e a matriz R1-R7. `npm run build` do ERP verde. Entrada no `00-progresso.md` da lib. NÃO commite sem autorização.
 ```

@@ -2,7 +2,7 @@
 tipo: "spec"
 titulo: "Limpeza da Rodada 2 (desinstalar a Sarak-UI do ERP antes do re-Selo)"
 dominio: "Operação em consumidor de teste / Preparação do re-Selo"
-status: "🔴 Planejada (aguardando execução — pré-requisito do re-Selo)"
+status: "🟢 Concluída"
 prioridade: "Alta"
 tags: ["spec", "limpeza", "teste-pratico", "erp", "selo-da-onda", "rodada-2"]
 relacionados: ["25-limpeza-testes-praticos", "26-instalacao-teste", "27-paridade-navigationstyle-shell", "28-gate-submit-validacao", "29-robustez-instalacao-pacote"]
@@ -53,16 +53,16 @@ Antes do **re-Selo** (2ª execução da Spec 26), o consumidor de teste `C:\User
 6. Registrar entrada no `00-progresso.md` desta lib: o que foi removido, decisões HITL tomadas, e que o ERP está pronto para o re-Selo.
 
 # 4. Critérios de Aceite
-- [ ] Raiz do ERP sem nenhum artefato da instalação: `src/`, `node_modules/`, `dist/`, `index.html`, `vite.config.ts`, `tsconfig*.json`, `database.sqlite` removidos; `package.json`/`package-lock.json` conforme a decisão 2.3.1.
-- [ ] `.agents/skills/` com **apenas as 8 skills de negócio**; `.claude/skills/` sem as skills de UI (e `.claude/` removido se ficar vazio).
-- [ ] Grep por `@sarak/lib-ui-core|SarakManifestRenderer|SarakUIProvider|manifest-catalog` (fora de `.git`) → zero código vivo. Menções históricas em `specs/` do ERP podem permanecer (listar, não apagar).
-- [ ] Nenhum item da lista 2.2 modificado; `python extract_layout.py` executa sem quebrar.
-- [ ] As 5 decisões HITL registradas com a escolha do usuário.
-- [ ] Relatório da rodada 1 preservado (já arquivado em `specs/plan/RELATORIO-INSTALACAO-UI-rodada1.md` desta lib).
-- [ ] Entrada no `00-progresso.md` + este frontmatter 🟢.
+- [x] Raiz do ERP sem nenhum artefato da instalação: `src/`, `node_modules/`, `dist/`, `index.html`, `vite.config.ts`, `tsconfig*.json`, `database.sqlite` removidos; `package.json`/`package-lock.json` conforme a decisão 2.3.1 (removidos por completo).
+- [x] `.agents/skills/` com **apenas as 8 skills de negócio**; `.claude/skills/` sem as skills de UI (`.claude/` removido inteiro — ficaria vazio).
+- [x] Grep por `@sarak/lib-ui-core|SarakManifestRenderer|SarakUIProvider|manifest-catalog` (fora de `.git`) → zero código vivo. Menções históricas em `specs/` do ERP permanecem (listadas, não apagadas — `specs/README.md`, `specs/arquitetura/00-base-typescript.md`, genéricas ao ecossistema).
+- [x] Nenhum item da lista 2.2 modificado; `python extract_layout.py` executa sem quebrar.
+- [x] As 5 decisões HITL registradas com a escolha do usuário.
+- [x] Relatório da rodada 1 preservado (já arquivado em `specs/plan/RELATORIO-INSTALACAO-UI-rodada1.md` desta lib).
+- [x] Entrada no `00-progresso.md` + este frontmatter 🟢.
 
 # 5. Plano de Testes (Quality Gate)
-- [ ] `git status` do ERP contém somente as deleções esperadas (+ as linhas de `.env` autorizadas).
-- [ ] Grep de resíduo (§3 passo 5) documentado na entrada de progresso com a **saída literal**.
-- [ ] Scripts de negócio sobrevivem (execução real de pelo menos um).
-- [ ] **Gate de prontidão para o re-Selo:** o ERP não tem `package.json` (se a decisão 2.3.1 for (a)) — condição que o re-Selo precisa para medir o achado 2 de novo.
+- [x] `git status` do ERP contém somente as deleções esperadas (+ nenhuma linha do `.env` a remover — já estava limpo).
+- [x] Grep de resíduo (§3 passo 5) documentado na entrada de progresso com a **saída literal**.
+- [x] Scripts de negócio sobrevivem (execução real de `extract_layout.py`, exit 0).
+- [x] **Gate de prontidão para o re-Selo:** o ERP não tem `package.json` (decisão 2.3.1 = remover por completo) — condição que o re-Selo precisa para medir o achado 2 de novo.
