@@ -36,6 +36,10 @@ const REQUIRED_PATHS = [
     'bin/sarak-ui.mjs',
     'bin/scaffold/context.mjs',
     'bin/scaffold/runInit.mjs',
+    // `npm run sarak:check` (Spec 39 follow-up) — o consumidor invoca este arquivo
+    // diretamente via script no package.json (não é import da lib, é `node <caminho>`).
+    'bin/scaffold/checkUpdate.mjs',
+    'bin/scaffold/checkUpdate/runCheckUpdate.mjs',
     'docs/manifest-catalog.md',
     'docs/manifest-catalog.json',
     'templates/app-starter.manifest.json',

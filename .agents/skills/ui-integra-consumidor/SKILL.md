@@ -113,12 +113,26 @@ clean --force` (invalida o cache git do npm, que também serviria o commit velho
 <mesmo spec git usado na instalação>` (reinstala do zero, resolvendo o HEAD atual do branch). As
 duas primeiras etapas são obrigatórias — pular qualquer uma delas reproduz o mesmo travamento.
 
-**Como conferir o que está instalado, antes e depois:** leia
-`node_modules/@sarak/lib-ui-core/dist/BUILD_INFO.json` — contém `commit` (SHA completo),
-`commitShort`, `builtAt` e `libVersion`, gravado a cada `npm run build` da lib. Compare o `commit`
-contra o `git rev-parse HEAD` de `Lib-Sarak/Sarak-Lib-UI-Core` (ou peça isso a quem mantém a lib) para
-saber objetivamente se a atualização pegou. Antes desta spec, a única forma (obscura) era ler o SHA
-em `resolved` do `package-lock.json`.
+**Como conferir se está atualizado (correção pós-Spec-39):**
+```bash
+npm run sarak:check
+```
+Ele lê o SHA REALMENTE instalado (`resolved` do `package-lock.json` do próprio consumidor — a fonte
+exata) e compara contra o HEAD remoto do repositório (`git ls-remote`), imprimindo um veredito
+("Atualizado" ou "Desatualizado — rode `npm run sarak:update`"). Não depende de rede além do
+`git ls-remote`; falha com mensagem legível se não achar `package.json`/lock ou não alcançar o
+repositório.
+
+**Por que NÃO usar `dist/BUILD_INFO.json` para responder "estou atualizado?":** o arquivo existe
+(grava `baseCommit`/`builtAt`/`libVersion` a cada `npm run build` da lib) mas **não pode** conter o
+commit que o publica — o `dist/` (incluindo o próprio `BUILD_INFO.json`) é commitado DEPOIS de
+gerado, e o hash de um commit depende do seu conteúdo; gravar dentro dele o próprio hash é uma
+auto-referência impossível. Por isso o campo se chama `baseCommit` (o commit-BASE do build, sempre
+um passo atrás do commit real) e nunca `commit`. Achado real: comparar `baseCommit` contra o HEAD do
+repositório dá **FALSO NEGATIVO** (parece desatualizado estando em dia) — é a mesma família de falha
+silenciosa que motivou a Spec 39, só que na própria ferramenta de verificação. Use `BUILD_INFO` só
+para saber `builtAt`/`libVersion`; para "estou atualizado?", `npm run sarak:check` (ou o `resolved`
+do lock, na unha) é a única fonte confiável.
 
 **Modo de desenvolvimento local (`file:`/`npm link`) — avaliado, não incorporado ao `init`:** para
 quem desenvolve a lib e o consumidor ao mesmo tempo, trocar a dependência por

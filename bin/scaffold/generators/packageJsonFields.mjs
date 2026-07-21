@@ -32,6 +32,17 @@ export function buildUpdateScript({ ctx }) {
     return `npm uninstall @sarak/lib-ui-core && npm cache clean --force && npm install ${libSpec}`;
 }
 
+/**
+ * Verificação AUTORITATIVA de "estou atualizado?" (Spec 39 follow-up, item 2):
+ * o `dist/BUILD_INFO.json` da lib NUNCA pode responder isso sozinho (é o
+ * commit-BASE do build, não o commit publicado — auto-referência impossível).
+ * A fonte exata é o `resolved` do `package-lock.json` do próprio consumidor,
+ * comparado contra o HEAD remoto — é isso que `checkUpdate.mjs` faz.
+ */
+export function buildCheckScript() {
+    return 'node node_modules/@sarak/lib-ui-core/bin/scaffold/checkUpdate.mjs';
+}
+
 function viteExpressScripts() {
     return {
         dev: 'concurrently "npm:dev:backend" "npm:dev:frontend"',
@@ -59,11 +70,14 @@ function frontendOnlyScripts() {
 /** Monta as 3 fatias (`scripts`/`dependencies`/`devDependencies`) para o `mergePackageJson`. */
 export function buildPackageJsonUpdates({ answers, ctx }) {
     const dependencies = buildDependencies({ ctx });
-    const updateScript = { 'sarak:update': buildUpdateScript({ ctx }) };
+    const updateScripts = {
+        'sarak:update': buildUpdateScript({ ctx }),
+        'sarak:check': buildCheckScript(),
+    };
 
     if (answers.stack === 'next') {
         return {
-            scripts: { ...nextScripts(), ...updateScript },
+            scripts: { ...nextScripts(), ...updateScripts },
             dependencies: { ...dependencies, next: NEXT_VERSION_RANGE },
             devDependencies: { ...NEXT_DEV_DEPENDENCIES },
         };
@@ -71,14 +85,14 @@ export function buildPackageJsonUpdates({ answers, ctx }) {
 
     if (answers.stack === 'frontend-only') {
         return {
-            scripts: { ...frontendOnlyScripts(), ...updateScript },
+            scripts: { ...frontendOnlyScripts(), ...updateScripts },
             dependencies,
             devDependencies: { ...FRONTEND_ONLY_DEV_DEPENDENCIES },
         };
     }
 
     return {
-        scripts: { ...viteExpressScripts(), ...updateScript },
+        scripts: { ...viteExpressScripts(), ...updateScripts },
         dependencies: { ...dependencies, ...GOLDEN_PATH_DEPENDENCIES },
         devDependencies: { ...GOLDEN_PATH_DEV_DEPENDENCIES },
     };

@@ -1,6 +1,6 @@
 // @vitest-environment node
 import { describe, it, expect } from 'vitest';
-import { buildDependencies, buildPackageJsonUpdates, buildUpdateScript } from '../packageJsonFields.mjs';
+import { buildDependencies, buildPackageJsonUpdates, buildUpdateScript, buildCheckScript } from '../packageJsonFields.mjs';
 
 const ctx = {
     libVersion: '3.0.0',
@@ -47,6 +47,19 @@ describe('buildPackageJsonUpdates', () => {
             const updates = buildPackageJsonUpdates({ answers: { stack }, ctx });
             expect(updates.scripts['sarak:update']).toContain('npm uninstall @sarak/lib-ui-core');
         }
+    });
+
+    it('as 3 stacks ganham o script sarak:check (Spec 39 follow-up — verificação autoritativa)', () => {
+        for (const stack of ['vite-express', 'next', 'frontend-only']) {
+            const updates = buildPackageJsonUpdates({ answers: { stack }, ctx });
+            expect(updates.scripts['sarak:check']).toBe('node node_modules/@sarak/lib-ui-core/bin/scaffold/checkUpdate.mjs');
+        }
+    });
+});
+
+describe('buildCheckScript', () => {
+    it('aponta para o checkUpdate.mjs shipado no pacote instalado (não é import da lib)', () => {
+        expect(buildCheckScript()).toBe('node node_modules/@sarak/lib-ui-core/bin/scaffold/checkUpdate.mjs');
     });
 });
 

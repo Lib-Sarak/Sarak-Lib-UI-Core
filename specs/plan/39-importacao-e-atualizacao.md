@@ -43,6 +43,29 @@ O objetivo desta spec é, então: **tornar a atualização um único comando con
 - Entregar um mecanismo mínimo de identidade: gravar no pacote publicado o **commit/hash e a data do build** (ex.: `dist/BUILD_INFO.json` gerado no `npm run build`, ou campo equivalente exposto pela lib), de modo que o consumidor (e um agente de teste) consiga verificar objetivamente qual build está instalada.
 - **Decisão a confirmar na execução (HITL):** adicionar também **bump de versão de desenvolvimento** (`3.0.1`, `3.0.2`…) a cada release de dev — barato e dá sinal semântico — ou deixar só o `BUILD_INFO` até o módulo sair de desenvolvimento. Recomendação: **`BUILD_INFO` agora** (resolve verificação sem criar cerimônia de versionamento antes da hora).
 
+> **CORREÇÃO (follow-up, 2026-07-21) — o `BUILD_INFO` original era estruturalmente impreciso.**
+> A 1ª execução gravou o campo como `commit` (implicando "o commit que este build publica"). Isso é
+> **impossível de garantir**: o `dist/` (incluindo o próprio `BUILD_INFO.json`) é commitado DEPOIS de
+> gerado — a instalação oficial é via `github:` e não há `prepare` script —, e o hash de um commit
+> depende do seu conteúdo; gravar dentro dele o próprio hash é auto-referência circular. Evidência real
+> colhida no ERP: após um `npm run sarak:update` bem-sucedido, `BUILD_INFO.json` reportava
+> `599341cc...` enquanto o `resolved` do lock (e o HEAD real de `origin/main`) já estava em `b8f78ee...`
+> — **FALSO NEGATIVO** (parecia desatualizado estando em dia). Correção aplicada:
+> 1. **Campo renomeado** `commit`/`commitShort` → `baseCommit`/`baseCommitShort` — semântica honesta:
+>    o commit-BASE sobre o qual o build foi gerado, sempre um passo atrás do commit que o publica.
+>    `builtAt`/`libVersion` permanecem (são precisos). Campo `note` novo, autoexplicativo no próprio
+>    JSON. (`scripts/generate-build-info.mjs`.)
+> 2. **Verificação autoritativa nova:** `npm run sarak:check` (gerado pelo `init` junto do
+>    `sarak:update`, `bin/scaffold/checkUpdate.mjs`) — lê o `resolved` REAL do
+>    `package-lock.json` do consumidor e compara contra o HEAD remoto (`git ls-remote`), a única fonte
+>    exata. `BUILD_INFO`/`baseCommit` nunca deve ser usado para essa pergunta.
+> 3. Skill `ui-integra-consumidor` corrigida para apontar `sarak:check`/`resolved` como fonte de
+>    verdade, com o porquê documentado (para ninguém "consertar" o `BUILD_INFO` de volta no futuro).
+>
+> Esta é uma correção de follow-up — **a Spec 39 permanece 🟢 Concluída**; o mecanismo central
+> (`sarak:update` furando pin+cache) não mudou, só a peça de identidade de build que se mostrou
+> insuficiente sozinha. Ver entrada correspondente no `00-progresso.md`.
+
 ## 2.3 Documentar o fluxo na skill de consumo
 - `ui-integra-consumidor` ganha uma seção **"Como atualizar a biblioteca"** — hoje inexistente: a skill ensina a instalar e nunca menciona atualizar. Deve cobrir:
   - o comando (`npm run sarak:update`);

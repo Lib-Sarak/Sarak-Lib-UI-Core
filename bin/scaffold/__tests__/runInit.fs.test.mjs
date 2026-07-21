@@ -164,6 +164,13 @@ describe('runInit (fs real, tmp dir)', () => {
         expect(pkg.scripts['sarak:update']).toContain('npm install github:Lib-Sarak/Sarak-Lib-UI-Core');
     });
 
+    it('sarak:check (Spec 39 follow-up): gerado junto do sarak:update, aponta pro checkUpdate.mjs shipado', async () => {
+        await runInit({ rootDir: tmpDir, overrideAnswers: GOLDEN_PATH_ANSWERS });
+
+        const pkg = JSON.parse(fs.readFileSync(path.join(tmpDir, 'package.json'), 'utf8'));
+        expect(pkg.scripts['sarak:check']).toBe('node node_modules/@sarak/lib-ui-core/bin/scaffold/checkUpdate.mjs');
+    });
+
     it('sarak:update reusa o spec git JÁ instalado pelo consumidor (fork/mirror), nunca assume o oficial', async () => {
         fs.writeFileSync(
             path.join(tmpDir, 'package.json'),
