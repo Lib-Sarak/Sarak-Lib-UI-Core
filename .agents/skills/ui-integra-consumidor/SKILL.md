@@ -87,6 +87,48 @@ escreve arquivo de infraestrutura à mão** (isso é o que causava a adivinhaç�
    - **Ação:** Após a infraestrutura base estar acoplada e renderizando com sucesso o manifesto do template, informe ao usuário que a integração arquitetural terminou.
    - **Próximo Passo Obrigatório:** Oriente o usuário (ou você mesmo no próximo turno) a invocar a skill **`ui-integra-escrever-manifesto`** (já instalada no repositório do consumidor pelo `init`) para construir as telas — ela usa o catálogo GERADO `node_modules/@sarak/lib-ui-core/docs/manifest-catalog.md` como fonte da verdade de `type`s e props.
 
+## Como atualizar a biblioteca (Spec 39)
+
+A `@sarak/lib-ui-core` é instalada por **URL git** (`github:Lib-Sarak/Sarak-Lib-UI-Core`), não por
+registry — e a `version` do `package.json` fica parada em `3.0.0` por muitos commits seguidos (o
+módulo ainda está em desenvolvimento; tags/semver ficam fora de escopo por decisão do mantenedor,
+`specs/plan/39-importacao-e-atualizacao.md` §2.6). Isso tem uma consequência que **não é intuitiva**:
+
+- **Um `npm install` comum NÃO atualiza a lib — e isso é o comportamento ESPERADO do npm, não um bug.**
+  O `package-lock.json` grava o commit git exato que foi resolvido na primeira instalação
+  (`resolved: "...#<sha>"`). Como a `version` não muda, o npm considera o lock satisfeito e nunca
+  volta à rede — `npm install` reinstala fielmente o MESMO commit antigo, em silêncio, sem erro nem aviso.
+  Achado real: um consumidor de teste (`Earendel/ERP`) ficou preso 4 commits atrás por semanas sem
+  ninguém perceber.
+- **Consequência prática:** "o consumidor está sempre na versão mais atual" só é alcançável como
+  **atualização sob comando**, nunca automática. Automático de verdade exigiria registry + faixa
+  semver (`^3.1.0`) — fora do escopo atual; ver §2.6 da Spec 39 para a porta documentada.
+
+**O comando (gerado pelo `init` no `package.json` do consumidor):**
+```bash
+npm run sarak:update
+```
+Ele faz, nesta ordem: `npm uninstall @sarak/lib-ui-core` (remove o pin do lockfile) `&& npm cache
+clean --force` (invalida o cache git do npm, que também serviria o commit velho) `&& npm install
+<mesmo spec git usado na instalação>` (reinstala do zero, resolvendo o HEAD atual do branch). As
+duas primeiras etapas são obrigatórias — pular qualquer uma delas reproduz o mesmo travamento.
+
+**Como conferir o que está instalado, antes e depois:** leia
+`node_modules/@sarak/lib-ui-core/dist/BUILD_INFO.json` — contém `commit` (SHA completo),
+`commitShort`, `builtAt` e `libVersion`, gravado a cada `npm run build` da lib. Compare o `commit`
+contra o `git rev-parse HEAD` de `Lib-Sarak/Sarak-Lib-UI-Core` (ou peça isso a quem mantém a lib) para
+saber objetivamente se a atualização pegou. Antes desta spec, a única forma (obscura) era ler o SHA
+em `resolved` do `package-lock.json`.
+
+**Modo de desenvolvimento local (`file:`/`npm link`) — avaliado, não incorporado ao `init`:** para
+quem desenvolve a lib e o consumidor ao mesmo tempo, trocar a dependência por
+`"@sarak/lib-ui-core": "file:../Sarak-Lib-UI-Core"` (caminho relativo ao repo da lib clonado ao lado)
+propaga mudanças sem reinstalar a cada teste — é o que o `Sarak-MyService` já faz. `npm link` tem o
+mesmo efeito. **Trade-off a ter em mente:** isso NÃO reproduz o pacote publicado (aponta para o
+`dist/` local, sem passar pelo `npm pack`/`files` allowlist) — nunca use este modo para validar uma
+instalação real ou testar o fluxo de atualização acima; é estritamente uma conveniência de
+desenvolvimento simultâneo. Volte para o spec git antes de qualquer teste de instalação.
+
 ## Regras (SRP - Responsabilidade Única)
 - **NÃO escreva arquivo de infraestrutura à mão** (`vite.config.ts`, `server.ts`, `package.json` de scripts/deps, etc.) — isso é o que o `init` (Spec 21) existe para eliminar. A única saída manual permitida é a Etapa 4 (montagem da ilha embarcada), porque o scaffolder pressupõe um host que ainda não existe.
 - **NÃO** ensine ou tente montar telas, formulários ou laços de repetição (`renderFor`) nesta skill. O foco aqui é estrito: DevOps e Infraestrutura Front-end.

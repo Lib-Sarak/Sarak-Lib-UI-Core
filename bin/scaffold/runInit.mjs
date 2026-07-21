@@ -12,7 +12,7 @@ import { buildFileMap } from './buildFileMap.mjs';
 import { buildPackageJsonUpdates } from './generators/packageJsonFields.mjs';
 import { mergePackageJson, parsePackageJson } from './mergePackageJson.mjs';
 import { writeFileMap, copyDirRecursive } from './fsWrite.mjs';
-import { SKILLS_TO_COPY } from './constants.mjs';
+import { SKILLS_TO_COPY, DEFAULT_LIB_GIT_SPEC } from './constants.mjs';
 
 function readExistingPackageJson({ rootDir }) {
     const pkgPath = path.join(rootDir, 'package.json');
@@ -20,9 +20,20 @@ function readExistingPackageJson({ rootDir }) {
     return parsePackageJson(fs.readFileSync(pkgPath, 'utf8'));
 }
 
+/**
+ * O `sarak:update` (Spec 39 §2.1) precisa reinstalar do MESMO spec git que o
+ * consumidor já usa — nunca assumir o repositório oficial se o projeto já
+ * aponta para outro (fork, mirror interno). Só cai no default na 1ª instalação
+ * (`existing` ainda não tem a dependência gravada).
+ */
+function resolveLibGitSpec({ existing }) {
+    return existing?.dependencies?.['@sarak/lib-ui-core'] ?? DEFAULT_LIB_GIT_SPEC;
+}
+
 function writePackageJson({ rootDir, answers, ctx, force }) {
     const existing = readExistingPackageJson({ rootDir });
-    const updates = buildPackageJsonUpdates({ answers, ctx });
+    const libGitSpec = resolveLibGitSpec({ existing });
+    const updates = buildPackageJsonUpdates({ answers, ctx: { ...ctx, libGitSpec } });
     const { packageJson, skipped } = mergePackageJson({ existing, updates, force });
     fs.writeFileSync(path.join(rootDir, 'package.json'), `${JSON.stringify(packageJson, null, 4)}\n`);
     return skipped;

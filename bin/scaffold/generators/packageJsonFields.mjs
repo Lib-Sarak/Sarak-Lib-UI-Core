@@ -9,6 +9,7 @@ import {
     NEXT_DEV_DEPENDENCIES,
     NEXT_VERSION_RANGE,
     FRONTEND_ONLY_DEV_DEPENDENCIES,
+    DEFAULT_LIB_GIT_SPEC,
 } from '../constants.mjs';
 
 export function buildDependencies({ ctx }) {
@@ -16,6 +17,19 @@ export function buildDependencies({ ctx }) {
         '@sarak/lib-ui-core': `^${ctx.libVersion}`,
         ...ctx.peerDependencies,
     };
+}
+
+/**
+ * Comando único de atualização (Spec 39 §2.1). Como a dependência é git e a
+ * `version` do pacote não muda a cada release, um `npm install` comum é um
+ * NO-OP: o npm honra o `resolved` já gravado no lockfile. O script precisa
+ * furar as DUAS causas do travamento: o pin do lockfile (removendo a
+ * dependência) e o cache git do npm (`cache clean --force`), antes de
+ * reinstalar do MESMO spec que o consumidor usou originalmente.
+ */
+export function buildUpdateScript({ ctx }) {
+    const libSpec = ctx.libGitSpec ?? DEFAULT_LIB_GIT_SPEC;
+    return `npm uninstall @sarak/lib-ui-core && npm cache clean --force && npm install ${libSpec}`;
 }
 
 function viteExpressScripts() {
@@ -45,10 +59,11 @@ function frontendOnlyScripts() {
 /** Monta as 3 fatias (`scripts`/`dependencies`/`devDependencies`) para o `mergePackageJson`. */
 export function buildPackageJsonUpdates({ answers, ctx }) {
     const dependencies = buildDependencies({ ctx });
+    const updateScript = { 'sarak:update': buildUpdateScript({ ctx }) };
 
     if (answers.stack === 'next') {
         return {
-            scripts: nextScripts(),
+            scripts: { ...nextScripts(), ...updateScript },
             dependencies: { ...dependencies, next: NEXT_VERSION_RANGE },
             devDependencies: { ...NEXT_DEV_DEPENDENCIES },
         };
@@ -56,14 +71,14 @@ export function buildPackageJsonUpdates({ answers, ctx }) {
 
     if (answers.stack === 'frontend-only') {
         return {
-            scripts: frontendOnlyScripts(),
+            scripts: { ...frontendOnlyScripts(), ...updateScript },
             dependencies,
             devDependencies: { ...FRONTEND_ONLY_DEV_DEPENDENCIES },
         };
     }
 
     return {
-        scripts: viteExpressScripts(),
+        scripts: { ...viteExpressScripts(), ...updateScript },
         dependencies: { ...dependencies, ...GOLDEN_PATH_DEPENDENCIES },
         devDependencies: { ...GOLDEN_PATH_DEV_DEPENDENCIES },
     };

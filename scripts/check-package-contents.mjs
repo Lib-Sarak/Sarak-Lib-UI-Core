@@ -31,6 +31,8 @@ const REQUIRED_PATHS = [
     'dist/backend-node.d.ts',
     'dist/sarak.css',
     'dist/styles/sarak-base.css',
+    // Identidade de build verificável (Spec 39 §2.2) — gerado por scripts/generate-build-info.mjs.
+    'dist/BUILD_INFO.json',
     'bin/sarak-ui.mjs',
     'bin/scaffold/context.mjs',
     'bin/scaffold/runInit.mjs',

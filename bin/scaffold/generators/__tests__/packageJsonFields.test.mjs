@@ -1,6 +1,6 @@
 // @vitest-environment node
 import { describe, it, expect } from 'vitest';
-import { buildDependencies, buildPackageJsonUpdates } from '../packageJsonFields.mjs';
+import { buildDependencies, buildPackageJsonUpdates, buildUpdateScript } from '../packageJsonFields.mjs';
 
 const ctx = {
     libVersion: '3.0.0',
@@ -40,5 +40,27 @@ describe('buildPackageJsonUpdates', () => {
         const updates = buildPackageJsonUpdates({ answers: { stack: 'frontend-only' }, ctx });
         expect(updates.devDependencies['ts-node-dev']).toBeUndefined();
         expect(updates.devDependencies.vite).toBeTruthy();
+    });
+
+    it('as 3 stacks ganham o script sarak:update (Spec 39 §2.1)', () => {
+        for (const stack of ['vite-express', 'next', 'frontend-only']) {
+            const updates = buildPackageJsonUpdates({ answers: { stack }, ctx });
+            expect(updates.scripts['sarak:update']).toContain('npm uninstall @sarak/lib-ui-core');
+        }
+    });
+});
+
+describe('buildUpdateScript', () => {
+    it('fura o pin do lockfile E o cache git do npm — um `npm install` sozinho não satisfaz', () => {
+        const script = buildUpdateScript({ ctx });
+        expect(script).toContain('npm uninstall @sarak/lib-ui-core');
+        expect(script).toContain('npm cache clean --force');
+        expect(script).toContain('npm install github:Lib-Sarak/Sarak-Lib-UI-Core');
+    });
+
+    it('reusa o spec git REAL do consumidor (ctx.libGitSpec) em vez do default', () => {
+        const script = buildUpdateScript({ ctx: { ...ctx, libGitSpec: 'github:MeuFork/Sarak-Lib-UI-Core#minha-branch' } });
+        expect(script).toContain('npm install github:MeuFork/Sarak-Lib-UI-Core#minha-branch');
+        expect(script).not.toContain('Lib-Sarak');
     });
 });

@@ -46,3 +46,12 @@ export const NEXT_VERSION_RANGE = '^14.2.0';
 
 /** As 2 skills que o `init` copia para o consumidor (mesmo par da Etapa 6 de `ui-integra-consumidor`). */
 export const SKILLS_TO_COPY = ['ui-integra-escrever-manifesto', 'ui-auditoria-manifesto'];
+
+/**
+ * Spec da dependência git usada quando o consumidor ainda não tem
+ * `dependencies['@sarak/lib-ui-core']` gravado (1ª instalação). Quando já existe
+ * (`init` rodando sobre um projeto que já instalou a lib), `runInit.mjs` reusa o
+ * spec REAL do consumidor em vez deste default — o `sarak:update` deve furar o
+ * pin do MESMO repositório que foi instalado, nunca assumir um alheio (Spec 39 §2.1).
+ */
+export const DEFAULT_LIB_GIT_SPEC = 'github:Lib-Sarak/Sarak-Lib-UI-Core';

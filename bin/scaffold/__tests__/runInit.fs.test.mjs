@@ -157,6 +157,28 @@ describe('runInit (fs real, tmp dir)', () => {
         expect(pkg.devDependencies['ts-node-dev']).toBeUndefined();
     });
 
+    it('sarak:update (Spec 39 §2.1): 1ª instalação usa o spec git oficial default', async () => {
+        await runInit({ rootDir: tmpDir, overrideAnswers: GOLDEN_PATH_ANSWERS });
+
+        const pkg = JSON.parse(fs.readFileSync(path.join(tmpDir, 'package.json'), 'utf8'));
+        expect(pkg.scripts['sarak:update']).toContain('npm install github:Lib-Sarak/Sarak-Lib-UI-Core');
+    });
+
+    it('sarak:update reusa o spec git JÁ instalado pelo consumidor (fork/mirror), nunca assume o oficial', async () => {
+        fs.writeFileSync(
+            path.join(tmpDir, 'package.json'),
+            JSON.stringify({
+                name: 'consumidor-com-fork',
+                dependencies: { '@sarak/lib-ui-core': 'github:MeuFork/Sarak-Lib-UI-Core#7fd0bd1' },
+            }, null, 2),
+        );
+
+        await runInit({ rootDir: tmpDir, overrideAnswers: GOLDEN_PATH_ANSWERS });
+
+        const pkg = JSON.parse(fs.readFileSync(path.join(tmpDir, 'package.json'), 'utf8'));
+        expect(pkg.scripts['sarak:update']).toContain('npm install github:MeuFork/Sarak-Lib-UI-Core#7fd0bd1');
+    });
+
     it('modo embarcado: main.tsx importa o CSS escopado e passa options.mode', async () => {
         await runInit({ rootDir: tmpDir, overrideAnswers: { ...GOLDEN_PATH_ANSWERS, mode: 'embedded' } });
 
