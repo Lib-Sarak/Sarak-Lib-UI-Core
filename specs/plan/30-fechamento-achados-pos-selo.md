@@ -5,14 +5,14 @@ dominio: "Manifest Engine / Componentes / Build / Empacotamento / Design Engine 
 status: "🟢 Concluída (2026-07-21) — SarakActionCard generalizado in-place; follow-up SarakCoreCard/SarakCardGrid extraído para a Spec 42"
 prioridade: "Média"
 tags: ["spec", "pos-selo", "polimento", "contrato-de-componente", "empacotamento", "performance", "dx"]
-relacionados: ["26-instalacao-teste", "27-paridade-navigationstyle-shell", "29-robustez-instalacao-pacote", "41-teste-real", "42-generalizar-cardgrid-corecard", "otimizacao-nivel-1"]
+relacionados: ["26-instalacao-teste", "27-paridade-navigationstyle-shell", "29-robustez-instalacao-pacote", "40-teste-real", "42-generalizar-cardgrid-corecard", "otimizacao-nivel-1"]
 ---
 
-> **Nota de renumeração:** esta spec era a **Spec 30 ("Polimento pós-Selo")**, planejada a partir dos achados NÃO-bloqueantes da rodada 1 do Selo. Foi **renumerada para 40** e **expandida** para incluir TODOS os achados residuais das duas rodadas do Selo — inclusive um que não é "polimento", mas lacuna de contrato de componente (`SarakActionCard`). Objetivo: fechar 100% dos achados abertos das rodadas 1 e 2, sem deixar pendência solta.
+> **Nota de renumeração (histórico):** esta spec nasceu como **Spec 30 ("Polimento pós-Selo")**, a partir dos achados NÃO-bloqueantes da rodada 1 do Selo. Foi **expandida** para cobrir TODOS os achados residuais das duas rodadas — inclusive um que não é "polimento", mas lacuna de contrato de componente (`SarakActionCard`) — e nessa expansão passou temporariamente a **Spec 40**. Com a reorganização da família 40 (2026-07-21), que reservou os números 40+ para o que ainda está POR EXECUTAR, ela **voltou ao número 30**, já concluída. Entradas antigas do `00-progresso.md` a chamam de "Spec 40" — é a mesma spec (log append-only, preservado de propósito).
 
 # 1. Visão Geral e Descrição do Problema
 
-Agrupa os achados residuais das duas rodadas do Selo da Onda (Spec 26) — nenhum deles bloqueou o Selo, mas todos ficam abertos até esta spec. Fontes: `RELATORIO-INSTALACAO-UI-rodada1.md` (achados 6/7/8) e `RELATORIO-INSTALACAO-UI-rodada2.md` (Problemas 1/4 + melhorias 2/3 + M9 PARCIAL). Divididos por natureza:
+Agrupa os achados residuais das duas rodadas do Selo da Onda (Spec 26) — nenhum deles bloqueou o Selo, mas todos ficam abertos até esta spec. Fontes: `RELATORIO-INSTALACAO-CONSOLIDADO.md (Anexo A)` (achados 6/7/8) e `RELATORIO-INSTALACAO-CONSOLIDADO.md (Anexo C)` (Problemas 1/4 + melhorias 2/3 + M9 PARCIAL). Divididos por natureza:
 
 **Polimento / performance / cosmético (rodada 1):**
 - **Achado 6 — `renderFor` sem chave natural:** `[Sarak:renderFor] item sem id/uuid; usando índice N como key.` aparece em TODA renderização de uma lista cujos itens usam outra chave (ex.: `hash`). O motor não reconhece convenção além de `id`/`uuid` e avisa por item.
@@ -84,4 +84,4 @@ Agrupa os achados residuais das duas rodadas do Selo da Onda (Spec 26) — nenhu
 ## Build / medição
 - [x] Comparação antes/depois do chunk inicial de um app mínimo, com build real (init do scaffolder + `vite build`, node_modules reaproveitado do próprio repo — sem instalação de rede): números registrados no `00-progresso.md`.
 ## Validação real (opcional, se houver rodada de teste na sequência)
-- [ ] Os itens de UI (SarakActionCard genérico, fluxo do Design Engine documentado) reaparecem cobertos no **Teste Real (Spec 41)** — que exercita componentes de verdade num consumidor real. Pendente (spec 41 ainda não executada).
+- [ ] Os itens de UI (SarakActionCard genérico, fluxo do Design Engine documentado) reaparecem cobertos no **Teste Real (Spec 40)** — que exercita componentes de verdade num consumidor real. Pendente (spec 40 ainda não executada).

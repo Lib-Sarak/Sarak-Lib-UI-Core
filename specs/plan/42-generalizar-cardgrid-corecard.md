@@ -2,15 +2,15 @@
 tipo: "spec"
 titulo: "Generalizar SarakCoreCard / SarakCardGrid (remover domínio LLM da variante default)"
 dominio: "Componentes UI Base / Templates"
-status: "🔴 Planejada (follow-up da Spec 40 — decisão HITL de 2026-07-21, não bloqueia nenhum Selo)"
+status: "🔴 Planejada (follow-up da Spec 30 — decisão HITL de 2026-07-21, não bloqueia nenhum Selo)"
 prioridade: "Média"
 tags: ["spec", "contrato-de-componente", "follow-up", "cardgrid", "paridade"]
-relacionados: ["40-fechamento-achados-pos-selo", "03-padrao-e-taxonomia-biblioteca-atomica"]
+relacionados: ["30-fechamento-achados-pos-selo", "03-padrao-e-taxonomia-biblioteca-atomica"]
 ---
 
 # 1. Visão Geral e Descrição do Problema
 
-Durante a execução da Spec 40 (generalização do `SarakActionCard`), a varredura por strings de UI hardcoded encontrou o MESMO defeito num componente de superfície MAIOR: `SarakCoreCard` (`src/components/atomic/Templates/components/SarakCoreCard.tsx`) é a variante **`"classic"`** de `SarakCardGrid` — a variante **DEFAULT** quando o manifesto não declara `variant`. Ela tem embutido o mesmo domínio de catálogo de modelos LLM que o `SarakActionCard` tinha:
+Durante a execução da Spec 30 (generalização do `SarakActionCard`), a varredura por strings de UI hardcoded encontrou o MESMO defeito num componente de superfície MAIOR: `SarakCoreCard` (`src/components/atomic/Templates/components/SarakCoreCard.tsx`) é a variante **`"classic"`** de `SarakCardGrid` — a variante **DEFAULT** quando o manifesto não declara `variant`. Ela tem embutido o mesmo domínio de catálogo de modelos LLM que o `SarakActionCard` tinha:
 
 - Painel fixo "Custo In (1M)" / "Custo Out (1M)" (linhas 116-128 de `SarakCoreCard.tsx`).
 - "Janela de Contexto" com aritmética de domínio `Number(context) / 1000` (linhas 129-134).
@@ -19,9 +19,9 @@ Durante a execução da Spec 40 (generalização do `SarakActionCard`), a varred
 
 O vazamento vai além do componente: a própria **interface pública** `SarakCardGridProps.mapping` (`src/components/atomic/Templates/SarakCardGrid.tsx`, linhas 36-47) declara os campos `price_in?`, `price_out?`, `context?` NO TIPO — já publicados no catálogo gerado (`docs/manifest-catalog.md`, seção `SarakCardGrid`, aprox. linha 777). Isso é diferente do `SarakActionCard` (que recebia `mapping?: Record<string, string>` solto, sem tipo fechado) — aqui a mudança é **quebra de contrato tipado**, não apenas de comportamento.
 
-## 1.1 Por que isto NÃO entrou na Spec 40
+## 1.1 Por que isto NÃO entrou na Spec 30
 
-Decisão do mantenedor (2026-07-21, registrada em `00-progresso.md`): a Spec 40 nomeia explicitamente só `SarakActionCard.tsx`. `SarakCoreCard`/`SarakCardGrid` ficaram de fora porque:
+Decisão do mantenedor (2026-07-21, registrada em `00-progresso.md`): a Spec 30 nomeia explicitamente só `SarakActionCard.tsx`. `SarakCoreCard`/`SarakCardGrid` ficaram de fora porque:
 1. É o caminho **default** do grid mais usado — maior superfície de regressão.
 2. `SarakCardGrid.mapping` é tipo público **já publicado** — remover campos dele é quebra de contrato do consumidor, exige nota de migração formal.
 3. Merece teste de caracterização do `SarakCoreCard` (hoje coberto só indiretamente por `SarakCardGrid.test.tsx`, sem suíte dedicada) ANTES do refactor, não durante.
@@ -32,7 +32,7 @@ Decisão do mantenedor (2026-07-21, registrada em `00-progresso.md`): a Spec 40 
 - Criar `SarakCoreCard.test.tsx` (`src/components/atomic/Templates/components/__tests__/`) cobrindo o comportamento ATUAL (variant classic com `price_in`/`price_out`/`context`/`tokenizer`/`description`) via snapshot, para servir de rede de segurança do refactor seguinte.
 
 ## 2.2 Generalizar `SarakCoreCard`
-- Mesma filosofia da Spec 40 §2.5: painel de "Custo In/Out"/"Janela de Contexto"/"Tokenizer" vira genérico, dirigido por `mapping.details` (array de pares `{ label, value }` já formatados pelo consumidor — sem aritmética embutida).
+- Mesma filosofia da Spec 30 §2.5: painel de "Custo In/Out"/"Janela de Contexto"/"Tokenizer" vira genérico, dirigido por `mapping.details` (array de pares `{ label, value }` já formatados pelo consumidor — sem aritmética embutida).
 - Default do `subtitle` deixa de ser `'Modelo'` (vira vazio/configurável).
 - Preservar as demais seções (input/output capacities, botões Ver Specs/ExternalLink) — fora do escopo desta generalização, a menos que também tenham domínio embutido (auditar ao executar).
 
@@ -43,14 +43,14 @@ Decisão do mantenedor (2026-07-21, registrada em `00-progresso.md`): a Spec 40 
 
 ## 2.4 Nota de migração
 - Documentar em `docs/manifest-catalog.md` (ou changelog, conforme convenção do repositório) a mudança de `mapping.price_in/price_out/context` → `mapping.details`, com o exemplo do "antes"/"depois".
-- Atualizar a linha temporária inserida pela Spec 40 no catálogo/skill (a que aponta "SarakCardGrid/SarakCoreCard pendentes de generalização") — remover a nota de pendência quando esta spec fechar.
+- Atualizar a linha temporária inserida pela Spec 30 no catálogo/skill (a que aponta "SarakCardGrid/SarakCoreCard pendentes de generalização") — remover a nota de pendência quando esta spec fechar.
 
 # 3. Critérios de Aceite
 - [ ] `SarakCoreCard.test.tsx` (caracterização do comportamento atual) criado e verde ANTES do refactor.
 - [ ] `SarakCoreCard` (variante `classic`) sem nenhum texto/aritmética de domínio LLM fixo; painel de detalhes dirigido por `mapping.details`.
 - [ ] `SarakCardGridProps.mapping` sem `price_in`/`price_out`/`context` no tipo; catálogo regenerado.
 - [ ] Nota de migração escrita (antes/depois) referenciando este breaking change.
-- [ ] Nota temporária da Spec 40 sobre esta pendência removida do catálogo/skill.
+- [ ] Nota temporária da Spec 30 sobre esta pendência removida do catálogo/skill.
 - [ ] Gates verdes: `RegistryParity`, `catalog:check`, `npm run build`; `run_audit.mjs` sem regressão (baseline conhecido).
 
 # 4. Plano de Testes (Quality Gate)

@@ -1,4 +1,4 @@
-# Prompts de Execução — Onda "Renderizador Genérico" (specs 16-24 + Fase 5 de correção pós-Selo, specs 27-30)
+# Prompts de Execução — Onda "Renderizador Genérico" (specs 16-24 + Fase 5 pós-Selo: 27-31, 30 e 40-42)
 
 Cada bloco abaixo é um prompt COMPLETO para iniciar a execução de uma spec **numa conversa nova** (agente sem contexto anterior). Copie e cole o bloco inteiro. A ordem dos prompts é a ordem de execução do roteiro (`00-indice.md`). Specs agrupáveis têm prompt único (P8).
 
@@ -191,11 +191,11 @@ NÃO corrija a biblioteca, NÃO abra specs dela, NÃO commite nada sem autoriza�
 
 # Fase 5 — Correção pós-Selo + Teste Real (P11-P17)
 
-> Rodada de correção dos achados do Selo negado (`RELATORIO-SELO-ONDA-ACHADOS.md` + triagem da Spec 26 no `00-progresso.md`). Ordem: P11 e P12 (os dois FAIL/críticos) → P13 (robustez de instalação) → **P14 (desinstalar o ERP)** → **P15 (re-Selo)** → **P16 (Spec 40, fechamento dos achados residuais)** → **P17 (Spec 41, Teste Real — funcionalidades reais)**. Cada correção de código segue o mesmo ciclo da onda: spec → execução → revisão independente → re-teste. **A validação final é o re-teste real (P15/P17), não a suíte unitária.**
+> Rodada de correção dos achados do Selo negado (`RELATORIO-INSTALACAO-CONSOLIDADO.md (Anexo B)` + triagem da Spec 26 no `00-progresso.md`). Ordem: P11 e P12 (os dois FAIL/críticos) → P13 (robustez de instalação) → **P14 (desinstalar o ERP)** → **P15 (re-Selo)** → **P16 (Spec 30, fechamento dos achados residuais)** → **P17 (Spec 40, Teste Real — funcionalidades reais)**. Cada correção de código segue o mesmo ciclo da onda: spec → execução → revisão independente → re-teste. **A validação final é o re-teste real (P15/P17), não a suíte unitária.**
 >
 > **O ciclo do re-Selo é de dois passos:** desinstalar (P14) e reinstalar do zero medindo (P15). O ERP hoje tem a instalação completa da rodada 1 na raiz — pular o P14 faria o teste medir uma instalação sobre a outra.
 >
-> **P16 vs P17:** o P16 (Spec 40) fecha os achados residuais das rodadas 1/2 (polimento + `SarakActionCard` genérico + empacotamento). O P17 (Spec 41) é a **2ª parte do teste real**: implementar as funcionalidades REAIS do ERP 100% via manifesto, corrigindo lacunas NA FONTE — não é medição de instalação, é prova de produção.
+> **P16 vs P17:** o P16 (Spec 30) fecha os achados residuais das rodadas 1/2 (polimento + `SarakActionCard` genérico + empacotamento). O P17 (Spec 40) é a **2ª parte do teste real**: implementar as funcionalidades REAIS do ERP 100% via manifesto, corrigindo lacunas NA FONTE — não é medição de instalação, é prova de produção.
 
 ## P11 — Spec 27: Paridade de navigationStyle no Shell
 
@@ -258,7 +258,7 @@ Contexto essencial: o ERP recebeu, na rodada 1 do Selo, uma instalação COMPLET
 
 Regras inegociáveis: esta operação REMOVE artefatos da Sarak-UI de um consumidor de teste — nada do NEGÓCIO do ERP pode ser modificado (`Modulos/`, `specs/`, `.githooks/`, `CLAUDE.md`, `.env`, scripts Python, SQLs de negócio, o PDF de template, e as 8 skills de negócio em `.agents/skills/`). Faça o INVENTÁRIO VIVO (listar a raiz + grep por "sarak" fora de node_modules/.git) ANTES de deletar e compare com a tabela 2.1 da spec — a pegada muda conforme as respostas do `init`. Rode `git status`/`git ls-files` para separar o que é tracked (precisa `git rm --cached`) do que é só disco. Resolva as 5 decisões HITL da seção 2.3 com o usuário ANTES de agir (package.json híbrido — recomendação é remover por completo, pois o re-Selo precisa medir a instalação num diretório SEM package.json; database.sqlite; schema ui_core remoto; linhas do .env; quem commita).
 
-O relatório da rodada 1 já está arquivado nesta lib (`specs/plan/RELATORIO-INSTALACAO-UI-rodada1.md`) — pode remover o `RELATORIO-INSTALACAO-UI.md` do ERP.
+O relatório da rodada 1 já está arquivado nesta lib (`specs/plan/RELATORIO-INSTALACAO-CONSOLIDADO.md (Anexo A)`) — pode remover o `RELATORIO-INSTALACAO-UI.md` do ERP.
 
 Ao terminar: verificação de integridade da seção 3 passo 5 (git status só com as remoções esperadas + grep de resíduo com SAÍDA LITERAL + um script Python de negócio executando); entrada no `00-progresso.md` da LIB; frontmatter da spec 🟢; checkbox item 14 no `00-indice.md`. NÃO commite sem autorização explícita.
 ```
@@ -308,12 +308,12 @@ NÃO corrija a biblioteca, NÃO abra specs dela, NÃO commite nada sem autoriza�
 
 ---
 
-## P16 — Spec 40: Fechamento de Achados pós-Selo (era a Spec 30, renumerada e expandida — SÓ depois do re-Selo)
+## P16 — Spec 30: Fechamento de Achados pós-Selo (SÓ depois do re-Selo)
 
 ```
-Execute a spec `specs/plan/40-fechamento-achados-pos-selo.md` da Sarak-Lib-UI-Core. NÃO execute antes do re-Selo (P15). Fecha TODOS os achados residuais das rodadas 1 e 2 do Selo — não bloqueia o Selo, mas fecha o objetivo por completo.
+Execute a spec `specs/plan/30-fechamento-achados-pos-selo.md` da Sarak-Lib-UI-Core. NÃO execute antes do re-Selo (P15). Fecha TODOS os achados residuais das rodadas 1 e 2 do Selo — não bloqueia o Selo, mas fecha o objetivo por completo.
 
-Preparação obrigatória, nesta ordem: (1) acione a skill `ui-contexto-repositorio`; (2) leia `specs/plan/00-indice.md` e `specs/plan/00-progresso.md`; (3) leia a spec 40 inteira; (4) leia os dois relatórios de origem `specs/plan/RELATORIO-INSTALACAO-UI-rodada1.md` e `RELATORIO-INSTALACAO-UI-rodada2.md`. Skills de execução: `sarak:padrao-typescript`, `sarak:otimizacao-nivel-1` (bundle — medir antes/depois) e `ui-refatorar-componente` (para o `SarakActionCard`, que muda assinatura de props — paridade 1:1:1:1:1:1).
+Preparação obrigatória, nesta ordem: (1) acione a skill `ui-contexto-repositorio`; (2) leia `specs/plan/00-indice.md` e `specs/plan/00-progresso.md`; (3) leia a spec 30 inteira; (4) leia os dois relatórios de origem `specs/plan/RELATORIO-INSTALACAO-CONSOLIDADO.md (Anexo A)` e `RELATORIO-INSTALACAO-CONSOLIDADO.md (Anexo C)`. Skills de execução: `sarak:padrao-typescript`, `sarak:otimizacao-nivel-1` (bundle — medir antes/depois) e `ui-refatorar-componente` (para o `SarakActionCard`, que muda assinatura de props — paridade 1:1:1:1:1:1).
 
 Contexto essencial: seis frentes. (6) `renderFor` avisa "item sem id/uuid" por item quando a chave natural é outra (`hash`); (7) bundle de app mínimo em 3,9 MB / 993 KB gzip sem code-splitting (pesados já são `React.lazy` no `LeafNode`) — incluir `manualChunks` no `vite.config.ts` do `init`; (8) `input[type=color]` do CustomizationPanel recebe `var(...)` cru; (M9) o pacote ainda tem `src/styles/sarak-base.css` — mover para `dist/` e reapontar o export `./sarak-base.css` (zera `src/` do pacote, M9 vira PASS puro); (Problema 4) `SarakActionCard` (`src/components/atomic/Cards/SarakActionCard.tsx`) é um card de LLM com botão "Executar" HARDCODED (linha 118), subtitle "Modelo" e painel de custo de tokens fixo — generalizar (props/mapping) ou separar em card especializado, + varrer strings de UI hardcoded em `atomic/`; (Problema 1) documentar o fluxo do Design Engine "Commit por categoria → Aplicar Alterações Globais → modal Salvar Novo Tema".
 
@@ -324,14 +324,14 @@ Ao terminar: gates `RegistryParity`/`catalog:check`/`npm run build` verdes; `run
 
 ---
 
-## P17 — Spec 41: Teste Real (2ª parte do teste — funcionalidades reais do ERP via manifesto)
+## P17 — Spec 40: Teste Real (2ª parte do teste — funcionalidades reais do ERP via manifesto)
 
-> Só dispare DEPOIS do re-Selo (P15) concedido E da Spec 40 (P16) executada. Diferente do re-Selo (que MEDE a instalação), aqui se CONSTRÓI as funcionalidades reais do ERP e se CORRIGE na fonte toda lacuna da lib. O importador só mexe no manifesto.
+> Só dispare DEPOIS do re-Selo (P15) concedido E da Spec 30 (P16) executada. Diferente do re-Selo (que MEDE a instalação), aqui se CONSTRÓI as funcionalidades reais do ERP e se CORRIGE na fonte toda lacuna da lib. O importador só mexe no manifesto.
 
 ```
-Execute a spec `specs/plan/41-teste-real.md` da Sarak-Lib-UI-Core. É a 2ª parte do teste em consumidor real: implementar as funcionalidades REAIS do ERP Earendel (`C:\Users\Igor\Desktop\Sarak\X - Trabalho\Code\Earendel\ERP`) — Propostas, Contratos, Projetos — com conexões REAIS (Supabase do ERP), 100% via manifesto JSON.
+Execute a spec `specs/plan/40-teste-real.md` da Sarak-Lib-UI-Core. É a 2ª parte do teste em consumidor real: implementar as funcionalidades REAIS do ERP Earendel (`C:\Users\Igor\Desktop\Sarak\X - Trabalho\Code\Earendel\ERP`) — Propostas, Contratos, Projetos — com conexões REAIS (Supabase do ERP), 100% via manifesto JSON.
 
-Preparação obrigatória: (1) acione a skill `ui-contexto-repositorio`; (2) leia `specs/plan/00-indice.md`, `00-progresso.md` e a spec 41 INTEIRA; (3) leia as skills de consumo `ui-integra-escrever-manifesto` e `ui-auditoria-manifesto` e o catálogo `docs/manifest-catalog.md`. Pré-condições: re-Selo concedido (P15) e Spec 40 executada (P16) — se faltar, PARE e avise.
+Preparação obrigatória: (1) acione a skill `ui-contexto-repositorio`; (2) leia `specs/plan/00-indice.md`, `00-progresso.md` e a spec 40 INTEIRA; (3) leia as skills de consumo `ui-integra-escrever-manifesto` e `ui-auditoria-manifesto` e o catálogo `docs/manifest-catalog.md`. Pré-condições: re-Selo concedido (P15) e Spec 30 executada (P16) — se faltar, PARE e avise.
 
 REGRA DE OURO (o que esta spec mede): no ERP, APENAS o `manifest.json` pode ser alterado para construir a UI — ZERO componente/tela/CSS React no importador. Se a UI precisa de algo que o manifesto não entrega, o problema é da BIBLIOTECA e se corrige NA FONTE (Sarak-Lib-UI-Core), com o ciclo da onda (spec/fix + gates verdes + catálogo/rebuild + reinstala no ERP) — NUNCA se adapta o ERP. A porta de dados (interceptor/backend) pode ser CONFIGURADA para apontar ao Supabase real do ERP (é plumbing de contrato, não UI); se conectar dado real exigir mais que configurar a porta, isso é um achado sobre a ergonomia da porta.
 
@@ -342,20 +342,40 @@ Entregue: `RELATORIO-TESTE-REAL.md` na raiz do ERP + na conversa, com as telas r
 
 ---
 
-## P18 — Spec 42: Generalizar SarakCoreCard / SarakCardGrid (follow-up da Spec 40)
+## P18 — Spec 41: Piso de Bundle / barris de ícone (rodar ANTES da Spec 42)
 
-> Follow-up da Spec 40 (decisão HITL de 2026-07-21): não bloqueia nenhum Selo, mas fecha a mesma classe de defeito (domínio LLM embutido) que sobrou fora do escopo nomeado da 40. Pode rodar a qualquer momento depois da Spec 40 — sem dependência do re-Selo/Teste Real.
+> Origem: achado da execução da Spec 30. Toca 2 arquivos em comum com a Spec 42 (`SarakCoreCard`, `SarakCardGrid`) — **nunca em paralelo**; esta vem primeiro.
+
+```
+Execute a spec `specs/plan/41-piso-de-bundle-barris-de-icone.md` da Sarak-Lib-UI-Core.
+
+Preparação obrigatória, nesta ordem: (1) acione a skill `ui-contexto-repositorio`; (2) leia `specs/plan/00-indice.md` e `specs/plan/00-progresso.md` (especialmente a entrada da Spec 30, que contém o achado que originou esta spec); (3) leia a spec 41 INTEIRA; (4) leia a `specs/plan/42-generalizar-cardgrid-corecard.md` para saber o que NÃO invadir (ela vem depois e toca 2 dos mesmos arquivos). Skills de execução: `sarak:otimizacao-nivel-1` (disciplina de medir antes/depois — é o coração desta spec) e `sarak:padrao-typescript`.
+
+Contexto essencial: a Spec 30 tentou reduzir o bundle com `manualChunks` e NÃO reduziu bytes (~2,44 MB antes e depois). A razão é estrutural: num renderizador de manifesto a ligação é por STRING em runtime (`{"type": "X"}`), então o Registry precisa de todo componente não-lazy de forma ansiosa — o bundler não pode podar o que não sabe que não será usado. A causa ATACÁVEL é outra: 6 arquivos fazem `import * as LucideIcons from 'lucide-react'` e acessam por índice DINÂMICO (`LucideIcons[nomeEmRuntime]`), o que impede tree-shaking e arrasta ~1500 ícones. Os 5 cards (`SarakActionCard`, `SarakSearchCard`, `SarakTitleCard`, `SarakCoreCard`, `SarakCardGrid`) burlam o átomo oficial `SarakIcon`, que já resolve nome→ícone via `IconMap` CURADO. Atenção às duas mecânicas diferentes: `lucide-react` é peerDependency e está em `--external` (incha o bundle do CONSUMIDOR), enquanto `@phosphor-icons/react` e `@tabler/icons-react` são `dependencies` e NÃO estão em `--external` (hipótese a verificar: podem estar sendo empacotadas inteiras dentro do `dist/` da lib).
+
+REGRA DURA: **meça ANTES de refatorar.** Isole com número quanto cada família de ícone contribui (dist da lib vs bundle do consumidor), usando um app mínimo do `init` como cobaia. Se o ganho for irrelevante, a spec fecha com a CONCLUSÃO NEGATIVA documentada — não force o refactor para justificar a spec.
+
+Entregue: os itens 2.1 a 2.4 da spec — medição antes/depois registrada; zero `import * as *Icons` com acesso dinâmico em `src/` (cards usando `SarakIcon`); cobertura do `IconMap` estendida onde faltar + nome desconhecido degradando com `console.warn` (postura da Spec 17), nunca quebrando a tela; nomes de ícone válidos DOCUMENTADOS no catálogo gerado (hoje ícone é a exceção não documentada da regra dura de tokens); e a conclusão "manualChunks não reduz bundle em renderizador de manifesto" registrada no `vite.config.ts` gerado pelo `init` e/ou na skill, para não voltar como achado na próxima rodada de teste.
+
+Ao terminar: gates `RegistryParity`/`catalog:check`/`npm run build` verdes; `run_audit.mjs` sem regressão (compare com o baseline conhecido, não espere 0); suítes de `src/components/atomic/Cards`, `Templates` e `Icon` verdes (snapshots dos 5 cards mudam de propósito — revise cada um); frontmatter da spec + checkbox (item 18) no `00-indice.md` + entrada no `00-progresso.md` com os NÚMEROS de antes/depois.
+```
+
+---
+
+## P19 — Spec 42: Generalizar SarakCoreCard / SarakCardGrid (follow-up da Spec 30)
+
+> Follow-up da Spec 30 (decisão HITL de 2026-07-21): não bloqueia nenhum Selo, mas fecha a mesma classe de defeito (domínio LLM embutido) que sobrou fora do escopo nomeado da 40. Pode rodar a qualquer momento depois da Spec 30 — sem dependência do re-Selo/Teste Real.
 
 ```
 Execute a spec `specs/plan/42-generalizar-cardgrid-corecard.md` da Sarak-Lib-UI-Core.
 
-Preparação obrigatória, nesta ordem: (1) acione a skill `ui-contexto-repositorio`; (2) leia `specs/plan/00-indice.md` e `specs/plan/00-progresso.md`; (3) leia a spec 42 inteira; (4) leia a relacionada `specs/plan/40-fechamento-achados-pos-selo.md` (o precedente direto — mesma solução aplicada ao `SarakActionCard`) e a entrada de 2026-07-21 no `00-progresso.md` (as 4 decisões HITL que criaram esta spec). Skills de execução: `sarak:padrao-typescript` e `ui-refatorar-componente` (o tipo público `SarakCardGridProps.mapping` perde campos — paridade/quebra de contrato).
+Preparação obrigatória, nesta ordem: (1) acione a skill `ui-contexto-repositorio`; (2) leia `specs/plan/00-indice.md` e `specs/plan/00-progresso.md`; (3) leia a spec 42 inteira; (4) leia a relacionada `specs/plan/30-fechamento-achados-pos-selo.md` (o precedente direto — mesma solução aplicada ao `SarakActionCard`) e a entrada de 2026-07-21 no `00-progresso.md` (as 4 decisões HITL que criaram esta spec). Skills de execução: `sarak:padrao-typescript` e `ui-refatorar-componente` (o tipo público `SarakCardGridProps.mapping` perde campos — paridade/quebra de contrato).
 
-Contexto essencial: `SarakCoreCard` (`src/components/atomic/Templates/components/SarakCoreCard.tsx`) é a variante `"classic"` — a DEFAULT de `SarakCardGrid` — e tem o mesmo domínio de catálogo de modelos LLM que o `SarakActionCard` tinha antes da Spec 40: painel fixo "Custo In/Out (1M)" e "Janela de Contexto" com aritmética embutida (`Number(context)/1000`), bloco "Tokenizer", default de subtitle `'Modelo'`. Pior: a interface pública `SarakCardGridProps.mapping` (`SarakCardGrid.tsx` linhas 36-47) declara `price_in?`/`price_out?`/`context?` NO TIPO, já publicado no catálogo (`docs/manifest-catalog.md`, seção `SarakCardGrid`) — removê-los é BREAKING CHANGE de contrato tipado, não só de comportamento.
+Contexto essencial: `SarakCoreCard` (`src/components/atomic/Templates/components/SarakCoreCard.tsx`) é a variante `"classic"` — a DEFAULT de `SarakCardGrid` — e tem o mesmo domínio de catálogo de modelos LLM que o `SarakActionCard` tinha antes da Spec 30: painel fixo "Custo In/Out (1M)" e "Janela de Contexto" com aritmética embutida (`Number(context)/1000`), bloco "Tokenizer", default de subtitle `'Modelo'`. Pior: a interface pública `SarakCardGridProps.mapping` (`SarakCardGrid.tsx` linhas 36-47) declara `price_in?`/`price_out?`/`context?` NO TIPO, já publicado no catálogo (`docs/manifest-catalog.md`, seção `SarakCardGrid`) — removê-los é BREAKING CHANGE de contrato tipado, não só de comportamento.
 
-Ordem obrigatória: (1) criar `SarakCoreCard.test.tsx` (caracterização do comportamento ATUAL, snapshot) ANTES de tocar no componente; (2) só então generalizar o painel de detalhes para `mapping.details` (mesmo modelo da Spec 40 — array de pares `{label, value}` pré-formatados pelo consumidor, sem aritmética de domínio na Sarak); (3) remover `price_in`/`price_out`/`context` do tipo `SarakCardGridProps.mapping`; (4) escrever nota de migração (antes/depois) e remover a nota temporária que a Spec 40 deixou no catálogo/skill sobre esta pendência.
+Ordem obrigatória: (1) criar `SarakCoreCard.test.tsx` (caracterização do comportamento ATUAL, snapshot) ANTES de tocar no componente; (2) só então generalizar o painel de detalhes para `mapping.details` (mesmo modelo da Spec 30 — array de pares `{label, value}` pré-formatados pelo consumidor, sem aritmética de domínio na Sarak); (3) remover `price_in`/`price_out`/`context` do tipo `SarakCardGridProps.mapping`; (4) escrever nota de migração (antes/depois) e remover a nota temporária que a Spec 30 deixou no catálogo/skill sobre esta pendência.
 
 Entregue: os 4 itens da seção 2 da spec (2.1 a 2.4); `SarakCardGrid.test.tsx` com fixtures migradas para `details`; catálogo regenerado (a seção `SarakCardGrid` reflete o tipo novo); nota de migração documentada.
 
-Ao terminar: gates `RegistryParity`/`catalog:check`/`npm run build` verdes; `run_audit.mjs` sem regressão (baseline conhecido); suítes de `src/components/atomic/Templates` verdes; frontmatter da spec 42 + checkbox (item 18) no `00-indice.md` + entrada no `00-progresso.md`.
+Ao terminar: gates `RegistryParity`/`catalog:check`/`npm run build` verdes; `run_audit.mjs` sem regressão (baseline conhecido); suítes de `src/components/atomic/Templates` verdes; frontmatter da spec 42 + checkbox (item 19) no `00-indice.md` + entrada no `00-progresso.md`. Pré-requisito: a **Spec 41 (P18)** deve ter rodado antes — vocês tocam `SarakCoreCard`/`SarakCardGrid` em comum; se por algum motivo a 43 ainda não rodou, PRESERVE a troca de ícone que ela fará (use o átomo `SarakIcon`, nunca `import * as LucideIcons` com índice dinâmico).
 ```

@@ -31,7 +31,7 @@ Antes do **re-Selo** (2ª execução da Spec 26), o consumidor de teste `C:\User
 | Storage de temas da UI (sqlite escolhido na entrevista) | `database.sqlite` | ⚠️ HITL — ver 2.3.2 |
 | Skills de consumo copiadas pelo `init` | `.agents/skills/ui-integra-escrever-manifesto/`, `.agents/skills/ui-auditoria-manifesto/` | Spec 21 |
 | Espelho `.claude` das skills acima | `.claude/skills/ui-integra-escrever-manifesto/`, `.claude/skills/ui-auditoria-manifesto/` (e o próprio `.claude/` se ficar vazio — **note: a Spec 25 dizia que `.claude` não existia no ERP; ele existe agora, criado pelo `init`**) | Spec 21 |
-| Relatório da rodada 1 | `RELATORIO-INSTALACAO-UI.md` — **já arquivado nesta lib** em `specs/plan/RELATORIO-INSTALACAO-UI-rodada1.md` (cópia verbatim, 2026-07-20). Pode remover do ERP; o re-Selo grava um novo. | Spec 26 |
+| Relatório da rodada 1 | `RELATORIO-INSTALACAO-UI.md` — **já arquivado nesta lib** em `specs/plan/RELATORIO-INSTALACAO-CONSOLIDADO.md (Anexo A)` (cópia verbatim, 2026-07-20). Pode remover do ERP; o re-Selo grava um novo. | Spec 26 |
 
 ## 2.2 PRESERVAR (negócio do ERP — proibido tocar)
 `Modulos/` (Contratos/Propostas/Projetos), `specs/` (ADRs/specs do ERP), `.githooks/`, `CLAUDE.md`, `.env`, `.gitignore`, `.git`, `__pycache__/`, os scripts Python de negócio (`extract_drawings.py`, `extract_layout.py`, `generate_templates.py`, `gerador_contrato.py`), os SQLs de negócio (`supabase_contratos.sql`, `supabase_propostas.sql`), `Template_Contrato_Iarendel_Template.pdf`, e as **8 skills de negócio** em `.agents/skills/`: `contrato-gerador-iarendel`, `contrato-template-iarendel`, `erp-regras`, `meta-create-skill`, `projeto-editar-iarendel`, `projeto-gerador-iarendel`, `proposta-editar-iarendel`, `proposta-gerador-iarendel`.
@@ -58,7 +58,7 @@ Antes do **re-Selo** (2ª execução da Spec 26), o consumidor de teste `C:\User
 - [x] Grep por `@sarak/lib-ui-core|SarakManifestRenderer|SarakUIProvider|manifest-catalog` (fora de `.git`) → zero código vivo. Menções históricas em `specs/` do ERP permanecem (listadas, não apagadas — `specs/README.md`, `specs/arquitetura/00-base-typescript.md`, genéricas ao ecossistema).
 - [x] Nenhum item da lista 2.2 modificado; `python extract_layout.py` executa sem quebrar.
 - [x] As 5 decisões HITL registradas com a escolha do usuário.
-- [x] Relatório da rodada 1 preservado (já arquivado em `specs/plan/RELATORIO-INSTALACAO-UI-rodada1.md` desta lib).
+- [x] Relatório da rodada 1 preservado (já arquivado em `specs/plan/RELATORIO-INSTALACAO-CONSOLIDADO.md (Anexo A)` desta lib).
 - [x] Entrada no `00-progresso.md` + este frontmatter 🟢.
 
 # 5. Plano de Testes (Quality Gate)

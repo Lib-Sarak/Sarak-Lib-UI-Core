@@ -2,10 +2,10 @@
 tipo: "spec"
 titulo: "Teste Real — Implementação das Funcionalidades Reais do ERP via Manifesto (2ª parte do teste)"
 dominio: "Teste de aceitação em consumidor real / Prova de produção / Renderizador Genérico"
-status: "🔴 Planejada (executar DEPOIS do re-Selo e da Spec 40)"
+status: "🔴 Planejada (executar DEPOIS do re-Selo e da Spec 30)"
 prioridade: "Máxima"
 tags: ["spec", "teste-de-aceitacao", "teste-real", "erp", "producao", "manifest-only", "fix-at-source"]
-relacionados: ["26-instalacao-teste", "40-fechamento-achados-pos-selo", "31-limpeza-rodada2-erp", "08-consumo-externo-e-integracao"]
+relacionados: ["26-instalacao-teste", "30-fechamento-achados-pos-selo", "31-limpeza-rodada2-erp", "08-consumo-externo-e-integracao"]
 ---
 
 # 1. Visão Geral e Objetivo
@@ -29,7 +29,7 @@ Consequências diretas:
 
 ## 3.1 Pré-condições
 - Re-Selo (Spec 26, P15) concedido — a instalação plug-and-play já está provada.
-- Spec 40 executada — os achados residuais das rodadas 1/2 (inclusive `SarakActionCard` genérico) fechados, para não poluir o Teste Real com defeitos já conhecidos.
+- Spec 30 executada — os achados residuais das rodadas 1/2 (inclusive `SarakActionCard` genérico) fechados, para não poluir o Teste Real com defeitos já conhecidos.
 - ERP com a lib instalada (do re-Selo) e a porta de dados apontável ao Supabase real do ERP.
 
 ## 3.2 O que construir (funcionalidades REAIS, não demo)
