@@ -1,77 +1,67 @@
 ---
 tipo: "spec"
-titulo: "Teste Real — Implementação das Funcionalidades Reais do ERP via Manifesto (2ª parte do teste)"
-dominio: "Teste de aceitação em consumidor real / Prova de produção / Renderizador Genérico"
-status: "🔴 Planejada (executar DEPOIS do re-Selo e da Spec 30)"
+titulo: "Teste Real — o ERP como módulos-plugin na base Sarak (modelo MyService)"
+dominio: "Teste de aceitação em consumidor real / Prova de produção / Modelo módulos-plugin"
+status: "🔴 Planejada (REESCRITA 2026-07-22 — modelo módulos-plugin; executar DEPOIS de 43/44/45)"
 prioridade: "Máxima"
-tags: ["spec", "teste-de-aceitacao", "teste-real", "erp", "producao", "manifest-only", "fix-at-source"]
-relacionados: ["26-instalacao-teste", "30-fechamento-achados-pos-selo", "31-limpeza-rodada2-erp", "08-consumo-externo-e-integracao"]
+tags: ["spec", "teste-de-aceitacao", "teste-real", "erp", "producao", "modulos-plugin"]
+relacionados: ["43-design-system-primeiro", "44-temas-json-e-persistencia", "45-scaffolder-react-e-skills", "46-remover-motor-de-manifesto"]
 ---
+
+> **Reescrita (2026-07-22):** a 1ª versão media "montar o ERP 100% via manifesto" — e FALHOU (4 paredes numa tela simples). A 2ª versão (breve) media "importar componentes à la MUI" — descartada porque a premissa "MyService roda esse modelo" era falsa. Esta versão testa o **modelo REAL e provado**: o ERP como **módulos-plugin** na base Sarak, exatamente como o MyService, tematizado pela central (Design Engine). É o gate empírico que libera a remoção do #2 (Spec 46).
 
 # 1. Visão Geral e Objetivo
 
-Esta é a **segunda parte do teste** em consumidor real. A primeira parte (Spec 26 / re-Selo) provou o **plug-and-play da instalação** — o sistema sobe, o template renderiza, telas de demonstração com dados de exemplo funcionam. Isso responde "a lib INSTALA bem?". Não responde "a lib SUSTENTA um sistema de produção real?".
+Provar que a Sarak-Lib-UI-Core, como **base de front (Shell + Design Engine central + modelo de módulos-plugin)**, sustenta um sistema de PRODUÇÃO real. O ERP Earendel (Propostas, Contratos, Projetos) passa a ter um front real: suas features viram **módulos React** registrados na base, com **dados reais** (Supabase) e fluxos reais, e o layout de todas as telas é controlado pela **central de tema/template**. É o padrão que o MyService já valida — aqui provamos que ele aguenta outro sistema real.
 
-O **Teste Real** responde essa segunda pergunta: implementar as **funcionalidades reais** do ERP Earendel (Propostas, Contratos, Projetos) com **conexões reais** (dados reais do Supabase do ERP, fluxos de negócio reais — listar, filtrar, criar, editar, gravar de verdade), montando **100% da interface via manifesto JSON**. Hoje o ERP apenas IMPORTA a biblioteca (lib + plumbing do `init`); aqui ele passa a USÁ-la para valer.
+# 2. Regra de Ouro
 
-É o teste que fecha a promessa da onda "Renderizador Genérico": um sistema de produção monta toda a sua UI declarativamente, sem uma linha de React de interface, e a biblioteca aguenta.
-
-# 2. Regra de Ouro (a mais importante desta spec)
-
-> **No sistema importador (ERP), APENAS o manifesto (`manifest.json`) pode ser alterado para construir a interface.** Nenhum componente React de UI, nenhum CSS, nenhuma adaptação de tela é escrita no ERP. Se a UI precisa de algo que o manifesto não entrega, **o problema é da biblioteca** e é corrigido **NA FONTE** (Sarak-Lib-UI-Core) — nunca contornado no importador.
-
-Consequências diretas:
-- **Zero adaptação no importador.** É proibido escrever `.tsx`/`.css`/componente de UI no ERP para "completar" uma tela, exatamente como a regra 2 da Spec 26. A diferença é que aqui isso não é só uma regra de teste — é o critério central que estamos medindo.
-- **Defeito de lib → corrige na lib.** Diferente da Spec 26 (que PROIBIA corrigir "no calor" para manter a medição honesta), o Teste Real é um ciclo iterativo de **construção + correção na fonte**: detectou lacuna de renderização/comportamento na lib → registra → corrige na Sarak-Lib-UI-Core (com spec/fix + gates) → regenera/reinstala no ERP → continua a tela. A honestidade aqui é garantida pela regra "importador só mexe no manifesto", não por isolamento de contexto.
-- **O que NÃO é "adaptar o importador" (fronteira do dado — a porta, não a UI):** a Sarak-Lib-UI-Core declara PORTAS de infraestrutura (Spec 19/20/30) — o `networkInterceptor` e os endpoints de backend que servem o dado. Configurar essa porta para apontar aos dados REAIS do ERP (Supabase / backend do ERP) é **plumbing de contrato**, não UI, e é permitido — é a mesma fronteira que a Spec 26 usou (endpoints de `server.ts` são backend, não interface). **Regra fina:** prefira CONFIGURAR a porta a ESCREVER código nela; se conectar o dado real exigir mais do que configurar/apontar a porta, **isso é um achado** sobre a ergonomia da porta de dados da lib (candidato a correção na fonte).
+> **O importador registra seus MÓDULOS na base; a base fornece Shell + tema.** O ERP escreve suas features como módulos React (`registerSarakModule`) e overrides pontuais (`registerLocalComponent`), usando os **componentes Sarak** e os **tokens** para serem tematizáveis pela central. Falta um componente? Caminho default (opção A): o módulo usa React próprio com **tokens** (`var(--sarak-*)`). Bug/lacuna REAL de componente Sarak → corrige NA LIB (ciclo da onda: fix + gates + `sarak:update`), não hackeia no ERP. O layout global (tema/template) é alterado **só pela central**, e a troca atinge todas as telas.
 
 # 3. Protocolo do Teste
 
 ## 3.1 Pré-condições
-- Re-Selo (Spec 26, P15) concedido — a instalação plug-and-play já está provada.
-- Spec 30 executada — os achados residuais das rodadas 1/2 (inclusive `SarakActionCard` genérico) fechados, para não poluir o Teste Real com defeitos já conhecidos.
-- ERP com a lib instalada (do re-Selo) e a porta de dados apontável ao Supabase real do ERP.
+- **Specs 43, 44, 45 executadas** — modelo de módulos oficial, Design Engine central sem backend, e o `init` gerando o starter padrão.
+- ERP com a build atual (`npm run sarak:check` → "Atualizado"; senão `sarak:update`).
+- O front do ERP parte do **starter do `init`** (Spec 45) — é o "importar o módulo e o frontend ser criado no padrão".
+- Porta de dados apontável ao Supabase real do ERP.
 
-## 3.2 O que construir (funcionalidades REAIS, não demo)
-Para cada módulo de negócio do ERP (Propostas, Contratos, Projetos), montar via manifesto:
-1. **Listagem real:** `source` lê os dados REAIS do módulo (Supabase do ERP), com `states` loading/empty/error reais e `renderFor` sobre o dado real. Nada de mock.
-2. **Detalhe/leitura:** abrir um registro real (navegação por rota + `$route`/estado), exibindo os campos reais.
-3. **Formulário real (create/edit):** `form` + `model` + `validation` + `api_call` com `submit` que **grava de verdade** no backend do ERP; toasts de sucesso/erro reais; `curl`/consulta confirmando a persistência real.
-4. **Composição densa real:** pelo menos uma tela com grid/cards/tabela densa refletindo dado real (não só empilhamento flex) — exercitando componentes além do subconjunto básico.
-5. **Navegação e shell reais:** shell com as rotas reais do ERP, `navigationStyle` do tema aplicado, Design Engine acessível.
+## 3.2 O que construir (features REAIS, como módulos)
+Por módulo de negócio (Propostas, Contratos, Projetos), como módulo React registrado na base:
+1. **Listagem real:** lê dados REAIS do Supabase, com estados loading/empty/error, usando componentes Sarak (`SarakTable`/`SarakCardGrid`/`SarakDataTable`). Nada de mock.
+2. **Detalhe/leitura:** tela exibindo TODOS os campos reais — inclusive os que quebraram no manifesto (JSONB `dados_extras` formatado em JS, link clicável, moeda do próprio registro): agora triviais em React.
+3. **Formulário real (create/edit):** grava de verdade no backend do ERP, com validação e feedback; `curl`/consulta confirmando a persistência.
+4. **Composição densa real:** ≥1 tela com grid/cards/tabela densa sobre dado real.
+5. **Layout central:** o Design Engine (`/design`) altera tema/template e **todas as telas do ERP** (módulos incluídos) respondem; tema persiste (localStorage) e recarrega mantendo.
 
-## 3.3 Ciclo de execução (build + fix-at-source)
-Para cada tela: montar no manifesto → rodar → observar. Se algo não renderiza/comporta como o negócio exige:
-- **É lacuna do autor (manifesto)?** Corrige o manifesto (consultando skills + catálogo).
-- **É lacuna da lib?** Registra o achado, corrige NA FONTE (Sarak-Lib-UI-Core) seguindo o ciclo da onda (spec de correção quando o risco justificar, ou fix direto + testes; gates permanentes verdes), regenera o catálogo/rebuild, reinstala no ERP, e retoma a tela. **Nunca** adapta o ERP.
-
-## 3.4 Proibições (invalidam o teste)
-- Escrever qualquer componente/tela/CSS React no ERP (só o manifesto muda para UI).
-- `registerComponent` de componente de UI no ERP para tapar buraco da lib (a demanda vai para a lib via `ui-novo-componente`).
-- "Resolver" no importador algo que é da biblioteca.
+## 3.3 Ciclo de execução
+Montar a feature como módulo → registrar na base → rodar → observar. Falta componente → React+tokens (opção A). Bug/lacuna real de componente → corrige na lib, `sarak:update`, retoma. Layout/composição → é do importador (livre no módulo).
 
 # 4. O que medir
 
 | # | Medição | O que prova |
 |---|---|---|
-| R1 | Cada módulo (Propostas/Contratos/Projetos) tem listagem real funcionando via `source` sobre dado real | Fonte de dados aguenta produção |
-| R2 | Formulário real grava no backend do ERP (persistência confirmada) com validação barrando inválidos | Ciclo de escrita real |
-| R3 | Composição densa real (grid/cards/tabela) com dado real | Catálogo além do básico |
-| R4 | 100% da UI construída só no manifesto — ZERO arquivo de UI tocado no ERP | Renderizador genérico de verdade |
-| R5 | Toda lacuna encontrada foi corrigida NA LIB, nunca no importador — contagem de correções-na-fonte vs. adaptações-no-importador (que deve ser 0) | Fix-at-source respeitado |
-| R6 | A porta de dados conectou ao Supabase real só por configuração (ou o que faltou virou achado) | Ergonomia da porta |
-| R7 | `npm run build` do ERP verde; app real de pé no browser | Entrega real |
+| R1 | Cada módulo (Propostas/Contratos/Projetos) registrado na base, com listagem real sobre dado real | Modelo de módulos aguenta produção |
+| R2 | Formulário real grava no backend com validação/feedback | Ciclo de escrita real |
+| R3 | Detalhe exibe JSONB, link e moeda dinâmica — as 4 paredes do manifesto agora triviais em React | **As 4 paredes caíram** |
+| R4 | ≥1 composição densa real (grid/tabela) sobre dado real | Componentes além do básico |
+| R5 | **A central (Design Engine) altera o layout de TODAS as telas** do ERP; troca de tema/template reflete nos módulos; tema persiste | **O valor central do produto** |
+| R6 | Onde faltou componente, o módulo usou React+tokens (temático); fricções da ergonomia de tokens registradas | Escape hatch (opção A) |
+| R7 | Bug/lacuna real de componente → corrigido NA LIB (contagem); layout resolvido no módulo do ERP | Fronteira base×importador respeitada |
+| R8 | `npm run build` do ERP verde; app real de pé no browser | Entrega real |
 
 # 5. Entregável
-`RELATORIO-TESTE-REAL.md` na raiz do ERP + reproduzido na conversa, com: (1) ambiente e tempo; (2) telas reais construídas por módulo, com evidência (dado real na tela, persistência via `curl`/consulta); (3) **lista de defeitos da lib encontrados e corrigidos na fonte** (cada um: sintoma na tela → causa na lib → correção → commit/spec); (4) confirmação R4 (diff do ERP mostrando SÓ o `manifest.json` alterado para UI); (5) matriz R1-R7; (6) veredito: a lib sustenta o ERP real 100% via manifesto? Nota + lacunas remanescentes.
+`RELATORIO-TESTE-REAL.md` na raiz do ERP + na conversa, com: ambiente/tempo; as features reais por módulo (dado real + persistência via curl); AS 4 PAREDES cada uma resolvida em React (como/qual componente/token); a prova de que a central tematiza todas as telas do ERP (R5, com evidência de troca de tema atingindo os módulos); bugs/lacunas de componente corrigidos NA LIB; fricções da ergonomia de tokens; matriz R1-R8; veredito (a base sustenta o ERP real? nota + próximos gaps de componente).
 
 # 6. Critérios de Aceite
-- [ ] Os 3 módulos do ERP com listagem + detalhe + formulário reais, dados reais, persistência real confirmada.
-- [ ] Diff do ERP: nenhum arquivo de UI (`.tsx`/`.css`/componente) alterado — só `manifest.json` (e, se necessário, configuração da porta de dados, justificada).
-- [ ] Toda lacuna de lib encontrada foi corrigida na Sarak-Lib-UI-Core (com gates verdes), nunca adaptada no ERP; a lista de correções-na-fonte está no relatório.
-- [ ] Matriz R1-R7 preenchida com evidência; `npm run build` do ERP verde.
-- [ ] Entrada no `00-progresso.md` da lib com o resultado e as correções de fonte disparadas.
+- [ ] Os 3 módulos do ERP registrados na base, com listagem + detalhe + formulário reais, dados reais, persistência confirmada.
+- [ ] Detalhe exibe JSONB formatado, link clicável e moeda do registro — as 4 paredes explicitamente derrubadas (R3).
+- [ ] **A central altera o layout de todas as telas do ERP** (R5) — evidência de troca de tema/template atingindo os módulos + persistência.
+- [ ] Onde faltou componente, resolvido com React+tokens (temático), não hardcode fora do contrato; fricções registradas.
+- [ ] Bug/lacuna real de componente corrigido na lib (gates verdes), nunca hackeado no ERP.
+- [ ] Matriz R1-R8 com evidência; `npm run build` do ERP verde.
+- [ ] Entrada no `00-progresso.md` com o resultado, os componentes demandados e as correções de fonte.
 
 # 7. Pós-teste
-- Cada defeito de lib corrigido durante o Teste Real segue o ciclo da onda (spec/fix → revisão independente → gates). Correções de risco alto viram spec própria; as diretas entram com teste.
-- Se o Teste Real passar limpo (R4 e R5 perfeitos), é a prova final de que a Sarak-Lib-UI-Core é um renderizador genérico de produção — não só de demonstração. Registrar na memória do projeto.
+- Cada lacuna real de componente vira demanda na lib (ciclo da onda) — o relatório alimenta o roadmap de componentes com base em uso REAL.
+- **Gate para a Spec 46:** se o Teste Real passar (o modelo de módulos + central sustenta o ERP real), está provado que o modelo React é suficiente → libera a remoção do #2. Se revelar que a camada declarativa é necessária, reavaliar ANTES da 46.

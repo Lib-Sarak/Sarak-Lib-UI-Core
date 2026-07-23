@@ -29,13 +29,17 @@ export const MANIFEST_EXCLUSIONS: Readonly<Record<string, string>> = {
     SarakInvalidManifestScreen: 'Tela DX de payload inválido (Spec 17) — renderizada pelo próprio motor.',
     DesignScope: 'Aplicado internamente pela diretiva `theme` do nó (Onda 6) — não por `type`.',
 
-    // --- Sistema legado (Spec 04 — Shell/Discovery). Consumidores novos usam shell/routes ---
-    SarakShell: 'Shell legado (Spec 04). No motor atual o shell é dado: `shell`/`routes` + SarakShellNav.',
-    DynamicRenderer: 'Renderer legado do Discovery (Spec 04).',
-    ThemeToggle: 'Legado do shell antigo com catálogo vazio (TODO no código) — tema troca via CustomizationPanel.',
-    LanguageSelector: 'Peça do shell legado (Controls) acoplada ao lib-translator via cookie.',
-    UserMenu: 'Peça do shell legado (Controls) — exige callbacks imperativos de auth do host.',
-    ModuleSelector: 'Peça do shell legado (Controls) — navegação era do Discovery, hoje é `routes`.',
+    // --- Shell/Discovery (Spec 04) — modelo OFICIAL de consumo (módulos-plugin, Spec 43).
+    // Não é "legado": é o padrão que o Sarak-MyService usa em produção. Fica de fora do
+    // Registry do manifesto (não é um `type` de nó) porque é montado uma vez, no bootstrap
+    // do consumidor (`registerSarakModule`/`registerLocalComponent` + `<SarakShell/>`), e
+    // não como peça de uma árvore de manifesto declarativo.
+    SarakShell: 'Shell do modelo módulos-plugin (Spec 04/43) — montado no bootstrap do consumidor, não é nó de manifesto.',
+    DynamicRenderer: 'Renderer do Discovery (Spec 04/43) — resolve os módulos registrados via `registerSarakModule`, não é nó de manifesto.',
+    ThemeToggle: 'Peça do Shell com catálogo vazio (TODO no código) — tema troca via CustomizationPanel.',
+    LanguageSelector: 'Peça do Shell (Controls) acoplada ao lib-translator via cookie.',
+    UserMenu: 'Peça do Shell (Controls) — exige callbacks imperativos de auth do host.',
+    ModuleSelector: 'Peça do Shell (Controls) — navegação é do Discovery (`registerSarakModule`), não de `routes` do manifesto.',
 
     // --- Internos com fachada própria já manifestável ---
     SarakChartEngine: 'Motor interno de gráficos — alcançável via type `SarakChart`.',
@@ -45,10 +49,14 @@ export const MANIFEST_EXCLUSIONS: Readonly<Record<string, string>> = {
 };
 
 /**
- * Paridade Discovery ↔ Manifesto: todo id legado registrado pela PRÓPRIA biblioteca
- * via `registerLocalComponent` precisa de um `type` equivalente no Registry do motor
- * atual. Foi exatamente este elo que faltou para o Design Engine (CustomizationPanel
- * registrado só no Discovery → inalcançável via manifesto).
+ * Paridade Discovery ↔ Manifesto: todo id registrado pela PRÓPRIA biblioteca via
+ * `registerLocalComponent` (modelo módulos-plugin, Spec 04/43) precisa de um `type`
+ * equivalente no Registry do motor de manifesto (Spec 11/30), para quem optar por
+ * montar uma tela 100% dado/JSON em vez de módulo-plugin. Foi exatamente este elo que
+ * faltou para o Design Engine (CustomizationPanel registrado só no Discovery →
+ * inalcançável via manifesto). O nome da constante (`LEGACY_...`) é histórico — o
+ * Discovery deixou de ser legado (Spec 43), mas renomear o export é fora do escopo
+ * enxuto desta spec.
  */
 export const LEGACY_DISCOVERY_TYPE_MAP: Readonly<Record<string, string>> = {
     'mx-customization': 'CustomizationPanel',

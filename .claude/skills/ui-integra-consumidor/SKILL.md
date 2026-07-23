@@ -26,6 +26,35 @@ escreve arquivo de infraestrutura à mão** (isso é o que causava a adivinhaç�
   linguagem/porta, fora do Node).
 - O `init` é **idempotente**: nunca sobrescreve arquivo existente sem `--force`; reporta o que pulou.
 
+## Modelo de consumo: módulos-plugin (Spec 43)
+
+> Nota mínima — a reescrita completa desta skill para o modelo módulos-plugin (e o `init` React sem manifesto) é a **Spec 45**. Isto aqui é só o suficiente para destravar o Teste Real (Spec 40).
+
+O modelo OFICIAL de consumo da `@sarak/lib-ui-core` é por **módulos-plugin** — o mesmo padrão que o `Sarak-MyService` usa em produção (o único consumidor real da lib). A lib é uma BASE de front com **Shell + Design Engine central**; o importador **registra seus módulos de negócio** (componentes React comuns) na base, sem escrever manifesto/JSON nenhum:
+
+```tsx
+import { SarakUIProvider, SarakShell, registerSarakModule, registerLocalComponent } from '@sarak/lib-ui-core';
+import { MeuModuloDeNegocio } from './modulos/MeuModulo';
+
+registerLocalComponent('meu-modulo', MeuModuloDeNegocio);
+registerSarakModule({ id: 'meu-modulo', label: 'Meu Módulo', icon: 'Box' });
+
+function App() {
+  return (
+    <SarakUIProvider options={{ manifest: { brand: { name: 'Meu Sistema' } } }}>
+      <SarakShell />
+    </SarakUIProvider>
+  );
+}
+```
+
+- `registerSarakModule({ id, label, icon, category?, priority? })` registra o módulo — a base gera a navegação (Sidebar/Topbar/Dock, conforme o tema) e o roteamento automaticamente, sem rota declarada à mão.
+- `registerLocalComponent(id, Component)` liga um componente React ao `id` do módulo (alternativa: passar `component` direto no objeto de `registerSarakModule`). Use o padrão `safeRegister`/`registerSarakModuleSafe` do `Sarak-MyService` (`src/main.tsx`) para blindar contra `undefined`/estrutura inválida.
+- `SarakShell`, sob `SarakUIProvider`, é quem renderiza a navegação e o módulo ativo — o importador nunca monta o `SarakManifestRenderer` para isto. O motor de manifesto segue disponível como caminho **opcional** para telas 100% dado/JSON; não é o modelo de consumo.
+- O importador **pode criar o que precisar** — não há obrigação de "programar em JSON" nem de importar só componentes atômicos prontos.
+
+**Contrato de tokens público (escape hatch — para o módulo/componente do IMPORTADOR responder à central):** um componente próprio só é tematizado quando a central troca de tema se ele usar os tokens públicos `var(--sarak-*)` em vez de valor hardcoded — ex.: `background: var(--sarak-card-bg)`, `color: var(--sarak-title-color)`, `gap: var(--sarak-layout-gap-md)`. Marcação com cor/espaçamento cru (`#3b82f6`, `16px`) nunca responde a uma troca de tema — é a mesma regra "Zero Hardcode" que os átomos da própria lib seguem (`specs/specs/03-padrao-e-taxonomia-biblioteca-atomica.md`). A lista completa das CSS Variables `--sarak-*` reais (as únicas que a central efetivamente emite) está em `docs/manifest-catalog.md`, seção "CSS Variables públicas" — nomes fora dela não existem e não pintam nada.
+
 ## Workflow
 
 1. **Entrevista de Instalação (HITL) — faça TODAS estas perguntas ANTES de rodar qualquer comando**

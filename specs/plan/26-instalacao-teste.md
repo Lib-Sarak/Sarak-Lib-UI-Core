@@ -2,7 +2,7 @@
 tipo: "spec"
 titulo: "Instalação Teste (Selo da Onda — importar a Sarak-UI no ERP e TESTAR a instalação)"
 dominio: "Teste de aceitação em consumidor real / Qualidade da instalação"
-status: "🟡 Executada — Selo Negado (aguardando rodada de correção)"
+status: "🟢 Concluída — SELO DA ONDA CONCEDIDO (2026-07-21, rodada 2: 9,3/10)"
 prioridade: "Máxima"
 tags: ["spec", "teste-de-aceitacao", "instalacao", "erp", "selo-da-onda", "plug-and-play"]
 relacionados: ["25-limpeza-testes-praticos", "21-scaffolder-init", "22-skills-de-consumo-golden-path", "08-consumo-externo-e-integracao"]
@@ -58,7 +58,11 @@ Cada item recebe **PASS / PARCIAL / FAIL** no relatório, com evidência (mensag
 - [x] Teste executado por agente externo via P10, sem violação das regras 2.2 (confirmado no relatório: zero modificação em `node_modules/@sarak/*`, zero componente React de UI no consumidor, zero leitura do código-fonte da lib).
 - [x] Relatório entregue completo (`Earendel/ERP/RELATORIO-INSTALACAO-UI.md`), com a matriz M1-M10 preenchida com evidências.
 - [x] **Triagem dos achados registrada no `00-progresso.md` da lib** (entrada 2026-07-20): cada FAIL/PARCIAL classificado (bug de lib / lacuna de skill-catálogo) com destino.
-- [ ] **Selo da Onda:** **NÃO concedido** — matriz fechou M1 PARCIAL · M2 FAIL · M3 PASS · M4 PASS · M5 PASS · M6 FAIL · M7 PASS · M8 PASS · M9 PARCIAL · M10 PASS (nota 6,5/10). A onda ganha uma rodada de correção (ver triagem no `00-progresso.md`) e o teste se repete após ela.
+- [x] **Selo da Onda: CONCEDIDO em 2026-07-21** (decisão do mantenedor), na **2ª execução** desta spec.
+  - **Rodada 1 (2026-07-20) — NEGADO:** M1 PARCIAL · M2 **FAIL** · M3 PASS · M4 PASS · M5 PASS · M6 **FAIL** · M7 PASS(→reclassificado FAIL) · M8 PASS · M9 PARCIAL · M10 PASS — nota **6,5/10**. Gerou a rodada de correção (specs 27/28/29 + 30).
+  - **Rodada 2 / re-Selo (2026-07-21) — CONCEDIDO:** **9 PASS · 1 PARCIAL · 0 FAIL**, nota **9,3/10**. Os dois FAIL (M2 instalação, M6 validação) e o achado crítico 0 (M7, `navigationStyle`) foram corrigidos e comprovados com evidência de interação real (`curl` no endpoint + automação de browser).
+  - **Ressalva registrada (M9):** ficou PARCIAL na medição por causa da pasta `src/` no pacote. A **causa foi eliminada fora do teste** pela Spec 30 (CSS movido para `dist/styles/`, export reapontado) e **verificada objetivamente** — `npm pack --dry-run` com zero `src/`, e confirmado dentro do próprio `node_modules` do ERP. Decisão do mantenedor: **não exigir uma rodada 3 só para re-medir esse ponto** — será reconfirmado naturalmente na próxima rodada em consumidor.
+  - Evidência integral (as duas rodadas, matriz lado a lado e os 13 achados consolidados): `RELATORIO-INSTALACAO-CONSOLIDADO.md`.
 
 # 6. Pós-teste
 - Selo concedido → registrar na memória do projeto + índice (onda encerrada); o ERP segue como consumidor real de referência.

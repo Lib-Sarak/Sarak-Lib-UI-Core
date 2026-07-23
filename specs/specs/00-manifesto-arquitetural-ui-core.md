@@ -2,17 +2,18 @@
 
 Este documento atua como o ponto de partida (Root Spec) da arquitetura visual do ecossistema Sarak. Ele define o papel da biblioteca, suas regras universais e a separação estrita de camadas.
 
+> **Virada de tese (Spec 43, 2026-07-23):** o §1 abaixo foi reescrito. O modelo de consumo oficial passou a ser **módulos-plugin** (o que o `Sarak-MyService` usa), não mais "100% via manifesto". Ver `specs/plan/00-indice.md` (Princípio vigente) e `specs/plan/43-design-system-primeiro.md` para o histórico completo da decisão.
+
 ## 1. O Papel da Biblioteca
-A **Sarak-Lib-UI-Core** não é apenas uma biblioteca de componentes; ela é um **Design System Vivo** guiado por dados. Ela fornece a fundação atômica, o motor de design dinâmico e os layouts estruturais para o desenvolvimento de todas as frentes web e mobile da Sarak. 
+A **Sarak-Lib-UI-Core** é uma **BASE de front com Shell + Design Engine central**, consumida pelo modelo de **módulos-plugin**: o sistema importador registra seus próprios módulos de negócio (React) na base — `registerSarakModule`/`registerLocalComponent`, sobre `SarakUIProvider`+`SarakShell` — e a base fornece o **Shell** (navegação/layout), o **Design Engine** (central de tema/template que aplica a TODA tela que consome os tokens públicos) e os **componentes atômicos** como blocos prontos. É o padrão do `Sarak-MyService`, o único consumidor real da lib hoje, agora oficial.
 
 **Nenhuma regra de negócio (business logic)** deve residir aqui. Esta biblioteca se preocupa exclusivamente com:
-- Renderização limpa e tipada.
+- Renderização limpa e tipada (Shell, Design Engine, componentes atômicos).
 - Resiliência visual (Zero Hardcode).
-- Aplicação determinística de Design Tokens.
+- Aplicação determinística de Design Tokens — a central que, ao trocar de tema, atinge todas as telas que a consomem.
 
-### A Filosofia do Preenchimento (Não programe, configure)
-Aqui, criar um layout diferente ou um comportamento funcional novo não significa criar um componente React ou escrever lógica imperativa. Significa apenas **enviar um conjunto diferente de dados (Manifestos)** para as propriedades mapeadas no sistema.
-O motor UI Core atua como uma **Engine Declarativa (Low-Code/No-Code)** que reage a dicionários de dados (JSON/Payloads). Seu trabalho é alimentar a máquina com os valores estruturais e os comandos lógicos (ex: `renderFor`, ações) corretos, sem atuar como um *Front-End Coder* tradicional. Alterações de UI e Lógica são tratadas estritamente como injeção de dados.
+### A Fronteira Layout × Look (o que o importador possui vs. o que a base possui)
+O importador **possui o layout**: registra seus módulos de negócio como componentes React normais (`registerSarakModule`/`registerLocalComponent`) e pode criar o que precisar — não há obrigação de "programar em JSON". A base **possui o look**: o Design Engine é a central de tema/template, e qualquer módulo/componente — da lib ou do próprio importador — que use os tokens públicos (`var(--sarak-*)`) responde automaticamente a uma troca de tema feita na central. Marcação com estilo hardcoded fora do contrato de tokens **não é tematizada**. O motor de renderização por manifesto (`src/core/Manifest/`, camada opcional descrita na Spec 11) segue disponível para telas que preferirem 100% dado/JSON, mas **não é o modelo de consumo** — o piso de funcionalidade da lib é o padrão módulos-plugin do `Sarak-MyService`.
 
 ## 2. As Três Camadas (3-Layer Architecture)
 

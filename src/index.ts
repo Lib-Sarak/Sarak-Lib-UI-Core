@@ -28,6 +28,27 @@ export { DESIGN_MANIFEST } from './core/Provider/manifest';
 export * from './features/DesignEngine/Library/CustomizationPanel';
 export * from './components/atomic/Atoms';
 export * from './components/atomic/Cards/ExpandableCard';
+export * from './components/atomic/Cards/SarakActionCard';
+export * from './components/atomic/Cards/SarakSearchCard';
+export * from './components/atomic/Cards/SarakTitleCard';
+// API React pública do modelo módulos-plugin (Spec 43 §3.1) — faltavam inteiras no
+// barrel público (só viviam no Registry do motor de manifesto, `nativeComponents.ts`).
+// `SarakTabs` de `Layouts/` fica de fora do `export *`: colide de nome com
+// `UX/SarakTabs` (já público abaixo) e são dois componentes DIFERENTES e
+// incompatíveis (props `items/defaultActiveId` vs `tabs/activeTab/onChange`) —
+// achado pré-existente desta auditoria, fora do escopo enxuto da Spec 43; a
+// deduplicação fica para uma spec de refatoração dedicada.
+export { SarakFlex } from './components/atomic/Layouts/SarakFlex';
+export type { SarakFlexProps } from './components/atomic/Layouts/SarakFlex';
+export { SarakGrid } from './components/atomic/Layouts/SarakGrid';
+export type { SarakGridProps } from './components/atomic/Layouts/SarakGrid';
+export { SarakSplitPane } from './components/atomic/Layouts/SarakSplitPane';
+export type { SarakSplitPaneProps } from './components/atomic/Layouts/SarakSplitPane';
+export { SarakAccordion } from './components/atomic/Layouts/SarakAccordion';
+export type { SarakAccordionProps } from './components/atomic/Layouts/SarakAccordion';
+export { SarakFormGroup } from './components/atomic/Layouts/SarakFormGroup';
+export type { SarakFormGroupProps } from './components/atomic/Layouts/SarakFormGroup';
+export * from './components/atomic/Navigation';
 export * from './components/atomic/Inputs/Controls';
 // Entrada de dados avançada (Spec 11 / Onda 8) — também resolvíveis via manifesto.
 export * from './components/atomic/Inputs/SarakRangeSlider';
