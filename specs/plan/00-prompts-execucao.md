@@ -4,31 +4,32 @@ Cada bloco abaixo é um prompt COMPLETO para iniciar a execução de uma spec **
 
 Regras comuns já embutidas: acionar `ui-contexto-repositorio` primeiro; ler `00-indice.md`, `00-progresso.md` e a spec inteira; ao terminar, atualizar status/checkbox/progresso; gates (`catalog:check`, `npm run build`, testes por pasta, `run_audit.mjs` — comparar com o baseline conhecido, não esperar 0; `RegistryParity` é do #2 e vale até a Spec 46).
 
-> ⚠️ **VIRADA (2026-07-22), premissa corrigida:** a lib tem 3 arquiteturas — **#1 módulos-plugin** (`Shell`+`Discovery`, o que o `Sarak-MyService` USA), **#2 renderizador de páginas por manifesto** (`Manifest`, FALHOU/ninguém usa), **#3 componentes atômicos+Provider+Design Engine**. Modelo oficial = **#1 (módulos-plugin do MyService)**: o importador registra seus módulos na base; o **Design Engine é a central de layout que aplica ao sistema inteiro**; atômicos são os blocos. **Remove só o #2 e o backend.** Um erro anterior dizia que "o MyService rodava componentes atômicos" — falso, ele roda #1. Ver `00-indice.md` (Fase 6).
+> ⚠️ **VIRADA (2026-07-22) + correção (2026-07-24):** a lib tem 3 arquiteturas — **#1 módulos-plugin** (`Shell`+`Discovery`, o que o `Sarak-MyService` USA), **#2 renderizador de páginas por manifesto** (`Manifest`, FALHOU/ninguém usa), **#3 componentes atômicos+Provider+Design Engine**. **Remove só o #2 e o backend.** O Design Engine é a central de layout que aplica ao sistema inteiro; atômicos são os blocos.
+> **Nuance de consumo (auditoria do ERP real, 2026-07-24):** há DOIS modos legítimos de consumir, conforme a arquitetura do consumidor. **#1 (Shell host)** — o MyService usa: o importador registra módulos no `SarakShell`. **#3 (ui-kit + central)** — o ERP Earendel usa: monorepo React puro, cada módulo é seu web app, o Sarak entra como `packages/ui-kit` (componentes+tokens) + Design Engine central, SEM `SarakShell` como host (removeu o Sarak por ADR 009 e o reintroduz como kit). A Spec 40 testa o **#3** (a forma real do ERP). Ambos partilham o mesmo núcleo (Provider + tokens + central). Ver `00-indice.md` (Fase 6) e `40-teste-real.md` §1.1.
 
 ## Ordem de execução
 
 | Prompt | Spec | Item | Observação |
 |---|---|---|---|
-| **P21** | 40 — Teste Real (ERP como módulos) | 21 | Gate empírico. Libera a remoção do #2. Depende da 45 (✅ concluída) e da 44 (✅ concluída) para o starter + Design Engine sem backend. |
+| **P21** | 40 — Teste Real (ERP adota Sarak como ui-kit + Design Engine) | 21 | Gate empírico. Libera a remoção do #2. **Reescrita 2026-07-24:** ERP é monorepo React puro que removeu o Sarak (ADR 009) — Sarak entra como `packages/ui-kit` + central, NÃO como `SarakShell` host. Depende da 45 e da 44 (✅). |
 | **P22** | 46 — Remover o renderizador de páginas (#2) | 22 | ⚠️ SÓ depois do Teste Real. Mantém o #1. |
 | **P23** | 41 — Piso de Bundle | 23 | Depois da 46 (muda a base) e antes da 42. |
 | **P24** | 42 — Generalizar CardGrid | 24 | Depois da 41. |
 
 ---
 
-## P21 — Spec 40: Teste Real (o ERP como módulos-plugin — GATE EMPÍRICO)
+## P21 — Spec 40: Teste Real (o ERP adota Sarak como ui-kit + Design Engine — GATE EMPÍRICO)
 
 ```
-Execute a spec `specs/plan/40-teste-real.md` da Sarak-Lib-UI-Core. Implementar as features REAIS do ERP Earendel (`...\Code\Earendel\ERP`) — Propostas, Contratos, Projetos — como MÓDULOS-PLUGIN registrados na base Sarak (padrão MyService), com dados REAIS (Supabase), tematizados pela central (Design Engine). É o gate empírico que libera a remoção do #2 (Spec 46).
+Execute a spec `specs/plan/40-teste-real.md` da Sarak-Lib-UI-Core. O ERP Earendel (`...\Code\Earendel\ERP`) é hoje um MONOREPO MODULAR REACT PURO que REMOVEU o Sarak-UI por completo (ADR 009). O teste NÃO usa `SarakShell` como host: o ERP adota o Sarak como `packages/ui-kit` (caixa de componentes + tokens) + Design Engine central, e escreve as telas reais (Propostas primeiro — já tem `web` e dado real) em REACT usando componentes Sarak + tokens, com dados REAIS (Supabase via `api/` do módulo). É o gate empírico que libera a remoção do #2 (Spec 46).
 
-Preparação: (1) acione `ui-contexto-repositorio`; (2) leia `00-indice.md`, `00-progresso.md` e a spec 40 INTEIRA; (3) leia a `ui-integra-consumidor` reescrita (Spec 45) e o `Sarak-MyService/src/main.tsx`. CONFIRMAÇÃO ANTES: Specs 43/44/45 executadas; ERP com a build atual (`npm run sarak:check` na raiz do ERP → "Atualizado"; senão `sarak:update`). Parta do STARTER do `init` (Spec 45).
+Preparação: (1) acione `ui-contexto-repositorio`; (2) leia `00-indice.md`, `00-progresso.md` e a spec 40 INTEIRA (esp. §1.1 contexto real do ERP e §3.2 Task 3.0); (3) AUDITE o ERP real antes de escrever (`Modulos/*/web`, o conector `Modulos/conector/web`, os ADRs 006/007/009/011). CONFIRMAÇÃO ANTES: Specs 43/44/45 executadas; o ERP registrou o ADR que supera o 009; Sarak instalado UMA VEZ em `packages/ui-kit`; `npm run sarak:check` no ERP → "Atualizado".
 
-REGRA DE OURO: o importador REGISTRA seus módulos na base; a base dá Shell + tema. Cada feature do ERP vira um módulo React (`registerSarakModule`) usando componentes Sarak + tokens. Falta componente → React próprio com TOKENS (`var(--sarak-*)`) — opção A — ou demanda na lib. Bug/lacuna REAL de componente → corrige NA LIB (fix + gates + `sarak:update`), não hackeia no ERP. O layout global é alterado SÓ pela central, e a troca atinge todas as telas.
+REGRA DE OURO: o ERP mantém a arquitetura dele; o Sarak entra como caixa de componentes + central de tema, NÃO como dono do app. Instala UMA VEZ em `packages/ui-kit`; cada `web` depende de `@erp/ui-kit`, não do Sarak direto. `SarakShell`/`registerSarakModule` NÃO são host — o conector segue a casca. Telas reais = React do módulo com componentes+tokens. Falta componente → React próprio com TOKENS (`var(--sarak-*)`) — opção A — ou demanda na lib. Bug/lacuna REAL → corrige NA LIB (fix + gates + `sarak:update`), não hackeia no ERP. Layout global só pela central, atinge todas as telas.
 
-Construa por módulo: listagem real (componente Sarak sobre dado real), detalhe exibindo os campos que quebraram no manifesto (JSONB `dados_extras` em JS, link clicável, moeda do próprio registro), formulário real que grava de verdade, ≥1 composição densa. E prove o R5: o Design Engine (`/design`) altera tema/template e TODAS as telas do ERP (módulos incluídos) respondem; tema persiste (localStorage).
+Antes das telas, resolva a Task 3.0 (§3.2): decida e implemente COMO o conector compõe um módulo (mono-SPA recomendado p/ o teste vs bundles separados) — isso define como a central atinge N web apps. Depois, por módulo: listagem real (componente Sarak sobre dado real), detalhe exibindo as 4 paredes (JSONB `dados_extras` em JS, `link_proposta` clicável, `moeda` do registro, `status`), formulário real que grava via `api/`, ≥1 composição densa. E prove o R5: o Design Engine (`/design` no conector) altera tema/template e TODAS as telas respondem; tema persiste (localStorage).
 
-Entregue: `RELATORIO-TESTE-REAL.md` na raiz do ERP + na conversa: features reais por módulo (dado real + persistência via curl); as 4 PAREDES cada uma resolvida em React; a prova de que a central tematiza todas as telas (R5); bugs/lacunas de componente corrigidos NA LIB; fricções da ergonomia de tokens; matriz R1-R8; veredito. `npm run build` do ERP verde. Progresso. NÃO commite sem autorização.
+Entregue: `RELATORIO-TESTE-REAL.md` na raiz do ERP + na conversa: o modelo de composição escolhido (Task 3.0) e o porquê; features reais por módulo (dado real + persistência via curl); as 4 PAREDES cada uma resolvida em React; a prova de que a central tematiza todas as telas (R5); bugs/lacunas de componente corrigidos NA LIB; fricções da ergonomia de tokens; matriz R1-R9; veredito. `npm run build` do ERP verde. Progresso. NÃO commite sem autorização.
 ```
 
 ---

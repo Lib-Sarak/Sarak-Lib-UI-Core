@@ -1319,6 +1319,31 @@
         }
       ]
     },
+    "SarakLink": {
+      "propsInterface": "SarakLinkProps",
+      "source": "src/components/atomic/Navigation/SarakLink.tsx",
+      "extends": "Omit<React.AnchorHTMLAttributes<HTMLAnchorElement>, 'href' | 'target' | 'rel'>",
+      "props": [
+        {
+          "name": "href",
+          "type": "string",
+          "optional": false,
+          "doc": "Destino do link. Esquemas perigosos (`javascript:`, `data:`, ...) são bloqueados."
+        },
+        {
+          "name": "external",
+          "type": "boolean",
+          "optional": true,
+          "doc": "Abre em nova aba com `rel=\"noreferrer noopener\"` + indicação visual/a11y."
+        },
+        {
+          "name": "children",
+          "type": "React.ReactNode",
+          "optional": false,
+          "doc": ""
+        }
+      ]
+    },
     "SarakShellNav": {
       "propsInterface": "SarakShellNavProps",
       "source": "src/components/atomic/Navigation/SarakShellNav.tsx",

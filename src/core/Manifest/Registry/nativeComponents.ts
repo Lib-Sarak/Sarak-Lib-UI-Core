@@ -48,6 +48,7 @@ import {
     SarakBreadcrumbs,
     SarakPagination,
     SarakShellNav,
+    SarakLink,
 } from '../../../components/atomic/Navigation';
 import {
     SarakMarkdownRenderer,
@@ -163,6 +164,9 @@ export const NATIVE_COMPONENTS = {
     SarakStepper,
     SarakBreadcrumbs,
     SarakPagination,
+    // Átomo de link acessível (lacuna pré-Teste Real): href validado por allow-list
+    // de esquema + marcação de link externo.
+    SarakLink,
     // Navegação de shell guiada por dados (Spec 33): menu com grupos + estado ativo.
     // Par canônico no manifesto: `activeRoute: "{{$route}}"` + ação navigate `{{$event}}`.
     SarakShellNav: widen(SarakShellNav),

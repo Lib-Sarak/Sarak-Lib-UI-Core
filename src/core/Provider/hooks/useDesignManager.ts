@@ -5,6 +5,7 @@ import { GLOBAL_THEMES } from '../../Design/presets/themes';
 import { getDefaultDesignState } from '../../Design/master-map';
 import { useDesignSync } from './useDesignSync';
 import { useDesignRemoteLoader } from './useDesignRemoteLoader';
+import { useDesignStorageSync } from './useDesignStorageSync';
 import { SarakThemePayload, SarakUIOptions, SarakDesignState, ThemeEntry } from '../types';
 
 /**
@@ -85,6 +86,11 @@ export const useDesignManager = (props: {
 
     useDesignSync(isHydrated, activeThemeId, allThemes, storageKey, hasHydratedRef, setDesign);
     useDesignRemoteLoader(isHydrated, optionsRef, isBackendLoaded, setIsBackendLoaded, setDesign);
+
+    // Sincronização entre abas/apps (lacuna pré-Teste Real): default ligado, opt-out
+    // via `options.persistence.crossTabSync === false`.
+    const crossTabSyncEnabled = options?.persistence?.crossTabSync !== false;
+    useDesignStorageSync(isHydrated, storageKey, crossTabSyncEnabled, design, setDesign);
 
     // 3. Persistência de Design (Core Logic). Sempre localStorage (a lib não ship
     // servidor — Spec 44); `onSave`/`onThemeChange` são portas opcionais "traga sua

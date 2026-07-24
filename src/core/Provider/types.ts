@@ -156,6 +156,13 @@ export interface SarakUIOptions {
         onSave?: (design: SarakThemePayload) => Promise<void> | void;
         onLoad?: () => Promise<SarakThemePayload> | SarakThemePayload;
         strictBackendSync?: boolean;
+        /**
+         * Sincroniza o tema entre abas/apps que compartilham a `storageKey` (N
+         * Providers independentes — modelo #3). Escuta `storage` e reaplica o
+         * design (validado) quando outra aba grava a mesma chave. Default `true`
+         * (validado antes de aplicar; desligue para sincronização própria).
+         */
+        crossTabSync?: boolean;
     };
     theme?: {
         defaultTheme?: string;

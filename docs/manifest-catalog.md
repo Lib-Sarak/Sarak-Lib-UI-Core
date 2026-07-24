@@ -106,7 +106,7 @@ Vars REAIS emitidas pelo Design Engine. Use SEMPRE com fallback — `var(--sarak
 
 `--sarak-accent-color` · `--sarak-animation-speed` · `--sarak-bg-opacity` · `--sarak-body-font` · `--sarak-border-radius` · `--sarak-border-radius-lg` · `--sarak-border-radius-md` · `--sarak-border-radius-sm` · `--sarak-border-style` · `--sarak-border-type` · `--sarak-border-width` · `--sarak-button-active-color` · `--sarak-button-bg` · `--sarak-button-hover` · `--sarak-button-padding` · `--sarak-button-radius` · `--sarak-card-active-color` · `--sarak-card-bg` · `--sarak-card-border` · `--sarak-card-hover-color` · `--sarak-card-noise-opacity` · `--sarak-card-padding-lg` · `--sarak-card-padding-md` · `--sarak-card-padding-sm` · `--sarak-card-radius` · `--sarak-card-shadow-intensity` · `--sarak-chart-thickness` · `--sarak-chat-anim-speed` · `--sarak-chat-bubble` · `--sarak-color-depth` · `--sarak-color-variation` · `--sarak-contrast-curve` · `--sarak-elasticity` · `--sarak-error-color` · `--sarak-flow-grid` · `--sarak-flow-radius` · `--sarak-fluid-scale` · `--sarak-font-scale` · `--sarak-font-size` · `--sarak-font-size-base` · `--sarak-glass-blur` · `--sarak-glass-opacity` · `--sarak-glass-saturation` · `--sarak-haptic-scale` · `--sarak-heading-font` · `--sarak-heading-spacing` · `--sarak-heading-weight` · `--sarak-icon-stroke` · `--sarak-input-border-width` · `--sarak-input-style` · `--sarak-layered-shadows` · `--sarak-layout` · `--sarak-layout-density` · `--sarak-layout-gap` · `--sarak-layout-gap-lg` · `--sarak-layout-gap-md` · `--sarak-layout-gap-sm` · `--sarak-line-height` · `--sarak-max-width` · `--sarak-mode` · `--sarak-nav-style` · `--sarak-navigation-style` · `--sarak-noise-opacity` · `--sarak-palette` · `--sarak-primary-color` · `--sarak-scale-ratio` · `--sarak-scrollbar-width` · `--sarak-secondary-color` · `--sarak-security-glow` · `--sarak-security-pulse` · `--sarak-shadow-intensity` · `--sarak-sidebar-active-color` · `--sarak-sidebar-bg` · `--sarak-sidebar-hover-color` · `--sarak-sidebar-noise-opacity` · `--sarak-sidebar-width` · `--sarak-subtitle-font` · `--sarak-success-color` · `--sarak-surface` · `--sarak-surface-color` · `--sarak-surface-intensity` · `--sarak-system-tone` · `--sarak-tab-font` · `--sarak-tab-gap` · `--sarak-tab-section-margin` · `--sarak-tabular-nums` · `--sarak-tertiary-color` · `--sarak-texture` · `--sarak-texture-color` · `--sarak-texture-opacity` · `--sarak-title-color` · `--sarak-topbar-active-color` · `--sarak-topbar-bg` · `--sarak-topbar-height` · `--sarak-topbar-hover-color` · `--sarak-topbar-noise-opacity` · `--sarak-warning-color`
 
-## Componentes resolvíveis via `"type"` (66)
+## Componentes resolvíveis via `"type"` (67)
 
 ### SarakFlex
 
@@ -535,6 +535,18 @@ Props (`SarakPaginationProps` — `src/components/atomic/Navigation/SarakPaginat
 | `maxVisible` | `number` | não | Máximo de botões numéricos antes de compactar com reticências (default: 7). |
 | `onChange` | `(page: number) => void` | sim | Disparado ao escolher uma página válida (diferente da atual). |
 | `className` | `string` | não |  |
+
+### SarakLink
+
+Props (`SarakLinkProps` — `src/components/atomic/Navigation/SarakLink.tsx`):
+
+| Prop | Tipo | Obrigatória | Descrição |
+| --- | --- | --- | --- |
+| `href` | `string` | sim | Destino do link. Esquemas perigosos (`javascript:`, `data:`, ...) são bloqueados. |
+| `external` | `boolean` | não | Abre em nova aba com `rel="noreferrer noopener"` + indicação visual/a11y. |
+| `children` | `React.ReactNode` | sim |  |
+
+Estende: `Omit<React.AnchorHTMLAttributes<HTMLAnchorElement>, 'href' | 'target' | 'rel'>`
 
 ### SarakShellNav
 
