@@ -1,6 +1,6 @@
 import { useState, useEffect, useCallback, useMemo, useRef } from 'react';
 import { validateDesign } from '../utils/validation';
-import { DEFAULT_STORAGE_KEY, DEFAULT_UI_BASE_URL } from '../constants';
+import { DEFAULT_STORAGE_KEY } from '../constants';
 import { GLOBAL_THEMES } from '../../Design/presets/themes';
 import { getDefaultDesignState } from '../../Design/master-map';
 import { useDesignSync } from './useDesignSync';
@@ -8,27 +8,32 @@ import { useDesignRemoteLoader } from './useDesignRemoteLoader';
 import { SarakThemePayload, SarakUIOptions, SarakDesignState, ThemeEntry } from '../types';
 
 /**
- * useDesignManager (v10.1)
+ * useDesignManager (v11.0 — Spec 44, sem backend próprio)
  *
- * Centraliza a lógica de estado do design, rascunhos, rascunhos persistentes
- * e sincronização com backend/localStorage.
+ * Centraliza a lógica de estado do design, rascunhos e persistência: sempre em
+ * localStorage; sync remoto é opcional e sempre via callback do CONSUMIDOR
+ * (`options.persistence.onSave`/`onLoad`, `onThemeChange`) — a lib nunca faz
+ * fetch para um servidor próprio.
  */
 export const useDesignManager = (props: {
     initialConfig: SarakThemePayload,
     options: SarakUIOptions,
-    token?: string | null,
     isHydrated: boolean,
     allThemes?: ThemeEntry[],
-    activeThemeId?: string
+    activeThemeId?: string,
+    initialTheme?: string,
+    onThemeChange?: (design: SarakThemePayload) => void
 }) => {
-    const { initialConfig, options, token, isHydrated, allThemes, activeThemeId } = props;
-    
+    const { initialConfig, options, isHydrated, allThemes, activeThemeId, initialTheme, onThemeChange } = props;
+
     const optionsRef = useRef(options);
     const configRef = useRef(initialConfig);
     const hasHydratedRef = useRef(false);
+    const onThemeChangeRef = useRef(onThemeChange);
 
     optionsRef.current = options;
     configRef.current = initialConfig;
+    onThemeChangeRef.current = onThemeChange;
 
     const [isBackendLoaded, setIsBackendLoaded] = useState(false);
 
@@ -36,28 +41,31 @@ export const useDesignManager = (props: {
     const getSeedConfig = useCallback(() => {
         const opt = optionsRef.current;
         const masterDefaults = getDefaultDesignState();
-        
+
         let themeDesignTokens: Record<string, unknown> = {};
 
-        if (activeThemeId && allThemes) {
-            const activeTheme = allThemes.find(t => t.id === activeThemeId);
+        // `activeThemeId` (controlado) manda; senão `initialTheme` (semente,
+        // não-reativa) só afeta este seed inicial — nunca reaplica sozinho.
+        const seedThemeId = activeThemeId || initialTheme;
+        if (seedThemeId && allThemes) {
+            const activeTheme = allThemes.find(t => t.id === seedThemeId);
             if (activeTheme) {
                 themeDesignTokens = activeTheme.design || {};
             }
         }
-        
+
         // Aplica o Preset base apenas se necessário, mas a fundação vem do Master Map
         if (Object.keys(themeDesignTokens).length === 0) {
             const defaultThemeId = opt?.theme?.defaultTheme || 'classic';
             const themeEntry = GLOBAL_THEMES.find(t => t.id === defaultThemeId) ?? GLOBAL_THEMES[0];
             themeDesignTokens = themeEntry?.design ?? {};
         }
-        
+
         // Mescla de defaults conhecidos + payload dinâmico do banco no estado
         // canônico: cast pontual tipado (o índice dinâmico de `themeDesignTokens`
         // não se atribui sozinho a `SarakDesignState`).
         return { ...masterDefaults, ...themeDesignTokens, ...configRef.current } as SarakDesignState;
-    }, [activeThemeId, allThemes]);
+    }, [activeThemeId, initialTheme, allThemes]);
 
     const [design, setDesign] = useState<SarakDesignState>(() => {
         if (typeof window === 'undefined') return getSeedConfig();
@@ -74,12 +82,13 @@ export const useDesignManager = (props: {
     });
 
     const storageKey = useMemo(() => options?.persistence?.storageKey || DEFAULT_STORAGE_KEY, [options?.persistence?.storageKey]);
-    const uiBaseUrl = useMemo(() => options?.endpoints?.baseUrl || DEFAULT_UI_BASE_URL, [options?.endpoints?.baseUrl]);
 
     useDesignSync(isHydrated, activeThemeId, allThemes, storageKey, hasHydratedRef, setDesign);
-    useDesignRemoteLoader(isHydrated, token, uiBaseUrl, optionsRef, isBackendLoaded, setIsBackendLoaded, setDesign);
+    useDesignRemoteLoader(isHydrated, optionsRef, isBackendLoaded, setIsBackendLoaded, setDesign);
 
-    // 3. Persistência de Design (Core Logic)
+    // 3. Persistência de Design (Core Logic). Sempre localStorage (a lib não ship
+    // servidor — Spec 44); `onSave`/`onThemeChange` são portas opcionais "traga sua
+    // persistência" para o backend do PRÓPRIO consumidor, nunca um fetch da lib.
     const persistDesign = useCallback(async (config: SarakDesignState) => {
         if (!isHydrated) return;
         const opt = optionsRef.current;
@@ -87,21 +96,12 @@ export const useDesignManager = (props: {
             localStorage.setItem(storageKey, JSON.stringify(config));
             if (opt?.persistence?.onSave) {
                 await opt.persistence.onSave(config);
-            } else {
-                const designPath = opt?.endpoints?.designPath || '/design';
-                const headers: Record<string, string> = { 'Content-Type': 'application/json' };
-                if (token) headers['Authorization'] = `Bearer ${token}`;
-                
-                await fetch(`${uiBaseUrl}${designPath}`, {
-                    method: 'POST',
-                    headers,
-                    body: JSON.stringify({ design: config })
-                });
             }
+            onThemeChangeRef.current?.(config);
         } catch (e) {
             console.error("[Sarak:Design] Save error:", e);
         }
-    }, [isHydrated, storageKey, token, uiBaseUrl]);
+    }, [isHydrated, storageKey]);
 
     // 4. Persistência Automática (Debounced)
     useEffect(() => {

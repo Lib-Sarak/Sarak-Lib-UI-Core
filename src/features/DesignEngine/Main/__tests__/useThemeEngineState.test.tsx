@@ -7,23 +7,20 @@ vi.mock('../../../../core/Provider/SarakUIProvider', () => ({
     useSarakUI: vi.fn()
 }));
 
-const mockFetch = vi.fn();
-global.fetch = mockFetch;
-
-describe('useThemeEngineState', () => {
+describe('useThemeEngineState (Spec 44 — sem backend próprio)', () => {
     beforeEach(() => {
         vi.clearAllMocks();
         (SarakUIProvider.useSarakUI as any).mockReturnValue({
             systemDesign: {},
             design: {},
-            options: { endpoints: { baseUrl: '/api/mock' } },
-            token: ['mock', 'token'].join('-')
+            options: {},
+            token: null
         });
     });
 
     it('deve inicializar com o estado padrão', () => {
         const { result } = renderHook(() => useThemeEngineState());
-        
+
         expect(result.current.activePreviewApp).toBe('dashboard');
         expect(result.current.previewDevice).toBe('desktop');
         expect(result.current.activePillarId).toBe('surfaces'); // mapped from 'dashboard'
@@ -33,53 +30,25 @@ describe('useThemeEngineState', () => {
 
     it('deve sincronizar activePillarId quando activePreviewApp mudar', () => {
         const { result } = renderHook(() => useThemeEngineState());
-        
+
         act(() => {
             result.current.setActivePreviewApp('typography');
         });
-        
+
         expect(result.current.activePillarId).toBe('typography');
-        
+
         act(() => {
             result.current.setActivePreviewApp('chat');
         });
-        
+
         expect(result.current.activePillarId).toBe('advanced');
     });
 
-    it('deve fazer fetchActiveTheme corretamente', async () => {
-        mockFetch.mockResolvedValueOnce({
-            ok: true,
-            json: async () => ({ data: { design: { tokens: 'mocked' } } })
-        });
-
+    it('não expõe mais `uiBaseUrl`/`apiToken`/`fetchActiveTheme` (a persistência é local, sem backend)', () => {
         const { result } = renderHook(() => useThemeEngineState());
-        
-        let theme;
-        await act(async () => {
-            theme = await result.current.fetchActiveTheme();
-        });
-        
-        expect(mockFetch).toHaveBeenCalledWith('/api/mock/design', {
-            headers: {
-                'Content-Type': 'application/json',
-                'Authorization': `Bearer ${['mock', 'token'].join('-')}`
-            }
-        });
-        
-        expect(theme).toEqual({ tokens: 'mocked' });
-    });
-    
-    it('deve lidar com falhas no fetchActiveTheme graciosamente', async () => {
-        mockFetch.mockRejectedValueOnce(new Error('Network error'));
 
-        const { result } = renderHook(() => useThemeEngineState());
-        
-        let theme;
-        await act(async () => {
-            theme = await result.current.fetchActiveTheme();
-        });
-        
-        expect(theme).toBeNull();
+        expect(result.current).not.toHaveProperty('uiBaseUrl');
+        expect(result.current).not.toHaveProperty('apiToken');
+        expect(result.current).not.toHaveProperty('fetchActiveTheme');
     });
 });

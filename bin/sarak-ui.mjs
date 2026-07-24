@@ -6,7 +6,7 @@
  */
 import { runInit } from './scaffold/runInit.mjs';
 
-const NUMERIC_FLAGS = new Set(['backendPort', 'frontendPort']);
+const NUMERIC_FLAGS = new Set(['frontendPort']);
 const BOOLEAN_FLAGS = new Set(['force', 'yes']);
 
 function toCamelCase(kebab) {
@@ -32,7 +32,7 @@ function parseFlags(argv) {
 }
 
 function printSummary({ answers, written, skipped }) {
-    console.log(`\n[sarak-ui init] Modo=${answers.mode} Stack=${answers.stack} Storage=${answers.storage}`);
+    console.log(`\n[sarak-ui init] Modo=${answers.mode} Porta=${answers.frontendPort}`);
     console.log(`[sarak-ui init] ${written.length} arquivo(s) escrito(s).`);
     if (skipped.length > 0) {
         console.log(`[sarak-ui init] ${skipped.length} pulado(s) (já existiam; use --force para sobrescrever):`);
@@ -44,26 +44,21 @@ function printSummary({ answers, written, skipped }) {
 /** `--help`/`-h` de verdade (Spec 29 §2.2): todas as flags + defaults + exemplos. */
 const USAGE = `Uso: npx @sarak/lib-ui-core init [opções]
 
-Gera o boilerplate do Golden Path (Vite+Express monolítico, Next.js ou frontend-only):
-peerDependencies gravadas no package.json, skills de consumo copiadas e manifesto inicial.
+Gera o starter padrão (Spec 45 — modelo módulos-plugin, o mesmo do Sarak-MyService):
+um front Vite puro com \`SarakUIProvider\`+\`SarakShell\` e um módulo de exemplo já
+registrado. Sem backend (Design Engine persiste em localStorage — Spec 44).
+peerDependencies gravadas no package.json e skills de consumo copiadas.
 
 Opções:
   --mode <app|embedded>              Modo de renderização (default: app)
-  --stack <vite-express|next|frontend-only>
-                                      Stack do consumidor (default: vite-express)
-  --storage <sqlite|postgres|custom>
-                                      Persistência de temas (default: sqlite)
-  --schema <nome>                    Schema do Postgres (só com --storage postgres; default: vazio)
-  --backend-port <porta>              Porta do backend (default: 3000)
-  --frontend-port <porta>             Porta do frontend (default: 5173)
+  --frontend-port <porta>             Porta do dev server (default: 5173)
   --force                            Sobrescreve arquivo existente (default: nunca sobrescreve)
-  --yes                              Aceita os defaults do Golden Path sem perguntar nada
+  --yes                              Aceita os defaults do starter padrão sem perguntar nada
   --help, -h                         Mostra esta ajuda e sai
 
 Exemplos:
   npx @sarak/lib-ui-core init --yes
-  npx @sarak/lib-ui-core init --mode app --stack vite-express --storage sqlite
-  npx @sarak/lib-ui-core init --stack next --storage postgres --schema meu_schema
+  npx @sarak/lib-ui-core init --mode embedded --frontend-port 4173
 
 Sem terminal interativo (CI/agente/pipe) e sem "--yes" nem flags suficientes, o comando
 falha com código de saída 1 (nunca sai em silêncio sem escrever nada).`;

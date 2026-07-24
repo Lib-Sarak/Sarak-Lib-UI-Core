@@ -117,6 +117,10 @@ interface SarakThemePayloadExtras {
     availableLanguages?: string[];
 }
 
+// `PAYLOAD_EXTRA_KEYS` (espelho em runtime das chaves acima, usado por
+// `validateDesign`) mora em `./payloadExtraKeys.ts` — só para manter este
+// arquivo abaixo do limite de linhas do auditor de Clean Code (250).
+
 /**
  * Modo de consumo da biblioteca (Spec 24).
  * - `app`: o sistema nasce com a lib; o Provider é dono da página (default).
@@ -139,11 +143,8 @@ export interface SarakUIOptions {
         injectGlobalFonts?: boolean;
     };
     endpoints?: {
-        baseUrl?: string;
-        designPath?: string;
         discoveryPath?: string;
         discovery?: string[];
-        branding?: string;
     };
     manifest?: {
         brand?: { name?: string; logoUrl?: string };
@@ -161,6 +162,23 @@ export interface SarakUIOptions {
         defaultModuleId?: string;
         extraTokens?: Record<string, unknown>;
     };
+    /**
+     * Marca/branding do sistema (Spec 44 — sem backend próprio): `initial` semeia
+     * o estado; `onChange` é a porta "traga sua persistência" (sync no backend DO
+     * CONSUMIDOR, se ele quiser — a lib nunca faz fetch/POST para nenhum servidor).
+     */
+    branding?: {
+        initial?: Partial<SarakBrandingState>;
+        onChange?: (branding: SarakBrandingState) => Promise<void> | void;
+    };
+}
+
+/** Estado de marca/branding do sistema (nome, logo, textos de login/aba). */
+export interface SarakBrandingState {
+    companyName: string;
+    loginName: string;
+    tabName: string;
+    logoBase64: string | null;
 }
 
 export interface SarakUIContextType {
@@ -186,13 +204,8 @@ export interface SarakUIContextType {
     allThemes: unknown[]; // Array unificado (Scripts + DB) para a interface
     token?: string | null; // Adicionado para expor o token aos componentes filhos (Catálogo, Temas, etc)
     // Branding
-    branding?: {
-        companyName: string;
-        loginName: string;
-        tabName: string;
-        logoBase64: string | null;
-    };
-    updateBranding?: (partial: Record<string, unknown>) => Promise<void>;
+    branding?: SarakBrandingState;
+    updateBranding?: (partial: Partial<SarakBrandingState>) => Promise<void>;
     
     // Media Strategy
     onMediaUpload?: (file: File) => Promise<string>;
@@ -205,7 +218,22 @@ export interface SarakUIProviderProps {
     token?: string | null;
     userId?: string | null;
     options?: SarakUIOptions;
-    customThemes?: unknown[]; // Temas vindos do banco de dados (UI.custom_themes)
-    activeThemeId?: string; // ID do tema atualmente selecionado no banco
+    customThemes?: unknown[]; // Temas em JSON definidos pelo consumidor no próprio código (Spec 44)
+    /** ID do tema ATIVO (controlado): sempre que setado, vence — reaplica a cada mudança. */
+    activeThemeId?: string;
+    /**
+     * ID do tema SEMENTE (não-controlado): só semeia o estado inicial (uma vez, no
+     * primeiro seed), nunca força reaplicação. Alternativa mais segura a
+     * `activeThemeId` para o caso comum "só quero começar neste tema" — não expõe o
+     * consumidor ao contrato de estabilidade de referência que `activeThemeId`
+     * exige de `customThemes` (Spec 43 §5.1/Spec 44 §2.1).
+     */
+    initialTheme?: string;
+    /**
+     * Callback "traga sua persistência" (Spec 44 §2.5): chamado a cada commit do
+     * design persistido (após localStorage), para o consumidor sincronizar no
+     * backend DELE, se quiser. A lib nunca faz essa chamada por conta própria.
+     */
+    onThemeChange?: (design: SarakThemePayload) => void;
     onMediaUpload?: (file: File) => Promise<string>; // Adapter opcional para envio de mídias para Storage externo
 }

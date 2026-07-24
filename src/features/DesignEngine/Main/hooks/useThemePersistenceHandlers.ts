@@ -1,104 +1,52 @@
 import { useCallback } from 'react';
-import { useThemeActions } from './useThemeActions';
-import { SaveThemeAction } from '../components/SaveThemeModal';
+import { buildThemeExportPayload, downloadThemeJson } from '../utils/exportTheme';
 
 import type { SarakDesignState } from '../../../../core/Provider/types';
 
 export interface UseThemePersistenceHandlersProps {
-    uiBaseUrl: string;
-    apiToken?: string | null;
     draft: SarakDesignState;
-    currentThemeId: string | null;
-    setCurrentThemeId: (id: string | null) => void;
-    currentThemeOrigin: 'script' | 'database';
-    setCurrentThemeOrigin: (origin: 'script' | 'database') => void;
-    currentThemeName: string;
     setCurrentThemeName: (name: string) => void;
     setIsSaveModalOpen: (open: boolean) => void;
     setIsSaving: (saving: boolean) => void;
-    pendingApply: boolean;
-    setPendingApply: (pending: boolean) => void;
     showToast: (type: 'success' | 'warning' | 'error', message: string) => void;
     handleApplyToSystem: () => void;
-    isDirty: boolean;
 }
 
+/**
+ * Handlers de "persistência" do Design Engine (Spec 44 — sem backend próprio):
+ * "salvar um tema" É exportar um JSON (`buildThemeExportPayload`/`downloadThemeJson`)
+ * que o dev cola num arquivo do próprio repo e passa via `customThemes`; "aplicar"
+ * só comita o rascunho no design ativo (localStorage via `useDesignManager`) —
+ * nenhuma das duas ações faz uma chamada de rede.
+ */
 export function useThemePersistenceHandlers(props: UseThemePersistenceHandlersProps) {
     const {
-        uiBaseUrl, apiToken,
         draft,
-        currentThemeId, setCurrentThemeId,
-        currentThemeOrigin, setCurrentThemeOrigin,
-        currentThemeName, setCurrentThemeName,
+        setCurrentThemeName,
         setIsSaveModalOpen, setIsSaving,
-        pendingApply, setPendingApply,
-        showToast, handleApplyToSystem, isDirty
+        showToast, handleApplyToSystem
     } = props;
 
-    const { saveNewThemeAPI, updateThemeAPI, activateThemeAPI } = useThemeActions(uiBaseUrl, apiToken || undefined);
-
-    const handleSaveTheme = useCallback(async (action: SaveThemeAction) => {
-        if (action.type === 'CANCEL') {
-            setIsSaveModalOpen(false);
-            setPendingApply(false);
-            return;
-        }
-
+    const handleExportTheme = useCallback((name: string) => {
         setIsSaving(true);
         try {
-            if (action.type === 'CREATE_NEW') {
-                const newTheme = await saveNewThemeAPI(draft, action.name, pendingApply);
-                setCurrentThemeId(newTheme.id);
-                setCurrentThemeOrigin('database');
-                setCurrentThemeName(newTheme.name);
-                showToast('success', `Tema "${newTheme.name}" salvo no banco com sucesso!`);
-            }
-            if (action.type === 'OVERWRITE_EXISTING') {
-                if (currentThemeId) {
-                    await updateThemeAPI(currentThemeId, draft, currentThemeName, pendingApply);
-                    showToast('success', `Tema atualizado no banco com sucesso!`);
-                }
-            }
-
-            if (pendingApply) {
-                handleApplyToSystem();
-            }
-
+            const payload = buildThemeExportPayload(draft, name);
+            downloadThemeJson(payload);
+            setCurrentThemeName(payload.name);
+            showToast('success', `Tema "${payload.name}" exportado — cole o JSON em \`customThemes\` no seu código.`);
             setIsSaveModalOpen(false);
         } catch (error) {
             console.error(error);
-            showToast('warning', 'Erro ao salvar o tema.');
-        } finally {
-            setIsSaving(false);
-            setPendingApply(false);
-        }
-    }, [draft, currentThemeId, currentThemeName, pendingApply, saveNewThemeAPI, updateThemeAPI, handleApplyToSystem, showToast, setCurrentThemeId, setCurrentThemeOrigin, setCurrentThemeName, setIsSaveModalOpen, setIsSaving, setPendingApply]);
-
-    const handleApplyGlobalChanges = useCallback(async () => {
-        if (!currentThemeId || currentThemeOrigin === 'script') {
-            setPendingApply(true);
-            setIsSaveModalOpen(true);
-            return;
-        }
-
-        if (isDirty) {
-            setPendingApply(true);
-            setIsSaveModalOpen(true);
-            return;
-        }
-
-        setIsSaving(true);
-        try {
-            await activateThemeAPI(currentThemeId);
-            handleApplyToSystem();
-            showToast('success', `Tema ativado com sucesso!`);
-        } catch (e) {
-            console.error(e);
-            showToast('warning', 'Erro ao ativar tema.');
+            showToast('warning', 'Erro ao exportar o tema.');
         } finally {
             setIsSaving(false);
         }
-    }, [currentThemeId, currentThemeOrigin, isDirty, activateThemeAPI, handleApplyToSystem, showToast, setPendingApply, setIsSaveModalOpen, setIsSaving]);
+    }, [draft, showToast, setCurrentThemeName, setIsSaveModalOpen, setIsSaving]);
 
-    return { handleSaveTheme, handleApplyGlobalChanges };
+    const handleApplyGlobalChanges = useCallback(() => {
+        handleApplyToSystem();
+        showToast('success', 'Alterações aplicadas ao sistema.');
+    }, [handleApplyToSystem, showToast]);
+
+    return { handleExportTheme, handleApplyGlobalChanges };
 }

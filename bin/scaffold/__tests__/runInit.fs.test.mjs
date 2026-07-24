@@ -15,45 +15,78 @@ afterEach(() => {
     fs.rmSync(tmpDir, { recursive: true, force: true });
 });
 
-const GOLDEN_PATH_ANSWERS = {
+const STARTER_ANSWERS = {
     mode: 'app',
-    stack: 'vite-express',
-    storage: 'sqlite',
-    schema: null,
-    backendPort: 3000,
     frontendPort: 5173,
 };
 
-describe('runInit (fs real, tmp dir)', () => {
-    it('gera a estrutura completa do Golden Path na 1ª execução', async () => {
-        const result = await runInit({ rootDir: tmpDir, overrideAnswers: GOLDEN_PATH_ANSWERS });
+describe('runInit (fs real, tmp dir) — starter padrão módulos-plugin (Spec 45)', () => {
+    it('gera a estrutura completa do starter na 1ª execução', async () => {
+        const result = await runInit({ rootDir: tmpDir, overrideAnswers: STARTER_ANSWERS });
 
         expect(result.skipped).toEqual([]);
         for (const relPath of [
             'index.html',
             'vite.config.ts',
             'tsconfig.json',
-            'tsconfig.server.json',
             'src/main.tsx',
-            'src/server.ts',
-            'src/Sarak-Engine/index.ts',
-            'src/manifests/app.manifest.json',
+            'src/modules/ExampleModule.tsx',
             'package.json',
         ]) {
             expect(fs.existsSync(path.join(tmpDir, relPath)), `esperava ${relPath}`).toBe(true);
         }
 
         const pkg = JSON.parse(fs.readFileSync(path.join(tmpDir, 'package.json'), 'utf8'));
-        expect(pkg.scripts.dev).toContain('concurrently');
+        expect(pkg.scripts.dev).toBe('vite');
         expect(pkg.dependencies['@sarak/lib-ui-core']).toBeTruthy();
         expect(pkg.devDependencies.typescript.startsWith('^5')).toBe(true);
     });
 
+    it('main.tsx segue o padrão módulos-plugin (Sarak-MyService): Provider+Shell+registro, sem manifesto', async () => {
+        await runInit({ rootDir: tmpDir, overrideAnswers: STARTER_ANSWERS });
+
+        const mainTsx = fs.readFileSync(path.join(tmpDir, 'src/main.tsx'), 'utf8');
+        expect(mainTsx).toContain('SarakUIProvider');
+        expect(mainTsx).toContain('SarakShell');
+        expect(mainTsx).toContain('registerSarakModule');
+        expect(mainTsx).toContain('registerLocalComponent');
+        expect(mainTsx).not.toContain('SarakManifestRenderer');
+        expect(mainTsx).not.toContain('app.manifest.json');
+    });
+
+    it('main.tsx define o módulo de exemplo como defaultModuleId (achado real: sem isso, o Shell abre no Design Engine por padrão — prioridade 9999)', async () => {
+        await runInit({ rootDir: tmpDir, overrideAnswers: STARTER_ANSWERS });
+
+        const mainTsx = fs.readFileSync(path.join(tmpDir, 'src/main.tsx'), 'utf8');
+        expect(mainTsx).toContain("defaultModuleId: 'exemplo'");
+    });
+
+    it('não gera backend nenhum (Spec 44/45): sem server.ts, sem rotas Next, sem manifesto/Sarak-Engine', async () => {
+        await runInit({ rootDir: tmpDir, overrideAnswers: STARTER_ANSWERS });
+
+        for (const relPath of [
+            'src/server.ts',
+            'tsconfig.server.json',
+            'instrumentation.ts',
+            'CONTRATO-BACKEND.md',
+            'src/Sarak-Engine/index.ts',
+            'src/manifests/app.manifest.json',
+        ]) {
+            expect(fs.existsSync(path.join(tmpDir, relPath)), `NÃO esperava ${relPath}`).toBe(false);
+        }
+
+        const pkg = JSON.parse(fs.readFileSync(path.join(tmpDir, 'package.json'), 'utf8'));
+        expect(pkg.dependencies.express).toBeUndefined();
+        expect(pkg.dependencies.next).toBeUndefined();
+        expect(pkg.devDependencies['ts-node-dev']).toBeUndefined();
+        expect(pkg.devDependencies.concurrently).toBeUndefined();
+    });
+
     it('2ª execução é idempotente: nada é sobrescrito e tudo aparece em skipped', async () => {
-        await runInit({ rootDir: tmpDir, overrideAnswers: GOLDEN_PATH_ANSWERS });
+        await runInit({ rootDir: tmpDir, overrideAnswers: STARTER_ANSWERS });
         fs.writeFileSync(path.join(tmpDir, 'src', 'main.tsx'), '// edição manual do usuário\n');
 
-        const second = await runInit({ rootDir: tmpDir, overrideAnswers: GOLDEN_PATH_ANSWERS });
+        const second = await runInit({ rootDir: tmpDir, overrideAnswers: STARTER_ANSWERS });
 
         expect(second.skipped).toContain('src/main.tsx');
         const content = fs.readFileSync(path.join(tmpDir, 'src', 'main.tsx'), 'utf8');
@@ -61,17 +94,17 @@ describe('runInit (fs real, tmp dir)', () => {
     });
 
     it('--force sobrescreve o que a 2ª execução pularia', async () => {
-        await runInit({ rootDir: tmpDir, overrideAnswers: GOLDEN_PATH_ANSWERS });
+        await runInit({ rootDir: tmpDir, overrideAnswers: STARTER_ANSWERS });
         fs.writeFileSync(path.join(tmpDir, 'src', 'main.tsx'), '// edição manual do usuário\n');
 
-        await runInit({ rootDir: tmpDir, flags: { force: true }, overrideAnswers: GOLDEN_PATH_ANSWERS });
+        await runInit({ rootDir: tmpDir, flags: { force: true }, overrideAnswers: STARTER_ANSWERS });
 
         const content = fs.readFileSync(path.join(tmpDir, 'src', 'main.tsx'), 'utf8');
         expect(content).not.toContain('edição manual');
     });
 
     it('copia as 2 skills de consumo para .agents/skills e .claude/skills', async () => {
-        await runInit({ rootDir: tmpDir, overrideAnswers: GOLDEN_PATH_ANSWERS });
+        await runInit({ rootDir: tmpDir, overrideAnswers: STARTER_ANSWERS });
 
         for (const base of ['.agents/skills', '.claude/skills']) {
             expect(fs.existsSync(path.join(tmpDir, base, 'ui-integra-escrever-manifesto', 'SKILL.md'))).toBe(true);
@@ -85,12 +118,12 @@ describe('runInit (fs real, tmp dir)', () => {
             JSON.stringify({ name: 'meu-app-existente', version: '9.9.9', scripts: { lint: 'eslint .' } }, null, 2),
         );
 
-        await runInit({ rootDir: tmpDir, overrideAnswers: GOLDEN_PATH_ANSWERS });
+        await runInit({ rootDir: tmpDir, overrideAnswers: STARTER_ANSWERS });
 
         const pkg = JSON.parse(fs.readFileSync(path.join(tmpDir, 'package.json'), 'utf8'));
         expect(pkg.name).toBe('meu-app-existente');
         expect(pkg.scripts.lint).toBe('eslint .');
-        expect(pkg.scripts.dev).toContain('concurrently');
+        expect(pkg.scripts.dev).toBe('vite');
     });
 
     it('preserva um package.json existente com BOM UTF-8 (achado real: `Set-Content -Encoding utf8` do PowerShell 5 grava BOM e derrubava o init no meio, com o resto dos arquivos já escritos)', async () => {
@@ -100,72 +133,34 @@ describe('runInit (fs real, tmp dir)', () => {
             `${BOM}${JSON.stringify({ name: 'meu-app-bom', scripts: { lint: 'eslint .' } }, null, 2)}`,
         );
 
-        const result = await runInit({ rootDir: tmpDir, overrideAnswers: GOLDEN_PATH_ANSWERS });
+        const result = await runInit({ rootDir: tmpDir, overrideAnswers: STARTER_ANSWERS });
 
         expect(result.skipped.filter((s) => s.startsWith('package.json'))).toEqual([]);
         const pkg = JSON.parse(fs.readFileSync(path.join(tmpDir, 'package.json'), 'utf8'));
         expect(pkg.name).toBe('meu-app-bom');
         expect(pkg.scripts.lint).toBe('eslint .');
-        expect(pkg.scripts.dev).toContain('concurrently');
+        expect(pkg.scripts.dev).toBe('vite');
         // O arquivo final é regravado sem BOM — não propaga o problema adiante.
         const rawFinal = fs.readFileSync(path.join(tmpDir, 'package.json'), 'utf8');
         expect(rawFinal.startsWith(BOM)).toBe(false);
     });
 
-    it('storage postgres com schema: server.ts final reflete o schema escolhido', async () => {
-        await runInit({
-            rootDir: tmpDir,
-            overrideAnswers: { ...GOLDEN_PATH_ANSWERS, storage: 'postgres', schema: 'MeuSchema' },
-        });
-
-        const serverTs = fs.readFileSync(path.join(tmpDir, 'src', 'server.ts'), 'utf8');
-        expect(serverTs).toContain("schema: 'MeuSchema'");
-    });
-
     it('rejeita answers inválidas antes de escrever qualquer arquivo', async () => {
         await expect(
-            runInit({ rootDir: tmpDir, overrideAnswers: { ...GOLDEN_PATH_ANSWERS, stack: 'sveltekit' } }),
-        ).rejects.toThrow(/Stack inválido/);
+            runInit({ rootDir: tmpDir, overrideAnswers: { ...STARTER_ANSWERS, mode: 'servidor' } }),
+        ).rejects.toThrow(/Modo inválido/);
         expect(fs.readdirSync(tmpDir)).toEqual([]);
     });
 
-    it('stack next: gera instrumentation + os 3 handlers oficiais (design/branding/themes)', async () => {
-        await runInit({ rootDir: tmpDir, overrideAnswers: { ...GOLDEN_PATH_ANSWERS, stack: 'next', storage: 'postgres', schema: null } });
-
-        for (const relPath of [
-            'instrumentation.ts',
-            'app/api/ui/design/route.ts',
-            'app/api/ui/branding/route.ts',
-            'app/api/ui/themes/route.ts',
-            'app/api/ui/themes/[id]/route.ts',
-            'app/api/ui/themes/[id]/activate/route.ts',
-        ]) {
-            expect(fs.existsSync(path.join(tmpDir, relPath)), `esperava ${relPath}`).toBe(true);
-        }
-        // Nenhum src/server.ts Express nesta stack.
-        expect(fs.existsSync(path.join(tmpDir, 'src/server.ts'))).toBe(false);
-    });
-
-    it('stack frontend-only: gera front puro + stub do contrato REST, sem servidor Node', async () => {
-        await runInit({ rootDir: tmpDir, overrideAnswers: { ...GOLDEN_PATH_ANSWERS, stack: 'frontend-only', storage: 'custom' } });
-
-        expect(fs.existsSync(path.join(tmpDir, 'CONTRATO-BACKEND.md'))).toBe(true);
-        expect(fs.existsSync(path.join(tmpDir, 'src/main.tsx'))).toBe(true);
-        expect(fs.existsSync(path.join(tmpDir, 'src/server.ts'))).toBe(false);
-
-        const pkg = JSON.parse(fs.readFileSync(path.join(tmpDir, 'package.json'), 'utf8'));
-        expect(pkg.devDependencies['ts-node-dev']).toBeUndefined();
-    });
-
     it('sarak:update (Spec 39 §2.1): 1ª instalação usa o spec git oficial default', async () => {
-        await runInit({ rootDir: tmpDir, overrideAnswers: GOLDEN_PATH_ANSWERS });
+        await runInit({ rootDir: tmpDir, overrideAnswers: STARTER_ANSWERS });
 
         const pkg = JSON.parse(fs.readFileSync(path.join(tmpDir, 'package.json'), 'utf8'));
         expect(pkg.scripts['sarak:update']).toContain('npm install github:Lib-Sarak/Sarak-Lib-UI-Core');
     });
 
     it('sarak:check (Spec 39 follow-up): gerado junto do sarak:update, aponta pro checkUpdate.mjs shipado', async () => {
-        await runInit({ rootDir: tmpDir, overrideAnswers: GOLDEN_PATH_ANSWERS });
+        await runInit({ rootDir: tmpDir, overrideAnswers: STARTER_ANSWERS });
 
         const pkg = JSON.parse(fs.readFileSync(path.join(tmpDir, 'package.json'), 'utf8'));
         expect(pkg.scripts['sarak:check']).toBe('node node_modules/@sarak/lib-ui-core/bin/scaffold/checkUpdate.mjs');
@@ -180,14 +175,14 @@ describe('runInit (fs real, tmp dir)', () => {
             }, null, 2),
         );
 
-        await runInit({ rootDir: tmpDir, overrideAnswers: GOLDEN_PATH_ANSWERS });
+        await runInit({ rootDir: tmpDir, overrideAnswers: STARTER_ANSWERS });
 
         const pkg = JSON.parse(fs.readFileSync(path.join(tmpDir, 'package.json'), 'utf8'));
         expect(pkg.scripts['sarak:update']).toContain('npm install github:MeuFork/Sarak-Lib-UI-Core#7fd0bd1');
     });
 
     it('modo embarcado: main.tsx importa o CSS escopado e passa options.mode', async () => {
-        await runInit({ rootDir: tmpDir, overrideAnswers: { ...GOLDEN_PATH_ANSWERS, mode: 'embedded' } });
+        await runInit({ rootDir: tmpDir, overrideAnswers: { ...STARTER_ANSWERS, mode: 'embedded' } });
 
         const mainTsx = fs.readFileSync(path.join(tmpDir, 'src/main.tsx'), 'utf8');
         expect(mainTsx).toContain('sarak-scoped.css');

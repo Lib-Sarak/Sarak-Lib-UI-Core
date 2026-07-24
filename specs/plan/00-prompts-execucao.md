@@ -1,6 +1,6 @@
 # Prompts de Execução — PENDENTES
 
-Cada bloco abaixo é um prompt COMPLETO para iniciar a execução de uma spec **numa conversa nova** (agente sem contexto anterior). Copie e cole o bloco inteiro. A numeração (`P19`…) corresponde ao item no Roteiro de Execução do `00-indice.md`. Prompts de itens concluídos são removidos (P18/Spec 43 — concluída 2026-07-23).
+Cada bloco abaixo é um prompt COMPLETO para iniciar a execução de uma spec **numa conversa nova** (agente sem contexto anterior). Copie e cole o bloco inteiro. A numeração (`P21`…) corresponde ao item no Roteiro de Execução do `00-indice.md`. Prompts de itens concluídos são removidos (P18/Spec 43 — concluída 2026-07-23; P20/Spec 45 — concluída 2026-07-24, executada fora de ordem antes da 44 a pedido do mantenedor; P19/Spec 44 — concluída 2026-07-24).
 
 Regras comuns já embutidas: acionar `ui-contexto-repositorio` primeiro; ler `00-indice.md`, `00-progresso.md` e a spec inteira; ao terminar, atualizar status/checkbox/progresso; gates (`catalog:check`, `npm run build`, testes por pasta, `run_audit.mjs` — comparar com o baseline conhecido, não esperar 0; `RegistryParity` é do #2 e vale até a Spec 46).
 
@@ -10,44 +10,10 @@ Regras comuns já embutidas: acionar `ui-contexto-repositorio` primeiro; ler `00
 
 | Prompt | Spec | Item | Observação |
 |---|---|---|---|
-| **P19** | 44 — Design Engine central + temas JSON + sem backend | 19 | O coração do produto. Remove o backend. |
-| **P20** | 45 — Scaffolder (starter padrão MyService) | 20 | Antes do teste (o teste usa o starter). |
-| **P21** | 40 — Teste Real (ERP como módulos) | 21 | Gate empírico. Libera a remoção do #2. |
+| **P21** | 40 — Teste Real (ERP como módulos) | 21 | Gate empírico. Libera a remoção do #2. Depende da 45 (✅ concluída) e da 44 (✅ concluída) para o starter + Design Engine sem backend. |
 | **P22** | 46 — Remover o renderizador de páginas (#2) | 22 | ⚠️ SÓ depois do Teste Real. Mantém o #1. |
 | **P23** | 41 — Piso de Bundle | 23 | Depois da 46 (muda a base) e antes da 42. |
 | **P24** | 42 — Generalizar CardGrid | 24 | Depois da 41. |
-
----
-
-## P19 — Spec 44: Design Engine central + temas JSON + REMOVE o backend
-
-```
-Execute a spec `specs/plan/44-temas-json-e-persistencia.md` da Sarak-Lib-UI-Core. É o CORAÇÃO do produto: uma central de layout (Design Engine) que aplica tema/template AO SISTEMA INTEIRO; o dev cria temas em JSON no código dele; persistência sem backend (o backend próprio é REMOVIDO — biblioteca de front não carrega servidor).
-
-Preparação: (1) acione `ui-contexto-repositorio`; (2) leia `00-indice.md`, `00-progresso.md` e a spec 44 INTEIRA; (3) leia a Spec 43 (executada antes) e a Spec 19 (que esta supersede). Skills: `sarak:padrao-typescript`, `ui-arquitetura-design`, `sarak:cyber-codigo` (validação de tema como consulta de segurança).
-
-Contexto: o `SarakUIProvider` já aceita `customThemes` (`SarakUIProvider.tsx:85,101`) e já tem `persistence.storageKey` (localStorage) — formalizar. Backend a remover: `backend/node/`, `backend/sarak_ui_core/`, `backend/sql/`, o 2º `tsup backend/node/backend-node.ts` do `build:js`, o export `./backend/node` + `typesVersions`, `dist/backend-node.*`, `pg`/`better-sqlite3`, `endpoints.branding` como fetch a servidor (vira callback), e `bin/scaffold/generators/serverTs.mjs` + testes.
-
-⚠️ **Achado da Spec 43 (§5.1) para avaliar aqui:** `customThemes` tem default `= []` em `SarakUIProvider` (novo array a cada render sem prop explícita); `useDesignSync` chama `setDesign` incondicionalmente sempre que `activeThemeId` está setado — a combinação é um **loop de render infinito real** (reproduzido com CPU ~100%, processo que nunca termina) para qualquer consumidor que passe `activeThemeId` sem também passar uma referência ESTÁVEL de `customThemes`. Corrigir (ex.: estabilizar `allThemes`/guardar `setDesign` com deep-equal, ou mudar o default) antes de formalizar `customThemes` como API pública de temas JSON.
-
-Entregue (seção 2 da spec): (2.1) garantir/testar que trocar tema/template repinta TODAS as telas (componentes Sarak + módulo do importador que usa tokens) via as CSS vars do Provider; multi-template trocável pela central; (2.2) `customThemes`/`defaultTheme` documentados + schema de tema no catálogo; (2.3) VALIDAÇÃO de tema no load (só chaves/valores conhecidos; fora do contrato → warn + descartado; teste de que nenhum valor vira CSS/HTML cru — grep `dangerouslySetInnerHTML`/`<style>`); (2.4) CustomizationPanel EXPORTA JSON (não persiste em servidor) + preview localStorage; (2.5) seleção do usuário em localStorage na camada Provider/Design (NÃO em `core/Manifest/Storage`, que sai na 46) + callbacks `initialTheme`/`onThemeChange`; (2.6) REMOVER o backend por completo (grep-zero). ORDEM: a persistência no Provider ANTES de remover o backend.
-
-Ao terminar: `build:js` só o tsup do front; `npm pack --dry-run` sem backend; Design Engine funciona sem servidor; MyService intacto; gates verdes; frontmatter + checkbox (item 19) + progresso. NÃO commite sem autorização.
-```
-
----
-
-## P20 — Spec 45: Scaffolder — starter padrão (MyService) + skills
-
-```
-Execute a spec `specs/plan/45-scaffolder-react-e-skills.md` da Sarak-Lib-UI-Core. Realiza "ao iniciar um projeto, importo o módulo UI e o frontend nasce no padrão": o `init` gera o STARTER PADRÃO (modelo MyService — Provider + Shell + Design Engine + módulo de exemplo registrado).
-
-Preparação: (1) acione `ui-contexto-repositorio`; (2) leia `00-indice.md`, `00-progresso.md` e a spec 45 INTEIRA; (3) leia o `Sarak-MyService/src/main.tsx` (o padrão de registro a espelhar) e as Specs 43/44. Skills: `sarak:padrao-typescript`, `meta-create-skill`.
-
-Entregue (seção 2 da spec): o `init` gera o starter no padrão MyService (`main.tsx` com `SarakUIProvider` + `SarakShell` + um módulo de exemplo via `registerSarakModule` + um `registerLocalComponent` de exemplo + Design Engine acessível), SEM backend (sem `serverTs.mjs`); reescrever `ui-integra-consumidor` para o modelo módulos-plugin (montar Provider+Shell, registrar módulos/componentes, usar componentes/tokens, temas JSON); marcar `ui-integra-escrever-manifesto`/`ui-auditoria-manifesto` para remoção na Spec 46; espelhar `.agents`→`.claude`; catálogo coerente com a API do modelo.
-
-Ao terminar: smoke do `init` (starter) verde — `npm install`+`build`, módulo de exemplo renderiza no Shell tematizado; gates verdes; frontmatter + checkbox (item 20) + progresso. NÃO commite sem autorização.
-```
 
 ---
 

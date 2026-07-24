@@ -1,7 +1,9 @@
 ---
 name: ui-integra-escrever-manifesto
-description: Ensina a compor telas, componentes e lógicas construindo arquivos JSON válidos para o SarakManifestRenderer. Use ao criar ou editar páginas de interface num consumidor que já importou @sarak/lib-ui-core, ou logo após rodar a skill ui-integra-consumidor (Handoff). NÃO acione proativamente.
+description: Ensina a compor telas, componentes e lógicas construindo arquivos JSON válidos para o SarakManifestRenderer. Use ao criar ou editar páginas de interface num consumidor que já importou @sarak/lib-ui-core E optou por usar o motor de manifesto (caminho opcional — não é mais o handoff padrão da ui-integra-consumidor). NÃO acione proativamente.
 ---
+
+> ⚠️ **MARCADA PARA REMOÇÃO (Spec 46, `specs/plan/46-remover-motor-de-manifesto.md`).** Desde a Spec 43, o modelo OFICIAL de consumo da lib é módulos-plugin (`registerSarakModule`/`registerLocalComponent` — ver skill `ui-integra-consumidor`), não mais "montar tudo via manifesto JSON". O motor de manifesto (`SarakManifestRenderer`) segue vivo e funcional como caminho **opcional** até a Spec 46 rodar (gate: só depois do Teste Real, Spec 40, provar o modelo de módulos em produção real) — use esta skill somente se o consumidor explicitamente optar por montar alguma tela específica 100% via dado/JSON. Não ofereça este caminho como o padrão.
 
 # Skill: Escrever Manifesto Declarativo (UI)
 

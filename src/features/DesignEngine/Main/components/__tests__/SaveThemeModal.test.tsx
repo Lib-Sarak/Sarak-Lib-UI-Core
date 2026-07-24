@@ -9,7 +9,6 @@ const customRender = (ui: React.ReactElement) => {
     return render(<SarakUIProvider>{ui}</SarakUIProvider>);
 };
 
-// Mocks
 vi.mock('framer-motion', () => ({
     motion: {
         div: ({ children, ...props }: any) => <div {...props}>{children}</div>
@@ -21,89 +20,57 @@ vi.mock('lucide-react', async (importOriginal) => {
     const actual = await importOriginal<any>();
     return {
         ...actual,
-        Save: () => <div data-testid="icon-save" />,
-        Copy: () => <div data-testid="icon-copy" />,
-        X: () => <div data-testid="icon-x" />,
-        Database: () => <div data-testid="icon-database" />
+        FileJson: () => <div data-testid="icon-filejson" />,
+        X: () => <div data-testid="icon-x" />
     };
 });
 
-describe('SaveThemeModal', () => {
+describe('SaveThemeModal (Spec 44 — exportar tema como JSON, sem backend)', () => {
     const defaultProps = {
         isOpen: true,
         onClose: vi.fn(),
-        onAction: vi.fn(),
+        onExport: vi.fn(),
     };
 
     it('não renderiza se isOpen for falso', () => {
-        customRender(<SaveThemeModal {...defaultProps} origin="script" isOpen={false} />);
-        expect(screen.queryByText('Persistência de Tema')).not.toBeInTheDocument();
+        customRender(<SaveThemeModal {...defaultProps} isOpen={false} />);
+        expect(screen.queryByText('Exportar Tema (JSON)')).not.toBeInTheDocument();
     });
 
-    it('renderiza corretamente quando origin é script', () => {
-        customRender(<SaveThemeModal {...defaultProps} origin="script" />);
-        expect(screen.getByText('Persistência de Tema')).toBeInTheDocument();
-        expect(screen.getByText(/Você está modificando um tema padrão/)).toBeInTheDocument();
-        expect(screen.getByPlaceholderText('Ex: Sarak Sovereign Customizado')).toBeInTheDocument();
-        expect(screen.getByText('Salvar Novo Tema')).toBeInTheDocument();
+    it('renderiza o nome pré-preenchido e o aviso de que nada vai para um servidor', () => {
+        customRender(<SaveThemeModal {...defaultProps} themeName="Meu Tema" />);
+        expect(screen.getByText('Exportar Tema (JSON)')).toBeInTheDocument();
+        expect(screen.getByText(/não tem backend próprio/)).toBeInTheDocument();
+        expect(screen.getByDisplayValue('Meu Tema')).toBeInTheDocument();
     });
 
-    it('renderiza corretamente quando origin é database', () => {
-        customRender(<SaveThemeModal {...defaultProps} origin="database" themeName="My Custom Theme" />);
-        expect(screen.getByText(/Você modificou o tema/)).toBeInTheDocument();
-        expect(screen.getByText('My Custom Theme')).toBeInTheDocument();
-        expect(screen.getByText('Atualizar Tema Atual')).toBeInTheDocument();
-        expect(screen.getByPlaceholderText('Nome para a cópia')).toBeInTheDocument();
-        expect(screen.getByText('Salvar Cópia')).toBeInTheDocument();
-    });
+    it('chama onExport com o nome editado ao clicar em "Exportar JSON"', () => {
+        const onExport = vi.fn();
+        customRender(<SaveThemeModal {...defaultProps} onExport={onExport} />);
 
-    it('atualiza o nome do tema e chama onAction(CREATE_NEW) (script)', () => {
-        const onAction = vi.fn();
-        customRender(<SaveThemeModal {...defaultProps} origin="script" onAction={onAction} />);
-        
         const input = screen.getByPlaceholderText('Ex: Sarak Sovereign Customizado');
-        fireEvent.change(input, { target: { value: 'New Theme' } });
-        
-        const btn = screen.getByText('Salvar Novo Tema');
-        fireEvent.click(btn);
-        
-        expect(onAction).toHaveBeenCalledWith({ type: 'CREATE_NEW', name: 'New Theme' });
+        fireEvent.change(input, { target: { value: 'Tema Corporativo' } });
+
+        fireEvent.click(screen.getByText('Exportar JSON'));
+
+        expect(onExport).toHaveBeenCalledWith('Tema Corporativo');
     });
 
-    it('chama onAction(OVERWRITE_EXISTING) (database)', () => {
-        const onAction = vi.fn();
-        customRender(<SaveThemeModal {...defaultProps} origin="database" onAction={onAction} />);
-        
-        const btn = screen.getByText('Atualizar Tema Atual');
-        fireEvent.click(btn);
-        
-        expect(onAction).toHaveBeenCalledWith({ type: 'OVERWRITE_EXISTING' });
-    });
-
-    it('chama onAction(CREATE_NEW) (database)', () => {
-        const onAction = vi.fn();
-        customRender(<SaveThemeModal {...defaultProps} origin="database" onAction={onAction} />);
-        
-        const input = screen.getByPlaceholderText('Nome para a cópia');
-        fireEvent.change(input, { target: { value: 'Copy Theme' } });
-        
-        const btn = screen.getByText('Salvar Cópia');
-        fireEvent.click(btn);
-        
-        expect(onAction).toHaveBeenCalledWith({ type: 'CREATE_NEW', name: 'Copy Theme' });
-    });
-
-    it('chama onAction(CANCEL) e onClose', () => {
+    it('chama onClose ao cancelar ou fechar', () => {
         const onClose = vi.fn();
-        const onAction = vi.fn();
-        customRender(<SaveThemeModal {...defaultProps} origin="script" onClose={onClose} onAction={onAction} />);
-        
-        const btnCancel = screen.getByText('Cancelar');
-        fireEvent.click(btnCancel);
-        expect(onAction).toHaveBeenCalledWith({ type: 'CANCEL' });
+        customRender(<SaveThemeModal {...defaultProps} onClose={onClose} />);
 
-        const btnClose = screen.getByTestId('icon-x').parentElement;
-        fireEvent.click(btnClose!);
-        expect(onClose).toHaveBeenCalled();
+        fireEvent.click(screen.getByText('Cancelar'));
+        expect(onClose).toHaveBeenCalledTimes(1);
+
+        fireEvent.click(screen.getByTestId('icon-x').parentElement!);
+        expect(onClose).toHaveBeenCalledTimes(2);
+    });
+
+    it('desabilita "Exportar JSON" quando o nome está vazio', () => {
+        customRender(<SaveThemeModal {...defaultProps} themeName="" />);
+        const input = screen.getByPlaceholderText('Ex: Sarak Sovereign Customizado');
+        fireEvent.change(input, { target: { value: '' } });
+        expect(screen.getByText('Exportar JSON').closest('button')).toBeDisabled();
     });
 });

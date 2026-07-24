@@ -1,50 +1,38 @@
 /**
- * Constantes do scaffolder (Spec 21). `typescript` fica travado em ^5 — o
- * `ts-node-dev` do Golden Path não roda sobre TS 7 (achado real de instalação).
+ * Constantes do scaffolder (Spec 21; simplificado pela Spec 45 — starter padrão
+ * módulos-plugin, sem backend). `typescript` fica travado em ^5 (achado real de
+ * instalação com toolchains mais novas).
  */
-export const DEFAULT_BACKEND_PORT = 3000;
 export const DEFAULT_FRONTEND_PORT = 5173;
 
-export const STACKS = ['vite-express', 'next', 'frontend-only'];
-export const STORAGES = ['sqlite', 'postgres', 'custom'];
 export const MODES = ['app', 'embedded'];
 
-export const DEFAULT_STACK = 'vite-express';
-export const DEFAULT_STORAGE = 'sqlite';
 export const DEFAULT_MODE = 'app';
 
 export const TYPESCRIPT_VERSION_RANGE = '^5.4.0';
 
-export const EXPRESS_VERSION_RANGE = '^4.19.0';
-
-/** O backend Express do Golden Path é runtime, não deve entrar em devDependencies. */
-export const GOLDEN_PATH_DEPENDENCIES = {
-    express: EXPRESS_VERSION_RANGE,
-};
-
-export const GOLDEN_PATH_DEV_DEPENDENCIES = {
-    vite: '^5.4.0',
-    '@vitejs/plugin-react': '^4.3.0',
-    concurrently: '^9.0.0',
-    'ts-node-dev': '^2.0.0',
-    typescript: TYPESCRIPT_VERSION_RANGE,
-    '@types/express': '^4.17.0',
-};
-
-export const NEXT_DEV_DEPENDENCIES = {
-    typescript: TYPESCRIPT_VERSION_RANGE,
-    '@types/node': '^20.0.0',
-};
-
-export const FRONTEND_ONLY_DEV_DEPENDENCIES = {
+/**
+ * Starter padrão (Spec 45): um front Vite puro — Provider + Shell + Design
+ * Engine + módulo de exemplo registrado. Sem backend: persistência de tema é
+ * localStorage (já embutido no `SarakUIProvider`); sem servidor Express/Next
+ * para gerar. Substitui os antigos `GOLDEN_PATH_*`/`NEXT_*`/`FRONTEND_ONLY_*`
+ * (3 stacks divergentes, cada uma com seu próprio backend) — a Spec 44 (Design
+ * Engine sem backend) e a decisão de "importar e o front nascer no padrão"
+ * eliminaram a necessidade de escolher stack de servidor no `init`.
+ */
+export const STARTER_DEV_DEPENDENCIES = {
     vite: '^5.4.0',
     '@vitejs/plugin-react': '^4.3.0',
     typescript: TYPESCRIPT_VERSION_RANGE,
+    // `react`/`react-dom` são peerDependencies (mirroradas via buildDependencies) —
+    // os @types NÃO vêm junto (a lib os declara só em devDependencies, uso interno).
+    // Achado real deste smoke test: sem eles, `tsc --noEmit` falha em `main.tsx`
+    // com TS7016 em `react-dom/client`.
+    '@types/react': '^18.0.0',
+    '@types/react-dom': '^18.0.0',
 };
 
-export const NEXT_VERSION_RANGE = '^14.2.0';
-
-/** As 2 skills que o `init` copia para o consumidor (mesmo par da Etapa 6 de `ui-integra-consumidor`). */
+/** As 2 skills que o `init` copia para o consumidor (mesmo par da Etapa 6 de `ui-integra-consumidor`). Removidas na Spec 46 (o motor de manifesto sai). */
 export const SKILLS_TO_COPY = ['ui-integra-escrever-manifesto', 'ui-auditoria-manifesto'];
 
 /**

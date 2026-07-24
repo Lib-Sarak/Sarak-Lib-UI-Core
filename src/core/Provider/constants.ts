@@ -1,5 +1,4 @@
 export const DEFAULT_STORAGE_KEY = 'sarak-ui-design-v9.0';
-export const DEFAULT_UI_BASE_URL = '/api/ui';
 
 export const BEZIER_CURVES = {
     standard: 'cubic-bezier(0.4, 0, 0.2, 1)',

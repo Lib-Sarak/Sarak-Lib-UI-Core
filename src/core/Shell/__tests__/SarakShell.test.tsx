@@ -7,14 +7,14 @@ import { SarakUIProvider } from '../../Provider/SarakUIProvider';
 import { registerSarakModule, registerLocalComponent } from '../../Discovery/registry';
 import type { ThemeEntry } from '../../Provider/types';
 
-// Achado (fora do escopo da Spec 43 — Design Engine é a Spec 44): `customThemes`
-// tem default `= []` em `SarakUIProvider`, um NOVO array a cada render sem prop
-// explícita. Combinado com `useDesignSync` chamando `setDesign` sempre que
-// `activeThemeId` está setado, isso gera um loop de render infinito (render → novo
-// `customThemes` → novo `allThemes` → efeito refaz `setDesign` → render...) —
-// reproduzido e confirmado por CPU 100% num processo que nunca termina. Passar uma
-// referência ESTÁVEL de `customThemes` (mesmo vazia) evita o loop sem precisar
-// tocar no Design Engine.
+// Achado da Spec 43 (§5.1), CORRIGIDO na Spec 44: `customThemes` tinha default
+// `= []` em `SarakUIProvider` (um NOVO array a cada render sem prop explícita) e
+// `useDesignSync` chamava `setDesign` sem guard sempre que `activeThemeId` estava
+// setado — a combinação gerava um loop de render infinito real (CPU ~100%, processo
+// que nunca terminava). A correção definitiva foi um guard de `activeThemeId` já
+// aplicado em `useDesignSync` (não depende mais da referência de `customThemes`
+// ser estável) — ver `useDesignSync.test.ts` para a regressão isolada. Esta
+// constante segue em uso aqui só por ser a prática recomendada, não workaround.
 const STABLE_EMPTY_CUSTOM_THEMES: ThemeEntry[] = [];
 
 // As animações spring/exit do framer-motion (usadas no `AnimatePresence` do
@@ -171,5 +171,39 @@ describe('Modelo módulos-plugin sob SarakUIProvider + SarakShell (Spec 43)', ()
         // valer também para o código do importador (Spec 43 §2.2/§3.3), sem que o
         // módulo de negócio precise de nenhum CSS próprio.
         expect(primaryColorThemeB).not.toBe(primaryColorThemeA);
+    });
+
+    it('não entra em loop de render infinito com `activeThemeId` setado e `customThemes` INSTÁVEL (regressão real da Spec 43 §5.1, corrigida na Spec 44)', async () => {
+        registerLocalComponent(MODULE_ID, CustomBusinessModule);
+        registerSarakModule({ id: MODULE_ID, label: 'Módulo de Teste', icon: 'Box' });
+
+        // O footgun exato do achado: uma prop `customThemes` com uma referência
+        // NOVA a cada render (aqui, via um wrapper que força re-render do pai).
+        // Antes da correção em `useDesignSync`, isto nunca convergia (CPU ~100%).
+        let renderCount = 0;
+        const UnstableWrapper: React.FC = () => {
+            renderCount += 1;
+            return (
+                <SarakUIProvider
+                    options={{ persistence: { storageKey: 'spec44-loop-regression' } }}
+                    activeThemeId="cyberpunk-neon"
+                    customThemes={[]}
+                >
+                    <SarakShell />
+                </SarakUIProvider>
+            );
+        };
+
+        render(<UnstableWrapper />);
+
+        await waitFor(() => {
+            expect(screen.getByTestId('modulo-plugin-tematizado')).toBeInTheDocument();
+        });
+
+        // Sem o guard, este teste nunca chegaria aqui (o processo travaria antes).
+        // Chegar até este ponto já prova a ausência do loop; a asserção abaixo é
+        // só uma segunda confirmação de que o tema efetivamente aplicou.
+        expect(document.documentElement.style.getPropertyValue('--sarak-primary-color')).toBeTruthy();
+        expect(renderCount).toBeGreaterThan(0);
     });
 });

@@ -1,7 +1,7 @@
 /**
- * Dois `tsconfig` no Golden Path (Spec 21 §2.3): `tsconfig.json` (raiz, usado
- * pelo Vite/editor, inclui o front `.tsx`) e `tsconfig.server.json` (usado por
- * `ts-node-dev`, exclui o front — o backend nunca precisa tipar JSX/React DOM).
+ * `tsconfig.json` do starter padrão (Spec 45): um front puro (Vite/editor), sem
+ * backend Node para tipar separadamente — o 2º tsconfig (`tsconfig.server.json`)
+ * saiu junto com o Express (Spec 44/45 removem o backend do `init`).
  */
 export function buildTsconfig() {
     return {
@@ -20,23 +20,4 @@ export function buildTsconfig() {
         },
         include: ['src'],
     };
-}
-
-export function buildServerTsconfig() {
-    return {
-        extends: './tsconfig.json',
-        compilerOptions: {
-            module: 'CommonJS',
-            moduleResolution: 'node',
-            jsx: 'preserve',
-            noEmit: true,
-        },
-        include: ['src/server.ts', 'src/Sarak-Engine'],
-        exclude: ['src/main.tsx', 'src/manifests'],
-    };
-}
-
-/** Stack `frontend-only`: um único tsconfig (não existe backend Node aqui). */
-export function buildFrontendOnlyTsconfig() {
-    return buildTsconfig();
 }

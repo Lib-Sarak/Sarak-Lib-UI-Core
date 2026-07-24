@@ -67,8 +67,7 @@ A instalação plug-and-play é um CONTRATO verificado por gates automatizados n
 - **Scaffolder oficial (Spec 21):** `npx @sarak/lib-ui-core init` materializa todo este contrato de instalação de uma vez (peerDeps gravadas, template, CSS, skills copiadas) — a skill `ui-integra-consumidor` o orquestra em vez de ditar arquivo por arquivo.
 
 ## 4. Integração com Python (FastAPI/Scripts)
-Agentes locais ou rotas Node.js externas não renderizam componentes visuais (React), porém podem interagir com as funções exportadas em `backend/node/backend-node.ts` (ex: acessar chaves do catálogo, extrair definições JSON de Design Systems para alimentar APIs LLMs, etc).
-Sistemas backend Python devem consultar os dados gerados em `dist/catalog/` ou consumir endpoints Node que utilizam as funções expostas do motor.
+A lib é uma biblioteca de FRONT sem backend próprio (Spec 44 — o antigo `backend/node/` foi removido: era passivo de segurança para uma lib de front, e temas viraram dado no código do consumidor via `customThemes`). Agentes locais, scripts ou backends em qualquer linguagem (Python incluído) que precisem dos dados do Design System consultam o catálogo estático já publicado (`docs/manifest-catalog.json`) — não há endpoint Node para consumir.
 
 ## 5. Prevenção de Colisão (Prefixing)
 Todos os tokens expostos pela biblioteca utilizam os prefixos reais `--sarak-*`/`--theme-*` nas suas variáveis CSS nativas (ex: `--sarak-color-background-base`), sempre emitidos com fallback. O namespace `--sx-*` é proibido (variável-fantasma — não é emitido por nenhuma fonte da engine).

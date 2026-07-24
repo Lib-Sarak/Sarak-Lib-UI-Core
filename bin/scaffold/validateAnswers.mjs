@@ -1,4 +1,4 @@
-import { STACKS, STORAGES, MODES } from './constants.mjs';
+import { MODES } from './constants.mjs';
 
 function assertOneOf({ value, allowed, label }) {
     if (!allowed.includes(value)) {
@@ -12,12 +12,9 @@ function assertPort({ value, label }) {
     }
 }
 
-/** Valida a entrevista (Spec 21 §2.2) antes de qualquer geração de arquivo. */
+/** Valida a entrevista (Spec 21 §2.2; simplificada pela Spec 45) antes de qualquer geração de arquivo. */
 export function validateAnswers(answers) {
     assertOneOf({ value: answers.mode, allowed: MODES, label: 'Modo' });
-    assertOneOf({ value: answers.stack, allowed: STACKS, label: 'Stack' });
-    assertOneOf({ value: answers.storage, allowed: STORAGES, label: 'Storage' });
-    assertPort({ value: answers.backendPort, label: 'Porta do backend' });
     assertPort({ value: answers.frontendPort, label: 'Porta do frontend' });
     return answers;
 }

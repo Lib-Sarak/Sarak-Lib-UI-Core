@@ -1,13 +1,23 @@
 /**
- * `src/main.tsx` — entry point do Modo App: Provider + Renderer + navegação via
- * History API pura (sem router novo — Golden Path não adiciona dependência).
- * Modo Embarcado (Spec 24) troca o CSS automático pela variante escopada e
- * monta o Provider com `options={{ mode: 'embedded' }}`.
+ * `src/main.tsx` — starter padrão (Spec 45): modelo módulos-plugin, o mesmo
+ * padrão do `Sarak-MyService` — `SarakUIProvider` + `SarakShell`, um módulo de
+ * exemplo registrado via `registerSarakModule`/`registerLocalComponent` (o
+ * `safeRegister` espelha `Sarak-MyService/src/main.tsx`). Sem
+ * `SarakManifestRenderer`, sem manifesto JSON, sem backend — tema persiste em
+ * localStorage (embutido no Provider). Modo Embarcado (Spec 24) troca o CSS
+ * automático pela variante escopada e monta o Provider com
+ * `options={{ mode: 'embedded' }}`.
  */
 const EMBEDDED_CSS_IMPORT = `import '@sarak/lib-ui-core/dist/sarak-scoped.css'; // Modo Embarcado (Spec 24): CSS escopado a .sarak-scope\n`;
 
-const APP_PROVIDER_OPTIONS = '';
-const EMBEDDED_PROVIDER_OPTIONS = " options={{ mode: 'embedded' }}";
+/**
+ * Sem `defaultModuleId`, o Shell sempre abre no módulo nativo "Design Engine"
+ * (`mx-customization`, prioridade 9999 — vence qualquer módulo do consumidor
+ * por padrão). Setar o módulo de exemplo como default é o que faz a tela
+ * inicial do starter mostrar "Bem-vindo à Sarak UI" em vez do Design Engine.
+ */
+const APP_PROVIDER_OPTIONS = " options={{ theme: { defaultModuleId: 'exemplo' } }}";
+const EMBEDDED_PROVIDER_OPTIONS = " options={{ mode: 'embedded', theme: { defaultModuleId: 'exemplo' } }}";
 
 export function buildMainTsx({ answers }) {
     const isEmbedded = answers.mode === 'embedded';
@@ -18,43 +28,35 @@ export function buildMainTsx({ answers }) {
 import ReactDOM from 'react-dom/client';
 ${cssImport}import {
     SarakUIProvider,
-    SarakManifestRendererDefault,
-    createSarakDataStore,
+    SarakShell,
+    registerSarakModule,
+    registerLocalComponent,
 } from '@sarak/lib-ui-core';
-import { dataStore, networkInterceptor } from './Sarak-Engine';
-import appManifest from './manifests/app.manifest.json';
+import { ExampleModule } from './modules/ExampleModule';
 
-// \`route\` reage à navegação do host (Spec 33) via History API pura — sem router
-// novo. \`routerInterceptor\` chama \`history.pushState\` e reflete de volta no state.
-function useHistoryRoute(): [string, (to: string) => void] {
-    const [route, setRoute] = React.useState(window.location.pathname);
-
-    React.useEffect(() => {
-        const onPopState = () => setRoute(window.location.pathname);
-        window.addEventListener('popstate', onPopState);
-        return () => window.removeEventListener('popstate', onPopState);
-    }, []);
-
-    const navigate = React.useCallback((to: string) => {
-        window.history.pushState({}, '', to);
-        setRoute(to);
-    }, []);
-
-    return [route, navigate];
+// Registro Industrial de Componentes com Proteção — espelha o padrão real do
+// Sarak-MyService (\`safeRegister\`/\`registerSarakModuleSafe\` em
+// Sarak-MyService/src/main.tsx): nunca deixe um componente \`undefined\` quebrar
+// o registro em silêncio.
+function safeRegister(id: string, component: React.ComponentType | undefined) {
+    if (!component) {
+        // eslint-disable-next-line no-console
+        console.warn(\`[Sarak] Componente '\${id}' é undefined. Verifique o import.\`);
+        return;
+    }
+    registerLocalComponent(id, component);
 }
 
-function App() {
-    const [route, navigate] = useHistoryRoute();
+// Módulo de EXEMPLO — apague e registre os seus próprios módulos de negócio do
+// mesmo jeito. A base gera a navegação (Shell) sozinha a partir do registro;
+// não é preciso declarar rota nem manifesto.
+safeRegister('exemplo', ExampleModule);
+registerSarakModule({ id: 'exemplo', label: 'Exemplo', icon: 'Box' });
 
+function App() {
     return (
         <SarakUIProvider${providerOptions}>
-            <SarakManifestRendererDefault
-                payload={appManifest}
-                dataStore={dataStore}
-                networkInterceptor={networkInterceptor}
-                routerInterceptor={navigate}
-                route={route}
-            />
+            <SarakShell />
         </SarakUIProvider>
     );
 }
@@ -64,8 +66,5 @@ ReactDOM.createRoot(document.getElementById('root')!).render(
         <App />
     </React.StrictMode>,
 );
-
-// Export mantido para quem quiser instanciar uma 2ª store isolada (ex.: testes).
-export { createSarakDataStore };
 `;
 }

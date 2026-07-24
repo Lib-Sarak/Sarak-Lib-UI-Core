@@ -1,4 +1,4 @@
-import React, { useState, useEffect, useMemo, useCallback } from 'react';
+import React, { useCallback } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
 import {
     Zap, Check, Monitor, Tablet, Smartphone,
@@ -35,7 +35,7 @@ import {
 } from '../components/DesignControls';
 import { MasterControlPanel } from './MasterControlPanel';
 import { TemplatesTab } from './TemplatesTab';
-import { SaveThemeModal, SaveThemeAction } from './components/SaveThemeModal';
+import { SaveThemeModal } from './components/SaveThemeModal';
 import { SarakButton } from '../../../components/atomic/Buttons/SarakButton';
 import { ThemeSidebarHeader } from './components/ThemeSidebarHeader';
 import { ThemeSidebarContent } from './components/ThemeSidebarContent';
@@ -48,7 +48,7 @@ import { ThemeFeedbackToast } from './components/ThemeFeedbackToast';
 export const ThemeCustomizationTab: React.FC = () => {
     // 1) Puxamos o estado visual e métodos globais de persistência do Theme Engine
     const {
-        sarak, uiBaseUrl, apiToken,
+        sarak,
         activePreviewApp, setActivePreviewApp,
         previewDevice, setPreviewDevice,
         activePillarId, setActivePillarId,
@@ -57,13 +57,9 @@ export const ThemeCustomizationTab: React.FC = () => {
         searchQuery, setSearchQuery,
         isEssentialMode, setIsEssentialMode,
         isPreviewStacked, setIsPreviewStacked,
-        currentThemeId, setCurrentThemeId,
-        currentThemeOrigin, setCurrentThemeOrigin,
         currentThemeName, setCurrentThemeName,
         isSaveModalOpen, setIsSaveModalOpen,
-        isSaving, setIsSaving,
-        pendingApply, setPendingApply,
-        fetchActiveTheme
+        isSaving, setIsSaving
     } = useThemeEngineState();
 
     const {
@@ -83,42 +79,22 @@ export const ThemeCustomizationTab: React.FC = () => {
         handleApplyToSystem();
     }, [handleApplyToSystem]);
 
-    const { handleSaveTheme, handleApplyGlobalChanges } = useThemePersistenceHandlers({
-        uiBaseUrl, apiToken,
+    const { handleExportTheme, handleApplyGlobalChanges } = useThemePersistenceHandlers({
         draft,
-        currentThemeId, setCurrentThemeId,
-        currentThemeOrigin, setCurrentThemeOrigin,
-        currentThemeName, setCurrentThemeName,
+        setCurrentThemeName,
         setIsSaveModalOpen, setIsSaving,
-        pendingApply, setPendingApply,
         showToast,
-        handleApplyToSystem: handleApplyToSystemWrapper, isDirty
+        handleApplyToSystem: handleApplyToSystemWrapper
     });
 
-    // Busca o tema ativo na API real ao montar, para não perder o estado após reload (F5)
-    useEffect(() => {
-        const loadActive = async () => {
-            const active = await fetchActiveTheme();
-            if (active) {
-                setCurrentThemeId(active.id);
-                setCurrentThemeOrigin('database');
-                setCurrentThemeName(active.name);
-            }
-        };
-        loadActive();
-    }, [fetchActiveTheme]);
-
     const handleApplyFullTheme = useCallback((design: SarakDesignState & { systemName?: string }) => {
-        // Quando um tema global é escolhido, rastreamos sua origem
-        setCurrentThemeOrigin('script');
-        setCurrentThemeId(null);
         setCurrentThemeName(design.systemName || 'Novo Tema');
 
         // Joga o design inteiro pro draft (Sandbox) para refletir no Preview
         if (handleThemePreview) {
             handleThemePreview(design);
         }
-    }, [handleThemePreview]);
+    }, [handleThemePreview, setCurrentThemeName]);
 
     // 0. Redimensionamento da Barra Design Engine
     const { size: engineSidebarWidth, startResizing: startResizingEngine, isResizing: isResizingEngine } = useResizable({
@@ -228,10 +204,9 @@ export const ThemeCustomizationTab: React.FC = () => {
 
             <SaveThemeModal
                 isOpen={isSaveModalOpen}
-                origin={currentThemeOrigin}
                 themeName={currentThemeName}
                 onClose={() => setIsSaveModalOpen(false)}
-                onAction={handleSaveTheme}
+                onExport={handleExportTheme}
                 isSaving={isSaving}
             />
 

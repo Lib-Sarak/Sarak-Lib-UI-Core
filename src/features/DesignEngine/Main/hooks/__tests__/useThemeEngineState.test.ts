@@ -9,27 +9,26 @@ vi.mock('../../../../../core/Provider/SarakUIProvider', () => ({
         design: {},
         branding: {},
         updateBranding: vi.fn(),
-        options: { endpoints: { baseUrl: 'http://test/api' } },
-        ['tok' + 'en']: 'test-token'
+        options: {},
+        token: null
     })
 }));
-
 
 vi.mock('../usePersistenceState', () => ({
-    usePersistenceState: (url: string, token: string) => ({
-        currentThemeId: '123',
-        apiToken: token,
-        uiBaseUrl: url
+    usePersistenceState: () => ({
+        currentThemeName: 'Meu Tema',
+        isSaveModalOpen: false,
+        isSaving: false
     })
 }));
 
-describe('useThemeEngineState', () => {
-    it('should combine states from multiple hooks', () => {
+describe('useThemeEngineState (Spec 44 — sem backend próprio)', () => {
+    it('combina o estado dos hooks internos sem uiBaseUrl/apiToken', () => {
         const { result } = renderHook(() => useThemeEngineState());
-        
-        expect(result.current.uiBaseUrl).toBe('http://test/api');
-        expect(result.current.apiToken).toBe('test-token');
-        expect(result.current.currentThemeId).toBe('123');
+
         expect(result.current.sarak).toBeDefined();
+        expect(result.current.currentThemeName).toBe('Meu Tema');
+        expect(result.current).not.toHaveProperty('uiBaseUrl');
+        expect(result.current).not.toHaveProperty('apiToken');
     });
 });

@@ -1,7 +1,9 @@
 ---
 name: ui-auditoria-manifesto
-description: Skill de conferência estática do JSON do manifesto. Vasculha chaves órfãs, valores de tokens inválidos, loops infinitos e vazamentos de segurança (Safe Eval). Use ao auditar layouts. NÃO acione proativamente.
+description: Skill de conferência estática do JSON do manifesto. Vasculha chaves órfãs, valores de tokens inválidos, loops infinitos e vazamentos de segurança (Safe Eval). Use ao auditar layouts que optaram pelo motor de manifesto (caminho opcional, não o modelo padrão). NÃO acione proativamente.
 ---
+
+> ⚠️ **MARCADA PARA REMOÇÃO (Spec 46, `specs/plan/46-remover-motor-de-manifesto.md`).** Desde a Spec 43, o modelo OFICIAL de consumo da lib é módulos-plugin (ver skill `ui-integra-consumidor`). Esta skill audita o motor de manifesto, que segue vivo como caminho **opcional** até a Spec 46 rodar — use somente sobre manifestos JSON que o consumidor escolheu escrever deliberadamente.
 
 # Skill: Auditoria de Manifesto (JSON Linter)
 

@@ -2,49 +2,43 @@ import { useEffect, MutableRefObject } from 'react';
 import { validateDesign } from '../utils/validation';
 import { SarakUIOptions, SetDesign } from '../types';
 
+/**
+ * Carrega o design de uma fonte remota OPCIONAL do próprio consumidor
+ * (`options.persistence.onLoad`, BYO-persistência — Spec 44). A lib não tem
+ * backend próprio: sem `onLoad`, o design já veio do seed/localStorage (síncrono,
+ * no `useState` inicial de `useDesignManager`) e não há mais nada a buscar.
+ */
 export const useDesignRemoteLoader = (
     isHydrated: boolean,
-    token: string | null | undefined,
-    uiBaseUrl: string,
     optionsRef: MutableRefObject<SarakUIOptions>,
     isBackendLoaded: boolean,
     setIsBackendLoaded: (v: boolean) => void,
     setDesign: SetDesign
 ) => {
     useEffect(() => {
-        if (!isHydrated) return;
+        if (!isHydrated || isBackendLoaded) return;
 
+        const opt = optionsRef.current;
+        if (!opt?.persistence?.onLoad) {
+            setIsBackendLoaded(true);
+            return;
+        }
+
+        let cancelled = false;
         const loadRemote = async () => {
-            const opt = optionsRef.current;
-            if (opt?.persistence?.onLoad) {
-                try {
-                    const custom = await opt.persistence.onLoad();
-                    if (custom) {
-                        setDesign((prev) => validateDesign({ ...prev, ...custom }));
-                        setIsBackendLoaded(true);
-                        return;
-                    }
-                } catch (e) { console.error("[Sarak:Design] onLoad error:", e); }
-            }
-
-            if (!isBackendLoaded) {
-                const designPath = opt?.endpoints?.designPath || '/design';
-                try {
-                    const headers: Record<string, string> = {};
-                    if (token) headers['Authorization'] = `Bearer ${token}`;
-
-                    const resp = await fetch(`${uiBaseUrl}${designPath}`, {
-                        headers
-                    });
-                    if (resp.ok) {
-                        const data = await resp.json();
-                        if (data.design) setDesign((prev) => validateDesign({ ...prev, ...data.design }));
-                        setIsBackendLoaded(true);
-                    }
-                } catch (e) {}
+            try {
+                const custom = await opt.persistence!.onLoad!();
+                if (!cancelled && custom) {
+                    setDesign((prev) => validateDesign({ ...prev, ...custom }));
+                }
+            } catch (e) {
+                console.error("[Sarak:Design] onLoad error:", e);
+            } finally {
+                if (!cancelled) setIsBackendLoaded(true);
             }
         };
 
         loadRemote();
-    }, [token, isBackendLoaded, isHydrated, uiBaseUrl, optionsRef, setDesign, setIsBackendLoaded]);
+        return () => { cancelled = true; };
+    }, [isHydrated, isBackendLoaded, optionsRef, setDesign, setIsBackendLoaded]);
 };

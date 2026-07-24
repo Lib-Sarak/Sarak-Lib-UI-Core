@@ -1,50 +1,27 @@
 import { renderHook, act } from '@testing-library/react';
-import { describe, it, expect, vi } from 'vitest';
+import { describe, it, expect } from 'vitest';
 import { usePersistenceState } from '../usePersistenceState';
 
-// Mocar o fetch global para não dar timeout ou quebrar com network real
-global.fetch = vi.fn();
+describe('usePersistenceState (Spec 44 — sem backend próprio)', () => {
+    it('inicializa com os defaults esperados', () => {
+        const { result } = renderHook(() => usePersistenceState());
 
-describe('usePersistenceState', () => {
-    it('should initialize with default states', () => {
-        const { result } = renderHook(() => usePersistenceState('http://localhost/api'));
-        
-        expect(result.current.currentThemeId).toBeNull();
-        expect(result.current.currentThemeOrigin).toBe('script');
+        expect(result.current.currentThemeName).toBe('');
         expect(result.current.isSaveModalOpen).toBe(false);
+        expect(result.current.isSaving).toBe(false);
     });
 
-    it('should update state via setters', () => {
-        const { result } = renderHook(() => usePersistenceState('http://localhost/api'));
+    it('atualiza o estado via os setters', () => {
+        const { result } = renderHook(() => usePersistenceState());
 
         act(() => {
-            result.current.setCurrentThemeId('theme-123');
+            result.current.setCurrentThemeName('Meu Tema');
+            result.current.setIsSaveModalOpen(true);
             result.current.setIsSaving(true);
         });
 
-        expect(result.current.currentThemeId).toBe('theme-123');
+        expect(result.current.currentThemeName).toBe('Meu Tema');
+        expect(result.current.isSaveModalOpen).toBe(true);
         expect(result.current.isSaving).toBe(true);
-    });
-
-    it('should return null if fetchActiveTheme fails', async () => {
-        (global.fetch as ReturnType<typeof vi.fn>).mockRejectedValueOnce(new Error('Network error'));
-        
-        const { result } = renderHook(() => usePersistenceState('http://localhost/api'));
-
-        const activeTheme = await result.current.fetchActiveTheme();
-        expect(activeTheme).toBeNull();
-    });
-
-    it('should return design payload on successful fetchActiveTheme', async () => {
-        const mockDesign = { color: 'blue' };
-        (global.fetch as ReturnType<typeof vi.fn>).mockResolvedValueOnce({
-            ok: true,
-            json: async () => ({ data: { design: mockDesign } })
-        });
-        
-        const { result } = renderHook(() => usePersistenceState('http://localhost/api'));
-
-        const activeTheme = await result.current.fetchActiveTheme();
-        expect(activeTheme).toEqual(mockDesign);
     });
 });

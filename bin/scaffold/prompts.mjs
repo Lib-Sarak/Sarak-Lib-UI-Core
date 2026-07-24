@@ -1,14 +1,15 @@
 /**
- * Entrevista do `init` (Spec 21 §2.2) — só o que é decisão do consumidor.
- * `node:readline`, sem dependência nova. Flags de CLI (`--stack`, `--storage`,
- * `--mode`, `--backend-port`, `--frontend-port`, `--schema`, `--yes`) pulam a
- * pergunta correspondente — usado pelo smoke test e por automação não-interativa.
+ * Entrevista do `init` (Spec 21 §2.2; simplificada pela Spec 45 — starter padrão
+ * módulos-plugin, sem backend). Só o que é decisão do consumidor: modo de
+ * consumo e porta do front. `node:readline`, sem dependência nova. Flags de CLI
+ * (`--mode`, `--frontend-port`, `--yes`) pulam a pergunta correspondente — usado
+ * pelo smoke test e por automação não-interativa.
  */
 import readline from 'node:readline';
-import { DEFAULT_BACKEND_PORT, DEFAULT_FRONTEND_PORT, DEFAULT_STACK, DEFAULT_STORAGE, DEFAULT_MODE } from './constants.mjs';
+import { DEFAULT_FRONTEND_PORT, DEFAULT_MODE } from './constants.mjs';
 
 /** Campos que a entrevista precisa resolver — via flag, `--yes`, ou pergunta interativa. */
-const REQUIRED_ANSWER_FLAGS = ['mode', 'stack', 'storage', 'backendPort', 'frontendPort'];
+const REQUIRED_ANSWER_FLAGS = ['mode', 'frontendPort'];
 
 const flagNameToCliFlag = (flagName) => `--${flagName.replace(/([A-Z])/g, '-$1').toLowerCase()}`;
 
@@ -25,7 +26,7 @@ export function assertInteractionIsPossible({ flags, isTTY }) {
     const missingCliFlags = missing.map(flagNameToCliFlag).join(', ');
     throw new Error(
         `[sarak-ui init] Terminal não interativo (sem TTY) e faltam flags: ${missingCliFlags}. ` +
-        'Passe "--yes" (aceita os defaults do Golden Path) ou informe todas as flags. ' +
+        'Passe "--yes" (aceita os defaults do starter padrão) ou informe todas as flags. ' +
         'Rode "npx @sarak/lib-ui-core init --help" para ver a lista completa.',
     );
 }
@@ -44,7 +45,7 @@ async function resolveField({ rl, flags, flagName, question, defaultValue, useDe
     return ask({ rl, question, defaultValue });
 }
 
-/** Pergunta modo/stack/storage/portas; flags/`--yes` pulam a pergunta correspondente. */
+/** Pergunta modo/porta do front; flags/`--yes` pulam a pergunta correspondente. */
 export async function collectAnswers({ flags = {}, input = process.stdin, output = process.stdout } = {}) {
     assertInteractionIsPossible({ flags, isTTY: Boolean(input.isTTY) });
     const rl = readline.createInterface({ input, output });
@@ -59,35 +60,6 @@ export async function collectAnswers({ flags = {}, input = process.stdin, output
             defaultValue: DEFAULT_MODE,
             useDefaults,
         });
-        const stack = await resolveField({
-            rl,
-            flags,
-            flagName: 'stack',
-            question: 'Stack (vite-express | next | frontend-only)',
-            defaultValue: DEFAULT_STACK,
-            useDefaults,
-        });
-        const storage = await resolveField({
-            rl,
-            flags,
-            flagName: 'storage',
-            question: 'Persistência de temas (sqlite | postgres | custom)',
-            defaultValue: DEFAULT_STORAGE,
-            useDefaults,
-        });
-        const schemaDefault = flags.schema ?? '';
-        const schema =
-            storage === 'postgres'
-                ? await resolveField({ rl, flags, flagName: 'schema', question: 'Schema Postgres (vazio = default)', defaultValue: schemaDefault, useDefaults })
-                : '';
-        const backendPortRaw = await resolveField({
-            rl,
-            flags,
-            flagName: 'backendPort',
-            question: 'Porta do backend',
-            defaultValue: String(DEFAULT_BACKEND_PORT),
-            useDefaults,
-        });
         const frontendPortRaw = await resolveField({
             rl,
             flags,
@@ -99,10 +71,6 @@ export async function collectAnswers({ flags = {}, input = process.stdin, output
 
         return {
             mode,
-            stack,
-            storage,
-            schema: schema || null,
-            backendPort: Number(backendPortRaw),
             frontendPort: Number(frontendPortRaw),
         };
     } finally {

@@ -8,22 +8,17 @@ export function useThemeEngineState() {
     const { systemDesign, design, branding, updateBranding, ...rest } = sarakContext;
 
     // Deep Reference Stability
-    const sarak = useMemo(() => ({ 
-        systemDesign, 
-        design, 
-        ...rest 
+    const sarak = useMemo(() => ({
+        systemDesign,
+        design,
+        ...rest
     }), [systemDesign, design, JSON.stringify(rest)]);
 
-    const uiBaseUrl = sarak.options?.endpoints?.baseUrl || '/api/ui';
-    const apiToken = sarak.token;
-
     const uiState = usePreviewUIState();
-    const persistenceState = usePersistenceState(uiBaseUrl, apiToken ?? undefined);
+    const persistenceState = usePersistenceState();
 
     return {
         sarak,
-        uiBaseUrl,
-        apiToken,
         ...uiState,
         ...persistenceState
     };

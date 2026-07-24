@@ -12,7 +12,6 @@ injectSarakStyles(SARAK_CSS);
 
 // Novos Módulos Refatorados
 import { SarakUIContextType, SarakUIOptions, SarakUIProviderProps, SarakThemePayload, ThemeEntry } from './types';
-import { DEFAULT_UI_BASE_URL } from './constants';
 import { useRegistryManager } from './hooks/useRegistryManager';
 import { useDesignManager } from './hooks/useDesignManager';
 import { useBrandingManager } from './hooks/useBrandingManager';
@@ -37,6 +36,15 @@ export { DESIGN_MANIFEST } from './manifest';
 // --- SARAK UI BRIDGE CONTEXT ---
 export const UIContext = createContext<SarakUIContextType | undefined>(undefined);
 export const DesignOverrideContext = createContext<Partial<SarakThemePayload> | null>(null);
+
+// Referência estável para o default de `customThemes` (Spec 44). Um array literal
+// `= []` inline no destructuring dos props seria uma referência NOVA a cada
+// render sem prop explícita — é metade da causa do loop de render infinito real
+// achado na Spec 43 §5.1 (a outra metade, o `useDesignSync` chamar `setDesign`
+// sem guard, já foi corrigida). Consumidores que passam `customThemes` inline
+// (`customThemes={[...]}` a cada render) continuam expostos ao padrão — por isso
+// o guard em `useDesignSync` é a correção definitiva; isto é só o default seguro.
+const EMPTY_CUSTOM_THEMES: ThemeEntry[] = [];
 
 export const useSarakUI = (): SarakUIContextType & SarakThemePayload => {
     const context = useContext(UIContext);
@@ -82,8 +90,10 @@ export const SarakUIProvider: React.FC<SarakUIProviderProps> = ({
     token,
     userId,
     options = {},
-    customThemes = [],
+    customThemes = EMPTY_CUSTOM_THEMES,
     activeThemeId,
+    initialTheme,
+    onThemeChange,
     onMediaUpload
 }) => {
     // 0. Modo de consumo (Spec 24): `app` (default, dono da página) vs `embedded`
@@ -105,14 +115,15 @@ export const SarakUIProvider: React.FC<SarakUIProviderProps> = ({
     const { design, setDesign, applyConfig, applyFullConfig, persistDesign, isBackendLoaded } = useDesignManager({
         initialConfig: initialPropsConfig,
         options,
-        token,
         isHydrated,
         allThemes,
-        activeThemeId
+        activeThemeId,
+        initialTheme,
+        onThemeChange
     });
 
     // 2.5 Gerenciamento do Estado da Marca (Branding)
-    const { branding, updateBranding, isBrandingLoaded } = useBrandingManager(options, token);
+    const { branding, updateBranding } = useBrandingManager(options);
 
     // 3. Gerenciamento de Rascunho (Live Preview)
     const drafting = useSarakDrafting(design, applyConfig, applyFullConfig);

@@ -1,77 +1,42 @@
-import { useState, useEffect, useCallback } from 'react';
-import { SarakUIOptions } from '../types';
+import { useState, useCallback, useRef } from 'react';
+import { SarakUIOptions, SarakBrandingState } from '../types';
 
-export interface BrandingState {
-    companyName: string;
-    loginName: string;
-    tabName: string;
-    logoBase64: string | null;
-}
+/** @deprecated use `SarakBrandingState` (types.ts) — mantido para compatibilidade de import. */
+export type BrandingState = SarakBrandingState;
 
-export function useBrandingManager(options: SarakUIOptions, token?: string | null) {
-    const [branding, setBranding] = useState<BrandingState>({
-        companyName: 'Sarak OS',
-        loginName: 'Acesso ao Sistema',
-        tabName: 'Sarak OS',
-        logoBase64: null
-    });
+const DEFAULT_BRANDING: SarakBrandingState = {
+    companyName: 'Sarak OS',
+    loginName: 'Acesso ao Sistema',
+    tabName: 'Sarak OS',
+    logoBase64: null
+};
 
-    const [isBrandingLoaded, setIsBrandingLoaded] = useState(false);
+/**
+ * useBrandingManager (Spec 44 — sem backend próprio).
+ *
+ * A lib não faz fetch para nenhum servidor: `options.branding.initial` semeia o
+ * estado e `options.branding.onChange` é a porta "traga sua persistência" — só
+ * dispara se o CONSUMIDOR passar o callback, para o backend dele.
+ */
+export function useBrandingManager(options: SarakUIOptions) {
+    const brandingRef = useRef<SarakBrandingState>({ ...DEFAULT_BRANDING, ...options?.branding?.initial });
+    const [branding, setBranding] = useState<SarakBrandingState>(brandingRef.current);
 
-    useEffect(() => {
-        const brandingUrl = options?.endpoints?.branding;
-        if (!brandingUrl) return;
-
-        const fetchBranding = async () => {
-            try {
-                const headers: Record<string, string> = {};
-                if (token) headers['Authorization'] = `Bearer ${token}`;
-
-                const res = await fetch(brandingUrl, { headers });
-                if (res.ok) {
-                    const data = await res.json();
-                    if (data.branding && Object.keys(data.branding).length > 0) {
-                        setBranding({
-                            companyName: data.branding.companyName || 'Sarak OS',
-                            loginName: data.branding.loginName || 'Acesso ao Sistema',
-                            tabName: data.branding.tabName || 'Sarak OS',
-                            logoBase64: data.branding.logoBase64 || null
-                        });
-                    }
-                }
-            } catch (err) {
-                console.error('[Sarak-UI-Core] Failed to fetch branding', err);
-            } finally {
-                setIsBrandingLoaded(true);
-            }
-        };
-
-        fetchBranding();
-    }, [options?.endpoints?.branding, token]);
-
-    const updateBranding = useCallback(async (partial: Partial<BrandingState>) => {
-        setBranding(prev => ({ ...prev, ...partial }));
-
-        const brandingUrl = options?.endpoints?.branding;
-        if (!brandingUrl) return;
+    const updateBranding = useCallback(async (partial: Partial<SarakBrandingState>) => {
+        const next = { ...brandingRef.current, ...partial };
+        brandingRef.current = next;
+        setBranding(next);
 
         try {
-            const headers: Record<string, string> = { 'Content-Type': 'application/json' };
-            if (token) headers['Authorization'] = `Bearer ${token}`;
-
-            await fetch(brandingUrl, {
-                method: 'POST',
-                headers,
-                body: JSON.stringify({ branding: partial })
-            });
+            await options?.branding?.onChange?.(next);
         } catch (err) {
-            console.error('[Sarak-UI-Core] Failed to save branding', err);
+            console.error('[Sarak-UI-Core] onChange de branding falhou', err);
         }
-    }, [options?.endpoints?.branding, token]);
+    }, [options?.branding]);
 
     return {
         branding,
         updateBranding,
-        isBrandingLoaded
+        isBrandingLoaded: true
     };
 }

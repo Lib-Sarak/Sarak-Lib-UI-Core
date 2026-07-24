@@ -8,8 +8,18 @@ import type { SarakTokenValue } from '../types';
 /**
  * Helper para converter camelCase para kebab-case (ex: cardBorderRadius -> card-border-radius)
  */
-const toKebabCase = (str: string) => 
+const toKebabCase = (str: string) =>
     str.replace(/[A-Z]/g, letter => `-${letter.toLowerCase()}`);
+
+/**
+ * Segunda barreira contra breakout de CSS/HTML (a primeira é `validateDesign`,
+ * que já deveria ter descartado qualquer valor com estes caracteres antes de
+ * chegar aqui). `responsiveCSS` é interpolado cru dentro de um `<style>`
+ * (`styleTag.innerHTML` no Modo App; `dangerouslySetInnerHTML` no Embarcado) —
+ * Spec 44 §2.3 exige que NENHUM valor de tema chegue lá sem sanitização, mesmo
+ * que uma chamada direta de `applyConfig`/`setDesign` pule `validateDesign`.
+ */
+const isCssSafeValue = (value: string): boolean => !/[<>{};]/.test(value);
 
 /**
  * Hook Universal de Tradução de Design (v12.9 - Reactive Sync)
@@ -60,7 +70,12 @@ export const useDesignVariables = (
 
             if (isResponsiveValue) {
                 // FALLBACK: Gerador Responsivo Inteligente
-                const parseUnit = (v: unknown) => token.unit && typeof v === 'number' ? `${v}${token.unit}` : String(v);
+                const parseUnit = (v: unknown) => {
+                    const raw = token.unit && typeof v === 'number' ? `${v}${token.unit}` : String(v);
+                    if (isCssSafeValue(raw)) return raw;
+                    console.warn(`[Sarak:Design] Valor responsivo inseguro para "${token.id}" — descartado.`, v);
+                    return typeof token.defaultValue === 'number' ? String(token.defaultValue) : '0';
+                };
                 const mobVal = parseUnit(value.mob);
                 const tabVal = parseUnit(value.tab);
                 const deskVal = parseUnit(value.desk);
@@ -87,6 +102,10 @@ export const useDesignVariables = (
                 finalValue = String(value);
                 if (token.unit && typeof value === 'number') {
                     finalValue = `${value}${token.unit}`;
+                }
+                if (!isCssSafeValue(finalValue)) {
+                    console.warn(`[Sarak:Design] Valor inseguro para "${token.id}" — descartado.`, value);
+                    finalValue = String(token.defaultValue ?? '');
                 }
                 variables[autoVar] = finalValue;
 

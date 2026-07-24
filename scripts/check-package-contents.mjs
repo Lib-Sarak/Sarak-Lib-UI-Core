@@ -26,9 +26,6 @@ const REQUIRED_PATHS = [
     'dist/index.js',
     'dist/index.cjs',
     'dist/index.d.ts',
-    'dist/backend-node.js',
-    'dist/backend-node.cjs',
-    'dist/backend-node.d.ts',
     'dist/sarak.css',
     'dist/styles/sarak-base.css',
     // Identidade de build verificável (Spec 39 §2.2) — gerado por scripts/generate-build-info.mjs.

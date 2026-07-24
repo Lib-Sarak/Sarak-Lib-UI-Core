@@ -30,10 +30,10 @@ function resolveLibGitSpec({ existing }) {
     return existing?.dependencies?.['@sarak/lib-ui-core'] ?? DEFAULT_LIB_GIT_SPEC;
 }
 
-function writePackageJson({ rootDir, answers, ctx, force }) {
+function writePackageJson({ rootDir, ctx, force }) {
     const existing = readExistingPackageJson({ rootDir });
     const libGitSpec = resolveLibGitSpec({ existing });
-    const updates = buildPackageJsonUpdates({ answers, ctx: { ...ctx, libGitSpec } });
+    const updates = buildPackageJsonUpdates({ ctx: { ...ctx, libGitSpec } });
     const { packageJson, skipped } = mergePackageJson({ existing, updates, force });
     fs.writeFileSync(path.join(rootDir, 'package.json'), `${JSON.stringify(packageJson, null, 4)}\n`);
     return skipped;
@@ -68,9 +68,9 @@ export async function runInit({ rootDir = process.cwd(), flags = {}, overrideAns
     const ctx = loadInitContext();
     const force = Boolean(flags.force);
 
-    const fileMap = buildFileMap({ answers, ctx });
+    const fileMap = buildFileMap({ answers });
     const { written, skipped } = writeFileMap({ rootDir, fileMap, force });
-    const packageJsonSkipped = writePackageJson({ rootDir, answers, ctx, force });
+    const packageJsonSkipped = writePackageJson({ rootDir, ctx, force });
     const skills = copySkills({ rootDir, ctx, force });
 
     return {

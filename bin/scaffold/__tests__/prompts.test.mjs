@@ -3,11 +3,8 @@ import { describe, it, expect } from 'vitest';
 import { PassThrough } from 'node:stream';
 import { assertInteractionIsPossible, collectAnswers } from '../prompts.mjs';
 
-const GOLDEN_PATH_FLAGS = {
+const STARTER_FLAGS = {
     mode: 'app',
-    stack: 'vite-express',
-    storage: 'sqlite',
-    backendPort: 3000,
     frontendPort: 5173,
 };
 
@@ -28,12 +25,12 @@ describe('assertInteractionIsPossible — guard de TTY (Spec 29 §2.2)', () => {
     });
 
     it('sem TTY e com TODAS as flags obrigatórias: não lança', () => {
-        expect(() => assertInteractionIsPossible({ flags: GOLDEN_PATH_FLAGS, isTTY: false })).not.toThrow();
+        expect(() => assertInteractionIsPossible({ flags: STARTER_FLAGS, isTTY: false })).not.toThrow();
     });
 
     it('sem TTY, sem --yes e faltando flags: lança erro alto listando as flags que faltam', () => {
-        expect(() => assertInteractionIsPossible({ flags: { mode: 'app' }, isTTY: false })).toThrow(
-            /--stack.*--storage.*--backend-port.*--frontend-port/s,
+        expect(() => assertInteractionIsPossible({ flags: {}, isTTY: false })).toThrow(
+            /--mode.*--frontend-port/s,
         );
     });
 
@@ -56,9 +53,6 @@ describe('collectAnswers — nunca sai em silêncio sem TTY (Spec 29 §2.2)', ()
         const answers = await collectAnswers({ flags: { yes: true }, input, output });
         expect(answers).toMatchObject({
             mode: 'app',
-            stack: 'vite-express',
-            storage: 'sqlite',
-            backendPort: 3000,
             frontendPort: 5173,
         });
     });
@@ -66,18 +60,15 @@ describe('collectAnswers — nunca sai em silêncio sem TTY (Spec 29 §2.2)', ()
     it('sem TTY e com todas as flags resolvidas individualmente: resolve sem abrir pergunta', async () => {
         const input = fakeNonTTYInput();
         const output = new PassThrough();
-        const answers = await collectAnswers({ flags: GOLDEN_PATH_FLAGS, input, output });
+        const answers = await collectAnswers({ flags: STARTER_FLAGS, input, output });
         expect(answers).toMatchObject({
             mode: 'app',
-            stack: 'vite-express',
-            storage: 'sqlite',
-            backendPort: 3000,
             frontendPort: 5173,
         });
     });
 
     it('sem TTY, faltando só 1 flag e sem --yes: rejeita apontando exatamente a que falta', async () => {
-        const { frontendPort: _omit, ...missingFrontendPort } = GOLDEN_PATH_FLAGS;
+        const { frontendPort: _omit, ...missingFrontendPort } = STARTER_FLAGS;
         const input = fakeNonTTYInput();
         const output = new PassThrough();
         await expect(collectAnswers({ flags: missingFrontendPort, input, output })).rejects.toThrow(

@@ -57,9 +57,9 @@ export const ThemeSidebarHeader: React.FC<ThemeSidebarHeaderProps> = ({
                         disabled={!isDirty}
                         variant={isDirty ? 'secondary' : 'ghost'}
                         size="xs"
-                        title={isDirty ? "Você possui alterações não salvas" : "Nenhuma alteração"}
+                        title={isDirty ? "Exportar o tema atual como JSON" : "Nenhuma alteração para exportar"}
                     >
-                        <span className="text-[var(--sarak-type-scale2xs,10px)] font-black uppercase tracking-widest">{isDirty ? 'Salvar' : 'Salvo'}</span>
+                        <span className="text-[var(--sarak-type-scale2xs,10px)] font-black uppercase tracking-widest">{isDirty ? 'Exportar' : 'Exportado'}</span>
                     </SarakButton>
                 </div>
             </div>

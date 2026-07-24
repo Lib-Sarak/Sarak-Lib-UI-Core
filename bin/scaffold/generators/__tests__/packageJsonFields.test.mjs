@@ -4,7 +4,7 @@ import { buildDependencies, buildPackageJsonUpdates, buildUpdateScript, buildChe
 
 const ctx = {
     libVersion: '3.0.0',
-    peerDependencies: { react: '>=18.0.0', pg: '^8.21.0' },
+    peerDependencies: { react: '>=18.0.0', 'react-dom': '>=18.0.0' },
 };
 
 describe('buildDependencies', () => {
@@ -12,48 +12,41 @@ describe('buildDependencies', () => {
         const deps = buildDependencies({ ctx });
         expect(deps['@sarak/lib-ui-core']).toBe('^3.0.0');
         expect(deps.react).toBe('>=18.0.0');
-        expect(deps.pg).toBe('^8.21.0');
+        expect(deps['react-dom']).toBe('>=18.0.0');
     });
 });
 
-describe('buildPackageJsonUpdates', () => {
-    it('vite-express: nunca usa typescript ^7 (incompatível com ts-node-dev)', () => {
-        const updates = buildPackageJsonUpdates({ answers: { stack: 'vite-express' }, ctx });
+describe('buildPackageJsonUpdates (starter padrão — Spec 45, sem backend)', () => {
+    it('nunca usa typescript ^7 (achado real de instalação com toolchains mais novas)', () => {
+        const updates = buildPackageJsonUpdates({ ctx });
         expect(updates.devDependencies.typescript.startsWith('^5')).toBe(true);
-        expect(updates.devDependencies['ts-node-dev']).toBeTruthy();
-        expect(updates.scripts.dev).toContain('concurrently');
     });
 
-    it('vite-express: declara express (runtime) e @types/express (dev) — o server.ts importa express', () => {
-        const updates = buildPackageJsonUpdates({ answers: { stack: 'vite-express' }, ctx });
-        expect(updates.dependencies.express).toBeTruthy();
-        expect(updates.devDependencies['@types/express']).toBeTruthy();
-    });
-
-    it('next: não inclui ts-node-dev/concurrently (não fazem sentido nessa stack)', () => {
-        const updates = buildPackageJsonUpdates({ answers: { stack: 'next' }, ctx });
+    it('scripts são um front Vite puro — sem express/ts-node-dev/concurrently/next', () => {
+        const updates = buildPackageJsonUpdates({ ctx });
+        expect(updates.scripts.dev).toBe('vite');
+        expect(updates.scripts.build).toContain('vite build');
         expect(updates.devDependencies['ts-node-dev']).toBeUndefined();
-        expect(updates.dependencies.next).toBeTruthy();
+        expect(updates.devDependencies.concurrently).toBeUndefined();
+        expect(updates.devDependencies.next).toBeUndefined();
+        expect(updates.dependencies.express).toBeUndefined();
+        expect(updates.dependencies.next).toBeUndefined();
     });
 
-    it('frontend-only: sem concurrently/ts-node-dev, mas com vite', () => {
-        const updates = buildPackageJsonUpdates({ answers: { stack: 'frontend-only' }, ctx });
-        expect(updates.devDependencies['ts-node-dev']).toBeUndefined();
-        expect(updates.devDependencies.vite).toBeTruthy();
+    it('inclui @types/react e @types/react-dom (achado real: tsc falhava em react-dom/client sem eles — os @types não vêm via peerDependencies)', () => {
+        const updates = buildPackageJsonUpdates({ ctx });
+        expect(updates.devDependencies['@types/react']).toBeTruthy();
+        expect(updates.devDependencies['@types/react-dom']).toBeTruthy();
     });
 
-    it('as 3 stacks ganham o script sarak:update (Spec 39 §2.1)', () => {
-        for (const stack of ['vite-express', 'next', 'frontend-only']) {
-            const updates = buildPackageJsonUpdates({ answers: { stack }, ctx });
-            expect(updates.scripts['sarak:update']).toContain('npm uninstall @sarak/lib-ui-core');
-        }
+    it('ganha o script sarak:update (Spec 39 §2.1)', () => {
+        const updates = buildPackageJsonUpdates({ ctx });
+        expect(updates.scripts['sarak:update']).toContain('npm uninstall @sarak/lib-ui-core');
     });
 
-    it('as 3 stacks ganham o script sarak:check (Spec 39 follow-up — verificação autoritativa)', () => {
-        for (const stack of ['vite-express', 'next', 'frontend-only']) {
-            const updates = buildPackageJsonUpdates({ answers: { stack }, ctx });
-            expect(updates.scripts['sarak:check']).toBe('node node_modules/@sarak/lib-ui-core/bin/scaffold/checkUpdate.mjs');
-        }
+    it('ganha o script sarak:check (Spec 39 follow-up — verificação autoritativa)', () => {
+        const updates = buildPackageJsonUpdates({ ctx });
+        expect(updates.scripts['sarak:check']).toBe('node node_modules/@sarak/lib-ui-core/bin/scaffold/checkUpdate.mjs');
     });
 });
 
