@@ -14,7 +14,7 @@ relacionados: ["40-teste-real", "40.1-correcoes-importacao", "40.3-multidisposit
 
 # 1. Visão Geral e Objetivo
 
-Produzir um artefato de raiz **`sarak-ui/`** — o "kit de uso do consumidor" — contido no pacote publicado. Ele reúne **tudo o que o importador precisa para usar o módulo**: o guia (spec) de autoria do front, a skill de uso prático, e o **catálogo vivo** (JSON) do que a lib expõe. É **genérico** (o ERP é apenas um importador comum — nada específico dele), cobre **as 4 topologias** e **as regras/casos** de autoria, e é **dinâmico**: gerado do código, com gate que impede publicar desatualizado.
+Produzir um artefato de raiz **`sarak-ui/`** — o "kit de uso do consumidor" — contido no pacote publicado. Ele reúne **TUDO o que o importador precisa para usar o módulo**: as **instruções** (guia de autoria + skill de uso prático), os **templates** (esqueletos de código copiáveis), a **documentação** e o **catálogo vivo** (JSON) do que a lib expõe. É **genérico** (o ERP é apenas um importador comum — nada específico dele), cobre **as 4 topologias** e **as regras/casos** de autoria, e é **dinâmico**: gerado do código, com gate que impede publicar desatualizado. Meta explícita: **o consumidor sabe agir diante de QUALQUER necessidade** — não por enumerar tudo, mas por um procedimento de decisão + fallback + loop de completude (§5.0/§9).
 
 # 2. Princípios
 - **Dinâmico (a regra central):** nunca escrever à mão o que muda. As listas (componentes/props/tokens/contrato de responsividade) são **GERADAS** das fontes vivas (barril, catálogo AST, `design-token-ids`, contrato da 40.3); a prosa (regras/topologias/como-fazer) é estável e **aponta** para o gerado, nunca duplica. Um **gate** barra o build se o kit estiver velho.
@@ -27,6 +27,7 @@ Estrutura (nome da pasta: `sarak-ui/`):
 - **`sarak-ui/START-HERE.md`** — ponto de entrada para o agente do importador: o que é a pasta, o que mover para onde (a spec → `specs/` do importador; a skill → `.claude/skills/`), a regra "leia o catálogo, não assuma", e a versão/carimbo.
 - **`sarak-ui/GUIA-FRONTEND.md`** — o **documento único** de autoria (§5): 4 topologias + todos os casos. Prosa estável + apêndice gerado. É a **spec que o importador incorpora** (vira decisão estrutural dele).
 - **`sarak-ui/skill/`** — a **skill de uso** (a `ui-integra-consumidor` reescrita, versão consumidor), para autoria assistida por IA no importador.
+- **`sarak-ui/templates/`** — **esqueletos de código copiáveis** (genéricos, por topologia), prontos para o importador adaptar: wiring do `main.tsx` (Provider + tema + cromo); a forma de um `ui-kit` compartilhado (`themes`/`nav`/`index`); uma **tela-exemplo** compondo componentes + tokens, com os 3 estados (loading/erro/vazio); e um **componente próprio temável** de exemplo. Código estável (não é lista gerada); referencia tokens genéricos, nunca lista componentes à mão.
 - **`sarak-ui/catalog.json`** — o **catálogo vivo GERADO** (componentes + props + tokens + contrato de responsividade), a verdade da versão instalada.
 - **`sarak-ui/VERSION`** — carimbo (versão da lib + hash) para o importador saber quando re-sincronizar.
 
@@ -37,6 +38,13 @@ Estrutura (nome da pasta: `sarak-ui/`):
 - Regenera e faz diff; **falha o build/CI** se o kit estiver desatualizado (mesma família de `catalog:check`/`barrel:check`). Consequência: **impossível publicar uma versão cujo kit não bata com a API**. É o dinamismo do lado do autor — não depende de ninguém lembrar.
 
 # 5. O documento único `GUIA-FRONTEND.md` (4 topologias + todos os casos)
+
+## 5.0 Como agir em QUALQUER necessidade (o topo do guia — a garantia de completude)
+Não se enumera o infinito — dá-se um **procedimento + fallback + loop**:
+- **Árvore de decisão (índice de necessidades):** *"Preciso de X → seção Y"* — mapeia as necessidades comuns (usar componente · personalizar 1 elemento · tema global · estado de tela · ícone · multidispositivo · dados/formulário · criar componente próprio · escolher topologia) às seções do guia. É a porta de entrada.
+- **Regra de fallback universal (decide o que NÃO está mapeado):** (1) é componente da lib? → use do barril. (2) não é, mas é um elemento seu? → React próprio **com tokens**. (3) um lugar só, diferente de propósito? → **sobrescrita LOCAL** (a escada de "Personalização pontual"). (4) a lib deveria fazer e não faz? → **DEMANDA na lib** (defeito), nunca gambiarra. Esse procedimento responde a qualquer caso, mesmo os não listados.
+- **Reporte o buraco:** se a necessidade não está no guia E o fallback não resolve limpo, é sinal de **lacuna do GUIA** → reporte, para virar uma seção nova. O guia se completa por **loop** (§9), não por decreto — é isto que sustenta o "qualquer necessidade".
+
 **Prosa estável** (não hardcoda listas):
 - **Início:** instalar (`@sarak/lib-ui-core` direto ou via um `ui-kit` próprio), envolver no `SarakUIProvider`, passar temas (JSON), montar o Design Engine (`CustomizationPanel`), opcional `SarakAppChrome`.
 - **As 4 topologias** (cada uma com o padrão de Provider/cromo/propagação de tema):
@@ -47,6 +55,11 @@ Estrutura (nome da pasta: `sarak-ui/`):
 - **Casos de autoria:**
   - **Componente existe** → importe do barril; componha com `var(--sarak-*)`; liberdade total (ex.: trocar tabela por cards).
   - **Falta componente** → **Opção A:** React próprio **com tokens** (continua temável) OU demanda na lib (ciclo de rodada). **Nunca** hardcode fora do contrato de tokens (não é tematizado) → zero-gambiarra.
+  - **Personalização pontual** (a cor de um card, a fonte de um texto, um elemento específico) → a **escada**, da mais temável à mais fixa: (1) **prop do componente** (`variant`/`color`) se existir; (2) **sobrescrever o TOKEN localmente** num wrapper (`style={{ ['--sarak-card-bg']: 'var(--sarak-accent-color)' }}`) → o elemento continua seguindo o tema; (3) **`style`/`className` com VALOR DE TOKEN** (`var(--sarak-*)`) → one-off ainda temável; (4) **`style` com valor FIXO** → one-off consciente que **não** segue o tema (ok se for a intenção). Régua: **um** lugar = local; o **mesmo** override em muitos lugares = variação faltando → **demanda**. **Pontual ≠ gambiarra** (gambiarra é tapar buraco da lib; personalizar um elemento seu é liberdade sua).
+  - **Estados de tela** (loading/erro/vazio) → sempre os **três**; use os componentes de skeleton/feedback do barril, ou React próprio com tokens.
+  - **Ícones** → o `IconMap` curado via `SarakIcon`; o catálogo lista os nomes válidos; nome desconhecido → warn (não invente).
+  - **Criar componente próprio TEMÁVEL** → para o Design Engine alcançá-lo, estilize por `var(--sarak-*)`; nunca hardcode fora do contrato. (É a mesma regra da Opção A, aqui como caso de "eu vou compor algo novo".)
+  - **Dados / formulários / eventos** → é o **seu** React: hooks e a **`api/` do próprio módulo** (nunca dado externo direto nem `api` alheia); a lib dá inputs/validação visual, você liga a lógica.
   - **Extrair TODAS as funcionalidades** → o **catálogo vivo** (`sarak-ui/catalog.json`) lista tudo: átomos, layouts, navegação, inputs, data-display, media, engines, Design Engine central, primitivas multidispositivo, temas-JSON. Sempre o catálogo, nunca memória.
   - **Tema** → temas como JSON, Design Engine central, temas completos, fonte automática.
   - **Multidispositivo** → o **contrato de responsividade** (40.3): o que adapta sozinho, onde refinar com `ResponsiveValue`.
@@ -63,16 +76,19 @@ Estrutura (nome da pasta: `sarak-ui/`):
 - **`sarak:update`** (Spec 39): ao atualizar a lib, o novo `sarak-ui/` refresca a spec/skill movidas (pelo `VERSION`).
 
 # 8. Critérios de Aceite
-- [ ] `sarak-ui/` na raiz com START-HERE + guia único (4 topologias + todos os casos) + skill + `catalog.json` + VERSION; nos `files`; `package:check` exige.
+- [ ] `sarak-ui/` na raiz com START-HERE + guia único (4 topologias + todos os casos) + skill + **`templates/`** + `catalog.json` + VERSION; nos `files`; `package:check` exige (incl. `templates/`).
+- [ ] O guia tem, no topo (§5.0), a **árvore de decisão** + a **regra de fallback universal** + a instrução de **reportar buraco**; e os casos incluem **personalização pontual** (a escada), **estados de tela**, **ícones**, **componente próprio temável** e **dados/formulários/eventos** — além dos já previstos.
+- [ ] `sarak-ui/templates/` com esqueletos copiáveis: wiring (`main.tsx`), forma de `ui-kit`, tela-exemplo (com os 3 estados) e componente próprio temável.
 - [ ] Gerador `npm run guide` monta o kit das fontes vivas; **gate `guide:check`** falha o build se stale (na CI/build).
-- [ ] O guia NÃO hardcoda listas — o apêndice é gerado; a prosa aponta para o catálogo.
+- [ ] O guia NÃO hardcoda listas — o apêndice é gerado; a prosa aponta para o catálogo. (A árvore de decisão, o fallback e os templates são **prosa/código estáveis**, não listas geradas.)
 - [ ] `ui-integra-consumidor` reescrita (fonte + espelho); versão consumidor em `sarak-ui/skill/` com a regra "leia o catálogo".
 - [ ] Genérico (grep: zero menção ao ERP no `sarak-ui/`).
 - [ ] Integrado a `init` (copia o kit) e `sarak:update` (refresca).
 - [ ] Gates da lib verdes (incl. `guide:check`); Spec 40 atualizada; entrada no `00-progresso.md`.
 
-# 9. Validação (o teste de verdade)
-- **Aprovada quando um MÓDULO NOVO do sistema importador for construído seguindo SÓ o `sarak-ui/`** — sem consultar nada fora dele. Se faltar alguma instrução, o buraco volta como correção ao guia (dinâmico) — não como gambiarra no importador.
+# 9. Validação (o teste de verdade) + o loop de completude
+- **Aprovada quando um MÓDULO NOVO do sistema importador for construído seguindo SÓ o `sarak-ui/`** — sem consultar nada fora dele.
+- **Loop de completude (o mecanismo do "qualquer necessidade"):** o guia NUNCA é declarado completo por decreto. Toda necessidade real que surgir na construção do módulo novo **e não estiver coberta** vira uma **seção nova no guia** (ou um template novo) — nunca uma gambiarra no importador. Assim a cobertura cresce por uso real, e o fallback universal (§5.0) segura os casos entre uma rodada e outra. Cada buraco absorvido é registrado no `00-progresso.md`.
 
 # 10. Fronteiras (não fazer)
 - Não escrever à mão o que é gerável (listas) — só prosa estável aponta para o gerado.

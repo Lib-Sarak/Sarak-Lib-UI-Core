@@ -144,7 +144,7 @@ export const naturebreezeTheme: ThemePreset = {
         btnPrimaryText: "#ffffff",
         btnSecondaryBg: "rgba(255, 255, 255, 0.05)",
         btnGhostHoverBg: "rgba(255, 255, 255, 0.05)",
-        btnStyleType: "solid",
+        btnStyleType: "matte",
         btnNeonGlowColor: "rgba(0, 242, 255, 0.4)",
         btnNeonPulseSpeed: 1.5,
         btnBackdropBlur: 8,

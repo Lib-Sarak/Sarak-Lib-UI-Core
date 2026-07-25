@@ -320,7 +320,8 @@ export const AtmosphereSchema: ComponentSchema = {
                 { value: 'bottom', label: 'Projeção Inferior' },
                 { value: 'center', label: 'Centro Uniforme' },
                 { value: 'top', label: 'Superior Invertida' },
-                { value: 'dynamic', label: 'Ângulo Dinâmico' }
+                { value: 'dynamic', label: 'Ângulo Dinâmico' },
+                { value: 'bottom-right', label: 'Diagonal (Canto Inferior Direito)' }
             ],
             defaultValue: 'bottom',
             cssVars: ['--shadow-orientation']

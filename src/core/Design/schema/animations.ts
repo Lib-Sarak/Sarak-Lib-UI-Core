@@ -66,7 +66,10 @@ export const AnimationSchema: ComponentSchema = {
                     { id: 'cubic-bezier(0.4, 0, 0.2, 1)', label: 'Standard' },
                     { id: 'cubic-bezier(0.6, 0.05, 0.01, 0.9)', label: 'Smooth Industrial' },
                     { id: 'cubic-bezier(0.4, 0, 1, 1)', label: 'Accelerated' },
-                    { id: 'cubic-bezier(0, 0, 0.2, 1)', label: 'Decelerated' }
+                    { id: 'cubic-bezier(0, 0, 0.2, 1)', label: 'Decelerated' },
+                    { id: 'linear', label: 'Linear (Mecânico)' },
+                    { id: 'cubic-bezier(0.16, 1, 0.3, 1)', label: 'Expo Glide (Sci-fi)' },
+                    { id: 'cubic-bezier(0.175, 0.885, 0.32, 1.275)', label: 'Overshoot (Kinetic Bounce)' }
                 ]
             },
             defaultValue: 'cubic-bezier(0.4, 0, 0.2, 1)',
@@ -82,7 +85,9 @@ export const AnimationSchema: ComponentSchema = {
                 options: [
                     { id: 'cubic-bezier(0.4, 0, 0.2, 1)', label: 'Standard' },
                     { id: 'cubic-bezier(0.23, 1, 0.32, 1)', label: 'Quintic' },
-                    { id: 'cubic-bezier(0.19, 1, 0.22, 1)', label: 'Expo' }
+                    { id: 'cubic-bezier(0.19, 1, 0.22, 1)', label: 'Expo' },
+                    { id: 'cubic-bezier(0, 0, 0.2, 1)', label: 'Decelerated' },
+                    { id: 'linear', label: 'Linear (Mecânico)' }
                 ]
             },
             defaultValue: 'cubic-bezier(0.4, 0, 0.2, 1)',

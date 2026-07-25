@@ -41,7 +41,8 @@ export const MediaSchema: ComponentSchema = {
                     { id: 'overlay', value: 'overlay', label: 'Overlay' },
                     { id: 'multiply', value: 'multiply', label: 'Multiply' },
                     { id: 'screen', value: 'screen', label: 'Screen' },
-                    { id: 'soft-light', value: 'soft-light', label: 'Soft Light' }
+                    { id: 'soft-light', value: 'soft-light', label: 'Soft Light' },
+                    { id: 'color-dodge', value: 'color-dodge', label: 'Color Dodge (Neon)' }
                 ]
             },
             defaultValue: 'normal',

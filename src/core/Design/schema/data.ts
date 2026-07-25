@@ -44,6 +44,7 @@ export const DataSchema: ComponentSchema = {
             defaultValue: 'line',
             options: [
                 { value: 'line', label: 'Lines' },
+                { value: 'area', label: 'Area/Preenchido' },
                 { value: 'bar', label: 'Bars' },
                 { value: 'pie', label: 'Pie/Donut' },
                 { value: 'radar', label: 'Radar' },

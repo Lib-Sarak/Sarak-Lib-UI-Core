@@ -131,6 +131,56 @@ const coerceTokenValue = (token: DesignToken, value: unknown): unknown => {
     }
 };
 
+/** Uma violação de contrato encontrada num payload de tema (Spec 40.4 L1/L3). */
+export interface TokenContractDrift {
+    token: string;
+    fonte: string;
+    valor: unknown;
+    motivo: string;
+}
+
+/** Descreve, para humano, por que `coerceTokenValue` rejeitou o valor. */
+const describeDriftReason = (token: DesignToken, value: unknown): string => {
+    if (token.isResponsive && value !== null && typeof value === 'object' && !Array.isArray(value) && 'desk' in (value as Record<string, unknown>)) {
+        return 'eixo responsivo não-numérico (tipo)';
+    }
+    switch (token.type) {
+        case 'number':
+        case 'slider':
+            return 'tipo (esperado number finito)';
+        case 'boolean':
+            return 'tipo (esperado boolean)';
+        case 'select':
+            if (typeof value !== 'string' || !isSafeCssString(value)) return 'tipo (esperado string segura)';
+            return getEnumOptions(token) ? 'enum ausente (valor fora de constraints.options)' : 'tipo (esperado string segura)';
+        case 'color':
+            return 'formato de cor inválido (fora de COLOR_PATTERN)';
+        default:
+            return 'string insegura (fora de isSafeCssString)';
+    }
+};
+
+/**
+ * Audita um payload de tema (fonte = defaults do MASTER_DESIGN_MAP ou tema/preset
+ * shippado pela lib) contra o contrato de cada token, SEM efeito colateral
+ * (nunca `console.warn` — puro, para uso em gate/teste). Devolve todo valor que
+ * `coerceTokenValue` rejeitaria — a mesma função que `validateDesign` usa em
+ * runtime, então a auditoria nunca diverge do comportamento real (Spec 40.4 L1).
+ */
+export const auditTokenContract = (fonte: string, design: Record<string, unknown>): TokenContractDrift[] => {
+    const tokenIndex = getTokenIndex();
+    const drift: TokenContractDrift[] = [];
+    Object.entries(design).forEach(([key, value]) => {
+        if (value === null || value === undefined || value === '') return;
+        const token = tokenIndex.get(key);
+        if (!token) return; // fora do MASTER_DESIGN_MAP (branding/legado) — fora do escopo desta auditoria
+        if (coerceTokenValue(token, value) === undefined) {
+            drift.push({ token: key, fonte, valor: value, motivo: describeDriftReason(token, value) });
+        }
+    });
+    return drift;
+};
+
 export const validateDesign = (design: unknown): SarakDesignState => {
     if (!design) return {} as SarakDesignState;
     const input = design as Record<string, unknown>;

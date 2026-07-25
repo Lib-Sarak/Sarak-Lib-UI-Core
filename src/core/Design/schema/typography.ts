@@ -133,6 +133,7 @@ export const TypographySchema: ComponentSchema = {
                     { id: '400', label: 'Regular' },
                     { id: '600', label: 'Semi-Bold' },
                     { id: '700', label: 'Bold' },
+                    { id: '800', label: 'Extra-Bold' },
                     { id: '900', label: 'Black' }
                 ]
             },
@@ -186,7 +187,9 @@ export const TypographySchema: ComponentSchema = {
                     { id: '300', label: 'Light' },
                     { id: '400', label: 'Regular' },
                     { id: '600', label: 'Semi-Bold' },
-                    { id: '700', label: 'Bold' }
+                    { id: '700', label: 'Bold' },
+                    { id: '800', label: 'Extra-Bold' },
+                    { id: '900', label: 'Black' }
                 ]
             },
             defaultValue: '700',

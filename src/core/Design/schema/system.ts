@@ -26,7 +26,8 @@ export const SystemSchema: ComponentSchema = {
             defaultValue: 'grid',
             options: [
                 { value: 'grid', label: 'Grid System' },
-                { value: 'flex', label: 'Flexbox Layout' }
+                { value: 'flex', label: 'Flexbox Layout' },
+                { value: 'masonry', label: 'Masonry (Alvenaria)' }
             ]
         },
 
@@ -51,6 +52,7 @@ export const SystemSchema: ComponentSchema = {
             axis: 'geometry',
             defaultValue: '1440px',
             options: [
+                { value: '1000px', label: 'Muito Estreito (1000px, Editorial)' },
                 { value: '1200px', label: 'Estreito (1200px)' },
                 { value: '1440px', label: 'Padrão (1440px)' },
                 { value: '1600px', label: 'Largo (1600px)' },

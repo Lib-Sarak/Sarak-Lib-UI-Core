@@ -137,7 +137,7 @@ export const cyberRetroWaveTheme: ThemePreset = {
         chatUserBg: 'rgba(255, 255, 255, 0.05)',
         chatBubbleStyle: 'glass',
         chatAnimationSpeed: 0.05,
-        colorPalette: 'vibrant',
+        colorPalette: 'neon',
         primaryColor: '#ff00ff',
         secondaryColor: '#00ffff',
         tertiaryColor: '#ffaa00',

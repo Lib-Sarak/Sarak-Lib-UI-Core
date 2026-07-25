@@ -7,7 +7,7 @@ export const nebulaSpaceTheme: ThemePreset = {
     design: {
         mode: 'dark',
         navigationStyle: 'topbar',
-        bodySize: '13px',
+        bodySize: '12px',
         iconFamily: 'phosphor',
         iconWeight: 'duotone',
         identityAlignment: 'left',
