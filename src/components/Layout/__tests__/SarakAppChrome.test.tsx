@@ -4,6 +4,7 @@ import '@testing-library/jest-dom';
 import { describe, it, expect, vi } from 'vitest';
 import { SarakAppChrome } from '../SarakAppChrome';
 import SarakUIProvider from '../../../core/Provider/SarakUIProvider';
+import { DeviceProvider, type DeviceType } from '../../../core/Provider/DeviceProvider';
 
 const NAV = [
     { label: 'Propostas', route: '/propostas' },
@@ -152,5 +153,70 @@ describe('SarakAppChrome (Spec 40.2 — L3, TODOS os tokens de cromo repintam, n
         expect(topHtml).toContain('--sarak-topbar-height');
         expect(topHtml).toContain('--sarak-topbar-bg');
         expect(topHtml).toContain('--sarak-topbar-title-color');
+    });
+});
+
+// `useSarakDevice` lê o DeviceContext; aninhar um DeviceProvider com override força o device
+// (o SarakUIProvider já monta o seu — o interno vence). SarakIcon (hambúrguer) exige o Provider.
+const renderAtDevice = (device: DeviceType, ui: React.ReactElement) =>
+    render(
+        <SarakUIProvider config={{ mode: 'dark' }}>
+            <DeviceProvider overrideDevice={device}>{ui}</DeviceProvider>
+        </SarakUIProvider>,
+    );
+
+const toggleOf = (c: HTMLElement) => c.querySelector('[aria-controls="sarak-chrome-drawer"]') as HTMLElement | null;
+
+describe('SarakAppChrome (Spec 40.3 — L1, multidispositivo por padrão / cromo reflui)', () => {
+    it('CELULAR: colapsa a nav atrás de um toggle (hambúrguer) — a nav não vem aberta', () => {
+        const { container } = renderAtDevice('smartphone',
+            <SarakAppChrome brand={{ name: 'ERP' }} nav={NAV}><div>conteúdo</div></SarakAppChrome>,
+        );
+        const toggle = toggleOf(container);
+        expect(toggle).not.toBeNull();
+        expect(toggle).toHaveAttribute('aria-expanded', 'false');
+        // Não há sidebar fixa comendo a tela; a nav (drawer) começa fechada.
+        expect(container.querySelector('#sarak-chrome-drawer')).toBeNull();
+        expect(screen.queryByText('Propostas')).toBeNull();
+        expect(screen.getByText('conteúdo')).toBeInTheDocument();
+    });
+
+    it('CELULAR: o toggle abre o drawer, é acessível (aria-expanded/controls) e mostra a nav', () => {
+        const { container } = renderAtDevice('smartphone',
+            <SarakAppChrome brand={{ name: 'ERP' }} nav={NAV}><div>x</div></SarakAppChrome>,
+        );
+        const toggle = toggleOf(container)!;
+        fireEvent.click(toggle);
+        expect(toggle).toHaveAttribute('aria-expanded', 'true');
+        expect(container.querySelector('#sarak-chrome-drawer')).not.toBeNull();
+        expect(screen.getByText('Propostas')).toBeInTheDocument();
+    });
+
+    it('CELULAR: selecionar um item navega (onNavigate) e fecha o drawer', () => {
+        const onNavigate = vi.fn();
+        const { container } = renderAtDevice('smartphone',
+            <SarakAppChrome nav={NAV} onNavigate={onNavigate}><div>x</div></SarakAppChrome>,
+        );
+        fireEvent.click(toggleOf(container)!);
+        fireEvent.click(screen.getByText('Projetos'));
+        expect(onNavigate).toHaveBeenCalledWith('/projetos');
+        // Fechou: o drawer some da árvore.
+        expect(container.querySelector('#sarak-chrome-drawer')).toBeNull();
+    });
+
+    it('TABLET: cai no tier intermediário (topbar compacta) mesmo com nav sidebar — sem sidebar fixa', () => {
+        const { container } = renderAtDevice('tablet',
+            <SarakAppChrome navigationStyle="sidebar" nav={NAV}><div>x</div></SarakAppChrome>,
+        );
+        expect(container.querySelector('header')).not.toBeNull();
+        expect(container.querySelector('aside')).toBeNull();
+    });
+
+    it('DESKTOP: mantém a sidebar completa (comportamento atual preservado)', () => {
+        const { container } = renderAtDevice('desktop',
+            <SarakAppChrome navigationStyle="sidebar" nav={NAV}><div>x</div></SarakAppChrome>,
+        );
+        expect(container.querySelector('aside')).not.toBeNull();
+        expect(toggleOf(container)).toBeNull();
     });
 });

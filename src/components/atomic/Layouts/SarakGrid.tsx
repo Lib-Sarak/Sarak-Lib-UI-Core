@@ -1,9 +1,19 @@
 import React from 'react';
 import { useStructuralStyles } from '../hooks/useStructuralStyles';
+import { useSarakDevice } from '../../../core/Provider/DeviceProvider';
+import { resolveResponsiveValue } from '../../../core/Design/resolveResponsiveValue';
+import type { ResponsiveValue } from '../../../core/Design/types';
 
-export interface SarakGridProps extends React.HTMLAttributes<HTMLDivElement> {
+export interface SarakGridProps extends Omit<React.HTMLAttributes<HTMLDivElement>, 'children'> {
     children: React.ReactNode;
-    templateColumns?: string;
+    /**
+     * Colunas do grid. Aceita:
+     * - `string` fixo (ex.: `"1fr 1fr 1fr"`): mobile-first por padrão — **colapsa para 1
+     *   coluna no celular** (nunca estoura a página), reflui no valor cheio em tablet/desktop.
+     * - `ResponsiveValue<string>` (`{ mob, tab, desk }`): o consumidor controla por dispositivo.
+     * Sem `templateColumns`, usa a estratégia de grid do Design Engine (também 1 coluna no celular).
+     */
+    templateColumns?: string | ResponsiveValue<string>;
     templateAreas?: string;
     gap?: string;
     as?: React.ElementType;
@@ -14,23 +24,39 @@ export interface SarakGridProps extends React.HTMLAttributes<HTMLDivElement> {
  * O SarakGrid é o container raiz que lê o Token de Layout do Design Engine
  * e organiza os componentes filhos (Cards, Tabelas, Gráficos) na malha correta.
  * Ele elimina a necessidade de chumbarmos "grid-cols-X" nas telas.
+ *
+ * Multidispositivo por padrão (Spec 40.3 — L2): um `templateColumns` fixo colapsa para
+ * **uma coluna no celular** (via `useSarakDevice`), então nenhum grid estoura horizontalmente
+ * no mobile sem o consumidor escrever CSS. Para controlar por dispositivo, passe um
+ * `ResponsiveValue<string>`.
  */
-export const SarakGrid: React.FC<SarakGridProps> = ({ 
-    children, 
-    className = '', 
-    style, 
+export const SarakGrid: React.FC<SarakGridProps> = ({
+    children,
+    className = '',
+    style,
     templateColumns,
     templateAreas,
     gap,
     as: Component = 'div',
-    ...props 
+    ...props
 }) => {
     const { getGridStyles } = useStructuralStyles();
-    const structuralStyles = getGridStyles(templateColumns, templateAreas, gap);
+    const device = useSarakDevice();
+
+    // Mobile-first: um `templateColumns` fixo (string) vira 1 coluna no celular para não
+    // estourar; um `ResponsiveValue` é resolvido no device ativo (controle do consumidor).
+    // Sem `templateColumns`, delega a estratégia responsiva do Design Engine (já 1 col no mob).
+    const resolvedColumns = templateColumns === undefined
+        ? undefined
+        : device === 'smartphone' && typeof templateColumns === 'string'
+            ? '1fr'
+            : resolveResponsiveValue(templateColumns, device);
+
+    const structuralStyles = getGridStyles(resolvedColumns, templateAreas, gap);
 
     return (
-        <Component 
-            className={`${structuralStyles.className} ${className}`.trim()} 
+        <Component
+            className={`${structuralStyles.className} ${className}`.trim()}
             style={{ ...structuralStyles.style, ...style }}
             {...props}
         >

@@ -1,5 +1,6 @@
 import React, { useState, useRef, useCallback } from 'react';
 import { useSarakUI } from '../../../core/Provider/SarakUIProvider';
+import { useSarakDevice } from '../../../core/Provider/DeviceProvider';
 
 export interface SarakSplitPaneProps {
     leftPane: React.ReactNode;
@@ -13,6 +14,11 @@ export interface SarakSplitPaneProps {
 /**
  * Componente de Painel Redimensionável (Split Pane).
  * Permite arraste fluido entre dois painéis respeitando os limites configurados.
+ *
+ * Multidispositivo por padrão (Spec 40.3 — L2): no celular (`useSarakDevice`) os painéis
+ * **empilham** em coluna full-width (sem a divisória de arraste, que não faz sentido no
+ * touch estreito) — nenhum painel de largura fixa estoura a página. Em tablet/desktop
+ * mantém o split redimensionável.
  */
 export const SarakSplitPane: React.FC<SarakSplitPaneProps> = ({
     leftPane,
@@ -23,6 +29,7 @@ export const SarakSplitPane: React.FC<SarakSplitPaneProps> = ({
     className = ''
 }) => {
     const { design } = useSarakUI();
+    const device = useSarakDevice();
     const [leftWidth, setLeftWidth] = useState(defaultLeftWidth);
     const isDragging = useRef(false);
     const containerRef = useRef<HTMLDivElement>(null);
@@ -63,6 +70,16 @@ export const SarakSplitPane: React.FC<SarakSplitPaneProps> = ({
             document.removeEventListener('mouseup', handleMouseUp);
         };
     }, [handleMouseMove, handleMouseUp]);
+
+    // Celular: empilha em coluna full-width (sem divisória de arraste) — zero overflow.
+    if (device === 'smartphone') {
+        return (
+            <div className={className} style={{ display: 'flex', flexDirection: 'column', gap, width: '100%' }}>
+                <div className="w-full overflow-auto">{leftPane}</div>
+                <div className="w-full overflow-auto">{rightPane}</div>
+            </div>
+        );
+    }
 
     return (
         <div ref={containerRef} className={`flex h-full w-full ${className}`} style={{ gap }}>

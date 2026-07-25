@@ -49,7 +49,6 @@ Traduzidos pelo resolutor oficial (`resolveToken`, Spec 16). Qualquer compriment
 
 | Componente | Prop | Valores aceitos |
 | --- | --- | --- |
-| `SarakFlex` | `direction` | `row` · `column` · `row-reverse` · `column-reverse` |
 | `SarakFlex` | `justify` | `flex-start` · `flex-end` · `center` · `space-between` · `space-around` · `space-evenly` |
 | `SarakFlex` | `align` | `stretch` · `flex-start` · `flex-end` · `center` · `baseline` |
 | `SarakTabs` | `alignment` | `horizontal` · `vertical` |
@@ -116,13 +115,14 @@ Props (`SarakFlexProps` — `src/components/atomic/Layouts/SarakFlex.tsx`):
 | Prop | Tipo | Obrigatória | Descrição |
 | --- | --- | --- | --- |
 | `children` | `React.ReactNode` | sim |  |
-| `direction` | `'row' \| 'column' \| 'row-reverse' \| 'column-reverse' \| string` | não |  |
+| `direction` | `FlexDirection \| ResponsiveValue<FlexDirection>` | não | Direção do eixo. Aceita `ResponsiveValue` para variar por dispositivo (opcional). |
 | `justify` | `'flex-start' \| 'flex-end' \| 'center' \| 'space-between' \| 'space-around' \| 'space-evenly' \| string` | não |  |
 | `align` | `'stretch' \| 'flex-start' \| 'flex-end' \| 'center' \| 'baseline' \| string` | não |  |
 | `gap` | `string` | não |  |
+| `wrap` | `boolean` | não | Quebra em múltiplas linhas quando não cabe (mobile-first). Default `true`: uma linha de itens nunca estoura a página no celular — reflui para baixo. Passe `false` para forçar linha única (nowrap) quando o layout exigir. |
 | `as` | `React.ElementType` | não |  |
 
-Estende: `React.HTMLAttributes<HTMLDivElement>`
+Estende: `Omit<React.HTMLAttributes<HTMLDivElement>, 'children'>`
 
 ### SarakGrid
 
@@ -131,12 +131,12 @@ Props (`SarakGridProps` — `src/components/atomic/Layouts/SarakGrid.tsx`):
 | Prop | Tipo | Obrigatória | Descrição |
 | --- | --- | --- | --- |
 | `children` | `React.ReactNode` | sim |  |
-| `templateColumns` | `string` | não |  |
+| `templateColumns` | `string \| ResponsiveValue<string>` | não | Colunas do grid. Aceita: - `string` fixo (ex.: `"1fr 1fr 1fr"`): mobile-first por padrão — **colapsa para 1 coluna no celular** (nunca estoura a página), reflui no valor cheio em tablet/desktop. - `ResponsiveValue<string>` (`{ mob, tab, desk }`): o consumidor controla por dispositivo. Sem `templateColumns`, usa a estratégia de grid do Design Engine (também 1 coluna no celular). |
 | `templateAreas` | `string` | não |  |
 | `gap` | `string` | não |  |
 | `as` | `React.ElementType` | não |  |
 
-Estende: `React.HTMLAttributes<HTMLDivElement>`
+Estende: `Omit<React.HTMLAttributes<HTMLDivElement>, 'children'>`
 
 ### SarakSplitPane
 

@@ -5,7 +5,7 @@
     "SarakFlex": {
       "propsInterface": "SarakFlexProps",
       "source": "src/components/atomic/Layouts/SarakFlex.tsx",
-      "extends": "React.HTMLAttributes<HTMLDivElement>",
+      "extends": "Omit<React.HTMLAttributes<HTMLDivElement>, 'children'>",
       "props": [
         {
           "name": "children",
@@ -15,9 +15,9 @@
         },
         {
           "name": "direction",
-          "type": "'row' | 'column' | 'row-reverse' | 'column-reverse' | string",
+          "type": "FlexDirection | ResponsiveValue<FlexDirection>",
           "optional": true,
-          "doc": ""
+          "doc": "Direção do eixo. Aceita `ResponsiveValue` para variar por dispositivo (opcional)."
         },
         {
           "name": "justify",
@@ -38,6 +38,12 @@
           "doc": ""
         },
         {
+          "name": "wrap",
+          "type": "boolean",
+          "optional": true,
+          "doc": "Quebra em múltiplas linhas quando não cabe (mobile-first). Default `true`: uma linha de itens nunca estoura a página no celular — reflui para baixo. Passe `false` para forçar linha única (nowrap) quando o layout exigir."
+        },
+        {
           "name": "as",
           "type": "React.ElementType",
           "optional": true,
@@ -48,7 +54,7 @@
     "SarakGrid": {
       "propsInterface": "SarakGridProps",
       "source": "src/components/atomic/Layouts/SarakGrid.tsx",
-      "extends": "React.HTMLAttributes<HTMLDivElement>",
+      "extends": "Omit<React.HTMLAttributes<HTMLDivElement>, 'children'>",
       "props": [
         {
           "name": "children",
@@ -58,9 +64,9 @@
         },
         {
           "name": "templateColumns",
-          "type": "string",
+          "type": "string | ResponsiveValue<string>",
           "optional": true,
-          "doc": ""
+          "doc": "Colunas do grid. Aceita: - `string` fixo (ex.: `\"1fr 1fr 1fr\"`): mobile-first por padrão — **colapsa para 1 coluna no celular** (nunca estoura a página), reflui no valor cheio em tablet/desktop. - `ResponsiveValue<string>` (`{ mob, tab, desk }`): o consumidor controla por dispositivo. Sem `templateColumns`, usa a estratégia de grid do Design Engine (também 1 coluna no celular)."
         },
         {
           "name": "templateAreas",
@@ -2916,16 +2922,6 @@
       "spacing-xl": "calc(var(--sarak-layout-gap-lg, 24px) * 1.5)"
     },
     "variants": [
-      {
-        "component": "SarakFlex",
-        "prop": "direction",
-        "values": [
-          "row",
-          "column",
-          "row-reverse",
-          "column-reverse"
-        ]
-      },
       {
         "component": "SarakFlex",
         "prop": "justify",

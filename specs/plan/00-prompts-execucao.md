@@ -14,10 +14,13 @@ Regras comuns já embutidas: acionar `ui-contexto-repositorio` primeiro; ler `00
 | **P21** | 40 — Teste Real (ERP readota Sarak como ui-kit, apps separados) | 21 | 🟡 v5 executada PARCIAL. Gate empírico do #2. Correções no ciclo 40.x. |
 | **P21.1** | 40.1 — Correções de Importação (rodada 1) | 21.1 | 🟡 Executada (gates verdes); validação prática achou 3 gaps → rodada 2. |
 | **P21.2** | 40.2 — Correções de Importação (rodada 2) | 21.2 | 🟡 Executada (gates verdes, browser ok); validação achou o gap multidispositivo → rodada 3. |
-| **P21.3** | 40.3 — Multidispositivo por padrão | 21.3 | Adaptação de layout abrangente zero-config: cromo reflui por dispositivo + primitivas mobile-first + densos do ERP + contrato de responsividade. Fix de lib (ERP herda). Escopo delimitado. Depois: atualiza a 40 → dono valida → aprova o Teste Real ou abre 40.4. |
+| **P21.3** | 40.3 — Multidispositivo por padrão | 21.3 | 🟠 Executada PARCIAL: L2/L3/L4 ok; **L1 (hambúrguer) reprovado no browser** → ver P21.3-C. |
+| **P21.3-C** | 40.3 — Correção: detecção real de dispositivo (hambúrguer) | 21.3 | Conserta a DETECÇÃO real (`useSarakDevice`/`window.innerWidth`) — os testes usavam `overrideDevice` e nunca a exercitaram. Prova headless nos 3 viewports. |
+| **P21.4** | 40.4 — Reconciliação do contrato de tokens | 21.4 | Avisos `token fora do contrato` (achado de browser da 40.3): reconciliar valor↔enum **na fonte** (sem afrouxar o validador) + gate anti-regressão. Fix de lib. |
 | **P22** | 46 — Remover o renderizador de páginas (#2) | 22 | ⚠️ SÓ depois do Teste Real. Mantém o #1. |
 | **P23** | 41 — Piso de Bundle | 23 | Depois da 46 (muda a base) e antes da 42. |
 | **P24** | 42 — Generalizar CardGrid | 24 | Depois da 41. |
+| **P50** | 50 — Kit de uso do consumidor (`sarak-ui/`) | 25 | *(renumerada de 40.4)* **ÚLTIMA da execução** (após 46/41/42). Guia 4 topologias + skill + catálogo vivo; DINÂMICO (gate `guide:check`); genérico. |
 
 ---
 
@@ -141,7 +144,87 @@ FRONTEIRAS: não reescrever a responsividade de todos os componentes; não host/
 
 VALIDAÇÃO (dono, browser + viewports): cromo reflui em celular/tablet/desktop (nav acessível no celular sem comer a tela); telas legíveis/utilizáveis sem overflow horizontal; tema continua repintando.
 
-ENTREGUE: relatório por tarefa (L1–L4) com evidência (gates verdes com números; grep zero-gambiarra incl. `@media`/`grid-template-columns` fiado à mão = vazio; screenshots dos 3 viewports); ATUALIZE a Spec 40 (§1.3 + matriz) e o `00-progresso.md`; deixe explícito o que o dono valida e o que, se falhar, vira a Spec 40.4. NÃO commite sem autorização.
+ENTREGUE: relatório por tarefa (L1–L4) com evidência (gates verdes com números; grep zero-gambiarra incl. `@media`/`grid-template-columns` fiado à mão = vazio; screenshots dos 3 viewports); ATUALIZE a Spec 40 (§1.3 + matriz) e o `00-progresso.md`; deixe explícito o que o dono valida e o que, se falhar, vira uma rodada de correção. NÃO commite sem autorização.
+```
+
+---
+
+## P21.3-C — Spec 40.3 (correção do L1): detecção real de dispositivo (o hambúrguer)
+
+```
+Execute a CORREÇÃO do critério L1 da spec `specs/plan/40.3-multidispositivo-por-padrao.md` da Sarak-Lib-UI-Core. As demais tarefas — L2 (primitivas mobile-first), L3 (densos→cards), L4 (contrato) — foram APROVADAS; NÃO as refaça. A 40.3 foi executada e a validação de browser do dono REPROVOU o L1: o cromo NÃO colapsa em menu hambúrguer no celular — mesmo com BUILD FRESCO (o dono reiniciou o dev e limpou cache) e mesmo em `navigationStyle:'sidebar'`, a barra continua topbar de texto. As telas (cards/grid) adaptam; só o cromo não vira hambúrguer/drawer.
+
+DIAGNÓSTICO JÁ FEITO (confirme, não redescubra): o CÓDIGO do componente está correto — `SarakUIProvider` monta `<DeviceProvider>` (`src/core/Provider/SarakUIProvider.tsx:177`); `SarakAppChrome` roteia `device==='smartphone' → SarakAppChromeMobile` (`src/components/Layout/SarakAppChrome.tsx:132`); o `SarakAppChromeMobile` tem hambúrguer+drawer+focus-trap corretos. O BURACO é a DETECÇÃO: `useSarakDevice()` (`src/core/Provider/DeviceProvider.tsx`) detecta por `window.innerWidth`+`resize`, MAS os 5 testes por viewport da 40.3 usaram `DeviceProvider overrideDevice` — BYPASSAM a detecção real e passaram verdes enquanto o browser real nunca vira 'smartphone'. É a MESMA classe da armadilha da 40.2 (verde no jsdom, quebrado no browser).
+
+PRINCÍPIOS: zero-gambiarra (fix na LIB; o ERP não muda); renderizador genérico (cromo por-app); a correção tem que fazer a DETECÇÃO REAL funcionar no browser, NÃO mascarar com override.
+
+Preparação: (1) `ui-contexto-repositorio`; (2) leia `00-indice.md`, `00-progresso.md`, a Spec 40.3 INTEIRA (o L1 reprovado no §5) e a Spec 40 §1.3 (Rodada 3); (3) CONFIRME no código: `DeviceProvider` (estado inicial 'desktop', `useEffect` com `window.innerWidth` vs `BREAKPOINT_TABLET=768`/`BREAKPOINT_DESKTOP=1024`) e como o ERP monta a árvore (`@erp/ui-kit` `ErpChrome` → `SarakAppChrome` sob `SarakUIProvider`).
+
+TAREFA (LIB):
+1. REPRODUZIR num browser real / headless (Playwright) sobre o BUILD FRESCO, a <768px — documentando os passos que DESCARTAM em definitivo o cache do Vite (`.vite` limpo; `file:` = cópia no store; `version` da lib). Se NÃO reproduzir fresco, era cache → registre e feche com a prova headless. Se reproduzir, siga.
+2. ACHAR a causa real de `useSarakDevice()` não retornar 'smartphone' no browser do ERP. Suspeitos, nesta ordem: (a) a detecção real nunca foi validada — estado inicial 'desktop' e o `useEffect`/`resize` não corrige no cenário; (b) DUAS instâncias do módulo de contexto (lib buildada + dedupe de chunk) → o `useContext(DeviceContext)` do `SarakAppChrome` não enxerga o Provider e fica em 'desktop' (checar o `dist`/chunks); (c) timing/StrictMode/hidratação; (d) a árvore real do ERP (o `SarakAppChrome` está mesmo SOB o `SarakUIProvider`?).
+3. CORRIGIR na fonte para a detecção real valer em runtime SEM `overrideDevice` (esse fica só como hook do Gêmeo Digital/testes).
+4. TROCAR/ADICIONAR o teste para exercitar o CAMINHO REAL — setar `window.innerWidth` + disparar `resize` (ou `matchMedia` mockado) e afirmar que o `SarakAppChrome` renderiza o hambúrguer/`SarakAppChromeMobile`. Um teste que TERIA pego este bug.
+5. NÃO regredir L2/L3/L4 nem a acessibilidade/tematização do drawer.
+
+GATES: `catalog:check`; `barrel:check`; `npm run build` (DTS); suíte COMPLETA `npx vitest run`; `package:check`; `run_audit.mjs` no baseline.
+
+FRONTEIRAS: só o L1/detecção; não reescrever o conector; não host/mono-SPA; não mexer nos tokens (Spec 40.4), no bundle (41) nem no `SarakCoreCard` (42).
+
+PROVA (obrigatória): screenshots headless (Playwright) do BUILD FRESCO nos 3 viewports — 375px (hambúrguer + drawer abrindo/fechando), 768px (tier tablet), 1280px (desktop) — anexados ao relatório.
+
+ENTREGUE: relatório com causa-raiz, fix, o teste novo do caminho real e as 3 provas headless; marque o L1 `[x]` na Spec 40.3 (§5) + atualize o status dela; atualize a Spec 40 (§1.3 Rodada 3 + matriz R12) e o `00-progresso.md`. NÃO commite sem autorização.
+```
+
+---
+
+## P21.4 — Spec 40.4: Reconciliação do contrato de tokens da Design Engine
+
+```
+Execute a spec `specs/plan/40.4-reconciliacao-contrato-tokens.md` da Sarak-Lib-UI-Core. É a rodada 4 do ciclo 40.x (CORREÇÃO): a validação de browser da 40.3 expôs no console uma enxurrada de `[Sarak:Design] Token "X" com valor fora do contrato — descartado.` (`searchPositionSidebar`=none, `cardVariant`=solid, `h1Weight`=800, `btnStyleType`=solid, `switchStyleType`=solid, `easeOut`=cubic-bezier(0,0,0.2,1), `surfaceMaterial`=solid, `systemTone`=neutral, `shadowColorMode`=monochrome). É DRIFT INTERNO da lib: o tema COMPLETO (defaults + `SARAK_REFERENCE_THEMES`, montado pela 40.1 L6) carrega valores que o validador estrito da Spec 44 descarta → um bloco de eixos de tema NÃO aplica (contradiz o R10). O ERP só faz `spread` dos temas de referência — nenhuma gambiarra no importador; é fix 100% de LIB.
+
+PRINCÍPIO INEGOCIÁVEL: reconciliar valor↔contrato NA FONTE, token a token — NUNCA afrouxar o `validateDesign` para "aceitar qualquer coisa" (reabriria o vetor de segurança que a Spec 44 fechou: tema é DADO, domínio FECHADO). Respeitar a Paridade 1:1:1:1:1:1 (opção vive no schema; catálogo/gerados em sincronia). Preservar a aparência pretendida dos temas (snapshot antes de mudar valores).
+
+Preparação: (1) `ui-contexto-repositorio`; (2) leia `00-indice.md`, `00-progresso.md` e a Spec 40.4 INTEIRA (§2 estado confirmado + §3 tarefas L1–L4); (3) CONFIRME no código: `src/core/Provider/utils/validation.ts` (`coerceTokenValue`:101-132, warn:147; `select`→enum:114-120), `src/core/Design/schema/*` (as `constraints.options`), os temas shippados (`src/core/Design/presets/themes/*`, `SARAK_REFERENCE_THEMES`, `GLOBAL_THEMES`) e como o conjunto COMPLETO é montado (`buildThemeExportPayload`/`getDefaultDesignState`, 40.1 L6) — mapeie a FONTE exata de cada valor rejeitado (default do token vs. tema específico). Skills: `ui-arquitetura-design`, `ui-refatorar-componente`, `sarak:padrao-typescript`.
+
+TAREFA (LIB, L1–L4):
+- L1: AUDITORIA EXAUSTIVA — script/teste que percorre cada token do `MASTER_DESIGN_MAP` × cada valor emitido pelos temas shippados (defaults + referência + globais/presets) e lista TODO valor que `coerceTokenValue` rejeitaria (o console mostra só o que o boot tocou). Saída: `{token, fonte, valor, motivo}`.
+- L2: RECONCILIAR cada drift na fonte, decisão determinística por token: valor legítimo + enum incompleto → adicionar a opção ao `constraints.options` (id/value/label, paridade sincronizada); enum canônico + valor errado → corrigir o `defaultValue`/`legacyValue` ou o valor no tema de referência para uma opção válida, preservando o visual. Sem inventar opção só para calar o aviso; sem afrouxar o validador.
+- L3: GATE anti-regressão (família `catalog:check`/`barrel:check`) que FALHA o build se qualquer default/legacy de token OU valor de tema shippado cair fora do próprio contrato.
+- L4: caracterização (snapshot dos temas afetados antes) + verificar que os tokens antes descartados AGORA aplicam (viram `var(--sarak-*)`); teste que carrega cada tema shippado e afirma console SEM `fora do contrato`.
+
+GATES: `catalog:check`; `barrel:check`; `npm run build` (DTS); suíte COMPLETA `npx vitest run`; `package:check`; `run_audit.mjs` no baseline. O gate novo (L3) entra no conjunto.
+
+FRONTEIRAS: não afrouxar `validateDesign`; não redesenhar o sistema de tokens nem adicionar tokens novos; não mexer na responsividade (40.3), no bundle (41) nem no `SarakCoreCard` (42); não tocar o ERP além de conferir o console.
+
+VALIDAÇÃO (dono, browser): abrir o ERP (conector + Propostas + `/design`) → console SEM avisos `fora do contrato`; tema renderiza igual (ou melhor — eixos antes descartados agora aparecem); trocar tema segue repintando.
+
+ENTREGUE: relatório por tarefa (L1–L4) com a lista de drift, as decisões de reconciliação, a prova do gate falhando ao reintroduzir um drift, e os gates verdes com números; ATUALIZE a Spec 40 (nota no R10) e o `00-progresso.md`. NÃO commite sem autorização.
+```
+
+---
+
+## P50 — Spec 50: Kit de uso do consumidor (`sarak-ui/`) — dinâmico, genérico, shippado *(renumerada de 40.4; ÚLTIMA da execução, após 46/41/42)*
+
+```
+Execute a spec `specs/plan/50-kit-de-uso-do-consumidor.md` da Sarak-Lib-UI-Core (renumerada de 40.4 → 50; é a ÚLTIMA da execução — rode só DEPOIS de 46/41/42). Fase de ENABLEMENT: as rodadas 40.1–40.4 fecharam a CAPACIDADE e a lib está estruturalmente fechada; esta produz o KIT que explica ao importador COMO usar o módulo, de forma DINÂMICA (nunca desatualiza) e GENÉRICA (qualquer importador; o ERP é só um exemplo — NÃO cite o ERP).
+
+PRINCÍPIO CENTRAL — DINÂMICO: nunca escreva à mão o que muda. As listas (componentes/props/tokens/contrato de responsividade da 40.3) são GERADAS das fontes vivas (barril, `docs/manifest-catalog.json` AST, `design-token-ids`); a prosa (regras/topologias/como-fazer) é estável e APONTA para o gerado, nunca duplica. Um GATE barra o build se o kit estiver stale.
+
+Preparação: (1) `ui-contexto-repositorio`; (2) leia `00-indice.md`, `00-progresso.md` e a Spec 50 INTEIRA; (3) veja o pipeline existente `npm run catalog` (reusar o AST, não reinventar), o `package.json` (`files`, scripts), `scripts/check-package-contents.mjs`, a skill `.agents/skills/ui-integra-consumidor` (será reescrita), o `init`/scaffolder (Spec 45) e `sarak:update` (Spec 39). Skills: `sarak:padrao-typescript`, `ui-integra-consumidor`, `meta-create-skill` se precisar do formato de skill.
+
+ENTREGAR (tudo LIB):
+- ARTEFATO `sarak-ui/` na RAIZ do pacote, com: `START-HERE.md` (guia para o agente do importador mover a spec→`specs/` e a skill→`.claude/skills/`, + a regra "leia o catálogo, não assuma", + carimbo de versão); `GUIA-FRONTEND.md` (o DOCUMENTO ÚNICO — 4 topologias [monolito, monorepo, monolito modular, microsserviço] + todos os casos [componente existe→barril+tokens; falta componente→React+tokens opção A ou demanda, nunca hardcode fora do contrato; extrair TUDO→o catálogo vivo; tema→JSON+Design Engine; multidispositivo→contrato da 40.3; isolamento→Provider/cromo por app, sem import lateral]); `skill/` (a `ui-integra-consumidor` reescrita, versão consumidor, regra nº1 "leia o catalog.json"); `catalog.json` (GERADO); `VERSION`.
+- GERADOR `npm run guide` (monta o `catalog.json`, injeta o apêndice gerado no `GUIA-FRONTEND.md`, grava o `VERSION`, reusando o AST do `npm run catalog`).
+- GATE `npm run guide:check` (regenera+diff, falha o build se stale — família de `catalog:check`/`barrel:check`; ligado à CI/build).
+- REESCREVER `ui-integra-consumidor` (fonte em `.agents/skills/` + espelho `.claude` symlink) para a realidade atual.
+- EMPACOTAMENTO: `sarak-ui/` nos `files`; `check-package-contents.mjs` passa a EXIGIR `sarak-ui/`; `init` copia o kit; `sarak:update` refresca as cópias movidas pelo `VERSION`.
+
+FRONTEIRAS: não escrever à mão o que é gerável; não citar o ERP (genérico); não duplicar o pipeline AST (reusar `npm run catalog`); não executar o teste do módulo novo aqui (é a validação do dono, §9 da spec).
+
+GATES: `catalog:check`, `barrel:check`, `guide:check` (novo), `npm run build` (DTS), suíte COMPLETA `npx vitest run`, `package:check` (com `sarak-ui/`), `run_audit.mjs` no baseline.
+
+ENTREGUE: relatório com evidência (o `sarak-ui/` gerado; prova de que `guide:check` falha quando um componente é adicionado sem regenerar; grep de "ERP" no `sarak-ui/` = vazio; gates verdes com números); ATUALIZE o `00-progresso.md`. NÃO commite sem autorização. Deixe claro que a validação final é o dono construir um MÓDULO NOVO seguindo só o `sarak-ui/`.
 ```
 
 ---

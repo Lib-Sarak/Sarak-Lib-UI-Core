@@ -102,11 +102,16 @@ o consumidor escrever CSS** (isso seria gambiarra). A lib degrada graciosamente 
   Opt-out: `responsive={false}` mantém a tabela colunar em qualquer dispositivo.
 - Tudo por tokens (`--sarak-card-*`, `--sarak-layout-gap-*`) — o consumidor não pinta nada.
 
-> **Follow-up registrado (não resolvido nesta rodada — evitar "boilar o oceano"):** os
-> vizinhos densos **`SarakTable`**, **`SarakManagementGrid`** e a primitiva headless
-> **`SarakDataGrid`** ainda não têm colapso mobile próprio. O `SarakDataTable` foi priorizado
-> por ser o que o ERP usa (Teste Real / Spec 40). Os demais entram numa spec de
-> responsividade dedicada quando um consumidor real os exigir no mobile.
+- **`SarakTable`** (denso genérico) — no smartphone também **colapsa para cards** empilhados
+  (`SarakTableCards`, Spec 40.3 — L3), reusando as mesmas colunas/rótulos. Desktop/tablet
+  seguem a tabela dentro de um container com scroll X contido (`overflow-x-auto`).
+
+> **Follow-up registrado (não resolvido — evitar "boilar o oceano"):** os vizinhos densos
+> **`SarakManagementGrid`** e a primitiva headless **`SarakDataGrid`** ainda não têm colapso
+> mobile próprio. O ERP não os usa hoje (Teste Real / Spec 40 — as telas migraram para
+> cards/listas), então entram numa spec de responsividade dedicada quando um consumidor real
+> os exigir no mobile. Os densos que a lib JÁ adapta são `SarakDataTable` (Spec 40.2) e
+> `SarakTable` (Spec 40.3).
 
 ```tsx
 import { DeviceProvider, useSarakDevice, SarakHidden, type ResponsiveValue } from '@sarak/lib-ui-core';
@@ -128,3 +133,37 @@ const largura: ResponsiveValue<number> = { mob: 200, tab: 220, desk: 240 };
 
 Breakpoints são tokens do tema (`breakpointTablet`/`breakpointDesktop`) — o consumidor
 não hardcoda largura de tela.
+
+## 4. Contrato de responsividade (Spec 40.3 — L4)
+
+**Layout multidispositivo é por padrão (zero-config).** O consumidor **não escreve CSS nem
+media query** para as telas adaptarem a celular/tablet/desktop — o cromo e as primitivas
+consomem `useSarakDevice` sozinhos. Onde quiser um layout específico, refine passando
+`ResponsiveValue<T>` (nunca é obrigatório). Breakpoints: **celular** `< 768px`, **tablet**
+`768–1023px`, **desktop** `≥ 1024px`.
+
+### O que adapta automaticamente
+
+| Componente | Celular | Tablet | Desktop | Refino opcional |
+| --- | --- | --- | --- | --- |
+| **`SarakAppChrome`** (cromo) | barra compacta + **hambúrguer → drawer** (nav não come a tela, acessível: `aria-expanded`/foco/ESC) | **topbar compacta** | sidebar **ou** topbar (por `navigationStyle`) | tokens de cromo (`--sarak-sidebar-*`/`--sarak-topbar-*`) aceitam `ResponsiveValue` |
+| **`SarakGrid`** | **1 coluna** (um `templateColumns` fixo colapsa; nunca estoura) | valor cheio | valor cheio | `templateColumns={{ mob, tab, desk }}` |
+| **`SarakFlex`** | **quebra em linhas** (`wrap` on) | idem | idem | `wrap={false}`; `direction={{ mob, tab, desk }}` |
+| **`SarakSplitPane`** | **empilha** em coluna full-width (sem divisória) | split redimensionável | split redimensionável | — |
+| **`SarakDataTable`** | **colapsa para cards** (`SarakDataCards`) | tabela colunar (scroll X contido) | idem | `responsive={false}` (opt-out) |
+| **`SarakTable`** | **colapsa para cards** (`SarakTableCards`) | tabela (scroll X contido) | idem | — |
+| **`SarakHidden`** | oculta por `on={['smartphone', ...]}` | idem | idem | — |
+
+### Regras do contrato
+
+- **Nenhum `grid-template-columns` fixo estoura no celular** — a lib colapsa para 1 coluna por
+  padrão; passe `ResponsiveValue` para controlar por dispositivo.
+- **A adaptação é do componente, não do host** — funciona em qualquer deploy (monólito,
+  modular, microfrontend). O cromo é por-app (cada app renderiza o seu `SarakAppChrome`).
+- **Zero-config com controle opcional** — defaults mobile-first sensatos; `ResponsiveValue<T>`
+  é sempre opcional, nunca exigido.
+- **Fora do contrato desta rodada** (registrado, não corrigido): colapso mobile de
+  `SarakManagementGrid` e `SarakDataGrid` (o ERP não os usa) — spec dedicada quando exigidos.
+- Para forçar/observar o dispositivo numa subárvore (ex.: preview/Gêmeo Digital), use
+  `DeviceProvider overrideDevice`; o `SarakUIProvider` já monta um `DeviceProvider` que segue
+  o viewport real.

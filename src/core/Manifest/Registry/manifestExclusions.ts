@@ -46,6 +46,7 @@ export const MANIFEST_EXCLUSIONS: Readonly<Record<string, string>> = {
     IconMap: 'Catálogo de dados de ícones — consumido pelo type `SarakIcon`.',
     SarakDataGridImpl: 'Implementação interna do type lazy `SarakDataGrid` (vaza pelo barrel).',
     SarakDataTableImpl: 'Implementação interna do type lazy `SarakDataTable` (vaza pelo barrel).',
+    SarakTableCards: 'Colapso mobile interno do `SarakTable` (Spec 40.3 — L3), renderizado por ele no celular; não é nó de manifesto avulso.',
 };
 
 /**

@@ -14,9 +14,11 @@ import {
 import { SarakInput } from '../Inputs';
 import { SarakButton, SarakIconButton } from '../Buttons';
 import { useSarakUI } from '../../../core/Provider/SarakUIProvider';
+import { useSarakDevice } from '../../../core/Provider/DeviceProvider';
 import { useTableLayoutStyles } from '../Tables/hooks/useTableLayoutStyles';
 import { useStructuralStyles } from '../hooks/useStructuralStyles';
 import { useSarakTableData } from './hooks/useSarakTableData';
+import { SarakTableCards } from './SarakTableCards';
 import { twMerge } from 'tailwind-merge';
 
 export interface SarakTableProps<TData extends Record<string, unknown> = Record<string, unknown>> {
@@ -37,6 +39,7 @@ export interface SarakTableProps<TData extends Record<string, unknown> = Record<
  */
 export const SarakTable = <TData extends Record<string, unknown> = Record<string, unknown>>({ endpoint, data: initialData, label, mapping, role = 'neutral', density = 'standard' }: SarakTableProps<TData>) => {
     const { design } = useSarakUI();
+    const device = useSarakDevice();
     const { tableWrapperClass, cellDensityClass, actionColumnAlignmentClass } = useTableLayoutStyles(design);
     const { getContainerStyles, getHeaderStyles } = useStructuralStyles();
     
@@ -107,6 +110,11 @@ export const SarakTable = <TData extends Record<string, unknown> = Record<string
 
             {/* Container da Tabela com Glassmorphism */}
             <div className="relative bg-[var(--color-theme-card,#1e293b)] border-[var(--border-color,#334155)] overflow-hidden rounded-[var(--sarak-card-radius,12px)]">
+                {device === 'smartphone' ? (
+                    // L3 (Spec 40.3): no celular a tabela larga colapsa para cards empilhados
+                    // (mesmas colunas/rótulos), sem overflow horizontal da página.
+                    <SarakTableCards rows={filteredData} columns={columns} columnLabels={columnLabels} loading={loading} />
+                ) : (
                 <div className="overflow-x-auto">
                     <table className="w-full text-left border-collapse">
                         <thead>
@@ -182,6 +190,7 @@ export const SarakTable = <TData extends Record<string, unknown> = Record<string
                         </tbody>
                     </table>
                 </div>
+                )}
 
                 {filteredData.length === 0 && !loading && (
                     <div className={twMerge("items-center justify-center text-center", containerLayout.className)} style={{ padding: 'calc(var(--sarak-layout-gap-md,16px) * 5)', gap: 'calc(var(--sarak-layout-gap-md,16px) / 2)' }}>

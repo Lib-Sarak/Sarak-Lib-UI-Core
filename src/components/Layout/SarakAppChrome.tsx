@@ -1,6 +1,8 @@
 import React from 'react';
 import { SarakShellNav, type ShellNavItem } from '../atomic/Navigation/SarakShellNav';
 import { useNavigationStyle } from '../../core/Provider/useNavigationStyle';
+import { useSarakDevice } from '../../core/Provider/DeviceProvider';
+import { SarakAppChromeMobile } from './SarakAppChromeMobile';
 
 /**
  * Item de navegação estruturado do `SarakAppChrome` (Spec 40.2 — L1).
@@ -42,6 +44,13 @@ export interface SarakNavItem {
  * renderiza sozinho. Sem `registerSarakModule`, sem Discovery, sem acoplar módulos.
  * A navegação é DADO (`navItems`/`nav`) e a seleção sai por callback (`onNavigate`) —
  * o host decide o que fazer (redirect de página inteira, router local, etc.).
+ *
+ * Multidispositivo por padrão (Spec 40.3 — L1), zero-config via `useSarakDevice`: em
+ * **desktop** é o cromo configurado (sidebar/topbar); em **tablet** vira topbar compacta
+ * (a sidebar cheia comeria a tela ≤1024px); no **celular** colapsa para barra + hambúrguer
+ * + drawer (`SarakAppChromeMobile`) — a nav não ocupa a tela toda e continua acessível. O
+ * consumidor não escreve CSS/media query; para refinar, os tokens de cromo aceitam
+ * `ResponsiveValue` pelo Design Engine.
  *
  * Zero hardcode (Regra 2): toda cor/medida vem de tokens `--sarak-*` com fallback.
  */
@@ -112,7 +121,16 @@ export const SarakAppChrome: React.FC<SarakAppChromeProps> = ({
     style,
 }) => {
     const designNav = useNavigationStyle();
+    const device = useSarakDevice();
     const resolved = navigationStyle === 'auto' ? (designNav === 'topbar' ? 'topbar' : 'sidebar') : navigationStyle;
+
+    // Multidispositivo por padrão (Spec 40.3 — L1), zero-config via `useSarakDevice`:
+    //  - desktop: o cromo configurado (sidebar OU topbar por `navigationStyle`);
+    //  - tablet:  tier intermediário — topbar compacta (a sidebar cheia comeria a tela ≤1024px);
+    //  - celular: colapsa para barra + hambúrguer + drawer (`SarakAppChromeMobile`), a nav não
+    //             ocupa a tela toda e fica acessível. O consumidor não escreve CSS/media query.
+    const mode: 'sidebar' | 'topbar' | 'mobile' =
+        device === 'smartphone' ? 'mobile' : device === 'tablet' ? 'topbar' : resolved;
 
     // `navItems` (Spec 40.2 — L1) tem precedência: mapeia o modelo estruturado
     // (id/href/active + ícone) para o contrato do `SarakShellNav`, reusando o mesmo
@@ -143,7 +161,23 @@ export const SarakAppChrome: React.FC<SarakAppChromeProps> = ({
         </main>
     );
 
-    if (resolved === 'topbar') {
+    if (mode === 'mobile') {
+        return (
+            <SarakAppChromeMobile
+                brand={<Brand brand={brand} horizontal />}
+                nav={effectiveNav}
+                activeRoute={effectiveActiveRoute}
+                onNavigate={onNavigate}
+                topbarActions={topbarActions}
+                className={className}
+                rootStyle={rootStyle}
+            >
+                {children}
+            </SarakAppChromeMobile>
+        );
+    }
+
+    if (mode === 'topbar') {
         return (
             <div className={`flex flex-col w-full h-full min-h-0 ${className}`} style={rootStyle}>
                 <header

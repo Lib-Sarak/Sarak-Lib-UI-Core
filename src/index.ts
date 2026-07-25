@@ -24,6 +24,11 @@ export * from './core/Shell/SarakShell';
 // e documentada para o consumidor compor multi-dispositivo sem CSS próprio.
 export * from './core/Provider/DeviceProvider';
 export type { ResponsiveValue } from './core/Design/types';
+// Resolvedor puro `ResponsiveValue<T>` → device ativo (Spec 40.3 — L2): as primitivas de
+// layout o usam para aceitar valores por dispositivo; exposto para o consumidor resolver
+// valores responsivos no próprio código, sem duplicar a cascata mobile-first.
+export { resolveResponsiveValue, isResponsiveValue } from './core/Design/resolveResponsiveValue';
+export type { ResponsiveDevice } from './core/Design/resolveResponsiveValue';
 export * from './components/Layout/SarakAnalyticalPage';
 export * from './components/Layout/SarakHidden';
 // Cromo apresentacional temável topbar/sidebar (Spec 40.1 — L2), sem host/registro.
