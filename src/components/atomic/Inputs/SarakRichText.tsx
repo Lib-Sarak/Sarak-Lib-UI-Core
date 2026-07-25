@@ -11,7 +11,7 @@
 
 import React, { useEffect, useRef } from 'react';
 import { Bold, Italic, List, ListOrdered, Link2 } from 'lucide-react';
-import { sanitizeHtml } from '../../../core/Manifest/Security/sanitizeHtml';
+import { sanitizeHtml } from '../../../core/Security/sanitizeHtml';
 
 /** Allowlist semântica restrita (Regra 4): sem `style`/`script`, só marcação segura. */
 const ALLOWED_TAGS = ['p', 'br', 'b', 'strong', 'i', 'em', 'u', 's', 'ul', 'ol', 'li', 'a', 'h1', 'h2', 'h3', 'blockquote', 'code'];

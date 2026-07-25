@@ -32,8 +32,13 @@ export const STARTER_DEV_DEPENDENCIES = {
     '@types/react-dom': '^18.0.0',
 };
 
-/** As 2 skills que o `init` copia para o consumidor (mesmo par da Etapa 6 de `ui-integra-consumidor`). Removidas na Spec 46 (o motor de manifesto sai). */
-export const SKILLS_TO_COPY = ['ui-integra-escrever-manifesto', 'ui-auditoria-manifesto'];
+/**
+ * Skills que o `init` copia para o consumidor. Vazio desde a Spec 46 (removeu o
+ * motor de manifesto e as 2 skills que o acompanhavam — `ui-integra-escrever-manifesto`/
+ * `ui-auditoria-manifesto`); o modelo oficial (módulos-plugin) não tem skill de
+ * consumo própria a copiar. Mantido como mecanismo para uma futura skill do gênero.
+ */
+export const SKILLS_TO_COPY = [];
 
 /**
  * Spec da dependência git usada quando o consumidor ainda não tem

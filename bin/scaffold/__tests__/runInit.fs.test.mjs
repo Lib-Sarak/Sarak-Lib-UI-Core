@@ -103,12 +103,11 @@ describe('runInit (fs real, tmp dir) — starter padrão módulos-plugin (Spec 4
         expect(content).not.toContain('edição manual');
     });
 
-    it('copia as 2 skills de consumo para .agents/skills e .claude/skills', async () => {
+    it('não copia skill nenhuma (SKILLS_TO_COPY vazio desde a Spec 46 — sem motor de manifesto)', async () => {
         await runInit({ rootDir: tmpDir, overrideAnswers: STARTER_ANSWERS });
 
         for (const base of ['.agents/skills', '.claude/skills']) {
-            expect(fs.existsSync(path.join(tmpDir, base, 'ui-integra-escrever-manifesto', 'SKILL.md'))).toBe(true);
-            expect(fs.existsSync(path.join(tmpDir, base, 'ui-auditoria-manifesto', 'SKILL.md'))).toBe(true);
+            expect(fs.existsSync(path.join(tmpDir, base))).toBe(false);
         }
     });
 

@@ -1,6 +1,6 @@
 import { describe, it, expect, vi, beforeEach, afterEach } from 'vitest';
 import { resolveGap } from '../useStructuralStyles.gap';
-import { resetTokenWarnings } from '../../../../core/Manifest/Tokens';
+import { resetTokenWarnings } from '../../../../core/Design/resolveToken';
 
 describe('resolveGap (ponte prop → resolutor de tokens, Spec 16)', () => {
     beforeEach(() => resetTokenWarnings());

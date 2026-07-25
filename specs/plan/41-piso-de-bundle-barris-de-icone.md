@@ -42,6 +42,11 @@ Padrão de acesso (ex. `SarakActionCard`): `LucideIcons[mapping.icon as keyof ty
 - **`lucide-react` é `peerDependency` e está em `--external` no `build:js`.** Ou seja: NÃO entra no `dist/` da lib; o `import * as` sobrevive como import externo e é o **bundle do CONSUMIDOR** que incha (os 2,44 MB medidos). 
 - **`@phosphor-icons/react` e `@tabler/icons-react` são `dependencies` e NÃO estão na lista `--external`.** Hipótese a VERIFICAR na medição: podem estar sendo **empacotadas inteiras dentro do `dist/` da própria lib**. Se confirmado, é um segundo vetor, possivelmente maior, e independente do consumidor.
 
+## 1.4 Terceira dimensão, confirmada no Teste Real: o `export *` do consumidor (2026-07-25)
+O `RELATORIO-TESTE-REAL` (§7.5) mediu, no bundle REAL do ERP, um vetor ADICIONAL (possivelmente maior que os ícones): o `export * from '@sarak/lib-ui-core'` — feito no `ui-kit` do consumidor — reexporta **todo o grafo alcançável**, arrastando para o `dist/` do consumidor chunks lazy pesados que o app nem importa: `pdf.worker` (~1,2 MB), `prism`/syntax-highlighter (~736 KB), `SarakPDFViewerImpl` (~479 KB), `SarakChartEngine`/echarts (~374 KB), `SarakFlowEngine`/reactflow (~139 KB). São chunks **separados** (o browser não baixa em produção real), mas **peso morto** em disco/CDN. **Medir também esta dimensão** e avaliar mitigações (o consumidor reexportar só o que usa; a lib oferecer **subpaths/entradas granulares**; ampliar `HEAVY_LAZY`). Não confundir com os ícones (§1.2), que atacam o **grafo estático inicial**; este ataca o **total de chunks emitidos**.
+
+> **Nota de sequência (2026-07-25):** o raciocínio do §1.1 (piso vindo do Registry ansioso do #2) muda quando a **Spec 46 remove o #2** — parte do piso sai. Por isso 41 roda **DEPOIS da 46** e re-mede do zero (a linha de base é outra). As três dimensões (ícones §1.2, phosphor/tabler §1.3, `export *` §1.4) são independentes — medir cada uma.
+
 # 2. Regras de Negócio (Solução)
 
 ## 2.1 MEDIR ANTES de refatorar (regra dura)

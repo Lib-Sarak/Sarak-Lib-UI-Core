@@ -106,14 +106,6 @@ export * from './components/atomic/DataDisplay';
 export * from './components/atomic/Media';
 export { default as SarakChartEngine } from './components/engines/charts/SarakChartEngine';
 
-// Manifest Engine — Bloco Funcional (Contrato do Importador — Spec 30)
-// Porta de entrada da automação total: `<SarakManifestRenderer />` + suas Interfaces
-// TS. Contrato (Spec 30, Regra 2): `payload` · `dataStore` (21) · `networkInterceptor`
-// (31) · `routerInterceptor` (25) — e `route`/`shell`/`routes` da composição em app
-// multi-página (Spec 33). Fundação 20–22; engines 23–29/31; responsividade como dado
-// (16). Os átomos isolados (SarakButton, etc.) seguem exportados acima (Regra 1).
-export * from './core/Manifest';
-
 // Discovery and Dynamic Rendering (Universal Bridge)
 export { default as DynamicRenderer } from './core/Discovery/DynamicRenderer';
 export * from './core/Discovery/registry';

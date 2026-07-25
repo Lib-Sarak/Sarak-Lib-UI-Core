@@ -1,4 +1,4 @@
-import { resolveToken } from '../../../core/Manifest/Tokens';
+import { resolveToken } from '../../../core/Design/resolveToken';
 
 /**
  * Resolve a medida de `gap` vinda de prop (token semântico ou CSS já válido) para

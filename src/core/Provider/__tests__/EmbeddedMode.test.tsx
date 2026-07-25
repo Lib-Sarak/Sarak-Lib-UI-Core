@@ -12,13 +12,10 @@
  * (`scopeCss.test.ts`).
  */
 
-import React from 'react';
+import React, { useState } from 'react';
 import { render, screen, fireEvent, act } from '@testing-library/react';
 import { describe, it, expect, beforeEach } from 'vitest';
 import SarakUIProvider from '../SarakUIProvider';
-import { SarakManifestRenderer } from '../../Manifest/SarakManifestRenderer';
-import { createSarakDataStore } from '../../Manifest/DataStore/SarakDataStore';
-import type { ManifestRoot } from '../../Manifest/types';
 import { SARAK_SCOPE_CLASS } from '../scope';
 import { useToast } from '../../../components/atomic/Feedback/SarakToast';
 
@@ -135,24 +132,23 @@ describe('Modo Embarcado — o Provider não toca em nada fora da ilha', () => {
         expect(toast.closest(`.${SARAK_SCOPE_CLASS}`)).not.toBeNull();
     });
 
-    it('N Renderers sob 1 Provider embarcado: DataStores independentes, 1 só escopo', () => {
-        const manifesto = (): ManifestRoot => ({
-            schemaVersion: 1,
-            type: 'SarakTypography',
-            props: { content: '{{titulo}}' },
-        });
-
-        const storeA = createSarakDataStore({ titulo: 'dados-da-ilha-A' });
-        const storeB = createSarakDataStore({ titulo: 'dados-da-ilha-B' });
+    it('N árvores React sob 1 Provider embarcado: estado independente, 1 só escopo', () => {
+        // Cada ilha carrega SEU PRÓPRIO estado local (React puro, sem DataStore
+        // compartilhado do antigo motor de manifesto — Spec 46) para provar que não
+        // há vazamento de estado entre árvores irmãs sob o mesmo escopo embarcado.
+        const Ilha: React.FC<{ inicial: string }> = ({ inicial }) => {
+            const [valor] = useState(inicial);
+            return <span>{valor}</span>;
+        };
 
         render(
             <SarakUIProvider config={DESIGN} options={{ mode: 'embedded' }}>
-                <SarakManifestRenderer manifest={manifesto()} dataStore={storeA} />
-                <SarakManifestRenderer manifest={manifesto()} dataStore={storeB} />
+                <Ilha inicial="dados-da-ilha-A" />
+                <Ilha inicial="dados-da-ilha-B" />
             </SarakUIProvider>,
         );
 
-        // Cada ilha resolve o binding contra o SEU dataStore — sem interferência.
+        // Cada ilha mantém o SEU estado — sem interferência.
         const ilhaA = screen.getByText('dados-da-ilha-A');
         const ilhaB = screen.getByText('dados-da-ilha-B');
 

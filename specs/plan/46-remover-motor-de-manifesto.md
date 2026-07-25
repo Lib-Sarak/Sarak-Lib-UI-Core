@@ -2,7 +2,7 @@
 tipo: "spec"
 titulo: "Remover o renderizador de páginas por manifesto (#2) — preservando o modelo de módulos (#1)"
 dominio: "Arquitetura / Remoção / Redução de escopo"
-status: "🔴 Planejada (remoção grande; SÓ depois do Teste Real provar o modelo de módulos)"
+status: "🟢 Concluída (2026-07-25) — #2 removido em 6 fatias (0-5), gates verdes em cada uma; #1/#3 intactos; bundle re-medido"
 prioridade: "Alta"
 tags: ["spec", "virada", "remocao", "manifesto"]
 relacionados: ["43-design-system-primeiro", "40-teste-real", "44-temas-json-e-persistencia", "45-scaffolder-react-e-skills"]
@@ -30,6 +30,14 @@ Remover a camada de renderização de páginas por manifesto (#2) — a que falh
 - **Testes** de `src/core/Manifest/__tests__` e **templates** manifesto-only (`templates/app-starter.manifest.json`).
 - **NÃO remover:** `core/Shell/` (SarakShell legado = modelo oficial agora), `core/Discovery/` (registro de módulos), `core/Provider/`, `core/Design/`, `components/atomic/`.
 
+## 3.1 Desacoplamento OBRIGATÓRIO antes de deletar (achado do ciclo 40.x — 2026-07-25)
+O ciclo 40.x construiu **ferramental do modelo oficial (#3) EM CIMA do Registry do #2** (`nativeComponents.ts`). Removê-lo sem re-apontar esses consumidores **quebra o #3**. Portanto, ANTES de deletar `src/core/Manifest/`:
+- **Gate de paridade de barril** (`scripts/check-barrel-parity.mjs`, Spec 40.1) — hoje cruza `nativeComponents.ts` contra `src/index.ts`. Re-apontar para a fonte que sobrevive (AST dos componentes públicos e/ou o próprio barril), sem depender do Registry do #2.
+- **Gerador de catálogo** (`npm run catalog` / `generate-manifest-catalog.mjs`) — hoje gera do Registry do #2. O #3 **e a Spec 50** (o kit do consumidor, que reusa o `catalog`) precisam de um catálogo da **API pública**; re-apontar para o barril/AST.
+- **Gerador do kit do consumidor** (Spec 50, `npm run guide`) — reusa o `catalog`; garantir que o catálogo que ela consome **não** dependa do #2 (a 50 roda por último, mas sua fonte não pode ter sido removida).
+- **Componentes registrados no #2 durante o ciclo** (`SarakLink`, os 6 inputs da 40.1) — sair do `nativeComponents.ts` **não pode des-exportá-los do barril**; eles já estão em `src/index.ts` (é o que vale para o consumidor).
+- **Regra:** cada ferramenta acima passa a ler o barril/AST **antes** de o `nativeComponents.ts` ser deletado; `barrel:check` e `catalog:check` seguem **verdes** em toda fatia. Se algo do #3 ficar órfão do Registry, **PARE** — o desacoplamento vem primeiro. Isto é o que muda o tamanho desta spec: não é só "deletar o #2", é "mudar a fonte do ferramental do #3 e então deletar o #2".
+
 # 4. Pré-condições (trava de sequência)
 - **Spec 40 (Teste Real) concluída e verde** — modelo de módulos provado no ERP.
 - **Spec 44 concluída** — persistência de tema já na camada Provider/Design (não em `core/Manifest/Storage`).
@@ -42,15 +50,15 @@ Remover a camada de renderização de páginas por manifesto (#2) — a que falh
 - Nota de descontinuação no `00-progresso.md`: o #2 existiu (specs 11-42), foi validado para telas simples (Selo 9,3), removido na virada por não ter uso no modelo de módulos. Histórico no git.
 
 # 6. Critérios de Aceite
-- [ ] `src/core/Manifest/` removido; grep-zero de `SarakManifestRenderer`/manifesto-de-página vivo.
-- [ ] `core/Shell/`, `core/Discovery/`, `core/Provider/`, `core/Design/`, `components/atomic/` intactos; `SarakShell`/`registerSarakModule`/`registerLocalComponent` seguem exportados; **MyService intacto**.
-- [ ] `src/index.ts` exporta só a base (Provider, Shell, registro de módulos/componentes, atômicos, Design Engine); nada de renderizador de páginas.
-- [ ] Catálogo/gates do #2 removidos ou substituídos; paridade de tokens de design segue verde.
-- [ ] Skills do #2 removidas (Spec 45); deps que só o #2 usava removidas; `npm pack` menor; bundle re-medido (base nova p/ Spec 41).
-- [ ] `npm run build` verde; suíte restante verde.
-- [ ] Nota de descontinuação no `00-progresso.md`.
+- [x] `src/core/Manifest/` removido (81 arquivos); grep-zero de `SarakManifestRenderer`/manifesto-de-página vivo (só sobram asserções negativas/notas históricas em `bin/scaffold`).
+- [x] `core/Shell/`, `core/Discovery/`, `core/Provider/`, `core/Design/`, `components/atomic/` intactos; `SarakShell`/`registerSarakModule`/`registerLocalComponent` seguem exportados; **MyService intacto** (nenhum arquivo do ERP tocado nesta execução).
+- [x] `src/index.ts` exporta só a base (Provider, Shell, registro de módulos/componentes, atômicos, Design Engine); nada de renderizador de páginas (`export * from './core/Manifest'` removido).
+- [x] Catálogo/gates do #2 removidos ou substituídos; paridade de tokens de design segue verde (`verify_parity.ts` 409/409/409, sem regressão).
+- [x] Skills do #2 removidas (`ui-integra-escrever-manifesto`, `ui-auditoria-manifesto`); nenhuma dependência era exclusiva do #2 (verificado por grep de uso — todas seguem em uso pelo #1/#3; `react-grid-layout` já estava morta ANTES desta spec, fora de escopo); `npm pack` 60→55 arquivos; bundle re-medido (§ abaixo).
+- [x] `npm run build` verde; suíte restante verde (**269 arq / 763 testes**, era 307/996 — a diferença são os **41 arquivos de teste / ~233 testes** do próprio #2 removidos; contagem reconciliada e verificada na revisão de 2026-07-25).
+- [x] Nota de descontinuação no `00-progresso.md`.
 
 # 7. Plano de Testes
-- [ ] Após cada fatia: `npm run build` + suíte + `run_audit.mjs` verdes.
-- [ ] Bundle antes/depois da saída do Registry ansioso (número no progresso — alimenta a Spec 41).
-- [ ] Confirmar Design Engine, Provider, Shell (#1) e componentes funcionando sem o #2; MyService intacto.
+- [x] Após cada fatia (0 a 5): `npm run build` + `package:check` + suíte completa + `run_audit.mjs` verdes (auditoria caiu de 3→2 falhas pré-existentes — sumiu o órfão de manifesto; hardcode+ghostvars são baseline anterior, não desta spec).
+- [x] Bundle antes/depois da saída do Registry ansioso (número no progresso — alimenta a Spec 41): `dist/` 3.5M→3.2M, `index.cjs` 1305KB→1257KB, `index.d.ts` 161.7KB→107KB (-33%), `npm pack` 60→55 arquivos.
+- [x] Confirmado Design Engine, Provider, Shell (#1) e componentes funcionando sem o #2; MyService intacto (não tocado).

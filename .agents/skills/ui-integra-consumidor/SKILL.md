@@ -36,10 +36,10 @@ function App() {
 
 - `registerSarakModule({ id, label, icon, category?, priority? })` registra o módulo — a base gera a navegação (Sidebar/Topbar/Dock, conforme o tema) e o roteamento automaticamente, sem rota declarada à mão.
 - `registerLocalComponent(id, Component)` liga um componente React ao `id` do módulo (alternativa: passar `component` direto no objeto de `registerSarakModule`). Use o padrão `safeRegister`/`registerSarakModuleSafe` do `Sarak-MyService` (`src/main.tsx`) para blindar contra `undefined`/estrutura inválida — é exatamente o que o `init` já gera em `src/main.tsx` (Etapa 2).
-- `SarakShell`, sob `SarakUIProvider`, é quem renderiza a navegação e o módulo ativo. O motor de renderização por manifesto (`SarakManifestRenderer`) segue disponível como caminho **opcional** para quem quiser montar uma tela específica 100% via dado/JSON, mas **não é o modelo de consumo** — as skills desse caminho (`ui-integra-escrever-manifesto`/`ui-auditoria-manifesto`) estão marcadas para remoção na Spec 46; não as ofereça como o fluxo principal.
+- `SarakShell`, sob `SarakUIProvider`, é quem renderiza a navegação e o módulo ativo — o modelo de consumo é 100% React (módulos-plugin); o antigo motor de renderização por manifesto (`SarakManifestRenderer`) foi removido (Spec 46).
 - O importador **pode criar o que precisar** — não há obrigação de "programar em JSON" nem de importar só componentes atômicos prontos.
 
-**Contrato de tokens público (escape hatch — para o módulo/componente do IMPORTADOR responder à central):** um componente próprio só é tematizado quando a central troca de tema se ele usar os tokens públicos `var(--sarak-*)` em vez de valor hardcoded — ex.: `background: var(--sarak-card-bg)`, `color: var(--sarak-title-color)`, `gap: var(--sarak-layout-gap-md)`. Marcação com cor/espaçamento cru (`#3b82f6`, `16px`) nunca responde a uma troca de tema — é a mesma regra "Zero Hardcode" que os átomos da própria lib seguem (`specs/specs/03-padrao-e-taxonomia-biblioteca-atomica.md`). A lista completa das CSS Variables `--sarak-*` reais (as únicas que a central efetivamente emite) está em `docs/manifest-catalog.md`, seção "CSS Variables públicas" — nomes fora dela não existem e não pintam nada.
+**Contrato de tokens público (escape hatch — para o módulo/componente do IMPORTADOR responder à central):** um componente próprio só é tematizado quando a central troca de tema se ele usar os tokens públicos `var(--sarak-*)` em vez de valor hardcoded — ex.: `background: var(--sarak-card-bg)`, `color: var(--sarak-title-color)`, `gap: var(--sarak-layout-gap-md)`. Marcação com cor/espaçamento cru (`#3b82f6`, `16px`) nunca responde a uma troca de tema — é a mesma regra "Zero Hardcode" que os átomos da própria lib seguem (`specs/specs/03-padrao-e-taxonomia-biblioteca-atomica.md`). A lista completa das CSS Variables `--sarak-*` reais (as únicas que a central efetivamente emite) está em `docs/component-catalog.md`, seção "CSS Variables públicas" — nomes fora dela não existem e não pintam nada.
 
 **Temas em JSON (Spec 44 — o Design Engine é a central de layout, sem backend próprio):** o dev cria temas próprios como objetos `{ id, name, design: {...} }` (mesmo formato dos temas embutidos, `ThemePreset`) e passa via `customThemes` ao `SarakUIProvider`. Três props controlam qual tema está ativo — não confundir:
 - **`activeThemeId`** — CONTROLADO: sempre que setado, é a verdade absoluta e reaplica a cada mudança de valor. Uso típico: o próprio app decide o tema (ex.: por tenant/config), sem depender de escolha do usuário final.
@@ -93,7 +93,6 @@ A seleção do usuário final (qual tema está ativo agora) persiste sozinha em 
      - **TODAS as peerDependencies gravadas** no `package.json` do consumidor (nunca confie no auto-install do npm 7+, que instala em `node_modules` mas não registra — irreproduzível em `npm ci`).
      - `typescript` travado em `^5`.
      - `vite.config.ts` (sem proxy — não há backend), `tsconfig.json`, `index.html`, `src/main.tsx` (`SarakUIProvider`+`SarakShell`+um módulo de exemplo registrado via `registerSarakModule`/`registerLocalComponent`, no padrão `Sarak-MyService`) e `src/modules/ExampleModule.tsx` (componente React de exemplo — apague e crie os seus).
-     - As 2 skills de consumo do motor de manifesto (`ui-integra-escrever-manifesto`, `ui-auditoria-manifesto`) copiadas para `.agents/skills/` **e** `.claude/skills/` do consumidor — só relevantes para quem optar por usar o motor opcional de manifesto (marcadas para remoção na Spec 46).
    - **Ação:** `npm install` (o `init` só escreve `package.json`; quem baixa os pacotes é o npm).
 3. **Validação**
    - Confira, nesta ordem: `npm run build` verde (`tsc --noEmit && vite build`); `npm run dev` sobe o front; a tela inicial renderiza o módulo de exemplo dentro do `SarakShell`, tematizado; o Design Engine está acessível (módulo nativo "Design Engine"/`mx-customization`, sempre registrado pela base).
@@ -128,7 +127,7 @@ A seleção do usuário final (qual tema está ativo agora) persiste sozinha em 
    - **Verificação obrigatória antes de declarar pronto:** abra a página do host e confira, nesta ordem: (1) o front existente está visualmente IDÊNTICO ao de antes (títulos, botões, espaçamentos); (2) o título da aba não mudou; (3) dentro da ilha os componentes Sarak estão estilizados (não "crus"); (4) um toast/modal do módulo renderiza estilizado. Se (3) falhar, quase sempre é o import do CSS escopado faltando ou o `dist/sarak.css` importado por engano.
 5. **Handoff (Ponto de Transição)**
    - **Ação:** Após a base estar acoplada e o módulo de exemplo renderizando com sucesso no `SarakShell`, informe ao usuário que a integração arquitetural terminou.
-   - **Próximo Passo Obrigatório:** oriente o usuário (ou você mesmo no próximo turno) a **escrever seus próprios módulos de negócio** como componentes React comuns em `src/modules/`, usando os componentes atômicos (`SarakButton`, `SarakCardGrid`, etc. — catálogo em `docs/manifest-catalog.md`) e os tokens públicos (`var(--sarak-*)`) para serem temáveis pela central, registrando cada um via `registerSarakModule`/`registerLocalComponent` no `main.tsx`, no mesmo padrão do módulo de exemplo apagado. **Não** oriente o usuário a escrever manifesto JSON como caminho principal — isso é o motor opcional (`ui-integra-escrever-manifesto`), reservado para quem explicitamente quiser montar uma tela 100% via dado.
+   - **Próximo Passo Obrigatório:** oriente o usuário (ou você mesmo no próximo turno) a **escrever seus próprios módulos de negócio** como componentes React comuns em `src/modules/`, usando os componentes atômicos (`SarakButton`, `SarakCardGrid`, etc. — catálogo em `docs/component-catalog.md`) e os tokens públicos (`var(--sarak-*)`) para serem temáveis pela central, registrando cada um via `registerSarakModule`/`registerLocalComponent` no `main.tsx`, no mesmo padrão do módulo de exemplo apagado.
 
 ## Como atualizar a biblioteca (Spec 39)
 
@@ -186,18 +185,17 @@ desenvolvimento simultâneo. Volte para o spec git antes de qualquer teste de in
 
 ## Regras (SRP - Responsabilidade Única)
 - **NÃO escreva arquivo de infraestrutura à mão** (`vite.config.ts`, `package.json` de scripts/deps, etc.) — isso é o que o `init` (Spec 21/45) existe para eliminar. A única saída manual permitida é a Etapa 4 (montagem da ilha embarcada), porque o scaffolder pressupõe um host que ainda não existe.
-- **NÃO** ensine ou tente montar telas via manifesto/`renderFor` nesta skill como caminho principal — o foco aqui é DevOps/Infraestrutura e o registro de módulos React (`registerSarakModule`/`registerLocalComponent`). O motor de manifesto é um caminho opcional e fora de escopo (marcado para remoção — Spec 46).
+- **NÃO** ensine ou tente montar telas via manifesto/JSON nesta skill — o foco aqui é DevOps/Infraestrutura e o registro de módulos React (`registerSarakModule`/`registerLocalComponent`). O motor de manifesto foi removido (Spec 46); o modelo de consumo é 100% React.
 - **SEMPRE** garanta que cada módulo de negócio seja registrado (`registerSarakModule`+`registerLocalComponent`) e monte sob `SarakShell` — nunca oriente o consumidor a renderizar telas soltas fora da base (perderiam Shell/tema/navegação).
 
 ## Referências
 **Artefatos do pacote (`node_modules/@sarak/lib-ui-core/`):**
 - `bin/sarak-ui.mjs` (`npx sarak-ui init`) — o scaffolder oficial (Spec 21/45); gera o starter padrão inteiro, Node puro, idempotente.
-- `docs/manifest-catalog.md` / `.json` — catálogo GERADO de componentes/props/CSS Variables públicas (fonte da verdade dos tokens e do que existe).
+- `docs/component-catalog.md` / `.json` — catálogo GERADO de componentes/props/CSS Variables públicas (fonte da verdade dos tokens e do que existe).
 
 **Skills (ordem do fluxo):**
 - `ui-contexto-repositorio` — ambientação (se estiver trabalhando NA lib).
-- **Esta skill** → conduz a entrevista e roda o `init`.
-- `ui-integra-escrever-manifesto`/`ui-auditoria-manifesto` — **opcionais**, só para quem escolher montar alguma tela via o motor de manifesto (Spec 11); marcadas para remoção na Spec 46. Não são o handoff padrão.
+- **Esta skill** → conduz a entrevista e roda o `init`. É o handoff padrão único — não há skill de continuação.
 
 **Specs da Biblioteca Core:**
 - Spec 43 (`43-design-system-primeiro.md`) — o modelo módulos-plugin oficial: API pública, contrato de tokens.

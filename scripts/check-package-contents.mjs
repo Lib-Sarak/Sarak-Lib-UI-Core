@@ -1,10 +1,9 @@
 // Gate de empacotamento (Spec 29 §2.1/2.4, Spec 40 §2.4): roda `npm pack --dry-run
 // --json` sobre o pacote já buildado e confere a allowlist do campo `files`. Falha se
 // o tarball trouxer código-fonte/config de teste (achado 4 do Selo) OU se faltar algo
-// que o `init` (`bin/scaffold/context.mjs` → `skillsSourceDir`/`templates/`) precisa
-// ler do pacote instalado — sem isso o `init` do consumidor não acha as skills nem o
-// manifesto starter. `src/` é proibido SEM EXCEÇÃO (Spec 40 §2.4 fechou o M9 PARCIAL
-// do re-Selo — o export "./sarak-base.css" agora resolve para `dist/styles/`).
+// que o `init` (`bin/scaffold/context.mjs`) precisa ler do pacote instalado. `src/` é
+// proibido SEM EXCEÇÃO (Spec 40 §2.4 fechou o M9 PARCIAL do re-Selo — o export
+// "./sarak-base.css" agora resolve para `dist/styles/`).
 import { execSync } from 'node:child_process';
 
 const FORBIDDEN_PREFIXES = [
@@ -37,13 +36,8 @@ const REQUIRED_PATHS = [
     // diretamente via script no package.json (não é import da lib, é `node <caminho>`).
     'bin/scaffold/checkUpdate.mjs',
     'bin/scaffold/checkUpdate/runCheckUpdate.mjs',
-    'docs/manifest-catalog.md',
-    'docs/manifest-catalog.json',
-    'templates/app-starter.manifest.json',
-    // As 2 skills que `SKILLS_TO_COPY` (bin/scaffold/constants.mjs) copia no `init` —
-    // sem elas no tarball, o `init` do consumidor não encontra o que copiar.
-    '.agents/skills/ui-integra-escrever-manifesto/SKILL.md',
-    '.agents/skills/ui-auditoria-manifesto/SKILL.md',
+    'docs/component-catalog.md',
+    'docs/component-catalog.json',
 ];
 
 function isForbidden(filePath) {

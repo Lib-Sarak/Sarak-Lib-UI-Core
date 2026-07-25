@@ -13,8 +13,9 @@
 
 /** Componentes registrados que NÃO são exportados como valor no barril público. */
 export const BARREL_VALUE_EXCLUSIONS = Object.freeze({
-    // Nada por ora — a meta da Spec 40.1 é exposição TOTAL. Entradas entram aqui só
-    // quando houver motivo concreto (ex.: primitiva interna do motor de manifesto).
+    // Entradas entram aqui só quando houver motivo concreto (ex.: peça interna de outro
+    // componente, ou tipo do lado duplicado/não-canônico de um nome colidente).
+    SarakAppChromeMobile: 'Colapso interno do SarakAppChrome no celular (Spec 40.3) — não é peça standalone do barril.',
 });
 
 /**
@@ -27,4 +28,5 @@ export const BARREL_PROPS_EXCLUSIONS = Object.freeze({
     // ser generalizado na Spec 42; congelar o tipo público agora tornaria o fix da 42 um
     // breaking change. O componente `SarakCardGrid` segue exportado; só o tipo espera a 42.
     SarakCardGrid: 'Props com domínio leaky (mapping LLM) — generalização é a Spec 42; não congelar o tipo antes.',
+    SarakAppChromeMobile: 'Mesmo motivo do valor (ver BARREL_VALUE_EXCLUSIONS) — colapso interno, não peça standalone.',
 });

@@ -6,7 +6,7 @@ description: Audita a integridade estrutural do Sarak-Lib-UI-Core. Varre o módu
 # Skill: ui-auditoria-modulo
 
 Auditor Mestre que garante a estrita integridade estrutural e cumprimento das regras de negócios estabelecidas para o módulo **Sarak-Lib-UI-Core**. A auditoria não é analítica e sim determinística: ela roda um conjunto de **8 scripts estáticos** (Node.js/AST) contra a base de código e acusa violações diretas:
-> `auditor_hardcoded` (Tailwind estrutural + valor px/rem/em, com baldes de dedução), `auditor_ghostvars` (variáveis CSS consumidas que a engine não emite — `var(--x)` que não resolve), `auditor_typescript` (zero `any`), `auditor_coverage`, `auditor_arquitetura`, `auditor_cleancode`, `auditor_paridade` (1:1:1:1:1) e `auditor_manifesto`.
+> `auditor_hardcoded` (Tailwind estrutural + valor px/rem/em, com baldes de dedução), `auditor_ghostvars` (variáveis CSS consumidas que a engine não emite — `var(--x)` que não resolve), `auditor_typescript` (zero `any`), `auditor_coverage`, `auditor_arquitetura`, `auditor_cleancode` e `auditor_paridade` (1:1:1:1:1). *(O antigo `auditor_manifesto` — conferência funcional do motor de renderização por manifesto — foi removido junto com o motor na Spec 46.)*
 
 > **Dependência:** Esta skill audita as regras definidas na `padrao-escrita` e nas regras arquiteturais descritas no manifesto de engenharia do módulo (ex: Clean Code, Test Coverage obrigatório, 3-Layer Architecture e Paridade 1:1:1:1:1).
 
@@ -26,7 +26,7 @@ Ao ser acionado, você DEVE rodar exatamente esta sequência inquebrável:
 
 2. **Ler Laudo (Se houver falhas):**
    - Analise os *warnings* ou *erros* apontados no stdout da execução.
-   - Os erros estarão divididos por sub-auditor (`Hardcoded`, `GhostVars`, `Typescript`, `Coverage`, `Architecture`, `CleanCode`, `Parity`, `Manifesto`).
+   - Os erros estarão divididos por sub-auditor (`Hardcoded`, `GhostVars`, `Typescript`, `Coverage`, `Architecture`, `CleanCode`, `Parity`).
    - **GhostVars:** `var(--x)` consumido que não é emitido pela engine. Corrija **migrando para a variável real + fallback** (`var(--sarak-…, <valor>)`); **nunca** afrouxe a allowlist do auditor para mascarar um fantasma real.
 
 3. **Plano de Correção (HITL):**

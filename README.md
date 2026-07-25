@@ -1,26 +1,23 @@
-# 💠 Sarak-Lib-UI-Core (Design Engine & Manifest Renderer)
+# 💠 Sarak-Lib-UI-Core (Design Engine & Módulos-Plugin)
 
-O **Sarak-Lib-UI-Core** é o motor de interface industrial de alta performance do ecossistema Sarak. Ele utiliza uma arquitetura baseada num **Manifest Renderer (Zero-Code Frontend)** e um **Design Engine Data-Driven**, permitindo que sistemas inteiros sejam renderizados e estilizados puramente através de manifestos JSON declarativos, sem a necessidade de escrever código de interface repetitivo ou hardcoded.
+O **Sarak-Lib-UI-Core** é o motor de interface industrial de alta performance do ecossistema Sarak. Ele combina um **Design Engine Data-Driven** (temas/tokens em JSON, sem backend) com um **modelo de consumo por módulos-plugin 100% React** (`SarakUIProvider` + `SarakShell` + `registerSarakModule`/`registerLocalComponent`) — o consumidor escreve suas telas como componentes React comuns usando os átomos e os tokens públicos (`var(--sarak-*)`), sem manifesto JSON. *(O antigo motor de renderização de páginas por manifesto foi removido — Spec 46; ver `specs/plan/46-remover-motor-de-manifesto.md` para o histórico.)*
 
 ---
 
 ## 📦 Instalação num Sistema Consumidor (Plug & Play)
 
-**Toda a instalação — do zero — é coberta por duas skills.** Um prompt simples é suficiente:
+**Toda a instalação — do zero — é coberta por uma única skill.** Um prompt simples é suficiente:
 
-> "Baixe a biblioteca Sarak-UI `github.com/Lib-Sarak/Sarak-Lib-UI-Core`, ela será responsável por toda a renderização do sistema."
+> "Baixe a biblioteca Sarak-UI `github.com/Lib-Sarak/Sarak-Lib-UI-Core`, ela será responsável pelo Shell e tema do sistema."
 
-Isso deve disparar, na ordem:
-
-1. **[`ui-integra-consumidor`](.agents/skills/ui-integra-consumidor/SKILL.md)** — instala o pacote e as `peerDependencies`, acopla `SarakUIProvider` + `SarakManifestRenderer`, configura `SarakDataStore` e os Interceptors (rede/rota). **CSS é automático** — a lib injeta o próprio stylesheet em runtime ao ser importada; nenhum `import '...css'` manual é necessário no caso comum.
-2. **[`ui-integra-escrever-manifesto`](.agents/skills/ui-integra-escrever-manifesto/SKILL.md)** — a partir daí, ensina a compor as telas via JSON (o "manifesto") consumido pelo `SarakManifestRenderer`.
+Isso deve disparar **[`ui-integra-consumidor`](.agents/skills/ui-integra-consumidor/SKILL.md)** — instala o pacote e as `peerDependencies`, roda o scaffolder (`npx sarak-ui init`) que gera `SarakUIProvider` + `SarakShell` + um módulo de exemplo registrado, e conduz o handoff para o consumidor escrever seus próprios módulos de negócio. **CSS é automático** — a lib injeta o próprio stylesheet em runtime ao ser importada; nenhum `import '...css'` manual é necessário no caso comum.
 
 Se preferir rodar manualmente, o comando de instalação (via GitHub, sem publish no npm registry) é:
 ```bash
 npm install github:Lib-Sarak/Sarak-Lib-UI-Core
 npm install framer-motion lucide-react recharts echarts echarts-for-react reactflow react-grid-layout react-markdown react-syntax-highlighter react-dropzone pdfjs-dist clsx tailwind-merge date-fns @tanstack/react-virtual axios pg tailwindcss
 ```
-Detalhes de cada `peerDependency`, a entrevista de infraestrutura (Design Agent opcional, DataStore, roteamento) e o passo-a-passo completo estão na skill `ui-integra-consumidor` — ela é a fonte da verdade, não este README.
+Detalhes de cada `peerDependency`, a entrevista de infraestrutura (modo app/embarcado, porta do front) e o passo-a-passo completo estão na skill `ui-integra-consumidor` — ela é a fonte da verdade, não este README.
 
 ---
 
@@ -53,9 +50,9 @@ Responsável por orquestrar a estética do sistema de maneira unificada e reativ
 - O componente `DesignInjector` pendura essas variáveis no `:root` e no `body` da aplicação de forma transparente.
 - Os componentes físicos e o Tailwind CSS (`@theme`) consomem essas variáveis passivamente, gerando mudanças globais instantâneas sem a necessidade de re-renderizações onerosas no React.
 
-### 2. O Manifest Renderer (Motor Lógico — Spec 11)
-Aplicações hosts injetam um `payload` JSON (o "Manifesto") descrevendo a árvore de telas inteira — componentes, condicionais (`renderIf`), loops (`renderFor`), two-way binding (`model`) e eventos (`actions`).
-O `SarakManifestRenderer` interpreta esse JSON nó a nó, resolve cada `type` contra o Registry de componentes atômicos e trafega eventos entre a UI e a lógica de negócio externa (via `networkInterceptor`/`routerInterceptor`, injetados pelo consumidor). Ver a skill **`ui-integra-escrever-manifesto`** para a gramática completa.
+### 2. O modelo de módulos-plugin (Spec 04/43 — modelo oficial)
+Aplicações hosts registram cada módulo de negócio via `registerSarakModule({ id, label, icon, ... })` + `registerLocalComponent(id, Component)` — componentes React comuns, escritos livremente, usando os átomos da biblioteca (`SarakButton`, `SarakCardGrid`, `SarakTable`, etc.) e os tokens públicos (`var(--sarak-*)`) para responderem à troca de tema.
+`SarakShell`, sob `SarakUIProvider`, resolve a navegação (Sidebar/Topbar/Dock, conforme o tema) e o roteamento entre os módulos registrados, sem rota declarada à mão. Ver `docs/component-catalog.md` para o catálogo gerado de componentes/props/tokens.
 
 ---
 
@@ -66,20 +63,22 @@ O `SarakManifestRenderer` interpreta esse JSON nó a nó, resolve cada `type` co
 - `npm run build`: Compila a biblioteca (bundles JS via `tsup`, CSS via Tailwind CLI, e injeta o CSS compilado no bundle via `scripts/inject-css.mjs`) criando a pasta `dist/` pronta para ser consumida como pacote `@sarak/lib-ui-core`.
 - `npm run build:js` e `npm run build:css`: Sub-comandos isolados (não injetam o CSS sozinhos — rode `npm run build` para o bundle final consumível).
 
-### Consumindo na Aplicação Host (`SarakManifestRenderer`)
+### Consumindo na Aplicação Host (módulos-plugin)
 ```tsx
 import ReactDOM from 'react-dom/client';
-import { SarakUIProvider, SarakManifestRendererDefault, createSarakDataStore } from '@sarak/lib-ui-core';
+import { SarakUIProvider, SarakShell, registerSarakModule, registerLocalComponent } from '@sarak/lib-ui-core';
+import { MeuModulo } from './modules/MeuModulo';
 
-const store = createSarakDataStore({ initialState: {} });
+registerLocalComponent('meu-modulo', MeuModulo);
+registerSarakModule({ id: 'meu-modulo', label: 'Meu Módulo', icon: 'Box' });
 
 ReactDOM.createRoot(document.getElementById('root')!).render(
     <SarakUIProvider>
-        <SarakManifestRendererDefault payload={meuManifesto} dataStore={store} />
+        <SarakShell />
     </SarakUIProvider>,
 );
 ```
-Nenhum import de CSS é necessário — o `SarakUIProvider` injeta o stylesheet automaticamente. Veja a seção **Instalação num Sistema Consumidor** acima para o passo-a-passo completo (peerDependencies, interceptors, Design Agent opcional).
+Nenhum import de CSS é necessário — o `SarakUIProvider` injeta o stylesheet automaticamente. Veja a seção **Instalação num Sistema Consumidor** acima para o passo-a-passo completo (peerDependencies, scaffolder, modo embarcado).
 
 ---
 

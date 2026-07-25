@@ -10,9 +10,6 @@ Este arquivo é auto-gerado. Ele lista todas as regras de negócio deste projeto
 - **ui-arquitetura-design**: Define a regra arquitetural do módulo Design Engine do Sarak-Lib-UI-Core. Use ao desenvolver, revisar ou validar o CSS/Design de componentes. NÃO acione proativamente.
   - *Caminho*: `.agents/skills/ui-arquitetura-design/SKILL.md`
 
-- **ui-auditoria-manifesto**: Skill de conferência estática do JSON do manifesto. Vasculha chaves órfãs, valores de tokens inválidos, loops infinitos e vazamentos de segurança (Safe Eval). Use ao auditar layouts que optaram pelo motor de manifesto (caminho opcional, não o modelo padrão). NÃO acione proativamente.
-  - *Caminho*: `.agents/skills/ui-auditoria-manifesto/SKILL.md`
-
 - **ui-auditoria-modulo**: Audita a integridade estrutural do Sarak-Lib-UI-Core. Varre o módulo em busca de quebras de Clean Code, falhas de cobertura (Coverage), dependências circulares, tipagens inseguras (any), hardcoded e paridade de Design Tokens. Use APENAS quando pedirem para auditar a base ou validar um PR. NÃO acione proativamente.
   - *Caminho*: `.agents/skills/ui-auditoria-modulo/SKILL.md`
 
@@ -27,9 +24,6 @@ Este arquivo é auto-gerado. Ele lista todas as regras de negócio deste projeto
 
 - **ui-integra-consumidor**: Instala e acopla a base Sarak (@sarak/lib-ui-core) num sistema consumidor React — npm install, peerDependencies, SarakUIProvider+SarakShell, registro de módulos de negócio (módulos-plugin). Use quando o usuário pedir para baixar/instalar/importar a biblioteca Sarak UI (ex.: "baixe a biblioteca Sarak-UI <link>, ela será responsável pelo Shell e tema do sistema"), iniciar a infraestrutura do front-end com a Lib, ou plugar a base num projeto novo. NÃO acione proativamente.
   - *Caminho*: `.agents/skills/ui-integra-consumidor/SKILL.md`
-
-- **ui-integra-escrever-manifesto**: Ensina a compor telas, componentes e lógicas construindo arquivos JSON válidos para o SarakManifestRenderer. Use ao criar ou editar páginas de interface num consumidor que já importou @sarak/lib-ui-core E optou por usar o motor de manifesto (caminho opcional — não é mais o handoff padrão da ui-integra-consumidor). NÃO acione proativamente.
-  - *Caminho*: `.agents/skills/ui-integra-escrever-manifesto/SKILL.md`
 
 - **ui-novo-componente**: Orquestra a adição de novos componentes atômicos à UI Core garantindo a paridade 1:1:1:1:1. Use ao adicionar um token ou componente base ao sistema. NÃO acione proativamente.
   - *Caminho*: `.agents/skills/ui-novo-componente/SKILL.md`

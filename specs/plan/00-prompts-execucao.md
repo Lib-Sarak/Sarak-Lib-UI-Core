@@ -11,13 +11,13 @@ Regras comuns já embutidas: acionar `ui-contexto-repositorio` primeiro; ler `00
 
 | Prompt | Spec | Item | Observação |
 |---|---|---|---|
-| **P21** | 40 — Teste Real (ERP readota Sarak como ui-kit, apps separados) | 21 | 🟡 v5 executada PARCIAL. Gate empírico do #2. Correções no ciclo 40.x. |
-| **P21.1** | 40.1 — Correções de Importação (rodada 1) | 21.1 | 🟡 Executada (gates verdes); validação prática achou 3 gaps → rodada 2. |
-| **P21.2** | 40.2 — Correções de Importação (rodada 2) | 21.2 | 🟡 Executada (gates verdes, browser ok); validação achou o gap multidispositivo → rodada 3. |
-| **P21.3** | 40.3 — Multidispositivo por padrão | 21.3 | 🟠 Executada PARCIAL: L2/L3/L4 ok; **L1 (hambúrguer) reprovado no browser** → ver P21.3-C. |
-| **P21.3-C** | 40.3 — Correção: detecção real de dispositivo (hambúrguer) | 21.3 | Conserta a DETECÇÃO real (`useSarakDevice`/`window.innerWidth`) — os testes usavam `overrideDevice` e nunca a exercitaram. Prova headless nos 3 viewports. |
-| **P21.4** | 40.4 — Reconciliação do contrato de tokens | 21.4 | Avisos `token fora do contrato` (achado de browser da 40.3): reconciliar valor↔enum **na fonte** (sem afrouxar o validador) + gate anti-regressão. Fix de lib. |
-| **P22** | 46 — Remover o renderizador de páginas (#2) | 22 | ⚠️ SÓ depois do Teste Real. Mantém o #1. |
+| ~~P21~~ | 40 — Teste Real | 21 | ✅ **APROVADO (2026-07-25)** — ciclo 40.x concluído e validado; R1–R12 verdes. Gate empírico do #2 liberado. |
+| ~~P21.1~~ | 40.1 — Correções de Importação (rodada 1) | 21.1 | ✅ Concluída (parte do Teste Real aprovado). |
+| ~~P21.2~~ | 40.2 — Correções de Importação (rodada 2) | 21.2 | ✅ Concluída (parte do Teste Real aprovado). |
+| ~~P21.3~~ | 40.3 — Multidispositivo por padrão | 21.3 | ✅ Concluída — L2/L3/L4 + L1 (via P21.3-C). |
+| ~~P21.3-C~~ | 40.3 — Correção: detecção real de dispositivo | 21.3 | ✅ Concluída — reprovação era BUILD STALE, não bug; detecção endurecida (self-contained) + teste do caminho real + headless nos 3 viewports. |
+| ~~P21.4~~ | 40.4 — Reconciliação do contrato de tokens | 21.4 | ✅ Concluída, aprovada e commitada. |
+| **P22** | 46 — Remover o renderizador de páginas (#2) | 22 | ▶️ **PRÓXIMO** — Teste Real APROVADO, gate liberado. Mantém o #1. Desacoplar o ferramental do #3 (§3.1) antes de deletar. |
 | **P23** | 41 — Piso de Bundle | 23 | Depois da 46 (muda a base) e antes da 42. |
 | **P24** | 42 — Generalizar CardGrid | 24 | Depois da 41. |
 | **P50** | 50 — Kit de uso do consumidor (`sarak-ui/`) | 25 | *(renumerada de 40.4)* **ÚLTIMA da execução** (após 46/41/42). Guia 4 topologias + skill + catálogo vivo; DINÂMICO (gate `guide:check`); genérico. |
@@ -236,9 +236,11 @@ Execute a spec `specs/plan/46-remover-motor-de-manifesto.md` da Sarak-Lib-UI-Cor
 
 PRÉ-CONDIÇÃO INEGOCIÁVEL: o Teste Real (Spec 40) precisa estar CONCLUÍDO E VERDE — o modelo de módulos provado no ERP. Não se remove antes. Se o teste revelou que a camada declarativa é necessária, PARE e reavalie. Confirme também: persistência de tema já migrada para o Provider (Spec 44); API/skills/starter no lugar (43/45).
 
-Preparação: (1) acione `ui-contexto-repositorio`; (2) leia `00-indice.md`, `00-progresso.md` e a spec 46 INTEIRA (a tabela das 3 arquiteturas — o que sai e o que FICA); (3) confirme por grep o escopo real. Skills: `sarak:padrao-typescript`, `ui-refatorar-componente`, `sarak:code-limpeza-projeto`.
+Preparação: (1) acione `ui-contexto-repositorio`; (2) leia `00-indice.md`, `00-progresso.md` e a spec 46 INTEIRA (a tabela das 3 arquiteturas + o §3.1 DESACOPLAMENTO); (3) confirme por grep o escopo real. Skills: `sarak:padrao-typescript`, `ui-refatorar-componente`, `sarak:code-limpeza-projeto`.
 
-Entregue (seções 3/5), em FATIAS com gate verde a cada uma: parar de exportar o renderer/tipos do #2 → remover templates/skills/catálogo do #2 → remover `src/core/Manifest/` → remover gates do #2 (`RegistryParity` etc.; a paridade de tokens de DESIGN fica) → limpar deps que só o #2 usava. Grep-zero de `SarakManifestRenderer`/manifesto-de-página. CONFIRMAR que `SarakShell`/`registerSarakModule`/`registerLocalComponent`/Design Engine/componentes seguem intactos e exportados; MyService intacto. MEDIR o bundle antes/depois (a saída do Registry ansioso muda a base da Spec 41). Nota de descontinuação no progresso.
+⚠️ DESACOPLAMENTO PRIMEIRO (§3.1 — achado do ciclo 40.x): o ferramental do modelo oficial (#3) foi construído EM CIMA do Registry do #2 (`nativeComponents.ts`) — o gate `barrel:check` (40.1), o gerador `npm run catalog`, e (por tabela) o gerador do kit da Spec 50. ANTES de deletar `src/core/Manifest/`, RE-APONTE cada um para o barril/AST direto, mantendo `barrel:check`/`catalog:check` VERDES. `SarakLink` + os 6 inputs saem do `nativeComponents.ts` mas CONTINUAM em `src/index.ts`. Se algo do #3 ficar órfão do Registry, PARE — desacoplar vem antes de remover.
+
+Entregue (seções 3/3.1/5), em FATIAS com gate verde a cada uma: (0) DESACOPLAR o ferramental do #3 do Registry do #2 → (1) parar de exportar o renderer/tipos do #2 → (2) remover templates/skills/catálogo do #2 → (3) remover `src/core/Manifest/` → (4) remover gates do #2 (`RegistryParity` etc.; a paridade de tokens de DESIGN fica) → (5) limpar deps que só o #2 usava. Grep-zero de `SarakManifestRenderer`/manifesto-de-página. CONFIRMAR que `SarakShell`/`registerSarakModule`/`registerLocalComponent`/Design Engine/componentes seguem intactos e exportados; `barrel:check`/`catalog:check` verdes; MyService intacto. MEDIR o bundle antes/depois (a saída do Registry ansioso muda a base da Spec 41). Nota de descontinuação no progresso.
 
 Ao terminar: `npm run build` verde; suíte restante verde; `npm pack` menor; números de bundle no progresso; frontmatter + checkbox (item 22). NÃO commite sem autorização.
 ```
@@ -252,9 +254,9 @@ Execute a spec `specs/plan/41-piso-de-bundle-barris-de-icone.md` da Sarak-Lib-UI
 
 Preparação, nesta ordem: (1) acione `ui-contexto-repositorio`; (2) leia `00-indice.md`, `00-progresso.md` (incl. os números de bundle que a Spec 46 registrou — a linha de base MUDOU com a saída do Registry ansioso do #2) e a spec 41 INTEIRA; (3) leia a `specs/plan/42-generalizar-cardgrid-corecard.md` (vem depois, toca 2 dos mesmos arquivos — não invada). Skills: `sarak:otimizacao-nivel-1` (medir antes/depois — o coração) e `sarak:padrao-typescript`.
 
-Contexto: 6 arquivos fazem `import * as LucideIcons from 'lucide-react'` com acesso por índice DINÂMICO (`LucideIcons[nome]`), impedindo tree-shaking (~1500 ícones). Os 5 cards burlam o átomo `SarakIcon`/`IconMap` curado. `lucide-react` é peerDep+external (incha o bundle do consumidor); `@phosphor-icons/react`/`@tabler/icons-react` são deps não-external (podem estar inteiras no `dist/` — verificar). Com o #2 REMOVIDO (Spec 46), re-meça: a base é outra.
+Contexto — TRÊS dimensões independentes, meça cada uma: (§1.2) 6 arquivos fazem `import * as LucideIcons from 'lucide-react'` com acesso por índice DINÂMICO (`LucideIcons[nome]`), impedindo tree-shaking (~1500 ícones); os 5 cards burlam o átomo `SarakIcon`/`IconMap` curado — ataca o GRAFO ESTÁTICO. (§1.3) `@phosphor-icons/react`/`@tabler/icons-react` são deps não-external (podem estar inteiras no `dist/` — verificar). (§1.4) **NOVO — confirmado no Teste Real (§7.5 do RELATORIO):** o `export * from '@sarak/lib-ui-core'` no `ui-kit` do consumidor arrasta TODO o grafo para o `dist/` dele — `pdf.worker` 1,2 MB, syntax-highlighter 736 KB, PDFViewer 479 KB, ChartEngine 374 KB, FlowEngine 139 KB (chunks separados, peso morto em disco/CDN) — ataca o TOTAL DE CHUNKS; avaliar mitigações (subpaths granulares na lib; consumidor reexportar só o que usa; ampliar `HEAVY_LAZY`). Com o #2 REMOVIDO (Spec 46), re-meça do zero: a base é outra.
 
-REGRA DURA: meça ANTES de refatorar; se o ganho for irrelevante, feche com a conclusão negativa documentada. Entregue os itens 2.1-2.4 (medição; zero `import * as *Icons` dinâmico; `IconMap` estendido + warn em nome desconhecido; nomes de ícone no catálogo). Ao terminar: gates verdes; `run_audit.mjs` sem regressão; suítes de Cards/Templates/Icon verdes (snapshots dos 5 cards mudam — revise); checkbox (item 23) + progresso com os NÚMEROS.
+REGRA DURA: meça ANTES de refatorar; se o ganho for irrelevante, feche com a conclusão negativa documentada. Entregue os itens 2.1-2.4 (medição das 3 dimensões; zero `import * as *Icons` dinâmico; `IconMap` estendido + warn em nome desconhecido; nomes de ícone no catálogo) + a medição/mitigação do `export *` (§1.4). Ao terminar: gates verdes; `run_audit.mjs` sem regressão; suítes de Cards/Templates/Icon verdes (snapshots dos 5 cards mudam — revise); checkbox (item 23) + progresso com os NÚMEROS das 3 dimensões.
 ```
 
 ---
