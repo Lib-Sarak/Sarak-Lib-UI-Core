@@ -8,7 +8,7 @@ function cn(...inputs: ClassValue[]) {
     return twMerge(clsx(inputs));
 }
 
-interface SocialButtonProps {
+export interface SocialButtonProps {
     provider: 'google' | 'github';
     variant: 'glass' | 'sovereign';
     onClick?: (provider: 'google' | 'github') => void;

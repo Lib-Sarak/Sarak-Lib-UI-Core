@@ -20,7 +20,7 @@ import { SecurityOrchestratorStatus } from './components/SecurityOrchestratorSta
 import { SecurityOrchestratorSetup } from './components/SecurityOrchestratorSetup';
 import { SecurityOrchestratorDisable } from './components/SecurityOrchestratorDisable';
 
-interface SarakSecurityOrchestratorProps {
+export interface SarakSecurityOrchestratorProps {
     endpoint: string;
     label?: string;
     config?: Record<string, unknown>;

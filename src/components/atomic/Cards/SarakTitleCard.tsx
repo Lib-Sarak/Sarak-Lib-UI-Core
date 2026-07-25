@@ -7,7 +7,7 @@ import { useCardLayoutStyles } from './hooks/useCardLayoutStyles';
 
 import { SarakThemePayload } from '../../../core/Provider/types';
 
-interface SarakTitleCardProps<TItem extends Record<string, unknown>> {
+export interface SarakTitleCardProps<TItem extends Record<string, unknown>> {
     item: TItem;
     mapping?: Record<string, string>;
     className?: string;

@@ -1,5 +1,9 @@
 export * from './FilterSelect';
 export * from './HelpButton';
+// `export *` não propaga o export default — reexporta-se o valor nominalmente para
+// que FilterSelect/HelpButton cheguem ao barril público React (gate L1, Spec 40.1).
+export { default as FilterSelect } from './FilterSelect';
+export { default as HelpButton } from './HelpButton';
 export * from './SarakTable';
 export * from './SarakCardGrid';
 export * from './SarakStats';

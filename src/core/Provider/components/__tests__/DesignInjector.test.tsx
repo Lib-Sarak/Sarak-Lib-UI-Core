@@ -81,6 +81,39 @@ describe('DesignInjector', () => {
         expect(document.body.hasAttribute('data-sarak-has-media')).toBe(false);
     });
 
+    it('L5: ancora a fonte do tema INLINE no body (Modo App) — vence reset do consumidor', () => {
+        (useDesignVariablesHook.useDesignVariables as any).mockReturnValue({
+            variables: { '--font-main': "'Space Grotesk', sans-serif" },
+            attributes: {},
+            responsiveCSS: null,
+        });
+        // Simula um reset de scaffold do consumidor: body já tem uma família.
+        document.body.style.fontFamily = 'system-ui';
+
+        render(<DesignInjector design={{ mode: 'dark' }} isDrafting={false} />);
+
+        // A lib sobrepõe com a var do tema (inline vence a cascata da folha do consumidor).
+        expect(document.body.style.fontFamily).toContain('var(--font-main');
+    });
+
+    it('L5: Modo Embarcado ancora a fonte no container da ilha, nunca no body do host', () => {
+        (useDesignVariablesHook.useDesignVariables as any).mockReturnValue({
+            variables: { '--font-main': "'Space Grotesk', sans-serif" },
+            attributes: {},
+            responsiveCSS: null,
+        });
+        document.body.style.fontFamily = 'system-ui';
+        const island = document.createElement('div');
+        document.body.appendChild(island);
+
+        render(<DesignInjector design={{ mode: 'dark' }} isDrafting={false} mode="embedded" scopeElement={island} />);
+
+        expect(island.style.fontFamily).toContain('var(--font-main');
+        // O body do host permanece intocado (isolamento do Modo Embarcado).
+        expect(document.body.style.fontFamily).toBe('system-ui');
+        island.remove();
+    });
+
     it('não injeta nada se design não for fornecido', () => {
         (useDesignVariablesHook.useDesignVariables as any).mockReturnValue({
             variables: {},

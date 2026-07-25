@@ -27,9 +27,16 @@ vi.mock('../../hooks/useResizable', () => ({
     }))
 }));
 
-// Mocks dos Sub-componentes
+// Mocks dos Sub-componentes. O PreviewCanvas expõe `onApplyFullTheme` por um botão
+// para cobrir o caminho do PresetsCatalog (aplicar tema completo pelo catálogo — L4).
 vi.mock('../../Canvas/PreviewCanvas', () => ({
-    PreviewCanvas: () => <div data-testid="preview-canvas" />
+    PreviewCanvas: ({ onApplyFullTheme }: { onApplyFullTheme?: (d: Record<string, unknown>) => void }) => (
+        <div data-testid="preview-canvas">
+            <button data-testid="apply-full-theme" onClick={() => onApplyFullTheme?.({ mode: 'dark', primaryColor: '#38bdf8', systemName: 'ERP Noturno' })}>
+                Apply Full
+            </button>
+        </div>
+    )
 }));
 
 vi.mock('../MasterControlPanel', () => ({
@@ -68,8 +75,11 @@ vi.mock('../../utils/dynamic-categories', () => ({
     buildDynamicGroups: vi.fn(() => ({}))
 }));
 
+const mockApplyFullConfigRaw = vi.fn();
+const mockPersistDesign = vi.fn();
+
 const baseThemeEngineState = {
-    sarak: {},
+    sarak: { applyFullConfigRaw: mockApplyFullConfigRaw, persistDesign: mockPersistDesign },
     activePreviewApp: 'dashboard',
     setActivePreviewApp: vi.fn(),
     previewDevice: 'desktop',
@@ -153,6 +163,32 @@ describe('ThemeCustomizationTab (Spec 44 — sem backend próprio)', () => {
         fireEvent.click(screen.getByText('Export'));
 
         expect(fetchSpy).not.toHaveBeenCalled();
+    });
+
+    it('L4: aplicar um tema completo pelo catálogo comita ao sistema E persiste (não só preview)', () => {
+        const mockPreview = vi.fn();
+        vi.mocked(useDesignDraft).mockReturnValue({
+            draft: { mode: 'light' },
+            updateDraft: vi.fn(),
+            handleApplyToSystem: mockHandleApplyToSystem,
+            handleApplyComponent: vi.fn(),
+            isComponentDirty: vi.fn(() => false),
+            resetComponent: vi.fn(),
+            isDirty: false,
+            toast: null,
+            showToast: vi.fn(),
+            handleThemePreview: mockPreview
+        } as any);
+
+        render(<ThemeCustomizationTab />);
+        fireEvent.click(screen.getByTestId('apply-full-theme'));
+
+        const expected = { mode: 'dark', primaryColor: '#38bdf8', systemName: 'ERP Noturno' };
+        // Reflete no preview...
+        expect(mockPreview).toHaveBeenCalledWith(expected);
+        // ...E comita ao sistema + persiste (o que faltava no v5).
+        expect(mockApplyFullConfigRaw).toHaveBeenCalledWith(expected);
+        expect(mockPersistDesign).toHaveBeenCalledWith(expected);
     });
 
     it('aplica as alterações globais diretamente ao sistema, sem abrir modal de exportação (sem conceito de "tema no banco")', () => {

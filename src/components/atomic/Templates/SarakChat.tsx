@@ -6,7 +6,7 @@ import { ChatInput } from './Chat/ChatInput';
 import { useSarakUI } from '../../../core/Provider/SarakUIProvider';
 import { useStructuralStyles } from '../hooks/useStructuralStyles';
 
-interface SarakChatProps {
+export interface SarakChatProps {
   endpoint: string;
   modelsEndpoint?: string;
   label?: string;

@@ -14,15 +14,18 @@ describe('slugifyThemeId', () => {
 });
 
 describe('buildThemeExportPayload (Spec 44 §2.4 — exportar, não persistir em servidor)', () => {
-    it('monta o mesmo formato { id, name, design } dos temas embutidos (ThemePreset)', () => {
+    it('monta o formato { id, name, design } e preserva os valores customizados', () => {
         const design = { mode: 'dark', primaryColor: '#00f2ff' } as unknown as SarakDesignState;
         const payload = buildThemeExportPayload(design, 'Meu Tema Corporativo');
 
-        expect(payload).toEqual({
-            id: 'meu-tema-corporativo',
-            name: 'Meu Tema Corporativo',
-            design
-        });
+        expect(payload.id).toBe('meu-tema-corporativo');
+        expect(payload.name).toBe('Meu Tema Corporativo');
+        // O export é COMPLETO (Spec 40.1 L6): inclui os valores customizados sobre TODOS os
+        // tokens default — não mais só o subconjunto passado.
+        expect(payload.design).toMatchObject({ mode: 'dark', primaryColor: '#00f2ff' });
+        expect(Object.keys(payload.design).length).toBeGreaterThan(50);
+        // Um eixo não informado (fonte) vem preenchido pelo default, nunca ausente.
+        expect((payload.design as Record<string, unknown>).bodyFont).toBeDefined();
     });
 
     it('usa um nome-fallback quando o nome vem vazio', () => {

@@ -10,7 +10,7 @@ import {
 import { useSarakStatsData } from './hooks/useSarakStatsData';
 import { useStructuralStyles } from '../hooks/useStructuralStyles';
 
-interface SarakStatsProps<TData extends Record<string, unknown>> {
+export interface SarakStatsProps<TData extends Record<string, unknown>> {
     endpoint?: string;
     data?: TData;
     label?: string;

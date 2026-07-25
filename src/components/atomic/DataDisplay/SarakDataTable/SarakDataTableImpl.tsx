@@ -1,14 +1,10 @@
 /**
  * SarakDataTable — grid colunar avançado (Spec 12, Regra 2 · Onda 9)
  *
- * Camada POR CIMA da virtualização: reusa o motor de windowing (`@tanstack/react-virtual`,
- * a mesma peer da primitiva headless `SarakDataGrid`) num ÚNICO contêiner de scroll, o
- * que permite — de forma nativa, sem sincronização imperativa — cabeçalho sticky no topo
- * e colunas congeladas (pinned) que mantêm o alinhamento ao rolar X/Y (Critério de Aceite).
- *
- * Entrega as três funções avançadas da Regra 2: pinned (sticky left/right), resize
- * (handle pointer-driven) e reorder (drag-and-drop nativo HTML5). Zero Hardcode: cores e
- * superfícies via `[--sarak-*]` / tokens de tabela (`--sarak-table-*`). Zero dependência nova.
+ * Camada POR CIMA da virtualização (`@tanstack/react-virtual`) num ÚNICO contêiner de
+ * scroll: cabeçalho sticky + colunas congeladas (pinned) alinhadas ao rolar X/Y. Entrega
+ * pinned (sticky left/right), resize (pointer) e reorder (drag-and-drop nativo). No celular
+ * colapsa para cards (L2, Spec 40.2). Zero Hardcode: tokens `--sarak-*`/`--sarak-table-*`.
  */
 
 import React, { useMemo, useRef, useState } from 'react';
@@ -20,6 +16,8 @@ import {
     reorder,
     widthOf,
 } from './columnModel';
+import SarakDataCards from './SarakDataCards';
+import { useSarakDevice } from '../../../../core/Provider/DeviceProvider';
 
 export interface SarakDataTableProps<T = Record<string, unknown>> {
     /** Definição declarativa das colunas (ordem inicial = ordem do array). */
@@ -40,6 +38,8 @@ export interface SarakDataTableProps<T = Record<string, unknown>> {
     onColumnResize?: (columnId: string, width: number) => void;
     /** Notifica reordenação (origem → destino) ao soltar o drag do cabeçalho. */
     onColumnReorder?: (fromId: string, toId: string) => void;
+    /** L2 (Spec 40.2): no smartphone colapsa para cards empilhados. Default `true`. */
+    responsive?: boolean;
     className?: string;
 }
 
@@ -68,9 +68,13 @@ function SarakDataTableImpl<T>({
     getRowKey,
     onColumnResize,
     onColumnReorder,
+    responsive = true,
     className,
 }: SarakDataTableProps<T>) {
+    const device = useSarakDevice();
     const scrollRef = useRef<HTMLDivElement>(null);
+    // L2: denso é mobile-usável por padrão — no celular colapsa para cards (após os hooks).
+    const collapseToCards = responsive && device === 'smartphone';
     const [widths, setWidths] = useState<Record<string, number>>({});
     const [order, setOrder] = useState<string[]>(() => columns.map((c) => c.id));
     const [dragId, setDragId] = useState<string | null>(null);
@@ -121,13 +125,21 @@ function SarakDataTableImpl<T>({
     const headerBg = 'var(--sarak-table-header-bg, var(--color-theme-card,#1e293b))';
     const cellBg = 'var(--color-theme-card,#1e293b)';
 
+    // Colapso mobile (L2): cards reusando as MESMAS colunas (após todos os hooks).
+    if (collapseToCards) {
+        return (
+            <SarakDataCards columns={columns} rows={rows} height={height} overscan={overscan} getRowKey={getRowKey} className={className} />
+        );
+    }
+
     return (
         <div
             ref={scrollRef}
             data-sarak-datatable="true"
             role="table"
             className={className}
-            style={{ height, overflow: 'auto', position: 'relative' }}
+            // `maxWidth: 100%` mantém o scroll horizontal CONTIDO no container (barra mínima L2).
+            style={{ height, maxWidth: '100%', overflow: 'auto', position: 'relative' }}
         >
             <div style={{ width: offsets.total, position: 'relative', height: headerHeight + virtualizer.getTotalSize() }}>
                 {/* Cabeçalho sticky (topo). */}

@@ -3,6 +3,7 @@ import { render, screen, fireEvent, act } from '@testing-library/react';
 import { describe, it, expect, vi } from 'vitest';
 import SarakDataTableImpl from '../SarakDataTableImpl';
 import type { SarakColumn } from '../columnModel';
+import { DeviceProvider } from '../../../../../core/Provider/DeviceProvider';
 
 interface Row {
     name: string;
@@ -64,5 +65,44 @@ describe('Spec 12 (Onda 9) — SarakDataTable: colunas avançadas', () => {
             (el) => el.getAttribute('data-column-id'),
         );
         expect(headers).toEqual(['role', 'name']);
+    });
+});
+
+describe('Spec 40.2 (L2) — SarakDataTable responsivo por padrão (denso é mobile-usável)', () => {
+    it('no desktop (default) renderiza a TABELA colunar (não cards)', () => {
+        const { container } = render(<SarakDataTableImpl columns={columns} rows={rows} height={300} />);
+        expect(container.querySelector('[data-sarak-datatable="true"]')).not.toBeNull();
+        expect(container.querySelector('[data-sarak-datacards="true"]')).toBeNull();
+    });
+
+    it('no smartphone colapsa para CARDS empilhados (sem tabela colunar)', () => {
+        const { container } = render(
+            <DeviceProvider overrideDevice="smartphone">
+                <SarakDataTableImpl columns={columns} rows={rows} height={300} />
+            </DeviceProvider>,
+        );
+        expect(container.querySelector('[data-sarak-datacards="true"]')).not.toBeNull();
+        expect(container.querySelector('[data-sarak-datatable="true"]')).toBeNull();
+    });
+
+    it('o container de cards contém o scroll (overflow-x hidden + maxWidth 100%) — sem overflow da página', () => {
+        const { container } = render(
+            <DeviceProvider overrideDevice="smartphone">
+                <SarakDataTableImpl columns={columns} rows={rows} height={300} />
+            </DeviceProvider>,
+        );
+        const cards = container.querySelector('[data-sarak-datacards="true"]') as HTMLElement;
+        expect(cards.style.overflowX).toBe('hidden');
+        expect(cards.style.maxWidth).toBe('100%');
+    });
+
+    it('responsive={false} mantém a tabela colunar mesmo no smartphone (opt-out)', () => {
+        const { container } = render(
+            <DeviceProvider overrideDevice="smartphone">
+                <SarakDataTableImpl columns={columns} rows={rows} height={300} responsive={false} />
+            </DeviceProvider>,
+        );
+        expect(container.querySelector('[data-sarak-datatable="true"]')).not.toBeNull();
+        expect(container.querySelector('[data-sarak-datacards="true"]')).toBeNull();
     });
 });

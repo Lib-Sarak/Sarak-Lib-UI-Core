@@ -99,6 +99,7 @@ Traduzidos pelo resolutor oficial (`resolveToken`, Spec 16). Qualquer compriment
 | `SarakCatalogGrid` | `role` | `primary` · `secondary` · `neutral` · `accent` |
 | `SarakCatalogGrid` | `density` | `compact` · `standard` · `spacious` |
 | `SarakCatalogGrid` | `importance` | `hero` · `base` · `subtle` |
+| `SarakAppChrome` | `navigationStyle` | `sidebar` · `topbar` · `auto` |
 
 ### CSS Variables públicas (namespace `--sarak-*`)
 
@@ -106,7 +107,7 @@ Vars REAIS emitidas pelo Design Engine. Use SEMPRE com fallback — `var(--sarak
 
 `--sarak-accent-color` · `--sarak-animation-speed` · `--sarak-bg-opacity` · `--sarak-body-font` · `--sarak-border-radius` · `--sarak-border-radius-lg` · `--sarak-border-radius-md` · `--sarak-border-radius-sm` · `--sarak-border-style` · `--sarak-border-type` · `--sarak-border-width` · `--sarak-button-active-color` · `--sarak-button-bg` · `--sarak-button-hover` · `--sarak-button-padding` · `--sarak-button-radius` · `--sarak-card-active-color` · `--sarak-card-bg` · `--sarak-card-border` · `--sarak-card-hover-color` · `--sarak-card-noise-opacity` · `--sarak-card-padding-lg` · `--sarak-card-padding-md` · `--sarak-card-padding-sm` · `--sarak-card-radius` · `--sarak-card-shadow-intensity` · `--sarak-chart-thickness` · `--sarak-chat-anim-speed` · `--sarak-chat-bubble` · `--sarak-color-depth` · `--sarak-color-variation` · `--sarak-contrast-curve` · `--sarak-elasticity` · `--sarak-error-color` · `--sarak-flow-grid` · `--sarak-flow-radius` · `--sarak-fluid-scale` · `--sarak-font-scale` · `--sarak-font-size` · `--sarak-font-size-base` · `--sarak-glass-blur` · `--sarak-glass-opacity` · `--sarak-glass-saturation` · `--sarak-haptic-scale` · `--sarak-heading-font` · `--sarak-heading-spacing` · `--sarak-heading-weight` · `--sarak-icon-stroke` · `--sarak-input-border-width` · `--sarak-input-style` · `--sarak-layered-shadows` · `--sarak-layout` · `--sarak-layout-density` · `--sarak-layout-gap` · `--sarak-layout-gap-lg` · `--sarak-layout-gap-md` · `--sarak-layout-gap-sm` · `--sarak-line-height` · `--sarak-max-width` · `--sarak-mode` · `--sarak-nav-style` · `--sarak-navigation-style` · `--sarak-noise-opacity` · `--sarak-palette` · `--sarak-primary-color` · `--sarak-scale-ratio` · `--sarak-scrollbar-width` · `--sarak-secondary-color` · `--sarak-security-glow` · `--sarak-security-pulse` · `--sarak-shadow-intensity` · `--sarak-sidebar-active-color` · `--sarak-sidebar-bg` · `--sarak-sidebar-hover-color` · `--sarak-sidebar-noise-opacity` · `--sarak-sidebar-width` · `--sarak-subtitle-font` · `--sarak-success-color` · `--sarak-surface` · `--sarak-surface-color` · `--sarak-surface-intensity` · `--sarak-system-tone` · `--sarak-tab-font` · `--sarak-tab-gap` · `--sarak-tab-section-margin` · `--sarak-tabular-nums` · `--sarak-tertiary-color` · `--sarak-texture` · `--sarak-texture-color` · `--sarak-texture-opacity` · `--sarak-title-color` · `--sarak-topbar-active-color` · `--sarak-topbar-bg` · `--sarak-topbar-height` · `--sarak-topbar-hover-color` · `--sarak-topbar-noise-opacity` · `--sarak-warning-color`
 
-## Componentes resolvíveis via `"type"` (67)
+## Componentes resolvíveis via `"type"` (68)
 
 ### SarakFlex
 
@@ -211,6 +212,7 @@ Props (`SarakDataTableProps` — `src/components/atomic/DataDisplay/SarakDataTab
 | `getRowKey` | `(row: T, index: number) => React.Key` | não | Chave estável da linha (default: índice). |
 | `onColumnResize` | `(columnId: string, width: number) => void` | não | Notifica nova largura ao soltar o handle de resize. |
 | `onColumnReorder` | `(fromId: string, toId: string) => void` | não | Notifica reordenação (origem → destino) ao soltar o drag do cabeçalho. |
+| `responsive` | `boolean` | não | L2 (Spec 40.2): no smartphone colapsa para cards empilhados. Default `true`. |
 | `className` | `string` | não |  |
 
 ### SarakSparkline
@@ -986,6 +988,23 @@ Props (`SarakHiddenProps` — `src/components/Layout/SarakHidden.tsx`):
 | --- | --- | --- | --- |
 | `children` | `ReactNode` | sim |  |
 | `on` | `DeviceType \| DeviceType[]` | sim | Esconder quando o dispositivo ativo estiver nesta lista |
+
+### SarakAppChrome
+
+Props (`SarakAppChromeProps` — `src/components/Layout/SarakAppChrome.tsx`):
+
+| Prop | Tipo | Obrigatória | Descrição |
+| --- | --- | --- | --- |
+| `children` | `React.ReactNode` | sim | Conteúdo do app (a tela do próprio módulo). |
+| `brand` | `{ name?: string; logoUrl?: string }` | não | Identidade exibida no cromo (topo da sidebar / início da topbar). |
+| `navItems` | `SarakNavItem[]` | não | Navegação ESTRUTURADA com ícone first-class (Spec 40.2 — L1). Renderiza ícone (via `SarakIcon`/`IconMap`) + label, temável por token, com estado ativo acessível (`aria-current`, foco por teclado). É o caminho recomendado para o cromo por-app; tem precedência sobre `nav` quando ambos são passados. |
+| `nav` | `ShellNavItem[]` | não | Itens de navegação como DADO no contrato do `SarakShellNav` (modelo declarativo, `route`/`activeRoute`). Mantido para compatibilidade; prefira `navItems`. |
+| `activeRoute` | `string` | não | Rota ativa (destaca o item correspondente no `nav`; ignorado se `navItems`). |
+| `onNavigate` | `(route: string) => void` | não | Clique/teclado num item de navegação — o host decide como navegar. |
+| `navigationStyle` | `'sidebar' \| 'topbar' \| 'auto'` | não | Estilo do cromo. `'auto'` (default) segue o Design Engine (`design.navigationStyle === 'topbar'` → topbar; caso contrário → sidebar), então trocar o tema no `/design` também troca a orientação do cromo. |
+| `topbarActions` | `React.ReactNode` | não | Conteúdo à direita da topbar (ações, avatar, seletor de tema…). |
+| `className` | `string` | não |  |
+| `style` | `React.CSSProperties` | não |  |
 
 ### CustomizationPanel
 

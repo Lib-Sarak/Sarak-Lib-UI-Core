@@ -3,7 +3,7 @@ import { motion } from 'framer-motion';
 import { Sparkles, Zap, Box, Compass } from 'lucide-react';
 import { useSarakUI } from '../../../core/Provider/SarakUIProvider';
 
-interface SarakEmptyStateProps {
+export interface SarakEmptyStateProps {
     type?: 'minimal' | 'abstract' | 'geometric';
 }
 

@@ -36,7 +36,8 @@ describe('useThemePersistenceHandlers (Spec 44 — sem backend próprio)', () =>
         expect(downloadSpy).toHaveBeenCalledWith(expect.objectContaining({
             id: 'meu-tema-corporativo',
             name: 'Meu Tema Corporativo',
-            design: draft
+            // Export completo (Spec 40.1 L6): preserva o rascunho sobre todos os defaults.
+            design: expect.objectContaining({ mode: 'dark', primaryColor: '#00f2ff' })
         }));
         expect(setCurrentThemeName).toHaveBeenCalledWith('Meu Tema Corporativo');
         expect(setIsSaveModalOpen).toHaveBeenCalledWith(false);

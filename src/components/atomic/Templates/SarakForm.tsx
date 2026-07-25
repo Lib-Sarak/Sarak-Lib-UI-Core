@@ -9,7 +9,7 @@ import { useStructuralStyles } from '../hooks/useStructuralStyles';
 import { twMerge } from 'tailwind-merge';
 import { useFormData } from './hooks/useFormData';
 
-interface SarakFormProps<TData extends Record<string, unknown>> {
+export interface SarakFormProps<TData extends Record<string, unknown>> {
     endpoint: string;
     label?: string;
     mapping?: Record<string, string>; // { field_name: "Label do Input" }

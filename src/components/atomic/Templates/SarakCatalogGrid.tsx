@@ -23,7 +23,7 @@ interface CatalogItem {
     [key: string]: unknown;
 }
 
-interface SarakCatalogGridProps {
+export interface SarakCatalogGridProps {
     items: CatalogItem[];
     loading?: boolean;
     title: string;

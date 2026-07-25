@@ -21,7 +21,7 @@ import { useSarakUI } from '../../../core/Provider/SarakUIProvider';
 import { ManagementGroupCard } from './components/ManagementGroupCard';
 import { useManagementGrid } from './hooks/useManagementGrid';
 
-interface SarakManagementGridProps<TItem extends Record<string, unknown>> {
+export interface SarakManagementGridProps<TItem extends Record<string, unknown>> {
     endpoint: string;
     groupBy: string;
     ghostGroups?: string[];

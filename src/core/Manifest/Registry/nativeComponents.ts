@@ -83,6 +83,7 @@ import {
 } from '../../../components/atomic/Templates';
 import { SarakAnalyticalPage } from '../../../components/Layout/SarakAnalyticalPage';
 import { SarakHidden } from '../../../components/Layout/SarakHidden';
+import { SarakAppChrome } from '../../../components/Layout/SarakAppChrome';
 import { lazy, type ComponentType } from 'react';
 
 /**
@@ -213,6 +214,9 @@ export const NATIVE_COMPONENTS = {
     // ReactNode (navBar/mainContent/sidePanel) são alimentadas via `slots` do nó.
     SarakAnalyticalPage: widen(SarakAnalyticalPage),
     SarakHidden: widen(SarakHidden),
+    // Cromo apresentacional temável (Spec 40.1 — L2): topbar/sidebar + conteúdo, sem
+    // host/registro. Consome os tokens de navegação (Spec 18). `children` via slots.
+    SarakAppChrome: widen(SarakAppChrome),
     // Painel do Design Engine (Spec 01) — Camada 3 via React.lazy (ver acima).
     CustomizationPanel,
 } as const;

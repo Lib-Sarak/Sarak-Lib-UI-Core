@@ -1,7 +1,7 @@
 import React from "react";
 import { SarakSelect } from "../Inputs/SarakSelect";
 
-interface FilterSelectProps {
+export interface FilterSelectProps {
     col: string;
     placeholder?: string;
     filters: Record<string, string>;

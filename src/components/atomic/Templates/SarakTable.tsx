@@ -19,7 +19,7 @@ import { useStructuralStyles } from '../hooks/useStructuralStyles';
 import { useSarakTableData } from './hooks/useSarakTableData';
 import { twMerge } from 'tailwind-merge';
 
-interface SarakTableProps<TData extends Record<string, unknown> = Record<string, unknown>> {
+export interface SarakTableProps<TData extends Record<string, unknown> = Record<string, unknown>> {
     endpoint: string;
     data?: TData[];
     label?: string;

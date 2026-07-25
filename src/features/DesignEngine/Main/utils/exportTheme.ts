@@ -1,10 +1,23 @@
 import type { SarakDesignState } from '../../../../core/Provider/types';
+import { getDefaultDesignState } from '../../../../core/Design/master-map';
 
 export interface ThemeExportPayload {
     id: string;
     name: string;
     design: SarakDesignState;
 }
+
+/**
+ * Resolve o conjunto COMPLETO de tokens (Spec 40.1 — L6): parte dos defaults de TODOS
+ * os tokens (`getDefaultDesignState`) e sobrepõe o design informado. Garante que um tema
+ * exportado nasça com todos os eixos preenchidos (cor + fonte + cromo + raio + espaçamento),
+ * em vez de um subconjunto — assim o consumidor customiza um tema já completo e nunca
+ * "esquece" um eixo (a causa-raiz de "fonte/cromo não mudam" do Teste Real).
+ */
+const resolveCompleteDesign = (design: SarakDesignState): SarakDesignState => ({
+    ...getDefaultDesignState(),
+    ...(design as Record<string, unknown>),
+} as SarakDesignState);
 
 /** Converte um nome livre em um `id` de tema estável (kebab-case, sem acentos). */
 export const slugifyThemeId = (name: string): string => {
@@ -28,7 +41,8 @@ export const slugifyThemeId = (name: string): string => {
 export const buildThemeExportPayload = (design: SarakDesignState, name: string): ThemeExportPayload => ({
     id: slugifyThemeId(name),
     name: name.trim() || 'Meu Novo Tema',
-    design
+    // Exporta o conjunto COMPLETO de tokens (L6), nunca um subconjunto do rascunho.
+    design: resolveCompleteDesign(design)
 });
 
 /** Dispara o download do JSON no navegador. Só roda no cliente (`document` real). */

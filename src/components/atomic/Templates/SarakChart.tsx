@@ -6,7 +6,7 @@ import { useStructuralStyles } from '../hooks/useStructuralStyles';
 import { twMerge } from 'tailwind-merge';
 import { useChartData } from './hooks/useChartData';
 
-interface SarakChartProps {
+export interface SarakChartProps {
     endpoint: string;
     label?: string;
     mapping?: Record<string, string>; // { value_key: "Label", date_key: "Label" }

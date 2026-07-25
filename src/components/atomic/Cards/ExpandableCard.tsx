@@ -8,7 +8,7 @@ import { useCardLayoutStyles } from './hooks/useCardLayoutStyles';
 import { useExpandableCard } from './hooks/useExpandableCard';
 import { useStructuralStyles } from '../hooks/useStructuralStyles';
 
-interface ExpandableCardProps {
+export interface ExpandableCardProps {
     title: string;
     iconContent?: React.ReactNode;
     helpButton?: React.ReactNode;

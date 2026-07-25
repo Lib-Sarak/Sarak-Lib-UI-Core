@@ -118,6 +118,21 @@ export const DesignInjector: React.FC<DesignInjectorProps> = ({ design: s, mode 
             Object.entries(BEZIER_CURVES).forEach(([k, v]) => primary.style.setProperty(k, v));
         }
 
+        // 3.5 FONTE DO TEMA APLICA SOZINHA (Spec 40.1 — L5). As vars `--font-main`/
+        // `--font-heading` já são emitidas pelos tokens de tipografia e o CSS da lib
+        // (`_base.css`/`_typography.css`) liga `body`/títulos a elas. Mas um consumidor
+        // plug-and-play quase sempre traz um `body { font-family }` de reset no scaffold
+        // (ex.: o `index.css` padrão do Vite), cuja cascata pode vencer a regra de
+        // elemento da lib. Ancorar a família INLINE no escopo do Provider — body (Modo
+        // App, dono da página) ou container da ilha (Embarcado) — garante que a fonte do
+        // tema vença SEM o consumidor escrever uma linha de CSS. Referencia a var, então
+        // repinta ao vivo quando o tema muda (custom properties resolvem no computed-value).
+        const fontScope = isEmbedded ? scopeElement : document.body;
+        if (fontScope) {
+            const FONT_MAIN = 'var(--font-main, var(--sarak-font-b, system-ui, sans-serif))';
+            if (fontScope.style.fontFamily !== FONT_MAIN) fontScope.style.fontFamily = FONT_MAIN;
+        }
+
         // 4. Classes de Modo (Dark/Light) — no `body` (App) ou no container (Embarcado)
         const modeClass = s.mode || 'dark';
         const classTarget = isEmbedded && scopeElement ? scopeElement : document.body;

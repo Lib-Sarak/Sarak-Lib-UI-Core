@@ -15,7 +15,7 @@ interface SarakActionCardDetail {
     value: unknown;
 }
 
-interface SarakActionCardProps<TItem extends Record<string, unknown>> {
+export interface SarakActionCardProps<TItem extends Record<string, unknown>> {
     item: TItem;
     mapping?: Record<string, string>;
     className?: string;

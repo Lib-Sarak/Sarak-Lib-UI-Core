@@ -4,7 +4,7 @@ import { Search, Command, X, ArrowRight } from 'lucide-react';
 import { useSarakUI } from '../../../core/Provider/SarakUIProvider';
 import { getRegisteredModules } from '../../../core/Discovery/registry';
 
-interface SarakSearchProps {
+export interface SarakSearchProps {
     isOpen: boolean;
     onClose: () => void;
 }

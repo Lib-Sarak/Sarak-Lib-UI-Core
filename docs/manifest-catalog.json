@@ -304,6 +304,12 @@
           "doc": "Notifica reordenação (origem → destino) ao soltar o drag do cabeçalho."
         },
         {
+          "name": "responsive",
+          "type": "boolean",
+          "optional": true,
+          "doc": "L2 (Spec 40.2): no smartphone colapsa para cards empilhados. Default `true`."
+        },
+        {
           "name": "className",
           "type": "string",
           "optional": true,
@@ -2764,6 +2770,72 @@
         }
       ]
     },
+    "SarakAppChrome": {
+      "propsInterface": "SarakAppChromeProps",
+      "source": "src/components/Layout/SarakAppChrome.tsx",
+      "props": [
+        {
+          "name": "children",
+          "type": "React.ReactNode",
+          "optional": false,
+          "doc": "Conteúdo do app (a tela do próprio módulo)."
+        },
+        {
+          "name": "brand",
+          "type": "{ name?: string; logoUrl?: string }",
+          "optional": true,
+          "doc": "Identidade exibida no cromo (topo da sidebar / início da topbar)."
+        },
+        {
+          "name": "navItems",
+          "type": "SarakNavItem[]",
+          "optional": true,
+          "doc": "Navegação ESTRUTURADA com ícone first-class (Spec 40.2 — L1). Renderiza ícone (via `SarakIcon`/`IconMap`) + label, temável por token, com estado ativo acessível (`aria-current`, foco por teclado). É o caminho recomendado para o cromo por-app; tem precedência sobre `nav` quando ambos são passados."
+        },
+        {
+          "name": "nav",
+          "type": "ShellNavItem[]",
+          "optional": true,
+          "doc": "Itens de navegação como DADO no contrato do `SarakShellNav` (modelo declarativo, `route`/`activeRoute`). Mantido para compatibilidade; prefira `navItems`."
+        },
+        {
+          "name": "activeRoute",
+          "type": "string",
+          "optional": true,
+          "doc": "Rota ativa (destaca o item correspondente no `nav`; ignorado se `navItems`)."
+        },
+        {
+          "name": "onNavigate",
+          "type": "(route: string) => void",
+          "optional": true,
+          "doc": "Clique/teclado num item de navegação — o host decide como navegar."
+        },
+        {
+          "name": "navigationStyle",
+          "type": "'sidebar' | 'topbar' | 'auto'",
+          "optional": true,
+          "doc": "Estilo do cromo. `'auto'` (default) segue o Design Engine (`design.navigationStyle === 'topbar'` → topbar; caso contrário → sidebar), então trocar o tema no `/design` também troca a orientação do cromo."
+        },
+        {
+          "name": "topbarActions",
+          "type": "React.ReactNode",
+          "optional": true,
+          "doc": "Conteúdo à direita da topbar (ações, avatar, seletor de tema…)."
+        },
+        {
+          "name": "className",
+          "type": "string",
+          "optional": true,
+          "doc": ""
+        },
+        {
+          "name": "style",
+          "type": "React.CSSProperties",
+          "optional": true,
+          "doc": ""
+        }
+      ]
+    },
     "CustomizationPanel": {
       "propsInterface": null,
       "source": null,
@@ -3311,6 +3383,15 @@
           "hero",
           "base",
           "subtle"
+        ]
+      },
+      {
+        "component": "SarakAppChrome",
+        "prop": "navigationStyle",
+        "values": [
+          "sidebar",
+          "topbar",
+          "auto"
         ]
       }
     ],

@@ -1,7 +1,13 @@
 import * as React$1 from 'react';
-import React__default, { ReactNode, ButtonHTMLAttributes, HTMLAttributes, InputHTMLAttributes, TextareaHTMLAttributes, SelectHTMLAttributes, ComponentType as ComponentType$1 } from 'react';
+import React__default, { ReactNode, ButtonHTMLAttributes, InputHTMLAttributes, SelectHTMLAttributes, TextareaHTMLAttributes, HTMLAttributes, ComponentType as ComponentType$1 } from 'react';
 import * as react_jsx_runtime from 'react/jsx-runtime';
 
+/**
+ * Sarak Industrial Design Schema (v11.0)
+ *
+ * Define o contrato para mapeamento de 100% das funcionalidades e componentes.
+ */
+type TokenValueType = 'number' | 'color' | 'string' | 'boolean' | 'select' | 'slider' | 'font' | 'text' | 'image' | 'file';
 type ResponsiveValue<T> = {
     desk: T;
     tab: T;
@@ -9,6 +15,53 @@ type ResponsiveValue<T> = {
 };
 /** Espaço de valores que um token pode assumir (espelha SarakDesignTokens). */
 type SarakTokenValue = string | number | boolean | ResponsiveValue<string | number>;
+interface DesignToken {
+    id: string;
+    label: string;
+    type: TokenValueType;
+    isResponsive?: boolean;
+    semanticRole?: 'bg' | 'text' | 'border' | 'primary';
+    iconFamily?: 'lucide' | 'phosphor' | 'tabler';
+    iconWeight?: 'thin' | 'light' | 'regular' | 'bold' | 'fill' | 'duotone';
+    unit?: 'px' | '%' | 'rem' | 'em' | 'ms' | 'deg' | 's';
+    cssVars?: string[];
+    generateVariants?: boolean;
+    constraints?: {
+        min?: number;
+        max?: number;
+        step?: number;
+        options?: {
+            value?: string;
+            id?: string;
+            label: string;
+        }[];
+    };
+    options?: {
+        value?: string;
+        id?: string;
+        label: string;
+    }[];
+    min?: number;
+    max?: number;
+    step?: number;
+    defaultValue: SarakTokenValue;
+    legacyValue?: SarakTokenValue;
+    description?: string;
+    /**
+     * Classificação de eixo visual (Spec 02) — usada pelo retrieval semântico do
+     * Design Agent e pela diversificação por eixo (Spec 04). Opcional: tokens
+     * estruturais/não-visuais (ex: `mode`, `navigationStyle`) podem não ter eixo —
+     * ver taxonomia na Seção 5 de `specs/plan/02-mapeamento-semantico-rag-catalogo.md`.
+     */
+    axis?: 'color' | 'geometry' | 'elevation' | 'texture' | 'density' | 'motion';
+    /**
+     * Presença = token Estrutural (Alavanca 2): o valor não é injetado como CSS Variable,
+     * é lido em JS por um Hook Controlador (Camada 6) que decide className/style (ex: direção,
+     * posição, alinhamento). Lista os hooks/métodos consumidores (ex: ['useCardLayoutStyles']).
+     * Ausência = token de Valor (Alavanca 1, default): consumido via `var(--sarak-*, fallback)`.
+     */
+    structuralConsumer?: string[];
+}
 
 interface SarakDesignTokens {
     accentColor: string;
@@ -680,6 +733,136 @@ interface SarakHiddenProps {
  */
 declare const SarakHidden: React__default.FC<SarakHiddenProps>;
 
+/**
+ * SarakShellNav — Navegação de shell 100% orientada a dados (Spec 33 + Spec 14)
+ *
+ * Equivalente declarativo do menu do shell legado (Spec 04): recebe os módulos como
+ * DADOS (`items`), agrupa por categoria, destaca o item ativo e delega a navegação ao
+ * host — nunca manipula a URL. No manifesto, o par canônico é:
+ *   props:   { "items": [...], "activeRoute": "{{$route}}" }
+ *   actions: [{ "type": "navigate", "payload": { "to": "{{$event}}" } }]
+ * O componente emite `onChange(route)` no clique/teclado; a Engine converte o valor
+ * em `{{$event}}` para a cadeia de ações (LeafNode).
+ */
+/** Item de navegação do shell — espelho declarativo do `SarakModule` do Discovery. */
+interface ShellNavItem {
+    /** Rótulo exibido no menu. */
+    label: string;
+    /** Rota destino (comparada com `activeRoute` para o destaque). */
+    route: string;
+    /** Nome do ícone (resolvido pelo `SarakIcon`/IconMap). */
+    icon?: string;
+    /** Agrupamento visual (itens sem categoria ficam no grupo raiz). */
+    category?: string;
+}
+interface SarakShellNavProps {
+    /** Módulos/rotas do sistema, na ordem de exibição. */
+    items: ShellNavItem[];
+    /** Rota ativa — no manifesto, use `"{{$route}}"` (injetada pelo Renderer). */
+    activeRoute?: string;
+    /** Identidade exibida no topo do menu. */
+    brand?: {
+        name?: string;
+        logoUrl?: string;
+    };
+    /** Caminho TSX: callback direto. No manifesto a navegação sai por `onChange`. */
+    onNavigate?: (route: string) => void;
+    /** Caminho manifesto: a Engine injeta este handler e roda as `actions`. */
+    onChange?: (route: string) => void;
+    /**
+     * Orientação do menu (Spec 18). `'auto'` (default) segue o Design Engine:
+     * `design.navigationStyle === 'topbar'` → horizontal; qualquer outro → vertical.
+     * `'dock'`/`'glass'` do shell legado ficam fora desta spec (tratados como vertical).
+     */
+    orientation?: 'vertical' | 'horizontal' | 'auto';
+    className?: string;
+}
+/** Menu vertical de shell guiado por dados, com grupos e estado ativo (Spec 33). */
+declare const SarakShellNav: React__default.FC<SarakShellNavProps>;
+
+/**
+ * Item de navegação estruturado do `SarakAppChrome` (Spec 40.2 — L1).
+ *
+ * Modelo de NAVEGAÇÃO com ícone first-class, pensado para o consumidor de apps
+ * separados (conector-redirect): cada item aponta para uma `href` (URL de destino)
+ * e o próprio consumidor marca qual está `active`. É o contrato que o `@erp/ui-kit`
+ * compartilha entre todos os apps para o cromo ficar IDÊNTICO em toda aba.
+ *
+ * O `icon` é resolvido pelo `SarakIcon`/`IconMap` curado (mesmo motor do shell),
+ * temável por token, opcional por item. Difere do `ShellNavItem` (que usa
+ * `route`/`activeRoute` do modelo declarativo) por trazer `id` estável + `active`
+ * por item — mais ergonômico para um menu de topo estático por app.
+ */
+interface SarakNavItem {
+    /** Identidade estável do item (chave de render; não precisa ser a URL). */
+    id: string;
+    /** Rótulo exibido ao lado do ícone. */
+    label: string;
+    /** Nome do ícone (resolvido pelo `SarakIcon`/`IconMap` curado). Opcional. */
+    icon?: string;
+    /** URL de destino — o host navega para cá (redirect de página, router, etc.). */
+    href: string;
+    /** Marca o item como ativo (destaque + `aria-current="page"`). */
+    active?: boolean;
+}
+/**
+ * SarakAppChrome — cromo apresentacional temável (topbar/sidebar) SEM host/registro.
+ *
+ * A lacuna real do Teste Real (Spec 40.1 — L2): os tokens de cromo da Spec 18
+ * (`--sarak-topbar-*`, `--sarak-sidebar-*`) ficavam SEM consumidor porque o único
+ * consumidor era o `SarakShell`, que é um HOST de módulos-plugin (renderiza o
+ * `activeModule` do Discovery, não `children`). Um consumidor de apps-separados (como
+ * o ERP) não usa o modelo Shell/registro — então nada pintava a topbar/sidebar.
+ *
+ * `SarakAppChrome` fecha isso: é um cromo 100% PRESENTACIONAL — topbar/sidebar + área
+ * de conteúdo (`children`) —, temável por tokens do Design Engine, que CADA app
+ * renderiza sozinho. Sem `registerSarakModule`, sem Discovery, sem acoplar módulos.
+ * A navegação é DADO (`navItems`/`nav`) e a seleção sai por callback (`onNavigate`) —
+ * o host decide o que fazer (redirect de página inteira, router local, etc.).
+ *
+ * Zero hardcode (Regra 2): toda cor/medida vem de tokens `--sarak-*` com fallback.
+ */
+interface SarakAppChromeProps {
+    /** Conteúdo do app (a tela do próprio módulo). */
+    children: React__default.ReactNode;
+    /** Identidade exibida no cromo (topo da sidebar / início da topbar). */
+    brand?: {
+        name?: string;
+        logoUrl?: string;
+    };
+    /**
+     * Navegação ESTRUTURADA com ícone first-class (Spec 40.2 — L1). Renderiza
+     * ícone (via `SarakIcon`/`IconMap`) + label, temável por token, com estado
+     * ativo acessível (`aria-current`, foco por teclado). É o caminho recomendado
+     * para o cromo por-app; tem precedência sobre `nav` quando ambos são passados.
+     */
+    navItems?: SarakNavItem[];
+    /**
+     * Itens de navegação como DADO no contrato do `SarakShellNav` (modelo declarativo,
+     * `route`/`activeRoute`). Mantido para compatibilidade; prefira `navItems`.
+     */
+    nav?: ShellNavItem[];
+    /** Rota ativa (destaca o item correspondente no `nav`; ignorado se `navItems`). */
+    activeRoute?: string;
+    /** Clique/teclado num item de navegação — o host decide como navegar. */
+    onNavigate?: (route: string) => void;
+    /**
+     * Estilo do cromo. `'auto'` (default) segue o Design Engine
+     * (`design.navigationStyle === 'topbar'` → topbar; caso contrário → sidebar),
+     * então trocar o tema no `/design` também troca a orientação do cromo.
+     */
+    navigationStyle?: 'sidebar' | 'topbar' | 'auto';
+    /** Conteúdo à direita da topbar (ações, avatar, seletor de tema…). */
+    topbarActions?: React__default.ReactNode;
+    className?: string;
+    style?: React__default.CSSProperties;
+}
+/**
+ * Cromo apresentacional. Renderiza topbar OU sidebar (por `navigationStyle`) + a área
+ * de conteúdo, tudo pintado pelos tokens de navegação (Spec 18) que o Design Engine emite.
+ */
+declare const SarakAppChrome: React__default.FC<SarakAppChromeProps>;
+
 type IconName = 'AlertCircle' | 'Check' | 'X' | 'Menu' | 'Search' | 'Bell' | 'User' | 'LogOut' | 'Shield' | 'Globe' | 'ChevronDown' | 'ChevronLeft' | 'ChevronRight' | 'Zap' | 'LayoutDashboard' | 'Save' | 'Settings' | 'BarChart3' | 'Layout' | 'FileText' | 'MessageSquare' | 'History' | 'Network' | 'Box' | 'Type' | 'Lock' | 'Layers' | 'Grid' | 'AlignLeft' | 'LineChart' | 'Hash' | 'Copy' | 'RefreshCw' | 'Edit3' | 'CornerDownRight' | 'Activity' | 'Users' | 'ArrowRight' | 'FileSpreadsheet' | 'Download' | 'ArrowUpDown' | 'Database' | 'List' | 'CheckCircle2' | 'Loader2' | 'Calendar' | 'Trash2' | 'Plus' | 'UploadCloud' | 'MoreVertical' | 'Image' | 'File' | 'Edit' | 'Eye' | 'UserPlus';
 
 declare const IconMap: Record<IconName, {
@@ -718,6 +901,88 @@ declare const useDesignDraft: (sarak: SarakUIContextType) => {
     } | null;
     showToast: (type: "success" | "warning", message: string) => void;
 };
+
+/**
+ * Presets: Temas Globais
+ *
+ * Configurações que alteram a aplicação inteira de uma vez.
+ * Formato: { id: ThemePresetId; name: string; description: string; design: Record<string, unknown> }
+ *
+ * `design` é `Record<string, unknown>` (Zero `any` — §0.6) e NÃO o `SarakThemePayload`
+ * estrito: os presets legados carregam valores que divergiram do domínio fechado do
+ * payload (ex.: `logoMinimalUrl`, `cardVariant: "solid"`), reconciliação pendente com a
+ * paridade 1:1:1:1:1 (ver `Provider/types.ts`). A blindagem estrita vive na diretiva
+ * `theme` (Spec 42), que autores de manifesto consomem via `Partial<SarakThemePayload>`.
+ */
+/**
+ * União conhecida dos ids de preset (fonte única; espelha `GLOBAL_THEMES`).
+ * Adicionar um tema = adicionar seu id aqui e importá-lo abaixo. Consumida pela
+ * diretiva `theme` (Spec 42) como o ramo "preset nomeado".
+ */
+declare const THEME_PRESET_IDS: readonly ["sarak-sovereign", "crystal-glass", "cyberpunk-neon", "holographic-glass", "industrial-terminal", "nature-breeze", "neo-brutalism", "synthwave-retro", "nebula-space", "dot-matrix-elegant", "stellar-nebula", "kinetic-flow", "cyber-retro-wave", "minimalist-airy", "data-terminal", "neumorphic-mobile", "industrial-dashboard", "asymmetric-editorial"];
+type ThemePresetId = (typeof THEME_PRESET_IDS)[number];
+interface ThemePreset {
+    id: ThemePresetId;
+    name: string;
+    description: string;
+    design: Record<string, unknown>;
+}
+declare const GLOBAL_THEMES: ThemePreset[];
+
+/**
+ * Temas de REFERÊNCIA da lib (Spec 40.1 — L6).
+ *
+ * A lib fornece um PAR de temas COMPLETOS (todos os eixos: cor + fonte + cromo
+ * topbar/sidebar + raio + espaçamento) para o consumidor CUSTOMIZAR — em vez de montar
+ * do zero e esquecer eixos (a causa-raiz de "fonte/cromo não mudam" do Teste Real, onde
+ * o `ERP_THEMES` nasceu com só ~10 chaves de cor). O consumidor parte destes, troca
+ * poucos valores (marca/cor) e mantém a completude por construção.
+ *
+ * O par difere em MODO (claro/escuro), NAVEGAÇÃO (topbar/sidebar) e FONTE de propósito,
+ * para que alternar entre eles mude visivelmente cor E fonte E cromo E raio — a prova
+ * ampla do R5.
+ */
+
+/** Busca um preset completo do catálogo pelo id. */
+declare const getThemePreset: (id: ThemePresetId) => ThemePreset | undefined;
+/**
+ * Par de referência recomendado: um CLARO (`minimalist-airy`, topbar, Inter) e um
+ * ESCURO (`sarak-sovereign`, sidebar, Outfit). Ambos completos — ponto de partida para
+ * o consumidor. Use direto em `customThemes` do `SarakUIProvider`, ou clone e ajuste.
+ */
+declare const SARAK_REFERENCE_THEMES: ThemePreset[];
+
+/**
+ * Helper para obter todos os tokens em uma lista plana.
+ */
+declare const getAllDesignTokens: () => DesignToken[];
+/**
+ * Helper para obter os valores padrão de todos os tokens.
+ */
+declare const getDefaultDesignState: () => Record<string, SarakTokenValue>;
+
+/**
+ * Cobertura de EIXOS de um tema (Spec 40.1 — L6, aviso de omissão).
+ *
+ * Um tema "completo" preenche todos os eixos conceituais que o consumidor espera ver
+ * mudar ao trocar de tema: cor, fonte, cromo (topbar/sidebar), raio e espaçamento. Um
+ * tema que omite um eixo inteiro (o `ERP_THEMES` do v5, só cor) faz o consumidor achar
+ * que "a lib não muda fonte/cromo", quando na verdade o TEMA é que não os declara.
+ *
+ * `findMissingThemeAxes` detecta esses buracos; `warnOnIncompleteTheme` avisa uma vez
+ * (dev), sem lançar. São utilitários OPT-IN — a lib não força completude, só ajuda o
+ * consumidor a não ficar silenciosamente incompleto.
+ */
+
+/** Eixo conceitual → tokens representativos (basta UM presente para o eixo contar). */
+declare const THEME_AXES: Readonly<Record<string, readonly string[]>>;
+/** Eixos que o tema NÃO declara (nenhum token representativo presente). Vazio = completo. */
+declare const findMissingThemeAxes: (design: SarakDesignState | Record<string, unknown>) => string[];
+/**
+ * Avisa (uma vez, `console.warn`) se o tema omite eixos inteiros. Não lança — apenas
+ * sinaliza ao dev. Chame ao aplicar um tema custom para não ficar incompleto em silêncio.
+ */
+declare const warnOnIncompleteTheme: (design: SarakDesignState | Record<string, unknown>, label?: string) => string[];
 
 /**
  * CustomizationPanel (v6.0)
@@ -975,53 +1240,6 @@ interface SarakPaginationProps {
 declare const SarakPagination: React__default.FC<SarakPaginationProps>;
 
 /**
- * SarakShellNav — Navegação de shell 100% orientada a dados (Spec 33 + Spec 14)
- *
- * Equivalente declarativo do menu do shell legado (Spec 04): recebe os módulos como
- * DADOS (`items`), agrupa por categoria, destaca o item ativo e delega a navegação ao
- * host — nunca manipula a URL. No manifesto, o par canônico é:
- *   props:   { "items": [...], "activeRoute": "{{$route}}" }
- *   actions: [{ "type": "navigate", "payload": { "to": "{{$event}}" } }]
- * O componente emite `onChange(route)` no clique/teclado; a Engine converte o valor
- * em `{{$event}}` para a cadeia de ações (LeafNode).
- */
-/** Item de navegação do shell — espelho declarativo do `SarakModule` do Discovery. */
-interface ShellNavItem {
-    /** Rótulo exibido no menu. */
-    label: string;
-    /** Rota destino (comparada com `activeRoute` para o destaque). */
-    route: string;
-    /** Nome do ícone (resolvido pelo `SarakIcon`/IconMap). */
-    icon?: string;
-    /** Agrupamento visual (itens sem categoria ficam no grupo raiz). */
-    category?: string;
-}
-interface SarakShellNavProps {
-    /** Módulos/rotas do sistema, na ordem de exibição. */
-    items: ShellNavItem[];
-    /** Rota ativa — no manifesto, use `"{{$route}}"` (injetada pelo Renderer). */
-    activeRoute?: string;
-    /** Identidade exibida no topo do menu. */
-    brand?: {
-        name?: string;
-        logoUrl?: string;
-    };
-    /** Caminho TSX: callback direto. No manifesto a navegação sai por `onChange`. */
-    onNavigate?: (route: string) => void;
-    /** Caminho manifesto: a Engine injeta este handler e roda as `actions`. */
-    onChange?: (route: string) => void;
-    /**
-     * Orientação do menu (Spec 18). `'auto'` (default) segue o Design Engine:
-     * `design.navigationStyle === 'topbar'` → horizontal; qualquer outro → vertical.
-     * `'dock'`/`'glass'` do shell legado ficam fora desta spec (tratados como vertical).
-     */
-    orientation?: 'vertical' | 'horizontal' | 'auto';
-    className?: string;
-}
-/** Menu vertical de shell guiado por dados, com grupos e estado ativo (Spec 33). */
-declare const SarakShellNav: React__default.FC<SarakShellNavProps>;
-
-/**
  * Valida o esquema de um `href` de link contra uma allow-list (`http(s):`,
  * `mailto:`, `tel:`, caminhos relativos/âncora). Bloqueia `javascript:`, `data:`
  * e qualquer outro esquema executável — vetor clássico de XSS via link.
@@ -1066,6 +1284,68 @@ declare const ModuleSelector: ({ currentModule, setCurrentModule, modules }: {
     setCurrentModule: (id: string) => void;
     modules: ModuleConfig[];
 }) => react_jsx_runtime.JSX.Element;
+
+interface SarakInputProps extends InputHTMLAttributes<HTMLInputElement> {
+    label?: string;
+    icon?: React__default.ReactNode;
+    leftIcon?: React__default.ReactNode;
+    rightIcon?: React__default.ReactNode;
+    error?: string;
+    fullWidth?: boolean;
+}
+/**
+ * Componente Atômico: SarakInput
+ * Segue a regra da "Composição Atômica Obrigatória" da Sarak-Lib-UI-Core.
+ */
+declare const SarakInput: React__default.FC<SarakInputProps>;
+
+interface SarakSelectProps extends SelectHTMLAttributes<HTMLSelectElement> {
+    error?: string;
+    fullWidth?: boolean;
+}
+/**
+ * Componente Atômico: SarakSelect
+ */
+declare const SarakSelect: React__default.FC<SarakSelectProps>;
+
+interface SarakTextareaProps extends TextareaHTMLAttributes<HTMLTextAreaElement> {
+    error?: string;
+    fullWidth?: boolean;
+}
+/**
+ * Componente Atômico: SarakTextarea
+ */
+declare const SarakTextarea: React__default.FC<SarakTextareaProps>;
+
+interface SarakSliderProps extends Omit<InputHTMLAttributes<HTMLInputElement>, 'type'> {
+    label?: string;
+    valueLabel?: string | number;
+}
+/**
+ * Componente Atômico: SarakSlider
+ * Substitui o `<input type="range">`.
+ */
+declare const SarakSlider: React__default.FC<SarakSliderProps>;
+
+interface SarakSwitchProps extends Omit<InputHTMLAttributes<HTMLInputElement>, 'type'> {
+    label?: React__default.ReactNode;
+    description?: React__default.ReactNode;
+}
+/**
+ * Componente Atômico: SarakSwitch
+ */
+declare const SarakSwitch: React__default.FC<SarakSwitchProps>;
+
+interface SarakSearchProps {
+    isOpen: boolean;
+    onClose: () => void;
+}
+/**
+ * SarakSearch (v6.0 Command Palette)
+ *
+ * Global search component integrated into the Sarak ecosystem.
+ */
+declare const SarakSearch: React__default.FC<SarakSearchProps>;
 
 /** Par ordenado [início, fim] de um intervalo contínuo. */
 type RangeValue = [number, number];
@@ -1241,6 +1521,19 @@ interface SarakRichTextProps {
     className?: string;
 }
 declare const SarakRichText: React__default.FC<SarakRichTextProps>;
+
+interface FilterSelectProps {
+    col: string;
+    placeholder?: string;
+    filters: Record<string, string>;
+    onChange: (col: string, value: string) => void;
+    options: string[];
+}
+declare const FilterSelect: React__default.FC<FilterSelectProps>;
+
+declare const HelpButton: ({ text }: {
+    text: string;
+}) => react_jsx_runtime.JSX.Element;
 
 interface SarakTableProps<TData extends Record<string, unknown> = Record<string, unknown>> {
     endpoint: string;
@@ -1932,9 +2225,11 @@ interface SarakDataTableProps<T = Record<string, unknown>> {
     onColumnResize?: (columnId: string, width: number) => void;
     /** Notifica reordenação (origem → destino) ao soltar o drag do cabeçalho. */
     onColumnReorder?: (fromId: string, toId: string) => void;
+    /** L2 (Spec 40.2): no smartphone colapsa para cards empilhados. Default `true`. */
+    responsive?: boolean;
     className?: string;
 }
-declare function SarakDataTableImpl<T>({ columns, rows, rowHeight, headerHeight, height, overscan, getRowKey, onColumnResize, onColumnReorder, className, }: SarakDataTableProps<T>): react_jsx_runtime.JSX.Element;
+declare function SarakDataTableImpl<T>({ columns, rows, rowHeight, headerHeight, height, overscan, getRowKey, onColumnResize, onColumnReorder, responsive, className, }: SarakDataTableProps<T>): react_jsx_runtime.JSX.Element;
 
 /**
  * SarakDataTable — barrel + carregamento preguiçoso (Spec 12, Regra 2 · Onda 9).
@@ -2149,26 +2444,6 @@ interface SarakChartEngineProps {
  * Sarak Chart Engine v7.5 [Quantum Edition] - Refactored v7.2.5
  */
 declare const SarakChartEngine: React__default.FC<SarakChartEngineProps>;
-
-/**
- * Presets: Temas Globais
- *
- * Configurações que alteram a aplicação inteira de uma vez.
- * Formato: { id: ThemePresetId; name: string; description: string; design: Record<string, unknown> }
- *
- * `design` é `Record<string, unknown>` (Zero `any` — §0.6) e NÃO o `SarakThemePayload`
- * estrito: os presets legados carregam valores que divergiram do domínio fechado do
- * payload (ex.: `logoMinimalUrl`, `cardVariant: "solid"`), reconciliação pendente com a
- * paridade 1:1:1:1:1 (ver `Provider/types.ts`). A blindagem estrita vive na diretiva
- * `theme` (Spec 42), que autores de manifesto consomem via `Partial<SarakThemePayload>`.
- */
-/**
- * União conhecida dos ids de preset (fonte única; espelha `GLOBAL_THEMES`).
- * Adicionar um tema = adicionar seu id aqui e importá-lo abaixo. Consumida pela
- * diretiva `theme` (Spec 42) como o ramo "preset nomeado".
- */
-declare const THEME_PRESET_IDS: readonly ["sarak-sovereign", "crystal-glass", "cyberpunk-neon", "holographic-glass", "industrial-terminal", "nature-breeze", "neo-brutalism", "synthwave-retro", "nebula-space", "dot-matrix-elegant", "stellar-nebula", "kinetic-flow", "cyber-retro-wave", "minimalist-airy", "data-terminal", "neumorphic-mobile", "industrial-dashboard", "asymmetric-editorial"];
-type ThemePresetId = (typeof THEME_PRESET_IDS)[number];
 
 /**
  * Manifest Schema e Gramática do Nó (Spec 20). `ManifestNode` é a Lei do JSON do bloco
@@ -2526,35 +2801,6 @@ interface SarakDataStore<TState extends StateRecord = StateRecord> {
  */
 declare const createSarakDataStore: <TState extends StateRecord = StateRecord>(initialState: TState) => SarakDataStore<TState>;
 
-interface SarakInputProps extends InputHTMLAttributes<HTMLInputElement> {
-    label?: string;
-    icon?: React__default.ReactNode;
-    leftIcon?: React__default.ReactNode;
-    rightIcon?: React__default.ReactNode;
-    error?: string;
-    fullWidth?: boolean;
-}
-
-interface SarakTextareaProps extends TextareaHTMLAttributes<HTMLTextAreaElement> {
-    error?: string;
-    fullWidth?: boolean;
-}
-
-interface SarakSelectProps extends SelectHTMLAttributes<HTMLSelectElement> {
-    error?: string;
-    fullWidth?: boolean;
-}
-
-interface SarakSwitchProps extends Omit<InputHTMLAttributes<HTMLInputElement>, 'type'> {
-    label?: React__default.ReactNode;
-    description?: React__default.ReactNode;
-}
-
-interface SarakSliderProps extends Omit<InputHTMLAttributes<HTMLInputElement>, 'type'> {
-    label?: string;
-    valueLabel?: string | number;
-}
-
 interface TabItem {
     id: string;
     label: React__default.ReactNode;
@@ -2652,6 +2898,7 @@ declare const NATIVE_COMPONENTS: {
     readonly SarakPageTransition: AnyManifestComponent;
     readonly SarakAnalyticalPage: AnyManifestComponent;
     readonly SarakHidden: AnyManifestComponent;
+    readonly SarakAppChrome: AnyManifestComponent;
     readonly CustomizationPanel: React$1.LazyExoticComponent<React$1.FC<{}>>;
 };
 /** União dos `type` nativos oficiais — fonte do `ComponentType` (Spec 22, Regra 1). */
@@ -3559,4 +3806,4 @@ interface SarakRouterState {
  */
 declare function useSarakRouter(basePath?: string): SarakRouterState;
 
-export { ACTION_HANDLERS, type Accept, type ActionHandler, type ActionList, type AriaDirective, type BadgeSize, type BadgeVariant, type BindingExpression, type BreadcrumbItem, type CardMove, type ComponentRegistry, type ComponentResolution, type ComponentType, type ConditionExpression, ConditionSyntaxError, type ContextMenuPosition, CustomizationPanel, DEFAULT_COLUMN_WIDTH, DESIGN_MANIFEST, DIRECTIVE_OWNERS, type DataNodeState, type DataSourceController, type DataSourceDirective, type DataSourceMethod, type DataSourceStates, type DatePickerValue, DesignScope, DeviceProvider, type DeviceType, type DirectiveName, type DirectiveWarning, type DiscoveredModule, type DispatchContext, DynamicRenderer, ExpandableCard, type ExpandedNode, FORM_META_KEY, type FileRejection, type FilterDescriptor, type FormModelDirective, type FormResetTrigger, type FormScope, FormScopeContext, type FormScopeDirective, type FormStore, IconMap, type IconName, ImageCard, type ImageCardProps, type KanbanCard, type KanbanColumn, type LanguageOption, LanguageSelector, type LightboxImage, MIN_COLUMN_WIDTH, type ManifestAction, type ManifestComponent, type ManifestComponentProps, type ManifestNode, type ManifestProps, type ManifestRoot, type ManifestValidationError, type ManifestValidationResult, type ManifestValue, type MatrixNodeConfig, type MatrixParentData, type MatrixTreeNode, type ModalLayoutContext, type ModuleConfig, type ModuleManifest, ModuleSelector, type MultiSelectOption, NATIVE_COMPONENTS, type NativeComponentType, type NavigateFn, type NavigationItem, type NetworkInterceptor, type NetworkRequest, type NodeParts, type OverlayController, type OverlayRequest, type PaginationToken, type PersistDirective, type Pipe, RESERVED_DIRECTIVES, type RangeValue, type RenderForDirective, type RenderForResult, type ResolveTokenOptions, type ResponsiveDirective, type RouteMap, type RouteTarget, SARAK_MODE_ATTRIBUTE, SARAK_SCOPE_CLASS, SARAK_STARTER_MANIFEST, SPACING_TOKENS, SPACING_TOKEN_NAMES, STORAGE_NAMESPACE, STRUCTURAL_KEYS, SUPPORTED_SCHEMA_VERSION, type SanitizeResult, SarakAccordion, type SarakAccordionProps, SarakActionCard, SarakAnalyticalPage, type SarakAnalyticalPageProps, SarakAuthScreen, type SarakAuthScreenEvent, type SarakAuthScreenProps, SarakBadge, type SarakBadgeProps, SarakBreadcrumbs, type SarakBreadcrumbsProps, SarakButton, type SarakButtonProps, SarakCardGrid, SarakCatalogGrid, SarakChart, SarakChartEngine, SarakChat, type SarakColumn, type SarakComponent, type SarakComponentProps, SarakContextMenu, type SarakContextMenuProps, SarakDataEmpty, type SarakDataEmptyProps, SarakDataGrid, SarakDataGridImpl, type SarakDataGridProps, type SarakDataStore, SarakDataTable, SarakDataTableImpl, type SarakDataTableProps, SarakDatePicker, type SarakDatePickerProps, SarakDrawer, type SarakDrawerProps, SarakEmptyState, SarakErrorBoundary, type SarakErrorBoundaryProps, SarakErrorFallback, type SarakErrorFallbackProps, SarakExpandableMatrix, type SarakExpandableMatrixProps, SarakFallback, type SarakFallbackProps, SarakFlex, type SarakFlexProps, SarakForm, SarakFormGroup, type SarakFormGroupProps, SarakGrid, type SarakGridProps, SarakHidden, SarakIcon, SarakIconButton, type SarakIconButtonProps, type SarakIconProps, SarakInvalidManifestScreen, type SarakInvalidManifestScreenProps, SarakKanbanImpl as SarakKanban, type SarakKanbanProps, SarakLightbox, type SarakLightboxProps, SarakLink, type SarakLinkProps, SarakManagementGrid, SarakManifestRenderer, SarakManifestRenderer as SarakManifestRendererDefault, type SarakManifestRendererProps, SarakMarkdownRenderer, type SarakMarkdownRendererProps, type SarakMatrixManifest, SarakMissingManifestScreen, SarakModal, type SarakModalProps, type SarakModule, SarakMultiSelect, type SarakMultiSelectProps, type SarakOverlayController, SarakOverlayProvider, type SarakOverlayRequest, SarakPDFViewer, type SarakPDFViewerProps, SarakPageTransition, type SarakPageTransitionProps, SarakPagination, type SarakPaginationProps, SarakRangeSlider, type SarakRangeSliderProps, SarakRichText, type SarakRichTextProps, type SarakRouterState, SarakSearchCard, SarakSecurityOrchestrator, SarakShell, SarakShellNav, type SarakShellNavProps, SarakSkeleton, type SarakSkeletonProps, SarakSparkline, type SarakSparklineProps, SarakSplitPane, type SarakSplitPaneProps, SarakSpotlight, type SarakSpotlightProps, SarakStats, SarakStepper, type SarakStepperProps, type SarakTabItem, SarakTable, SarakTabs, type SarakTabsProps$1 as SarakTabsProps, SarakTimePicker, type SarakTimePickerProps, SarakTitleCard, SarakToastProvider, SarakTooltip, type SarakTooltipProps, SarakTreeView, type SarakTreeViewProps, SarakTypography, type SarakTypographyColor, type SarakTypographyProps, type SarakTypographyVariant, type SarakUIMode, SarakUIProvider, SarakUploader, type SarakUploaderProps, type Selector, type ShellDirective, type ShellNavItem, type SkeletonShape, type SlotMap, SocialButton, type SparklineVariant, type StateRecord, type StepConfig, type StepperOrientation, SubmitBlockedError, type ThemeDirective, ThemeToggle, type ToastController, type ToastOptions, type ToastVariant, type TooltipPosition, UserMenu, type UserPayload, VIRTUALIZE_THRESHOLD, type ValidationError, type ValidationRule, type ValidationRuleName, type ValidationSchema, type ValidationTypeName, type VisualContract, type VisualContractType, buildPaginationRange, coerceEventValue, computeOffsets, createComponentRegistry, createFormScope, createSarakDataStore, debounce, defaultComponentRegistry, emitDirectiveWarnings, evaluateCondition, expandRenderFor, firstErrorMessage, getByPath, getLocalComponent, getLocalComponentIds, getPipe, getRegisteredModules, getSarakModule, hasPipe, interpolate, interpolateProps, isPassthroughCss, isReservedDirective, isResolvableSpacing, isSafeLinkHref, isStructuralKey, moveCard, namespacedKey, readPersisted, registerComponent, registerLocalComponent, registerPipe, registerSarakModule, removePersisted, reorder, resetDirectiveWarnings, resetTokenWarnings, resolveBinding, resolveComponent, resolveExpression, resolveModelValue, resolveScopedPath, resolveToken, runActions, sanitizeDirectives, sanitizeRichText, separateNodeParts, setByPath, subscribeStorage, subscribeToRegistry, throttle, useDataSource, useDesignDraft, useFormScope, useModalLayoutStyles, useModuleDiscovery, useOverlay, usePersistedSlice, useSarakDevice, useSarakRouter, useSarakUI, useToast, validateManifestNode, validateManifestRoot, validateValue, widthOf, writePersisted };
+export { ACTION_HANDLERS, type Accept, type ActionHandler, type ActionList, type AriaDirective, type BadgeSize, type BadgeVariant, type BindingExpression, type BreadcrumbItem, type CardMove, type ComponentRegistry, type ComponentResolution, type ComponentType, type ConditionExpression, ConditionSyntaxError, type ContextMenuPosition, CustomizationPanel, DEFAULT_COLUMN_WIDTH, DESIGN_MANIFEST, DIRECTIVE_OWNERS, type DataNodeState, type DataSourceController, type DataSourceDirective, type DataSourceMethod, type DataSourceStates, type DatePickerValue, DesignScope, DeviceProvider, type DeviceType, type DirectiveName, type DirectiveWarning, type DiscoveredModule, type DispatchContext, DynamicRenderer, ExpandableCard, type ExpandableCardProps, type ExpandedNode, FORM_META_KEY, type FileRejection, type FilterDescriptor, FilterSelect, type FilterSelectProps, type FormModelDirective, type FormResetTrigger, type FormScope, FormScopeContext, type FormScopeDirective, type FormStore, GLOBAL_THEMES, HelpButton, IconMap, type IconName, ImageCard, type ImageCardProps, type KanbanCard, type KanbanColumn, type LanguageOption, LanguageSelector, type LightboxImage, MIN_COLUMN_WIDTH, type ManifestAction, type ManifestComponent, type ManifestComponentProps, type ManifestNode, type ManifestProps, type ManifestRoot, type ManifestValidationError, type ManifestValidationResult, type ManifestValue, type MatrixNodeConfig, type MatrixParentData, type MatrixTreeNode, type ModalLayoutContext, type ModuleConfig, type ModuleManifest, ModuleSelector, type MultiSelectOption, NATIVE_COMPONENTS, type NativeComponentType, type NavigateFn, type NavigationItem, type NetworkInterceptor, type NetworkRequest, type NodeParts, type OverlayController, type OverlayRequest, type PaginationToken, type PersistDirective, type Pipe, RESERVED_DIRECTIVES, type RangeValue, type RenderForDirective, type RenderForResult, type ResolveTokenOptions, type ResponsiveDirective, type ResponsiveValue, type RouteMap, type RouteTarget, SARAK_MODE_ATTRIBUTE, SARAK_REFERENCE_THEMES, SARAK_SCOPE_CLASS, SARAK_STARTER_MANIFEST, SPACING_TOKENS, SPACING_TOKEN_NAMES, STORAGE_NAMESPACE, STRUCTURAL_KEYS, SUPPORTED_SCHEMA_VERSION, type SanitizeResult, SarakAccordion, type SarakAccordionProps, SarakActionCard, type SarakActionCardProps, SarakAnalyticalPage, type SarakAnalyticalPageProps, SarakAppChrome, type SarakAppChromeProps, SarakAuthScreen, type SarakAuthScreenEvent, type SarakAuthScreenProps, SarakBadge, type SarakBadgeProps, SarakBreadcrumbs, type SarakBreadcrumbsProps, SarakButton, type SarakButtonProps, SarakCardGrid, SarakCatalogGrid, type SarakCatalogGridProps, SarakChart, SarakChartEngine, type SarakChartProps, SarakChat, type SarakChatProps, type SarakColumn, type SarakComponent, type SarakComponentProps, SarakContextMenu, type SarakContextMenuProps, SarakDataEmpty, type SarakDataEmptyProps, SarakDataGrid, SarakDataGridImpl, type SarakDataGridProps, type SarakDataStore, SarakDataTable, SarakDataTableImpl, type SarakDataTableProps, SarakDatePicker, type SarakDatePickerProps, SarakDrawer, type SarakDrawerProps, SarakEmptyState, type SarakEmptyStateProps, SarakErrorBoundary, type SarakErrorBoundaryProps, SarakErrorFallback, type SarakErrorFallbackProps, SarakExpandableMatrix, type SarakExpandableMatrixProps, SarakFallback, type SarakFallbackProps, SarakFlex, type SarakFlexProps, SarakForm, SarakFormGroup, type SarakFormGroupProps, type SarakFormProps, SarakGrid, type SarakGridProps, SarakHidden, type SarakHiddenProps, SarakIcon, SarakIconButton, type SarakIconButtonProps, type SarakIconProps, SarakInput, type SarakInputProps, SarakInvalidManifestScreen, type SarakInvalidManifestScreenProps, SarakKanbanImpl as SarakKanban, type SarakKanbanProps, SarakLightbox, type SarakLightboxProps, SarakLink, type SarakLinkProps, SarakManagementGrid, type SarakManagementGridProps, SarakManifestRenderer, SarakManifestRenderer as SarakManifestRendererDefault, type SarakManifestRendererProps, SarakMarkdownRenderer, type SarakMarkdownRendererProps, type SarakMatrixManifest, SarakMissingManifestScreen, SarakModal, type SarakModalProps, type SarakModule, SarakMultiSelect, type SarakMultiSelectProps, type SarakNavItem, type SarakOverlayController, SarakOverlayProvider, type SarakOverlayRequest, SarakPDFViewer, type SarakPDFViewerProps, SarakPageTransition, type SarakPageTransitionProps, SarakPagination, type SarakPaginationProps, SarakRangeSlider, type SarakRangeSliderProps, SarakRichText, type SarakRichTextProps, type SarakRouterState, SarakSearch, SarakSearchCard, type SarakSearchCardProps, type SarakSearchProps, SarakSecurityOrchestrator, type SarakSecurityOrchestratorProps, SarakSelect, type SarakSelectProps, SarakShell, SarakShellNav, type SarakShellNavProps, SarakSkeleton, type SarakSkeletonProps, SarakSlider, type SarakSliderProps, SarakSparkline, type SarakSparklineProps, SarakSplitPane, type SarakSplitPaneProps, SarakSpotlight, type SarakSpotlightProps, SarakStats, type SarakStatsProps, SarakStepper, type SarakStepperProps, SarakSwitch, type SarakSwitchProps, type SarakTabItem, SarakTable, type SarakTableProps, SarakTabs, type SarakTabsProps$1 as SarakTabsProps, SarakTextarea, type SarakTextareaProps, SarakTimePicker, type SarakTimePickerProps, SarakTitleCard, type SarakTitleCardProps, SarakToastProvider, SarakTooltip, type SarakTooltipProps, SarakTreeView, type SarakTreeViewProps, SarakTypography, type SarakTypographyColor, type SarakTypographyProps, type SarakTypographyVariant, type SarakUIMode, SarakUIProvider, SarakUploader, type SarakUploaderProps, type Selector, type ShellDirective, type ShellNavItem, type SkeletonShape, type SlotMap, SocialButton, type SocialButtonProps, type SparklineVariant, type StateRecord, type StepConfig, type StepperOrientation, SubmitBlockedError, THEME_AXES, THEME_PRESET_IDS, type ThemeDirective, type ThemePreset, type ThemePresetId, ThemeToggle, type ToastController, type ToastOptions, type ToastVariant, type TooltipPosition, UserMenu, type UserPayload, VIRTUALIZE_THRESHOLD, type ValidationError, type ValidationRule, type ValidationRuleName, type ValidationSchema, type ValidationTypeName, type VisualContract, type VisualContractType, buildPaginationRange, coerceEventValue, computeOffsets, createComponentRegistry, createFormScope, createSarakDataStore, debounce, defaultComponentRegistry, emitDirectiveWarnings, evaluateCondition, expandRenderFor, findMissingThemeAxes, firstErrorMessage, getAllDesignTokens, getByPath, getDefaultDesignState, getLocalComponent, getLocalComponentIds, getPipe, getRegisteredModules, getSarakModule, getThemePreset, hasPipe, interpolate, interpolateProps, isPassthroughCss, isReservedDirective, isResolvableSpacing, isSafeLinkHref, isStructuralKey, moveCard, namespacedKey, readPersisted, registerComponent, registerLocalComponent, registerPipe, registerSarakModule, removePersisted, reorder, resetDirectiveWarnings, resetTokenWarnings, resolveBinding, resolveComponent, resolveExpression, resolveModelValue, resolveScopedPath, resolveToken, runActions, sanitizeDirectives, sanitizeRichText, separateNodeParts, setByPath, subscribeStorage, subscribeToRegistry, throttle, useDataSource, useDesignDraft, useFormScope, useModalLayoutStyles, useModuleDiscovery, useOverlay, usePersistedSlice, useSarakDevice, useSarakRouter, useSarakUI, useToast, validateManifestNode, validateManifestRoot, validateValue, warnOnIncompleteTheme, widthOf, writePersisted };
