@@ -36,6 +36,7 @@ ela dá um **procedimento**, um **fallback** e um **loop**. Comece sempre por aq
 | --- | --- |
 | instalar e acoplar a base pela primeira vez | [§1 Início](#1--início-instalar-e-acoplar) |
 | decidir como organizar o projeto (1 app? vários? deploys separados?) | [§2 As 4 topologias](#2--as-4-topologias) |
+| saber qual gerenciador de pacotes usar (npm/pnpm/yarn), ou atualizar a lib | [§2.6](#26-gerenciador-de-pacotes--a-lib-não-escolhe-o-seu) e [§2.7](#27-ficar-sabendo-que-saiu-versão-nova) |
 | usar um componente que a lib já tem | [§3.1](#31-o-componente-existe--use-do-barril) |
 | montar algo que a lib **não** tem | [§3.2](#32-falta-um-componente--react-próprio-com-tokens-ou-demanda) |
 | mudar a cor/fonte/raio de **um** elemento específico | [§3.3 A escada da personalização pontual](#33-personalização-pontual--a-escada) |
@@ -227,6 +228,52 @@ preferências do usuário, um parâmetro na navegação): leia o valor e passe e
 > **Código compartilhado resolve o tema *default*. Mesma origem resolve a *troca em runtime*.**
 > Se você precisa das duas coisas e as origens são diferentes, o transporte entre origens é do
 > importador — a lib não inventa rede.
+
+## 2.6 Gerenciador de pacotes — a lib não escolhe o seu
+
+**npm, pnpm e yarn são todos suportados.** O `init` detecta qual é o seu (pelo campo
+`packageManager` do `package.json` e, na falta dele, pelo lockfile presente) e gera os comandos
+daquele gerenciador. O `check` também: a mensagem de atualização sempre traz o comando certo para
+o seu projeto.
+
+**Em monorepo, os comandos de instalação e atualização rodam da RAIZ do workspace**, com o filtro do
+pacote — não de dentro do pacote. Rodar o gerenciador errado dentro de um workspace de outro
+gerenciador **quebra a instalação**: ele entra no armazenamento interno do outro e tenta executar
+scripts de pacotes de terceiros. Isso não é teoria — é um erro real, já observado.
+
+⚠️ **Dois lockfiles = armadilha.** Se o repositório tiver, por exemplo, `pnpm-lock.yaml` **e** um
+`package-lock.json` esquecido, qualquer comando `npm` acidental vai usar o resíduo. O `check` avisa
+quando detecta essa ambiguidade. Apague o lockfile que não é do seu gerenciador.
+
+**Sobre `npm workspaces` especificamente:** eles quebram binários locais no Windows (achado real de
+instalação). **Isso é sobre npm workspaces, não sobre monorepo** — workspaces de **pnpm** e **yarn**
+são suportados e são a forma normal das topologias 2, 3 e 4 acima.
+
+## 2.7 Ficar sabendo que saiu versão nova
+
+A lib **avisa no seu terminal** — você não precisa lembrar de conferir:
+
+```bash
+npx sarak-ui check --notify
+```
+
+Em dia, ele **não imprime nada**. Quando há versão nova, imprime um bloco com as duas versões e **o
+comando exato** para o seu gerenciador. Sai sempre com código 0: um aviso nunca derruba o seu `dev`.
+Sem rede, também fica em silêncio.
+
+O `init` já liga isso como `predev`, então o aviso aparece a cada `npm run dev`. **Se o seu projeto
+não veio do `init`** (ou já tinha um `predev`), encadeie à mão no pacote que roda o `dev`:
+
+```json
+"predev": "node scripts/o-que-voce-ja-fazia.mjs && node node_modules/@sarak/lib-ui-core/bin/sarak-ui.mjs check --notify"
+```
+
+> **Em monorepo, atenção a QUEM roda o `dev`.** Quem declara a dependência (o pacote de UI
+> compartilhada) muitas vezes não é quem roda o servidor de desenvolvimento (a raiz, ou cada app).
+> O `predev` tem de ficar em **quem roda o `dev`** — o comando funciona de qualquer diretório do
+> workspace, porque ele procura o pacote e o lockfile subindo a árvore.
+
+Para um veredito sob demanda, sem o modo silencioso: `npx sarak-ui check`.
 
 ---
 

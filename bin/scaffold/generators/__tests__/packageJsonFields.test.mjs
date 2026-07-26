@@ -46,13 +46,13 @@ describe('buildPackageJsonUpdates (starter padrão — Spec 45, sem backend)', (
 
     it('ganha o script sarak:check (Spec 39 follow-up — verificação autoritativa)', () => {
         const updates = buildPackageJsonUpdates({ ctx });
-        expect(updates.scripts['sarak:check']).toBe('node node_modules/@sarak/lib-ui-core/bin/scaffold/checkUpdate.mjs');
+        expect(updates.scripts['sarak:check']).toBe('node node_modules/@sarak/lib-ui-core/bin/sarak-ui.mjs check');
     });
 });
 
 describe('buildCheckScript', () => {
-    it('aponta para o checkUpdate.mjs shipado no pacote instalado (não é import da lib)', () => {
-        expect(buildCheckScript()).toBe('node node_modules/@sarak/lib-ui-core/bin/scaffold/checkUpdate.mjs');
+    it('aponta para a CLI pública do pacote instalado (não é import da lib)', () => {
+        expect(buildCheckScript()).toBe('node node_modules/@sarak/lib-ui-core/bin/sarak-ui.mjs check');
     });
 });
 

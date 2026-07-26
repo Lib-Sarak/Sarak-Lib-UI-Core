@@ -14,6 +14,7 @@ import { mergePackageJson, parsePackageJson } from './mergePackageJson.mjs';
 import { writeFileMap, copyDirRecursive } from './fsWrite.mjs';
 import { SKILLS_TO_COPY, DEFAULT_LIB_GIT_SPEC } from './constants.mjs';
 import { KIT_DIR } from './kitTargets.mjs';
+import { detectPackageManager } from './packageManager.mjs';
 
 function readExistingPackageJson({ rootDir }) {
     const pkgPath = path.join(rootDir, 'package.json');
@@ -34,7 +35,10 @@ function resolveLibGitSpec({ existing }) {
 function writePackageJson({ rootDir, ctx, force }) {
     const existing = readExistingPackageJson({ rootDir });
     const libGitSpec = resolveLibGitSpec({ existing });
-    const updates = buildPackageJsonUpdates({ ctx: { ...ctx, libGitSpec } });
+    // O gerenciador é do CONSUMIDOR, não do pacote (Spec 51 — L2): mandar comando npm
+    // para um workspace pnpm quebra o repositório de quem seguir a instrução.
+    const manager = detectPackageManager({ startDir: rootDir });
+    const updates = buildPackageJsonUpdates({ ctx: { ...ctx, libGitSpec, manager } });
     const { packageJson, skipped } = mergePackageJson({ existing, updates, force });
     fs.writeFileSync(path.join(rootDir, 'package.json'), `${JSON.stringify(packageJson, null, 4)}\n`);
     return skipped;

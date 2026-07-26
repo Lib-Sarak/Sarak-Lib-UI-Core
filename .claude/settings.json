@@ -7,7 +7,12 @@
       "Bash(echo \"--- exit: $? \\(esperado 1: skill mudou e o kit não foi regenerado\\) ---\")",
       "Bash(grep -rn \"fiado pelo \\\\`model\\\\`\" src/components/atomic/Inputs/SarakRichText.tsx)",
       "Bash(sed -i \"s/brand={{ name: 'ERP Earendel' }}/brand={{ name: 'Meu Sistema' }}/\" docs/extensibilidade-de-layout.md docs/temas-cromo-e-multidispositivo.md)",
-      "Bash(sed -i \"s/<title>ERP Earendel — Propostas<\\\\/title>/<title>Meu Sistema — Propostas<\\\\/title>/\" docs/identidade-do-host.md)"
+      "Bash(sed -i \"s/<title>ERP Earendel — Propostas<\\\\/title>/<title>Meu Sistema — Propostas<\\\\/title>/\" docs/identidade-do-host.md)",
+      "Bash(node bin/sarak-ui.mjs blah)",
+      "Bash(echo \"--- exit=$? ---\")",
+      "Bash(node \"c:/Users/Igor/Desktop/Sarak/X - Trabalho/Code/Biblioteca/Sarak-Lib-UI-Core/bin/sarak-ui.mjs\" check)",
+      "Bash(sed -i -e 's#it\\('\\\\''sarak:check \\(Spec 39 follow-up\\): gerado junto do sarak:update, aponta pro checkUpdate.mjs shipado'\\\\''#it\\('\\\\''sarak:check usa a CLI PÚBLICA do pacote \\(Spec 51 — D2: caminho interno não vaza mais para o package.json do importador\\)'\\\\''#' -e 's#expect\\(pkg.scripts\\\\['\\\\''sarak:check'\\\\''\\\\]\\).toBe\\('\\\\''node node_modules/@sarak/lib-ui-core/bin/scaffold/checkUpdate.mjs'\\\\''\\);#expect\\(pkg.scripts['\\\\''sarak:check'\\\\'']\\).toBe\\('\\\\''node node_modules/@sarak/lib-ui-core/bin/sarak-ui.mjs check'\\\\''\\);#' -e 's#expect\\(pkg.scripts\\\\['\\\\''sarak:update'\\\\''\\\\]\\).toContain\\('\\\\''bin/scaffold/refreshKit.mjs'\\\\''\\);#expect\\(pkg.scripts['\\\\''sarak:update'\\\\'']\\).toContain\\('\\\\''bin/sarak-ui.mjs refresh'\\\\''\\);#' bin/scaffold/__tests__/runInit.fs.test.mjs)",
+      "Bash(sed -i -e 's#expect\\(updates.scripts\\\\['\\\\''sarak:check'\\\\''\\\\]\\).toBe\\('\\\\''node node_modules/@sarak/lib-ui-core/bin/scaffold/checkUpdate.mjs'\\\\''\\);#expect\\(updates.scripts['\\\\''sarak:check'\\\\'']\\).toBe\\('\\\\''node node_modules/@sarak/lib-ui-core/bin/sarak-ui.mjs check'\\\\''\\);#' -e 's#it\\('\\\\''aponta para o checkUpdate.mjs shipado no pacote instalado \\(não é import da lib\\)'\\\\''#it\\('\\\\''aponta para a CLI pública do pacote instalado \\(não é import da lib\\)'\\\\''#' -e 's#expect\\(buildCheckScript\\(\\)\\).toBe\\('\\\\''node node_modules/@sarak/lib-ui-core/bin/scaffold/checkUpdate.mjs'\\\\''\\);#expect\\(buildCheckScript\\(\\)\\).toBe\\('\\\\''node node_modules/@sarak/lib-ui-core/bin/sarak-ui.mjs check'\\\\''\\);#' bin/scaffold/generators/__tests__/packageJsonFields.test.mjs)"
     ]
   }
 }

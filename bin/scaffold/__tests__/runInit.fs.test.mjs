@@ -158,11 +158,11 @@ describe('runInit (fs real, tmp dir) — starter padrão módulos-plugin (Spec 4
         expect(pkg.scripts['sarak:update']).toContain('npm install github:Lib-Sarak/Sarak-Lib-UI-Core');
     });
 
-    it('sarak:check (Spec 39 follow-up): gerado junto do sarak:update, aponta pro checkUpdate.mjs shipado', async () => {
+    it('sarak:check usa a CLI PÚBLICA do pacote (Spec 51 — D2: caminho interno não vaza mais para o package.json do importador)', async () => {
         await runInit({ rootDir: tmpDir, overrideAnswers: STARTER_ANSWERS });
 
         const pkg = JSON.parse(fs.readFileSync(path.join(tmpDir, 'package.json'), 'utf8'));
-        expect(pkg.scripts['sarak:check']).toBe('node node_modules/@sarak/lib-ui-core/bin/scaffold/checkUpdate.mjs');
+        expect(pkg.scripts['sarak:check']).toBe('node node_modules/@sarak/lib-ui-core/bin/sarak-ui.mjs check');
     });
 
     it('sarak:update reusa o spec git JÁ instalado pelo consumidor (fork/mirror), nunca assume o oficial', async () => {
@@ -203,10 +203,44 @@ describe('runInit (fs real, tmp dir) — starter padrão módulos-plugin (Spec 4
         }
     });
 
+    it('liga o AVISO de atualização como predev (Spec 51 — L1): o importador é avisado a cada `npm run dev`', async () => {
+        await runInit({ rootDir: tmpDir, overrideAnswers: STARTER_ANSWERS });
+
+        const pkg = JSON.parse(fs.readFileSync(path.join(tmpDir, 'package.json'), 'utf8'));
+        expect(pkg.scripts.predev).toBe('node node_modules/@sarak/lib-ui-core/bin/sarak-ui.mjs check --notify');
+    });
+
+    it('NÃO sobrescreve um predev que o consumidor já tem (o dele vence; encadear é escolha dele)', async () => {
+        fs.writeFileSync(
+            path.join(tmpDir, 'package.json'),
+            JSON.stringify({ name: 'app', scripts: { predev: 'node scripts/matar-portas.mjs' } }, null, 2),
+        );
+
+        const result = await runInit({ rootDir: tmpDir, overrideAnswers: STARTER_ANSWERS });
+
+        const pkg = JSON.parse(fs.readFileSync(path.join(tmpDir, 'package.json'), 'utf8'));
+        expect(pkg.scripts.predev).toBe('node scripts/matar-portas.mjs');
+        expect(result.skipped).toContain('package.json:scripts.predev');
+    });
+
+    it('sarak:update segue o GERENCIADOR do consumidor (Spec 51 — L2: comando npm num workspace pnpm quebra o repositório)', async () => {
+        fs.writeFileSync(
+            path.join(tmpDir, 'package.json'),
+            JSON.stringify({ name: 'app-pnpm', packageManager: 'pnpm@11.17.0' }, null, 2),
+        );
+
+        await runInit({ rootDir: tmpDir, overrideAnswers: STARTER_ANSWERS });
+
+        const pkg = JSON.parse(fs.readFileSync(path.join(tmpDir, 'package.json'), 'utf8'));
+        expect(pkg.scripts['sarak:update']).toContain('pnpm remove @sarak/lib-ui-core');
+        expect(pkg.scripts['sarak:update']).toContain('pnpm add github:Lib-Sarak/Sarak-Lib-UI-Core');
+        expect(pkg.scripts['sarak:update']).not.toContain('npm uninstall');
+    });
+
     it('sarak:update re-sincroniza o kit no fim (senão a lib fica nova e as instruções velhas)', async () => {
         await runInit({ rootDir: tmpDir, overrideAnswers: STARTER_ANSWERS });
 
         const pkg = JSON.parse(fs.readFileSync(path.join(tmpDir, 'package.json'), 'utf8'));
-        expect(pkg.scripts['sarak:update']).toContain('bin/scaffold/refreshKit.mjs');
+        expect(pkg.scripts['sarak:update']).toContain('bin/sarak-ui.mjs refresh');
     });
 });

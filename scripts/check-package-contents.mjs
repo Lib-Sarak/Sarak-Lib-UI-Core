@@ -40,6 +40,12 @@ const REQUIRED_PATHS = [
     // direto no script do consumidor, exatamente como o checkUpdate acima.
     'bin/scaffold/refreshKit.mjs',
     'bin/scaffold/refreshKit/runRefreshKit.mjs',
+    // CLI do consumidor (Spec 51): `check`/`refresh` são invocados pelos scripts do
+    // importador; sem estes módulos o `sarak:check`/`predev` dele quebra no pacote publicado.
+    'bin/scaffold/packageManager.mjs',
+    'bin/scaffold/checkUpdate/consumerContext.mjs',
+    'bin/scaffold/checkUpdate/localDependency.mjs',
+    'bin/scaffold/checkUpdate/renderNotice.mjs',
     'docs/component-catalog.md',
     'docs/component-catalog.json',
     // Kit de uso do consumidor (Spec 50) — o pacote sem `sarak-ui/` não ensina a

@@ -106,9 +106,18 @@ existe "salvar tema no banco": a central não tem servidor, e salvar **é** expo
 - APENAS a pedido explícito de instalação/integração. NÃO acione proativamente.
 
 ## Golden Path (leia antes de tudo)
-- **A instalação é MONOLÍTICA:** um único `package.json` na raiz do projeto-alvo. **NÃO use NPM
-  Workspaces** — quebram binários locais no Windows (achado real). Se o consumidor já é um monorepo
-  com workspaces, rode o `init` **dentro do pacote** que vai hospedar a Sarak, nunca na raiz.
+- **Projeto novo: instalação MONOLÍTICA** — um único `package.json` na raiz do projeto-alvo. É o que
+  o `init` gera.
+- **Monorepo é suportado** (topologias 2/3/4 do `GUIA-FRONTEND.md`). Rode o `init` **dentro do
+  pacote** que vai hospedar a Sarak, nunca na raiz do workspace.
+- ⚠️ **A ressalva é sobre `npm workspaces`, não sobre monorepo:** eles quebram binários locais no
+  Windows (achado real). **Workspaces de `pnpm` e `yarn` são suportados** e são a forma normal de
+  monorepo — não desaconselhe.
+- **Use o gerenciador DO projeto.** Rodar `npm` num workspace pnpm entra em `node_modules/.pnpm/` e
+  tenta executar o `prepare` de pacotes de terceiros — **quebra a instalação** (achado real,
+  2026-07-26). Confira `packageManager` no `package.json` e o lockfile presente antes de rodar
+  qualquer coisa; se houver mais de um lockfile, um deles é resíduo. O `init` e o `check` detectam
+  isso sozinhos e geram os comandos do gerenciador certo.
 - **Starter padrão:** front **Vite puro** (Provider + Shell + módulo de exemplo), **sem backend
   nenhum** — o tema persiste em `localStorage`. O backend de negócio (se existir) é inteiramente do
   consumidor, em processo separado; a lib **nunca chama rede sozinha**.
@@ -208,18 +217,28 @@ decisão do mantenedor). Consequência **não intuitiva**:
 npm run sarak:update
 ```
 
-Faz, nesta ordem: `npm uninstall @sarak/lib-ui-core` (tira o pin do lockfile) → `npm cache clean
---force` (invalida o cache git do npm, que também serviria o commit velho) → `npm install <mesmo spec
-git>` → **`refreshKit.mjs`** (re-sincroniza o `sarak-ui/` e as cópias movidas para `specs/` e
-`.claude/skills/`). As três primeiras etapas são obrigatórias; pular qualquer uma reproduz o
-travamento. A quarta é o que impede a lib nova conviver com instruções velhas.
+O script é gerado **conforme o gerenciador do projeto** (Spec 51). No npm faz, nesta ordem:
+`npm uninstall` (tira o pin do lockfile) → `npm cache clean --force` (invalida o cache git, que
+também serviria o commit velho) → `npm install <mesmo spec git>` → **`sarak-ui refresh`**
+(re-sincroniza o `sarak-ui/` e as cópias movidas). No pnpm/yarn é `remove` + `add` + `refresh`
+(medido: ambos re-resolvem o HEAD remoto sem precisar limpar cache). A última etapa é o que impede a
+lib nova conviver com instruções velhas.
 
 ```bash
-npm run sarak:check
+npm run sarak:check          # veredito sob demanda
+npx sarak-ui check --notify  # modo AVISO: só fala se houver atualização; sai sempre com 0
 ```
 
-Lê o SHA REALMENTE instalado (`resolved` do lockfile do consumidor) e compara com o HEAD remoto
-(`git ls-remote`), imprimindo um veredito.
+O `check` funciona em **monorepo** (procura o lockfile subindo a árvore) e em **dependência local**
+(`file:`/`link:`). Neste último não existe commit remoto para comparar: ele compara a assinatura de
+build instalada com a do repositório em disco e diz se um rebuild da lib ainda não chegou ao
+consumidor. Isso é o `check` — e é normal, não erro.
+
+**O AVISO (`--notify`)** é o que o `init` liga como `predev`: em dia não imprime nada; havendo versão
+nova, imprime as duas versões e **o comando do seu gerenciador**. Nunca derruba o `dev` (exit 0
+sempre, silêncio se estiver offline). Se o projeto não veio do `init`, ou já tinha um `predev`,
+encadeie à mão **no pacote que roda o `dev`** — que num monorepo raramente é o pacote que declara a
+dependência.
 
 **Por que NÃO usar `dist/BUILD_INFO.json` para "estou atualizado?":** o arquivo existe, mas **não
 pode** conter o commit que o publica — o `dist/` é commitado DEPOIS de gerado, e gravar dentro dele o

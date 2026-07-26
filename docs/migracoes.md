@@ -5,6 +5,43 @@ com o "antes" e o "depois" lado a lado. Uma entrada por mudança, mais recente p
 
 ---
 
+## CLI do consumidor: comandos reais, multi-gerenciador e aviso de atualização (Spec 51)
+
+**Não quebra nada.** Tudo abaixo é aditivo: os scripts já gerados em consumidores existentes
+continuam funcionando. A migração é opcional, mas recomendada.
+
+**O que mudou.**
+
+| | Antes | Depois |
+| --- | --- | --- |
+| Comandos da CLI | só `init`. `sarak-ui check` imprimia a **ajuda do `init`** | `init` · `check` · `refresh`; comando desconhecido diz **qual** não existe |
+| `sarak:check` no `package.json` | caminho INTERNO (`bin/scaffold/checkUpdate.mjs`) | superfície pública (`bin/sarak-ui.mjs check`) |
+| `sarak:update` | string **npm fixa** — quebrava em workspace pnpm/yarn | gerado conforme o **gerenciador detectado** (npm/pnpm/yarn) |
+| `check` em monorepo | falhava (`package.json/package-lock.json não encontrados`) | procura o lockfile **subindo a árvore** |
+| Dependência `file:`/`link:` | tratada como **erro** (`lockfile em formato inesperado`) | diagnóstico próprio, **exit 0**: link vivo × cópia velha |
+| Saber de versão nova | só sob demanda, e **em silêncio** se você não rodasse nada | `check --notify` no `predev` avisa a cada `npm run dev` |
+
+**Migração opcional** — no `package.json` do seu projeto:
+
+```jsonc
+// antes
+"sarak:check": "node node_modules/@sarak/lib-ui-core/bin/scaffold/checkUpdate.mjs",
+// depois (a forma pública; imune a refatoração interna da lib)
+"sarak:check": "node node_modules/@sarak/lib-ui-core/bin/sarak-ui.mjs check",
+
+// novo: o aviso de atualização, no pacote que roda o `dev`
+"predev": "node node_modules/@sarak/lib-ui-core/bin/sarak-ui.mjs check --notify"
+```
+
+Se o seu `sarak:update` for a string npm e o projeto usar pnpm/yarn, troque as duas primeiras
+etapas pelas do seu gerenciador (`pnpm remove … && pnpm add …`, `yarn remove … && yarn add …`) e
+termine com `… && node node_modules/@sarak/lib-ui-core/bin/sarak-ui.mjs refresh`.
+
+**Contrato do `--notify`:** silencioso quando em dia, quando não há rede e quando a verificação não
+pôde ser feita; **exit 0 sempre**. Ele nunca derruba o seu `dev`.
+
+---
+
 ## Rótulos decorativos — fim da marca da lib estampada em componentes (Spec 49)
 
 **O que mudou.** A Spec 47 fechou a FONTE do vazamento de identidade (defaults de
