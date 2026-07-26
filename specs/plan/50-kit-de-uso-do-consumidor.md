@@ -2,7 +2,7 @@
 tipo: "spec"
 titulo: "Kit de uso do consumidor — artefato `sarak-ui/` na raiz, dinâmico, genérico, shippado no install"
 dominio: "Habilitação do consumidor / Empacotamento / Documentação viva / Skill de integração"
-status: "🔴 Planejada (2026-07-25; renumerada de 40.4 → 50 em 2026-07-25) — ÚLTIMA da execução (após a Spec 42); produz o kit de autoria do front (spec+skill+catálogo)"
+status: "🟢 Executada (2026-07-26; renumerada de 40.4 → 50 em 2026-07-25) — kit `sarak-ui/` gerado, gate `guide:check` ligado ao build, skill reescrita, `init`/`sarak:update` integrados. **Falta a validação do dono (§9): construir um MÓDULO NOVO seguindo só o `sarak-ui/`.**"
 prioridade: "Máxima"
 tags: ["spec", "consumidor", "kit", "documentacao-viva", "skill", "empacotamento", "ciclo-40x"]
 relacionados: ["40-teste-real", "40.1-correcoes-importacao", "40.3-multidispositivo-por-padrao", "45-scaffolder-react-e-skills", "39-importacao-e-atualizacao", "08-consumo-externo-e-integracao"]
@@ -78,16 +78,23 @@ Não se enumera o infinito — dá-se um **procedimento + fallback + loop**:
 - **`sarak:update`** (Spec 39): ao atualizar a lib, o novo `sarak-ui/` refresca a spec/skill movidas (pelo `VERSION`).
 
 # 8. Critérios de Aceite
-- [ ] `sarak-ui/` na raiz com START-HERE + guia único (4 topologias + todos os casos) + skill + **`templates/`** + `catalog.json` + VERSION; nos `files`; `package:check` exige (incl. `templates/`).
-- [ ] O guia tem, no topo (§5.0), a **árvore de decisão** + a **regra de fallback universal** + a instrução de **reportar buraco**; e os casos incluem **personalização pontual** (a escada), **estados de tela**, **ícones**, **componente próprio temável** e **dados/formulários/eventos** — além dos já previstos.
-- [ ] `sarak-ui/templates/` com esqueletos copiáveis: wiring (`main.tsx`), forma de `ui-kit`, tela-exemplo (com os 3 estados) e componente próprio temável.
-- [ ] Gerador `npm run guide` monta o kit das fontes vivas; **gate `guide:check`** falha o build se stale (na CI/build).
-- [ ] O guia NÃO hardcoda listas — o apêndice é gerado; a prosa aponta para o catálogo. (A árvore de decisão, o fallback e os templates são **prosa/código estáveis**, não listas geradas.)
-- [ ] `ui-integra-consumidor` reescrita (fonte + espelho); versão consumidor em `sarak-ui/skill/` com a regra "leia o catálogo".
-- [ ] Genérico (grep: zero menção ao ERP no `sarak-ui/`).
-- [ ] **Casos de autoria herdados absorvidos:** `docs/migracoes.md` (Spec 42), `docs/identidade-do-host.md` (Spec 47) e `docs/extensibilidade-de-layout.md` (Spec 48 — os 2 níveis de imagem/animação: tema global + slots do cromo). Os três já estão em `docs/` e vão no pacote; o kit os incorpora em vez de reescrevê-los do zero.
-- [ ] Integrado a `init` (copia o kit) e `sarak:update` (refresca).
-- [ ] Gates da lib verdes (incl. `guide:check`); Spec 40 atualizada; entrada no `00-progresso.md`.
+- [x] `sarak-ui/` na raiz com START-HERE + guia único (4 topologias + todos os casos) + skill + **`templates/`** + `catalog.json` + VERSION; nos `files`; `package:check` exige (incl. `templates/`).
+- [x] O guia tem, no topo (§5.0), a **árvore de decisão** + a **regra de fallback universal** + a instrução de **reportar buraco**; e os casos incluem **personalização pontual** (a escada), **estados de tela**, **ícones**, **componente próprio temável** e **dados/formulários/eventos** — além dos já previstos.
+- [x] `sarak-ui/templates/` com esqueletos copiáveis: wiring (`main.tsx`), forma de `ui-kit`, tela-exemplo (com os 3 estados) e componente próprio temável.
+- [x] Gerador `npm run guide` monta o kit das fontes vivas; **gate `guide:check`** falha o build se stale (na CI/build).
+- [x] O guia NÃO hardcoda listas — o apêndice é gerado; a prosa aponta para o catálogo. (A árvore de decisão, o fallback e os templates são **prosa/código estáveis**, não listas geradas.)
+- [x] `ui-integra-consumidor` reescrita (fonte + espelho); versão consumidor em `sarak-ui/skill/` com a regra "leia o catálogo".
+- [x] Genérico (grep: zero menção ao ERP no `sarak-ui/`).
+- [x] **Casos de autoria herdados absorvidos:** `docs/migracoes.md` (Spec 42), `docs/identidade-do-host.md` (Spec 47) e `docs/extensibilidade-de-layout.md` (Spec 48 — os 2 níveis de imagem/animação: tema global + slots do cromo). Os três já estão em `docs/` e vão no pacote; o kit os incorpora em vez de reescrevê-los do zero.
+- [x] Integrado a `init` (copia o kit) e `sarak:update` (refresca).
+- [x] Gates da lib verdes (incl. `guide:check`); entrada no `00-progresso.md`. *(A Spec 40 não precisou de atualização: o ciclo 40.x já está fechado e aprovado.)*
+
+## 8.1 Como o kit é montado (decisões de execução, 2026-07-26)
+- **Reuso do AST, sem duplicação:** o pipeline do `npm run catalog` foi FATIADO em `scripts/catalogAst.mjs` (coletores) + `scripts/componentCatalog.mjs` (montagem) + a CLI fina; o gerador do kit importa os mesmos módulos. Saída do `catalog:check` byte a byte idêntica antes/depois do fatiamento.
+- **Híbrido por marcadores:** a prosa do guia é editada à mão e o gerado entra entre `<!-- SARAK-KIT:APENDICE-GERADO:… -->` / `<!-- SARAK-KIT:CARIMBO:… -->`. O gerador falha ALTO se o marcador sumir.
+- **`kitHash` é hash de CONTEÚDO do `catalog.json`, nunca commit git** — um carimbo por commit deixaria o `guide:check` vermelho a cada commit.
+- **A skill é ESPELHADA** de `.agents/skills/ui-integra-consumidor/` para `sarak-ui/skill/` pelo gerador: fonte única, e editar a fonte sem rodar `npm run guide` deixa o gate vermelho.
+- **Fontes vivas extras** (além do catálogo de componentes): `design-token-ids.ts` (chaves de tema), `THEME_PRESET_IDS`/`reference.ts` (temas), `breakpoints.ts` (limiares), uso REAL de `useSarakDevice` + resolução de wrappers `lazy(() => import(...))` (o que adapta sozinho), props com `ResponsiveValue` (refino) e as props `ReactNode` opcionais do `SarakAppChrome` (slots). O catálogo do kit também cobre a API de `core/` (Provider/Shell/…), que o `component-catalog` não varre.
 
 # 9. Validação (o teste de verdade) + o loop de completude
 - **Aprovada quando um MÓDULO NOVO do sistema importador for construído seguindo SÓ o `sarak-ui/`** — sem consultar nada fora dele.

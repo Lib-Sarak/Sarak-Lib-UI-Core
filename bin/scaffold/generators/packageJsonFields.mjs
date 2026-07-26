@@ -19,10 +19,17 @@ export function buildDependencies({ ctx }) {
  * furar as DUAS causas do travamento: o pin do lockfile (removendo a
  * dependência) e o cache git do npm (`cache clean --force`), antes de
  * reinstalar do MESMO spec que o consumidor usou originalmente.
+ *
+ * A 4ª etapa (Spec 50 §7) re-sincroniza o kit `sarak-ui/` e as cópias que o
+ * importador moveu para `specs/`/`.claude/skills/` — sem ela, a lib estaria nova
+ * e as instruções de uso descreveriam a API velha.
  */
 export function buildUpdateScript({ ctx }) {
     const libSpec = ctx.libGitSpec ?? DEFAULT_LIB_GIT_SPEC;
-    return `npm uninstall @sarak/lib-ui-core && npm cache clean --force && npm install ${libSpec}`;
+    return (
+        `npm uninstall @sarak/lib-ui-core && npm cache clean --force && npm install ${libSpec}` +
+        ' && node node_modules/@sarak/lib-ui-core/bin/scaffold/refreshKit.mjs'
+    );
 }
 
 /**

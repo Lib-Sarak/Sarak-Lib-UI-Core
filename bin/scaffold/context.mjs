@@ -18,10 +18,14 @@ const PACKAGE_ROOT = path.resolve(path.dirname(fileURLToPath(import.meta.url)), 
 export function loadInitContext({ packageRoot = PACKAGE_ROOT } = {}) {
     const libPackageJson = JSON.parse(fs.readFileSync(path.join(packageRoot, 'package.json'), 'utf8'));
     const skillsSourceDir = path.join(packageRoot, '.agents', 'skills');
+    // Kit de uso do consumidor (Spec 50): o `init` o copia para a raiz do projeto novo,
+    // para o agente do importador achar o START-HERE sem cavar o `node_modules`.
+    const kitSourceDir = path.join(packageRoot, 'sarak-ui');
 
     return {
         libVersion: libPackageJson.version,
         peerDependencies: libPackageJson.peerDependencies ?? {},
         skillsSourceDir,
+        kitSourceDir,
     };
 }

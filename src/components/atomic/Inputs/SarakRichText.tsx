@@ -22,7 +22,7 @@ export const sanitizeRichText = (html: string): string =>
     sanitizeHtml(html, { allowedTags: ALLOWED_TAGS, allowedAttributes: ALLOWED_ATTR });
 
 export interface SarakRichTextProps {
-    /** Conteúdo HTML controlado (fiado pelo `model` no manifesto). */
+    /** Conteúdo HTML controlado pelo consumidor (par com `onChange`). */
     value?: string;
     /** Conteúdo inicial não-controlado. */
     defaultValue?: string;

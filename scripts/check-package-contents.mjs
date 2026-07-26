@@ -36,8 +36,27 @@ const REQUIRED_PATHS = [
     // diretamente via script no package.json (não é import da lib, é `node <caminho>`).
     'bin/scaffold/checkUpdate.mjs',
     'bin/scaffold/checkUpdate/runCheckUpdate.mjs',
+    // Última etapa do `npm run sarak:update` (Spec 50 §7) — invocada por caminho
+    // direto no script do consumidor, exatamente como o checkUpdate acima.
+    'bin/scaffold/refreshKit.mjs',
+    'bin/scaffold/refreshKit/runRefreshKit.mjs',
     'docs/component-catalog.md',
     'docs/component-catalog.json',
+    // Kit de uso do consumidor (Spec 50) — o pacote sem `sarak-ui/` não ensina a
+    // usar a lib: o importador acha `node_modules/@sarak/lib-ui-core/sarak-ui/` e
+    // parte do START-HERE. Ausência aqui = publicação muda, sai sem instruções.
+    'sarak-ui/START-HERE.md',
+    'sarak-ui/GUIA-FRONTEND.md',
+    'sarak-ui/catalog.json',
+    'sarak-ui/VERSION',
+    'sarak-ui/skill/SKILL.md',
+    'sarak-ui/templates/README.md',
+    'sarak-ui/templates/main.tsx',
+    'sarak-ui/templates/tela-exemplo.tsx',
+    'sarak-ui/templates/componente-proprio.tsx',
+    'sarak-ui/templates/ui-kit/index.ts',
+    'sarak-ui/templates/ui-kit/themes.ts',
+    'sarak-ui/templates/ui-kit/nav.ts',
 ];
 
 function isForbidden(filePath) {

@@ -773,13 +773,9 @@ declare const SarakHidden: React__default.FC<SarakHiddenProps>;
 /**
  * SarakShellNav — Navegação de shell 100% orientada a dados (Spec 33 + Spec 14)
  *
- * Equivalente declarativo do menu do shell legado (Spec 04): recebe os módulos como
- * DADOS (`items`), agrupa por categoria, destaca o item ativo e delega a navegação ao
- * host — nunca manipula a URL. No manifesto, o par canônico é:
- *   props:   { "items": [...], "activeRoute": "{{$route}}" }
- *   actions: [{ "type": "navigate", "payload": { "to": "{{$event}}" } }]
- * O componente emite `onChange(route)` no clique/teclado; a Engine converte o valor
- * em `{{$event}}` para a cadeia de ações (LeafNode).
+ * Menu guiado por DADOS: recebe os módulos como `items`, agrupa por categoria, destaca
+ * o item ativo e **delega a navegação ao host** — nunca manipula a URL. O consumidor
+ * passa `activeRoute` (a rota atual, do roteador dele) e reage em `onNavigate`.
  */
 /** Item de navegação do shell — espelho declarativo do `SarakModule` do Discovery. */
 interface ShellNavItem {
@@ -795,16 +791,16 @@ interface ShellNavItem {
 interface SarakShellNavProps {
     /** Módulos/rotas do sistema, na ordem de exibição. */
     items: ShellNavItem[];
-    /** Rota ativa — no manifesto, use `"{{$route}}"` (injetada pelo Renderer). */
+    /** Rota ativa (a do roteador do consumidor) — comparada com `items[].route`. */
     activeRoute?: string;
     /** Identidade exibida no topo do menu. */
     brand?: {
         name?: string;
         logoUrl?: string;
     };
-    /** Caminho TSX: callback direto. No manifesto a navegação sai por `onChange`. */
+    /** Callback de navegação — o host decide como navegar (router, pushState, assign). */
     onNavigate?: (route: string) => void;
-    /** Caminho manifesto: a Engine injeta este handler e roda as `actions`. */
+    /** Alias de `onNavigate`; ambos são chamados, na ordem. Mantido por compatibilidade. */
     onChange?: (route: string) => void;
     /**
      * Orientação do menu (Spec 18). `'auto'` (default) segue o Design Engine:
@@ -1130,11 +1126,8 @@ interface SarakTypographyProps extends React__default.HTMLAttributes<HTMLElement
     /** Sobrepõe `--sarak-h-transform` só para esta instância. */
     transform?: 'none' | 'uppercase' | 'capitalize';
     /**
-     * Texto via prop (string), pensado para uso via manifesto (Spec 22/24): o motor
-     * de Manifesto só entrega `children` como nós filhos aninhados, nunca como string
-     * crua — `content` é o canal de texto que `props.content` (com interpolação
-     * `{{...}}` já resolvida em `LeafNode`) alimenta. Tem prioridade sobre `children`
-     * quando ambos são passados.
+     * Texto via prop, para quando a origem é uma string e não nós filhos (ex.: dado
+     * vindo de uma API). Tem prioridade sobre `children` quando ambos são passados.
      */
     content?: string;
     children?: React__default.ReactNode;
@@ -1655,7 +1648,7 @@ declare const SarakTimePicker: React__default.FC<SarakTimePickerProps>;
 /** Sanitiza o HTML do editor pela allowlist restrita. Exportado para teste isolado. */
 declare const sanitizeRichText: (html: string) => string;
 interface SarakRichTextProps {
-    /** Conteúdo HTML controlado (fiado pelo `model` no manifesto). */
+    /** Conteúdo HTML controlado pelo consumidor (par com `onChange`). */
     value?: string;
     /** Conteúdo inicial não-controlado. */
     defaultValue?: string;

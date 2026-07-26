@@ -66,7 +66,7 @@ morto); nenhuma é obrigatória e nada do contrato anterior (`brand`, `topbarAct
 
 ```tsx
 <SarakAppChrome
-  brand={{ name: 'ERP Earendel' }}
+  brand={{ name: 'Meu Sistema' }}
   navItems={NAV}
   onNavigate={(href) => window.location.assign(href)}
 

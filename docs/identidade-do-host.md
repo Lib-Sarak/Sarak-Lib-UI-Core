@@ -15,7 +15,7 @@ o valor. Sem valor, ela não age.
 
 ```html
 <!-- index.html do consumidor: esta é a fonte da verdade por padrão -->
-<title>ERP Earendel — Propostas</title>
+<title>Meu Sistema — Propostas</title>
 <link rel="icon" href="/favicon.ico" />
 ```
 

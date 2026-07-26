@@ -73,7 +73,7 @@ const NAV: SarakNavItem[] = [
 ];
 
 <SarakAppChrome
-  brand={{ name: 'ERP Earendel' }}
+  brand={{ name: 'Meu Sistema' }}
   navItems={NAV.map((it) => ({ ...it, active: it.href === rotaAtual }))}
   onNavigate={(href) => window.location.assign(href)}  // o host decide como navegar
 >

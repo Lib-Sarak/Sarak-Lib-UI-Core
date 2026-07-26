@@ -13,11 +13,8 @@ export interface SarakTypographyProps extends React.HTMLAttributes<HTMLElement> 
     /** Sobrepõe `--sarak-h-transform` só para esta instância. */
     transform?: 'none' | 'uppercase' | 'capitalize';
     /**
-     * Texto via prop (string), pensado para uso via manifesto (Spec 22/24): o motor
-     * de Manifesto só entrega `children` como nós filhos aninhados, nunca como string
-     * crua — `content` é o canal de texto que `props.content` (com interpolação
-     * `{{...}}` já resolvida em `LeafNode`) alimenta. Tem prioridade sobre `children`
-     * quando ambos são passados.
+     * Texto via prop, para quando a origem é uma string e não nós filhos (ex.: dado
+     * vindo de uma API). Tem prioridade sobre `children` quando ambos são passados.
      */
     content?: string;
     children?: React.ReactNode;

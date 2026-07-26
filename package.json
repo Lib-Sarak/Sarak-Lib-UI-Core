@@ -14,15 +14,18 @@
         "dist",
         "bin",
         "!bin/**/__tests__/**",
-        "docs"
+        "docs",
+        "sarak-ui"
     ],
     "scripts": {
         "build:css": "npx @tailwindcss/cli -i ./src/styles/sarak-base.css -o ./dist/sarak.css --minify",
         "build:js": "tsup src/index.ts --format esm,cjs --shims --dts --clean --minify --external react,react-dom,framer-motion,lucide-react,recharts,echarts-for-react,echarts,reactflow,react-grid-layout,react-markdown,react-syntax-highlighter,react-dropzone,pdfjs-dist,clsx,tailwind-merge,date-fns,@tanstack/react-virtual",
         "build:css:scoped": "node scripts/build-scoped-css.mjs",
-        "build": "npm run catalog:check && npm run barrel:check && npm run zero-brand:check && npm run build:js && npm run build:css && npm run build:css:scoped && node scripts/copy-base-css.mjs && node scripts/inject-css.mjs && node scripts/generate-build-info.mjs",
+        "build": "npm run catalog:check && npm run barrel:check && npm run zero-brand:check && npm run guide:check && npm run build:js && npm run build:css && npm run build:css:scoped && node scripts/copy-base-css.mjs && node scripts/inject-css.mjs && node scripts/generate-build-info.mjs",
         "catalog": "node scripts/generate-component-catalog.mjs",
         "catalog:check": "node scripts/generate-component-catalog.mjs --check",
+        "guide": "node scripts/generate-consumer-kit.mjs",
+        "guide:check": "node scripts/generate-consumer-kit.mjs --check",
         "barrel:check": "node scripts/check-barrel-parity.mjs --check",
         "zero-brand:check": "node scripts/check-zero-brand.mjs --check",
         "package:check": "node scripts/check-package-contents.mjs",

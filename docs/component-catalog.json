@@ -2083,7 +2083,7 @@
           "name": "value",
           "type": "string",
           "optional": true,
-          "doc": "Conteúdo HTML controlado (fiado pelo `model` no manifesto)."
+          "doc": "Conteúdo HTML controlado pelo consumidor (par com `onChange`)."
         },
         {
           "name": "defaultValue",
@@ -2264,7 +2264,7 @@
           "name": "activeRoute",
           "type": "string",
           "optional": true,
-          "doc": "Rota ativa — no manifesto, use `\"{{$route}}\"` (injetada pelo Renderer)."
+          "doc": "Rota ativa (a do roteador do consumidor) — comparada com `items[].route`."
         },
         {
           "name": "brand",
@@ -2276,13 +2276,13 @@
           "name": "onNavigate",
           "type": "(route: string) => void",
           "optional": true,
-          "doc": "Caminho TSX: callback direto. No manifesto a navegação sai por `onChange`."
+          "doc": "Callback de navegação — o host decide como navegar (router, pushState, assign)."
         },
         {
           "name": "onChange",
           "type": "(route: string) => void",
           "optional": true,
-          "doc": "Caminho manifesto: a Engine injeta este handler e roda as `actions`."
+          "doc": "Alias de `onNavigate`; ambos são chamados, na ordem. Mantido por compatibilidade."
         },
         {
           "name": "orientation",
@@ -2904,7 +2904,7 @@
           "name": "content",
           "type": "string",
           "optional": true,
-          "doc": "Texto via prop (string), pensado para uso via manifesto (Spec 22/24): o motor de Manifesto só entrega `children` como nós filhos aninhados, nunca como string crua — `content` é o canal de texto que `props.content` (com interpolação `{{...}}` já resolvida em `LeafNode`) alimenta. Tem prioridade sobre `children` quando ambos são passados."
+          "doc": "Texto via prop, para quando a origem é uma string e não nós filhos (ex.: dado vindo de uma API). Tem prioridade sobre `children` quando ambos são passados."
         },
         {
           "name": "children",

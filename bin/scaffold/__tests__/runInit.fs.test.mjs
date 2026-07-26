@@ -187,4 +187,26 @@ describe('runInit (fs real, tmp dir) — starter padrão módulos-plugin (Spec 4
         expect(mainTsx).toContain('sarak-scoped.css');
         expect(mainTsx).toContain("mode: 'embedded'");
     });
+
+    it('copia o kit de uso `sarak-ui/` para a raiz (Spec 50 §7): o agente do importador acha o START-HERE sem cavar node_modules', async () => {
+        await runInit({ rootDir: tmpDir, overrideAnswers: STARTER_ANSWERS });
+
+        for (const relPath of [
+            'sarak-ui/START-HERE.md',
+            'sarak-ui/GUIA-FRONTEND.md',
+            'sarak-ui/catalog.json',
+            'sarak-ui/VERSION',
+            'sarak-ui/skill/SKILL.md',
+            'sarak-ui/templates/main.tsx',
+        ]) {
+            expect(fs.existsSync(path.join(tmpDir, relPath)), `esperava ${relPath}`).toBe(true);
+        }
+    });
+
+    it('sarak:update re-sincroniza o kit no fim (senão a lib fica nova e as instruções velhas)', async () => {
+        await runInit({ rootDir: tmpDir, overrideAnswers: STARTER_ANSWERS });
+
+        const pkg = JSON.parse(fs.readFileSync(path.join(tmpDir, 'package.json'), 'utf8'));
+        expect(pkg.scripts['sarak:update']).toContain('bin/scaffold/refreshKit.mjs');
+    });
 });

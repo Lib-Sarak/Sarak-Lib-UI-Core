@@ -5,13 +5,9 @@ import { useNavigationStyle } from '../../../core/Provider/useNavigationStyle';
 /**
  * SarakShellNav — Navegação de shell 100% orientada a dados (Spec 33 + Spec 14)
  *
- * Equivalente declarativo do menu do shell legado (Spec 04): recebe os módulos como
- * DADOS (`items`), agrupa por categoria, destaca o item ativo e delega a navegação ao
- * host — nunca manipula a URL. No manifesto, o par canônico é:
- *   props:   { "items": [...], "activeRoute": "{{$route}}" }
- *   actions: [{ "type": "navigate", "payload": { "to": "{{$event}}" } }]
- * O componente emite `onChange(route)` no clique/teclado; a Engine converte o valor
- * em `{{$event}}` para a cadeia de ações (LeafNode).
+ * Menu guiado por DADOS: recebe os módulos como `items`, agrupa por categoria, destaca
+ * o item ativo e **delega a navegação ao host** — nunca manipula a URL. O consumidor
+ * passa `activeRoute` (a rota atual, do roteador dele) e reage em `onNavigate`.
  */
 
 /** Item de navegação do shell — espelho declarativo do `SarakModule` do Discovery. */
@@ -29,13 +25,13 @@ export interface ShellNavItem {
 export interface SarakShellNavProps {
     /** Módulos/rotas do sistema, na ordem de exibição. */
     items: ShellNavItem[];
-    /** Rota ativa — no manifesto, use `"{{$route}}"` (injetada pelo Renderer). */
+    /** Rota ativa (a do roteador do consumidor) — comparada com `items[].route`. */
     activeRoute?: string;
     /** Identidade exibida no topo do menu. */
     brand?: { name?: string; logoUrl?: string };
-    /** Caminho TSX: callback direto. No manifesto a navegação sai por `onChange`. */
+    /** Callback de navegação — o host decide como navegar (router, pushState, assign). */
     onNavigate?: (route: string) => void;
-    /** Caminho manifesto: a Engine injeta este handler e roda as `actions`. */
+    /** Alias de `onNavigate`; ambos são chamados, na ordem. Mantido por compatibilidade. */
     onChange?: (route: string) => void;
     /**
      * Orientação do menu (Spec 18). `'auto'` (default) segue o Design Engine:

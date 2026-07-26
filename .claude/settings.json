@@ -1,7 +1,13 @@
 {
   "permissions": {
     "allow": [
-      "Bash(node scripts/check-zero-brand.mjs --check)"
+      "Bash(node scripts/check-zero-brand.mjs --check)",
+      "Bash(node scripts/generate-consumer-kit.mjs)",
+      "Bash(awk '/SARAK-KIT:APENDICE-GERADO:INICIO/,0' sarak-ui/GUIA-FRONTEND.md)",
+      "Bash(echo \"--- exit: $? \\(esperado 1: skill mudou e o kit não foi regenerado\\) ---\")",
+      "Bash(grep -rn \"fiado pelo \\\\`model\\\\`\" src/components/atomic/Inputs/SarakRichText.tsx)",
+      "Bash(sed -i \"s/brand={{ name: 'ERP Earendel' }}/brand={{ name: 'Meu Sistema' }}/\" docs/extensibilidade-de-layout.md docs/temas-cromo-e-multidispositivo.md)",
+      "Bash(sed -i \"s/<title>ERP Earendel — Propostas<\\\\/title>/<title>Meu Sistema — Propostas<\\\\/title>/\" docs/identidade-do-host.md)"
     ]
   }
 }

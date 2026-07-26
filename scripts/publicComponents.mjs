@@ -155,7 +155,7 @@ const EXPORT_NAME_RE = /export\s+(?:const|function|class)\s+([A-Z][A-Za-z0-9]*)/
 const DEFAULT_EXPORT_RE = /export\s+default\s+(?:function\s+)?([A-Z][A-Za-z0-9]*)/;
 
 /** Nomes PascalCase exportados por um arquivo `.tsx` de raiz (sem barril na categoria). */
-const namesFromFileExports = (file) => {
+export const namesFromFileExports = (file) => {
     const content = fs.readFileSync(file, 'utf-8');
     const names = new Set();
     for (const match of content.matchAll(EXPORT_NAME_RE)) names.add(match[1]);

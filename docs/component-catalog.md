@@ -740,7 +740,7 @@ Props (`SarakRichTextProps` — `src/components/atomic/Inputs/SarakRichText.tsx`
 
 | Prop | Tipo | Obrigatória | Descrição |
 | --- | --- | --- | --- |
-| `value` | `string` | não | Conteúdo HTML controlado (fiado pelo `model` no manifesto). |
+| `value` | `string` | não | Conteúdo HTML controlado pelo consumidor (par com `onChange`). |
 | `defaultValue` | `string` | não | Conteúdo inicial não-controlado. |
 | `onChange` | `(html: string) => void` | não | Emite o HTML JÁ sanitizado a cada mudança. |
 | `placeholder` | `string` | não |  |
@@ -802,10 +802,10 @@ Props (`SarakShellNavProps` — `src/components/atomic/Navigation/SarakShellNav.
 | Prop | Tipo | Obrigatória | Descrição |
 | --- | --- | --- | --- |
 | `items` | `ShellNavItem[]` | sim | Módulos/rotas do sistema, na ordem de exibição. |
-| `activeRoute` | `string` | não | Rota ativa — no manifesto, use `"{{$route}}"` (injetada pelo Renderer). |
+| `activeRoute` | `string` | não | Rota ativa (a do roteador do consumidor) — comparada com `items[].route`. |
 | `brand` | `{ name?: string; logoUrl?: string }` | não | Identidade exibida no topo do menu. |
-| `onNavigate` | `(route: string) => void` | não | Caminho TSX: callback direto. No manifesto a navegação sai por `onChange`. |
-| `onChange` | `(route: string) => void` | não | Caminho manifesto: a Engine injeta este handler e roda as `actions`. |
+| `onNavigate` | `(route: string) => void` | não | Callback de navegação — o host decide como navegar (router, pushState, assign). |
+| `onChange` | `(route: string) => void` | não | Alias de `onNavigate`; ambos são chamados, na ordem. Mantido por compatibilidade. |
 | `orientation` | `'vertical' \| 'horizontal' \| 'auto'` | não | Orientação do menu (Spec 18). `'auto'` (default) segue o Design Engine: `design.navigationStyle === 'topbar'` → horizontal; qualquer outro → vertical. `'dock'`/`'glass'` do shell legado ficam fora desta spec (tratados como vertical). |
 | `className` | `string` | não |  |
 
@@ -1013,7 +1013,7 @@ Props (`SarakTypographyProps` — `src/components/atomic/Atoms/SarakTypography.t
 | `color` | `SarakTypographyColor` | não | Cor de texto (`textColorMaster`/`textColorSecondary`/`textColorMuted`). Default: `main`. |
 | `as` | `React.ElementType` | não | Tag HTML a renderizar; sobrepõe o default semântico do `variant`. |
 | `transform` | `'none' \| 'uppercase' \| 'capitalize'` | não | Sobrepõe `--sarak-h-transform` só para esta instância. |
-| `content` | `string` | não | Texto via prop (string), pensado para uso via manifesto (Spec 22/24): o motor de Manifesto só entrega `children` como nós filhos aninhados, nunca como string crua — `content` é o canal de texto que `props.content` (com interpolação `{{...}}` já resolvida em `LeafNode`) alimenta. Tem prioridade sobre `children` quando ambos são passados. |
+| `content` | `string` | não | Texto via prop, para quando a origem é uma string e não nós filhos (ex.: dado vindo de uma API). Tem prioridade sobre `children` quando ambos são passados. |
 | `children` | `React.ReactNode` | não |  |
 
 Estende: `React.HTMLAttributes<HTMLElement>`
