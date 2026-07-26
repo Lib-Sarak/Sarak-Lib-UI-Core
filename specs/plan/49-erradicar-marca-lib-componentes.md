@@ -2,7 +2,7 @@
 tipo: "spec"
 titulo: "Erradicar a marca da lib em componentes consumidor-facing — nenhum 'Sarak Lib'/'Sarak OS' renderizado no produto do consumidor"
 dominio: "Componentes / Identidade / Zero-marca / DX do consumidor / Gate"
-status: "🔴 Planejada (2026-07-26) — achado da revisão da Spec 47; fecha o SINK que a 47 (fonte) deixou de fora"
+status: "🟢 Executada (2026-07-26) — L1/L2/L3 entregues; gates verdes; run_audit no baseline exato (2 falhas pré-existentes); falta a validação de browser do dono (§6)"
 prioridade: "Alta"
 tags: ["spec", "correcao", "identidade", "marca", "vazamento", "componentes", "gate"]
 relacionados: ["47-soberania-identidade-host", "50-kit-de-uso-do-consumidor"]
@@ -49,10 +49,10 @@ Ocorrências de marca da lib em componentes **consumidor-facing** (fora de comen
 - Nenhuma mudança no ERP. Uma vez que a lib pare de estampar a marca, os componentes que o ERP usa (ex.: estados vazios, busca) deixam de exibir `'Sarak Lib'`. Reinstalar o `file:` no store do pnpm para o `dist/` novo refletir.
 
 # 5. Critérios de Aceite
-- [ ] **L1:** nenhuma das ocorrências da §2 (exceto `SidebarNav`) renderiza a marca da lib; cada uma cai na fonte do consumidor ou num rótulo genérico; sem heading vazio/quebrado. Decisões registradas.
-- [ ] **L2:** gate zero-marca verde; falha se um literal de marca voltar num componente consumidor-facing; allowlist dos painéis internos comentada.
-- [ ] **L3:** nota em `docs/migracoes.md`; handoff p/ a Spec 50.
-- [ ] Grep: `Sarak Lib`/`Sarak OS`/`Sarak AI` como TEXTO renderizado em componentes consumidor-facing = **0** (allowlist à parte). Gates da lib verdes; entrada no `00-progresso.md`.
+- [x] **L1:** nenhuma das ocorrências da §2 (exceto `SidebarNav`) renderiza a marca da lib; cada uma cai na fonte do consumidor (`systemName`) ou num rótulo genérico (`'Sistema'`/`'Search Engine'`/`'Chat Engine'`/`'AI Chat'`); sem heading vazio/quebrado. **2 sinks adicionais** achados na confirmação em código (fora do levantamento original da §2, mesma classe de defeito) e corrigidos junto: `SarakShell.tsx:57` (`brand` default `{ name: "Sarak Lib" }` → `{ name: "Sistema" }` — é a FONTE do `brand.name` que `SidebarNav`/`TopbarNav` já consomem via `systemName || brand.name`; sem este fix, o grep de `'Sarak Lib'` continuaria positivo por essa porta) + `SarakShell.tsx:134` (fallback mobile `"Sarak"` → `"Sistema"`) + `ShellUserWidget.tsx:27/65` (`'Sarak User'` → `'User'`, fallback de nome de usuário sem `username`/`email`). Decisões registradas em `docs/migracoes.md`.
+- [x] **L2:** gate zero-marca verde (`npm run zero-brand:check`, novo `scripts/check-zero-brand.mjs` + `src/__tests__/ZeroBrand.test.ts`, varredura por AST — só `StringLiteral`/`JsxText`, não acusa comentário); falha se um literal de marca (`'Sarak Lib'`/`'Sarak OS'`/`'Sarak AI'`) voltar num componente consumidor-facing; allowlist comentada dos 3 painéis internos (`KitchenSinkPreview`, `LanguageTab`, `LayoutTab`). Ligado no `npm run build` (roda junto de `catalog:check`/`barrel:check`).
+- [x] **L3:** nota em `docs/migracoes.md` (nova seção "Rótulos decorativos — fim da marca da lib estampada em componentes"); handoff p/ a Spec 50 registrado no mesmo bloco.
+- [x] Grep: `Sarak Lib`/`Sarak OS`/`Sarak AI` como TEXTO renderizado em componentes consumidor-facing = **0** (confirmado; sobram só 1 comentário histórico em `useBrandingManager.ts` e os 3 arquivos da allowlist). Gates da lib verdes: `catalog:check` (em dia), `barrel:check` (78/0), `zero-brand:check` (363 arquivos, 0 violações), `build` (DTS 112,56 KB), suíte **276 arq / 842 testes** (era 275/840 — +1 arquivo/+2 testes = o novo gate), `package:check` (57 arquivos), `run_audit` no **baseline exato** (2 regras pré-existentes: hardcode Valor=1 + 3 ghostvars — inalteradas). Entrada no `00-progresso.md`.
 
 # 6. Validação prática (dono, browser)
 - Renderizar `SarakEmptyState`, `SarakSearch` e o chat no produto: **nenhum texto "Sarak Lib"/"Sarak OS"** aparece; os componentes seguem coerentes e tematizados.

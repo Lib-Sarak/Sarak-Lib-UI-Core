@@ -2454,7 +2454,7 @@ exports[`PreviewCanvas - Refatoração Data-Driven > deve usar propriedades de e
                           <span
                             class="text-xs font-bold text-[var(--theme-title)]/90 leading-tight truncate"
                           >
-                            Sarak User
+                            User
                           </span>
                           <div
                             class="flex items-center gap-1.5"

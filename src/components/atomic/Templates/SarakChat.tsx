@@ -18,7 +18,7 @@ export interface SarakChatProps {
 export const SarakChat: React.FC<SarakChatProps> = ({ 
   endpoint, 
   modelsEndpoint = '/llm-test-chat/models',
-  label = 'Sarak AI Chat Lab'
+  label = 'AI Chat'
 }) => {
   const chat = useSarakChat(endpoint, modelsEndpoint);
   const { design } = useSarakUI();

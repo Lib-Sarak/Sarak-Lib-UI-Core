@@ -2,7 +2,7 @@
 tipo: "spec"
 titulo: "Slots de extensão do SarakAppChrome — o consumidor injeta imagens/animações/regiões custom no layout"
 dominio: "Componentes / Cromo apresentacional / Extensibilidade / Slots / DX do consumidor"
-status: "🔴 Planejada (2026-07-26) — pedido do dono; o consumidor precisa acrescentar conteúdo ao layout sem forkar"
+status: "🟢 Executada (2026-07-26) — L1-L4 entregues; gates verdes (suíte 275 arq/840 testes, run_audit no baseline). Falta a validação de browser do dono (§6)"
 prioridade: "Alta"
 tags: ["spec", "feature", "cromo", "layout", "slots", "extensibilidade", "imagens", "animacoes"]
 relacionados: ["40.2-correcoes-importacao-r2", "40.3-multidispositivo-por-padrao", "18-shell-consome-design-engine", "47-soberania-identidade-host", "50-kit-de-uso-do-consumidor"]
@@ -54,11 +54,18 @@ Cada slot é opcional; ausente = não renderiza a região (sem espaço morto). P
 - Nada obrigatório. O ERP **pode** usar os slots no `ErpChrome` (ex.: um `banner` de aviso, um `footer`, um logo animado) — ação normal de consumidor, sem CSS próprio. Serve de demonstração viva se o dono quiser.
 
 # 5. Critérios de Aceite
-- [ ] **L1:** `SarakAppChrome` aceita os slots (`logo`/`topbarStart`/`topbarEnd`/`sidebarHeader`/`sidebarFooter`/`banner`/`footer`/`decoration`), todos opcionais; `brand`/`topbarActions`/`children` sem breaking change; tokens, não hardcode; teste por slot.
-- [ ] **L2:** slots refluem/degradam no `SarakAppChromeMobile` sem estourar a tela; `decoration` não captura foco/toque; testes por viewport.
-- [ ] **L3:** contrato documentado com os dois níveis (tema global + slots por região).
-- [ ] **L4:** caso de autoria de "extensibilidade de layout" registrado como pendência da Spec 50 + ordem 48→50 mantida.
-- [ ] `barrel:check`/`catalog:check` verdes (props no catálogo); demais gates da lib verdes; entrada no `00-progresso.md`.
+- [x] **L1:** `SarakAppChrome` aceita os slots (`logo`/`topbarStart`/`topbarEnd`/`sidebarHeader`/`sidebarFooter`/`banner`/`footer`/`decoration`), todos opcionais; `brand`/`topbarActions`/`children` sem breaking change; tokens, não hardcode; teste por slot.
+- [x] **L2:** slots refluem/degradam no `SarakAppChromeMobile` sem estourar a tela; `decoration` não captura foco/toque; testes por viewport.
+- [x] **L3:** contrato documentado com os dois níveis (tema global + slots por região) — `docs/extensibilidade-de-layout.md`, shippado no pacote.
+- [x] **L4:** caso de autoria de "extensibilidade de layout" registrado na Spec 50 (§5 casos + critério de aceite) + ordem 48→50 mantida.
+- [x] `barrel:check`/`catalog:check` verdes (as 8 props novas no `component-catalog`); demais gates da lib verdes; entrada no `00-progresso.md`.
+
+## 5.1 Decisões de execução (registro)
+- **Geometria do `banner`/`footer`:** regra ÚNICA para os três modos — `banner` é a **primeira** faixa do cromo e `footer` a **última**, ambas full-width, com a barra de navegação (topbar/sidebar/hambúrguer) e o conteúdo entre elas. Evita caso especial por dispositivo (o refluxo mobile é o mesmo do desktop, só mais estreito) e torna "full-width" literal também no modo sidebar.
+- **`topbarStart`/`topbarEnd` no modo sidebar:** não existe barra superior ali, então **degradam** para topo/rodapé da sidebar (o `topbarEnd` mantém exatamente o markup que o `topbarActions` já tinha) — nada de conteúdo do consumidor some em silêncio.
+- **Empilhamento do `decoration`:** a raiz só vira contexto próprio (`position: relative` + `isolation: isolate`) **quando há decoração**; sem ela, a raiz fica byte a byte como antes.
+- **Extração interna:** `chrome/ChromeFrame.tsx` (moldura comum aos 3 modos) + `chrome/ChromeSlots.tsx` (regiões) + `chrome/navItem.ts` (tipo movido) — necessária para manter `SarakAppChrome.tsx` sob o teto de 250 linhas do Clean Code. Subpasta de propósito: só `.tsx` de RAIZ de `components/Layout/` entram no `barrel:check`/catálogo, então os blocos internos não viram peça pública.
+- **Âncoras `data-sarak-slot`:** cada região expõe uma âncora estável para teste e CSS do consumidor, sem depender da estrutura interna.
 
 # 6. Validação prática (dono, browser)
 - Montar um `SarakAppChrome` com um `banner` (imagem/animação), um `footer` e um `decoration` de fundo → aparecem nas regiões certas, tematizados, e **refluem no mobile** sem quebrar; a nav e o conteúdo continuam funcionando.

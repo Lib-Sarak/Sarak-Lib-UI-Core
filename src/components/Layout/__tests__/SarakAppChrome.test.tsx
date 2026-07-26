@@ -220,3 +220,157 @@ describe('SarakAppChrome (Spec 40.3 — L1, multidispositivo por padrão / cromo
         expect(toggleOf(container)).toBeNull();
     });
 });
+
+// ---------------------------------------------------------------------------
+// Spec 48 — L1: slots de extensão (a lib dá a REGIÃO, o consumidor dá o CONTEÚDO)
+// ---------------------------------------------------------------------------
+
+const slotOf = (c: HTMLElement, name: string) => c.querySelector(`[data-sarak-slot="${name}"]`);
+
+describe('SarakAppChrome (Spec 48 — L1, slots opcionais por região)', () => {
+    it('ZERO-CONFIG: sem slots, NENHUMA região extra é renderizada (sem espaço morto)', () => {
+        const { container } = renderAtDevice('desktop',
+            <SarakAppChrome nav={NAV}><div>x</div></SarakAppChrome>,
+        );
+        for (const slot of ['logo', 'topbarStart', 'topbarEnd', 'sidebarHeader', 'sidebarFooter', 'banner', 'footer', 'decoration']) {
+            expect(slotOf(container, slot)).toBeNull();
+        }
+    });
+
+    it('banner e footer renderizam como faixas full-width no modo SIDEBAR', () => {
+        const { container } = renderAtDevice('desktop',
+            <SarakAppChrome nav={NAV} banner={<img src="/promo.gif" alt="promo" />} footer={<span>rodapé</span>}>
+                <div>x</div>
+            </SarakAppChrome>,
+        );
+        const banner = slotOf(container, 'banner');
+        const footer = slotOf(container, 'footer');
+        expect(banner?.className).toContain('w-full');
+        expect(footer?.className).toContain('w-full');
+        expect(screen.getByAltText('promo')).toBeInTheDocument();
+        expect(screen.getByText('rodapé')).toBeInTheDocument();
+        // Ordem do cromo: banner é a PRIMEIRA faixa e footer a ÚLTIMA (o Provider
+        // envolve a árvore, então a raiz do cromo é o pai das faixas, não o container).
+        const root = banner!.parentElement as HTMLElement;
+        expect(root.firstElementChild).toBe(banner);
+        expect(root.lastElementChild).toBe(footer);
+    });
+
+    it('banner e footer também valem no modo TOPBAR (mesma moldura)', () => {
+        const { container } = renderAtDevice('desktop',
+            <SarakAppChrome navigationStyle="topbar" nav={NAV} banner={<span>aviso</span>} footer={<span>rodapé</span>}>
+                <div>x</div>
+            </SarakAppChrome>,
+        );
+        expect(slotOf(container, 'banner')).not.toBeNull();
+        expect(slotOf(container, 'footer')).not.toBeNull();
+        expect(container.querySelector('header')).not.toBeNull();
+    });
+
+    it('decoration é camada ATRÁS, aria-hidden e sem captura de foco/toque (a11y)', () => {
+        const { container } = renderAtDevice('desktop',
+            <SarakAppChrome nav={NAV} decoration={<video data-testid="anim" />}><div>x</div></SarakAppChrome>,
+        );
+        const deco = slotOf(container, 'decoration') as HTMLElement;
+        expect(deco).not.toBeNull();
+        expect(deco).toHaveAttribute('aria-hidden', 'true');
+        expect(deco.style.pointerEvents).toBe('none');
+        expect(deco.style.position).toBe('absolute');
+        // A raiz vira contexto de empilhamento próprio só quando há decoração.
+        const root = deco.parentElement as HTMLElement;
+        expect(root.style.position).toBe('relative');
+        expect(root.style.isolation).toBe('isolate');
+    });
+
+    it('logo custom tem PRECEDÊNCIA sobre brand.logoUrl (e o brand.name permanece)', () => {
+        const { container } = renderAtDevice('desktop',
+            <SarakAppChrome
+                nav={NAV}
+                brand={{ name: 'ERP', logoUrl: '/estatico.png' }}
+                logo={<span data-testid="logo-animado">◆</span>}
+            >
+                <div>x</div>
+            </SarakAppChrome>,
+        );
+        expect(slotOf(container, 'logo')).not.toBeNull();
+        expect(screen.getByTestId('logo-animado')).toBeInTheDocument();
+        expect(container.querySelector('img[src="/estatico.png"]')).toBeNull();
+        expect(screen.getByText('ERP')).toBeInTheDocument();
+    });
+
+    it('sidebarHeader/sidebarFooter aparecem DENTRO da sidebar, com medida por TOKEN', () => {
+        const { container } = renderAtDevice('desktop',
+            <SarakAppChrome nav={NAV} sidebarHeader={<span>busca</span>} sidebarFooter={<span>v1.2.3</span>}>
+                <div>x</div>
+            </SarakAppChrome>,
+        );
+        const aside = container.querySelector('aside')!;
+        const header = slotOf(container, 'sidebarHeader') as HTMLElement;
+        const footer = slotOf(container, 'sidebarFooter') as HTMLElement;
+        expect(aside.contains(header)).toBe(true);
+        expect(aside.contains(footer)).toBe(true);
+        expect(header.getAttribute('style')).toContain('var(--sarak-layout-gap-sm');
+        expect(footer.getAttribute('style')).toContain('var(--sarak-layout-gap-sm');
+    });
+
+    it('topbarStart/topbarEnd aparecem na barra superior (modo topbar)', () => {
+        const { container } = renderAtDevice('desktop',
+            <SarakAppChrome navigationStyle="topbar" nav={NAV} topbarStart={<span>busca</span>} topbarEnd={<span>avatar</span>}>
+                <div>x</div>
+            </SarakAppChrome>,
+        );
+        const header = container.querySelector('header')!;
+        expect(header.contains(slotOf(container, 'topbarStart'))).toBe(true);
+        expect(header.contains(slotOf(container, 'topbarEnd'))).toBe(true);
+    });
+
+    it('sem barra superior (modo sidebar), topbarStart/End degradam para a sidebar — nada some', () => {
+        const { container } = renderAtDevice('desktop',
+            <SarakAppChrome nav={NAV} topbarStart={<span>busca</span>} topbarEnd={<span>avatar</span>}>
+                <div>x</div>
+            </SarakAppChrome>,
+        );
+        const aside = container.querySelector('aside')!;
+        expect(aside.contains(slotOf(container, 'topbarStart'))).toBe(true);
+        expect(aside.contains(slotOf(container, 'topbarEnd'))).toBe(true);
+        expect(screen.getByText('avatar')).toBeInTheDocument();
+    });
+
+    it('COMPAT: topbarActions continua funcionando e topbarEnd é seu alias (vence quando ambos)', () => {
+        const legado = renderAtDevice('desktop',
+            <SarakAppChrome navigationStyle="topbar" nav={NAV} topbarActions={<span>ações legadas</span>}>
+                <div>x</div>
+            </SarakAppChrome>,
+        );
+        expect(legado.getByText('ações legadas')).toBeInTheDocument();
+        expect(slotOf(legado.container, 'topbarEnd')).not.toBeNull();
+
+        const ambos = renderAtDevice('desktop',
+            <SarakAppChrome navigationStyle="topbar" nav={NAV} topbarActions={<span>legado</span>} topbarEnd={<span>novo</span>}>
+                <div>x</div>
+            </SarakAppChrome>,
+        );
+        expect(ambos.queryByText('novo')).toBeInTheDocument();
+        expect(ambos.queryByText('legado')).toBeNull();
+    });
+
+    it('os slots NÃO tiram a nav nem o conteúdo do ar (cromo segue funcional)', () => {
+        const onNavigate = vi.fn();
+        renderAtDevice('desktop',
+            <SarakAppChrome
+                nav={NAV}
+                onNavigate={onNavigate}
+                banner={<span>b</span>}
+                footer={<span>f</span>}
+                decoration={<span>d</span>}
+                sidebarHeader={<span>sh</span>}
+                sidebarFooter={<span>sf</span>}
+            >
+                <div>conteúdo do app</div>
+            </SarakAppChrome>,
+        );
+        expect(screen.getByText('conteúdo do app')).toBeInTheDocument();
+        fireEvent.click(screen.getByText('Projetos'));
+        expect(onNavigate).toHaveBeenCalledWith('/projetos');
+    });
+});

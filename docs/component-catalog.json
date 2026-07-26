@@ -328,7 +328,55 @@
           "name": "topbarActions",
           "type": "React.ReactNode",
           "optional": true,
-          "doc": "Conteúdo à direita da topbar (ações, avatar, seletor de tema…)."
+          "doc": "Conteúdo à direita da topbar (ações, avatar, seletor de tema…). Alias legado de `topbarEnd`."
+        },
+        {
+          "name": "logo",
+          "type": "React.ReactNode",
+          "optional": true,
+          "doc": "Slot `logo` (Spec 48 — L1): logo custom/animado (`ReactNode`). Tem PRECEDÊNCIA sobre `brand.logoUrl`; o `brand.name` continua ao lado. Aparece nos três modos."
+        },
+        {
+          "name": "topbarStart",
+          "type": "React.ReactNode",
+          "optional": true,
+          "doc": "Slot `topbarStart`: conteúdo no INÍCIO da barra superior (após a marca). Sem barra superior (modo sidebar) degrada para o topo da sidebar."
+        },
+        {
+          "name": "topbarEnd",
+          "type": "React.ReactNode",
+          "optional": true,
+          "doc": "Slot `topbarEnd`: conteúdo no FIM da barra superior. É o mesmo lugar do `topbarActions` (alias preservado); quando os dois vêm, `topbarEnd` vence. No modo sidebar degrada para o rodapé da sidebar (comportamento atual)."
+        },
+        {
+          "name": "sidebarHeader",
+          "type": "React.ReactNode",
+          "optional": true,
+          "doc": "Slot `sidebarHeader`: topo da sidebar (abaixo da marca). No celular migra para o drawer."
+        },
+        {
+          "name": "sidebarFooter",
+          "type": "React.ReactNode",
+          "optional": true,
+          "doc": "Slot `sidebarFooter`: rodapé da sidebar. No celular migra para o drawer."
+        },
+        {
+          "name": "banner",
+          "type": "React.ReactNode",
+          "optional": true,
+          "doc": "Slot `banner`: faixa full-width no topo do cromo (aviso, promo, faixa animada)."
+        },
+        {
+          "name": "footer",
+          "type": "React.ReactNode",
+          "optional": true,
+          "doc": "Slot `footer`: faixa full-width na base do cromo (rodapé da página)."
+        },
+        {
+          "name": "decoration",
+          "type": "React.ReactNode",
+          "optional": true,
+          "doc": "Slot `decoration`: camada decorativa ATRÁS do conteúdo do cromo (imagem/animação escopada ao cromo). É ornamento — `aria-hidden` e sem captura de foco/toque. COMPLEMENTA o fundo/atmosfera global por tema (Design Engine), não o substitui."
         },
         {
           "name": "className",
@@ -382,7 +430,43 @@
           "name": "topbarActions",
           "type": "React.ReactNode",
           "optional": true,
-          "doc": ""
+          "doc": "Slot `topbarEnd` (alias legado `topbarActions`) — fim da barra compacta."
+        },
+        {
+          "name": "topbarStart",
+          "type": "React.ReactNode",
+          "optional": true,
+          "doc": "Slot `topbarStart` — início da barra compacta, logo após a marca."
+        },
+        {
+          "name": "sidebarHeader",
+          "type": "React.ReactNode",
+          "optional": true,
+          "doc": "Slot `sidebarHeader` — migra para o topo do drawer (a sidebar do celular)."
+        },
+        {
+          "name": "sidebarFooter",
+          "type": "React.ReactNode",
+          "optional": true,
+          "doc": "Slot `sidebarFooter` — migra para o rodapé do drawer."
+        },
+        {
+          "name": "banner",
+          "type": "React.ReactNode",
+          "optional": true,
+          "doc": "Slot `banner` — faixa full-width no topo."
+        },
+        {
+          "name": "footer",
+          "type": "React.ReactNode",
+          "optional": true,
+          "doc": "Slot `footer` — faixa full-width na base."
+        },
+        {
+          "name": "decoration",
+          "type": "React.ReactNode",
+          "optional": true,
+          "doc": "Slot `decoration` — camada decorativa atrás do cromo (aria-hidden, sem foco/toque)."
         },
         {
           "name": "className",

@@ -87,6 +87,14 @@ const NAV: SarakNavItem[] = [
   topbar; caso contrário → sidebar. Trocar o tema no `/design` troca o cromo também.
 - Pintado 100% por tokens (`--sarak-topbar-*`, `--sarak-sidebar-*`) — zero CSS do consumidor.
 
+### Slots de extensão do cromo (Spec 48)
+
+Para **injetar imagem, animação ou qualquer `ReactNode`** em regiões do cromo (`logo`,
+`topbarStart`/`topbarEnd`, `sidebarHeader`/`sidebarFooter`, `banner`, `footer`, `decoration`)
+sem forkar a componente — e para o outro nível, o **fundo/atmosfera global por tema** —, veja
+o guia dedicado: [`extensibilidade-de-layout.md`](./extensibilidade-de-layout.md). Todos os
+slots são opcionais e aditivos (`brand`/`topbarActions`/`children` não mudaram).
+
 ## 3. Multi-dispositivo (L3) + densos responsivos por padrão (Spec 40.2 — L2)
 
 ### Princípio: **componente denso da lib é mobile-usável por padrão**
@@ -153,6 +161,7 @@ consomem `useSarakDevice` sozinhos. Onde quiser um layout específico, refine pa
 | **`SarakDataTable`** | **colapsa para cards** (`SarakDataCards`) | tabela colunar (scroll X contido) | idem | `responsive={false}` (opt-out) |
 | **`SarakTable`** | **colapsa para cards** (`SarakTableCards`) | tabela (scroll X contido) | idem | — |
 | **`SarakHidden`** | oculta por `on={['smartphone', ...]}` | idem | idem | — |
+| **Slots do cromo** (Spec 48) | faixas full-width refluem; regiões de sidebar migram para o **drawer**; `topbarStart/End` comprimem | idem (sem sidebar) | cada slot na sua região | conteúdo é do consumidor (`ReactNode`) |
 
 ### Regras do contrato
 

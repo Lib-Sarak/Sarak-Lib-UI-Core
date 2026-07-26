@@ -200,7 +200,15 @@ Props (`SarakAppChromeProps` — `src/components/Layout/SarakAppChrome.tsx`):
 | `activeRoute` | `string` | não | Rota ativa (destaca o item correspondente no `nav`; ignorado se `navItems`). |
 | `onNavigate` | `(route: string) => void` | não | Clique/teclado num item de navegação — o host decide como navegar. |
 | `navigationStyle` | `'sidebar' \| 'topbar' \| 'auto'` | não | Estilo do cromo. `'auto'` (default) segue o Design Engine (`design.navigationStyle === 'topbar'` → topbar; caso contrário → sidebar), então trocar o tema no `/design` também troca a orientação do cromo. |
-| `topbarActions` | `React.ReactNode` | não | Conteúdo à direita da topbar (ações, avatar, seletor de tema…). |
+| `topbarActions` | `React.ReactNode` | não | Conteúdo à direita da topbar (ações, avatar, seletor de tema…). Alias legado de `topbarEnd`. |
+| `logo` | `React.ReactNode` | não | Slot `logo` (Spec 48 — L1): logo custom/animado (`ReactNode`). Tem PRECEDÊNCIA sobre `brand.logoUrl`; o `brand.name` continua ao lado. Aparece nos três modos. |
+| `topbarStart` | `React.ReactNode` | não | Slot `topbarStart`: conteúdo no INÍCIO da barra superior (após a marca). Sem barra superior (modo sidebar) degrada para o topo da sidebar. |
+| `topbarEnd` | `React.ReactNode` | não | Slot `topbarEnd`: conteúdo no FIM da barra superior. É o mesmo lugar do `topbarActions` (alias preservado); quando os dois vêm, `topbarEnd` vence. No modo sidebar degrada para o rodapé da sidebar (comportamento atual). |
+| `sidebarHeader` | `React.ReactNode` | não | Slot `sidebarHeader`: topo da sidebar (abaixo da marca). No celular migra para o drawer. |
+| `sidebarFooter` | `React.ReactNode` | não | Slot `sidebarFooter`: rodapé da sidebar. No celular migra para o drawer. |
+| `banner` | `React.ReactNode` | não | Slot `banner`: faixa full-width no topo do cromo (aviso, promo, faixa animada). |
+| `footer` | `React.ReactNode` | não | Slot `footer`: faixa full-width na base do cromo (rodapé da página). |
+| `decoration` | `React.ReactNode` | não | Slot `decoration`: camada decorativa ATRÁS do conteúdo do cromo (imagem/animação escopada ao cromo). É ornamento — `aria-hidden` e sem captura de foco/toque. COMPLEMENTA o fundo/atmosfera global por tema (Design Engine), não o substitui. |
 | `className` | `string` | não |  |
 | `style` | `React.CSSProperties` | não |  |
 
@@ -215,7 +223,13 @@ Props (`SarakAppChromeMobileProps` — `src/components/Layout/SarakAppChromeMobi
 | `nav` | `ShellNavItem[]` | sim |  |
 | `activeRoute` | `string` | não |  |
 | `onNavigate` | `(route: string) => void` | não |  |
-| `topbarActions` | `React.ReactNode` | não |  |
+| `topbarActions` | `React.ReactNode` | não | Slot `topbarEnd` (alias legado `topbarActions`) — fim da barra compacta. |
+| `topbarStart` | `React.ReactNode` | não | Slot `topbarStart` — início da barra compacta, logo após a marca. |
+| `sidebarHeader` | `React.ReactNode` | não | Slot `sidebarHeader` — migra para o topo do drawer (a sidebar do celular). |
+| `sidebarFooter` | `React.ReactNode` | não | Slot `sidebarFooter` — migra para o rodapé do drawer. |
+| `banner` | `React.ReactNode` | não | Slot `banner` — faixa full-width no topo. |
+| `footer` | `React.ReactNode` | não | Slot `footer` — faixa full-width na base. |
+| `decoration` | `React.ReactNode` | não | Slot `decoration` — camada decorativa atrás do cromo (aria-hidden, sem foco/toque). |
 | `className` | `string` | não |  |
 | `rootStyle` | `React.CSSProperties` | sim |  |
 

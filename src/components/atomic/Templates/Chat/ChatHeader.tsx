@@ -17,7 +17,7 @@ export const ChatHeader: React.FC<ChatHeaderProps> = ({ label, mode, setMode, cl
       </div>
       <div>
         <h2 className="text-sm font-bold tracking-tight text-[var(--color-theme-title,#ffffff)] uppercase" style={{ fontWeight: 'var(--sarak-h1-weight,700)' }}>{label}</h2>
-        <p className="text-2xs text-[var(--text-muted,#94a3b8)] font-medium tracking-widest">Agnostic Interface • Sarak Lib Engine</p>
+        <p className="text-2xs text-[var(--text-muted,#94a3b8)] font-medium tracking-widest">Agnostic Interface • Chat Engine</p>
       </div>
     </div>
 

@@ -829,6 +829,9 @@ declare const SarakShellNav: React__default.FC<SarakShellNavProps>;
  * temável por token, opcional por item. Difere do `ShellNavItem` (que usa
  * `route`/`activeRoute` do modelo declarativo) por trazer `id` estável + `active`
  * por item — mais ergonômico para um menu de topo estático por app.
+ *
+ * Mora em `chrome/` (e não no `SarakAppChrome.tsx`) só por higiene de tamanho de
+ * arquivo — o tipo continua público pelo mesmo caminho (re-export no cromo + barril).
  */
 interface SarakNavItem {
     /** Identidade estável do item (chave de render; não precisa ser a URL). */
@@ -842,6 +845,7 @@ interface SarakNavItem {
     /** Marca o item como ativo (destaque + `aria-current="page"`). */
     active?: boolean;
 }
+
 /**
  * SarakAppChrome — cromo apresentacional temável (topbar/sidebar) SEM host/registro.
  *
@@ -863,6 +867,12 @@ interface SarakNavItem {
  * + drawer (`SarakAppChromeMobile`) — a nav não ocupa a tela toda e continua acessível. O
  * consumidor não escreve CSS/media query; para refinar, os tokens de cromo aceitam
  * `ResponsiveValue` pelo Design Engine.
+ *
+ * Extensibilidade de layout (Spec 48 — L1): os slots `logo`/`topbarStart`/`topbarEnd`/
+ * `sidebarHeader`/`sidebarFooter`/`banner`/`footer`/`decoration` deixam o consumidor
+ * injetar imagem, animação ou qualquer `ReactNode` em regiões do cromo sem forkar a
+ * componente. Todos opcionais (ausente = região não renderiza); complementam — não
+ * substituem — o fundo/atmosfera GLOBAL por tema do Design Engine.
  *
  * Zero hardcode (Regra 2): toda cor/medida vem de tokens `--sarak-*` com fallback.
  */
@@ -896,8 +906,38 @@ interface SarakAppChromeProps {
      * então trocar o tema no `/design` também troca a orientação do cromo.
      */
     navigationStyle?: 'sidebar' | 'topbar' | 'auto';
-    /** Conteúdo à direita da topbar (ações, avatar, seletor de tema…). */
+    /** Conteúdo à direita da topbar (ações, avatar, seletor de tema…). Alias legado de `topbarEnd`. */
     topbarActions?: React__default.ReactNode;
+    /**
+     * Slot `logo` (Spec 48 — L1): logo custom/animado (`ReactNode`). Tem PRECEDÊNCIA
+     * sobre `brand.logoUrl`; o `brand.name` continua ao lado. Aparece nos três modos.
+     */
+    logo?: React__default.ReactNode;
+    /**
+     * Slot `topbarStart`: conteúdo no INÍCIO da barra superior (após a marca).
+     * Sem barra superior (modo sidebar) degrada para o topo da sidebar.
+     */
+    topbarStart?: React__default.ReactNode;
+    /**
+     * Slot `topbarEnd`: conteúdo no FIM da barra superior. É o mesmo lugar do
+     * `topbarActions` (alias preservado); quando os dois vêm, `topbarEnd` vence.
+     * No modo sidebar degrada para o rodapé da sidebar (comportamento atual).
+     */
+    topbarEnd?: React__default.ReactNode;
+    /** Slot `sidebarHeader`: topo da sidebar (abaixo da marca). No celular migra para o drawer. */
+    sidebarHeader?: React__default.ReactNode;
+    /** Slot `sidebarFooter`: rodapé da sidebar. No celular migra para o drawer. */
+    sidebarFooter?: React__default.ReactNode;
+    /** Slot `banner`: faixa full-width no topo do cromo (aviso, promo, faixa animada). */
+    banner?: React__default.ReactNode;
+    /** Slot `footer`: faixa full-width na base do cromo (rodapé da página). */
+    footer?: React__default.ReactNode;
+    /**
+     * Slot `decoration`: camada decorativa ATRÁS do conteúdo do cromo (imagem/animação
+     * escopada ao cromo). É ornamento — `aria-hidden` e sem captura de foco/toque.
+     * COMPLEMENTA o fundo/atmosfera global por tema (Design Engine), não o substitui.
+     */
+    decoration?: React__default.ReactNode;
     className?: string;
     style?: React__default.CSSProperties;
 }

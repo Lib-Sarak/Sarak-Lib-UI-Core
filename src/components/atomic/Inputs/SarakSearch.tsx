@@ -16,7 +16,7 @@ export interface SarakSearchProps {
  */
 export const SarakSearch: React.FC<SarakSearchProps> = ({ isOpen, onClose }) => {
     const { design } = useSarakUI();
-    const { searchStyle } = design || {};
+    const { searchStyle, systemName } = design || {};
     const registeredModules = getRegisteredModules();
 
     const [query, setQuery] = useState('');
@@ -128,7 +128,7 @@ export const SarakSearch: React.FC<SarakSearchProps> = ({ isOpen, onClose }) => 
                                 <span>Navigate</span>
                             </div>
                         </div>
-                        <span className="text-2xs font-black uppercase tracking-widest text-[var(--text-muted,#94a3b8)] italic">Sarak Lib Search Engine</span>
+                        <span className="text-2xs font-black uppercase tracking-widest text-[var(--text-muted,#94a3b8)] italic">{systemName ? `${systemName} Search Engine` : 'Search Engine'}</span>
                     </div>
                 </motion.div>
             </div>

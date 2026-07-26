@@ -48,3 +48,66 @@ describe('SarakAppChromeMobile (Spec 40.3 — L1, drawer atrás de hambúrguer)'
         expect(container.querySelector('#sarak-chrome-drawer')).toBeNull();
     });
 });
+
+const slotOf = (c: HTMLElement, name: string) => c.querySelector(`[data-sarak-slot="${name}"]`);
+
+describe('SarakAppChromeMobile (Spec 48 — L2, os slots têm lugar coerente no celular)', () => {
+    it('banner/footer seguem faixas full-width (mesma moldura do desktop)', () => {
+        const { container } = renderMobile(
+            <SarakAppChromeMobile nav={NAV} banner={<span>aviso</span>} footer={<span>rodapé</span>} {...base}>
+                <div>x</div>
+            </SarakAppChromeMobile>,
+        );
+        const banner = slotOf(container, 'banner') as HTMLElement;
+        const footer = slotOf(container, 'footer') as HTMLElement;
+        // `w-full min-w-0` = acompanha a largura da tela em vez de estourar (Spec 40.3).
+        expect(banner.className).toContain('w-full');
+        expect(banner.className).toContain('min-w-0');
+        expect(footer.className).toContain('w-full');
+        expect(footer.className).toContain('min-w-0');
+    });
+
+    it('sidebarHeader/sidebarFooter MIGRAM para o drawer (a sidebar do celular)', () => {
+        const { container } = renderMobile(
+            <SarakAppChromeMobile nav={NAV} sidebarHeader={<span>busca</span>} sidebarFooter={<span>v1.2.3</span>} {...base}>
+                <div>x</div>
+            </SarakAppChromeMobile>,
+        );
+        // Fechado: as regiões da sidebar não ocupam a tela.
+        expect(slotOf(container, 'sidebarHeader')).toBeNull();
+        expect(slotOf(container, 'sidebarFooter')).toBeNull();
+
+        fireEvent.click(container.querySelector('[aria-controls="sarak-chrome-drawer"]') as HTMLElement);
+        const drawer = container.querySelector('#sarak-chrome-drawer')!;
+        expect(drawer.contains(slotOf(container, 'sidebarHeader'))).toBe(true);
+        expect(drawer.contains(slotOf(container, 'sidebarFooter'))).toBe(true);
+        expect(screen.getByText('v1.2.3')).toBeInTheDocument();
+    });
+
+    it('topbarStart/topbarEnd compactam na barra sem empurrar o hambúrguer', () => {
+        const { container } = renderMobile(
+            <SarakAppChromeMobile nav={NAV} topbarStart={<span>busca</span>} topbarActions={<span>avatar</span>} {...base}>
+                <div>x</div>
+            </SarakAppChromeMobile>,
+        );
+        const header = container.querySelector('header')!;
+        const start = slotOf(container, 'topbarStart') as HTMLElement;
+        const end = slotOf(container, 'topbarEnd') as HTMLElement;
+        expect(header.contains(start)).toBe(true);
+        expect(header.contains(end)).toBe(true);
+        expect(start.className).toContain('min-w-0');   // comprime em vez de estourar
+        expect(end.className).toContain('shrink-0');
+        // O toggle continua sendo o primeiro elemento da barra.
+        expect(header.firstElementChild).toHaveAttribute('aria-controls', 'sarak-chrome-drawer');
+    });
+
+    it('decoration fica atrás, aria-hidden e sem captura de foco/toque', () => {
+        const { container } = renderMobile(
+            <SarakAppChromeMobile nav={NAV} decoration={<span>arte</span>} {...base}><div>x</div></SarakAppChromeMobile>,
+        );
+        const deco = slotOf(container, 'decoration') as HTMLElement;
+        expect(deco).toHaveAttribute('aria-hidden', 'true');
+        expect(deco.style.pointerEvents).toBe('none');
+        expect(deco.querySelector('button, a, input')).toBeNull();
+    });
+});
