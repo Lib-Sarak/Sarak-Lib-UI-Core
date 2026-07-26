@@ -1,7 +1,7 @@
 import React, { useState } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
-import { ExternalLink, Box } from 'lucide-react';
-import * as LucideIcons from 'lucide-react';
+import { ExternalLink } from 'lucide-react';
+import { SarakIcon } from '../../Icon/SarakIcon';
 import { useSarakUI } from '../../../../core/Provider/SarakUIProvider';
 import { SarakTitleCard } from '../../Cards/SarakTitleCard';
 import { SarakActionCard } from '../../Cards/SarakActionCard';
@@ -44,10 +44,10 @@ export const SarakCoreCard = <TItem extends Record<string, unknown>>({ item, map
 
     const getCapIcon = (cap: string) => {
         switch (cap.toLowerCase()) {
-            case 'vision': return <LucideIcons.Eye size={10} />;
-            case 'web': return <LucideIcons.Globe size={10} />;
-            case 'chat': return <LucideIcons.MessageSquare size={10} />;
-            default: return <LucideIcons.Zap size={10} />;
+            case 'vision': return <SarakIcon name="Eye" size={10} />;
+            case 'web': return <SarakIcon name="Globe" size={10} />;
+            case 'chat': return <SarakIcon name="MessageSquare" size={10} />;
+            default: return <SarakIcon name="Zap" size={10} />;
         }
     };
 
@@ -85,9 +85,7 @@ export const SarakCoreCard = <TItem extends Record<string, unknown>>({ item, map
                         </h4>
                     </div>
                     <div className="bg-[var(--color-theme-card,#1e293b)] border-[var(--border-color,#334155)]" style={{ padding: 'calc(var(--sarak-layout-gap-md,16px) / 2)', borderRadius: 'var(--sarak-card-radius,12px)' }}>
-                        {mapping?.icon && LucideIcons[mapping.icon as keyof typeof LucideIcons] ? (
-                            React.createElement(LucideIcons[mapping.icon as keyof typeof LucideIcons] as React.ElementType, { size: 20, className: "text-[var(--text-muted,#94a3b8)]" })
-                        ) : <Box size={20} className="text-[var(--text-muted,#94a3b8)]" />}
+                        <SarakIcon name={mapping?.icon || 'Box'} size={20} className="text-[var(--text-muted,#94a3b8)]" />
                     </div>
                 </div>
 
@@ -140,7 +138,7 @@ export const SarakCoreCard = <TItem extends Record<string, unknown>>({ item, map
                         variant="secondary"
                         className="flex-1"
                     >
-                        <LucideIcons.ChevronDown className={`w-3 h-3 transition-transform ${isExpanded ? 'rotate-180' : ''}`} />
+                        <SarakIcon name="ChevronDown" size={12} className={`transition-transform ${isExpanded ? 'rotate-180' : ''}`} />
                         {isExpanded ? 'Fechar' : 'Ver Specs'}
                     </SarakButton>
                     <SarakIconButton 

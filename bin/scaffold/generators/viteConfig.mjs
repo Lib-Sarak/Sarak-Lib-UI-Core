@@ -14,6 +14,30 @@
  * de `node_modules` — deixa o particionamento automático (que já preserva os limites
  * de `import()` dinâmico) cuidar do resto.
  */
+/**
+ * Nota que vai NO ARQUIVO GERADO (Spec 41 §2.4): encerra por escrito a expectativa
+ * errada de que "bundle grande" se resolve mexendo em `manualChunks`. Vale para o
+ * consumidor, que é quem lê este arquivo quando o build parece pesado.
+ */
+const NOTA_PISO_DE_BUNDLE = `// ────────────────────────────────────────────────────────────────────────────
+// Sobre o tamanho do bundle (medido, não teórico — Spec 41):
+//
+// \`manualChunks\` NÃO reduz bytes. Ele só decide em QUAL arquivo cada byte cai.
+// Reduzir o que o browser baixa no boot depende de duas coisas, ambas na origem:
+//
+//   1) nada de acesso DINÂMICO a barril de biblioteca (\`Icons[nomeEmRuntime]\`):
+//      o bundler não sabe qual membro será usado e mantém a biblioteca inteira.
+//      Medido: um \`lucide-react\` inteiro custava 789 KB no chunk principal; com
+//      o mapa curado do \`SarakIcon\` isso caiu para 56 KB (−93%).
+//   2) coisa pesada atrás de fronteira \`React.lazy\` + \`import()\`: foi o que tirou
+//      echarts/zrender/recharts (~2,7 MB) do chunk principal para um chunk sob
+//      demanda. Resultado das duas juntas: 3203 KB → 1531 KB no boot (−52%).
+//
+// Também medido e SEM efeito: trocar \`export * from '@sarak/lib-ui-core'\` por
+// imports nomeados no seu barril não muda um byte — o Rollup já resolve o grafo
+// da mesma forma nos dois casos. Não perca tempo com isso.
+// ────────────────────────────────────────────────────────────────────────────`;
+
 const MANUAL_CHUNKS_SNIPPET = `        rollupOptions: {
             output: {
                 manualChunks(id) {
@@ -32,6 +56,9 @@ export function buildViteConfig({ answers }) {
 import react from '@vitejs/plugin-react';
 
 // Gerado por \`npx @sarak/lib-ui-core init\` (starter padrão — módulos-plugin, Spec 45).
+
+${NOTA_PISO_DE_BUNDLE}
+
 export default defineConfig({
     plugins: [react()],
     build: {

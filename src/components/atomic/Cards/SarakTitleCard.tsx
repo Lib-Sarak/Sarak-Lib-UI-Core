@@ -1,7 +1,6 @@
 import React from 'react';
 import { motion } from 'framer-motion';
-import * as LucideIcons from 'lucide-react';
-import { Box } from 'lucide-react';
+import { SarakIcon } from '../Icon/SarakIcon';
 import { useSarakUI } from '../../../core/Provider/SarakUIProvider';
 import { useCardLayoutStyles } from './hooks/useCardLayoutStyles';
 
@@ -34,10 +33,10 @@ export const SarakTitleCard = <TItem extends Record<string, unknown>>({ item, ma
 
     const getCapIcon = (cap: string) => {
         switch (cap.toLowerCase()) {
-            case 'vision': return <LucideIcons.Eye size={10} />;
-            case 'web': return <LucideIcons.Globe size={10} />;
-            case 'chat': return <LucideIcons.MessageSquare size={10} />;
-            default: return <LucideIcons.Zap size={10} />;
+            case 'vision': return <SarakIcon name="Eye" size={10} />;
+            case 'web': return <SarakIcon name="Globe" size={10} />;
+            case 'chat': return <SarakIcon name="MessageSquare" size={10} />;
+            default: return <SarakIcon name="Zap" size={10} />;
         }
     };
 
@@ -106,12 +105,13 @@ export const SarakTitleCard = <TItem extends Record<string, unknown>>({ item, ma
                             boxShadow: '0 0 var(--sarak-card-title-icon-glow-blur, 15px) var(--sarak-card-title-icon-glow, rgba(0, 242, 255, 0.2))'
                         }}
                     >
-                        {mapping?.icon && LucideIcons[mapping.icon as keyof typeof LucideIcons] ? (
-                            React.createElement(LucideIcons[mapping.icon as keyof typeof LucideIcons] as React.ElementType, { 
-                                size: 18, 
-                                className: "text-[var(--sarak-primary-color,#3b82f6)] group-hover:scale-110 transition-transform" 
-                            })
-                        ) : <Box size={18} className="text-[var(--text-muted,#94a3b8)]" />}
+                        {mapping?.icon ? (
+                            <SarakIcon
+                                name={mapping.icon}
+                                size={18}
+                                className="text-[var(--sarak-primary-color,#3b82f6)] group-hover:scale-110 transition-transform"
+                            />
+                        ) : <SarakIcon name="Box" size={18} className="text-[var(--text-muted,#94a3b8)]" />}
                     </div>
                 </div>
 

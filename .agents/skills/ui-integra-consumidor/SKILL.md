@@ -183,6 +183,21 @@ mesmo efeito. **Trade-off a ter em mente:** isso NÃO reproduz o pacote publicad
 instalação real ou testar o fluxo de atualização acima; é estritamente uma conveniência de
 desenvolvimento simultâneo. Volte para o spec git antes de qualquer teste de instalação.
 
+**Tamanho do bundle — o que resolve e o que NÃO resolve (Spec 41, medido):** quando o `dist/` do
+consumidor parecer grande, **não** vá mexer em `manualChunks`: ele não reduz um byte, só decide em
+qual arquivo cada byte cai — e uma regra ampla demais ainda FUNDE de volta os chunks lazy que a lib
+já divide. Três achados de medição, para não repetir a investigação:
+- **Acesso dinâmico a barril de ícone é o vilão clássico.** `Icons[nomeEmRuntime]` impede o
+  tree-shaking e segura a biblioteca inteira. Na lib isso valia 789 KB de `lucide-react` no chunk de
+  boot; com o mapa curado do `SarakIcon` caiu para 56 KB. **No SEU código, use `<SarakIcon name="..." />`**
+  com um nome do catálogo (`docs/component-catalog.md`, seção "Ícones") em vez de importar o barril.
+- **Peso de verdade fica atrás de `React.lazy` + `import()`.** É o que mantém echarts/pdfjs/prism/
+  reactflow (~2,7 MB só de gráfico) fora do boot: viram chunk sob demanda. Se você criar um
+  componente pesado próprio, faça o mesmo.
+- **`export * from '@sarak/lib-ui-core'` no seu barril NÃO custa nada.** Medido byte a byte contra a
+  alternativa (reexportar só o que se usa): saída idêntica, mesmos chunks. O Rollup resolve o grafo
+  igual nos dois casos. A "porta única" de um monorepo pode ser um `export *` tranquilo.
+
 ## Regras (SRP - Responsabilidade Única)
 - **NÃO escreva arquivo de infraestrutura à mão** (`vite.config.ts`, `package.json` de scripts/deps, etc.) — isso é o que o `init` (Spec 21/45) existe para eliminar. A única saída manual permitida é a Etapa 4 (montagem da ilha embarcada), porque o scaffolder pressupõe um host que ainda não existe.
 - **NÃO** ensine ou tente montar telas via manifesto/JSON nesta skill — o foco aqui é DevOps/Infraestrutura e o registro de módulos React (`registerSarakModule`/`registerLocalComponent`). O motor de manifesto foi removido (Spec 46); o modelo de consumo é 100% React.

@@ -1,7 +1,7 @@
 import React, { useState } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
-import * as LucideIcons from 'lucide-react';
-import { Box, ExternalLink, ChevronDown } from 'lucide-react';
+import { ExternalLink, ChevronDown } from 'lucide-react';
+import { SarakIcon } from '../Icon/SarakIcon';
 import { useSarakUI } from '../../../core/Provider/SarakUIProvider';
 import { SarakButton } from '../Buttons/SarakButton';
 import { useCardLayoutStyles } from './hooks/useCardLayoutStyles';
@@ -105,12 +105,7 @@ export const SarakActionCard = <TItem extends Record<string, unknown>>({ item, m
                         </h4>
                     </div>
                     <div className="bg-[var(--color-theme-card,#1e293b)] border-[var(--border-color,#334155)] shrink-0 rounded-lg" style={{ padding: 'var(--sarak-layout-gap-sm, 8px)' }}>
-                        {mapping?.icon && LucideIcons[mapping.icon as keyof typeof LucideIcons] ? (
-                            React.createElement(LucideIcons[mapping.icon as keyof typeof LucideIcons] as React.ElementType, {
-                                size: 16,
-                                className: "text-[var(--text-muted,#94a3b8)]"
-                            })
-                        ) : <Box size={16} className="text-[var(--text-muted,#94a3b8)]" />}
+                        <SarakIcon name={mapping?.icon || 'Box'} size={16} className="text-[var(--text-muted,#94a3b8)]" />
                     </div>
                 </div>
 

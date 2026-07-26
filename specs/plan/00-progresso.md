@@ -30,6 +30,45 @@ Este arquivo é um **log de acompanhamento, append-only**, de toda execução de
 
 # Entradas
 
+## [2026-07-25] Spec 41 — Piso de Bundle: barris de ícone (3 dimensões medidas; 2 hipóteses refutadas)
+
+- **Status resultante:** Spec 41 → 🟢 Concluída. **Chunk de boot do consumidor: 3203,6 KB → 1533,6 KB (−1670 KB, −52,1%).** Nada commitado.
+- **Método (reprodutível):** app mínimo em Vite importando 8 símbolos representativos do barril da lib, build de produção, atribuição de bytes por pacote npm via plugin Rollup em `generateBundle` (`renderedLength` por módulo). **Duas variantes do MESMO app** para isolar o §1.4: **A** importa direto do barril; **C** importa de um `ui-kit` local com `export * from '@sarak/lib-ui-core'` (réplica do `packages/ui-kit` do ERP). Medi o `dist/` da lib por bytes de arquivo + inspeção dos imports externos remanescentes. Linha de base tirada do zero pós-Spec 46, como o prompt exigia.
+
+### Dimensão §1.2 (barril com índice dinâmico) — CONFIRMADA, e era o previsto
+- `lucide-react` no chunk de boot: **789,2 KB → 56,5 KB (−732,7 KB, −92,8%)**. O pacote tem `sideEffects: false` e tree-shaking perfeito — o que segurava os ~1500 ícones era só o `LucideIcons[nomeEmRuntime]`.
+- **Correção do diagnóstico da spec:** dos 6 arquivos listados, **2 eram barril VESTIGIAL** (`SarakSearchCard`/`SarakCardGrid` importavam `* as LucideIcons` e nunca usavam) e o vetor central não eram os cards — era o **fallback do próprio `SarakIcon`** para nome fora do `IconMap`. Trocar só os cards não teria resolvido nada.
+
+### Dimensão §1.3 (phosphor/tabler não-external) — HIPÓTESE REFUTADA
+- Contribuição ao `dist/` da lib: **0 bytes**. O `tsup` externaliza sozinho tudo em `dependencies`/`peerDependencies`; a lista `--external` do `build:js` só ACRESCENTA. Prova: `dist/index.js` tem `from"@phosphor-icons/react"` e `from"@tabler/icons-react"` como imports externos.
+- ⚠️ **Armadilha de medição (registrar):** um harness esbuild que espelhe apenas a flag `--external` "mede" 143,7 KB de phosphor no bundle — número que **não existe** no artefato real. Sempre cruze o harness com o `dist/` de verdade; foi assim que peguei o erro.
+- Onde custam de fato: no bundle do CONSUMIDOR (são `dependencies`). Custo marginal medido **~2,6 KB por nome** (phosphor 2,35 — cada módulo embute os 6 pesos; tabler 0,28; lucide 0,17 e external). Estender o `IconMap` 55→100 custou **+179,5 KB** no boot — preço consciente da não-regressão do §2.3, contra 732,7 KB economizados.
+- **Achado estrutural registrado, NÃO executado:** as 3 famílias estão no grafo estático mas só UMA renderiza por vez (`iconFamily`) — ~265 KB de família que nunca desenha. Carregar phosphor/tabler sob demanda resolveria, mas o tema padrão (`sarak-sovereign`) é `phosphor` → troca visível de ícone no primeiro paint. É concessão de UX (`otimizacao-nivel-2`), fora do nível 1: **decisão do dono**.
+
+### Dimensão §1.4 (`export *` do consumidor) — HIPÓTESE REFUTADA, ganho ZERO
+- A e C produzem saída **byte a byte idêntica**: antes 4658,6 KB / 12 chunks nos dois; depois 4401,3 vs 4401,2 KB / 13 chunks (0,1 KB = nome do arquivo de entrada). O Rollup emite os chunks de `import()` dinâmico alcançáveis a partir do barril **com ou sem** `export *`.
+- Ou seja: o `RELATORIO-TESTE-REAL §7.5` acusou o suspeito errado. Trocar o `export *` do `ui-kit` do ERP por imports nomeados não economizaria um byte — a recomendação foi **retirada** da skill de consumo, com o número junto.
+- **A causa real, achada ao medir:** `src/index.ts` exportava o `default` de `SarakChartEngine`, **anulando o `React.lazy` que `components/engines/index.ts` já declarava**. echarts (1761,9 KB) + zrender (448,6) + recharts (453,5) + lodash (110,3) + d3-* (~100) caíam no boot de TODO consumidor, mesmo o que nunca desenha gráfico. Corrigido com fronteira lazy que preserva o contrato público (`Suspense` interno via `LazyEngineWrapper` — `<SarakChartEngine />` continua sem exigir `Suspense` do consumidor).
+
+### Números finais
+| Métrica | Antes | Depois | Δ |
+| --- | --- | --- | --- |
+| **Chunk de boot** (minificado) | 3203,6 KB | **1533,6 KB** | **−52,1%** |
+| Boot, soma por pacote (pré-min.) | 5874,6 KB | 2290,8 KB | −61,0% |
+| Total JS emitido (disco/CDN) | 4658,6 KB / 12 chunks | 4401,3 KB / 13 chunks | −257,3 KB |
+| `dist/` da lib (JS+CJS) | 2 546 236 B | 2 554 100 B | +0,3% |
+| `npm pack` | 54 arquivos | 54 arquivos | = |
+
+- **Entregas 2.1–2.4:** medição das 3 dimensões (acima); **zero** `import * as *Icons` com índice dinâmico em `src/` (grep limpo); `IconMap` **55 → 100 nomes** com `console.warn` dedup + `AlertCircle` visível em nome fora do contrato; nomes publicados no catálogo gerado (seção "Ícones", derivada por AST de `ICON_NAMES`).
+- **Arquitetura do átomo:** `IconMap.ts` (245 linhas, no limite do MAX_LINES) virou composição — `iconNames.ts` (contrato, fonte ÚNICA) + `families/{lucide,phosphor,tabler}Icons.ts` tipados `Record<IconName, ElementType>`, o que faz **o compilador cobrar a paridade 1:1:1**: nome sem tripla não compila. Acrescentar ícone é editar `iconNames.ts` e deixar o `tsc` apontar os 3 buracos.
+- **Mudança de comportamento intencional:** os cards resolviam ícone sempre em lucide, ignorando o tema; agora passam pelo `SarakIcon` e **obedecem o token `iconFamily`** (sob o padrão `sarak-sovereign`/phosphor o glifo muda). É o fim do desvio do átomo oficial apontado no §1.2 — e a razão dos 2 snapshots atualizados (diff puramente de `viewBox`/`<path>`).
+- **Regressão pega no fim, pelo consumidor real:** ao conferir o `packages/ui-kit` do ERP contra o contrato novo, faltava **`Home`** (usado no `ERP_NAV_ITEMS`) — nada na lib usa esse nome, então nenhum teste teria pego. Acrescentado às 3 famílias. Lição: o gate de cobertura de nomes tem que olhar o CONSUMIDOR, não só `src/`.
+- **§2.4 (encerrar a expectativa do `manualChunks`):** o argumento original ("não reduz bundle num renderizador de manifesto") morreu com a Spec 46 — reescrito para a versão geral e medida: `manualChunks` não reduz bytes, só decide em qual arquivo cada byte cai (e regra ampla demais DESFAZ o code-splitting existente); o que reduz o boot é (1) nada de acesso dinâmico a barril e (2) peso atrás de `React.lazy`+`import()`. As duas juntas cortaram 52% **sem tocar em `manualChunks`**. Escrito no `vite.config.ts` **gerado** pelo `init` (antes a nota só existia no JSDoc do gerador, o consumidor nunca via) e na skill `ui-integra-consumidor`.
+- **Arquivos tocados:** `src/components/atomic/Icon/{iconNames.ts (novo),IconMap.ts,SarakIcon.tsx,families/{lucideIcons,phosphorIcons,tablerIcons}.ts (novos),__tests__/{iconContract.test.tsx,iconCatalogParity.test.ts} (novos)}`, `src/components/atomic/Cards/{SarakActionCard,SarakTitleCard,SarakSearchCard}.tsx` + `__tests__/{cardsIcon.test.tsx (novo),__snapshots__/{SarakActionCard,SarakTitleCard}.test.tsx.snap}`, `src/components/atomic/Templates/{SarakCardGrid.tsx,components/SarakCoreCard.tsx}`, `src/components/engines/charts/index.tsx (novo)`, `src/index.ts`, `scripts/generate-component-catalog.mjs`, `docs/component-catalog.{md,json}`, `bin/scaffold/generators/viteConfig.mjs`, `.agents/skills/ui-integra-consumidor/SKILL.md`, `specs/plan/{41-*.md,00-indice.md}`, este arquivo.
+- **Gates:** `catalog:check` em dia · `barrel:check` 78 componentes, 0 faltas · `npm run build` verde (DTS 112,7 KB) · `package:check` 54 arquivos · `tsc --noEmit` **18 erros, os mesmos 18 do HEAD limpo** (conferido com `git stash`) · `run_audit.mjs` **no baseline exato** (2 falhas: 1 hardcode `SarakTypography:42` + 3 ghostvars) · paridade 1:1:1:1:1 416 tokens · presets 0 chave órfã · suíte completa **272 arquivos / 781 testes, 0 falhas** (era 269/763; +3 arquivos = os 3 novos desta spec).
+- **Desvios da spec original:** dois, ambos por medição. (a) A spec previa que o refactor fosse "trocar os 5 cards"; a medição mostrou que o vetor era o fallback do `SarakIcon` — os cards sozinhos não moviam a agulha (foram trocados assim mesmo, é o §2.2 e corrige o cheiro de arquitetura). (b) A mitigação do §1.4 que entregou o ganho não estava na lista da spec (`export *`/subpaths/HEAVY_LAZY): foi restaurar uma fronteira lazy que a lib **já tinha** e o barril anulava — cabe em "ampliar HEAVY_LAZY", mas o diagnóstico é outro.
+- **Pendências/próximos passos:** **Spec 42** é a próxima (2 arquivos em comum já tocados aqui — `SarakCoreCard.tsx` ganhou `SarakIcon` no lugar do barril e `SarakCardGrid.tsx` perdeu o import vestigial; a 42 deve **preservar** isso). Depois a 50. Aberto para decisão do dono: carregar phosphor/tabler sob demanda (~265 KB) — é nível 2, tem flash de ícone no tema padrão.
+
 ## [2026-07-25] Spec 46 REVISADA (independente) — APROVADA na substância; ⚠️ números da suíte no relatório estavam ERRADOS
 
 - **Veredito:** remoção do #2 **correta e segura** — aprovo na substância. Verifiquei rodando, não por relatório.

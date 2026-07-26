@@ -10,7 +10,6 @@ import {
     Filter,
     XCircle
 } from 'lucide-react';
-import * as LucideIcons from 'lucide-react';
 import { useCardGridState } from './hooks/useCardGridState';
 import { useSarakUI } from '../../../core/Provider/SarakUIProvider';
 import { SarakTitleCard } from '../Cards/SarakTitleCard';

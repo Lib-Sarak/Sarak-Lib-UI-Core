@@ -132,6 +132,30 @@ const collectSpacingTokens = () => {
     return tokens;
 };
 
+/** Nomes de ícone do contrato público (Spec 41 §2.3) — fonte ÚNICA: `ICON_NAMES`. */
+const collectIconNames = () => {
+    const source = parse('components/atomic/Icon/iconNames.ts');
+    const names = [];
+    const visit = (node) => {
+        if (
+            ts.isVariableDeclaration(node) &&
+            node.name.getText() === 'ICON_NAMES' &&
+            node.initializer
+        ) {
+            // `[...] as const` — o array fica dentro da asserção de tipo.
+            const array = ts.isAsExpression(node.initializer) ? node.initializer.expression : node.initializer;
+            if (ts.isArrayLiteralExpression(array)) {
+                for (const element of array.elements) {
+                    if (ts.isStringLiteral(element)) names.push(element.text);
+                }
+            }
+        }
+        ts.forEachChild(node, visit);
+    };
+    visit(source);
+    return names;
+};
+
 /** CSS Variables públicas reais (namespace `--sarak-*`) emitidas pelo DESIGN_MANIFEST (Spec 16). */
 const collectPublicCssVars = () => {
     const source = parse('core/Provider/manifest.ts');
@@ -188,6 +212,7 @@ const buildCatalog = () => {
             spacing: collectSpacingTokens(),
             variants: collectVariantUnions(components),
             cssVars: collectPublicCssVars(),
+            iconNames: collectIconNames(),
         },
     };
 };
@@ -227,6 +252,17 @@ const renderTokensSection = (tokens) => {
         'Vars REAIS emitidas pelo Design Engine. Use SEMPRE com fallback — `var(--sarak-x, valor)`. Nomes fora desta lista NÃO existem e não pintam nada.',
         '',
         tokens.cssVars.map((cssVar) => `\`${cssVar}\``).join(' · '),
+        '',
+        `### Ícones (${tokens.iconNames.length} nomes válidos)`,
+        '',
+        'Valores aceitos por `<SarakIcon name>`, por `navItems[].icon` (`SarakAppChrome`/`SarakShellNav`) e por ' +
+            '`mapping.icon` nos cards. O nome é o MESMO nas três famílias (`iconFamily`: `lucide` · `phosphor` · `tabler`) — ' +
+            'trocar a família repinta todos os ícones sem mexer em nome nenhum.',
+        '',
+        'Nome fora desta lista **não renderiza o ícone pedido**: o `SarakIcon` avisa no console ' +
+            '(`console.warn`, uma vez por nome) e desenha `AlertCircle` no lugar — degradação visível, nunca tela quebrada.',
+        '',
+        tokens.iconNames.map((name) => `\`${name}\``).join(' · '),
         '',
     );
     return lines;

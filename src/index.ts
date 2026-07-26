@@ -104,7 +104,9 @@ export * from './components/atomic/UX';
 export * from './components/atomic/DataDisplay';
 // Renderizadores de mídia (Spec 15): Markdown (lazy) + Lightbox + PDFViewer (lazy, Onda 10).
 export * from './components/atomic/Media';
-export { default as SarakChartEngine } from './components/engines/charts/SarakChartEngine';
+// Motor de gráficos atrás de fronteira lazy (Spec 41 §2.4): echarts/zrender/recharts
+// ficam fora do grafo estático — quem não desenha gráfico não paga por eles.
+export { SarakChartEngine, type SarakChartEngineProps } from './components/engines/charts';
 
 // Discovery and Dynamic Rendering (Universal Bridge)
 export { default as DynamicRenderer } from './core/Discovery/DynamicRenderer';
