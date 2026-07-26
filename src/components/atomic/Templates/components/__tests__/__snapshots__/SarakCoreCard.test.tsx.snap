@@ -1,0 +1,255 @@
+// Vitest Snapshot v1, https://vitest.dev/guide/snapshot.html
+
+exports[`SarakCoreCard (Spec 42 — card classic genérico) > matches snapshot com dados neutros (sem domínio LLM) 1`] = `
+<DocumentFragment>
+  <div
+    class="fixed inset-0 pointer-events-none z-[9999] opacity-[var(--sarak-noise-opacity,0)] transition-opacity duration-1000"
+    style="mix-blend-mode: overlay; background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 200 200' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.65' numOctaves='3' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)'/%3E%3C/svg%3E"); background-size: 200px 200px; background-repeat: repeat;"
+  />
+  <style
+    id="sarak-sovereign-bridge"
+  >
+    
+            /* Sarak Sovereign Bridge - Dark Mode Hue Hijack */
+            body.dark .bg-zinc-950,
+            body.dark .bg-black\\/40,
+            body.dark .bg-zinc-950\\/40 {
+                background-color: var(--theme-card) !important;
+            }
+        
+  </style>
+  <div
+    class="flex w-full sarak-card bg-[var(--color-theme-card,#1e293b)] border-[var(--border-color,#334155)] group transition-all h-fit relative overflow-hidden"
+    data-border-beam="0"
+    data-geometric="0"
+    data-spotlight="1"
+    data-sx-card-texture-type="none"
+    style="flex-direction: column; justify-content: flex-start; align-items: stretch; gap: 0px; transition-duration: var(--duration-normal, 0.3s); padding: var(--sarak-card-padding-md); opacity: 0; transform: translateY(20px);"
+  >
+    <div
+      class="absolute inset-0 z-0 spotlight-effect pointer-events-none opacity-0 group-hover:opacity-100 transition-opacity duration-500"
+    />
+    <div
+      class="border-beam-effect"
+    />
+    <div
+      class="p-theme relative z-10"
+      style="padding: var(--sarak-layout-gap-lg,24px);"
+    >
+      <div
+        class="flex justify-between items-start"
+        style="margin-bottom: calc(var(--sarak-layout-gap-md,16px) / 1.5);"
+      >
+        <div
+          class="flex w-full"
+          style="flex-direction: column; justify-content: flex-start; align-items: stretch; gap: 0px;"
+        >
+          <span
+            class="text-2xs font-black text-[var(--sarak-primary-color,#3b82f6)] uppercase"
+            style="margin-bottom: calc(var(--sarak-layout-gap-md,16px)*0.25); letter-spacing: var(--sarak-tracking-tight, 0.2em);"
+          >
+            Prefeitura de Salvador
+          </span>
+          <h4
+            class="text-xl font-black text-[var(--color-theme-title,#ffffff)] tracking-tight group-hover:text-[var(--sarak-primary-color,#3b82f6)] transition-colors"
+          >
+            Contrato #4471
+          </h4>
+        </div>
+        <div
+          class="bg-[var(--color-theme-card,#1e293b)] border-[var(--border-color,#334155)]"
+          style="padding: calc(var(--sarak-layout-gap-md,16px) / 2); border-radius: var(--sarak-card-radius,12px);"
+        >
+          <svg
+            class="text-[var(--text-muted,#94a3b8)]"
+            fill="currentColor"
+            height="20"
+            viewBox="0 0 256 256"
+            width="20"
+            xmlns="http://www.w3.org/2000/svg"
+          >
+            <path
+              d="M223.68,66.15,135.68,18a15.88,15.88,0,0,0-15.36,0l-88,48.17a16,16,0,0,0-8.32,14v95.64a16,16,0,0,0,8.32,14l88,48.17a15.88,15.88,0,0,0,15.36,0l88-48.17a16,16,0,0,0,8.32-14V80.18A16,16,0,0,0,223.68,66.15ZM128,120,47.65,76,128,32l80.35,44Zm8,99.64V133.83l80-43.78v85.76Z"
+            />
+          </svg>
+        </div>
+      </div>
+      <div
+        class="flex w-full"
+        style="flex-direction: column; justify-content: flex-start; align-items: stretch; gap: var(--sarak-layout-gap-md,16px); margin-bottom: var(--sarak-layout-gap-lg,24px);"
+      >
+        <div
+          class="flex flex-wrap"
+          style="gap: var(--sarak-layout-gap-sm,8px);"
+        >
+          <div
+            class="flex items-center bg-[var(--sarak-primary-color-bg,rgba(59,130,246,0.1))] text-[var(--sarak-primary-color,#3b82f6)] border border-[var(--border-color,#334155)] text-2xs font-black uppercase"
+            style="gap: calc(var(--sarak-layout-gap-md,16px)*0.25); padding: calc(var(--sarak-layout-gap-md,16px) / 4) calc(var(--sarak-layout-gap-md,16px) / 1.5); border-radius: var(--sarak-card-radius,12px);"
+          >
+            <svg
+              class=""
+              fill="currentColor"
+              height="10"
+              viewBox="0 0 256 256"
+              width="10"
+              xmlns="http://www.w3.org/2000/svg"
+            >
+              <path
+                d="M213.85,125.46l-112,120a8,8,0,0,1-13.69-7l14.66-73.33L45.19,143.49a8,8,0,0,1-3-13l112-120a8,8,0,0,1,13.69,7L153.18,90.9l57.63,21.61a8,8,0,0,1,3,12.95Z"
+              />
+            </svg>
+             digitalizado
+          </div>
+          <div
+            class="flex items-center bg-[var(--sarak-primary-color-bg,rgba(59,130,246,0.1))] text-[var(--sarak-primary-color,#3b82f6)] border border-[var(--border-color,#334155)] text-2xs font-black uppercase"
+            style="gap: calc(var(--sarak-layout-gap-md,16px)*0.25); padding: calc(var(--sarak-layout-gap-md,16px) / 4) calc(var(--sarak-layout-gap-md,16px) / 1.5); border-radius: var(--sarak-card-radius,12px);"
+          >
+            <svg
+              class=""
+              fill="currentColor"
+              height="10"
+              viewBox="0 0 256 256"
+              width="10"
+              xmlns="http://www.w3.org/2000/svg"
+            >
+              <path
+                d="M213.85,125.46l-112,120a8,8,0,0,1-13.69-7l14.66-73.33L45.19,143.49a8,8,0,0,1-3-13l112-120a8,8,0,0,1,13.69,7L153.18,90.9l57.63,21.61a8,8,0,0,1,3,12.95Z"
+              />
+            </svg>
+             assinado
+          </div>
+        </div>
+        <div
+          class="flex flex-wrap"
+          style="gap: var(--sarak-layout-gap-sm,8px);"
+        >
+          <div
+            class="flex items-center bg-[var(--sarak-primary-color-bg,rgba(59,130,246,0.1))] text-[var(--sarak-primary-color,#3b82f6)] border border-[var(--border-color,#334155)] text-2xs font-black uppercase"
+            style="gap: calc(var(--sarak-layout-gap-md,16px)*0.25); padding: calc(var(--sarak-layout-gap-md,16px) / 4) calc(var(--sarak-layout-gap-md,16px) / 1.5); border-radius: var(--sarak-card-radius,12px);"
+          >
+            <svg
+              class=""
+              fill="currentColor"
+              height="10"
+              viewBox="0 0 256 256"
+              width="10"
+              xmlns="http://www.w3.org/2000/svg"
+            >
+              <path
+                d="M213.85,125.46l-112,120a8,8,0,0,1-13.69-7l14.66-73.33L45.19,143.49a8,8,0,0,1-3-13l112-120a8,8,0,0,1,13.69,7L153.18,90.9l57.63,21.61a8,8,0,0,1,3,12.95Z"
+              />
+            </svg>
+             relatório
+          </div>
+        </div>
+      </div>
+      <div
+        class="grid w-full border-t border-[var(--border-color,#334155)]"
+        style="gap: var(--sarak-layout-gap-md,16px); grid-template-columns: repeat(2, minmax(0, 1fr)); margin-bottom: var(--sarak-layout-gap-md,16px); padding-top: calc(var(--sarak-layout-gap-md,16px) * 1.5);"
+      >
+        <div
+          class="flex w-full"
+          style="flex-direction: column; justify-content: flex-start; align-items: stretch; gap: 0px;"
+        >
+          <span
+            class="text-3xs font-black text-[var(--text-muted,#94a3b8)] opacity-50 uppercase tracking-widest"
+            style="margin-bottom: calc(var(--sarak-layout-gap-md,16px)*0.25);"
+          >
+            Valor mensal
+          </span>
+          <span
+            class="text-sm font-mono text-[var(--text-muted,#94a3b8)] font-bold"
+          >
+            R$ 18.500,00
+          </span>
+        </div>
+        <div
+          class="flex w-full"
+          style="flex-direction: column; justify-content: flex-start; align-items: stretch; gap: 0px;"
+        >
+          <span
+            class="text-3xs font-black text-[var(--text-muted,#94a3b8)] opacity-50 uppercase tracking-widest"
+            style="margin-bottom: calc(var(--sarak-layout-gap-md,16px)*0.25);"
+          >
+            Vigência
+          </span>
+          <span
+            class="text-sm font-mono text-[var(--text-muted,#94a3b8)] font-bold"
+          >
+            24 meses
+          </span>
+        </div>
+        <div
+          class="flex w-full"
+          style="flex-direction: column; justify-content: flex-start; align-items: stretch; gap: 0px; grid-column: span 2 / span 2;"
+        >
+          <span
+            class="text-3xs font-black text-[var(--text-muted,#94a3b8)] opacity-50 uppercase tracking-widest"
+            style="margin-bottom: calc(var(--sarak-layout-gap-md,16px)*0.25);"
+          >
+            Responsável
+          </span>
+          <span
+            class="text-sm font-mono text-[var(--text-muted,#94a3b8)] font-bold"
+          >
+            Diretoria Jurídica
+          </span>
+        </div>
+      </div>
+      <div
+        class="flex"
+        style="gap: calc(var(--sarak-layout-gap-md,16px) / 2.5);"
+      >
+        <button
+          class="flex justify-center items-center gap-2 w-max min-w-fit flex-row font-black uppercase tracking-widest transition-all focus:outline-none rounded-btn py-4 px-6 text-sm bg-[var(--color-theme-card,#1e293b)] text-[var(--text-muted,#94a3b8)] hover:bg-[var(--sarak-primary-color,#3b82f6)] hover:text-[var(--text-muted,#94a3b8)] border border-[var(--sarak-primary-color,#3b82f6)]/20 active:scale-[0.98]   flex-1"
+        >
+          <span>
+            <svg
+              class="transition-transform "
+              fill="currentColor"
+              height="12"
+              viewBox="0 0 256 256"
+              width="12"
+              xmlns="http://www.w3.org/2000/svg"
+            >
+              <path
+                d="M213.66,101.66l-80,80a8,8,0,0,1-11.32,0l-80-80A8,8,0,0,1,48,88H208a8,8,0,0,1,5.66,13.66Z"
+              />
+            </svg>
+            Ver mais
+          </span>
+        </button>
+        <button
+          class="inline-flex items-center justify-center transition-all focus:outline-none rounded-btn flex-shrink-0 w-10 h-10 text-base bg-[var(--sarak-primary-color,#3b82f6)] text-[var(--text-muted,#94a3b8)] hover:brightness-110 active:scale-[0.95] shadow-xl shadow-[var(--sarak-primary-color,#3b82f6)]/20  shadow-lg"
+        >
+          <svg
+            class="lucide lucide-external-link"
+            fill="none"
+            height="18"
+            stroke="currentColor"
+            stroke-linecap="round"
+            stroke-linejoin="round"
+            stroke-width="2"
+            viewBox="0 0 24 24"
+            width="18"
+            xmlns="http://www.w3.org/2000/svg"
+          >
+            <path
+              d="M18 13v6a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h6"
+            />
+            <polyline
+              points="15 3 21 3 21 9"
+            />
+            <line
+              x1="10"
+              x2="21"
+              y1="14"
+              y2="3"
+            />
+          </svg>
+        </button>
+      </div>
+    </div>
+  </div>
+</DocumentFragment>
+`;

@@ -297,7 +297,7 @@ Props (`SarakCardGridProps` — `src/components/atomic/Templates/SarakCardGrid.t
 | --- | --- | --- | --- |
 | `endpoint` | `string` | sim |  |
 | `label` | `string` | não |  |
-| `mapping` | `{ title: string; subtitle?: string; description?: string; badge?: string; tags?: string; icon?: string; color?: string; price_in?: string; // v6.3 price_out?: string; // v6.3 context?: string; // v6.3 }` | não |  |
+| `mapping` | `{ title: string; subtitle?: string; description?: string; badge?: string; tags?: string; icon?: string; color?: string; details?: string; input_caps?: string; output_caps?: string; input_caps_label?: string; output_caps_label?: string; description_label?: string; expand_label?: string; collapse_label?: string; }` | não | Mapa de dados do card. Cada valor é o CAMINHO de um campo do item, exceto os marcados como *literal* (texto/nome fixo escrito pelo próprio autor). Genérico por contrato (Spec 42): a Sarak não conhece domínio nenhum — nenhuma aritmética, unidade ou moeda é calculada aqui. O consumidor entrega valores prontos em `details`. |
 | `filters` | `FilterConfig[]` | não |  |
 | `role` | `'primary' \| 'secondary' \| 'neutral' \| 'accent'` | não |  |
 | `density` | `'compact' \| 'standard' \| 'spacious'` | não |  |

@@ -59,7 +59,16 @@ import { SarakCardGrid, SarakTypography } from '@sarak/lib-ui-core';
 export const ClientesModule = () => (
     <div style={{ display: 'flex', flexDirection: 'column', gap: 'var(--sarak-layout-gap-md, 1rem)' }}>
         <SarakTypography variant="h1">Clientes</SarakTypography>
-        <SarakCardGrid items={meusClientes} mapping={{ title: 'nome', subtitle: 'email' }} />
+        <SarakCardGrid
+            endpoint="/api/v1/clientes"
+            mapping={{
+                title: 'nome',
+                subtitle: 'email',
+                // `details` aponta para um array de pares JÁ FORMATADOS pelo consumidor
+                // — a lib não faz aritmética nem formatação de domínio (Spec 42).
+                details: 'resumo',
+            }}
+        />
     </div>
 );
 ```

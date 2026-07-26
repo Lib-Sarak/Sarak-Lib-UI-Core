@@ -207,6 +207,7 @@ já divide. Três achados de medição, para não repetir a investigação:
 **Artefatos do pacote (`node_modules/@sarak/lib-ui-core/`):**
 - `bin/sarak-ui.mjs` (`npx sarak-ui init`) — o scaffolder oficial (Spec 21/45); gera o starter padrão inteiro, Node puro, idempotente.
 - `docs/component-catalog.md` / `.json` — catálogo GERADO de componentes/props/CSS Variables públicas (fonte da verdade dos tokens e do que existe).
+- `docs/migracoes.md` — breaking changes do contrato público, com "antes/depois". Consulte ao ATUALIZAR a lib num consumidor que já existe (`npm run sarak:update`), antes de investigar quebra de tipo.
 
 **Skills (ordem do fluxo):**
 - `ui-contexto-repositorio` — ambientação (se estiver trabalhando NA lib).

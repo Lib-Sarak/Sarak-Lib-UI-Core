@@ -2,7 +2,7 @@
 tipo: "spec"
 titulo: "Generalizar SarakCoreCard / SarakCardGrid (remover domínio LLM da variante default)"
 dominio: "Componentes UI Base / Templates"
-status: "🔴 Planejada (follow-up da Spec 30 — decisão HITL de 2026-07-21, não bloqueia nenhum Selo)"
+status: "🟢 Concluída (2026-07-25) — painel dirigido por `mapping.details`; `price_in`/`price_out`/`context` fora do tipo; `SarakCardGridProps` agora é público"
 prioridade: "Média"
 tags: ["spec", "contrato-de-componente", "follow-up", "cardgrid", "paridade"]
 relacionados: ["30-fechamento-achados-pos-selo", "03-padrao-e-taxonomia-biblioteca-atomica"]
@@ -46,17 +46,25 @@ Decisão do mantenedor (2026-07-21, registrada em `00-progresso.md`): a Spec 30 
 - Atualizar a linha temporária inserida pela Spec 30 no catálogo/skill (a que aponta "SarakCardGrid/SarakCoreCard pendentes de generalização") — remover a nota de pendência quando esta spec fechar.
 
 # 3. Critérios de Aceite
-- [ ] `SarakCoreCard.test.tsx` (caracterização do comportamento atual) criado e verde ANTES do refactor.
-- [ ] `SarakCoreCard` (variante `classic`) sem nenhum texto/aritmética de domínio LLM fixo; painel de detalhes dirigido por `mapping.details`.
-- [ ] `SarakCardGridProps.mapping` sem `price_in`/`price_out`/`context` no tipo; catálogo regenerado.
-- [ ] Nota de migração escrita (antes/depois) referenciando este breaking change.
-- [ ] Nota temporária da Spec 30 sobre esta pendência removida do catálogo/skill.
-- [ ] Gates verdes: `RegistryParity`, `catalog:check`, `npm run build`; `run_audit.mjs` sem regressão (baseline conhecido).
+- [x] `SarakCoreCard.test.tsx` (caracterização do comportamento atual) criado e verde ANTES do refactor — 7 casos + snapshot do card LLM, rodados verdes antes de qualquer edição no componente (snapshot arquivado fora do repo como evidência do "antes").
+- [x] `SarakCoreCard` (variante `classic`) sem nenhum texto/aritmética de domínio LLM fixo; painel de detalhes dirigido por `mapping.details`.
+- [x] `SarakCardGridProps.mapping` sem `price_in`/`price_out`/`context` no tipo; catálogo regenerado. **Além do previsto:** o tipo passou a ser EXPORTADO publicamente (estava na allowlist `BARREL_PROPS_EXCLUSIONS` justamente esperando esta spec).
+- [x] Nota de migração escrita (antes/depois) — `docs/migracoes.md` (novo; `docs/` é publicado no pacote).
+- [x] Nota temporária de pendência removida. **Correção factual:** a nota da Spec 30 vivia na skill `ui-integra-escrever-manifesto`, REMOVIDA junto com o motor de manifesto (Spec 46) — já não existia. A pendência viva era a entrada `SarakCardGrid` em `scripts/barrelExclusions.mjs` (deixada pela Spec 40.1), essa sim removida aqui.
+- [x] Gates verdes: `catalog:check`, `barrel:check` (78 componentes, 0 faltas), `npm run build` (DTS 110,26 KB), `package:check` (55 arquivos — +1 = `docs/migracoes.md`); `run_audit.mjs` **no baseline exato** (2 falhas: 1 hardcode `SarakTypography:42` + 3 ghostvars). *(`RegistryParity` não existe mais — saiu com o motor de manifesto na Spec 46.)*
 
 # 4. Plano de Testes (Quality Gate)
 ## Unitários
-- [ ] `SarakCoreCard.test.tsx`: caracterização (antes) + comportamento novo (depois) — `mapping.details` renderiza pares genéricos, nenhum campo LLM fixo aparece.
-- [ ] `SarakCardGrid.test.tsx`: ajustar fixtures que hoje usam `price_in`/`price_out`/`context` para o novo formato `details`, mantendo cobertura da variante `classic`.
+- [x] `SarakCoreCard.test.tsx`: caracterização (antes) + comportamento novo (depois) — `mapping.details` renderiza pares genéricos, nenhum campo LLM fixo aparece (10 casos, incl. asserção negativa varrendo as 9 strings de domínio).
+- [x] `SarakCardGrid.test.tsx`: nenhuma fixture usava `price_in`/`price_out`/`context` (o arquivo era só um smoke de import) — nada a ajustar; a cobertura da variante `classic` vive no `SarakCoreCard.test.tsx`.
 ## Build / Contrato
-- [ ] `npm run catalog:check` reflete o tipo novo de `SarakCardGridProps.mapping`.
-- [ ] `npm run build` verde (breaking change de tipo não quebra a compilação da própria lib, só o contrato para consumidores externos — documentado na nota de migração).
+- [x] `npm run catalog:check` reflete o tipo novo de `SarakCardGridProps.mapping`.
+- [x] `npm run build` verde; `dist/index.d.ts` sem nenhuma ocorrência de `price_in`/`price_out` e com `type SarakCardGridProps` exportado.
+
+# 5. Achados da execução (fora do previsto na spec)
+
+1. **Zero consumidor real do `SarakCardGrid`.** Grep no ERP Earendel (único consumidor real, 4 web apps): nenhuma ocorrência de `SarakCardGrid`/`SarakCoreCard`/`price_in`. O breaking change de tipo não tem vítima conhecida — mesmo desfecho da Spec 30 com o `SarakActionCard`.
+2. **O tipo nunca chegou a ser público.** A spec o descrevia como "já publicado"; ele estava documentado no catálogo, mas EXCLUÍDO do barril (`BARREL_PROPS_EXCLUSIONS`) pela Spec 40.1 exatamente para não congelar o domínio LLM. A quebra real é do *catálogo*, não da tipagem importada.
+3. **Domínio além do painel (auditado, conforme §2.2).** Também eram texto fixo de domínio, e viraram dado: `"Ver Specs"`/`"Fechar"` (→ `expand_label`/`collapse_label`, defaults neutros), `"Descrição Técnica"` (→ `description_label`), `"Input/Output Capacities"` (→ `input_caps_label`/`output_caps_label`) e o `getCapIcon`, que trocava o ícone do chip por palavra-chave de LLM (`vision`/`web`/`chat`) — agora ícone neutro único. O bloco `Tokenizer` foi removido (cabe em `details`).
+4. **O expansor virou condicional.** Sem `mapping.description` não há painel para abrir; o botão deixou de ser renderizado em vez de abrir uma gaveta vazia.
+5. **Bug do gerador de catálogo, corrigido de raiz.** `generate-component-catalog.mjs` copiava o texto do tipo CRU: os `// v6.3` (e qualquer JSDoc de campo inline) iam parar dentro da célula da tabela. Adicionado `typeTextOf()` (remove comentários antes de colapsar o espaço em branco) — sem isso, documentar os campos novos por JSDoc deixaria a célula ilegível. Único efeito no catálogo inteiro: a própria linha do `SarakCardGrid`.

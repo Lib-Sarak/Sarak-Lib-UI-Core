@@ -29,20 +29,42 @@ interface FilterConfig {
     dynamic?: boolean;
 }
 
-interface SarakCardGridProps {
+export interface SarakCardGridProps {
     endpoint: string;
     label?: string;
+    /**
+     * Mapa de dados do card. Cada valor é o CAMINHO de um campo do item, exceto os
+     * marcados como *literal* (texto/nome fixo escrito pelo próprio autor).
+     *
+     * Genérico por contrato (Spec 42): a Sarak não conhece domínio nenhum — nenhuma
+     * aritmética, unidade ou moeda é calculada aqui. O consumidor entrega valores
+     * prontos em `details`.
+     */
     mapping?: {
         title: string;
         subtitle?: string;
         description?: string;
         badge?: string;
         tags?: string;
+        /** *literal*: nome do ícone (contrato de nomes em `docs/component-catalog.md`). */
         icon?: string;
         color?: string;
-        price_in?: string; // v6.3
-        price_out?: string; // v6.3
-        context?: string; // v6.3
+        /** Caminho para `Array<{ label, value }>` JÁ FORMATADO pelo consumidor — painel de detalhes. */
+        details?: string;
+        /** Caminho para `string[]` — chips da fileira primária. */
+        input_caps?: string;
+        /** Caminho para `string[]` — chips da fileira secundária. */
+        output_caps?: string;
+        /** *literal*: cabeçalho da fileira `input_caps` (ausente = fileira sem cabeçalho). */
+        input_caps_label?: string;
+        /** *literal*: cabeçalho da fileira `output_caps` (ausente = fileira sem cabeçalho). */
+        output_caps_label?: string;
+        /** *literal*: cabeçalho do bloco de descrição no painel expansível. */
+        description_label?: string;
+        /** *literal*: texto do botão que abre o painel expansível (default `"Ver mais"`). */
+        expand_label?: string;
+        /** *literal*: texto do mesmo botão com o painel aberto (default `"Fechar"`). */
+        collapse_label?: string;
     };
     filters?: FilterConfig[]; // v6.4
     role?: 'primary' | 'secondary' | 'neutral' | 'accent';

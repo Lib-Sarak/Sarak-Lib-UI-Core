@@ -24,9 +24,7 @@ export const BARREL_VALUE_EXCLUSIONS = Object.freeze({
  * futura). O componente-valor segue exportado; só o tipo nomeado fica de fora.
  */
 export const BARREL_PROPS_EXCLUSIONS = Object.freeze({
-    // `SarakCardGridProps` carrega mapping de domínio LLM (price_in/price_out/context) a
-    // ser generalizado na Spec 42; congelar o tipo público agora tornaria o fix da 42 um
-    // breaking change. O componente `SarakCardGrid` segue exportado; só o tipo espera a 42.
-    SarakCardGrid: 'Props com domínio leaky (mapping LLM) — generalização é a Spec 42; não congelar o tipo antes.',
+    // `SarakCardGridProps` saiu daqui na Spec 42: o mapping foi generalizado (fim de
+    // `price_in`/`price_out`/`context`) e o tipo passou a ser exportado publicamente.
     SarakAppChromeMobile: 'Mesmo motivo do valor (ver BARREL_VALUE_EXCLUSIONS) — colapso interno, não peça standalone.',
 });

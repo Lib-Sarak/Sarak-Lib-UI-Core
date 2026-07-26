@@ -58,6 +58,20 @@ const jsDocOf = (member) => {
         .trim();
 };
 
+/**
+ * Texto do tipo SEM comentários. `getText()` devolve o trecho fonte cru — os JSDoc dos
+ * campos de um objeto inline (e os `// nota` de fim de linha) iam parar dentro da célula
+ * do catálogo, deixando o tipo ilegível. Os comentários seguem no código (IntelliSense).
+ */
+const typeTextOf = (typeNode, sourceFile) =>
+    typeNode
+        .getText(sourceFile)
+        .replace(/\/\*[\s\S]*?\*\//g, '')
+        .replace(/\/\/[^\n]*/g, '')
+        .replace(/\s+/g, ' ')
+        .replace(/\s+;/g, ';')
+        .trim();
+
 /** Extrai membros de uma interface/type-literal de props. */
 const membersOf = (declaration, sourceFile) => {
     const members = ts.isInterfaceDeclaration(declaration)
@@ -70,7 +84,7 @@ const membersOf = (declaration, sourceFile) => {
         if (!ts.isPropertySignature(member) || !member.name) continue;
         props.push({
             name: member.name.getText(sourceFile),
-            type: member.type ? member.type.getText(sourceFile).replace(/\s+/g, ' ') : 'unknown',
+            type: member.type ? typeTextOf(member.type, sourceFile) : 'unknown',
             optional: Boolean(member.questionToken),
             doc: jsDocOf(member),
         });
