@@ -176,8 +176,10 @@ describe('Modo App (default) — comportamento inalterado', () => {
 
     it('continua dono da página: título, vars no `:root` e classe de modo no `body`', () => {
         renderApp();
-        // O valor exato é o `systemName` RESOLVIDO pela engine (config + defaults +
-        // branding); o que este gate afirma é que o Modo App continua dono do título.
+        // O título vem do `systemName` que o DESIGN aqui fornece (`DESIGN.systemName`).
+        // Pós-Spec 47 nenhum default da lib contribui: sem valor do consumidor o
+        // título seria o do host. O que este gate afirma é que, QUANDO o consumidor
+        // nomeia a página, o Modo App a escreve (ao contrário do Embarcado).
         expect(document.title).not.toBe(HOST_TITLE);
         expect(document.documentElement.getAttribute('style') ?? '').toContain('--');
         expect(document.body.classList.contains('light')).toBe(true);

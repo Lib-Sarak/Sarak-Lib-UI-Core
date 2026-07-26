@@ -63,6 +63,8 @@ Não se enumera o infinito — dá-se um **procedimento + fallback + loop**:
   - **Extrair TODAS as funcionalidades** → o **catálogo vivo** (`sarak-ui/catalog.json`) lista tudo: átomos, layouts, navegação, inputs, data-display, media, engines, Design Engine central, primitivas multidispositivo, temas-JSON. Sempre o catálogo, nunca memória.
   - **Tema** → temas como JSON, Design Engine central, temas completos, fonte automática.
   - **Multidispositivo** → o **contrato de responsividade** (40.3): o que adapta sozinho, onde refinar com `ResponsiveValue`.
+  - **Extensibilidade de layout — adicionar imagem/animação/qualquer conteúdo** → DOIS níveis (Spec 48): (a) fundo/atmosfera **global por tema** (Design Engine, sem código); (b) conteúdo **por região** via **slots do `SarakAppChrome`** (`logo`/`topbarStart|End`/`sidebarHeader|Footer`/`banner`/`footer`/`decoration`) — o consumidor põe imagem/componente animado/qualquer React; refluem no mobile. As props dos slots estão no catálogo vivo.
+  - **Identidade da página** (nome da aba, favicon, marca) → é **do importador** (Spec 47): no Modo App a lib preserva o `<title>` do host por padrão; para controlar, passe `options.branding.initial.tabName`/`logoBase64` ou `systemName`. A lib nunca impõe a própria marca.
   - **Estrutura/isolamento** → Provider por app, cromo por app, sem import lateral, código compartilhado num `ui-kit`.
 **Apêndice gerado** (§4): a lista viva de componentes/props/tokens/contrato — regenerada a cada build.
 

@@ -4,10 +4,20 @@ import { SarakUIOptions, SarakBrandingState } from '../types';
 /** @deprecated use `SarakBrandingState` (types.ts) — mantido para compatibilidade de import. */
 export type BrandingState = SarakBrandingState;
 
+/**
+ * Defaults NEUTROS (Spec 47 — soberania de identidade do host).
+ *
+ * A identidade da página (nome da aba, marca, ícone) é SEMPRE do importador. Por
+ * isso `tabName`/`companyName`/`logoBase64` nascem sem valor: os guards a jusante
+ * (`if (branding?.tabName)`, `if (branding?.logoBase64)`) então NÃO escrevem nada e
+ * o `<title>`/favicon do `index.html` do host sobrevivem à montagem do Provider.
+ * Antes daqui saía `'Sarak OS'`, que vazava a marca da LIB para dentro do produto
+ * do consumidor — na aba e no rótulo do cromo (via `useSarakUI().systemName`).
+ *
+ * `loginName` é rótulo de UI, não identidade: mantém default genérico (não é marca).
+ */
 const DEFAULT_BRANDING: SarakBrandingState = {
-    companyName: 'Sarak OS',
     loginName: 'Acesso ao Sistema',
-    tabName: 'Sarak OS',
     logoBase64: null
 };
 

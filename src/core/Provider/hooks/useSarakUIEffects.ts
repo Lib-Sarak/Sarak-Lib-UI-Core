@@ -9,14 +9,26 @@ import type { SarakUIMode } from '../types';
  * host, e a ilha herda as fontes da página. As fontes voltam com opt-in explícito
  * (`options.embedded.injectGlobalFonts`), porque `@import` de webfont é
  * necessariamente global (não existe `@font-face` confinado a um seletor).
+ *
+ * **FONTE ÚNICA do `document.title` (Spec 47).** Até aqui dois efeitos independentes
+ * escreviam o título (este, via `branding.tabName`, e o `DesignInjector`, via
+ * `systemName`) e podiam brigar. Agora este hook é o único caminho, com precedência
+ * explícita, e a escrita é **opt-in**: sem valor do consumidor, a lib não toca no
+ * `<title>` que o host definiu no `index.html`.
  */
 export const useSarakUIEffects = (
     branding: BrandingState | undefined,
     mode: SarakUIMode = 'app',
     injectGlobalFonts: boolean = false,
+    systemName?: string,
 ) => {
     const isEmbedded = mode === 'embedded';
     const shouldInjectFonts = !isEmbedded || injectGlobalFonts;
+
+    // Precedência: `branding.tabName` (porta explícita "nome da aba") vence
+    // `systemName` (nome do sistema, vindo do design) — do mais específico para o
+    // mais genérico. Nenhum dos dois → `undefined` → a lib não escreve o título.
+    const resolvedTitle = branding?.tabName || systemName;
 
     // Injeção de Fontes Avançadas (Core Optimization)
     useEffect(() => {
@@ -37,12 +49,12 @@ export const useSarakUIEffects = (
         document.head.prepend(style);
     }, [shouldInjectFonts]);
 
-    // Atualização Dinâmica do Título e Ícone da Aba (Branding)
+    // Identidade da aba (título + ícone) — só toca no que o consumidor FORNECEU.
     useEffect(() => {
         if (typeof document === 'undefined' || isEmbedded) return;
 
-        if (branding?.tabName) {
-            document.title = branding.tabName;
+        if (resolvedTitle) {
+            document.title = resolvedTitle;
         }
 
         if (branding?.logoBase64) {
@@ -54,5 +66,5 @@ export const useSarakUIEffects = (
             }
             link.href = branding.logoBase64;
         }
-    }, [branding?.tabName, branding?.logoBase64, isEmbedded]);
+    }, [resolvedTitle, branding?.logoBase64, isEmbedded]);
 };

@@ -180,11 +180,13 @@ export interface SarakUIOptions {
     };
 }
 
-/** Estado de marca/branding do sistema (nome, logo, textos de login/aba). */
+/** Estado de marca/branding do sistema (nome, logo, textos de login/aba). Identidade
+ *  (`companyName`/`tabName`/`logoBase64`) nasce AUSENTE — a lib nunca impõe a própria
+ *  marca (Spec 47; contrato em `docs/identidade-do-host.md`). */
 export interface SarakBrandingState {
-    companyName: string;
+    companyName?: string;
     loginName: string;
-    tabName: string;
+    tabName?: string;
     logoBase64: string | null;
 }
 

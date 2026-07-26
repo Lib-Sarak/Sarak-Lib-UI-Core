@@ -17,10 +17,13 @@ Regras comuns já embutidas: acionar `ui-contexto-repositorio` primeiro; ler `00
 | ~~P21.3~~ | 40.3 — Multidispositivo por padrão | 21.3 | ✅ Concluída — L2/L3/L4 + L1 (via P21.3-C). |
 | ~~P21.3-C~~ | 40.3 — Correção: detecção real de dispositivo | 21.3 | ✅ Concluída — reprovação era BUILD STALE, não bug; detecção endurecida (self-contained) + teste do caminho real + headless nos 3 viewports. |
 | ~~P21.4~~ | 40.4 — Reconciliação do contrato de tokens | 21.4 | ✅ Concluída, aprovada e commitada. |
-| **P22** | 46 — Remover o renderizador de páginas (#2) | 22 | ▶️ **PRÓXIMO** — Teste Real APROVADO, gate liberado. Mantém o #1. Desacoplar o ferramental do #3 (§3.1) antes de deletar. |
-| **P23** | 41 — Piso de Bundle | 23 | Depois da 46 (muda a base) e antes da 42. |
-| **P24** | 42 — Generalizar CardGrid | 24 | Depois da 41. |
-| **P50** | 50 — Kit de uso do consumidor (`sarak-ui/`) | 25 | *(renumerada de 40.4)* **ÚLTIMA da execução** (após 46/41/42). Guia 4 topologias + skill + catálogo vivo; DINÂMICO (gate `guide:check`); genérico. |
+| ~~P22~~ | 46 — Remover o renderizador de páginas (#2) | 22 | ✅ Concluída e commitada (`52e6041`); #1/#3 intactos, bundle re-medido. |
+| ~~P23~~ | 41 — Piso de Bundle | 23 | ✅ Concluída — boot −52% (chart engine EAGER anulava o lazy). |
+| ~~P24~~ | 42 — Generalizar CardGrid | 24 | ✅ Concluída — painel por `mapping.details`; `SarakCardGridProps` público. |
+| ~~P47~~ | 47 — Soberania de identidade do host | 25 | ✅ Executada — título/favicon/marca do host preservados (opt-in, fonte única). Ressalva: SINKS hardcoded → P49. |
+| **P48** | 48 — Slots de extensão do `SarakAppChrome` | 26 | Slots nomeados p/ o consumidor injetar imagens/animações/regiões custom; responsivos; sem breaking change; handoff p/ a 50. |
+| **P49** | 49 — Erradicar a marca da lib em componentes | 27 | Neutralizar `'Sarak Lib …'` em `SarakEmptyState`/`SarakSearch`/chat (componentes que o consumidor embute) + gate zero-marca; painéis internos do Design Engine na allowlist. Fecha o SINK que a 47 deixou. |
+| **P50** | 50 — Kit de uso do consumidor (`sarak-ui/`) | 28 | *(renumerada de 40.4)* **ÚLTIMA** (após 46/41/42 **+ 47/48/49**). Guia 4 topologias + skill + catálogo vivo; DINÂMICO (gate `guide:check`); absorve `docs/migracoes.md` + casos de identidade (47) e slots (48). |
 
 ---
 
@@ -204,7 +207,86 @@ ENTREGUE: relatório por tarefa (L1–L4) com a lista de drift, as decisões de 
 
 ---
 
-## P50 — Spec 50: Kit de uso do consumidor (`sarak-ui/`) — dinâmico, genérico, shippado *(renumerada de 40.4; ÚLTIMA da execução, após 46/41/42)*
+## P47 — Spec 47: Soberania de identidade do host (fim do vazamento "Sarak OS")
+
+```
+Execute a spec `specs/plan/47-soberania-identidade-host.md` da Sarak-Lib-UI-Core. É uma CORREÇÃO pequena e delimitada: a validação de browser do dono achou que a lib sobrescreve o `document.title` do host com o próprio brand ("Sarak OS") — durante o load aparece o `<title>` do `index.html` do importador e, ao montar, a lib troca por "Sarak OS". Princípio INEGOCIÁVEL do dono: **a identidade da página (nome da aba, favicon, marca) é SEMPRE do importador**; a lib nunca impõe a sua.
+
+PRINCÍPIOS: opt-in, não opt-out (a lib só toca título/favicon/marca se o consumidor FORNECER; sem valor, NÃO toca no que o host definiu); UMA fonte de verdade p/ `document.title` (hoje há 2 setters); Modo Embarcado (Spec 24) sem regressão (já é do host).
+
+Preparação: (1) `ui-contexto-repositorio`; (2) leia `00-indice.md`, `00-progresso.md` e a Spec 47 INTEIRA; (3) CONFIRME no código: `src/core/Provider/hooks/useBrandingManager.ts` (`DEFAULT_BRANDING` com 'Sarak OS'), `src/core/Provider/hooks/useSarakUIEffects.ts:44-45` (`document.title = branding.tabName`, default sempre truthy), `src/core/Provider/components/DesignInjector.tsx:82-87` (2º setter via `systemName`), e os testes de Embarcado (`EmbeddedMode.test.tsx`). Skills: `sarak:padrao-typescript`, `ui-refatorar-componente`.
+
+TAREFA (LIB, L1–L3):
+- L1: DEFAULTS NEUTROS — `DEFAULT_BRANDING.tabName` vira `undefined` (o guard `if (branding?.tabName)` já preserva o `<title>` do host); `companyName`/`loginName` viram neutro/genérico (ou `undefined`), NUNCA 'Sarak OS' (a tela de login não pode exibir a marca da lib). Favicon segue condicional (`logoBase64` default `null`) — manter.
+- L2: UMA FONTE DE VERDADE p/ `document.title` — consolidar os 2 setters (`useSarakUIEffects` via `branding.tabName` + `DesignInjector` via `systemName`) num só caminho com precedência definida; a lib só escreve o título se o consumidor forneceu valor; sem valor, não escreve (host preservado).
+- L3: documentar o contrato "consumidor é dono da identidade" (como setar via `options.branding.initial`/`systemName`; default do Modo App = preservar o `<title>` do host) + handoff p/ a Spec 50.
+- Teste anti-regressão: sem NENHUMA config, o Provider NÃO altera `document.title` (seta um título de host e afirma que sobrevive à montagem); com `tabName`/`systemName`, o título É setado por um único caminho.
+
+GATES: `catalog:check`; `barrel:check`; `npm run build` (DTS); suíte COMPLETA `npx vitest run` (incl. Embarcado verde); `package:check`; `run_audit.mjs` no baseline.
+
+FRONTEIRAS: não remover a CAPACIDADE de setar título/favicon/marca (só o default que vaza); não mexer no Modo Embarcado (correto); não tocar nas fontes globais; não host/mono-SPA; não fazer deploy.
+
+VALIDAÇÃO (dono, browser): a aba mostra o nome do HOST (do `index.html`), nunca "Sarak OS", e não pisca p/ a marca da lib após o load.
+
+ENTREGUE: relatório por tarefa (L1–L3) com evidência (grep 'Sarak OS' = 0 no runtime consumidor-facing; teste do host-title preservado; gates verdes com números); ATUALIZE `00-indice.md` (item 25) e `00-progresso.md`; frontmatter da 47. NÃO commite sem autorização.
+```
+
+---
+
+## P48 — Spec 48: Slots de extensão do `SarakAppChrome` (imagens/animações/regiões custom)
+
+```
+Execute a spec `specs/plan/48-slots-extensao-layout-chrome.md` da Sarak-Lib-UI-Core. O dono quer que o IMPORTADOR possa adicionar imagens, animações ou qualquer conteúdo na parte de layout. Hoje o `SarakAppChrome` só aceita logo (`brand.logoUrl`), ações na topbar (`topbarActions`) e `children`; e o Design Engine já faz fundo/atmosfera GLOBAL por tema. Falta um conjunto de SLOTS nomeados para o consumidor injetar conteúdo em regiões do cromo, sem forkar.
+
+PRINCÍPIOS: a lib dá a REGIÃO, o consumidor dá o CONTEÚDO (slot = `ReactNode`, a lib não presume o que vai dentro); zero-config e ADITIVO (todos opcionais; `brand`/`topbarActions`/`children` sem breaking change; `topbarActions` preservado como alias de `topbarEnd`); tematizável/acessível/responsivo (refluem no mobile — Spec 40.3 —, `decoration` é `aria-hidden`/`pointer-events:none`); renderizador genérico (cromo por-app).
+
+Preparação: (1) `ui-contexto-repositorio`; (2) leia `00-indice.md`, `00-progresso.md` e a Spec 48 INTEIRA; (3) CONFIRME no código: `src/components/Layout/SarakAppChrome.tsx` (props atuais) + `SarakAppChromeMobile.tsx` (colapso mobile) + o fundo global já existente (`SarakBackgroundRenderer`/atmosfera do Design Engine). Skills: `sarak:padrao-typescript`, `ui-novo-componente`/`ui-refatorar-componente`, `ui-arquitetura-design`.
+
+TAREFA (LIB, L1–L4):
+- L1: SLOTS `ReactNode` opcionais no `SarakAppChrome` (nomes afináveis, mantendo a intenção): `logo` (precede `brand.logoUrl`), `topbarStart`/`topbarEnd` (`topbarEnd`=alias de `topbarActions`), `sidebarHeader`/`sidebarFooter`, `banner` (full-width acima do conteúdo), `footer`, `decoration`/`background` (camada atrás do conteúdo do cromo). Ausente = não renderiza a região. Medidas/posição por TOKEN, zero hardcode.
+- L2: RESPONSIVIDADE + A11Y — no `SarakAppChromeMobile` os slots têm lugar coerente (banner/footer full-width; sidebarHeader/Footer migram p/ o drawer; topbarStart/End compactam) e refluem sem estourar; `decoration` não captura foco/toque. Testes por slot + por viewport.
+- L3: documentar os DOIS níveis de "adicionar imagem/animação": (a) fundo/atmosfera GLOBAL por tema (já existe — como usar) e (b) conteúdo por REGIÃO via slots (esta spec).
+- L4: HANDOFF p/ a Spec 50 — registrar o caso de autoria novo ("extensibilidade de layout: slots + fundo por tema") como pendência da 50; o catálogo do kit é gerado por AST, então as props novas entram sozinhas SE a 48 rodar antes da 50 (ordem do roteiro).
+
+GATES: `catalog:check` (props novas no `component-catalog`); `barrel:check` (o tipo `SarakAppChromeProps` já é exportado — manter verde); `npm run build` (DTS); suíte COMPLETA `npx vitest run`; `package:check`; `run_audit.mjs` no baseline (slots por token — zero hardcode novo).
+
+FRONTEIRAS: não forkar a componente nem pôr lógica de negócio nos slots; não tornar slot obrigatório nem quebrar `brand`/`topbarActions`/`children`; não reimplementar o fundo global (é do Design Engine — os slots complementam); não host/mono-SPA; não fazer deploy.
+
+VALIDAÇÃO (dono, browser): montar um `SarakAppChrome` com `banner` (imagem/animação) + `footer` + `decoration` de fundo → aparecem nas regiões certas, tematizados, e refluem no mobile sem quebrar; nav e conteúdo seguem funcionando.
+
+ENTREGUE: relatório por tarefa (L1–L4) com evidência (gates verdes com números; props no catálogo; testes por slot/viewport); ATUALIZE `00-indice.md` (item 26) e `00-progresso.md`; frontmatter da 48. NÃO commite sem autorização.
+```
+
+---
+
+## P49 — Spec 49: Erradicar a marca da lib em componentes consumidor-facing
+
+```
+Execute a spec `specs/plan/49-erradicar-marca-lib-componentes.md` da Sarak-Lib-UI-Core. É o follow-up da Spec 47: a 47 fechou a identidade da PÁGINA (título/favicon) e a FONTE (defaults de branding → `systemName`), mas os SINKS ficaram — vários componentes que o CONSUMIDOR embute no produto dele renderizam a marca da lib HARDCODED ('Sarak Lib …'). O grep da 47 procurou só 'Sarak OS'; a marca hardcoded é 'Sarak Lib'. Com `systemName` agora `undefined` (efeito da 47), o `SarakEmptyState` inclusive passou a exibir 'Sarak Lib' onde antes exibia 'Sarak OS' — o vazamento mudou de string, não fechou.
+
+PRINCÍPIO INEGOCIÁVEL (mesmo da 47): a lib NUNCA estampa a própria marca no produto do consumidor. Fallback = marca/`systemName` do CONSUMIDOR quando existir, senão um rótulo GENÉRICO de função (ex.: "Sistema"/"Busca") — jamais 'Sarak …'. Não deixar heading vazio/quebrado. Painéis INTERNOS do Design Engine (Kitchen Sink, abas de customização) são a ferramenta de autoria da lib — ficam numa ALLOWLIST, não são varridos.
+
+Preparação: (1) `ui-contexto-repositorio`; (2) leia `00-indice.md`, `00-progresso.md`, a Spec 47 (contexto) e a Spec 49 INTEIRA (esp. §2 — as ocorrências já mapeadas); (3) CONFIRME no código. Skills: `sarak:padrao-typescript`, `ui-refatorar-componente`.
+
+OCORRÊNCIAS (consumidor-facing — §2, confirmar antes): `SarakEmptyState.tsx:39` (`systemName || 'Sarak Lib'`), `SarakEmptyState.tsx:111` ('Sarak Lib Core Engine'), `SarakSearch.tsx:131` ('Sarak Lib Search Engine'), `ChatHeader.tsx:20` ('… • Sarak Lib Engine'), `SarakChat.tsx:21` (default `label='Sarak AI Chat Lab'`). NÃO mexer no `SidebarNav.tsx:107` (`systemName || brand.name` — já cai na marca do consumidor). Allowlist (fora): `KitchenSinkPreview`, `LanguageTab`/`LayoutTab` (interno do Design Engine).
+
+TAREFA (LIB, L1–L3):
+- L1: neutralizar cada ocorrência (exceto `SidebarNav`): há fonte do consumidor (`systemName`/`brand.name`)? → cai nela; senão → rótulo genérico de função (nunca 'Sarak …'). Default de prop `label` vira neutro (segue sobrescrevível). Sem heading vazio/quebrado. Registrar cada decisão.
+- L2: GATE zero-marca (família `barrel:check`/`catalog:check`) que falha o build se um componente consumidor-facing renderizar um literal de marca da lib ('Sarak Lib'/'Sarak OS'/'Sarak AI' como TEXTO), com ALLOWLIST comentada dos painéis internos.
+- L3: nota em `docs/migracoes.md` (rótulos decorativos mudaram) + handoff p/ a Spec 50 (não documentar/mostrar componentes que estampam a marca).
+
+GATES: `catalog:check`; `barrel:check`; o gate novo (L2); `npm run build` (DTS); suíte COMPLETA `npx vitest run` (revisar snapshots de `SarakEmptyState`/`SarakSearch`/chat); `package:check`; `run_audit.mjs` no baseline.
+
+FRONTEIRAS: não mexer na identidade da página (47) nem no `SidebarNav`; não varrer os painéis internos do Design Engine (allowlist); não deixar rótulo vazio nem remover a capacidade de o consumidor rotular (props seguem); não fazer deploy.
+
+VALIDAÇÃO (dono, browser): renderizar `SarakEmptyState`/`SarakSearch`/chat → nenhum texto "Sarak Lib"/"Sarak OS"; componentes coerentes e tematizados.
+
+ENTREGUE: relatório por tarefa (L1–L3) com evidência (grep 'Sarak Lib'/'Sarak OS'/'Sarak AI' como texto renderizado em consumidor-facing = 0; gate verde; gates com números); ATUALIZE `00-indice.md` (item 27) e `00-progresso.md`; frontmatter da 49. NÃO commite sem autorização.
+```
+
+---
+
+## P50 — Spec 50: Kit de uso do consumidor (`sarak-ui/`) — dinâmico, genérico, shippado *(renumerada de 40.4; ÚLTIMA da execução, após 46/41/42 + 47/48/49)*
 
 ```
 Execute a spec `specs/plan/50-kit-de-uso-do-consumidor.md` da Sarak-Lib-UI-Core (renumerada de 40.4 → 50; é a ÚLTIMA da execução — rode só DEPOIS de 46/41/42). Fase de ENABLEMENT: as rodadas 40.1–40.4 fecharam a CAPACIDADE e a lib está estruturalmente fechada; esta produz o KIT que explica ao importador COMO usar o módulo, de forma DINÂMICA (nunca desatualiza) e GENÉRICA (qualquer importador; o ERP é só um exemplo — NÃO cite o ERP).

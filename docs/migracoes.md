@@ -5,6 +5,50 @@ com o "antes" e o "depois" lado a lado. Uma entrada por mudança, mais recente p
 
 ---
 
+## Identidade da página — a lib parou de impor a própria marca (Spec 47)
+
+**O que mudou.** O `DEFAULT_BRANDING` do Provider trazia `companyName: 'Sarak OS'` e
+`tabName: 'Sarak OS'`. Como o guard a jusante era `if (branding?.tabName)` e o default
+era sempre truthy, **todo consumidor tinha o `<title>` do seu `index.html` sobrescrito
+por "Sarak OS"** assim que o React montava — a aba piscava do nome do produto dele para
+a marca da lib. O mesmo default vazava para o rótulo de marca do cromo (sidebar/topbar),
+via `useSarakUI().systemName`.
+
+Agora os campos de **identidade** nascem ausentes e a escrita é **opt-in**: sem valor
+fornecido pelo consumidor, a lib não toca em `document.title` nem no favicon.
+
+**Antes**
+
+```tsx
+// index.html: <title>Meu ERP</title>
+<SarakUIProvider><App /></SarakUIProvider>
+// → aba exibe "Sarak OS"
+```
+
+**Depois**
+
+```tsx
+// index.html: <title>Meu ERP</title>
+<SarakUIProvider><App /></SarakUIProvider>
+// → aba exibe "Meu ERP" (a lib não interfere)
+
+// Para a lib gerenciar o título, forneça o valor:
+<SarakUIProvider options={{ branding: { initial: { tabName: 'Meu ERP — Propostas' } } }}>
+```
+
+**Mudança de tipo.** Em `SarakBrandingState`, `companyName` e `tabName` passaram de
+obrigatórios para opcionais (`companyName?: string`, `tabName?: string`), refletindo que
+podem legitimamente não existir. Quem **escreve** branding não é afetado
+(`options.branding.initial` já era `Partial<>`); quem **lê** `useSarakUI().branding`
+precisa tratar `undefined`.
+
+**Nenhuma capacidade foi removida** — só o default que vazava. `loginName` segue
+obrigatório com default genérico (`'Acesso ao Sistema'`): é rótulo de UI, não marca.
+
+Contrato completo em [`identidade-do-host.md`](./identidade-do-host.md).
+
+---
+
 ## `SarakCardGrid.mapping` — fim dos campos de domínio LLM (Spec 42)
 
 **O que mudou.** O `SarakCoreCard` — a variante `"classic"`, que é a **default** do

@@ -44,11 +44,13 @@ interface DesignInjectorProps {
  *
  * Sincroniza o estado de design com o DOM.
  *
- * - **Modo App:** escreve no documento global (`documentElement` + `body`) e mantém o
- *   `document.title` em dia com o `systemName` — o sistema é dono da página.
+ * - **Modo App:** escreve no documento global (`documentElement` + `body`).
  * - **Modo Embarcado (Spec 24):** escreve TUDO no container da ilha e nunca toca em
  *   `documentElement`, `body` nem no título/ícone da aba do host. É o mesmo mecanismo
  *   que o `DesignScope` já usa para a diretiva `theme`.
+ *
+ * O `document.title` NÃO é escrito aqui (Spec 47): a identidade da aba tem fonte
+ * única no `useSarakUIEffects`.
  */
 export const DesignInjector: React.FC<DesignInjectorProps> = ({ design: s, mode = 'app', scopeElement = null }) => {
     const isEmbedded = mode === 'embedded';
@@ -78,13 +80,11 @@ export const DesignInjector: React.FC<DesignInjectorProps> = ({ design: s, mode 
         return () => window.removeEventListener('mousemove', handleMouseMove);
     }, [isEmbedded, scopeElement]);
 
-    // Tab Title Sync — exclusivo do Modo App: o título da aba é do host no Embarcado.
-    useEffect(() => {
-        if (isEmbedded) return;
-        if (s?.systemName && typeof document !== 'undefined') {
-            document.title = s.systemName;
-        }
-    }, [s?.systemName, isEmbedded]);
+    // Título da aba: NÃO é mais responsabilidade deste componente (Spec 47). O
+    // `useSarakUIEffects` é a fonte única de `document.title` — recebe o `systemName`
+    // do Provider e aplica a precedência `branding.tabName > systemName`. Manter um
+    // segundo `useEffect` aqui era o que fazia dois caminhos disputarem o mesmo
+    // `document.title`.
 
     // Injeção de Variáveis e Atributos
     useIsomorphicLayoutEffect(() => {

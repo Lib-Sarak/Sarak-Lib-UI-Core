@@ -9,6 +9,9 @@ vi.mock('../../../Design/hooks/useDesignVariables', () => ({
     useDesignVariables: vi.fn()
 }));
 
+/** Título que o `index.html` do host definiria — o DesignInjector não pode tocá-lo. */
+const HOST_TITLE = 'App do Host — intocado';
+
 describe('DesignInjector', () => {
     beforeEach(() => {
         vi.clearAllMocks();
@@ -22,6 +25,8 @@ describe('DesignInjector', () => {
         
         const styleTag = document.getElementById('sarak-responsive-vars');
         if (styleTag) styleTag.remove();
+
+        document.title = HOST_TITLE;
     });
 
     it('injeta variáveis, atributos e responsiveCSS no DOM', () => {
@@ -54,8 +59,10 @@ describe('DesignInjector', () => {
         // Testa Classes Mode
         expect(document.body.classList.contains('dark')).toBe(true);
 
-        // Testa Title
-        expect(document.title).toBe('Test App');
+        // Título: NÃO é responsabilidade deste componente (Spec 47 — fonte única no
+        // `useSarakUIEffects`). Mesmo com `systemName` no design, o DesignInjector
+        // deixa o `<title>` do host exatamente como estava.
+        expect(document.title).toBe(HOST_TITLE);
 
         // Testa Media
         expect(document.body.getAttribute('data-sarak-has-media')).toBe('true');

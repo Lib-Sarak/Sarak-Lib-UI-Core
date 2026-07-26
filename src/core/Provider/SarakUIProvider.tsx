@@ -128,8 +128,12 @@ export const SarakUIProvider: React.FC<SarakUIProviderProps> = ({
     // 3. Gerenciamento de Rascunho (Live Preview)
     const drafting = useSarakDrafting(design, applyConfig, applyFullConfig);
 
-    // 4. Efeitos Colaterais globais (Fontes, Título, Ícone) — inertes no Modo Embarcado
-    useSarakUIEffects(branding, mode, options?.embedded?.injectGlobalFonts);
+    // 4. Efeitos Colaterais globais (Fontes, Título, Ícone) — inertes no Modo Embarcado.
+    //    FONTE ÚNICA da identidade da aba (Spec 47): recebe as DUAS portas pelas quais
+    //    o consumidor pode nomear a página (`branding.tabName` e o `systemName` do
+    //    design) e resolve a precedência num só lugar. Sem nenhuma delas preenchida, o
+    //    `<title>`/favicon do `index.html` do host ficam intocados.
+    useSarakUIEffects(branding, mode, options?.embedded?.injectGlobalFonts, design?.systemName);
 
     // 4.5 Guarda do stylesheet: confere a injeção automática (Modo App) e desfaz o
     //     CSS global quando a ilha é embarcada (Spec 24).

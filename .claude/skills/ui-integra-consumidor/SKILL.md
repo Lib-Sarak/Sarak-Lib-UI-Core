@@ -202,12 +202,14 @@ já divide. Três achados de medição, para não repetir a investigação:
 - **NÃO escreva arquivo de infraestrutura à mão** (`vite.config.ts`, `package.json` de scripts/deps, etc.) — isso é o que o `init` (Spec 21/45) existe para eliminar. A única saída manual permitida é a Etapa 4 (montagem da ilha embarcada), porque o scaffolder pressupõe um host que ainda não existe.
 - **NÃO** ensine ou tente montar telas via manifesto/JSON nesta skill — o foco aqui é DevOps/Infraestrutura e o registro de módulos React (`registerSarakModule`/`registerLocalComponent`). O motor de manifesto foi removido (Spec 46); o modelo de consumo é 100% React.
 - **SEMPRE** garanta que cada módulo de negócio seja registrado (`registerSarakModule`+`registerLocalComponent`) e monte sob `SarakShell` — nunca oriente o consumidor a renderizar telas soltas fora da base (perderiam Shell/tema/navegação).
+- **A identidade da página é do CONSUMIDOR (Spec 47).** O `<title>` e o favicon vivem no `index.html` dele e a lib não os sobrescreve por padrão. Se o consumidor quiser que a lib gerencie o nome da aba, oriente `options.branding.initial.tabName` (ou `config.systemName`, que também alimenta o rótulo do cromo) — nunca deixe a marca da lib aparecer no produto dele. Detalhes em `docs/identidade-do-host.md`.
 
 ## Referências
 **Artefatos do pacote (`node_modules/@sarak/lib-ui-core/`):**
 - `bin/sarak-ui.mjs` (`npx sarak-ui init`) — o scaffolder oficial (Spec 21/45); gera o starter padrão inteiro, Node puro, idempotente.
 - `docs/component-catalog.md` / `.json` — catálogo GERADO de componentes/props/CSS Variables públicas (fonte da verdade dos tokens e do que existe).
 - `docs/migracoes.md` — breaking changes do contrato público, com "antes/depois". Consulte ao ATUALIZAR a lib num consumidor que já existe (`npm run sarak:update`), antes de investigar quebra de tipo.
+- `docs/identidade-do-host.md` — contrato de identidade da página (Spec 47): título da aba, favicon e marca são SEMPRE do importador. A lib não escreve nada por padrão; as duas portas de opt-in (`options.branding.initial.tabName` e `config.systemName`) e a precedência entre elas.
 
 **Skills (ordem do fluxo):**
 - `ui-contexto-repositorio` — ambientação (se estiver trabalhando NA lib).
