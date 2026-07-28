@@ -1,36 +1,61 @@
 # 🧭 Como usar o diretório de Specs
 
-Este diretório (`specs/`) é o "cérebro" do projeto. É aqui que você define **o que** a IA deve construir e **como** o sistema deve ser estruturado. 
+Este diretório descreve a Sarak-Lib-UI-Core: **o que ela é**, **por que ficou assim** e **quais regras valem**. O mapa das categorias e a ordem de leitura estão em [`INDEX.md`](./INDEX.md); aqui está o **fluxo** — o que entra em cada pasta, quem pode ser editado e como se escreve um documento novo.
 
-Abaixo explicamos onde cada arquivo deve ser criado e por que certos arquivos NÃO devem entrar aqui.
+## O princípio que governa tudo aqui
 
----
+> **O código é a fonte da verdade.** Onde um documento desta pasta contradiz o código, o código vence — sem exceção. Toda afirmação estrutural precisa ser confirmável por `arquivo:linha`.
 
-### 1. Specs de Negócio (O "QUÊ") -> `specs/`
-- **Onde criar:** Crie arquivos `.md` dentro da pasta `specs/`.
-- **Exemplo:** `01-login.md`, `02-pagamento.md`.
-- **O que colocar:** Regras de negócio, o que a funcionalidade deve fazer, regras de validação.
-- **Natureza:** Documento Vivo. Atualize este arquivo se a regra de negócio mudar.
+Uma spec que descreve código inexistente é **pior que nenhuma spec**: ela custa a mesma leitura e entrega instrução errada, com a autoridade de estar versionada. Foi exatamente isso que motivou a reescrita em curso — quatro documentos ainda descreviam como vigente um motor que havia sido removido.
 
-### 2. Arquitetura e Design (O "COMO") -> `arquitetura/`
-- **Onde criar:** Crie arquivos `.md` dentro da pasta `arquitetura/`.
-- **Exemplo:** `00-base-python.md` (copiado dos templates do Sarak), `api-design.md`, `diagrama-banco.md`.
-- **O que colocar:** O design estrutural do sistema, regras globais de banco de dados, escolhas de bibliotecas do projeto.
-- **Natureza:** Documento Vivo. Atualize se a arquitetura mudar.
+Corolário prático: **nunca transcreva fonte viva.** Lista de tokens, de componentes, de props ou de ícones não é copiada para dentro de markdown — aponte para o artefato gerado (`docs/component-catalog.json`, `sarak-ui/catalog.json`) ou para a função que a produz. Cópia estática vira mentira na primeira mudança de código.
 
-### 3. Decisões Históricas (O "POR QUÊ") -> `adr/`
-- **Onde criar:** Crie arquivos `.md` dentro da pasta `adr/`.
-- **Exemplo:** `001-escolha-do-postgres.md`.
-- **O que colocar:** Os "Architecture Decision Records" (ADRs). Explique o motivo pelo qual você tomou uma decisão técnica difícil (ex: por que optou por Microserviços ao invés de Monolito).
-- **Natureza:** Documento Imutável. Não se altera um ADR. Se a decisão mudar no futuro, crie um ADR novo (`002-migrando-para-monolito.md`).
+## Onde cada coisa mora
 
----
+### `arquitetura/` — a visão macro (o **COMO**)
 
-## 🚫 Onde adicionar os Planos de Implementação (Plans)?
+O estado estrutural do módulo: as camadas e a regra de dependência entre elas, a forma do produto e os modos de consumo, o Design Engine, o contrato de tokens, a superfície pública, o build e a distribuição.
 
-**Em NENHUM LUGAR dentro do projeto.**
+**Natureza: vivo.** Quando a arquitetura muda, este documento muda junto — no mesmo trabalho, não depois. Molde: `_templates/template-arquitetura.md`.
 
-Os planos (ex: "Passo 1: Criar arquivo X, Passo 2: Criar função Y") são arquivos **efêmeros** (descartáveis). 
-Quando você pedir para a IA *"implemente o 01-login.md"*, a própria IA vai gerar um plano temporário na memória interna dela (ou em uma pasta invisível fora do seu repositório). 
+### `adr/` — as decisões (o **POR QUÊ**)
 
-**Regra de Ouro:** Não crie arquivos de plano dentro do Git. Assim que a funcionalidade estiver pronta e commitada, o plano perde a validade. Mantenha seu repositório limpo contendo apenas a verdade final do seu sistema (as Specs).
+Por que se decidiu o que se decidiu, e o que isso custou. É onde vive o conhecimento que o código não guarda: o que já foi tentado, o que falhou, e por qual motivo.
+
+**Natureza: IMUTÁVEL.** Um ADR não é editado para mudar a decisão — cria-se um ADR novo que o substitui, ligado pelos campos `substitui`/`substituido_por`. A regra completa e a convenção de nome estão em [`adr/README.md`](./adr/README.md). Molde: `_templates/template-adr.md`.
+
+### `specs/` — as regras e features (o **QUÊ**)
+
+Um tópico por documento: as regras e invariantes do módulo, os gates e seu baseline, e cada feature com seu contrato, seus critérios de aceite e seu plano de testes.
+
+**Natureza: vivo.** Molde: `_templates/template-spec.md`.
+
+### `plan/` — o plano transitório (o **AGORA**)
+
+**Aqui, planos de implementação EXISTEM e são versionados** — ao contrário da regra genérica do ecossistema, que manda mantê-los fora do repositório. Esta é uma escolha deliberada deste módulo, e ela vem com uma contrapartida que a torna segura.
+
+A `plan/` guarda **uma campanha por vez**: o roteiro, os prompts de execução autocontidos e o log de progresso. O que a impede de virar entulho é que **ela nasce com data de morte**. Toda campanha termina com uma tarefa de fechamento que **esvazia a pasta**, depois de provar, arquivo por arquivo, que todo conteúdo ainda vivo foi migrado para uma das três categorias permanentes. Nada é apagado sem esse destino demonstrado.
+
+O motivo de os planos serem versionados aqui: uma campanha atravessa várias conversas e vários agentes sem contexto compartilhado. O plano em disco é o que torna a execução **retomável e auditável** por quem chega no meio.
+
+**Natureza: descartável.** Não aponte para `plan/` a partir de `arquitetura/`, `adr/` ou `specs/` — o alvo vai deixar de existir, e link quebrado é dívida que sobrevive ao arquivo.
+
+### `_templates/` — os moldes
+
+Todo documento novo nasce do template da sua categoria, com o frontmatter completo. **Nada de campo inventado**, e `status` honesto — um `🟢` que não corresponde ao código é a mesma classe de defeito que a reescrita veio corrigir.
+
+## Onde vive o histórico
+
+**No git, e no `plan/00-progresso.md` enquanto a campanha durar.**
+
+O `00-progresso.md` é um log *append-only*: cada execução acrescenta uma entrada no topo, e nenhuma entrada já escrita é editada ou apagada. Ele existe para que um agente entenda rapidamente o que já foi feito, como e quando, sem reconstruir o raciocínio lendo o diff inteiro. Quando a campanha fecha, ele sai junto com a pasta — e o histórico integral permanece onde sempre esteve, no git.
+
+Documento permanente não carrega histórico de execução. Se você sentir vontade de escrever "antes era assim, agora é assado" numa spec, o lugar disso é um ADR (se foi decisão) ou `docs/migracoes.md` (se afeta o consumidor).
+
+## Ao encontrar uma divergência
+
+Se o código não bate com o documento, se o escopo não fecha, ou se dois documentos disputam o mesmo conteúdo:
+
+**Pare. Não decida sozinho. Não contorne.**
+
+Registre o que o documento diz, o que o código mostra (com `arquivo:linha`), as opções que você vê e sua recomendação — e peça aprovação. **Obstáculo se registra, não se contorna**: um contorno silencioso resolve o seu dia e deixa a próxima pessoa com o mesmo problema, agora escondido.
