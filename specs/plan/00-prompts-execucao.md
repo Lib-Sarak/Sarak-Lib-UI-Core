@@ -69,7 +69,7 @@ Lista de tokens, de componentes, de props, de ícones: **jamais** copiada para d
 | `catalog:check` | `npm run catalog:check` | ✅ em dia |
 | `zero-brand:check` | `npm run zero-brand:check` | ✅ **363 arquivos, 0 violações** |
 | `guide:check` | `npm run guide:check` | ✅ **kit em dia (6 arquivos)** |
-| suíte completa | `npx vitest run` | ✅ **280 arquivos / 890 testes, 100% verde** (~136s) |
+| suíte completa | `npx vitest run` | **280 arquivos / 890 testes** (~136s). ⚠️ **Atualizado em 2026-07-28:** 889 passam e **1 falha DEPENDENTE DO AMBIENTE** — `bin/scaffold/__tests__/packageManager.test.mjs > "sem nenhum sinal, o default é npm"`. O teste assume ausência de lockfile em **qualquer ancestral** do diretório temporário do SO; num `$HOME` com `package-lock.json` solto, `detectPackageManager` acha um lockfile de verdade e devolve `source: 'lockfile'`. **Não é regressão da campanha nem defeito do código** — é teste não-hermético. Detalhe em `specs/specs/01-gates-e-baseline.md` §3.1. Numa máquina limpa: 890/890 |
 | `tsc` | `npx tsc --noEmit` | ❌ **14 erros** — 10 em teste, **4 em produção** (`useStructuralStyles.ts:30,71,94`; `ThemeCustomizationTab.tsx:86`). **Não é gate hoje.** |
 | `build` + DTS | `npm run build` | encadeia catalog→barrel→zero-brand→guide→tsup→css→scoped→copy→inject→build-info |
 | `package:check` | `npm run package:check` | roda no `prepublishOnly`; exige `dist/` buildado |
@@ -136,18 +136,19 @@ O que ficou de fora do escopo e por quê. Silêncio aqui é proibido.
 - [x] **P2** — ADR 005–007: modelo oficial, zero-marca, distribuição por Git
 
 ### Fase 2 — Arquitetura (a visão macro)
-- [ ] **P3** — `arquitetura/01-forma-do-produto-e-modos-de-consumo.md`
-- [ ] **P4** — `arquitetura/00-mapa-do-modulo.md`
-- [ ] **P5** — `arquitetura/04-contrato-de-tokens-e-paridade.md`
-- [ ] **P6** — `arquitetura/02-design-engine.md`
-- [ ] **P7** — `arquitetura/03-superficie-publica.md`
-- [ ] **P8** — `arquitetura/05-build-e-distribuicao.md`
+- [x] **P3** — `arquitetura/01-forma-do-produto-e-modos-de-consumo.md`
+- [x] **P4** — `arquitetura/00-mapa-do-modulo.md`
+- [x] **P5** — `arquitetura/04-contrato-de-tokens-e-paridade.md`
+- [x] **P6** — `arquitetura/02-design-engine.md`
+- [x] **P7** — `arquitetura/03-superficie-publica.md`
+- [x] **P8** — `arquitetura/05-build-e-distribuicao.md`
+- [x] **P8-C** — Correção da Fase 2 (3 edições pontuais nos docs `03` e `04`) — *achados da revisão*
 
 ### Fase 3 — Regras, gates, enforcement e versão *(as duas únicas fases que mexem em código antes da 5)*
-- [ ] **P9** — `specs/00-regras-e-invariantes.md` (o contrato único)
-- [ ] **P10** — `specs/01-gates-e-baseline.md`
-- [ ] **P11** — `specs/02-enforcement-por-commit.md` **+ IMPLEMENTAR o pipeline de pre-commit**
-- [ ] **P12** — `specs/03-versionamento-e-release.md` **+ RENUMERAR para `1.0.0`**
+- [x] **P9** — `specs/00-regras-e-invariantes.md` (o contrato único)
+- [x] **P10** — `specs/01-gates-e-baseline.md`
+- [x] **P11** — `specs/02-enforcement-por-commit.md` **+ IMPLEMENTAR o pipeline de pre-commit**
+- [x] **P12** — `specs/03-versionamento-e-release.md` **+ RENUMERAR para `1.0.0`**
 
 ### Fase 4 — Specs de feature e regra
 - [ ] **P13** — `specs/09-temas-e-presets.md`
@@ -467,6 +468,58 @@ ENTREGUE: o RELATÓRIO DE ENTREGA (§7). Critério de aceite: cada linha do scri
 
 ---
 
+## P8-C — Correção da Fase 2 (3 edições pontuais)
+
+> **Contexto para quem lê o roteiro:** a revisão da Fase 2 reverificou as medições por conta própria e aprovou os seis documentos. Encontrou **dois números errados e um achado subdimensionado**, todos no mesmo par de arquivos. É uma tarefa de edição cirúrgica — **markdown apenas**, nenhum código, nenhum gate novo.
+
+```
+Você vai aplicar TRÊS correções pontuais nos documentos da Fase 2 da Sarak-Lib-UI-Core. Elas vieram da revisão independente, que reverificou as medições e achou dois números errados e um achado subdimensionado. Os seis documentos foram APROVADOS — isto é acerto de precisão, não reescrita.
+
+Preparação: (1) `ui-contexto-repositorio`; (2) `specs/plan/00-prompts-execucao.md` INTEIRO (regras comuns, baseline, regra de DIVERGÊNCIA); (3) leia os dois documentos-alvo INTEIROS antes de editar: `specs/arquitetura/03-superficie-publica.md` e `specs/arquitetura/04-contrato-de-tokens-e-paridade.md`.
+
+⚠️ REGRA DESTA TAREFA: **confirme cada número você mesmo antes de escrever.** Não copie os números deste prompt de olhos fechados — se a sua medição divergir da minha, isso é uma DIVERGÊNCIA e você para.
+
+CORREÇÃO 1 — `04-contrato-de-tokens-e-paridade.md` §6: o número de sufixos está errado.
+O texto diz "expandida com 17 sufixos gerados". São **18**. Confirme lendo `GENERATED_SUFFIXES` em `.agents/skills/ui-auditoria-modulo/scripts/auditor_ghostvars.mjs`: 8 sufixos nomeados (`-rgb`, `-bg`, `-border`, `-text`, `-hover`, `-active`, `-light`, `-glow`) + 10 numéricos (`-10` a `-100`). Corrija o número.
+
+CORREÇÃO 2 — `04-contrato-de-tokens-e-paridade.md` §2.1 e §2.2: a distribuição por coluna soma 416, não 409.
+A tabela de §2.1 anuncia 409 nos três totais e, logo abaixo, lista a distribuição por coluna — que **soma 416**. Quem soma a lista não chega ao total e fica sem saber qual dos dois está errado (nenhum está).
+- Em §2.1, acrescente a nota de rodapé: a soma das colunas é 416 porque sete ids são roteados para DUAS colunas cada; o total de ids únicos é 409. Aponte para §2.2.
+- Em §2.2, acrescente a prova nova: **a duplicação de schema PROPAGA para o roteamento de persistência.** `src/core/Design/catalog/theme_table_mapping.json` tem **416 entradas brutas para 409 ids únicos** — os mesmos sete ids da tabela de §2.2 aparecem em duas colunas. Confirme você mesmo somando os arrays do JSON e deduplicando. Isso REFORÇA o achado; não o substitui.
+
+CORREÇÃO 3 — `03-superficie-publica.md` §8: o achado dos engines é maior do que está escrito.
+O texto registra que `SarakFlowEngine` não está no barril. Verdade, mas incompleto: das QUATRO categorias de `src/components/engines/`, apenas `charts/` é alcançável. Confirme rodando o coletor do próprio repositório (`collectExportedNames('src/index.ts')` de `scripts/publicComponents.mjs`) e checando os quatro nomes: `SarakChartEngine` está no barril; `SarakFlowEngine`, `SarakChatEngine` e `SarakVisualEngine` NÃO estão.
+Reescreva a dívida para refletir o tamanho real: não é uma peça esquecida, é **uma pasta inteira fora do contrato público**. Mantenha o registro de que `barrel:check` não pega isso porque `engines/` está fora do escopo de varredura (o mecanismo já está descrito na §3 do próprio documento — aponte para ela). Mantenha o "não apurado — registrado para decisão": a escolha entre "interno de propósito" e "lacuna de exposição" é do dono.
+
+FRONTEIRAS: **não toque em código, CSS, script, gate ou `README.md`** — nada além dos dois arquivos markdown citados. Não reescreva seções que não foram apontadas. Não corrija nenhum dos sete achados registrados nos documentos (eles têm rota própria: P9, P10 e P24). Não mexa nos ADRs nem nos outros quatro documentos da Fase 2.
+
+GATES: nenhum código tocado — rode `npm run catalog:check` e `npm run guide:check` só para provar que nada vazou. Devem sair idênticos ao baseline.
+
+ENTREGUE: o RELATÓRIO DE ENTREGA (§7), com a seção 2 (RASTREABILIDADE) trazendo a SUA medição de cada um dos três números (18 sufixos; 416 bruto × 409 únicos no `theme_table_mapping.json`; os quatro engines com presença/ausência no barril). Marque o checkbox de P8-C e registre em `00-progresso.md`. NÃO commite sem autorização.
+```
+
+---
+
+# REGISTRO — os 7 achados da Fase 2 e para onde cada um foi roteado
+
+A Fase 2 produziu sete achados que **não são erros dos documentos** — são defeitos e ambiguidades do próprio módulo, encontrados enquanto ele era documentado. Todos estão registrados nos documentos onde foram achados. **Nenhum foi corrigido**, e nenhum deve ser corrigido de passagem.
+
+Esta tabela é a rota oficial. Se você é um agente executando P9, P10 ou P24, os itens marcados com o seu prompt são **escopo seu**.
+
+| # | Achado | Onde está registrado | Rota |
+| --- | --- | --- | --- |
+| 1 | `src/components/atomic/Tables/` é categoria **sem componente** (só `hooks/useTableLayoutStyles.ts`); `SarakTable.tsx` mora em `Templates/` e importa cruzando a fronteira de categoria; `grep "atomic/Tables"` = 0 | `00-mapa-do-modulo` §9 | **P10** (dívida) + **decisão do dono** (mover é mexer em imports e testes; "qual é a categoria certa" é decisão de taxonomia) |
+| 2 | Dois usos VIVOS de `--sx-*` — o namespace declarado proibido — em `src/styles/_utilities.css:80` e `:89`, como fallback de 2º nível que resolve para vazio. O `auditor_ghostvars` não pega porque varre só `components/` e `features/` | `00-mapa-do-modulo` §6.1 e `04-contrato-de-tokens-e-paridade` §6 | **P10** (dívida + **lacuna de cobertura do gate**). O conserto tem duas metades — as 2 linhas de CSS **e** o escopo do auditor; mexer em gate durante a campanha contamina o baseline, então vira spec própria |
+| 3 | `CustomizationPanel` sai **eager** do barril (`src/index.ts:50`) e ainda é importado eager pelo efeito colateral de `:119-125` — contraria a regra derivada da campanha de bundle | `03-superficie-publica` §8 | **P9** (nomear como violação conhecida da regra "nada pesado eager") + **P10** (dívida). Tornar lazy muda o tipo público para `LazyExoticComponent` = **breaking change** |
+| 4 | **Três das quatro** categorias de `src/components/engines/` estão fora do barril (`flows`, `chat`, `visuals`); só `charts` é alcançável | `03-superficie-publica` §8 (após P8-C) | **P9** (registrar) + **decisão do dono**: interno de propósito (e a taxonomia diz isso) OU lacuna de exposição |
+| 5 | `README.md:18` manda o consumidor instalar `pg` como peerDependency — o driver saiu com o backend | `05-build-e-distribuicao` §4 | **P24** (escopo ampliado: mesma classe de ponteiro morto das skills) |
+| 6 | `upgradeThemePayload` (`master-map.ts:148`) declara `partialMode` e nunca o usa | `04-contrato-de-tokens-e-paridade` §5 | **P10** (dívida) |
+| 7 | `verify_parity.ts` mora em `ui-novo-componente/scripts/`, não em `ui-auditoria-modulo/` | `04-contrato-de-tokens-e-paridade` §8.1 | **Fechado.** Era imprecisão de um relatório de revisão; o plano nunca afirmou o caminho errado e o documento já registra o certo |
+
+> **Regra que vale para os sete:** achado registrado não é achado resolvido, mas também não é achado esquecido. Quem executar P9, P10 ou P24 **tem de fechar os itens da sua linha** — e quem não conseguir fechar registra em DIVERGÊNCIAS, nunca em silêncio.
+
+---
+
 # FASE 3 — REGRAS, GATES, ENFORCEMENT E VERSÃO
 
 ## P9 — `specs/00-regras-e-invariantes.md` (o contrato único)
@@ -506,6 +559,10 @@ AS REGRAS A COBRIR (no mínimo — se achar outra no material, inclua e sinalize
 16. **Zero-gambiarra** — o consumidor NUNCA precisa escrever CSS/media query para consertar comportamento da lib; buraco na lib vira demanda na lib, não workaround no importador. Cobrada por: nenhum gate — CONDUTA.
 17. **Não transcrever fonte viva** — lista de token/componente/ícone nunca é copiada para markdown. Cobrada por `catalog:check`/`guide:check` (para os artefatos gerados).
 
+⚠️ ACHADOS DA FASE 2 QUE SÃO ESCOPO SEU (ver "REGISTRO — os 7 achados da Fase 2" acima):
+- **Achado 3 — a regra 15 já está sendo violada pela própria lib.** `CustomizationPanel` sai EAGER do barril (`src/index.ts:50`) e ainda é importado eager pelo efeito colateral de `:119-125`. Ao escrever a regra 15, registre esta violação NOMEADA junto com ela, com o custo (o painel inteiro do Design Engine no caminho crítico de todo consumidor) e o motivo de não ter sido corrigida (tornar lazy muda o tipo público para `LazyExoticComponent` = breaking change, exige decisão). Regra com violação conhecida e declarada é honesta; regra que finge estar cumprida é ficção.
+- **Achado 4 — a regra 14 (barril completo) tem um vão.** Três das quatro categorias de `src/components/engines/` (`flows`, `chat`, `visuals`) não estão no barril, e o `barrel:check` não pega porque `engines/` está fora do escopo de varredura. Registre como limite CONHECIDO da regra 14 — não invente a decisão (interno de propósito × lacuna de exposição é do dono).
+
 MATERIAL-FONTE: `specs/spec-any-eradication.md` (FUNDIR), `specs/arquitetura/05-diretriz-zero-any-e-foundation.md` §2 (FUNDIR), `specs/arquitetura/08-gate-auditoria-hardcode-e-variaveis.md` §3/§4 (as regras; os gates vão para P10), `specs/specs/03-padrao-e-taxonomia-biblioteca-atomica.md` §2 (Regras 1–5), `specs/specs/09-expansao-vs-configuracao.md` (FUNDIR inteiro), `specs/arquitetura/04-paridade-cinco-camadas.md` §4/§5, `plan/41` (regra 15), `plan/47`/`plan/49` (regras 12/13), os 8 auditores em `.agents/skills/ui-auditoria-modulo/scripts/`.
 
 FRONTEIRAS: aqui é O QUE VALE, não COMO RODAR (isso é P10) nem QUANDO RODAR (P11). Não crie regra nova que não esteja no material ou no código. Se duas fontes se contradisserem, o CÓDIGO decide e a contradição vai para DIVERGÊNCIAS.
@@ -540,6 +597,12 @@ CONTEÚDO:
   · ghostvars: `--token`, `--sarak-button-radius`, `--sarak-shell-brand-logo-size` — LOCALIZE cada consumo no código e registre. ⚠️ Nota conhecida: `--sarak-button-radius` é ghost; o token real de raio de card é `--sarak-card-radius`. Confirme antes de afirmar.
   · `tsc`: os 4 erros de produção (`useStructuralStyles.ts:30,71,94` — `ResponsiveValue<number>` não aceito por um helper que só aceita `string|number`; `ThemeCustomizationTab.tsx:86` — união de tipo de toast incompatível) e os 10 de teste.
   · Ghost vars históricas do `backlog_cobertura.md` que ainda procedem (ex.: `--sarak-shadow-glow` existe só como alias estático em `src/styles/_theme.css`, fora do pipeline dinâmico; `--sarak-sidebar-active`/`--sarak-topbar-active` — quebra de nome vs `*-active-color`). VERIFIQUE cada uma contra o código atual antes de trazer: várias podem já ter sido corrigidas.
+  · ⚠️ **ACHADOS DA FASE 2 — escopo seu** (ver "REGISTRO — os 7 achados da Fase 2" acima). Cada um entra na dívida com `arquivo:linha`, causa e o que fecharia:
+    - **Achado 2 (o mais grave — é lacuna de COBERTURA do gate, não só dívida):** dois usos VIVOS de `--sx-*`, o namespace declarado proibido, em `src/styles/_utilities.css:80` e `:89` (`var(--sarak-range-active-bg, var(--sx-color-primary-base))`). Como ninguém emite `--sx-color-primary-base`, o fallback de 2º nível resolve para VAZIO. O `auditor_ghostvars` **não acusa** porque varre só `src/components` e `src/features` — `src/styles/` é tratado como FONTE emissora, nunca como consumidora. Documente as duas metades do conserto (as 2 linhas de CSS **e** ampliar o escopo do auditor) e por que ele não é feito aqui: mexer em gate durante a campanha move o baseline que esta própria spec está fixando.
+    - **Achado 3:** `CustomizationPanel` eager no barril (`src/index.ts:50` + efeito colateral `:119-125`) — dívida de bundle; conserto é breaking change de tipo.
+    - **Achado 1:** `src/components/atomic/Tables/` é categoria sem componente (só `hooks/`), com `SarakTable.tsx` em `Templates/` importando o hook cruzando a fronteira; `grep "atomic/Tables"` = 0.
+    - **Achado 6:** `upgradeThemePayload` (`master-map.ts:148`) tem `partialMode` declarado e nunca usado.
+    Para cada um, registre TAMBÉM se ele é ou não visível em algum gate hoje — é essa coluna que revela o que o conjunto de gates não vê.
 - A REGRA DE ORDEM DE CORREÇÃO ("raiz primeiro"): ao corrigir um consumo fantasma compartilhado, corrija a fonte compartilhada (hook controlador) ANTES dos consumidores individuais.
 - A REGRA ANTI-AFROUXAMENTO: NUNCA relaxar a allowlist de um auditor para mascarar violação real; NUNCA excluir pasta do escopo do auditor para baixar a contagem.
 
@@ -871,6 +934,7 @@ CONTEÚDO:
 - A CONFIGURAÇÃO E O PORQUÊ DELA: `environment: 'jsdom'`, `globals: true`, `pool: 'forks'` e `execArgv: ['--max-old-space-size=8192']`. ⚠️ Registre a história: a suíte completa caía por OOM; a causa-raiz foi um LOOP INFINITO DE REFETCH (dependência de objeto inline num hook de dados), e o agravante foi o Vitest 4 ter removido `poolOptions` e IGNORÁ-LO EM SILÊNCIO — a configuração "correta" não estava fazendo nada. Duas lições permanentes.
 - O ESCOPO EXCLUÍDO do vitest: `**/__e2e__/**` e `**/*.spec.ts(x)` — porque são Playwright, não Vitest.
 - ⚠️ A REGRA DURA: "suítes verdes" exige `npx vitest run` INTEIRO. Rodar pasta a dedo esconde snapshot de terceiro que quebrou.
+- ⚠️ **TESTE NÃO-HERMÉTICO — registre como defeito de teste, com destaque.** `bin/scaffold/__tests__/packageManager.test.mjs > "sem nenhum sinal, o default é npm"` depende do ambiente: ele cria um `tmpDir` sob o diretório temporário do SO e espera que `detectPackageManager` não ache lockfile nenhum subindo a árvore — mas a subida vai até a raiz do volume (comportamento CORRETO e testado de propósito em outro caso), então um `package-lock.json` solto no `$HOME` faz o teste falhar por motivo alheio ao repositório. Confirmado nesta máquina em 2026-07-28. **Consequência real, não teórica:** foi essa fragilidade que impediu o Anel 3 de virar `pre-push` bloqueante em P11. Documente o defeito, a condição que o dispara, e o que o tornaria hermético (fixar uma fronteira de parada da subida no teste, ou isolar o `tmpDir` fora de qualquer ancestral com lockfile). **NÃO conserte aqui** — é código de teste; registre como dívida com dono e caminho.
 - E2E — o estado HONESTO: Playwright CT está instalado (`npm run test-ct`, `playwright/index.tsx`) e existem specs em `src/core/Provider/__e2e__/` e `src/features/DesignEngine/__e2e__/`; algumas EXIGEM `npm run build` antes. Mas **nada disso roda em pipeline automático**. Registre como LACUNA, não como plano concluído — a spec antiga listava jornadas E2E como "próximo passo" desde sempre.
 - Números do baseline: 280 arquivos / 890 testes, 100% verde, ~136s. E a meta de cobertura declarada (~80%) com a ferramenta que a mede (`@vitest/coverage-v8`) — confirme se ela é de fato medida hoje ou se é só uma intenção; diga a verdade.
 
@@ -1004,6 +1068,7 @@ DEFEITOS JÁ MAPEADOS (confirme cada um antes de agir):
 - `ui-contexto-repositorio`: manda ler `specs/specs/07-agente-llm-design-e-expansao-estrutural.md` (inexistente) e outras specs que a campanha renomeou; a lista de leitura obrigatória tem de apontar para a base NOVA.
 - `ui-integra-consumidor`: é a skill do CONSUMIDOR, espelhada aqui a partir de `sarak-ui/skill/`. Ela é GERADA pelo `guide` — **não a edite à mão**; verifique se é cópia fiel e registre.
 - `ui-auditoria-modulo`, `ui-arquitetura-design`, `ui-criar-tema`, `ui-criar-preset`, `ui-refatorar-componente`: audite cada uma contra o código e contra as specs novas; corrija ponteiros e contagens defasadas.
+- ⚠️ **ESCOPO AMPLIADO — `README.md` da raiz entra nesta tarefa** (achado 5 da Fase 2). Ele é o primeiro texto que um consumidor lê e tem a mesma classe de defeito das skills: ponteiro morto. Confirmado: `README.md:18` manda instalar **`pg`** no comando de peerDependencies, mas o driver saiu junto com o backend próprio (ADR-003) e `pg` não está mais em `peerDependencies`. Audite o `README.md` INTEIRO contra o código — comando de instalação, lista de dependências, exemplo de consumo, comandos de build, e a seção "Guia Rápido para Agentes IA" (que cita skills que P24 pode estar aposentando na mesma rodada) — e corrija o que estiver morto. Trate-o como o artefato consumidor-facing que ele é.
 
 TAREFA:
 - T1: AUDITAR as 10 skills — para cada uma, tabela: ponteiro citado × existe? × ação (manter / corrigir / aposentar).

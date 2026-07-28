@@ -1,6 +1,6 @@
 {
     "name": "@sarak/lib-ui-core",
-    "version": "3.0.0",
+    "version": "1.0.0",
     "description": "Sarak Design System and UI Engine [Pre-compiled]",
     "type": "module",
     "style": "./dist/sarak.css",
@@ -29,6 +29,10 @@
         "barrel:check": "node scripts/check-barrel-parity.mjs --check",
         "zero-brand:check": "node scripts/check-zero-brand.mjs --check",
         "package:check": "node scripts/check-package-contents.mjs",
+        "audit": "node .agents/skills/ui-auditoria-modulo/scripts/run_audit.mjs",
+        "audit:baseline": "node scripts/check-audit-baseline.mjs",
+        "hooks:install": "node scripts/install-hooks.mjs",
+        "gates:full": "npm run build && npm run package:check && npx vitest run",
         "prepublishOnly": "npm run build && npm run package:check",
         "test-ct": "playwright test -c playwright-ct.config.ts"
     },

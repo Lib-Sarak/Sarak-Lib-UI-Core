@@ -1,0 +1,35 @@
+{
+    "_doc": "Baseline do Anel 2 (specs/specs/02-enforcement-por-commit.md). NÃO editar à mão: rode `npm run audit:baseline -- --write` DEPOIS de consertar a dívida, e commite junto do conserto.",
+    "_leitura": "Cada número é o MÁXIMO tolerado. Maior que isto = regressão = commit bloqueado.",
+    "medidoEm": "2026-07-28",
+    "metricas": {
+        "auditor_hardcoded.mjs": {
+            "valor": 1,
+            "estruturalLiquido": 0
+        },
+        "auditor_ghostvars.mjs": {
+            "consumos": 3
+        },
+        "auditor_typescript.mjs": {
+            "violacoes": 0
+        },
+        "auditor_coverage.mjs": {
+            "orfaos": 0
+        },
+        "auditor_arquitetura.mjs": {
+            "violacoes": 0
+        },
+        "auditor_cleancode.mjs": {
+            "violacoes": 0
+        },
+        "auditor_paridade.mjs": {
+            "falhou": 0
+        },
+        "auditor_presets.mjs": {
+            "falhou": 0
+        }
+    },
+    "tsc": {
+        "erros": 14
+    }
+}

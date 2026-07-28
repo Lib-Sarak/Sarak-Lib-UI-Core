@@ -5,6 +5,46 @@ com o "antes" e o "depois" lado a lado. Uma entrada por mudança, mais recente p
 
 ---
 
+## Renumeração de `3.0.0` para `1.0.0` — identidade, não regressão
+
+**Não quebra nada. Nada foi removido, nada mudou de comportamento.** Esta entrada existe
+justamente porque o número ANDA PARA TRÁS, e um número que anda para trás normalmente
+significa perda de capacidade. Aqui não significa.
+
+**O que mudou.**
+
+| | Antes | Depois |
+| --- | --- | --- |
+| `package.json` → `version` | `3.0.0` | **`1.0.0`** |
+| `dist/BUILD_INFO.json` → `libVersion` | `3.0.0` | `1.0.0` (regenerado por `npm run build`) |
+| `sarak-ui/VERSION` → `libVersion` | `3.0.0` | `1.0.0` (regenerado por `npm run guide`) |
+
+**Por quê.** O `3.0.0` era herança sem significado: **nunca houve um 1.x nem um 2.x com
+release**. O pacote nunca foi publicado em registry, o repositório tem **zero tags git**, e a
+`version` ficou **imóvel por mais de 15 commits** que alteraram o `package.json` — inclusive
+commits que mudaram o contrato público. O número não descrevia nada.
+
+Esta é a v1 do produto. O número passa a dizer a verdade, e a partir daqui ele **se move**,
+com a política de MAJOR/MINOR/PATCH descrita em `specs/specs/03-versionamento-e-release.md`.
+
+**O que você precisa fazer: nada.**
+
+- Se você resolve por **`github:`** — a resolução é por **commit**, não por semver. O `npm install`
+  se comporta exatamente como antes.
+- Se você resolve por **`file:`/`link:`** — a resolução é por **caminho**. Idem.
+- Um `^3.0.0` escrito à mão no seu `package.json` **nunca esteve sendo respeitado** nesses dois
+  modos; se você o tem, pode trocar por `^1.0.0` por higiene, sem efeito prático.
+
+**O que NÃO foi renumerado, e por quê** — são outras coisas, com ciclos de vida próprios:
+
+| Número | Onde | O que é |
+| --- | --- | --- |
+| `kitSchemaVersion=1` | `sarak-ui/VERSION` | Versão do **formato** do kit do consumidor |
+| `MASTER_DESIGN_MAP.version` | `src/core/Design/master-map.ts` | Versão do **dicionário de tokens** |
+| `schema_version` | payload de design | Versão do **formato do tema** |
+
+---
+
 ## CLI do consumidor: comandos reais, multi-gerenciador e aviso de atualização (Spec 51)
 
 **Não quebra nada.** Tudo abaixo é aditivo: os scripts já gerados em consumidores existentes
