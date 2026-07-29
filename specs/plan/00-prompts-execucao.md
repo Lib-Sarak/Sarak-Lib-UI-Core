@@ -138,6 +138,17 @@ Decisões tomadas em conversa, com data. **Nenhum agente re-litiga o que está a
 | **D4** | **Distribuição: tags + `#semver:` como caminho RECOMENDADO; `github:` puro segue SUPORTADO.** Opção (A). Nenhum consumidor existente precisa mexer no `package.json` dele no dia em que a tag nasce; quem pina por commit (reprodutibilidade) continua podendo; e a decisão é reversível — deprecar `github:` puro depois é fácil, desforçar uma migração não é. | 2026-07-28 | **P12-C** |
 | **D5** | **Emissão de tag: semi-automática, com BLOQUEIO no push.** O gatilho é *"o artefato publicado mudou"*, não *"houve commit"*. O nível do bump é **decidido por humano**, não derivado de mensagem de commit. | 2026-07-28 | **P12-C** |
 | **D6** | **O `Sarak-MyService` é OBSOLETO.** Deixa de ser consumidor de referência. | 2026-07-28 | Varreduras de consumidor real passam a considerar só o **ERP**. ⚠️ Impacta o **P15**: o modo Shell-host (#1) perde o consumidor real que o justificou na regra de corte do ADR-001 — a spec do Shell tem de registrar isso como fato, sem decidir nada |
+| **D7** | **`Template-Ts/` SAI do repositório.** É um template de backend de chat (`template-chat-ts`: express/supabase/pg), **85 arquivos versionados**, sem nenhuma referência na lib, invisível para todos os gates exceto a suíte — onde produz **falso verde** (passa só por causa de um `node_modules/` local não versionado). Princípio do dono: *"esta é uma biblioteca genérica e não deve depender de nenhum módulo."* | 2026-07-28 | **P20-A**, antes do P20 |
+| **D8** | **Anel 3 → `pre-push`: PROMOVER, mas só a SUÍTE, e só depois do D7.** `npm run build` e `package:check` ficam FORA de hook para sempre — o motivo (2) da §4 (o build MUTA a árvore de trabalho) não expira. | 2026-07-28 | **P27**, depois do P20-A |
+| **D9** | **CI ganha FASE PRÓPRIA, depois de esvaziar o `specs/plan/`.** É o único item que resolve a classe inteira de "verde que depende da máquina" — o `$HOME` de um runner limpo não tem lockfile solto nem `node_modules` de projeto alheio. | 2026-07-28 | **Campanha 2, Fase A** |
+| **D10** | **Registry: NÃO agora.** O `#semver:` + tag já entrega o `npm update`. O ganho que falta é **tirar o `dist/` do git** — e ele só compensa quando houver consumidor fora da órbita do dono. | 2026-07-28 | Registrado; sem tarefa |
+| **D11** | **Ciclo de atualização do consumidor precisa de dois comandos**, refletindo a única fronteira que importa em semver: `sarak-ui update` (dentro da faixa, seguro) e `sarak-ui update --latest` (ATRAVESSA o major, mostrando quantos majors pula + as entradas de `docs/migracoes.md` entre as duas versões, e pedindo confirmação). "Subir uma versão de cada vez" **não existe** no npm e não faz sentido: dentro do major todas as versões prometem a mesma compatibilidade. | 2026-07-28 | **Campanha 2, Fase D** |
+| **D12** | **As quebras de contrato acumuladas são agrupadas num ÚNICO major.** `CustomizationPanel` lazy, dedup do `SarakTabs` e o destino dos ids legados do Discovery saem juntos numa `2.0.0`, com uma entrada só em `docs/migracoes.md`. Três releases breaking separadas custariam três migrações ao consumidor. | 2026-07-28 | **Campanha 2, Fase C** |
+
+> ### ⚠️ Mudança no destino do `specs/plan/`
+> O plano original dizia "`specs/plan/` será ESVAZIADO". Isso continua verdade **para esta campanha** — mas o `plan/` não morre: ele é **reciclado**. O `specs/README.md` (reescrito no P0) já descreve o modelo certo: *plano transitório, com data de morte, esvaziado ao fim de cada campanha*.
+>
+> O **P25** passa a ter duas obrigações: (1) apagar tudo o que é da Campanha 1 e (2) **semear** o `specs/plan/00-prompts-execucao.md` da **Campanha 2** a partir do briefing no fim deste documento. Sem isso, o briefing da Campanha 2 morreria junto com o arquivo que o carrega.
 
 > **Por que D5 não é auto-tag em todo commit:** neste repositório todo trabalho acontece direto na `main` — "tag a cada commit na main" produziria centenas de tags e o semver viraria contador de build; a faixa `^1.0.0` do consumidor resolveria para algo novo quase todo dia e "minor" deixaria de significar coisa alguma.
 >
@@ -183,10 +194,12 @@ Decisões tomadas em conversa, com data. **Nenhum agente re-litiga o que está a
 - [ ] **P17** — `specs/07-responsividade-e-multidispositivo.md`
 - [ ] **P18** — `specs/06-painel-de-customizacao-e-preview.md`
 - [ ] **P19** — `specs/08-identidade-do-host-e-zero-marca.md`
+- [ ] **P20-A** — **Remover `Template-Ts/` do repositório** *(decisão D7 — pré-requisito do P20: sem isso a spec de testes documenta um número falso)*
 - [ ] **P20** — `specs/11-testes-e-cobertura.md`
 
-### Fase 4.5 — Fechamento da superfície pública *(mexe em código; roda ANTES dos kits, para o kit documentar a superfície final)*
+### Fase 4.5 — Fechamento da superfície pública e do enforcement *(mexe em código; roda ANTES dos kits, para o kit documentar a superfície final)*
 - [ ] **P26** — Engines: apagar o barril órfão · expor Chat+Flow · remover Visual · ampliar o `barrel:check` *(decisão D2)*
+- [ ] **P27** — Promover o **Anel 3 (suíte) a `pre-push`** *(decisão D8 — depende do P20-A)*
 
 ### Fase 5 — Habilitação (os dois kits)
 - [ ] **P21** — `specs/12-kit-do-consumidor.md`
@@ -195,7 +208,15 @@ Decisões tomadas em conversa, com data. **Nenhum agente re-litiga o que está a
 
 ### Fase 6 — Fechamento
 - [ ] **P24** — Reconciliar as skills do mantenedor com o código real
-- [ ] **P25** — Esvaziar `specs/plan/` e remover as specs aposentadas
+- [ ] **P25** — Esvaziar `specs/plan/` da Campanha 1 · remover as specs aposentadas · **SEMEAR o plano da Campanha 2**
+
+### 🔜 CAMPANHA 2 — Adequação do sistema *(briefing no fim deste documento; vira plano executável no P25)*
+> Primeiro corrigimos e limpamos as specs (Campanha 1). **Depois** adequamos o sistema ao que ficou escrito.
+- **Fase A** — Integração contínua *(D9)*
+- **Fase B** — Quitação do baseline de auditoria
+- **Fase C** — Limpeza do contrato público → `2.0.0` *(D12)*
+- **Fase D** — Ciclo de atualização do consumidor *(D11)*
+- **Fase E** — E2E no pipeline
 
 > **Nota de numeração:** o número no NOME do arquivo é ordem de **leitura**, não de **execução**. `arquitetura/01` sai antes de `arquitetura/00` de propósito — a forma do produto é pré-requisito do mapa.
 
@@ -1028,6 +1049,35 @@ ENTREGUE: o RELATÓRIO DE ENTREGA (§7). Marque o checkbox de P19 e registre em 
 
 ---
 
+## P20-A — Remover `Template-Ts/` do repositório
+
+> ⚠️ **MEXE NO REPOSITÓRIO (deleção).** É pré-requisito do P20: enquanto o `Template-Ts/` estiver aqui, qualquer número de suíte que a spec de testes escrever é falso.
+
+```
+Você vai remover do repositório da Sarak-Lib-UI-Core um subprojeto que não pertence a ele. Decisão D7, já tomada — execute, não rediscuta.
+
+Preparação: (1) `ui-contexto-repositorio`; (2) `specs/plan/00-prompts-execucao.md` INTEIRO (regras comuns, baseline, decisão D7); (3) `specs/specs/01-gates-e-baseline.md` §3.2 — o achado completo, com a saída real do clone limpo; (4) estude `sarak:code-limpeza-projeto` (o fluxo de remoção com HITL e grep antes de deletar).
+
+O QUE É (confirme antes de apagar): `Template-Ts/` é `template-chat-ts` — um template de BACKEND de chat (express, @supabase/supabase-js, pg, zod, cors, dotenv). **85 arquivos versionados**: 48 em `src/`, **27 em `dist/`** (saída compilada, commitada), 6 testes, `tsconfig.json`, `package.json`, `package-lock.json`, `.env.example`. Entrou num commit só: `c43293e chore: setup Template-Ts and agents structure`.
+
+POR QUE SAI — o princípio do dono: *"esta é uma biblioteca genérica e não deve depender de nenhum módulo."* E os fatos: nada na lib o referencia; ele já é PROIBIDO no tarball (`scripts/check-package-contents.mjs:14`); o `tsc` não o compila (`tsconfig.json` tem `"include": ["src"]`); nenhum dos 8 auditores o vê. O único gate que o enxerga é a **suíte** — e lá ele passa por causa de um `Template-Ts/node_modules/` **local e não versionado**. Num clone limpo, 3 arquivos falham. É verde que depende de estado que não viaja no git.
+
+TAREFA:
+- T1: CONFIRMAR o isolamento ANTES de apagar. Grep por `Template-Ts` em todo o repositório, fora do próprio diretório. O esperado é achar SÓ: `scripts/check-package-contents.mjs` (lista de proibidos), `specs/specs/01-gates-e-baseline.md` §3.2 e `specs/arquitetura/05-build-e-distribuicao.md` §3. **Qualquer outra referência é DIVERGÊNCIA — pare e reporte.**
+- T2: REMOVER o diretório inteiro (os 85 arquivos versionados; o `node_modules/` local não é rastreado e some junto). O histórico permanece no git — registre o commit de referência (`c43293e`) para quem quiser recuperar.
+- T3: DECIDIR o que fazer com a entrada `'Template-Ts/'` na lista de proibidos de `check-package-contents.mjs`. Argumente e escolha: mantê-la é uma trava barata contra o diretório voltar; removê-la é coerente com "não existe mais". **Recomendo MANTER**, com o motivo escrito ao lado — o gate já tem o hábito de recusar exclusão obsoleta, e uma linha comentada custa menos que o diretório reaparecer sem ninguém notar.
+- T4: ATUALIZAR `specs/specs/01-gates-e-baseline.md` §3.2 — de achado aberto para **RESOLVIDO**, com a data, o número da suíte ANTES e DEPOIS, e a lição preservada (*a suíte varria um projeto alheio e ninguém via, porque o único gate que o alcançava era o que ele enganava*). Mesmo tratamento que a §3.1 recebeu.
+- T5: CONFERIR se `vitest.config.ts` precisa de ajuste. **Provavelmente não** — sumindo o diretório, o `include` default para de achá-lo. **NÃO acrescente exclusão** de um caminho que não existe mais: seria exatamente a regra 2 da §6 (*nunca excluir pasta do escopo de um auditor*) aplicada ao contrário.
+
+FRONTEIRAS: não mexa em nenhum outro diretório; não altere `vitest.config.ts` sem que a T5 prove necessidade; não `git rm` (só remoção de arquivo — o commit é decisão do dono); não corrija nenhum item do baseline de auditoria; não instale nem desinstale dependência.
+
+GATES: suíte COMPLETA `npx vitest run` — o número tem de CAIR (saem os 6 arquivos de teste do Template-Ts) e continuar **100% verde**; `run_audit` no baseline exato; `barrel:check`, `catalog:check`, `zero-brand:check`, `guide:check`; `npm run build` e `package:check` (o tarball não pode mudar — o diretório já era proibido nele).
+
+ENTREGUE: o RELATÓRIO DE ENTREGA (§7), com o grep da T1 (a prova que autoriza a deleção), a contagem da suíte antes e depois, e a decisão da T3 justificada. Marque o checkbox de P20-A, registre em `00-progresso.md` e ATUALIZE a linha da suíte na §5 deste plano. NÃO commite sem autorização.
+```
+
+---
+
 ## P20 — `specs/11-testes-e-cobertura.md`
 
 ```
@@ -1096,6 +1146,41 @@ FRONTEIRAS: não mexa nos outros achados (P10 já os registrou); não torne o `C
 GATES: `barrel:check` (com o escopo NOVO), `catalog:check` (os engines expostos entram no catálogo gerado — confirme), `zero-brand:check`, `guide:check`, `npm run build` (DTS), suíte COMPLETA, `package:check`, `run_audit` no baseline exato. Mais a medição de bundle antes/depois da L2.
 
 ENTREGUE: o RELATÓRIO DE ENTREGA (§7), com: a varredura do ERP (a prova que autoriza ou cancela a L3), a medição de bundle da L2, e a saída do `barrel:check` mostrando o escopo ampliado. Marque o checkbox de P26 e registre em `00-progresso.md`. NÃO commite sem autorização.
+```
+
+---
+
+## P27 — Promover o Anel 3 (suíte) a `pre-push`
+
+> ⚠️ **MEXE EM CÓDIGO.** Depende do **P20-A** (sem ele, o push trava por projeto alheio). Decisão **D8** já tomada.
+
+```
+Você vai promover a suíte de testes a gate de push na Sarak-Lib-UI-Core, fechando uma decisão que ficou pendente desde o P11.
+
+Preparação: (1) `ui-contexto-repositorio`; (2) `specs/plan/00-prompts-execucao.md` INTEIRO (regras comuns, decisão D8); (3) `specs/specs/02-enforcement-por-commit.md` INTEIRA — esp. a §4 (a decisão de deixar o Anel 3 manual, com os motivos numerados) e o **caminho de promoção** que ela já registra; (4) `.githooks/pre-push` e `scripts/check-release-tag.mjs` (o anel de push que o P12-C instalou — você vai CONVIVER com ele, não substituí-lo); (5) `scripts/install-hooks.mjs`.
+
+⚠️ PRÉ-REQUISITO: o **P20-A** tem de estar concluído. Enquanto o `Template-Ts/` estiver no repositório, a suíte não fecha verde num clone limpo e um `pre-push` bloqueante travaria todo push por um projeto que não é da lib. Confirme; se não estiver, PARE e reporte.
+
+O QUE MUDA — e o que NÃO muda:
+- **PROMOVER: só a suíte** (`npx vitest run`). Os motivos (1) e (2) da §4 tinham validades diferentes, e só um expirou:
+  · motivo (1) *"a suíte tem falha dependente do ambiente"* → **caiu** (P11-D fechou a §3.1; P20-A fecha a §3.2);
+  · motivo (2) *"`npm run build` MUTA a árvore de trabalho"* → **NÃO expira nunca.** Um hook que regenera `dist/` no meio de um push faz o push sair com uma árvore diferente da que foi validada.
+- **`npm run build` e `package:check` ficam FORA de hook, permanentemente.** Registre isso na spec como decisão fechada, não como pendência — para ninguém "completar" o Anel 3 depois achando que faltou.
+
+TAREFA:
+- L1: acrescentar a suíte ao `.githooks/pre-push`, **convivendo** com o anel de release (`check-release-tag.mjs`). Decida e JUSTIFIQUE a ordem: a suíte é cara (~165 s) e o anel de release é instantâneo — rodar o barato primeiro devolve o "não" mais rápido, que é o que respeita quem está do outro lado do terminal.
+- L2: o gate vale só para push de `main`? Ou para qualquer branch? **Decida e justifique.** O anel de release já filtra `refs/heads/main`; a suíte tem outro caráter — quebrar teste em branch de trabalho é normal, e bloquear atrapalharia. Minha inclinação: **só `main`**, mesmo critério do anel de release. Mas argumente.
+- L3: mensagem acionável no bloqueio, no mesmo padrão dos outros anéis: qual regra, qual comando reproduz, onde está a dívida tolerada.
+- L4: atualizar `scripts/install-hooks.mjs` se preciso (o `pre-push` já deve estar em `HOOK_FILES` desde o P12-C — confirme).
+- L5: reescrever a §4 de `02-enforcement-por-commit.md`: o Anel 3 deixa de ser "manual" e passa a ser "suíte no push; build e package:check fora de hook, por decisão". Preserve o histórico do porquê — a seção é instrutiva, não some.
+
+PROVA OBRIGATÓRIA (com saída real): (1) push com a suíte verde passa; (2) push com um teste quebrado de propósito é BLOQUEADO com a mensagem acionável — **e reverta a quebra depois**; (3) o anel de release continua funcionando nos dois cenários dele (artefato mudou sem tag → bloqueia; só markdown → passa); (4) meça o custo total do `pre-push` e registre — se passar de ~3 min, reporte, porque hook caro é hook contornado.
+
+FRONTEIRAS: não coloque `build` nem `package:check` no hook (motivo (2), permanente); não altere nenhum auditor; não mexa no `pre-commit`; não corrija o baseline; não faça push de verdade.
+
+GATES: suíte COMPLETA verde; `run_audit` no baseline exato; `barrel:check`, `catalog:check`, `zero-brand:check`, `guide:check`.
+
+ENTREGUE: o RELATÓRIO DE ENTREGA (§7), com as 4 provas e as justificativas de L1 e L2. Marque o checkbox de P27 e registre em `00-progresso.md`. NÃO commite sem autorização.
 ```
 
 ---
@@ -1254,6 +1339,8 @@ TAREFA:
 - T4: após aprovação — remover os arquivos aprovados de `specs/plan/` e as specs aposentadas de `specs/arquitetura/`/`specs/specs/`.
 - T5: ATUALIZAR os índices: `specs/INDEX.md` com a lista FINAL e completa dos documentos das 4 categorias; `specs/README.md` conferido; `specs/adr/README.md` com o índice dos 7 ADRs.
 - T6: FECHAMENTO — a última entrada de `00-progresso.md` antes de ele sair: o resumo da campanha (o que existia, o que passou a existir, o que foi aposentado e por quê).
+- T7: ⚠️ **SEMEAR A CAMPANHA 2 — esta tarefa NÃO termina com o `plan/` vazio.** Antes de apagar este arquivo, transcreva o **BRIEFING DA CAMPANHA 2** (a última seção deste documento) para um `specs/plan/00-prompts-execucao.md` NOVO, com: o cabeçalho da campanha nova, as **REGRAS COMUNS** (§1–§9 — copie da Campanha 1, atualizando o baseline para o estado real ao fim do P25), o **REGISTRO DE DECISÕES DO DONO** (D1–D12, que continuam valendo), o roteiro das 5 fases e o briefing de cada uma. Os **prompts** de cada fase da Campanha 2 NÃO são escritos aqui — eles nascem quando o dono for executar cada fase, como aconteceu nesta.
+  **Por que:** o `plan/` é transitório **por campanha**, não para sempre — é o modelo que o `specs/README.md` (reescrito no P0) descreve. Apagar este arquivo sem semear o próximo mataria junto todo o trabalho de decisão registrado nas D7–D12.
 
 FRONTEIRAS: não apague nada não aprovado; não apague `specs/_templates/`; não toque em código-fonte, `docs/`, `sarak-ui/` ou `sarak-dev/` além de corrigir referências órfãs; **não `git rm` — apenas remoção de arquivo** (o commit é decisão do dono); não faça push.
 
@@ -1261,6 +1348,97 @@ GATES: TODOS, ao final, no baseline exato — `run_audit`, `barrel:check`, `cata
 
 ENTREGUE: o RELATÓRIO DE ENTREGA (§7), com a tabela de migração da T1 COMPLETA (é a prova de que nada de vivo foi perdido) e o resultado da varredura da T2 (referências órfãs: encontradas × corrigidas). Registre o estado final: `specs/plan/` vazio, `specs/adr/` com 7 ADRs, `specs/arquitetura/` com 6, `specs/specs/` com 15. NÃO commite sem autorização.
 ```
+
+---
+
+# BRIEFING DA CAMPANHA 2 — ADEQUAÇÃO DO SISTEMA
+
+> **Esta seção é a semente do próximo plano.** O **P25 (T7)** a transcreve para um `specs/plan/00-prompts-execucao.md` novo antes de apagar este arquivo. Aqui há **briefing**, não prompt — os prompts nascem quando o dono for executar cada fase.
+>
+> **A ordem das duas campanhas é uma decisão, não acaso:** *primeiro corrigimos e limpamos as specs; depois adequamos o sistema ao que ficou escrito.* Adequar antes de escrever seria consertar contra um alvo que ainda se movia.
+
+**Ponto de partida:** a base de specs está escrita e verdadeira, o `specs/plan/` foi esvaziado da Campanha 1, e o sistema tem uma dívida **inteiramente documentada e nenhuma paga**. A Campanha 1 mediu; a Campanha 2 conserta.
+
+---
+
+## Fase A — Integração contínua *(decisão D9)*
+
+**Problema.** Duas vezes nesta campanha um "verde" foi falso por causa da máquina: um `package-lock.json` solto no `$HOME` derrubava um teste (§3.1), e um `node_modules/` não versionado fazia 6 arquivos de um projeto alheio passarem (§3.2). Nenhum gate local pega essa classe — por definição, o ambiente local é o problema. **`.github/` não existe** neste repositório.
+
+**Escopo.** Rodar num ambiente limpo o que não cabe em hook: suíte completa, `npm run build`, `package:check`, e o `run_audit` comparado ao baseline versionado. Cobrar quem usou `--no-verify` — hoje esse escape é invisível.
+
+**Spec a criar:** `specs/specs/15-integracao-continua.md`.
+**Também atualiza:** `02-enforcement-por-commit.md` (a §9 "opção em aberto" morre) e `01-gates-e-baseline.md` (onde cada gate roda).
+**Aceite:** um PR com teste quebrado é reprovado pela automação, não pela memória de alguém; e a suíte roda num `$HOME` que não é o do dono.
+
+---
+
+## Fase B — Quitação do baseline de auditoria
+
+**Problema.** `run_audit` não está em zero, e **nenhuma tarefa da Campanha 1 conserta isso** — ela documentou a dívida com precisão e não agendou pagamento. Baseline permanente deixa de ser dívida e vira norma.
+
+**Escopo, item a item** (o detalhe com `arquivo:linha` está em `01-gates-e-baseline.md`):
+- `--sx-*` vivo em `_utilities.css:80` e `:89` **+ ampliar o escopo do `auditor_ghostvars` para `src/styles/`** — as duas metades juntas, senão o conserto de um lado não é cobrado pelo outro. ⚠️ Ao ampliar o escopo, **ampliar o registro junto**: o auditor não lê `useDesignVariables.ts`, e escopo maior sem registro maior produz **acusação falsa** (§4.3.c).
+- `--sarak-button-radius` → o token real é `--sarak-btn-border-radius` (erro de grafia).
+- `--sarak-shell-brand-logo-size` → não existe token nenhum: é **Expansão** (criar nas 3 fontes), não renomeação.
+- `--token` → **NÃO corrigir.** É falso positivo dentro de um JSDoc; trocar a grafia do comentário baixaria o número sem consertar nada. É maquiagem, e a §6 a proíbe por escrito.
+- `SarakTypography.tsx:39` → fallback negativo; a convenção é `calc(var(--token, <positivo>) * -1)`.
+- **`tsc`: os 4 erros de PRODUÇÃO** (`useStructuralStyles.ts:30,71,94` — `ResponsiveValue<number>` recusado por um helper que só aceita `string|number`; `ThemeCustomizationTab.tsx:86` — união de tipo de toast). Os 10 de teste entram depois.
+- `upgradeThemePayload(partialMode)` — parâmetro morto.
+- **Os 7 ids de token duplicados**, no schema **e** no roteamento de persistência — 4 em duas colunas diferentes (ambiguidade real) e 3 repetidos na mesma coluna (redundância literal). São dois defeitos sob o mesmo sintoma; consertar muda **qual definição vence** em `getDefaultDesignState()`, então exige caracterização antes.
+
+**Spec a criar:** nenhuma. Atualiza `01-gates-e-baseline.md` (o baseline encolhe) e `.githooks/audit-baseline.json` — via `npm run audit:baseline -- --write`, **junto do conserto que o justificou**, nunca sozinho.
+**Aceite:** cada item fechado com o baseline regravado no mesmo commit; e o `--token` continua no baseline, com o motivo escrito.
+
+---
+
+## Fase C — Limpeza do contrato público → `2.0.0` *(decisão D12)*
+
+**Problema.** Três quebras de contrato estão paradas porque cada uma, sozinha, custaria uma migração ao consumidor.
+
+**Escopo — as três saem juntas, num único major:**
+- **`CustomizationPanel` lazy.** Hoje sai *eager* do barril (`src/index.ts:50`) e ainda é importado eager pelo efeito colateral de `:119-125` — é o painel inteiro do Design Engine no caminho crítico de todo consumidor. Tornar lazy muda o tipo público para `LazyExoticComponent`.
+- **Dedup do `SarakTabs`.** Dois componentes, mesmo nome, APIs incompatíveis (`items`/`defaultActiveId` × `tabs`/`activeTab`/`onChange`). Exige decidir qual API sobrevive.
+- **Os 2 ids legados do Discovery** (`mx-customization`, `personalization`), registrados por efeito colateral de import: manter ou remover.
+
+**Specs:** atualiza `arquitetura/03-superficie-publica.md` (as três dívidas da §8 morrem) e **exige uma entrada única em `docs/migracoes.md`** cobrindo as três, com antes/depois e como migrar. Avalie se a decisão de API do `SarakTabs` merece **ADR** — se sobreviver uma e morrer outra, sim.
+**Aceite:** `npm version major` → `2.0.0` com uma nota de migração só; e o consumidor atravessa o major uma vez, não três.
+
+---
+
+## Fase D — Ciclo de atualização do consumidor *(decisão D11)*
+
+**Problema.** O consumidor é avisado de que há versão nova (`sarak-ui check`, desde a Spec 51/ADR-008), mas não tem comando para agir. Dentro da faixa ele descobre sozinho que é `npm update`; **atravessar um major** exige editar o `package.json` à mão, sem ninguém dizer o que quebra.
+
+**Escopo:**
+- `sarak-ui update` — atualiza **dentro da faixa**, com o comando do gerenciador detectado. ⚠️ Regra da Spec 51: **comando não executado de verdade não entra.**
+- `sarak-ui update --latest` — **ATRAVESSA o major**: mostra quantos majors pula, imprime as entradas de `docs/migracoes.md` **entre a versão instalada e a nova**, pede confirmação e só então reescreve a faixa no `package.json`. O caminho seguro é um comando; o caminho que quebra é um comando **com o que quebra na tela**.
+- **Corrigir o filtro de faixa** (`tagComparison.mjs:54-59`): hoje lê só o MAJOR, então `~1.2.0` é tratado como `^1.2.0` e o consumidor recebe aviso de um `v1.9.0` que o `npm update` nunca vai lhe dar — aviso permanente, exatamente o ruído que a Spec 51 combate. Capturar o minor e filtrar por major+minor quando a faixa for `~`. Corrigir também o rótulo que imprime `(^N)` para quem escreveu `~`.
+
+**Specs:** atualiza `13-instalacao-e-atualizacao.md` (criada no P22) e o `sarak-ui/GUIA-FRONTEND.md` §2.7.
+**Aceite:** provado num consumidor real de cada gerenciador — dentro da faixa e atravessando um major, com a nota de migração aparecendo antes da confirmação.
+
+---
+
+## Fase E — E2E no pipeline
+
+**Problema.** Playwright CT está instalado (`npm run test-ct`) e existem specs em `src/core/Provider/__e2e__/` e `src/features/DesignEngine/__e2e__/` — **nada disso roda em automação nenhuma**, e algumas exigem `npm run build` antes. A Campanha 1 registrou como lacuna; ninguém fechou.
+
+**Escopo.** Levar E2E para a CI da Fase A (é o único lugar onde o `build` prévio não atrapalha, porque lá a árvore é descartável). Definir quais jornadas são bloqueantes e quais são informativas.
+
+**Spec:** atualiza `11-testes-e-cobertura.md` (a lacuna vira cobertura) e `15-integracao-continua.md`.
+**Aceite:** o não-vazamento do modo embarcado — hoje só verificável à mão — passa a ser cobrado a cada PR.
+**Depende de:** Fase A.
+
+---
+
+## Ordem sugerida e o porquê
+
+```
+A (CI)  →  B (baseline)  →  C (2.0.0)  →  D (update)  →  E (E2E)
+```
+
+**A primeiro** porque é o único item que torna todos os outros verificáveis: sem ambiente limpo, cada conserto continua sendo validado na máquina que já provou duas vezes que mente. **B antes de C** porque quebrar contrato com a auditoria vermelha mistura duas fontes de risco no mesmo release. **E por último** porque depende de A e é a única que pode esperar sem custo.
 
 ---
 

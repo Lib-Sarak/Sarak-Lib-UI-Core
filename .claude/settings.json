@@ -99,7 +99,8 @@
       "PowerShell(node .agents/skills/ui-auditoria-modulo/scripts/run_audit.mjs 2>&1 | Select-String -Pattern 'Executando auditor_|Encontradas|quebrou|SUCESSO ABSOLUTO|Itens auditados|1x  --' | Select-Object -Last 20; \"EXIT=$LASTEXITCODE\")",
       "PowerShell($e = \\(npx tsc --noEmit 2>&1 | Select-String -Pattern 'error TS'\\).Count; \"tsc erros: $e \\(baseline 14\\)\"; \"--- guide:check apos as edicoes de doc ---\"; npm run guide:check 2>&1 | Select-Object -Last 2)",
       "PowerShell(npx vitest run --reporter=dot 2>&1)",
-      "PowerShell($f=\"C:\\\\Users\\\\Igor\\\\AppData\\\\Local\\\\Temp\\\\claude\\\\c--Users-Igor-Desktop-Sarak-X---Trabalho-Code-Biblioteca-Sarak-Lib-UI-Core\\\\d493c0d6-6b17-4cf9-8d51-61fe4ced9d3a\\\\tasks\\\\bhwcudnwt.output\"; \\(Get-Item $f\\).Length; Get-Content $f -Tail 8)"
+      "PowerShell($f=\"C:\\\\Users\\\\Igor\\\\AppData\\\\Local\\\\Temp\\\\claude\\\\c--Users-Igor-Desktop-Sarak-X---Trabalho-Code-Biblioteca-Sarak-Lib-UI-Core\\\\d493c0d6-6b17-4cf9-8d51-61fe4ced9d3a\\\\tasks\\\\bhwcudnwt.output\"; \\(Get-Item $f\\).Length; Get-Content $f -Tail 8)",
+      "PowerShell($r=\"c:\\\\Users\\\\Igor\\\\Desktop\\\\Sarak\\\\X - Trabalho\\\\Code\\\\Biblioteca\\\\Sarak-Lib-UI-Core\"; Write-Output \"=== worktree limpo? \\(npm version EXIGE\\) ===\"; $s = git -C $r status --short; if \\($s\\) { $s } else { \"LIMPO\" }; Write-Output \"=== HEAD ===\"; git -C $r log --oneline -1; Write-Output \"=== commits desde a v1.0.0 ===\"; git -C $r log --oneline v1.0.0..HEAD; Write-Output \"=== version atual ===\"; \\(Get-Content \"$r\\\\package.json\" -Raw | ConvertFrom-Json\\).version)"
     ]
   }
 }
