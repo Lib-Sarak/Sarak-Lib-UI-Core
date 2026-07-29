@@ -18,7 +18,7 @@ import { fileURLToPath } from 'node:url';
 
 const ROOT = path.resolve(path.dirname(fileURLToPath(import.meta.url)), '..');
 const HOOKS_DIR = '.githooks';
-const HOOK_FILES = ['pre-commit'];
+const HOOK_FILES = ['pre-commit', 'pre-push'];
 
 const git = (...args) => spawnSync('git', args, { encoding: 'utf8', cwd: ROOT });
 
@@ -68,4 +68,5 @@ const garantirExecutavel = () => {
 
 configurarHooksPath();
 garantirExecutavel();
-console.log('[hooks:install] pronto. O gate de segredos + os Anéis 1 e 2 rodam no próximo commit.');
+console.log('[hooks:install] pronto. O gate de segredos + os Anéis 1 e 2 rodam no próximo commit,');
+console.log('               e o Anel de push cobra a tag de release no próximo `git push` para main.');

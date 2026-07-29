@@ -20,7 +20,20 @@ import path from 'node:path';
 const LOCAL_PREFIXES = ['file:', 'link:'];
 
 /** O que o consumidor de fato consome — o `dist/` publicado e o kit, nunca o `src/`. */
-const SIGNED_DIRS = ['dist', 'sarak-ui'];
+export const SIGNED_DIRS = ['dist', 'sarak-ui'];
+
+/**
+ * Hash curto de um inventário `caminho:tamanho`. Exportado porque o gate de release
+ * (`scripts/check-release-tag.mjs`, ADR-008) precisa responder "o artefato publicado
+ * mudou?" com **exatamente este critério** — só que lendo o inventário do git em vez do
+ * disco. Duas noções concorrentes de "o que é o artefato" seria a porta para o gate
+ * dizer uma coisa e o `sarak-ui check` dizer outra.
+ *
+ * A ordenação acontece aqui para que a origem das linhas (filesystem × `git ls-tree`)
+ * não influencie o hash.
+ */
+export const hashInventoryLines = (lines) =>
+    crypto.createHash('sha256').update([...lines].sort().join('\n')).digest('hex').slice(0, 12);
 
 export const isLocalSpec = (spec) => LOCAL_PREFIXES.some((prefix) => spec.startsWith(prefix));
 
@@ -77,7 +90,7 @@ const buildSignature = (packageRoot) => {
     return {
         buildInfo,
         kitVersion,
-        inventoryHash: crypto.createHash('sha256').update(files.join('\n')).digest('hex').slice(0, 12),
+        inventoryHash: hashInventoryLines(files),
         present: buildInfo !== null || kitVersion !== null,
     };
 };

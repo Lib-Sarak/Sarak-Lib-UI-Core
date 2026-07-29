@@ -144,7 +144,14 @@ existe "salvar tema no banco": a central não tem servidor, e salvar **é** expo
      `ls package.json` antes). **Por quê:** sem `package.json` local, o `npm install github:...` sobe
      a árvore de diretórios e instala **lá**, em silêncio, poluindo um projeto alheio (achado real:
      289 pacotes num projeto não relacionado). Nunca pule, mesmo em diretório aparentemente vazio.
-   - **Ação:** `npm install @sarak/lib-ui-core` (github: `npm install github:Lib-Sarak/Sarak-Lib-UI-Core`).
+   - **Ação (RECOMENDADO — faixa semver por tag):**
+     `npm install "github:Lib-Sarak/Sarak-Lib-UI-Core#semver:^1.0.0"`.
+     O npm resolve a faixa contra as **tags** do repositório: a instalação pega a maior versão
+     compatível, e depois `npm update @sarak/lib-ui-core` sobe sozinho para a próxima — **sem
+     registry e sem mexer no `package.json`**. Só atravessa MAJOR quem editar a faixa à mão.
+   - **Ação (SUPORTADO — sem faixa):** `npm install github:Lib-Sarak/Sarak-Lib-UI-Core` continua
+     válido e **não é erro**; ele resolve o HEAD do momento e depois precisa do `sarak:update`
+     (que fura pin de lockfile e cache) para andar. Quem já instalou assim **não precisa migrar**.
    - **Ação:** rode o scaffolder com as respostas da Etapa 1, via flags (não repita a entrevista):
      ```bash
      npx sarak-ui init --mode app --frontend-port 5173

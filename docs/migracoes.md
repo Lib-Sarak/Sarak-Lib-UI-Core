@@ -5,6 +5,39 @@ com o "antes" e o "depois" lado a lado. Uma entrada por mudança, mais recente p
 
 ---
 
+## Releases com tag: `#semver:` passa a funcionar — e você não precisa fazer nada
+
+**Não quebra nada.** Nenhum export mudou, nenhum comportamento mudou, e **nenhuma forma de
+instalar deixou de funcionar**. Esta entrada existe porque uma capacidade NOVA ficou disponível
+e vale a pena saber que ela existe.
+
+**O que mudou.** O repositório passou a emitir **tags `vX.Y.Z`** a cada release (`v1.0.0` é a
+primeira). O npm resolve faixa semver contra as tags de um repositório git — então:
+
+```jsonc
+// RECOMENDADO a partir de agora
+"@sarak/lib-ui-core": "github:Lib-Sarak/Sarak-Lib-UI-Core#semver:^1.0.0"
+
+// SUPORTADO, e continua correto — não é erro, não é depreciado
+"@sarak/lib-ui-core": "github:Lib-Sarak/Sarak-Lib-UI-Core"
+```
+
+Com a faixa, `npm update @sarak/lib-ui-core` sobe sozinho para a maior versão compatível — **sem
+registry, sem editar o `package.json`, e sem atravessar MAJOR**. Sem a faixa, tudo segue como
+antes: `npm run sarak:update` continua sendo o caminho (é ele que fura o pin do lockfile e o cache).
+
+**O que você precisa fazer: nada.** Migrar é opcional e reversível. Se quiser migrar, é uma linha
+no seu `package.json` seguida de uma reinstalação.
+
+**O aviso mudou de vocabulário.** `sarak-ui check` passa a comparar **versões** em vez de hashes:
+`instalado v1.0.1, publicado v1.0.2`. Se o seu spec tem uma faixa `^1`, um `v2.0.0` publicado
+**não** vira aviso — ele não chegaria até você por `npm update`, e um aviso que não se resolve é
+um aviso que se aprende a ignorar.
+
+Detalhe e justificativa: `specs/adr/008-releases-com-tag-e-semver-em-git.md`.
+
+---
+
 ## Renumeração de `3.0.0` para `1.0.0` — identidade, não regressão
 
 **Não quebra nada. Nada foi removido, nada mudou de comportamento.** Esta entrada existe

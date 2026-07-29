@@ -69,7 +69,7 @@ Lista de tokens, de componentes, de props, de ícones: **jamais** copiada para d
 | `catalog:check` | `npm run catalog:check` | ✅ em dia |
 | `zero-brand:check` | `npm run zero-brand:check` | ✅ **363 arquivos, 0 violações** |
 | `guide:check` | `npm run guide:check` | ✅ **kit em dia (6 arquivos)** |
-| suíte completa | `npx vitest run` | **280 arquivos / 890 testes** (~136s). ⚠️ **Atualizado em 2026-07-28:** 889 passam e **1 falha DEPENDENTE DO AMBIENTE** — `bin/scaffold/__tests__/packageManager.test.mjs > "sem nenhum sinal, o default é npm"`. O teste assume ausência de lockfile em **qualquer ancestral** do diretório temporário do SO; num `$HOME` com `package-lock.json` solto, `detectPackageManager` acha um lockfile de verdade e devolve `source: 'lockfile'`. **Não é regressão da campanha nem defeito do código** — é teste não-hermético. Detalhe em `specs/specs/01-gates-e-baseline.md` §3.1. Numa máquina limpa: 890/890 |
+| suíte completa | `npx vitest run` | ✅ **281 arquivos / 901 testes, 100% verde** (~198s). ⚠️ **Atualizado em 2026-07-28:** era 890 com **1 falha dependente do ambiente** (`packageManager.test.mjs`); o **P11-D** tornou o teste hermético (fronteira `stopAt`) e somou o caso que prova as duas direções (→ 891), e o **P12-C** somou `tagComparison.test.mjs` com 10 casos (→ 901). Detalhe em `specs/specs/01-gates-e-baseline.md` §3.1 |
 | `tsc` | `npx tsc --noEmit` | ❌ **14 erros** — 10 em teste, **4 em produção** (`useStructuralStyles.ts:30,71,94`; `ThemeCustomizationTab.tsx:86`). **Não é gate hoje.** |
 | `build` + DTS | `npm run build` | encadeia catalog→barrel→zero-brand→guide→tsup→css→scoped→copy→inject→build-info |
 | `package:check` | `npm run package:check` | roda no `prepublishOnly`; exige `dist/` buildado |
@@ -126,6 +126,27 @@ O que ficou de fora do escopo e por quê. Silêncio aqui é proibido.
 
 ---
 
+# REGISTRO DE DECISÕES DO DONO
+
+Decisões tomadas em conversa, com data. **Nenhum agente re-litiga o que está aqui.** Se você acha que uma delas está errada, isso é DIVERGÊNCIA — registra e pergunta; não decide por conta.
+
+| # | Decisão | Data | Consequência |
+| --- | --- | --- | --- |
+| **D1** | **`atomic/Tables/` fica como está.** A categoria não tem componente (só `hooks/useTableLayoutStyles.ts`), mas **não é obsoleta**: o hook é importado por `Templates/SarakTable.tsx:18` e é `structuralConsumer` de dois tokens (`schema/tables.ts:25` e `:40`, espelhados em `components_base.json:110,126`). Apagar quebraria a paridade estrutural. As três alternativas (mover o hook, mover o componente, reorganizar) custam mais que a anomalia. | 2026-07-28 | **Sem tarefa.** Fica documentada em `00-mapa-do-modulo` §9 |
+| **D2** | **Engines: apagar o barril órfão, expor Chat+Flow, remover Visual, ampliar o gate.** | 2026-07-28 | **P26** |
+| **D3** | **Versão renumerada para `1.0.0`.** | 2026-07-27 | ✅ executado no P12 |
+| **D4** | **Distribuição: tags + `#semver:` como caminho RECOMENDADO; `github:` puro segue SUPORTADO.** Opção (A). Nenhum consumidor existente precisa mexer no `package.json` dele no dia em que a tag nasce; quem pina por commit (reprodutibilidade) continua podendo; e a decisão é reversível — deprecar `github:` puro depois é fácil, desforçar uma migração não é. | 2026-07-28 | **P12-C** |
+| **D5** | **Emissão de tag: semi-automática, com BLOQUEIO no push.** O gatilho é *"o artefato publicado mudou"*, não *"houve commit"*. O nível do bump é **decidido por humano**, não derivado de mensagem de commit. | 2026-07-28 | **P12-C** |
+| **D6** | **O `Sarak-MyService` é OBSOLETO.** Deixa de ser consumidor de referência. | 2026-07-28 | Varreduras de consumidor real passam a considerar só o **ERP**. ⚠️ Impacta o **P15**: o modo Shell-host (#1) perde o consumidor real que o justificou na regra de corte do ADR-001 — a spec do Shell tem de registrar isso como fato, sem decidir nada |
+
+> **Por que D5 não é auto-tag em todo commit:** neste repositório todo trabalho acontece direto na `main` — "tag a cada commit na main" produziria centenas de tags e o semver viraria contador de build; a faixa `^1.0.0` do consumidor resolveria para algo novo quase todo dia e "minor" deixaria de significar coisa alguma.
+>
+> **E por que o nível não sai da mensagem de commit:** os cinco commits mais recentes deste repositório são **todos `feat:`** — inclusive os que REMOVERAM capacidade e os que corrigiram bug. As mensagens são geradas por agentes e não carregam intenção de release. Uma heurística sobre elas diria `minor` sempre, e um dia diria `minor` numa mudança breaking. **Tag errada é pior que tag ausente**, porque o consumidor confia na faixa.
+>
+> **O problema real nunca foi "não sei tagear", foi "esqueci"** — 0 tags em 330 commits, e um consumidor preso 4 commits atrás por semanas. Bloqueio resolve esquecimento sem tirar a decisão de quem entende o impacto.
+
+---
+
 # ROTEIRO DE EXECUÇÃO (ordem única — de cima para baixo, um item por vez)
 
 ### Fase 0 — Fundação da nova base
@@ -149,6 +170,10 @@ O que ficou de fora do escopo e por quê. Silêncio aqui é proibido.
 - [x] **P10** — `specs/01-gates-e-baseline.md`
 - [x] **P11** — `specs/02-enforcement-por-commit.md` **+ IMPLEMENTAR o pipeline de pre-commit**
 - [x] **P12** — `specs/03-versionamento-e-release.md` **+ RENUMERAR para `1.0.0`**
+- [x] **P11-D** — Tornar `packageManager.test.mjs` HERMÉTICO *(dívida aberta pelo P11; pré-requisito do P12-C)*
+- [x] **P12-C** — **Releases com tag**: ADR-008 + ritual automatizado + bloqueio no push + `v1.0.0` *(decisões D4/D5)* — ⚠️ tag `v1.0.0` criada **local**; push pendente de autorização do dono
+
+> **Fase 3 CONCLUÍDA em 2026-07-28.** Próximo: **Fase 4** (P13–P20), cujas 8 tarefas são independentes entre si.
 
 ### Fase 4 — Specs de feature e regra
 - [ ] **P13** — `specs/09-temas-e-presets.md`
@@ -159,6 +184,9 @@ O que ficou de fora do escopo e por quê. Silêncio aqui é proibido.
 - [ ] **P18** — `specs/06-painel-de-customizacao-e-preview.md`
 - [ ] **P19** — `specs/08-identidade-do-host-e-zero-marca.md`
 - [ ] **P20** — `specs/11-testes-e-cobertura.md`
+
+### Fase 4.5 — Fechamento da superfície pública *(mexe em código; roda ANTES dos kits, para o kit documentar a superfície final)*
+- [ ] **P26** — Engines: apagar o barril órfão · expor Chat+Flow · remover Visual · ampliar o `barrel:check` *(decisão D2)*
 
 ### Fase 5 — Habilitação (os dois kits)
 - [ ] **P21** — `specs/12-kit-do-consumidor.md`
@@ -698,6 +726,86 @@ ENTREGUE: o RELATÓRIO DE ENTREGA (§7), com um grep de `3.0.0` no repositório 
 
 ---
 
+## P11-D — Tornar o `packageManager.test.mjs` HERMÉTICO
+
+> **Por que existe:** a suíte não fecha 100% verde nesta máquina, e a causa não é o código da lib. Isso bloqueou uma decisão de arquitetura no P11 (o Anel 3 ficou manual em vez de `pre-push`) e vai bloquear o `preversion` do P12-C. É a menor tarefa da campanha com o maior efeito destravante.
+
+```
+Você vai consertar UM teste não-hermético na Sarak-Lib-UI-Core. Tarefa pequena, cirúrgica e com efeito destravante grande.
+
+Preparação: (1) `ui-contexto-repositorio`; (2) `specs/plan/00-prompts-execucao.md` INTEIRO (regras comuns, baseline, regra de DIVERGÊNCIA); (3) `specs/specs/01-gates-e-baseline.md` §3.1 e `specs/specs/02-enforcement-por-commit.md` §4 — os dois documentam este defeito e a consequência dele; (4) leia `bin/scaffold/packageManager.mjs` e `bin/scaffold/__tests__/packageManager.test.mjs` INTEIROS.
+
+O DEFEITO, reproduzido e confirmado em 2026-07-28:
+`packageManager.test.mjs > detectPackageManager (Spec 51 — L2) > "sem nenhum sinal, o default é npm"` falha com `source: 'lockfile'` onde espera `'default'`.
+Causa: o teste cria um `tmpDir` sob o diretório temporário do SO e espera que `detectPackageManager` não encontre lockfile nenhum. Mas a função sobe a árvore até a raiz do volume — comportamento CORRETO, e testado de propósito em outro caso do mesmo arquivo (monorepo). Numa máquina com um `package-lock.json` solto no `$HOME` (é o caso desta), a subida acha um lockfile de verdade e a detecção acerta. **O código está certo; o teste é que assume um ambiente.**
+
+⚠️ REGRA DURA: **o comportamento de produção NÃO muda.** Subir a árvore até achar o lockfile é a feature (é o caso monorepo da Spec 51). Se a sua correção alterar o que `detectPackageManager` faz em uso real, ela está errada.
+
+TAREFA:
+- T1: REPRODUZA primeiro. Rode o teste isolado e confirme a falha; confirme a existência do lockfile ancestral. Se NÃO falhar na sua máquina, PARE — sem reprodução não há conserto, e o relatório vira "não reproduzi", que é resposta legítima.
+- T2: TORNE O TESTE HERMÉTICO. Escolha e JUSTIFIQUE a abordagem; as duas que vejo:
+  (a) dar a `detectPackageManager` uma **fronteira de parada** opcional (ex.: um `stopAt`/`boundary` que a busca não ultrapassa), usada só pelo teste — a produção continua sem fronteira, subindo até a raiz;
+  (b) isolar o `tmpDir` num caminho comprovadamente sem lockfile ancestral, criado e limpo pelo próprio teste.
+  Prefiro (a): torna a hermeticidade uma propriedade do contrato da função, não da sorte do sistema de arquivos — mas a escolha é sua, desde que justificada e desde que a T3 passe.
+- T3: PROVE A HERMETICIDADE. O teste tem de passar **com** e **sem** um lockfile ancestral. Demonstre os dois cenários: rode como está (com o lockfile do `$HOME` presente) e demonstre o caso oposto de forma verificável.
+- T4: Se a sua correção tocar `packageManager.mjs`, os OUTROS 11 testes do arquivo continuam verdes — inclusive o de monorepo, que depende de subir a árvore.
+
+FRONTEIRAS: não mexa em nenhum outro teste; não altere o comportamento de produção; não delete o `package-lock.json` do `$HOME` (não é seu, e "consertar" o ambiente em vez do teste deixa o defeito de pé para o próximo); não instale dependência; não promova o Anel 3 a `pre-push` (isso é decisão do P12-C).
+
+GATES: suíte COMPLETA `npx vitest run` — o alvo aqui é **280 arquivos / 890 testes, 100% verde**, e essa é a prova de que a tarefa terminou. Mais `run_audit` (baseline exato), `barrel:check`, `catalog:check`, `zero-brand:check`, `guide:check`.
+
+ENTREGUE: o RELATÓRIO DE ENTREGA (§7). A seção 4 (GATES) tem de conter a saída da suíte ANTES (1 falha) e DEPOIS (0 falhas), e a seção 2 (RASTREABILIDADE) a prova dos dois cenários da T3. Marque o checkbox de P11-D, registre em `00-progresso.md` e ATUALIZE a linha da suíte na §5 deste plano e a §3.1 de `01-gates-e-baseline.md` (o defeito deixou de existir). NÃO commite sem autorização.
+```
+
+---
+
+## P12-C — Releases com tag: ADR-008 + ritual automatizado + `v1.0.0`
+
+> ⚠️ **MEXE EM CÓDIGO E CRIA UMA TAG NO REPOSITÓRIO.** É a segunda maior tarefa da campanha. As decisões **D4** e **D5** já estão tomadas — você as implementa, não as rediscute.
+
+```
+Você vai implementar o ciclo de release por TAG da Sarak-Lib-UI-Core, e registrar a decisão que o motiva. Hoje o repositório tem 0 tags em 330 commits, e é isso que faz `npm install` ser no-op para o consumidor.
+
+Preparação: (1) `ui-contexto-repositorio`; (2) `specs/plan/00-prompts-execucao.md` INTEIRO — esp. o REGISTRO DE DECISÕES DO DONO (D4 e D5) e as regras comuns; (3) `specs/adr/007-distribuicao-por-git.md` e `specs/adr/README.md` (o protocolo de substituição); (4) `specs/specs/03-versionamento-e-release.md` e `specs/specs/02-enforcement-por-commit.md` INTEIROS — os dois vão ser alterados; (5) `bin/scaffold/checkUpdate/**` (o aviso da Spec 51, que você vai evoluir); (6) `package.json`.
+
+⚠️ PRÉ-REQUISITO: o **P11-D** tem de estar concluído (suíte 100% verde). Se ainda houver a falha ambiental, o `preversion` não pode incluir a suíte e a entrega fica pela metade. Confirme antes de começar; se não estiver, PARE e reporte.
+
+A DESCOBERTA QUE MOTIVA TUDO: o npm resolve faixa semver contra TAGS de um repositório git — `"@sarak/lib-ui-core": "github:Lib-Sarak/Sarak-Lib-UI-Core#semver:^1.0.0"`. Com tags, `npm update` passa a resolver para a tag compatível mais recente: o mesmo comportamento de um registry, SEM registry. O ADR-007 afirmou que "automático exigiria registry + semver" — isso era meia verdade, e é o que este trabalho corrige.
+
+ENTREGAR — cinco frentes:
+
+L1 · ADR-008 (`specs/adr/008-releases-com-tag-e-semver-em-git.md`)
+Registra: o que mudou em relação ao ADR-007 e por quê; a decisão D4 (`#semver:` RECOMENDADO, `github:` puro SUPORTADO) com a justificativa de assimetria de risco; a decisão D5 (emissão semi-automática com bloqueio, nível decidido por humano) com as DUAS evidências que a sustentam — "tag a cada commit na main" produziria centenas de tags num repositório que trabalha direto na main, e os 5 commits mais recentes são TODOS `feat:` (inclusive remoções e correções), o que inviabiliza derivar o nível da mensagem. ADR é IMUTÁVEL: preencha `substitui`/`substituido_por` ligando 007 e 008, e mude o `status` do 007 conforme o protocolo do `adr/README.md`. O 007 continua correto sobre o que se sabia em 26/07 — não o reescreva.
+
+L2 · O RITUAL, via ganchos nativos do npm (zero dependência nova)
+Ligue os três ganchos de `npm version`, respeitando a ordem em que o npm os executa:
+  · `preversion` (ANTES do bump) — os gates. Falhou, não versiona. Inclua a suíte (P11-D fez isso ser possível).
+  · `version` (DEPOIS do bump, ANTES do commit) — regenera `dist/` e `sarak-ui/` com a versão nova e faz `git add` deles. É isto que corrige um defeito estrutural real: hoje o `dist/` é commitado SEPARADO do bump, e é daí que nasce a defasagem. Com o gancho, o artefato regenerado entra no MESMO commit que a tag aponta.
+  · `postversion` — `git push --follow-tags`.
+Formato de tag: `vX.Y.Z`. Documente que o `baseCommit` do `BUILD_INFO` continua um passo atrás (auto-referência é impossível — ADR-007) e que isso PAROU DE IMPORTAR, porque a identidade passou a ser a tag.
+
+L3 · O BLOQUEIO (decisão D5) — um anel de `pre-push`
+Gatilho: push para `main` **E** o artefato publicado mudou desde a última tag **E** não há tag nova → BLOQUEIA, com mensagem acionável mandando rodar o comando de release. Reuse a assinatura de inventário de `dist/` + `sarak-ui/` que a Spec 51 já construiu (`bin/scaffold/checkUpdate/localDependency.mjs`) — não reimplemente. Commit que só mexe em `specs/` não muda artefato, não pede tag, não incomoda ninguém. Ao bloquear, SUGIRA o nível lendo os commits desde a última tag — **sugestão, nunca decisão**: quem escolhe é o humano.
+⚠️ CONSEQUÊNCIA ESTRUTURAL: `specs/specs/02-enforcement-por-commit.md` passa a ter um anel que **não é por commit, é por push**. Amplie o TÍTULO e o ESCOPO da spec para cobrir os dois (é o mesmo pipeline, mesma instalação de hook, mesma filosofia de anéis — separar criaria duas specs que se referenciam o tempo todo) e acrescente `'pre-push'` a `HOOK_FILES` em `scripts/install-hooks.mjs`.
+
+L4 · `sarak-ui check` por TAG
+Troque a comparação de commit por comparação de tag: `git ls-remote --tags` → maior tag semver × versão instalada. O encanamento já existe desde a Spec 51 (`predev`, silêncio quando em dia, bloco destacado quando há novidade, SEMPRE exit 0, tolerante a offline) — isto é upgrade da lógica de comparação, não peça nova. O aviso passa a dizer `v1.0.0 → v1.1.0` em vez de dois hashes. Preserve o suporte ao modo `file:`/`link:` (lá não há tag — a assinatura de inventário continua sendo o mecanismo).
+
+L5 · A TAG `v1.0.0` + a PROVA
+  · Crie a tag `v1.0.0` no commit que carrega a versão 1.0.0.
+  · ⚠️ **PROVE o `#semver:` num consumidor real** — a regra da Spec 51 vale aqui e não é negociável: *comando não executado de verdade não entra.* Instale num projeto descartável usando `#semver:^1.0.0`, taggeie uma versão nova, rode `npm update` e mostre resolver. Documentação da npm NÃO é prova. Se não conseguir provar, o `#semver:` NÃO entra no kit como instrução — vira "não validado" e você reporta.
+  · Atualize `specs/specs/03-versionamento-e-release.md`: a seção "OPÇÕES EM ABERTO" morre; entram a decisão tomada, o ritual, o formato de tag e o que o consumidor escreve no `package.json` dele. Nota em `docs/migracoes.md`.
+  · O kit (`sarak-ui/`) documenta `#semver:` como RECOMENDADO e `github:` puro como SUPORTADO — nunca como errado.
+
+FRONTEIRAS: não publique em registry; não crie CI; não force nenhum consumidor a migrar (D4 é explícita); não altere nenhum auditor; não derive o nível do bump automaticamente (D5 é explícita); não instale dependência nova; não reescreva o ADR-007.
+
+GATES: `npm run gates:full` verde (build + package:check + suíte); `run_audit` no baseline exato; `barrel:check`, `catalog:check`, `zero-brand:check`, `guide:check`; e o hook de push exercitado nos DOIS cenários (artefato mudou sem tag → bloqueia; só markdown → passa), com saída real.
+
+ENTREGUE: o RELATÓRIO DE ENTREGA (§7). A seção 4 tem de conter: a saída dos dois cenários do hook de push, a saída do `npm version` num release de teste, e **a prova do `#semver:` no consumidor real** (comandos e saídas). Marque o checkbox de P12-C e registre em `00-progresso.md`. NÃO faça push nem publique sem autorização explícita do dono — inclusive da tag.
+```
+
+---
+
 # FASE 4 — SPECS DE FEATURE E REGRA
 
 > As 8 tarefas desta fase são independentes entre si e podem ser executadas em qualquer ordem interna, mas **todas dependem da Fase 2 e da Fase 3** (elas apontam para arquitetura e para o contrato de regras).
@@ -783,6 +891,8 @@ CONTEÚDO:
 - O CROMO DO SHELL consome tokens do Design Engine (`--sarak-topbar-*`/`--sarak-sidebar-*`) — trocar o tema muda a casca. Aponte para P16 (o cromo SEM host) e deixe a diferença cristalina: `SarakShell` é HOST (renderiza o módulo ativo do Discovery); `SarakAppChrome` é APRESENTACIONAL (renderiza `children`).
 - `DynamicRenderer`, `useModuleDiscovery`, `useSarakRouter`, `useEndpointResolver` — o que cada um faz e quando o consumidor toca neles.
 - ⚠️ DÍVIDA A REGISTRAR (não corrigir): `src/index.ts` executa `registerLocalComponent('mx-customization', CustomizationPanel)` e `('personalization', ...)` como EFEITO COLATERAL DE IMPORT. São ids legados do Discovery. Documente que existem, o que fazem, e registre a pergunta "mantém ou remove?" para o dono.
+
+⚠️ FATO NOVO QUE MUDA O ENQUADRAMENTO (decisão D6, 2026-07-28): **o `Sarak-MyService` é OBSOLETO.** Ele era o consumidor real que justificou o modo Shell-host (#1) na regra de corte do ADR-001 ("só permanece o que tem consumidor real provado"). Registre isto como FATO na spec, com honestidade: o modo #1 existe, funciona, está coberto por teste — e hoje **não tem consumidor real conhecido**. **NÃO decida nada** sobre o futuro dele (manter × depreciar × remover é decisão do dono, e exige uma varredura de consumidores que esta spec não faz). Escrever a spec como se o MyService ainda o sustentasse seria repetir exatamente o erro que esta campanha existe para corrigir.
 
 MATERIAL-FONTE: `specs/specs/04-estrutura-shell-discovery.md` (REESCREVER), `plan/43-design-system-primeiro.md` §3.1 (a API pública do modelo), `plan/18-shell-consome-design-engine.md` (os tokens de cromo — ⚠️ a parte que fala do `ShellRouterNode`/shell do MANIFESTO está morta; só a parte de tokens sobrevive), `README.md`.
 
@@ -945,6 +1055,47 @@ FRONTEIRAS: não escreva teste novo; não mude configuração de teste; não pro
 GATES: rode a suíte COMPLETA e reporte os números; demais gates no baseline.
 
 ENTREGUE: o RELATÓRIO DE ENTREGA (§7). Critério de aceite: o número declarado é o da SUA execução, e a lacuna de E2E aparece como lacuna. Marque o checkbox de P20 e registre em `00-progresso.md`. NÃO commite sem autorização.
+```
+
+---
+
+# FASE 4.5 — FECHAMENTO DA SUPERFÍCIE PÚBLICA
+
+## P26 — Engines: barril órfão, exposição e corte
+
+> ⚠️ **MEXE EM CÓDIGO.** Roda ANTES dos kits (Fase 5), para que o kit documente a superfície final. Decisão **D2** já tomada — implemente, não rediscuta.
+
+```
+Você vai fechar a superfície pública de `src/components/engines/` na Sarak-Lib-UI-Core. A auditoria da Fase 2 achou que três das quatro categorias de engine são inalcançáveis pelo consumidor; a investigação mostrou que os três casos têm status DIFERENTES e pedem ações diferentes.
+
+Preparação: (1) `ui-contexto-repositorio`; (2) `specs/plan/00-prompts-execucao.md` INTEIRO (regras comuns, baseline, decisão D2); (3) `specs/arquitetura/03-superficie-publica.md` §3, §7 e §8 — o mecanismo do gate, as fronteiras lazy e a dívida registrada; (4) `specs/specs/00-regras-e-invariantes.md` R14 e R15; (5) leia `src/components/engines/**` INTEIRO, `src/index.ts` e `scripts/publicComponents.mjs`.
+
+O DIAGNÓSTICO CONFIRMADO (reconfirme antes de agir):
+| Engine | Uso interno | No barril | Ação |
+| `SarakChartEngine` | — | ✅ via `engines/charts/index.tsx` | é o PADRÃO a copiar |
+| `SarakChatEngine`  | ✅ `core/Discovery/components/ContractRenderer.tsx:67` | ❌ | EXPOR |
+| `SarakFlowEngine`  | ✅ `ContractRenderer.tsx:9` | ❌ | EXPOR |
+| `SarakVisualEngine`| ❌ nenhum | ❌ | REMOVER |
+E o achado que explica a confusão: `src/components/engines/index.ts` — que declara os quatro atrás de `React.lazy` — **não é importado por ninguém**. O `ContractRenderer` importa direto dos arquivos; o `src/index.ts` importa de `engines/charts`. É código morto que produz leitura errada da arquitetura.
+
+TAREFA (L1–L4):
+
+- **L1 · Apagar `src/components/engines/index.ts`.** Confirme por grep que ninguém importa (incluindo `PaletteSelector` e `LazyEngineWrapper`, que ele reexporta — se alguém depender por esse caminho, re-aponte para o arquivo real ANTES de apagar).
+
+- **L2 · Expor `SarakChatEngine` e `SarakFlowEngine`** replicando o padrão de `engines/charts/index.tsx`: barril próprio por categoria, `lazy` + `LazyEngineWrapper` (Suspense INTERNO, para o consumidor não precisar declarar `Suspense`), tipo `Props` exportado, e o export nomeado em `src/index.ts`. **Custo de boot tem de ser ZERO** — é a lição medida da Spec 41: o pecado nunca foi expor, foi expor *eager*. MEÇA o `dist/` antes e depois e prove que não mudou de forma relevante.
+
+- **L3 · Remover `SarakVisualEngine`** (regra de corte do ADR-001: só permanece o que tem consumidor real provado).
+  ⚠️ **PRÉ-CONDIÇÃO — varredura de consumidor real:** grep no **ERP Earendel**. O `Sarak-MyService` está OBSOLETO (decisão D6) e **não** entra na varredura. Se o ERP usar, a decisão se inverte sozinha: ele vira caso L2 (expor) e você reporta a inversão. Remova também o que só existia para ele (`engines/visuals/index.ts`, e avalie `PaletteSelector` — se ninguém usar, cai junto; se alguém usar, fica e você registra por quê).
+
+- **L4 · Ampliar o escopo do `barrel:check` para `components/engines/**`.** Sem isso o vão volta na próxima adição — é exatamente a lição da §4.3 de `01-gates-e-baseline`: gate com escopo menor que a regra deixa a regra violada em silêncio. Ajuste `collectPublicComponentNames()` em `scripts/publicComponents.mjs` e confirme que o gate passa a ver os engines. Se a ampliação acusar algo além dos engines, PARE e reporte — não amplie a allowlist para silenciar.
+
+DEPOIS: atualize `specs/arquitetura/03-superficie-publica.md` (§6 taxonomia — as categorias de engine deixam de ser 4; §8 — a dívida dos engines deixa de existir e vira registro do que foi feito) e `docs/migracoes.md` se `SarakVisualEngine` for removido (não era público, mas o registro é barato e o arquivo é o histórico do contrato).
+
+FRONTEIRAS: não mexa nos outros achados (P10 já os registrou); não torne o `CustomizationPanel` lazy (breaking change de tipo, decisão separada); não corrija o baseline; não instale dependência.
+
+GATES: `barrel:check` (com o escopo NOVO), `catalog:check` (os engines expostos entram no catálogo gerado — confirme), `zero-brand:check`, `guide:check`, `npm run build` (DTS), suíte COMPLETA, `package:check`, `run_audit` no baseline exato. Mais a medição de bundle antes/depois da L2.
+
+ENTREGUE: o RELATÓRIO DE ENTREGA (§7), com: a varredura do ERP (a prova que autoriza ou cancela a L3), a medição de bundle da L2, e a saída do `barrel:check` mostrando o escopo ampliado. Marque o checkbox de P26 e registre em `00-progresso.md`. NÃO commite sem autorização.
 ```
 
 ---

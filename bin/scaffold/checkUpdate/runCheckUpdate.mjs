@@ -3,13 +3,20 @@
  *
  * Responde "o consumidor está atualizado?" nos DOIS modos de dependência e devolve,
  * junto, o COMANDO certo para o gerenciador daquele projeto:
- *  - **git spec** — commit instalado (`resolved` do lockfile) × HEAD remoto (`git ls-remote`);
+ *  - **git spec** — **versão instalada × maior tag `vX.Y.Z` do remoto** (ADR-008);
+ *    sem tags no remoto, cai para commit instalado × HEAD remoto (o modo pré-tag);
  *  - **`file:`/`link:`** — assinatura de build instalada × a do repositório em disco
- *    (`localDependency.mjs`), porque aqui não existe commit remoto para comparar.
+ *    (`localDependency.mjs`), porque aqui não existe commit remoto nem tag para comparar.
  *
  * O que a Spec 51 mudou: o contexto é resolvido subindo a árvore (monorepo funciona),
  * `file:` deixou de ser tratado como erro, o comando sugerido deixou de ser npm cru, e
  * há um modo `--notify` que **nunca falha e nunca fala à toa** (§ `formatNotice`).
+ *
+ * O que o ADR-008 mudou: a comparação PREFERE tag. O aviso passa a dizer `v1.0.0 →
+ * v1.1.0` em vez de dois hashes de 7 caracteres — que é o que o consumidor consegue
+ * relacionar com a faixa que ele escreveu no `package.json`. A queda para commit não
+ * foi removida: `github:` puro continua SUPORTADO, e um remoto sem tag nenhuma
+ * (repositório novo, fork) tem de continuar respondendo alguma coisa.
  *
  * `execGitLsRemote` é injetável para teste (evita rede); o default usa `execFileSync`
  * com timeout — nunca `execSync` com string interpolada, já que a URL vem do
@@ -21,6 +28,7 @@ import { resolveRemoteUrl } from './resolveRemoteUrl.mjs';
 import { readInstalledCommit } from './readInstalledCommit.mjs';
 import { PKG_NAME, resolveConsumerContext } from './consumerContext.mjs';
 import { inspectLocalDependency, isLocalSpec } from './localDependency.mjs';
+import { compareByTag, defaultExecGitLsRemoteTags } from './tagComparison.mjs';
 import { gitUpdateCommand, localRefreshCommand } from '../packageManager.mjs';
 import { renderNotice } from './renderNotice.mjs';
 
@@ -82,13 +90,35 @@ const localResult = (context, inspection) => {
     };
 };
 
-const gitResult = (context, execGitLsRemote) => {
+const gitResult = (context, execGitLsRemote, execGitLsRemoteTags) => {
     const { command, validated } = gitUpdateCommand({
         manager: context.manager.name,
         packageName: PKG_NAME,
         gitSpec: context.spec,
     });
     const base = { ok: true, mode: 'git', manager: context.manager, command, commandValidated: validated };
+    const { url, ref, pinnedCommit } = resolveRemoteUrl(context.spec);
+
+    // Spec com commit fixado no próprio texto é decisão explícita do autor: nem tag nem
+    // HEAD são resposta. Cai direto no caminho antigo, que sabe dizer isso.
+    if (!pinnedCommit) {
+        const porTag = compareByTag({ base, context, url, execGitLsRemoteTags });
+        if (porTag) return porTag;
+
+        // Um spec `#semver:` NÃO tem para onde cair: `ref` não é uma ref de verdade, e
+        // insistir com `ls-remote <url> semver:^1.0.0` produziria "nenhum commit" — uma
+        // mensagem que descreve o sintoma errado.
+        if (ref?.startsWith('semver:')) {
+            return {
+                ...base,
+                ok: false,
+                upToDate: null,
+                message:
+                    `[sarak:check] "${context.spec}" resolve por TAG, e não consegui compará-la agora ` +
+                    '(sem rede, remoto sem nenhuma tag "vX.Y.Z", ou versão instalada ilegível).',
+            };
+        }
+    }
 
     if (!context.lockfile) {
         return { ...base, ok: false, upToDate: null, message: '[sarak:check] Nenhum lockfile encontrado (deste pacote para cima). Instale as dependências primeiro.' };
@@ -104,7 +134,6 @@ const gitResult = (context, execGitLsRemote) => {
         };
     }
 
-    const { url, ref, pinnedCommit } = resolveRemoteUrl(context.spec);
     if (pinnedCommit) {
         return {
             ...base,
@@ -140,13 +169,17 @@ const gitResult = (context, execGitLsRemote) => {
     };
 };
 
-export function runCheckUpdate({ rootDir = process.cwd(), execGitLsRemote = defaultExecGitLsRemote } = {}) {
+export function runCheckUpdate({
+    rootDir = process.cwd(),
+    execGitLsRemote = defaultExecGitLsRemote,
+    execGitLsRemoteTags = defaultExecGitLsRemoteTags,
+} = {}) {
     const context = resolveConsumerContext({ startDir: rootDir });
     if (!context.ok) return { ok: false, upToDate: null, message: context.message };
 
     const result = isLocalSpec(context.spec)
         ? localResult(context, inspectLocalDependency(context))
-        : gitResult(context, execGitLsRemote);
+        : gitResult(context, execGitLsRemote, execGitLsRemoteTags);
 
     if (context.manager.ambiguous.length > 0) {
         return {

@@ -46,6 +46,9 @@ Ponha a **data da decisão no corpo** do documento. Mantenha curto — uma a dua
 | [004](./004-remocao-design-agent.md) | Remoção do Design Agent (agente LLM embarcado) | 🟢 Aceito |
 | [005](./005-modelo-modulos-plugin-e-apps-separados.md) | Modelo módulos-plugin oficial e a composição apps-separados | 🟢 Aceito |
 | [006](./006-zero-marca-soberania-host.md) | A lib nunca estampa a própria marca | 🟢 Aceito |
-| [007](./007-distribuicao-por-git.md) | Distribuição por Git, sem registry npm | 🟢 Aceito |
+| [007](./007-distribuicao-por-git.md) | Distribuição por Git, sem registry npm | 🔴 Substituído por [008](./008-releases-com-tag-e-semver-em-git.md) |
+| [008](./008-releases-com-tag-e-semver-em-git.md) | Releases com tag e faixa semver em Git — sem registry | 🟢 Aceito |
 
 Comece pelo **001** — ele enquadra os outros três da mesma virada (002, 003, 004) e explica a regra de corte que os produziu.
+
+> **Sobre o 007 → 008:** o 008 substitui o 007 **numa única conclusão** — a de que atualização automática exigiria registry. Todo o resto do 007 (identidade de build, comando por gerenciador, aviso no `predev`, a armadilha do `baseCommit`) continua descrevendo o que vale hoje, e é por isso que ele segue sendo leitura obrigatória mesmo marcado como substituído. O protocolo desta pasta é binário de propósito: um ADR substituído **em qualquer parte** muda de status, e o ADR novo declara o recorte.

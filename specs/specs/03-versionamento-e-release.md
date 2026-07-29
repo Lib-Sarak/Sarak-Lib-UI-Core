@@ -4,15 +4,15 @@ titulo: "Versionamento e release — o que o número significa e como ele se mov
 dominio: "Sarak-Lib-UI-Core / Distribuição / Contrato público"
 status: "🟢 Vigente"
 prioridade: "Alta"
-tags: ["spec", "versionamento", "semver", "release", "migracoes", "distribuicao"]
-relacionados: ["[[007-distribuicao-por-git]]", "[[05-build-e-distribuicao]]", "[[03-superficie-publica]]", "[[00-regras-e-invariantes]]"]
+tags: ["spec", "versionamento", "semver", "release", "migracoes", "distribuicao", "tag"]
+relacionados: ["[[008-releases-com-tag-e-semver-em-git]]", "[[007-distribuicao-por-git]]", "[[02-enforcement-por-commit]]", "[[05-build-e-distribuicao]]", "[[03-superficie-publica]]", "[[00-regras-e-invariantes]]"]
 ---
 
 # 1. Visão geral
 
 Até 2026-07-27 a `version` da lib era **`3.0.0` e não significava nada.** Nunca houve um 1.x nem um 2.x com release, o pacote nunca foi publicado em registry, e o número ficou parado enquanto o contrato público mudava.
 
-Esta spec faz duas coisas: registra a **renumeração para `1.0.0`** e define **o que o número passa a significar** a partir dela.
+Esta spec faz três coisas: registra a **renumeração para `1.0.0`**, define **o que o número passa a significar** a partir dela, e descreve **o ritual que o move** — `npm version`, com tag `vX.Y.Z` e bloqueio no push (decidido no dia seguinte, em [[008-releases-com-tag-e-semver-em-git]]).
 
 O *como* a lib chega no consumidor (Git, sem registry) é [[007-distribuicao-por-git]]; o *como* o artefato é produzido é [[05-build-e-distribuicao]]. Aqui é só o **número**.
 
@@ -41,7 +41,7 @@ Um número que não se move e não corresponde a release nenhum não é versão 
 | `dist/*.js`, `dist/index.cjs` | **regenerados** pelo build (o número entra no bundle) | `1.0.0` |
 | `docs/migracoes.md` | entrada nova | registro da renumeração |
 
-> **`npm version` NÃO foi usado.** Ele cria commit **e tag** — e a decisão sobre tags não foi tomada (§6). O campo foi editado diretamente.
+> **`npm version` NÃO foi usado nesta renumeração.** Ele cria commit **e tag**, e naquele dia a decisão sobre tags ainda não existia. O campo foi editado diretamente. **A partir da `1.0.0`, o caminho é o oposto:** editar a `version` à mão passa a ser o desvio, e `npm version` é o ritual (§6).
 
 **O gate provou que funciona:** trocada a versão, `guide:check` ficou **vermelho apontando os 4 arquivos defasados** antes de qualquer regeneração. Era o comportamento esperado — é a prova de que um derivado editado à mão, ou esquecido, derruba o build.
 
@@ -73,6 +73,10 @@ Também permanecem `>=3.0.0` nas `peerDependencies` de `@tanstack/react-virtual`
 ## 2.5 Impacto no consumidor: nenhum
 
 Os dois modos de instalação em uso resolvem **por commit** (`github:`) ou **por caminho** (`file:`/`link:`), nunca por semver. Um `^3.0.0` escrito à mão no `package.json` do consumidor **nunca esteve sendo respeitado** nesses modos.
+
+> **Isto mudou no dia seguinte, e é o que dá sentido à renumeração:** com tags publicadas, a faixa
+> `#semver:^1.0.0` **passa a ser respeitada** (§7). A `1.0.0` deixou de ser só identidade e virou o piso
+> de uma faixa que resolve.
 
 # 3. A política a partir de `1.0.0`
 
@@ -124,45 +128,86 @@ Todo MAJOR tem entrada em `docs/migracoes.md`, mais recente primeiro, com:
 
 A renumeração desta spec **não é** breaking change, e mesmo assim ganhou entrada: um número que **anda para trás** normalmente significa perda de capacidade, e o consumidor merece ler que aqui não significa.
 
-# 6. O ritual de release de hoje — honestamente
+# 6. O ritual de release — `npm version`
+
+**Decidido em 2026-07-28 ([[008-releases-com-tag-e-semver-em-git]]).** Um comando, três ganchos nativos
+do npm, zero dependência nova:
 
 ```
-npm run build          # 4 gates → compila → regenera BUILD_INFO
-npm run package:check   # confere o tarball (proibidos e obrigatórios)
-commit do dist/         # o artefato viaja no repositório
+npm version <major|minor|patch>
 ```
 
-E do lado do consumidor, **sob comando**:
+| Gancho | Quando o npm roda | O que faz aqui |
+| --- | --- | --- |
+| `preversion` | ANTES do bump | `npm run gates:full` (build + `package:check` + suíte). **Falhou, não versiona.** |
+| `version` | DEPOIS do bump, ANTES do commit | `npm run guide && npm run build` e `git add` de `dist/` + `sarak-ui/` |
+| `postversion` | depois do commit e da tag | `git push --follow-tags` |
 
-```
-npm run sarak:update    # ou o equivalente do gerenciador dele
-```
+Formato da tag: **`vX.Y.Z`**, anotada, criada pelo próprio `npm version`.
 
-**Sem `npm publish`. Sem `git tag`. Sem CI.** Não há release automático; "sempre a mais atual" é **sob comando**, nunca automático — a razão está em [[007-distribuicao-por-git]].
+## 6.1 O defeito estrutural que o gancho `version` corrige
 
-# 7. Opções em aberto (decisão do dono — NÃO decididas aqui)
+No fluxo antigo o `dist/` era commitado **separado** do bump: a versão andava num commit e o artefato
+noutro, e é dessa janela que nasce a defasagem entre "o que o `package.json` diz" e "o que está ali".
+Com o gancho, **o artefato regenerado entra no MESMO commit que a tag aponta**.
 
-## 7.1 Adotar `git tag vX.Y.Z` a cada release
+Medido no ensaio do release (sandbox, 2026-07-28): o commit da `v1.0.1` carrega `package.json`,
+`package-lock.json`, `dist/BUILD_INFO.json` (`libVersion: "1.0.1"`), os bundles e `sarak-ui/VERSION`
+(`libVersion=1.0.1`) — tudo junto.
+
+> **O `baseCommit` continua um passo atrás** (§4.1) e **parou de importar**: a identidade do build passou
+> a ser a tag.
+
+## 6.2 O bloqueio que impede o esquecimento
+
+Push para `main` com o **artefato publicado alterado** e **sem tag nova** é BLOQUEADO pelo anel de push
+(`.githooks/pre-push` → `scripts/check-release-tag.mjs`). O gatilho é *"o artefato mudou"*, não *"houve
+commit"*: mudança só em `specs/` não pede tag. O mecanismo e a mensagem estão em
+[[02-enforcement-por-commit]] §4.1.
+
+Ao bloquear, ele **sugere** o nível lendo os commits desde a última tag — e diz, no próprio texto, que é
+sugestão. **Quem escolhe o nível é humano**, pelo motivo registrado no ADR-008: os 8 commits mais
+recentes deste repositório são todos `feat:`, inclusive remoções e correções.
+
+# 7. O que o consumidor escreve no `package.json` dele
+
+| Forma | Status | Comportamento |
+| --- | --- | --- |
+| `"github:Lib-Sarak/Sarak-Lib-UI-Core#semver:^1.0.0"` | **RECOMENDADO** | Resolve por **tag**. `npm update` sobe para a maior compatível sem editar nada. Não atravessa MAJOR |
+| `"github:Lib-Sarak/Sarak-Lib-UI-Core"` | **SUPORTADO** | Resolve o HEAD do momento; anda com `sarak:update` (fura pin de lockfile + cache) |
+| `"github:...#<sha>"` | SUPORTADO | Pin explícito, reprodutível. `sarak-ui check` não compara — quem fixou foi o autor |
+| `"file:"` / `"link:"` | SUPORTADO | Desenvolvimento lado a lado; não há tag, a comparação é por assinatura de inventário |
+
+**Ninguém é forçado a migrar** — a decisão D4 é explícita quanto a isso. Nenhum consumidor existente
+precisou tocar no `package.json` no dia em que a primeira tag nasceu.
+
+## 7.1 As provas (executadas em 2026-07-28, não deduzidas)
+
+Contra um repositório git de verdade servido por `git daemon`, com as tags reais deste pacote:
+
+| Prova | Resultado |
+| --- | --- |
+| `npm install "<repo>#semver:^1.0.0"` | instalou **1.0.0** e gravou a faixa no `package.json` do consumidor |
+| `npm version patch` na lib → `v1.0.1` publicada | `npm update` levou o consumidor de **1.0.0 → 1.0.1**, sem tocar na faixa |
+| `sarak-ui check` com `v1.0.2` publicada | `Desatualizado — instalado v1.0.1, publicado v1.0.2` |
+| `v2.0.0` publicada, consumidor em `^1.0.0` | `check` **em silêncio** e `npm update` **não atravessou o major** |
+
+> A regra dura da Spec 51 vale aqui: **comando não executado de verdade não entra.** Documentação da npm
+> não é prova.
+
+# 8. Publicar em registry — continua fora
 
 | Prós | Contras |
 | --- | --- |
-| A `version` passa a ter **âncora verificável**: `v1.0.0` aponta para um commit exato | Mais uma etapa manual no ritual, que hoje tem duas |
-| Consumidor pode fixar `github:org/repo#v1.0.0` — reprodutível | Tag errada/movida é pior que tag nenhuma; exige disciplina |
-| `git describe` passa a responder "que build é este?" sem abrir o `BUILD_INFO` | Não resolve o `npm install` no-op (§7.2) — só torna o estado legível |
+| `npm outdated` passaria a funcionar no consumidor | Infraestrutura e credenciais para manter; segredo novo no fluxo |
+| O `dist/` deixaria de precisar ser commitado | Mudança de fluxo, não só de destino |
 
-**Hoje: 0 tags em 330 commits.**
+O ganho que motivava o registry — **faixa semver que resolve sozinha** — foi obtido **sem ele**
+(§7). O que sobra é conveniência marginal. **Não implementado**, e a decisão segue do dono.
 
-## 7.2 Publicar em registry (npm privado / GitHub Packages)
+# 9. Critérios de aceite
 
-| Prós | Contras |
-| --- | --- |
-| Resolve a **raiz** do problema: com registry + semver, `npm install` deixa de ser no-op — é a causa dos dois incidentes reais do [[007-distribuicao-por-git]] | Infraestrutura e credenciais para manter; segredo novo no fluxo |
-| `npm outdated` passa a funcionar no consumidor | O `dist/` deixaria de precisar ser commitado — mudança de fluxo, não só de destino |
-| Faixas semver (`^1.2.0`) passam a **significar** algo | Publicar exige disciplina de versionar **todo** merge |
-
-**Nenhuma das duas foi implementada.** Esta spec registra o trade-off; a escolha é do dono.
-
-# 8. Critérios de aceite
+Da renumeração (2026-07-27):
 
 - [x] `package.json` em `1.0.0`, editado diretamente (sem `npm version`, sem tag, sem push).
 - [x] Todos os derivados **regenerados**, nenhum editado à mão.
@@ -171,14 +216,23 @@ npm run sarak:update    # ou o equivalente do gerenciador dele
 - [x] Entrada em `docs/migracoes.md` explicando que é renumeração de identidade.
 - [x] `kitSchemaVersion`, `MASTER_DESIGN_MAP.version` e `schema_version` **intocados**, com o porquê escrito.
 - [x] Política MAJOR/MINOR/PATCH amarrada ao barril como contrato.
-- [x] Tags e registry registrados como opções em aberto, sem escolher nenhuma.
 
-# 9. Plano de testes (Quality Gate)
+Do ciclo de release por tag (2026-07-28):
+
+- [x] Os três ganchos de `npm version` ligados, com a suíte dentro do `preversion`.
+- [x] O gancho `version` provado colocando `dist/` + `sarak-ui/` regenerados no MESMO commit da tag.
+- [x] Anel de push exercitado nos dois cenários: artefato alterado sem tag **bloqueia**; só markdown **passa**.
+- [x] `#semver:` **provado** num consumidor real (instalar, publicar versão nova, `npm update` resolver).
+- [x] `sarak-ui check` compara por tag e **respeita a faixa** do consumidor (major fora dela não vira ruído).
+- [x] As duas formas de instalar documentadas no kit: `#semver:` RECOMENDADO, `github:` puro SUPORTADO — nunca "errado".
+
+# 10. Plano de testes (Quality Gate)
 
 | Verificação | Comando | Resultado |
 | --- | --- | --- |
 | Kit regenerado | `npm run guide` → `npm run guide:check` | ✅ kit em dia (6 arquivos) |
-| Build + `BUILD_INFO` | `npm run build` | ✅ `libVersion: "1.0.0"`, `baseCommit 97baeb0` |
-| Conteúdo do pacote | `npm run package:check` | ✅ 77 arquivos, allowlist respeitada |
+| Build + `BUILD_INFO` | `npm run build` | ✅ `libVersion: "1.0.0"` |
+| Conteúdo do pacote | `npm run package:check` | ✅ allowlist respeitada |
 | Auditoria | `node .agents/skills/ui-auditoria-modulo/scripts/run_audit.mjs` | ✅ baseline exato ([[01-gates-e-baseline]] §3) |
-| Suíte completa | `npx vitest run` | 280 arquivos / 890 testes — com a falha ambiental já documentada em [[01-gates-e-baseline]] §3.1, **nenhum teste quebrou pela renumeração** |
+| Suíte completa | `npx vitest run` | ✅ **280 arquivos / 891 testes, 100% verde** (desde o P11-D) |
+| Anel de push | `npm run release:check` | avalia o HEAD sem precisar de push |

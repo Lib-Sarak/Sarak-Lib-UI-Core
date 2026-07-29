@@ -63,8 +63,32 @@ describe('detectPackageManager (Spec 51 — L2)', () => {
         expect(detected.dir).toBe(tmpDir);
     });
 
-    it('sem nenhum sinal, o default é npm', () => {
-        expect(detectPackageManager({ startDir: tmpDir })).toMatchObject({ name: 'npm', source: 'default' });
+    // `stopAt` é o que torna este caso HERMÉTICO: "sem nenhum sinal" só é afirmável
+    // dentro de um recorte declarado. Sem a fronteira, a asserção depende de não
+    // existir lockfile em NENHUM ancestral da máquina — um `package-lock.json` solto
+    // no `$HOME` faz a detecção acertar (`source: 'lockfile'`) e o teste reprovar por
+    // motivo ambiental. O caso seguinte prova que a fronteira não muda a produção.
+    it('sem nenhum sinal DENTRO da fronteira, o default é npm', () => {
+        expect(detectPackageManager({ startDir: tmpDir, stopAt: tmpDir })).toMatchObject({
+            name: 'npm',
+            source: 'default',
+        });
+    });
+
+    it('a fronteira delimita SEM mudar a produção: o mesmo lockfile ancestral é achado sem `stopAt` e fica de fora com ele', () => {
+        write('package-lock.json', '{}');
+        const app = path.join(tmpDir, 'app');
+        fs.mkdirSync(app, { recursive: true });
+
+        expect(detectPackageManager({ startDir: app })).toMatchObject({
+            name: 'npm',
+            source: 'lockfile',
+            dir: tmpDir,
+        });
+        expect(detectPackageManager({ startDir: app, stopAt: app })).toMatchObject({
+            name: 'npm',
+            source: 'default',
+        });
     });
 
     it('package.json ilegível não derruba a detecção', () => {

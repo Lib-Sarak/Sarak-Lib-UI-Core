@@ -123,14 +123,21 @@ Registrado como o que é: **cobertura que existe e não é cobrada**.
 | `catalog:check` | `npm run catalog:check` | ✅ catálogo em dia |
 | `zero-brand:check` | `npm run zero-brand:check` | ✅ **363 arquivos, 0 violações** |
 | `guide:check` | `npm run guide:check` | ✅ **kit em dia (6 arquivos)** |
-| suíte | `npx vitest run` | ⚠️ **280 arquivos / 890 testes — 1 FALHA** (§3.1). ~155 s |
+| suíte | `npx vitest run` | ✅ **281 arquivos / 901 testes, 100% verde** (~198 s). Era 890 com 1 falha ambiental até 2026-07-28 — ver §3.1 |
 | `tsc` | `npx tsc --noEmit` | ❌ **14 erros** — 10 em teste, **4 em produção**. Não é gate |
 | `build` | `npm run build` | 4 gates + 6 etapas de compilação |
 | `package:check` | `npm run package:check` | exige `dist/` buildado |
 
-## 3.1 ⚠️ Divergência de primeira ordem: a suíte NÃO está 100% verde
+## 3.1 ✅ RESOLVIDO em 2026-07-28 — o teste não-hermético que segurava a suíte
 
-O plano da campanha registrava `280 arquivos / 890 testes, 100% verde`. **Medido hoje: 1 teste falha.**
+> **Estado atual: a suíte fecha 100% verde (280 arquivos / 891 testes).** A seção fica registrada porque a
+> causa é instrutiva e porque duas decisões de arquitetura foram tomadas enquanto o defeito existia
+> (o Anel 3 manual de [[02-enforcement-por-commit]]). O relato abaixo descreve o defeito **como ele era**;
+> o fecho está no fim da seção.
+
+### O defeito (medição de 2026-07-27)
+
+Naquela medição, `280 arquivos / 890 testes` com **1 teste falhando**.
 
 ```
 FAIL  bin/scaffold/__tests__/packageManager.test.mjs
@@ -155,9 +162,47 @@ Existe um `C:\Users\Igor\package-lock.json` (com `mammoth`, `playwright-core`, `
 
 **O que isto NÃO é:** regressão desta campanha (nenhum arquivo de `src/` ou `bin/` foi tocado) nem defeito do `detectPackageManager`.
 
-**Correção conhecida, NÃO aplicada aqui:** dar ao teste uma fronteira explícita — parar a subida num diretório-raiz informado — ou plantar um `package.json` sem `packageManager` e sem lockfile no topo do `tmpDir` e apontar `startDir` para um filho. As duas mexem em código de teste, o que está **fora do escopo desta campanha** (§6). Decisão do dono.
+### O fecho (2026-07-28 — P11-D)
 
-**Consequência para [[02-enforcement-por-commit]]:** um anel que rode a suíte completa e bloqueie vai bloquear **por causa do estado do `$HOME` da máquina**. Isso é levado em conta lá.
+Aplicada a primeira das duas correções previstas: `ancestorDirs` e `detectPackageManager` ganharam uma
+**fronteira de parada opcional** (`stopAt`), e o caso passou a declarar o recorte em que afirma "não há
+sinal nenhum" (`bin/scaffold/packageManager.mjs:42-66`, `:78`; `bin/scaffold/__tests__/packageManager.test.mjs:66-93`).
+
+**O comportamento de produção não mudou.** Nenhum chamador real passa `stopAt`
+(`bin/scaffold/runInit.mjs:40`, `bin/scaffold/checkUpdate/consumerContext.mjs:29,45,55,84`): sem
+fronteira, a subida continua indo até a raiz do volume — que é a feature do caso monorepo. A
+hermeticidade virou **propriedade do contrato da função**, não sorte do sistema de arquivos.
+
+Um caso novo prova as duas direções sem depender do ambiente: com um lockfile plantado num ancestral
+sintético, a detecção o acha **sem** `stopAt` (`source: 'lockfile'`) e não o vê **com** `stopAt`
+(`source: 'default'`).
+
+**Consequência para [[02-enforcement-por-commit]]:** cai a ressalva de que um anel rodando a suíte
+completa bloquearia por estado do `$HOME`. A suíte é, a partir daqui, sinal confiável para automação —
+é o que destrava o `preversion` do ciclo de release.
+
+## 3.2 ⚠️ A suíte NÃO roda verde num clone limpo — `Template-Ts/`
+
+**Achado do P12-C (2026-07-28), medido num clone de verdade deste repositório.**
+
+`Template-Ts/` é um projeto TypeScript **não relacionado à biblioteca**, com **85 arquivos versionados**
+aqui, e os testes dele são coletados pela suíte (o `exclude` do `vitest.config.ts` não os filtra). Eles
+passam **nesta máquina** porque existe um `Template-Ts/node_modules/` **local e não versionado** com
+`@supabase/supabase-js` dentro. Num clone limpo:
+
+```
+FAIL  Template-Ts/tests/unit/toolbox/database/supabase_database.test.ts
+Error: Failed to resolve import "@supabase/supabase-js" — Does the file exist?
+Test Files  3 failed | 278 passed (281)
+```
+
+**É o mesmo defeito da §3.1, um nível acima:** um resultado verde que depende de estado local que não
+viaja no repositório. A diferença é que aqui não é um teste da lib — é um subprojeto carona.
+
+**Não corrigido nesta campanha** (fora do escopo do P12-C, e a decisão — excluir do `vitest.config.ts`,
+mover para fora do repositório, ou versionar o lockfile dele — é do dono). Registrado porque **qualquer
+CI futuro vai bater nisto no primeiro dia**, e porque o `preversion` do release só passa hoje graças a
+uma pasta que não está no git.
 
 # 4. Dívida técnica conhecida
 

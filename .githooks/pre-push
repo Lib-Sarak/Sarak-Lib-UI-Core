@@ -1,0 +1,17 @@
+#!/bin/sh
+# --- Sarak Git Hook (Pre-Push) ---
+#
+# Anel de PUSH (spec: specs/specs/02-enforcement-por-commit.md; decisão: ADR-008).
+#   Bloqueia o push para `main` quando o ARTEFATO PUBLICADO (dist/ + sarak-ui/) mudou
+#   desde a última tag e não há tag nova. Qualquer outro push passa direto.
+#
+# O git entrega, no stdin, uma linha por ref empurrada:
+#   <ref local> <sha local> <ref remota> <sha remoto>
+# O script decide a partir dela — por isso o stdin é repassado sem filtro.
+#
+# Escape: `git push --no-verify` (registrado como dívida na spec, §7).
+#
+# POSIX sh (Git Bash no Windows). Nada de PowerShell aqui dentro.
+
+node scripts/check-release-tag.mjs
+exit $?

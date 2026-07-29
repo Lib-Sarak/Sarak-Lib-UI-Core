@@ -39,12 +39,28 @@ const lockfilesIn = (dir) =>
         .map((entry) => ({ ...entry, mtime: fs.statSync(entry.full).mtimeMs }))
         .sort((a, b) => b.mtime - a.mtime);
 
-/** Diretórios de `startDir` até a raiz do volume, de dentro para fora. */
-export const ancestorDirs = (startDir) => {
+/**
+ * Diretórios de `startDir` até a raiz do volume, de dentro para fora.
+ *
+ * `stopAt` é uma FRONTEIRA opcional: a subida inclui esse diretório e para ali, sem
+ * nunca ultrapassá-lo. Em produção ela não é passada — subir até a raiz é a feature
+ * (é assim que um pacote de monorepo herda o gerenciador da raiz). Ela existe porque
+ * sem fronteira o resultado de uma busca depende do que houver ACIMA da sub-árvore
+ * observada: um `package-lock.json` solto no `$HOME` de uma máquina é achado de
+ * verdade, e a detecção acerta — mas quem quer observar só uma sub-árvore não tem
+ * como dizê-lo. `stopAt` torna esse recorte parte do CONTRATO da função, em vez de
+ * depender do estado do sistema de arquivos ao redor.
+ *
+ * Se `stopAt` não estiver na linha de ancestrais de `startDir`, a subida vai até a
+ * raiz (comportamento sem fronteira) — a fronteira delimita, não redireciona.
+ */
+export const ancestorDirs = (startDir, { stopAt = null } = {}) => {
+    const boundary = stopAt === null ? null : path.resolve(stopAt);
     const dirs = [];
     let current = path.resolve(startDir);
     for (;;) {
         dirs.push(current);
+        if (current === boundary) return dirs;
         const parent = path.dirname(current);
         if (parent === current) return dirs;
         current = parent;
@@ -58,10 +74,12 @@ export const ancestorDirs = (startDir) => {
  * investigado tinha `pnpm-lock.yaml` e um `package-lock.json` dois dias mais velho),
  * e o campo é a declaração de intenção; o lockfile é só um rastro.
  *
+ * `stopAt` (opcional) delimita a subida — ver `ancestorDirs`. Uso real não passa.
+ *
  * @returns {{ name: string, source: 'packageManager'|'lockfile'|'default', dir: string|null, ambiguous: string[] }}
  */
-export const detectPackageManager = ({ startDir = process.cwd() } = {}) => {
-    for (const dir of ancestorDirs(startDir)) {
+export const detectPackageManager = ({ startDir = process.cwd(), stopAt = null } = {}) => {
+    for (const dir of ancestorDirs(startDir, { stopAt })) {
         const pkgPath = path.join(dir, 'package.json');
         if (fs.existsSync(pkgPath)) {
             try {

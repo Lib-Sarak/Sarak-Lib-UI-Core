@@ -1,11 +1,11 @@
 ---
 tipo: "adr"
 titulo: "Distribuição por Git, sem registry npm"
-status: "🟢 Aceito"
+status: "🔴 Substituído"
 tags: ["adr", "distribuicao", "empacotamento", "atualizacao", "dx", "cli"]
 relacionados: ["[[005-modelo-modulos-plugin-e-apps-separados]]", "[[003-remocao-backend-proprio]]"]
 substitui: ""
-substituido_por: ""
+substituido_por: "[[008-releases-com-tag-e-semver-em-git]]"
 ---
 
 # 1. Contexto e Problema

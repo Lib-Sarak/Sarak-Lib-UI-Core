@@ -33,6 +33,10 @@
         "audit:baseline": "node scripts/check-audit-baseline.mjs",
         "hooks:install": "node scripts/install-hooks.mjs",
         "gates:full": "npm run build && npm run package:check && npx vitest run",
+        "release:check": "node scripts/check-release-tag.mjs",
+        "preversion": "npm run gates:full",
+        "version": "npm run guide && npm run build && git add package.json package-lock.json dist sarak-ui",
+        "postversion": "git push --follow-tags",
         "prepublishOnly": "npm run build && npm run package:check",
         "test-ct": "playwright test -c playwright-ct.config.ts"
     },
