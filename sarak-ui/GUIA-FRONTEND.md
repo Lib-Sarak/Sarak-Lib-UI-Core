@@ -565,7 +565,7 @@ defeito da base é dívida que ninguém mais vai entender — e some na próxima
 
 ## Apêndice A — Superfície viva desta versão (GERADO)
 
-> **Não edite esta seção à mão.** Ela é regenerada por `npm run guide` a partir do código-fonte da `@sarak/lib-ui-core` v1.0.0; o gate `guide:check` derruba o build se ficar defasada. A fonte de máquina equivalente é o `catalog.json` ao lado deste arquivo.
+> **Não edite esta seção à mão.** Ela é regenerada por `npm run guide` a partir do código-fonte da `@sarak/lib-ui-core` v1.1.0; o gate `guide:check` derruba o build se ficar defasada. A fonte de máquina equivalente é o `catalog.json` ao lado deste arquivo.
 
 Exportações do barril público: **249** nomes (componentes, tipos, hooks e helpers).
 
