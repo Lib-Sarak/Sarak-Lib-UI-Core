@@ -22,7 +22,7 @@ Aqui está a regra de **exposição**. As regras de estilo e de hardcode moram n
 
 **Deep imports são proibidos por contrato.** Um consumidor que escreva `import X from '@sarak/lib-ui-core/dist/components/...'` está fora do contrato, e nada garante que o caminho exista na próxima versão. A única porta é a raiz do pacote.
 
-Hoje o barril exporta **249 nomes** (valores e tipos). A organização é uma lista categorizada por comentários de seção, misturando `export *` de categoria inteira com exports nomeados individuais onde é preciso controle fino.
+Hoje o barril exporta **253 nomes** (valores e tipos). A organização é uma lista categorizada por comentários de seção, misturando `export *` de categoria inteira com exports nomeados individuais onde é preciso controle fino.
 
 ## 2.1 Duas particularidades do barril que você precisa conhecer
 
@@ -34,12 +34,15 @@ Hoje o barril exporta **249 nomes** (valores e tipos). A organização é uma li
 
 A lista de componentes públicos **não é escrita à mão** — é derivada do código-fonte por AST, em `scripts/publicComponents.mjs` (`collectPublicComponentNames`, `:173-206`). Foi assim que ela passou a ser depois que o registro paralelo que a alimentava foi removido ([[002-remocao-motor-manifesto]]).
 
-O algoritmo, por categoria de `src/components/atomic/`:
+O escopo são **duas raízes organizadas por categoria** — `src/components/atomic/` e `src/components/engines/` — mais `src/components/Layout/`, que não tem categorias. O algoritmo por categoria (`collectFromCategoryRoot`):
 
-- **Com barril de categoria** (`index.ts` na raiz): segue a cadeia de `export *` (`:182-185`), coletando só **valores** — `interface` e `type` são ignorados.
-- **Sem barril**: varre os `.tsx` de **RAIZ** da categoria por padrão de export (`:186-193`).
-- A pasta `hooks/` é pulada explicitamente (`:178`).
-- Depois varre `src/components/Layout/`, **sempre** no modo "raiz apenas", mesmo que houvesse barril (`:196-203`).
+- **Com barril de categoria** (`index.ts`/`index.tsx` na raiz): segue a cadeia de `export *`, coletando só **valores** — `interface` e `type` são ignorados.
+- **Sem barril**: varre os `.tsx` de **RAIZ** da categoria por padrão de export.
+- As pastas `hooks/` e `__tests__/` são puladas explicitamente (`NON_CATEGORY_DIRS`).
+- **Arquivo solto na raiz de uma raiz-de-categorias não é categoria** e fica de fora. É o caso de `engines/LazyEngineWrapper.tsx`: peça interna que os barris de categoria consomem para embutir o `Suspense`, nunca importada pelo consumidor.
+- Por fim varre `src/components/Layout/`, **sempre** no modo "raiz apenas", mesmo que houvesse barril.
+
+> **`engines/` entrou no escopo em P26** (decisão D2). Até ali o gate varria menos do que a regra R14 exigia, e três dos quatro engines viviam fora do barril público sem que nada acendesse. Ver §8.
 
 > ⚠️ **Limitação conhecida, escrita no próprio código (`:167-172`): categoria SEM barril só tem a RAIZ varrida.** Um componente colocado em subpasta **escapa do gate** e do catálogo. Isso é usado deliberadamente em alguns casos — as peças internas do cromo vivem em `Layout/chrome/` justamente para não virarem peça de barril — mas é uma faca de dois lados: um componente público esquecido numa subpasta passa em silêncio.
 
@@ -47,7 +50,7 @@ O algoritmo, por categoria de `src/components/atomic/`:
 
 ```
 $ npm run barrel:check
-[barrel:check] 78 componentes registrados; barril em dia (0 faltas).
+[barrel:check] 81 componentes registrados; barril em dia (0 faltas).
 ```
 
 `scripts/check-barrel-parity.mjs` cobra **duas coisas** para cada componente derivado da §3 (`:63-70`):
@@ -75,14 +78,14 @@ E ele derruba o build também no sentido inverso — **exclusão obsoleta** (`:7
 
 > Este catálogo **sucedeu** o antigo catálogo de manifesto. A superfície de autoria em JSON — tipos de nó, ações, pipes, diretivas — **morreu com o motor removido** ([[002-remocao-motor-manifesto]]). Se você encontrar referência a `manifest-catalog`, é ponteiro morto.
 
-## 5.1 A divergência de contagem 78 × 85 — APURADA, não é bug
+## 5.1 A divergência de contagem 81 × 87 — APURADA, não é bug
 
-O gate reporta **78 componentes**; `sarak-ui/VERSION` e o catálogo do kit reportam **85**. Os dois números estão certos, porque **medem escopos de varredura diferentes**:
+O gate reporta **81 componentes**; `sarak-ui/VERSION` e o catálogo do kit reportam **87**. Os dois números estão certos, porque **medem escopos de varredura diferentes**:
 
-- **78** = o que `collectPublicComponentNames()` varre: `components/atomic/**` + `components/Layout/**`.
-- **85** = 78 **+ 7**, onde os 7 vêm de `collectExtraPublicApi()` (`scripts/consumer-kit/collectKitSources.mjs:184-199`): nomes que o barril exporta, têm `<Nome>Props`, e **não** moram nas duas pastas varridas pelo gate.
+- **81** = o que `collectPublicComponentNames()` varre: `components/atomic/**` + `components/engines/**` + `components/Layout/**`.
+- **87** = 81 **+ 6**, onde os 6 vêm de `collectExtraPublicApi()` (`scripts/consumer-kit/collectKitSources.mjs:184-199`): nomes que o barril exporta, têm `<Nome>Props`, e **não** moram nas pastas varridas pelo gate.
 
-Os 7, com onde moram:
+Os 6, com onde moram:
 
 | Nome | Mora em |
 | --- | --- |
@@ -92,9 +95,10 @@ Os 7, com onde moram:
 | `SarakComponent` | `src/core/Discovery/registry.ts` |
 | `DeviceProvider` | `src/core/Provider/DeviceProvider.tsx` |
 | `DesignScope` | `src/core/Design/components/` |
-| `SarakChartEngine` | `src/components/engines/charts/` |
 
-**Nenhum dos 7 está faltando no barril** — todos já são exportados; é justamente por isso que o coletor do kit consegue achá-los. A diferença é de **qual script os enumera como "componente"**: o gate mede paridade das peças visuais; o kit do consumidor amplia para as peças de **montagem** (Provider, Shell, Discovery, engines), que o importador também precisa saber que existem.
+**Nenhum dos 6 está faltando no barril** — todos já são exportados; é justamente por isso que o coletor do kit consegue achá-los. A diferença é de **qual script os enumera como "componente"**: o gate mede paridade das peças visuais; o kit do consumidor amplia para as peças de **montagem** (Provider, Shell, Discovery), que o importador também precisa saber que existem.
+
+> A lista era de **7** antes do P26, e o sétimo era `SarakChartEngine`: ele precisava ser reincorporado por este caminho justamente porque `engines/` estava fora do escopo do gate. Com `engines/` dentro (§3), os três engines entram pela porta da frente e a lista de extras encolheu — a divergência de contagem passou a medir só o que ela sempre quis medir, as peças de montagem em `core/`.
 
 # 6. Taxonomia
 
@@ -119,7 +123,7 @@ Os 7, com onde moram:
 
 Mais duas pastas fora da taxonomia atômica:
 
-- **`src/components/engines/`** — `charts/`, `chat/`, `flows/`, `visuals/`. São **wrappers de abstração sobre bibliotecas pesadas de terceiros** (ECharts, React Flow). A regra que os define: **nenhum engine tem cor de framework de terceiro hardcoded** — todos sobrescrevem a configuração da lib base forçando `var(--sarak-*)`, e é isso que faz um gráfico repintar quando o tema muda.
+- **`src/components/engines/`** — **três** categorias: `charts/`, `chat/`, `flows/`. São **wrappers de abstração sobre bibliotecas pesadas de terceiros** (ECharts, React Flow, React Markdown + Syntax Highlighter). A regra que os define: **nenhum engine tem cor de framework de terceiro hardcoded** — todos sobrescrevem a configuração da lib base forçando `var(--sarak-*)`, e é isso que faz um gráfico repintar quando o tema muda. As três são **públicas e lazy** (§7.1) e estão no escopo do `barrel:check` (§3). Na raiz da pasta mora ainda `LazyEngineWrapper.tsx`, que **não é categoria**: é a peça interna que embute o `Suspense` nos barris das três.
 - **`src/components/Layout/`** — o cromo e o layout de aplicação: `SarakAppChrome`, `SarakAppChromeMobile`, `SarakAnalyticalPage`, `SarakHidden`, mais a subpasta `chrome/` com as peças internas.
 
 A lista componente-por-componente **não está aqui de propósito** — está no catálogo gerado (§5).
@@ -155,6 +159,8 @@ O chunk de **boot** de um consumidor caiu de **3203,6 KB para 1533,6 KB (−52,1
 | Componente | Onde o `lazy` é declarado |
 | --- | --- |
 | `SarakChartEngine` | `src/components/engines/charts/index.tsx:20` |
+| `SarakChatEngine` | `src/components/engines/chat/index.tsx:19` |
+| `SarakFlowEngine` | `src/components/engines/flows/index.tsx:17` |
 | `SarakPDFViewer` | `src/components/atomic/Media/SarakPDFViewer/index.ts:12` |
 | `SarakMarkdownRenderer` | `src/components/atomic/Media/SarakMarkdownRenderer/index.ts:13` |
 | `SarakDataTable` | `src/components/atomic/DataDisplay/SarakDataTable/index.ts:11` |
@@ -172,19 +178,21 @@ Registradas para serem conhecidas, **não corrigidas aqui**:
 
 **Os dois ids legados do Discovery** (`mx-customization`, `personalization`) registrados por efeito colateral de import. Funcionam, mas ninguém decidiu se devem continuar existindo.
 
-**Três das QUATRO categorias de `engines/` estão fora do contrato público.** Isto não é uma peça esquecida — é **uma pasta inteira majoritariamente inalcançável**.
+# 9. Os engines — dívida FECHADA em P26 (registro)
 
-`src/components/engines/index.ts:8-11` declara os quatro engines, todos atrás de `React.lazy`. Mas `src/index.ts` só reexporta a partir de `./components/engines/charts` — nunca do barril `engines/`. Resultado, medido contra os 249 nomes do barril:
+Esta seção era, até 2026-07-29, a maior dívida desta lista: **três das quatro categorias de `engines/` estavam fora do contrato público**, e o gate não pegava porque `components/engines/**` não estava no escopo de varredura. A investigação mostrou que os três casos tinham **status diferentes** — e é por isso que a resposta não foi uma só (decisão **D2**).
 
-| Engine | Componente existe | `<Nome>Props` exportado | No barril público |
+| Engine | Uso interno na lib | Estava no barril | O que foi feito |
 | --- | --- | --- | --- |
-| `SarakChartEngine` | ✅ `charts/SarakChartEngine.tsx` | ✅ | ✅ **PRESENTE** |
-| `SarakFlowEngine` | ✅ `flows/SarakFlowEngine.tsx` | ✅ | ❌ **AUSENTE** |
-| `SarakChatEngine` | ✅ `chat/SarakChatEngine.tsx` | ✅ | ❌ **AUSENTE** |
-| `SarakVisualEngine` | ✅ `visuals/SarakVisualEngine.tsx` | ✅ | ❌ **AUSENTE** |
+| `SarakChartEngine` | — | ✅ | Nada — era o padrão a copiar |
+| `SarakChatEngine` | ✅ `core/Discovery/components/ContractRenderer.tsx:67` | ❌ | **EXPOSTO** (barril próprio, lazy) |
+| `SarakFlowEngine` | ✅ `ContractRenderer.tsx:89` | ❌ | **EXPOSTO** (barril próprio, lazy) |
+| `SarakVisualEngine` | ❌ nenhum | ❌ | **REMOVIDO** |
 
-Os três ausentes **não são esboços**: cada um é um componente real, com `interface <Nome>Props` exportada — exatamente o par que `barrel:check` exigiria se estivessem no escopo do gate.
+**O achado que explicava a confusão:** existia um `src/components/engines/index.ts` que declarava os quatro atrás de `React.lazy` e **não era importado por ninguém** — o `ContractRenderer` importava direto dos arquivos e o `src/index.ts` importava de `engines/charts`. Código morto que produzia leitura errada da arquitetura: quem o lia concluía que os quatro engines eram alcançáveis. Foi apagado.
 
-**E o gate não pega isso por construção.** `collectPublicComponentNames()` varre `components/atomic/**` e `components/Layout/**`; `components/engines/**` **não está no escopo** (§3). Não é falha do gate — é o limite declarado dele, e é a mesma razão pela qual o catálogo do kit precisou reincorporar `SarakChartEngine` por outro caminho (§5.1). A consequência prática é que a ausência dos outros três **nunca vai acender uma luz vermelha**: ela é invisível para toda a automação existente.
+**Por que `SarakVisualEngine` saiu** e os outros dois ficaram: a regra de corte de [[001-tres-arquiteturas]] — *só permanece o que tem consumidor real provado*. Chat e Flow tinham consumidor interno vivo; o Visual não tinha nenhum, nem dentro da lib nem no ERP Earendel (o único consumidor real, decisão D13 — varredura feita antes da remoção). Saiu junto o `PaletteSelector`, que morava na mesma categoria, também sem nenhum consumidor, e cuja lista de paletas (`COLOR_PALETTES`) era um **array vazio** — ele não desenhava nada. Registro em `docs/migracoes.md`.
 
-**Não apurado** — a escolha é do dono, e as duas leituras são defensáveis: ou os três são **internos de propósito** (e então a taxonomia da §6 deve dizer isso explicitamente, em vez de listar quatro categorias como se todas fossem consumíveis), ou é **lacuna de exposição** da mesma classe que o `barrel:check` nasceu para impedir — e nesse caso a correção é exportar os três e discutir se `engines/` entra no escopo de varredura.
+**O custo de boot foi ZERO**, e isso é o ponto: expor não é o pecado, expor *eager* é (§7). Chat e Flow entraram pelo mesmo padrão do `charts/` — barril de categoria com `React.lazy` + `LazyEngineWrapper` (`Suspense` interno, para o consumidor não ter de declarar). Medido: `dist/index.js` (o chunk de boot) foi de **657,4 KB para 657,7 KB** — os `+0,3 KB` dos dois wrappers. As implementações continuam em chunks próprios, com o mesmo hash de antes.
+
+**E o vão do gate foi fechado**, não contornado: `collectPublicComponentNames()` passou a varrer `components/engines/**` como raiz por categoria (§3). O gate saiu de 78 para **81 componentes** e continua em 0 faltas. A prova de que ele passou a ver os engines: comentar o export de `SarakChatEngine` derruba o `barrel:check` com `exit 1`, acusando o valor e o tipo — coisa que antes passava em silêncio.

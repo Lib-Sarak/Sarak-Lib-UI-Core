@@ -4,9 +4,10 @@
  * Antes (#2, removido): a lista vinha do `NATIVE_COMPONENTS` — um registro curado
  * dentro do motor de manifesto (`core/Manifest/Registry/nativeComponents.ts`).
  * Agora (#3): deriva-se por AST diretamente do código-fonte dos componentes —
- * `src/components/atomic/<Categoria>/` (via o barril `index.ts` da categoria, quando
- * existe — resolve `export *` em cadeia; sem barril, varre os `.tsx` de raiz) e
- * `src/components/Layout/` (sem barril, varre `.tsx` de raiz).
+ * `src/components/atomic/<Categoria>/` e `src/components/engines/<Categoria>/` (via o
+ * barril `index.ts` da categoria, quando existe — resolve `export *` em cadeia; sem
+ * barril, varre os `.tsx` de raiz) e `src/components/Layout/` (sem barril, varre
+ * `.tsx` de raiz).
  *
  * Usado por `check-barrel-parity.mjs` (paridade contra `src/index.ts`) e por
  * `generate-component-catalog.mjs` (catálogo da API pública).
@@ -20,7 +21,11 @@ import ts from 'typescript';
 const ROOT = path.resolve(path.dirname(fileURLToPath(import.meta.url)), '..');
 const SRC = path.join(ROOT, 'src');
 const ATOMIC_ROOT = path.join(SRC, 'components/atomic');
+const ENGINES_ROOT = path.join(SRC, 'components/engines');
 const LAYOUT_ROOT = path.join(SRC, 'components/Layout');
+
+/** Pastas que existem dentro de uma raiz de categorias mas NÃO são categoria. */
+const NON_CATEGORY_DIRS = new Set(['hooks', '__tests__']);
 
 const CANDIDATE_SUFFIXES = ['.ts', '.tsx', '/index.ts', '/index.tsx'];
 
@@ -165,17 +170,19 @@ export const namesFromFileExports = (file) => {
 };
 
 /**
- * Nomes públicos derivados do código-fonte: categorias atômicas COM barril seguem a
- * cadeia `export *` (pega tudo que a categoria expõe, componente + tipos + helpers);
- * categorias SEM barril (`Cards/`, `Icon/`) e `components/Layout/` varrem os `.tsx`
- * de raiz por regex (mesma heurística usada pelo antigo gate R3 do Registry).
+ * Varre uma raiz organizada POR CATEGORIA (uma pasta por categoria): categoria COM
+ * barril segue a cadeia `export *` (pega o que a categoria expõe como valor);
+ * categoria SEM barril (`Cards/`, `Icon/`) varre os `.tsx` de raiz por regex (mesma
+ * heurística usada pelo antigo gate R3 do Registry).
+ *
+ * Arquivo solto na RAIZ da raiz de categorias não é categoria e fica de fora — é o
+ * caso de `engines/LazyEngineWrapper.tsx`, peça interna que os barris das categorias
+ * consomem para embutir o `Suspense`, nunca importada pelo consumidor.
  */
-export const collectPublicComponentNames = () => {
-    const names = new Set();
-
-    for (const category of fs.readdirSync(ATOMIC_ROOT)) {
-        const dir = path.join(ATOMIC_ROOT, category);
-        if (!fs.statSync(dir).isDirectory() || category === 'hooks') continue;
+const collectFromCategoryRoot = (root, names) => {
+    for (const category of fs.readdirSync(root)) {
+        const dir = path.join(root, category);
+        if (!fs.statSync(dir).isDirectory() || NON_CATEGORY_DIRS.has(category)) continue;
         const indexFile = ['index.ts', 'index.tsx']
             .map((f) => path.join(dir, f))
             .find((f) => fs.existsSync(f));
@@ -192,6 +199,22 @@ export const collectPublicComponentNames = () => {
             }
         }
     }
+};
+
+/**
+ * Nomes públicos derivados do código-fonte: as duas raízes por categoria
+ * (`components/atomic/` e `components/engines/`) mais `components/Layout/`, que não
+ * tem categorias e varre os `.tsx` de raiz.
+ *
+ * `engines/` entrou no escopo em P26 (decisão D2). Antes disso o gate varria menos do
+ * que a regra exigia, e 3 dos 4 engines viviam fora do barril público sem que nada
+ * acendesse — gate com escopo menor que a regra deixa a regra violada em silêncio.
+ */
+export const collectPublicComponentNames = () => {
+    const names = new Set();
+
+    collectFromCategoryRoot(ATOMIC_ROOT, names);
+    if (fs.existsSync(ENGINES_ROOT)) collectFromCategoryRoot(ENGINES_ROOT, names);
 
     if (fs.existsSync(LAYOUT_ROOT)) {
         for (const entry of fs.readdirSync(LAYOUT_ROOT)) {

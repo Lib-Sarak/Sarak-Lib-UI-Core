@@ -33,10 +33,13 @@ Esta spec descreve o pipeline, as decisões de desenho com a justificativa de ca
 | **0 — Segurança** | Todo commit, sem exceção | **BLOQUEIA** | < 1 s |
 | **1 — Contrato** | Commit que toca código/artefato | **BLOQUEIA** no vermelho | ~2,9 s |
 | **2 — Auditoria** | Commit que toca código/artefato | **BLOQUEIA só em REGRESSÃO** | ~7 s (+ ~11 s se tocar `.ts`/`.tsx`) |
-| **3 — Pesado** | **Manual** (§4) | Responsabilidade de quem entrega | ~3 min |
-| **Push — Release** | `git push` para `main` (§4.1) | **BLOQUEIA** artefato alterado sem tag nova | < 1 s |
+| **Push — Release** | `git push` para `main` (§4.3) | **BLOQUEIA** artefato alterado sem tag nova | < 1 s |
+| **3 — Suíte** | `git push` para `main` que toca código (§4) | **BLOQUEIA** no vermelho | ~170 s |
+| **3 — Build/pacote** | **Manual**, `npm run gates:full` (§4.1) | Responsabilidade de quem entrega | ~1 min |
 
-**Custo total de um commit de código:** ~10 s sem TypeScript, ~20 s com. Um commit de documentação custa **~0,6 s** (§3). O anel de push só lê o git (`for-each-ref` + `ls-tree`) — não roda gate nenhum.
+**Custo total de um commit de código:** ~10 s sem TypeScript, ~20 s com. Um commit de documentação custa **~0,6 s** (§3). **Custo de um push da `main` com código:** ~170 s; de qualquer outro push: instantâneo.
+
+> A tabela tem cinco linhas para quatro anéis porque o **Anel 3 foi partido em dois** em P27: a suíte virou hook, o `build`/`package:check` não — e não vai virar. O porquê está na §4.1.
 
 ## 2.1 Anel 0 — Segurança (inalterado)
 
@@ -121,25 +124,47 @@ O hook lê `git diff --cached --name-only --diff-filter=ACMR` e decide:
 
 **Medido:** commit só de markdown = **609 ms**; o mesmo commit tocando código = **10.042 ms**.
 
-# 4. Anel 3 — a decisão de deixá-lo MANUAL
+# 4. Anel 3 — a SUÍTE no push; `build` e `package:check` fora de hook, por decisão
 
-**Decisão: o Anel 3 NÃO vira `pre-push` nesta entrega. Fica manual, atrás de um comando único.**
+**Decisão atual (P27, decisão D8, 2026-07-29): o Anel 3 foi PARTIDO em dois, e só metade dele virou hook.**
+
+| Peça do antigo "Anel 3" | Onde roda hoje | Por quê |
+| --- | --- | --- |
+| `npx vitest run` | **`pre-push`, BLOQUEANTE** (push da `main`) | O motivo que a segurava expirou |
+| `npm run build` | **fora de hook, permanentemente** | Ele **muta a árvore de trabalho** |
+| `npm run package:check` | **fora de hook, permanentemente** | Depende do `build` |
 
 ```
 npm run gates:full     # npm run build && npm run package:check && npx vitest run
 ```
 
-Três razões, todas concretas:
+O comando único continua existindo e continua sendo o que se roda antes de entregar. O que mudou é que **a metade verificável dele deixou de depender de alguém lembrar**.
 
-1. ~~**A suíte tem uma falha dependente do ambiente.**~~ **CAÍDA em 2026-07-28.** Era o motivo principal: `bin/scaffold/__tests__/packageManager.test.mjs` falhava nesta máquina por causa de um `package-lock.json` no diretório do usuário, e um `pre-push` bloqueante teria impedido **todo push** por um motivo alheio à mudança — gate vermelho no dia da instalação ensina todo mundo a usar `--no-verify`, e aí não sobra gate nenhum. O teste foi tornado hermético ([[01-gates-e-baseline]] §3.1) e a suíte fecha 100% verde. **Os motivos (2) e (3) continuam de pé sozinhos** e são o que mantém o Anel 3 fora de hook.
-2. **`npm run build` MUTA a árvore de trabalho.** Ele regenera `dist/` e `dist/BUILD_INFO.json`. Um hook que reescreve arquivos versionados no meio de um push é armadilha: o push sai com uma árvore diferente da que foi validada.
-3. **`package:check` depende de (2).** Ele roda `npm pack --dry-run` e exige `dist/` buildado — não é executável isoladamente num hook.
+## 4.1 Por que só a suíte foi promovida — os três motivos tinham validades diferentes
 
-**Caminho de promoção, agora desimpedido pelo lado da suíte:** o `.githooks/pre-push` **já existe** (§4.1) e `'pre-push'` já está em `HOOK_FILES`; promover a suíte é acrescentar `npx vitest run` a ele. O `build` e o `package:check` devem continuar **fora** de hook pelo motivo (2).
+Este é o registro do raciocínio original, preservado porque ele é o que impede alguém de "completar" o Anel 3 no futuro achando que faltou peça:
 
-> **Onde a suíte de fato roda hoje:** dentro do `preversion` de `npm version` ([[03-versionamento-e-release]] §6). É o momento certo — quem está emitindo release já aceitou pagar os 3 minutos, e quem só empurra um commit não paga nada.
+1. ~~**A suíte tem uma falha dependente do ambiente.**~~ **CAÍDA em 2026-07-28 (P11-D) e reforçada em 2026-07-29 (P20-A).** Era o motivo principal: `bin/scaffold/__tests__/packageManager.test.mjs` falhava nesta máquina por causa de um `package-lock.json` no diretório do usuário, e um `pre-push` bloqueante teria impedido **todo push** por um motivo alheio à mudança — gate vermelho no dia da instalação ensina todo mundo a usar `--no-verify`, e aí não sobra gate nenhum. O teste foi tornado hermético ([[01-gates-e-baseline]] §3.1) e o `Template-Ts/` — que fechava verde só por causa de um `node_modules/` local não versionado — saiu do repositório (§3.2). Com as duas metades fechadas, **este motivo expirou**: a suíte hoje fecha 100% verde em clone limpo.
+2. **`npm run build` MUTA a árvore de trabalho** — regenera `dist/`, `sarak-ui/` e `dist/BUILD_INFO.json`. Um hook que reescreve arquivos versionados no meio de um push é armadilha: **o push sai com uma árvore diferente da que foi validada**. Este motivo **não expira nunca**, porque não é sobre o estado do repositório — é sobre o que a operação faz.
+3. **`package:check` depende de (2).** Roda `npm pack --dry-run` e exige `dist/` buildado; não é executável isoladamente num hook.
 
-# 4.1 O anel de PUSH — o release que não pode ser esquecido
+> **Isto é decisão fechada, não pendência.** `build` e `package:check` **não** vão para hook nenhum. O lugar deles é o `npm run gates:full` (à mão, antes de entregar) e o gancho `preversion` de `npm version` ([[03-versionamento-e-release]] §6) — ali a mutação da árvore é o **objetivo** da operação, não um efeito colateral.
+
+## 4.2 O desenho do anel da suíte
+
+| Item | Valor | Justificativa |
+| --- | --- | --- |
+| **Ordem** | O anel de **release roda primeiro**; a suíte depois | O release é `< 1 s` (só lê o git) e a suíte custa ~3 min. **Rodar o barato primeiro devolve o "não" mais rápido** — é o que respeita quem está do outro lado do terminal |
+| **Escopo de branch** | **Só `refs/heads/main`** | Mesmo critério do anel de release: um modelo mental só, um lugar só para olhar. **Quebrar teste em branch de trabalho é parte de trabalhar** — push de WIP, backup, branch compartilhada para revisão. Bloquear ali ensinaria o reflexo do `--no-verify`, que desligaria **os dois** anéis de uma vez. E como neste repositório o trabalho acontece direto na `main` (ADR-008), a concessão é quase gratuita na prática |
+| **Escopo de conteúdo** | Roda quando a faixa empurrada toca `src/`, `scripts/`, `bin/`, `package(-lock).json`, `tsconfig*.json` ou `vitest.config/setup.ts` | Mesmo princípio da §3: quem não mexeu, não paga. Um push só de `specs/` custa **zero** |
+| **Fail-safe** | Qualquer incerteza sobre a faixa **RODA** a suíte | Ref remota nova (sha zerado) ou sha remoto que não existe localmente = sem base de comparação. Um pulo errado aqui produziria exatamente o "verde que não é" que este anel existe para impedir |
+| **stdin** | Capturado **uma vez** no topo do hook e repassado | O stdin do `pre-push` só pode ser lido uma vez. O `vitest` roda com `< /dev/null` — um runner que tente ler stdin já consumido trava o push |
+
+**Custo medido (2026-07-29):** push da `main` tocando código = **169–179 s** (~3 min), sendo ~1 s de anel de release e o resto de suíte. Push de branch, ou push da `main` só com markdown = **instantâneo**.
+
+> ⚠️ **Três minutos é o teto.** Está no limite do que um hook pode custar sem começar a ser contornado por reflexo. É por isso que o escopo de conteúdo (§4.2) não é luxo: sem ele, cada push de spec desta campanha pagaria 3 minutos por nada, e o `--no-verify` viraria hábito. Se a suíte crescer além disso, a saída é a CI (§9), não afrouxar o anel.
+
+## 4.3 O anel de PUSH — o release que não pode ser esquecido
 
 **Decisão: [[008-releases-com-tag-e-semver-em-git]] (D5).** Zero tags em 331 commits nunca foi falta de conhecimento — foi falta de gatilho. E o consumidor que instala com `#semver:` depende de tag: sem tag nova, ele fica no artefato velho **em silêncio**, que é o incidente do ADR-007 se repetindo.
 
@@ -200,7 +225,25 @@ O dono pediu **"confirma regra aplicada"**, não só "acusa violação". Cada an
 [Sarak] Commit liberado. Anel 3 (suíte, build, package) NÃO roda aqui — rode: npm run gates:full
 ```
 
-Quando um anel é pulado, a linha diz **que foi pulado e por quê** — silêncio seria indistinguível de "passou".
+E no push (saída real da prova 1 do P27):
+
+```
+[release:check] OK — o artefato publicado é idêntico ao de v1.1.0 (dd5dd4f0b1eb). Nenhuma tag devida.
+[Sarak] Anel 3 — suíte completa (npx vitest run). Isto leva ~3 min.
+ Test Files  273 passed (273)
+      Tests  877 passed (877)
+[Sarak] Anel 3 OK — suíte completa verde.
+[Sarak] Push liberado. Fora de hook, por decisão: npm run build e package:check
+        (o build muta a árvore — rode com npm run gates:full).
+```
+
+Quando um anel é pulado, a linha diz **que foi pulado e por quê** — silêncio seria indistinguível de "passou":
+
+```
+[Sarak] Anel 3 PULADO — nada sendo empurrado para main.
+[Sarak] Anel 3 PULADO — nada que a suíte enxergue mudou nesta faixa
+        (src/, scripts/, bin/, package.json, tsconfig, vitest.config/setup).
+```
 
 # 6. Instalação
 
@@ -221,7 +264,9 @@ Duas decisões dentro dele:
 
 # 7. O escape — `--no-verify`
 
-`git commit --no-verify` pula todos os hooks e **não há como impedir isso** (é do git, não do repositório). O mesmo vale para `git push --no-verify`, que pula o anel de release — e lá o custo do escape é diferente: não é dívida técnica que fica no repositório, é um consumidor que fica para trás sem saber.
+`git commit --no-verify` pula todos os hooks e **não há como impedir isso** (é do git, não do repositório). O mesmo vale para `git push --no-verify`, que pula **os dois anéis de push de uma vez** — o de release e o da suíte. Lá o custo do escape é diferente: não é só dívida técnica que fica no repositório, é um consumidor que fica para trás sem saber, ou uma `main` vermelha que ninguém vê.
+
+> É por causa desse "de uma vez" que o anel da suíte vale **só para a `main`** (§4.2). Um gate que incomoda em branch de trabalho seria contornado por reflexo — e o reflexo derrubaria junto o anel de release, que é o mais barato e o mais consequente dos dois.
 
 O uso é **excepcional**: commit de emergência, ou salvar trabalho em andamento numa branch pessoal. O que se espera de quem usa:
 
@@ -242,7 +287,7 @@ O que um CI acrescentaria, se o dono quiser:
 
 | Ganho | Detalhe |
 | --- | --- |
-| Rodar o **Anel 3 em PR** | A suíte, o build e o `package:check` rodariam num ambiente limpo, sem custar tempo de commit — resolve exatamente o motivo (1) da §4 |
+| Rodar **build e `package:check`** em ambiente limpo | São as duas peças que **nunca** vão para hook (§4.1), justamente porque mutam a árvore — na CI a árvore é descartável, então lá a objeção não existe. A suíte já é cobrada no push desde P27 |
 | Ambiente **determinístico** | ~~A falha da §3.1~~ — resolvida no P11-D; o ganho que resta é pegar o que depende de estado local não versionado (ver [[01-gates-e-baseline]] §3.1) |
 | Cobrar quem usou `--no-verify` | O escape da §7 deixa de ser invisível |
 | Rodar o **Playwright** | Hoje `test-ct` e os `__e2e__` estão fora de toda automação ([[01-gates-e-baseline]] §2.6) |
@@ -261,17 +306,30 @@ O que um CI acrescentaria, se o dono quiser:
 - [x] Instalação idempotente (`npm run hooks:install`).
 - [x] Nenhum auditor ou script de check existente foi alterado — só orquestrados.
 - [x] Nenhuma dependência nova.
-- [x] Anel 3 decidido (manual) **com justificativa escrita** e caminho de promoção.
+- [x] Anel 3 decidido **com justificativa escrita** e caminho de promoção — percorrido em P27.
 - [x] CI **não** criado; registrado como opção em aberto (§9).
 
 Do anel de push (2026-07-28):
 
 - [x] `.githooks/pre-push` criado e `'pre-push'` acrescentado a `HOOK_FILES`.
 - [x] A definição de "artefato publicado" **reusada** de `localDependency.mjs`, não reimplementada.
-- [x] Bloqueio exercitado nos dois cenários contra um remoto real, com a saída registrada (§4.1).
+- [x] Bloqueio exercitado nos dois cenários contra um remoto real, com a saída registrada (§4.3).
 - [x] Nível do bump **sugerido** e rotulado como sugestão na própria mensagem.
 - [x] Repositório sem tag nenhuma **não** é bloqueado.
 - [x] Nenhuma dependência nova.
+
+Da promoção da suíte (2026-07-29, P27):
+
+- [x] Pré-requisito confirmado: P20-A concluído (`Template-Ts/` fora), suíte 100% verde em 273/877.
+- [x] Suíte acrescentada ao `pre-push` **convivendo** com o anel de release, que continua rodando primeiro.
+- [x] Ordem e escopo de branch **decididos e justificados** (§4.2).
+- [x] `build` e `package:check` **fora de hook**, registrado como decisão fechada e não como pendência (§4.1).
+- [x] `HOOK_FILES` conferido — `'pre-push'` já estava lá desde o P12-C; `install-hooks.mjs` **não** precisou de alteração.
+- [x] Mensagem de bloqueio acionável: regra, comando que reproduz, e onde está a dívida tolerada.
+- [x] stdin do `pre-push` capturado uma vez e repassado; `vitest` com `< /dev/null`.
+- [x] As 4 provas executadas com saída real (§11.1). Quebra deliberada **revertida**.
+- [x] Custo medido e registrado (169–179 s), com o teto discutido em voz alta.
+- [x] Nenhum auditor alterado, `pre-commit` intocado, nenhuma dependência nova, nenhum push real.
 
 # 11. Plano de testes (Quality Gate) — as 5 provas, executadas
 
@@ -286,3 +344,17 @@ Todas foram executadas invocando `sh .githooks/pre-commit` com o índice prepara
 | 5 | Gate de segredos **não regrediu** | ✅ exit 1 no Anel 0, chave mascarada `AKIA...LE`, arquivo de prova removido |
 
 Verificado ao fim: `git status` sem resíduo das provas e índice vazio.
+
+## 11.1 As 4 provas do anel da suíte (P27, 2026-07-29)
+
+Executadas invocando `sh .githooks/pre-push` com o **protocolo real do git no stdin** (`<ref local> <sha local> <ref remota> <sha remoto>`), **sem push de verdade**. É o mesmo caminho de código que o git executa.
+
+| # | Prova | Resultado |
+| --- | --- | --- |
+| 1 | Push da `main` com código na faixa e suíte **verde** | ✅ **exit 0** — release OK, `273 passed / 877 passed`, "Anel 3 OK". **169 s** |
+| 2 | Push da `main` com um teste **quebrado de propósito** | ✅ **exit 1** — `1 failed | 273 passed`, mensagem citando **R8**, o comando que reproduz e onde está a dívida tolerada. **Quebra revertida** e o verde reconfirmado (prova 1 re-executada depois) |
+| 3a | Anel de release: artefato mudou desde a tag, **sem tag nova** | ✅ **exit 1**, `v1.1.0 (dd5dd4f0b1eb)` × `dbf2d18 (6cbac86216ad)`, sugestão `patch` — e a suíte **nem chegou a rodar**, que é o ponto da ordem escolhida |
+| 3b | Anel de release: artefato **idêntico** ao da tag | ✅ **exit 0**, "o artefato publicado é idêntico ao de v1.1.0" |
+| 4 | Escopo: push de **branch de trabalho**, e push da `main` sem código na faixa | ✅ **exit 0** instantâneo, com a linha "Anel 3 PULADO — …". O filtro foi conferido também contra uma faixa real só-de-markdown do histórico (`1a9f318..dbf2d18` → nenhum caminho de código) |
+
+**Custo total medido:** 169 s e 179 s em duas execuções da prova 1 (~3 min), das quais **< 1 s** é o anel de release. Fora da `main`, ou sem código na faixa: **instantâneo**. O teto de 3 minutos está discutido na §4.2 — não é confortável, e é a razão de o escopo de conteúdo existir.

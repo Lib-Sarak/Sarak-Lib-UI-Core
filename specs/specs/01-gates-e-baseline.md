@@ -119,11 +119,11 @@ Registrado como o que é: **cobertura que existe e não é cobrada**.
 | ↳ `auditor_cleancode` | | ✅ 0 violações |
 | ↳ `auditor_paridade` | | ✅ **409 / 409 / 409** em 13 arquivos de partição (linha final relata 416 brutos) |
 | ↳ `auditor_presets` | | ✅ gabarito de 409 chaves; **120 itens** (18 temas + 102 presets), 0 órfã |
-| `barrel:check` | `npm run barrel:check` | ✅ **78 componentes, 0 faltas** |
-| `catalog:check` | `npm run catalog:check` | ✅ catálogo em dia |
-| `zero-brand:check` | `npm run zero-brand:check` | ✅ **363 arquivos, 0 violações** |
-| `guide:check` | `npm run guide:check` | ✅ **kit em dia (6 arquivos)** |
-| suíte | `npx vitest run` | ✅ **275 arquivos / 879 testes, 100% verde** (~167 s), desde 2026-07-29. Era 281/901 até a remoção do `Template-Ts/` (§3.2) e 280/890 com 1 falha ambiental até 2026-07-28 (§3.1) |
+| `barrel:check` | `npm run barrel:check` | ✅ **81 componentes, 0 faltas** — era 78 até P26, que pôs `components/engines/**` no escopo de varredura (§4.5, item 4) |
+| `catalog:check` | `npm run catalog:check` | ✅ catálogo em dia (**81** componentes) |
+| `zero-brand:check` | `npm run zero-brand:check` | ✅ **361 arquivos, 0 violações** — era 363 até P26; a contagem é o nº de arquivos varridos, então remover 2 componentes a faz cair. **O número que importa é o de violações (0)** |
+| `guide:check` | `npm run guide:check` | ✅ **kit em dia (6 arquivos)** — o kit reporta **87** componentes (81 + 6 extras; ver [[03-superficie-publica]] §5.1) |
+| suíte | `npx vitest run` | ✅ **273 arquivos / 877 testes, 100% verde** (~185 s), desde 2026-07-29 (P26). Era 275/879 antes da remoção do `SarakVisualEngine`/`PaletteSelector`, que levou junto os 2 testes de fumaça deles; 281/901 até a remoção do `Template-Ts/` (§3.2); e 280/890 com 1 falha ambiental até 2026-07-28 (§3.1) |
 | `tsc` | `npx tsc --noEmit` | ❌ **14 erros** — 10 em teste, **4 em produção**. Não é gate |
 | `build` | `npm run build` | 4 gates + 6 etapas de compilação |
 | `package:check` | `npm run package:check` | exige `dist/` buildado |
@@ -324,10 +324,12 @@ O comentário de `auditor_ghostvars.mjs:5-10` diz que o registro vem de "`useDes
 | --- | --- | --- | --- |
 | 1 | **`atomic/Tables/` é categoria sem componente** — só `hooks/useTableLayoutStyles.ts`; `SarakTable.tsx`/`SarakTableCards.tsx` moram em `Templates/` e importam o hook cruzando a fronteira de categoria; `grep "atomic/Tables"` = **0** | `src/components/atomic/Tables/` | ❌ **Não.** `auditor_arquitetura` só cobra `components ⊅ features` e `core ⊅ features`; cruzar categoria dentro de `atomic/` não é violação para nenhum gate |
 | 3 | **`CustomizationPanel` eager no barril** — o painel inteiro do Design Engine no caminho crítico de todo consumidor | `src/index.ts:50` + efeito colateral `:119-125` | ❌ **Não.** Não existe gate de peso de bundle |
-| 4 | **3 das 4 categorias de `engines/` fora do barril** (`flows`, `chat`, `visuals`) | `src/components/engines/` | ❌ **Não** — `engines/` está fora do escopo de varredura do `barrel:check` |
+| 4 | ✅ **FECHADA em P26** (2026-07-29) — **3 das 4 categorias de `engines/` estavam fora do barril** (`flows`, `chat`, `visuals`) e o gate não via | `src/components/engines/` | ✅ **Sim, agora.** `engines/` entrou no escopo do `barrel:check` (78 → **81** componentes); Chat e Flow foram expostos atrás de fronteira lazy e o Visual foi removido. Ver [[03-superficie-publica]] §9 |
 | 6 | **`upgradeThemePayload` declara `partialMode` e nunca usa** — parâmetro morto na assinatura pública | `src/core/Design/master-map.ts:148` | ❌ **Não.** Parâmetro não usado não é `any` nem estoura limiar de Clean Code |
 
-**O que fecharia cada um:** (1) decisão de taxonomia — mover o componente para `Tables/`, mover o hook para `Templates/`, ou aceitar e documentar; (3) `React.lazy`, que muda o tipo público para `LazyExoticComponent` e portanto é **breaking change**; (4) decisão do dono entre "interno de propósito" e "lacuna de exposição"; (6) remover o parâmetro (mudança de assinatura, ainda que ninguém o passe).
+**O que fecharia cada um:** (1) decisão de taxonomia — mover o componente para `Tables/`, mover o hook para `Templates/`, ou aceitar e documentar; (3) `React.lazy`, que muda o tipo público para `LazyExoticComponent` e portanto é **breaking change**; (4) **já fechada** — a decisão D2 do dono, executada em P26; (6) remover o parâmetro (mudança de assinatura, ainda que ninguém o passe).
+
+> **A lição da nº 4 vale para a nº 2 (o `--sx-*` em `src/styles/`), que continua aberta:** as duas são a mesma classe de defeito — *gate com escopo menor que a regra*. A nº 4 foi fechada **ampliando o escopo do gate junto com o conserto**; a nº 2 espera a mesma dupla (§4.3). Consertar só o código deixaria o vão do gate de pé para a próxima violação.
 
 **Nenhum destes é corrigido por esta spec.** Documentar com precisão é a entrega.
 

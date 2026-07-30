@@ -5,6 +5,37 @@ com o "antes" e o "depois" lado a lado. Uma entrada por mudança, mais recente p
 
 ---
 
+## Engines: `SarakChatEngine` e `SarakFlowEngine` viraram públicos; `SarakVisualEngine` foi removido
+
+**Provavelmente não quebra nada para você** — nenhum dos três estava no barril público, então
+não havia como importá-los pela porta oficial. A entrada existe porque o arquivo é o histórico
+do contrato, e porque quem usava **deep import** (proibido por contrato, mas possível) é afetado.
+
+**Ganho — dois engines novos na API pública:**
+
+```tsx
+import { SarakChatEngine, SarakFlowEngine } from '@sarak/lib-ui-core';
+import type { SarakChatEngineProps, SarakFlowEngineProps } from '@sarak/lib-ui-core';
+```
+
+Os dois entram **atrás de fronteira lazy**, com o `Suspense` embutido — igual ao
+`SarakChartEngine`. Você **não** precisa declarar `Suspense`, e o custo no chunk de boot é
+zero: `react-syntax-highlighter` e `reactflow` só carregam quando o componente é renderizado.
+Ambos são peer dependencies — instale-as se for usar o engine correspondente.
+
+**Remoção — `SarakVisualEngine` e `PaletteSelector` saíram da biblioteca.**
+
+| | |
+| --- | --- |
+| **Antes** | `src/components/engines/visuals/` — nunca exportados no barril, sem consumidor na lib nem no único consumidor real |
+| **Depois** | não existem mais |
+| **Como migrar** | se você alcançava algum dos dois por deep import, copie o componente para o seu projeto (o código está no histórico do git). Não há substituto na lib: o `SarakVisualEngine` desenhava ilustrações técnicas decorativas, e o `PaletteSelector` renderizava uma lista de paletas que **já era um array vazio** — ele não desenhava nada |
+
+Junto saiu o barril `src/components/engines/index.ts`, que declarava os quatro engines e **não
+era importado por ninguém** — código morto que fazia a arquitetura parecer outra.
+
+---
+
 ## Releases com tag: `#semver:` passa a funcionar — e você não precisa fazer nada
 
 **Não quebra nada.** Nenhum export mudou, nenhum comportamento mudou, e **nenhuma forma de

@@ -1,7 +1,7 @@
 {
-    "baseCommit": "6f2155d5a1cd18cf49fd1b980d36231d240efc85",
-    "baseCommitShort": "6f2155d",
-    "builtAt": "2026-07-29T23:29:19.570Z",
+    "baseCommit": "7d224fbbe8f4551d59bec4e9a506df8fb60928b0",
+    "baseCommitShort": "7d224fb",
+    "builtAt": "2026-07-30T01:44:13.987Z",
     "libVersion": "1.1.0",
     "note": "baseCommit é o commit SOBRE o qual este build foi gerado — não o commit que o publica (o dist/ é commitado depois de gerado, e o hash de um commit não pode conter o próprio hash). Para saber se o consumidor está atualizado, use o \"resolved\" do package-lock.json ou rode \"npm run sarak:check\"."
 }

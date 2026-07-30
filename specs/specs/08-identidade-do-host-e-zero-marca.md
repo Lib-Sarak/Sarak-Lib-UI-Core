@@ -149,10 +149,10 @@ O escopo é `src/`, excluindo `.d.ts`, `.test.*`, `.spec.*` e `__tests__/` (`:49
 ## 7.2 Baseline medido
 
 ```
-[zero-brand:check] 363 arquivo(s) varrido(s); zero marca da lib fora da allowlist.
+[zero-brand:check] 361 arquivo(s) varrido(s); zero marca da lib fora da allowlist.
 ```
 
-Medido em **2026-07-29** nesta entrega — **baseline exato** de [[01-gates-e-baseline]] §3.
+Medido em **2026-07-29** — **baseline exato** de [[01-gates-e-baseline]] §3. Eram **363** quando esta spec foi escrita; o P26 removeu dois componentes (`SarakVisualEngine`, `PaletteSelector`) e a contagem, que é de **arquivos varridos**, caiu junto. **O número que importa é o de violações: 0** — um total de arquivos que sobe ou desce acompanha o tamanho do `src/`, não a saúde da regra.
 
 ## 7.3 A allowlist, e como (não) entrar nela
 

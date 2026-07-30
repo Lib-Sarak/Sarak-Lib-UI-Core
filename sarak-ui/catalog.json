@@ -90,6 +90,8 @@
     "SarakChartEngineProps",
     "SarakChartProps",
     "SarakChat",
+    "SarakChatEngine",
+    "SarakChatEngineProps",
     "SarakChatProps",
     "SarakColumn",
     "SarakComponent",
@@ -114,6 +116,8 @@
     "SarakExpandableMatrixProps",
     "SarakFlex",
     "SarakFlexProps",
+    "SarakFlowEngine",
+    "SarakFlowEngineProps",
     "SarakForm",
     "SarakFormGroup",
     "SarakFormGroupProps",
@@ -1296,6 +1300,36 @@
         }
       ]
     },
+    "SarakChatEngine": {
+      "propsInterface": "SarakChatEngineProps",
+      "source": "src/components/engines/chat/SarakChatEngine.tsx",
+      "props": [
+        {
+          "name": "messages",
+          "type": "Message[]",
+          "optional": false,
+          "doc": ""
+        },
+        {
+          "name": "onSendMessage",
+          "type": "(text: string) => void",
+          "optional": false,
+          "doc": ""
+        },
+        {
+          "name": "isLoading",
+          "type": "boolean",
+          "optional": true,
+          "doc": ""
+        },
+        {
+          "name": "placeholder",
+          "type": "string",
+          "optional": true,
+          "doc": ""
+        }
+      ]
+    },
     "SarakComponent": {
       "propsInterface": "SarakComponentProps",
       "source": "src/core/Discovery/registry.ts",
@@ -1700,6 +1734,30 @@
         {
           "name": "as",
           "type": "React.ElementType",
+          "optional": true,
+          "doc": ""
+        }
+      ]
+    },
+    "SarakFlowEngine": {
+      "propsInterface": "SarakFlowEngineProps",
+      "source": "src/components/engines/flows/SarakFlowEngine.tsx",
+      "props": [
+        {
+          "name": "nodes",
+          "type": "NonNullable<ReactFlowProps['nodes']>",
+          "optional": false,
+          "doc": ""
+        },
+        {
+          "name": "edges",
+          "type": "NonNullable<ReactFlowProps['edges']>",
+          "optional": false,
+          "doc": ""
+        },
+        {
+          "name": "onConnect",
+          "type": "ReactFlowProps['onConnect']",
           "optional": true,
           "doc": ""
         }
@@ -3693,6 +3751,34 @@
           "hero",
           "base",
           "subtle"
+        ]
+      },
+      {
+        "component": "SarakChartEngine",
+        "prop": "type",
+        "values": [
+          "line",
+          "area",
+          "bar",
+          "pie",
+          "radar",
+          "gauge",
+          "scatter",
+          "heatmap",
+          "funnel",
+          "treemap",
+          "candlestick",
+          "sunburst",
+          "histogram",
+          "boxplot"
+        ]
+      },
+      {
+        "component": "SarakChartEngine",
+        "prop": "config",
+        "values": [
+          "recharts",
+          "echarts"
         ]
       },
       {

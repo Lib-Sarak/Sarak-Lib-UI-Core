@@ -904,6 +904,30 @@
         }
       ]
     },
+    "SarakChartEngine": {
+      "propsInterface": "SarakChartEngineProps",
+      "source": "src/components/engines/charts/SarakChartEngine.tsx",
+      "props": [
+        {
+          "name": "type",
+          "type": "'line' | 'area' | 'bar' | 'pie' | 'radar' | 'gauge' | 'scatter' | 'heatmap' | 'funnel' | 'treemap' | 'candlestick' | 'sunburst' | 'histogram' | 'boxplot'",
+          "optional": false,
+          "doc": ""
+        },
+        {
+          "name": "data",
+          "type": "ChartDataItem[]",
+          "optional": false,
+          "doc": ""
+        },
+        {
+          "name": "config",
+          "type": "{ xAxisKey?: string; dataKey?: string; engine?: 'recharts' | 'echarts'; title?: string; showGradients?: boolean; showAnimation?: boolean; thickness?: number; }",
+          "optional": true,
+          "doc": ""
+        }
+      ]
+    },
     "SarakChat": {
       "propsInterface": "SarakChatProps",
       "source": "src/components/atomic/Templates/SarakChat.tsx",
@@ -941,6 +965,36 @@
         {
           "name": "importance",
           "type": "'hero' | 'base' | 'subtle'",
+          "optional": true,
+          "doc": ""
+        }
+      ]
+    },
+    "SarakChatEngine": {
+      "propsInterface": "SarakChatEngineProps",
+      "source": "src/components/engines/chat/SarakChatEngine.tsx",
+      "props": [
+        {
+          "name": "messages",
+          "type": "Message[]",
+          "optional": false,
+          "doc": ""
+        },
+        {
+          "name": "onSendMessage",
+          "type": "(text: string) => void",
+          "optional": false,
+          "doc": ""
+        },
+        {
+          "name": "isLoading",
+          "type": "boolean",
+          "optional": true,
+          "doc": ""
+        },
+        {
+          "name": "placeholder",
+          "type": "string",
           "optional": true,
           "doc": ""
         }
@@ -1338,6 +1392,30 @@
         {
           "name": "as",
           "type": "React.ElementType",
+          "optional": true,
+          "doc": ""
+        }
+      ]
+    },
+    "SarakFlowEngine": {
+      "propsInterface": "SarakFlowEngineProps",
+      "source": "src/components/engines/flows/SarakFlowEngine.tsx",
+      "props": [
+        {
+          "name": "nodes",
+          "type": "NonNullable<ReactFlowProps['nodes']>",
+          "optional": false,
+          "doc": ""
+        },
+        {
+          "name": "edges",
+          "type": "NonNullable<ReactFlowProps['edges']>",
+          "optional": false,
+          "doc": ""
+        },
+        {
+          "name": "onConnect",
+          "type": "ReactFlowProps['onConnect']",
           "optional": true,
           "doc": ""
         }
@@ -3211,6 +3289,34 @@
           "hero",
           "base",
           "subtle"
+        ]
+      },
+      {
+        "component": "SarakChartEngine",
+        "prop": "type",
+        "values": [
+          "line",
+          "area",
+          "bar",
+          "pie",
+          "radar",
+          "gauge",
+          "scatter",
+          "heatmap",
+          "funnel",
+          "treemap",
+          "candlestick",
+          "sunburst",
+          "histogram",
+          "boxplot"
+        ]
+      },
+      {
+        "component": "SarakChartEngine",
+        "prop": "config",
+        "values": [
+          "recharts",
+          "echarts"
         ]
       },
       {

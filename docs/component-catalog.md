@@ -40,6 +40,8 @@ Traduzidos por `resolveToken` (`core/Design/resolveToken.ts`). Qualquer comprime
 | `SarakChart` | `role` | `primary` · `secondary` · `neutral` · `accent` |
 | `SarakChart` | `density` | `compact` · `standard` · `spacious` |
 | `SarakChart` | `importance` | `hero` · `base` · `subtle` |
+| `SarakChartEngine` | `type` | `line` · `area` · `bar` · `pie` · `radar` · `gauge` · `scatter` · `heatmap` · `funnel` · `treemap` · `candlestick` · `sunburst` · `histogram` · `boxplot` |
+| `SarakChartEngine` | `config` | `recharts` · `echarts` |
 | `SarakChat` | `role` | `primary` · `secondary` · `neutral` · `accent` |
 | `SarakChat` | `density` | `compact` · `standard` · `spacious` |
 | `SarakChat` | `importance` | `hero` · `base` · `subtle` |
@@ -88,7 +90,7 @@ Nome fora desta lista **não renderiza o ícone pedido**: o `SarakIcon` avisa no
 
 `AlertCircle` · `AlertTriangle` · `Check` · `CheckCircle2` · `X` · `Info` · `HelpCircle` · `Menu` · `Search` · `Bell` · `Filter` · `List` · `Grid` · `Layout` · `LayoutDashboard` · `Home` · `ChevronDown` · `ChevronLeft` · `ChevronRight` · `ChevronUp` · `ArrowRight` · `ArrowLeft` · `ArrowUp` · `ArrowDown` · `ArrowUpDown` · `CornerDownRight` · `MoreVertical` · `MoreHorizontal` · `Maximize2` · `Minimize2` · `Loader2` · `RefreshCw` · `User` · `UserPlus` · `Users` · `LogIn` · `LogOut` · `Lock` · `Shield` · `Eye` · `File` · `FileText` · `FileSpreadsheet` · `Folder` · `Image` · `Paperclip` · `ScrollText` · `Clipboard` · `Copy` · `Download` · `Upload` · `UploadCloud` · `Printer` · `Save` · `Edit` · `Edit3` · `Plus` · `Trash2` · `Type` · `AlignLeft` · `Hash` · `Activity` · `BarChart3` · `LineChart` · `PieChart` · `ScatterChart` · `TrendingUp` · `Database` · `Layers` · `Network` · `Box` · `Package` · `Cpu` · `Cloud` · `Terminal` · `Thermometer` · `History` · `Calendar` · `Clock` · `MessageSquare` · `Mail` · `Send` · `Phone` · `Bot` · `Globe` · `Link` · `ExternalLink` · `Briefcase` · `Building` · `CreditCard` · `DollarSign` · `MapPin` · `Tag` · `Star` · `Play` · `Palette` · `Settings` · `Zap` · `Chrome` · `Github`
 
-## Componentes públicos (78)
+## Componentes públicos (81)
 
 ### DEFAULT_COLUMN_WIDTH
 
@@ -349,6 +351,16 @@ Props (`SarakChartProps` — `src/components/atomic/Templates/SarakChart.tsx`):
 | `density` | `'compact' \| 'standard' \| 'spacious'` | não |  |
 | `importance` | `'hero' \| 'base' \| 'subtle'` | não |  |
 
+### SarakChartEngine
+
+Props (`SarakChartEngineProps` — `src/components/engines/charts/SarakChartEngine.tsx`):
+
+| Prop | Tipo | Obrigatória | Descrição |
+| --- | --- | --- | --- |
+| `type` | `'line' \| 'area' \| 'bar' \| 'pie' \| 'radar' \| 'gauge' \| 'scatter' \| 'heatmap' \| 'funnel' \| 'treemap' \| 'candlestick' \| 'sunburst' \| 'histogram' \| 'boxplot'` | sim |  |
+| `data` | `ChartDataItem[]` | sim |  |
+| `config` | `{ xAxisKey?: string; dataKey?: string; engine?: 'recharts' \| 'echarts'; title?: string; showGradients?: boolean; showAnimation?: boolean; thickness?: number; }` | não |  |
+
 ### SarakChat
 
 Props (`SarakChatProps` — `src/components/atomic/Templates/SarakChat.tsx`):
@@ -361,6 +373,17 @@ Props (`SarakChatProps` — `src/components/atomic/Templates/SarakChat.tsx`):
 | `role` | `'primary' \| 'secondary' \| 'neutral' \| 'accent'` | não |  |
 | `density` | `'compact' \| 'standard' \| 'spacious'` | não |  |
 | `importance` | `'hero' \| 'base' \| 'subtle'` | não |  |
+
+### SarakChatEngine
+
+Props (`SarakChatEngineProps` — `src/components/engines/chat/SarakChatEngine.tsx`):
+
+| Prop | Tipo | Obrigatória | Descrição |
+| --- | --- | --- | --- |
+| `messages` | `Message[]` | sim |  |
+| `onSendMessage` | `(text: string) => void` | sim |  |
+| `isLoading` | `boolean` | não |  |
+| `placeholder` | `string` | não |  |
 
 ### SarakContextMenu
 
@@ -489,6 +512,16 @@ Props (`SarakFlexProps` — `src/components/atomic/Layouts/SarakFlex.tsx`):
 | `as` | `React.ElementType` | não |  |
 
 Estende: `Omit<React.HTMLAttributes<HTMLDivElement>, 'children'>`
+
+### SarakFlowEngine
+
+Props (`SarakFlowEngineProps` — `src/components/engines/flows/SarakFlowEngine.tsx`):
+
+| Prop | Tipo | Obrigatória | Descrição |
+| --- | --- | --- | --- |
+| `nodes` | `NonNullable<ReactFlowProps['nodes']>` | sim |  |
+| `edges` | `NonNullable<ReactFlowProps['edges']>` | sim |  |
+| `onConnect` | `ReactFlowProps['onConnect']` | não |  |
 
 ### SarakForm
 

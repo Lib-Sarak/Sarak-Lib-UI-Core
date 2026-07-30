@@ -315,7 +315,7 @@ if (b) return y;
 <span>Search Engine</span>
 ```
 
-**Cobrada por:** `npm run zero-brand:check` (`scripts/check-zero-brand.mjs`). Varre `src/` por AST — só `StringLiteral`, `JsxText` e partes fixas de template literal contam, para **não** acusar comentário que documenta a correção. Hoje: **363 arquivos, 0 violações**. A allowlist tem 3 painéis **internos** do Design Engine (`KitchenSinkPreview`, `LanguageTab`, `LayoutTab`) — ferramenta de autoria da própria lib, nunca embutida pelo consumidor — e o gate também derruba **entrada de allowlist obsoleta**.
+**Cobrada por:** `npm run zero-brand:check` (`scripts/check-zero-brand.mjs`). Varre `src/` por AST — só `StringLiteral`, `JsxText` e partes fixas de template literal contam, para **não** acusar comentário que documenta a correção. Hoje: **361 arquivos, 0 violações**. A allowlist tem 3 painéis **internos** do Design Engine (`KitchenSinkPreview`, `LanguageTab`, `LayoutTab`) — ferramenta de autoria da própria lib, nunca embutida pelo consumidor — e o gate também derruba **entrada de allowlist obsoleta**.
 
 ---
 
@@ -359,9 +359,11 @@ export { SarakGrid } from './components/atomic/Layouts/SarakGrid';
 export type { SarakGridProps } from './components/atomic/Layouts/SarakGrid';
 ```
 
-**Cobrada por:** `npm run barrel:check`. Hoje: **78 componentes, 0 faltas**; a allowlist tem **1 entrada** (`SarakAppChromeMobile`, com motivo).
+**Cobrada por:** `npm run barrel:check`. Hoje: **81 componentes, 0 faltas**; a allowlist tem **1 entrada** (`SarakAppChromeMobile`, com motivo).
 
-> ⚠️ **A regra tem um vão conhecido.** `collectPublicComponentNames()` varre `components/atomic/**` e `components/Layout/**`; **`components/engines/**` está fora do escopo**. Resultado: **3 das 4 categorias de `engines/`** (`flows`, `chat`, `visuals`) não estão no barril, e o gate **não pega** — não é falha do gate, é o limite declarado dele. Os três são componentes reais, com `interface <Nome>Props` exportada, exatamente o par que o gate exigiria se os visse. **A decisão é do dono** e as duas leituras são defensáveis: internos de propósito (e então a taxonomia deve dizer isso) ou lacuna de exposição. Ver [[03-superficie-publica]] §8. A segunda metade do mesmo limite: categoria **sem barril de categoria** só tem os `.tsx` de **raiz** varridos — componente em subpasta escapa igual.
+> ✅ **O vão de `engines/` foi FECHADO em P26** (decisão D2, 2026-07-29). O gate varria `components/atomic/**` e `components/Layout/**` e **não via `components/engines/**`** — resultado: 3 das 4 categorias de engine viviam fora do barril e o gate ficava verde. Hoje `collectPublicComponentNames()` varre `engines/` como raiz por categoria; `SarakChatEngine` e `SarakFlowEngine` foram expostos atrás de fronteira lazy, `SarakVisualEngine` foi removido por não ter consumidor real, e a contagem foi de 78 para 81. Ver [[03-superficie-publica]] §9.
+>
+> ⚠️ **O outro limite do gate CONTINUA de pé:** categoria **sem barril de categoria** só tem os `.tsx` de **raiz** varridos — componente colocado em subpasta escapa do gate e do catálogo. Isso é deliberado em alguns casos (as peças internas do cromo vivem em `Layout/chrome/` justamente por isso), mas um componente público esquecido numa subpasta passa em silêncio.
 
 ---
 
@@ -443,7 +445,7 @@ CERTO    "A lista completa está em `docs/component-catalog.json`, gerada por AS
 | **R11** | **Configuração × Expansão** | **nenhum — CONDUTA** | — |
 | R12 | Zero-marca | `check-zero-brand.mjs` | `npm run zero-brand:check` |
 | R13 | Identidade do host | testes (`HostIdentity`, `EmbeddedMode`) | `npx vitest run` |
-| R14 | Barril completo | `check-barrel-parity.mjs` ⚠️ escopo parcial | `npm run barrel:check` |
+| R14 | Barril completo | `check-barrel-parity.mjs` | `npm run barrel:check` |
 | **R15** | **Nada pesado eager** | **nenhum — CONDUTA** ⚠️ violada hoje | — |
 | **R16** | **Zero-gambiarra** | **nenhum — CONDUTA** | — |
 | R17 | Não transcrever fonte viva | `catalog:check`/`guide:check` (só gerados) | `npm run catalog:check` |
@@ -453,7 +455,7 @@ CERTO    "A lista completa está em `docs/component-catalog.json`, gerada por AS
 Três coisas ficam registradas em voz alta, porque quem lê um contrato precisa saber onde ele é fino:
 
 1. **Seis regras não têm gate** (R10, R11, R15, R16, e as metades sem cobertura de R13 e R17). Elas valem igual, mas dependem de revisão.
-2. **Duas regras têm o escopo do gate menor que o da regra.** R7 não vê `src/styles/` — e é exatamente ali que estão os 2 usos vivos de `--sx-*`. R14 não vê `src/components/engines/` — e é exatamente ali que estão 3 componentes públicos fora do barril. Nos dois casos, **o gate está verde e a regra está sendo violada**.
+2. **Uma regra tem o escopo do gate menor que o da regra.** R7 não vê `src/styles/` — e é exatamente ali que estão os 2 usos vivos de `--sx-*`: **o gate está verde e a regra está sendo violada**. R14 tinha o mesmo defeito (não via `src/components/engines/`, onde estavam 3 componentes públicos fora do barril) e foi **corrigida em P26** — o escopo do gate foi ampliado até cobrir a regra, não o contrário.
 3. **Uma regra está sendo violada pela própria lib de forma declarada** (R15 / `CustomizationPanel`), com a correção conhecida e barrada por ser breaking change.
 
 Nenhum destes é corrigido aqui. Cada um está catalogado com `arquivo:linha` em [[01-gates-e-baseline]], que é onde a dívida mora.

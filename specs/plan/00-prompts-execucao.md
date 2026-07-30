@@ -65,11 +65,11 @@ Lista de tokens, de componentes, de props, de ícones: **jamais** copiada para d
 | ↳ `auditor_hardcoded` | | **1 violação:** `src/components/atomic/Atoms/SarakTypography.tsx:39` → `var(--sarak-h1-ls, -1px)` (fallback negativo). Estrutural líquido = **0** |
 | ↳ `auditor_ghostvars` | | **3 consumos:** `--token`, `--sarak-button-radius`, `--sarak-shell-brand-logo-size` |
 | ↳ typescript / coverage / arquitetura / cleancode / paridade / presets | | ✅ **6 verdes** (409/409/409 tokens; 120 itens de tema/preset) |
-| `barrel:check` | `npm run barrel:check` | ✅ **78 componentes, 0 faltas** |
+| `barrel:check` | `npm run barrel:check` | ✅ **81 componentes, 0 faltas** — ⚠️ **atualizado em 2026-07-29 (P26):** era 78; `components/engines/**` entrou no escopo de varredura e os 3 engines públicos passaram a ser contados |
 | `catalog:check` | `npm run catalog:check` | ✅ em dia |
-| `zero-brand:check` | `npm run zero-brand:check` | ✅ **363 arquivos, 0 violações** |
+| `zero-brand:check` | `npm run zero-brand:check` | ✅ **361 arquivos, 0 violações** — ⚠️ **atualizado em 2026-07-29 (P26):** era 363; a contagem é de arquivos VARRIDOS e caiu com a remoção do `SarakVisualEngine`/`PaletteSelector`. O número que importa é o de violações (0) |
 | `guide:check` | `npm run guide:check` | ✅ **kit em dia (6 arquivos)** |
-| suíte completa | `npx vitest run` | ✅ **275 arquivos / 879 testes, 100% verde** (~167s). ⚠️ **Atualizado em 2026-07-29 (P20-A):** era 281/901; a remoção do `Template-Ts/` tirou **6 arquivos / 22 testes** que não eram da lib e que só passavam por causa de um `node_modules/` local não versionado. **O número caiu e o sinal subiu** — este verde vale em qualquer clone. Histórico anterior: 890 com **1 falha ambiental** (`packageManager.test.mjs`) até o **P11-D** (→ 891) e o **P12-C** (+`tagComparison.test.mjs`, → 901). Detalhe em `specs/specs/01-gates-e-baseline.md` §3.1 e §3.2 |
+| suíte completa | `npx vitest run` | ✅ **273 arquivos / 877 testes, 100% verde** (~185s). ⚠️ **Atualizado em 2026-07-29 (P26):** era 275/879; a remoção do `SarakVisualEngine`/`PaletteSelector` levou junto os **2 arquivos / 2 testes** de fumaça deles. Histórico anterior — **P20-A:** era 281/901; a remoção do `Template-Ts/` tirou **6 arquivos / 22 testes** que não eram da lib e que só passavam por causa de um `node_modules/` local não versionado. **O número caiu e o sinal subiu** — este verde vale em qualquer clone. Histórico anterior: 890 com **1 falha ambiental** (`packageManager.test.mjs`) até o **P11-D** (→ 891) e o **P12-C** (+`tagComparison.test.mjs`, → 901). Detalhe em `specs/specs/01-gates-e-baseline.md` §3.1 e §3.2 |
 | `tsc` | `npx tsc --noEmit` | ❌ **14 erros** — 10 em teste, **4 em produção** (`useStructuralStyles.ts:30,71,94`; `ThemeCustomizationTab.tsx:86`). **Não é gate hoje.** |
 | `build` + DTS | `npm run build` | encadeia catalog→barrel→zero-brand→guide→tsup→css→scoped→copy→inject→build-info |
 | `package:check` | `npm run package:check` | roda no `prepublishOnly`; exige `dist/` buildado |
@@ -171,8 +171,9 @@ Decisões tomadas em conversa, com data. **Nenhum agente re-litiga o que está a
 > - **Modo `file:` = cópia no store.** Rebuildar a lib **NÃO** chega ao ERP sozinho. Arquivo existente reescrito propaga por hardlink; arquivo **adicionado/removido não** — e o `tsup` gera chunks com **hash no nome** (`chunk-MV2BQG5R.js`), que mudam a cada build. Sem reinstalar, o `dist/index.js` do ERP passa a importar chunks que a cópia dele não tem.
 > - **Comando validado** (`packageManager.mjs:111-121`, `validated: true`, medido no próprio ERP): `pnpm install --force --filter <nome-do-pacote>`.
 > - ⚠️ **NUNCA `npm install` ali.** Foi isso que quebrou um consumidor pnpm na Spec 51 — o npm entra no `node_modules/.pnpm/` e tenta rodar o `prepare` de pacote de terceiro.
-> - ⚠️ **`pnpm` pode não estar no PATH.** Aconteceu em 2026-07-29: `CommandNotFoundException`. O campo `packageManager` **declara** o gerenciador, não o instala — quem materializa é o **corepack** (presente em `C:\Program Files\nodejs\corepack.cmd`), e o shim dele é apagado quando o Node é atualizado. `corepack enable pnpm` é o caminho que o projeto já está preparado para usar. **Declarado ≠ invocável.**
-> - **O ERP NÃO tem `sarak:check` nem `sarak:update` instalados** — o `predev` dele é o `matar-portas-dev.mjs` próprio. Ele está fora do ciclo de aviso que esta campanha construiu, e depende do dono lembrar de reinstalar.
+> - ⚠️ **`pnpm` pode não estar no PATH.** Aconteceu em 2026-07-29: `CommandNotFoundException`. O campo `packageManager` **declara** o gerenciador, não o instala — quem materializa é o **corepack** (presente em `C:\Program Files\nodejs\corepack.cmd`), e o shim dele é apagado quando o Node é atualizado. **Declarado ≠ invocável.**
+>   - ⚠️ **CORRIGIDO no P28 (2026-07-29):** `corepack enable pnpm` **FALHA nesta máquina** com `EPERM: operation not permitted, open 'C:\Program Files\nodejs\pnpm'` — ele escreve em `Program Files` e exige terminal elevado. **O caminho que funciona sem elevação é `corepack pnpm <args>`**, que resolve a mesma `pnpm@11.17.0` declarada, só não cria o shim. Use-o.
+> - ~~**O ERP NÃO tem `sarak:check` nem `sarak:update` instalados**~~ — ⚠️ **FATO CORRIGIDO no P28 (2026-07-29): o ERP TEM `sarak:check`**, em `packages/ui-kit/package.json:15` (`node node_modules/@sarak/lib-ui-core/bin/sarak-ui.mjs check || true`). O que **não existe é o FIO**: nenhum `predev` o invoca — o `predev` da raiz é o `matar-portas-dev.mjs` próprio, e os 4 apps `web` têm só `dev`/`build`/`test`. O comando existe e nunca dispara sozinho, o que é **pior que não existir**: dá a impressão de que o ciclo de aviso está montado. Ligar o fio é **Campanha 2, Fase D** — não se faz no P28.
 
 > ### ⚠️ Mudança no destino do `specs/plan/`
 > O plano original dizia "`specs/plan/` será ESVAZIADO". Isso continua verdade **para esta campanha** — mas o `plan/` não morre: ele é **reciclado**. O `specs/README.md` (reescrito no P0) já descreve o modelo certo: *plano transitório, com data de morte, esvaziado ao fim de cada campanha*.
@@ -233,9 +234,11 @@ Decisões tomadas em conversa, com data. **Nenhum agente re-litiga o que está a
 > 🔓 **Duas perguntas abertas para o dono**, registradas nas specs e **não decididas**: (a) o destino dos ids legados `mx-customization`/`personalization` registrados por efeito colateral de import (`04-shell-e-discovery` §7.1 — candidato ao major único da D12); (b) se as 5 abas inalcançáveis do `CustomizationPanel` **voltam** ou **saem** (`06-painel-de-customizacao-e-preview` §9.3).
 
 ### Fase 4.5 — Fechamento da superfície pública e do enforcement *(mexe em código; roda ANTES dos kits, para o kit documentar a superfície final)*
-- [ ] **P26** — Engines: apagar o barril órfão · expor Chat+Flow · remover Visual · ampliar o `barrel:check` *(decisão D2)*
-- [ ] **P27** — Promover o **Anel 3 (suíte) a `pre-push`** *(decisão D8 — depende do P20-A)*
-- [ ] **P28** — **Atualizar e revalidar o ERP** *(decisão D13)* ⚠️ **toca repositório de FORA — exige aprovação do dono ANTES de executar**
+- [x] **P26** — Engines: apagar o barril órfão · expor Chat+Flow · remover Visual · ampliar o `barrel:check` *(decisão D2)* — `barrel:check` 78 → **81**; boot +0,3 KB (custo zero, como previsto); suíte 275/879 → **273/877** verde
+- [x] **P27** — Promover o **Anel 3 (suíte) a `pre-push`** *(decisão D8 — depende do P20-A)* — só a suíte, só `main`, só quando a faixa toca código; anel de release roda primeiro (barato antes de caro); custo **169–179 s**. `build`/`package:check` **fora de hook, decisão fechada**
+- [x] **P28** — **Atualizar e revalidar o ERP** *(decisão D13)* — aprovado pelo dono e executado em 2026-07-29. ERP saiu de `libVersion 3.0.0` (26/07) para **1.1.0**; `tsc` + `vite build` **verdes nos 4 apps**; **zero rastro versionado** no repositório dele. Delta de contrato = 0, como o diagnóstico previu
+
+> **Fase 4.5 CONCLUÍDA em 2026-07-29** (P26, P27, P28). Próximo: **Fase 5** (P21, P22, P23) — os dois kits, agora escritos sobre uma superfície pública que parou de mudar e um consumidor real revalidado.
 
 ### Fase 5 — Habilitação (os dois kits)
 - [ ] **P21** — `specs/12-kit-do-consumidor.md`

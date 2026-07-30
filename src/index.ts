@@ -104,9 +104,15 @@ export * from './components/atomic/UX';
 export * from './components/atomic/DataDisplay';
 // Renderizadores de mídia (Spec 15): Markdown (lazy) + Lightbox + PDFViewer (lazy, Onda 10).
 export * from './components/atomic/Media';
-// Motor de gráficos atrás de fronteira lazy (Spec 41 §2.4): echarts/zrender/recharts
-// ficam fora do grafo estático — quem não desenha gráfico não paga por eles.
+// Motores de visualização, todos atrás de fronteira lazy (Spec 41 §2.4 / P26): as
+// libs pesadas (echarts/zrender/recharts, reactflow, react-syntax-highlighter) ficam
+// fora do grafo estático — quem não desenha gráfico, fluxo ou chat não paga por elas.
+// `chat` e `flows` eram usados internamente pelo `ContractRenderer` e nunca chegaram
+// ao consumidor: mesma classe de lacuna do `SarakLink` que o `barrel:check` nasceu
+// para impedir, e invisível para o gate porque `engines/` estava fora do escopo dele.
 export { SarakChartEngine, type SarakChartEngineProps } from './components/engines/charts';
+export { SarakChatEngine, type SarakChatEngineProps } from './components/engines/chat';
+export { SarakFlowEngine, type SarakFlowEngineProps } from './components/engines/flows';
 
 // Discovery and Dynamic Rendering (Universal Bridge)
 export { default as DynamicRenderer } from './core/Discovery/DynamicRenderer';

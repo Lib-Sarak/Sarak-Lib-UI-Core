@@ -1,17 +1,93 @@
 #!/bin/sh
 # --- Sarak Git Hook (Pre-Push) ---
 #
-# Anel de PUSH (spec: specs/specs/02-enforcement-por-commit.md; decisão: ADR-008).
-#   Bloqueia o push para `main` quando o ARTEFATO PUBLICADO (dist/ + sarak-ui/) mudou
-#   desde a última tag e não há tag nova. Qualquer outro push passa direto.
+# Anéis de PUSH (spec: specs/specs/02-enforcement-por-commit.md).
+#   Anel de RELEASE — cobra a tag quando o artefato publicado mudou (ADR-008). Instantâneo.
+#   Anel 3 (SUÍTE)  — `npx vitest run` completo, bloqueante (decisão D8, P27). ~185 s.
+#
+# Os dois valem SÓ para push da `main`, e o barato roda primeiro — quem está do outro
+# lado do terminal recebe o "não" em um segundo em vez de em três minutos.
+#
+# `npm run build` e `package:check` NÃO entram aqui, e isso é decisão fechada, não
+# pendência: o build MUTA a árvore de trabalho (regenera dist/ e sarak-ui/), e um hook
+# que reescreve arquivos no meio de um push faz o push sair com uma árvore diferente da
+# que foi validada. Eles moram no `npm run gates:full` e no ritual de `npm version`.
 #
 # O git entrega, no stdin, uma linha por ref empurrada:
 #   <ref local> <sha local> <ref remota> <sha remoto>
-# O script decide a partir dela — por isso o stdin é repassado sem filtro.
+# O stdin só pode ser lido UMA vez — por isso é capturado aqui e repassado a quem precisa.
 #
 # Escape: `git push --no-verify` (registrado como dívida na spec, §7).
 #
 # POSIX sh (Git Bash no Windows). Nada de PowerShell aqui dentro.
 
-node scripts/check-release-tag.mjs
-exit $?
+STDIN=$(cat)
+
+# =============================================================================
+# ANEL DE RELEASE — instantâneo, roda primeiro
+# =============================================================================
+printf '%s\n' "$STDIN" | node scripts/check-release-tag.mjs || exit 1
+
+# =============================================================================
+# ESCOPO — só push da `main`, e só quando algo que a suíte enxerga mudou
+# =============================================================================
+# Mesmo critério do anel de release: ref REMOTA igual a refs/heads/main e sha local
+# não-zerado (sha zerado = deleção de ref). Push de branch de trabalho passa direto —
+# quebrar teste em branch é parte de trabalhar, e bloquear ali só ensinaria o reflexo
+# do `--no-verify`, que desligaria os dois anéis de uma vez.
+LINHA_MAIN=$(printf '%s\n' "$STDIN" | awk '$3 == "refs/heads/main" && $2 !~ /^0+$/ { print; exit }')
+
+if [ -z "$LINHA_MAIN" ]; then
+  echo "[Sarak] Anel 3 PULADO — nada sendo empurrado para main."
+  exit 0
+fi
+
+SHA_LOCAL=$(printf '%s\n' "$LINHA_MAIN" | awk '{ print $2 }')
+SHA_REMOTO=$(printf '%s\n' "$LINHA_MAIN" | awk '{ print $4 }')
+
+# Qualquer incerteza sobre a faixa empurrada RODA a suíte. Um pulo errado aqui produz
+# exatamente o "verde que não é" que este anel existe para impedir.
+RODAR_SUITE=1
+if ! echo "$SHA_REMOTO" | grep -qE '^0+$' && git cat-file -e "$SHA_REMOTO^{commit}" 2>/dev/null; then
+  MUDOU=$(git diff --name-only "$SHA_REMOTO" "$SHA_LOCAL" \
+    | grep -E '^(src/|scripts/|bin/|package(-lock)?\.json|tsconfig.*\.json|vitest\.(config|setup)\.ts)' \
+    | head -n 1)
+  [ -z "$MUDOU" ] && RODAR_SUITE=0
+fi
+
+if [ "$RODAR_SUITE" -eq 0 ]; then
+  echo "[Sarak] Anel 3 PULADO — nada que a suíte enxergue mudou nesta faixa"
+  echo "        (src/, scripts/, bin/, package.json, tsconfig, vitest.config/setup)."
+  exit 0
+fi
+
+# =============================================================================
+# ANEL 3 — a suíte COMPLETA. Verde é a única saída aceitável.
+# =============================================================================
+echo "[Sarak] Anel 3 — suíte completa (npx vitest run). Isto leva ~3 min."
+
+# `< /dev/null`: o stdin do hook já foi consumido, e um runner que tente lê-lo trava.
+npx vitest run < /dev/null
+status=$?
+
+if [ "$status" -ne 0 ]; then
+  echo ""
+  echo "⛔ PUSH BLOQUEADO — Anel 3: a suíte NÃO está verde."
+  echo "   Regra violada : R8 — Cobertura 1:1 / comportamento coberto por teste"
+  echo "                   (specs/specs/00-regras-e-invariantes.md)"
+  echo "   Reproduza     : npx vitest run"
+  echo "   Um teste só   : npx vitest run <caminho do arquivo>"
+  echo ""
+  echo "   O baseline é 100% VERDE — não há falha tolerada na suíte."
+  echo "   A dívida que É tolerada está em specs/specs/01-gates-e-baseline.md §3,"
+  echo "   e nenhuma delas é teste vermelho. Se o seu vermelho não está lá, é seu."
+  echo ""
+  echo "   Se este push é urgente e você vai consertar em seguida: git push --no-verify"
+  echo "   (uso excepcional e auditável — spec §7)."
+  exit 1
+fi
+
+echo "[Sarak] Anel 3 OK — suíte completa verde."
+echo "[Sarak] Push liberado. Fora de hook, por decisão: npm run build e package:check"
+echo "        (o build muta a árvore — rode com npm run gates:full)."
+exit 0
