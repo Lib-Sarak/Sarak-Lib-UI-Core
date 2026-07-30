@@ -175,6 +175,8 @@ Decisões tomadas em conversa, com data. **Nenhum agente re-litiga o que está a
 >   - ⚠️ **CORRIGIDO no P28 (2026-07-29):** `corepack enable pnpm` **FALHA nesta máquina** com `EPERM: operation not permitted, open 'C:\Program Files\nodejs\pnpm'` — ele escreve em `Program Files` e exige terminal elevado. **O caminho que funciona sem elevação é `corepack pnpm <args>`**, que resolve a mesma `pnpm@11.17.0` declarada, só não cria o shim. Use-o.
 > - ~~**O ERP NÃO tem `sarak:check` nem `sarak:update` instalados**~~ — ⚠️ **FATO CORRIGIDO no P28 (2026-07-29): o ERP TEM `sarak:check`**, em `packages/ui-kit/package.json:15` (`node node_modules/@sarak/lib-ui-core/bin/sarak-ui.mjs check || true`). O que **não existe é o FIO**: nenhum `predev` o invoca — o `predev` da raiz é o `matar-portas-dev.mjs` próprio, e os 4 apps `web` têm só `dev`/`build`/`test`. O comando existe e nunca dispara sozinho, o que é **pior que não existir**: dá a impressão de que o ciclo de aviso está montado. Ligar o fio é **Campanha 2, Fase D** — não se faz no P28.
 
+| **D14** | **O ERP ganha uma FASE DE ALINHAMENTO própria, executada ENTRE o P25 e a Fase A da Campanha 2.** A auditoria do P28 achou **8 defeitos estruturais no ERP** (não na lib). Enquanto eles existirem, o ERP é um instrumento de medição pouco confiável: o `pnpm install` sempre sai `exit 1`, os 4 apps `web` **não são projetos do workspace**, e a atualização da lib só chega neles por *junction* manual — ou seja, **funcionou por acidente favorável**. Antes de a Campanha 2 começar a mexer na biblioteca, o instrumento que valida essas mudanças precisa ser confiável. | 2026-07-30 | **Campanha 2, Fase 0** |
+
 > ### ⚠️ Mudança no destino do `specs/plan/`
 > O plano original dizia "`specs/plan/` será ESVAZIADO". Isso continua verdade **para esta campanha** — mas o `plan/` não morre: ele é **reciclado**. O `specs/README.md` (reescrito no P0) já descreve o modelo certo: *plano transitório, com data de morte, esvaziado ao fim de cada campanha*.
 >
@@ -252,6 +254,7 @@ Decisões tomadas em conversa, com data. **Nenhum agente re-litiga o que está a
 ### 🔜 CAMPANHA 2 — Adequação do sistema *(briefing no fim deste documento; vira plano executável no P25)*
 > Primeiro corrigimos e limpamos as specs (Campanha 1). **Depois** adequamos o sistema ao que ficou escrito.
 > 🔒 **O escopo da Campanha 1 está FECHADO** (decisão do dono, 2026-07-29): os **21 achados** das auditorias vão TODOS para cá. Nenhum é consertado lá.
+- **Fase 0** — **Alinhamento do ERP** *(D14)* — entre o P25 e a Fase A
 - **Fase A** — Integração contínua *(D9)*
 - **Fase B** — Quitação do baseline + lacunas de gate
 - **Fase F** — Achados de comportamento *(inclui o `localStorage.clear()`)*
@@ -1432,6 +1435,7 @@ TAREFA:
 - T6: FECHAMENTO — a última entrada de `00-progresso.md` antes de ele sair: o resumo da campanha (o que existia, o que passou a existir, o que foi aposentado e por quê).
 - T7: ⚠️ **SEMEAR A CAMPANHA 2 — esta tarefa NÃO termina com o `plan/` vazio.** Antes de apagar este arquivo, transcreva o **BRIEFING DA CAMPANHA 2** (a última seção deste documento) para um `specs/plan/00-prompts-execucao.md` NOVO, com: o cabeçalho da campanha nova, as **REGRAS COMUNS** (§1–§9 — copie da Campanha 1, atualizando o baseline para o estado real ao fim do P25), o **REGISTRO DE DECISÕES DO DONO** (D1–D12, que continuam valendo), o roteiro das 5 fases e o briefing de cada uma. Os **prompts** de cada fase da Campanha 2 NÃO são escritos aqui — eles nascem quando o dono for executar cada fase, como aconteceu nesta.
   **Por que:** o `plan/` é transitório **por campanha**, não para sempre — é o modelo que o `specs/README.md` (reescrito no P0) descreve. Apagar este arquivo sem semear o próximo mataria junto todo o trabalho de decisão registrado nas D1–D13.
+  ⚠️ **A transcrição INCLUI a `Fase 0 — Alinhamento do ERP` (decisão D14) como PRIMEIRO item do roteiro da Campanha 2** — ela roda entre este P25 e a Fase A, e os 8 defeitos do ERP só existem escritos aqui.
   ⚠️ **A transcrição INCLUI, obrigatoriamente:** a seção **"Os 21 achados da Campanha 1 — e onde cada um entra"** (a tabela de roteamento inteira, com os `arquivo:linha`), a **REGRA DE ESCOPO** que fecha a Campanha 1, e as **6 fases (A, B, F, C, D, E)** com o escopo de cada uma. Os achados só existem hoje neste arquivo e no `00-progresso.md` — e o `00-progresso.md` também sai no P25. **Perder a tabela de roteamento é perder 21 achados de auditoria que custaram duas rodadas para encontrar.** Confira, ao fim, que cada um dos 21 aparece no arquivo novo.
 
 FRONTEIRAS: não apague nada não aprovado; não apague `specs/_templates/`; não toque em código-fonte, `docs/`, `sarak-ui/` ou `sarak-dev/` além de corrigir referências órfãs; **não `git rm` — apenas remoção de arquivo** (o commit é decisão do dono); não faça push.
@@ -1528,6 +1532,58 @@ Consequência: **"restaurar as abas" ATIVA a perda de dados.** A ordem é obriga
 Decidir na ordem inversa é a única forma de transformar código morto em bug de produção.
 
 ---
+
+---
+
+## Fase 0 — Alinhamento do ERP *(decisão D14)* ⚠️ REPOSITÓRIO DE FORA
+
+> **Roda ENTRE o P25 e a Fase A.** É a primeira coisa da Campanha 2, e a única que não toca a biblioteca.
+
+**Problema.** O ERP é o **único consumidor real** e, por isso, o **instrumento de medição** desta campanha inteira — é nele que a Fase C vai provar que um `2.0.0` migra. A auditoria do P28 (2026-07-29/30) achou 8 defeitos estruturais nele, e o mais desconfortável é este: **a atualização da lib chegou aos 4 apps por acidente favorável** (*junction* manual), não porque o gerenciador a levou. Um instrumento que funciona por acidente não serve para validar mudança de contrato.
+
+**Quem executa.** O dono disse que corrige direto (2026-07-30). Se um agente executar, vale o **mesmo protocolo do P28**: diagnóstico read-only → relatório em texto → aprovação → execução. Nada é escrito no ERP sem "sim".
+
+### A ordem é obrigatória — o passo 2 derruba o install se o 1 não vier antes
+
+**0.1 · Blindar o `_template`** *(faça primeiro)*
+`Modulos/_template/web/package.json` tem `"name": "@erp/<modulo>-web"` — **placeholder literal**. Hoje é inofensivo porque `_template` está fora do workspace. Corrigir o 0.2 o coloca dentro, e um `name` com `<modulo>` **derruba o `pnpm install`**. Excluir do glob (`!Modulos/_template/*`) ou dar um nome válido.
+
+**0.2 · O glob do workspace não casa com a pasta real** 🔴 *o item central*
+`pnpm-workspace.yaml:6-7` declara `'modulos/*/web'` e `'modulos/*/api'`; a pasta é **`Modulos/`**. O NTFS é case-insensitive para abrir arquivo, mas o glob compara **string** — não casa.
+Efeito: os 4 apps `web` e as `api` **não são projetos do workspace** (`pnpm ls -r` vê 5: raiz + 2 `adapters` + 2 `packages`); `--filter @erp/conector-web` → *"No projects matched"*.
+⚠️ **Bomba de portabilidade:** os 5 scripts `dev:*-web`/`dev:conector-api` do root usam `--prefix modulos/...` minúsculo. Windows resolve; **Linux não**. Qualquer CI do ERP quebra no primeiro dia.
+Corrigir isto **resolve 0.6 e 0.7 de tabela**.
+
+**0.3 · `allowBuilds` com placeholder literal**
+`pnpm-workspace.yaml:11-12`: `better-sqlite3: set this to true or false` e `esbuild: idem` — strings onde se espera booleano → **todo install termina `exit 1`** (`ERR_PNPM_IGNORED_BUILDS`). Efeito prático hoje é nulo (o binário do esbuild vem das `optionalDependencies`), e é exatamente por isso que é insidioso: **install que sempre sai vermelho treina a ignorar o vermelho.**
+
+**0.4 · Convenção de nome de módulo**
+`Contratos`/`Projetos`/`Propostas` capitalizados; `conector`/`_template` minúsculos. Escolher uma e aplicar — senão o 0.2 volta em outra forma.
+
+**0.5 · `conector:build` e `conector:test` são provavelmente no-op**
+Usam `turbo run … --filter=@erp/conector-*`, e o turbo lê o mesmo workspace do pnpm. Sem os apps como projetos (0.2), o filtro não casa nada e o comando **sai 0 sem rodar**. Vale para `npm run test` do root também.
+*Inferência derivada do 0.2 — CONFIRMAR rodando e vendo quantos pacotes o turbo reporta.*
+
+**0.6 · `sarak:check` existe e nunca dispara**
+`packages/ui-kit/package.json:15`, com `|| true`, e nenhum `predev` o invoca. **Pior que não existir** — parece montado.
+⚠️ Ao ligar: o `predev` do root já é ocupado (`matar-portas-dev.mjs`) — **encadear, não substituir**. O `|| true` pode sair (o `check` já é `exit 0` por contrato).
+⚠️ **Sobreposição declarada:** a **Fase D** também mexe no ciclo de aviso, mas do lado da LIB (`sarak-ui update`). O fio no ERP é aqui; a Fase D revisita se o comando mudar. Fica registrado para não haver trabalho dobrado.
+
+**0.7 · Junctions manuais como único elo**
+`Modulos/*/web/node_modules/@erp/ui-kit` existe nos 4 — acoplamento **fora do gerenciador**. Foi o que fez a atualização do P28 chegar neles; e é o que pode ser apagado por um install que recrie `node_modules`, sem nada acusar até um build falhar. **Corrigir 0.2 elimina a necessidade** (o pnpm passa a linkar sozinho).
+
+**0.8 · O ADR 009 do ERP nunca foi superado**
+Ele registra a **remoção** do Sarak; o Sarak foi **reintroduzido** como `packages/ui-kit` (Teste Real / Spec 40) e o ADR novo ficou como *"follow-up do dono, não gate"* — nunca feito. É um ADR vigente que descreve o oposto do código: o mesmo defeito que esta campanha passou seis fases corrigindo do lado da lib. ADR é imutável — cria-se um novo com `substitui`/`substituido_por` e o 009 vira `🔴 Substituído`.
+
+### Fora de escopo desta fase — registrado para não confundir
+
+- **`file:` exigir `pnpm install --force` após cada rebuild** não é defeito: é o preço da escolha deliberada da **D13**, e desaparece quando o ERP migrar para `github:…#semver:^1.x`. **Não "consertar".**
+- **`pnpm` não invocável** é da **máquina**, não do ERP: `corepack enable pnpm` falha com `EPERM` em `Program Files`. Hoje o caminho é `corepack pnpm <args>`; definitivo é terminal elevado ou `corepack enable --install-directory <pasta já no seu PATH>`.
+
+**Ordem sugerida:** `0.1 → 0.2 → 0.3 → 0.5 → 0.6 → 0.4 → 0.8`. Os dois primeiros provavelmente resolvem três problemas com uma edição.
+
+**Spec a criar:** nenhuma **nesta** base — os oito itens são do repositório do ERP. Do lado da lib, só a atualização do bloco "📌 Fatos do ERP" e da **D13**, quando 0.2/0.7 mudarem a topologia.
+**Aceite:** `pnpm install` sai **0**; `pnpm ls -r` lista os 4 apps `web`; `--filter @erp/conector-web` casa; os builds funcionam **sem** junction manual; e `npm run sarak:check` dispara sozinho num `npm run dev`.
 
 ---
 
@@ -1642,8 +1698,10 @@ O `CustomizationPanel` importa 7 abas e renderiza 1 (`:3-9` × `:40`). As outras
 ## Ordem sugerida e o porquê
 
 ```
-A (CI)  →  B (baseline)  →  F (comportamento)  →  C (2.0.0)  →  D (update)  →  E (E2E)
+0 (ERP)  →  A (CI)  →  B (baseline)  →  F (comportamento)  →  C (2.0.0)  →  D (update)  →  E (E2E)
 ```
+
+**0 antes de tudo** porque o ERP é o **instrumento de medição** desta campanha — é nele que a Fase C vai provar que um `2.0.0` migra de verdade. Hoje esse instrumento funciona por acidente (junction manual) e grita vermelho a cada install. Validar quebra de contrato contra um consumidor assim é evidência fraca. E é a única fase que não toca a biblioteca, então não compete com nada.
 
 **A primeiro** porque é o único item que torna todos os outros verificáveis: sem ambiente limpo, cada conserto continua sendo validado na máquina que já provou duas vezes que mente. **B antes de F** porque consertar comportamento com a auditoria vermelha impede distinguir regressão nova de dívida velha. **F antes de C** porque `F1` (o `localStorage.clear()`) e `F2` (as abas) são pré-requisito de qualquer decisão sobre o painel, e a Fase C mexe justamente no `CustomizationPanel`. **C depois de B e F** porque quebrar contrato com auditoria vermelha e comportamento duvidoso mistura três fontes de risco no mesmo release. **E por último** porque depende de A e é a única que pode esperar sem custo.
 
