@@ -123,7 +123,7 @@ Registrado como o que é: **cobertura que existe e não é cobrada**.
 | `catalog:check` | `npm run catalog:check` | ✅ catálogo em dia |
 | `zero-brand:check` | `npm run zero-brand:check` | ✅ **363 arquivos, 0 violações** |
 | `guide:check` | `npm run guide:check` | ✅ **kit em dia (6 arquivos)** |
-| suíte | `npx vitest run` | ✅ **281 arquivos / 901 testes, 100% verde** (~198 s). Era 890 com 1 falha ambiental até 2026-07-28 — ver §3.1 |
+| suíte | `npx vitest run` | ✅ **275 arquivos / 879 testes, 100% verde** (~167 s), desde 2026-07-29. Era 281/901 até a remoção do `Template-Ts/` (§3.2) e 280/890 com 1 falha ambiental até 2026-07-28 (§3.1) |
 | `tsc` | `npx tsc --noEmit` | ❌ **14 erros** — 10 em teste, **4 em produção**. Não é gate |
 | `build` | `npm run build` | 4 gates + 6 etapas de compilação |
 | `package:check` | `npm run package:check` | exige `dist/` buildado |
@@ -181,14 +181,20 @@ sintético, a detecção o acha **sem** `stopAt` (`source: 'lockfile'`) e não o
 completa bloquearia por estado do `$HOME`. A suíte é, a partir daqui, sinal confiável para automação —
 é o que destrava o `preversion` do ciclo de release.
 
-## 3.2 ⚠️ A suíte NÃO roda verde num clone limpo — `Template-Ts/`
+## 3.2 ✅ RESOLVIDO em 2026-07-29 — o subprojeto carona que fazia a suíte mentir num clone limpo
 
-**Achado do P12-C (2026-07-28), medido num clone de verdade deste repositório.**
+> **Estado atual: `Template-Ts/` não existe mais no repositório** (removido no P20-A, decisão D7).
+> A seção fica registrada porque a lição é a mais transferível de toda a campanha: **o único gate que
+> alcançava o problema era justamente o que ele enganava.**
 
-`Template-Ts/` é um projeto TypeScript **não relacionado à biblioteca**, com **85 arquivos versionados**
-aqui, e os testes dele são coletados pela suíte (o `exclude` do `vitest.config.ts` não os filtra). Eles
-passam **nesta máquina** porque existe um `Template-Ts/node_modules/` **local e não versionado** com
-`@supabase/supabase-js` dentro. Num clone limpo:
+### O defeito (achado do P12-C, 2026-07-28, medido num clone de verdade)
+
+`Template-Ts/` era um projeto TypeScript **não relacionado à biblioteca** (`template-chat-ts`: um
+template de backend de chat com express/supabase/pg), com **85 arquivos versionados** aqui — 48 em
+`src/`, 27 em `dist/` compilado e commitado, 6 arquivos de teste. Os testes dele eram coletados pela
+suíte (o `exclude` do `vitest.config.ts` não os filtrava) e passavam **naquela máquina** porque existia
+um `Template-Ts/node_modules/` **local e não versionado** com `@supabase/supabase-js` dentro. Num clone
+limpo:
 
 ```
 FAIL  Template-Ts/tests/unit/toolbox/database/supabase_database.test.ts
@@ -196,13 +202,43 @@ Error: Failed to resolve import "@supabase/supabase-js" — Does the file exist?
 Test Files  3 failed | 278 passed (281)
 ```
 
-**É o mesmo defeito da §3.1, um nível acima:** um resultado verde que depende de estado local que não
-viaja no repositório. A diferença é que aqui não é um teste da lib — é um subprojeto carona.
+**Era o mesmo defeito da §3.1, um nível acima:** verde que depende de estado local que não viaja no
+repositório. A diferença é que ali não era um teste da lib — era um subprojeto carona.
 
-**Não corrigido nesta campanha** (fora do escopo do P12-C, e a decisão — excluir do `vitest.config.ts`,
-mover para fora do repositório, ou versionar o lockfile dele — é do dono). Registrado porque **qualquer
-CI futuro vai bater nisto no primeiro dia**, e porque o `preversion` do release só passa hoje graças a
-uma pasta que não está no git.
+**A lição, que é o motivo desta seção sobreviver:** os outros gates não o viam por construção — `tsc`
+não o compilava (`"include": ["src"]`), o tarball já o proibia
+(`scripts/check-package-contents.mjs:14`), e nenhum dos 8 auditores varre fora de `src/`. Só a suíte o
+alcançava, e para a suíte ele era verde. **Um diretório inteiro atravessou 330 commits invisível porque
+o único instrumento que o media era o que ele enganava.**
+
+### O fecho (2026-07-29 — P20-A)
+
+O diretório foi removido (85 arquivos versionados). Princípio do dono que decidiu: *"esta é uma
+biblioteca genérica e não deve depender de nenhum módulo."* O histórico permanece no git — quem
+precisar recuperar, o diretório entrou inteiro num commit só: **`c43293e chore: setup Template-Ts and
+agents structure`**.
+
+| Suíte | Arquivos | Testes | Veredito |
+| --- | --- | --- | --- |
+| **ANTES** (2026-07-29, com o diretório) | 281 | 901 | ✅ verde (166,3 s) — mas **só nesta máquina** |
+| **DEPOIS** (2026-07-29, sem o diretório) | **275** | **879** | ✅ verde (167,0 s) — **e verde em qualquer clone** |
+
+Saíram exatamente os **6 arquivos / 22 testes** do subprojeto. O número caiu e o **sinal** subiu: o
+verde de hoje não depende de nenhuma pasta ausente do git. **Este é o novo baseline da suíte** — a
+tabela da §3 acima já o reflete.
+
+Duas coisas deliberadamente **não** feitas:
+
+- **`vitest.config.ts` não ganhou exclusão nenhuma.** Excluir um caminho que não existe mais seria a
+  regra 2 da §6 (*nunca excluir pasta do escopo de um auditor*) aplicada ao contrário — sumindo o
+  diretório, o `include` default para de achá-lo, sem precisar de ajuda.
+- **A entrada `'Template-Ts/'` FICA** na lista de proibidos de `check-package-contents.mjs:14`, agora
+  com o motivo escrito ao lado. É a trava mais barata contra um carona reaparecer; uma linha de
+  allowlist negativa custa menos que redescobrir o problema.
+
+**Consequência para o enforcement:** cai o último impedimento técnico ao Anel 3 (`pre-push` rodando a
+suíte) de [[02-enforcement-por-commit]]. Com a §3.1 e esta §3.2 fechadas, a suíte é sinal confiável
+para automação em qualquer máquina — não só nesta.
 
 # 4. Dívida técnica conhecida
 
@@ -323,7 +359,7 @@ Três coisas são **proibidas**, sem exceção:
 
 # 7. Critérios de aceite
 
-- [x] Rodar os comandos deste documento reproduz exatamente a tabela da §3 — **com a exceção documentada da §3.1**, cuja causa foi reproduzida em isolamento.
+- [x] Rodar os comandos deste documento reproduz exatamente a tabela da §3. As duas exceções que existiam foram fechadas: §3.1 (teste não-hermético, 2026-07-28) e §3.2 (subprojeto carona, 2026-07-29).
 - [x] Todo item de dívida tem `arquivo:linha` e a coluna "visível em gate".
 - [x] Os 8 auditores e os 5 scripts de check foram lidos um por um antes de descritos.
 - [x] Nenhum item do baseline foi corrigido nesta entrega.
@@ -334,5 +370,5 @@ Esta spec é verificada **executando-a**:
 
 - `node .agents/skills/ui-auditoria-modulo/scripts/run_audit.mjs` → tem que bater com a §3, incluindo os vermelhos.
 - `npm run barrel:check && npm run catalog:check && npm run zero-brand:check && npm run guide:check` → quatro verdes.
-- `npx vitest run` → 280/890 com a falha da §3.1, enquanto o ambiente for este.
+- `npx vitest run` → **275 arquivos / 879 testes, 100% verde**, em qualquer máquina (§3.1 e §3.2 fechadas).
 - `npx tsc --noEmit` → 14 erros, na composição da §4.4.

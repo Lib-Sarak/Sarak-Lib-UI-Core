@@ -11,6 +11,10 @@ const FORBIDDEN_PREFIXES = [
     'specs/',
     'playwright/',
     '__snapshots__/',
+    // Mantida DE PROPÓSITO após a remoção do diretório (P20-A, decisão D7, 2026-07-29):
+    // o `Template-Ts/` saiu do repositório, mas esta entrada continua sendo a trava mais
+    // barata contra um subprojeto carona reaparecer e voltar a vazar no tarball. Uma linha
+    // de allowlist negativa custa menos que redescobrir o problema numa auditoria.
     'Template-Ts/',
 ];
 

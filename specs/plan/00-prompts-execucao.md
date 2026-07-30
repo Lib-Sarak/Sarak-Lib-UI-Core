@@ -69,7 +69,7 @@ Lista de tokens, de componentes, de props, de ícones: **jamais** copiada para d
 | `catalog:check` | `npm run catalog:check` | ✅ em dia |
 | `zero-brand:check` | `npm run zero-brand:check` | ✅ **363 arquivos, 0 violações** |
 | `guide:check` | `npm run guide:check` | ✅ **kit em dia (6 arquivos)** |
-| suíte completa | `npx vitest run` | ✅ **281 arquivos / 901 testes, 100% verde** (~198s). ⚠️ **Atualizado em 2026-07-28:** era 890 com **1 falha dependente do ambiente** (`packageManager.test.mjs`); o **P11-D** tornou o teste hermético (fronteira `stopAt`) e somou o caso que prova as duas direções (→ 891), e o **P12-C** somou `tagComparison.test.mjs` com 10 casos (→ 901). Detalhe em `specs/specs/01-gates-e-baseline.md` §3.1 |
+| suíte completa | `npx vitest run` | ✅ **275 arquivos / 879 testes, 100% verde** (~167s). ⚠️ **Atualizado em 2026-07-29 (P20-A):** era 281/901; a remoção do `Template-Ts/` tirou **6 arquivos / 22 testes** que não eram da lib e que só passavam por causa de um `node_modules/` local não versionado. **O número caiu e o sinal subiu** — este verde vale em qualquer clone. Histórico anterior: 890 com **1 falha ambiental** (`packageManager.test.mjs`) até o **P11-D** (→ 891) e o **P12-C** (+`tagComparison.test.mjs`, → 901). Detalhe em `specs/specs/01-gates-e-baseline.md` §3.1 e §3.2 |
 | `tsc` | `npx tsc --noEmit` | ❌ **14 erros** — 10 em teste, **4 em produção** (`useStructuralStyles.ts:30,71,94`; `ThemeCustomizationTab.tsx:86`). **Não é gate hoje.** |
 | `build` + DTS | `npm run build` | encadeia catalog→barrel→zero-brand→guide→tsup→css→scoped→copy→inject→build-info |
 | `package:check` | `npm run package:check` | roda no `prepublishOnly`; exige `dist/` buildado |
@@ -124,6 +124,25 @@ O que ficou de fora do escopo e por quê. Silêncio aqui é proibido.
 - **NÃO** "aproveite para corrigir" o baseline do `run_audit` — os 4 itens são dívida conhecida e documentada; corrigi-los é outra spec, fora desta campanha.
 - **NÃO** invente numeração, nome de arquivo ou categoria diferente da que o prompt fixa.
 
+### 10. 🔒 A EXCEÇÃO DESTE ARQUIVO — só sai daqui o que foi EXECUTADO
+
+> **Regra absoluta, acima de qualquer tarefa deste plano — inclusive do P25.**
+>
+> **Deste arquivo só se remove conteúdo cujo checkbox está `[x]`.** Qualquer item com checkbox `[ ]` — tarefa, prompt, briefing, decisão pendente, achado sem rota fechada — **NUNCA é removido.** Não por limpeza, não por "esvaziar o plan", não por achar que já não serve.
+
+**Por quê.** Este arquivo não é só registro do que passou: ele é a **única fonte executável do que ainda vai acontecer**. Os prompts das próximas etapas, as 13 decisões do dono e os 21 achados de auditoria existem aqui e no `00-progresso.md` — e o `00-progresso.md` também sai no P25. Apagar uma etapa não executada não "limpa o plano": **destrói trabalho que ninguém fez ainda e que ninguém vai lembrar de refazer.**
+
+**Como isso muda o P25.** A tarefa dele **não é "esvaziar"** — é:
+
+| | |
+| --- | --- |
+| **REMOVER** | o que está `[x]` — executado, revisado, e cujo conteúdo vivo já foi migrado para `arquitetura/`, `adr/` ou `specs/` |
+| **MIGRAR** | o que está `[ ]` — vai íntegro para o `specs/plan/00-prompts-execucao.md` novo, junto do briefing da Campanha 2 |
+
+Se ao rodar o P25 sobrar qualquer item aberto — uma tarefa que foi pulada, um achado sem rota, uma decisão que o dono não tomou — ele **acompanha** a migração. O plano novo nasce com a pendência visível, não com ela apagada.
+
+**Regra de conferência (obrigatória no P25):** conte os checkboxes `[ ]` ANTES de remover qualquer coisa, e prove ao fim que **todos** aparecem no arquivo novo. Diferença de um é falha de entrega.
+
 ---
 
 # REGISTRO DE DECISÕES DO DONO
@@ -144,6 +163,16 @@ Decisões tomadas em conversa, com data. **Nenhum agente re-litiga o que está a
 | **D10** | **Registry: NÃO agora.** O `#semver:` + tag já entrega o `npm update`. O ganho que falta é **tirar o `dist/` do git** — e ele só compensa quando houver consumidor fora da órbita do dono. | 2026-07-28 | Registrado; sem tarefa |
 | **D11** | **Ciclo de atualização do consumidor precisa de dois comandos**, refletindo a única fronteira que importa em semver: `sarak-ui update` (dentro da faixa, seguro) e `sarak-ui update --latest` (ATRAVESSA o major, mostrando quantos majors pula + as entradas de `docs/migracoes.md` entre as duas versões, e pedindo confirmação). "Subir uma versão de cada vez" **não existe** no npm e não faz sentido: dentro do major todas as versões prometem a mesma compatibilidade. | 2026-07-28 | **Campanha 2, Fase D** |
 | **D12** | **As quebras de contrato acumuladas são agrupadas num ÚNICO major.** `CustomizationPanel` lazy, dedup do `SarakTabs` e o destino dos ids legados do Discovery saem juntos numa `2.0.0`, com uma entrada só em `docs/migracoes.md`. Três releases breaking separadas custariam três migrações ao consumidor. | 2026-07-28 | **Campanha 2, Fase C** |
+
+| **D13** | **O ERP é o ÚNICO consumidor real, e a importação é LOCAL por enquanto.** `ERP/packages/ui-kit/package.json` declara `"@sarak/lib-ui-core": "file:../../../../Biblioteca/Sarak-Lib-UI-Core"`. As duas pontas estão em desenvolvimento simultâneo — por isso `file:`; **a importação por `github:` vem depois**. O ERP é o ambiente onde o dono valida na prática o que muda aqui. | 2026-07-28 | **P28** (atualizar e revalidar), e revalidação obrigatória na **Campanha 2, Fase C** |
+
+> ### 📌 Fatos do ERP que quem executar o P28 precisa saber (medidos em 2026-07-29)
+> - **É workspace pnpm, sem ambiguidade:** `pnpm-lock.yaml`, `pnpm-workspace.yaml` e `packageManager: "pnpm@11.17.0"`.
+> - **Modo `file:` = cópia no store.** Rebuildar a lib **NÃO** chega ao ERP sozinho. Arquivo existente reescrito propaga por hardlink; arquivo **adicionado/removido não** — e o `tsup` gera chunks com **hash no nome** (`chunk-MV2BQG5R.js`), que mudam a cada build. Sem reinstalar, o `dist/index.js` do ERP passa a importar chunks que a cópia dele não tem.
+> - **Comando validado** (`packageManager.mjs:111-121`, `validated: true`, medido no próprio ERP): `pnpm install --force --filter <nome-do-pacote>`.
+> - ⚠️ **NUNCA `npm install` ali.** Foi isso que quebrou um consumidor pnpm na Spec 51 — o npm entra no `node_modules/.pnpm/` e tenta rodar o `prepare` de pacote de terceiro.
+> - ⚠️ **`pnpm` pode não estar no PATH.** Aconteceu em 2026-07-29: `CommandNotFoundException`. O campo `packageManager` **declara** o gerenciador, não o instala — quem materializa é o **corepack** (presente em `C:\Program Files\nodejs\corepack.cmd`), e o shim dele é apagado quando o Node é atualizado. `corepack enable pnpm` é o caminho que o projeto já está preparado para usar. **Declarado ≠ invocável.**
+> - **O ERP NÃO tem `sarak:check` nem `sarak:update` instalados** — o `predev` dele é o `matar-portas-dev.mjs` próprio. Ele está fora do ciclo de aviso que esta campanha construiu, e depende do dono lembrar de reinstalar.
 
 > ### ⚠️ Mudança no destino do `specs/plan/`
 > O plano original dizia "`specs/plan/` será ESVAZIADO". Isso continua verdade **para esta campanha** — mas o `plan/` não morre: ele é **reciclado**. O `specs/README.md` (reescrito no P0) já descreve o modelo certo: *plano transitório, com data de morte, esvaziado ao fim de cada campanha*.
@@ -187,19 +216,26 @@ Decisões tomadas em conversa, com data. **Nenhum agente re-litiga o que está a
 > **Fase 3 CONCLUÍDA em 2026-07-28.** Próximo: **Fase 4** (P13–P20), cujas 8 tarefas são independentes entre si.
 
 ### Fase 4 — Specs de feature e regra
-- [ ] **P13** — `specs/09-temas-e-presets.md`
-- [ ] **P14** — `specs/10-seguranca-e-acessibilidade.md`
-- [ ] **P15** — `specs/04-shell-e-discovery.md`
-- [ ] **P16** — `specs/05-cromo-e-slots.md`
-- [ ] **P17** — `specs/07-responsividade-e-multidispositivo.md`
-- [ ] **P18** — `specs/06-painel-de-customizacao-e-preview.md`
-- [ ] **P19** — `specs/08-identidade-do-host-e-zero-marca.md`
-- [ ] **P20-A** — **Remover `Template-Ts/` do repositório** *(decisão D7 — pré-requisito do P20: sem isso a spec de testes documenta um número falso)*
-- [ ] **P20** — `specs/11-testes-e-cobertura.md`
+- [x] **P13** — `specs/09-temas-e-presets.md`
+- [x] **P14** — `specs/10-seguranca-e-acessibilidade.md`
+- [x] **P15** — `specs/04-shell-e-discovery.md`
+- [x] **P16** — `specs/05-cromo-e-slots.md`
+- [x] **P17** — `specs/07-responsividade-e-multidispositivo.md`
+- [x] **P18** — `specs/06-painel-de-customizacao-e-preview.md`
+- [x] **P19** — `specs/08-identidade-do-host-e-zero-marca.md`
+- [x] **P20-A** — **Remover `Template-Ts/` do repositório** *(decisão D7)* — 85 arquivos versionados removidos; suíte 281/901 → **275/879**, verde e agora independente de estado local
+- [x] **P20** — `specs/11-testes-e-cobertura.md`
+
+> **Fase 4 CONCLUÍDA em 2026-07-29.** Próximo: **Fase 4.5** (P26, P27). O P27 está **destravado** — o P20-A era o pré-requisito dele.
+>
+> ⚠️ **14 achados novos** foram registrados nas specs desta fase (**nenhum corrigido**, conforme a fronteira da §9 — 7 deles são afirmações do material-fonte que o código NÃO sustenta). Os dois que eu recomendaria priorizar: **`AdvancedTab` chamando `localStorage.clear()`** (apaga a origem inteira do consumidor, `06-painel-de-customizacao-e-preview` §9.5) e **`src/shared/` fora do escopo do `auditor_coverage`** (3 arquivos sem teste, 2 deles críticos, `11-testes-e-cobertura` §6.1). Lista completa em `00-progresso.md`.
+>
+> 🔓 **Duas perguntas abertas para o dono**, registradas nas specs e **não decididas**: (a) o destino dos ids legados `mx-customization`/`personalization` registrados por efeito colateral de import (`04-shell-e-discovery` §7.1 — candidato ao major único da D12); (b) se as 5 abas inalcançáveis do `CustomizationPanel` **voltam** ou **saem** (`06-painel-de-customizacao-e-preview` §9.3).
 
 ### Fase 4.5 — Fechamento da superfície pública e do enforcement *(mexe em código; roda ANTES dos kits, para o kit documentar a superfície final)*
 - [ ] **P26** — Engines: apagar o barril órfão · expor Chat+Flow · remover Visual · ampliar o `barrel:check` *(decisão D2)*
 - [ ] **P27** — Promover o **Anel 3 (suíte) a `pre-push`** *(decisão D8 — depende do P20-A)*
+- [ ] **P28** — **Atualizar e revalidar o ERP** *(decisão D13)* ⚠️ **toca repositório de FORA — exige aprovação do dono ANTES de executar**
 
 ### Fase 5 — Habilitação (os dois kits)
 - [ ] **P21** — `specs/12-kit-do-consumidor.md`
@@ -208,12 +244,14 @@ Decisões tomadas em conversa, com data. **Nenhum agente re-litiga o que está a
 
 ### Fase 6 — Fechamento
 - [ ] **P24** — Reconciliar as skills do mantenedor com o código real
-- [ ] **P25** — Esvaziar `specs/plan/` da Campanha 1 · remover as specs aposentadas · **SEMEAR o plano da Campanha 2**
+- [ ] **P25** — Remover o que está `[x]` · **MIGRAR o que está `[ ]`** (§10) · remover as specs aposentadas · **SEMEAR o plano da Campanha 2**
 
 ### 🔜 CAMPANHA 2 — Adequação do sistema *(briefing no fim deste documento; vira plano executável no P25)*
 > Primeiro corrigimos e limpamos as specs (Campanha 1). **Depois** adequamos o sistema ao que ficou escrito.
+> 🔒 **O escopo da Campanha 1 está FECHADO** (decisão do dono, 2026-07-29): os **21 achados** das auditorias vão TODOS para cá. Nenhum é consertado lá.
 - **Fase A** — Integração contínua *(D9)*
-- **Fase B** — Quitação do baseline de auditoria
+- **Fase B** — Quitação do baseline + lacunas de gate
+- **Fase F** — Achados de comportamento *(inclui o `localStorage.clear()`)*
 - **Fase C** — Limpeza do contrato público → `2.0.0` *(D12)*
 - **Fase D** — Ciclo de atualização do consumidor *(D11)*
 - **Fase E** — E2E no pipeline
@@ -1185,6 +1223,54 @@ ENTREGUE: o RELATÓRIO DE ENTREGA (§7), com as 4 provas e as justificativas de 
 
 ---
 
+## P28 — Atualizar e revalidar o ERP
+
+> ⚠️ **ESTA TAREFA TOCA UM REPOSITÓRIO FORA DESTE.** O ERP é o único consumidor real (decisão **D13**) e é onde o dono valida na prática. **Nada é executado lá antes de aprovação explícita** — a tarefa começa apresentando um plano e PARANDO.
+>
+> **Quando roda:** ao fim da Fase 4.5, depois de P20-A/P26/P27 — quando a superfície pública já parou de mudar, mas ANTES de a Fase 5 documentar os kits. Assim o kit é escrito com um consumidor real já revalidado.
+
+```
+Você vai atualizar o ERP Earendel — o único consumidor real da Sarak-Lib-UI-Core — e revalidar que as mudanças desta campanha não o quebraram. ⚠️ ISTO TOCA UM REPOSITÓRIO FORA DA LIB. Leia a regra de HITL abaixo antes de qualquer coisa.
+
+Preparação: (1) `ui-contexto-repositorio`; (2) `specs/plan/00-prompts-execucao.md` INTEIRO — esp. a decisão **D13** e o bloco "📌 Fatos do ERP que quem executar o P28 precisa saber"; (3) `specs/specs/13-instalacao-e-atualizacao.md` (se o P22 já rodou) e `bin/scaffold/packageManager.mjs` §`localRefreshCommand`; (4) `docs/migracoes.md` — todas as entradas desde a última versão que o ERP tinha.
+
+═══ REGRA DE HITL — INEGOCIÁVEL ═══
+Esta tarefa tem DUAS metades, separadas por uma parada obrigatória.
+
+**METADE 1 — DIAGNOSTICAR (read-only). Não escreva NADA no ERP.**
+**PARE. Apresente o relatório em TEXTO** (contexto · o que será tocado · o que pode quebrar · recomendação) e **AGUARDE aprovação explícita do dono.** Não use popup interativo — relatório em texto, como o resto desta campanha.
+**METADE 2 — EXECUTAR.** Só depois do "sim".
+
+Se em qualquer ponto da metade 2 aparecer algo que não estava no diagnóstico, **PARE de novo** e reporte. É repositório de produção do dono; surpresa não se resolve por conta.
+═══════════════════════════════════
+
+## METADE 1 — DIAGNÓSTICO (read-only)
+
+- D1: CONFIRMAR o estado do ERP: o `file:` em `packages/ui-kit/package.json`, o `name` real do pacote (é ele que vai no `--filter`), e qual `libVersion` está instalada hoje (`node_modules/@sarak/lib-ui-core/dist/BUILD_INFO.json`).
+- D2: CONFIRMAR se o `pnpm` é **invocável** (`Get-Command pnpm`) — não basta estar declarado em `packageManager`. Se não estiver, o caminho preparado do projeto é `corepack enable pnpm`. **Declarado ≠ invocável**; em 2026-07-29 isso custou um `CommandNotFoundException` ao dono.
+- D3: LEVANTAR o delta: entre a `libVersion` instalada no ERP e a atual da lib, o que mudou de contrato público? Cruze `docs/migracoes.md` + as mudanças desta campanha. Atenção especial ao **P26**: `SarakVisualEngine` pode ter sido REMOVIDO e `SarakChatEngine`/`SarakFlowEngine` passaram a ser públicos. **Grep no ERP** por cada nome afetado.
+- D4: LISTAR o que a atualização pode quebrar, com `arquivo:linha` do ERP. Se o delta for zero, diga isso — "nada quebra" é resultado legítimo e é o mais provável, já que o P26 varreu o ERP antes de remover.
+- D5: MONTAR o plano de execução: o comando exato, o que será verificado depois, e como reverter (o `pnpm-lock.yaml` do ERP e a cópia anterior no store).
+
+**⇒ PARE AQUI. Relatório em texto + aguardar o "sim".**
+
+## METADE 2 — EXECUÇÃO (só após aprovação)
+
+- E1: reinstalar com o comando **validado**: `pnpm install --force --filter <nome-do-pacote>` na raiz do monorepo do ERP. ⚠️ **NUNCA `npm install`** ali — foi isso que quebrou um consumidor pnpm na Spec 51.
+- E2: CONFERIR que a cópia foi refeita de verdade: `node_modules/@sarak/lib-ui-core/dist/BUILD_INFO.json` tem de trazer a `libVersion` e o `baseCommit` novos. Se continuar na versão velha, a reinstalação não pegou — PARE e reporte, não tente contornar.
+- E3: verificar tipos e build de CADA app `web` do ERP que consome o `ui-kit` (`tsc` + build). Erro de tipo aqui é o sinal mais barato de quebra de contrato.
+- E4: se algo quebrar, **conserte na LIB, não no ERP** — é a regra que governou o Teste Real inteiro: *se o consumidor precisou escrever CSS, fiar token à mão ou montar andaime só para a lib funcionar, é defeito da lib.* Contorno no importador é proibido; o achado volta como tarefa na lib.
+- E5: entregar ao dono a lista do que ELE precisa validar no browser — a lib não decide que a tela está certa.
+
+FRONTEIRAS: não commite nada no ERP (é repositório dele; o commit é decisão dele); não instale `pnpm` global sem autorização (muda a versão que gerou o lockfile — prefira `corepack enable`); não altere código de negócio do ERP; não migre o ERP para `github:`/`#semver:` (D13 diz que a importação local é deliberada enquanto as duas pontas estão em desenvolvimento); não instale o `sarak:check` no ERP nesta tarefa (é Fase D da Campanha 2).
+
+GATES: **na LIB** — nada deve ter mudado: `run_audit` no baseline, `barrel:check`, `catalog:check`, `zero-brand:check`, `guide:check`, suíte completa. **No ERP** — `tsc` e build verdes em cada app que consome o `ui-kit`.
+
+ENTREGUE: o RELATÓRIO DE ENTREGA (§7) com as duas metades separadas, o `BUILD_INFO` antes e depois (a prova de que a cópia foi refeita), a saída do `tsc`/build de cada app, e a lista de validação de browser para o dono. Marque o checkbox de P28 e registre em `00-progresso.md`. NÃO commite em NENHUM dos dois repositórios sem autorização.
+```
+
+---
+
 # FASE 5 — HABILITAÇÃO (OS DOIS KITS)
 
 ## P21 — `specs/12-kit-do-consumidor.md`
@@ -1326,6 +1412,8 @@ ENTREGUE: o RELATÓRIO DE ENTREGA (§7), com a tabela de auditoria da T1 complet
 ```
 ⚠️ TAREFA DESTRUTIVA. É a ÚLTIMA da campanha e só roda com TODAS as anteriores concluídas e revisadas. Se qualquer checkbox de P0 a P24 estiver aberto, PARE.
 
+🔒 LEIA A §10 DAS REGRAS COMUNS ANTES DE QUALQUER COISA — "só sai daqui o que foi EXECUTADO". Sua tarefa **não é esvaziar**: é REMOVER o que está `[x]` e MIGRAR o que está `[ ]`. Conte os checkboxes abertos ANTES de tocar em nada e prove, ao fim, que todos aparecem no arquivo novo. **Diferença de um é falha de entrega.** Apagar etapa não executada não limpa o plano — destrói trabalho que ninguém fez ainda.
+
 Você vai fechar a campanha "Reescrita da Base de Specs" da Sarak-Lib-UI-Core: esvaziar o `specs/plan/` e remover as specs aposentadas, agora que o conteúdo vivo foi migrado.
 
 Preparação: (1) `ui-contexto-repositorio`; (2) `specs/plan/00-prompts-execucao.md` INTEIRO — esp. o Roteiro (todos os checkboxes) e o mapa DE→PARA; (3) a base nova COMPLETA; (4) estude `sarak:spec-atualizar` §5 (a etapa de limpeza é HITL por definição — nunca apague sem consentimento).
@@ -1340,7 +1428,8 @@ TAREFA:
 - T5: ATUALIZAR os índices: `specs/INDEX.md` com a lista FINAL e completa dos documentos das 4 categorias; `specs/README.md` conferido; `specs/adr/README.md` com o índice dos 7 ADRs.
 - T6: FECHAMENTO — a última entrada de `00-progresso.md` antes de ele sair: o resumo da campanha (o que existia, o que passou a existir, o que foi aposentado e por quê).
 - T7: ⚠️ **SEMEAR A CAMPANHA 2 — esta tarefa NÃO termina com o `plan/` vazio.** Antes de apagar este arquivo, transcreva o **BRIEFING DA CAMPANHA 2** (a última seção deste documento) para um `specs/plan/00-prompts-execucao.md` NOVO, com: o cabeçalho da campanha nova, as **REGRAS COMUNS** (§1–§9 — copie da Campanha 1, atualizando o baseline para o estado real ao fim do P25), o **REGISTRO DE DECISÕES DO DONO** (D1–D12, que continuam valendo), o roteiro das 5 fases e o briefing de cada uma. Os **prompts** de cada fase da Campanha 2 NÃO são escritos aqui — eles nascem quando o dono for executar cada fase, como aconteceu nesta.
-  **Por que:** o `plan/` é transitório **por campanha**, não para sempre — é o modelo que o `specs/README.md` (reescrito no P0) descreve. Apagar este arquivo sem semear o próximo mataria junto todo o trabalho de decisão registrado nas D7–D12.
+  **Por que:** o `plan/` é transitório **por campanha**, não para sempre — é o modelo que o `specs/README.md` (reescrito no P0) descreve. Apagar este arquivo sem semear o próximo mataria junto todo o trabalho de decisão registrado nas D1–D13.
+  ⚠️ **A transcrição INCLUI, obrigatoriamente:** a seção **"Os 21 achados da Campanha 1 — e onde cada um entra"** (a tabela de roteamento inteira, com os `arquivo:linha`), a **REGRA DE ESCOPO** que fecha a Campanha 1, e as **6 fases (A, B, F, C, D, E)** com o escopo de cada uma. Os achados só existem hoje neste arquivo e no `00-progresso.md` — e o `00-progresso.md` também sai no P25. **Perder a tabela de roteamento é perder 21 achados de auditoria que custaram duas rodadas para encontrar.** Confira, ao fim, que cada um dos 21 aparece no arquivo novo.
 
 FRONTEIRAS: não apague nada não aprovado; não apague `specs/_templates/`; não toque em código-fonte, `docs/`, `sarak-ui/` ou `sarak-dev/` além de corrigir referências órfãs; **não `git rm` — apenas remoção de arquivo** (o commit é decisão do dono); não faça push.
 
@@ -1358,6 +1447,84 @@ ENTREGUE: o RELATÓRIO DE ENTREGA (§7), com a tabela de migração da T1 COMPLE
 > **A ordem das duas campanhas é uma decisão, não acaso:** *primeiro corrigimos e limpamos as specs; depois adequamos o sistema ao que ficou escrito.* Adequar antes de escrever seria consertar contra um alvo que ainda se movia.
 
 **Ponto de partida:** a base de specs está escrita e verdadeira, o `specs/plan/` foi esvaziado da Campanha 1, e o sistema tem uma dívida **inteiramente documentada e nenhuma paga**. A Campanha 1 mediu; a Campanha 2 conserta.
+
+> ## 🔒 REGRA DE ESCOPO — o escopo da Campanha 1 está FECHADO
+>
+> Decisão do dono (2026-07-29): **nenhum achado é consertado na Campanha 1.** A Campanha 1 tem uma fronteira só — *escrever a base de specs* — e ela não cresce. Achado encontrado enquanto se escreve é **registrado e roteado para cá**, nunca resolvido de passagem.
+>
+> Isso vale inclusive para o achado mais grave da campanha (o `localStorage.clear()`), que hoje é **código inalcançável** — e é justamente essa inalcançabilidade que torna adiá-lo seguro.
+>
+> As três tarefas de código que ficaram na Campanha 1 (**P20-A**, **P26**, **P27**) estavam no plano **antes** dos achados e são pré-requisito do que vem depois: sem elas o kit documentaria uma superfície que ia mudar e a suíte não seria sinal confiável. Não são exceção à regra; são escopo original.
+
+---
+
+# Os 21 achados da Campanha 1 — e onde cada um entra
+
+Duas rodadas de auditoria produziram achados que **não são erros das specs**: são defeitos e ambiguidades do módulo, encontrados justamente porque alguém foi conferir no código em vez de copiar do material antigo. Todos estão registrados nos documentos e no `00-progresso.md`. **Nenhum foi corrigido.**
+
+Esta é a rota oficial. Quem executar uma fase desta campanha **fecha os itens da sua linha**; o que não conseguir fechar vira DIVERGÊNCIA, nunca silêncio.
+
+## Da Fase 2 (7 achados)
+
+| Achado | Rota |
+| --- | --- |
+| `--sx-*` vivo em `_utilities.css:80,89` + `auditor_ghostvars` não varre `styles/` | **Fase B** |
+| `upgradeThemePayload(partialMode)` — parâmetro morto | **Fase B** |
+| `CustomizationPanel` sai **eager** do barril | **Fase C** |
+| 3 das 4 categorias de `engines/` fora do barril | ✅ **P26** (Campanha 1 — escopo original) |
+| `README.md` mandando instalar `pg` | ✅ **P24** (Campanha 1 — escopo original) |
+| `atomic/Tables/` categoria sem componente | ✅ **fechado** por decisão D1 — fica como está |
+| Local do `verify_parity.ts` | ✅ **fechado** — era imprecisão de relatório |
+
+## Da Fase 4 (14 achados)
+
+**Grupo 1 — Bugs de comportamento → Fase F** *(nova)*
+
+| Achado | Gravidade |
+| --- | --- |
+| **`AdvancedTab.tsx:21` chama `localStorage.clear()`** — apaga a ORIGEM inteira do consumidor (token de sessão, preferências, tudo), não só as chaves da lib, e recarrega a página. O `confirm()` promete "configurações visuais". **Hoje é inalcançável** (o `AdvancedTab` é importado e nunca renderizado) | 🔴 **o único capaz de destruir dado de terceiro** |
+| `isGlass` é ramo morto que renderizaria nav nenhuma — só é inalcançável porque `validateDesign` descarta o valor | 🟡 |
+| `focusRingWidth` ignorado pela regra global de foco | 🟡 |
+| Token de breakpoint move só 1 dos 3 caminhos de responsividade | 🟡 |
+| `SarakTable` sem opt-out de colapso mobile (o `SarakDataTable` tem `responsive={false}`) | 🟡 inconsistência de API |
+
+**Grupo 2 — Lacunas de gate → Fase B**
+
+| Achado |
+| --- |
+| `src/shared/` **fora do escopo** do `auditor_coverage` (`:52-60`): 3 arquivos sem teste, incluindo `useSarakRouter` e `api.ts`. Gate verde, regra violada |
+| **O gate anti-acoplamento de auth NÃO EXISTE** — `plan/20` o previu, se marcou concluída, e nenhum arquivo `AuthCoupling*` foi criado. *(É a prova mais limpa de por que esta campanha existiu: uma spec declarou um gate entregue e o gate nunca existiu.)* |
+| Cobertura em % — `@vitest/coverage-v8` instalado e **nunca medido** |
+| 5 sinks de `dangerouslySetInnerHTML`, não "uma exceção" — auditar se os 5 são legítimos (CSS gerado pela engine) ou se algum é vetor real |
+
+**Grupo 3 — Pipeline e medição → Fase E**
+
+| Achado |
+| --- |
+| `playwright.config.ts:7` aponta `testDir: './e2e'` — **a pasta não existe**; `playwright test` não acha nada. As specs E2E reais vivem em `src/**/__e2e__/` |
+| Contraste **WCAG AA não é medido em lugar nenhum** — a lib não pode prometê-lo sem medir (axe-core na CI) |
+
+**Grupo 4 — Já resolvidos pela própria reescrita** *(sem ação de código)*
+
+| Achado | Por que fecha |
+| --- | --- |
+| "A lib nunca controla a URL" era falso (`useSarakRouter.ts:49,51` fazem `pushState`/`replaceState`) | a spec nova registra o comportamento real |
+| Status falso na spec antiga de presets | a spec nova corrigiu |
+
+## ⚠️ O acoplamento que muda a ordem de execução
+
+**`localStorage.clear()` e "as 6 abas inalcançáveis" são o mesmo problema visto de dois lados.**
+
+O `CustomizationPanel` importa 7 componentes de aba e renderiza **um** (`CustomizationPanel.tsx:3-9` × `:40`). Uma das abas mortas é justamente o `AdvancedTab`, que contém o `localStorage.clear()`.
+
+Consequência: **"restaurar as abas" ATIVA a perda de dados.** A ordem é obrigatória e não é negociável:
+
+1. **Primeiro** consertar o `clear()` para apagar só as chaves da lib (o `storageKey` do Provider).
+2. **Depois** decidir se as abas voltam ou saem.
+
+Decidir na ordem inversa é a única forma de transformar código morto em bug de produção.
+
+---
 
 ---
 
@@ -1387,7 +1554,13 @@ ENTREGUE: o RELATÓRIO DE ENTREGA (§7), com a tabela de migração da T1 COMPLE
 - `upgradeThemePayload(partialMode)` — parâmetro morto.
 - **Os 7 ids de token duplicados**, no schema **e** no roteamento de persistência — 4 em duas colunas diferentes (ambiguidade real) e 3 repetidos na mesma coluna (redundância literal). São dois defeitos sob o mesmo sintoma; consertar muda **qual definição vence** em `getDefaultDesignState()`, então exige caracterização antes.
 
-**Spec a criar:** nenhuma. Atualiza `01-gates-e-baseline.md` (o baseline encolhe) e `.githooks/audit-baseline.json` — via `npm run audit:baseline -- --write`, **junto do conserto que o justificou**, nunca sozinho.
+**Escopo adicional — as LACUNAS DE GATE achadas na Fase 4** (grupo 2 da tabela acima). São diferentes dos itens acima: ali o gate acusa e ninguém consertou; aqui **o gate não acusa**, e é o gate que precisa mudar.
+- **`src/shared/` fora do escopo do `auditor_coverage`** (`:52-60` varre só `components`/`features`/`core`): 3 arquivos sem teste, incluindo `useSarakRouter` e `api.ts`. Ampliar o escopo **e** escrever os testes que faltam — ampliar sem cobrir só troca verde por vermelho.
+- **Criar o gate anti-acoplamento de auth**, ou registrar por escrito que ele não vai existir. `plan/20` o declarou entregue e ele nunca foi criado; a spec nova já registra o fato, mas a decisão de construí-lo continua aberta.
+- **Medir cobertura em %** — `@vitest/coverage-v8` está instalado e nunca foi usado. Ou se mede e se declara o piso, ou se remove a dependência e se para de prometer.
+- **Auditar os 5 sinks de `dangerouslySetInnerHTML`** (`DesignScope:54`, `DesignInjector:173`, `SovereignThemeInjector:116`, `PreviewCanvas:181`, `MasterControlPanel:199`) — confirmar um por um que é CSS gerado pela engine, e não conteúdo que atravessa fronteira. Onde for legítimo, o motivo fica escrito ao lado.
+
+**Spec a criar:** nenhuma. Atualiza `01-gates-e-baseline.md` (o baseline encolhe), `11-testes-e-cobertura.md` (escopo de cobertura e o piso em %), `10-seguranca-e-acessibilidade.md` (os 5 sinks auditados) e `.githooks/audit-baseline.json` — via `npm run audit:baseline -- --write`, **junto do conserto que o justificou**, nunca sozinho.
 **Aceite:** cada item fechado com o baseline regravado no mesmo commit; e o `--token` continua no baseline, com o motivo escrito.
 
 ---
@@ -1403,6 +1576,7 @@ ENTREGUE: o RELATÓRIO DE ENTREGA (§7), com a tabela de migração da T1 COMPLE
 
 **Specs:** atualiza `arquitetura/03-superficie-publica.md` (as três dívidas da §8 morrem) e **exige uma entrada única em `docs/migracoes.md`** cobrindo as três, com antes/depois e como migrar. Avalie se a decisão de API do `SarakTabs` merece **ADR** — se sobreviver uma e morrer outra, sim.
 **Aceite:** `npm version major` → `2.0.0` com uma nota de migração só; e o consumidor atravessa o major uma vez, não três.
+⚠️ **Revalidação do ERP é OBRIGATÓRIA aqui** (decisão D13) — é a única fase da Campanha 2 que quebra contrato público de propósito, e o ERP é o único consumidor real. Reuse o protocolo do **P28**: diagnóstico read-only → relatório em texto → aprovação do dono → execução. Um major que não foi provado no consumidor real é um major que ninguém sabe se migra.
 
 ---
 
@@ -1426,19 +1600,51 @@ ENTREGUE: o RELATÓRIO DE ENTREGA (§7), com a tabela de migração da T1 COMPLE
 
 **Escopo.** Levar E2E para a CI da Fase A (é o único lugar onde o `build` prévio não atrapalha, porque lá a árvore é descartável). Definir quais jornadas são bloqueantes e quais são informativas.
 
-**Spec:** atualiza `11-testes-e-cobertura.md` (a lacuna vira cobertura) e `15-integracao-continua.md`.
-**Aceite:** o não-vazamento do modo embarcado — hoje só verificável à mão — passa a ser cobrado a cada PR.
+**Escopo adicional — os achados da Fase 4** (grupo 3 da tabela acima):
+- **`playwright.config.ts:7` aponta `testDir: './e2e'` e a pasta NÃO EXISTE.** As specs E2E reais vivem em `src/**/__e2e__/`. Hoje `playwright test` sai verde sem rodar nada — **o pior tipo de verde**, porque é indistinguível de sucesso. Corrigir o `testDir` é a primeira linha desta fase, antes de qualquer jornada nova.
+- **Contraste WCAG AA não é medido em lugar nenhum.** A spec de segurança e acessibilidade registra o contrato; nada o verifica. Ou entra medição real (axe-core na CI, sobre o conjunto atômico) ou a promessa de nível AA sai do texto. **A lib não pode prometer o que não mede** — e prometer sem medir é a mesma classe de defeito do gate de auth que nunca existiu.
+
+**Spec:** atualiza `11-testes-e-cobertura.md` (a lacuna vira cobertura), `10-seguranca-e-acessibilidade.md` (o contrato de a11y passa a ter verificação) e `15-integracao-continua.md`.
+**Aceite:** o não-vazamento do modo embarcado — hoje só verificável à mão — passa a ser cobrado a cada PR; e `playwright test` deixa de sair verde sem executar nada.
 **Depende de:** Fase A.
+
+---
+
+## Fase F — Achados de comportamento *(nova; grupo 1 da tabela de achados)*
+
+**Problema.** Cinco defeitos de comportamento que nenhum gate vê, achados ao escrever as specs da Fase 4. Nenhum deles é falha de documentação — são o código fazendo coisa diferente do que promete.
+
+**Escopo, em ordem obrigatória:**
+
+**F1 · `localStorage.clear()` — PRIMEIRO, e sozinho.**
+`AdvancedTab.tsx:21` apaga a **origem inteira** do consumidor e recarrega a página, enquanto o `confirm()` promete "TODAS as configurações visuais". Token de sessão, preferências, carrinho — tudo o que o importador guardou naquela origem. Conserto: remover **apenas as chaves da lib** (o `storageKey` do Provider), e alinhar o texto do `confirm()` ao que de fato acontece.
+Hoje é **inalcançável** — o `AdvancedTab` é importado (`CustomizationPanel.tsx:7`) e nunca renderizado. É por isso que adiar foi seguro; é por isso também que **não pode ser adiado mais uma vez** sem antes fechar F2.
+
+**F2 · As 6 abas inalcançáveis — decisão do dono, DEPOIS de F1.**
+O `CustomizationPanel` importa 7 abas e renderiza 1 (`:3-9` × `:40`). As outras 6 estão no bundle e fora de alcance. Restaurar a navegação **ativa** o `clear()` — daí a ordem. As opções: restaurar a navegação (depois de F1), ou remover os imports mortos (menos bundle, menos superfície).
+
+**F3 · `isGlass` é ramo morto** que renderizaria nav nenhuma. Só é inalcançável porque `validateDesign` descarta o valor — ou seja, está protegido **por acidente**, não por desenho. Ou o ramo passa a funcionar, ou sai.
+
+**F4 · `focusRingWidth` ignorado** pela regra global de foco. Token que existe, é validado, e não move nada — é um `--sx-*` com outra roupa: promessa sem emissor.
+
+**F5 · Token de breakpoint move só 1 dos 3 caminhos** de responsividade. Trocar o token não muda o comportamento nos outros dois, o que quebra a promessa "breakpoints são tokens do tema" do contrato de responsividade.
+
+**F6 · `SarakTable` sem opt-out de colapso mobile**, enquanto o `SarakDataTable` tem `responsive={false}`. Inconsistência de API entre dois componentes irmãos.
+
+**Spec:** nenhuma nova. Atualiza `06-painel-de-customizacao-e-preview.md` (F1/F2), `07-responsividade-e-multidispositivo.md` (F5/F6), `04-shell-e-discovery.md` (F3) e `00-regras-e-invariantes.md` se F4 virar regra de token sem consumidor. **F1 e F6 exigem entrada em `docs/migracoes.md`** (mudam comportamento observável).
+**Aceite:** F1 com teste que prova que uma chave alheia sobrevive ao reset; F5 com teste nos três caminhos; e cada item com o gate que passaria a pegá-lo, ou a declaração de que nenhum pega.
 
 ---
 
 ## Ordem sugerida e o porquê
 
 ```
-A (CI)  →  B (baseline)  →  C (2.0.0)  →  D (update)  →  E (E2E)
+A (CI)  →  B (baseline)  →  F (comportamento)  →  C (2.0.0)  →  D (update)  →  E (E2E)
 ```
 
-**A primeiro** porque é o único item que torna todos os outros verificáveis: sem ambiente limpo, cada conserto continua sendo validado na máquina que já provou duas vezes que mente. **B antes de C** porque quebrar contrato com a auditoria vermelha mistura duas fontes de risco no mesmo release. **E por último** porque depende de A e é a única que pode esperar sem custo.
+**A primeiro** porque é o único item que torna todos os outros verificáveis: sem ambiente limpo, cada conserto continua sendo validado na máquina que já provou duas vezes que mente. **B antes de F** porque consertar comportamento com a auditoria vermelha impede distinguir regressão nova de dívida velha. **F antes de C** porque `F1` (o `localStorage.clear()`) e `F2` (as abas) são pré-requisito de qualquer decisão sobre o painel, e a Fase C mexe justamente no `CustomizationPanel`. **C depois de B e F** porque quebrar contrato com auditoria vermelha e comportamento duvidoso mistura três fontes de risco no mesmo release. **E por último** porque depende de A e é a única que pode esperar sem custo.
+
+> **Se você só puder fazer duas fases:** **A** (para os números pararem de mentir) e **F1** (o único achado da campanha inteira capaz de destruir dado de terceiro).
 
 ---
 
