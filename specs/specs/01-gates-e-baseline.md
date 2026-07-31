@@ -51,11 +51,14 @@ Ele roda os 8 na ordem abaixo, cada um em processo próprio:
 | Catálogo | `npm run catalog:check` | `docs/component-catalog.{json,md}` commitado == gerado agora | R17 | ~1,5 s |
 | Zero-marca | `npm run zero-brand:check` | Nenhuma marca da lib como texto em componente consumidor-facing | R12 | ~1,3 s |
 | Kit | `npm run guide:check` | `sarak-ui/` commitado == gerado agora (6 arquivos) | R17 | ~1,8 s |
+| Kit do mantenedor | `npm run dev-kit:check` | `sarak-dev/` commitado == gerado agora (3 arquivos) **e zero ponteiro morto** na prosa | R17 | ~2,0 s |
 | Pacote | `npm run package:check` | O tarball não leva proibido nem esquece obrigatório | — | precisa de `dist/` |
 
 Os quatro primeiros são **rápidos e verdes**, e são os que rodam encadeados antes de compilar no `npm run build`. `package:check` é diferente: roda `npm pack --dry-run --json`, então **exige `dist/` buildado** — é por isso que ele mora no `prepublishOnly`, não no `build`.
 
-Todos os quatro têm a mesma mecânica de leitura: **saída de uma linha quando passa**. Se a linha não apareceu, leia o erro acima dela.
+Todos têm a mesma mecânica de leitura: **saída de uma linha quando passa**. Se a linha não apareceu, leia o erro acima dela.
+
+⚠️ **`dev-kit:check` é o único gate com DUAS causas de reprovação** (Spec 14, criado em 2026-07-31): defasagem *e* **ponteiro morto** — caminho, `npm run <script>` ou comando `node` citado em crase na prosa do kit e que não existe. É o único gate que audita **documentação** por conteúdo, e não por hash. Ele **não** roda no `build` (o `build` produz o artefato publicado, e `sarak-dev/` não é publicado); roda no `gates:full` e, por ele, no `preversion`. Contrato completo em [[14-artefatos-do-mantenedor]].
 
 ## 2.3 `npm run build` — os quatro gates encadeados + a compilação
 
@@ -123,7 +126,8 @@ Registrado como o que é: **cobertura que existe e não é cobrada**.
 | `catalog:check` | `npm run catalog:check` | ✅ catálogo em dia (**81** componentes) |
 | `zero-brand:check` | `npm run zero-brand:check` | ✅ **361 arquivos, 0 violações** — era 363 até P26; a contagem é o nº de arquivos varridos, então remover 2 componentes a faz cair. **O número que importa é o de violações (0)** |
 | `guide:check` | `npm run guide:check` | ✅ **kit em dia (6 arquivos)** — o kit reporta **87** componentes (81 + 6 extras; ver [[03-superficie-publica]] §5.1) |
-| suíte | `npx vitest run` | ✅ **273 arquivos / 877 testes, 100% verde** (~185 s), desde 2026-07-29 (P26). Era 275/879 antes da remoção do `SarakVisualEngine`/`PaletteSelector`, que levou junto os 2 testes de fumaça deles; 281/901 até a remoção do `Template-Ts/` (§3.2); e 280/890 com 1 falha ambiental até 2026-07-28 (§3.1) |
+| `dev-kit:check` | `npm run dev-kit:check` | ✅ **kit em dia (3 arquivos, 0 ponteiros mortos)** — gate novo, criado em 2026-07-31 (P23) |
+| suíte | `npx vitest run` | ✅ **274 arquivos / 889 testes, 100% verde** (~159 s), desde 2026-07-31 (P23 — +1 arquivo e +12 testes do gerador do `sarak-dev/`). Era 273/877 desde 2026-07-29 (P26); 275/879 antes da remoção do `SarakVisualEngine`/`PaletteSelector`, que levou junto os 2 testes de fumaça deles; 281/901 até a remoção do `Template-Ts/` (§3.2); e 280/890 com 1 falha ambiental até 2026-07-28 (§3.1) |
 | `tsc` | `npx tsc --noEmit` | ❌ **14 erros** — 10 em teste, **4 em produção**. Não é gate |
 | `build` | `npm run build` | 4 gates + 6 etapas de compilação |
 | `package:check` | `npm run package:check` | exige `dist/` buildado |

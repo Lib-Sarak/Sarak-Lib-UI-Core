@@ -69,7 +69,8 @@ Lista de tokens, de componentes, de props, de ícones: **jamais** copiada para d
 | `catalog:check` | `npm run catalog:check` | ✅ em dia |
 | `zero-brand:check` | `npm run zero-brand:check` | ✅ **361 arquivos, 0 violações** — ⚠️ **atualizado em 2026-07-29 (P26):** era 363; a contagem é de arquivos VARRIDOS e caiu com a remoção do `SarakVisualEngine`/`PaletteSelector`. O número que importa é o de violações (0) |
 | `guide:check` | `npm run guide:check` | ✅ **kit em dia (6 arquivos)** |
-| suíte completa | `npx vitest run` | ✅ **273 arquivos / 877 testes, 100% verde** (~185s). ⚠️ **Atualizado em 2026-07-29 (P26):** era 275/879; a remoção do `SarakVisualEngine`/`PaletteSelector` levou junto os **2 arquivos / 2 testes** de fumaça deles. Histórico anterior — **P20-A:** era 281/901; a remoção do `Template-Ts/` tirou **6 arquivos / 22 testes** que não eram da lib e que só passavam por causa de um `node_modules/` local não versionado. **O número caiu e o sinal subiu** — este verde vale em qualquer clone. Histórico anterior: 890 com **1 falha ambiental** (`packageManager.test.mjs`) até o **P11-D** (→ 891) e o **P12-C** (+`tagComparison.test.mjs`, → 901). Detalhe em `specs/specs/01-gates-e-baseline.md` §3.1 e §3.2 |
+| `dev-kit:check` | `npm run dev-kit:check` | ✅ **kit em dia (3 arquivos, 0 ponteiros mortos)** — ⚠️ **gate NOVO, criado em 2026-07-31 (P23)**. Reprova por defasagem **e** por ponteiro morto na prosa do `sarak-dev/`. Fora do `build`, dentro do `gates:full` |
+| suíte completa | `npx vitest run` | ✅ **274 arquivos / 889 testes, 100% verde** (~159s). ⚠️ **Atualizado em 2026-07-31 (P23):** era 273/877; o gerador do `sarak-dev/` trouxe **1 arquivo / 12 testes** novos. Histórico anterior — **P26:** caiu de 275/879 para 273/877 — a remoção do `SarakVisualEngine`/`PaletteSelector` levou junto os **2 arquivos / 2 testes** de fumaça deles. Histórico anterior — **P20-A:** era 281/901; a remoção do `Template-Ts/` tirou **6 arquivos / 22 testes** que não eram da lib e que só passavam por causa de um `node_modules/` local não versionado. **O número caiu e o sinal subiu** — este verde vale em qualquer clone. Histórico anterior: 890 com **1 falha ambiental** (`packageManager.test.mjs`) até o **P11-D** (→ 891) e o **P12-C** (+`tagComparison.test.mjs`, → 901). Detalhe em `specs/specs/01-gates-e-baseline.md` §3.1 e §3.2 |
 | `tsc` | `npx tsc --noEmit` | ❌ **14 erros** — 10 em teste, **4 em produção** (`useStructuralStyles.ts:30,71,94`; `ThemeCustomizationTab.tsx:86`). **Não é gate hoje.** |
 | `build` + DTS | `npm run build` | encadeia catalog→barrel→zero-brand→guide→tsup→css→scoped→copy→inject→build-info |
 | `package:check` | `npm run package:check` | roda no `prepublishOnly`; exige `dist/` buildado |
@@ -243,9 +244,13 @@ Decisões tomadas em conversa, com data. **Nenhum agente re-litiga o que está a
 > **Fase 4.5 CONCLUÍDA em 2026-07-29** (P26, P27, P28). Próximo: **Fase 5** (P21, P22, P23) — os dois kits, agora escritos sobre uma superfície pública que parou de mudar e um consumidor real revalidado.
 
 ### Fase 5 — Habilitação (os dois kits)
-- [ ] **P21** — `specs/12-kit-do-consumidor.md`
-- [ ] **P22** — `specs/13-instalacao-e-atualizacao.md`
-- [ ] **P23** — `specs/14-artefatos-do-mantenedor.md` **+ CRIAR o kit `sarak-dev/` + gate `dev:check`**
+- [x] **P21** — `specs/12-kit-do-consumidor.md`
+- [x] **P22** — `specs/13-instalacao-e-atualizacao.md`
+- [x] **P23** — `specs/14-artefatos-do-mantenedor.md` **+ CRIAR o kit `sarak-dev/` + gate `dev-kit:check`** — kit de 3 arquivos, `state.json` derivado por AST, gate com caça a **ponteiro morto**; `sarak-dev/` fora do tarball (provado nos dois sentidos); suíte 273/877 → **274/889**
+
+> **Fase 5 CONCLUÍDA em 2026-07-31** (P21, P22, P23). Próximo: **Fase 6** (P24, P25).
+>
+> ⚠️ **Achado que muda o escopo da Campanha 2 (Fase B):** `src/core/Provider/generated/design-token-ids.ts` está **defasado em 105 tokens** (304 no tipo público × 409 no catálogo) e o gerador dele (`scripts/generate-token-types.ts`) **não está registrado em nenhum script nem hook**. Consequência de segunda ordem: o `sarak-ui/catalog.json` publica `designTokens.count = 304` ao consumidor, que é **falso**. Detalhe em `specs/specs/14-artefatos-do-mantenedor.md` §7.1.
 
 ### Fase 6 — Fechamento
 - [ ] **P24** — Reconciliar as skills do mantenedor com o código real
@@ -1436,7 +1441,7 @@ TAREFA:
 - T7: ⚠️ **SEMEAR A CAMPANHA 2 — esta tarefa NÃO termina com o `plan/` vazio.** Antes de apagar este arquivo, transcreva o **BRIEFING DA CAMPANHA 2** (a última seção deste documento) para um `specs/plan/00-prompts-execucao.md` NOVO, com: o cabeçalho da campanha nova, as **REGRAS COMUNS** (§1–§9 — copie da Campanha 1, atualizando o baseline para o estado real ao fim do P25), o **REGISTRO DE DECISÕES DO DONO** (D1–D12, que continuam valendo), o roteiro das 5 fases e o briefing de cada uma. Os **prompts** de cada fase da Campanha 2 NÃO são escritos aqui — eles nascem quando o dono for executar cada fase, como aconteceu nesta.
   **Por que:** o `plan/` é transitório **por campanha**, não para sempre — é o modelo que o `specs/README.md` (reescrito no P0) descreve. Apagar este arquivo sem semear o próximo mataria junto todo o trabalho de decisão registrado nas D1–D13.
   ⚠️ **A transcrição INCLUI a `Fase 0 — Alinhamento do ERP` (decisão D14) como PRIMEIRO item do roteiro da Campanha 2** — ela roda entre este P25 e a Fase A, e os 8 defeitos do ERP só existem escritos aqui.
-  ⚠️ **A transcrição INCLUI, obrigatoriamente:** a seção **"Os 21 achados da Campanha 1 — e onde cada um entra"** (a tabela de roteamento inteira, com os `arquivo:linha`), a **REGRA DE ESCOPO** que fecha a Campanha 1, e as **6 fases (A, B, F, C, D, E)** com o escopo de cada uma. Os achados só existem hoje neste arquivo e no `00-progresso.md` — e o `00-progresso.md` também sai no P25. **Perder a tabela de roteamento é perder 21 achados de auditoria que custaram duas rodadas para encontrar.** Confira, ao fim, que cada um dos 21 aparece no arquivo novo.
+  ⚠️ **A transcrição INCLUI, obrigatoriamente:** a seção **"Os 21 achados da Campanha 1 — e onde cada um entra"** (a tabela de roteamento inteira, com os `arquivo:linha`), **a tabela dos 6 achados da Fase 5** (itens 22–27, acrescentada em 2026-07-31), a **REGRA DE ESCOPO** que fecha a Campanha 1, e as **6 fases (A, B, F, C, D, E)** com o escopo de cada uma. Os achados só existem hoje neste arquivo e no `00-progresso.md` — e o `00-progresso.md` também sai no P25. **Perder a tabela de roteamento é perder 27 achados de auditoria que custaram três rodadas para encontrar.** Confira, ao fim, que cada um dos **27** aparece no arquivo novo.
 
 FRONTEIRAS: não apague nada não aprovado; não apague `specs/_templates/`; não toque em código-fonte, `docs/`, `sarak-ui/` ou `sarak-dev/` além de corrigir referências órfãs; **não `git rm` — apenas remoção de arquivo** (o commit é decisão do dono); não faça push.
 
@@ -1465,7 +1470,10 @@ ENTREGUE: o RELATÓRIO DE ENTREGA (§7), com a tabela de migração da T1 COMPLE
 
 ---
 
-# Os 21 achados da Campanha 1 — e onde cada um entra
+# Os 27 achados da Campanha 1 — e onde cada um entra
+
+> **21 até a Fase 4.5; +6 na Fase 5** (P21/P22/P23, 2026-07-31). A tabela da Fase 5 está no fim
+> desta seção.
 
 Duas rodadas de auditoria produziram achados que **não são erros das specs**: são defeitos e ambiguidades do módulo, encontrados justamente porque alguém foi conferir no código em vez de copiar do material antigo. Todos estão registrados nos documentos e no `00-progresso.md`. **Nenhum foi corrigido.**
 
@@ -1517,6 +1525,20 @@ Esta é a rota oficial. Quem executar uma fase desta campanha **fecha os itens d
 | --- | --- |
 | "A lib nunca controla a URL" era falso (`useSarakRouter.ts:49,51` fazem `pushState`/`replaceState`) | a spec nova registra o comportamento real |
 | Status falso na spec antiga de presets | a spec nova corrigiu |
+
+## Da Fase 5 (6 achados — P21/P22/P23, 2026-07-31)
+
+⚠️ **O P25 tem de transcrever esta seção junto das outras.** São 6 achados NOVOS; com eles a
+campanha fecha em **27**, não 21.
+
+| # | Achado | Rota |
+| --- | --- | --- |
+| 22 | 🔴 **`src/core/Provider/generated/design-token-ids.ts` DEFASADO em 105 tokens** (304 no tipo público × 409 no catálogo) — e o gerador `scripts/generate-token-types.ts` **não está em script nem hook nenhum**. Nenhum gate acusa: o `auditor_paridade` cruza schema × mapping × partições, e o tipo gerado **não é uma das três fontes**. Efeito colateral grave: o `sarak-ui/catalog.json` publica `designTokens.count = 304` ao consumidor, que é **falso**. Detalhe em `specs/specs/14-artefatos-do-mantenedor.md` §7.1 | **Fase B** — conserto em DUAS metades: regenerar **e** registrar o gerador num pipeline, senão apodrece de novo |
+| 23 | **`sarak-ui/templates/` está fora de todo gate de conteúdo**: não está no plano de saída do `guide:check` (que confere 6 arquivos, nenhum deles template) e o `tsconfig` não o compila (`include: ['src']`). O `package:check` só cobra **presença de caminho**. Um template citando componente removido sai verde em tudo | **Fase B** (lacuna de gate) |
+| 24 | **O `main.tsx` que todo consumidor novo recebe cita o `Sarak-MyService`** (`bin/scaffold/generators/mainTsx.mjs:37-40`), OBSOLETO por D6 e inacessível ao importador. Mesma classe dos 5 JSDoc do motor removido: comentário que viaja para o consumidor é documentação pública | **Fase B** (higiene de superfície) |
+| 25 | **Ponteiro morto em `bin/scaffold/context.mjs:5-10`** — afirma que `templates/app-starter.manifest.json` "segue publicado (`SARAK_STARTER_MANIFEST`)". Medido: a pasta `templates/` **não existe** e o símbolo tem **0 ocorrências** fora do próprio comentário | **Fase B** |
+| 26 | **Nenhum teste automatizado exercita um `install` de verdade.** As provas ponta a ponta de npm/pnpm/yarn foram feitas à mão, uma vez, e nenhum gate as repete. Idem para o `check --notify` no `predev` — o comando que mais executa na vida do importador é o menos coberto | **Fase A/E** (CI é o único lugar onde isso cabe) |
+| 27 | **`chromeSlots` gerado conta 9 para as 8 regiões** documentadas: `topbarActions`, alias legado de `topbarEnd`, é prop opcional de `ReactNode` e o coletor captura por TIPO, não por semântica. Não é erro — é imprecisão de derivação | **Fase C** (sai junto do dedup do contrato público) |
 
 ## ⚠️ O acoplamento que muda a ordem de execução
 

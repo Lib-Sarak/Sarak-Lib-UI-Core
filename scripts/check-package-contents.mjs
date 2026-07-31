@@ -16,6 +16,11 @@ const FORBIDDEN_PREFIXES = [
     // barata contra um subprojeto carona reaparecer e voltar a vazar no tarball. Uma linha
     // de allowlist negativa custa menos que redescobrir o problema numa auditoria.
     'Template-Ts/',
+    // Kit do MANTENEDOR (Spec 14): documentação de quem EDITA a lib, não de quem a usa.
+    // Já fica fora do tarball por não estar no campo `files`; a entrada aqui é a trava
+    // explícita — se alguém acrescentar `sarak-dev` aos `files` por engano, o gate acusa
+    // em vez de publicar o baseline de auditoria e a topografia interna do repositório.
+    'sarak-dev/',
 ];
 
 const FORBIDDEN_EXACT_OR_SUFFIX = [

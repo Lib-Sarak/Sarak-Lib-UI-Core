@@ -1,0 +1,320 @@
+{
+  "$comment": "GERADO por scripts/generate-dev-kit.mjs (npm run dev-kit) — NÃO edite à mão. É o estado REAL deste repositório: as skills e o GUIA-MANUTENCAO.md leem daqui em vez de duplicar contagens que envelhecem.",
+  "schemaVersion": 1,
+  "lib": {
+    "name": "@sarak/lib-ui-core",
+    "version": "1.1.0"
+  },
+  "design": {
+    "schemaFiles": {
+      "count": 28,
+      "files": [
+        "advanced.ts",
+        "animations.ts",
+        "atmosphere.ts",
+        "branding.ts",
+        "buttons.ts",
+        "card-action.ts",
+        "card-search.ts",
+        "card-title.ts",
+        "cards.ts",
+        "chat.ts",
+        "colors.ts",
+        "data.ts",
+        "engineering.ts",
+        "global.ts",
+        "inputs.ts",
+        "layers.ts",
+        "media.ts",
+        "motion.ts",
+        "navigation.ts",
+        "overlays.ts",
+        "scrollbars.ts",
+        "specialized.ts",
+        "status.ts",
+        "structural.ts",
+        "switches.ts",
+        "system.ts",
+        "tables.ts",
+        "typography.ts"
+      ]
+    },
+    "masterMapVersion": "13.0.0",
+    "tokens": {
+      "nota": "Os quatro números têm de convergir. `idsUnicos` é o total real; `entradasBrutas` maior que ele significa id roteado para mais de uma coluna. `tipoPublico` menor significa que `design-token-ids.ts` está DEFASADO (regenere com o script do §5.1 do guia).",
+      "mapeamento": {
+        "colunas": 13,
+        "entradasBrutas": 416,
+        "idsUnicos": 409
+      },
+      "particoes": {
+        "arquivos": 13,
+        "tokens": 409
+      },
+      "tipoPublico": {
+        "interface": "SarakDesignTokens",
+        "ids": 304,
+        "responsivos": 40
+      }
+    }
+  },
+  "componentes": {
+    "categoriasAtomicas": [
+      "Atoms",
+      "Buttons",
+      "Cards",
+      "DataDisplay",
+      "Feedback",
+      "Icon",
+      "Inputs",
+      "Layouts",
+      "Media",
+      "Modals",
+      "Navigation",
+      "Tables",
+      "Templates",
+      "UX"
+    ],
+    "categoriasDeEngine": [
+      "charts",
+      "chat",
+      "flows"
+    ],
+    "publicos": {
+      "count": 81,
+      "nomes": [
+        "DEFAULT_COLUMN_WIDTH",
+        "ExpandableCard",
+        "FilterSelect",
+        "HelpButton",
+        "ImageCard",
+        "LanguageSelector",
+        "MIN_COLUMN_WIDTH",
+        "ModuleSelector",
+        "SarakAccordion",
+        "SarakActionCard",
+        "SarakAnalyticalPage",
+        "SarakAppChrome",
+        "SarakAppChromeMobile",
+        "SarakAuthScreen",
+        "SarakBadge",
+        "SarakBreadcrumbs",
+        "SarakButton",
+        "SarakCardGrid",
+        "SarakCatalogGrid",
+        "SarakChart",
+        "SarakChartEngine",
+        "SarakChat",
+        "SarakChatEngine",
+        "SarakContextMenu",
+        "SarakDataEmpty",
+        "SarakDataGrid",
+        "SarakDataGridImpl",
+        "SarakDataTable",
+        "SarakDataTableImpl",
+        "SarakDatePicker",
+        "SarakDrawer",
+        "SarakEmptyState",
+        "SarakExpandableMatrix",
+        "SarakFlex",
+        "SarakFlowEngine",
+        "SarakForm",
+        "SarakFormGroup",
+        "SarakGrid",
+        "SarakHidden",
+        "SarakIcon",
+        "SarakIconButton",
+        "SarakInput",
+        "SarakKanban",
+        "SarakLightbox",
+        "SarakLink",
+        "SarakManagementGrid",
+        "SarakMarkdownRenderer",
+        "SarakModal",
+        "SarakMultiSelect",
+        "SarakOverlayProvider",
+        "SarakPDFViewer",
+        "SarakPageTransition",
+        "SarakPagination",
+        "SarakRangeSlider",
+        "SarakRichText",
+        "SarakSearch",
+        "SarakSearchCard",
+        "SarakSecurityOrchestrator",
+        "SarakSelect",
+        "SarakShellNav",
+        "SarakSkeleton",
+        "SarakSlider",
+        "SarakSparkline",
+        "SarakSplitPane",
+        "SarakSpotlight",
+        "SarakStats",
+        "SarakStepper",
+        "SarakSwitch",
+        "SarakTable",
+        "SarakTabs",
+        "SarakTextarea",
+        "SarakTimePicker",
+        "SarakTitleCard",
+        "SarakToastProvider",
+        "SarakTooltip",
+        "SarakTreeView",
+        "SarakTypography",
+        "SarakUploader",
+        "SocialButton",
+        "ThemeToggle",
+        "UserMenu"
+      ]
+    }
+  },
+  "gates": [
+    {
+      "nome": "npm run audit",
+      "comando": "node .agents/skills/ui-auditoria-modulo/scripts/run_audit.mjs"
+    },
+    {
+      "nome": "npm run barrel:check",
+      "comando": "node scripts/check-barrel-parity.mjs --check"
+    },
+    {
+      "nome": "npm run catalog:check",
+      "comando": "node scripts/generate-component-catalog.mjs --check"
+    },
+    {
+      "nome": "npm run dev-kit:check",
+      "comando": "node scripts/generate-dev-kit.mjs --check"
+    },
+    {
+      "nome": "npm run gates:full",
+      "comando": "npm run dev-kit:check && npm run build && npm run package:check && npx vitest run"
+    },
+    {
+      "nome": "npm run guide:check",
+      "comando": "node scripts/generate-consumer-kit.mjs --check"
+    },
+    {
+      "nome": "npm run package:check",
+      "comando": "node scripts/check-package-contents.mjs"
+    },
+    {
+      "nome": "npm run release:check",
+      "comando": "node scripts/check-release-tag.mjs"
+    },
+    {
+      "nome": "npm run zero-brand:check",
+      "comando": "node scripts/check-zero-brand.mjs --check"
+    }
+  ],
+  "auditores": [
+    "auditor_hardcoded.mjs",
+    "auditor_ghostvars.mjs",
+    "auditor_typescript.mjs",
+    "auditor_coverage.mjs",
+    "auditor_arquitetura.mjs",
+    "auditor_cleancode.mjs",
+    "auditor_paridade.mjs",
+    "auditor_presets.mjs"
+  ],
+  "baseline": {
+    "_doc": "Baseline do Anel 2 (specs/specs/02-enforcement-por-commit.md). NÃO editar à mão: rode `npm run audit:baseline -- --write` DEPOIS de consertar a dívida, e commite junto do conserto.",
+    "_leitura": "Cada número é o MÁXIMO tolerado. Maior que isto = regressão = commit bloqueado.",
+    "medidoEm": "2026-07-28",
+    "metricas": {
+      "auditor_hardcoded.mjs": {
+        "valor": 1,
+        "estruturalLiquido": 0
+      },
+      "auditor_ghostvars.mjs": {
+        "consumos": 3
+      },
+      "auditor_typescript.mjs": {
+        "violacoes": 0
+      },
+      "auditor_coverage.mjs": {
+        "orfaos": 0
+      },
+      "auditor_arquitetura.mjs": {
+        "violacoes": 0
+      },
+      "auditor_cleancode.mjs": {
+        "violacoes": 0
+      },
+      "auditor_paridade.mjs": {
+        "falhou": 0
+      },
+      "auditor_presets.mjs": {
+        "falhou": 0
+      }
+    },
+    "tsc": {
+      "erros": 14
+    }
+  },
+  "base": {
+    "adr": [
+      "001-tres-arquiteturas.md",
+      "002-remocao-motor-manifesto.md",
+      "003-remocao-backend-proprio.md",
+      "004-remocao-design-agent.md",
+      "005-modelo-modulos-plugin-e-apps-separados.md",
+      "006-zero-marca-soberania-host.md",
+      "007-distribuicao-por-git.md",
+      "008-releases-com-tag-e-semver-em-git.md"
+    ],
+    "arquitetura": [
+      "00-base-typescript.md",
+      "00-mapa-do-modulo.md",
+      "00-mapa-topografica-modulo.md",
+      "01-arquitetura-motor-tema-design-engine.md",
+      "01-forma-do-produto-e-modos-de-consumo.md",
+      "02-design-engine.md",
+      "02-processamento-luminancia-hibrido.md",
+      "03-arquitetura-motores-especiais.md",
+      "03-superficie-publica.md",
+      "04-contrato-de-tokens-e-paridade.md",
+      "04-paridade-cinco-camadas.md",
+      "05-build-e-distribuicao.md",
+      "05-diretriz-zero-any-e-foundation.md",
+      "06-plano-diretor-expansao-visual.md",
+      "07-plano-diretor-engine-declarativa.md",
+      "08-gate-auditoria-hardcode-e-variaveis.md",
+      "09-pipeline-criacao-aplicacao-tema.md"
+    ],
+    "specs": [
+      "00-manifesto-arquitetural-ui-core.md",
+      "00-regras-e-invariantes.md",
+      "01-gates-e-baseline.md",
+      "01-painel-customizacao-temas.md",
+      "02-ambiente-sandboxing-preview.md",
+      "02-enforcement-por-commit.md",
+      "03-padrao-e-taxonomia-biblioteca-atomica.md",
+      "03-versionamento-e-release.md",
+      "04-estrutura-shell-discovery.md",
+      "04-shell-e-discovery.md",
+      "05-cobertura-de-testes.md",
+      "05-cromo-e-slots.md",
+      "06-painel-de-customizacao-e-preview.md",
+      "06-presets-engine.md",
+      "07-responsividade-e-multidispositivo.md",
+      "08-consumo-externo-e-integracao.md",
+      "08-identidade-do-host-e-zero-marca.md",
+      "09-expansao-vs-configuracao.md",
+      "09-temas-e-presets.md",
+      "10-seguranca-e-acessibilidade.md",
+      "10-taxonomia-estendida-e-responsividade.md",
+      "11-engine-declarativa-e-manifestos.md",
+      "11-testes-e-cobertura.md",
+      "12-kit-do-consumidor.md",
+      "12-modelo-de-seguranca-e-acessibilidade.md",
+      "13-instalacao-e-atualizacao.md",
+      "14-artefatos-do-mantenedor.md"
+    ]
+  },
+  "docs": [
+    "component-catalog.md",
+    "extensibilidade-de-layout.md",
+    "identidade-do-host.md",
+    "migracoes.md",
+    "temas-cromo-e-multidispositivo.md"
+  ]
+}
