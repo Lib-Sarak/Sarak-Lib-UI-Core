@@ -147,7 +147,8 @@
       "Bash(grep -nE \"^#{2,3} \" specs/arquitetura/04-contrato-de-tokens-e-paridade.md)",
       "Bash(awk -F: '$2>0')",
       "Bash(npm version *)",
-      "Bash(git commit *)"
+      "Bash(git commit *)",
+      "Bash(grep -nE \"^#{1,2} \" specs/plan/00-prompts-execucao-migrar.md)"
     ]
   }
 }

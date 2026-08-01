@@ -3,7 +3,7 @@
   "schemaVersion": 1,
   "lib": {
     "name": "@sarak/lib-ui-core",
-    "version": "1.1.0"
+    "version": "1.2.0"
   },
   "design": {
     "schemaFiles": {
@@ -284,7 +284,8 @@
       "11-testes-e-cobertura.md",
       "12-kit-do-consumidor.md",
       "13-instalacao-e-atualizacao.md",
-      "14-artefatos-do-mantenedor.md"
+      "14-artefatos-do-mantenedor.md",
+      "15-divida-conhecida.md"
     ]
   },
   "docs": [

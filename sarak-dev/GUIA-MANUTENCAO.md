@@ -289,7 +289,7 @@ depois acrescente o fluxo — nunca deixe o próximo redescobrir.
 
 ## Apêndice B — Estado deste repositório (GERADO)
 
-> **Não edite esta seção à mão.** Ela é regenerada por `npm run dev-kit` a partir do próprio repositório (`@sarak/lib-ui-core` v1.1.0); o gate `npm run dev-kit:check` derruba se ficar defasada. A fonte de máquina equivalente é o `state.json` ao lado deste arquivo.
+> **Não edite esta seção à mão.** Ela é regenerada por `npm run dev-kit` a partir do próprio repositório (`@sarak/lib-ui-core` v1.2.0); o gate `npm run dev-kit:check` derruba se ficar defasada. A fonte de máquina equivalente é o `state.json` ao lado deste arquivo.
 
 ### B.1 Design — as fontes que a paridade cruza
 
@@ -359,6 +359,6 @@ Fonte: `.githooks/audit-baseline.json`. **Não edite à mão** — o número mud
 
 **Arquitetura (6)** — visão macro viva: `00-mapa-do-modulo.md` · `01-forma-do-produto-e-modos-de-consumo.md` · `02-design-engine.md` · `03-superficie-publica.md` · `04-contrato-de-tokens-e-paridade.md` · `05-build-e-distribuicao.md`
 
-**Specs (15)** — feature e regra: `00-regras-e-invariantes.md` · `01-gates-e-baseline.md` · `02-enforcement-por-commit.md` · `03-versionamento-e-release.md` · `04-shell-e-discovery.md` · `05-cromo-e-slots.md` · `06-painel-de-customizacao-e-preview.md` · `07-responsividade-e-multidispositivo.md` · `08-identidade-do-host-e-zero-marca.md` · `09-temas-e-presets.md` · `10-seguranca-e-acessibilidade.md` · `11-testes-e-cobertura.md` · `12-kit-do-consumidor.md` · `13-instalacao-e-atualizacao.md` · `14-artefatos-do-mantenedor.md`
+**Specs (16)** — feature e regra: `00-regras-e-invariantes.md` · `01-gates-e-baseline.md` · `02-enforcement-por-commit.md` · `03-versionamento-e-release.md` · `04-shell-e-discovery.md` · `05-cromo-e-slots.md` · `06-painel-de-customizacao-e-preview.md` · `07-responsividade-e-multidispositivo.md` · `08-identidade-do-host-e-zero-marca.md` · `09-temas-e-presets.md` · `10-seguranca-e-acessibilidade.md` · `11-testes-e-cobertura.md` · `12-kit-do-consumidor.md` · `13-instalacao-e-atualizacao.md` · `14-artefatos-do-mantenedor.md` · `15-divida-conhecida.md`
 
 <!-- SARAK-DEV:APENDICE-GERADO:FIM -->
