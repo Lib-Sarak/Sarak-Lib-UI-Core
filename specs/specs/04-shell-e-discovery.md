@@ -290,7 +290,8 @@ dois componentes locais — ambos apontando para o mesmo `CustomizationPanel`. E
 **PERGUNTA ABERTA PARA O DONO (não decidida aqui):** manter os dois ids legados, manter apenas
 `mx-customization`, ou remover ambos e exigir registro explícito? Remover é **breaking change** para quem
 depende do id implícito; manter perpetua um efeito colateral de import. A decisão pertence ao pacote de
-limpeza de contrato público ([[00-prompts-execucao]] Campanha 2, Fase C, decisão D12).
+limpeza de contrato público — o pacote de quebras agrupadas num único major (decisão **D12** do dono),
+cujo briefing vive no plano transitório da campanha em curso (`specs/plan/`).
 
 ## 7.2 O ramo `'glass'` inalcançável
 

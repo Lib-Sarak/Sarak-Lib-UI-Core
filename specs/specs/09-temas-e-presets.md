@@ -267,14 +267,15 @@ Registrado para não ser redescoberto; **nenhum destes itens tem tarefa aberta n
 
 | # | Item | Origem | Situação |
 | --- | --- | --- | --- |
-| 1 | **Expansão/hospedagem de mídias de atmosfera** — biblioteca de texturas/imagens de fundo além das embutidas, e a decisão de onde elas ficam hospedadas | `plan/12-expansao-midias-atmosfera.md` | nunca executado |
-| 2 | **Enriquecimento de presets visuais** — a granularidade de `cards.ts` estendida a `inputs`/`tables`/`navigation`, que a spec antiga de presets propunha | `specs/specs/06-presets-engine.md` §2 | **parcial**: `INPUT_PRESETS` existe, tabela/navegação não ganharam família de preset própria |
+| 1 | **Expansão/hospedagem de mídias de atmosfera** — biblioteca de texturas/imagens de fundo além das embutidas, e a decisão de onde elas ficam hospedadas | plano antigo de mídias de atmosfera *(removido; git)* | nunca executado |
+| 2 | **Enriquecimento de presets visuais** — a granularidade de `cards.ts` estendida a `inputs`/`tables`/`navigation` | spec antiga de presets *(removida; git)* | **parcial**: `INPUT_PRESETS` existe, tabela/navegação não ganharam família de preset própria |
 
-> ⚠️ **Correção de estado registrada:** a spec antiga `06-presets-engine.md` carrega
-> `status: "🔴 A Implementar"` — e isso é **falso**. `ButtonPresetPreview.tsx`,
+> ⚠️ **Correção de estado registrada:** a spec antiga de presets carregava
+> `status: "🔴 A Implementar"` — e isso era **falso**. `ButtonPresetPreview.tsx`,
 > `InputPresetPreview.tsx` e `PresetsCatalog.tsx` existem, todos em
-> `src/features/DesignEngine/Canvas/components/`. O que ficou de fora daquela spec é só o item 2 desta
-> tabela. O documento antigo é aposentado pelo P25.
+> `src/features/DesignEngine/Canvas/components/`. O que ficou de fora dela é só o item 2 desta
+> tabela. **O documento antigo foi removido na reescrita da base** — esta tabela é o que sobrou dele,
+> e é aqui que o backlog vive agora.
 
 # 9. Critérios de aceite
 

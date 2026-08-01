@@ -16,7 +16,8 @@ na §5, nomeadas.
 
 > ## ⚠️ Leia antes de comparar com a spec antiga
 >
-> `specs/specs/12-modelo-de-seguranca-e-acessibilidade.md` foi escrita quando a lib **executava um
+> A spec antiga de segurança e acessibilidade *(`12-modelo-de-seguranca-e-acessibilidade.md`,
+> **removida** na reescrita da base — histórico no git)* foi escrita quando a lib **executava um
 > manifesto JSON autorado por usuário ou por IA**. Aquele motor **não existe mais**
 > ([[002-remocao-motor-manifesto]]). Com ele morreram, sem substituto e sem herança:
 > **Safe Evaluator, `renderIf`, interpolação escapada `{{ }}`, limites anti-DoS de `renderFor`,

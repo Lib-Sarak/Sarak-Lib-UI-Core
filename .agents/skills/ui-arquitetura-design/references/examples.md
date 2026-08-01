@@ -1,291 +1,157 @@
-﻿# Exemplos de Arquitetura de Design
+# Exemplos de Arquitetura de Design
 
-## Exemplo Bom
-# Exemplo Bom â€” AdiÃ§Ã£o de um novo componente (Sidebar)
-
-## CenÃ¡rio
-
-O desenvolvedor precisa tornar a largura, cor de fundo e raio de borda da Sidebar configurÃ¡veis pelo Design Engine.
+Casos mínimos do pipeline `Schema → Master Map → CSS Variables`. A regra completa está em
+`specs/specs/00-regras-e-invariantes.md` (R2, R7, R10) e em
+`specs/arquitetura/04-contrato-de-tokens-e-paridade.md`.
 
 ---
 
-## Estado ANTES (sem o componente mapeado)
+## Exemplo Bom — o valor atravessa o pipeline inteiro
 
-A Sidebar possui estilos hardcoded no componente:
+### Estado ANTES — o estilo está chumbado e invisível ao Engine
 
 ```tsx
-// src/core/Shell/Sidebar.tsx
 <aside style={{ width: '260px', background: '#0a0a0b', borderRadius: '0px' }}>
     {children}
 </aside>
 ```
 
-**Problemas:**
-- A largura Ã© fixa e invisÃ­vel ao Design Engine.
-- O usuÃ¡rio nÃ£o pode personalizar a Sidebar pelo painel.
-- NÃ£o existe preset de Sidebar.
+**Problemas:** a largura é fixa e o Design Engine não a enxerga; o usuário não pode personalizá-la
+pelo painel; e — o pior — a peça **não responde à troca de tema**, ficando parada enquanto o resto
+muda. É o defeito mais caro de diagnosticar num Design System, porque nada quebra.
 
----
+### Estado DEPOIS
 
-## Estado DEPOIS (pipeline data-driven aplicado)
-
-### 1. Schema criado
+**1. Schema** — `src/core/Design/schema/[dominio].ts`
 
 ```typescript
-// src/core/Design/schema/sidebar.ts
-import { ComponentSchema } from '../types';
-
-export const SidebarSchema: ComponentSchema = {
-    id: 'sidebar',
-    label: 'Sidebar',
-    pilar: 'navigation',
-    subcategory: 'Estrutura',
-    tokens: [
-        {
-            id: 'sidebarWidth',
-            label: 'Largura da Sidebar',
-            category: 'Layout',
-            type: 'slider',
-            unit: 'px',
-            constraints: { min: 180, max: 400, step: 10 },
-            defaultValue: 260,
-            cssVars: ['--sarak-sidebar-width']
-        },
-        {
-            id: 'sidebarBackground',
-            label: 'Cor de Fundo',
-            category: 'SuperfÃ­cie',
-            type: 'color',
-            defaultValue: '#0a0a0b',
-            cssVars: ['--sarak-sidebar-bg'],
-            generateVariants: true
-        },
-        {
-            id: 'sidebarBorderRadius',
-            label: 'Raio da Borda',
-            category: 'Geometria',
-            type: 'slider',
-            unit: 'px',
-            constraints: { min: 0, max: 30 },
-            defaultValue: 0,
-            cssVars: ['--sarak-sidebar-border-radius']
-        }
-    ]
-};
-```
-
-### 2. Master Map atualizado
-
-```typescript
-// src/core/Design/master-map.ts
-import { SidebarSchema } from './schema/sidebar';
-
-export const MASTER_DESIGN_MAP: MasterDesignSchema = {
-    version: '13.0.0',
-    components: [
-        // ... schemas existentes ...
-        SidebarSchema
-    ]
-};
-```
-
-### 3. Preset criado
-
-```typescript
-// src/core/Design/presets/navigation/sidebar.ts
-export interface SidebarPreset {
-    id: string;
-    name: string;
-    description: string;
-    design: {
-        sidebarWidth: number;
-        sidebarBackground: string;
-        sidebarBorderRadius: number;
-        [key: string]: any;
-    };
+{
+    id: 'sidebarWidth',
+    label: 'Largura da Sidebar',
+    type: 'slider',
+    description: 'Largura da barra lateral do cromo, em pixels.',
+    axis: 'density',
+    unit: 'px',
+    constraints: { min: 180, max: 400, step: 10 },
+    defaultValue: 260,
+    cssVars: ['--sarak-sidebar-width']
 }
-
-export const SIDEBAR_PRESETS: SidebarPreset[] = [
-    {
-        id: 'compact-ops',
-        name: 'Compact Operations',
-        description: 'Sidebar estreita para mÃ¡xima densidade de informaÃ§Ã£o.',
-        design: {
-            sidebarWidth: 200,
-            sidebarBackground: '#050508',
-            sidebarBorderRadius: 0
-        }
-    },
-    {
-        id: 'wide-command',
-        name: 'Wide Command',
-        description: 'Sidebar ampla com respiro para navegaÃ§Ã£o confortÃ¡vel.',
-        design: {
-            sidebarWidth: 320,
-            sidebarBackground: 'rgba(10, 10, 15, 0.95)',
-            sidebarBorderRadius: 16
-        }
-    }
-];
 ```
 
-### 4. Componente agora consome variÃ¡veis CSS
+**2. Master Map** — o schema entra no array `components` de `src/core/Design/master-map.ts`.
 
-```tsx
-// src/core/Shell/Sidebar.tsx
-<aside className="sarak-sidebar">
-    {children}
-</aside>
-```
+**3. Roteamento + partição** — o `id` entra na coluna correspondente de
+`catalog/theme_table_mapping.json` **e** na partição `catalog/partitions/<coluna>.json`.
+Sem as três, o token é **inexistente**: o autor do tema preenche e nada acontece.
+
+**4. Consumo — CSS de base, sempre com fallback**
 
 ```css
-/* src/styles/sarak-base.css */
 .sarak-sidebar {
     width: var(--sarak-sidebar-width, 260px);
     background: var(--sarak-sidebar-bg, #0a0a0b);
-    border-radius: var(--sarak-sidebar-border-radius, 0px);
 }
 ```
 
-### 5. Resultado
+**5. Resultado**
 
-- âœ… A Sidebar aparece no painel sob "5. NavegaÃ§Ã£o e Estrutura" > "Estrutura"
-- âœ… O slider de largura atualiza a Preview em tempo real
-- âœ… Os presets "Compact Operations" e "Wide Command" estÃ£o disponÃ­veis na galeria
-- âœ… Clicar "Aplicar ao Sistema" persiste a configuraÃ§Ã£o
-- âœ… Zero CSS hardcoded no componente
+- O token aparece no painel e o slider atualiza a preview em tempo real.
+- Trocar o tema move a sidebar junto — que é o teste real de que o pipeline foi respeitado.
+- Zero valor chumbado no componente.
 
 ---
 
-## Categorias de CorreÃ§Ã£o Aplicadas
+## Exemplo Ruim — as violações que mais aparecem
 
-1. **Schema Registration** â€” Componente mapeado com tokens tipados
-2. **Master Map Integration** â€” Schema agregado ao mapa central
-3. **Preset Centralization** â€” Presets na fonte Ãºnica (`core/Design/presets/`)
-4. **CSS Variable Consumption** â€” Componente consome variÃ¡veis ao invÃ©s de valores hardcoded
-5. **Pipeline Compliance** â€” Draft â†’ Preview â†’ Apply respeitado
-
-
-## Exemplo Ruim
-# Exemplo Ruim â€” ViolaÃ§Ãµes comuns do pipeline Data-Driven
-
-## CenÃ¡rio
-
-Um desenvolvedor precisa adicionar presets de card ao sistema. Ele cria os presets rapidamente sem seguir o pipeline.
-
----
-
-## Estado Incorreto (ViolaÃ§Ãµes Marcadas)
-
-### ViolaÃ§Ã£o 1: Preset em localizaÃ§Ã£o errada
+### Violação 1: chave que não existe no dicionário
 
 ```typescript
-// âš ï¸ ERRADO: src/constants/cards-presets.ts (fora do pipeline)
-export const CARD_VARIANTS = [
-    {
-        id: 'glass',
-        name: 'Glass',
-        tokens: {                          // âš ï¸ ERRADO: chave "tokens" ao invÃ©s de "design"
-            surfaceMaterial: 'glass',      // âš ï¸ ERRADO: chave nÃ£o existe no CardSchema
-            glassOpacity: 0.8,             // âš ï¸ ERRADO: chave nÃ£o existe no CardSchema
-            borderRadius: 16              // âš ï¸ ERRADO: deveria ser "cardBorderRadius"
-        }
-    }
-];
+// ⚠️ ERRADO
+design: {
+    surfaceMaterial: 'glass',   // ⚠️ não existe em nenhum schema
+    glassOpacity: 0.8,          // ⚠️ não existe em nenhum schema
+    borderRadius: 16            // ⚠️ o id real é 'cardBorderRadius'
+}
 ```
 
-**Por que Ã© ruim:**
-- O arquivo estÃ¡ em `constants/`, nÃ£o em `core/Design/presets/surfaces/`.
-- Usa `tokens` como chave do objeto ao invÃ©s de `design`.
-- As chaves `surfaceMaterial`, `glassOpacity`, `borderRadius` **nÃ£o existem** no `CardSchema`. O `useDesignVariables` as ignora silenciosamente â€” elas nunca chegam ao CSS.
-- Resultado: a galeria parece funcionar (renderiza) mas ao aplicar, o sistema real nÃ£o muda.
+**Por que é ruim:** `validateDesign` **descarta a chave desconhecida com `console.warn`** e ela
+nunca chega ao CSS. O tema *parece* completo e não é. Antes de inventar chave, procure no
+catálogo — os ids são camelCase e específicos.
 
 ---
 
-### ViolaÃ§Ã£o 2: Dupla injeÃ§Ã£o CSS no Specimen
+### Violação 2: namespace proibido e consumo sem fallback
 
 ```tsx
-// âš ï¸ ERRADO: PresetsGallery.tsx â€” dupla injeÃ§Ã£o
-const CardSpecimen = ({ preset, tokens }) => {
-    const { variables } = useDesignVariables(mergedTokens);
-    
-    return (
-        <DesignScope design={mergedTokens}>              {/* Camada 1: DesignScope */}
-            <div style={variables as any}>                {/* âš ï¸ Camada 2: inline duplicado */}
-                <div className="sarak-card">ConteÃºdo</div>
-            </div>
-        </DesignScope>
-    );
-};
+// ⚠️ ERRADO
+style={{ color: 'var(--sx-color-primary-base)' }}   // ⚠️ --sx-* é PROIBIDO: nunca foi emitido
+style={{ gap: 'var(--sarak-layout-gap-md)' }}       // ⚠️ sem fallback
+
+// ✅ CERTO
+style={{ gap: 'var(--sarak-layout-gap-md, 16px)' }}
 ```
 
-**Por que Ã© ruim:**
-- O `DesignScope` jÃ¡ injeta as variÃ¡veis CSS no DOM via `useDesignVariables` internamente.
-- Adicionar `style={variables}` inline cria uma segunda camada de variÃ¡veis que pode sobrescrever ou conflitar com a primeira.
-- Resultado: a Preview mostra algo diferente do que serÃ¡ aplicado ao sistema real (uma camada vence na cascata CSS de forma imprevisÃ­vel).
+**Por que é ruim:** variável sem emissor resolve para **vazio** — o espaçamento colapsa, a cor
+some, e o console fica limpo. É a falha mais barata de introduzir e a mais cara de achar. O
+`auditor_ghostvars` cobra o emissor; o fallback é **conduta**, sem gate.
 
 ---
 
-### ViolaÃ§Ã£o 3: Merge com defaults estÃ¡ticos
+### Violação 3: Tailwind estrutural chumbado no átomo
 
 ```tsx
-// âš ï¸ ERRADO: CardsGallery.tsx â€” base estÃ¡tica
-const mergedTokens = useMemo(() => {
-    const base = getDefaultDesignState();    // âš ï¸ ERRADO: defaults do schema, nÃ£o do sistema real
-    return { ...base, ...preset.design };
-}, [preset]);
+// ⚠️ ERRADO — geometria fora do controle do Engine
+<div className="flex flex-col gap-4 p-4 grid-cols-3" />
+
+// ✅ CERTO — geometria vinda do Hook Controlador
+const { getFlexStyles } = useStructuralStyles();
+<div {...getFlexStyles({ direction: 'column', gap: 'spacing-md' })} />
 ```
 
-**Por que Ã© ruim:**
-- `getDefaultDesignState()` retorna os `defaultValue` de todos os schemas â€” que podem ser completamente diferentes do estado real do sistema do usuÃ¡rio.
-- Resultado: o specimen mostra um card com tema default (ex: cor primÃ¡ria azul) enquanto o sistema real usa uma cor primÃ¡ria verde. O usuÃ¡rio pensa que vai ficar como na preview, mas ao aplicar, as cores divergem.
+**Por que é ruim:** espaçamento, direção de flex e grid chumbados no `className` de um átomo são
+**geometria que o banco de dados não governa**. O `auditor_hardcoded` reprova (balde DURO).
+
+⚠️ **Mover a classe para uma `const` interpolada, para um `.ts` puro ou trocar espaço por `_`
+para escapar do detector é fraude, não arquitetura.** O critério é o propósito, não o número.
 
 ---
 
-### ViolaÃ§Ã£o 4: ContaminaÃ§Ã£o de namespace ao aplicar
+### Violação 4: HTML nativo cru dentro de template
 
 ```tsx
-// âš ï¸ ERRADO: PresetsGallery.tsx â€” contaminaÃ§Ã£o
-const handleSelect = (preset) => {
-    Object.entries(preset.design).forEach(([key, val]) => {
-        onUpdateDraft(key, val);
-    });
-    onUpdateDraft('layout', preset.id);    // âš ï¸ ERRADO: sobrescreve "layout" global
-};
+// ⚠️ ERRADO
+<button className="rounded bg-[var(--sarak-color-primary)]">Salvar</button>
+
+// ✅ CERTO
+<SarakButton variant="primary">Salvar</SarakButton>
 ```
 
-**Por que Ã© ruim:**
-- A chave `layout` pertence ao namespace de navegaÃ§Ã£o/estrutura, nÃ£o de cards.
-- Ao aplicar um preset de card, o layout do sistema Ã© sobrescrito, causando efeitos colaterais em outra subcategoria.
-- Deveria usar `onUpdateDraft('cardPresetId', preset.id)`.
+**Por que é ruim:** HTML nativo cru causa **vazamento de especificidade** — o elemento fica preso
+na variável global do preflight, ignora a paridade atômica e deixa de responder ao token que
+deveria governá-lo. **Nenhum gate pega isto** (R10 é conduta); depende de revisão.
 
 ---
 
-### ViolaÃ§Ã£o 5: Filtro restritivo na aplicaÃ§Ã£o
+### Violação 5: lógica de roteamento de estilo dentro do JSX
 
 ```tsx
-// âš ï¸ ERRADO: CardsGallery.tsx â€” filtro que perde tokens
-Object.entries(preset.design).forEach(([key, val]) => {
-    if (key.startsWith('card')) {     // âš ï¸ ERRADO: ignora tokens sem prefixo "card"
-        onUpdateDraft(key, val);
-    }
-});
+// ⚠️ ERRADO — decisão de design no componente burro
+const bg = variant === 'neon' ? '#0af' : variant === 'glass' ? 'rgba(0,0,0,.4)' : '#111';
+return <div style={{ background: bg }} />;
 ```
 
-**Por que Ã© ruim:**
-- Se o preset define tokens legÃ­timos do schema que nÃ£o comeÃ§am com `card` (ex: `themePrimary` para sobrescrita local), eles sÃ£o descartados.
-- Se todos os tokens jÃ¡ estÃ£o corretamente prefixados (como devem estar), o filtro Ã© redundante e adiciona complexidade desnecessÃ¡ria.
-- A soluÃ§Ã£o correta Ã© garantir que o PRESET use apenas chaves vÃ¡lidas do schema, e aplicar TODAS sem filtro.
+**Por que é ruim:** o átomo é **burro** por contrato. Todo `if`/`switch` de variante e toda
+matemática de cor moram no **Hook Controlador** (`useAtomicStyles`, `useStructuralStyles`) — que,
+por viver em `.ts`, é também o único lugar legítimo para um preset nomeado de geometria.
 
 ---
 
-## Resumo das ViolaÃ§Ãµes
+## Resumo
 
-| # | ViolaÃ§Ã£o | Impacto |
-|---|---------|---------|
-| 1 | Preset em localizaÃ§Ã£o errada com chaves invÃ¡lidas | Tokens nunca chegam ao CSS |
-| 2 | Dupla injeÃ§Ã£o CSS (DesignScope + inline) | Conflitos de cascata imprevisÃ­veis |
-| 3 | Merge com defaults estÃ¡ticos | Preview nÃ£o reflete sistema real |
-| 4 | ContaminaÃ§Ã£o de namespace (`layout`) | Efeitos colaterais entre subcategorias |
-| 5 | Filtro restritivo na aplicaÃ§Ã£o | Perda silenciosa de tokens |
-
+| # | Violação | Impacto | Cobrada por |
+| --- | --- | --- | --- |
+| 1 | Chave fora do dicionário | Descartada com warn; nunca chega ao CSS | `auditor_paridade` / `validateDesign` |
+| 2 | `--sx-*` ou consumo sem fallback | Resolve para vazio, em silêncio | `auditor_ghostvars` (emissor) · fallback = conduta |
+| 3 | Tailwind estrutural no átomo | Geometria fora do controle do Engine | `auditor_hardcoded` |
+| 4 | HTML nativo cru | Vazamento de especificidade | **nenhum gate — conduta** |
+| 5 | Roteamento de estilo no JSX | Átomo deixa de ser burro | **nenhum gate — conduta** |

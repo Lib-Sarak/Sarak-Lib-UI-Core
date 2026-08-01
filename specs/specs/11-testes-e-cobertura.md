@@ -229,7 +229,8 @@ que ela está fixando ([[01-gates-e-baseline]] §6). Vira spec própria.
 3. ❌ **Nenhuma jornada de usuário ponta a ponta em browser real.** Os 4 `.spec` são component testing —
    valiosos, mas não são "login → navega → troca tema → persiste".
 
-> **Registrado como LACUNA, não como plano concluído.** A spec antiga (`05-cobertura-de-testes.md`) listava
+> **Registrado como LACUNA, não como plano concluído.** A spec antiga de cobertura
+> *(`05-cobertura-de-testes.md`, **removida** na reescrita da base — histórico no git)* listava
 > "Integração Playwright/Cypress" e "fluxos de painel em DOM real" como **próximo passo** — e ali estão,
 > ainda próximos. A diferença é que agora está escrito **por que** não avançou: sem CI, um E2E manual não
 > tem quem o execute.

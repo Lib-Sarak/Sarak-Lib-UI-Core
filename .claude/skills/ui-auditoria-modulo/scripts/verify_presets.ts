@@ -7,12 +7,13 @@ import { ATMOSPHERE_PRESETS } from '../../../../src/core/Design/presets/componen
 import { TYPOGRAPHY_PRESETS } from '../../../../src/core/Design/presets/components/typography.ts';
 
 // ==========================================================================
-// Auditor de Drift de Presets/Temas (spec 09)
+// Auditor de Drift de Presets/Temas — cobra a regra R5.
 // Compara as chaves de cada Tema/Preset real contra o Gabarito Dinâmico
 // (getScaffold, sempre vivo) — nunca contra uma cópia estática. Uma chave usada
-// num preset que não existe mais no dicionário é uma "chave órfã": ficaria
-// silenciosamente descartada pela Regra 4 do backend se esse payload fosse
-// enviado à API hoje (ver arquitetura/09-pipeline-criacao-aplicacao-tema.md §4).
+// num preset que não existe mais no dicionário é uma "chave órfã": em runtime ela
+// é descartada com aviso por `validateDesign` (src/core/Provider/utils/validation.ts),
+// então o tema PARECE completo e não é. Contrato em
+// specs/arquitetura/04-contrato-de-tokens-e-paridade.md §9.
 // ==========================================================================
 
 interface AuditableItem {

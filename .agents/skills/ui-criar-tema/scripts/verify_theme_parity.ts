@@ -1,6 +1,6 @@
 import fs from 'fs';
 import path from 'path';
-import { MASTER_DESIGN_MAP } from '../../../../../src/core/Design/master-map.js';
+import { MASTER_DESIGN_MAP } from '../../../../src/core/Design/master-map.ts';
 
 const resolvePath = (relativePath: string) => path.join(process.cwd(), relativePath);
 
@@ -52,17 +52,18 @@ async function runThemeParityCheck() {
 
         let hasError = false;
 
-        // 3. Validar Paridade Integral
+        // 3. COMPLETUDE — informativa, NUNCA reprova.
+        //    O tema NOVO nasce do gerador com 100% dos tokens; os temas que JÁ existem
+        //    são parciais de propósito e continuam funcionando (as chaves ausentes caem
+        //    no default do schema via `upgradeThemePayload`/`legacyValue`). Reprovar por
+        //    ausência quebraria todo tema antigo a cada token novo — que é exatamente o
+        //    que a spec `09-temas-e-presets.md` §"a lib não força completude" proíbe.
         if (totalThemeTokens < totalSchemaTokens) {
-            console.error(`❌ PARIDADE QUEBRADA: O tema possui menos tokens (${totalThemeTokens}) do que o sistema exige (${totalSchemaTokens}).`);
-            console.error("Isso significa que tokens foram deletados do template gerado, violando a regra de Cápsula do Tempo.");
-            
-            // Descobrir quais estão faltando para ajudar o dev
             const themeTokensSet = new Set(themeTokens);
             const missing = Array.from(allSchemaTokens).filter(x => !themeTokensSet.has(x));
-            console.error(`Tokens ausentes: ${missing.slice(0, 10).join(', ')}${missing.length > 10 ? '...' : ''}`);
-            
-            hasError = true;
+            console.warn(`⚠️  COMPLETUDE PARCIAL (aviso, não falha): o tema preenche ${totalThemeTokens} de ${totalSchemaTokens} tokens.`);
+            console.warn(`   Ausentes (${missing.length}) caem no default do schema: ${missing.slice(0, 10).join(', ')}${missing.length > 10 ? '…' : ''}`);
+            console.warn("   Se este tema é NOVO, gere-o com generate_theme_template.ts para nascer 100% preenchido.");
         }
 
         // Validação inversa (não pode ter chaves inventadas)
@@ -75,10 +76,13 @@ async function runThemeParityCheck() {
         }
 
         if (hasError) {
-            console.error("\n❌ Teste de Paridade do Tema Falhou. Você deve corrigir o arquivo do tema antes de fazer o commit.");
+            console.error("\n❌ Teste de Paridade do Tema Falhou: há chave que NÃO existe no dicionário. Corrija antes de commitar.");
             process.exit(1);
+        } else if (totalThemeTokens < totalSchemaTokens) {
+            console.log(`\n✅ O tema ${themeId} está VÁLIDO (${totalThemeTokens} tokens, zero chave inventada) — parcial, mas funcional.`);
+            process.exit(0);
         } else {
-            console.log(`\n✅ SUCESSO ABSOLUTO: O tema ${themeId} possui 100% de paridade com o MasterMap (${totalThemeTokens} tokens)! Cápsula do tempo validada.`);
+            console.log(`\n✅ O tema ${themeId} está VÁLIDO e COMPLETO: ${totalThemeTokens} tokens, 100% do dicionário.`);
             process.exit(0);
         }
 

@@ -182,11 +182,12 @@ bloco monolítico que só testaria o token de superfície.
 `Canvas/components/`: `AtmosphereCatalog`, `CardsCatalog`, `PresetsCatalog`, `TypographyCatalog`,
 `ButtonsCatalog`, `InputsCatalog`, mais `ButtonPresetPreview`, `InputPresetPreview` e `PresetCard`.
 
-> **Correção de estado:** a spec antiga `06-presets-engine.md` declara
-> `status: "🔴 A Implementar"` justamente estes componentes. **Eles existem** — os três nomeados naquela
-> spec (`ButtonPresetPreview`, `InputPresetPreview`, `PresetsCatalog`) estão em
-> `src/features/DesignEngine/Canvas/components/`. O que de fato ficou pendente daquela spec é só o
-> enriquecimento de presets de tabela/navegação — registrado como backlog em [[09-temas-e-presets]] §8.
+> **Correção de estado:** a spec antiga de presets *(`06-presets-engine.md`, **removida** na reescrita
+> da base — histórico no git)* declarava `status: "🔴 A Implementar"` justamente estes componentes.
+> **Eles existem** — os três nomeados naquela spec (`ButtonPresetPreview`, `InputPresetPreview`,
+> `PresetsCatalog`) estão em `src/features/DesignEngine/Canvas/components/`. O que de fato ficou
+> pendente dela é só o enriquecimento de presets de tabela/navegação — registrado como backlog em
+> [[09-temas-e-presets]] §8.
 
 # 7. Dogfooding
 

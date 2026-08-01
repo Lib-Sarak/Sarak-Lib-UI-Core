@@ -1,169 +1,174 @@
-# Template: Novo Componente Data-Driven
+# Template: Novo Token Data-Driven
 
-Use este template ao adicionar um novo componente ao Design Engine. Preencha os campos `[PLACEHOLDER]` com os valores reais.
+Use este template ao adicionar um token ao Design Engine. Preencha os `[PLACEHOLDER]` com os
+valores reais.
+
+> **A regra mora na spec, não aqui.** O contrato completo do dicionário está em
+> `specs/arquitetura/04-contrato-de-tokens-e-paridade.md`; o fluxo passo a passo, em
+> `sarak-dev/GUIA-MANUTENCAO.md` §2. Este arquivo é só o **molde copiável**.
+>
+> ⚠️ **A forma real das interfaces é `src/core/Design/types.ts`.** Se este molde divergir dela,
+> **o código vence** — e o molde é que está errado.
 
 ---
 
 ## 1. Schema — `src/core/Design/schema/[NOME_COMPONENTE].ts`
 
+`ComponentSchema` tem exatamente **três** campos: `id`, `label` e `tokens`.
+
 ```typescript
 import { ComponentSchema } from '../types';
 
 /**
- * Schema: [NOME_LEGIVEL] (v1.0)
- * [DESCRICAO_DO_COMPONENTE]
+ * Mapeamento Atômico: [NOME_LEGIVEL]
+ * [DESCRICAO_DO_QUE_ESTE_SCHEMA_GOVERNA]
  */
 export const [NOME]Schema: ComponentSchema = {
-    id: '[nome-kebab]',                              // Ex: 'sidebar', 'chat-bubble', 'table-header'
-    label: '[Nome Legível]',                         // Ex: 'Sidebar', 'Chat Bubble', 'Cabeçalho de Tabela'
-    pilar: '[PILAR]',                                // brand | typography | surfaces | interaction | navigation | systems
-    subcategory: '[Subcategoria]',                   // Ex: 'Estrutura', 'Mensagens', 'Data Grid'
+    id: '[nome-kebab]',                              // Ex: 'cards', 'sidebar', 'tables'
+    label: '[Nome Legível]',                         // Ex: 'Card Geral'
     tokens: [
         {
-            id: '[prefixo][NomeToken]',              // Ex: 'sidebarWidth', 'chatBubblePadding'
-            label: '[Rótulo legível]',               // Ex: 'Largura da Sidebar'
-            category: '[Grupo]',                     // Ex: 'Layout', 'Geometria', 'Superfície'
-            type: '[TIPO]',                          // slider | color | select | boolean | text | number | font
-            unit: '[UNIDADE]',                       // px | % | rem | ms | deg | s (omitir se não aplicável)
+            id: '[prefixo][NomeToken]',              // Ex: 'cardBorderRadius' — camelCase, único no estado
+            label: '[Rótulo legível]',               // Ex: 'Raio da Borda (Master)'
+            type: '[TIPO]',                          // slider | color | select | boolean | text | number | font | image | file
+            description: '[O que este token faz]',   // É SUPERFÍCIE PÚBLICA: o catálogo o publica verbatim
+            axis: '[EIXO]',                          // color | geometry | elevation | texture | density | motion (opcional)
+            isResponsive: [true|false],              // true habilita a forma { desk, tab, mob }
+            unit: '[UNIDADE]',                       // px | % | rem | em | ms | deg | s (omitir se não aplicável)
             constraints: {
-                min: [MIN],                          // Ex: 0
-                max: [MAX],                          // Ex: 60
-                step: [STEP]                         // Ex: 1
+                min: [MIN],
+                max: [MAX],
+                step: [STEP]
             },
-            defaultValue: [VALOR_PADRAO],            // Ex: 260, '#0a0a0b', true
-            cssVars: ['--sarak-[kebab-case-id]'],    // Ex: ['--sarak-sidebar-width']
-            generateVariants: [true|false]           // true para cores (gera RGB, hover, active)
+            defaultValue: [VALOR_PADRAO],            // Ex: 12, '#0a0a0b', true, { mob: 8, tab: 12, desk: 12 }
+            cssVars: ['--sarak-[kebab-case-id]'],    // As variáveis que ESTE token emite
+            generateVariants: [true|false]           // true para cores (gera -rgb, -hover, -active…)
         }
-        // Adicionar mais tokens conforme necessário
+    ]
+};
+```
+
+**Se o token for ESTRUTURAL** (muda *qual classe* o componente usa, não o valor de uma
+propriedade), ele **não** vira CSS Variable: acrescente `structuralConsumer` e deixe `cssVars`
+vazio.
+
+```typescript
+{
+    id: 'tableDensity',
+    label: 'Densidade da Tabela',
+    type: 'select',
+    constraints: {
+        options: [
+            { id: 'comfortable', value: 'comfortable', label: 'Confortável' },
+            { id: 'spacious',    value: 'spacious',    label: 'Espaçosa' }
+        ]
+    },
+    defaultValue: 'comfortable',
+    structuralConsumer: ['useTableLayoutStyles']     // o hook que LÊ este token em JS
+}
+```
+
+---
+
+## 2. Master Map — registrar em `src/core/Design/master-map.ts`
+
+```typescript
+import { [NOME]Schema } from './schema/[NOME_COMPONENTE]';
+
+export const MASTER_DESIGN_MAP: MasterDesignSchema = {
+    version: '[VERSAO]',
+    components: [
+        // ... schemas existentes ...
+        [NOME]Schema
     ]
 };
 ```
 
 ---
 
-## 2. Master Map — Adicionar a `src/core/Design/master-map.ts`
+## 3. Roteamento de persistência — `src/core/Design/catalog/theme_table_mapping.json`
 
-```typescript
-// Import
-import { [NOME]Schema } from './schema/[NOME_COMPONENTE]';
+Acrescente o `id` do token no array da **coluna** correspondente. Um id em **duas** colunas é
+ambiguidade de roteamento — o defeito que a §2.4 do `GUIA-MANUTENCAO.md` registra.
 
-// No array components
-components: [
-    // ... existentes ...
-    [NOME]Schema
-]
-```
-
----
-
-## 3. Preset — `src/core/Design/presets/[SUBCATEGORIA]/[NOME_COMPONENTE].ts`
-
-```typescript
-export interface [Nome]Preset {
-    id: string;
-    name: string;
-    description: string;
-    design: {
-        [prefixo][NomeToken1]: [TIPO1];     // Ex: sidebarWidth: number
-        [prefixo][NomeToken2]: [TIPO2];     // Ex: sidebarBackground: string
-        [key: string]: any;
-    };
+```json
+{
+  "[coluna_do_dominio]": [
+    "...ids existentes...",
+    "[prefixo][NomeToken]"
+  ]
 }
-
-export const [NOME]_PRESETS: [Nome]Preset[] = [
-    {
-        id: '[id-kebab]',                   // Ex: 'compact-ops'
-        name: '[Nome Legível]',             // Ex: 'Compact Operations'
-        description: '[Descrição]',
-        design: {
-            [prefixo][NomeToken1]: [VALOR], // Ex: sidebarWidth: 200
-            [prefixo][NomeToken2]: [VALOR]  // Ex: sidebarBackground: '#050508'
-        }
-    }
-];
 ```
 
 ---
 
-## 4. Barrel Export — `src/core/Design/presets/[SUBCATEGORIA]/index.ts`
+## 4. Partição do catálogo — `src/core/Design/catalog/partitions/[coluna].json`
 
-```typescript
-export * from './[NOME_COMPONENTE]';
+```json
+{
+    "tokenId": "[prefixo][NomeToken]",
+    "databaseColumn": "[coluna_do_dominio]",
+    "schemaOrigin": "[NOME_COMPONENTE].ts",
+    "digitalTwins": ["[SarakComponente]"],
+    "cssVariables": ["--sarak-[kebab-case-id]"],
+    "allowedValues": [],
+    "relatedTokens": [],
+    "consumerHook": []
+}
 ```
+
+⚠️ **Paridade da marca estrutural:** token com `structuralConsumer` no schema tem o
+`consumerHook` espelhado aqui (ex.: `["useStructuralStyles.getInputIconStyles"]`), e `cssVariables`
+vazio. Marcar num lado e esquecer o outro é drift.
 
 ---
 
-## 5. Galeria — `src/features/DesignEngine/Canvas/Galleries/[Nome]Gallery.tsx`
+## 5. O consumo — Hook Controlador, nunca JSX
+
+Nenhuma decisão de estilo mora no `.tsx`. A **alavanca de Valor** chega sozinha, via CSS Variable;
+a **alavanca Estrutural** é lida pelo Hook Controlador, que devolve `{ className, style }`.
 
 ```tsx
-import React, { useMemo } from 'react';
-import { GalleryItem } from './GalleryItem';
-import { [NOME]_PRESETS, [Nome]Preset } from '../../../../core/Design/presets/[SUBCATEGORIA]/[NOME_COMPONENTE]';
-import { DesignScope } from '../../../../core/Design/components/DesignScope';
+// CERTO — geometria vinda do Hook, valor vindo de token COM fallback
+const { getFlexStyles } = useStructuralStyles();
 
-const Specimen: React.FC<{ preset: [Nome]Preset, globalTokens: any }> = ({ preset, globalTokens }) => {
-    const mergedTokens = useMemo(() => {
-        const final = { ...globalTokens, ...preset.design };
-        ['themePrimary', 'mode'].forEach(t => {
-            if (globalTokens[t] !== undefined) final[t] = globalTokens[t];
-        });
-        return final;
-    }, [preset, globalTokens]);
-
-    return (
-        <DesignScope design={mergedTokens}>
-            {/* Renderizar representação visual do componente */}
-        </DesignScope>
-    );
-};
-
-export const [Nome]Gallery: React.FC<{
-    tokens: any;
-    onUpdateDraft: (key: string, value: any) => void;
-}> = ({ tokens, onUpdateDraft }) => {
-    
-    const handleSelect = (preset: [Nome]Preset) => {
-        Object.entries(preset.design).forEach(([key, val]) => {
-            onUpdateDraft(key, val);
-        });
-        onUpdateDraft('[prefixo]PresetId', preset.id);
-    };
-
-    return (
-        <div>
-            {[NOME]_PRESETS.map(preset => (
-                <GalleryItem
-                    key={preset.id}
-                    title={preset.name}
-                    description={preset.description}
-                    isActive={tokens.[prefixo]PresetId === preset.id}
-                    onClick={() => handleSelect(preset)}
-                >
-                    <Specimen preset={preset} globalTokens={tokens} />
-                </GalleryItem>
-            ))}
-        </div>
-    );
-};
+<div
+    {...getFlexStyles({ direction: 'column', gap: 'spacing-sm' })}
+    style={{ borderRadius: 'var(--sarak-card-radius, 12px)' }}
+/>
 ```
-
----
-
-## 6. Router — Adicionar a `src/features/DesignEngine/Canvas/Galleries/GalleryRouter.tsx`
 
 ```tsx
-case '[subcategoria]':
-    return <[Nome]Gallery tokens={tokens} onUpdateDraft={onUpdateDraft} />;
+// ERRADO — Tailwind estrutural chumbado + valor solto
+<div className="flex flex-col gap-2 p-4" style={{ borderRadius: '12px' }} />
 ```
 
 ---
 
-## 7. CSS — Adicionar a `src/styles/sarak-base.css` (se necessário)
+## 6. CSS de base — `src/styles/sarak-base.css` (só se necessário)
 
 ```css
 .sarak-[nome-componente] {
     width: var(--sarak-[prefixo]-width, [DEFAULT]);
-    background: var(--sarak-[prefixo]-background, [DEFAULT]);
+    background: var(--sarak-[prefixo]-bg, [DEFAULT]);
     border-radius: var(--sarak-[prefixo]-border-radius, [DEFAULT]);
 }
 ```
+
+**Sempre com fallback.** `var(--x)` sem fallback resolve para vazio: o espaçamento colapsa, a cor
+some, e o console fica limpo.
+
+---
+
+## 7. Fechar
+
+```bash
+npm run audit           # auditor_paridade cruza as 3 fontes; auditor_ghostvars confere o emissor
+npm run catalog         # regenera docs/component-catalog.{json,md}
+npm run guide           # kit do consumidor
+npm run dev-kit         # kit do mantenedor
+npx vitest run          # a suíte INTEIRA
+```
+
+Compare o `npm run audit` com o **baseline** de `specs/specs/01-gates-e-baseline.md` — ele **não**
+está em zero.

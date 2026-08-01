@@ -40,15 +40,14 @@ export interface DesignToken {
     legacyValue?: SarakTokenValue; // Valor estático imutável que este token assume para temas/presets antigos que não o possuem
     description?: string;
     /**
-     * Classificação de eixo visual (Spec 02) — usada pelo retrieval semântico do
-     * Design Agent e pela diversificação por eixo (Spec 04). Opcional: tokens
-     * estruturais/não-visuais (ex: `mode`, `navigationStyle`) podem não ter eixo —
-     * ver taxonomia na Seção 5 de `specs/plan/02-mapeamento-semantico-rag-catalogo.md`.
+     * Classificação de eixo visual, usada para medir a completude de um tema por eixo
+     * (`findMissingThemeAxes`, em `src/core/Design/utils/themeAxes.ts`). Opcional: tokens
+     * estruturais/não-visuais (ex: `mode`, `navigationStyle`) podem não ter eixo.
      */
     axis?: 'color' | 'geometry' | 'elevation' | 'texture' | 'density' | 'motion';
     /**
      * Presença = token Estrutural (Alavanca 2): o valor não é injetado como CSS Variable,
-     * é lido em JS por um Hook Controlador (Camada 6) que decide className/style (ex: direção,
+     * é lido em JS por um Hook Controlador que decide className/style (ex: direção,
      * posição, alinhamento). Lista os hooks/métodos consumidores (ex: ['useCardLayoutStyles']).
      * Ausência = token de Valor (Alavanca 1, default): consumido via `var(--sarak-*, fallback)`.
      */

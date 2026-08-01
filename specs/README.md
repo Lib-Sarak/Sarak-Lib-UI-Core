@@ -34,7 +34,12 @@ Um tópico por documento: as regras e invariantes do módulo, os gates e seu bas
 
 **Aqui, planos de implementação EXISTEM e são versionados** — ao contrário da regra genérica do ecossistema, que manda mantê-los fora do repositório. Esta é uma escolha deliberada deste módulo, e ela vem com uma contrapartida que a torna segura.
 
-A `plan/` guarda **uma campanha por vez**: o roteiro, os prompts de execução autocontidos e o log de progresso. O que a impede de virar entulho é que **ela nasce com data de morte**. Toda campanha termina com uma tarefa de fechamento que **esvazia a pasta**, depois de provar, arquivo por arquivo, que todo conteúdo ainda vivo foi migrado para uma das três categorias permanentes. Nada é apagado sem esse destino demonstrado.
+A `plan/` guarda **uma campanha por vez**, em três arquivos fixos: `00-indice.md` (a porta de entrada), `00-prompts-execucao.md` (o plano executável) e `00-progresso.md` (o log). O que a impede de virar entulho é que **cada campanha nasce com data de morte**. Toda campanha termina com uma tarefa de fechamento que **limpa e resemeia a pasta**, depois de provar, arquivo por arquivo, que todo conteúdo ainda vivo foi migrado para uma das três categorias permanentes.
+
+Duas regras tornam esse fechamento seguro, e as duas foram pagas com trabalho perdido antes de existirem:
+
+1. **Nada é apagado sem destino demonstrado.** Para cada arquivo removido, mostra-se onde o conteúdo dele foi parar. Sem destino, o arquivo não sai — vira divergência.
+2. **Só sai o que foi EXECUTADO.** Item ainda aberto **migra íntegro** para o plano seguinte. Apagar uma etapa não executada não limpa o plano: destrói trabalho que ninguém fez ainda e que ninguém vai lembrar de refazer.
 
 O motivo de os planos serem versionados aqui: uma campanha atravessa várias conversas e vários agentes sem contexto compartilhado. O plano em disco é o que torna a execução **retomável e auditável** por quem chega no meio.
 
@@ -48,7 +53,7 @@ Todo documento novo nasce do template da sua categoria, com o frontmatter comple
 
 **No git, e no `plan/00-progresso.md` enquanto a campanha durar.**
 
-O `00-progresso.md` é um log *append-only*: cada execução acrescenta uma entrada no topo, e nenhuma entrada já escrita é editada ou apagada. Ele existe para que um agente entenda rapidamente o que já foi feito, como e quando, sem reconstruir o raciocínio lendo o diff inteiro. Quando a campanha fecha, ele sai junto com a pasta — e o histórico integral permanece onde sempre esteve, no git.
+O `00-progresso.md` é um log *append-only*: cada execução acrescenta uma entrada no topo, e nenhuma entrada já escrita é editada ou apagada. Ele existe para que um agente entenda rapidamente o que já foi feito, como e quando, sem reconstruir o raciocínio lendo o diff inteiro. Ele **atravessa** o fechamento de campanha — as entradas antigas continuam ali, e o histórico integral permanece também onde sempre esteve, no git.
 
 Documento permanente não carrega histórico de execução. Se você sentir vontade de escrever "antes era assim, agora é assado" numa spec, o lugar disso é um ADR (se foi decisão) ou `docs/migracoes.md` (se afeta o consumidor).
 
