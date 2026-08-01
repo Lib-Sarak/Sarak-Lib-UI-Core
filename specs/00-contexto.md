@@ -276,9 +276,14 @@ Antes de escolher **como** fazer algo, leia **[[00-knowledge]]** — é o rotead
 > é o `git` e os `adr/`.
 
 - **A dívida conhecida está catalogada** em [`specs/15-divida-conhecida.md`](specs/15-divida-conhecida.md):
-  **22 achados abertos** (de 31 numerados; 9 já fechados), cada um com arquivo:linha, exposição medida e
-  rota. Não é lista de desejos — é o que
-  já foi verificado no código e ainda não foi corrigido. Leia antes de "descobrir" um problema.
+  **14 achados abertos** (de 31 numerados), cada um com arquivo:linha, exposição medida, **a regra que viola** e
+  **destino decidido pelo dono** (triagem de 2026-08-01). Não é lista de desejos — é o que já foi verificado no
+  código e ainda não foi corrigido. Leia antes de "descobrir" um problema.
+- **Gate que nunca existiu não é dívida — é implementação posterior** *(decisão do dono, 2026-08-01)*. A ordem
+  é: **fechar o conjunto de regras primeiro, construir a verificação depois.** Gate erguido antes de a régua
+  estar pronta cobra a régua errada, e gate errado custa mais que gate ausente porque ninguém desconfia dele. Os
+  **5 gates em fila** e as **4 ampliações de escopo** estão em
+  [`specs/15-divida-conhecida.md`](specs/15-divida-conhecida.md) §4 — fora da contagem de dívida, de propósito.
 - **O `run_audit` fecha em exit 1 no HEAD limpo** (2 regras estruturais em vermelho). O baseline exato está em
   [`specs/01-gates-e-baseline.md`](specs/01-gates-e-baseline.md).
 - **Padrão recorrente, ainda não medido: o escopo do gate é menor que o escopo da regra.** Quatro casos
@@ -287,6 +292,21 @@ Antes de escolher **como** fazer algo, leia **[[00-knowledge]]** — é o rotead
 - **`src/core/Provider/generated/design-token-ids.ts` está defasado em 105 tokens** (304 publicados × 409
   reais) e o gerador não está registrado em script, hook ou skill nenhuma. O número falso **vaza para o
   consumidor** via `sarak-ui/catalog.json`.
+
+**Aceito como característica — não proponha conserto para isto:**
+
+- **Os 5 `dangerouslySetInnerHTML` de `src/` são a forma como a engine injeta CSS, e são legítimos.**
+  Auditados um a um em 2026-08-01: `DesignScope.tsx:54`, `DesignInjector.tsx:173` e
+  `SovereignThemeInjector.tsx:116` recebem CSS derivado de `design` — que já passou por `validateDesign`, o
+  qual bloqueia breakout `[<>{};]` (R6). `PreviewCanvas.tsx:181` e `MasterControlPanel.tsx:199` são **literais
+  estáticos**, sem interpolação. **Nenhum recebe HTML de origem não confiável.**
+- **`chromeSlots` publica 9 entradas para 8 regiões, e está certo assim.** `topbarActions` é alias legado de
+  `topbarEnd`; o coletor deriva por **tipo** (`ReactNode` opcional), não por semântica, e o `doc` do próprio
+  slot avisa o consumidor de que é alias. Consertar o coletor custa mais que declarar a imprecisão.
+- **O token de breakpoint alcança o CSS, não as classes utilitárias.** `useDesignVariables.ts:58` lê
+  `design.breakpointTablet` e gera a media-query; as classes `@min-[768px]` de `useStructuralStyles*` são
+  resolvidas em **build-time** pelo Tailwind e **não aceitam `var()`** — limitação da ferramenta, não omissão.
+  O alinhamento do detector JS (`DeviceProvider`) **é** dívida e está na §3 da spec de dívida.
 - **O ERP Earendel é o único consumidor** e está em desenvolvimento simultâneo, consumindo por caminho local.
   Ele tem defeitos estruturais próprios, catalogados na plan de alinhamento.
 - **Migração em curso (2026-08-01):** este fluxo SDD substituiu o modelo de "campanha em três arquivos fixos"
