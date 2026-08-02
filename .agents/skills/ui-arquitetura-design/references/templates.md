@@ -89,7 +89,7 @@ export const MASTER_DESIGN_MAP: MasterDesignSchema = {
 ## 3. Roteamento de persistência — `src/core/Design/catalog/theme_table_mapping.json`
 
 Acrescente o `id` do token no array da **coluna** correspondente. Um id em **duas** colunas é
-ambiguidade de roteamento — o defeito que a §2.4 do `GUIA-MANUTENCAO.md` registra.
+ambiguidade de roteamento — o defeito que o §2.4 do `sarak-dev/GUIA-MANUTENCAO.md` registra.
 
 ```json
 {

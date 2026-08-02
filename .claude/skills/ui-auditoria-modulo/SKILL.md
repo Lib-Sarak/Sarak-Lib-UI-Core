@@ -27,18 +27,16 @@ Cada número do baseline é o **máximo tolerado**: igual passa; **maior é regr
 significa que alguém pagou dívida — e aí o baseline precisa ser regravado com
 `npm run audit:baseline`, **no mesmo commit do conserto que o justificou**, nunca sozinho.
 
-## Os 8 auditores
+## Os auditores — a lista é derivada, não transcrita
 
-| Script | O que cobra | Regra |
-| --- | --- | --- |
-| `auditor_hardcoded.mjs` | `#hex`/`px`/`rem`/`em` soltos + Tailwind estrutural em `atomic/`, com baldes de dedução | R2 |
-| `auditor_ghostvars.mjs` | `var(--x)` consumida sem emissor real; namespace `--sx-*` proibido | R7 |
-| `auditor_typescript.mjs` | zero `any` na AST de `src/` | R3 |
-| `auditor_coverage.mjs` | teste 1:1 ao lado de cada componente/hook | R8 |
-| `auditor_arquitetura.mjs` | as três camadas (`components`/`core` não importam de `features`) | R1 |
-| `auditor_cleancode.mjs` | ≤250 linhas, zero `else if`, ≤3 hooks de estado, aninhamento ≤2 | R9 |
-| `auditor_paridade.mjs` → `verify_parity.ts` | o token existe nas **três** fontes do dicionário | R4 |
-| `auditor_presets.mjs` → `verify_presets.ts` | zero chave órfã em tema/preset embarcado | R5 |
+**Quais auditores existem:** `sarak-dev/state.json` → chave `auditores`, derivada do próprio
+`run_audit.mjs`. **Qual regra cada um cobra:** o mapa regra → gate de
+`specs/specs/00-regras-e-invariantes.md` §3. **Como ler a saída de cada um:**
+`specs/specs/01-gates-e-baseline.md` §2.1.
+
+Esta skill não repete nenhuma das três listas. Contagem copiada para markdown envelhece em
+silêncio (R17) — e foi assim que as skills deste repositório passaram meses mandando registrar
+componente em arquivo removido.
 
 *(O antigo `auditor_manifesto` — conferência funcional do motor de renderização por manifesto —
 foi removido junto com o motor; ver `specs/adr/002-remocao-motor-manifesto.md`.)*
@@ -55,13 +53,17 @@ Abra `specs/specs/01-gates-e-baseline.md` (ou o Apêndice B do `sarak-dev/GUIA-M
 carregue os números tolerados **antes** de rodar. Sem isso você não sabe distinguir dívida de
 regressão.
 
-### 2. Rodar a auditoria completa
+### 2. Rodar a auditoria completa — **pelo gate, nunca pelo script**
 ```bash
-node .agents/skills/ui-auditoria-modulo/scripts/run_audit.mjs
-# equivalente: npm run audit
+npm run audit
 ```
-O script agrega as 8 varreduras e imprime o laudo por sub-auditor no stdout. **Exit 1 é o estado
+O gate agrega as varreduras e imprime o laudo por sub-auditor no stdout. **Exit 1 é o estado
 esperado hoje** — o que importa são os números, não o código de saída.
+
+> **Invoque o gate, não o auditor.** Os scripts vivem aqui porque esta skill é dona deles, mas
+> quem os executa é o `package.json` — e, em breve, o pipeline de CI/CD. Chamar um
+> **auditor_\<regra\>.mjs** a dedo cria um segundo jeito de rodar a mesma coisa, que é como um dia
+> o número do gate e o número que alguém mediu passam a divergir.
 
 ### 3. Comparar, não julgar
 Para cada auditor, ponha lado a lado o número medido e o número do baseline. O laudo ao usuário
@@ -110,14 +112,29 @@ números finais comparados ao baseline.
 
 ## Checklist "Auditoria Plena"
 - [ ] Leu o baseline **antes** de rodar?
-- [ ] Rodou `run_audit.mjs` inteiro (os 8 auditores)?
+- [ ] Rodou `npm run audit` inteiro (o gate, não um auditor a dedo)?
 - [ ] Classificou cada achado em baseline exato / regressão / dívida paga?
 - [ ] Fez o alerta HITL pedindo permissão, listando **só as regressões**?
 - [ ] Aplicou os fixes aprovados e rodou de novo, provando o retorno ao baseline?
 - [ ] Rodou `npx vitest run` **inteiro** ao final?
 
-## Referências (Camada 3)
-- `scripts/run_audit.mjs` — agregador dos 8 auditores.
-- `scripts/verify_presets.ts` — motor do `auditor_presets` (drift de tema/preset contra o gabarito vivo).
-- `.agents/skills/ui-novo-componente/scripts/verify_parity.ts` — motor do `auditor_paridade`
-  (as três fontes do dicionário). Mora na skill vizinha; os dois auditores que os invocam vivem aqui.
+## Referências (Camada 3) — os scripts que esta skill hospeda
+
+**Você não os invoca; o gate invoca.** Estão listados com o caminho completo porque são a
+**infraestrutura de verificação do módulo** e o insumo do pipeline de CI/CD — quem for montá-lo
+precisa saber onde eles moram. Caminho relativo aqui já mandou agente aterrissar no `scripts/` da
+raiz, que é outro diretório.
+
+| Script | Papel | Invocado por |
+| --- | --- | --- |
+| `.agents/skills/ui-auditoria-modulo/scripts/run_audit.mjs` | agregador dos auditores | `npm run audit` |
+| `.agents/skills/ui-auditoria-modulo/scripts/auditor_*.mjs` | um por regra estrutural | `run_audit.mjs` |
+| `.agents/skills/ui-auditoria-modulo/scripts/verify_presets.ts` | drift de tema/preset contra o gabarito vivo | `auditor_presets.mjs` |
+| `.agents/skills/ui-novo-componente/scripts/verify_parity.ts` | as três fontes do dicionário | `auditor_paridade.mjs` |
+
+> ⚠️ **`verify_parity.ts` mora na skill vizinha e é chamado daqui.** Consequência mecânica:
+> `.agents/skills/ui-novo-componente/` **não é removível** — apagá-la derruba `npm run audit`, e
+> por ele o `gates:full` e o `preversion`.
+
+O inventário completo dos validadores, incluindo os que **ainda não têm gate**, está em
+`specs/specs/00-regras-e-invariantes.md` §3.1.

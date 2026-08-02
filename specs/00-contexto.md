@@ -167,8 +167,12 @@ Detalhe completo em [`specs/03-versionamento-e-release.md`](specs/03-versionamen
 > aqui. **Ponteiro órfão é defeito**: toda spec citada tem de existir.
 
 > ⚠️ **Este repositório tem skills LOCAIS**, em `.agents/skills/` — o [[00-knowledge]] é universal e não as
-> conhece. A coluna *Capacidade* abaixo é o único roteador delas. Skill local é **procedimento**; a spec fixa
+> conhece. A coluna *Capacidade* da §4 é o único roteador delas. Skill local é **procedimento**; a spec fixa
 > é a **regra**. As duas se leem juntas.
+>
+> **A verificação é do gate, não da skill.** Nenhuma skill invoca validador direto; quem executa é o
+> `package.json` e, adiante, o pipeline de CI/CD. O inventário de quem executa o quê está em
+> [`specs/00-regras-e-invariantes.md`](specs/00-regras-e-invariantes.md) §3.1.
 
 | Tipo de tarefa | Leia antes (specs fixas) | Capacidade |
 |---|---|---|
@@ -186,6 +190,27 @@ Detalhe completo em [`specs/03-versionamento-e-release.md`](specs/03-versionamen
 | Mudar gate, hook ou pipeline | `specs/02-enforcement-por-commit` + `specs/01` | [[00-knowledge]] |
 | Escrever teste | `specs/11-testes-e-cobertura` | [[00-knowledge]] (`test-*`) |
 | Mudar decisão estrutural | todos os `adr/` + `arquitetura/` | [[00-knowledge]] |
+
+## 4.1 Ambientação — a ordem de leitura de quem chega
+
+A tabela acima roteia **por tarefa**. Quem ainda não tem tarefa, e só precisa se ambientar, lê nesta ordem:
+
+| # | Leia | Por quê |
+|---|---|---|
+| 0 | [`sarak-dev/START-HERE.md`](../sarak-dev/START-HERE.md) | O índice operacional e o **carimbo de estado** — números recontados a cada geração, nunca escritos à mão |
+| 1 | [`specs/00-regras-e-invariantes.md`](specs/00-regras-e-invariantes.md) | **O contrato único.** As 17 regras, cada uma com o gate que a cobra — ou a admissão de que **nenhum** cobre |
+| 2 | [`arquitetura/01-forma-do-produto-e-modos-de-consumo.md`](arquitetura/01-forma-do-produto-e-modos-de-consumo.md) | O que a lib **é** hoje, e os dois modos de consumo |
+| 3 | [`arquitetura/00-mapa-do-modulo.md`](arquitetura/00-mapa-do-modulo.md) | Onde cada coisa mora e o que pode importar o quê |
+| 4 | [`sarak-dev/GUIA-MANUTENCAO.md`](../sarak-dev/GUIA-MANUTENCAO.md) | O roteador de fluxos: o passo a passo do que você vai mexer e **qual spec é dona** daquilo |
+| 5 | [`specs/01-gates-e-baseline.md`](specs/01-gates-e-baseline.md) | **Antes de rodar qualquer gate.** O `run_audit` **NÃO está em zero** |
+
+Os **ADRs** (`adr/`) respondem *por quê*. Leia-os quando a pergunta for "por que isto é assim?" ou antes de
+propor reverter uma decisão — é o que evita repropor o que já falhou. São **imutáveis**: decisão errada não se
+edita, cria-se um ADR novo (protocolo em [`adr/README.md`](adr/README.md)).
+
+> Esta ordem veio da skill `ui-contexto-repositorio`, **removida em 2026-08-01** (plan-02): ela reescrevia
+> sete regras do contrato e competia com esta spec. A ordem de leitura era a única parte dela sem destino, e
+> este é o destino.
 
 ---
 

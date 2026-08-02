@@ -148,7 +148,8 @@
       "Bash(awk -F: '$2>0')",
       "Bash(npm version *)",
       "Bash(git commit *)",
-      "Bash(grep -nE \"^#{1,2} \" specs/plan/00-prompts-execucao-migrar.md)"
+      "Bash(grep -nE \"^#{1,2} \" specs/plan/00-prompts-execucao-migrar.md)",
+      "Bash(grep -v \"^\\\\./\\\\.agents/skills/ui-contexto-repositorio/\\\\|^\\\\./\\\\.agents/skills/meta-create-skill/\")"
     ]
   }
 }

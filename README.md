@@ -28,13 +28,14 @@ Detalhes de cada `peerDependency`, a entrevista de infraestrutura (modo app/emba
 
 **Comece por [`sarak-dev/START-HERE.md`](sarak-dev/START-HERE.md)** — o kit do mantenedor, que é o índice operacional da base de specs e traz o carimbo de estado do repositório (números recontados por geração, nunca escritos à mão). O contrato único de regras é [`specs/specs/00-regras-e-invariantes.md`](specs/specs/00-regras-e-invariantes.md); os fluxos passo a passo, [`sarak-dev/GUIA-MANUTENCAO.md`](sarak-dev/GUIA-MANUTENCAO.md).
 
+A porta de entrada é [`specs/00-contexto.md`](specs/00-contexto.md) — o que este repositório é, as regras inegociáveis, o mapa de "que spec eu leio para esta tarefa" e a ordem de leitura de ambientação (§4.1). Depois, conforme o papel: [`specs/00-prompt-revisor.md`](specs/00-prompt-revisor.md) ou [`specs/00-prompt-executor.md`](specs/00-prompt-executor.md).
+
 As skills que regulam o trabalho aqui dentro:
 
-1. **`/ui-contexto-repositorio`**: a porta de entrada — a ordem de leitura e os limites do módulo.
-2. **`/ui-arquitetura-design`**: **Regra de Ouro do Design Engine.** NENHUMA propriedade visual (como `margin: 10px`, `color: #fff`, ou `bg-[#050505]`) é inserida de forma "hardcoded" ou "inline" nos componentes. A estilização segue o pipeline `Schema → Master Map → CSS Variables → Tailwind Classes`, e toda `var()` consumida leva **fallback**.
-3. **`/ui-novo-componente`**: **Paridade nas TRÊS fontes.** Um token só é real se existir no `Schema` (`src/core/Design/schema/` → `master-map.ts`), no roteamento de persistência (`catalog/theme_table_mapping.json`) e na partição do catálogo (`catalog/partitions/`). O **alcance** do componente é cobrado à parte, por `npm run barrel:check` e `npm run catalog:check`.
-4. **`/ui-auditoria-modulo`**: o verificador estático. ⚠️ **O `npm run audit` NÃO está em zero** — compare com o baseline de [`specs/specs/01-gates-e-baseline.md`](specs/specs/01-gates-e-baseline.md), nunca com zero.
-5. **`/padrao-escrita`**: funções curtas, modularidade extrema e encapsulamento rigoroso (≤ 250 linhas por arquivo é o limiar cobrado aqui).
+1. **`/ui-arquitetura-design`**: **Regra de Ouro do Design Engine.** NENHUMA propriedade visual (como `margin: 10px`, `color: #fff`, ou `bg-[#050505]`) é inserida de forma "hardcoded" ou "inline" nos componentes. A estilização segue o pipeline `Schema → Master Map → CSS Variables → Tailwind Classes`, e toda `var()` consumida leva **fallback**.
+2. **`/ui-novo-componente`**: **Paridade nas TRÊS fontes.** Um token só é real se existir no `Schema` (`src/core/Design/schema/` → `master-map.ts`), no roteamento de persistência (`catalog/theme_table_mapping.json`) e na partição do catálogo (`catalog/partitions/`). O **alcance** do componente é cobrado à parte, por `npm run barrel:check` e `npm run catalog:check`.
+3. **`/ui-auditoria-modulo`**: o verificador estático. ⚠️ **O `npm run audit` NÃO está em zero** — compare com o baseline de [`specs/specs/01-gates-e-baseline.md`](specs/specs/01-gates-e-baseline.md), nunca com zero.
+4. **`/padrao-escrita`**: funções curtas, modularidade extrema e encapsulamento rigoroso (≤ 250 linhas por arquivo é o limiar cobrado aqui).
 
 ### Integração com Tailwind v4
 Este projeto utiliza **Tailwind CSS v4**. Isso significa que as variáveis de cor geradas pelo Design Engine (ex: `--sarak-card-bg` ou `--sarak-bg-base`) são mapeadas no bloco `@theme` no arquivo `src/styles/sarak-base.css` e expostas como variáveis semânticas do Tailwind (`--color-theme-card`, `--color-theme-bg`).

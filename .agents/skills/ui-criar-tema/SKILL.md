@@ -79,12 +79,21 @@ Comunique que o tema está registrado, quantos eixos ficaram vazios (se algum) e
 - [ ] A completude foi medida com `findMissingThemeAxes`, e as lacunas são deliberadas?
 
 ## Referências (Camada 3)
-- `scripts/generate_theme_template.ts` — gera o arquivo do tema pré-populado com os tokens vivos
-  do `MASTER_DESIGN_MAP`. **Escreve em `src/`.**
-- `scripts/verify_theme_parity.ts` — valida UM tema. **Reprova** chave que não existe no
-  dicionário; **avisa** (sem reprovar) quando o tema é parcial. Rode com
-  `npx tsx .agents/skills/ui-criar-tema/scripts/verify_theme_parity.ts <id-do-tema>`.
-  A assimetria é deliberada: **tema novo nasce 100% preenchido pelo gerador**, mas tema que já
+
+**Gerador — esta skill invoca:**
+- `.agents/skills/ui-criar-tema/scripts/generate_theme_template.ts` — gera o arquivo do tema
+  pré-populado com os tokens vivos do `MASTER_DESIGN_MAP`. **Escreve em `src/`.**
+
+**Validador — o GATE invoca, não você:**
+- `.agents/skills/ui-criar-tema/scripts/verify_theme_parity.ts` — valida UM tema. **Reprova**
+  chave que não existe no dicionário; **avisa** (sem reprovar) quando o tema é parcial. A
+  assimetria é deliberada: **tema novo nasce 100% preenchido pelo gerador**, mas tema que já
   existe é parcial de propósito e continua funcionando — as chaves ausentes caem no default do
   schema. Reprovar por ausência quebraria todo tema antigo a cada token novo.
-- `references/examples.md` — estrutura de um `ThemePreset` (bom × ruim).
+
+> ⚠️ **Este validador ainda NÃO tem gate** — hoje nenhum pipeline o invoca. Ele está registrado
+> para entrar no pipeline de CI/CD em `specs/specs/00-regras-e-invariantes.md` §3.1. Até lá, a
+> cobertura de tema que **existe** é o `auditor_presets` dentro do `npm run audit`, que cobra
+> chave órfã em todos os temas embarcados de uma vez.
+
+- `.agents/skills/ui-criar-tema/references/examples.md` — estrutura de um `ThemePreset` (bom × ruim).

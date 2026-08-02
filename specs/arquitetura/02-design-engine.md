@@ -60,7 +60,18 @@ A ordem real em `src/core/Provider/SarakUIProvider.tsx` — e a ordem importa, p
 | `:140` | `useSarakStylesheetGuard(mode, scopeElement)` → a guarda de stylesheet (§9) |
 | `:143-174` | O `useMemo` que monta o contexto público |
 
-A árvore renderizada (`:180-221`): `DeviceProvider` → `UIContext.Provider` → `SarakScopeRoot` → dentro dela `DesignInjector`, `SovereignThemeInjector`, e — **só fora do modo embarcado** — `NoiseOverlay` e `SarakBackgroundRenderer`; por fim `SarakToastProvider` → `SarakOverlayProvider` → `children`.
+A árvore renderizada (`:180-221`): `DeviceProvider` → `UIContext.Provider` → `SarakScopeRoot`, e dentro dela — **nesta ordem**:
+
+| Ordem | Nó | Condição |
+| --- | --- | --- |
+| 1 | `DesignInjector` (`:184`) | sempre |
+| 2 | `NoiseOverlay` (`:197`) | **só fora do modo embarcado** |
+| 3 | `SovereignThemeInjector` (`:198`) | sempre — **não** é gated por modo; ele resolve o modo internamente (§6) |
+| 4 | `SarakBackgroundRenderer` (`:199`) | **só fora do modo embarcado** |
+
+Por fim `SarakToastProvider` → `SarakOverlayProvider` → `children` (`:214-216`).
+
+> ⚠️ **A ordem destes quatro irmãos é carregada de significado — não a reordene.** O comentário em `:190-196` registra o porquê: no modo app a árvore tem de sair **byte-a-byte igual** à de antes do modo embarcado, porque há **snapshots de Cards** que a cobrem (`SarakActionCard`, `SarakSearchCard`, `SarakTitleCard`). O modo embarcado só **remove** nós do ramo — nunca reordena.
 
 > Os hosts de toast e overlay são montados **automaticamente**. O consumidor não deve montá-los à mão.
 
@@ -72,7 +83,7 @@ O sintoma: CPU a 100% e um processo que nunca termina. A causa tinha **duas meta
 
 **Metade 1 — a referência instável.** Um default `customThemes = []` escrito inline no destructuring cria um **array novo a cada render**. Isso invalida o `useMemo` de `allThemes`, que invalida o efeito de sincronização. A correção é a constante `EMPTY_CUSTOM_THEMES` (`:47`), com o motivo escrito ali.
 
-**Metade 2 — o `setDesign` incondicional.** `useDesignSync` chamava `setDesign` sempre que `activeThemeId` estivesse definido, com um objeto novo por spread. React nunca faz bailout por igualdade referencial de objeto, então: render → novo `customThemes` → novo `allThemes` → efeito → `setDesign` → render.
+**Metade 2 — o `setDesign` incondicional.** `useDesignSync` (`src/core/Provider/hooks/useDesignSync.ts` — mora no **Provider**, não em `Design/hooks/`) chamava `setDesign` sempre que `activeThemeId` estivesse definido, com um objeto novo por spread. React nunca faz bailout por igualdade referencial de objeto, então: render → novo `customThemes` → novo `allThemes` → efeito → `setDesign` → render.
 
 A correção de raiz é um **guard por ref** em `useDesignSync`: `lastAppliedThemeIdRef` (`:21`) guarda o último id efetivamente aplicado; o efeito retorna cedo se o id não mudou (`:29`); ao aplicar, grava o ref (`:33`) **antes** de chamar `setDesign` (`:34`); e se `activeThemeId` for limpo, o ref é resetado (`:40`) para permitir reaplicar depois.
 

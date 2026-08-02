@@ -41,7 +41,7 @@ as duas, sempre, na mesma ação.**
 | # | Plan | Objetivo | Depende de | Status | Destino |
 |---|---|---|---|---|---|
 | 1 | [plan-01-migrar-para-fluxo-sdd](plan/plan-01-migrar-para-fluxo-sdd.md) | Migrar a base de specs para o fluxo SDD | — | 🟢 Aprovada | `00-contexto.md` · `specs/15-divida-conhecida.md` |
-| 2 | [plan-03-triagem-divida-conhecida](plan/plan-03-triagem-divida-conhecida.md) | Decidir o destino de cada achado aberto *(análise, não conserto)* | plan-01 | 🔴 A executar | `specs/15-divida-conhecida.md` · `00-contexto.md` |
+| 2 | [plan-03-triagem-divida-conhecida](plan/plan-03-triagem-divida-conhecida.md) | Decidir o destino de cada achado aberto *(análise, não conserto)* | plan-01 | 🟠 Em revisão | `specs/15-divida-conhecida.md` · `00-contexto.md` |
 | 3 | [plan-02-adequar-skills-locais](plan/plan-02-adequar-skills-locais.md) | Adequar as 9 skills locais ao fluxo SDD | plan-01 | 🔴 A executar | `00-contexto.md` |
 | 4 | [plan-04-alinhamento-erp](plan/plan-04-alinhamento-erp.md) | Alinhar o ERP — o instrumento de medição da lib | — | 🔴 A executar | `—` |
 | 5 | [plan-05-integracao-continua](plan/plan-05-integracao-continua.md) | Rodar os gates num ambiente que não é a máquina de ninguém | — | 🔴 A executar | `specs/16-integracao-continua.md` *(nova)* · `specs/02` · `specs/01` |

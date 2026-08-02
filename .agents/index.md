@@ -4,17 +4,11 @@ Este arquivo é auto-gerado. Ele lista todas as regras de negócio deste projeto
 
 ## Skills
 
-- **meta-create-skill**: Padrão oficial para criar e revisar skills do ecossistema Sarak — estrutura em 3 camadas, description (o gatilho), workflow, regras e checklist. Use APENAS quando pedirem para criar, padronizar ou revisar uma skill. NÃO acione proativamente.
-  - *Caminho*: `.agents/skills/meta-create-skill/SKILL.md`
-
 - **ui-arquitetura-design**: Define a regra arquitetural do módulo Design Engine do Sarak-Lib-UI-Core. Use ao desenvolver, revisar ou validar o CSS/Design de componentes. NÃO acione proativamente.
   - *Caminho*: `.agents/skills/ui-arquitetura-design/SKILL.md`
 
 - **ui-auditoria-modulo**: Audita a integridade estrutural do Sarak-Lib-UI-Core. Varre o módulo em busca de quebras de Clean Code, falhas de cobertura (Coverage), violações de camada, tipagens inseguras (any), hardcoded, variáveis-fantasma e paridade de Design Tokens. Use APENAS quando pedirem para auditar a base ou validar um PR. NÃO acione proativamente.
   - *Caminho*: `.agents/skills/ui-auditoria-modulo/SKILL.md`
-
-- **ui-contexto-repositorio**: Orquestradora de onboarding e contexto. Use SEMPRE que iniciar uma nova conversa ou precisar se ambientar com as regras estruturais e limites da biblioteca Sarak-Lib-UI-Core.
-  - *Caminho*: `.agents/skills/ui-contexto-repositorio/SKILL.md`
 
 - **ui-criar-preset**: Cria presets modulares parciais (cards, atmosphere, typography, buttons, inputs) no Design Engine da UI Core. Use ao adicionar variantes visuais para componentes específicos. NÃO acione proativamente.
   - *Caminho*: `.agents/skills/ui-criar-preset/SKILL.md`

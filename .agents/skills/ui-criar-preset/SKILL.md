@@ -9,7 +9,7 @@ Cria presets granulares para componentes no Sarak-Lib-UI-Core. Preset modular n�
 inteiro: ele altera apenas as chaves do escopo daquele componente (merge parcial).
 
 > **Esta skill ORQUESTRA; ela não define regra.** A spec dona é
-> `specs/specs/09-temas-e-presets.md`; o fluxo está em `sarak-dev/GUIA-MANUTENCAO.md` §4.
+> `specs/specs/09-temas-e-presets.md`; o fluxo está no §4 do `sarak-dev/GUIA-MANUTENCAO.md`.
 > Quando esta skill divergir de uma spec, **a spec vence**.
 
 > **Preset e tema são a MESMA primitiva**, diferindo só na amplitude: o preset preenche a fatia de
@@ -26,15 +26,9 @@ inteiro: ele altera apenas as chaves do escopo daquele componente (merge parcial
 ## Workflow
 
 ### 1. Identificação do pilar
-Os presets de componente vivem em `src/core/Design/presets/components/` — hoje **5 arquivos**:
-
-| Arquivo | Constantes exportadas |
-| --- | --- |
-| `atmosphere.ts` | `MEDIA_PRESETS`, `TEXTURE_PRESETS`, `ATMOSPHERE_PRESETS` |
-| `buttons.ts` | `BUTTON_PRESETS`, `BUTTON_STYLE_PRESETS` |
-| `cards.ts` | `CARD_PRESETS`, `CARD_TEXTURE_PRESETS` |
-| `inputs.ts` | `INPUT_PRESETS` |
-| `typography.ts` | `TYPOGRAPHY_PRESETS` |
+Os presets de componente vivem em `src/core/Design/presets/components/` — **um arquivo por pilar**.
+Abra o diretório para ver quais existem e quais constantes cada um exporta; esta skill não repete a
+lista, porque lista copiada para markdown fica errada na primeira adição (R17).
 
 *(Temas completos ficam em `src/core/Design/presets/themes/` — outra skill: `ui-criar-tema`.)*
 

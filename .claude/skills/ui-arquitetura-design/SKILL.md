@@ -28,23 +28,41 @@ Esta skill aplica a lei arquitetural do módulo Design Engine do Sarak-Lib-UI-Co
    - **Ferramenta:** Diálogo
    - **Ação:** Peça ao usuário para fornecer o arquivo do componente ou o token a ser validado.
 2. **Validação do Pipeline Data-Driven**
-   - **Ferramenta:** `grep_search` ou `view_file`
+   - **Ferramenta:** leitura do arquivo + busca por conteúdo (a que o seu harness oferecer).
    - **Ação:** Inspecione o código alvo garantindo a regra de Ouro: `Schema → Master Map → CSS Variables`.
    - **Critério:** Nenhuma propriedade (como `margin: 10px` ou `color: red`) deve estar hardcoded no CSS/JS. Tudo deve referenciar uma CSS Variable atrelada ao motor.
+   - **A verificação mecânica é do GATE**, não desta leitura: `npm run audit` roda os detectores de
+     hardcode e de variável-fantasma. Esta etapa pega o que nenhum detector alcança — R10, e o
+     hardcode em `.css`, que o `auditor_hardcoded` não varre (só coleta `.tsx`).
 3. **Reporte e Correção**
    - **Ação:** Informe as infrações ao usuário e apresente o plano de execução para refatorar o código para CSS Variables.
 4. **Execução**
    - Após aprovação, aplique as refatorações.
 
 ## Regras
-- **NUNCA** escreva valores hexadecimais, `px`, `rem`, ou `em` diretamente nas estilizações de componentes.
-- **NAMESPACE E FALLBACK:** toda CSS Variable consumida é `--sarak-*` ou `--theme-*`, **SEMPRE com fallback** (`var(--sarak-card-radius, 12px)`). O namespace **`--sx-*` é PROIBIDO** — nunca foi emitido por nenhuma fonte, logo é variável-fantasma por definição.
-- **NÃO** duplique definições de estilo que já existam no dicionário (schema/`master-map.ts`).
-- **ABSTRAÇÃO DE VARIANTES OBRIGATÓRIA:** Todo o mapeamento de variáveis CSS para criar variantes complexas (ex: `neon`, `frosted`, lógicas matemáticas) DEVE morar em um Hook Controlador (`src/components/atomic/hooks/useAtomicStyles.ts`, `useStructuralStyles.ts`).
-- **PROIBIDO LÓGICA NO JSX:** É estritamente proibido criar blocos condicionais grandes (if/switch) de roteamento de estilo ou injetar tags `<style>` cruas dentro do componente atômico. O Componente é "burro" (Dumb Component): **≤ 250 linhas** por arquivo é o limiar cobrado (R9, `auditor_cleancode`); um átomo que se aproxima disso quase sempre está carregando decisão que pertence ao Hook.
-- **COMPOSIÇÃO ATÔMICA (R10):** proibido `<button>`, `<input>` ou `<select>` cru dentro de template ou componente pré-montado — use `SarakButton`, `SarakInput`, `SarakSelect`. HTML nativo cru causa vazamento de especificidade e deixa de responder ao token. **Nenhum gate pega isto** — depende desta revisão.
-- **FRONTEIRA LÓGICA (ATÔMICO VS FEATURE):** É **ESTRITAMENTE PROIBIDO** injetar lógica de negócio (ex: requests HTTP, `useEffect` complexo, chamadas à API ou estado global Context/Redux) dentro de `src/components/atomic/`. Toda inteligência e estado da aplicação DEVE ser alocada numa Feature (`src/features/`), enquanto os átomos permanecem passivos.
-- **PROIBIÇÃO DE HARDCODE ESTRUTURAL (DESENGESSAMENTO):** É absolutamente proibido chumbar classes estruturais do Tailwind (ex: `flex-col`, `gap-4`, `p-4`, `w-full`, `items-center`) diretamente no `className` do JSX dos átomos. Toda e qualquer geometria, layout e espaçamento deve obrigatoriamente derivar do Hook de Layout `useStructuralStyles()` (ex: `className={layout.className}` e `style={layout.style}`). O átomo deve ser fluidamente controlado pelo BD.
+
+**As normativas não são reescritas aqui** — enunciado, porquê, exemplo certo × errado e o gate de
+cada uma estão em `specs/specs/00-regras-e-invariantes.md`: **R2** (zero hardcode, incluindo o
+Tailwind estrutural em `atomic/`), **R7** (namespace `--sarak-*`/`--theme-*` com fallback
+obrigatório; `--sx-*` PROIBIDO), **R9** (≤ 250 linhas) e **R10** (composição atômica). Quando esta
+skill divergir da spec, a spec vence — e a divergência é defeito desta skill.
+
+O que é **procedimento desta skill**, e por isso mora aqui:
+
+- **ABSTRAÇÃO DE VARIANTES OBRIGATÓRIA:** todo mapeamento de variáveis CSS para variantes complexas
+  (`neon`, `frosted`, lógica matemática) mora num **Hook Controlador**
+  (`src/components/atomic/hooks/useAtomicStyles.ts`, `useStructuralStyles.ts`) — nunca no `.tsx`.
+- **PROIBIDO LÓGICA NO JSX:** nada de `if`/`switch` grande de roteamento de estilo nem `<style>`
+  cru dentro do átomo. O componente é burro. Um átomo que se aproxima do teto de 250 linhas quase
+  sempre está carregando decisão que pertence ao Hook — o limiar é sintoma, não meta.
+- **FRONTEIRA LÓGICA (ATÔMICO × FEATURE):** requests HTTP, `useEffect` complexo, chamada de API ou
+  estado global não entram em `src/components/atomic/`. Estado e inteligência vivem em
+  `src/features/`; os átomos permanecem passivos.
+- **NÃO duplique** definição de estilo que o dicionário já tem (schema / `master-map.ts`) — é a
+  fronteira Configuração × Expansão (R11) aplicada ao CSS.
+
+> ⚠️ **R10 não tem gate** — o §3 de `specs/specs/00-regras-e-invariantes.md` a marca como CONDUTA.
+> Ela depende desta revisão e de mais nenhuma coisa: é o item que esta skill existe para pegar.
 
 ## Checklist
 - [ ] O componente obedece ao fluxo Schema → Master Map → CSS Variables?

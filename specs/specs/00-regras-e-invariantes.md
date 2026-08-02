@@ -450,6 +450,38 @@ CERTO    "A lista completa está em `docs/component-catalog.json`, gerada por AS
 | **R16** | **Zero-gambiarra** | **nenhum — CONDUTA** | — |
 | R17 | Não transcrever fonte viva | `catalog:check`/`guide:check` (só gerados) | `npm run catalog:check` |
 
+## 3.1 Os validadores e o pipeline — quem executa o quê
+
+> **Decisão do dono (2026-08-01): a verificação é do GATE, não da skill.** As skills de
+> `.agents/skills/` **hospedam** os validadores porque são donas do domínio, mas **não os invocam**.
+> Quem executa é o `package.json` hoje e o **pipeline de CI/CD** adiante. Esta tabela existe para
+> quem for montá-lo: é o inventário do que já está ligado e do que ainda falta ligar.
+
+| Validador | Cobra | Onde mora | Executado por |
+| --- | --- | --- | --- |
+| `run_audit.mjs` (agrega os `auditor_*.mjs`) | R1 · R2 · R3 · R4 · R5 · R7 · R8 · R9 | `.agents/skills/ui-auditoria-modulo/scripts/` | ✅ `npm run audit` |
+| `verify_parity.ts` | R4 | `.agents/skills/ui-novo-componente/scripts/` | ✅ via `auditor_paridade.mjs` |
+| `verify_presets.ts` | R5 | `.agents/skills/ui-auditoria-modulo/scripts/` | ✅ via `auditor_presets.mjs` |
+| `check-barrel-parity.mjs` · `check-zero-brand.mjs` · `check-package-contents.mjs` | R14 · R12 · empacotamento | `scripts/` | ✅ `barrel:check` · `zero-brand:check` · `package:check` |
+| `generate-component-catalog.mjs` · `generate-consumer-kit.mjs` · `generate-dev-kit.mjs` (modo `--check`) | R17 (só o gerado) | `scripts/` | ✅ `catalog:check` · `guide:check` · `dev-kit:check` |
+| **`verify_theme_parity.ts`** | **R5, por tema individual** | `.agents/skills/ui-criar-tema/scripts/` | ⏳ **nenhum — vai para o pipeline** |
+
+**A única linha ⏳ é a que importa para o CI/CD.** `verify_theme_parity.ts` valida **um** tema
+contra o dicionário e hoje só roda se alguém o chamar à mão. O que **existe** em gate é o
+`auditor_presets`, que cobra chave órfã em todos os temas embarcados de uma vez — cobertura
+diferente, não equivalente: ele não pega tema que o consumidor escreveu, nem mede completude.
+
+> ⚠️ **Nada nesta tabela transforma `⏳` em gate.** A coluna diz o que **é**, não o que deveria
+> ser — inventar gate para preencher tabela é proibido por este repositório, e um `⏳` declarado
+> vale mais que um ✅ falso. A construção dos gates está sequenciada **depois** do fechamento das
+> regras; a fila completa está em [[15-divida-conhecida]] §4.
+
+**Geradores não viram gate — e a distinção é deliberada.**
+`generate_theme_template.ts` (`ui-criar-tema`) escreve arquivo em `src/`; um gerador que rodasse
+em pipeline produziria commit fantasma a cada execução. Gerador é invocado pela skill, sob decisão
+humana. **Validador** é invocado pelo gate, sempre. Os dois vivem lado a lado na mesma pasta de
+`scripts/` e não se confundem: um escreve, o outro só lê e reprova.
+
 # 4. O que esta spec admite sobre si mesma
 
 Três coisas ficam registradas em voz alta, porque quem lê um contrato precisa saber onde ele é fino:

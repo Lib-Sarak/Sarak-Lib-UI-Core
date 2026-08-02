@@ -82,8 +82,9 @@ npx vitest run          # a suíte INTEIRA
 ```
 - **Critério:** `barrel:check` e `catalog:check` em verde; e o `npm run audit` **no BASELINE**,
   não em zero — ver `specs/specs/01-gates-e-baseline.md` antes de acusar regressão.
-- Para rodar só a paridade do dicionário:
-  `npx tsx .agents/skills/ui-novo-componente/scripts/verify_parity.ts`.
+- **A paridade se confere pelo gate** (`npm run audit`, que roda o `auditor_paridade`), nunca
+  invocando o `verify_parity.ts` a dedo: dois caminhos para a mesma medição é como o número do
+  gate e o número que alguém mediu passam a divergir.
 
 ### 6. Finalização
 Informe o resultado da injeção, quais gates rodaram e com que números, comparados ao baseline.
@@ -111,6 +112,12 @@ Informe o resultado da injeção, quais gates rodaram e com que números, compar
 - [ ] `npm run audit` comparado ao **baseline** (não a zero) e a suíte inteira verde?
 
 ## Referências (Camada 3)
+
 - `.agents/skills/ui-novo-componente/scripts/verify_parity.ts` — motor de paridade das três
-  fontes do dicionário. É o mesmo script que o `auditor_paridade.mjs` invoca. Rode com
-  `npx tsx .agents/skills/ui-novo-componente/scripts/verify_parity.ts`.
+  fontes do dicionário. **Você não o invoca:** quem o executa é o `auditor_paridade.mjs`, dentro
+  do `npm run audit` — e, adiante, o pipeline de CI/CD.
+
+> ⚠️ **Esta pasta NÃO é removível.** O script acima mora aqui e é chamado de
+> `.agents/skills/ui-auditoria-modulo/scripts/auditor_paridade.mjs`. Apagar esta skill derruba
+> `npm run audit`, e por ele o `gates:full` e o `preversion`. Se um dia a skill for absorvida por
+> uma spec, o **script fica** — o inventário está em `specs/specs/00-regras-e-invariantes.md` §3.1.

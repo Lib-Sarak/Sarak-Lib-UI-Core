@@ -5,6 +5,26 @@ description: Instala e acopla a base Sarak (@sarak/lib-ui-core) num sistema cons
 
 # Skill: Integrar Consumidor (Infraestrutura)
 
+> 🔒 **Esta skill tem contrato INVERTIDO em relação às outras deste repositório — leia antes de
+> "adequá-la".**
+>
+> As demais skills de `.agents/skills/` **apontam** para `specs/` em vez de duplicar conteúdo.
+> Esta **não pode**: ela é a **fonte** do kit do consumidor
+> (`scripts/consumer-kit/kitFiles.mjs` → `sarak-ui/skill/`) e viaja dentro do pacote. Quem a lê do
+> outro lado **não tem `specs/`** — tem só o que veio no `node_modules`. Para ela, ser
+> autocontida é o requisito, não o defeito.
+>
+> Duas consequências práticas:
+> - **Os caminhos daqui são do repositório do CONSUMIDOR**, não deste — o **src/main.tsx** dele, o
+>   **npm run dev** dele. Um detector de ponteiro morto rodando aqui dentro os acusa, e estaria
+>   errado. *(Por isso são citados em negrito: a convenção de `specs/specs/14-artefatos-do-mantenedor.md`
+>   §4.2 é que caminho não-verificável nunca vai em crase.)*
+> - **Apagá-la derruba o `npm run build`**: o `guide:check` lê esta pasta e um `readdirSync` num
+>   caminho ausente lança `ENOENT`.
+>
+> Ela também deixou de ser procedimento para o agente que trabalha **neste** repositório: quem
+> baixa o módulo hoje recebe os artefatos prontos, esta skill inclusive.
+
 Instalação plug-and-play da base Sarak (`@sarak/lib-ui-core`) no projeto cliente e o **handoff**
 para quem vai escrever as telas. A instalação é feita pelo **scaffolder oficial**
 (`npx @sarak/lib-ui-core init`) — esta skill conduz a entrevista, roda o comando, valida a saída e
