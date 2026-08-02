@@ -317,6 +317,15 @@ Antes de escolher **como** fazer algo, leia **[[00-knowledge]]** — é o rotead
 - **`src/core/Provider/generated/design-token-ids.ts` está defasado em 105 tokens** (304 publicados × 409
   reais) e o gerador não está registrado em script, hook ou skill nenhuma. O número falso **vaza para o
   consumidor** via `sarak-ui/catalog.json`.
+- **O ERP Earendel é o único consumidor** e está em desenvolvimento simultâneo, consumindo por **caminho
+  local** (`file:`) — decisão do dono enquanto os dois repositórios são ajustados juntos; a migração para
+  `github:…#semver:` vem depois. **Alinhado em 2026-08-02** (plan-04 🟢): workspace com 13 projetos, lockfile
+  canônico, lib **1.2.0**, junctions manuais substituídas pelo elo do gerenciador e aviso de defasagem no
+  `predev`. ⚠️ **`file:` é cópia no store do pnpm, não link** — todo rebuild da lib exige
+  `pnpm install --force --filter @erp/ui-kit` no ERP para chegar lá. Medir a lib por um ERP não reinstalado é
+  medir o passado.
+- **Migração em curso (2026-08-01):** este fluxo SDD substituiu o modelo de "campanha em três arquivos fixos"
+  em `plan/`. Plans antigas foram sintetizadas nas specs fixas e removidas; o histórico está no git.
 
 **Aceito como característica — não proponha conserto para isto:**
 
@@ -332,10 +341,6 @@ Antes de escolher **como** fazer algo, leia **[[00-knowledge]]** — é o rotead
   `design.breakpointTablet` e gera a media-query; as classes `@min-[768px]` de `useStructuralStyles*` são
   resolvidas em **build-time** pelo Tailwind e **não aceitam `var()`** — limitação da ferramenta, não omissão.
   O alinhamento do detector JS (`DeviceProvider`) **é** dívida e está na §3 da spec de dívida.
-- **O ERP Earendel é o único consumidor** e está em desenvolvimento simultâneo, consumindo por caminho local.
-  Ele tem defeitos estruturais próprios, catalogados na plan de alinhamento.
-- **Migração em curso (2026-08-01):** este fluxo SDD substituiu o modelo de "campanha em três arquivos fixos"
-  em `plan/`. Plans antigas foram sintetizadas nas specs fixas e removidas; o histórico está no git.
 
 ---
 

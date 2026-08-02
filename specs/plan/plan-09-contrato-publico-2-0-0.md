@@ -1,6 +1,6 @@
 ---
 tipo: "plan"
-titulo: "Limpar o contrato público — as três quebras saem juntas num único major"
+titulo: "Limpar o contrato público — as quebras saem juntas num único major"
 dominio: "Sarak-Lib-UI-Core / Superfície pública"
 status: "🔴 A executar"
 prioridade: "Alta"
@@ -20,24 +20,31 @@ não três**.
 
 # 2. Contexto
 
-Três quebras de contrato estão paradas há tempo, e sempre pelo mesmo motivo: **cada uma, sozinha, custaria uma
-migração ao consumidor.** Três migrações separadas custam ao importador três vezes o mesmo trabalho de leitura,
+As quebras de contrato estão paradas há tempo, e sempre pelo mesmo motivo: **cada uma, sozinha, custaria uma
+migração ao consumidor.** Migrações separadas custam ao importador várias vezes o mesmo trabalho de leitura,
 teste e ajuste — por isso saem juntas ou não saem.
+
+> **Escopo revisado em 2026-08-01, pela triagem da plan-03** (veredito 🟢). Duas trocas, ambas já decididas pelo
+> dono e registradas em [[15-divida-conhecida]]: o **achado 27 SAIU** — `chromeSlots` contando 9 para 8 foi
+> **aceito como característica** (§5 da spec de dívida; o `doc` do próprio slot avisa o consumidor de que
+> `topbarActions` é alias de `topbarEnd`), e o **achado 2 ENTROU** — `upgradeThemePayload(partialMode)` é
+> parâmetro morto cuja remoção muda assinatura pública. Continuam sendo **quatro** itens.
 
 # 3. Escopo
 
 ## 3.1 Dentro — as quatro saem no mesmo major
 
 - **`CustomizationPanel` lazy** *(achado 3)*. Hoje sai **eager** do barril (`src/index.ts:50`) e ainda é
-  importado eager pelo efeito colateral de `:119-125` — é **o painel inteiro do Design Engine no caminho
+  importado eager pelo efeito colateral de `:126-131` — é **o painel inteiro do Design Engine no caminho
   crítico de todo consumidor**, inclusive de quem nunca o abre. Tornar lazy muda o tipo público para
   `LazyExoticComponent`: é breaking por tipo, não por comportamento.
 - **Dedup do `SarakTabs`** — dois componentes, **mesmo nome**, APIs incompatíveis
   (`items`/`defaultActiveId` × `tabs`/`activeTab`/`onChange`). Exige **decidir qual API sobrevive**.
 - **Os 2 ids legados do Discovery** (`mx-customization`, `personalization`), registrados por **efeito colateral
-  de import**: manter ou remover — decisão do dono, pendente desde 2026-07-30.
-- **Achado 27** — `chromeSlots` contando **9 para 8 regiões**: resolver o alias legado `topbarActions` junto.
-  É imprecisão de derivação, e o major é a única janela barata para acertá-la.
+  de import** (`src/index.ts:126-131`): manter ou remover — decisão do dono, pendente desde 2026-07-30.
+- **`upgradeThemePayload(partialMode)`** *(achado 2)*. Parâmetro morto: `src/core/Design/master-map.ts:148`
+  tem a **única ocorrência** de `partialMode` no repositório inteiro — a própria assinatura. Remover parâmetro
+  de função exportada é mudança de assinatura pública, e o major é a janela dela.
 
 ## 3.2 Fora
 - ⛔ Emitir o `npm version major` **antes** da revalidação no ERP.
@@ -57,12 +64,13 @@ teste e ajuste — por isso saem juntas ou não saem.
 
 # 5. Instruções de execução
 
-1. **`CustomizationPanel` lazy** — e remover o import eager por efeito colateral (`src/index.ts:119-125`).
+1. **`CustomizationPanel` lazy** — e remover o import eager por efeito colateral (`src/index.ts:126-131`).
    Medir o boot do consumidor antes e depois: o ganho é o argumento da nota de migração.
 2. **`SarakTabs`** — apresentar as duas APIs ao dono, com quem usa cada uma, e aplicar a decisão.
    ⚠️ Se **uma sobrevive e outra morre**, isso é decisão técnica com trade-off: **escreva um ADR**.
 3. **Ids legados do Discovery** — decisão do dono. Se saírem, verificar quem os registra por efeito colateral.
-4. **Achado 27** — resolver o alias `topbarActions` e fazer o coletor contar por **semântica**, não por tipo.
+4. **Achado 2** — remover o parâmetro `partialMode` de `upgradeThemePayload` (`master-map.ts:148`) e confirmar,
+   por busca no repositório inteiro, que nenhum chamador o passava.
 5. **Uma entrada única em `docs/migracoes.md`**, cobrindo as quatro: antes/depois e como migrar. Uma entrada,
    não quatro — é o ponto inteiro desta plan.
 6. **⇒ PARE. Revalidar no ERP** *antes* do `npm version`: diagnóstico read-only → relatório → **"sim" do dono**
@@ -91,7 +99,7 @@ Não commite. Ao terminar, escreva o resumo na própria plan.
 - [ ] Ganho de boot **medido**, antes e depois.
 - [ ] `SarakTabs` com **uma** API; ADR escrito se uma sobreviveu e outra morreu.
 - [ ] Decisão sobre os ids legados do Discovery registrada e aplicada.
-- [ ] `chromeSlots` contando **8 para 8 regiões**.
+- [ ] `upgradeThemePayload` sem o parâmetro `partialMode`, e nenhum chamador quebrado.
 - [ ] **Uma** entrada em `docs/migracoes.md` cobrindo as quatro, com antes/depois.
 - [ ] `arquitetura/03-superficie-publica.md` §8 sem as três dívidas.
 - [ ] **ERP revalidado com o `2.0.0`** — sobe, navega e builda.
@@ -102,7 +110,7 @@ Não commite. Ao terminar, escreva o resumo na própria plan.
 
 - `grep -n "CustomizationPanel" src/index.ts` → export lazy; sem import por efeito colateral
 - `grep -c "SarakTabs" dist/index.d.ts` → uma definição
-- Contagem de `chromeSlots` no artefato gerado → **8**
+- `grep -rn "partialMode" src/` → **0 ocorrências**
 - `docs/migracoes.md` → **uma** entrada nova cobrindo as quatro
 - No ERP: `pnpm install && npm run dev` → sobe com o `2.0.0`; as telas navegam
 - `npx vitest run` · `npm run gates:full` → verdes
@@ -110,7 +118,12 @@ Não commite. Ao terminar, escreva o resumo na própria plan.
 # 9. Destino da síntese
 
 **Destino:** `arquitetura/03-superficie-publica.md` (as dívidas da §8 morrem) · `adr/009-*` (se o `SarakTabs`
-exigir) · `docs/migracoes.md` (a entrada única) · `specs/15-divida-conhecida.md` (achados 3 e 27 saem)
+exigir) · `docs/migracoes.md` (a entrada única) · `specs/15-divida-conhecida.md` (achados **2 e 3** saem da §3)
+
+> **Correção a levar junto na síntese** *(medida pelo revisor em 2026-08-01)*:
+> `arquitetura/03-superficie-publica.md:177` cita o import por efeito colateral em `src/index.ts:119-125`.
+> O real hoje é **`:126-131`** (`:50` é o export). Divergência spec × código, pequena e viva — some quando a
+> §8 for reescrita por esta plan.
 
 ---
 

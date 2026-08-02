@@ -41,23 +41,29 @@ as duas, sempre, na mesma ação.**
 | # | Plan | Objetivo | Depende de | Status | Destino |
 |---|---|---|---|---|---|
 | 1 | [plan-01-migrar-para-fluxo-sdd](plan/plan-01-migrar-para-fluxo-sdd.md) | Migrar a base de specs para o fluxo SDD | — | 🟢 Aprovada | `00-contexto.md` · `specs/15-divida-conhecida.md` |
-| 2 | [plan-03-triagem-divida-conhecida](plan/plan-03-triagem-divida-conhecida.md) | Decidir o destino de cada achado aberto *(análise, não conserto)* | plan-01 | 🟠 Em revisão | `specs/15-divida-conhecida.md` · `00-contexto.md` |
-| 3 | [plan-02-adequar-skills-locais](plan/plan-02-adequar-skills-locais.md) | Adequar as 9 skills locais ao fluxo SDD | plan-01 | 🔴 A executar | `00-contexto.md` |
-| 4 | [plan-04-alinhamento-erp](plan/plan-04-alinhamento-erp.md) | Alinhar o ERP — o instrumento de medição da lib | — | 🔴 A executar | `—` |
+| 2 | [plan-03-triagem-divida-conhecida](plan/plan-03-triagem-divida-conhecida.md) | Decidir o destino de cada achado aberto *(análise, não conserto)* | plan-01 | 🟢 Aprovada | `specs/15-divida-conhecida.md` · `00-contexto.md` |
+| 3 | [plan-02-adequar-skills-locais](plan/plan-02-adequar-skills-locais.md) | Adequar as 9 skills locais ao fluxo SDD | plan-01 | 🟢 Aprovada | `00-contexto.md` · `specs/00-regras-e-invariantes.md` · `arquitetura/02` |
+| 4 | [plan-04-alinhamento-erp](plan/plan-04-alinhamento-erp.md) | Alinhar o ERP — o instrumento de medição da lib | — | 🟢 Aprovada | `—` |
 | 5 | [plan-05-integracao-continua](plan/plan-05-integracao-continua.md) | Rodar os gates num ambiente que não é a máquina de ninguém | — | 🔴 A executar | `specs/16-integracao-continua.md` *(nova)* · `specs/02` · `specs/01` |
 | 6 | [plan-06-auditoria-cobertura-gates](plan/plan-06-auditoria-cobertura-gates.md) | Mapear o escopo real de cada gate contra o escopo da regra *(investigação)* | plan-03 | 🔴 A executar | `specs/00-regras-e-invariantes.md` · `specs/01` · `specs/15` |
 | 7 | [plan-07-quitacao-baseline](plan/plan-07-quitacao-baseline.md) | Quitar o baseline de auditoria | plan-06 | 🔴 A executar | `specs/01` · `specs/11` · `specs/10` |
 | 8 | [plan-08-achados-comportamento](plan/plan-08-achados-comportamento.md) | Corrigir o código que faz coisa diferente do que promete | plan-06 | 🔴 A executar | `specs/06` · `specs/07` · `specs/04` |
-| 9 | [plan-09-contrato-publico-2-0-0](plan/plan-09-contrato-publico-2-0-0.md) | As três quebras de contrato saem juntas num único major | plan-06 | 🔴 A executar | `arquitetura/03` · `adr/009-*` · `docs/migracoes.md` |
-| 10 | [plan-10-ciclo-atualizacao](plan/plan-10-ciclo-atualizacao.md) | Dar comando de atualização a quem só recebia aviso | plan-05 | 🔴 A executar | `specs/13-instalacao-e-atualizacao.md` |
-| 11 | [plan-11-e2e-no-pipeline](plan/plan-11-e2e-no-pipeline.md) | Parar de sair verde sem executar nada | plan-05 | 🔴 A executar | `specs/11` · `specs/10` · `specs/16` |
+| 9 | [plan-09-contrato-publico-2-0-0](plan/plan-09-contrato-publico-2-0-0.md) | As quebras de contrato saem juntas num único major | plan-06 | 🔴 A executar | `arquitetura/03` · `adr/009-*` · `docs/migracoes.md` |
+| 10 | [plan-12-construcao-dos-gates](plan/plan-12-construcao-dos-gates.md) | Dar dono e verificação aos gates que hoje só estão escritos | plan-06 | 🔴 A executar | `specs/00-regras-e-invariantes.md` · `specs/01` · `specs/02` · `specs/15` |
+| 11 | [plan-10-ciclo-atualizacao](plan/plan-10-ciclo-atualizacao.md) | Dar comando de atualização a quem só recebia aviso | plan-05 | 🔴 A executar | `specs/13-instalacao-e-atualizacao.md` |
+| 12 | [plan-11-e2e-no-pipeline](plan/plan-11-e2e-no-pipeline.md) | Parar de sair verde sem executar nada | plan-05 | 🔴 A executar | `specs/11` · `specs/10` · `specs/16` |
 
 > **A ordem da coluna `#` não é a ordem do número da plan** — e isso é a feature, não um erro. A `plan-03`
 > (triagem) roda **antes** da `plan-02` porque ela decide o escopo real de 07, 08 e 09; a `plan-02` só depende
 > da `plan-01`. Numeração é identidade; a coluna `#` é o plano.
 >
-> **A `plan-06` é a única que começa sem lista de tarefas** — a lista é o produto dela, e é por isso que 07, 08
-> e 09 dependem dela. Os escopos dessas três estão marcados como **provisórios** dentro dos próprios arquivos.
+> **A `plan-06` é a única que começa sem lista de tarefas** — a lista é o produto dela, e é por isso que 07, 08,
+> 09 e 12 dependem dela. Os escopos de 07 e 08 seguem marcados como **provisórios** dentro dos próprios
+> arquivos; o da 09 foi **fixado em 2026-08-01** pela triagem da `plan-03` (achado 27 saiu, achado 2 entrou).
+>
+> **A `plan-12` roda DEPOIS de 07, 08 e 09, e não antes** — embora dependa formalmente só da `plan-06`. O motivo
+> é operacional: ela liga verificação, e gate ligado antes do conserto correspondente acende vermelho que
+> pertence a outra plan. Consertar primeiro, cobrar depois, é o que mantém o baseline legível.
 
 ---
 
@@ -65,7 +71,7 @@ as duas, sempre, na mesma ação.**
 
 | Status | Significado | Quem move para cá |
 |---|---|---|
-| 🔴 A executar | Spec escrita e liberada. Aguarda executor. | revisor (ao criar) |
+| 🔴 A executar | Spec escrita. Aguarda a **sua vez na fila** — não é autorização para começar (§5). | revisor (ao criar) |
 | 🟡 Em execução | Executor trabalhando. | executor (ao iniciar) |
 | 🟠 Em revisão | Execução concluída no worktree, aguardando veredito. | executor (ao entregar) |
 | 🔵 Em correção | Reprovada. Prompt de correção emitido, executor refazendo. | revisor (ao reprovar) |
@@ -114,7 +120,11 @@ Toda plan declara, **desde o momento em que é escrita**, para onde seu conteúd
 - **Nunca remova uma linha.** Plan abandonada vira `⛔ Bloqueada` com o motivo; plan concluída vai para a §4.
 - **Status duplicado é status divergente.** O valor aqui e no frontmatter da plan são atualizados na **mesma
   ação**. Divergiu? A **plan** é a fonte da verdade e este índice está errado — corrija aqui.
-- **Dependência é contrato:** não libere (`🔴`) uma plan cuja dependência não esteja `🟢` ou `⚪`.
+- **Dependência é contrato: não MANDE EXECUTAR uma plan cuja dependência não esteja `🟢` ou `⚪`.** O status
+  `🔴` diz apenas que a **spec está escrita** — ele não é autorização para começar. Quem governa é a **ordem da
+  coluna `#`**, lida junto com a coluna *Depende de*: **as plans são executadas na ordem da fila**
+  *(decisão do dono, 2026-08-01)*. Por isso é normal e correto ver várias `🔴` ao mesmo tempo com dependência
+  ainda aberta — a fila é que as sequencia.
 - **Uma plan `🟡 Em execução` por vez**, salvo plans comprovadamente disjuntas (arquivos sem interseção) — o
   revisor declara a disjunção ao liberar as duas.
 - **Só o revisor edita este arquivo.** O executor nunca o toca; ele escreve apenas na plan que executou.

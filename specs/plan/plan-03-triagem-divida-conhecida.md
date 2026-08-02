@@ -2,7 +2,7 @@
 tipo: "plan"
 titulo: "Triar a dívida conhecida — decidir o destino de cada achado aberto"
 dominio: "Sarak-Lib-UI-Core / Qualidade / Dívida técnica"
-status: "🟠 Em revisão"
+status: "🟢 Aprovada"
 prioridade: "Máxima"
 tags: ["plan", "divida-tecnica", "triagem", "analise", "read-only"]
 relacionados: ["[[15-divida-conhecida]]", "[[00-contexto]]", "[[01-gates-e-baseline]]"]
@@ -278,3 +278,72 @@ suposições".
 # 11. Veredito
 
 <!-- Preenchido pelo REVISOR. Append-only. -->
+
+## Veredito — 2026-08-01 — 🟢 Aprovado
+
+**Como verifiquei.** A execução já estava commitada (`ccf8d8f`) quando cheguei — o worktree estava limpo, então
+a inspeção saiu por `git show`, não por `git diff`. O desvio de processo está registrado na mensagem ao usuário;
+não pesa contra esta execução, porque quem commita é o usuário.
+
+**1. Inventário real (`git show --stat ccf8d8f`) — 3 arquivos, todos em `specs/`:**
+
+| Arquivo | Δ | Estava no escopo? |
+|---|---|---|
+| `specs/specs/15-divida-conhecida.md` | +173/−54 | ✅ §3.1 |
+| `specs/00-contexto.md` | +26 | ✅ §3.1 |
+| `specs/plan/plan-03-…` | +154 | ✅ (status + resumo) |
+
+**Zero ocorrência de `src/`, `scripts/`, `bin/`, `dist/` ou `.githooks/`** — o bloqueio 🔒 da §3.2 foi
+respeitado ao pé da letra. Nada faltando, nada em excesso. O resumo do executor bate arquivo por arquivo com o
+diff real.
+
+**2. Critérios de aceite, um a um, com evidência minha:**
+
+- [x] **Achados reconfirmados com `arquivo:linha`** — coluna *Onde* de §3 e §4 reaberta. Reconferi por amostra:
+      `master-map.ts:148` tem **1 ocorrência** de `partialMode` (a própria assinatura) ✅ · `src/index.ts:50`
+      exporta `CustomizationPanel` e `:126-131` faz o registro por efeito colateral ✅ · `SarakUIProvider.tsx`
+      confere com o que a spec descreve ✅
+- [x] **Exposição medida, sem "provavelmente"** — li §3 inteira: toda linha traz número ou `arquivo:linha`
+- [x] **Regra nomeada ou `nenhuma` declarada** — coluna *Regra* presente em todas as tabelas de §3 e §4.
+      **12 dos 21 vivos não violam regra nenhuma**: é o dado mais valioso da entrega, e está em voz alta
+- [x] **Destino por achado** — coluna *Destino*, mais a distribuição de §2
+- [x] **Aceitos migrados com o motivo** — `00-contexto` §8, bloco "Aceito como característica" (3 itens, cada um
+      com o porquê); spec 15 §5 guarda os números 16 e 27
+- [x] **Soma fechada** — recontei item a item: §3 = 14 (8, 22, 1, 13, 29, 10, 11, 12, 9, 2, 3, 24, 25, 17) ·
+      §4 = 5 (14, 15, 18, 23, 26) · §5 = 2 (16, 27) · §6 = 10 (4, 5, 6, 7, 19, 20, 21, 28, 30, 31) = **31** ✅
+- [x] **Lista de plans que mudam de escopo entregue ao revisor** — recebida e **aplicada nesta rodada**
+      (plan-09 reescrita, plan-12 criada, índice atualizado)
+
+**3. Gates rodados por mim (saída real, 2026-08-01):**
+
+```
+npm run audit          → exit 1, 2 auditores vermelhos — BASELINE EXATO
+  hardcoded  : 1 violação — src\components\atomic\Atoms\SarakTypography.tsx
+  ghostvars  : 3 variáveis-fantasma distintas, 3 consumos; registro de 14.179 emitidas
+  typescript : 0 any   ·  coverage: 0 órfãos  ·  arquitetura: 0 quebras  ·  cleancode: 0
+  paridade   : 409 / 409 / 409 em 13 partições
+  presets    : 120 itens (18 temas + 102), 0 chave órfã
+npx vitest run         → 274 arquivos / 889 testes, 100% verde (195,68 s)
+npm run guide:check    → kit em dia (6 arquivos)
+npm run dev-kit:check  → kit em dia (3 arquivos, 0 ponteiros mortos)
+npm run barrel:check   → 81 componentes, 0 faltas
+npm run catalog:check  → catálogo em dia
+npm run zero-brand:check → 361 arquivos, 0 violações
+```
+
+Idêntico ao baseline de [[01-gates-e-baseline]] §3, como tinha de ser: a plan é read-only sobre o código.
+
+**4. Sinais de atalho:** nenhum. Sem `TODO` novo, sem teste desabilitado, sem gate contornado, sem dependência
+nova. Nenhum arquivo apagado.
+
+**Ajuste feito por mim, não é achado contra a execução.** A inserção do bloco "Aceito como característica"
+em `00-contexto` §8 absorveu dois bullets pré-existentes ("O ERP Earendel é o único consumidor" e "Migração em
+curso") para dentro de uma seção rotulada *não proponha conserto para isto* — o segundo, em particular, não é
+característica aceita, é estado. Movi os dois de volta para antes do bloco. `00-contexto.md` é arquivo do
+revisor ([[00-prompt-revisor]] §3.1); corrigir posicionamento nele é meu trabalho, não rodada de correção.
+
+**Destino da síntese:** `specs/15-divida-conhecida.md` · `00-contexto.md` — **ambos já escritos por esta
+própria execução** (a triagem *é* a síntese, como a §9 declara). O `/spec-atualizar` só precisará mover esta
+linha para o histórico do índice.
+
+**Liberado: pode commitar.**
