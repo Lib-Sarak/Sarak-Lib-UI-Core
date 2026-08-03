@@ -44,7 +44,7 @@ Remova ou atualize a chave **simultaneamente** em:
 
 E, se a mudança for de **componente público**, a superfície:
 - `src/index.ts` — o export do valor **e** do `<Nome>Props`;
-- `scripts/barrelExclusions.mjs` — o gate derruba **exclusão obsoleta** (nome já exportado ou
+- `gates/allowlists/barrelExclusions.mjs` — o gate derruba **exclusão obsoleta** (nome já exportado ou
   componente que não existe mais), então limpe a entrada junto.
 
 > ⚠️ **A "6ª camada" NÃO existe mais.** Não há **NATIVE_COMPONENTS**, não há
@@ -71,7 +71,7 @@ npm run dev-kit         # kit do mantenedor
 npx vitest run          # a suíte INTEIRA
 ```
 - Para rodar só a paridade do dicionário:
-  `node .agents/skills/ui-auditoria-modulo/scripts/auditor_paridade.mjs`.
+  `node gates/scripts/audit/auditor_paridade.mjs`.
 - **Compare o `npm run audit` com o BASELINE** de `specs/specs/01-gates-e-baseline.md` — ele
   **não** está em zero, e acusar regressão onde há dívida conhecida custa uma rodada inteira.
 

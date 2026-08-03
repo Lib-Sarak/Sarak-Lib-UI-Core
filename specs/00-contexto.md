@@ -130,7 +130,7 @@ testes `vitest` + `playwright-ct` · gerenciador **npm** · distribuída por **g
 O consumidor resolve a versão por **tag** (`#semver:^1.x`), não por commit. Daí decorrem quatro fatos que um
 agente descobre do jeito difícil se não estiverem escritos:
 
-- **Mudou o artefato publicado, precisa de tag nova.** O anel de `pre-push` (`scripts/check-release-tag.mjs`)
+- **Mudou o artefato publicado, precisa de tag nova.** O anel de `pre-push` (`gates/scripts/release/check-release-tag.mjs`)
   compara `dist/` + `sarak-ui/` entre a última tag e o HEAD e **bloqueia o push** se mudaram sem tag nova.
   Sem ela o importador fica no artefato antigo **em silêncio** — é o incidente que o [[adr/007-distribuicao-por-git]]
   registra. Não é release? `--no-verify` é a saída legítima, e é decisão do usuário.

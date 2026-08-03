@@ -18,19 +18,19 @@
  * LIDA de `run_audit.mjs` para não haver drift: auditor novo lá é auditor novo aqui.
  *
  * Uso:
- *   node scripts/check-audit-baseline.mjs            # compara (exit 1 se regrediu)
- *   node scripts/check-audit-baseline.mjs --write    # regrava o baseline com a medição atual
- *   node scripts/check-audit-baseline.mjs --with-tsc # inclui a contagem do `tsc --noEmit`
+ *   node gates/scripts/release/check-audit-baseline.mjs            # compara (exit 1 se regrediu)
+ *   node gates/scripts/release/check-audit-baseline.mjs --write    # regrava o baseline com a medição atual
+ *   node gates/scripts/release/check-audit-baseline.mjs --with-tsc # inclui a contagem do `tsc --noEmit`
  */
 import fs from 'node:fs';
 import path from 'node:path';
 import { spawnSync } from 'node:child_process';
 import { fileURLToPath } from 'node:url';
 
-const ROOT = path.resolve(path.dirname(fileURLToPath(import.meta.url)), '..');
-const AUDIT_DIR = path.join(ROOT, '.agents/skills/ui-auditoria-modulo/scripts');
+const ROOT = path.resolve(path.dirname(fileURLToPath(import.meta.url)), '../../..');
+const AUDIT_DIR = path.join(ROOT, 'gates/scripts/audit');
 const RUN_AUDIT = path.join(AUDIT_DIR, 'run_audit.mjs');
-const BASELINE_FILE = path.join(ROOT, '.githooks/audit-baseline.json');
+const BASELINE_FILE = path.join(ROOT, 'gates/baselines/audit-baseline.json');
 
 /** Lê a lista de auditores do próprio `run_audit.mjs` — evita drift entre os dois. */
 const auditorList = () => {
@@ -155,14 +155,14 @@ const main = () => {
 
     if (write) {
         writeBaseline(metricas, tsc);
-        console.log(`[audit:baseline] baseline regravado em .githooks/audit-baseline.json`);
+        console.log(`[audit:baseline] baseline regravado em gates/baselines/audit-baseline.json`);
         console.log('[audit:baseline] COMMITE este arquivo junto do conserto que o justificou.');
         return;
     }
 
     const baseline = readBaseline();
     if (!baseline) {
-        console.error('[audit:baseline] BLOQUEADO — .githooks/audit-baseline.json não existe.');
+        console.error('[audit:baseline] BLOQUEADO — gates/baselines/audit-baseline.json não existe.');
         console.error('  Gere com: npm run audit:baseline -- --write');
         process.exit(1);
     }
@@ -184,7 +184,7 @@ const main = () => {
         console.error(`\n[audit:baseline] REGRESSÃO — a auditoria piorou em relação ao baseline de ${baseline.medidoEm}:`);
         for (const linha of regressoes) console.error(`  - ${linha}`);
         console.error('\n  Veja o detalhe (arquivo e linha) com:');
-        console.error('    node .agents/skills/ui-auditoria-modulo/scripts/run_audit.mjs');
+        console.error('    node gates/scripts/audit/run_audit.mjs');
         console.error('  As regras estão em specs/specs/00-regras-e-invariantes.md; a dívida tolerada, em 01-gates-e-baseline.md.\n');
         process.exit(1);
     }

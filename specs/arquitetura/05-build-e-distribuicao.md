@@ -56,7 +56,7 @@ A flag `--external` do `build:js` lista **17 libs**, e todas as 17 são `peerDep
 
 ## 3.1 O gate `package:check`
 
-`scripts/check-package-contents.mjs` roda `npm pack --dry-run --json` e lê a lista real de arquivos do tarball. Ele cobra **duas coisas**, e a segunda é a que costuma ser esquecida:
+`gates/scripts/contrato/check-package-contents.mjs` roda `npm pack --dry-run --json` e lê a lista real de arquivos do tarball. Ele cobra **duas coisas**, e a segunda é a que costuma ser esquecida:
 
 **PROIBIDOS** — por prefixo: `src/` (**sem exceção**), `specs/`, `playwright/`, `__snapshots__/`, `Template-Ts/`. Por nome ou sufixo: `vitest.config.ts`, `.test.mjs`, `.test.ts`, `.test.tsx`.
 

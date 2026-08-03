@@ -170,11 +170,11 @@
   "gates": [
     {
       "nome": "npm run audit",
-      "comando": "node .agents/skills/ui-auditoria-modulo/scripts/run_audit.mjs"
+      "comando": "node gates/scripts/audit/run_audit.mjs"
     },
     {
       "nome": "npm run barrel:check",
-      "comando": "node scripts/check-barrel-parity.mjs --check"
+      "comando": "node gates/scripts/contrato/check-barrel-parity.mjs --check"
     },
     {
       "nome": "npm run catalog:check",
@@ -194,15 +194,15 @@
     },
     {
       "nome": "npm run package:check",
-      "comando": "node scripts/check-package-contents.mjs"
+      "comando": "node gates/scripts/contrato/check-package-contents.mjs"
     },
     {
       "nome": "npm run release:check",
-      "comando": "node scripts/check-release-tag.mjs"
+      "comando": "node gates/scripts/release/check-release-tag.mjs"
     },
     {
       "nome": "npm run zero-brand:check",
-      "comando": "node scripts/check-zero-brand.mjs --check"
+      "comando": "node gates/scripts/contrato/check-zero-brand.mjs --check"
     }
   ],
   "auditores": [

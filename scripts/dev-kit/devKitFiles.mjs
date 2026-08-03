@@ -7,7 +7,7 @@
  * implementações seria a porta para os dois kits divergirem em silêncio.
  *
  * ⚠️ `sarak-dev/` é INTERNO: não entra no campo `files` do `package.json` e é
- * PROIBIDO no tarball (`scripts/check-package-contents.mjs`). Quem consome a lib
+ * PROIBIDO no tarball (`gates/scripts/contrato/check-package-contents.mjs`). Quem consome a lib
  * recebe o `sarak-ui/`; quem a EDITA usa este.
  */
 

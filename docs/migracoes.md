@@ -179,7 +179,7 @@ seguem funcionando e sobrescrevendo o default; a mudança é só o **valor** do 
 `'Sarak Lib'`/`'Sarak OS'`/`'Sarak AI'` voltar a aparecer como texto renderizado em
 componente consumidor-facing. Os painéis INTERNOS do Design Engine (Kitchen Sink, abas de
 customização — ferramenta de autoria da própria lib, não embutida pelo consumidor) ficam
-numa allowlist explícita em `scripts/check-zero-brand.mjs`.
+numa allowlist explícita em `gates/scripts/contrato/check-zero-brand.mjs`.
 
 **Handoff para a Spec 50** (kit de uso do consumidor): não documentar nem exemplificar
 componentes que estampem a marca da lib — os exemplos do kit devem refletir os rótulos

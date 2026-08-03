@@ -4,7 +4,7 @@ import path from 'path';
 console.log("--- Auditor de Drift de Presets/Temas ---");
 console.log("Invocando o validador de Gabarito Dinâmico (verify_presets.ts)...\n");
 
-const verifyScript = path.resolve('.agents/skills/ui-auditoria-modulo/scripts/verify_presets.ts');
+const verifyScript = path.resolve('gates/scripts/audit/verify_presets.ts');
 
 try {
   execSync(`npx tsx "${verifyScript}"`, { stdio: 'inherit' });

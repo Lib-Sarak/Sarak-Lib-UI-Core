@@ -1,12 +1,12 @@
 import fs from 'fs';
 import path from 'path';
-import { MASTER_DESIGN_MAP } from '../../../../src/core/Design/master-map.ts';
+import { MASTER_DESIGN_MAP } from '../../../src/core/Design/master-map.ts';
 
 import { fileURLToPath } from 'url';
 
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = path.dirname(__filename);
-const rootDir = path.resolve(__dirname, '../../../../');
+const rootDir = path.resolve(__dirname, '../../../');
 const resolvePath = (relativePath: string) => path.join(rootDir, relativePath);
 
 function runParityCheck() {

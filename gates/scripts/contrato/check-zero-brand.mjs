@@ -16,7 +16,7 @@
  * `SarakSearch`, `ChatHeader`, `SarakChat`, `SarakShell`) ficaram de fora — a Spec 49 fecha
  * os sinks e este gate impede o carimbo de voltar em silêncio.
  *
- * Uso: `node scripts/check-zero-brand.mjs` (relatório) | `--check` (exit 1 se achar).
+ * Uso: `node gates/scripts/contrato/check-zero-brand.mjs` (relatório) | `--check` (exit 1 se achar).
  */
 
 import fs from 'node:fs';
@@ -24,7 +24,7 @@ import path from 'node:path';
 import { fileURLToPath } from 'node:url';
 import ts from 'typescript';
 
-const ROOT = path.resolve(path.dirname(fileURLToPath(import.meta.url)), '..');
+const ROOT = path.resolve(path.dirname(fileURLToPath(import.meta.url)), '../../..');
 const SRC = path.join(ROOT, 'src');
 
 /** Literais de marca da lib proibidos como TEXTO renderizado (Spec 49 §2/§5). */

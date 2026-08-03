@@ -59,7 +59,7 @@ mais cruel é que a tela não quebra: o valor apenas não pinta nada.
 - **Interface de props nomeada:** exporte sempre `interface <Nome>Props` — o gate cobra o tipo
   **junto** com o valor, e é dela que o catálogo extrai a documentação de props.
 - **Exporte os dois** (valor + tipo) em `src/index.ts`. Se o componente for interno de propósito,
-  a exclusão vai em `scripts/barrelExclusions.mjs` **com motivo escrito**; o gate também derruba
+  a exclusão vai em `gates/allowlists/barrelExclusions.mjs` **com motivo escrito**; o gate também derruba
   exclusão obsoleta.
 - **Nada pesado sai eager do barril** — componente que arrasta biblioteca grande vive atrás de
   fronteira `React.lazy`, senão o barril anula a fronteira que já existia lá dentro.
@@ -113,11 +113,11 @@ Informe o resultado da injeção, quais gates rodaram e com que números, compar
 
 ## Referências (Camada 3)
 
-- `.agents/skills/ui-novo-componente/scripts/verify_parity.ts` — motor de paridade das três
+- `gates/scripts/audit/verify_parity.ts` — motor de paridade das três
   fontes do dicionário. **Você não o invoca:** quem o executa é o `auditor_paridade.mjs`, dentro
   do `npm run audit` — e, adiante, o pipeline de CI/CD.
 
 > ⚠️ **Esta pasta NÃO é removível.** O script acima mora aqui e é chamado de
-> `.agents/skills/ui-auditoria-modulo/scripts/auditor_paridade.mjs`. Apagar esta skill derruba
+> `gates/scripts/audit/auditor_paridade.mjs`. Apagar esta skill derruba
 > `npm run audit`, e por ele o `gates:full` e o `preversion`. Se um dia a skill for absorvida por
 > uma spec, o **script fica** — o inventário está em `specs/specs/00-regras-e-invariantes.md` §3.1.

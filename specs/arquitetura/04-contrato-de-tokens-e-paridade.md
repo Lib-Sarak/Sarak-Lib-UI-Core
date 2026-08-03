@@ -232,7 +232,7 @@ Seja preciso aqui, porque o termo mudou de significado e ainda há skill do mant
 
 `verify_parity.ts` (invocado por `auditor_paridade.mjs`) cruza **exatamente três** conjuntos: Schema ↔ `theme_table_mapping` ↔ partições do catálogo. Ele valida nos dois sentidos (Schema→DB, Schema→Catálogo, e as duas inversas) e sai com 1 se qualquer token faltar em qualquer fonte.
 
-> Nota de localização: `verify_parity.ts` mora em `.agents/skills/ui-novo-componente/scripts/`, e `verify_presets.ts` em `.agents/skills/ui-auditoria-modulo/scripts/`. Os dois auditores que os invocam vivem em `ui-auditoria-modulo`.
+> Nota de localização: `verify_parity.ts` mora em `.agents/skills/ui-novo-componente/scripts/`, e `verify_presets.ts` em `gates/scripts/audit/`. Os dois auditores que os invocam vivem em `ui-auditoria-modulo`.
 
 ## 8.2 Verificado por outros gates — as camadas de ALCANCE
 

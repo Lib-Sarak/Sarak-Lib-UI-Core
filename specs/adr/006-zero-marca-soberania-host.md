@@ -38,7 +38,7 @@ A regra se desdobra em quatro cláusulas:
 
 **4. Onde não houver fonte do consumidor, usa-se rótulo genérico de função — nunca `'Sarak …'`, e nunca um cabeçalho vazio.** A regra de fallback é determinística: existe `systemName`/`brand.name`? cai nele; senão, um nome de função ("Sistema", "Search Engine", "Chat Engine").
 
-**A regra é cobrada por gate**, não por disciplina: `scripts/check-zero-brand.mjs`, ligado ao `npm run build` como `zero-brand:check`. Ele varre por AST (API do compilador TypeScript) e só conta nós que são **texto de saída** — literais de string e `JsxText`. Comentário não conta, o que é essencial: as notas que *documentam* a correção citam a string antiga e não podem gerar falso positivo.
+**A regra é cobrada por gate**, não por disciplina: `gates/scripts/contrato/check-zero-brand.mjs`, ligado ao `npm run build` como `zero-brand:check`. Ele varre por AST (API do compilador TypeScript) e só conta nós que são **texto de saída** — literais de string e `JsxText`. Comentário não conta, o que é essencial: as notas que *documentam* a correção citam a string antiga e não podem gerar falso positivo.
 
 A allowlist tem exatamente **três arquivos**, todos painéis internos do Design Engine, cada um com o motivo escrito no próprio código. A justificativa é conceitual, não pragmática: esses painéis são a **ferramenta de autoria da própria lib**, não algo que o consumidor embute no produto dele. Eles podem citar a lib porque são a lib.
 

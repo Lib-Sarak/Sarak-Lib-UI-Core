@@ -66,7 +66,7 @@ Os quatro gates que estão **verdes hoje e devem continuar verdes para sempre**:
 
 `run_audit.mjs` tem baseline **não-zero** ([[01-gates-e-baseline]] §3). Um gate binário sobre ele bloquearia todo commit; ignorá-lo deixaria a dívida crescer em silêncio. A saída é comparar contra um baseline **versionado em arquivo**:
 
-**Arquivo:** `.githooks/audit-baseline.json` — mora ao lado do hook, viaja no repositório, aparece no diff.
+**Arquivo:** `gates/baselines/audit-baseline.json` — mora ao lado do hook, viaja no repositório, aparece no diff.
 
 **Formato:** uma entrada por auditor, com as métricas que importam para ele.
 
@@ -94,7 +94,7 @@ Os quatro gates que estão **verdes hoje e devem continuar verdes para sempre**:
 
 ### 2.3.1 Duas decisões de robustez do orquestrador
 
-**A lista de auditores é LIDA de `run_audit.mjs`.** `scripts/check-audit-baseline.mjs` extrai o array `const scripts = [...]` do próprio agregador em vez de manter uma cópia. Auditor novo lá é auditor novo aqui, sem ninguém lembrar de sincronizar. Auditor sem parser conhecido cai num parser genérico que só olha o código de saída — degrada, não ignora.
+**A lista de auditores é LIDA de `run_audit.mjs`.** `gates/scripts/release/check-audit-baseline.mjs` extrai o array `const scripts = [...]` do próprio agregador em vez de manter uma cópia. Auditor novo lá é auditor novo aqui, sem ninguém lembrar de sincronizar. Auditor sem parser conhecido cai num parser genérico que só olha o código de saída — degrada, não ignora.
 
 **Métrica ilegível é bloqueio, não silêncio.** Se a saída de um auditor mudar de formato e o número não puder ser lido, o resultado é `null` e o commit é **bloqueado** com "não consegui ler a saída do auditor". Fail-closed: um parser quebrado nunca vira aprovação automática.
 
@@ -171,7 +171,7 @@ Este é o registro do raciocínio original, preservado porque ele é o que imped
 | Item | Valor |
 | --- | --- |
 | Hook | `.githooks/pre-push` (POSIX `sh`, repassa o stdin do git) |
-| Lógica | `scripts/check-release-tag.mjs` |
+| Lógica | `gates/scripts/release/check-release-tag.mjs` |
 | À mão | `npm run release:check` (avalia o `HEAD`, sem precisar empurrar nada) |
 
 **Bloqueia quando as três forem verdade:** o push é para `refs/heads/main`; o **artefato publicado** mudou desde a última tag `v*`; e o commit empurrado **não** carrega tag.
@@ -270,7 +270,7 @@ Duas decisões dentro dele:
 
 O uso é **excepcional**: commit de emergência, ou salvar trabalho em andamento numa branch pessoal. O que se espera de quem usa:
 
-1. Rodar os anéis à mão depois (`node scripts/check-audit-baseline.mjs --with-tsc` e os quatro gates).
+1. Rodar os anéis à mão depois (`node gates/scripts/release/check-audit-baseline.mjs --with-tsc` e os quatro gates).
 2. Consertar antes do merge.
 
 Não é uma porta dos fundos — é uma saída de incêndio. Quem a usa e não volta está transferindo o próprio problema para o repositório.
@@ -298,7 +298,7 @@ O que um CI acrescentaria, se o dono quiser:
 
 - [x] Anel 0 preservado, sem alteração no `verificar_commit.py` nem no `config.json`.
 - [x] Anel 1 bloqueia no vermelho, com os quatro gates.
-- [x] Anel 2 bloqueia **só** em regressão contra `.githooks/audit-baseline.json`, versionado.
+- [x] Anel 2 bloqueia **só** em regressão contra `gates/baselines/audit-baseline.json`, versionado.
 - [x] `tsc` decidido, justificado e implementado (Anel 2, condicionado a `.ts`/`.tsx`).
 - [x] Escopo por staged implementado com `git diff --cached --name-only` e documentado.
 - [x] Mensagem de bloqueio cita regra, arquivo e comando.

@@ -75,7 +75,7 @@ existe na paridade e não move nada — a mesma classe de defeito de uma variáv
 
 1. Escreva nas **três** fontes.
 2. Rode `npm run audit` — o `auditor_paridade` roda o
-   `.agents/skills/ui-novo-componente/scripts/verify_parity.ts` e cruza as três.
+   `gates/scripts/audit/verify_parity.ts` e cruza as três.
 3. Se o token for consumido em CSS, rode o audit de novo e confira o `auditor_ghostvars`: toda
    `var(--x)` consumida precisa de um emissor real, e **sempre com fallback**.
 4. Rode `npm run catalog` e `npm run guide` — o token novo entra no catálogo público e no kit do
@@ -133,7 +133,7 @@ barril.
 ## 3.3 A exposição
 
 Exporte o componente **e** o `<Nome>Props` em `src/index.ts`. Se ele for interno de propósito,
-a exclusão vai em `scripts/barrelExclusions.mjs` **com motivo escrito** — silêncio é proibido, e
+a exclusão vai em `gates/allowlists/barrelExclusions.mjs` **com motivo escrito** — silêncio é proibido, e
 o gate também derruba exclusão obsoleta (nome que já está exportado ou que não existe mais).
 
 ⚠️ **Nada pesado sai eager do barril.** Componente que arrasta biblioteca grande vive atrás de
@@ -202,7 +202,7 @@ Contrato completo em `specs/specs/05-cromo-e-slots.md`.
 
 > **O `npm run audit` NÃO está em zero. Compare com o BASELINE, nunca com zero.**
 
-O baseline versionado é `.githooks/audit-baseline.json`, e ele está reproduzido no Apêndice B
+O baseline versionado é `gates/baselines/audit-baseline.json`, e ele está reproduzido no Apêndice B
 deste guia. Cada número é o **máximo tolerado**: igual passa, maior é regressão, menor significa
 que você pagou dívida e o baseline precisa ser regravado com `npm run audit:baseline` — **no mesmo
 commit do conserto que o justificou**, nunca sozinho.
@@ -237,7 +237,7 @@ Os hooks são versionados em `.githooks/` e o `core.hooksPath` aponta para lá. 
 
 - `.githooks/pre-commit` — segredos, os gates verdes (que **bloqueiam**) e o `run_audit` comparado
   ao baseline (que bloqueia **só em regressão**).
-- `.githooks/pre-push` — a suíte completa e o anel de release (`scripts/check-release-tag.mjs`).
+- `.githooks/pre-push` — a suíte completa e o anel de release (`gates/scripts/release/check-release-tag.mjs`).
 
 Commit que só toca markdown não paga o preço dos gates de UI. `--no-verify` existe, não dá para
 impedir, e o combinado é: quem usa, roda os gates depois. Detalhe em
@@ -319,15 +319,15 @@ depois acrescente o fluxo — nunca deixe o próximo redescobrir.
 
 | Comando | O que roda |
 | --- | --- |
-| `npm run audit` | `node .agents/skills/ui-auditoria-modulo/scripts/run_audit.mjs` |
-| `npm run barrel:check` | `node scripts/check-barrel-parity.mjs --check` |
+| `npm run audit` | `node gates/scripts/audit/run_audit.mjs` |
+| `npm run barrel:check` | `node gates/scripts/contrato/check-barrel-parity.mjs --check` |
 | `npm run catalog:check` | `node scripts/generate-component-catalog.mjs --check` |
 | `npm run dev-kit:check` | `node scripts/generate-dev-kit.mjs --check` |
 | `npm run gates:full` | `npm run dev-kit:check && npm run build && npm run package:check && npx vitest run` |
 | `npm run guide:check` | `node scripts/generate-consumer-kit.mjs --check` |
-| `npm run package:check` | `node scripts/check-package-contents.mjs` |
-| `npm run release:check` | `node scripts/check-release-tag.mjs` |
-| `npm run zero-brand:check` | `node scripts/check-zero-brand.mjs --check` |
+| `npm run package:check` | `node gates/scripts/contrato/check-package-contents.mjs` |
+| `npm run release:check` | `node gates/scripts/release/check-release-tag.mjs` |
+| `npm run zero-brand:check` | `node gates/scripts/contrato/check-zero-brand.mjs --check` |
 
 **Auditores agregados por `run_audit.mjs` (8):** `auditor_hardcoded.mjs` · `auditor_ghostvars.mjs` · `auditor_typescript.mjs` · `auditor_coverage.mjs` · `auditor_arquitetura.mjs` · `auditor_cleancode.mjs` · `auditor_paridade.mjs` · `auditor_presets.mjs`
 
@@ -351,7 +351,7 @@ depois acrescente o fluxo — nunca deixe o próximo redescobrir.
 
 `npx tsc --noEmit`: **14 erros** tolerados — não é gate hoje.
 
-Fonte: `.githooks/audit-baseline.json`. **Não edite à mão** — o número muda com `npm run audit:baseline`, no mesmo commit do conserto que o justificou.
+Fonte: `gates/baselines/audit-baseline.json`. **Não edite à mão** — o número muda com `npm run audit:baseline`, no mesmo commit do conserto que o justificou.
 
 ### B.5 A base de specs
 

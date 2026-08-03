@@ -19,9 +19,9 @@
 
 import { describe, expect, it } from 'vitest';
 import * as PublicAPI from '../index';
-import { runBarrelParityCheck } from '../../scripts/check-barrel-parity.mjs';
+import { runBarrelParityCheck } from '../../gates/scripts/contrato/check-barrel-parity.mjs';
 import { collectPublicComponentNames } from '../../scripts/publicComponents.mjs';
-import { BARREL_VALUE_EXCLUSIONS } from '../../scripts/barrelExclusions.mjs';
+import { BARREL_VALUE_EXCLUSIONS } from '../../gates/allowlists/barrelExclusions.mjs';
 
 describe('Gate de Paridade de Barril Público — L1 (código-fonte → src/index.ts)', () => {
     const result = runBarrelParityCheck();

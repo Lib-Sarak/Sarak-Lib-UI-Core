@@ -15,7 +15,7 @@
  * `src/components/Layout/**` — não mais do Registry do motor de manifesto (removido).
  * Exceções declaradas (`barrelExclusions.mjs`, com motivo).
  *
- * Uso: `node scripts/check-barrel-parity.mjs` (relatório) | `--check` (exit 1 se faltar).
+ * Uso: `node gates/scripts/contrato/check-barrel-parity.mjs` (relatório) | `--check` (exit 1 se faltar).
  * Roda no `npm run build` (gate permanente) e é reusado por `BarrelParity.test.ts`.
  */
 
@@ -26,10 +26,10 @@ import fs from 'node:fs';
 import {
     BARREL_VALUE_EXCLUSIONS,
     BARREL_PROPS_EXCLUSIONS,
-} from './barrelExclusions.mjs';
-import { collectExportedNames, collectPublicComponentNames } from './publicComponents.mjs';
+} from '../../allowlists/barrelExclusions.mjs';
+import { collectExportedNames, collectPublicComponentNames } from '../../../scripts/publicComponents.mjs';
 
-const ROOT = path.resolve(path.dirname(fileURLToPath(import.meta.url)), '..');
+const ROOT = path.resolve(path.dirname(fileURLToPath(import.meta.url)), '../../..');
 const SRC = path.join(ROOT, 'src');
 const INDEX = path.join(SRC, 'index.ts');
 

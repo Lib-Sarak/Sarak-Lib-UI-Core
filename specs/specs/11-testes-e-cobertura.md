@@ -31,7 +31,7 @@ gate está em [[01-gates-e-baseline]]; **quando** cada um roda está em [[02-enf
 
 # 2. A regra de cobertura 1:1 e sua forma EXATA
 
-Cobrada por `auditor_coverage.mjs` (`.agents/skills/ui-auditoria-modulo/scripts/`), dentro de `run_audit`.
+Cobrada por `auditor_coverage.mjs` (`gates/scripts/audit/`), dentro de `run_audit`.
 
 ## 2.1 O que ela exige
 
@@ -99,8 +99,8 @@ Categoria própria: não verificam comportamento de componente, verificam **inva
 
 | Gate-teste | O que cobra | Onde |
 | --- | --- | --- |
-| `BarrelParity.test.ts` | todo componente derivado por AST está no barril, com `<Nome>Props` — **reusa `scripts/check-barrel-parity.mjs`** | `src/__tests__/` |
-| `ZeroBrand.test.ts` | nenhuma marca da lib como texto renderizado — **reusa `scripts/check-zero-brand.mjs`** | `src/__tests__/` |
+| `BarrelParity.test.ts` | todo componente derivado por AST está no barril, com `<Nome>Props` — **reusa `gates/scripts/contrato/check-barrel-parity.mjs`** | `src/__tests__/` |
+| `ZeroBrand.test.ts` | nenhuma marca da lib como texto renderizado — **reusa `gates/scripts/contrato/check-zero-brand.mjs`** | `src/__tests__/` |
 | `tokenContractParity.test.ts` | nenhum valor shippado (defaults + 18 temas + 102 presets) fora do contrato do próprio token | `src/core/Provider/utils/__tests__/` |
 | `shippedThemesConsoleClean.test.ts` | boot dos 18 temas sem aviso "fora do contrato" | idem |
 | `EmbeddedMode.test.tsx` | modo embarcado não escreve fora do container | `src/core/Provider/__tests__/` |
@@ -329,7 +329,7 @@ Esta spec é verificada **executando-a**:
 | Comando | Esperado |
 | --- | --- |
 | `npx vitest run` | 275 arquivos / 879 testes, 100% verde |
-| `node .agents/skills/ui-auditoria-modulo/scripts/auditor_coverage.mjs` | `[OK] Todos os componentes possuem testes!` |
+| `node gates/scripts/audit/auditor_coverage.mjs` | `[OK] Todos os componentes possuem testes!` |
 | `npm run test-ct` | roda os 4 `.spec.tsx` (manual; `EmbeddedNoLeak` exige `npm run build` antes) |
 | `find src/shared -type d -name __tests__` | **vazio** — a prova da lacuna §6.1 |
 

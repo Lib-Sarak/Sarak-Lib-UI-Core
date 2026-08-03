@@ -77,7 +77,7 @@ import { useDesignDraft } from '../../../features/DesignEngine/hooks/useDesignDr
 import { useSarakDesign } from '../../../core/Provider/SarakUIProvider';
 ```
 
-**Cobrada por:** `node .agents/skills/ui-auditoria-modulo/scripts/auditor_arquitetura.mjs` (dentro de `run_audit.mjs`). Varre todo `src/` por AST, reporta arquivo e linha do import ofensor. Detalhe das camadas e as **duas limitações honestas do auditor** (`require()`/`import()` dinâmico passam; a checagem é por substring, não por resolução de módulo) em [[00-mapa-do-modulo]] §4.1 — declaradas no código, que é o que R18 exige.
+**Cobrada por:** `node gates/scripts/audit/auditor_arquitetura.mjs` (dentro de `run_audit.mjs`). Varre todo `src/` por AST, reporta arquivo e linha do import ofensor. Detalhe das camadas e as **duas limitações honestas do auditor** (`require()`/`import()` dinâmico passam; a checagem é por substring, não por resolução de módulo) em [[00-mapa-do-modulo]] §4.1 — declaradas no código, que é o que R18 exige.
 
 ---
 
@@ -101,7 +101,7 @@ const { getFlexStyles } = useStructuralStyles();
      style={{ borderRadius: 'var(--sarak-card-radius, 12px)', color: 'var(--sarak-color-primary, #0af)' }} />
 ```
 
-**Cobrada por:** `node .agents/skills/ui-auditoria-modulo/scripts/auditor_hardcoded.mjs`.
+**Cobrada por:** `node gates/scripts/audit/auditor_hardcoded.mjs`.
 
 ### R2.1 Os dois detectores e seus escopos
 
@@ -175,7 +175,7 @@ type ToastKind = 'success' | 'warning' | 'error';
 
 `@ts-expect-error` é permitido **só** com contrato externo inevitável e comentário explicando qual é.
 
-**Cobrada por:** `node .agents/skills/ui-auditoria-modulo/scripts/auditor_typescript.mjs` — falha em qualquer nó `AnyKeyword` na AST de `src/` (exceto `__tests__/` e `Mocks/`). Hoje: **0 ocorrências**.
+**Cobrada por:** `node gates/scripts/audit/auditor_typescript.mjs` — falha em qualquer nó `AnyKeyword` na AST de `src/` (exceto `__tests__/` e `Mocks/`). Hoje: **0 ocorrências**.
 
 > **R3 e R30 checam coisas diferentes.** Um procura o **token** `any` na AST; o outro **compila**. Um estar verde não implica o outro — e o outro **não** está verde (14 erros, ver R30).
 
@@ -191,7 +191,7 @@ type ToastKind = 'success' | 'warning' | 'error';
 
 **Certo × Errado.** Adicionar um token é sempre **as três** edições, na mesma entrega — nunca "o schema primeiro, o resto depois".
 
-**Cobrada por:** `auditor_paridade.mjs` → `npx tsx .agents/skills/ui-novo-componente/scripts/verify_parity.ts`. Hoje: **409 / 409 / 409**. O dicionário, as duas alavancas (Valor × Estrutural) e a divergência apurada 409 × 416 estão em [[04-contrato-de-tokens-e-paridade]].
+**Cobrada por:** `auditor_paridade.mjs` → `npx tsx gates/scripts/audit/verify_parity.ts`. Hoje: **409 / 409 / 409**. O dicionário, as duas alavancas (Valor × Estrutural) e a divergência apurada 409 × 416 estão em [[04-contrato-de-tokens-e-paridade]].
 
 > ⚠️ **O vão declarado.** `src/core/Provider/generated/design-token-ids.ts` é **derivado** do `MASTER_DESIGN_MAP` e **não é uma das três fontes que o gate cruza** — então ele pode apodrecer com o gate verde, e apodreceu: **304 propriedades publicadas × 409 tokens reais**. O número falso **vaza para o consumidor** via `sarak-ui/catalog.json` (`designTokens.count = 304`). Fechar esse vão é alvo de **R29** (artefato gerado bate com a fonte), não de um quarto braço da paridade. Achado 22 em [[15-divida-conhecida]].
 
@@ -207,9 +207,9 @@ type ToastKind = 'success' | 'warning' | 'error';
 
 **Por quê.** Um tema com chave que o motor não conhece é um tema que **parece** completo e não é: o eixo some sem aviso. Como os temas de referência são o ponto de partida do consumidor, o defeito se propaga para fora da lib.
 
-**Cobrada por:** `auditor_presets.mjs` → `npx tsx .agents/skills/ui-auditoria-modulo/scripts/verify_presets.ts`. Hoje: **120 itens auditados** (18 temas + 102 presets de componente), zero órfã.
+**Cobrada por:** `auditor_presets.mjs` → `npx tsx gates/scripts/audit/verify_presets.ts`. Hoje: **120 itens auditados** (18 temas + 102 presets de componente), zero órfã.
 
-> ⏳ **O segundo gate que existe e não roda.** `.agents/skills/ui-criar-tema/scripts/verify_theme_parity.ts` valida **um** tema contra o dicionário — isto é, mede **completude por tema**, não só ausência de órfã — e **nenhum script o invoca**. Cobertura diferente, não equivalente: o `auditor_presets` não pega tema escrito pelo consumidor nem mede completude. Ligá-lo é trabalho da `plan-12`.
+> ⏳ **O segundo gate que existe e não roda.** `gates/scripts/audit/verify_theme_parity.ts` valida **um** tema contra o dicionário — isto é, mede **completude por tema**, não só ausência de órfã — e **nenhum script o invoca**. Cobertura diferente, não equivalente: o `auditor_presets` não pega tema escrito pelo consumidor nem mede completude. Ligá-lo é trabalho da `plan-12`.
 
 ---
 
@@ -254,7 +254,7 @@ style={{ gap: 'var(--sarak-layout-gap-md)' }}
 style={{ gap: 'var(--sarak-layout-gap-md, 16px)' }}
 ```
 
-**Cobrada por:** `node .agents/skills/ui-auditoria-modulo/scripts/auditor_ghostvars.mjs` — constrói o registro real de variáveis emitidas (schemas + `src/styles/*.css`, expandido por 18 sufixos gerados) e cruza com todo `var(--x)` consumido. Hoje: **14.179 variáveis no registro, 3 consumos fantasma** (o baseline).
+**Cobrada por:** `node gates/scripts/audit/auditor_ghostvars.mjs` — constrói o registro real de variáveis emitidas (schemas + `src/styles/*.css`, expandido por 18 sufixos gerados) e cruza com todo `var(--x)` consumido. Hoje: **14.179 variáveis no registro, 3 consumos fantasma** (o baseline).
 
 > ⚠️ **O vão declarado, e a violação viva dentro dele.** O auditor varre apenas `src/components/` e `src/features/` (`auditor_ghostvars.mjs:14`); `src/styles/` é tratado como fonte **emissora**, nunca como consumidora, e `src/core/` está inteiramente fora. Por isso os **2 usos vivos de `--sx-*`** em `src/styles/_utilities.css:80` e `:89` (`var(--sarak-range-active-bg, var(--sx-color-primary-base))`) **não acendem luz vermelha nenhuma**: o gate está verde e a regra está sendo violada. Achado 1 em [[15-divida-conhecida]].
 >
@@ -282,7 +282,7 @@ Cards/SarakActionCard.tsx                Cards/SarakActionCard.tsx
 Cards/__tests__/SarakActionCard.test.tsx test/cards.test.tsx   ← agregado, não 1:1
 ```
 
-**Cobrada por:** `node .agents/skills/ui-auditoria-modulo/scripts/auditor_coverage.mjs`, sobre `src/components/`, `src/features/` e `src/core/`. Duas particularidades do escopo, para não haver surpresa: arquivos `index*` são ignorados, e **arquivos `.ts` só entram na cobrança se o nome começar com `use`** (isto é, utilitário `.ts` que não é hook não é cobrado). Hoje: **zero órfão**.
+**Cobrada por:** `node gates/scripts/audit/auditor_coverage.mjs`, sobre `src/components/`, `src/features/` e `src/core/`. Duas particularidades do escopo, para não haver surpresa: arquivos `index*` são ignorados, e **arquivos `.ts` só entram na cobrança se o nome começar com `use`** (isto é, utilitário `.ts` que não é hook não é cobrado). Hoje: **zero órfão**.
 
 > ⚠️ **O vão declarado.** `src/shared/` está **fora** do escopo (`auditor_coverage.mjs:52-60` varre só `components`, `features`, `core`). Medido: **4 arquivos, 0 testes** — `useSarakRouter.ts` e `useModuleDiscovery.ts` são **violação de R8 na letra**; `services/api.ts` e `types/index.ts` não são cobrados nem pela regra (um é `.ts` que não começa com `use`, o outro é `index*`). Achado 13 em [[15-divida-conhecida]].
 
@@ -315,7 +315,7 @@ if (a) return x;
 if (b) return y;
 ```
 
-**Cobrada por:** `node .agents/skills/ui-auditoria-modulo/scripts/auditor_cleancode.mjs`. **Isenção declarada no código** (`:37`): arquivos sob `/presets/themes/`, `/Design/schema/` e `/Design/master-map` não pagam o teto de linhas — são dicionários de dados, não lógica. Hoje: **zero violação**.
+**Cobrada por:** `node gates/scripts/audit/auditor_cleancode.mjs`. **Isenção declarada no código** (`:37`): arquivos sob `/presets/themes/`, `/Design/schema/` e `/Design/master-map` não pagam o teto de linhas — são dicionários de dados, não lógica. Hoje: **zero violação**.
 
 ---
 
@@ -363,7 +363,7 @@ if (b) return y;
 <span>Search Engine</span>
 ```
 
-**Cobrada por:** `npm run zero-brand:check` (`scripts/check-zero-brand.mjs`). Varre `src/` por AST — só `StringLiteral`, `JsxText` e partes fixas de template literal contam, para **não** acusar comentário que documenta a correção. Hoje: **361 arquivos, 0 violações**. A allowlist tem 3 painéis **internos** do Design Engine (`KitchenSinkPreview`, `LanguageTab`, `LayoutTab`) — ferramenta de autoria da própria lib, nunca embutida pelo consumidor — e o gate também derruba **entrada de allowlist obsoleta**.
+**Cobrada por:** `npm run zero-brand:check` (`gates/scripts/contrato/check-zero-brand.mjs`). Varre `src/` por AST — só `StringLiteral`, `JsxText` e partes fixas de template literal contam, para **não** acusar comentário que documenta a correção. Hoje: **361 arquivos, 0 violações**. A allowlist tem 3 painéis **internos** do Design Engine (`KitchenSinkPreview`, `LanguageTab`, `LayoutTab`) — ferramenta de autoria da própria lib, nunca embutida pelo consumidor — e o gate também derruba **entrada de allowlist obsoleta**.
 
 ---
 
@@ -396,7 +396,7 @@ R12 e R13 são complementares: **R13 cobre a identidade da PÁGINA, R12 cobre os
 
 **Estado:** ⚠️ **escopo menor que a regra** — categoria sem barril só tem a raiz varrida.
 
-**Enunciado.** Todo componente consumidor-facing está exportado em `src/index.ts`, **junto com o seu tipo `<Nome>Props`**. Exclusão só com **motivo escrito** em `scripts/barrelExclusions.mjs`.
+**Enunciado.** Todo componente consumidor-facing está exportado em `src/index.ts`, **junto com o seu tipo `<Nome>Props`**. Exclusão só com **motivo escrito** em `gates/allowlists/barrelExclusions.mjs`.
 
 **Por quê.** Componente exportado sem o tipo das props deixa o consumidor sem como tipar o próprio wrapper — ele acaba recorrendo a deep import, que **é proibido por contrato** (R27, [[03-superficie-publica]] §2) e quebra na versão seguinte. E allowlist sem motivo vira depósito: por isso o gate também derruba **exclusão obsoleta** (nome já exportado, ou componente que não existe mais).
 
@@ -487,7 +487,7 @@ ERRADO   o tarball NÃO traz bin/scaffold/checkUpdate.mjs   (o predev do consumi
 CERTO    dist/ + bin/ (sem __tests__) + docs/ + sarak-ui/
 ```
 
-**Cobrada por:** `npm run package:check` → `scripts/check-package-contents.mjs`. Roda `npm pack --dry-run --json` sobre o pacote **já buildado** (`:85`) e cruza a lista de arquivos contra três listas declaradas no próprio script:
+**Cobrada por:** `npm run package:check` → `gates/scripts/contrato/check-package-contents.mjs`. Roda `npm pack --dry-run --json` sobre o pacote **já buildado** (`:85`) e cruza a lista de arquivos contra três listas declaradas no próprio script:
 
 - **6 prefixos proibidos** (`:9-24`): `src/`, `specs/`, `playwright/`, `__snapshots__/`, `Template-Ts/` e `sarak-dev/`.
 - **4 sufixos/nomes proibidos** (`:26-31`): `vitest.config.ts`, `.test.mjs`, `.test.ts`, `.test.tsx`.
@@ -503,7 +503,7 @@ CERTO    dist/ + bin/ (sem __tests__) + docs/ + sarak-ui/
 
 **Estado:** ✅ gate pleno.
 
-**Enunciado.** A auditoria estrutural pode continuar vermelha, mas **não pode piorar**. Cada métrica de cada auditor é comparada contra `.githooks/audit-baseline.json`, versionado; pior que o baseline bloqueia o commit.
+**Enunciado.** A auditoria estrutural pode continuar vermelha, mas **não pode piorar**. Cada métrica de cada auditor é comparada contra `gates/baselines/audit-baseline.json`, versionado; pior que o baseline bloqueia o commit.
 
 **Por quê.** `run_audit.mjs` tem baseline **não-zero** e não vai estar em zero tão cedo. Um gate binário sobre ele bloquearia todo commit — e gate vermelho no dia da instalação ensina todo mundo a usar `--no-verify`, o que desliga todos os outros. Ignorá-lo deixaria a dívida crescer em silêncio. O baseline versionado é a terceira saída: **a dívida fica, o crescimento não.**
 
@@ -517,7 +517,7 @@ ERRADO   baseline que se auto-ajusta a cada execução — apagaria a evidência
          regressão travestida de melhora
 ```
 
-**Cobrada por:** `npm run audit:baseline` → `scripts/check-audit-baseline.mjs`, **Anel 2** do `.githooks/pre-commit:78-93`. Três decisões que o script toma, e que a regra herda:
+**Cobrada por:** `npm run audit:baseline` → `gates/scripts/release/check-audit-baseline.mjs`, **Anel 2** do `.githooks/pre-commit:78-93`. Três decisões que o script toma, e que a regra herda:
 
 1. **Pior bloqueia · igual passa · melhor passa e AVISA** para regravar o baseline (`:133-147`, `:183-199`). O baseline **nunca** se atualiza sozinho.
 2. **A lista de auditores é LIDA de `run_audit.mjs`** (`:36-41`) em vez de copiada — auditor novo lá é auditor novo aqui, sem ninguém lembrar de sincronizar. Auditor sem parser conhecido cai num parser genérico que só olha o código de saída: degrada, não ignora.
@@ -543,7 +543,7 @@ CERTO    mudou dist/ + sarak-ui/ → `npm version <major|minor|patch>` (cria tag
 ERRADO   empurrar artefato novo sem tag — o importador não tem a que se agarrar
 ```
 
-**Cobrada por:** `npm run release:check` → `scripts/check-release-tag.mjs`, no anel de push do `.githooks/pre-push`. Bloqueia quando **as três** forem verdade (`:118-145`):
+**Cobrada por:** `npm run release:check` → `gates/scripts/release/check-release-tag.mjs`, no anel de push do `.githooks/pre-push`. Bloqueia quando **as três** forem verdade (`:118-145`):
 
 1. o push é para `refs/heads/main` (`:28`, `:46-55`) — push de branch de trabalho não paga;
 2. a assinatura do artefato mudou desde a última tag `v*` (`:68-78`, `:138-143`). "Artefato publicado" é `SIGNED_DIRS` (`dist/` + `sarak-ui/`), **reusado** de `bin/scaffold/checkUpdate/localDependency.mjs` — duas noções concorrentes de "artefato" seriam a porta para o gate dizer uma coisa e o aviso do consumidor dizer outra;
@@ -585,7 +585,7 @@ CERTO    process.env.API_KEY   +   .env no .gitignore   +   .env.example version
 > fraude que a [[01-gates-e-baseline]] §6.1 proíbe. E o episódio é a melhor prova do desenho do gate: ele é
 > **em camadas** — o segundo padrão pegou o que o primeiro deixou passar.
 
-**Cobrada por:** `.githooks/pre-commit:17-27` → `python .githooks/verificar_commit.py --raiz .`. Varre **apenas o staged**, mascara o trecho encontrado antes de imprimir e sai com **1**, o que faz o hook bloquear. As listas vivem em `.githooks/config.json`, não no script (zero hardcoded): **12 padrões de segredo**, **15 globs de arquivo sensível** e **4 exceções** (`.env.example`, `.sample`, `.template`, `.dist`). O catálogo é derivado do canônico da skill `cyber-segredos`, e o `_fonte` do JSON manda mantê-los em sincronia.
+**Cobrada por:** `.githooks/pre-commit:17-27` → `python gates/scripts/segredo/verificar_commit.py --raiz .`. Varre **apenas o staged**, mascara o trecho encontrado antes de imprimir e sai com **1**, o que faz o hook bloquear. As listas vivem em `.githooks/config.json`, não no script (zero hardcoded): **12 padrões de segredo**, **15 globs de arquivo sensível** e **4 exceções** (`.env.example`, `.sample`, `.template`, `.dist`). O catálogo é derivado do canônico da skill `cyber-segredos`, e o `_fonte` do JSON manda mantê-los em sincronia.
 
 > **Escopo declarado (R18):** este gate vê **só o commit atual**. O histórico **não** é escopo dele — é da skill `git-especialista-repositorio` / `/git1-auditar`. Um segredo que já está num commit anterior passa aqui em silêncio, e isso é por construção.
 
@@ -927,7 +927,7 @@ e a correção é criar o token (R11 → Expansão), não remendar do lado de fo
 | R19 | Tarball só com o publicável | ✅ | `check-package-contents.mjs` | `npm run package:check` |
 | R20 | Baseline não regride | ✅ | `check-audit-baseline.mjs` (Anel 2) | `npm run audit:baseline` |
 | R21 | Artefato mudou, exige tag | ✅ | `check-release-tag.mjs` (`pre-push`) | `npm run release:check` |
-| R22 | Zero segredo no staged | ✅ | `verificar_commit.py` (Anel 0) | `python .githooks/verificar_commit.py --raiz .` |
+| R22 | Zero segredo no staged | ✅ | `verificar_commit.py` (Anel 0) | `python gates/scripts/segredo/verificar_commit.py --raiz .` |
 | R23 | Zero ponteiro morto no gerado | ⚠️ | `dev-kit/deadPointers.mjs` — **só `sarak-dev/`, sem `§N.N`** | `npm run dev-kit:check` |
 | R24 | CSS não vaza no host | ✅ | `scopeCss.test.ts` · `EmbeddedMode.test.tsx` | `npx vitest run` |
 | R25 | Temas shippados sem ruído | ✅ | `shippedThemesConsoleClean.test.ts` | `npx vitest run` |
@@ -951,17 +951,17 @@ e a correção é criar o token (R11 → Expansão), não remendar do lado de fo
 
 | Validador | Cobra | Onde mora | Executado por |
 | --- | --- | --- | --- |
-| `run_audit.mjs` (agrega os `auditor_*.mjs`) | R1 · R2 · R3 · R4 · R5 · R7 · R8 · R9 | `.agents/skills/ui-auditoria-modulo/scripts/` | ✅ `npm run audit` |
-| `verify_parity.ts` | R4 | `.agents/skills/ui-novo-componente/scripts/` | ✅ via `auditor_paridade.mjs` |
-| `verify_presets.ts` | R5 | `.agents/skills/ui-auditoria-modulo/scripts/` | ✅ via `auditor_presets.mjs` |
-| `check-barrel-parity.mjs` · `check-zero-brand.mjs` | R14 · R12 | `scripts/` | ✅ `barrel:check` · `zero-brand:check` (Anel 1) |
-| `check-package-contents.mjs` | **R19** | `scripts/` | ✅ `package:check` (`prepublishOnly`, `gates:full`) |
-| `generate-component-catalog.mjs` · `generate-consumer-kit.mjs` · `generate-dev-kit.mjs` (modo `--check`) | R17 · **R23** · **R29** | `scripts/` | ✅ `catalog:check` · `guide:check` · `dev-kit:check` |
-| `check-audit-baseline.mjs` | **R20** · **R30** (contagem) | `scripts/` | ✅ Anel 2 do `pre-commit` · `npm run audit:baseline` |
-| `check-release-tag.mjs` | **R21** | `scripts/` | ✅ anel de push do `pre-push` · `npm run release:check` |
-| `verificar_commit.py` | **R22** | `.githooks/` | ✅ Anel 0 do `pre-commit` (sempre) |
-| A suíte (`npx vitest run`) | R6 · R13 · **R24** · **R25** · **R26** | `src/**/__tests__/` | ✅ Anel 3 do `pre-push` |
-| **`verify_theme_parity.ts`** | **R5, por tema individual** | `.agents/skills/ui-criar-tema/scripts/` | ⏳ **nenhum — vai para o pipeline** |
+| `run_audit.mjs` (agrega os `auditor_*.mjs`) | R1 · R2 · R3 · R4 · R5 · R7 · R8 · R9 | `gates/scripts/audit/` | ✅ `npm run audit` |
+| `verify_parity.ts` | R4 | `gates/scripts/audit/` | ✅ via `auditor_paridade.mjs` |
+| `verify_presets.ts` | R5 | `gates/scripts/audit/` | ✅ via `auditor_presets.mjs` |
+| `check-barrel-parity.mjs` · `check-zero-brand.mjs` | R14 · R12 | `gates/scripts/contrato/` | ✅ `barrel:check` · `zero-brand:check` (Anel 1) |
+| `check-package-contents.mjs` | **R19** | `gates/scripts/contrato/` | ✅ `package:check` (`prepublishOnly`, `gates:full`) |
+| `generate-component-catalog.mjs` · `generate-consumer-kit.mjs` · `generate-dev-kit.mjs` (modo `--check`) | R17 · **R23** · **R29** | `scripts/` — geram **e** conferem, por isso **não** migram | ✅ `catalog:check` · `guide:check` · `dev-kit:check` |
+| `check-audit-baseline.mjs` | **R20** · **R30** (contagem) | `gates/scripts/release/` | ✅ Anel 2 do `pre-commit` · `npm run audit:baseline` |
+| `check-release-tag.mjs` | **R21** | `gates/scripts/release/` | ✅ anel de push do `pre-push` · `npm run release:check` |
+| `verificar_commit.py` | **R22** | `gates/scripts/segredo/` | ✅ Anel 0 do `pre-commit` (sempre) |
+| A suíte (`npx vitest run`) | R6 · R13 · **R24** · **R25** · **R26** | `src/**/__tests__/` — R8 exige teste ao lado | ✅ Anel 3 do `pre-push` |
+| **`verify_theme_parity.ts`** | **R5, por tema individual** | `gates/scripts/audit/` | ⏳ **nenhum — vai para o pipeline** |
 | **`@vitest/coverage-v8`** | **R8.1, cobertura em %** | `package.json:100` | ⏳ **nenhum script o invoca** |
 
 **As duas linhas ⏳ são as que a `plan-12` herda desta tabela** — mais os seis gates que ainda não existem em arquivo nenhum (R10, R18, R27, R28, R31, R32). `verify_theme_parity.ts` valida **um** tema contra o dicionário e hoje só roda se alguém o chamar à mão; o que existe em gate é o `auditor_presets`, que cobra chave órfã em todos os temas embarcados de uma vez — cobertura diferente, não equivalente.
@@ -1005,7 +1005,7 @@ Esta spec é normativa: ela não adiciona teste, ela **cataloga** os que existem
 - **Contagem:** `grep -c "^## R" specs/specs/00-regras-e-invariantes.md` → **32**.
 - **Categorias:** `grep -nE "^## R(11|15|16) "` → as três dentro de `# 3. Regras de conduta`; **R10 fora dela**.
 - **Numeração preservada:** `grep -nE "^## R(1|2|3|4|5|6|7|8|9|12|13|14|17) "` → os números e enunciados de antes.
-- **Unitário / gate:** `node .agents/skills/ui-auditoria-modulo/scripts/run_audit.mjs` no baseline documentado em [[01-gates-e-baseline]] — **não** em zero.
+- **Unitário / gate:** `node gates/scripts/audit/run_audit.mjs` no baseline documentado em [[01-gates-e-baseline]] — **não** em zero.
 - **Gates de contrato:** `npm run barrel:check`, `npm run catalog:check`, `npm run zero-brand:check`, `npm run guide:check`, `npm run dev-kit:check` — os cinco em verde.
 - **Suíte:** `npx vitest run` **completa**. Rodar pasta a dedo esconde snapshot de terceiros quebrado; "suítes verdes" só vale para a suíte inteira.
 - **`tsc`:** `npx tsc --noEmit` → **14 erros**, na composição da R30. Vermelho é o estado esperado.

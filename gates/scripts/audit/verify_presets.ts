@@ -1,10 +1,10 @@
-import { getScaffold } from '../../../../src/core/Design/master-map.ts';
-import { GLOBAL_THEMES } from '../../../../src/core/Design/presets/themes/index.ts';
-import { CARD_PRESETS } from '../../../../src/core/Design/presets/components/cards.ts';
-import { BUTTON_PRESETS } from '../../../../src/core/Design/presets/components/buttons.ts';
-import { INPUT_PRESETS } from '../../../../src/core/Design/presets/components/inputs.ts';
-import { ATMOSPHERE_PRESETS } from '../../../../src/core/Design/presets/components/atmosphere.ts';
-import { TYPOGRAPHY_PRESETS } from '../../../../src/core/Design/presets/components/typography.ts';
+import { getScaffold } from '../../../src/core/Design/master-map.ts';
+import { GLOBAL_THEMES } from '../../../src/core/Design/presets/themes/index.ts';
+import { CARD_PRESETS } from '../../../src/core/Design/presets/components/cards.ts';
+import { BUTTON_PRESETS } from '../../../src/core/Design/presets/components/buttons.ts';
+import { INPUT_PRESETS } from '../../../src/core/Design/presets/components/inputs.ts';
+import { ATMOSPHERE_PRESETS } from '../../../src/core/Design/presets/components/atmosphere.ts';
+import { TYPOGRAPHY_PRESETS } from '../../../src/core/Design/presets/components/typography.ts';
 
 // ==========================================================================
 // Auditor de Drift de Presets/Temas — cobra a regra R5.

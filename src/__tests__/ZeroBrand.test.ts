@@ -12,7 +12,7 @@
  */
 
 import { describe, expect, it } from 'vitest';
-import { runZeroBrandCheck } from '../../scripts/check-zero-brand.mjs';
+import { runZeroBrandCheck } from '../../gates/scripts/contrato/check-zero-brand.mjs';
 
 describe('Gate Zero-Marca — L2 (nenhum "Sarak Lib"/"Sarak OS"/"Sarak AI" renderizado fora da allowlist)', () => {
     const result = runZeroBrandCheck();

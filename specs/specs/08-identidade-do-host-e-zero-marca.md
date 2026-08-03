@@ -126,7 +126,7 @@ backend **do consumidor**. A lib **não faz fetch** ([[003-remocao-backend-propr
 
 # 7. O gate `zero-brand:check`
 
-`scripts/check-zero-brand.mjs`. Comando: `npm run zero-brand:check` — e ele roda **encadeado no
+`gates/scripts/contrato/check-zero-brand.mjs`. Comando: `npm run zero-brand:check` — e ele roda **encadeado no
 `npm run build`**, então marca nova derruba o build.
 
 ## 7.1 Como ele varre — por AST, e o motivo importa

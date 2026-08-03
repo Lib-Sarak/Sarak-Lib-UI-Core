@@ -161,7 +161,7 @@ Medido no ensaio do release (sandbox, 2026-07-28): o commit da `v1.0.1` carrega 
 ## 6.2 O bloqueio que impede o esquecimento
 
 Push para `main` com o **artefato publicado alterado** e **sem tag nova** é BLOQUEADO pelo anel de push
-(`.githooks/pre-push` → `scripts/check-release-tag.mjs`). O gatilho é *"o artefato mudou"*, não *"houve
+(`.githooks/pre-push` → `gates/scripts/release/check-release-tag.mjs`). O gatilho é *"o artefato mudou"*, não *"houve
 commit"*: mudança só em `specs/` não pede tag. O mecanismo e a mensagem estão em
 [[02-enforcement-por-commit]] §4.1.
 
@@ -233,6 +233,6 @@ Do ciclo de release por tag (2026-07-28):
 | Kit regenerado | `npm run guide` → `npm run guide:check` | ✅ kit em dia (6 arquivos) |
 | Build + `BUILD_INFO` | `npm run build` | ✅ `libVersion: "1.0.0"` |
 | Conteúdo do pacote | `npm run package:check` | ✅ allowlist respeitada |
-| Auditoria | `node .agents/skills/ui-auditoria-modulo/scripts/run_audit.mjs` | ✅ baseline exato ([[01-gates-e-baseline]] §3) |
+| Auditoria | `node gates/scripts/audit/run_audit.mjs` | ✅ baseline exato ([[01-gates-e-baseline]] §3) |
 | Suíte completa | `npx vitest run` | ✅ **280 arquivos / 891 testes, 100% verde** (desde o P11-D) |
 | Anel de push | `npm run release:check` | avalia o HEAD sem precisar de push |

@@ -86,7 +86,7 @@ src/components/  ⊅  features/      (componente não importa feature)
 src/core/        ⊅  features/      (inversão de dependência)
 ```
 
-Cobrada por `.agents/skills/ui-auditoria-modulo/scripts/auditor_arquitetura.mjs`, **por AST de verdade** (`ts.createSourceFile` + `ts.forEachChild`, `:21-56`), não por regex de arquivo. Ele varre **todo** `src/` (`.ts` e `.tsx`, sem excluir nem `__tests__`), inspeciona nós de `ImportDeclaration` e reporta o arquivo e a **linha exata** do import ofensor. Sai com código 1 se houver qualquer violação.
+Cobrada por `gates/scripts/audit/auditor_arquitetura.mjs`, **por AST de verdade** (`ts.createSourceFile` + `ts.forEachChild`, `:21-56`), não por regex de arquivo. Ele varre **todo** `src/` (`.ts` e `.tsx`, sem excluir nem `__tests__`), inspeciona nós de `ImportDeclaration` e reporta o arquivo e a **linha exata** do import ofensor. Sai com código 1 se houver qualquer violação.
 
 **Duas limitações honestas do auditor**, para ninguém confiar mais nele do que se deve:
 
@@ -153,13 +153,15 @@ Toda variável consumida precisa de uma **fonte emissora real**. É o que `audit
 
 ## 6.2 Os scripts não têm uma convenção só
 
-Dos 21 arquivos em `scripts/`, três estilos coexistem:
+Dos 13 arquivos que restaram em `scripts/`, três estilos coexistem:
 
-- **kebab-case** — `build-scoped-css.mjs`, `check-barrel-parity.mjs`, `generate-component-catalog.mjs`, `inject-css.mjs`…
-- **camelCase** — `barrelExclusions.mjs`, `catalogAst.mjs`, `componentCatalog.mjs`, `publicComponents.mjs`
-- **snake_case** — `fix_hardcoded.mjs`, `generate_orphan_tests.mjs`, `generate_themes.ts`, `replace_ghosts.mjs`
+- **kebab-case** — `build-scoped-css.mjs`, `generate-component-catalog.mjs`, `inject-css.mjs`, `copy-base-css.mjs`…
+- **camelCase** — `catalogAst.mjs`, `componentCatalog.mjs`, `publicComponents.mjs`
+- **snake_case** — `generate_themes.ts`
 
-Não há gate cobrando isso, e o padrão observável é fraco: **kebab-case para script executável de pipeline, camelCase para módulo importado por outro script**. Os `snake_case` são ferramentas pontuais de manutenção. Documentado como **estado**, não como norma — normalizar é decisão em aberto.
+Não há gate cobrando isso, e o padrão observável é fraco: **kebab-case para script executável de pipeline, camelCase para módulo importado por outro script**. Documentado como **estado**, não como norma — normalizar é decisão em aberto.
+
+> **O `snake_case` deixou de ser uma família em 2026-08-02** (`plan-14`). As outras três eram ferramentas pontuais das campanhas antigas — `fix_hardcoded.mjs`, `generate_orphan_tests.mjs` e `replace_ghosts.mjs` — e foram **removidas** junto com `find-def.mjs`, `find-usages.mjs`, `find-spacing.mjs` e `extract-spacing.mjs`: nenhuma era invocada por `package.json`, hook ou outro script, e o `grep` no repositório versionado não achou uso. Sobra **um** arquivo no estilo, e ele não é ferramenta pontual: `generate_themes.ts` é o gerador de temas que a [[09-temas-e-presets]] §6.3 documenta chamando `getScaffold()` em tempo de execução.
 
 # 7. Onde alocar o quê
 
@@ -176,12 +178,13 @@ Não há gate cobrando isso, e o padrão observável é fraco: **kebab-case para
 
 | Pasta | O que é |
 | --- | --- |
-| `scripts/` | Os gates e os geradores (catálogo, kit, paridade de barril, zero-marca, CSS escopado, build info) — 21 arquivos |
+| `gates/` | **O que reprova** — os 8 auditores, os 3 `verify_*`, os `check-*` de contrato e de release, o gate de segredos, mais `baselines/` e `allowlists/`. Índice em `gates/README.md` |
+| `scripts/` | **O que escreve** — os geradores (catálogo, kit do consumidor, kit do mantenedor, CSS escopado, build info) e a biblioteca compartilhada `catalogAst.mjs` + `publicComponents.mjs` — 13 arquivos + `consumer-kit/` e `dev-kit/` |
 | `bin/` | O CLI do consumidor: `sarak-ui.mjs` + `scaffold/` (init, check, refresh) |
 | `docs/` | O catálogo gerado (`component-catalog.{json,md}`) e os guias que viajam no pacote |
 | `sarak-ui/` | O kit do consumidor, **gerado** — guia, skill, templates, catálogo, carimbo de versão |
-| `.agents/skills/` | As 10 skills do mantenedor, incluindo os auditores de `ui-auditoria-modulo/scripts/` |
-| `.githooks/` | O hook de commit versionado (`pre-commit`, `verificar_commit.py`, `config.json`) |
+| `.agents/skills/` | As 10 skills do mantenedor — **procedimento, não verificação**. Desde a `plan-14` não hospedam nenhum validador; sobra `ui-criar-tema/scripts/generate_theme_template.ts`, que é gerador |
+| `.githooks/` | Os dois **gatilhos** versionados (`pre-commit`, `pre-push`). Eles chamam `gates/scripts/…` — o gate não mora aqui |
 
 O build e o contrato do pacote estão em [[05-build-e-distribuicao]].
 

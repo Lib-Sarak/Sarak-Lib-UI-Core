@@ -80,7 +80,7 @@ const renderBaseline = (baseline) => [
     '',
     `\`npx tsc --noEmit\`: **${baseline.tsc.erros} erros** tolerados — não é gate hoje.`,
     '',
-    'Fonte: `.githooks/audit-baseline.json`. **Não edite à mão** — o número muda com ' +
+    'Fonte: `gates/baselines/audit-baseline.json`. **Não edite à mão** — o número muda com ' +
         '`npm run audit:baseline`, no mesmo commit do conserto que o justificou.',
     '',
 ];

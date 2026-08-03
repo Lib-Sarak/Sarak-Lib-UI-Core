@@ -25,7 +25,7 @@ Aqui está **como rodar** cada verificação e **onde ela está**. O que cada um
 ## 2.1 `run_audit.mjs` — o agregador dos 8 auditores
 
 ```
-node .agents/skills/ui-auditoria-modulo/scripts/run_audit.mjs
+node gates/scripts/audit/run_audit.mjs
 ```
 
 **Custo:** ~7 s. **Saída:** exit 1 se **qualquer** auditor sair diferente de 0. Ele não soma violações — soma **auditores reprovados** (`run_audit.mjs:36-43`). "Quebrou 2 regras estruturais" significa *dois auditores vermelhos*, não duas violações.
@@ -60,9 +60,9 @@ Ele roda os 8 na ordem abaixo, cada um em processo próprio:
 
 | Gate | Comando | Garante | Cobra |
 | --- | --- | --- | --- |
-| Baseline de auditoria | `npm run audit:baseline` (Anel 2 do `pre-commit`) | A auditoria não piora — métrica a métrica contra `.githooks/audit-baseline.json` | **R20**, e a **contagem** de `tsc` (**R30**) quando o staged tem `.ts`/`.tsx` |
+| Baseline de auditoria | `npm run audit:baseline` (Anel 2 do `pre-commit`) | A auditoria não piora — métrica a métrica contra `gates/baselines/audit-baseline.json` | **R20**, e a **contagem** de `tsc` (**R30**) quando o staged tem `.ts`/`.tsx` |
 | Release | `npm run release:check` (anel de push) | Artefato publicado alterado sem tag nova não sobe para a `main` | **R21** |
-| Segredos | `python .githooks/verificar_commit.py --raiz .` (Anel 0) | Nenhum segredo nem arquivo sensível no staged | **R22** |
+| Segredos | `python gates/scripts/segredo/verificar_commit.py --raiz .` (Anel 0) | Nenhum segredo nem arquivo sensível no staged | **R22** |
 
 > **Por que isto está escrito agora:** em 2026-08-02 o `check-release-tag` barrou um push imprimindo *"Regra violada"* — e a regra **não existia** em spec nenhuma. Um gate que reprova citando regra inexistente deixa o leitor sem caminho do bloqueio até o contrato. As três regras acima foram escritas em [[00-regras-e-invariantes]] (`plan-13`) a partir da leitura de cada script.
 
@@ -127,7 +127,7 @@ Registrado como o que é: **cobertura que existe e não é cobrada**. **Não cob
 
 | Gate | Comando | Baseline |
 | --- | --- | --- |
-| `run_audit` | `node .agents/skills/ui-auditoria-modulo/scripts/run_audit.mjs` | ❌ **exit 1 — 2 auditores vermelhos** |
+| `run_audit` | `node gates/scripts/audit/run_audit.mjs` | ❌ **exit 1 — 2 auditores vermelhos** |
 | ↳ `auditor_hardcoded` | | **1 violação de VALOR:** `src/components/atomic/Atoms/SarakTypography.tsx:39`. Estrutural líquido = **0** (bruto 516 − 188 ícone − 87 dimensão − 241 alinhamento) |
 | ↳ `auditor_ghostvars` | | **3 consumos** em 3 variáveis distintas; registro de **14.179** emitidas |
 | ↳ `auditor_typescript` | | ✅ 0 `any` |
@@ -147,7 +147,7 @@ Registrado como o que é: **cobertura que existe e não é cobrada**. **Não cob
 | `package:check` **(R19)** | `npm run package:check` | exige `dist/` buildado |
 | `audit:baseline` **(R20 · R30)** | `npm run audit:baseline` | ✅ igual ao baseline de **2026-07-28** — nenhuma regressão |
 | `release:check` **(R21)** | `npm run release:check` | depende do estado do git na hora; **não tem baseline** — ou o artefato mudou desde a tag, ou não |
-| Anel 0 — segredos **(R22)** | `python .githooks/verificar_commit.py --raiz .` | ✅ verde é a **única** saída aceitável — não há baseline nem escopo: segredo é segredo |
+| Anel 0 — segredos **(R22)** | `python gates/scripts/segredo/verificar_commit.py --raiz .` | ✅ verde é a **única** saída aceitável — não há baseline nem escopo: segredo é segredo |
 
 ## 3.1 ✅ RESOLVIDO em 2026-07-28 — o teste não-hermético que segurava a suíte
 
@@ -228,7 +228,7 @@ repositório. A diferença é que ali não era um teste da lib — era um subpro
 
 **A lição, que é o motivo desta seção sobreviver:** os outros gates não o viam por construção — `tsc`
 não o compilava (`"include": ["src"]`), o tarball já o proibia
-(`scripts/check-package-contents.mjs:14`), e nenhum dos 8 auditores varre fora de `src/`. Só a suíte o
+(`gates/scripts/contrato/check-package-contents.mjs:14`), e nenhum dos 8 auditores varre fora de `src/`. Só a suíte o
 alcançava, e para a suíte ele era verde. **Um diretório inteiro atravessou 330 commits invisível porque
 o único instrumento que o media era o que ele enganava.**
 
@@ -392,7 +392,7 @@ Três coisas são **proibidas**, sem exceção:
 
 Esta spec é verificada **executando-a**:
 
-- `node .agents/skills/ui-auditoria-modulo/scripts/run_audit.mjs` → tem que bater com a §3, incluindo os vermelhos.
+- `node gates/scripts/audit/run_audit.mjs` → tem que bater com a §3, incluindo os vermelhos.
 - `npm run barrel:check && npm run catalog:check && npm run zero-brand:check && npm run guide:check` → quatro verdes.
 - `npx vitest run` → **275 arquivos / 879 testes, 100% verde**, em qualquer máquina (§3.1 e §3.2 fechadas).
 - `npx tsc --noEmit` → 14 erros, na composição da §4.4.

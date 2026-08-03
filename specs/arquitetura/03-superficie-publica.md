@@ -53,7 +53,7 @@ $ npm run barrel:check
 [barrel:check] 81 componentes registrados; barril em dia (0 faltas).
 ```
 
-`scripts/check-barrel-parity.mjs` cobra **duas coisas** para cada componente derivado da §3 (`:63-70`):
+`gates/scripts/contrato/check-barrel-parity.mjs` cobra **duas coisas** para cada componente derivado da §3 (`:63-70`):
 
 1. O **componente** está exportado em `src/index.ts`.
 2. Se existir um tipo `<Nome>Props` em qualquer lugar de `src/`, ele **também** está exportado. Exportar o componente sem o tipo das props deixa o consumidor sem como tipar o próprio wrapper.
@@ -62,7 +62,7 @@ E ele derruba o build também no sentido inverso — **exclusão obsoleta** (`:7
 
 ## 4.1 A allowlist exige MOTIVO escrito
 
-`scripts/barrelExclusions.mjs` tem hoje **exatamente uma exclusão**, duplicada nas duas listas (valor e props):
+`gates/allowlists/barrelExclusions.mjs` tem hoje **exatamente uma exclusão**, duplicada nas duas listas (valor e props):
 
 | Nome | Motivo registrado no código |
 | --- | --- |

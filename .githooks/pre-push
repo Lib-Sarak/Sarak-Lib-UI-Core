@@ -26,7 +26,7 @@ STDIN=$(cat)
 # =============================================================================
 # ANEL DE RELEASE — instantâneo, roda primeiro
 # =============================================================================
-printf '%s\n' "$STDIN" | node scripts/check-release-tag.mjs || exit 1
+printf '%s\n' "$STDIN" | node gates/scripts/release/check-release-tag.mjs || exit 1
 
 # =============================================================================
 # ESCOPO — só push da `main`, e só quando algo que a suíte enxerga mudou

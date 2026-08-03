@@ -1,6 +1,6 @@
 import fs from 'fs';
 import path from 'path';
-import { MASTER_DESIGN_MAP } from '../../../../src/core/Design/master-map.ts';
+import { MASTER_DESIGN_MAP } from '../../../src/core/Design/master-map.ts';
 
 const resolvePath = (relativePath: string) => path.join(process.cwd(), relativePath);
 

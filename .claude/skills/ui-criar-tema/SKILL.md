@@ -85,7 +85,7 @@ Comunique que o tema está registrado, quantos eixos ficaram vazios (se algum) e
   pré-populado com os tokens vivos do `MASTER_DESIGN_MAP`. **Escreve em `src/`.**
 
 **Validador — o GATE invoca, não você:**
-- `.agents/skills/ui-criar-tema/scripts/verify_theme_parity.ts` — valida UM tema. **Reprova**
+- `gates/scripts/audit/verify_theme_parity.ts` — valida UM tema. **Reprova**
   chave que não existe no dicionário; **avisa** (sem reprovar) quando o tema é parcial. A
   assimetria é deliberada: **tema novo nasce 100% preenchido pelo gerador**, mas tema que já
   existe é parcial de propósito e continua funcionando — as chaves ausentes caem no default do

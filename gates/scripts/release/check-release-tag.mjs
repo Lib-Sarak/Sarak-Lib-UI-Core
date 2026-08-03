@@ -22,7 +22,7 @@
  */
 import { execFileSync } from 'node:child_process';
 import fs from 'node:fs';
-import { SIGNED_DIRS, hashInventoryLines } from '../bin/scaffold/checkUpdate/localDependency.mjs';
+import { SIGNED_DIRS, hashInventoryLines } from '../../../bin/scaffold/checkUpdate/localDependency.mjs';
 
 /** Só a `main` publica. Push de branch de trabalho não pede tag. */
 const RELEASE_BRANCH_REF = 'refs/heads/main';

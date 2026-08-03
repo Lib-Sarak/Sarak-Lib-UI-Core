@@ -15,7 +15,7 @@ if command -v python >/dev/null 2>&1; then PY=python; else PY=python3; fi
 # ANEL 0 — Segurança e índice (custo desprezível, sempre roda)
 # =============================================================================
 echo "[Sarak] Anel 0 — verificando vazamento de segredos no staged..."
-"$PY" .githooks/verificar_commit.py --raiz .
+"$PY" gates/scripts/segredo/verificar_commit.py --raiz .
 status=$?
 
 if [ "$status" -ne 0 ]; then
@@ -38,7 +38,7 @@ STAGED=$(git diff --cached --name-only --diff-filter=ACMR)
 
 # Anéis 1 e 2 só interessam quando o commit mexe no código da lib ou nos artefatos
 # gerados a partir dele. Commit de documentação/spec não paga o preço.
-TOCA_CODIGO=$(echo "$STAGED" | grep -E '^(src/|scripts/|docs/|sarak-ui/|bin/|package\.json|\.githooks/)' | head -n 1)
+TOCA_CODIGO=$(echo "$STAGED" | grep -E '^(src/|scripts/|docs/|sarak-ui/|bin/|package\.json|\.githooks/|gates/)' | head -n 1)
 # O tsc só faz sentido quando o commit mexe em TypeScript.
 TOCA_TS=$(echo "$STAGED" | grep -E '\.tsx?$' | head -n 1)
 
@@ -65,9 +65,9 @@ anel1() {
   fi
 }
 
-anel1 "paridade do barril público" "R14 — Barril completo" "npm run barrel:check" scripts/check-barrel-parity.mjs --check
+anel1 "paridade do barril público" "R14 — Barril completo" "npm run barrel:check" gates/scripts/contrato/check-barrel-parity.mjs --check
 anel1 "catálogo de componentes"    "R17 — Não transcrever fonte viva" "npm run catalog:check" scripts/generate-component-catalog.mjs --check
-anel1 "zero-marca"                 "R12 — A lib nunca estampa a própria marca" "npm run zero-brand:check" scripts/check-zero-brand.mjs --check
+anel1 "zero-marca"                 "R12 — A lib nunca estampa a própria marca" "npm run zero-brand:check" gates/scripts/contrato/check-zero-brand.mjs --check
 anel1 "kit do consumidor"          "R17 — Não transcrever fonte viva" "npm run guide:check" scripts/generate-consumer-kit.mjs --check
 
 echo "[Sarak] Anel 1 OK — barril, catálogo, zero-marca e kit em dia."
@@ -76,11 +76,11 @@ echo "[Sarak] Anel 1 OK — barril, catálogo, zero-marca e kit em dia."
 # ANEL 2 — Auditoria contra baseline VERSIONADO. Bloqueia só se PIOROU.
 # =============================================================================
 if [ -n "$TOCA_TS" ]; then
-  echo "[Sarak] Anel 2 — auditoria + tsc contra .githooks/audit-baseline.json..."
-  node scripts/check-audit-baseline.mjs --with-tsc
+  echo "[Sarak] Anel 2 — auditoria + tsc contra gates/baselines/audit-baseline.json..."
+  node gates/scripts/release/check-audit-baseline.mjs --with-tsc
 else
-  echo "[Sarak] Anel 2 — auditoria contra .githooks/audit-baseline.json (tsc pulado: nenhum .ts/.tsx no staged)..."
-  node scripts/check-audit-baseline.mjs
+  echo "[Sarak] Anel 2 — auditoria contra gates/baselines/audit-baseline.json (tsc pulado: nenhum .ts/.tsx no staged)..."
+  node gates/scripts/release/check-audit-baseline.mjs
 fi
 status=$?
 

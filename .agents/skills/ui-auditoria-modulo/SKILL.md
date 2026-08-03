@@ -20,7 +20,7 @@ diretas.
 
 Ele sai com **exit 1** por dívida **conhecida e documentada**. Acusar regressão porque o auditor
 saiu vermelho é o erro que este aviso existe para evitar. O baseline versionado é
-`.githooks/audit-baseline.json` e está reproduzido em `specs/specs/01-gates-e-baseline.md` e no
+`gates/baselines/audit-baseline.json` e está reproduzido em `specs/specs/01-gates-e-baseline.md` e no
 Apêndice B de `sarak-dev/GUIA-MANUTENCAO.md`.
 
 Cada número do baseline é o **máximo tolerado**: igual passa; **maior é regressão**; **menor**
@@ -127,10 +127,10 @@ raiz, que é outro diretório.
 
 | Script | Papel | Invocado por |
 | --- | --- | --- |
-| `.agents/skills/ui-auditoria-modulo/scripts/run_audit.mjs` | agregador dos auditores | `npm run audit` |
-| `.agents/skills/ui-auditoria-modulo/scripts/auditor_*.mjs` | um por regra estrutural | `run_audit.mjs` |
-| `.agents/skills/ui-auditoria-modulo/scripts/verify_presets.ts` | drift de tema/preset contra o gabarito vivo | `auditor_presets.mjs` |
-| `.agents/skills/ui-novo-componente/scripts/verify_parity.ts` | as três fontes do dicionário | `auditor_paridade.mjs` |
+| `gates/scripts/audit/run_audit.mjs` | agregador dos auditores | `npm run audit` |
+| `gates/scripts/audit/auditor_*.mjs` | um por regra estrutural | `run_audit.mjs` |
+| `gates/scripts/audit/verify_presets.ts` | drift de tema/preset contra o gabarito vivo | `auditor_presets.mjs` |
+| `gates/scripts/audit/verify_parity.ts` | as três fontes do dicionário | `auditor_paridade.mjs` |
 
 > ⚠️ **`verify_parity.ts` mora na skill vizinha e é chamado daqui.** Consequência mecânica:
 > `.agents/skills/ui-novo-componente/` **não é removível** — apagá-la derruba `npm run audit`, e

@@ -80,7 +80,7 @@ de AST nova foi escrita.
 | `componentes.publicos` | **81** + a lista de nomes | `collectPublicComponentNames()` |
 | `gates` | 9 entradas (nome + comando) | os `scripts` do `package.json` |
 | `auditores` | os 8 | `run_audit.mjs` |
-| `baseline` | o baseline versionado inteiro | `.githooks/audit-baseline.json` |
+| `baseline` | o baseline versionado inteiro | `gates/baselines/audit-baseline.json` |
 | `base` | ADRs · arquitetura · specs | `specs/adr/` · `specs/arquitetura/` · `specs/specs/` |
 | `docs` | os guias shippados | `docs/` |
 
@@ -160,7 +160,7 @@ morto — não uma coisa ou outra.
 # 6. Empacotamento — `sarak-dev/` é INTERNO
 
 **Não entra no `files` do `package.json`** e é **proibido no tarball**
-(`scripts/check-package-contents.mjs`, lista de prefixos proibidos).
+(`gates/scripts/contrato/check-package-contents.mjs`, lista de prefixos proibidos).
 
 A dupla trava é deliberada, e o motivo está escrito no próprio gate: `sarak-dev/` publicaria o
 **baseline de auditoria** e a **topografia interna** do repositório para todo importador. Estar

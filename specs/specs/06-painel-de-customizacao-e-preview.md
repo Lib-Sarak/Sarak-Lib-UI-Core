@@ -198,7 +198,7 @@ mais usa a lib (nós). O painel é o consumidor mais intenso da biblioteca.
 
 # 8. A allowlist do zero-marca — por que ela é legítima
 
-`scripts/check-zero-brand.mjs` proíbe os literais de marca da lib como **texto renderizado** em `src/`, com
+`gates/scripts/contrato/check-zero-brand.mjs` proíbe os literais de marca da lib como **texto renderizado** em `src/`, com
 **allowlist comentada** de três arquivos (`:37-46`):
 
 | Arquivo | Motivo escrito no gate |

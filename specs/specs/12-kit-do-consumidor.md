@@ -37,7 +37,7 @@ O gerador é `scripts/generate-consumer-kit.mjs` (`npm run guide`), e o plano de
 
 > ⚠️ **`templates/` NÃO está no plano de saída** — logo, não é conferido pelo `guide:check`. Ele é
 > código estável, escrito à mão, e a única coisa que o cobra é o `package:check`, que exige os 7
-> arquivos no tarball (`scripts/check-package-contents.mjs:63-69`). É uma assimetria real e
+> arquivos no tarball (`gates/scripts/contrato/check-package-contents.mjs:63-69`). É uma assimetria real e
 > deliberada: template é exemplo, não lista; envelhece por semântica, não por contagem — e nenhum
 > gate sabe medir isso. Está registrado aqui para ninguém supor cobertura que não existe.
 
@@ -224,7 +224,7 @@ Quem não moveu não recebe arquivo do nada; quem moveu não fica com um guia ve
 | `npm run build` da lib | `guide:check` | Derruba o build se o kit estiver defasado |
 | publicação | `package:check` | **Exige** 12 caminhos do kit no tarball |
 
-O `package:check` (`scripts/check-package-contents.mjs:55-69`) trata a ausência do kit como falha
+O `package:check` (`gates/scripts/contrato/check-package-contents.mjs:55-69`) trata a ausência do kit como falha
 de publicação, com o motivo escrito no próprio código: *"o pacote sem `sarak-ui/` não ensina a
 usar a lib"*. Publicar sem o kit é publicar sem instruções — e o gate cobra **ausência** com a
 mesma severidade com que cobra **excesso** (ver [[03-versionamento-e-release]] e

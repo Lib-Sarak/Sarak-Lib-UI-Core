@@ -19,8 +19,8 @@ import { collectPublicComponentNames } from '../publicComponents.mjs';
 import { collectDesignTokens } from '../consumer-kit/collectKitSources.mjs';
 
 const DESIGN_DIR = path.join(SRC, 'core/Design');
-const AUDITOR_DIR = path.join(ROOT, '.agents/skills/ui-auditoria-modulo/scripts');
-const BASELINE_FILE = path.join(ROOT, '.githooks/audit-baseline.json');
+const AUDITOR_DIR = path.join(ROOT, 'gates/scripts/audit');
+const BASELINE_FILE = path.join(ROOT, 'gates/baselines/audit-baseline.json');
 
 const readJson = (file) => JSON.parse(fs.readFileSync(file, 'utf-8'));
 

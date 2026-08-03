@@ -290,7 +290,7 @@ Detalhe correlato: o rótulo impresso combina `kitHash` **e** a assinatura do `d
 (`runCheckUpdate.mjs:77-79`).
 
 **Fronteira reusada, não duplicada:** `hashInventoryLines` é **exportada** para que o gate de
-release (`scripts/check-release-tag.mjs`, ADR-008) responda "o artefato publicado mudou?" com
+release (`gates/scripts/release/check-release-tag.mjs`, ADR-008) responda "o artefato publicado mudou?" com
 **exatamente este critério**, só que lendo o inventário do git (`localDependency.mjs:25-36`).
 Duas noções concorrentes de "o que é o artefato" seriam a porta para o gate dizer uma coisa e o
 `check` dizer outra.
@@ -469,7 +469,7 @@ Ver §5.3. Roteado para a **Fase D** da Campanha 2, junto do `sarak-ui update`.
 ## Verificação de sistema
 - [x] `node bin/sarak-ui.mjs --help` imprime o USAGE completo e sai com 0.
 - [x] `package:check` exige no tarball todos os módulos que o `check`/`refresh` do consumidor lê
-      (`scripts/check-package-contents.mjs:36-52`).
+      (`gates/scripts/contrato/check-package-contents.mjs:36-52`).
 
 ## Lacunas declaradas
 - [ ] **Nenhum teste automatizado exercita um `install` de verdade.** As provas de instalação
