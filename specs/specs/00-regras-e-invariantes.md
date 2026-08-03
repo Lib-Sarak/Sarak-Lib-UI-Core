@@ -875,6 +875,13 @@ export { SarakChartEngine, type SarakChartEngineProps } from './components/engin
 
 **Cobrada por:** **nenhum gate — CONDUTA.** Não existe verificação de peso de bundle no pipeline. As fronteiras lazy que existem hoje estão listadas em [[03-superficie-publica]] §7.1.
 
+> **Reavaliada e mantida como conduta em 2026-08-03** *(decisão do dono, plan-06)*. Foi levantado que ela **é
+> mensurável** — comparar o tamanho do chunk de boot contra um piso versionado é o mesmo mecanismo aprovado
+> para a cobertura em % (R8.1): mede, grava, o piso só sobe. **A decisão foi deixá-la fora por enquanto.**
+> Registrado aqui para que não seja reproposto: R15 é a única regra deste documento **mensurável e
+> deliberadamente não medida** — as outras duas de conduta (R11, R16) não são mensuráveis por natureza.
+> Reabrir isto exige decisão nova, não um "descobri que dava para medir".
+
 > ⚠️ **Esta regra está sendo violada pela própria lib, e a violação é declarada.** `CustomizationPanel` sai **eager** do barril (`src/index.ts:50`) e ainda é importado eager pelo efeito colateral de `:119-125`, que registra o painel em dois ids legados do Discovery ao simples ato de importar a lib. O custo é **o painel inteiro do Design Engine no caminho crítico de todo consumidor** — a dívida mais cara da lista. **Não foi corrigida** porque torná-lo lazy muda o tipo público para `LazyExoticComponent`: é **breaking change** do contrato, roteado para a `plan-09` (achado 3).
 >
 > Regra com violação conhecida e declarada é honesta. Regra que finge estar cumprida é ficção.

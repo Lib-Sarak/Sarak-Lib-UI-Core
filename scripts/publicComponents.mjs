@@ -178,6 +178,26 @@ export const namesFromFileExports = (file) => {
  * Arquivo solto na RAIZ da raiz de categorias não é categoria e fica de fora — é o
  * caso de `engines/LazyEngineWrapper.tsx`, peça interna que os barris das categorias
  * consomem para embutir o `Suspense`, nunca importada pelo consumidor.
+ *
+ * -------------------------------------------------------------------------
+ * LIMITE DECLARADO (R18) — o que este coletor NÃO vê
+ * -------------------------------------------------------------------------
+ * Em categoria SEM barril, só os `.tsx` de RAIZ são varridos: um componente
+ * público colocado em SUBPASTA escapa deste coletor, logo escapa do
+ * `barrel:check` (R14) e do catálogo gerado (R17).
+ *
+ * Isso é deliberado em parte — as peças internas do cromo vivem em
+ * `Layout/chrome/` justamente para não virarem peça de barril.
+ *
+ * EXPOSIÇÃO MEDIDA (plan-06, 2026-08-03): **ZERO**. As três categorias sem
+ * barril hoje — `atomic/Cards/`, `atomic/Icon/`, `atomic/Tables/` — não têm
+ * nenhuma subpasta com `.tsx` além de `__tests__/`. O vão existe e está vazio.
+ *
+ * Por isso o limite é DECLARADO em vez de fechado: ampliar a varredura custa
+ * mais do que vale enquanto a exposição for zero. Se alguém criar uma subpasta
+ * de componente numa dessas categorias, este comentário deixa de valer e o
+ * caso vira trabalho da plan-12. Recontar é um `find`, não uma auditoria.
+ * -------------------------------------------------------------------------
  */
 const collectFromCategoryRoot = (root, names) => {
     for (const category of fs.readdirSync(root)) {

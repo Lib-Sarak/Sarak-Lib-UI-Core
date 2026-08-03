@@ -172,7 +172,7 @@ Detalhe completo em [`specs/03-versionamento-e-release.md`](specs/03-versionamen
 >
 > **A verificação é do gate, não da skill.** Nenhuma skill invoca validador direto; quem executa é o
 > `package.json` e, adiante, o pipeline de CI/CD. O inventário de quem executa o quê está em
-> [`specs/00-regras-e-invariantes.md`](specs/00-regras-e-invariantes.md) §3.1.
+> [`specs/00-regras-e-invariantes.md`](specs/00-regras-e-invariantes.md) §4.1.
 
 | Tipo de tarefa | Leia antes (specs fixas) | Capacidade |
 |---|---|---|

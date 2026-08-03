@@ -17,6 +17,28 @@
  * os sinks e este gate impede o carimbo de voltar em silêncio.
  *
  * Uso: `node gates/scripts/contrato/check-zero-brand.mjs` (relatório) | `--check` (exit 1 se achar).
+ *
+ * -------------------------------------------------------------------------
+ * LIMITE DECLARADO (R18) — o que este gate NÃO vê
+ * -------------------------------------------------------------------------
+ * 1. ESCOPO: apenas `src/`. NÃO varre os outros artefatos que chegam ao
+ *    consumidor — `sarak-ui/templates/` (o código que o `init` copia para o
+ *    projeto dele), `bin/scaffold/generators/` (que gera esse código) e
+ *    `docs/` (que viaja no tarball).
+ * 2. Dentro de `src/`, ficam de fora `.d.ts`, `__tests__/`, `.test.` e `.spec.`
+ *    (ver `isScannableFile`).
+ *
+ * EXPOSIÇÃO MEDIDA (plan-06, 2026-08-03): **ZERO violações reais**.
+ * `sarak-ui/templates/` e `bin/` estão limpos. Os únicos acertos fora de `src/`
+ * são 2 arquivos de `docs/` (`identidade-do-host.md`, `migracoes.md`), e neles a
+ * marca aparece em PROSA que documenta a própria correção — exatamente o
+ * falso-positivo que a varredura por AST existe para evitar dentro de `src/`.
+ *
+ * Por isso o limite é DECLARADO em vez de fechado: ampliar para markdown
+ * exigiria distinguir prosa de texto renderizado, e o ganho medido hoje é zero.
+ * O que muda a conta é template `.tsx` novo em `sarak-ui/templates/` — aí o
+ * escopo passa a valer, e isso é trabalho da plan-12.
+ * -------------------------------------------------------------------------
  */
 
 import fs from 'node:fs';

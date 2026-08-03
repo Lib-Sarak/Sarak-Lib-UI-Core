@@ -44,14 +44,14 @@ as duas, sempre, na mesma ação.**
 | 2 | [plan-03-triagem-divida-conhecida](plan/plan-03-triagem-divida-conhecida.md) | Decidir o destino de cada achado aberto *(análise, não conserto)* | plan-01 | 🟢 Aprovada | `specs/15-divida-conhecida.md` · `00-contexto.md` |
 | 3 | [plan-02-adequar-skills-locais](plan/plan-02-adequar-skills-locais.md) | Adequar as 9 skills locais ao fluxo SDD | plan-01 | 🟢 Aprovada | `00-contexto.md` · `specs/00-regras-e-invariantes.md` · `arquitetura/02` |
 | 4 | [plan-04-alinhamento-erp](plan/plan-04-alinhamento-erp.md) | Alinhar o ERP — o instrumento de medição da lib | — | 🟢 Aprovada | `—` |
-| 5 | [plan-13-fechar-conjunto-de-regras](plan/plan-13-fechar-conjunto-de-regras.md) | Tudo que se cobra aqui vira regra numerada; conduta em categoria própria | — | 🟠 Em revisão | `specs/00-regras-e-invariantes.md` |
+| 5 | [plan-13-fechar-conjunto-de-regras](plan/plan-13-fechar-conjunto-de-regras.md) | Tudo que se cobra aqui vira regra numerada; conduta em categoria própria | — | 🟢 Aprovada | `specs/00-regras-e-invariantes.md` |
 | 6 | [plan-14-casa-dos-gates](plan/plan-14-casa-dos-gates.md) | Concentrar todo verificador em `gates/` e limpar o legado de `scripts/` | plan-13 | 🟢 Aprovada | `specs/01` · `specs/02` · `specs/00-regras-e-invariantes.md` |
-| 7 | [plan-06-auditoria-cobertura-gates](plan/plan-06-auditoria-cobertura-gates.md) | Mapear o escopo real de cada gate contra o escopo da regra *(investigação)* | plan-14 | 🔴 A executar | `specs/00-regras-e-invariantes.md` · `specs/01` · `specs/15` |
-| 8 | [plan-05-integracao-continua](plan/plan-05-integracao-continua.md) | Rodar os gates num ambiente que não é a máquina de ninguém | — | 🔴 A executar | `specs/16-integracao-continua.md` *(nova)* · `specs/02` · `specs/01` |
-| 9 | [plan-07-quitacao-baseline](plan/plan-07-quitacao-baseline.md) | Quitar o baseline de auditoria | plan-06 | 🔴 A executar | `specs/01` · `specs/11` · `specs/10` |
-| 10 | [plan-08-achados-comportamento](plan/plan-08-achados-comportamento.md) | Corrigir o código que faz coisa diferente do que promete | plan-06 | 🔴 A executar | `specs/06` · `specs/07` · `specs/04` |
-| 11 | [plan-09-contrato-publico-2-0-0](plan/plan-09-contrato-publico-2-0-0.md) | As quebras de contrato saem juntas num único major | plan-06 | 🔴 A executar | `arquitetura/03` · `adr/009-*` · `docs/migracoes.md` |
-| 12 | [plan-12-construcao-dos-gates](plan/plan-12-construcao-dos-gates.md) | Dar dono e verificação aos gates que hoje só estão escritos | plan-06 | 🔴 A executar | `specs/00-regras-e-invariantes.md` · `specs/01` · `specs/02` · `specs/15` |
+| 7 | [plan-06-auditoria-cobertura-gates](plan/plan-06-auditoria-cobertura-gates.md) | Mapear o escopo real de cada gate contra o escopo da regra *(investigação)* | plan-14 | 🟢 Aprovada | `specs/00-regras-e-invariantes.md` · `specs/01` · `specs/15` |
+| 8 | [plan-07-quitacao-baseline](plan/plan-07-quitacao-baseline.md) | Quitar o baseline de auditoria | plan-06 | 🔴 A executar | `specs/01` · `specs/11` · `specs/10` |
+| 9 | [plan-08-achados-comportamento](plan/plan-08-achados-comportamento.md) | Corrigir o código que faz coisa diferente do que promete | plan-06 | 🔴 A executar | `specs/06` · `specs/07` · `specs/04` |
+| 10 | [plan-09-contrato-publico-2-0-0](plan/plan-09-contrato-publico-2-0-0.md) | As quebras de contrato saem juntas num único major | plan-06 | 🔴 A executar | `arquitetura/03` · `adr/009-*` · `docs/migracoes.md` |
+| 11 | [plan-12-construcao-dos-gates](plan/plan-12-construcao-dos-gates.md) | Construir os ~21 itens da matriz: 7 regras sem gate + 14 vãos | plan-06 | 🔴 A executar | `specs/00-regras-e-invariantes.md` · `specs/01` · `specs/02` · `specs/15` |
+| 12 | [plan-05-integracao-continua](plan/plan-05-integracao-continua.md) | Rodar os gates num ambiente que não é a máquina de ninguém | — | 🔴 A executar | `specs/16-integracao-continua.md` *(nova)* · `specs/02` · `specs/01` |
 | 13 | [plan-10-ciclo-atualizacao](plan/plan-10-ciclo-atualizacao.md) | Dar comando de atualização a quem só recebia aviso | plan-05 | 🔴 A executar | `specs/13-instalacao-e-atualizacao.md` |
 | 14 | [plan-11-e2e-no-pipeline](plan/plan-11-e2e-no-pipeline.md) | Parar de sair verde sem executar nada | plan-05 | 🔴 A executar | `specs/11` · `specs/10` · `specs/16` |
 
@@ -59,7 +59,8 @@ as duas, sempre, na mesma ação.**
 > (triagem) roda **antes** da `plan-02` porque ela decide o escopo real de 07, 08 e 09; a `plan-02` só depende
 > da `plan-01`. Numeração é identidade; a coluna `#` é o plano.
 >
-> **A cadeia `13 → 14 → 06 → 12 → 05` é a ordem que o dono fixou: regra → casa → medir → construir → rodar.**
+> **A cadeia é `13 → 14 → 06 → [07 · 08 · 09] → 12 → 05`: regra → casa → medir → consertar → construir → rodar.**
+> *(ordem fixada pelo dono em 2026-08-03: **gates completos antes do pipeline**)*.
 > A `plan-13` fecha o conjunto de regras (nenhum gate é criado nela); a `plan-14` concentra os verificadores em
 > `gates/` e limpa o legado; a `plan-06` mede o escopo real de cada gate contra a regra **já fechada**, e mede
 > nos **caminhos definitivos**; a `plan-12` constrói o que faltar, já nascendo no lugar certo; a `plan-05` roda
@@ -68,8 +69,10 @@ as duas, sempre, na mesma ação.**
 > **A `plan-14` vem ANTES da `plan-06` de propósito:** a 06 registra `arquivo:linha` de cada gate. Medir antes
 > de mover obrigaria a reescrever todas as referências depois — e é assim que matriz vira documento morto.
 >
-> **A `plan-06` é a única que começa sem lista de tarefas** — a lista é o produto dela, e é por isso que 07, 08,
-> 09 e 12 dependem dela. Os escopos de 07 e 08 seguem marcados como **provisórios** dentro dos próprios
+> **A `plan-06` era a única que começava sem lista de tarefas — e entregou a lista.** Ela está na **§9 de
+> [`01-gates-e-baseline`](specs/01-gates-e-baseline.md)**: a matriz com os **14 vãos** medidos, cada um com
+> destino. Somada às **7 regras sem gate nenhum**, dá os **~21 itens** que a `plan-12` vai construir — contra os
+> 9 que a spec de dívida previa. Os escopos de 07 e 08 seguem marcados como **provisórios** dentro dos próprios
 > arquivos; o da 09 foi **fixado em 2026-08-01** pela triagem da `plan-03` (achado 27 saiu, achado 2 entrou).
 >
 > **O escopo da `plan-06` ENCOLHEU em 2026-08-02, com a execução da `plan-13`.** As quatro perguntas de
@@ -81,7 +84,13 @@ as duas, sempre, na mesma ação.**
 >
 > **A `plan-12` roda DEPOIS de 07, 08 e 09, e não antes** — embora dependa formalmente só da `plan-06`. O motivo
 > é operacional: ela liga verificação, e gate ligado antes do conserto correspondente acende vermelho que
-> pertence a outra plan. Consertar primeiro, cobrar depois, é o que mantém o baseline legível.
+> pertence a outra plan. Consertar primeiro, cobrar depois, é o que mantém o baseline legível. O caso concreto:
+> **R32** nasceria vermelha enquanto o `SarakSecurityOrchestrator` existir, e removê-lo é da `plan-09`.
+>
+> **A `plan-05` (CI) foi para o fim da cadeia por decisão do dono (2026-08-03).** Ela não depende de ninguém e
+> poderia rodar hoje com os gates que existem — a escolha foi montar o pipeline **uma vez, completo**, em vez de
+> montá-lo e acrescentar linhas a cada gate novo. Custo aceito e registrado: até a `plan-12` fechar, toda prova
+> continua dependendo da máquina de quem executa.
 
 ---
 

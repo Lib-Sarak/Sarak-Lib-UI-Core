@@ -4,16 +4,40 @@ import path from 'path';
 // ==========================================================================
 // Auditor de Variáveis-Fantasma
 // Detecta `var(--x)` consumido nos componentes/features que NÃO é emitido por
-// nenhuma fonte real (schemas da engine via cssVars / auto --sarak-<id> /
-// definições em src/styles/*.css). Um consumo fora do registro = FANTASMA:
-// a variável nunca resolve em runtime (espaçamento/cor colapsa silenciosamente).
-// ==========================================================================
+// nenhuma fonte real. Um consumo fora do registro = FANTASMA: a variável nunca
+// resolve em runtime (espaçamento/cor colapsa silenciosamente).
+//
+// -------------------------------------------------------------------------
+// LIMITES DECLARADOS (R18) — o que este auditor NÃO vê
+// -------------------------------------------------------------------------
+// 1. ESCOPO DE CONSUMO: apenas `src/components/` e `src/features/`.
+//    `src/styles/` é lido SÓ como fonte emissora, nunca como consumidora, e
+//    `src/core/` está inteiramente fora. Medido pela plan-06 (2026-08-03):
+//    16 vars / 24 consumos não resolvidos em `styles/` — incluindo os 2 usos
+//    do namespace PROIBIDO `--sx-*` (`_utilities.css:80,89`) — e 4 vars / 11
+//    consumos em `core/`, dos quais 2 são prosa de comentário.
+//    ⚠️ AMPLIAR ESTE ESCOPO É TRABALHO DA plan-12, e só DEPOIS do registro
+//    abaixo existir: com o registro antigo, a mesma varredura acusava 36 vars /
+//    128 consumos — ~85 acusações FALSAS.
+// 2. A varredura de consumo é LINHA A LINHA POR REGEX, não por AST: um
+//    `var(--x)` dentro de comentário conta como consumo. É a causa de 1 dos 3
+//    fantasmas do baseline (`--token`, num JSDoc de SarakTypography.tsx:32).
+// -------------------------------------------------------------------------
 
 const SCHEMA_DIR = path.resolve('src/core/Design/schema');
 const STYLES_DIR = path.resolve('src/styles');
+// Emissores que NÃO são schema nem CSS: o manifesto de mapeamento token→var e o
+// hook que injeta as variáveis em runtime. Ficaram fora do registro por anos, e
+// é o que fazia a sonda de escopo ampliado acusar variável que EXISTE.
+const MANIFEST_FILE = path.resolve('src/core/Provider/manifest.ts');
+const RUNTIME_VARS_FILE = path.resolve('src/core/Design/hooks/useDesignVariables.ts');
 const CONSUMER_DIRS = [path.resolve('src/components'), path.resolve('src/features')];
 
 // Sufixos gerados dinamicamente pela engine (variantes cromáticas e responsivas).
+// `-rgb` cobre a emissão por NOME COMPUTADO de `useDesignVariables.ts:121,134`
+// (`variables[`${v}-rgb`] = variants.rgb`), que nenhum registro baseado em literal
+// enxergaria. Só resolve para bases que já estão no registro — e é por isso que
+// acrescentar o manifesto acima aumenta o alcance desta linha de graça.
 const GENERATED_SUFFIXES = ['-rgb', '-bg', '-border', '-text', '-hover', '-active', '-light', '-glow',
   '-10', '-20', '-30', '-40', '-50', '-60', '-70', '-80', '-90', '-100'];
 
@@ -55,6 +79,14 @@ for (const file of walk(STYLES_DIR, ['.css'])) {
   for (const m of src.matchAll(/(^|[\s;{])(--[a-z0-9-]+)\s*:/g)) registry.add(m[2]);
 }
 
+// O MANIFESTO (`DESIGN_MANIFEST`) mapeia token → CSS var nos arrays `vars: [...]`.
+// É a terceira fonte emissora, e ficou fora do registro desde sempre.
+for (const file of [MANIFEST_FILE, RUNTIME_VARS_FILE]) {
+  if (!fs.existsSync(file)) continue;
+  const src = fs.readFileSync(file, 'utf8');
+  for (const m of src.matchAll(/['"`](--[a-z0-9-]+)['"`]/g)) registry.add(m[1]);
+}
+
 // Expandir com sufixos gerados
 for (const base of [...registry]) {
   for (const sfx of GENERATED_SUFFIXES) registry.add(base + sfx);
@@ -76,7 +108,7 @@ for (const dir of CONSUMER_DIRS) {
 
 // --- 3. Relatório -------------------------------------------------------------
 console.log('--- Auditor de Variáveis-Fantasma ---');
-console.log(`Registro real: ${registry.size} variáveis emitidas (schemas + styles).`);
+console.log(`Registro real: ${registry.size} variáveis emitidas (schemas + styles + manifesto + runtime).`);
 
 const ghosts = Object.entries(consumed)
   .filter(([name]) => !registry.has(name) && !ALLOWLIST.has(name))
