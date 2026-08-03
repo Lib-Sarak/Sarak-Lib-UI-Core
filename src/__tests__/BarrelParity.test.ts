@@ -6,7 +6,7 @@
  * o componente E o seu tipo `<Nome>Props`.
  *
  * Duas camadas de verificação:
- *  - ESTÁTICA (AST, `scripts/check-barrel-parity.mjs`): resolve a cadeia de `export *`
+ *  - ESTÁTICA (AST, `gates/scripts/contrato/check-barrel-parity.mjs`): resolve a cadeia de `export *`
  *    e valida valores + tipos Props; é a mesma checagem que roda no `npm run build`
  *    (`npm run barrel:check`). Pega tipo Props não exportado.
  *  - RUNTIME (import real de `../index`): confirma que cada nome derivado é um export
@@ -14,7 +14,7 @@
  *    coletor estático.
  *
  * Se falhar, NÃO afrouxe: exporte o símbolo em `src/index.ts` (componente + `Props`)
- * ou declare a exclusão com motivo em `scripts/barrelExclusions.mjs`.
+ * ou declare a exclusão com motivo em `gates/allowlists/barrelExclusions.mjs`.
  */
 
 import { describe, expect, it } from 'vitest';
@@ -30,7 +30,7 @@ describe('Gate de Paridade de Barril Público — L1 (código-fonte → src/inde
         expect(
             result.missingValues,
             `Componentes registrados SEM export no barril público: ${result.missingValues.join(', ')}. ` +
-                `Exporte em src/index.ts ou declare em scripts/barrelExclusions.mjs com motivo.`,
+                `Exporte em src/index.ts ou declare em gates/allowlists/barrelExclusions.mjs com motivo.`,
         ).toEqual([]);
         expect(
             result.missingProps,

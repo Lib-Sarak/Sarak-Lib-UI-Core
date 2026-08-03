@@ -45,7 +45,7 @@ as duas, sempre, na mesma ação.**
 | 3 | [plan-02-adequar-skills-locais](plan/plan-02-adequar-skills-locais.md) | Adequar as 9 skills locais ao fluxo SDD | plan-01 | 🟢 Aprovada | `00-contexto.md` · `specs/00-regras-e-invariantes.md` · `arquitetura/02` |
 | 4 | [plan-04-alinhamento-erp](plan/plan-04-alinhamento-erp.md) | Alinhar o ERP — o instrumento de medição da lib | — | 🟢 Aprovada | `—` |
 | 5 | [plan-13-fechar-conjunto-de-regras](plan/plan-13-fechar-conjunto-de-regras.md) | Tudo que se cobra aqui vira regra numerada; conduta em categoria própria | — | 🟠 Em revisão | `specs/00-regras-e-invariantes.md` |
-| 6 | [plan-14-casa-dos-gates](plan/plan-14-casa-dos-gates.md) | Concentrar todo verificador em `gates/` e limpar o legado de `scripts/` | plan-13 | 🔴 A executar | `specs/01` · `specs/02` · `specs/00-regras-e-invariantes.md` |
+| 6 | [plan-14-casa-dos-gates](plan/plan-14-casa-dos-gates.md) | Concentrar todo verificador em `gates/` e limpar o legado de `scripts/` | plan-13 | 🟢 Aprovada | `specs/01` · `specs/02` · `specs/00-regras-e-invariantes.md` |
 | 7 | [plan-06-auditoria-cobertura-gates](plan/plan-06-auditoria-cobertura-gates.md) | Mapear o escopo real de cada gate contra o escopo da regra *(investigação)* | plan-14 | 🔴 A executar | `specs/00-regras-e-invariantes.md` · `specs/01` · `specs/15` |
 | 8 | [plan-05-integracao-continua](plan/plan-05-integracao-continua.md) | Rodar os gates num ambiente que não é a máquina de ninguém | — | 🔴 A executar | `specs/16-integracao-continua.md` *(nova)* · `specs/02` · `specs/01` |
 | 9 | [plan-07-quitacao-baseline](plan/plan-07-quitacao-baseline.md) | Quitar o baseline de auditoria | plan-06 | 🔴 A executar | `specs/01` · `specs/11` · `specs/10` |

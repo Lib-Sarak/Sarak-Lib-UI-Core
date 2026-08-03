@@ -2,7 +2,7 @@
 tipo: "plan"
 titulo: "A casa dos gates — um endereço só para o que reprova, e o legado sai junto"
 dominio: "Sarak-Lib-UI-Core / Qualidade / Gates"
-status: "🟠 Em revisão"
+status: "🟢 Aprovada"
 prioridade: "Alta"
 tags: ["plan", "gates", "organizacao", "limpeza", "ci"]
 relacionados: ["[[00-regras-e-invariantes]]", "[[01-gates-e-baseline]]", "[[02-enforcement-por-commit]]", "[[14-artefatos-do-mantenedor]]"]
@@ -394,3 +394,201 @@ terceira coluna para cada um dos 8 auditores, a lista dos gates que **não** mor
 # 12. Veredito
 
 <!-- Preenchido pelo REVISOR. Append-only. -->
+
+## Veredito — 2026-08-02 — 🔴 Reprovado (1 achado — e o achado é meu)
+
+**A execução está certa em tudo que importa. Reprovo por 5 linhas de comentário que a minha própria instrução
+mandou não tocar.**
+
+### Reproduzi o critério central: zero regressão
+
+| Gate | Passo 1 | Minha medição, no endereço novo |
+|---|---|---|
+| `run_audit` | exit 1 · valor=1 · ghostvars=3 · 409/409/409 · 120 presets | **idêntico** |
+| `barrel` · `catalog` · `zero-brand` | 81/0 · em dia · 361/0 | **idêntico** |
+| `guide` · `dev-kit` · `audit:baseline` | 6 arq. · 3 arq./0 mortos · sem regressão | **idêntico** |
+| `npx vitest run` | 274 / 889 | **274 arquivos / 889 testes** |
+
+**O escopo é cirúrgico.** 79 arquivos: 21 `R` (renome, histórico preservado), 19 `D`, 38 `M`, 1 `A`. Em `src/`,
+`git diff --cached --numstat` devolve **2+2 e 1+1** — as três linhas de import, e nada mais. Conferi o diff
+literal: as três trocam caminho, e o `publicComponents.mjs` de `BarrelParity.test.ts:23` ficou intacto, como
+tinha de ficar.
+
+**As deleções são exatamente as 7 autorizadas.** Os outros 12 `D` são os espelhos de `.claude/`/`.agents/`.
+`find` por `auditor_*`/`run_audit*`/`verify_*` nas duas árvores de skill devolve **0**, e
+`generate_theme_template.ts` continua na `ui-criar-tema`. A duplicação que a plan-02 registrou como suposição
+**morreu aqui, medida**.
+
+### Os três desvios declarados — todos aceitos
+
+1. **`config.json` junto com o `.py`.** Omissão minha na §5.2. `verificar_commit.py:73` resolve por
+   `Path(__file__).parent`; mover sem ele seria **mudança de comportamento**, que a §3.2 proíbe.
+2. **`gates/` no `TOCA_CODIGO` do `pre-commit`.** **Não é ampliação — é preservação.** O código dos gates morava
+   em `.githooks/` e `scripts/`, ambos já na lista; sem `gates/`, alterar um gate deixaria de acionar os Anéis 1
+   e 2. Seria **estreitamento silencioso de escopo**, que é literalmente o que R18 nomeia. Aceito, e é bom que
+   tenha sido enxergado.
+3. **17 specs em vez de 4.** As 4 que enumerei eram as que eu lembrava; o `grep` achou as mesmas citações em 13
+   outras. Enumerar em vez de mandar varrer foi erro meu.
+
+### O excesso declarado no `00-mapa-do-modulo`: **aceito, e a autorização estreita foi minha**
+
+Autorizei "a linha 160, e só ela". Mas o move tornou **falsas** outras três afirmações do mesmo documento:
+*"Dos 21 arquivos em `scripts/`"* (são 13), a linha que descrevia `scripts/` como casa dos gates, e a que dizia
+que `.agents/skills/` hospeda os auditores. **Deixar as três de pé seria criar exatamente a classe de ponteiro
+morto que esta plan existe para matar** — e o R23 provou o ponto no meio da própria execução, quando o
+`dev-kit:check` se recusou a gerar por causa de um ponteiro que o move tinha acabado de criar.
+
+Separar isso do resto e oferecer reversão limpa foi o comportamento certo. **Fica.**
+
+### O achado
+
+**1. Cinco citações de caminho antigo sobraram em comentário e mensagem de asserção**, nos dois arquivos que a
+execução já tocou: `src/__tests__/BarrelParity.test.ts:9,17,33` e `src/__tests__/ZeroBrand.test.ts:6,11`.
+
+- **Por que é achado:** são **ponteiros mortos dentro do teste do gate**. Quem abrir `BarrelParity.test.ts`
+  para entender o que ele cobra vai procurar `scripts/check-barrel-parity.mjs` e não vai achar. É a mesma classe
+  de defeito que o `dev-kit:check` barrou nesta execução — só que em `src/`, onde nenhum gate olha.
+- **Por que a culpa é minha:** o limite *"só as linhas de import, nenhuma asserção"* foi meu, e ele foi
+  respeitado ao pé da letra. **A instrução é que estava errada** — a §3.1 manda atualizar *toda* citação de
+  caminho, e comentário é citação. Sexta vez nesta campanha que eu escrevo um escopo mais estreito que a
+  realidade exige.
+- **Critério:** [[00-contexto]] §2 — *"o código é a fonte da verdade; toda afirmação estrutural tem de ser
+  confirmável por arquivo:linha"*.
+
+### Prompt de correção
+
+```
+Leia specs/00-prompt-executor.md e corrija a execução de specs/plan/plan-14-casa-dos-gates.md.
+
+Veredito de 2026-08-02: REPROVADO. Achado único:
+
+1. src/__tests__/BarrelParity.test.ts:9,17,33 e src/__tests__/ZeroBrand.test.ts:6,11 — comentários de
+   cabeçalho e mensagem de asserção ainda citam os caminhos antigos dos gates movidos. São ponteiros
+   mortos dentro do teste do próprio gate.
+
+O limite anterior ("só as linhas de import") era MEU ERRO: a §3.1 manda atualizar TODA citação de
+caminho, e comentário é citação. A autorização agora cobre comentário e mensagem de asserção nesses
+dois arquivos.
+
+Escopo: EXCLUSIVAMENTE trocar os caminhos citados nessas 5 linhas. Nenhuma asserção muda de
+semântica, nenhum teste novo, nenhum outro arquivo. Varra os dois arquivos inteiros por caminho
+antigo — se houver citação além das 5 linhas, corrija-a também e diga no resumo.
+
+Rode `npx vitest run` e confirme 274/889. Não rode os outros gates de novo: o revisor já reproduziu.
+
+Acrescente "## Resumo da execução (correção 1) — AAAA-MM-DD" ao final (os anteriores intactos).
+Depois marque status: "🟢 Aprovada". Não commite. Devolva para revisão.
+```
+
+### Duas coisas que NÃO são achado
+
+- **`sarak-ui/` e `sarak-dev/` regenerados → R21 vai cobrar tag.** É consequência esperada: os geradores
+  rodaram. Soma-se ao bloqueio que já existia desde a `plan-02`. **Resolve-se com `npm version patch`**, e é
+  decisão do dono — não desta plan.
+- **O `00-indice` marcando 🔴.** Correto não ter tocado: ele não está na §3.1 desta plan. **Reconciliei eu**, que
+  sou o dono do arquivo.
+
+---
+
+## Resumo da execução (correção 1) — 2026-08-02
+
+**Resultado:** Concluído
+
+**Achado 1 — comentários e mensagem de asserção citando caminho antigo.** Resolvido.
+
+Varri os **dois arquivos inteiros**, não só as 5 linhas do veredito. As 5 citações apontadas eram
+exatamente as que existiam; **nenhuma citação adicional foi encontrada**.
+
+| Arquivo:linha | Antes | Depois | Natureza |
+|---|---|---|---|
+| `BarrelParity.test.ts:9` | `scripts/check-barrel-parity.mjs` | `gates/scripts/contrato/check-barrel-parity.mjs` | comentário de cabeçalho |
+| `BarrelParity.test.ts:17` | `scripts/barrelExclusions.mjs` | `gates/allowlists/barrelExclusions.mjs` | comentário de cabeçalho |
+| `BarrelParity.test.ts:33` | `scripts/barrelExclusions.mjs` | `gates/allowlists/barrelExclusions.mjs` | **mensagem de asserção** |
+| `ZeroBrand.test.ts:6` | `scripts/check-zero-brand.mjs` | `gates/scripts/contrato/check-zero-brand.mjs` | comentário de cabeçalho |
+| `ZeroBrand.test.ts:11` | `scripts/check-zero-brand.mjs` | `gates/scripts/contrato/check-zero-brand.mjs` | comentário de cabeçalho |
+
+**Uma citação foi deliberadamente NÃO alterada, e é preciso dizer qual.** `BarrelParity.test.ts:5` (comentário)
+e `:23` (o `import` real) citam **`scripts/publicComponents.mjs`** — que **não** foi movido. Ele é lido por um
+gate **e** por três geradores, e ficou em `scripts/` como biblioteca compartilhada (decisão 3 do resumo
+anterior, confirmada pelo dono). Trocá-lo teria sido introduzir um ponteiro morto, não corrigir um.
+
+**O que mudou de fato:** 5 linhas, **só a string do caminho**. Nenhuma asserção mudou de semântica, nenhum
+`describe`, nenhum teste novo, nenhum outro arquivo tocado — o `git diff` de `src/__tests__/` mostra 5
+inserções e 5 remoções, todas em texto.
+
+**Verificações executadas**
+
+- `git diff -- src/__tests__/` → **5 linhas trocadas**, todas string de caminho
+- `grep -nE "scripts/check-|scripts/barrelExclusions|githooks/|ui-auditoria-modulo"` nos dois arquivos → **vazio**
+- `npx vitest run` → **274 arquivos / 889 testes, 100% verde** (170,35 s)
+
+Os demais gates **não** foram reexecutados: o prompt de correção declara que o revisor já os reproduziu.
+
+**Decisões e suposições**
+
+- Nenhuma. O escopo era mecânico e a autorização, explícita.
+
+**Achados fora do escopo (não corrigidos)**
+
+- Nenhum novo. Os dois registrados no resumo anterior seguem abertos e **não** são desta plan: o
+  `release:check` bloqueando por tag devida (estado do `HEAD`, anterior a esta execução) e o `gates/README.md`
+  sem gate que o cubra — candidato natural à ampliação de R23 na `plan-12`.
+
+**Pendências / riscos**
+
+- Nenhum introduzido por esta correção.
+
+## Veredito (correção 1) — 2026-08-03 — 🟢 Aprovado
+
+**Achado fechado. A plan está aprovada.**
+
+| Verificação | Minha medição |
+|---|---|
+| Escopo | `3+3` e `2+2` nos dois testes — **5 linhas**, todas string de caminho |
+| Semântica | Nenhuma asserção alterada; a de `:33` troca o caminho **dentro da mensagem de falha** |
+| Caminho antigo | `grep` nos dois arquivos → **vazio** |
+| Append-only | `:268` · `:398` · `:493` — resumos e veredito anteriores intactos |
+| Suíte | **274 arquivos / 889 testes** — rodada por mim, no estado final |
+
+**A citação preservada de propósito está certa.** `BarrelParity.test.ts:5,23` aponta
+`scripts/publicComponents.mjs`, que **não se moveu** — é biblioteca compartilhada entre um gate e três
+geradores. Trocar teria **criado** um ponteiro morto em vez de corrigir um. Distinguir *"caminho antigo"* de
+*"caminho que continua certo"* era o julgamento que o achado exigia, e foi feito.
+
+---
+
+## Fecho da plan-14
+
+**Entregue, medido:** `gates/` com 21 arquivos · **21 renomes com histórico preservado** (`git mv`, status `R`)
+· **19 deleções** — os 7 scripts mortos autorizados + os 12 espelhos que duplicavam os auditores · `scripts/`
+de 21 para 13 arquivos, só com o que escreve · **17 specs** reconciliadas · os dois anéis apontando para os
+endereços novos · `gates/README.md` como índice operacional, com a coluna *"o que NÃO vê"* que R18 exige.
+
+**Zero regressão:** os oito gates e a suíte saíram idênticos ao baseline do passo 1, reproduzidos por mim nas
+duas rodadas.
+
+**Três coisas que esta plan provou, e que valem além dela:**
+
+1. **A duplicação dos auditores era real.** `.claude/skills` é junction no disco, mas o git rastreava **24
+   arquivos** em dobro. A plan-02 registrou isso como suposição; aqui morreu, medida.
+2. **O R23 funcionou dentro da própria execução.** O `dev-kit:check` se recusou a gerar apontando
+   `GUIA-MANUTENCAO.md:240` — um ponteiro morto que o próprio move tinha acabado de criar. Gate pegando o
+   defeito de quem o estava mudando de lugar é a melhor prova de que ele serve.
+3. **Escopo estreito demais custa rodada.** Seis vezes nesta campanha eu escrevi um limite mais apertado do que
+   a realidade exigia — e a sexta gerou esta correção. O padrão: **enumerar arquivos quando o certo é mandar
+   varrer**.
+
+**Resíduos, nenhum desta plan:**
+
+- **R21 vai cobrar tag** — `sarak-ui/` e `sarak-dev/` foram regenerados. Resolve com `npm version patch`, e é
+  decisão do dono.
+- **`gates/README.md` não tem gate que o cubra** *(achado do executor)*. Ele é o **índice que a `plan-05` vai
+  consumir** para montar o CI: índice de gates defasado é mais caro que ausente, pelo mesmo argumento do R18.
+  **Vai para a `plan-12`** como candidato a ampliação do `dev-kit:check`, que já sabe caçar ponteiro morto.
+- **`.claude/settings.json`** tem 5 permissões apontando para os caminhos velhos. Não quebra nada — permissão
+  que não casa nunca é usada. Config do harness, fora de escopo.
+
+**Destino da síntese:** `specs/01-gates-e-baseline.md` · `specs/02-enforcement-por-commit.md` ·
+`specs/00-regras-e-invariantes.md` §3.1 — **os três já escritos por esta execução**.
+
+**Liberado: pode commitar.**

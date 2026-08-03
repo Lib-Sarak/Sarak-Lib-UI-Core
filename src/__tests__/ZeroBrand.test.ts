@@ -3,12 +3,12 @@
  *
  * A lib NUNCA estampa a própria marca ('Sarak Lib'/'Sarak OS'/'Sarak AI') como TEXTO
  * de saída em componente consumidor-facing. Mesma checagem AST que roda no
- * `npm run build` (`npm run zero-brand:check`, `scripts/check-zero-brand.mjs`).
+ * `npm run build` (`npm run zero-brand:check`, `gates/scripts/contrato/check-zero-brand.mjs`).
  *
  * Se falhar, NÃO afrouxe a allowlist: neutralize a string (marca/`systemName` do
  * consumidor, senão um rótulo genérico de função) ou, se for legitimamente um painel
  * INTERNO do Design Engine (ferramenta de autoria da própria lib), declare a exclusão
- * com motivo em `scripts/check-zero-brand.mjs` (ALLOWLIST).
+ * com motivo em `gates/scripts/contrato/check-zero-brand.mjs` (ALLOWLIST).
  */
 
 import { describe, expect, it } from 'vitest';
