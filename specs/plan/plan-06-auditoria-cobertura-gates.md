@@ -15,7 +15,7 @@ destino_sintese: "specs/00-regras-e-invariantes.md · specs/01-gates-e-baseline.
 
 # 1. Objetivo
 
-As 17 regras têm o escopo do seu gate **mapeado com `arquivo:linha`**, todo vão está **declarado ou fechado**,
+As **29 regras verificáveis** têm o escopo do seu gate **mapeado com `arquivo:linha`**, todo vão está **declarado ou fechado**,
 e nenhum vão novo pode nascer silencioso.
 
 # 2. Contexto
@@ -54,7 +54,7 @@ em que a classe foi catalogada.
 
 | Tipo | Referência | Por quê |
 |---|---|---|
-| Spec fixa | `specs/00-regras-e-invariantes.md` | as 17 regras — 11 com gate, 6 conduta |
+| Spec fixa | `specs/00-regras-e-invariantes.md` | as **32 regras** — 29 verificáveis, 3 de conduta (fechadas pela plan-13) |
 | Spec fixa | `specs/01-gates-e-baseline.md` | o baseline e o que cada gate garante hoje |
 | Spec fixa | `specs/15-divida-conhecida.md` §3.3 | os 4 casos já conhecidos, para não recontá-los |
 | Código | `.agents/skills/ui-auditoria-modulo/scripts/` | os 8 auditores — ler o **código**, não o comentário |
@@ -63,7 +63,7 @@ em que a classe foi catalogada.
 
 ## Metade 1 — INVESTIGAÇÃO (read-only)
 
-1. Para **cada uma das 17 regras**, preencher com `arquivo:linha`:
+1. Para **cada uma das 29 regras verificáveis** (as 3 de conduta ficam fora — não têm gate por decisão), preencher com `arquivo:linha`:
 
 | Coluna | O que responder |
 |---|---|
@@ -136,7 +136,7 @@ Não commite. Ao terminar, escreva o resumo na própria plan.
 
 # 7. Critérios de aceite
 
-- [ ] As **17 regras** com escopo de gate mapeado por `arquivo:linha`, lido no código.
+- [ ] As **29 regras verificáveis** com escopo de gate mapeado por `arquivo:linha`, lido no código.
 - [ ] Os gates sem regra numerada cobertos pela mesma pergunta.
 - [ ] Cada Δ classificado como **declarado** ou **silencioso**.
 - [ ] Exposição **medida** em cada vão silencioso — nenhum "provavelmente".

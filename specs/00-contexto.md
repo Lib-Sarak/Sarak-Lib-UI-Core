@@ -62,8 +62,8 @@ marca** — a identidade visível é sempre do host ([[adr/006-zero-marca-sobera
 **Universais do ecossistema:** `CLAUDE.md` da raiz + skill `padrao-escrita` + `padrao-typescript`. Não são
 reescritas aqui.
 
-**Específicas deste repositório** — as 17 regras vivem em [`specs/00-regras-e-invariantes.md`](specs/00-regras-e-invariantes.md)
-(**11 têm gate, 6 são conduta**, e a spec diz qual é qual). As cinco que um agente viola sem perceber:
+**Específicas deste repositório** — as **32 regras** vivem em [`specs/00-regras-e-invariantes.md`](specs/00-regras-e-invariantes.md)
+(**29 verificáveis e 3 de conduta**, cada uma com o estado da verificação: ✅ · ⚠️ · ⏳ · 🔴). As cinco que um agente viola sem perceber:
 
 - **O código é a fonte da verdade.** Onde um documento desta pasta contradiz o código, **o código vence**.
   Toda afirmação estrutural tem de ser confirmável por `arquivo:linha`. Spec que descreve código inexistente é
@@ -198,7 +198,7 @@ A tabela acima roteia **por tarefa**. Quem ainda não tem tarefa, e só precisa 
 | # | Leia | Por quê |
 |---|---|---|
 | 0 | [`sarak-dev/START-HERE.md`](../sarak-dev/START-HERE.md) | O índice operacional e o **carimbo de estado** — números recontados a cada geração, nunca escritos à mão |
-| 1 | [`specs/00-regras-e-invariantes.md`](specs/00-regras-e-invariantes.md) | **O contrato único.** As 17 regras, cada uma com o gate que a cobra — ou a admissão de que **nenhum** cobre |
+| 1 | [`specs/00-regras-e-invariantes.md`](specs/00-regras-e-invariantes.md) | **O contrato único.** As 32 regras em duas categorias, cada uma com o gate que a cobra — ou a admissão de que **nenhum** cobre |
 | 2 | [`arquitetura/01-forma-do-produto-e-modos-de-consumo.md`](arquitetura/01-forma-do-produto-e-modos-de-consumo.md) | O que a lib **é** hoje, e os dois modos de consumo |
 | 3 | [`arquitetura/00-mapa-do-modulo.md`](arquitetura/00-mapa-do-modulo.md) | Onde cada coisa mora e o que pode importar o quê |
 | 4 | [`sarak-dev/GUIA-MANUTENCAO.md`](../sarak-dev/GUIA-MANUTENCAO.md) | O roteador de fluxos: o passo a passo do que você vai mexer e **qual spec é dona** daquilo |

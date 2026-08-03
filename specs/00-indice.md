@@ -44,22 +44,40 @@ as duas, sempre, na mesma ação.**
 | 2 | [plan-03-triagem-divida-conhecida](plan/plan-03-triagem-divida-conhecida.md) | Decidir o destino de cada achado aberto *(análise, não conserto)* | plan-01 | 🟢 Aprovada | `specs/15-divida-conhecida.md` · `00-contexto.md` |
 | 3 | [plan-02-adequar-skills-locais](plan/plan-02-adequar-skills-locais.md) | Adequar as 9 skills locais ao fluxo SDD | plan-01 | 🟢 Aprovada | `00-contexto.md` · `specs/00-regras-e-invariantes.md` · `arquitetura/02` |
 | 4 | [plan-04-alinhamento-erp](plan/plan-04-alinhamento-erp.md) | Alinhar o ERP — o instrumento de medição da lib | — | 🟢 Aprovada | `—` |
-| 5 | [plan-05-integracao-continua](plan/plan-05-integracao-continua.md) | Rodar os gates num ambiente que não é a máquina de ninguém | — | 🔴 A executar | `specs/16-integracao-continua.md` *(nova)* · `specs/02` · `specs/01` |
-| 6 | [plan-06-auditoria-cobertura-gates](plan/plan-06-auditoria-cobertura-gates.md) | Mapear o escopo real de cada gate contra o escopo da regra *(investigação)* | plan-03 | 🔴 A executar | `specs/00-regras-e-invariantes.md` · `specs/01` · `specs/15` |
-| 7 | [plan-07-quitacao-baseline](plan/plan-07-quitacao-baseline.md) | Quitar o baseline de auditoria | plan-06 | 🔴 A executar | `specs/01` · `specs/11` · `specs/10` |
-| 8 | [plan-08-achados-comportamento](plan/plan-08-achados-comportamento.md) | Corrigir o código que faz coisa diferente do que promete | plan-06 | 🔴 A executar | `specs/06` · `specs/07` · `specs/04` |
-| 9 | [plan-09-contrato-publico-2-0-0](plan/plan-09-contrato-publico-2-0-0.md) | As quebras de contrato saem juntas num único major | plan-06 | 🔴 A executar | `arquitetura/03` · `adr/009-*` · `docs/migracoes.md` |
-| 10 | [plan-12-construcao-dos-gates](plan/plan-12-construcao-dos-gates.md) | Dar dono e verificação aos gates que hoje só estão escritos | plan-06 | 🔴 A executar | `specs/00-regras-e-invariantes.md` · `specs/01` · `specs/02` · `specs/15` |
-| 11 | [plan-10-ciclo-atualizacao](plan/plan-10-ciclo-atualizacao.md) | Dar comando de atualização a quem só recebia aviso | plan-05 | 🔴 A executar | `specs/13-instalacao-e-atualizacao.md` |
-| 12 | [plan-11-e2e-no-pipeline](plan/plan-11-e2e-no-pipeline.md) | Parar de sair verde sem executar nada | plan-05 | 🔴 A executar | `specs/11` · `specs/10` · `specs/16` |
+| 5 | [plan-13-fechar-conjunto-de-regras](plan/plan-13-fechar-conjunto-de-regras.md) | Tudo que se cobra aqui vira regra numerada; conduta em categoria própria | — | 🟠 Em revisão | `specs/00-regras-e-invariantes.md` |
+| 6 | [plan-14-casa-dos-gates](plan/plan-14-casa-dos-gates.md) | Concentrar todo verificador em `gates/` e limpar o legado de `scripts/` | plan-13 | 🔴 A executar | `specs/01` · `specs/02` · `specs/00-regras-e-invariantes.md` |
+| 7 | [plan-06-auditoria-cobertura-gates](plan/plan-06-auditoria-cobertura-gates.md) | Mapear o escopo real de cada gate contra o escopo da regra *(investigação)* | plan-14 | 🔴 A executar | `specs/00-regras-e-invariantes.md` · `specs/01` · `specs/15` |
+| 8 | [plan-05-integracao-continua](plan/plan-05-integracao-continua.md) | Rodar os gates num ambiente que não é a máquina de ninguém | — | 🔴 A executar | `specs/16-integracao-continua.md` *(nova)* · `specs/02` · `specs/01` |
+| 9 | [plan-07-quitacao-baseline](plan/plan-07-quitacao-baseline.md) | Quitar o baseline de auditoria | plan-06 | 🔴 A executar | `specs/01` · `specs/11` · `specs/10` |
+| 10 | [plan-08-achados-comportamento](plan/plan-08-achados-comportamento.md) | Corrigir o código que faz coisa diferente do que promete | plan-06 | 🔴 A executar | `specs/06` · `specs/07` · `specs/04` |
+| 11 | [plan-09-contrato-publico-2-0-0](plan/plan-09-contrato-publico-2-0-0.md) | As quebras de contrato saem juntas num único major | plan-06 | 🔴 A executar | `arquitetura/03` · `adr/009-*` · `docs/migracoes.md` |
+| 12 | [plan-12-construcao-dos-gates](plan/plan-12-construcao-dos-gates.md) | Dar dono e verificação aos gates que hoje só estão escritos | plan-06 | 🔴 A executar | `specs/00-regras-e-invariantes.md` · `specs/01` · `specs/02` · `specs/15` |
+| 13 | [plan-10-ciclo-atualizacao](plan/plan-10-ciclo-atualizacao.md) | Dar comando de atualização a quem só recebia aviso | plan-05 | 🔴 A executar | `specs/13-instalacao-e-atualizacao.md` |
+| 14 | [plan-11-e2e-no-pipeline](plan/plan-11-e2e-no-pipeline.md) | Parar de sair verde sem executar nada | plan-05 | 🔴 A executar | `specs/11` · `specs/10` · `specs/16` |
 
 > **A ordem da coluna `#` não é a ordem do número da plan** — e isso é a feature, não um erro. A `plan-03`
 > (triagem) roda **antes** da `plan-02` porque ela decide o escopo real de 07, 08 e 09; a `plan-02` só depende
 > da `plan-01`. Numeração é identidade; a coluna `#` é o plano.
 >
+> **A cadeia `13 → 14 → 06 → 12 → 05` é a ordem que o dono fixou: regra → casa → medir → construir → rodar.**
+> A `plan-13` fecha o conjunto de regras (nenhum gate é criado nela); a `plan-14` concentra os verificadores em
+> `gates/` e limpa o legado; a `plan-06` mede o escopo real de cada gate contra a regra **já fechada**, e mede
+> nos **caminhos definitivos**; a `plan-12` constrói o que faltar, já nascendo no lugar certo; a `plan-05` roda
+> tudo fora da máquina de alguém.
+>
+> **A `plan-14` vem ANTES da `plan-06` de propósito:** a 06 registra `arquivo:linha` de cada gate. Medir antes
+> de mover obrigaria a reescrever todas as referências depois — e é assim que matriz vira documento morto.
+>
 > **A `plan-06` é a única que começa sem lista de tarefas** — a lista é o produto dela, e é por isso que 07, 08,
 > 09 e 12 dependem dela. Os escopos de 07 e 08 seguem marcados como **provisórios** dentro dos próprios
 > arquivos; o da 09 foi **fixado em 2026-08-01** pela triagem da `plan-03` (achado 27 saiu, achado 2 entrou).
+>
+> **O escopo da `plan-06` ENCOLHEU em 2026-08-02, com a execução da `plan-13`.** As quatro perguntas de
+> **regra** que ela herdaria da triagem foram respondidas pelo dono e já entraram na spec como regra escrita:
+> R10 saiu da conduta e virou ⏳; a promessa de AA virou **R31** (só os 18 temas de referência); o acoplamento
+> de auth virou **R32**; e a cobertura em % virou **R8.1**, com piso móvel. A `plan-06` volta a ser **só** o que
+> o nome diz — **medir escopo de gate contra escopo de regra**, agora contra as **32** regras fechadas e nos
+> caminhos definitivos que a `plan-14` fixa. Ela **não decide mais nenhuma regra**.
 >
 > **A `plan-12` roda DEPOIS de 07, 08 e 09, e não antes** — embora dependa formalmente só da `plan-06`. O motivo
 > é operacional: ela liga verificação, e gate ligado antes do conserto correspondente acende vermelho que

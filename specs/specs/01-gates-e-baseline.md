@@ -16,6 +16,8 @@ Este documento existe para impedir uma coisa específica: **alguém acusar regre
 
 Aqui está **como rodar** cada verificação e **onde ela está**. O que cada uma cobra está em [[00-regras-e-invariantes]]; **quando** ela roda está em [[02-enforcement-por-commit]].
 
+> **Todo gate deste documento cita o número da regra que cobra** *(fechado em 2026-08-02, `plan-13`)*. É o caminho de volta que faltava: quem é bloqueado por um gate chega ao contrato sem adivinhar. Antes disso o `check-release-tag` bloqueava um push imprimindo *"Regra violada"* citando uma regra que não existia em spec nenhuma.
+
 > Todos os números deste documento foram **medidos em 2026-07-27** nesta máquina, na execução que produziu esta spec. Nenhum foi copiado de documento anterior.
 
 # 2. Catálogo de gates
@@ -51,8 +53,18 @@ Ele roda os 8 na ordem abaixo, cada um em processo próprio:
 | Catálogo | `npm run catalog:check` | `docs/component-catalog.{json,md}` commitado == gerado agora | R17 | ~1,5 s |
 | Zero-marca | `npm run zero-brand:check` | Nenhuma marca da lib como texto em componente consumidor-facing | R12 | ~1,3 s |
 | Kit | `npm run guide:check` | `sarak-ui/` commitado == gerado agora (6 arquivos) | R17 | ~1,8 s |
-| Kit do mantenedor | `npm run dev-kit:check` | `sarak-dev/` commitado == gerado agora (3 arquivos) **e zero ponteiro morto** na prosa | R17 | ~2,0 s |
-| Pacote | `npm run package:check` | O tarball não leva proibido nem esquece obrigatório | — | precisa de `dist/` |
+| Kit do mantenedor | `npm run dev-kit:check` | `sarak-dev/` commitado == gerado agora (3 arquivos) **e zero ponteiro morto** na prosa | R17 · R23 · R29 | ~2,0 s |
+| Pacote | `npm run package:check` | O tarball não leva proibido nem esquece obrigatório | **R19** | precisa de `dist/` |
+
+**Os três gates que não estão nesta tabela porque não são de contrato**, e as regras que cobram:
+
+| Gate | Comando | Garante | Cobra |
+| --- | --- | --- | --- |
+| Baseline de auditoria | `npm run audit:baseline` (Anel 2 do `pre-commit`) | A auditoria não piora — métrica a métrica contra `.githooks/audit-baseline.json` | **R20**, e a **contagem** de `tsc` (**R30**) quando o staged tem `.ts`/`.tsx` |
+| Release | `npm run release:check` (anel de push) | Artefato publicado alterado sem tag nova não sobe para a `main` | **R21** |
+| Segredos | `python .githooks/verificar_commit.py --raiz .` (Anel 0) | Nenhum segredo nem arquivo sensível no staged | **R22** |
+
+> **Por que isto está escrito agora:** em 2026-08-02 o `check-release-tag` barrou um push imprimindo *"Regra violada"* — e a regra **não existia** em spec nenhuma. Um gate que reprova citando regra inexistente deixa o leitor sem caminho do bloqueio até o contrato. As três regras acima foram escritas em [[00-regras-e-invariantes]] (`plan-13`) a partir da leitura de cada script.
 
 Os quatro primeiros são **rápidos e verdes**, e são os que rodam encadeados antes de compilar no `npm run build`. `package:check` é diferente: roda `npm pack --dry-run --json`, então **exige `dist/` buildado** — é por isso que ele mora no `prepublishOnly`, não no `build`.
 
@@ -78,6 +90,8 @@ npx vitest run
 
 **Custo:** ~155 s. Não existe script `test` no `package.json` — o comando é este.
 
+**Cobra R6 · R13 · R24 · R25 · R26.** A suíte **é** gate: ela roda no Anel 3 do `pre-push` e bloqueia ([[02-enforcement-por-commit]] §4). Cinco regras dependem exclusivamente dela, e cada uma nomeia o arquivo do seu teste em [[00-regras-e-invariantes]] — `tokenContractParity`, `HostIdentity`/`EmbeddedMode`, `scopeCss`, `shippedThemesConsoleClean`, `iconCatalogParity`/`iconContract`.
+
 > **Regra dura: "suítes verdes" exige a suíte INTEIRA.** Rodar pasta a dedo esconde snapshot de terceiro que quebrou. Esta regra não é preferência de estilo; ela já custou uma spec aprovada com snapshot vermelho fora da pasta olhada.
 
 Duas coisas do `vitest.config.ts` que importam para quem lê a saída:
@@ -93,9 +107,9 @@ Duas coisas do `vitest.config.ts` que importam para quem lê a saída:
 npx tsc --noEmit
 ```
 
-**Não está em nenhum pipeline e não está verde: 14 erros.** Não é gate hoje. Rodar `tsc` e ver vermelho é o estado esperado; a lista item a item está na §4.4.
+**Cobra R30 — e a regra NASCE VIOLADA: 14 erros.** Não é gate próprio e não roda no `build` nem no `gates:full`. A única coisa que o toca é o **Anel 2**, que cobra a **contagem** contra `tsc.erros` do baseline quando o staged tem `.ts`/`.tsx`: isso impede o número de subir de 14, **não exige zero**. Rodar `tsc` e ver vermelho é o estado esperado; a lista item a item está na §4.4.
 
-Isso não contradiz o `auditor_typescript` estar verde: um procura o **token** `any` na AST, o outro **compila**. São checagens diferentes.
+Isso não contradiz o `auditor_typescript` (R3) estar verde: um procura o **token** `any` na AST, o outro **compila**. São checagens diferentes.
 
 ## 2.6 Playwright — existe, e está fora de tudo
 
@@ -105,7 +119,7 @@ npm run test-ct            # component testing  (playwright-ct.config.ts)
 
 Mais os `__e2e__` de `src/core/Provider/` e `src/features/DesignEngine/` (`playwright.config.ts`). **Nenhum dos dois roda em automação nenhuma** — nem no build, nem no hook, nem em CI (que não existe). São executados à mão, quando alguém lembra.
 
-Registrado como o que é: **cobertura que existe e não é cobrada**.
+Registrado como o que é: **cobertura que existe e não é cobrada**. **Não cobra regra nenhuma hoje** — ligá-lo ao pipeline é a `plan-11`, e nenhuma das 32 regras depende dele.
 
 # 3. O BASELINE — medido em 2026-07-27
 
@@ -122,15 +136,18 @@ Registrado como o que é: **cobertura que existe e não é cobrada**.
 | ↳ `auditor_cleancode` | | ✅ 0 violações |
 | ↳ `auditor_paridade` | | ✅ **409 / 409 / 409** em 13 arquivos de partição (linha final relata 416 brutos) |
 | ↳ `auditor_presets` | | ✅ gabarito de 409 chaves; **120 itens** (18 temas + 102 presets), 0 órfã |
-| `barrel:check` | `npm run barrel:check` | ✅ **81 componentes, 0 faltas** — era 78 até P26, que pôs `components/engines/**` no escopo de varredura (§4.5, item 4) |
-| `catalog:check` | `npm run catalog:check` | ✅ catálogo em dia (**81** componentes) |
-| `zero-brand:check` | `npm run zero-brand:check` | ✅ **361 arquivos, 0 violações** — era 363 até P26; a contagem é o nº de arquivos varridos, então remover 2 componentes a faz cair. **O número que importa é o de violações (0)** |
-| `guide:check` | `npm run guide:check` | ✅ **kit em dia (6 arquivos)** — o kit reporta **87** componentes (81 + 6 extras; ver [[03-superficie-publica]] §5.1) |
-| `dev-kit:check` | `npm run dev-kit:check` | ✅ **kit em dia (3 arquivos, 0 ponteiros mortos)** — gate novo, criado em 2026-07-31 (P23) |
-| suíte | `npx vitest run` | ✅ **274 arquivos / 889 testes, 100% verde** (~159 s), desde 2026-07-31 (P23 — +1 arquivo e +12 testes do gerador do `sarak-dev/`). Era 273/877 desde 2026-07-29 (P26); 275/879 antes da remoção do `SarakVisualEngine`/`PaletteSelector`, que levou junto os 2 testes de fumaça deles; 281/901 até a remoção do `Template-Ts/` (§3.2); e 280/890 com 1 falha ambiental até 2026-07-28 (§3.1) |
-| `tsc` | `npx tsc --noEmit` | ❌ **14 erros** — 10 em teste, **4 em produção**. Não é gate |
+| `barrel:check` **(R14)** | `npm run barrel:check` | ✅ **81 componentes, 0 faltas** — era 78 até P26, que pôs `components/engines/**` no escopo de varredura (§4.5, item 4) |
+| `catalog:check` **(R17 · R29)** | `npm run catalog:check` | ✅ catálogo em dia (**81** componentes) |
+| `zero-brand:check` **(R12)** | `npm run zero-brand:check` | ✅ **361 arquivos, 0 violações** — era 363 até P26; a contagem é o nº de arquivos varridos, então remover 2 componentes a faz cair. **O número que importa é o de violações (0)** |
+| `guide:check` **(R17 · R29)** | `npm run guide:check` | ✅ **kit em dia (6 arquivos)** — o kit reporta **87** componentes (81 + 6 extras; ver [[03-superficie-publica]] §5.1) |
+| `dev-kit:check` **(R17 · R23 · R29)** | `npm run dev-kit:check` | ✅ **kit em dia (3 arquivos, 0 ponteiros mortos)** — gate novo, criado em 2026-07-31 (P23) |
+| suíte **(R6 · R13 · R24 · R25 · R26)** | `npx vitest run` | ✅ **274 arquivos / 889 testes, 100% verde** (~159 s), desde 2026-07-31 (P23 — +1 arquivo e +12 testes do gerador do `sarak-dev/`). Era 273/877 desde 2026-07-29 (P26); 275/879 antes da remoção do `SarakVisualEngine`/`PaletteSelector`, que levou junto os 2 testes de fumaça deles; 281/901 até a remoção do `Template-Ts/` (§3.2); e 280/890 com 1 falha ambiental até 2026-07-28 (§3.1) |
+| `tsc` **(R30)** | `npx tsc --noEmit` | ❌ **14 erros** — 10 em teste, **4 em produção**. Não é gate próprio; o Anel 2 cobra só a **contagem** |
 | `build` | `npm run build` | 4 gates + 6 etapas de compilação |
-| `package:check` | `npm run package:check` | exige `dist/` buildado |
+| `package:check` **(R19)** | `npm run package:check` | exige `dist/` buildado |
+| `audit:baseline` **(R20 · R30)** | `npm run audit:baseline` | ✅ igual ao baseline de **2026-07-28** — nenhuma regressão |
+| `release:check` **(R21)** | `npm run release:check` | depende do estado do git na hora; **não tem baseline** — ou o artefato mudou desde a tag, ou não |
+| Anel 0 — segredos **(R22)** | `python .githooks/verificar_commit.py --raiz .` | ✅ verde é a **única** saída aceitável — não há baseline nem escopo: segredo é segredo |
 
 ## 3.1 ✅ RESOLVIDO em 2026-07-28 — o teste não-hermético que segurava a suíte
 
@@ -369,6 +386,7 @@ Três coisas são **proibidas**, sem exceção:
 - [x] Todo item de dívida tem `arquivo:linha` e a coluna "visível em gate".
 - [x] Os 8 auditores e os 5 scripts de check foram lidos um por um antes de descritos.
 - [x] Nenhum item do baseline foi corrigido nesta entrega.
+- [x] **Todo gate cita o número da regra que cobra** — incluindo os três que não são de contrato (`audit:baseline` → R20/R30, `release:check` → R21, Anel 0 → R22) e o Playwright, que declara **não** cobrar regra nenhuma *(2026-08-02, `plan-13`)*.
 
 # 8. Plano de testes (Quality Gate)
 

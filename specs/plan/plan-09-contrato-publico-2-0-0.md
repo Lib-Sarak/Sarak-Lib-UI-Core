@@ -28,11 +28,15 @@ teste e ajuste — por isso saem juntas ou não saem.
 > dono e registradas em [[15-divida-conhecida]]: o **achado 27 SAIU** — `chromeSlots` contando 9 para 8 foi
 > **aceito como característica** (§5 da spec de dívida; o `doc` do próprio slot avisa o consumidor de que
 > `topbarActions` é alias de `topbarEnd`), e o **achado 2 ENTROU** — `upgradeThemePayload(partialMode)` é
-> parâmetro morto cuja remoção muda assinatura pública. Continuam sendo **quatro** itens.
+> parâmetro morto cuja remoção muda assinatura pública.
+>
+> **Acréscimo de 2026-08-02:** a `plan-13` escreveu **R32** (a lib é indiferente ao sistema de autenticação) e a
+> única violação dela é pública — o `SarakSecurityOrchestrator`. Removê-lo é breaking, então entra aqui.
+> **São cinco itens.**
 
 # 3. Escopo
 
-## 3.1 Dentro — as quatro saem no mesmo major
+## 3.1 Dentro — as cinco saem no mesmo major
 
 - **`CustomizationPanel` lazy** *(achado 3)*. Hoje sai **eager** do barril (`src/index.ts:50`) e ainda é
   importado eager pelo efeito colateral de `:126-131` — é **o painel inteiro do Design Engine no caminho
@@ -45,6 +49,13 @@ teste e ajuste — por isso saem juntas ou não saem.
 - **`upgradeThemePayload(partialMode)`** *(achado 2)*. Parâmetro morto: `src/core/Design/master-map.ts:148`
   tem a **única ocorrência** de `partialMode` no repositório inteiro — a própria assinatura. Remover parâmetro
   de função exportada é mudança de assinatura pública, e o major é a janela dela.
+- **Remover o `SarakSecurityOrchestrator`** *(violação de R32 — decisão do dono, 2026-08-02)*. Três arquivos:
+  `Templates/SarakSecurityOrchestrator.tsx`, `Templates/components/SecurityOrchestratorSetup.tsx` e
+  `Templates/hooks/useSecurityOrchestratorState.ts`, mais o export de `Templates/index.ts:14` e os testes deles.
+  **Por quê:** `useSecurityOrchestratorState.ts:22-68` chama `GET {endpoint}/mfa/status`, `/mfa/setup`,
+  `POST /mfa/enable` e `/mfa/disable` — a lib **dita o protocolo de autenticação do importador**. É a diferença
+  exata para o `SarakTable`, que recebe um `endpoint` e é **agnóstico** sobre o que existe atrás dele.
+  Autenticação é decisão do importador; a lib constrói a tela e entrega o evento.
 
 ## 3.2 Fora
 - ⛔ Emitir o `npm version major` **antes** da revalidação no ERP.
@@ -71,11 +82,13 @@ teste e ajuste — por isso saem juntas ou não saem.
 3. **Ids legados do Discovery** — decisão do dono. Se saírem, verificar quem os registra por efeito colateral.
 4. **Achado 2** — remover o parâmetro `partialMode` de `upgradeThemePayload` (`master-map.ts:148`) e confirmar,
    por busca no repositório inteiro, que nenhum chamador o passava.
-5. **Uma entrada única em `docs/migracoes.md`**, cobrindo as quatro: antes/depois e como migrar. Uma entrada,
-   não quatro — é o ponto inteiro desta plan.
-6. **⇒ PARE. Revalidar no ERP** *antes* do `npm version`: diagnóstico read-only → relatório → **"sim" do dono**
+5. **`SarakSecurityOrchestrator`** — remover os 3 arquivos, o export de `Templates/index.ts:14` e os testes.
+   Conferir que nenhum outro componente importa o hook, e que o `barrel:check`/`catalog:check` refletem a saída.
+6. **Uma entrada única em `docs/migracoes.md`**, cobrindo as cinco: antes/depois e como migrar. Uma entrada,
+   não cinco separadas — é o ponto inteiro desta plan.
+7. **⇒ PARE. Revalidar no ERP** *antes* do `npm version`: diagnóstico read-only → relatório → **"sim" do dono**
    → execução. O ERP tem de subir e funcionar com o `2.0.0`.
-7. Só então emitir o major, pelo ciclo normal (`npm version major`).
+8. Só então emitir o major, pelo ciclo normal (`npm version major`).
 
 # 6. Prompt de execução
 
@@ -89,7 +102,7 @@ Skills a aplicar: padrao-typescript, test-unitario.
 
 Você NÃO emite `npm version major` — quem publica é o usuário, e só depois da revalidação
 no ERP. O SarakTabs e os ids do Discovery têm decisão do dono: pare e pergunte.
-As quatro mudanças produzem UMA entrada em docs/migracoes.md, não quatro.
+As cinco mudanças produzem UMA entrada em docs/migracoes.md, não cinco.
 Não commite. Ao terminar, escreva o resumo na própria plan.
 ```
 
@@ -100,7 +113,8 @@ Não commite. Ao terminar, escreva o resumo na própria plan.
 - [ ] `SarakTabs` com **uma** API; ADR escrito se uma sobreviveu e outra morreu.
 - [ ] Decisão sobre os ids legados do Discovery registrada e aplicada.
 - [ ] `upgradeThemePayload` sem o parâmetro `partialMode`, e nenhum chamador quebrado.
-- [ ] **Uma** entrada em `docs/migracoes.md` cobrindo as quatro, com antes/depois.
+- [ ] `SarakSecurityOrchestrator` e suas 2 peças removidos; `grep -rn "mfa/" src/` → **0**.
+- [ ] **Uma** entrada em `docs/migracoes.md` cobrindo as cinco, com antes/depois.
 - [ ] `arquitetura/03-superficie-publica.md` §8 sem as três dívidas.
 - [ ] **ERP revalidado com o `2.0.0`** — sobe, navega e builda.
 - [ ] Suíte verde; `npm run gates:full` verde; DTS gerado sem erro.
@@ -111,14 +125,16 @@ Não commite. Ao terminar, escreva o resumo na própria plan.
 - `grep -n "CustomizationPanel" src/index.ts` → export lazy; sem import por efeito colateral
 - `grep -c "SarakTabs" dist/index.d.ts` → uma definição
 - `grep -rn "partialMode" src/` → **0 ocorrências**
-- `docs/migracoes.md` → **uma** entrada nova cobrindo as quatro
+- `grep -rn "SecurityOrchestrator\|mfa/" src/` → **0 ocorrências**
+- `docs/migracoes.md` → **uma** entrada nova cobrindo as cinco
 - No ERP: `pnpm install && npm run dev` → sobe com o `2.0.0`; as telas navegam
 - `npx vitest run` · `npm run gates:full` → verdes
 
 # 9. Destino da síntese
 
 **Destino:** `arquitetura/03-superficie-publica.md` (as dívidas da §8 morrem) · `adr/009-*` (se o `SarakTabs`
-exigir) · `docs/migracoes.md` (a entrada única) · `specs/15-divida-conhecida.md` (achados **2 e 3** saem da §3)
+exigir) · `docs/migracoes.md` (a entrada única) · `specs/15-divida-conhecida.md` (achados **2 e 3** saem da §3) ·
+`specs/00-regras-e-invariantes.md` (R32 deixa de ter violação declarada)
 
 > **Correção a levar junto na síntese** *(medida pelo revisor em 2026-08-01)*:
 > `arquitetura/03-superficie-publica.md:177` cita o import por efeito colateral em `src/index.ts:119-125`.

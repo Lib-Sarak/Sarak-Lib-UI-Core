@@ -119,19 +119,24 @@ aqui.
 > regras formadas, para então criar a verificação para o gate."*
 
 A diferença é de sequência, não de rigor. Um gate que **nunca foi construído** não é um defeito do código: é
-trabalho que ainda não chegou a sua vez. Construí-lo antes de as 17 regras estarem fechadas produz gate que
+trabalho que ainda não chegou a sua vez. Construí-lo antes de o conjunto de regras estar fechado produz gate que
 cobra a régua errada — e gate errado é mais caro que gate ausente, porque ninguém desconfia dele.
 
 **A ordem é:** fechar o conjunto de regras ([[00-regras-e-invariantes]]) → mapear escopo de gate × escopo de
 regra (plan-06) → **só então** construir/ampliar as verificações.
 
+> ✅ **O primeiro degrau foi dado em 2026-08-02 (plan-13):** o conjunto fechou em **32 regras** — 29 verificáveis
+> e 3 de conduta. Três achados desta seção **ganharam a regra que lhes faltava** e deixaram de ser "nenhuma":
+> **14 → R32** (a lib é indiferente ao sistema de autenticação) · **15 → R8.1** (cobertura em %, piso móvel) ·
+> **18 → R31** (contraste AA nos 18 temas shippados). O que falta neles agora é só o gate — plan-12.
+
 ## 4.1 Gates integralmente ausentes
 
 | # | O que falta | Onde | Regra que ele cobraria |
 |---|---|---|---|
-| 14 | **Gate anti-acoplamento de auth.** Confirmado: **0 arquivos** `AuthCoupling*`. Um plano antigo o previu e se declarou concluído sem criar nada | — | **NENHUMA das 17 fala de auth.** Sem regra formada não há gate a construir — é o caso que melhor ilustra a ordem acima |
-| 15 | **Cobertura em %.** `@vitest/coverage-v8` em `package.json:100`, **nenhum script o invoca** | `package.json:100` | R8 escolhe **1:1 de propósito** ([[00-regras-e-invariantes]] R8 argumenta por quê). Decidir se % acrescenta algo vem antes de medir — se não acrescentar, a dependência sai |
-| 18 | **Medição de contraste WCAG AA.** Confirmado: **0 cálculos** de razão de contraste em `src/`. (`useMediaLuminance.ts` mede luminância de mídia para escolher cor de texto — **não** é contraste WCAG) | — | **NENHUMA.** Antes do gate, a regra: *a lib promete AA?* Se promete, mede; se não promete, o item morre. A pergunta é da plan-06 |
+| 14 | **Gate anti-acoplamento de auth.** Confirmado: **0 arquivos** `AuthCoupling*`. Um plano antigo o previu e se declarou concluído sem criar nada | — | **R32** *(escrita em 2026-08-02)* — a lib é indiferente ao sistema de autenticação. A regra existe; falta o gate. ⚠️ Ela **nasce com uma violação**: o `SarakSecurityOrchestrator`, roteado à plan-09 |
+| 15 | **Cobertura em %.** `@vitest/coverage-v8` em `package.json:100`, **nenhum script o invoca** | `package.json:100` | **R8.1** *(decidido em 2026-08-02)* — o % entra como **segunda rede** do 1:1, com **piso móvel**: mede, grava, e o piso só sobe |
+| 18 | **Medição de contraste WCAG AA.** Confirmado: **0 cálculos** de razão de contraste em `src/`. (`useMediaLuminance.ts` mede luminância de mídia para escolher cor de texto — **não** é contraste WCAG) | — | **R31** *(escrita em 2026-08-02)* — AA garantido nos **18 temas shippados**; **sem promessa** para tema do consumidor. Pode nascer vermelha: ninguém mediu os 18 |
 | 23 | **Gate de conteúdo sobre `sarak-ui/templates/`.** Medido: `kitFiles.mjs:16-22` não lista `templates/`; `tsconfig.json:20` é `include: ["src"]`; `check-package-contents.mjs` cobra **só presença** de 3 dos 5 itens — `componente-proprio.tsx` e `templates/ui-kit/` existem e **nada os cobra**. Template citando componente removido sai verde em tudo | `sarak-ui/templates/` | **R17**, cuja metade de prosa manual não tem gate. O achado 24 é a prova de que já aconteceu |
 | 26 | **Automação que exercite um `install` de verdade.** Confirmado: **0 ocorrências** de `child_process`/`execSync` nos testes de `bin/scaffold/`. As provas de npm/pnpm/yarn foram feitas à mão, uma vez. Idem o `check --notify` do `predev` | — | Nenhuma regra escrita. Depende de CI (plan-05) e é o escopo da **plan-11** |
 
