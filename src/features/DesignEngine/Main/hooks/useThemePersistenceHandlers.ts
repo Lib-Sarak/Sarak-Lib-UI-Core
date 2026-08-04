@@ -8,7 +8,11 @@ export interface UseThemePersistenceHandlersProps {
     setCurrentThemeName: (name: string) => void;
     setIsSaveModalOpen: (open: boolean) => void;
     setIsSaving: (saving: boolean) => void;
-    showToast: (type: 'success' | 'warning' | 'error', message: string) => void;
+    // O toast do painel tem DOIS estados, não três: `useDesignDraft.ts:53` guarda
+    // `'success' | 'warning'` e é o único produtor. Nenhum chamador passa `'error'`
+    // — a falha de exportação (`:40`) usa `'warning'`. Declarar um terceiro valor que
+    // ninguém emite nem renderiza era o `TS2322` de `ThemeCustomizationTab.tsx:86`.
+    showToast: (type: 'success' | 'warning', message: string) => void;
     handleApplyToSystem: () => void;
 }
 

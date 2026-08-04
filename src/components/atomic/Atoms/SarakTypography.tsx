@@ -29,7 +29,11 @@ const DEFAULT_TAG: Record<SarakTypographyVariant, React.ElementType> = {
     mono: 'code',
 };
 
-/** Estilo por variante — 100% via `var(--token, fallback)` (Zero Hardcode). */
+/**
+ * Estilo por variante — 100% tokenizado (Zero Hardcode, R2): cada propriedade lê uma
+ * CSS Variable real do Design Engine, sempre com fallback. Ver os nomes emitidos em
+ * `src/core/Design/schema/typography.ts`; nenhum valor é escrito solto aqui.
+ */
 const variantStyle: Record<SarakTypographyVariant, React.CSSProperties> = {
     h1: {
         fontFamily: 'var(--font-heading, var(--sarak-font-h, "Outfit", sans-serif))',

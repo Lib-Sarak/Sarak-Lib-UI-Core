@@ -113,33 +113,6 @@ export const ColorsSchema: ComponentSchema = {
         },
         // --- CORES DE SUPERFÍCIE ---
         {
-            id: 'colorBgBody',
-            label: 'Background Geral (Body)',
-            type: 'color',
-            description: 'Cor de fundo base de toda a aplicação (atrás de qualquer card/painel) — a camada mais profunda da hierarquia de superfícies.',
-            axis: 'color',
-            defaultValue: '#050505',
-            cssVars: ['--sarak-bg-body', '--theme-bg', '--theme-body', '--bg-body', '--sarak-bg-base']
-        },
-        {
-            id: 'colorBgLayer1',
-            label: 'Background Layer 1',
-            type: 'color',
-            description: 'Cor de fundo da primeira camada de profundidade acima do body — usada em containers/seções intermediárias que precisam se destacar levemente do fundo geral.',
-            axis: 'color',
-            defaultValue: '#0f0f0f',
-            cssVars: ['--sarak-bg-layer-1', '--theme-surface-1']
-        },
-        {
-            id: 'colorBgLayer2',
-            label: 'Background Layer 2',
-            type: 'color',
-            description: 'Cor de fundo da segunda camada de profundidade — mais clara/destacada que `colorBgLayer1`, para elementos ainda mais elevados na hierarquia visual (ex. um card dentro de uma seção).',
-            axis: 'color',
-            defaultValue: '#1a1a1a',
-            cssVars: ['--sarak-bg-layer-2', '--theme-surface-2']
-        },
-        {
             id: 'colorBgModal',
             label: 'Background Modais',
             type: 'color',
@@ -153,9 +126,14 @@ export const ColorsSchema: ComponentSchema = {
             id: 'cardBackgroundColor',
             label: 'Background dos Cards',
             type: 'color',
-            description: 'Cor de fundo padrão de todos os cards do sistema. Nota: existe um token homônimo em `cards.ts` com `cssVars` parcialmente divergente (`--theme-card-bg`/`--theme-card-border` a mais) — pendência de higiene de schema já registrada no backlog de cobertura, fora do escopo desta spec.',
+            description: 'Cor de fundo padrão de todos os cards do sistema.',
             axis: 'color',
             defaultValue: 'rgba(15, 23, 42, 0.6)',
+            // `generateVariants` veio da declaração homônima de `cards.ts`, desduplicada
+            // pela plan-07: era ELA que emitia as 51 variantes cromáticas (`-rgb`, `-bg`,
+            // `-10`…`-50`, `-hover`, `-active`, `-light`). Remover a duplicata sem herdar
+            // esta linha apagava todas — desduplicar é FUNDIR, não descartar.
+            generateVariants: true,
             cssVars: ['--card-bg', '--theme-surface', '--theme-card', '--sarak-card-bg', '--theme-card-bg']
         },
         {

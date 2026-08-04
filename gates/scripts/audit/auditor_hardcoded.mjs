@@ -121,9 +121,20 @@ const UNIT_RE = /\b([1-9][0-9]*(?:\.[0-9]+)?|0\.[0-9]+)(px|rem|em)\b/; // ignora
 
 function sanitizeFallbacks(text) {
   // Remove fallbacks documentados dentro de var(): var(--x, #fff) / var(--x, 12px)
+  //
+  // LIMITE CONSERTADO em 2026-08-03 (R18, plan-07 correção 1): o `[-+]?` aceita
+  // fallback COM SINAL. Sem ele, `var(--sarak-h1-ls, -1px)` sobrevivia à limpeza e era
+  // acusado como unidade solta — falso positivo, não hardcode. A [[01-gates-e-baseline]]
+  // §4.1 já o classificava assim, e a "convenção" que se propunha no lugar
+  // (`calc(var(--x, 1px) * -1)`) INVERTERIA o valor sempre que o token carregasse o
+  // próprio sinal: `h1LetterSpacing` é slider de faixa -5..10, default -1.
+  //
+  // O que este ajuste NÃO faz, de propósito: `UNIT_RE`/`HEX_RE` continuam intactos, então
+  // valor negativo escrito SOLTO (fora de `var(...)`) segue sendo violação. O que mudou é
+  // só o reconhecimento do fallback documentado — nada deixou de ser cobrado.
   return text
     .replace(/var\([^,]+,\s*#[0-9a-fA-F]{3,8}\s*\)/gi, '')
-    .replace(/var\([^,]+,\s*[0-9.]+(?:px|rem|em)\s*\)/gi, '');
+    .replace(/var\([^,]+,\s*[-+]?[0-9.]+(?:px|rem|em)\s*\)/gi, '');
 }
 
 function checkValueHardcoded(sourceFile, relFilePath) {

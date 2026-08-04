@@ -41,57 +41,83 @@ catalog/partitions/*.json            13 partições, uma por coluna
 
 Distribuição por coluna: `cards_engine` 95 · `components_base` 70 · `colors_and_atmosphere` 61 · `layout_and_navigation` 40 · `data_and_charts` 40 · `typography` 33 · `branding_config` 30 · `motion_and_animation` 17 · `specialized_engines` 16 · `structural` 11 · e três colunas de valor único (`mode`, `navigation_style`, `body_size`).
 
-> ⚠️ **Se você somar a distribuição acima, chega a 416 — não a 409.** Os dois números estão certos: a lista conta **entradas** e a tabela conta **ids únicos**. Sete ids aparecem **duas vezes** no roteamento, e é isso que produz a diferença de 7. A apuração completa está em §2.2 — **não "corrija" nenhum dos dois números antes de ler aquela seção.**
+> ⚠️ **HISTÓRICO — não vale mais desde 2026-08-03 (`plan-07`).** Os sete ids duplicados foram **fundidos**, e
+> hoje a soma fecha em **410 = 410**: entradas brutas e ids únicos coincidem. O aviso abaixo descreve o estado
+> **anterior** e fica porque a §2.2 explica o defeito que ele sinalizava.
+>
+> ⚠️ *(até 2026-08-03)* **Se você somar a distribuição acima, chega a 416 — não a 409.** Os dois números estão certos: a lista conta **entradas** e a tabela conta **ids únicos**. Sete ids aparecem **duas vezes** no roteamento, e é isso que produz a diferença de 7. A apuração completa está em §2.2 — **não "corrija" nenhum dos dois números antes de ler aquela seção.**
 
-## 2.2 ⚠️ A divergência 409 × 416 — APURADA
+## 2.2 ✅ A divergência 409 × 416 — FECHADA em 2026-08-03
 
-A saída do auditor de paridade imprime `409/409/409` nos três totais e, na linha final de sucesso, **`416 tokens validados`**. Os dois números estão certos e medem coisas diferentes:
+> **Estado atual: não há divergência.** O auditor imprime `410/410/410` nos três totais **e** `410 tokens
+> validados` na linha final. Os sete `id` que existiam em dois schemas ao mesmo tempo foram desduplicados pela
+> `plan-07`. Esta seção fica porque **a classificação anterior estava errada num ponto que custa caro**, e o
+> erro é mais instrutivo que o defeito.
 
-- **409** = ids **únicos**, contados por `Set` — é o tamanho real do contrato.
-- **416** = contagem **bruta** de entradas em `schema.tokens[]` somando os 28 arquivos, incrementada sem deduplicar (`totalTokensChecked`, em `verify_parity.ts:60-63`, impresso na `:96`).
+### O que era
 
-A diferença de 7 é real: **sete `id` estão declarados em DOIS schemas diferentes**, e como `MASTER_DESIGN_MAP` não deduplica, `getAllDesignTokens()` devolve 416 itens para 409 ids distintos.
+O auditor imprimia `409/409/409` e, na linha de sucesso, **`416 tokens validados`**. Os dois números estavam
+certos e mediam coisas diferentes: **409** = ids únicos (`Set`), **416** = entradas brutas em `schema.tokens[]`
+somando os 28 arquivos, sem deduplicar (`totalTokensChecked`). A diferença de 7 eram **sete ids declarados em
+DOIS schemas**, e a mesma duplicação propagava para o `theme_table_mapping.json`.
 
-| `id` duplicado | Declarado em | E também em |
+| `id` | Declarado em | E também em | O que a segunda declaração acrescentava |
+| --- | --- | --- | --- |
+| `bgBaseColor` | `system.ts` | `atmosphere.ts` | nada — subconjunto |
+| `cardBackgroundColor` | `cards.ts` | `colors.ts` | ⚠️ **`generateVariants: true`** vivia só em `cards.ts` |
+| `cardBorderColor` | `cards.ts` | `colors.ts` | nada — subconjunto |
+| `colorBgBody` | `colors.ts` | `atmosphere.ts` | ⚠️ **3 aliases** só em `colors.ts` |
+| `colorBgLayer1` | `colors.ts` | `atmosphere.ts` | nada — subconjunto |
+| `colorBgLayer2` | `colors.ts` | `atmosphere.ts` | nada — subconjunto |
+| `zIndexModal` | `engineering.ts` | `layers.ts` | nada — subconjunto |
+
+### 🔴 A classificação anterior estava ERRADA, e o erro tinha consequência
+
+Esta seção afirmava que a consequência era **"a última declaração sobrescreve a primeira"** em
+`getDefaultDesignState()`, e que as três entradas repetidas na mesma coluna do roteamento eram
+*"redundância literal … inofensivo hoje"*.
+
+**As duas afirmações estavam incompletas, e a segunda é falsa.** Medido ao executar a desduplicação:
+
+**`getAllDesignTokens()` (`master-map.ts:75`) é um `flatMap` — ele NÃO deduplica.** Logo, as duas declarações
+eram **ambas processadas pelo injetor**, e os `cssVars` das duas iam para o DOM. O "sobrescreve" valia só para
+o `defaultValue`; para as **variáveis emitidas**, o efeito era de **união**.
+
+Remover a declaração "perdedora" — o que parecia faxina — apagou **51 variáveis CSS**: todas as variantes
+cromáticas de `cardBackgroundColor` (`-rgb`, `-bg`, `-border`, `-10`…`-50`, `-hover`, `-active`, `-light`) e o
+alias `--theme-body`. Duas causas distintas:
+
+- **`generateVariants: true`** existia **só** na declaração de `cards.ts`. É essa flag que dispara as variantes;
+- **`colorBgBody`** tinha em `colors.ts` três aliases que `atmosphere.ts` não tem — `--theme-body`,
+  `--bg-body`, `--sarak-bg-base`.
+
+> **A duplicata não era redundância: era uma UNIÃO de aliases e flags.** Desduplicar é **fundir**, não escolher
+> um lado. Quem tratar um `id` duplicado como "apague o repetido" quebra a superfície emitida em silêncio — o
+> `defaultValue` continua certo, o console fica limpo, e a cor some da tela.
+
+**Como foi fechado:** o vencedor de cada par herdou o que era exclusivo do outro (a flag em `colors.ts`, os 3
+aliases em `atmosphere.ts`), e a rede de caracterização em `src/core/Design/__tests__/master-map.test.ts`
+passou a cobrir **as duas** superfícies — o `defaultValue` (snapshot) **e** o conjunto de aliases emitidos.
+A primeira versão daquele teste cobria só a primeira, e foi a suíte de snapshots do Design Engine que pegou a
+perda. Está registrado ali, no próprio teste.
+
+### O roteamento de persistência — mesma origem, mesma correção
+
+`theme_table_mapping.json` tinha o mesmo desvio: **416 entradas brutas para 409 ids únicos**, nos mesmos sete
+ids, em duas formas:
+
+| Forma | Ids | O que era |
 | --- | --- | --- |
-| `bgBaseColor` | `atmosphere.ts:84` | `system.ts:12` |
-| `cardBackgroundColor` | `cards.ts:87` | `colors.ts:153` |
-| `cardBorderColor` | `cards.ts:131` | `colors.ts:162` |
-| `colorBgBody` | `atmosphere.ts:56` | `colors.ts:116` |
-| `colorBgLayer1` | `atmosphere.ts:65` | `colors.ts:125` |
-| `colorBgLayer2` | `atmosphere.ts:74` | `colors.ts:134` |
-| `zIndexModal` | `engineering.ts:32` | `layers.ts:34` |
+| Duas colunas **diferentes** | `bgBaseColor` · `cardBackgroundColor` · `cardBorderColor` · `zIndexModal` | ambiguidade de **roteamento**: dois destinos de persistência declarados |
+| Repetido na **mesma** coluna | `colorBgBody` · `colorBgLayer1` · `colorBgLayer2` | entrada duplicada literal |
 
-**Isto não produz falso-negativo na paridade** — toda validação é por presença em `Set`, então a duplicata não engana o gate. Mas tem uma consequência de comportamento que importa: em `getDefaultDesignState()` (`master-map.ts:90-96`), o estado é um objeto indexado por `id`, então a **última** declaração sobrescreve a primeira. Duas definições do mesmo token com metadados diferentes (faixa, enum, default) resolvem por ordem de declaração no array, não por intenção.
+Fechado pela mesma execução, mantendo em cada caso a **última** coluna — que é a que prevalecia. Hoje:
+**410 brutas para 410 únicos**.
 
-### A duplicação PROPAGA para o roteamento de persistência
-
-O achado não para no schema. `src/core/Design/catalog/theme_table_mapping.json` — a fonte que decide **em qual coluna cada token é persistido** — tem exatamente o mesmo desvio: **416 entradas brutas para 409 ids únicos**, e são **os mesmos sete ids** da tabela acima.
-
-A forma da duplicação, porém, **não é uniforme** — e a distinção importa para quem for consertar:
-
-| `id` | Onde aparece no roteamento | Forma |
-| --- | --- | --- |
-| `bgBaseColor` | `branding_config` + `colors_and_atmosphere` | Duas colunas **diferentes** |
-| `cardBackgroundColor` | `colors_and_atmosphere` + `cards_engine` | Duas colunas **diferentes** |
-| `cardBorderColor` | `colors_and_atmosphere` + `cards_engine` | Duas colunas **diferentes** |
-| `zIndexModal` | `layout_and_navigation` + `specialized_engines` | Duas colunas **diferentes** |
-| `colorBgBody` | `colors_and_atmosphere` **×2** | Entrada **repetida na MESMA coluna** |
-| `colorBgLayer1` | `colors_and_atmosphere` **×2** | Entrada **repetida na MESMA coluna** |
-| `colorBgLayer2` | `colors_and_atmosphere` **×2** | Entrada **repetida na MESMA coluna** |
-
-São dois defeitos de natureza distinta sob o mesmo sintoma:
-
-- **Quatro ids em duas colunas diferentes** é ambiguidade de **roteamento**: o mesmo token tem dois destinos de persistência declarados. Qual vence depende da ordem em que o consumidor do mapa itera.
-- **Três ids repetidos dentro da mesma coluna** é redundância **literal** — a mesma string duas vezes no mesmo array. Não é ambíguo, é só entrada duplicada; inofensivo hoje porque todo consumo é por presença, e é o caso mais barato de limpar.
-
-Isto **reforça** o achado do schema, não o substitui: a mesma higiene faltante aparece nas duas fontes independentes do dicionário, o que sugere que uma foi derivada da outra sem deduplicar em nenhum dos dois lados.
-
-Registrado em DIVERGÊNCIAS. **Não corrigido aqui** — no schema, mexer muda qual definição vence; no roteamento, muda em qual coluna o valor passa a ser gravado. As duas coisas exigem decisão, não faxina.
-
-# 3. As duas alavancas
-
-Todo token é consumido por uma de duas vias. **O payload de entrada não distingue** — a distinção nasce só no consumo.
+> **A lição que sobrevive a esta seção:** a mesma higiene faltava nas **duas** fontes independentes do
+> dicionário, o que indica que uma foi derivada da outra sem deduplicar em nenhum dos lados. Um gate que
+> compare **bruto × único** — em vez de só `Set` contra `Set` — teria pego isso anos antes. Ele não existe; está
+> na fila da `plan-12`.
 
 ## 3.1 Alavanca de VALOR — vira CSS Variable
 

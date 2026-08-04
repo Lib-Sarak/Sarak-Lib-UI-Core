@@ -120,7 +120,7 @@ export const useStructuralStyles = () => {
 
         return {
             className: labelStrategies[labelPos] || labelStrategies['top'],
-            style: { gap }
+            style: { gap } as React.CSSProperties
         };
     };
 

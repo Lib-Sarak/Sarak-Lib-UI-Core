@@ -9,15 +9,6 @@ export const SystemSchema: ComponentSchema = {
     label: 'Configurações de Layout',
     tokens: [
         {
-            id: 'bgBaseColor',
-            label: 'Cor de Fundo Base',
-            type: 'color',
-            description: 'Cor de fundo base do sistema (camada mais profunda) — equivalente/paralela a `colorBgBody` em `colors.ts`, consumida pela camada de configurações de layout.',
-            axis: 'color',
-            defaultValue: '#0a0a0c',
-            cssVars: ['--sarak-bg-base']
-        },
-        {
             id: 'layout',
             label: 'Modo de Layout',
             type: 'select',

@@ -4,11 +4,11 @@
     "medidoEm": "2026-08-03",
     "metricas": {
         "auditor_hardcoded.mjs": {
-            "valor": 1,
+            "valor": 0,
             "estruturalLiquido": 0
         },
         "auditor_ghostvars.mjs": {
-            "consumos": 2
+            "consumos": 0
         },
         "auditor_typescript.mjs": {
             "violacoes": 0
@@ -30,6 +30,6 @@
         }
     },
     "tsc": {
-        "erros": 14
+        "erros": 10
     }
 }

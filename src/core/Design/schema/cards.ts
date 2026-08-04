@@ -84,16 +84,6 @@ export const CardSchema: ComponentSchema = {
 
         // --- SUPERFÍCIE ---
         {
-            id: 'cardBackgroundColor',
-            label: 'Cor de Fundo (Base)',
-            type: 'color',
-            description: 'Cor de fundo padrão de todos os cards do sistema — a superfície mais usada da UI. Gera variantes automáticas de hover/active.',
-            axis: 'color',
-            defaultValue: 'rgba(15, 23, 42, 0.6)',
-            generateVariants: true,
-            cssVars: ['--card-bg', '--theme-surface', '--theme-card', '--sarak-card-bg']
-        },
-        {
             id: 'cardBackdropBlur',
             label: 'Backdrop Blur (Glass)',
             type: 'slider',
@@ -126,15 +116,6 @@ export const CardSchema: ComponentSchema = {
             constraints: { min: 0, max: 20 },
             defaultValue: 1,
             cssVars: ['--card-border-width', '--theme-border-width', '--sarak-card-border-width']
-        },
-        {
-            id: 'cardBorderColor',
-            label: 'Cor da Borda',
-            type: 'color',
-            description: 'Cor da borda padrão dos cards — costuma ser sutil (baixa opacidade) para demarcar o card sem criar contraste forte.',
-            axis: 'color',
-            defaultValue: 'rgba(255, 255, 255, 0.1)',
-            cssVars: ['--card-border-color', '--theme-border', '--sarak-card-border-color']
         },
         {
             id: 'cardBorderOpacity',

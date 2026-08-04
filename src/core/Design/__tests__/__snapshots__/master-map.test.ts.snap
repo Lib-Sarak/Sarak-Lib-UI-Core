@@ -1,0 +1,13 @@
+// Vitest Snapshot v1, https://vitest.dev/guide/snapshot.html
+
+exports[`getDefaultDesignState — caracterização dos 7 ids antes duplicados > o valor vencedor de cada um é EXATAMENTE o de antes da desduplicação 1`] = `
+{
+  "bgBaseColor": "#0a0a0c",
+  "cardBackgroundColor": "rgba(15, 23, 42, 0.6)",
+  "cardBorderColor": "rgba(255, 255, 255, 0.1)",
+  "colorBgBody": "#050505",
+  "colorBgLayer1": "#0f0f0f",
+  "colorBgLayer2": "#1a1a1a",
+  "zIndexModal": 2000,
+}
+`;

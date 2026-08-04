@@ -265,13 +265,41 @@ para automação em qualquer máquina — não só nesta.
 
 Cada item traz `arquivo:linha`, por que ainda existe, o que fecharia — e **se algum gate o vê hoje**. Essa última coluna é a mais importante: é ela que revela o que o conjunto de gates **não** enxerga.
 
-## 4.1 Hardcode — 1 violação
+## 4.1 ✅ Hardcode — FECHADO em 2026-08-03
 
-| Item | Onde | Por que existe |
-| --- | --- | --- |
-| `letterSpacing: 'var(--sarak-h1-ls, -1px)'` | `src/components/atomic/Atoms/SarakTypography.tsx:39` | **Limitação do detector, não hardcode real.** `sanitizeFallbacks()` (`auditor_hardcoded.mjs:122-127`) remove `var(--x, 12px)` mas a regex **não aceita sinal negativo**, então o fallback `-1px` sobrevive à limpeza e é acusado como unidade solta |
+**Era:** `letterSpacing: 'var(--sarak-h1-ls, -1px)'` em `SarakTypography.tsx`, acusado como unidade solta.
+Já estava classificado aqui como **"limitação do detector, não hardcode real"** — `sanitizeFallbacks()` removia
+`var(--x, 12px)` mas a regex não aceitava **sinal**, então o `-1px` sobrevivia à limpeza.
 
-**O que fecharia:** trocar por `calc(var(--sarak-h1-ls, 1px) * -1)`, que é a convenção adotada — ou corrigir a regex do auditor para aceitar o sinal. A primeira muda um átomo; a segunda muda um gate. **Visível em gate:** ✅ sim, é metade do baseline vermelho.
+Esta seção oferecia duas saídas: trocar o átomo por `calc(var(--sarak-h1-ls, 1px) * -1)`, *"a convenção
+adotada"*, **ou** corrigir a regex. A `plan-07` mediu as duas e o dono escolheu a segunda.
+
+### Por que a "convenção" NÃO servia aqui
+
+`h1LetterSpacing` (`schema/typography.ts:154-163`) é `type: 'slider'`, `unit: 'px'`,
+`constraints: { min: -5, max: 10 }`, `defaultValue: -1`: **o token carrega o próprio sinal**. A engine emite
+`--sarak-h1-ls: -1px`, e `calc(-1px * -1)` resulta **`+1px`** — o espaçamento do H1 **inverteria** para todo
+consumidor, e o erro cresceria conforme o usuário mexesse no slider.
+
+Pior: **teria passado no gate.** O `sanitizeFallbacks` limparia o `var(--sarak-h1-ls, 1px)` e o `* -1`
+sobreviveria sem unidade. Número em zero, tela errada — exatamente o que a §6 item 3 proíbe.
+
+> `calc(var(--x, N) * -1)` só é convenção válida quando o token é **magnitude** e apenas o *fallback* precisa
+> do sinal. Onde o token pode ser negativo, ela inverte. **A regra geral estava escrita larga demais.**
+
+### A correção aplicada
+
+`auditor_hardcoded.mjs:126` — `[0-9.]+` → `[-+]?[0-9.]+`, **uma linha**. `UNIT_RE` e `HEX_RE` ficaram
+intactos, então **valor negativo escrito solto (fora de `var(...)`) continua sendo violação**: o que mudou foi
+só o reconhecimento do fallback documentado. O limite corrigido está escrito no cabeçalho da função (R18).
+
+**Prova de que nada mais deixou de ser acusado:** as duas versões da regex foram rodadas sobre **6.720 literais
+de string** de `src/components/` e `src/features/` — o `VALUE_SCOPE` do auditor — comparando o veredito de cada
+uma. **Exatamente 1 veredito mudou** (o alvo), e **0 passaram a ser acusados**: a mudança só relaxa, e relaxa
+num único ponto.
+
+**Estado:** `Valor (hex/px/rem/em) : 0`. Nenhum átomo foi tocado — o defeito estava no detector, e é onde foi
+consertado.
 
 ## 4.2 Variáveis-fantasma — 2 consumos acusados, 1 real
 

@@ -289,7 +289,7 @@ depois acrescente o fluxo — nunca deixe o próximo redescobrir.
 
 ## Apêndice B — Estado deste repositório (GERADO)
 
-> **Não edite esta seção à mão.** Ela é regenerada por `npm run dev-kit` a partir do próprio repositório (`@sarak/lib-ui-core` v1.2.0); o gate `npm run dev-kit:check` derruba se ficar defasada. A fonte de máquina equivalente é o `state.json` ao lado deste arquivo.
+> **Não edite esta seção à mão.** Ela é regenerada por `npm run dev-kit` a partir do próprio repositório (`@sarak/lib-ui-core` v1.2.1); o gate `npm run dev-kit:check` derruba se ficar defasada. A fonte de máquina equivalente é o `state.json` ao lado deste arquivo.
 
 ### B.1 Design — as fontes que a paridade cruza
 
@@ -298,10 +298,10 @@ depois acrescente o fluxo — nunca deixe o próximo redescobrir.
 | Fonte | Medida | Valor |
 | --- | --- | --- |
 | `catalog/theme_table_mapping.json` | colunas | 13 |
-| `catalog/theme_table_mapping.json` | entradas brutas | 416 |
-| `catalog/theme_table_mapping.json` | **ids únicos** | **409** |
+| `catalog/theme_table_mapping.json` | entradas brutas | 410 |
+| `catalog/theme_table_mapping.json` | **ids únicos** | **410** |
 | `catalog/partitions/` | arquivos | 13 |
-| `catalog/partitions/` | tokens | 409 |
+| `catalog/partitions/` | tokens | 410 |
 | `SarakDesignTokens` (tipo público) | ids | 304 |
 | `SarakDesignTokens` (tipo público) | responsivos | 40 |
 
@@ -333,7 +333,7 @@ depois acrescente o fluxo — nunca deixe o próximo redescobrir.
 
 > A suíte (`npx vitest run`) **não é um script do `package.json`** e por isso não aparece na tabela acima — ela é invocada direto. Ver o guia, §6.
 
-### B.4 Baseline dos auditores (medido em 2026-07-28)
+### B.4 Baseline dos auditores (medido em 2026-08-03)
 
 > Cada número é o MÁXIMO tolerado. Maior que isto = regressão = commit bloqueado.
 
@@ -341,7 +341,7 @@ depois acrescente o fluxo — nunca deixe o próximo redescobrir.
 | --- | --- | --- |
 | `auditor_hardcoded.mjs` | valor | **1** |
 | `auditor_hardcoded.mjs` | estruturalLiquido | **0** |
-| `auditor_ghostvars.mjs` | consumos | **3** |
+| `auditor_ghostvars.mjs` | consumos | **2** |
 | `auditor_typescript.mjs` | violacoes | **0** |
 | `auditor_coverage.mjs` | orfaos | **0** |
 | `auditor_arquitetura.mjs` | violacoes | **0** |

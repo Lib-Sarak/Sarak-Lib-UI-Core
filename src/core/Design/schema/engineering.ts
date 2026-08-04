@@ -29,15 +29,6 @@ export const EngineeringSchema: ComponentSchema = {
             cssVars: ['--sarak-reduced-motion']
         },
         {
-            id: 'zIndexModal',
-            label: 'Camada: Modais',
-            type: 'number',
-            description: 'Índice de empilhamento (z-index) usado por modais/diálogos — deve ser maior que o de elementos de navegação (sidebar/topbar) para garantir que o modal sempre fique por cima, mas coerente com as demais camadas do sistema (toast, tooltip). Nota: existe um token homônimo (mesmo `id`) em `layers.ts`, com range diferente (`min: 1000, max: 5000`) — como este arquivo (`engineering.ts`) vem ANTES de `layers.ts` em `MASTER_DESIGN_MAP.components`, é ESTA definição (sem min/max) que o `agent-design-operator` de fato preenche/valida hoje (`deduplicateById`, primeira ocorrência). Pendência de higiene de schema — Spec 01/`backlog_cobertura.md`.',
-            axis: 'elevation',
-            defaultValue: 1000,
-            cssVars: ['--sarak-z-modal']
-        },
-        {
             id: 'zIndexToast',
             label: 'Camada: Notificações',
             type: 'number',

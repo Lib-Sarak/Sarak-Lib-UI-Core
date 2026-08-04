@@ -46,6 +46,17 @@ export const NavigationSchema: ComponentSchema = {
             cssVars: ['--sidebar-width', '--sarak-sidebar-width']
         },
         {
+            id: 'shellBrandLogoSize',
+            label: 'Altura do Logo da Marca',
+            type: 'slider',
+            description: 'Altura, em pixels, do logo da marca no cabeçalho do shell. Logos maiores dominam a navegação; menores cedem espaço ao nome do sistema e aos itens de menu.',
+            axis: 'geometry',
+            unit: 'px',
+            constraints: { min: 16, max: 64 },
+            defaultValue: 28,
+            cssVars: ['--sarak-shell-brand-logo-size']
+        },
+        {
             id: 'sidebarMinWidth',
             label: 'Largura Mínima da Sidebar',
             type: 'slider',

@@ -56,10 +56,13 @@ export const AtmosphereSchema: ComponentSchema = {
             id: 'colorBgBody',
             label: 'Fundo Global (Body)',
             type: 'color',
-            description: 'Cor de fundo base de toda a aplicação. Nota: mesmo `id` existe em `colors.ts` — ambos representam o mesmo conceito de fundo global; ver pendência de higiene de schema (tokens duplicados entre famílias) registrada no backlog de cobertura, fora do escopo desta spec.',
+            description: 'Cor de fundo base de toda a aplicação.',
             axis: 'color',
             defaultValue: '#050505',
-            cssVars: ['--sarak-bg-body', '--theme-bg']
+            // Os 3 últimos vieram da declaração homônima de `colors.ts`, desduplicada
+            // pela plan-07. Sem herdá-los, `--theme-body` deixava de ser emitida — a
+            // duplicata não era redundante, era uma UNIÃO de aliases.
+            cssVars: ['--sarak-bg-body', '--theme-bg', '--theme-body', '--bg-body', '--sarak-bg-base']
         },
         {
             id: 'colorBgLayer1',

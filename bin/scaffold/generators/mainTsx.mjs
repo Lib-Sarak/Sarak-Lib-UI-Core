@@ -34,10 +34,9 @@ ${cssImport}import {
 } from '@sarak/lib-ui-core';
 import { ExampleModule } from './modules/ExampleModule';
 
-// Registro Industrial de Componentes com Proteção — espelha o padrão real do
-// Sarak-MyService (\`safeRegister\`/\`registerSarakModuleSafe\` em
-// Sarak-MyService/src/main.tsx): nunca deixe um componente \`undefined\` quebrar
-// o registro em silêncio.
+// Registro de componentes com proteção: nunca deixe um componente \`undefined\`
+// quebrar o registro em silêncio. Um import errado vira aviso no console, não
+// uma tela em branco sem explicação.
 function safeRegister(id: string, component: React.ComponentType | undefined) {
     if (!component) {
         // eslint-disable-next-line no-console
