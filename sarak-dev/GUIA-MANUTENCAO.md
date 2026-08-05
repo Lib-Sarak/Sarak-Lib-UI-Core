@@ -298,10 +298,10 @@ depois acrescente o fluxo — nunca deixe o próximo redescobrir.
 | Fonte | Medida | Valor |
 | --- | --- | --- |
 | `catalog/theme_table_mapping.json` | colunas | 13 |
-| `catalog/theme_table_mapping.json` | entradas brutas | 410 |
-| `catalog/theme_table_mapping.json` | **ids únicos** | **410** |
+| `catalog/theme_table_mapping.json` | entradas brutas | 409 |
+| `catalog/theme_table_mapping.json` | **ids únicos** | **409** |
 | `catalog/partitions/` | arquivos | 13 |
-| `catalog/partitions/` | tokens | 410 |
+| `catalog/partitions/` | tokens | 409 |
 | `SarakDesignTokens` (tipo público) | ids | 304 |
 | `SarakDesignTokens` (tipo público) | responsivos | 40 |
 

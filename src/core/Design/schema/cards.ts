@@ -559,19 +559,6 @@ export const CardSchema: ComponentSchema = {
             cssVars: ['--sarak-matrix-node-min-width']
         },
 
-        // --- TEMPLATES: SECURITY / MFA (Spec 27) ---
-        {
-            id: 'mfaQrCodeSize',
-            label: 'MFA: Tamanho do QR Code',
-            type: 'slider',
-            description: 'Tamanho, em pixels, do QR Code exibido na tela de configuração de autenticação de dois fatores (MFA).',
-            axis: 'geometry',
-            unit: 'px',
-            constraints: { min: 100, max: 400 },
-            defaultValue: 200,
-            cssVars: ['--sarak-mfa-qr-code-size']
-        },
-
         // --- TEMPLATES: CATALOG / CARD GRID (Spec 27) ---
         {
             id: 'catalogFilterMinWidth',

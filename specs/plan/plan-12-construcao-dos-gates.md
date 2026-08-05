@@ -10,8 +10,11 @@ depende_de: "plan-06"
 destino_sintese: "specs/00-regras-e-invariantes.md · specs/01-gates-e-baseline.md · specs/02-enforcement-por-commit.md · specs/15-divida-conhecida.md"
 ---
 
-> 🔒 **Esta plan constrói verificação. Ela NÃO conserta código.** O conserto dos achados de código é das plans
-> 07, 08 e 09. Aqui se constrói o instrumento que impede a próxima violação — e só depois de a régua existir.
+> 🔒 **Esta plan constrói verificação. Ela NÃO conserta código.** O conserto do que os gates acusarem é a
+> **`plan-15`**. Aqui se constrói o instrumento e se **registra** o que ele encontra.
+>
+> ⛔ **E nenhum gate nasce com exceção** *(decisão do dono, 2026-08-05)*. Carve-out, allowlist ou condição para
+> acomodar violação existente **reprova a execução inteira** — ver §2.1.
 >
 > ⚠️ **Nenhum gate nasce antes da sua regra.** Item cuja regra ainda não estiver escrita em
 > [[00-regras-e-invariantes]] **não é implementado nesta plan** — ele volta para a fila de regras. Gate erguido
@@ -19,94 +22,136 @@ destino_sintese: "specs/00-regras-e-invariantes.md · specs/01-gates-e-baseline.
 
 # 1. Objetivo
 
-Os **9 itens da §4 de [[15-divida-conhecida]]** deixam de ser lista sem dono: cada um vira **gate ligado e
-verde**, ou **regra nova escrita antes do gate**, ou **item morto com o motivo registrado** — e nenhum fica
-como está hoje, que é escrito sem ninguém responsável.
+**Toda regra verificável tem gate, e nenhum gate nasce com exceção.** Ao final, as 29 regras verificáveis
+estão cobradas por script determinístico — e o que elas acusarem fica **registrado no baseline**, não escondido
+numa allowlist.
 
 # 2. Contexto
 
-A triagem da `plan-03` (veredito 🟢, 2026-08-01) separou dívida de trabalho em fila, por decisão do dono:
-*"tudo que é relacionado ao gate de verificação ainda não foi implementado — não é dívida, é implementação
-posterior. Devemos ter todas as regras formadas, para então criar a verificação para o gate."*
+O mapeamento está fechado. [[00-regras-e-invariantes]] classifica as **32 regras** e a §9 de
+[[01-gates-e-baseline]] traz os **14 vãos** medidos. O trabalho desta plan é o inventário exato:
 
-A separação está feita e é boa. O que ficou faltando é **dono**: a §4 da spec de dívida lista **5 gates
-integralmente ausentes** (achados 14, 15, 18, 23, 26) e **4 ampliações de escopo** (as metades de gate dos
-achados 1, 13, 22, 29), e nenhuma plan da fila os executa. A `plan-06` **produz o insumo** — o mapa
-escopo-de-gate × escopo-de-regra — mas é read-only por desenho, e misturar construção nela destruiria o valor
-do produto dela. Daí esta plan existir, depois dela.
+| Estado | Quantas | Quais |
+|---|---|---|
+| ⏳ **sem gate** | **7** | R8 *(o gate de %)* · R10 · R18 · R27 · R28 · R31 · R32 |
+| ⚠️ **gate com escopo menor que a regra** | **8** | R4 · R7 · R8 *(1:1)* · R14 · R17 · R23 · R29 · R30 |
+| ✅ pleno | 17 | — |
+| 🔴 conduta | 3 | R11 · R15 · R16 — **não entram** |
 
-Duas heranças da triagem que mudam o trabalho aqui:
+Mais três vãos que não são de regra: o **pre-push sem `gates/`**, a **sincronia plan × índice** e o
+**`dist/BUILD_INFO.json` sem `--check`**.
 
-- **12 dos 21 achados vivos não violavam regra nenhuma das 17.** Isso não é lacuna de preenchimento: é o sinal
-  de que se cobra o que não está escrito. Parte desta plan é **escrever regra**, não código.
-- **Três perguntas de regra ficaram em aberto** e a `plan-06` as responde: *(a)* a lib promete WCAG AA em algum
-  lugar? (achado 18) · *(b)* acoplamento de auth deve virar regra? (achado 14) · *(c)* cobertura em % acrescenta
-  algo ao 1:1 de R8? (achado 15). **Sem a resposta, os três itens não são implementados** — é a regra que decide
-  se o gate existe.
+## 2.1 A regra desta plan: construir sem exceção
+
+> **Decisão do dono, 2026-08-05:** *"vamos construir os gates e depois adequar tudo — não faz sentido criar
+> gates e criar exceções no processo."*
+
+**Um gate nasce cobrando a regra como ela está escrita.** Não se adiciona carve-out, allowlist nem condição
+para acomodar violação existente. Violação existente é **dívida**, e dívida se paga na `plan-15` — não se
+esconde no verificador que deveria acusá-la.
+
+**Três coisas que NÃO são exceção, e a diferença importa:**
+
+| | O que é | Permitido? |
+|---|---|---|
+| **Exceção / allowlist** | o gate **para de olhar** para um caso que **é** violação | ⛔ **proibida nesta plan** |
+| **Limite de escopo declarado** (R18) | o gate diz o que **não** vê — e continua sem ver | ✅ **obrigatório** |
+| **Conserto de falso positivo** | o gate acusava o que **não é** violação; corrige-se o **gate** | ✅ **obrigatório** |
+
+A fronteira é **o que a regra diz**. Se o caso viola a regra → é dívida, vai para o baseline e para a
+`plan-15`. Se o caso **não** viola → o gate está errado, e o gate se conserta.
+
+## 2.2 O baseline é a ponte entre construir e adequar — e não é exceção
+
+Ligar 15 gates novos e ampliados **vai acender vermelho**. O baseline é o que permite construir agora e
+adequar depois **sem mentir**:
+
+- **Exceção** = o gate **deixa de olhar**. A dívida some do radar.
+- **Baseline** = o gate **olha, conta e reporta** — e o Anel 2 impede o número de **crescer**.
+
+**O baseline vai deixar de ser zero nesta plan, e isso é o esperado.** Ele volta a zero na `plan-15`. O que
+não pode acontecer é dívida virar allowlist: uma tem data e dono, a outra some da vista.
 
 # 3. Escopo
 
-## 3.1 Dentro
+## 3.1 Dentro — três lotes
 
-- `.agents/skills/ui-auditoria-modulo/scripts/auditor_ghostvars.mjs` — ampliação de escopo (achado 1)
-- `.agents/skills/ui-auditoria-modulo/scripts/auditor_coverage.mjs` — ampliação de escopo (achado 13)
-- `scripts/dev-kit/` — validação de ponteiro de **seção** `§N.N` (achado 29) e o `PLACEHOLDER` de
-  `deadPointers.mjs:53`, que hoje não cobre `[...]`
-- `scripts/check-package-contents.mjs` — cobertura de conteúdo de `sarak-ui/templates/` (achado 23)
-- `package.json` — os scripts novos e o encadeamento em `gates:full`
-- `specs/specs/00-regras-e-invariantes.md` — **as regras novas primeiro**, e a §3.1 (inventário validador × gate)
-- `specs/specs/01-gates-e-baseline.md` — baseline recontado a cada gate ligado
-- `specs/specs/15-divida-conhecida.md` — a §4 encolhe à medida que os itens saem
-- `scripts/generate-token-types.ts` — registrar num script/gate (metade de gate do achado 22)
-- `.agents/skills/ui-criar-tema/scripts/verify_theme_parity.ts` — o único ⏳ da §3.1 de `00-regras`
+**A ordem é por risco, não por regra.**
+
+### Lote A — nascem verdes *(nenhum vermelho previsto)*
+
+| Item | Por que verde |
+|---|---|
+| **R27** — deep import | o campo `exports` já restringe |
+| **R28** — contrato de saída do CLI | medido correto na `plan-04` |
+| **R32** — indiferente a auth | o `SarakSecurityOrchestrator` saiu na `plan-09` |
+| **vão 6** — `auditor_coverage` em `shared/`, `effects/`, `constants/` | os 4 testes foram escritos na `plan-07` |
+| **vão 8** — `dist/BUILD_INFO.json` com `--check` | artefato novo no cruzamento |
+| **vão 11** — `pre-push:53` incluir `gates/` | uma linha |
+| **vão 12** — sincronia plan × `00-indice` | as 14 linhas estão sincronizadas hoje |
+| **R4 / R29 / vão 1** — regenerar `design-token-ids.ts` **e registrar o gerador** | **as duas metades juntas.** ⚠️ Isto muda o número publicado de **304 → 409** e conserta o `sarak-ui/VERSION` |
+
+### Lote B — vermelho conhecido e medido
+
+| Item | Vermelhos previstos |
+|---|---|
+| **R30** — `tsc --noEmit` | **10**, todos em arquivos de teste |
+| **R18** — todo gate declara o que não vê | **13 de 17** scripts sem bloco de limite. É **escrita**, não conserto |
+| **vão 5** — R2 (hardcoded) em `src/core/` | **4 linhas** com `px` literal em `core/Shell/Components/` |
+| **vão 3** — R7 (ghostvars) em `src/core/` | **4** — sendo **2 reais** e **2 falsos vindos de comentário** |
+| **vão 2** — R7 em `src/styles/` | a medir; os 2 `--sx-*` já saíram na `plan-07` |
+| **vão 7** — ponteiro `§N.N` | **4 vivos**; o detector acusa 23, e **16 são ruído** |
+| **vão 13** — R17, prosa manual | a medir |
+| **R8** — cobertura em %, piso móvel | mede, grava, o piso só sobe |
+
+⚠️ **Dois itens do lote B exigem consertar o GATE antes de ligar** — não é exceção, é falso positivo:
+os **2 comentários** do vão 3 (o auditor não distingue prosa de código) e os **16 ruídos** do §N.N (as duas
+convenções: `§7.3` como *item 3 da seção 7*, e alvo com `## 2.1` sem `# 2` pai). **O detector ignora
+`specs/plan/`** — plan é rastro append-only.
+
+### Lote C — escopo a decidir ANTES do código
+
+Estes dois **não são implementação, são decisão**. Se entrarem no mesmo lote dos outros, param a plan inteira.
+
+| Item | O que falta decidir |
+|---|---|
+| **R10** — composição atômica | **97 ocorrências** de `<button>`/`<input>`/`<select>` fora dos átomos de Buttons/Inputs — **66 só em `features/DesignEngine`**. A regra diz *"dentro de template ou componente pré-montado"* e afirma que o painel obedece por *dogfooding*. **Onde exatamente a regra vale?** Sem essa fronteira, o gate nasce com dezenas de falsos |
+| **R31** — contraste AA nos 18 temas | **Ninguém nunca mediu.** Pode dar 0 reprovados, pode dar 18. E o conserto, se houver, é **ajustar cor de tema** — decisão visual, não mecânica |
+
+**⇒ PARADA OBRIGATÓRIA antes do lote C.** Meça primeiro, apresente, e só então implemente.
 
 ## 3.2 Fora
 
-- ⛔ **Conserto de qualquer achado de código da §3 da spec de dívida.** As metades de código são das plans 07,
-  08 e 09. Ligar o gate **antes** de a metade de código estar consertada produz vermelho novo — ver §5, passo 6.
-- ⛔ **Implementar gate cuja regra a `plan-06` não tiver respondido.** Vale nominalmente para os achados 14, 15
-  e 18.
-- ⛔ Criar gate sem registrar o baseline dele em `01-gates-e-baseline`.
-- ⛔ Mexer no pipeline de CI/CD em si — isso é a `plan-05`. Aqui se constroem os **validadores** que ela chama.
-- `src/`, `bin/`, `dist/`.
+- ⛔ **Criar exceção, allowlist ou carve-out** para acomodar violação existente. **Reprova a execução inteira.**
+- ⛔ **Adequar o código** que os gates acusarem — é a `plan-15`. Aqui se **constrói e se registra**.
+- ⛔ R11, R15 e R16 — conduta por decisão do dono.
+- ⛔ Ampliar escopo **sem** ampliar o registro correspondente. A `plan-06` mediu o custo: **~85 acusações
+  falsas**. Cada ampliação sai com a contagem de falsos medida **antes e depois**.
 
 # 4. Referências obrigatórias
 
 | Tipo | Referência | Por quê |
 |---|---|---|
-| Spec fixa | `specs/15-divida-conhecida.md` §4 | **a lista exata** dos 9 itens, com `arquivo:linha` |
-| Spec fixa | `specs/00-regras-e-invariantes.md` §3.1 | o inventário validador × gate, e o único ⏳ |
-| Spec fixa | `specs/01-gates-e-baseline.md` | o baseline de hoje — compare contra ele, nunca contra zero |
-| Spec fixa | `specs/02-enforcement-por-commit.md` | os anéis existentes; onde um gate novo se pendura |
+| Spec fixa | `specs/00-regras-e-invariantes.md` | **as 32 regras e o estado de cada uma** — a fonte do que construir |
+| Spec fixa | `specs/01-gates-e-baseline.md` §9 | **a matriz dos 14 vãos**, com exposição medida e destino |
+| Spec fixa | `specs/02-enforcement-por-commit.md` | onde cada gate novo se pendura |
 | Spec fixa | `specs/14-artefatos-do-mantenedor.md` §4.2 | por que gate com falso-positivo é pior que gate ausente |
-| Plan | `plan-06-auditoria-cobertura-gates` | **o insumo**: o mapa escopo-de-gate × escopo-de-regra |
-| **Skill** | `padrao-escrita` + `padrao-typescript` | sempre |
-| **Skill** | `ui-auditoria-modulo` | procedimento dos auditores que serão ampliados |
+| Código | `gates/README.md` | o índice; **cada gate novo entra nele, com a coluna "o que NÃO vê"** |
+| **Skill** | `padrao-escrita` · `padrao-typescript` · `test-unitario` | sempre |
 
 # 5. Instruções de execução
 
-1. **Ler o produto da `plan-06` primeiro.** O mapa dela pode ter achado vãos além dos 9 — todo vão novo entra
-   nesta lista, com `arquivo:linha`, antes de qualquer implementação.
-2. **Regras antes de gates.** Para cada item cuja coluna *Regra* diga **nenhuma**: escrever a regra em
-   `00-regras-e-invariantes` — número novo, com o texto, o exemplo e o gate que a cobrará — **ou** declarar em
-   voz alta que ela não será escrita, e então **matar o item**, registrando o motivo. Item sem regra não vira
-   gate.
-3. **⇒ PARE. Relatório em texto ao dono:** uma linha por item — *o que é · qual regra o sustenta (nova ou
-   existente) · o que o gate vai cobrar · onde ele roda · qual o custo em segundos*. **Aguarde a decisão, item
-   a item.** As 3 perguntas de regra (WCAG AA · auth · cobertura em %) são decisão dele, não do executor.
-4. **Implementar apenas o aprovado**, um gate por vez. Cada gate: (a) roda isolado, (b) entra no `package.json`,
-   (c) é encadeado onde faz sentido (`gates:full`, `build`, hook), (d) tem o baseline dele escrito em
-   `01-gates-e-baseline`.
-5. **Todo gate novo nasce com teste do próprio gate** — um caso que ele **pega** e um que ele **deixa passar**.
-   Gate sem teste é gate que ninguém sabe se funciona. Aplique a skill `test-unitario`.
-6. **Ampliação de escopo é acompanhada de medição do vermelho que ela acende.** Ampliar escopo sem ampliar o
-   registro produz **acusação falsa** — é o aviso literal de [[01-gates-e-baseline]] §4.3.c para o
-   `auditor_ghostvars`. Se o vermelho novo for a metade de código de um achado das plans 07/08/09, **registre-o
-   no baseline como dívida conhecida** e não conserte aqui.
-7. **A §4 da spec de dívida encolhe na mesma execução** — item que virou gate sai de lá; item morto sai com o
-   motivo. Ao fim, `15-divida-conhecida` §4 deve estar vazia ou conter só o que o dono adiou explicitamente.
-8. Rodar `npm run audit`, `npm run gates:full` e `npx vitest run`. Comparar com o baseline **recontado**, não
-   com o antigo.
+1. **Lote A**, um gate por vez. Cada um: roda isolado → entra no `package.json` → encadeia onde faz sentido →
+   **baseline escrito** em `01-gates-e-baseline` → linha no `gates/README.md` com o que ele **não** vê.
+2. **Todo gate novo nasce com teste do próprio gate** — um caso que ele **pega** e um que ele **deixa passar**.
+   Gate sem teste é gate que ninguém sabe se funciona.
+3. **Lote B**, na mesma disciplina. Onde houver falso positivo conhecido (vãos 3 e 7), **conserte o gate
+   primeiro** e prove com a contagem antes/depois.
+4. **Registre o vermelho no baseline** — `npm run audit:baseline -- --write`, **no mesmo commit** do gate que o
+   acendeu. Baseline sozinho no diff é o que a §6.1 proíbe.
+5. **⇒ PARE antes do lote C.** Meça R10 (onde a regra vale) e R31 (os 18 temas passam?) e **apresente ao dono**.
+6. Ao final: `npm run gates:full`, `npm run audit` e `npx vitest run`, com o **baseline novo declarado** —
+   e a lista do que a `plan-15` vai ter de adequar.
 
 # 6. Prompt de execução
 
@@ -129,8 +174,12 @@ Não saia do escopo. Não commite. Ao terminar, escreva o resumo na própria pla
 
 # 7. Critérios de aceite
 
-- [ ] Todo item da §4 de `15-divida-conhecida` tem destino final: **gate ligado**, **regra escrita**, ou
-      **morto com motivo**. Nenhum permanece como está.
+- [ ] **As 7 regras ⏳ têm gate** e **os 8 escopos ⚠️ foram ampliados** — ou o item está declarado com o motivo.
+- [ ] ⛔ **Zero exceção criada.** Nenhuma allowlist nova, nenhum carve-out, nenhuma condição para acomodar
+      violação existente. `git diff` das allowlists vazio.
+- [ ] O **baseline final está escrito** em `01-gates-e-baseline`, com cada vermelho novo nomeado — é o escopo
+      da `plan-15`.
+- [ ] A parada do **lote C** aconteceu: R10 e R31 medidos e apresentados **antes** de virar código.
 - [ ] Nenhum gate novo existe sem uma regra escrita em `00-regras-e-invariantes` que o sustente.
 - [ ] Cada gate novo tem **teste do próprio gate**: um caso pegado, um caso liberado.
 - [ ] `01-gates-e-baseline` traz o baseline **recontado** de cada gate ligado — números reais, não previsão.

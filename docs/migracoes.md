@@ -7,9 +7,9 @@ com o "antes" e o "depois" lado a lado. Uma entrada por mudança, mais recente p
 
 ## 2.0.0 — a limpeza do contrato público, num major só
 
-**Esta é a única entrada que você precisa ler para migrar para a `2.0.0`.** Cinco mudanças saíram
+**Esta é a única entrada que você precisa ler para migrar para a `2.0.0`.** Seis mudanças saíram
 juntas de propósito: cada uma sozinha custaria a você uma migração inteira de leitura, teste e
-ajuste. **Você atravessa o major uma vez, não cinco.**
+ajuste. **Você atravessa o major uma vez, não seis.**
 
 Se você não usa nenhum dos itens abaixo, **atualizar é trocar a faixa da versão e mais nada** — e
 você ainda ganha o boot 75% menor do item 1 sem fazer nada.
@@ -73,7 +73,21 @@ declarasse esse `type` renderizava o componente pelo `DynamicRenderer`, e agora 
 | **Depois** | `upgradeThemePayload(payload)` |
 | **Como migrar** | apague o segundo argumento se você o passava. Ele **nunca fez nada** — era declarado e jamais lido dentro da função, então o comportamento é idêntico |
 
-### 4. O `SarakTabs` duplicado saiu (provavelmente não te afeta)
+### 4. O token `mfaQrCodeSize` saiu do tema
+
+Ele existia só para o `SarakSecurityOrchestrator` do item 2. Com o componente fora, ninguém emitia
+mais `--sarak-mfa-qr-code-size` — o token virou promessa sem emissor, e saiu junto.
+
+| | |
+| --- | --- |
+| **Antes** | **410** tokens; `SarakDesignTokens` tinha a propriedade `mfaQrCodeSize: number`, e a variável `--sarak-mfa-qr-code-size` era emitida |
+| **Depois** | **409** tokens; a propriedade e a variável não existem mais |
+| **Como migrar** | se o seu tema (JSON, `customThemes` ou preset próprio) declara `mfaQrCodeSize`, **remova a chave** — o TypeScript vai acusá-la como propriedade desconhecida de `SarakDesignTokens`. Se o seu CSS lê `var(--sarak-mfa-qr-code-size)`, troque pelo seu próprio valor: a lib não a emite mais |
+
+Tema declarado em JSON puro (sem tipagem) **não quebra em runtime** — a chave a mais é ignorada. O
+erro aparece só para quem tipa o tema com `SarakDesignTokens`, que é o caminho recomendado.
+
+### 5. O `SarakTabs` duplicado saiu (provavelmente não te afeta)
 
 Existiam dois componentes com o mesmo nome e APIs incompatíveis: `Layouts/SarakTabs`
 (`items`/`defaultActiveId`) e `UX/SarakTabs` (`tabs`/`activeTab`/`onChange`). **Só o de `UX/` era

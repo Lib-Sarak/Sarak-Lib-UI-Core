@@ -168,15 +168,24 @@ O chunk de **boot** de um consumidor caiu de **3203,6 KB para 1533,6 KB (−52,1
 
 `SarakKanban` **não** é lazy, e isso é deliberado — o comentário em `DataDisplay/SarakKanban/index.ts:3` registra que ele é leve (arrastar-e-soltar HTML5 nativo, zero dependência).
 
-# 8. Dívidas nomeadas
+# 8. Dívidas nomeadas — ✅ TODAS FECHADAS em 2026-08-04 (`plan-09`)
 
-Registradas para serem conhecidas, **não corrigidas aqui**:
+Esta seção listava **três** dívidas de superfície pública. As três morreram no major `2.0.0`, e ficam
+registradas aqui com o desfecho — o histórico é o `git`, mas o **porquê** de cada uma some se não for escrito.
 
-**`SarakTabs` duplicado e incompatível.** Dois componentes, mesmo nome, APIs que não conversam: `Layouts/SarakTabs` (`items`, `defaultActiveId`, `alignment`) e `UX/SarakTabs` (`tabs`, `activeTab`, `onChange`, `variant`, `fullWidth`). Só o de `UX/` é público; o outro é mantido fora do barril pelos exports nomeados da §2.1. Deduplicar exige uma decisão de API.
+| Dívida | Desfecho |
+|---|---|
+| **`SarakTabs` duplicado** — dois componentes, mesmo nome, APIs incompatíveis | **Removido o de `Layouts/`.** A medição da `plan-09` mostrou que ele **nunca foi público**: exportado pelo barril de categoria, deliberadamente fora do barril público (exports nomeados da §2.1) e **sem um único consumidor** em `src/`. Não era decisão de API — era código morto. **Nenhum ADR foi necessário** |
+| **`CustomizationPanel` eager** — o painel inteiro no caminho crítico de todo consumidor | **Fechada, e é a maior medição desta base:** o chunk de boot foi de **674.011 → 167.684 bytes (−494,4 KB · −75,1%)**. Seguiu o padrão do `SarakChartEngine` (§7.1), que **preserva o tipo público** — o consumidor continua escrevendo `<CustomizationPanel />` sem `Suspense`. **Não quebrou contrato** |
+| **Os 2 ids legados do Discovery** (`mx-customization`, `personalization`) | **Removidos** junto com o bloco de efeito colateral de `src/index.ts`. ⚠️ Eram **três pontas, não uma**: o registro no entrypoint, o `useRegistryManager.ts:35-42` que contava com ele e o `useSarakShell.ts:31` que auto-navegava para o módulo. Apagar só o bloco entregaria item de menu que não renderiza nada + `console.warn` em todo boot |
 
-**`CustomizationPanel` sai EAGER do barril.** Ele é exportado sem `React.lazy` (`src/index.ts:50`) e ainda é importado de forma *eager* pelo efeito colateral de `:119-125`. Isso contraria diretamente a regra da §7 — é o painel inteiro do Design Engine no caminho crítico de todo consumidor. É a dívida mais custosa desta lista.
+**O que saiu junto, e não estava nesta lista:** o `SarakSecurityOrchestrator` (violação de **R32** — a lib
+ditava o protocolo de MFA do importador), o parâmetro morto `upgradeThemePayload(partialMode)` e o token órfão
+`mfaQrCodeSize`, que existia só para o orquestrador.
 
-**Os dois ids legados do Discovery** (`mx-customization`, `personalization`) registrados por efeito colateral de import. Funcionam, mas ninguém decidiu se devem continuar existindo.
+> **A lição que sobrevive a esta seção:** duas das três "dívidas de API" não eram decisão de design — eram
+> **código morto que ninguém tinha medido**. O `SarakTabs` esperou uma "spec de refatoração dedicada" que nunca
+> precisou existir. **Antes de agendar uma decisão, meça se ainda há o que decidir.**
 
 # 9. Os engines — dívida FECHADA em P26 (registro)
 

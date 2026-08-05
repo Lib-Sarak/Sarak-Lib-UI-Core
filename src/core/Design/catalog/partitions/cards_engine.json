@@ -1870,21 +1870,6 @@
     "relatedTokens": []
   },
   {
-    "tokenId": "mfaQrCodeSize",
-    "name": "MFA: Tamanho do QR Code",
-    "description": "Largura/altura do QR code (e do placeholder) exibido na configuração de MFA.",
-    "type": "number",
-    "importance": 40,
-    "categories": ["cards", "layout", "cards-engine"],
-    "tags": ["mfa", "qr-code", "template"],
-    "databaseColumn": "cards_engine",
-    "schemaOrigin": "cards.ts",
-    "digitalTwins": [],
-    "cssVariables": ["--sarak-mfa-qr-code-size"],
-    "allowedValues": { "min": 100, "max": 400, "step": 10 },
-    "relatedTokens": []
-  },
-  {
     "tokenId": "catalogFilterMinWidth",
     "name": "Catálogo: Largura Mínima do Filtro",
     "description": "Largura mínima de cada select de filtro lateral do catálogo.",

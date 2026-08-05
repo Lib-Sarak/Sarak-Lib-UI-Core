@@ -2,7 +2,7 @@
 tipo: "plan"
 titulo: "Limpar o contrato público — as quebras saem juntas num único major"
 dominio: "Sarak-Lib-UI-Core / Superfície pública"
-status: "🔵 Em correção"
+status: "🟢 Aprovada"
 prioridade: "Alta"
 tags: ["plan", "breaking-change", "major", "superficie-publica", "migracao"]
 relacionados: ["[[03-superficie-publica]]", "[[03-versionamento-e-release]]", "[[15-divida-conhecida]]"]
@@ -530,3 +530,174 @@ NÃO emita `npm version major` — é do dono, e só depois deste veredito.
 Acrescente "## Resumo da execução (correção 1) — AAAA-MM-DD" ao final. Status: "🟠 Em revisão".
 Não commite. Devolva para revisão.
 ```
+
+
+---
+
+## Resumo da execução (correção 1) — 2026-08-05
+
+**Resultado:** Concluído
+
+Veredito de 2026-08-04: as 4 operações **aprovadas**, passo 7 (ERP) **cumprido**, zero achado.
+Faltava a **operação 5** (§3.6), acrescentada pelo revisor depois da entrega. Escopo desta rodada:
+**exclusivamente** ela. O ERP **não** foi revalidado de novo, e o `npm version major` **não** foi
+emitido.
+
+**Operação 5 — o token órfão do MFA**
+
+Removido das **três** fontes, na mesma edição — a R4 ao contrário, como a §3.6 formula: *token morre
+nas três ou não morre*.
+
+| Fonte | Onde | O que saiu |
+|---|---|---|
+| Schema | `src/core/Design/schema/cards.ts:562-574` | o bloco inteiro do token `mfaQrCodeSize`, mais o comentário de seção `// --- TEMPLATES: SECURITY / MFA (Spec 27) ---`, que existia só para ele |
+| Banco | `src/core/Design/catalog/theme_table_mapping.json:314` | a entrada `"mfaQrCodeSize"` |
+| Catálogo | `src/core/Design/catalog/partitions/cards_engine.json:1872-1886` | o objeto do token (15 linhas), incluindo o `cssVariables: ["--sarak-mfa-qr-code-size"]` |
+
+**29 linhas a menos, e `grep mfaQrCodeSize` nas 3 fontes → 0 em cada uma.**
+
+Três snapshots foram regravados porque o `useDesignVariables` deixou de emitir a variável — não é
+mudança de teste, é o efeito do token sumindo:
+`PreviewCanvas.test.tsx.snap` (20 ocorrências), `PresetCard.test.tsx.snap` e
+`PreviewSystemRenderer.test.tsx.snap` (1 cada).
+
+**Nota de migração — a 4ª quebra**
+
+`docs/migracoes.md:76-88` — item **4** novo na entrada única, com antes/depois (410 → 409 tokens) e
+o "como migrar": remover a chave de tema próprio e trocar `var(--sarak-mfa-qr-code-size)` por valor
+do host. Registrei também o que **não** quebra: tema em JSON puro ignora a chave a mais em runtime;
+o erro só aparece para quem tipa o tema com `SarakDesignTokens` — que é o caminho recomendado.
+
+O cabeçalho da entrada e a numeração acompanharam: *"Cinco mudanças"* → **"Seis mudanças"**, e o
+`SarakTabs` virou o item **5**. **Continua sendo UMA entrada**, como a §5.6 exige.
+
+**Arquivos alterados (desta rodada)**
+
+| Arquivo | Natureza | O que mudou |
+|---|---|---|
+| `src/core/Design/schema/cards.ts` | alterado | token removido (−13 linhas) |
+| `src/core/Design/catalog/theme_table_mapping.json` | alterado | entrada removida (−1) |
+| `src/core/Design/catalog/partitions/cards_engine.json` | alterado | objeto removido (−15) |
+| `docs/migracoes.md` | alterado | item 4 novo + contagem do cabeçalho |
+| 3 arquivos `__snapshots__` | alterado | regravados (a variável deixou de ser emitida) |
+| `sarak-dev/*` | alterado | **gerado** — carimbo passa a 409 tokens |
+
+`docs/component-catalog.*` e `sarak-ui/*` foram regerados e **não mudaram**: o catálogo de
+componentes publica props, não tokens, e o kit do consumidor publica a contagem a partir do tipo
+gerado defasado (achado 22, ainda aberto).
+
+**Verificações executadas**
+
+```
+$ npm run audit
+  📐 Schema (MASTER_DESIGN_MAP): 409 tokens
+  🗄️  Banco de Dados (theme_table_mapping): 409 tokens
+  📦 Catálogo JSON (partitions/): 409 tokens em 13 arquivos
+✅ SUCESSO ABSOLUTO: Paridade 1:1:1:1:1 garantida! 409 tokens validados nas 3 fontes da verdade
+✅ Nenhuma chave órfã encontrada. Todos os Presets/Temas estão em paridade com o Gabarito Dinâmico.
+AUDITORIA FINALIZADA COM SUCESSO
+exit=0
+
+$ npm run gates:full
+[check-package-contents] OK — 81 arquivos no tarball, allowlist respeitada.
+ Test Files  275 passed (275)
+      Tests  942 passed (942)
+exit=0
+
+$ npx tsc --noEmit
+10 erros — os mesmos pré-existentes, nenhum novo
+
+$ npm run dev-kit
+[dev-kit] sarak-dev/ gerado — 80 componentes públicos, 409 tokens, 9 gates
+```
+
+**Critérios do veredito**
+
+- [x] Token removido das **três** fontes e catálogo regenerado — evidência: tabela acima, `grep` → 0
+      em cada fonte.
+- [x] **Paridade 409/409/409** e `npm run audit` **exit 0** — saída acima.
+- [x] Token na entrada única de `docs/migracoes.md` como **4ª quebra**, com o efeito no tipo público
+      `SarakDesignTokens` explicitado — `docs/migracoes.md:76-88`.
+- [x] `npm run gates:full` **verde, inclusive `package:check`** — exit 0.
+- [x] Escopo respeitado: nada além disto foi tocado; ERP não revalidado de novo;
+      `npm version major` **não** emitido.
+
+**Decisões e suposições**
+
+1. **Removi junto o comentário de seção `// --- TEMPLATES: SECURITY / MFA (Spec 27) ---`.** Ele
+   rotulava um grupo que agora tem zero tokens; deixá-lo seria um cabeçalho sem conteúdo apontando
+   para uma feature que não existe mais. É a mesma edição, não item novo.
+2. **Os 3 snapshots foram regravados, não ajustados à mão.** A mudança neles é consequência
+   mecânica: sem o token, `useDesignVariables` não emite mais a variável.
+3. **Nenhum dos 18 temas declarava `mfaQrCodeSize`** (verificado antes da remoção), por isso o
+   `auditor_presets` não acusou chave órfã — a remoção não exigiu tocar em preset nenhum.
+
+**Achados fora do escopo (não corrigidos)**
+
+Um da rodada anterior **fechou** — o token órfão era exatamente esta operação 5. Seguem os outros:
+
+- `sarak-ui/VERSION` publica **304** tokens (o real agora é **409**) — achado 22, o gerador do kit lê
+  o tipo defasado `design-token-ids.ts` em vez do schema. Esta rodada **alargou a defasagem em 1**.
+- `specs/01-gates-e-baseline.md` · `00-contexto.md:312` seguem descrevendo um baseline de auditoria
+  que já foi quitado (`run_audit` mede **exit 0**).
+- `arquitetura/03-superficie-publica.md` §8 segue listando as três dívidas que esta plan matou — é
+  destino de **síntese** do revisor, não do executor.
+
+**Pendências / riscos**
+
+- **Nenhuma pendência de execução.** As 5 operações estão fechadas, `gates:full` verde e a nota de
+  migração cobre as 6 mudanças numa entrada só.
+- **Falta só o `npm version major`, e ele é do dono** — a plan e o veredito reservam o passo a você.
+  O anel de `pre-push` vai cobrar a tag, e o `version` regenera `dist/` + `sarak-ui/` no mesmo
+  commit.
+- ⚠️ **Ao publicar, o `sarak-ui/VERSION` sairá dizendo 304 tokens** enquanto o real é 409. É o
+  achado 22, pré-existente e conhecido — vale saber que o major carrega esse número falso para o
+  consumidor.
+- Nada commitado.
+
+## Veredito (correção 1) — 2026-08-05 — 🟢 Aprovado
+
+**Operação 5 fechada. A `plan-09` está aprovada.**
+
+| Verificação | Minha medição |
+|---|---|
+| Paridade | **409 / 409 / 409** — Schema, mapping e catálogo |
+| `mfaQrCodeSize` nas 3 fontes | `grep -c` → **0, 0, 0** |
+| `npm run audit` | **exit 0 — 100% íntegro**, zero chave órfã |
+| `gates:full` | exit 0 · `package:check` **81 arquivos no tarball, allowlist respeitada** |
+| Suíte | 275 arquivos / 942 testes |
+
+**Tirar o comentário de seção `// --- TEMPLATES: SECURITY / MFA ---` junto foi o detalhe certo:** ele existia
+só para aquele token, e cabeçalho de seção vazio é o começo de uma seção que alguém repovoa por engano.
+
+**A nota de migração está honesta nos dois sentidos.** Registrar **o que NÃO quebra** — tema em JSON puro
+ignora a chave a mais em runtime; o erro só aparece para quem tipa com `SarakDesignTokens` — vale mais que a
+lista de quebras. É a diferença entre uma nota que assusta e uma que orienta.
+
+---
+
+## Fecho da plan-09
+
+**Cinco operações, quatro quebras de contrato, e a maior medição desta base:**
+
+| | Antes | Depois |
+|---|---|---|
+| Chunk de boot | 674.011 bytes | **167.684 — −75,1%** |
+| Componentes públicos | 81 | 80 |
+| Tokens | 410 | 409 |
+| Símbolos removidos | — | `SarakSecurityOrchestrator` · `partialMode` · 2 ids do Discovery · `mfaQrCodeSize` |
+
+**As três "dívidas nomeadas" da [[03-superficie-publica]] §8 morreram** — reescrita pelo revisor nesta ação,
+com o desfecho de cada uma. E a lição que ficou: **duas das três não eram decisão de design, eram código morto
+que ninguém tinha medido.** O `SarakTabs` esperava uma "spec de refatoração dedicada" que nunca precisou
+existir.
+
+**Três operações foram acrescentadas por mim DEPOIS da entrega** (a 5, e as duas correções de §3). Isso é
+falha de planejamento minha, não de execução: a plan foi liberada com a §3 subdimensionada em dois itens e com
+uma previsão errada. O executor mediu e corrigiu as três vezes.
+
+**Destino da síntese:** `arquitetura/03-superficie-publica.md` §8 (**já escrita**) · `docs/migracoes.md` (a
+entrada única, com 6 mudanças) · `specs/15-divida-conhecida.md` (achados 2 e 3 saem da §3) ·
+`specs/00-regras-e-invariantes.md` (**R32 deixa de ter violação declarada**)
+
+**Liberado: pode commitar.** O `npm version major` é seu — mas leia a recomendação sobre o momento, na mensagem.
