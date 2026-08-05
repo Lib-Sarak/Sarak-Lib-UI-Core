@@ -29,6 +29,12 @@ export interface SarakTableProps<TData extends Record<string, unknown> = Record<
     role?: 'primary' | 'secondary' | 'neutral' | 'accent';
     density?: 'compact' | 'standard' | 'spacious';
     importance?: 'hero' | 'base' | 'subtle';
+    /**
+     * No smartphone colapsa para cards empilhados. Default `true` — mesma prop, mesmo
+     * default e mesmo efeito do irmão `SarakDataTable`, para que os dois componentes
+     * públicos de tabela não tenham APIs divergentes.
+     */
+    responsive?: boolean;
 }
 
 /**
@@ -37,9 +43,10 @@ export interface SarakTableProps<TData extends Record<string, unknown> = Record<
  * Um componente agnóstico que renderiza qualquer conjunto de dados tabular
  * baseado em um contrato visual enviado pelo manifesto do módulo.
  */
-export const SarakTable = <TData extends Record<string, unknown> = Record<string, unknown>>({ endpoint, data: initialData, label, mapping, role = 'neutral', density = 'standard' }: SarakTableProps<TData>) => {
+export const SarakTable = <TData extends Record<string, unknown> = Record<string, unknown>>({ endpoint, data: initialData, label, mapping, role = 'neutral', density = 'standard', responsive = true }: SarakTableProps<TData>) => {
     const { design } = useSarakUI();
     const device = useSarakDevice();
+    const collapseToCards = responsive && device === 'smartphone';
     const { tableWrapperClass, cellDensityClass, actionColumnAlignmentClass } = useTableLayoutStyles(design);
     const { getContainerStyles, getHeaderStyles } = useStructuralStyles();
     
@@ -110,9 +117,10 @@ export const SarakTable = <TData extends Record<string, unknown> = Record<string
 
             {/* Container da Tabela com Glassmorphism */}
             <div className="relative bg-[var(--color-theme-card,#1e293b)] border-[var(--border-color,#334155)] overflow-hidden rounded-[var(--sarak-card-radius,12px)]">
-                {device === 'smartphone' ? (
+                {collapseToCards ? (
                     // L3 (Spec 40.3): no celular a tabela larga colapsa para cards empilhados
-                    // (mesmas colunas/rótulos), sem overflow horizontal da página.
+                    // (mesmas colunas/rótulos), sem overflow horizontal da página. O consumidor
+                    // desliga com `responsive={false}` quando a tabela colunar é o requisito.
                     <SarakTableCards rows={filteredData} columns={columns} columnLabels={columnLabels} loading={loading} />
                 ) : (
                 <div className="overflow-x-auto">

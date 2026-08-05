@@ -5,6 +5,49 @@ com o "antes" e o "depois" lado a lado. Uma entrada por mudança, mais recente p
 
 ---
 
+## O "Factory Hard Reset" do painel deixou de apagar o `localStorage` inteiro do seu site
+
+**Se você nunca abriu o painel de customização, nada muda para você.** Esta entrada existe porque
+a mudança é de **comportamento observável**, e o comportamento antigo destruía dado que não era da
+lib.
+
+**Antes.** O botão *Restaurar Padrões* (aba Avançado do painel) chamava `localStorage.clear()`:
+apagava a **origem inteira** do seu site — token de sessão, preferências, carrinho, qualquer coisa
+que a sua aplicação tivesse guardado — e recarregava a página. O `confirm()` prometia apenas
+"TODAS as configurações visuais", então nem quem lia o aviso sabia o que ia perder.
+
+**Depois.** O reset remove **só as chaves que a lib grava**:
+
+| | |
+| --- | --- |
+| **Antes** | `localStorage.clear()` — toda a origem |
+| **Depois** | a `persistence.storageKey` do seu Provider (default `sarak-ui-design-v9.0`) e `sarak_lang` |
+| **Como migrar** | nada a fazer. Se você **dependia** de o reset limpar o seu próprio armazenamento, chame o seu `clear` no seu código — a lib não faz mais isso por você |
+
+O texto do `confirm()` foi reescrito para descrever exatamente isso, e nada além disso.
+
+---
+
+## `SarakTable` ganhou `responsive` — o colapso mobile agora tem opt-out
+
+**Aditivo: não quebra nada.** O default (`true`) é o comportamento que já existia.
+
+No smartphone, o `SarakTable` troca a tabela colunar por cards empilhados. Isso era
+**incondicional** — não havia como desligar, enquanto o irmão `SarakDataTable` já aceitava
+`responsive={false}`. Duas tabelas públicas, duas APIs diferentes.
+
+```tsx
+// Colapsa no celular (default — igual a antes)
+<SarakTable endpoint="/api/itens" />
+
+// Mantém a tabela colunar em qualquer dispositivo
+<SarakTable endpoint="/api/itens" responsive={false} />
+```
+
+Mesma prop, mesmo default e mesmo efeito do `SarakDataTable`.
+
+---
+
 ## Engines: `SarakChatEngine` e `SarakFlowEngine` viraram públicos; `SarakVisualEngine` foi removido
 
 **Provavelmente não quebra nada para você** — nenhum dos três estava no barril público, então

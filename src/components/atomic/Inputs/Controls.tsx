@@ -3,6 +3,7 @@ import { motion, AnimatePresence } from 'framer-motion';
 import { Sun, Moon, User, ChevronDown, KeyRound, LogOut } from 'lucide-react';
 import { useSarakUI } from '../../../core/Provider/SarakUIProvider';
 import { LANGUAGES as ALL_LANGUAGES } from '../../../core/Discovery/constants';
+import { LANGUAGE_STORAGE_KEY } from '../../../core/Provider/constants';
 
 export interface UserPayload {
     email?: string;
@@ -23,11 +24,11 @@ export interface LanguageOption {
 export const LanguageSelector = () => {
     const { design } = useSarakUI();
     const enabledLanguages = design?.enabledLanguages;
-    const [current, setCurrent] = React.useState(localStorage.getItem('sarak_lang') || 'pt');
+    const [current, setCurrent] = React.useState(localStorage.getItem(LANGUAGE_STORAGE_KEY) || 'pt');
 
     const handleLangChange = (lang: string) => {
         if (lang === current) return;
-        localStorage.setItem('sarak_lang', lang);
+        localStorage.setItem(LANGUAGE_STORAGE_KEY, lang);
         setCurrent(lang);
 
         // Directly swap the Google Translate cookie

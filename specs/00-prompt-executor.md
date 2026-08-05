@@ -61,9 +61,14 @@ suposição. Suposição não registrada é reprovação garantida.
 5. **Escreva o código como o código vizinho.** Mesma nomenclatura, mesmos idiomas, mesma densidade de
    comentário. Não introduza estilo, biblioteca ou paradigma novos — nada que a plan não autorize.
 6. **Mudou comportamento? Tem teste.** Use a skill `test-*` que a plan indicar.
-7. **Hook ou validador bloqueou? Corrija a causa.** Nunca contorne, silencie, desative nem adicione exceção
+7. **Gate de baseline verde sai verde — mesmo que a causa seja de outra plan.** *(regra nova, 2026-08-04,
+   nascida de um achado da `plan-08`.)* "Pré-existente" **não** é licença para entregar vermelho: se o baseline
+   daquele gate é verde e ele está vermelho na sua entrega, **é regressão**, e você o deixa verde. O que **não**
+   se faz é aproveitar a carona para consertar outra coisa — a fronteira é *"deixar o gate verde"*, não
+   *"resolver o defeito que o acendeu"*. Se as duas coisas forem inseparáveis, **pare e pergunte**.
+8. **Hook ou validador bloqueou? Corrija a causa.** Nunca contorne, silencie, desative nem adicione exceção
    para "passar". Contornar um gate reprova a execução inteira.
-8. **Não faça nada irreversível ou externo** (deploy, migration em base real, reescrita de histórico, `push`,
+9. **Não faça nada irreversível ou externo** (deploy, migration em base real, reescrita de histórico, `push`,
    deleção em massa) a menos que a plan mande explicitamente — e, ainda assim, confirme com o usuário antes.
 
 ---

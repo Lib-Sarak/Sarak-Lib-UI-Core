@@ -1,5 +1,8 @@
 export const DEFAULT_STORAGE_KEY = 'sarak-ui-design-v9.0';
 
+/** Chave de `localStorage` do idioma escolhido no `LanguageSelector`. */
+export const LANGUAGE_STORAGE_KEY = 'sarak_lang';
+
 export const BEZIER_CURVES = {
     standard: 'cubic-bezier(0.4, 0, 0.2, 1)',
     decelerate: 'cubic-bezier(0.0, 0, 0.2, 1)',

@@ -1,18 +1,14 @@
-import React, { useState } from 'react';
-import { Palette, Layout, Globe, Settings, Keyboard, Zap, Box } from 'lucide-react';
+import React from 'react';
 import { ThemeCustomizationTab } from '../Main/ThemeCustomizationTab';
-import { LayoutTab } from '../Panels/LayoutTab';
-import { LanguageTab } from '../Panels/LanguageTab';
-import { ShortcutsTab } from '../Panels/ShortcutsTab';
-import { AdvancedTab } from '../Panels/AdvancedTab';
-import { EngineCustomizationTab } from '../Panels/EngineCustomizationTab';
-import { HyperGranularityTab } from '../Panels/HyperGranularityTab';
-
-type TabId = 'sovereignty' | 'engines' | 'language' | 'shortcuts' | 'advanced';
 
 /**
  * CustomizationPanel (v6.0)
  * Central de Comando Unificada - Foco 100% em Soberania e Gêmeo Digital.
+ *
+ * O painel monta **uma** aba: a de tema. Ele já importou sete — as outras seis nunca
+ * foram renderizadas, então pagavam bundle sem alcance nenhum. Os imports mortos saíram
+ * (decisão do dono, 2026-08-04); os componentes seguem em `../Panels/` com os seus testes,
+ * prontos para quem decidir restaurar a navegação.
  */
 export const CustomizationPanel: React.FC = () => {
     return (

@@ -38,7 +38,10 @@ vi.mock('../../../effects/NoiseOverlay', () => ({
     NoiseOverlay: () => <div data-testid="noise-overlay" />
 }));
 
-vi.mock('../DeviceProvider', () => ({
+// Mock PARCIAL: o Provider também importa os limiares canônicos (F5) para descê-los
+// ao detector de dispositivo — só o componente é substituído pelo stub.
+vi.mock('../DeviceProvider', async (importOriginal) => ({
+    ...(await importOriginal<typeof import('../DeviceProvider')>()),
     DeviceProvider: ({ children }: { children: React.ReactNode }) => <div data-testid="device-provider">{children}</div>
 }));
 

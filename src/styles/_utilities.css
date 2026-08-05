@@ -51,8 +51,11 @@ button:active:not(.p-0),
     transition: transform 0.1s var(--ease-sarak-fluid);
 }
 
+/* Anel de foco global governado pelo token `focusRingWidth` (schema `engineering`,
+   emite `--sarak-focus-width`) — a mesma variável que o `SarakLink` honra, para que
+   mexer no token mova o anel de botão e de link juntos. */
 button:focus-visible {
-    outline: 2px solid var(--theme-texture-color, var(--theme-primary));
+    outline: var(--sarak-focus-width, 2px) solid var(--theme-texture-color, var(--theme-primary));
     outline-offset: 2px;
     box-shadow: 0 0 0 4px var(--theme-primary-focus);
 }

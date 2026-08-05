@@ -2711,6 +2711,12 @@
           "type": "'hero' | 'base' | 'subtle'",
           "optional": true,
           "doc": ""
+        },
+        {
+          "name": "responsive",
+          "type": "boolean",
+          "optional": true,
+          "doc": "No smartphone colapsa para cards empilhados. Default `true` — mesma prop, mesmo default e mesmo efeito do irmão `SarakDataTable`, para que os dois componentes públicos de tabela não tenham APIs divergentes."
         }
       ]
     },

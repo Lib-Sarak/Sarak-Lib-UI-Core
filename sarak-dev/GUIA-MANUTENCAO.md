@@ -339,9 +339,9 @@ depois acrescente o fluxo — nunca deixe o próximo redescobrir.
 
 | Auditor | Métrica | Máximo tolerado |
 | --- | --- | --- |
-| `auditor_hardcoded.mjs` | valor | **1** |
+| `auditor_hardcoded.mjs` | valor | **0** |
 | `auditor_hardcoded.mjs` | estruturalLiquido | **0** |
-| `auditor_ghostvars.mjs` | consumos | **2** |
+| `auditor_ghostvars.mjs` | consumos | **0** |
 | `auditor_typescript.mjs` | violacoes | **0** |
 | `auditor_coverage.mjs` | orfaos | **0** |
 | `auditor_arquitetura.mjs` | violacoes | **0** |
@@ -349,7 +349,7 @@ depois acrescente o fluxo — nunca deixe o próximo redescobrir.
 | `auditor_paridade.mjs` | falhou | **0** |
 | `auditor_presets.mjs` | falhou | **0** |
 
-`npx tsc --noEmit`: **14 erros** tolerados — não é gate hoje.
+`npx tsc --noEmit`: **10 erros** tolerados — não é gate hoje.
 
 Fonte: `gates/baselines/audit-baseline.json`. **Não edite à mão** — o número muda com `npm run audit:baseline`, no mesmo commit do conserto que o justificou.
 

@@ -1,6 +1,9 @@
 import React from 'react';
+import fs from 'node:fs';
+import path from 'node:path';
 import { describe, it, expect, beforeEach, vi } from 'vitest';
 import { render, screen, waitFor } from '@testing-library/react';
+import { GlobalSchema } from '../../Design/schema/global';
 import * as ComponentModule from '../SarakShell';
 import { SarakShell } from '../SarakShell';
 import { SarakUIProvider } from '../../Provider/SarakUIProvider';
@@ -62,6 +65,37 @@ vi.stubGlobal('fetch', vi.fn(() => Promise.reject(new Error('network disabled in
 describe('SarakShell', () => {
     it('should be defined and export its contents without crashing', () => {
         expect(ComponentModule).toBeDefined();
+    });
+});
+
+/**
+ * plan-08 F3 (achado 9) — o shell testava `navigationStyle === 'glass'`, valor que o schema
+ * nunca ofereceu. O ramo era inalcançável só porque `validateDesign` descartava o valor:
+ * protegido por acidente, não por desenho. Se alguém acrescentasse `'glass'` ao schema,
+ * `isSidebar` viraria `false` e a tela ficaria SEM NAVEGAÇÃO NENHUMA.
+ *
+ * Este teste cobra a paridade nos dois sentidos, então vale para qualquer valor futuro —
+ * não é um teste sobre a palavra "glass".
+ */
+describe('navigationStyle: o shell e o schema falam do mesmo conjunto (F3)', () => {
+    const fonte = fs.readFileSync(path.join(process.cwd(), 'src/core/Shell/SarakShell.tsx'), 'utf-8');
+    const comparados = [...fonte.matchAll(/navigationStyle\s*===\s*'([^']+)'/g)].map((m) => m[1]);
+    const doSchema = (GlobalSchema.tokens
+        .find((t) => t.id === 'navigationStyle')?.constraints?.options ?? [])
+        .map((o) => String(o.value));
+
+    it('o schema segue oferecendo sidebar | topbar | dock', () => {
+        expect(doSchema).toEqual(['sidebar', 'topbar', 'dock']);
+    });
+
+    it('todo valor comparado no shell existe no schema — zero ramo inalcançável', () => {
+        expect(comparados.length).toBeGreaterThan(0);
+        expect(comparados.filter((v) => !doSchema.includes(v))).toEqual([]);
+    });
+
+    it('a sidebar é o fallback de qualquer valor fora de topbar/dock — nunca fica sem nav', () => {
+        const expressaoFallback = /isSidebar\s*=\s*design\?\.navigationStyle === 'sidebar'\s*\|\|\s*\(!isTopbar && !isDock\)/;
+        expect(fonte).toMatch(expressaoFallback);
     });
 });
 

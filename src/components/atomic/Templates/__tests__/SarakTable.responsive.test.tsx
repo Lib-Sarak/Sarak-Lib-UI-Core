@@ -20,11 +20,11 @@ import { SarakUIProvider } from '../../../../core/Provider/SarakUIProvider';
 import { DeviceProvider, type DeviceType } from '../../../../core/Provider/DeviceProvider';
 
 const MAPPING = { nome: 'Nome', ativo: 'Situação' };
-const renderAt = (device: DeviceType) =>
+const renderAt = (device: DeviceType, responsive?: boolean) =>
     render(
         <SarakUIProvider>
             <DeviceProvider overrideDevice={device}>
-                <SarakTable endpoint="/x" mapping={MAPPING} />
+                <SarakTable endpoint="/x" mapping={MAPPING} responsive={responsive} />
             </DeviceProvider>
         </SarakUIProvider>,
     );
@@ -43,5 +43,28 @@ describe('SarakTable — colapso mobile por padrão (Spec 40.3 — L3)', () => {
         const { container } = renderAt('desktop');
         expect(container.querySelector('table')).not.toBeNull();
         expect(container.querySelector('[data-sarak-tablecards]')).toBeNull();
+    });
+});
+
+/**
+ * plan-08 F6 (achado 12) — o colapso era incondicional aqui, enquanto o irmão
+ * `SarakDataTable` já tinha `responsive`. Mesma prop, mesmo default, mesmo efeito.
+ */
+describe('SarakTable — opt-out do colapso (F6)', () => {
+    it('responsive={false} mantém a tabela colunar mesmo no smartphone', () => {
+        const { container } = renderAt('smartphone', false);
+        expect(container.querySelector('table')).not.toBeNull();
+        expect(container.querySelector('[data-sarak-tablecards]')).toBeNull();
+    });
+
+    it('responsive={true} é explicitamente igual ao default (colapsa)', () => {
+        const { container } = renderAt('smartphone', true);
+        expect(container.querySelector('[data-sarak-tablecards]')).not.toBeNull();
+        expect(container.querySelector('table')).toBeNull();
+    });
+
+    it('responsive={false} não muda nada no desktop', () => {
+        const { container } = renderAt('desktop', false);
+        expect(container.querySelector('table')).not.toBeNull();
     });
 });

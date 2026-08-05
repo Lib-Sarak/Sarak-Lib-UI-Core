@@ -955,6 +955,7 @@ Props (`SarakTableProps` — `src/components/atomic/Templates/SarakTable.tsx`):
 | `role` | `'primary' \| 'secondary' \| 'neutral' \| 'accent'` | não |  |
 | `density` | `'compact' \| 'standard' \| 'spacious'` | não |  |
 | `importance` | `'hero' \| 'base' \| 'subtle'` | não |  |
+| `responsive` | `boolean` | não | No smartphone colapsa para cards empilhados. Default `true` — mesma prop, mesmo default e mesmo efeito do irmão `SarakDataTable`, para que os dois componentes públicos de tabela não tenham APIs divergentes. |
 
 ### SarakTabs
 

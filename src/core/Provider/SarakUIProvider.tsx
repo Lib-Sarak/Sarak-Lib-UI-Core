@@ -24,7 +24,7 @@ import { resolveSarakUIMode } from './scope';
 import { SovereignThemeInjector } from './components/SovereignThemeInjector';
 import { SarakBackgroundRenderer } from '../Design/components/SarakBackgroundRenderer';
 import { GLOBAL_THEMES } from '../Design/presets/themes/index';
-import { DeviceProvider } from './DeviceProvider';
+import { DeviceProvider, DEFAULT_DEVICE_BREAKPOINTS, DeviceBreakpoints } from './DeviceProvider';
 import { SarakToastProvider } from '../../components/atomic/Feedback/SarakToast';
 import { SarakOverlayProvider } from '../../components/atomic/Modals/SarakOverlayProvider';
 
@@ -177,8 +177,17 @@ export const SarakUIProvider: React.FC<SarakUIProviderProps> = ({
     const isStrictSync = options?.persistence?.strictBackendSync === true;
     const shouldRenderChildren = isStrictSync ? isBackendLoaded : true;
 
+    // Breakpoints como DADO (Spec 16, Regra 1): os mesmos tokens que `useDesignVariables`
+    // interpola na media-query descem ao detector JS, senão CSS e JS discordam sobre o
+    // que é "tablet" assim que alguém troca o token. Memoizado porque o hook de
+    // dispositivo depende da identidade do objeto.
+    const deviceBreakpoints = useMemo<DeviceBreakpoints>(() => ({
+        tablet: typeof design?.breakpointTablet === 'number' ? design.breakpointTablet : DEFAULT_DEVICE_BREAKPOINTS.tablet,
+        desktop: typeof design?.breakpointDesktop === 'number' ? design.breakpointDesktop : DEFAULT_DEVICE_BREAKPOINTS.desktop
+    }), [design?.breakpointTablet, design?.breakpointDesktop]);
+
     return (
-        <DeviceProvider>
+        <DeviceProvider breakpoints={deviceBreakpoints}>
             <UIContext.Provider value={uiContextValue}>
                 <SarakScopeRoot mode={mode} onScopeElement={setScopeElement}>
                     <DesignInjector

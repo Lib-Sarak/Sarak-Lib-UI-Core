@@ -1,7 +1,11 @@
 import React, { useState } from 'react';
 import { useSarakUI } from '../../../core/Provider/SarakUIProvider';
 import { getRegisteredModules } from '../../../core/Discovery/registry';
+import { clearSarakStorage } from '../../../core/Provider/utils/storage';
 import { Settings, Cpu, HardDrive, RefreshCw, Zap, Shield, HelpCircle, Activity } from 'lucide-react';
+
+/** Respiro entre o clique e o reload, para a animação de "resetando" ser vista. */
+const RESET_DELAY_MS = 1000;
 
 export const AdvancedTab: React.FC = () => {
     const sarak = useSarakUI() as ReturnType<typeof useSarakUI> & { systemId?: string };
@@ -14,14 +18,23 @@ export const AdvancedTab: React.FC = () => {
 
     const [isResetting, setIsResetting] = useState(false);
 
+    /**
+     * Reset de fábrica do que é NOSSO. Remove só as chaves da lib (tema e idioma)
+     * e recarrega — o resto da origem é do host e não se toca. O texto do
+     * `confirm()` descreve exatamente isto, nem mais nem menos.
+     */
     const handleHardReset = () => {
-        if (confirm("ATENÇÃO: Isso restaurará TODAS as configurações visuais para o padrão de fábrica. Continuar?")) {
-            setIsResetting(true);
-            setTimeout(() => {
-                localStorage.clear();
-                window.location.reload();
-            }, 1000);
-        }
+        const confirmed = confirm(
+            'ATENÇÃO: Isso apagará as configurações visuais da Sarak guardadas neste navegador '
+            + '(tema e idioma) e recarregará a página. Nenhum outro dado deste site é afetado. Continuar?'
+        );
+        if (!confirmed) return;
+
+        setIsResetting(true);
+        setTimeout(() => {
+            clearSarakStorage(sarak.options?.persistence?.storageKey);
+            window.location.reload();
+        }, RESET_DELAY_MS);
     };
 
     const stats = [
@@ -84,7 +97,7 @@ export const AdvancedTab: React.FC = () => {
                             </div>
                             <div>
                                 <h4 className="text-xs font-black uppercase tracking-widest text-white/90">Factory Hard Reset</h4>
-                                <p className="text-2xs text-white/30 uppercase font-medium">Limpar cache local e configurações de tema</p>
+                                <p className="text-2xs text-white/30 uppercase font-medium">Apagar tema e idioma guardados pela Sarak neste navegador</p>
                             </div>
                         </div>
 

@@ -33,7 +33,7 @@ inegociável ou o mapa de roteamento. Nunca por conta própria fora de uma plan.
 
 **`@sarak/lib-ui-core` é uma biblioteca React de Design System** — não um app, não um serviço, não tem backend.
 Ela resolve o problema de o host ter identidade visual própria sem reescrever componentes: um Design Engine
-central resolve 409 tokens em tempo de execução, e os componentes leem esses tokens em vez de terem estilo
+central resolve 410 tokens em tempo de execução, e os componentes leem esses tokens em vez de terem estilo
 fixo.
 
 **Quem consome:** outros repositórios React (hoje o ERP Earendel), por dependência **git com tag**, nunca por
@@ -72,12 +72,14 @@ reescritas aqui.
   copiada para markdown — aponte para o artefato gerado (`docs/component-catalog.json`, `sarak-ui/catalog.json`)
   ou para a função que a produz. Cópia estática vira mentira na primeira mudança de código.
 - **Paridade 1:1:1 dos tokens.** Schema ↔ `theme_table_mapping` ↔ partições do catálogo têm de bater
-  (hoje 409/409/409). Detalhe em [`arquitetura/04-contrato-de-tokens-e-paridade.md`](arquitetura/04-contrato-de-tokens-e-paridade.md).
+  (hoje 410/410/410). Detalhe em [`arquitetura/04-contrato-de-tokens-e-paridade.md`](arquitetura/04-contrato-de-tokens-e-paridade.md).
 - **Zero marca.** Nenhum nome, logo ou cor da Sarak vaza para a UI do host ([[adr/006-zero-marca-soberania-host]]),
   cobrado por `npm run zero-brand:check`.
-- **O `run_audit` NÃO está em zero.** Existe dívida conhecida e medida. **Leia
-  [`specs/01-gates-e-baseline.md`](specs/01-gates-e-baseline.md) antes de rodar qualquer gate** — acusar
-  regressão onde há dívida registrada custa uma rodada inteira de trabalho.
+- **O `run_audit` fecha em ZERO desde 2026-08-03** (`plan-07`), e isso **mudou o regime**: as 8 métricas do
+  baseline estão em 0, então **não há mais folga** — qualquer regressão bloqueia no Anel 2, sem margem.
+  **Leia [`specs/01-gates-e-baseline.md`](specs/01-gates-e-baseline.md) antes de rodar qualquer gate**: o
+  baseline continua sendo a referência, só que agora ele é zero. O `tsc` **não** é zero (10 erros, todos em
+  teste) e não é gate.
 
 ---
 
@@ -101,7 +103,7 @@ testes `vitest` + `playwright-ct` · gerenciador **npm** · distribuída por **g
 
 | Bloco | Responsabilidade | Detalhe em |
 |---|---|---|
-| `src/core/Design/` | O Design Engine: 28 schemas → `MASTER_DESIGN_MAP` → 409 tokens | [`arquitetura/02`](arquitetura/02-design-engine.md) |
+| `src/core/Design/` | O Design Engine: 28 schemas → `MASTER_DESIGN_MAP` → 410 tokens | [`arquitetura/02`](arquitetura/02-design-engine.md) |
 | `src/core/Provider/` | `SarakUIProvider`, validação da fronteira, tipos gerados | [`arquitetura/04`](arquitetura/04-contrato-de-tokens-e-paridade.md) |
 | `src/core/Shell/` · `Discovery/` | Cromo, rotas e os módulos-plugin | [`specs/04`](specs/04-shell-e-discovery.md) · [`specs/05`](specs/05-cromo-e-slots.md) |
 | `src/core/Security/` | Sanitização e limites anti-DoS | [`specs/10`](specs/10-seguranca-e-acessibilidade.md) |
@@ -202,7 +204,7 @@ A tabela acima roteia **por tarefa**. Quem ainda não tem tarefa, e só precisa 
 | 2 | [`arquitetura/01-forma-do-produto-e-modos-de-consumo.md`](arquitetura/01-forma-do-produto-e-modos-de-consumo.md) | O que a lib **é** hoje, e os dois modos de consumo |
 | 3 | [`arquitetura/00-mapa-do-modulo.md`](arquitetura/00-mapa-do-modulo.md) | Onde cada coisa mora e o que pode importar o quê |
 | 4 | [`sarak-dev/GUIA-MANUTENCAO.md`](../sarak-dev/GUIA-MANUTENCAO.md) | O roteador de fluxos: o passo a passo do que você vai mexer e **qual spec é dona** daquilo |
-| 5 | [`specs/01-gates-e-baseline.md`](specs/01-gates-e-baseline.md) | **Antes de rodar qualquer gate.** O `run_audit` **NÃO está em zero** |
+| 5 | [`specs/01-gates-e-baseline.md`](specs/01-gates-e-baseline.md) | **Antes de rodar qualquer gate.** O `run_audit` fecha em **zero** desde 2026-08-03 — sem folga |
 
 Os **ADRs** (`adr/`) respondem *por quê*. Leia-os quando a pergunta for "por que isto é assim?" ou antes de
 propor reverter uma decisão — é o que evita repropor o que já falhou. São **imutáveis**: decisão errada não se
@@ -309,8 +311,9 @@ Antes de escolher **como** fazer algo, leia **[[00-knowledge]]** — é o rotead
   estar pronta cobra a régua errada, e gate errado custa mais que gate ausente porque ninguém desconfia dele. Os
   **5 gates em fila** e as **4 ampliações de escopo** estão em
   [`specs/15-divida-conhecida.md`](specs/15-divida-conhecida.md) §4 — fora da contagem de dívida, de propósito.
-- **O `run_audit` fecha em exit 1 no HEAD limpo** (2 regras estruturais em vermelho). O baseline exato está em
-  [`specs/01-gates-e-baseline.md`](specs/01-gates-e-baseline.md).
+- **O `run_audit` está em ZERO** (2026-08-03, `plan-07`): hardcode, fantasmas, `any`, cobertura, arquitetura,
+  clean code, paridade e presets, todos limpos. **Era exit 1 com 2 auditores vermelhos até então.** O detalhe
+  está em [`specs/01-gates-e-baseline.md`](specs/01-gates-e-baseline.md).
 - **Padrão recorrente, ainda não medido: o escopo do gate é menor que o escopo da regra.** Quatro casos
   independentes já apareceram — sempre por acaso. Quantos faltam é desconhecido, e é o que a plan de auditoria
   de cobertura existe para responder.

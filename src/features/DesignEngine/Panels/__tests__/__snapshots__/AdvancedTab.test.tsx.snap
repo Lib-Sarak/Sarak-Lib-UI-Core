@@ -347,7 +347,7 @@ exports[`AdvancedTab > matches baseline snapshot 1`] = `
               <p
                 class="text-2xs text-white/30 uppercase font-medium"
               >
-                Limpar cache local e configurações de tema
+                Apagar tema e idioma guardados pela Sarak neste navegador
               </p>
             </div>
           </div>

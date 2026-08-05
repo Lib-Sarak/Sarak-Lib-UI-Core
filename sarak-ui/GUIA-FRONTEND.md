@@ -567,7 +567,7 @@ defeito da base é dívida que ninguém mais vai entender — e some na próxima
 
 > **Não edite esta seção à mão.** Ela é regenerada por `npm run guide` a partir do código-fonte da `@sarak/lib-ui-core` v1.2.1; o gate `guide:check` derruba o build se ficar defasada. A fonte de máquina equivalente é o `catalog.json` ao lado deste arquivo.
 
-Exportações do barril público: **253** nomes (componentes, tipos, hooks e helpers).
+Exportações do barril público: **255** nomes (componentes, tipos, hooks e helpers).
 
 ### A.1 Componentes públicos (87)
 
@@ -584,7 +584,7 @@ Importe do barril: `import { X } from '@sarak/lib-ui-core'`. Os TIPOS de cada pr
 | Cards | **SarakSearchCard** | `item` · `mapping` · `className` · `onSearchChange` · `onToggleCapability` · `design` · `label` |
 | Cards | **SarakTitleCard** | `item` · `mapping` · `className` · `design` · `label` |
 | Core | **DesignScope** | `design` · `children` · `className` · `style` |
-| Core | **DeviceProvider** | `children` · `overrideDevice` |
+| Core | **DeviceProvider** | `children` · `overrideDevice` · `breakpoints` |
 | Core | **DynamicRenderer** | `contracts` · `module` |
 | Core | **SarakComponent** | `children` |
 | Core | **SarakShell** | `children` · `brand` · `extraToolbarItems` · `user` · `logout` · `token` · `authApi` |
@@ -659,7 +659,7 @@ Importe do barril: `import { X } from '@sarak/lib-ui-core'`. Os TIPOS de cada pr
 | Templates | **SarakPageTransition** | `children` · `locationKey` |
 | Templates | **SarakSecurityOrchestrator** | `endpoint` · `label` · `config` · `role` · `density` · `importance` |
 | Templates | **SarakStats** | `endpoint` · `data` · `label` · `mapping` · `role` · `density` · `importance` |
-| Templates | **SarakTable** | `endpoint` · `data` · `label` · `mapping` · `role` · `density` · `importance` |
+| Templates | **SarakTable** | `endpoint` · `data` · `label` · `mapping` · `role` · `density` · `importance` · `responsive` |
 | UX | **SarakContextMenu** | `isOpen` · `position` · `onClose` · `children` · `className` |
 | UX | **SarakTooltip** | `children` · `content` · `position` · `delay` · `className` · `disabled` |
 

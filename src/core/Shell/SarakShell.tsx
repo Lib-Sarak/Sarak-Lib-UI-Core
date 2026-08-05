@@ -75,10 +75,12 @@ export const SarakShell: React.FC<SarakShellProps> = (props) => {
     // --- DESIGN HYDRATION LOG (v10.1) ---
     // Log removido para produção
 
+    // O schema oferece só sidebar | topbar | dock (`Design/schema/global.ts`), e a sidebar
+    // é o fallback de qualquer valor que não seja os outros dois — assim nunca existe
+    // estado em que nenhuma nav é renderizada.
     const isTopbar = design?.navigationStyle === 'topbar';
     const isDock = design?.navigationStyle === 'dock';
-    const isGlass = design?.navigationStyle === 'glass';
-    const isSidebar = design?.navigationStyle === 'sidebar' || (!isTopbar && !isDock && !isGlass);
+    const isSidebar = design?.navigationStyle === 'sidebar' || (!isTopbar && !isDock);
 
     const layoutClass = `layout-${design?.navigationStyle || 'sidebar'}`;
 

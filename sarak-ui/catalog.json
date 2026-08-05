@@ -19,9 +19,11 @@
     "ContextMenuPosition",
     "CustomizationPanel",
     "DEFAULT_COLUMN_WIDTH",
+    "DEFAULT_DEVICE_BREAKPOINTS",
     "DESIGN_MANIFEST",
     "DatePickerValue",
     "DesignScope",
+    "DeviceBreakpoints",
     "DeviceProvider",
     "DeviceType",
     "DiscoveredModule",
@@ -317,6 +319,12 @@
           "type": "DeviceType",
           "optional": true,
           "doc": "Se fornecido, sequestra o dispositivo (Gêmeo Digital / testes) e desliga a detecção real."
+        },
+        {
+          "name": "breakpoints",
+          "type": "DeviceBreakpoints",
+          "optional": true,
+          "doc": "Limiares do tema ativo. Omitidos, valem os canônicos."
         }
       ]
     },
@@ -3101,6 +3109,12 @@
           "type": "'hero' | 'base' | 'subtle'",
           "optional": true,
           "doc": ""
+        },
+        {
+          "name": "responsive",
+          "type": "boolean",
+          "optional": true,
+          "doc": "No smartphone colapsa para cards empilhados. Default `true` — mesma prop, mesmo default e mesmo efeito do irmão `SarakDataTable`, para que os dois componentes públicos de tabela não tenham APIs divergentes."
         }
       ]
     },
