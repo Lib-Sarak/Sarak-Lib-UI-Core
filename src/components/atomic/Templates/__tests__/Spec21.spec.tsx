@@ -5,10 +5,6 @@ import React from 'react';
 import { SarakUIProvider } from '../../../../core/Provider/SarakUIProvider';
 
 // Components
-import { SarakSecurityOrchestrator } from '../SarakSecurityOrchestrator';
-import { SecurityOrchestratorStatus } from '../components/SecurityOrchestratorStatus';
-import { SecurityOrchestratorSetup } from '../components/SecurityOrchestratorSetup';
-import { SecurityOrchestratorDisable } from '../components/SecurityOrchestratorDisable';
 import { AuthForm } from '../components/AuthForm';
 import { AuthHero } from '../components/AuthHero';
 import { AuthSocialLogin } from '../components/AuthSocialLogin';
@@ -27,74 +23,6 @@ const dummyVariants = {
 const dummyLayout = { className: '', style: {} };
 
 test.describe('Spec 21 Visual Validations', () => {
-  test('SarakSecurityOrchestrator', async ({ mount }) => {
-    const component = await mount(
-      <SarakUIProvider>
-        <div className="p-5 w-full bg-slate-900">
-          <SarakSecurityOrchestrator endpoint="/test" />
-        </div>
-      </SarakUIProvider>
-    );
-    await expect(component).toHaveScreenshot('SarakSecurityOrchestrator.png');
-  });
-
-  test('SecurityOrchestratorStatus', async ({ mount }) => {
-    const component = await mount(
-      <SarakUIProvider>
-        <div className="p-5 w-full bg-slate-900">
-          <SecurityOrchestratorStatus
-            mfaStatus={{ enabled: true, lastVerified: 'Hoje' }}
-            startSetup={() => {}}
-            setStep={() => {}}
-            containerVariants={dummyVariants}
-          />
-        </div>
-      </SarakUIProvider>
-    );
-    await expect(component).toHaveScreenshot('SecurityOrchestratorStatus.png');
-  });
-
-  test('SecurityOrchestratorSetup', async ({ mount }) => {
-    const component = await mount(
-      <SarakUIProvider>
-        <div className="p-5 w-full bg-slate-900">
-          <SecurityOrchestratorSetup
-            setupData={{ secret: 'SECRET', qrCode: 'QR' }}
-            qrSize={200}
-            code="123456"
-            setCode={() => {}}
-            handleEnable={() => {}}
-            isValidating={false}
-            error={null}
-            containerVariants={dummyVariants}
-            layout={dummyLayout}
-          />
-        </div>
-      </SarakUIProvider>
-    );
-    await expect(component).toHaveScreenshot('SecurityOrchestratorSetup.png');
-  });
-
-  test('SecurityOrchestratorDisable', async ({ mount }) => {
-    const component = await mount(
-      <SarakUIProvider>
-        <div className="p-5 w-full bg-slate-900">
-          <SecurityOrchestratorDisable
-            code="123456"
-            setCode={() => {}}
-            handleDisable={() => {}}
-            setStep={() => {}}
-            isValidating={false}
-            error={null}
-            containerVariants={dummyVariants}
-            layout={dummyLayout}
-          />
-        </div>
-      </SarakUIProvider>
-    );
-    await expect(component).toHaveScreenshot('SecurityOrchestratorDisable.png');
-  });
-
   test('AuthForm', async ({ mount }) => {
     const component = await mount(
       <SarakUIProvider>

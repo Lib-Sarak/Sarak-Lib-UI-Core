@@ -19,27 +19,17 @@ export const useRegistryManager = (options: SarakUIOptions) => {
     const [isHydrated, setIsHydrated] = useState(false);
 
     useEffect(() => {
-
-        // 1. O componente local 'mx-customization' já é registrado na raiz (index.ts) para evitar
-        // dependência circular (Core -> Features). O registry vai resolver a referência pelo ID.
-
-        // 2. Registrar módulos do manifesto (se houver)
+        // Registrar módulos do manifesto (se houver). O módulo `mx-customization` NÃO é mais
+        // registrado aqui: o `src/index.ts` registrava o componente por efeito colateral de
+        // import, e os dois saíram juntos. Registrar o módulo sem o componente deixaria uma
+        // entrada de menu que não renderiza nada — e o registry acusaria em `console.warn`.
+        // Quem quiser o Design Engine no Shell registra o par (ver `docs/migracoes.md`).
         const manifestModules = options?.manifest?.modules;
         if (Array.isArray(manifestModules)) {
             manifestModules.forEach((mod) => {
                 registerSarakModule(mod as SarakModule);
             });
         }
-
-        // 3. Garantir que o módulo de personalização existe no registro com prioridade máxima
-        registerSarakModule({
-            id: 'mx-customization',
-            label: 'Design Engine',
-            icon: 'Palette',
-            category: 'Personalização',
-            priority: 9999
-            // O componente será resolvido através de registerLocalComponent('mx-customization') no entrypoint
-        });
 
         const updateModules = () => {
             const current = getRegisteredModules();

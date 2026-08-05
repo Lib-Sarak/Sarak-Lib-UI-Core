@@ -2,7 +2,7 @@ import axios, { InternalAxiosRequestConfig } from 'axios';
 
 /**
  * Instância base para os hooks de dados dos templates pesados (SarakTable/SarakChart/
- * SarakForm/SarakManagementGrid/SarakSecurityOrchestrator — ver `hooks/useXxxData.ts`).
+ * SarakForm/SarakManagementGrid — ver `hooks/useXxxData.ts`).
  *
  * Fronteira de Confiança (Spec 08 §6.2 / Spec 20 §2.1): a Sarak NUNCA lê nem escreve
  * token de autenticação — só o host sabe onde ele vive. Este cliente não injeta

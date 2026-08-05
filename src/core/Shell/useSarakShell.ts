@@ -18,19 +18,15 @@ export const useSarakShell = (loggedIn: boolean) => {
         navigate(`/${id}`);
     }, [navigate]);
 
-    // Module activation (Native Routing v10.2) - Prioritizes default or mx-customization
+    // Module activation (Native Routing v10.2): `defaultModuleId` do consumidor manda; sem
+    // ele, abre o primeiro módulo descoberto. O desempate por `mx-customization` saiu junto
+    // com o id legado — a lib não elege mais um módulo dela como tela inicial do host.
     useEffect(() => {
         if (discoveredModules.length > 0 && !activeModuleId) {
             const defaultId = options?.theme?.defaultModuleId;
             const targetMod = defaultId ? discoveredModules.find((m: DiscoveredModule) => m.id === defaultId) : null;
-            
-            if (targetMod) {
-                navigate(`/${targetMod.id}`, true);
-            } else {
-                // Fallback: Tenta encontrar mx-customization primeiro, senão pega o primeiro da lista
-                const customMod = discoveredModules.find((m: DiscoveredModule) => m.id === 'mx-customization');
-                navigate(`/${customMod ? customMod.id : discoveredModules[0].id}`, true);
-            }
+
+            navigate(`/${targetMod ? targetMod.id : discoveredModules[0].id}`, true);
         }
     }, [discoveredModules, activeModuleId, navigate, options?.theme?.defaultModuleId]);
 

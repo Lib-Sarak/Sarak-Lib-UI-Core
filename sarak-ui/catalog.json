@@ -169,8 +169,6 @@
     "SarakSearchCard",
     "SarakSearchCardProps",
     "SarakSearchProps",
-    "SarakSecurityOrchestrator",
-    "SarakSecurityOrchestratorProps",
     "SarakSelect",
     "SarakSelectProps",
     "SarakShell",
@@ -2617,48 +2615,6 @@
         }
       ]
     },
-    "SarakSecurityOrchestrator": {
-      "propsInterface": "SarakSecurityOrchestratorProps",
-      "source": "src/components/atomic/Templates/SarakSecurityOrchestrator.tsx",
-      "props": [
-        {
-          "name": "endpoint",
-          "type": "string",
-          "optional": false,
-          "doc": ""
-        },
-        {
-          "name": "label",
-          "type": "string",
-          "optional": true,
-          "doc": ""
-        },
-        {
-          "name": "config",
-          "type": "Record<string, unknown>",
-          "optional": true,
-          "doc": ""
-        },
-        {
-          "name": "role",
-          "type": "'primary' | 'secondary' | 'neutral' | 'accent'",
-          "optional": true,
-          "doc": ""
-        },
-        {
-          "name": "density",
-          "type": "'compact' | 'standard' | 'spacious'",
-          "optional": true,
-          "doc": ""
-        },
-        {
-          "name": "importance",
-          "type": "'hero' | 'base' | 'subtle'",
-          "optional": true,
-          "doc": ""
-        }
-      ]
-    },
     "SarakSelect": {
       "propsInterface": "SarakSelectProps",
       "source": "src/components/atomic/Inputs/SarakSelect.tsx",
@@ -3120,28 +3076,46 @@
     },
     "SarakTabs": {
       "propsInterface": "SarakTabsProps",
-      "source": "src/components/atomic/Layouts/SarakTabs.tsx",
+      "source": "src/components/atomic/UX/SarakTabs.tsx",
       "props": [
         {
-          "name": "items",
-          "type": "TabItem[]",
+          "name": "tabs",
+          "type": "SarakTabItem[]",
           "optional": false,
           "doc": ""
         },
         {
-          "name": "defaultActiveId",
+          "name": "activeTab",
+          "type": "string",
+          "optional": false,
+          "doc": ""
+        },
+        {
+          "name": "onChange",
+          "type": "(tabId: string) => void",
+          "optional": false,
+          "doc": ""
+        },
+        {
+          "name": "variant",
+          "type": "'pills' | 'underlined' | 'enclosed'",
+          "optional": true,
+          "doc": "Estilo de exibição das abas"
+        },
+        {
+          "name": "fullWidth",
+          "type": "boolean",
+          "optional": true,
+          "doc": "Preencher a largura toda?"
+        },
+        {
+          "name": "className",
           "type": "string",
           "optional": true,
           "doc": ""
         },
         {
-          "name": "alignment",
-          "type": "'horizontal' | 'vertical'",
-          "optional": true,
-          "doc": ""
-        },
-        {
-          "name": "className",
+          "name": "listClassName",
           "type": "string",
           "optional": true,
           "doc": ""
@@ -3975,34 +3949,6 @@
         ]
       },
       {
-        "component": "SarakSecurityOrchestrator",
-        "prop": "role",
-        "values": [
-          "primary",
-          "secondary",
-          "neutral",
-          "accent"
-        ]
-      },
-      {
-        "component": "SarakSecurityOrchestrator",
-        "prop": "density",
-        "values": [
-          "compact",
-          "standard",
-          "spacious"
-        ]
-      },
-      {
-        "component": "SarakSecurityOrchestrator",
-        "prop": "importance",
-        "values": [
-          "hero",
-          "base",
-          "subtle"
-        ]
-      },
-      {
         "component": "SarakShellNav",
         "prop": "orientation",
         "values": [
@@ -4069,10 +4015,11 @@
       },
       {
         "component": "SarakTabs",
-        "prop": "alignment",
+        "prop": "variant",
         "values": [
-          "horizontal",
-          "vertical"
+          "pills",
+          "underlined",
+          "enclosed"
         ]
       },
       {

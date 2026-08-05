@@ -1,5 +1,5 @@
 import React from 'react';
-import { ThemeCustomizationTab } from '../Main/ThemeCustomizationTab';
+import { ThemeCustomizationTab } from '../../Main/ThemeCustomizationTab';
 
 /**
  * CustomizationPanel (v6.0)

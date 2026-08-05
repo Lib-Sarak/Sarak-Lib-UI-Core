@@ -32,7 +32,6 @@ vi.mock('../../../../components/atomic/Templates', async (importOriginal) => {
         SarakForm: make('SarakForm'),
         SarakManagementGrid: make('SarakManagementGrid'),
         SarakChat: make('SarakChat'),
-        SarakSecurityOrchestrator: make('SarakSecurityOrchestrator'),
         SarakAuthScreen: make('SarakAuthScreen'),
         SarakCatalogGrid: make('SarakCatalogGrid'),
     };
@@ -100,11 +99,6 @@ describe('ContractRenderer — roteamento por type', () => {
     it('CHAT_INTERFACE → SarakChat', () => {
         renderType({ type: 'CHAT_INTERFACE' });
         expect(screen.getByTestId('SarakChat')).toBeInTheDocument();
-    });
-
-    it('SECURITY_ORCHESTRATOR → SarakSecurityOrchestrator', () => {
-        renderType({ type: 'SECURITY_ORCHESTRATOR', config: { a: 1 } });
-        expect(screen.getByTestId('SarakSecurityOrchestrator')).toBeInTheDocument();
     });
 
     it('AUTH_FLOW → SarakAuthScreen e repassa campos enriquecidos (username)', () => {

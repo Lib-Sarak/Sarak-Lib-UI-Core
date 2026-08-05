@@ -61,9 +61,6 @@ Traduzidos por `resolveToken` (`core/Design/resolveToken.ts`). Qualquer comprime
 | `SarakManagementGrid` | `role` | `primary` · `secondary` · `neutral` · `accent` |
 | `SarakManagementGrid` | `density` | `compact` · `standard` · `spacious` |
 | `SarakManagementGrid` | `importance` | `hero` · `base` · `subtle` |
-| `SarakSecurityOrchestrator` | `role` | `primary` · `secondary` · `neutral` · `accent` |
-| `SarakSecurityOrchestrator` | `density` | `compact` · `standard` · `spacious` |
-| `SarakSecurityOrchestrator` | `importance` | `hero` · `base` · `subtle` |
 | `SarakShellNav` | `orientation` | `vertical` · `horizontal` · `auto` |
 | `SarakStats` | `role` | `primary` · `secondary` · `neutral` · `accent` |
 | `SarakStats` | `density` | `compact` · `standard` · `spacious` |
@@ -71,7 +68,7 @@ Traduzidos por `resolveToken` (`core/Design/resolveToken.ts`). Qualquer comprime
 | `SarakTable` | `role` | `primary` · `secondary` · `neutral` · `accent` |
 | `SarakTable` | `density` | `compact` · `standard` · `spacious` |
 | `SarakTable` | `importance` | `hero` · `base` · `subtle` |
-| `SarakTabs` | `alignment` | `horizontal` · `vertical` |
+| `SarakTabs` | `variant` | `pills` · `underlined` · `enclosed` |
 | `SarakTypography` | `transform` | `none` · `uppercase` · `capitalize` |
 | `SocialButton` | `provider` | `google` · `github` |
 | `SocialButton` | `variant` | `glass` · `sovereign` |
@@ -90,7 +87,7 @@ Nome fora desta lista **não renderiza o ícone pedido**: o `SarakIcon` avisa no
 
 `AlertCircle` · `AlertTriangle` · `Check` · `CheckCircle2` · `X` · `Info` · `HelpCircle` · `Menu` · `Search` · `Bell` · `Filter` · `List` · `Grid` · `Layout` · `LayoutDashboard` · `Home` · `ChevronDown` · `ChevronLeft` · `ChevronRight` · `ChevronUp` · `ArrowRight` · `ArrowLeft` · `ArrowUp` · `ArrowDown` · `ArrowUpDown` · `CornerDownRight` · `MoreVertical` · `MoreHorizontal` · `Maximize2` · `Minimize2` · `Loader2` · `RefreshCw` · `User` · `UserPlus` · `Users` · `LogIn` · `LogOut` · `Lock` · `Shield` · `Eye` · `File` · `FileText` · `FileSpreadsheet` · `Folder` · `Image` · `Paperclip` · `ScrollText` · `Clipboard` · `Copy` · `Download` · `Upload` · `UploadCloud` · `Printer` · `Save` · `Edit` · `Edit3` · `Plus` · `Trash2` · `Type` · `AlignLeft` · `Hash` · `Activity` · `BarChart3` · `LineChart` · `PieChart` · `ScatterChart` · `TrendingUp` · `Database` · `Layers` · `Network` · `Box` · `Package` · `Cpu` · `Cloud` · `Terminal` · `Thermometer` · `History` · `Calendar` · `Clock` · `MessageSquare` · `Mail` · `Send` · `Phone` · `Bot` · `Globe` · `Link` · `ExternalLink` · `Briefcase` · `Building` · `CreditCard` · `DollarSign` · `MapPin` · `Tag` · `Star` · `Play` · `Palette` · `Settings` · `Zap` · `Chrome` · `Github`
 
-## Componentes públicos (81)
+## Componentes públicos (80)
 
 ### DEFAULT_COLUMN_WIDTH
 
@@ -804,19 +801,6 @@ Props (`SarakSearchCardProps` — `src/components/atomic/Cards/SarakSearchCard.t
 | `design` | `SarakThemePayload` | não |  |
 | `label` | `string` | não |  |
 
-### SarakSecurityOrchestrator
-
-Props (`SarakSecurityOrchestratorProps` — `src/components/atomic/Templates/SarakSecurityOrchestrator.tsx`):
-
-| Prop | Tipo | Obrigatória | Descrição |
-| --- | --- | --- | --- |
-| `endpoint` | `string` | sim |  |
-| `label` | `string` | não |  |
-| `config` | `Record<string, unknown>` | não |  |
-| `role` | `'primary' \| 'secondary' \| 'neutral' \| 'accent'` | não |  |
-| `density` | `'compact' \| 'standard' \| 'spacious'` | não |  |
-| `importance` | `'hero' \| 'base' \| 'subtle'` | não |  |
-
 ### SarakSelect
 
 Props (`SarakSelectProps` — `src/components/atomic/Inputs/SarakSelect.tsx`):
@@ -959,14 +943,17 @@ Props (`SarakTableProps` — `src/components/atomic/Templates/SarakTable.tsx`):
 
 ### SarakTabs
 
-Props (`SarakTabsProps` — `src/components/atomic/Layouts/SarakTabs.tsx`):
+Props (`SarakTabsProps` — `src/components/atomic/UX/SarakTabs.tsx`):
 
 | Prop | Tipo | Obrigatória | Descrição |
 | --- | --- | --- | --- |
-| `items` | `TabItem[]` | sim |  |
-| `defaultActiveId` | `string` | não |  |
-| `alignment` | `'horizontal' \| 'vertical'` | não |  |
+| `tabs` | `SarakTabItem[]` | sim |  |
+| `activeTab` | `string` | sim |  |
+| `onChange` | `(tabId: string) => void` | sim |  |
+| `variant` | `'pills' \| 'underlined' \| 'enclosed'` | não | Estilo de exibição das abas |
+| `fullWidth` | `boolean` | não | Preencher a largura toda? |
 | `className` | `string` | não |  |
+| `listClassName` | `string` | não |  |
 
 ### SarakTextarea
 

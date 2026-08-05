@@ -20,8 +20,13 @@ function main() {
         return;
     }
 
-    cpSync(SRC_DIR, DEST_DIR, { recursive: true });
-    console.log('[copy-base-css] src/styles/ copiado para dist/styles/ (export público "./sarak-base.css").');
+    // Só CSS entra no pacote: a pasta de origem também hospeda testes (`__tests__/`), e
+    // copiar a pasta inteira os publicava dentro de `dist/` — o `package:check` acusa.
+    cpSync(SRC_DIR, DEST_DIR, {
+        recursive: true,
+        filter: (src) => !path.basename(src).startsWith('__') && !/\.(test|spec)\.[cm]?[jt]sx?$/.test(src)
+    });
+    console.log('[copy-base-css] src/styles/*.css copiado para dist/styles/ (export público "./sarak-base.css").');
 }
 
 main();

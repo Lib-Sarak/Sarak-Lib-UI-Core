@@ -47,7 +47,9 @@ export type { ThemePreset, ThemePresetId } from './core/Design/presets/themes';
 export { SARAK_REFERENCE_THEMES, getThemePreset } from './core/Design/presets/themes/reference';
 export { getDefaultDesignState, getAllDesignTokens } from './core/Design/master-map';
 export { THEME_AXES, findMissingThemeAxes, warnOnIncompleteTheme } from './core/Design/utils/themeAxes';
-export * from './features/DesignEngine/Library/CustomizationPanel';
+// Painel do Design Engine atrás de fronteira lazy (o índice declara o `React.lazy` e o
+// `Suspense` interno) — ele arrasta o Design Engine inteiro e não pode sair eager do barril.
+export { CustomizationPanel } from './features/DesignEngine/Library/CustomizationPanel';
 export * from './components/atomic/Atoms';
 export * from './components/atomic/Cards/ExpandableCard';
 export * from './components/atomic/Cards/SarakActionCard';
@@ -55,11 +57,9 @@ export * from './components/atomic/Cards/SarakSearchCard';
 export * from './components/atomic/Cards/SarakTitleCard';
 // API React pública do modelo módulos-plugin (Spec 43 §3.1) — faltavam inteiras no
 // barrel público (só viviam no Registry do motor de manifesto, `nativeComponents.ts`).
-// `SarakTabs` de `Layouts/` fica de fora do `export *`: colide de nome com
-// `UX/SarakTabs` (já público abaixo) e são dois componentes DIFERENTES e
-// incompatíveis (props `items/defaultActiveId` vs `tabs/activeTab/onChange`) —
-// achado pré-existente desta auditoria, fora do escopo enxuto da Spec 43; a
-// deduplicação fica para uma spec de refatoração dedicada.
+// Exports NOMEADOS de propósito: a superfície de `Layouts/` é declarada componente a
+// componente aqui, não herdada do barril de categoria. Trocar por `export *` faria a
+// superfície pública passar a depender do que `Layouts/index.ts` acrescentar no futuro.
 export { SarakFlex } from './components/atomic/Layouts/SarakFlex';
 export type { SarakFlexProps } from './components/atomic/Layouts/SarakFlex';
 export { SarakGrid } from './components/atomic/Layouts/SarakGrid';
@@ -122,10 +122,3 @@ export { useModuleDiscovery } from './shared/hooks/useModuleDiscovery';
 export { useSarakRouter } from './shared/hooks/useSarakRouter';
 export type { SarakRouterState } from './shared/hooks/useSarakRouter';
 
-import { registerLocalComponent } from './core/Discovery/registry';
-import { CustomizationPanel } from './features/DesignEngine/Library/CustomizationPanel';
-
-// Component mapping for the registry. 
-// We use the unified CustomizationPanel (v12.0) as the target for both IDs.
-registerLocalComponent('mx-customization', CustomizationPanel);
-registerLocalComponent('personalization', CustomizationPanel);

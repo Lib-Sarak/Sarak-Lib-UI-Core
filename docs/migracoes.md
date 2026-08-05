@@ -5,6 +5,88 @@ com o "antes" e o "depois" lado a lado. Uma entrada por mudança, mais recente p
 
 ---
 
+## 2.0.0 — a limpeza do contrato público, num major só
+
+**Esta é a única entrada que você precisa ler para migrar para a `2.0.0`.** Cinco mudanças saíram
+juntas de propósito: cada uma sozinha custaria a você uma migração inteira de leitura, teste e
+ajuste. **Você atravessa o major uma vez, não cinco.**
+
+Se você não usa nenhum dos itens abaixo, **atualizar é trocar a faixa da versão e mais nada** — e
+você ainda ganha o boot 75% menor do item 1 sem fazer nada.
+
+### 1. O painel do Design Engine saiu do seu boot — e não é mais registrado sozinho
+
+**O ganho, de graça:** o `CustomizationPanel` arrastava o Design Engine inteiro (abas, canvas de
+preview, controles de token) para o chunk de boot de **todo** consumidor, mesmo quem nunca abre o
+painel. Ele agora fica atrás de fronteira lazy.
+
+| | `dist/index.js` (o chunk de boot) |
+| --- | --- |
+| **Antes** | 674.011 bytes (658,2 KB) |
+| **Depois** | 167.684 bytes (163,8 KB) |
+| **Ganho** | **−506.327 bytes, −75,1%** |
+
+O tipo público **não mudou**: `CustomizationPanel` continua sendo um `React.FC` e o `Suspense` é
+interno, no mesmo padrão do `SarakChartEngine`. Você **não** precisa declarar `Suspense`.
+
+**A quebra:** a lib **parou de registrar sozinha** os ids `mx-customization` e `personalization` no
+Discovery. Antes isso acontecia por efeito colateral de import — bastava importar qualquer coisa da
+lib e o painel aparecia no menu do `SarakShell`.
+
+| | |
+| --- | --- |
+| **Antes** | `import '@sarak/lib-ui-core'` → o módulo "Design Engine" aparecia no menu do Shell sozinho, e era a tela inicial padrão |
+| **Depois** | nada é registrado por você; o Shell abre o `defaultModuleId` que você configurou, ou o primeiro módulo descoberto |
+| **Como migrar** | se você **quer** o painel no menu, registre o par você mesmo: |
+
+```tsx
+import { registerSarakModule, registerLocalComponent, CustomizationPanel } from '@sarak/lib-ui-core';
+
+registerSarakModule({ id: 'design-engine', label: 'Design Engine', icon: 'Palette', category: 'Personalização' });
+registerLocalComponent('design-engine', CustomizationPanel);
+```
+
+Se você **não** quer, não faça nada — e repare que a lib deixou de eleger um módulo dela como a
+tela inicial do seu sistema. Para fixar a sua, use `options.theme.defaultModuleId`.
+
+### 2. `SarakSecurityOrchestrator` foi removido
+
+O componente de MFA saiu da biblioteca, junto com as três peças que só ele usava
+(`SecurityOrchestratorSetup`, `SecurityOrchestratorStatus`, `SecurityOrchestratorDisable`) e o hook
+`useSecurityOrchestratorState`.
+
+| | |
+| --- | --- |
+| **Antes** | `import { SarakSecurityOrchestrator } from '@sarak/lib-ui-core'`, falando com `GET/POST {endpoint}/mfa/*` |
+| **Depois** | não existe mais |
+| **Como migrar** | copie o componente para o seu projeto (o código está no histórico do git). **Não há substituto na lib, e isso é intencional:** autenticação é do host, não do Design System — a lib é indiferente ao seu sistema de auth |
+
+Sai junto o contrato `'SECURITY_ORCHESTRATOR'` do union `VisualContractType`: um manifesto que
+declarasse esse `type` renderizava o componente pelo `DynamicRenderer`, e agora cai no `default`.
+**Se algum manifesto seu usa esse tipo, troque-o por `'CUSTOM'`** e aponte para o seu componente.
+
+### 3. `upgradeThemePayload` perdeu o segundo parâmetro
+
+| | |
+| --- | --- |
+| **Antes** | `upgradeThemePayload(payload, partialMode?)` |
+| **Depois** | `upgradeThemePayload(payload)` |
+| **Como migrar** | apague o segundo argumento se você o passava. Ele **nunca fez nada** — era declarado e jamais lido dentro da função, então o comportamento é idêntico |
+
+### 4. O `SarakTabs` duplicado saiu (provavelmente não te afeta)
+
+Existiam dois componentes com o mesmo nome e APIs incompatíveis: `Layouts/SarakTabs`
+(`items`/`defaultActiveId`) e `UX/SarakTabs` (`tabs`/`activeTab`/`onChange`). **Só o de `UX/` era
+público** — o outro nunca esteve no barril.
+
+| | |
+| --- | --- |
+| **Antes** | `Layouts/SarakTabs` existia no código, alcançável só por deep import (proibido por contrato) |
+| **Depois** | não existe mais; `SarakTabs` é, sem ambiguidade, o de `UX/` |
+| **Como migrar** | nada, se você importa do barril. Se usava deep import, migre para a API do `UX/SarakTabs`: `tabs={[{id, label}]}`, `activeTab`, `onChange` |
+
+---
+
 ## O "Factory Hard Reset" do painel deixou de apagar o `localStorage` inteiro do seu site
 
 **Se você nunca abriu o painel de customização, nada muda para você.** Esta entrada existe porque

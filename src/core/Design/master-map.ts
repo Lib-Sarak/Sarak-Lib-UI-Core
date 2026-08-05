@@ -145,7 +145,7 @@ export const getScaffold = (domain?: string): Record<string, SarakTokenValue> =>
  */
 // `themePayload` é um pacote de tema vindo do banco/preset (chaves dinâmicas,
 // fora do nosso controle): fronteira dinâmica de verdade → `Record<string, unknown>`.
-export const upgradeThemePayload = (themePayload: Record<string, unknown>, partialMode = false) => {
+export const upgradeThemePayload = (themePayload: Record<string, unknown>) => {
     const upgraded = { ...themePayload };
     getAllDesignTokens().forEach(token => {
         // Se a chave não existe no payload

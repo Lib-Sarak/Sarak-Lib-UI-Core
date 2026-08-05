@@ -1,5 +1,5 @@
 import React, { lazy } from 'react';
-import { SarakTable, SarakCardGrid, SarakStats, SarakChart, SarakForm, SarakManagementGrid, SarakChat, SarakSecurityOrchestrator, SarakAuthScreen, SarakCatalogGrid } from '../../../components/atomic/Templates';
+import { SarakTable, SarakCardGrid, SarakStats, SarakChart, SarakForm, SarakManagementGrid, SarakChat, SarakAuthScreen, SarakCatalogGrid } from '../../../components/atomic/Templates';
 import { VisualContract, DiscoveredModule } from '../types';
 import LazyEngineWrapper from '../../../components/engines/LazyEngineWrapper';
 import { getSarakModule } from '../registry';
@@ -91,16 +91,6 @@ export const ContractRenderer: React.FC<{
                                     edges={[]} 
                                 />
                             </LazyEngineWrapper>
-                        );
-
-                    case 'SECURITY_ORCHESTRATOR':
-                        return (
-                            <SarakSecurityOrchestrator 
-                                key={id} 
-                                endpoint={resolvedEndpoint} 
-                                label={label}
-                                config={contract.config as React.ComponentProps<typeof SarakSecurityOrchestrator>['config']}
-                            />
                         );
 
                     case 'AUTH_FLOW': {

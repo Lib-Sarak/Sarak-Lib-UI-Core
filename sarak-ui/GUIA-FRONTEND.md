@@ -567,9 +567,9 @@ defeito da base é dívida que ninguém mais vai entender — e some na próxima
 
 > **Não edite esta seção à mão.** Ela é regenerada por `npm run guide` a partir do código-fonte da `@sarak/lib-ui-core` v1.2.1; o gate `guide:check` derruba o build se ficar defasada. A fonte de máquina equivalente é o `catalog.json` ao lado deste arquivo.
 
-Exportações do barril público: **255** nomes (componentes, tipos, hooks e helpers).
+Exportações do barril público: **253** nomes (componentes, tipos, hooks e helpers).
 
-### A.1 Componentes públicos (87)
+### A.1 Componentes públicos (86)
 
 Importe do barril: `import { X } from '@sarak/lib-ui-core'`. Os TIPOS de cada prop, com descrição, estão em `catalog.json` → `components.<Nome>.props` (e em `docs/component-catalog.md`).
 
@@ -623,7 +623,6 @@ Importe do barril: `import { X } from '@sarak/lib-ui-core'`. Os TIPOS de cada pr
 | Layouts | **SarakFormGroup** | `children` · `gap` |
 | Layouts | **SarakGrid** | `children` · `templateColumns` · `templateAreas` · `gap` · `as` |
 | Layouts | **SarakSplitPane** | `leftPane` · `rightPane` · `minLeftWidth` · `maxLeftWidth` · `defaultLeftWidth` · `className` |
-| Layouts | **SarakTabs** | `items` · `defaultActiveId` · `alignment` · `className` |
 | Media | **SarakLightbox** | `images` · `isOpen` · `initialIndex` · `onClose` · `onIndexChange` |
 | Media | **SarakMarkdownRenderer** | `content` · `className` |
 | Media | **SarakPDFViewer** | `src` · `initialPage` · `zoom` · `workerSrc` · `onDownload` · `className` |
@@ -657,10 +656,10 @@ Importe do barril: `import { X } from '@sarak/lib-ui-core'`. Os TIPOS de cada pr
 | Templates | **SarakForm** | `endpoint` · `label` · `mapping` · `mode` · `initialData` · `actions` · `onSuccess` · `role` · `density` · `importance` |
 | Templates | **SarakManagementGrid** | `endpoint` · `groupBy` · `ghostGroups` · `mapping` · `headerActions` · `groupActions` · `formMapping` · `role` · `density` · `importance` |
 | Templates | **SarakPageTransition** | `children` · `locationKey` |
-| Templates | **SarakSecurityOrchestrator** | `endpoint` · `label` · `config` · `role` · `density` · `importance` |
 | Templates | **SarakStats** | `endpoint` · `data` · `label` · `mapping` · `role` · `density` · `importance` |
 | Templates | **SarakTable** | `endpoint` · `data` · `label` · `mapping` · `role` · `density` · `importance` · `responsive` |
 | UX | **SarakContextMenu** | `isOpen` · `position` · `onClose` · `children` · `className` |
+| UX | **SarakTabs** | `tabs` · `activeTab` · `onChange` · `variant` · `fullWidth` · `className` · `listClassName` |
 | UX | **SarakTooltip** | `children` · `content` · `position` · `delay` · `className` · `disabled` |
 
 ### A.2 Contrato de responsividade (gerado do uso real)

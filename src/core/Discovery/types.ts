@@ -25,7 +25,6 @@ export type VisualContractType =
     | 'FLOW_DIAGRAM' 
     | 'ELITE_CHART' 
     | 'ADVANCED_CHAT' 
-    | 'SECURITY_ORCHESTRATOR' 
     | 'CATALOG_GRID' 
     | 'CUSTOM' 
     | 'AUTH_FLOW'

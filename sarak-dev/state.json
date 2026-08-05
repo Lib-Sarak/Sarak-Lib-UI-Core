@@ -81,7 +81,7 @@
       "flows"
     ],
     "publicos": {
-      "count": 81,
+      "count": 80,
       "nomes": [
         "DEFAULT_COLUMN_WIDTH",
         "ExpandableCard",
@@ -140,7 +140,6 @@
         "SarakRichText",
         "SarakSearch",
         "SarakSearchCard",
-        "SarakSecurityOrchestrator",
         "SarakSelect",
         "SarakShellNav",
         "SarakSkeleton",

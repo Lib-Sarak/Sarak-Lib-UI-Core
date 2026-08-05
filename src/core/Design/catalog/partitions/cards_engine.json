@@ -1879,7 +1879,7 @@
     "tags": ["mfa", "qr-code", "template"],
     "databaseColumn": "cards_engine",
     "schemaOrigin": "cards.ts",
-    "digitalTwins": ["SecurityOrchestratorSetup"],
+    "digitalTwins": [],
     "cssVariables": ["--sarak-mfa-qr-code-size"],
     "allowedValues": { "min": 100, "max": 400, "step": 10 },
     "relatedTokens": []
