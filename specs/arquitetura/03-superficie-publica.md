@@ -50,7 +50,7 @@ O escopo são **duas raízes organizadas por categoria** — `src/components/ato
 
 ```
 $ npm run barrel:check
-[barrel:check] 81 componentes registrados; barril em dia (0 faltas).
+[barrel:check] 80 componentes registrados; barril em dia (0 faltas).
 ```
 
 `gates/scripts/contrato/check-barrel-parity.mjs` cobra **duas coisas** para cada componente derivado da §3 (`:63-70`):
@@ -80,7 +80,7 @@ E ele derruba o build também no sentido inverso — **exclusão obsoleta** (`:7
 
 ## 5.1 A divergência de contagem 81 × 87 — APURADA, não é bug
 
-O gate reporta **81 componentes**; `sarak-ui/VERSION` e o catálogo do kit reportam **87**. Os dois números estão certos, porque **medem escopos de varredura diferentes**:
+O gate reporta **80 componentes**; o catálogo do kit reporta **86**. Os dois números estão certos, porque **medem escopos de varredura diferentes**:
 
 - **81** = o que `collectPublicComponentNames()` varre: `components/atomic/**` + `components/engines/**` + `components/Layout/**`.
 - **87** = 81 **+ 6**, onde os 6 vêm de `collectExtraPublicApi()` (`scripts/consumer-kit/collectKitSources.mjs:184-199`): nomes que o barril exporta, têm `<Nome>Props`, e **não** moram nas pastas varridas pelo gate.

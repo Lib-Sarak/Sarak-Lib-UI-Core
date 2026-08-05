@@ -33,7 +33,7 @@ inegociável ou o mapa de roteamento. Nunca por conta própria fora de uma plan.
 
 **`@sarak/lib-ui-core` é uma biblioteca React de Design System** — não um app, não um serviço, não tem backend.
 Ela resolve o problema de o host ter identidade visual própria sem reescrever componentes: um Design Engine
-central resolve 410 tokens em tempo de execução, e os componentes leem esses tokens em vez de terem estilo
+central resolve 409 tokens em tempo de execução, e os componentes leem esses tokens em vez de terem estilo
 fixo.
 
 **Quem consome:** outros repositórios React (hoje o ERP Earendel), por dependência **git com tag**, nunca por
@@ -72,7 +72,7 @@ reescritas aqui.
   copiada para markdown — aponte para o artefato gerado (`docs/component-catalog.json`, `sarak-ui/catalog.json`)
   ou para a função que a produz. Cópia estática vira mentira na primeira mudança de código.
 - **Paridade 1:1:1 dos tokens.** Schema ↔ `theme_table_mapping` ↔ partições do catálogo têm de bater
-  (hoje 410/410/410). Detalhe em [`arquitetura/04-contrato-de-tokens-e-paridade.md`](arquitetura/04-contrato-de-tokens-e-paridade.md).
+  (hoje 409/409/409). Detalhe em [`arquitetura/04-contrato-de-tokens-e-paridade.md`](arquitetura/04-contrato-de-tokens-e-paridade.md).
 - **Zero marca.** Nenhum nome, logo ou cor da Sarak vaza para a UI do host ([[adr/006-zero-marca-soberania-host]]),
   cobrado por `npm run zero-brand:check`.
 - **O `run_audit` fecha em ZERO desde 2026-08-03** (`plan-07`), e isso **mudou o regime**: as 8 métricas do
@@ -97,13 +97,13 @@ reescritas aqui.
 
 **Stack:** TypeScript + React `>=18` (peer) · Tailwind CSS `>=4` · build `tsup` (ESM + CJS + DTS) ·
 testes `vitest` + `playwright-ct` · gerenciador **npm** · distribuída por **git com tag**, sem registry
-([[adr/007-distribuicao-por-git]] · [[adr/008-releases-com-tag-e-semver-em-git]]). Versão atual: **1.2.0**.
+([[adr/007-distribuicao-por-git]] · [[adr/008-releases-com-tag-e-semver-em-git]]). Versão atual: **1.2.1** — e o `2.0.0` está **pronto no worktree**, aguardando a decisão de publicar (ver §8).
 
 **Camada de padrão da linguagem:** skill `padrao-typescript` (+ `padrao-escrita`, sempre).
 
 | Bloco | Responsabilidade | Detalhe em |
 |---|---|---|
-| `src/core/Design/` | O Design Engine: 28 schemas → `MASTER_DESIGN_MAP` → 410 tokens | [`arquitetura/02`](arquitetura/02-design-engine.md) |
+| `src/core/Design/` | O Design Engine: 28 schemas → `MASTER_DESIGN_MAP` → 409 tokens | [`arquitetura/02`](arquitetura/02-design-engine.md) |
 | `src/core/Provider/` | `SarakUIProvider`, validação da fronteira, tipos gerados | [`arquitetura/04`](arquitetura/04-contrato-de-tokens-e-paridade.md) |
 | `src/core/Shell/` · `Discovery/` | Cromo, rotas e os módulos-plugin | [`specs/04`](specs/04-shell-e-discovery.md) · [`specs/05`](specs/05-cromo-e-slots.md) |
 | `src/core/Security/` | Sanitização e limites anti-DoS | [`specs/10`](specs/10-seguranca-e-acessibilidade.md) |
@@ -323,7 +323,7 @@ Antes de escolher **como** fazer algo, leia **[[00-knowledge]]** — é o rotead
 - **O ERP Earendel é o único consumidor** e está em desenvolvimento simultâneo, consumindo por **caminho
   local** (`file:`) — decisão do dono enquanto os dois repositórios são ajustados juntos; a migração para
   `github:…#semver:` vem depois. **Alinhado em 2026-08-02** (plan-04 🟢): workspace com 13 projetos, lockfile
-  canônico, lib **1.2.0**, junctions manuais substituídas pelo elo do gerenciador e aviso de defasagem no
+  canônico, lib **1.2.1**, junctions manuais substituídas pelo elo do gerenciador e aviso de defasagem no
   `predev`. ⚠️ **`file:` é cópia no store do pnpm, não link** — todo rebuild da lib exige
   `pnpm install --force --filter @erp/ui-kit` no ERP para chegar lá. Medir a lib por um ERP não reinstalado é
   medir o passado.

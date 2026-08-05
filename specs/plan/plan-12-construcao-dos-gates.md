@@ -101,7 +101,7 @@ não pode acontecer é dívida virar allowlist: uma tem data e dono, a outra som
 | **vão 3** — R7 (ghostvars) em `src/core/` | **4** — sendo **2 reais** e **2 falsos vindos de comentário** |
 | **vão 2** — R7 em `src/styles/` | a medir; os 2 `--sx-*` já saíram na `plan-07` |
 | **vão 7** — ponteiro `§N.N` | **4 vivos**; o detector acusa 23, e **16 são ruído** |
-| **vão 13** — R17, prosa manual | a medir |
+| **vão 13** — R17, prosa manual | a medir. ⚠️ **Reincidência medida em 2026-08-05:** o fecho da campanha achou **9 números falsos** em specs fixas — `410` onde o real é `409`, `81` onde é `80`, `274/889` onde é `275/942`, `1.2.0` onde é `1.2.1`. Foram corrigidos à mão pelo revisor **pela terceira vez nesta campanha**. É a prova de que prosa manual sem gate volta a mentir a cada entrega |
 | **R8** — cobertura em %, piso móvel | mede, grava, o piso só sobe |
 
 ⚠️ **Dois itens do lote B exigem consertar o GATE antes de ligar** — não é exceção, é falso positivo:

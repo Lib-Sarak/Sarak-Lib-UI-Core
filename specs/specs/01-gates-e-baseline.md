@@ -136,12 +136,12 @@ Registrado como o que é: **cobertura que existe e não é cobrada**. **Não cob
 | ↳ `auditor_cleancode` | | ✅ 0 violações |
 | ↳ `auditor_paridade` | | ✅ **409 / 409 / 409** em 13 arquivos de partição (linha final relata 416 brutos) |
 | ↳ `auditor_presets` | | ✅ gabarito de 409 chaves; **120 itens** (18 temas + 102 presets), 0 órfã |
-| `barrel:check` **(R14)** | `npm run barrel:check` | ✅ **81 componentes, 0 faltas** — era 78 até P26, que pôs `components/engines/**` no escopo de varredura (§4.5, item 4) |
+| `barrel:check` **(R14)** | `npm run barrel:check` | ✅ **80 componentes, 0 faltas** — era 81 até a `plan-09` (saiu o `SarakTabs` de `Layouts/`), e 78 até P26, que pôs `components/engines/**` no escopo de varredura (§4.5, item 4) |
 | `catalog:check` **(R17 · R29)** | `npm run catalog:check` | ✅ catálogo em dia (**81** componentes) |
 | `zero-brand:check` **(R12)** | `npm run zero-brand:check` | ✅ **361 arquivos, 0 violações** — era 363 até P26; a contagem é o nº de arquivos varridos, então remover 2 componentes a faz cair. **O número que importa é o de violações (0)** |
 | `guide:check` **(R17 · R29)** | `npm run guide:check` | ✅ **kit em dia (6 arquivos)** — o kit reporta **87** componentes (81 + 6 extras; ver [[03-superficie-publica]] §5.1) |
 | `dev-kit:check` **(R17 · R23 · R29)** | `npm run dev-kit:check` | ✅ **kit em dia (3 arquivos, 0 ponteiros mortos)** — gate novo, criado em 2026-07-31 (P23) |
-| suíte **(R6 · R13 · R24 · R25 · R26)** | `npx vitest run` | ✅ **274 arquivos / 889 testes, 100% verde** (~159 s), desde 2026-07-31 (P23 — +1 arquivo e +12 testes do gerador do `sarak-dev/`). Era 273/877 desde 2026-07-29 (P26); 275/879 antes da remoção do `SarakVisualEngine`/`PaletteSelector`, que levou junto os 2 testes de fumaça deles; 281/901 até a remoção do `Template-Ts/` (§3.2); e 280/890 com 1 falha ambiental até 2026-07-28 (§3.1) |
+| suíte **(R6 · R13 · R24 · R25 · R26)** | `npx vitest run` | ✅ **275 arquivos / 942 testes, 100% verde**, desde 2026-08-05 (`plan-09`). Era 281/950 depois da `plan-08`; a `plan-09` removeu os testes do `SarakSecurityOrchestrator` e do `SarakTabs` duplicado. Antes: 274/889 desde 2026-07-31 (P23 — +1 arquivo e +12 testes do gerador do `sarak-dev/`). Era 273/877 desde 2026-07-29 (P26); 275/879 antes da remoção do `SarakVisualEngine`/`PaletteSelector`, que levou junto os 2 testes de fumaça deles; 281/901 até a remoção do `Template-Ts/` (§3.2); e 280/890 com 1 falha ambiental até 2026-07-28 (§3.1) |
 | `tsc` **(R30)** | `npx tsc --noEmit` | ❌ **14 erros** — 10 em teste, **4 em produção**. Não é gate próprio; o Anel 2 cobra só a **contagem** |
 | `build` | `npm run build` | 4 gates + 6 etapas de compilação |
 | `package:check` **(R19)** | `npm run package:check` | exige `dist/` buildado |

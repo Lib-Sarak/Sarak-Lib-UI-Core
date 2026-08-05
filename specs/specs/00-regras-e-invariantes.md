@@ -411,7 +411,7 @@ export { SarakGrid } from './components/atomic/Layouts/SarakGrid';
 export type { SarakGridProps } from './components/atomic/Layouts/SarakGrid';
 ```
 
-**Cobrada por:** `npm run barrel:check`. Hoje: **81 componentes, 0 faltas**; a allowlist tem **1 entrada** (`SarakAppChromeMobile`, com motivo).
+**Cobrada por:** `npm run barrel:check`. Hoje: **80 componentes, 0 faltas** *(era 81 até a `plan-09` remover o `SarakTabs` duplicado)*; a allowlist tem **1 entrada** (`SarakAppChromeMobile`, com motivo).
 
 > ✅ **O vão de `engines/` foi FECHADO em P26** (decisão D2, 2026-07-29). O gate varria `components/atomic/**` e `components/Layout/**` e **não via `components/engines/**`** — resultado: 3 das 4 categorias de engine viviam fora do barril e o gate ficava verde. Hoje `collectPublicComponentNames()` varre `engines/` como raiz por categoria; `SarakChatEngine` e `SarakFlowEngine` foram expostos atrás de fronteira lazy, `SarakVisualEngine` foi removido por não ter consumidor real, e a contagem foi de 78 para 81. Ver [[03-superficie-publica]] §9.
 >
