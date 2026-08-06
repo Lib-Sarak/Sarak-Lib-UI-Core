@@ -38,6 +38,7 @@
         "section-pointers:check": "node gates/scripts/contrato/check-section-pointers.mjs",
         "gate-limits:check": "node gates/scripts/contrato/check-gate-limits.mjs",
         "coverage:check": "vitest run --coverage && node gates/scripts/release/check-coverage-floor.mjs",
+        "composicao-atomica:check": "node gates/scripts/audit/auditor_composicaoatomica.mjs",
         "package:check": "node gates/scripts/contrato/check-package-contents.mjs",
         "audit": "node gates/scripts/audit/run_audit.mjs",
         "audit:baseline": "node gates/scripts/release/check-audit-baseline.mjs",

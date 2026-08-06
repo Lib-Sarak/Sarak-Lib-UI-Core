@@ -6,7 +6,7 @@ status: "🔴 A executar"
 prioridade: "Alta"
 tags: ["plan", "adequacao", "baseline", "divida", "gates"]
 relacionados: ["[[00-regras-e-invariantes]]", "[[01-gates-e-baseline]]", "[[15-divida-conhecida]]"]
-depende_de: "plan-12"
+depende_de: "plan-12 · plan-16"
 destino_sintese: "specs/01-gates-e-baseline.md · specs/15-divida-conhecida.md · specs/00-regras-e-invariantes.md"
 ---
 
@@ -48,12 +48,24 @@ sentido criar gates e criar exceções no processo."* A `plan-12` é o "construi
 | **vãos 2+3** | **27** consumos-fantasma em `src/styles/` + `src/core/` | conserto trivial |
 | **vão 7** | **27** ponteiros `§N.N` mortos, autorreferência *(a previsão dizia 4)* | texto |
 | **vão 13** | 1 número falso novo: `arquitetura/04-…:52` diz `410 = 410`, o real é **409** | texto — **sem gate**, achado a numerar |
-| **R10** | **111** ocorrências de HTML nativo cru — **64 em `features/DesignEngine`** | ⚠️ **depende da fronteira que o dono fixar** |
-| **R31** | **12 de 18** temas falham ≥1 par canônico de AA | ⚠️ conserto é **cor de tema**, decisão visual |
+| **R10** | **47** ocorrências de HTML nativo cru — fronteira **fixada pelo dono em 2026-08-05** | ⚠️ refactor de componente; o gate é a `plan-16` |
+| **R31** | **12 de 18** temas falham ≥1 par canônico de AA | ⚠️ **não é decisão de limiar** — ver abaixo |
 
-**Os dois últimos dominam o risco, e agora com número.** Se a fronteira de R10 incluir o painel do Design
-Engine, esta plan tem **64** substituições de HTML por átomo lá dentro — refactor com risco visual, não
-higiene. Se ficar de fora, sobram **47**.
+**A fronteira de R10 fechou o número.** `features/**` ficou **fora** da regra (ferramenta de autoria da própria
+lib), então as 64 ocorrências do painel do Design Engine **não são dívida** — sobram **47**, em
+`components/atomic` (23), `core/Shell` (15), `Layout` (6), `engines` (2) e `Discovery` (1). Continua sendo
+refactor com risco visual, não higiene, mas caiu de 111 para 47.
+
+**R31 mudou de natureza, e isto muda o custo desta plan.** O relatório da `plan-12` a enquadrou como escolha de
+limiar; a reprodução do revedor mediu o contrafactual: com `textColorMuted` a **3:1**, dos 12 reprovados
+**apenas 1** é resgatado. As outras 11 falhas estão abaixo até de 3:1 — e **4 delas são texto primário ou
+secundário**, não tom apagado (`neo-brutalism` tem `#000000` sobre `#050505` = **1.03:1**). **Não é ajuste de
+régua: são 12 temas com defeito de contraste real**, um deles (`minimalist-airy`) sendo um dos dois
+`SARAK_REFERENCE_THEMES` que a [[09-temas-e-presets]] §4.1 manda o consumidor clonar.
+
+> ⚠️ **R31 ainda não tem gate nem decisão.** Enquanto o dono não escolher entre corrigir as cores, estreitar a
+> promessa da regra ou fatiar (só os 4 de texto primário/secundário primeiro), **ela não entra no escopo desta
+> plan** — nem como conserto, nem como número. A medição está preservada no anexo da `plan-12`.
 
 > ⚠️ **A medição de R31 vive fora do repositório.** O script de contraste foi recriado pela `plan-12` no
 > `%TEMP%` da sessão e **não sobrevive a uma limpeza**. Antes de decidir R31, mova-o para um lugar durável —

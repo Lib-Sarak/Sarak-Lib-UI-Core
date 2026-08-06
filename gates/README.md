@@ -19,7 +19,8 @@ escopo de um gate sem atualizar esta coluna é regressão.
 
 | Comando | Cobra | O que ele **NÃO** vê |
 | --- | --- | --- |
-| `npm run audit` | R1 R2 R3 R4 R5 R7 R8 R9 R17 R23 R32 | agrega 10 auditores (2 novos na `plan-12`); os limites de cada um estão abaixo |
+| `npm run audit` | R1 R2 R3 R4 R5 R7 R8 R9 R10 R17 R23 R32 | agrega 11 auditores (2 novos na `plan-12`, 1 novo na `plan-16`); os limites de cada um estão abaixo |
+| `npm run composicao-atomica:check` *(plan-16)* | R10 | só a metade "HTML nativo cru" — o `switch`/`case` de design continua sem detector; `src/features/**` está fora por decisão do dono (64 ocorrências vivem lá, sem gate) |
 | `npm run barrel:check` | R14 | componente em **subpasta** de categoria sem barril de categoria — só a raiz é varrida |
 | `npm run zero-brand:check` | R12 | só conta `StringLiteral`, `JsxText` e parte fixa de template literal — comentário que documenta a marca não é acusado, de propósito |
 | `npm run package:check` | R19 | **exige `dist/` buildado**; por isso mora no `prepublishOnly`/`gates:full` e não na cadeia do `build` |
@@ -47,6 +48,7 @@ escopo de um gate sem atualizar esta coluna é regressão.
 | `audit/auditor_paridade.mjs` → `verify_parity.ts` | R4 | o **tipo gerado** (`design-token-ids.ts`) não é uma das 3 fontes cruzadas — R29/`token-types:check` (plan-12) cobre esse vão pelo outro lado |
 | `audit/auditor_presets.mjs` → `verify_presets.ts` | R5 | tema **do consumidor**; e mede ausência de órfã, **não completude por tema** |
 | `audit/auditor_authcoupling.mjs` *(plan-12, R32)* | R32 | só sinks de credencial (`localStorage`/`sessionStorage`/cookie/`Authorization`) e rota embutida que **começa com `/`** — não proíbe `fetch`/`axios` em geral (templates de dados são agnósticos por design) |
+| `audit/auditor_composicaoatomica.mjs` *(plan-16, R10)* | R10 | só HTML nativo cru (`<button>`/`<input>`/`<select>`, por AST) em `src/components/**`+`src/core/**` fora de `atomic/Buttons\|Inputs`; `switch`/`case` de design no JSX **não tem detector**; `src/features/**` fora por decisão (64 ocorrências vivem lá) |
 | `audit/auditor_sectionpointers.mjs` → `contrato/check-section-pointers.mjs` *(plan-12)* | R23 · R17 | wrapper fino (nome `auditor_*` exigido por `buildDevState.mjs`); a lógica real e os limites estão em `check-section-pointers.mjs` — só autorreferência, ver linha própria acima |
 
 ## Gates que NÃO moram aqui, e por quê

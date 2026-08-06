@@ -41,7 +41,8 @@ function main() {
     'auditor_paridade.mjs',
     'auditor_presets.mjs',
     'auditor_authcoupling.mjs',
-    'auditor_sectionpointers.mjs'
+    'auditor_sectionpointers.mjs',
+    'auditor_composicaoatomica.mjs'
   ];
   
   let totalFailures = 0;

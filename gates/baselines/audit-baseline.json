@@ -33,6 +33,9 @@
         },
         "auditor_sectionpointers.mjs": {
             "mortos": 27
+        },
+        "auditor_composicaoatomica.mjs": {
+            "violacoes": 47
         }
     },
     "tsc": {

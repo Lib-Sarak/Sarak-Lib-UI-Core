@@ -89,6 +89,9 @@ const PARSERS = {
     'auditor_sectionpointers.mjs': (out) => ({
         mortos: /Nenhum ponteiro de seção/.test(out) ? 0 : num(out, /(\d+) ponteiro\(s\) de seção morto\(s\)/),
     }),
+    'auditor_composicaoatomica.mjs': (out) => ({
+        violacoes: /Nenhum elemento nativo cru/.test(out) ? 0 : num(out, /(\d+) ocorrência\(s\) de composição atômica violada/),
+    }),
 };
 
 /** Auditor sem parser conhecido cai no genérico: só o status de saída. */

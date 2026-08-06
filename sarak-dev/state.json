@@ -184,6 +184,10 @@
       "comando": "node scripts/generate-component-catalog.mjs --check"
     },
     {
+      "nome": "npm run composicao-atomica:check",
+      "comando": "node gates/scripts/audit/auditor_composicaoatomica.mjs"
+    },
+    {
       "nome": "npm run coverage:check",
       "comando": "vitest run --coverage && node gates/scripts/release/check-coverage-floor.mjs"
     },
@@ -242,7 +246,8 @@
     "auditor_paridade.mjs",
     "auditor_presets.mjs",
     "auditor_authcoupling.mjs",
-    "auditor_sectionpointers.mjs"
+    "auditor_sectionpointers.mjs",
+    "auditor_composicaoatomica.mjs"
   ],
   "baseline": {
     "_doc": "Baseline do Anel 2 (specs/specs/02-enforcement-por-commit.md). NÃO editar à mão: rode `npm run audit:baseline -- --write` DEPOIS de consertar a dívida, e commite junto do conserto.",
@@ -279,6 +284,9 @@
       },
       "auditor_sectionpointers.mjs": {
         "mortos": 27
+      },
+      "auditor_composicaoatomica.mjs": {
+        "violacoes": 47
       }
     },
     "tsc": {

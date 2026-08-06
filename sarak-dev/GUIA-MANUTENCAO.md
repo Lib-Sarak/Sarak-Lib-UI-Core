@@ -315,7 +315,7 @@ depois acrescente o fluxo — nunca deixe o próximo redescobrir.
 
 **Componentes públicos: 80** — é o número que o `barrel:check` cobra. A lista completa está em `state.json` → `componentes.publicos.nomes`.
 
-### B.3 Gates registrados (16)
+### B.3 Gates registrados (17)
 
 | Comando | O que roda |
 | --- | --- |
@@ -323,6 +323,7 @@ depois acrescente o fluxo — nunca deixe o próximo redescobrir.
 | `npm run barrel:check` | `node gates/scripts/contrato/check-barrel-parity.mjs --check` |
 | `npm run build-info:check` | `node scripts/generate-build-info.mjs --check` |
 | `npm run catalog:check` | `node scripts/generate-component-catalog.mjs --check` |
+| `npm run composicao-atomica:check` | `node gates/scripts/audit/auditor_composicaoatomica.mjs` |
 | `npm run coverage:check` | `vitest run --coverage && node gates/scripts/release/check-coverage-floor.mjs` |
 | `npm run deep-import:check` | `node gates/scripts/contrato/check-no-deep-import.mjs` |
 | `npm run dev-kit:check` | `node scripts/generate-dev-kit.mjs --check` |
@@ -336,7 +337,7 @@ depois acrescente o fluxo — nunca deixe o próximo redescobrir.
 | `npm run token-types:check` | `npx tsx scripts/generate-token-types.ts --check` |
 | `npm run zero-brand:check` | `node gates/scripts/contrato/check-zero-brand.mjs --check` |
 
-**Auditores agregados por `run_audit.mjs` (10):** `auditor_hardcoded.mjs` · `auditor_ghostvars.mjs` · `auditor_typescript.mjs` · `auditor_coverage.mjs` · `auditor_arquitetura.mjs` · `auditor_cleancode.mjs` · `auditor_paridade.mjs` · `auditor_presets.mjs` · `auditor_authcoupling.mjs` · `auditor_sectionpointers.mjs`
+**Auditores agregados por `run_audit.mjs` (11):** `auditor_hardcoded.mjs` · `auditor_ghostvars.mjs` · `auditor_typescript.mjs` · `auditor_coverage.mjs` · `auditor_arquitetura.mjs` · `auditor_cleancode.mjs` · `auditor_paridade.mjs` · `auditor_presets.mjs` · `auditor_authcoupling.mjs` · `auditor_sectionpointers.mjs` · `auditor_composicaoatomica.mjs`
 
 > A suíte (`npx vitest run`) **não é um script do `package.json`** e por isso não aparece na tabela acima — ela é invocada direto. Ver o guia, §6.
 
@@ -357,6 +358,7 @@ depois acrescente o fluxo — nunca deixe o próximo redescobrir.
 | `auditor_presets.mjs` | falhou | **0** |
 | `auditor_authcoupling.mjs` | violacoes | **0** |
 | `auditor_sectionpointers.mjs` | mortos | **27** |
+| `auditor_composicaoatomica.mjs` | violacoes | **47** |
 
 `npx tsc --noEmit`: **10 erros** tolerados — não é gate hoje.
 

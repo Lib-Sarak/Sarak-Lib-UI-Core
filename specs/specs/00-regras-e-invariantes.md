@@ -323,9 +323,32 @@ if (b) return y;
 
 **Estado:** ⏳ **gate a construir.**
 
-**Enunciado.** Proibido `<button>`, `<input>` ou `<select>` cru dentro de template ou componente pré-montado — use `SarakButton`, `SarakInput`, `SarakSelect`. E proibido `switch`/`case` de design ou `<style>` de roteamento dentro do JSX: essa decisão mora no Hook Controlador.
+**Enunciado.** Proibido `<button>`, `<input>` ou `<select>` cru **no que o consumidor embute no produto dele** —
+use `SarakButton`, `SarakInput`, `SarakSelect`. E proibido `switch`/`case` de design ou `<style>` de roteamento
+dentro do JSX: essa decisão mora no Hook Controlador.
 
-**Por quê.** HTML nativo cru causa **vazamento de especificidade** — o elemento fica preso na variável global do preflight e ignora a paridade atômica, deixando de responder ao token que deveria governá-lo. O próprio painel do Design Engine obedece a isto (*dogfooding*).
+**A fronteira, explícita** *(decisão do dono, 2026-08-05)* — porque "template ou componente pré-montado" não é
+verificável e foi o que impediu o gate de nascer:
+
+| Onde | Vale? | Por quê |
+| --- | --- | --- |
+| `src/components/**` | ✅ **SIM** | é o que o consumidor importa e embute |
+| `src/core/**` | ✅ **SIM** | o cromo do Shell chega à tela do consumidor |
+| `src/components/atomic/Buttons/` · `atomic/Inputs/` | ❌ **NÃO** | são a **implementação** do átomo: o elemento nativo ali é o alvo da regra, não a violação |
+| `src/features/**` | ❌ **NÃO** | é **ferramenta de autoria da própria lib** — mesmo critério que sustenta a allowlist do `zero-brand:check` ([[006-zero-marca-soberania-host]]): esses painéis podem usar HTML cru porque não são produto de consumidor |
+| `__tests__/` · `__e2e__/` · `Mocks/` | ❌ **NÃO** | não são superfície |
+
+**Por quê.** HTML nativo cru causa **vazamento de especificidade** — o elemento fica preso na variável global do
+preflight e ignora a paridade atômica, deixando de responder ao token que deveria governá-lo.
+
+> ⚠️ **A versão anterior citava o painel do Design Engine como quem já obedece por *dogfooding*, e isso era
+> FALSO.** Medido em 2026-08-05 (`plan-12`, Lote C): **111 ocorrências** de HTML nativo cru fora dos átomos, e
+> **64 delas dentro do próprio painel** — o exemplo que a regra dava como conforme era o maior infrator da base.
+> Uma regra que dá exemplo em vez de fronteira é como se chega a 64 exceções sem ninguém perceber; é por isso
+> que a tabela acima existe e o *dogfooding* saiu.
+>
+> **Com a fronteira fixada, a exposição real da regra é 47** (`components/` 23 + `Layout/` 6 + `core/Shell/` 15
+> + `engines/` 2 + `Discovery/` 1), e é isso que a `plan-15` herda.
 
 **Certo × Errado.**
 
@@ -337,7 +360,12 @@ if (b) return y;
 <SarakButton variant="primary">Salvar</SarakButton>
 ```
 
-**Cobrada por:** ⏳ **nenhum gate ainda.** Não existe detector de HTML nativo cru nem de `switch` de design no JSX.
+**Cobrada por:** ⏳ **nenhum gate ainda** — mas a fronteira está fixada e o gate ficou **construível**: varrer
+`<button|<input|<select` por AST nos escopos ✅ da tabela acima. ⚠️ **Cuidado medido, para quem construir:** uma
+regex do tipo `<(button|input|select)[ >/]` **perde 55 das 111 ocorrências**, porque o JSX mais comum escreve o
+nome da tag no fim da linha (`<button\n  className=…`) e `grep` é por linha. O detector tem de ser por AST ou
+tolerar quebra de linha. *(Erro cometido pelo revisor no veredito da `plan-12` e corrigido pela medição do
+executor.)* O detector de `switch` de design no JSX continua sem desenho.
 
 > **R10 SAIU da conduta em 2026-08-02** *(decisão do dono)*. Ela vivia entre as regras sem gate por herança, não por análise: um detector de `<button>`/`<input>`/`<select>` cru em `.tsx` é **determinístico e barato** — é exatamente a mesma classe de varredura por AST que o `auditor_hardcoded` e o `check-zero-brand` já fazem. Conduta é para o que um script **não consegue** decidir; isto ele consegue. A metade `switch` de design é mais difícil e pode nascer fora do escopo do gate — se nascer, o vão vai declarado, como manda R18. Construir é trabalho da `plan-12`.
 

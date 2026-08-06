@@ -772,6 +772,100 @@ casos de self-test**, baseline recontado com 10 auditores, e **zero exceção cr
 
 ---
 
+## Anexo do revisor — a medição de R31, preservada e reproduzida (2026-08-05)
+
+**Por que isto está numa plan, e não em `gates/`:** não é gate — é a **medição avulsa** que sustenta uma
+decisão do dono. Ela vivia no `%TEMP%` e não sobreviveria a uma limpeza; o número 12/18 voltaria a ser
+irreproduzível, que é o estado que esta base combate. Plan é rastro append-only e versionado, então é aqui que
+ela fica durável **sem** virar código executável no repositório. Quando R31 for decidida, o gate de verdade
+nasce em `gates/scripts/audit/` e este anexo vira histórico.
+
+**Reproduzida pelo revisor em 2026-08-05, saída idêntica à do executor: `12 de 18 temas com pelo menos 1 par
+abaixo de AA · 19 pares pulados`.**
+
+```js
+// Medição AVULSA de contraste WCAG AA nos 18 temas shippados (R31).
+// Fórmula: luminância relativa sRGB padrão WCAG 2.x.
+// LIMITE: só resolve #RRGGBB — pares em rgba()/hsl()/#RGB são PULADOS (19 de 72).
+import { GLOBAL_THEMES } from '<raiz>/src/core/Design/presets/themes/index.ts';
+
+const hexToRgb = (hex) => {
+  const m = typeof hex === 'string' && hex.trim().match(/^#([0-9a-fA-F]{6})$/);
+  if (!m) return null;
+  const int = parseInt(m[1], 16);
+  return [(int >> 16) & 255, (int >> 8) & 255, int & 255];
+};
+const relLuminance = ([r, g, b]) => {
+  const chan = (c) => { const cs = c / 255; return cs <= 0.03928 ? cs / 12.92 : Math.pow((cs + 0.055) / 1.055, 2.4); };
+  return 0.2126 * chan(r) + 0.7152 * chan(g) + 0.0722 * chan(b);
+};
+const contrastRatio = (h1, h2) => {
+  const [c1, c2] = [hexToRgb(h1), hexToRgb(h2)];
+  if (!c1 || !c2) return null;
+  const [L1, L2] = [relLuminance(c1), relLuminance(c2)];
+  const [lighter, darker] = L1 > L2 ? [L1, L2] : [L2, L1];
+  return (lighter + 0.05) / (darker + 0.05);
+};
+
+// Os 4 pares CANÔNICOS — NÃO são todos os pares que os componentes produzem.
+const PAIRS = [
+  ['textColorMaster', 'colorBgBody', 4.5],
+  ['textColorSecondary', 'colorBgBody', 4.5],
+  ['textColorMuted', 'colorBgBody', 4.5],
+  ['btnPrimaryText', 'btnPrimaryBg', 4.5],
+];
+
+let comFalha = 0, pulados = 0;
+for (const theme of GLOBAL_THEMES) {
+  const d = theme.design;
+  const falhas = [];
+  for (const [fg, bg, min] of PAIRS) {
+    const r = contrastRatio(d[fg], d[bg]);
+    if (r === null) { pulados++; continue; }
+    if (r < min) falhas.push(`${fg}(${d[fg]})/${bg}(${d[bg]}): ${r.toFixed(2)}:1 (min ${min}:1)`);
+  }
+  if (falhas.length) { comFalha++; console.log(`[FAIL] ${theme.id}`); falhas.forEach((f) => console.log(`   - ${f}`)); }
+  else console.log(`[OK]   ${theme.id}`);
+}
+console.log(`\n${comFalha} de ${GLOBAL_THEMES.length} temas com pelo menos 1 par abaixo de AA.`);
+console.log(`${pulados} pares pulados (valor não-hex simples).`);
+```
+
+### O que a reprodução revelou, e que muda a forma da decisão
+
+O relatório da parada enquadrou R31 como **escolha de limiar** — *"a maioria falha só em `textColorMuted`, que
+talvez se qualifique para 3:1"*. **Rodei o contrafactual: não se qualifica, e o limiar quase não importa.**
+
+Simulando `textColorMuted` a **3:1** em vez de 4,5:1, dos 12 temas reprovados **apenas 1 é resgatado**
+(`industrial-terminal`, 3.45:1). Os outros 11 continuam vermelhos, porque as razões medidas estão **muito
+abaixo de 3:1**: `kinetic-flow` 1.54 · `neumorphic-mobile` 2.03 · `minimalist-airy` 2.45 ·
+`asymmetric-editorial` 2.48 · `dot-matrix-elegant` 2.91 — e `stellar-nebula` passaria no muted mas continua
+reprovado pelo botão (4.23:1).
+
+**E quatro falhas não são de tom apagado — são de texto PRIMÁRIO ou SECUNDÁRIO:**
+
+| Tema | Par | Razão |
+|---|---|---|
+| `neo-brutalism` | **textColorMaster** `#000000` / bg `#050505` | **1.03:1** — preto sobre quase-preto |
+| `nature-breeze` | **textColorMaster** `#1b5e20` / bg `#050505` | 2.59:1 |
+| `data-terminal` | **textColorSecondary** `#475569` / bg `#000000` | 2.77:1 |
+| `industrial-dashboard` | **textColorSecondary** `#475569` / bg `#18181b` | 2.34:1 |
+
+O padrão é reconhecível: `#94a3b8`, `#475569`, `#64748b` são tons de cinza-azulado de paleta **clara**,
+aplicados sobre `colorBgBody` **escuro**. Não é decisão estética discutível — é paleta que nunca foi ajustada
+ao fundo do próprio tema.
+
+> **Conclusão para o dono: R31 não é uma decisão de limiar, é o diagnóstico de que 12 dos 18 temas de
+> referência têm defeito de contraste real.** E o mais caro deles: **`minimalist-airy` é um dos dois
+> `SARAK_REFERENCE_THEMES`** — o par que a [[09-temas-e-presets]] §4.1 manda o consumidor clonar como ponto de
+> partida. A lib entrega como modelo um tema com texto abaixo de AA.
+
+**O que continua em aberto e não muda com isto:** os **19 pares pulados** (`rgba()`), e o fato de os 4 pares
+canônicos **não serem** todos os pares que os componentes produzem. O gate real precisa dos dois; a medição
+acima é piso, não teto.
+
+---
+
 ## Resumo da execução (correção 1) — 2026-08-05
 
 **Resultado:** Concluído. Escopo exclusivo: os 2 achados do veredito. Nenhum gate novo, nenhum conserto de
