@@ -81,8 +81,30 @@ const interfaceType = `export interface SarakDesignTokens {\n${interfaceLines.jo
 const idType = 'export type DesignTokenId = keyof SarakDesignTokens;\n';
 
 const outDir = path.join(rootDir, 'src/core/Provider/generated');
-fs.mkdirSync(outDir, { recursive: true });
 const outFile = path.join(outDir, 'design-token-ids.ts');
-fs.writeFileSync(outFile, header + interfaceType + idType, 'utf-8');
+const conteudo = header + interfaceType + idType;
+
+// ---------------------------------------------------------------------------
+// LIMITES DECLARADOS (R18) — o que o modo `--check` NÃO vê
+// ---------------------------------------------------------------------------
+// Comparação byte a byte do arquivo inteiro contra o que o gerador produziria
+// agora — mesma mecânica de catalog/guide/dev-kit. NÃO confere se
+// `MASTER_DESIGN_MAP` em si está correto (isso é R4, `auditor_paridade`); só
+// confere se o ARTEFATO GERADO está em dia com a fonte. Registrado porque foi
+// exatamente este vão que deixou `design-token-ids.ts` defasado em 105 tokens
+// por mais de um mês sem nenhum gate acusar (achado 22).
+// ---------------------------------------------------------------------------
+if (process.argv.includes('--check')) {
+    const atual = fs.existsSync(outFile) ? fs.readFileSync(outFile, 'utf-8') : null;
+    if (atual === conteudo) {
+        console.log(`[token-types:check] design-token-ids.ts em dia (${sortedTokens.length} tokens).`);
+        process.exit(0);
+    }
+    console.log(`[token-types:check] design-token-ids.ts DEFASADO — rode \`npx tsx scripts/generate-token-types.ts\` e commite o resultado.`);
+    process.exit(1);
+}
+
+fs.mkdirSync(outDir, { recursive: true });
+fs.writeFileSync(outFile, conteudo, 'utf-8');
 
 console.log(`✅ design-token-ids.ts: ${sortedTokens.length} tokens tipados (interface SarakDesignTokens + DesignTokenId).`);

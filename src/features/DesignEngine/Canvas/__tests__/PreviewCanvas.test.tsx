@@ -60,5 +60,5 @@ describe('PreviewCanvas - Refatoração Data-Driven', () => {
         }
 
         expect(container).toMatchSnapshot();
-    }, 15000);
+    }, 30000); // 15000 não bastava sob `vitest --coverage` (instrumentação V8 + contenção de workers, plan-12/R8.1)
 });

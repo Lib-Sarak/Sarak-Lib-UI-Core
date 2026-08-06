@@ -1,3 +1,12 @@
+// -------------------------------------------------------------------------
+// LIMITES DECLARADOS (R18) — o que este agregador NÃO vê
+// -------------------------------------------------------------------------
+// Soma AUDITORES REPROVADOS, não violações — "quebrou 2" significa 2
+// auditores vermelhos, não 2 achados. A lista de auditores é a fonte que
+// `check-audit-baseline.mjs` lê (via regex sobre este arquivo) para nunca
+// dessincronizar; um script adicionado aqui sem parser dedicado lá cai no
+// parser genérico (só código de saída).
+// -------------------------------------------------------------------------
 import { spawnSync } from 'child_process';
 import path from 'path';
 import { fileURLToPath } from 'url';
@@ -30,7 +39,9 @@ function main() {
     'auditor_arquitetura.mjs',
     'auditor_cleancode.mjs',
     'auditor_paridade.mjs',
-    'auditor_presets.mjs'
+    'auditor_presets.mjs',
+    'auditor_authcoupling.mjs',
+    'auditor_sectionpointers.mjs'
   ];
   
   let totalFailures = 0;

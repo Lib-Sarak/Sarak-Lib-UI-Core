@@ -10,18 +10,48 @@ import path from 'path';
 // -------------------------------------------------------------------------
 // LIMITES DECLARADOS (R18) — o que este auditor NÃO vê
 // -------------------------------------------------------------------------
-// 1. ESCOPO DE CONSUMO: apenas `src/components/` e `src/features/`.
-//    `src/styles/` é lido SÓ como fonte emissora, nunca como consumidora, e
-//    `src/core/` está inteiramente fora. Medido pela plan-06 (2026-08-03):
-//    16 vars / 24 consumos não resolvidos em `styles/` — incluindo os 2 usos
-//    do namespace PROIBIDO `--sx-*` (`_utilities.css:80,89`) — e 4 vars / 11
-//    consumos em `core/`, dos quais 2 são prosa de comentário.
-//    ⚠️ AMPLIAR ESTE ESCOPO É TRABALHO DA plan-12, e só DEPOIS do registro
-//    abaixo existir: com o registro antigo, a mesma varredura acusava 36 vars /
-//    128 consumos — ~85 acusações FALSAS.
-// 2. A varredura de consumo é LINHA A LINHA POR REGEX, não por AST: um
-//    `var(--x)` dentro de comentário conta como consumo. É a causa de 1 dos 3
-//    fantasmas do baseline (`--token`, num JSDoc de SarakTypography.tsx:32).
+// 1. ESCOPO DE CONSUMO (plan-12, vãos 2 e 3): `src/components/`,
+//    `src/features/`, `src/styles/` e `src/core/` — os quatro. `src/styles/`
+//    ampliado para valer também como CONSUMIDORA (antes só fonte emissora):
+//    um `var(--x, var(--y))` dentro do próprio CSS onde `--y` nunca é
+//    emitido em lugar nenhum é o MESMO defeito que um componente consumir
+//    fantasma, só que o achado 1 (namespace `--sx-*`) já foi corrigido no
+//    código antes desta ampliação — o gate mede o que sobrou.
+//    ⚠️ AMPLIAR ESTE ESCOPO SEM O REGISTRO DE 4 FONTES (schema + styles +
+//    manifest + runtime, ver abaixo) produz acusação falsa — medido pela
+//    plan-06: com o registro antigo (2 fontes) a mesma varredura de
+//    `src/styles/` acusava 36 vars / 128 consumos; com as 4 fontes, cai para
+//    a exposição real medida pela plan-12 (ver baseline).
+// 2. A varredura de consumo é LINHA A LINHA POR REGEX, não por AST — MAS
+//    (conserto da plan-12, vão 3) o conteúdo de comentário de bloco
+//    (`/* ... */`, inclusive JSDoc `/** ... */`) e de linha (`//`) é
+//    REMOVIDO antes de varrer. Isso fecha a classe de falso-positivo mais
+//    comum ("--x"/"--sarak-" citados como PADRÃO em prosa/JSDoc, não como
+//    consumo real) — é o que os dois falsos positivos do vão 3 eram. O que
+//    ISSO NÃO FECHA: um literal de exemplo dentro de uma STRING de código
+//    real (não comentário) — ex.: um `console.warn` que cita
+//    `var(--x, 16px)` como ilustração numa mensagem de erro. Esse caso
+//    permanece contado (é código de verdade, só que o valor é texto de
+//    ajuda, não CSS) — visto e aceito como exposição residual, não como
+//    defeito do gate: distinguir "string que parece CSS" de "string que É
+//    CSS" exige resolução de contexto que uma varredura por regex não tem.
+// 3. ⚠️ FALSO NEGATIVO em `.css` (achado do veredito da plan-12, correção 1):
+//    `stripComments()` corta `//.*$` LINHA A LINHA em TODOS os arquivos —
+//    inclusive `.css`, onde `//` NÃO é comentário. Numa linha hipotética como
+//    `background: url(https://cdn/x.png), var(--sarak-overlay-bg);`, o corte
+//    apagaria o `var()` real que vem DEPOIS do `//` de `https://` — o
+//    consumo deixaria de ser visto (o oposto do item 2: aqui o gate PERDE
+//    um fantasma real, não ganha um falso positivo). Medido nesta correção,
+//    varrendo os 4 `CONSUMER_DIRS`: **exposição ZERO hoje** — só 2 linhas em
+//    todo o escopo têm `//` antes de um `var(...)`
+//    (`src/core/Design/hooks/useDesignVariables.ts:57` e
+//    `SarakShell.test.tsx:133`), e as duas são comentário de verdade (a
+//    segunda nem chega a ser varrida — `__tests__/` é excluído por `walk()`
+//    antes de chegar aqui). Exposição zero não apaga o vão: ele reaparece no
+//    dia em que uma URL `https://` compartilhar linha com um `var()` real
+//    num `.css` novo — daí a declaração, mesmo com o número em zero (mesmo
+//    padrão dos vãos 9/10 da plan-06: "declarar já é o suficiente quando a
+//    exposição é zero").
 // -------------------------------------------------------------------------
 
 const SCHEMA_DIR = path.resolve('src/core/Design/schema');
@@ -31,7 +61,23 @@ const STYLES_DIR = path.resolve('src/styles');
 // é o que fazia a sonda de escopo ampliado acusar variável que EXISTE.
 const MANIFEST_FILE = path.resolve('src/core/Provider/manifest.ts');
 const RUNTIME_VARS_FILE = path.resolve('src/core/Design/hooks/useDesignVariables.ts');
-const CONSUMER_DIRS = [path.resolve('src/components'), path.resolve('src/features')];
+const CONSUMER_DIRS = [
+  path.resolve('src/components'),
+  path.resolve('src/features'),
+  path.resolve('src/styles'),
+  path.resolve('src/core'),
+];
+
+/** Remove comentário de bloco (inclusive JSDoc) e de linha antes de varrer
+ * consumo — sem isso, `var(--x)` citado como PADRÃO em prosa conta como
+ * consumo real (era a causa de 2 dos 3 fantasmas do baseline antigo). */
+function stripComments(text) {
+  return text
+    .replace(/\/\*[\s\S]*?\*\//g, '')
+    .split('\n')
+    .map((line) => line.replace(/\/\/.*$/, ''))
+    .join('\n');
+}
 
 // Sufixos gerados dinamicamente pela engine (variantes cromáticas e responsivas).
 // `-rgb` cobre a emissão por NOME COMPUTADO de `useDesignVariables.ts:121,134`
@@ -95,8 +141,9 @@ for (const base of [...registry]) {
 // --- 2. Varrer o CONSUMO e cruzar com o registro ------------------------------
 const consumed = {}; // varName -> [{file, line}]
 for (const dir of CONSUMER_DIRS) {
-  for (const file of walk(dir, ['.tsx', '.ts'])) {
-    const lines = fs.readFileSync(file, 'utf8').split('\n');
+  for (const file of walk(dir, ['.tsx', '.ts', '.css'])) {
+    const semComentario = stripComments(fs.readFileSync(file, 'utf8'));
+    const lines = semComentario.split('\n');
     lines.forEach((line, i) => {
       for (const m of line.matchAll(/var\(\s*(--[a-z0-9-]+)/g)) {
         const name = m[1];

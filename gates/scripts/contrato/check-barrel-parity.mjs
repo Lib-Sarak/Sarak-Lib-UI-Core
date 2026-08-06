@@ -17,6 +17,14 @@
  *
  * Uso: `node gates/scripts/contrato/check-barrel-parity.mjs` (relatório) | `--check` (exit 1 se faltar).
  * Roda no `npm run build` (gate permanente) e é reusado por `BarrelParity.test.ts`.
+ *
+ * -------------------------------------------------------------------------
+ * LIMITES DECLARADOS (R18) — o que este gate NÃO vê
+ * -------------------------------------------------------------------------
+ * Categoria SEM barril de categoria só tem os `.tsx` de RAIZ varridos
+ * (`scripts/publicComponents.mjs`) — componente colocado em subpasta escapa
+ * do gate e do catálogo. Deliberado para as peças internas de `Layout/chrome/`.
+ * -------------------------------------------------------------------------
  */
 
 import path from 'node:path';

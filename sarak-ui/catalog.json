@@ -4252,7 +4252,7 @@
   },
   "designTokens": {
     "note": "Chaves válidas de `design` num ThemePreset. Chave/valor fora do contrato é descartado com console.warn pelo Design Engine — nunca vira CSS cru.",
-    "count": 304,
+    "count": 409,
     "responsiveCapable": [
       "borderRadius",
       "borderRadiusLg",
@@ -4302,6 +4302,21 @@
         "responsive": false
       },
       {
+        "id": "actionGlowShadowBlur",
+        "type": "number",
+        "responsive": false
+      },
+      {
+        "id": "actionGlowShadowOffsetY",
+        "type": "number",
+        "responsive": false
+      },
+      {
+        "id": "actionGlowShadowSpread",
+        "type": "number",
+        "responsive": false
+      },
+      {
         "id": "aiGlowColor",
         "type": "string",
         "responsive": false
@@ -4338,6 +4353,11 @@
       },
       {
         "id": "atmosphereNoiseOpacity",
+        "type": "number",
+        "responsive": false
+      },
+      {
+        "id": "authHeroOrbBlur",
         "type": "number",
         "responsive": false
       },
@@ -4657,6 +4677,11 @@
         "responsive": false
       },
       {
+        "id": "cardHoverLift",
+        "type": "number",
+        "responsive": false
+      },
+      {
         "id": "cardHoverStyle",
         "type": "string",
         "responsive": false
@@ -4787,6 +4812,11 @@
         "responsive": false
       },
       {
+        "id": "cardTitleIconGlowBlur",
+        "type": "number",
+        "responsive": false
+      },
+      {
         "id": "cardTitleLetterSpacing",
         "type": "number",
         "responsive": false
@@ -4797,8 +4827,28 @@
         "responsive": false
       },
       {
+        "id": "catalogFilterMinWidth",
+        "type": "number",
+        "responsive": false
+      },
+      {
+        "id": "catalogItemRadius",
+        "type": "number",
+        "responsive": false
+      },
+      {
+        "id": "catalogSectionRadius",
+        "type": "number",
+        "responsive": false
+      },
+      {
         "id": "chartColorPalette",
         "type": "string",
+        "responsive": false
+      },
+      {
+        "id": "chartEngineMinHeight",
+        "type": "number",
         "responsive": false
       },
       {
@@ -4837,6 +4887,16 @@
         "responsive": false
       },
       {
+        "id": "chatAttachmentNameMaxWidth",
+        "type": "number",
+        "responsive": false
+      },
+      {
+        "id": "chatBubbleGlassBlur",
+        "type": "number",
+        "responsive": false
+      },
+      {
         "id": "chatBubbleRadius",
         "type": "number | ResponsiveValue<number>",
         "responsive": true
@@ -4844,6 +4904,11 @@
       {
         "id": "chatBubbleStyle",
         "type": "string",
+        "responsive": false
+      },
+      {
+        "id": "chatTokenSliderMinWidth",
+        "type": "number",
         "responsive": false
       },
       {
@@ -4897,7 +4962,72 @@
         "responsive": false
       },
       {
+        "id": "contextMenuMinWidth",
+        "type": "number",
+        "responsive": false
+      },
+      {
         "id": "contrastCurve",
+        "type": "number",
+        "responsive": false
+      },
+      {
+        "id": "controlHeightToggle",
+        "type": "number",
+        "responsive": false
+      },
+      {
+        "id": "designEngineSidebarMaxWidth",
+        "type": "number",
+        "responsive": false
+      },
+      {
+        "id": "designEngineSidebarMinWidth",
+        "type": "number",
+        "responsive": false
+      },
+      {
+        "id": "deviceDesktopMinWidth",
+        "type": "number",
+        "responsive": false
+      },
+      {
+        "id": "deviceFrameRadius",
+        "type": "number",
+        "responsive": false
+      },
+      {
+        "id": "devicePhoneHeight",
+        "type": "number",
+        "responsive": false
+      },
+      {
+        "id": "devicePhoneNotchRadius",
+        "type": "number",
+        "responsive": false
+      },
+      {
+        "id": "devicePhoneWidth",
+        "type": "number",
+        "responsive": false
+      },
+      {
+        "id": "deviceTabletHeight",
+        "type": "number",
+        "responsive": false
+      },
+      {
+        "id": "dotGridDotOffset",
+        "type": "number",
+        "responsive": false
+      },
+      {
+        "id": "dotGridDotSize",
+        "type": "number",
+        "responsive": false
+      },
+      {
+        "id": "dotGridTileSize",
         "type": "number",
         "responsive": false
       },
@@ -4912,8 +5042,63 @@
         "responsive": false
       },
       {
+        "id": "emptyStateCaptionMaxWidth",
+        "type": "number",
+        "responsive": false
+      },
+      {
+        "id": "emptyStateOrbBlur",
+        "type": "number",
+        "responsive": false
+      },
+      {
+        "id": "emptyStateOrbInner",
+        "type": "number",
+        "responsive": false
+      },
+      {
+        "id": "emptyStateOrbOuter",
+        "type": "number",
+        "responsive": false
+      },
+      {
+        "id": "emptyStateRingRadius",
+        "type": "number",
+        "responsive": false
+      },
+      {
+        "id": "emptyStateVoidLetterOffset",
+        "type": "number",
+        "responsive": false
+      },
+      {
+        "id": "engineMinHeightLg",
+        "type": "number",
+        "responsive": false
+      },
+      {
+        "id": "engineMinHeightSm",
+        "type": "number",
+        "responsive": false
+      },
+      {
         "id": "flowGridStyle",
         "type": "string",
+        "responsive": false
+      },
+      {
+        "id": "flowHandleSize",
+        "type": "number",
+        "responsive": false
+      },
+      {
+        "id": "flowNodeBlur",
+        "type": "number",
+        "responsive": false
+      },
+      {
+        "id": "flowNodePadding",
+        "type": "number",
         "responsive": false
       },
       {
@@ -5062,6 +5247,31 @@
         "responsive": false
       },
       {
+        "id": "iconButtonFrostedShadowBlur",
+        "type": "number",
+        "responsive": false
+      },
+      {
+        "id": "iconButtonFrostedShadowOffsetY",
+        "type": "number",
+        "responsive": false
+      },
+      {
+        "id": "iconButtonGlowBlurLg",
+        "type": "number",
+        "responsive": false
+      },
+      {
+        "id": "iconButtonGlowBlurMd",
+        "type": "number",
+        "responsive": false
+      },
+      {
+        "id": "iconButtonGlowBlurSm",
+        "type": "number",
+        "responsive": false
+      },
+      {
         "id": "iconFamily",
         "type": "string",
         "responsive": false
@@ -5112,12 +5322,32 @@
         "responsive": false
       },
       {
+        "id": "imageCardGlowBlur",
+        "type": "number",
+        "responsive": false
+      },
+      {
         "id": "imageCardHoverZoom",
         "type": "number",
         "responsive": false
       },
       {
         "id": "imageCardOverlayOpacity",
+        "type": "number",
+        "responsive": false
+      },
+      {
+        "id": "imageCardShadowBlur",
+        "type": "number",
+        "responsive": false
+      },
+      {
+        "id": "imageCardShadowOffsetY",
+        "type": "number",
+        "responsive": false
+      },
+      {
+        "id": "imageCardShadowSpread",
         "type": "number",
         "responsive": false
       },
@@ -5207,6 +5437,26 @@
         "responsive": false
       },
       {
+        "id": "kanbanCardRadius",
+        "type": "number",
+        "responsive": false
+      },
+      {
+        "id": "kanbanHeaderPaddingY",
+        "type": "number",
+        "responsive": false
+      },
+      {
+        "id": "kanbanHeaderTracking",
+        "type": "number",
+        "responsive": false
+      },
+      {
+        "id": "kbdMinWidth",
+        "type": "number",
+        "responsive": false
+      },
+      {
         "id": "layerBackdropBlur",
         "type": "number",
         "responsive": false
@@ -5267,6 +5517,21 @@
         "responsive": true
       },
       {
+        "id": "layoutPreviewMaxH",
+        "type": "number",
+        "responsive": false
+      },
+      {
+        "id": "managementGroupDescMaxWidth",
+        "type": "number",
+        "responsive": false
+      },
+      {
+        "id": "managementGroupListMaxHeight",
+        "type": "number",
+        "responsive": false
+      },
+      {
         "id": "matrixBlur",
         "type": "number",
         "responsive": false
@@ -5284,6 +5549,11 @@
       {
         "id": "matrixItemBg",
         "type": "string",
+        "responsive": false
+      },
+      {
+        "id": "matrixNodeMinWidth",
+        "type": "number",
         "responsive": false
       },
       {
@@ -5377,6 +5647,11 @@
         "responsive": false
       },
       {
+        "id": "multiSelectInputMinWidth",
+        "type": "number",
+        "responsive": false
+      },
+      {
         "id": "navActiveMarkerColor",
         "type": "string",
         "responsive": false
@@ -5412,8 +5687,103 @@
         "responsive": false
       },
       {
+        "id": "presetCardHoverShadowBlur",
+        "type": "number",
+        "responsive": false
+      },
+      {
+        "id": "presetCardHoverShadowOffsetY",
+        "type": "number",
+        "responsive": false
+      },
+      {
+        "id": "presetCardHoverShadowSpread",
+        "type": "number",
+        "responsive": false
+      },
+      {
+        "id": "presetCardShadowBlur",
+        "type": "number",
+        "responsive": false
+      },
+      {
+        "id": "presetCardShadowOffsetY",
+        "type": "number",
+        "responsive": false
+      },
+      {
+        "id": "presetCardShadowSpread",
+        "type": "number",
+        "responsive": false
+      },
+      {
+        "id": "presetGlowShadowBlur",
+        "type": "number",
+        "responsive": false
+      },
+      {
+        "id": "presetGlowShadowBlurLg",
+        "type": "number",
+        "responsive": false
+      },
+      {
+        "id": "presetGridTextureSize",
+        "type": "number",
+        "responsive": false
+      },
+      {
+        "id": "presetMatteShadowBlur1",
+        "type": "number",
+        "responsive": false
+      },
+      {
+        "id": "presetMatteShadowBlur2",
+        "type": "number",
+        "responsive": false
+      },
+      {
+        "id": "presetMatteShadowOffsetY2",
+        "type": "number",
+        "responsive": false
+      },
+      {
+        "id": "presetMatteShadowSpread1",
+        "type": "number",
+        "responsive": false
+      },
+      {
+        "id": "presetMatteShadowSpread2",
+        "type": "number",
+        "responsive": false
+      },
+      {
+        "id": "presetMiniCardHeight",
+        "type": "number",
+        "responsive": false
+      },
+      {
+        "id": "presetMiniCardMaxWidth",
+        "type": "number",
+        "responsive": false
+      },
+      {
+        "id": "presetPreviewMinHeight",
+        "type": "number",
+        "responsive": false
+      },
+      {
+        "id": "presetPreviewPaddingY",
+        "type": "number",
+        "responsive": false
+      },
+      {
         "id": "primaryColor",
         "type": "string",
+        "responsive": false
+      },
+      {
+        "id": "progressBarMaxWidth",
+        "type": "number",
         "responsive": false
       },
       {
@@ -5465,6 +5835,11 @@
         "id": "scrollWidth",
         "type": "number | ResponsiveValue<number>",
         "responsive": true
+      },
+      {
+        "id": "searchBackdropBlur",
+        "type": "number",
+        "responsive": false
       },
       {
         "id": "searchPositionSidebar",
@@ -5522,6 +5897,11 @@
         "responsive": false
       },
       {
+        "id": "shellBrandLogoSize",
+        "type": "number",
+        "responsive": false
+      },
+      {
         "id": "sidebarActiveColor",
         "type": "string",
         "responsive": false
@@ -5572,8 +5952,33 @@
         "responsive": true
       },
       {
+        "id": "skeletonCircleSize",
+        "type": "number",
+        "responsive": false
+      },
+      {
+        "id": "skeletonRowHeight",
+        "type": "number",
+        "responsive": false
+      },
+      {
+        "id": "skeletonRowRadius",
+        "type": "number",
+        "responsive": false
+      },
+      {
+        "id": "splitPaneMinWidth",
+        "type": "number",
+        "responsive": false
+      },
+      {
         "id": "statusErrorColor",
         "type": "string",
+        "responsive": false
+      },
+      {
+        "id": "statusGlowBlur",
+        "type": "number",
         "responsive": false
       },
       {
@@ -5737,8 +6142,28 @@
         "responsive": false
       },
       {
+        "id": "themeDropdownMaxHeight",
+        "type": "number",
+        "responsive": false
+      },
+      {
         "id": "titleColor",
         "type": "string",
+        "responsive": false
+      },
+      {
+        "id": "toastAccentWidth",
+        "type": "number",
+        "responsive": false
+      },
+      {
+        "id": "toastMaxWidth",
+        "type": "number",
+        "responsive": false
+      },
+      {
+        "id": "toastMinWidth",
+        "type": "number",
         "responsive": false
       },
       {
@@ -5782,12 +6207,112 @@
         "responsive": false
       },
       {
+        "id": "trackingSnug",
+        "type": "number",
+        "responsive": false
+      },
+      {
+        "id": "trackingSubtle",
+        "type": "number",
+        "responsive": false
+      },
+      {
+        "id": "trackingTight",
+        "type": "number",
+        "responsive": false
+      },
+      {
+        "id": "trackingUltra",
+        "type": "number",
+        "responsive": false
+      },
+      {
+        "id": "trackingWide",
+        "type": "number",
+        "responsive": false
+      },
+      {
+        "id": "trackingWider",
+        "type": "number",
+        "responsive": false
+      },
+      {
+        "id": "trackingWidest",
+        "type": "number",
+        "responsive": false
+      },
+      {
+        "id": "typeScale2xs",
+        "type": "number",
+        "responsive": false
+      },
+      {
+        "id": "typeScale3xs",
+        "type": "number",
+        "responsive": false
+      },
+      {
+        "id": "typeScaleCaption",
+        "type": "number",
+        "responsive": false
+      },
+      {
+        "id": "typeScaleDisplay",
+        "type": "number",
+        "responsive": false
+      },
+      {
+        "id": "typeScaleMicro",
+        "type": "number",
+        "responsive": false
+      },
+      {
+        "id": "typeScaleTiny",
+        "type": "number",
+        "responsive": false
+      },
+      {
+        "id": "typeScaleXl",
+        "type": "number",
+        "responsive": false
+      },
+      {
+        "id": "typeScaleXs",
+        "type": "number",
+        "responsive": false
+      },
+      {
         "id": "vignetteOpacity",
         "type": "number",
         "responsive": false
       },
       {
         "id": "vignetteSoftness",
+        "type": "number",
+        "responsive": false
+      },
+      {
+        "id": "visualDotGridSize",
+        "type": "number",
+        "responsive": false
+      },
+      {
+        "id": "visualOrbBlur",
+        "type": "number",
+        "responsive": false
+      },
+      {
+        "id": "visualPerspective",
+        "type": "number",
+        "responsive": false
+      },
+      {
+        "id": "visualTranslateOffsetSm",
+        "type": "number",
+        "responsive": false
+      },
+      {
+        "id": "visualTranslateZMd",
         "type": "number",
         "responsive": false
       },

@@ -1,3 +1,10 @@
+// -------------------------------------------------------------------------
+// LIMITES DECLARADOS (R18) — o que este auditor NÃO vê
+// -------------------------------------------------------------------------
+// Cruza Schema × `theme_table_mapping.json` × `partitions/*.json` — as TRÊS
+// fontes de R4. O TIPO GERADO (`design-token-ids.ts`) NÃO é uma das três e
+// pode apodrecer com o gate verde (R29 cobre o artefato gerado em si).
+// -------------------------------------------------------------------------
 import { execSync } from 'child_process';
 import path from 'path';
 

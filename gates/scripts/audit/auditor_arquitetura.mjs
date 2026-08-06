@@ -1,3 +1,11 @@
+// -------------------------------------------------------------------------
+// LIMITES DECLARADOS (R18) — o que este auditor NÃO vê
+// -------------------------------------------------------------------------
+// `require()`/`import()` DINÂMICO passam sem checagem. A verificação é por
+// SUBSTRING do texto do import (`components ⊅ features`, `core ⊅ features`),
+// não por resolução real de módulo — um alias de bundler que escondesse o
+// caminho literal escaparia.
+// -------------------------------------------------------------------------
 import fs from 'fs';
 import path from 'path';
 import ts from 'typescript';

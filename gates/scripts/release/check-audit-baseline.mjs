@@ -21,6 +21,16 @@
  *   node gates/scripts/release/check-audit-baseline.mjs            # compara (exit 1 se regrediu)
  *   node gates/scripts/release/check-audit-baseline.mjs --write    # regrava o baseline com a medição atual
  *   node gates/scripts/release/check-audit-baseline.mjs --with-tsc # inclui a contagem do `tsc --noEmit`
+ *
+ * -------------------------------------------------------------------------
+ * LIMITES DECLARADOS (R18) — o que este gate NÃO vê
+ * -------------------------------------------------------------------------
+ * Compara NÚMEROS contra o baseline, não conteúdo — dois arquivos diferentes
+ * que produzem a mesma contagem passam igual. `tsc` só entra com
+ * `--with-tsc` (o `pre-commit` só liga quando o staged tem `.ts`/`.tsx`) e
+ * NÃO exige zero — só impede a contagem de subir. Auditor sem parser
+ * dedicado em `PARSERS` cai no genérico (só código de saída, não métrica).
+ * -------------------------------------------------------------------------
  */
 import fs from 'node:fs';
 import path from 'node:path';
@@ -73,6 +83,12 @@ const PARSERS = {
     }),
     'auditor_paridade.mjs': (out) => ({ falhou: /SUCESSO ABSOLUTO/.test(out) ? 0 : 1 }),
     'auditor_presets.mjs': (out) => ({ falhou: /Nenhuma chave órfã/.test(out) ? 0 : 1 }),
+    'auditor_authcoupling.mjs': (out) => ({
+        violacoes: /Nenhum sink de credencial/.test(out) ? 0 : num(out, /(\d+) violaç(?:ão|ões) de R32/),
+    }),
+    'auditor_sectionpointers.mjs': (out) => ({
+        mortos: /Nenhum ponteiro de seção/.test(out) ? 0 : num(out, /(\d+) ponteiro\(s\) de seção morto\(s\)/),
+    }),
 };
 
 /** Auditor sem parser conhecido cai no genérico: só o status de saída. */
@@ -90,16 +106,36 @@ const runAuditors = () => {
     return medicao;
 };
 
+const TEST_PATH_RE = /(__tests__|__e2e__|\.test\.|\.spec\.)/;
+
 /**
  * Conta os erros do compilador. Invoca o `tsc` de `node_modules` pelo próprio Node
  * (nada de `npx` com `shell: true`, que dispara DeprecationWarning e ainda paga a
  * resolução do npx a cada commit).
+ *
+ * -------------------------------------------------------------------------
+ * LIMITES DECLARADOS (R18/R30) — o que esta contagem NÃO vê
+ * -------------------------------------------------------------------------
+ * Classifica produção × teste pelo CAMINHO do arquivo na linha do erro
+ * (`__tests__`/`__e2e__`/`.test.`/`.spec.`) — não pela gravidade do erro.
+ * Um erro de teste "grave" e um de produção "cosmético" pesam igual na
+ * contagem de cada balde.
+ * -------------------------------------------------------------------------
  */
+/** Puro — recebe o texto bruto (stdout+stderr) do `tsc` e classifica. Extraído
+ * para ser testável sem precisar rodar o compilador de verdade. */
+export const classifyTscOutput = (output) => {
+    const linhasDeErro = output.split('\n').filter((l) => /error TS\d+/.test(l));
+    const producao = linhasDeErro.filter((l) => !TEST_PATH_RE.test(l));
+    const teste = linhasDeErro.filter((l) => TEST_PATH_RE.test(l));
+    return { erros: linhasDeErro.length, producao: producao.length, teste: teste.length, linhasProducao: producao };
+};
+
 const tscErrorCount = () => {
     const tscBin = path.join(ROOT, 'node_modules/typescript/bin/tsc');
     const result = spawnSync(process.execPath, [tscBin, '--noEmit'], { encoding: 'utf8', cwd: ROOT });
     const output = `${result.stdout || ''}\n${result.stderr || ''}`;
-    return { erros: (output.match(/error TS\d+/g) || []).length };
+    return classifyTscOutput(output);
 };
 
 /** Data LOCAL (YYYY-MM-DD). `toISOString()` usa UTC e carimbaria o dia seguinte à noite. */
@@ -151,7 +187,21 @@ const main = () => {
     const withTsc = process.argv.includes('--with-tsc') || write;
 
     const metricas = runAuditors();
-    const tsc = withTsc ? tscErrorCount() : null;
+    const tscBruto = withTsc ? tscErrorCount() : null;
+    // `linhasProducao` é só para a mensagem de bloqueio — nunca vira baseline
+    // (baseline só guarda números) nem entra na comparação genérica.
+    const linhasProducao = tscBruto?.linhasProducao ?? [];
+    const tsc = tscBruto ? { erros: tscBruto.erros, producao: tscBruto.producao, teste: tscBruto.teste } : null;
+
+    // R30 promovida (plan-12): produção SEMPRE zero, hard-block — não entra
+    // no mecanismo de baseline (que tolera dívida). O baseline segue cobrindo
+    // só os erros de TESTE (`tsc.teste`), como antes cobria o total.
+    if (tsc && tsc.producao > 0) {
+        console.error(`\n[audit:baseline] BLOQUEADO — tsc: ${tsc.producao} erro(s) de TIPO EM PRODUÇÃO (R30).`);
+        linhasProducao.forEach((l) => console.error(`  - ${l.trim()}`));
+        console.error('\n  Produção precisa fechar em ZERO, sempre — dívida de teste é a única tolerada (01-gates-e-baseline.md).');
+        process.exit(1);
+    }
 
     if (write) {
         writeBaseline(metricas, tsc);
@@ -199,4 +249,10 @@ const main = () => {
     console.log(`[audit:baseline] igual ao baseline de ${baseline.medidoEm} — nenhuma regressão.`);
 };
 
-main();
+// Guarda de execução direta — sem isto, `import { classifyTscOutput }` (usado
+// pelo teste do próprio gate, R18) dispararia `main()` como efeito colateral
+// da importação, rodando os 10 auditores e podendo chamar `process.exit()`.
+const isMain = path.resolve(fileURLToPath(import.meta.url)) === path.resolve(process.argv[1] || '');
+if (isMain) {
+    main();
+}

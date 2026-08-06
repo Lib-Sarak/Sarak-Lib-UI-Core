@@ -19,6 +19,15 @@
  * Uso:
  *   - como hook: `.githooks/pre-push` repassa o stdin do git (protocolo pre-push);
  *   - à mão:     `npm run release:check` (avalia o HEAD atual).
+ *
+ * -------------------------------------------------------------------------
+ * LIMITES DECLARADOS (R18) — o que este gate NÃO vê
+ * -------------------------------------------------------------------------
+ * Só push para `refs/heads/main`; só `dist/` + `sarak-ui/` (`SIGNED_DIRS`)
+ * contam como "artefato publicado" — mudança em `bin/` ou `docs/` sozinha
+ * não pede tag. NÃO decide o nível do bump, só sugere. Repositório sem tag
+ * nenhuma não bloqueia (nada para comparar ainda).
+ * -------------------------------------------------------------------------
  */
 import { execFileSync } from 'node:child_process';
 import fs from 'node:fs';

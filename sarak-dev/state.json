@@ -53,7 +53,7 @@
       },
       "tipoPublico": {
         "interface": "SarakDesignTokens",
-        "ids": 304,
+        "ids": 409,
         "responsivos": 40
       }
     }
@@ -176,16 +176,32 @@
       "comando": "node gates/scripts/contrato/check-barrel-parity.mjs --check"
     },
     {
+      "nome": "npm run build-info:check",
+      "comando": "node scripts/generate-build-info.mjs --check"
+    },
+    {
       "nome": "npm run catalog:check",
       "comando": "node scripts/generate-component-catalog.mjs --check"
+    },
+    {
+      "nome": "npm run coverage:check",
+      "comando": "vitest run --coverage && node gates/scripts/release/check-coverage-floor.mjs"
+    },
+    {
+      "nome": "npm run deep-import:check",
+      "comando": "node gates/scripts/contrato/check-no-deep-import.mjs"
     },
     {
       "nome": "npm run dev-kit:check",
       "comando": "node scripts/generate-dev-kit.mjs --check"
     },
     {
+      "nome": "npm run gate-limits:check",
+      "comando": "node gates/scripts/contrato/check-gate-limits.mjs"
+    },
+    {
       "nome": "npm run gates:full",
-      "comando": "npm run dev-kit:check && npm run build && npm run package:check && npx vitest run"
+      "comando": "npm run dev-kit:check && npm run build && npm run build-info:check && npm run package:check && npm run coverage:check"
     },
     {
       "nome": "npm run guide:check",
@@ -196,8 +212,20 @@
       "comando": "node gates/scripts/contrato/check-package-contents.mjs"
     },
     {
+      "nome": "npm run plan-index:check",
+      "comando": "node gates/scripts/contrato/check-plan-index-sync.mjs"
+    },
+    {
       "nome": "npm run release:check",
       "comando": "node gates/scripts/release/check-release-tag.mjs"
+    },
+    {
+      "nome": "npm run section-pointers:check",
+      "comando": "node gates/scripts/contrato/check-section-pointers.mjs"
+    },
+    {
+      "nome": "npm run token-types:check",
+      "comando": "npx tsx scripts/generate-token-types.ts --check"
     },
     {
       "nome": "npm run zero-brand:check",
@@ -212,19 +240,21 @@
     "auditor_arquitetura.mjs",
     "auditor_cleancode.mjs",
     "auditor_paridade.mjs",
-    "auditor_presets.mjs"
+    "auditor_presets.mjs",
+    "auditor_authcoupling.mjs",
+    "auditor_sectionpointers.mjs"
   ],
   "baseline": {
     "_doc": "Baseline do Anel 2 (specs/specs/02-enforcement-por-commit.md). NÃO editar à mão: rode `npm run audit:baseline -- --write` DEPOIS de consertar a dívida, e commite junto do conserto.",
     "_leitura": "Cada número é o MÁXIMO tolerado. Maior que isto = regressão = commit bloqueado.",
-    "medidoEm": "2026-08-03",
+    "medidoEm": "2026-08-05",
     "metricas": {
       "auditor_hardcoded.mjs": {
-        "valor": 0,
+        "valor": 35,
         "estruturalLiquido": 0
       },
       "auditor_ghostvars.mjs": {
-        "consumos": 0
+        "consumos": 27
       },
       "auditor_typescript.mjs": {
         "violacoes": 0
@@ -243,10 +273,18 @@
       },
       "auditor_presets.mjs": {
         "falhou": 0
+      },
+      "auditor_authcoupling.mjs": {
+        "violacoes": 0
+      },
+      "auditor_sectionpointers.mjs": {
+        "mortos": 27
       }
     },
     "tsc": {
-      "erros": 10
+      "erros": 10,
+      "producao": 0,
+      "teste": 10
     }
   },
   "base": {

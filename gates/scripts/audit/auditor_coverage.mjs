@@ -1,6 +1,19 @@
 import fs from 'fs';
 import path from 'path';
 
+// -------------------------------------------------------------------------
+// LIMITES DECLARADOS (R18) — o que este auditor NÃO vê
+// -------------------------------------------------------------------------
+// 1. ESCOPO: `src/components/`, `src/features/`, `src/core/`, `src/shared/`,
+//    `src/effects/` e `src/constants/` (os três últimos, ampliados pela
+//    plan-12 — vão 6 de [[01-gates-e-baseline]] §9.2). `src/styles/` não
+//    entra: não há componente/hook lá, só CSS.
+// 2. Arquivos `index*` são ignorados (barril, não lógica).
+// 3. `.ts` só entra na cobrança se o nome começar com `use` — utilitário
+//    `.ts` puro (ex.: `services/api.ts`, `types/index.ts`) não é hook e não
+//    é cobrado por esta regra na letra (R8 é sobre "componente e hook").
+// -------------------------------------------------------------------------
+
 function getFiles(dir, extFilter, fileList = []) {
   if (!fs.existsSync(dir)) return fileList;
   const files = fs.readdirSync(dir);
@@ -49,15 +62,16 @@ function checkCoverage(filePath) {
   return { hasTest: true, expectedPath: testFilePath };
 }
 
-const srcDir = path.resolve('src/components');
-const featuresDir = path.resolve('src/features');
-const coreDir = path.resolve('src/core');
-
-const allFiles = [
-  ...getFiles(srcDir, ['.tsx', '.ts']),
-  ...getFiles(featuresDir, ['.tsx', '.ts']),
-  ...getFiles(coreDir, ['.tsx', '.ts'])
+const SCOPE_DIRS = [
+  'src/components',
+  'src/features',
+  'src/core',
+  'src/shared',
+  'src/effects',
+  'src/constants',
 ];
+
+const allFiles = SCOPE_DIRS.flatMap((dir) => getFiles(path.resolve(dir), ['.tsx', '.ts']));
 
 let totalViolations = 0;
 console.log("--- Auditor de Cobertura de Testes (FS Node) ---");

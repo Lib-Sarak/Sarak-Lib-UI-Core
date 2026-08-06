@@ -302,7 +302,7 @@ depois acrescente o fluxo — nunca deixe o próximo redescobrir.
 | `catalog/theme_table_mapping.json` | **ids únicos** | **409** |
 | `catalog/partitions/` | arquivos | 13 |
 | `catalog/partitions/` | tokens | 409 |
-| `SarakDesignTokens` (tipo público) | ids | 304 |
+| `SarakDesignTokens` (tipo público) | ids | 409 |
 | `SarakDesignTokens` (tipo público) | responsivos | 40 |
 
 > Os quatro números têm de convergir. `idsUnicos` é o total real; `entradasBrutas` maior que ele significa id roteado para mais de uma coluna. `tipoPublico` menor significa que `design-token-ids.ts` está DEFASADO (regenere com o script do §5.1 do guia).
@@ -315,39 +315,48 @@ depois acrescente o fluxo — nunca deixe o próximo redescobrir.
 
 **Componentes públicos: 80** — é o número que o `barrel:check` cobra. A lista completa está em `state.json` → `componentes.publicos.nomes`.
 
-### B.3 Gates registrados (9)
+### B.3 Gates registrados (16)
 
 | Comando | O que roda |
 | --- | --- |
 | `npm run audit` | `node gates/scripts/audit/run_audit.mjs` |
 | `npm run barrel:check` | `node gates/scripts/contrato/check-barrel-parity.mjs --check` |
+| `npm run build-info:check` | `node scripts/generate-build-info.mjs --check` |
 | `npm run catalog:check` | `node scripts/generate-component-catalog.mjs --check` |
+| `npm run coverage:check` | `vitest run --coverage && node gates/scripts/release/check-coverage-floor.mjs` |
+| `npm run deep-import:check` | `node gates/scripts/contrato/check-no-deep-import.mjs` |
 | `npm run dev-kit:check` | `node scripts/generate-dev-kit.mjs --check` |
-| `npm run gates:full` | `npm run dev-kit:check && npm run build && npm run package:check && npx vitest run` |
+| `npm run gate-limits:check` | `node gates/scripts/contrato/check-gate-limits.mjs` |
+| `npm run gates:full` | `npm run dev-kit:check && npm run build && npm run build-info:check && npm run package:check && npm run coverage:check` |
 | `npm run guide:check` | `node scripts/generate-consumer-kit.mjs --check` |
 | `npm run package:check` | `node gates/scripts/contrato/check-package-contents.mjs` |
+| `npm run plan-index:check` | `node gates/scripts/contrato/check-plan-index-sync.mjs` |
 | `npm run release:check` | `node gates/scripts/release/check-release-tag.mjs` |
+| `npm run section-pointers:check` | `node gates/scripts/contrato/check-section-pointers.mjs` |
+| `npm run token-types:check` | `npx tsx scripts/generate-token-types.ts --check` |
 | `npm run zero-brand:check` | `node gates/scripts/contrato/check-zero-brand.mjs --check` |
 
-**Auditores agregados por `run_audit.mjs` (8):** `auditor_hardcoded.mjs` · `auditor_ghostvars.mjs` · `auditor_typescript.mjs` · `auditor_coverage.mjs` · `auditor_arquitetura.mjs` · `auditor_cleancode.mjs` · `auditor_paridade.mjs` · `auditor_presets.mjs`
+**Auditores agregados por `run_audit.mjs` (10):** `auditor_hardcoded.mjs` · `auditor_ghostvars.mjs` · `auditor_typescript.mjs` · `auditor_coverage.mjs` · `auditor_arquitetura.mjs` · `auditor_cleancode.mjs` · `auditor_paridade.mjs` · `auditor_presets.mjs` · `auditor_authcoupling.mjs` · `auditor_sectionpointers.mjs`
 
 > A suíte (`npx vitest run`) **não é um script do `package.json`** e por isso não aparece na tabela acima — ela é invocada direto. Ver o guia, §6.
 
-### B.4 Baseline dos auditores (medido em 2026-08-03)
+### B.4 Baseline dos auditores (medido em 2026-08-05)
 
 > Cada número é o MÁXIMO tolerado. Maior que isto = regressão = commit bloqueado.
 
 | Auditor | Métrica | Máximo tolerado |
 | --- | --- | --- |
-| `auditor_hardcoded.mjs` | valor | **0** |
+| `auditor_hardcoded.mjs` | valor | **35** |
 | `auditor_hardcoded.mjs` | estruturalLiquido | **0** |
-| `auditor_ghostvars.mjs` | consumos | **0** |
+| `auditor_ghostvars.mjs` | consumos | **27** |
 | `auditor_typescript.mjs` | violacoes | **0** |
 | `auditor_coverage.mjs` | orfaos | **0** |
 | `auditor_arquitetura.mjs` | violacoes | **0** |
 | `auditor_cleancode.mjs` | violacoes | **0** |
 | `auditor_paridade.mjs` | falhou | **0** |
 | `auditor_presets.mjs` | falhou | **0** |
+| `auditor_authcoupling.mjs` | violacoes | **0** |
+| `auditor_sectionpointers.mjs` | mortos | **27** |
 
 `npx tsc --noEmit`: **10 erros** tolerados — não é gate hoje.
 

@@ -36,20 +36,28 @@ sentido criar gates e criar exceções no processo."* A `plan-12` é o "construi
 
 ## 2.1 O que já se sabe que vai aparecer
 
-Medido antes da `plan-12` rodar. **Não é a lista** — é a ordem de grandeza, para dimensionar:
+> ✅ **Atualizado em 2026-08-05, com a `plan-12` (Lotes A+B) 🟢 aprovada.** Os números abaixo deixaram de ser
+> previsão: são o **baseline recontado** por ela, verificado no veredito. **Continua não sendo a lista** — a
+> lista é o resumo de execução da `plan-12`.
 
-| Origem | Vermelhos previstos | Natureza |
+| Origem | Vermelho MEDIDO | Natureza |
 |---|---|---|
-| **R18** | 13 de 17 gates sem limite declarado | **escrita**, não código |
-| **R30** | 10 erros de `tsc`, todos em teste | tipagem |
-| **vão 5** | 4 linhas com `px` literal em `core/Shell/Components/` | conserto trivial |
-| **vão 3** | 2 fantasmas reais em `src/core/` | conserto trivial |
-| **vão 7** | 4 ponteiros `§N.N` vivos | texto |
-| **R10** | **até 97** ocorrências de HTML nativo cru — **66 em `features/DesignEngine`** | ⚠️ **depende do escopo que o lote C definir** |
-| **R31** | **desconhecido** — 0 a 18 temas | ⚠️ conserto é **cor de tema**, decisão visual |
+| **R18** | ✅ **0** — os blocos de limite foram escritos **na própria `plan-12`**; `gate-limits:check` fecha **25/25** | *(não chega a esta plan)* |
+| **R30** | **10** erros de `tsc`, todos em teste — **produção já em 0**, e virou hard-block | tipagem |
+| **vão 5** | **35** violações de `px` literal em `src/core/Shell/` *(a previsão dizia 4)* | conserto trivial, volume médio |
+| **vãos 2+3** | **27** consumos-fantasma em `src/styles/` + `src/core/` | conserto trivial |
+| **vão 7** | **27** ponteiros `§N.N` mortos, autorreferência *(a previsão dizia 4)* | texto |
+| **vão 13** | 1 número falso novo: `arquitetura/04-…:52` diz `410 = 410`, o real é **409** | texto — **sem gate**, achado a numerar |
+| **R10** | **111** ocorrências de HTML nativo cru — **64 em `features/DesignEngine`** | ⚠️ **depende da fronteira que o dono fixar** |
+| **R31** | **12 de 18** temas falham ≥1 par canônico de AA | ⚠️ conserto é **cor de tema**, decisão visual |
 
-**Os dois últimos dominam o risco.** Se o lote C decidir que R10 vale para o painel do Design Engine, esta
-plan tem 66 substituições de HTML por átomo — e isso é refactor com risco visual, não higiene.
+**Os dois últimos dominam o risco, e agora com número.** Se a fronteira de R10 incluir o painel do Design
+Engine, esta plan tem **64** substituições de HTML por átomo lá dentro — refactor com risco visual, não
+higiene. Se ficar de fora, sobram **47**.
+
+> ⚠️ **A medição de R31 vive fora do repositório.** O script de contraste foi recriado pela `plan-12` no
+> `%TEMP%` da sessão e **não sobrevive a uma limpeza**. Antes de decidir R31, mova-o para um lugar durável —
+> ou o número 12/18 volta a ser irreproduzível, que é o estado que esta base combate.
 
 # 3. Escopo
 

@@ -4,6 +4,15 @@
 // que o `init` (`bin/scaffold/context.mjs`) precisa ler do pacote instalado. `src/` é
 // proibido SEM EXCEÇÃO (Spec 40 §2.4 fechou o M9 PARCIAL do re-Selo — o export
 // "./sarak-base.css" agora resolve para `dist/styles/`).
+//
+// -------------------------------------------------------------------------
+// LIMITES DECLARADOS (R18) — o que este gate NÃO vê
+// -------------------------------------------------------------------------
+// Confere só as listas DECLARADAS aqui (prefixos proibidos, sufixos
+// proibidos, caminhos obrigatórios) — não varre o conteúdo arbitrário do
+// tarball. Exige `dist/` já buildado (`npm pack --dry-run` sobre o pacote
+// pronto); por isso mora no `prepublishOnly`/`gates:full`, não no `build`.
+// -------------------------------------------------------------------------
 import { execSync } from 'node:child_process';
 
 const FORBIDDEN_PREFIXES = [

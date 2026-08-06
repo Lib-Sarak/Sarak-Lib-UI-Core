@@ -97,7 +97,7 @@ describe('buildDevState — estado DERIVADO, nunca digitado', () => {
         const nomes = state.gates.map((gate) => gate.nome);
         expect(nomes).toContain('npm run dev-kit:check');
         expect(nomes).toContain('npm run barrel:check');
-        expect(state.auditores).toHaveLength(8);
+        expect(state.auditores).toHaveLength(10);
     });
 
     it('o baseline vem do arquivo versionado, não de uma cópia no gerador', () => {

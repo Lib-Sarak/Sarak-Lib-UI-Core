@@ -1,3 +1,11 @@
+// -------------------------------------------------------------------------
+// LIMITES DECLARADOS (R18) — o que este verificador NÃO vê
+// -------------------------------------------------------------------------
+// Valida UM tema por vez (`process.argv[2]`) — nada o invoca em pipeline
+// nenhum hoje; é ferramenta manual. `auditor_presets.mjs`/`verify_presets.ts`
+// cobrem todos os temas embarcados de uma vez, mas só ausência de órfã, não
+// completude — as duas coberturas são diferentes, não equivalentes.
+// -------------------------------------------------------------------------
 import fs from 'fs';
 import path from 'path';
 import { MASTER_DESIGN_MAP } from '../../../src/core/Design/master-map.ts';

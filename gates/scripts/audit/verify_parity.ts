@@ -1,3 +1,10 @@
+// -------------------------------------------------------------------------
+// LIMITES DECLARADOS (R18) — o que este verificador NÃO vê
+// -------------------------------------------------------------------------
+// Cruza as TRÊS fontes de R4 (schema, mapping, partições). O tipo público
+// gerado (`design-token-ids.ts`) não é uma delas — pode divergir com este
+// verificador 100% verde (R29 cobre o artefato gerado, não este).
+// -------------------------------------------------------------------------
 import fs from 'fs';
 import path from 'path';
 import { MASTER_DESIGN_MAP } from '../../../src/core/Design/master-map.ts';

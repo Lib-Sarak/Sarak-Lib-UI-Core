@@ -50,7 +50,7 @@ as duas, sempre, na mesma ação.**
 | 8 | [plan-07-quitacao-baseline](plan/plan-07-quitacao-baseline.md) | Quitar o baseline de auditoria | plan-06 | 🟢 Aprovada | `specs/01` · `specs/11` · `specs/10` |
 | 9 | [plan-08-achados-comportamento](plan/plan-08-achados-comportamento.md) | Corrigir o código que faz coisa diferente do que promete | plan-06 | 🟢 Aprovada | `specs/06` · `specs/07` · `specs/04` |
 | 10 | [plan-09-contrato-publico-2-0-0](plan/plan-09-contrato-publico-2-0-0.md) | As quebras de contrato saem juntas num único major | plan-06 | 🟢 Aprovada | `arquitetura/03` · `adr/009-*` · `docs/migracoes.md` |
-| 11 | [plan-12-construcao-dos-gates](plan/plan-12-construcao-dos-gates.md) | Construir os ~21 itens da matriz: 7 regras sem gate + 14 vãos | plan-06 | 🔴 A executar | `specs/00-regras-e-invariantes.md` · `specs/01` · `specs/02` · `specs/15` |
+| 11 | [plan-12-construcao-dos-gates](plan/plan-12-construcao-dos-gates.md) | Construir os ~21 itens da matriz: 7 regras sem gate + 14 vãos | plan-06 | 🟢 Aprovada | `specs/00-regras-e-invariantes.md` · `specs/01` · `specs/02` · `specs/15` |
 | 12 | [plan-15-adequacao-total](plan/plan-15-adequacao-total.md) | O baseline volta a zero — pagar tudo que os gates novos acusarem | plan-12 | 🔴 A executar | `specs/01` · `specs/15` · `specs/00-regras-e-invariantes.md` |
 | 13 | [plan-05-integracao-continua](plan/plan-05-integracao-continua.md) | Rodar os gates num ambiente que não é a máquina de ninguém | — | 🔴 A executar | `specs/16-integracao-continua.md` *(nova)* · `specs/02` · `specs/01` |
 | 14 | [plan-10-ciclo-atualizacao](plan/plan-10-ciclo-atualizacao.md) | Dar comando de atualização a quem só recebia aviso | plan-05 | 🔴 A executar | `specs/13-instalacao-e-atualizacao.md` |

@@ -12,5 +12,14 @@ export default defineConfig({
         // `poolOptions` foi removido e era ignorado em silêncio).
         pool: 'forks',
         execArgv: ['--max-old-space-size=8192'],
+        // R8.1 (piso móvel, plan-12) — só ativa com `--coverage` (não no
+        // `pre-push`, que roda a suíte pura por custo). `json-summary` é o
+        // formato que `check-coverage-floor.mjs` lê.
+        coverage: {
+            provider: 'v8',
+            reporter: ['text', 'json-summary'],
+            include: ['src/**/*.{ts,tsx}'],
+            exclude: ['src/**/__tests__/**', 'src/**/__e2e__/**', 'src/**/*.d.ts', 'src/core/Provider/generated/**'],
+        },
     },
 });

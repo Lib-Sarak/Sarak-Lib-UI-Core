@@ -50,7 +50,7 @@ SHA_REMOTO=$(printf '%s\n' "$LINHA_MAIN" | awk '{ print $4 }')
 RODAR_SUITE=1
 if ! echo "$SHA_REMOTO" | grep -qE '^0+$' && git cat-file -e "$SHA_REMOTO^{commit}" 2>/dev/null; then
   MUDOU=$(git diff --name-only "$SHA_REMOTO" "$SHA_LOCAL" \
-    | grep -E '^(src/|scripts/|bin/|package(-lock)?\.json|tsconfig.*\.json|vitest\.(config|setup)\.ts)' \
+    | grep -E '^(src/|scripts/|bin/|gates/|package(-lock)?\.json|tsconfig.*\.json|vitest\.(config|setup)\.ts)' \
     | head -n 1)
   [ -z "$MUDOU" ] && RODAR_SUITE=0
 fi

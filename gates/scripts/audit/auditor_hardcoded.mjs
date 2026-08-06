@@ -7,8 +7,10 @@ import ts from 'typescript';
 // ==========================================================================
 
 // Escopo do detector de VALOR (hex/px/rem/em): hardcode de valor CSS é proibido
-// em qualquer camada (átomos OU features).
-const VALUE_SCOPE = ['src/components', 'src/features'];
+// em qualquer camada (átomos, features OU core — ampliado pela plan-12, vão 5:
+// `src/core/` nunca foi varrido, e é onde vivem 4 `px` literais em
+// `core/Shell/Components/` medidos nesta execução).
+const VALUE_SCOPE = ['src/components', 'src/features', 'src/core'];
 
 // Escopo do detector ESTRUTURAL (Tailwind de layout): a regra de desengessamento
 // (skill ui-arquitetura-design) é específica dos átomos. Features compõem layout

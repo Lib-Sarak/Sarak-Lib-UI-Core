@@ -1,3 +1,11 @@
+// -------------------------------------------------------------------------
+// LIMITES DECLARADOS (R18) — o que este verificador NÃO vê
+// -------------------------------------------------------------------------
+// Mede AUSÊNCIA DE CHAVE ÓRFÃ nos temas/presets EMBARCADOS — não mede
+// completude por tema (chave faltando, sem estar órfã, passa aqui) e não
+// vê tema escrito pelo consumidor. `verify_theme_parity.ts` cobre
+// completude, mas por UM tema de cada vez, e nada o invoca em pipeline.
+// -------------------------------------------------------------------------
 import { getScaffold } from '../../../src/core/Design/master-map.ts';
 import { GLOBAL_THEMES } from '../../../src/core/Design/presets/themes/index.ts';
 import { CARD_PRESETS } from '../../../src/core/Design/presets/components/cards.ts';

@@ -10,6 +10,14 @@ Saída:
 
 Regras (CLAUDE.md): zero hardcoded (padrões/listas no config.json), segredos mascarados,
 responsabilidade única (só o commit atual/staged — histórico é da git-especialista-repositorio).
+
+-------------------------------------------------------------------------
+LIMITES DECLARADOS (R18) — o que este gate NÃO vê
+-------------------------------------------------------------------------
+Varre SÓ o staged do commit atual. Segredo que já está num commit anterior
+passa em silêncio, por construção — histórico é escopo da skill
+`git-especialista-repositorio` / `/git1-auditar`, não deste gate.
+-------------------------------------------------------------------------
 """
 import argparse
 import json

@@ -1,3 +1,10 @@
+// -------------------------------------------------------------------------
+// LIMITES DECLARADOS (R18) — o que este auditor NÃO vê
+// -------------------------------------------------------------------------
+// Isenção declarada do teto de 250 linhas (`isThemeOrSchema`, abaixo):
+// arquivos sob `/presets/themes/`, `/Design/schema/` e `/Design/master-map`
+// são dicionários de dados, não lógica, e não pagam o limiar.
+// -------------------------------------------------------------------------
 import fs from 'fs';
 import path from 'path';
 import ts from 'typescript';

@@ -1,3 +1,10 @@
+// -------------------------------------------------------------------------
+// LIMITES DECLARADOS (R18) — o que este auditor NÃO vê
+// -------------------------------------------------------------------------
+// `__tests__/` e `Mocks/` estão fora do escopo (ver exclusão em `getFiles`).
+// Procura o TOKEN `any` na AST — não compila, então não pega erro de tipo
+// que não passe por esse token (isso é R30/`tsc`, checagem diferente).
+// -------------------------------------------------------------------------
 import fs from 'fs';
 import path from 'path';
 import ts from 'typescript';

@@ -1,3 +1,11 @@
+// -------------------------------------------------------------------------
+// LIMITES DECLARADOS (R18) — o que este auditor NÃO vê
+// -------------------------------------------------------------------------
+// Mede AUSÊNCIA DE CHAVE ÓRFÃ em todos os temas/presets embarcados de uma
+// vez — NÃO mede completude por tema (um tema que faltasse chaves, mas sem
+// nenhuma órfã, passaria). Não vê tema escrito pelo consumidor.
+// `verify_theme_parity.ts` cobriria completude por tema; nada o invoca hoje.
+// -------------------------------------------------------------------------
 import { execSync } from 'child_process';
 import path from 'path';
 
