@@ -61,8 +61,9 @@ O que é **procedimento desta skill**, e por isso mora aqui:
 - **NÃO duplique** definição de estilo que o dicionário já tem (schema / `master-map.ts`) — é a
   fronteira Configuração × Expansão (R11) aplicada ao CSS.
 
-> ⚠️ **R10 não tem gate** — o §3 de `specs/specs/00-regras-e-invariantes.md` a marca como CONDUTA.
-> Ela depende desta revisão e de mais nenhuma coisa: é o item que esta skill existe para pegar.
+> ⚠️ **R10 já tem gate parcial** — `auditor_composicaoatomica.mjs` cobra só a metade "HTML nativo
+> cru fora dos átomos"; a metade `switch`/`case` de design continua sem detector. Ver `specs/specs/00-regras-e-invariantes.md` R10.
+> Esta skill continua sendo a primeira linha de defesa para a metade que o gate ainda não alcança.
 
 ## Checklist
 - [ ] O componente obedece ao fluxo Schema → Master Map → CSS Variables?

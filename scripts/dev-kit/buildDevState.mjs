@@ -60,7 +60,7 @@ const collectDesignState = () => {
             nota:
                 'Os quatro números têm de convergir. `idsUnicos` é o total real; `entradasBrutas` ' +
                 'maior que ele significa id roteado para mais de uma coluna. `tipoPublico` menor ' +
-                'significa que `design-token-ids.ts` está DEFASADO (regenere com o script do §5.1 do guia).',
+                'significa que `design-token-ids.ts` está DEFASADO (regenere com o script do §2 do guia).',
             mapeamento: {
                 colunas: colunas.length,
                 entradasBrutas: colunas.flat().length,

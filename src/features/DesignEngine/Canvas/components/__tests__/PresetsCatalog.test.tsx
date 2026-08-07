@@ -32,5 +32,5 @@ describe('PresetsCatalog', () => {
         ['Globais', 'Cards', 'Typography', 'Atmosphere', 'Buttons', 'Inputs'].forEach(label => {
             expect(screen.getByRole('button', { name: label })).toBeInTheDocument();
         });
-    });
+    }, 15000); // 5000 (default) não bastava sob `vitest --coverage` (instrumentação V8 + contenção de workers, mesma causa do PreviewCanvas.test.tsx, plan-12/R8.1)
 });

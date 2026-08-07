@@ -25,7 +25,7 @@ todos dele, gerados do código-fonte da versão instalada.
   inexistente não quebra a tela — ele silenciosamente não faz nada, que é pior.
 
 Se algo que você precisa não está no catálogo, a resposta está na **regra de fallback universal**
-do guia (§0 do `GUIA-FRONTEND.md`). Ela cobre inclusive os casos que ninguém previu.
+do guia (`GUIA-FRONTEND.md` §0). Ela cobre inclusive os casos que ninguém previu.
 
 ---
 
@@ -53,7 +53,7 @@ substituída a cada atualização da lib.
 | Arquivo | O que é |
 | --- | --- |
 | `START-HERE.md` | Este arquivo. |
-| `GUIA-FRONTEND.md` | **O documento único de autoria**: as 4 topologias de projeto + todos os casos (usar componente, criar o seu, personalizar um elemento, tema, multidispositivo, dados/formulários, estados de tela, ícones, isolamento). Comece pela §0 — a árvore de decisão. |
+| `GUIA-FRONTEND.md` | **O documento único de autoria**: as 4 topologias de projeto + todos os casos (usar componente, criar o seu, personalizar um elemento, tema, multidispositivo, dados/formulários, estados de tela, ícones, isolamento). Comece pelo `GUIA-FRONTEND.md` §0 — a árvore de decisão. |
 | `skill/` | A skill `ui-integra-consumidor`, versão consumidor. |
 | `templates/` | Esqueletos de código copiáveis: wiring do app, forma de um `ui-kit` compartilhado, tela-exemplo com os 3 estados e componente próprio temável. |
 | `catalog.json` | **GERADO.** A superfície viva desta versão. A regra nº 1 acima. |

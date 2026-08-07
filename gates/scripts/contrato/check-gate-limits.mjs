@@ -6,7 +6,9 @@
 // LIMITES DECLARADOS (R18) — o que este gate NÃO vê
 // -------------------------------------------------------------------------
 // 1. ESCOPO: só `gates/scripts/**/*.{mjs,ts,py}`, excluindo `__tests__/`,
-//    `helpers/` e `allowlists/`. Os geradores de `scripts/` (que também
+//    `helpers/`, `allowlists/` e arquivos `.d.ts` (declaração de tipos pura,
+//    nunca um script executável com lógica de verificação — não tem "o que
+//    não vê" para declarar). Os geradores de `scripts/` (que também
 //    ganharam modo `--check` nesta plan — `generate-build-info.mjs`,
 //    `generate-token-types.ts`) NÃO entram nesta varredura: o inventário
 //    "17 scripts" que esta regra herda é o de `gates/scripts/`
@@ -35,7 +37,7 @@ function walk(dir, out = []) {
     const full = path.join(dir, entry);
     if (fs.statSync(full).isDirectory()) {
       if (!EXCLUDED_DIR_SEGMENTS.has(entry)) walk(full, out);
-    } else if (/\.(mjs|ts|py)$/.test(entry)) {
+    } else if (/\.(mjs|ts|py)$/.test(entry) && !entry.endsWith('.d.ts')) {
       out.push(full);
     }
   }

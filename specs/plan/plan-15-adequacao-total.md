@@ -2,7 +2,7 @@
 tipo: "plan"
 titulo: "Adequação total — o baseline volta a zero"
 dominio: "Sarak-Lib-UI-Core / Qualidade / Dívida"
-status: "🔴 A executar"
+status: "🟡 Em execução"
 prioridade: "Alta"
 tags: ["plan", "adequacao", "baseline", "divida", "gates"]
 relacionados: ["[[00-regras-e-invariantes]]", "[[01-gates-e-baseline]]", "[[15-divida-conhecida]]"]
@@ -193,3 +193,44 @@ Não commite. Ao terminar, escreva o resumo na própria plan.
 # 11. Veredito
 
 <!-- Preenchido pelo REVISOR. Append-only. -->
+
+## Veredito parcial (lotes 1–3) — 2026-08-07 — 🟢 Aprovado
+
+**Aprovado sem achado.** A plan continua `🟡 Em execução` — os lotes 4, 5 e 6 seguem abertos. Este bloco libera
+**apenas** o commit dos três primeiros, conforme combinado na parada do passo 2: não prender texto e tipagem a
+um refactor de 20 componentes.
+
+### Reproduzido por mim
+
+| Verificação | Medição |
+|---|---|
+| `npx tsc --noEmit` | **limpo** — exit 0, zero saída. Produção 0, teste 0 |
+| `npm run gates:full` | **exit 0** de ponta a ponta; `coverage:check` igual ao piso (70,66%) |
+| `gate-limits:check` | **26/26** |
+| Baseline regravado | `sectionpointers 27 → 18` · `tsc {erros 0, producao 0, teste 0}` · **`hardcoded 35`, `ghostvars 27`, `composicaoatomica 47` intactos** — os três não pagos não se moveram |
+| `git diff -- gates/allowlists/` | vazio |
+| Achado 29 | **fechado de verdade**: `buildDevState.mjs:63` aponta `§2`, e `sarak-dev/GUIA-MANUTENCAO.md` tem **0** ocorrências de `§5.1` — regenerado, não editado à mão |
+| `PresetsCatalog.test.tsx` | **uma linha**, só o timeout, com o motivo e o precedente citados |
+
+### As três decisões da entrega, todas certas
+
+1. **Não editar `arquitetura/04` (lote 1).** É spec fixa, e [[00-prompt-executor]] §7.3 proíbe. Declarar para a
+   síntese foi o comportamento correto — o mesmo das plans 12 e 16.
+2. **O conserto do `check-gate-limits.mjs` é falso positivo, não exceção.** Um `.d.ts` é declaração de tipo
+   pura: não tem lógica de verificação, logo não tem "o que não vê" para declarar. E o diff faz as **duas**
+   coisas na mesma edição — a condição `&& !entry.endsWith('.d.ts')` **e** o bloco `LIMITES DECLARADOS`
+   atualizado com o porquê. É exatamente o que R18 pede de quem mexe num gate.
+3. **O timeout do `PresetsCatalog`.** Mesma causa-raiz já documentada na `plan-12` (instrumentação V8 +
+   contenção de workers), verificada isolada, e coberta pela §3.7 do [[00-prompt-executor]]: *gate cujo baseline
+   é verde sai verde, mesmo quando a causa é de outra plan*. Não é sua dívida e ainda assim era sua
+   responsabilidade — a distinção está aplicada certa.
+
+### Os 18 ponteiros restantes são MEUS, e isso está correto
+
+Conferi onde vivem: **`specs/specs/` (14) · `specs/adr/` (3) · `specs/00-indice.md` (1)**. Nenhum está ao
+alcance do executor. A recusa foi certa, e a lista completa que você deixou é o que torna o handoff barato.
+
+> **Consequência para o objetivo da plan:** enquanto esses 18 não caírem, `auditor_sectionpointers` não chega a
+> zero — e **o conserto não é execução, é manutenção de spec do revisor**. Está roteado na mensagem ao dono.
+
+**Liberado: pode commitar os lotes 1–3.** Siga para a parada do lote 4.

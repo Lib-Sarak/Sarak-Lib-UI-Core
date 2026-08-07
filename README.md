@@ -28,7 +28,7 @@ Detalhes de cada `peerDependency`, a entrevista de infraestrutura (modo app/emba
 
 **Comece por [`sarak-dev/START-HERE.md`](sarak-dev/START-HERE.md)** — o kit do mantenedor, que é o índice operacional da base de specs e traz o carimbo de estado do repositório (números recontados por geração, nunca escritos à mão). O contrato único de regras é [`specs/specs/00-regras-e-invariantes.md`](specs/specs/00-regras-e-invariantes.md); os fluxos passo a passo, [`sarak-dev/GUIA-MANUTENCAO.md`](sarak-dev/GUIA-MANUTENCAO.md).
 
-A porta de entrada é [`specs/00-contexto.md`](specs/00-contexto.md) — o que este repositório é, as regras inegociáveis, o mapa de "que spec eu leio para esta tarefa" e a ordem de leitura de ambientação (§4.1). Depois, conforme o papel: [`specs/00-prompt-revisor.md`](specs/00-prompt-revisor.md) ou [`specs/00-prompt-executor.md`](specs/00-prompt-executor.md).
+A porta de entrada é [`specs/00-contexto.md`](specs/00-contexto.md) — o que este repositório é, as regras inegociáveis, o mapa de "que spec eu leio para esta tarefa" e a ordem de leitura de ambientação (`specs/00-contexto.md` §4.1). Depois, conforme o papel: [`specs/00-prompt-revisor.md`](specs/00-prompt-revisor.md) ou [`specs/00-prompt-executor.md`](specs/00-prompt-executor.md).
 
 As skills que regulam o trabalho aqui dentro:
 

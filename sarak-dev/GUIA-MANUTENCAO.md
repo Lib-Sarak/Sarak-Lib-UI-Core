@@ -289,7 +289,7 @@ depois acrescente o fluxo — nunca deixe o próximo redescobrir.
 
 ## Apêndice B — Estado deste repositório (GERADO)
 
-> **Não edite esta seção à mão.** Ela é regenerada por `npm run dev-kit` a partir do próprio repositório (`@sarak/lib-ui-core` v1.2.1); o gate `npm run dev-kit:check` derruba se ficar defasada. A fonte de máquina equivalente é o `state.json` ao lado deste arquivo.
+> **Não edite esta seção à mão.** Ela é regenerada por `npm run dev-kit` a partir do próprio repositório (`@sarak/lib-ui-core` v2.0.0); o gate `npm run dev-kit:check` derruba se ficar defasada. A fonte de máquina equivalente é o `state.json` ao lado deste arquivo.
 
 ### B.1 Design — as fontes que a paridade cruza
 
@@ -305,7 +305,7 @@ depois acrescente o fluxo — nunca deixe o próximo redescobrir.
 | `SarakDesignTokens` (tipo público) | ids | 409 |
 | `SarakDesignTokens` (tipo público) | responsivos | 40 |
 
-> Os quatro números têm de convergir. `idsUnicos` é o total real; `entradasBrutas` maior que ele significa id roteado para mais de uma coluna. `tipoPublico` menor significa que `design-token-ids.ts` está DEFASADO (regenere com o script do §5.1 do guia).
+> Os quatro números têm de convergir. `idsUnicos` é o total real; `entradasBrutas` maior que ele significa id roteado para mais de uma coluna. `tipoPublico` menor significa que `design-token-ids.ts` está DEFASADO (regenere com o script do §2 do guia).
 
 ### B.2 Componentes
 
@@ -341,7 +341,7 @@ depois acrescente o fluxo — nunca deixe o próximo redescobrir.
 
 > A suíte (`npx vitest run`) **não é um script do `package.json`** e por isso não aparece na tabela acima — ela é invocada direto. Ver o guia, §6.
 
-### B.4 Baseline dos auditores (medido em 2026-08-05)
+### B.4 Baseline dos auditores (medido em 2026-08-07)
 
 > Cada número é o MÁXIMO tolerado. Maior que isto = regressão = commit bloqueado.
 
@@ -357,10 +357,10 @@ depois acrescente o fluxo — nunca deixe o próximo redescobrir.
 | `auditor_paridade.mjs` | falhou | **0** |
 | `auditor_presets.mjs` | falhou | **0** |
 | `auditor_authcoupling.mjs` | violacoes | **0** |
-| `auditor_sectionpointers.mjs` | mortos | **27** |
+| `auditor_sectionpointers.mjs` | mortos | **18** |
 | `auditor_composicaoatomica.mjs` | violacoes | **47** |
 
-`npx tsc --noEmit`: **10 erros** tolerados — não é gate hoje.
+`npx tsc --noEmit`: **0 erros** tolerados — não é gate hoje.
 
 Fonte: `gates/baselines/audit-baseline.json`. **Não edite à mão** — o número muda com `npm run audit:baseline`, no mesmo commit do conserto que o justificou.
 

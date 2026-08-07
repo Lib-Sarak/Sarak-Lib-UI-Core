@@ -17,8 +17,7 @@ description: Instala e acopla a base Sarak (@sarak/lib-ui-core) num sistema cons
 > Duas consequências práticas:
 > - **Os caminhos daqui são do repositório do CONSUMIDOR**, não deste — o **src/main.tsx** dele, o
 >   **npm run dev** dele. Um detector de ponteiro morto rodando aqui dentro os acusa, e estaria
->   errado. *(Por isso são citados em negrito: a convenção de `specs/specs/14-artefatos-do-mantenedor.md`
->   §4.2 é que caminho não-verificável nunca vai em crase.)*
+>   errado. *(Por isso são citados em negrito: a convenção de `specs/specs/14-artefatos-do-mantenedor.md` §4.2 é que caminho não-verificável nunca vai em crase.)*
 > - **Apagá-la derruba o `npm run build`**: o `guide:check` lê esta pasta e um `readdirSync` num
 >   caminho ausente lança `ENOENT`.
 >
@@ -156,7 +155,7 @@ existe "salvar tema no banco": a central não tem servidor, e salvar **é** expo
    - **SEGUNDA PERGUNTA — Topologia:** *"O projeto é um app único (monolito), vários apps num
      repositório (monorepo), apps compostos num deploy único (monolito modular) ou serviços com
      deploys independentes (microsserviço)?"* A resposta não muda o `init`, mas **decide onde moram
-     os temas e a navegação** — registre-a e entregue-a no handoff (§2 do `GUIA-FRONTEND.md`).
+     os temas e a navegação** — registre-a e entregue-a no handoff (`GUIA-FRONTEND.md` §2).
    - **Porta do dev server** (default 5173).
 2. **Instalação de Dependências + scaffolder oficial**
    - **Ação OBRIGATÓRIA antes de qualquer `npm install`: garanta um `package.json` na RAIZ do

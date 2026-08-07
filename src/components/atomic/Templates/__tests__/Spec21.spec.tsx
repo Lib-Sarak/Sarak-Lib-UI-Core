@@ -27,13 +27,14 @@ test.describe('Spec 21 Visual Validations', () => {
     const component = await mount(
       <SarakUIProvider>
         <div className="p-5 w-full bg-slate-900">
-          <AuthForm 
+          <AuthForm
             isRegistering={false}
             setIsRegistering={() => {}}
             mfaStep={false}
             setMfaStep={() => {}}
             username="test"
             setUsername={() => {}}
+            onSubmit={() => {}}
           />
         </div>
       </SarakUIProvider>
@@ -67,7 +68,7 @@ test.describe('Spec 21 Visual Validations', () => {
     const component = await mount(
       <SarakUIProvider>
         <div className="p-5 w-full bg-slate-900">
-          <AuthFormFields mfaStep={false} isRegistering={false} username="" setUsername={() => {}} />
+          <AuthFormFields mfaStep={false} setMfaStep={() => {}} isRegistering={false} username="" setUsername={() => {}} />
         </div>
       </SarakUIProvider>
     );
@@ -89,8 +90,8 @@ test.describe('Spec 21 Visual Validations', () => {
     const component = await mount(
       <SarakUIProvider>
         <div className="p-5 w-full bg-slate-900">
-          <RecursiveMatrixNode 
-            item={{ id: '1', title: 'Node', isPremium: true }} 
+          <RecursiveMatrixNode
+            item={{ id: '1', name: 'Node' }}
             parentId="root"
             level={0}
             activeMapping={() => false}

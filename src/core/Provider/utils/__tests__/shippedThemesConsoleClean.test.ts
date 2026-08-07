@@ -27,7 +27,7 @@ describe('Console limpo ao carregar os temas shippados (Spec 40.4 L4)', () => {
             const merged = { ...getDefaultDesignState(), ...(theme.design as Record<string, unknown>) };
             validateDesign(merged);
 
-            const contractWarnings = warnSpy.mock.calls.filter((call) =>
+            const contractWarnings = warnSpy.mock.calls.filter((call: unknown[]) =>
                 String(call[0]).includes('fora do contrato')
             );
             expect(contractWarnings).toEqual([]);

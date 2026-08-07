@@ -40,7 +40,7 @@ as duas, sempre, na mesma ação.**
 
 | # | Plan | Objetivo | Depende de | Status | Destino |
 |---|---|---|---|---|---|
-| 1 | [plan-15-adequacao-total](plan/plan-15-adequacao-total.md) | O baseline volta a zero — pagar tudo que os gates novos acusarem | plan-12 · plan-16 | 🔴 A executar | `specs/01` · `specs/15` · `specs/00-regras-e-invariantes.md` |
+| 1 | [plan-15-adequacao-total](plan/plan-15-adequacao-total.md) | O baseline volta a zero — pagar tudo que os gates novos acusarem | plan-12 · plan-16 | 🟡 Em execução | `specs/01` · `specs/15` · `specs/00-regras-e-invariantes.md` |
 | 2 | [plan-05-integracao-continua](plan/plan-05-integracao-continua.md) | Rodar os gates num ambiente que não é a máquina de ninguém | — | 🔴 A executar | `specs/16-integracao-continua.md` *(nova)* · `specs/02` · `specs/01` |
 | 3 | [plan-10-ciclo-atualizacao](plan/plan-10-ciclo-atualizacao.md) | Dar comando de atualização a quem só recebia aviso | plan-05 | 🔴 A executar | `specs/13-instalacao-e-atualizacao.md` |
 | 4 | [plan-11-e2e-no-pipeline](plan/plan-11-e2e-no-pipeline.md) | Parar de sair verde sem executar nada | plan-05 | 🔴 A executar | `specs/11` · `specs/10` · `specs/16` |
@@ -99,6 +99,22 @@ as duas, sempre, na mesma ação.**
 
 > Um status só avança na ordem `🔴 → 🟡 → 🟠 → (🔵 ⇄ 🟠) → 🟢 → ⚪`. **🔵 não volta para 🔴** — correção não é
 > execução nova; a plan e o histórico de vereditos são os mesmos.
+
+> 🔴 **A coluna "Quem move para cá" fala do `status` DA PLAN, não deste arquivo** *(esclarecido em 2026-08-07)*.
+> Ela e a §5 pareciam se contradizer: aqui o executor "move" 🟡 e 🟠, e lá está escrito que *"só o revisor edita
+> este arquivo"*. **As duas estão certas, e o sujeito é que era ambíguo:** o executor move o `status` no
+> frontmatter da plan — que é a **fonte da verdade** (§5) — e o revisor **espelha aqui**. O executor nunca abre
+> este arquivo.
+>
+> **Isso deixou de ser detalhe quando o gate nasceu.** O `plan-index:check` (`plan-12`) compara os dois e
+> **bloqueia o commit** na divergência. Como o executor legitimamente move a plan para 🟡 antes da primeira
+> edição ([[00-prompt-executor]] §2) e para 🟠 ao entregar (§5), **toda execução cria uma divergência que só o
+> revisor pode fechar** — e o bloqueio cai sobre quem commita, que é o dono.
+>
+> **A regra operacional que resolve, e é do revisor:** *espelhar o status aqui **antes de liberar qualquer
+> commit**, inclusive nas liberações parciais no meio de uma execução.* Foi a falha que apareceu na `plan-15`:
+> liberei os lotes 1–3 com a plan em 🟡 e o índice ainda em 🔴. Autorização pontual ao executor para editar
+> este arquivo **é remendo, não solução** — repete-se a cada transição e corrói a regra de propriedade.
 
 ---
 
@@ -160,3 +176,7 @@ Toda plan declara, **desde o momento em que é escrita**, para onde seu conteúd
 - **Uma plan `🟡 Em execução` por vez**, salvo plans comprovadamente disjuntas (arquivos sem interseção) — o
   revisor declara a disjunção ao liberar as duas.
 - **Só o revisor edita este arquivo.** O executor nunca o toca; ele escreve apenas na plan que executou.
+- **O revisor espelha o status ANTES de liberar qualquer commit** — inclusive liberação parcial no meio de uma
+  execução. O `plan-index:check` bloqueia o commit na divergência, e a divergência nasce de um movimento
+  **legítimo** do executor (🟡 ao iniciar, 🟠 ao entregar). Espelhar no veredito basta para o fluxo normal;
+  espelhar **ao liberar** é o que cobre a liberação parcial. Ver a nota da §2.
