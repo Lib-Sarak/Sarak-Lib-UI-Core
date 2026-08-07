@@ -46,31 +46,28 @@ Nota técnica registrada no próprio arquivo (`breakpoints.ts:11-13`): `@media` 
 `var(--…)`** na condição, então o número é interpolado no JS ao gerar a media-query — não existe como
 variável CSS consumível na condição.
 
-## 2.1 ⚠️ Alcance real do token de breakpoint — os três caminhos NÃO andam juntos
+## 2.1 ⚠️ Alcance real do token de breakpoint — 2 dos 3 caminhos andam juntos desde 2026-08-04
 
 O cabeçalho de `breakpoints.ts:4-7` afirma que a fonte única garante que *"CSS e JS nunca divirjam sobre o
 que é tablet/desktop"*. Isso é verdade **para os valores default**. Se o consumidor **alterar** o token no
-tema, os três caminhos divergem:
+tema:
 
 | Caminho | Segue o token do tema? | Onde |
 | --- | --- | --- |
 | **Media-query dos tokens responsivos** | ✅ **sim** — lê `design.breakpointTablet`/`Desktop` e só cai na constante se ausente | `src/core/Design/hooks/useDesignVariables.ts:58-59` |
-| **Detecção JS de dispositivo** (`useSarakDevice`) | ❌ **não** — usa a **constante** importada | `src/core/Provider/DeviceProvider.tsx:2,8-9` |
-| **Classes estruturais de container query** (`@min-[768px]:`, `@min-[1024px]:`) | ❌ **não** — a constante é **interpolada em build-time** na string da classe | `useStructuralStyles.ts:40,42,86-87,229`; `useStructuralStyles.presets.ts:13-15,21`; `ShellContent.tsx:38,54`; `TopbarNav.tsx:111`; `useShellLayoutStyles.ts:33` |
+| **Detecção JS de dispositivo** (`useSarakDevice`) | ✅ **sim, desde a `plan-08` (F5, 2026-08-04)** — `SarakUIProvider` memoiza os breakpoints do tema ativo e os desce ao `DeviceProvider` via `DeviceBreakpointsContext`; sem o tema atravessar a fronteira de bundle, o pior caso é o comportamento anterior (nunca pior) | `src/core/Provider/SarakUIProvider.tsx:180-190`, `DeviceProvider.tsx:41-52,78-92` |
+| **Classes estruturais de container query** (`@min-[768px]:`, `@min-[1024px]:`) | ❌ **não** — a constante é **interpolada em build-time** na string da classe. **Limite de ferramenta, não dívida** — Tailwind resolve a classe em build-time e não aceita `var()` na condição | `useStructuralStyles.ts:40,42,86-87,229`; `useStructuralStyles.presets.ts:13-15,21`; `ShellContent.tsx:38,54`; `TopbarNav.tsx:111`; `useShellLayoutStyles.ts:33` |
 
-**Consequência prática:** mover `breakpointTablet` para, digamos, 900px muda **onde o valor responsivo de
-um token troca**, mas **não** muda em que largura `useSarakDevice` passa a dizer `'tablet'`, nem em que
-largura o grid estrutural vira 2 colunas. O resultado é uma faixa de larguras onde metade da interface
-já virou tablet e a outra metade não.
+**Consequência prática, hoje:** mover `breakpointTablet` no tema já muda **onde o valor responsivo de um
+token troca** *e* em que largura `useSarakDevice` diz `'tablet'` — os dois andam juntos. O que **continua**
+sem seguir o token é o grid estrutural resolvido por classe Tailwind (a camada 3 da §6), e essa metade foi
+**aceita como característica** na triagem de 2026-08-01 — o motivo está em [[00-contexto]] §8: classe
+Tailwind com valor arbitrário é build-time, token de tema é runtime, e fechar essa divergência exigiria
+abandonar as classes de container query em favor de CSS gerado.
 
-**Isso não é bug de implementação — é limite arquitetural:** classe Tailwind com valor arbitrário é
-resolvida em build-time; um token de tema é runtime. Fechar a divergência exigiria abandonar as classes
-de container query em favor de CSS gerado, o que é uma mudança grande.
-
-**A regra derivada, e é a que importa:** **os tokens de breakpoint são para AJUSTE FINO do valor
-responsivo dos tokens, não para redefinir o que é "tablet" na biblioteca.** Quem precisar mudar as faixas
-de verdade deve tratar isso como uma spec de arquitetura, não como configuração de tema. Registrado como
-lacuna em §8.
+**A regra derivada continua valendo para a metade que resta:** os tokens de breakpoint ajustam fino o valor
+responsivo e a detecção de dispositivo; **não** redefinem a largura em que o grid estrutural muda de
+colunas.
 
 # 3. `useSarakDevice` — e a lição arquitetural que ele carrega
 
@@ -147,13 +144,12 @@ Cada linha foi **conferida no código**, e cada uma tem teste identificado.
 | **`SarakFlex`** | `wrap` **liga por default** — itens quebram em linhas em vez de transbordar; `direction` aceita `ResponsiveValue` | `SarakFlex.tsx:16-21,46-48,58` | `SarakFlex.test.tsx`, `SarakLayoutsResponsive.test.tsx` |
 | **`SarakSplitPane`** | **celular:** painéis **empilham** em coluna full-width, **sem a divisória de arraste** (não faz sentido em touch estreito); tablet/desktop mantêm o split | `SarakSplitPane.tsx:18-21,32` | `SarakSplitPane.test.tsx` |
 | **`SarakDataTable`** | **celular:** colapsa para `SarakDataCards`; **opt-out explícito** `responsive={false}` | `SarakDataTableImpl.tsx:41-42,71,74,77` | `SarakDataTableImpl.test.tsx`, `SarakDataCards.test.tsx` |
-| **`SarakTable`** | **celular:** colapsa para `SarakTableCards` | `SarakTable.tsx:42,113-116` | `SarakTable.responsive.test.tsx`, `SarakTableCards.test.tsx` |
+| **`SarakTable`** | **celular:** colapsa para `SarakTableCards`; **opt-out explícito** `responsive={false}` *(desde 2026-08-04)* | `SarakTable.tsx:32-37,44,46,116` | `SarakTable.responsive.test.tsx`, `SarakTableCards.test.tsx` |
 | **`SarakHidden`** | remove da árvore nos dispositivos listados | `SarakHidden.tsx:17-24` | `SarakHidden.test.tsx` |
 
-**Assimetria a saber:** `SarakDataTable` tem `responsive={false}`; **`SarakTable` não tem opt-out** — o
-colapso no celular é incondicional (`SarakTable.tsx:113`). Quem precisar da tabela real no celular (um
-caso legítimo: relatório denso com scroll horizontal deliberado) **não tem como pedir** hoje. Registrado
-em §8.
+✅ **A assimetria fechou em 2026-08-04 (`plan-08`, F6).** `SarakTable` ganhou `responsive?: boolean` com
+default `true`, espelhando `SarakDataTableImpl` — mesma prop, mesmo default, mesmo efeito. Mudança aditiva
+(`minor`), sem esperar o major. Entrada em `docs/migracoes.md`.
 
 ## 5.1 ⚠️ O que NÃO adapta — explicitamente
 
@@ -216,8 +212,8 @@ override. Saber a diferença é o que evita concluir "está coberto" quando o qu
 | # | Item | Situação |
 | --- | --- | --- |
 | 1 | **Container Queries reais no Gêmeo Digital** — o preview simula viewport por escala/constraint de largura + `overrideDevice`, não por container query verdadeira. É o "Tier B" de `plan/10-responsividade-gemeo-digital.md`, **nunca feito** | backlog |
-| 2 | **Token de breakpoint não move a detecção JS nem as classes estruturais** (§2.1) | limite arquitetural documentado |
-| 3 | **`SarakTable` sem opt-out de colapso** (§5) | assimetria com `SarakDataTable` |
+| 2 | ✅ **FECHADO em parte (2026-08-04, `plan-08` F5)** — token de breakpoint agora move a detecção JS; as classes estruturais continuam sem seguir o token | limite arquitetural, aceito como característica ([[00-contexto]] §8) |
+| 3 | ✅ **FECHADO em 2026-08-04 (`plan-08` F6)** — `SarakTable` ganhou opt-out | — |
 | 4 | **`SarakManagementGrid` e `SarakDataGrid` sem colapso mobile** (§5.1) | lacuna declarada |
 | 5 | **Nenhum teste de detecção real por redimensionamento de janela** além do `DeviceProvider.test.tsx` — nenhum teste dispara `resize` com um componente de layout montado | lacuna de cobertura |
 

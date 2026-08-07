@@ -175,36 +175,26 @@ Onde a diferença mora:
 > que importa é o **sinal**: nenhum teste do repositório está silenciosamente fora, exceto os 4 `.spec` —
 > que são de outra ferramenta, de propósito.
 
-## 6.1 ⚠️ A LACUNA REAL DE ESCOPO: `src/shared/` é invisível para o gate de cobertura
+## 6.1 ✅ FECHADO em 2026-08-05 — `src/shared/`, `src/effects/` e `src/constants/` entraram no gate de cobertura
 
-`auditor_coverage.mjs:52-60` varre **exatamente três raízes**:
+**Era:** `auditor_coverage.mjs:52-60` varria só `src/components`, `src/features` e `src/core`. `src/shared/`
+ficava invisível, com **três arquivos sem teste** — `useSarakRouter.ts` (rota nativa por History API),
+`useModuleDiscovery.ts` (formata/ordena módulos do menu) e `services/api.ts` (cliente axios + a fronteira "a
+lib não injeta `Authorization`", [[10-seguranca-e-acessibilidade]] §3.1).
 
-```js
-const srcDir      = path.resolve('src/components');
-const featuresDir = path.resolve('src/features');
-const coreDir     = path.resolve('src/core');
-```
+**Conserto, em duas metades, como a spec já previa que precisava ser:**
 
-**`src/shared/` não está na lista.** E ele contém três arquivos **sem nenhum teste**
-(`find src/shared -type d -name __tests__` → **vazio**):
+1. **Metade de código (2026-08-03, `plan-07`):** testes escritos para os dois hooks —
+   `useSarakRouter.ts` (9 casos) e `useModuleDiscovery.ts` (11 casos, com as duas fronteiras mockadas).
+   `services/api.ts` e `types/index.ts` continuam fora da regra 1:1 **na letra** (um é `.ts` que não começa
+   com `use`, o outro é `index*`) — não são violação, são o próprio recorte da regra.
+2. **Metade de gate (2026-08-05, `plan-12`, vão nº 6):** `auditor_coverage.mjs` ampliado para
+   `src/shared/`, `src/effects/` e `src/constants/`. **Nasceu verde** — os testes já existiam, escritos na
+   metade 1, incluindo dois achados novos que a ampliação revelou: `effects/NoiseOverlay.tsx` (6 testes) e
+   `constants/icon-packs.tsx` (7 testes, com paridade de chaves entre os 8 packs de ícone).
 
-| Arquivo | O que é | Por que dói |
-| --- | --- | --- |
-| `src/shared/hooks/useSarakRouter.ts` | rota nativa por History API — `pushState`/`replaceState` + dispatch de `popstate` | **o coração do roteamento do modo Shell-host**, o código mais acoplado a browser da lib |
-| `src/shared/hooks/useModuleDiscovery.ts` | formata/ordena os módulos registrados, aplica blacklist | decide **o que aparece no menu** |
-| `src/shared/services/api.ts` | cliente axios dos templates pesados, e a fronteira "a lib não injeta `Authorization`" | é uma **fronteira de segurança** ([[10-seguranca-e-acessibilidade]] §3.1) |
-
-**Isto é a mesma classe de defeito da lacuna do `auditor_ghostvars`** ([[01-gates-e-baseline]] §4.3):
-**escopo do auditor menor que o alcance da regra** → o gate fica verde e a regra fica violada. A regra 1:1
-diz "todo componente/hook tem teste"; o auditor diz "todo componente/hook **de três pastas**".
-
-**Consequência medida:** `auditor_coverage` reporta **0 órfãos** enquanto **3 arquivos** — dois deles
-críticos — não têm um único teste. Ver também [[04-shell-e-discovery]] §9.
-
-**O conserto tem duas metades, e as duas importam:** (1) acrescentar `src/shared` às raízes varridas;
-(2) **escrever os testes que a ampliação vai passar a exigir**. Fazer só (1) transforma o baseline em
-vermelho sem consertar nada. **Não é feito aqui** — mexer em gate durante esta campanha moveria o baseline
-que ela está fixando ([[01-gates-e-baseline]] §6). Vira spec própria.
+**Estado hoje:** `auditor_coverage` cobre as seis raízes e reporta **0 órfãos**, de verdade — não mais
+"0 órfãos dentro de um recorte que deixava três arquivos de fora".
 
 # 7. E2E — o estado HONESTO
 
@@ -237,41 +227,40 @@ que ela está fixando ([[01-gates-e-baseline]] §6). Vira spec própria.
 >
 > CI é a **Fase A da Campanha 2** (decisão D9), e é ela que destrava isto.
 
-# 8. Cobertura percentual — a verdade sobre os "80%"
+# 8. ✅ Cobertura percentual — ligada em 2026-08-05 (`plan-12`, R8.1), com piso móvel
 
-**A meta de ~80% é uma INTENÇÃO, não uma medição.** Verificado nesta entrega:
+**Era:** `@vitest/coverage-v8` instalado (`package.json:98`) e **nenhum script o invocava** — a meta de
+~80% era intenção, não medição.
 
-| Fato | Evidência |
-| --- | --- |
-| `@vitest/coverage-v8` **está instalado** | `package.json:98` (`^4.1.8`, devDependency) |
-| **Não há configuração de `coverage`** no Vitest | `vitest.config.ts` — o bloco `test` não tem a chave |
-| **Não há script que rode cobertura** | os 22 scripts do `package.json` — nenhum menciona coverage |
-| Portanto: **nenhum número de cobertura % é produzido hoje** | — |
+**Conserto:** `vitest.config.ts` ganhou o bloco `coverage` (`provider: 'v8'`, reporter `text` + `json-summary`);
+`gates/scripts/release/check-coverage-floor.mjs` (novo) aplica a **mesma mecânica do `audit:baseline`** —
+mede, grava como piso, e o piso só sobe. Pior bloqueia, igual passa, melhor passa e regrava.
+`npm run coverage:check` (`vitest run --coverage && check-coverage-floor.mjs`), dentro do `gates:full`.
 
-A spec antiga afirmava *"atingindo coberturas sólidas (>80%) globalmente"*. **Essa afirmação não é
-verificável com o ferramental como está configurado.** A ferramenta está instalada e ociosa.
+**Por que piso móvel e não alvo fixo — a mesma razão que a versão anterior desta seção já argumentava:** um
+teto arbitrário (80%) reprova no primeiro dia e ensina a ignorar o vermelho. O 1:1 continua sendo a regra
+principal; o percentual é a segunda rede, e mede **outra coisa**: quanto de **dentro** de cada arquivo o
+teste alcança.
 
-**O que a biblioteca realmente tem em lugar de percentual** — e é defensável:
+**Piso gravado hoje: 70,66% de linhas** (`gates/baselines/coverage-floor.json`). O que a biblioteca tem em
+lugar de um número solto:
 
-- **cobertura 1:1 estrutural** (§2), que é binária e cobrada por gate: todo componente/hook do escopo
-  varrido **tem** arquivo de teste;
-- **9 gates-teste de invariante** (§4), que cobrem propriedades que percentual não mede (paridade de
-  barril, contrato de token, não-vazamento de escopo).
-
-**A avaliação honesta:** 1:1 garante **existência** de teste, não **qualidade** — um teste que só monta o
-componente e afirma `toBeTruthy()` passa no gate. Percentual mediria linhas exercitadas e pegaria isso.
-Ligar cobertura é barato (a dependência já está lá); a decisão de **ligar com limiar bloqueante** é que
-precisa de dono, porque um limiar mal calibrado reprova PR legítimo.
+- **cobertura 1:1 estrutural** (§2), binária e cobrada por gate: todo componente/hook do escopo varrido
+  **tem** arquivo de teste — inclusive `shared/`, `effects/` e `constants/` agora (§6.1);
+- **percentual com piso móvel** (esta seção), que pega o que o 1:1 não vê: um teste que só monta o
+  componente e afirma `toBeTruthy()` passa no 1:1, mas pesa pouco no percentual;
+- **11 gates-teste de invariante** (§4), que cobrem propriedades que percentual não mede (paridade de
+  barril, contrato de token, não-vazamento de escopo, ausência de acoplamento de auth, composição atômica).
 
 # 9. Dívidas e lacunas
 
 | # | Item | Situação |
 | --- | --- | --- |
-| 1 | **`src/shared/` fora do escopo do gate de cobertura** — 3 arquivos sem teste, 2 críticos (§6.1) | a mais grave; conserto em duas metades |
-| 2 | **Cobertura % instalada e não medida** (§8) | ferramenta ociosa; falta config + decisão de limiar |
-| 3 | **Nada de Playwright em automação**; `playwright.config.ts` aponta para `./e2e` inexistente (§7) | destravado pela CI (Campanha 2, Fase A) |
+| 1 | ✅ **FECHADO em 2026-08-05** — `src/shared/`, `src/effects/`, `src/constants/` no escopo do gate (§6.1) | — |
+| 2 | ✅ **FECHADO em 2026-08-05** — cobertura % ligada, piso móvel 70,66% (§8) | — |
+| 3 | **Nada de Playwright em automação**; `playwright.config.ts` aponta para `./e2e` inexistente (§7) | destravado pela CI (`plan-05`, ainda não executada) |
 | 4 | **Nenhum gate de a11y** | [[10-seguranca-e-acessibilidade]] §5.1 |
-| 5 | **Nenhum teste de alcançabilidade das abas do `CustomizationPanel`** — a razão pela qual 5 abas ficaram inalcançáveis sem nenhum gate reclamar | [[06-painel-de-customizacao-e-preview]] §9.3 |
+| 5 | ✅ **NÃO SE APLICA MAIS** — o `CustomizationPanel` deixou de ter abas inalcançáveis: os imports mortos **saíram** (2026-08-04, decisão do dono), não foram tornados alcançáveis. Não há mais aba para testar | [[06-painel-de-customizacao-e-preview]] §9.3 |
 | 6 | **Nenhum teste de detecção real por `resize`** com layout montado | [[07-responsividade-e-multidispositivo]] §8 item 5 |
 
 ## 9.1 ✅ RESOLVIDO — o teste não-hermético que segurava o Anel 3
@@ -318,9 +307,9 @@ Todos do jsdom, e nenhum indica problema:
 - [x] Os gates-teste foram **verificados um a um** antes de listados — e o que não existe
       (`AuthCouplingGate`) aparece como ausente.
 - [x] A lacuna de E2E aparece **como lacuna**, incluindo o config morto apontando para `./e2e`.
-- [x] A cobertura percentual está descrita como **não medida**, contra a afirmação da spec antiga.
-- [x] A lacuna de escopo de `src/shared/` está registrada com os 3 arquivos e o conserto em duas metades.
-- [x] Nenhum teste novo foi escrito e nenhuma configuração de teste foi alterada.
+- [x] A cobertura percentual está descrita — *(atualizado 2026-08-07)* ligada em 2026-08-05, piso móvel
+      70,66%, contra a afirmação sem medição da spec antiga.
+- [x] A lacuna de escopo de `src/shared/` está registrada — **fechada em 2026-08-05**, nas duas metades.
 
 # 11. Plano de testes (Quality Gate)
 
@@ -331,8 +320,7 @@ Esta spec é verificada **executando-a**:
 | `npx vitest run` | 275 arquivos / 879 testes, 100% verde |
 | `node gates/scripts/audit/auditor_coverage.mjs` | `[OK] Todos os componentes possuem testes!` |
 | `npm run test-ct` | roda os 4 `.spec.tsx` (manual; `EmbeddedNoLeak` exige `npm run build` antes) |
-| `find src/shared -type d -name __tests__` | **vazio** — a prova da lacuna §6.1 |
+| `npm run coverage:check` | **igual ao piso (70,66%)** — §8 |
 
-**A implementar (backlog, em ordem de valor):** (1) testes de `useSarakRouter`/`useModuleDiscovery`/`api.ts`
-+ ampliação do escopo do auditor; (2) CI que execute suíte **e** Playwright; (3) cobertura % com limiar
-acordado.
+**A implementar (backlog, em ordem de valor):** (1) CI que execute suíte **e** Playwright (`plan-05`,
+ainda não executada); (2) teste de detecção real por `resize` com layout montado (§9 item 6).

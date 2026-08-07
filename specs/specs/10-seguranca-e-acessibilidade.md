@@ -174,21 +174,21 @@ Navegação por `Tab`/`Shift+Tab`/`Enter`/`Espaço`/`ESC` nos componentes intera
 nenhum `axe`, nenhum teste de árvore de acessibilidade agregado. A cobertura é a que os testes por
 componente exercitam. Ver §5.1.
 
-### c) Anel de foco — e a inconsistência real
+### c) ✅ Anel de foco — FECHADO em 2026-08-04 (`plan-08`, F4)
 
 O token existe: **`focusRingWidth`** (`src/core/Design/schema/engineering.ts:12-20`), slider 0-6px,
 default 2, emitindo `--sarak-focus-width`; a própria descrição instrui a **não** reduzir abaixo de 2px
 sem motivo validado. O schema que o hospeda chama-se, literalmente, "Acessibilidade e Camadas".
 
-**Mas o token só é honrado em um lugar:**
+**Agora o token é honrado nos dois lugares:**
 
 | Onde o anel é desenhado | Respeita o token? |
 | --- | --- |
 | `SarakLink` (`src/components/atomic/Navigation/SarakLink.tsx:72`) | ✅ `outlineWidth: 'var(--sarak-focus-width, 2px)'` |
-| Regra global de botão (`src/styles/_utilities.css:54-56`) | ❌ `outline: 2px solid …` — **largura fixa** |
+| Regra global de botão (`src/styles/_utilities.css:58`) | ✅ `outline: var(--sarak-focus-width, 2px) solid …` — **corrigido em 2026-08-04** |
 
-Consequência: **mexer em `focusRingWidth` muda o anel dos links e não muda o dos botões.** Um consumidor
-que aumentar o anel por necessidade de acessibilidade vai vê-lo aumentar em parte da interface.
+**Fechado.** A regra global de foco passou a ler o token, junto com o anel de link. Teste dedicado em
+`src/styles/__tests__/focusRing.test.ts` (3 casos).
 
 Agravante estrutural: essa regra vive em `src/styles/*.css`, e `src/styles/` **não é varrido como
 consumidor** por nenhum auditor ([[01-gates-e-baseline]] §4.3a) — nem o hardcode nem o não-consumo do
@@ -304,11 +304,11 @@ consumidor, chamado pelo callback dele.
 | # | Lacuna | Consequência | Onde |
 | --- | --- | --- | --- |
 | **5.1** | **Nenhum gate de a11y.** Não há `axe`, nem teste de árvore de acessibilidade agregada. A cobertura é a dos testes por componente | uma regressão de ARIA/foco passa se o teste daquele componente não a cobrir | — |
-| **5.2** | **Contraste não é medido** (§2.4d) | a lib não sabe dizer se os 18 temas shippados passam AA | `color-engine.ts` tem a heurística; falta a régua |
-| **5.3** | **O gate anti-acoplamento de auth não existe** (§3.1) | a propriedade "zero auth em `src/`" é verdadeira hoje e não é defendida | `plan/20` §2.3 previu; nada implementa |
+| **5.2** | ⚠️ **Contraste medido, gate ainda não construído** (§2.4d) — `plan-12` mediu **12 dos 18 temas falham** em pelo menos 1 dos 4 pares canônicos, inclusive `minimalist-airy` (um dos `SARAK_REFERENCE_THEMES`). Regra escrita (**R31**) | gate depende de decisão do dono sobre fronteira de pares/limiar | script de medição fora do repo, anexo da `plan-12`; achado 18 em [[15-divida-conhecida]] §4.1 |
+| **5.3** | ✅ **FECHADA em 2026-08-05** — `auditor_authcoupling.mjs` construído (**R32**), nasce verde | o único violador (`SarakSecurityOrchestrator`) já havia saído do contrato público na `plan-09` | — |
 | **5.4** | **`PreviewCanvas` aplica design SEM `validateDesign`** — o boot real valida, o caminho de preview não | valor fora do contrato virava CSS Variable literal no preview; foi o que expôs o drift de 21 tokens | `plan/40.4` §Nota; ver [[06-painel-de-customizacao-e-preview]] |
-| **5.5** | **`AdvancedTab` chama `localStorage.clear()`** (`src/features/DesignEngine/Panels/AdvancedTab.tsx:17-25`) — apaga **toda** a origem, não só as chaves da lib, e em seguida dá `window.location.reload()`. O `confirm()` promete "restaurar TODAS as configurações **visuais**" | num host que guarda sessão/carrinho/rascunho em `localStorage`, um "reset visual" apaga **os dados do host**. Grave no modo embarcado, onde a ilha não é dona da página | ver [[06-painel-de-customizacao-e-preview]] |
-| **5.6** | **`focusRingWidth` não é honrado pela regra global de foco** (§2.4c) | anel de foco muda em link e não em botão | `src/styles/_utilities.css:54-56` |
+| **5.5** | ✅ **FECHADA em 2026-08-04 (`plan-08`, F1)** — `AdvancedTab` chamava `localStorage.clear()`, apagando a origem inteira | `clearSarakStorage()` remove só as chaves da lib; teste prova que chave alheia sobrevive ao reset | ver [[06-painel-de-customizacao-e-preview]] §9.5 |
+| **5.6** | ✅ **FECHADA em 2026-08-04** — `focusRingWidth` agora é honrado pela regra global de foco (§2.4c) | anel de foco consistente entre link e botão | `src/styles/_utilities.css:58` |
 | **5.7** | **E2E de isolamento não roda em automação** — `EmbeddedNoLeak.spec.tsx` exige build e execução manual | a garantia mais difícil de manter (não-vazamento) é a menos exercitada | [[01-gates-e-baseline]] §2.6 |
 
 **Nenhuma delas é corrigida por esta spec** — ela só escreve código-documento. As 5.5 e 5.6 são as duas
@@ -338,5 +338,6 @@ que eu recomendaria priorizar: são pequenas, locais, e a 5.5 tem impacto em dad
 | Jornada só-teclado num overlay | `src/components/atomic/Modals/__tests__/keyboardJourney.test.tsx` | ✅ suíte |
 | Não-vazamento em página real | `src/core/Provider/__e2e__/EmbeddedNoLeak.spec.tsx` | ❌ **manual**, exige `npm run build` |
 
-**A implementar (backlog, não desta spec):** gate de a11y (5.1), auditoria de contraste dos temas
-shippados (5.2), gate anti-acoplamento de auth (5.3).
+**A implementar (backlog, não desta spec):** gate de a11y (5.1); o gate de contraste (5.2) depende de
+decisão do dono sobre fronteira de pares/limiar — a medição já existe. O gate anti-acoplamento de auth
+(5.3) **fechou em 2026-08-05**.

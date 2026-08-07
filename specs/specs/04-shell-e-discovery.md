@@ -147,7 +147,7 @@ O token `navigationStyle` (`src/core/Design/schema/global.ts:21-34`) tem **enum 
 Mais o comportamento de **fallback**: `isSidebar` cobre também "nenhum dos outros" (`:81`), então um valor
 desconhecido cai em sidebar.
 
-> ### ⚠️ Dívida a registrar: o quarto valor `'glass'` é um ramo INALCANÇÁVEL e perigoso
+> ### ✅ FECHADO em 2026-08-04 (`plan-08`, F3): o ramo `'glass'` foi removido
 >
 > `SarakShell.tsx:80` calcula `const isGlass = design?.navigationStyle === 'glass'` e usa `isGlass` **só**
 > para excluir o fallback de sidebar (`:81`). Consequência aritmética: com `navigationStyle === 'glass'`,
@@ -161,8 +161,13 @@ desconhecido cai em sidebar.
 >
 > **Duas coisas erradas ao mesmo tempo:** código morto que só está morto por causa de um gate de outra
 > camada, e um comportamento de "nav nenhuma" esperando um dia em que alguém adicione `'glass'` ao enum
-> por parecer um estilo faltante. **Não corrigido aqui** (esta spec não altera código); a correção
-> honesta é remover `isGlass` — não adicionar o enum.
+> por parecer um estilo faltante. **Decisão do dono (2026-08-04): remover** — a correção honesta era
+> remover `isGlass`, não adicionar o enum. `SarakShell.tsx:78-83`: saiu a variável e o `&& !isGlass`; a
+> derivação de `isSidebar` virou `navigationStyle === 'sidebar' || (!isTopbar && !isDock)` — sidebar é o
+> fallback explícito de **qualquer** valor fora de topbar/dock, inclusive um futuro `navigationStyle` novo
+> que ninguém tenha tratado ainda. Teste de paridade `SarakShell.tsx` ↔ enum do schema, nos dois sentidos,
+> em `SarakShell.test.tsx:70-101`. Zero mudança de comportamento observável — `'glass'` nunca foi opção do
+> schema, então `isGlass` era sempre `false`.
 
 ## 4.2 Roteamento — a lib ESCREVE na URL
 
@@ -262,40 +267,25 @@ Trocar o tema muda a casca: `SidebarNav`/`TopbarNav` consomem os tokens `--sarak
 
 # 7. Dívidas a registrar (nenhuma corrigida aqui)
 
-## 7.1 Registro por EFEITO COLATERAL DE IMPORT — os dois ids legados
+## 7.1 ✅ FECHADO em 2026-08-05 (`plan-09`, operação 1) — os dois ids legados saíram, junto do import eager
 
-`src/index.ts:119-125`:
+**Era:** `src/index.ts:126-131` importava `CustomizationPanel` de forma eager e registrava dois ids legados
+por efeito colateral — `mx-customization` e `personalization`, ambos apontando para o mesmo componente, um
+deles com tratamento privilegiado no roteamento (§4.2, resolução da tela inicial).
 
-```ts
-import { registerLocalComponent } from './core/Discovery/registry';
-import { CustomizationPanel } from './features/DesignEngine/Library/CustomizationPanel';
-registerLocalComponent('mx-customization', CustomizationPanel);
-registerLocalComponent('personalization', CustomizationPanel);
-```
+**Conserto:** o bloco de efeito colateral inteiro foi removido, na mesma edição que tornou o
+`CustomizationPanel` lazy ([[06-painel-de-customizacao-e-preview]] §9.2). Como consequência, o registro
+automático do módulo também saiu — `useRegistryManager.ts` não registra mais `mx-customization` com
+`priority: 9999`, e `useSarakShell.ts` não desempata mais a tela inicial por esse id.
 
-**O que isto faz:** todo consumidor que importa **qualquer coisa** do barril público registra, sem pedir,
-dois componentes locais — ambos apontando para o mesmo `CustomizationPanel`. Efeitos:
+**Consequência para o consumidor, na nota de migração:** quem dependia do id implícito para o painel
+aparecer no menu sem registro explícito precisa chamar `registerSarakModule({ id: 'mx-customization', … })`
+(ou o id que preferir) manualmente agora — o código de reposição está em `docs/migracoes.md`. É quebra de
+contrato pública, parte do major junto com `partialMode` e o `SarakSecurityOrchestrator`.
 
-1. **`import` com efeito colateral no registro global.** Importar um átomo escreve no `window`.
-2. **Os dois ids ficam disponíveis para registro de módulo** — se o consumidor fizer
-   `registerSarakModule({ id: 'mx-customization', … })`, o painel aparece no menu sem que ele tenha
-   escrito componente algum. É até conveniente, e é totalmente implícito.
-3. **`mx-customization` tem tratamento privilegiado no roteamento** (§4.2): sem módulo na URL e sem
-   `defaultModuleId`, o Shell procura justamente por ele antes de cair no primeiro da lista
-   (`useSarakShell.ts:30-32`).
-4. **Agrava a dívida de bundle** — o `CustomizationPanel` já está eager no barril
-   ([[01-gates-e-baseline]] §4.5 item 3), e este import garante que ele **nunca** possa ser removido por
-   tree-shaking: um efeito colateral top-level é, por definição, não-eliminável.
+## 7.2 ✅ FECHADO — ver §4.1
 
-**PERGUNTA ABERTA PARA O DONO (não decidida aqui):** manter os dois ids legados, manter apenas
-`mx-customization`, ou remover ambos e exigir registro explícito? Remover é **breaking change** para quem
-depende do id implícito; manter perpetua um efeito colateral de import. A decisão pertence ao pacote de
-limpeza de contrato público — o pacote de quebras agrupadas num único major (decisão **D12** do dono),
-cujo briefing vive no plano transitório da campanha em curso (`specs/plan/`).
-
-## 7.2 O ramo `'glass'` inalcançável
-
-Ver §4.1. Código morto cuja morte depende de um gate de outra camada.
+O ramo `'glass'` foi removido em 2026-08-04 (`plan-08`, F3). Não é mais código morto: não existe.
 
 ## 7.3 Ghost vars no cromo do Shell — nenhum gate os vê
 
@@ -315,7 +305,8 @@ código. Detalhe em [[01-gates-e-baseline]] §4.3b.
       modo #1.
 - [x] A diferença Shell (host) × AppChrome (apresentacional) está explícita.
 - [x] Nenhuma menção a manifesto, `ShellRouterNode` ou renderizador declarativo.
-- [x] Os dois ids legados estão documentados com a pergunta aberta, não resolvidos.
+- [x] Os dois ids legados estão documentados — **fechados em 2026-08-05** (`plan-09`): o registro implícito
+      saiu, o consumidor registra explicitamente agora (§7.1).
 
 # 9. Plano de testes (Quality Gate)
 

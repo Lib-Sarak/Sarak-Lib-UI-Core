@@ -2,7 +2,7 @@
 tipo: "plan"
 titulo: "Quitar o baseline de auditoria — pagar a dívida que foi documentada e nunca agendada"
 dominio: "Sarak-Lib-UI-Core / Qualidade / Gates"
-status: "🟢 Aprovada"
+status: "⚪ Sintetizada"
 prioridade: "Alta"
 tags: ["plan", "baseline", "gates", "divida-tecnica"]
 relacionados: ["[[01-gates-e-baseline]]", "[[15-divida-conhecida]]", "[[11-testes-e-cobertura]]"]
@@ -531,3 +531,17 @@ margem. É o objetivo — mas é uma mudança de regime, e a primeira reprovaç�
 `specs/15-divida-conhecida.md` (achados 1, 22, 24, 25 e o achado 13 pela metade de teste)
 
 **Liberado: pode commitar** — `audit-baseline.json`, `auditor_hardcoded.mjs` e os schemas **no mesmo commit**.
+
+---
+
+## Síntese — 2026-08-07
+
+Sintetizada em: `specs/specs/01-gates-e-baseline.md` (já escrita) · `specs/arquitetura/04-contrato-de-tokens-e-paridade.md`
+(já escrita) · `specs/specs/15-divida-conhecida.md` (achados 1/22/24/25 fechados, 13 fechado após a metade de
+gate da `plan-12`) · `specs/specs/11-testes-e-cobertura.md` §6.1/§8/§9 (shared/effects/constants no gate de
+cobertura — metade de código desta plan, metade de gate da `plan-12`; cobertura % ligada pela `plan-12`) ·
+`specs/specs/10-seguranca-e-acessibilidade.md` §2.4c/§5.2/§5.3/§5.5/§5.6 (anel de foco, achados de auth e
+localStorage cruzados com as plans 08/12).
+
+Observações: os dois últimos destinos ficaram pendentes até esta rodada de `/spec-atualizar` porque o
+executor não podia editar spec fixa. Nada desta plan ficou de fora.

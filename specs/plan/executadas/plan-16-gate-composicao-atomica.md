@@ -2,7 +2,7 @@
 tipo: "plan"
 titulo: "Construir o gate de R10 — composição atômica, com a fronteira já fixada"
 dominio: "Sarak-Lib-UI-Core / Qualidade / Gates"
-status: "🟢 Aprovada"
+status: "⚪ Sintetizada"
 prioridade: "Alta"
 tags: ["plan", "gates", "r10", "composicao-atomica", "ast"]
 relacionados: ["[[00-regras-e-invariantes]]", "[[01-gates-e-baseline]]", "[[plan-12-construcao-dos-gates]]", "[[plan-15-adequacao-total]]"]
@@ -391,3 +391,14 @@ na metade `switch`/`case` de design) · `specs/01-gates-e-baseline.md` (o 11º a
 **Liberado: pode commitar** — `auditor_composicaoatomica.mjs`, o self-test, `run_audit.mjs`,
 `check-audit-baseline.mjs` e `audit-baseline.json` **no mesmo commit**, que é a exigência da
 [[01-gates-e-baseline]] §6.1.
+
+---
+
+## Síntese — 2026-08-07
+
+Sintetizada em: `specs/specs/00-regras-e-invariantes.md` (R10: ⏳→⚠️) · `specs/specs/01-gates-e-baseline.md`
+(11º auditor no catálogo e no baseline — 47 violações; §9.2/§9.5) · `specs/specs/02-enforcement-por-commit.md`
+(Anel 2, 11 auditores).
+
+Observações: as 47 violações de R10 ficam registradas no baseline como dívida da `plan-15`, ainda não
+executada. Nada desta plan ficou de fora.

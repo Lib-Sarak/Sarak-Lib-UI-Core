@@ -2,7 +2,7 @@
 tipo: "plan"
 titulo: "Alinhar o ERP Earendel — o instrumento de medição da lib"
 dominio: "ERP Earendel (repositório EXTERNO)"
-status: "🟢 Aprovada"
+status: "⚪ Sintetizada"
 prioridade: "Alta"
 tags: ["plan", "erp", "consumidor", "repositorio-externo", "workspace"]
 relacionados: ["[[00-contexto]]", "[[13-instalacao-e-atualizacao]]", "[[adr/007-distribuicao-por-git]]"]
@@ -644,3 +644,10 @@ lado. `turbo run build` **5/5** e `verificar` **8/8**, reproduzidos pelo revisor
 `00-contexto.md` §8 descrevia o ERP com fatos que esta execução mudou.
 
 **Liberado: pode commitar — nos dois repositórios.**
+
+---
+
+## Síntese — 2026-08-07
+
+Sintetizada em: `—` (destino declarado). A exceção de `00-contexto.md` §8 já foi aplicada pelo revisor no
+próprio veredito. Nada pendente.

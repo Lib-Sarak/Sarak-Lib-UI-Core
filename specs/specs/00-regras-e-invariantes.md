@@ -48,11 +48,15 @@ Toda regra abre com um marcador. São quatro, e só quatro:
 
 **32 regras: 29 verificáveis (§2) e 3 de conduta (§3).**
 
+> ✅ **Atualizado em 2026-08-07** (síntese das plans 12 e 16): R18, R27, R28 e R32 ganharam gate e viraram ✅;
+> R10 ganhou gate parcial (HTML nativo cru) e virou ⚠️. Só **R31** segue ⏳ — parada obrigatória da `plan-12`,
+> aguardando o dono decidir a fronteira de pares/limiar antes de o gate poder nascer.
+
 | Estado | Quantas | Quais |
 | --- | --- | --- |
-| ✅ gate pleno | **15** | R1 · R2 · R3 · R5 · R6 · R9 · R12 · R13 · R19 · R20 · R21 · R22 · R24 · R25 · R26 |
-| ⚠️ escopo menor que a regra | **8** | R4 · R7 · R8 · R14 · R17 · R23 · R29 · R30 |
-| ⏳ gate a construir (`plan-12`) | **6** | R10 · R18 · R27 · R28 · R31 · R32 |
+| ✅ gate pleno | **19** | R1 · R2 · R3 · R5 · R6 · R9 · R12 · R13 · R18 · R19 · R20 · R21 · R22 · R24 · R25 · R26 · R27 · R28 · R32 |
+| ⚠️ escopo menor que a regra | **9** | R4 · R7 · R8 · R10 · R14 · R17 · R23 · R29 · R30 |
+| ⏳ gate a construir | **1** | R31 |
 | 🔴 conduta | **3** | R11 · R15 · R16 |
 
 **A numeração é identidade e é definitiva.** R14 é R14 para sempre: o `.githooks/pre-commit:68-71` imprime os números na mensagem de bloqueio, e há citação em skills, specs e no próprio código. Regra que sai de categoria **leva o número consigo** — foi o que aconteceu com R10, R11, R15 e R16.
@@ -321,7 +325,8 @@ if (b) return y;
 
 ## R10 — Composição atômica obrigatória
 
-**Estado:** ⏳ **gate a construir.**
+**Estado:** ⚠️ **escopo menor que a regra** — a metade "HTML nativo cru" tem gate pleno; a metade `switch`/`case`
+de design no JSX continua sem detector.
 
 **Enunciado.** Proibido `<button>`, `<input>` ou `<select>` cru **no que o consumidor embute no produto dele** —
 use `SarakButton`, `SarakInput`, `SarakSelect`. E proibido `switch`/`case` de design ou `<style>` de roteamento
@@ -360,12 +365,19 @@ preflight e ignora a paridade atômica, deixando de responder ao token que dever
 <SarakButton variant="primary">Salvar</SarakButton>
 ```
 
-**Cobrada por:** ⏳ **nenhum gate ainda** — mas a fronteira está fixada e o gate ficou **construível**: varrer
-`<button|<input|<select` por AST nos escopos ✅ da tabela acima. ⚠️ **Cuidado medido, para quem construir:** uma
-regex do tipo `<(button|input|select)[ >/]` **perde 55 das 111 ocorrências**, porque o JSX mais comum escreve o
-nome da tag no fim da linha (`<button\n  className=…`) e `grep` é por linha. O detector tem de ser por AST ou
-tolerar quebra de linha. *(Erro cometido pelo revisor no veredito da `plan-12` e corrigido pela medição do
-executor.)* O detector de `switch` de design no JSX continua sem desenho.
+**Cobrada por:** `node gates/scripts/audit/auditor_composicaoatomica.mjs` (construído pela `plan-16`,
+2026-08-05) — detecção **por AST** (`ts.createSourceFile` + `ts.forEachChild`), não por regex de linha. Acusa
+`JsxOpeningElement`/`JsxSelfClosingElement` cujo `tagName` é o identificador minúsculo `button`/`input`/`select`,
+na fronteira exata da tabela acima. Roda no **Anel 2** (via `run_audit.mjs`, junto do `auditor_hardcoded`) — ele
+**nasce vermelho**, não pode ir para o Anel 1. Hoje: **47 ocorrências**, registradas no baseline
+(`components/atomic` 23 · `core/Shell` 15 · `Layout/` 6 · `engines/` 2 · `Discovery/` 1) — dívida da `plan-15`,
+ainda não paga.
+
+> ⚠️ **A metade `switch`/`case` de design no JSX continua sem detector**, declarada no bloco `LIMITES
+> DECLARADOS` do próprio gate. E o cuidado que custou uma rodada de veredito: uma regex do tipo
+> `<(button|input|select)[ >/]` **perde 55 das 111 ocorrências** medidas sem fronteira, porque o JSX mais comum
+> escreve o nome da tag no fim da linha (`<button\n  className=…`) e `grep` é por linha — é por isso que o
+> detector tem de ser por AST.
 
 > **R10 SAIU da conduta em 2026-08-02** *(decisão do dono)*. Ela vivia entre as regras sem gate por herança, não por análise: um detector de `<button>`/`<input>`/`<select>` cru em `.tsx` é **determinístico e barato** — é exatamente a mesma classe de varredura por AST que o `auditor_hardcoded` e o `check-zero-brand` já fazem. Conduta é para o que um script **não consegue** decidir; isto ele consegue. A metade `switch` de design é mais difícil e pode nascer fora do escopo do gate — se nascer, o vão vai declarado, como manda R18. Construir é trabalho da `plan-12`.
 
@@ -470,7 +482,7 @@ CERTO    "A lista completa está em `docs/component-catalog.json`, gerada por AS
 
 ## R18 — Todo gate declara o que NÃO vê
 
-**Estado:** ⏳ **gate a construir.**
+**Estado:** ✅ **gate pleno.**
 
 **Enunciado.** Todo gate declara, **no próprio código**, qual é o seu escopo e o que ele **não** vê. Ampliar o escopo de um gate sem ampliar o registro do que ele consome é regressão, e um cabeçalho que descreve escopo que o código não tem é defeito, não imprecisão.
 
@@ -495,7 +507,7 @@ O antigo achado 30 provou que atenção humana não pega essa classe: ela reapar
 //   :37-61 abre apenas schema/*.ts e styles/*.css.
 ```
 
-**Cobrada por:** ⏳ **nenhum gate.** A construção é da `plan-12`: varrer os scripts de gate atrás de um bloco de limites declarado. Hoje o padrão existe **por hábito** em `auditor_hardcoded.mjs:18-25`, `auditor_cleancode.mjs:37`, `publicComponents.mjs:167-172` e `check-package-contents.mjs:14-23` — e falta exatamente onde já custou caro.
+**Cobrada por:** `node gates/scripts/contrato/check-gate-limits.mjs` (construído pela `plan-12`, 2026-08-05). Varre `gates/scripts/**` (exceto `__tests__/`/`allowlists`) atrás do marcador `LIMITES DECLARADOS` (ou a convenção antiga já existente, "ponto cego conhecido"). Hoje: **26/26** scripts declaram o que não veem — os 17 pré-existentes ganharam o bloco que faltava, e os 9 gates novos das plans 12/16 já nasceram com ele. `npm run gate-limits:check`.
 
 ---
 
@@ -697,7 +709,7 @@ h1,h2 { margin: 0 }
 
 ## R27 — O consumidor nunca precisa de deep import
 
-**Estado:** ⏳ **gate a construir.**
+**Estado:** ✅ **gate pleno.**
 
 **Enunciado.** A superfície da lib é o **barril** (`src/index.ts`) mais o campo `exports` do `package.json`. Nenhum caso de uso legítimo exige `@sarak/lib-ui-core/dist/components/…`. O que está no barril tem retrocompatibilidade; o que não está é interno e muda sem aviso.
 
@@ -713,18 +725,18 @@ import { SarakGrid } from '@sarak/lib-ui-core/dist/components/atomic/Layouts/Sar
 import { SarakGrid, type SarakGridProps } from '@sarak/lib-ui-core';
 ```
 
-**Cobrada por:** ⏳ **nenhum gate.** Hoje há **duas** coisas, e nenhuma é verificação:
+**Cobrada por:** `node gates/scripts/contrato/check-no-deep-import.mjs` (construído pela `plan-12`, 2026-08-05; `npm run deep-import:check`, Anel 1 do `pre-commit`) — confere que `package.json.exports` só expõe a raiz e subcaminhos `.css`. **Nasceu verde.** Continuam valendo, ao lado do gate:
 
 - **o contrato escrito** ([[03-superficie-publica]] §2);
 - **o campo `exports` do `package.json`**, que publica a raiz mais **5 subcaminhos, todos de CSS** — não há porta declarada para `dist/components/…`. Isso torna o deep import um erro de resolução em runtime moderno, o que ajuda; mas não é gate, não cobre bundler tolerante, e sobretudo **não verifica o outro lado da regra**: que o barril cobre tudo que o consumidor precisa.
 
-O gate é trabalho da `plan-12`. R14 (barril completo) é a metade que já tem gate; esta é a metade que falta.
+R14 (barril completo) garante que o consumidor não **precise** de deep import; este gate garante que o **caminho** não exista publicado.
 
 ---
 
 ## R28 — Contrato de saída do CLI do consumidor
 
-**Estado:** ⏳ **gate a construir.**
+**Estado:** ✅ **gate pleno.**
 
 **Enunciado.** `sarak-ui check --notify` sai **sempre com 0** e imprime **só** quando há atualização a fazer. O modo normal (sem a flag) é o oposto, de propósito: sai com **1** se está desatualizado ou se a verificação falhou.
 
@@ -738,7 +750,7 @@ O gate é trabalho da `plan-12`. R14 (barril completo) é a metade que já tem g
 | Existe versão nova e há comando a rodar | bloco destacado, **exit 0** | veredito, **exit 1** |
 | A verificação estourou | **silêncio, exit 0** | mensagem de falha, **exit 1** |
 
-**Cobrada por:** ⏳ **nenhum gate, nem teste.** O comportamento está implementado e comentado em `bin/scaffold/checkUpdate.mjs:14-28` (`runCheckCli` engole qualquer exceção no modo notify em `:20-24`, e decide o código em `:27`), e `formatNotice` devolve `null` para tudo que não seja "existe versão nova E há um comando" (`checkUpdate/runCheckUpdate.mjs:199-201`). Mas **nada exercita isso**: `runCheckCli` não aparece em teste nenhum, e os 4 arquivos de teste de `bin/scaffold/` não cobrem o CLI (achado 26 — **0 ocorrências** de `child_process`/`execSync` ali).
+**Cobrada por:** `bin/scaffold/checkUpdate/__tests__/checkUpdateCli.contract.test.mjs` (construído pela `plan-12`, 2026-08-05) — 8 casos, exercitando `runCheckCli` real (fixtures `file:`, sem rede) nos 4 quadrantes da tabela acima (normal/`--notify` × em dia/desatualizado/falhou), mais o caso de exceção lançada por `runCheckUpdate`. Roda em `npx vitest run` (Anel 3 do `pre-push`), mesma família de R6/R13/R24-26. `runCheckCli` está implementado e comentado em `bin/scaffold/checkUpdate.mjs:14-28` (`runCheckCli` engole qualquer exceção no modo notify em `:20-24`, decide o código em `:27`), e `formatNotice` devolve `null` para tudo que não seja "existe versão nova E há um comando" (`checkUpdate/runCheckUpdate.mjs:199-201`). ⚠️ O teste do CLI **não** cobre o achado 26 (automação de `install` real via `child_process`/`execSync`) — são contratos diferentes; 26 segue aberto, roteado à `plan-11`.
 
 > **Esta regra custou uma rodada inteira na `plan-04` por não existir escrita.** É o argumento mais curto a favor de escrever a regra antes de construir o gate. Contrato completo em [[13-instalacao-e-atualizacao]] §5.1.
 
@@ -828,7 +840,7 @@ ERRADO   silêncio                     — o consumidor assume que passa
 
 ## R32 — A lib é indiferente ao sistema de autenticação
 
-**Estado:** ⏳ **gate a construir** — e a regra **nasce com uma violação**, já roteada.
+**Estado:** ✅ **gate pleno, e nasce verde.**
 
 **Enunciado.** A lib **constrói a tela** de autenticação e **entrega o evento**. Nenhum componente lê ou escreve credencial, token ou sessão, e **nenhum impõe rota, verbo ou payload de autenticação** ao importador.
 
@@ -847,11 +859,11 @@ ERRADO   silêncio                     — o consumidor assume que passa
 await api.post(`${endpoint}/mfa/enable`, { code });
 ```
 
-**Cobrada por:** ⏳ **nenhum gate.** Confirmado: **0 arquivos** `AuthCoupling*` — um plano antigo previu esse gate e **se declarou concluído sem criar nada** (achado 14).
+**Cobrada por:** `node gates/scripts/audit/auditor_authcoupling.mjs` (construído pela `plan-12`, 2026-08-05 — 9º/depois 10º auditor de `run_audit.mjs`). Detecção por AST: sinks de credencial (`localStorage`/`sessionStorage`/cookie com chave auth-ish) + header `Authorization` literal + rota embutida (string iniciada em `/` contendo `/mfa|login|oauth2?|token|auth|sso|2fa/`). **Hoje: 0 violações.**
 
 > **O gate não pode ser burro, e isto vai escrito para quem for construí-lo.** Proibir `fetch`/`axios` em `src/components/` derrubaria **12 arquivos legítimos**: os templates de dados (`SarakTable`, `SarakChart`, `SarakForm`, `SarakManagementGrid`, …) recebem um `endpoint` e são agnósticos sobre o que existe atrás dele. O que se cobra é outra coisa — **sinks de credencial** (`localStorage`/`sessionStorage`/`cookie`/`Authorization`) e **rota de autenticação embutida** (`/mfa`, `/login`, `/oauth`, `/token`).
 
-> 🔴 **A violação com que a regra nasce, e o destino dela.** `src/components/atomic/Templates/hooks/useSecurityOrchestratorState.ts:25,36,48,61` chama `GET {endpoint}/mfa/status`, `GET {endpoint}/mfa/setup`, `POST {endpoint}/mfa/enable` e `POST {endpoint}/mfa/disable`: a lib **dita o protocolo de autenticação do importador**. O `SarakSecurityOrchestrator` é **público** (`Templates/index.ts:14` → `src/index.ts:98`), então remover é **quebra de contrato**. **Decisão do dono (2026-08-02): remover**, e o lugar é a `plan-09`, no major. Aqui só se escreve a regra.
+> ✅ **A violação com que a regra nascia foi removida.** `useSecurityOrchestratorState.ts` chamava `GET {endpoint}/mfa/status`, `GET {endpoint}/mfa/setup`, `POST {endpoint}/mfa/enable` e `POST {endpoint}/mfa/disable` — a lib ditava o protocolo de autenticação do importador. A `plan-09` (2026-08-05, operação 4) removeu o `SarakSecurityOrchestrator` inteiro (10 arquivos) do contrato público, no major. Quando o gate `auditor_authcoupling.mjs` nasceu, na `plan-12`, o único violador já não existia mais — confirmado: **0 violações** desde o primeiro dia do gate.
 
 # 3. Regras de conduta
 
@@ -953,12 +965,12 @@ e a correção é criar o token (R11 → Expansão), não remendar do lado de fo
 | R7 | Namespace e fallback | ⚠️ | `auditor_ghostvars.mjs` — **não vê `src/styles/` nem `src/core/`** | `npm run audit` |
 | R8 | Cobertura 1:1 | ⚠️ | `auditor_coverage.mjs` — **não vê `src/shared/`**; % em `plan-12` | idem |
 | R9 | Clean Code | ✅ | `auditor_cleancode.mjs` | idem |
-| R10 | Composição atômica | ⏳ | **a construir** — `plan-12` | — |
+| R10 | Composição atômica | ⚠️ | `auditor_composicaoatomica.mjs` — **só HTML nativo cru**; `switch` de design sem detector | `npm run audit` |
 | R12 | Zero-marca | ✅ | `check-zero-brand.mjs` | `npm run zero-brand:check` |
 | R13 | Identidade do host | ✅ | `HostIdentity.test.tsx` · `EmbeddedMode.test.tsx` | `npx vitest run` |
 | R14 | Barril completo | ⚠️ | `check-barrel-parity.mjs` — **não vê subpasta de categoria** | `npm run barrel:check` |
 | R17 | Não transcrever fonte viva | ⚠️ | `catalog:check` · `guide:check` · `dev-kit:check` — **só o gerado** | `npm run catalog:check` |
-| R18 | Gate declara o que não vê | ⏳ | **a construir** — `plan-12` | — |
+| R18 | Gate declara o que não vê | ✅ | `check-gate-limits.mjs` — 26/26 | `npm run gate-limits:check` |
 | R19 | Tarball só com o publicável | ✅ | `check-package-contents.mjs` | `npm run package:check` |
 | R20 | Baseline não regride | ✅ | `check-audit-baseline.mjs` (Anel 2) | `npm run audit:baseline` |
 | R21 | Artefato mudou, exige tag | ✅ | `check-release-tag.mjs` (`pre-push`) | `npm run release:check` |
@@ -967,12 +979,12 @@ e a correção é criar o token (R11 → Expansão), não remendar do lado de fo
 | R24 | CSS não vaza no host | ✅ | `scopeCss.test.ts` · `EmbeddedMode.test.tsx` | `npx vitest run` |
 | R25 | Temas shippados sem ruído | ✅ | `shippedThemesConsoleClean.test.ts` | `npx vitest run` |
 | R26 | Paridade de ícones | ✅ | `iconCatalogParity.test.ts` · `iconContract.test.tsx` | `npx vitest run` |
-| R27 | Zero deep import | ⏳ | **a construir** — hoje só contrato + campo `exports` | — |
-| R28 | Contrato de saída do CLI | ⏳ | **a construir** — nem teste existe | — |
+| R27 | Zero deep import | ✅ | `check-no-deep-import.mjs` | `npm run deep-import:check` |
+| R28 | Contrato de saída do CLI | ✅ | `checkUpdateCli.contract.test.mjs` (8 casos) | `npx vitest run` |
 | R29 | Gerado bate com a fonte | ⚠️ | 3 geradores com `--check`; `generate-token-types.ts` e `generate-build-info.mjs` **sem** | `npm run catalog:check` … |
 | R30 | O TypeScript compila | ⚠️ | contagem no Anel 2 (`--with-tsc`), **não verde** — 14 erros | `npx tsc --noEmit` |
 | R31 | Contraste AA nos 18 temas | ⏳ | **a construir** — 0 cálculos de contraste em `src/` | — |
-| R32 | Indiferente à autenticação | ⏳ | **a construir** — 0 arquivos `AuthCoupling*` | — |
+| R32 | Indiferente à autenticação | ✅ | `auditor_authcoupling.mjs` — nasce verde | `npm run audit` |
 | **R11** | **Configuração × Expansão** | **🔴** | **nenhum — CONDUTA** | — |
 | **R15** | **Nada pesado eager** | **🔴** | **nenhum — CONDUTA** ⚠️ violada hoje | — |
 | **R16** | **Zero-gambiarra** | **🔴** | **nenhum — CONDUTA** | — |
@@ -997,9 +1009,14 @@ e a correção é criar o token (R11 → Expansão), não remendar do lado de fo
 | `verificar_commit.py` | **R22** | `gates/scripts/segredo/` | ✅ Anel 0 do `pre-commit` (sempre) |
 | A suíte (`npx vitest run`) | R6 · R13 · **R24** · **R25** · **R26** | `src/**/__tests__/` — R8 exige teste ao lado | ✅ Anel 3 do `pre-push` |
 | **`verify_theme_parity.ts`** | **R5, por tema individual** | `gates/scripts/audit/` | ⏳ **nenhum — vai para o pipeline** |
-| **`@vitest/coverage-v8`** | **R8.1, cobertura em %** | `package.json:100` | ⏳ **nenhum script o invoca** |
+| `check-coverage-floor.mjs` | **R8.1, cobertura em %** | `gates/scripts/release/` | ✅ `npm run coverage:check` (dentro de `gates:full`) — piso 70,66% |
+| `auditor_composicaoatomica.mjs` | **R10** | `gates/scripts/audit/` | ✅ via `run_audit.mjs` (Anel 2) — 47 violações no baseline |
+| `auditor_authcoupling.mjs` | **R32** | `gates/scripts/audit/` | ✅ via `run_audit.mjs` — nasce verde |
+| `check-no-deep-import.mjs` | **R27** | `gates/scripts/contrato/` | ✅ `npm run deep-import:check` (Anel 1) |
+| `checkUpdateCli.contract.test.mjs` | **R28** | `bin/scaffold/checkUpdate/__tests__/` | ✅ Anel 3 (`npx vitest run`) |
+| `check-gate-limits.mjs` | **R18** | `gates/scripts/contrato/` | ✅ `npm run gate-limits:check` — 26/26 |
 
-**As duas linhas ⏳ são as que a `plan-12` herda desta tabela** — mais os seis gates que ainda não existem em arquivo nenhum (R10, R18, R27, R28, R31, R32). `verify_theme_parity.ts` valida **um** tema contra o dicionário e hoje só roda se alguém o chamar à mão; o que existe em gate é o `auditor_presets`, que cobra chave órfã em todos os temas embarcados de uma vez — cobertura diferente, não equivalente.
+**Das duas linhas ⏳, `@vitest/coverage-v8` fechou em 2026-08-05** (`plan-12`, Lote B) — vira `check-coverage-floor.mjs`, piso móvel gravado em **70,66%** (`npm run coverage:check`, dentro do `gates:full`). **`verify_theme_parity.ts` continua ⏳**: valida **um** tema contra o dicionário e hoje só roda se alguém o chamar à mão; o que existe em gate é o `auditor_presets`, que cobra chave órfã em todos os temas embarcados de uma vez — cobertura diferente, não equivalente. Dos seis gates que não existiam em arquivo nenhum (R10, R18, R27, R28, R31, R32), **cinco foram construídos** pelas plans 12 e 16; só **R31** segue sem gate, na parada obrigatória da `plan-12` (Lote C), aguardando decisão do dono sobre a fronteira de pares/limiar.
 
 **Geradores não viram gate — e a distinção é deliberada.**
 `generate_theme_template.ts` (`ui-criar-tema`) escreve arquivo em `src/`; um gerador que rodasse
@@ -1012,13 +1029,13 @@ humana. **Validador** é invocado pelo gate, sempre. Os dois vivem lado a lado n
 
 Cinco coisas ficam registradas em voz alta, porque quem lê um contrato precisa saber onde ele é fino:
 
-1. **Seis regras verificáveis ainda não têm gate nenhum** (R10, R18, R27, R28, R31, R32) e **três são conduta permanente** (R11, R15, R16). As nove valem igual; nove de trinta e duas dependem de revisão humana hoje.
-2. **Oito regras têm o escopo do gate menor que o da regra** (R4, R7, R8, R14, R17, R23, R29, R30), e cada vão está escrito na linha da própria regra, não em nota de rodapé. **R7 é o caso extremo: o gate está verde e a regra está sendo violada** em `src/styles/_utilities.css:80,89`. R14 tinha o mesmo defeito e foi corrigida em P26 **ampliando o escopo do gate junto com o conserto** — é o modelo. **R18 existe para que o próximo vão seja conferência, não descoberta.**
-3. **Três regras nascem violadas, e as três declaram a violação**: R30 (14 erros de `tsc`), R7 (`--sx-*` vivo) e R32 (`useSecurityOrchestratorState.ts` ditando o protocolo de MFA). **R15 está violada de forma declarada** desde antes.
-4. **Duas regras não têm sequer teste**: R28 (`runCheckCli` não aparece em teste nenhum) e R18.
+1. **Só uma regra verificável ainda não tem gate** (R31 — parada obrigatória, decisão de fronteira pendente do dono) e **três são conduta permanente** (R11, R15, R16). As quatro valem igual; quatro de trinta e duas dependem de revisão humana hoje. *(Atualizado em 2026-08-07: as plans 12 e 16 construíram os cinco gates que faltavam — R10, R18, R27, R28, R32.)*
+2. **Nove regras têm o escopo do gate menor que o da regra** (R4, R7, R8, R10, R14, R17, R23, R29, R30), e cada vão está escrito na linha da própria regra, não em nota de rodapé. R14 tinha o mesmo defeito e foi corrigida em P26 **ampliando o escopo do gate junto com o conserto** — é o modelo que R18 generaliza, e R18 agora tem gate próprio (`check-gate-limits.mjs`, 26/26).
+3. **Uma regra continua nascendo violada, de forma declarada e medida**: R30 (`tsc` — produção em 0, hard-block; 10 erros de teste, tolerados como piso). R7 e R32 **fecharam** (`--sx-*` corrigido pela `plan-07`; `SarakSecurityOrchestrator` removido pela `plan-09`, antes de o gate de R32 nascer — ele já nasceu verde). **R15 segue violada de forma declarada.** R10, cujo gate nasceu em 2026-08-05, registra **47 violações no baseline** — dívida explícita da `plan-15`, ainda não paga.
+4. **As duas regras que não tinham teste ganharam um**: R28 (`checkUpdateCli.contract.test.mjs`, 8 casos) e R18 (`check-gate-limits.mjs`).
 5. **Nenhuma regra existente foi renumerada nesta reestruturação.** R10, R11, R15 e R16 mudaram de **categoria** e mantiveram o número, porque o `.githooks/pre-commit:68-71` imprime números na mensagem de bloqueio e há citação em código, skills e specs.
 
-Nenhum destes é corrigido aqui — **regra nasce descrevendo o que é**. Cada um está catalogado com `arquivo:linha` em [[01-gates-e-baseline]] e [[15-divida-conhecida]], que é onde a dívida mora; a construção dos gates é a `plan-12`.
+Nenhum destes é corrigido aqui — **regra nasce descrevendo o que é**. Cada um está catalogado com `arquivo:linha` em [[01-gates-e-baseline]] e [[15-divida-conhecida]], que é onde a dívida mora; pagar o que os gates novos acusam é a **`plan-15`**, ainda não executada.
 
 # 6. Critérios de aceite
 
@@ -1029,9 +1046,9 @@ Nenhum destes é corrigido aqui — **regra nasce descrevendo o que é**. Cada u
 - [x] Os vãos de escopo (R4, R7, R8, R14, R17, R23, R29, R30) estão declarados **na linha da regra**.
 - [x] Toda regra abre com o marcador de estado do vocabulário fixo da §1.2 (✅ · ⚠️ · ⏳ · 🔴).
 - [x] **Nenhuma regra foi renumerada.** R1–R17 mantêm o número; R10, R11, R15 e R16 mudaram só de categoria.
-- [x] R30 declarada **violada**, com a composição dos 14 erros medida nesta entrega.
-- [x] R32 declarada com a violação viva e o destino dela (`plan-09`).
-- [x] **Zero gate criado, ampliado ou alterado** — esta spec só escreve regra.
+- [x] R30 declarada **violada**, com a composição medida — *(atualizado 2026-08-07: a `plan-12` separou produção de teste; produção fechou em 0/hard-block pela `plan-07`, restam 10 erros de teste, tolerados como piso)*.
+- [x] R32 declarada com a violação viva e o destino dela (`plan-09`) — *(fechada em 2026-08-05: o `SarakSecurityOrchestrator` saiu antes de o gate nascer, que já nasceu verde)*.
+- [x] **Zero gate criado, ampliado ou alterado nesta plan** — esta spec só escreve regra. *(As plans 12 e 16, subsequentes, construíram os gates que faltavam; sintetizado aqui em 2026-08-07.)*
 
 # 7. Plano de testes (Quality Gate)
 
@@ -1043,6 +1060,6 @@ Esta spec é normativa: ela não adiciona teste, ela **cataloga** os que existem
 - **Unitário / gate:** `node gates/scripts/audit/run_audit.mjs` no baseline documentado em [[01-gates-e-baseline]] — **não** em zero.
 - **Gates de contrato:** `npm run barrel:check`, `npm run catalog:check`, `npm run zero-brand:check`, `npm run guide:check`, `npm run dev-kit:check` — os cinco em verde.
 - **Suíte:** `npx vitest run` **completa**. Rodar pasta a dedo esconde snapshot de terceiros quebrado; "suítes verdes" só vale para a suíte inteira.
-- **`tsc`:** `npx tsc --noEmit` → **14 erros**, na composição da R30. Vermelho é o estado esperado.
+- **`tsc`:** `npx tsc --noEmit` → **10 erros, todos em teste** (produção em 0, hard-block desde a `plan-07`; a `plan-12` separou a contagem por classe no Anel 2). Vermelho de teste é o estado esperado até a `plan-15`.
 </content>
 </invoke>

@@ -2,7 +2,7 @@
 tipo: "plan"
 titulo: "Achados de comportamento — o código fazendo coisa diferente do que promete"
 dominio: "Sarak-Lib-UI-Core / Comportamento"
-status: "🟢 Aprovada"
+status: "⚪ Sintetizada"
 prioridade: "Máxima"
 tags: ["plan", "bug", "comportamento", "seguranca-de-dados"]
 relacionados: ["[[06-painel-de-customizacao-e-preview]]", "[[07-responsividade-e-multidispositivo]]", "[[15-divida-conhecida]]"]
@@ -677,3 +677,15 @@ inalcançável futuro, não só o `glass` — teste que cobre a **classe** do de
 **Destino da síntese:** `specs/06` · `specs/07` · `specs/04` (comportamento) · `00-contexto` (**já escrito**)
 
 **Liberado: pode commitar.**
+
+---
+
+## Síntese — 2026-08-07
+
+Sintetizada em: `specs/specs/06-painel-de-customizacao-e-preview.md` §§9.2-9.3-9.5 (F1, F2) ·
+`specs/specs/07-responsividade-e-multidispositivo.md` §§2.1, §5, §8 (F5, F6) ·
+`specs/specs/04-shell-e-discovery.md` §4.1, §7.1-7.2 (F3) · `00-contexto.md` (já escrito).
+
+Observações: F4 (`focusRingWidth`) não tinha destino de spec fixa declarado além de
+`15-divida-conhecida.md` (achado 10, já fechado no Bloco 1) — nenhuma regra nova nasceu dele, então não há
+outro arquivo a tocar. Nada desta plan ficou de fora.

@@ -2,7 +2,7 @@
 tipo: "plan"
 titulo: "Limpar o contrato público — as quebras saem juntas num único major"
 dominio: "Sarak-Lib-UI-Core / Superfície pública"
-status: "🟢 Aprovada"
+status: "⚪ Sintetizada"
 prioridade: "Alta"
 tags: ["plan", "breaking-change", "major", "superficie-publica", "migracao"]
 relacionados: ["[[03-superficie-publica]]", "[[03-versionamento-e-release]]", "[[15-divida-conhecida]]"]
@@ -701,3 +701,13 @@ entrada única, com 6 mudanças) · `specs/15-divida-conhecida.md` (achados 2 e 
 `specs/00-regras-e-invariantes.md` (**R32 deixa de ter violação declarada**)
 
 **Liberado: pode commitar.** O `npm version major` é seu — mas leia a recomendação sobre o momento, na mensagem.
+
+---
+
+## Síntese — 2026-08-07
+
+Sintetizada em: `arquitetura/03-superficie-publica.md` (já escrita) · `docs/migracoes.md` (já escrita) ·
+`specs/specs/15-divida-conhecida.md` (achados 2 e 3 fechados, movidos para §6) ·
+`specs/specs/00-regras-e-invariantes.md` (R32 sem violação declarada, gate nasceu verde).
+
+Observações: os 4 destinos confirmados nesta passada de `/spec-atualizar`. Nenhuma pendência.

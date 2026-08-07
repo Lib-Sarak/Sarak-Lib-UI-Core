@@ -49,7 +49,7 @@ Roda também o auto-indexador (`.agents/gerar_indice.py` + `git add .agents/inde
 
 ## 2.2 Anel 1 — Os gates de contrato
 
-Os quatro gates que estão **verdes hoje e devem continuar verdes para sempre**:
+Os gates que estão **verdes hoje e devem continuar verdes para sempre**:
 
 | Gate | Regra que cobra |
 | --- | --- |
@@ -57,8 +57,16 @@ Os quatro gates que estão **verdes hoje e devem continuar verdes para sempre**:
 | `generate-component-catalog.mjs --check` | R17 — Não transcrever fonte viva |
 | `check-zero-brand.mjs --check` | R12 — A lib nunca estampa a própria marca |
 | `generate-consumer-kit.mjs --check` | R17 — Não transcrever fonte viva |
+| `check-no-deep-import.mjs` | R27 — Zero deep import *(entrou em 2026-08-05, `plan-12`)* |
+| `check-gate-limits.mjs` | R18 — Todo gate declara o que não vê *(entrou em 2026-08-05, `plan-12`)* |
+| `generate-token-types.ts --check` | R4 · R29 — tipo gerado bate com o schema *(entrou em 2026-08-05, `plan-12`; roda logo no início, porque `guide`/`dev-kit` leem esse arquivo)* |
 
 **Verde é a única saída aceitável.** Não há baseline aqui porque não há dívida: qualquer vermelho é regressão introduzida agora.
+
+> **Duas seções condicionais entraram no `pre-commit` fora do bloco de código (`plan-12`, 2026-08-05):**
+> `check-plan-index-sync.mjs` dispara quando o staged toca `specs/plan/` ou `specs/00-indice.md` — e roda **mesmo
+> sem tocar código**; `check-section-pointers.mjs` (via `auditor_sectionpointers.mjs`) entra pelo Anel 2, junto
+> dos demais auditores.
 
 > **Por que o hook chama `node scripts/…` direto e não `npm run …`:** medido — `npm run` custa ~1,3 s por gate contra ~0,65 s da invocação direta. Nos quatro, a diferença é **5,9 s → 2,9 s por commit**. A mensagem de erro segue citando o comando `npm run` equivalente, que é o que a pessoa vai digitar para investigar.
 
@@ -100,15 +108,15 @@ Os quatro gates que estão **verdes hoje e devem continuar verdes para sempre**:
 
 ## 2.4 A decisão sobre `tsc --noEmit`
 
-**Decisão: entra no Anel 2, com baseline de contagem, e SÓ quando o commit toca `.ts`/`.tsx`.**
+**Decisão: entra no Anel 2, e SÓ quando o commit toca `.ts`/`.tsx`.**
 
 O porquê, com os números:
 
-- **A favor de incluir:** `tsc` é o único gate que enxerga os **4 erros de tipo em produção** ([[01-gates-e-baseline]] §4.4). O fato de existirem é a prova de que ninguém estava olhando. E, ao contrário da suíte, ele é **determinístico** — não depende do estado da máquina.
+- **A favor de incluir:** `tsc` é o único gate que enxerga erro de tipo real ([[01-gates-e-baseline]] §4.4). E, ao contrário da suíte, ele é **determinístico** — não depende do estado da máquina.
 - **A favor de restringir:** custa **~11 s**, quase dobrando o commit. Pagar isso num commit que só mexe em JSON ou markdown é imposto sem contrapartida.
-- **Por que baseline e não verde:** há 14 erros hoje. Exigir zero bloquearia tudo; ignorar deixaria o número subir.
+- **Por que produção é verde-obrigatório e teste é baseline:** *(ampliado em 2026-08-05, `plan-12`)* a contagem passou a **separar produção de teste** (`classifyTscOutput`). Erro de **produção** é **hard-block a zero**, fora do mecanismo de baseline — a `plan-07` já tinha zerado esse lado. Erro de **teste** continua contra o piso do baseline (hoje 10): exigir zero bloquearia tudo por ruído de fixture; ignorar deixaria o número subir sem controle.
 
-Resultado prático: commit em TypeScript custa ~20 s e não pode aumentar a contagem de erros de tipo. Qualquer outro commit não paga.
+Resultado prático: commit em TypeScript custa ~20 s, não pode introduzir **nenhum** erro de tipo em produção, e não pode aumentar a contagem de erros em teste.
 
 # 3. Escopo por staged — quem não mexeu, não paga
 
@@ -116,9 +124,14 @@ O hook lê `git diff --cached --name-only --diff-filter=ACMR` e decide:
 
 | Condição | Efeito |
 | --- | --- |
-| Staged toca `src/`, `scripts/`, `docs/`, `sarak-ui/`, `bin/`, `package.json` ou `.githooks/` | Anéis 1 e 2 **rodam** |
+| Staged toca `src/`, `scripts/`, `gates/`, `docs/`, `sarak-ui/`, `bin/`, `package.json` ou `.githooks/` | Anéis 1 e 2 **rodam** |
 | Staged não toca nada disso (spec, README, `.claude/`, `.agents/`…) | Anéis 1 e 2 **PULADOS**, com a linha explicando |
 | Staged contém pelo menos um `.ts`/`.tsx` | `tsc` **entra** no Anel 2 |
+| Staged toca `specs/plan/` ou `specs/00-indice.md` | `check-plan-index-sync.mjs` **entra**, mesmo sem tocar código |
+
+> **`gates/` entrou no escopo em 2026-08-02 (`plan-14`).** Não é ampliação: o código dos gates morava em
+> `.githooks/` e `scripts/`, ambos já na lista. Sem esta linha, alterar um gate deixaria de acionar os Anéis 1
+> e 2 — seria estreitamento silencioso de escopo, o que R18 existe para impedir.
 
 **Por que `docs/` e `sarak-ui/` entram na lista mesmo sendo "documentação":** os dois são **artefatos gerados**. `catalog:check` e `guide:check` comparam o commitado com o que o gerador produz agora — editar um deles à mão é exatamente o defeito que R17 existe para pegar.
 
@@ -156,7 +169,7 @@ Este é o registro do raciocínio original, preservado porque ele é o que imped
 | --- | --- | --- |
 | **Ordem** | O anel de **release roda primeiro**; a suíte depois | O release é `< 1 s` (só lê o git) e a suíte custa ~3 min. **Rodar o barato primeiro devolve o "não" mais rápido** — é o que respeita quem está do outro lado do terminal |
 | **Escopo de branch** | **Só `refs/heads/main`** | Mesmo critério do anel de release: um modelo mental só, um lugar só para olhar. **Quebrar teste em branch de trabalho é parte de trabalhar** — push de WIP, backup, branch compartilhada para revisão. Bloquear ali ensinaria o reflexo do `--no-verify`, que desligaria **os dois** anéis de uma vez. E como neste repositório o trabalho acontece direto na `main` (ADR-008), a concessão é quase gratuita na prática |
-| **Escopo de conteúdo** | Roda quando a faixa empurrada toca `src/`, `scripts/`, `bin/`, `package(-lock).json`, `tsconfig*.json` ou `vitest.config/setup.ts` | Mesmo princípio da §3: quem não mexeu, não paga. Um push só de `specs/` custa **zero** |
+| **Escopo de conteúdo** | Roda quando a faixa empurrada toca `src/`, `scripts/`, `gates/`, `bin/`, `package(-lock).json`, `tsconfig*.json` ou `vitest.config/setup.ts` | Mesmo princípio da §3: quem não mexeu, não paga. Um push só de `specs/` custa **zero**. *(`gates/` entrou em 2026-08-05, `plan-12`, vão nº 11 — antes, mexer só num gate não disparava a suíte, embora `BarrelParity`/`ZeroBrand` importem gates)* |
 | **Fail-safe** | Qualquer incerteza sobre a faixa **RODA** a suíte | Ref remota nova (sha zerado) ou sha remoto que não existe localmente = sem base de comparação. Um pulo errado aqui produziria exatamente o "verde que não é" que este anel existe para impedir |
 | **stdin** | Capturado **uma vez** no topo do hook e repassado | O stdin do `pre-push` só pode ser lido uma vez. O `vitest` roda com `< /dev/null` — um runner que tente ler stdin já consumido trava o push |
 

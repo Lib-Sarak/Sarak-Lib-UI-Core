@@ -2,7 +2,7 @@
 tipo: "plan"
 titulo: "Construir os gates em fila — dar dono e verificação ao que hoje só está escrito"
 dominio: "Sarak-Lib-UI-Core / Qualidade / Gates"
-status: "🟢 Aprovada"
+status: "⚪ Sintetizada"
 prioridade: "Alta"
 tags: ["plan", "gates", "enforcement", "ci", "regras"]
 relacionados: ["[[15-divida-conhecida]]", "[[00-regras-e-invariantes]]", "[[01-gates-e-baseline]]", "[[02-enforcement-por-commit]]"]
@@ -1002,3 +1002,17 @@ Nenhum arquivo fora desses dois. `git diff --stat` desta rodada de correção co
   o comando exato do revisor, não dá para saber qual dos dois (ou nenhum) é o número certo. Fica para quem for
   decidir a fronteira de R10 pedir o comando do lado que faltar.
 - O caminho do script de R31 é `%TEMP%` — não é permanente (ver aviso acima).
+
+---
+
+## Síntese — 2026-08-07
+
+Sintetizada em: `specs/specs/00-regras-e-invariantes.md` (§1.3, R10/R18/R27/R28/R32, §4, §5) ·
+`specs/specs/01-gates-e-baseline.md` (§2.1, §2.2, §3 baseline recontado, §9.2 matriz encolhida, §9.5) ·
+`specs/specs/02-enforcement-por-commit.md` (Anel 1 com os gates novos, escopo `gates/`) ·
+`specs/specs/15-divida-conhecida.md` (achados 14/15 fechados, achado 32 novo).
+
+Observações: o baseline final desta execução (hardcoded 35 · ghostvars 27 · sectionpointers 27 · tsc
+produção 0/teste 10 · coverage-floor 70,66%) é o que a `plan-15` (ainda `🔴 A executar`) herda para pagar.
+A divergência de contagem de R10 (111×56) entre executor e revisor não foi reconciliada — registrada como
+risco aberto na própria plan, não repetida aqui.

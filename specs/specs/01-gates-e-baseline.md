@@ -12,7 +12,7 @@ relacionados: ["[[00-regras-e-invariantes]]", "[[02-enforcement-por-commit]]", "
 
 Este documento existe para impedir uma coisa específica: **alguém acusar regressão onde há dívida conhecida.**
 
-`run_audit.mjs` **não está em zero** e não vai estar tão cedo. Quem roda a auditoria pela primeira vez vê "AUDITORIA FALHOU: 2 regras estruturais" e conclui que quebrou alguma coisa. Não quebrou. O baseline da §3 é a régua; **compare com ele, nunca com zero**.
+`run_audit.mjs` **não está em zero** e não vai estar tão cedo. Quem roda a auditoria pela primeira vez vê "AUDITORIA FALHOU: 4 regras estruturais" e conclui que quebrou alguma coisa. Não quebrou. O baseline da §3 é a régua; **compare com ele, nunca com zero**.
 
 Aqui está **como rodar** cada verificação e **onde ela está**. O que cada uma cobra está em [[00-regras-e-invariantes]]; **quando** ela roda está em [[02-enforcement-por-commit]]; e **o que cada gate NÃO enxerga** está na **§9**, a matriz de cobertura — leia-a antes de confiar num verde.
 
@@ -22,7 +22,7 @@ Aqui está **como rodar** cada verificação e **onde ela está**. O que cada um
 
 # 2. Catálogo de gates
 
-## 2.1 `run_audit.mjs` — o agregador dos 8 auditores
+## 2.1 `run_audit.mjs` — o agregador dos 11 auditores
 
 ```
 node gates/scripts/audit/run_audit.mjs
@@ -30,7 +30,10 @@ node gates/scripts/audit/run_audit.mjs
 
 **Custo:** ~7 s. **Saída:** exit 1 se **qualquer** auditor sair diferente de 0. Ele não soma violações — soma **auditores reprovados** (`run_audit.mjs:36-43`). "Quebrou 2 regras estruturais" significa *dois auditores vermelhos*, não duas violações.
 
-Ele roda os 8 na ordem abaixo, cada um em processo próprio:
+> ✅ **Ampliado de 8 para 11 em 2026-08-05** (plans 12 e 16): entraram `auditor_authcoupling.mjs` (R32),
+> `auditor_sectionpointers.mjs` (R23/R17) e `auditor_composicaoatomica.mjs` (R10).
+
+Ele roda os 11 na ordem abaixo, cada um em processo próprio:
 
 | # | Auditor | Cobra | Como ler a saída |
 | --- | --- | --- | --- |
@@ -42,6 +45,9 @@ Ele roda os 8 na ordem abaixo, cada um em processo próprio:
 | 6 | `auditor_cleancode.mjs` | R9 | Arquivo + linha + qual limiar estourou |
 | 7 | `auditor_paridade.mjs` | R4 | Delega para `verify_parity.ts`: imprime a contagem das 3 fontes |
 | 8 | `auditor_presets.mjs` | R5 | Delega para `verify_presets.ts`: gabarito vivo + itens auditados |
+| 9 | `auditor_authcoupling.mjs` | R32 | AST: sinks de credencial + rota de auth embutida. Um `[FAIL]` por sink |
+| 10 | `auditor_sectionpointers.mjs` | R23 · R17 | Ponteiro `§N.N` que não resolve contra o heading real do alvo citado (autorreferência) |
+| 11 | `auditor_composicaoatomica.mjs` | R10 | AST: `<button>`/`<input>`/`<select>` cru fora da fronteira declarada de R10 |
 
 > ⚠️ **Relatório × FAIL.** O balde **deduzido** do `auditor_hardcoded` (ícones, `w-full`/`h-full`, alinhamento) é **relatório**: aparece na reconciliação, é contado, e **não reprova**. Só o líquido reprova. Já a linha final de `verify_parity` ("416 tokens validados") é relatório de contagem bruta; o número que importa para paridade é o das três fontes (409). Ver [[04-contrato-de-tokens-e-paridade]] §2.
 
@@ -55,14 +61,20 @@ Ele roda os 8 na ordem abaixo, cada um em processo próprio:
 | Kit | `npm run guide:check` | `sarak-ui/` commitado == gerado agora (6 arquivos) | R17 | ~1,8 s |
 | Kit do mantenedor | `npm run dev-kit:check` | `sarak-dev/` commitado == gerado agora (3 arquivos) **e zero ponteiro morto** na prosa | R17 · R23 · R29 | ~2,0 s |
 | Pacote | `npm run package:check` | O tarball não leva proibido nem esquece obrigatório | **R19** | precisa de `dist/` |
+| Deep import | `npm run deep-import:check` | `package.json.exports` só expõe raiz + subcaminhos `.css` | **R27** | ~0,3 s |
+| Limites de gate | `npm run gate-limits:check` | Todo gate declara, no cabeçalho, o que não vê | **R18** | ~0,3 s |
+| Tipos de token | `npm run token-types:check` | `design-token-ids.ts` commitado == gerado agora a partir do schema | **R4 · R29** | precisa do schema |
+| Sincronia plan × índice | roda no Anel 1, condicional | `status` do frontmatter de cada plan bate com a coluna do [[00-indice]] | — *(vão 12, fechado)* |
 
 **Os três gates que não estão nesta tabela porque não são de contrato**, e as regras que cobram:
 
 | Gate | Comando | Garante | Cobra |
 | --- | --- | --- | --- |
-| Baseline de auditoria | `npm run audit:baseline` (Anel 2 do `pre-commit`) | A auditoria não piora — métrica a métrica contra `gates/baselines/audit-baseline.json` | **R20**, e a **contagem** de `tsc` (**R30**) quando o staged tem `.ts`/`.tsx` |
+| Baseline de auditoria | `npm run audit:baseline` (Anel 2 do `pre-commit`) | A auditoria não piora — métrica a métrica contra `gates/baselines/audit-baseline.json` | **R20**, e a **contagem** de `tsc` (**R30**) quando o staged tem `.ts`/`.tsx` — `tsc` de **produção** agora é hard-block (§2.5) |
 | Release | `npm run release:check` (anel de push) | Artefato publicado alterado sem tag nova não sobe para a `main` | **R21** |
 | Segredos | `python gates/scripts/segredo/verificar_commit.py --raiz .` (Anel 0) | Nenhum segredo nem arquivo sensível no staged | **R22** |
+| `BUILD_INFO.json` | `npm run build-info:check` (dentro de `gates:full`) | `dist/BUILD_INFO.json` commitado bate com o que o gerador produz agora | **R29** |
+| Cobertura em % | `npm run coverage:check` (dentro de `gates:full`) | Piso móvel: mede, grava, e o piso só sobe — mesma mecânica do `audit:baseline` | **R8.1** — piso hoje: **70,66%** |
 
 > **Por que isto está escrito agora:** em 2026-08-02 o `check-release-tag` barrou um push imprimindo *"Regra violada"* — e a regra **não existia** em spec nenhuma. Um gate que reprova citando regra inexistente deixa o leitor sem caminho do bloqueio até o contrato. As três regras acima foram escritas em [[00-regras-e-invariantes]] (`plan-13`) a partir da leitura de cada script.
 
@@ -90,7 +102,7 @@ npx vitest run
 
 **Custo:** ~155 s. Não existe script `test` no `package.json` — o comando é este.
 
-**Cobra R6 · R13 · R24 · R25 · R26.** A suíte **é** gate: ela roda no Anel 3 do `pre-push` e bloqueia ([[02-enforcement-por-commit]] §4). Cinco regras dependem exclusivamente dela, e cada uma nomeia o arquivo do seu teste em [[00-regras-e-invariantes]] — `tokenContractParity`, `HostIdentity`/`EmbeddedMode`, `scopeCss`, `shippedThemesConsoleClean`, `iconCatalogParity`/`iconContract`.
+**Cobra R6 · R13 · R24 · R25 · R26 · R28.** A suíte **é** gate: ela roda no Anel 3 do `pre-push` e bloqueia ([[02-enforcement-por-commit]] §4). Seis regras dependem exclusivamente dela, e cada uma nomeia o arquivo do seu teste em [[00-regras-e-invariantes]] — `tokenContractParity`, `HostIdentity`/`EmbeddedMode`, `scopeCss`, `shippedThemesConsoleClean`, `iconCatalogParity`/`iconContract`, `checkUpdateCli.contract.test.mjs`. Todo gate novo das plans 12/16 também nasceu com **self-test** próprio (um caso pego, um liberado) — 51 casos, em 12 arquivos.
 
 > **Regra dura: "suítes verdes" exige a suíte INTEIRA.** Rodar pasta a dedo esconde snapshot de terceiro que quebrou. Esta regra não é preferência de estilo; ela já custou uma spec aprovada com snapshot vermelho fora da pasta olhada.
 
@@ -107,7 +119,14 @@ Duas coisas do `vitest.config.ts` que importam para quem lê a saída:
 npx tsc --noEmit
 ```
 
-**Cobra R30 — e a regra NASCE VIOLADA: 14 erros.** Não é gate próprio e não roda no `build` nem no `gates:full`. A única coisa que o toca é o **Anel 2**, que cobra a **contagem** contra `tsc.erros` do baseline quando o staged tem `.ts`/`.tsx`: isso impede o número de subir de 14, **não exige zero**. Rodar `tsc` e ver vermelho é o estado esperado; a lista item a item está na §4.4.
+**Cobra R30.** Não é gate próprio e não roda no `build` nem no `gates:full`. O que o toca é o **Anel 2**
+(`check-audit-baseline.mjs --with-tsc`), acionado quando o staged tem `.ts`/`.tsx`.
+
+> ✅ **Ampliado em 2026-08-05 (`plan-12`):** a contagem agora **separa produção de teste**
+> (`classifyTscOutput`, exportada e testada). **Erro de produção é hard-block sempre** — fora do mecanismo de
+> baseline, exige **zero**. Erro de teste continua tolerado como piso, contra `tsc.teste` do baseline. Hoje:
+> **0 em produção, 10 em teste.** Rodar `tsc` e ver os 10 de teste é o estado esperado; a lista item a item
+> está na §4.4.
 
 Isso não contradiz o `auditor_typescript` (R3) estar verde: um procura o **token** `any` na AST, o outro **compila**. São checagens diferentes.
 
@@ -121,33 +140,47 @@ Mais os `__e2e__` de `src/core/Provider/` e `src/features/DesignEngine/` (`playw
 
 Registrado como o que é: **cobertura que existe e não é cobrada**. **Não cobra regra nenhuma hoje** — ligá-lo ao pipeline é a `plan-11`, e nenhuma das 32 regras depende dele.
 
-# 3. O BASELINE — medido em 2026-07-27
+# 3. O BASELINE — recontado em 2026-08-05 (plans 12 e 16)
 
 **Compare com esta tabela. Nunca espere zero.**
 
+> ✅ **Recontagem completa em 2026-08-05.** As plans 12 e 16 ligaram 11 gates novos/ampliados de propósito
+> (§2.1 dos §9), **sem exceção** — o vermelho novo é dívida medida e registrada, não escondida, e é o que a
+> `plan-15` (ainda não executada) paga. O baseline de 2026-07-27/2026-08-03 abaixo está superado; os números
+> vigentes são estes.
+
 | Gate | Comando | Baseline |
 | --- | --- | --- |
-| `run_audit` | `node gates/scripts/audit/run_audit.mjs` | ❌ **exit 1 — 2 auditores vermelhos** |
-| ↳ `auditor_hardcoded` | | **1 violação de VALOR:** `src/components/atomic/Atoms/SarakTypography.tsx:39`. Estrutural líquido = **0** (bruto 516 − 188 ícone − 87 dimensão − 241 alinhamento) |
-| ↳ `auditor_ghostvars` | | **2 consumos** em 2 variáveis distintas; registro de **15.394** emitidas. *(Era 3 consumos / 14.179 até 2026-08-03: a `plan-06` acrescentou o manifesto e as vars de runtime ao registro, e `--sarak-button-radius` deixou de ser acusada — ver §4.2 e §9.3)* |
+| `run_audit` | `node gates/scripts/audit/run_audit.mjs` | ❌ **exit 1 — 4 auditores vermelhos** |
+| ↳ `auditor_hardcoded` | | **35 violações de VALOR**, todas em `src/core/Shell/Components/` (`SidebarNav.tsx`, `TopbarNav.tsx`, `ShellUserWidget.tsx`, `SarakShell.tsx`) — vão nº 5 fechado como **gate** pela `plan-12` (`VALUE_SCOPE` ganhou `src/core`); zero ocorrência fora de `Mocks/`/`__tests__/` em `components/`/`features/`. **Era 0** depois da `plan-07` fechar o achado do `SarakTypography.tsx`; o número subiu porque o gate passou a **ver** um território que nunca tinha visto |
+| ↳ `auditor_ghostvars` | | **27 consumos**, combinados entre `src/styles/` e `src/core/` (vãos 2 e 3, fechados como **gate** pela `plan-12` — `CONSUMER_DIRS` ampliado, registro com as 4 fontes emissoras). **Era 0** depois da `plan-07` (o `--sx-*` fora e o único fantasma real virou token) |
 | ↳ `auditor_typescript` | | ✅ 0 `any` |
-| ↳ `auditor_coverage` | | ✅ 0 órfãos |
+| ↳ `auditor_coverage` | | ✅ 0 órfãos — `shared/`/`effects/`/`constants/` entraram no escopo (vão 6) e **nasceu verde**: os testes já existiam, escritos pela `plan-07` |
 | ↳ `auditor_arquitetura` | | ✅ 0 quebras de hierarquia |
 | ↳ `auditor_cleancode` | | ✅ 0 violações |
-| ↳ `auditor_paridade` | | ✅ **409 / 409 / 409** em 13 arquivos de partição (linha final relata 416 brutos) |
+| ↳ `auditor_paridade` | | ✅ **409 / 409 / 409** — a `plan-09` removeu o token `mfaQrCodeSize` (era 410, depois da fusão dos 7 ids duplicados pela `plan-07`) |
 | ↳ `auditor_presets` | | ✅ gabarito de 409 chaves; **120 itens** (18 temas + 102 presets), 0 órfã |
+| ↳ `auditor_authcoupling` (R32) | | ✅ **0 violações** — nasceu verde: o único violador (`SarakSecurityOrchestrator`) já havia saído na `plan-09` |
+| ↳ `auditor_sectionpointers` (R23 · R17, vão 7) | | ❌ **27 ponteiros mortos** de autorreferência — inclui o achado 29 (`sarak-dev/GUIA-MANUTENCAO.md:308`, `§5.1` inexistente), confirmado ainda vivo |
+| ↳ `auditor_composicaoatomica` (R10) | | ❌ **47 violações** — `components/atomic` 23 · `core/Shell` 15 · `Layout/` 6 · `engines/` 2 · `Discovery/` 1. Zero em `features/**`, `atomic/Buttons/`, `atomic/Inputs/` — a fronteira que R10 declara |
 | `barrel:check` **(R14)** | `npm run barrel:check` | ✅ **80 componentes, 0 faltas** — era 81 até a `plan-09` (saiu o `SarakTabs` de `Layouts/`), e 78 até P26, que pôs `components/engines/**` no escopo de varredura (§4.5, item 4) |
-| `catalog:check` **(R17 · R29)** | `npm run catalog:check` | ✅ catálogo em dia (**81** componentes) |
-| `zero-brand:check` **(R12)** | `npm run zero-brand:check` | ✅ **361 arquivos, 0 violações** — era 363 até P26; a contagem é o nº de arquivos varridos, então remover 2 componentes a faz cair. **O número que importa é o de violações (0)** |
-| `guide:check` **(R17 · R29)** | `npm run guide:check` | ✅ **kit em dia (6 arquivos)** — o kit reporta **87** componentes (81 + 6 extras; ver [[03-superficie-publica]] §5.1) |
-| `dev-kit:check` **(R17 · R23 · R29)** | `npm run dev-kit:check` | ✅ **kit em dia (3 arquivos, 0 ponteiros mortos)** — gate novo, criado em 2026-07-31 (P23) |
-| suíte **(R6 · R13 · R24 · R25 · R26)** | `npx vitest run` | ✅ **275 arquivos / 942 testes, 100% verde**, desde 2026-08-05 (`plan-09`). Era 281/950 depois da `plan-08`; a `plan-09` removeu os testes do `SarakSecurityOrchestrator` e do `SarakTabs` duplicado. Antes: 274/889 desde 2026-07-31 (P23 — +1 arquivo e +12 testes do gerador do `sarak-dev/`). Era 273/877 desde 2026-07-29 (P26); 275/879 antes da remoção do `SarakVisualEngine`/`PaletteSelector`, que levou junto os 2 testes de fumaça deles; 281/901 até a remoção do `Template-Ts/` (§3.2); e 280/890 com 1 falha ambiental até 2026-07-28 (§3.1) |
-| `tsc` **(R30)** | `npx tsc --noEmit` | ❌ **14 erros** — 10 em teste, **4 em produção**. Não é gate próprio; o Anel 2 cobra só a **contagem** |
+| `catalog:check` **(R17 · R29)** | `npm run catalog:check` | ✅ catálogo em dia (**80** componentes — era 81 até a `plan-09`) |
+| `zero-brand:check` **(R12)** | `npm run zero-brand:check` | ✅ **357 arquivos, 0 violações** — a contagem é o nº de arquivos varridos; **o número que importa é o de violações (0)** |
+| `guide:check` **(R17 · R29)** | `npm run guide:check` | ✅ **kit em dia (6 arquivos)** — o kit reporta **86** componentes (80 + 6 extras; era 87 até a `plan-09`) |
+| `dev-kit:check` **(R17 · R23 · R29)** | `npm run dev-kit:check` | ✅ **kit em dia (3 arquivos, 0 ponteiros mortos)** — dentro do que o gate mede hoje (caminho, `npm run`, `node`); **não** valida ponteiro de **seção**, que é o `auditor_sectionpointers` acima |
+| `deep-import:check` **(R27)** | `npm run deep-import:check` | ✅ **0 violações** — nasceu verde |
+| `gate-limits:check` **(R18)** | `npm run gate-limits:check` | ✅ **26/26** scripts declaram o que não veem |
+| `token-types:check` **(R4 · R29)** | `npm run token-types:check` | ✅ **409 tokens**, em dia — regenerado pela `plan-12` (era 304, defasado em 105) |
+| `build-info:check` **(R29)** | `npm run build-info:check` | ✅ em dia |
+| `coverage:check` **(R8.1)** | `npm run coverage:check` | ✅ **igual ao piso — 70,66% de linhas** (piso móvel; melhora regrava, piora bloqueia) |
+| suíte **(R6 · R13 · R24 · R25 · R26 · R28)** | `npx vitest run` | ✅ **289 arquivos / 1004 testes, 100% verde**, desde 2026-08-05 (`plan-16`). Era 288/997 depois da `plan-12` (self-tests dos 8 gates do Lote A/B); 275/942 depois da `plan-09` (que removeu os testes do `SarakSecurityOrchestrator` e do `SarakTabs` duplicado); 281/950 depois da `plan-08` |
+| `tsc` **(R30)** | `npx tsc --noEmit` | ⚠️ **0 erros em produção (hard-block) · 10 em teste** (piso, tolerado). Produção fechou pela `plan-07`; a `plan-12` separou a contagem por classe no Anel 2 |
 | `build` | `npm run build` | 4 gates + 6 etapas de compilação |
 | `package:check` **(R19)** | `npm run package:check` | exige `dist/` buildado |
-| `audit:baseline` **(R20 · R30)** | `npm run audit:baseline` | ✅ igual ao baseline de **2026-08-03** — nenhuma regressão |
+| `audit:baseline` **(R20 · R30)** | `npm run audit:baseline` | ✅ igual ao baseline de **2026-08-05** — nenhuma regressão |
 | `release:check` **(R21)** | `npm run release:check` | depende do estado do git na hora; **não tem baseline** — ou o artefato mudou desde a tag, ou não |
 | Anel 0 — segredos **(R22)** | `python gates/scripts/segredo/verificar_commit.py --raiz .` | ✅ verde é a **única** saída aceitável — não há baseline nem escopo: segredo é segredo |
+| Sincronia plan × índice *(vão 12)* | `npm run plan-index:check` | ✅ `status` do frontmatter de cada plan bate com a coluna do [[00-indice]] |
 
 ## 3.1 ✅ RESOLVIDO em 2026-07-28 — o teste não-hermético que segurava a suíte
 
@@ -301,7 +334,13 @@ num único ponto.
 **Estado:** `Valor (hex/px/rem/em) : 0`. Nenhum átomo foi tocado — o defeito estava no detector, e é onde foi
 consertado.
 
-## 4.2 Variáveis-fantasma — 2 consumos acusados, 1 real
+## 4.2 ✅ FECHADO em 2026-08-05 — variáveis-fantasma (o histórico abaixo é anterior à `plan-07`)
+
+> Os dois fantasmas descritos abaixo fecharam: `--token` continua falso positivo declarado (não é código, é
+> JSDoc), e `--sarak-shell-brand-logo-size` foi criado nas 3 fontes pela `plan-07`. O baseline de
+> `auditor_ghostvars` **atual não é mais este** — a `plan-12` ampliou `CONSUMER_DIRS` depois deste fecho e
+> revelou 27 novos consumos em `src/styles/`+`src/core/`, registrados no baseline da §3 como dívida da
+> `plan-15`. O relato abaixo fica como histórico de como os dois primeiros fantasmas foram diagnosticados.
 
 **Localizados nesta execução, um a um:**
 
@@ -382,29 +421,27 @@ O comentário de `auditor_ghostvars.mjs:5-10` diz que o registro vem de "`useDes
 
 **Por que isso importa:** hoje nenhum consumo dentro do escopo varrido depende dessa família, então o gate segue verde. Mas a lacuna é de **falso positivo** — o dia em que um componente consumir uma variável emitida só em runtime, o auditor vai acusar fantasma numa variável que existe. Registrado para quem for ampliar o escopo: **ampliar o escopo sem ampliar o registro produz acusação falsa.**
 
-## 4.4 `tsc --noEmit` — 14 erros
+## 4.4 ✅ Metade de produção FECHADA em 2026-08-03 (`plan-07`) — restam 10 erros de teste
 
-**4 em produção:**
+Os 4 erros de produção (histórico: `useStructuralStyles.ts:30,71,94` — `TS2345`, `ResponsiveValue<number>` não
+aceito por helper `string | number`; `ThemeCustomizationTab.tsx:86` — `TS2322`, união de toast incompatível)
+fecharam: a `plan-07` criou o tipo `GapValue` e alargou a assinatura, e estreitou a união do toast para os
+valores reais. **Confirmado 0 erros de produção** desde então.
 
-| Onde | Erro |
-| --- | --- |
-| `src/components/atomic/hooks/useStructuralStyles.ts:30`, `:71`, `:94` | `TS2345` — `ResponsiveValue<number>` não é aceito por um helper cuja assinatura é `string \| number`. Os três são a mesma causa |
-| `src/features/DesignEngine/Main/ThemeCustomizationTab.tsx:86` | `TS2322` — união de tipo de toast incompatível: o alvo aceita `'error' \| 'success' \| 'warning'`, a função fornecida só trata `'success' \| 'warning'` |
+**10 em teste, inalterado:** `BarrelParity.test.ts` (4) e `ZeroBrand.test.ts` (2) importam `scripts/*.mjs` sem declaração de tipo (`TS7016`/`TS7006`); `Templates/__tests__/Spec21.spec.tsx` (3) tem props faltando em objetos de fixture; `shippedThemesConsoleClean.test.ts` (1) tem parâmetro implícito.
 
-**10 em teste:** `BarrelParity.test.ts` (4) e `ZeroBrand.test.ts` (2) importam `scripts/*.mjs` sem declaração de tipo (`TS7016`/`TS7006`); `Templates/__tests__/Spec21.spec.tsx` (3) tem props faltando em objetos de fixture; `shippedThemesConsoleClean.test.ts` (1) tem parâmetro implícito.
-
-**Por que ainda existe:** `tsc` nunca foi ligado a nenhum pipeline, então os erros nunca derrubaram nada. **O que fecharia:** os 4 de produção são correções pequenas e locais (alargar a assinatura do helper; alargar a união do toast). Os 10 de teste são ruído de tipagem em fixture. **Visível em gate:** ❌ **não** — nenhum pipeline roda `tsc`.
+**Visível em gate:** ✅ **agora sim, para produção.** A `plan-12` (2026-08-05) separou a contagem por classe no Anel 2 (`classifyTscOutput`) e tornou produção **hard-block a zero**, fora do mecanismo de baseline. Teste continua tolerado como piso (§3).
 
 ## 4.5 Dívidas estruturais herdadas da Fase 2
 
 | # | Dívida | Onde | Visível em gate? |
 | --- | --- | --- | --- |
 | 1 | **`atomic/Tables/` é categoria sem componente** — só `hooks/useTableLayoutStyles.ts`; `SarakTable.tsx`/`SarakTableCards.tsx` moram em `Templates/` e importam o hook cruzando a fronteira de categoria; `grep "atomic/Tables"` = **0** | `src/components/atomic/Tables/` | ❌ **Não.** `auditor_arquitetura` só cobra `components ⊅ features` e `core ⊅ features`; cruzar categoria dentro de `atomic/` não é violação para nenhum gate |
-| 3 | **`CustomizationPanel` eager no barril** — o painel inteiro do Design Engine no caminho crítico de todo consumidor | `src/index.ts:50` + efeito colateral `:119-125` | ❌ **Não.** Não existe gate de peso de bundle |
+| 3 | ✅ **FECHADA em 2026-08-05 (`plan-09`)** — **`CustomizationPanel` eager no barril** | `src/index.ts:50` | ✅ **Sim, agora.** Virou `React.lazy` com `Suspense` interno (padrão `SarakChartEngine`), preservando o tipo público `React.FC`. Boot: **−75,1%** |
 | 4 | ✅ **FECHADA em P26** (2026-07-29) — **3 das 4 categorias de `engines/` estavam fora do barril** (`flows`, `chat`, `visuals`) e o gate não via | `src/components/engines/` | ✅ **Sim, agora.** `engines/` entrou no escopo do `barrel:check` (78 → **81** componentes); Chat e Flow foram expostos atrás de fronteira lazy e o Visual foi removido. Ver [[03-superficie-publica]] §9 |
-| 6 | **`upgradeThemePayload` declara `partialMode` e nunca usa** — parâmetro morto na assinatura pública | `src/core/Design/master-map.ts:148` | ❌ **Não.** Parâmetro não usado não é `any` nem estoura limiar de Clean Code |
+| 6 | ✅ **FECHADA em 2026-08-05 (`plan-09`)** — **`upgradeThemePayload` declarava `partialMode` e nunca usava** | `src/core/Design/master-map.ts:148` | ✅ **Sim, agora.** Parâmetro removido; confirmado zero chamador afetado |
 
-**O que fecharia cada um:** (1) decisão de taxonomia — mover o componente para `Tables/`, mover o hook para `Templates/`, ou aceitar e documentar; (3) `React.lazy`, que muda o tipo público para `LazyExoticComponent` e portanto é **breaking change**; (4) **já fechada** — a decisão D2 do dono, executada em P26; (6) remover o parâmetro (mudança de assinatura, ainda que ninguém o passe).
+**O que fecharia o item 1** (a taxonomia de `atomic/Tables/`): decisão de taxonomia — mover o componente para `Tables/`, mover o hook para `Templates/`, ou aceitar e documentar. Continua aberto; não foi tocado por nenhuma plan desta rodada.
 
 > **A lição da nº 4 vale para a nº 2 (o `--sx-*` em `src/styles/`), que continua aberta:** as duas são a mesma classe de defeito — *gate com escopo menor que a regra*. A nº 4 foi fechada **ampliando o escopo do gate junto com o conserto**; a nº 2 espera a mesma dupla (§4.3). Consertar só o código deixaria o vão do gate de pé para a próxima violação.
 
@@ -450,8 +487,8 @@ Esta spec é verificada **executando-a**:
 
 - `node gates/scripts/audit/run_audit.mjs` → tem que bater com a §3, incluindo os vermelhos.
 - `npm run barrel:check && npm run catalog:check && npm run zero-brand:check && npm run guide:check` → quatro verdes.
-- `npx vitest run` → **275 arquivos / 879 testes, 100% verde**, em qualquer máquina (§3.1 e §3.2 fechadas).
-- `npx tsc --noEmit` → 14 erros, na composição da §4.4.
+- `npx vitest run` → **289 arquivos / 1004 testes, 100% verde**, em qualquer máquina (§3.1 e §3.2 fechadas).
+- `npx tsc --noEmit` → **0 erros em produção, 10 em teste**, na composição da §4.4.
 
 # 9. A matriz de cobertura — escopo do gate × escopo da regra
 
@@ -470,28 +507,32 @@ pela `plan-06`: investigar e construir são plans diferentes, de propósito.
 - **Exposição** — o que vive **hoje** dentro do vão, contado. Exposição zero não apaga o vão: significa que
   declarar o limite basta, e ampliar o escopo não se paga.
 
-## 9.2 Os 14 vãos, por exposição medida
+## 9.2 Os 14 vãos — estado em 2026-08-07
 
-| # | Regra | Gate · `arquivo:linha` | O que ele **NÃO** vê | Exposição medida | Δ | Destino |
-|---|---|---|---|---|---|---|
-| 1 | R4 · R29 | `auditor_paridade.mjs` → `verify_parity.ts` | o **tipo gerado** não é uma das 3 fontes cruzadas | **105 tokens** (304 × 409) — e o número falso **vaza ao consumidor** via `sarak-ui/catalog.json` | declarado | `plan-12` *(achado 22)* |
-| 2 | R7 | `auditor_ghostvars.mjs:14` | `src/styles/` como **consumidora** (é lido só como fonte) | **16 vars / 24 consumos**, incluindo os **2 usos do namespace PROIBIDO `--sx-*`** (`_utilities.css:80,89`) | declarado | `plan-12` |
-| 3 | R7 | `auditor_ghostvars.mjs:14` | `src/core/` inteiro | **4 vars / 11 consumos** — 2 reais (`--dynamic-shadow`, `--theme-background`), 2 são prosa de comentário | **silencioso** | `plan-12` |
-| 4 | R7 | o **registro**, `auditor_ghostvars.mjs:37-70` | *(era: `manifest.ts` com 173 vars e `useDesignVariables.ts` com 37 — +73 invisíveis)* | *(era: ~85 acusações falsas em escopo ampliado)* | — | ✅ **FECHADO** pela `plan-06` (§9.3) |
-| 5 | R2 | `auditor_hardcoded.mjs:11` | `src/core/` — `VALUE_SCOPE` é só `components` + `features` | **4 linhas** com `px` literal em `core/Shell/Components/` (`SidebarNav.tsx:69,87` · `TopbarNav.tsx:63,84`) | **silencioso** | `plan-12` |
-| 6 | R8 | `auditor_coverage.mjs:52-54` | `src/shared/`, `src/effects/`, `src/constants/` | **4 arquivos** sem teste — `useSarakRouter.ts`, `useModuleDiscovery.ts`, **`effects/NoiseOverlay.tsx`**, **`constants/icon-packs.tsx`** *(os dois últimos, achados novos)* | **silencioso** | `plan-12` *(o gate)* + `plan-07` *(a dívida)* |
-| 7 | R23 · R17 | `dev-kit/deadPointers.mjs:38-40` | ponteiro de **seção** (`§N.N`) — valida caminho, `npm run` e `node`, não seção | **4 ponteiros mortos vivos** *(3 skills + `00-contexto.md:175`)*, todos apontando `00-regras-e-invariantes §3.1`, que a `plan-13` moveu para **§4.1** | **silencioso** | `plan-12` — ⚠️ ver §9.4 |
-| 8 | R29 | — | `dist/BUILD_INFO.json` não tem modo `--check` | 1 artefato gerado sem conferência | **silencioso** | `plan-12` |
-| 9 | R14 · R17 | `scripts/publicComponents.mjs:172-194` | componente em **subpasta** de categoria sem barril | **ZERO** — `Cards/`, `Icon/` e `Tables/` não têm subpasta com `.tsx` | declarado | ✅ **DECLARADO** pela `plan-06` |
-| 10 | R12 | `check-zero-brand.mjs:19-40` | fora de `src/` — `sarak-ui/templates/`, `bin/`, `docs/` | **ZERO real** — os 2 acertos em `docs/` são prosa que documenta a correção | declarado | ✅ **DECLARADO** pela `plan-06` |
-| 11 | R8 *(via suíte)* | `.githooks/pre-push:53` | `gates/` não está no filtro de escopo | mexer num gate **não dispara mais a suíte** no push, embora `BarrelParity` e `ZeroBrand` importem gates. **Criado pela `plan-14`**; correção de 1 linha | **silencioso** | `plan-12` |
-| 12 | — | nenhum | sincronia entre o `status` da plan e o do [[00-indice]] | **falhou 2×** nesta campanha (plan-02 e plan-13) | **silencioso** | `plan-12` |
-| 13 | R17 | `catalog:check` · `guide:check` · `dev-kit:check` | a metade **prosa manual** — só o artefato **gerado** é conferido | é o vão por onde passaram os ponteiros mortos do nº 7, e os achados **24** e **25** | declarado | `plan-12` |
-| 14 | R30 | `check-audit-baseline.mjs` *(Anel 2)* | cobra a **contagem** de erros de `tsc` contra o baseline, **não o zero** | 14 erros tolerados, **4 em produção** | declarado | `plan-12` |
+> ✅ **12 dos 14 fecharam** nas plans 12 e 16 (2026-08-05), a maioria como **gate construído** (a exposição que
+> ele revelou virou dívida no baseline da §3, não sumiu). Restam **13** (medido, gate não construído) e **14**
+> (narrowed, não zerado por definição de R30).
 
-**Fora da matriz, e não esquecidas:** **7 regras não têm gate nenhum** — R10, R18, R27, R28, R31 e R32 (⏳) —
-e as **3 de conduta** R11, R15 e R16 (🔴), que permanecem assim por decisão do dono. Vão sem gate e regra sem
-gate são coisas diferentes: aqui se mede o **recorte** de um verificador que existe.
+| # | Regra | Gate · `arquivo:linha` | Estado |
+|---|---|---|---|
+| 1 | R4 · R29 | `token-types:check` | ✅ **FECHADO** — `design-token-ids.ts` regenerado (304→409) e o gerador registrado (`plan-12` Lote A) |
+| 2 | R7 | `auditor_ghostvars.mjs` | ✅ **FECHADO como gate** — `CONSUMER_DIRS` passou a tratar `src/styles/` como consumidora. Exposição revelada: parte dos 27 consumos do baseline (§3), dívida da `plan-15` |
+| 3 | R7 | `auditor_ghostvars.mjs` | ✅ **FECHADO como gate** — `src/core/` entrou no escopo. Mesma observação do vão 2 |
+| 4 | R7 | o registro do `auditor_ghostvars.mjs` | ✅ **FECHADO** pela `plan-06` (§9.3) |
+| 5 | R2 | `auditor_hardcoded.mjs` | ✅ **FECHADO como gate** — `VALUE_SCOPE` ganhou `src/core`. Exposição revelada: **35 violações** (§3), dívida da `plan-15` |
+| 6 | R8 | `auditor_coverage.mjs` | ✅ **FECHADO** — `shared/`/`effects/`/`constants/` no escopo; nasceu **verde** (os testes já existiam, escritos pela `plan-07`) |
+| 7 | R23 · R17 | `auditor_sectionpointers.mjs` (novo) | ✅ **FECHADO como gate** — detector por autorreferência construído (`plan-12`). Exposição: **27 ponteiros mortos** (§3), incluindo o achado 29 |
+| 8 | R29 | `build-info:check` (novo) | ✅ **FECHADO** — `dist/BUILD_INFO.json` ganhou modo `--check` |
+| 9 | R14 · R17 | `scripts/publicComponents.mjs:172-194` | ✅ **DECLARADO** pela `plan-06` — exposição zero |
+| 10 | R12 | `check-zero-brand.mjs:19-40` | ✅ **DECLARADO** pela `plan-06` — exposição zero |
+| 11 | R8 *(via suíte)* | `.githooks/pre-push` | ✅ **FECHADO** — `gates/` entrou no filtro de escopo do Anel 3 (`plan-12`) |
+| 12 | — | `check-plan-index-sync.mjs` (novo) | ✅ **FECHADO** — sincronia plan × [[00-indice]] agora é gate (`plan-12`) |
+| 13 | R17 | `catalog:check` · `guide:check` · `dev-kit:check` | ⏳ **ABERTO** — a metade **prosa manual** continua sem gate geral (falso-positivo alto). A `plan-12` mediu um caso novo em passagem: `arquitetura/04:52` desatualizado (achado 32 em [[15-divida-conhecida]]) |
+| 14 | R30 | `check-audit-baseline.mjs` *(Anel 2)* | ⚠️ **NARROWED, não fechado** — produção agora é **hard-block a zero** (fechado pela `plan-07` + separado pela `plan-12`); teste continua tolerado como piso (hoje 10) — por definição de R30, não por vão |
+
+**Fora da matriz, e não esquecidas:** as três de **conduta** R11, R15 e R16 (🔴), que permanecem assim por
+decisão do dono, e **R31** (⏳), a única regra verificável ainda sem gate — parada obrigatória da `plan-12`
+(Lote C), aguardando decisão sobre a fronteira de pares/limiar (§9.5).
 
 ## 9.3 O vão nº 4 — a prova de que registro vem antes de escopo
 
@@ -540,3 +581,22 @@ reprovaria o repositório para sempre. **Vale para spec fixa, skill, código e R
 > `00-regras-e-invariantes` em duas categorias, e a tabela *validador × executor* saiu de **§3.1** para
 > **§4.1**. Ninguém percebeu porque **nenhum gate olha ponteiro de seção**. É o achado 30 se repetindo: a
 > entrega que catalogou a classe a reintroduziu.
+
+> ✅ **Fechado em 2026-08-05 (`plan-12`).** `auditor_sectionpointers.mjs` (§2.1) construiu exatamente este
+> detector, com as duas convenções acima codificadas. Escopo reduzido a **autorreferência** (cross-documento
+> fica fora, declarado) depois que a primeira versão atribuiu um ponteiro ao arquivo errado. Mede hoje **27**
+> mortos, registrados no baseline (§3) como dívida da `plan-15`.
+
+## 9.5 R10 e R31 — a parada obrigatória do Lote C da `plan-12` (2026-08-05)
+
+**R10 foi decidida e construída.** O dono fixou a fronteira ("pré-montado" = `components/**` + `core/**`,
+exclui `atomic/Buttons|Inputs` e `features/**`); a `plan-16` construiu `auditor_composicaoatomica.mjs` sobre
+ela. Detalhe em [[00-regras-e-invariantes]] R10 e no baseline (§3).
+
+**R31 continua sem gate.** Medido (script preservado fora do repositório, anexo da `plan-12`, reproduzido pelo
+revisor): **12 dos 18 temas shippados falham** em pelo menos 1 dos 4 pares canônicos texto/fundo — 4 falhas são
+de texto primário/secundário, não só do `textColorMuted` mais apagado, e `minimalist-airy` (um dos dois
+`SARAK_REFERENCE_THEMES`) está entre eles. Simular o limiar de texto grande (3:1 em vez de 4,5:1) só resgata 1
+dos 12. Construir o gate exige antes: (1) mapear todos os pares que os componentes realmente produzem, não só
+os 4 canônicos; (2) decidir o limiar de `textColorMuted`; (3) decidir o que fazer com os 19 pares em `rgba()`,
+pulados na medição. Achado 18 em [[15-divida-conhecida]] §4.1.

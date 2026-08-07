@@ -2,7 +2,7 @@
 tipo: "plan"
 titulo: "Triar a dívida conhecida — decidir o destino de cada achado aberto"
 dominio: "Sarak-Lib-UI-Core / Qualidade / Dívida técnica"
-status: "🟢 Aprovada"
+status: "⚪ Sintetizada"
 prioridade: "Máxima"
 tags: ["plan", "divida-tecnica", "triagem", "analise", "read-only"]
 relacionados: ["[[15-divida-conhecida]]", "[[00-contexto]]", "[[01-gates-e-baseline]]"]
@@ -347,3 +347,14 @@ própria execução** (a triagem *é* a síntese, como a §9 declara). O `/spec-
 linha para o histórico do índice.
 
 **Liberado: pode commitar.**
+
+---
+
+## Síntese — 2026-08-07
+
+Sintetizada em: `specs/specs/15-divida-conhecida.md` · `specs/00-contexto.md`
+
+Observações: confirmado nesta passada que `15-divida-conhecida.md` está reestruturada (§3 abertos/§4
+implementação-posterior/§5 aceitos/§6 fechados, 31 = soma fechada) e que `00-contexto.md` §8 carrega o bloco
+"Aceito como característica" com os 3 itens e motivo. Nada deixado de fora — o conteúdo dessa spec já reflete
+também as plans 06/07/09/12, que a reabriram depois desta.

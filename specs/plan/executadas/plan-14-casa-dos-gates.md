@@ -2,7 +2,7 @@
 tipo: "plan"
 titulo: "A casa dos gates — um endereço só para o que reprova, e o legado sai junto"
 dominio: "Sarak-Lib-UI-Core / Qualidade / Gates"
-status: "🟢 Aprovada"
+status: "⚪ Sintetizada"
 prioridade: "Alta"
 tags: ["plan", "gates", "organizacao", "limpeza", "ci"]
 relacionados: ["[[00-regras-e-invariantes]]", "[[01-gates-e-baseline]]", "[[02-enforcement-por-commit]]", "[[14-artefatos-do-mantenedor]]"]
@@ -592,3 +592,14 @@ duas rodadas.
 `specs/00-regras-e-invariantes.md` §3.1 — **os três já escritos por esta execução**.
 
 **Liberado: pode commitar.**
+
+---
+
+## Síntese — 2026-08-07
+
+Sintetizada em: `specs/specs/01-gates-e-baseline.md` · `specs/specs/02-enforcement-por-commit.md` ·
+`specs/specs/00-regras-e-invariantes.md` §3.1
+
+Observações: confirmado nesta passada — os dois primeiros citam caminhos `gates/scripts/**` (o endereço
+pós-move). Baseline recontado e matriz de gates das plans 12/16 (posteriores) ainda não estão refletidos
+aqui — tratado no bloco de síntese seguinte desta mesma rodada. Nada desta plan ficou de fora.

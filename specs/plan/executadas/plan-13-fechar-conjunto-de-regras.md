@@ -2,7 +2,7 @@
 tipo: "plan"
 titulo: "Fechar o conjunto de regras — tudo que se cobra aqui vira regra numerada"
 dominio: "Sarak-Lib-UI-Core / Governança / Regras"
-status: "🟢 Aprovada"
+status: "⚪ Sintetizada"
 prioridade: "Máxima"
 tags: ["plan", "regras", "contrato", "gates", "conduta"]
 relacionados: ["[[00-regras-e-invariantes]]", "[[01-gates-e-baseline]]", "[[02-enforcement-por-commit]]", "[[15-divida-conhecida]]"]
@@ -432,3 +432,14 @@ declarou como achados fora do escopo, corretamente. **Como são meus, corrigi ag
 **Destino da síntese:** `specs/00-regras-e-invariantes.md` — a plan **era** a síntese, e está escrita.
 
 **Liberado: pode commitar.**
+
+---
+
+## Síntese — 2026-08-07
+
+Sintetizada em: `specs/specs/00-regras-e-invariantes.md`
+
+Observações: confirmado nesta passada — 32 regras (R1-R32), duas categorias (`# 2. Regras verificáveis` /
+`# 3. Regras de conduta`), vocabulário de estado §1.2 presente. R18, R27, R28 e R32 aparecem como ⏳/⏳/⏳/⏳
+nesta leitura porque as plans 12 e 16 (posteriores) ainda não tiveram sua síntese aplicada — isso é tratado
+no bloco de síntese seguinte desta mesma rodada de `/spec-atualizar`, não é pendência desta plan.

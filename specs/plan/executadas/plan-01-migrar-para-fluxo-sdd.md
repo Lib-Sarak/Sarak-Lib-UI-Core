@@ -2,7 +2,7 @@
 tipo: "plan"
 titulo: "Migrar a base de specs para o fluxo SDD"
 dominio: "Governança de Specs (SDD)"
-status: "🟢 Aprovada"
+status: "⚪ Sintetizada"
 prioridade: "Máxima"
 tags: ["plan", "sdd", "migracao", "governanca"]
 relacionados: ["[[00-contexto]]", "[[00-indice]]", "[[00-knowledge]]", "[[15-divida-conhecida]]"]
@@ -197,3 +197,14 @@ Revisão do dono apontou duas falhas no `00-contexto.md` entregue. Ambas confirm
 A segunda é a mais instrutiva: é **exatamente a classe do achado 30** — número/ponteiro que envelhece sem
 gate. Duas specs escritas na mesma entrega já divergiam. Registrado como pista para a `plan-06`: **contagens
 declaradas que nenhum gate cruza contra a fonte.**
+
+---
+
+## Síntese — 2026-08-07
+
+Sintetizada em: `specs/00-contexto.md` · `specs/specs/15-divida-conhecida.md`
+
+Observações: esta plan era, por desenho (§9), a própria execução da síntese — foi escrita e executada pelo
+revisor diretamente nas specs fixas de destino, sem produto intermediário. Verificado nesta passada de
+`/spec-atualizar`: `00-contexto.md` §§1-8 preenchidas e `specs/15-divida-conhecida.md` criada com os 31 achados
+(hoje refinados pelas plans 03/06/07/09/12 subsequentes). Nada foi deixado de fora.

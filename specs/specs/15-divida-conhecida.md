@@ -44,71 +44,36 @@ característica** (§5) · **5 movidos para implementação posterior** (§4) ·
 > ⚠️ **Correção de contagem.** Até esta triagem o cabeçalho declarava *"9 fechados · 22 abertos"*. Contado item
 > a item: eram **8 fechados e 23 abertos** (8 + 23 = 31). Os dois números estavam errados; a numeração, não.
 
+**Estado em 2026-08-07, após a síntese das plans 06/07/09/12 (`/spec-atualizar`):** as plans de conserto e de
+construção de gate fecharam 12 achados de código e 2 gates de "implementação posterior" (§4.1), e mediram um
+achado novo. **32 numerados** (o 32 é novo) · **24 fechados** (§6) · **2 aceitos como característica** (§5) ·
+**3 em implementação posterior** (§4) · **3 abertos** (§3). Soma: 32.
+
 ---
 
 # 3. Achados ABERTOS — a dívida de verdade
 
-Todos foram **reconfirmados no código em 2026-08-01** (plan-03) e todos têm **destino decidido pelo dono**. A
-coluna *Regra* é a mais informativa da tabela: onde ela diz **nenhuma**, estamos cobrando algo que não está
-escrito — e isso é candidato a regra nova, não a conserto silencioso.
+> **Reduzida de 14 para 3 em 2026-08-07** (síntese das plans 06/07/09/12): 12 achados fecharam por conserto de
+> código, e 1 achado novo (32) entrou, medido de passagem pela `plan-12`. O detalhe de cada fechamento está em
+> §6.
 
-## 3.1 🔴 Capaz de destruir dado de terceiro
-
-| # | Achado | Onde | Regra | Destino |
-|---|---|---|---|---|
-| 8 | **`localStorage.clear()`** apaga a **origem inteira** do consumidor — token de sessão, preferências, tudo — não só as chaves da lib, e recarrega a página. O `confirm()` promete "configurações visuais". **Hoje inalcançável**: o componente é importado (`CustomizationPanel.tsx:7`) e nunca renderizado (`:40` monta só a `ThemeCustomizationTab`) | `src/features/DesignEngine/Panels/AdvancedTab.tsx:21` | **nenhuma** | **Corrigir** — apagar só as chaves `sarak-*`. Candidato a regra nova: *a lib não apaga dado do host* |
-
-> ⚠️ **Acoplamento que impõe ordem de execução.** O `CustomizationPanel` importa 7 abas e renderiza **uma**
-> (`CustomizationPanel.tsx:3-9` × `:40`); uma das mortas é justamente a `AdvancedTab`. Logo: **restaurar as abas
-> ATIVA a perda de dados.** Consertar o `clear()` vem **primeiro**; decidir se as abas voltam vem depois.
-> Decidir na ordem inversa é a única forma de transformar código morto em bug de produção.
-
-## 3.2 🔴 Artefato gerado que publica número falso
-
-| # | Achado | Onde | Regra | Destino |
-|---|---|---|---|---|
-| 22 | **Tipo público defasado em 105 tokens.** Recontado em 2026-08-01: **304 propriedades** na `SarakDesignTokens` × **409** tokens reais. Nenhum gate acusa: o `auditor_paridade` cruza schema × mapping × partições, e o tipo gerado **não é uma das três fontes**. O número falso **vaza para o consumidor** via `sarak-ui/catalog.json` (`designTokens.count = 304`). ⚠️ **Dimensão nova, medida em 2026-08-03 (`plan-07`):** ele não só publica número velho — ele **esconde mudança**. A `plan-07` criou um token (409 → 410) e o `catalog:check`/`guide:check` **não acusaram**, porque publicam a contagem a partir deste tipo defasado. Uma alteração real no artefato publicado passou invisível pelos dois gates de contrato | `src/core/Provider/generated/design-token-ids.ts` · gerador `scripts/generate-token-types.ts` | **nenhuma** | **Corrigir (metade de código)** — regenerar. A outra metade (registrar o gerador num pipeline) é gate: §4 |
-
-> **Este achado tem duas metades e elas foram separadas na triagem.** Regenerar o artefato é dívida — o número
-> falso está publicado agora. Registrar o gerador num pipeline é **construção de gate**, e gate vem depois das
-> regras (§4). Fechar só a primeira metade faz o artefato apodrecer de novo; é por isso que as duas ficam
-> escritas, cada uma no seu lugar, em vez de uma sumir.
-
-## 3.3 Violação de regra **já formada** que nenhum gate vê
-
-Estes três não são "gate faltando" — a regra existe, está escrita, e o código a viola **agora**. O gate não
-enxergar é agravante, não a causa. A ampliação de escopo de cada auditor está em §4; o conserto do código é
-aqui.
-
-| # | Achado | Onde | Regra | Destino |
-|---|---|---|---|---|
-| 1 | **`--sx-*` vivo** como fallback de 2º nível. Ninguém emite `--sx-color-primary-base`: o fallback **resolve para vazio** e o thumb do range fica sem cor quando `--sarak-range-active-bg` falta | `src/styles/_utilities.css:80,89` | **R7** (namespace PROIBIDO) | **Corrigir (metade de código)** — as 2 linhas de CSS. Ampliar o `auditor_ghostvars` a `src/styles/` é gate: §4 |
-| 13 | `src/shared/` **fora do escopo** do `auditor_coverage` (`:52-60` varre `components`, `features`, `core`). Recontado: **4 arquivos, 0 testes** — `useSarakRouter.ts` e `useModuleDiscovery.ts` são **violação de R8 na letra**; `services/api.ts` (`.ts` que não começa com `use`) e `types/index.ts` (`index*`) **não são cobrados nem pela regra** | `src/shared/` · `auditor_coverage.mjs:52-60` | **R8** (2 dos 4) | **Corrigir (metade de código)** — testes para os 2 hooks. Ampliar o escopo do auditor é gate: §4 |
-| 29 | Bloco **gerado** manda "regenere com o script do **§5.1 do guia**". Medido: `GUIA-MANUTENCAO.md` tem §5 = *"Mexer no cromo"*, **sem 5.1**; o alvo real é o §2 (paridade). O texto sai em dois artefatos gerados | `sarak-dev/GUIA-MANUTENCAO.md:308` · `sarak-dev/state.json:44` · gerador `scripts/dev-kit/renderDevAppendix.mjs` | **R17** (metade sem gate) | **Corrigir (metade de código)** — o texto do gerador. Ensinar `§N.N` ao `dev-kit:check` é gate: §4 |
-
-## 3.4 Comportamento
-
-| # | Achado | Onde | Regra | Destino |
-|---|---|---|---|---|
-| 10 | **`focusRingWidth` é token de acessibilidade que não move nada.** O schema emite `--sarak-focus-width` (faixa 0–6, default 2); a regra global de foco **chumba** `outline: 2px solid`. Nenhum tema altera o anel de foco | `src/core/Design/schema/engineering.ts:12` × `src/styles/_utilities.css:54-58` | **nenhuma na letra** (o `auditor_hardcoded` só varre `.tsx`) | **Corrigir** — `outline: var(--sarak-focus-width, 2px) solid …`. Candidato a regra nova: *token de a11y tem de alcançar o CSS* |
-| 11 | **Token de breakpoint move só 1 dos 3 caminhos.** Medido: só `useDesignVariables.ts:58` lê `design.breakpointTablet`. `DeviceProvider.tsx:8` e `useStructuralStyles.ts:40,42,86,229` + `.presets.ts:13,14` usam a **constante** 768/1024. Quem muda o token desalinha CSS × JS | `src/core/Provider/DeviceProvider.tsx:8` · `src/components/atomic/hooks/useStructuralStyles*` | **nenhuma** | **Corrigir em parte** — o `DeviceProvider` é JS e sai barato. As classes `@min-[768px]` são build-time e **não aceitam `var()`**: essa metade é **aceita**, com o motivo em `00-contexto` §8 |
-| 12 | **`SarakTable` sem opt-out de colapso mobile:** `:113` troca por cards no smartphone sem prop nenhuma, enquanto o irmão `SarakDataTableImpl` tem `responsive?: boolean` (`:42,71,77`) com teste dedicado. Dois componentes públicos, APIs divergentes | `src/components/atomic/Templates/SarakTable.tsx:113` | **nenhuma** | **Corrigir** — `responsive?: boolean` com default `true`. É **aditivo → minor**, não precisa esperar o major |
-| 9 | `isGlass` é ramo morto que renderizaria **nav nenhuma**. Confirmado: `global.ts:21-33` só oferece `sidebar\|topbar\|dock`, então `validateDesign` descarta `'glass'` e o ramo é inalcançável. Exposição hoje: **zero** | `src/core/Shell/SarakShell.tsx:80-81` | **nenhuma** | **Corrigir** — higiene barata e sem risco; hoje é uma armadilha para quem acrescentar a opção |
-| 2 | `upgradeThemePayload(partialMode)` — parâmetro morto. Confirmado: **1 única ocorrência** em todo o repositório, a própria assinatura | `src/core/Design/master-map.ts:148` | **nenhuma** | **Corrigir → plan-09** — remover parâmetro é mudança de assinatura pública (**major**) |
-
-## 3.5 Superfície pública e higiene
-
-| # | Achado | Onde | Regra | Destino |
-|---|---|---|---|---|
-| 3 | `CustomizationPanel` sai **eager** do barril, e ainda é importado eager pelo efeito colateral de `:126-131` — paga custo de boot quem nunca abre o painel | `src/index.ts:50` · `:126-131` | **R15** (violação declarada) | **Corrigir → plan-09** — `React.lazy` muda o tipo público para `LazyExoticComponent`: **breaking change** |
-| 24 | O `main.tsx` que **todo consumidor novo recebe** cita o `Sarak-MyService`, obsoleto e inacessível ao importador. Comentário que viaja para o consumidor é documentação pública | `bin/scaffold/generators/mainTsx.mjs:36-40` | **R17** (metade sem gate) | **Corrigir** — troca de texto |
-| 25 | Ponteiro morto: afirma que `templates/app-starter.manifest.json` "segue publicado (`SARAK_STARTER_MANIFEST`)". Reconfirmado: a pasta `templates/` **não existe** na raiz e o símbolo tem **1 ocorrência em todo o código-fonte** — o próprio comentário | `bin/scaffold/context.mjs:7-10` | **R17** (metade sem gate) | **Corrigir** — remover as 4 linhas |
-
-## 3.6 Segurança e medição
+## 3.1 Segurança e medição
 
 | # | Achado | Onde | Regra | Destino |
 |---|---|---|---|---|
 | 17 | `testDir: './e2e'` — **a pasta não existe**; `playwright test` não acha nada e **sai verde**. As specs E2E reais vivem em `src/core/Provider/__e2e__/` e `src/features/DesignEngine/__e2e__/` | `playwright.config.ts:7` | **nenhuma** | **Corrigir** — defeito de configuração, 1 linha. Ligar o Playwright ao pipeline é a plan-11 |
+
+## 3.2 Violação de regra **já formada** que o gate agora vê, mas não corrige sozinho
+
+| # | Achado | Onde | Regra | Destino |
+|---|---|---|---|---|
+| 29 | Bloco **gerado** manda "regenere com o script do **§5.1 do guia**". Medido de novo em 2026-08-05 (`plan-12`, gate de ponteiro de seção): `GUIA-MANUTENCAO.md` **continua sem `§5.1`**; o alvo real é o §2 (paridade). ✅ **A metade de gate fechou** — `check-section-pointers.mjs` (construído pela `plan-12`) agora **acusa** este ponteiro entre os 27 mortos que mede. A metade de **código** (corrigir o texto) segue aberta | `sarak-dev/GUIA-MANUTENCAO.md:308` · `sarak-dev/state.json:44` · gerador `scripts/dev-kit/renderDevAppendix.mjs` | **R17** | **Corrigir** — o texto do gerador. É a única linha que falta para o `check-section-pointers.mjs` não acusar mais este caso |
+
+## 3.3 Prosa manual desatualizada por um conserto de outra plan
+
+| # | Achado | Onde | Regra | Destino |
+|---|---|---|---|---|
+| 32 | `arquitetura/04-contrato-de-tokens-e-paridade.md:52` afirma que a paridade "hoje fecha em `410 = 410`" como estado resolvido (2026-08-03, pela `plan-07`, quando a fusão dos 7 ids duplicados criou o token `--sarak-shell-brand-logo-size` e a soma foi de 409 para 410). A `plan-09` (2026-08-05) removeu o token `mfaQrCodeSize` das 3 fontes, e a paridade real **voltou a 409/409/409** — a prosa não acompanhou. Medido de passagem pela `plan-12`, ao vivo, com `auditor_paridade` | `specs/arquitetura/04-contrato-de-tokens-e-paridade.md:52` | **R17** (metade prosa manual, sem gate) | **Corrigir** — trocar `410 = 410` por `409 = 409` e nomear as duas plans que moveram o número (fusão dos ids → remoção do token de MFA) |
 
 ---
 
@@ -132,31 +97,14 @@ regra (plan-06) → **só então** construir/ampliar as verificações.
 
 ## 4.1 Gates integralmente ausentes
 
+> **14 e 15 fecharam em 2026-08-05 (`plan-12`, Lote A/B)** — os gates existem agora; o detalhe está em §6.
+> Restam **18, 23, 26**.
+
 | # | O que falta | Onde | Regra que ele cobraria |
 |---|---|---|---|
-| 14 | **Gate anti-acoplamento de auth.** Confirmado: **0 arquivos** `AuthCoupling*`. Um plano antigo o previu e se declarou concluído sem criar nada | — | **R32** *(escrita em 2026-08-02)* — a lib é indiferente ao sistema de autenticação. A regra existe; falta o gate. ⚠️ Ela **nasce com uma violação**: o `SarakSecurityOrchestrator`, roteado à plan-09 |
-| 15 | **Cobertura em %.** `@vitest/coverage-v8` em `package.json:100`, **nenhum script o invoca** | `package.json:100` | **R8.1** *(decidido em 2026-08-02)* — o % entra como **segunda rede** do 1:1, com **piso móvel**: mede, grava, e o piso só sobe |
-| 18 | **Medição de contraste WCAG AA.** Confirmado: **0 cálculos** de razão de contraste em `src/`. (`useMediaLuminance.ts` mede luminância de mídia para escolher cor de texto — **não** é contraste WCAG) | — | **R31** *(escrita em 2026-08-02)* — AA garantido nos **18 temas shippados**; **sem promessa** para tema do consumidor. Pode nascer vermelha: ninguém mediu os 18 |
-| 23 | **Gate de conteúdo sobre `sarak-ui/templates/`.** Medido: `kitFiles.mjs:16-22` não lista `templates/`; `tsconfig.json:20` é `include: ["src"]`; `check-package-contents.mjs` cobra **só presença** de 3 dos 5 itens — `componente-proprio.tsx` e `templates/ui-kit/` existem e **nada os cobra**. Template citando componente removido sai verde em tudo | `sarak-ui/templates/` | **R17**, cuja metade de prosa manual não tem gate. O achado 24 é a prova de que já aconteceu |
+| 18 | **Medição de contraste WCAG AA.** ✅ **Medida em 2026-08-05 (`plan-12`, Lote C — parada obrigatória)**: **12 de 18 temas shippados falham** em pelo menos 1 dos 4 pares canônicos (texto/fundo), a maioria em `textColorMuted`, mas **4 falhas são de texto primário/secundário** — inclusive `minimalist-airy`, um dos dois `SARAK_REFERENCE_THEMES` que o consumidor clona como ponto de partida. Script de medição preservado fora do repositório (anexo da `plan-12`, reproduzido pelo revisor). **A construção do gate está parada**, aguardando o dono decidir: (1) todos os pares que os componentes realmente produzem — não só os 4 canônicos; (2) se `textColorMuted` é cobrado a 4,5:1 ou 3:1 (simulado: só resgata 1 dos 12); (3) o que fazer com os 19 pares em `rgba()`, pulados na medição | — | **R31** — AA garantido nos 18 temas shippados. Regra escrita, gate pendente de decisão de fronteira |
+| 23 | **Gate de conteúdo sobre `sarak-ui/templates/`.** Medido: `kitFiles.mjs:16-22` não lista `templates/`; `tsconfig.json:20` é `include: ["src"]`; `check-package-contents.mjs` cobra **só presença** de 3 dos 5 itens — `componente-proprio.tsx` e `templates/ui-kit/` existem e **nada os cobra**. Template citando componente removido sai verde em tudo | `sarak-ui/templates/` | **R17**, cuja metade de prosa manual não tem gate. O achado 24 (fechado, §6) foi a prova de que já aconteceu |
 | 26 | **Automação que exercite um `install` de verdade.** Confirmado: **0 ocorrências** de `child_process`/`execSync` nos testes de `bin/scaffold/`. As provas de npm/pnpm/yarn foram feitas à mão, uma vez. Idem o `check --notify` do `predev` | — | Nenhuma regra escrita. Depende de CI (plan-05) e é o escopo da **plan-11** |
-
-## 4.2 Ampliações de escopo — a metade "gate" dos achados partidos
-
-Cada linha aqui é a **segunda metade** de um achado que continua aberto em §3 pela metade de código. As duas
-metades existem porque fechar só uma deixa o vão de pé para a próxima violação — é a lição do achado 4
-(fechado ampliando o escopo do `barrel:check` **junto** com o conserto).
-
-| Achado | Metade de código (§3) | Metade de gate (aqui) |
-|---|---|---|
-| **1** | as 2 linhas de `--sx-*` em `_utilities.css` | `auditor_ghostvars.mjs:14` tratar `src/styles/` também como **consumidora**, não só como fonte. ⚠️ Ampliar o escopo **sem ampliar o registro** produz acusação falsa — ver [[01-gates-e-baseline]] §4.3.c |
-| **13** | testes para `useSarakRouter` e `useModuleDiscovery` | `auditor_coverage.mjs:52-60` incluir `src/shared/` |
-| **22** | regenerar `design-token-ids.ts` | registrar `scripts/generate-token-types.ts` em script/hook/pipeline, para não apodrecer de novo |
-| **29** | o texto `§5.1` no gerador do `sarak-dev/` | `dev-kit:check` aprender a validar ponteiro de **seção** (`§N.N`), hoje só valida caminho, `npm run` e `node` |
-
-> **O padrão que estas duas seções nomeiam é o mais caro do repositório:** *o escopo do gate é menor que o
-> escopo da regra*. Os primeiros casos apareceram **por acaso**, não por método — e o antigo achado 30 provou
-> que atenção humana não o pega: a classe reapareceu pela mão que a acabara de catalogar. **Quantos faltam é
-> desconhecido**, e responder isso é exatamente o produto da plan-06.
 
 ---
 
@@ -172,7 +120,7 @@ destino. Registrados aqui só para a numeração não ser reaproveitada.
 
 ---
 
-# 6. Achados FECHADOS (2026-07-28 → 2026-08-01)
+# 6. Achados FECHADOS (2026-07-28 → 2026-08-05)
 
 Registrados só para que a numeração não seja reaproveitada. O detalhe está no `git`.
 
@@ -188,6 +136,20 @@ Registrados só para que a numeração não seja reaproveitada. O detalhe está 
 | 28 | JSDoc citando arquivo de plano inexistente, removido |
 | 30 | **Não se reproduz** (verificado 2026-08-01). Dizia que `verify_presets.ts:16` apontava para um `arquitetura/04 §9` inexistente. O alvo existe e é o certo: `04-contrato-de-tokens-e-paridade.md:252` = `# 9. Anti-drift de tema e preset` — exatamente o assunto do script. A reescrita da base (plan-01) criou o §9 |
 | 31 | **Não se reproduz** (verificado 2026-08-01). Dizia que a ponte para `specs/` era SOFT. `CLAUDE.md:3` hoje aponta **duro** para `specs/00-contexto.md`, os dois prompts e o `00-indice`. `.agents/index.md` segue com 0 referências a `specs/`, mas a ponte não passa mais por ele |
+| 8 | **`plan-08` F1 (2026-08-04).** `clearSarakStorage()` remove só as chaves da lib; texto do `confirm()` alinhado. Teste prova que chave alheia sobrevive ao reset |
+| 22 | **`plan-12` Lote A (2026-08-05).** `design-token-ids.ts` regenerado (304→409) **e** `generate-token-types.ts --check` registrado no `build` e no Anel 1 — as duas metades fecharam juntas |
+| 1 | **`plan-07` (código, 2026-08-03) + `plan-12` vão 2 (gate, 2026-08-05).** `--sx-*` encadeado num token real (`--theme-primary`); `auditor_ghostvars` passou a tratar `src/styles/` como consumidora |
+| 13 | **`plan-07` (código, 2026-08-03) + `plan-12` vão 6 (gate, 2026-08-05).** Testes escritos para `useSarakRouter`/`useModuleDiscovery`; `auditor_coverage` ampliado a `shared/`/`effects/`/`constants/` |
+| 10 | **`plan-08` F4 (2026-08-04).** `_utilities.css:58` passou a ler `var(--sarak-focus-width, 2px)` |
+| 11 | **`plan-08` F5 (2026-08-04).** `DeviceProvider` passou a receber os breakpoints do tema via contexto. A metade Tailwind (`@min-[768px]`, build-time, sem `var()`) já havia sido aceita como característica na triagem (`00-contexto` §8) |
+| 12 | **`plan-08` F6 (2026-08-04).** `SarakTable` ganhou `responsive?: boolean`, espelhando `SarakDataTableImpl` |
+| 9 | **`plan-08` F3 (2026-08-04).** Ramo `isGlass` removido; `isSidebar` passou a ser o fallback explícito de qualquer valor fora de topbar/dock |
+| 2 | **`plan-09` operação 3 (2026-08-05).** `partialMode` removido de `upgradeThemePayload`; zero chamador afetado |
+| 3 | **`plan-09` operação 1 (2026-08-05).** `CustomizationPanel` virou `React.lazy` com `Suspense` interno (padrão `SarakChartEngine`), preservando o tipo público `React.FC`. Boot: **−75,1%** |
+| 24 | **`plan-07` item 8 (2026-08-03).** `main.tsx` do scaffold deixou de citar `Sarak-MyService` |
+| 25 | **`plan-07` item 8 (2026-08-03).** `context.mjs` deixou de citar `templates/app-starter.manifest.json` |
+| 14 | **`plan-12` Lote A (2026-08-05).** `auditor_authcoupling.mjs` construído (R32); nasce verde — o único violador (`SarakSecurityOrchestrator`) já havia saído na `plan-09` |
+| 15 | **`plan-12` Lote B (2026-08-05).** `check-coverage-floor.mjs` construído (R8.1); piso móvel gravado em 70,66% |
 
 ---
 
@@ -195,10 +157,10 @@ Registrados só para que a numeração não seja reaproveitada. O detalhe está 
 
 - [x] Todo achado aberto tem **arquivo:linha** ou a declaração explícita de que a localização é o próprio vão.
 - [x] Nenhum achado aberto está sem categoria.
-- [x] A numeração é contínua de 1 a 31, sem reaproveitamento.
+- [x] A numeração é contínua de 1 a 32, sem reaproveitamento.
 - [x] Todo achado aberto tem **regra nomeada** — ou a declaração explícita de que **nenhuma regra o cobre**.
 - [x] Todo achado aberto tem **destino decidido pelo dono** (plan-03, 2026-08-01).
-- [x] **Soma fechada:** 14 abertos (§3) + 5 implementação posterior (§4) + 2 aceitos (§5) + 10 fechados (§6) = **31**.
+- [x] **Soma fechada:** 3 abertos (§3) + 3 implementação posterior (§4) + 2 aceitos (§5) + 24 fechados (§6) = **32**.
 - [ ] Toda plan que fecha um achado **remove a linha** aqui e cita o número no veredito.
 - [x] `00-contexto` §8 aponta para cá em vez de listar achado.
 
@@ -208,7 +170,7 @@ Registrados só para que a numeração não seja reaproveitada. O detalhe está 
 
 - **Só entra o que foi medido.** Suspeita vira plan de investigação, não linha nesta spec.
 - **Item fechado sai** — na mesma execução que o fechou, não "depois".
-- **Numeração definitiva.** Achado novo pega o próximo número livre (a partir de 32).
+- **Numeração definitiva.** Achado novo pega o próximo número livre (a partir de 33).
 - Achado que o dono decidir **aceitar como dívida permanente** sai da §3 e vira linha em `00-contexto` §8, com
   o motivo — porque aí deixou de ser dívida e virou característica. O §5 desta spec guarda só o número.
 - **Gate que nunca existiu não é dívida** — vai para a §4. Dívida é código que viola regra **já formada**;

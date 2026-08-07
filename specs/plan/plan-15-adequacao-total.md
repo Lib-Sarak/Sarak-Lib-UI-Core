@@ -25,8 +25,8 @@ não por cansaço.
 # 2. Contexto
 
 A `plan-12` constrói os gates **sem exceção**, cobrando cada regra como ela está escrita. A consequência
-inevitável é que **o baseline deixa de ser zero**: 15 verificações novas ou ampliadas acendem a dívida que já
-existia e ninguém via.
+inevitável é que **o baseline deixa de ser zero**: 16 verificações novas ou ampliadas (15 na `plan-12`, mais o
+`auditor_composicaoatomica` da `plan-16`) acendem a dívida que já existia e ninguém via.
 
 **Isso é a metade do trabalho, e a metade fácil.** Um gate que acusa e nunca é atendido vira ruído — e ruído
 treina a ignorar o vermelho, que é o defeito que este repositório passou a campanha inteira consertando.
@@ -42,7 +42,7 @@ sentido criar gates e criar exceções no processo."* A `plan-12` é o "construi
 
 | Origem | Vermelho MEDIDO | Natureza |
 |---|---|---|
-| **R18** | ✅ **0** — os blocos de limite foram escritos **na própria `plan-12`**; `gate-limits:check` fecha **25/25** | *(não chega a esta plan)* |
+| **R18** | ✅ **0** — os blocos de limite foram escritos **na própria `plan-12`**; `gate-limits:check` fecha **26/26** | *(não chega a esta plan)* |
 | **R30** | **10** erros de `tsc`, todos em teste — **produção já em 0**, e virou hard-block | tipagem |
 | **vão 5** | **35** violações de `px` literal em `src/core/Shell/` *(a previsão dizia 4)* | conserto trivial, volume médio |
 | **vãos 2+3** | **27** consumos-fantasma em `src/styles/` + `src/core/` | conserto trivial |
@@ -75,10 +75,19 @@ régua: são 12 temas com defeito de contraste real**, um deles (`minimalist-air
 
 ## 3.1 Dentro
 
-- **Todo item do baseline** que a `plan-12` deixou vermelho, sem exceção.
-- `specs/01-gates-e-baseline.md` — o baseline recontado a cada lote pago.
-- `specs/15-divida-conhecida.md` — item pago **sai** da lista, na mesma execução.
+- **Todo item do baseline** que a `plan-12` e a `plan-16` deixaram vermelho, sem exceção.
+- **O código que os gates acusam** — `src/`, e o texto dos geradores onde o vermelho for de prosa.
 - `gates/baselines/audit-baseline.json` — regravado **junto** do conserto, nunca sozinho.
+
+> 🔴 **Correção de 2026-08-07 — erro do revisor.** A versão anterior listava aqui
+> `specs/01-gates-e-baseline.md` e `specs/15-divida-conhecida.md` como "dentro do escopo". **O executor não pode
+> editá-las** ([[00-prompt-executor]] §7.3) — foi por isso que os executores da `plan-12` e da `plan-16`
+> corretamente se recusaram a tocá-las e declararam a recusa. Mandar fazer o que o prompt do executor proíbe
+> produz ou recusa (e o critério nasce impossível) ou violação (e eu reprovo).
+>
+> **O que o executor faz no lugar:** escreve no resumo, item a item, **qual achado foi pago e qual número do
+> baseline mudou**. A edição das duas specs é do **revisor**, na síntese — exatamente como aconteceu nas duas
+> plans anteriores.
 
 ## 3.2 Fora
 
@@ -153,7 +162,8 @@ Não commite. Ao terminar, escreva o resumo na própria plan.
 - [ ] `npm run audit` em **zero**, ou o que sobrou está no baseline **com motivo escrito e dono nomeado**.
 - [ ] **Nenhum gate alterado** — `git diff` em `gates/scripts/` vazio, salvo conserto de falso positivo
       **declarado e medido**.
-- [ ] Todo item pago **saiu** de `15-divida-conhecida` na mesma execução.
+- [ ] Todo item pago está **nomeado no resumo**, com o achado de `15-divida-conhecida` e a métrica do baseline
+      que ele move — a remoção da linha na spec é do revisor, na síntese.
 - [ ] Baseline regravado **junto** de cada conserto, nunca isolado no diff.
 - [ ] Onde houve risco de comportamento, a **caracterização veio antes** — e está no diff.
 - [ ] `npx vitest run` verde; `npm run gates:full` verde.

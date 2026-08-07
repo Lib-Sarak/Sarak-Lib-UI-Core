@@ -12,9 +12,10 @@ relacionados: ["[[00-regras-e-invariantes]]", "[[01-gates-e-baseline]]", "[[02-d
 
 O **painel de customização** é a ferramenta de autoria de temas da própria biblioteca: a UI onde um humano
 mexe em tokens e vê o resultado ao vivo. A peça pública é o **`CustomizationPanel`**
-(`src/features/DesignEngine/Library/CustomizationPanel.tsx`, exportado no barril em `src/index.ts:50`); por
-dentro, quem faz o trabalho é o `ThemeCustomizationTab` orquestrando `MasterControlPanel` +
-`PreviewCanvas`.
+(`src/features/DesignEngine/Library/CustomizationPanel/index.tsx`, exportado **lazy** no barril em
+`src/index.ts:50-52` desde 2026-08-05, `plan-09`), reexportando um `React.FC` com `Suspense` interno — o
+tipo público não mudou. Por dentro, o trabalho de fato é `CustomizationPanelImpl.tsx` orquestrando
+`ThemeCustomizationTab`, `MasterControlPanel` e `PreviewCanvas`.
 
 **`features/DesignEngine/` é a ÚNICA feature de `src/features/`** — e o motivo é a regra de alocação de
 [[00-mapa-do-modulo]]: ela tem **estado, lógica e orquestração**, logo não é átomo. Um átomo é visual e
@@ -234,36 +235,34 @@ incompatível. O alvo (`useThemePersistenceHandlers`) aceita `'error' | 'success
 **`tsc` não é gate hoje** — 14 erros no baseline, dos quais 4 em produção
 ([[01-gates-e-baseline]] §4.4). **Não corrigido aqui** (esta spec não altera código).
 
-## 9.2 O painel inteiro é EAGER no barril
+## 9.2 ✅ FECHADO em 2026-08-05 (`plan-09`) — o painel deixou de ser eager no barril
 
-`src/index.ts:50` exporta `CustomizationPanel` de forma eager, e `:119-125` o **importa com efeito
-colateral** para registrá-lo no Discovery. Resultado: o painel de autoria — a peça mais pesada da
-biblioteca — está no **caminho crítico de todo consumidor**, mesmo de quem nunca o exibe. E o efeito
-colateral top-level é, por definição, **não-eliminável por tree-shaking**.
+**Era:** `src/index.ts:50` exportava `CustomizationPanel` de forma eager, e o bloco `:126-131` o **importava
+com efeito colateral** para registrá-lo no Discovery — o painel inteiro, a peça mais pesada da biblioteca, no
+caminho crítico de todo consumidor.
 
-Corrigir é `React.lazy`, que muda o tipo público para `LazyExoticComponent` → **breaking change**. Está
-agrupado no major único da Campanha 2 (decisão D12). Não existe gate de peso de bundle
-([[01-gates-e-baseline]] §4.5 item 3).
+**Conserto:** o bloco de efeito colateral foi apagado (saíram junto os dois ids legados do Discovery,
+`mx-customization`/`personalization` — ver [[04-shell-e-discovery]] §7.1), e `src/index.ts:50-52` passou a
+exportar o índice lazy (`Library/CustomizationPanel/index.tsx`, `React.lazy` + `Suspense` interno, no padrão
+do `SarakChartEngine`). **O Design Engine inteiro saiu do caminho crítico:** chunk de boot medido em
+**674.011 → 167.684 bytes (−75,1%)**. O tipo público não mudou (`React.FC`, não `LazyExoticComponent`) —
+consequência de seguir o padrão existente em vez da previsão original desta spec.
 
-## 9.3 ⚠️ `CustomizationPanel` importa 6 abas e renderiza UMA
+**Consequência para o consumidor:** quem dependia do registro automático de `mx-customization` como módulo
+do Discovery precisa registrá-lo explicitamente agora — está em `docs/migracoes.md`.
 
-Achado desta entrega, verificável na leitura do arquivo
-(`Library/CustomizationPanel.tsx:1-46`): ele importa `LayoutTab`, `LanguageTab`, `ShortcutsTab`,
-`AdvancedTab`, `EngineCustomizationTab` e `HyperGranularityTab`, declara
-`type TabId = 'sovereignty' | 'engines' | 'language' | 'shortcuts' | 'advanced'` (`:11`) e importa
-`useState` — e o corpo do componente renderiza **somente `<ThemeCustomizationTab />`** (`:41`). Não há
-estado de aba, não há navegação entre abas, e **as outras cinco abas são inalcançáveis**.
+## 9.3 ✅ FECHADO em 2026-08-04 (`plan-08`, F2) — as 6 abas mortas saíram, não voltaram
 
-Duas consequências:
+**Era:** `CustomizationPanel.tsx` importava `LayoutTab`, `LanguageTab`, `ShortcutsTab`, `AdvancedTab`,
+`EngineCustomizationTab` e `HyperGranularityTab`, mas o corpo só renderizava `<ThemeCustomizationTab />` —
+as outras cinco eram inalcançáveis e pesavam no bundle sem entregar nada.
 
-1. **Cinco abas de funcionalidade estão mortas na peça pública** — quem só usa `CustomizationPanel` não
-   alcança layout, idioma, atalhos, avançado nem hiper-granularidade.
-2. **Agrava a §9.2 de forma direta:** os 6 imports arrastam as 6 árvores de componente para o bundle do
-   consumidor, e nenhuma delas renderiza. É peso puro no caminho crítico.
-
-**Pergunta aberta para o dono:** o painel deve **voltar a ter as abas** (havia navegação, e ela foi
-perdida numa refatoração — o `TabId` órfão é o vestígio) ou **as abas devem sair** e o painel assumir que é
-só o customizador de tema? São correções opostas, e a escolha é de produto. **Não decidida aqui.**
+**Decisão do dono (2026-08-04): remover os imports mortos**, não restaurar a navegação. `CustomizationPanel`
+(hoje `CustomizationPanelImpl.tsx`) caiu de 49 para 35 linhas — saíram os 6 imports de aba, os ícones que só
+serviam a elas, o `useState` não usado e o `type TabId` órfão. **Os 6 componentes de aba não foram apagados**
+— continuam em `Panels/`, com os próprios testes, caso uma navegação futura queira reativá-los. A ordem
+obrigatória foi respeitada: esta remoção só aconteceu **depois** de a §9.5 fechar (F1 antes de F2, porque
+restaurar navegação antes do conserto do `localStorage.clear()` ativaria a perda de dados).
 
 ## 9.4 `PreviewCanvas` aplica design SEM `validateDesign`
 
@@ -274,30 +273,20 @@ ficou visível (`plan/40.4` §Nota). Registrado também em [[10-seguranca-e-aces
 **Risco real:** baixo hoje (o dado do preview é o rascunho do próprio painel). Mas é uma **assimetria de
 fronteira**: dois caminhos que aplicam design, um valida e o outro não.
 
-## 9.5 ⚠️ `AdvancedTab` apaga TODO o `localStorage` da origem
+## 9.5 ✅ FECHADO em 2026-08-04 (`plan-08`, F1) — o reset deixou de apagar a origem inteira
 
-`src/features/DesignEngine/Panels/AdvancedTab.tsx:17-25`:
+**Era:** `AdvancedTab.tsx` chamava `localStorage.clear()` num botão cujo `confirm()` prometia só
+"configurações visuais" — `clear()` não distingue chave da lib de chave do host, e apagava token de sessão,
+carrinho, rascunho de formulário, tudo, antes de recarregar a página do host.
 
-```ts
-if (confirm("ATENÇÃO: Isso restaurará TODAS as configurações visuais para o padrão de fábrica. Continuar?")) {
-    setIsResetting(true);
-    setTimeout(() => { localStorage.clear(); window.location.reload(); }, 1000);
-}
-```
+**Conserto:** `src/core/Provider/utils/storage.ts` (novo) — `clearSarakStorage(storageKey?)` remove **só**
+as chaves da lib (as fixas mais a `persistence.storageKey` do Provider); `AdvancedTab.tsx` passou a chamá-la
+no lugar de `localStorage.clear()`, e o texto do `confirm()` e do subtítulo do cartão foram alinhados ao que
+o código de fato faz. Teste dedicado prova que **uma chave alheia sobrevive ao reset**
+(`storage.test.ts`). Entrada em `docs/migracoes.md`.
 
-**O texto promete "configurações visuais"; a ação apaga a origem inteira.** `localStorage.clear()` não
-distingue chave da lib de chave do host — token de sessão, carrinho, rascunho de formulário, preferência do
-usuário: tudo vai. Em seguida, `window.location.reload()` recarrega a página **do host**.
-
-**Onde isso é grave:** num consumidor que guarda estado em `localStorage` (a maioria), e especialmente no
-**modo embarcado**, onde a ilha **não é dona da página** e não deveria recarregá-la.
-
-**O conserto é pequeno e óbvio** — remover apenas as chaves com o prefixo da lib (a `storageKey` é
-conhecida, `types.ts:155`) e trocar o reload por reaplicação dos defaults. Não é feito aqui porque esta
-spec não altera código; é a lacuna que eu recomendaria priorizar de toda a Fase 4.
-
-**Atenuante:** a aba está inalcançável pela §9.3 — hoje ninguém chega a esse botão pelo
-`CustomizationPanel`. **Isso é sorte, não proteção**, e desaparece no dia em que as abas voltarem.
+**Esta foi a primeira correção do lote F1→F2, de propósito:** restaurar navegação para as abas mortas
+(§9.3) **antes** deste conserto teria ativado a perda de dados em produção. A ordem foi respeitada.
 
 ## 9.6 `plan/14` está APOSENTADA — decisão de não fazer
 
@@ -316,8 +305,9 @@ hoje é decisão do consumidor (ele exporta o componente e monta onde quiser, ou
 - [x] O preview está descrito com o **limite** declarado (override lógico, não container query).
 - [x] A allowlist do zero-marca tem a justificativa **e** a tensão registrada.
 - [x] O erro de `tsc` está documentado e **não corrigido**.
-- [x] As dívidas 9.3 e 9.5, achadas nesta entrega, estão registradas com pergunta/recomendação e sem
-      decisão unilateral.
+- [x] As dívidas 9.2, 9.3 e 9.5 estão registradas — **as três fecharam** entre 2026-08-04 e 2026-08-05
+      (plans 08 e 09); o registro documenta a decisão do dono e o conserto aplicado, não mais uma pergunta
+      em aberto.
 
 # 11. Plano de testes (Quality Gate)
 
@@ -327,10 +317,11 @@ hoje é decisão do consumidor (ele exporta o componente e monta onde quiser, ou
 | Rascunho: inicialização nula, resolução para o sistema, comparação profunda | `src/features/DesignEngine/hooks/__tests__/useDesignDraft.test.tsx` | ✅ suíte |
 | Export completo (não subconjunto) e slug estável | `Main/utils/__tests__/exportTheme.test.ts` | ✅ suíte |
 | Escopo do preview não vaza variável para o host | `src/core/Design/components/__tests__/DesignScope.test.tsx` | ✅ suíte |
-| Painel monta e renderiza a aba de tema | `Library/__tests__/CustomizationPanel.test.tsx` | ✅ suíte |
+| Painel monta e renderiza a aba de tema | `Library/CustomizationPanel/__tests__/CustomizationPanelImpl.test.tsx` | ✅ suíte |
+| Fronteira lazy (`Suspense`, tipo público preservado) | `Library/CustomizationPanel/__tests__/CustomizationPanelImpl.test.tsx` | ✅ suíte *(2026-08-05, `plan-09`)* |
+| Reset apaga só as chaves da lib | `src/core/Provider/utils/__tests__/storage.test.ts` · `Panels/__tests__/AdvancedTab.test.tsx` | ✅ suíte *(2026-08-04, `plan-08`)* |
 | Preview (canvas, mocks, kitchen sink) | `Canvas/__tests__/PreviewCanvas.test.tsx`, `MockApps.test.tsx`, `KitchenSinkPreview.test.tsx` | ✅ suíte |
 | Boot e injeção ao vivo do painel | `src/features/DesignEngine/__e2e__/Boot.spec.tsx`, `RealtimeInjection.spec.tsx` | ❌ **Playwright, manual** |
 
-**A implementar (backlog):** um teste que prove que as abas do `CustomizationPanel` são alcançáveis — hoje
-**não existe**, e é justamente por isso que a §9.3 pôde acontecer sem nenhum gate reclamar. Um teste de
-"renderiza a aba X ao clicar em X" teria falhado no dia da refatoração.
+> **O backlog anterior** ("provar que as abas são alcançáveis") **saiu de pauta**: a §9.3 fechou removendo
+> os imports mortos, não restaurando navegação — não há mais aba para provar alcançável.

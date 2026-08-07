@@ -201,7 +201,7 @@ Todas em `src/core/Design/master-map.ts`:
 
 | Função | Devolve |
 | --- | --- |
-| `getAllDesignTokens()` `:74` | Todos os tokens, **brutos** (416 itens — ver §2.2) |
+| `getAllDesignTokens()` `:74` | Todos os tokens, **brutos** — **409** itens hoje, e **409 ids únicos**: o bruto e o único coincidem desde que a `plan-07` fundiu os 7 ids duplicados (§2.2). ⚠️ **"Bruto" continua sendo a palavra certa**: a função é um `flatMap` e **não deduplica** — basta um id declarado em dois schemas para os dois números divergirem de novo, que é exatamente o defeito que §2.2 registra |
 | `getStructuralTokens()` `:83` | Só os estruturais (17) |
 | `getDefaultDesignState()` `:90` | `{ tokenId: defaultValue }` — indexado por id, portanto já deduplicado |
 | `getDomainMap()` `:105` | `{ bySchema, byColumn }` — duas granularidades de domínio |
@@ -283,19 +283,24 @@ Execução atual: **120 itens auditados (18 temas + 102 presets de componente)**
 
 É o gate que impede o drift silencioso de acontecer na direção contrária: alguém remove um token do schema e os 18 temas embarcados continuam carregando a chave morta.
 
-# 10. O baseline do `run_audit`, desta execução
+# 10. O baseline do `run_audit` — ele NÃO mora aqui
 
-**`run_audit.mjs` NÃO está em zero.** Duas regras vermelhas, ambas dívida conhecida e documentada:
+**A régua é [`specs/01-gates-e-baseline.md`](../specs/01-gates-e-baseline.md) §3**, e o número que o gate lê é
+[`gates/baselines/audit-baseline.json`](../../gates/baselines/audit-baseline.json). **Compare com aqueles dois;
+nunca com zero, e nunca com uma cópia.**
 
-| Auditor | Resultado |
-| --- | --- |
-| `auditor_hardcoded` | ❌ **1 violação de Valor** — `src/components/atomic/Atoms/SarakTypography.tsx:39`, `var(--sarak-h1-ls, -1px)`. Estrutural líquido = **0** (516 brutos, menos 188 ícones, 87 dimensão fluida e 241 alinhamento) |
-| `auditor_ghostvars` | ❌ **3 consumos** que não resolvem: `--token`, `--sarak-button-radius`, `--sarak-shell-brand-logo-size` |
-| `auditor_typescript` | ✅ nenhum `any` |
-| `auditor_coverage` | ✅ todos os componentes com teste |
-| `auditor_arquitetura` | ✅ nenhuma quebra de camada |
-| `auditor_cleancode` | ✅ nenhuma violação |
-| `auditor_paridade` | ✅ 409/409/409 |
-| `auditor_presets` | ✅ 120 itens, zero chave órfã |
-
-> **Compare com este baseline; NUNCA espere zero.** Acusar regressão porque o auditor saiu com código 1 é o erro que este registro existe para evitar. A dívida detalhada, com o que seria preciso para fechar cada item, é assunto da spec de gates e baseline.
+> 🔴 **Esta seção trazia uma TABELA de baseline, e ela foi removida em 2026-08-07.** Não por estar
+> desatualizada — por **não poder morar aqui**. Um baseline é fonte viva: ele muda a cada plan que conserta ou
+> constrói gate. Transcrevê-lo para markdown é exatamente o que **R17** proíbe, e o dano se materializou:
+> a tabela dizia *"duas regras vermelhas · `auditor_hardcoded` 1 · `auditor_ghostvars` 3"* enquanto a medição
+> real era **quatro vermelhas · 35 · 27**, mais três auditores que ela nem listava. Pior que o número: ela
+> instruía — *"compare com este baseline"* — e teria feito o leitor concluir **regressão de +34 e +24** onde
+> houve **ampliação de escopo de gate**.
+>
+> **Os três nomes que ela citava são o caso didático desta base:** `--token` era comentário JSDoc,
+> `--sarak-button-radius` **nunca foi fantasma** (é emitida por `manifest.ts:198`) e
+> `--sarak-shell-brand-logo-size` foi **criado** pela `plan-07`. Quem lesse a tabela hoje reabriria três casos
+> fechados. O registro de por que cada um caiu está em [[01-gates-e-baseline]] §4.2 e §9.3.
+>
+> **Destino demonstrado** ([[00-contexto]] §5): o conteúdo vive em [[01-gates-e-baseline]] §3, mais completo do
+> que era aqui — os **11** auditores, cada um com o número medido e o motivo de ele ser esse.

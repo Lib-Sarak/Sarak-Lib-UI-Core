@@ -2,7 +2,7 @@
 tipo: "plan"
 titulo: "Adequar as skills locais ao fluxo SDD"
 dominio: "Governança de Specs (SDD) / Inteligência local"
-status: "🟢 Aprovada"
+status: "⚪ Sintetizada"
 prioridade: "Alta"
 tags: ["plan", "skills", "sdd", "governanca"]
 relacionados: ["[[00-contexto]]", "[[00-knowledge]]", "[[00-prompt-revisor]]"]
@@ -667,3 +667,15 @@ em `00-contexto` §4.1, e os 13 scripts de auditoria preservados no disco.
 `arquitetura/02-design-engine.md` (a ordem de renderização, adotada pelo revisor).
 
 **Liberado: pode commitar.**
+
+---
+
+## Síntese — 2026-08-07
+
+Sintetizada em: `specs/00-contexto.md` §4.1 · `specs/specs/00-regras-e-invariantes.md` §3.1 (tabela
+validador × executor) · `specs/arquitetura/02-design-engine.md` (ordem de renderização do `SarakScopeRoot`)
+
+Observações: os três destinos já foram escritos pelo revisor durante o próprio ciclo de veredito/correção
+desta plan (confirmado por `git grep` nesta passada — a §3.1 de `00-regras-e-invariantes.md` referencia
+`gates/scripts`, caminho pós-plan-14, e a ordem de renderização em `arquitetura/02` bate com
+`SarakUIProvider.tsx:184-216`). Nada deixado de fora.

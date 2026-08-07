@@ -40,22 +40,10 @@ as duas, sempre, na mesma ação.**
 
 | # | Plan | Objetivo | Depende de | Status | Destino |
 |---|---|---|---|---|---|
-| 1 | [plan-01-migrar-para-fluxo-sdd](plan/plan-01-migrar-para-fluxo-sdd.md) | Migrar a base de specs para o fluxo SDD | — | 🟢 Aprovada | `00-contexto.md` · `specs/15-divida-conhecida.md` |
-| 2 | [plan-03-triagem-divida-conhecida](plan/plan-03-triagem-divida-conhecida.md) | Decidir o destino de cada achado aberto *(análise, não conserto)* | plan-01 | 🟢 Aprovada | `specs/15-divida-conhecida.md` · `00-contexto.md` |
-| 3 | [plan-02-adequar-skills-locais](plan/plan-02-adequar-skills-locais.md) | Adequar as 9 skills locais ao fluxo SDD | plan-01 | 🟢 Aprovada | `00-contexto.md` · `specs/00-regras-e-invariantes.md` · `arquitetura/02` |
-| 4 | [plan-04-alinhamento-erp](plan/plan-04-alinhamento-erp.md) | Alinhar o ERP — o instrumento de medição da lib | — | 🟢 Aprovada | `—` |
-| 5 | [plan-13-fechar-conjunto-de-regras](plan/plan-13-fechar-conjunto-de-regras.md) | Tudo que se cobra aqui vira regra numerada; conduta em categoria própria | — | 🟢 Aprovada | `specs/00-regras-e-invariantes.md` |
-| 6 | [plan-14-casa-dos-gates](plan/plan-14-casa-dos-gates.md) | Concentrar todo verificador em `gates/` e limpar o legado de `scripts/` | plan-13 | 🟢 Aprovada | `specs/01` · `specs/02` · `specs/00-regras-e-invariantes.md` |
-| 7 | [plan-06-auditoria-cobertura-gates](plan/plan-06-auditoria-cobertura-gates.md) | Mapear o escopo real de cada gate contra o escopo da regra *(investigação)* | plan-14 | 🟢 Aprovada | `specs/00-regras-e-invariantes.md` · `specs/01` · `specs/15` |
-| 8 | [plan-07-quitacao-baseline](plan/plan-07-quitacao-baseline.md) | Quitar o baseline de auditoria | plan-06 | 🟢 Aprovada | `specs/01` · `specs/11` · `specs/10` |
-| 9 | [plan-08-achados-comportamento](plan/plan-08-achados-comportamento.md) | Corrigir o código que faz coisa diferente do que promete | plan-06 | 🟢 Aprovada | `specs/06` · `specs/07` · `specs/04` |
-| 10 | [plan-09-contrato-publico-2-0-0](plan/plan-09-contrato-publico-2-0-0.md) | As quebras de contrato saem juntas num único major | plan-06 | 🟢 Aprovada | `arquitetura/03` · `adr/009-*` · `docs/migracoes.md` |
-| 11 | [plan-12-construcao-dos-gates](plan/plan-12-construcao-dos-gates.md) | Construir os ~21 itens da matriz: 7 regras sem gate + 14 vãos | plan-06 | 🟢 Aprovada | `specs/00-regras-e-invariantes.md` · `specs/01` · `specs/02` · `specs/15` |
-| 12 | [plan-16-gate-composicao-atomica](plan/plan-16-gate-composicao-atomica.md) | Construir o gate de R10, com a fronteira já fixada pelo dono | plan-12 | 🟢 Aprovada | `specs/00-regras-e-invariantes.md` · `specs/01` · `specs/02` |
-| 13 | [plan-15-adequacao-total](plan/plan-15-adequacao-total.md) | O baseline volta a zero — pagar tudo que os gates novos acusarem | plan-12 · plan-16 | 🔴 A executar | `specs/01` · `specs/15` · `specs/00-regras-e-invariantes.md` |
-| 14 | [plan-05-integracao-continua](plan/plan-05-integracao-continua.md) | Rodar os gates num ambiente que não é a máquina de ninguém | — | 🔴 A executar | `specs/16-integracao-continua.md` *(nova)* · `specs/02` · `specs/01` |
-| 15 | [plan-10-ciclo-atualizacao](plan/plan-10-ciclo-atualizacao.md) | Dar comando de atualização a quem só recebia aviso | plan-05 | 🔴 A executar | `specs/13-instalacao-e-atualizacao.md` |
-| 16 | [plan-11-e2e-no-pipeline](plan/plan-11-e2e-no-pipeline.md) | Parar de sair verde sem executar nada | plan-05 | 🔴 A executar | `specs/11` · `specs/10` · `specs/16` |
+| 1 | [plan-15-adequacao-total](plan/plan-15-adequacao-total.md) | O baseline volta a zero — pagar tudo que os gates novos acusarem | plan-12 · plan-16 | 🔴 A executar | `specs/01` · `specs/15` · `specs/00-regras-e-invariantes.md` |
+| 2 | [plan-05-integracao-continua](plan/plan-05-integracao-continua.md) | Rodar os gates num ambiente que não é a máquina de ninguém | — | 🔴 A executar | `specs/16-integracao-continua.md` *(nova)* · `specs/02` · `specs/01` |
+| 3 | [plan-10-ciclo-atualizacao](plan/plan-10-ciclo-atualizacao.md) | Dar comando de atualização a quem só recebia aviso | plan-05 | 🔴 A executar | `specs/13-instalacao-e-atualizacao.md` |
+| 4 | [plan-11-e2e-no-pipeline](plan/plan-11-e2e-no-pipeline.md) | Parar de sair verde sem executar nada | plan-05 | 🔴 A executar | `specs/11` · `specs/10` · `specs/16` |
 
 > **A ordem da coluna `#` não é a ordem do número da plan** — e isso é a feature, não um erro. A `plan-03`
 > (triagem) roda **antes** da `plan-02` porque ela decide o escopo real de 07, 08 e 09; a `plan-02` só depende
@@ -134,12 +122,26 @@ Toda plan declara, **desde o momento em que é escrita**, para onde seu conteúd
 # 4. Histórico — plans sintetizadas
 
 > **Como escrever:** ao concluir `/spec-atualizar`, mova a linha da §1 para cá, com a **data absoluta**
-> (`AAAA-MM-DD`) da síntese e a spec fixa efetivamente atualizada. O arquivo da plan **permanece** em `plan/`
-> (é rastro auditável) — só sai da fila. Esta tabela é append-only: nada é editado nem removido.
+> (`AAAA-MM-DD`) da síntese e a spec fixa efetivamente atualizada. **O arquivo da plan é movido para
+> `plan/executadas/`** *(convenção adotada em 2026-08-07, a pedido do dono — antes disso o arquivo
+> permanecia em `plan/`; as plans sintetizadas até aquela data foram movidas retroativamente)*. Continua
+> sendo rastro auditável, só muda de pasta — nunca é editado além do bloco `## Síntese` que o fecha. Esta
+> tabela é append-only: nada é editado nem removido.
 
 | Plan | Sintetizada em | Spec fixa atualizada |
 |---|---|---|
-| — | — | — |
+| [plan-01-migrar-para-fluxo-sdd](plan/executadas/plan-01-migrar-para-fluxo-sdd.md) | 2026-08-07 | `00-contexto.md` · `specs/15-divida-conhecida.md` |
+| [plan-03-triagem-divida-conhecida](plan/executadas/plan-03-triagem-divida-conhecida.md) | 2026-08-07 | `specs/15-divida-conhecida.md` · `00-contexto.md` |
+| [plan-02-adequar-skills-locais](plan/executadas/plan-02-adequar-skills-locais.md) | 2026-08-07 | `00-contexto.md` §4.1 · `specs/00-regras-e-invariantes.md` §3.1 · `arquitetura/02-design-engine.md` |
+| [plan-04-alinhamento-erp](plan/executadas/plan-04-alinhamento-erp.md) | 2026-08-07 | `—` (exceção já aplicada em `00-contexto.md` §8) |
+| [plan-13-fechar-conjunto-de-regras](plan/executadas/plan-13-fechar-conjunto-de-regras.md) | 2026-08-07 | `specs/00-regras-e-invariantes.md` |
+| [plan-14-casa-dos-gates](plan/executadas/plan-14-casa-dos-gates.md) | 2026-08-07 | `specs/01-gates-e-baseline.md` · `specs/02-enforcement-por-commit.md` · `specs/00-regras-e-invariantes.md` §3.1 |
+| [plan-06-auditoria-cobertura-gates](plan/executadas/plan-06-auditoria-cobertura-gates.md) | 2026-08-07 | `specs/01-gates-e-baseline.md` §9 · `specs/15-divida-conhecida.md` · `specs/00-regras-e-invariantes.md` |
+| [plan-09-contrato-publico-2-0-0](plan/executadas/plan-09-contrato-publico-2-0-0.md) | 2026-08-07 | `arquitetura/03-superficie-publica.md` · `docs/migracoes.md` · `specs/15-divida-conhecida.md` · `specs/00-regras-e-invariantes.md` |
+| [plan-12-construcao-dos-gates](plan/executadas/plan-12-construcao-dos-gates.md) | 2026-08-07 | `specs/00-regras-e-invariantes.md` · `specs/01-gates-e-baseline.md` · `specs/02-enforcement-por-commit.md` · `specs/15-divida-conhecida.md` |
+| [plan-16-gate-composicao-atomica](plan/executadas/plan-16-gate-composicao-atomica.md) | 2026-08-07 | `specs/00-regras-e-invariantes.md` · `specs/01-gates-e-baseline.md` · `specs/02-enforcement-por-commit.md` |
+| [plan-08-achados-comportamento](plan/executadas/plan-08-achados-comportamento.md) | 2026-08-07 | `specs/06-painel-de-customizacao-e-preview.md` · `specs/07-responsividade-e-multidispositivo.md` · `specs/04-shell-e-discovery.md` |
+| [plan-07-quitacao-baseline](plan/executadas/plan-07-quitacao-baseline.md) | 2026-08-07 | `specs/01-gates-e-baseline.md` · `specs/arquitetura/04-contrato-de-tokens-e-paridade.md` · `specs/15-divida-conhecida.md` · `specs/11-testes-e-cobertura.md` · `specs/10-seguranca-e-acessibilidade.md` |
 
 ---
 

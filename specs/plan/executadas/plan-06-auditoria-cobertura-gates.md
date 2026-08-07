@@ -2,7 +2,7 @@
 tipo: "plan"
 titulo: "Auditoria de cobertura dos gates — procurar de propósito o que apareceu por acaso"
 dominio: "Sarak-Lib-UI-Core / Qualidade / Gates"
-status: "🟢 Aprovada"
+status: "⚪ Sintetizada"
 prioridade: "Máxima"
 tags: ["plan", "gates", "investigacao", "cobertura", "read-only"]
 relacionados: ["[[00-regras-e-invariantes]]", "[[01-gates-e-baseline]]", "[[15-divida-conhecida]]"]
@@ -548,3 +548,14 @@ numeração entra na síntese.
 mantida como conduta — **já escrito**)
 
 **Liberado: pode commitar.**
+
+---
+
+## Síntese — 2026-08-07
+
+Sintetizada em: `specs/specs/15-divida-conhecida.md` (achado 32 novo, achado 29 com a metade de gate fechada) ·
+`specs/specs/01-gates-e-baseline.md` §9 (já escrita por esta execução; recontada agora nas plans 12/16) ·
+`specs/specs/00-regras-e-invariantes.md` (já escrito).
+
+Observações: os 14 vãos que esta plan mapeou foram consumidos pelas plans 12 e 16, que fecharam 12 deles.
+Nada desta plan ficou de fora.
