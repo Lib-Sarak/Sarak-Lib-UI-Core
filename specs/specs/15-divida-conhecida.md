@@ -56,6 +56,9 @@ achado novo. **32 numerados** (o 32 é novo) · **24 fechados** (§6) · **2 ace
 > **Reduzida de 14 para 3 em 2026-08-07** (síntese das plans 06/07/09/12): 12 achados fecharam por conserto de
 > código, e 1 achado novo (32) entrou, medido de passagem pela `plan-12`. O detalhe de cada fechamento está em
 > §6.
+>
+> **De 3 para 2 em 2026-08-08:** o achado **29** fechou a metade que faltava e saiu para a §6. Restam **17**
+> (§3.1) e **32** (§3.3).
 
 ## 3.1 Segurança e medição
 
@@ -65,9 +68,10 @@ achado novo. **32 numerados** (o 32 é novo) · **24 fechados** (§6) · **2 ace
 
 ## 3.2 Violação de regra **já formada** que o gate agora vê, mas não corrige sozinho
 
-| # | Achado | Onde | Regra | Destino |
-|---|---|---|---|---|
-| 29 | Bloco **gerado** manda "regenere com o script do **§5.1 do guia**". Medido de novo em 2026-08-05 (`plan-12`, gate de ponteiro de seção): `GUIA-MANUTENCAO.md` **continua sem `§5.1`**; o alvo real é o §2 (paridade). ✅ **A metade de gate fechou** — `check-section-pointers.mjs` (construído pela `plan-12`) agora **acusa** este ponteiro entre os 27 mortos que mede. A metade de **código** (corrigir o texto) segue aberta | `sarak-dev/GUIA-MANUTENCAO.md:308` · `sarak-dev/state.json:44` · gerador `scripts/dev-kit/renderDevAppendix.mjs` | **R17** | **Corrigir** — o texto do gerador. É a única linha que falta para o `check-section-pointers.mjs` não acusar mais este caso |
+> ✅ **Categoria vazia desde 2026-08-08.** Seu único ocupante — o achado **29** — fechou as duas metades e saiu
+> para a §6, como o contrato da §8 manda. **A categoria fica**: ela é o que a §8 chama de *"achado com duas
+> metades"*, e é para cá que volta o próximo caso em que o gate passa a **ver** uma violação que ele não
+> **conserta**.
 
 ## 3.3 Prosa manual desatualizada por um conserto de outra plan
 
@@ -134,6 +138,7 @@ Registrados só para que a numeração não seja reaproveitada. O detalhe está 
 | 20 | Status falso na spec antiga de presets |
 | 21 | Duplicação entre specs antigas, resolvida pela consolidação |
 | 28 | JSDoc citando arquivo de plano inexistente, removido |
+| 29 | **As duas metades fecharam.** Gate: `check-section-pointers.mjs` (`plan-12`, 2026-08-05). Código: verificado fechado pelo revisor em **2026-08-08** — `scripts/dev-kit/renderDevAppendix.mjs` **não emite mais** `§5.1`, e `sarak-dev/GUIA-MANUTENCAO.md:308` regenerado aponta `§2` (paridade), o alvo correto. Medido rodando `npm run dev-kit` e recontando: **0 ocorrências** de `§5.1` no guia e no `state.json` |
 | 30 | **Não se reproduz** (verificado 2026-08-01). Dizia que `verify_presets.ts:16` apontava para um `arquitetura/04 §9` inexistente. O alvo existe e é o certo: `04-contrato-de-tokens-e-paridade.md:252` = `# 9. Anti-drift de tema e preset` — exatamente o assunto do script. A reescrita da base (plan-01) criou o §9 |
 | 31 | **Não se reproduz** (verificado 2026-08-01). Dizia que a ponte para `specs/` era SOFT. `CLAUDE.md:3` hoje aponta **duro** para `specs/00-contexto.md`, os dois prompts e o `00-indice`. `.agents/index.md` segue com 0 referências a `specs/`, mas a ponte não passa mais por ele |
 | 8 | **`plan-08` F1 (2026-08-04).** `clearSarakStorage()` remove só as chaves da lib; texto do `confirm()` alinhado. Teste prova que chave alheia sobrevive ao reset |
@@ -176,7 +181,7 @@ Registrados só para que a numeração não seja reaproveitada. O detalhe está 
 - **Gate que nunca existiu não é dívida** — vai para a §4. Dívida é código que viola regra **já formada**;
   gate ausente é trabalho em fila, e a fila começa depois de as regras fecharem. Misturar os dois faz a lista
   de dívida crescer com trabalho que ninguém prometeu, e a métrica perde o sentido.
-- **Achado com duas metades declara as duas** (§4.2). Fechar só a de código deixa o vão aberto para a próxima
+- **Achado com duas metades declara as duas** (§3.2). Fechar só a de código deixa o vão aberto para a próxima
   violação; apagar a de gate destrói trabalho que ninguém fez e ninguém vai lembrar de refazer.
 - **`nenhuma` na coluna *Regra* é resultado, não lacuna de preenchimento.** É o sinal de que estamos cobrando
   algo que não está escrito — leia como candidato a regra nova, não como achado de segunda classe.

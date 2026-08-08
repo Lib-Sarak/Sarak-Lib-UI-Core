@@ -23,10 +23,10 @@ export const ShellUserWidget: React.FC<ShellUserWidgetProps> = ({
         return (
             <div className="flex items-center gap-4 ml-auto border-l border-[var(--theme-border)] pl-6">
                 <div className="flex flex-col items-end">
-                    <span className="text-[10px] font-black text-[var(--theme-title)] uppercase tracking-widest leading-tight">
+                    <span className="text-2xs font-black text-[var(--theme-title)] uppercase tracking-widest leading-tight">
                         {user?.username || user?.email?.split('@')[0] || 'User'}
                     </span>
-                    <span className="text-[7px] text-[var(--theme-primary)] font-bold uppercase tracking-[0.2em]">
+                    <span className="text-[var(--sarak-type-scale-micro,7px)] text-[var(--theme-primary)] font-bold uppercase tracking-[var(--sarak-tracking-tight,0.2em)]">
                         {user?.level === 100 ? 'Master' : (user?.level ?? 0) >= 50 ? 'Admin' : 'User'}
                     </span>
                 </div>
@@ -66,7 +66,7 @@ export const ShellUserWidget: React.FC<ShellUserWidgetProps> = ({
                             </span>
                             <div className="flex items-center gap-1.5">
                                 <SarakIcon name="Shield" size={8} className="text-[var(--theme-primary)]" />
-                                <span className="text-[8px] text-[var(--theme-muted)] uppercase tracking-widest font-black">
+                                <span className="text-[var(--sarak-type-scale-tiny,8px)] text-[var(--theme-muted)] uppercase tracking-widest font-black">
                                     {user?.level === 100 ? 'Master' : (user?.level ?? 0) >= 50 ? 'Admin' : 'User'}
                                 </span>
                             </div>

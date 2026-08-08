@@ -44,7 +44,7 @@ export const ShellSearchWidget: React.FC<ShellSearchWidgetProps> = ({
             >
                 <Search size={18} className="text-[var(--theme-muted)] group-hover:text-[var(--theme-primary)]" />
                 <span className="text-sm font-tab">Search...</span>
-                <div className="ml-auto flex items-center gap-1 px-1.5 py-0.5 rounded bg-[var(--theme-muted)]/10 border border-[var(--theme-border)] text-[8px] text-[var(--theme-muted)] font-black opacity-0 group-hover:opacity-100 transition-opacity">
+                <div className="ml-auto flex items-center gap-1 px-1.5 py-0.5 rounded bg-[var(--theme-muted)]/10 border border-[var(--theme-border)] text-[var(--sarak-type-scale-tiny,8px)] text-[var(--theme-muted)] font-black opacity-0 group-hover:opacity-100 transition-opacity">
                     <span>CTRL</span>
                     <span>K</span>
                 </div>
@@ -65,7 +65,7 @@ export const ShellSearchWidget: React.FC<ShellSearchWidgetProps> = ({
                 onFocus={() => setIsOpen(true)}
                 leftIcon={<Search size={14} className="text-[var(--theme-muted)] group-focus-within:text-[var(--theme-primary)] transition-colors" />}
                 rightIcon={
-                    <div className="flex items-center gap-1 px-1.5 py-0.5 rounded bg-[var(--theme-muted)]/10 border border-[var(--theme-border)] text-[8px] text-[var(--theme-muted)] font-black transition-opacity pointer-events-none">
+                    <div className="flex items-center gap-1 px-1.5 py-0.5 rounded bg-[var(--theme-muted)]/10 border border-[var(--theme-border)] text-[var(--sarak-type-scale-tiny,8px)] text-[var(--theme-muted)] font-black transition-opacity pointer-events-none">
                         <span>CTRL</span>
                         <span>K</span>
                     </div>
@@ -79,7 +79,7 @@ export const ShellSearchWidget: React.FC<ShellSearchWidgetProps> = ({
                     <div className="max-h-[60vh] overflow-y-auto custom-scrollbar p-2">
                         {filteredModules.length > 0 ? (
                             <div className="py-2">
-                                <h4 className="text-2xs font-black uppercase tracking-[0.2em] text-[var(--theme-muted)] px-4 mb-2">Results</h4>
+                                <h4 className="text-2xs font-black uppercase tracking-[var(--sarak-tracking-tight,0.2em)] text-[var(--theme-muted)] px-4 mb-2">Results</h4>
                                 {filteredModules.map(mod => (
                                     <div 
                                         key={mod.id}
@@ -91,7 +91,7 @@ export const ShellSearchWidget: React.FC<ShellSearchWidgetProps> = ({
                                             </div>
                                             <div className="flex flex-col">
                                                 <span className="text-xs font-bold text-[var(--theme-title)]/80 group-hover:text-[var(--theme-primary)]">{mod.label}</span>
-                                                <span className="text-[9px] text-[var(--theme-muted)] uppercase tracking-widest">{mod.category || 'Module'}</span>
+                                                <span className="text-3xs text-[var(--theme-muted)] uppercase tracking-widest">{mod.category || 'Module'}</span>
                                             </div>
                                         </div>
                                         <ArrowRight className="w-3 h-3 text-[var(--theme-muted)] opacity-0 group-hover:opacity-100 transition-all -translate-x-2 group-hover:translate-x-0" />

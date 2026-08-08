@@ -127,7 +127,7 @@ export const SidebarNav: React.FC<SidebarNavProps> = ({
 
                 {Object.entries(groupedModules).map(([category, mods]) => (
                     <div key={category} style={{ marginBottom: `var(--theme-tab-gap, ${tabGap}px)` }}>
-                        {!effectiveIsNavHidden && <h4 className="text-2xs font-bold text-[var(--theme-muted)] uppercase tracking-[0.2em] mb-3 px-3">{category}</h4>}
+                        {!effectiveIsNavHidden && <h4 className="text-2xs font-bold text-[var(--theme-muted)] uppercase tracking-[var(--sarak-tracking-tight,0.2em)] mb-3 px-3">{category}</h4>}
                         <div className="space-y-1" style={{ gap: `var(--theme-tab-gap, ${tabGap}px)` }}>
                             {mods.map(mod => {
                                 const isOffline = mod.status === 'offline';

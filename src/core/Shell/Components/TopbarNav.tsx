@@ -99,7 +99,7 @@ export const TopbarNav: React.FC<TopbarNavProps> = ({
                                     )}
                                 </div>
                             ) : (
-                                <div className={`${effectiveIsNavHidden ? 'w-6 h-6 text-[10px]' : 'w-8 h-8 text-xs'} rounded-lg bg-[var(--theme-primary)] flex items-center justify-center font-bold shrink-0`}>S</div>
+                                <div className={`${effectiveIsNavHidden ? 'w-6 h-6 text-2xs' : 'w-8 h-8 text-xs'} rounded-lg bg-[var(--theme-primary)] flex items-center justify-center font-bold shrink-0`}>S</div>
                             )}
                             {!effectiveIsNavHidden && <span className="font-black tracking-tighter text-sm uppercase italic truncate max-w-[150px]">{systemName || brand.name}</span>}
                         </div>
@@ -121,7 +121,7 @@ export const TopbarNav: React.FC<TopbarNavProps> = ({
                                     className={`flex items-center justify-center transition-all whitespace-nowrap font-tab shrink-0 
                                         ${effectiveIsNavHidden
                                             ? `w-8 h-8 rounded-lg ${activeModuleId === mod.id ? 'bg-[var(--sarak-topbar-active,rgba(var(--theme-primary-rgb),0.2))] text-[var(--theme-primary)]' : 'text-[var(--theme-muted)] hover:text-[var(--theme-title)] hover:bg-[var(--theme-muted)]/10'}`
-                                            : `px-4 py-1.5 rounded-full text-[10px] font-black uppercase tracking-widest ${activeModuleId === mod.id ? 'bg-[var(--sarak-topbar-active,var(--theme-primary))] text-[var(--theme-on-primary)] shadow-lg shadow-[var(--theme-primary)]/30 scale-105' : 'text-[var(--theme-muted)] hover:text-[var(--theme-title)] hover:bg-[var(--theme-muted)]/10'}`
+                                            : `px-4 py-1.5 rounded-full text-2xs font-black uppercase tracking-widest ${activeModuleId === mod.id ? 'bg-[var(--sarak-topbar-active,var(--theme-primary))] text-[var(--theme-on-primary)] shadow-lg shadow-[var(--theme-primary)]/30 scale-105' : 'text-[var(--theme-muted)] hover:text-[var(--theme-title)] hover:bg-[var(--theme-muted)]/10'}`
                                         }
                                     `}
                                 >
@@ -147,7 +147,7 @@ export const TopbarNav: React.FC<TopbarNavProps> = ({
                     <div className={`flex items-center gap-2 p-1 bg-[var(--theme-muted)]/10 rounded-xl border border-[var(--theme-border)] !overflow-visible ${effectiveIsNavHidden ? 'scale-90' : ''}`}>
                         <ShellLanguageSelector variant="horizontal" />
 
-                        <div className="w-[1px] h-4 bg-[var(--theme-border)] mx-1" />
+                        <div className="w-[var(--theme-border-width,1px)] h-4 bg-[var(--theme-border)] mx-1" />
 
                         <ShellThemeToggle variant="horizontal" />
 

@@ -82,7 +82,7 @@ régua: são 12 temas com defeito de contraste real**, um deles (`minimalist-air
 ### O que já foi PAGO
 
 | Item | De → Para | Lote |
-|---|---|---|
+|---|---|---|lot
 | **R30** — `tsc` | **10 → 0** (produção já era 0) | 3 |
 | **Vão 7** — ponteiros de seção | **27 → 18** (9 pagos: skills, README, kit, e o achado 29 no gerador) | 2 |
 | **Vãos 2+3** — fantasmas | **27 → 26** (`--theme-text`, no-op comprovado) | 4 |
@@ -91,14 +91,19 @@ régua: são 12 temas com defeito de contraste real**, um deles (`minimalist-air
 
 ### O que FALTA — o baseline, item a item
 
-| Métrica | Vermelho hoje | Falso positivo (`plan-17`) | **Dívida real** | Lote | Estado |
-|---|---|---|---|---|---|
-| `composicaoatomica` (R10) | **47** | 0 | **47** | **6** | 🔴 não iniciado |
-| `hardcoded` (R2) | **33** | **2** | **31** | **5** | 🟠 classificado, travado |
-| `ghostvars` (R7) | **26** | **1** *(`--x`, já declarado)* | **25** | **4** | 🟠 caracterizado, travado |
-| `sectionpointers` (R23) | **18** | **~12** | **~6** | **2** | 🟠 os 6 são do revisor |
-| `tsc` (R30) | 0 | — | **0** | 3 | ✅ pago |
-| **Total** | **124** | **~15** | **≈ 109** | | |
+> ⚠️ **Duas colunas de lote, e elas NÃO são a mesma coisa** *(ambiguidade corrigida em 2026-08-08)*: onde a
+> dívida foi **medida/classificada** (passado) e onde ela será **paga** (futuro, §2.4 e §12). A coluna única
+> anterior misturava as duas e produziu um conflito real — dizia que `composicaoatomica` era "o lote 6",
+> enquanto a §2.4 dava o 6 ao balde 1.
+
+| Métrica | Vermelho hoje | Falso positivo (`plan-17`) | **Dívida real** | Medido no lote | **Pago no lote** | Estado |
+|---|---|---|---|---|---|---|
+| `composicaoatomica` (R10) | **47** | 0 | **47** | — | **9** | 🔴 não iniciado |
+| `hardcoded` (R2) | **33** | **2** | **31** | 5 | **6 · 7 · 8** | 🟠 classificado, liberado |
+| `ghostvars` (R7) | **26** | **1** *(`--x`, já declarado)* | **25** | 4 | **7 · 8** | 🟠 caracterizado, liberado |
+| `sectionpointers` (R23) | **18 → 2** | **16** *(pagos pela `plan-17`)* | **2** | 2 | **revisor** | ⏳ aguarda autorização |
+| `tsc` (R30) | 0 | — | **0** | 3 | 3 | ✅ pago |
+| **Total** | **124 → 108** | | **≈ 105** | | | |
 
 ### A composição de cada bloco
 
@@ -123,7 +128,7 @@ régua: são 12 temas com defeito de contraste real**, um deles (`minimalist-air
 > (`59,130,246/10` sem função de cor). Consertar só o nome **mascara** o segundo. Ver o veredito do lote 4.
 
 **`composicaoatomica` — 47 reais**, ainda sem classificação: `components/atomic` 23 · `core/Shell` 15 ·
-`Layout` 6 · `engines` 2 · `Discovery` 1. **20 arquivos**, risco de foco/teclado/estilo. É o lote 6.
+`Layout` 6 · `engines` 2 · `Discovery` 1. **20 arquivos**, risco de foco/teclado/estilo. **É o lote 9** (§12.4).
 
 ### A dívida FORA do baseline — nenhum gate a mede
 
@@ -147,6 +152,78 @@ melhor dizer isso agora:
 3. **R31** — só entra depois da decisão e do gate.
 
 **Zero é a meta; item declarado com dono nomeado é resposta legítima (§5.5). Item esquecido não é.**
+
+> **Atualização de 2026-08-08 (§2.3):** o dono decidiu, e **o item 1 acima caiu** — os 3 do balde 4 vão ser
+> tokenizados, não declarados. A R2 fica com **zero exceção** e `00-regras-e-invariantes` não precisa de
+> reescrita. Sobram os itens 2 e 3.
+
+## 2.3 AS DECISÕES DO DONO — 2026-08-08
+
+A `plan-17` limpou os falsos positivos, e o dono decidiu sobre os 31 `hardcoded` e os 25 `ghostvars` restantes.
+**Nenhuma destas decisões é do executor.** Estão fechadas; execute-as, não as reabra.
+
+| # | Assunto | Decisão |
+|---|---|---|
+| 1 | **Balde 1** — 20 literais com token de valor idêntico | ✅ **Trocar.** Zero mudança de pixel. Inclui o `w-[1px]` do divisor (item 19) → `--theme-border-width`: um divisor vertical **é** uma borda |
+| 2 | **Ghostvars grupo A** (4 consumos, têm fallback — *troca* o que está na tela) | ✅ **Consertar** |
+| 2 | **Ghostvars grupo B** (10 consumos, sem fallback — *liga* o que está desligado) | ✅ **Consertar.** Não é estética: é CSS morto sendo publicado |
+| 3 | **Balde 2** — `32px` cru × token `shellBrandLogoSize` = 28 | ✅ **O token é que está errado: default vai a 32.** Sidebar e topbar concordam em 32, logo 32 é a realidade observada; 28 é default que ninguém consome. Paga a dívida **sem mexer em pixel** |
+| 4 | **Expansão** — tokens novos | ✅ **Criar** `sidebarCollapsedWidth`(74px), `topbarCollapsedHeight`(40px), `brandLogoSizeCollapsed`(20px), `searchDropdownGap`(0.5rem) · dos 9 candidatos do lote 4: **criar 6**, redirecionar os 3 `*-scaled` para `layoutGap*`/`layoutPadding`/`borderRadius` |
+| 5 | **Balde 4** — os 3 restantes (`max-w-[120px]`, `max-w-[150px]`, `w-[400px]`) | ✅ **Tokenizar** — `sidebarLabelMaxWidth`, `topbarLabelMaxWidth`, `searchDropdownWidth`. Uma sidebar mais larga quer um rótulo mais largo; a granularidade de layout é o que a lib vende. **Sem exceção na R2** |
+
+### Decisão 6 — os 4 raios do `DynamicRenderer`: **reusar o token de papel** *(fechada em 2026-08-08)*
+
+Os 4 `rounded-[3rem]/[2rem]/[1.5rem]` de `DynamicRenderer.tsx:64,82,87,94` tinham ficado sem saída. **A
+medição do catálogo mudou a pergunta**, e desfez uma recomendação anterior do revisor:
+
+**O sistema de raio desta lib não é uma escala — é por PAPEL.** Medido em `_base.css:39` e `_theme.css:19-23`:
+
+```
+--radius-theme : var(--theme-radius-scaled, 12px)                    ← a base
+--radius-sarak : var(--sarak-card-border-radius, --radius-theme)     ← superfície/card
+--radius-btn   : var(--sarak-btn-border-radius,  --radius-sarak)     ← controle
+--radius-input · --radius-modal · --radius-badge (99px, pill)
+```
+
+Cada um é dirigido por preset (`cardBorderRadius` vai de 0 a 32 nos presets existentes; `btnBorderRadius`, de
+0 a 999). **Não existe `radius-lg/xl/2xl`, e é de propósito:** o consumidor diz *"o raio dos meus cards"*, não
+*"raio nível 3"*. Logo a afirmação anterior — *"não existe nada entre 1,5rem e 99px"* — **estava errada**:
+`cardBorderRadius: 32` já alcança 2rem. O que não existe é raio **sem papel**.
+
+E os 4 literais têm papel: `:64` é um painel de estado vazio; `:82`, `:87` e `:94` são o `<nav>`, o botão de
+aba e a pílula ativa de um *segmented control*.
+
+| Opção | Custo | Veredito |
+|---|---|---|
+| **(A) Reusar o token de papel** — `--radius-sarak` no painel, `--radius-btn` nas abas | **0 token novo**; muda pixel (48px → 12px no padrão) | ✅ **ESCOLHIDA PELO DONO** |
+| (B) Criar a escala `radius-lg/xl/2xl` | 3 tokens novos + cadeia de paridade; zero mudança visual | descartada — cria **duas formas** de dizer raio, a mesma confusão que `--sarak-*` × `--theme-*` |
+| (C) Tirar `core/Discovery/**` do escopo do auditor | conserto de gate | descartada — o argumento que tirou `features/**` da R10 **não vale aqui**: `features/**` é o painel de autoria, que o consumidor nunca vê; o `DynamicRenderer` é o estado vazio/carregando do renderer e **aparece no app do consumidor**. Se é visto, é tematizável |
+
+**O raciocínio que fechou:** um raio de 48px que ignora o tema é **defeito, não escolha** — quem monta um tema
+brutalista com `cardBorderRadius: 0` vê o estado vazio continuar arredondadíssimo, visivelmente fora do tema.
+
+**Consequência de rota:** como (A) muda pixel, os 4 saem do **lote 8** e vão para o **lote 7** (§12.2), que já
+tem revisão visual do dono antes do commit. O lote 8 fica só com Expansão de verdade.
+
+### Consequência: o baseline de `hardcoded` vai a zero
+
+27 dos 31 estão cobertos pelas decisões acima; os 4 do parágrafo anterior fecham o resto assim que a escala
+de raio for decidida. **Nenhum item de `hardcoded` sobra como "declarado e não pago".**
+
+## 2.4 A sequência dos lotes restantes — do mais seguro ao mais invasivo
+
+Um lote por conversa, baseline regravado junto (§5.3). A ordem **não** é negociável: ela existe para que uma
+mudança visual nunca chegue junto de um refactor grande, e para que o dono possa olhar a tela entre um e outro.
+
+| Lote | Conteúdo | Muda pixel? | Paga |
+|---|---|---|---|
+| **6** | Balde 1 — as 20 trocas de valor idêntico | **Não** | 20 de 31 `hardcoded` |
+| **7** | Balde 2 (default 28→32) + ghostvars grupo A e B | **Sim** — grupo A troca cor, grupo B liga estilo desligado | 2 `hardcoded` + 14 `ghostvars` |
+| **8** | Expansão — os tokens novos e a cadeia de paridade | Não (valores atuais viram default) | o resto de `hardcoded` + 11 `ghostvars` |
+| **9** | R10 — 47 ocorrências em 20 arquivos | Não deveria — exige caracterização (§5.4) | 47 `composicaoatomica` |
+
+**O lote 7 é o único que pede revisão visual do dono antes do commit**, e por dois motivos opostos na mesma
+entrega: o grupo A troca o que está na tela, o grupo B acende o que estava apagado.
 
 # 3. Escopo
 
@@ -565,6 +642,116 @@ plan proíbe.
 
 ---
 
+## Resumo da execução (lote 6 — as 20 trocas de valor idêntico) — 2026-08-08
+
+**Resultado:** Concluído. Escopo exclusivo: §12.1. Nenhum outro lote, nenhum gate, nenhum ghostvar, nenhuma
+ocorrência de R10 tocados.
+
+### As 20 trocas, com a prova estática de "zero pixel"
+
+Valor resolvido do token (com `arquivo:linha` da definição) ao lado do literal substituído — iguais, como a
+§12.1 exige.
+
+| # | Arquivo:linha | Literal → Trocado por | Token | Definição (`arquivo:linha`) | Valor resolvido | Igual? |
+|---|---|---|---|---|---|---|
+| 1 | `SarakExpandableMatrixEngine.tsx:20` | `tracking-[0.3em]` → `tracking-[var(--sarak-tracking-wide,0.3em)]` | `trackingWide` | `typography.ts:353,360` | `0.3` (em) | ✅ |
+| 2 | `DynamicRenderer.tsx:67` | `text-[10px]` → `text-2xs` | `typeScale2xs` (via `--text-2xs`) | `typography.ts:309,316` · `_theme.css:57` | `10` (px) | ✅ |
+| 3 | `DynamicRenderer.tsx:87` | `tracking-[0.2em]` → `tracking-[var(--sarak-tracking-tight,0.2em)]` | `trackingTight` | `typography.ts:331,338` | `0.2` (em) | ✅ |
+| 4 | `ShellContent.tsx:52` | `tracking-[0.4em]` → `tracking-[var(--sarak-tracking-wider,0.4em)]` | `trackingWider` | `typography.ts:364,371` | `0.4` (em) | ✅ |
+| 5 | `ShellLanguageSelector.tsx:55` | `text-[10px]` → `text-2xs` | `typeScale2xs` | idem #2 | `10` (px) | ✅ |
+| 6 | `ShellLanguageSelector.tsx:56` | `text-[9px]` → `text-3xs` | `typeScale3xs` (via `--text-3xs`) | `typography.ts:298,305` · `_theme.css:56` | `9` (px) | ✅ |
+| 7 | `ShellLanguageSelector.tsx:65` | `text-[10px]` → `text-2xs` | `typeScale2xs` | idem #2 | `10` (px) | ✅ |
+| 8 | `ShellLanguageSelector.tsx:87` | `text-[10px]` → `text-2xs` | `typeScale2xs` | idem #2 | `10` (px) | ✅ |
+| 9 | `ShellSearchWidget.tsx:47` | `text-[8px]` → `text-[var(--sarak-type-scale-tiny,8px)]` | `typeScaleTiny` | `typography.ts:287,294` | `8` (px) | ✅ |
+| 10 | `ShellSearchWidget.tsx:68` | `text-[8px]` → idem #9 | `typeScaleTiny` | idem #9 | `8` (px) | ✅ |
+| 11 | `ShellSearchWidget.tsx:82` | `tracking-[0.2em]` → `tracking-[var(--sarak-tracking-tight,0.2em)]` | `trackingTight` | idem #3 | `0.2` (em) | ✅ |
+| 12 | `ShellSearchWidget.tsx:94` | `text-[9px]` → `text-3xs` | `typeScale3xs` | idem #6 | `9` (px) | ✅ |
+| 13 | `ShellUserWidget.tsx:26` | `text-[10px]` → `text-2xs` | `typeScale2xs` | idem #2 | `10` (px) | ✅ |
+| 14 | `ShellUserWidget.tsx:29` | `text-[7px]`+`tracking-[0.2em]` → `text-[var(--sarak-type-scale-micro,7px)]`+`tracking-[var(--sarak-tracking-tight,0.2em)]` | `typeScaleMicro` + `trackingTight` | `typography.ts:276,283` + idem #3 | `7` (px) + `0.2` (em) | ✅ |
+| 15 | `ShellUserWidget.tsx:69` | `text-[8px]` → idem #9 | `typeScaleTiny` | idem #9 | `8` (px) | ✅ |
+| 16 | `SidebarNav.tsx:130` | `tracking-[0.2em]` → `tracking-[var(--sarak-tracking-tight,0.2em)]` | `trackingTight` | idem #3 | `0.2` (em) | ✅ |
+| 17 | `TopbarNav.tsx:102` | `text-[10px]` → `text-2xs` | `typeScale2xs` | idem #2 | `10` (px) | ✅ |
+| 18 | `TopbarNav.tsx:124` | `text-[10px]` → `text-2xs` | `typeScale2xs` | idem #2 | `10` (px) | ✅ |
+| 19 | `TopbarNav.tsx:150` | `w-[1px]` → `w-[var(--theme-border-width,1px)]` | `borderWidth` | `system.ts:129,136` (`cssVars` inclui `--theme-border-width`) | `1` (px) | ✅ |
+| 20 | `SarakShell.tsx:215` | `text-[10px]` → `text-2xs` | `typeScale2xs` | idem #2 | `10` (px) | ✅ |
+
+**Os dois avisos do revisor se confirmaram, exatamente como previsto:**
+
+1. `DynamicRenderer.tsx:87` **continua vermelha** — o `tracking` foi pago (item 3), mas o `rounded-[1.5rem]`
+   (lote 8) segue na mesma linha/`className`, e o auditor reporta por linha inteira.
+2. **Violação ≠ linha.** 31 → **12** (não 31−20=11): a linha 87 conta como 1 violação tanto antes quanto
+   depois — o item pago dentro dela não zera a linha sozinho. As outras 19 trocas fecharam sua própria linha
+   1:1.
+
+### Verificações executadas
+
+- `node gates/scripts/audit/auditor_hardcoded.mjs` → **antes: 31 · depois: 12** (`Valor: 12`, `Estrutural: 0`).
+- `node gates/scripts/audit/run_audit.mjs` → só `auditor_composicaoatomica` (R10, 47, fora do escopo deste
+  lote) segue vermelho entre os 4 que já estavam.
+- `npm run gate-limits:check` → **26/26**.
+- `node gates/scripts/release/check-audit-baseline.mjs --with-tsc --write` → baseline regravado
+  (`hardcoded.valor: 31 → 12`).
+- `npx vitest run` → **1ª rodada: 2 snapshots falharam** (`PreviewCanvas.test.tsx`,
+  `PreviewSystemRenderer.test.tsx`) — **esperado, não regressão**: os dois renderizam o cromo inteiro (Design
+  Engine preview) e capturam a `className` literal dos componentes que este lote editou. O `diff` mostrado pelo
+  próprio vitest confirma que a ÚNICA mudança é o texto da classe (`tracking-[0.2em]` →
+  `tracking-[var(--sarak-tracking-tight,0.2em)]`, `text-[10px]` → `text-2xs`, `text-[8px]` →
+  `text-[var(--sarak-type-scale-tiny,8px)]`) — nenhuma estrutura de DOM mudou. Atualizei os dois snapshots
+  (`npx vitest run -u`). **2ª rodada, limpa: 290 arquivos / 1012 testes, 100% verde.**
+- `node gates/scripts/release/check-audit-baseline.mjs --with-tsc` (pós-regravação) → relatou
+  `auditor_sectionpointers.mjs.mortos: 2 → 1` como **MELHORIA não bloqueante** — **não é minha**: não toquei
+  `specs/specs/`, `specs/adr/` nem nenhum ponteiro de seção nesta rodada. É uma mudança concorrente (fora deste
+  diff) que já estava no working tree quando medi. **Não regravei** essa métrica — quem fez o conserto grava o
+  número, e não fui eu.
+- `git diff --stat` → os **9 arquivos** de `src/core/` listados no prompt + `gates/baselines/audit-baseline.json`
+  + os 2 arquivos de snapshot (`__snapshots__/PreviewCanvas.test.tsx.snap`,
+  `__snapshots__/PreviewSystemRenderer.test.tsx.snap`) + esta plan. **Fora disto**, o `git diff --stat` também
+  mostra `specs/00-indice.md`, `specs/specs/15-divida-conhecida.md` e
+  `src/core/Provider/generated/design-token-ids.ts` modificados — **nenhum dos três é meu**: não os toquei em
+  nenhum momento desta rodada (o último é gerado, e eu nunca rodo o gerador de tokens sem instrução explícita).
+  São mudanças já presentes no working tree, de outra atividade concorrente.
+
+### Critérios de aceite
+
+- [x] Escopo exclusivo à §12.1 — nenhum outro lote tocado.
+- [x] As 20 trocas aplicadas, cada uma com prova estática (valor do token = literal).
+- [x] Nenhum gate alterado — `git diff -- gates/scripts/` vazio.
+- [x] Nenhuma edição em `specs/specs/`, `specs/adr/` ou `specs/00-indice.md`.
+- [x] Item 19 (`w-[1px]`) trocado conforme a decisão do dono já fechada — não reaberta.
+- [x] Baseline regravado junto (`hardcoded 31→12`), no mesmo lote.
+- [x] `npx vitest run` verde (suíte inteira, não pasta a dedo) — 290/1012 depois de atualizar os 2 snapshots.
+- [x] `npm run gate-limits:check` → 26/26.
+
+### Decisões e suposições
+
+1. **Atualizei os 2 snapshots afetados** (`PreviewCanvas`, `PreviewSystemRenderer`) em vez de declarar como
+   pendência — o próprio diff do vitest prova que a única mudança é textual (nome da classe), não estrutural, e
+   os dois componentes fonte estão nesta mesma lista de 20 trocas aprovadas. Atualizar é registrar o resultado
+   esperado da mudança já aprovada, não maquiar nada.
+2. **Não regravei o `sectionpointers` de 2 para 1** — essa melhoria não é desta rodada nem deste executor;
+   regravar tornaria o baseline não-auditável (baseline tem de andar com QUEM fez o conserto).
+3. **Não investiguei `design-token-ids.ts`/`15-divida-conhecida.md`** além de confirmar que não são meus — são
+   arquivos fora do meu alcance (gerado / spec fixa) e fora do escopo desta rodada.
+
+### Achados fora do escopo (não corrigidos)
+
+- Nenhum novo.
+
+### Pendências / riscos
+
+- **11 de 31 `hardcoded` restam**: 4 em `DynamicRenderer.tsx` (radius, lote 8) + 1 em `ShellSearchWidget.tsx:78`
+  (gap/width/z, lote 8) + 3 em `SidebarNav.tsx` (74px, 32px, max-w-120px — lotes 7/8) + 3 em `TopbarNav.tsx`
+  (40px, 20px, 32px, max-w-150px — nota: são 4 ocorrências em 3 linhas — lotes 7/8). Todos já roteados pela
+  §2.3/§2.4; nenhum é deste lote.
+- **`time-tracking`:** ausente nesta sessão, mesma nota de todas as rodadas anteriores.
+- **`specs/00-indice.md` vai divergir de novo** ao mudar o status desta plan — mesma mecânica, executor não
+  corrige.
+- **Mudanças concorrentes no working tree** (`specs/00-indice.md`, `specs/specs/15-divida-conhecida.md`,
+  `design-token-ids.ts`) não são minhas e não foram tocadas — sinalizadas acima para o revisor não as confundir
+  com este diff.
+
+---
+
 # 11. Veredito
 
 <!-- Preenchido pelo REVISOR. Append-only. -->
@@ -658,3 +845,139 @@ fallback. É limite novo, e vai declarado.
 
 **Liberado: pode commitar.** O índice foi espelhado por mim para 🟠 nesta mesma ação — a regra nova da
 [[00-indice]] §5 sendo aplicada pela primeira vez.
+
+---
+
+# 12. AS TAREFAS DOS LOTES 6–9 — a lista executável
+
+> 🔴 **Esta é a fonte da verdade do trabalho que falta.** As tabelas dentro dos "Resumos de execução" (§10) são
+> **histórico congelado** — o que o executor mediu e classificou naquele dia. Quando as duas divergirem, esta
+> seção vence. Escrita pelo revisor em 2026-08-08, depois das decisões da §2.3.
+
+**Um lote por conversa.** A ordem é a da §2.4 e existe para separar o que muda pixel do que não muda.
+
+> 🔴 **VALE PARA TODO LOTE — o baseline tem um ESPELHO, e ninguém o estava movendo** *(medido pelo revisor em
+> 2026-08-08)*. `sarak-dev/` é **gerado** e reproduz os números do baseline em `GUIA-MANUTENCAO.md §B.4`,
+> `state.json` e `START-HERE.md`. Ele está defasado **desde o lote 4**: o repo diz `hardcoded 35`,
+> `ghostvars 27`, `sectionpointers 18`; o real é `31`, `26`, `2`.
+>
+> **`dev-kit:check` é o PRIMEIRO comando de `gates:full`** — enquanto isso não fechar, `gates:full` não passa,
+> e a regra *"o baseline se regrava JUNTO do conserto"* fica meia cumprida. **Todo lote que mover o baseline
+> roda `npm run dev-kit` e commita o resultado junto.** Não é conserto de gate (o script é gerador, não
+> verificador) — é o mesmo ato de regravar o baseline, na outra ponta.
+
+## 12.1 Lote 6 — as 20 trocas de valor idêntico  ·  `🟢 EXECUTADO em 2026-08-08`
+
+> ✅ **Entregue e aprovado.** As 20 trocas aplicadas, `hardcoded` **31 → 12**. O veredito com a verificação
+> independente do revisor está na §11; o relatório do executor, na §10. **A tabela abaixo fica como registro
+> do que foi pedido** — não é mais trabalho pendente.
+
+**Não muda pixel nenhum.** Cada literal abaixo tem token com valor **exatamente igual**. Paga 20 dos 31
+`hardcoded`.
+
+| # | Arquivo:linha | Literal hoje | Token | Trocar por |
+|---|---|---|---|---|
+| 1 | `SarakExpandableMatrixEngine.tsx:20` | `tracking-[0.3em]` | `trackingWide` | `tracking-[var(--sarak-tracking-wide,0.3em)]` |
+| 2 | `DynamicRenderer.tsx:67` | `text-[10px]` | `typeScale2xs` | `text-2xs` |
+| 3 | `DynamicRenderer.tsx:87` | `tracking-[0.2em]` | `trackingTight` | `tracking-[var(--sarak-tracking-tight,0.2em)]` |
+| 4 | `ShellContent.tsx:52` | `tracking-[0.4em]` | `trackingWider` | `tracking-[var(--sarak-tracking-wider,0.4em)]` |
+| 5 | `ShellLanguageSelector.tsx:55` | `text-[10px]` | `typeScale2xs` | `text-2xs` |
+| 6 | `ShellLanguageSelector.tsx:56` | `text-[9px]` | `typeScale3xs` | `text-3xs` |
+| 7 | `ShellLanguageSelector.tsx:65` | `text-[10px]` | `typeScale2xs` | `text-2xs` |
+| 8 | `ShellLanguageSelector.tsx:87` | `text-[10px]` | `typeScale2xs` | `text-2xs` |
+| 9 | `ShellSearchWidget.tsx:47` | `text-[8px]` | `typeScaleTiny` | `text-[var(--sarak-type-scale-tiny,8px)]` |
+| 10 | `ShellSearchWidget.tsx:68` | `text-[8px]` | `typeScaleTiny` | idem #9 |
+| 11 | `ShellSearchWidget.tsx:82` | `tracking-[0.2em]` | `trackingTight` | idem #3 |
+| 12 | `ShellSearchWidget.tsx:94` | `text-[9px]` | `typeScale3xs` | `text-3xs` |
+| 13 | `ShellUserWidget.tsx:26` | `text-[10px]` | `typeScale2xs` | `text-2xs` |
+| 14 | `ShellUserWidget.tsx:29` | `text-[7px]` **+** `tracking-[0.2em]` | `typeScaleMicro` + `trackingTight` | `text-[var(--sarak-type-scale-micro,7px)]` + idem #3 |
+| 15 | `ShellUserWidget.tsx:69` | `text-[8px]` | `typeScaleTiny` | idem #9 |
+| 16 | `SidebarNav.tsx:130` | `tracking-[0.2em]` | `trackingTight` | idem #3 |
+| 17 | `TopbarNav.tsx:102` | `text-[10px]` | `typeScale2xs` | `text-2xs` |
+| 18 | `TopbarNav.tsx:124` | `text-[10px]` | `typeScale2xs` | `text-2xs` |
+| 19 | `TopbarNav.tsx:150` | `w-[1px]` (divisor vertical) | `--theme-border-width` (1px) | `w-[var(--theme-border-width,1px)]` — **aprovado pelo dono**: um divisor vertical *é* uma borda |
+| 20 | `SarakShell.tsx:215` | `text-[10px]` | `typeScale2xs` | `text-2xs` |
+
+**Dois avisos medidos pelo revisor, para o número não assustar:**
+
+1. **`DynamicRenderer.tsx:87` continua vermelha depois do conserto.** A linha tem dois conceitos —
+   `tracking-[0.2em]` (item 3, deste lote) e `rounded-[1.5rem]` (lote 8). O auditor reporta por **linha**, com
+   o `className` inteiro. Não tente zerá-la aqui.
+2. **Violação e linha não são a mesma unidade.** Não presuma que o baseline cai exatamente 20 — meça antes e
+   depois e escreva os dois números.
+
+**A prova de "zero pixel" é estática e é o critério de aceite principal:** para cada troca, mostre o valor
+resolvido do token (`arquivo:linha` da definição) ao lado do literal substituído. Iguais = provado. Não há
+automação visual nesta base ([[01-gates-e-baseline]] §2.6) — não invente uma.
+
+**Se algum item não bater exatamente, ele não é deste lote:** ⇒ PARE e relate.
+
+## 12.2 Lote 7 — muda a tela, em duas direções opostas  ·  `🔴 A executar`
+
+**Único lote que exige revisão visual do dono antes do commit.**
+
+- **Balde 2 (2 itens)** — `SidebarNav.tsx:87` e `TopbarNav.tsx:84`, ambos `32px` crus. **Decisão do dono
+  (§2.3 #3): o default de `shellBrandLogoSize` vai de 28 para 32** e os dois passam a consumir o token. Zero
+  pixel muda; o que muda é o contrato do token.
+- **Ghostvars grupo A (3–4 consumos)** — têm fallback funcional; consertar **troca a cor na tela**.
+- **Ghostvars grupo B (10–11 consumos)** — sem fallback; hoje não renderizam nada. Consertar **liga** estilo
+  desligado: os 4 easings, `--bg-card` ×3, `--theme-surface-main`, `SidebarNav`, `--theme-background` ×2.
+
+> 🔴 **`SidebarNav.tsx:142` tem dois defeitos empilhados** — nome fantasma **e** fallback malformado
+> (`59,130,246/10`, sem função de cor). Consertar só o nome **mascara** o segundo. Os dois, ou nenhum.
+
+**Resolvido estaticamente pelo revisor, não precisa de browser:** os dois casos que o lote 4 marcou como "só
+`getComputedStyle` resolve" (`SidebarNav:142` e `_surfaces.css:45`) são **IACVT** — fallback sem função de cor
+e `color-mix` com argumento inválido derrubam a declaração inteira. **Já estão quebrados**; consertar não pode
+piorar.
+
+### Os 4 raios do `DynamicRenderer` — entraram aqui em 2026-08-08 (decisão 6 da §2.3)
+
+Vieram do lote 8 porque **mudam pixel**. Reusar o token de papel, nunca criar escala nova:
+
+| Linha | Hoje | Elemento | Trocar por |
+|---|---|---|---|
+| `DynamicRenderer.tsx:64` | `rounded-[3rem]` | painel de estado vazio (`border-dashed`, `p-20`) | `rounded-[var(--radius-sarak)]` — é superfície |
+| `:82` | `rounded-[2rem]` | o `<nav>` que contém as abas | `rounded-[var(--radius-sarak)]` — é superfície |
+| `:87` | `rounded-[1.5rem]` | o botão de aba | `rounded-[var(--radius-btn)]` — é controle |
+| `:94` | `rounded-[1.5rem]` | a pílula ativa atrás da aba | `rounded-[var(--radius-btn)]` — acompanha o botão que ela preenche |
+
+**Esta é a linha que fecha `DynamicRenderer.tsx:87`** — o lote 6 tirou o `tracking-[0.2em]` dela e a deixou
+vermelha de propósito, à espera deste raio.
+
+## 12.3 Lote 8 — Expansão: tokens novos e a cadeia de paridade  ·  `🔴 A executar`
+
+Aprovado em §2.3 #4 e #5. Cada token novo arrasta a cadeia inteira de
+[[04-contrato-de-tokens-e-paridade]] — tipo público, catálogo, testes.
+
+| Token | Valor | Origem |
+|---|---|---|
+| `sidebarCollapsedWidth` | 74px | `SidebarNav.tsx:69` |
+| `topbarCollapsedHeight` | 40px | `TopbarNav.tsx:63` |
+| `brandLogoSizeCollapsed` | 20px | `TopbarNav.tsx:84` |
+| `searchDropdownGap` | 0.5rem | `ShellSearchWidget.tsx:78` |
+| `searchDropdownWidth` | 400px | `ShellSearchWidget.tsx:78` |
+| `sidebarLabelMaxWidth` | 120px | `SidebarNav.tsx:107` |
+| `topbarLabelMaxWidth` | 150px | `TopbarNav.tsx:104` |
+| *(dos 9 candidatos do lote 4)* | — | **criar 6**; os 3 `*-scaled` redirecionam para `layoutGap*`/`layoutPadding`/`borderRadius` |
+
+> ✅ **A pendência de raio saiu daqui em 2026-08-08.** O dono escolheu **reusar o token de papel** (decisão 6
+> da §2.3), o que muda pixel — então os 4 `rounded-[Nrem]` do `DynamicRenderer` foram para o **lote 7**
+> (§12.2). **Nenhum token de raio novo será criado**; este lote é só Expansão de verdade.
+
+## 12.4 Lote 9 — R10, composição atômica  ·  `🔴 A executar`
+
+**47 ocorrências em 20 arquivos** de HTML nativo cru: `components/atomic` 23 · `core/Shell` 15 · `Layout` 6 ·
+`engines` 2 · `Discovery` 1. É o maior e o mais arriscado — mexe em foco, teclado e estilo de componente
+montado. **A caracterização vem antes** (§5.4, skill `code-adequacao`), não depois.
+
+`features/**` está **fora** por decisão do dono (ferramenta de autoria da própria lib) — as 64 ocorrências de
+lá não são dívida. O detector é AST, nunca regex de linha: a `plan-16` mediu que
+`<(button|input|select)[ >/]` **perde 55 de 111** por ser busca por linha.
+
+## 12.5 Fora dos lotes — o que é do revisor
+
+Os **2 ponteiros de seção** que sobraram (`01-gates-e-baseline.md:572` → `§7.3` e `15-divida-conhecida.md:179`
+→ `§4.2`) e a **linha 70 de `15-divida-conhecida.md`**, que ainda declara o achado 29 aberto quando ele já foi
+pago (`sarak-dev/GUIA-MANUTENCAO.md:308` hoje aponta `§2`, o alvo certo). São arquivos de `specs/specs/` — o
+executor **não os toca** ([[00-prompt-executor]] §7.3). `⏳ Aguardando autorização do dono.`

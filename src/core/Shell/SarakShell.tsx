@@ -212,7 +212,7 @@ export const SarakShell: React.FC<SarakShellProps> = (props) => {
                                 <div className="flex flex-col items-center justify-center h-full text-[var(--theme-primary)] opacity-50 animate-pulse border-2 border-dashed border-[var(--theme-primary)] m-4 rounded-xl">
                                     <div className="text-xl font-bold mb-2">Estabilizando Ambiente Industrial...</div>
                                     <div className="text-xs font-mono">Monitorando Layout: {Math.round(dimensions.w)}x{Math.round(dimensions.h)}</div>
-                                    <div className="text-[10px] mt-4 opacity-30 italic">v10.1.10 Diagnostic Active</div>
+                                    <div className="text-2xs mt-4 opacity-30 italic">v10.1.10 Diagnostic Active</div>
                                 </div>
                             )}
                         </React.Suspense>

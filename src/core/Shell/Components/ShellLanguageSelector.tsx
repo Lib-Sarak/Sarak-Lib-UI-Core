@@ -52,8 +52,8 @@ export const ShellLanguageSelector: React.FC<ShellLanguageSelectorProps> = ({
             >
                 {isHorizontal ? (
                     <>
-                        <span className="text-[10px]">{currentLang.flag}</span>
-                        <span className="text-[9px] font-black uppercase tracking-widest text-[var(--theme-title)]/60 group-hover:text-[var(--theme-title)]">
+                        <span className="text-2xs">{currentLang.flag}</span>
+                        <span className="text-3xs font-black uppercase tracking-widest text-[var(--theme-title)]/60 group-hover:text-[var(--theme-title)]">
                             {currentLang.code.split('-')[0]}
                         </span>
                         <ChevronDown size={10} className={`text-[var(--theme-muted)] transition-transform ${isOpen ? 'rotate-180' : ''}`} />
@@ -62,7 +62,7 @@ export const ShellLanguageSelector: React.FC<ShellLanguageSelectorProps> = ({
                     <>
                         <Globe size={18} className="text-[var(--theme-muted)] group-hover:text-[var(--theme-primary)]" />
                         <span className="text-sm font-tab flex-1 text-left">Language</span>
-                        <span className="text-[10px] font-bold text-[var(--theme-primary)]">{currentLang.code.split('-')[0].toUpperCase()}</span>
+                        <span className="text-2xs font-bold text-[var(--theme-primary)]">{currentLang.code.split('-')[0].toUpperCase()}</span>
                     </>
                 )}
             </button>
@@ -84,7 +84,7 @@ export const ShellLanguageSelector: React.FC<ShellLanguageSelectorProps> = ({
                                     setCurrentLang(lang);
                                     setIsOpen(false);
                                 }}
-                                className={`w-full flex items-center justify-between px-3 py-2 rounded-lg text-[10px] font-bold uppercase tracking-wider transition-all ${
+                                className={`w-full flex items-center justify-between px-3 py-2 rounded-lg text-2xs font-bold uppercase tracking-wider transition-all ${
                                     currentLang.code === lang.code 
                                         ? 'bg-[var(--theme-primary)] text-[var(--theme-on-primary)]' 
                                         : 'text-[var(--theme-muted)] hover:bg-[var(--theme-muted)]/10 hover:text-[var(--theme-title)]'

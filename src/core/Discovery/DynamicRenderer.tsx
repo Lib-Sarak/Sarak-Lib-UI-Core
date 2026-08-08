@@ -64,7 +64,7 @@ export const DynamicRenderer: React.FC<DynamicRendererProps> = ({ contracts, mod
             <div className="flex flex-col items-center justify-center p-20 text-white/20 border border-white/5 border-dashed rounded-[3rem]">
                 <AlertCircle size={48} className="mb-4 opacity-50" />
                 <p className="text-sm font-black uppercase tracking-widest">No Visual Contracts Defined</p>
-                {module && <p className="text-[10px] mt-2 opacity-30">Module ID: {module.id}</p>}
+                {module && <p className="text-2xs mt-2 opacity-30">Module ID: {module.id}</p>}
             </div>
         );
     }
@@ -84,7 +84,7 @@ export const DynamicRenderer: React.FC<DynamicRendererProps> = ({ contracts, mod
                             <button
                                 key={name}
                                 onClick={() => setActiveTab(name)}
-                                className={`relative px-8 py-3.5 rounded-[1.5rem] text-2xs font-black uppercase tracking-[0.2em] transition-all duration-500 ${
+                                className={`relative px-8 py-3.5 rounded-[1.5rem] text-2xs font-black uppercase tracking-[var(--sarak-tracking-tight,0.2em)] transition-all duration-500 ${
                                     activeTab === name ? 'text-white' : 'text-white/30 hover:text-white/60'
                                 }`}
                             >
