@@ -10,7 +10,7 @@
   --color-theme-topbar: var(--sarak-topbar-bg, rgba(10, 10, 12, 0.8));
   
   --color-theme-border: var(--sarak-card-border-color, var(--theme-border, rgba(255, 255, 255, 0.1)));
-  --color-theme-text: var(--theme-text, var(--text-main, #ffffff));
+  --color-theme-text: var(--text-main, #ffffff);
   --color-theme-on-primary: var(--theme-on-primary, #020617);
   --color-theme-title: var(--sarak-topbar-title-color, var(--theme-title, #ffffff));
   --color-theme-muted: var(--theme-muted, rgba(255, 255, 255, 0.4));
