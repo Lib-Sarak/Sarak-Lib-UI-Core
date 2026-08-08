@@ -4,7 +4,7 @@
     "medidoEm": "2026-08-07",
     "metricas": {
         "auditor_hardcoded.mjs": {
-            "valor": 35,
+            "valor": 33,
             "estruturalLiquido": 0
         },
         "auditor_ghostvars.mjs": {

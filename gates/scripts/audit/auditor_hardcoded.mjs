@@ -12,6 +12,15 @@ import ts from 'typescript';
 // `core/Shell/Components/` medidos nesta execução).
 const VALUE_SCOPE = ['src/components', 'src/features', 'src/core'];
 
+// LIMITE DECLARADO (R18, plan-15 lote 5): `getFiles` exclui `__e2e__/`, junto de
+// `__tests__/` e `Mocks/`. Fixture de Playwright CT planta CSS ARBITRÁRIO de propósito
+// para provar isolamento (ex.: `EmbeddedNoLeak.spec.tsx` planta `37px`/`31px`/`11px`/`29px`
+// como "folha do host externo" — o teste PROVA que a lib não vaza nesses valores; tokenizá-los
+// destruiria o próprio teste). Antes desta correção, `src/core` entrar no VALUE_SCOPE (vão 5)
+// alcançou `src/core/Provider/__e2e__/EmbeddedNoLeak.spec.tsx`, que não é `__tests__` nem
+// `Mocks` — 2 falsos positivos (`:49`, `:108`) só apareceram por isso. Medido antes/depois:
+// 35 → 33.
+
 // Escopo do detector ESTRUTURAL (Tailwind de layout): a regra de desengessamento
 // (skill ui-arquitetura-design) é específica dos átomos. Features compõem layout
 // legitimamente, por isso não entram aqui. Amplie esta lista se a política mudar.
@@ -40,11 +49,6 @@ const VALUE_ALLOWLIST = new Set([
   'src/components/atomic/Atoms/SocialButton.tsx::#34A853',
   'src/components/atomic/Atoms/SocialButton.tsx::#FBBC05',
   'src/components/atomic/Atoms/SocialButton.tsx::#EA4335',
-  // Fixtures de teste E2E (Playwright CT): valor arbitrário usado para provar que a injeção
-  // de CSS via var() reflete o dado bruto no DOM — não é estilo de componente, não é tema.
-  'src/features/DesignEngine/__e2e__/RealtimeInjection.spec.tsx::#ff0000',
-  'src/features/DesignEngine/__e2e__/RealtimeInjection.spec.tsx::20px',
-  'src/features/DesignEngine/__e2e__/Boot.spec.tsx::2rem',
   // Fallback do <input type="color"> nativo (Spec 40 §2.3): o atributo `value` do input
   // HTML só aceita hex literal — `var(--x, fallback)` quebra o input com o warning nativo
   // do Chrome que esta spec corrigiu. Configuração (var+fallback) não resolve aqui por
@@ -87,7 +91,7 @@ function getFiles(dir, extFilter, fileList = []) {
   for (const file of fs.readdirSync(dir)) {
     const fullPath = path.join(dir, file);
     if (fs.statSync(fullPath).isDirectory()) {
-      if (!fullPath.includes('__tests__') && !fullPath.includes('Mocks')) {
+      if (!fullPath.includes('__tests__') && !fullPath.includes('Mocks') && !fullPath.includes('__e2e__')) {
         getFiles(fullPath, extFilter, fileList);
       }
     } else if (extFilter.includes(path.extname(fullPath))) {

@@ -2,11 +2,11 @@
 tipo: "plan"
 titulo: "Adequação total — o baseline volta a zero"
 dominio: "Sarak-Lib-UI-Core / Qualidade / Dívida"
-status: "🟡 Em execução"
+status: "🟠 Em revisão"
 prioridade: "Alta"
 tags: ["plan", "adequacao", "baseline", "divida", "gates"]
 relacionados: ["[[00-regras-e-invariantes]]", "[[01-gates-e-baseline]]", "[[15-divida-conhecida]]"]
-depende_de: "plan-12 · plan-16"
+depende_de: "plan-12 · plan-16 · plan-17"
 destino_sintese: "specs/01-gates-e-baseline.md · specs/15-divida-conhecida.md · specs/00-regras-e-invariantes.md"
 ---
 
@@ -70,6 +70,83 @@ régua: são 12 temas com defeito de contraste real**, um deles (`minimalist-air
 > ⚠️ **A medição de R31 vive fora do repositório.** O script de contraste foi recriado pela `plan-12` no
 > `%TEMP%` da sessão e **não sobrevive a uma limpeza**. Antes de decidir R31, mova-o para um lugar durável —
 > ou o número 12/18 volta a ser irreproduzível, que é o estado que esta base combate.
+
+## 2.2 O INVENTÁRIO COMPLETO DA DÍVIDA — medido em 2026-08-08
+
+> Esta é a lista fechada do que a plan tem de pagar. A §2.1 acima é o registro **do que se previa**; esta é
+> **o que existe**, recontado ao vivo depois dos lotes 1–5.
+>
+> ⚠️ **O baseline superestima a dívida.** Parte do vermelho é **falso positivo de gate**, e a `plan-17` o
+> remove **antes** — pagar código para satisfazer um verificador errado é a definição de maquiagem invertida.
+
+### O que já foi PAGO
+
+| Item | De → Para | Lote |
+|---|---|---|
+| **R30** — `tsc` | **10 → 0** (produção já era 0) | 3 |
+| **Vão 7** — ponteiros de seção | **27 → 18** (9 pagos: skills, README, kit, e o achado 29 no gerador) | 2 |
+| **Vãos 2+3** — fantasmas | **27 → 26** (`--theme-text`, no-op comprovado) | 4 |
+
+**20 itens pagos.**
+
+### O que FALTA — o baseline, item a item
+
+| Métrica | Vermelho hoje | Falso positivo (`plan-17`) | **Dívida real** | Lote | Estado |
+|---|---|---|---|---|---|
+| `composicaoatomica` (R10) | **47** | 0 | **47** | **6** | 🔴 não iniciado |
+| `hardcoded` (R2) | **33** | **2** | **31** | **5** | 🟠 classificado, travado |
+| `ghostvars` (R7) | **26** | **1** *(`--x`, já declarado)* | **25** | **4** | 🟠 caracterizado, travado |
+| `sectionpointers` (R23) | **18** | **~12** | **~6** | **2** | 🟠 os 6 são do revisor |
+| `tsc` (R30) | 0 | — | **0** | 3 | ✅ pago |
+| **Total** | **124** | **~15** | **≈ 109** | | |
+
+### A composição de cada bloco
+
+**`hardcoded` — 31 reais**, classificados no lote 5:
+
+| Balde | Itens | Saída | Decisão de quem |
+|---|---|---|---|
+| 1 — token existe, **mesmo valor** | **20** | trocar (ganha tema, não muda pixel) | executor, liberado |
+| 2 — token existe, **valor diferente** (`32px` × `shellBrandLogoSize=28`) | **2** | usar o token, ou corrigir o default do token | **dono** |
+| 3 — **sem token** (sidebar colapsada, topbar colapsado, logo colapsada, radius de tela de diagnóstico, gap de dropdown) | **6** | Expansão (R11) ou aceitar como tela interna | **dono** |
+| 4 — literal legítimo (2 truncamentos, 1 largura de dropdown) | **3** | ⇒ é *"a regra está larga demais"* (§3.3, linha 3) | **dono** |
+
+**`ghostvars` — 25 reais**, caracterizados no lote 4:
+
+| Grupo | Consumos | O que acontece ao consertar |
+|---|---|---|
+| **A** — fallback funciona hoje | **3** | **troca o valor na tela** (topbar ×2, botão) |
+| **B** — sem fallback, hoje não renderiza | **11** | **liga o que está desligado** (easings ×4, `--bg-card` ×3, `--theme-surface-main`, `SidebarNav`, `--theme-background` ×2) |
+| **Expansão** — conceito sem token | **11** | 6 tokens novos + 3 redirecionamentos (`*-scaled` → `layoutGap*`/`layoutPadding`/`borderRadius`) |
+
+> 🔴 **`SidebarNav.tsx:142` tem DOIS defeitos empilhados** — o nome fantasma **e** um fallback malformado
+> (`59,130,246/10` sem função de cor). Consertar só o nome **mascara** o segundo. Ver o veredito do lote 4.
+
+**`composicaoatomica` — 47 reais**, ainda sem classificação: `components/atomic` 23 · `core/Shell` 15 ·
+`Layout` 6 · `engines` 2 · `Discovery` 1. **20 arquivos**, risco de foco/teclado/estilo. É o lote 6.
+
+### A dívida FORA do baseline — nenhum gate a mede
+
+| Item | O que é | Destino |
+|---|---|---|
+| **R31** | **12 de 18 temas** falham AA; 4 são texto primário/secundário (`neo-brutalism` = **1.03:1**) | gate **antes** da recriação dos temas *(decisão do dono, 2026-08-08: temas serão refeitos)* |
+| **Achado 17** | `playwright.config.ts:7` aponta para pasta inexistente — `playwright test` **sai verde sem executar nada** | `plan-11` |
+| **Achado 29** | metade de código fechada; **a metade de gate segue viva** | `plan-17` |
+| **Achado 32** | `arquitetura/04:52` diz `410 = 410`, o real é **409** | revisor, na síntese |
+| **~6 ponteiros** | prosa apontando para `plan/20` e `arquitetura/09-…`, ambas removidas; e o `§4.2` que a síntese fundiu | revisor |
+| **9 regras ⚠️ · 2 regras ⏳** | escopo de gate menor que a regra; R10 na metade `switch`, R31 sem gate | fora desta plan |
+
+### O que "baseline zero" vai significar ao final
+
+**≈ 109 itens de código + ~15 de calibração de gate.** Ao final, três coisas **não** estarão em zero, e é
+melhor dizer isso agora:
+
+1. **Os 3 do balde 4** (`hardcoded`) — se o dono decidir que a regra está larga demais, eles ficam com o
+   motivo escrito, não pagos.
+2. **R10 na metade `switch` de design** — não tem detector e não é desta plan.
+3. **R31** — só entra depois da decisão e do gate.
+
+**Zero é a meta; item declarado com dono nomeado é resposta legítima (§5.5). Item esquecido não é.**
 
 # 3. Escopo
 
@@ -339,6 +416,152 @@ o alvo é uma correspondência textual quase exata). Essa incerteza é do dono, 
   `CLAUDE.md` cobra uma capacidade que o ambiente não oferece; sinalizado, não ignorado.
 - **`specs/00-indice.md` vai divergir de novo** ao mudar o `status` desta plan para `🟠 Em revisão` — mesma
   mecânica do fim dos lotes 1–3, e o executor não pode corrigir sozinho ([[00-prompt-executor]] §7.3).
+
+---
+
+## Resumo da execução (lote 5 — parte 1 paga, parte 2 classificada) — 2026-08-07
+
+**Resultado:** Concluído com pendência declarada — **PARADA OBRIGATÓRIA** antes de qualquer troca da Parte 2,
+conforme mandado. A Parte 1 (falso positivo `__e2e__`) foi executada por completo, como autorizado sem parar.
+
+### Parte 1 — falso positivo `__e2e__`, pago
+
+`gates/scripts/audit/auditor_hardcoded.mjs` — `getFiles()` passou a excluir `__e2e__/`, junto de `__tests__/`
+e `Mocks/`, na mesma edição que:
+(a) o `walk()` (`:90`) ganhou a terceira condição;
+(b) o bloco de comentário acima de `VALUE_SCOPE` ganhou o novo **LIMITE DECLARADO** (R18), nomeando a causa
+(2 falsos positivos em `EmbeddedNoLeak.spec.tsx:49,108` — CSS que o teste PLANTA como folha do host externo
+para provar isolamento, com valores arbitrários de propósito) e a contagem antes/depois;
+(c) as 3 entradas mortas da `VALUE_ALLOWLIST` foram removidas (`RealtimeInjection.spec.tsx::#ff0000`,
+`::20px`, `Boot.spec.tsx::2rem`) — essas fixtures já não precisam de allowlist nenhuma, porque `__e2e__`
+inteiro saiu do escopo.
+
+**Contagem:** `node gates/scripts/audit/auditor_hardcoded.mjs` → **35 → 33**. Baseline regravado no mesmo lote.
+
+### Parte 2 — classificação dos 33 restantes nos 4 baldes (§5.4-símile desta rodada)
+
+**Achado central:** existe uma família inteira de tokens de escala micro-tipográfica e tracking
+(`typography.ts`, Spec 26) com valores que batem **exatos** com a maioria dos literais — `typeScaleMicro=7`,
+`typeScaleTiny=8`, `typeScale3xs=9`, `typeScale2xs=10` (`px`) e `trackingTight=0.2`, `trackingWide=0.3`,
+`trackingWider=0.4` (`em`). Dois deles (`typeScale2xs`/`typeScale3xs`) já têm utilitário Tailwind pronto
+(`text-2xs`/`text-3xs`, via `--text-2xs`/`--text-3xs` em `_theme.css:56-57`); os demais não têm classe curta,
+mas o token existe e a troca seria por valor arbitrário `[var(--sarak-…, Npx)]`, mesma mecânica seg 1:1.
+
+**Nenhuma troca foi feita.** A tabela abaixo é só investigação.
+
+#### Balde 1 — token existe, MESMO valor (troca segura — não executada, aguardando OK para adiantar)
+
+| # | Consumo | Token | Troca proposta |
+|---|---|---|---|
+| 1 | `SarakExpandableMatrixEngine.tsx:20` `tracking-[0.3em]` | `trackingWide` (0.3em) | `tracking-[var(--sarak-tracking-wide,0.3em)]` |
+| 2 | `DynamicRenderer.tsx:67` `text-[10px]` | `typeScale2xs` | `text-2xs` |
+| 3 | `DynamicRenderer.tsx:87` `tracking-[0.2em]` (metade da linha — ver Balde 3, item 3) | `trackingTight` | `tracking-[var(--sarak-tracking-tight,0.2em)]` |
+| 4 | `ShellContent.tsx:52` `tracking-[0.4em]` | `trackingWider` | `tracking-[var(--sarak-tracking-wider,0.4em)]` |
+| 5–8 | `ShellLanguageSelector.tsx:55,65,87` `text-[10px]` (×3) · `:56` `text-[9px]` | `typeScale2xs`/`typeScale3xs` | `text-2xs` / `text-3xs` |
+| 9–10 | `ShellSearchWidget.tsx:47,68` `text-[8px]` (×2) | `typeScaleTiny` | `text-[var(--sarak-type-scale-tiny,8px)]` |
+| 11 | `ShellSearchWidget.tsx:82` `tracking-[0.2em]` | `trackingTight` | idem item 3 |
+| 12 | `ShellSearchWidget.tsx:94` `text-[9px]` | `typeScale3xs` | `text-3xs` |
+| 13 | `ShellUserWidget.tsx:26` `text-[10px]` | `typeScale2xs` | `text-2xs` |
+| 14 | `ShellUserWidget.tsx:29` `text-[7px]` + `tracking-[0.2em]` (mesma linha, 2 conceitos, ambos baldeáveis) | `typeScaleMicro` + `trackingTight` | `text-[var(--sarak-type-scale-micro,7px)]` + tracking idem item 3 |
+| 15 | `ShellUserWidget.tsx:69` `text-[8px]` | `typeScaleTiny` | idem item 9 |
+| 16 | `SidebarNav.tsx:130` `tracking-[0.2em]` | `trackingTight` | idem item 3 |
+| 17–18 | `TopbarNav.tsx:102,124` `text-[10px]` (×2) | `typeScale2xs` | `text-2xs` |
+| 19 | `TopbarNav.tsx:150` `w-[1px]` (divisor vertical) | `--theme-border-width` (default 1px, já usado em `_base.css`) | `w-[var(--theme-border-width,1px)]` — **candidato**, mesmo valor, mas é reaproveitar um token de BORDA para uma LARGURA; se você achar o conceito errado mesmo com o valor batendo, é balde 4 |
+| 20 | `SarakShell.tsx:215` `text-[10px]` | `typeScale2xs` | `text-2xs` |
+
+**20 de 33** caem aqui — mesmo valor visual hoje, ganham capacidade de tema.
+
+#### Balde 2 — token existe, valor DIFERENTE (muda pixel — NÃO tocar sem aprovação)
+
+| # | Consumo | Literal hoje | Token do conceito | Valor do token | Diferença |
+|---|---|---|---|---|---|
+| 1 | `SidebarNav.tsx:87` `height: '32px'` (altura da logo, expandida) | 32px | `shellBrandLogoSize` (`--sarak-shell-brand-logo-size`) | **28px** (default) | −12,5% se trocar |
+| 2 | `TopbarNav.tsx:84` `'32px'` (mesma métrica, no topbar) | 32px | idem | 28px | idem |
+
+Os dois usam **32px cru**, hoje, para o mesmo conceito ("altura da logo do brand") que **já tem token
+publicado com default diferente**. Não sei se 32 é a intenção visual real (e o token é que está desatualizado)
+ou se o token é a verdade e o cromo nunca foi migrado — é exatamente a pergunta que só você responde.
+
+#### Balde 3 — conceito sem token (Expansão, R11 — decisão do dono, igual aos 9 do lote 4)
+
+| # | Consumo | O que é | Por que não achei token |
+|---|---|---|---|
+| 1 | `SidebarNav.tsx:69` `'74px'` (largura da sidebar quando recolhida/só-ícone) | dimensão de layout do modo colapsado | `sidebarWidth` (200–240) e `sidebarMinWidth` (150–200) só cobrem a sidebar EXPANDIDA/redimensionável; não existe `sidebarCollapsedWidth` |
+| 2 | `TopbarNav.tsx:63` `'40px'` (altura do topbar quando recolhido) | idem, modo colapsado | `topbarHeight` (default 64) só cobre o EXPANDIDO |
+| 3 | `TopbarNav.tsx:84` `'20px'` (altura da logo quando recolhida) | idem | mesma lacuna do Balde 2 acima, mas para o estado colapsado — nem o valor errado (28) existe aqui |
+| 4 | `DynamicRenderer.tsx:64` `rounded-[3rem]` · `:82` `rounded-[2rem]` · `:87`(metade)/`:94` `rounded-[1.5rem]` | raio de borda "cápsula" grande, numa tela de diagnóstico do Design Engine (loading/empty state do `Discovery`) | nenhum token de radius do catálogo passa de `--radius-badge` (99px, pill completo); não existe escala 24/32/48px |
+| 5 | `ShellSearchWidget.tsx:78` `0.5rem` (gap do `calc(100%+0.5rem)`, distância do dropdown ao gatilho) | espaçamento pontual | não achei token de spacing pequeno inequívoco para este conceito específico (vários tokens de 8px existem, mas em domínios não relacionados — button/card/input padding — nenhum é "gap de dropdown flutuante") |
+
+**Nota sobre o item 4:** `DynamicRenderer.tsx` e `SarakExpandableMatrixEngine.tsx` são telas de estado vazio/carregamento
+do **próprio Design Engine** (`core/Discovery`), não cromo consumidor-facing comum — mesma classe de
+"ferramenta de autoria interna" que a R10 já tratou como caso à parte para `features/**`. Vale a mesma pergunta
+que a R10 levantou: isso deveria ter token, ou é tela de diagnóstico que não precisa responder a tema?
+
+#### Balde 4 — literal legítimo, não deveria virar token (⇒ PARE E RELATE, sem allowlist)
+
+| # | Consumo | Por que é legítimo |
+|---|---|---|
+| 1–2 | `SarakBackgroundRenderer.tsx:71` `#ffffff` / `#000000` | Não é cor de tema — é o ponto de referência matemático de um cálculo de contraste (`color-mix` contra a luminância detectada da mídia de fundo, branco/preto puro como polos opostos). Mesma classe do script de luminância que a `plan-12` usou para medir R31: literal de fórmula, não de estilo |
+| 3 | `SidebarNav.tsx:107` `max-w-[120px]` | Truncamento de texto (`truncate`) — largura máxima de um rótulo, não uma propriedade visual de tema |
+| 4 | `TopbarNav.tsx:104` `max-w-[150px]` | Idem |
+| 5 | `ShellSearchWidget.tsx:78` `w-[400px]` (largura do dropdown de busca) | Dimensão de layout de um menu flutuante específico, não uma propriedade de identidade visual — nenhum tema plausível precisaria de um dropdown de busca mais estreito/largo |
+
+**Nenhuma entrada de allowlist foi criada para estes 5** — ficam como achado relatado, conforme a §3.2 desta
+plan proíbe.
+
+### Verificações executadas
+
+- `node gates/scripts/audit/auditor_hardcoded.mjs` → **33** (era 35).
+- `npm run gate-limits:check` → **26/26**.
+- `node gates/scripts/release/check-audit-baseline.mjs --with-tsc --write` → baseline regravado.
+- `npx vitest run` → **1ª rodada: 1 teste falhou** (`bin/scaffold/checkUpdate/__tests__/checkUpdateCli.contract.test.mjs`,
+  `expect(runCheck()).toBe(0)`) — **2ª rodada, imediata, sem tocar em nada: 289/1004, 100% verde.** Não
+  reproduziu; é a mesma classe de instabilidade sob contenção de workers já documentada para
+  `PreviewCanvas.test.tsx`/`PresetsCatalog.test.tsx`, agora num arquivo diferente. Não investiguei a fundo
+  porque não reproduziu — registrado para quem notar de novo, não escondido.
+- `node gates/scripts/release/check-audit-baseline.mjs --with-tsc` (rodada limpa) → "igual ao baseline de
+  2026-08-07 — nenhuma regressão."
+- `git diff -- gates/scripts/` → só `auditor_hardcoded.mjs`, o conserto de falso positivo desta rodada.
+- **`npm run gates:full` NÃO rodado nesta rodada** — nenhuma classe/CSS de cromo foi tocada ainda (Parte 2 é
+  só investigação), e a Parte 1 mexeu em gate/allowlist, não em `src/` de produção.
+
+### Critérios de aceite (desta rodada)
+
+- [x] Parte 1: falso positivo corrigido, declarado, medido (35→33), baseline regravado junto.
+- [x] Nenhuma allowlist nova criada — só remoção de 3 entradas mortas.
+- [x] Nenhum token criado nesta rodada.
+- [x] Nenhuma troca de literal por token executada na Parte 2 — nem as do Balde 1.
+- [x] Classificação dos 33 apresentada nos 4 baldes, com literal × token × diferença onde aplicável.
+- [x] Lotes 4 e 6 não tocados.
+- [ ] `npm run gates:full` — não rodado (justificado acima; nenhuma mudança de `src/` de produção nesta rodada).
+
+### Decisões e suposições
+
+1. **Não executei o Balde 1 mesmo sendo permitido "adiantar".** Motivo: 3 dos 20 itens do Balde 1 estão na
+   MESMA linha de um item do Balde 3 (`DynamicRenderer.tsx:87`) — resolver só a metade token deixaria a linha
+   ainda vermelha por causa do `rounded-[1.5rem]`, e prefiro uma rodada de troca única e revisável a duas
+   parciais na mesma linha.
+2. **`--theme-border-width` para o `w-[1px]` do divisor (Balde 1, item 19)** é o candidato mais próximo, mas é
+   uma reclassificação de conceito (borda → largura de elemento) que o valor batendo não resolve sozinho —
+   listei como balde 1 com ressalva em vez de balde 4, para você decidir com o contexto visual.
+3. **`DynamicRenderer`/`SarakExpandableMatrixEngine` tratados como candidatos a "ferramenta interna"** (Balde 3,
+   nota) — não decidi isso sozinho; é uma pergunta aberta ao dono, análoga ao precedente de R10/`features/**`.
+
+### Achados fora do escopo (não corrigidos)
+
+- Nenhum novo.
+
+### Pendências / riscos
+
+- **Balde 1 (20 itens) pronto para execução**, aguardando só a confirmação de que pode adiantar (a plan já
+  autoriza; fiz a pausa por prudência de revisão única, não por dúvida de classificação).
+- **Balde 2 (2 itens)** — muda pixel 32px→28px se corrigido para o token. Decisão do dono.
+- **Balde 3 (5 conceitos, 6 ocorrências)** — candidatos a Expansão (R11) ou aceitar como literal de tela
+  interna. Decisão do dono.
+- **Balde 4 (5 itens)** — recomendo aceitar como característica (análogo ao que `00-contexto` §8 já registra
+  para outros casos), sem allowlist — mas quem fecha isso é você.
+- **`time-tracking`:** ausente nesta sessão, mesma nota das rodadas anteriores.
+- **`specs/00-indice.md` vai divergir de novo** ao voltar para `🟠` — mesma mecânica, executor não corrige.
 
 ---
 

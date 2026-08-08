@@ -40,10 +40,11 @@ as duas, sempre, na mesma ação.**
 
 | # | Plan | Objetivo | Depende de | Status | Destino |
 |---|---|---|---|---|---|
-| 1 | [plan-15-adequacao-total](plan/plan-15-adequacao-total.md) | O baseline volta a zero — pagar tudo que os gates novos acusarem | plan-12 · plan-16 | 🟠 Em revisão | `specs/01` · `specs/15` · `specs/00-regras-e-invariantes.md` |
-| 2 | [plan-05-integracao-continua](plan/plan-05-integracao-continua.md) | Rodar os gates num ambiente que não é a máquina de ninguém | — | 🔴 A executar | `specs/16-integracao-continua.md` *(nova)* · `specs/02` · `specs/01` |
-| 3 | [plan-10-ciclo-atualizacao](plan/plan-10-ciclo-atualizacao.md) | Dar comando de atualização a quem só recebia aviso | plan-05 | 🔴 A executar | `specs/13-instalacao-e-atualizacao.md` |
-| 4 | [plan-11-e2e-no-pipeline](plan/plan-11-e2e-no-pipeline.md) | Parar de sair verde sem executar nada | plan-05 | 🔴 A executar | `specs/11` · `specs/10` · `specs/16` |
+| 1 | [plan-17-calibrar-gates-por-falso-positivo](plan/plan-17-calibrar-gates-por-falso-positivo.md) | O verificador para de acusar o que não é violação — 4 falsos positivos medidos | plan-12 · plan-16 | 🔴 A executar | `specs/01` · `specs/00-regras-e-invariantes.md` |
+| 2 | [plan-15-adequacao-total](plan/plan-15-adequacao-total.md) | O baseline volta a zero — pagar tudo que os gates novos acusarem | plan-12 · plan-16 · plan-17 | 🟠 Em revisão | `specs/01` · `specs/15` · `specs/00-regras-e-invariantes.md` |
+| 3 | [plan-05-integracao-continua](plan/plan-05-integracao-continua.md) | Rodar os gates num ambiente que não é a máquina de ninguém | — | 🔴 A executar | `specs/16-integracao-continua.md` *(nova)* · `specs/02` · `specs/01` |
+| 4 | [plan-10-ciclo-atualizacao](plan/plan-10-ciclo-atualizacao.md) | Dar comando de atualização a quem só recebia aviso | plan-05 | 🔴 A executar | `specs/13-instalacao-e-atualizacao.md` |
+| 5 | [plan-11-e2e-no-pipeline](plan/plan-11-e2e-no-pipeline.md) | Parar de sair verde sem executar nada | plan-05 | 🔴 A executar | `specs/11` · `specs/10` · `specs/16` |
 
 > **A ordem da coluna `#` não é a ordem do número da plan** — e isso é a feature, não um erro. A `plan-03`
 > (triagem) roda **antes** da `plan-02` porque ela decide o escopo real de 07, 08 e 09; a `plan-02` só depende
