@@ -68,3 +68,83 @@ describe('checkSectionPointers — autorreferência', () => {
     expect(ignoradosComQualificador).toBe(2);
   });
 });
+
+// plan-17 (2026-08-08) — calibração: dois falsos positivos medidos pela plan-15,
+// consertados no PRÓPRIO GATE (nunca afrouxando a regra R23). Self-test por
+// conserto: um caso que AINDA pega, um caso que PASSOU a liberar.
+describe('checkSectionPointers — convenção 3c: rótulo de linha de tabela', () => {
+  it('libera §N.M quando existe uma linha de tabela "| **N.M** |" no corpo da seção N', () => {
+    const { root, files } = montarFixture(
+      'doc.md',
+      [
+        '# 5. Lacunas conhecidas',
+        '',
+        '| # | Lacuna |',
+        '| --- | --- |',
+        '| **5.1** | Nenhum gate de a11y |',
+        '',
+        'Ver §5.1.',
+      ].join('\n'),
+    );
+    const { mortos } = checkSectionPointers({ root, files });
+    expect(mortos).toEqual([]);
+  });
+
+  it('AINDA acusa §N.M quando a linha de tabela "**N.M**" não existe na seção N (self-test negativo)', () => {
+    const { root, files } = montarFixture(
+      'doc.md',
+      [
+        '# 5. Lacunas conhecidas',
+        '',
+        '| # | Lacuna |',
+        '| --- | --- |',
+        '| **5.1** | Nenhum gate de a11y |',
+        '',
+        'Ver §5.9 (linha de tabela inexistente).',
+      ].join('\n'),
+    );
+    const { mortos } = checkSectionPointers({ root, files });
+    expect(mortos).toEqual([{ arquivo: 'doc.md', linha: 7, secao: '5.9' }]);
+  });
+});
+
+describe('checkSectionPointers — qualificador ampliado (item 4 do LIMITES DECLARADOS)', () => {
+  it('IGNORA §N.M com qualificador `.md` DEPOIS do §, na mesma linha (antes só olhava os 40 chars ANTES)', () => {
+    const { root, files } = montarFixture(
+      'doc.md',
+      ['# 1. Único', '', 'Está na §9 de [`outro-doc`](outro-doc.md).'].join('\n'),
+    );
+    const { mortos, ignoradosComQualificador } = checkSectionPointers({ root, files });
+    expect(mortos).toEqual([]);
+    expect(ignoradosComQualificador).toBe(1);
+  });
+
+  it('IGNORA §N.M com qualificador wikilink na linha SEGUINTE', () => {
+    const { root, files } = montarFixture(
+      'doc.md',
+      ['# 1. Único', '', 'Ver §9.9', '(conforme [[outro-documento]]).'].join('\n'),
+    );
+    const { mortos, ignoradosComQualificador } = checkSectionPointers({ root, files });
+    expect(mortos).toEqual([]);
+    expect(ignoradosComQualificador).toBe(1);
+  });
+
+  it('IGNORA §N.M com qualificador em forma de PROSA ("do guia") na mesma linha', () => {
+    const { root, files } = montarFixture(
+      'doc.md',
+      ['# 1. Único', '', 'A árvore de decisão é a §0 do guia.'].join('\n'),
+    );
+    const { mortos, ignoradosComQualificador } = checkSectionPointers({ root, files });
+    expect(mortos).toEqual([]);
+    expect(ignoradosComQualificador).toBe(1);
+  });
+
+  it('AINDA acusa §N.M morto sem NENHUM qualificador na linha, na anterior ou na seguinte (self-test negativo)', () => {
+    const { root, files } = montarFixture(
+      'doc.md',
+      ['# 1. Único', '', 'Linha isolada, sem qualificador.', 'Ver §9.9 aqui.', 'Outra linha isolada.'].join('\n'),
+    );
+    const { mortos } = checkSectionPointers({ root, files });
+    expect(mortos).toEqual([{ arquivo: 'doc.md', linha: 4, secao: '9.9' }]);
+  });
+});

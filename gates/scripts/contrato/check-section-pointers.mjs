@@ -7,6 +7,15 @@
 // §5.1 do guia", e a seção §5 não tem subseção `.1` nenhuma — o alvo real é
 // o §2.
 //
+// CALIBRAÇÃO (plan-17, 2026-08-08): a `plan-15` mediu dois falsos positivos
+// na versão original — (a) `§N.M` que é RÓTULO DE LINHA DE TABELA
+// (`| **5.1** |`), não heading nem item de lista numerada; (b) `§N.M` com
+// qualificador de outro documento que EXISTE mas não era reconhecido, por
+// viver fora da janela de 40 caracteres ANTES do `§`, ou DEPOIS do `§`, ou
+// numa linha ADJACENTE, ou em forma de PROSA ("do guia", "da spec"). A
+// convenção 3c e o item 4 abaixo resolvem os dois — sem tentar RESOLVER
+// cross-documento, só a decidir se IGNORA (ver o item 2).
+//
 // -------------------------------------------------------------------------
 // LIMITES DECLARADOS (R18) — o que este gate NÃO vê
 // -------------------------------------------------------------------------
@@ -26,12 +35,13 @@
 //    de origem, não o citado), produzindo acusação falsa. Resolver os dois
 //    formatos de qualificador com confiança (sem reintroduzir a mesma classe
 //    de erro) é mais trabalho do que cabe nesta rodada. Por isso: **todo
-//    `§N.N` com QUALQUER qualificador de documento próximo (`[[...]]` OU um
-//    trecho contendo `.md` nos 40 caracteres antes) é IGNORADO** — nem
-//    validado nem acusado — e só a autorreferência (a maioria medida, e o
-//    caso do achado 29) é coberta. Declarado, não escondido: cobertura
-//    cross-documento fica para uma iteração futura.
-// 3. AS DUAS CONVENÇÕES QUE PRECISAM ESTAR CODIFICADAS ANTES DE LIGAR (a
+//    `§N.N` com QUALQUER qualificador de documento reconhecido (ver item 4)
+//    é IGNORADO** — nem validado nem acusado — e só a autorreferência (a
+//    maioria medida) é coberta. Declarado, não escondido: cobertura
+//    cross-documento (resolver contra o ARQUIVO CERTO) fica para uma
+//    iteração futura — este gate nunca tenta resolver fora do próprio
+//    arquivo, só decide se ignora.
+// 3. AS TRÊS CONVENÇÕES QUE PRECISAM ESTAR CODIFICADAS ANTES DE LIGAR (a
 //    causa dos "16 de 23 são ruído" que a plan-06 mediu como sonda):
 //      a) `§N.M` pode ser uma SUBSEÇÃO real (heading `## N.M ...` em
 //         qualquer nível, sem exigir um heading pai `# N` imediatamente
@@ -41,8 +51,42 @@
 //         em `00-prompt-executor` §7 e `01-gates-e-baseline` §6.1. Um
 //         heading "N.M" tem PRIORIDADE; na ausência dele, conta os itens
 //         numerados de nível 1 sob a seção N e aceita se M estiver dentro
-//         da contagem.
-//      Só quando NENHUMA das duas resolve é que o ponteiro é MORTO.
+//         da contagem;
+//      c) OU pode ser "rótulo de linha de TABELA da seção N" (`§5.1` = uma
+//         linha `| **5.1** | ... |` no início de linha, em algum lugar do
+//         corpo da seção `# 5`) — convenção viva em
+//         `10-seguranca-e-acessibilidade.md` §5 (plan-17, medido: 4
+//         ocorrências). Só testada depois de (a) e (b) não resolverem.
+//      Só quando NENHUMA das três resolve é que o ponteiro é MORTO.
+// 4. QUALIFICADOR DE DOCUMENTO — reconhecimento AMPLIADO (plan-17): um
+//    `§N.M` é IGNORADO (não validado, não acusado) quando a LINHA em que
+//    ele vive, OU a linha ANTERIOR, OU a SEGUINTE contém `[[WikiLink]]`,
+//    um trecho `.md`, OU uma forma em PROSA ("do guia", "da spec", "desta
+//    spec", "deste guia/documento") — em QUALQUER posição da linha, antes
+//    ou depois do `§` (não mais só os 40 caracteres antes). PONTO CEGO
+//    NOVO, e é o preço deste alargamento: uma linha que cite qualquer outro
+//    documento (ou a linha vizinha dela) faz TODO `§N.M` daquela linha ser
+//    ignorado, mesmo que algum desses ponteiros seja autorreferência morta
+//    de verdade. Aceito porque o gate nunca passa a RESOLVER contra o
+//    arquivo citado — só decide não acusar —, então o único efeito colateral
+//    possível é sub-cobertura (um morto real escapa), nunca acusação falsa
+//    num arquivo errado. É a mesma classe de risco que a plan-12 já reduziu
+//    a autorreferência para evitar (ver item 2) — mas na direção segura:
+//    alargar o IGNORE nunca produz atribuição errada, porque não há
+//    atribuição nenhuma.
+//
+//    A MAGNITUDE (medida pelo revisor em 2026-08-08, contra o corpus de
+//    `§N.M` do escopo atual): cobertura efetiva caiu de **328 de 455**
+//    ponteiros (72%) para **271 de 455** (60%) — **45 ponteiros que antes
+//    eram validados e passavam saíram da cobertura** (deixaram de ser
+//    resolvidos e passaram a só ser ignorados). **16 desses 45 saíram
+//    exclusivamente pela regra de linha VIZINHA** (nem a própria linha, nem
+//    prosa — só a anterior/seguinte ter `.md`/wikilink), e nela há
+//    autorreferência GENUÍNA escondida, não só risco teórico:
+//    `specs/00-contexto.md:172` (`§4`), `specs/specs/02-enforcement-por-commit.md:303`
+//    (`§4.1`) e `:305` (`§7`) — os três resolviam sozinhos antes desta
+//    calibração e hoje só são ignorados. Sub-cobertura sem número não cumpre
+//    R18; este é o número.
 // -------------------------------------------------------------------------
 import fs from 'fs';
 import path from 'path';
@@ -103,15 +147,48 @@ function countNumberedItems(lines, secao, headings) {
   return corpo.filter((l) => /^\s*\d+\.\s/.test(l)).length;
 }
 
-/** Um pointer §N.M resolve se existe heading N.M, OU se M está dentro da
- * contagem de itens numerados da seção N. */
+/** Convenção 3c: `§N.M` resolve se existe, em algum lugar do corpo da seção
+ * N, uma linha de tabela cuja primeira célula é o rótulo `**N.M**`. */
+function hasTableRowLabel(lines, secao, numero, headings) {
+  const alvo = headings.find((h) => h.numero === String(secao));
+  if (!alvo) return false;
+  const corpo = lines.slice(alvo.linha + 1, alvo.fimExclusivo);
+  const rotuloEscapado = numero.replace(/\./g, '\\.');
+  const linhaDeTabela = new RegExp(`^\\s*\\|\\s*\\*\\*${rotuloEscapado}\\*\\*\\s*\\|`);
+  return corpo.some((l) => linhaDeTabela.test(l));
+}
+
+/** Um pointer §N.M resolve se existe heading N.M, se M está dentro da
+ * contagem de itens numerados da seção N, OU se M é rótulo de linha de
+ * tabela da seção N (convenção 3c, ver LIMITES DECLARADOS). */
 function pointerResolves(target, numero) {
   const { headings, lines } = target;
   if (headings.some((h) => h.numero === numero)) return true;
   const [secao, item] = numero.split('.');
   if (!item) return false;
   const total = countNumberedItems(lines, secao, headings);
-  return Number(item) <= total;
+  if (Number(item) <= total) return true;
+  return hasTableRowLabel(lines, secao, numero, headings);
+}
+
+const WIKILINK_RE = /\[\[[\w-]+\]\]/;
+const MD_MENTION_RE = /\.md\b/;
+// Formas em prosa que nomeiam "outro documento" sem `.md` nem wikilink —
+// ver item 4 do LIMITES DECLARADOS.
+const PROSE_QUALIFIER_RE = /\bd[oa]\s+(guia|specs?)\b|\bdaquela\s+specs?\b|\bde(?:ste|sta)\s+(documento|guia|specs?)\b/i;
+
+/** Uma linha tem sinal de qualificador de OUTRO documento — wikilink, menção
+ * `.md`, ou forma em prosa ("do guia", "da spec"...). */
+function lineHasQualifierSignal(line) {
+  if (line == null) return false;
+  return WIKILINK_RE.test(line) || MD_MENTION_RE.test(line) || PROSE_QUALIFIER_RE.test(line);
+}
+
+/** Qualificador AMPLIADO (item 4 do LIMITES DECLARADOS): a própria linha, OU
+ * a anterior, OU a seguinte, em QUALQUER posição — não mais só os 40
+ * caracteres antes do `§`. Só decide IGNORAR; nunca resolve cross-documento. */
+function hasDocumentQualifier(line, linhaAnterior, linhaSeguinte) {
+  return lineHasQualifierSignal(line) || lineHasQualifierSignal(linhaAnterior) || lineHasQualifierSignal(linhaSeguinte);
 }
 
 export function checkSectionPointers({ root = ROOT, files = null } = {}) {
@@ -130,11 +207,11 @@ export function checkSectionPointers({ root = ROOT, files = null } = {}) {
     lines.forEach((line, i) => {
       for (const m of line.matchAll(/§(\d+(?:\.\d+)?)/g)) {
         const numero = m[1];
-        const antes = line.slice(Math.max(0, m.index - 40), m.index);
 
-        // Qualquer sinal de referência a OUTRO documento (wikilink ou
-        // menção a um caminho `.md`) — não resolvido nesta versão, ver R18.
-        if (/\[\[[\w-]+\]\]/.test(antes) || /\.md\b/.test(antes)) {
+        // Qualquer sinal de referência a OUTRO documento (wikilink, menção
+        // `.md` ou forma em prosa) na própria linha ou nas vizinhas — não
+        // resolvido nesta versão, ver R18 item 4.
+        if (hasDocumentQualifier(line, lines[i - 1], lines[i + 1])) {
           ignoradosComQualificador++;
           continue;
         }

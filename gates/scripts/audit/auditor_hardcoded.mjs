@@ -143,11 +143,80 @@ function sanitizeFallbacks(text) {
     .replace(/var\([^,]+,\s*[-+]?[0-9.]+(?:px|rem|em)\s*\)/gi, '');
 }
 
-function checkValueHardcoded(sourceFile, relFilePath) {
+// LIMITE CONSERTADO em 2026-08-08 (R18, plan-17 conserto 3 — fallback interpolado):
+// `sanitizeFallbacks()` só limpa hex/unidade escritos LITERALMENTE dentro de
+// `var(--x, #fff)`/`var(--x, 12px)`. Quando o fallback é uma `const` interpolada
+// — `var(--token, ${fallbackColor})`, com `fallbackColor` declarada em OUTRA
+// linha — o literal (`'#ffffff'`) mora num `StringLiteral` separado, fora do
+// `var(...)`, e sobrevivia à limpeza (medido: `SarakBackgroundRenderer.tsx:71`,
+// 2 ocorrências). `collectInterpolatedFallbackIdentifiers` varre o arquivo por
+// AST e localiza toda `TemplateExpression` cuja substituição `${ident}` está
+// entre um HEAD/literal anterior terminando em `var(--token, ` e um literal
+// seguinte começando em `)` — isto é, `ident` é usado EXATAMENTE como fallback
+// interpolado de um `var()`. Só então o(s) literal(is) que declaram esse
+// identificador (direto, ou via ternário/parênteses) deixam de ser acusados.
+//
+// PONTO CEGO CONHECIDO (novo, R18): a isenção casa por NOME de identificador,
+// não por escopo/tipo resolvido. Um literal solto numa `const` cujo nome
+// COINCIDE com um identificador usado como fallback interpolado em OUTRO
+// lugar do mesmo arquivo (mesmo sem relação nenhuma entre os dois) deixaria
+// de ser acusado. Aceito porque o inverso — resolver escopo de verdade —
+// exigiria um resolvedor de símbolos completo, fora do orçamento desta
+// calibração; o efeito é sub-cobertura (um hardcode real escapa), nunca
+// acusação de um caso que não existe.
+const VAR_FALLBACK_HEAD_RE = /var\(\s*--[\w-]+\s*,\s*$/;
+const VAR_FALLBACK_TAIL_RE = /^\s*\)/;
+
+function collectInterpolatedFallbackIdentifiers(sourceFile) {
+  const nomes = new Set();
+  function visit(node) {
+    if (ts.isTemplateExpression(node)) {
+      node.templateSpans.forEach((span, i) => {
+        const textoAntes = i === 0 ? node.head.text : node.templateSpans[i - 1].literal.text;
+        const textoDepois = span.literal.text;
+        if (ts.isIdentifier(span.expression) && VAR_FALLBACK_HEAD_RE.test(textoAntes) && VAR_FALLBACK_TAIL_RE.test(textoDepois)) {
+          nomes.add(span.expression.text);
+        }
+      });
+    }
+    ts.forEachChild(node, visit);
+  }
+  visit(sourceFile);
+  return nomes;
+}
+
+// Sobe de um literal até a `VariableDeclaration` que o guarda, atravessando só
+// ternário/parênteses (o suficiente para `const x = cond ? '#fff' : '#000'`).
+function findDeclaredVariableName(node) {
+  let atual = node;
+  while (atual && atual.parent) {
+    const pai = atual.parent;
+    if (ts.isVariableDeclaration(pai) && pai.initializer === atual) {
+      return ts.isIdentifier(pai.name) ? pai.name.text : null;
+    }
+    if (ts.isConditionalExpression(pai) || ts.isParenthesizedExpression(pai)) {
+      atual = pai;
+      continue;
+    }
+    return null;
+  }
+  return null;
+}
+
+function isInterpolatedFallbackLiteral(node, interpolatedFallbackNames) {
+  const nomeVariavel = findDeclaredVariableName(node);
+  return nomeVariavel != null && interpolatedFallbackNames.has(nomeVariavel);
+}
+
+function checkValueHardcoded(sourceFile, relFilePath, interpolatedFallbackNames) {
   const violations = [];
   function visit(node) {
     if (ts.isStringLiteralLike(node) || ts.isTemplateLiteralToken(node)) {
       if (VALUE_ALLOWLIST.has(`${relFilePath}::${node.text}`)) {
+        ts.forEachChild(node, visit);
+        return;
+      }
+      if (isInterpolatedFallbackLiteral(node, interpolatedFallbackNames)) {
         ts.forEachChild(node, visit);
         return;
       }
@@ -251,7 +320,8 @@ console.log('\n### VALOR (hex / px / rem / em) — todas as camadas');
 for (const file of valueFiles) {
   const sf = parse(file);
   const relPath = path.relative(process.cwd(), file).split(path.sep).join('/');
-  const violations = checkValueHardcoded(sf, relPath);
+  const interpolatedFallbackNames = collectInterpolatedFallbackIdentifiers(sf);
+  const violations = checkValueHardcoded(sf, relPath, interpolatedFallbackNames);
   if (violations.length > 0) {
     console.log(`\n[FAIL] ${path.relative(process.cwd(), file)}`);
     violations.forEach((v) => console.log(`  - ${v}`));
