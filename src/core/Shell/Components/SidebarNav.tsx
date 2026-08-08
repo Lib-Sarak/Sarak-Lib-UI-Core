@@ -84,7 +84,7 @@ export const SidebarNav: React.FC<SidebarNavProps> = ({
                 {!effectiveIsNavHidden && (
                     <div className={`flex items-center gap-3 w-full ${logoPosition === 'center' ? 'justify-center' : ''}`}>
                         {logoUrl ? (
-                            <div style={{ height: '32px', display: 'flex', alignItems: 'center', justifyContent: logoPosition === 'center' ? 'center' : 'flex-start' }}>
+                            <div style={{ height: 'var(--sarak-shell-brand-logo-size, 32px)', display: 'flex', alignItems: 'center', justifyContent: logoPosition === 'center' ? 'center' : 'flex-start' }}>
                                 {isVideo(activeLogo) ? (
                                     <video
                                         src={activeLogo}
@@ -139,7 +139,7 @@ export const SidebarNav: React.FC<SidebarNavProps> = ({
                                         title={isOffline ? `Offline Module: ${mod.error || 'Connection error'}` : mod.label}
                                         className={`w-full flex items-center gap-3 px-3 py-2.5 rounded-xl transition-all relative group font-tab 
                                             ${activeModuleId === mod.id
-                                                ? 'bg-[var(--sarak-sidebar-active,var(--theme-primary-rgb,59,130,246)/10)] text-[var(--theme-primary)] font-bold shadow-[inset_0_0_20px_rgba(var(--theme-primary-rgb),0.05)]'
+                                                ? 'bg-[var(--sarak-sidebar-active-color,rgba(var(--theme-primary-rgb),0.1))] text-[var(--theme-primary)] font-bold shadow-[inset_0_0_20px_rgba(var(--theme-primary-rgb),0.05)]'
                                                 : 'text-[var(--theme-muted)] hover:bg-[var(--theme-muted)]/10 hover:text-[var(--theme-title)]'}
                                             ${isOffline ? 'opacity-30 grayscale cursor-not-allowed border border-dashed border-[var(--theme-border)]' : ''}
                                         `}

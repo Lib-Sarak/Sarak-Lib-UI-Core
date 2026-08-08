@@ -61,7 +61,7 @@ export const DynamicRenderer: React.FC<DynamicRendererProps> = ({ contracts, mod
 
     if (!contracts || contracts.length === 0) {
         return (
-            <div className="flex flex-col items-center justify-center p-20 text-white/20 border border-white/5 border-dashed rounded-[3rem]">
+            <div className="flex flex-col items-center justify-center p-20 text-white/20 border border-white/5 border-dashed rounded-[var(--radius-sarak)]">
                 <AlertCircle size={48} className="mb-4 opacity-50" />
                 <p className="text-sm font-black uppercase tracking-widest">No Visual Contracts Defined</p>
                 {module && <p className="text-2xs mt-2 opacity-30">Module ID: {module.id}</p>}
@@ -79,19 +79,19 @@ export const DynamicRenderer: React.FC<DynamicRendererProps> = ({ contracts, mod
             {/* Tab Navigation (v6.1) */}
             {tabs.hasTabs && (
                 <div className="flex justify-center mb-12">
-                    <nav className="flex p-1.5 bg-white/[0.02] border border-white/5 rounded-[2rem] backdrop-blur-3xl shadow-2xl">
+                    <nav className="flex p-1.5 bg-white/[0.02] border border-white/5 rounded-[var(--radius-sarak)] backdrop-blur-3xl shadow-2xl">
                         {tabs.names.map(name => (
                             <button
                                 key={name}
                                 onClick={() => setActiveTab(name)}
-                                className={`relative px-8 py-3.5 rounded-[1.5rem] text-2xs font-black uppercase tracking-[var(--sarak-tracking-tight,0.2em)] transition-all duration-500 ${
+                                className={`relative px-8 py-3.5 rounded-[var(--radius-btn)] text-2xs font-black uppercase tracking-[var(--sarak-tracking-tight,0.2em)] transition-all duration-500 ${
                                     activeTab === name ? 'text-white' : 'text-white/30 hover:text-white/60'
                                 }`}
                             >
                                 {activeTab === name && (
                                     <motion.div 
                                         layoutId="activeTabMarker"
-                                        className="absolute inset-0 bg-primary-600 rounded-[1.5rem] shadow-lg shadow-primary-500/20"
+                                        className="absolute inset-0 bg-primary-600 rounded-[var(--radius-btn)] shadow-lg shadow-primary-500/20"
                                         transition={{ type: 'spring', bounce: 0.2, duration: 0.6 }}
                                     />
                                 )}

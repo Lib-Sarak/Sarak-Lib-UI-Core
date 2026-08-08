@@ -18,7 +18,7 @@
 
 /* 1.1 TRANSITION UTILITIES (v8.5) */
 .transition-sarak {
-    transition: all var(--animation-speed, 0.4s) var(--ease-sarak-cubic) !important;
+    transition: all var(--animation-speed, 0.4s) var(--sarak-ease-main, cubic-bezier(0.4, 0, 0.2, 1)) !important;
 }
 
 /* Layout Utilities */
@@ -27,16 +27,16 @@
 
 /* Sincronização de Geometria Atômica em Botões e Inputs */
 button:not(.p-0) {
-    border-radius: var(--sarak-btn-radius-tl, var(--sarak-btn-border-radius, 8px)) 
-                   var(--sarak-btn-radius-tr, var(--sarak-btn-border-radius, 8px)) 
-                   var(--sarak-btn-radius-br, var(--sarak-btn-border-radius, 8px)) 
+    border-radius: var(--sarak-btn-radius-tl, var(--sarak-btn-border-radius, 8px))
+                   var(--sarak-btn-radius-tr, var(--sarak-btn-border-radius, 8px))
+                   var(--sarak-btn-radius-br, var(--sarak-btn-border-radius, 8px))
                    var(--sarak-btn-radius-bl, var(--sarak-btn-border-radius, 8px));
-    transition: all 0.2s var(--ease-sarak-cubic);
+    transition: all 0.2s var(--sarak-ease-main, cubic-bezier(0.4, 0, 0.2, 1));
 }
 
 input, select, textarea {
     border-radius: var(--sarak-input-border-radius, 8px);
-    transition: all 0.2s var(--ease-sarak-cubic);
+    transition: all 0.2s var(--sarak-ease-main, cubic-bezier(0.4, 0, 0.2, 1));
 }
 
 button:hover:not(.p-0) {
@@ -46,9 +46,9 @@ button:hover:not(.p-0) {
 
 button:active:not(.p-0),
 .bg-theme-card:active {
-    background-color: var(--sarak-button-active, var(--theme-primary-active));
+    background-color: var(--sarak-button-active-color, var(--theme-primary-active));
     transform: translateY(0) scale(var(--sarak-btn-active-scale, 0.98)) !important;
-    transition: transform 0.1s var(--ease-sarak-fluid);
+    transition: transform 0.1s var(--sarak-ease-out, cubic-bezier(0.4, 0, 0.2, 1));
 }
 
 /* Anel de foco global governado pelo token `focusRingWidth` (schema `engineering`,

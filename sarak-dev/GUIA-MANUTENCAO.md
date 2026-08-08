@@ -341,15 +341,15 @@ depois acrescente o fluxo — nunca deixe o próximo redescobrir.
 
 > A suíte (`npx vitest run`) **não é um script do `package.json`** e por isso não aparece na tabela acima — ela é invocada direto. Ver o guia, §6.
 
-### B.4 Baseline dos auditores (medido em 2026-08-07)
+### B.4 Baseline dos auditores (medido em 2026-08-08)
 
 > Cada número é o MÁXIMO tolerado. Maior que isto = regressão = commit bloqueado.
 
 | Auditor | Métrica | Máximo tolerado |
 | --- | --- | --- |
-| `auditor_hardcoded.mjs` | valor | **35** |
+| `auditor_hardcoded.mjs` | valor | **6** |
 | `auditor_hardcoded.mjs` | estruturalLiquido | **0** |
-| `auditor_ghostvars.mjs` | consumos | **27** |
+| `auditor_ghostvars.mjs` | consumos | **12** |
 | `auditor_typescript.mjs` | violacoes | **0** |
 | `auditor_coverage.mjs` | orfaos | **0** |
 | `auditor_arquitetura.mjs` | violacoes | **0** |
@@ -357,7 +357,7 @@ depois acrescente o fluxo — nunca deixe o próximo redescobrir.
 | `auditor_paridade.mjs` | falhou | **0** |
 | `auditor_presets.mjs` | falhou | **0** |
 | `auditor_authcoupling.mjs` | violacoes | **0** |
-| `auditor_sectionpointers.mjs` | mortos | **18** |
+| `auditor_sectionpointers.mjs` | mortos | **1** |
 | `auditor_composicaoatomica.mjs` | violacoes | **47** |
 
 `npx tsc --noEmit`: **0 erros** tolerados — não é gate hoje.

@@ -752,6 +752,173 @@ Valor resolvido do token (com `arquivo:linha` da definição) ao lado do literal
 
 ---
 
+## Resumo da execução (lote 7 — Balde 2 + ghostvars A/B + os 4 raios) — 2026-08-08
+
+**Resultado:** Concluído.
+
+**⇒ PARADA OBRIGATÓRIA — mudanças visíveis, por natureza, ANTES de qualquer commit.** Nada foi commitado; isto
+é o relatório que o dono revisa antes de autorizar.
+
+### (a) Balde 2 — `shellBrandLogoSize` 28→32
+
+| Arquivo:linha | Antes | Depois |
+|---|---|---|
+| `src/core/Design/schema/navigation.ts:56` | `defaultValue: 28` | `defaultValue: 32` |
+| `src/core/Shell/Components/SidebarNav.tsx:87` | `height: '32px'` (cru, ignorava o token) | `height: 'var(--sarak-shell-brand-logo-size, 32px)'` |
+| `src/core/Shell/Components/TopbarNav.tsx:84` | `height: ... ? '20px' : '32px'` (32px cru) | `height: ... ? '20px' : 'var(--sarak-shell-brand-logo-size, 32px)'` |
+
+**Resultado no pixel destes dois:** zero — os dois já renderizavam 32px; agora chegam lá pelo token. Confere no
+`git diff` das duas linhas: só o `style` mudou de string literal para `var(...)`.
+
+🔴 **Achado que o pedido original não previa — a decisão tem um raio maior do que os dois arquivos citados.**
+`--sarak-shell-brand-logo-size` é injetada por `useDesignVariables.ts:62-63` (`design[token.id] ?? token.defaultValue`) **sempre**, para todo consumidor, não só para `SidebarNav`/`TopbarNav`. Existe um TERCEIRO consumidor
+do mesmo token, já com `var(...)` correto: `src/components/atomic/Navigation/SarakShellNav.tsx:134` —
+`style={{ height: 'var(--sarak-shell-brand-logo-size, 28px)' }}`. Este componente (não tocado, fora do escopo
+literal do pedido) é usado por `SarakAppChrome.tsx`, `SarakAppChromeMobile.tsx`, `SarakAuthScreen.tsx` e
+`SarakDataCards.tsx`. Como o valor da variável passa a ser emitido como `32px` (o default mudou), **o fallback
+`28px` escrito ali nunca vai ganhar da variável real** — logo o logo renderizado por `SarakShellNav` também
+sobe de 28px para 32px em qualquer consumidor que não tenha customizado `shellBrandLogoSize` no próprio tema.
+Confirmado por leitura de código (`useDesignVariables.ts` injeta o token sempre; nenhum branch o pula) — não é
+suposição. **Isto não é desvio da decisão do dono** (o token é mesmo o alvo, 32 é mesmo a realidade que se quer
+generalizar) — é o alcance real dela, maior que os dois `arquivo:linha` citados no pedido.
+
+### (b) Ghostvars grupo A — troca a cor na tela (3 consumos, não 3-4: o 4º elegível foi para o grupo B, ver nota abaixo)
+
+| # | Arquivo:linha | Nome fantasma → real | Antes (via fallback, hoje) | Depois (via token real) |
+|---|---|---|---|---|
+| 1 | `TopbarNav.tsx:123` | `--sarak-topbar-active` → `--sarak-topbar-active-color` | `rgba(var(--theme-primary-rgb),0.2)` — quadrado translúcido atrás do ícone ativo (topbar recolhida) | `topbarActiveColor` é token real (`navigation.ts:167-174`), `defaultValue: 'transparent'` — **some o destaque de fundo por padrão**; some só volta se o host customizar `topbarActiveColor` no tema |
+| 2 | `TopbarNav.tsx:124` | idem | `var(--theme-primary)` — "pílula" sólida atrás do item ativo (topbar expandida) | idem — fundo vira `transparent` por padrão |
+| 3 | `_utilities.css:49` | `--sarak-button-active` → `--sarak-button-active-color` | `var(--theme-primary-active)` (cor escurecida do primário, no `:active` de qualquer botão) | **Sem mudança de pixel.** Ver achado abaixo — `--sarak-button-active-color` nunca é emitida em runtime, então a declaração cai no MESMO fallback de antes |
+
+🔴 **Achado: o item 3 não se comporta como "grupo A" apesar de estar catalogado assim.** `buttonActiveColor`
+existe **só** em `src/core/Provider/manifest.ts:210` (`DESIGN_MANIFEST`) — busquei por toda a árvore quem lê o
+campo `.vars`/`.transform` desse manifesto (`grep -rn ".transform(\|DESIGN_MANIFEST)" src/`) e o único uso real
+é `Object.keys(DESIGN_MANIFEST)` em `validation.ts:34`, só para **aceitar** a chave no payload — ninguém nunca
+usa `.vars`/`.transform` para de fato emitir `--sarak-button-active-color` no DOM. É metadado morto (mesma
+família do "Registry do motor de manifesto" que já morreu, [[002-remocao-motor-manifesto]], mas este pedaço
+específico não foi removido). Resultado prático: renomear fecha o gate (o auditor conta `manifesto` como fonte
+válida desde a calibragem recente) e não piora nada — mas também **não liga** o botão ao token real; o
+`:active` de qualquer botão continua 100% dependente de `--theme-primary-active`, exatamente como hoje. Não
+consertei o manifesto morto — está fora do escopo (não é um dos 4 consumos previstos pelo pedido, e mexer nele
+é decisão de arquitetura, não renomeação). Registrado em "achados fora do escopo".
+
+### (c) Ghostvars grupo B — liga estilo que está desligado (11 consumos)
+
+| # | Arquivo:linha | Nome fantasma → real | Antes (declaração cai — IACVT/sem fallback) | Depois |
+|---|---|---|---|---|
+| 4 | `_utilities.css:21` | `--ease-sarak-cubic` → `--sarak-ease-main` (+ fallback `cubic-bezier(0.4,0,0.2,1)`) | `.transition-sarak` não anima (timing-function inválido derruba o `transition` inteiro) | anima com a curva "Standard" do sistema |
+| 5 | `_utilities.css:34` | idem | sincronização de raio do botão não anima | anima |
+| 6 | `_utilities.css:39` | idem | sincronização de raio de input/select/textarea não anima | anima |
+| 7 | `_utilities.css:51` | `--ease-sarak-fluid` → `--sarak-ease-out` (+ mesmo fallback) | o "afundar" do botão no clique (`scale(0.98)`) não anima, salta direto | anima (decelera na saída) |
+| 8/12 | `_base.css:16` (uma linha, dois nomes) | `--theme-surface-main`→`--theme-surface`, `--bg-card`→`--card-bg` | `--theme-card` inválida nesta declaração (cai por inteiro) — só não se nota porque o Provider, quando montado, sobrescreve `--theme-card` por `style` inline com especificidade maior (a própria `cardBackgroundColor` já emite `--theme-card` direto); esta linha só importa fora do alcance do Provider | `--theme-card` resolve corretamente aqui também |
+| 9 | `_surfaces.css:25` | `--bg-card`→`--card-bg` | `[data-surface="matte"]` sem `background-color` (declaração cai, `!important` e tudo) | modo matte passa a aplicar o fundo do card de verdade |
+| 10 | `_surfaces.css:45` | idem, dentro de `color-mix()` | `[data-surface="brushed"] .sarak-card` sem `background` nenhum (gradiente de ruído + `color-mix` caem juntos, é um `background` só) | modo brushed passa a mostrar a textura de ruído sobre a cor do card |
+| 11 | `SidebarNav.tsx:142` | `--sarak-sidebar-active` → `--sarak-sidebar-active-color`, **e** fallback malformado `var(--theme-primary-rgb,59,130,246)/10` → `rgba(var(--theme-primary-rgb),0.1)` (os dois defeitos consertados juntos, como mandado) | item ativo da sidebar sem fundo nenhum (`bg-[...]` cai por inteiro — IACVT) | `sidebarActiveColor` é token real, `defaultValue: 'transparent'` — **visualmente igual a hoje por padrão** (sem fundo), mas agora é `transparent` válido e customizável pelo host, não mais uma declaração quebrada |
+| 13 | `presets/components/inputs.ts:34` | `--theme-background`→`--theme-body` | preset "Industrial Inset": `inputBg` inválido, input sem fundo | input ganha fundo `#050505` (cor global do body) — o efeito "entalhado" pretendido passa a aparecer |
+| 14 | `presets/components/inputs.ts:69` | idem | preset "High Contrast (Brutalism)": idem | idem |
+
+**Suposição declarada (decisão minha, não do dono — os itens 4/5/6/7 não tinham alvo nomeado em lugar nenhum):**
+só existem DOIS tokens de easing "família CSS" no catálogo — `--sarak-ease-main` ("Standard", usado pela
+maioria das transições, `animations.ts:59-76`) e `--sarak-ease-out` ("Saída Suave", `animations.ts:79-94`); os
+três `motionEase*` de `motion.ts` são para `framer-motion`/JS, não para `transition:` puro em CSS, então
+descartei essa família. Mapeei `-cubic` (uso genérico, 3 ocorrências) → `--sarak-ease-main`, e `-fluid` (o
+"afundar" de clique) → `--sarak-ease-out`. **Se o dono quis outra curva, é só trocar o nome — nenhum token novo
+foi criado, a troca é de uma linha.**
+
+**A nomeação `--bg-card`→`--card-bg` e `--theme-surface-main`→`--theme-surface`:** não é arbitrária — os dois
+nomes reais existem como `cssVars` do MESMO token (`cardBackgroundColor`, `colors.ts:126-137`, que emite
+`['--card-bg', '--theme-surface', '--theme-card', '--sarak-card-bg', '--theme-card-bg']`), então os dois lados
+da cadeia em `_base.css:16` resolvem para o MESMO valor — troquei só os nomes, não a estrutura da cadeia.
+
+### (d) Os 4 raios do `DynamicRenderer.tsx` — decisão 6 da §2.3
+
+| Linha | Antes | Depois | Resolvido hoje (leitura estática da cadeia, não medido em browser) |
+|---|---|---|---|
+| `:64` | `rounded-[3rem]` (48px) | `rounded-[var(--radius-sarak)]` | `--radius-sarak` cai em `--radius-theme` → `var(--theme-radius-scaled, 12px)` → **12px** (nenhum tema custom no baseline de teste) |
+| `:82` | `rounded-[2rem]` (32px) | `rounded-[var(--radius-sarak)]` | **12px**, mesma cadeia |
+| `:87` | `rounded-[1.5rem]` (24px) | `rounded-[var(--radius-btn)]` | `--radius-btn` resolve em `--sarak-btn-border-radius` (token responsivo `btnBorderRadius`, `defaultValue.desk: 8px`) → **8px** |
+| `:94` | `rounded-[1.5rem]` (24px) | `rounded-[var(--radius-btn)]` | **8px**, mesma cadeia |
+
+Confirma a estimativa do dono ("48px → 12px no padrão"); o par `:87`/`:94` desce mais ainda, a 8px, por resolver
+via `--radius-btn` (controle) em vez de `--radius-sarak` (superfície) — é exatamente a distinção de papel que a
+decisão 6 pediu.
+
+**O que foi feito**
+- `src/core/Design/schema/navigation.ts:56` — `shellBrandLogoSize.defaultValue` 28→32 — Balde 2.
+- `src/core/Shell/Components/SidebarNav.tsx:87` — logo passa a consumir o token — Balde 2.
+- `src/core/Shell/Components/SidebarNav.tsx:142` — nome fantasma + fallback malformado consertados juntos — ghostvars B.
+- `src/core/Shell/Components/TopbarNav.tsx:84` — logo passa a consumir o token — Balde 2.
+- `src/core/Shell/Components/TopbarNav.tsx:123,124` — `--sarak-topbar-active`→`-color` — ghostvars A.
+- `src/styles/_utilities.css:21,34,39,49,51` — 4 easings + `--sarak-button-active`→`-color` — ghostvars A+B.
+- `src/styles/_base.css:16` — `--theme-card` chain consertada — ghostvars B.
+- `src/styles/_surfaces.css:25,45` — `--bg-card`→`--card-bg` — ghostvars B.
+- `src/core/Design/presets/components/inputs.ts:34,69` — `--theme-background`→`--theme-body` — ghostvars B.
+- `src/core/Discovery/DynamicRenderer.tsx:64,82,87,94` — 4 raios reusam `--radius-sarak`/`--radius-btn` — decisão 6.
+- 3 snapshots atualizados (`PreviewCanvas.test.tsx.snap`, `PresetCard.test.tsx.snap`, `PreviewSystemRenderer.test.tsx.snap`) — refletem só a mudança 28px→32px de `--sarak-shell-brand-logo-size` (conferido: a única CSS var que diverge em cada diff é essa).
+- `gates/baselines/audit-baseline.json` — regravado (`hardcoded` 12→6, `ghostvars` 26→12, `sectionpointers` 2→1).
+- `sarak-dev/` (`START-HERE.md`, `GUIA-MANUTENCAO.md`, `state.json`) — regenerado via `npm run dev-kit` — estava defasado desde o lote 4, agora reflete o baseline atual.
+- `dist/**` — regenerado por `npm run gates:full` (que roda `npm run build`); inclui a correção de `--theme-text` do lote 4 que nunca tinha sido rebuildada, além dos chunks lazy com hash novo (renomeação inevitável de content-hash, não é mudança de conteúdo funcional).
+
+**Arquivos alterados**
+
+| Arquivo | Natureza | O que mudou |
+|---|---|---|
+| `src/core/Design/schema/navigation.ts` | alterado | Balde 2 — default 28→32 |
+| `src/core/Shell/Components/SidebarNav.tsx` | alterado | Balde 2 (logo) + ghostvars B (item ativo) |
+| `src/core/Shell/Components/TopbarNav.tsx` | alterado | Balde 2 (logo) + ghostvars A (item ativo ×2) |
+| `src/core/Design/presets/components/inputs.ts` | alterado | ghostvars B ×2 (`--theme-background`→`--theme-body`) |
+| `src/styles/_utilities.css` | alterado | ghostvars A (button-active) + B (4 easings) |
+| `src/styles/_base.css` | alterado | ghostvars B (`--theme-card` chain) |
+| `src/styles/_surfaces.css` | alterado | ghostvars B ×2 (`--bg-card`→`--card-bg`) |
+| `src/core/Discovery/DynamicRenderer.tsx` | alterado | 4 raios — decisão 6 |
+| `src/features/DesignEngine/Canvas/__tests__/__snapshots__/PreviewCanvas.test.tsx.snap` | alterado | snapshot atualizado (28→32px) |
+| `src/features/DesignEngine/Canvas/components/__tests__/__snapshots__/PresetCard.test.tsx.snap` | alterado | idem |
+| `src/features/DesignEngine/Canvas/components/__tests__/__snapshots__/PreviewSystemRenderer.test.tsx.snap` | alterado | idem |
+| `gates/baselines/audit-baseline.json` | alterado | baseline regravado (§ acima) |
+| `sarak-dev/START-HERE.md`, `GUIA-MANUTENCAO.md`, `state.json` | alterado | espelho regerado (`npm run dev-kit`) |
+| `dist/**` | alterado (gerado) | rebuild completo via `gates:full` |
+
+**Verificações executadas**
+- `npm run audit` (ANTES) → `hardcoded: 12` · `ghostvars: 26` · `sectionpointers: 1 morto` (baseline tolerava 2) · `composicaoatomica: 47` · demais auditores em 0. Saída completa lida.
+- `npm run audit` (DEPOIS) → `hardcoded: 6` · `ghostvars: 12` · `sectionpointers: 1` · `composicaoatomica: 47` (inalterado, fora de escopo) · demais em 0. Os 6 hardcoded e 12 ghostvars restantes conferidos um a um contra a lista de "fora do escopo" da §12.2 (candidatos a Expansão do lote 8) — nenhum dos 14 alvos deste lote sobrou.
+- `npx vitest run` → primeira rodada: **287 passed / 3 failed** (290 arquivos) — as 3 falhas eram só snapshot desatualizado (`- Expected`/`+ Received`), e o diff de cada uma foi extraído programaticamente: a ÚNICA CSS var que diverge em cada uma é `--sarak-shell-brand-logo-size` (28px→32px). `npx vitest run -u` → **290 passed / 290, 1012 testes, 100% verde**, 3 snapshots atualizados.
+- `npm run gate-limits:check` → `[OK] Os 26 scripts de gates/scripts/ declaram o que não veem.`
+- `npm run dev-kit` → regenerado (80 componentes, 409 tokens, 17 gates). `npm run dev-kit:check` → `[dev-kit:check] kit em dia (3 arquivos, 0 ponteiros mortos)`.
+- `node gates/scripts/release/check-audit-baseline.mjs --with-tsc --write` → baseline regravado.
+- `node gates/scripts/release/check-audit-baseline.mjs --with-tsc` (após o write) → `igual ao baseline de 2026-08-08 — nenhuma regressão`.
+- `npm run gates:full` → **exit 0**. Cadeia completa: `dev-kit:check` → `build` (token-types, catalog, barrel, zero-brand, guide, deep-import, build:js, build:css, build:css:scoped) → `build-info:check` → `package:check` → `coverage:check` (`vitest run --coverage` + `check-coverage-floor`). Cobertura: `68.83%`/`57.48%`/`60.85%`/`70.66%` (statements/branches/functions/lines) — `[coverage:check] igual ao piso (70.66%) — nenhuma regressão`.
+- `git diff --stat` → 33 arquivos, +88/−290 linhas (a maior parte do `−` é código morto de chunk antigo do `dist/`, renomeado por hash).
+
+**Critérios de aceite**
+- [x] Balde 2 — SidebarNav/TopbarNav consomem o token, zero pixel nos dois — evidência: diff de `SidebarNav.tsx:87`/`TopbarNav.tsx:84`, ambos já resolviam 32px.
+- [x] Ghostvars grupo A consertado (troca cor) — evidência: tabela (b) acima; 2 dos 3 realmente trocam (topbar), 1 não troca (achado registrado).
+- [x] Ghostvars grupo B consertado (liga estilo desligado) — evidência: tabela (c), 11 consumos, todos IACVT/sem-fallback antes, todos resolvendo para nome real depois.
+- [x] `SidebarNav.tsx:142` — os DOIS defeitos (nome fantasma + fallback malformado) consertados juntos, não um sem o outro — evidência: diff da linha, `rgba(var(--theme-primary-rgb),0.1)` substitui `var(--theme-primary-rgb,59,130,246)/10`.
+- [x] Os 4 raios do `DynamicRenderer` reusam `--radius-sarak`/`--radius-btn`, nenhuma escala nova criada — evidência: diff de `DynamicRenderer.tsx`; `git diff -- gates/ src/core/Design/schema/ src/core/Design/catalog/` mostra zero token de raio novo.
+- [x] Nenhum gate alterado — evidência: `git diff --stat -- gates/scripts/` vazio (só `gates/baselines/audit-baseline.json`, que é dado, não lógica).
+- [x] Baseline e espelho (`sarak-dev/`) regravados junto do conserto — evidência: os dois no mesmo `git status`.
+- [x] `npx vitest run` 100% verde, `gates:full` exit 0 — evidência acima.
+- [x] Nada commitado — `git log` inalterado nesta sessão.
+
+**Decisões e suposições**
+1. **Alvo dos 2 easings (`--ease-sarak-cubic`→`--sarak-ease-main`, `--ease-sarak-fluid`→`--sarak-ease-out`) foi decisão minha, não do dono** — o lote 4 já tinha registrado essa incerteza como "do dono, não do executor", e nem a §2.3 nem o pedido desta rodada nomeiam o alvo. Escolhi conservadoramente pela única família de tokens CSS de easing que existe (excluindo a família `motion*`, que é para JS/framer-motion). Baixo impacto — timing de transição, degrada bem, e a troca por outro nome real é de uma linha. Se o dono discordar do mapeamento, é ajuste cirúrgico, não reabertura de escopo.
+2. **`--bg-card`→`--card-bg` e `--theme-surface-main`→`--theme-surface`** — mantive a MESMA estrutura de cadeia (`var(A, var(B))`) só corrigindo os dois nomes para os dois cssVars reais do mesmo token (`cardBackgroundColor`), em vez de colapsar para um nome só — mudança mínima, sem redesenhar a lógica de fallback existente.
+3. **`_utilities.css:49` (`--sarak-button-active`→`-color`) foi mantido mesmo descobrindo que não muda pixel** — porque (a) fecha o gate legitimamente (a auditoria conta `manifesto` como fonte), (b) zero risco de regressão (cai no mesmo fallback de hoje), e (c) consertar a causa raiz (manifesto morto) é fora do escopo — decisão de arquitetura do dono, não renomeação.
+4. **Não toquei em `SarakShellNav.tsx:134`** — o pedido citou só `SidebarNav.tsx:87`/`TopbarNav.tsx:84`; o arquivo já usa `var(...)` corretamente (não é um "32px cru" a corrigir), só o VALOR emitido que muda por tabela — registrado como achado, não como conserto.
+
+**Achados fora do escopo (não corrigidos)**
+- **`buttonActiveColor`/`cardHoverColor`/`cardActiveColor` são metadado morto em `manifest.ts`** — declaram `.vars`/`.transform` que nenhum código lê para emitir CSS. Só `buttonActiveColor` foi tocado nesta rodada (por estar entre os 4 consumos do pedido); os outros dois nem apareciam no ghostvars. Sugestão: spec nova para decidir se o `DESIGN_MANIFEST` é religado ao runtime ou é removido — hoje ele só serve para `validateDesign` aceitar a chave, o que é enganoso (parece que emite CSS e não emite).
+- **`--radius-sarak` (`_theme.css:19`) consome `--sarak-card-border-radius`, que `cardBorderRadius` NÃO emite** (`cards.ts:23` emite `--sarak-card-radius`, sem `-border-`) — outro nome fantasma, mas invisível ao `auditor_ghostvars` porque `src/styles/` só conta como fonte emissora, nunca como consumidora (limite já declarado no próprio auditor, R7). Não é dos 4 raios pedidos (esses eu apenas fiz REUSAR essa variável, como mandado); é a variável em si que tem um segundo nome fantasma dentro dela, pré-existente, fora do escopo desta plan.
+- **`SarakShellNav.tsx:134`** — não é um conserto pendente (já usa `var()` corretamente); é só o alcance da mudança do default, registrado em (a) acima para a revisão visual do dono.
+
+**Pendências / riscos**
+- **A revisão visual (`getComputedStyle`/DevTools) continua não automatizada nesta base** ([[01-gates-e-baseline]] §2.6) — tudo acima é assertiva estática (regra CSS/token/cadeia), não pixel medido em browser. Onde a plan já dava a mesma limitação por resolvida (SidebarNav:142, `_surfaces.css:45` — IACVT, "já quebrado, consertar não pode piorar"), segui a orientação; para o resto, a prova é a leitura da cadeia de tokens, não uma captura de tela.
+- **`time-tracking`:** ausente nesta sessão — mesma nota de todas as rodadas anteriores; MCP/skill não existe no ambiente.
+- **`specs/00-indice.md` vai divergir de novo** ao mudar o `status` desta plan — mesma mecânica das rodadas anteriores, fora do que o executor pode corrigir.
+- **`dist/**` carrega também a correção de `--theme-text` do lote 4** (nunca tinha sido rebuildada) — não é regressão, é o `dist/` alcançando o `src/` que já estava certo; sinalizado para o revisor não estranhar o tamanho do diff em `dist/`.
+
+---
+
 # 11. Veredito
 
 <!-- Preenchido pelo REVISOR. Append-only. -->

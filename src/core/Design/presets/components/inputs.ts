@@ -31,7 +31,7 @@ export const INPUT_PRESETS: ComponentPreset[] = [
         design: {
             inputBorderType: 'none',
             inputBorderRadius: 6,
-            inputBg: 'var(--theme-background)',
+            inputBg: 'var(--theme-body)',
             inputShadow: 'inset 3px 3px 6px rgba(0,0,0,0.6), inset -2px -2px 4px rgba(255,255,255,0.03)',
         }
     },
@@ -66,7 +66,7 @@ export const INPUT_PRESETS: ComponentPreset[] = [
         design: {
             inputBorderType: 'solid',
             inputBorderRadius: 0,
-            inputBg: 'var(--theme-background)',
+            inputBg: 'var(--theme-body)',
             inputBorderColor: 'var(--theme-title)',
         }
     },

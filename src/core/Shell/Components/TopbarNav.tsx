@@ -81,7 +81,7 @@ export const TopbarNav: React.FC<TopbarNavProps> = ({
 
                         <div className={`flex items-center gap-3 ${!effectiveIsNavHidden ? 'pr-6 border-r border-[var(--theme-border)]' : ''} shrink-0`}>
                             {logoUrl ? (
-                                <div style={{ height: effectiveIsNavHidden ? '20px' : '32px', display: 'flex', alignItems: 'center' }}>
+                                <div style={{ height: effectiveIsNavHidden ? '20px' : 'var(--sarak-shell-brand-logo-size, 32px)', display: 'flex', alignItems: 'center' }}>
                                     {isVideo(activeLogo) ? (
                                         <video
                                             src={activeLogo}
@@ -120,8 +120,8 @@ export const TopbarNav: React.FC<TopbarNavProps> = ({
                                     title={mod.label}
                                     className={`flex items-center justify-center transition-all whitespace-nowrap font-tab shrink-0 
                                         ${effectiveIsNavHidden
-                                            ? `w-8 h-8 rounded-lg ${activeModuleId === mod.id ? 'bg-[var(--sarak-topbar-active,rgba(var(--theme-primary-rgb),0.2))] text-[var(--theme-primary)]' : 'text-[var(--theme-muted)] hover:text-[var(--theme-title)] hover:bg-[var(--theme-muted)]/10'}`
-                                            : `px-4 py-1.5 rounded-full text-2xs font-black uppercase tracking-widest ${activeModuleId === mod.id ? 'bg-[var(--sarak-topbar-active,var(--theme-primary))] text-[var(--theme-on-primary)] shadow-lg shadow-[var(--theme-primary)]/30 scale-105' : 'text-[var(--theme-muted)] hover:text-[var(--theme-title)] hover:bg-[var(--theme-muted)]/10'}`
+                                            ? `w-8 h-8 rounded-lg ${activeModuleId === mod.id ? 'bg-[var(--sarak-topbar-active-color,rgba(var(--theme-primary-rgb),0.2))] text-[var(--theme-primary)]' : 'text-[var(--theme-muted)] hover:text-[var(--theme-title)] hover:bg-[var(--theme-muted)]/10'}`
+                                            : `px-4 py-1.5 rounded-full text-2xs font-black uppercase tracking-widest ${activeModuleId === mod.id ? 'bg-[var(--sarak-topbar-active-color,var(--theme-primary))] text-[var(--theme-on-primary)] shadow-lg shadow-[var(--theme-primary)]/30 scale-105' : 'text-[var(--theme-muted)] hover:text-[var(--theme-title)] hover:bg-[var(--theme-muted)]/10'}`
                                         }
                                     `}
                                 >

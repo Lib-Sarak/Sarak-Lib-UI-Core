@@ -53,7 +53,7 @@ export const NavigationSchema: ComponentSchema = {
             axis: 'geometry',
             unit: 'px',
             constraints: { min: 16, max: 64 },
-            defaultValue: 28,
+            defaultValue: 32,
             cssVars: ['--sarak-shell-brand-logo-size']
         },
         {

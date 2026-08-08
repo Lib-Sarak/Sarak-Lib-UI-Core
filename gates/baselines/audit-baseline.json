@@ -4,11 +4,11 @@
     "medidoEm": "2026-08-08",
     "metricas": {
         "auditor_hardcoded.mjs": {
-            "valor": 12,
+            "valor": 6,
             "estruturalLiquido": 0
         },
         "auditor_ghostvars.mjs": {
-            "consumos": 26
+            "consumos": 12
         },
         "auditor_typescript.mjs": {
             "violacoes": 0
@@ -32,7 +32,7 @@
             "violacoes": 0
         },
         "auditor_sectionpointers.mjs": {
-            "mortos": 2
+            "mortos": 1
         },
         "auditor_composicaoatomica.mjs": {
             "violacoes": 47
