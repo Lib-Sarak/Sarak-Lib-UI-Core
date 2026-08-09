@@ -57,8 +57,10 @@ achado novo. **32 numerados** (o 32 é novo) · **24 fechados** (§6) · **2 ace
 > código, e 1 achado novo (32) entrou, medido de passagem pela `plan-12`. O detalhe de cada fechamento está em
 > §6.
 >
-> **De 3 para 2 em 2026-08-08:** o achado **29** fechou a metade que faltava e saiu para a §6. Restam **17**
-> (§3.1) e **32** (§3.3).
+> **De 3 para 2 em 2026-08-08:** o achado **29** fechou a metade que faltava e saiu para a §6.
+>
+> **De 2 para 1 em 2026-08-09:** o achado **32** fechou e saiu para a §6 — a prosa deixou de citar um total.
+> **Resta o 17**, na §3.1.
 
 ## 3.1 Segurança e medição
 
@@ -75,9 +77,10 @@ achado novo. **32 numerados** (o 32 é novo) · **24 fechados** (§6) · **2 ace
 
 ## 3.3 Prosa manual desatualizada por um conserto de outra plan
 
-| # | Achado | Onde | Regra | Destino |
-|---|---|---|---|---|
-| 32 | `arquitetura/04-contrato-de-tokens-e-paridade.md:52` afirma que a paridade "hoje fecha em `410 = 410`" como estado resolvido (2026-08-03, pela `plan-07`, quando a fusão dos 7 ids duplicados criou o token `--sarak-shell-brand-logo-size` e a soma foi de 409 para 410). A `plan-09` (2026-08-05) removeu o token `mfaQrCodeSize` das 3 fontes, e a paridade real **voltou a 409/409/409** — a prosa não acompanhou. Medido de passagem pela `plan-12`, ao vivo, com `auditor_paridade` | `specs/arquitetura/04-contrato-de-tokens-e-paridade.md:52` | **R17** (metade prosa manual, sem gate) | **Corrigir** — trocar `410 = 410` por `409 = 409` e nomear as duas plans que moveram o número (fusão dos ids → remoção do token de MFA) |
+> ✅ **Categoria vazia desde 2026-08-09.** O achado **32** saiu para a §6. **A categoria fica** — ela é a que
+> mais reincide nesta base, e o padrão já apareceu três vezes: `arquitetura/04` com `416`, depois `410`,
+> depois `409`. A lição que fechou o 32 vale como aviso permanente: **total absoluto em prosa envelhece a cada
+> conserto.** Cifra fica em fonte gerada; prosa afirma a relação.
 
 ---
 
@@ -138,6 +141,7 @@ Registrados só para que a numeração não seja reaproveitada. O detalhe está 
 | 20 | Status falso na spec antiga de presets |
 | 21 | Duplicação entre specs antigas, resolvida pela consolidação |
 | 28 | JSDoc citando arquivo de plano inexistente, removido |
+| 32 | **Fechado em 2026-08-09.** `arquitetura/04-contrato-de-tokens-e-paridade.md:52` dizia `410/410/410` como estado resolvido; era 409 quando foi escrito e **422** hoje (a `plan-15` criou 13 tokens). O conserto não foi trocar o número: a linha **deixou de citar total**, porque total em prosa envelhece a cada token. A cifra vive em `sarak-dev/state.json` → `design.tokens` e é cobrada por `auditor_paridade.mjs`; a prosa afirma a **convergência**, não o valor |
 | 29 | **As duas metades fecharam.** Gate: `check-section-pointers.mjs` (`plan-12`, 2026-08-05). Código: verificado fechado pelo revisor em **2026-08-08** — `scripts/dev-kit/renderDevAppendix.mjs` **não emite mais** `§5.1`, e `sarak-dev/GUIA-MANUTENCAO.md:308` regenerado aponta `§2` (paridade), o alvo correto. Medido rodando `npm run dev-kit` e recontando: **0 ocorrências** de `§5.1` no guia e no `state.json` |
 | 30 | **Não se reproduz** (verificado 2026-08-01). Dizia que `verify_presets.ts:16` apontava para um `arquitetura/04 §9` inexistente. O alvo existe e é o certo: `04-contrato-de-tokens-e-paridade.md:252` = `# 9. Anti-drift de tema e preset` — exatamente o assunto do script. A reescrita da base (plan-01) criou o §9 |
 | 31 | **Não se reproduz** (verificado 2026-08-01). Dizia que a ponte para `specs/` era SOFT. `CLAUDE.md:3` hoje aponta **duro** para `specs/00-contexto.md`, os dois prompts e o `00-indice`. `.agents/index.md` segue com 0 referências a `specs/`, mas a ponte não passa mais por ele |

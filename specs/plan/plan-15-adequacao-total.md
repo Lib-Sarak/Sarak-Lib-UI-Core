@@ -2,7 +2,7 @@
 tipo: "plan"
 titulo: "Adequação total — o baseline volta a zero"
 dominio: "Sarak-Lib-UI-Core / Qualidade / Dívida"
-status: "🟠 Em revisão"
+status: "🟡 Em execução"
 prioridade: "Alta"
 tags: ["plan", "adequacao", "baseline", "divida", "gates"]
 relacionados: ["[[00-regras-e-invariantes]]", "[[01-gates-e-baseline]]", "[[15-divida-conhecida]]"]
@@ -1654,7 +1654,52 @@ e é a única saída que preserva as duas situações.
    aceita nome que o manifesto declara mas o runtime nunca emite. É achado de **regra que falta**, não de
    código: relatar, não consertar por conta própria.
 
-## 12.4 Lote 9 — R10, composição atômica  ·  `🔴 A executar`
+## 12.4 Lote 9 — R10, composição atômica  ·  `🟢 EXECUTADO (parcial) em 2026-08-09`
+
+> ✅ **Entregue e aprovado como completo.** 47 → **23**: 24 trocas seguras. O déficit **não é trabalho
+> pendente** — é o achado do Provider, que virou a [[plan-18-atomo-sem-provider]] e já foi executado. As 20
+> ocorrências bloqueadas voltam no **lote 10** (§12.6). As 3 restantes precisam de decisão do dono.
+
+## 12.6 Lote 10 — pagar as 20 que a `plan-18` destravou  ·  `🔴 A executar`
+
+**Pré-requisito cumprido:** a `plan-18` entregou `useSarakUIOptional()` e os átomos
+(`SarakButton`, `SarakIconButton`, `SarakInput`) **renderizam sem `SarakUIProvider`**. O obstáculo que parou o
+lote 9 não existe mais.
+
+### As 20, por como o bloqueio foi estabelecido
+
+**Grupo 1 — provado por conversão no lote 9** (converteu, viu quebrar, reverteu). São os de menor risco agora:
+o caminho já foi percorrido uma vez.
+
+| Arquivo | Ocorrências |
+|---|---|
+| `atomic/Navigation/SarakShellNav.tsx:66` | 1 |
+| `atomic/UX/SarakTabs.tsx:77` | 1 |
+| `Layout/SarakAnalyticalPage.tsx:43,52,79,92` | 4 |
+| `core/Discovery/DynamicRenderer.tsx:84` | 1 |
+
+**Grupo 2 — generalizado por leitura de fonte** (nunca convertido; os 5 têm **zero** `useSarakUI` hoje, medido
+pelo revisor). Risco maior: 12 das 13 vivem **dentro de armadilha de foco**.
+
+| Arquivo | Ocorrências | Risco |
+|---|---|---|
+| `atomic/Feedback/SarakToast.tsx:89` | 1 | tem teste *"useToast() sem Provider degrada"* — não pode regredir |
+| `atomic/Navigation/SarakPagination.tsx:65,85,101` | 3 | teclado próprio |
+| `atomic/Media/SarakLightbox.tsx:89,99,107` | 3 | **armadilha de foco** |
+| `atomic/Media/SarakPDFViewer/SarakPDFViewerImpl.tsx:109,115,121,127,132` | 5 | **armadilha de foco** |
+| `atomic/Navigation/SarakSpotlight.tsx:130` | 1 | **armadilha de foco** · é `<input>`, vai para `SarakInput` |
+
+### As 3 que NÃO são deste lote — decisão do dono
+
+| Item | Por quê |
+|---|---|
+| `atomic/Templates/Chat/ChatInput.tsx:117` | `<input type="file" ref>` **oculto**, disparado por `.click()`. Nenhum átomo serve, e o `ref` bloqueia. Terceira saída da §3.3 — *"a regra está larga demais"* |
+| `Layout/SarakAppChromeMobile.tsx:116` | scrim de tela cheia, sem ícone nem texto. **Não tem `ref`** — o revisor errou ao dizer que tinha (§12.4 corrigida). Nenhum átomo atual serve |
+| `atomic/Atoms/SocialButton.tsx:56` | átomo de botão fora de `atomic/Buttons/`. **A fronteira da R10 é por PASTA ou por PAPEL?** |
+
+### Meta
+
+**23 → 3.** Se as 3 forem decididas no caminho, 23 → 0.
 
 **47 ocorrências em 20 arquivos** de HTML nativo cru: `components/atomic` 23 · `core/Shell` 15 · `Layout` 6 ·
 `engines` 2 · `Discovery` 1. É o maior e o mais arriscado — mexe em foco, teclado e estilo de componente

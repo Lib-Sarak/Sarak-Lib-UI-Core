@@ -2,7 +2,7 @@
 tipo: "plan"
 titulo: "O átomo funciona sem Provider — alinhar useSarakUI à convenção de leniência da própria base"
 dominio: "Sarak-Lib-UI-Core / Núcleo / Provider"
-status: "🟠 Em revisão"
+status: "🟢 Aprovada"
 prioridade: "Alta"
 tags: ["plan", "provider", "atomos", "leniencia", "r10"]
 relacionados: ["[[00-regras-e-invariantes]]", "[[03-superficie-publica]]", "[[plan-15-adequacao-total]]", "[[05-cromo-e-slots]]"]

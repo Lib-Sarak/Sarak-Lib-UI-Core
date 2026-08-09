@@ -49,10 +49,16 @@ Distribuição por coluna: `cards_engine` 95 · `components_base` 70 · `colors_
 
 ## 2.2 ✅ A divergência 409 × 416 — FECHADA em 2026-08-03
 
-> **Estado atual: não há divergência.** O auditor imprime `410/410/410` nos três totais **e** `410 tokens
-> validados` na linha final. Os sete `id` que existiam em dois schemas ao mesmo tempo foram desduplicados pela
-> `plan-07`. Esta seção fica porque **a classificação anterior estava errada num ponto que custa caro**, e o
-> erro é mais instrutivo que o defeito.
+> **Estado atual: não há divergência.** Os sete `id` que existiam em dois schemas ao mesmo tempo foram
+> desduplicados pela `plan-07`. Esta seção fica porque **a classificação anterior estava errada num ponto que
+> custa caro**, e o erro é mais instrutivo que o defeito.
+>
+> 🔴 **Não repita um TOTAL aqui — foi o defeito desta própria linha** *(achado 32, fechado em 2026-08-09)*.
+> Ela dizia `410/410/410` como estado resolvido; quando foi escrita já era **409**, e hoje é **422**. Um número
+> absoluto em prosa envelhece a cada token criado, e a `plan-15` criou 13 de uma vez. **O total vive em
+> `sarak-dev/state.json` → `design.tokens`** (regenerado por `npm run dev-kit`) e é cobrado por
+> `auditor_paridade.mjs`. O que esta seção afirma — e o que continua verdade — é a **convergência**, não a
+> cifra: as três fontes batem entre si, seja qual for o número.
 
 ### O que era
 
