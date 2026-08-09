@@ -4252,7 +4252,7 @@
   },
   "designTokens": {
     "note": "Chaves válidas de `design` num ThemePreset. Chave/valor fora do contrato é descartado com console.warn pelo Design Engine — nunca vira CSS cru.",
-    "count": 409,
+    "count": 422,
     "responsiveCapable": [
       "borderRadius",
       "borderRadiusLg",
@@ -4448,6 +4448,11 @@
       },
       {
         "id": "borderWidth",
+        "type": "number",
+        "responsive": false
+      },
+      {
+        "id": "brandLogoSizeCollapsed",
         "type": "number",
         "responsive": false
       },
@@ -5132,6 +5137,16 @@
         "responsive": false
       },
       {
+        "id": "glassEdgeColor",
+        "type": "string",
+        "responsive": false
+      },
+      {
+        "id": "glassEdgeWidth",
+        "type": "number",
+        "responsive": false
+      },
+      {
         "id": "glassOpacity",
         "type": "number",
         "responsive": false
@@ -5229,6 +5244,11 @@
       {
         "id": "h2Weight",
         "type": "string",
+        "responsive": false
+      },
+      {
+        "id": "h3Size",
+        "type": "number",
         "responsive": false
       },
       {
@@ -5787,6 +5807,11 @@
         "responsive": false
       },
       {
+        "id": "rangeActiveColor",
+        "type": "string",
+        "responsive": false
+      },
+      {
         "id": "reducedMotion",
         "type": "boolean",
         "responsive": false
@@ -5838,6 +5863,16 @@
       },
       {
         "id": "searchBackdropBlur",
+        "type": "number",
+        "responsive": false
+      },
+      {
+        "id": "searchDropdownGap",
+        "type": "number",
+        "responsive": false
+      },
+      {
+        "id": "searchDropdownWidth",
         "type": "number",
         "responsive": false
       },
@@ -5912,6 +5947,11 @@
         "responsive": false
       },
       {
+        "id": "sidebarCollapsedWidth",
+        "type": "number",
+        "responsive": false
+      },
+      {
         "id": "sidebarColor",
         "type": "string",
         "responsive": false
@@ -5919,6 +5959,11 @@
       {
         "id": "sidebarHoverColor",
         "type": "string",
+        "responsive": false
+      },
+      {
+        "id": "sidebarLabelMaxWidth",
+        "type": "number",
         "responsive": false
       },
       {
@@ -6172,13 +6217,28 @@
         "responsive": false
       },
       {
+        "id": "tooltipBorderColor",
+        "type": "string",
+        "responsive": false
+      },
+      {
         "id": "tooltipRadius",
         "type": "number",
         "responsive": false
       },
       {
+        "id": "tooltipTextColor",
+        "type": "string",
+        "responsive": false
+      },
+      {
         "id": "topbarActiveColor",
         "type": "string",
+        "responsive": false
+      },
+      {
+        "id": "topbarCollapsedHeight",
+        "type": "number",
         "responsive": false
       },
       {
@@ -6194,6 +6254,11 @@
       {
         "id": "topbarHoverColor",
         "type": "string",
+        "responsive": false
+      },
+      {
+        "id": "topbarLabelMaxWidth",
+        "type": "number",
         "responsive": false
       },
       {

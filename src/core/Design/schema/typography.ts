@@ -205,6 +205,17 @@ export const TypographySchema: ComponentSchema = {
             defaultValue: 1.2,
             cssVars: ['--sarak-h2-lh']
         },
+        {
+            id: 'h3Size',
+            label: 'Tamanho (H3)',
+            type: 'slider',
+            description: 'Tamanho da fonte de subtítulos (H3), em pixels — terceiro nível da hierarquia tipográfica, abaixo do H2. Reusa o peso de `h2Weight`.',
+            axis: 'density',
+            unit: 'px',
+            constraints: { min: 14, max: 48 },
+            defaultValue: 24,
+            cssVars: ['--sarak-h3-size']
+        },
 
         // --- CORPO & TEXTO ---
 

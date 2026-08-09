@@ -184,6 +184,17 @@ export const InputsSchema: ComponentSchema = {
             constraints: { min: 0, max: 30 },
             defaultValue: 8,
             cssVars: ['--sarak-search-backdrop-blur']
+        },
+
+        // --- RANGE SLIDER ---
+        {
+            id: 'rangeActiveColor',
+            label: 'Range Slider: Cor Ativa',
+            type: 'color',
+            description: 'Cor do polegar (thumb) arrastável de um range slider — herda a cor primária do sistema por padrão, mas pode ser customizada independentemente para destacar o controle.',
+            axis: 'color',
+            defaultValue: 'var(--theme-primary)',
+            cssVars: ['--sarak-range-active-bg']
         }
     ]
 };

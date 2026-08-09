@@ -1193,6 +1193,68 @@
     ]
   },
   {
+    "tokenId": "glassEdgeWidth",
+    "name": "Espessura da Borda do Vidro",
+    "description": "Espessura da borda fina que demarca o contorno de uma superfície de vidro (glassmorphism).",
+    "type": "number",
+    "importance": 35,
+    "categories": [
+      "efeitos",
+      "colors-and-atmosphere",
+      "glassmorphism"
+    ],
+    "tags": [
+      "glass",
+      "edge",
+      "border"
+    ],
+    "databaseColumn": "colors_and_atmosphere",
+    "schemaOrigin": "atmosphere.ts",
+    "digitalTwins": [
+      "DesignInjector"
+    ],
+    "cssVariables": [
+      "--sarak-glass-edge-width"
+    ],
+    "allowedValues": {
+      "min": 0,
+      "max": 8,
+      "step": 1
+    },
+    "relatedTokens": [
+      "glassEdgeColor"
+    ]
+  },
+  {
+    "tokenId": "glassEdgeColor",
+    "name": "Cor da Borda do Vidro",
+    "description": "Cor da borda fina que demarca o contorno de uma superfície de vidro (glassmorphism).",
+    "type": "color",
+    "importance": 35,
+    "categories": [
+      "efeitos",
+      "colors-and-atmosphere",
+      "glassmorphism"
+    ],
+    "tags": [
+      "glass",
+      "edge",
+      "color"
+    ],
+    "databaseColumn": "colors_and_atmosphere",
+    "schemaOrigin": "atmosphere.ts",
+    "digitalTwins": [
+      "DesignInjector"
+    ],
+    "cssVariables": [
+      "--sarak-glass-edge-color"
+    ],
+    "allowedValues": null,
+    "relatedTokens": [
+      "glassEdgeWidth"
+    ]
+  },
+  {
     "tokenId": "shadowIntensity",
     "name": "Intensidade da Sombra",
     "description": "Nível de escuridão/opacidade das sombras (drop-shadows) projetadas por painéis.",

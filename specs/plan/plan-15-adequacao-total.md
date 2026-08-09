@@ -919,6 +919,192 @@ decisão 6 pediu.
 
 ---
 
+## Resumo da execução (lote 8 — Expansão: 13 tokens novos + os 3 elos `*-scaled`) — 2026-08-08
+
+**Resultado:** Concluído. **Meta batida: `hardcoded` 6 → 0 e `ghostvars` 12 → 1** (só o `--x` declarado, intocado).
+
+**Critério de aceite do lote — ZERO PIXEL — provado abaixo, item a item**, com o valor do token novo ao lado
+do fallback que ele substitui.
+
+### Parte 1 — os 7 tokens de dimensão (todos em `navigation.ts`, todos alavanca Valor, sem `isResponsive`)
+
+| Token novo | `defaultValue` | Fallback que ele reproduz | Consumo (`arquivo:linha`) |
+|---|---|---|---|
+| `sidebarCollapsedWidth` | `74` (px) | `'74px'` cru | `SidebarNav.tsx:69` |
+| `sidebarLabelMaxWidth` | `120` (px) | `max-w-[120px]` cru | `SidebarNav.tsx:107` |
+| `topbarCollapsedHeight` | `40` (px) | `'40px'` cru | `TopbarNav.tsx:63` |
+| `brandLogoSizeCollapsed` | `20` (px) | `'20px'` cru | `TopbarNav.tsx:84` |
+| `topbarLabelMaxWidth` | `150` (px) | `max-w-[150px]` cru | `TopbarNav.tsx:104` |
+| `searchDropdownGap` | `0.5` (rem) | `calc(100%+0.5rem)` cru | `ShellSearchWidget.tsx:78` |
+| `searchDropdownWidth` | `400` (px) | `w-[400px]` cru | `ShellSearchWidget.tsx:78` |
+
+Cada consumo virou `var(--sarak-<kebab-id>, <o mesmo literal>)` — mesmo padrão do lote 6/7. `sidebarWidth`/
+`topbarHeight`/`shellBrandLogoSize` (os "modos expandidos" análogos) já eram tokens; estes 7 são os "modos
+recolhidos"/limites de rótulo/dropdown que faltavam.
+
+### Parte 2 — os 6 tokens de fantasma (renomear a fonte, não o consumo)
+
+**Decisão de implementação:** em vez de trocar o nome consumido no `.css`, dei ao token novo o **mesmo**
+`cssVars` que o fantasma já tinha. Resultado: **zero linha tocada em `_atmosphere.css`, `_colors.css`,
+`_typography.css` ou `_utilities.css`** — confira no `git diff --stat` ao final, nenhum dos quatro aparece. O
+nome que já estava certo na tela passou a ter uma fonte real atrás dele.
+
+| Fantasma (inalterado no `.css`) | Token novo | Schema | `defaultValue` | Fallback que ele reproduz |
+|---|---|---|---|---|
+| `--sarak-range-active-bg` (×2, `_utilities.css:83,92`) | `rangeActiveColor` | `inputs.ts` | `'var(--theme-primary)'` | `var(--theme-primary)` — **defaultValue é a MESMA referência de variável**, não uma cópia congelada da cor |
+| `--sarak-glass-edge-width` (`_atmosphere.css:100`) | `glassEdgeWidth` | `atmosphere.ts` | `1` (px) | `1px` |
+| `--sarak-glass-edge-color` (`_atmosphere.css:100`) | `glassEdgeColor` | `atmosphere.ts` | `'rgba(255,255,255,0.1)'` | `rgba(255,255,255,0.1)` |
+| `--sarak-tooltip-text` (`_colors.css:19`) | `tooltipTextColor` | `overlays.ts` | `'#0f172a'` | `#0f172a` |
+| `--sarak-tooltip-border` (`_colors.css:20`) | `tooltipBorderColor` | `overlays.ts` | `'#cbd5e1'` | `#cbd5e1` |
+| `--sarak-h3-size` (`_typography.css:25`) | `h3Size` | `typography.ts` | `24` (px) | `24px` |
+
+**Duas decisões que valem registro:**
+
+1. **`rangeActiveColor.defaultValue = 'var(--theme-primary)'`** — sem precedente no repositório (busquei
+   `defaultValue: 'var(` em todo `schema/`, zero ocorrência antes desta). `COLOR_PATTERN` (`validation.ts`)
+   aceita `var(--x, fallback)` como valor de cor válido, e é a única forma de preservar o comportamento
+   **reativo** que o fantasma já tinha por acidente (a cor do thumb do range segue `--theme-primary` do tema
+   ativo, não um hex congelado do momento em que o token nasceu). Um hex fixo teria sido zero-pixel **hoje** e
+   quebraria na primeira troca de tema.
+2. **`h3Size` NÃO é `isResponsive`, ao contrário de `h1Size`/`h2Size`** (que são, com `{mob,tab,desk}`
+   diferentes entre si). O fallback que ele substitui é um único literal `24px`, sem variação por breakpoint —
+   torná-lo responsivo exigiria inventar 3 valores (mob/tab/desk) onde hoje só existe um, o que **muda pixel**
+   em pelo menos 2 dos 3 breakpoints. Mantive escalar para bater o critério do lote. Ficou inconsistente com os
+   irmãos H1/H2 — é decisão de Configuração para depois, não desta rodada.
+
+### Parte 3 — os 3 elos `*-scaled` em `_base.css:36-43` (achado do revisor, não redirecionamento simples)
+
+| Linha | Antes | Depois | Por quê |
+|---|---|---|---|
+| `--theme-gap` | `var(--theme-gap-scaled, 20px)` | `var(--sarak-layout-gap, 20px)` | `--sarak-layout-gap` é `cssVar` real de `layoutGap` (`system.ts:165`) |
+| `--theme-pad` | `var(--theme-pad-scaled, 1.5rem)` | `var(--sarak-layout-padding, 1.5rem)` | `--sarak-layout-padding` é `cssVar` real de `layoutPadding` (`system.ts:63`) |
+| `--theme-card-padding` | `var(--theme-pad-scaled, 24px)` | `var(--sarak-layout-padding, 24px)` | mesmo elo de `--theme-pad` — é a mesma família "compatibilidade genérica", não um token de card específico (o canal primário de padding de card já é `--sarak-card-padding-md`, via `_cards.css:18`; esta linha é só a segunda camada de fallback) |
+| `--radius-theme` | `var(--theme-radius-scaled, 12px)` | `var(--sarak-border-radius, 12px)` | **caso especial mandado**: `--radius-theme` já é `cssVar` DIRETO do token `borderRadius` (`system.ts:90`) — apontar para si mesma seria circular. Usei `--sarak-border-radius`, o outro `cssVar` do mesmo token |
+
+**As 4 linhas NÃO foram apagadas** — só o nome do meio (o elo fantasma) mudou. Comentário adicionado no
+próprio `_base.css` explicando por que o `--radius-theme` é diferente dos outros três.
+
+🔴 **Achado, registrado, não perseguido nesta rodada:** com o engine montado, `--theme-gap` já é setado
+**diretamente** por `layoutGap.cssVars` (que inclui o próprio `--theme-gap`) via `style` inline — especificidade
+maior que qualquer regra de `_base.css`. Isso significa que esta linha específica só importa para um elemento
+que dependa da cascata de `_base.css` mas esteja **fora** do alcance do `style` inline do `DesignScope` — cenário
+que eu não consegui enumerar com certeza (é assertiva estática sobre a cadeia, não uma varredura de todo
+consumidor de `_base.css`). Segui a instrução ao pé da letra porque ela já veio com a medição do snapshot
+(`--theme-gap`/`--sarak-layout-gap` sempre iguais, em toda entrada do `PreviewCanvas.test.tsx.snap` — conferi:
+22× 24px/24px, 9× 16px/16px, 8× 20px/20px, 3× 32px/32px, zero divergência) — mas declaro a lacuna: não é uma
+prova de que TODO elemento que só existiu através da cascata estática (sem `DesignScope` por cima) vai ver o
+mesmo pixel de hoje, é uma prova de que os elementos DENTRO do `DesignScope` (a esmagadora maioria) veem.
+
+### Parte 4 — as duas pendências herdadas do lote 7
+
+1. **Consertado.** `SarakShellNav.tsx:134` — fallback `28px` → `32px`. Zero pixel: o `defaultValue` do token já
+   é 32 desde o lote 7; isto só alinha o literal-morto que nunca era realmente usado (a variável real sempre
+   vencia) com a realidade, fechando a incoerência de leitura entre os três consumidores.
+2. **Relatado, não consertado — como mandado.** `--sarak-button-active-color` (`_utilities.css:49`) é metadado
+   morto em `manifest.ts:210`: `DESIGN_MANIFEST` declara `.vars`/`.transform` para ele, mas **nada no
+   runtime lê esses campos** — confirmei de novo nesta rodada (`grep -rn "DESIGN_MANIFEST\[" src/` e
+   `grep -rn "\.transform(" src/core/Provider/`, o único consumo de `DESIGN_MANIFEST` continua sendo
+   `Object.keys(...)` em `validation.ts:34`, só para liberar a chave no payload). **Isto é achado de regra que
+   falta** (o `auditor_ghostvars` aceita como "real" um nome que o manifesto *declara* mas o runtime nunca
+   *emite*, porque a expansão do registro para "manifesto" — feita numa calibragem recente — confiou na
+   declaração sem verificar o uso) **e não de código** — não toquei em `manifest.ts` nem em `_utilities.css:49`.
+   Fica como estava: caindo no fallback `var(--theme-primary-active)`, exatamente como no lote 7.
+
+### Verificações executadas
+
+- `npm run audit` (ANTES, estado herdado do lote 7 committed) → `hardcoded: 6` · `ghostvars: 12` ·
+  `sectionpointers: 1` · `composicaoatomica: 47` · demais em 0.
+- `npm run audit` (DEPOIS) → `hardcoded: 0` · `ghostvars: 1` (só `--x`) · `sectionpointers: 1` (inalterado) ·
+  `composicaoatomica: 47` (inalterado, fora de escopo) · demais em 0.
+- `npx tsx gates/scripts/audit/verify_parity.ts` → rodado 2× durante a execução (após Parte 1 e após Parte 2),
+  as duas vezes `✅ SUCESSO ABSOLUTO`: primeiro `416/416/416`, depois `422/422/422` (409 herdados + 13 novos).
+- `npx vitest run` → 1ª rodada: **286 passed / 4 failed** (290 arquivos). Uma falha NÃO era snapshot:
+  `generate-token-types.check.test.mjs` — `design-token-ids.ts` defasado (13 tokens novos, gerador não tinha
+  rodado). `npm run token-types` resolveu; `npm run token-types:check` → `[token-types:check] design-token-ids.ts
+  em dia (422 tokens)`. As outras 3 eram snapshot (mesma família do lote 7 — `className` com o token novo em vez
+  do literal). `npx vitest run -u` → **290 passed / 290, 1012 testes, 100% verde**, 3 snapshots atualizados.
+- `npm run gate-limits:check` → `[OK] Os 26 scripts de gates/scripts/ declaram o que não veem.`
+- `npm run dev-kit` → regenerado (80 componentes, **422 tokens**, 17 gates). `npm run dev-kit:check` → em dia.
+- `node gates/scripts/release/check-audit-baseline.mjs --with-tsc --write` → baseline regravado
+  (`hardcoded: 0`, `ghostvars: 1`, resto inalterado).
+- `node gates/scripts/release/check-audit-baseline.mjs --with-tsc` (pós-write) → `igual ao baseline de
+  2026-08-08 — nenhuma regressão`.
+- `npm run gates:full` → **1ª tentativa: FALHOU** em `guide:check` — `sarak-ui/` (kit do consumidor, também
+  gerado) estava defasado em 4 arquivos pela mesma razão do `dev-kit` (tokens novos). `npm run guide` resolveu
+  (`86 componentes, 422 tokens de tema, 100 ícones`). **2ª tentativa: exit 0**, cadeia completa até
+  `coverage:check`.
+- `coverage:check` reportou **melhora** (68.83%→68.84% statements, 70.66%→70.67% lines) — não bloqueou, mas
+  regravei o piso (`node gates/scripts/release/check-coverage-floor.mjs --write`) pela mesma regra do R8.1 que
+  vale para o baseline de auditoria: piso que sobe se regrava, nunca fica desatualizado silenciosamente.
+- `git diff --stat` → 30 arquivos de fonte/geração (+810/−135) fora do `dist/`, mais 25 arquivos em `dist/`
+  regenerados pelo `build` (rebuild completo, chunks com hash renomeado — mesmo aviso operacional do lote 7).
+
+### Critérios de aceite
+
+- [x] `hardcoded` 6 → 0 — evidência: `npm run audit`, seção VALOR vazia.
+- [x] `ghostvars` 12 → 1 (só `--x`) — evidência: `npm run audit`, lista de fantasmas.
+- [x] **Zero pixel em todo token novo** — evidência: as três tabelas acima, `defaultValue` do token ao lado do
+      fallback substituído, todos idênticos (ou, no caso de `rangeActiveColor`, a mesma referência de variável).
+      Nenhum item precisou de PARE.
+- [x] Cadeia de paridade completa nos 13 tokens (schema + mapping + partição) — evidência:
+      `verify_parity.ts` → `422/422/422` nas duas medições.
+- [x] `--radius-theme` não ficou circular — evidência: usa `--sarak-border-radius`, não `--radius-theme`.
+- [x] As 4 linhas de `_base.css:36-43` não foram apagadas — evidência: `git diff`, são 4 substituições de nome,
+      não remoções.
+- [x] `SarakShellNav.tsx:134` alinhado em 32px — evidência: diff da linha.
+- [x] `--sarak-button-active-color` relatado, não tocado — evidência: `git diff -- src/styles/_utilities.css`
+      vazio; `git diff -- src/core/Provider/manifest.ts` vazio.
+- [x] Nenhum gate alterado — evidência: `git diff --stat -- gates/scripts/` vazio (só os dois baselines, que são
+      dado, não lógica).
+- [x] Baseline e espelhos (`sarak-dev/`, `sarak-ui/`) regravados junto — evidência: os três no mesmo `git status`.
+- [x] `npx vitest run` 100% verde, `gates:full` exit 0 — evidência acima.
+- [x] Nada commitado.
+
+### Decisões e suposições
+
+1. **Onde colocar cada token novo** — os 7 de dimensão foram todos para `navigation.ts` (mesma origem dos
+   tokens irmãos "modo expandido" que já existiam: `sidebarWidth`, `topbarHeight`, `shellBrandLogoSize`). Os 6
+   de Expansão foram para o schema do domínio mais próximo por convenção de nome já existente no arquivo
+   (`glassEdgeWidth/Color` ao lado de `glassBlur/Opacity/Specularity/Roughness/Saturation` em `atmosphere.ts`;
+   `tooltipTextColor/BorderColor` ao lado de `tooltipBg/Radius` em `overlays.ts`; `h3Size` ao lado de
+   `h2Size/h2Weight/h2LineHeight` em `typography.ts`; `rangeActiveColor` é o primeiro token de range slider no
+   catálogo — não havia família, foi para `inputs.ts` por ser o schema mais próximo semanticamente).
+2. **`rangeActiveColor.defaultValue` é uma referência de variável, não um hex** — decisão registrada na Parte 2,
+   é a única forma honesta de preservar o comportamento reativo ao tema que o fantasma já tinha.
+3. **`h3Size` não é responsivo** — decisão registrada na Parte 2, para não inventar 3 valores onde hoje só
+   existe 1 (o que violaria zero-pixel em 2 dos 3 breakpoints).
+4. **`--theme-card-padding` reusa `--sarak-layout-padding`** (o mesmo elo de `--theme-pad`), em vez de apontar
+   para `--sarak-card-padding-md` — porque a linha vive no bloco "ALIASES DE COMPATIBILIDADE" genérico, não é um
+   token de card dedicado, e o canal primário de padding de card (`_cards.css:18`) já resolve via
+   `--sarak-card-padding-md` antes de chegar nesta camada de fallback.
+5. **Corrigi um erro MEU no meio da execução, registrado para transparência**: ao inserir `h3Size` em
+   `catalog/partitions/typography.json`, o primeiro `Edit` casou com o trecho errado do arquivo e sobrescreveu
+   o `relatedTokens` de `h2Weight` (de `["h2Size"]` para `["h1Size"]"`) sem querer, sem inserir nada. Percebi
+   ao reler o arquivo antes de rodar o `verify_parity`, revertive o `relatedTokens` para `["h2Size"]"` e refiz a
+   inserção no lugar certo — `git diff` final confirma que o único delta em `typography.json` é o bloco novo de
+   `h3Size`, nada mais mudou.
+
+### Achados fora do escopo (não corrigidos)
+
+- **`--sarak-button-active-color` é metadado morto** — relatado na Parte 4, não corrigido por mandato explícito.
+- **A lacuna do `--theme-gap`/`--theme-pad`/`--radius-theme` para elementos fora do alcance do `DesignScope`**
+  (Parte 3, achado 🔴) — não enumerei todo consumidor de `_base.css` para provar que nenhum vive fora do
+  `DesignScope`; a prova que tenho é o snapshot do `PreviewCanvas`, que cobre os componentes internos da lib,
+  não necessariamente composições arbitrárias do consumidor.
+- **`h1Size`/`h2Size` são responsivos e `h3Size` não é** — inconsistência de padrão registrada na Parte 2,
+  decisão de Configuração para uma rodada futura, não desta.
+
+### Pendências / riscos
+
+- **`time-tracking`:** ausente nesta sessão — mesma nota de todas as rodadas anteriores.
+- **`specs/00-indice.md` vai divergir de novo** ao mudar o `status` desta plan — mesma mecânica, fora do que o
+  executor corrige.
+- **`sarak-ui/` (kit do consumidor) também precisa ser regenerado quando o token count muda** — não estava
+  documentado nos avisos operacionais desta rodada (só `sarak-dev/` estava); descoberto porque `gates:full`
+  falhou nele na 1ª tentativa. Registrado aqui para a próxima rodada não repetir a surpresa.
+
+---
+
 # 11. Veredito
 
 <!-- Preenchido pelo REVISOR. Append-only. -->
@@ -1079,7 +1265,12 @@ automação visual nesta base ([[01-gates-e-baseline]] §2.6) — não invente u
 
 **Se algum item não bater exatamente, ele não é deste lote:** ⇒ PARE e relate.
 
-## 12.2 Lote 7 — muda a tela, em duas direções opostas  ·  `🔴 A executar`
+## 12.2 Lote 7 — muda a tela, em duas direções opostas  ·  `🟢 EXECUTADO em 2026-08-08`
+
+> ✅ **Entregue e aprovado** (veredito na §11). `hardcoded` **12 → 6**, `ghostvars` **26 → 12**, 14 fantasmas
+> pagos, zero fantasma novo. **Uma pendência ficou aberta** e foi empurrada para o lote 8: o fallback de
+> `SarakShellNav.tsx:134` segue em `28px` enquanto `SidebarNav:87` e `TopbarNav:84` usam `32px` — um token,
+> três consumidores, dois fallbacks.
 
 **Único lote que exige revisão visual do dono antes do commit.**
 
@@ -1126,11 +1317,68 @@ Aprovado em §2.3 #4 e #5. Cada token novo arrasta a cadeia inteira de
 | `searchDropdownWidth` | 400px | `ShellSearchWidget.tsx:78` |
 | `sidebarLabelMaxWidth` | 120px | `SidebarNav.tsx:107` |
 | `topbarLabelMaxWidth` | 150px | `TopbarNav.tsx:104` |
-| *(dos 9 candidatos do lote 4)* | — | **criar 6**; os 3 `*-scaled` redirecionam para `layoutGap*`/`layoutPadding`/`borderRadius` |
-
 > ✅ **A pendência de raio saiu daqui em 2026-08-08.** O dono escolheu **reusar o token de papel** (decisão 6
 > da §2.3), o que muda pixel — então os 4 `rounded-[Nrem]` do `DynamicRenderer` foram para o **lote 7**
 > (§12.2). **Nenhum token de raio novo será criado**; este lote é só Expansão de verdade.
+
+### Os 12 fantasmas restantes, localizados (medidos pelo revisor em 2026-08-08)
+
+**Todos têm fallback funcional hoje.** Se o token novo nascer com o valor do fallback atual, **este lote não
+muda pixel nenhum** — é a diferença entre "criar token" e "trocar valor". Vale como critério de aceite.
+
+| Consumo (`arquivo:linha`) | Fantasma | Fallback de hoje |
+|---|---|---|
+| `_utilities.css:83` · `:92` | `--sarak-range-active-bg` ×2 | `var(--theme-primary)` |
+| `_atmosphere.css:100` | `--sarak-glass-edge-width` | `1px` |
+| `_atmosphere.css:100` | `--sarak-glass-edge-color` | `rgba(255,255,255,0.1)` |
+| `_colors.css:19` | `--sarak-tooltip-text` | `#0f172a` |
+| `_colors.css:20` | `--sarak-tooltip-border` | `#cbd5e1` |
+| `_typography.css:25` | `--sarak-h3-size` | `24px` |
+| `_base.css:38` · `:40` | `--theme-pad-scaled` ×2 | `1.5rem` / `24px` *(iguais)* |
+| `_base.css:37` | `--theme-gap-scaled` | `20px` |
+| `_base.css:39` | `--theme-radius-scaled` | `12px` |
+| — | `--x` | já declarado como caso à parte |
+
+### 🔴 O achado que muda o desenho deste lote — os 3 `*-scaled` NÃO são "criar token"
+
+A plan dizia *"os 3 `*-scaled` redirecionam para `layoutGap`/`layoutPadding`/`borderRadius`"*. **Medindo, o
+problema é outro e maior:** essas três variáveis **já são emitidas pelo Design Engine**, com valor por tema —
+confirmado no snapshot do `PreviewCanvas` (`--theme-gap: 16px|20px`, `--radius-theme: 0px|10px`,
+`--sarak-layout-padding: 16px|20px`, `--sarak-layout-gap: 16px|20px`, `--border-radius: 0px|10px`).
+
+O bloco `body { }` de `_base.css:36-40` — rotulado *"ALIASES DE COMPATIBILIDADE"* — **redefine** `--theme-gap`,
+`--theme-pad`, `--radius-theme` e `--theme-card-padding` em termos de nomes que **não existem**:
+
+```css
+--theme-gap:          var(--theme-gap-scaled, 20px);      /* engine já emite --sarak-layout-gap */
+--theme-pad:          var(--theme-pad-scaled, 1.5rem);    /* engine já emite --sarak-layout-padding */
+--radius-theme:       var(--theme-radius-scaled, 12px);   /* engine já emite --radius-theme DIRETO */
+--theme-card-padding: var(--theme-pad-scaled, 24px);
+```
+
+**Não delete as linhas.** Elas são a camada de compatibilidade para quem usa a lib **sem** o Design Engine
+montado — aí não há valor inline nenhum e o literal é o único piso. O conserto é **apontar a cadeia para a
+variável REAL do mesmo conceito, mantendo o literal como último fallback**:
+
+```css
+--theme-gap: var(--sarak-layout-gap, 20px);
+```
+
+Com o engine: a variável real vence. Sem o engine: cai no mesmo literal de hoje. **Zero pixel nos dois casos** —
+e é a única saída que preserva as duas situações.
+
+> ⚠️ **`--radius-theme` é o caso especial:** o engine emite `--radius-theme` **diretamente** (é `cssVar` do
+> token `borderRadius`, `system.ts:81`). Redefini-la em termos de si mesma é circular. Escolha outro `cssVar`
+> do mesmo token (`--sarak-border-radius` ou `--border-radius`) como elo, ou justifique a alternativa.
+
+### Pendências herdadas do lote 7 — entram neste
+
+1. **`SarakShellNav.tsx:134`** — fallback `28px` para `--sarak-shell-brand-logo-size`, enquanto `SidebarNav:87`
+   e `TopbarNav:84` usam `32px`. Um token, três consumidores, dois fallbacks. **Alinhar em 32px.**
+2. **`--sarak-button-active-color` é metadado morto** — declarado em `manifest.ts:210`, **0 emissões** no
+   snapshot do `PreviewCanvas`. Consumido em `_utilities.css:49`. O `auditor_ghostvars` **não o vê** porque
+   aceita nome que o manifesto declara mas o runtime nunca emite. É achado de **regra que falta**, não de
+   código: relatar, não consertar por conta própria.
 
 ## 12.4 Lote 9 — R10, composição atômica  ·  `🔴 A executar`
 

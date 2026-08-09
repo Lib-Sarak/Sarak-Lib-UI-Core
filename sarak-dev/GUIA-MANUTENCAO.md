@@ -298,11 +298,11 @@ depois acrescente o fluxo — nunca deixe o próximo redescobrir.
 | Fonte | Medida | Valor |
 | --- | --- | --- |
 | `catalog/theme_table_mapping.json` | colunas | 13 |
-| `catalog/theme_table_mapping.json` | entradas brutas | 409 |
-| `catalog/theme_table_mapping.json` | **ids únicos** | **409** |
+| `catalog/theme_table_mapping.json` | entradas brutas | 422 |
+| `catalog/theme_table_mapping.json` | **ids únicos** | **422** |
 | `catalog/partitions/` | arquivos | 13 |
-| `catalog/partitions/` | tokens | 409 |
-| `SarakDesignTokens` (tipo público) | ids | 409 |
+| `catalog/partitions/` | tokens | 422 |
+| `SarakDesignTokens` (tipo público) | ids | 422 |
 | `SarakDesignTokens` (tipo público) | responsivos | 40 |
 
 > Os quatro números têm de convergir. `idsUnicos` é o total real; `entradasBrutas` maior que ele significa id roteado para mais de uma coluna. `tipoPublico` menor significa que `design-token-ids.ts` está DEFASADO (regenere com o script do §2 do guia).
@@ -347,9 +347,9 @@ depois acrescente o fluxo — nunca deixe o próximo redescobrir.
 
 | Auditor | Métrica | Máximo tolerado |
 | --- | --- | --- |
-| `auditor_hardcoded.mjs` | valor | **6** |
+| `auditor_hardcoded.mjs` | valor | **0** |
 | `auditor_hardcoded.mjs` | estruturalLiquido | **0** |
-| `auditor_ghostvars.mjs` | consumos | **12** |
+| `auditor_ghostvars.mjs` | consumos | **1** |
 | `auditor_typescript.mjs` | violacoes | **0** |
 | `auditor_coverage.mjs` | orfaos | **0** |
 | `auditor_arquitetura.mjs` | violacoes | **0** |

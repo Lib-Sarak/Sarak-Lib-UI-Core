@@ -57,6 +57,28 @@ export const NavigationSchema: ComponentSchema = {
             cssVars: ['--sarak-shell-brand-logo-size']
         },
         {
+            id: 'sidebarCollapsedWidth',
+            label: 'Largura da Sidebar (Recolhida)',
+            type: 'slider',
+            description: 'Largura, em pixels, da sidebar quando está no modo recolhido (só ícones, sem rótulo de texto) — independente de `sidebarWidth`, que só vale no modo expandido.',
+            axis: 'geometry',
+            unit: 'px',
+            constraints: { min: 48, max: 100 },
+            defaultValue: 74,
+            cssVars: ['--sarak-sidebar-collapsed-width']
+        },
+        {
+            id: 'sidebarLabelMaxWidth',
+            label: 'Largura Máxima do Rótulo (Sidebar)',
+            type: 'slider',
+            description: 'Largura máxima, em pixels, do texto de nome do sistema exibido no cabeçalho da sidebar — acima desse limite o texto trunca com reticências, para não invadir o botão de recolher.',
+            axis: 'geometry',
+            unit: 'px',
+            constraints: { min: 60, max: 240 },
+            defaultValue: 120,
+            cssVars: ['--sarak-sidebar-label-max-width']
+        },
+        {
             id: 'sidebarMinWidth',
             label: 'Largura Mínima da Sidebar',
             type: 'slider',
@@ -146,6 +168,28 @@ export const NavigationSchema: ComponentSchema = {
             cssVars: ['--topbar-height', '--sarak-topbar-height', '--theme-topbar-height']
         },
         {
+            id: 'topbarCollapsedHeight',
+            label: 'Altura da Topbar (Recolhida)',
+            type: 'slider',
+            description: 'Altura, em pixels, da topbar quando está no modo recolhido (hover-to-expand) — independente de `topbarHeight`, que só vale no modo expandido.',
+            axis: 'geometry',
+            unit: 'px',
+            constraints: { min: 24, max: 56 },
+            defaultValue: 40,
+            cssVars: ['--sarak-topbar-collapsed-height']
+        },
+        {
+            id: 'brandLogoSizeCollapsed',
+            label: 'Altura do Logo da Marca (Recolhida)',
+            type: 'slider',
+            description: 'Altura, em pixels, do logo da marca no cabeçalho do shell quando a navegação está no modo recolhido — independente de `shellBrandLogoSize`, que só vale no modo expandido.',
+            axis: 'geometry',
+            unit: 'px',
+            constraints: { min: 12, max: 32 },
+            defaultValue: 20,
+            cssVars: ['--sarak-brand-logo-size-collapsed']
+        },
+        {
             id: 'topbarColor',
             label: 'Cor da Topbar (Fundo)',
             type: 'color',
@@ -190,6 +234,17 @@ export const NavigationSchema: ComponentSchema = {
             axis: 'color',
             defaultValue: '#ffffff',
             cssVars: ['--sarak-topbar-title-color']
+        },
+        {
+            id: 'topbarLabelMaxWidth',
+            label: 'Largura Máxima do Rótulo (Topbar)',
+            type: 'slider',
+            description: 'Largura máxima, em pixels, do texto de nome do sistema exibido na topbar — acima desse limite o texto trunca com reticências, para não invadir os itens de menu vizinhos.',
+            axis: 'geometry',
+            unit: 'px',
+            constraints: { min: 60, max: 300 },
+            defaultValue: 150,
+            cssVars: ['--sarak-topbar-label-max-width']
         },
         // --- SEÇÕES E TABS ---
         {
@@ -310,6 +365,28 @@ export const NavigationSchema: ComponentSchema = {
                 ]
             },
             defaultValue: 'top'
+        },
+        {
+            id: 'searchDropdownGap',
+            label: 'Espaço do Dropdown de Busca',
+            type: 'slider',
+            description: 'Distância, em `rem`, entre o campo de busca da topbar e o dropdown de resultados que aparece abaixo dele.',
+            axis: 'geometry',
+            unit: 'rem',
+            constraints: { min: 0, max: 2 },
+            defaultValue: 0.5,
+            cssVars: ['--sarak-search-dropdown-gap']
+        },
+        {
+            id: 'searchDropdownWidth',
+            label: 'Largura do Dropdown de Busca',
+            type: 'slider',
+            description: 'Largura, em pixels, do painel de resultados exibido abaixo do campo de busca da topbar.',
+            axis: 'geometry',
+            unit: 'px',
+            constraints: { min: 240, max: 600 },
+            defaultValue: 400,
+            cssVars: ['--sarak-search-dropdown-width']
         }
     ]
 };

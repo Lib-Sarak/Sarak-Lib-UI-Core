@@ -422,6 +422,39 @@
     ]
   },
   {
+    "tokenId": "h3Size",
+    "name": "Tamanho (H3)",
+    "description": "Tamanho da fonte de subtítulos (H3), terceiro nível da hierarquia tipográfica.",
+    "type": "number",
+    "importance": 70,
+    "categories": [
+      "geometria",
+      "tipografia",
+      "typography"
+    ],
+    "tags": [
+      "size",
+      "h3",
+      "heading"
+    ],
+    "databaseColumn": "typography",
+    "schemaOrigin": "typography.ts",
+    "digitalTwins": [
+      "DesignInjector"
+    ],
+    "cssVariables": [
+      "--sarak-h3-size"
+    ],
+    "allowedValues": {
+      "min": 14,
+      "max": 48,
+      "step": 1
+    },
+    "relatedTokens": [
+      "h2Size"
+    ]
+  },
+  {
     "tokenId": "bodyLineHeight",
     "name": "Altura da Linha (Corpo)",
     "description": "Espaçamento vertical que garante a legibilidade ótima do texto em parágrafos normais.",

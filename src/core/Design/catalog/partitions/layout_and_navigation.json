@@ -192,6 +192,72 @@
     ]
   },
   {
+    "tokenId": "sidebarCollapsedWidth",
+    "name": "Largura da Sidebar (Recolhida)",
+    "description": "Largura da sidebar quando está no modo recolhido (só ícones, sem rótulo de texto).",
+    "type": "number",
+    "importance": 60,
+    "categories": [
+      "geometria",
+      "layout",
+      "layout_and_navigation"
+    ],
+    "tags": [
+      "sidebar",
+      "width",
+      "collapsed"
+    ],
+    "databaseColumn": "layout_and_navigation",
+    "schemaOrigin": "navigation.ts",
+    "digitalTwins": [
+      "SidebarNav"
+    ],
+    "cssVariables": [
+      "--sarak-sidebar-collapsed-width"
+    ],
+    "allowedValues": {
+      "min": 48,
+      "max": 100,
+      "step": 1
+    },
+    "relatedTokens": [
+      "sidebarWidth"
+    ]
+  },
+  {
+    "tokenId": "sidebarLabelMaxWidth",
+    "name": "Largura Máxima do Rótulo (Sidebar)",
+    "description": "Largura máxima do texto de nome do sistema exibido no cabeçalho da sidebar antes de truncar.",
+    "type": "number",
+    "importance": 40,
+    "categories": [
+      "geometria",
+      "layout",
+      "layout_and_navigation"
+    ],
+    "tags": [
+      "sidebar",
+      "label",
+      "truncate"
+    ],
+    "databaseColumn": "layout_and_navigation",
+    "schemaOrigin": "navigation.ts",
+    "digitalTwins": [
+      "SidebarNav"
+    ],
+    "cssVariables": [
+      "--sarak-sidebar-label-max-width"
+    ],
+    "allowedValues": {
+      "min": 60,
+      "max": 240,
+      "step": 1
+    },
+    "relatedTokens": [
+      "sidebarWidth"
+    ]
+  },
+  {
     "tokenId": "sidebarMinWidth",
     "name": "Largura Mínima da Sidebar",
     "description": "Limita o tamanho mínimo da barra lateral ao ser redimensionada.",
@@ -415,6 +481,73 @@
     ]
   },
   {
+    "tokenId": "topbarCollapsedHeight",
+    "name": "Altura da Topbar (Recolhida)",
+    "description": "Altura do cabeçalho de navegação quando está no modo recolhido (hover-to-expand).",
+    "type": "number",
+    "importance": 55,
+    "categories": [
+      "geometria",
+      "layout",
+      "layout_and_navigation"
+    ],
+    "tags": [
+      "topbar",
+      "height",
+      "collapsed"
+    ],
+    "databaseColumn": "layout_and_navigation",
+    "schemaOrigin": "navigation.ts",
+    "digitalTwins": [
+      "TopbarNav"
+    ],
+    "cssVariables": [
+      "--sarak-topbar-collapsed-height"
+    ],
+    "allowedValues": {
+      "min": 24,
+      "max": 56,
+      "step": 1
+    },
+    "relatedTokens": [
+      "topbarHeight"
+    ]
+  },
+  {
+    "tokenId": "brandLogoSizeCollapsed",
+    "name": "Altura do Logo da Marca (Recolhida)",
+    "description": "Altura do logo da marca no cabeçalho do shell quando a navegação está no modo recolhido.",
+    "type": "number",
+    "importance": 40,
+    "categories": [
+      "geometria",
+      "layout",
+      "layout_and_navigation"
+    ],
+    "tags": [
+      "brand",
+      "logo",
+      "size",
+      "collapsed"
+    ],
+    "databaseColumn": "layout_and_navigation",
+    "schemaOrigin": "navigation.ts",
+    "digitalTwins": [
+      "TopbarNav"
+    ],
+    "cssVariables": [
+      "--sarak-brand-logo-size-collapsed"
+    ],
+    "allowedValues": {
+      "min": 12,
+      "max": 32,
+      "step": 1
+    },
+    "relatedTokens": [
+      "shellBrandLogoSize"
+    ]
+  },
+  {
     "tokenId": "topbarColor",
     "name": "Cor da Topbar (Fundo)",
     "description": "Cor de fundo base do cabeçalho superior de navegação.",
@@ -564,6 +697,39 @@
     "allowedValues": null,
     "relatedTokens": [
       "topbarColor"
+    ]
+  },
+  {
+    "tokenId": "topbarLabelMaxWidth",
+    "name": "Largura Máxima do Rótulo (Topbar)",
+    "description": "Largura máxima do texto de nome do sistema exibido na topbar antes de truncar.",
+    "type": "number",
+    "importance": 40,
+    "categories": [
+      "geometria",
+      "layout",
+      "layout_and_navigation"
+    ],
+    "tags": [
+      "topbar",
+      "label",
+      "truncate"
+    ],
+    "databaseColumn": "layout_and_navigation",
+    "schemaOrigin": "navigation.ts",
+    "digitalTwins": [
+      "TopbarNav"
+    ],
+    "cssVariables": [
+      "--sarak-topbar-label-max-width"
+    ],
+    "allowedValues": {
+      "min": 60,
+      "max": 300,
+      "step": 1
+    },
+    "relatedTokens": [
+      "topbarHeight"
     ]
   },
   {
@@ -854,6 +1020,72 @@
     ],
     "relatedTokens": [
       "searchPositionTopbar"
+    ]
+  },
+  {
+    "tokenId": "searchDropdownGap",
+    "name": "Espaço do Dropdown de Busca",
+    "description": "Distância entre o campo de busca da topbar e o dropdown de resultados exibido abaixo dele.",
+    "type": "number",
+    "importance": 35,
+    "categories": [
+      "geometria",
+      "layout",
+      "layout_and_navigation"
+    ],
+    "tags": [
+      "search",
+      "dropdown",
+      "gap"
+    ],
+    "databaseColumn": "layout_and_navigation",
+    "schemaOrigin": "navigation.ts",
+    "digitalTwins": [
+      "ShellSearchWidget"
+    ],
+    "cssVariables": [
+      "--sarak-search-dropdown-gap"
+    ],
+    "allowedValues": {
+      "min": 0,
+      "max": 2,
+      "step": 0.1
+    },
+    "relatedTokens": [
+      "searchDropdownWidth"
+    ]
+  },
+  {
+    "tokenId": "searchDropdownWidth",
+    "name": "Largura do Dropdown de Busca",
+    "description": "Largura do painel de resultados exibido abaixo do campo de busca da topbar.",
+    "type": "number",
+    "importance": 45,
+    "categories": [
+      "geometria",
+      "layout",
+      "layout_and_navigation"
+    ],
+    "tags": [
+      "search",
+      "dropdown",
+      "width"
+    ],
+    "databaseColumn": "layout_and_navigation",
+    "schemaOrigin": "navigation.ts",
+    "digitalTwins": [
+      "ShellSearchWidget"
+    ],
+    "cssVariables": [
+      "--sarak-search-dropdown-width"
+    ],
+    "allowedValues": {
+      "min": 240,
+      "max": 600,
+      "step": 1
+    },
+    "relatedTokens": [
+      "searchDropdownGap"
     ]
   },
   {

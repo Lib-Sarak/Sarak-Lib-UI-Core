@@ -60,7 +60,7 @@ export const TopbarNav: React.FC<TopbarNavProps> = ({
             style={{
                 margin: `var(--theme-tab-section-margin, ${tabSectionMargin ?? 12}px)`,
                 borderRadius: `var(--radius-theme, ${borderRadius ?? 12}px)`,
-                height: effectiveIsNavHidden ? '40px' : `${topbarHeight || 64}px`,
+                height: effectiveIsNavHidden ? 'var(--sarak-topbar-collapsed-height, 40px)' : `${topbarHeight || 64}px`,
                 backgroundColor: 'var(--theme-topbar-bg)',
                 transition: 'all 0.4s cubic-bezier(0.4, 0, 0.2, 1)',
                 border: `var(--border-width, 1px) solid var(--theme-border)`,
@@ -81,7 +81,7 @@ export const TopbarNav: React.FC<TopbarNavProps> = ({
 
                         <div className={`flex items-center gap-3 ${!effectiveIsNavHidden ? 'pr-6 border-r border-[var(--theme-border)]' : ''} shrink-0`}>
                             {logoUrl ? (
-                                <div style={{ height: effectiveIsNavHidden ? '20px' : 'var(--sarak-shell-brand-logo-size, 32px)', display: 'flex', alignItems: 'center' }}>
+                                <div style={{ height: effectiveIsNavHidden ? 'var(--sarak-brand-logo-size-collapsed, 20px)' : 'var(--sarak-shell-brand-logo-size, 32px)', display: 'flex', alignItems: 'center' }}>
                                     {isVideo(activeLogo) ? (
                                         <video
                                             src={activeLogo}
@@ -101,7 +101,7 @@ export const TopbarNav: React.FC<TopbarNavProps> = ({
                             ) : (
                                 <div className={`${effectiveIsNavHidden ? 'w-6 h-6 text-2xs' : 'w-8 h-8 text-xs'} rounded-lg bg-[var(--theme-primary)] flex items-center justify-center font-bold shrink-0`}>S</div>
                             )}
-                            {!effectiveIsNavHidden && <span className="font-black tracking-tighter text-sm uppercase italic truncate max-w-[150px]">{systemName || brand.name}</span>}
+                            {!effectiveIsNavHidden && <span className="font-black tracking-tighter text-sm uppercase italic truncate max-w-[var(--sarak-topbar-label-max-width,150px)]">{systemName || brand.name}</span>}
                         </div>
                         {searchPos === 'left' && renderSearch()}
                     </div>

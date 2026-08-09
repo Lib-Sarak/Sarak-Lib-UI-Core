@@ -279,6 +279,62 @@
     ]
   },
   {
+    "tokenId": "tooltipTextColor",
+    "name": "Texto do Tooltip",
+    "description": "Cor do texto exibido dentro da caixa de dica flutuante (Tooltip).",
+    "type": "color",
+    "importance": 45,
+    "categories": [
+      "cores",
+      "overlays"
+    ],
+    "tags": [
+      "tooltip",
+      "text",
+      "color"
+    ],
+    "databaseColumn": "components_base",
+    "schemaOrigin": "overlays.ts",
+    "digitalTwins": [
+      "SarakTooltip"
+    ],
+    "cssVariables": [
+      "--sarak-tooltip-text"
+    ],
+    "allowedValues": null,
+    "relatedTokens": [
+      "tooltipBg"
+    ]
+  },
+  {
+    "tokenId": "tooltipBorderColor",
+    "name": "Borda do Tooltip",
+    "description": "Cor da borda da caixa de dica flutuante (Tooltip).",
+    "type": "color",
+    "importance": 30,
+    "categories": [
+      "cores",
+      "overlays"
+    ],
+    "tags": [
+      "tooltip",
+      "border",
+      "color"
+    ],
+    "databaseColumn": "components_base",
+    "schemaOrigin": "overlays.ts",
+    "digitalTwins": [
+      "SarakTooltip"
+    ],
+    "cssVariables": [
+      "--sarak-tooltip-border"
+    ],
+    "allowedValues": null,
+    "relatedTokens": [
+      "tooltipBg"
+    ]
+  },
+  {
     "tokenId": "tableHeaderBg",
     "name": "Fundo do Cabeçalho da Tabela",
     "description": "Cor de fundo para a primeira linha (cabeçalho) de tabelas e grids de dados.",
@@ -1443,5 +1499,12 @@
     "type": "number",
     "defaultValue": 8,
     "cssVars": ["--sarak-search-backdrop-blur"]
+  },
+  {
+    "tokenId": "rangeActiveColor",
+    "label": "Range Slider: Cor Ativa",
+    "type": "color",
+    "defaultValue": "var(--theme-primary)",
+    "cssVars": ["--sarak-range-active-bg"]
   }
 ]

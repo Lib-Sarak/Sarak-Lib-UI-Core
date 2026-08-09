@@ -291,6 +291,26 @@ export const AtmosphereSchema: ComponentSchema = {
             defaultValue: 1.2,
             cssVars: ['--sarak-glass-saturation']
         },
+        {
+            id: 'glassEdgeWidth',
+            label: 'Espessura da Borda do Vidro',
+            type: 'slider',
+            description: 'Espessura, em pixels, da borda fina que demarca o contorno de uma superfície de vidro (glassmorphism) — reforça a leitura do plano translúcido contra o que está atrás dele.',
+            axis: 'elevation',
+            unit: 'px',
+            constraints: { min: 0, max: 8 },
+            defaultValue: 1,
+            cssVars: ['--sarak-glass-edge-width']
+        },
+        {
+            id: 'glassEdgeColor',
+            label: 'Cor da Borda do Vidro',
+            type: 'color',
+            description: 'Cor da borda fina que demarca o contorno de uma superfície de vidro (glassmorphism) — normalmente branco translúcido, para simular a refração de luz na borda do material.',
+            axis: 'color',
+            defaultValue: 'rgba(255,255,255,0.1)',
+            cssVars: ['--sarak-glass-edge-color']
+        },
 
         // --- SOMBRAS E ELEVAÇÃO ---
         {

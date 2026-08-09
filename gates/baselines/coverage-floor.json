@@ -1,6 +1,6 @@
 {
     "_doc": "Piso móvel de R8.1 (specs/specs/00-regras-e-invariantes.md). NÃO editar à mão: rode `npm run coverage:check -- --write` DEPOIS de medir, e commite junto.",
     "_leitura": "`linesPct` é o MÍNIMO tolerado. Menor que isto = regressão = bloqueio.",
-    "medidoEm": "2026-08-05",
-    "linesPct": 70.66
+    "medidoEm": "2026-08-08",
+    "linesPct": 70.67
 }

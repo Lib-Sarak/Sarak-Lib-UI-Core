@@ -93,6 +93,24 @@ export const OverlaysSchema: ComponentSchema = {
             defaultValue: 4,
             cssVars: ['--sarak-tooltip-radius']
         },
+        {
+            id: 'tooltipTextColor',
+            label: 'Texto do Tooltip',
+            type: 'color',
+            description: 'Cor do texto exibido dentro da caixa de tooltip — deve manter contraste alto contra `tooltipBg`.',
+            axis: 'color',
+            defaultValue: '#0f172a',
+            cssVars: ['--sarak-tooltip-text']
+        },
+        {
+            id: 'tooltipBorderColor',
+            label: 'Borda do Tooltip',
+            type: 'color',
+            description: 'Cor da borda da caixa de tooltip — costuma ser sutil, só para separar o tooltip visualmente do que está atrás dele.',
+            axis: 'color',
+            defaultValue: '#cbd5e1',
+            cssVars: ['--sarak-tooltip-border']
+        },
 
         // --- TOAST (Spec 27) ---
         {

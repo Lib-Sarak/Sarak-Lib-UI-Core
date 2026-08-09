@@ -95,6 +95,7 @@ interface SarakDesignTokens {
     borderStyle: string;
     borderType: string;
     borderWidth: number;
+    brandLogoSizeCollapsed: number;
     breakpointDesktop: number;
     breakpointTablet: number;
     btnActiveScale: number;
@@ -231,6 +232,8 @@ interface SarakDesignTokens {
     formLabelPosition: string;
     formLayoutDirection: string;
     glassBlur: number;
+    glassEdgeColor: string;
+    glassEdgeWidth: number;
     glassOpacity: number;
     glassRoughness: number;
     glassSaturation: number;
@@ -251,6 +254,7 @@ interface SarakDesignTokens {
     h2LineHeight: number;
     h2Size: number | ResponsiveValue<number>;
     h2Weight: string;
+    h3Size: number;
     headerAlignment: string;
     headingFont: string;
     headingTransform: string;
@@ -362,6 +366,7 @@ interface SarakDesignTokens {
     presetPreviewPaddingY: number;
     primaryColor: string;
     progressBarMaxWidth: number;
+    rangeActiveColor: string;
     reducedMotion: boolean;
     scrollbarThumbColor: string;
     scrollbarWidth: number | ResponsiveValue<number>;
@@ -373,6 +378,8 @@ interface SarakDesignTokens {
     scrollTrackOpacity: number;
     scrollWidth: number | ResponsiveValue<number>;
     searchBackdropBlur: number;
+    searchDropdownGap: number;
+    searchDropdownWidth: number;
     searchPositionSidebar: string;
     searchPositionTopbar: string;
     secondaryColor: string;
@@ -387,8 +394,10 @@ interface SarakDesignTokens {
     shellBrandLogoSize: number;
     sidebarActiveColor: string;
     sidebarBlur: number;
+    sidebarCollapsedWidth: number;
     sidebarColor: string;
     sidebarHoverColor: string;
+    sidebarLabelMaxWidth: number;
     sidebarMaxWidth: number | ResponsiveValue<number>;
     sidebarMinWidth: number | ResponsiveValue<number>;
     sidebarNoiseOpacity: number;
@@ -439,11 +448,15 @@ interface SarakDesignTokens {
     toastMaxWidth: number;
     toastMinWidth: number;
     tooltipBg: string;
+    tooltipBorderColor: string;
     tooltipRadius: number;
+    tooltipTextColor: string;
     topbarActiveColor: string;
+    topbarCollapsedHeight: number;
     topbarColor: string;
     topbarHeight: number | ResponsiveValue<number>;
     topbarHoverColor: string;
+    topbarLabelMaxWidth: number;
     topbarNoiseOpacity: number;
     topbarTitleColor: string;
     trackingSnug: number;

@@ -33,11 +33,16 @@ body {
   --theme-accent-hover: var(--theme-accent-hover, color-mix(in srgb, var(--accent-color), #000 10%));
   --theme-accent-active: var(--theme-accent-active, color-mix(in srgb, var(--accent-color), #000 20%));
 
-  /* Engine de Geometria Escalonada (v8.5) */
-  --theme-gap: var(--theme-gap-scaled, 20px);
-  --theme-pad: var(--theme-pad-scaled, 1.5rem);
-  --radius-theme: var(--theme-radius-scaled, 12px);
-  --theme-card-padding: var(--theme-pad-scaled, 24px);
+  /* Engine de Geometria Escalonada (v8.5) — piso para quem usa a lib SEM o Design
+     Engine montado. Com engine: a variável real do mesmo conceito vence (é ela que
+     o `useDesignVariables.ts` injeta com especificidade maior). Sem engine: cai no
+     mesmo literal de sempre. `--radius-theme` usa `--sarak-border-radius` (não a si
+     mesma) porque o token `borderRadius` já emite `--radius-theme` diretamente
+     (`system.ts:90`) — apontar para o próprio nome seria circular. */
+  --theme-gap: var(--sarak-layout-gap, 20px);
+  --theme-pad: var(--sarak-layout-padding, 1.5rem);
+  --radius-theme: var(--sarak-border-radius, 12px);
+  --theme-card-padding: var(--sarak-layout-padding, 24px);
   
   background-color: var(--bg-body) !important;
   color: var(--text-main);

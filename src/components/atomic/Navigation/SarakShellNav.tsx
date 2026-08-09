@@ -131,7 +131,7 @@ export const SarakShellNav: React.FC<SarakShellNavProps> = ({
                             src={brand.logoUrl}
                             alt={brand.name ?? 'Logo'}
                             className="object-contain"
-                            style={{ height: 'var(--sarak-shell-brand-logo-size, 28px)' }}
+                            style={{ height: 'var(--sarak-shell-brand-logo-size, 32px)' }}
                         />
                     ) : null}
                     {brand.name ? (

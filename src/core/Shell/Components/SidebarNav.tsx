@@ -66,7 +66,7 @@ export const SidebarNav: React.FC<SidebarNavProps> = ({
                 setIsHovered(false);
             }}
             style={{
-                width: isMobileDrawer ? '100%' : (effectiveIsNavHidden ? '74px' : `${sidebarWidth || 240}px`),
+                width: isMobileDrawer ? '100%' : (effectiveIsNavHidden ? 'var(--sarak-sidebar-collapsed-width, 74px)' : `${sidebarWidth || 240}px`),
                 opacity: 1,
                 visibility: 'visible',
                 transition: `width ${animationSpeed || 0.4}s cubic-bezier(0.16, 1, 0.3, 1), transform ${animationSpeed || 0.4}s ease`,
@@ -104,7 +104,7 @@ export const SidebarNav: React.FC<SidebarNavProps> = ({
                         ) : (
                             <div className="w-8 h-8 rounded-[var(--radius-theme)] bg-gradient-to-br from-[var(--theme-primary)] to-[var(--theme-primary-rgb),0.5] flex items-center justify-center font-black text-xs text-[var(--theme-on-primary)] shrink-0">S</div>
                         )}
-                        <span className="text-sm font-bold tracking-tighter opacity-80 text-[var(--theme-title)] truncate max-w-[120px]">{systemName || brand.name}</span>
+                        <span className="text-sm font-bold tracking-tighter opacity-80 text-[var(--theme-title)] truncate max-w-[var(--sarak-sidebar-label-max-width,120px)]">{systemName || brand.name}</span>
                     </div>
                 )}
 
