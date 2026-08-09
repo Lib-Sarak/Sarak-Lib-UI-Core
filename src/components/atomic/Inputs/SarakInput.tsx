@@ -1,5 +1,5 @@
 import React, { InputHTMLAttributes, useId, useState } from 'react';
-import { useSarakUI } from '../../../core/Provider/SarakUIProvider';
+import { useSarakUIOptional } from '../../../core/Provider/SarakUIProvider';
 import { useAtomicStyles } from '../hooks/useAtomicStyles';
 import { useStructuralStyles } from '../hooks/useStructuralStyles';
 import { SarakFormGroup } from '../Layouts/SarakFormGroup';
@@ -29,7 +29,8 @@ export const SarakInput: React.FC<SarakInputProps> = ({
     style,
     ...props
 }) => {
-    const { design } = useSarakUI();
+    // Átomo: tolera montar sem SarakUIProvider (Spec 18 — R10 §2.3), usa o default abaixo.
+    const design = useSarakUIOptional()?.design;
     const { getInputStyles } = useAtomicStyles();
     const { getInputIconStyles } = useStructuralStyles();
     const { iconPositionClass, isIconRight } = getInputIconStyles();

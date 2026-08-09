@@ -4,9 +4,10 @@ import '@testing-library/jest-dom';
 import { describe, it, expect, vi } from 'vitest';
 import { MockChat } from '../ChatMock';
 
-vi.mock('../../../../../core/Provider/SarakUIProvider', () => ({
-    useSarakUI: vi.fn(() => ({ mode: 'dark', branding: {} }))
-}));
+vi.mock('../../../../../core/Provider/SarakUIProvider', () => {
+    const useSarakUI = vi.fn(() => ({ mode: 'dark', branding: {} }));
+    return { useSarakUI, useSarakUIOptional: useSarakUI };
+});
 
 vi.mock('framer-motion', async () => {
     const actual = await vi.importActual('framer-motion');

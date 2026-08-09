@@ -4,9 +4,10 @@ import '@testing-library/jest-dom';
 import { describe, it, expect, vi } from 'vitest';
 import { MockDashboard } from '../DashboardMock';
 
-vi.mock('../../../../../core/Provider/SarakUIProvider', () => ({
-    useSarakUI: vi.fn(() => ({ mode: 'dark', branding: {} }))
-}));
+vi.mock('../../../../../core/Provider/SarakUIProvider', () => {
+    const useSarakUI = vi.fn(() => ({ mode: 'dark', branding: {} }));
+    return { useSarakUI, useSarakUIOptional: useSarakUI };
+});
 
 // O DashboardMock usa useDesignVariables internamente
 vi.mock('../../../../../core/Design/hooks/useDesignVariables', () => ({

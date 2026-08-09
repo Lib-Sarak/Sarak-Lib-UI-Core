@@ -46,36 +46,43 @@ export const DesignOverrideContext = createContext<Partial<SarakThemePayload> | 
 // o guard em `useDesignSync` é a correção definitiva; isto é só o default seguro.
 const EMPTY_CUSTOM_THEMES: ThemeEntry[] = [];
 
+/** Funde o contexto bruto com o override de rascunho e a marca — regra única para as duas portas abaixo. */
+const mergeUIContextValue = (context: SarakUIContextType, overrideDesign: Partial<SarakThemePayload> | null): SarakUIContextType & SarakThemePayload => {
+    const systemDesign = context.design || {};
+    const activeDesign = overrideDesign || systemDesign;
+    const activeDesignWithBranding = { ...activeDesign, systemName: context.branding?.companyName || activeDesign.systemName, logoUrl: context.branding?.logoBase64 || activeDesign.logoUrl };
+    return { ...context, systemDesign, activeDesign: activeDesignWithBranding, design: activeDesignWithBranding, ...activeDesignWithBranding };
+};
+
+// Porta PÚBLICA — código de aplicação. Lança fora do Provider de propósito: esquecer
+// o Provider é erro do consumidor. Peça interna da lib? Use `useSarakUIOptional`.
 export const useSarakUI = (): SarakUIContextType & SarakThemePayload => {
     const context = useContext(UIContext);
     const overrideDesign = useContext(DesignOverrideContext);
-    
+
     if (!context) {
         throw new Error('useSarakUI must be used within a SarakUIProvider');
     }
-    
-    // Design do Sistema (O que está persistido)
-    const systemDesign = context.design || {};
-    
-    // Design Ativo (Rascunho se houver override, caso contrário usa o design persistido do sistema)
-    const activeDesign = overrideDesign || systemDesign;
 
-    // Merging the branding overrides smoothly
-    const activeDesignWithBranding = {
-        ...activeDesign,
-        systemName: context.branding?.companyName || activeDesign.systemName,
-        logoUrl: context.branding?.logoBase64 || activeDesign.logoUrl
-    };
-
-    return {
-        ...context,
-        systemDesign,
-        activeDesign: activeDesignWithBranding,
-        design: activeDesignWithBranding,
-        ...activeDesignWithBranding,
-    };
+    return mergeUIContextValue(context, overrideDesign);
 };
 
+// Porta INTERNA — átomos e Hooks Controladores compartilhados que já toleram `design`
+// ausente e não devem impor Provider a quem os compõe. Nunca lança; `null` fora do
+// Provider, aviso único por montagem (não por render — dep. `context` é estável
+// enquanto não houver Provider). NÃO é para código de aplicação: use `useSarakUI`.
+export const useSarakUIOptional = (): (SarakUIContextType & SarakThemePayload) | null => {
+    const context = useContext(UIContext);
+    const overrideDesign = useContext(DesignOverrideContext);
+
+    useMemo(() => {
+        if (!context) {
+            console.warn('[Sarak:UI] useSarakUIOptional() sem SarakUIProvider; átomo usa o próprio default.');
+        }
+    }, [context]);
+
+    return context ? mergeUIContextValue(context, overrideDesign) : null;
+};
 
 /**
  * SarakUIProvider Orchestrator (v10.1)

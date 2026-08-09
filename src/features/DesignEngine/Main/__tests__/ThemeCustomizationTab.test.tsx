@@ -7,9 +7,10 @@ import { useThemeEngineState } from '../hooks/useThemeEngineState';
 import { useDesignDraft } from '../../hooks/useDesignDraft';
 import { useSarakUI } from '../../../../core/Provider/SarakUIProvider';
 
-vi.mock('../../../../core/Provider/SarakUIProvider', () => ({
-    useSarakUI: vi.fn()
-}));
+vi.mock('../../../../core/Provider/SarakUIProvider', () => {
+    const useSarakUI = vi.fn();
+    return { useSarakUI, useSarakUIOptional: useSarakUI };
+});
 
 vi.mock('../hooks/useThemeEngineState', () => ({
     useThemeEngineState: vi.fn()

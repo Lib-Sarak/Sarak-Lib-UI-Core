@@ -1,5 +1,5 @@
 import React from 'react';
-import { useSarakUI } from '../../../core/Provider/SarakUIProvider';
+import { useSarakUIOptional } from '../../../core/Provider/SarakUIProvider';
 import { BREAKPOINT_TABLET, BREAKPOINT_DESKTOP } from '../../../core/Design/breakpoints';
 import {
     RESPONSIVE_GRID_PRESETS,
@@ -15,7 +15,7 @@ import { resolveGap } from './useStructuralStyles.gap';
  * os traduz para classes utilitárias ou variáveis CSS inline, removendo o hardcode do JSX.
  */
 export const useStructuralStyles = () => {
-    const { design } = useSarakUI();
+    const design = useSarakUIOptional()?.design; // Spec 18: tolera montar sem Provider.
 
     // ==========================================
     // EIXO 1: MACRO-LAYOUT (Grids, Flex e Containers)

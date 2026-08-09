@@ -2,7 +2,7 @@ import React from 'react';
 import { render, screen, fireEvent } from '@testing-library/react';
 import '@testing-library/jest-dom';
 import { describe, it, expect, vi, beforeEach } from 'vitest';
-import { SarakUIProvider, useSarakUI } from '../SarakUIProvider';
+import { SarakUIProvider, useSarakUI, useSarakUIOptional } from '../SarakUIProvider';
 import { useDesignManager } from '../hooks/useDesignManager';
 
 // Mock dependências do SarakUIProvider
@@ -172,5 +172,51 @@ describe('SarakUIProvider', () => {
         // E smartApplyFullConfig
         fireEvent.click(screen.getByTestId('btn-smart-apply-full'));
         expect(screen.getByTestId('draft-mode')).toHaveTextContent('dark');
+    });
+
+    it('useSarakUIOptional() entrega o MESMO design real de useSarakUI() com Provider montado (Spec 18)', () => {
+        const warn = vi.spyOn(console, 'warn').mockImplementation(() => undefined);
+        const Consumer = () => {
+            const viaObrigatoria = useSarakUI();
+            const viaOpcional = useSarakUIOptional();
+            return (
+                <div>
+                    <span data-testid="mode-obrigatoria">{viaObrigatoria.design?.mode}</span>
+                    <span data-testid="mode-opcional">{viaOpcional?.design?.mode}</span>
+                    <span data-testid="opcional-e-null">{String(viaOpcional === null)}</span>
+                </div>
+            );
+        };
+
+        render(
+            <SarakUIProvider>
+                <Consumer />
+            </SarakUIProvider>,
+        );
+
+        expect(screen.getByTestId('mode-obrigatoria')).toHaveTextContent('light');
+        expect(screen.getByTestId('mode-opcional')).toHaveTextContent('light');
+        expect(screen.getByTestId('opcional-e-null')).toHaveTextContent('false');
+        // Com Provider montado nenhuma das duas portas avisa — o warn é só do caminho sem Provider.
+        expect(warn).not.toHaveBeenCalled();
+        warn.mockRestore();
+    });
+
+    it('useSarakUIOptional() sem Provider devolve null e avisa UMA vez, não a cada render', () => {
+        const warn = vi.spyOn(console, 'warn').mockImplementation(() => undefined);
+        let renders = 0;
+        const Consumer = () => {
+            const viaOpcional = useSarakUIOptional();
+            renders += 1;
+            return <span data-testid="renders">{renders}</span>;
+        };
+
+        const { rerender } = render(<Consumer />);
+        rerender(<Consumer />);
+        rerender(<Consumer />);
+
+        expect(screen.getByTestId('renders')).toHaveTextContent('3');
+        expect(warn).toHaveBeenCalledTimes(1);
+        warn.mockRestore();
     });
 });

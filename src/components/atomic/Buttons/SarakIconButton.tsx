@@ -1,5 +1,5 @@
 import React, { ButtonHTMLAttributes, useState } from 'react';
-import { useSarakUI } from '../../../core/Provider/SarakUIProvider';
+import { useSarakUIOptional } from '../../../core/Provider/SarakUIProvider';
 
 export interface SarakIconButtonProps extends ButtonHTMLAttributes<HTMLButtonElement> {
     variant?: 'primary' | 'secondary' | 'ghost' | 'danger';
@@ -23,7 +23,8 @@ export const SarakIconButton: React.FC<SarakIconButtonProps> = ({
     style,
     ...props
 }) => {
-    const { design } = useSarakUI();
+    // Átomo: tolera montar sem SarakUIProvider (Spec 18 — R10 §2.3), usa o default abaixo.
+    const design = useSarakUIOptional()?.design;
     const [isHovered, setIsHovered] = useState(false);
 
     const styleType = design?.btnStyleType || 'matte';

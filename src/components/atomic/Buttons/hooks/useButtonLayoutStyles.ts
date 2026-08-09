@@ -9,7 +9,7 @@ export interface ButtonLayoutContext {
 /**
  * Hook Controlador Estrutural (Camada 6) - Botões
  */
-export const useButtonLayoutStyles = (design: SarakThemePayload): ButtonLayoutContext => {
+export const useButtonLayoutStyles = (design: SarakThemePayload | undefined): ButtonLayoutContext => {
     return useMemo(() => {
         const iconPosition = design?.buttonIconPosition || 'left';
         const widthStrategy = design?.buttonWidthStrategy || 'auto';

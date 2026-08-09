@@ -5,9 +5,10 @@ import { describe, it, expect, vi } from 'vitest';
 import { ShellThemeToggle } from '../ShellThemeToggle';
 
 const applyConfigRawMock = vi.fn();
-vi.mock('../../../../core/Provider/SarakUIProvider', () => ({
-    useSarakUI: vi.fn(() => ({ design: { mode: 'dark' }, applyConfigRaw: applyConfigRawMock }))
-}));
+vi.mock('../../../../core/Provider/SarakUIProvider', () => {
+    const useSarakUI = vi.fn(() => ({ design: { mode: 'dark' }, applyConfigRaw: applyConfigRawMock }));
+    return { useSarakUI, useSarakUIOptional: useSarakUI };
+});
 
 describe('ShellThemeToggle', () => {
     it('renderiza na variante mini e chama toggle', () => {

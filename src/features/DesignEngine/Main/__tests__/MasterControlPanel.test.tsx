@@ -7,9 +7,10 @@ import { useSarakUI } from '../../../../core/Provider/SarakUIProvider';
 import { useDesignDraft } from '../../hooks/useDesignDraft';
 
 // Mock dependencies
-vi.mock('../../../../core/Provider/SarakUIProvider', () => ({
-    useSarakUI: vi.fn()
-}));
+vi.mock('../../../../core/Provider/SarakUIProvider', () => {
+    const useSarakUI = vi.fn();
+    return { useSarakUI, useSarakUIOptional: useSarakUI };
+});
 
 vi.mock('../../hooks/useDesignDraft', () => ({
     useDesignDraft: vi.fn()

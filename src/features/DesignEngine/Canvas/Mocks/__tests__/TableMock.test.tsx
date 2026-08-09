@@ -4,9 +4,10 @@ import '@testing-library/jest-dom';
 import { describe, it, expect, vi } from 'vitest';
 import { MockTable } from '../TableMock';
 
-vi.mock('../../../../../core/Provider/SarakUIProvider', () => ({
-    useSarakUI: vi.fn(() => ({ mode: 'dark', branding: {} }))
-}));
+vi.mock('../../../../../core/Provider/SarakUIProvider', () => {
+    const useSarakUI = vi.fn(() => ({ mode: 'dark', branding: {} }));
+    return { useSarakUI, useSarakUIOptional: useSarakUI };
+});
 
 // Ignorar animações do framer-motion no teste para simplificar e focar no DOM puro
 vi.mock('framer-motion', async () => {

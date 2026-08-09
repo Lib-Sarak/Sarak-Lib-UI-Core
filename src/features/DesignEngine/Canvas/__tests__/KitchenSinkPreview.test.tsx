@@ -5,9 +5,10 @@ import { describe, it, expect, vi, beforeEach } from 'vitest';
 import { KitchenSinkPreview } from '../KitchenSinkPreview';
 import { useSarakUI } from '../../../../core/Provider/SarakUIProvider';
 
-vi.mock('../../../../core/Provider/SarakUIProvider', () => ({
-    useSarakUI: vi.fn()
-}));
+vi.mock('../../../../core/Provider/SarakUIProvider', () => {
+    const useSarakUI = vi.fn();
+    return { useSarakUI, useSarakUIOptional: useSarakUI };
+});
 
 vi.mock('framer-motion', () => ({
     motion: {
