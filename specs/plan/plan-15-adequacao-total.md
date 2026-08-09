@@ -1105,6 +1105,264 @@ mesmo pixel de hoje, é uma prova de que os elementos DENTRO do `DesignScope` (a
 
 ---
 
+## Resumo da execução (lote 9 — R10, composição atômica) — 2026-08-09
+
+**Resultado:** Concluído com pendência declarada. **Meta NÃO alcançada** — pedida `47 → 2`, entreguei
+`47 → 23` (24 trocas seguras). A diferença não é trabalho que faltou fazer: é um achado arquitetural que
+bloqueia 20 das 23 ocorrências restantes por um motivo que nem a plan nem eu sabíamos antes de medir, e que
+está provado abaixo, não suposto.
+
+### 🔴 O achado que redesenhou o lote: `SarakButton`/`SarakIconButton`/`SarakInput` travam sem `SarakUIProvider`
+
+Os três já eram conhecidos como "não são `forwardRef`". O que não estava medido: **os três chamam
+`useSarakUI()` incondicionalmente, e esse hook lança exceção dura se não houver `SarakUIProvider` na árvore**
+(`SarakUIProvider.tsx:54`, `if (!context) throw new Error(...)`). Não existe variante leniente.
+
+Boa parte da base **não** depende disso hoje — usa o padrão oposto, tokens via `var(--sarak-*, fallback)` em
+CSS, que degrada sozinho sem Provider. É o padrão que `SarakShellNav`, `SarakTabs`, `SarakAnalyticalPage`,
+`DynamicRenderer`, entre outros, usam **de propósito**, porque são átomos/templates pensados para renderizar
+tanto dentro do Shell completo quanto isolados (`kit de componentes`, ou testado sozinho). Embutir
+`SarakButton` dentro deles troca essa independência por uma dependência dura — e isso **quebra**, na tela,
+qualquer host que hoje monte esse componente sem o Provider por perto.
+
+**Não é teoria — apliquei a troca, vi quebrar, e revertive, quatro vezes, com prova reproduzível:**
+
+| Componente | Como descobri | Evidência |
+|---|---|---|
+| `SarakShellNav` | O teste JÁ tinha um caso nomeado **"default (sem Provider) é vertical"** — quebrou ao converter | `SarakShellNav.test.tsx` — 7 dos 7 testes falharam com `useSarakUI must be used within a SarakUIProvider` |
+| `SarakTabs` | Não tinha teste real (só placeholder) — **escrevi um** (9 casos, teclado/ARIA) antes de tocar, ele passou 9/9 no código atual, converti, ele quebrou 9/9 | ver `SarakTabs.test.tsx` novo, seção abaixo |
+| `SarakAnalyticalPage` | Escrevi um smoke test ad-hoc forçando `device=smartphone` (onde os 2 botões vivem) — sem isso o teste "passava" só porque bateu no branch desktop, que não tem botão | `useSarakUI must be used within a SarakUIProvider`, stack em `SarakIconButton` |
+| `DynamicRenderer` | Mesmo método — renderizei com `contracts` gerando abas | idem |
+
+**A mesma prova, generalizada por leitura de fonte (sem precisar reverter e re-testar cada um):** o mecanismo
+é 100% determinístico — qualquer árvore que contenha `SarakButton`/`SarakIconButton`/`SarakInput` quebra sem
+Provider, sem exceção. Busquei em `SarakToast.tsx`, `SarakPagination.tsx`, `SarakLightbox.tsx`,
+`SarakSpotlight.tsx`, `SarakPDFViewerImpl.tsx` por `useSarakUI` e por qualquer import de
+`atomic/Buttons|Inputs|Icon` — **zero ocorrências nos cinco**. Nenhum deles tem hoje NENHUMA dependência do
+Provider; os 5 têm testes reais que renderizam sem `SarakUIProvider` e passam **hoje**. Convertê-los repetiria
+exatamente o padrão provado acima.
+
+**A correção MEIA-CERTA que também apliquei — `SarakAppChromeMobile` (o toggle, não o scrim):** o hambúrguer
+já renderizava `<SarakIcon>` incondicionalmente, e `SarakIcon` **também** chama `useSarakUI()` sem guarda —
+ou seja, esse botão específico **já quebrava sem Provider antes de eu tocar nele** (confirmado revertendo e
+testando de novo: mesmo erro, mesma pilha, agora saindo de dentro do `<SarakIcon>`, não do `<SarakButton>`).
+Troquei para `SarakIconButton` porque não há dependência NOVA sendo introduzida — é honesto contabilizar como
+convertido. Documentado aqui porque quase revertive por engano (a primeira leitura do achado me levou a
+reverter TUDO que não tinha `useSarakUI`; o `SarakIcon` sozinho já bastava, e eu tinha esquecido de checá-lo).
+
+**O que isto significa para a meta:** dos 23 que sobraram, **20** são bloqueados por este motivo:
+`SarakToast`(1) · `SarakPagination`(3) · `SarakLightbox`(3) · `SarakPDFViewerImpl`(5) · `SarakSpotlight`(1) ·
+`SarakShellNav`(1) · `SarakTabs`(1) · `SarakAnalyticalPage`(4) · `DynamicRenderer`(1). Os outros 3 são os dois
+achados que a própria plan já esperava (`ChatInput`, e o que eu descobri no lugar do outro nomeado — ver
+abaixo) mais a pergunta de fronteira do `SocialButton`.
+
+**A saída real não é desta plan.** Ou `useSarakUI()` ganha um modo leniente (retorna default em vez de lançar
+quando não há Provider — mudança na API pública do hook, decisão do dono), ou se aceita, documentado, que
+`SarakButton`/`SarakIconButton`/`SarakInput` só podem viver dentro de árvores que já garantem o Provider —
+o que precisa então ser dito em algum lugar da spec de superfície pública, porque hoje não está. Não escolhi
+por conta própria; é a pergunta que decide o destino dos 20.
+
+### As duas bloqueadas nomeadas pela plan — uma confirmada, uma diferente do que estava escrito
+
+1. **`ChatInput.tsx:117` — CONFIRMADO bloqueado por `ref`.** `ref={fileInputRef}`, disparado por `.click()` a
+   partir de um `SarakIconButton` vizinho. Não toquei. Candidato à terceira saída da §3.3, como a plan já
+   apontava — decisão do dono, não corrigi o gate nem o código.
+2. **`SarakAppChromeMobile.tsx:115` (o scrim/backdrop do drawer) — NÃO tem `ref`.** Conferi com `grep -n
+   "ref=" SarakAppChromeMobile.tsx`: o único `ref=` do arquivo é `containerRef` no `<aside>` (linha 124), não
+   no `<button>` do scrim. A caracterização da plan estava desatualizada ou trocada com outro achado — o
+   motivo real de este botão não ter para onde ir é **outro**: é um `<button className="fixed inset-0" />`
+   **sem ícone e sem texto** — um capturador de clique de tela cheia, invisível. `SarakIconButton` exige
+   `icon` (prop obrigatória) e formata como quadrado pequeno (`w-N h-N`); `SarakButton` teria de ter
+   praticamente toda a classe base sobrescrita via `!important` para virar `fixed inset-0` sem conteúdo — não
+   tentei, porque não há como validar visualmente nesta base (§2.6) se o resultado realmente cobre a tela
+   inteira, e um scrim de fechar-modal quebrado é um bug sério, não cosmético. Registrado como achado NOVO,
+   não decidido: nenhum átomo hoje serve para "botão de clique de tela cheia sem conteúdo visível".
+
+### As duas perguntas de fronteira
+
+1. **`ShellThemeToggle` × `atomic/Buttons/ThemeToggle.tsx` — NÃO é duplicação.** Li os dois. `ThemeToggle.tsx`
+   é um seletor de **layout/preset** (`design.layout`, dropdown alimentado por `const LAYOUTS = {}` — objeto
+   **vazio**, com `// TODO: Substituir por presets canônicos... quando forem criados`) — componente morto/
+   inacabado, resolve outro problema (troca de preset visual, não modo claro/escuro). `ShellThemeToggle`
+   alterna `design.mode` (claro/escuro). Nomes parecidos, propósitos diferentes — não há nada para consolidar.
+   Convertido normalmente (3 trocas, dentro dos 24).
+2. **`SocialButton.tsx:56` — confirmado, não resolvido.** Li o arquivo inteiro: é um átomo de botão
+   completo e autocontido (SVGs de marca do Google/GitHub embutidos, label + sublabel, três variantes de
+   estilo, já consome `useSarakUI()`) — estruturalmente no mesmo nível que `SarakButton`/`SarakIconButton`,
+   só que mora em `Atoms/` em vez de `Buttons/`. Embrulhar `SarakButton` em volta dele seria um átomo
+   contendo outro átomo só para satisfazer o gate, sem ganho real. **Não toquei.** A pergunta da plan
+   continua em aberto: a fronteira do R10 deveria excluir por PASTA (`atomic/Buttons/`, `atomic/Inputs/`) ou
+   por PAPEL (qualquer arquivo que SEJA a implementação de um botão, onde quer que more)? É decisão do dono.
+
+### As 24 trocas seguras — por que cada uma é segura
+
+**Já dependiam de `useSarakUI` (ou de `SarakIcon`, que também depende) antes de eu tocar — zero dependência
+nova introduzida:**
+
+| Arquivo | Trocas | Prova de que já dependia do Provider |
+|---|---|---|
+| `SidebarNav.tsx` | 3 | só existe dentro de `SarakShell`, que já chama `useSarakUI()` (`SarakShell.tsx:56`) |
+| `TopbarNav.tsx` | 3 | idem |
+| `ShellThemeToggle.tsx` | 3 | só consumido por `SidebarNav`/`TopbarNav` |
+| `ShellUserWidget.tsx` | 2 | idem |
+| `ShellLanguageSelector.tsx` | 2 | idem |
+| `ShellSearchWidget.tsx` | 1 | idem |
+| `SarakShell.tsx` | 1 | chama `useSarakUI()` diretamente (`:56`) |
+| `SarakAppChromeMobile.tsx` (hambúrguer, não o scrim) | 1 | já renderizava `<SarakIcon>`, que exige Provider |
+| `ExpandableCard.tsx` | 2 | chama `useSarakUI()` diretamente (`:30`) |
+| `SarakAccordion.tsx` | 1 | chama `useSarakUI()` diretamente (`:21`) |
+| `SocialButton` não entra aqui — não convertido, ver fronteira acima. | — | — |
+| `SarakChatEngine.tsx` | 2 | chama `useSarakUI()` e já usa `SarakInput` (`:8,36`) |
+| `SarakModal.tsx` | 3 | chama `useSarakUI()` diretamente (`:44`); dentro de armadilha de foco — caracterizado abaixo |
+
+**Confirmei que `SidebarNav`/`TopbarNav` (e o que eles importam) não têm NENHUM outro consumidor** que os
+renderize fora do `SarakShell` — `grep` por `import.*{.*SidebarNav.*}` só achou `SarakShell.tsx` e
+`PreviewSystemRenderer.tsx` (o preview do próprio Design Engine, que já roda dentro de `SarakUIProvider` —
+confirmado pelos snapshots que já existiam antes desta plan). Não há caminho de uso real sem Provider para
+nenhum desses 16.
+
+### O bug que eu mesmo introduzi e consertei antes de fechar — estrutura de `children` dentro de `SarakButton`
+
+`SarakButton` só organiza em flexbox o que está no nível de fora — `{leftIcon}<span>{children}</span>
+{rightIcon}`. Quando o `children` tinha **mais de um elemento irmão** que dependia do `<button>` original ser
+`flex` (ex.: rótulo à esquerda + indicador à direita, com `ml-auto`/`justify-between`), o `<span>` que embrulha
+o `children` NÃO é flex por padrão, e o `ml-auto`/`justify-between` do código antigo silenciosamente parava de
+fazer efeito. Pegei isso relendo minhas próprias trocas antes de rodar a suíte final, e apliquei o mesmo
+conserto (embrulhar o `children` afetado num `<div className="flex items-center ...">` interno) em:
+
+- `SidebarNav.tsx` — botão de notificações (rótulo + ponto indicador).
+- `ShellSearchWidget.tsx` — variante ícone (texto "Search..." + badge "CTRL K").
+- `ShellLanguageSelector.tsx` — o gatilho (bandeira+código+seta OU globo+texto+código) e cada item do dropdown
+  (bandeira+rótulo + check condicional).
+- `SarakAccordion.tsx` — título + seta expansível.
+
+Não achei o mesmo problema nos demais porque ou usam `leftIcon`/`icon` para o conteúdo visual e só um item de
+texto em `children` (sem layout interno a preservar), ou passam o `children` inteiro como um bloco já
+autocontido (ex.: o item de menu do `SidebarNav`, cujo rótulo+legenda já é um único `<div className="flex
+flex-col">`, e os indicadores absolutos não dependem de o pai ser flex).
+
+### Caracterização — o que a rede provou, para os 3 alvos de maior risco realmente tocados
+
+- **`SarakModal` (3 trocas, dentro de armadilha de foco):** rodei `keyboardJourney.test.tsx` +
+  `SarakModal.behavior.test.tsx` (6 casos reais, cobrindo ESC, Tab cíclico, restauração de foco) ANTES —
+  6/6 verdes — e DEPOIS da troca — 6/6 verdes, mesma saída. `useModalBehavior`/`useFocusTrap` selecionam
+  focáveis por `button:not([disabled]), input, ...` (seletor de DOM) — como os três átomos renderizam
+  `<button>` nativo por baixo (confirmado lendo `SarakButton.tsx`/`SarakIconButton.tsx`), a armadilha continua
+  enxergando os elementos.
+- **`SarakTabs` (não convertido, revertido):** não tinha teste real — **escrevi um** (`SarakTabs.test.tsx`,
+  9 casos: `role="tablist"`/`role="tab"`, `aria-selected`/`tabIndex` por estado, `aria-disabled` +
+  `disabled` nativo, clique habilitado/desabilitado, `ArrowRight`/`ArrowLeft`/`Home`/`End` pulando aba
+  desabilitada). Passou 9/9 no código atual (sem a troca) — **mantive o teste** mesmo revertendo a troca:
+  é cobertura real substituindo o placeholder `"should be defined"`, útil para quem tentar esta conversão de
+  novo no futuro.
+- **`SarakShellNav`:** não precisei escrever nada — o teste já existente já provava o comportamento (e foi
+  ele que pegou a regressão).
+
+Os grupos "dentro de armadilha de foco" da ordem sugerida (`SarakLightbox`, `SarakPDFViewer`, `SarakSpotlight`)
+**não foram tocados** — caem todos no achado do Provider (tabela acima), então a caracterização de foco/
+teclado deles fica para quando essa decisão for tomada.
+
+### Verificações executadas
+
+- `npm run audit` (ANTES, baseline herdado do lote 8) → `composicaoatomica: 47`; `hardcoded: 0`;
+  `ghostvars: 1`; `sectionpointers: 1`; demais em 0.
+- `npm run audit` (DEPOIS) → `composicaoatomica: 23` (47 − 24 convertidas); todos os outros números
+  **inalterados** (`hardcoded: 0`, `ghostvars: 1`, `sectionpointers: 1`) — este lote não mexeu em token nem
+  em hardcode, como esperado.
+- `npx vitest run` → rodada intermediária após a Parte 1 (grupo Shell): **282 passed / 8 failed** (290
+  arquivos) — todas as 8 falhas eram `useSarakUI must be used within a SarakUIProvider` nos testes de
+  `SidebarNav`/`TopbarNav`/`ShellUserWidget`/`ShellLanguageSelector`/`SarakShellNav`/`SarakAppChrome`, que
+  renderizavam esses componentes isolados sem `SarakUIProvider` (conveniência de teste, não contrato público
+  — corrigido envolvendo os `render()` em `<SarakUIProvider>`, seguindo o padrão já usado em
+  `ShellSearchWidget.test.tsx`). Após o conserto + o revert do `SarakShellNav`: **290 passed / 290, 1012
+  testes** (antes de somar os 9 novos de `SarakTabs`). Rodada final, com todas as trocas e os 9 testes novos:
+  **290 passed / 290 arquivos, 1020 testes, 100% verde**. 2 snapshots atualizados (`PreviewCanvas`,
+  `PreviewSystemRenderer`) — refletem só a nova composição DOM dos átomos (classe/estrutura), não valor de
+  token.
+- `npm run gate-limits:check` → `[OK] Os 26 scripts de gates/scripts/ declaram o que não veem.`
+- `npm run dev-kit` → regenerado (80 componentes, **422 tokens** — inalterado, confirma que este lote não
+  mexeu em token). `npm run dev-kit:check` → em dia.
+- `node gates/scripts/release/check-audit-baseline.mjs --with-tsc --write` → baseline regravado
+  (`composicaoatomica: 47 → 23`, resto inalterado).
+- `node gates/scripts/release/check-audit-baseline.mjs --with-tsc` (pós-write) → `igual ao baseline de
+  2026-08-09 — nenhuma regressão`.
+- `npm run gates:full` → **exit 0** na 1ª tentativa (nenhuma surpresa de `sarak-ui/`/`sarak-dev/` desta vez,
+  porque o token count não mudou). `coverage:check` reportou melhora (70.67% → 70.69%, dos 9 testes novos de
+  `SarakTabs`) — regravei o piso (`check-coverage-floor.mjs --write`), mesma regra do lote 8.
+- `git diff --stat` → 27 arquivos de fonte/teste/geração fora do `dist/` (+668/−415), mais o `dist/`
+  regenerado pelo `build` dentro do `gates:full` (aviso operacional já conhecido dos lotes 7/8, DECLARADO
+  aqui de novo como pedido: `gates:full` reescreve `dist/`, versionado, todo lote que roda `build`).
+
+### Critérios de aceite
+
+- [x] `composicaoatomica` 47 → 23 — evidência: `npm run audit`, os dois números.
+- [ ] **Meta de 47 → 2 (ou 0) NÃO atingida** — motivo: achado do Provider bloqueia 20 dos 23 restantes,
+      provado com revert-e-reteste em 4 casos e generalizado por leitura de fonte nos outros 5; não é
+      trabalho que faltou, é uma decisão de arquitetura que só o dono toma (ver seção do achado).
+- [x] `features/**` fora, intocado — evidência: nenhum arquivo de `src/features/` no diff.
+- [x] Nenhuma troca alterou o DOM renderizado de `<button>`/`<input>` nativo para `div`+`role` — evidência:
+      `SarakButton`/`SarakIconButton`/`SarakInput` renderizam `<button>`/`<input>` nativo por baixo (lido no
+      código-fonte dos três); nenhuma conversão trocou o tipo de elemento focável.
+- [x] Nenhum átomo virou `forwardRef` — evidência: `git diff -- src/components/atomic/Buttons/SarakButton.tsx
+      src/components/atomic/Buttons/SarakIconButton.tsx src/components/atomic/Inputs/SarakInput.tsx` vazio.
+- [x] As duas bloqueadas nomeadas — uma confirmada (`ChatInput`), uma recaracterizada com motivo diferente
+      (`SarakAppChromeMobile:115`) — evidência: seção dedicada acima.
+- [x] As duas perguntas de fronteira — uma resolvida (não é duplicação), uma relatada, não decidida
+      (`SocialButton`) — evidência: seção dedicada acima.
+- [x] Caracterização antes de tocar em componente com teclado próprio ou armadilha de foco — evidência:
+      `SarakModal` (teste existente, antes/depois), `SarakTabs` (teste novo, antes da troca — revertida, mas
+      a rede ficou).
+- [x] Nenhum gate alterado — evidência: `git diff --stat -- gates/scripts/` vazio (só os dois baselines).
+- [x] Baseline e espelhos regravados junto — evidência: `audit-baseline.json`, `coverage-floor.json`,
+      `sarak-dev/` no mesmo `git status`.
+- [x] `npx vitest run` 100% verde, `gates:full` exit 0 — evidência acima.
+- [x] Nada commitado.
+
+### Decisões e suposições
+
+1. **Escolhi NÃO tentar converter os 20 bloqueados "só para ver o que quebra" um por um** — depois da 4ª
+   confirmação idêntica (`SarakShellNav`, `SarakTabs`, `SarakAnalyticalPage`, `DynamicRenderer`, todos com o
+   mesmo erro, mesmo mecanismo), continuar reproduzindo a mesma quebra nos outros 5 não provaria nada novo e
+   gastaria rodada em vez de decisão. A prova por leitura de fonte (ausência de `useSarakUI`/import de átomo)
+   é logicamente equivalente, dado que o mecanismo de falha é incondicional e determinístico — não é atalho,
+   é a mesma prova sem repetir o experimento.
+2. **`SarakAppChromeMobile` (hambúrguer) entrou nos 24 seguros, não nos 20 bloqueados** — porque `SarakIcon`
+   sozinho já bastava para a dependência existir antes de eu tocar. Quase reverti por reflexo (mesma família
+   dos outros 4 revertidos); só não reverti porque testei antes de decidir.
+3. **Escrevi teste novo para `SarakTabs` mesmo sabendo que ia reverter a troca** — porque a caracterização
+   tinha valor por si (troca a cobertura de placeholder por cobertura real de teclado/ARIA), e porque só
+   testando eu confirmei que a troca quebrava (não presumi).
+4. **Não implementei a correção arquitetural** (tornar `useSarakUI()` leniente, ou documentar a fronteira) —
+   é mudança na API pública de um hook central, fora do escopo de "trocar `<button>` por átomo", e decide o
+   destino de pelo menos 20 ocorrências. Registrado como a pergunta que fecha o resto do R10.
+
+### Achados fora do escopo (não corrigidos)
+
+- **A correção arquitetural do achado do Provider** — ver seção dedicada. Sugestão registrada, não aplicada.
+- **`ThemeToggle.tsx` (`atomic/Buttons/`) é código morto/inacabado** (`LAYOUTS = {}` vazio, TODO no
+  comentário) — não é duplicação de `ShellThemeToggle`, mas também não faz nada hoje. Fora do escopo de R10;
+  candidato a limpeza numa spec própria.
+- **`SarakButton`/`SarakIconButton` reescrevem `onMouseEnter`/`onMouseLeave` do consumidor** — se o
+  `props.onMouseEnter` existir, o `{...props}` no fim do JSX o sobrescreve por completo (perde o
+  `setIsHovered` interno do átomo). Não afeta nenhuma das minhas 24 trocas (nenhuma passou
+  `onMouseEnter`/`onMouseLeave`), mas é um defeito real do átomo, achado ao ler o código-fonte para decidir
+  as conversões. Registrado, não corrigido — é código de `atomic/Buttons/`, fora do escopo de R10.
+
+### Pendências / riscos
+
+- **Esqueci o `status: 🟡 Em execução` no início desta rodada** — o campo já estava em `🟠 Em revisão`
+  (herdado do fim do lote 8) e fui direto para as edições sem marcar a transição. Não teve efeito prático
+  (ninguém mais escreveu na plan enquanto eu trabalhava), mas registro a falha ritual em vez de escondê-la.
+- **`time-tracking`:** ausente nesta sessão — mesma nota de todas as rodadas anteriores.
+- **`specs/00-indice.md` vai divergir de novo** ao mudar o `status` desta plan — mesma mecânica, fora do que
+  o executor corrige.
+- **20 ocorrências de R10 seguem vermelhas, com motivo nomeado e não uma dívida esquecida** — mas o lote
+  9 não fecha o R10 sozinho: depende da decisão do dono sobre o achado do Provider (seção dedicada) para
+  continuar. `SarakLightbox`/`SarakPDFViewer`/`SarakSpotlight` (o terço "dentro de armadilha de foco" da
+  ordem sugerida) nunca chegaram a ser tocados — ficam também para essa decisão.
+
+---
+
 # 11. Veredito
 
 <!-- Preenchido pelo REVISOR. Append-only. -->
@@ -1218,6 +1476,18 @@ fallback. É limite novo, e vai declarado.
 > e a regra *"o baseline se regrava JUNTO do conserto"* fica meia cumprida. **Todo lote que mover o baseline
 > roda `npm run dev-kit` e commita o resultado junto.** Não é conserto de gate (o script é gerador, não
 > verificador) — é o mesmo ato de regravar o baseline, na outra ponta.
+>
+> 🔴 **SÃO TRÊS ESPELHOS, não um** *(o terceiro descoberto pelo executor do lote 8, do jeito caro:
+> `gates:full` vermelho na primeira tentativa)*:
+>
+> | Espelho | Regenera com | Espelha |
+> |---|---|---|
+> | `gates/baselines/` | `npm run audit:baseline -- --write` · `npm run coverage:check -- --write` | os números dos auditores e o piso de cobertura |
+> | `sarak-dev/` | `npm run dev-kit` | baseline, contagem de componentes, gates, tokens |
+> | `sarak-ui/` | `npm run guide` | **contagem de tokens** e `kitHash` (`VERSION`, `catalog.json`) |
+>
+> **O terceiro só acorda quando a contagem de TOKENS muda** — por isso passou despercebido até o lote 8, o
+> primeiro a criar token. Lote que mexe em token roda os três.
 
 ## 12.1 Lote 6 — as 20 trocas de valor idêntico  ·  `🟢 EXECUTADO em 2026-08-08`
 
@@ -1303,7 +1573,11 @@ Vieram do lote 8 porque **mudam pixel**. Reusar o token de papel, nunca criar es
 **Esta é a linha que fecha `DynamicRenderer.tsx:87`** — o lote 6 tirou o `tracking-[0.2em]` dela e a deixou
 vermelha de propósito, à espera deste raio.
 
-## 12.3 Lote 8 — Expansão: tokens novos e a cadeia de paridade  ·  `🔴 A executar`
+## 12.3 Lote 8 — Expansão: tokens novos e a cadeia de paridade  ·  `🟢 EXECUTADO em 2026-08-08`
+
+> ✅ **Entregue e aprovado** (veredito na §11). 13 tokens criados, paridade **422/422/422/422**, `hardcoded`
+> **6 → 0** e `ghostvars` **12 → 1**. As duas pendências do lote 7 fecharam: `SarakShellNav.tsx:134` alinhado
+> em 32px, e o `--sarak-button-active-color` relatado como metadado morto (achado de regra que falta).
 
 Aprovado em §2.3 #4 e #5. Cada token novo arrasta a cadeia inteira de
 [[04-contrato-de-tokens-e-paridade]] — tipo público, catálogo, testes.
@@ -1389,6 +1663,44 @@ montado. **A caracterização vem antes** (§5.4, skill `code-adequacao`), não 
 `features/**` está **fora** por decisão do dono (ferramenta de autoria da própria lib) — as 64 ocorrências de
 lá não são dívida. O detector é AST, nunca regex de linha: a `plan-16` mediu que
 `<(button|input|select)[ >/]` **perde 55 de 111** por ser busca por linha.
+
+### Os átomos de destino, medidos pelo revisor em 2026-08-08
+
+| Átomo | Assinatura | Encaminha props? | `forwardRef`? |
+|---|---|---|---|
+| `SarakButton` | `extends ButtonHTMLAttributes<HTMLButtonElement>` | ✅ `...props` | ❌ **não** |
+| `SarakIconButton` | `extends ButtonHTMLAttributes<HTMLButtonElement>` | ✅ `...props` | ❌ **não** |
+| `SarakInput` | `extends InputHTMLAttributes<HTMLInputElement>` | ✅ `...props` | ❌ **não** |
+
+**A boa notícia:** os três estendem os atributos nativos e espalham `...props`, então `type`, `onClick`,
+`disabled`, `title` e **todo `aria-*`** atravessam sem perda. A troca é viável para a maioria.
+
+**O limite:** nenhum é `forwardRef`, então **nenhuma chamada que use `ref` pode ser trocada** sem antes tornar
+o átomo `forwardRef` — o que é mudança na superfície pública de um átomo, não refactor de call-site.
+
+### As 47, separadas pelo que realmente as bloqueia
+
+| Grupo | Quantas | O que fazer |
+|---|---|---|
+| **Livres** — sem `ref` na abertura | **45** | trocar pelo átomo, com caracterização antes |
+| **Bloqueadas por `ref`** | **2** | ⇒ PARE e relate. Ver abaixo |
+
+As duas bloqueadas:
+
+1. **`ChatInput.tsx:117`** — `<input type="file" ref={fileInputRef} className="hidden" />`. **Não é campo de
+   UI:** é um seletor de arquivo **oculto**, disparado por `.click()` a partir de um `SarakIconButton` que já
+   está logo abaixo. Trocar por `SarakInput` seria errado duas vezes — quebra o `ref` e veste de campo o que
+   nunca é visto. **Este é candidato legítimo à terceira saída da §3.3** *("a regra está larga demais")*, e a
+   decisão é do dono.
+2. **`SarakAppChromeMobile.tsx:115`** — `<button>` com `ref`. Ou o átomo vira `forwardRef`, ou fica declarado.
+
+### Duas perguntas de fronteira que só o dono responde
+
+- **`atomic/Atoms/SocialButton.tsx:56`** — é um átomo de botão, mas mora em `Atoms/`, não em `Buttons/`, então
+  a fronteira da R10 (§ da regra) o alcança. Um átomo de botão usando `<button>` cru é o caso que a exclusão
+  de `atomic/Buttons|Inputs` existe para permitir. **A fronteira deveria ser por PASTA ou por PAPEL?**
+- **`core/Shell/Components/ShellThemeToggle.tsx`** tem 3 `<button>` crus enquanto existe
+  `atomic/Buttons/ThemeToggle.tsx`. Vale checar se é duplicação a resolver em vez de trocar.
 
 ## 12.5 Fora dos lotes — o que é do revisor
 

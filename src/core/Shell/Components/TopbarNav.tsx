@@ -1,5 +1,7 @@
 import React from 'react';
 import { SarakIcon } from '../../../components/atomic/Icon/SarakIcon';
+import { SarakButton } from '../../../components/atomic/Buttons/SarakButton';
+import { SarakIconButton } from '../../../components/atomic/Buttons/SarakIconButton';
 import { DiscoveredModule } from '../../../core/Discovery/types';
 import { SarakDesignState } from '../../../core/Provider/types';
 import { BREAKPOINT_DESKTOP } from '../../../core/Design/breakpoints';
@@ -72,12 +74,13 @@ export const TopbarNav: React.FC<TopbarNavProps> = ({
             <div className="flex items-center justify-between w-full h-full relative z-10 !overflow-visible">
                 <div className="flex items-center gap-4">
                     <div className="flex items-center gap-3">
-                        <button
+                        <SarakIconButton
                             onClick={toggleNav}
-                            className={`p-1.5 bg-[var(--theme-muted)]/10 hover:bg-[var(--theme-primary)] hover:text-[var(--theme-on-primary)] rounded-lg text-[var(--theme-muted)] transition-all shadow-lg border border-[var(--theme-border)] shrink-0`}
-                        >
-                            <SarakIcon name="Menu" size={16} />
-                        </button>
+                            variant="secondary"
+                            size="sm"
+                            className="shrink-0"
+                            icon={<SarakIcon name="Menu" size={16} />}
+                        />
 
                         <div className={`flex items-center gap-3 ${!effectiveIsNavHidden ? 'pr-6 border-r border-[var(--theme-border)]' : ''} shrink-0`}>
                             {logoUrl ? (
@@ -114,21 +117,23 @@ export const TopbarNav: React.FC<TopbarNavProps> = ({
                             }}
                         >
                             {discoveredModules.filter(m => m.status === 'online').map(mod => (
-                                <button
+                                <SarakButton
                                     key={mod.id}
+                                    variant="ghost"
+                                    size="xs"
                                     onClick={() => setActiveModuleId(mod.id)}
                                     title={mod.label}
-                                    className={`flex items-center justify-center transition-all whitespace-nowrap font-tab shrink-0 
+                                    className={`whitespace-nowrap font-tab shrink-0
                                         ${effectiveIsNavHidden
-                                            ? `w-8 h-8 rounded-lg ${activeModuleId === mod.id ? 'bg-[var(--sarak-topbar-active-color,rgba(var(--theme-primary-rgb),0.2))] text-[var(--theme-primary)]' : 'text-[var(--theme-muted)] hover:text-[var(--theme-title)] hover:bg-[var(--theme-muted)]/10'}`
-                                            : `px-4 py-1.5 rounded-full text-2xs font-black uppercase tracking-widest ${activeModuleId === mod.id ? 'bg-[var(--sarak-topbar-active-color,var(--theme-primary))] text-[var(--theme-on-primary)] shadow-lg shadow-[var(--theme-primary)]/30 scale-105' : 'text-[var(--theme-muted)] hover:text-[var(--theme-title)] hover:bg-[var(--theme-muted)]/10'}`
+                                            ? `w-8 h-8 !p-0 rounded-lg ${activeModuleId === mod.id ? 'bg-[var(--sarak-topbar-active-color,rgba(var(--theme-primary-rgb),0.2))] text-[var(--theme-primary)]' : 'text-[var(--theme-muted)] hover:text-[var(--theme-title)] hover:bg-[var(--theme-muted)]/10'}`
+                                            : `rounded-full text-2xs ${activeModuleId === mod.id ? 'bg-[var(--sarak-topbar-active-color,var(--theme-primary))] text-[var(--theme-on-primary)] shadow-lg shadow-[var(--theme-primary)]/30 scale-105' : 'text-[var(--theme-muted)] hover:text-[var(--theme-title)] hover:bg-[var(--theme-muted)]/10'}`
                                         }
                                     `}
                                 >
                                     {effectiveIsNavHidden ? (
                                         <div className="scale-75"><IconRenderer name={mod.icon} /></div>
                                     ) : mod.label}
-                                </button>
+                                </SarakButton>
                             ))}
                         </nav>
                     )}
@@ -151,10 +156,15 @@ export const TopbarNav: React.FC<TopbarNavProps> = ({
 
                         <ShellThemeToggle variant="horizontal" />
 
-                        <button className="p-1.5 text-[var(--theme-muted)] hover:text-[var(--theme-title)] transition-colors relative">
-                            <SarakIcon name="Bell" size={14} />
-                            <div className="absolute top-1.5 right-1.5 w-1 h-1 bg-[var(--theme-primary)] rounded-full border border-[var(--theme-card)]" />
-                        </button>
+                        <SarakIconButton
+                            variant="ghost"
+                            size="xs"
+                            className="relative text-[var(--theme-muted)] hover:text-[var(--theme-title)]"
+                            icon={<>
+                                <SarakIcon name="Bell" size={14} />
+                                <div className="absolute top-1.5 right-1.5 w-1 h-1 bg-[var(--theme-primary)] rounded-full border border-[var(--theme-card)]" />
+                            </>}
+                        />
                         {extraToolbarItems}
                     </div>
 

@@ -3,6 +3,9 @@ import { render, screen, fireEvent } from '@testing-library/react';
 import '@testing-library/jest-dom';
 import { describe, it, expect, vi } from 'vitest';
 import { ShellUserWidget } from '../ShellUserWidget';
+import { SarakUIProvider } from '../../../Provider/SarakUIProvider';
+
+const renderWithProvider = (ui: React.ReactElement) => render(<SarakUIProvider>{ui}</SarakUIProvider>);
 
 vi.mock('../../../../components/atomic/Icon/SarakIcon', () => ({
     SarakIcon: ({ name }: any) => <span>{name}</span>
@@ -13,7 +16,7 @@ describe('ShellUserWidget', () => {
     const logoutMock = vi.fn();
 
     it('renderiza na variante vertical', () => {
-        render(<ShellUserWidget user={user} logout={logoutMock} variant="vertical" />);
+        renderWithProvider(<ShellUserWidget user={user} logout={logoutMock} variant="vertical" />);
         expect(screen.getByText('testuser')).toBeInTheDocument();
         expect(screen.getByText('Master')).toBeInTheDocument();
         
@@ -23,7 +26,7 @@ describe('ShellUserWidget', () => {
     });
 
     it('renderiza na variante horizontal', () => {
-        render(<ShellUserWidget user={user} logout={logoutMock} variant="horizontal" />);
+        renderWithProvider(<ShellUserWidget user={user} logout={logoutMock} variant="horizontal" />);
         expect(screen.getByText('testuser')).toBeInTheDocument();
     });
 });

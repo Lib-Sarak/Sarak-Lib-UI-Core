@@ -1,6 +1,8 @@
 import React from 'react';
 import { Sun, Moon } from 'lucide-react';
 import { useSarakUI } from '../../Provider/SarakUIProvider';
+import { SarakIconButton } from '../../../components/atomic/Buttons/SarakIconButton';
+import { SarakButton } from '../../../components/atomic/Buttons/SarakButton';
 
 interface ShellThemeToggleProps {
     variant?: 'horizontal' | 'vertical' | 'mini';
@@ -18,42 +20,46 @@ export const ShellThemeToggle: React.FC<ShellThemeToggleProps> = ({ variant = 'h
 
     if (variant === 'mini') {
         return (
-            <button 
+            <SarakIconButton
                 onClick={toggleTheme}
-                className="w-full flex justify-center p-2.5 rounded-xl text-[var(--theme-muted)] hover:bg-[var(--theme-muted)]/10 hover:text-[var(--theme-title)] transition-all"
+                variant="ghost"
+                size="md"
+                className="w-full rounded-xl text-[var(--theme-muted)] hover:bg-[var(--theme-muted)]/10 hover:text-[var(--theme-title)]"
                 title={`Mudar para modo ${isDarkMode ? 'claro' : 'escuro'}`}
-            >
-                {isDarkMode ? <Sun size={18} /> : <Moon size={18} />}
-            </button>
+                icon={isDarkMode ? <Sun size={18} /> : <Moon size={18} />}
+            />
         );
     }
 
     if (variant === 'vertical') {
         return (
-            <button 
+            <SarakButton
                 onClick={toggleTheme}
-                className="w-full flex items-center gap-3 px-3 py-2.5 rounded-xl text-[var(--theme-muted)] hover:bg-[var(--theme-muted)]/10 hover:text-[var(--theme-title)] transition-all group"
-            >
-                {isDarkMode ? (
+                variant="ghost"
+                fullWidth
+                className="text-[var(--theme-muted)] hover:bg-[var(--theme-muted)]/10 hover:text-[var(--theme-title)] group justify-start normal-case font-tab tracking-normal"
+                leftIcon={isDarkMode ? (
                     <Sun size={18} className="text-[var(--theme-muted)] group-hover:text-[var(--theme-primary)]" />
                 ) : (
                     <Moon size={18} className="text-[var(--theme-muted)] group-hover:text-[var(--theme-primary)]" />
                 )}
+            >
                 <span className="text-sm font-tab flex-1 text-left">
                     {isDarkMode ? 'Light Mode' : 'Dark Mode'}
                 </span>
-            </button>
+            </SarakButton>
         );
     }
 
     // Horizontal Variant (Topbar)
     return (
-        <button 
+        <SarakIconButton
             onClick={toggleTheme}
-            className="p-1.5 text-[var(--theme-muted)] hover:text-[var(--theme-title)] hover:bg-[var(--theme-muted)]/10 rounded-md transition-colors relative"
+            variant="ghost"
+            size="xs"
+            className="relative text-[var(--theme-muted)] hover:text-[var(--theme-title)] hover:bg-[var(--theme-muted)]/10"
             title={`Mudar para modo ${isDarkMode ? 'claro' : 'escuro'}`}
-        >
-            {isDarkMode ? <Sun size={16} /> : <Moon size={16} />}
-        </button>
+            icon={isDarkMode ? <Sun size={16} /> : <Moon size={16} />}
+        />
     );
 };

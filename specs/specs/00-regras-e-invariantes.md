@@ -962,7 +962,7 @@ e a correção é criar o token (R11 → Expansão), não remendar do lado de fo
 | R4 | Paridade 3 fontes | ⚠️ | `auditor_paridade.mjs` → `verify_parity.ts` — **não vê o tipo gerado** | idem |
 | R5 | Zero chave órfã | ✅ | `auditor_presets.mjs` → `verify_presets.ts` (+ `verify_theme_parity.ts` ⏳) | idem |
 | R6 | Contrato de valor | ✅ | `validateDesign` + `tokenContractParity.test.ts` | `npx vitest run` |
-| R7 | Namespace e fallback | ⚠️ | `auditor_ghostvars.mjs` — **não vê `src/styles/` nem `src/core/`** | `npm run audit` |
+| R7 | Namespace e fallback | ⚠️ | `auditor_ghostvars.mjs` — vê os 4 `CONSUMER_DIRS`, mas **valida só o NOME, nunca a sintaxe do fallback**, e **aceita nome que o manifesto declara e o runtime nunca emite** | `npm run audit` |
 | R8 | Cobertura 1:1 | ⚠️ | `auditor_coverage.mjs` — **não vê `src/shared/`**; % em `plan-12` | idem |
 | R9 | Clean Code | ✅ | `auditor_cleancode.mjs` | idem |
 | R10 | Composição atômica | ⚠️ | `auditor_composicaoatomica.mjs` — **só HTML nativo cru**; `switch` de design sem detector | `npm run audit` |
@@ -975,14 +975,14 @@ e a correção é criar o token (R11 → Expansão), não remendar do lado de fo
 | R20 | Baseline não regride | ✅ | `check-audit-baseline.mjs` (Anel 2) | `npm run audit:baseline` |
 | R21 | Artefato mudou, exige tag | ✅ | `check-release-tag.mjs` (`pre-push`) | `npm run release:check` |
 | R22 | Zero segredo no staged | ✅ | `verificar_commit.py` (Anel 0) | `python gates/scripts/segredo/verificar_commit.py --raiz .` |
-| R23 | Zero ponteiro morto no gerado | ⚠️ | `dev-kit/deadPointers.mjs` — **só `sarak-dev/`, sem `§N.N`** | `npm run dev-kit:check` |
+| R23 | Zero ponteiro morto no gerado | ⚠️ | `dev-kit/deadPointers.mjs` (caminhos/comandos em `sarak-dev/`) **+** `check-section-pointers.mjs` (`§N.N`, escopo amplo) — este **não resolve cross-documento**: cobre 271 de 455 ponteiros | `npm run dev-kit:check` |
 | R24 | CSS não vaza no host | ✅ | `scopeCss.test.ts` · `EmbeddedMode.test.tsx` | `npx vitest run` |
 | R25 | Temas shippados sem ruído | ✅ | `shippedThemesConsoleClean.test.ts` | `npx vitest run` |
 | R26 | Paridade de ícones | ✅ | `iconCatalogParity.test.ts` · `iconContract.test.tsx` | `npx vitest run` |
 | R27 | Zero deep import | ✅ | `check-no-deep-import.mjs` | `npm run deep-import:check` |
 | R28 | Contrato de saída do CLI | ✅ | `checkUpdateCli.contract.test.mjs` (8 casos) | `npx vitest run` |
 | R29 | Gerado bate com a fonte | ⚠️ | 3 geradores com `--check`; `generate-token-types.ts` e `generate-build-info.mjs` **sem** | `npm run catalog:check` … |
-| R30 | O TypeScript compila | ⚠️ | contagem no Anel 2 (`--with-tsc`), **não verde** — 14 erros | `npx tsc --noEmit` |
+| R30 | O TypeScript compila | ⚠️ | **0 erros, produção e teste** *(medido 2026-08-08)*; baseline em 0 ⇒ qualquer erro novo bloqueia. O vão que resta é o **gatilho**: o `--with-tsc` do Anel 2 só liga quando o staged tem `.ts`/`.tsx` | `npx tsc --noEmit` |
 | R31 | Contraste AA nos 18 temas | ⏳ | **a construir** — 0 cálculos de contraste em `src/` | — |
 | R32 | Indiferente à autenticação | ✅ | `auditor_authcoupling.mjs` — nasce verde | `npm run audit` |
 | **R11** | **Configuração × Expansão** | **🔴** | **nenhum — CONDUTA** | — |

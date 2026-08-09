@@ -7,6 +7,7 @@ import { useSarakUI } from '../../../core/Provider/SarakUIProvider';
 import { useCardLayoutStyles } from './hooks/useCardLayoutStyles';
 import { useExpandableCard } from './hooks/useExpandableCard';
 import { useStructuralStyles } from '../hooks/useStructuralStyles';
+import { SarakIconButton } from '../Buttons/SarakIconButton';
 
 export interface ExpandableCardProps {
     title: string;
@@ -51,14 +52,15 @@ export const ExpandableCard: React.FC<ExpandableCardProps> = ({
                     </h3>
                     <div className="flex items-center shrink-0" style={{ gap: 'var(--sarak-layout-gap-sm, 8px)' }}>
                         {helpButton}
-                        <button
+                        <SarakIconButton
                             onClick={() => setIsExpanded(true)}
-                            className="text-theme-muted hover:text-theme-primary hover:bg-theme-primary/10 rounded-lg transition-sarak cursor-pointer"
+                            variant="ghost"
+                            size="xs"
+                            className="text-theme-muted hover:text-theme-primary hover:bg-theme-primary/10 rounded-lg"
                             style={{ padding: 'calc(var(--sarak-layout-gap-md, 16px) * 0.375)' }}
                             title="Expandir Tela Cheia"
-                        >
-                            <Maximize2 className="w-4 h-4" />
-                        </button>
+                            icon={<Maximize2 className="w-4 h-4" />}
+                        />
                     </div>
                 </div>
                 <div className={`w-full flex-1 relative p-[var(--sarak-card-padding-md,24px)] ${contentClassName}`} style={dynamicStyle}>
@@ -97,14 +99,15 @@ export const ExpandableCard: React.FC<ExpandableCardProps> = ({
                                     </h3>
                                     <div className="flex items-center flex-wrap justify-end" style={{ gap: 'var(--sarak-layout-gap-md, 16px)' }}>
                                         {helpButton && <div className="flex items-center">{helpButton}</div>}
-                                        <button
+                                        <SarakIconButton
                                             onClick={() => setIsExpanded(false)}
-                                            className="bg-[var(--color-theme-card,#1e293b)] hover:bg-theme-primary/20 text-theme-primary border border-[var(--border-color,#334155)]-border rounded-sarak transition-sarak shadow-lg cursor-pointer shrink-0"
+                                            variant="secondary"
+                                            size="lg"
+                                            className="bg-[var(--color-theme-card,#1e293b)] hover:bg-theme-primary/20 text-theme-primary border border-[var(--border-color,#334155)]-border rounded-sarak shadow-lg shrink-0"
                                             style={{ padding: 'calc(var(--sarak-layout-gap-md, 16px) * 0.75)', marginLeft: 'var(--sarak-layout-gap-sm, 8px)' }}
                                             title="Fechar"
-                                        >
-                                            <X className="w-5 h-5 sm:w-6 sm:h-6" />
-                                        </button>
+                                            icon={<X className="w-5 h-5 sm:w-6 sm:h-6" />}
+                                        />
                                     </div>
                                 </div>
                                 <div

@@ -3,6 +3,7 @@ import { Globe, Check, ChevronDown } from 'lucide-react';
 import { motion, AnimatePresence } from 'framer-motion';
 
 import { getLocalComponent } from '../../Discovery/registry';
+import { SarakButton } from '../../../components/atomic/Buttons/SarakButton';
 
 interface ShellLanguageSelectorProps {
     variant?: 'horizontal' | 'vertical';
@@ -42,30 +43,33 @@ export const ShellLanguageSelector: React.FC<ShellLanguageSelectorProps> = ({
 
     return (
         <div className="relative">
-            <button 
+            <SarakButton
+                variant="ghost"
                 onClick={() => setIsOpen(!isOpen)}
-                className={`flex items-center gap-2 transition-all group ${
-                    isHorizontal 
-                        ? 'h-9 px-3 rounded-xl bg-[var(--theme-muted)]/10 border border-[var(--theme-border)] hover:border-[var(--theme-primary)]/40 hover:bg-[var(--theme-muted)]/15' 
-                        : 'w-full px-3 py-2.5 rounded-xl text-[var(--theme-muted)] hover:bg-[var(--theme-muted)]/10 hover:text-[var(--theme-title)]'
+                className={`group normal-case font-tab tracking-normal ${
+                    isHorizontal
+                        ? 'h-9 rounded-xl bg-[var(--theme-muted)]/10 border border-[var(--theme-border)] hover:border-[var(--theme-primary)]/40 hover:bg-[var(--theme-muted)]/15'
+                        : 'w-full rounded-xl text-[var(--theme-muted)] hover:bg-[var(--theme-muted)]/10 hover:text-[var(--theme-title)] justify-start'
                 }`}
             >
-                {isHorizontal ? (
-                    <>
-                        <span className="text-2xs">{currentLang.flag}</span>
-                        <span className="text-3xs font-black uppercase tracking-widest text-[var(--theme-title)]/60 group-hover:text-[var(--theme-title)]">
-                            {currentLang.code.split('-')[0]}
-                        </span>
-                        <ChevronDown size={10} className={`text-[var(--theme-muted)] transition-transform ${isOpen ? 'rotate-180' : ''}`} />
-                    </>
-                ) : (
-                    <>
-                        <Globe size={18} className="text-[var(--theme-muted)] group-hover:text-[var(--theme-primary)]" />
-                        <span className="text-sm font-tab flex-1 text-left">Language</span>
-                        <span className="text-2xs font-bold text-[var(--theme-primary)]">{currentLang.code.split('-')[0].toUpperCase()}</span>
-                    </>
-                )}
-            </button>
+                <div className="flex items-center gap-2 w-full">
+                    {isHorizontal ? (
+                        <>
+                            <span className="text-2xs">{currentLang.flag}</span>
+                            <span className="text-3xs font-black uppercase tracking-widest text-[var(--theme-title)]/60 group-hover:text-[var(--theme-title)]">
+                                {currentLang.code.split('-')[0]}
+                            </span>
+                            <ChevronDown size={10} className={`text-[var(--theme-muted)] transition-transform ${isOpen ? 'rotate-180' : ''}`} />
+                        </>
+                    ) : (
+                        <>
+                            <Globe size={18} className="text-[var(--theme-muted)] group-hover:text-[var(--theme-primary)]" />
+                            <span className="text-sm font-tab flex-1 text-left">Language</span>
+                            <span className="text-2xs font-bold text-[var(--theme-primary)]">{currentLang.code.split('-')[0].toUpperCase()}</span>
+                        </>
+                    )}
+                </div>
+            </SarakButton>
 
             <AnimatePresence>
                 {isOpen && (
@@ -78,24 +82,28 @@ export const ShellLanguageSelector: React.FC<ShellLanguageSelectorProps> = ({
                         }`}
                     >
                         {LANGUAGES.map((lang) => (
-                            <button
+                            <SarakButton
                                 key={lang.code}
+                                variant="ghost"
+                                fullWidth
                                 onClick={() => {
                                     setCurrentLang(lang);
                                     setIsOpen(false);
                                 }}
-                                className={`w-full flex items-center justify-between px-3 py-2 rounded-lg text-2xs font-bold uppercase tracking-wider transition-all ${
-                                    currentLang.code === lang.code 
-                                        ? 'bg-[var(--theme-primary)] text-[var(--theme-on-primary)]' 
+                                className={`rounded-lg text-2xs tracking-wider ${
+                                    currentLang.code === lang.code
+                                        ? 'bg-[var(--theme-primary)] text-[var(--theme-on-primary)]'
                                         : 'text-[var(--theme-muted)] hover:bg-[var(--theme-muted)]/10 hover:text-[var(--theme-title)]'
                                 }`}
                             >
-                                <div className="flex items-center gap-2">
-                                    <span>{lang.flag}</span>
-                                    <span>{lang.label}</span>
+                                <div className="flex items-center justify-between w-full">
+                                    <div className="flex items-center gap-2">
+                                        <span>{lang.flag}</span>
+                                        <span>{lang.label}</span>
+                                    </div>
+                                    {currentLang.code === lang.code && <Check size={10} />}
                                 </div>
-                                {currentLang.code === lang.code && <Check size={10} />}
-                            </button>
+                            </SarakButton>
                         ))}
                     </motion.div>
                 )}

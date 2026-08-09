@@ -3,6 +3,9 @@ import { render, screen, fireEvent } from '@testing-library/react';
 import '@testing-library/jest-dom';
 import { describe, it, expect, vi } from 'vitest';
 import { SidebarNav } from '../SidebarNav';
+import { SarakUIProvider } from '../../../Provider/SarakUIProvider';
+
+const renderWithProvider = (ui: React.ReactElement) => render(<SarakUIProvider>{ui}</SarakUIProvider>);
 
 vi.mock('framer-motion', async () => {
     const actual = await vi.importActual('framer-motion');
@@ -33,7 +36,7 @@ describe('SidebarNav', () => {
     };
 
     it('renderiza o sistema e módulos', () => {
-        render(<SidebarNav {...defaultProps} />);
+        renderWithProvider(<SidebarNav {...defaultProps} />);
         expect(screen.getByText('Test System')).toBeInTheDocument();
         expect(screen.getByText('Module 1')).toBeInTheDocument();
         expect(screen.getByTestId('mock-search')).toBeInTheDocument();
@@ -41,7 +44,7 @@ describe('SidebarNav', () => {
     });
 
     it('chama setActiveModuleId ao clicar em um módulo online', () => {
-        render(<SidebarNav {...defaultProps} />);
+        renderWithProvider(<SidebarNav {...defaultProps} />);
         const btn = screen.getByRole('button', { name: /Module 1/i });
         fireEvent.click(btn);
         expect(defaultProps.setActiveModuleId).toHaveBeenCalledWith('m1');

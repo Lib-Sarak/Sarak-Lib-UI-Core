@@ -6,6 +6,7 @@ import { Send, Paperclip, User, Bot, Sparkles } from 'lucide-react';
 import { motion, AnimatePresence } from 'framer-motion';
 import { useSarakUI } from '../../../core/Provider/SarakUIProvider';
 import { SarakInput } from '../../../components/atomic/Inputs/SarakInput';
+import { SarakIconButton } from '../../../components/atomic/Buttons/SarakIconButton';
 
 interface Message {
     id: string;
@@ -192,23 +193,22 @@ const SarakChatEngine: React.FC<SarakChatEngineProps> = ({
                         borderRadius: 'var(--sarak-chat-radius, 12px)'
                     }}
                 >
-                    <button type="button" className="p-2 text-white/20 hover:text-white transition-colors">
-                        <Paperclip size={18} />
-                    </button>
-                    <SarakInput 
+                    <SarakIconButton type="button" variant="ghost" size="sm" className="text-white/20 hover:text-white" icon={<Paperclip size={18} />} />
+                    <SarakInput
                         value={input}
                         onChange={(e) => setInput(e.target.value)}
                         placeholder={placeholder}
                         className="!bg-transparent !border-none !outline-none !shadow-none !text-white flex-1"
                         fullWidth
                     />
-                    <button 
-                        type="submit" 
+                    <SarakIconButton
+                        type="submit"
+                        variant="ghost"
+                        size="sm"
                         disabled={!input.trim() || isLoading}
-                        className={`p-2 rounded-xl transition-all ${input.trim() && !isLoading ? 'bg-[var(--theme-primary)] text-white shadow-lg shadow-[var(--theme-primary)]/20' : 'bg-white/5 text-white/10'}`}
-                    >
-                        <Send size={18} />
-                    </button>
+                        className={`rounded-xl ${input.trim() && !isLoading ? 'bg-[var(--theme-primary)] text-white shadow-lg shadow-[var(--theme-primary)]/20' : 'bg-white/5 text-white/10'}`}
+                        icon={<Send size={18} />}
+                    />
                 </form>
             </div>
         </div>

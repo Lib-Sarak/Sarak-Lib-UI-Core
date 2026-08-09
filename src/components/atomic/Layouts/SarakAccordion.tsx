@@ -1,5 +1,6 @@
 import React, { useState, useRef, useEffect } from 'react';
 import { useSarakUI } from '../../../core/Provider/SarakUIProvider';
+import { SarakButton } from '../Buttons/SarakButton';
 
 export interface SarakAccordionProps {
     title: React.ReactNode;
@@ -61,24 +62,28 @@ export const SarakAccordion: React.FC<SarakAccordionProps> = ({
                 borderRadius
             }}
         >
-            <button
+            <SarakButton
                 type="button"
-                className="flex items-center justify-between w-full text-left focus:outline-none transition-colors hover:bg-white/5"
+                variant="ghost"
+                fullWidth
+                className="justify-between text-left normal-case font-normal tracking-normal hover:bg-white/5"
                 style={{ padding: 'var(--sarak-layout-gap-md, 16px)' }}
                 onClick={toggleOpen}
             >
-                <div className="flex-1">{title}</div>
-                <div 
-                    className="transform transition-transform"
-                    style={{ 
-                        transitionDuration: animDuration, 
-                        transitionTimingFunction: animEasing,
-                        transform: isOpen ? 'rotate(180deg)' : 'rotate(0deg)'
-                    }}
-                >
-                    ▼
+                <div className="flex items-center justify-between w-full">
+                    <div className="flex-1">{title}</div>
+                    <div
+                        className="transform transition-transform"
+                        style={{
+                            transitionDuration: animDuration,
+                            transitionTimingFunction: animEasing,
+                            transform: isOpen ? 'rotate(180deg)' : 'rotate(0deg)'
+                        }}
+                    >
+                        ▼
+                    </div>
                 </div>
-            </button>
+            </SarakButton>
             <div 
                 className="overflow-hidden transition-all"
                 style={{ 

@@ -1,6 +1,8 @@
 import React from 'react';
 import { motion } from 'framer-motion';
 import { SarakIcon } from '../../../components/atomic/Icon/SarakIcon';
+import { SarakButton } from '../../../components/atomic/Buttons/SarakButton';
+import { SarakIconButton } from '../../../components/atomic/Buttons/SarakIconButton';
 import { IconRenderer } from './IconRenderer';
 import { DiscoveredModule } from '../../../core/Discovery/types';
 import { SarakDesignState } from '../../../core/Provider/types';
@@ -115,9 +117,12 @@ export const SidebarNav: React.FC<SidebarNavProps> = ({
                 )}
 
                 {!effectiveIsNavHidden && logoPosition !== 'center' && (
-                    <button onClick={toggleNav} className="p-1.5 hover:bg-[var(--theme-muted)]/10 rounded-md text-[var(--theme-muted)] hover:text-[var(--theme-title)] transition-colors">
-                        <SarakIcon name="ChevronLeft" size={16} />
-                    </button>
+                    <SarakIconButton
+                        onClick={toggleNav}
+                        variant="ghost"
+                        size="sm"
+                        icon={<SarakIcon name="ChevronLeft" size={16} />}
+                    />
                 )}
             </div>
 
@@ -132,21 +137,25 @@ export const SidebarNav: React.FC<SidebarNavProps> = ({
                             {mods.map(mod => {
                                 const isOffline = mod.status === 'offline';
                                 return (
-                                    <button
+                                    <SarakButton
                                         key={mod.id}
+                                        variant="ghost"
+                                        fullWidth
                                         onClick={() => !isOffline && setActiveModuleId(mod.id)}
                                         disabled={isOffline}
                                         title={isOffline ? `Offline Module: ${mod.error || 'Connection error'}` : mod.label}
-                                        className={`w-full flex items-center gap-3 px-3 py-2.5 rounded-xl transition-all relative group font-tab 
+                                        leftIcon={
+                                            <div className={`shrink-0 ${effectiveIsNavHidden ? 'mx-auto' : ''}`}>
+                                                <IconRenderer name={mod.icon} className={activeModuleId === mod.id ? 'text-[var(--theme-primary)]' : 'text-[var(--theme-muted)]'} />
+                                            </div>
+                                        }
+                                        className={`relative group justify-start normal-case font-tab tracking-normal
                                             ${activeModuleId === mod.id
                                                 ? 'bg-[var(--sarak-sidebar-active-color,rgba(var(--theme-primary-rgb),0.1))] text-[var(--theme-primary)] font-bold shadow-[inset_0_0_20px_rgba(var(--theme-primary-rgb),0.05)]'
                                                 : 'text-[var(--theme-muted)] hover:bg-[var(--theme-muted)]/10 hover:text-[var(--theme-title)]'}
                                             ${isOffline ? 'opacity-30 grayscale cursor-not-allowed border border-dashed border-[var(--theme-border)]' : ''}
                                         `}
                                     >
-                                        <div className={`shrink-0 ${effectiveIsNavHidden ? 'mx-auto' : ''}`}>
-                                            <IconRenderer name={mod.icon} className={activeModuleId === mod.id ? 'text-[var(--theme-primary)]' : 'text-[var(--theme-muted)]'} />
-                                        </div>
                                         {!effectiveIsNavHidden && (
                                             <div className="flex flex-col items-start overflow-hidden">
                                                 <span className="text-sm truncate">{mod.label}</span>
@@ -155,7 +164,7 @@ export const SidebarNav: React.FC<SidebarNavProps> = ({
                                         )}
                                         {activeModuleId === mod.id && <motion.div layoutId="active-pill" className="absolute left-0 w-1 h-4 bg-[var(--theme-primary)] rounded-full shadow-[0_0_15px_var(--theme-primary)]" />}
                                         {isOffline && <div className="absolute right-2 top-1/2 -translate-y-1/2 w-1.5 h-1.5 rounded-full bg-[var(--theme-error)] animate-pulse shadow-[0_0_5px_var(--theme-error)]" />}
-                                    </button>
+                                    </SarakButton>
                                 );
                             })}
                         </div>
@@ -174,11 +183,17 @@ export const SidebarNav: React.FC<SidebarNavProps> = ({
                 <ShellThemeToggle variant={effectiveIsNavHidden ? 'mini' : 'vertical'} />
 
                 {/* 3. Notifications */}
-                <button className={`w-full flex items-center gap-3 px-3 py-2.5 rounded-xl text-[var(--theme-muted)] hover:bg-[var(--theme-muted)]/10 hover:text-[var(--theme-title)] transition-all group ${effectiveIsNavHidden ? 'justify-center' : ''}`}>
-                    <SarakIcon name="Bell" size={18} className="text-[var(--theme-muted)] group-hover:text-[var(--theme-primary)]" />
-                    {!effectiveIsNavHidden && <span className="text-sm font-tab flex-1 text-left">Notifications</span>}
-                    <div className="w-1.5 h-1.5 bg-[var(--theme-primary)] rounded-full shadow-[0_0_5px_var(--theme-primary)]" />
-                </button>
+                <SarakButton
+                    variant="ghost"
+                    fullWidth
+                    leftIcon={<SarakIcon name="Bell" size={18} className="text-[var(--theme-muted)] group-hover:text-[var(--theme-primary)]" />}
+                    className={`text-[var(--theme-muted)] hover:bg-[var(--theme-muted)]/10 hover:text-[var(--theme-title)] group normal-case font-tab tracking-normal ${effectiveIsNavHidden ? 'justify-center' : 'justify-start'}`}
+                >
+                    <div className="flex items-center w-full">
+                        {!effectiveIsNavHidden && <span className="text-sm font-tab flex-1 text-left">Notifications</span>}
+                        <div className="w-1.5 h-1.5 bg-[var(--theme-primary)] rounded-full shadow-[0_0_5px_var(--theme-primary)]" />
+                    </div>
+                </SarakButton>
             </div>
 
             {/* 4. User Profile & Logout */}

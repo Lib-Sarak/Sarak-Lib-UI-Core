@@ -40,16 +40,16 @@ export const SarakAnalyticalPage: React.FC<SarakAnalyticalPageProps> = ({
                 {(navBar || sidePanel) && (
                     <div className="flex items-center justify-between p-4 border-b border-[var(--border-color,#334155)] bg-[var(--color-theme-card,#1e293b)] z-20 shrink-0">
                         {navBar ? (
-                            <button 
+                            <button
                                 onClick={() => setIsMobileNavOpen(true)}
                                 className="p-2 rounded-lg bg-[var(--color-theme-card,#1e293b)] hover:bg-[var(--color-theme-card, #1e293b)] transition-colors"
                             >
                                 <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><line x1="3" y1="12" x2="21" y2="12"></line><line x1="3" y1="6" x2="21" y2="6"></line><line x1="3" y1="18" x2="21" y2="18"></line></svg>
                             </button>
                         ) : <div />}
-                        
+
                         {sidePanel && (
-                            <button 
+                            <button
                                 onClick={() => setIsSidePanelOpen(true)}
                                 className="p-2 rounded-lg bg-[var(--color-theme-card,#1e293b)] hover:bg-[var(--color-theme-card, #1e293b)] transition-colors"
                             >

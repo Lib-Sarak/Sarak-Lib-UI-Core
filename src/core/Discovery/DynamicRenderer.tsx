@@ -89,7 +89,7 @@ export const DynamicRenderer: React.FC<DynamicRendererProps> = ({ contracts, mod
                                 }`}
                             >
                                 {activeTab === name && (
-                                    <motion.div 
+                                    <motion.div
                                         layoutId="activeTabMarker"
                                         className="absolute inset-0 bg-primary-600 rounded-[var(--radius-btn)] shadow-lg shadow-primary-500/20"
                                         transition={{ type: 'spring', bounce: 0.2, duration: 0.6 }}

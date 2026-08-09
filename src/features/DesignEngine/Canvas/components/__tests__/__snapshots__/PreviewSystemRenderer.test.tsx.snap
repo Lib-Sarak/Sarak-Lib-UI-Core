@@ -766,7 +766,7 @@ exports[`PreviewSystemRenderer > should render and match snapshot 1`] = `
             </span>
           </div>
           <button
-            class="p-1.5 hover:bg-[var(--theme-muted)]/10 rounded-md text-[var(--theme-muted)] hover:text-[var(--theme-title)] transition-colors"
+            class="inline-flex items-center justify-center transition-all focus:outline-none rounded-btn flex-shrink-0 w-8 h-8 text-sm bg-transparent text-[var(--sarak-primary-color,#3b82f6)] hover:bg-white/5 active:scale-[0.98]  "
           >
             <svg
               class=""
@@ -852,49 +852,55 @@ exports[`PreviewSystemRenderer > should render and match snapshot 1`] = `
             class="relative"
           >
             <button
-              class="flex items-center gap-2 transition-all group w-full px-3 py-2.5 rounded-xl text-[var(--theme-muted)] hover:bg-[var(--theme-muted)]/10 hover:text-[var(--theme-title)]"
+              class="flex justify-center items-center gap-2 w-max min-w-fit flex-row font-black uppercase tracking-widest transition-all focus:outline-none rounded-btn py-4 px-6 text-sm bg-transparent text-[var(--sarak-primary-color,#3b82f6)] hover:bg-white/5 active:scale-[0.98]   group normal-case font-tab tracking-normal w-full rounded-xl text-[var(--theme-muted)] hover:bg-[var(--theme-muted)]/10 hover:text-[var(--theme-title)] justify-start"
             >
-              <svg
-                class="text-[var(--theme-muted)] group-hover:text-[var(--theme-primary)]"
-                fill="none"
-                height="18"
-                stroke="currentColor"
-                stroke-linecap="round"
-                stroke-linejoin="round"
-                stroke-width="2"
-                viewBox="0 0 24 24"
-                width="18"
-                xmlns="http://www.w3.org/2000/svg"
-              >
-                <circle
-                  cx="12"
-                  cy="12"
-                  r="10"
-                />
-                <line
-                  x1="2"
-                  x2="22"
-                  y1="12"
-                  y2="12"
-                />
-                <path
-                  d="M12 2a15.3 15.3 0 0 1 4 10 15.3 15.3 0 0 1-4 10 15.3 15.3 0 0 1-4-10 15.3 15.3 0 0 1 4-10z"
-                />
-              </svg>
-              <span
-                class="text-sm font-tab flex-1 text-left"
-              >
-                Language
-              </span>
-              <span
-                class="text-2xs font-bold text-[var(--theme-primary)]"
-              >
-                PT
+              <span>
+                <div
+                  class="flex items-center gap-2 w-full"
+                >
+                  <svg
+                    class="text-[var(--theme-muted)] group-hover:text-[var(--theme-primary)]"
+                    fill="none"
+                    height="18"
+                    stroke="currentColor"
+                    stroke-linecap="round"
+                    stroke-linejoin="round"
+                    stroke-width="2"
+                    viewBox="0 0 24 24"
+                    width="18"
+                    xmlns="http://www.w3.org/2000/svg"
+                  >
+                    <circle
+                      cx="12"
+                      cy="12"
+                      r="10"
+                    />
+                    <line
+                      x1="2"
+                      x2="22"
+                      y1="12"
+                      y2="12"
+                    />
+                    <path
+                      d="M12 2a15.3 15.3 0 0 1 4 10 15.3 15.3 0 0 1-4 10 15.3 15.3 0 0 1-4-10 15.3 15.3 0 0 1 4-10z"
+                    />
+                  </svg>
+                  <span
+                    class="text-sm font-tab flex-1 text-left"
+                  >
+                    Language
+                  </span>
+                  <span
+                    class="text-2xs font-bold text-[var(--theme-primary)]"
+                  >
+                    PT
+                  </span>
+                </div>
               </span>
             </button>
           </div>
           <button
-            class="w-full flex items-center gap-3 px-3 py-2.5 rounded-xl text-[var(--theme-muted)] hover:bg-[var(--theme-muted)]/10 hover:text-[var(--theme-title)] transition-all group"
+            class="flex justify-center items-center gap-2 w-max min-w-fit flex-row font-black uppercase tracking-widest transition-all focus:outline-none rounded-btn py-4 px-6 text-sm bg-transparent text-[var(--sarak-primary-color,#3b82f6)] hover:bg-white/5 active:scale-[0.98] w-full  text-[var(--theme-muted)] hover:bg-[var(--theme-muted)]/10 hover:text-[var(--theme-title)] group justify-start normal-case font-tab tracking-normal"
           >
             <svg
               class="text-[var(--theme-muted)] group-hover:text-[var(--theme-primary)]"
@@ -938,14 +944,16 @@ exports[`PreviewSystemRenderer > should render and match snapshot 1`] = `
                 d="m19.07 4.93-1.41 1.41"
               />
             </svg>
-            <span
-              class="text-sm font-tab flex-1 text-left"
-            >
-              Light Mode
+            <span>
+              <span
+                class="text-sm font-tab flex-1 text-left"
+              >
+                Light Mode
+              </span>
             </span>
           </button>
           <button
-            class="w-full flex items-center gap-3 px-3 py-2.5 rounded-xl text-[var(--theme-muted)] hover:bg-[var(--theme-muted)]/10 hover:text-[var(--theme-title)] transition-all group "
+            class="flex justify-center items-center gap-2 w-max min-w-fit flex-row font-black uppercase tracking-widest transition-all focus:outline-none rounded-btn py-4 px-6 text-sm bg-transparent text-[var(--sarak-primary-color,#3b82f6)] hover:bg-white/5 active:scale-[0.98] w-full  text-[var(--theme-muted)] hover:bg-[var(--theme-muted)]/10 hover:text-[var(--theme-title)] group normal-case font-tab tracking-normal justify-start"
           >
             <svg
               class="text-[var(--theme-muted)] group-hover:text-[var(--theme-primary)]"
@@ -966,14 +974,20 @@ exports[`PreviewSystemRenderer > should render and match snapshot 1`] = `
                 d="M10.3 21a1.94 1.94 0 0 0 3.4 0"
               />
             </svg>
-            <span
-              class="text-sm font-tab flex-1 text-left"
-            >
-              Notifications
+            <span>
+              <div
+                class="flex items-center w-full"
+              >
+                <span
+                  class="text-sm font-tab flex-1 text-left"
+                >
+                  Notifications
+                </span>
+                <div
+                  class="w-1.5 h-1.5 bg-[var(--theme-primary)] rounded-full shadow-[0_0_5px_var(--theme-primary)]"
+                />
+              </div>
             </span>
-            <div
-              class="w-1.5 h-1.5 bg-[var(--theme-primary)] rounded-full shadow-[0_0_5px_var(--theme-primary)]"
-            />
           </button>
         </div>
         <div
@@ -1049,7 +1063,7 @@ exports[`PreviewSystemRenderer > should render and match snapshot 1`] = `
               </div>
             </div>
             <button
-              class="p-2 text-[var(--theme-muted)] hover:text-[var(--theme-error)] hover:bg-[var(--theme-error-bg)] rounded-lg transition-all "
+              class="inline-flex items-center justify-center transition-all focus:outline-none rounded-btn flex-shrink-0 w-6 h-6 text-xs bg-transparent text-[var(--sarak-primary-color,#3b82f6)] hover:bg-white/5 active:scale-[0.98]  text-[var(--theme-muted)] hover:text-[var(--theme-error)] hover:bg-[var(--theme-error-bg)] "
               title="Logout"
             >
               <svg

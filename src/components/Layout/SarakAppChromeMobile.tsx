@@ -2,6 +2,7 @@ import React, { useEffect, useState } from 'react';
 import { SarakShellNav, type ShellNavItem } from '../atomic/Navigation/SarakShellNav';
 import { SarakIcon } from '../atomic/Icon/SarakIcon';
 import { useFocusTrap } from '../atomic/Modals/hooks/useFocusTrap';
+import { SarakIconButton } from '../atomic/Buttons/SarakIconButton';
 import { ChromeFrame } from './chrome/ChromeFrame';
 import { ChromeSidebarSlot, ChromeTopbarSlot } from './chrome/ChromeSlots';
 
@@ -94,17 +95,17 @@ export const SarakAppChromeMobile: React.FC<SarakAppChromeMobileProps> = ({
                     borderColor: 'var(--border-color, var(--theme-border, rgba(255,255,255,0.1)))',
                 }}
             >
-                <button
+                <SarakIconButton
                     type="button"
+                    variant="ghost"
                     onClick={() => setOpen((v) => !v)}
                     aria-expanded={open}
                     aria-controls={DRAWER_ID}
                     aria-label={open ? 'Fechar menu de navegação' : 'Abrir menu de navegação'}
-                    className="flex items-center justify-center shrink-0 rounded-[var(--sarak-card-radius,8px)] cursor-pointer text-[var(--sarak-text-main,var(--color-theme-title,inherit))] hover:bg-[var(--sarak-card-bg,rgba(255,255,255,0.06))] transition-sarak"
+                    className="shrink-0 rounded-[var(--sarak-card-radius,8px)] cursor-pointer text-[var(--sarak-text-main,var(--color-theme-title,inherit))] hover:bg-[var(--sarak-card-bg,rgba(255,255,255,0.06))]"
                     style={{ width: 'var(--sarak-topbar-height, 44px)', height: 'var(--sarak-topbar-height, 44px)' }}
-                >
-                    <SarakIcon name={open ? 'X' : 'Menu'} size={22} />
-                </button>
+                    icon={<SarakIcon name={open ? 'X' : 'Menu'} size={22} />}
+                />
                 {brand}
                 <ChromeTopbarSlot region="start" className="overflow-hidden">{topbarStart}</ChromeTopbarSlot>
                 {topbarActions && <div data-sarak-slot="topbarEnd" className="flex items-center gap-2 shrink-0 ml-auto">{topbarActions}</div>}

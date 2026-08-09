@@ -2,6 +2,7 @@ import React from 'react';
 import { SarakIcon } from '../../../components/atomic/Icon/SarakIcon';
 import { motion } from 'framer-motion';
 import { ShellUser } from './types';
+import { SarakIconButton } from '../../../components/atomic/Buttons/SarakIconButton';
 
 interface ShellUserWidgetProps {
     user?: ShellUser;
@@ -37,13 +38,14 @@ export const ShellUserWidget: React.FC<ShellUserWidgetProps> = ({
                         <SarakIcon name="User" size={16} className="text-[var(--theme-primary)] relative z-10" />
                     </div>
                     
-                    <button
+                    <SarakIconButton
                         onClick={logout}
-                        className="w-8 h-8 bg-[var(--theme-error-bg)] hover:bg-[var(--theme-error)] text-[var(--theme-error)] hover:text-[var(--theme-on-primary)] rounded-lg flex items-center justify-center transition-all cursor-pointer border border-[var(--theme-error-border)]"
+                        variant="ghost"
+                        size="xs"
+                        className="bg-[var(--theme-error-bg)] hover:bg-[var(--theme-error)] text-[var(--theme-error)] hover:text-[var(--theme-on-primary)] rounded-lg border border-[var(--theme-error-border)]"
                         title="Logout"
-                    >
-                        <SarakIcon name="LogOut" size={12} />
-                    </button>
+                        icon={<SarakIcon name="LogOut" size={12} />}
+                    />
                 </div>
             </div>
         );
@@ -74,13 +76,14 @@ export const ShellUserWidget: React.FC<ShellUserWidgetProps> = ({
                     )}
                 </div>
                 
-                <button 
-                    onClick={logout} 
-                    className={`p-2 text-[var(--theme-muted)] hover:text-[var(--theme-error)] hover:bg-[var(--theme-error-bg)] rounded-lg transition-all ${isMini ? 'bg-[var(--theme-error-bg)] text-[var(--theme-error)]' : ''}`}
+                <SarakIconButton
+                    onClick={logout}
+                    variant="ghost"
+                    size="xs"
+                    className={`text-[var(--theme-muted)] hover:text-[var(--theme-error)] hover:bg-[var(--theme-error-bg)] ${isMini ? 'bg-[var(--theme-error-bg)] text-[var(--theme-error)]' : ''}`}
                     title="Logout"
-                >
-                    <SarakIcon name="LogOut" size={isMini ? 12 : 14} />
-                </button>
+                    icon={<SarakIcon name="LogOut" size={isMini ? 12 : 14} />}
+                />
             </div>
         </div>
     );

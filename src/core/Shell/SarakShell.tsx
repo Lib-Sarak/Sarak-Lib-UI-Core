@@ -5,6 +5,7 @@ import { TopbarNav } from './Components/TopbarNav';
 import { DockNav } from './Components/DockNav';
 import { ShellContent } from './Components/ShellContent';
 import SarakSearch from '../../components/atomic/Inputs/SarakSearch';
+import { SarakIconButton } from '../../components/atomic/Buttons/SarakIconButton';
 import { SarakShellProps } from './Components/types';
 import { useShellLayoutStyles } from './hooks/useShellLayoutStyles';
 import { useShellDiagnostics } from './hooks/useShellDiagnostics';
@@ -126,12 +127,13 @@ export const SarakShell: React.FC<SarakShellProps> = (props) => {
             {isMobile && isSidebar && (
                 <div className="flex items-center justify-between px-4 py-3 border-b border-[var(--theme-border)] bg-[var(--theme-sidebar)] z-20 shrink-0 shadow-sm">
                     <div className="flex items-center gap-3">
-                        <button 
+                        <SarakIconButton
                             onClick={() => shell.setIsMobileNavOpen(true)}
-                            className="p-1.5 -ml-1.5 rounded-md text-[var(--theme-muted)] hover:text-[var(--theme-title)] hover:bg-[var(--theme-primary)]/10 transition-colors"
-                        >
-                            <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><line x1="3" y1="12" x2="21" y2="12"></line><line x1="3" y1="6" x2="21" y2="6"></line><line x1="3" y1="18" x2="21" y2="18"></line></svg>
-                        </button>
+                            variant="ghost"
+                            size="sm"
+                            className="-ml-1.5 rounded-md text-[var(--theme-muted)] hover:text-[var(--theme-title)] hover:bg-[var(--theme-primary)]/10"
+                            icon={<svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><line x1="3" y1="12" x2="21" y2="12"></line><line x1="3" y1="6" x2="21" y2="6"></line><line x1="3" y1="18" x2="21" y2="18"></line></svg>}
+                        />
                         <span className="font-bold tracking-tight text-[var(--theme-title)] truncate">
                             {brand.name || "Sistema"}
                         </span>

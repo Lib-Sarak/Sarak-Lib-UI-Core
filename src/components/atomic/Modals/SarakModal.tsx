@@ -6,6 +6,8 @@ import { useModalLayoutStyles } from './hooks/useModalLayoutStyles';
 import { useModalBehavior } from './hooks/useModalBehavior';
 import { clsx } from 'clsx';
 import { twMerge } from 'tailwind-merge';
+import { SarakButton } from '../Buttons/SarakButton';
+import { SarakIconButton } from '../Buttons/SarakIconButton';
 
 export interface SarakModalProps {
     isOpen: boolean;
@@ -63,21 +65,22 @@ export const SarakModal: React.FC<SarakModalProps> = ({
     const wizardBtnStyle = { paddingInline: 'var(--sarak-layout-gap-sm, 8px)', paddingBlock: 'calc(var(--sarak-layout-gap-md, 16px) * 0.375)' };
     const wizardFooter = hasSteps ? (
         <div className="flex items-center justify-between w-full">
-            <button
+            <SarakButton
                 type="button"
+                variant="ghost"
                 onClick={goBack}
                 disabled={stepIndex === 0}
-                className="text-sm rounded-md disabled:opacity-50"
+                className="text-sm normal-case font-normal tracking-normal rounded-md disabled:opacity-50"
                 style={wizardBtnStyle}
             >
                 Voltar
-            </button>
+            </SarakButton>
             <span className="text-xs text-[var(--theme-muted)]">
                 {stepIndex + 1} / {steps.length}
             </span>
-            <button type="button" onClick={advance} className="text-sm rounded-md" style={wizardBtnStyle}>
+            <SarakButton type="button" variant="ghost" onClick={advance} className="text-sm normal-case font-normal tracking-normal rounded-md" style={wizardBtnStyle}>
                 {stepIndex === lastStep ? 'Concluir' : 'Avançar'}
-            </button>
+            </SarakButton>
         </div>
     ) : (
         footer
@@ -126,17 +129,18 @@ export const SarakModal: React.FC<SarakModalProps> = ({
                             )}
 
                             {!hideCloseButton && (
-                                <button
+                                <SarakIconButton
                                     onClick={onClose}
+                                    variant="ghost"
+                                    size="sm"
                                     className={clsx(
-                                        "text-[var(--theme-muted)] hover:text-white transition-colors rounded-md hover:bg-white/10",
+                                        "text-[var(--theme-muted)] hover:text-white rounded-md hover:bg-white/10",
                                         closeButtonClass
                                     )}
                                     style={{ padding: 'calc(var(--sarak-layout-gap-md, 16px) * 0.375)' }}
                                     aria-label="Fechar modal"
-                                >
-                                    <X size={18} />
-                                </button>
+                                    icon={<X size={18} />}
+                                />
                             )}
                         </div>
                     )}

@@ -3,6 +3,9 @@ import { render, screen, fireEvent } from '@testing-library/react';
 import { describe, it, expect, vi } from 'vitest';
 import { TopbarNav } from '../TopbarNav';
 import '@testing-library/jest-dom';
+import { SarakUIProvider } from '../../../Provider/SarakUIProvider';
+
+const renderWithProvider = (ui: React.ReactElement) => render(<SarakUIProvider>{ui}</SarakUIProvider>);
 
 vi.mock('../../../../components/atomic/Icon/SarakIcon', () => ({
     SarakIcon: () => <div data-testid="sarak-icon" />
@@ -45,12 +48,12 @@ describe('TopbarNav', () => {
     };
 
     it('renderiza o logo e o systemName', () => {
-        render(<TopbarNav {...mockProps} />);
+        renderWithProvider(<TopbarNav {...mockProps} />);
         expect(screen.getByText('Sarak Test')).toBeInTheDocument();
     });
 
     it('renderiza os módulos online na navegação principal e muda o ativo', () => {
-        render(<TopbarNav {...mockProps} />);
+        renderWithProvider(<TopbarNav {...mockProps} />);
         
         // Modules online: module1, module2. module3 is offline.
         expect(screen.getByText('Mod 1')).toBeInTheDocument();
@@ -62,7 +65,7 @@ describe('TopbarNav', () => {
     });
 
     it('aciona o botão de menu lateral', () => {
-        const { container } = render(<TopbarNav {...mockProps} />);
+        const { container } = renderWithProvider(<TopbarNav {...mockProps} />);
         // Menu button is the first button usually, let's find it by icon or role
         const menuBtn = container.querySelector('button');
         fireEvent.click(menuBtn!);
@@ -70,14 +73,14 @@ describe('TopbarNav', () => {
     });
 
     it('aciona o search widget', () => {
-        render(<TopbarNav {...mockProps} />);
+        renderWithProvider(<TopbarNav {...mockProps} />);
         const searchWidget = screen.getByTestId('shell-search');
         fireEvent.click(searchWidget);
         expect(mockProps.setIsSearchOpen).toHaveBeenCalledWith(true);
     });
 
     it('renderiza sem search widget se searchPos for hidden', () => {
-        render(<TopbarNav {...mockProps} design={{ ...mockProps.design, searchPositionTopbar: 'hidden' }} />);
+        renderWithProvider(<TopbarNav {...mockProps} design={{ ...mockProps.design, searchPositionTopbar: 'hidden' }} />);
         expect(screen.queryByTestId('shell-search')).not.toBeInTheDocument();
     });
 });
