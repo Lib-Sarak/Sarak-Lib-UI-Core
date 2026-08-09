@@ -23,6 +23,7 @@ import React, {
 } from 'react';
 import { createPortal } from 'react-dom';
 import { SarakPortalScope } from '../../../core/Provider/components/SarakPortalScope';
+import { SarakIconButton } from '../Buttons/SarakIconButton';
 
 /** Variantes semânticas, mapeadas 1:1 ao Status Schema. */
 export type ToastVariant = 'success' | 'error' | 'warning' | 'info';
@@ -86,14 +87,17 @@ const SarakToast: React.FC<{ entry: ToastEntry; onDismiss: (id: string) => void 
             }}
         >
             <span className="flex-1">{entry.message}</span>
-            <button
-                type="button"
+            {/* Composição atômica (R10 — lote 10): SarakIconButton tolera montar sem
+                Provider (Spec 18); `color`/`lineHeight`/`borderRadius` por `style`
+                (vence a classe do átomo) preservam a aparência inline original. */}
+            <SarakIconButton
+                variant="ghost"
+                size="xs"
                 aria-label="Fechar notificação"
                 onClick={() => onDismiss(entry.id)}
-                style={{ color: 'var(--text-muted,#94a3b8)', lineHeight: 1 }}
-            >
-                ×
-            </button>
+                style={{ color: 'var(--text-muted,#94a3b8)', lineHeight: 1, borderRadius: 0 }}
+                icon="×"
+            />
         </div>
     );
 };

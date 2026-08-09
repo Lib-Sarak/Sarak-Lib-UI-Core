@@ -11,6 +11,7 @@ import React, { useCallback, useEffect, useState } from 'react';
 import { createPortal } from 'react-dom';
 import { SarakPortalScope } from '../../../core/Provider/components/SarakPortalScope';
 import { useFocusTrap } from '../Modals/hooks/useFocusTrap';
+import { SarakIconButton } from '../Buttons/SarakIconButton';
 
 export interface LightboxImage {
     src: string;
@@ -30,8 +31,18 @@ export interface SarakLightboxProps {
     onIndexChange?: (index: number) => void;
 }
 
-const navBtn =
-    'absolute top-1/2 -translate-y-1/2 w-11 h-11 inline-flex items-center justify-center rounded-full bg-white/10 text-white text-2xl hover:bg-white/20 transition-colors';
+const navBtn = 'absolute top-1/2 -translate-y-1/2 bg-white/10 text-white hover:bg-white/20 transition-colors';
+
+/** Neutraliza o `rounded-btn`/`w-N h-N` que `SarakIconButton` aplica por padrão — `style`
+ *  sempre vence a classe do átomo (R10 — lote 10), preservando `w-11 h-11 rounded-full`.
+ *  Zero hardcode (R2): `--sarak-layout-gap-md` e `--radius-badge` (99px, pill completo —
+ *  o mesmo token que a §12.2 já usa para "nenhuma escala nova") são tokens reais. */
+const lightboxBtnStyle: React.CSSProperties = {
+    width: 'calc(var(--sarak-layout-gap-md, 16px) * 2.75)',
+    height: 'calc(var(--sarak-layout-gap-md, 16px) * 2.75)',
+    borderRadius: 'var(--radius-badge, 99px)',
+    fontSize: 'calc(var(--sarak-layout-gap-md, 16px) * 1.25)',
+};
 
 export const SarakLightbox: React.FC<SarakLightboxProps> = ({
     images,
@@ -86,27 +97,40 @@ export const SarakLightbox: React.FC<SarakLightboxProps> = ({
             onKeyDown={onKeyDown}
             className="fixed inset-0 z-[1100] flex items-center justify-center bg-black/90"
         >
-            <button
-                type="button"
+            {/* Composição atômica (R10 — lote 10): SarakIconButton renderiza <button> nativo
+                por baixo, então `useFocusTrap` (seletor `button:not([disabled])`) continua
+                enxergando os três — conferido lendo o código-fonte do átomo antes de trocar. */}
+            <SarakIconButton
+                variant="ghost"
                 aria-label="Fechar galeria"
                 onClick={onClose}
-                className="absolute top-4 right-4 w-11 h-11 inline-flex items-center justify-center rounded-full bg-white/10 text-white text-xl hover:bg-white/20 transition-colors"
-            >
-                ✕
-            </button>
+                className="absolute top-4 right-4 bg-white/10 text-white hover:bg-white/20 transition-colors"
+                style={{ ...lightboxBtnStyle, fontSize: 'calc(var(--sarak-layout-gap-md, 16px) * 1.125)' }}
+                icon="✕"
+            />
 
             {multiple && (
-                <button type="button" aria-label="Imagem anterior" onClick={() => go(current - 1)} className={`${navBtn} left-4`}>
-                    ‹
-                </button>
+                <SarakIconButton
+                    variant="ghost"
+                    aria-label="Imagem anterior"
+                    onClick={() => go(current - 1)}
+                    className={`${navBtn} left-4`}
+                    style={lightboxBtnStyle}
+                    icon="‹"
+                />
             )}
 
             <img src={image.src} alt={image.alt ?? ''} className="max-w-[90vw] max-h-[85vh] object-contain select-none" />
 
             {multiple && (
-                <button type="button" aria-label="Próxima imagem" onClick={() => go(current + 1)} className={`${navBtn} right-4`}>
-                    ›
-                </button>
+                <SarakIconButton
+                    variant="ghost"
+                    aria-label="Próxima imagem"
+                    onClick={() => go(current + 1)}
+                    className={`${navBtn} right-4`}
+                    style={lightboxBtnStyle}
+                    icon="›"
+                />
             )}
 
             {multiple && (

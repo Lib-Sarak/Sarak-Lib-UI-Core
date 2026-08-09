@@ -5,6 +5,7 @@ import { getSarakModule } from './registry';
 import { AlertCircle } from 'lucide-react';
 import { useEndpointResolver } from './hooks/useEndpointResolver';
 import { ContractRenderer } from './components/ContractRenderer';
+import { SarakButton } from '../../components/atomic/Buttons/SarakButton';
 
 interface DynamicRendererProps {
     contracts: VisualContract[];
@@ -81,22 +82,32 @@ export const DynamicRenderer: React.FC<DynamicRendererProps> = ({ contracts, mod
                 <div className="flex justify-center mb-12">
                     <nav className="flex p-1.5 bg-white/[0.02] border border-white/5 rounded-[var(--radius-sarak)] backdrop-blur-3xl shadow-2xl">
                         {tabs.names.map(name => (
-                            <button
+                            // Composição atômica (R10 — lote 10): padding/fonte já batem com o
+                            // default do átomo (font-black uppercase tracking + rounded-btn);
+                            // só `fontSize`/padding vão por `style` porque o átomo usa `text-sm`
+                            // e `py-4 px-6`, diferentes do `text-2xs`/`px-8 py-3.5` originais.
+                            <SarakButton
                                 key={name}
+                                variant="ghost"
                                 onClick={() => setActiveTab(name)}
-                                className={`relative px-8 py-3.5 rounded-[var(--radius-btn)] text-2xs font-black uppercase tracking-[var(--sarak-tracking-tight,0.2em)] transition-all duration-500 ${
-                                    activeTab === name ? 'text-white' : 'text-white/30 hover:text-white/60'
-                                }`}
+                                leftIcon={
+                                    activeTab === name && (
+                                        <motion.div
+                                            layoutId="activeTabMarker"
+                                            className="absolute inset-0 bg-primary-600 rounded-[var(--radius-btn)] shadow-lg shadow-primary-500/20"
+                                            transition={{ type: 'spring', bounce: 0.2, duration: 0.6 }}
+                                        />
+                                    )
+                                }
+                                className={`relative ${activeTab === name ? 'text-white' : 'text-white/30 hover:text-white/60'}`}
+                                style={{
+                                    paddingInline: 'calc(var(--sarak-layout-gap-md, 16px) * 2)',
+                                    paddingBlock: 'calc(var(--sarak-layout-gap-md, 16px) * 0.875)',
+                                    fontSize: 'var(--text-2xs, 10px)',
+                                }}
                             >
-                                {activeTab === name && (
-                                    <motion.div
-                                        layoutId="activeTabMarker"
-                                        className="absolute inset-0 bg-primary-600 rounded-[var(--radius-btn)] shadow-lg shadow-primary-500/20"
-                                        transition={{ type: 'spring', bounce: 0.2, duration: 0.6 }}
-                                    />
-                                )}
                                 <span className="relative z-10">{name}</span>
-                            </button>
+                            </SarakButton>
                         ))}
                     </nav>
                 </div>

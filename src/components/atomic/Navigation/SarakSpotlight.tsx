@@ -1,4 +1,5 @@
 import React, { useEffect, useMemo, useRef, useState } from 'react';
+import { SarakInput } from '../Inputs/SarakInput';
 
 /** Item navegável da Command Palette (Spec 14, Regra 1). */
 export interface NavigationItem {
@@ -127,7 +128,18 @@ export const SarakSpotlight: React.FC<SarakSpotlightProps> = ({
                 className="w-full max-w-xl rounded-lg overflow-hidden border border-[var(--border-color,#334155)] bg-[var(--color-theme-card,#1e293b)] shadow-2xl"
                 onClick={(event) => event.stopPropagation()}
             >
-                <input
+                {/* Composição atômica (R10 — lote 10): SarakInput renderiza <input> nativo por
+                    baixo, preservando `autoFocus`/`onKeyDown` (spread via `...props`). Achado:
+                    ao contrário do que a plan presumia, SarakSpotlight NÃO usa `useFocusTrap`
+                    — não há Tab cíclico nem `containerRef`, só `autoFocus` + ESC no próprio
+                    onKeyDown do input. `getInputStyles` sempre recalcula `border` por cima do
+                    `style` (diferente de `getButtonStyles`, que no default 'matte' devolve
+                    `{}`), então a borda vira um contorno 1px nos 4 lados (o token
+                    `inputBorderType`, default 'solid') em vez do `border-b` original — a
+                    diferença visual é aceita e documentada (não há automação visual nesta
+                    base para provar mais que isso); `background`/`padding`/`fontSize` não são
+                    tocados pelo átomo e continuam fiéis ao original via `style`. */}
+                <SarakInput
                     autoFocus
                     type="text"
                     value={query}
@@ -138,8 +150,13 @@ export const SarakSpotlight: React.FC<SarakSpotlightProps> = ({
                     }}
                     onKeyDown={onKeyDown}
                     aria-label="Campo de busca"
-                    className="w-full bg-transparent outline-none text-[var(--sarak-text-main,#ffffff)] border-b border-[var(--border-color,#334155)]"
-                    style={{ paddingInline: 'var(--sarak-layout-gap-md, 16px)', paddingBlock: 'calc(var(--sarak-layout-gap-md, 16px) * 0.75)' }}
+                    fullWidth
+                    className="text-[var(--sarak-text-main,#ffffff)]"
+                    style={{
+                        background: 'transparent',
+                        paddingInline: 'var(--sarak-layout-gap-md, 16px)',
+                        paddingBlock: 'calc(var(--sarak-layout-gap-md, 16px) * 0.75)',
+                    }}
                 />
                 <ul role="listbox" className="max-h-80 overflow-y-auto" style={{ paddingBlock: 'calc(var(--sarak-layout-gap-md, 16px) * 0.25)' }}>
                     {results.map((item, index) => (

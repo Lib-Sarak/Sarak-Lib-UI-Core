@@ -13,6 +13,7 @@
 import React, { useEffect, useRef, useState } from 'react';
 import { ZoomIn, ZoomOut, Download, ChevronLeft, ChevronRight } from 'lucide-react';
 import { usePdfDocument, type PdfSource } from './usePdfDocument';
+import { SarakIconButton } from '../../Buttons/SarakIconButton';
 
 export interface SarakPDFViewerProps {
     /** Origem do documento: URL, bytes ou ArrayBuffer. */
@@ -76,7 +77,15 @@ const SarakPDFViewerImpl: React.FC<SarakPDFViewerProps> = ({
         }
     };
 
-    const controlBtn = 'flex items-center justify-center w-8 h-8 rounded-md text-[var(--color-theme-title,#ffffff)] hover:bg-[var(--text-muted,#94a3b8)]/10 disabled:opacity-40 disabled:cursor-not-allowed transition-colors';
+    const controlBtn = 'text-[var(--color-theme-title,#ffffff)] hover:bg-[var(--text-muted,#94a3b8)]/10 transition-colors';
+    // Neutraliza o `rounded-btn`/`w-N h-N` que `SarakIconButton` aplica por padrão — `style`
+    // sempre vence a classe do átomo (R10 — lote 10), preservando `w-8 h-8 rounded-md`.
+    // Zero hardcode (R2): deriva de `--sarak-layout-gap-md`/`--sarak-button-radius`, tokens reais.
+    const controlBtnStyle: React.CSSProperties = {
+        width: 'calc(var(--sarak-layout-gap-md, 16px) * 2)',
+        height: 'calc(var(--sarak-layout-gap-md, 16px) * 2)',
+        borderRadius: 'calc(var(--sarak-button-radius, 8px) * 0.75)',
+    };
 
     return (
         <div
@@ -105,33 +114,26 @@ const SarakPDFViewerImpl: React.FC<SarakPDFViewerProps> = ({
                     background: 'var(--sarak-table-header-bg, var(--color-theme-card,#1e293b))',
                 }}
             >
+                {/* Composição atômica (R10 — lote 10): SarakIconButton renderiza <button>
+                    nativo por baixo — não há armadilha de foco própria aqui (o viewer não
+                    usa useFocusTrap), então não há seletor de DOM para reconferir. */}
                 <div style={{ display: 'flex', alignItems: 'center', gap: 4 }}>
-                    <button type="button" aria-label="Diminuir zoom" className={controlBtn} onClick={() => zoomBy(-ZOOM_STEP)} disabled={scale <= ZOOM_MIN}>
-                        <ZoomOut size={16} />
-                    </button>
+                    <SarakIconButton variant="ghost" aria-label="Diminuir zoom" className={controlBtn} style={controlBtnStyle} onClick={() => zoomBy(-ZOOM_STEP)} disabled={scale <= ZOOM_MIN} icon={<ZoomOut size={16} />} />
                     <span style={{ minWidth: 44, textAlign: 'center', fontSize: 12, color: 'var(--text-muted,#94a3b8)' }}>
                         {Math.round(scale * 100)}%
                     </span>
-                    <button type="button" aria-label="Aumentar zoom" className={controlBtn} onClick={() => zoomBy(ZOOM_STEP)} disabled={scale >= ZOOM_MAX}>
-                        <ZoomIn size={16} />
-                    </button>
+                    <SarakIconButton variant="ghost" aria-label="Aumentar zoom" className={controlBtn} style={controlBtnStyle} onClick={() => zoomBy(ZOOM_STEP)} disabled={scale >= ZOOM_MAX} icon={<ZoomIn size={16} />} />
                 </div>
 
                 <div style={{ display: 'flex', alignItems: 'center', gap: 4 }}>
-                    <button type="button" aria-label="Página anterior" className={controlBtn} onClick={() => goTo(page - 1)} disabled={page <= 1}>
-                        <ChevronLeft size={16} />
-                    </button>
+                    <SarakIconButton variant="ghost" aria-label="Página anterior" className={controlBtn} style={controlBtnStyle} onClick={() => goTo(page - 1)} disabled={page <= 1} icon={<ChevronLeft size={16} />} />
                     <span aria-live="polite" style={{ fontSize: 12, color: 'var(--text-muted,#94a3b8)', minWidth: 64, textAlign: 'center' }}>
                         {total ? `${page} / ${total}` : '—'}
                     </span>
-                    <button type="button" aria-label="Próxima página" className={controlBtn} onClick={() => goTo(page + 1)} disabled={page >= total}>
-                        <ChevronRight size={16} />
-                    </button>
+                    <SarakIconButton variant="ghost" aria-label="Próxima página" className={controlBtn} style={controlBtnStyle} onClick={() => goTo(page + 1)} disabled={page >= total} icon={<ChevronRight size={16} />} />
                 </div>
 
-                <button type="button" aria-label="Baixar PDF" className={controlBtn} onClick={handleDownload}>
-                    <Download size={16} />
-                </button>
+                <SarakIconButton variant="ghost" aria-label="Baixar PDF" className={controlBtn} style={controlBtnStyle} onClick={handleDownload} icon={<Download size={16} />} />
             </div>
 
             {/* Área de renderização. */}

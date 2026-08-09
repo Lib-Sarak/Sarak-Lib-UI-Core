@@ -1,5 +1,6 @@
 import React from 'react';
 import { SarakIcon } from '../Icon/SarakIcon';
+import { SarakButton } from '../Buttons/SarakButton';
 import { useNavigationStyle } from '../../../core/Provider/useNavigationStyle';
 
 /**
@@ -63,24 +64,35 @@ const NavEntry: React.FC<{
     horizontal: boolean;
     onSelect: (route: string) => void;
 }> = ({ item, isActive, horizontal, onSelect }) => (
-    <button
+    // Composição atômica (R10 — Spec 18/lote 10): `SarakButton` já tolera montar sem
+    // Provider. `textTransform`/`fontWeight`/`letterSpacing`/`justifyContent`/`width` vão
+    // por `style` (inline vence a classe do átomo) para neutralizar o `font-black
+    // uppercase tracking-widest justify-center` que o átomo aplica por padrão — zero pixel.
+    <SarakButton
         type="button"
+        variant="ghost"
         onClick={() => onSelect(item.route)}
         aria-current={isActive ? 'page' : undefined}
-        className={`${horizontal ? 'shrink-0' : 'w-full'} flex items-center text-left rounded-[var(--sarak-button-radius,8px)] transition-sarak cursor-pointer ${
+        leftIcon={item.icon ? <SarakIcon name={item.icon} size={18} /> : undefined}
+        className={`${horizontal ? 'shrink-0' : ''} rounded-[var(--sarak-button-radius,8px)] transition-sarak cursor-pointer ${
             isActive
-                ? 'bg-[var(--sarak-primary-color,#3b82f6)]/15 text-[var(--sarak-primary-color,#3b82f6)] font-medium'
+                ? 'bg-[var(--sarak-primary-color,#3b82f6)]/15 text-[var(--sarak-primary-color,#3b82f6)]'
                 : 'text-[var(--text-muted,#94a3b8)] hover:text-[var(--sarak-text-main,#ffffff)] hover:bg-[var(--sarak-card-bg,rgba(255,255,255,0.04))]'
         }`}
         style={{
             gap: 'var(--sarak-layout-gap-sm, 8px)',
             paddingInline: 'var(--sarak-layout-gap-sm, 8px)',
             paddingBlock: 'calc(var(--sarak-layout-gap-md, 16px) * 0.5)',
+            borderRadius: 'var(--sarak-button-radius,8px)',
+            textTransform: 'none',
+            fontWeight: isActive ? 500 : 400,
+            letterSpacing: 'normal',
+            justifyContent: 'flex-start',
+            width: horizontal ? undefined : '100%',
         }}
     >
-        {item.icon ? <SarakIcon name={item.icon} size={18} /> : null}
         <span className="truncate text-sm">{item.label}</span>
-    </button>
+    </SarakButton>
 );
 
 /** Menu vertical de shell guiado por dados, com grupos e estado ativo (Spec 33). */

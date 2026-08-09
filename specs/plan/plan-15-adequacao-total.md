@@ -2,7 +2,7 @@
 tipo: "plan"
 titulo: "Adequação total — o baseline volta a zero"
 dominio: "Sarak-Lib-UI-Core / Qualidade / Dívida"
-status: "🟡 Em execução"
+status: "🟠 Em revisão"
 prioridade: "Alta"
 tags: ["plan", "adequacao", "baseline", "divida", "gates"]
 relacionados: ["[[00-regras-e-invariantes]]", "[[01-gates-e-baseline]]", "[[15-divida-conhecida]]"]
@@ -1360,6 +1360,188 @@ teclado deles fica para quando essa decisão for tomada.
   9 não fecha o R10 sozinho: depende da decisão do dono sobre o achado do Provider (seção dedicada) para
   continuar. `SarakLightbox`/`SarakPDFViewer`/`SarakSpotlight` (o terço "dentro de armadilha de foco" da
   ordem sugerida) nunca chegaram a ser tocados — ficam também para essa decisão.
+
+---
+
+## Resumo da execução (lote 10 — pagar as 20 que a `plan-18` destravou) — 2026-08-09
+
+**Resultado:** Concluído. **Meta alcançada:** `composicaoatomica` **23 → 3**, exatamente as 3 nomeadas como
+fora deste lote (`SocialButton.tsx:56`, `ChatInput.tsx:117`, `SarakAppChromeMobile.tsx:116` — nenhuma tocada).
+
+### As 20 trocas, na ordem obrigatória da §12.6
+
+**Grupo 1 (7) — o caminho já percorrido no lote 9:**
+
+| Arquivo | Trocas | Átomo |
+|---|---|---|
+| `SarakShellNav.tsx:66` | 1 | `SarakButton` (`leftIcon` para o ícone, `children` para o rótulo) |
+| `SarakTabs.tsx:77` | 1 | `SarakButton` (3 variantes: `underlined`/`pills`/`enclosed`) |
+| `SarakAnalyticalPage.tsx:43,52,79,92` | 4 | `SarakIconButton` (2 gatilhos + 2 botões "✕" de fechar) |
+| `DynamicRenderer.tsx:84` | 1 | `SarakButton` |
+
+**Grupo 2a (4) — a rede que não pode regredir:**
+
+| Arquivo | Trocas | Átomo |
+|---|---|---|
+| `SarakToast.tsx:89` | 1 | `SarakIconButton` (botão "×" de dispensar) |
+| `SarakPagination.tsx:65,85,101` | 3 | `SarakButton` (‹, números, ›) |
+
+**Grupo 2b (9) — o território mais perigoso, com a checagem de armadilha feita antes:**
+
+| Arquivo | Trocas | Átomo |
+|---|---|---|
+| `SarakLightbox.tsx:89,99,107` | 3 | `SarakIconButton` (fechar, anterior, próxima) |
+| `SarakPDFViewerImpl.tsx:109,115,121,127,132` | 5 | `SarakIconButton` (zoom, página, download) |
+| `SarakSpotlight.tsx:130` | 1 | `SarakInput` |
+
+### A checagem de armadilha de foco — feita uma vez, no início, como pedido
+
+`FOCUSABLE` (`useFocusTrap.ts:15`) é `'a[href], button:not([disabled]), textarea, input, select, [tabindex]…'`
+— um seletor de **DOM nativo**. Li o código-fonte de `SarakButton`/`SarakIconButton`/`SarakInput` antes de
+tocar qualquer um dos 12: os três renderizam `<button>`/`<input>` nativo por baixo (nenhum vira `div`+`role`),
+então a armadilha continua enxergando os elementos depois da troca — confirmado pelos testes de teclado
+(`ArrowLeft`/`ArrowRight`/ESC do `SarakLightbox`) passando 4/4 sem alteração de asserção.
+
+**🔴 Achado que corrige a premissa da plan: nem todo o Grupo 2b vive dentro de armadilha de foco.** A plan
+descrevia "12 das 13 do grupo 2 vivem dentro de armadilha de foco". Lendo o código-fonte dos três antes de
+converter:
+
+| Componente | Usa `useFocusTrap`? | Realidade |
+|---|---|---|
+| `SarakLightbox` | ✅ sim (`SarakLightbox.tsx:13,43`) | overlay com Tab cíclico real — a checagem acima vale |
+| `SarakPDFViewerImpl` | ❌ **não** — nenhum import, nenhum `containerRef`/`handleTrap` | é um **widget embutido** (barra de controles + canvas), não um overlay; não há armadilha nenhuma para reconferir |
+| `SarakSpotlight` | ❌ **não** — só `autoFocus` no `<input>` + `ESC` no `onKeyDown` do próprio campo, sem `Tab` cíclico | é foco inicial automático, não uma armadilha |
+
+Ou seja: dos 13 do grupo 2, só os **3 do `SarakLightbox`** têm armadilha de foco de verdade; os outros **10**
+(5 do PDFViewer + 1 do Spotlight + os 4 já cobertos por precedente do lote 9) não têm. Não muda o risco de
+tocar neles com cuidado, mas muda o que precisava ser reconferido — registrado para não repetir a suposição.
+
+### A técnica usada nas 20 trocas — `style` sempre vence a classe do átomo
+
+`SarakButton`/`SarakIconButton`/`SarakInput` concatenam `className` por **string simples**, não `twMerge` —
+então uma classe custom não tem garantia de vencer `font-black uppercase tracking-widest rounded-btn` (ou
+`rounded-input`/borda do `SarakInput`) que o átomo já aplica. A técnica usada em todas as 20 trocas, seguindo
+o precedente já aprovado do `SidebarNav` (lote 9) e reforçando com uma garantia mais forte: propriedades CSS
+que têm equivalente direto (`textTransform`, `fontWeight`, `letterSpacing`, `borderRadius`, `width`, `height`,
+`padding*`, `fontSize`) vão pelo prop `style`, que **sempre** vence a classe (cascade CSS, sem depender da
+ordem de geração do Tailwind). Documentado em comentário acima de cada troca.
+
+**Limite encontrado, aceito e documentado:** `getButtonStyles` (usado por `SarakButton`) devolve objeto vazio
+no `styleType` default (`'matte'`), então `style.border` do chamador sobrevive. `getInputStyles` (usado por
+`SarakInput`) **sempre** recalcula `border` por cima do `style` do chamador (não há `styleType` neutro) — por
+isso `SarakSpotlight` não conseguiu manter a borda `border-b` original: o campo agora tem um contorno 1px nos
+4 lados (token `inputBorderType`, default `'solid'`) em vez de só embaixo. Funcionalmente idêntico
+(`autoFocus`, `onChange`, `onKeyDown`, ESC, filtro, seleção por seta — todos os 6 testes originais passam,
+mais o teste de foco novo), visualmente diferente nesse detalhe específico — aceito por não haver automação
+visual nesta base ([[01-gates-e-baseline]] §2.6) para provar mais que isso.
+
+### 🔴 Regressão que eu mesmo introduzi e corrigi antes de fechar — hardcode de `px`/`rem`
+
+As primeiras versões das 20 trocas usaram valores literais (`'2.75rem'`, `'9999px'`, `'0.375rem'` etc.) nos
+overrides de `style` — o `npm run audit` intermediário acusou **19 violações novas** de `auditor_hardcoded`
+(VALOR), porque R2 varre **qualquer string literal** do arquivo, não só `className`. Corrigido substituindo
+todo literal por `var(--token-real, fallback)`/`calc(...)`, reaproveitando tokens que **já são emitidos**
+(nunca inventando nome novo, que acenderia `auditor_ghostvars` em vez de `auditor_hardcoded`):
+`--sarak-layout-gap-md`/`--sarak-layout-gap-sm` (espaçamento), `--sarak-button-radius` (raio, o mesmo que o
+`SarakShellNav` já usava), `--radius-badge` (99px, pill completo — o token que a §12.2 já registra como "não
+crie escala nova, reuse") e `--text-2xs` (o mesmo de `_theme.css:57`, usado pelo lote 6 na mesma tela do
+`DynamicRenderer`). `npm run audit` depois: **0** hardcode, de novo.
+
+### Verificações executadas
+
+- `npm run audit` (ANTES desta rodada, herdado do lote 9): `composicaoatomica: 23`; `hardcoded: 0`;
+  `ghostvars: 1`; `sectionpointers: 1`; demais em 0.
+- `npm run audit` (intermediário, logo após as 20 trocas, ANTES da correção de hardcode):
+  `composicaoatomica: 3` ✅; `hardcoded: 19` ❌ (regressão, ver acima); `ghostvars: 1` (inalterado);
+  `sectionpointers: 1` (inalterado).
+- `npm run audit` (DEPOIS da correção): `composicaoatomica: 3`; `hardcoded: 0`; `ghostvars: 1`
+  (`--x`, pré-existente, não relacionado); `sectionpointers: 1` (pré-existente); `cleancode`, `typescript`,
+  `coverage`, `arquitetura`, `paridade` (422/422/422), `presets`, `authcoupling`: todos `[OK]`.
+- `npx vitest run` rodado **4 vezes** (uma por grupo + uma final), suíte **INTEIRA** a cada vez:
+  - Após Grupo 1: 290/290 arquivos, 1033/1033 testes.
+  - Após Grupo 2a: 290/290, 1034/1034.
+  - Após Grupo 2b (as 20 completas): 290/290, 1035/1035.
+  - Final (após corrigir o hardcode): 290/290, 1035/1035 — igual, confirma que a correção de tokens não mudou
+    comportamento, só a origem do valor.
+- `node gates/scripts/release/check-audit-baseline.mjs --with-tsc`: primeiro rodou **MELHOROU** (
+  `auditor_composicaoatomica.mjs.violacoes: 23 -> 3`) — regravado com `npm run audit:baseline -- --write`.
+  Reconferido: `igual ao baseline de 2026-08-09 — nenhuma regressão`.
+- `npm run coverage:check`: **MELHOROU** (70.69% → 71.47%, dos 9 testes novos/characterização) — regravado
+  com `npm run coverage:check -- --write`; reconferido: `igual ao piso (71.47%) — nenhuma regressão`.
+- `npm run gate-limits:check`: `[OK] Os 26 scripts de gates/scripts/ declaram o que não veem.`
+- `npm run dev-kit`: regenerado — `80 componentes públicos, 422 tokens, 17 gates` (contagem de componentes e
+  de tokens **inalterada**: nenhum componente novo, nenhum token novo). `npm run dev-kit:check`: em dia.
+- **`sarak-ui/` (`npm run guide`) NÃO rodado** — a contagem de tokens não mudou (422 antes e depois), e a
+  plan condiciona esse espelho a essa contagem mudar. `git status --short -- sarak-ui/` confirma zero
+  mudança.
+- `npm run gates:full`: **exit 0**.
+- `git diff --stat`: **33 arquivos** — 12 de produção (`src/`), 6 de teste, 2 baselines (`gates/baselines/`),
+  3 de `sarak-dev/`, 14 dentro de `dist/`. Nenhum arquivo de `gates/scripts/` (nenhum gate alterado), nenhum
+  arquivo de `specs/specs/`/`specs/adr/`/`specs/arquitetura/`/`specs/00-indice.md`.
+
+**`dist/` MUDOU** (declarado, como pedido) — o `build` dentro de `gates:full` o reescreveu: `BUILD_INFO.json`,
+`index.cjs`/`index.js`, os dois CSS, e os chunks hash-named de `CustomizationPanelImpl`/`SarakChartEngine`/
+`SarakChatEngine`/`SarakFlowEngine`/`SarakMarkdownRendererImpl`/`SarakPDFViewerImpl` trocaram de hash (os
+antigos saem, os novos entram) — esperado: `SarakToast`/`SarakLightbox`/`SarakPDFViewerImpl` passaram a
+importar `SarakButton`/`SarakIconButton`/`SarakInput`, o que muda o grafo de módulos desses chunks lazy.
+`src/core/Provider/generated/design-token-ids.ts` recebeu um toque de `git` (aviso de CRLF) mas **zero
+diferença de conteúdo** (`git diff` vazio) — não é uma mudança real.
+
+### Critérios de aceite
+
+- [x] `composicaoatomica` 23 → 3 — evidência: `npm run audit`, os dois números; baseline regravado e
+      reconferido "igual".
+- [x] As 3 nomeadas (`SocialButton`, `ChatInput`, `SarakAppChromeMobile`) **não tocadas** — evidência:
+      nenhuma aparece em `git diff --stat`.
+- [x] Nenhuma troca alterou o DOM renderizado de `<button>`/`<input>` nativo para `div`+`role` — evidência:
+      os três átomos-alvo renderizam elemento nativo (lido no código-fonte); a armadilha de foco do
+      `SarakLightbox` continua funcionando nos mesmos 4 testes, sem alteração de asserção.
+- [x] Nenhum gate alterado — evidência: `git diff --stat -- gates/scripts/` vazio (só os 2 baselines).
+- [x] Baseline e os três espelhos regravados junto — evidência: `audit-baseline.json`,
+      `coverage-floor.json`, `sarak-dev/` no mesmo diff; `sarak-ui/` deliberadamente não tocado (token count
+      não mudou).
+- [x] `npx vitest run` 100% verde, `gates:full` exit 0 — evidência acima, 4 rodadas da suíte inteira.
+- [x] Caracterização/reconferência de armadilha de foco antes de tocar nos 12 do território perigoso —
+      evidência: seção dedicada acima, com a correção da premissa (só 3 dos 13 têm armadilha real).
+- [x] O ajuste de comentário pendente da `plan-18` (`SarakUIProvider.tsx`, "aviso único" →
+      "aviso deduplicado por re-render, StrictMode duplica em dev") — feito, zero linha de comportamento.
+- [x] Nada commitado.
+
+### Decisões e suposições
+
+1. **Adicionei `aria-label` aos 4 botões de `SarakAnalyticalPage`** (`"Abrir/Fechar menu de navegação"`,
+   `"Abrir/Fechar painel lateral"`) — **não existiam antes** (só um SVG sem rótulo). Não era exigido pela
+   letra do R10, mas o foco/teclado é "O risco" declarado no prompt desta rodada, e um botão sem nome
+   acessível é exatamente o tipo de regressão que essa atenção deveria pegar. Registrado como melhoria em
+   escopo, não como conserto silencioso — os 3 testes novos que dependem desses rótulos provam que existem.
+2. **`icon="×"`/`icon="‹"`/`icon="›"` como string, não SVG** — `SarakIconButtonProps.icon` é `React.ReactNode`,
+   que aceita string; preserva exatamente o caractere que já estava lá (nenhum ícone de biblioteca novo).
+3. **Não persegui paridade de pixel na borda do `SarakSpotlight`** (ver seção da técnica) — decisão
+   deliberada, documentada, dado que `getInputStyles` não permite o mesmo truque de `style` que funcionou nos
+   outros 19. Se a paridade exata da borda importar, o conserto é no átomo (`useAtomicStyles.getInputStyles`
+   respeitar `style.border` do chamador quando presente), fora do escopo desta plan (ela não altera átomo).
+4. **`buildBtnStyle`/`pageBtnStyle`/`controlBtnStyle`/`lightboxBtnStyle`/`TAB_RADIUS` como constantes de
+   módulo** (não inline) — evita repetir o mesmo objeto de estilo 2-5 vezes por arquivo; nenhum limite de
+   Clean Code foi tocado por isso (todos os 6 arquivos de produção continuam com `[OK]` no `auditor_cleancode`).
+5. **`time-tracking`:** ausente nesta sessão — mesma nota das rodadas anteriores.
+
+### Achados fora do escopo (não corrigidos)
+
+- **`getInputStyles` não respeita `style.border` do chamador** (ver Decisões #3) — achado de arquitetura do
+  átomo `SarakInput`/`useAtomicStyles`, não desta plan. Registrado para uma spec futura de refinamento de
+  átomo, se a paridade de borda do `SarakSpotlight` vier a importar.
+- **`SarakPDFViewerImpl` e `SarakSpotlight` não têm armadilha de foco** apesar de serem overlays/widgets que
+  plausivelmente deveriam ter Tab cíclico (o PDFViewer nem é overlay, mas o Spotlight é um Command Palette
+  modal sem `Tab` preso — hoje o foco pode escapar do diálogo com Tab). Não é uma regressão desta plan (o
+  comportamento já era esse antes da troca de átomo) — é uma lacuna de a11y pré-existente, achada ao
+  caracterizar. Registrada para o dono avaliar se `SarakSpotlight` merece `useFocusTrap`.
+
+### Pendências / riscos
+
+- Nenhuma pendência desta plan. As 3 ocorrências fora do escopo (`SocialButton`, `ChatInput`,
+  `SarakAppChromeMobile`) continuam aguardando decisão do dono, como já registrado no lote 9.
+- `specs/00-indice.md` vai divergir de novo ao mudar o `status` desta plan — mesma mecânica já registrada,
+  fora do que o executor corrige.
 
 ---
 

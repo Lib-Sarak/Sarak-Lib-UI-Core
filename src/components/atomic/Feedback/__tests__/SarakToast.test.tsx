@@ -1,5 +1,5 @@
 import React from 'react';
-import { render, screen, act } from '@testing-library/react';
+import { render, screen, act, fireEvent } from '@testing-library/react';
 import { describe, it, expect, vi, beforeEach, afterEach } from 'vitest';
 import { SarakToastProvider, useToast, type ToastController } from '../SarakToast';
 
@@ -50,6 +50,21 @@ describe('Spec 13 — SarakToast (Regra 1 + Plano de Testes)', () => {
             for (let i = 0; i < 5; i++) api.notify({ message: `Toast ${i}`, duration: 10000 });
         });
         expect(screen.getAllByRole('alert')).toHaveLength(5);
+    });
+
+    it('o botão de fechar (×) dispensa o toast antes do timeout (R10 — lote 10)', () => {
+        let api!: ToastController;
+        render(
+            <SarakToastProvider>
+                <Harness onReady={(c) => (api = c)} />
+            </SarakToastProvider>,
+        );
+        act(() => {
+            api.notify({ message: 'Fecha manual', duration: 10000 });
+        });
+        expect(screen.getByText('Fecha manual')).toBeInTheDocument();
+        fireEvent.click(screen.getByRole('button', { name: 'Fechar notificação' }));
+        expect(screen.queryByText('Fecha manual')).not.toBeInTheDocument();
     });
 
     it('useToast() sem Provider degrada para no-op (não quebra a árvore)', () => {

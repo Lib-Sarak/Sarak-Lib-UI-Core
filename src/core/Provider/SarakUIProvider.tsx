@@ -69,8 +69,9 @@ export const useSarakUI = (): SarakUIContextType & SarakThemePayload => {
 
 // Porta INTERNA — átomos e Hooks Controladores compartilhados que já toleram `design`
 // ausente e não devem impor Provider a quem os compõe. Nunca lança; `null` fora do
-// Provider, aviso único por montagem (não por render — dep. `context` é estável
-// enquanto não houver Provider). NÃO é para código de aplicação: use `useSarakUI`.
+// Provider, aviso deduplicado por re-render (dep. `context` é estável enquanto não
+// houver Provider) — sob `React.StrictMode` o render é duplo em dev, e o aviso pode
+// sair duas vezes ali. NÃO é para código de aplicação: use `useSarakUI`.
 export const useSarakUIOptional = (): (SarakUIContextType & SarakThemePayload) | null => {
     const context = useContext(UIContext);
     const overrideDesign = useContext(DesignOverrideContext);

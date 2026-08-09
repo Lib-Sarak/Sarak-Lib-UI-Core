@@ -40,6 +40,11 @@ describe('Spec 14 — SarakSpotlight (Command Palette)', () => {
         expect(onSelect).toHaveBeenCalledWith(expect.objectContaining({ id: 'clients' }));
     });
 
+    it('o campo de busca recebe foco automaticamente ao abrir (R10 — lote 10)', () => {
+        render(<SarakSpotlight items={items} open onSelect={() => {}} />);
+        expect(document.activeElement).toBe(screen.getByLabelText('Campo de busca'));
+    });
+
     it('Enter sem mover seleciona o primeiro resultado', () => {
         const onSelect = vi.fn();
         render(<SarakSpotlight items={items} open onSelect={onSelect} />);

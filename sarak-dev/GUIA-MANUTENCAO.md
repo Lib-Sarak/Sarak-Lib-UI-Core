@@ -358,7 +358,7 @@ depois acrescente o fluxo — nunca deixe o próximo redescobrir.
 | `auditor_presets.mjs` | falhou | **0** |
 | `auditor_authcoupling.mjs` | violacoes | **0** |
 | `auditor_sectionpointers.mjs` | mortos | **1** |
-| `auditor_composicaoatomica.mjs` | violacoes | **23** |
+| `auditor_composicaoatomica.mjs` | violacoes | **3** |
 
 `npx tsc --noEmit`: **0 erros** tolerados — não é gate hoje.
 
