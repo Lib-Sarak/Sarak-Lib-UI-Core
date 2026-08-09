@@ -2,7 +2,7 @@
 tipo: "plan"
 titulo: "Adequação total — o baseline volta a zero"
 dominio: "Sarak-Lib-UI-Core / Qualidade / Dívida"
-status: "🟠 Em revisão"
+status: "🟢 Aprovada"
 prioridade: "Alta"
 tags: ["plan", "adequacao", "baseline", "divida", "gates"]
 relacionados: ["[[00-regras-e-invariantes]]", "[[01-gates-e-baseline]]", "[[15-divida-conhecida]]"]
