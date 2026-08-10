@@ -2,7 +2,7 @@
 tipo: "plan"
 titulo: "A superfície pública da major — remover o que não funciona e destravar o que falta"
 dominio: "Sarak-Lib-UI-Core / Núcleo / Superfície pública"
-status: "🟠 Em revisão"
+status: "🟢 Aprovada"
 prioridade: "Alta"
 tags: ["plan", "superficie-publica", "major", "breaking", "r10"]
 relacionados: ["[[03-superficie-publica]]", "[[plan-22-triar-a-fronteira-de-papel]]", "[[plan-18-atomo-sem-provider]]", "[[00-regras-e-invariantes]]"]
@@ -533,5 +533,107 @@ arquivos-fonte) antes de escrever:
   emitida) — nenhuma delas fazia parte do escopo desta correção.
 
 # 11. Veredito
+
+## Veredito — 2026-08-10 — 🟢 **Aprovada** (execução + correção 1)
+
+Suíte **295 arquivos / 1078 testes**, verde. `composicaoatomica` **4 → 2**, `ghostvars` 1, `hardcoded` 0,
+baseline sem regressão, e os três espelhos em dia.
+
+### 🔴 O achado que salvou o critério de aceite #1
+
+**Remover a linha do `ThemeToggle` em `src/index.ts` NÃO o tirava da API.** O executor descobriu, e o revisor
+reproduziu com `git show HEAD:src/components/atomic/Inputs/index.ts`:
+
+```
+export * from './Controls';     ← e Controls.tsx exporta um ThemeToggle HOMÔNIMO
+```
+
+O export explícito **mascarava** o homônimo. Removê-lo teria **revelado** um `ThemeToggle` diferente, e o
+critério #1 desta plan ficaria **falso enquanto parecia verdadeiro** — o gate de barril continuaria verde, o
+catálogo continuaria listando o nome, e ninguém veria.
+
+**Achar isso exigiu ir além do que a plan pedia**, e é o tipo de defeito que sobrevive a revisão por
+checklist: o nome certo, no lugar certo, apontando para outra coisa.
+
+### A remoção cresceu de 1 para 4, e é justificada
+
+Tirar `Controls.tsx` dos barris removeu da API pública **4 componentes e 3 tipos**:
+
+```
+ThemeToggle · LanguageSelector · UserMenu · ModuleSelector
+LanguageOption · ModuleConfig · UserPayload
+```
+
+Verificado pelo revisor: `atomic/Inputs/Controls.tsx` tem **zero consumidor interno**, e `ShellThemeToggle`,
+`ShellLanguageSelector` e `ShellUserWidget` estão vivos em `core/Shell/`. O executor **não apagou o arquivo** —
+só o tirou dos barris, que era o mínimo para o critério ser verdadeiro.
+
+> **Nota do revisor:** a primeira varredura de consumidores deu falso positivo — o `grep` pegou
+> `DesignControls`, que é outro arquivo. Refeita, confirmou zero.
+
+### A correção 1 — e ela ficou melhor do que o pedido
+
+A `03-versionamento-e-release` §5 exige entrada em `docs/migracoes.md` para toda quebra, e a entrega original
+documentava **só o `ThemeToggle`**. O revisor pediu as outras três; o executor **mediu cada substituto em vez
+de assumir**, e o resultado desmentiu a hipótese do próprio revisor:
+
+| Removido | Substituto proposto pelo revisor | O que a medição mostrou |
+|---|---|---|
+| `LanguageSelector` | `ShellLanguageSelector` | 🔴 **NÃO é equivalente** — ver abaixo |
+| `UserMenu` | `ShellUserWidget` | ⚠️ **parcial** — cobre identidade e logout; não tem dropdown nem troca de senha |
+| `ModuleSelector` | `SarakShellNav` | ✅ razoável, com antes/depois de código na entrada |
+
+**O caso do `LanguageSelector`, reproduzido pelo revisor:**
+
+| | Removido (`Controls.tsx`) | `ShellLanguageSelector` |
+|---|---|---|
+| Idiomas | lista configurável, filtrada | `const LANGUAGES` fixo em 2 |
+| Persistência | `localStorage` | nenhuma |
+| Google Translate | grava `googtrans`, com domínio | não toca |
+| Aplicação | `window.location.reload()` | nenhuma |
+
+A entrada resultante avisa em negrito — *"não force essa migração achando que é"* —, explica que o
+`ShellLanguageSelector` existe sobretudo como **slot** para `registerLocalComponent`, e manda copiar a lógica
+do histórico do `git`. **Uma migração que aponta para o componente errado é pior que uma que admite não ter**,
+e esta admite.
+
+### O resto, verificado
+
+**`SarakScrim`:** `animate = false` e `visible = true` como defaults — o comportamento de hoje preservado
+**por construção**, não por promessa.
+
+**O item 3 (`forwardRef`) não foi executado**, corretamente: não houve autorização escrita, e a plan mandava
+declarar e seguir.
+
+**Um erro real de `tsc`** (passthrough genérico × `motion.button`) apareceu e foi corrigido antes de o
+baseline fechar — a prop nova atravessava para um componente do `framer-motion`.
+
+**Dúvida do revisor, fechada:** o `Controls.tsx` tem 6 ocorrências de R10 e o `composicaoatomica` fechou em 2
+sem contradição — a `plan-22` **já as havia pago** (0 nativos crus, 14 referências a átomos Sarak).
+
+### 🔴 Uma correção do revisor sobre a versão
+
+O revisor afirmou que o `2.1.0` do `package.json` talvez precisasse voltar para `2.0.0`, supondo edição
+manual. **Errado — não foi verificado antes de dizer.** O `git log` mostra:
+
+```
+583ff2c  "2.1.0"        ← commit do `npm version`
+tag v2.1.0              ← existe local E no remoto (9b038a5)
+```
+
+**A `v2.1.0` já está publicada.** Ela carrega as plans 15–22 (adições e mudança visual, sem remoção) — nível
+correto para aquele momento. **Nada deve ser revertido.** O `package.json` em `2.1.0` é o estado publicado, e
+o próximo release parte dele.
+
+### O que fica aberto
+
+| Pendência | Estado |
+|---|---|
+| `SarakInput` como `forwardRef` (item 3) | ⏳ **sem decisão do dono** — `SarakMultiSelect:113` segue declarado |
+| `atomic/Inputs/Controls.tsx` morto no repositório | ⏳ fora dos barris, sem consumidor, **sem destino escrito** |
+| `SarakUploader:111` | falso positivo de detector, declarado na `plan-22` |
+
+**Liberado: pode commitar.** ⚠️ **O próximo release é `npm version major` → `3.0.0`** — saem 4 componentes e
+3 tipos da API pública, e isso é quebra por definição.
 
 *(a preencher pelo revisor)*
