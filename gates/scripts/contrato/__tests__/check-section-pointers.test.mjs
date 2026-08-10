@@ -148,3 +148,69 @@ describe('checkSectionPointers — qualificador ampliado (item 4 do LIMITES DECL
     expect(mortos).toEqual([{ arquivo: 'doc.md', linha: 4, secao: '9.9' }]);
   });
 });
+
+// plan-20 (2026-08-10) — fechamento de escopo: três consertos, self-test por
+// conserto (um caso que AINDA pega, um caso que PASSOU a liberar).
+describe('checkSectionPointers — conserto (a): §N.M entre crases é CITAÇÃO', () => {
+  it('IGNORA (como citação) §N.M fechado entre crases (`` `§7.3` ``)', () => {
+    const { root, files } = montarFixture(
+      'doc.md',
+      ['# 1. Único', '', 'A notação `§7.3` significa "item 3 da seção 7".'].join('\n'),
+    );
+    const { mortos, ignoradosComoCitacao } = checkSectionPointers({ root, files });
+    expect(mortos).toEqual([]);
+    expect(ignoradosComoCitacao).toBe(1);
+  });
+
+  it('AINDA acusa §N.M morto quando NÃO está entre crases, mesmo em frase parecida (self-test negativo)', () => {
+    const { root, files } = montarFixture(
+      'doc.md',
+      ['# 1. Único', '', 'A notação §7.3 significa "item 3 da seção 7".'].join('\n'),
+    );
+    const { mortos, ignoradosComoCitacao } = checkSectionPointers({ root, files });
+    expect(mortos).toEqual([{ arquivo: 'doc.md', linha: 3, secao: '7.3' }]);
+    expect(ignoradosComoCitacao).toBe(0);
+  });
+});
+
+describe('checkSectionPointers — conserto (b): `plan/NN` é qualificador de documento', () => {
+  it('IGNORA §N.M quando a linha cita `plan/NN` (sem `.md`, sem wikilink)', () => {
+    const { root, files } = montarFixture(
+      'doc.md',
+      ['# 1. Único', '', 'Documentado em plan/20 §2.3, fora deste arquivo.'].join('\n'),
+    );
+    const { mortos, ignoradosComQualificador } = checkSectionPointers({ root, files });
+    expect(mortos).toEqual([]);
+    expect(ignoradosComQualificador).toBe(1);
+  });
+});
+
+describe('checkSectionPointers — conserto (c): linha SEGUINTE só conta quando a atual não fecha a frase; ANTERIOR saiu', () => {
+  it('AINDA acusa §N.M morto quando a linha JÁ TERMINA A FRASE (ponto final) — a seguinte não é mais consultada', () => {
+    const { root, files } = montarFixture(
+      'doc.md',
+      ['# 1. Único', '', 'Ver §9.9.', 'Conforme [[outro-documento]] explica.'].join('\n'),
+    );
+    const { mortos } = checkSectionPointers({ root, files });
+    expect(mortos).toEqual([{ arquivo: 'doc.md', linha: 3, secao: '9.9' }]);
+  });
+
+  it('AINDA acusa §N.M morto quando SÓ a linha ANTERIOR tem qualificador — ela não é mais consultada', () => {
+    const { root, files } = montarFixture(
+      'doc.md',
+      ['# 1. Único', '', 'Conforme [[outro-documento]] explica.', 'Ver §9.9 aqui.'].join('\n'),
+    );
+    const { mortos } = checkSectionPointers({ root, files });
+    expect(mortos).toEqual([{ arquivo: 'doc.md', linha: 4, secao: '9.9' }]);
+  });
+
+  it('LIBERA §N.M quando a linha atual NÃO termina a frase e a SEGUINTE tem qualificador (continuação real)', () => {
+    const { root, files } = montarFixture(
+      'doc.md',
+      ['# 1. Único', '', 'Ver §9.9', '(conforme [[outro-documento]]).'].join('\n'),
+    );
+    const { mortos, ignoradosComQualificador } = checkSectionPointers({ root, files });
+    expect(mortos).toEqual([]);
+    expect(ignoradosComQualificador).toBe(1);
+  });
+});

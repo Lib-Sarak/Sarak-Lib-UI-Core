@@ -331,7 +331,7 @@ depois acrescente o fluxo — nunca deixe o próximo redescobrir.
 | `npm run gates:full` | `npm run dev-kit:check && npm run build && npm run build-info:check && npm run package:check && npm run coverage:check` |
 | `npm run guide:check` | `node scripts/generate-consumer-kit.mjs --check` |
 | `npm run package:check` | `node gates/scripts/contrato/check-package-contents.mjs` |
-| `npm run plan-index:check` | `node gates/scripts/contrato/check-plan-index-sync.mjs` |
+| `npm run plan-index:check` | `node gates/scripts/contrato/check-plan-index-sync.mjs && node scripts/generate-plan-index.mjs --check` |
 | `npm run release:check` | `node gates/scripts/release/check-release-tag.mjs` |
 | `npm run section-pointers:check` | `node gates/scripts/contrato/check-section-pointers.mjs` |
 | `npm run token-types:check` | `npx tsx scripts/generate-token-types.ts --check` |
@@ -341,7 +341,7 @@ depois acrescente o fluxo — nunca deixe o próximo redescobrir.
 
 > A suíte (`npx vitest run`) **não é um script do `package.json`** e por isso não aparece na tabela acima — ela é invocada direto. Ver o guia, §6.
 
-### B.4 Baseline dos auditores (medido em 2026-08-09)
+### B.4 Baseline dos auditores (medido em 2026-08-10)
 
 > Cada número é o MÁXIMO tolerado. Maior que isto = regressão = commit bloqueado.
 
@@ -349,7 +349,7 @@ depois acrescente o fluxo — nunca deixe o próximo redescobrir.
 | --- | --- | --- |
 | `auditor_hardcoded.mjs` | valor | **0** |
 | `auditor_hardcoded.mjs` | estruturalLiquido | **0** |
-| `auditor_ghostvars.mjs` | consumos | **1** |
+| `auditor_ghostvars.mjs` | consumos | **17** |
 | `auditor_typescript.mjs` | violacoes | **0** |
 | `auditor_coverage.mjs` | orfaos | **0** |
 | `auditor_arquitetura.mjs` | violacoes | **0** |
@@ -357,8 +357,8 @@ depois acrescente o fluxo — nunca deixe o próximo redescobrir.
 | `auditor_paridade.mjs` | falhou | **0** |
 | `auditor_presets.mjs` | falhou | **0** |
 | `auditor_authcoupling.mjs` | violacoes | **0** |
-| `auditor_sectionpointers.mjs` | mortos | **1** |
-| `auditor_composicaoatomica.mjs` | violacoes | **1** |
+| `auditor_sectionpointers.mjs` | mortos | **0** |
+| `auditor_composicaoatomica.mjs` | violacoes | **23** |
 
 `npx tsc --noEmit`: **0 erros** tolerados — não é gate hoje.
 

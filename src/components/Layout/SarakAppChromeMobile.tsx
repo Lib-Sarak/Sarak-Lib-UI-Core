@@ -3,7 +3,7 @@ import { SarakShellNav, type ShellNavItem } from '../atomic/Navigation/SarakShel
 import { SarakIcon } from '../atomic/Icon/SarakIcon';
 import { useFocusTrap } from '../atomic/Modals/hooks/useFocusTrap';
 import { SarakIconButton } from '../atomic/Buttons/SarakIconButton';
-import { SarakScrim } from '../atomic/Buttons/SarakScrim';
+import { SarakScrim } from '../atomic/Layouts/SarakScrim';
 import { ChromeFrame } from './chrome/ChromeFrame';
 import { ChromeSidebarSlot, ChromeTopbarSlot } from './chrome/ChromeSlots';
 

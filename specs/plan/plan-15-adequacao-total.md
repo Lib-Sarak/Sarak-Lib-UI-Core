@@ -8,6 +8,7 @@ tags: ["plan", "adequacao", "baseline", "divida", "gates"]
 relacionados: ["[[00-regras-e-invariantes]]", "[[01-gates-e-baseline]]", "[[15-divida-conhecida]]"]
 depende_de: "plan-12 · plan-16 · plan-17"
 destino_sintese: "specs/01-gates-e-baseline.md · specs/15-divida-conhecida.md · specs/00-regras-e-invariantes.md"
+objetivo: "Levar o baseline de auditoria a zero, pagando toda a dívida que os gates novos revelaram"
 ---
 
 > 🔒 **Esta plan NÃO mexe em gate.** Ela paga o que os gates da `plan-12` acusaram. Gate alterado aqui —

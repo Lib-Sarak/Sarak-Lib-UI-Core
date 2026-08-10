@@ -780,7 +780,7 @@ Props (`SarakRichTextProps` — `src/components/atomic/Inputs/SarakRichText.tsx`
 
 ### SarakScrim
 
-Props (`SarakScrimProps` — `src/components/atomic/Buttons/SarakScrim.tsx`):
+Props (`SarakScrimProps` — `src/components/atomic/Layouts/SarakScrim.tsx`):
 
 | Prop | Tipo | Obrigatória | Descrição |
 | --- | --- | --- | --- |

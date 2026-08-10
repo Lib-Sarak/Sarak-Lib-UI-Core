@@ -15,7 +15,6 @@ export { default as ThemeToggle } from './components/atomic/Buttons/ThemeToggle'
 export * from './components/atomic/Buttons/SarakButton';
 export * from './components/atomic/Buttons/SarakIconButton';
 export * from './components/atomic/Buttons/SocialButton';
-export * from './components/atomic/Buttons/SarakScrim';
 
 
 // Layout Components and Plug & Play UI
@@ -72,6 +71,8 @@ export { SarakAccordion } from './components/atomic/Layouts/SarakAccordion';
 export type { SarakAccordionProps } from './components/atomic/Layouts/SarakAccordion';
 export { SarakFormGroup } from './components/atomic/Layouts/SarakFormGroup';
 export type { SarakFormGroupProps } from './components/atomic/Layouts/SarakFormGroup';
+export { SarakScrim } from './components/atomic/Layouts/SarakScrim';
+export type { SarakScrimProps } from './components/atomic/Layouts/SarakScrim';
 export * from './components/atomic/Navigation';
 export * from './components/atomic/Inputs/Controls';
 // Entrada de dados BÁSICA (achado Spec 40 — Teste Real): existiam e já estavam no

@@ -12,6 +12,9 @@ export interface SarakIconButtonProps extends ButtonHTMLAttributes<HTMLButtonEle
  * Componente Atômico: SarakIconButton
  * Um botão iconográfico com restrições geométricas exatas.
  * Implementa taxonomia completa (Neon, Frosted) adaptada para proporções quadradas/circulares.
+ *
+ * @sarak-encapsula button — a razão de existir deste componente é encapsular o
+ *   `<button>` nativo, para teclado e leitor de tela funcionarem por construção.
  */
 export const SarakIconButton: React.FC<SarakIconButtonProps> = ({
     variant = 'primary',

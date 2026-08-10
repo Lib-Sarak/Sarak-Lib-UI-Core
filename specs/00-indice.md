@@ -38,17 +38,20 @@ as duas, sempre, na mesma ação.**
 > - **Status** — um dos valores da §2. **Igual** ao frontmatter da plan.
 > - **Destino** — para onde o conteúdo é sintetizado depois (§3).
 
+<!-- SARAK-INDICE:FILA:INICIO -->
 | # | Plan | Objetivo | Depende de | Status | Destino |
 |---|---|---|---|---|---|
-| 1 | [plan-17-calibrar-gates-por-falso-positivo](plan/plan-17-calibrar-gates-por-falso-positivo.md) | O verificador para de acusar o que não é violação — 4 falsos positivos medidos | plan-12 · plan-16 | 🟢 Aprovada | `specs/01` · `specs/00-regras-e-invariantes.md` |
-| 2 | [plan-15-adequacao-total](plan/plan-15-adequacao-total.md) | O baseline volta a zero — pagar tudo que os gates novos acusarem | plan-12 · plan-16 · plan-17 | 🟢 Aprovada | `specs/01` · `specs/15` · `specs/00-regras-e-invariantes.md` |
-| 3 | [plan-18-atomo-sem-provider](plan/plan-18-atomo-sem-provider.md) | Fazer o átomo Sarak renderizar sem `SarakUIProvider` — destrava 20 das 23 de R10 | plan-15 | 🟢 Aprovada | `specs/arquitetura/03-superficie-publica.md` · `specs/00-regras-e-invariantes.md` |
-| 4 | [plan-19-fechar-o-baseline](plan/plan-19-fechar-o-baseline.md) | Matar o falso verde do E2E e zerar o que resta de R10 | plan-15 · plan-18 | 🟢 Aprovada | `specs/15` · `specs/01` · `specs/arquitetura/03-superficie-publica.md` |
-| 5 | [plan-20-gates-sem-vao](plan/plan-20-gates-sem-vao.md) | Fechar o escopo de R14, R17, R23 e R7 — sem tocar em `src/` | plan-19 | 🔴 A executar | `specs/00-regras-e-invariantes.md` · `specs/01` · `specs/00-indice.md` |
-| 6 | [plan-21-pagar-o-manifesto-morto](plan/plan-21-pagar-o-manifesto-morto.md) | Pagar os 21 consumos que o runtime nunca emite | plan-20 | 🔴 A executar | `specs/01` · `specs/15` · `specs/arquitetura/04-contrato-de-tokens-e-paridade.md` |
-| 7 | [plan-05-integracao-continua](plan/plan-05-integracao-continua.md) | Rodar os gates num ambiente que não é a máquina de ninguém | — | 🔴 A executar | `specs/16-integracao-continua.md` *(nova)* · `specs/02` · `specs/01` |
-| 8 | [plan-10-ciclo-atualizacao](plan/plan-10-ciclo-atualizacao.md) | Dar comando de atualização a quem só recebia aviso | plan-05 | 🔴 A executar | `specs/13-instalacao-e-atualizacao.md` |
-| 9 | [plan-11-e2e-no-pipeline](plan/plan-11-e2e-no-pipeline.md) | Parar de sair verde sem executar nada | plan-05 | 🔴 A executar | `specs/11` · `specs/10` · `specs/16` |
+| 1 | [plan-17-calibrar-gates-por-falso-positivo](plan/plan-17-calibrar-gates-por-falso-positivo.md) | Calibrar os gates pelos falsos positivos medidos, sem deixar nenhuma violação real escapar | plan-12 · plan-16 | 🟢 Aprovada | specs/01-gates-e-baseline.md · specs/00-regras-e-invariantes.md |
+| 2 | [plan-15-adequacao-total](plan/plan-15-adequacao-total.md) | Levar o baseline de auditoria a zero, pagando toda a dívida que os gates novos revelaram | plan-12 · plan-16 · plan-17 | 🟢 Aprovada | specs/01-gates-e-baseline.md · specs/15-divida-conhecida.md · specs/00-regras-e-invariantes.md |
+| 3 | [plan-18-atomo-sem-provider](plan/plan-18-atomo-sem-provider.md) | Fazer o átomo Sarak renderizar sem SarakUIProvider — destrava 20 das 23 ocorrências de R10 | plan-15 | 🟢 Aprovada | specs/arquitetura/03-superficie-publica.md · specs/specs/00-regras-e-invariantes.md |
+| 4 | [plan-19-fechar-o-baseline](plan/plan-19-fechar-o-baseline.md) | Matar o falso verde do E2E e zerar o que resta de R10 | plan-15 · plan-18 | 🟢 Aprovada | specs/specs/15-divida-conhecida.md · specs/specs/01-gates-e-baseline.md · specs/arquitetura/03-superficie-publica.md |
+| 5 | [plan-20-gates-sem-vao](plan/plan-20-gates-sem-vao.md) | Fechar o escopo de R14, R17, R23 e R7 — sem tocar em src/ | plan-19 | 🟢 Aprovada | specs/specs/00-regras-e-invariantes.md · specs/specs/01-gates-e-baseline.md · specs/00-indice.md |
+| 6 | [plan-21-pagar-o-manifesto-morto](plan/plan-21-pagar-o-manifesto-morto.md) | Pagar os 16 consumos de variavel que o runtime nunca emite | plan-20 | 🔴 A executar | specs/specs/01-gates-e-baseline.md · specs/specs/15-divida-conhecida.md · specs/arquitetura/04-contrato-de-tokens-e-paridade.md |
+| 7 | [plan-22-triar-a-fronteira-de-papel](plan/plan-22-triar-a-fronteira-de-papel.md) | Triar os 23 de R10 entre encapsulamento e dívida real, e fechar a migração do SarakScrim | plan-20 | 🔴 A executar | specs/specs/00-regras-e-invariantes.md · specs/specs/01-gates-e-baseline.md · specs/arquitetura/03-superficie-publica.md |
+| 8 | [plan-05-integracao-continua](plan/plan-05-integracao-continua.md) | Rodar os gates num ambiente que não é a máquina de ninguém | — | 🔴 A executar | specs/16-integracao-continua.md · specs/02-enforcement-por-commit.md · specs/01-gates-e-baseline.md |
+| 9 | [plan-10-ciclo-atualizacao](plan/plan-10-ciclo-atualizacao.md) | Dar comando de atualização a quem só recebia aviso | plan-05 | 🔴 A executar | specs/13-instalacao-e-atualizacao.md |
+| 10 | [plan-11-e2e-no-pipeline](plan/plan-11-e2e-no-pipeline.md) | Parar de sair verde sem executar nada | plan-05 | 🔴 A executar | specs/11-testes-e-cobertura.md · specs/10-seguranca-e-acessibilidade.md · specs/16-integracao-continua.md |
+<!-- SARAK-INDICE:FILA:FIM -->
 
 > **A ordem da coluna `#` não é a ordem do número da plan** — e isso é a feature, não um erro. A `plan-03`
 > (triagem) roda **antes** da `plan-02` porque ela decide o escopo real de 07, 08 e 09; a `plan-02` só depende

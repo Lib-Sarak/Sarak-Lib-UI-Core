@@ -8,6 +8,7 @@ tags: ["plan", "r10", "e2e", "baseline", "producao"]
 relacionados: ["[[00-regras-e-invariantes]]", "[[15-divida-conhecida]]", "[[plan-15-adequacao-total]]", "[[03-superficie-publica]]"]
 depende_de: "plan-15 · plan-18"
 destino_sintese: "specs/specs/15-divida-conhecida.md · specs/specs/01-gates-e-baseline.md · specs/arquitetura/03-superficie-publica.md"
+objetivo: "Matar o falso verde do E2E e zerar o que resta de R10"
 ---
 
 > 🎯 **Esta plan existe para produção.** Os três itens abaixo foram escolhidos por **dano ao consumidor**, não

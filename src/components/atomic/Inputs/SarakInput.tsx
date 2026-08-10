@@ -16,6 +16,9 @@ export interface SarakInputProps extends InputHTMLAttributes<HTMLInputElement> {
 /**
  * Componente Atômico: SarakInput
  * Segue a regra da "Composição Atômica Obrigatória" da Sarak-Lib-UI-Core.
+ *
+ * @sarak-encapsula input — a razão de existir deste componente é encapsular o
+ *   `<input>` nativo, para teclado e leitor de tela funcionarem por construção.
  */
 export const SarakInput: React.FC<SarakInputProps> = ({
     label,

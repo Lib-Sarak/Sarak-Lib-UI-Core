@@ -180,26 +180,29 @@ export const namesFromFileExports = (file) => {
  * consomem para embutir o `Suspense`, nunca importada pelo consumidor.
  *
  * -------------------------------------------------------------------------
- * LIMITE DECLARADO (R18) — o que este coletor NÃO vê
+ * REGRA (R14, decisão do dono — plan-20, 2026-08-09): componente público
+ * mora na RAIZ da categoria; subpasta é peça interna.
  * -------------------------------------------------------------------------
- * Em categoria SEM barril, só os `.tsx` de RAIZ são varridos: um componente
- * público colocado em SUBPASTA escapa deste coletor, logo escapa do
- * `barrel:check` (R14) e do catálogo gerado (R17).
+ * Em categoria SEM barril, só os `.tsx` de RAIZ são varridos — de propósito,
+ * não por lacuna. Um arquivo dentro de uma SUBPASTA de categoria NUNCA é
+ * parte da superfície pública, qualquer que seja o nome do arquivo ou o que
+ * ele exporta: é assim que `Layout/chrome/` (peças internas do cromo) e as
+ * pastas `<Componente>/` das fronteiras lazy (`SarakPDFViewer/
+ * SarakPDFViewerImpl.tsx`, `SarakDataTable/SarakDataTableImpl.tsx`, …)
+ * permanecem privadas sem allowlist nenhuma — o endereço já é a fronteira.
  *
- * Isso é deliberado em parte — as peças internas do cromo vivem em
- * `Layout/chrome/` justamente para não virarem peça de barril.
+ * A regra virou VARREDURA RECURSIVA NÃO, de propósito: recursão publicaria
+ * exatamente as peças `Impl` que a fronteira lazy existe para esconder.
+ * `collectFromCategoryRoot.test.mjs` prova as duas metades com fixture: um
+ * componente na raiz é coletado, um componente idêntico numa subpasta não é
+ * — a mesma função, dois lugares, dois resultados, por design.
  *
- * EXPOSIÇÃO MEDIDA (plan-06, 2026-08-03): **ZERO**. As três categorias sem
- * barril hoje — `atomic/Cards/`, `atomic/Icon/`, `atomic/Tables/` — não têm
- * nenhuma subpasta com `.tsx` além de `__tests__/`. O vão existe e está vazio.
- *
- * Por isso o limite é DECLARADO em vez de fechado: ampliar a varredura custa
- * mais do que vale enquanto a exposição for zero. Se alguém criar uma subpasta
- * de componente numa dessas categorias, este comentário deixa de valer e o
- * caso vira trabalho da plan-12. Recontar é um `find`, não uma auditoria.
+ * Consequência para quem escreve componente novo: se ele é consumidor-facing,
+ * o arquivo mora na raiz da categoria (ou a categoria ganha um barril próprio
+ * que o re-exporte por `export *`). Subpasta é, por definição, implementação.
  * -------------------------------------------------------------------------
  */
-const collectFromCategoryRoot = (root, names) => {
+export const collectFromCategoryRoot = (root, names) => {
     for (const category of fs.readdirSync(root)) {
         const dir = path.join(root, category);
         if (!fs.statSync(dir).isDirectory() || NON_CATEGORY_DIRS.has(category)) continue;

@@ -1,6 +1,6 @@
 ---
 tipo: "plan"
-titulo: "Pagar o manifesto morto — 21 consumos que renderizam só o fallback"
+titulo: "Pagar o manifesto morto — 16 consumos que renderizam só o fallback"
 dominio: "Sarak-Lib-UI-Core / Qualidade / Dívida"
 status: "🔴 A executar"
 prioridade: "Alta"
@@ -8,6 +8,7 @@ tags: ["plan", "r7", "manifesto", "divida", "fantasma"]
 relacionados: ["[[00-regras-e-invariantes]]", "[[04-contrato-de-tokens-e-paridade]]", "[[plan-20-gates-sem-vao]]", "[[15-divida-conhecida]]"]
 depende_de: "plan-20"
 destino_sintese: "specs/specs/01-gates-e-baseline.md · specs/specs/15-divida-conhecida.md · specs/arquitetura/04-contrato-de-tokens-e-paridade.md"
+objetivo: "Pagar os 16 consumos de variavel que o runtime nunca emite"
 ---
 
 > ⚠️ **Esta plan nasce com escopo MEDIDO, não descoberto.** Os números abaixo foram apurados pelo revisor em
@@ -16,7 +17,7 @@ destino_sintese: "specs/specs/01-gates-e-baseline.md · specs/specs/15-divida-co
 
 # 1. Objetivo
 
-**Os 21 consumos de variável que o runtime nunca emite passam a apontar para o nome real**, e as 27 entradas
+**Os 16 consumos de variável que o runtime nunca emite passam a apontar para o nome real**, e as 24 entradas
 mortas saem do `manifest.ts`.
 
 # 2. Contexto
@@ -28,25 +29,32 @@ existe. **Não é prova.** O manifesto declara o mapeamento `tokenId → cssVars
 schema nenhum e nenhuma das vars é emitida, aquilo é **metadado morto** — e todo consumo desses nomes passa
 no gate rendendo apenas o fallback.
 
-| Medida (revisor, 2026-08-09) | Valor |
+> 🔴 **NÚMEROS CORRIGIDOS em 2026-08-10.** Esta seção dizia **21 consumos / 27 órfãs**, apurados pelo revisor
+> com varredura própria **antes** de o detector existir. O detector da `plan-20` nasceu e mediu **17 / 24** —
+> e ele é a fonte certa: a varredura do revisor contou ocorrências **fora dos `CONSUMER_DIRS`** que o auditor
+> de fato varre. **Use os números abaixo, não os antigos.**
+
+| Medida (detector da `plan-20`, 2026-08-10) | Valor |
 |---|---|
 | Entradas do manifesto com lista de `vars` | **103** |
-| Órfãs — sem token de mesmo `id` em schema **e** sem var emitida | **27** |
-| Nomes de variável que essas 27 declaram | **39** |
+| Órfãs — sem token de mesmo `id` em schema **e** sem var emitida | **24** |
 | Nomes **já consumidos** hoje | **7** |
-| **Consumos a pagar** | **21** |
+| **Consumos a pagar** | **17** *(16 + o `--x`, que é caso à parte já declarado)* |
 
-## 2.2 Os 21, por nome
+## 2.2 Os 17, por nome — medido pelo auditor, não estimado
 
-| Consumos | Nome fantasma | Nome real provável |
+| Consumos | Nome fantasma | Nome real |
 |---|---|---|
-| **9x** | `--sarak-button-radius` | **`--sarak-btn-border-radius`** — `buttons.ts:59`, token `btnBorderRadius`, **42 emissões** no snapshot contra **0** do nome consumido |
-| 5x | `--font-tab` | *a apurar* |
-| 2x | `--font-subtitle` | *a apurar* |
+| **9x** | `--sarak-button-radius` | ✅ **`--sarak-btn-border-radius`** — `buttons.ts:59`, token `btnBorderRadius`, **42 emissões** no snapshot contra **0** do nome consumido |
 | 2x | `--sarak-elasticity` | *a apurar* |
-| 1x | `--sarak-button-hover` | *a apurar* |
+| 1x | `--font-tab` | *a apurar* |
+| 1x | `--font-subtitle` | *a apurar* |
 | 1x | `--animation-speed` | *a apurar* |
+| 1x | `--sarak-button-hover` | *a apurar* |
 | 1x | `--sarak-button-active-color` | *a apurar* — pode não ter alvo; ver §2.4 |
+| 1x | `--x` | **não é desta plan** — caso à parte, já declarado no baseline desde a `plan-15`. Não toque |
+
+**16 consumos a pagar**, em 6 nomes. O `--sarak-button-radius` sozinho é mais da metade.
 
 ## 2.3 🔴 O caso do `--sarak-button-radius` corrige um veredito do revisor
 
@@ -62,7 +70,7 @@ certo, **o nome não existe**. Aquelas 9 linhas renderizam pelo fallback e **nã
 
 ## 2.4 Nem todo fantasma tem alvo — e aí a saída é outra
 
-Alguns dos 7 podem não ter token correspondente **nenhum**. Nesse caso as saídas são, em ordem:
+Alguns dos 6 podem não ter token correspondente **nenhum**. Nesse caso as saídas são, em ordem:
 
 1. **Redirecionar** para o token real do mesmo conceito *(esperado para `--sarak-button-radius`)*.
 2. **Criar o token** — Expansão (R11), **decisão do dono**, com a cadeia de paridade completa.
@@ -71,9 +79,9 @@ Alguns dos 7 podem não ter token correspondente **nenhum**. Nesse caso as saíd
 **A terceira saída não é atalho.** Só vale quando o valor é legitimamente fixo, e exige a mesma justificativa
 de qualquer outro item da §3.3 da `plan-15`.
 
-## 2.5 As 27 entradas órfãs do manifesto
+## 2.5 As 24 entradas órfãs do manifesto
 
-Depois de os consumos serem redirecionados, as 27 entradas ficam sem nenhum leitor. Elas **descrevem um
+Depois de os consumos serem redirecionados, as 24 entradas ficam sem nenhum leitor. Elas **descrevem um
 mapeamento que não existe** e, enquanto viverem lá, qualquer código novo pode consumir um dos 39 nomes e
 passar no gate — porque foi o próprio manifesto que os legitimou.
 
@@ -84,17 +92,17 @@ passar no gate — porque foi o próprio manifesto que os legitimou.
 
 ## 3.1 Dentro
 
-1. **Apurar o nome real** de cada um dos 7 fantasmas, com evidência: `arquivo:linha` do token e contagem de
+1. **Apurar o nome real** de cada um dos 6 fantasmas, com evidência: `arquivo:linha` do token e contagem de
    emissão no snapshot do `PreviewCanvas`.
-2. **Redirecionar os 21 consumos** para o nome real.
-3. **Remover as 27 entradas órfãs** do `manifest.ts`, e consertar o `headingWeight` malformado.
+2. **Redirecionar os 16 consumos** para o nome real.
+3. **Remover as 24 entradas órfãs** do `manifest.ts`, e consertar o `headingWeight` malformado.
 4. `ghostvars` volta ao número que era antes de o detector nascer.
 
 ## 3.2 Fora
 
 - **Criar token novo.** Se algum conceito não tiver alvo, ⇒ **PARE e relate** — é Expansão, decisão do dono.
 - Qualquer alteração de gate. A `plan-20` já os deixou prontos.
-- Os outros 32 nomes órfãos ainda **não consumidos**: eles somem junto com as entradas, mas não são trabalho
+- Os demais nomes órfãos ainda **não consumidos**: eles somem junto com as entradas, mas não são trabalho
   de conserto.
 
 ## 3.3 As três saídas para cada consumo
@@ -119,13 +127,13 @@ Iguais às da `plan-15` §3.3, e a terceira é do dono:
 
 # 5. Instruções de execução
 
-1. **Apure os 7 antes de trocar qualquer um.** Para cada: o token candidato (`arquivo:linha`), o `cssVar` que
+1. **Apure os 6 antes de trocar qualquer um.** Para cada: o token candidato (`arquivo:linha`), o `cssVar` que
    ele declara, e **quantas vezes esse nome aparece no snapshot**. Sem as três colunas, não troque.
 2. **⇒ PARE e relate** qualquer conceito sem token — é Expansão, e é do dono.
 3. **Cada troca pode mudar pixel.** O fallback de hoje e o valor emitido do token real **não são
    necessariamente iguais** — ao contrário do lote 6 da `plan-15`, aqui **zero-pixel não é garantido**. Meça o
    par (fallback atual × valor emitido) e **declare quando divergir**.
-4. Só depois de os 21 estarem redirecionados, remova as 27 entradas. Remover antes deixa consumo órfão.
+4. Só depois de os 16 estarem redirecionados, remova as 24 entradas. Remover antes deixa consumo órfão.
 5. `ghostvars` tem de voltar ao número anterior ao detector. Se sobrar, diga o quê e por quê.
 
 # 6. Prompt de execução
@@ -138,8 +146,8 @@ specs/specs/00-regras-e-invariantes.md (R7 e R11),
 specs/arquitetura/04-contrato-de-tokens-e-paridade.md, e a §2 desta plan.
 Skills: code-adequacao, test-unitario, padrao-typescript, padrao-escrita.
 
-O escopo já está MEDIDO: 21 consumos de 7 nomes que o runtime nunca emite,
-mais 27 entradas órfãs no manifest.ts. Você não precisa descobrir — precisa apurar
+O escopo já está MEDIDO: 16 consumos de 6 nomes que o runtime nunca emite,
+mais 24 entradas órfãs no manifest.ts. Você não precisa descobrir — precisa apurar
 o ALVO de cada um e trocar.
 
 PASSO 1 — APURAR ANTES DE TROCAR. Para cada um dos 7 nomes, três colunas:
@@ -157,8 +165,8 @@ par para cada troca e DECLARE onde muda. Onde mudar, caracterize antes (§5.3).
 ⇒ PARADA OBRIGATÓRIA: se algum conceito não tiver token nenhum, PARE e relate.
    Criar token é Expansão (R11) e é decisão do dono, não sua.
 
-PASSO 2 — trocar os 21 consumos.
-PASSO 3 — só então remover as 27 entradas órfãs do manifest.ts, e consertar a
+PASSO 2 — trocar os 16 consumos.
+PASSO 3 — só então remover as 24 entradas órfãs do manifest.ts, e consertar a
    entrada headingWeight, que lista `var(--sarak-h1-weight,700)` COMO SE FOSSE um
    nome de variável (um var() inteiro dentro do array de nomes).
    Remover antes do passo 2 deixa consumo órfão.
@@ -190,9 +198,9 @@ plan e mova o status para 🟠 Em revisão.
 # 7. Critérios de aceite
 
 - [ ] Os **7 nomes** têm alvo apurado com as **três colunas** (token, `cssVar`, contagem de emissão).
-- [ ] Os **21 consumos** apontam para nome emitido — provado por contagem no snapshot, não por leitura.
+- [ ] Os **16 consumos** apontam para nome emitido — provado por contagem no snapshot, não por leitura.
 - [ ] Onde o pixel mudou, está **declarado e caracterizado antes**.
-- [ ] As **27 entradas órfãs** saíram do `manifest.ts`, e o `headingWeight` malformado foi consertado.
+- [ ] As **24 entradas órfãs** saíram do `manifest.ts`, e o `headingWeight` malformado foi consertado.
 - [ ] `ghostvars` voltou ao número anterior ao detector; o que sobrou tem **motivo escrito e dono nomeado**.
 - [ ] Conceito sem token virou **parada relatada**, nunca token criado por conta própria.
 - [ ] `npx vitest run` verde; baseline e espelhos regravados junto.

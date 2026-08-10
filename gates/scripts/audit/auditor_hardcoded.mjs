@@ -38,23 +38,24 @@ const STRUCTURAL_SCOPE = ['src/components/atomic'];
 // Funções utilitárias que recebem classes Tailwind como argumento (além de className).
 const CLASS_HELPERS = new Set(['cn', 'clsx', 'classnames', 'classNames', 'twMerge', 'cva', 'tw']);
 
-// Allowlist NARROW do detector de VALOR: só exceções reais e documentadas, uma por linha,
-// chaveadas por `${caminhoRelativoDoArquivo}::${literalExato}`. Espelha o mecanismo já
-// existente em auditor_ghostvars.mjs (ALLOWLIST). NUNCA usar para mascarar hardcode real —
-// cada entrada precisa de uma razão de negócio que a Configuração (var+fallback) não resolve.
-const VALUE_ALLOWLIST = new Set([
-  // Cores oficiais da marca Google (G-logo, 4 cores fixas por guideline de marca — não são
-  // tema, então não devem virar var(--sarak-*): isso implicaria falsamente que são customizáveis).
-  'src/components/atomic/Buttons/SocialButton.tsx::#4285F4',
-  'src/components/atomic/Buttons/SocialButton.tsx::#34A853',
-  'src/components/atomic/Buttons/SocialButton.tsx::#FBBC05',
-  'src/components/atomic/Buttons/SocialButton.tsx::#EA4335',
-  // Fallback do <input type="color"> nativo (Spec 40 §2.3): o atributo `value` do input
-  // HTML só aceita hex literal — `var(--x, fallback)` quebra o input com o warning nativo
-  // do Chrome que esta spec corrigiu. Configuração (var+fallback) não resolve aqui por
-  // definição do próprio elemento DOM, não é valor de tema/estilo.
-  'src/features/DesignEngine/components/controls/ColorControl.tsx::#ffffff',
-]);
+// Marcador B1 (plan-20, 2026-08-10, R2): `VALUE_ALLOWLIST` (chaveada por
+// caminho::literal) DEIXOU DE EXISTIR — `git mv` a apagava em silêncio (a
+// `plan-19` mediu: mover `SocialButton.tsx` invalidou as 4 entradas dele de
+// uma vez, e o executor teve de tocar este gate só para PRESERVAR o que já
+// estava lá — cruzando uma linha vermelha que não deveria existir). A
+// isenção agora mora NO PRÓPRIO literal: `sarak-allow-hardcode: <razão>`
+// numa linha de comentário — a do literal, ou a imediatamente acima. Razão
+// obrigatória depois do `:`; marcador vazio não isenta. Sobrevive a
+// `git mv` porque viaja DENTRO do arquivo, não referenciado por caminho de
+// fora dele.
+const ALLOW_HARDCODE_RE = /sarak-allow-hardcode:\s*\S/;
+
+/** O literal (ou a linha imediatamente acima dele) carrega o marcador com razão. */
+function hasAllowHardcodeMarker(sourceFile, node) {
+  const line = lineOf(sourceFile, node);
+  const lines = sourceFile.text.split('\n');
+  return ALLOW_HARDCODE_RE.test(lines[line - 1] ?? '') || ALLOW_HARDCODE_RE.test(lines[line - 2] ?? '');
+}
 
 // Classificação por BALDE. Toda classe estrutural é LOCALIZADA e contabilizada.
 // - Baldes DUROS (reprovam): devem migrar para o Hook Controlador / tokens.
@@ -208,11 +209,11 @@ function isInterpolatedFallbackLiteral(node, interpolatedFallbackNames) {
   return nomeVariavel != null && interpolatedFallbackNames.has(nomeVariavel);
 }
 
-function checkValueHardcoded(sourceFile, relFilePath, interpolatedFallbackNames) {
+function checkValueHardcoded(sourceFile, interpolatedFallbackNames) {
   const violations = [];
   function visit(node) {
     if (ts.isStringLiteralLike(node) || ts.isTemplateLiteralToken(node)) {
-      if (VALUE_ALLOWLIST.has(`${relFilePath}::${node.text}`)) {
+      if (hasAllowHardcodeMarker(sourceFile, node)) {
         ts.forEachChild(node, visit);
         return;
       }
@@ -319,9 +320,8 @@ let valueTotal = 0;
 console.log('\n### VALOR (hex / px / rem / em) — todas as camadas');
 for (const file of valueFiles) {
   const sf = parse(file);
-  const relPath = path.relative(process.cwd(), file).split(path.sep).join('/');
   const interpolatedFallbackNames = collectInterpolatedFallbackIdentifiers(sf);
-  const violations = checkValueHardcoded(sf, relPath, interpolatedFallbackNames);
+  const violations = checkValueHardcoded(sf, interpolatedFallbackNames);
   if (violations.length > 0) {
     console.log(`\n[FAIL] ${path.relative(process.cwd(), file)}`);
     violations.forEach((v) => console.log(`  - ${v}`));

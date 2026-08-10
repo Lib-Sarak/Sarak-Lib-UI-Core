@@ -8,6 +8,7 @@ tags: ["plan", "gates", "falso-positivo", "calibracao", "r18"]
 relacionados: ["[[00-regras-e-invariantes]]", "[[01-gates-e-baseline]]", "[[plan-12-construcao-dos-gates]]", "[[plan-15-adequacao-total]]"]
 depende_de: "plan-12 · plan-16"
 destino_sintese: "specs/01-gates-e-baseline.md · specs/00-regras-e-invariantes.md"
+objetivo: "Calibrar os gates pelos falsos positivos medidos, sem deixar nenhuma violação real escapar"
 ---
 
 > 🔒 **Esta plan conserta o VERIFICADOR, não o código verificado.** Nenhuma violação real é paga aqui — isso é

@@ -8,6 +8,7 @@ tags: ["plan", "ci", "gates", "automacao"]
 relacionados: ["[[01-gates-e-baseline]]", "[[02-enforcement-por-commit]]", "[[11-testes-e-cobertura]]"]
 depende_de: ""
 destino_sintese: "specs/16-integracao-continua.md · specs/02-enforcement-por-commit.md · specs/01-gates-e-baseline.md"
+objetivo: "Rodar os gates num ambiente que não é a máquina de ninguém"
 ---
 
 # 1. Objetivo

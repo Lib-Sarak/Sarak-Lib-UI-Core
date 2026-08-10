@@ -2203,7 +2203,7 @@
     },
     "SarakScrim": {
       "propsInterface": "SarakScrimProps",
-      "source": "src/components/atomic/Buttons/SarakScrim.tsx",
+      "source": "src/components/atomic/Layouts/SarakScrim.tsx",
       "props": [
         {
           "name": "onClose",

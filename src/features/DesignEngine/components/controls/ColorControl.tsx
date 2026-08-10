@@ -13,6 +13,7 @@ export const ColorControl: React.FC<ColorControlProps> = ({ label, description, 
     // Spec 40 §2.3: `<input type="color">` só aceita hex real — nunca `var(...)`. O
     // display (rótulo textual abaixo do swatch) pode mostrar a CSS var crua, mas o
     // valor entregue ao input nativo tem que SEMPRE resolver para hex.
+    // sarak-allow-hardcode: fallback do <input type="color"> nativo — value só aceita hex.
     const HEX_FALLBACK = '#ffffff';
     const [localColor, setLocalColor] = React.useState(value || DISPLAY_DEFAULT);
 

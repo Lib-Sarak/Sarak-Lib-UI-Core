@@ -13,6 +13,10 @@ export interface SarakScrimProps {
  * clique fora. É `<button>` nativo, não `<div onClick>`: teclado (foco + Enter/Espaço) e
  * leitor de tela funcionam por construção, sem handler adicional (achado 17 / plan-19 —
  * o padrão se repetia pela base sem um átomo próprio).
+ *
+ * @sarak-encapsula button — a razão de existir deste componente é encapsular o
+ *   `<button>` nativo do backdrop, para teclado e leitor de tela funcionarem por
+ *   construção (a fronteira de R10 passou de PASTA para PAPEL — plan-20).
  */
 export const SarakScrim: React.FC<SarakScrimProps> = ({ onClose, ariaLabel, className = '' }) => (
     <button

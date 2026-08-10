@@ -15,6 +15,9 @@ export interface SarakButtonProps extends ButtonHTMLAttributes<HTMLButtonElement
 /**
  * Componente Atômico: SarakButton
  * Respeita a Spec 08-taxonomia-componentes e implementa a universalização de Neon/Frosted para todas as variantes.
+ *
+ * @sarak-encapsula button — a razão de existir deste componente é encapsular o
+ *   `<button>` nativo, para teclado e leitor de tela funcionarem por construção.
  */
 export const SarakButton: React.FC<SarakButtonProps> = ({
     variant = 'primary',

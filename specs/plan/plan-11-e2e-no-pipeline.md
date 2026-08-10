@@ -8,6 +8,7 @@ tags: ["plan", "e2e", "playwright", "ci", "acessibilidade"]
 relacionados: ["[[11-testes-e-cobertura]]", "[[10-seguranca-e-acessibilidade]]", "[[15-divida-conhecida]]"]
 depende_de: "plan-05"
 destino_sintese: "specs/11-testes-e-cobertura.md · specs/10-seguranca-e-acessibilidade.md · specs/16-integracao-continua.md"
+objetivo: "Parar de sair verde sem executar nada"
 ---
 
 # 1. Objetivo

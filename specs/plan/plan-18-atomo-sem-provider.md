@@ -8,6 +8,7 @@ tags: ["plan", "provider", "atomos", "leniencia", "r10"]
 relacionados: ["[[00-regras-e-invariantes]]", "[[03-superficie-publica]]", "[[plan-15-adequacao-total]]", "[[05-cromo-e-slots]]"]
 depende_de: "plan-15"
 destino_sintese: "specs/arquitetura/03-superficie-publica.md · specs/specs/00-regras-e-invariantes.md"
+objetivo: "Fazer o átomo Sarak renderizar sem SarakUIProvider — destrava 20 das 23 ocorrências de R10"
 ---
 
 > 🔒 **Esta plan mexe em superfície pública do núcleo.** `useSarakUI` é exportado e consumido por **62

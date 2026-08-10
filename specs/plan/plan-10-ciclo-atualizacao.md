@@ -8,6 +8,7 @@ tags: ["plan", "cli", "atualizacao", "consumidor", "semver"]
 relacionados: ["[[13-instalacao-e-atualizacao]]", "[[adr/008-releases-com-tag-e-semver-em-git]]", "[[12-kit-do-consumidor]]"]
 depende_de: "plan-05"
 destino_sintese: "specs/13-instalacao-e-atualizacao.md"
+objetivo: "Dar comando de atualização a quem só recebia aviso"
 ---
 
 # 1. Objetivo
