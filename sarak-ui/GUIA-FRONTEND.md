@@ -567,9 +567,9 @@ defeito da base é dívida que ninguém mais vai entender — e some na próxima
 
 > **Não edite esta seção à mão.** Ela é regenerada por `npm run guide` a partir do código-fonte da `@sarak/lib-ui-core` v2.1.0; o gate `guide:check` derruba o build se ficar defasada. A fonte de máquina equivalente é o `catalog.json` ao lado deste arquivo.
 
-Exportações do barril público: **255** nomes (componentes, tipos, hooks e helpers).
+Exportações do barril público: **248** nomes (componentes, tipos, hooks e helpers).
 
-### A.1 Componentes públicos (87)
+### A.1 Componentes públicos (83)
 
 Importe do barril: `import { X } from '@sarak/lib-ui-core'`. Os TIPOS de cada prop, com descrição, estão em `catalog.json` → `components.<Nome>.props` (e em `docs/component-catalog.md`).
 
@@ -622,7 +622,7 @@ Importe do barril: `import { X } from '@sarak/lib-ui-core'`. Os TIPOS de cada pr
 | Layouts | **SarakFlex** | `children` · `direction` · `justify` · `align` · `gap` · `wrap` · `as` |
 | Layouts | **SarakFormGroup** | `children` · `gap` |
 | Layouts | **SarakGrid** | `children` · `templateColumns` · `templateAreas` · `gap` · `as` |
-| Layouts | **SarakScrim** | `onClose` · `ariaLabel` · `className` |
+| Layouts | **SarakScrim** | `onClose` · `ariaLabel` · `className` · `testId` · `style` · `animate` · `visible` · `durationMs` |
 | Layouts | **SarakSplitPane** | `leftPane` · `rightPane` · `minLeftWidth` · `maxLeftWidth` · `defaultLeftWidth` · `className` |
 | Media | **SarakLightbox** | `images` · `isOpen` · `initialIndex` · `onClose` · `onIndexChange` |
 | Media | **SarakMarkdownRenderer** | `content` · `className` |
@@ -637,15 +637,11 @@ Importe do barril: `import { X } from '@sarak/lib-ui-core'`. Os TIPOS de cada pr
 | Navigation | **SarakStepper** | `steps` · `current` · `orientation` · `className` |
 | Outros | **DEFAULT_COLUMN_WIDTH** | _ver arquivo do componente_ |
 | Outros | **HelpButton** | _ver arquivo do componente_ |
-| Outros | **LanguageSelector** | _ver arquivo do componente_ |
 | Outros | **MIN_COLUMN_WIDTH** | _ver arquivo do componente_ |
-| Outros | **ModuleSelector** | _ver arquivo do componente_ |
 | Outros | **SarakDataGridImpl** | _ver arquivo do componente_ |
 | Outros | **SarakDataTableImpl** | _ver arquivo do componente_ |
 | Outros | **SarakOverlayProvider** | _ver arquivo do componente_ |
 | Outros | **SarakToastProvider** | _ver arquivo do componente_ |
-| Outros | **ThemeToggle** | _ver arquivo do componente_ |
-| Outros | **UserMenu** | _ver arquivo do componente_ |
 | Templates | **FilterSelect** | `col` · `placeholder` · `filters` · `onChange` · `options` |
 | Templates | **ImageCard** | `src` · `alt` · `title` · `subtitle` · `children` · `className` · `onClick` |
 | Templates | **SarakAuthScreen** | `branding` · `isRegistering` · `setIsRegistering` · `mfaStep` · `setMfaStep` · `username` · `setUsername` · `password` · `setPassword` · `mfaCode` · `setMfaCode` · `showPassword` · `setShowPassword` · `error` · `isPending` · `onSubmit` · `onSocialLogin` · `socialConfig` · `onForgot` · `onMasterLogin` · `onChange` · `role` · `density` · `importance` |

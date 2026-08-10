@@ -11,7 +11,6 @@ export { default as SarakUIProvider, useSarakUI } from './core/Provider/SarakUIP
 export type { SarakUIMode } from './core/Provider/types';
 export { SARAK_SCOPE_CLASS, SARAK_MODE_ATTRIBUTE } from './core/Provider/scope';
 export { DesignScope } from './core/Design/components/DesignScope';
-export { default as ThemeToggle } from './components/atomic/Buttons/ThemeToggle';
 export * from './components/atomic/Buttons/SarakButton';
 export * from './components/atomic/Buttons/SarakIconButton';
 export * from './components/atomic/Buttons/SocialButton';
@@ -74,7 +73,6 @@ export type { SarakFormGroupProps } from './components/atomic/Layouts/SarakFormG
 export { SarakScrim } from './components/atomic/Layouts/SarakScrim';
 export type { SarakScrimProps } from './components/atomic/Layouts/SarakScrim';
 export * from './components/atomic/Navigation';
-export * from './components/atomic/Inputs/Controls';
 // Entrada de dados BÁSICA (achado Spec 40 — Teste Real): existiam e já estavam no
 // Registry do motor de manifesto (`nativeComponents.ts`), mas nunca chegaram ao
 // barril público React — mesma classe de lacuna do `SarakLink` (Spec 40, pré-req).

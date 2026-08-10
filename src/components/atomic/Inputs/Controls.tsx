@@ -6,6 +6,7 @@ import { LANGUAGES as ALL_LANGUAGES } from '../../../core/Discovery/constants';
 import { LANGUAGE_STORAGE_KEY } from '../../../core/Provider/constants';
 import { SarakButton } from '../Buttons/SarakButton';
 import { SarakIconButton } from '../Buttons/SarakIconButton';
+import { SarakScrim } from '../Layouts/SarakScrim';
 
 /** O preset de SarakButton é para rótulo de AÇÃO (maiúsculas, tracking largo, peso
  * preto) — os usos deste arquivo são rótulo de ESTADO (idioma/módulo ativo) ou item
@@ -139,7 +140,7 @@ export const UserMenu = ({ user, onPasswordModal, onLogout }: { user: UserPayloa
             <AnimatePresence>
                 {isOpen && (
                     <>
-                        <motion.div initial={{ opacity: 0 }} animate={{ opacity: 1 }} exit={{ opacity: 0 }} className="fixed inset-0 z-40" onClick={() => setIsOpen(false)} />
+                        <SarakScrim animate onClose={() => setIsOpen(false)} ariaLabel="Fechar menu do usuário" />
                         <motion.div
                             initial={{ opacity: 0, y: -10, scale: 0.95 }}
                             animate={{ opacity: 1, y: 0, scale: 1 }}

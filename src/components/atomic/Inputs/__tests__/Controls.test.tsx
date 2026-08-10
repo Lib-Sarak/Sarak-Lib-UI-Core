@@ -1,6 +1,6 @@
 import React from 'react';
 import { describe, it, expect, vi } from 'vitest';
-import { render, screen, fireEvent } from '@testing-library/react';
+import { render, screen, fireEvent, waitFor } from '@testing-library/react';
 import { SarakUIProvider } from '../../../../core/Provider/SarakUIProvider';
 import { LanguageSelector, ThemeToggle, UserMenu, ModuleSelector } from '../Controls';
 
@@ -34,6 +34,17 @@ describe('Controls (conserto R10 — plan-22)', () => {
         fireEvent.click(screen.getByText('ana'));
         fireEvent.click(screen.getByText('Log Out'));
         expect(onLogout).toHaveBeenCalled();
+    });
+
+    it('UserMenu: o backdrop (SarakScrim) fecha o dropdown ao clique (conserto §2.3 — plan-23)', async () => {
+        renderWithProvider(<UserMenu user={{ email: 'ana@example.com' }} onPasswordModal={() => {}} onLogout={() => {}} />);
+        fireEvent.click(screen.getByText('ana'));
+        expect(screen.getByText('Change Password')).toBeInTheDocument();
+
+        fireEvent.click(screen.getByRole('button', { name: 'Fechar menu do usuário' }));
+        // AnimatePresence mantém o painel montado durante a saída animada — a remoção é
+        // assíncrona (não há mais timer de setTimeout, é o motion aguardando a transição).
+        await waitFor(() => expect(screen.queryByText('Change Password')).not.toBeInTheDocument());
     });
 
     it('ModuleSelector: reporta o módulo clicado', () => {

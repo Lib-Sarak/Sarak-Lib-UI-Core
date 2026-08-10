@@ -7,9 +7,9 @@ com o "antes" e o "depois" lado a lado. Uma entrada por mudança, mais recente p
 
 ## 2.0.0 — a limpeza do contrato público, num major só
 
-**Esta é a única entrada que você precisa ler para migrar para a `2.0.0`.** Seis mudanças saíram
+**Esta é a única entrada que você precisa ler para migrar para a `2.0.0`.** Oito mudanças saíram
 juntas de propósito: cada uma sozinha custaria a você uma migração inteira de leitura, teste e
-ajuste. **Você atravessa o major uma vez, não seis.**
+ajuste. **Você atravessa o major uma vez, não oito.**
 
 Se você não usa nenhum dos itens abaixo, **atualizar é trocar a faixa da versão e mais nada** — e
 você ainda ganha o boot 75% menor do item 1 sem fazer nada.
@@ -98,6 +98,69 @@ público** — o outro nunca esteve no barril.
 | **Antes** | `Layouts/SarakTabs` existia no código, alcançável só por deep import (proibido por contrato) |
 | **Depois** | não existe mais; `SarakTabs` é, sem ambiguidade, o de `UX/` |
 | **Como migrar** | nada, se você importa do barril. Se usava deep import, migre para a API do `UX/SarakTabs`: `tabs={[{id, label}]}`, `activeTab`, `onChange` |
+
+### 6. `ThemeToggle` foi removido — abria um seletor sempre vazio
+
+Componente publicado desde a origem, mas nunca funcional: `LAYOUTS` era um objeto literal `{}` (com um
+`TODO` no próprio código pedindo os presets canônicos que nunca chegaram a ser plugados). O dropdown que
+ele abre sempre esteve vazio — não é regressão desta versão, é o estado dele desde que existe.
+
+| | |
+| --- | --- |
+| **Antes** | `import { ThemeToggle } from '@sarak/lib-ui-core'` — renderiza um botão "Layouts Premium Matrix" cujo dropdown nunca lista nada |
+| **Depois** | não existe mais — nem o componente, nem o export |
+| **Não confunda com** | `ShellThemeToggle` (`core/Shell/`), que é o toggle claro/escuro do cromo — esse continua existindo e funcionando; não foi tocado |
+| **Como migrar** | se você usava o `ThemeToggle` para trocar de layout, ele nunca fez isso de verdade (o seletor estava vazio); não há substituto direto porque não havia funcionalidade a substituir. Se você precisa de um seletor de preset de layout, é escopo novo — abra como feature no seu produto |
+
+### 7. `LanguageSelector`, `UserMenu`, `ModuleSelector` — e os tipos que vinham com eles — saíram do barril
+
+Consequência direta do item 6, não uma mudança separada: os quatro viviam em
+`atomic/Inputs/Controls.tsx`, publicados só porque um `export *` os arrastava junto com o
+`ThemeToggle` — nenhum tinha consumidor interno (a base real usa a família `Shell*`:
+`ShellLanguageSelector`, `ShellThemeToggle`, `ShellUserWidget`). Como só o `ThemeToggle` tinha
+entrada aqui, esta seção fecha o registro dos outros três.
+
+#### `LanguageSelector`
+
+| | |
+| --- | --- |
+| **Antes** | `import { LanguageSelector } from '@sarak/lib-ui-core'` — pílulas de idioma que gravam a escolha em `localStorage`, trocam o cookie do Google Translate (`googtrans`) e recarregam a página |
+| **Depois** | não existe mais |
+| **Substituto?** | **`ShellLanguageSelector` (`core/Shell/Components/`) NÃO é equivalente — não force essa migração achando que é.** Ele é fixo em 2 idiomas (`pt-BR`/`en-US`, não lê os `enabledLanguages` do tema), guarda a escolha só em estado React — sem `localStorage`, sem cookie, sem reload — e existe sobretudo como um *slot* para você plugar o seu próprio seletor via `registerLocalComponent('shell-language-selector', ...)` |
+| **Como migrar** | se você usava o `LanguageSelector` para trocar de idioma de verdade, o comportamento (persistência + cookie + reload) não tem substituto pronto na lib — copie a lógica de `Controls.tsx` no histórico do git para o seu projeto |
+
+#### `UserMenu`
+
+| | |
+| --- | --- |
+| **Antes** | `import { UserMenu } from '@sarak/lib-ui-core'` — avatar + nome + dropdown com "Change Password" e "Log Out" |
+| **Depois** | não existe mais |
+| **Substituto?** | **`ShellUserWidget` (`core/Shell/Components/`) cobre só metade.** Mostra identidade (avatar, nome, nível) e tem um botão de logout — mas não tem dropdown nem ação de trocar senha; é um chip de identidade, não um menu |
+| **Como migrar** | para identidade + logout, troque por `ShellUserWidget` (`user`, `logout`, `variant`). Para "trocar senha", não há slot equivalente — monte seu próprio botão/modal ao lado |
+
+#### `ModuleSelector`
+
+| | |
+| --- | --- |
+| **Antes** | `import { ModuleSelector } from '@sarak/lib-ui-core'` — fileira de abas de módulo (`modules: {id,label}[]`, `currentModule`, `setCurrentModule`) |
+| **Depois** | não existe mais |
+| **Substituto** | **`SarakShellNav`** faz o mesmo trabalho (escolher o módulo/seção ativa) e é o componente que a base realmente usa para isso. A forma muda: `modules`→`items` (cada item usa `route` no lugar de `id`), `currentModule`→`activeRoute`, `setCurrentModule`→`onNavigate` |
+
+```tsx
+// Antes
+<ModuleSelector currentModule={id} setCurrentModule={setId} modules={[{ id: 'a', label: 'A' }]} />
+
+// Depois
+<SarakShellNav activeRoute={id} onNavigate={setId} items={[{ route: 'a', label: 'A' }]} />
+```
+
+#### Os três tipos que vinham junto
+
+| Tipo | Forma | Equivalente público hoje |
+| --- | --- | --- |
+| `LanguageOption` | `{ id: string; label: string }` | nenhum — declare o seu: `interface LanguageOption { id: string; label: string }` |
+| `ModuleConfig` | `{ id: string; label: string; [k: string]: unknown }` | **`SarakModule`** (o tipo de `registerSarakModule`) já é público e tem `id`/`label` compatíveis — reutilizável, mas é um tipo mais pesado (pensado para o Discovery: carrega `component`, `priority`, `isLocal` etc.) |
+| `UserPayload` | `{ email?: string; [k: string]: unknown }` | nenhum — declare o seu: `interface UserPayload { email?: string }` |
 
 ---
 

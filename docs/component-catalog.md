@@ -87,7 +87,7 @@ Nome fora desta lista **não renderiza o ícone pedido**: o `SarakIcon` avisa no
 
 `AlertCircle` · `AlertTriangle` · `Check` · `CheckCircle2` · `X` · `Info` · `HelpCircle` · `Menu` · `Search` · `Bell` · `Filter` · `List` · `Grid` · `Layout` · `LayoutDashboard` · `Home` · `ChevronDown` · `ChevronLeft` · `ChevronRight` · `ChevronUp` · `ArrowRight` · `ArrowLeft` · `ArrowUp` · `ArrowDown` · `ArrowUpDown` · `CornerDownRight` · `MoreVertical` · `MoreHorizontal` · `Maximize2` · `Minimize2` · `Loader2` · `RefreshCw` · `User` · `UserPlus` · `Users` · `LogIn` · `LogOut` · `Lock` · `Shield` · `Eye` · `File` · `FileText` · `FileSpreadsheet` · `Folder` · `Image` · `Paperclip` · `ScrollText` · `Clipboard` · `Copy` · `Download` · `Upload` · `UploadCloud` · `Printer` · `Save` · `Edit` · `Edit3` · `Plus` · `Trash2` · `Type` · `AlignLeft` · `Hash` · `Activity` · `BarChart3` · `LineChart` · `PieChart` · `ScatterChart` · `TrendingUp` · `Database` · `Layers` · `Network` · `Box` · `Package` · `Cpu` · `Cloud` · `Terminal` · `Thermometer` · `History` · `Calendar` · `Clock` · `MessageSquare` · `Mail` · `Send` · `Phone` · `Bot` · `Globe` · `Link` · `ExternalLink` · `Briefcase` · `Building` · `CreditCard` · `DollarSign` · `MapPin` · `Tag` · `Star` · `Play` · `Palette` · `Settings` · `Zap` · `Chrome` · `Github`
 
-## Componentes públicos (81)
+## Componentes públicos (77)
 
 ### DEFAULT_COLUMN_WIDTH
 
@@ -137,15 +137,7 @@ Props (`ImageCardProps` — `src/components/atomic/Templates/ImageCard.tsx`):
 | `className` | `string` | não |  |
 | `onClick` | `() => void` | não |  |
 
-### LanguageSelector
-
-_Props não expostas por interface nomeada — consulte o arquivo do componente._
-
 ### MIN_COLUMN_WIDTH
-
-_Props não expostas por interface nomeada — consulte o arquivo do componente._
-
-### ModuleSelector
 
 _Props não expostas por interface nomeada — consulte o arquivo do componente._
 
@@ -787,6 +779,11 @@ Props (`SarakScrimProps` — `src/components/atomic/Layouts/SarakScrim.tsx`):
 | `onClose` | `() => void` | sim | Fecha a camada — chamado ao clique em qualquer ponto do scrim. |
 | `ariaLabel` | `string` | sim | Rótulo acessível do scrim (ex.: "Fechar menu de navegação"). |
 | `className` | `string` | não |  |
+| `testId` | `string` | não | `data-testid`, para quem precisa localizar o scrim em teste sem depender do `ariaLabel`. Não é passthrough genérico de props — evita colidir com os tipos de evento do `motion.button` (que redefine `onDrag` e afins com assinatura própria). |
+| `style` | `React.CSSProperties` | não | Sobrepõe o fundo padrão (`--sarak-overlay-bg`) — para consumidores que já liam a cor do overlay de um token de design próprio antes de migrar para este átomo. |
+| `animate` | `boolean` | não | Ativa a transição de opacidade na entrada/saída. Default `false` — o comportamento de sempre, sem animação (plan-19/20/22 pararam exatamente por causa disto: dar animação sem ela ser opcional removeria o scrim estático que já existe). |
+| `visible` | `boolean` | não | Só tem efeito com `animate`. Alvo da opacidade (1 = visível, 0 = invisível) SEM desmontar — para consumidores que gerenciam o próprio atraso de desmontagem (ex.: `SarakDrawer`, que mantém o overlay montado até a transição terminar). Quando omitido, assume visível — o caso de quem desmonta via `AnimatePresence` por fora (ex.: `Controls.tsx`), onde o `exit` já cobre o fade de saída. |
+| `durationMs` | `number` | não | Só tem efeito com `animate`. Duração da transição em ms. Default 300 — o mesmo valor que o `motion.div` ad hoc de `Controls.tsx` já usava (default do framer-motion para uma transição de opacidade sem `transition` explícito). |
 
 ### SarakSearch
 
@@ -1079,12 +1076,4 @@ Props (`SocialButtonProps` — `src/components/atomic/Buttons/SocialButton.tsx`)
 | `label` | `string` | não |  |
 | `hideLabel` | `boolean` | não |  |
 | `className` | `string` | não |  |
-
-### ThemeToggle
-
-_Props não expostas por interface nomeada — consulte o arquivo do componente._
-
-### UserMenu
-
-_Props não expostas por interface nomeada — consulte o arquivo do componente._
 

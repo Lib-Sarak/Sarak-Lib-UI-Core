@@ -46,17 +46,13 @@
     "ImageCardProps",
     "KanbanCard",
     "KanbanColumn",
-    "LanguageOption",
-    "LanguageSelector",
     "LightboxImage",
     "MIN_COLUMN_WIDTH",
     "MatrixNodeConfig",
     "MatrixParentData",
     "MatrixTreeNode",
     "ModalLayoutContext",
-    "ModuleConfig",
     "ModuleManifest",
-    "ModuleSelector",
     "MultiSelectOption",
     "NavigationItem",
     "PaginationToken",
@@ -227,13 +223,10 @@
     "THEME_PRESET_IDS",
     "ThemePreset",
     "ThemePresetId",
-    "ThemeToggle",
     "ToastController",
     "ToastOptions",
     "ToastVariant",
     "TooltipPosition",
-    "UserMenu",
-    "UserPayload",
     "VisualContract",
     "VisualContractType",
     "buildPaginationRange",
@@ -484,19 +477,7 @@
         }
       ]
     },
-    "LanguageSelector": {
-      "propsInterface": null,
-      "source": null,
-      "props": [],
-      "note": "Props não expostas por interface nomeada — consulte o arquivo do componente."
-    },
     "MIN_COLUMN_WIDTH": {
-      "propsInterface": null,
-      "source": null,
-      "props": [],
-      "note": "Props não expostas por interface nomeada — consulte o arquivo do componente."
-    },
-    "ModuleSelector": {
       "propsInterface": null,
       "source": null,
       "props": [],
@@ -2572,6 +2553,36 @@
           "type": "string",
           "optional": true,
           "doc": ""
+        },
+        {
+          "name": "testId",
+          "type": "string",
+          "optional": true,
+          "doc": "`data-testid`, para quem precisa localizar o scrim em teste sem depender do `ariaLabel`. Não é passthrough genérico de props — evita colidir com os tipos de evento do `motion.button` (que redefine `onDrag` e afins com assinatura própria)."
+        },
+        {
+          "name": "style",
+          "type": "React.CSSProperties",
+          "optional": true,
+          "doc": "Sobrepõe o fundo padrão (`--sarak-overlay-bg`) — para consumidores que já liam a cor do overlay de um token de design próprio antes de migrar para este átomo."
+        },
+        {
+          "name": "animate",
+          "type": "boolean",
+          "optional": true,
+          "doc": "Ativa a transição de opacidade na entrada/saída. Default `false` — o comportamento de sempre, sem animação (plan-19/20/22 pararam exatamente por causa disto: dar animação sem ela ser opcional removeria o scrim estático que já existe)."
+        },
+        {
+          "name": "visible",
+          "type": "boolean",
+          "optional": true,
+          "doc": "Só tem efeito com `animate`. Alvo da opacidade (1 = visível, 0 = invisível) SEM desmontar — para consumidores que gerenciam o próprio atraso de desmontagem (ex.: `SarakDrawer`, que mantém o overlay montado até a transição terminar). Quando omitido, assume visível — o caso de quem desmonta via `AnimatePresence` por fora (ex.: `Controls.tsx`), onde o `exit` já cobre o fade de saída."
+        },
+        {
+          "name": "durationMs",
+          "type": "number",
+          "optional": true,
+          "doc": "Só tem efeito com `animate`. Duração da transição em ms. Default 300 — o mesmo valor que o `motion.div` ad hoc de `Controls.tsx` já usava (default do framer-motion para uma transição de opacidade sem `transition` explícito)."
         }
       ]
     },
@@ -3581,18 +3592,6 @@
           "doc": ""
         }
       ]
-    },
-    "ThemeToggle": {
-      "propsInterface": null,
-      "source": null,
-      "props": [],
-      "note": "Props não expostas por interface nomeada — consulte o arquivo do componente."
-    },
-    "UserMenu": {
-      "propsInterface": null,
-      "source": null,
-      "props": [],
-      "note": "Props não expostas por interface nomeada — consulte o arquivo do componente."
     }
   },
   "tokens": {

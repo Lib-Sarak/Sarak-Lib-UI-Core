@@ -3,7 +3,7 @@
   "schemaVersion": 1,
   "lib": {
     "name": "@sarak/lib-ui-core",
-    "version": "2.0.0"
+    "version": "2.1.0"
   },
   "design": {
     "schemaFiles": {
@@ -81,16 +81,14 @@
       "flows"
     ],
     "publicos": {
-      "count": 81,
+      "count": 77,
       "nomes": [
         "DEFAULT_COLUMN_WIDTH",
         "ExpandableCard",
         "FilterSelect",
         "HelpButton",
         "ImageCard",
-        "LanguageSelector",
         "MIN_COLUMN_WIDTH",
-        "ModuleSelector",
         "SarakAccordion",
         "SarakActionCard",
         "SarakAnalyticalPage",
@@ -161,9 +159,7 @@
         "SarakTreeView",
         "SarakTypography",
         "SarakUploader",
-        "SocialButton",
-        "ThemeToggle",
-        "UserMenu"
+        "SocialButton"
       ]
     }
   },
@@ -287,7 +283,7 @@
         "mortos": 0
       },
       "auditor_composicaoatomica.mjs": {
-        "violacoes": 4
+        "violacoes": 2
       }
     },
     "tsc": {

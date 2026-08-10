@@ -3,6 +3,7 @@ import { createPortal } from 'react-dom';
 import { SarakPortalScope } from '../../../core/Provider/components/SarakPortalScope';
 import { useSarakUI } from '../../../core/Provider/SarakUIProvider';
 import { useFocusTrap } from './hooks/useFocusTrap';
+import { SarakScrim } from '../Layouts/SarakScrim';
 
 export interface SarakDrawerProps {
     isOpen: boolean;
@@ -98,18 +99,23 @@ export const SarakDrawer: React.FC<SarakDrawerProps> = ({
 
     const drawerElement = (
         <div style={{ position: 'relative', zIndex }}>
-            {/* Overlay */}
-            <div
-                className="fixed inset-0 transition-opacity"
-                data-testid="sarak-drawer-overlay"
+            {/* Overlay — SarakScrim animado (plan-23): fica montado (governado por
+                `shouldRender` acima) e só a opacidade muda com `isOpen`, o mesmo padrão
+                que o `<div>` ad hoc já usava. Ganha foco/teclado por construção (o
+                `<div aria-hidden>` anterior não tinha) — o `useFocusTrap` do `<aside>`
+                abaixo mantém o Tab preso nele enquanto aberto, então isso não desvia o
+                fluxo normal de teclado. */}
+            <SarakScrim
+                animate
+                visible={isOpen}
+                durationMs={typeof animSlow === 'number' ? animSlow : 400}
+                onClose={onClose}
+                ariaLabel="Fechar painel"
+                testId="sarak-drawer-overlay"
                 style={{
-                    backgroundColor: String(overlayBg),
-                    opacity: isOpen ? 1 : 0,
-                    transitionDuration: String(animDuration),
-                    zIndex: parseInt(String(zIndex)) || 1000
+                    background: String(overlayBg),
+                    zIndex: parseInt(String(zIndex)) || 1000,
                 }}
-                onClick={onClose}
-                aria-hidden="true"
             />
             {/* Drawer */}
             <div

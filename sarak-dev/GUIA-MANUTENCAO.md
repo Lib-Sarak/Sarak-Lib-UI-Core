@@ -289,7 +289,7 @@ depois acrescente o fluxo — nunca deixe o próximo redescobrir.
 
 ## Apêndice B — Estado deste repositório (GERADO)
 
-> **Não edite esta seção à mão.** Ela é regenerada por `npm run dev-kit` a partir do próprio repositório (`@sarak/lib-ui-core` v2.0.0); o gate `npm run dev-kit:check` derruba se ficar defasada. A fonte de máquina equivalente é o `state.json` ao lado deste arquivo.
+> **Não edite esta seção à mão.** Ela é regenerada por `npm run dev-kit` a partir do próprio repositório (`@sarak/lib-ui-core` v2.1.0); o gate `npm run dev-kit:check` derruba se ficar defasada. A fonte de máquina equivalente é o `state.json` ao lado deste arquivo.
 
 ### B.1 Design — as fontes que a paridade cruza
 
@@ -313,7 +313,7 @@ depois acrescente o fluxo — nunca deixe o próximo redescobrir.
 
 **Categorias de engine (3)** — `charts` · `chat` · `flows`
 
-**Componentes públicos: 81** — é o número que o `barrel:check` cobra. A lista completa está em `state.json` → `componentes.publicos.nomes`.
+**Componentes públicos: 77** — é o número que o `barrel:check` cobra. A lista completa está em `state.json` → `componentes.publicos.nomes`.
 
 ### B.3 Gates registrados (17)
 
@@ -358,7 +358,7 @@ depois acrescente o fluxo — nunca deixe o próximo redescobrir.
 | `auditor_presets.mjs` | falhou | **0** |
 | `auditor_authcoupling.mjs` | violacoes | **0** |
 | `auditor_sectionpointers.mjs` | mortos | **0** |
-| `auditor_composicaoatomica.mjs` | violacoes | **4** |
+| `auditor_composicaoatomica.mjs` | violacoes | **2** |
 
 `npx tsc --noEmit`: **0 erros** tolerados — não é gate hoje.
 

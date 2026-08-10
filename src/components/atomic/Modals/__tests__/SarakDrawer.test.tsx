@@ -44,6 +44,21 @@ describe('SarakDrawer', () => {
         expect(onCloseMock).toHaveBeenCalled();
     });
 
+    it('overlay anima a opacidade via SarakScrim (conserto §2.3 — plan-23)', () => {
+        render(
+            <SarakUIProvider>
+                <SarakDrawer isOpen={true} onClose={() => {}}>
+                    <div data-testid="drawer-content">Drawer Content</div>
+                </SarakDrawer>
+            </SarakUIProvider>
+        );
+        const overlay = screen.getByTestId('sarak-drawer-overlay');
+        expect(overlay.tagName).toBe('BUTTON');
+        expect(overlay).toHaveAttribute('aria-label', 'Fechar painel');
+        // motion.button aplica opacity via style inline quando `animate` está ligado.
+        expect(overlay.getAttribute('style')).toMatch(/opacity/);
+    });
+
     it('should call onClose when pressing Escape', () => {
         const onCloseMock = vi.fn();
         render(

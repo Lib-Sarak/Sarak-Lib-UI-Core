@@ -2,7 +2,7 @@
 tipo: "plan"
 titulo: "A superfície pública da major — remover o que não funciona e destravar o que falta"
 dominio: "Sarak-Lib-UI-Core / Núcleo / Superfície pública"
-status: "🔴 A executar"
+status: "🟠 Em revisão"
 prioridade: "Alta"
 tags: ["plan", "superficie-publica", "major", "breaking", "r10"]
 relacionados: ["[[03-superficie-publica]]", "[[plan-22-triar-a-fronteira-de-papel]]", "[[plan-18-atomo-sem-provider]]", "[[00-regras-e-invariantes]]"]
@@ -270,7 +270,267 @@ node gates/scripts/release/check-audit-baseline.mjs --with-tsc
 
 # 10. Resumo da execução
 
-*(a preencher pelo executor)*
+## Resumo da execução — 2026-08-10
+
+**Resultado:** Concluído com pendências
+
+**O que foi feito**
+
+Seguida a ordem obrigatória do prompt (1→2→3→4→5), o irreversível por último.
+
+**1. `SarakScrim` ganhou prop opcional de animação** (`src/components/atomic/Layouts/SarakScrim.tsx`):
+`animate?`, `visible?`, `durationMs?`, `style?`, `testId?`. Default (`animate=false`) renderiza o mesmo
+`<button>` estático de sempre — zero mudança para `SarakAppChromeMobile`, o único consumidor publicado.
+Com `animate=true`, troca para `motion.button` (framer-motion, já é peer dependency da lib — não é
+dependência nova) com `initial/animate/exit` de opacidade. `visible` controla o alvo da opacidade sem
+desmontar (para quem, como o `SarakDrawer`, atrasa a própria desmontagem); quando omitido assume visível
+(o caso de quem desmonta via `AnimatePresence` externo, como o `Controls.tsx`).
+
+**2. Os 2 consumidores migraram, com a animação que tinham preservada:**
+- `Controls.tsx:142` (backdrop do `UserMenu`) — trocado o `motion.div` ad hoc por
+  `<SarakScrim animate onClose={...} ariaLabel="Fechar menu do usuário" />`, dentro do mesmo
+  `<AnimatePresence>` que já existia (o `exit` do `motion.button` interno é quem entrega o fade de saída).
+- `SarakDrawer.tsx:100-119` (overlay) — trocado o `<div aria-hidden>` com `transition-opacity`/`opacity`
+  manual por `<SarakScrim animate visible={isOpen} durationMs={...} style={{background: overlayBg,
+  zIndex}} testId="sarak-drawer-overlay" />`. `durationMs` recebe o `design?.animSlow` já computado
+  (fallback 400, igual ao original); `style.background` preserva a cor dinâmica de
+  `design?.modalOverlayColor` (ver "Achados fora do escopo").
+
+**3. `forwardRef` no `SarakInput`: NÃO EXECUTADO.** Não houve autorização escrita do dono nesta conversa.
+Conforme o prompt manda ("Sem autorização: DECLARE e siga"), o item foi pulado. `SarakMultiSelect.tsx:113`
+segue com `<input>` cru, comentário já apontando para esta plan §2.4 (herdado da `plan-22`).
+
+**4. `ThemeToggle` removido** (`Buttons/ThemeToggle.tsx` + teste, apagados; export removido de
+`Buttons/index.ts` e `src/index.ts:14`). Consumo zero provado por `grep` **antes** de remover (colado
+abaixo). `ShellThemeToggle` (`core/Shell/`) não foi tocado.
+
+> 🔴 **Achado crítico durante a remoção, corrigido na hora:** remover a linha 14 de `src/index.ts`
+> (`export { default as ThemeToggle } from '.../Buttons/ThemeToggle'`) **não fez `ThemeToggle` sumir da API
+> pública** — fez aparecer um `ThemeToggle` DIFERENTE. `src/index.ts:76` já fazia
+> `export * from './components/atomic/Inputs/Controls'`, e `Controls.tsx` tem um export local **também**
+> chamado `ThemeToggle` (o toggle claro/escuro interno, sem nenhum consumidor dentro de `src/` — a base
+> real usa `ShellThemeToggle`/`ShellLanguageSelector`/`ShellUserWidget`, uma família paralela). Enquanto a
+> linha 14 existia, o export explícito **vencia** a colisão com o `export *` (semântica padrão de ES
+> modules: export nomeado explícito tem precedência sobre `export *` que colide). Ao remover a linha 14, o
+> `export *` deixou de colidir e passou a exportar o `ThemeToggle` de `Controls.tsx` **no lugar** — um
+> consumidor que já importava `{ ThemeToggle }` não veria erro nenhum, só passaria a receber um componente
+> completamente diferente, silenciosamente. Isso violava o próprio critério de aceite desta plan
+> ("`ThemeToggle` não existe... no barril"). Corrigido removendo `Controls.tsx` de **ambos** os barris
+> (`Inputs/index.ts` e `src/index.ts`) — `Controls.tsx` continua existindo no código (não foi apagado, é
+> escopo maior que o desta plan), só parou de vazar para a API pública. Isso também tirou `LanguageSelector`,
+> `UserMenu` e `ModuleSelector` (as outras 3 peças de `Controls.tsx`) do barril — nenhuma tinha consumidor
+> interno, e as 4 já estavam documentadas (sem querer) em `docs/component-catalog.json`/`sarak-ui/catalog.json`
+> antes desta plan.
+
+**5. `docs/migracoes.md`** ganhou o item 6 na seção `## 2.0.0` já existente (não criei versão nova — o
+`package.json` está em `2.1.0`, ainda sem tag emitida, e a `2.0.0` documentada já era a major pendente de
+publicar; agrupar aqui é o mesmo padrão que a `plan-09` já usou).
+
+**Arquivos alterados**
+
+| Arquivo | Natureza | O que mudou |
+|---|---|---|
+| `src/components/atomic/Layouts/SarakScrim.tsx` | alterado | +`animate`/`visible`/`durationMs`/`style`/`testId`, default idêntico ao anterior |
+| `src/components/atomic/Layouts/__tests__/SarakScrim.test.tsx` | alterado | +4 testes (default inalterado, `animate` liga motion, `style` sobrepõe, `SarakAppChromeMobile` não muda) |
+| `src/components/atomic/Inputs/Controls.tsx` | alterado | Backdrop do `UserMenu` → `SarakScrim animate` |
+| `src/components/atomic/Inputs/__tests__/Controls.test.tsx` | alterado | +1 teste (backdrop fecha o menu, assíncrono por causa do `AnimatePresence`) |
+| `src/components/atomic/Modals/SarakDrawer.tsx` | alterado | Overlay `<div>` → `SarakScrim animate visible durationMs` |
+| `src/components/atomic/Modals/__tests__/SarakDrawer.test.tsx` | alterado | +1 teste (overlay é `<button>`, `aria-label`, opacidade via style) |
+| `src/components/atomic/Buttons/ThemeToggle.tsx` | **removido** | Componente morto (seletor de layout sempre vazio) |
+| `src/components/atomic/Buttons/__tests__/ThemeToggle.test.tsx` | **removido** | Teste do componente removido |
+| `src/components/atomic/Buttons/index.ts` | alterado | Removido `export * from './ThemeToggle'` |
+| `src/components/atomic/Inputs/index.ts` | alterado | Removido `export * from './Controls'` (achado crítico acima) |
+| `src/index.ts` | alterado | Removida a linha 14 (`ThemeToggle`) **e** a linha 76 (`Inputs/Controls`) |
+| `docs/migracoes.md` | alterado | Item 6 da `## 2.0.0`: remoção do `ThemeToggle` documentada |
+| `docs/component-catalog.json`/`.md` | alterado | Regravado via `npm run catalog` — 81→77 componentes |
+| `gates/baselines/audit-baseline.json` | alterado | Regravado: `composicaoatomica` 4→2 |
+| `sarak-dev/*` | alterado | Regravado via `npm run dev-kit` — 77 componentes públicos |
+| `sarak-ui/*` | alterado | Regravado via `npm run guide` — 87→83 componentes (77 do gate + 6 extras de montagem) |
+
+**Verificações executadas**
+
+Prova de consumo zero do `ThemeToggle`, colada (rodada antes de remover):
+```
+$ grep -rn "ThemeToggle" src/ --include=*.ts --include=*.tsx | grep -v ShellThemeToggle
+src/components/atomic/Buttons/index.ts:1:export * from './ThemeToggle';
+src/components/atomic/Buttons/ThemeToggle.tsx:17:export const ThemeToggle: React.FC = () => {
+src/components/atomic/Buttons/ThemeToggle.tsx:73:export default ThemeToggle;
+src/components/atomic/Buttons/__tests__/ThemeToggle.test.tsx:2:import * as ComponentModule from '../ThemeToggle';
+src/components/atomic/Buttons/__tests__/ThemeToggle.test.tsx:4:describe('ThemeToggle', () => {
+src/components/atomic/Inputs/Controls.tsx:82:export const ThemeToggle = () => {
+src/components/atomic/Inputs/__tests__/Controls.test.tsx:5:import { LanguageSelector, ThemeToggle, UserMenu, ModuleSelector } from '../Controls';
+src/index.ts:14:export { default as ThemeToggle } from './components/atomic/Buttons/ThemeToggle';
+```
+Só o próprio arquivo, seu barril, seu teste, o barril público e o `ThemeToggle` homônimo de `Controls.tsx`
+(componente diferente, tratado acima) — **zero consumo real**.
+
+- `npm run audit` (ANTES, herdado do fim da `plan-22`): `composicaoatomica` 4 (`ThemeToggle` ×2,
+  `SarakMultiSelect` ×1, `SarakUploader` ×1); `ghostvars` 1; `hardcoded` 0.
+- `npm run audit` (DEPOIS): `composicaoatomica` **2** (`SarakMultiSelect.tsx:113`, `SarakUploader.tsx:111` —
+  as 2 que sobraram, ambas já declaradas); `ghostvars` 1; `hardcoded` 0; demais 7 auditores `[OK]`.
+- `npx vitest run` (suíte inteira) → **295 arquivos / 1078 testes, todos verdes** (era 296/1073 no fim da
+  `plan-22`: −1 arquivo pelo `ThemeToggle.test.tsx` apagado, +6 testes novos).
+- `npm run barrel:check` → `77 componentes registrados; barril em dia (0 faltas)`.
+- `npm run deep-import:check` → `[OK]`.
+- `npm run gate-limits:check` → `[OK]` 26/26.
+- `npm run dev-kit:check` / `catalog:check` / `guide:check` → defasados antes de eu regenerar; `[OK]` depois.
+- `node gates/scripts/release/check-audit-baseline.mjs --with-tsc` → `igual ao baseline de 2026-08-10 —
+  nenhuma regressão.` (Um erro de TS real apareceu no meio do caminho — ver "Decisões e suposições" — e foi
+  corrigido antes desta verificação final passar.)
+- `git diff --stat` → 13 arquivos em `src/` (159 inserções, 110 deleções) + os 3 espelhos + `docs/migracoes.md`.
+  **`dist/` não mudou** (não é rastreado neste worktree; não rodei `npm run build`). **Nenhuma tag emitida.**
+
+**Critérios de aceite**
+- [x] `ThemeToggle` não existe em `src/`, no barril nem no catálogo — evidência: `grep` colado acima (pré),
+      arquivo apagado, `barrel:check` 77/0 faltas, `docs/component-catalog.json` regravado sem ele.
+- [x] `ShellThemeToggle` continua intacto — evidência: não foi tocado; suíte inteira verde inclui os testes
+      de `core/Shell/`.
+- [x] A prop do `SarakScrim` é opcional, com teste provando que `SarakAppChromeMobile` não mudou — evidência:
+      teste "SarakAppChromeMobile — o único uso publicado hoje NÃO muda" em `SarakScrim.test.tsx`.
+- [x] `Controls.tsx` e `SarakDrawer.tsx` usam `SarakScrim` com a animação que tinham, caracterizada antes —
+      evidência: testes assíncronos provando fade-out (`Controls.test.tsx`) e opacidade via style
+      (`SarakDrawer.test.tsx`).
+- [x] Item 3: declarado (sem autorização), não decidido sozinho — evidência: nenhuma mudança em
+      `SarakInput.tsx`/`SarakMultiSelect.tsx` além do comentário já herdado da `plan-22`.
+- [x] `CHANGELOG` nomeia a remoção e diz o que o consumidor faz no lugar — evidência: item 6 de
+      `docs/migracoes.md`.
+- [x] `composicaoatomica` = 2 (item 3 não autorizado), com motivo escrito — evidência: os 2 comentários de
+      declaração já existem nos arquivos (herdados da `plan-22`, ainda válidos).
+- [x] `npx vitest run` verde; baseline e os três espelhos regravados junto — evidência: números acima.
+- [x] Nenhuma tag emitida — evidência: não rodei `npm version` nem `git tag`/`git push` em nenhum momento.
+
+**Decisões e suposições**
+- **O achado crítico da colisão `ThemeToggle`/`Controls.tsx` (acima) não estava previsto no prompt.** Tratei
+  como correção obrigatória, não como achado fora do escopo, porque sem ela o próprio critério de aceite #1
+  desta plan ("`ThemeToggle` não existe... no barril") ficaria falso — a remoção pedida não teria realmente
+  acontecido, só teria trocado de forma silenciosa o que `ThemeToggle` significa. Removi `Controls.tsx` dos
+  dois barris (categoria e público); **não apaguei o arquivo** `Controls.tsx` em si — isso é decisão maior,
+  fora desta plan.
+- **Erro de TypeScript real encontrado e corrigido durante a execução:** a primeira versão do `SarakScrim`
+  usava um objeto `sharedProps` com spread de `...rest` (tipado como `ButtonHTMLAttributes`) tanto no
+  `<button>` quanto no `<motion.button>` — o TS acusou incompatibilidade (`motion.button` redefine
+  `onDrag`/`onAnimationStart` com assinatura própria, incompatível com a do DOM). Troquei o passthrough
+  genérico por uma prop específica (`testId?: string` → `data-testid`), que é tudo que os dois migrados
+  precisavam. `node gates/scripts/release/check-audit-baseline.mjs --with-tsc` bloqueou antes de eu rodar de
+  novo — o gate funcionou como desenhado.
+- **`SarakDrawer`'s overlay perde o `aria-hidden="true"`, ganha `aria-label`/foco real.** Decisão deliberada,
+  não descuido: é exatamente o motivo de o `SarakScrim` existir (achado 17/`plan-19` — teclado e leitor de
+  tela por construção). O `useFocusTrap` do `<aside>` mantém o Tab preso dentro do painel enquanto aberto,
+  então o botão do scrim não deveria aparecer no fluxo normal de teclado — mas não testei isso com um
+  leitor de tela real. Mesma mudança em `Controls.tsx`: o backdrop do `UserMenu` passa de `<div onClick>`
+  mudo (mouse-only) para um botão de verdade.
+- **`durationMs` do `SarakDrawer` usa `design?.animSlow` com fallback 400** — igual ao `animDuration` que já
+  existia no arquivo, só que como número em vez de string `"400ms"`.
+
+**Achados fora do escopo (não corrigidos)**
+- **`Controls.tsx` é código morto** (4 componentes — `LanguageSelector`, `ThemeToggle`, `UserMenu`,
+  `ModuleSelector` —, zero consumidor interno, duplicado funcionalmente por `ShellLanguageSelector`/
+  `ShellThemeToggle`/`ShellUserWidget`). Só tirei do barril (necessário para esta plan); o arquivo continua
+  em `src/components/atomic/Inputs/Controls.tsx`, testado (pela `plan-22`), mas morto. Sugestão: plan de
+  faxina dedicada — decidir se apaga ou se algum dia vira a versão "sem Shell" desses widgets.
+  **Isso também explica por que ele vivia sob `Inputs/`** (categoria errada para menu/toggle/seletor de
+  módulo) sem ninguém notar: nada o importava, então nada quebrava.
+- **`SarakDrawer.tsx`'s fallback `var(--sarak-modal-overlay-color, rgba(0,0,0,0.5))`** (usado só quando
+  `design?.modalOverlayColor` é falsy) referencia uma CSS var que **não existe** — o schema
+  (`overlays.ts:45`) emite `--sarak-modal-overlay`, sem o `-color`. Pré-existente (não mudei essa linha,
+  só passei o valor computado adiante via `style`); o `ghostvars` não pega porque só audita `var()` em
+  código, e esse fallback só seria lido sem `SarakUIProvider` — caminho raro. Achado, não conserto.
+- Os achados já registrados no resumo da `plan-22` (JS morto lendo `--animation-speed`, etc.) continuam
+  válidos e não foram reabertos aqui.
+
+**Pendências / riscos**
+- **Item 3 (`forwardRef` no `SarakInput`) segue sem decisão.** `SarakMultiSelect.tsx:113` continua com
+  `<input>` cru; `composicaoatomica` fecha em 2, não 1.
+- **`Controls.tsx` morto** (achado acima) — sem destino decidido.
+- **Não tenho como verificar com leitor de tela real** se o novo botão focável do scrim (em `SarakDrawer` e
+  `Controls.tsx`) interage bem com o `useFocusTrap` em todos os navegadores — testei só via Testing Library
+  (jsdom), que não simula ordem real de foco do browser com precisão total.
+- **Nenhuma tag foi emitida.** `package.json` segue em `2.1.0`; a decisão de quando/como publicar (e se
+  falta mais alguma coisa antes) é do dono.
+
+## Resumo da execução (correção 1) — 2026-08-10
+
+**Resultado:** Concluído
+
+**Achado do revisor:** a remoção de `Controls.tsx` dos barris (execução original) tirou da API pública
+**quatro** componentes e **três** tipos, e só o `ThemeToggle` tinha entrada em `docs/migracoes.md`. Por
+`specs/specs/03-versionamento-e-release.md` §5, breaking change sem entrada é entrega incompleta.
+
+**O que foi feito — só em `docs/migracoes.md`, nada de código:**
+
+Investiguei os três substitutos sugeridos abrindo cada um antes de escrever, como pedido — o resultado
+não foi uniforme, e a entrada diz isso em vez de forçar equivalência:
+
+- **`LanguageSelector` → `ShellLanguageSelector` (`core/Shell/Components/`): NÃO é substituto adequado,
+  e a entrada diz isso explicitamente.** Abri o arquivo: é fixo em 2 idiomas hardcoded (`pt-BR`/`en-US`,
+  não lê `design.enabledLanguages`), guarda a escolha só em `useState` — sem `localStorage`, sem cookie
+  `googtrans`, sem `location.reload()` — e existe principalmente como *slot* de override
+  (`registerLocalComponent('shell-language-selector', ...)`) para o consumidor plugar o próprio seletor.
+  O `LanguageSelector` antigo fazia a troca de idioma de verdade; o `ShellLanguageSelector` não faz nada
+  disso sozinho. A entrada recomenda copiar a lógica do histórico do git, não usar o Shell um como se
+  fosse equivalente.
+- **`UserMenu` → `ShellUserWidget` (`core/Shell/Components/`): substituto PARCIAL.** Abri o arquivo:
+  mostra identidade (avatar/nome/nível) e tem um botão de logout — mas não tem dropdown nem ação de
+  "Change Password" nenhuma; é um chip de identidade, não um menu. A entrada diz que cobre metade
+  (identidade + logout) e nomeia a peça que falta.
+- **`ModuleSelector` → `SarakShellNav`: substituto razoável, com adaptação de forma.** Abri o arquivo:
+  mesmo trabalho (escolher módulo/seção ativa), e é o componente que a base realmente usa para isso. A
+  API não é idêntica — `modules`→`items`, `id`→`route`, `currentModule`→`activeRoute`,
+  `setCurrentModule`→`onNavigate` — a entrada mostra um antes/depois em código com a troca de campo.
+
+**Os três tipos** — verifiquei cada um contra o barril público (`grep` em `src/index.ts` e leitura dos
+arquivos-fonte) antes de escrever:
+- `LanguageOption` (`{id,label}`): **sem equivalente público** — a entrada dá a forma mínima para o
+  consumidor declarar a própria.
+- `ModuleConfig` (`{id,label,...}`): **`SarakModule`** (o tipo de `registerSarakModule`, já exportado via
+  `export * from './core/Discovery/registry'` em `src/index.ts:120`) tem `id`/`label` compatíveis —
+  reutilizável, com a ressalva de ser um tipo mais pesado (carrega `component`/`priority`/`isLocal`,
+  pensado para o Discovery, não para uma lista simples de abas).
+- `UserPayload` (`{email?}`): **sem equivalente público** — `ShellUser` (`core/Shell/Components/types.ts`)
+  tem forma parecida e mais rica, mas **não é exportado** (`SarakShell.tsx` só importa o tipo para uso
+  interno, nunca re-exporta) — confirmei com `grep` no barril. A entrada dá a forma mínima para declarar.
+
+**Arquivos alterados**
+
+| Arquivo | Natureza | O que mudou |
+|---|---|---|
+| `docs/migracoes.md` | alterado | +item 7 (`LanguageSelector`/`UserMenu`/`ModuleSelector` + os 3 tipos); contagem da intro "sete"→"oito" mudanças; item 6 (`ThemeToggle`) **intocado** |
+
+**Verificações executadas**
+- `npx vitest run` (suíte inteira) → **295 arquivos / 1078 testes, todos verdes** — idêntico à execução
+  anterior, porque nenhum código mudou.
+- `npm run dev-kit:check` → `[OK]` kit em dia (3 arquivos, 0 ponteiros mortos) — não regrava, porque
+  `docs/migracoes.md` não faz parte do kit do mantenedor.
+- `git diff --stat` → **1 arquivo** (`docs/migracoes.md`, 65 inserções / 2 deleções), como esperado.
+
+**Critérios de aceite**
+- [x] Entradas acrescentadas para os 4 componentes e os 3 tipos — evidência: item 7 de `docs/migracoes.md`.
+- [x] Cada substituto sugerido foi confirmado abrindo o arquivo antes de escrever — evidência: leituras de
+      `ShellLanguageSelector.tsx`, `ShellUserWidget.tsx`, `SarakShellNav.tsx` nesta rodada.
+- [x] Substituto inadequado foi declarado como tal, não forçado — evidência: `LanguageSelector` marcado
+      "NÃO é substituto adequado"; `UserMenu` marcado "substituto PARCIAL", com a peça faltante nomeada.
+- [x] Tipos sem equivalente público mostram a forma mínima; o que tem equivalente (`ModuleConfig` →
+      `SarakModule`) está identificado, com a ressalva de peso semântico.
+- [x] `docs/migracoes.md`'s entrada do `ThemeToggle` (item 6) não foi tocada — evidência: `git diff` mostra
+      só inserção de conteúdo novo depois dela, nenhuma linha do item 6 aparece como removida/alterada.
+- [x] Nada de código — evidência: `git diff --stat` = 1 arquivo, `docs/migracoes.md`.
+
+**Decisões e suposições**
+- Tratei os quatro (`LanguageSelector`/`UserMenu`/`ModuleSelector`/tipos) como **um item novo (7)**, não
+  como edição do item 6 — são exports diferentes, com histórias de substituto diferentes; misturar tudo
+  sob "ThemeToggle" teria escondido que o `ThemeToggle` não tinha substituto por não ter funcionalidade,
+  enquanto os outros três têm substitutos de qualidade desigual (inadequado / parcial / razoável).
+- Atualizei a contagem "sete mudanças" → "oito" na introdução da seção `## 2.0.0`, já que o novo item 7
+  passou a existir — é a mesma frase que eu já tinha corrigido de "seis" para "sete" na execução original,
+  pela mesma razão (o número tem que bater com a contagem real de itens).
+
+**Achados fora do escopo (não corrigidos)**
+- Nenhum novo. Os achados desta rodada (qualidade desigual dos substitutos `Shell*`) já estão documentados
+  como a própria entrada — não é uma dívida de código, é a natureza da migração.
+
+**Pendências / riscos**
+- As mesmas da execução original (item 3 sem decisão, `Controls.tsx` morto sem destino, nenhuma tag
+  emitida) — nenhuma delas fazia parte do escopo desta correção.
 
 # 11. Veredito
 
