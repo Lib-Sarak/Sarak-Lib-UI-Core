@@ -1,5 +1,6 @@
 import React, { useId, useMemo, useRef, useState } from 'react';
 import { SarakFormGroup } from '../Layouts/SarakFormGroup';
+import { SarakIconButton } from '../Buttons/SarakIconButton';
 
 export interface MultiSelectOption {
     value: string;
@@ -100,6 +101,15 @@ export const SarakMultiSelect: React.FC<SarakMultiSelectProps> = ({
                         <Chip key={val} label={labelOf(val)} onRemove={() => remove(val)} disabled={disabled} />
                     ))}
 
+                    {/* R10 declarado, não corrigido (plan-22, triagem 2026-08-10): é composição
+                        (o campo de busca é uma peça do combobox, junto com chips e listbox —
+                        não "dá forma" a um input sozinho), mas o conserto mecânico está
+                        bloqueado. `SarakInput` não é `forwardRef`, e este `inputRef` é lido em
+                        `add()`/`remove()` para devolver o foco ao campo após alterar a seleção
+                        — trocar sem resolver o forwardRef quebraria esse retorno de foco.
+                        Decisão de estender `SarakInput` para forwardRef está aberta com o dono
+                        na plan-23 §2.4. Não contornar com document.activeElement (esconde a
+                        dependência real). */}
                     <input
                         ref={inputRef}
                         type="text"
@@ -170,16 +180,20 @@ const Chip: React.FC<ChipProps> = ({ label, disabled, onRemove }) => (
         }}
     >
         {label}
-        <button
-            type="button"
+        <SarakIconButton
+            variant="ghost"
+            size="xs"
             aria-label={`Remover ${label}`}
             disabled={disabled}
             onMouseDown={(e) => { e.preventDefault(); onRemove(); }}
-            className="flex items-center justify-center w-4 h-4 rounded-full hover:bg-[var(--sarak-primary-color,#3b82f6)]/30"
-        >
-            <svg className="w-3 h-3" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M6 18L18 6M6 6l12 12" />
-            </svg>
-        </button>
+            // O preset "xs" do átomo (24px) é maior que os 16px originais do botão de
+            // remover cru — cresce o alvo de toque do chip. Aceito: forçar um tamanho
+            // sem token válido (`1rem`) seria hardcode duro (R7), pior que o delta visual.
+            icon={
+                <svg className="w-3 h-3" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M6 18L18 6M6 6l12 12" />
+                </svg>
+            }
+        />
     </span>
 );

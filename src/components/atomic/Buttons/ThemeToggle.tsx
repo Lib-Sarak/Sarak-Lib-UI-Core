@@ -5,6 +5,15 @@ import { Palette, ChevronRight, Check } from 'lucide-react';
 // TODO: Substituir por presets canônicos de core/Design/presets/themes/ quando forem criados
 const LAYOUTS: Record<string, { id: string; name: string; class: string; animation: string }> = {};
 
+/**
+ * R10 declarado, não corrigido (plan-22, triagem 2026-08-10): os 2 `<button>` deste
+ * componente não são triados aqui. `LAYOUTS` está vazio desde a plan-15 — o componente
+ * é um seletor de preset MORTO, exportado no barril público (`src/index.ts`), sem
+ * consumidor interno. O dono decidiu REMOVER; remoção de export público é `major` e
+ * foi agrupada na plan-23 junto de outras mudanças de contrato, para a quebra sair
+ * numa versão só. Não marcar (não é encapsulamento), não consertar (o componente vai
+ * sair), não remover aqui (fora do escopo desta plan).
+ */
 export const ThemeToggle: React.FC = () => {
     const { design, applyConfig } = useSarakUI();
     const theme = design?.layout;

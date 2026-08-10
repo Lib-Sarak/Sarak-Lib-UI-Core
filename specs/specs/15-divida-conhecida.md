@@ -60,13 +60,22 @@ achado novo. **32 numerados** (o 32 é novo) · **24 fechados** (§6) · **2 ace
 > **De 3 para 2 em 2026-08-08:** o achado **29** fechou a metade que faltava e saiu para a §6.
 >
 > **De 2 para 1 em 2026-08-09:** o achado **32** fechou e saiu para a §6 — a prosa deixou de citar um total.
-> **Resta o 17**, na §3.1.
+>
+> **De 1 para 4 em 2026-08-10:** o **17** fechou com a `plan-19` (o `playwright.config.ts` era órfão e foi
+> deletado) e **quatro achados novos foram numerados** — **33** a **36**. Eles vinham sendo carregados só em
+> relatório de plan desde a campanha de gates, o que contraria a §8: *"achado novo pega o próximo número
+> livre"*. **Dois deles já tinham sido reportados por mais de um executor como "pré-existente, fora do
+> escopo"** — que é exatamente o sintoma de achado sem número.
 
 ## 3.1 Segurança e medição
 
+> ✅ **Categoria vazia desde 2026-08-10.** O achado **17** fechou com a `plan-19` e saiu para a §6. **A
+> categoria fica** — é para cá que volta o próximo caso de gate que mede errado ou não mede.
+
 | # | Achado | Onde | Regra | Destino |
 |---|---|---|---|---|
-| 17 | `testDir: './e2e'` — **a pasta não existe**; `playwright test` não acha nada e **sai verde**. As specs E2E reais vivem em `src/core/Provider/__e2e__/` e `src/features/DesignEngine/__e2e__/` | `playwright.config.ts:7` | **nenhuma** | **Corrigir** — defeito de configuração, 1 linha. Ligar o Playwright ao pipeline é a plan-11 |
+| 33 | **Sem `.gitattributes` e com `core.autocrlf=true`**, qualquer `checkout`/`stash pop` reescreve `sarak-dev/` em CRLF; o gerador escreve LF e o `dev-kit:check` compara byte a byte ⇒ **falso "defasado"**. Foi reportado como "pré-existente, fora do escopo" por **dois** executores antes de a causa ser medida (`plan-18`) | raiz do repo · `scripts/generate-dev-kit.mjs` | **nenhuma** | **Corrigir** — `.gitattributes` com `eol=lf`, ou o checker normalizando antes de comparar |
+| 35 | **O detector de órfãs da `plan-20` perde entradas por ordem de propriedade.** O executor da `plan-21` mediu **27** com varredura própria contra as **24** do detector; as 3 a mais são `buttonHoverEffect`, `inputStyle`, `useTabularNums` | `gates/scripts/audit/auditor_ghostvars.mjs` | **R7** | **Corrigir** — o detector, não o manifesto |
 
 ## 3.2 Violação de regra **já formada** que o gate agora vê, mas não corrige sozinho
 
@@ -141,6 +150,9 @@ Registrados só para que a numeração não seja reaproveitada. O detalhe está 
 | 20 | Status falso na spec antiga de presets |
 | 21 | Duplicação entre specs antigas, resolvida pela consolidação |
 | 28 | JSDoc citando arquivo de plano inexistente, removido |
+| 34 | **Aceito em 2026-08-10 (decisão do dono).** O conjunto de chaves aceitas na validação de tema caiu de 122 para 95 quando a `plan-21` removeu 27 entradas órfãs do manifesto. **Aceito porque as 27 eram metadado morto** — preservá-las só para validação seria manter um dicionário de coisas que não existem. Exposição na base medida em **zero**. Se um consumidor com tema persistido reclamar, o `console.warn` de `validation.ts:213` **é** o diagnóstico: ele nomeia a chave que caiu |
+| 36 | **Fechado em 2026-08-10 (decisão do dono).** A "Regra de Ouro (Time Tracking)" saiu do `CLAUDE.md`: exigia a skill/MCP `time-tracking`, que não existe. Ficou no lugar um comentário com o motivo e um critério para regra nova naquele arquivo — verificável e com ferramenta existente, ou o lugar dela é uma spec |
+| 17 | **Fechado em 2026-08-10 (`plan-19`).** O conserto não foi ajustar o `testDir`: o `playwright.config.ts` era **arquivo órfão** — nenhum script o usava. O que roda é `playwright-ct.config.ts` (`testDir: './src'`), pelo `npm run test-ct`, e os 4 arquivos em `src/**/__e2e__/` são **component tests**, não E2E de navegador. O arquivo foi **deletado**; `npx playwright test` agora sai com **exit 1** e *"No tests found"* — falha alto em vez de passar em silêncio |
 | 32 | **Fechado em 2026-08-09.** `arquitetura/04-contrato-de-tokens-e-paridade.md:52` dizia `410/410/410` como estado resolvido; era 409 quando foi escrito e **422** hoje (a `plan-15` criou 13 tokens). O conserto não foi trocar o número: a linha **deixou de citar total**, porque total em prosa envelhece a cada token. A cifra vive em `sarak-dev/state.json` → `design.tokens` e é cobrada por `auditor_paridade.mjs`; a prosa afirma a **convergência**, não o valor |
 | 29 | **As duas metades fecharam.** Gate: `check-section-pointers.mjs` (`plan-12`, 2026-08-05). Código: verificado fechado pelo revisor em **2026-08-08** — `scripts/dev-kit/renderDevAppendix.mjs` **não emite mais** `§5.1`, e `sarak-dev/GUIA-MANUTENCAO.md:308` regenerado aponta `§2` (paridade), o alvo correto. Medido rodando `npm run dev-kit` e recontando: **0 ocorrências** de `§5.1` no guia e no `state.json` |
 | 30 | **Não se reproduz** (verificado 2026-08-01). Dizia que `verify_presets.ts:16` apontava para um `arquitetura/04 §9` inexistente. O alvo existe e é o certo: `04-contrato-de-tokens-e-paridade.md:252` = `# 9. Anti-drift de tema e preset` — exatamente o assunto do script. A reescrita da base (plan-01) criou o §9 |

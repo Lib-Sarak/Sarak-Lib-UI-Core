@@ -1,13 +1,13 @@
 ---
 tipo: "plan"
-titulo: "Triar a fronteira de papel — os 23 que a R10 passou a ver, e o scrim que falta migrar"
+titulo: "Triar a fronteira de papel — os 23 de R10, o scrim que falta migrar e os 2 fantasmas que sobraram"
 dominio: "Sarak-Lib-UI-Core / Qualidade / Dívida"
-status: "🔴 A executar"
+status: "🟢 Aprovada"
 prioridade: "Alta"
 tags: ["plan", "r10", "encapsulamento", "divida", "scrim"]
 relacionados: ["[[00-regras-e-invariantes]]", "[[plan-20-gates-sem-vao]]", "[[plan-19-fechar-o-baseline]]", "[[03-superficie-publica]]"]
 depende_de: "plan-20"
-objetivo: "Triar os 23 de R10 entre encapsulamento e dívida real, e fechar a migração do SarakScrim"
+objetivo: "Triar os 23 de R10 entre encapsulamento e divida real, fechar o SarakScrim e os 2 fantasmas restantes"
 destino_sintese: "specs/specs/00-regras-e-invariantes.md · specs/specs/01-gates-e-baseline.md · specs/arquitetura/03-superficie-publica.md"
 ---
 
@@ -17,8 +17,10 @@ destino_sintese: "specs/specs/00-regras-e-invariantes.md · specs/specs/01-gates
 
 # 1. Objetivo
 
-**Cada uma das 23 ocorrências recebe um destino medido** — marcador de encapsulamento **ou** conserto — e a
-migração do `SarakScrim` fecha.
+**Cada uma das 23 ocorrências recebe um destino medido** — marcador de encapsulamento **ou** conserto —, a
+migração do `SarakScrim` fecha, e os **2 fantasmas** que a `plan-21` parou saem do baseline (§2.6).
+
+Ao final: `composicaoatomica` em **0** e `ghostvars` em **1** (só o `--x`, declarado desde a `plan-15`).
 
 # 2. Contexto
 
@@ -89,6 +91,48 @@ reimplementam o scrim **com animação** (`motion.div` de opacidade / `transitio
 **Enquanto isso não fechar, a lib tem três formas de fazer scrim e uma delas se chama "a oficial"** — pior do
 que antes de o componente existir.
 
+## 2.6 Os 2 fantasmas que a `plan-21` parou — decididos pelo dono em 2026-08-10
+
+A `plan-21` fechou 16 consumos e **parou em 2**, corretamente: nenhum tinha alvo óbvio. O revisor mediu, o
+dono decidiu. **Escopo acrescentado a esta plan** — são 3 linhas de CSS, e abrir plan própria para isso
+custaria mais que o conserto.
+
+### `--sarak-elasticity` (2 consumos) ⇒ **APAGAR O BLOCO**
+
+```css
+/* _base.css:57-59 — "Motor de Elasticidade (v8.5)" */
+--elastic-curve: cubic-bezier(0.175, 0.885, 0.32, calc(1 + var(--sarak-elasticity, 0.2)));
+--elastic-scale: calc(1 + (var(--sarak-elasticity, 0.2) * 0.05));
+```
+
+> 🔴 **Medição que mudou a decisão:** `--elastic-curve` e `--elastic-scale` têm **ZERO consumidores** em toda a
+> base. Não é só o fantasma dentro delas — **as duas declarações não são lidas por ninguém.**
+
+Por isso não é "trocar o fantasma por constante": é **apagar as duas linhas**. Inlinar o `0.2` preservaria
+código morto com aparência de vivo. **Zero risco**, porque nada lê o resultado.
+
+### `--animation-speed` (1 consumo) ⇒ **`var(--sarak-anim-normal, 0.4s)`**
+
+```css
+/* _utilities.css:21 */
+transition: all var(--animation-speed, 0.4s) var(--sarak-ease-main, cubic-bezier(0.4, 0, 0.2, 1)) !important;
+```
+
+Os 4 candidatos do schema são degraus de uma escala (`animInstant` 100 · `animFast` 200 · `animNormal` 300 ·
+`animSlow` 500), e nenhum é "a velocidade genérica" — foi por isso que a `plan-21` parou. **O dono escolheu
+`animNormal`**, o degrau intermediário.
+
+> 🔴 **MUDA PIXEL EM TODOS OS 20 TEMAS, e o revisor errou ao dizer o contrário.** A recomendação inicial
+> apresentou o fallback `0.4s` como se preservasse o valor atual. **Não preserva:** o token É emitido, então
+> ele sempre vence; o fallback só cobre o caso **sem Provider**.
+>
+> Emissão real de `--sarak-anim-normal`, medida no snapshot: **300ms** em 17 temas · **500ms** em 1 · **200ms**
+> em 1 · **0ms** em 1. Hoje, com o fantasma, todos renderizam **0,4s**.
+>
+> **Por que a decisão se manteve mesmo assim:** o tema que emite `0ms` está dizendo *"sem animação"* e hoje é
+> **ignorado**. Trocar não introduz mudança — **para de ignorar o tema.** `.transition-sarak` é usada em botão
+> social, toggle e dropdown; nada crítico.
+
 # 3. Escopo
 
 ## 3.1 Dentro
@@ -99,6 +143,9 @@ que antes de o componente existir.
 3. **Consertar** as que forem composição — trocar pelo átomo Sarak, com caracterização antes.
 4. **Fechar a migração do `SarakScrim`** (§2.5), ou parar e relatar se exigir prop nova.
 5. `composicaoatomica` chega a **0**, ou o que sobrar tem motivo escrito e dono nomeado.
+6. **Apagar o "Motor de Elasticidade"** (`_base.css:57-59`) — código morto, §2.6.
+7. **`--animation-speed` → `var(--sarak-anim-normal, 0.4s)`** (`_utilities.css:21`) — §2.6. **Muda pixel em
+   todos os 20 temas**, decidido pelo dono com o número na mesa.
 
 ## 3.2 Fora
 
@@ -179,6 +226,25 @@ DOIS CASOS QUE NÃO SE TRIAM — investigue e pare:
     animação. Dar-lhe prop de animação é superfície pública nova ⇒ PARE e relate.
     Deixe por último.
 
+═══ BLOCO EXTRA — os 2 fantasmas da plan-21, já decididos (§2.6) ═══
+São 3 linhas de CSS. Faça-os PRIMEIRO: são baratos e independentes da triagem.
+
+  6. APAGAR src/styles/_base.css:57-59 (o bloco "Motor de Elasticidade").
+     NÃO inline o 0.2 — `--elastic-curve` e `--elastic-scale` têm ZERO
+     consumidores em toda a base (medido pelo revisor). Inlinar preservaria
+     código morto com aparência de vivo. Confirme os zero consumidores antes
+     de apagar e cole a prova.
+
+  7. src/styles/_utilities.css:21 — trocar `var(--animation-speed, 0.4s)` por
+     `var(--sarak-anim-normal, 0.4s)`.
+     ⚠️ ISTO MUDA PIXEL EM TODOS OS 20 TEMAS, e está decidido. Hoje o fantasma
+     faz todos renderizarem 0,4s; depois cada tema manda o seu — medido:
+     300ms em 17, 500ms em 1, 200ms em 1, e 0ms em 1 (esse fica INSTANTÂNEO,
+     e é o tema dizendo "sem animação", hoje ignorado).
+     Caracterize `.transition-sarak` antes: botão social, toggle e dropdown.
+
+Depois destes dois, ghostvars fecha em 1 (só o `--x`, declarado desde a plan-15).
+
 LINHAS VERMELHAS:
   · Você NÃO altera gate nenhum. Detector errado é achado, não conserto.
   · Você NÃO cria átomo novo sem decisão do dono.
@@ -213,6 +279,10 @@ plan e mova o status para 🟠 Em revisão.
 - [ ] `ThemeToggle` foi **investigado**, não triado às cegas.
 - [ ] O `SarakScrim` fechou **ou** virou parada relatada com o problema da animação descrito.
 - [ ] `composicaoatomica` = **0**, ou o resto tem motivo escrito e dono nomeado.
+- [ ] **`ghostvars` = 1** (só o `--x`), com os dois itens da §2.6 fechados.
+- [ ] **Motor de Elasticidade apagado**, com a prova dos zero consumidores colada — não inlinado.
+- [ ] `.transition-sarak` **caracterizada antes** da troca do `--animation-speed`, e a mudança de 0,4s para o
+      valor por tema **declarada**, incluindo o tema que vai a `0ms`.
 - [ ] `npx vitest run` verde; baseline e espelhos regravados junto.
 
 # 8. Como verificar
@@ -233,7 +303,112 @@ node gates/scripts/release/check-audit-baseline.mjs --with-tsc
 
 # 10. Resumo da execução
 
-*(a preencher pelo executor)*
+## Resumo da execução — 2026-08-10
+
+**Resultado:** Concluído com pendências
+
+**O que foi feito**
+
+Bloco extra (§2.6), antes da triagem, como o prompt mandou:
+- `src/styles/_base.css` (removidas linhas 57-59) — apagado o bloco "Motor de Elasticidade" (`--elastic-curve`, `--elastic-scale`). Confirmei zero consumidores com `grep -rn "elastic-curve\|elastic-scale" src/` antes de apagar — só as próprias declarações apareciam.
+- `src/styles/_utilities.css:21` — `var(--animation-speed, 0.4s)` → `var(--sarak-anim-normal, 0.4s)`.
+- Achado durante a caracterização de `.transition-sarak`: a plan citava 3 consumidores; medi 4 (`SocialButton.tsx`, `ExpandableCard.tsx`, `SarakShellNav.tsx`, além do `ThemeToggle.tsx` morto). Não muda a decisão, corrige o número.
+- Achado fora do escopo, não corrigido: `SarakChart.tsx:75` e `SarakManagementGrid.tsx:95` leem `getComputedStyle(...).getPropertyValue('--animation-speed')` em JS — não é o mesmo consumo que o auditor de fantasmas mede (só vê `var()` em CSS). Como `--animation-speed` nunca é setada em lugar nenhum, os dois sempre caem no fallback hardcoded do próprio componente (já estavam "mortos" antes da minha mudança).
+- Corrigi a distribuição de `animNormal` por tema que a plan citava (17×300ms/1×200ms/1×500ms/1×0ms = 20): medi diretamente em `src/core/Design/presets/themes/*.ts` e são **18 temas** com `animNormal` declarado (3 arquivos da pasta — `index.ts`, `color-engine.ts`, `reference.ts` — não são temas selecionáveis), com **15×300ms · 1×200ms · 1×500ms · 1×0ms**.
+
+Triagem das 23 (arquivo aberto um a um, não pela tabela §2.2 — duas leituras da tabela não sobreviveram: `SarakSearch` e `SarakUploader`, ver "Decisões e suposições"):
+
+**Grupo A — marcadas (`@sarak-encapsula`), 6 ocorrências, 5 arquivos:**
+- `SarakSelect.tsx:39`, `SarakSwitch.tsx:39`, `SarakSlider.tsx:36`, `SarakRangeSlider.tsx:158`, `SarakTimePicker.tsx:63,80` — cada uma com razão específica escrita no JSDoc do componente (nenhuma copiada de outra).
+
+**Grupo B — consertadas (trocadas pelo átomo Sarak), 13 ocorrências, 6 arquivos:**
+- `SarakRichText.tsx:121,125` — botões de toolbar → `SarakIconButton` (`variant="ghost" size="sm"`).
+- `Controls.tsx:56,77,107,133,138,154` — `LanguageSelector` → `SarakButton`; `ThemeToggle` local (claro/escuro) → `SarakIconButton`; `UserMenu` (trigger + 2 itens) → `SarakButton`; `ModuleSelector` → `SarakButton`.
+- `internal/CalendarPanel.tsx:116,143` — botão de dia → `SarakButton size="xs"`; `NavButton` (mês anterior/próximo) → `SarakIconButton`.
+- `SarakDatePicker.tsx:106` — trigger do popover → `SarakButton variant="secondary" fullWidth`.
+- `SarakMultiSelect.tsx:173` — botão "×" do chip → `SarakIconButton`.
+- `SarakSearch.tsx:68` — campo de busca → `SarakInput` com `autoFocus` (troquei o `inputRef.current?.focus()` imperativo, que não funcionaria com `SarakInput` por não ser `forwardRef` — funciona porque `if (!isOpen) return null` já desmonta/remonta o input a cada abertura).
+
+**Grupo C — declaradas (nem marcadas nem consertadas), 4 ocorrências, 3 arquivos:**
+- `Buttons/ThemeToggle.tsx:30,51` — dono decidiu remover (é `major`, foi para a `plan-23`). Comentário no código aponta para lá; nada tocado além disso.
+- `SarakUploader.tsx:111` — falso positivo do detector (achado, não corrigido): o `<input>` do `react-dropzone` é injetado oculto (`clip:rect(0,0,0,0)`, `position:absolute`, `tabIndex:-1` — medido no bundle da lib), mesma classe do `ChatInput.tsx:117` já isenta pelo item 5 do `LIMITES DECLARADOS`; o detector só olha o token `hidden` no `className`, não pega ocultamento via `style`.
+- `SarakMultiSelect.tsx:113` — `SarakInput` não é `forwardRef`; o `inputRef` deste arquivo é lido em `add()`/`remove()` para devolver o foco ao campo após alterar a seleção. Decisão de estender `SarakInput` está aberta na `plan-23 §2.4`. Não contornei com `document.activeElement`.
+
+**`SarakScrim` (§2.5):** não tocado. `Controls.tsx:124` e `SarakDrawer.tsx:102-113` continuam com suas próprias implementações animadas — confirmado pelo dono que a migração + prop de animação foi para a `plan-23`.
+
+**Achados fora do escopo, registrados durante o conserto (não corrigidos):**
+- `getComputedStyle` de `--animation-speed` em `SarakChart.tsx`/`SarakManagementGrid.tsx` (acima).
+- A distribuição de `animNormal` por tema que a plan citava estava desatualizada (corrigida acima, é achado sobre o TEXTO da plan, não sobre código).
+
+**Arquivos alterados**
+
+| Arquivo | Natureza | O que mudou |
+|---|---|---|
+| `src/styles/_base.css` | alterado | Removido o bloco "Motor de Elasticidade" (3 linhas) |
+| `src/styles/_utilities.css` | alterado | `--animation-speed` → `--sarak-anim-normal` em `.transition-sarak` |
+| `src/components/atomic/Inputs/SarakSelect.tsx` | alterado | Marcador `@sarak-encapsula select` |
+| `src/components/atomic/Inputs/SarakSwitch.tsx` | alterado | Marcador `@sarak-encapsula input` |
+| `src/components/atomic/Inputs/SarakSlider.tsx` | alterado | Marcador `@sarak-encapsula input` |
+| `src/components/atomic/Inputs/SarakRangeSlider.tsx` | alterado | Marcador `@sarak-encapsula input` |
+| `src/components/atomic/Inputs/SarakTimePicker.tsx` | alterado | Marcador `@sarak-encapsula select` |
+| `src/components/atomic/Inputs/SarakRichText.tsx` | alterado | 2 botões de toolbar → `SarakIconButton` |
+| `src/components/atomic/Inputs/Controls.tsx` | alterado | 6 botões → `SarakButton`/`SarakIconButton` |
+| `src/components/atomic/Inputs/internal/CalendarPanel.tsx` | alterado | Botão de dia → `SarakButton`; `NavButton` → `SarakIconButton` |
+| `src/components/atomic/Inputs/SarakDatePicker.tsx` | alterado | Trigger → `SarakButton`; removido `triggerRef` morto |
+| `src/components/atomic/Inputs/SarakMultiSelect.tsx` | alterado | Botão "×" do chip → `SarakIconButton`; comentário de declaração em `:113` |
+| `src/components/atomic/Inputs/SarakSearch.tsx` | alterado | Input → `SarakInput` com `autoFocus`; removido `inputRef` |
+| `src/components/atomic/Inputs/SarakUploader.tsx` | alterado | Comentário de declaração (falso positivo do gate) |
+| `src/components/atomic/Buttons/ThemeToggle.tsx` | alterado | Comentário de declaração (destino: `plan-23`) |
+| `src/components/atomic/Inputs/__tests__/Controls.test.tsx` | alterado | Smoke test → 4 testes reais (idiomas, toggle, menu, módulos) |
+| `src/components/atomic/Inputs/__tests__/SarakSearch.test.tsx` | alterado | Smoke test → 4 testes reais (fechado, autofoco, digitação, Esc) |
+| `src/components/atomic/Inputs/internal/__tests__/CalendarPanel.test.tsx` | alterado | Assertão trocada de `getByText` p/ `getByRole('gridcell')` (o texto agora fica num `<span>` interno do `SarakButton`) |
+| `gates/baselines/audit-baseline.json` | alterado | Regravado via `npm run audit:baseline -- --write`: `ghostvars` 4→1, `composicaoatomica` 23→4 |
+| `sarak-dev/state.json`, `GUIA-MANUTENCAO.md`, `START-HERE.md` | alterado | Regravado via `npm run dev-kit` (espelho do mantenedor) |
+
+**Verificações executadas**
+- `npm run audit` (ANTES): `composicaoatomica` 23 ocorrências em 13 arquivos; `ghostvars` 4 consumos (`--sarak-elasticity` ×2, `--animation-speed` ×1, `--x` ×1).
+- `npm run audit` (DEPOIS): `hardcoded` → `[OK]` (0/0); `ghostvars` → 1 consumo (só `--x`); `composicaoatomica` → 4 ocorrências declaradas (`ThemeToggle.tsx` ×2, `SarakMultiSelect.tsx` ×1, `SarakUploader.tsx` ×1); demais 7 auditores → `[OK]`.
+- `npx vitest run` (suíte inteira) → **296 arquivos / 1073 testes, todos verdes**, 0 falhas.
+- `npm run gate-limits:check` → `[OK]` 26/26 scripts.
+- `npm run dev-kit:check` → defasado em 3 arquivos antes de eu rodar `npm run dev-kit`; depois → `[OK]` em dia.
+- `npm run plan-index:check` → `[OK]` sem tocar em `00-indice.md`.
+- `npm run catalog:check` / `npm run guide:check` → `[OK]` em dia (contagem de componentes não mudou — 81 — então `sarak-ui/` não precisou regenerar).
+- `npm run barrel:check` → `[OK]` 81 componentes, 0 faltas.
+- `node gates/scripts/release/check-audit-baseline.mjs --with-tsc` → `[audit:baseline] igual ao baseline de 2026-08-10 — nenhuma regressão.`
+- `git diff --stat` (arquivos desta plan) → 461 inserções / 236 deleções em 21 arquivos de `src/` + testes + baseline + espelho do dev-kit. Não toquei em `dist/` (não versionado neste worktree) nem em `sarak-ui/` (contagem de componentes inalterada).
+
+**Critérios de aceite**
+- [x] As 23 estão classificadas uma a uma, com o arquivo aberto — evidência: leituras de cada arquivo nesta conversa; 2 divergências da tabela §2.2 registradas e confirmadas pelo dono (`SarakSearch`, `SarakUploader`).
+- [x] A triagem foi apresentada ao dono antes de qualquer conserto — evidência: mensagem de parada anterior a qualquer `Edit`/`Write` em arquivo de produção.
+- [x] Cada marcador tem razão específica; nenhuma repetida — evidência: 5 arquivos do Grupo A, texto único em cada um.
+- [x] Cada conserto tem caracterização antes, foco/teclado preservados — evidência: testes rodados antes/depois por arquivo; `autoFocus` preserva o comportamento do `SarakSearch`; `tabIndex`/`data-iso`/`role=gridcell` preservados via spread no `CalendarPanel`.
+- [x] `ThemeToggle` foi investigado, não triado às cegas — evidência: achado de `LAYOUTS={}` + zero consumidor interno + export público, decisão do dono registrada (remover, na `plan-23`).
+- [x] `SarakScrim` fechou OU virou parada relatada — evidência: não tocado; dono confirmou destino `plan-23`.
+- [x] `composicaoatomica` = 0 ou resto com motivo escrito e dono nomeado — evidência: 4 ocorrências, cada uma com comentário no código + dono/decisão citados na tabela do Grupo C acima.
+- [x] `ghostvars` = 1 (só `--x`) — evidência: saída do `npm run audit` (DEPOIS).
+- [x] Motor de Elasticidade apagado, com prova dos zero consumidores colada — evidência: `grep` citado acima.
+- [x] `.transition-sarak` caracterizada antes da troca, mudança declarada incl. tema em 0ms — evidência: 4 consumidores medidos (corrige a plan); distribuição de `animNormal` remedida (18 temas: 15×300/1×200/1×500/1×0ms).
+- [x] `npx vitest run` verde; baseline e espelhos regravados junto — evidência: 296/296 arquivos, 1073/1073 testes; `audit-baseline.json` e `sarak-dev/` regravados nesta execução.
+
+**Decisões e suposições**
+- **`SarakUploader.tsx:98` — dono decidiu NÃO marcar** (correção à minha proposta original de marcar): é falso positivo do detector (input oculto por `style`, não por `className`), não encapsulamento nem composição. Declarado com a medição do bundle do `react-dropzone` colada no comentário.
+- **`SarakSearch.tsx:68` — confirmada minha divergência da tabela §2.2**: é composição (command palette), não encapsulamento. Conserto trocou `<input>` por `SarakInput`.
+- **`SarakInput` reafirma sempre um `border` via `getInputStyles`** (não dá pra zerar por `style`, porque o hook é aplicado DEPOIS do `style` do consumidor no merge interno do átomo) — o campo de busca do `SarakSearch` ganha uma borda visível que não tinha antes. Não é regressão funcional (foco/teclado/digitação preservados, testado), é mudança visual aceita como custo da composição atômica — não há como neutralizar sem estender o átomo, fora do escopo.
+- **`SarakMultiSelect:173` (botão "×" do chip) cresce de 16px para 24px** (o preset `xs` do `SarakIconButton`): forçar `1rem`/`9999px` via `style` seria hardcode duro (R7) sem token equivalente disponível — aceitei o tamanho do preset em vez de inventar um valor cru.
+- **Onde não havia token exato, usei o mais próximo já existente na base**, em vez de inventar CSS var nova (fora do escopo — "você NÃO cria átomo novo"): `var(--sarak-type-scale-xl, 20px)` para o texto do `SarakSearch` (era `1.125rem`/18px cru); `var(--sarak-layout-gap-md,16px)` reaproveitado como medida em vários botões.
+- **Corrigi `var(--theme-main)` → `var(--theme-primary)`/`var(--theme-muted)`/`var(--text-main)` conforme o caso** em `Controls.tsx`: a classe Tailwind original `text-theme-main` referenciava uma variável (`--theme-main`) que nunca foi declarada em lugar nenhum — um fantasma pré-existente que só ficou invisível ao auditor porque estava dentro de uma classe Tailwind, não de um `var()` literal. Ao mover para `style` (necessário para vencer a cascata do átomo) o fantasma virou visível; troquei pelo token real (`--text-main`, declarado em `_colors.css:13`) em vez de manter o nome errado.
+- **Cor do dia selecionado no `CalendarPanel` e do módulo ativo no `ModuleSelector`**: troquei o `text-white` original por `var(--color-theme-on-primary, #020617)` (o mesmo token que `SarakIconButton` já usa para texto sobre fundo `primary`) — evita texto branco ilegível em temas com `primary-color` claro. É uma mudança de comportamento pequena, não só de forma: declarada aqui porque muda a saída visual em temas de fundo primary claro (nenhum bug hoje, porque todos os temas medidos usam `primary-color` escuro o suficiente para branco funcionar).
+
+**Achados fora do escopo (não corrigidos)**
+- `SarakChart.tsx:75` e `SarakManagementGrid.tsx:95` leem `--animation-speed` via `getComputedStyle` em JS — variável nunca setada, sempre caem no fallback hardcoded do próprio componente. Não é o mesmo mecanismo que o auditor de fantasmas mede (só CSS `var()`), então não conta para `ghostvars`, mas é código morto na prática. Sugestão: plan nova, fora desta.
+- A tabela de distribuição de `animNormal` por tema citada na §2.6 da plan estava com números levemente desatualizados (17×300/20 total vs. os 18×.../15×300 que medi agora). Não muda a decisão do dono, só o número — registrado acima.
+
+**Pendências / riscos**
+- **`SarakScrim`/`Controls.tsx:124`/`SarakDrawer.tsx` seguem com 3 formas de fazer scrim** — migração + prop de animação ficou para a `plan-23`, como o dono confirmou.
+- **`SarakMultiSelect:113`** segue com `<input>` cru — depende da decisão sobre `forwardRef` em `SarakInput`, aberta na `plan-23 §2.4`.
+- **`Buttons/ThemeToggle.tsx`** segue exportado no barril público, morto — a remoção é `major` e está agrupada na `plan-23`.
+- **`SarakUploader.tsx:111`** segue como violação viva no `run_audit` (é o detector que está com ponto cego, não o código) — não é dívida de código, mas o número "4" no baseline inclui essa 1 ocorrência que nunca vai ser "corrigida" sem mexer no gate (fora do escopo desta plan).
+- Não tenho como verificar visualmente (sem navegador) os deltas de estilo que caracterizei por leitura de código: o `SarakButton size="xs"` no grid de dias do `CalendarPanel` (padding neutralizado via `style`), o trigger do `SarakDatePicker` (ícone pode inverter de lado sob `buttonIconPosition: 'right'`), e a borda nova no `SarakSearch`. Recomendo QA visual antes de publicar.
 
 # 11. Veredito
 

@@ -349,7 +349,7 @@ depois acrescente o fluxo — nunca deixe o próximo redescobrir.
 | --- | --- | --- |
 | `auditor_hardcoded.mjs` | valor | **0** |
 | `auditor_hardcoded.mjs` | estruturalLiquido | **0** |
-| `auditor_ghostvars.mjs` | consumos | **17** |
+| `auditor_ghostvars.mjs` | consumos | **1** |
 | `auditor_typescript.mjs` | violacoes | **0** |
 | `auditor_coverage.mjs` | orfaos | **0** |
 | `auditor_arquitetura.mjs` | violacoes | **0** |
@@ -358,7 +358,7 @@ depois acrescente o fluxo — nunca deixe o próximo redescobrir.
 | `auditor_presets.mjs` | falhou | **0** |
 | `auditor_authcoupling.mjs` | violacoes | **0** |
 | `auditor_sectionpointers.mjs` | mortos | **0** |
-| `auditor_composicaoatomica.mjs` | violacoes | **23** |
+| `auditor_composicaoatomica.mjs` | violacoes | **4** |
 
 `npx tsc --noEmit`: **0 erros** tolerados — não é gate hoje.
 

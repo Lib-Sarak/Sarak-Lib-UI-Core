@@ -8,7 +8,7 @@
             "estruturalLiquido": 0
         },
         "auditor_ghostvars.mjs": {
-            "consumos": 17
+            "consumos": 1
         },
         "auditor_typescript.mjs": {
             "violacoes": 0
@@ -35,7 +35,7 @@
             "mortos": 0
         },
         "auditor_composicaoatomica.mjs": {
-            "violacoes": 23
+            "violacoes": 4
         }
     },
     "tsc": {

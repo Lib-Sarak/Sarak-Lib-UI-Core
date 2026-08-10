@@ -35,7 +35,7 @@ describe('CalendarPanel', () => {
         render(
             <CalendarPanel mode="range" start={new Date(2026, 0, 10)} end={new Date(2026, 0, 20)} onSelectDay={() => undefined} />,
         );
-        const day = within(screen.getByRole('grid')).getByText('15');
+        const day = within(screen.getByRole('grid')).getByRole('gridcell', { name: '15' });
         expect(day).toHaveClass('tabular-nums');
     });
 });

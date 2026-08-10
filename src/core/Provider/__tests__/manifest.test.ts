@@ -20,13 +20,18 @@ describe('DESIGN_MANIFEST', () => {
     });
 
     it('should transform colors using computeColorVariants', () => {
+        // `buttonColor`/`buttonHoverColor`/`cardHoverColor`/`cardActiveColor`/
+        // `buttonActiveColor` saíram desta lista (plan-21, 2026-08-10): eram
+        // entradas ÓRFÃS do manifesto — nenhum token de schema com o mesmo id
+        // e nenhuma var confirmada por outra fonte (R7 vão 2) — removidas do
+        // `DESIGN_MANIFEST` junto das outras 22 entradas mortas.
         const colorProps = [
             'primaryColor', 'secondaryColor', 'tertiaryColor', 'accentColor',
             'surfaceColor', 'errorColor', 'successColor', 'warningColor',
             'textureColor', 'sidebarColor', 'topbarColor', 'cardBackgroundColor',
-            'cardBorderColor', 'buttonColor', 'buttonHoverColor', 'titleColor',
+            'cardBorderColor', 'titleColor',
             'sidebarHoverColor', 'sidebarActiveColor', 'topbarHoverColor',
-            'topbarActiveColor', 'cardHoverColor', 'cardActiveColor', 'buttonActiveColor'
+            'topbarActiveColor'
         ];
 
         colorProps.forEach(prop => {
@@ -45,15 +50,17 @@ describe('DESIGN_MANIFEST', () => {
         expect(DESIGN_MANIFEST.colorVariation.transform?.('invalid')).toBe(1);
     });
 
+    // `logoScale`/`hapticIntensity` saíram desta lista (plan-21, 2026-08-10):
+    // eram entradas ÓRFÃS do manifesto (R7 vão 2) — `logoScale` continua um
+    // campo de payload válido (PAYLOAD_EXTRA_KEYS), só a entrada do manifesto
+    // (que nunca alimentou CSS real — `useDesignVariables.ts` não lê
+    // `DESIGN_MANIFEST`) foi removida; `hapticIntensity` não tinha nenhum
+    // consumidor, nem de CSS nem de JS, em lugar nenhum do código.
     it('should transform floats correctly', () => {
         expect(DESIGN_MANIFEST.contrastCurve.transform?.('1.5')).toBe(1.5);
         expect(DESIGN_MANIFEST.contrastCurve.transform?.('invalid')).toBe(1.0);
-        expect(DESIGN_MANIFEST.logoScale.transform?.('2.0')).toBe('2.0');
-        expect(DESIGN_MANIFEST.logoScale.transform?.(undefined as unknown as SarakTokenValue)).toBe(1.0);
         expect(DESIGN_MANIFEST.cardSpotlightOpacity.transform?.('0.5')).toBe(0.5);
         expect(DESIGN_MANIFEST.cardSpotlightOpacity.transform?.('invalid')).toBe(0);
-        expect(DESIGN_MANIFEST.hapticIntensity.transform?.('0.05')).toBeCloseTo(0.95);
-        expect(DESIGN_MANIFEST.hapticIntensity.transform?.('invalid')).toBeCloseTo(0.98);
         expect(DESIGN_MANIFEST.sidebarMinWidth.transform?.('300')).toBe(300);
         expect(DESIGN_MANIFEST.sidebarMinWidth.transform?.('invalid')).toBe(200);
         expect(DESIGN_MANIFEST.sidebarMaxWidth.transform?.('500')).toBe(500);
@@ -62,39 +69,16 @@ describe('DESIGN_MANIFEST', () => {
         expect(DESIGN_MANIFEST.noiseIntensity.transform?.('invalid')).toBe(0);
     });
 
-    it('should transform headingLetterSpacing correctly', () => {
-        const transform = DESIGN_MANIFEST.headingLetterSpacing.transform!;
-        expect(transform('tight')).toBe('-0.05em');
-        expect(transform('normal')).toBe('0');
-        expect(transform('wide')).toBe('0.1em');
-        expect(transform('widest')).toBe('0.25em');
-        expect(transform('custom')).toBe('custom');
-    });
-
-    it('should transform chartPalette correctly', () => {
-        const transform = DESIGN_MANIFEST.chartPalette.transform!;
-        expect(transform(['#000', '#fff'] as unknown as SarakTokenValue)).toBe('#000,#fff');
-        expect(transform('#ff0000')).toBe('#ff0000');
-    });
-
-    it('should transform useTabularNums correctly', () => {
-        const transform = DESIGN_MANIFEST.useTabularNums.transform!;
-        expect(transform(true)).toBe('tabular-nums');
-        expect(transform(false)).toBe('normal');
-    });
-
-    it('should transform scaleRatio correctly', () => {
-        const transform = DESIGN_MANIFEST.scaleRatio.transform!;
-        const result = transform('2.0') as unknown as { ratio: number; gap: string; pad: string; margin: string; radius: string };
-        expect(result.ratio).toBe(2);
-        expect(result.gap).toBe('2.5rem');
-        expect(result.pad).toBe('3rem');
-        expect(result.margin).toBe('2rem');
-        expect(result.radius).toBe('24px');
-
-        const resultInvalid = transform('invalid') as unknown as { ratio: number };
-        expect(resultInvalid.ratio).toBe(1.0);
-    });
+    // `headingLetterSpacing`, `chartPalette`, `useTabularNums`, `scaleRatio`
+    // saíram do DESIGN_MANIFEST (plan-21, 2026-08-10, R7 vão 2 — entradas
+    // órfãs, sem token de schema nem var confirmada). Os testes que as
+    // caracterizavam saíram junto: a lógica de transform (`transformScaleRatio`
+    // etc., em `manifest-transformers.ts`) ficou sem NENHUM chamador — nem a
+    // própria `DESIGN_MANIFEST` era lida pelo injetor real de CSS
+    // (`useDesignVariables.ts` deriva 100% de `MASTER_DESIGN_MAP`/schema, não
+    // do manifesto) — então não há comportamento de produção para caracterizar
+    // mais. As funções seguem exportadas em `manifest-transformers.ts`, não
+    // removidas (fora do escopo desta plan).
 
     it('should transform layeredShadows correctly', () => {
         const transform = DESIGN_MANIFEST.layeredShadows.transform!;
@@ -115,14 +99,6 @@ describe('DESIGN_MANIFEST', () => {
         expect(transform('unknown')).toEqual({ px: '16px', factor: '1.0' });
     });
 
-    it('should transform fluidScaling correctly', () => {
-        const transform = DESIGN_MANIFEST.fluidScaling.transform!;
-        const result = transform('2.0') as unknown as { base: string; gap: string; padding: string };
-        expect(result.base).toBe('clamp(12px, 1.6vw + 8px, 40px)');
-        expect(result.gap).toBe('clamp(10px, 2vw + 4px, 64px)');
-        expect(result.padding).toBe('clamp(16px, 3vw + 8px, 96px)');
-
-        const resultInvalid = transform('invalid') as unknown as { base: string };
-        expect(resultInvalid.base).toBe('clamp(12px, 0.8vw + 8px, 20px)');
-    });
+    // `fluidScaling` saiu do DESIGN_MANIFEST (plan-21, 2026-08-10, R7 vão 2) —
+    // mesma razão do bloco de comentário acima de `layeredShadows`.
 });

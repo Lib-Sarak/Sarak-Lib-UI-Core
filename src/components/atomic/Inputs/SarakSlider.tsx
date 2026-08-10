@@ -9,7 +9,10 @@ export interface SarakSliderProps extends Omit<InputHTMLAttributes<HTMLInputElem
 
 /**
  * Componente Atômico: SarakSlider
- * Substitui o `<input type="range">`. 
+ * Substitui o `<input type="range">`.
+ *
+ * @sarak-encapsula input — dá trilho e thumb com tokens Sarak ao `<input
+ *   type=range>` nativo; é o próprio input estilizado, não uma peça de algo maior.
  */
 export const SarakSlider: React.FC<SarakSliderProps> = ({
     label,

@@ -74,7 +74,7 @@ const NavEntry: React.FC<{
         onClick={() => onSelect(item.route)}
         aria-current={isActive ? 'page' : undefined}
         leftIcon={item.icon ? <SarakIcon name={item.icon} size={18} /> : undefined}
-        className={`${horizontal ? 'shrink-0' : ''} rounded-[var(--sarak-button-radius,8px)] transition-sarak cursor-pointer ${
+        className={`${horizontal ? 'shrink-0' : ''} rounded-[var(--sarak-btn-border-radius,8px)] transition-sarak cursor-pointer ${
             isActive
                 ? 'bg-[var(--sarak-primary-color,#3b82f6)]/15 text-[var(--sarak-primary-color,#3b82f6)]'
                 : 'text-[var(--text-muted,#94a3b8)] hover:text-[var(--sarak-text-main,#ffffff)] hover:bg-[var(--sarak-card-bg,rgba(255,255,255,0.04))]'
@@ -83,7 +83,7 @@ const NavEntry: React.FC<{
             gap: 'var(--sarak-layout-gap-sm, 8px)',
             paddingInline: 'var(--sarak-layout-gap-sm, 8px)',
             paddingBlock: 'calc(var(--sarak-layout-gap-md, 16px) * 0.5)',
-            borderRadius: 'var(--sarak-button-radius,8px)',
+            borderRadius: 'var(--sarak-btn-border-radius,8px)',
             textTransform: 'none',
             fontWeight: isActive ? 500 : 400,
             letterSpacing: 'normal',

@@ -34,6 +34,10 @@ const percent = (n: number, min: number, max: number): number =>
  * Slider duplo (início/fim) para intervalos contínuos, com tooltips de valor.
  * Dois `<input type="range">` sobrepostos preservam a navegação por teclado nativa;
  * o trilho colorido entre os thumbs reflete os tokens do Design Engine.
+ *
+ * @sarak-encapsula input — o `RangeThumb` interno é um `<input type=range>`
+ *   transparente; dois deles sobrepostos formam o padrão de slider duplo. São o
+ *   próprio controle de início/fim, não decoração de algo maior.
  */
 export const SarakRangeSlider: React.FC<SarakRangeSliderProps> = ({
     label,

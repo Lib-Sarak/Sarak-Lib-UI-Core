@@ -10,6 +10,10 @@ export interface SarakSwitchProps extends Omit<InputHTMLAttributes<HTMLInputElem
 
 /**
  * Componente Atômico: SarakSwitch
+ *
+ * @sarak-encapsula input — o `<input type=checkbox role=switch>` é o controle
+ *   real (foco, teclado, leitor de tela); trilho e thumb são só a pele visual
+ *   sobreposta. Sem o input não há switch, só dois `<div>` decorativos.
  */
 export const SarakSwitch: React.FC<SarakSwitchProps> = ({
     label,

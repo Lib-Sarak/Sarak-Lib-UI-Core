@@ -1,4 +1,3 @@
-import { execFileSync } from 'node:child_process';
 import fs from 'node:fs';
 import os from 'node:os';
 import path from 'node:path';
@@ -7,7 +6,6 @@ import { describe, expect, it } from 'vitest';
 import { collectPlans, orderPlans, buildIndiceTable } from '../generate-plan-index.mjs';
 
 const ROOT = path.resolve(path.dirname(fileURLToPath(import.meta.url)), '..', '..');
-const GENERATOR = path.resolve(ROOT, 'scripts', 'generate-plan-index.mjs');
 const REAL_PLAN_DIR = path.join(ROOT, 'specs', 'plan');
 
 function plantPlanDir(files) {
@@ -73,7 +71,7 @@ describe('orderPlans — a ordem vem do bloco atual; plan nova entra no fim, alf
 });
 
 describe('buildIndiceTable — prova do gerador: apagar a tabela e reconstruir não perde dado', () => {
-  it('bloco vazio + specs/plan/ REAL: reconstrói as 9 plans ativas, em ordem alfabética, sem perda', () => {
+  it('bloco vazio + specs/plan/ REAL: reconstrói as plans ativas, em ordem alfabética, sem perda', () => {
     const emptyBlock = '<!-- SARAK-INDICE:FILA:INICIO -->\n<!-- SARAK-INDICE:FILA:FIM -->';
     const table = buildIndiceTable({ planDir: REAL_PLAN_DIR, indiceContent: emptyBlock });
     const linhas = table.split('\n').slice(2); // sem header + separador
@@ -86,9 +84,23 @@ describe('buildIndiceTable — prova do gerador: apagar a tabela e reconstruir n
   });
 });
 
-describe('generate-plan-index.mjs --check — contra o specs/00-indice.md REAL do repositório', () => {
-  it('sai 0: o commitado bate com o gerado agora (regenerado nesta execução da plan-20)', () => {
-    const result = execFileSync('node', [GENERATOR, '--check'], { cwd: ROOT, encoding: 'utf8' });
-    expect(result).toContain('em dia');
-  });
-});
+// NÃO adicione um teste que rode `generate-plan-index.mjs --check` contra o
+// `specs/00-indice.md` REAL do repositório (existiu um até a correção da
+// plan-21, 2026-08-10 — removido de propósito, não por instabilidade).
+//
+// O problema não era o gerador: era o que o teste estava afirmando. Um
+// `--check` contra o arquivo real é uma asserção sobre o ESTADO DO
+// REPOSITÓRIO, não sobre o comportamento do gerador — e esse estado diverge
+// por DESIGN toda vez que um executor entrega uma plan: entregar move o
+// `status` no frontmatter para 🟠, e só o revisor resincroniza o índice
+// (00-indice.md §2). Ou seja, o teste falhava sempre que havia uma plan em
+// execução ou recém-entregue — não era flakiness, era um gate de estado do
+// repositório contrabandeado para dentro da suíte unitária, duplicando
+// `npm run plan-index:check` (que já roda como gate e é o lugar certo dessa
+// verificação).
+//
+// Nenhuma cobertura foi perdida ao remover: `buildIndiceTable({ planDir,
+// indiceContent })`, a função que o `--check` usa por baixo, já é testada
+// acima com FIXTURE — incluindo o caso "bloco vazio, reconstrução sem perda"
+// — que é como um self-test de gerador deve ser feito (isolado, determinístico,
+// sem depender do estado do repositório no momento em que a suíte roda).

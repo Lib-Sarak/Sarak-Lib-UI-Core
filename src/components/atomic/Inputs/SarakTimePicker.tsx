@@ -26,6 +26,10 @@ const SELECT =
  * Componente Atômico: SarakTimePicker (Spec 11, Regra 1 — par temporal)
  * Seleção de horário 24h via dois campos (hora/minuto), com passo de minutos
  * configurável. Emite `HH:mm`; teclado nativo dos `<select>` cobre a navegação.
+ *
+ * @sarak-encapsula select — os dois `<select>` (hora/minuto) SÃO o controle de
+ *   horário, não decoram nada: juntos formam o par temporal completo. Sem eles
+ *   não há como escolher hora nenhuma.
  */
 export const SarakTimePicker: React.FC<SarakTimePickerProps> = ({
     label,

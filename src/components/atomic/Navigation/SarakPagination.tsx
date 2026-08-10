@@ -50,13 +50,13 @@ const baseBtn = 'transition-colors';
 /** Neutraliza o `font-black uppercase tracking-widest` + `rounded-btn`/`py-*px-*` que
  *  `SarakButton` aplica por padrão — `style` sempre vence a classe do átomo (R10 —
  *  lote 10), preservando o `min-w-9 h-9 px-3 rounded-md text-sm font-medium` original.
- *  Zero hardcode (R2): deriva de `--sarak-layout-gap-*`/`--sarak-button-radius`, tokens reais. */
+ *  Zero hardcode (R2): deriva de `--sarak-layout-gap-*`/`--sarak-btn-border-radius`, tokens reais. */
 const pageBtnStyle: React.CSSProperties = {
     minWidth: 'calc(var(--sarak-layout-gap-md, 16px) * 2.25)',
     height: 'calc(var(--sarak-layout-gap-md, 16px) * 2.25)',
     paddingInline: 'calc(var(--sarak-layout-gap-sm, 8px) * 1.5)',
     paddingBlock: 0,
-    borderRadius: 'calc(var(--sarak-button-radius, 8px) * 0.75)',
+    borderRadius: 'calc(var(--sarak-btn-border-radius, 8px) * 0.75)',
     fontSize: 'calc(var(--sarak-layout-gap-md, 16px) * 0.875)',
     fontWeight: 500,
     textTransform: 'none',

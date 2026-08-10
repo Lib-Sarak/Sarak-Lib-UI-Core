@@ -1,10 +1,7 @@
 import { computeColorVariants } from './utils/color-engine';
-import { 
-    transformHeadingLetterSpacing, 
-    transformFontScale, 
-    transformScaleRatio, 
-    transformLayeredShadows, 
-    transformFluidScaling 
+import {
+    transformFontScale,
+    transformLayeredShadows
 } from './utils/manifest-transformers';
 import type { SarakTokenValue } from '../Design/types';
 
@@ -82,14 +79,6 @@ export const DESIGN_MANIFEST: Record<string, {
         vars: ['--theme-card-border', '--sarak-card-border'],
         transform: (v: SarakTokenValue) => computeColorVariants(String(v), 'rgba(255, 255, 255, 0.1)')
     },
-    buttonColor: {
-        vars: ['--theme-button-bg', '--sarak-button-bg'],
-        transform: (v: SarakTokenValue) => computeColorVariants(String(v), '#3b82f6')
-    },
-    buttonHoverColor: {
-        vars: ['--theme-button-hover', '--sarak-button-hover'],
-        transform: (v: SarakTokenValue) => computeColorVariants(String(v), '#60a5fa')
-    },
     titleColor: {
         vars: ['--theme-title-color', '--sarak-title-color'],
         transform: (v: SarakTokenValue) => computeColorVariants(String(v), '#ffffff')
@@ -99,16 +88,8 @@ export const DESIGN_MANIFEST: Record<string, {
     navigationStyle: { vars: ['--sarak-navigation-style', '--sarak-nav-style', '--nav-style'], classPrefix: 'nav-' },
     sidebarWidth: { vars: ['--sidebar-width', '--sarak-sidebar-width'], unit: 'px' },
     headingFont: { vars: ['--font-heading', '--sarak-heading-font'] },
-    subtitleFont: { vars: ['--font-subtitle', '--sarak-subtitle-font'] },
-    tabFont: { vars: ['--font-tab', '--sarak-tab-font'] },
     bodyFont: { vars: ['--font-main', '--sarak-body-font'] },
-    headingWeight: { vars: ['var(--sarak-h1-weight,700)', '--sarak-heading-weight'] },
-    headingLetterSpacing: {
-        vars: ['--heading-spacing', '--sarak-heading-spacing'],
-        transform: (v: SarakTokenValue) => transformHeadingLetterSpacing(String(v))
-    },
     fontLineHeight: { vars: ['--line-height', '--sarak-line-height'] },
-    fontBaseSize: { vars: ['--font-size-base', '--sarak-font-size-base'], unit: 'px' },
 
     borderRadius: { vars: ['--radius-theme', '--sarak-border-radius', '--border-radius'], unit: 'px' },
     borderRadiusSm: { vars: ['--sarak-border-radius-sm'], unit: 'px' },
@@ -129,14 +110,19 @@ export const DESIGN_MANIFEST: Record<string, {
     contrastCurve: { vars: ['--contrast-curve', '--sarak-contrast-curve'], transform: (v: SarakTokenValue) => parseFloat(String(v)) || 1.0 },
     shadowIntensity: { vars: ['--shadow-intensity', '--sarak-shadow-intensity'] },
     
-    cardPaddingSm: { vars: ['--sarak-card-padding-sm'], unit: 'px' },
     cardPaddingMd: { vars: ['--sarak-card-padding-md'], unit: 'px' },
-    cardPaddingLg: { vars: ['--sarak-card-padding-lg'], unit: 'px' },
 
     tabGap: { vars: ['--tab-gap', '--sarak-tab-gap', '--theme-tab-gap'], unit: 'px' },
     tabSectionMargin: { vars: ['--tab-section-margin', '--sarak-tab-section-margin', '--theme-tab-section-margin', '--safe-area-padding'], unit: 'px' },
     textureOpacity: { vars: ['--texture-opacity', '--sarak-texture-opacity', '--theme-texture-opacity'] },
-    animationSpeed: { vars: ['--animation-speed', '--sarak-animation-speed', '--transition-speed'], unit: 's' },
+    // `animationSpeed` (`--animation-speed`/`--sarak-animation-speed`/`--transition-speed`) foi
+    // REMOVIDA aqui (plan-21, 2026-08-10): nenhum token de schema corresponde ao conceito, e
+    // há 4 candidatos plausíveis (motionDurationInstant/Fast/Normal/Slow) sem um único alvo
+    // óbvio por consumidor — decisão de qual duração vale para cada um dos 3 sites que ainda
+    // consomem essas vars (SarakChart.tsx:75, SarakManagementGrid.tsx:95, _utilities.css:21)
+    // é do dono (R11 — Expansão ou redirecionamento deliberado), não do executor. Os 3 sites
+    // continuam consumindo o fallback local (não tocados); `ghostvars` continua acusando os
+    // 3 consumos até essa decisão.
     surfaceMaterial: { attr: 'data-surface', vars: ['--sarak-surface', '--surface-material'] },
     surfaceIntensity: { vars: ['--surface-intensity', '--sarak-surface-intensity'] },
     borderType: { attr: 'data-border', vars: ['--sarak-border-type', '--border-type'] },
@@ -147,24 +133,19 @@ export const DESIGN_MANIFEST: Record<string, {
     systemName: { attr: 'data-system-name' },
     logoUrl: { attr: 'data-logo-url' },
     logoDarkUrl: { attr: 'data-logo-dark' },
-    // `String(undefined)` é "undefined" (truthy) — o fallback via `||` nunca disparava
-    // e a var CSS recebia a string "undefined". Ausência real (null/undefined/'') → 1.0.
-    logoScale: {
-        vars: ['--logo-scale'],
-        transform: (v: SarakTokenValue) => (v == null || String(v).trim() === '' ? 1.0 : String(v)),
-    },
     logoPosition: { attr: 'data-logo-position' },
-    interfaceElasticity: { vars: ['--sarak-elasticity'] },
+    // `interfaceElasticity` (`--sarak-elasticity`) foi REMOVIDA aqui (plan-21, 2026-08-10):
+    // nenhum token de schema corresponde ao conceito de "elasticidade" — busca no schema
+    // inteiro não achou nada. Continua consumida (fallback numérico `0.2`, sem cadeia de
+    // var) em `src/styles/_base.css:58-59` (curva/escala elástica) — SEM alvo para
+    // redirecionar. Criar o token é Expansão (R11), decisão do dono; não tocado aqui.
     isSplitViewEnabled: { attr: 'data-split-view' },
     chartStyle: { attr: 'data-chart-style' },
-    chartPalette: { vars: ['--chart-palette'], transform: (v: SarakTokenValue) => Array.isArray(v) ? v.join(',') : String(v) },
     cardSpotlightOpacity: {
         vars: ['--spotlight-opacity'],
         transform: (v: SarakTokenValue) => parseFloat(String(v)) || 0
     },
     cardBorderRadius: { vars: ['--card-radius', '--sarak-card-radius'], unit: 'px' },
-    cardShadowIntensity: { vars: ['--card-shadow-intensity', '--sarak-card-shadow-intensity'] },
-
 
     borderBeamEnabled: { attr: 'data-border-beam' },
     secondaryModuleId: { attr: 'data-sec-module' },
@@ -178,10 +159,7 @@ export const DESIGN_MANIFEST: Record<string, {
         attr: 'data-font-scale',
         transform: (v: SarakTokenValue) => transformFontScale(String(v)) as unknown as string
     },
-    scaleRatio: {
-        vars: ['--sarak-scale-ratio'],
-        transform: (v: SarakTokenValue) => transformScaleRatio(String(v)) as unknown as string
-    },    layeredShadows: {
+    layeredShadows: {
         vars: ['--sarak-layered-shadows'],
         transform: (v: SarakTokenValue) => String(transformLayeredShadows(String(v)))
     },
@@ -193,38 +171,22 @@ export const DESIGN_MANIFEST: Record<string, {
     chartType: { attr: 'data-chart-type' },
     chartThickness: { vars: ['--sarak-chart-thickness'], unit: 'px' },
     chartSmoothing: { attr: 'data-chart-smoothing' },
-    buttonHoverEffect: { attr: 'data-button-hover', vars: ['--sarak-button-hover'] },
-    inputStyle: { attr: 'data-input-style', vars: ['--sarak-input-style'] },
-    buttonRadius: { vars: ['--button-radius', '--sarak-button-radius'], unit: 'px' },
-    buttonPadding: { vars: ['--button-padding', '--sarak-button-padding'], unit: 'px' },
-    inputBorderWidth: { vars: ['--input-border-width', '--sarak-input-border-width'], unit: 'px' },
 
-    
     // Hyper-Granular Interaction Tokens
     sidebarHoverColor: { vars: ['--sarak-sidebar-hover-color'], transform: (v: SarakTokenValue) => computeColorVariants(String(v), 'transparent') as unknown as string },
     sidebarActiveColor: { vars: ['--sarak-sidebar-active-color'], transform: (v: SarakTokenValue) => computeColorVariants(String(v), 'transparent') as unknown as string },
     topbarHoverColor: { vars: ['--sarak-topbar-hover-color'], transform: (v: SarakTokenValue) => computeColorVariants(String(v), 'transparent') as unknown as string },
     topbarActiveColor: { vars: ['--sarak-topbar-active-color'], transform: (v: SarakTokenValue) => computeColorVariants(String(v), 'transparent') as unknown as string },
-    cardHoverColor: { vars: ['--sarak-card-hover-color'], transform: (v: SarakTokenValue) => computeColorVariants(String(v), 'transparent') as unknown as string },
-    cardActiveColor: { vars: ['--sarak-card-active-color'], transform: (v: SarakTokenValue) => computeColorVariants(String(v), 'transparent') as unknown as string },
-    buttonActiveColor: { vars: ['--sarak-button-active-color'], transform: (v: SarakTokenValue) => computeColorVariants(String(v), 'transparent') as unknown as string },
 
     // Hyper-Granular Layer Textures
     sidebarNoiseOpacity: { vars: ['--sarak-sidebar-noise-opacity'] },
     topbarNoiseOpacity: { vars: ['--sarak-topbar-noise-opacity'] },
-    cardNoiseOpacity: { vars: ['--sarak-card-noise-opacity'] },
 
     atmosphereNoiseOpacity: { vars: ['--sarak-noise-opacity', '--theme-noise-opacity'] },
 
     iconStrokeWidth: { vars: ['--sarak-icon-stroke', '--theme-icon-stroke'], unit: 'px' },
     maxContentWidth: { vars: ['--sarak-max-width', '--theme-max-width'] },
-    useTabularNums: { attr: 'data-tabular-nums', vars: ['--sarak-tabular-nums'], transform: (v: SarakTokenValue) => v ? 'tabular-nums' : 'normal' },
-    hapticIntensity: { vars: ['--haptic-intensity', '--sarak-haptic-scale'], transform: (v: SarakTokenValue) => 1 - (parseFloat(String(v)) || 0.02) },
     scrollbarStyle: { vars: ['--sarak-scrollbar-width'], unit: 'px', attr: 'data-scrollbar-style' },
-    fluidScaling: {
-        vars: ['--sarak-fluid-scale'],
-        transform: (v: SarakTokenValue) => transformFluidScaling(String(v)) as unknown as string
-    },
     topbarHeight: { vars: ['--topbar-height', '--sarak-topbar-height', '--theme-topbar-height'], unit: 'px' },
     isNavHidden: { vars: ['--is-nav-hidden'], attr: 'data-nav-hidden' },
     sidebarMinWidth: { vars: ['--sidebar-min-width'], transform: (v: SarakTokenValue) => parseFloat(String(v)) || 200 },

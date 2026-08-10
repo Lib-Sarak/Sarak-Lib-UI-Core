@@ -5,11 +5,11 @@ import { twMerge } from 'tailwind-merge';
 import { SarakButton } from '../Buttons/SarakButton';
 
 /** `border-radius` por variante (equivalente ao `rounded-*` que cada uma usava). Zero
- *  hardcode (R2): `--sarak-button-radius` é token real, mesmo default (8px = 0.5rem). */
+ *  hardcode (R2): `--sarak-btn-border-radius` é token real, mesmo default (8px = 0.5rem). */
 const TAB_RADIUS: Record<SarakTabsProps['variant'] & string, string> = {
     underlined: '0px',
-    pills: 'var(--sarak-button-radius, 8px)',
-    enclosed: 'var(--sarak-button-radius, 8px) var(--sarak-button-radius, 8px) 0 0',
+    pills: 'var(--sarak-btn-border-radius, 8px)',
+    enclosed: 'var(--sarak-btn-border-radius, 8px) var(--sarak-btn-border-radius, 8px) 0 0',
 };
 
 export interface SarakTabItem {

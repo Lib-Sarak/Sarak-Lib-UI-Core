@@ -9,6 +9,10 @@ export interface SarakSelectProps extends SelectHTMLAttributes<HTMLSelectElement
 
 /**
  * Componente Atômico: SarakSelect
+ *
+ * @sarak-encapsula select — a razão de existir deste componente é dar forma Sarak
+ *   ao `<select>` nativo (seta customizada, tokens de cor); remova o `<select>` e
+ *   não sobra função nenhuma, só a seta decorativa.
  */
 export const SarakSelect: React.FC<SarakSelectProps> = ({
     error,

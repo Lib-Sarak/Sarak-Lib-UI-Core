@@ -1,8 +1,9 @@
-import React, { useState, useEffect, useRef } from 'react';
+import React, { useState, useEffect } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
 import { Search, Command, X, ArrowRight } from 'lucide-react';
 import { useSarakUI } from '../../../core/Provider/SarakUIProvider';
 import { getRegisteredModules } from '../../../core/Discovery/registry';
+import { SarakInput } from './SarakInput';
 
 export interface SarakSearchProps {
     isOpen: boolean;
@@ -20,11 +21,13 @@ export const SarakSearch: React.FC<SarakSearchProps> = ({ isOpen, onClose }) => 
     const registeredModules = getRegisteredModules();
 
     const [query, setQuery] = useState('');
-    const inputRef = useRef<HTMLInputElement>(null);
 
+    // Sem ref: o SarakInput (React.FC simples, não forwardRef) não tem como repassar
+    // um DOM node. Como `if (!isOpen) return null` desmonta o <input> quando fechado,
+    // ele é recriado do zero a cada abertura — `autoFocus` nativo faz o mesmo que o
+    // `inputRef.current?.focus()` imperativo fazia, sem precisar de ref.
     useEffect(() => {
         if (isOpen) {
-            inputRef.current?.focus();
             const handleEsc = (e: KeyboardEvent) => {
                 if (e.key === 'Escape') onClose();
             };
@@ -65,12 +68,19 @@ export const SarakSearch: React.FC<SarakSearchProps> = ({ isOpen, onClose }) => 
                         style={{ gap: 'var(--sarak-layout-gap-md,16px)', padding: 'calc(var(--sarak-layout-gap-md,16px) * 1.25) var(--sarak-layout-gap-lg, 24px)' }}
                     >
                         <Search className="w-5 h-5 text-[var(--text-muted,#94a3b8)]" />
-                        <input 
-                            ref={inputRef}
+                        <SarakInput
                             value={query}
                             onChange={(e) => setQuery(e.target.value)}
                             placeholder="Search tool, record or configuration..."
-                            className="flex-1 bg-transparent border-none outline-none text-[var(--color-theme-title,#ffffff)] text-lg placeholder:text-[var(--text-muted,#94a3b8)] font-medium"
+                            autoFocus
+                            className="flex-1"
+                            // `className` do SarakInput cai no wrapper (SarakFormGroup), não no
+                            // <input> real — cor/fundo/tamanho de fonte do campo em si só chegam
+                            // via `style`, que o átomo repassa direto. `border` do átomo é sempre
+                            // reafirmado por `getInputStyles` (não dá pra zerar por completo);
+                            // o campo ganha uma borda visível que a busca não tinha antes — ver
+                            // achado no resumo da plan-22.
+                            style={{ background: 'transparent', fontSize: 'var(--sarak-type-scale-xl, 20px)' }}
                         />
                         <div
                             className="flex items-center rounded-[calc(var(--radius-theme)*0.5)] bg-[var(--sarak-primary-color,#3b82f6)]/10 border border-[var(--sarak-primary-color,#3b82f6)]/20 text-2xs text-[var(--sarak-primary-color,#3b82f6)] font-bold uppercase tracking-widest"

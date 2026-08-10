@@ -95,6 +95,19 @@ export const SarakUploader: React.FC<SarakUploaderProps> = ({
                 aria-disabled={disabled || undefined}
                 aria-invalid={error ? true : undefined}
             >
+                {/* R10 declarado como FALSO POSITIVO do gate (plan-22, triagem 2026-08-10),
+                    não corrigido: `getInputProps()` do react-dropzone injeta este input com
+                    style visually-hidden (clip:rect(0,0,0,0), position:absolute, 1x1px) e
+                    tabIndex:-1 — medido no bundle da lib. É a MESMA classe do
+                    `ChatInput.tsx:117`, que o item 5 do LIMITES DECLARADOS já isenta de R10
+                    ("input oculto e acionado só por programa não é composição — é API do
+                    navegador"). O detector não pega este caso porque procura o token
+                    `hidden` no `className` (heurística de texto), e aqui o ocultamento vem
+                    por `style` espalhado pelo dropzone — é o próprio ponto cego que o item 5
+                    já admite. Não é encapsulamento (a razão de SarakUploader existir é ser
+                    zona de arrastar-e-soltar, não dar forma a um input) nem composição real
+                    (o input não é uma peça visível). Achado de gate, não de código — fica
+                    fora do escopo desta plan (§3.2: "você NÃO altera gate nenhum"). */}
                 <input {...getInputProps()} />
                 <svg className="w-8 h-8 text-[var(--text-muted,#94a3b8)]" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                     <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1.5} d="M7 16a4 4 0 01-.88-7.9A5 5 0 1115.9 6L16 6a5 5 0 011 9.9M9 12l3-3m0 0l3 3m-3-3v9" />

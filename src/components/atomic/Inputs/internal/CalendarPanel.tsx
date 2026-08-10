@@ -1,6 +1,8 @@
 import React, { useEffect, useMemo, useRef, useState } from 'react';
 import { addDays, addMonths, format, isSameDay, isSameMonth, isWithinInterval, startOfMonth } from 'date-fns';
 import { buildMonthMatrix, type WeekStart } from './calendarGrid';
+import { SarakButton } from '../../Buttons/SarakButton';
+import { SarakIconButton } from '../../Buttons/SarakIconButton';
 
 // CalendarPanel é deliberadamente independente do SarakUIProvider (usado em contextos sem
 // design system carregado) — por isso a grade de 7 colunas usa `gridTemplateColumns` direto
@@ -26,6 +28,21 @@ export interface CalendarPanelProps {
     weekStartsOn?: WeekStart;
     onSelectDay: (date: Date) => void;
 }
+
+const DAY_PRIMARY = 'var(--sarak-primary-color,#3b82f6)';
+const DAY_MUTED = 'var(--text-muted,#94a3b8)';
+
+/** Cor/fundo da célula de dia por estado — via `style` (não `className`), porque o
+ * preset `xs` do `SarakButton` já define cor de texto própria (variant ghost) e a
+ * ordem de cascata entre classes Tailwind concorrentes não é garantida. */
+const dayCellStyle = (outside: boolean, selected: boolean, between: boolean): React.CSSProperties => {
+    // padding:0 neutraliza o preset xs (py-1.5/px-3): a célula de 32px não cabe o
+    // padding fixo do átomo mais o número de 1-2 dígitos.
+    const base: React.CSSProperties = { padding: 0 };
+    if (selected) return { ...base, backgroundColor: DAY_PRIMARY, color: 'var(--color-theme-on-primary, #020617)', fontWeight: 700 };
+    if (between) return { ...base, backgroundColor: `color-mix(in srgb, ${DAY_PRIMARY} 20%, transparent)`, color: DAY_MUTED };
+    return { ...base, color: outside ? `color-mix(in srgb, ${DAY_MUTED} 30%, transparent)` : DAY_MUTED };
+};
 
 /** Desloca o dia em foco conforme a tecla de seta (Spec 11, Regra 1 — teclado). */
 const moveByKey = (date: Date, key: string): Date | null => {
@@ -113,7 +130,7 @@ export const CalendarPanel: React.FC<CalendarPanelProps> = ({
                     const selected = isSelected(cell.date);
                     const between = inRange(cell.date);
                     return (
-                        <button
+                        <SarakButton
                             key={format(cell.date, ISO)}
                             type="button"
                             role="gridcell"
@@ -122,16 +139,19 @@ export const CalendarPanel: React.FC<CalendarPanelProps> = ({
                             tabIndex={isSameDay(cell.date, focused) ? 0 : -1}
                             onClick={() => onSelectDay(cell.date)}
                             onFocus={() => setFocused(cell.date)}
-                            className={[
-                                'h-8 w-8 rounded-md text-xs tabular-nums transition-colors',
-                                cell.outside ? 'text-[var(--text-muted,#94a3b8)]/30' : 'text-[var(--text-muted,#94a3b8)]',
-                                selected ? 'bg-[var(--sarak-primary-color,#3b82f6)] text-white font-bold' : '',
-                                between && !selected ? 'bg-[var(--sarak-primary-color,#3b82f6)]/20' : '',
-                                !selected ? 'hover:bg-[var(--sarak-primary-color,#3b82f6)]/10' : '',
-                            ].join(' ')}
+                            variant="ghost"
+                            size="xs"
+                            fullWidth
+                            // Estado (cor/fundo) via `style`, não `className`: o preset xs do
+                            // SarakButton já tem padding e cor de texto próprios (variant ghost),
+                            // e a ordem de cascata entre classes Tailwind não é garantida —
+                            // `style` sempre vence, então é o único jeito confiável de a célula
+                            // selecionada/fora-do-mês continuar legível.
+                            style={dayCellStyle(cell.outside, selected, between)}
+                            className={`h-8 tabular-nums ${!selected ? 'hover:bg-[var(--sarak-primary-color,#3b82f6)]/10' : ''}`}
                         >
                             {cell.date.getDate()}
-                        </button>
+                        </SarakButton>
                     );
                 })}
             </div>
@@ -140,14 +160,15 @@ export const CalendarPanel: React.FC<CalendarPanelProps> = ({
 };
 
 const NavButton: React.FC<{ label: string; dir: 'prev' | 'next'; onClick: () => void }> = ({ label, dir, onClick }) => (
-    <button
-        type="button"
+    <SarakIconButton
+        variant="ghost"
+        size="sm"
         aria-label={label}
         onClick={onClick}
-        className="flex items-center justify-center w-7 h-7 rounded-md text-[var(--text-muted,#94a3b8)] hover:bg-[var(--sarak-primary-color,#3b82f6)]/10"
-    >
-        <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d={dir === 'prev' ? 'M15 19l-7-7 7-7' : 'M9 5l7 7-7 7'} />
-        </svg>
-    </button>
+        icon={
+            <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d={dir === 'prev' ? 'M15 19l-7-7 7-7' : 'M9 5l7 7-7 7'} />
+            </svg>
+        }
+    />
 );

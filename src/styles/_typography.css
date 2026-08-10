@@ -32,9 +32,9 @@ body {
     line-height: var(--sarak-body-lh, 1.6);
 }
 
-h3, h4 { font-family: var(--font-subtitle, var(--font-heading)); }
+h3, h4 { font-family: var(--font-heading, 'Inter', sans-serif); }
 
-.font-tab { font-family: var(--font-tab, var(--font-heading)); }
+.font-tab { font-family: var(--font-heading, 'Inter', sans-serif); }
 
 /* Sincronização de Tipografia Dinâmica */
 h1, h2, h3 { font-family: var(--font-heading) !important; }

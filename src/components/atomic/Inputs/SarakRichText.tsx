@@ -12,6 +12,7 @@
 import React, { useEffect, useRef } from 'react';
 import { Bold, Italic, List, ListOrdered, Link2 } from 'lucide-react';
 import { sanitizeHtml } from '../../../core/Security/sanitizeHtml';
+import { SarakIconButton } from '../Buttons/SarakIconButton';
 
 /** Allowlist semântica restrita (Regra 4): sem `style`/`script`, só marcação segura. */
 const ALLOWED_TAGS = ['p', 'br', 'b', 'strong', 'i', 'em', 'u', 's', 'ul', 'ol', 'li', 'a', 'h1', 'h2', 'h3', 'blockquote', 'code'];
@@ -99,8 +100,6 @@ export const SarakRichText: React.FC<SarakRichTextProps> = ({
         emit();
     };
 
-    const btn = 'flex items-center justify-center w-8 h-8 rounded-md text-[var(--color-theme-title,#ffffff)] hover:bg-[var(--text-muted,#94a3b8)]/10 disabled:opacity-40 transition-colors';
-
     return (
         <div className={`relative ${className}`}>
             <div
@@ -118,13 +117,24 @@ export const SarakRichText: React.FC<SarakRichTextProps> = ({
                 }}
             >
                 {TOOLS.map((tool) => (
-                    <button key={tool.cmd} type="button" aria-label={tool.label} className={btn} disabled={disabled} onClick={() => exec(tool.cmd)}>
-                        {tool.icon}
-                    </button>
+                    <SarakIconButton
+                        key={tool.cmd}
+                        variant="ghost"
+                        size="sm"
+                        aria-label={tool.label}
+                        icon={tool.icon}
+                        disabled={disabled}
+                        onClick={() => exec(tool.cmd)}
+                    />
                 ))}
-                <button type="button" aria-label="Inserir link" className={btn} disabled={disabled} onClick={addLink}>
-                    <Link2 size={15} />
-                </button>
+                <SarakIconButton
+                    variant="ghost"
+                    size="sm"
+                    aria-label="Inserir link"
+                    icon={<Link2 size={15} />}
+                    disabled={disabled}
+                    onClick={addLink}
+                />
             </div>
 
             <div

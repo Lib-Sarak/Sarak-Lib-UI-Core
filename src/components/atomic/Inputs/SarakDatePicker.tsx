@@ -1,6 +1,7 @@
-import React, { useId, useMemo, useRef, useState } from 'react';
+import React, { useId, useMemo, useState } from 'react';
 import { format, isValid, parseISO } from 'date-fns';
 import { SarakFormGroup } from '../Layouts/SarakFormGroup';
+import { SarakButton } from '../Buttons/SarakButton';
 import { useFocusTrap } from '../Modals/hooks/useFocusTrap';
 import { CalendarPanel, type WeekStart, type DateLocale } from './internal/CalendarPanel';
 
@@ -61,7 +62,6 @@ export const SarakDatePicker: React.FC<SarakDatePickerProps> = ({
     const errorId = `${reactId}-error`;
     const [open, setOpen] = useState(false);
     const { containerRef, handleTrap } = useFocusTrap(open, () => setOpen(false));
-    const triggerRef = useRef<HTMLButtonElement | null>(null);
 
     const [start, end] = useMemo(() => readRange(value), [value]);
 
@@ -103,8 +103,7 @@ export const SarakDatePicker: React.FC<SarakDatePickerProps> = ({
             {label && <span className="text-sm font-medium text-[var(--text-muted,#94a3b8)]">{label}</span>}
 
             <div className="relative w-full">
-                <button
-                    ref={triggerRef}
+                <SarakButton
                     type="button"
                     disabled={disabled}
                     aria-label={label ?? 'Selecionar data'}
@@ -113,16 +112,33 @@ export const SarakDatePicker: React.FC<SarakDatePickerProps> = ({
                     aria-invalid={error ? true : undefined}
                     aria-describedby={error ? errorId : undefined}
                     onClick={() => setOpen((prev) => !prev)}
-                    className={`flex items-center justify-between w-full rounded-input text-left text-sm bg-[var(--sarak-input-bg,var(--color-theme-card,#1e293b))] border border-[var(--sarak-input-border-color,var(--border-color,#334155))] ${disabled ? 'opacity-50 cursor-not-allowed' : 'cursor-pointer'}`}
-                    style={{ padding: 'calc(var(--sarak-layout-gap-md,16px) * 0.75) var(--sarak-layout-gap-md,16px)' }}
+                    variant="secondary"
+                    fullWidth
+                    rightIcon={
+                        <svg className="w-4 h-4 text-[var(--text-muted,#94a3b8)]" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M8 7V3m8 4V3m-9 8h10M5 21h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z" />
+                        </svg>
+                    }
+                    className="text-left"
+                    // O preset de SarakButton é pensado para rótulo de ação (maiúsculas,
+                    // tracking largo, peso preto) — aqui o conteúdo é um VALOR de campo
+                    // (a data), não um rótulo; neutraliza via `style` (vence a classe) em
+                    // vez de brigar com a cascata do Tailwind. justify-between mantém o
+                    // ícone fixo na borda direita, com o texto à esquerda.
+                    style={{
+                        justifyContent: 'space-between',
+                        backgroundColor: 'var(--sarak-input-bg,var(--color-theme-card,#1e293b))',
+                        borderColor: 'var(--sarak-input-border-color, var(--border-color,#334155))',
+                        padding: 'calc(var(--sarak-layout-gap-md,16px) * 0.75) var(--sarak-layout-gap-md,16px)',
+                        textTransform: 'none',
+                        letterSpacing: 'normal',
+                        fontWeight: 400,
+                    }}
                 >
                     <span className={start ? 'text-[var(--text-muted,#94a3b8)]' : 'text-[var(--text-muted,#94a3b8)]/50'}>
                         {display}
                     </span>
-                    <svg className="w-4 h-4 text-[var(--text-muted,#94a3b8)]" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M8 7V3m8 4V3m-9 8h10M5 21h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z" />
-                    </svg>
-                </button>
+                </SarakButton>
 
                 {open && (
                     <div
