@@ -567,18 +567,19 @@ defeito da base é dívida que ninguém mais vai entender — e some na próxima
 
 > **Não edite esta seção à mão.** Ela é regenerada por `npm run guide` a partir do código-fonte da `@sarak/lib-ui-core` v2.0.0; o gate `guide:check` derruba o build se ficar defasada. A fonte de máquina equivalente é o `catalog.json` ao lado deste arquivo.
 
-Exportações do barril público: **253** nomes (componentes, tipos, hooks e helpers).
+Exportações do barril público: **255** nomes (componentes, tipos, hooks e helpers).
 
-### A.1 Componentes públicos (86)
+### A.1 Componentes públicos (87)
 
 Importe do barril: `import { X } from '@sarak/lib-ui-core'`. Os TIPOS de cada prop, com descrição, estão em `catalog.json` → `components.<Nome>.props` (e em `docs/component-catalog.md`).
 
 | Categoria | Componente | Props |
 | --- | --- | --- |
 | Atoms | **SarakTypography** | `variant` · `color` · `as` · `transform` · `content` · `children` |
-| Atoms | **SocialButton** | `provider` · `variant` · `onClick` · `label` · `hideLabel` · `className` |
 | Buttons | **SarakButton** | `variant` · `isLoading` · `leftIcon` · `rightIcon` · `fullWidth` · `size` |
 | Buttons | **SarakIconButton** | `variant` · `size` · `isLoading` · `icon` |
+| Buttons | **SarakScrim** | `onClose` · `ariaLabel` · `className` |
+| Buttons | **SocialButton** | `provider` · `variant` · `onClick` · `label` · `hideLabel` · `className` |
 | Cards | **ExpandableCard** | `title` · `iconContent` · `helpButton` · `children` · `className` · `contentClassName` · `baseHeight` |
 | Cards | **SarakActionCard** | `item` · `mapping` · `className` · `onAction` · `design` · `label` · `actionLabel` |
 | Cards | **SarakSearchCard** | `item` · `mapping` · `className` · `onSearchChange` · `onToggleCapability` · `design` · `label` |

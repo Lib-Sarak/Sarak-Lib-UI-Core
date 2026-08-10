@@ -47,6 +47,19 @@ describe('SarakAppChromeMobile (Spec 40.3 — L1, drawer atrás de hambúrguer)'
         expect(onNavigate).toHaveBeenCalledWith('/projetos');
         expect(container.querySelector('#sarak-chrome-drawer')).toBeNull();
     });
+
+    it('o scrim (fundo de tela cheia atrás do drawer) é um <button> com rótulo acessível e fecha ao clique', () => {
+        const { container } = renderMobile(
+            <SarakAppChromeMobile nav={NAV} {...base}><div>x</div></SarakAppChromeMobile>,
+        );
+        fireEvent.click(container.querySelector('[aria-controls="sarak-chrome-drawer"]') as HTMLElement);
+        const scrim = container.querySelector('button.fixed.inset-0.z-40') as HTMLElement;
+        expect(scrim.tagName).toBe('BUTTON');
+        expect(scrim).toHaveAttribute('aria-label', 'Fechar menu de navegação');
+        expect(scrim.tabIndex).not.toBe(-1);
+        fireEvent.click(scrim);
+        expect(container.querySelector('#sarak-chrome-drawer')).toBeNull();
+    });
 });
 
 const slotOf = (c: HTMLElement, name: string) => c.querySelector(`[data-sarak-slot="${name}"]`);

@@ -2201,6 +2201,30 @@
         }
       ]
     },
+    "SarakScrim": {
+      "propsInterface": "SarakScrimProps",
+      "source": "src/components/atomic/Buttons/SarakScrim.tsx",
+      "props": [
+        {
+          "name": "onClose",
+          "type": "() => void",
+          "optional": false,
+          "doc": "Fecha a camada — chamado ao clique em qualquer ponto do scrim."
+        },
+        {
+          "name": "ariaLabel",
+          "type": "string",
+          "optional": false,
+          "doc": "Rótulo acessível do scrim (ex.: \"Fechar menu de navegação\")."
+        },
+        {
+          "name": "className",
+          "type": "string",
+          "optional": true,
+          "doc": ""
+        }
+      ]
+    },
     "SarakSearch": {
       "propsInterface": "SarakSearchProps",
       "source": "src/components/atomic/Inputs/SarakSearch.tsx",
@@ -3048,7 +3072,7 @@
     },
     "SocialButton": {
       "propsInterface": "SocialButtonProps",
-      "source": "src/components/atomic/Atoms/SocialButton.tsx",
+      "source": "src/components/atomic/Buttons/SocialButton.tsx",
       "props": [
         {
           "name": "provider",

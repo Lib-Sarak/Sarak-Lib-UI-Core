@@ -45,10 +45,10 @@ const CLASS_HELPERS = new Set(['cn', 'clsx', 'classnames', 'classNames', 'twMerg
 const VALUE_ALLOWLIST = new Set([
   // Cores oficiais da marca Google (G-logo, 4 cores fixas por guideline de marca — não são
   // tema, então não devem virar var(--sarak-*): isso implicaria falsamente que são customizáveis).
-  'src/components/atomic/Atoms/SocialButton.tsx::#4285F4',
-  'src/components/atomic/Atoms/SocialButton.tsx::#34A853',
-  'src/components/atomic/Atoms/SocialButton.tsx::#FBBC05',
-  'src/components/atomic/Atoms/SocialButton.tsx::#EA4335',
+  'src/components/atomic/Buttons/SocialButton.tsx::#4285F4',
+  'src/components/atomic/Buttons/SocialButton.tsx::#34A853',
+  'src/components/atomic/Buttons/SocialButton.tsx::#FBBC05',
+  'src/components/atomic/Buttons/SocialButton.tsx::#EA4335',
   // Fallback do <input type="color"> nativo (Spec 40 §2.3): o atributo `value` do input
   // HTML só aceita hex literal — `var(--x, fallback)` quebra o input com o warning nativo
   // do Chrome que esta spec corrigiu. Configuração (var+fallback) não resolve aqui por

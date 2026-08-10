@@ -3,6 +3,7 @@ import { SarakShellNav, type ShellNavItem } from '../atomic/Navigation/SarakShel
 import { SarakIcon } from '../atomic/Icon/SarakIcon';
 import { useFocusTrap } from '../atomic/Modals/hooks/useFocusTrap';
 import { SarakIconButton } from '../atomic/Buttons/SarakIconButton';
+import { SarakScrim } from '../atomic/Buttons/SarakScrim';
 import { ChromeFrame } from './chrome/ChromeFrame';
 import { ChromeSidebarSlot, ChromeTopbarSlot } from './chrome/ChromeSlots';
 
@@ -113,13 +114,7 @@ export const SarakAppChromeMobile: React.FC<SarakAppChromeMobileProps> = ({
 
             {open && (
                 <React.Fragment>
-                    <button
-                        type="button"
-                        aria-label="Fechar menu de navegação"
-                        onClick={close}
-                        className="fixed inset-0 z-40 border-0 cursor-default"
-                        style={{ background: 'var(--sarak-overlay-bg, rgba(0,0,0,0.5))' }}
-                    />
+                    <SarakScrim onClose={close} ariaLabel="Fechar menu de navegação" />
                     <aside
                         id={DRAWER_ID}
                         ref={containerRef}

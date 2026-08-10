@@ -81,7 +81,7 @@
       "flows"
     ],
     "publicos": {
-      "count": 80,
+      "count": 81,
       "nomes": [
         "DEFAULT_COLUMN_WIDTH",
         "ExpandableCard",
@@ -138,6 +138,7 @@
         "SarakPagination",
         "SarakRangeSlider",
         "SarakRichText",
+        "SarakScrim",
         "SarakSearch",
         "SarakSearchCard",
         "SarakSelect",
@@ -286,7 +287,7 @@
         "mortos": 1
       },
       "auditor_composicaoatomica.mjs": {
-        "violacoes": 3
+        "violacoes": 1
       }
     },
     "tsc": {

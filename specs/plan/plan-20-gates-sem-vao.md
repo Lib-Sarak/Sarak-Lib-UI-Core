@@ -220,9 +220,78 @@ schema, **ou (b)** alguma de suas vars é comprovadamente emitida. As 27 saem do
 ## 3.2 Fora
 
 - **Pagar os 21 consumos** e limpar as 27 entradas órfãs — é a `plan-21`.
-- **Qualquer arquivo de `src/`**, salvo o `ChatInput` **não** ser mais acusado (isso é efeito do gate, não
-  edição). `git diff -- src/` deve sair **vazio**.
+- **Qualquer arquivo de `src/`**, com **uma exceção nomeada**: o item condicionado da §3.4 (migrar
+  `Controls.tsx` e `SarakDrawer.tsx` para o `SarakScrim`, e o eventual movimento do próprio `SarakScrim`).
+  Fora dele, `git diff -- src/` sai **vazio** — e o `ChatInput` deixar de ser acusado é efeito do gate, não
+  edição.
 - R4, R30 e R31 — não são desta plan.
+
+## 3.3-bis ⇒ DUAS DECISÕES DO DONO, herdadas da `plan-19` (2026-08-09)
+
+A execução da `plan-19` produziu dois achados que **mudam o escopo desta plan**. Nenhum é do executor.
+
+### Achado A — a fronteira da R10 por PASTA está moldando a arquitetura
+
+Duas vezes na mesma plan, a R10 decidiu onde um componente mora: o `SocialButton` **mudou de pasta** e o
+`SarakScrim` **nasceu numa pasta** por causa dela. O primeiro é feliz — um botão social é um botão. **O segundo
+não: um scrim não é um botão**, é elemento de layout que *usa* um botão.
+
+**Proposta do revisor — a fronteira passa de PASTA para PAPEL:**
+
+> A R10 não se aplica ao componente **cuja razão de existir é encapsular um controle nativo** —
+> independentemente da pasta. Um átomo não pode compor a si mesmo, e é isso que a exclusão sempre quis dizer;
+> `atomic/Buttons`/`atomic/Inputs` era só a aproximação disponível.
+
+Com esse critério: `SarakScrim` volta para `atomic/Layouts/` e continua legítimo, porque **é** o
+encapsulamento de um `<button>`. A pasta deixa de ser o que decide.
+
+**⇒ DECISÃO DO DONO, e ela é de duas partes:** (1) a fronteira vira por papel? (2) em caso afirmativo, o
+`SarakScrim` **muda de categoria** — e ele já está publicado (`src/index.ts:18`, 87 entradas no catálogo do
+consumidor). Não quebra import (barril de raiz única, R27), mas muda a documentação que o consumidor lê.
+**Quanto mais cedo, mais barato.**
+
+### Achado B — a allowlist do `auditor_hardcoded` é chaveada por CAMINHO
+
+Mover o `SocialButton` invalidou 4 entradas da allowlist de uma vez, porque a chave é
+`caminho::valor`. O executor da `plan-19` teve de tocar o gate — cruzando uma linha vermelha — só para
+**preservar** o que já estava lá. Medido: 4 removidas, 4 adicionadas, zero alargamento.
+
+**O defeito é a chave.** Ela quebra em silêncio a cada `git mv`, e nenhuma plan que mova arquivo vai adivinhar
+isso de antemão. **Proposta:** a chave passa a ser algo que sobreviva ao movimento — marcador no próprio
+arquivo (comentário `sarak-allow:` na linha), ou o par `nome-do-arquivo::valor` sem o diretório.
+
+**⇒ DECISÃO DO DONO:** qual chave, e se isto entra nesta plan ou vira item próprio. **Recomendo entrar aqui**
+— é conserto de verificador, o tema exato desta plan, e a exposição é de 4 entradas.
+
+## 3.4 A continuação herdada da `plan-19` — CONDICIONADA, e é o único item que toca `src/`
+
+A `plan-19` criou o `SarakScrim` e deixou **duas cópias manuais do mesmo conceito** fora do escopo, nomeadas
+como continuação (§3.2 dela):
+
+| Onde | Forma hoje |
+|---|---|
+| `atomic/Inputs/Controls.tsx:124` | `motion.div fixed inset-0 z-40` com `onClick` |
+| `atomic/Modals/SarakDrawer.tsx:103` | `div fixed inset-0 transition-opacity` |
+
+**Elas foram o argumento que justificou criar o componente.** Se ninguém as migrar, a lib fica com um
+`SarakScrim` **e** duas reimplementações à mão — pior do que antes de o componente existir, porque agora há
+três formas e uma delas se chama "a oficial".
+
+> ⚠️ **ESTE ITEM É CONDICIONADO, e a condição não é burocracia.** Ele só executa **depois** da decisão do
+> achado A (§3.3-bis). Motivo: se a fronteira da R10 virar por papel, o `SarakScrim` **muda de
+> `atomic/Buttons/` para `atomic/Layouts/`**. Migrar os dois consumidores antes disso significa escrever o
+> import duas vezes, e a segunda numa plan que não é esta.
+>
+> **Ordem obrigatória:** decisão do achado A → o `SarakScrim` assume o endereço definitivo → **só então** os
+> dois consumidores migram, num movimento só.
+
+**Se o dono mantiver a fronteira por pasta**, o `SarakScrim` fica onde está e este item executa na mesma
+rodada, sem espera.
+
+**Risco a caracterizar antes:** os dois usam formas diferentes de backdrop — um com `motion.div` (animação de
+opacidade), outro com `transition-opacity`. O `SarakScrim` de hoje **não anima**. Trocar sem verificar
+**remove animação existente**. ⇒ Se o `SarakScrim` precisar ganhar prop de animação, isso é **superfície
+pública nova** — PARE e relate, não decida.
 
 ## 3.3 O item 6, e por que ele é conserto de REGRA
 
@@ -347,7 +416,11 @@ plan e mova o status para 🟠 Em revisão.
 
 # 7. Critérios de aceite
 
-- [ ] `git diff -- src/` **vazio**. Nenhuma violação paga aqui.
+- [ ] `git diff -- src/` **vazio**, salvo o item condicionado da §3.4. Nenhuma violação paga aqui.
+- [ ] **§3.4:** ou a migração de `Controls.tsx`/`SarakDrawer.tsx` foi feita **depois** do endereço definitivo
+      do `SarakScrim`, ou está **declarada como não executada com o motivo** — nunca esquecida.
+- [ ] Se o `SarakScrim` mudou de pasta, o barril e o catálogo do consumidor acompanharam, e
+      `barrel:check`/`guide:check` estão verdes.
 - [ ] Os 6 detectores têm **self-test** com um caso pego e um liberado.
 - [ ] O self-test da **R7a** inclui, como caso **liberado**, uma das 8 formas corretas
       (`rgba(var(--x-rgb, N,N,N), a)`).

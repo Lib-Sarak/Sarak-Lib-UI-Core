@@ -87,7 +87,7 @@ Nome fora desta lista **não renderiza o ícone pedido**: o `SarakIcon` avisa no
 
 `AlertCircle` · `AlertTriangle` · `Check` · `CheckCircle2` · `X` · `Info` · `HelpCircle` · `Menu` · `Search` · `Bell` · `Filter` · `List` · `Grid` · `Layout` · `LayoutDashboard` · `Home` · `ChevronDown` · `ChevronLeft` · `ChevronRight` · `ChevronUp` · `ArrowRight` · `ArrowLeft` · `ArrowUp` · `ArrowDown` · `ArrowUpDown` · `CornerDownRight` · `MoreVertical` · `MoreHorizontal` · `Maximize2` · `Minimize2` · `Loader2` · `RefreshCw` · `User` · `UserPlus` · `Users` · `LogIn` · `LogOut` · `Lock` · `Shield` · `Eye` · `File` · `FileText` · `FileSpreadsheet` · `Folder` · `Image` · `Paperclip` · `ScrollText` · `Clipboard` · `Copy` · `Download` · `Upload` · `UploadCloud` · `Printer` · `Save` · `Edit` · `Edit3` · `Plus` · `Trash2` · `Type` · `AlignLeft` · `Hash` · `Activity` · `BarChart3` · `LineChart` · `PieChart` · `ScatterChart` · `TrendingUp` · `Database` · `Layers` · `Network` · `Box` · `Package` · `Cpu` · `Cloud` · `Terminal` · `Thermometer` · `History` · `Calendar` · `Clock` · `MessageSquare` · `Mail` · `Send` · `Phone` · `Bot` · `Globe` · `Link` · `ExternalLink` · `Briefcase` · `Building` · `CreditCard` · `DollarSign` · `MapPin` · `Tag` · `Star` · `Play` · `Palette` · `Settings` · `Zap` · `Chrome` · `Github`
 
-## Componentes públicos (80)
+## Componentes públicos (81)
 
 ### DEFAULT_COLUMN_WIDTH
 
@@ -778,6 +778,16 @@ Props (`SarakRichTextProps` — `src/components/atomic/Inputs/SarakRichText.tsx`
 | `error` | `string` | não |  |
 | `className` | `string` | não |  |
 
+### SarakScrim
+
+Props (`SarakScrimProps` — `src/components/atomic/Buttons/SarakScrim.tsx`):
+
+| Prop | Tipo | Obrigatória | Descrição |
+| --- | --- | --- | --- |
+| `onClose` | `() => void` | sim | Fecha a camada — chamado ao clique em qualquer ponto do scrim. |
+| `ariaLabel` | `string` | sim | Rótulo acessível do scrim (ex.: "Fechar menu de navegação"). |
+| `className` | `string` | não |  |
+
 ### SarakSearch
 
 Props (`SarakSearchProps` — `src/components/atomic/Inputs/SarakSearch.tsx`):
@@ -1059,7 +1069,7 @@ Props (`SarakUploaderProps` — `src/components/atomic/Inputs/SarakUploader.tsx`
 
 ### SocialButton
 
-Props (`SocialButtonProps` — `src/components/atomic/Atoms/SocialButton.tsx`):
+Props (`SocialButtonProps` — `src/components/atomic/Buttons/SocialButton.tsx`):
 
 | Prop | Tipo | Obrigatória | Descrição |
 | --- | --- | --- | --- |

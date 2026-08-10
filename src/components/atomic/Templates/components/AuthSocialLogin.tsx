@@ -1,5 +1,5 @@
 import React from 'react';
-import { SocialButton } from '../../Atoms/SocialButton';
+import { SocialButton } from '../../Buttons/SocialButton';
 import { useStructuralStyles } from '../../hooks/useStructuralStyles';
 
 interface AuthSocialLoginProps {
