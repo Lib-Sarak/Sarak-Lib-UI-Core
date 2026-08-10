@@ -759,17 +759,6 @@ interface DesignScopeProps {
  */
 declare const DesignScope: React__default.FC<DesignScopeProps & Record<string, unknown>>;
 
-/**
- * R10 declarado, não corrigido (plan-22, triagem 2026-08-10): os 2 `<button>` deste
- * componente não são triados aqui. `LAYOUTS` está vazio desde a plan-15 — o componente
- * é um seletor de preset MORTO, exportado no barril público (`src/index.ts`), sem
- * consumidor interno. O dono decidiu REMOVER; remoção de export público é `major` e
- * foi agrupada na plan-23 junto de outras mudanças de contrato, para a quebra sair
- * numa versão só. Não marcar (não é encapsulamento), não consertar (o componente vai
- * sair), não remover aqui (fora do escopo desta plan).
- */
-declare const ThemeToggle: React__default.FC;
-
 interface SarakButtonProps extends ButtonHTMLAttributes<HTMLButtonElement> {
     variant?: 'primary' | 'secondary' | 'ghost' | 'danger' | 'success' | 'outline';
     isLoading?: boolean;
@@ -1446,12 +1435,37 @@ interface SarakScrimProps {
     /** Rótulo acessível do scrim (ex.: "Fechar menu de navegação"). */
     ariaLabel: string;
     className?: string;
+    /** `data-testid`, para quem precisa localizar o scrim em teste sem depender do
+     * `ariaLabel`. Não é passthrough genérico de props — evita colidir com os tipos de
+     * evento do `motion.button` (que redefine `onDrag` e afins com assinatura própria). */
+    testId?: string;
+    /** Sobrepõe o fundo padrão (`--sarak-overlay-bg`) — para consumidores que já liam a
+     * cor do overlay de um token de design próprio antes de migrar para este átomo. */
+    style?: React__default.CSSProperties;
+    /** Ativa a transição de opacidade na entrada/saída. Default `false` — o comportamento
+     * de sempre, sem animação (plan-19/20/22 pararam exatamente por causa disto: dar
+     * animação sem ela ser opcional removeria o scrim estático que já existe). */
+    animate?: boolean;
+    /** Só tem efeito com `animate`. Alvo da opacidade (1 = visível, 0 = invisível) SEM
+     * desmontar — para consumidores que gerenciam o próprio atraso de desmontagem (ex.:
+     * `SarakDrawer`, que mantém o overlay montado até a transição terminar). Quando
+     * omitido, assume visível — o caso de quem desmonta via `AnimatePresence` por fora
+     * (ex.: `Controls.tsx`), onde o `exit` já cobre o fade de saída. */
+    visible?: boolean;
+    /** Só tem efeito com `animate`. Duração da transição em ms. Default 300 — o mesmo
+     * valor que o `motion.div` ad hoc de `Controls.tsx` já usava (default do framer-motion
+     * para uma transição de opacidade sem `transition` explícito). */
+    durationMs?: number;
 }
 /**
  * SarakScrim — o backdrop de tela cheia que fecha um overlay (drawer, modal, painel) ao
  * clique fora. É `<button>` nativo, não `<div onClick>`: teclado (foco + Enter/Espaço) e
  * leitor de tela funcionam por construção, sem handler adicional (achado 17 / plan-19 —
  * o padrão se repetia pela base sem um átomo próprio).
+ *
+ * `animate` é opcional (plan-23): por padrão o scrim continua estático, pixel a pixel
+ * igual ao que sempre foi (`SarakAppChromeMobile`, o único uso publicado hoje). Quem
+ * precisa de fade (`Controls.tsx`, `SarakDrawer`) liga a prop.
  *
  * @sarak-encapsula button — a razão de existir deste componente é encapsular o
  *   `<button>` nativo do backdrop, para teclado e leitor de tela funcionarem por
@@ -1577,31 +1591,6 @@ interface SarakLinkProps extends Omit<React__default.AnchorHTMLAttributes<HTMLAn
  * + `rel="noreferrer noopener"` + ícone/texto para leitor de tela).
  */
 declare const SarakLink: React__default.FC<SarakLinkProps>;
-
-interface UserPayload {
-    email?: string;
-    [key: string]: unknown;
-}
-interface ModuleConfig {
-    id: string;
-    label: string;
-    [key: string]: unknown;
-}
-interface LanguageOption {
-    id: string;
-    label: string;
-}
-declare const LanguageSelector: () => react_jsx_runtime.JSX.Element;
-declare const UserMenu: ({ user, onPasswordModal, onLogout }: {
-    user: UserPayload | null;
-    onPasswordModal: () => void;
-    onLogout: () => void;
-}) => react_jsx_runtime.JSX.Element;
-declare const ModuleSelector: ({ currentModule, setCurrentModule, modules }: {
-    currentModule: string;
-    setCurrentModule: (id: string) => void;
-    modules: ModuleConfig[];
-}) => react_jsx_runtime.JSX.Element;
 
 interface SarakInputProps extends InputHTMLAttributes<HTMLInputElement> {
     label?: string;
@@ -3022,4 +3011,4 @@ interface SarakRouterState {
  */
 declare function useSarakRouter(basePath?: string): SarakRouterState;
 
-export { type Accept, type BadgeSize, type BadgeVariant, type BreadcrumbItem, type CardMove, type ContextMenuPosition, CustomizationPanel, DEFAULT_COLUMN_WIDTH, DEFAULT_DEVICE_BREAKPOINTS, DESIGN_MANIFEST, type DatePickerValue, DesignScope, type DeviceBreakpoints, DeviceProvider, type DeviceType, type DiscoveredModule, DynamicRenderer, ExpandableCard, type ExpandableCardProps, type FileRejection, type FilterDescriptor, FilterSelect, type FilterSelectProps, GLOBAL_THEMES, HelpButton, ICONE_DESCONHECIDO, ICON_NAMES, type IconFamily, IconMap, type IconName, type IconTriple, ImageCard, type ImageCardProps, type KanbanCard, type KanbanColumn, type LanguageOption, LanguageSelector, type LightboxImage, MIN_COLUMN_WIDTH, type MatrixNodeConfig, type MatrixParentData, type MatrixTreeNode, type ModalLayoutContext, type ModuleConfig, type ModuleManifest, ModuleSelector, type MultiSelectOption, type NavigationItem, type PaginationToken, type RangeValue, type ResponsiveDevice, type ResponsiveValue, SARAK_MODE_ATTRIBUTE, SARAK_REFERENCE_THEMES, SARAK_SCOPE_CLASS, SarakAccordion, type SarakAccordionProps, SarakActionCard, type SarakActionCardProps, SarakAnalyticalPage, type SarakAnalyticalPageProps, SarakAppChrome, type SarakAppChromeProps, SarakAuthScreen, type SarakAuthScreenEvent, type SarakAuthScreenProps, SarakBadge, type SarakBadgeProps, SarakBreadcrumbs, type SarakBreadcrumbsProps, SarakButton, type SarakButtonProps, SarakCardGrid, type SarakCardGridProps, SarakCatalogGrid, type SarakCatalogGridProps, SarakChart, SarakChartEngine, type SarakChartEngineProps, type SarakChartProps, SarakChat, SarakChatEngine, type SarakChatEngineProps, type SarakChatProps, type SarakColumn, type SarakComponent, type SarakComponentProps, SarakContextMenu, type SarakContextMenuProps, SarakDataEmpty, type SarakDataEmptyProps, SarakDataGrid, SarakDataGridImpl, type SarakDataGridProps, SarakDataTable, SarakDataTableImpl, type SarakDataTableProps, SarakDatePicker, type SarakDatePickerProps, SarakDrawer, type SarakDrawerProps, SarakEmptyState, type SarakEmptyStateProps, SarakExpandableMatrix, type SarakExpandableMatrixProps, SarakFlex, type SarakFlexProps, SarakFlowEngine, type SarakFlowEngineProps, SarakForm, SarakFormGroup, type SarakFormGroupProps, type SarakFormProps, SarakGrid, type SarakGridProps, SarakHidden, type SarakHiddenProps, SarakIcon, SarakIconButton, type SarakIconButtonProps, type SarakIconProps, SarakInput, type SarakInputProps, SarakKanbanImpl as SarakKanban, type SarakKanbanProps, SarakLightbox, type SarakLightboxProps, SarakLink, type SarakLinkProps, SarakManagementGrid, type SarakManagementGridProps, SarakMarkdownRenderer, type SarakMarkdownRendererProps, type SarakMatrixManifest, SarakModal, type SarakModalProps, type SarakModule, SarakMultiSelect, type SarakMultiSelectProps, type SarakNavItem, type SarakOverlayController, SarakOverlayProvider, type SarakOverlayRequest, SarakPDFViewer, type SarakPDFViewerProps, SarakPageTransition, type SarakPageTransitionProps, SarakPagination, type SarakPaginationProps, SarakRangeSlider, type SarakRangeSliderProps, SarakRichText, type SarakRichTextProps, type SarakRouterState, SarakScrim, type SarakScrimProps, SarakSearch, SarakSearchCard, type SarakSearchCardProps, type SarakSearchProps, SarakSelect, type SarakSelectProps, SarakShell, SarakShellNav, type SarakShellNavProps, SarakSkeleton, type SarakSkeletonProps, SarakSlider, type SarakSliderProps, SarakSparkline, type SarakSparklineProps, SarakSplitPane, type SarakSplitPaneProps, SarakSpotlight, type SarakSpotlightProps, SarakStats, type SarakStatsProps, SarakStepper, type SarakStepperProps, SarakSwitch, type SarakSwitchProps, type SarakTabItem, SarakTable, type SarakTableProps, SarakTabs, type SarakTabsProps, SarakTextarea, type SarakTextareaProps, SarakTimePicker, type SarakTimePickerProps, SarakTitleCard, type SarakTitleCardProps, SarakToastProvider, SarakTooltip, type SarakTooltipProps, SarakTreeView, type SarakTreeViewProps, SarakTypography, type SarakTypographyColor, type SarakTypographyProps, type SarakTypographyVariant, type SarakUIMode, SarakUIProvider, SarakUploader, type SarakUploaderProps, type ShellNavItem, type SkeletonShape, SocialButton, type SocialButtonProps, type SparklineVariant, type StepConfig, type StepperOrientation, THEME_AXES, THEME_PRESET_IDS, type ThemePreset, type ThemePresetId, ThemeToggle, type ToastController, type ToastOptions, type ToastVariant, type TooltipPosition, UserMenu, type UserPayload, type VisualContract, type VisualContractType, buildPaginationRange, computeOffsets, deviceForWidth, findMissingThemeAxes, getAllDesignTokens, getDefaultDesignState, getLocalComponent, getLocalComponentIds, getRegisteredModules, getSarakModule, getThemePreset, isResponsiveValue, isSafeLinkHref, moveCard, registerLocalComponent, registerSarakModule, reorder, resolveResponsiveValue, sanitizeRichText, subscribeToRegistry, useDesignDraft, useModalLayoutStyles, useModuleDiscovery, useOverlay, useSarakDevice, useSarakRouter, useSarakUI, useToast, warnOnIncompleteTheme, widthOf };
+export { type Accept, type BadgeSize, type BadgeVariant, type BreadcrumbItem, type CardMove, type ContextMenuPosition, CustomizationPanel, DEFAULT_COLUMN_WIDTH, DEFAULT_DEVICE_BREAKPOINTS, DESIGN_MANIFEST, type DatePickerValue, DesignScope, type DeviceBreakpoints, DeviceProvider, type DeviceType, type DiscoveredModule, DynamicRenderer, ExpandableCard, type ExpandableCardProps, type FileRejection, type FilterDescriptor, FilterSelect, type FilterSelectProps, GLOBAL_THEMES, HelpButton, ICONE_DESCONHECIDO, ICON_NAMES, type IconFamily, IconMap, type IconName, type IconTriple, ImageCard, type ImageCardProps, type KanbanCard, type KanbanColumn, type LightboxImage, MIN_COLUMN_WIDTH, type MatrixNodeConfig, type MatrixParentData, type MatrixTreeNode, type ModalLayoutContext, type ModuleManifest, type MultiSelectOption, type NavigationItem, type PaginationToken, type RangeValue, type ResponsiveDevice, type ResponsiveValue, SARAK_MODE_ATTRIBUTE, SARAK_REFERENCE_THEMES, SARAK_SCOPE_CLASS, SarakAccordion, type SarakAccordionProps, SarakActionCard, type SarakActionCardProps, SarakAnalyticalPage, type SarakAnalyticalPageProps, SarakAppChrome, type SarakAppChromeProps, SarakAuthScreen, type SarakAuthScreenEvent, type SarakAuthScreenProps, SarakBadge, type SarakBadgeProps, SarakBreadcrumbs, type SarakBreadcrumbsProps, SarakButton, type SarakButtonProps, SarakCardGrid, type SarakCardGridProps, SarakCatalogGrid, type SarakCatalogGridProps, SarakChart, SarakChartEngine, type SarakChartEngineProps, type SarakChartProps, SarakChat, SarakChatEngine, type SarakChatEngineProps, type SarakChatProps, type SarakColumn, type SarakComponent, type SarakComponentProps, SarakContextMenu, type SarakContextMenuProps, SarakDataEmpty, type SarakDataEmptyProps, SarakDataGrid, SarakDataGridImpl, type SarakDataGridProps, SarakDataTable, SarakDataTableImpl, type SarakDataTableProps, SarakDatePicker, type SarakDatePickerProps, SarakDrawer, type SarakDrawerProps, SarakEmptyState, type SarakEmptyStateProps, SarakExpandableMatrix, type SarakExpandableMatrixProps, SarakFlex, type SarakFlexProps, SarakFlowEngine, type SarakFlowEngineProps, SarakForm, SarakFormGroup, type SarakFormGroupProps, type SarakFormProps, SarakGrid, type SarakGridProps, SarakHidden, type SarakHiddenProps, SarakIcon, SarakIconButton, type SarakIconButtonProps, type SarakIconProps, SarakInput, type SarakInputProps, SarakKanbanImpl as SarakKanban, type SarakKanbanProps, SarakLightbox, type SarakLightboxProps, SarakLink, type SarakLinkProps, SarakManagementGrid, type SarakManagementGridProps, SarakMarkdownRenderer, type SarakMarkdownRendererProps, type SarakMatrixManifest, SarakModal, type SarakModalProps, type SarakModule, SarakMultiSelect, type SarakMultiSelectProps, type SarakNavItem, type SarakOverlayController, SarakOverlayProvider, type SarakOverlayRequest, SarakPDFViewer, type SarakPDFViewerProps, SarakPageTransition, type SarakPageTransitionProps, SarakPagination, type SarakPaginationProps, SarakRangeSlider, type SarakRangeSliderProps, SarakRichText, type SarakRichTextProps, type SarakRouterState, SarakScrim, type SarakScrimProps, SarakSearch, SarakSearchCard, type SarakSearchCardProps, type SarakSearchProps, SarakSelect, type SarakSelectProps, SarakShell, SarakShellNav, type SarakShellNavProps, SarakSkeleton, type SarakSkeletonProps, SarakSlider, type SarakSliderProps, SarakSparkline, type SarakSparklineProps, SarakSplitPane, type SarakSplitPaneProps, SarakSpotlight, type SarakSpotlightProps, SarakStats, type SarakStatsProps, SarakStepper, type SarakStepperProps, SarakSwitch, type SarakSwitchProps, type SarakTabItem, SarakTable, type SarakTableProps, SarakTabs, type SarakTabsProps, SarakTextarea, type SarakTextareaProps, SarakTimePicker, type SarakTimePickerProps, SarakTitleCard, type SarakTitleCardProps, SarakToastProvider, SarakTooltip, type SarakTooltipProps, SarakTreeView, type SarakTreeViewProps, SarakTypography, type SarakTypographyColor, type SarakTypographyProps, type SarakTypographyVariant, type SarakUIMode, SarakUIProvider, SarakUploader, type SarakUploaderProps, type ShellNavItem, type SkeletonShape, SocialButton, type SocialButtonProps, type SparklineVariant, type StepConfig, type StepperOrientation, THEME_AXES, THEME_PRESET_IDS, type ThemePreset, type ThemePresetId, type ToastController, type ToastOptions, type ToastVariant, type TooltipPosition, type VisualContract, type VisualContractType, buildPaginationRange, computeOffsets, deviceForWidth, findMissingThemeAxes, getAllDesignTokens, getDefaultDesignState, getLocalComponent, getLocalComponentIds, getRegisteredModules, getSarakModule, getThemePreset, isResponsiveValue, isSafeLinkHref, moveCard, registerLocalComponent, registerSarakModule, reorder, resolveResponsiveValue, sanitizeRichText, subscribeToRegistry, useDesignDraft, useModalLayoutStyles, useModuleDiscovery, useOverlay, useSarakDevice, useSarakRouter, useSarakUI, useToast, warnOnIncompleteTheme, widthOf };
