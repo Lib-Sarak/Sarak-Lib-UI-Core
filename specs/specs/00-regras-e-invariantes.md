@@ -51,11 +51,22 @@ Toda regra abre com um marcador. São quatro, e só quatro:
 > ✅ **Atualizado em 2026-08-07** (síntese das plans 12 e 16): R18, R27, R28 e R32 ganharam gate e viraram ✅;
 > R10 ganhou gate parcial (HTML nativo cru) e virou ⚠️. Só **R31** segue ⏳ — parada obrigatória da `plan-12`,
 > aguardando o dono decidir a fronteira de pares/limiar antes de o gate poder nascer.
+>
+> 🔴 **Recontagem de 2026-08-09 — seis linhas desta tabela descreviam gates que já não existiam assim.** O
+> revisor mediu cada regra contra o código, e **as seis erravam para o mesmo lado: diziam o sistema PIOR do
+> que ele está.** `R7` dizia não ver `src/styles/` (vê), `R23` citava um gate que não é o dono do `§N.N`,
+> `R30` dizia "14 erros" (são 0), `R8` dizia não ver `src/shared/` (vê, `:69`), `R29` dizia que 2 geradores
+> não tinham `--check` (os 5 têm), e `R15` declarava uma violação **já corrigida** como impossível de
+> corrigir. **R8 e R29 sobem para ✅**; o quadro vai de 19/9 para **21/7**.
+>
+> **Por que isso importa mais que a contagem:** documento que se descreve pior do que é não é humildade — é
+> ruído com a mesma consequência do exagero contrário. Ele fez a `plan-15` mirar em alvos que já não
+> existiam, e manteve fechada uma porta (R15) que estava aberta.
 
 | Estado | Quantas | Quais |
 | --- | --- | --- |
-| ✅ gate pleno | **19** | R1 · R2 · R3 · R5 · R6 · R9 · R12 · R13 · R18 · R19 · R20 · R21 · R22 · R24 · R25 · R26 · R27 · R28 · R32 |
-| ⚠️ escopo menor que a regra | **9** | R4 · R7 · R8 · R10 · R14 · R17 · R23 · R29 · R30 |
+| ✅ gate pleno | **21** | R1 · R2 · R3 · R5 · R6 · **R8** · R9 · R12 · R13 · R18 · R19 · R20 · R21 · R22 · R24 · R25 · R26 · R27 · R28 · **R29** · R32 |
+| ⚠️ escopo menor que a regra | **7** | R4 · R7 · R10 · R14 · R17 · R23 · R30 |
 | ⏳ gate a construir | **1** | R31 |
 | 🔴 conduta | **3** | R11 · R15 · R16 |
 
@@ -922,9 +933,25 @@ export { SarakChartEngine, type SarakChartEngineProps } from './components/engin
 > deliberadamente não medida** — as outras duas de conduta (R11, R16) não são mensuráveis por natureza.
 > Reabrir isto exige decisão nova, não um "descobri que dava para medir".
 
-> ⚠️ **Esta regra está sendo violada pela própria lib, e a violação é declarada.** `CustomizationPanel` sai **eager** do barril (`src/index.ts:50`) e ainda é importado eager pelo efeito colateral de `:119-125`, que registra o painel em dois ids legados do Discovery ao simples ato de importar a lib. O custo é **o painel inteiro do Design Engine no caminho crítico de todo consumidor** — a dívida mais cara da lista. **Não foi corrigida** porque torná-lo lazy muda o tipo público para `LazyExoticComponent`: é **breaking change** do contrato, roteado para a `plan-09` (achado 3).
+> ✅ **A violação FECHOU — e o motivo pelo qual ela "não podia" fechar estava errado** *(medido pelo revisor em
+> 2026-08-09)*. Até aqui esta regra declarava que `CustomizationPanel` saía **eager** do barril, pondo o painel
+> inteiro do Design Engine no caminho crítico de todo consumidor, e que consertar era **breaking change**
+> porque o tipo público viraria `LazyExoticComponent`.
 >
-> Regra com violação conhecida e declarada é honesta. Regra que finge estar cumprida é ficção.
+> **As duas metades caíram.** `src/features/DesignEngine/Library/CustomizationPanel/index.tsx` é hoje uma
+> fronteira lazy — `lazy(() => import('./CustomizationPanelImpl'))` dentro de `LazyEngineWrapper` — e o
+> `Suspense` é **interno**, no mesmo padrão do `SarakChartEngine`. Consequência: **o tipo público seguiu
+> `React.FC`**, e não houve breaking change nenhum. Medido no `dist/`: `CustomizationPanelImpl` é chunk
+> próprio de **375 KB**, e o boot ESM (`dist/index.js`) está em **164 KB**.
+>
+> 🔴 **A lição vale mais que o conserto, e é por isso que este parágrafo fica.** Durante meses a spec
+> **desaconselhou** um conserto que era barato, com base numa premissa técnica não verificada ("vira
+> `LazyExoticComponent`"). Suspense interno resolve isso e já era o padrão usado ao lado, no mesmo
+> repositório. **Custo declarado sem medição vira desculpa com aparência de rigor** — e ninguém reabre uma
+> porta que a spec diz estar trancada.
+>
+> Regra com violação conhecida e declarada é honesta. Regra que finge estar cumprida é ficção — e **regra que
+> declara impossível o que já é possível é a pior das três**, porque parece honestidade.
 
 ---
 
@@ -963,7 +990,7 @@ e a correção é criar o token (R11 → Expansão), não remendar do lado de fo
 | R5 | Zero chave órfã | ✅ | `auditor_presets.mjs` → `verify_presets.ts` (+ `verify_theme_parity.ts` ⏳) | idem |
 | R6 | Contrato de valor | ✅ | `validateDesign` + `tokenContractParity.test.ts` | `npx vitest run` |
 | R7 | Namespace e fallback | ⚠️ | `auditor_ghostvars.mjs` — vê os 4 `CONSUMER_DIRS`, mas **valida só o NOME, nunca a sintaxe do fallback**, e **aceita nome que o manifesto declara e o runtime nunca emite** | `npm run audit` |
-| R8 | Cobertura 1:1 | ⚠️ | `auditor_coverage.mjs` — **não vê `src/shared/`**; % em `plan-12` | idem |
+| R8 | Cobertura 1:1 | ✅ | `auditor_coverage.mjs` — 6 diretórios, **inclusive `src/shared/`** (`:65-73`); as exclusões (`src/styles/`, `index*`, `.ts` que não é hook) são a **fronteira da própria regra**, não vão de gate. `R8.1` = piso móvel de % | idem |
 | R9 | Clean Code | ✅ | `auditor_cleancode.mjs` | idem |
 | R10 | Composição atômica | ⚠️ | `auditor_composicaoatomica.mjs` — **só HTML nativo cru**; `switch` de design sem detector | `npm run audit` |
 | R12 | Zero-marca | ✅ | `check-zero-brand.mjs` | `npm run zero-brand:check` |
@@ -981,12 +1008,12 @@ e a correção é criar o token (R11 → Expansão), não remendar do lado de fo
 | R26 | Paridade de ícones | ✅ | `iconCatalogParity.test.ts` · `iconContract.test.tsx` | `npx vitest run` |
 | R27 | Zero deep import | ✅ | `check-no-deep-import.mjs` | `npm run deep-import:check` |
 | R28 | Contrato de saída do CLI | ✅ | `checkUpdateCli.contract.test.mjs` (8 casos) | `npx vitest run` |
-| R29 | Gerado bate com a fonte | ⚠️ | 3 geradores com `--check`; `generate-token-types.ts` e `generate-build-info.mjs` **sem** | `npm run catalog:check` … |
+| R29 | Gerado bate com a fonte | ✅ | **os 5 geradores têm `--check`, e os 5 rodam**: `token-types` · `catalog` · `guide` dentro do `build`; `build-info` e `dev-kit` no `gates:full` | `npm run catalog:check` … |
 | R30 | O TypeScript compila | ⚠️ | **0 erros, produção e teste** *(medido 2026-08-08)*; baseline em 0 ⇒ qualquer erro novo bloqueia. O vão que resta é o **gatilho**: o `--with-tsc` do Anel 2 só liga quando o staged tem `.ts`/`.tsx` | `npx tsc --noEmit` |
 | R31 | Contraste AA nos 18 temas | ⏳ | **a construir** — 0 cálculos de contraste em `src/` | — |
 | R32 | Indiferente à autenticação | ✅ | `auditor_authcoupling.mjs` — nasce verde | `npm run audit` |
 | **R11** | **Configuração × Expansão** | **🔴** | **nenhum — CONDUTA** | — |
-| **R15** | **Nada pesado eager** | **🔴** | **nenhum — CONDUTA** ⚠️ violada hoje | — |
+| **R15** | **Nada pesado eager** | **🔴** | **nenhum — CONDUTA.** ✅ a violação declarada FECHOU em 2026-08-09 (ver a regra) | — |
 | **R16** | **Zero-gambiarra** | **🔴** | **nenhum — CONDUTA** | — |
 
 ## 4.1 Os validadores e o pipeline — quem executa o quê
