@@ -18,7 +18,7 @@
 
 /* 1.1 TRANSITION UTILITIES (v8.5) */
 .transition-sarak {
-    transition: all var(--animation-speed, 0.4s) var(--sarak-ease-main, cubic-bezier(0.4, 0, 0.2, 1)) !important;
+    transition: all var(--sarak-anim-normal, 0.4s) var(--sarak-ease-main, cubic-bezier(0.4, 0, 0.2, 1)) !important;
 }
 
 /* Layout Utilities */
@@ -40,13 +40,13 @@ input, select, textarea {
 }
 
 button:hover:not(.p-0) {
-    background-color: var(--sarak-button-hover, var(--theme-primary-hover));
+    background-color: var(--theme-primary-hover);
     transform: translateY(-1px) scale(var(--sarak-btn-hover-scale, 1.02));
 }
 
 button:active:not(.p-0),
 .bg-theme-card:active {
-    background-color: var(--sarak-button-active-color, var(--theme-primary-active));
+    background-color: var(--theme-primary-active);
     transform: translateY(0) scale(var(--sarak-btn-active-scale, 0.98)) !important;
     transition: transform 0.1s var(--sarak-ease-out, cubic-bezier(0.4, 0, 0.2, 1));
 }
