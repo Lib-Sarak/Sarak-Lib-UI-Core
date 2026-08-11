@@ -94,6 +94,7 @@ const PARSERS = {
     }),
     'auditor_contraste.mjs': (out) => ({
         reprovados: num(out, /(\d+) par\(es\)-tema reprovado\(s\) no total/),
+        reprovadosModoOposto: num(out, /(\d+) par\(es\)-tema reprovado\(s\) no MODO OPOSTO/),
     }),
 };
 

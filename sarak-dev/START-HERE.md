@@ -77,12 +77,12 @@ A segunda é a razão de este kit existir. Regenerar números impede o guia de m
 
 <!-- SARAK-DEV:CARIMBO:INICIO -->
 
-- **Versão da lib:** `3.0.0` · **carimbo do estado:** `0c74340f85ca`
+- **Versão da lib:** `3.0.0` · **carimbo do estado:** `7a6f76854b0f`
 - **Design:** 28 schemas · 422 tokens únicos no catálogo · MASTER_DESIGN_MAP v13.0.0
 - **Componentes:** 77 públicos · 14 categorias atômicas · 3 categorias de engine
 - **Gates:** 17 registrados · 12 auditores em `run_audit.mjs`
 - **Base de specs:** 8 ADRs · 6 documentos de arquitetura · 16 specs
-- **Baseline dos auditores medido em:** 2026-08-10
+- **Baseline dos auditores medido em:** 2026-08-11
 
 <!-- SARAK-DEV:CARIMBO:FIM -->
 

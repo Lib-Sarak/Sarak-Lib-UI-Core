@@ -54,8 +54,11 @@ Toda regra abre com um marcador. São quatro, e só quatro:
 >
 > ✅ **Fechado em 2026-08-10 (`plan-24`):** o dono decidiu (todos os pares reais · 4,5:1 sem relaxamento ·
 > alfa composto), o gate nasceu e **R31 foi de ⏳ para ⚠️**. Nasceu **vermelho por desenho** — 188 pares-tema
-> reprovados —, e consertar tema é a `plan-24-1`. Na mesma síntese nasceu **R33** (payload de tema é contrato
-> público). **A fila de ⏳ zerou.**
+> reprovados. Na mesma síntese nasceu **R33** (payload de tema é contrato público). **A fila de ⏳ zerou.**
+>
+> ✅ **E ficou verde em 2026-08-11 (`plan-24-1`): 188 → 0**, nos dois modos. **R31 continua ⚠️, e de
+> propósito** — 25 pares-tema seguem pulados por fundo não determinístico. **Conformidade verde não é
+> cobertura plena**, e o marcador descreve a segunda.
 >
 > 🔴 **Recontagem de 2026-08-09 — seis linhas desta tabela descreviam gates que já não existiam assim.** O
 > revisor mediu cada regra contra o código, e **as seis erravam para o mesmo lado: diziam o sistema PIOR do
@@ -836,14 +839,19 @@ ERRADO   a união do toast do alvo aceita 'error'|'success'|'warning' e a funç�
 
 ## R31 — Contraste AA nos temas de referência
 
-**Estado:** ⚠️ **escopo menor que a regra** — *desde 2026-08-10 (`plan-24`)*. **O gate existe e nasceu
-vermelho, como previsto.**
+**Estado:** ⚠️ **escopo menor que a regra**. **O gate existe, e desde 2026-08-11 os 18 temas passam nos dois
+modos** — `0` reprovados no nativo, `0` no oposto.
 
-> **Por que saiu de ⏳ e não foi direto para ✅.** ⏳ significa *"a verificação ainda não foi construída"*
-> (§1.2), e ela foi: `auditor_contraste.mjs` roda dentro do `npm run audit`. Manter ⏳ repetiria exatamente o
-> defeito que a recontagem de 2026-08-09 encontrou — **descrever o sistema pior do que ele está**. E ✅ seria
-> falso na outra direção, porque o gate declara vãos reais (abaixo). **O marcador descreve a verificação, não
-> a conformidade**: o baseline está em 188 reprovados, e quem impede que isso piore é a R20.
+> **A trajetória, porque ela explica o marcador.** ⏳ até 2026-08-10 (`plan-24` construiu o gate; ele nasceu
+> **vermelho com 188**, por desenho). ⚠️ desde então — ⏳ significa *"a verificação ainda não foi
+> construída"* (§1.2), e ela foi.
+>
+> **Por que NÃO subiu para ✅ quando os temas ficaram verdes** *(revisor, `plan-24-1`)*. A `plan-24-1`
+> previa ✅ na sua meta, e o resultado não autoriza: **25 pares-tema seguem PULADOS** — fundo não
+> determinístico, declarado em vez de chutado — e o par de texto de status continua fora. O gate **não vê**
+> parte do que a regra exige, que é a definição literal de ⚠️ (§1.2). Marcar ✅ aqui seria o *"✅ falso"* que
+> esta spec proíbe no aviso da §1.2. **O marcador descreve a verificação, não a conformidade** — e a
+> conformidade, hoje, está verde.
 
 **Enunciado.** Os **18 temas shippados** garantem contraste **WCAG AA** (4,5:1 para texto normal, 3:1 para texto grande) nos pares texto/fundo que produzem. A lib **não promete AA** para tema escrito pelo consumidor.
 
@@ -858,8 +866,8 @@ ERRADO   silêncio                     — o consumidor assume que passa
 ```
 
 **Cobrada por:** `gates/scripts/audit/auditor_contraste.mjs` → `verify_contrast.ts` (`plan-24`, 2026-08-10),
-dentro do `npm run audit`, com teste próprio de 23 casos. **Baseline: 188 pares-tema reprovados, 18 de 18
-temas** — vermelho por desenho; consertar tema é a `plan-24-1`.
+dentro do `npm run audit`, com teste próprio. **Baseline: `reprovados: 0` e `reprovadosModoOposto: 0`** — o
+gate mede **duas passadas**, o modo nativo do tema e a contraparte gerada.
 
 **A fronteira, decidida pelo dono e agora escrita:** **36 pares reais** texto/fundo, levantados cruzando
 `catalog/partitions` (categorias e `relatedTokens`), a `description` de cada token no schema e o código dos
@@ -867,17 +875,25 @@ componentes — **não** "todo par possível". Limiar **4,5:1 em todos**, sem re
 para texto grande (≥24px), e onde `textColorMuted` renderiza são 9–14px. Cor com alfa é **composta** sobre a
 cadeia de fundo (`efetiva = alfa × cor + (1 − alfa) × fundo`), não pulada.
 
-**O que o gate NÃO vê** — e é por isso que a linha é ⚠️, não ✅:
+**Dois vãos FECHARAM na `plan-24-1` (2026-08-11)** — e os dois eram do motor, não do gate:
 
-1. **Só o modo nativo.** Ele lê o token **escrito**; `useDesignVariables.ts:43` chama `syncThemeWithMode` sem
-   condição antes de emitir. Medido: **1299 de 1316** valores de cor mudam e **178 de 648** veredictos
-   divergem. A decisão **D** da `plan-24-1` fecha essa diferença, e aí esta linha pode subir.
-2. **A contraparte gerada** (modo trocado) **não tem medição nenhuma** — é a segunda passada, também da
-   `plan-24-1`.
-3. **`statusErrorColor`/`statusSuccessColor` ficam fora**, declarados com número (**7/18** e **5/18**): o
-   fundo real deles é `--sarak-status-*-color-bg`, que **nunca é emitida** — cobrar isso do tema seria acusar
-   o autor por defeito de componente. Achado **38** em [[15-divida-conhecida]] §3.1.
-4. Valor em `hsl()`, `var()` ou gradiente é **declarado pulado** (25 pares-tema), nunca chutado.
+- ✅ **O gate media o escrito, não o emitido.** `useDesignVariables` chamava `syncThemeWithMode` **sem
+  condição**, e medido dava **1299 de 1316** valores reescritos com **178 de 648** veredictos divergentes. A
+  **decisão D** parou a reescrita no modo nativo: agora **emitido = escrito**, e o gate mede a tela.
+- ✅ **A contraparte gerada não tinha medição.** A **segunda passada** (`auditThemeOppositeMode`) mede o modo
+  oposto. Junto veio a **decisão C** (papel `onPrimary`), que fechou a sobreposição das faixas `text` × `primary`
+  — a causa de o texto de botão primário sair ilegível na conversão.
+
+**O que o gate ainda NÃO vê** — e é por isso que a linha segue ⚠️:
+
+1. **25 pares-tema PULADOS.** Valor em `hsl()`, `var()` ou gradiente, ou cadeia cujo elo final segue
+   translúcido: o gate **declara** em vez de chutar um fundo. **Pulado não é aprovado** — é não medido.
+2. **`statusErrorColor`/`statusSuccessColor` ficam fora**, declarados com número (**7/18** e **5/18**,
+   medidos antes da correção dos temas): o fundo real deles é `--sarak-status-*-color-bg`, que **nunca é
+   emitida** — cobrar isso do tema seria acusar o autor por defeito de componente. Achado **38** em
+   [[15-divida-conhecida]] §3.1.
+3. **O tema do consumidor não é coberto** — por desenho: a regra promete AA nos **18 shippados**, não no dado
+   de terceiro. Ver a nota de migração de D em `docs/migracoes.md`.
 
 > `useMediaLuminance.ts` mede **luminância de mídia** para escolher cor de texto sobre imagem — **não** é
 > contraste WCAG. Confundir os dois é a forma mais fácil de declarar cobertura que não existe.
@@ -1087,7 +1103,7 @@ e a correção é criar o token (R11 → Expansão), não remendar do lado de fo
 | R28 | Contrato de saída do CLI | ✅ | `checkUpdateCli.contract.test.mjs` (8 casos) | `npx vitest run` |
 | R29 | Gerado bate com a fonte | ✅ | **os 5 geradores têm `--check`, e os 5 rodam**: `token-types` · `catalog` · `guide` dentro do `build`; `build-info` e `dev-kit` no `gates:full` | `npm run catalog:check` … |
 | R30 | O TypeScript compila | ⚠️ | **0 erros, produção e teste** *(medido 2026-08-08)*; baseline em 0 ⇒ qualquer erro novo bloqueia. O vão que resta é o **gatilho**: o `--with-tsc` do Anel 2 só liga quando o staged tem `.ts`/`.tsx` | `npx tsc --noEmit` |
-| R31 | Contraste AA nos 18 temas | ⚠️ | `auditor_contraste.mjs` → `verify_contrast.ts` (`plan-24`) — **36 pares, 4,5:1, alfa composto; baseline 188 reprovados**. Vãos: só o modo **nativo** (o emitido passa por `syncThemeWithMode`), a contraparte gerada **sem medição**, cores de status fora com número | `npm run audit` |
+| R31 | Contraste AA nos 18 temas | ⚠️ | `auditor_contraste.mjs` → `verify_contrast.ts` — **36 pares, 4,5:1, alfa composto, DUAS passadas** (nativo + modo oposto); baseline **0 e 0**. Vãos que restam: **25 pares-tema pulados** (fundo não determinístico) e as cores de status, fora com número | `npm run audit` |
 | **R33** | **Payload de tema é contrato público** | **✅** | `consumerThemeContract.test.ts` (`plan-24`) — corpus de payload de consumidor; chave que sai do domínio para de emitir e o teste falha | `npx vitest run` |
 | R32 | Indiferente à autenticação | ✅ | `auditor_authcoupling.mjs` — nasce verde | `npm run audit` |
 | **R11** | **Configuração × Expansão** | **🔴** | **nenhum — CONDUTA** | — |

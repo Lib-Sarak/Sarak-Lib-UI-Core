@@ -1,5 +1,6 @@
 import { describe, expect, it } from 'vitest';
-import { PAIRS, parseColor, compositeOverOpaque, contrastRatio, resolveChain } from '../verify_contrast.ts';
+import { PAIRS, parseColor, compositeOverOpaque, contrastRatio, resolveChain, auditTheme, auditThemeOppositeMode } from '../verify_contrast.ts';
+import { GLOBAL_THEMES } from '../../../../src/core/Design/presets/themes/index.ts';
 
 // Teste do PRÓPRIO GATE (R31, plan-24). Trava a MECÂNICA de cálculo — não o
 // número de temas reprovados, que é baseline e muda a cada tema consertado
@@ -120,5 +121,28 @@ describe('PAIRS — o contrato da lista de pares reais (R31, veredito §11 da pl
 
   it('todo par declara ao menos um elo de fundo', () => {
     expect(PAIRS.every((p) => Array.isArray(p.bgChain) && p.bgChain.length > 0)).toBe(true);
+  });
+});
+
+// Segunda passada (plan-24-1, Passo 7) — mede o MODO OPOSTO ao nativo do
+// tema, via `syncThemeWithMode`. Não trava o número de temas reprovados
+// (isso é baseline), só que a função RODA e devolve o mesmo formato de
+// relatório que `auditTheme`.
+describe('auditThemeOppositeMode — segunda passada (plan-24-1)', () => {
+  it('roda para os 18 temas shippados sem lançar, com o mesmo formato de auditTheme', () => {
+    for (const theme of GLOBAL_THEMES) {
+      const nativo = auditTheme(theme);
+      const oposto = auditThemeOppositeMode(theme);
+      expect(oposto.id).toBe(nativo.id);
+      expect(Array.isArray(oposto.resultados)).toBe(true);
+      expect(oposto.resultados.length).toBe(PAIRS.length);
+    }
+  });
+
+  it('todos os 18 temas de referência passam AA nos dois modos (Decisão C + regeração da plan-24-1)', () => {
+    for (const theme of GLOBAL_THEMES) {
+      const oposto = auditThemeOppositeMode(theme);
+      expect(oposto.falhas, `tema "${theme.id}" reprova no modo oposto: ${JSON.stringify(oposto.falhas.map((f) => f.pair))}`).toEqual([]);
+    }
   });
 });

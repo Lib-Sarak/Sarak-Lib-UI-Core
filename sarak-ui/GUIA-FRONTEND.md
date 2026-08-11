@@ -700,7 +700,7 @@ Regiões do cromo que aceitam qualquer `ReactNode` (imagem, vídeo, componente a
 
 **Tokens de TEMA** (422 chaves válidas de `design` num tema JSON) — lista completa com tipo em `catalog.json` → `designTokens.ids`. 40 deles aceitam `ResponsiveValue`.
 
-**Temas embutidos** (18): `sarak-sovereign` · `crystal-glass` · `cyberpunk-neon` · `holographic-glass` · `industrial-terminal` · `nature-breeze` · `neo-brutalism` · `synthwave-retro` · `nebula-space` · `dot-matrix-elegant` · `stellar-nebula` · `kinetic-flow` · `cyber-retro-wave` · `minimalist-airy` · `data-terminal` · `neumorphic-mobile` · `industrial-dashboard` · `asymmetric-editorial`
+**Temas embutidos** (23): `sarak-sovereign` · `crystal-glass` · `cyberpunk-neon` · `holographic-glass` · `industrial-terminal` · `nature-breeze` · `neo-brutalism` · `synthwave-retro` · `nebula-space` · `dot-matrix-elegant` · `stellar-nebula` · `kinetic-flow` · `cyber-retro-wave` · `minimalist-airy` · `data-terminal` · `neumorphic-mobile` · `industrial-dashboard` · `asymmetric-editorial` · `terracota-solar` · `musgo-do-vale` · `ardosia-ao-entardecer` · `forja-ultravioleta` · `grafite-puro`
 
 **Par de referência** (parta destes — completos em todos os eixos): `minimalist-airy` · `sarak-sovereign`
 

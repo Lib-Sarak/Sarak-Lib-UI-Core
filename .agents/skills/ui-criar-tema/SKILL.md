@@ -46,15 +46,30 @@ O gerador **não** registra o tema — ele só escreve o arquivo. Exporte e regi
 `src/core/Design/presets/themes/index.ts` (`THEME_PRESET_IDS` e `GLOBAL_THEMES`), senão ele não é
 alcançável por ninguém.
 
-### 5. Verificação
+### 5. Verificação — completude E contraste
+
 ```bash
-npm run audit           # auditor_presets: reprova CHAVE ÓRFÃ em qualquer tema/preset embarcado
+npm run audit           # inclui auditor_presets (CHAVE ÓRFÃ) e auditor_contraste (R31, WCAG AA)
 npx vitest run          # a suíte INTEIRA
 ```
+
 Para medir **completude** (quais eixos o tema deixou vazios), use o utilitário público
 `findMissingThemeAxes` / `warnOnIncompleteTheme` (`src/core/Design/utils/themeAxes.ts`). Ele
 **avisa e devolve a lista; não lança** — a lib não força completude, ela só impede que a
-incompletude seja silenciosa.
+incompletude seja silenciosa (R33).
+
+Para medir **contraste** — o `npm run audit` acima já cobra, mas para saber **qual token corrigir**
+antes de rodar a auditoria completa, use o solucionador:
+
+```bash
+npx tsx .agents/skills/ui-criar-tema/scripts/solve_theme_contrast.ts <id-do-tema>
+```
+
+Ele mede os pares reais com o mesmo gate (`gates/scripts/audit/verify_contrast.ts`), e onde reprovar,
+ajusta **só a luminosidade** do token de texto — matiz e saturação saem intactos. Devolve um relatório
+(par, valor antes/depois, razão, delta): **cole esse relatório** ao registrar o tema — é o que transforma
+a correção numa proposta revisável, não um fato consumado. Um par que o relatório marcar como "não
+resolvido" exige uma decisão sua (ver `references/liberdade-e-restricao.md` §1).
 
 Compare o `npm run audit` com o **baseline** de `specs/specs/01-gates-e-baseline.md`, nunca com zero.
 
@@ -77,14 +92,24 @@ Comunique que o tema está registrado, quantos eixos ficaram vazios (se algum) e
 - [ ] O tema foi registrado em `presets/themes/index.ts`?
 - [ ] `auditor_presets` sem chave órfã e suíte inteira verde?
 - [ ] A completude foi medida com `findMissingThemeAxes`, e as lacunas são deliberadas?
+- [ ] O solucionador rodou e o relatório foi colado? Todo par "não resolvido" tem decisão registrada?
+- [ ] `npm run audit` fecha sem regressão no auditor de contraste (R31)?
 
 ## Referências (Camada 3)
 
 **Gerador — esta skill invoca:**
 - `.agents/skills/ui-criar-tema/scripts/generate_theme_template.ts` — gera o arquivo do tema
   pré-populado com os tokens vivos do `MASTER_DESIGN_MAP`. **Escreve em `src/`.**
+- `.agents/skills/ui-criar-tema/scripts/solve_theme_contrast.ts` — o solucionador (plan-24-1). Mede
+  contraste com o gate da R31 e corrige **só a luminosidade** do texto que reprovar, preservando matiz e
+  saturação. Devolve tema + relatório; **não escreve arquivo sozinho** — você aplica o valor corrigido.
+- `.agents/skills/ui-criar-tema/references/liberdade-e-restricao.md` — o mapa de onde há restrição
+  (os pares de contraste) e onde não há nenhuma (tudo o mais). Leia antes de preencher cor de texto.
 
 **Validador — o GATE invoca, não você:**
+- `gates/scripts/audit/verify_contrast.ts` (`auditor_contraste.mjs`) — **tem gate**, dentro de
+  `npm run audit` (R31). Mede os 36 pares reais texto/fundo a 4,5:1 em cada tema embarcado; é o que o
+  solucionador (acima) consulta para saber o que corrigir.
 - `gates/scripts/audit/verify_theme_parity.ts` — valida UM tema. **Reprova**
   chave que não existe no dicionário; **avisa** (sem reprovar) quando o tema é parcial. A
   assimetria é deliberada: **tema novo nasce 100% preenchido pelo gerador**, mas tema que já

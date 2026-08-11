@@ -3,19 +3,31 @@ import { Sun, Moon } from 'lucide-react';
 import { useSarakUI } from '../../Provider/SarakUIProvider';
 import { SarakIconButton } from '../../../components/atomic/Buttons/SarakIconButton';
 import { SarakButton } from '../../../components/atomic/Buttons/SarakButton';
+import { syncThemeWithMode } from '../../Design/presets/themes/color-engine';
+import type { SarakTokenValue } from '../../Design/types';
+import type { SarakThemePayload } from '../../Provider/types';
 
 interface ShellThemeToggleProps {
     variant?: 'horizontal' | 'vertical' | 'mini';
 }
 
 export const ShellThemeToggle: React.FC<ShellThemeToggleProps> = ({ variant = 'horizontal' }) => {
-    const { design, applyConfigRaw } = useSarakUI();
-    
+    const { design, applyFullConfigRaw } = useSarakUI();
+
     // Safely fallback to 'dark' if undefined
     const isDarkMode = (design?.mode || 'dark') === 'dark';
 
+    /**
+     * Decisão D (plan-24-1 §2.8): este toggle é o ÚNICO lugar que expressa a
+     * intenção "quero ver ESTE tema no OUTRO modo" — por isso é aqui, e só
+     * aqui, que `syncThemeWithMode` roda, computando a contraparte UMA vez e
+     * persistindo o resultado completo. `useDesignVariables` deixou de
+     * chamá-la a cada render: no modo nativo, emitido = escrito.
+     */
     const toggleTheme = () => {
-        applyConfigRaw({ mode: isDarkMode ? 'light' : 'dark' });
+        const targetMode = isDarkMode ? 'light' : 'dark';
+        const synced = syncThemeWithMode((design || {}) as Record<string, SarakTokenValue>, targetMode);
+        applyFullConfigRaw(synced as unknown as SarakThemePayload);
     };
 
     if (variant === 'mini') {

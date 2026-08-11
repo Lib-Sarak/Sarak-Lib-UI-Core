@@ -2,7 +2,6 @@ import { useMemo } from 'react';
 import { getAllDesignTokens } from '../master-map';
 import { BREAKPOINT_TABLET, BREAKPOINT_DESKTOP } from '../breakpoints';
 import { computeColorVariants, parseToRgba, rgbToHsl } from '../../../core/Provider/utils/color-engine';
-import { syncThemeWithMode } from '../presets/themes/color-engine';
 import type { SarakTokenValue } from '../types';
 
 /**
@@ -35,12 +34,14 @@ export const useDesignVariables = (
     return useMemo(() => {
         if (!rawDesign) return { variables: {}, attributes: {}, responsiveCSS: '' };
 
-        // 0. INTERCEPTAÇÃO DE MODO (LIGHT/DARK) - Sincronização Reativa em Tempo Real
-        // Garante que, independente do que estiver no banco de dados ou no estado bruto, 
-        // as cores sejam matematicamente forçadas a obedecer o targetMode (Claro/Escuro) 
-        // antes de serem injetadas no DOM global.
+        // 0. MODO (LIGHT/DARK) — Decisão D (plan-24-1 §2.8): no modo NATIVO, emitido
+        // = escrito. Este hook NÃO chama mais `syncThemeWithMode` — ela só roda no
+        // ÚNICO lugar que expressa de verdade a intenção "quero este tema no OUTRO
+        // modo": `ShellThemeToggle`. Rodá-la aqui, sem condição, reescrevia o valor
+        // do autor a cada render (medido: 1299/1316 valores alterados, 178/648
+        // veredictos de contraste divergentes entre o escrito e o emitido).
         const targetMode = (rawDesign.mode as 'light' | 'dark') || 'dark';
-        const design = syncThemeWithMode(rawDesign as Record<string, SarakTokenValue>, targetMode);
+        const design = rawDesign as Record<string, SarakTokenValue>;
 
         const variables: Record<string, string> = {};
         const attributes: Record<string, string> = {};

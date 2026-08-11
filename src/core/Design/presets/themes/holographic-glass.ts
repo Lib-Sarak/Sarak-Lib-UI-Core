@@ -5,6 +5,7 @@ export const holographicGlassTheme: ThemePreset = {
     name: 'Holographic Glass',
     description: 'Sci-fi holographic interface. Extreme glassmorphism, thin translucent borders, massive blurs, and neon magenta/blue accents over a deep abyss.',
     design: {
+        tooltipTextColor: '#5b7ac5',
         mode: 'dark',
         navigationStyle: 'topbar',
         bodySize: '14px',

@@ -5,6 +5,7 @@ export const nebulaSpaceTheme: ThemePreset = {
     name: 'Nebula Space',
     description: 'Imersivo & Cyberpunk: Imagem de fundo, transições de Zoom e Ícones Duotone com alto desfoque de vidro e componentes centralizados.',
     design: {
+        tooltipTextColor: '#6280c7',
         mode: 'dark',
         navigationStyle: 'topbar',
         bodySize: '12px',
@@ -102,7 +103,7 @@ export const nebulaSpaceTheme: ThemePreset = {
         cardTitleLetterSpacing: 0,
         cardTitleIconGlow: 'rgba(255, 0, 127, 0.2)',
         cardActionBtnPrimaryBg: '#ff007f',
-        cardActionBtnHoverBg: 'rgba(255, 0, 127, 0.8)',
+        cardActionBtnHoverBg: 'rgba(255, 0, 127, 0.95)',
         cardActionBtnText: '#090d16',
         cardActionBtnBorderRadius: 12,
         cardActionBtnPadding: 12,

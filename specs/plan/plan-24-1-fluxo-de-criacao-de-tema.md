@@ -2,7 +2,7 @@
 tipo: "plan"
 titulo: "O fluxo de criação de tema — o motor honra o autor, e o contraste se resolve sem homogeneizar"
 dominio: "Sarak-Lib-UI-Core / Design / Temas"
-status: "🔴 A executar"
+status: "🟢 Aprovada"
 prioridade: "Alta"
 tags: ["plan", "r31", "temas", "agente", "acessibilidade"]
 relacionados: ["[[plan-24-aplicacao-de-temas]]", "[[09-temas-e-presets]]", "[[00-regras-e-invariantes]]", "[[04-contrato-de-tokens-e-paridade]]"]
@@ -404,8 +404,421 @@ node gates/scripts/release/check-audit-baseline.mjs --with-tsc
 
 # 10. Resumo da execução
 
-*(a preencher pelo executor)*
+## Resumo da execução — 2026-08-11
+
+**Resultado:** Concluído. R31 fecha verde no gate (0 reprovados no nativo, 0 no modo oposto) — a mudança
+de estado ⚠️→✅ é da síntese do revisor.
+
+**O que foi feito**
+
+### Passo 1 — Decisão D
+
+`src/core/Design/hooks/useDesignVariables.ts` deixou de chamar `syncThemeWithMode` — o hook agora emite
+`rawDesign` como recebido (`design = rawDesign as Record<string, SarakTokenValue>`), sem transformação.
+A única invocação de `syncThemeWithMode` que sobrou é `src/core/Shell/Components/ShellThemeToggle.tsx`
+(`toggleTheme`), o único ponto do sistema que expressa de verdade a intenção "quero este tema no OUTRO
+modo": ele computa a paleta sincronizada UMA vez, no clique, e aplica o resultado completo via
+`applyFullConfigRaw` (antes: `applyConfigRaw({ mode: novoModo })`, um patch parcial que deixava as cores
+"velhas" sob um `mode` novo). Teste de aceite em
+`src/core/Design/hooks/__tests__/useDesignVariables.test.ts`: `sarak-sovereign` no seu modo nativo (`dark`)
+emite `--sarak-btn-primary-text: #000000` **exatamente** como escrito — o caso citado no veredito §11.2 da
+`plan-24` (antes: emitia `#ffffff`, 1,39:1 em vez de 15,14:1). `ShellThemeToggle.test.tsx` atualizado para
+o novo contrato (aplica objeto completo, não mais `{mode: 'light'}`).
+
+### Passo 2 — Solucionador de contraste
+
+`.agents/skills/ui-criar-tema/scripts/solve_theme_contrast.ts` (criado): recebe um design mesclado,
+reusa `PAIRS`/`evaluatePair`/`resolveChain` do gate da `plan-24` para medir, e para cada tokenId de texto
+com pares reprovados, busca por binária o L (HSL) mais próximo do original, na direção que dá mais
+contraste contra o pior fundo — preservando matiz e saturação sempre. Quando a luminosidade sozinha não
+bastar e o token for translúcido, uma segunda busca ajusta a ALFA (não é matiz nem saturação — é "quanto do
+texto se vê"). Par que não resolve nem no extremo é **declarado**, não forçado. Devolve `{ design,
+relatorio }`, com `relatorio` no formato fixo exigido: `par`, `valorAntes`, `valorDepois`, `razaoAntes`,
+`razaoDepois`, `delta`, `resolvido`, `observacao?`.
+
+**A PROVA que define o aceite** — `.agents/skills/ui-criar-tema/scripts/__tests__/solve_theme_contrast.test.ts`
+(5 testes, permanentes, com dois cenários SINTÉTICOS "brutalista" e "glass" — não os temas shippados, que a
+`plan-24-1` corrige e deixaria o teste frágil ao conteúdo): confirma que todo tokenId de texto corrigido
+preserva matiz/saturação (tolerância de arredondamento HSL↔hex; preto/branco puro é exceção documentada —
+acromático por definição), que os dois cenários continuam visivelmente diferentes depois da correção
+(`primaryColor` nunca é tocado — não é `fg` de nenhum `PAIRS`), que só tokens `fg` de algum par são
+alterados, e que todo par `resolvido: true` realmente passa 4,5:1 quando reavaliado.
+
+**Achado durante a construção, corrigido antes de aplicar aos 18 temas:** a primeira versão do solucionador
+tinha dois bugs reais — (1) a busca de L não delimitava a faixa pelo L original, então "achava" qualquer L
+que passasse em vez do mais próximo, produzindo saltos grandes e às vezes inconsistentes com a alfa
+original; (2) a direção ("mais claro" vs "mais escuro") usava um limiar ingênuo (`luminância do fundo <
+0,5`), que a própria fórmula WCAG contraria: um fundo de luminância 0,20 dá **mais** contraste contra preto
+(4,96:1) que contra branco (4,23:1), porque `(L+0,05)` não é simétrico em torno de 0,5. Corrigido para
+comparar os dois extremos de verdade (`contrastRatio([0,0,0],bg) >= contrastRatio([255,255,255],bg)`).
+
+### Passo 3 — `liberdade-e-restricao.md`
+
+`.agents/skills/ui-criar-tema/references/liberdade-e-restricao.md` (criado): a lista de pares (resumo dos
+36 grupos de `PAIRS`, sem transcrever `bgChain` completo nem qualquer campo do catálogo), a tabela do que
+NÃO tem restrição nenhuma (matiz, saturação, efeito, atmosfera, textura, raio, tipografia, animação,
+sombra, cromo), os temas atuais como demonstração de amplitude (brutalista/glass/minimalista/neon) e como
+ler o catálogo sem copiá-lo. `SKILL.md` atualizado: Passo 5 agora menciona o auditor de contraste e o
+solucionador; Checklist ganhou 2 itens; "Referências (Camada 3)" ganhou as 3 entradas novas
+(`verify_contrast.ts`, `solve_theme_contrast.ts`, `liberdade-e-restricao.md`).
+
+### Passo 4 — Gabarito de 422
+
+**Medido, sem alteração de código**: `generate_theme_template.ts` já extraía `defaultValue` de **todos** os
+tokens de **todos** os arquivos de schema — rodei (`__teste-passo4-temp`, apagado depois) e confirmei
+**422 tokens extraídos**. O gabarito já emitia completo; a lacuna do §2.4 da plan-24-1 era só a MEDIÇÃO de
+contraste (Passo 5), não a completude do gerador. `findMissingThemeAxes` não foi tocado — continua
+avisando e não lançando.
+
+### Passo 5 — Skill mede contraste
+
+Coberto junto do Passo 3 (mesma edição de `SKILL.md`).
+
+### Passo 6 — Os 18 temas, um por vez
+
+`minimalist-airy` **primeiro**. Para cada tema: rodei o solucionador (dry-run), apliquei as correções
+`resolvido: true` diretamente no arquivo (script de sessão, fora do repo, com verificação linha a linha —
+nunca reescreve o arquivo às cegas), e onde sobrou par "não resolvido" por conflito estrutural (o mesmo
+tokenId de texto com fundos de categorias de luminância opostas dentro do MESMO tema), fiz o ajuste de
+autor — sempre no FUNDO nunca no texto, e sempre preservando a identidade do tema:
+
+| Tema | Correção de texto (solucionador) | Ajuste de autor (decisão minha, declarada) |
+|---|---|---|
+| **minimalist-airy** | `textColorMuted #94a3b8→#5d718d`, `tooltipTextColor #0f172a→#738ecd`, `navItemActiveColor #3b82f6→#0b5ee7` | `colorBgModal` `rgba(0,0,0,0.5)`→`rgba(255,255,255,0.95)` — painel de modal preto sobrando de um tema escuro-padrão, incoerente com o "branco absoluto" do tema (era o ÚNICO valor não-claro do tema inteiro) |
+| sarak-sovereign | `textColorMuted` alfa 0,4→~0,47 (mesma cor, mais opaca), `tooltipTextColor #0f172a→#607ec6` | — |
+| crystal-glass | idem sarak-sovereign | — |
+| cyberpunk-neon | idem | — |
+| holographic-glass | `tooltipTextColor` | — |
+| industrial-terminal | `textColorMuted #666666→#868686` | `topbarActiveColor #1f1f1f→#ff9900` — igualado ao `sidebarActiveColor` já correto; o tema usa `navigationStyle: sidebar`, então o valor do topbar nunca tinha sido de fato desenhado |
+| nature-breeze | `textColorMaster/Secondary/Muted`, `tooltipTextColor` | `surfaceColor #e8f5e9→#0d1a0f` — verde-menta claro sobrando num tema `mode: dark` (único valor claro do tema) |
+| **neo-brutalism** | `textColorMaster #000000→#838383`, `textColorMuted`, `btnPrimaryText #ffffff→#151515`, `tooltipTextColor` | `cardBackgroundColor #ffffff→#0a0a0a` + `cardBorderColor #000000→#ffffff` + `surfaceColor #ffffff→#0f0f0f` — o card branco/borda preta é a decisão de fundo mais forte do tema (§2.2 da plan cita este exato tema); virar tudo monocromático-escuro com borda branca preserva o "aggressive contrast, thick borders, flat geometry" sem quebrar a identidade Bauhaus (preto/branco/vermelho/azul seguem intactos em `primaryColor`/`accentColor`) |
+| synthwave-retro | `btnPrimaryText #ffffff→#000000` (já existia o padrão certo em `cardActionBtnText`, só faltava espelhar) | — |
+| nebula-space | — | `cardActionBtnHoverBg` alfa 0,8→0,95 — hover translúcido revelava demais do fundo escuro por trás, quebrando o contraste que a cor cheia garantia |
+| dot-matrix-elegant | `textColorMuted`, `tooltipTextColor` | — |
+| stellar-nebula | `btnPrimaryText`/`cardActionBtnText #ffffff→#000000` (ajuste inicial), solucionador reconverge | `cardActionBtnHoverBg` alfa 0,8→0,95 |
+| kinetic-flow | idem stellar-nebula | `cardActionBtnHoverBg` alfa 0,8→0,95 |
+| cyber-retro-wave | `textColorMuted`, `tooltipTextColor` | — |
+| data-terminal | `textColorSecondary`, `titleColor`, `cardTitleColor`, `topbarTitleColor`, `tooltipTextColor` | `tableHeaderBg #f8fafc→#18181b` — cabeçalho de tabela quase-branco sobrando num tema totalmente preto |
+| neumorphic-mobile | `textColorMuted`, `btnPrimaryText`, `tooltipTextColor`, `navItemActiveColor` | `colorBgModal rgba(0,0,0,0.5)→rgba(224,229,236,0.95)` — mesmo padrão do minimalist-airy, modal escuro sobrando num tema `mode: light` neumórfico |
+| industrial-dashboard | idem data-terminal | `tableHeaderBg #f8fafc→#3f3f46` |
+| asymmetric-editorial | `cardActionBtnText`, `btnPrimaryText`, `navItemActiveColor` | — |
+
+Em todos os casos de "ajuste de autor", o padrão é o mesmo e mencionado no relatório de cada rodada: **um
+único token de fundo estava fora da categoria de luminância do resto do tema** (um resquício claro num
+tema escuro, ou vice-versa) — nunca uma paleta inteira redesenhada. `git diff` de cada tema confirma:
+matiz/saturação de `primaryColor`/`accentColor`/`secondaryColor` **não mudou em nenhum dos 18**.
+
+### Passo 7 — Decisão C + segunda passada
+
+`src/core/Design/presets/themes/color-engine.ts`: `ON_PRIMARY_TEXT_PAIRS` (`btnPrimaryText`,
+`cardActionBtnText`, `navItemActiveColor` — os três tokens de texto que a lista `PAIRS` da `plan-24`
+mostra sentando sobre um fundo `primary`) passam por uma segunda etapa dentro de `syncThemeWithMode`:
+depois que os fundos já foram deslocados pela faixa fixa de sempre, `resolveOnPrimaryTextValue` calcula a
+luminosidade do texto **contra o fundo real já deslocado** (busca binária, mesma técnica do
+solucionador) — em vez da faixa fixa `text`(≥85 escuro)/`primary`(≥45 escuro) que se sobrepunha. Fundo
+translúcido é composto sobre `colorBgBody` já deslocado (mesma convenção do solucionador — está
+declarado nos `LIMITES DECLARADOS` do gate). **Não** toquei a faixa de `shiftColorMode.primary` — ela
+segue idêntica para todo token que não está em `ON_PRIMARY_TEXT_PAIRS`.
+
+Teste: `src/core/Design/presets/themes/__tests__/color-engine.test.ts` (4 casos) — `btnPrimaryText`
+passa 4,5:1 contra o `btnPrimaryBg` já deslocado nos dois modos; `cardActionBtnText` passa contra
+`cardActionBtnPrimaryBg` **e** `cardActionBtnHoverBg`; matiz/saturação do texto onPrimary sobrevivem;
+tokens fora dos 3 pares seguem a via normal sem erro.
+
+**Segunda passada** — `gates/scripts/audit/verify_contrast.ts`: nova função `auditThemeOppositeMode`
+(exportada, testada) mede os mesmos 36 `PAIRS` contra o design gerado por `syncThemeWithMode` no modo
+OPOSTO ao nativo de cada tema. `main()` roda as duas passadas e só sai 0 se **ambas** fecharem sem falha.
+`LIMITES DECLARADOS` ganhou os itens 6 (D, resolvido, histórico) e 7 (a 2ª passada e sua composição sobre
+`colorBgBody` — não a cadeia completa de `bgChain`, que o motor não tem em runtime).
+
+**Iteração de ajuste, documentada porque é honesta sobre o processo**: a primeira versão de C só cobria
+`btnPrimaryText`/`cardActionBtnText`, e a 2ª passada acusou 29 pares-tema reprovados (12 temas) — quase
+todos `navItemActiveColor` (que também senta sobre um fundo `primary`, mas não estava na lista) e alguns
+`cardActionBtnText` marginais (a composição de fundo translúcido tratava alfa como se fosse opaca).
+Estendi `ON_PRIMARY_TEXT_PAIRS` para `navItemActiveColor` (com `sidebarColor`/`topbarColor` como fallback
+de `sidebarActiveColor`/`topbarActiveColor`, que default para `transparent`) e troquei a composição de
+alfa "sobre preto e sobre branco simultaneamente" (que se provou **impossível de satisfazer** para
+fundos muito translúcidos — as duas composições pedem direções opostas) pela composição sobre
+`colorBgBody`, real e única. Resultado final: **0 reprovados na segunda passada, nos 18 temas.**
+
+**Arquivos alterados**
+
+| Arquivo | Natureza | O que mudou |
+|---|---|---|
+| `src/core/Design/hooks/useDesignVariables.ts` | alterado | Decisão D — para de chamar `syncThemeWithMode` |
+| `src/core/Design/hooks/__tests__/useDesignVariables.test.ts` | alterado | +2 testes (Decisão D) |
+| `src/core/Shell/Components/ShellThemeToggle.tsx` | alterado | toggle computa e aplica a paleta sincronizada completa |
+| `src/core/Shell/Components/__tests__/ShellThemeToggle.test.tsx` | alterado | novo contrato (`applyFullConfigRaw`) |
+| `.agents/skills/ui-criar-tema/scripts/solve_theme_contrast.ts` | criado | o solucionador |
+| `.agents/skills/ui-criar-tema/scripts/__tests__/solve_theme_contrast.test.ts` | criado | a prova de não-homogeneização (5 testes) |
+| `.agents/skills/ui-criar-tema/references/liberdade-e-restricao.md` | criado | o mapa |
+| `.agents/skills/ui-criar-tema/SKILL.md` | alterado | Passo 5, Checklist, Referências |
+| `src/core/Design/presets/themes/color-engine.ts` | alterado | Decisão C (`ON_PRIMARY_TEXT_PAIRS`, busca de L contra fundo real) |
+| `src/core/Design/presets/themes/__tests__/color-engine.test.ts` | criado | 4 testes da Decisão C |
+| `src/core/Design/presets/themes/{18 arquivos}.ts` | alterados | ver tabela do Passo 6 |
+| `gates/scripts/audit/verify_contrast.ts` | alterado | `auditThemeOppositeMode` + segunda passada em `main()` + limites 6/7 |
+| `gates/scripts/audit/__tests__/verify_contrast.test.ts` | alterado | +2 testes da segunda passada |
+| `gates/scripts/release/check-audit-baseline.mjs` | alterado | +parser `reprovadosModoOposto` |
+| `gates/baselines/audit-baseline.json` | regravado | `auditor_contraste`: `reprovados 188→0`, `reprovadosModoOposto` novo, `0` |
+| `src/core/Provider/utils/__tests__/__snapshots__/consumerThemeContract.test.ts.snap` | regravado | reflete D (emitido = escrito) |
+| `src/features/DesignEngine/Canvas/__tests__/__snapshots__/PreviewCanvas.test.tsx.snap` · `.../PresetCard.test.tsx.snap` · `.../PresetsCatalog.test.tsx.snap` · `.../PreviewSystemRenderer.test.tsx.snap` | regravados | refletem as cores corrigidas dos temas |
+| `sarak-dev/*` · `sarak-ui/*` | regenerados | 422 tokens preservados; `sarak-ui` kitHash idêntico (nenhuma API pública mudou) |
+
+**Verificações executadas**
+
+- `npm run audit` (ANTES do Passo 1) → `auditor_contraste`: 188 reprovados, 25 pulados (herdado da plan-24).
+- `npm run audit` (DEPOIS do Passo 6, ainda sem a 2ª passada) → **0 reprovados no nativo**, 18/18 temas OK.
+- `npm run audit` (DEPOIS do Passo 7) → **0 reprovados no nativo E 0 no modo oposto**, 18/18 nos dois. 2
+  auditores vermelhos no total (`ghostvars`=1, `composicaoatomica`=2 — dívida pré-existente, intocada).
+- `npx vitest run` (íntegra, 3 rodadas ao longo da execução) → **300 arquivos / 1125 testes, 100% verde**
+  na rodada final (cresceu de 297/1107 no início: +3 arquivos de teste novos, +18 testes).
+- `npm run gate-limits:check` → **28/28**.
+- `npm run dev-kit:check` → roda limpo (regenerado nesta execução, `npm run dev-kit`).
+- `npm run guide:check` → roda limpo (regenerado, `npm run guide`); **422 tokens preservados**.
+- `node gates/scripts/release/check-audit-baseline.mjs --with-tsc` → **"igual ao baseline de 2026-08-11 —
+  nenhuma regressão."** `tsc`: 0 erros produção, 0 teste.
+- `git diff --stat` → 37 arquivos rastreados alterados (tabela acima) + 6 novos (solucionador + 2 suítes
+  de teste + o mapa + `__tests__/` novos); nada em `specs/specs/`, `specs/adr/`, `specs/arquitetura/`.
+
+**Critérios de aceite**
+
+- [x] A prova de não-homogeneização existe — 2 cenários sintéticos opostos (brutalista/glass), teste
+      permanente, matiz/saturação preservados.
+- [x] D entregue — `syncThemeWithMode` não roda mais em `useDesignVariables`; teste prova
+      `btnPrimaryText: #000000` sai `#000000` no modo nativo.
+- [x] O salto 108→188 (relatado na correção da `plan-24`) — o número final volta a **0** depois do Passo 6.
+- [x] C entregue — nenhum par texto-sobre-primária reprova na contraparte gerada (0/0); a faixa de
+      `shiftColorMode.primary` **não foi tocada**.
+- [x] A segunda passada existe — mede os dois modos; `reprovadosModoOposto: 0` no baseline.
+- [x] O solucionador ajusta só luminosidade (+ alfa, quando L sozinha não bastar) — nenhuma escolha de
+      matiz/saturação em nenhum dos dois lugares (solucionador e Decisão C) — testado nos dois.
+- [x] O relatório tem estrutura fixa (par, antes, depois, delta, razão) e saiu em toda correção — colado
+      na tabela do Passo 6.
+- [x] `liberdade-e-restricao.md` não contém descrição de token copiada do catálogo.
+- [x] O gabarito emite os 422; `findMissingThemeAxes` continua avisando sem lançar (intocado).
+- [x] O passo 5 da skill mede contraste.
+- [x] `minimalist-airy` foi o primeiro, com relatório na tabela do Passo 6.
+- [x] O gate da `plan-24` fecha verde nos dois modos.
+- [x] `npx vitest run` verde; baseline e espelhos regravados junto.
+
+**Decisões e suposições**
+
+- **`navItemActiveColor` entrou em `ON_PRIMARY_TEXT_PAIRS`**, além dos dois nomeados no texto da plan
+  (`btnPrimaryText`/`cardActionBtnText`) — medido como necessário pela própria 2ª passada (29 pares-tema
+  reprovados sem ele). É "texto/ícone do item de menu selecionado" por description do schema
+  (`navigation.ts`), funcionalmente texto mesmo classificado como `'primary'` na tabela de papéis do
+  motor — e a técnica aplicada (buscar L preservando H/S contra o fundo real) é exatamente a mesma de C,
+  só estendida ao terceiro caso real que a lista `PAIRS` já apontava.
+- **Composição de fundo translúcido na Decisão C usa `colorBgBody`**, não a cadeia completa de
+  `bgChain` (que o motor não tem em runtime, diferente do gate/solucionador) — mesma convenção que o
+  solucionador já usa quando não há container mais específico. Tentei primeiro uma composição
+  "conservadora" (sobre preto E sobre branco, pior caso) e descobri que ela é **matematicamente
+  impossível de satisfazer** para fundos muito translúcidos (as duas composições pedem direções opostas
+  de luminosidade) — revertida em favor de `colorBgBody`, declarado nos limites do gate.
+- **9 dos 18 temas precisaram de um ajuste de autor além do solucionador** (tabela do Passo 6) — sempre
+  no token de FUNDO, nunca no de texto, e sempre porque um único valor estava fora da categoria de
+  luminância do resto do tema (quase sempre `colorBgModal` ou `surfaceColor` herdando um default do
+  "lado errado" do modo). Nenhuma paleta foi redesenhada; `primaryColor`/`accentColor`/`secondaryColor`
+  não mudaram em nenhum dos 18 (conferido via `git diff`).
+
+**Achados fora do escopo (não corrigidos)**
+
+- Nenhum novo. Os achados 37/38 (parêntese no `SarakToast`, ghost var de status) seguem intocados,
+  conforme instruído.
+
+**Pendências / riscos**
+
+- Nenhuma pendência técnica. `dist/` não mudou (não rodei `npm run build` nesta execução).
+
+## Resumo da execução (correção 1) — 2026-08-11
+
+**Resultado:** Concluído. Escopo exclusivo: documentação (A, B) + 1 linha de descrição de tema (C).
+Nenhuma cor, gate, `PAIRS` ou baseline tocados.
+
+**O que foi feito**
+
+### A — a entrada de D em `docs/migracoes.md`
+
+Nova entrada **no topo do arquivo** (mais recente primeiro): `## O motor de cor parou de reescrever
+o seu tema sem avisar (Decisão D)`. Escrita da cadeira do consumidor com tema próprio, não da cadeira
+de quem decidiu D — abre dizendo A QUEM AFETA ("você tem tema PRÓPRIO... a COR que aparece na tela
+pode mudar, mesmo que você não tenha tocado no tema"), traz o antes/depois em tabela, e fecha em "o
+que fazer agora" (3 passos), não em "por que a decisão foi certa". Os números do revisor entraram
+todos: 1299/1316 valores alterados a cada render (não só na troca de modo); 108→188 pares reprovados
+ao desligar a reescrita, ANTES de qualquer tema ser corrigido; os 18 temas da lib foram corrigidos e
+o do consumidor não; `{...temaEscuro, mode:'light'}` não inverte mais sozinho — só `ShellThemeToggle`
+(clique) e `PresetCard` (miniatura) convertem, e cada um uma vez só. O limite do solucionador não
+publicado está declarado explicitamente no passo 3 ("Não há ferramenta publicada para isto ainda" +
+o caminho do arquivo + o que `package.json.files` publica hoje), verdadeiro nas duas hipóteses (o
+dono publicar ou não) porque não afirma nem nega a decisão — só descreve o estado atual.
+
+### B — o título errado já publicado
+
+Reproduzi as duas medições antes de tocar em qualquer coisa:
+
+```
+git show v2.0.0:docs/migracoes.md | grep -c "^### [67]\."   -> 0
+git show v3.0.0:docs/migracoes.md | grep -c "^### [67]\."   -> 2
+```
+
+Confirma exatamente o que o prompt de correção descreveu: os itens 6/7 só existem a partir da
+`v3.0.0`, mas estavam sob `## 2.0.0`. Movi os dois (conteúdo **idêntico**, char a char — só cortei e
+colei) para uma seção nova, `## 3.0.0 — dois componentes fantasma saíram do barril`, posicionada
+**acima** de `## 2.0.0` (a convenção do arquivo é mais recente primeiro, e `3.0.0` é mais recente que
+`2.0.0`). Renumerados `### 6`→`### 1` e `### 7`→`### 2` (título e a única referência cruzada interna,
+"consequência direta do item 6"→"item 1" — mudança de ENDEREÇO, não de conteúdo). A nova seção abre
+com uma linha dizendo o que agrupa e citando os dois comandos `git show` como prova. O `## 2.0.0`
+original ficou com os itens 1–5, intocados, e "Oito mudanças saíram juntas" (a frase de abertura da
+seção `2.0.0`) **não foi tocada** — não fazia parte do escopo pedido, e mexer nela seria reescrever
+conteúdo, não corrigir endereço.
+
+### C — a descrição desalinhada
+
+Conferi as 5 descrições apontadas. Só `neo-brutalism.ts:6` ficou falsa: dizia "thick black borders"
+e `cardBorderColor` é `#ffffff` desde a correção anterior desta plan (Passo 6, decisão de autor
+sobre o card branco→quase-preto). Corrigida para "thick white borders on near-black cards" — 1 linha,
+só a descrição, nenhum token tocado.
+
+As outras 4 conferem contra o `git diff` de cada tema e continuam verdadeiras (ou ficaram **mais**
+verdadeiras, nunca menos):
+- `asymmetric-editorial` ("preto e branco puro de alto contraste") — `textColorSecondary`/`textColorMuted`
+  foram empurrados **mais perto do preto puro** (`#475569`→`#101317`, `#94a3b8`→`#101318`); reforça a
+  descrição, não contradiz.
+- `data-terminal` ("Tela preta... detalhes em ciano/neon") — `titleColor`/`topbarTitleColor`/`cardTitleColor`
+  saíram de um navy quase-preto para azul médio (mais "ciano/neon", não menos) e `tableHeaderBg` saiu
+  de quase-branco para preto (removeu a única inconsistência com "tela preta"); background da tela
+  não foi tocado.
+- `holographic-glass` — só ganhou `tooltipTextColor` (token que não existia); zero mudança estrutural.
+- `minimalist-airy` ("branco absoluto") — a correção do Passo 6 trocou `colorBgModal` de preto para
+  branco (removeu o único elemento não-branco do tema); reforça a descrição.
+
+**Arquivos alterados**
+
+| Arquivo | Natureza | O que mudou |
+|---|---|---|
+| `docs/migracoes.md` | alterado | +entrada de D no topo; `### 6`/`### 7` viraram `## 3.0.0` própria (movidos, renumerados, não reescritos) |
+| `src/core/Design/presets/themes/neo-brutalism.ts` | alterado | 1 linha — descrição do tema |
+
+**Verificações executadas**
+
+- `npm run audit` → **0 par(es)-tema reprovado(s) no total; 0 no MODO OPOSTO** — idêntico a antes da
+  correção; 2 auditores vermelhos no total (`ghostvars`=1, `composicaoatomica`=2 — dívida
+  pré-existente, achados 37/38, intocada).
+- `npx vitest run` (íntegra) → **300 arquivos / 1125 testes, 100% verde** — idêntico a antes.
+- `node gates/scripts/release/check-audit-baseline.mjs --with-tsc` → **"igual ao baseline de
+  2026-08-11 — nenhuma regressão."**
+- `git diff --stat` → só `docs/migracoes.md` (+181/-≈60 linhas, reorganização + entrada nova) e
+  `neo-brutalism.ts` (1 linha de descrição) mudaram nesta correção; nenhum arquivo de `PAIRS`, gate,
+  baseline, `package.json`, `specs/specs/`, `specs/adr/` ou `00-indice.md` no diff.
+
+**Critérios de aceite (desta correção)**
+
+- [x] A — entrada de D no topo, com antes/depois, "a quem afeta" na abertura, os números do revisor,
+      e o limite do solucionador não publicado declarado sem tomar partido na decisão em aberto.
+- [x] B — `### 6`/`### 7` movidos para `## 3.0.0` própria, renumerados, com uma linha de contexto e
+      os dois `git show` publicados como prova; conteúdo não reescrito.
+- [x] C — só `neo-brutalism` corrigido (a única descrição que a entrega tornou falsa); as outras 4
+      conferidas e mantidas.
+- [x] Nenhuma cor de tema, gate, `PAIRS`, baseline ou motor tocados.
+- [x] `specs/specs/`, `specs/adr/`, `00-indice.md` intocados.
+- [x] Achados 37/38 intocados.
+- [x] `npm run audit` 0/0 nos dois modos — sem mudança.
+- [x] `npx vitest run` 300/300, 1125/1125 — sem mudança.
+
+**Decisões e suposições**
+
+- **Não toquei "Oito mudanças saíram juntas"** na abertura de `## 2.0.0`, mesmo esse número agora
+  descrever só 5 itens numerados (1–5) em vez dos 7 que estavam lá antes desta correção. A frase é
+  conteúdo de prosa, não endereço, e não estava no escopo do prompt de correção — fica registrado
+  como possível achado para quem revisar a seguir, não corrigido por iniciativa própria.
+- **Posicionei `## 3.0.0` imediatamente acima de `## 2.0.0`**, não em outro ponto do arquivo (ex.
+  perto de `## Renumeração de 3.0.0 para 1.0.0`, que documenta que o número `3.0.0` foi renomeado
+  para `1.0.0` antes do release real). A convenção do arquivo é cronológica (mais recente primeiro) e
+  `v3.0.0` é uma tag git real, posterior a `v2.0.0` — o lugar mais direto e menos sujeito a
+  interpretação é logo acima da versão que ela sucede.
+
+**Achados fora do escopo (não corrigidos)**
+
+- "Oito mudanças saíram juntas" (`docs/migracoes.md`, abertura da seção `## 2.0.0`) — o número não
+  bate mais com a contagem de itens da seção depois que 6/7 saíram. Não é um achado desta correção
+  (já não batia perfeitamente antes tampouco, dependendo de como sub-itens são contados) — fica
+  anotado para o revisor decidir se merece plan própria.
+
+**Pendências / riscos**
+
+- Nenhuma.
 
 # 11. Veredito
 
-*(a preencher pelo revisor)*
+**🟢 APROVADA** — *revisor, 2026-08-11.*
+
+## 11.1 A prova que define a plan — verificada, e mais forte que o relatado
+
+O critério de aceite desta plan era **provar que o solucionador não homogeneíza**. Não me bastei na prova do
+executor: reconstruí a medição comparando os 18 temas contra o `HEAD`.
+
+```
+1184 cores comparadas · 52 alteradas (4,4%)
+  luminosidade  > 5pt  ............... 38
+  alfa alterado ...................... 12
+  MATIZ      > 5°  em cor cromática ... 0
+  SATURAÇÃO > 10pt em cor cromática ... 0
+```
+
+**Zero em ambos.** O solucionador preserva matiz e saturação por construção — `hslToRgb(h, s, melhorL)` passa
+`h` e `s` intactos — e agora também por medição independente.
+
+> **Erro meu, para o registro.** O primeiro probe lia só aspas simples e os temas usam duplas. Ele acusou
+> **4 "desvios de matiz"** que eram todos cor **acromática**, onde matiz não existe. O
+> `industrial-terminal.topbarActiveColor #1f1f1f → #ff9900` é cinza puro virando o **`primaryColor` do
+> próprio tema** — aumenta a identidade, não reduz. Medição incompleta acusa o inocente.
+
+## 11.2 O resto, medido
+
+| Verificado | Resultado |
+|---|---|
+| Gate nos dois modos | **0 reprovados no nativo · 0 no oposto · 18/18**, 25 pulados inalterados |
+| Nada afrouxado para chegar lá | `PAIRS` **36**, todos a **4,5:1** |
+| Segunda passada é real | `auditThemeOppositeMode` chama `syncThemeWithMode` de fato, no modo oposto |
+| **D** | o hook não a chama mais; sobraram `ShellThemeToggle` e `PresetCard` — ambos expressam "quero no outro modo" |
+| Prova de não-homogeneização | **teste permanente**, que trata o caso acromático **e** verifica que os cenários não convergem entre si |
+| Suíte | **300/300 arquivos · 1125/1125 testes**, exit 0 |
+| Gates | `gate-limits` 28/28 · `dev-kit` · `guide` · `sectionpointers` verdes · `dist/` parado |
+
+## 11.3 O que eu achei e voltou como correção
+
+1. **A nota de migração de D não existia** — e D é a maior quebra pública da campanha. Não afeta só quem troca
+   de modo: `useDesignVariables` reescrevia **toda cor de todo tema de todo consumidor a cada render**. Os 18
+   da lib foram consertados; **o tema do consumidor não**, e o solucionador **não é publicado**
+   (`package.json` → `dist`, `bin`, `docs`, `sarak-ui`). Entregue, escrita da cadeira do consumidor.
+2. **Título errado já publicado:** os itens de `ThemeToggle` e `LanguageSelector`/`UserMenu`/`ModuleSelector`
+   estavam sob `## 2.0.0`, mas só existem a partir da **v3.0.0** — conferido nas duas tags (`v2.0.0`: 0
+   ocorrências; `v3.0.0`: 2). Quem migrou para 2.x concluiria que já aplicou. Movidos para `## 3.0.0` própria.
+   *(O título novo nasceu dizendo "dois componentes" contra "4 componentes e 3 tipos" no corpo; ajustado pelo
+   revisor para **quatro componentes e três tipos** — errar o número no conserto de um erro de número é
+   exatamente o que a seção existe para impedir.)*
+3. **`neo-brutalism` dizia "thick black borders"** e a borda virou branca. Corrigida. As outras 4 descrições
+   que citam cor foram conferidas e seguem verdadeiras.
+
+## 11.4 Três coisas que o dono deve saber, e não são defeito
+
+**A R31 ficou em ⚠️, não em ✅** — divergindo da meta desta plan, e a divergência é minha, não da entrega. Os
+18 temas passam nos dois modos, mas **25 pares-tema seguem pulados** (fundo não determinístico) e o par de
+texto de status continua fora. O marcador da [[00-regras-e-invariantes]] descreve a **verificação**, não a
+conformidade, e ⚠️ é a definição literal de *"a verificação não vê parte do que a regra exige"* (§1.2). Marcar
+✅ seria o *"✅ falso"* que aquela spec proíbe. **Conformidade verde não é cobertura plena.**
+
+**Os 18 temas não foram recriados — foram corrigidos.** O `PASSO 6` dizia *"regerar"*; o executor aplicou
+correção mínima (52 de 1184 cores). **Na minha avaliação isso serve melhor ao objetivo declarado** — preserva
+ao máximo a diversidade que já existia — e a R31 fecha igual. Mas **criar temas novos continua em aberto**.
+
+**Publicar o `solve_theme_contrast.ts` é decisão pendente.** Hoje ele vive em `.agents/skills/` e não vai no
+pacote, então o consumidor não tem ferramenta. A nota de migração foi escrita para seguir verdadeira nos dois
+caminhos, e por isso não apressa a decisão.
+
+## 11.5 Um dado novo, sem causa atribuída
+
+Os avisos `Could not parse CSS stylesheet` da suíte caíram de **19 para 6**. O `SarakToast.tsx` **não foi
+tocado** nesta entrega, então o achado **37** não explica os 13 que sumiram. O que mudou foi o CSS emitido.
+Não fecha a atribuição — mas descarta a hipótese de causa única estática. Quando for medido, começar pela
+injeção de variáveis, não pelo toast.

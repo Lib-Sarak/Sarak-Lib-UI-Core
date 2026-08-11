@@ -11,6 +11,7 @@ export const dotMatrixElegantTheme: ThemePreset = {
     name: 'Dot Matrix Elegant',
     description: 'Um tema sofisticado, escuro com fundo pontilhado e detalhes em dourado metálico.',
     design: {
+        tooltipTextColor: '#6481c8',
         matrixGap: 12,
         matrixRadius: 12,
         matrixItemBg: 'rgba(255, 255, 255, 0.02)',
@@ -266,7 +267,7 @@ export const dotMatrixElegantTheme: ThemePreset = {
         monoFont: '\'JetBrains Mono\', monospace',
         textColorMaster: '#d4af37',
         textColorSecondary: '#a67c00',
-        textColorMuted: '#595959',
+        textColorMuted: '#7e7e7e',
         h1Size: 52,
         h1Weight: '300',
         h1LineHeight: 1.2,

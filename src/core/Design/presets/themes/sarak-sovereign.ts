@@ -5,6 +5,7 @@ export const sarakSovereignTheme: ThemePreset = {
     name: 'Sarak Sovereign',
     description: 'O padrão original da Sarak: Layout Sidebar industrial, foco em tipografia Inter e raio de bordas moderado.',
     design: {
+        tooltipTextColor: '#6280c7',
         mode: 'dark',
         navigationStyle: 'sidebar',
         bodySize: '14px',
@@ -121,7 +122,7 @@ export const sarakSovereignTheme: ThemePreset = {
         monoFont: "'JetBrains Mono', monospace",
         textColorMaster: '#ffffff',
         textColorSecondary: 'rgba(255, 255, 255, 0.7)',
-        textColorMuted: 'rgba(255, 255, 255, 0.4)',
+        textColorMuted: '#ffffff77',
         h1Size: 48,
         h1Weight: '900',
         h1LineHeight: 1.1,

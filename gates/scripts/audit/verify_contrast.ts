@@ -38,29 +38,32 @@
 //    gate acusaria o tema por um defeito do componente, não do tema. Fica
 //    fora, declarado com o número — não é "não determinado", é "o par mede
 //    algo que o autor do tema não controla".
-// 6. Este verificador mede o token ESCRITO em `theme.design` — não o token
-//    EMITIDO. `useDesignVariables.ts:43` chama `syncThemeWithMode(rawDesign,
-//    targetMode)` SEM CONDIÇÃO antes de gerar as CSS Variables (inclusive a
-//    sobrescrita fixa dos 4 pares de `colorBgModal`, que mora dentro da
-//    própria `syncThemeWithMode`, `color-engine.ts:159,170`); hoje o valor
-//    que a tela realmente mostra pode diferir do que este script lê. Medido
-//    pelo revisor, com cada um dos 18 temas no PRÓPRIO modo nativo: **1299 de
-//    1316** valores de cor são alterados por `syncThemeWithMode`, o gate
-//    acusa **188** falhas medindo o valor cru mas **108** medindo o valor
-//    emitido, e **178 dos 648** veredictos (par × tema) DIVERGEM entre as
-//    duas medições — em ambos os sentidos (falso-verde e falso-vermelho).
-//    Exemplo real (`sarak-sovereign`): `btnPrimaryText` escrito `#000000` é
-//    emitido `#ffffff` sobre `btnPrimaryBg` `#00f2ff` — 15,14:1 no valor
-//    escrito (passa) contra 1,39:1 no valor emitido (o que a pessoa vê).
-//    NÃO é uma falha deste gate a corrigir aqui: é a decisão D da
-//    `plan-24-1-fluxo-de-criacao-de-tema.md` (aceita pelo dono) —
-//    `syncThemeWithMode` passará a agir só quando o modo pedido DIFERIR do
-//    nativo do tema; no modo nativo, cru volta a ser igual a emitido, e este
-//    gate volta a medir exatamente o que a tela mostra, sem mudar uma linha
-//    de código aqui.
+// 6. [RESOLVIDO na plan-24-1, Decisão D] Até a `plan-24-1`, `useDesignVariables`
+//    chamava `syncThemeWithMode` SEM CONDIÇÃO, e o token escrito podia
+//    divergir do emitido (medido então: 178/648 veredictos divergentes). A
+//    Decisão D fez `syncThemeWithMode` só agir quando o modo pedido DIFERE
+//    do nativo do tema (`useDesignVariables.ts` — a chamada saiu de lá;
+//    `ShellThemeToggle.tsx` é o único lugar que ainda a invoca, de propósito,
+//    ao trocar de modo). No modo nativo, cru = emitido, e esta 1ª passada
+//    mede exatamente o que a tela mostra.
+// 7. [Decisão C + 2ª passada, plan-24-1] Este verificador roda DUAS vezes:
+//    `auditTheme` mede o modo NATIVO (o que a Decisão D garante que é
+//    fielmente o que a tela mostra sem troca de modo); `auditThemeOppositeMode`
+//    mede a CONTRAPARTE gerada por `syncThemeWithMode` no modo oposto —
+//    território que, antes da `plan-24-1`, não tinha medição nenhuma. A
+//    Decisão C (`color-engine.ts`, `ON_PRIMARY_TEXT_PAIRS`) faz o texto que
+//    senta sobre uma primária (`btnPrimaryText`, `cardActionBtnText`,
+//    `navItemActiveColor`) calcular a luminosidade contra o fundo JÁ
+//    deslocado, em vez da faixa fixa `text`/`primary` que se sobrepunha.
+//    Fundo translúcido nessa 2ª passada é composto sobre `colorBgBody` já
+//    deslocado (mesma convenção do solucionador) — não é a cadeia completa
+//    de `PAIRS[].bgChain` (o motor não tem acesso a ela em runtime), então
+//    um card aninhado em múltiplas camadas translúcidas pode divergir
+//    ligeiramente do que a 1ª passada mediria para o mesmo par no nativo.
 // -------------------------------------------------------------------------
 import { getDefaultDesignState } from '../../../src/core/Design/master-map.ts';
 import { GLOBAL_THEMES, type ThemePreset } from '../../../src/core/Design/presets/themes/index.ts';
+import { syncThemeWithMode } from '../../../src/core/Design/presets/themes/color-engine.ts';
 
 export interface Rgba {
     r: number;
@@ -241,15 +244,34 @@ export function auditTheme(theme: ThemePreset): ThemeReport {
     };
 }
 
+/**
+ * SEGUNDA PASSADA (plan-24-1 §3.1 item 8) — mede também o MODO OPOSTO ao
+ * nativo do tema. Antes da Decisão D, o modo nativo já emitia diferente do
+ * escrito (§11.2 do veredito da plan-24); depois de D, `syncThemeWithMode`
+ * só roda de fato na troca de modo — e essa troca virou território sem
+ * medição nenhuma. Reusa o MESMO `PAIRS`/`evaluatePair` da 1ª passada; não
+ * muda a medição nativa, só acrescenta esta.
+ */
+export function auditThemeOppositeMode(theme: ThemePreset): ThemeReport {
+    const design = { ...getDefaultDesignState(), ...(theme.design as Record<string, unknown>) };
+    const nativeMode = (design.mode as 'light' | 'dark') || 'dark';
+    const oppositeMode = nativeMode === 'dark' ? 'light' : 'dark';
+    const shifted = syncThemeWithMode(design as Record<string, unknown>, oppositeMode);
+    const resultados = PAIRS.map((pair) => evaluatePair(pair, shifted));
+    return {
+        id: theme.id,
+        resultados,
+        falhas: resultados.filter((r): r is Extract<PairResult, { pulado: false }> => !r.pulado && !r.pass),
+        pulados: resultados.filter((r): r is Extract<PairResult, { pulado: true }> => r.pulado),
+    };
+}
+
 function formatPair(pair: ContrastPair): string {
     return `${pair.fg} / ${pair.bgChain[0]}`;
 }
 
-function main() {
-    console.log('--- Verificador de Contraste WCAG AA nos temas de referência (R31) ---\n');
-    console.log(`${PAIRS.length} pares reais cobertos, limiar 4,5:1 em todos.\n`);
-
-    const reports = GLOBAL_THEMES.map(auditTheme);
+function printPass(reports: ThemeReport[], label: string): { temasComFalha: number; totalFalhas: number; totalPulados: number } {
+    console.log(`\n--- ${label} ---`);
     let temasComFalha = 0;
     let totalFalhas = 0;
     let totalPulados = 0;
@@ -270,12 +292,22 @@ function main() {
 
     console.log(`\n${temasComFalha} de ${reports.length} temas com pelo menos 1 par abaixo de AA.`);
     console.log(`${totalFalhas} par(es)-tema reprovado(s) no total; ${totalPulados} par(es)-tema pulado(s) (fundo não determinístico).`);
+    return { temasComFalha, totalFalhas, totalPulados };
+}
 
-    if (temasComFalha === 0) {
-        console.log('\n✅ Todos os temas de referência passam AA nos pares cobertos.');
+function main() {
+    console.log('--- Verificador de Contraste WCAG AA nos temas de referência (R31) ---\n');
+    console.log(`${PAIRS.length} pares reais cobertos, limiar 4,5:1 em todos.\n`);
+
+    const nativo = printPass(GLOBAL_THEMES.map(auditTheme), 'MODO NATIVO');
+    const oposto = printPass(GLOBAL_THEMES.map(auditThemeOppositeMode), 'MODO OPOSTO (segunda passada, plan-24-1)');
+    console.log(`\n${oposto.totalFalhas} par(es)-tema reprovado(s) no MODO OPOSTO.`);
+
+    if (nativo.temasComFalha === 0 && oposto.temasComFalha === 0) {
+        console.log('\n✅ Todos os temas de referência passam AA nos pares cobertos, nos dois modos.');
         process.exit(0);
     } else {
-        console.log(`\n❌ R31: ${temasComFalha} tema(s) abaixo de AA. Corrigir tema NÃO é escopo desta plan (plan-24) — ver plan-24-1.`);
+        console.log(`\n❌ R31: ${nativo.temasComFalha} tema(s) abaixo de AA no nativo, ${oposto.temasComFalha} no oposto. Corrigir tema NÃO é escopo desta plan (plan-24) — ver plan-24-1.`);
         process.exit(1);
     }
 }

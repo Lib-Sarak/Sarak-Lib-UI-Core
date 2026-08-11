@@ -11,6 +11,7 @@ export const cyberRetroWaveTheme: ThemePreset = {
     name: 'Cyber Retro-Wave 2077',
     description: 'Uma imersão visual no estilo neon cyberpunk e retrowave dos anos 80, com alto contraste, cortes geométricos e brilho intenso.',
     design: {
+        tooltipTextColor: '#6280c7',
         matrixGap: 12,
         matrixRadius: 12,
         matrixItemBg: 'rgba(255, 255, 255, 0.02)',
@@ -266,7 +267,7 @@ export const cyberRetroWaveTheme: ThemePreset = {
         monoFont: '\'VT323\', monospace',
         textColorMaster: '#ffffff',
         textColorSecondary: 'rgba(255, 255, 255, 0.7)',
-        textColorMuted: 'rgba(255, 255, 255, 0.4)',
+        textColorMuted: '#ffffff77',
         h1Size: 48,
         h1Weight: '900',
         h1LineHeight: 1.1,

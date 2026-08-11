@@ -35,6 +35,11 @@ export const THEME_PRESET_IDS = [
     'neumorphic-mobile',
     'industrial-dashboard',
     'asymmetric-editorial',
+    'terracota-solar',
+    'musgo-do-vale',
+    'ardosia-ao-entardecer',
+    'forja-ultravioleta',
+    'grafite-puro',
 ] as const;
 
 export type ThemePresetId = (typeof THEME_PRESET_IDS)[number];
@@ -64,6 +69,11 @@ import { dataTerminal } from './data-terminal';
 import { neumorphicMobile } from './neumorphic-mobile';
 import { industrialDashboard } from './industrial-dashboard';
 import { asymmetricEditorial } from './asymmetric-editorial';
+import { terracotaSolarTheme } from './terracota-solar';
+import { musgoDoValeTheme } from './musgo-do-vale';
+import { ardosiaAoEntardecerTheme } from './ardosia-ao-entardecer';
+import { forjaUltravioletaTheme } from './forja-ultravioleta';
+import { grafitePuroTheme } from './grafite-puro';
 
 export const GLOBAL_THEMES: ThemePreset[] = [
     sarakSovereignTheme,
@@ -83,5 +93,10 @@ export const GLOBAL_THEMES: ThemePreset[] = [
     dataTerminal,
     neumorphicMobile,
     industrialDashboard,
-    asymmetricEditorial
+    asymmetricEditorial,
+    terracotaSolarTheme,
+    musgoDoValeTheme,
+    ardosiaAoEntardecerTheme,
+    forjaUltravioletaTheme,
+    grafitePuroTheme
 ];

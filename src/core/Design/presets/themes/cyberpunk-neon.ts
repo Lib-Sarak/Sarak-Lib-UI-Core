@@ -5,6 +5,7 @@ export const cyberpunkneonTheme: ThemePreset = {
     name: 'Cyberpunk Neon',
     description: 'Brutal hacker aesthetic. Neon green, zeroed corners, monospaced fonts and grid textures.',
     design: {
+        tooltipTextColor: '#6280c7',
         mode: "dark",
         navigationStyle: "sidebar",
         bodySize: "14px",
@@ -120,7 +121,7 @@ export const cyberpunkneonTheme: ThemePreset = {
         monoFont: "'JetBrains Mono', monospace",
         textColorMaster: "#00ff41",
         textColorSecondary: "rgba(255, 255, 255, 0.7)",
-        textColorMuted: "rgba(255, 255, 255, 0.4)",
+        textColorMuted: '#ffffff77',
         h1Size: 48,
         h1Weight: "900",
         h1LineHeight: 1.1,

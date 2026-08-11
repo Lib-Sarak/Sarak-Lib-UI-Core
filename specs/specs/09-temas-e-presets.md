@@ -149,6 +149,27 @@ consumidor ao contrato de estabilidade de referência** que `activeThemeId` exig
 tema inicial usa `initialTheme`; quem quer um seletor de tema controlado pelo próprio estado usa
 `activeThemeId` **e** memoiza `customThemes`.
 
+### 4.3.1 O que é emitido é o que foi escrito — decisão **D** *(`plan-24-1`, 2026-08-11)*
+
+> 🔴 **Mudança de comportamento público.** Até a `plan-24-1`, `useDesignVariables` chamava
+> `syncThemeWithMode` **a cada render, sem condição**: toda cor de todo tema de todo consumidor era
+> reescrita antes de virar CSS Variable. Medido nos 18 temas embarcados, cada um no **próprio modo nativo**:
+> **1299 de 1316 valores alterados**, e **178 de 648** veredictos de contraste divergindo entre o escrito e o
+> emitido.
+
+**Agora, no modo nativo do tema, `emitido = escrito`.** A conversão claro↔escuro só roda onde alguém de fato
+pediu o outro modo: no clique do `ShellThemeToggle` e na miniatura do `PresetCard`. Um patch parcial do tipo
+`{...temaEscuro, mode: 'light'}` **não inverte mais as cores sozinho** — muda o rótulo, não a paleta.
+
+**Por que valeu a quebra.** A reescrita silenciosa contradizia o padrão da base — a **R6** descarta valor fora
+do contrato **com `console.warn`**, e todo gate mede e declara; só o motor de cor mudava o dado do autor sem
+contar a ninguém. Ela também **inviabilizava conserto**: corrigir um token de tema não chegava à tela.
+
+⚠️ **Custo assumido, e ele é do consumidor:** os 18 temas embarcados foram autorados **contra** o motor
+forçando — desligar a reescrita levou o gate de **108 para 188** reprovados antes de eles serem corrigidos.
+Os 18 foram corrigidos; **o tema do consumidor não**, e o solucionador não é publicado. A entrada em
+`docs/migracoes.md` é obrigatória de ler antes do upgrade.
+
 ## 4.4 Persistir — `localStorage`, e a sincronização entre abas
 
 Persistência é **local por construção** (`options.persistence`, `types.ts:153-166`):
@@ -198,10 +219,11 @@ Nem todos os presets são escritos à mão: parte é **derivada** de listas de o
 `TYPOGRAPHY_PRESETS` de `THEME_FONTS` (`presets/components/*.ts`, todos por `.map()`). Derivar em vez de
 duplicar é o que mantém preset e enum do schema em sincronia sem gate extra.
 
-# 6. Anti-drift — as três travas
+# 6. Anti-drift — as travas
 
 Um tema é dado solto. Sem trava, ele apodrece em silêncio: o schema muda, o tema fica com chave que não
-existe mais, e ninguém vê. São três instrumentos, cada um pegando uma classe diferente de rot.
+existe mais, e ninguém vê. Cada instrumento pega uma classe diferente de rot — as quatro primeiras cobrem a
+**estrutura** do tema; a §6.5 é a única que olha o **resultado visual**.
 
 ## 6.1 `auditor_presets` — chave órfã
 
@@ -238,6 +260,24 @@ predicado testado em isolamento.
 `scripts/generate_themes.ts:35` chama `getScaffold()` **em tempo de execução**. Ele substituiu um
 `masterTemplate` hardcoded que, nas palavras do próprio comentário (`:7-9`), *"já nasceu desatualizado"*.
 Um gerador que carrega a própria cópia do dicionário fabrica drift a cada execução.
+
+## 6.5 `auditor_contraste` — a única trava que olha o RESULTADO, não a estrutura *(`plan-24`)*
+
+As quatro acima perguntam *"o tema tem as chaves certas, com valores dentro do contrato?"*. Um tema pode
+passar nas quatro e ainda entregar **texto ilegível** — foi exatamente o que aconteceu: `auditor_presets`
+verde com **12 dos 18** reprovando AA, e ninguém sabia.
+
+`verify_contrast.ts` mede **36 pares texto/fundo reais**, a **4,5:1 em todos** (a WCAG só permite 3:1 para
+texto grande, ≥24px; onde o `textColorMuted` renderiza são 9–14px). Cor com alfa é **composta** sobre a
+cadeia de fundo, não pulada. **Duas passadas**: o modo nativo do tema e a contraparte gerada. Baseline: **0
+e 0**.
+
+> ⚠️ **`pulado` não é `aprovado`.** 25 pares-tema não são medidos — fundo em `hsl()`, `var()`, gradiente, ou
+> cadeia que não resolve opaca. O gate **declara** em vez de chutar uma cor. É por isso que a **R31** segue
+> **⚠️** mesmo com os 18 temas verdes: conformidade verde não é cobertura plena.
+
+**O que ele não cobre, por desenho:** o tema do **consumidor**. A R31 promete AA nos 18 shippados; dado de
+terceiro é do terceiro — e desde a decisão **D** (§4.3.1) esse dado chega à tela como foi escrito.
 
 # 7. Como criar um tema que passa em tudo, sem um único warn
 

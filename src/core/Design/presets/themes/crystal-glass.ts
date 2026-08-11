@@ -5,6 +5,7 @@ export const crystalGlassTheme: ThemePreset = {
     name: 'Crystal Glass',
     description: 'Design de ponta focado em profundidade óptica. Cantos extremos, navegação superior, fonte Outfit e fortes efeitos translúcidos.',
     design: {
+        tooltipTextColor: '#6280c7',
         mode: 'dark',
         navigationStyle: 'topbar',
         bodySize: '16px',
@@ -121,7 +122,7 @@ export const crystalGlassTheme: ThemePreset = {
         monoFont: "'JetBrains Mono', monospace",
         textColorMaster: '#ffffff',
         textColorSecondary: 'rgba(255, 255, 255, 0.7)',
-        textColorMuted: 'rgba(255, 255, 255, 0.4)',
+        textColorMuted: '#ffffff77',
         h1Size: 56,
         h1Weight: '900',
         h1LineHeight: 1.1,

@@ -42,6 +42,7 @@
         "composicao-atomica:check": "node gates/scripts/audit/auditor_composicaoatomica.mjs",
         "package:check": "node gates/scripts/contrato/check-package-contents.mjs",
         "audit": "node gates/scripts/audit/run_audit.mjs",
+        "themes:diversity": "npx tsx gates/scripts/audit/verify_diversity.ts",
         "audit:baseline": "node gates/scripts/release/check-audit-baseline.mjs",
         "hooks:install": "node scripts/install-hooks.mjs",
         "gates:full": "npm run dev-kit:check && npm run build && npm run build-info:check && npm run package:check && npm run coverage:check",

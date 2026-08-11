@@ -2,33 +2,33 @@
 
 exports[`Corpus congelado — payload de consumidor → CSS Variable (R6, achado 34) > fixture "'botao-e-card'": as CSS Variables dos tokens do payload continuam sendo emitidas 1`] = `
 {
-  "--card-bg": "#080c14b3",
-  "--sarak-btn-primary-bg": "#00c2ffff",
-  "--sarak-btn-primary-text": "#fdfeffff",
-  "--sarak-card-background-color": "#080c14b3",
-  "--sarak-card-bg": "#080c14b3",
-  "--theme-card": "#080c14b3",
-  "--theme-card-bg": "#080c14b3",
-  "--theme-surface": "#080c14b3",
+  "--card-bg": "rgba(10,15,25,0.7)",
+  "--sarak-btn-primary-bg": "#00c2ff",
+  "--sarak-btn-primary-text": "#001018",
+  "--sarak-card-background-color": "rgba(10,15,25,0.7)",
+  "--sarak-card-bg": "rgba(10,15,25,0.7)",
+  "--theme-card": "rgba(10,15,25,0.7)",
+  "--theme-card-bg": "rgba(10,15,25,0.7)",
+  "--theme-surface": "rgba(10,15,25,0.7)",
 }
 `;
 
 exports[`Corpus congelado — payload de consumidor → CSS Variable (R6, achado 34) > fixture "'cores-minimas'": as CSS Variables dos tokens do payload continuam sendo emitidas 1`] = `
 {
-  "--bg-body": "#0d0d0dff",
-  "--primary-color": "#ff6600ff",
-  "--sarak-bg-base": "#08080aff",
-  "--sarak-bg-body": "#0d0d0dff",
-  "--sarak-color-bg-body": "#0d0d0dff",
-  "--sarak-color-primary": "#ff6600ff",
-  "--sarak-primary-color": "#ff6600ff",
-  "--sarak-text-color-master": "#e7e7e7ff",
-  "--sarak-text-main": "#e7e7e7ff",
-  "--theme-bg": "#0d0d0dff",
-  "--theme-body": "#0d0d0dff",
-  "--theme-primary": "#ff6600ff",
-  "--theme-text-primary": "#e7e7e7ff",
-  "--theme-title": "#e7e7e7ff",
+  "--bg-body": "#101010",
+  "--primary-color": "#ff6600",
+  "--sarak-bg-base": "#0a0a0c",
+  "--sarak-bg-body": "#101010",
+  "--sarak-color-bg-body": "#101010",
+  "--sarak-color-primary": "#ff6600",
+  "--sarak-primary-color": "#ff6600",
+  "--sarak-text-color-master": "#eeeeee",
+  "--sarak-text-main": "#eeeeee",
+  "--theme-bg": "#101010",
+  "--theme-body": "#101010",
+  "--theme-primary": "#ff6600",
+  "--theme-text-primary": "#eeeeee",
+  "--theme-title": "#eeeeee",
 }
 `;
 

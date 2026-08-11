@@ -341,7 +341,7 @@ depois acrescente o fluxo — nunca deixe o próximo redescobrir.
 
 > A suíte (`npx vitest run`) **não é um script do `package.json`** e por isso não aparece na tabela acima — ela é invocada direto. Ver o guia, §6.
 
-### B.4 Baseline dos auditores (medido em 2026-08-10)
+### B.4 Baseline dos auditores (medido em 2026-08-11)
 
 > Cada número é o MÁXIMO tolerado. Maior que isto = regressão = commit bloqueado.
 
@@ -359,7 +359,8 @@ depois acrescente o fluxo — nunca deixe o próximo redescobrir.
 | `auditor_authcoupling.mjs` | violacoes | **0** |
 | `auditor_sectionpointers.mjs` | mortos | **0** |
 | `auditor_composicaoatomica.mjs` | violacoes | **2** |
-| `auditor_contraste.mjs` | reprovados | **188** |
+| `auditor_contraste.mjs` | reprovados | **0** |
+| `auditor_contraste.mjs` | reprovadosModoOposto | **0** |
 
 `npx tsc --noEmit`: **0 erros** tolerados — não é gate hoje.
 
