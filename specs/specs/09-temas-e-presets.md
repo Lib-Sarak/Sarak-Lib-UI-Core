@@ -266,6 +266,40 @@ Arquivos: `src/core/Design/presets/themes/` (18 temas + `index.ts` + `reference.
 e `src/core/Design/presets/components/` (5 arquivos: `atmosphere`, `buttons`, `cards`, `inputs`,
 `typography`).
 
+## 5.1 De 18 para 23 — e a diversidade passou a ser MEDIDA *(plan-25, 2026-08-11)*
+
+> ⚠️ **A tabela acima é de 2026-07-29 e envelheceu.** A fonte viva é `npm run themes:diversity`; esta seção
+> registra a **relação**, não recontagem que vai envelhecer de novo (a lição do achado **32**).
+
+Cinco temas novos entraram — `terracota-solar`, `musgo-do-vale`, `ardosia-ao-entardecer`,
+`forja-ultravioleta`, `grafite-puro`. **Nenhum é `SARAK_REFERENCE_THEMES`** *(decisão do dono)*: a referência
+segue `minimalist-airy` + `sarak-sovereign`, porque é dali que o consumidor clona (§4.1) e trocá-la mudaria a
+base de quem já integrou.
+
+**O que motivou os cinco.** Medido antes de criá-los, o catálogo de 18 morava num canto só:
+
+| Concentração | 18 | 23 |
+|---|---|---|
+| `mode: dark` | 15 | 18 |
+| Primária com saturação **100** (neon puro) | 10 | **10** — nenhum novo entrou no padrão |
+| Família ciano + magenta | 8 | **8** — nenhum novo |
+| Claro com primária saturada (S ≥ 60) | **0** | **1** |
+| Fundo de luminosidade média (25 ≤ L ≤ 75) | **0** | **1** |
+
+**A biblioteca inteira morava em "escuro + neon + ciano/magenta"** — e isso aconteceu **sem** nunca ter havido
+gerador de paleta. Homogeneização não precisa de fórmula; basta ninguém medir.
+
+**Agora se mede:** `gates/scripts/audit/verify_diversity.ts` (+ `npm run themes:diversity`) emite modo,
+`navigationStyle`, família de matiz, H/S da primária, luminosidade do fundo, raio, borda, blur e densidade de
+todo `GLOBAL_THEMES`, e avalia 9 critérios de distância. **Diversidade deixou de ser afirmação e virou saída
+de script.**
+
+> 🔴 **A armadilha que o próprio instrumento trouxe, e que vale como aviso permanente.** Ele nasceu com os
+> buckets estruturais calibrados em intervalos que o dado **nunca alcança** — raio `0..120` quando o real é
+> `0..32`, borda `0..20` quando o real é `0..4`. Resultado: dois dos quatro eixos **nunca saíam da banda 1**, e
+> o critério estrutural passava por sorte. **Faixa que o dado não alcança não mede — só concorda.** Os limites
+> agora são **derivados dos temas existentes**, e um teste exige que cinco temas idênticos **reprovem**.
+
 > **A lista de temas e a lista de presets NÃO são transcritas aqui de propósito** (Regra 4 da campanha).
 > Elas se leem no código (`GLOBAL_THEMES`) e no catálogo gerado. Um tema novo entra amanhã e este
 > documento continuaria dizendo "18" — que é exatamente como uma spec vira mentira.

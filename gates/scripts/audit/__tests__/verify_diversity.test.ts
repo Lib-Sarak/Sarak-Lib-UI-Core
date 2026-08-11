@@ -262,6 +262,42 @@ describe('evaluateDistanceCriteria', () => {
         expect(r?.ok).toBe(true);
     });
 
+    it('critério 9 reprova 5 novos estruturalmente idênticos entre si (raio, borda, blur E densidade iguais)', () => {
+        const cincoIdenticos = Array.from({ length: 5 }, (_, i) =>
+            linha({ id: `identico-${i}`, cardBorderRadius: 8, cardBorderWidth: 1, cardBackdropBlur: 8, layoutDensity: 'comfortable' }),
+        );
+        const r = evaluateDistanceCriteria(existentesSinteticos, cincoIdenticos).find((c) => c.criterio === 9);
+        expect(r?.ok).toBe(false);
+    });
+
+    // Recalibragem (achado do revisor, plan-25 §11.3/§11.5): os limites antigos e
+    // hardcoded do bucket3 (0-120/0-20/0-100 — o `constraints.min..max` do
+    // schema) eram tão mais largos que o uso real que nenhum tema jamais
+    // escapava da faixa "baixo". Um conjunto de 5 novos cujo `cardBorderRadius`
+    // cobre TODA a faixa real observada nos 18 temas existentes (0 a 32, de
+    // `nature-breeze`) é genuinamente diverso — mas com os limites antigos,
+    // colapsava inteiro em "baixo" (0 faixas distintas detectadas) e, com
+    // borda/blur/densidade mantidos constantes, o critério 9 REPROVARIA essa
+    // dispersão real por engano. Com os limites novos — derivados dos
+    // `existentes`, nunca dos `novos` — a mesma dispersão é corretamente
+    // detectada.
+    it('recalibragem: raio que cobre toda a faixa real (0..32) escapava de "baixo" com os limites antigos e agora é detectado', () => {
+        const existentesReais = themesOriginais().map(measureTheme);
+        const novos = [0, 8, 16, 24, 32].map((radius, i) =>
+            linha({ id: `novo-${i}`, cardBorderRadius: radius, cardBorderWidth: 1, cardBackdropBlur: 0, layoutDensity: 'comfortable' }),
+        );
+
+        // Reprodução do bug: com os limites antigos (0-120), essa dispersão
+        // real e completa colapsa inteira em "baixo" — 0 faixas distintas.
+        const faixasComLimiteAntigo = new Set(novos.map((n) => bucket3(n.cardBorderRadius, 0, 120)));
+        expect(faixasComLimiteAntigo.size).toBe(1);
+
+        // Com a recalibragem (limites derivados dos 18 existentes reais), o
+        // critério 9 passa a enxergar essa mesma dispersão corretamente.
+        const r = evaluateDistanceCriteria(existentesReais, novos).find((c) => c.criterio === 9);
+        expect(r?.ok).toBe(true);
+    });
+
     it('devolve os 9 critérios, sempre', () => {
         const r = evaluateDistanceCriteria(existentesSinteticos, [linha({ id: 'a' })]);
         expect(r.length).toBe(9);

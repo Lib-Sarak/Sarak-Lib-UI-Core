@@ -2,7 +2,7 @@
 tipo: "plan"
 titulo: "Teste prático do fluxo de criação — 5 temas novos, medidos contra o espaço que a lib já ocupa"
 dominio: "Sarak-Lib-UI-Core / Design / Temas"
-status: "🟠 Em revisão"
+status: "🟢 Aprovada"
 prioridade: "Alta"
 tags: ["plan", "temas", "agente", "teste", "diversidade"]
 relacionados: ["[[plan-24-1-fluxo-de-criacao-de-tema]]", "[[plan-24-aplicacao-de-temas]]", "[[09-temas-e-presets]]", "[[00-regras-e-invariantes]]"]
@@ -687,7 +687,160 @@ sessão.
 - A decisão de promover os 5 temas a `SARAK_REFERENCE_THEMES` ou mantê-los só registrados/auditados é do
   dono, na revisão (§3.2, linha vermelha explícita) — não me pronunciei sobre isso no código.
 
+## Resumo da execução (correção) — 2026-08-11
+
+**Resultado:** Concluído. Duas correções pequenas e independentes, despachadas juntas pelo dono —
+fecham a pendência §11.5 item 1 desta plan (recalibragem) e o achado **40** de [[15-divida-conhecida]]
+(laço injeta-descarta de `validation.ts`, §11.6). Sem relação temática entre si; relação de oportunidade.
+
+### A — Recalibragem dos buckets (§11.3 item 2 / §11.5 item 1)
+
+O critério #9 usava `bucket3(v, 0, 120)`/`bucket3(v, 0, 20)`/`bucket3(v, 0, 100)` para
+`cardBorderRadius`/`cardBorderWidth`/`cardBackdropBlur` — o `constraints.min..max` do próprio schema, bem
+mais largo que qualquer tema usa na prática (intervalo real medido: **0–32 / 0–4 / 0–40**). Com isso, o
+critério só passava para os 5 novos por sorte: `raio:1 borda:1 blur:2` (linha 364 acima) — só o blur de
+`forja-ultravioleta` (40) escapava da banda 1, cruzando por pouco o limiar antigo de 33,3.
+
+**Conserto:** os 3 buckets agora derivam min/max dos **`existentes`** (nunca dos `novos`, que são o que
+está sendo julgado — autorreferência inflaria dispersão artificialmente para qualquer conjunto
+não-idêntico). Nova função exportada `structuralRange(rows, selector)` em `verify_diversity.ts`; bloco
+`LIMITES DECLARADOS` (R18, item 3) reescrito para descrever a derivação nova.
+
+⇒ **O teste do caso negativo, pedido em §11.3 item 2** ("cinco temas iguais devem REPROVAR o #9"):
+`critério 9 reprova 5 novos estruturalmente idênticos entre si (raio, borda, blur E densidade iguais)` —
+5 itens (não 2), todos os 4 eixos idênticos, `ok` confirmado `false`.
+
+Escrevi também um segundo teste, mais direto sobre a causa raiz (a miscalibração em si, não só a
+simetria "idênticos reprovam"): 5 valores de raio cobrindo **toda** a faixa real (`0,8,16,24,32`), com
+borda/blur/densidade mantidos constantes — de propósito, para isolar o raio como único eixo de variação.
+Com os limites antigos hardcoded (0–120), esses 5 valores colapsam inteiros em "baixo" (`bucket3` chamado
+diretamente no teste, 1 faixa só) — o que faria o critério 9 **reprovar por engano** uma dispersão real e
+completa. Com os limites novos (derivados dos 18 `existentes` reais, via `themesOriginais()`), o mesmo
+`evaluateDistanceCriteria` passa a **aprovar** corretamente. Evidência da inversão (antes ⇒ agora):
+
+```
+faixasComLimiteAntigo.size === 1   // reprodução do bug: 0 diversidade detectada
+r.ok === true                       // com a recalibragem, a mesma dispersão é vista
+```
+
+**GREEN confirmado** — `npx vitest run gates/scripts/audit/__tests__/verify_diversity.test.ts` → **31/31**
+(29 pré-existentes + 2 novos).
+
+**Rodado sobre os 23 reais** (`npm run themes:diversity -- --new terracota-solar,musgo-do-vale,ardosia-ao-entardecer,forja-ultravioleta,grafite-puro`)
+— os **9/9 critérios continuam OK**; nenhum novo falhou (não precisei parar/reportar). Critério #9 agora é
+robusto, não mais dependente de um único valor cruzar por sorte um limiar antigo:
+
+```
+[OK] #9 — diversidade estrutural real: raio, borda, blur e densidade não podem ficar TODOS na mesma faixa
+    faixas distintas — raio:3 borda:1 blur:3 densidade:3
+```
+
+(antes: `raio:1 borda:1 blur:2 densidade:3` — comparar com a linha 364 acima, mesma execução do script,
+mesmos 5 temas, únicas variáveis são os limites do bucket.)
+
+### B — Achado 40 (§11.6): laço injeta-descarta em `validation.ts`
+
+`validation.ts:227-228` injetava `hapticIntensity = 0` e `scaleRatio = 1` como fallback estrutural,
+citando um comentário desatualizado ("só existem no manifesto legado `DESIGN_MANIFEST`") — mas a
+`plan-21` já tinha removido as duas de lá por serem entradas órfãs. Sem token de schema E sem chave em
+`PAYLOAD_EXTRA_KEYS`, a linha 213 as descartava (`console.warn`) a cada `validateDesign`, e este bloco as
+reinjetava na chamada seguinte — um par de `console.warn` por passada, para sempre, medido num consumidor
+real (ERP). Confirmei via `grep` que nenhuma das duas tem consumidor em `src/` fora do próprio
+`validation.ts` (só a explicação histórica no comentário novo).
+
+**Conserto:** removidas as 2 linhas de injeção (`hapticIntensity`/`scaleRatio`). `animationSpeed` **não**
+foi tocado — está em `PAYLOAD_EXTRA_KEYS`, com consumidor real (`payloadExtraKeys.ts`), fora do escopo do
+achado. As duas chaves **não** foram devolvidas a `PAYLOAD_EXTRA_KEYS` como atalho — preservaria uma
+chave morta no contrato público (R33: contrato só encolhe por major). Comentário do bloco reescrito para
+refletir a realidade atual do manifesto (não mais "esvaziado", só sem essas duas entradas órfãs).
+
+⇒ **O teste pedido**: "validar o MESMO design duas vezes não emite warn na segunda passada" —
+escrito, confirmado **RED** primeiro (2 `console.warn` na 2ª passada — um por chave reinjetada — e
+`hapticIntensity: 0` presente na saída), depois **GREEN** depois do conserto. Um segundo teste confirma
+que as duas chaves não são mais injetadas.
+
+**GREEN confirmado** — `npx vitest run src/core/Provider/utils/__tests__/validation.test.ts` → **10/10**
+(8 pré-existentes + 2 novos).
+
+Não removi a linha do achado 40 de [[15-divida-conhecida]] §3.1 — é trabalho do revisor, na aprovação,
+por instrução explícita do despacho.
+
+### Linhas vermelhas respeitadas
+
+Não toquei: tema, gate de contraste, `PAIRS`, limiar, `contraparte`, `resolveThemeForMode`. Não afrouxei
+nenhum critério de `verify_diversity` para os 5 passarem. Nenhum dos 5 temas foi promovido a
+`SARAK_REFERENCE_THEMES` (decisão do dono, §11.5 acima, reafirmada — seguem como catálogo comum). Não
+editei `specs/specs/`, `specs/adr/`, nem `00-indice.md`. Não toquei nos achados 33/35/37/38/39 (têm plans
+próprias).
+
+### Verificações executadas (saída real, resumida)
+
+- `npm run audit` → `auditor_contraste`: **0/0 reprovados nos dois modos, 23 temas, 25 pulados**; termina
+  em "quebrou 2 regras estruturais" — são as **2 pré-existentes** (`ghostvars`=1, `composicaoatomica`=2),
+  **idênticas ao baseline** (`gates/baselines/audit-baseline.json`, sem diff no working tree). Não é
+  regressão.
+- `npm run themes:diversity -- --new terracota-solar,musgo-do-vale,ardosia-ao-entardecer,forja-ultravioleta,grafite-puro`
+  → **9/9 critérios OK** (saída colada acima).
+- `npx vitest run` (suíte INTEIRA) → **304 arquivos / 1184 testes, 100% verde**.
+- `npm run gate-limits:check` → **29/29** scripts declaram o que não veem (sem mudança de contagem — não
+  criei script novo, só editei um existente).
+- `npm run dev-kit:check` → `[dev-kit:check] kit em dia (3 arquivos, 0 ponteiros mortos)`.
+- `node gates/scripts/release/check-audit-baseline.mjs --with-tsc` → **"igual ao baseline de 2026-08-11 —
+  nenhuma regressão."**
+- `git diff --stat` → só os 4 arquivos desta correção (abaixo); `git status --short` → idêntico (working
+  tree limpo fora deles — o restante do `gitStatus` herdado do início da sessão já foi resolvido por fora,
+  entre a `plan-27` e este despacho).
+
+### `dist/` e baseline
+
+`dist/` **não mudou** — não rodei `npm run build` nesta execução (`git status` não lista nada em `dist/`).
+`gates/baselines/audit-baseline.json` **não mudou** — nenhuma métrica numérica se moveu (as 2
+pré-existentes continuam nos mesmos números; contraste continua 0/0).
+
+### Arquivos alterados
+
+| Arquivo | Natureza | O que mudou |
+|---|---|---|
+| `gates/scripts/audit/verify_diversity.ts` | alterado | critério #9: buckets derivados de `existentes` (`structuralRange`), não mais hardcoded; comentário `LIMITES DECLARADOS` item 3 reescrito |
+| `gates/scripts/audit/__tests__/verify_diversity.test.ts` | alterado | +2 testes (5 idênticos reprovam #9; flip antes/depois da recalibragem) |
+| `src/core/Provider/utils/validation.ts` | alterado | removida a injeção de `hapticIntensity`/`scaleRatio` (achado 40); comentário do bloco de fallbacks reescrito |
+| `src/core/Provider/utils/__tests__/validation.test.ts` | alterado | +2 testes (idempotência de `validateDesign`; ausência das 2 chaves) |
+
+**Status desta plan permanece 🟠 Em revisão** — não alterei o frontmatter, por instrução explícita do
+despacho. Nenhum commit foi feito.
+
 # 11. Veredito
+
+**🟢 APROVADA** — *revisor, 2026-08-11.* As duas pendências da §11.5 fecharam; o registro do 🟡 original fica
+abaixo.
+
+## 11.0 O fechamento
+
+**A · Recalibragem.** Os buckets do critério #9 passaram a ser **derivados dos temas existentes**, não mais
+fixados em `0..120`/`0..20`/`0..100`. Verificado por mim: `raio:1 borda:1 blur:2` virou **`raio:3 borda:1
+blur:3`** — o instrumento passou a enxergar a dispersão real (os 5 têm raios 32/20/16/4/0). Os 9 critérios
+seguem OK sobre os 23.
+
+> **`borda:1` continua 1, e isso agora é uma VERDADE, não um artefato.** Os cinco temas têm larguras
+> `[1,0,1,1,1]`; com a faixa real `0..4` os dois valores caem na mesma banda. O instrumento consertado revela
+> que um dos quatro eixos genuinamente não varia — o quebrado escondia isso atrás de "tudo é banda 1".
+
+Entraram dois testes: cinco temas idênticos **reprovam** o #9, e a **inversão** demonstrada — os limites
+antigos colapsavam a dispersão real numa faixa só, os novos a detectam.
+
+**B · Achado 40** fechado na mesma execução, por despacho do dono: a injeção de `hapticIntensity`/`scaleRatio`
+saiu de `validation.ts`, travada por **teste de idempotência**. `animationSpeed` intocado — está em
+`PAYLOAD_EXTRA_KEYS` e é consumido.
+
+**Medido:** contraste **0/0 nos dois modos** com 23 temas · suíte **304/304 · 1184/1184** · `gate-limits`
+29/29 · baseline sem regressão · `dist/` **não** mudou · escopo de 5 arquivos, exatamente o pedido.
+
+**Síntese escrita:** [[09-temas-e-presets]] §5.1 (18 → 23, e a diversidade virando saída de script) ·
+[[15-divida-conhecida]] (achado 40 movido para a §6).
+
+---
+
+*Veredito original, que gerou as correções:*
 
 **🟡 Aprovada no mérito, com duas correções pendentes** — *revisor, 2026-08-11.*
 

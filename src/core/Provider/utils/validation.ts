@@ -219,13 +219,20 @@ export const validateDesign = (design: unknown): SarakDesignState => {
     // tokens reais de `MASTER_DESIGN_MAP` — o default deles vem do
     // `getDefaultDesignState()` no seed, ANTES desta função rodar; forçá-los aqui
     // de novo sobrescreveria valores responsivos válidos — ex.: `sidebarWidth` é
-    // `{ desk, tab, mob }` — com um número escalar). `animationSpeed`/
-    // `hapticIntensity`/`scaleRatio` não estão em `MASTER_DESIGN_MAP` (só no
-    // manifesto legado, `DESIGN_MANIFEST`) e não têm seed garantido — por isso
-    // seguem com fallback explícito aqui.
+    // `{ desk, tab, mob }` — com um número escalar). `animationSpeed` está em
+    // `PAYLOAD_EXTRA_KEYS` (branding/estrutura — `manifest.ts` documenta por que
+    // não virou token de schema, R11), sem seed garantido — por isso segue com
+    // fallback explícito aqui.
+    //
+    // `hapticIntensity`/`scaleRatio` SAÍRAM (achado 40, fechado 2026-08-11): a
+    // justificativa antiga era "só existem no manifesto legado, DESIGN_MANIFEST"
+    // — mas a `plan-21` já tinha removido as duas de lá por serem entradas órfãs
+    // (R7 vão 2, ver `manifest.test.ts`). Sem token de schema E sem chave em
+    // `PAYLOAD_EXTRA_KEYS`, a `:213` as descartava a cada `validateDesign`, e
+    // este bloco as reinjetava na chamada seguinte — um `console.warn` por
+    // passada, para sempre, medido no console de um consumidor real (ERP). Zero
+    // consumidor de qualquer uma das duas em toda a `src/`, fora deste arquivo.
     if (typeof s.animationSpeed !== 'number') s.animationSpeed = 0.4;
-    if (typeof s.hapticIntensity !== 'number') s.hapticIntensity = 0;
-    if (typeof s.scaleRatio !== 'number') s.scaleRatio = 1;
     if (typeof s.borderRadius !== 'number') s.borderRadius = 12;
 
     if (!s.atmosphere) s.atmosphere = { texture: 'dots', noise: 0.05, opacity: 0.1, spotlight: true };

@@ -12,9 +12,15 @@
 //    não resolve por `parseColor` (hsl()/var()/gradiente) vira `null` nos
 //    campos de cor e "indeterminado" na família — nunca chuta um valor.
 // 3. Os 3 tokens estruturais usam bucket de 3 faixas (baixo/médio/alto)
-//    dividindo o `constraints.min..max` do próprio schema em terços — não é
-//    um valor "certo", é só o vocabulário para medir dispersão entre os 5
-//    temas novos (critério 9 da §3.3 da `plan-25`).
+//    dividindo em terços o intervalo REAL observado nos `existentes` (não o
+//    `constraints.min..max` do schema, que é 0-120/0-20/0-100 — bem mais
+//    largo que qualquer tema jamais usa; com ele, os dados reais nunca
+//    escapavam da faixa "baixo", achado do revisor na `plan-25` §11.3/§11.5).
+//    A faixa vem sempre dos `existentes` (nunca dos `novos`, que são o que
+//    está sendo julgado — autorreferência inflaria dispersão artificialmente
+//    para qualquer conjunto não-idêntico). Não é um valor "certo", é só o
+//    vocabulário para medir dispersão entre os 5 temas novos (critério 9 da
+//    §3.3 da `plan-25`).
 // 4. Critério 6 (distância de matiz) só compara temas com a MESMA família E
 //    o MESMO modo — é a fronteira literal da §3.3. Comparar tudo contra tudo
 //    acusaria falso positivo (um azul escuro perto de um azul claro não é o
@@ -63,6 +69,13 @@ export function bucket3(value: number | null, min: number, max: number): Faixa |
 export function hueDistance(a: number, b: number): number {
     const d = Math.abs(a - b) % 360;
     return d > 180 ? 360 - d : d;
+}
+
+/** min/max observados de `selector` em `rows` — a faixa real de dispersão de um token estrutural (LIMITE 3). */
+export function structuralRange(rows: ThemeDiversityRow[], selector: (row: ThemeDiversityRow) => number | null): [number, number] {
+    const valores = rows.map(selector).filter((v): v is number => v !== null);
+    if (valores.length === 0) return [0, 0];
+    return [Math.min(...valores), Math.max(...valores)];
 }
 
 function toNumber(value: unknown): number | null {
@@ -232,9 +245,12 @@ export function evaluateDistanceCriteria(existentes: ThemeDiversityRow[], novos:
         detalhe: `presentes: ${Array.from(navStyles).join(', ') || '—'}`,
     });
 
-    const radiusBuckets = new Set(novos.map((r) => bucket3(r.cardBorderRadius, 0, 120))).size;
-    const widthBuckets = new Set(novos.map((r) => bucket3(r.cardBorderWidth, 0, 20))).size;
-    const blurBuckets = new Set(novos.map((r) => bucket3(r.cardBackdropBlur, 0, 100))).size;
+    const [radiusMin, radiusMax] = structuralRange(existentes, (r) => r.cardBorderRadius);
+    const [widthMin, widthMax] = structuralRange(existentes, (r) => r.cardBorderWidth);
+    const [blurMin, blurMax] = structuralRange(existentes, (r) => r.cardBackdropBlur);
+    const radiusBuckets = new Set(novos.map((r) => bucket3(r.cardBorderRadius, radiusMin, radiusMax))).size;
+    const widthBuckets = new Set(novos.map((r) => bucket3(r.cardBorderWidth, widthMin, widthMax))).size;
+    const blurBuckets = new Set(novos.map((r) => bucket3(r.cardBackdropBlur, blurMin, blurMax))).size;
     const densityBuckets = new Set(novos.map((r) => r.layoutDensity)).size;
     resultados.push({
         criterio: 9,

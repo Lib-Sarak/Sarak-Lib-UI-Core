@@ -81,4 +81,25 @@ describe('validateDesign (Spec 44 §2.3 — tema é dado validado, nunca CSS/HTM
         expect(serialized).not.toContain('onerror');
         expect(serialized).not.toContain('onload');
     });
+
+    // Achado 40 (specs/specs/15-divida-conhecida.md §3.1): `hapticIntensity`/
+    // `scaleRatio` eram injetadas como fallback estrutural e, na passada
+    // seguinte, descartadas por serem chave desconhecida (nem token de schema,
+    // nem `PAYLOAD_EXTRA_KEYS`) — e reinjetadas de novo. Um par de warn por
+    // chamada, para sempre. `validateDesign` é idempotente: validar a SAÍDA de
+    // uma validação não pode gerar warn novo.
+    it('validar o MESMO design duas vezes não emite warn na segunda passada (achado 40)', () => {
+        const once = validateDesign({ mode: 'dark', primaryColor: '#111827' });
+        warnSpy.mockClear();
+
+        validateDesign(once);
+
+        expect(warnSpy).not.toHaveBeenCalled();
+    });
+
+    it('não injeta mais `hapticIntensity`/`scaleRatio` — vestigiais do manifesto legado (achado 40)', () => {
+        const result = validateDesign({ mode: 'dark' });
+        expect(result).not.toHaveProperty('hapticIntensity');
+        expect(result).not.toHaveProperty('scaleRatio');
+    });
 });
