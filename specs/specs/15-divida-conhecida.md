@@ -70,13 +70,18 @@ achado novo. **32 numerados** (o 32 é novo) · **24 fechados** (§6) · **2 ace
 > **Mais dois em 2026-08-10, da revisão da `plan-24`:** **37** (parêntese a mais no `SarakToast`) e **38**
 > (`--sarak-status-*-color-bg` consumida e nunca emitida). Ambos **medidos**, ambos com o gate calado.
 > **Um terceiro NÃO entrou:** a suíte emite 19× `Could not parse CSS stylesheet` e eu **não atribuí causa** —
-> pela §8, suspeita não vira linha aqui.
+> pela §8, suspeita não vira linha aqui. *(O número caiu para 6 e depois 4 conforme o CSS emitido mudou, o que
+> descarta causa única estática — mas segue sem atribuição.)*
+>
+> **E o 39 em 2026-08-11, da `plan-25`:** o gerador de gabarito de tema produz arquivo que **não faz parse**.
+> É o achado mais caro dos cinco, porque **quebra o segundo passo do fluxo documentado de criação de tema** —
+> e passou dois ciclos despercebido porque o aceite contava chaves em vez de validar valores.
 
 ## 3.1 Segurança e medição
 
 > O achado **17** fechou com a `plan-19` e saiu para a §6. A categoria voltou a encher no mesmo dia: **33** e
-> **35** entraram com a campanha de gates, e **37** e **38** com a revisão da `plan-24`. É a categoria de
-> *gate que mede errado ou não mede* — e as quatro linhas abaixo são todas disso.
+> **35** entraram com a campanha de gates, **37** e **38** com a revisão da `plan-24`, e **39** com a
+> `plan-25`. É a categoria de *gate que mede errado ou não mede* — e as cinco linhas abaixo são todas disso.
 
 | # | Achado | Onde | Regra | Destino |
 |---|---|---|---|---|
@@ -84,6 +89,7 @@ achado novo. **32 numerados** (o 32 é novo) · **24 fechados** (§6) · **2 ace
 | 35 | **O detector de órfãs da `plan-20` perde entradas por ordem de propriedade.** O executor da `plan-21` mediu **27** com varredura própria contra as **24** do detector; as 3 a mais são `buttonHoverEffect`, `inputStyle`, `useTabularNums` | `gates/scripts/audit/auditor_ghostvars.mjs` | **R7** | **Corrigir** — o detector, não o manifesto |
 | 37 | **Parêntese a mais mata duas declarações do toast.** `var(--color-theme-card,#1e293b))` e `var(--sarak-text-main,#ffffff))` — CSS malformado é descartado pelo parser, então o toast fica **sem fundo e sem cor de texto próprios** e herda o que estiver atrás. Os dois nomes existem e **são emitidos**; o defeito é só a sintaxe. Nenhum gate olha a sintaxe de `var()` dentro de string | `src/components/atomic/Feedback/SarakToast.tsx:84-85` | **nenhuma** | **Corrigir** — 2 caracteres; e decidir se vale detector de `var()` desbalanceado |
 | 38 | **`--sarak-status-*-color-bg` é consumida e nunca emitida.** 5+ componentes usam `var(--sarak-status-error-color-bg, rgba(239,68,68,0.1))` como fundo de texto de status, mas `generateVariants` só existe em `primaryColor`, `secondaryColor`, `tertiaryColor` e `cardBackgroundColor` ⇒ **o fallback duro sempre vence, e o tema não controla esse fundo**. Medido na revisão da `plan-24`: o par texto-de-status reprova em **7/18** (erro) e **5/18** (sucesso) temas. O `auditor_ghostvars` **não pegou** — possível mesma raiz do achado **35** | `src/components/atomic/Templates/SarakForm.tsx:105-107` · `SarakTable.tsx:72` · `gates/scripts/audit/auditor_ghostvars.mjs` | **R7** | **Corrigir** — decidir entre emitir a variante ou trocar o nome consumido; **e** o detector, que é a metade de gate |
+| 39 | **`generate_theme_template.ts` gera arquivo que NÃO FAZ PARSE.** O **segundo comando** do workflow da skill `ui-criar-tema` emite `[object Object]` para os **40 de 422** tokens cujo `defaultValue` é um objeto `{mob,tab,desk}` — `designProps += \`${key}: ${value},\``, interpolação cega. Reproduzido pelo revisor: `TS1005: ',' expected` já na linha 75. **Sem reparo manual fora do fluxo, nenhum tema sai do papel.** Passou despercebido porque o aceite da `plan-24-1` contava **chaves** (422 ✓), nunca validou **valores** — régua do revisor, não falha do executor | `.agents/skills/ui-criar-tema/scripts/generate_theme_template.ts` | **nenhuma** | **Corrigir** — serializar objeto responsivo, ou achatar para o `desk` (a convenção que os 18 temas já usam). **E** um teste que compile a saída do gerador: contar chave não é validar |
 
 ## 3.2 Violação de regra **já formada** que o gate agora vê, mas não corrige sozinho
 

@@ -689,4 +689,72 @@ sessão.
 
 # 11. Veredito
 
-*(a preencher pelo revisor)*
+**🟡 Aprovada no mérito, com duas correções pendentes** — *revisor, 2026-08-11.*
+
+**O teste cumpriu o que foi pedido: produziu diversidade medível E encontrou o defeito real do mecanismo.**
+Achar o defeito era o objetivo declarado na §2.3, não um efeito colateral.
+
+## 11.1 Medido por mim, não pelo script da entrega
+
+| Verificado | Resultado |
+|---|---|
+| Os **9 critérios** da §3.3 | **todos OK** em medição independente |
+| Buracos ocupados | `claro com S≥60` **0/18 → 1/23** · `fundo L 25..75` **0/18 → 1/23** |
+| Padrão antigo **não** repetido | `S=100` **10/18 → 10/23** · `ciano+magenta` **8/18 → 8/23** |
+| Grupo de controle | **1184 cores / 52 alteradas** — idêntico à medição da `plan-24-1`; os 18 **não** foram tocados |
+| Promessa "tema novo nasce completo" | **422 chaves** nos 5 novos, contra **256–265** nos antigos |
+| Contraste | **0/0 nos dois modos com 23 temas**, 25 pulados inalterados |
+| Suíte | **301/301 arquivos · 1159/1159 testes**, exit 0 |
+| Baseline | `check-audit-baseline --with-tsc` sem regressão |
+
+> O `npm run audit` termina em *"quebrou 2 regras estruturais"* — são as duas pré-existentes (`ghostvars`,
+> `composicaoatomica`). Não é regressão; o relato citou só a linha do contraste, e era melhor ter dito.
+
+## 11.2 O veredito sobre o FLUXO — reproduzido, e pior que o relatado
+
+Rodei o segundo comando do workflow. **Não é "não compila": o arquivo não faz parse.**
+
+```
+40 ocorrências de [object Object]  (os 40 tokens responsivos {mob,tab,desk})
+novo-tema-gerado.ts(75,34): error TS1005: ',' expected.
+```
+
+**O mecanismo produz diversidade de verdade, mas não é autossuficiente.** Quem seguir a skill como está
+documentada trava no PASSO 2. O executor acertou em **registrar antes de contornar** (§2.3) e em não
+consertar o gerador fora de escopo. Virou achado **39** em [[15-divida-conhecida]] §3.1.
+
+## 11.3 Duas coisas que a entrega não pegou — e a primeira é minha
+
+**1 · O critério de aceite que eu escrevi habilitou o defeito.** A `plan-24-1` pedia *"o gabarito emite os
+422"*, e eu verifiquei **contando chaves**. Um gerador que emite 422 chaves sintaticamente inválidas
+**passa** nesse critério. A falha é da régua, não de quem a cumpriu.
+
+**2 · 🔴 PENDENTE — o instrumento de aceite tem duas métricas mortas.** O critério #9 reportou
+`raio:1 borda:1` (uma faixa só), mas os raios dos 5 são **32/20/16/4/0**. A causa está na calibração:
+
+| Eixo | Bucket usado | Intervalo real na lib | Consequência |
+|---|---|---|---|
+| `cardBorderRadius` | `bucket3(v, 0, 120)` — bandas de 40 | **0–32** | **nunca sai da banda 1** |
+| `cardBorderWidth` | `bucket3(v, 0, 20)` — bandas de 6,7 | **0–4** | **nunca sai da banda 1** |
+| `cardBackdropBlur` | `bucket3(v, 0, 100)` — bandas de 33 | 0–40 | só escapa com blur ≥ 33 |
+
+Na substância o critério está satisfeito — os valores variam. Mas **o instrumento aprovaria cinco temas
+estruturalmente idênticos**, e ele nasceu aqui para durar. ⇒ **Recalibrar os três para o intervalo real, com
+o teste cobrindo o caso "cinco temas iguais devem REPROVAR o #9".**
+
+## 11.4 O padrão que une os três
+
+Gerador que **conta** 422 chaves sem validar valores. Critério meu que **conta** chaves sem validar sintaxe.
+Bucket que **classifica** numa escala que o dado nunca alcança.
+
+Três instâncias, na mesma entrega, de **medir a forma em vez do conteúdo** — a mesma lição que a
+[[09-temas-e-presets]] §6.2 já registrou como *"amostra não é auditoria"*.
+
+## 11.5 O que falta para 🟢
+
+1. **Recalibrar os buckets** do `verify_diversity` (§11.3 item 2), com teste do caso negativo.
+2. A síntese em [[09-temas-e-presets]] §5 — **catálogo de 18 → 23** e o registro de que a diversidade agora
+   é **medida**, não afirmada. É do revisor, na aprovação.
+
+**Decisão do dono, sem prazo:** promover algum dos 5 a `SARAK_REFERENCE_THEMES`, ou mantê-los como catálogo
+comum. Nada depende disso.

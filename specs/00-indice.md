@@ -54,7 +54,7 @@ as duas, sempre, na mesma ação.**
 | 11 | [plan-05-integracao-continua](plan/plan-05-integracao-continua.md) | Rodar os gates num ambiente que não é a máquina de ninguém | — | 🔴 A executar | specs/16-integracao-continua.md · specs/02-enforcement-por-commit.md · specs/01-gates-e-baseline.md |
 | 12 | [plan-10-ciclo-atualizacao](plan/plan-10-ciclo-atualizacao.md) | Dar comando de atualização a quem só recebia aviso | plan-05 | 🔴 A executar | specs/13-instalacao-e-atualizacao.md |
 | 13 | [plan-11-e2e-no-pipeline](plan/plan-11-e2e-no-pipeline.md) | Parar de sair verde sem executar nada | plan-05 | 🔴 A executar | specs/11-testes-e-cobertura.md · specs/10-seguranca-e-acessibilidade.md · specs/16-integracao-continua.md |
-| 14 | [plan-25-teste-pratico-do-fluxo-de-tema](plan/plan-25-teste-pratico-do-fluxo-de-tema.md) | Testar o mecanismo de criacao de temas na pratica, produzindo 5 temas que ocupem regioes vazias do espaco de design | plan-24-1 | 🔴 A executar | specs/specs/09-temas-e-presets.md · specs/specs/15-divida-conhecida.md |
+| 14 | [plan-25-teste-pratico-do-fluxo-de-tema](plan/plan-25-teste-pratico-do-fluxo-de-tema.md) | Testar o mecanismo de criacao de temas na pratica, produzindo 5 temas que ocupem regioes vazias do espaco de design | plan-24-1 | 🟠 Em revisão | specs/specs/09-temas-e-presets.md · specs/specs/15-divida-conhecida.md |
 <!-- SARAK-INDICE:FILA:FIM -->
 
 > **A ordem da coluna `#` não é a ordem do número da plan** — e isso é a feature, não um erro. A `plan-03`
