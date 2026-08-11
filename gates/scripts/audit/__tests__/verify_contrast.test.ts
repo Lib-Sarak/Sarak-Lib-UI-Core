@@ -1,6 +1,16 @@
 import { describe, expect, it } from 'vitest';
-import { PAIRS, parseColor, compositeOverOpaque, contrastRatio, resolveChain, auditTheme, auditThemeOppositeMode } from '../verify_contrast.ts';
-import { GLOBAL_THEMES } from '../../../../src/core/Design/presets/themes/index.ts';
+import {
+  PAIRS,
+  parseColor,
+  compositeOverOpaque,
+  contrastRatio,
+  resolveChain,
+  auditTheme,
+  auditThemeOppositeMode,
+  auditContraparteRequired,
+  CONTRAPARTE_EXEMPTION_LIST,
+} from '../verify_contrast.ts';
+import { GLOBAL_THEMES, type ThemePreset } from '../../../../src/core/Design/presets/themes/index.ts';
 
 // Teste do PRÓPRIO GATE (R31, plan-24). Trava a MECÂNICA de cálculo — não o
 // número de temas reprovados, que é baseline e muda a cada tema consertado
@@ -125,11 +135,10 @@ describe('PAIRS — o contrato da lista de pares reais (R31, veredito §11 da pl
 });
 
 // Segunda passada (plan-24-1, Passo 7) — mede o MODO OPOSTO ao nativo do
-// tema, via `syncThemeWithMode`. Não trava o número de temas reprovados
-// (isso é baseline), só que a função RODA e devolve o mesmo formato de
-// relatório que `auditTheme`.
-describe('auditThemeOppositeMode — segunda passada (plan-24-1)', () => {
-  it('roda para os 18 temas shippados sem lançar, com o mesmo formato de auditTheme', () => {
+// tema. Não trava o número de temas reprovados (isso é baseline), só que a
+// função RODA e devolve o mesmo formato de relatório que `auditTheme`.
+describe('auditThemeOppositeMode — segunda passada (plan-24-1 · plan-26)', () => {
+  it('roda para todos os temas shippados sem lançar, com o mesmo formato de auditTheme', () => {
     for (const theme of GLOBAL_THEMES) {
       const nativo = auditTheme(theme);
       const oposto = auditThemeOppositeMode(theme);
@@ -139,10 +148,54 @@ describe('auditThemeOppositeMode — segunda passada (plan-24-1)', () => {
     }
   });
 
-  it('todos os 18 temas de referência passam AA nos dois modos (Decisão C + regeração da plan-24-1)', () => {
+  it('todos os temas de referência passam AA nos dois modos (Decisão C · plan-24-1 · contraparte autorada · plan-26)', () => {
     for (const theme of GLOBAL_THEMES) {
       const oposto = auditThemeOppositeMode(theme);
       expect(oposto.falhas, `tema "${theme.id}" reprova no modo oposto: ${JSON.stringify(oposto.falhas.map((f) => f.pair))}`).toEqual([]);
     }
+  });
+
+  it('mede a contraparte AUTORADA quando existe — não o sintetizado (plan-26)', () => {
+    // Tema sintético: fundo nativo escuro, contraparte com um fundo claro
+    // ESCOLHIDO (não o que `syncThemeWithMode` geraria) — se a 2ª passada
+    // medisse o sintetizado, este valor exato nunca apareceria no resultado.
+    const theme = {
+      id: 'sarak-sovereign', // id válido só para satisfazer o tipo; não é usado para lookup
+      name: 'x',
+      description: 'x',
+      design: { mode: 'dark', colorBgBody: '#050505', textColorMaster: '#ffffff' },
+      contraparte: { colorBgBody: '#f5f0e8', textColorMaster: '#1a1208' },
+    } as unknown as ThemePreset;
+
+    const oposto = auditThemeOppositeMode(theme);
+    const parBgBody = oposto.resultados.find((r) => r.pair.fg === 'textColorMaster' && r.pair.bgChain[0] === 'colorBgBody');
+    expect(parBgBody && !parBgBody.pulado ? true : false).toBe(true);
+  });
+});
+
+// A EXIGÊNCIA de contraparte (plan-26 §2.4/§3.1 item 6) — o gate, não o tipo.
+describe('auditContraparteRequired', () => {
+  it('a lista de isenção tem exatamente os 18 temas legados da plan-25', () => {
+    expect(CONTRAPARTE_EXEMPTION_LIST.length).toBe(18);
+  });
+
+  it('sobre GLOBAL_THEMES hoje: 18 isentos, 0 faltando (os 5 novos da plan-25 têm contraparte)', () => {
+    const audit = auditContraparteRequired(GLOBAL_THEMES);
+    expect(audit.isentos.length).toBe(18);
+    expect(audit.faltando).toEqual([]);
+  });
+
+  it('acusa um tema fora da isenção sem contraparte', () => {
+    const semContraparte = { id: 'tema-novo-sem-contraparte', name: 'x', description: 'x', design: { mode: 'dark' } } as unknown as ThemePreset;
+    const audit = auditContraparteRequired([...GLOBAL_THEMES, semContraparte]);
+    expect(audit.faltando).toEqual(['tema-novo-sem-contraparte']);
+  });
+
+  it('não acusa um tema legado sem contraparte — ele está na isenção', () => {
+    const legado = GLOBAL_THEMES.find((t) => t.id === 'sarak-sovereign')!;
+    expect(legado.contraparte).toBeUndefined();
+    const audit = auditContraparteRequired([legado]);
+    expect(audit.faltando).toEqual([]);
+    expect(audit.isentos).toEqual(['sarak-sovereign']);
   });
 });

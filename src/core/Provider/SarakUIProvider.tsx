@@ -167,18 +167,19 @@ export const SarakUIProvider: React.FC<SarakUIProviderProps> = ({
         isHydrated,
         options,
         allThemes,
+        activeThemeId,
         token,
         branding,
         updateBranding,
         onMediaUpload,
         activeDesign: drafting.isDrafting && drafting.draftDesign ? drafting.draftDesign : design
     }), [
-        discoveryEndpoints, design, drafting.draftDesign, drafting.isDrafting, 
-        drafting.setIsDrafting, drafting.lockDrafting, setDesign, 
-        drafting.setDraftDesign, drafting.smartApplyConfig, 
-        drafting.smartApplyFullConfig, applyConfig, applyFullConfig, 
-        persistDesign, registeredModules, isHydrated, options, 
-        allThemes, token, branding, updateBranding, onMediaUpload
+        discoveryEndpoints, design, drafting.draftDesign, drafting.isDrafting,
+        drafting.setIsDrafting, drafting.lockDrafting, setDesign,
+        drafting.setDraftDesign, drafting.smartApplyConfig,
+        drafting.smartApplyFullConfig, applyConfig, applyFullConfig,
+        persistDesign, registeredModules, isHydrated, options,
+        allThemes, activeThemeId, token, branding, updateBranding, onMediaUpload
     ]);
 
     // 7. Renderização com Strict Sync (Evita Flash de Temas)

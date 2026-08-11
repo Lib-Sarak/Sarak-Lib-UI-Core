@@ -55,6 +55,7 @@ as duas, sempre, na mesma ação.**
 | 12 | [plan-10-ciclo-atualizacao](plan/plan-10-ciclo-atualizacao.md) | Dar comando de atualização a quem só recebia aviso | plan-05 | 🔴 A executar | specs/13-instalacao-e-atualizacao.md |
 | 13 | [plan-11-e2e-no-pipeline](plan/plan-11-e2e-no-pipeline.md) | Parar de sair verde sem executar nada | plan-05 | 🔴 A executar | specs/11-testes-e-cobertura.md · specs/10-seguranca-e-acessibilidade.md · specs/16-integracao-continua.md |
 | 14 | [plan-25-teste-pratico-do-fluxo-de-tema](plan/plan-25-teste-pratico-do-fluxo-de-tema.md) | Testar o mecanismo de criacao de temas na pratica, produzindo 5 temas que ocupem regioes vazias do espaco de design | plan-24-1 | 🟠 Em revisão | specs/specs/09-temas-e-presets.md · specs/specs/15-divida-conhecida.md |
+| 15 | [plan-26-contraparte-de-modo](plan/plan-26-contraparte-de-modo.md) | Fazer a preferencia de modo do usuario sobreviver a troca de tema, com valores autorados em vez de derivados por faixa | plan-25 | 🟢 Aprovada | specs/specs/09-temas-e-presets.md · specs/specs/00-regras-e-invariantes.md |
 <!-- SARAK-INDICE:FILA:FIM -->
 
 > **A ordem da coluna `#` não é a ordem do número da plan** — e isso é a feature, não um erro. A `plan-03`

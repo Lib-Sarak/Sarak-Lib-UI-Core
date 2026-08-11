@@ -34,6 +34,7 @@ export type SarakDesignState = SarakThemePayload & SarakRuntimeExtras;
 export interface ThemeEntry {
     id: string;
     design?: Record<string, unknown>;
+    contraparte?: Partial<SarakDesignState>; // Bloco p/ o modo OPOSTO ao nativo (plan-26) — opcional no tipo (R33)
 }
 
 /** Assinatura do setter do design-state (valor ou updater functional). */
@@ -211,11 +212,11 @@ export interface SarakUIContextType {
     isHydrated: boolean;
     options: SarakUIOptions;
     allThemes: unknown[]; // Array unificado (Scripts + DB) para a interface
+    activeThemeId?: string; // Espelho do prop do Provider (plan-26) — p/ ShellThemeToggle achar a contraparte do tema ativo
     token?: string | null; // Adicionado para expor o token aos componentes filhos (Catálogo, Temas, etc)
     // Branding
     branding?: SarakBrandingState;
     updateBranding?: (partial: Partial<SarakBrandingState>) => Promise<void>;
-    
     // Media Strategy
     onMediaUpload?: (file: File) => Promise<string>;
 }

@@ -60,10 +60,19 @@
 //    de `PAIRS[].bgChain` (o motor não tem acesso a ela em runtime), então
 //    um card aninhado em múltiplas camadas translúcidas pode divergir
 //    ligeiramente do que a 1ª passada mediria para o mesmo par no nativo.
+// 8. [plan-26] `auditThemeOppositeMode` passa a chamar `resolveThemeForMode`
+//    em vez de `syncThemeWithMode` direto: quando o tema declara
+//    `contraparte`, é ELA que é medida (o bloco autorado, não o sintetizado)
+//    — a 2ª passada deixou de medir só o que a lib deriva e passa a medir o
+//    que alguém escreveu. `syncThemeWithMode` só entra para os temas SEM
+//    contraparte (a lista de isenção em `CONTRAPARTE_EXEMPTION_LIST`).
+// 9. [plan-26] `auditContraparteRequired` só vê `GLOBAL_THEMES` — tema do
+//    CONSUMIDOR (fora do catálogo shippado) nunca é cobrado a ter
+//    `contraparte`; é dado de terceiro, mesma fronteira da R31 (§ acima).
 // -------------------------------------------------------------------------
 import { getDefaultDesignState } from '../../../src/core/Design/master-map.ts';
 import { GLOBAL_THEMES, type ThemePreset } from '../../../src/core/Design/presets/themes/index.ts';
-import { syncThemeWithMode } from '../../../src/core/Design/presets/themes/color-engine.ts';
+import { resolveThemeForMode } from '../../../src/core/Design/presets/themes/color-engine.ts';
 
 export interface Rgba {
     r: number;
@@ -247,16 +256,20 @@ export function auditTheme(theme: ThemePreset): ThemeReport {
 /**
  * SEGUNDA PASSADA (plan-24-1 §3.1 item 8) — mede também o MODO OPOSTO ao
  * nativo do tema. Antes da Decisão D, o modo nativo já emitia diferente do
- * escrito (§11.2 do veredito da plan-24); depois de D, `syncThemeWithMode`
- * só roda de fato na troca de modo — e essa troca virou território sem
- * medição nenhuma. Reusa o MESMO `PAIRS`/`evaluatePair` da 1ª passada; não
- * muda a medição nativa, só acrescenta esta.
+ * escrito (§11.2 do veredito da plan-24); depois de D, a troca de modo virou
+ * território sem medição nenhuma. Reusa o MESMO `PAIRS`/`evaluatePair` da 1ª
+ * passada; não muda a medição nativa, só acrescenta esta.
+ *
+ * plan-26: passa a medir a contraparte AUTORADA quando o tema a declara —
+ * via `resolveThemeForMode`, a mesma função que o motor usa em runtime — em
+ * vez de sempre sintetizar com `syncThemeWithMode`. Só cai no sintetizado
+ * para os temas SEM `contraparte` (os 18 legados, fallback deliberado).
  */
 export function auditThemeOppositeMode(theme: ThemePreset): ThemeReport {
     const design = { ...getDefaultDesignState(), ...(theme.design as Record<string, unknown>) };
     const nativeMode = (design.mode as 'light' | 'dark') || 'dark';
     const oppositeMode = nativeMode === 'dark' ? 'light' : 'dark';
-    const shifted = syncThemeWithMode(design as Record<string, unknown>, oppositeMode);
+    const shifted = resolveThemeForMode({ design, contraparte: theme.contraparte }, oppositeMode);
     const resultados = PAIRS.map((pair) => evaluatePair(pair, shifted));
     return {
         id: theme.id,
@@ -264,6 +277,52 @@ export function auditThemeOppositeMode(theme: ThemePreset): ThemeReport {
         falhas: resultados.filter((r): r is Extract<PairResult, { pulado: false }> => !r.pulado && !r.pass),
         pulados: resultados.filter((r): r is Extract<PairResult, { pulado: true }> => r.pulado),
     };
+}
+
+/**
+ * Os 18 temas legados que a `plan-25` mediu como grupo de controle — a ÚNICA
+ * lista de isenção da exigência de `contraparte` (plan-26 §2.4, decisão 2 do
+ * dono). Ela SÓ PODE ENCOLHER: autorar contraparte para um destes é permitido
+ * (e o retira da lista numa plan futura); crescer exigiria justificativa nova.
+ */
+export const CONTRAPARTE_EXEMPTION_LIST: readonly string[] = [
+    'sarak-sovereign',
+    'crystal-glass',
+    'cyberpunk-neon',
+    'holographic-glass',
+    'industrial-terminal',
+    'nature-breeze',
+    'neo-brutalism',
+    'synthwave-retro',
+    'nebula-space',
+    'dot-matrix-elegant',
+    'stellar-nebula',
+    'kinetic-flow',
+    'cyber-retro-wave',
+    'minimalist-airy',
+    'data-terminal',
+    'neumorphic-mobile',
+    'industrial-dashboard',
+    'asymmetric-editorial',
+];
+
+export interface ContraparteAudit {
+    isentos: string[];
+    faltando: string[];
+}
+
+/**
+ * O GATE que EXIGE `contraparte` (plan-26 §2.4/§3.1 item 6). Todo tema fora
+ * da lista de isenção acima e sem `contraparte` é uma violação — a mesma
+ * regressão que esta plan conserta reapareceria em silêncio no primeiro tema
+ * novo que alguém esquecesse de autorar.
+ */
+export function auditContraparteRequired(themes: ThemePreset[]): ContraparteAudit {
+    const isentos = themes.filter((t) => CONTRAPARTE_EXEMPTION_LIST.includes(t.id)).map((t) => t.id);
+    const faltando = themes
+        .filter((t) => !CONTRAPARTE_EXEMPTION_LIST.includes(t.id) && !t.contraparte)
+        .map((t) => t.id);
+    return { isentos, faltando };
 }
 
 function formatPair(pair: ContrastPair): string {
@@ -295,19 +354,38 @@ function printPass(reports: ThemeReport[], label: string): { temasComFalha: numb
     return { temasComFalha, totalFalhas, totalPulados };
 }
 
+function printContraparteAudit(audit: ContraparteAudit, total: number): boolean {
+    console.log('\n--- Exigência de CONTRAPARTE (plan-26) ---');
+    console.log(`${audit.isentos.length} tema(s) isento(s) (legados, plan-25): ${audit.isentos.join(', ')}`);
+    const autorados = total - audit.isentos.length - audit.faltando.length;
+    console.log(`${autorados} tema(s) com contraparte autorada.`);
+    // A contagem sai SEMPRE (sucesso ou falha) — `check-audit-baseline.mjs`
+    // lê este número por regex, e métrica ausente no caminho feliz vira
+    // "não consegui ler a saída" (R20, fail-closed), bloqueando à toa.
+    console.log(`${audit.faltando.length} tema(s) SEM contraparte e fora da isenção.`);
+    if (audit.faltando.length > 0) {
+        console.log(`❌ Faltando em: ${audit.faltando.join(', ')}`);
+        return false;
+    }
+    console.log('✅ Nenhum tema fora da isenção está sem contraparte.');
+    return true;
+}
+
 function main() {
     console.log('--- Verificador de Contraste WCAG AA nos temas de referência (R31) ---\n');
     console.log(`${PAIRS.length} pares reais cobertos, limiar 4,5:1 em todos.\n`);
 
     const nativo = printPass(GLOBAL_THEMES.map(auditTheme), 'MODO NATIVO');
-    const oposto = printPass(GLOBAL_THEMES.map(auditThemeOppositeMode), 'MODO OPOSTO (segunda passada, plan-24-1)');
+    const oposto = printPass(GLOBAL_THEMES.map(auditThemeOppositeMode), 'MODO OPOSTO (segunda passada — contraparte autorada quando existe, plan-26)');
     console.log(`\n${oposto.totalFalhas} par(es)-tema reprovado(s) no MODO OPOSTO.`);
 
-    if (nativo.temasComFalha === 0 && oposto.temasComFalha === 0) {
-        console.log('\n✅ Todos os temas de referência passam AA nos pares cobertos, nos dois modos.');
+    const contraparteOk = printContraparteAudit(auditContraparteRequired(GLOBAL_THEMES), GLOBAL_THEMES.length);
+
+    if (nativo.temasComFalha === 0 && oposto.temasComFalha === 0 && contraparteOk) {
+        console.log('\n✅ Todos os temas de referência passam AA nos pares cobertos, nos dois modos, e todo tema não isento tem contraparte.');
         process.exit(0);
     } else {
-        console.log(`\n❌ R31: ${nativo.temasComFalha} tema(s) abaixo de AA no nativo, ${oposto.temasComFalha} no oposto. Corrigir tema NÃO é escopo desta plan (plan-24) — ver plan-24-1.`);
+        console.log(`\n❌ R31: ${nativo.temasComFalha} tema(s) abaixo de AA no nativo, ${oposto.temasComFalha} no oposto${contraparteOk ? '' : ', e há tema(s) sem contraparte exigida'}.`);
         process.exit(1);
     }
 }

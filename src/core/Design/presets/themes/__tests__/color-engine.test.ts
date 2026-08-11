@@ -1,5 +1,5 @@
 import { describe, it, expect } from 'vitest';
-import { syncThemeWithMode } from '../color-engine';
+import { syncThemeWithMode, resolveThemeForMode } from '../color-engine';
 import { parseToRgba, rgbToHsl } from '../../../../Provider/utils/color-engine';
 
 /**
@@ -78,5 +78,77 @@ describe('syncThemeWithMode — Decisão C: onPrimary calcula L contra o fundo r
         // textColorMaster segue a estratégia normal de 'text' (não é onPrimary) —
         // continua existindo e sendo transformado pela via de sempre, sem erro.
         expect(result.textColorMaster).toBeDefined();
+    });
+});
+
+/**
+ * plan-26 — `resolveThemeForMode`: a função ÚNICA que decide o que aplicar. A
+ * preferência de MODO do usuário tem de vencer, sempre — nunca o modo nativo
+ * do tema sozinho (a regressão que esta plan conserta).
+ */
+describe('resolveThemeForMode', () => {
+    it('caso 1 — modo pedido = modo nativo: devolve theme.design tal como escrito, sem tocar em nada', () => {
+        const design = { mode: 'dark' as const, primaryColor: '#ff00aa', colorBgBody: '#050505' };
+        const theme = { design };
+        const result = resolveThemeForMode(theme, 'dark');
+        expect(result).toBe(design); // mesma referência — nada foi recalculado
+    });
+
+    it('caso 2 — modo pedido ≠ nativo, HÁ contraparte: aplica o bloco AUTORADO, nunca sintetiza', () => {
+        const design = { mode: 'dark' as const, primaryColor: '#ff00aa', colorBgBody: '#050505', textColorMaster: '#ffffff' };
+        // A contraparte é um valor ESCOLHIDO pelo autor — deliberadamente
+        // diferente do que `syncThemeWithMode` geraria, para provar que é o
+        // bloco autorado que vence, não uma conversão automática.
+        const contraparte = { colorBgBody: '#f5f0e8', textColorMaster: '#1a1208' };
+        const theme = { design, contraparte };
+
+        const result = resolveThemeForMode(theme, 'light');
+
+        expect(result.mode).toBe('light');
+        expect(result.colorBgBody).toBe('#f5f0e8'); // veio da contraparte, não de shiftColorMode
+        expect(result.textColorMaster).toBe('#1a1208');
+        expect(result.primaryColor).toBe('#ff00aa'); // não declarado na contraparte — sobrevive do design nativo
+    });
+
+    it('caso 3 — modo pedido ≠ nativo, NÃO há contraparte: cai no fallback syncThemeWithMode (os 18 legados)', () => {
+        const design = { mode: 'dark' as const, primaryColor: '#ff00aa', colorBgBody: '#050505' };
+        const theme = { design }; // sem `contraparte`
+
+        const result = resolveThemeForMode(theme, 'light');
+        const expected = syncThemeWithMode(design, 'light');
+
+        expect(result).toEqual(expected);
+        expect(result.mode).toBe('light');
+    });
+
+    it('IDA E VOLTA EXATA — com contraparte, alternar e voltar devolve o design ORIGINAL, chave a chave', () => {
+        const design = {
+            mode: 'dark' as const,
+            navigationStyle: 'sidebar' as const,
+            primaryColor: '#ff00aa',
+            colorBgBody: '#050505',
+            textColorMaster: '#ffffff',
+            borderRadius: 12,
+        };
+        const contraparte = { colorBgBody: '#f5f0e8', textColorMaster: '#1a1208' };
+        const theme = { design, contraparte };
+
+        const ida = resolveThemeForMode(theme, 'light');
+        expect(ida.mode).toBe('light');
+
+        // "Volta" é chamar de novo com o modo NATIVO — resolveThemeForMode
+        // sempre parte do `theme` original (imutável), não do resultado da ida.
+        const volta = resolveThemeForMode(theme, 'dark');
+
+        expect(volta).toEqual(design); // idêntico, chave a chave — nenhuma perda
+        Object.keys(design).forEach((key) => {
+            expect(volta[key as keyof typeof design]).toBe(design[key as keyof typeof design]);
+        });
+    });
+
+    it('a preferência de MODO do usuário vence — aplicar um tema nativamente escuro em modo claro preserva o claro (a regressão)', () => {
+        const darkTheme = { design: { mode: 'dark' as const, colorBgBody: '#050505' } };
+        const result = resolveThemeForMode(darkTheme, 'light');
+        expect(result.mode).toBe('light');
     });
 });

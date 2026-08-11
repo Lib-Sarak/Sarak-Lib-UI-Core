@@ -1,5 +1,7 @@
 import { useEffect, useRef, MutableRefObject } from 'react';
 import { validateDesign } from '../utils/validation';
+import { resolveThemeForMode } from '../../Design/presets/themes/color-engine';
+import type { SarakTokenValue } from '../../Design/types';
 import { ThemeEntry, SetDesign } from '../types';
 
 export const useDesignSync = (
@@ -31,7 +33,18 @@ export const useDesignSync = (
             const activeTheme = allThemes.find(t => t.id === activeThemeId);
             if (activeTheme && activeTheme.design) {
                 lastAppliedThemeIdRef.current = activeThemeId;
-                setDesign((prev) => validateDesign({ ...prev, ...activeTheme.design }));
+                // plan-26: o MODO do usuário tem que vencer — nunca o modo
+                // nativo do tema sozinho (a regressão medida no ERP: antes
+                // desta função, `{ ...prev, ...activeTheme.design }` deixava
+                // o `mode` do tema sobrescrever o `prev.mode` do usuário).
+                setDesign((prev) => {
+                    const requestedMode: 'light' | 'dark' = (prev.mode as 'light' | 'dark') || 'dark';
+                    const resolved = resolveThemeForMode(
+                        { design: activeTheme.design as Record<string, SarakTokenValue>, contraparte: activeTheme.contraparte },
+                        requestedMode,
+                    );
+                    return validateDesign({ ...prev, ...resolved });
+                });
             }
             return;
         }

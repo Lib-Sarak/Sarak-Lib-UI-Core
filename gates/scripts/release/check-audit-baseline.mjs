@@ -95,6 +95,8 @@ const PARSERS = {
     'auditor_contraste.mjs': (out) => ({
         reprovados: num(out, /(\d+) par\(es\)-tema reprovado\(s\) no total/),
         reprovadosModoOposto: num(out, /(\d+) par\(es\)-tema reprovado\(s\) no MODO OPOSTO/),
+        // plan-26: tema fora da lista de isenção (os 18 legados) sem `contraparte`.
+        contraparteFaltando: num(out, /(\d+) tema\(s\) SEM contraparte e fora da isenção/),
     }),
 };
 

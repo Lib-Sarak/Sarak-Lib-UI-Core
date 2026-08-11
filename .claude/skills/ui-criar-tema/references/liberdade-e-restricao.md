@@ -74,7 +74,33 @@ Para a lista **viva** de tokens de texto e de fundo por trás da tabela da §1, 
 `gates/scripts/audit/verify_contrast.ts` — é a mesma fonte que o gate usa, então nunca diverge do que é
 cobrado de verdade.
 
-## 5. Checklist rápido antes de registrar um tema
+## 5. Contraparte — o que muda para o modo OPOSTO (plan-26)
+
+Um tema é escrito para **um** modo (`design.mode`). A `contraparte` é um bloco **parcial**, autorado por você,
+com os tokens que precisam de um valor **diferente** quando alguém vê este tema no modo oposto —
+`resolveThemeForMode` (`presets/themes/color-engine.ts`) aplica esse bloco por cima do `design` nativo. Sem
+`contraparte`, o tema cai no fallback sintetizado (`syncThemeWithMode`) — aceitável para os 18 legados, **não**
+para tema novo (o gate `auditor_contraste` exige presença fora dessa lista de isenção).
+
+**86% do tema é agnóstico de modo** (estrutura, tipografia, animação, espaço — não toque). O que precisa de
+valor por modo são só as cores de **fundo**, **texto** e **borda** — a marca (`primaryColor`, `accentColor`,
+status) normalmente **não muda**, é identidade. A lista viva de qual token cai em qual papel é
+`resolveSemanticRole` em `presets/themes/color-engine.ts` (`EXPLICIT_TEXT_TOKENS` /
+`EXPLICIT_PRIMARY_TOKENS` / `EXPLICIT_BORDER_TOKENS` / `EXPLICIT_BG_TOKENS`) — leia lá, não copie daqui: ela
+já erra nas pontas por heurística de nome (`textureColor`/`cardTitleIconGlow` não são texto, são
+fundo/marca) e será corrigida com o tempo; este documento não pode divergir dela por estar desatualizado.
+
+**Como autorar, na prática (o que os 5 temas da plan-25 fizeram):**
+
+1. Rode o solucionador (`solve_theme_contrast.ts`) sobre um design candidato para o modo oposto — ele mede
+   com o MESMO `PAIRS` do gate e corrige só a luminosidade do texto que reprovar.
+2. Um par que reprova nos DOIS fundos do mesmo botão, em direções opostas (`cardActionBtnPrimaryBg` vs.
+   `cardActionBtnHoverBg`) não se resolve mexendo no texto — aproxime a luminância dos dois fundos, como no
+   §1 acima.
+3. Cole o relatório do solucionador ao registrar a contraparte — é a mesma prova de "correção revisável" do
+   tema nativo.
+
+## 6. Checklist rápido antes de registrar um tema
 
 1. Preencheu os 422 via `generate_theme_template.ts`? (temas **novos** nascem completos — R33)
 2. Rodou `findMissingThemeAxes` e sabe quais eixos ficaram vazios, se algum?

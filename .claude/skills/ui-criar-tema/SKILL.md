@@ -73,6 +73,12 @@ resolvido" exige uma decisão sua (ver `references/liberdade-e-restricao.md` §1
 
 Compare o `npm run audit` com o **baseline** de `specs/specs/01-gates-e-baseline.md`, nunca com zero.
 
+### 5.5. Contraparte de modo (obrigatória para tema NOVO — plan-26)
+Sem `contraparte`, escolher este tema troca o MODO do usuário (a regressão que a plan-26 consertou). Escreva
+`contraparte: { ... }` no `ThemePreset` — bloco parcial com só os tokens de fundo/texto/borda que mudam para
+o modo oposto (ver `references/liberdade-e-restricao.md` §5). `auditor_contraste` **exige** presença fora da
+lista de isenção (os 18 temas legados, que ficam no fallback sintetizado).
+
 ### 6. Confirmação
 Comunique que o tema está registrado, quantos eixos ficaram vazios (se algum) e o resultado do
 `auditor_presets`.
@@ -94,6 +100,7 @@ Comunique que o tema está registrado, quantos eixos ficaram vazios (se algum) e
 - [ ] A completude foi medida com `findMissingThemeAxes`, e as lacunas são deliberadas?
 - [ ] O solucionador rodou e o relatório foi colado? Todo par "não resolvido" tem decisão registrada?
 - [ ] `npm run audit` fecha sem regressão no auditor de contraste (R31)?
+- [ ] Tema NOVO: `contraparte` foi autorada (bloco parcial) e o gate deixou de acusar isenção faltando?
 
 ## Referências (Camada 3)
 
@@ -108,8 +115,12 @@ Comunique que o tema está registrado, quantos eixos ficaram vazios (se algum) e
 
 **Validador — o GATE invoca, não você:**
 - `gates/scripts/audit/verify_contrast.ts` (`auditor_contraste.mjs`) — **tem gate**, dentro de
-  `npm run audit` (R31). Mede os 36 pares reais texto/fundo a 4,5:1 em cada tema embarcado; é o que o
-  solucionador (acima) consulta para saber o que corrigir.
+  `npm run audit` (R31). Mede os 36 pares reais texto/fundo a 4,5:1 em cada tema embarcado (nativo E o
+  modo oposto, via `resolveThemeForMode`); é o que o solucionador (acima) consulta para saber o que
+  corrigir. Também **exige `contraparte`** fora da lista de isenção (`CONTRAPARTE_EXEMPTION_LIST`, plan-26).
+- `src/core/Design/presets/themes/color-engine.ts` (`resolveThemeForMode`) — a função que decide o que
+  aplicar ao trocar de tema/modo: nativo → `design`; oposto com `contraparte` → o bloco autorado; oposto
+  sem `contraparte` → `syncThemeWithMode` (fallback dos legados). Todo caminho de aplicar tema passa por ela.
 - `gates/scripts/audit/verify_theme_parity.ts` — valida UM tema. **Reprova**
   chave que não existe no dicionário; **avisa** (sem reprovar) quando o tema é parcial. A
   assimetria é deliberada: **tema novo nasce 100% preenchido pelo gerador**, mas tema que já

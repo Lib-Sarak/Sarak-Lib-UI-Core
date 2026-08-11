@@ -10,6 +10,7 @@
  * paridade 1:1:1:1:1 (ver `Provider/types.ts`). A blindagem estrita vive na diretiva
  * `theme` (Spec 42), que autores de manifesto consomem via `Partial<SarakThemePayload>`.
  */
+import type { SarakDesignState } from '../../../Provider/types';
 
 /**
  * União conhecida dos ids de preset (fonte única; espelha `GLOBAL_THEMES`).
@@ -49,6 +50,15 @@ export interface ThemePreset {
     name: string;
     description: string;
     design: Record<string, unknown>;
+    /**
+     * Bloco PARCIAL, autorado, com os tokens que mudam para o modo OPOSTO ao
+     * nativo (`design.mode`) — plan-26. OPCIONAL no tipo de propósito: torná-lo
+     * obrigatório quebraria os 18 temas legados e todo tema de consumidor
+     * (R33). `resolveThemeForMode` (abaixo) é quem decide o que aplicar; o
+     * gate de contraste (`auditor_contraste`) é quem EXIGE presença, com uma
+     * lista de isenção que nasce com exatamente os 18 legados.
+     */
+    contraparte?: Partial<SarakDesignState>;
 }
 
 import { sarakSovereignTheme } from './sarak-sovereign';

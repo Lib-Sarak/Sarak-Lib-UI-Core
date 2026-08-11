@@ -1,6 +1,7 @@
 import { MASTER_DESIGN_MAP } from '../../master-map';
 import { shiftColorMode, parseToRgba, rgbToHsl, hslToRgb, rgbToHex } from '../../../Provider/utils/color-engine';
 import type { SarakTokenValue } from '../../types';
+import type { SarakDesignState } from '../../../Provider/types';
 
 /**
  * Motor de Cores Semântico em Tempo de Execução (v11.3)
@@ -293,4 +294,40 @@ export const syncThemeWithMode = (draftTokens: Record<string, SarakTokenValue>, 
     }
 
     return result;
+};
+
+/** O que `resolveThemeForMode` precisa de um tema — `ThemePreset` e `ThemeEntry` batem por estrutura. */
+export interface ModeResolvableTheme {
+    design: Record<string, SarakTokenValue>;
+    contraparte?: Partial<SarakDesignState>;
+}
+
+/**
+ * A função ÚNICA que decide o que aplicar quando um tema é escolhido ou tem o
+ * modo alternado (plan-26). Resolve a regressão da Decisão D: depois dela,
+ * `applyFullConfigRaw(theme.design)` cru trocava o MODO DO USUÁRIO pelo modo
+ * nativo do tema — a preferência dele tem de vencer, sempre.
+ *
+ * Três casos, nesta ordem:
+ *  1. modo pedido = modo nativo do tema        → `theme.design`, tal como escrito.
+ *  2. modo pedido ≠ nativo, e HÁ `contraparte`  → `{ ...design, ...contraparte, mode }`
+ *     — bloco AUTORADO, nunca sintetizado.
+ *  3. modo pedido ≠ nativo, e NÃO há `contraparte` → `syncThemeWithMode` — o
+ *     fallback dos 18 temas legados (decisão do dono: eles não são autorados).
+ *
+ * NÃO resolve com conversão automática por padrão: `syncThemeWithMode` só
+ * entra quando o autor não deixou nada escrito para o modo oposto.
+ */
+export const resolveThemeForMode = (
+    theme: ModeResolvableTheme,
+    modo: 'light' | 'dark',
+): Record<string, SarakTokenValue> => {
+    const nativeMode: 'light' | 'dark' = (theme.design.mode as 'light' | 'dark') || 'dark';
+    if (modo === nativeMode) {
+        return theme.design;
+    }
+    if (theme.contraparte) {
+        return { ...theme.design, ...theme.contraparte, mode: modo } as unknown as Record<string, SarakTokenValue>;
+    }
+    return syncThemeWithMode(theme.design, modo);
 };

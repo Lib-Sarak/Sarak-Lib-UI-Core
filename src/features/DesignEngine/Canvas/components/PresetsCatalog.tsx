@@ -1,5 +1,6 @@
 import React, { useState } from 'react';
 import { GLOBAL_THEMES, ThemePreset } from '../../../../core/Design/presets/themes';
+import { resolveThemeForMode } from '../../../../core/Design/presets/themes/color-engine';
 import type { SarakTokenValue } from '../../../../core/Design/types';
 import { upgradeThemePayload } from '../../../../core/Design/master-map';
 import { Sparkles, Layout, Type, Layers, MousePointer2, Keyboard } from 'lucide-react';
@@ -82,7 +83,15 @@ export const PresetsCatalog: React.FC<PresetsCatalogProps> = ({
                                 theme={theme}
                                 currentMode={currentMode}
                                 onApply={() => {
-                                    const payload = upgradeThemePayload({ ...theme.design as Record<string, SarakTokenValue>, mode: currentMode });
+                                    // plan-26: o modo do USUÁRIO tem que vencer — nunca o modo
+                                    // nativo do tema sozinho. `resolveThemeForMode` decide entre
+                                    // o design nativo, a contraparte autorada ou o fallback
+                                    // sintetizado (`syncThemeWithMode`, só para os 18 legados).
+                                    const resolved = resolveThemeForMode(
+                                        { design: theme.design as Record<string, SarakTokenValue>, contraparte: theme.contraparte },
+                                        currentMode as 'light' | 'dark',
+                                    );
+                                    const payload = upgradeThemePayload(resolved);
                                     if (onApplyFullTheme) {
                                         onApplyFullTheme(payload);
                                     } else {

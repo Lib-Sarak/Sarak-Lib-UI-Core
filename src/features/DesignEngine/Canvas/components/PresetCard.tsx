@@ -1,14 +1,19 @@
 import React from 'react';
 import { motion } from 'framer-motion';
 import { ThemePreset } from '../../../../core/Design/presets/themes';
-import { syncThemeWithMode } from '../../../../core/Design/presets/themes/color-engine';
+import { resolveThemeForMode } from '../../../../core/Design/presets/themes/color-engine';
 import type { SarakTokenValue } from '../../../../core/Design/types';
 import { useDesignVariables } from '../../../../core/Design/hooks/useDesignVariables';
 import { Layout, ArrowRight } from 'lucide-react';
 
 export const PresetCard = ({ theme, currentMode, onApply, index }: { theme: ThemePreset, currentMode: string, onApply: () => void, index: number }) => {
-    // Calcula o design final na hora baseando-se no modo atual do sistema
-    const design = syncThemeWithMode(theme.design as Record<string, SarakTokenValue>, currentMode as 'light' | 'dark');
+    // plan-26: a miniatura reflete o que `onApply` REALMENTE aplicaria — a
+    // contraparte AUTORADA quando existe, e só cai no `syncThemeWithMode`
+    // sintetizado para os temas legados sem contraparte.
+    const design = resolveThemeForMode(
+        { design: theme.design as Record<string, SarakTokenValue>, contraparte: theme.contraparte },
+        currentMode as 'light' | 'dark',
+    );
     const { variables } = useDesignVariables(design);
 
     const primary = String(design.primaryColor || 'var(--color-theme-primary, #00f2ff)');
