@@ -76,12 +76,21 @@ achado novo. **32 numerados** (o 32 é novo) · **24 fechados** (§6) · **2 ace
 > **E o 39 em 2026-08-11, da `plan-25`:** o gerador de gabarito de tema produz arquivo que **não faz parse**.
 > É o achado mais caro dos cinco, porque **quebra o segundo passo do fluxo documentado de criação de tema** —
 > e passou dois ciclos despercebido porque o aceite contava chaves em vez de validar valores.
+>
+> **E o 40 em 2026-08-11**, achado **no console de um consumidor real** durante a validação da `plan-27`: a
+> lib injeta duas chaves e depois descarta as próprias chaves, em laço. **É o achado 34 voltando** — ele foi
+> aceito porque *"a exposição medida na base é zero"*, e a exposição deixou de ser zero. **Dívida aceita não
+> é dívida resolvida**; ela volta quando o contexto muda, e o registro é o que permite reconhecê-la.
 
 ## 3.1 Segurança e medição
 
 > O achado **17** fechou com a `plan-19` e saiu para a §6. A categoria voltou a encher no mesmo dia: **33** e
-> **35** entraram com a campanha de gates, **37** e **38** com a revisão da `plan-24`, e **39** com a
-> `plan-25`. É a categoria de *gate que mede errado ou não mede* — e as cinco linhas abaixo são todas disso.
+> **35** entraram com a campanha de gates, **37** e **38** com a revisão da `plan-24`, **39** com a `plan-25`
+> e **40** com a `plan-27`. É a categoria de *gate que mede errado ou não mede* — e as seis linhas abaixo são
+> todas disso.
+>
+> ⚠️ **Três das seis (38, 39, 40) foram achadas OLHANDO O CONSUMIDOR**, não a suíte. A base tem 1180 testes
+> verdes e nenhum deles via qualquer uma das três.
 
 | # | Achado | Onde | Regra | Destino |
 |---|---|---|---|---|
@@ -90,6 +99,7 @@ achado novo. **32 numerados** (o 32 é novo) · **24 fechados** (§6) · **2 ace
 | 37 | **Parêntese a mais mata duas declarações do toast.** `var(--color-theme-card,#1e293b))` e `var(--sarak-text-main,#ffffff))` — CSS malformado é descartado pelo parser, então o toast fica **sem fundo e sem cor de texto próprios** e herda o que estiver atrás. Os dois nomes existem e **são emitidos**; o defeito é só a sintaxe. Nenhum gate olha a sintaxe de `var()` dentro de string | `src/components/atomic/Feedback/SarakToast.tsx:84-85` | **nenhuma** | **Corrigir** — 2 caracteres; e decidir se vale detector de `var()` desbalanceado |
 | 38 | **`--sarak-status-*-color-bg` é consumida e nunca emitida.** 5+ componentes usam `var(--sarak-status-error-color-bg, rgba(239,68,68,0.1))` como fundo de texto de status, mas `generateVariants` só existe em `primaryColor`, `secondaryColor`, `tertiaryColor` e `cardBackgroundColor` ⇒ **o fallback duro sempre vence, e o tema não controla esse fundo**. Medido na revisão da `plan-24`: o par texto-de-status reprova em **7/18** (erro) e **5/18** (sucesso) temas. O `auditor_ghostvars` **não pegou** — possível mesma raiz do achado **35** | `src/components/atomic/Templates/SarakForm.tsx:105-107` · `SarakTable.tsx:72` · `gates/scripts/audit/auditor_ghostvars.mjs` | **R7** | **Corrigir** — decidir entre emitir a variante ou trocar o nome consumido; **e** o detector, que é a metade de gate |
 | 39 | **`generate_theme_template.ts` gera arquivo que NÃO FAZ PARSE.** O **segundo comando** do workflow da skill `ui-criar-tema` emite `[object Object]` para os **40 de 422** tokens cujo `defaultValue` é um objeto `{mob,tab,desk}` — `designProps += \`${key}: ${value},\``, interpolação cega. Reproduzido pelo revisor: `TS1005: ',' expected` já na linha 75. **Sem reparo manual fora do fluxo, nenhum tema sai do papel.** Passou despercebido porque o aceite da `plan-24-1` contava **chaves** (422 ✓), nunca validou **valores** — régua do revisor, não falha do executor | `.agents/skills/ui-criar-tema/scripts/generate_theme_template.ts` | **nenhuma** | **Corrigir** — serializar objeto responsivo, ou achatar para o `desk` (a convenção que os 18 temas já usam). **E** um teste que compile a saída do gerador: contar chave não é validar |
+| 40 | **A lib INJETA duas chaves e depois DESCARTA as próprias chaves, em laço.** `validation.ts:227-228` escreve `hapticIntensity = 0` e `scaleRatio = 1` porque, diz o comentário da `:222`, elas *"não estão em `MASTER_DESIGN_MAP` (só no manifesto legado, `DESIGN_MANIFEST`)"* — e a **`plan-21` esvaziou esse manifesto**. Então a validação seguinte cai no descarte da `:213`, que reinjeta, que descarta: **um par de `console.warn` por passada, para sempre**. Medido no console do ERP (consumidor real), dezenas de repetições. **É o achado 34 materializado** — ele foi aceito porque *"a exposição medida na base é zero"*, e deixou de ser zero | `src/core/Provider/utils/validation.ts:213` · `:227-228` | **R6** | **Corrigir** — remover a injeção, ou devolver as duas ao domínio. **E** um teste: validar duas vezes o mesmo design não pode emitir warn na segunda |
 
 ## 3.2 Violação de regra **já formada** que o gate agora vê, mas não corrige sozinho
 

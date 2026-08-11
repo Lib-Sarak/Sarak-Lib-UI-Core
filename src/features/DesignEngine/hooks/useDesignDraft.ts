@@ -1,8 +1,9 @@
 import React, { useState, useCallback, useMemo } from 'react';
 import { MASTER_DESIGN_MAP, getAllDesignTokens } from '../../../core/Design/master-map';
 import { useDesignDraftSync } from './useDesignDraftSync';
-import { SarakUIContextType, SarakDesignState } from '../../../core/Provider/types';
+import { SarakUIContextType, SarakDesignState, ThemeEntry } from '../../../core/Provider/types';
 import { SarakTokenValue } from '../../../core/Design/types';
+import { resolveThemeForMode, syncThemeWithMode } from '../../../core/Design/presets/themes/color-engine';
 
 /**
  * Deep Comparison Utility (v12.0)
@@ -104,18 +105,46 @@ export const useDesignDraft = (sarak: SarakUIContextType) => {
      * Atualiza o rascunho
      */
     const updateDraft = useCallback((key: string, value: SarakTokenValue) => {
+        // plan-27 PASSO 3: este `if` já existia, mas só trocava o RÓTULO do
+        // modo — idêntico ao caminho genérico. Antes da Decisão D
+        // (plan-24-1 §2.8), quem convertia de fato era `useDesignVariables` a
+        // cada render; esse "lá embaixo" acabou. Agora passa pelo MESMO
+        // resolvedor que `ShellThemeToggle` usa: achado o tema por
+        // `resolvedThemeId`, RECARREGA-o inteiro no modo pedido (contraparte
+        // autorada, ou o fallback sintetizado para os 18 legados) — as duas
+        // portas produzem design idêntico (§3.3). Sem tema rastreável, cai no
+        // fallback sobre o design corrente, como sempre.
+        if (key === 'mode') {
+            const targetMode = value as 'light' | 'dark';
+            const allThemes = sarak.allThemes as ThemeEntry[] | undefined;
+            const activeTheme = allThemes?.find((t) => t.id === sarak.resolvedThemeId);
+            const isReload = Boolean(activeTheme?.design) && draft.mode !== targetMode;
+
+            setDraftState((prev: SarakDesignState | null) => {
+                const current = prev || draft;
+                if ((current as Record<string, SarakTokenValue>).mode === value) return prev;
+                const resolved = activeTheme?.design
+                    ? resolveThemeForMode({ design: activeTheme.design as Record<string, SarakTokenValue>, contraparte: activeTheme.contraparte }, targetMode)
+                    : syncThemeWithMode(current as Record<string, SarakTokenValue>, targetMode);
+                return resolved as unknown as SarakDesignState;
+            });
+
+            // PASSO 5 — o aviso, NO MOMENTO da troca (decisão do dono, §2.5): a
+            // contraparte é um conjunto de valores fixos, então recarregar
+            // substitui qualquer customização feita neste tema.
+            if (isReload) {
+                showToast('warning', `Tema recarregado para o modo ${targetMode === 'dark' ? 'escuro' : 'claro'} — customizações de cor feitas neste tema foram substituídas pela contraparte autorada.`);
+            }
+            return;
+        }
+
         setDraftState((prev: SarakDesignState | null) => {
             const current = prev || draft;
             const currentAsRecord = current as Record<string, SarakTokenValue>;
             if (currentAsRecord[key] === value) return prev;
-            
-            if (key === 'mode') {
-                return { ...current, mode: value as SarakDesignState['mode'] } as SarakDesignState;
-            }
-            
             return { ...current, [key]: value } as SarakDesignState;
         });
-    }, [draft]);
+    }, [draft, sarak.allThemes, sarak.resolvedThemeId, showToast]);
 
     const resetComponent = useCallback((schemaIdOrSchemas: string | string[]) => {
         const componentKeys = typeof schemaIdOrSchemas === 'string'

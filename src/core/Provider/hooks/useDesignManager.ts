@@ -6,6 +6,7 @@ import { getDefaultDesignState } from '../../Design/master-map';
 import { useDesignSync } from './useDesignSync';
 import { useDesignRemoteLoader } from './useDesignRemoteLoader';
 import { useDesignStorageSync } from './useDesignStorageSync';
+import { useResolvedThemeId } from './useResolvedThemeId';
 import { SarakThemePayload, SarakUIOptions, SarakDesignState, ThemeEntry } from '../types';
 
 /**
@@ -38,35 +39,39 @@ export const useDesignManager = (props: {
 
     const [isBackendLoaded, setIsBackendLoaded] = useState(false);
 
+    /**
+     * plan-27: o id do tema que a SEMENTE efetivamente resolveu — `activeThemeId`
+     * (controlado) manda; senão `initialTheme`; sem nenhum dos dois (ou sem
+     * `allThemes` para achar o id pedido), cai no tema padrão do sistema. É a
+     * MESMA lógica que `getSeedConfig` usa para os tokens — extraída para que
+     * `resolvedThemeId` (abaixo) nasça consistente com o design semeado.
+     */
+    const resolveSeedThemeId = useCallback((): string | undefined => {
+        const seedThemeId = activeThemeId || initialTheme;
+        if (seedThemeId && allThemes?.some(t => t.id === seedThemeId)) return seedThemeId;
+        const defaultThemeId = optionsRef.current?.theme?.defaultTheme || 'classic';
+        const themeEntry = GLOBAL_THEMES.find(t => t.id === defaultThemeId) ?? GLOBAL_THEMES[0];
+        return themeEntry?.id;
+    }, [activeThemeId, initialTheme, allThemes]);
+
     // Initial seed logic (Sovereign Map v11.0)
     const getSeedConfig = useCallback(() => {
-        const opt = optionsRef.current;
         const masterDefaults = getDefaultDesignState();
-
-        let themeDesignTokens: Record<string, unknown> = {};
-
-        // `activeThemeId` (controlado) manda; senão `initialTheme` (semente,
-        // não-reativa) só afeta este seed inicial — nunca reaplica sozinho.
-        const seedThemeId = activeThemeId || initialTheme;
-        if (seedThemeId && allThemes) {
-            const activeTheme = allThemes.find(t => t.id === seedThemeId);
-            if (activeTheme) {
-                themeDesignTokens = activeTheme.design || {};
-            }
-        }
-
-        // Aplica o Preset base apenas se necessário, mas a fundação vem do Master Map
-        if (Object.keys(themeDesignTokens).length === 0) {
-            const defaultThemeId = opt?.theme?.defaultTheme || 'classic';
-            const themeEntry = GLOBAL_THEMES.find(t => t.id === defaultThemeId) ?? GLOBAL_THEMES[0];
-            themeDesignTokens = themeEntry?.design ?? {};
-        }
+        const seedId = resolveSeedThemeId();
+        const themeEntry = allThemes?.find(t => t.id === seedId) ?? GLOBAL_THEMES.find(t => t.id === seedId);
+        const themeDesignTokens = themeEntry?.design ?? {};
 
         // Mescla de defaults conhecidos + payload dinâmico do banco no estado
         // canônico: cast pontual tipado (o índice dinâmico de `themeDesignTokens`
         // não se atribui sozinho a `SarakDesignState`).
         return { ...masterDefaults, ...themeDesignTokens, ...configRef.current } as SarakDesignState;
-    }, [activeThemeId, initialTheme, allThemes]);
+    }, [resolveSeedThemeId, allThemes]);
+
+    // plan-27 — o tema EFETIVAMENTE no ar (não a prop `activeThemeId` crua); ver
+    // `useResolvedThemeId.ts`. ADITIVO: não muda a semântica de `activeThemeId`/
+    // `initialTheme` (R33). Extraído do corpo deste hook para não estourar o
+    // teto de estado por hook (R9) — sem isso são 5 useState/useEffect aqui.
+    const [resolvedThemeId, setResolvedThemeId] = useResolvedThemeId(activeThemeId, resolveSeedThemeId);
 
     const [design, setDesign] = useState<SarakDesignState>(() => {
         if (typeof window === 'undefined') return getSeedConfig();
@@ -139,6 +144,8 @@ export const useDesignManager = (props: {
         applyConfig,
         applyFullConfig,
         persistDesign,
-        isBackendLoaded
+        isBackendLoaded,
+        resolvedThemeId,
+        setResolvedThemeId
     };
 };

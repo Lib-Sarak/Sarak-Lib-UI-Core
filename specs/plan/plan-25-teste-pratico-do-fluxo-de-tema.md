@@ -756,5 +756,13 @@ Três instâncias, na mesma entrega, de **medir a forma em vez do conteúdo** �
 2. A síntese em [[09-temas-e-presets]] §5 — **catálogo de 18 → 23** e o registro de que a diversidade agora
    é **medida**, não afirmada. É do revisor, na aprovação.
 
-**Decisão do dono, sem prazo:** promover algum dos 5 a `SARAK_REFERENCE_THEMES`, ou mantê-los como catálogo
-comum. Nada depende disso.
+✅ **Decisão do dono, 2026-08-11: os 5 ficam como catálogo COMUM.** Nenhum é promovido a
+`SARAK_REFERENCE_THEMES` — que segue com `minimalist-airy` e `sarak-sovereign`. Faz sentido: é dali que o
+consumidor clona (a §4.1 manda), e o ERP monta os dois temas dele espalhando esse par. Trocar a referência
+mudaria a base de quem já integrou, sem ninguém ter pedido.
+
+## 11.6 O que veio junto na correção *(decidido pelo dono, 2026-08-11)*
+
+O achado **40** — o laço injeta-descarta de `validation.ts` — é corrigido **na mesma execução** que a
+recalibragem. Não tem relação temática com esta plan; tem relação de oportunidade: os dois são pequenos,
+independentes, e o dono os despachou juntos.

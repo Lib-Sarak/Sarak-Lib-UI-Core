@@ -120,7 +120,7 @@ export const SarakUIProvider: React.FC<SarakUIProviderProps> = ({
     }, [customThemes]);
 
     // 2. Gerenciamento do Estado de Design e Persistência
-    const { design, setDesign, applyConfig, applyFullConfig, persistDesign, isBackendLoaded } = useDesignManager({
+    const { design, setDesign, applyConfig, applyFullConfig, persistDesign, isBackendLoaded, resolvedThemeId, setResolvedThemeId } = useDesignManager({
         initialConfig: initialPropsConfig,
         options,
         isHydrated,
@@ -168,6 +168,8 @@ export const SarakUIProvider: React.FC<SarakUIProviderProps> = ({
         options,
         allThemes,
         activeThemeId,
+        resolvedThemeId,
+        setResolvedThemeId,
         token,
         branding,
         updateBranding,
@@ -179,7 +181,8 @@ export const SarakUIProvider: React.FC<SarakUIProviderProps> = ({
         drafting.setDraftDesign, drafting.smartApplyConfig,
         drafting.smartApplyFullConfig, applyConfig, applyFullConfig,
         persistDesign, registeredModules, isHydrated, options,
-        allThemes, activeThemeId, token, branding, updateBranding, onMediaUpload
+        allThemes, activeThemeId, resolvedThemeId, setResolvedThemeId,
+        token, branding, updateBranding, onMediaUpload
     ]);
 
     // 7. Renderização com Strict Sync (Evita Flash de Temas)

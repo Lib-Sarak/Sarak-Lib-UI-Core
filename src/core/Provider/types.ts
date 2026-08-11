@@ -212,12 +212,12 @@ export interface SarakUIContextType {
     isHydrated: boolean;
     options: SarakUIOptions;
     allThemes: unknown[]; // Array unificado (Scripts + DB) para a interface
-    activeThemeId?: string; // Espelho do prop do Provider (plan-26) — p/ ShellThemeToggle achar a contraparte do tema ativo
+    activeThemeId?: string; // Espelho CRU do prop do Provider — só setado no modo CONTROLADO (09-temas-e-presets §4.3)
+    resolvedThemeId?: string; // O tema EFETIVAMENTE no ar (plan-27) — usar este p/ achar a contraparte, nunca activeThemeId cru
+    setResolvedThemeId?: (id: string | undefined) => void; // Quem aplica um preset novo anuncia o id aqui (plan-27)
     token?: string | null; // Adicionado para expor o token aos componentes filhos (Catálogo, Temas, etc)
-    // Branding
     branding?: SarakBrandingState;
     updateBranding?: (partial: Partial<SarakBrandingState>) => Promise<void>;
-    // Media Strategy
     onMediaUpload?: (file: File) => Promise<string>;
 }
 

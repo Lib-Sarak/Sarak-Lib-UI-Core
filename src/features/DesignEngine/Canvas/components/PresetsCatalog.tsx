@@ -92,6 +92,11 @@ export const PresetsCatalog: React.FC<PresetsCatalogProps> = ({
                                         currentMode as 'light' | 'dark',
                                     );
                                     const payload = upgradeThemePayload(resolved);
+                                    // plan-27: anuncia QUAL tema ficou no ar — sem isto,
+                                    // `resolvedThemeId` continuaria apontando pro tema anterior
+                                    // (ou pra semente) e a próxima troca de modo não acharia a
+                                    // contraparte deste tema recém-aplicado.
+                                    sarak?.setResolvedThemeId?.(theme.id);
                                     if (onApplyFullTheme) {
                                         onApplyFullTheme(payload);
                                     } else {

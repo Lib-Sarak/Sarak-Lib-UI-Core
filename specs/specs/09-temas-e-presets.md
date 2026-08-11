@@ -32,10 +32,31 @@ export interface ThemePreset {
     name: string;
     description: string;
     design: Record<string, unknown>;
+    contraparte?: Partial<SarakDesignState>;   // plan-26
 }
 ```
 
 Fonte: `src/core/Design/presets/themes/index.ts:42-47`.
+
+## 2.1 `contraparte` — o par claro/escuro é AUTORADO *(plan-26, 2026-08-11)*
+
+Bloco **parcial** com os tokens que mudam entre claro e escuro. **Medido: apenas 55 dos 422 carregam modo**
+— 14 de texto, 8 de borda, 33 de fundo. Os outros **367 são agnósticos**: 343 não-cor (estrutura, tipografia,
+animação, espaço) e 19 de marca/acento, que **não mudam** entre modos.
+
+**Por que autorada e não derivada.** `syncThemeWithMode` força as faixas (`bg` L≥88 no claro, `text` L≤25,
+`border` L=90 **fixo**), então **toda contraparte gerada converge para a mesma paleta**. Medido nas 5
+autoradas: **93 a 98% dos valores diferem** do que a síntese produziria, e elas guardam matizes distintos
+(H30, H96, H223, H270, H240) onde a derivação colapsaria.
+
+**E a ida e volta é exata.** `shiftColorMode` satura nos dois sentidos e não guarda de onde veio: `escuro →
+claro → escuro` devolve faixa de faixa, não o original. Com contraparte são dois conjuntos fixos, e alternar
+é reversível por construção — provado chave a chave.
+
+> **Opcional no TIPO, obrigatória no GATE.** Obrigatória no tipo quebraria os 18 legados e todo tema de
+> consumidor (**R33**). Quem exige é o `auditor_contraste`, com uma lista de isenção declarada que nasce com
+> exatamente os 18 e **só pode encolher** — o mesmo idioma de `@sarak-encapsula` e `VALUE_ALLOWLIST`: tipo
+> permissivo, gate estrito, exceção visível e contável.
 
 Quatro observações que importam mais que o formato:
 
@@ -149,6 +170,22 @@ consumidor ao contrato de estabilidade de referência** que `activeThemeId` exig
 tema inicial usa `initialTheme`; quem quer um seletor de tema controlado pelo próprio estado usa
 `activeThemeId` **e** memoiza `customThemes`.
 
+> 🔴 **`resolvedThemeId` — leia ESTE, nunca `activeThemeId` cru** *(plan-27, 2026-08-11)*. As duas props
+> acima são **entrada**; nenhuma delas diz qual tema está **efetivamente no ar**. O contexto passou a expor
+> `resolvedThemeId`, que nasce da semente (`activeThemeId || initialTheme`), acompanha a prop controlada
+> **e é atualizado quando o painel aplica um preset**. Trocar de modo **não** o altera: é o mesmo tema noutro
+> modo.
+>
+> **Sem ele a contraparte é inalcançável.** Quem lê `activeThemeId` cru não acha tema nenhum no consumidor
+> que usa `initialTheme` — e cai no fallback sintetizado **em silêncio**, perdendo os valores autorados. Foi
+> exatamente o que aconteceu entre a `plan-26` e a `plan-27`: o mecanismo existia, correto e testado, e
+> **nada no consumidor real o encontrava**.
+>
+> ⚠️ **A lição, porque ela custou uma plan inteira:** a lib **recomendava o caminho que degradava**.
+> `initialTheme` é o conselho desta seção, e era justamente ele que desligava a contraparte. Toda entrega de
+> mecanismo novo precisa de um aceite que o exercite **pela porta que a documentação recomenda ao
+> importador** — não pela porta mais conveniente de testar.
+
 ### 4.3.1 O que é emitido é o que foi escrito — decisão **D** *(`plan-24-1`, 2026-08-11)*
 
 > 🔴 **Mudança de comportamento público.** Até a `plan-24-1`, `useDesignVariables` chamava
@@ -169,6 +206,25 @@ contar a ninguém. Ela também **inviabilizava conserto**: corrigir um token de 
 forçando — desligar a reescrita levou o gate de **108 para 188** reprovados antes de eles serem corrigidos.
 Os 18 foram corrigidos; **o tema do consumidor não**, e o solucionador não é publicado. A entrada em
 `docs/migracoes.md` é obrigatória de ler antes do upgrade.
+
+### O efeito colateral de D, e como ele foi fechado
+
+Rodar a conversão **a cada render** produzia um efeito do qual a UI dependia sem nunca ter sido escrito:
+**tema e modo eram independentes** — você estava no claro, escolhia um tema escuro, e o motor o convertia
+para claro na hora. **O seu modo vencia.**
+
+Desligar a reescrita levou junto essa garantia: durante a `plan-24-1`, **escolher um tema passou a trocar o
+modo do usuário**. Foi encontrado no consumidor real, não pela suíte.
+
+O fechamento veio em duas partes: a **`plan-26`** criou `resolveThemeForMode` — três casos (modo nativo →
+`design`; modo oposto **com** contraparte → merge autorado; **sem** contraparte → `syncThemeWithMode`, o
+fallback dos 18 legados) — e a **`plan-27`** ligou os **cinco** caminhos que aplicam tema ou trocam modo:
+`PresetsCatalog`, `ShellThemeToggle`, `useDesignSync`, `PresetCard` e o **token `mode`** do painel, que só
+trocava o rótulo.
+
+> **A preferência de modo do usuário vence, e o valor é escolhido, não derivado.** Trocar de modo
+> **recarrega** o tema (decisão do dono): os 55 tokens de modo são sobrescritos, inclusive customizações
+> manuais — e o painel avisa **no momento da troca**.
 
 ## 4.4 Persistir — `localStorage`, e a sincronização entre abas
 

@@ -673,6 +673,9 @@ interface SarakUIContextType {
     isHydrated: boolean;
     options: SarakUIOptions;
     allThemes: unknown[];
+    activeThemeId?: string;
+    resolvedThemeId?: string;
+    setResolvedThemeId?: (id: string | undefined) => void;
     token?: string | null;
     branding?: SarakBrandingState;
     updateBranding?: (partial: Partial<SarakBrandingState>) => Promise<void>;
@@ -1178,6 +1181,7 @@ declare const useDesignDraft: (sarak: SarakUIContextType) => {
  * paridade 1:1:1:1:1 (ver `Provider/types.ts`). A blindagem estrita vive na diretiva
  * `theme` (Spec 42), que autores de manifesto consomem via `Partial<SarakThemePayload>`.
  */
+
 /**
  * União conhecida dos ids de preset (fonte única; espelha `GLOBAL_THEMES`).
  * Adicionar um tema = adicionar seu id aqui e importá-lo abaixo. Consumida pela
@@ -1190,6 +1194,15 @@ interface ThemePreset {
     name: string;
     description: string;
     design: Record<string, unknown>;
+    /**
+     * Bloco PARCIAL, autorado, com os tokens que mudam para o modo OPOSTO ao
+     * nativo (`design.mode`) — plan-26. OPCIONAL no tipo de propósito: torná-lo
+     * obrigatório quebraria os 18 temas legados e todo tema de consumidor
+     * (R33). `resolveThemeForMode` (abaixo) é quem decide o que aplicar; o
+     * gate de contraste (`auditor_contraste`) é quem EXIGE presença, com uma
+     * lista de isenção que nasce com exatamente os 18 legados.
+     */
+    contraparte?: Partial<SarakDesignState>;
 }
 declare const GLOBAL_THEMES: ThemePreset[];
 

@@ -12,7 +12,7 @@ interface ShellThemeToggleProps {
 }
 
 export const ShellThemeToggle: React.FC<ShellThemeToggleProps> = ({ variant = 'horizontal' }) => {
-    const { design, applyFullConfigRaw, allThemes, activeThemeId } = useSarakUI();
+    const { design, applyFullConfigRaw, allThemes, resolvedThemeId } = useSarakUI();
 
     // Safely fallback to 'dark' if undefined
     const isDarkMode = (design?.mode || 'dark') === 'dark';
@@ -24,14 +24,17 @@ export const ShellThemeToggle: React.FC<ShellThemeToggleProps> = ({ variant = 'h
      * persistido. `useDesignVariables` deixou de chamar conversão a cada
      * render: no modo nativo, emitido = escrito.
      *
-     * plan-26: quando o tema ativo é RASTREÁVEL (`activeThemeId` casa com um
-     * item de `allThemes`), o toggle passa a usar `resolveThemeForMode` — a
-     * contraparte AUTORADA quando existe, o fallback sintetizado
-     * (`syncThemeWithMode`) só para os 18 legados. Sem tema rastreável (ex.:
-     * design customizado sem id de catálogo), o fallback direto sobre o
-     * `design` corrente é preservado — o comportamento de sempre.
+     * plan-27: procura por `resolvedThemeId` — o tema EFETIVAMENTE no ar —
+     * nunca `activeThemeId` cru. `activeThemeId` só existe no modo CONTROLADO
+     * (09-temas-e-presets §4.3); todo consumidor que segue a recomendação da
+     * spec e usa `initialTheme` teria `activeThemeId` sempre `undefined`, e a
+     * contraparte autorada (plan-26) nunca seria encontrada — era exatamente
+     * o defeito 2 da plan-27. Achado o tema, `resolveThemeForMode` decide
+     * entre a contraparte AUTORADA e o fallback sintetizado (os 18 legados).
+     * Sem tema rastreável, o fallback direto sobre o `design` corrente é
+     * preservado — o comportamento de sempre.
      */
-    const activeTheme = (allThemes as ThemeEntry[] | undefined)?.find((t) => t.id === activeThemeId);
+    const activeTheme = (allThemes as ThemeEntry[] | undefined)?.find((t) => t.id === resolvedThemeId);
 
     const toggleTheme = () => {
         const targetMode = isDarkMode ? 'light' : 'dark';
