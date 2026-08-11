@@ -22,7 +22,7 @@ Aqui está **como rodar** cada verificação e **onde ela está**. O que cada um
 
 # 2. Catálogo de gates
 
-## 2.1 `run_audit.mjs` — o agregador dos 11 auditores
+## 2.1 `run_audit.mjs` — o agregador dos 12 auditores
 
 ```
 node gates/scripts/audit/run_audit.mjs
@@ -32,8 +32,11 @@ node gates/scripts/audit/run_audit.mjs
 
 > ✅ **Ampliado de 8 para 11 em 2026-08-05** (plans 12 e 16): entraram `auditor_authcoupling.mjs` (R32),
 > `auditor_sectionpointers.mjs` (R23/R17) e `auditor_composicaoatomica.mjs` (R10).
+>
+> ✅ **De 11 para 12 em 2026-08-10** (`plan-24`): entrou `auditor_contraste.mjs` (R31) — **o último dos seis
+> gates que não existiam em arquivo nenhum**. Com ele, a fila de regras ⏳ zerou.
 
-Ele roda os 11 na ordem abaixo, cada um em processo próprio:
+Ele roda os 12 na ordem abaixo, cada um em processo próprio:
 
 | # | Auditor | Cobra | Como ler a saída |
 | --- | --- | --- | --- |
@@ -48,6 +51,7 @@ Ele roda os 11 na ordem abaixo, cada um em processo próprio:
 | 9 | `auditor_authcoupling.mjs` | R32 | AST: sinks de credencial + rota de auth embutida. Um `[FAIL]` por sink |
 | 10 | `auditor_sectionpointers.mjs` | R23 · R17 | Ponteiro `§N.N` que não resolve contra o heading real do alvo citado (autorreferência) |
 | 11 | `auditor_composicaoatomica.mjs` | R10 | AST: `<button>`/`<input>`/`<select>` cru fora da fronteira declarada de R10 |
+| 12 | `auditor_contraste.mjs` → `verify_contrast.ts` | R31 | Um `[FAIL]` por tema, com **cada par abaixo de 4,5:1** e a razão medida; a última linha traz reprovados **e pulados**. **Pulado ≠ aprovado** — é fundo não determinístico, declarado em vez de chutado |
 
 > ⚠️ **Relatório × FAIL.** O balde **deduzido** do `auditor_hardcoded` (ícones, `w-full`/`h-full`, alinhamento) é **relatório**: aparece na reconciliação, é contado, e **não reprova**. Só o líquido reprova. Já a linha final de `verify_parity` ("416 tokens validados") é relatório de contagem bruta; o número que importa para paridade é o das três fontes (409). Ver [[04-contrato-de-tokens-e-paridade]] §2.
 
@@ -144,6 +148,12 @@ Registrado como o que é: **cobertura que existe e não é cobrada**. **Não cob
 
 **Compare com esta tabela. Nunca espere zero.**
 
+> 🔴 **AVISO DE DEFASAGEM (revisor, 2026-08-10).** Só a linha do `auditor_contraste` foi escrita hoje. **As
+> demais são de 2026-08-05 e várias já não descrevem o repositório** — `hardcoded` e `ghostvars` foram pagos
+> pela `plan-15`, `composicaoatomica` mudou de fronteira na `plan-21`, e a suíte não é mais 289/1004. **A
+> fonte viva é `gates/baselines/audit-baseline.json`** (R20), regravada a cada plan; esta tabela é prosa e
+> envelhece — exatamente o padrão do achado **32**. Recontagem está na fila do `/spec-atualizar`.
+
 > ✅ **Recontagem completa em 2026-08-05.** As plans 12 e 16 ligaram 11 gates novos/ampliados de propósito
 > (§2.1 dos §9), **sem exceção** — o vermelho novo é dívida medida e registrada, não escondida, e é o que a
 > `plan-15` (ainda não executada) paga. O baseline de 2026-07-27/2026-08-03 abaixo está superado; os números
@@ -163,6 +173,7 @@ Registrado como o que é: **cobertura que existe e não é cobrada**. **Não cob
 | ↳ `auditor_authcoupling` (R32) | | ✅ **0 violações** — nasceu verde: o único violador (`SarakSecurityOrchestrator`) já havia saído na `plan-09` |
 | ↳ `auditor_sectionpointers` (R23 · R17, vão 7) | | ❌ **27 ponteiros mortos** de autorreferência — inclui o achado 29 (`sarak-dev/GUIA-MANUTENCAO.md:308`, `§5.1` inexistente), confirmado ainda vivo |
 | ↳ `auditor_composicaoatomica` (R10) | | ❌ **47 violações** — `components/atomic` 23 · `core/Shell` 15 · `Layout/` 6 · `engines/` 2 · `Discovery/` 1. Zero em `features/**`, `atomic/Buttons/`, `atomic/Inputs/` — a fronteira que R10 declara |
+| ↳ `auditor_contraste` (R31) *(`plan-24`, 2026-08-10)* | | ❌ **188 pares-tema reprovados · 25 pulados · 18 de 18 temas** — de um universo de 648 (36 pares × 18 temas), 435 aprovados. **Vermelho por desenho**: a `plan-24` construiu a régua e proibiu consertar tema; quem paga é a `plan-24-1`. ⚠️ Mede o token **escrito**; o emitido passa por `syncThemeWithMode` e, medido, **178 dos 648 veredictos divergem** (108 falhas no emitido) — a decisão **D** da `plan-24-1` fecha a diferença |
 | `barrel:check` **(R14)** | `npm run barrel:check` | ✅ **80 componentes, 0 faltas** — era 81 até a `plan-09` (saiu o `SarakTabs` de `Layouts/`), e 78 até P26, que pôs `components/engines/**` no escopo de varredura (§4.5, item 4) |
 | `catalog:check` **(R17 · R29)** | `npm run catalog:check` | ✅ catálogo em dia (**80** componentes — era 81 até a `plan-09`) |
 | `zero-brand:check` **(R12)** | `npm run zero-brand:check` | ✅ **357 arquivos, 0 violações** — a contagem é o nº de arquivos varridos; **o número que importa é o de violações (0)** |

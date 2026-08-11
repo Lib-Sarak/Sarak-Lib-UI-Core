@@ -42,7 +42,8 @@ function main() {
     'auditor_presets.mjs',
     'auditor_authcoupling.mjs',
     'auditor_sectionpointers.mjs',
-    'auditor_composicaoatomica.mjs'
+    'auditor_composicaoatomica.mjs',
+    'auditor_contraste.mjs'
   ];
   
   let totalFailures = 0;

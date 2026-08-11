@@ -92,6 +92,9 @@ const PARSERS = {
     'auditor_composicaoatomica.mjs': (out) => ({
         violacoes: /Nenhum elemento nativo cru/.test(out) ? 0 : num(out, /(\d+) ocorrência\(s\) de composição atômica violada/),
     }),
+    'auditor_contraste.mjs': (out) => ({
+        reprovados: num(out, /(\d+) par\(es\)-tema reprovado\(s\) no total/),
+    }),
 };
 
 /** Auditor sem parser conhecido cai no genérico: só o status de saída. */

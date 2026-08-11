@@ -66,16 +66,24 @@ achado novo. **32 numerados** (o 32 é novo) · **24 fechados** (§6) · **2 ace
 > relatório de plan desde a campanha de gates, o que contraria a §8: *"achado novo pega o próximo número
 > livre"*. **Dois deles já tinham sido reportados por mais de um executor como "pré-existente, fora do
 > escopo"** — que é exatamente o sintoma de achado sem número.
+>
+> **Mais dois em 2026-08-10, da revisão da `plan-24`:** **37** (parêntese a mais no `SarakToast`) e **38**
+> (`--sarak-status-*-color-bg` consumida e nunca emitida). Ambos **medidos**, ambos com o gate calado.
+> **Um terceiro NÃO entrou:** a suíte emite 19× `Could not parse CSS stylesheet` e eu **não atribuí causa** —
+> pela §8, suspeita não vira linha aqui.
 
 ## 3.1 Segurança e medição
 
-> ✅ **Categoria vazia desde 2026-08-10.** O achado **17** fechou com a `plan-19` e saiu para a §6. **A
-> categoria fica** — é para cá que volta o próximo caso de gate que mede errado ou não mede.
+> O achado **17** fechou com a `plan-19` e saiu para a §6. A categoria voltou a encher no mesmo dia: **33** e
+> **35** entraram com a campanha de gates, e **37** e **38** com a revisão da `plan-24`. É a categoria de
+> *gate que mede errado ou não mede* — e as quatro linhas abaixo são todas disso.
 
 | # | Achado | Onde | Regra | Destino |
 |---|---|---|---|---|
 | 33 | **Sem `.gitattributes` e com `core.autocrlf=true`**, qualquer `checkout`/`stash pop` reescreve `sarak-dev/` em CRLF; o gerador escreve LF e o `dev-kit:check` compara byte a byte ⇒ **falso "defasado"**. Foi reportado como "pré-existente, fora do escopo" por **dois** executores antes de a causa ser medida (`plan-18`) | raiz do repo · `scripts/generate-dev-kit.mjs` | **nenhuma** | **Corrigir** — `.gitattributes` com `eol=lf`, ou o checker normalizando antes de comparar |
 | 35 | **O detector de órfãs da `plan-20` perde entradas por ordem de propriedade.** O executor da `plan-21` mediu **27** com varredura própria contra as **24** do detector; as 3 a mais são `buttonHoverEffect`, `inputStyle`, `useTabularNums` | `gates/scripts/audit/auditor_ghostvars.mjs` | **R7** | **Corrigir** — o detector, não o manifesto |
+| 37 | **Parêntese a mais mata duas declarações do toast.** `var(--color-theme-card,#1e293b))` e `var(--sarak-text-main,#ffffff))` — CSS malformado é descartado pelo parser, então o toast fica **sem fundo e sem cor de texto próprios** e herda o que estiver atrás. Os dois nomes existem e **são emitidos**; o defeito é só a sintaxe. Nenhum gate olha a sintaxe de `var()` dentro de string | `src/components/atomic/Feedback/SarakToast.tsx:84-85` | **nenhuma** | **Corrigir** — 2 caracteres; e decidir se vale detector de `var()` desbalanceado |
+| 38 | **`--sarak-status-*-color-bg` é consumida e nunca emitida.** 5+ componentes usam `var(--sarak-status-error-color-bg, rgba(239,68,68,0.1))` como fundo de texto de status, mas `generateVariants` só existe em `primaryColor`, `secondaryColor`, `tertiaryColor` e `cardBackgroundColor` ⇒ **o fallback duro sempre vence, e o tema não controla esse fundo**. Medido na revisão da `plan-24`: o par texto-de-status reprova em **7/18** (erro) e **5/18** (sucesso) temas. O `auditor_ghostvars` **não pegou** — possível mesma raiz do achado **35** | `src/components/atomic/Templates/SarakForm.tsx:105-107` · `SarakTable.tsx:72` · `gates/scripts/audit/auditor_ghostvars.mjs` | **R7** | **Corrigir** — decidir entre emitir a variante ou trocar o nome consumido; **e** o detector, que é a metade de gate |
 
 ## 3.2 Violação de regra **já formada** que o gate agora vê, mas não corrige sozinho
 
@@ -178,10 +186,15 @@ Registrados só para que a numeração não seja reaproveitada. O detalhe está 
 
 - [x] Todo achado aberto tem **arquivo:linha** ou a declaração explícita de que a localização é o próprio vão.
 - [x] Nenhum achado aberto está sem categoria.
-- [x] A numeração é contínua de 1 a 32, sem reaproveitamento.
+- [x] A numeração é **contínua a partir de 1 e sem reaproveitamento** — o último número emitido é o maior que
+      aparece nas §3–§6.
 - [x] Todo achado aberto tem **regra nomeada** — ou a declaração explícita de que **nenhuma regra o cobre**.
 - [x] Todo achado aberto tem **destino decidido pelo dono** (plan-03, 2026-08-01).
-- [x] **Soma fechada:** 3 abertos (§3) + 3 implementação posterior (§4) + 2 aceitos (§5) + 24 fechados (§6) = **32**.
+- [x] **Soma fechada — pela relação, não pela cifra:** todo número emitido aparece em **exatamente uma** das
+      §3 (aberto) · §4 (gate futuro) · §5 (aceito) · §6 (fechado). Sem número em duas seções, sem buraco.
+      *(Esta linha carregava `3+3+2+24 = 32` e envelheceu na primeira leva de achados novos — os reais eram
+      `2+3+2+29`. É o padrão que o achado **32** já tinha ensinado: **total absoluto em prosa envelhece a cada
+      conserto.** A verificação agora afirma a relação, que não envelhece.)*
 - [ ] Toda plan que fecha um achado **remove a linha** aqui e cita o número no veredito.
 - [x] `00-contexto` §8 aponta para cá em vez de listar achado.
 

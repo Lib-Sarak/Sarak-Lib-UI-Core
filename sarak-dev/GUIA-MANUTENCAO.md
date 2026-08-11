@@ -289,7 +289,7 @@ depois acrescente o fluxo — nunca deixe o próximo redescobrir.
 
 ## Apêndice B — Estado deste repositório (GERADO)
 
-> **Não edite esta seção à mão.** Ela é regenerada por `npm run dev-kit` a partir do próprio repositório (`@sarak/lib-ui-core` v2.1.0); o gate `npm run dev-kit:check` derruba se ficar defasada. A fonte de máquina equivalente é o `state.json` ao lado deste arquivo.
+> **Não edite esta seção à mão.** Ela é regenerada por `npm run dev-kit` a partir do próprio repositório (`@sarak/lib-ui-core` v3.0.0); o gate `npm run dev-kit:check` derruba se ficar defasada. A fonte de máquina equivalente é o `state.json` ao lado deste arquivo.
 
 ### B.1 Design — as fontes que a paridade cruza
 
@@ -337,7 +337,7 @@ depois acrescente o fluxo — nunca deixe o próximo redescobrir.
 | `npm run token-types:check` | `npx tsx scripts/generate-token-types.ts --check` |
 | `npm run zero-brand:check` | `node gates/scripts/contrato/check-zero-brand.mjs --check` |
 
-**Auditores agregados por `run_audit.mjs` (11):** `auditor_hardcoded.mjs` · `auditor_ghostvars.mjs` · `auditor_typescript.mjs` · `auditor_coverage.mjs` · `auditor_arquitetura.mjs` · `auditor_cleancode.mjs` · `auditor_paridade.mjs` · `auditor_presets.mjs` · `auditor_authcoupling.mjs` · `auditor_sectionpointers.mjs` · `auditor_composicaoatomica.mjs`
+**Auditores agregados por `run_audit.mjs` (12):** `auditor_hardcoded.mjs` · `auditor_ghostvars.mjs` · `auditor_typescript.mjs` · `auditor_coverage.mjs` · `auditor_arquitetura.mjs` · `auditor_cleancode.mjs` · `auditor_paridade.mjs` · `auditor_presets.mjs` · `auditor_authcoupling.mjs` · `auditor_sectionpointers.mjs` · `auditor_composicaoatomica.mjs` · `auditor_contraste.mjs`
 
 > A suíte (`npx vitest run`) **não é um script do `package.json`** e por isso não aparece na tabela acima — ela é invocada direto. Ver o guia, §6.
 
@@ -359,6 +359,7 @@ depois acrescente o fluxo — nunca deixe o próximo redescobrir.
 | `auditor_authcoupling.mjs` | violacoes | **0** |
 | `auditor_sectionpointers.mjs` | mortos | **0** |
 | `auditor_composicaoatomica.mjs` | violacoes | **2** |
+| `auditor_contraste.mjs` | reprovados | **188** |
 
 `npx tsc --noEmit`: **0 erros** tolerados — não é gate hoje.
 

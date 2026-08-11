@@ -46,11 +46,16 @@ Toda regra abre com um marcador. São quatro, e só quatro:
 
 ## 1.3 A contagem
 
-**32 regras: 29 verificáveis (§2) e 3 de conduta (§3).**
+**33 regras: 30 verificáveis (§2) e 3 de conduta (§3).**
 
 > ✅ **Atualizado em 2026-08-07** (síntese das plans 12 e 16): R18, R27, R28 e R32 ganharam gate e viraram ✅;
-> R10 ganhou gate parcial (HTML nativo cru) e virou ⚠️. Só **R31** segue ⏳ — parada obrigatória da `plan-12`,
-> aguardando o dono decidir a fronteira de pares/limiar antes de o gate poder nascer.
+> R10 ganhou gate parcial (HTML nativo cru) e virou ⚠️. Só **R31** seguia ⏳ — parada obrigatória da
+> `plan-12`, aguardando o dono decidir a fronteira de pares/limiar antes de o gate poder nascer.
+>
+> ✅ **Fechado em 2026-08-10 (`plan-24`):** o dono decidiu (todos os pares reais · 4,5:1 sem relaxamento ·
+> alfa composto), o gate nasceu e **R31 foi de ⏳ para ⚠️**. Nasceu **vermelho por desenho** — 188 pares-tema
+> reprovados —, e consertar tema é a `plan-24-1`. Na mesma síntese nasceu **R33** (payload de tema é contrato
+> público). **A fila de ⏳ zerou.**
 >
 > 🔴 **Recontagem de 2026-08-09 — seis linhas desta tabela descreviam gates que já não existiam assim.** O
 > revisor mediu cada regra contra o código, e **as seis erravam para o mesmo lado: diziam o sistema PIOR do
@@ -65,9 +70,9 @@ Toda regra abre com um marcador. São quatro, e só quatro:
 
 | Estado | Quantas | Quais |
 | --- | --- | --- |
-| ✅ gate pleno | **21** | R1 · R2 · R3 · R5 · R6 · **R8** · R9 · R12 · R13 · R18 · R19 · R20 · R21 · R22 · R24 · R25 · R26 · R27 · R28 · **R29** · R32 |
-| ⚠️ escopo menor que a regra | **7** | R4 · R7 · R10 · R14 · R17 · R23 · R30 |
-| ⏳ gate a construir | **1** | R31 |
+| ✅ gate pleno | **22** | R1 · R2 · R3 · R5 · R6 · **R8** · R9 · R12 · R13 · R18 · R19 · R20 · R21 · R22 · R24 · R25 · R26 · R27 · R28 · **R29** · R32 · **R33** |
+| ⚠️ escopo menor que a regra | **8** | R4 · R7 · R10 · R14 · R17 · R23 · R30 · **R31** |
+| ⏳ gate a construir | **0** | — *(a categoria fica; é para cá que volta a próxima regra fechada sem gate)* |
 | 🔴 conduta | **3** | R11 · R15 · R16 |
 
 **A numeração é identidade e é definitiva.** R14 é R14 para sempre: o `.githooks/pre-commit:68-71` imprime os números na mensagem de bloqueio, e há citação em skills, specs e no próprio código. Regra que sai de categoria **leva o número consigo** — foi o que aconteceu com R10, R11, R15 e R16.
@@ -831,7 +836,14 @@ ERRADO   a união do toast do alvo aceita 'error'|'success'|'warning' e a funç�
 
 ## R31 — Contraste AA nos temas de referência
 
-**Estado:** ⏳ **gate a construir — e ele pode nascer vermelho.**
+**Estado:** ⚠️ **escopo menor que a regra** — *desde 2026-08-10 (`plan-24`)*. **O gate existe e nasceu
+vermelho, como previsto.**
+
+> **Por que saiu de ⏳ e não foi direto para ✅.** ⏳ significa *"a verificação ainda não foi construída"*
+> (§1.2), e ela foi: `auditor_contraste.mjs` roda dentro do `npm run audit`. Manter ⏳ repetiria exatamente o
+> defeito que a recontagem de 2026-08-09 encontrou — **descrever o sistema pior do que ele está**. E ✅ seria
+> falso na outra direção, porque o gate declara vãos reais (abaixo). **O marcador descreve a verificação, não
+> a conformidade**: o baseline está em 188 reprovados, e quem impede que isso piore é a R20.
 
 **Enunciado.** Os **18 temas shippados** garantem contraste **WCAG AA** (4,5:1 para texto normal, 3:1 para texto grande) nos pares texto/fundo que produzem. A lib **não promete AA** para tema escrito pelo consumidor.
 
@@ -845,7 +857,30 @@ ERRADO   "a lib é acessível"          — promessa que abrange dado de terceir
 ERRADO   silêncio                     — o consumidor assume que passa
 ```
 
-**Cobrada por:** ⏳ **nenhum gate.** Medido: **0 cálculos de razão de contraste** em `src/`. O `useMediaLuminance.ts` mede **luminância de mídia** para escolher cor de texto sobre imagem — **não** é contraste WCAG, e confundir os dois é a forma mais fácil de declarar cobertura que não existe. Construir é da `plan-12`, e **pode acender vermelho**: ninguém mediu os 18. Achado 18 em [[15-divida-conhecida]] §4.1.
+**Cobrada por:** `gates/scripts/audit/auditor_contraste.mjs` → `verify_contrast.ts` (`plan-24`, 2026-08-10),
+dentro do `npm run audit`, com teste próprio de 23 casos. **Baseline: 188 pares-tema reprovados, 18 de 18
+temas** — vermelho por desenho; consertar tema é a `plan-24-1`.
+
+**A fronteira, decidida pelo dono e agora escrita:** **36 pares reais** texto/fundo, levantados cruzando
+`catalog/partitions` (categorias e `relatedTokens`), a `description` de cada token no schema e o código dos
+componentes — **não** "todo par possível". Limiar **4,5:1 em todos**, sem relaxamento: a WCAG só permite 3:1
+para texto grande (≥24px), e onde `textColorMuted` renderiza são 9–14px. Cor com alfa é **composta** sobre a
+cadeia de fundo (`efetiva = alfa × cor + (1 − alfa) × fundo`), não pulada.
+
+**O que o gate NÃO vê** — e é por isso que a linha é ⚠️, não ✅:
+
+1. **Só o modo nativo.** Ele lê o token **escrito**; `useDesignVariables.ts:43` chama `syncThemeWithMode` sem
+   condição antes de emitir. Medido: **1299 de 1316** valores de cor mudam e **178 de 648** veredictos
+   divergem. A decisão **D** da `plan-24-1` fecha essa diferença, e aí esta linha pode subir.
+2. **A contraparte gerada** (modo trocado) **não tem medição nenhuma** — é a segunda passada, também da
+   `plan-24-1`.
+3. **`statusErrorColor`/`statusSuccessColor` ficam fora**, declarados com número (**7/18** e **5/18**): o
+   fundo real deles é `--sarak-status-*-color-bg`, que **nunca é emitida** — cobrar isso do tema seria acusar
+   o autor por defeito de componente. Achado **38** em [[15-divida-conhecida]] §3.1.
+4. Valor em `hsl()`, `var()` ou gradiente é **declarado pulado** (25 pares-tema), nunca chutado.
+
+> `useMediaLuminance.ts` mede **luminância de mídia** para escolher cor de texto sobre imagem — **não** é
+> contraste WCAG. Confundir os dois é a forma mais fácil de declarar cobertura que não existe.
 
 ---
 
@@ -875,6 +910,48 @@ await api.post(`${endpoint}/mfa/enable`, { code });
 > **O gate não pode ser burro, e isto vai escrito para quem for construí-lo.** Proibir `fetch`/`axios` em `src/components/` derrubaria **12 arquivos legítimos**: os templates de dados (`SarakTable`, `SarakChart`, `SarakForm`, `SarakManagementGrid`, …) recebem um `endpoint` e são agnósticos sobre o que existe atrás dele. O que se cobra é outra coisa — **sinks de credencial** (`localStorage`/`sessionStorage`/`cookie`/`Authorization`) e **rota de autenticação embutida** (`/mfa`, `/login`, `/oauth`, `/token`).
 
 > ✅ **A violação com que a regra nascia foi removida.** `useSecurityOrchestratorState.ts` chamava `GET {endpoint}/mfa/status`, `GET {endpoint}/mfa/setup`, `POST {endpoint}/mfa/enable` e `POST {endpoint}/mfa/disable` — a lib ditava o protocolo de autenticação do importador. A `plan-09` (2026-08-05, operação 4) removeu o `SarakSecurityOrchestrator` inteiro (10 arquivos) do contrato público, no major. Quando o gate `auditor_authcoupling.mjs` nasceu, na `plan-12`, o único violador já não existia mais — confirmado: **0 violações** desde o primeiro dia do gate.
+
+## R33 — O payload de tema é contrato público
+
+**Estado:** ✅ **gate pleno** — *nasceu na `plan-24`, 2026-08-10.*
+
+**Enunciado.** Uma chave de tema que o consumidor escreveu ou salvou na versão **N** continua sendo **aceita e
+emitindo as mesmas variáveis CSS** na versão **N+1**. Remover ou renomear chave do domínio é **mudança de
+contrato público** — exige major e nota de migração, como qualquer remoção de API.
+
+> **O que é contrato e o que é conteúdo.** A **chave** e a variável que ela produz são contrato. **A cor não
+> é.** Os 18 temas shippados são conteúdo da lib e podem ser recriados à vontade — foi exatamente o que o dono
+> autorizou para a `plan-24-1`. Sem essa distinção, *"tema antigo não pode quebrar"* e *"vamos recriar os 18"*
+> se contradiriam.
+
+**Por quê.** Já foi violado uma vez, em silêncio. A `plan-21` removeu 27 entradas órfãs do `manifest.ts`; como
+`validation.ts:34` monta `ALLOWED_EXTRA_KEYS` a partir de `Object.keys(DESIGN_MANIFEST)`, **o conjunto de
+chaves aceitas caiu de 122 para 95**. Pela **R6**, chave fora do conjunto é descartada com `console.warn` — e
+o aviso vai para o console, **não para o consumidor que perdeu a chave**. Ficou como achado **34**, aceito
+porque a exposição medida era zero; o **mecanismo** continuava de pé, e nenhum gate o veria repetir.
+
+R6 protege o **valor** (fora do contrato é descartado). R33 protege o **contrato** (ele não encolhe sem
+alarde). São faces opostas da mesma fronteira.
+
+**Certo × Errado.**
+
+```
+CERTO    remover chave do domínio  ⇒ major + nota de migração + a fixture do corpus acusa
+ERRADO   remover chave do domínio  ⇒ patch, e o consumidor descobre pelo console
+ERRADO   congelar os 18 temas      — trava a recriação; cor é conteúdo, não contrato
+```
+
+**Cobrada por:** `src/core/Provider/utils/__tests__/consumerThemeContract.test.ts` (`plan-24`) — corpus de
+fixtures de payload **no formato do consumidor** (parcial, como alguém escreve à mão ou exporta do painel),
+levadas por `validateDesign` → `useDesignVariables`, com o conjunto de variáveis emitidas em snapshot. Chave
+que sai do domínio deixa de ser emitida e **o teste falha**. Roda em `npx vitest run` — Anel 3 do `pre-push`.
+
+⚠️ **O vão conhecido, e é decisão adiada, não esquecimento:** não existe mecanismo de **alias com prazo** para
+chave renomeada. Foi deixado de fora da `plan-24` por não haver nenhum renome na fila — construir alias antes
+de existir o primeiro alias é construir para caso imaginado. Com o corpus no lugar, o dia em que aparecer um
+renome **a fixture acusa**, e o alias nasce com o caso real na mão.
+
+---
 
 # 3. Regras de conduta
 
@@ -1010,7 +1087,8 @@ e a correção é criar o token (R11 → Expansão), não remendar do lado de fo
 | R28 | Contrato de saída do CLI | ✅ | `checkUpdateCli.contract.test.mjs` (8 casos) | `npx vitest run` |
 | R29 | Gerado bate com a fonte | ✅ | **os 5 geradores têm `--check`, e os 5 rodam**: `token-types` · `catalog` · `guide` dentro do `build`; `build-info` e `dev-kit` no `gates:full` | `npm run catalog:check` … |
 | R30 | O TypeScript compila | ⚠️ | **0 erros, produção e teste** *(medido 2026-08-08)*; baseline em 0 ⇒ qualquer erro novo bloqueia. O vão que resta é o **gatilho**: o `--with-tsc` do Anel 2 só liga quando o staged tem `.ts`/`.tsx` | `npx tsc --noEmit` |
-| R31 | Contraste AA nos 18 temas | ⏳ | **a construir** — 0 cálculos de contraste em `src/` | — |
+| R31 | Contraste AA nos 18 temas | ⚠️ | `auditor_contraste.mjs` → `verify_contrast.ts` (`plan-24`) — **36 pares, 4,5:1, alfa composto; baseline 188 reprovados**. Vãos: só o modo **nativo** (o emitido passa por `syncThemeWithMode`), a contraparte gerada **sem medição**, cores de status fora com número | `npm run audit` |
+| **R33** | **Payload de tema é contrato público** | **✅** | `consumerThemeContract.test.ts` (`plan-24`) — corpus de payload de consumidor; chave que sai do domínio para de emitir e o teste falha | `npx vitest run` |
 | R32 | Indiferente à autenticação | ✅ | `auditor_authcoupling.mjs` — nasce verde | `npm run audit` |
 | **R11** | **Configuração × Expansão** | **🔴** | **nenhum — CONDUTA** | — |
 | **R15** | **Nada pesado eager** | **🔴** | **nenhum — CONDUTA.** ✅ a violação declarada FECHOU em 2026-08-09 (ver a regra) | — |
@@ -1043,7 +1121,7 @@ e a correção é criar o token (R11 → Expansão), não remendar do lado de fo
 | `checkUpdateCli.contract.test.mjs` | **R28** | `bin/scaffold/checkUpdate/__tests__/` | ✅ Anel 3 (`npx vitest run`) |
 | `check-gate-limits.mjs` | **R18** | `gates/scripts/contrato/` | ✅ `npm run gate-limits:check` — 26/26 |
 
-**Das duas linhas ⏳, `@vitest/coverage-v8` fechou em 2026-08-05** (`plan-12`, Lote B) — vira `check-coverage-floor.mjs`, piso móvel gravado em **70,66%** (`npm run coverage:check`, dentro do `gates:full`). **`verify_theme_parity.ts` continua ⏳**: valida **um** tema contra o dicionário e hoje só roda se alguém o chamar à mão; o que existe em gate é o `auditor_presets`, que cobra chave órfã em todos os temas embarcados de uma vez — cobertura diferente, não equivalente. Dos seis gates que não existiam em arquivo nenhum (R10, R18, R27, R28, R31, R32), **cinco foram construídos** pelas plans 12 e 16; só **R31** segue sem gate, na parada obrigatória da `plan-12` (Lote C), aguardando decisão do dono sobre a fronteira de pares/limiar.
+**Das duas linhas ⏳, `@vitest/coverage-v8` fechou em 2026-08-05** (`plan-12`, Lote B) — vira `check-coverage-floor.mjs`, piso móvel gravado em **70,66%** (`npm run coverage:check`, dentro do `gates:full`). **`verify_theme_parity.ts` continua ⏳**: valida **um** tema contra o dicionário e hoje só roda se alguém o chamar à mão; o que existe em gate é o `auditor_presets`, que cobra chave órfã em todos os temas embarcados de uma vez — cobertura diferente, não equivalente. Dos seis gates que não existiam em arquivo nenhum (R10, R18, R27, R28, R31, R32), **os seis existem desde 2026-08-10**: cinco pelas plans 12 e 16, e o de **R31** pela `plan-24`, depois de o dono fechar a fronteira de pares e o limiar.
 
 **Geradores não viram gate — e a distinção é deliberada.**
 `generate_theme_template.ts` (`ui-criar-tema`) escreve arquivo em `src/`; um gerador que rodasse

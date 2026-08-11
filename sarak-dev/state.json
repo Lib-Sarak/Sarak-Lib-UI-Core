@@ -3,7 +3,7 @@
   "schemaVersion": 1,
   "lib": {
     "name": "@sarak/lib-ui-core",
-    "version": "2.1.0"
+    "version": "3.0.0"
   },
   "design": {
     "schemaFiles": {
@@ -244,7 +244,8 @@
     "auditor_presets.mjs",
     "auditor_authcoupling.mjs",
     "auditor_sectionpointers.mjs",
-    "auditor_composicaoatomica.mjs"
+    "auditor_composicaoatomica.mjs",
+    "auditor_contraste.mjs"
   ],
   "baseline": {
     "_doc": "Baseline do Anel 2 (specs/specs/02-enforcement-por-commit.md). NÃO editar à mão: rode `npm run audit:baseline -- --write` DEPOIS de consertar a dívida, e commite junto do conserto.",
@@ -284,6 +285,9 @@
       },
       "auditor_composicaoatomica.mjs": {
         "violacoes": 2
+      },
+      "auditor_contraste.mjs": {
+        "reprovados": 188
       }
     },
     "tsc": {

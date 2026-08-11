@@ -36,6 +36,9 @@
         },
         "auditor_composicaoatomica.mjs": {
             "violacoes": 2
+        },
+        "auditor_contraste.mjs": {
+            "reprovados": 188
         }
     },
     "tsc": {
