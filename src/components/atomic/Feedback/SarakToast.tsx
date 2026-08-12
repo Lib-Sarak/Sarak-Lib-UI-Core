@@ -81,8 +81,8 @@ const SarakToast: React.FC<{ entry: ToastEntry; onDismiss: (id: string) => void 
                 paddingInline: 'var(--sarak-layout-gap-md, 16px)',
                 paddingBlock: 'calc(var(--sarak-layout-gap-md, 16px) * 0.75)',
                 borderRadius: 'var(--sarak-card-radius,12px)',
-                background: 'var(--color-theme-card,#1e293b))',
-                color: 'var(--sarak-text-main,#ffffff))',
+                background: 'var(--color-theme-card,#1e293b)',
+                color: 'var(--sarak-text-main,#ffffff)',
                 borderLeft: `var(--sarak-toast-accent-width, 4px) solid ${VARIANT_COLOR[entry.variant]}`,
             }}
         >

@@ -76,4 +76,35 @@ describe('Spec 13 — SarakToast (Regra 1 + Plano de Testes)', () => {
         });
         expect(warn).toHaveBeenCalled();
     });
+
+    it('as declarações de background e color têm parênteses balanceados, com fundo e texto próprios (achado 37)', () => {
+        let api!: ToastController;
+        render(
+            <SarakToastProvider>
+                <Harness onReady={(c) => (api = c)} />
+            </SarakToastProvider>,
+        );
+        act(() => {
+            api.notify({ message: 'Parênteses', duration: 10000 });
+        });
+
+        const toast = screen.getByRole('alert');
+        const styleAttr = toast.getAttribute('style') ?? '';
+        const balancedParens = (declaration: string): boolean =>
+            [...declaration].reduce((depth, char) => {
+                if (char === '(') return depth + 1;
+                if (char === ')') return depth - 1;
+                return depth;
+            }, 0) === 0;
+
+        const background = styleAttr.match(/background:\s*([^;]+);/)?.[1];
+        const color = styleAttr.match(/(?:^|\s)color:\s*([^;]+);/)?.[1];
+
+        expect(background).toBeTruthy();
+        expect(color).toBeTruthy();
+        expect(balancedParens(background as string)).toBe(true);
+        expect(balancedParens(color as string)).toBe(true);
+        expect(toast.style.background).not.toBe('');
+        expect(toast.style.color).not.toBe('');
+    });
 });

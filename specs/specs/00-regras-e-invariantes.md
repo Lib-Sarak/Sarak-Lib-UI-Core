@@ -78,15 +78,13 @@ Toda regra abre com um marcador. São quatro, e só quatro:
 | ⏳ gate a construir | **0** | — *(a categoria fica; é para cá que volta a próxima regra fechada sem gate)* |
 | 🔴 conduta | **3** | R11 · R15 · R16 |
 
-> 🔴 **Esta tabela diverge dos marcadores reais em UM ponto, e a divergência fica declarada em vez de
-> resolvida à revelia** *(medido na `plan-32`, 2026-08-12)*. Contando as linhas `**Estado:**` das regras
-> numeradas: **✅ 22 · ⚠️ 9 · 🔴 3**. A tabela diz ✅ 23 · ⚠️ 8. **A regra em desacordo é a R8**, que a tabela
-> lista como ✅ e cuja própria linha `**Estado:**` diz ⚠️.
+> ✅ **A divergência que a `plan-32` declarou aqui foi resolvida na `plan-33` (2026-08-12).** A tabela já
+> listava R8 como ✅; a linha `**Estado:**` da própria regra dizia ⚠️ por dois motivos que já tinham fechado
+> (escopo do gate, e o gate de R8.1). Medido o vão inteiro — não há **componente ou hook** fora do alcance
+> de `auditor_coverage.mjs` — e a linha `**Estado:**` de R8 foi alinhada a ✅. Os dois voltam a concordar.
 >
-> **Quem decide é o revisor, em execução própria** — mudar marcador exige medir o vão inteiro, não só a parte
-> que mora neste arquivo, e a `plan-32` tinha proibição expressa de tocá-lo. O comando que reproduz:
-> `grep -oE "^\*\*Estado:\*\* [⚠️✅⏳🔴]+" … | sort | uniq -c` *(a 35ª linha é a da sub-regra **R8.1**, que não
-> entra na contagem das numeradas)*.
+> `grep -cE "^\*\*Estado:\*\*"` desta spec dá **35**, não 34: a 35ª é a sub-regra **R8.1**, que não entra na
+> contagem das regras numeradas (§1.3 conta 34).
 
 **A numeração é identidade e é definitiva.** R14 é R14 para sempre: o `.githooks/pre-commit:68-71` imprime os números na mensagem de bloqueio, e há citação em skills, specs e no próprio código. Regra que sai de categoria **leva o número consigo** — foi o que aconteceu com R10, R11, R15 e R16.
 
@@ -334,9 +332,12 @@ Ao corrigir um consumo fantasma **compartilhado**, corrija a fonte comum (o Hook
 
 ## R8 — Cobertura 1:1
 
-**Estado:** ⚠️ — os dois motivos históricos deste marcador **fecharam** (ver o vão abaixo e a R8.1):
-o gate passou a ver `src/shared/`, e o segundo braço (cobertura em %) ganhou gate. Marcador mantido nesta
-correção por instrução expressa do revisor — quem decide se ele ainda cabe é o revisor, não esta execução.
+**Estado:** ✅ **gate pleno** *(decidido na `plan-33`, 2026-08-12, medindo o vão inteiro)*. Os dois motivos
+históricos do ⚠️ fecharam: o gate passou a ver `src/shared/`, e o segundo braço (R8.1) ganhou gate. Medido
+no código do auditor: as seis raízes de `src/` que podem conter componente ou hook estão cobertas —
+`src/styles/` é só CSS, `src/types/` só tem `external.d.ts` (declaração ambiente, não componente/hook) — e
+nenhuma outra pasta de `src/` fica de fora. O que resta fora (`src/styles/`, `index*`, `.ts` que não é
+hook) é **fronteira da própria regra** ("componente e hook"), não vão de gate.
 
 **Enunciado.** Todo componente e todo hook tem um teste **ao lado**, em `__tests__/<nome>.test.tsx` (ou `.test.ts`).
 
@@ -360,10 +361,13 @@ Cards/__tests__/SarakActionCard.test.tsx test/cards.test.tsx   ← agregado, nã
 
 **Por que piso móvel e não alvo fixo.** Um teto arbitrário (80%) reprova no primeiro dia e ensina a ignorar o vermelho — que é o defeito que este repositório mais combate (§4.1 e [[01-gates-e-baseline]] §6). O 1:1 continua sendo a regra principal; o % é a segunda rede, e mede **outra coisa**: o quanto de **dentro** de cada arquivo o teste alcança.
 
-**Estado:** ⏳ — 🔴 **marcador conservado por instrução da `plan-32`, e ele NÃO descreve mais o repositório.**
-O gate **existe e roda** (`npm run coverage:check`, dentro do `gates:full`); o achado 15 está **fechado** em
-[[15-divida-conhecida]] §6. Reavaliar o símbolo é decisão do revisor, em execução própria — esta linha o
-mantém para não mudar marcador por efeito colateral.
+**Estado:** ✅ **gate pleno** *(decidido na `plan-33`, 2026-08-12)*. O gate **existe e roda**
+(`npm run coverage:check`, dentro do `gates:full`), mede o piso corrente, bloqueia regressão e regrava a
+melhora; o achado 15 está **fechado** em [[15-divida-conhecida]] §6. **Vão declarado, não escondido:** o
+gate compara **um número agregado** (`lines.pct` do projeto inteiro) — um arquivo que caia de 100% para 10%
+pode não mover a média o bastante para bloquear sozinho. É o mesmo desenho do `audit:baseline` (R20, piso
+por métrica) e da própria decisão que criou este braço: a rede contra "arquivo sem teste nenhum" continua
+sendo o 1:1 (R8); esta mede outra coisa, agregada.
 
 ---
 
@@ -1288,7 +1292,7 @@ humana. **Validador** é invocado pelo gate, sempre. Os dois vivem lado a lado n
 
 Cinco coisas ficam registradas em voz alta, porque quem lê um contrato precisa saber onde ele é fino:
 
-1. **As regras de conduta permanente dependem de revisão humana, sem gate** — R11, R15, R16, a categoria 🔴 da §1.2. A categoria ⏳ está **vazia entre as regras numeradas**: a última a sair dela foi R31, com a `plan-24`. ⚠️ **Uma sub-regra ainda carrega ⏳ sem descrever o repositório** — a **R8.1**, cujo gate foi construído em 2026-08-05; o marcador está conservado ali de propósito, aguardando decisão do revisor (ver a própria R8.1).
+1. **As regras de conduta permanente dependem de revisão humana, sem gate** — R11, R15, R16, a categoria 🔴 da §1.2. A categoria ⏳ está **vazia**, entre as regras numeradas e na sub-regra: a última a sair dela foi R31 (`plan-24`, 2026-08-10), e a R8.1 saiu na `plan-33` (2026-08-12), com o gate já construído desde 2026-08-05.
 2. **As regras marcadas ⚠️ na tabela da §1.3 têm o escopo do gate menor que o da regra**, e cada vão está escrito na linha da própria regra, não em nota de rodapé. R14 tinha o mesmo defeito e foi corrigida em P26 **ampliando o escopo do gate junto com o conserto** — é o modelo que R18 generaliza, e R18 agora tem gate próprio (`check-gate-limits.mjs`).
 3. **As violações declaradas hoje vivem no baseline, não nesta prosa.** R30 (`tsc`) nasce com produção em hard-block a zero e teste tolerado como piso; R10 registra o resíduo dela em `auditor_composicaoatomica.violacoes`. As duas contagens correntes estão em `gates/baselines/audit-baseline.json`. R7 e R32 **fecharam** as violações com que nasceram (`--sx-*` corrigido pela `plan-07`; `SarakSecurityOrchestrator` removido pela `plan-09`, antes de o gate de R32 nascer — ele já nasceu verde). **R15 é a única que segue violada por decisão declarada**, e o motivo está na própria regra.
 4. **As duas regras que não tinham teste ganharam um**: R28 (`checkUpdateCli.contract.test.mjs`, 8 casos) e R18 (`check-gate-limits.mjs`).

@@ -161,14 +161,14 @@ Registrado como o que é: **cobertura que existe e não é cobrada**. **Não cob
 > Recontada por medição direta em **2026-08-11**.
 
 > ✅ **Recontagem completa em 2026-08-05.** As plans 12 e 16 ligaram 11 gates novos/ampliados de propósito
-> (§2.1 dos §9), **sem exceção** — o vermelho novo é dívida medida e registrada, não escondida, e é o que a
-> `plan-15` (ainda não executada) paga. O baseline de 2026-07-27/2026-08-03 abaixo está superado; os números
-> vigentes são estes.
+> (§2.1 dos §9), **sem exceção** — o vermelho novo é dívida medida e registrada, não escondida. O estado
+> corrente de cada métrica, paga ou não, é a tabela abaixo. O baseline de 2026-07-27/2026-08-03 está
+> superado; os números vigentes são estes.
 
 | Gate | Comando | Baseline *(medido 2026-08-11)* |
 | --- | --- | --- |
 | `run_audit` | `node gates/scripts/audit/run_audit.mjs` | ❌ **exit 1 — 2 auditores vermelhos** de 12. Os outros 10 estão verdes |
-| ↳ `auditor_hardcoded` (R2) | | ✅ **0** — era 35 quando o gate passou a ver `src/core`; pago pela `plan-15` |
+| ↳ `auditor_hardcoded` (R2) | | ✅ **0** — era 35 quando o gate passou a ver `src/core`; pago |
 | ↳ `auditor_ghostvars` (R7) | | ❌ **1 fantasma, 1 consumo** — era 27; o resíduo é o achado **38** ([[15-divida-conhecida]] §3.1). O sub-check de sintaxe de fallback (vão 1) está ✅ |
 | ↳ `auditor_typescript` (R3) | | ✅ **0** `any` |
 | ↳ `auditor_coverage` (R8) | | ✅ **0** componentes sem teste |
@@ -356,8 +356,8 @@ consertado.
 > Os dois fantasmas descritos abaixo fecharam: `--token` continua falso positivo declarado (não é código, é
 > JSDoc), e `--sarak-shell-brand-logo-size` foi criado nas 3 fontes pela `plan-07`. O baseline de
 > `auditor_ghostvars` **atual não é mais este** — a `plan-12` ampliou `CONSUMER_DIRS` depois deste fecho e
-> revelou 27 novos consumos em `src/styles/`+`src/core/`, registrados no baseline da §3 como dívida da
-> `plan-15`. O relato abaixo fica como histórico de como os dois primeiros fantasmas foram diagnosticados.
+> revelou 27 novos consumos em `src/styles/`+`src/core/`; o estado corrente é a tabela da §3 (hoje: **1**). O
+> relato abaixo fica como histórico de como os dois primeiros fantasmas foram diagnosticados.
 
 **Localizados nesta execução, um a um:**
 
@@ -537,12 +537,12 @@ pela `plan-06`: investigar e construir são plans diferentes, de propósito.
 | # | Regra | Gate · `arquivo:linha` | Estado |
 |---|---|---|---|
 | 1 | R4 · R29 | `token-types:check` | ✅ **FECHADO** — `design-token-ids.ts` regenerado (304→409) e o gerador registrado (`plan-12` Lote A) |
-| 2 | R7 | `auditor_ghostvars.mjs` | ✅ **FECHADO como gate** — `CONSUMER_DIRS` passou a tratar `src/styles/` como consumidora. Exposição revelada: parte dos 27 consumos do baseline (§3), dívida da `plan-15` |
+| 2 | R7 | `auditor_ghostvars.mjs` | ✅ **FECHADO como gate** — `CONSUMER_DIRS` passou a tratar `src/styles/` como consumidora. Exposição revelada: parte dos 27 consumos, hoje reduzida (§3) |
 | 3 | R7 | `auditor_ghostvars.mjs` | ✅ **FECHADO como gate** — `src/core/` entrou no escopo. Mesma observação do vão 2 |
 | 4 | R7 | o registro do `auditor_ghostvars.mjs` | ✅ **FECHADO** pela `plan-06` (§9.3) |
-| 5 | R2 | `auditor_hardcoded.mjs` | ✅ **FECHADO como gate** — `VALUE_SCOPE` ganhou `src/core`. Exposição revelada: **35 violações** (§3), dívida da `plan-15` |
+| 5 | R2 | `auditor_hardcoded.mjs` | ✅ **FECHADO como gate** — `VALUE_SCOPE` ganhou `src/core`. Exposição revelada: **35 violações**, hoje paga (§3) |
 | 6 | R8 | `auditor_coverage.mjs` | ✅ **FECHADO** — `shared/`/`effects/`/`constants/` no escopo; nasceu **verde** (os testes já existiam, escritos pela `plan-07`) |
-| 7 | R23 · R17 | `auditor_sectionpointers.mjs` (novo) | ✅ **FECHADO como gate** — detector por autorreferência construído (`plan-12`). Exposição: **27 ponteiros mortos** (§3), incluindo o achado 29 |
+| 7 | R23 · R17 | `auditor_sectionpointers.mjs` (novo) | ✅ **FECHADO como gate** — detector por autorreferência construído (`plan-12`). Exposição: **27 ponteiros mortos**, hoje **0** (§3), incluindo o achado 29 |
 | 8 | R29 | `build-info:check` (novo) | ✅ **FECHADO** — `dist/BUILD_INFO.json` ganhou modo `--check` |
 | 9 | R14 · R17 | `scripts/publicComponents.mjs:172-194` | ✅ **DECLARADO** pela `plan-06` — exposição zero |
 | 10 | R12 | `check-zero-brand.mjs:19-40` | ✅ **DECLARADO** pela `plan-06` — exposição zero |
@@ -552,8 +552,8 @@ pela `plan-06`: investigar e construir são plans diferentes, de propósito.
 | 14 | R30 | `check-audit-baseline.mjs` *(Anel 2)* | ⚠️ **NARROWED, não fechado** — produção agora é **hard-block a zero** (fechado pela `plan-07` + separado pela `plan-12`); teste continua tolerado como piso, valor corrente na tabela da §3 — por definição de R30, não por vão |
 
 **Fora da matriz, e não esquecidas:** as três de **conduta** R11, R15 e R16 (🔴), que permanecem assim por
-decisão do dono, e **R31** (⏳), a única regra verificável ainda sem gate — parada obrigatória da `plan-12`
-(Lote C), aguardando decisão sobre a fronteira de pares/limiar (§9.5).
+decisão do dono. **R31** tinha o mesmo estágio até 2026-08-10: hoje tem gate (`auditor_contraste.mjs`) e é
+⚠️, não ⏳ — detalhe em §9.5.
 
 ## 9.3 O vão nº 4 — a prova de que registro vem antes de escopo
 
@@ -605,19 +605,20 @@ reprovaria o repositório para sempre. **Vale para spec fixa, skill, código e R
 
 > ✅ **Fechado em 2026-08-05 (`plan-12`).** `auditor_sectionpointers.mjs` (§2.1) construiu exatamente este
 > detector, com as duas convenções acima codificadas. Escopo reduzido a **autorreferência** (cross-documento
-> fica fora, declarado) depois que a primeira versão atribuiu um ponteiro ao arquivo errado. Mede hoje **27**
-> mortos, registrados no baseline (§3) como dívida da `plan-15`.
+> fica fora, declarado) depois que a primeira versão atribuiu um ponteiro ao arquivo errado. Mediu **27**
+> mortos ao nascer, registrados no baseline (§3); o valor corrente é o da tabela — hoje **0**.
 
-## 9.5 R10 e R31 — a parada obrigatória do Lote C da `plan-12` (2026-08-05)
+## 9.5 R10 e R31 — as duas paradas do Lote C (`plan-12`, 2026-08-05) já fecharam
 
 **R10 foi decidida e construída.** O dono fixou a fronteira ("pré-montado" = `components/**` + `core/**`,
 exclui `atomic/Buttons|Inputs` e `features/**`); a `plan-16` construiu `auditor_composicaoatomica.mjs` sobre
 ela. Detalhe em [[00-regras-e-invariantes]] R10 e no baseline (§3).
 
-**R31 continua sem gate.** Medido (script preservado fora do repositório, anexo da `plan-12`, reproduzido pelo
-revisor): **12 dos 18 temas shippados falham** em pelo menos 1 dos 4 pares canônicos texto/fundo — 4 falhas são
-de texto primário/secundário, não só do `textColorMuted` mais apagado, e `minimalist-airy` (um dos dois
-`SARAK_REFERENCE_THEMES`) está entre eles. Simular o limiar de texto grande (3:1 em vez de 4,5:1) só resgata 1
-dos 12. Construir o gate exige antes: (1) mapear todos os pares que os componentes realmente produzem, não só
-os 4 canônicos; (2) decidir o limiar de `textColorMuted`; (3) decidir o que fazer com os 19 pares em `rgba()`,
-pulados na medição. Achado 18 em [[15-divida-conhecida]] §4.1.
+**R31 também tem gate, desde a `plan-24` (2026-08-10).** Na parada do Lote C (2026-08-05), o dono ainda não
+tinha decidido a fronteira de pares/limiar — o que segue registrado como medição histórica, **datada**: com
+o script preservado fora do repositório (anexo da `plan-12`, reproduzido pelo revisor), **12 dos 18 temas
+shippados falhavam** em pelo menos 1 dos 4 pares canônicos texto/fundo — 4 falhas de texto primário/secundário,
+não só do `textColorMuted` mais apagado, e `minimalist-airy` (um dos dois `SARAK_REFERENCE_THEMES`) entre
+eles. O dono decidiu a fronteira (36 pares reais, 4,5:1 sem relaxamento, alfa composto), o gate
+`auditor_contraste.mjs` nasceu vermelho por desenho e fechou na `plan-24-1` (2026-08-11) — baseline
+corrente **0 e 0** (§3). Detalhe em [[00-regras-e-invariantes]] R31.

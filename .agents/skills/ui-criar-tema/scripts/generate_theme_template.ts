@@ -5,6 +5,20 @@ import path from 'path';
 const schemaDir = path.join(process.cwd(), 'src/core/Design/schema');
 const targetDir = path.join(process.cwd(), 'src/core/Design/presets/themes');
 
+/**
+ * Achado 39: tokens responsivos (`defaultValue: { mob, tab, desk }`) não são um valor
+ * escalar — interpolá-los crus produz `[object Object]` e o gabarito não faz parse.
+ * Achata para o eixo `desk`, a convenção que os temas embarcados já usam
+ * (ex.: `sarak-sovereign.ts` grava `sidebarWidth: 240`, não o objeto responsivo).
+ */
+function flattenResponsiveValue(value: unknown): unknown {
+    if (value !== null && typeof value === 'object' && !Array.isArray(value)) {
+        const responsive = value as Record<string, unknown>;
+        return 'desk' in responsive ? responsive.desk : Object.values(responsive)[0];
+    }
+    return value;
+}
+
 async function generateTemplate() {
     if (!fs.existsSync(schemaDir)) {
         console.error(`❌ Erro: Diretório de Schema não encontrado em ${schemaDir}`);
@@ -41,7 +55,7 @@ async function generateTemplate() {
                     // Extract all tokens
                     for (const token of schemaObj.tokens) {
                         if (token.id && token.defaultValue !== undefined) {
-                            properties[token.id] = token.defaultValue;
+                            properties[token.id] = flattenResponsiveValue(token.defaultValue);
                         }
                     }
                 }

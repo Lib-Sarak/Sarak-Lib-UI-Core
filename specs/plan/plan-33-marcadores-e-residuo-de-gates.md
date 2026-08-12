@@ -2,7 +2,7 @@
 tipo: "plan"
 titulo: "Decidir os dois marcadores em desacordo e fechar o resíduo de 01-gates-e-baseline"
 dominio: "Sarak-Lib-UI-Core / Governança de Specs"
-status: "🔴 A executar"
+status: "🟢 Aprovada"
 prioridade: "Alta"
 tags: ["plan", "specs", "marcadores", "reconciliacao"]
 relacionados: ["[[00-regras-e-invariantes]]", "[[01-gates-e-baseline]]", "[[15-divida-conhecida]]"]
@@ -173,8 +173,188 @@ A execução já escreve nas specs fixas, que são o alvo.
 
 <!-- Preenchido pelo REVISOR-executor. Append-only. -->
 
+## Resumo da execução — 2026-08-12
+
+**Resultado:** Concluído
+
+**R8.1 — medido antes de decidir**
+- `gates/scripts/release/check-coverage-floor.mjs` existe, lê `coverage/coverage-summary.json`, compara
+  `lines.pct` contra `gates/baselines/coverage-floor.json` e implementa piso móvel (pior bloqueia, melhor
+  regrava com `--write`).
+- `grep -n "coverage:check" package.json` → `"coverage:check": "vitest run --coverage && node
+  gates/scripts/release/check-coverage-floor.mjs"`, e `"gates:full"` encadeia `coverage:check`.
+- Aplicando a §1.2 literal: ⏳ = *"a verificação ainda não foi construída"*. Ela foi, roda e bloqueia
+  regressão. **Decisão: ⏳ → ✅.** O vão declarado (compara um número **agregado**, não por arquivo) é
+  operacional — mesma mecânica do `audit:baseline` (R20) — e não é um requisito que a decisão original de
+  R8.1 tenha prometido e o gate não cumpra; por isso ficou registrado na prosa como limite conhecido, não
+  como motivo para ⚠️.
+
+**R8 — medido o vão inteiro, no código do auditor, não na prosa**
+- `gates/scripts/audit/auditor_coverage.mjs` varre seis raízes (`components`, `features`, `core`, `shared`,
+  `effects`, `constants`) — o próprio cabeçalho `LIMITES DECLARADOS` do script já as declara e justifica
+  cada exclusão.
+- `ls src/` → as pastas de `src/` são `__tests__, components, constants, core, effects, features, index.ts,
+  shared, styles, types`. Fora das seis varridas: `__tests__` (não é fonte), `index.ts` (barril), `styles`
+  (só CSS — confirmado no próprio script) e `types`.
+- `find src/types -type f` → **só `external.d.ts`** (declaração ambiente, não componente nem hook).
+- Conclusão: **não existe pasta de `src/` que possa conter "componente ou hook" e que o gate não varra.**
+  As três exclusões que a regra já declarava (`src/styles/`, `index*`, `.ts` que não começa com `use`) são,
+  na letra do enunciado ("todo **componente** e todo **hook**"), a fronteira da própria regra — exatamente o
+  que a tabela §1.3 já dizia. **Decisão: ⚠️ → ✅**, alinhando a linha `**Estado:**` da regra à tabela §1.3 e
+  à tabela §4, que já estavam certas.
+
+**`00-regras-e-invariantes.md` — o que mudou**
+- Linha `**Estado:**` de R8 (era ⚠️, sem alinhar com as tabelas) → ✅, com a medição acima resumida na prosa.
+- Linha `**Estado:**` de R8.1 (era ⏳, conservada por instrução da `plan-32`) → ✅, com o vão de granularidade
+  agregada declarado.
+- Nota de divergência da §1.3 (inserida pela `plan-32`) → substituída por um registro curto do fecho, mais
+  a explicação de por que `grep -cE "Estado:"` dá 35 e não 34 (fica — é fato permanente, não divergência).
+- §5 item 1 (*"O que esta spec admite sobre si mesma"*) → parou de declarar R8.1 como pendência de decisão;
+  registra as duas datas (R31 na `plan-24`, R8.1 na `plan-33`).
+- **Nenhum outro marcador foi tocado.**
+
+**`01-gates-e-baseline.md` — o resíduo da §2.3 desta plan**
+- `:165` (nota da §3) — parou de apontar `plan-15` como quem "ainda vai pagar"; passa a apontar a tabela
+  abaixo como fonte do estado corrente.
+- `:171` — `auditor_hardcoded` (R2): "pago pela `plan-15`" → "pago", sem nomear uma plan fora da fila.
+- `:360` (§4.2, nota dos fantasmas) — "registrados no baseline da §3 como dívida da `plan-15`" → aponta a
+  tabela da §3 e o valor corrente (**1**).
+- `:540`/`:543`/`:545` (tabela §9.2, vãos 2/5/7) — as três citações de "dívida da `plan-15`" trocadas por
+  "hoje reduzida/paga/**0** (§3)".
+- `:555` (nota fora da matriz §9.2) — parou de chamar R31 de "a única regra verificável ainda sem gate —
+  parada obrigatória da `plan-12`"; registra que ela tinha o mesmo estágio até 2026-08-10 e hoje tem gate.
+- `:609` (§9.4) — "registrados no baseline (§3) como dívida da `plan-15`" → "mediu 27 mortos ao nascer...
+  valor corrente é o da tabela — hoje 0".
+- `:611`/`:617-618` (§9.5) — título e corpo reescritos: R31 deixa de ser "continua sem gate"; o parágrafo
+  preserva a medição histórica de 12/18 **com a data que a produziu** (2026-08-05) e registra o fecho
+  seguinte (fronteira decidida, gate nasceu vermelho por desenho, fechou na `plan-24-1`, baseline 0 e 0).
+
+**Verificações executadas**
+- `grep -c "^## R" specs/specs/00-regras-e-invariantes.md` → **34**, inalterado.
+- `grep -cE "^\*\*Estado:\*\*" specs/specs/00-regras-e-invariantes.md` → **35**, inalterado.
+- Extração regra→marcador (`grep -oE "^\*\*Estado:\*\* [✅⚠️⏳🔴]+" … | sort | uniq -c`, mais robusta que o
+  `awk` da plan contra caractere multibyte) → **24 ✅ · 8 ⚠️ · 0 ⏳ · 3 🔴** = 35. Antes desta execução:
+  23 ✅ (numeradas) + 1 ⏳ (R8.1) + 9 ⚠️ (incl. R8) + 3 🔴 = 35 idem. A diferença é **exatamente** R8
+  (⚠️→✅) e R8.1 (⏳→✅) — nenhum outro símbolo mudou.
+- `npm run section-pointers:check` → `[OK] Nenhum ponteiro de seção (autorreferência) morto.` (exit 0).
+- `npm run dev-kit:check` → `[dev-kit:check] kit em dia (3 arquivos, 0 ponteiros mortos).` (exit 0).
+- `npx tsc --noEmit` → exit 0, 0 erros.
+- `node gates/scripts/audit/run_audit.mjs` → exit 1, **2 auditores vermelhos** (`auditor_ghostvars`,
+  `auditor_composicaoatomica`), os mesmos dois do baseline — sem regressão.
+- `npm run plan-index:check` → em dia (antes de eu mover o status desta plan).
+- `git diff --stat` (escopo) → `specs/specs/00-regras-e-invariantes.md` (36 linhas) ·
+  `specs/specs/01-gates-e-baseline.md` (43 linhas). **Exatamente os 2 arquivos da §3.1.**
+
+**Critérios de aceite**
+- [x] R8.1 e R8 têm marcador decidido por medição, com a evidência (arquivo/comando) acima.
+- [x] Onde o marcador mudou, os três lugares concordam: linha `**Estado:**`, tabela §1.3, tabela §4 — para
+      os dois, a tabela §1.3/§4 já diziam ✅; só a linha `**Estado:**` da própria regra precisou mudar.
+- [x] A nota de divergência da §1.3 **saiu** — o desacordo foi resolvido, não permanece.
+- [x] `grep -c "^## R"` = 34; `grep -cE "^\*\*Estado:\*\*"` = 35.
+- [x] Nenhum marcador além de R8 e R8.1 mudou — evidência: extração regra→marcador, antes/depois, acima.
+- [x] `01-gates-e-baseline.md` não roteia mais trabalho para `plan-12`/`plan-15`; a §9.5 registra o fecho de
+      R31 preservando a medição histórica datada (2026-08-05).
+- [x] `section-pointers:check` · `dev-kit:check` verdes; `run_audit` no baseline; `tsc` 0.
+- [x] `git diff --stat` — exatamente 2 arquivos.
+
+**Decisões e suposições**
+- **R8.1's vão de granularidade agregada não vira ⚠️.** A decisão original do dono (2026-08-02) já descrevia
+  o mecanismo como "mede agora, grava como piso" no nível de projeto — o mesmo desenho de R20. O texto da
+  regra nunca prometeu granularidade por arquivo como requisito da regra; "o quanto de dentro de cada
+  arquivo o teste alcança" descreve o que **cobertura percentual mede como conceito**, não uma promessa do
+  gate. Registrei o limite na prosa (consistente com R18) em vez de rebaixar o marcador.
+- **Não toquei na tabela de contagem da §1.3** (linha "34 regras... ✅ 23 · ⚠️ 8 · 🔴 3"): ela já estava
+  correta antes desta execução — o desacordo era só na linha `**Estado:**` de R8, não na tabela. Só a nota
+  de divergência (inserida pela `plan-32` para declarar esse desacordo) precisou ser substituída.
+- **`:171` de `01-gates-e-baseline.md`** ("pago pela `plan-15`") já estava em tempo passado, mas citava uma
+  plan fora da fila como se fosse um ponto de referência ainda localizável. Segui a instrução da §5 passo 4
+  ao pé da letra e removi a citação, preferindo "pago" sem atribuição — a autoria específica não estava em
+  risco de ser perdida (o rastro vive no git), e o objetivo desta plan é o resíduo de roteamento, não a
+  autoria histórica (que a `plan-32` decidiu preservar noutros casos, como `"fechado pela plan-12"`).
+
+**Achados fora do escopo (não corrigidos)**
+- `specs/specs/15-divida-conhecida.md:148` (achado 18, §4 "Implementação posterior") — ainda descreve R31
+  como *"a construção do gate está parada, aguardando o dono decidir"* e *"gate pendente de decisão de
+  fronteira"*. R31 tem gate desde 2026-08-10 (`plan-24`) e está fechado na medição corrente (baseline 0 e 0
+  desde a `plan-24-1`). Este arquivo não estava no escopo desta plan (só `00-regras-e-invariantes.md` e
+  `01-gates-e-baseline.md` estavam) — sugestão: plan própria para fechar o achado 18 e movê-lo para a §6
+  (fechados) de `15-divida-conhecida.md`.
+
+**Pendências / riscos**
+- Nenhuma das edições tocou código, gate ou config.
+- O achado acima (`15-divida-conhecida.md:148`) não foi corrigido, por estar fora do escopo declarado.
+
 ---
 
 # 11. Veredito
 
 <!-- Preenchido pelo REVISOR. Append-only. -->
+
+## Veredito — 2026-08-12 — 🟢 Aprovado
+
+**Refiz as duas medições em vez de aceitar as decisões.** Numa plan que **muda marcador**, o resumo é a
+alegação menos aceitável de todas: o marcador é o veredito que o contrato publica.
+
+### R8 → ✅ — a medição sustenta
+
+A pergunta da §5 era uma só: *existe algo que a regra exige e o `auditor_coverage.mjs` não vê?* Listei
+`src/` e cruzei com as seis raízes varridas:
+
+| Em `src/` | Varrido? | Poderia ter componente ou hook? |
+|---|---|---|
+| `components` · `core` · `features` · `shared` · `effects` · `constants` | ✅ as seis raízes | sim — e estão cobertas |
+| `styles/` | não | **não** — conferido: nenhum `.ts`/`.tsx`, só CSS |
+| `types/` | não | **não** — conferido: só `external.d.ts` |
+| `index.ts` | não | **não** — `index*` é exclusão da **própria regra** |
+| `__tests__/` | não | não é produção |
+
+✅ **Não sobra lugar.** O ⚠️ de R8 não tinha vão que o sustentasse, e a tabela §1.3 é que estava certa desde
+o início. Decisão correta, e por medição — não por conveniência de alinhar tabela.
+
+### R8.1 → ✅ — a medição sustenta
+
+`check-coverage-floor.mjs` existe, é cobrado por `npm run coverage:check` dentro do `gates:full`, lê o piso de
+`gates/baselines/coverage-floor.json` e bloqueia regressão. Pela §1.2, ⏳ significa *"a verificação ainda não
+foi construída"* — e ela foi. **A prosa de andaime que a `plan-32` deixou saiu junto**, como o passo 1 mandava.
+
+⚠️ **O ponto que eu conferiria com desconfiança, e está tratado certo:** o gate mede **percentual agregado**,
+não por arquivo. A execução registrou isso como **limite conhecido na prosa**, e **não** o usou para rebaixar
+o marcador. Está correto — R8.1 **pede** piso móvel agregado; a granularidade por arquivo é a R8, que é outra
+regra e tem gate próprio. Confundir as duas teria produzido um ⚠️ falso.
+
+### O que verifiquei além disso
+
+| Verificação | Saída |
+|---|---|
+| **Marcadores, antes × depois** | extração `awk` sobre `HEAD` e sobre o worktree: **só R8 mudou** entre as numeradas (⚠️→✅); R8.1 conferida à parte (⏳→✅). **Todos os outros 32 idênticos** |
+| Contagens | `grep -c "^## R"` → **34** · `Estado:` → **35** — inalteradas |
+| Coerência dos três lugares | §1.3 (✅ **23** · ⚠️ **8** · ⏳ **0** · 🔴 **3** = 34) · linha `Estado:` de R8 · linha de R8 na §4 — **os três concordam**, e a contagem real bate com a tabela pela primeira vez |
+| Nota de divergência | **removida** — `grep "diverge dos marcadores reais"` → 0. Ela existia só enquanto o desacordo existisse |
+| `⏳` remanescente | `grep -cE "^\*\*Estado:\*\*.*⏳"` → **0**. A §5 item 1 foi atualizada junto (*"vazia, entre as regras numeradas e na sub-regra"*), e ganhou nota explicando o 35 × 34 |
+| `01-gates-e-baseline.md` | `grep "plan-15"` → **0 ocorrências**; *"R31 continua sem gate"* / *"única regra sem gate"* → **0**. Resíduo fechado |
+| Gates | `section-pointers` · `dev-kit` · `plan-index` verdes · `tsc` **0** · `run_audit` nos mesmos 2 vermelhos |
+| Escopo | `git diff --stat` → **exatamente os 2 arquivos** da §3.1, mais índice e plan |
+
+**O detalhe que eu procurei de propósito e estava tratado:** a `plan-32` havia escrito na §5 que *"uma
+sub-regra ainda carrega ⏳"*. Ao mudar R8.1, essa frase viraria contradição nova — **e foi atualizada**. É o
+tipo de rastro que uma mudança de marcador deixa três seções adiante, e o motivo de a §5 passo 3 exigir
+alinhar os três lugares.
+
+### O que fica roteado
+
+`15-divida-conhecida.md:148` (achado **18**) ainda descreve o gate de R31 como *"parada obrigatória"*
+pendente de decisão do dono, com a medição de **12 de 18 temas** de antes do gate existir. **Declarado pela
+execução, e correto não ter tocado** — aquele arquivo estava fora do escopo, e é o **livro-caixa da dívida**,
+onde cifra e data são o conteúdo.
+
+⚠️ **Não crio plan para isto agora, e digo por quê:** é **um** achado, num arquivo cuja natureza é registro
+datado, e a campanha de reconciliação já consumiu seis plans. Entra na próxima passagem por
+`15-divida-conhecida` — que virá naturalmente com a **`plan-30`**, cujo destino de síntese é exatamente
+aquele arquivo. Roteado ali, não esquecido.
+
+### O que esta plan fecha
+
+Com ela, **as cinco specs fixas da campanha e o `00-contexto` descrevem o repositório que existe**, e
+nenhuma spec fixa roteia trabalho para plan que saiu da fila. A fila volta a ser sobre **código**.
+
+**Liberado.** As alterações estão no worktree, sem commit.
