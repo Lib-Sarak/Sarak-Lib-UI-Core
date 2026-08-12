@@ -86,8 +86,8 @@ qualquer quebra de tipo — mudanças de contrato público ficam registradas lá
 
 <!-- SARAK-KIT:CARIMBO:INICIO -->
 
-- **Versão da lib:** `4.0.0`
-- **Carimbo do kit (`kitHash`):** `073c753c24e9` — igual ao do arquivo `VERSION`.
+- **Versão da lib:** `4.0.1`
+- **Carimbo do kit (`kitHash`):** `297435714e0e` — igual ao do arquivo `VERSION`.
 - **Superfície desta versão:** 83 componentes públicos · 422 tokens de tema · 73 CSS Variables · 100 ícones · 23 temas embutidos.
 - **Guias completos que viajam no pacote:** `docs/component-catalog.md` · `docs/extensibilidade-de-layout.md` · `docs/identidade-do-host.md` · `docs/migracoes.md` · `docs/temas-cromo-e-multidispositivo.md`.
 
