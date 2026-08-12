@@ -3,7 +3,7 @@
   "schemaVersion": 1,
   "lib": {
     "name": "@sarak/lib-ui-core",
-    "version": "4.0.0"
+    "version": "4.0.1"
   },
   "design": {
     "schemaFiles": {
@@ -306,7 +306,9 @@
       "005-modelo-modulos-plugin-e-apps-separados.md",
       "006-zero-marca-soberania-host.md",
       "007-distribuicao-por-git.md",
-      "008-releases-com-tag-e-semver-em-git.md"
+      "008-releases-com-tag-e-semver-em-git.md",
+      "009-persistencia-tenant-aware.md",
+      "010-temas-salvos-pelo-usuario.md"
     ],
     "arquitetura": [
       "00-mapa-do-modulo.md",

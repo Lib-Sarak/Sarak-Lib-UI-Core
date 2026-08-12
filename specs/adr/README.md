@@ -48,6 +48,8 @@ Ponha a **data da decisão no corpo** do documento. Mantenha curto — uma a dua
 | [006](./006-zero-marca-soberania-host.md) | A lib nunca estampa a própria marca | 🟢 Aceito |
 | [007](./007-distribuicao-por-git.md) | Distribuição por Git, sem registry npm | 🔴 Substituído por [008](./008-releases-com-tag-e-semver-em-git.md) |
 | [008](./008-releases-com-tag-e-semver-em-git.md) | Releases com tag e faixa semver em Git — sem registry | 🟢 Aceito |
+| [009](./009-persistencia-tenant-aware.md) | Persistência de tema tenant-aware e strategy configurável | 🟢 Aceito |
+| [010](./010-temas-salvos-pelo-usuario.md) | Temas salvos pelo usuário em runtime — segunda porta de persistência | 🟢 Aceito |
 
 Comece pelo **001** — ele enquadra os outros três da mesma virada (002, 003, 004) e explica a regra de corte que os produziu.
 

@@ -1,6 +1,7 @@
 import { useState, useEffect, useCallback, useMemo, useRef } from 'react';
 import { validateDesign } from '../utils/validation';
-import { DEFAULT_STORAGE_KEY } from '../constants';
+import { resolveStorageKey } from '../utils/resolveStorageKey';
+import { resolveEffectiveStrategy } from '../utils/persistenceStrategy';
 import { GLOBAL_THEMES } from '../../Design/presets/themes';
 import { getDefaultDesignState } from '../../Design/master-map';
 import { useDesignSync } from './useDesignSync';
@@ -73,12 +74,19 @@ export const useDesignManager = (props: {
     // teto de estado por hook (R9) — sem isso são 5 useState/useEffect aqui.
     const [resolvedThemeId, setResolvedThemeId] = useResolvedThemeId(activeThemeId, resolveSeedThemeId);
 
+    // Chave efetiva (ADR-009 §2.1) — fonte única, calculada ANTES da semente para
+    // que a leitura síncrona do boot (abaixo) e todo o resto do hook consumam a
+    // MESMA chave, nunca compondo `storageKey`/`tenantId` duas vezes.
+    const storageKey = useMemo(
+        () => resolveStorageKey(options?.persistence),
+        [options?.persistence?.storageKey, options?.persistence?.tenantId],
+    );
+
     const [design, setDesign] = useState<SarakDesignState>(() => {
         if (typeof window === 'undefined') return getSeedConfig();
-        
+
         try {
-            const key = optionsRef.current?.persistence?.storageKey || DEFAULT_STORAGE_KEY;
-            const saved = localStorage.getItem(key);
+            const saved = localStorage.getItem(storageKey);
             if (saved) {
                 const parsed = JSON.parse(saved);
                 return validateDesign({ ...getSeedConfig(), ...parsed });
@@ -87,25 +95,27 @@ export const useDesignManager = (props: {
         return validateDesign(getSeedConfig());
     });
 
-    const storageKey = useMemo(() => options?.persistence?.storageKey || DEFAULT_STORAGE_KEY, [options?.persistence?.storageKey]);
-
     useDesignSync(isHydrated, activeThemeId, allThemes, storageKey, hasHydratedRef, setDesign);
-    useDesignRemoteLoader(isHydrated, optionsRef, isBackendLoaded, setIsBackendLoaded, setDesign);
+    useDesignRemoteLoader(isHydrated, optionsRef, isBackendLoaded, setIsBackendLoaded, setDesign, getSeedConfig);
 
     // Sincronização entre abas/apps (lacuna pré-Teste Real): default ligado, opt-out
     // via `options.persistence.crossTabSync === false`.
     const crossTabSyncEnabled = options?.persistence?.crossTabSync !== false;
     useDesignStorageSync(isHydrated, storageKey, crossTabSyncEnabled, design, setDesign);
 
-    // 3. Persistência de Design (Core Logic). Sempre localStorage (a lib não ship
-    // servidor — Spec 44); `onSave`/`onThemeChange` são portas opcionais "traga sua
-    // persistência" para o backend do PRÓPRIO consumidor, nunca um fetch da lib.
+    // 3. Persistência de Design (Core Logic). `strategy` (ADR-009 §2.2) decide o
+    // destino: 'local'/'hybrid' gravam localStorage; 'remote' só chama `onSave` —
+    // a lib nunca faz fetch para servidor próprio, `onSave`/`onThemeChange` são
+    // portas opcionais "traga sua persistência" do PRÓPRIO consumidor.
     const persistDesign = useCallback(async (config: SarakDesignState) => {
         if (!isHydrated) return;
         const opt = optionsRef.current;
+        const strategy = resolveEffectiveStrategy(opt?.persistence);
         try {
-            localStorage.setItem(storageKey, JSON.stringify(config));
-            if (opt?.persistence?.onSave) {
+            if (strategy !== 'remote') {
+                localStorage.setItem(storageKey, JSON.stringify(config));
+            }
+            if (strategy !== 'local' && opt?.persistence?.onSave) {
                 await opt.persistence.onSave(config);
             }
             onThemeChangeRef.current?.(config);

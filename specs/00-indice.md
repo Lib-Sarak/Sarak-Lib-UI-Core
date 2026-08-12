@@ -50,6 +50,11 @@ as duas, sempre, na mesma ação.**
 | 7 | [plan-11-remover-e2e-falso-verde](plan/plan-11-remover-e2e-falso-verde.md) | Remover o aparato de E2E que produz verde falso, deixando a capacidade declarada como adiada | — | 🔴 A executar | specs/specs/11-testes-e-cobertura.md · specs/specs/15-divida-conhecida.md |
 | 8 | [plan-05-integracao-continua](plan/plan-05-integracao-continua.md) | Rodar os gates num ambiente que não é a máquina de ninguém | — | 🔴 A executar | specs/16-integracao-continua.md · specs/02-enforcement-por-commit.md · specs/01-gates-e-baseline.md |
 | 9 | [plan-10-ciclo-atualizacao](plan/plan-10-ciclo-atualizacao.md) | Dar comando de atualização a quem só recebia aviso | plan-05 | 🔴 A executar | specs/13-instalacao-e-atualizacao.md |
+| 10 | [plan-34-persistencia-tema-tenant-aware](plan/plan-34-persistencia-tema-tenant-aware.md) | Um app multi-tenant na mesma origem não tem mais vazamento de tema entre tenants, e um consumidor com backend próprio pode fazê-lo vencer sobre o cache local | — | 🟢 Aprovada | specs/specs/09-temas-e-presets.md · specs/arquitetura/02-design-engine.md · docs/migracoes.md |
+| 11 | [plan-35-layout-responsivo-painel-design-engine](plan/plan-35-layout-responsivo-painel-design-engine.md) | O painel de customização se adapta ao espaço real do container onde está embutido, sem sobrepor colunas nem cortar texto, independentemente da largura da janela | — | 🔴 A executar | specs/specs/06-painel-de-customizacao-e-preview.md |
+| 12 | [plan-36-performance-rascunho-painel-design-engine](plan/plan-36-performance-rascunho-painel-design-engine.md) | Arrastar um slider ou digitar num controle do painel não recomputa o dicionário inteiro de tokens nem duplica estado de rascunho | plan-35 | 🔴 A executar | specs/specs/06-painel-de-customizacao-e-preview.md |
+| 13 | [plan-37-consolidar-modo-essencial-painel](plan/plan-37-consolidar-modo-essencial-painel.md) | O painel expõe dois modos claramente nomeados — Essencial e Avançado — e o Essencial cobre de fato os tokens de maior impacto visual, sem lacuna de dados | — | 🔴 A executar | specs/specs/06-painel-de-customizacao-e-preview.md |
+| 14 | [plan-38-salvar-tema-em-runtime](plan/plan-38-salvar-tema-em-runtime.md) | Um usuário final, sem acesso ao código do importador, cria um tema no painel, salva, e o tema aparece na lista a partir daí, sem redeploy — ⛔ PARADA em decisão do dono: o tipo `ThemePreset` que o ADR-010 manda reaproveitar tem `id` de união FECHADA e não cabe em tema autorado em runtime (ver §2.0) | plan-34 | ⛔ Bloqueada | specs/specs/09-temas-e-presets.md · specs/specs/06-painel-de-customizacao-e-preview.md |
 <!-- SARAK-INDICE:FILA:FIM -->
 
 > **A ordem da coluna `#` não é a ordem do número da plan** — e isso é a feature, não um erro. Numeração é
@@ -103,6 +108,35 @@ as duas, sempre, na mesma ação.**
 > `00-regras-e-invariantes`, os achados em `15-divida-conhecida`), e **o rastro de execução vive no Git** —
 > `git log --diff-filter=D -- specs/plan/` recupera qualquer uma das plans removidas. O texto antigo roteava
 > plans que não existem mais em nenhuma fila: era mapa de um caminho já andado.
+>
+> **As posições `#10`–`#13` entraram em 2026-08-12**, a pedido do dono, a partir de três problemas relatados
+> em uso real: persistência de tema em app multi-tenant, e o painel Design Engine lento e quebrando o layout
+> fora de viewport cheia. As quatro **não dependem** da cadeia `11 → 05 → 10` nem entre si, exceto
+> `plan-36 → plan-35` (mesma área de arquivo, evita conflito de merge — não é dependência funcional). A
+> `plan-37` revelou, na investigação, que o "modo essencial" pedido **já existe** no código (mal rotulado, com
+> lacuna de dado) — é conserto, não construção do zero. A `plan-34` implementa um contrato já decidido em
+> [`adr/009-persistencia-tenant-aware`](adr/009-persistencia-tenant-aware.md).
+>
+> **A posição `#14` entrou no mesmo dia**, um quarto pedido do dono chegado depois dos três primeiros: o
+> usuário final poder salvar um tema criado no painel, sem depender de deploy — hoje "salvar" só existe como
+> exportar JSON para o desenvolvedor colar em código. **Depende formalmente da `plan-34`** (reaproveita a
+> chave tenant-aware), e fica **depois** da `plan-35`/`plan-37` na fila por tocarem arquivos vizinhos do
+> painel (`SaveThemeModal.tsx`, `ThemeList.tsx`), mesmo sem dependência funcional entre elas. Implementa o
+> contrato de [`adr/010-temas-salvos-pelo-usuario`](adr/010-temas-salvos-pelo-usuario.md).
+>
+> 🔧 **As plans 35, 36 e 38 foram EMENDADAS em 2026-08-12, antes de qualquer execução.** O revisor conferiu
+> cada `arquivo:linha` das cinco contra o código e achou premissa falsa em três — inclusive **um alvo que não
+> existe** (a `plan-36` mandava memoizar `computeColorVariants` em dois arquivos do painel; a função não
+> aparece em nenhum dos dois, e a duplicação real vem de dois `DesignScope` aninhados). Cada emenda está no
+> corpo da plan, datada e com a medição, no padrão que a `plan-28` §2.0 e a `plan-30` §2.0 fixaram. **As
+> plans 34 e 37 passaram intactas** — todas as premissas confirmadas.
+>
+> ⛔ **A `plan-38` está BLOQUEADA numa decisão do dono**, não numa dependência de fila. O ADR-010 manda
+> reaproveitar o tipo `ThemePreset`, e ele tem `id: ThemePresetId` — **união fechada dos 23 ids que a lib
+> embarca**. Um tema salvo pelo usuário final tem id arbitrário e não cabe ali; e o shape que cabe
+> (`ThemeExportPayload`) mora em `features/`, que `core/` **não pode importar** (R1, gate pleno). As três
+> saídas e a recomendação estão na [`plan-38` §2.0](plan/plan-38-salvar-tema-em-runtime.md). **As plans 34–37
+> não dependem dela e seguem normalmente.**
 
 ---
 

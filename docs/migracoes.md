@@ -5,6 +5,64 @@ com o "antes" e o "depois" lado a lado. Uma entrada por mudança, mais recente p
 
 ---
 
+## Persistência de tema tenant-aware e `strategy` funcional (ADR-009)
+
+**Afeta você se** roda **múltiplos tenants na mesma origem** (troca de conta/tenant em runtime, sem
+reload de página) — o tema de um podia vazar para o outro — **ou** se já tem backend próprio e quer que
+ele vença sobre o `localStorage` sem ambiguidade.
+
+**Não afeta ninguém que não declarar `persistence.tenantId` nem `persistence.strategy`.** O default
+continua sendo exatamente o que a lib sempre fez: gravar/ler `localStorage` **e** chamar
+`onSave`/`onLoad` quando fornecidos — isso agora tem nome (`'hybrid'`), mas é o mesmo comportamento,
+provado por teste que não muda de veredito.
+
+**O que mudou.**
+
+| | Antes | Depois |
+| --- | --- | --- |
+| Chave de `localStorage` | sempre `storageKey` cru (`options.persistence.storageKey`, ou o default `sarak-ui-design-v9.0`) | com `persistence.tenantId` definido, a chave efetiva vira `` `${storageKey}::tenant:${tenantId}` `` — usada na leitura, na escrita e no filtro de `crossTabSync`. Sem `tenantId`, nada muda |
+| `persistence.strategy` | declarado no tipo, **nunca lido** — campo morto | funcional, com três valores (ver tabela abaixo); default `'hybrid'` |
+| `onLoad` resolvendo com `strategy: 'remote'` | fundia por cima do que já estava no estado (`{ ...prev, ...custom }`) — o que veio do fallback síncrono de `localStorage` podia sobreviver misturado | **substitui** (`{ ...semente, ...custom }`) — o que veio do `localStorage` é inteiramente descartado assim que `onLoad` resolve |
+
+**Os três valores de `strategy`:**
+
+| Valor | Comportamento |
+| --- | --- |
+| `'hybrid'` **(default)** | Grava/lê `localStorage` **e** chama `onSave`/`onLoad` quando fornecidos — o que a lib sempre fez, agora com nome |
+| `'local'` | Ignora `onSave`/`onLoad` mesmo se configurados — só `localStorage` |
+| `'remote'` | `localStorage` deixa de decidir: é lido uma única vez, síncrono, só contra o flash do primeiro paint, e é **substituído** assim que `onLoad` resolver. `persistDesign` para de escrever em `localStorage` — a escrita vira só `onSave`. Sem `onSave` nem `onLoad` configurados, a lib emite um `console.warn` único e degrada para `'local'` — nunca perde o tema em silêncio |
+
+**Por quê.** Um consumidor multi-tenant real reportou vazamento de tema entre contas na mesma origem: o
+boot lia `localStorage` sem saber "de quem" era aquele valor, e `crossTabSync` reaplicava o tema de um
+tenant nas abas de outro, porque todos escreviam na mesma chave. Levantamento completo em
+`specs/adr/009-persistencia-tenant-aware.md`.
+
+**Como migrar.**
+
+1. **Multi-tenant na mesma origem:** passe `options.persistence.tenantId` com o identificador do tenant
+   ativo. É um valor opaco — a lib não valida nem interpreta, só compõe a chave. Trocar de tenant em
+   runtime já isola automaticamente leitura, escrita e `crossTabSync`.
+
+   ```tsx
+   <SarakUIProvider options={{ persistence: { tenantId: tenantAtivo.id } }}>
+   ```
+
+2. **Já tem backend próprio e quer que ele vença:** declare `strategy: 'remote'` junto com `onSave`/
+   `onLoad`. O `localStorage` deixa de ser gravado e de decidir o design final.
+
+   ```tsx
+   <SarakUIProvider options={{ persistence: { strategy: 'remote', onSave, onLoad } }}>
+   ```
+
+3. **Não usa nenhum dos dois:** nada a fazer. `tenantId` ausente e `strategy` ausente (ou `'hybrid'`
+   explícito) reproduzem o comportamento de sempre.
+
+**O que NÃO mudou.** O formato do payload de tema (`schema_version`) é o mesmo; `crossTabSync` continua
+default `true`, com a mesma lógica de filtro — só passou a receber a chave já composta por tenant.
+Nenhum export do barril mudou de assinatura.
+
+---
+
 ## O motor de cor parou de reescrever o seu tema sem avisar (Decisão D)
 
 **Afeta você se tem tema PRÓPRIO** — seu, não um dos 18 embarcados na lib: escrito à mão, exportado
