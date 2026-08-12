@@ -12,13 +12,16 @@ relacionados: ["[[00-regras-e-invariantes]]", "[[02-enforcement-por-commit]]", "
 
 Este documento existe para impedir uma coisa específica: **alguém acusar regressão onde há dívida conhecida.**
 
-`run_audit.mjs` **não está em zero** e não vai estar tão cedo. Quem roda a auditoria pela primeira vez vê "AUDITORIA FALHOU: 4 regras estruturais" e conclui que quebrou alguma coisa. Não quebrou. O baseline da §3 é a régua; **compare com ele, nunca com zero**.
+`run_audit.mjs` **não está em zero**. Quem roda a auditoria pela primeira vez vê "AUDITORIA FALHOU: 2 regras estruturais" e conclui que quebrou alguma coisa. Não quebrou. O baseline da §3 é a régua; **compare com ele, nunca com zero**.
 
 Aqui está **como rodar** cada verificação e **onde ela está**. O que cada uma cobra está em [[00-regras-e-invariantes]]; **quando** ela roda está em [[02-enforcement-por-commit]]; e **o que cada gate NÃO enxerga** está na **§9**, a matriz de cobertura — leia-a antes de confiar num verde.
 
 > **Todo gate deste documento cita o número da regra que cobra** *(fechado em 2026-08-02, `plan-13`)*. É o caminho de volta que faltava: quem é bloqueado por um gate chega ao contrato sem adivinhar. Antes disso o `check-release-tag` bloqueava um push imprimindo *"Regra violada"* citando uma regra que não existia em spec nenhuma.
 
-> Todos os números deste documento foram **medidos em 2026-07-27** nesta máquina, na execução que produziu esta spec. Nenhum foi copiado de documento anterior.
+> **Nenhum número deste documento é copiado de documento anterior — todos são medidos.** A §3 foi recontada
+> por execução direta em **2026-08-11**; o resto do texto data cada afirmação onde ela pode ter envelhecido.
+> **Cifra sem data é candidata a estar errada** — foi assim que esta spec passou seis dias descrevendo um
+> repositório que não existia mais (achado **32**).
 
 # 2. Catálogo de gates
 
@@ -53,7 +56,7 @@ Ele roda os 12 na ordem abaixo, cada um em processo próprio:
 | 11 | `auditor_composicaoatomica.mjs` | R10 | AST: `<button>`/`<input>`/`<select>` cru fora da fronteira declarada de R10 |
 | 12 | `auditor_contraste.mjs` → `verify_contrast.ts` | R31 | Um `[FAIL]` por tema, com **cada par abaixo de 4,5:1** e a razão medida; a última linha traz reprovados **e pulados**. **Pulado ≠ aprovado** — é fundo não determinístico, declarado em vez de chutado |
 
-> ⚠️ **Relatório × FAIL.** O balde **deduzido** do `auditor_hardcoded` (ícones, `w-full`/`h-full`, alinhamento) é **relatório**: aparece na reconciliação, é contado, e **não reprova**. Só o líquido reprova. Já a linha final de `verify_parity` ("416 tokens validados") é relatório de contagem bruta; o número que importa para paridade é o das três fontes (409). Ver [[04-contrato-de-tokens-e-paridade]] §2.
+> ⚠️ **Relatório × FAIL.** O balde **deduzido** do `auditor_hardcoded` (ícones, `w-full`/`h-full`, alinhamento) é **relatório**: aparece na reconciliação, é contado, e **não reprova**. Só o líquido reprova. Já a linha final de `verify_parity` é relatório de contagem **bruta**; o número que importa para paridade é o das **três fontes**, que hoje batem em **422**. Ver [[04-contrato-de-tokens-e-paridade]] §2.
 
 ## 2.2 Os gates de contrato
 
@@ -78,7 +81,7 @@ Ele roda os 12 na ordem abaixo, cada um em processo próprio:
 | Release | `npm run release:check` (anel de push) | Artefato publicado alterado sem tag nova não sobe para a `main` | **R21** |
 | Segredos | `python gates/scripts/segredo/verificar_commit.py --raiz .` (Anel 0) | Nenhum segredo nem arquivo sensível no staged | **R22** |
 | `BUILD_INFO.json` | `npm run build-info:check` (dentro de `gates:full`) | `dist/BUILD_INFO.json` commitado bate com o que o gerador produz agora | **R29** |
-| Cobertura em % | `npm run coverage:check` (dentro de `gates:full`) | Piso móvel: mede, grava, e o piso só sobe — mesma mecânica do `audit:baseline` | **R8.1** — piso hoje: **70,66%** |
+| Cobertura em % | `npm run coverage:check` (dentro de `gates:full`) | Piso móvel: mede, grava, e o piso só sobe — mesma mecânica do `audit:baseline` | **R8.1** — piso hoje: **71,47%** *(medido 2026-08-11; a fonte viva é `gates/baselines/coverage-floor.json`)* |
 
 > **Por que isto está escrito agora:** em 2026-08-02 o `check-release-tag` barrou um push imprimindo *"Regra violada"* — e a regra **não existia** em spec nenhuma. Um gate que reprova citando regra inexistente deixa o leitor sem caminho do bloqueio até o contrato. As três regras acima foram escritas em [[00-regras-e-invariantes]] (`plan-13`) a partir da leitura de cada script.
 
@@ -148,47 +151,46 @@ Registrado como o que é: **cobertura que existe e não é cobrada**. **Não cob
 
 **Compare com esta tabela. Nunca espere zero.**
 
-> 🔴 **AVISO DE DEFASAGEM (revisor, 2026-08-10).** Só a linha do `auditor_contraste` foi escrita hoje. **As
-> demais são de 2026-08-05 e várias já não descrevem o repositório** — `hardcoded` e `ghostvars` foram pagos
-> pela `plan-15`, `composicaoatomica` mudou de fronteira na `plan-21`, e a suíte não é mais 289/1004. **A
-> fonte viva é `gates/baselines/audit-baseline.json`** (R20), regravada a cada plan; esta tabela é prosa e
-> envelhece — exatamente o padrão do achado **32**. Recontagem está na fila do `/spec-atualizar`.
+> ⚠️ **A fonte viva é `gates/baselines/audit-baseline.json`** (R20), regravada a cada plan. **Esta tabela é
+> prosa e envelhece** — é o padrão do achado **32**, e já aconteceu aqui uma vez: entre 2026-08-05 e
+> 2026-08-11 ela descreveu um repositório que não existia mais. **Diante de divergência, o JSON vence.**
+> Recontada por medição direta em **2026-08-11**.
 
 > ✅ **Recontagem completa em 2026-08-05.** As plans 12 e 16 ligaram 11 gates novos/ampliados de propósito
 > (§2.1 dos §9), **sem exceção** — o vermelho novo é dívida medida e registrada, não escondida, e é o que a
 > `plan-15` (ainda não executada) paga. O baseline de 2026-07-27/2026-08-03 abaixo está superado; os números
 > vigentes são estes.
 
-| Gate | Comando | Baseline |
+| Gate | Comando | Baseline *(medido 2026-08-11)* |
 | --- | --- | --- |
-| `run_audit` | `node gates/scripts/audit/run_audit.mjs` | ❌ **exit 1 — 4 auditores vermelhos** |
-| ↳ `auditor_hardcoded` | | **35 violações de VALOR**, todas em `src/core/Shell/Components/` (`SidebarNav.tsx`, `TopbarNav.tsx`, `ShellUserWidget.tsx`, `SarakShell.tsx`) — vão nº 5 fechado como **gate** pela `plan-12` (`VALUE_SCOPE` ganhou `src/core`); zero ocorrência fora de `Mocks/`/`__tests__/` em `components/`/`features/`. **Era 0** depois da `plan-07` fechar o achado do `SarakTypography.tsx`; o número subiu porque o gate passou a **ver** um território que nunca tinha visto |
-| ↳ `auditor_ghostvars` | | **27 consumos**, combinados entre `src/styles/` e `src/core/` (vãos 2 e 3, fechados como **gate** pela `plan-12` — `CONSUMER_DIRS` ampliado, registro com as 4 fontes emissoras). **Era 0** depois da `plan-07` (o `--sx-*` fora e o único fantasma real virou token) |
-| ↳ `auditor_typescript` | | ✅ 0 `any` |
-| ↳ `auditor_coverage` | | ✅ 0 órfãos — `shared/`/`effects/`/`constants/` entraram no escopo (vão 6) e **nasceu verde**: os testes já existiam, escritos pela `plan-07` |
-| ↳ `auditor_arquitetura` | | ✅ 0 quebras de hierarquia |
-| ↳ `auditor_cleancode` | | ✅ 0 violações |
-| ↳ `auditor_paridade` | | ✅ **409 / 409 / 409** — a `plan-09` removeu o token `mfaQrCodeSize` (era 410, depois da fusão dos 7 ids duplicados pela `plan-07`) |
-| ↳ `auditor_presets` | | ✅ gabarito de 409 chaves; **120 itens** (18 temas + 102 presets), 0 órfã |
-| ↳ `auditor_authcoupling` (R32) | | ✅ **0 violações** — nasceu verde: o único violador (`SarakSecurityOrchestrator`) já havia saído na `plan-09` |
-| ↳ `auditor_sectionpointers` (R23 · R17, vão 7) | | ❌ **27 ponteiros mortos** de autorreferência — inclui o achado 29 (`sarak-dev/GUIA-MANUTENCAO.md:308`, `§5.1` inexistente), confirmado ainda vivo |
-| ↳ `auditor_composicaoatomica` (R10) | | ❌ **47 violações** — `components/atomic` 23 · `core/Shell` 15 · `Layout/` 6 · `engines/` 2 · `Discovery/` 1. Zero em `features/**`, `atomic/Buttons/`, `atomic/Inputs/` — a fronteira que R10 declara |
-| ↳ `auditor_contraste` (R31) *(`plan-24`; verde na `plan-24-1`, 2026-08-11)* | | ✅ **0 reprovados no modo nativo · 0 no modo oposto · 18/18** — **duas passadas**, 36 pares × 18 temas. Nasceu em **188** e a `plan-24-1` pagou. ⚠️ **25 pares-tema seguem PULADOS** (fundo não determinístico: `hsl()`/`var()`/gradiente, ou cadeia que não resolve opaca) — **pulado não é aprovado, é não medido** |
-| `barrel:check` **(R14)** | `npm run barrel:check` | ✅ **80 componentes, 0 faltas** — era 81 até a `plan-09` (saiu o `SarakTabs` de `Layouts/`), e 78 até P26, que pôs `components/engines/**` no escopo de varredura (§4.5, item 4) |
-| `catalog:check` **(R17 · R29)** | `npm run catalog:check` | ✅ catálogo em dia (**80** componentes — era 81 até a `plan-09`) |
-| `zero-brand:check` **(R12)** | `npm run zero-brand:check` | ✅ **357 arquivos, 0 violações** — a contagem é o nº de arquivos varridos; **o número que importa é o de violações (0)** |
-| `guide:check` **(R17 · R29)** | `npm run guide:check` | ✅ **kit em dia (6 arquivos)** — o kit reporta **86** componentes (80 + 6 extras; era 87 até a `plan-09`) |
-| `dev-kit:check` **(R17 · R23 · R29)** | `npm run dev-kit:check` | ✅ **kit em dia (3 arquivos, 0 ponteiros mortos)** — dentro do que o gate mede hoje (caminho, `npm run`, `node`); **não** valida ponteiro de **seção**, que é o `auditor_sectionpointers` acima |
-| `deep-import:check` **(R27)** | `npm run deep-import:check` | ✅ **0 violações** — nasceu verde |
-| `gate-limits:check` **(R18)** | `npm run gate-limits:check` | ✅ **26/26** scripts declaram o que não veem |
-| `token-types:check` **(R4 · R29)** | `npm run token-types:check` | ✅ **409 tokens**, em dia — regenerado pela `plan-12` (era 304, defasado em 105) |
-| `build-info:check` **(R29)** | `npm run build-info:check` | ✅ em dia |
-| `coverage:check` **(R8.1)** | `npm run coverage:check` | ✅ **igual ao piso — 70,66% de linhas** (piso móvel; melhora regrava, piora bloqueia) |
-| suíte **(R6 · R13 · R24 · R25 · R26 · R28)** | `npx vitest run` | ✅ **289 arquivos / 1004 testes, 100% verde**, desde 2026-08-05 (`plan-16`). Era 288/997 depois da `plan-12` (self-tests dos 8 gates do Lote A/B); 275/942 depois da `plan-09` (que removeu os testes do `SarakSecurityOrchestrator` e do `SarakTabs` duplicado); 281/950 depois da `plan-08` |
-| `tsc` **(R30)** | `npx tsc --noEmit` | ⚠️ **0 erros em produção (hard-block) · 10 em teste** (piso, tolerado). Produção fechou pela `plan-07`; a `plan-12` separou a contagem por classe no Anel 2 |
-| `build` | `npm run build` | 4 gates + 6 etapas de compilação |
+| `run_audit` | `node gates/scripts/audit/run_audit.mjs` | ❌ **exit 1 — 2 auditores vermelhos** de 12. Os outros 10 estão verdes |
+| ↳ `auditor_hardcoded` (R2) | | ✅ **0** — era 35 quando o gate passou a ver `src/core`; pago pela `plan-15` |
+| ↳ `auditor_ghostvars` (R7) | | ❌ **1 fantasma, 1 consumo** — era 27; o resíduo é o achado **38** ([[15-divida-conhecida]] §3.1). O sub-check de sintaxe de fallback (vão 1) está ✅ |
+| ↳ `auditor_typescript` (R3) | | ✅ **0** `any` |
+| ↳ `auditor_coverage` (R8) | | ✅ **0** componentes sem teste |
+| ↳ `auditor_arquitetura` (R1) | | ✅ **0** quebras de hierarquia |
+| ↳ `auditor_cleancode` (R9) | | ✅ **0** violações |
+| ↳ `auditor_paridade` (R4) | | ✅ **422 / 422 / 422** — schema ↔ banco ↔ catálogo (13 arquivos). Era 409 |
+| ↳ `auditor_presets` (R5) | | ✅ gabarito vivo de **422 chaves**; **125 itens** auditados (**23 temas** + 102 presets), **0 órfãs**. Era 120 itens com 18 temas |
+| ↳ `auditor_authcoupling` (R32) | | ✅ **0** — nasceu verde e continua |
+| ↳ `auditor_sectionpointers` (R23·R17) | | ✅ **0** ponteiros mortos — eram 27 |
+| ↳ `auditor_composicaoatomica` (R10) | | ❌ **2** — `SarakMultiSelect` e `SarakUploader`, ambas declaradas. Eram 47, e a fronteira deixou de ser por pasta (ver **R10**) |
+| ↳ `auditor_contraste` (R31) | | ✅ **0 no modo nativo · 0 no modo oposto**, 23 temas · **18 isentos** de contraparte (os legados) · **25 pares-tema pulados**, que não são aprovação. Nasceu em 188 |
+| `barrel:check` **(R14)** | `npm run barrel:check` | ✅ **77 componentes, 0 faltas** |
+| `catalog:check` **(R17·R29)** | `npm run catalog:check` | ✅ em dia |
+| `zero-brand:check` **(R12)** | `npm run zero-brand:check` | ✅ **363 arquivos varridos, 0 violações** — o número que importa é o de violações |
+| `guide:check` **(R17·R29)** | `npm run guide:check` | ✅ kit em dia (6 arquivos) |
+| `dev-kit:check` **(R17·R23·R29)** | `npm run dev-kit:check` | ✅ kit em dia (3 arquivos, **0 ponteiros mortos**) — não valida ponteiro de **seção**, que é o `auditor_sectionpointers` |
+| `deep-import:check` **(R27)** | `npm run deep-import:check` | ✅ **0** — `exports` só expõe a raiz e subcaminhos de CSS |
+| `gate-limits:check` **(R18)** | `npm run gate-limits:check` | ✅ **29/29** scripts declaram o que não veem. Eram 26 |
+| `token-types:check` **(R4·R29)** | `npm run token-types:check` | ✅ **422 tokens**, em dia |
+| `build-info:check` **(R29)** | `npm run build-info:check` | ✅ íntegro |
+| `coverage:check` **(R8.1)** | `npm run coverage:check` | ✅ **72,43% contra piso de 71,47%** — piso móvel: melhora regrava (só com `--write`), piora bloqueia |
+| suíte **(R6·R13·R24·R25·R26·R28·R33·R34)** | `npx vitest run` | ✅ **304 arquivos / 1184 testes**, 100% verde. Era 289/1004 |
+| `tsc` **(R30)** | `npx tsc --noEmit` | ✅ **0 erros**, produção e teste. Baseline em 0 ⇒ qualquer erro novo bloqueia |
+| `build` | `npm run build` | 4 gates + as etapas de compilação |
 | `package:check` **(R19)** | `npm run package:check` | exige `dist/` buildado |
-| `audit:baseline` **(R20 · R30)** | `npm run audit:baseline` | ✅ igual ao baseline de **2026-08-05** — nenhuma regressão |
+| `audit:baseline` **(R20·R30)** | `npm run audit:baseline` | ✅ igual ao baseline de **2026-08-11** — nenhuma regressão |
 | `release:check` **(R21)** | `npm run release:check` | depende do estado do git na hora; **não tem baseline** — ou o artefato mudou desde a tag, ou não |
 | Anel 0 — segredos **(R22)** | `python gates/scripts/segredo/verificar_commit.py --raiz .` | ✅ verde é a **única** saída aceitável — não há baseline nem escopo: segredo é segredo |
 | Sincronia plan × índice *(vão 12)* | `npm run plan-index:check` | ✅ `status` do frontmatter de cada plan bate com a coluna do [[00-indice]] |

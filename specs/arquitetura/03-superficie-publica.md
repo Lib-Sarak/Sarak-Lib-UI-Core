@@ -78,12 +78,21 @@ E ele derruba o build também no sentido inverso — **exclusão obsoleta** (`:7
 
 > Este catálogo **sucedeu** o antigo catálogo de manifesto. A superfície de autoria em JSON — tipos de nó, ações, pipes, diretivas — **morreu com o motor removido** ([[002-remocao-motor-manifesto]]). Se você encontrar referência a `manifest-catalog`, é ponteiro morto.
 
-## 5.1 A divergência de contagem 81 × 87 — APURADA, não é bug
+## 5.1 A divergência entre o gate e o kit — APURADA, não é bug
 
-O gate reporta **80 componentes**; o catálogo do kit reporta **86**. Os dois números estão certos, porque **medem escopos de varredura diferentes**:
+> ⚠️ **Esta seção já se contradisse:** o título dizia "81 × 87" e o corpo, "80" e "86". **Cifra em prosa
+> envelhece** (achado **32**) — e aqui envelheceu duas vezes com números diferentes na mesma página. O que
+> não envelhece é a **relação**, e é ela que a seção passa a afirmar.
 
-- **81** = o que `collectPublicComponentNames()` varre: `components/atomic/**` + `components/engines/**` + `components/Layout/**`.
-- **87** = 81 **+ 6**, onde os 6 vêm de `collectExtraPublicApi()` (`scripts/consumer-kit/collectKitSources.mjs:184-199`): nomes que o barril exporta, têm `<Nome>Props`, e **não** moram nas pastas varridas pelo gate.
+**O gate e o kit medem escopos de varredura diferentes, e os dois estão certos.**
+
+- **O gate** (`collectPublicComponentNames()`) varre as peças **visuais**: `components/atomic/**` +
+  `components/engines/**` + `components/Layout/**`.
+- **O kit** amplia com as peças de **montagem** — as **6** que o barril exporta, têm `<Nome>Props` e **não**
+  moram nas pastas varridas pelo gate (`collectKitSources.mjs`, `collectExtraPublicApi()`).
+
+**A diferença é sempre 6**, e é essa a invariante. *(Medido em 2026-08-11: gate **77**, kit **83**. Os
+números vivem em `npm run barrel:check` e em `sarak-ui/catalog.json` — se divergirem daqui, eles vencem.)*
 
 Os 6, com onde moram:
 
@@ -168,10 +177,36 @@ O chunk de **boot** de um consumidor caiu de **3203,6 KB para 1533,6 KB (−52,1
 
 `SarakKanban` **não** é lazy, e isso é deliberado — o comentário em `DataDisplay/SarakKanban/index.ts:3` registra que ele é leve (arrastar-e-soltar HTML5 nativo, zero dependência).
 
-# 8. Dívidas nomeadas — ✅ TODAS FECHADAS em 2026-08-04 (`plan-09`)
+# 8. Dívidas nomeadas — as duas ondas de limpeza
 
-Esta seção listava **três** dívidas de superfície pública. As três morreram no major `2.0.0`, e ficam
-registradas aqui com o desfecho — o histórico é o `git`, mas o **porquê** de cada uma some se não for escrito.
+Esta seção listava **três** dívidas de superfície pública. As três morreram no major `2.0.0` (`plan-09`,
+2026-08-04), e ficam registradas aqui com o desfecho — o histórico é o `git`, mas o **porquê** de cada uma
+some se não for escrito.
+
+## 8.0 A segunda onda — major `3.0.0` *(2026-08-11)*
+
+**Quatro componentes e três tipos saíram do barril**, num major só. O que os unia não era tema — era
+**diagnóstico**: nenhum dos quatro tinha razão de ser público.
+
+| Saiu | Por quê |
+|---|---|
+| `ThemeToggle` | **Nunca foi funcional.** `LAYOUTS` era um objeto literal vazio, com um `TODO` pedindo presets que nunca chegaram: o dropdown sempre esteve vazio. Não é regressão do major — é o estado dele desde que existe |
+| `LanguageSelector` · `UserMenu` · `ModuleSelector` | Viviam numa pasta que deixou de fazer sentido como superfície. **Não têm substituto 1:1** — o que parecia equivalente no Shell **não é**: o removido carregava `localStorage`, cookie `googtrans` e `window.location.reload()`; o do cromo não tem nada disso |
+| `LanguageOption` · `ModuleConfig` · `UserPayload` | Os tipos que vinham com eles. Dois se declaram em uma linha no projeto do consumidor; `ModuleConfig` tem em `SarakModule` um parente público, mais pesado |
+
+⚠️ **A lição de processo desta onda:** a substituição "óbvia" foi **proposta pelo revisor e desmentida por
+medição do executor**. Componente com nome parecido não é componente equivalente — e a nota de migração
+teria mentido para o consumidor se a medição não tivesse sido feita.
+
+> **`SarakInput` NÃO expõe `ref` — e isso é decisão aplicada, não pendência.** A superfície pública não
+> promete `ref` em input; o tipo estende `InputHTMLAttributes` sem `forwardRef`.
+>
+> A consequência foi **assumida onde ela aparece**, não contornada: `SarakMultiSelect` mantém um `<input>`
+> cru porque lê o `inputRef` de forma imperativa, e a violação de R10 fica **declarada no próprio código e
+> contada no baseline** — deliberadamente **sem** o marcador `@sarak-encapsula`, que a silenciaria. É
+> violação real com conserto bloqueado, e o número tem de continuar doendo.
+
+## 8.1 A primeira onda — major `2.0.0` *(`plan-09`, 2026-08-04)*
 
 | Dívida | Desfecho |
 |---|---|

@@ -94,6 +94,25 @@ Três casos que valem explicitar, porque já causaram confusão:
 - **Tornar um export `React.lazy` é MAJOR**, porque o tipo público vira `LazyExoticComponent`. É exatamente o que trava a correção da dívida do `CustomizationPanel` ([[01-gates-e-baseline]] §4.5).
 - **Mudar o que é default é MAJOR**, mesmo mantendo a capacidade. Quem dependia do default vê comportamento diferente sem alterar uma linha.
 
+## 3.1 A linha publicada, e o que cada MAJOR carregou
+
+**Oito tags desde a renumeração**, três delas MAJOR. *(Fonte viva: `git tag`. Esta tabela existe para dar o
+**motivo** de cada quebra, que o `git` não guarda.)*
+
+| MAJOR | O que quebrou |
+|---|---|
+| **`2.0.0`** | A primeira limpeza de superfície: `SarakTabs` duplicado, `SarakSecurityOrchestrator`, o parâmetro morto de `upgradeThemePayload`, o token `mfaQrCodeSize`, os 2 ids legados do Discovery. E o `CustomizationPanel` saiu do caminho crítico — **−75,1% no chunk de boot**, sem quebrar o tipo público |
+| **`3.0.0`** | **Quatro componentes e três tipos saíram do barril** — `ThemeToggle` (nunca foi funcional), `LanguageSelector`, `UserMenu`, `ModuleSelector`, mais `LanguageOption`, `ModuleConfig`, `UserPayload`. Ver [[03-superficie-publica]] §8.0 |
+| **`4.0.0`** | **Mudança de comportamento, não de assinatura** — a decisão **D**: o motor de cor deixou de reescrever o tema a cada render, e no modo nativo o emitido passou a ser o escrito. Nenhum export mudou, e ainda assim **toda cor de todo tema de todo consumidor** podia mudar na tela. Ver [[09-temas-e-presets]] §4.3.1 |
+
+> 🔴 **A `4.0.0` é o caso que a tabela de níveis acima já previa e que mesmo assim quase passou.** Ela é
+> *"mudar um comportamento default"* — nenhum nome saiu do barril, nenhum `<Nome>Props` mudou, e o
+> `release:check` teria deixado passar como MINOR sem reclamar de nada. **O que a classificou como MAJOR foi
+> leitura humana do efeito no consumidor**, não gate.
+>
+> **Nenhum gate mede "o pixel mudou".** É por isso que a §5 (`docs/migracoes.md`) é obrigatória e não
+> automatizável: quebra de comportamento só existe no registro se alguém a escrever.
+
 # 4. A fonte única do número
 
 ```

@@ -35,15 +35,25 @@ catalog/partitions/*.json            13 partições, uma por coluna
 
 | Fonte | Tokens |
 | --- | --- |
-| Schema (`MASTER_DESIGN_MAP`) | **409** |
-| Banco (`theme_table_mapping`) | **409** |
-| Catálogo (`partitions/`, 13 arquivos) | **409** |
+| Schema (`MASTER_DESIGN_MAP`) | **422** |
+| Banco (`theme_table_mapping`) | **422** |
+| Catálogo (`partitions/`, 13 arquivos) | **422** |
 
-Distribuição por coluna: `cards_engine` 95 · `components_base` 70 · `colors_and_atmosphere` 61 · `layout_and_navigation` 40 · `data_and_charts` 40 · `typography` 33 · `branding_config` 30 · `motion_and_animation` 17 · `specialized_engines` 16 · `structural` 11 · e três colunas de valor único (`mode`, `navigation_style`, `body_size`).
+*(Medido em 2026-08-11. A fonte viva é `npm run audit` → `auditor_paridade`; diante de divergência, ele vence.)*
 
-> ⚠️ **HISTÓRICO — não vale mais desde 2026-08-03 (`plan-07`).** Os sete ids duplicados foram **fundidos**, e
-> hoje a soma fecha em **410 = 410**: entradas brutas e ids únicos coincidem. O aviso abaixo descreve o estado
-> **anterior** e fica porque a §2.2 explica o defeito que ele sinalizava.
+Distribuição por coluna: `cards_engine` 94 · `components_base` 73 · `colors_and_atmosphere` 63 ·
+`layout_and_navigation` 48 · `data_and_charts` 40 · `typography` 34 · `branding_config` 30 ·
+`motion_and_animation` 17 · `specialized_engines` 16 · `structural` 11 · e três colunas de valor único
+(`mode`, `navigation_style`, `body_size`).
+
+> ⚠️ **A soma da distribuição dá 429, não 422** — e isso **não** é a divergência da §2.2 voltando. São
+> **entradas do catálogo**: 7 ids aparecem em mais de uma partição, e o `auditor_paridade` conta **ids
+> únicos**. No **schema** o bruto e o único continuam coincidindo (§4).
+
+> ⚠️ **HISTÓRICO — não vale mais desde 2026-08-03 (`plan-07`).** Os sete ids duplicados **no schema** foram
+> fundidos, e desde então entradas brutas e ids únicos **coincidem lá** — o que a nota acima confirma por
+> medição. O aviso abaixo descreve o estado **anterior** e fica porque a §2.2 explica o defeito que ele
+> sinalizava. *(Não repita cifra aqui: esta nota já carregou `410 = 410`, que envelheceu duas vezes.)*
 >
 > ⚠️ *(até 2026-08-03)* **Se você somar a distribuição acima, chega a 416 — não a 409.** Os dois números estão certos: a lista conta **entradas** e a tabela conta **ids únicos**. Sete ids aparecem **duas vezes** no roteamento, e é isso que produz a diferença de 7. A apuração completa está em §2.2 — **não "corrija" nenhum dos dois números antes de ler aquela seção.**
 
@@ -147,7 +157,20 @@ Três origens, e nada além delas:
 
 1. Tokens do catálogo (índice de `getAllDesignTokens()`).
 2. `PAYLOAD_EXTRA_KEYS` (`payloadExtraKeys.ts`) — **69 campos** de branding e runtime que pertencem ao payload mas não têm `token.type`.
-3. As chaves de `DESIGN_MANIFEST` (`manifest.ts`) — **171** adicionais.
+3. As chaves de `DESIGN_MANIFEST` (`manifest.ts`) — **95** adicionais *(medido 2026-08-11)*.
+
+> 🔴 **Estar no manifesto NÃO legitima um token.** O manifesto entrou nesta lista como *conjunto de chaves
+> aceitas na validação*, e passou a ser lido como se fosse uma quarta fonte de verdade. **Não é.** Legitimidade
+> vem das três fontes da §2 — schema, banco e catálogo —, e o manifesto só diz o que a validação tolera.
+>
+> A prova: ele encolheu de **171** para **95** conforme entradas órfãs foram removidas — chaves que **não
+> emitiam variável nenhuma**, que nenhum componente lia, e que sobreviviam só por estarem ali. **Nenhum token
+> real morreu nesse encolhimento.**
+>
+> ⚠️ **E o encolhimento tem um custo que precisa ser lido junto:** cada chave removida daqui deixa de ser
+> aceita por `validateDesign`, então um payload de consumidor que a carregue **perde a chave com um `warn`**
+> (R6). É o mecanismo do achado **34**, e é por isso que a **R33** existe: o domínio de chaves de tema é
+> contrato público e só encolhe com major.
 
 ## 4.2 Valor tipado pelo próprio token
 
@@ -207,11 +230,11 @@ Todas em `src/core/Design/master-map.ts`:
 
 | Função | Devolve |
 | --- | --- |
-| `getAllDesignTokens()` `:74` | Todos os tokens, **brutos** — **409** itens hoje, e **409 ids únicos**: o bruto e o único coincidem desde que a `plan-07` fundiu os 7 ids duplicados (§2.2). ⚠️ **"Bruto" continua sendo a palavra certa**: a função é um `flatMap` e **não deduplica** — basta um id declarado em dois schemas para os dois números divergirem de novo, que é exatamente o defeito que §2.2 registra |
+| `getAllDesignTokens()` `:74` | Todos os tokens, **brutos** — **422** itens hoje, e **422 ids únicos**: o bruto e o único coincidem desde que a `plan-07` fundiu os 7 ids duplicados (§2.2), e **continuam coincidindo** *(medido 2026-08-11: zero duplicados)*. ⚠️ **"Bruto" continua sendo a palavra certa**: a função é um `flatMap` e **não deduplica** — basta um id declarado em dois schemas para os dois números divergirem de novo, que é exatamente o defeito que §2.2 registra |
 | `getStructuralTokens()` `:83` | Só os estruturais (17) |
 | `getDefaultDesignState()` `:90` | `{ tokenId: defaultValue }` — indexado por id, portanto já deduplicado |
 | `getDomainMap()` `:105` | `{ bySchema, byColumn }` — duas granularidades de domínio |
-| `getScaffold(domain?)` `:126` | O **gabarito vivo**: sem argumento, o tema completo (409 chaves); com domínio, a fatia daquele componente |
+| `getScaffold(domain?)` `:126` | O **gabarito vivo**: sem argumento, o tema completo (**422** chaves); com domínio, a fatia daquele componente |
 | `upgradeThemePayload()` `:148` | Preenche chaves ausentes a partir de `token.legacyValue` |
 
 **`getScaffold()` é a peça que unifica preset e tema:** um **preset** é a fatia de um domínio, um **tema** é tudo. A mesma primitiva, amplitudes diferentes.
@@ -285,9 +308,9 @@ A paridade de **alcance** foi redefinida: onde antes era "está no `NATIVE_COMPO
 
 `auditor_presets.mjs` → `verify_presets.ts` compara as chaves de **todo** tema e preset embarcado contra o `getScaffold()` **vivo**, e reprova **chave órfã** — uma chave que existe no arquivo do tema mas não existe mais no dicionário.
 
-Execução atual: **120 itens auditados (18 temas + 102 presets de componente)** contra o gabarito de **409 chaves**. **Nenhuma chave órfã.**
+Execução atual: **125 itens auditados (23 temas + 102 presets de componente)** contra o gabarito de **422 chaves** *(medido 2026-08-11)*. **Nenhuma chave órfã.**
 
-É o gate que impede o drift silencioso de acontecer na direção contrária: alguém remove um token do schema e os 18 temas embarcados continuam carregando a chave morta.
+É o gate que impede o drift silencioso de acontecer na direção contrária: alguém remove um token do schema e os temas embarcados continuam carregando a chave morta.
 
 # 10. O baseline do `run_audit` — ele NÃO mora aqui
 

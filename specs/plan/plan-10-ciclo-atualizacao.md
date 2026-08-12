@@ -28,6 +28,20 @@ aviso permanente, exatamente o ruído que o comando existe para combater.
 
 # 3. Escopo
 
+## 3.0 ✅ A notificação — CONFIRMADA pelo dono, e JÁ EXISTE *(2026-08-11)*
+
+> *"Quero que o importador receba uma notificação quando houver nova versão da biblioteca, para que faça a
+> atualização via comando."* — dono
+
+**A metade "notificação" está entregue.** Medido: `bin/scaffold/generators/packageJsonFields.mjs:70` grava um
+**`predev`** no `package.json` do importador, que roda `check --notify` — *"imprime SÓ se houver atualização e
+sai sempre com 0"*. Quem roda `npm run dev` já é avisado, sem ruído quando está em dia.
+
+⚠️ **Não reconstrua isso.** O que falta desta plan é a **outra metade**: o comando que age, e principalmente o
+que **atravessa major mostrando o que quebra antes de confirmar**. Foi exatamente onde o dono travou na
+prática, ao subir um consumidor real de `3.0.0` para `4.0.0`: a faixa `^3.0.0` não alcança a `4.0.0`, e a
+única saída foi **editar o `package.json` à mão**.
+
 ## 3.1 Dentro
 - **`sarak-ui update`** — atualiza **dentro da faixa**, com o comando do gerenciador detectado.
 - **`sarak-ui update --latest`** — **atravessa o major**: mostra quantos majors pula, imprime as entradas de
@@ -36,6 +50,11 @@ aviso permanente, exatamente o ruído que o comando existe para combater.
 - **Corrigir o filtro de faixa** (`bin/scaffold/checkUpdate/tagComparison.mjs:54-59`) — capturar o minor e
   filtrar por major+minor quando a faixa for `~`. Corrigir também o rótulo, que imprime `(^N)` para quem
   escreveu `~`.
+- **Achado 26 — automação que exercite um `install` de verdade.** *(Migrado da `plan-11` em 2026-08-11, com a
+  remoção do E2E: nunca foi teste de ponta a ponta, é ciclo de instalação.)* Medido: **0 ocorrências** de
+  `child_process`/`execSync` nos testes de `bin/scaffold/`. As provas de npm/pnpm/yarn foram feitas **à mão,
+  uma vez** — e o `check --notify` do `predev` também. **Comando de atualização sem prova de execução real é
+  exatamente o que a §3.2 proíbe**, então o achado pertence a esta plan por natureza.
 - `specs/13-instalacao-e-atualizacao.md` e `sarak-ui/GUIA-FRONTEND.md` §2.7.
 
 ## 3.2 Fora

@@ -46,7 +46,7 @@ Toda regra abre com um marcador. São quatro, e só quatro:
 
 ## 1.3 A contagem
 
-**33 regras: 30 verificáveis (§2) e 3 de conduta (§3).**
+**34 regras: 31 verificáveis (§2) e 3 de conduta (§3).**
 
 > ✅ **Atualizado em 2026-08-07** (síntese das plans 12 e 16): R18, R27, R28 e R32 ganharam gate e viraram ✅;
 > R10 ganhou gate parcial (HTML nativo cru) e virou ⚠️. Só **R31** seguia ⏳ — parada obrigatória da
@@ -73,7 +73,7 @@ Toda regra abre com um marcador. São quatro, e só quatro:
 
 | Estado | Quantas | Quais |
 | --- | --- | --- |
-| ✅ gate pleno | **22** | R1 · R2 · R3 · R5 · R6 · **R8** · R9 · R12 · R13 · R18 · R19 · R20 · R21 · R22 · R24 · R25 · R26 · R27 · R28 · **R29** · R32 · **R33** |
+| ✅ gate pleno | **23** | R1 · R2 · R3 · R5 · R6 · **R8** · R9 · R12 · R13 · R18 · R19 · R20 · R21 · R22 · R24 · R25 · R26 · R27 · R28 · **R29** · R32 · **R33** · **R34** |
 | ⚠️ escopo menor que a regra | **8** | R4 · R7 · R10 · R14 · R17 · R23 · R30 · **R31** |
 | ⏳ gate a construir | **0** | — *(a categoria fica; é para cá que volta a próxima regra fechada sem gate)* |
 | 🔴 conduta | **3** | R11 · R15 · R16 |
@@ -158,6 +158,27 @@ O balde deduzido nunca fica invisível: a saída imprime a **reconciliação** (
 - **Fixtures de E2E e o `<input type="color">`** têm entrada própria na allowlist, cada uma com o motivo escrito (`:41-50`). O `value` de um input de cor nativo **só** aceita hex literal — `var()` quebra o elemento.
 
 Hoje a allowlist de valor tem **5 entradas**, todas comentadas. Entrada sem motivo escrito é violação desta regra, não exceção a ela.
+
+### R2.3-bis A isenção viaja com o literal — `sarak-allow-hardcode`
+
+> 🔴 **A allowlist por caminho quebrava no `git mv`.** Medido: mover `SocialButton.tsx` **invalidou de uma vez
+> as 4 entradas dele**, e quem fez a mudança precisou editar o próprio gate só para **preservar** o que já
+> estava aprovado — cruzando uma linha vermelha que não deveria existir. Isenção que se perde ao renomear
+> pasta não é exceção declarada: é armadilha.
+
+A isenção passou a morar **no próprio literal**:
+
+```tsx
+// sarak-allow-hardcode: cor oficial da marca do Google — identidade de terceiro não é tema
+```
+
+Vale na linha do literal **ou na imediatamente acima**. **A razão depois dos dois-pontos é obrigatória** —
+marcador vazio não isenta. E ele **sobrevive a `git mv`** porque viaja *dentro* do arquivo, em vez de ser
+referenciado por caminho de fora dele.
+
+**As duas formas convivem por desenho:** a allowlist central serve ao que é decisão de política do
+repositório; o marcador serve ao que é propriedade daquele literal específico. **A segunda é a preferida** —
+quando a razão pertence ao código, ela deve viajar com o código.
 
 ### R2.4 As limitações do detector — documentadas para NÃO serem exploradas
 
@@ -358,9 +379,39 @@ verificável e foi o que impediu o gate de nascer:
 | --- | --- | --- |
 | `src/components/**` | ✅ **SIM** | é o que o consumidor importa e embute |
 | `src/core/**` | ✅ **SIM** | o cromo do Shell chega à tela do consumidor |
-| `src/components/atomic/Buttons/` · `atomic/Inputs/` | ❌ **NÃO** | são a **implementação** do átomo: o elemento nativo ali é o alvo da regra, não a violação |
 | `src/features/**` | ❌ **NÃO** | é **ferramenta de autoria da própria lib** — mesmo critério que sustenta a allowlist do `zero-brand:check` ([[006-zero-marca-soberania-host]]): esses painéis podem usar HTML cru porque não são produto de consumidor |
 | `__tests__/` · `__e2e__/` · `Mocks/` | ❌ **NÃO** | não são superfície |
+
+### A isenção é por PAPEL, não por pasta — o marcador `@sarak-encapsula`
+
+> 🔴 **`atomic/Buttons/` e `atomic/Inputs/` saíram da tabela.** Enquanto a isenção era por **caminho**, ela
+> tinha um efeito que ninguém pediu: **a pasta decidia se o código era legítimo**. Um átomo novo só ficava
+> conforme se nascesse nas duas pastas certas — a fronteira estava **moldando a arquitetura** em vez de
+> descrever uma regra.
+
+A isenção passou a ser **declarada no arquivo**, por quem escreve:
+
+```tsx
+// @sarak-encapsula select — este componente EXISTE para encapsular o <select> nativo
+```
+
+Três propriedades que a tornam verificável, e todas têm self-test:
+
+1. **É por tag.** Arquivo marcado para `button` **continua acusando** `<input>` cru. Isenção ampla exige
+   declaração ampla.
+2. **A razão é obrigatória.** Marcador sem `— <razão>` é erro do gate, não isenção silenciosa.
+3. **Tag inválida é erro**, não isenção que nunca casa.
+
+⚠️ **Limite declarado pelo próprio gate:** o marcador casa por **texto cru**, então isenta o **arquivo
+inteiro** — não só o componente abaixo do comentário. Está escrito no bloco `LIMITES DECLARADOS`, com o caso
+que escaparia nomeado. R18 no espírito, não só na letra.
+
+> **O que a troca revelou.** A triagem dos arquivos que viviam nas pastas excluídas desmentiu a premissa de
+> que eram "compostos": `SarakSelect` renderiza `<div><select/></div>` — **a razão de existir dele é
+> encapsular o `<select>`**. O mesmo para `SarakSwitch`, `SarakSlider`, `SarakRangeSlider`, `SarakSearch` e
+> `SarakUploader`. **Não eram dívida; eram encapsulamento sem nome.** Compostos de verdade eram outros
+> (`Controls.tsx`, com 6 `<button>`). Fronteira por pasta não distingue os dois casos; marcador por papel,
+> sim.
 
 **Por quê.** HTML nativo cru causa **vazamento de especificidade** — o elemento fica preso na variável global do
 preflight e ignora a paridade atômica, deixando de responder ao token que deveria governá-lo.
@@ -371,8 +422,8 @@ preflight e ignora a paridade atômica, deixando de responder ao token que dever
 > Uma regra que dá exemplo em vez de fronteira é como se chega a 64 exceções sem ninguém perceber; é por isso
 > que a tabela acima existe e o *dogfooding* saiu.
 >
-> **Com a fronteira fixada, a exposição real da regra é 47** (`components/` 23 + `Layout/` 6 + `core/Shell/` 15
-> + `engines/` 2 + `Discovery/` 1), e é isso que a `plan-15` herda.
+> **Com a fronteira fixada, a exposição medida foi 47** (`components/` 23 + `Layout/` 6 + `core/Shell/` 15 +
+> `engines/` 2 + `Discovery/` 1) — paga desde então. **Hoje são 2**, ambas declaradas no baseline.
 
 **Certo × Errado.**
 
@@ -387,10 +438,33 @@ preflight e ignora a paridade atômica, deixando de responder ao token que dever
 **Cobrada por:** `node gates/scripts/audit/auditor_composicaoatomica.mjs` (construído pela `plan-16`,
 2026-08-05) — detecção **por AST** (`ts.createSourceFile` + `ts.forEachChild`), não por regex de linha. Acusa
 `JsxOpeningElement`/`JsxSelfClosingElement` cujo `tagName` é o identificador minúsculo `button`/`input`/`select`,
-na fronteira exata da tabela acima. Roda no **Anel 2** (via `run_audit.mjs`, junto do `auditor_hardcoded`) — ele
-**nasce vermelho**, não pode ir para o Anel 1. Hoje: **47 ocorrências**, registradas no baseline
-(`components/atomic` 23 · `core/Shell` 15 · `Layout/` 6 · `engines/` 2 · `Discovery/` 1) — dívida da `plan-15`,
-ainda não paga.
+na fronteira exata da tabela acima, **descontadas as isenções declaradas por `@sarak-encapsula`**. Roda no
+**Anel 2** (via `run_audit.mjs`, junto do `auditor_hardcoded`). Hoje: **2 ocorrências**, ambas no baseline.
+
+### Isentar × declarar — não é a mesma coisa, e a diferença é o número
+
+O marcador **silencia**: o gate deixa de contar. Mas nem toda ocorrência legítima merece silêncio, e o
+repositório usa **três caminhos**, escolhidos pelo que a ocorrência **é**:
+
+| Caminho | Quando | Efeito no gate |
+|---|---|---|
+| **Corrigir** | o cru pode virar átomo | some |
+| **Isentar** com `@sarak-encapsula` | o componente **existe para** encapsular aquela tag (`SarakSelect`, `SarakSwitch`…) | some, com razão escrita — **10 arquivos hoje** |
+| **Declarar no código e continuar contando** | violação real com conserto **bloqueado**, ou ponto cego conhecido do detector | **permanece no baseline** |
+
+> 🔴 **As 2 que restam são do terceiro caminho, e por motivos diferentes:**
+>
+> - **`SarakMultiSelect`** — composição real. O conserto mecânico está bloqueado porque `SarakInput` **não é
+>   `forwardRef`** (decisão de superfície pública) e o `inputRef` é lido de forma imperativa. **Não recebeu
+>   marcador de propósito:** silenciar apagaria uma dívida que ainda é dívida.
+> - **`SarakUploader`** — **falso positivo do detector**. O `getInputProps()` do `react-dropzone` injeta um
+>   input escondido por `style` (`clip:rect(0,0,0,0)`, 1×1px, `tabIndex:-1`), que é a **mesma classe** que o
+>   item 5 dos `LIMITES DECLARADOS` já isenta ("input oculto e acionado só por programa não é composição — é
+>   API do navegador"). O detector não pega porque procura `hidden` no `className`, e aqui o ocultamento vem
+>   por `style`. **É achado de gate, não de código.**
+>
+> **Marcar as duas zeraria o número e apagaria as duas informações.** Baseline que chega a zero por isenção
+> não mede nada.
 
 > ⚠️ **A metade `switch`/`case` de design no JSX continua sem detector**, declarada no bloco `LIMITES
 > DECLARADOS` do próprio gate. E o cuidado que custou uma rodada de veredito: uma regex do tipo
@@ -972,6 +1046,42 @@ renome **a fixture acusa**, e o alias nasce com o caso real na mão.
 
 ---
 
+## R34 — O átomo renderiza sem Provider
+
+**Estado:** ✅ **gate pleno** — cobrada por teste na suíte.
+
+**Enunciado.** Um átomo Sarak (`SarakButton`, `SarakIconButton`, `SarakInput`…) **renderiza sem
+`SarakUIProvider`**, caindo no próprio default. Ele **nunca lança** por ausência de contexto.
+
+**Por quê.** Não é conveniência: **é o que tornou a R10 pagável.** Enquanto o átomo exigia Provider, trocar
+`<button>` cru por `SarakButton` dentro de uma peça que roda fora da árvore de tema **quebrava a peça** — e a
+saída era manter o HTML nativo. A regra que proíbe o cru dependia de uma capacidade que não existia. Vinte e
+poucas ocorrências de R10 estavam bloqueadas por isso.
+
+**A assimetria é deliberada, e a linha que a separa importa:**
+
+| Hook | Sem Provider | Para quem |
+|---|---|---|
+| `useSarakUI` | **lança** | código de **consumidor** — Provider ausente ali é erro dele, e falhar alto é o certo |
+| `useSarakUIOptional` | devolve `null` + um `console.warn` | **peça interna da lib** — o átomo tem de sobreviver |
+
+⚠️ **`useSarakUIOptional` NÃO é exportado** em `src/index.ts`, e isso é parte da regra: a leniência é um
+mecanismo **interno**. Expô-la convidaria o consumidor a montar árvore sem Provider e chamar de suportado —
+o que degradaria silenciosamente tudo que depende de tema.
+
+**Certo × Errado.**
+
+```
+CERTO    <SarakButton/> solto renderiza com o default do átomo
+ERRADO   <SarakButton/> solto lança e obriga o autor a voltar para <button>
+ERRADO   exportar useSarakUIOptional — vira contrato público sem querer
+```
+
+**Cobrada por:** `src/core/Provider/__tests__/SarakUIProvider.test.tsx`, na suíte (`npx vitest run`, Anel 3 do
+`pre-push`). Consumido hoje por `SarakButton`, `SarakIconButton`, `SarakInput` e `useStructuralStyles`.
+
+---
+
 # 3. Regras de conduta
 
 **Três regras não têm gate — e não vão ter.** Elas valem exatamente igual às da §2; o que muda é o mecanismo de cobrança, que é revisão humana. Cada uma traz **o motivo de não ter gate** na própria linha, porque "conduta" sem justificativa é só lacuna com nome bonito.
@@ -1108,6 +1218,7 @@ e a correção é criar o token (R11 → Expansão), não remendar do lado de fo
 | R30 | O TypeScript compila | ⚠️ | **0 erros, produção e teste** *(medido 2026-08-08)*; baseline em 0 ⇒ qualquer erro novo bloqueia. O vão que resta é o **gatilho**: o `--with-tsc` do Anel 2 só liga quando o staged tem `.ts`/`.tsx` | `npx tsc --noEmit` |
 | R31 | Contraste AA nos 18 temas | ⚠️ | `auditor_contraste.mjs` → `verify_contrast.ts` — **36 pares, 4,5:1, alfa composto, DUAS passadas** (nativo + modo oposto); baseline **0 e 0**. Vãos que restam: **25 pares-tema pulados** (fundo não determinístico) e as cores de status, fora com número | `npm run audit` |
 | **R33** | **Payload de tema é contrato público** | **✅** | `consumerThemeContract.test.ts` (`plan-24`) — corpus de payload de consumidor; chave que sai do domínio para de emitir e o teste falha | `npx vitest run` |
+| **R34** | **Átomo renderiza sem Provider** | **✅** | `SarakUIProvider.test.tsx` — `useSarakUIOptional` devolve `null` + `warn` em vez de lançar; **é o que tornou a R10 pagável**. O hook **não** é exportado, de propósito | `npx vitest run` |
 | R32 | Indiferente à autenticação | ✅ | `auditor_authcoupling.mjs` — nasce verde | `npm run audit` |
 | **R11** | **Configuração × Expansão** | **🔴** | **nenhum — CONDUTA** | — |
 | **R15** | **Nada pesado eager** | **🔴** | **nenhum — CONDUTA.** ✅ a violação declarada FECHOU em 2026-08-09 (ver a regra) | — |
