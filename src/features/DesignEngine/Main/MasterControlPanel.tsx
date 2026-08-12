@@ -1,27 +1,36 @@
 import React, { useState, useMemo } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
-import { 
-    Search, Filter, RotateCcw, Save, Check, AlertCircle, 
+import {
+    Search, Filter, RotateCcw, Save, Check, AlertCircle,
     ChevronRight, ChevronDown, Layers, Palette, Layout, Type
 } from 'lucide-react';
 import { MASTER_DESIGN_MAP } from '../../../core/Design/master-map';
-import { useSarakUI } from '../../../core/Provider/SarakUIProvider';
-import { useDesignDraft } from '../hooks/useDesignDraft';
 import { SarakInput } from '../../../components/atomic/Inputs';
 
+import { SarakDesignState } from '../../../core/Provider/types';
 import { SarakTokenValue, DesignToken } from '../../../core/Design/types';
+
+export interface MasterControlPanelProps {
+    draft: SarakDesignState;
+    updateDraft: (id: string, value: SarakTokenValue) => void;
+    resetToken: (id: string) => void;
+}
 
 /**
  * MasterControlPanel (v13.0) - A Planilha Mestra do Sarak UI
- * 
- * Uma interface centralizada de 100% de cobertura que exibe todos os tokens 
+ *
+ * Uma interface centralizada de 100% de cobertura que exibe todos os tokens
  * em formato de catálogo/planilha para auditoria e configuração em massa.
+ *
+ * `draft`/`updateDraft`/`resetToken` chegam por prop (plan-36) — ANTES este componente
+ * instanciava a própria `useDesignDraft(sarak)`, em paralelo à de `ThemeCustomizationTab`:
+ * dois estados de rascunho independentes, cada um com seus próprios `useEffect`s de
+ * sincronização com o Provider ([[02-design-engine]] §5). Agora consome a MESMA
+ * instância — fonte única de rascunho.
  */
-export const MasterControlPanel: React.FC = () => {
-    const sarak = useSarakUI();
-    const { draft, isDirty, isComponentDirty, updateDraft, handleApplyToSystem, resetToken } = useDesignDraft(sarak);
+export const MasterControlPanel: React.FC<MasterControlPanelProps> = ({ draft, updateDraft, resetToken }) => {
     const draftRecord = draft as Record<string, SarakTokenValue>;
-    
+
     const [searchQuery, setSearchQuery] = useState('');
     const [activeCategory, setActiveCategory] = useState<string | null>(null);
 

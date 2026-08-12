@@ -68,11 +68,25 @@ export const MASTER_DESIGN_MAP: MasterDesignSchema = {
     ]
 };
 
+// Cache module-level (plan-36): `MASTER_DESIGN_MAP` é estático em runtime — os schemas
+// não mudam depois do build — então recalcular o `flatMap` a cada chamada só reconstrói
+// o mesmo array. `getAllDesignTokens()` era chamado a cada tecla no painel (via
+// `useDesignDraft`/`resetComponent`/etc.), reachatando ~422 tokens de 28 schemas todo
+// evento. Calculado uma vez, na primeira chamada.
+let cachedAllDesignTokens: ReturnType<typeof computeAllDesignTokens> | null = null;
+
+function computeAllDesignTokens() {
+    return MASTER_DESIGN_MAP.components.flatMap(c => c.tokens);
+}
+
 /**
  * Helper para obter todos os tokens em uma lista plana.
  */
 export const getAllDesignTokens = () => {
-    return MASTER_DESIGN_MAP.components.flatMap(c => c.tokens);
+    if (!cachedAllDesignTokens) {
+        cachedAllDesignTokens = computeAllDesignTokens();
+    }
+    return cachedAllDesignTokens;
 };
 
 /**

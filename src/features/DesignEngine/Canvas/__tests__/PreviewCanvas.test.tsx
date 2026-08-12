@@ -96,3 +96,9 @@ describe('PreviewCanvas - Refatoração Data-Driven', () => {
         expect((dualViewRow as HTMLElement).className).toMatch(/@min-\[1280px\]:flex-row/);
     }, 30000);
 });
+
+// A MEDIÇÃO de estabilidade do `design` do DesignScope externo (plan-36) mora em
+// `PreviewCanvas.designScopeStability.test.tsx` — isolada da árvore real do
+// `SarakUIProvider`, que contamina qualquer contagem de `computeColorVariants` com
+// chamadas do `DesignInjector` de nível superior do Provider (não relacionadas a
+// este componente).

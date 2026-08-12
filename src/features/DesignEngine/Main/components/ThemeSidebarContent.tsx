@@ -23,6 +23,7 @@ interface ThemeSidebarContentProps {
     setActiveSectionId: (id: string | null) => void;
     isComponentDirty: (id: string) => boolean;
     resetComponent: (id: string) => void;
+    resetToken: (id: string) => void;
     handleApplyComponent: (id: string) => void;
     globalComponent: ComponentSchema | undefined;
     sarak: SarakUIContextType;
@@ -47,6 +48,7 @@ export const ThemeSidebarContent: React.FC<ThemeSidebarContentProps> = ({
     setActiveSectionId,
     isComponentDirty,
     resetComponent,
+    resetToken,
     handleApplyComponent,
     globalComponent,
     sarak,
@@ -112,7 +114,7 @@ export const ThemeSidebarContent: React.FC<ThemeSidebarContentProps> = ({
                     </motion.div>
                 ) : viewMode === 'catalog' ? (
                     <motion.div key="catalog" initial={{ opacity: 0 }} animate={{ opacity: 1 }} className="h-full">
-                        <MasterControlPanel />
+                        <MasterControlPanel draft={draft} updateDraft={updateDraft} resetToken={resetToken} />
                     </motion.div>
                 ) : (
                     <motion.div key="templates" initial={{ opacity: 0 }} animate={{ opacity: 1 }} className="h-full">

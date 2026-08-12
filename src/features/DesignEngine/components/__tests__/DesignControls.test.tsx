@@ -1,7 +1,7 @@
 import React from 'react';
 import '@testing-library/jest-dom';
 import { render, fireEvent, screen } from '@testing-library/react';
-import { describe, it, expect, vi } from 'vitest';
+import { describe, it, expect, vi, beforeEach, afterEach } from 'vitest';
 import { SliderControl, ColorControl, SwitchControl, SelectControl } from '../DesignControls';
 import { SarakUIProvider } from '../../../../core/Provider/SarakUIProvider';
 
@@ -10,17 +10,25 @@ const customRender = (ui: React.ReactElement) => {
 };
 
 describe('DesignControls', () => {
-    it('renderiza SliderControl e reage a mudanças', () => {
+    // plan-36: a propagação de SliderControl para `onChange` passou a ser debounced
+    // (~150ms) — o valor exibido continua instantâneo, só o commit atrasa.
+    beforeEach(() => vi.useFakeTimers());
+    afterEach(() => vi.useRealTimers());
+
+    it('renderiza SliderControl e reage a mudanças (após o debounce do commit, plan-36)', () => {
         const onChange = vi.fn();
         const { container } = customRender(
             <SliderControl label="Opacidade" value={0.5} min={0} max={1} step={0.1} unit="" onChange={onChange} />
         );
         expect(screen.getByText('Opacidade')).toBeInTheDocument();
-        
+
         const slider = container.querySelector('input[type="range"]') as HTMLInputElement;
         expect(slider).toBeInTheDocument();
-        
+
         fireEvent.change(slider, { target: { value: '0.8' } });
+        expect(onChange).not.toHaveBeenCalled(); // ainda dentro da janela de debounce
+
+        vi.advanceTimersByTime(150);
         expect(onChange).toHaveBeenCalledWith(0.8);
     });
 

@@ -3,18 +3,6 @@ import { render, screen, fireEvent } from '@testing-library/react';
 import '@testing-library/jest-dom';
 import { describe, it, expect, vi, beforeEach } from 'vitest';
 import { MasterControlPanel } from '../MasterControlPanel';
-import { useSarakUI } from '../../../../core/Provider/SarakUIProvider';
-import { useDesignDraft } from '../../hooks/useDesignDraft';
-
-// Mock dependencies
-vi.mock('../../../../core/Provider/SarakUIProvider', () => {
-    const useSarakUI = vi.fn();
-    return { useSarakUI, useSarakUIOptional: useSarakUI };
-});
-
-vi.mock('../../hooks/useDesignDraft', () => ({
-    useDesignDraft: vi.fn()
-}));
 
 // Mock MASTER_DESIGN_MAP
 vi.mock('../../../../core/Design/master-map', () => ({
@@ -39,29 +27,32 @@ vi.mock('../../../../core/Design/master-map', () => ({
     }
 }));
 
+/**
+ * plan-36: `draft`/`updateDraft`/`resetToken` chegam por PROP — o componente não
+ * instancia mais a própria `useDesignDraft(sarak)` (era uma segunda fonte de
+ * rascunho, paralela à de `ThemeCustomizationTab`). O teste passou a montar o
+ * componente direto, com props controladas, em vez de mockar o hook.
+ */
 describe('MasterControlPanel', () => {
     const mockUpdateDraft = vi.fn();
     const mockResetToken = vi.fn();
-    const mockHandleApplyToSystem = vi.fn();
 
     beforeEach(() => {
         vi.clearAllMocks();
-
-        vi.mocked(useSarakUI).mockReturnValue({} as any);
-
-        vi.mocked(useDesignDraft).mockReturnValue({
-            draft: { 'bg-primary': '#111' },
-            isDirty: true,
-            isComponentDirty: vi.fn(),
-            updateDraft: mockUpdateDraft,
-            handleApplyToSystem: mockHandleApplyToSystem,
-            resetToken: mockResetToken
-        } as any);
     });
 
+    const renderPanel = (draft: Record<string, unknown> = { 'bg-primary': '#111' }) =>
+        render(
+            <MasterControlPanel
+                draft={draft as any}
+                updateDraft={mockUpdateDraft}
+                resetToken={mockResetToken}
+            />
+        );
+
     it('renderiza o painel de controle e carrega todos os tokens', () => {
-        render(<MasterControlPanel />);
-        
+        renderPanel();
+
         expect(screen.getByText('Catálogo de')).toBeInTheDocument();
         expect(screen.getByText('Tokens')).toBeInTheDocument();
 
@@ -75,8 +66,8 @@ describe('MasterControlPanel', () => {
     });
 
     it('filtra tokens pela barra de busca', () => {
-        render(<MasterControlPanel />);
-        
+        renderPanel();
+
         const searchInput = screen.getByPlaceholderText('BUSCAR...');
         fireEvent.change(searchInput, { target: { value: 'Base Padding' } });
 
@@ -86,8 +77,8 @@ describe('MasterControlPanel', () => {
     });
 
     it('filtra tokens pelas categorias de pilar', () => {
-        render(<MasterControlPanel />);
-        
+        renderPanel();
+
         const typographyCategoryButton = screen.getByText('Typography');
         fireEvent.click(typographyCategoryButton);
 
@@ -95,9 +86,9 @@ describe('MasterControlPanel', () => {
         expect(screen.queryByText('Background Primary')).not.toBeInTheDocument();
     });
 
-    it('chama updateDraft ao alterar o valor de um token via input', () => {
-        render(<MasterControlPanel />);
-        
+    it('chama updateDraft (recebido por prop) ao alterar o valor de um token via input', () => {
+        renderPanel();
+
         // Encontra o input de color do bg-primary que usa o value '#111' (pois o draft tem isso)
         const colorInputs = screen.getAllByRole('textbox');
         // O primeiro textbox é a barra de busca. O segundo será o color do bg-primary.
@@ -106,8 +97,8 @@ describe('MasterControlPanel', () => {
         expect(mockUpdateDraft).toHaveBeenCalledWith('bg-primary', '#222');
     });
 
-    it('chama resetToken ao clicar no botão de reset', () => {
-        render(<MasterControlPanel />);
+    it('chama resetToken (recebido por prop) ao clicar no botão de reset', () => {
+        renderPanel();
 
         // Há um botão de reset por token
         const resetButtons = screen.getAllByTitle('Reset');
@@ -117,7 +108,7 @@ describe('MasterControlPanel', () => {
     });
 
     it('a tabela rola horizontalmente em vez de cortar em sidebar estreita (280px mínimo) — plan-35', () => {
-        const { container } = render(<MasterControlPanel />);
+        const { container } = renderPanel();
 
         const table = container.querySelector('table') as HTMLElement;
         const scrollWrapper = table.parentElement as HTMLElement;

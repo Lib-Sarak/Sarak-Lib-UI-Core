@@ -62,6 +62,19 @@ export const PreviewCanvas: React.FC<PreviewCanvasProps> = ({
     const parentContext = useSarakUI();
     const tokens = React.useMemo(() => ({ ...draftTokens }), [draftTokens]);
 
+    // plan-36: `useDesignVariables` (dentro do `DesignScope` abaixo) já memoiza a própria
+    // saída por referência do `design` recebido — mas um literal `{ ...tokens, x }`
+    // escrito direto no JSX é um objeto NOVO a cada render, então essa memoização nunca
+    // acertava cache: o dicionário inteiro de tokens (incl. `computeColorVariants` por
+    // cor com `generateVariants`) era recomputado em QUALQUER re-render deste
+    // componente — toggle de nav, arrasto de resize, troca de app mock — não só quando
+    // o rascunho mudava de verdade. Estabilizar a referência aqui é o que faz a
+    // memoização já existente no motor (fora do escopo desta plan) valer a pena.
+    const outerScopeDesign = React.useMemo(
+        () => ({ ...tokens, globalBackgroundImageUrl: undefined }),
+        [tokens],
+    );
+
     const { isInspecting, setIsInspecting } = useInspector(onInspectComponent);
 
     const handleSidebarResize = React.useCallback((newWidth: number) => {
@@ -128,7 +141,7 @@ export const PreviewCanvas: React.FC<PreviewCanvasProps> = ({
     const { targetWidth, getDeviceFrameStyles, getDeviceHeightClass } = useDeviceStyles(previewDevice, isPreviewStacked);
 
     return (
-        <DesignScope design={{ ...tokens, globalBackgroundImageUrl: undefined }} className="w-full h-full flex flex-col relative overflow-auto bg-[var(--color-theme-bg, #0a0a0c)] p-0 custom-scrollbar">
+        <DesignScope design={outerScopeDesign} className="w-full h-full flex flex-col relative overflow-auto bg-[var(--color-theme-bg, #0a0a0c)] p-0 custom-scrollbar">
             <UIContext.Provider value={previewContextValue as SarakUIContextType}>
                 {/* `@container`: fronteira de medida do dual-view abaixo — o par lado a lado
                     (Gêmeo Digital + catálogo) passa a reagir ao espaço REAL deste painel, não

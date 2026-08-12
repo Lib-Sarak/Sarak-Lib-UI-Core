@@ -1,6 +1,7 @@
 import React from 'react';
 import { SarakSlider, SarakSwitch, SarakSelect, SarakInput } from '../../../../components/atomic/Inputs';
 import { HelpTooltip } from './HelpTooltip';
+import { useDebouncedDraftCommit } from './useDebouncedDraftCommit';
 
 interface SliderControlProps {
     label: string;
@@ -14,25 +15,32 @@ interface SliderControlProps {
     unit?: string;
 }
 
-export const SliderControl: React.FC<SliderControlProps> = ({ label, description, value, min = 0, max = 100, step = 1, onChange, suffix = '', unit = 'px' }) => (
-    <div className="mb-3">
-        <div className="flex justify-between items-center mb-1.5">
-            <span className="text-[var(--sarak-type-scale2xs,10px)] font-black uppercase tracking-widest text-[var(--theme-muted)] flex items-center gap-1.5">
-                {label}
-                <HelpTooltip label={label} description={description} />
-            </span>
-            <span className="text-[var(--sarak-type-scale2xs,10px)] font-mono text-[var(--theme-primary)]">{value ?? 0}{suffix || unit}</span>
+export const SliderControl: React.FC<SliderControlProps> = ({ label, description, value, min = 0, max = 100, step = 1, onChange, suffix = '', unit = 'px' }) => {
+    // plan-36: o slider continua controlado localmente (feedback instantâneo, a cada
+    // pixel arrastado) — só a propagação para `updateDraft` (que recomputa o dicionário
+    // inteiro de tokens no preview) é debounced.
+    const [localValue, commitValue] = useDebouncedDraftCommit<number>(Number(value ?? 0), onChange);
+
+    return (
+        <div className="mb-3">
+            <div className="flex justify-between items-center mb-1.5">
+                <span className="text-[var(--sarak-type-scale2xs,10px)] font-black uppercase tracking-widest text-[var(--theme-muted)] flex items-center gap-1.5">
+                    {label}
+                    <HelpTooltip label={label} description={description} />
+                </span>
+                <span className="text-[var(--sarak-type-scale2xs,10px)] font-mono text-[var(--theme-primary)]">{localValue}{suffix || unit}</span>
+            </div>
+            <SarakSlider
+                min={min}
+                max={max}
+                step={step}
+                value={localValue}
+                valueLabel={`${localValue}${suffix || unit}`}
+                onChange={(e) => commitValue(parseFloat(e.target.value))}
+            />
         </div>
-        <SarakSlider 
-            min={min} 
-            max={max} 
-            step={step} 
-            value={value ?? 0} 
-            valueLabel={`${value ?? 0}${suffix || unit}`}
-            onChange={(e) => onChange(parseFloat(e.target.value))}
-        />
-    </div>
-);
+    );
+};
 
 interface SwitchControlProps {
     label: string;
@@ -104,22 +112,28 @@ interface InputControlProps {
     placeholder?: string;
 }
 
-export const InputControl: React.FC<InputControlProps> = ({ label, description, value, onChange, type = 'text', placeholder = '' }) => (
-    <div className="mb-3">
-        <div className="flex justify-between items-center mb-1.5">
-            <span className="text-[var(--sarak-type-scale2xs,10px)] font-black uppercase tracking-widest text-[var(--theme-muted)] flex items-center gap-1.5">
-                {label}
-                <HelpTooltip label={label} description={description} />
-            </span>
+export const InputControl: React.FC<InputControlProps> = ({ label, description, value, onChange, type = 'text', placeholder = '' }) => {
+    // plan-36: cada tecla digitada atualiza o campo na hora (estado local); só a
+    // propagação para `updateDraft` é debounced.
+    const [localValue, commitValue] = useDebouncedDraftCommit(value ?? '', onChange);
+
+    return (
+        <div className="mb-3">
+            <div className="flex justify-between items-center mb-1.5">
+                <span className="text-[var(--sarak-type-scale2xs,10px)] font-black uppercase tracking-widest text-[var(--theme-muted)] flex items-center gap-1.5">
+                    {label}
+                    <HelpTooltip label={label} description={description} />
+                </span>
+            </div>
+            <SarakInput
+                type={type}
+                value={localValue}
+                placeholder={placeholder}
+                onChange={(e) => commitValue(type === 'number' ? parseFloat(e.target.value) : e.target.value)}
+            />
         </div>
-        <SarakInput 
-            type={type}
-            value={value ?? ''} 
-            placeholder={placeholder}
-            onChange={(e) => onChange(type === 'number' ? parseFloat(e.target.value) : e.target.value)}
-        />
-    </div>
-);
+    );
+};
 
 export const ToggleControl: React.FC<{ label: string, active: boolean, onClick: () => void }> = ({ label, active, onClick }) => (
     <button 

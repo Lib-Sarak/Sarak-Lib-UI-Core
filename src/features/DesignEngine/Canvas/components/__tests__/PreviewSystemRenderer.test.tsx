@@ -2,8 +2,8 @@ import React from 'react';
 import { render, act } from '@testing-library/react';
 import { describe, it, expect, vi, afterEach } from 'vitest';
 import * as ComponentModule from '../PreviewSystemRenderer';
-import { PreviewSystemRenderer } from '../PreviewSystemRenderer';
-import { SarakUIContextType } from '../../../../../core/Provider/types';
+import { PreviewSystemRenderer, arePreviewPropsEqual, PreviewSystemRendererProps } from '../PreviewSystemRenderer';
+import { SarakUIContextType, SarakDesignState } from '../../../../../core/Provider/types';
 
 // Mocks
 vi.mock('framer-motion', () => ({
@@ -151,5 +151,65 @@ describe('PreviewSystemRenderer — escala pela largura REAL do container (plan-
         // inline de infraestrutura do Provider (DesignInjector/NoiseOverlay/etc.).
         const scaledNode = container.querySelector('.origin-top-left') as HTMLElement | null;
         expect(scaledNode?.style.transform).toBe('scale(0.75)'); // fallback dual-view de antes
+    });
+});
+
+describe('arePreviewPropsEqual — o comparador do React.memo (plan-36, corta a 2ª computação de computeColorVariants quando nada visual mudou)', () => {
+    const makeProps = (overrides: Partial<PreviewSystemRendererProps> = {}): PreviewSystemRendererProps => ({
+        sarak: {} as unknown as SarakUIContextType,
+        tokens: { mode: 'dark' } as unknown as Partial<SarakDesignState>,
+        previewDevice: 'desktop',
+        previewNavVisible: true,
+        setPreviewNavVisible: () => {},
+        previewMobileNavOpen: false,
+        setPreviewMobileNavOpen: () => {},
+        isSidebar: true,
+        isDock: false,
+        isTopbar: false,
+        parentContext: {} as unknown as SarakUIContextType,
+        activePreviewApp: 'dashboard',
+        setActivePreviewApp: () => {},
+        onUpdateDraft: () => {},
+        mockGroupedModules: {},
+        mockDiscoveredModules: [],
+        startResizingSidebar: () => {},
+        startResizingTopbar: () => {},
+        apps: {},
+        ...overrides,
+    });
+
+    it('props IDÊNTICAS (mesmas referências) → true (React.memo bloqueia o re-render, pula a 2ª computação de variantes de cor)', () => {
+        const props = makeProps();
+        // Um clone RASO com as MESMAS referências internas — simula um re-render do pai
+        // por um motivo alheio ao rascunho (toggle de nav, resize), que recria o objeto
+        // de props mas não o conteúdo.
+        const sameContentProps = { ...props };
+
+        expect(arePreviewPropsEqual(props, sameContentProps)).toBe(true);
+    });
+
+    it('`tokens` com NOVA referência (o rascunho mudou de verdade) → false — não pode mascarar conteúdo obsoleto', () => {
+        const props = makeProps();
+        const next = makeProps({ tokens: { ...props.tokens } });
+
+        expect(arePreviewPropsEqual(props, next)).toBe(false);
+    });
+
+    it('`mockGroupedModules`/`mockDiscoveredModules` com nova referência mas conteúdo invariante → ainda true (são ignoradas de propósito)', () => {
+        const props = makeProps();
+        // Só as duas props ignoradas trocam de referência — as demais (inclusive
+        // `sarak`/`parentContext`, objetos comparados por `===`) reusam a MESMA.
+        const next = { ...props, mockGroupedModules: {}, mockDiscoveredModules: [] };
+
+        expect(arePreviewPropsEqual(props, next)).toBe(true);
+    });
+
+    it('qualquer prop de estado visual (previewNavVisible, activePreviewApp, isSidebar...) mudando → false', () => {
+        const props = makeProps();
+
+        expect(arePreviewPropsEqual(props, makeProps({ previewNavVisible: false }))).toBe(false);
+        expect(arePreviewPropsEqual(props, makeProps({ activePreviewApp: 'settings' }))).toBe(false);
+        expect(arePreviewPropsEqual(props, makeProps({ isSidebar: false, isTopbar: true }))).toBe(false);
+        expect(arePreviewPropsEqual(props, makeProps({ isDualView: true }))).toBe(false);
     });
 });

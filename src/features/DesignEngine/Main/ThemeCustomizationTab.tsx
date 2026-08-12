@@ -69,6 +69,7 @@ export const ThemeCustomizationTab: React.FC = () => {
         handleApplyComponent,
         isComponentDirty,
         resetComponent,
+        resetToken,
         isDirty,
         toast,
         showToast,
@@ -180,6 +181,7 @@ export const ThemeCustomizationTab: React.FC = () => {
                     setActiveSectionId={setActiveSectionId}
                     isComponentDirty={isComponentDirty}
                     resetComponent={resetComponent}
+                    resetToken={resetToken}
                     handleApplyComponent={handleApplyComponent}
                     globalComponent={globalComponent}
                     sarak={sarak}

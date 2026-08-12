@@ -1,5 +1,24 @@
 import { describe, it, expect } from 'vitest';
-import { getDefaultDesignState, MASTER_DESIGN_MAP } from '../master-map';
+import { getDefaultDesignState, getAllDesignTokens, MASTER_DESIGN_MAP } from '../master-map';
+
+describe('getAllDesignTokens — cache module-level (plan-36)', () => {
+    it('MEDIÇÃO: chamadas sucessivas devolvem a MESMA referência de array — antes desta plan, `flatMap` recomputava (novo array) em toda chamada', () => {
+        const first = getAllDesignTokens();
+        const second = getAllDesignTokens();
+        const third = getAllDesignTokens();
+
+        expect(second).toBe(first);
+        expect(third).toBe(first);
+    });
+
+    it('o conteúdo continua batendo com o achatamento de MASTER_DESIGN_MAP — cache não perde nem duplica token', () => {
+        const cached = getAllDesignTokens();
+        const freshFlatten = MASTER_DESIGN_MAP.components.flatMap((c) => c.tokens);
+
+        expect(cached).toHaveLength(freshFlatten.length);
+        expect(cached.map((t) => t.id)).toEqual(freshFlatten.map((t) => t.id));
+    });
+});
 
 /**
  * REDE DE CARACTERIZAÇÃO de `getDefaultDesignState()` — plan-07, item 6.

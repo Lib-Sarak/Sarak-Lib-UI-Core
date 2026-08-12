@@ -8,14 +8,7 @@ import { DiscoveredModule } from '../../../../core/Discovery/types';
 import { SarakUIContextType } from '../../../../core/Provider/types';
 import { SarakDesignState } from '../../../../core/Provider/types';
 import { SarakTokenValue } from '../../../../core/Design/types';
-
-// Largura de referência em que o mock de app foi pensado para caber sem cortar (mesma
-// referência do breakpoint do dual-view, `panelResponsive.presets.ts`) — abaixo dela o
-// preview reduz proporcionalmente, até o piso `MIN_SCALE`; acima dela nunca ultrapassa
-// `MAX_SCALE` (o teto que o código já usava para o modo single-view, 0.95).
-const SCALE_REFERENCE_WIDTH = 1280;
-const MIN_SCALE = 0.5;
-const MAX_SCALE = 0.95;
+import { useContainerScale } from '../hooks/useContainerScale';
 
 export interface PreviewSystemRendererProps {
     useSystemDesign?: boolean;
@@ -41,7 +34,34 @@ export interface PreviewSystemRendererProps {
     apps: Record<string, React.ReactNode>;
 }
 
-export const PreviewSystemRenderer: React.FC<PreviewSystemRendererProps> = ({
+// plan-36: cada `DesignScope` (este e o de `PreviewCanvas.tsx`, que o envolve) roda o
+// próprio `useDesignVariables` — inclusive `computeColorVariants` por token de cor com
+// `generateVariants` (ver ADR/emenda da plan). `React.memo` corta a recomputação DESTE
+// escopo interno quando nada que afeta a saída visual mudou. Comparação por lista
+// explícita, não shallow-all: `mockGroupedModules`/`mockDiscoveredModules`
+// (`useMockModules.ts`) têm conteúdo IMUTÁVEL (lista fixa de apps mock, não deriva de
+// nenhum token) mas trocam de referência a cada render do pai — comparar por valor as
+// deixaria sempre "iguais" sem risco de conteúdo obsoleto, então nem entram na lista:
+// ignorá-las é seguro porque elas nunca representam a mudança real de nada.
+export const arePreviewPropsEqual = (
+    prev: Readonly<PreviewSystemRendererProps>,
+    next: Readonly<PreviewSystemRendererProps>,
+): boolean =>
+    prev.tokens === next.tokens &&
+    prev.apps === next.apps &&
+    prev.sarak === next.sarak &&
+    prev.parentContext === next.parentContext &&
+    prev.useSystemDesign === next.useSystemDesign &&
+    prev.previewDevice === next.previewDevice &&
+    prev.isDualView === next.isDualView &&
+    prev.activePreviewApp === next.activePreviewApp &&
+    prev.previewNavVisible === next.previewNavVisible &&
+    prev.previewMobileNavOpen === next.previewMobileNavOpen &&
+    prev.isSidebar === next.isSidebar &&
+    prev.isDock === next.isDock &&
+    prev.isTopbar === next.isTopbar;
+
+const PreviewSystemRendererImpl: React.FC<PreviewSystemRendererProps> = ({
     useSystemDesign = false,
     sarak,
     tokens,
@@ -69,26 +89,11 @@ export const PreviewSystemRenderer: React.FC<PreviewSystemRendererProps> = ({
     const hasTexture = activeDesign.texture && activeDesign.texture !== 'none';
     const isMobile = previewDevice === 'smartphone';
 
-    // Escala pela largura REAL do container (plan-35), não mais uma constante assumindo
-    // viewport. `fallbackScale` é o valor de antes desta plan — usado até a primeira
-    // medição resolver, e para sempre em ambiente sem `ResizeObserver` (SSR, jsdom em
-    // teste): nenhum consumidor perde o número que já tinha.
+    // Escala pela largura REAL do container (plan-35/36) — ver `useContainerScale`.
+    // `fallbackScale` é o valor de antes das duas plans: usado até a primeira medição
+    // resolver, e para sempre em ambiente sem `ResizeObserver` (SSR, jsdom em teste).
     const fallbackScale = isDualView ? 0.75 : 0.95;
-    const scaleContainerRef = React.useRef<HTMLDivElement>(null);
-    const [scaleFactor, setScaleFactor] = React.useState(fallbackScale);
-
-    React.useEffect(() => {
-        const node = scaleContainerRef.current;
-        if (!node || typeof ResizeObserver === 'undefined') return undefined;
-
-        const observer = new ResizeObserver((entries) => {
-            const width = entries[0]?.contentRect.width;
-            if (!width || width < 100) return;
-            setScaleFactor(Math.min(MAX_SCALE, Math.max(MIN_SCALE, width / SCALE_REFERENCE_WIDTH)));
-        });
-        observer.observe(node);
-        return () => observer.disconnect();
-    }, []);
+    const { containerRef: scaleContainerRef, scale: scaleFactor } = useContainerScale(fallbackScale);
 
     const widthPercent = `${(100 / scaleFactor).toFixed(2)}%`;
     const heightPercent = `${(100 / scaleFactor).toFixed(2)}%`;
@@ -230,3 +235,5 @@ export const PreviewSystemRenderer: React.FC<PreviewSystemRendererProps> = ({
         </DeviceProvider>
     );
 };
+
+export const PreviewSystemRenderer = React.memo(PreviewSystemRendererImpl, arePreviewPropsEqual);
