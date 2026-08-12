@@ -1,0 +1,9 @@
+# Achado 33 (specs/15-divida-conhecida.md §3.1): sem .gitattributes e com
+# core.autocrlf=true, qualquer checkout/stash pop reescrevia sarak-dev/ (e todo
+# texto do repositório) em CRLF; os geradores escrevem LF, então o comparador
+# byte a byte (`dev-kit:check` e afins) acusava "defasado" sem ninguém ter mudado
+# nada. Normaliza para LF na árvore de trabalho, independentemente do autocrlf local.
+* text=auto eol=lf
+
+*.png binary
+*.ico binary
