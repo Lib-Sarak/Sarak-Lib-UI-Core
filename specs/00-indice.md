@@ -42,19 +42,33 @@ as duas, sempre, na mesma ação.**
 | # | Plan | Objetivo | Depende de | Status | Destino |
 |---|---|---|---|---|---|
 | 1 | [plan-28-reconciliar-contexto](plan/plan-28-reconciliar-contexto.md) | Fazer a porta de entrada dos agentes descrever o repositório que existe | — | 🟢 Aprovada | — |
-| 2 | [plan-29-erradicar-cifra-em-prosa](plan/plan-29-erradicar-cifra-em-prosa.md) | Fazer as quatro specs fixas pararem de afirmar totais que já envelheceram | plan-28 | 🔴 A executar | — |
-| 3 | [plan-30-pagar-divida-aberta](plan/plan-30-pagar-divida-aberta.md) | Zerar a seção de achados abertos da spec de dívida conhecida | — | 🔴 A executar | specs/15-divida-conhecida.md · specs/01-gates-e-baseline.md |
-| 4 | [plan-11-remover-e2e-falso-verde](plan/plan-11-remover-e2e-falso-verde.md) | Remover o aparato de E2E que produz verde falso, deixando a capacidade declarada como adiada | — | 🔴 A executar | specs/specs/11-testes-e-cobertura.md · specs/specs/15-divida-conhecida.md |
-| 5 | [plan-05-integracao-continua](plan/plan-05-integracao-continua.md) | Rodar os gates num ambiente que não é a máquina de ninguém | — | 🔴 A executar | specs/16-integracao-continua.md · specs/02-enforcement-por-commit.md · specs/01-gates-e-baseline.md |
-| 6 | [plan-10-ciclo-atualizacao](plan/plan-10-ciclo-atualizacao.md) | Dar comando de atualização a quem só recebia aviso | plan-05 | 🔴 A executar | specs/13-instalacao-e-atualizacao.md |
+| 2 | [plan-29-erradicar-cifra-em-prosa](plan/plan-29-erradicar-cifra-em-prosa.md) | Fazer as quatro specs fixas pararem de afirmar totais que já envelheceram | plan-28 | 🟢 Aprovada | — |
+| 3 | [plan-31-segunda-onda-cifra](plan/plan-31-segunda-onda-cifra.md) | Fechar a cifra em prosa nas quatro specs fixas restantes, com a spec do mantenedor primeiro | plan-29 | 🔴 A executar | — |
+| 4 | [plan-32-contrato-unico-leitura-integral](plan/plan-32-contrato-unico-leitura-integral.md) | Fazer o contrato único parar de declarar vãos e violações que já foram fechados | plan-29 | 🔴 A executar | — |
+| 5 | [plan-30-pagar-divida-aberta](plan/plan-30-pagar-divida-aberta.md) | Zerar a seção de achados abertos da spec de dívida conhecida | — | 🔴 A executar | specs/15-divida-conhecida.md · specs/01-gates-e-baseline.md |
+| 6 | [plan-11-remover-e2e-falso-verde](plan/plan-11-remover-e2e-falso-verde.md) | Remover o aparato de E2E que produz verde falso, deixando a capacidade declarada como adiada | — | 🔴 A executar | specs/specs/11-testes-e-cobertura.md · specs/specs/15-divida-conhecida.md |
+| 7 | [plan-05-integracao-continua](plan/plan-05-integracao-continua.md) | Rodar os gates num ambiente que não é a máquina de ninguém | — | 🔴 A executar | specs/16-integracao-continua.md · specs/02-enforcement-por-commit.md · specs/01-gates-e-baseline.md |
+| 8 | [plan-10-ciclo-atualizacao](plan/plan-10-ciclo-atualizacao.md) | Dar comando de atualização a quem só recebia aviso | plan-05 | 🔴 A executar | specs/13-instalacao-e-atualizacao.md |
 <!-- SARAK-INDICE:FILA:FIM -->
 
 > **A ordem da coluna `#` não é a ordem do número da plan** — e isso é a feature, não um erro. Numeração é
 > identidade; a coluna `#` é o plano.
 >
-> **A ordem de hoje é `28 → 29 → 30 → 11 → 05 → 10`: descrever certo → parar de envelhecer → pagar a dívida
-> medida → remover o verde falso → rodar fora da máquina de alguém.**
-> *(fixada pelo revisor em 2026-08-11, na auditoria de entrada.)*
+> **A ordem de hoje é `28 → 29 → 31 → 32 → 30 → 11 → 05 → 10`: descrever certo → parar de envelhecer (três
+> ondas) → pagar a dívida medida → remover o verde falso → rodar fora da máquina de alguém.**
+> *(fixada em 2026-08-11; a `plan-31` entrou em 2026-08-12 no veredito de reprovação da 29, e a `plan-32` no
+> veredito de aprovação da correção 2.)*
+>
+> **A `plan-31` e a `plan-32` colam na 29** porque são a mesma classe, o mesmo executor e o mesmo tipo de
+> sessão — separá-las na fila só pagaria duas vezes o custo de entrar no assunto. Elas existem, em vez de a
+> 29 ter crescido, porque **ampliar uma plan no meio de uma correção é o erro que as três existem para
+> consertar.**
+>
+> 🔴 **A `plan-32` é uma lição de escopagem, e vale lê-la antes de escrever a próxima plan de prosa.**
+> `00-regras-e-invariantes.md` esteve dentro da `plan-29` e **não fechou em três rodadas** — 1300 linhas e 35
+> vereditos de estado não cabem numa plan de cinco arquivos, e **não se auditam por varredura**: o defeito
+> pior daquele arquivo não tem cifra errada, tem *afirmação* errada, e só a leitura integral a vê. A regra
+> que ficou: **o objetivo de uma plan não pode ser mais largo que o método de fecho que ela declara.**
 >
 > **A `plan-28` vem primeiro porque a porta de entrada está INSTRUINDO ERRADO.** `00-contexto.md` §2 afirma que
 > o `run_audit` "fecha em ZERO" e que "não há mais folga" — o repositório responde **exit 1 com 2 auditores

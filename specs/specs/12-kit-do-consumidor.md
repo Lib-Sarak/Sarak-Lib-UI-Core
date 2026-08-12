@@ -15,10 +15,10 @@ publicado (`package.json:18`, campo `files`). O importador a encontra em
 `node_modules/@sarak/lib-ui-core/sarak-ui/` no momento em que instala a biblioteca — sem baixar
 nada, sem consultar site nenhum, sem depender de uma wiki que pode ter envelhecido.
 
-Ele existe porque **instalar a lib não ensina a usá-la**. A biblioteca expõe 87 nomes catalogados,
-304 tokens de tema e 100 nomes de ícone; nenhum deles é adivinhável. O kit é a resposta a
-*"instalei — e agora?"*, entregue no único lugar que não pode ficar dessincronizado da versão
-instalada: **dentro dela**.
+Ele existe porque **instalar a lib não ensina a usá-la**. A biblioteca expõe componentes catalogados,
+tokens de tema e nomes de ícone — nenhum deles é adivinhável, e a contagem corrente de cada lista vive em
+`sarak-ui/VERSION`, não em prosa. O kit é a resposta a *"instalei — e agora?"*, entregue no único lugar que
+não pode ficar dessincronizado da versão instalada: **dentro dela**.
 
 ## 1.1 O conteúdo
 
@@ -164,15 +164,8 @@ vermelho. É por isso que [[14-artefatos-do-mantenedor]] e a reconciliação de 
 # 5. O carimbo — `VERSION` e o `kitHash`
 
 `sarak-ui/VERSION` é gerado por `renderVersionFile` (`kitFiles.mjs:58-70`) e carrega seis campos:
-
-```
-libVersion=1.1.0
-kitSchemaVersion=1
-kitHash=258c92a2451d
-components=87
-designTokens=304
-iconNames=100
-```
+`libVersion`, `kitSchemaVersion`, `kitHash`, `components`, `designTokens` e `iconNames`. Os valores mudam a
+cada release — leia o arquivo gerado, não um carimbo transcrito aqui.
 
 **`kitHash` é hash de CONTEÚDO, nunca de commit** — SHA-256 dos primeiros 12 hex do
 `catalog.json` (`kitFiles.mjs:50-51`). A escolha é deliberada e o motivo é o que salva o gate de
@@ -294,7 +287,7 @@ deixados em paz.
 
 # 11. Ruído conhecido do catálogo (registrado, não corrigido)
 
-O `catalog.json` lista **87 entradas em `components`**, e nem todas são componentes:
+O `catalog.json` lista entradas em `components` (contagem corrente no próprio arquivo gerado), e nem todas são componentes:
 
 | Entrada | O que é de verdade | Origem |
 | --- | --- | --- |
@@ -314,20 +307,16 @@ Nenhum dos três é corrigido aqui: são ruído de derivação, não erro de con
 coletor durante uma campanha de documentação moveria números de gate. Rota registrada na
 Campanha 2.
 
-## 11.1 🔴 Um número do kit está ERRADO — `designTokens.count`
+## 11.1 ✅ FECHADO — `designTokens.count` voltou a bater com a fonte
 
-Diferente dos três acima, este não é ruído: é **informação falsa publicada ao importador**.
+Chegou a publicar informação falsa ao importador: o coletor lê a interface `SarakDesignTokens`
+(`collectKitSources.mjs:26-45`), gerada a partir de `src/core/Provider/generated/design-token-ids.ts`, e
+esse arquivo esteve defasado porque o gerador dele não estava registrado em pipeline nenhum — o consumidor
+lia no kit uma contagem de chaves válidas de `design` menor do que a real.
 
-`designTokens.count` diz **304**, porque o coletor lê a interface `SarakDesignTokens`
-(`collectKitSources.mjs:26-45`). Mas o catálogo de tokens do repositório tem **409** ids únicos —
-e o arquivo que gera aquela interface (`src/core/Provider/generated/design-token-ids.ts`) está
-**defasado em 105 tokens**, porque o gerador dele não está registrado em pipeline nenhum.
-
-O consumidor lê no kit que existem 304 chaves válidas de `design`; existem 409.
-
-Medição, causa e rota estão em [[14-artefatos-do-mantenedor]] §7.1. **Não corrigido aqui** —
-regenerar o arquivo mudaria `src/`, o `catalog.json` e o carimbo do kit, muito além do mandato
-desta tarefa. Roteado para a **Fase B da Campanha 2**.
+**Fechado pelo achado 22 em [[15-divida-conhecida]] §6 (`plan-12`):** o gerador ganhou modo `--check`
+(`npm run token-types:check`), registrado no `build` e no Anel 1 do `pre-commit`, e `designTokens.count`
+volta a ser conferido a cada geração do kit — o valor corrente está em `sarak-ui/VERSION`.
 
 # 12. Fronteiras desta spec
 

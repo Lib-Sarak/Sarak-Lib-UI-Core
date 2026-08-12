@@ -148,7 +148,7 @@ Cada classe encontrada cai num balde (`classifyToken`, `:66-77`):
 
 > ⚠️ **Não existe um balde "Tolerado" de hairlines ≤2px.** A documentação anterior descrevia três baldes; o código tem **dois**. Hairlines (`1px`, `2px`) passam por um mecanismo diferente: `sanitizeFallbacks()` (`:122-127`) remove o conteúdo de `var(--x, <valor>)` antes de testar, então **`var(--sarak-border-width, 1px)` é limpo e `border-[1px]` não é**. Medido: as 84 ocorrências de `1px`/`2px` em `.tsx` de `atomic/` estão **todas** na forma `var(--token, Npx)`. Registrado como divergência — a política real é "hairline também é token", que é mais estrita do que a documentação dizia.
 
-O balde deduzido nunca fica invisível: a saída imprime a **reconciliação** (bruto → deduções → líquido), hoje `516 → 188 + 87 + 241 → 0 líquido`.
+O balde deduzido nunca fica invisível: a saída de `npm run audit` imprime a **reconciliação** (bruto → deduções → líquido) a cada execução — leia-a, não a reproduza aqui.
 
 ### R2.3 As exceções de política — permanentes
 
@@ -221,13 +221,13 @@ type ToastKind = 'success' | 'warning' | 'error';
 
 **Cobrada por:** `node gates/scripts/audit/auditor_typescript.mjs` — falha em qualquer nó `AnyKeyword` na AST de `src/` (exceto `__tests__/` e `Mocks/`). Hoje: **0 ocorrências**.
 
-> **R3 e R30 checam coisas diferentes.** Um procura o **token** `any` na AST; o outro **compila**. Um estar verde não implica o outro — e o outro **não** está verde (14 erros, ver R30).
+> **R3 e R30 checam coisas diferentes.** Um procura o **token** `any` na AST; o outro **compila**. Um estar verde não implica o outro — o estado corrente de R30 está no baseline (`gates/baselines/audit-baseline.json`), não presumido aqui.
 
 ---
 
 ## R4 — Paridade: token nasce nas três fontes ou não existe
 
-**Estado:** ⚠️ **escopo menor que a regra** — o **tipo gerado não é uma das três fontes**, e é nesse vão que mora a deriva de 105 tokens.
+**Estado:** ⚠️ **escopo menor que a regra** — o **tipo gerado não é uma das três fontes** que este gate cruza, e um tipo gerado pode voltar a divergir sem que R4 o veja. A instância de deriva que esse vão deixou passar (achado 22) **fechou** — o gerador ganhou `--check` própria, que é R29 (ver abaixo) — mas o vão estrutural em si continua de pé: fechar a instância não fecha o vão.
 
 **Enunciado.** Uma chave de design só é **real** se existir simultaneamente no **Schema** (`src/core/Design/schema/*.ts` → `MASTER_DESIGN_MAP`), no **roteamento de persistência** (`catalog/theme_table_mapping.json`) e no **catálogo** (`catalog/partitions/*.json`). Fora disso, ela é inexistente.
 
@@ -235,9 +235,9 @@ type ToastKind = 'success' | 'warning' | 'error';
 
 **Certo × Errado.** Adicionar um token é sempre **as três** edições, na mesma entrega — nunca "o schema primeiro, o resto depois".
 
-**Cobrada por:** `auditor_paridade.mjs` → `npx tsx gates/scripts/audit/verify_parity.ts`. Hoje: **409 / 409 / 409**. O dicionário, as duas alavancas (Valor × Estrutural) e a divergência apurada 409 × 416 estão em [[04-contrato-de-tokens-e-paridade]].
+**Cobrada por:** `auditor_paridade.mjs` → `npx tsx gates/scripts/audit/verify_parity.ts`. As três fontes convergem — o valor corrente vive em `npm run audit` → `auditor_paridade` e em [[01-gates-e-baseline]] §3. O dicionário, as duas alavancas (Valor × Estrutural) e a divergência histórica apurada (409 × 416) estão em [[04-contrato-de-tokens-e-paridade]].
 
-> ⚠️ **O vão declarado.** `src/core/Provider/generated/design-token-ids.ts` é **derivado** do `MASTER_DESIGN_MAP` e **não é uma das três fontes que o gate cruza** — então ele pode apodrecer com o gate verde, e apodreceu: **304 propriedades publicadas × 409 tokens reais**. O número falso **vaza para o consumidor** via `sarak-ui/catalog.json` (`designTokens.count = 304`). Fechar esse vão é alvo de **R29** (artefato gerado bate com a fonte), não de um quarto braço da paridade. Achado 22 em [[15-divida-conhecida]].
+> ✅ **O vão fechou.** `src/core/Provider/generated/design-token-ids.ts` é **derivado** do `MASTER_DESIGN_MAP` e **não é uma das três fontes que o gate cruza** — então podia apodrecer com o gate verde, e apodreceu (achado 22 em [[15-divida-conhecida]]). Fechado pela `plan-12`: o gerador ganhou modo `--check` (`npm run token-types:check`, registrado no `build` e no Anel 1), e o valor publicado ao consumidor (`sarak-ui/VERSION` → `designTokens`) volta a bater com o schema. É o mesmo mecanismo que **R29** cobra para todo artefato gerado.
 
 > A antiga **"6ª camada = Registry do motor de manifesto" MORREU** com o motor ([[002-remocao-motor-manifesto]]). Se você encontrar uma skill ou documento exigindo paridade com um Registry, é ponteiro morto — a paridade verificada hoje é de **três** fontes.
 
@@ -251,7 +251,7 @@ type ToastKind = 'success' | 'warning' | 'error';
 
 **Por quê.** Um tema com chave que o motor não conhece é um tema que **parece** completo e não é: o eixo some sem aviso. Como os temas de referência são o ponto de partida do consumidor, o defeito se propaga para fora da lib.
 
-**Cobrada por:** `auditor_presets.mjs` → `npx tsx gates/scripts/audit/verify_presets.ts`. Hoje: **120 itens auditados** (18 temas + 102 presets de componente), zero órfã.
+**Cobrada por:** `auditor_presets.mjs` → `npx tsx gates/scripts/audit/verify_presets.ts`. O total de itens auditados (temas + presets de componente) e a confirmação de zero órfã vivem em `npm run audit` → `auditor_presets` e em [[01-gates-e-baseline]] §3.
 
 > ⏳ **O segundo gate que existe e não roda.** `gates/scripts/audit/verify_theme_parity.ts` valida **um** tema contra o dicionário — isto é, mede **completude por tema**, não só ausência de órfã — e **nenhum script o invoca**. Cobertura diferente, não equivalente: o `auditor_presets` não pega tema escrito pelo consumidor nem mede completude. Ligá-lo é trabalho da `plan-12`.
 
@@ -298,11 +298,21 @@ style={{ gap: 'var(--sarak-layout-gap-md)' }}
 style={{ gap: 'var(--sarak-layout-gap-md, 16px)' }}
 ```
 
-**Cobrada por:** `node gates/scripts/audit/auditor_ghostvars.mjs` — constrói o registro real de variáveis emitidas (schemas + `src/styles/*.css`, expandido por 18 sufixos gerados) e cruza com todo `var(--x)` consumido. Hoje: **14.179 variáveis no registro, 3 consumos fantasma** (o baseline).
+**Cobrada por:** `node gates/scripts/audit/auditor_ghostvars.mjs` — constrói o registro real de variáveis emitidas (schemas + `src/styles/*.css`, expandido por 18 sufixos gerados) e cruza com todo `var(--x)` consumido. O tamanho do registro e a contagem de consumos fantasma vivem em `npm run audit` e em `gates/baselines/audit-baseline.json` (o baseline).
 
-> ⚠️ **O vão declarado, e a violação viva dentro dele.** O auditor varre apenas `src/components/` e `src/features/` (`auditor_ghostvars.mjs:14`); `src/styles/` é tratado como fonte **emissora**, nunca como consumidora, e `src/core/` está inteiramente fora. Por isso os **2 usos vivos de `--sx-*`** em `src/styles/_utilities.css:80` e `:89` (`var(--sarak-range-active-bg, var(--sx-color-primary-base))`) **não acendem luz vermelha nenhuma**: o gate está verde e a regra está sendo violada. Achado 1 em [[15-divida-conhecida]].
+> ✅ **O vão descrito aqui FECHOU, nos dois lados.** Até a `plan-12`, o auditor varria só `src/components/`
+> e `src/features/`; `src/styles/` era tratado como fonte **emissora**, nunca como consumidora, e
+> `src/core/` ficava inteiramente fora — por isso os usos vivos de `--sx-*` em `src/styles/_utilities.css`
+> não acendiam luz vermelha nenhuma. **As duas metades fecharam**: o escopo cresceu para os 4
+> `CONSUMER_DIRS` (`src/components/`, `src/features/`, `src/styles/`, `src/core/`), e o código corrigiu o
+> namespace `--sx-*` (`plan-07`) — hoje **zero** ocorrência em `src/styles/`. Achado 1 em
+> [[15-divida-conhecida]], fechado.
 >
-> **Ampliar o escopo sem ampliar o registro produz acusação falsa** — `--theme-on-primary` é emitida em runtime por `useDesignVariables.ts:183` e não está no registro. Detalhe em [[01-gates-e-baseline]] §4.3.c. É literalmente o caso que R18 existe para não deixar acontecer duas vezes.
+> **O registro também cresceu junto com o escopo** — hoje cruza schema, `src/styles/*.css`, o manifesto
+> (`manifest.ts`, só quando comprovado) **e** o hook de runtime (`useDesignVariables.ts`), o que fecha o
+> caso de acusação falsa que motivava o aviso anterior sobre `--theme-on-primary`. **O que o auditor NÃO
+> vê hoje está declarado no próprio cabeçalho dele** (`auditor_ghostvars.mjs`, bloco `LIMITES DECLARADOS`,
+> R18) — é para lá que se aponta um vão vivo, não para este, que já fechou.
 
 ### R7.1 Ordem de correção: raiz primeiro
 
@@ -312,7 +322,9 @@ Ao corrigir um consumo fantasma **compartilhado**, corrija a fonte comum (o Hook
 
 ## R8 — Cobertura 1:1
 
-**Estado:** ⚠️ **escopo menor que a regra** — o gate não vê `src/shared/`. O segundo braço (cobertura em %) está ⏳.
+**Estado:** ⚠️ — os dois motivos históricos deste marcador **fecharam** (ver o vão abaixo e a R8.1):
+o gate passou a ver `src/shared/`, e o segundo braço (cobertura em %) ganhou gate. Marcador mantido nesta
+correção por instrução expressa do revisor — quem decide se ele ainda cabe é o revisor, não esta execução.
 
 **Enunciado.** Todo componente e todo hook tem um teste **ao lado**, em `__tests__/<nome>.test.tsx` (ou `.test.ts`).
 
@@ -326,9 +338,9 @@ Cards/SarakActionCard.tsx                Cards/SarakActionCard.tsx
 Cards/__tests__/SarakActionCard.test.tsx test/cards.test.tsx   ← agregado, não 1:1
 ```
 
-**Cobrada por:** `node gates/scripts/audit/auditor_coverage.mjs`, sobre `src/components/`, `src/features/` e `src/core/`. Duas particularidades do escopo, para não haver surpresa: arquivos `index*` são ignorados, e **arquivos `.ts` só entram na cobrança se o nome começar com `use`** (isto é, utilitário `.ts` que não é hook não é cobrado). Hoje: **zero órfão**.
+**Cobrada por:** `node gates/scripts/audit/auditor_coverage.mjs`, sobre seis raízes (`src/components/`, `src/features/`, `src/core/`, `src/shared/`, `src/effects/` e `src/constants/` — as três últimas desde a `plan-12`, vão 6, ver abaixo). Duas particularidades do escopo, para não haver surpresa: arquivos `index*` são ignorados, e **arquivos `.ts` só entram na cobrança se o nome começar com `use`** (isto é, utilitário `.ts` que não é hook não é cobrado).
 
-> ⚠️ **O vão declarado.** `src/shared/` está **fora** do escopo (`auditor_coverage.mjs:52-60` varre só `components`, `features`, `core`). Medido: **4 arquivos, 0 testes** — `useSarakRouter.ts` e `useModuleDiscovery.ts` são **violação de R8 na letra**; `services/api.ts` e `types/index.ts` não são cobrados nem pela regra (um é `.ts` que não começa com `use`, o outro é `index*`). Achado 13 em [[15-divida-conhecida]].
+> ✅ **O vão FECHOU.** Até a `plan-12`, `src/shared/` estava fora do escopo do auditor, e `useSarakRouter.ts`/`useModuleDiscovery.ts` eram violação de R8 na letra, sem teste. Hoje `auditor_coverage.mjs` varre seis raízes — inclusive `src/shared/`, `src/effects/` e `src/constants/` — e reporta zero órfão. `services/api.ts` e `types/index.ts` continuam fora **da própria regra**, não do gate (um é `.ts` que não começa com `use`, o outro é `index*`). Achado 13 em [[15-divida-conhecida]], fechado.
 
 ### R8.1 O segundo braço — cobertura em %, com piso móvel
 
@@ -496,7 +508,7 @@ repositório usa **três caminhos**, escolhidos pelo que a ocorrência **é**:
 <span>Search Engine</span>
 ```
 
-**Cobrada por:** `npm run zero-brand:check` (`gates/scripts/contrato/check-zero-brand.mjs`). Varre `src/` por AST — só `StringLiteral`, `JsxText` e partes fixas de template literal contam, para **não** acusar comentário que documenta a correção. Hoje: **361 arquivos, 0 violações**. A allowlist tem 3 painéis **internos** do Design Engine (`KitchenSinkPreview`, `LanguageTab`, `LayoutTab`) — ferramenta de autoria da própria lib, nunca embutida pelo consumidor — e o gate também derruba **entrada de allowlist obsoleta**.
+**Cobrada por:** `npm run zero-brand:check` (`gates/scripts/contrato/check-zero-brand.mjs`). Varre `src/` por AST — só `StringLiteral`, `JsxText` e partes fixas de template literal contam, para **não** acusar comentário que documenta a correção. O número de arquivos varridos e a confirmação de zero violação vivem em [[01-gates-e-baseline]] §3 — **o que importa é o de violações**, não o de arquivos. A allowlist tem 3 painéis **internos** do Design Engine (`KitchenSinkPreview`, `LanguageTab`, `LayoutTab`) — ferramenta de autoria da própria lib, nunca embutida pelo consumidor — e o gate também derruba **entrada de allowlist obsoleta**.
 
 ---
 
@@ -544,7 +556,7 @@ export { SarakGrid } from './components/atomic/Layouts/SarakGrid';
 export type { SarakGridProps } from './components/atomic/Layouts/SarakGrid';
 ```
 
-**Cobrada por:** `npm run barrel:check`. Hoje: **80 componentes, 0 faltas** *(era 81 até a `plan-09` remover o `SarakTabs` duplicado)*; a allowlist tem **1 entrada** (`SarakAppChromeMobile`, com motivo).
+**Cobrada por:** `npm run barrel:check`. A contagem corrente de componentes e a confirmação de zero falta vivem em [[01-gates-e-baseline]] §3 *(a contagem já caiu uma vez, quando a `plan-09` removeu o `SarakTabs` duplicado)*; a allowlist tem **1 entrada** (`SarakAppChromeMobile`, com motivo).
 
 > ✅ **O vão de `engines/` foi FECHADO em P26** (decisão D2, 2026-07-29). O gate varria `components/atomic/**` e `components/Layout/**` e **não via `components/engines/**`** — resultado: 3 das 4 categorias de engine viviam fora do barril e o gate ficava verde. Hoje `collectPublicComponentNames()` varre `engines/` como raiz por categoria; `SarakChatEngine` e `SarakFlowEngine` foram expostos atrás de fronteira lazy, `SarakVisualEngine` foi removido por não ter consumidor real, e a contagem foi de 78 para 81. Ver [[03-superficie-publica]] §9.
 >
@@ -582,8 +594,8 @@ CERTO    "A lista completa está em `docs/component-catalog.json`, gerada por AS
 **Por quê.** Esta é a regra que nasce do padrão mais caro do repositório: **o escopo do gate é menor que o escopo da regra**, e ninguém desconfia porque o gate está verde. Três casos independentes, todos medidos:
 
 - **R14** — o `barrel:check` não via `components/engines/`; 3 componentes públicos ficaram fora do barril **com o gate verde**, e o vão só apareceu por acaso (fechado em P26).
-- **R7** — o `auditor_ghostvars` não vê `src/styles/`; o namespace **proibido** `--sx-*` está vivo lá desde então, gate verde (aberto).
-- **O registro do próprio `auditor_ghostvars`** — o cabeçalho dele (`:5-10`) afirma ler `useDesignVariables.ts`, e o código (`:37-61`) **não lê**. Consequência: quem ampliar o escopo confiando no cabeçalho vai produzir **acusação falsa** numa variável que existe ([[01-gates-e-baseline]] §4.3.c).
+- **R7** — o `auditor_ghostvars` não via `src/styles/`; o namespace **proibido** `--sx-*` ficou vivo lá com o gate verde, até o escopo crescer e o código ser corrigido (fechado — ver R7).
+- **O registro do próprio `auditor_ghostvars`** — o cabeçalho dele chegou a afirmar que lia `useDesignVariables.ts` sem o código realmente ler, o que produziria **acusação falsa** numa variável que existe. Fechado: o código passou a ler o arquivo de runtime, e o cabeçalho hoje descreve o que o código de fato faz (ver R7).
 
 O antigo achado 30 provou que atenção humana não pega essa classe: ela reapareceu pela mão que a acabara de catalogar. **Escrever o limite é o que o transforma de descoberta em conferência.**
 
@@ -600,7 +612,7 @@ O antigo achado 30 provou que atenção humana não pega essa classe: ela reapar
 //   :37-61 abre apenas schema/*.ts e styles/*.css.
 ```
 
-**Cobrada por:** `node gates/scripts/contrato/check-gate-limits.mjs` (construído pela `plan-12`, 2026-08-05). Varre `gates/scripts/**` (exceto `__tests__/`/`allowlists`) atrás do marcador `LIMITES DECLARADOS` (ou a convenção antiga já existente, "ponto cego conhecido"). Hoje: **26/26** scripts declaram o que não veem — os 17 pré-existentes ganharam o bloco que faltava, e os 9 gates novos das plans 12/16 já nasceram com ele. `npm run gate-limits:check`.
+**Cobrada por:** `node gates/scripts/contrato/check-gate-limits.mjs` (construído pela `plan-12`, 2026-08-05). Varre `gates/scripts/**` (exceto `__tests__/`/`allowlists`) atrás do marcador `LIMITES DECLARADOS` (ou a convenção antiga já existente, "ponto cego conhecido"). A contagem corrente de scripts que declaram o que não veem vive em `npm run gate-limits:check` — os pré-existentes ganharam o bloco que faltava, e todo gate novo já nasce com ele.
 
 ---
 
@@ -656,7 +668,7 @@ ERRADO   baseline que se auto-ajusta a cada execução — apagaria a evidência
 2. **A lista de auditores é LIDA de `run_audit.mjs`** (`:36-41`) em vez de copiada — auditor novo lá é auditor novo aqui, sem ninguém lembrar de sincronizar. Auditor sem parser conhecido cai num parser genérico que só olha o código de saída: degrada, não ignora.
 3. **Métrica ilegível é bloqueio, não silêncio** (`:140`). Saída que mudou de formato vira `null` e o commit é barrado com "não consegui ler a saída do auditor". **Fail-closed** — parser quebrado nunca vira aprovação automática.
 
-O baseline de hoje (`medidoEm: 2026-07-28`): `auditor_hardcoded.valor = 1`, `auditor_ghostvars.consumos = 3`, `tsc.erros = 14`, e zero em todo o resto.
+O baseline corrente — data, métrica a métrica — vive em `gates/baselines/audit-baseline.json` (campo `medidoEm`) e está espelhado, com o contexto de cada linha, em [[01-gates-e-baseline]] §3.
 
 ---
 
@@ -851,11 +863,11 @@ R14 (barril completo) garante que o consumidor não **precise** de deep import; 
 
 ## R29 — Todo artefato gerado bate com a fonte
 
-**Estado:** ⚠️ **escopo menor que a regra** — 3 dos geradores têm modo `--check`; os outros não.
+**Estado:** ✅ **gate pleno** — os 5 geradores têm modo `--check`, e os 5 rodam.
 
 **Enunciado.** Todo arquivo **gerado** e **versionado** é reproduzível: rodar o gerador agora produz byte a byte o que está commitado. Gerador sem modo `--check` ligado a um gate é artefato que apodrece.
 
-**Por quê.** É o mecanismo que faz R17 funcionar — apontar para a fonte gerada só é seguro se a fonte gerada estiver em dia. E o dano de não ter isso está medido: `src/core/Provider/generated/design-token-ids.ts` publica **304 propriedades para 409 tokens reais**, defasagem de **105 tokens**, e o número falso **vaza para o consumidor** via `sarak-ui/catalog.json` (`designTokens.count = 304`). Nenhum gate acusa porque o tipo gerado não é uma das três fontes que R4 cruza — o vão de R4 e a ausência de gate aqui são o **mesmo buraco**, visto de dois lados.
+**Por quê.** É o mecanismo que faz R17 funcionar — apontar para a fonte gerada só é seguro se a fonte gerada estiver em dia. O dano de não ter isso já foi medido e fechado: `src/core/Provider/generated/design-token-ids.ts` chegou a publicar menos propriedades do que os tokens reais, e o número falso vazava para o consumidor via `sarak-ui/catalog.json`. Nenhum gate acusava porque o tipo gerado não era uma das três fontes que R4 cruza — o vão de R4 e a ausência de gate aqui eram o **mesmo buraco**, visto de dois lados. Fechado pelo achado 22 em [[15-divida-conhecida]]: o gerador ganhou `--check` e passou a rodar no `build`.
 
 **Certo × Errado.**
 
@@ -865,17 +877,10 @@ CERTO    npm run catalog       # gera
 ERRADO   npx tsx scripts/generate-token-types.ts   # gera, e nada confere depois
 ```
 
-**Cobrada por:** ⚠️ **parcialmente.** Medido em 2026-08-02, os geradores com modo `--check` ligado a um script são **três**:
-
-| Artefato gerado | Gerador | `--check`? |
-| --- | --- | --- |
-| `docs/component-catalog.{json,md}` | `generate-component-catalog.mjs` | ✅ `npm run catalog:check` |
-| `sarak-ui/` (6 arquivos) | `generate-consumer-kit.mjs` | ✅ `npm run guide:check` |
-| `sarak-dev/` (3 arquivos) | `generate-dev-kit.mjs` | ✅ `npm run dev-kit:check` |
-| `src/core/Provider/generated/design-token-ids.ts` | `generate-token-types.ts` | ❌ **nenhum** — e está defasado em 105 tokens |
-| `dist/BUILD_INFO.json` | `generate-build-info.mjs` | ❌ **nenhum** |
-
-Os três primeiros rodam no `build` (ou, no caso do `dev-kit`, no `gates:full`) e no Anel 1 do `pre-commit`. Os dois últimos não são invocados por script, hook nem skill nenhuma. Achado 22 em [[15-divida-conhecida]]; a metade "registrar o gerador num pipeline" é da `plan-12`.
+**Cobrada por:** os 5 geradores têm modo `--check`, e os 5 rodam — `catalog:check` · `guide:check` ·
+`token-types:check` dentro do `build`; `build-info:check` e `dev-kit:check` dentro do `gates:full`. A tabela
+completa de gerador × `--check` está em [[01-gates-e-baseline]] §2.2. Achado 22 em [[15-divida-conhecida]]
+registra o fecho.
 
 > **`src/core/Provider/manifest.ts` NÃO entra nesta regra.** Conferido no arquivo em 2026-08-02: ele é **escrito à mão** (`DESIGN_MANIFEST`, "Sovereign Design Manifest v10.1") — não tem marca de gerado e não há gerador para ele em `scripts/`. O único arquivo de `src/` com a marca `ARQUIVO GERADO AUTOMATICAMENTE` é o `design-token-ids.ts`.
 
@@ -883,11 +888,13 @@ Os três primeiros rodam no `build` (ou, no caso do `dev-kit`, no `gates:full`) 
 
 ## R30 — O TypeScript compila
 
-**Estado:** ⚠️ **NASCE VIOLADA, e isso é deliberado.** Há gate de **contagem**, não de verde.
+**Estado:** ⚠️ — o vão é o **gatilho**: o Anel 2 só liga quando o staged tem `.ts`/`.tsx`, **não** porque haja
+erro hoje. Produção é hard-block a zero desde a `plan-07`; o estado corrente das duas classes (produção ·
+teste) vive em `gates/baselines/audit-baseline.json`.
 
 **Enunciado.** `npx tsc --noEmit` fecha **limpo**.
 
-**Por quê.** Escrever isto como regra é o que transforma 14 erros de *"coisa que a gente sabe"* em **dívida com dono e prazo** *(decisão do dono, 2026-08-02)*. O fato de existirem **4 erros de tipo em produção** é a prova de que ninguém estava olhando: `tsc` nunca foi ligado a pipeline nenhum, então os erros nunca derrubaram nada e o número subiu sem resistência. E `tsc` é a única checagem que os vê — R3 procura o **token** `any` na AST, não compila.
+**Por quê.** Escrever isto como regra é o que transformou os erros que existiam de *"coisa que a gente sabe"* em **dívida com dono e prazo** *(decisão do dono, 2026-08-02)*. Até então `tsc` nunca tinha sido ligado a pipeline nenhum, e os erros de tipo em produção nunca haviam derrubado nada — o número subiu sem resistência até alguém contar. `tsc` é a única checagem que os vê — R3 procura o **token** `any` na AST, não compila.
 
 **Certo × Errado.**
 
@@ -897,9 +904,9 @@ ERRADO   a união do toast do alvo aceita 'error'|'success'|'warning' e a funç�
          fornecida só trata 'success'|'warning'   ← TS2322, em produção
 ```
 
-**Cobrada por:** ⚠️ **contagem, não verde.** `tsc` **não** é gate próprio e não roda no `build` nem no `gates:full`. O que existe é o **Anel 2** (`check-audit-baseline.mjs --with-tsc`, `:98-103`), acionado pelo `pre-commit` **só quando o staged tem `.ts`/`.tsx`** (`.githooks/pre-commit:78-84`): ele conta `error TS\d+` e compara com `tsc.erros` do baseline. **Isso impede a contagem de subir de 14 — não exige zero.**
+**Cobrada por:** ⚠️ **contagem, não verde.** `tsc` **não** é gate próprio e não roda no `build` nem no `gates:full`. O que existe é o **Anel 2** (`check-audit-baseline.mjs --with-tsc`, `:98-103`), acionado pelo `pre-commit` **só quando o staged tem `.ts`/`.tsx`** (`.githooks/pre-commit:78-84`): ele conta `error TS\d+` e compara com `tsc.erros` do baseline. **Isso impede a contagem de subir — não exige zero para a classe de teste** (produção já é zero, hard-block).
 
-**O baseline medido nesta entrega (2026-08-02): 14 erros, idêntico ao de [[01-gates-e-baseline]] §4.4.**
+**A composição medida em 2026-08-02 (tabela abaixo) é o registro do achado original que motivou a regra.** O baseline corrente das duas classes vive em `gates/baselines/audit-baseline.json` e em [[01-gates-e-baseline]] §3 — não neste parágrafo.
 
 | Onde | Erro | Quantos |
 | --- | --- | --- |
@@ -1203,7 +1210,7 @@ e a correção é criar o token (R11 → Expansão), não remendar do lado de fo
 | R13 | Identidade do host | ✅ | `HostIdentity.test.tsx` · `EmbeddedMode.test.tsx` | `npx vitest run` |
 | R14 | Barril completo | ⚠️ | `check-barrel-parity.mjs` — **não vê subpasta de categoria** | `npm run barrel:check` |
 | R17 | Não transcrever fonte viva | ⚠️ | `catalog:check` · `guide:check` · `dev-kit:check` — **só o gerado** | `npm run catalog:check` |
-| R18 | Gate declara o que não vê | ✅ | `check-gate-limits.mjs` — 26/26 | `npm run gate-limits:check` |
+| R18 | Gate declara o que não vê | ✅ | `check-gate-limits.mjs` — contagem corrente no comando | `npm run gate-limits:check` |
 | R19 | Tarball só com o publicável | ✅ | `check-package-contents.mjs` | `npm run package:check` |
 | R20 | Baseline não regride | ✅ | `check-audit-baseline.mjs` (Anel 2) | `npm run audit:baseline` |
 | R21 | Artefato mudou, exige tag | ✅ | `check-release-tag.mjs` (`pre-push`) | `npm run release:check` |
@@ -1244,14 +1251,14 @@ e a correção é criar o token (R11 → Expansão), não remendar do lado de fo
 | `verificar_commit.py` | **R22** | `gates/scripts/segredo/` | ✅ Anel 0 do `pre-commit` (sempre) |
 | A suíte (`npx vitest run`) | R6 · R13 · **R24** · **R25** · **R26** | `src/**/__tests__/` — R8 exige teste ao lado | ✅ Anel 3 do `pre-push` |
 | **`verify_theme_parity.ts`** | **R5, por tema individual** | `gates/scripts/audit/` | ⏳ **nenhum — vai para o pipeline** |
-| `check-coverage-floor.mjs` | **R8.1, cobertura em %** | `gates/scripts/release/` | ✅ `npm run coverage:check` (dentro de `gates:full`) — piso 70,66% |
-| `auditor_composicaoatomica.mjs` | **R10** | `gates/scripts/audit/` | ✅ via `run_audit.mjs` (Anel 2) — 47 violações no baseline |
+| `check-coverage-floor.mjs` | **R8.1, cobertura em %** | `gates/scripts/release/` | ✅ `npm run coverage:check` (dentro de `gates:full`) — piso corrente em `gates/baselines/coverage-floor.json` |
+| `auditor_composicaoatomica.mjs` | **R10** | `gates/scripts/audit/` | ✅ via `run_audit.mjs` (Anel 2) — contagem corrente em `gates/baselines/audit-baseline.json` (`auditor_composicaoatomica.violacoes`) |
 | `auditor_authcoupling.mjs` | **R32** | `gates/scripts/audit/` | ✅ via `run_audit.mjs` — nasce verde |
 | `check-no-deep-import.mjs` | **R27** | `gates/scripts/contrato/` | ✅ `npm run deep-import:check` (Anel 1) |
 | `checkUpdateCli.contract.test.mjs` | **R28** | `bin/scaffold/checkUpdate/__tests__/` | ✅ Anel 3 (`npx vitest run`) |
-| `check-gate-limits.mjs` | **R18** | `gates/scripts/contrato/` | ✅ `npm run gate-limits:check` — 26/26 |
+| `check-gate-limits.mjs` | **R18** | `gates/scripts/contrato/` | ✅ `npm run gate-limits:check` — contagem corrente no comando |
 
-**Das duas linhas ⏳, `@vitest/coverage-v8` fechou em 2026-08-05** (`plan-12`, Lote B) — vira `check-coverage-floor.mjs`, piso móvel gravado em **70,66%** (`npm run coverage:check`, dentro do `gates:full`). **`verify_theme_parity.ts` continua ⏳**: valida **um** tema contra o dicionário e hoje só roda se alguém o chamar à mão; o que existe em gate é o `auditor_presets`, que cobra chave órfã em todos os temas embarcados de uma vez — cobertura diferente, não equivalente. Dos seis gates que não existiam em arquivo nenhum (R10, R18, R27, R28, R31, R32), **os seis existem desde 2026-08-10**: cinco pelas plans 12 e 16, e o de **R31** pela `plan-24`, depois de o dono fechar a fronteira de pares e o limiar.
+**Das duas linhas ⏳, `@vitest/coverage-v8` fechou em 2026-08-05** (`plan-12`, Lote B) — vira `check-coverage-floor.mjs`, piso móvel (valor corrente em `gates/baselines/coverage-floor.json`), cobrado por `npm run coverage:check`, dentro do `gates:full`. **`verify_theme_parity.ts` continua ⏳**: valida **um** tema contra o dicionário e hoje só roda se alguém o chamar à mão; o que existe em gate é o `auditor_presets`, que cobra chave órfã em todos os temas embarcados de uma vez — cobertura diferente, não equivalente. Dos seis gates que não existiam em arquivo nenhum (R10, R18, R27, R28, R31, R32), **os seis existem desde 2026-08-10**: cinco pelas plans 12 e 16, e o de **R31** pela `plan-24`, depois de o dono fechar a fronteira de pares e o limiar.
 
 **Geradores não viram gate — e a distinção é deliberada.**
 `generate_theme_template.ts` (`ui-criar-tema`) escreve arquivo em `src/`; um gerador que rodasse
@@ -1264,9 +1271,9 @@ humana. **Validador** é invocado pelo gate, sempre. Os dois vivem lado a lado n
 
 Cinco coisas ficam registradas em voz alta, porque quem lê um contrato precisa saber onde ele é fino:
 
-1. **Só uma regra verificável ainda não tem gate** (R31 — parada obrigatória, decisão de fronteira pendente do dono) e **três são conduta permanente** (R11, R15, R16). As quatro valem igual; quatro de trinta e duas dependem de revisão humana hoje. *(Atualizado em 2026-08-07: as plans 12 e 16 construíram os cinco gates que faltavam — R10, R18, R27, R28, R32.)*
-2. **Nove regras têm o escopo do gate menor que o da regra** (R4, R7, R8, R10, R14, R17, R23, R29, R30), e cada vão está escrito na linha da própria regra, não em nota de rodapé. R14 tinha o mesmo defeito e foi corrigida em P26 **ampliando o escopo do gate junto com o conserto** — é o modelo que R18 generaliza, e R18 agora tem gate próprio (`check-gate-limits.mjs`, 26/26).
-3. **Uma regra continua nascendo violada, de forma declarada e medida**: R30 (`tsc` — produção em 0, hard-block; 10 erros de teste, tolerados como piso). R7 e R32 **fecharam** (`--sx-*` corrigido pela `plan-07`; `SarakSecurityOrchestrator` removido pela `plan-09`, antes de o gate de R32 nascer — ele já nasceu verde). **R15 segue violada de forma declarada.** R10, cujo gate nasceu em 2026-08-05, registra **47 violações no baseline** — dívida explícita da `plan-15`, ainda não paga.
+1. **As regras de conduta permanente dependem de revisão humana, sem gate** — R11, R15, R16, a categoria 🔴 da §1.2. A categoria ⏳ (gate a construir) está **vazia**: a última a sair dela foi R31, com a `plan-24`. *(Atualizado em 2026-08-10: a `plan-24` fechou o gate que faltava — R31; antes dela, as plans 12 e 16 já haviam construído os de R10, R18, R27, R28, R32.)*
+2. **As regras marcadas ⚠️ na tabela da §1.3 têm o escopo do gate menor que o da regra**, e cada vão está escrito na linha da própria regra, não em nota de rodapé. R14 tinha o mesmo defeito e foi corrigida em P26 **ampliando o escopo do gate junto com o conserto** — é o modelo que R18 generaliza, e R18 agora tem gate próprio (`check-gate-limits.mjs`).
+3. **Uma regra continua nascendo violada, por desenho declarado**: R30 (`tsc` — produção é hard-block a zero; teste é tolerado como piso móvel, com o valor corrente em `gates/baselines/audit-baseline.json`). R7 e R32 **fecharam** (`--sx-*` corrigido pela `plan-07`; `SarakSecurityOrchestrator` removido pela `plan-09`, antes de o gate de R32 nascer — ele já nasceu verde). **R15 segue violada de forma declarada.** R10, cujo gate nasceu em 2026-08-05, registra no mesmo baseline (`auditor_composicaoatomica.violacoes`) — dívida explícita da `plan-15`, ainda não paga.
 4. **As duas regras que não tinham teste ganharam um**: R28 (`checkUpdateCli.contract.test.mjs`, 8 casos) e R18 (`check-gate-limits.mjs`).
 5. **Nenhuma regra existente foi renumerada nesta reestruturação.** R10, R11, R15 e R16 mudaram de **categoria** e mantiveram o número, porque o `.githooks/pre-commit:68-71` imprime números na mensagem de bloqueio e há citação em código, skills e specs.
 
@@ -1275,13 +1282,13 @@ Nenhum destes é corrigido aqui — **regra nasce descrevendo o que é**. Cada u
 # 6. Critérios de aceite
 
 - [x] Toda regra citada em qualquer outro documento da base aparece aqui, com enunciado, porquê, exemplo e o campo "Cobrada por".
-- [x] **Duas categorias**: 29 regras verificáveis (§2) e 3 de conduta (§3), somando 32.
+- [x] **Duas categorias** — verificáveis (§2) e de conduta (§3) — cuja contagem se lê na tabela da §1.3, nunca fixada aqui.
 - [x] Nenhum gate foi inventado: cada comando da §4 existe no repositório e foi lido no código antes de descrito.
 - [x] Cada regra de conduta traz **o motivo de não ter gate** na própria linha, não em nota.
-- [x] Os vãos de escopo (R4, R7, R8, R14, R17, R23, R29, R30) estão declarados **na linha da regra**.
+- [x] Os vãos de escopo que continuam abertos (R4, R14, R17, R23, R30) estão declarados **na linha da regra**; R7, R8 e R29 fecharam os deles, e o fecho também está declarado na linha, não escondido.
 - [x] Toda regra abre com o marcador de estado do vocabulário fixo da §1.2 (✅ · ⚠️ · ⏳ · 🔴).
 - [x] **Nenhuma regra foi renumerada.** R1–R17 mantêm o número; R10, R11, R15 e R16 mudaram só de categoria.
-- [x] R30 declarada **violada**, com a composição medida — *(atualizado 2026-08-07: a `plan-12` separou produção de teste; produção fechou em 0/hard-block pela `plan-07`, restam 10 erros de teste, tolerados como piso)*.
+- [x] R30 declarada **violada**, com a composição medida — *(atualizado 2026-08-07: a `plan-12` separou produção de teste; produção fechou em 0/hard-block pela `plan-07`; a classe de teste é tolerada como piso, valor corrente em `gates/baselines/audit-baseline.json`)*.
 - [x] R32 declarada com a violação viva e o destino dela (`plan-09`) — *(fechada em 2026-08-05: o `SarakSecurityOrchestrator` saiu antes de o gate nascer, que já nasceu verde)*.
 - [x] **Zero gate criado, ampliado ou alterado nesta plan** — esta spec só escreve regra. *(As plans 12 e 16, subsequentes, construíram os gates que faltavam; sintetizado aqui em 2026-08-07.)*
 
@@ -1289,12 +1296,10 @@ Nenhum destes é corrigido aqui — **regra nasce descrevendo o que é**. Cada u
 
 Esta spec é normativa: ela não adiciona teste, ela **cataloga** os que existem. A verificação de que ela continua verdadeira é:
 
-- **Contagem:** `grep -c "^## R" specs/specs/00-regras-e-invariantes.md` → **32**.
+- **Contagem:** `grep -c "^## R" specs/specs/00-regras-e-invariantes.md` → tem de bater com o total da tabela da §1.3 (verificáveis + conduta). Não fixe o número aqui — ele é o que a §1.3 afirma.
 - **Categorias:** `grep -nE "^## R(11|15|16) "` → as três dentro de `# 3. Regras de conduta`; **R10 fora dela**.
 - **Numeração preservada:** `grep -nE "^## R(1|2|3|4|5|6|7|8|9|12|13|14|17) "` → os números e enunciados de antes.
 - **Unitário / gate:** `node gates/scripts/audit/run_audit.mjs` no baseline documentado em [[01-gates-e-baseline]] — **não** em zero.
 - **Gates de contrato:** `npm run barrel:check`, `npm run catalog:check`, `npm run zero-brand:check`, `npm run guide:check`, `npm run dev-kit:check` — os cinco em verde.
 - **Suíte:** `npx vitest run` **completa**. Rodar pasta a dedo esconde snapshot de terceiros quebrado; "suítes verdes" só vale para a suíte inteira.
-- **`tsc`:** `npx tsc --noEmit` → **10 erros, todos em teste** (produção em 0, hard-block desde a `plan-07`; a `plan-12` separou a contagem por classe no Anel 2). Vermelho de teste é o estado esperado até a `plan-15`.
-</content>
-</invoke>
+- **`tsc`:** `npx tsc --noEmit` → produção é hard-block a zero (desde a `plan-07`); teste é tolerado como piso (`classifyTscOutput`, Anel 2). O baseline corrente das duas classes vive em `gates/baselines/audit-baseline.json` e em [[01-gates-e-baseline]] §3.

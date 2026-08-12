@@ -209,7 +209,7 @@ A tabela acima roteia **por tarefa**. Quem ainda não tem tarefa, e só precisa 
 | 2 | [`arquitetura/01-forma-do-produto-e-modos-de-consumo.md`](arquitetura/01-forma-do-produto-e-modos-de-consumo.md) | O que a lib **é** hoje, e os dois modos de consumo |
 | 3 | [`arquitetura/00-mapa-do-modulo.md`](arquitetura/00-mapa-do-modulo.md) | Onde cada coisa mora e o que pode importar o quê |
 | 4 | [`sarak-dev/GUIA-MANUTENCAO.md`](../sarak-dev/GUIA-MANUTENCAO.md) | O roteador de fluxos: o passo a passo do que você vai mexer e **qual spec é dona** daquilo |
-| 5 | [`specs/01-gates-e-baseline.md`](specs/01-gates-e-baseline.md) | **Antes de rodar qualquer gate.** O `run_audit` fecha em **zero** desde 2026-08-03 — sem folga |
+| 5 | [`specs/01-gates-e-baseline.md`](specs/01-gates-e-baseline.md) | **Antes de rodar qualquer gate.** O baseline do `run_audit` **não é zero** — compare com `gates/baselines/audit-baseline.json`, nunca com zero (§2) |
 
 Os **ADRs** (`adr/`) respondem *por quê*. Leia-os quando a pergunta for "por que isto é assim?" ou antes de
 propor reverter uma decisão — é o que evita repropor o que já falhou. São **imutáveis**: decisão errada não se
@@ -343,7 +343,9 @@ Antes de escolher **como** fazer algo, leia **[[00-knowledge]]** — é o rotead
 - **O token de breakpoint alcança o CSS, não as classes utilitárias.** `useDesignVariables.ts:58` lê
   `design.breakpointTablet` e gera a media-query; as classes `@min-[768px]` de `useStructuralStyles*` são
   resolvidas em **build-time** pelo Tailwind e **não aceitam `var()`** — limitação da ferramenta, não omissão.
-  O alinhamento do detector JS (`DeviceProvider`) **é** dívida e está na §3 da spec de dívida.
+  O alinhamento do detector JS (`DeviceProvider`) **não é mais dívida**: fechou com a `plan-08` (F5,
+  2026-08-04) — ele passou a receber os breakpoints do tema por contexto. Achado 11, fechado, em
+  [`specs/15-divida-conhecida.md`](specs/15-divida-conhecida.md).
 
 ---
 

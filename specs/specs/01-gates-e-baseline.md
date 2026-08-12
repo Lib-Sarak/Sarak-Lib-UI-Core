@@ -131,9 +131,9 @@ npx tsc --noEmit
 
 > ✅ **Ampliado em 2026-08-05 (`plan-12`):** a contagem agora **separa produção de teste**
 > (`classifyTscOutput`, exportada e testada). **Erro de produção é hard-block sempre** — fora do mecanismo de
-> baseline, exige **zero**. Erro de teste continua tolerado como piso, contra `tsc.teste` do baseline. Hoje:
-> **0 em produção, 10 em teste.** Rodar `tsc` e ver os 10 de teste é o estado esperado; a lista item a item
-> está na §4.4.
+> baseline, exige **zero**. Erro de teste continua tolerado como piso, contra `tsc.teste` do baseline. **O
+> valor corrente das duas classes é o da tabela da §3 — não repita aqui**; a composição histórica que chegou
+> a existir está na §4.4.
 
 Isso não contradiz o `auditor_typescript` (R3) estar verde: um procura o **token** `any` na AST, o outro **compila**. São checagens diferentes.
 
@@ -143,7 +143,11 @@ Isso não contradiz o `auditor_typescript` (R3) estar verde: um procura o **toke
 npm run test-ct            # component testing  (playwright-ct.config.ts)
 ```
 
-Mais os `__e2e__` de `src/core/Provider/` e `src/features/DesignEngine/` (`playwright.config.ts`). **Nenhum dos dois roda em automação nenhuma** — nem no build, nem no hook, nem em CI (que não existe). São executados à mão, quando alguém lembra.
+Mais os `__e2e__` de `src/core/Provider/` e `src/features/DesignEngine/` — coletados pelo mesmo
+`playwright-ct.config.ts` acima, **não** por um `playwright.config.ts`: esse arquivo era órfão e foi
+**deletado** pela `plan-19` (achado 17, [[15-divida-conhecida]] §6). **Nenhum dos dois roda em automação
+nenhuma** — nem no build, nem no hook, nem em CI (que não existe). São executados à mão, quando alguém
+lembra.
 
 Registrado como o que é: **cobertura que existe e não é cobrada**. **Não cobra regra nenhuma hoje** — ligá-lo ao pipeline é a `plan-11`, e nenhuma das 32 regras depende dele.
 
@@ -274,7 +278,7 @@ repositório. A diferença é que ali não era um teste da lib — era um subpro
 
 **A lição, que é o motivo desta seção sobreviver:** os outros gates não o viam por construção — `tsc`
 não o compilava (`"include": ["src"]`), o tarball já o proibia
-(`gates/scripts/contrato/check-package-contents.mjs:14`), e nenhum dos 8 auditores varre fora de `src/`. Só a suíte o
+(`gates/scripts/contrato/check-package-contents.mjs:14`), e nenhum auditor de `run_audit.mjs` (§2.1) varre fora de `src/`. Só a suíte o
 alcançava, e para a suíte ele era verde. **Um diretório inteiro atravessou 330 commits invisível porque
 o único instrumento que o media era o que ele enganava.**
 
@@ -434,14 +438,18 @@ O comentário de `auditor_ghostvars.mjs:5-10` diz que o registro vem de "`useDes
 
 **Por que isso importa:** hoje nenhum consumo dentro do escopo varrido depende dessa família, então o gate segue verde. Mas a lacuna é de **falso positivo** — o dia em que um componente consumir uma variável emitida só em runtime, o auditor vai acusar fantasma numa variável que existe. Registrado para quem for ampliar o escopo: **ampliar o escopo sem ampliar o registro produz acusação falsa.**
 
-## 4.4 ✅ Metade de produção FECHADA em 2026-08-03 (`plan-07`) — restam 10 erros de teste
+## 4.4 ✅ Produção fechada em 2026-08-03 (`plan-07`) — a classe de teste também zerou
 
 Os 4 erros de produção (histórico: `useStructuralStyles.ts:30,71,94` — `TS2345`, `ResponsiveValue<number>` não
 aceito por helper `string | number`; `ThemeCustomizationTab.tsx:86` — `TS2322`, união de toast incompatível)
 fecharam: a `plan-07` criou o tipo `GapValue` e alargou a assinatura, e estreitou a união do toast para os
 valores reais. **Confirmado 0 erros de produção** desde então.
 
-**10 em teste, inalterado:** `BarrelParity.test.ts` (4) e `ZeroBrand.test.ts` (2) importam `scripts/*.mjs` sem declaração de tipo (`TS7016`/`TS7006`); `Templates/__tests__/Spec21.spec.tsx` (3) tem props faltando em objetos de fixture; `shippedThemesConsoleClean.test.ts` (1) tem parâmetro implícito.
+**A classe de teste, que chegou a ter erros próprios** (histórico: `BarrelParity.test.ts` (4) e
+`ZeroBrand.test.ts` (2) importando `scripts/*.mjs` sem declaração de tipo — `TS7016`/`TS7006`;
+`Templates/__tests__/Spec21.spec.tsx` (3) com props faltando em fixture; `shippedThemesConsoleClean.test.ts`
+(1) com parâmetro implícito) **também zerou.** O valor corrente das duas classes é o da tabela da §3 — não
+presuma o número aqui.
 
 **Visível em gate:** ✅ **agora sim, para produção.** A `plan-12` (2026-08-05) separou a contagem por classe no Anel 2 (`classifyTscOutput`) e tornou produção **hard-block a zero**, fora do mecanismo de baseline. Teste continua tolerado como piso (§3).
 
@@ -490,7 +498,7 @@ Três coisas são **proibidas**, sem exceção:
 
 - [x] Rodar os comandos deste documento reproduz exatamente a tabela da §3. As duas exceções que existiam foram fechadas: §3.1 (teste não-hermético, 2026-07-28) e §3.2 (subprojeto carona, 2026-07-29).
 - [x] Todo item de dívida tem `arquivo:linha` e a coluna "visível em gate".
-- [x] Os 8 auditores e os 5 scripts de check foram lidos um por um antes de descritos.
+- [x] Todos os auditores (a lista viva está no array de `run_audit.mjs`, §2.1) e os 5 scripts de check foram lidos um por um antes de descritos.
 - [x] Nenhum item do baseline foi corrigido nesta entrega.
 - [x] **Todo gate cita o número da regra que cobra** — incluindo os três que não são de contrato (`audit:baseline` → R20/R30, `release:check` → R21, Anel 0 → R22) e o Playwright, que declara **não** cobrar regra nenhuma *(2026-08-02, `plan-13`)*.
 
@@ -500,8 +508,8 @@ Esta spec é verificada **executando-a**:
 
 - `node gates/scripts/audit/run_audit.mjs` → tem que bater com a §3, incluindo os vermelhos.
 - `npm run barrel:check && npm run catalog:check && npm run zero-brand:check && npm run guide:check` → quatro verdes.
-- `npx vitest run` → **289 arquivos / 1004 testes, 100% verde**, em qualquer máquina (§3.1 e §3.2 fechadas).
-- `npx tsc --noEmit` → **0 erros em produção, 10 em teste**, na composição da §4.4.
+- `npx vitest run` → 100% verde, em qualquer máquina (§3.1 e §3.2 fechadas). A contagem corrente de arquivos/testes vive na tabela da §3.
+- `npx tsc --noEmit` → produção em 0 (hard-block). A contagem corrente de teste vive na tabela da §3 e no baseline (`gates/baselines/audit-baseline.json`); a composição histórica está na §4.4.
 
 # 9. A matriz de cobertura — escopo do gate × escopo da regra
 
@@ -541,7 +549,7 @@ pela `plan-06`: investigar e construir são plans diferentes, de propósito.
 | 11 | R8 *(via suíte)* | `.githooks/pre-push` | ✅ **FECHADO** — `gates/` entrou no filtro de escopo do Anel 3 (`plan-12`) |
 | 12 | — | `check-plan-index-sync.mjs` (novo) | ✅ **FECHADO** — sincronia plan × [[00-indice]] agora é gate (`plan-12`) |
 | 13 | R17 | `catalog:check` · `guide:check` · `dev-kit:check` | ⏳ **ABERTO** — a metade **prosa manual** continua sem gate geral (falso-positivo alto). A `plan-12` mediu um caso novo em passagem: `arquitetura/04:52` desatualizado (achado 32 em [[15-divida-conhecida]]) |
-| 14 | R30 | `check-audit-baseline.mjs` *(Anel 2)* | ⚠️ **NARROWED, não fechado** — produção agora é **hard-block a zero** (fechado pela `plan-07` + separado pela `plan-12`); teste continua tolerado como piso (hoje 10) — por definição de R30, não por vão |
+| 14 | R30 | `check-audit-baseline.mjs` *(Anel 2)* | ⚠️ **NARROWED, não fechado** — produção agora é **hard-block a zero** (fechado pela `plan-07` + separado pela `plan-12`); teste continua tolerado como piso, valor corrente na tabela da §3 — por definição de R30, não por vão |
 
 **Fora da matriz, e não esquecidas:** as três de **conduta** R11, R15 e R16 (🔴), que permanecem assim por
 decisão do dono, e **R31** (⏳), a única regra verificável ainda sem gate — parada obrigatória da `plan-12`

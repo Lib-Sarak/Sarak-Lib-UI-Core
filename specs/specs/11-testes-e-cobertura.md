@@ -14,17 +14,10 @@ Esta spec descreve **como se testa** nesta biblioteca, **o que é cobrado por ga
 não existe**. A última parte é a mais importante: um documento de testes que só lista o que funciona
 produz confiança injustificada.
 
-**Medido nesta entrega, em 2026-07-29, na máquina que produziu esta spec:**
-
-| Métrica | Valor |
-| --- | --- |
-| `npx vitest run` | ✅ **275 arquivos / 879 testes, 100% verde** |
-| Duração | **~167 s** |
-| Arquivos `*.test.*` no repositório | **295** (282 em `src/`, 12 em `bin/`, 1 em `scripts/`) |
-| Arquivos `*.spec.ts(x)` (Playwright) | **4** |
-
-> A diferença entre **295 arquivos de teste** e **275 arquivos rodados** é explicada, item por item, na §6.
-> Ela não é arredondamento: é escopo excluído + escopo invisível.
+**A propriedade que vale, independente de quando se lê esta spec:** `npx vitest run` fecha 100% verde, e a
+diferença entre os arquivos de teste que existem no disco e os que o Vitest **coleta** é escopo excluído +
+escopo invisível — explicada, item por item, na §6. A contagem corrente de arquivos e testes, e a duração
+medida, vivem em [[01-gates-e-baseline]] §3 — não são repetidas aqui para não envelhecer a cada suíte nova.
 
 **Não existe script `test` no `package.json`** — o comando é `npx vitest run`. Detalhe de execução de cada
 gate está em [[01-gates-e-baseline]]; **quando** cada um roda está em [[02-enforcement-por-commit]].
@@ -139,7 +132,7 @@ verificou cada arquivo antes de nomeá-lo.
 | Opção | Por quê |
 | --- | --- |
 | `environment: 'jsdom'` | é biblioteca de UI; quase todo teste monta DOM |
-| `globals: true` | `describe`/`it`/`expect` sem import em 295 arquivos |
+| `globals: true` | `describe`/`it`/`expect` sem import em nenhum arquivo de teste |
 | `pool: 'forks'` + `execArgv` | ver o quadro abaixo |
 | `exclude` de `__e2e__` e `*.spec.*` | **são Playwright, não Vitest** (§7) |
 
@@ -160,20 +153,20 @@ verificou cada arquivo antes de nomeá-lo.
 >
 > As duas lições sobrevivem ao caso concreto, e é por isso que estão aqui e não só no log.
 
-# 6. Escopo — os 295 arquivos de teste × os 275 rodados
+# 6. Escopo — arquivos de teste no disco × arquivos rodados
 
 Onde a diferença mora:
 
-| Grupo | Arquivos | Roda em `vitest run`? |
-| --- | --- | --- |
-| Testes de `src/`, `bin/`, `scripts/` (`*.test.*`) | 295 | ✅ sim — e são a maior parte dos 275 arquivos coletados |
-| `*.spec.ts(x)` (4 arquivos) | 4 | ❌ **excluídos** — são Playwright |
-| `**/__e2e__/**` | 2 dos 4 acima | ❌ excluídos |
+| Grupo | Roda em `vitest run`? |
+| --- | --- |
+| Testes de `src/`, `bin/`, `scripts/` (`*.test.*`) | ✅ sim — são a maior parte dos arquivos coletados |
+| `*.spec.ts(x)` (Playwright) | ❌ **excluídos** — são Playwright |
+| `**/__e2e__/**` | ❌ excluídos |
 
-> A contagem de "arquivos" do Vitest (275) não é comparável um-a-um com `find … -name "*.test.*"` (295):
-> o Vitest conta **arquivos coletados** dentro das raízes que ele varre, com o `exclude` aplicado. O ponto
-> que importa é o **sinal**: nenhum teste do repositório está silenciosamente fora, exceto os 4 `.spec` —
-> que são de outra ferramenta, de propósito.
+> A contagem de "arquivos" do Vitest não é comparável um-a-um com `find … -name "*.test.*"`: o Vitest conta
+> **arquivos coletados** dentro das raízes que ele varre, com o `exclude` aplicado. O ponto que importa é o
+> **sinal**: nenhum teste do repositório está silenciosamente fora, exceto os `.spec` — que são de outra
+> ferramenta, de propósito. A contagem corrente das duas listas vive em [[01-gates-e-baseline]] §3.
 
 ## 6.1 ✅ FECHADO em 2026-08-05 — `src/shared/`, `src/effects/` e `src/constants/` entraram no gate de cobertura
 
@@ -212,10 +205,11 @@ lib não injeta `Authorization`", [[10-seguranca-e-acessibilidade]] §3.1).
 
 1. ❌ **Nada disso roda em pipeline automático.** Não no `build`, não em hook, não em CI — que não existe.
    Todos são executados **à mão, quando alguém lembra**. Cobertura que existe e não é cobrada.
-2. ❌ **`playwright.config.ts` aponta para um diretório que NÃO EXISTE.** `testDir: './e2e'`, e
-   `ls -d e2e` → *No such file or directory*. Não há script no `package.json` que o use. **É configuração
-   morta:** `npx playwright test` com o config default não coletaria nada. Todo o Playwright usável passa
-   pelo `-ct`.
+2. ❌ **`playwright.config.ts` não existe mais.** Era arquivo órfão — apontava para `./e2e`, que nunca
+   existiu, e nenhum script do `package.json` o usava. Foi **deletado** pela `plan-19` (achado 17 em
+   [[15-divida-conhecida]] §6): `npx playwright test` com o config default hoje sai com `exit 1` e
+   *"No tests found"* — falha alto em vez de passar em silêncio. O que resta, e funciona, é
+   `playwright-ct.config.ts` via `npm run test-ct`, fora de automação (item 1 acima).
 3. ❌ **Nenhuma jornada de usuário ponta a ponta em browser real.** Os 4 `.spec` são component testing —
    valiosos, mas não são "login → navega → troca tema → persiste".
 
@@ -242,8 +236,8 @@ teto arbitrário (80%) reprova no primeiro dia e ensina a ignorar o vermelho. O 
 principal; o percentual é a segunda rede, e mede **outra coisa**: quanto de **dentro** de cada arquivo o
 teste alcança.
 
-**Piso gravado hoje: 70,66% de linhas** (`gates/baselines/coverage-floor.json`). O que a biblioteca tem em
-lugar de um número solto:
+**O piso corrente vive em `gates/baselines/coverage-floor.json`** — leia-o, não o presuma aqui. O que a
+biblioteca tem em lugar de um número solto:
 
 - **cobertura 1:1 estrutural** (§2), binária e cobrada por gate: todo componente/hook do escopo varrido
   **tem** arquivo de teste — inclusive `shared/`, `effects/` e `constants/` agora (§6.1);
@@ -257,8 +251,8 @@ lugar de um número solto:
 | # | Item | Situação |
 | --- | --- | --- |
 | 1 | ✅ **FECHADO em 2026-08-05** — `src/shared/`, `src/effects/`, `src/constants/` no escopo do gate (§6.1) | — |
-| 2 | ✅ **FECHADO em 2026-08-05** — cobertura % ligada, piso móvel 70,66% (§8) | — |
-| 3 | **Nada de Playwright em automação**; `playwright.config.ts` aponta para `./e2e` inexistente (§7) | destravado pela CI (`plan-05`, ainda não executada) |
+| 2 | ✅ **FECHADO em 2026-08-05** — cobertura % ligada, piso móvel (valor corrente em `gates/baselines/coverage-floor.json`, §8) | — |
+| 3 | **Nada de Playwright em automação** (§7). O `playwright.config.ts` órfão foi deletado (achado 17, [[15-divida-conhecida]] §6) — o que resta é `playwright-ct.config.ts` via `npm run test-ct`, executado à mão | destravado pela CI (`plan-05`, ainda não executada) |
 | 4 | **Nenhum gate de a11y** | [[10-seguranca-e-acessibilidade]] §5.1 |
 | 5 | ✅ **NÃO SE APLICA MAIS** — o `CustomizationPanel` deixou de ter abas inalcançáveis: os imports mortos **saíram** (2026-08-04, decisão do dono), não foram tornados alcançáveis. Não há mais aba para testar | [[06-painel-de-customizacao-e-preview]] §9.3 |
 | 6 | **Nenhum teste de detecção real por `resize`** com layout montado | [[07-responsividade-e-multidispositivo]] §8 item 5 |
@@ -302,13 +296,14 @@ Todos do jsdom, e nenhum indica problema:
 
 # 10. Critérios de aceite
 
-- [x] O número declarado é o da **execução desta entrega**: 275 arquivos / 879 testes, verde, ~167 s.
+- [x] A suíte fecha 100% verde na **execução desta entrega** (2026-07-29); a contagem corrente de arquivos, testes e duração vive em [[01-gates-e-baseline]] §3, não aqui.
 - [x] A regra 1:1 está descrita na forma **exata** que o auditor cobra, com as exclusões.
 - [x] Os gates-teste foram **verificados um a um** antes de listados — e o que não existe
       (`AuthCouplingGate`) aparece como ausente.
 - [x] A lacuna de E2E aparece **como lacuna**, incluindo o config morto apontando para `./e2e`.
 - [x] A cobertura percentual está descrita — *(atualizado 2026-08-07)* ligada em 2026-08-05, piso móvel
-      70,66%, contra a afirmação sem medição da spec antiga.
+      (valor corrente em `gates/baselines/coverage-floor.json`), contra a afirmação sem medição da spec
+      antiga.
 - [x] A lacuna de escopo de `src/shared/` está registrada — **fechada em 2026-08-05**, nas duas metades.
 
 # 11. Plano de testes (Quality Gate)
@@ -317,10 +312,10 @@ Esta spec é verificada **executando-a**:
 
 | Comando | Esperado |
 | --- | --- |
-| `npx vitest run` | 275 arquivos / 879 testes, 100% verde |
+| `npx vitest run` | 100% verde — contagem corrente de arquivos/testes em [[01-gates-e-baseline]] §3 |
 | `node gates/scripts/audit/auditor_coverage.mjs` | `[OK] Todos os componentes possuem testes!` |
 | `npm run test-ct` | roda os 4 `.spec.tsx` (manual; `EmbeddedNoLeak` exige `npm run build` antes) |
-| `npm run coverage:check` | **igual ao piso (70,66%)** — §8 |
+| `npm run coverage:check` | igual ou melhor que o piso corrente — a tabela datada de [[01-gates-e-baseline]] §3 tem o valor; §8 explica a mecânica |
 
 **A implementar (backlog, em ordem de valor):** (1) CI que execute suíte **e** Playwright (`plan-05`,
 ainda não executada); (2) teste de detecção real por `resize` com layout montado (§9 item 6).
