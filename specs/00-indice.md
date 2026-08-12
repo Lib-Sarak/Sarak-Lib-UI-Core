@@ -43,7 +43,7 @@ as duas, sempre, na mesma ação.**
 |---|---|---|---|---|---|
 | 1 | [plan-28-reconciliar-contexto](plan/plan-28-reconciliar-contexto.md) | Fazer a porta de entrada dos agentes descrever o repositório que existe | — | 🟢 Aprovada | — |
 | 2 | [plan-29-erradicar-cifra-em-prosa](plan/plan-29-erradicar-cifra-em-prosa.md) | Fazer as quatro specs fixas pararem de afirmar totais que já envelheceram | plan-28 | 🟢 Aprovada | — |
-| 3 | [plan-31-segunda-onda-cifra](plan/plan-31-segunda-onda-cifra.md) | Fechar a cifra em prosa nas quatro specs fixas restantes, com a spec do mantenedor primeiro | plan-29 | 🔴 A executar | — |
+| 3 | [plan-31-segunda-onda-cifra](plan/plan-31-segunda-onda-cifra.md) | Fechar a cifra em prosa nas quatro specs fixas restantes, com a spec do mantenedor primeiro | plan-29 | 🟢 Aprovada | — |
 | 4 | [plan-32-contrato-unico-leitura-integral](plan/plan-32-contrato-unico-leitura-integral.md) | Fazer o contrato único parar de declarar vãos e violações que já foram fechados | plan-29 | 🔴 A executar | — |
 | 5 | [plan-30-pagar-divida-aberta](plan/plan-30-pagar-divida-aberta.md) | Zerar a seção de achados abertos da spec de dívida conhecida | — | 🔴 A executar | specs/15-divida-conhecida.md · specs/01-gates-e-baseline.md |
 | 6 | [plan-11-remover-e2e-falso-verde](plan/plan-11-remover-e2e-falso-verde.md) | Remover o aparato de E2E que produz verde falso, deixando a capacidade declarada como adiada | — | 🔴 A executar | specs/specs/11-testes-e-cobertura.md · specs/specs/15-divida-conhecida.md |

@@ -226,14 +226,14 @@ como violação: os três arquivos são abas internas, e nenhum consumidor real 
 
 # 9. Dívidas conhecidas (documentadas, não corrigidas)
 
-## 9.1 `tsc`: um dos 4 erros de produção mora aqui
+## 9.1 ✅ FECHADO — `tsc` estava vermelho em `ThemeCustomizationTab.tsx`, hoje zero erros
 
-`src/features/DesignEngine/Main/ThemeCustomizationTab.tsx:86` — `TS2322`: união de tipo de toast
-incompatível. O alvo (`useThemePersistenceHandlers`) aceita `'error' | 'success' | 'warning'`; a função
-`showToast` fornecida trata só `'success' | 'warning'`. O que fecharia é alargar a união da função.
+**Era:** `src/features/DesignEngine/Main/ThemeCustomizationTab.tsx:86` — `TS2322`: união de tipo de toast
+incompatível. O alvo (`useThemePersistenceHandlers`) aceitava `'error' | 'success' | 'warning'`; a função
+`showToast` fornecida tratava só `'success' | 'warning'`.
 
-**`tsc` não é gate hoje** — 14 erros no baseline, dos quais 4 em produção
-([[01-gates-e-baseline]] §4.4). **Não corrigido aqui** (esta spec não altera código).
+**Hoje:** `npx tsc --noEmit` fecha com **zero erros**, produção e teste — o baseline vive em
+[[01-gates-e-baseline]] §3, que é a fonte a conferir (não este número, que envelhece).
 
 ## 9.2 ✅ FECHADO em 2026-08-05 (`plan-09`) — o painel deixou de ser eager no barril
 

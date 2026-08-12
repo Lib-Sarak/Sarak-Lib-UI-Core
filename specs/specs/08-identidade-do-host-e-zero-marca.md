@@ -149,10 +149,12 @@ O escopo é `src/`, excluindo `.d.ts`, `.test.*`, `.spec.*` e `__tests__/` (`:49
 ## 7.2 Baseline medido
 
 ```
-[zero-brand:check] 361 arquivo(s) varrido(s); zero marca da lib fora da allowlist.
+[zero-brand:check] N arquivo(s) varrido(s); zero marca da lib fora da allowlist.
 ```
 
-Medido em **2026-07-29** — **baseline exato** de [[01-gates-e-baseline]] §3. Eram **363** quando esta spec foi escrita; o P26 removeu dois componentes (`SarakVisualEngine`, `PaletteSelector`) e a contagem, que é de **arquivos varridos**, caiu junto. **O número que importa é o de violações: 0** — um total de arquivos que sobe ou desce acompanha o tamanho do `src/`, não a saúde da regra.
+Rode `npm run zero-brand:check` para o `N` de hoje. **O número que importa é o de violações: 0** — o
+total de arquivos varridos apenas acompanha o tamanho do `src/` (sobe com componente novo, desce com
+remoção), e não diz nada sobre a saúde da regra.
 
 ## 7.3 A allowlist, e como (não) entrar nela
 
@@ -239,8 +241,8 @@ lacuna visual. Foi o que motivou `'System Core Engine'` em vez de string vazia n
 - [x] O comportamento no modo embarcado (**nunca**, mesmo com valor) está explícito.
 - [x] A distinção identidade × rótulo de UI está mapeada campo a campo, com o bug histórico explicado
       (*o defeito era o default existir*).
-- [x] O gate está descrito com escopo, mecânica (AST), literais, baseline **medido** (363/0) e regra de
-      allowlist.
+- [x] O gate está descrito com escopo, mecânica (AST), literais, o comando do baseline (**violações: 0**,
+      `npm run zero-brand:check`) e regra de allowlist.
 - [x] Os sinks históricos aparecem com as duas regras derivadas.
 - [x] Nenhum código, nem a allowlist, foi alterado nesta entrega.
 

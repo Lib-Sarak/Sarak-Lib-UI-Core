@@ -251,25 +251,18 @@ portanto o consumidor que o cola em `customThemes` não herda o problema de "fal
 O caminho ponta a ponta: **painel → exportar JSON → colar em arquivo `.ts`/`.json` do repo do consumidor
 → passar em `customThemes`**. É este o ciclo inteiro; não existe outro.
 
-# 5. O catálogo shippado — números MEDIDOS
+# 5. O catálogo shippado — números DERIVADOS
 
-Medidos em **2026-07-29**, na execução de `run_audit` que acompanha esta spec:
+A contagem de temas, presets e chaves do gabarito **não é fixada aqui** — é a lição do achado **32**
+([[15-divida-conhecida]] §6): total em prosa envelhece a cada tema novo. A fonte viva é `npm run audit`
+(roda `auditor_presets`, que imprime temas globais (`GLOBAL_THEMES`), presets de componente, o total de
+itens auditados e o gabarito vivo de `getScaffold()`).
 
-| Fonte | Contagem |
-| --- | --- |
-| Temas globais (`GLOBAL_THEMES`) | **18** |
-| Presets de componente | **102** |
-| **Total auditado** | **120 itens** |
-| Gabarito vivo (`getScaffold()`) | **409 chaves** |
-
-Arquivos: `src/core/Design/presets/themes/` (18 temas + `index.ts` + `reference.ts` + `color-engine.ts`)
+Arquivos: `src/core/Design/presets/themes/` (temas + `index.ts` + `reference.ts` + `color-engine.ts`)
 e `src/core/Design/presets/components/` (5 arquivos: `atmosphere`, `buttons`, `cards`, `inputs`,
 `typography`).
 
 ## 5.1 De 18 para 23 — e a diversidade passou a ser MEDIDA *(plan-25, 2026-08-11)*
-
-> ⚠️ **A tabela acima é de 2026-07-29 e envelheceu.** A fonte viva é `npm run themes:diversity`; esta seção
-> registra a **relação**, não recontagem que vai envelhecer de novo (a lição do achado **32**).
 
 Cinco temas novos entraram — `terracota-solar`, `musgo-do-vale`, `ardosia-ao-entardecer`,
 `forja-ultravioleta`, `grafite-puro`. **Nenhum é `SARAK_REFERENCE_THEMES`** *(decisão do dono)*: a referência
@@ -318,13 +311,14 @@ existe mais, e ninguém vê. Cada instrumento pega uma classe diferente de rot �
 ## 6.1 `auditor_presets` — chave órfã
 
 Compara **todo** tema/preset shippado contra o `getScaffold()` vivo (delega a `verify_presets.ts`).
-Saída atual: gabarito de **409 chaves**, **120 itens auditados**, **0 órfãs**. Roda dentro de
-`run_audit` — ver [[01-gates-e-baseline]] §2.1.
+Saída atual (`npm run audit`): gabarito vivo, itens auditados (temas + presets) e **0 chaves órfãs** —
+o número que importa é o de órfãs, não o total auditado. Roda dentro de `run_audit` — ver
+[[01-gates-e-baseline]] §2.1.
 
 ## 6.2 `tokenContractParity.test.ts` — valor fora do próprio contrato
 
 `src/core/Provider/utils/__tests__/tokenContractParity.test.ts` audita **todo valor shippado pela lib**
-(defaults do `MASTER_DESIGN_MAP` + os 18 temas + os 102 presets) com `auditTokenContract`
+(defaults do `MASTER_DESIGN_MAP` + todos os temas e presets de `GLOBAL_THEMES`) com `auditTokenContract`
 (`validation.ts:170-182`) — a função **pura** que reusa `coerceTokenValue`, o mesmo predicado do runtime.
 Por isso a auditoria **nunca diverge do comportamento real**.
 
@@ -340,8 +334,8 @@ Por isso a auditoria **nunca diverge do comportamento real**.
 
 ## 6.3 `shippedThemesConsoleClean.test.ts` — a propagação de fato
 
-`src/core/Provider/utils/__tests__/shippedThemesConsoleClean.test.ts` carrega cada um dos 18 temas pelo
-caminho do boot real (`{...defaults, ...tema}` por `validateDesign`) e afirma **zero** aviso
+`src/core/Provider/utils/__tests__/shippedThemesConsoleClean.test.ts` carrega cada tema shippado
+(`it.each(GLOBAL_THEMES...)`) pelo caminho do boot real (`{...defaults, ...tema}` por `validateDesign`) e afirma **zero** aviso
 "fora do contrato". É a prova de que a correção chegou ao caminho que o consumidor executa — não só ao
 predicado testado em isolamento.
 
@@ -364,10 +358,10 @@ e 0**.
 
 > ⚠️ **`pulado` não é `aprovado`.** 25 pares-tema não são medidos — fundo em `hsl()`, `var()`, gradiente, ou
 > cadeia que não resolve opaca. O gate **declara** em vez de chutar uma cor. É por isso que a **R31** segue
-> **⚠️** mesmo com os 18 temas verdes: conformidade verde não é cobertura plena.
+> **⚠️** mesmo com todos os temas shippados verdes: conformidade verde não é cobertura plena.
 
-**O que ele não cobre, por desenho:** o tema do **consumidor**. A R31 promete AA nos 18 shippados; dado de
-terceiro é do terceiro — e desde a decisão **D** (§4.3.1) esse dado chega à tela como foi escrito.
+**O que ele não cobre, por desenho:** o tema do **consumidor**. A R31 promete AA nos temas shippados; dado
+de terceiro é do terceiro — e desde a decisão **D** (§4.3.1) esse dado chega à tela como foi escrito.
 
 # 7. Como criar um tema que passa em tudo, sem um único warn
 
@@ -412,7 +406,7 @@ Registrado para não ser redescoberto; **nenhum destes itens tem tarefa aberta n
 - [x] O contrato `ThemePreset` está descrito com `arquivo:linha`, incluindo **por que** `design` não é
       tipado estritamente.
 - [x] Preset e tema aparecem como a mesma primitiva, com `getScaffold()` como gabarito comum.
-- [x] Os números do catálogo são os **medidos** em 2026-07-29 (18 / 102 / 120 / 409), não copiados.
+- [x] Os números do catálogo apontam a fonte viva (`npm run audit`), não são copiados à mão.
 - [x] Nenhuma lista de tokens, temas ou presets foi transcrita para dentro deste markdown.
 - [x] As cinco fases do ciclo de vida têm porta nomeada no código.
 - [x] O procedimento da §7 leva a um tema que passa `auditor_presets` + `validateDesign` sem warn.
@@ -427,7 +421,7 @@ Os testes que cobrem esta spec **já existem** — ela documenta o que eles cobr
 | --- | --- |
 | Todo tema/preset shippado em paridade com o gabarito vivo | `auditor_presets` (via `run_audit`) |
 | Nenhum valor shippado fora do contrato do próprio token | `src/core/Provider/utils/__tests__/tokenContractParity.test.ts` |
-| Boot dos 18 temas sem aviso de contrato | `src/core/Provider/utils/__tests__/shippedThemesConsoleClean.test.ts` |
+| Boot de todos os temas shippados sem aviso de contrato | `src/core/Provider/utils/__tests__/shippedThemesConsoleClean.test.ts` |
 | `validateDesign` descarta chave/valor fora do domínio | `src/core/Provider/utils/__tests__/validation.test.ts` |
 | Eixos faltantes detectados | `src/core/Design/utils/__tests__/themeAxes.test.ts` |
 | Export completo (não subconjunto) | `src/features/DesignEngine/Main/utils/__tests__/exportTheme.test.ts` |

@@ -70,16 +70,16 @@ de AST nova foi escrita.
 
 | Chave | Conteúdo | Fonte viva |
 | --- | --- | --- |
-| `design.schemaFiles` | 28 arquivos | `src/core/Design/schema/` |
-| `design.masterMapVersion` | `13.0.0` | `src/core/Design/master-map.ts` |
-| `design.tokens.mapeamento` | 13 colunas · 416 entradas brutas · **409 ids únicos** | `src/core/Design/catalog/theme_table_mapping.json` |
-| `design.tokens.particoes` | 13 arquivos · 409 tokens | `src/core/Design/catalog/partitions/` |
-| `design.tokens.tipoPublico` | 304 ids · 40 responsivos | `src/core/Provider/generated/design-token-ids.ts` |
-| `componentes.categoriasAtomicas` | 14 | `src/components/atomic/` |
-| `componentes.categoriasDeEngine` | 3 | `src/components/engines/` |
-| `componentes.publicos` | **81** + a lista de nomes | `collectPublicComponentNames()` |
-| `gates` | 9 entradas (nome + comando) | os `scripts` do `package.json` |
-| `auditores` | os 8 | `run_audit.mjs` |
+| `design.schemaFiles` | contagem + lista de arquivos | `src/core/Design/schema/` |
+| `design.masterMapVersion` | a versão do mapa mestre | `src/core/Design/master-map.ts` |
+| `design.tokens.mapeamento` | colunas · entradas brutas · ids únicos | `src/core/Design/catalog/theme_table_mapping.json` |
+| `design.tokens.particoes` | arquivos · tokens | `src/core/Design/catalog/partitions/` |
+| `design.tokens.tipoPublico` | ids · responsivos | `src/core/Provider/generated/design-token-ids.ts` |
+| `componentes.categoriasAtomicas` | a lista de categorias | `src/components/atomic/` |
+| `componentes.categoriasDeEngine` | a lista de categorias | `src/components/engines/` |
+| `componentes.publicos` | contagem + a lista de nomes | `collectPublicComponentNames()` |
+| `gates` | uma entrada por script (nome + comando) | os `scripts` do `package.json` |
+| `auditores` | a lista de auditores | `run_audit.mjs` |
 | `baseline` | o baseline versionado inteiro | `gates/baselines/audit-baseline.json` |
 | `base` | ADRs · arquitetura · specs | `specs/adr/` · `specs/arquitetura/` · `specs/specs/` |
 | `docs` | os guias shippados | `docs/` |
@@ -90,14 +90,17 @@ impede o catálogo de gates de virar uma lista que alguém esqueceu de atualizar
 
 ## 3.1 Os quatro números de token lado a lado — de propósito
 
-O `state.json` publica as **quatro** contagens de token juntas, e a divergência entre elas é
-informação, não ruído:
+O `state.json` publica as **quatro** contagens de token juntas (`mapeamento.entradasBrutas`,
+`mapeamento.idsUnicos`, `particoes.tokens`, `tipoPublico.ids`), e a divergência entre elas é
+**informação, não ruído** — um kit que publicasse um número só esconderia duas coisas distintas:
 
-- `mapeamento.entradasBrutas` (**416**) > `mapeamento.idsUnicos` (**409**) → sete ids roteados
-  para mais de uma coluna. Achado conhecido, roteado à Campanha 2.
-- `tipoPublico.ids` (**304**) < `idsUnicos` (**409**) → **o tipo público está defasado** (§7.1).
+- `entradasBrutas` maior que `idsUnicos` → algum id foi roteado para mais de uma coluna do
+  mapeamento. Sinaliza duplicação na fonte.
+- `tipoPublico.ids` menor que `idsUnicos` → **o tipo público gerado está defasado** em relação ao
+  `MASTER_DESIGN_MAP` (era o achado 22, fechado — §7.1).
 
-Um kit que publicasse um número só esconderia as duas coisas.
+Hoje as quatro contagens convergem — `npm run token-types:check` confere isso a cada execução, e
+`sarak-dev/state.json` → `design.tokens` traz os valores correntes.
 
 # 4. O gate `dev-kit:check`
 
@@ -172,40 +175,26 @@ Provado com `npm pack --dry-run` (§9).
 
 # 7. Achados registrados por esta entrega
 
-## 7.1 🔴 `design-token-ids.ts` está DEFASADO — e o gerador não está em pipeline nenhum
+## 7.1 ✅ `design-token-ids.ts` estava DEFASADO — fechado
 
 `src/core/Provider/generated/design-token-ids.ts` é um arquivo **gerado**, com cabeçalho
 `ARQUIVO GERADO AUTOMATICAMENTE — NÃO EDITAR À MÃO` e a instrução de regenerar com
 `scripts/generate-token-types.ts`.
 
-**Medido nesta entrega:**
+**O achado 22** ([[15-divida-conhecida]] §6) registrava que o tipo público gerado ficava para trás
+do `MASTER_DESIGN_MAP` / `theme_table_mapping.json` / `partitions/`, porque `generate-token-types.ts`
+não estava registrado em nenhum script nem hook — regenerava só quando alguém lembrava.
 
-| Fonte | Tokens |
-| --- | --- |
-| `MASTER_DESIGN_MAP` / `theme_table_mapping.json` / `partitions/` | **409** |
-| `SarakDesignTokens` (o tipo público gerado) | **304** |
-| **Diferença** | **105 tokens ausentes do tipo** |
+**Fechado pela `plan-12` (Lote A, 2026-08-05), nas duas metades que a família de achados sempre
+exige:** o arquivo foi regenerado **e** `generate-token-types.ts --check` entrou no `build` e no
+Anel 1 do `pre-commit` (`.githooks/pre-commit`). As três fontes convergem hoje —
+`npm run token-types:check` confere e reporta o dia — e o `sarak-ui/catalog.json` do consumidor
+(`designTokens.count`) lê do mesmo tipo, agora em dia.
 
-E a causa é estrutural, não distração: **`generate-token-types.ts` não está registrado em nenhum
-script do `package.json` nem em nenhum hook.** Ele regenera só quando alguém lembra. O último
-commit do arquivo gerado é de **2026-06-27**; o schema que o alimenta mudou em **2026-07-25**.
-
-**Consequências, em ordem de gravidade:**
-
-1. `DesignTokenId = keyof SarakDesignTokens` é a união que tipa o payload de tema. Enquanto o
-   arquivo estiver defasado, **105 tokens legítimos são invisíveis ao TypeScript** para quem tipa
-   um tema.
-2. O **kit do consumidor publica o número errado**: `sarak-ui/catalog.json` → `designTokens.count`
-   diz **304** porque lê essa mesma interface. O importador lê que existem 304 chaves válidas de
-   `design` quando existem 409.
-3. Nenhum gate acusa. O `auditor_paridade` cruza schema × mapping × partições — o **tipo gerado
-   não é uma das três fontes**.
-
-**NÃO corrigido aqui**, e o motivo é escopo, não conveniência: regenerar mudaria
-`src/`, o `catalog.json` do consumidor e o carimbo do kit, com blast radius muito além do
-mandato desta tarefa. **Roteado para a Fase B da Campanha 2**, junto das demais lacunas de gate —
-e o conserto tem **duas** metades, como as outras dessa família: regenerar o arquivo **e**
-registrar o gerador num pipeline, senão ele volta a apodrecer no mês seguinte.
+**Consequência que não se repete mais:** enquanto o arquivo ficava para trás, tokens legítimos
+eram invisíveis a `DesignTokenId = keyof SarakDesignTokens` para quem tipava um tema, e o kit do
+consumidor publicava a contagem errada. O gate resolve as duas: sem ele registrado em pipeline, o
+mesmo apodrecimento reapareceria no primeiro token novo.
 
 ## 7.2 A anomalia que o próprio kit expôs na primeira execução
 
