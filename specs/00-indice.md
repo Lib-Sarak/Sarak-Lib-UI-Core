@@ -41,48 +41,53 @@ as duas, sempre, na mesma ação.**
 <!-- SARAK-INDICE:FILA:INICIO -->
 | # | Plan | Objetivo | Depende de | Status | Destino |
 |---|---|---|---|---|---|
-| 1 | [plan-05-integracao-continua](plan/plan-05-integracao-continua.md) | Rodar os gates num ambiente que não é a máquina de ninguém | — | 🔴 A executar | specs/16-integracao-continua.md · specs/02-enforcement-por-commit.md · specs/01-gates-e-baseline.md |
-| 2 | [plan-10-ciclo-atualizacao](plan/plan-10-ciclo-atualizacao.md) | Dar comando de atualização a quem só recebia aviso | plan-05 | 🔴 A executar | specs/13-instalacao-e-atualizacao.md |
-| 3 | [plan-11-remover-e2e-falso-verde](plan/plan-11-remover-e2e-falso-verde.md) | Remover o aparato de E2E que produz verde falso, deixando a capacidade declarada como adiada | — | 🔴 A executar | specs/specs/11-testes-e-cobertura.md · specs/specs/15-divida-conhecida.md |
+| 1 | [plan-28-reconciliar-contexto](plan/plan-28-reconciliar-contexto.md) | Fazer a porta de entrada dos agentes descrever o repositório que existe | — | 🟢 Aprovada | — |
+| 2 | [plan-29-erradicar-cifra-em-prosa](plan/plan-29-erradicar-cifra-em-prosa.md) | Fazer as quatro specs fixas pararem de afirmar totais que já envelheceram | plan-28 | 🔴 A executar | — |
+| 3 | [plan-30-pagar-divida-aberta](plan/plan-30-pagar-divida-aberta.md) | Zerar a seção de achados abertos da spec de dívida conhecida | — | 🔴 A executar | specs/15-divida-conhecida.md · specs/01-gates-e-baseline.md |
+| 4 | [plan-11-remover-e2e-falso-verde](plan/plan-11-remover-e2e-falso-verde.md) | Remover o aparato de E2E que produz verde falso, deixando a capacidade declarada como adiada | — | 🔴 A executar | specs/specs/11-testes-e-cobertura.md · specs/specs/15-divida-conhecida.md |
+| 5 | [plan-05-integracao-continua](plan/plan-05-integracao-continua.md) | Rodar os gates num ambiente que não é a máquina de ninguém | — | 🔴 A executar | specs/16-integracao-continua.md · specs/02-enforcement-por-commit.md · specs/01-gates-e-baseline.md |
+| 6 | [plan-10-ciclo-atualizacao](plan/plan-10-ciclo-atualizacao.md) | Dar comando de atualização a quem só recebia aviso | plan-05 | 🔴 A executar | specs/13-instalacao-e-atualizacao.md |
 <!-- SARAK-INDICE:FILA:FIM -->
 
-> **A ordem da coluna `#` não é a ordem do número da plan** — e isso é a feature, não um erro. A `plan-03`
-> (triagem) roda **antes** da `plan-02` porque ela decide o escopo real de 07, 08 e 09; a `plan-02` só depende
-> da `plan-01`. Numeração é identidade; a coluna `#` é o plano.
+> **A ordem da coluna `#` não é a ordem do número da plan** — e isso é a feature, não um erro. Numeração é
+> identidade; a coluna `#` é o plano.
 >
-> **A cadeia é `13 → 14 → 06 → [07 · 08 · 09] → 12 → 15 → 05`: regra → casa → medir → consertar → construir →
-> adequar → rodar.**
-> *(ordem fixada pelo dono em 2026-08-03: **gates completos antes do pipeline**)*.
-> A `plan-13` fecha o conjunto de regras (nenhum gate é criado nela); a `plan-14` concentra os verificadores em
-> `gates/` e limpa o legado; a `plan-06` mede o escopo real de cada gate contra a regra **já fechada**, e mede
-> nos **caminhos definitivos**; a `plan-12` constrói o que faltar, já nascendo no lugar certo; a `plan-05` roda
-> tudo fora da máquina de alguém.
+> **A ordem de hoje é `28 → 29 → 30 → 11 → 05 → 10`: descrever certo → parar de envelhecer → pagar a dívida
+> medida → remover o verde falso → rodar fora da máquina de alguém.**
+> *(fixada pelo revisor em 2026-08-11, na auditoria de entrada.)*
 >
-> **A `plan-14` vem ANTES da `plan-06` de propósito:** a 06 registra `arquivo:linha` de cada gate. Medir antes
-> de mover obrigaria a reescrever todas as referências depois — e é assim que matriz vira documento morto.
+> **A `plan-28` vem primeiro porque a porta de entrada está INSTRUINDO ERRADO.** `00-contexto.md` §2 afirma que
+> o `run_audit` "fecha em ZERO" e que "não há mais folga" — o repositório responde **exit 1 com 2 auditores
+> vermelhos**, e o baseline versionado é não-zero. Todo agente que começa hoje entra com a régua invertida, e
+> **cada hora que ela fica de pé custa uma investigação inteira** de regressão que não existe. É o cenário que
+> [`01-gates-e-baseline`](specs/01-gates-e-baseline.md) abre declarando que existe para impedir.
 >
-> **A `plan-06` era a única que começava sem lista de tarefas — e entregou a lista.** Ela está na **§9 de
-> [`01-gates-e-baseline`](specs/01-gates-e-baseline.md)**: a matriz com os **14 vãos** medidos, cada um com
-> destino. Somada às **7 regras sem gate nenhum**, dá os **~21 itens** que a `plan-12` vai construir — contra os
-> 9 que a spec de dívida previa. Os escopos de 07 e 08 seguem marcados como **provisórios** dentro dos próprios
-> arquivos; o da 09 foi **fixado em 2026-08-01** pela triagem da `plan-03` (achado 27 saiu, achado 2 entrou).
+> **A `plan-29` depende da 28** e generaliza o mesmo conserto às quatro specs fixas onde a cifra em prosa
+> sobreviveu. As duas são de prosa, só tocam `specs/`, e por isso são executadas pelo **revisor** — é o desvio
+> declarado em [[00-contexto]], na seção do ciclo SDD.
 >
-> **O escopo da `plan-06` ENCOLHEU em 2026-08-02, com a execução da `plan-13`.** As quatro perguntas de
-> **regra** que ela herdaria da triagem foram respondidas pelo dono e já entraram na spec como regra escrita:
-> R10 saiu da conduta e virou ⏳; a promessa de AA virou **R31** (só os 18 temas de referência); o acoplamento
-> de auth virou **R32**; e a cobertura em % virou **R8.1**, com piso móvel. A `plan-06` volta a ser **só** o que
-> o nome diz — **medir escopo de gate contra escopo de regra**, agora contra as **32** regras fechadas e nos
-> caminhos definitivos que a `plan-14` fixa. Ela **não decide mais nenhuma regra**.
+> **A `plan-29` vem ANTES da `plan-11` de propósito.** As duas editam
+> [`11-testes-e-cobertura`](specs/11-testes-e-cobertura.md): a 29 faz a spec **parar de descrever um arquivo
+> deletado**; a 11 **remove** o aparato que sobrou e declara a ausência. Descrever corretamente o que existe é
+> pré-requisito de removê-lo com honestidade — na ordem inversa, a remoção seria escrita por cima de um texto
+> que já mente.
 >
-> **A `plan-12` roda DEPOIS de 07, 08 e 09, e não antes** — embora dependa formalmente só da `plan-06`. O motivo
-> é operacional: ela liga verificação, e gate ligado antes do conserto correspondente acende vermelho que
-> pertence a outra plan. Consertar primeiro, cobrar depois, é o que mantém o baseline legível. O caso concreto:
-> **R32** nasceria vermelha enquanto o `SarakSecurityOrchestrator` existir, e removê-lo é da `plan-09`.
+> **A `plan-30` não depende de ninguém e pode ser puxada para a frente.** Ela é a única desta leva que toca
+> código, e carrega o achado **39** — o gerador de gabarito de tema emite arquivo que não compila, o que
+> **quebra o segundo passo do fluxo documentado de criação de tema**. Se criar tema for iminente, ela sobe
+> para o `#1`; a ordem da fila é do revisor e se muda trocando duas linhas aqui e rodando `npm run plan-index`.
 >
-> **A `plan-05` (CI) foi para o fim da cadeia por decisão do dono (2026-08-03).** Ela não depende de ninguém e
-> poderia rodar hoje com os gates que existem — a escolha foi montar o pipeline **uma vez, completo**, em vez de
-> montá-lo e acrescentar linhas a cada gate novo. Custo aceito e registrado: até a `plan-12` fechar, toda prova
-> continua dependendo da máquina de quem executa.
+> **A `plan-05` (CI) segue no fim, por decisão do dono (2026-08-03).** Ela não depende de ninguém e poderia
+> rodar hoje — a escolha foi montar o pipeline **uma vez, completo**, em vez de acrescentar linhas a cada gate
+> novo. Custo aceito e registrado: até lá, toda prova continua dependendo da máquina de quem executa. A
+> `plan-10` depende dela.
+>
+> 🔴 **A cadeia anterior (`13 → 14 → 06 → [07 · 08 · 09] → 12 → 15 → 05`) foi CONCLUÍDA e o texto que a
+> explicava saiu daqui em 2026-08-11.** Destino demonstrado, como manda [[00-contexto]] §5: **as decisões
+> viraram spec fixa** (a matriz de cobertura em `01-gates-e-baseline`, as regras em
+> `00-regras-e-invariantes`, os achados em `15-divida-conhecida`), e **o rastro de execução vive no Git** —
+> `git log --diff-filter=D -- specs/plan/` recupera qualquer uma das plans removidas. O texto antigo roteava
+> plans que não existem mais em nenhuma fila: era mapa de um caminho já andado.
 
 ---
 

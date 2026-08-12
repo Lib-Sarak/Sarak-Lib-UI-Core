@@ -33,8 +33,8 @@ inegociável ou o mapa de roteamento. Nunca por conta própria fora de uma plan.
 
 **`@sarak/lib-ui-core` é uma biblioteca React de Design System** — não um app, não um serviço, não tem backend.
 Ela resolve o problema de o host ter identidade visual própria sem reescrever componentes: um Design Engine
-central resolve 409 tokens em tempo de execução, e os componentes leem esses tokens em vez de terem estilo
-fixo.
+central resolve o dicionário inteiro de tokens em tempo de execução, e os componentes leem esses tokens em vez
+de terem estilo fixo.
 
 **Quem consome:** outros repositórios React (hoje o ERP Earendel), por dependência **git com tag**, nunca por
 registry npm. O consumo é feito de dois modos ortogonais — como **host do Shell** (a lib desenha o cromo) ou
@@ -62,8 +62,10 @@ marca** — a identidade visível é sempre do host ([[adr/006-zero-marca-sobera
 **Universais do ecossistema:** `CLAUDE.md` da raiz + skill `padrao-escrita` + `padrao-typescript`. Não são
 reescritas aqui.
 
-**Específicas deste repositório** — as **32 regras** vivem em [`specs/00-regras-e-invariantes.md`](specs/00-regras-e-invariantes.md)
-(**29 verificáveis e 3 de conduta**, cada uma com o estado da verificação: ✅ · ⚠️ · ⏳ · 🔴). As cinco que um agente viola sem perceber:
+**Específicas deste repositório** — as regras vivem em [`specs/00-regras-e-invariantes.md`](specs/00-regras-e-invariantes.md),
+em **duas categorias** (verificáveis e de conduta), cada uma com o estado da verificação: ✅ · ⚠️ · ⏳ · 🔴.
+Quantas são se conta com `grep -c "^## R"` naquele arquivo — **não presuma o número**. As cinco que um agente
+viola sem perceber:
 
 - **O código é a fonte da verdade.** Onde um documento desta pasta contradiz o código, **o código vence**.
   Toda afirmação estrutural tem de ser confirmável por `arquivo:linha`. Spec que descreve código inexistente é
@@ -71,15 +73,16 @@ reescritas aqui.
 - **Nunca transcreva fonte viva** *(R17)*. Lista de tokens, de componentes, de props ou de ícones **não** é
   copiada para markdown — aponte para o artefato gerado (`docs/component-catalog.json`, `sarak-ui/catalog.json`)
   ou para a função que a produz. Cópia estática vira mentira na primeira mudança de código.
-- **Paridade 1:1:1 dos tokens.** Schema ↔ `theme_table_mapping` ↔ partições do catálogo têm de bater
-  (hoje 409/409/409). Detalhe em [`arquitetura/04-contrato-de-tokens-e-paridade.md`](arquitetura/04-contrato-de-tokens-e-paridade.md).
+- **Paridade 1:1:1 dos tokens.** Schema ↔ `theme_table_mapping` ↔ partições do catálogo têm de bater — o que
+  vale é a **convergência**, e o número vive em `npm run audit` → `auditor_paridade` e em
+  `sarak-dev/state.json` → `design.tokens`. Detalhe em [`arquitetura/04-contrato-de-tokens-e-paridade.md`](arquitetura/04-contrato-de-tokens-e-paridade.md).
 - **Zero marca.** Nenhum nome, logo ou cor da Sarak vaza para a UI do host ([[adr/006-zero-marca-soberania-host]]),
   cobrado por `npm run zero-brand:check`.
-- **O `run_audit` fecha em ZERO desde 2026-08-03** (`plan-07`), e isso **mudou o regime**: as 8 métricas do
-  baseline estão em 0, então **não há mais folga** — qualquer regressão bloqueia no Anel 2, sem margem.
-  **Leia [`specs/01-gates-e-baseline.md`](specs/01-gates-e-baseline.md) antes de rodar qualquer gate**: o
-  baseline continua sendo a referência, só que agora ele é zero. O `tsc` **não** é zero (10 erros, todos em
-  teste) e não é gate.
+- **O baseline do `run_audit` NÃO é zero — compare com ele, nunca com zero.** A fonte viva é
+  `gates/baselines/audit-baseline.json`, versionado, regravado a cada plan que conserta ou constrói gate; o
+  `tsc` tem baseline próprio dentro do mesmo JSON. **Leia [`specs/01-gates-e-baseline.md`](specs/01-gates-e-baseline.md)
+  antes de rodar qualquer gate** — é ela que ensina a ler cada saída. **Não presuma nenhum desses valores:**
+  quem os afirma em prosa acerta por um dia e mente pelo resto.
 
 ---
 
@@ -97,13 +100,15 @@ reescritas aqui.
 
 **Stack:** TypeScript + React `>=18` (peer) · Tailwind CSS `>=4` · build `tsup` (ESM + CJS + DTS) ·
 testes `vitest` + `playwright-ct` · gerenciador **npm** · distribuída por **git com tag**, sem registry
-([[adr/007-distribuicao-por-git]] · [[adr/008-releases-com-tag-e-semver-em-git]]). Versão atual: **1.2.1** — e o `2.0.0` está **pronto no worktree**, aguardando a decisão de publicar (ver §8).
+([[adr/007-distribuicao-por-git]] · [[adr/008-releases-com-tag-e-semver-em-git]]). A versão vive em
+`package.json`; a linha publicada é `git tag`; e o **motivo de cada MAJOR** está em
+[`specs/03-versionamento-e-release.md`](specs/03-versionamento-e-release.md).
 
 **Camada de padrão da linguagem:** skill `padrao-typescript` (+ `padrao-escrita`, sempre).
 
 | Bloco | Responsabilidade | Detalhe em |
 |---|---|---|
-| `src/core/Design/` | O Design Engine: 28 schemas → `MASTER_DESIGN_MAP` → 409 tokens | [`arquitetura/02`](arquitetura/02-design-engine.md) |
+| `src/core/Design/` | O Design Engine: 28 schemas → `MASTER_DESIGN_MAP` → o dicionário de tokens | [`arquitetura/02`](arquitetura/02-design-engine.md) |
 | `src/core/Provider/` | `SarakUIProvider`, validação da fronteira, tipos gerados | [`arquitetura/04`](arquitetura/04-contrato-de-tokens-e-paridade.md) |
 | `src/core/Shell/` · `Discovery/` | Cromo, rotas e os módulos-plugin | [`specs/04`](specs/04-shell-e-discovery.md) · [`specs/05`](specs/05-cromo-e-slots.md) |
 | `src/core/Security/` | Sanitização e limites anti-DoS | [`specs/10`](specs/10-seguranca-e-acessibilidade.md) |
@@ -113,14 +118,14 @@ testes `vitest` + `playwright-ct` · gerenciador **npm** · distribuída por **g
 **Fronteiras de dependência:** só **duas** regras são cobradas (`components/` não importa `features/`;
 `core/` não importa `components/`). As demais pastas (`shared/`, `styles/`, `effects/`, `constants/`,
 `types/`) **não são cobradas por nenhum auditor** — está declarado em
-[`arquitetura/00-mapa-do-modulo.md`](arquitetura/00-mapa-do-modulo.md) §96.
+[`arquitetura/00-mapa-do-modulo.md`](arquitetura/00-mapa-do-modulo.md), na seção da regra de dependência.
 
 **Comandos vitais** (todos verificados):
 
 | Para | Comando |
 |---|---|
 | Suíte completa | `npx vitest run` |
-| Auditoria estrutural (8 auditores) | `npm run audit` — **compare com o baseline, não com zero** |
+| Auditoria estrutural (todos os auditores de `run_audit.mjs`) | `npm run audit` — **compare com o baseline, não com zero** |
 | Todos os gates de release | `npm run gates:full` |
 | Barril público ↔ componentes | `npm run barrel:check` |
 | Catálogo · kit do consumidor · kit do mantenedor | `npm run catalog:check` · `guide:check` · `dev-kit:check` |
@@ -200,7 +205,7 @@ A tabela acima roteia **por tarefa**. Quem ainda não tem tarefa, e só precisa 
 | # | Leia | Por quê |
 |---|---|---|
 | 0 | [`sarak-dev/START-HERE.md`](../sarak-dev/START-HERE.md) | O índice operacional e o **carimbo de estado** — números recontados a cada geração, nunca escritos à mão |
-| 1 | [`specs/00-regras-e-invariantes.md`](specs/00-regras-e-invariantes.md) | **O contrato único.** As 32 regras em duas categorias, cada uma com o gate que a cobra — ou a admissão de que **nenhum** cobre |
+| 1 | [`specs/00-regras-e-invariantes.md`](specs/00-regras-e-invariantes.md) | **O contrato único.** As regras em duas categorias, cada uma com o gate que a cobra — ou a admissão de que **nenhum** cobre |
 | 2 | [`arquitetura/01-forma-do-produto-e-modos-de-consumo.md`](arquitetura/01-forma-do-produto-e-modos-de-consumo.md) | O que a lib **é** hoje, e os dois modos de consumo |
 | 3 | [`arquitetura/00-mapa-do-modulo.md`](arquitetura/00-mapa-do-modulo.md) | Onde cada coisa mora e o que pode importar o quê |
 | 4 | [`sarak-dev/GUIA-MANUTENCAO.md`](../sarak-dev/GUIA-MANUTENCAO.md) | O roteador de fluxos: o passo a passo do que você vai mexer e **qual spec é dona** daquilo |
@@ -302,29 +307,24 @@ Antes de escolher **como** fazer algo, leia **[[00-knowledge]]** — é o rotead
 > (`2026-07-31`, nunca "semana passada"). Item resolvido sai daqui — esta seção não é histórico; o histórico
 > é o `git` e os `adr/`.
 
-- **A dívida conhecida está catalogada** em [`specs/15-divida-conhecida.md`](specs/15-divida-conhecida.md):
-  **14 achados abertos** (de 31 numerados), cada um com arquivo:linha, exposição medida, **a regra que viola** e
-  **destino decidido pelo dono** (triagem de 2026-08-01). Não é lista de desejos — é o que já foi verificado no
-  código e ainda não foi corrigido. Leia antes de "descobrir" um problema.
+- **A dívida conhecida está catalogada** em [`specs/15-divida-conhecida.md`](specs/15-divida-conhecida.md),
+  cada achado com arquivo:linha, exposição medida, **a regra que viola** e **destino decidido pelo dono**. Não
+  é lista de desejos — é o que já foi verificado no código e ainda não foi corrigido. **Quantos estão abertos,
+  só aquela spec diz**; leia-a antes de "descobrir" um problema.
 - **Gate que nunca existiu não é dívida — é implementação posterior** *(decisão do dono, 2026-08-01)*. A ordem
   é: **fechar o conjunto de regras primeiro, construir a verificação depois.** Gate erguido antes de a régua
-  estar pronta cobra a régua errada, e gate errado custa mais que gate ausente porque ninguém desconfia dele. Os
-  **5 gates em fila** e as **4 ampliações de escopo** estão em
-  [`specs/15-divida-conhecida.md`](specs/15-divida-conhecida.md) §4 — fora da contagem de dívida, de propósito.
-- **O `run_audit` está em ZERO** (2026-08-03, `plan-07`): hardcode, fantasmas, `any`, cobertura, arquitetura,
-  clean code, paridade e presets, todos limpos. **Era exit 1 com 2 auditores vermelhos até então.** O detalhe
-  está em [`specs/01-gates-e-baseline.md`](specs/01-gates-e-baseline.md).
-- **Padrão recorrente, ainda não medido: o escopo do gate é menor que o escopo da regra.** Quatro casos
-  independentes já apareceram — sempre por acaso. Quantos faltam é desconhecido, e é o que a plan de auditoria
-  de cobertura existe para responder.
-- **`src/core/Provider/generated/design-token-ids.ts` está defasado em 105 tokens** (304 publicados × 409
-  reais) e o gerador não está registrado em script, hook ou skill nenhuma. O número falso **vaza para o
-  consumidor** via `sarak-ui/catalog.json`.
+  estar pronta cobra a régua errada, e gate errado custa mais que gate ausente porque ninguém desconfia dele. A
+  fila deles vive na seção de implementação posterior de
+  [`specs/15-divida-conhecida.md`](specs/15-divida-conhecida.md) — fora da contagem de dívida, de propósito.
+- **Padrão recorrente e JÁ MEDIDO: o escopo do gate costuma ser menor que o escopo da regra.** Ele apareceu
+  quatro vezes por acaso antes de alguém procurá-lo de propósito; a varredura sistemática existe e é a
+  **matriz de cobertura** de [`specs/01-gates-e-baseline.md`](specs/01-gates-e-baseline.md), que lista vão a
+  vão o que cada gate não enxerga. **R18 nasceu daí** — todo gate declara, no próprio código, o que não vê.
 - **O ERP Earendel é o único consumidor** e está em desenvolvimento simultâneo, consumindo por **caminho
   local** (`file:`) — decisão do dono enquanto os dois repositórios são ajustados juntos; a migração para
   `github:…#semver:` vem depois. **Alinhado em 2026-08-02** (plan-04 🟢): workspace com 13 projetos, lockfile
-  canônico, lib **1.2.1**, junctions manuais substituídas pelo elo do gerenciador e aviso de defasagem no
-  `predev`. ⚠️ **`file:` é cópia no store do pnpm, não link** — todo rebuild da lib exige
+  canônico, junctions manuais substituídas pelo elo do gerenciador e aviso de defasagem no `predev`.
+  ⚠️ **`file:` é cópia no store do pnpm, não link** — todo rebuild da lib exige
   `pnpm install --force --filter @erp/ui-kit` no ERP para chegar lá. Medir a lib por um ERP não reinstalado é
   medir o passado.
 - **Migração em curso (2026-08-01):** este fluxo SDD substituiu o modelo de "campanha em três arquivos fixos"

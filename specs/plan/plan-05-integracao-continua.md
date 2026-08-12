@@ -52,12 +52,17 @@ Achado **26** entra aqui porque a CI é o único lugar onde cabe: **nenhum teste
 | Spec fixa | `specs/01-gates-e-baseline.md` | o baseline versionado e o que cada gate garante |
 | Spec fixa | `specs/02-enforcement-por-commit.md` | os anéis de `pre-commit`/`pre-push` que a CI complementa |
 | Spec fixa | `specs/13-instalacao-e-atualizacao.md` | o que o teste de `install` precisa provar |
-| Código | `.githooks/pre-commit` · `pre-push` · `scripts/check-audit-baseline.mjs` | o que já roda, para não duplicar |
+| Código | `.githooks/pre-commit` · `pre-push` · `gates/scripts/release/check-audit-baseline.mjs` | o que já roda, para não duplicar |
 
 # 5. Instruções de execução
 
 1. Criar o workflow: **suíte completa**, `npm run build`, `package:check`, e `run_audit` comparado ao
-   **baseline versionado** (`.githooks/audit-baseline.json`), nunca a zero.
+   **baseline versionado** (`gates/baselines/audit-baseline.json`), nunca a zero.
+
+   > 🔧 **Os dois caminhos acima foram corrigidos em 2026-08-11 pelo revisor.** A plan citava
+   > `.githooks/audit-baseline.json` e `scripts/check-audit-baseline.mjs`, que a `plan-14` moveu para
+   > `gates/`. Ponteiro morto dentro de uma plan a executar manda o executor atrás de arquivo inexistente —
+   > o objetivo e o escopo da plan **não mudaram**.
 2. **Cobrar o `--no-verify`**: a CI roda o que o hook rodaria, então um push que burlou o anel local é
    reprovado no remoto. É o único lugar onde esse escape deixa de ser invisível.
 3. **Teste de `install` real** (achado 26) — matriz npm/pnpm/yarn, provando que a lib instala a partir de uma
