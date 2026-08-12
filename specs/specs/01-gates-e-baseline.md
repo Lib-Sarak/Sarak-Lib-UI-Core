@@ -149,7 +149,7 @@ Mais os `__e2e__` de `src/core/Provider/` e `src/features/DesignEngine/` — col
 nenhuma** — nem no build, nem no hook, nem em CI (que não existe). São executados à mão, quando alguém
 lembra.
 
-Registrado como o que é: **cobertura que existe e não é cobrada**. **Não cobra regra nenhuma hoje** — ligá-lo ao pipeline é a `plan-11`, e nenhuma das 32 regras depende dele.
+Registrado como o que é: **cobertura que existe e não é cobrada**. **Não cobra regra nenhuma hoje** — ligá-lo ao pipeline é a `plan-11`, e **nenhuma regra do contrato depende dele** (a contagem de regras se lê em [[00-regras-e-invariantes]] §1.3, não aqui).
 
 # 3. O BASELINE — recontado em 2026-08-05 (plans 12 e 16)
 

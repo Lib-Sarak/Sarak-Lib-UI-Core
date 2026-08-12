@@ -37,7 +37,7 @@ Toda regra abre com um marcador. São quatro, e só quatro:
 | --- | --- |
 | ✅ **gate pleno** | Existe verificação automática e o escopo dela **cobre** o escopo da regra |
 | ⚠️ **escopo menor que a regra** | Existe verificação, e ela **não vê** parte do que a regra exige. O vão está escrito na própria linha |
-| ⏳ **gate a construir** | A regra está fechada; a verificação ainda não foi construída. É trabalho da `plan-12` |
+| ⏳ **gate a construir** | A regra está fechada; a verificação ainda não foi construída. Vira plan própria, na fila do [[00-indice]] |
 | 🔴 **conduta** | Não há gate, e **não vai haver** — o motivo está escrito na regra (§3) |
 
 **A suíte conta como gate.** `npx vitest run` roda no Anel 3 do `pre-push` e **bloqueia** ([[02-enforcement-por-commit]] §4). Regra cobrada por teste que roda na suíte é ✅, e a linha nomeia o arquivo do teste.
@@ -77,6 +77,16 @@ Toda regra abre com um marcador. São quatro, e só quatro:
 | ⚠️ escopo menor que a regra | **8** | R4 · R7 · R10 · R14 · R17 · R23 · R30 · **R31** |
 | ⏳ gate a construir | **0** | — *(a categoria fica; é para cá que volta a próxima regra fechada sem gate)* |
 | 🔴 conduta | **3** | R11 · R15 · R16 |
+
+> 🔴 **Esta tabela diverge dos marcadores reais em UM ponto, e a divergência fica declarada em vez de
+> resolvida à revelia** *(medido na `plan-32`, 2026-08-12)*. Contando as linhas `**Estado:**` das regras
+> numeradas: **✅ 22 · ⚠️ 9 · 🔴 3**. A tabela diz ✅ 23 · ⚠️ 8. **A regra em desacordo é a R8**, que a tabela
+> lista como ✅ e cuja própria linha `**Estado:**` diz ⚠️.
+>
+> **Quem decide é o revisor, em execução própria** — mudar marcador exige medir o vão inteiro, não só a parte
+> que mora neste arquivo, e a `plan-32` tinha proibição expressa de tocá-lo. O comando que reproduz:
+> `grep -oE "^\*\*Estado:\*\* [⚠️✅⏳🔴]+" … | sort | uniq -c` *(a 35ª linha é a da sub-regra **R8.1**, que não
+> entra na contagem das numeradas)*.
 
 **A numeração é identidade e é definitiva.** R14 é R14 para sempre: o `.githooks/pre-commit:68-71` imprime os números na mensagem de bloqueio, e há citação em skills, specs e no próprio código. Regra que sai de categoria **leva o número consigo** — foi o que aconteceu com R10, R11, R15 e R16.
 
@@ -152,12 +162,12 @@ O balde deduzido nunca fica invisível: a saída de `npm run audit` imprime a **
 
 ### R2.3 As exceções de política — permanentes
 
-- **Cor de marca de terceiro.** As 4 cores oficiais do logo do Google em `SocialButton.tsx` estão na `VALUE_ALLOWLIST` (`:37-40`). Tokenizá-las implicaria falsamente que são customizáveis. Identidade de terceiro não é tema.
+- **Cor de marca de terceiro.** As cores oficiais do logo do Google em `SocialButton.tsx` são isentas pelo marcador da §R2.3-bis. Tokenizá-las implicaria falsamente que são customizáveis. Identidade de terceiro não é tema.
 - **Grid sem token 1:1.** Quando a malha responsiva não tem equivalente no catálogo, o mecanismo correto é um **preset nomeado** no companion do hook (`RESPONSIVE_GRID_PRESETS`/`RESPONSIVE_SPACING_PRESETS` em `useStructuralStyles.presets.ts`) — **nunca** um carve-out permanente no auditor.
 - **Componentes `internal/` desacoplados do Provider** (ex.: `CalendarPanel`) podem usar valor estrutural inline: não têm acesso à árvore de tema **por design**, não por omissão.
-- **Fixtures de E2E e o `<input type="color">`** têm entrada própria na allowlist, cada uma com o motivo escrito (`:41-50`). O `value` de um input de cor nativo **só** aceita hex literal — `var()` quebra o elemento.
+- **O `<input type="color">`** é isento pelo mesmo marcador: o `value` de um input de cor nativo **só** aceita hex literal — `var()` quebra o elemento.
 
-Hoje a allowlist de valor tem **5 entradas**, todas comentadas. Entrada sem motivo escrito é violação desta regra, não exceção a ela.
+Isenção sem motivo escrito é violação desta regra, não exceção a ela — e o gate cobra isso: marcador vazio não isenta (§R2.3-bis).
 
 ### R2.3-bis A isenção viaja com o literal — `sarak-allow-hardcode`
 
@@ -176,9 +186,9 @@ Vale na linha do literal **ou na imediatamente acima**. **A razão depois dos do
 marcador vazio não isenta. E ele **sobrevive a `git mv`** porque viaja *dentro* do arquivo, em vez de ser
 referenciado por caminho de fora dele.
 
-**As duas formas convivem por desenho:** a allowlist central serve ao que é decisão de política do
-repositório; o marcador serve ao que é propriedade daquele literal específico. **A segunda é a preferida** —
-quando a razão pertence ao código, ela deve viajar com o código.
+**Hoje existe UMA forma só, e é esta.** A `VALUE_ALLOWLIST` central **foi removida** junto com a mudança — o
+comentário do marcador B1 no próprio gate registra a deleção e o motivo. Quem procurar por uma allowlist de
+valor em `gates/allowlists/` não vai achar: a razão pertence ao código e viaja com ele.
 
 ### R2.4 As limitações do detector — documentadas para NÃO serem exploradas
 
@@ -253,7 +263,7 @@ type ToastKind = 'success' | 'warning' | 'error';
 
 **Cobrada por:** `auditor_presets.mjs` → `npx tsx gates/scripts/audit/verify_presets.ts`. O total de itens auditados (temas + presets de componente) e a confirmação de zero órfã vivem em `npm run audit` → `auditor_presets` e em [[01-gates-e-baseline]] §3.
 
-> ⏳ **O segundo gate que existe e não roda.** `gates/scripts/audit/verify_theme_parity.ts` valida **um** tema contra o dicionário — isto é, mede **completude por tema**, não só ausência de órfã — e **nenhum script o invoca**. Cobertura diferente, não equivalente: o `auditor_presets` não pega tema escrito pelo consumidor nem mede completude. Ligá-lo é trabalho da `plan-12`.
+> ⏳ **O segundo gate que existe e não roda.** `gates/scripts/audit/verify_theme_parity.ts` valida **um** tema contra o dicionário — isto é, mede **completude por tema**, não só ausência de órfã — e **nenhum script o invoca** *(reconferido em 2026-08-12: nenhuma ocorrência em `package.json`, `gates/`, `scripts/` ou `.githooks/`)*. Cobertura diferente, não equivalente: o `auditor_presets` não pega tema escrito pelo consumidor nem mede completude. Ligá-lo continua sem plan na fila — é candidato a uma.
 
 ---
 
@@ -281,7 +291,9 @@ type ToastKind = 'success' | 'warning' | 'error';
 
 ## R7 — Namespace e fallback obrigatórios
 
-**Estado:** ⚠️ **escopo menor que a regra — e a regra está sendo violada hoje, com o gate verde.**
+**Estado:** ⚠️ **escopo menor que a regra** — o gate valida o **nome** da variável, nunca a **sintaxe do
+fallback** que a regra também exige. A violação que esta linha declarava (`--sx-*` vivo em `src/styles/`)
+**fechou** — ver o vão abaixo.
 
 **Enunciado.** Toda CSS Variable consumida é `--sarak-*` ou `--theme-*`, **sempre com fallback**, e precisa de uma **fonte emissora real**. O namespace `--sx-*` é **PROIBIDO**.
 
@@ -298,7 +310,7 @@ style={{ gap: 'var(--sarak-layout-gap-md)' }}
 style={{ gap: 'var(--sarak-layout-gap-md, 16px)' }}
 ```
 
-**Cobrada por:** `node gates/scripts/audit/auditor_ghostvars.mjs` — constrói o registro real de variáveis emitidas (schemas + `src/styles/*.css`, expandido por 18 sufixos gerados) e cruza com todo `var(--x)` consumido. O tamanho do registro e a contagem de consumos fantasma vivem em `npm run audit` e em `gates/baselines/audit-baseline.json` (o baseline).
+**Cobrada por:** `node gates/scripts/audit/auditor_ghostvars.mjs` — constrói o registro real de variáveis emitidas (**quatro** fontes: schemas, `src/styles/*.css`, o manifesto e o hook de runtime — ver o vão abaixo), expandido por 18 sufixos gerados, e cruza com todo `var(--x)` consumido nos `CONSUMER_DIRS`. O tamanho do registro e a contagem de consumos fantasma vivem em `npm run audit` e em `gates/baselines/audit-baseline.json` (o baseline).
 
 > ✅ **O vão descrito aqui FECHOU, nos dois lados.** Até a `plan-12`, o auditor varria só `src/components/`
 > e `src/features/`; `src/styles/` era tratado como fonte **emissora**, nunca como consumidora, e
@@ -344,11 +356,14 @@ Cards/__tests__/SarakActionCard.test.tsx test/cards.test.tsx   ← agregado, nã
 
 ### R8.1 O segundo braço — cobertura em %, com piso móvel
 
-**Decisão do dono, 2026-08-02.** `@vitest/coverage-v8` está em `package.json:100` e **nenhum script o invoca**. Ele vira gate pelo mesmo mecanismo do `audit:baseline`: **mede agora, grava como piso, e o piso só sobe.** Cobertura que cai reprova; cobertura que sobe regrava o piso.
+**Decisão do dono, 2026-08-02.** `@vitest/coverage-v8` estava instalado e **nenhum script o invocava**. Ele vira gate pelo mesmo mecanismo do `audit:baseline`: **mede agora, grava como piso, e o piso só sobe.** Cobertura que cai reprova; cobertura que sobe regrava o piso. **Construído em 2026-08-05** — `check-coverage-floor.mjs`, cobrado por `npm run coverage:check` dentro do `gates:full`, com o piso corrente em `gates/baselines/coverage-floor.json`.
 
 **Por que piso móvel e não alvo fixo.** Um teto arbitrário (80%) reprova no primeiro dia e ensina a ignorar o vermelho — que é o defeito que este repositório mais combate (§4.1 e [[01-gates-e-baseline]] §6). O 1:1 continua sendo a regra principal; o % é a segunda rede, e mede **outra coisa**: o quanto de **dentro** de cada arquivo o teste alcança.
 
-**Estado:** ⏳ — construir é trabalho da `plan-12`. Achado 15 em [[15-divida-conhecida]] §4.1.
+**Estado:** ⏳ — 🔴 **marcador conservado por instrução da `plan-32`, e ele NÃO descreve mais o repositório.**
+O gate **existe e roda** (`npm run coverage:check`, dentro do `gates:full`); o achado 15 está **fechado** em
+[[15-divida-conhecida]] §6. Reavaliar o símbolo é decisão do revisor, em execução própria — esta linha o
+mantém para não mudar marcador por efeito colateral.
 
 ---
 
@@ -484,7 +499,7 @@ repositório usa **três caminhos**, escolhidos pelo que a ocorrência **é**:
 > escreve o nome da tag no fim da linha (`<button\n  className=…`) e `grep` é por linha — é por isso que o
 > detector tem de ser por AST.
 
-> **R10 SAIU da conduta em 2026-08-02** *(decisão do dono)*. Ela vivia entre as regras sem gate por herança, não por análise: um detector de `<button>`/`<input>`/`<select>` cru em `.tsx` é **determinístico e barato** — é exatamente a mesma classe de varredura por AST que o `auditor_hardcoded` e o `check-zero-brand` já fazem. Conduta é para o que um script **não consegue** decidir; isto ele consegue. A metade `switch` de design é mais difícil e pode nascer fora do escopo do gate — se nascer, o vão vai declarado, como manda R18. Construir é trabalho da `plan-12`.
+> **R10 SAIU da conduta em 2026-08-02** *(decisão do dono)*. Ela vivia entre as regras sem gate por herança, não por análise: um detector de `<button>`/`<input>`/`<select>` cru em `.tsx` é **determinístico e barato** — é exatamente a mesma classe de varredura por AST que o `auditor_hardcoded` e o `check-zero-brand` já fazem. Conduta é para o que um script **não consegue** decidir; isto ele consegue. A metade `switch` de design é mais difícil e pode nascer fora do escopo do gate — se nascer, o vão vai declarado, como manda R18. **O detector de HTML nativo cru foi construído em 2026-08-05** (`auditor_composicaoatomica.mjs`); a metade `switch` segue sem detector, declarada acima.
 
 ---
 
@@ -581,7 +596,7 @@ CERTO    "A lista completa está em `docs/component-catalog.json`, gerada por AS
 
 **Cobrada por:** `npm run catalog:check`, `npm run guide:check` e `npm run dev-kit:check` — **para os três artefatos gerados**. Os três comparam o commitado com o que o gerador produz agora e derrubam o build (ou o `gates:full`) se divergirem.
 
-> ⚠️ **O vão declarado: a metade "prosa manual" não tem gate.** Markdown escrito à mão — `README.md`, as specs, os comentários que viajam para o consumidor — não é comparado com nada. Os achados **24** (o `main.tsx` que todo consumidor novo recebe cita um serviço obsoleto) e **25** (comentário afirmando que uma pasta inexistente "segue publicada") são exatamente essa metade, e estão abertos em [[15-divida-conhecida]] §3.5. A parte **verificável** dessa metade — ponteiro morto na prosa dos artefatos gerados — é **R23**, e ela também tem escopo menor que a regra.
+> ⚠️ **O vão declarado: a metade "prosa manual" não tem gate.** Markdown escrito à mão — `README.md`, as specs, os comentários que viajam para o consumidor — não é comparado com nada. Os achados **24** (o `main.tsx` que todo consumidor novo recebe citava um serviço obsoleto) e **25** (comentário afirmando que uma pasta inexistente "segue publicada") foram exatamente essa metade — os dois **fecharam** com a `plan-07`, e o registro está em [[15-divida-conhecida]]. **O vão do gate continua**: o que os pegou foi leitura humana, não verificação. A parte **verificável** dessa metade — ponteiro morto na prosa dos artefatos gerados — é **R23**, e ela também tem escopo menor que a regra.
 
 ---
 
@@ -678,7 +693,7 @@ O baseline corrente — data, métrica a métrica — vive em `gates/baselines/a
 
 **Enunciado.** Se `dist/` ou `sarak-ui/` mudaram desde a última tag `v*`, o push para `main` **exige uma tag nova**.
 
-**Por quê.** O consumidor resolve a versão por **tag** (`#semver:^1.x`), não por commit. Sem tag nova ele fica no artefato antigo **em silêncio** — é o incidente que o [[007-distribuicao-por-git]] registra, e a razão de existirem **zero tags em 331 commits** nunca foi falta de conhecimento: foi falta de gatilho.
+**Por quê.** O consumidor resolve a versão por **tag** (`#semver:^1.x`), não por commit. Sem tag nova ele fica no artefato antigo **em silêncio** — é o incidente que o [[007-distribuicao-por-git]] registra, e a razão de o repositório ter passado **centenas de commits sem uma única tag** nunca foi falta de conhecimento: foi falta de gatilho. *(Desde o gate, a linha publicada é `git tag`.)*
 
 **Certo × Errado.**
 
@@ -762,7 +777,7 @@ ERRADO   "edite `src/core/Manifest/Registry/nativeComponents.ts`" → arquivo re
 
 Metavariável (`<Categoria>`) e glob (`*`) são **ignorados de propósito** (`:49-60`): um verificador que adivinha produz falso-positivo, e gate com falso-positivo é gate que se aprende a contornar — o autor simplesmente para de usar crase, que é o que dá poder a este gate.
 
-> ⚠️ **Os dois vãos declarados.** (1) **Só `sarak-dev/` é varrido** — `docs/`, `sarak-ui/` e as specs não são. (2) **Ponteiro de seção (`§N.N`) não é validado**, e é exatamente onde a regra está sendo violada: o bloco gerado manda "regenere com o script do **§5.1** do guia", e o `GUIA-MANUTENCAO.md` não tem §5.1 — o alvo real é o §2. O texto sai em **dois** artefatos gerados (`sarak-dev/GUIA-MANUTENCAO.md:308` e `state.json:44`). Achado 29 em [[15-divida-conhecida]].
+> ⚠️ **Os dois vãos declarados.** (1) **Só `sarak-dev/` é varrido** por este gate — `docs/`, `sarak-ui/` e as specs não são. (2) **Ponteiro de seção (`§N.N`) não é validado por ele**: quem cobre isso é o `auditor_sectionpointers.mjs`, e só a **autorreferência** — ponteiro `§N` que aponta para outro documento fica fora, declarado no cabeçalho do script. O achado **29**, que era a instância viva deste vão (um `§5.1` inexistente saindo em dois artefatos gerados), **fechou** — ver [[15-divida-conhecida]].
 
 ---
 
@@ -784,7 +799,7 @@ h1,h2 { margin: 0 }
 .sarak-scope h1, .sarak-scope h2 { margin: 0 }
 ```
 
-**Cobrada por:** dois gates de suíte — `src/core/Provider/__tests__/scopeCss.test.ts`, que exercita o transformador `scopeCss` de `scripts/build-scoped-css.mjs` inclusive nos casos que quebram um prefixador ingênuo (universal, âncora de documento, `:not()` aninhado, at-rules) e afirma que a classe de escopo do **build** é a mesma do **runtime**; e `EmbeddedMode.test.tsx`. Rodam em `npx vitest run` (Anel 3 do `pre-push`). Contrato do modo em [[24-modo-embarcado]] §2.1.
+**Cobrada por:** dois gates de suíte — `src/core/Provider/__tests__/scopeCss.test.ts`, que exercita o transformador `scopeCss` de `scripts/build-scoped-css.mjs` inclusive nos casos que quebram um prefixador ingênuo (universal, âncora de documento, `:not()` aninhado, at-rules) e afirma que a classe de escopo do **build** é a mesma do **runtime**; e `EmbeddedMode.test.tsx`. Rodam em `npx vitest run` (Anel 3 do `pre-push`). O contrato do modo embarcado — o que é tocado e o que nunca é — está em [[01-forma-do-produto-e-modos-de-consumo]], na seção do eixo `app`/`embedded`.
 
 ---
 
@@ -792,7 +807,7 @@ h1,h2 { margin: 0 }
 
 **Estado:** ✅ gate pleno, via suíte.
 
-**Enunciado.** Carregar **qualquer** um dos 18 temas shippados não emite aviso `fora do contrato` nenhum no `console.warn`.
+**Enunciado.** Carregar **qualquer** tema shippado não emite aviso `fora do contrato` nenhum no `console.warn`. O conjunto é `GLOBAL_THEMES`, e o teste itera sobre ele — não sobre uma lista fixada aqui.
 
 **Por quê.** É o teste de coerência entre R5 e R6: se um tema **da lib** dispara o descarte de R6, a lib está entregando ao consumidor um ponto de partida que o próprio motor rejeita — e o consumidor vê o aviso, não sabe que é nosso, e vai caçar o defeito no código dele. Aviso que aparece sempre também vira aviso que ninguém lê, e aí o dia em que o warn for **dele** já não terá efeito.
 
@@ -855,7 +870,7 @@ R14 (barril completo) garante que o consumidor não **precise** de deep import; 
 | Existe versão nova e há comando a rodar | bloco destacado, **exit 0** | veredito, **exit 1** |
 | A verificação estourou | **silêncio, exit 0** | mensagem de falha, **exit 1** |
 
-**Cobrada por:** `bin/scaffold/checkUpdate/__tests__/checkUpdateCli.contract.test.mjs` (construído pela `plan-12`, 2026-08-05) — 8 casos, exercitando `runCheckCli` real (fixtures `file:`, sem rede) nos 4 quadrantes da tabela acima (normal/`--notify` × em dia/desatualizado/falhou), mais o caso de exceção lançada por `runCheckUpdate`. Roda em `npx vitest run` (Anel 3 do `pre-push`), mesma família de R6/R13/R24-26. `runCheckCli` está implementado e comentado em `bin/scaffold/checkUpdate.mjs:14-28` (`runCheckCli` engole qualquer exceção no modo notify em `:20-24`, decide o código em `:27`), e `formatNotice` devolve `null` para tudo que não seja "existe versão nova E há um comando" (`checkUpdate/runCheckUpdate.mjs:199-201`). ⚠️ O teste do CLI **não** cobre o achado 26 (automação de `install` real via `child_process`/`execSync`) — são contratos diferentes; 26 segue aberto, roteado à `plan-11`.
+**Cobrada por:** `bin/scaffold/checkUpdate/__tests__/checkUpdateCli.contract.test.mjs` (construído pela `plan-12`, 2026-08-05) — 8 casos, exercitando `runCheckCli` real (fixtures `file:`, sem rede) nos 4 quadrantes da tabela acima (normal/`--notify` × em dia/desatualizado/falhou), mais o caso de exceção lançada por `runCheckUpdate`. Roda em `npx vitest run` (Anel 3 do `pre-push`), mesma família de R6/R13/R24-26. `runCheckCli` está implementado e comentado em `bin/scaffold/checkUpdate.mjs:14-28` (`runCheckCli` engole qualquer exceção no modo notify em `:20-24`, decide o código em `:27`), e `formatNotice` devolve `null` para tudo que não seja "existe versão nova E há um comando" (`checkUpdate/runCheckUpdate.mjs:199-201`). ⚠️ O teste do CLI **não** cobre o achado 26 (automação de `install` real via `child_process`/`execSync`) — são contratos diferentes; 26 segue aberto, e desde 2026-08-11 está roteado à **`plan-10`** (ciclo de atualização), não à `plan-11`: nunca foi E2E, é ciclo de instalação.
 
 > **Esta regra custou uma rodada inteira na `plan-04` por não existir escrita.** É o argumento mais curto a favor de escrever a regra antes de construir o gate. Contrato completo em [[13-instalacao-e-atualizacao]] §5.1.
 
@@ -914,14 +929,14 @@ ERRADO   a união do toast do alvo aceita 'error'|'success'|'warning' e a funç�
 | `src/features/DesignEngine/Main/ThemeCustomizationTab.tsx:86` | `TS2322` — união de toast incompatível | **1, produção** |
 | `BarrelParity.test.ts` (4) · `ZeroBrand.test.ts` (2) · `Spec21.spec.tsx` (3) · `shippedThemesConsoleClean.test.ts` (1) | `TS7016`/`TS7006`/`TS2741`/`TS2353` — import de `.mjs` sem tipos e fixtures incompletas | **10, teste** |
 
-> **Regra que nasce vermelha é honesta; regra que finge estar cumprida é ficção.** Se o gate pleno entra com baseline (como o `audit:baseline`) ou só depois da quitação é decisão da `plan-12`. A quitação dos 4 de produção é da `plan-07`.
+> **Regra que nasce vermelha é honesta; regra que finge estar cumprida é ficção.** A pergunta que estava em aberto — se o gate pleno entraria com baseline ou só depois da quitação — **foi resolvida pelos fatos**: a quitação de produção veio primeiro (`plan-07`) e o Anel 2 passou a separar as duas classes, com produção em hard-block a zero e teste contra o piso.
 
 ---
 
 ## R31 — Contraste AA nos temas de referência
 
-**Estado:** ⚠️ **escopo menor que a regra**. **O gate existe, e desde 2026-08-11 os 18 temas passam nos dois
-modos** — `0` reprovados no nativo, `0` no oposto.
+**Estado:** ⚠️ **escopo menor que a regra**. **O gate existe, e desde 2026-08-11 os temas shippados passam nos
+dois modos** — baseline `0` no nativo e `0` no oposto, valor corrente em `npm run audit`.
 
 > **A trajetória, porque ela explica o marcador.** ⏳ até 2026-08-10 (`plan-24` construiu o gate; ele nasceu
 > **vermelho com 188**, por desenho). ⚠️ desde então — ⏳ significa *"a verificação ainda não foi
@@ -934,14 +949,16 @@ modos** — `0` reprovados no nativo, `0` no oposto.
 > esta spec proíbe no aviso da §1.2. **O marcador descreve a verificação, não a conformidade** — e a
 > conformidade, hoje, está verde.
 
-**Enunciado.** Os **18 temas shippados** garantem contraste **WCAG AA** (4,5:1 para texto normal, 3:1 para texto grande) nos pares texto/fundo que produzem. A lib **não promete AA** para tema escrito pelo consumidor.
+**Enunciado.** **Todo tema shippado** (o conjunto `GLOBAL_THEMES`) garante contraste **WCAG AA** (4,5:1 para texto normal, 3:1 para texto grande) nos pares texto/fundo que produz. A lib **não promete AA** para tema escrito pelo consumidor.
 
-**Por quê.** É o caminho do meio, e as duas metades importam. A metade que **não** se promete já estava registrada em [[10-seguranca-e-acessibilidade]] §2.4d: *"o tema é dado do consumidor; prometer AA exigiria a lib recusar valores dele, o que contradiz o contrato de tema"* (R6 descarta o que está **fora do contrato**, não o que está feio). Isso está certo — e **não cobre os 18 temas que são da lib**, entregues como ponto de partida. A própria spec admite, no item 5.2, que *"a lib não sabe dizer se os 18 passam AA"*. R31 fecha essa metade, e só ela.
+> ⚠️ **Não confunda dois conjuntos.** *"Os temas shippados"* é `GLOBAL_THEMES` inteiro, e cresce. *"Os **18** legados"* é a lista fechada de isenção de **contraparte** do `auditor_contraste` — conjunto real, nomeado, que **só encolhe**. Escrever "18" onde se quer dizer "shippados" é o erro que esta regra já cometeu.
+
+**Por quê.** É o caminho do meio, e as duas metades importam. A metade que **não** se promete já estava registrada em [[10-seguranca-e-acessibilidade]] §2.4d: *"o tema é dado do consumidor; prometer AA exigiria a lib recusar valores dele, o que contradiz o contrato de tema"* (R6 descarta o que está **fora do contrato**, não o que está feio). Isso está certo — e **não cobre os temas que são da lib**, entregues como ponto de partida. Aquela spec chegou a admitir que a lib não sabia dizer se os próprios temas passavam AA. R31 fecha essa metade, e só ela.
 
 **Certo × Errado.**
 
 ```
-CERTO    "os 18 temas de referência passam AA; o seu tema é responsabilidade sua"
+CERTO    "os temas shippados passam AA; o seu tema é responsabilidade sua"
 ERRADO   "a lib é acessível"          — promessa que abrange dado de terceiro
 ERRADO   silêncio                     — o consumidor assume que passa
 ```
@@ -976,8 +993,8 @@ cadeia de fundo (`efetiva = alfa × cor + (1 − alfa) × fundo`), não pulada.
    medidos antes da correção dos temas): o fundo real deles é `--sarak-status-*-color-bg`, que **nunca é
    emitida** — cobrar isso do tema seria acusar o autor por defeito de componente. Achado **38** em
    [[15-divida-conhecida]] §3.1.
-3. **O tema do consumidor não é coberto** — por desenho: a regra promete AA nos **18 shippados**, não no dado
-   de terceiro. Ver a nota de migração de D em `docs/migracoes.md`.
+3. **O tema do consumidor não é coberto** — por desenho: a regra promete AA nos **temas shippados**, não no
+   dado de terceiro. Ver a nota de migração de D em `docs/migracoes.md`.
 
 > `useMediaLuminance.ts` mede **luminância de mídia** para escolher cor de texto sobre imagem — **não** é
 > contraste WCAG. Confundir os dois é a forma mais fácil de declarar cobertura que não existe.
@@ -1020,7 +1037,7 @@ emitindo as mesmas variáveis CSS** na versão **N+1**. Remover ou renomear chav
 contrato público** — exige major e nota de migração, como qualquer remoção de API.
 
 > **O que é contrato e o que é conteúdo.** A **chave** e a variável que ela produz são contrato. **A cor não
-> é.** Os 18 temas shippados são conteúdo da lib e podem ser recriados à vontade — foi exatamente o que o dono
+> é.** Os temas shippados são conteúdo da lib e podem ser recriados à vontade — foi exatamente o que o dono
 > autorizou para a `plan-24-1`. Sem essa distinção, *"tema antigo não pode quebrar"* e *"vamos recriar os 18"*
 > se contradiriam.
 
@@ -1038,7 +1055,7 @@ alarde). São faces opostas da mesma fronteira.
 ```
 CERTO    remover chave do domínio  ⇒ major + nota de migração + a fixture do corpus acusa
 ERRADO   remover chave do domínio  ⇒ patch, e o consumidor descobre pelo console
-ERRADO   congelar os 18 temas      — trava a recriação; cor é conteúdo, não contrato
+ERRADO   congelar os temas da lib  — trava a recriação; cor é conteúdo, não contrato
 ```
 
 **Cobrada por:** `src/core/Provider/utils/__tests__/consumerThemeContract.test.ts` (`plan-24`) — corpus de
@@ -1215,7 +1232,7 @@ e a correção é criar o token (R11 → Expansão), não remendar do lado de fo
 | R20 | Baseline não regride | ✅ | `check-audit-baseline.mjs` (Anel 2) | `npm run audit:baseline` |
 | R21 | Artefato mudou, exige tag | ✅ | `check-release-tag.mjs` (`pre-push`) | `npm run release:check` |
 | R22 | Zero segredo no staged | ✅ | `verificar_commit.py` (Anel 0) | `python gates/scripts/segredo/verificar_commit.py --raiz .` |
-| R23 | Zero ponteiro morto no gerado | ⚠️ | `dev-kit/deadPointers.mjs` (caminhos/comandos em `sarak-dev/`) **+** `check-section-pointers.mjs` (`§N.N`, escopo amplo) — este **não resolve cross-documento**: cobre 271 de 455 ponteiros | `npm run dev-kit:check` |
+| R23 | Zero ponteiro morto no gerado | ⚠️ | `dev-kit/deadPointers.mjs` (caminhos/comandos em `sarak-dev/`) **+** `auditor_sectionpointers.mjs` (`§N.N`) — este **só resolve autorreferência**; o número de ponteiros cross-documento ignorados sai na própria execução | `npm run dev-kit:check` · `npm run section-pointers:check` |
 | R24 | CSS não vaza no host | ✅ | `scopeCss.test.ts` · `EmbeddedMode.test.tsx` | `npx vitest run` |
 | R25 | Temas shippados sem ruído | ✅ | `shippedThemesConsoleClean.test.ts` | `npx vitest run` |
 | R26 | Paridade de ícones | ✅ | `iconCatalogParity.test.ts` · `iconContract.test.tsx` | `npx vitest run` |
@@ -1223,7 +1240,7 @@ e a correção é criar o token (R11 → Expansão), não remendar do lado de fo
 | R28 | Contrato de saída do CLI | ✅ | `checkUpdateCli.contract.test.mjs` (8 casos) | `npx vitest run` |
 | R29 | Gerado bate com a fonte | ✅ | **os 5 geradores têm `--check`, e os 5 rodam**: `token-types` · `catalog` · `guide` dentro do `build`; `build-info` e `dev-kit` no `gates:full` | `npm run catalog:check` … |
 | R30 | O TypeScript compila | ⚠️ | **0 erros, produção e teste** *(medido 2026-08-08)*; baseline em 0 ⇒ qualquer erro novo bloqueia. O vão que resta é o **gatilho**: o `--with-tsc` do Anel 2 só liga quando o staged tem `.ts`/`.tsx` | `npx tsc --noEmit` |
-| R31 | Contraste AA nos 18 temas | ⚠️ | `auditor_contraste.mjs` → `verify_contrast.ts` — **36 pares, 4,5:1, alfa composto, DUAS passadas** (nativo + modo oposto); baseline **0 e 0**. Vãos que restam: **25 pares-tema pulados** (fundo não determinístico) e as cores de status, fora com número | `npm run audit` |
+| R31 | Contraste AA nos temas shippados | ⚠️ | `auditor_contraste.mjs` → `verify_contrast.ts` — **36 pares, 4,5:1, alfa composto, DUAS passadas** (nativo + modo oposto); baseline **0 e 0**. Vãos que restam: pares-tema **pulados** por fundo não determinístico e as cores de status, fora com número — contagem corrente na execução | `npm run audit` |
 | **R33** | **Payload de tema é contrato público** | **✅** | `consumerThemeContract.test.ts` (`plan-24`) — corpus de payload de consumidor; chave que sai do domínio para de emitir e o teste falha | `npx vitest run` |
 | **R34** | **Átomo renderiza sem Provider** | **✅** | `SarakUIProvider.test.tsx` — `useSarakUIOptional` devolve `null` + `warn` em vez de lançar; **é o que tornou a R10 pagável**. O hook **não** é exportado, de propósito | `npx vitest run` |
 | R32 | Indiferente à autenticação | ✅ | `auditor_authcoupling.mjs` — nasce verde | `npm run audit` |
@@ -1271,13 +1288,13 @@ humana. **Validador** é invocado pelo gate, sempre. Os dois vivem lado a lado n
 
 Cinco coisas ficam registradas em voz alta, porque quem lê um contrato precisa saber onde ele é fino:
 
-1. **As regras de conduta permanente dependem de revisão humana, sem gate** — R11, R15, R16, a categoria 🔴 da §1.2. A categoria ⏳ (gate a construir) está **vazia**: a última a sair dela foi R31, com a `plan-24`. *(Atualizado em 2026-08-10: a `plan-24` fechou o gate que faltava — R31; antes dela, as plans 12 e 16 já haviam construído os de R10, R18, R27, R28, R32.)*
+1. **As regras de conduta permanente dependem de revisão humana, sem gate** — R11, R15, R16, a categoria 🔴 da §1.2. A categoria ⏳ está **vazia entre as regras numeradas**: a última a sair dela foi R31, com a `plan-24`. ⚠️ **Uma sub-regra ainda carrega ⏳ sem descrever o repositório** — a **R8.1**, cujo gate foi construído em 2026-08-05; o marcador está conservado ali de propósito, aguardando decisão do revisor (ver a própria R8.1).
 2. **As regras marcadas ⚠️ na tabela da §1.3 têm o escopo do gate menor que o da regra**, e cada vão está escrito na linha da própria regra, não em nota de rodapé. R14 tinha o mesmo defeito e foi corrigida em P26 **ampliando o escopo do gate junto com o conserto** — é o modelo que R18 generaliza, e R18 agora tem gate próprio (`check-gate-limits.mjs`).
-3. **Uma regra continua nascendo violada, por desenho declarado**: R30 (`tsc` — produção é hard-block a zero; teste é tolerado como piso móvel, com o valor corrente em `gates/baselines/audit-baseline.json`). R7 e R32 **fecharam** (`--sx-*` corrigido pela `plan-07`; `SarakSecurityOrchestrator` removido pela `plan-09`, antes de o gate de R32 nascer — ele já nasceu verde). **R15 segue violada de forma declarada.** R10, cujo gate nasceu em 2026-08-05, registra no mesmo baseline (`auditor_composicaoatomica.violacoes`) — dívida explícita da `plan-15`, ainda não paga.
+3. **As violações declaradas hoje vivem no baseline, não nesta prosa.** R30 (`tsc`) nasce com produção em hard-block a zero e teste tolerado como piso; R10 registra o resíduo dela em `auditor_composicaoatomica.violacoes`. As duas contagens correntes estão em `gates/baselines/audit-baseline.json`. R7 e R32 **fecharam** as violações com que nasceram (`--sx-*` corrigido pela `plan-07`; `SarakSecurityOrchestrator` removido pela `plan-09`, antes de o gate de R32 nascer — ele já nasceu verde). **R15 é a única que segue violada por decisão declarada**, e o motivo está na própria regra.
 4. **As duas regras que não tinham teste ganharam um**: R28 (`checkUpdateCli.contract.test.mjs`, 8 casos) e R18 (`check-gate-limits.mjs`).
 5. **Nenhuma regra existente foi renumerada nesta reestruturação.** R10, R11, R15 e R16 mudaram de **categoria** e mantiveram o número, porque o `.githooks/pre-commit:68-71` imprime números na mensagem de bloqueio e há citação em código, skills e specs.
 
-Nenhum destes é corrigido aqui — **regra nasce descrevendo o que é**. Cada um está catalogado com `arquivo:linha` em [[01-gates-e-baseline]] e [[15-divida-conhecida]], que é onde a dívida mora; pagar o que os gates novos acusam é a **`plan-15`**, ainda não executada.
+Nenhum destes é corrigido aqui — **regra nasce descrevendo o que é**. Cada um está catalogado com `arquivo:linha` em [[01-gates-e-baseline]] e [[15-divida-conhecida]], que é onde a dívida mora; **pagar o que os gates acusam é sempre plan própria**, na fila do [[00-indice]] — nunca efeito colateral de uma plan de regra.
 
 # 6. Critérios de aceite
 
@@ -1285,7 +1302,7 @@ Nenhum destes é corrigido aqui — **regra nasce descrevendo o que é**. Cada u
 - [x] **Duas categorias** — verificáveis (§2) e de conduta (§3) — cuja contagem se lê na tabela da §1.3, nunca fixada aqui.
 - [x] Nenhum gate foi inventado: cada comando da §4 existe no repositório e foi lido no código antes de descrito.
 - [x] Cada regra de conduta traz **o motivo de não ter gate** na própria linha, não em nota.
-- [x] Os vãos de escopo que continuam abertos (R4, R14, R17, R23, R30) estão declarados **na linha da regra**; R7, R8 e R29 fecharam os deles, e o fecho também está declarado na linha, não escondido.
+- [x] Toda regra marcada ⚠️ na tabela da §1.3 declara o vão **na linha da própria regra**; onde o vão fechou, o fecho também está declarado ali, não escondido. A lista de quais são ⚠️ se lê na §1.3, não é repetida aqui.
 - [x] Toda regra abre com o marcador de estado do vocabulário fixo da §1.2 (✅ · ⚠️ · ⏳ · 🔴).
 - [x] **Nenhuma regra foi renumerada.** R1–R17 mantêm o número; R10, R11, R15 e R16 mudaram só de categoria.
 - [x] R30 declarada **violada**, com a composição medida — *(atualizado 2026-08-07: a `plan-12` separou produção de teste; produção fechou em 0/hard-block pela `plan-07`; a classe de teste é tolerada como piso, valor corrente em `gates/baselines/audit-baseline.json`)*.

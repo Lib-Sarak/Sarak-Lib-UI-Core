@@ -44,11 +44,12 @@ as duas, sempre, na mesma ação.**
 | 1 | [plan-28-reconciliar-contexto](plan/plan-28-reconciliar-contexto.md) | Fazer a porta de entrada dos agentes descrever o repositório que existe | — | 🟢 Aprovada | — |
 | 2 | [plan-29-erradicar-cifra-em-prosa](plan/plan-29-erradicar-cifra-em-prosa.md) | Fazer as quatro specs fixas pararem de afirmar totais que já envelheceram | plan-28 | 🟢 Aprovada | — |
 | 3 | [plan-31-segunda-onda-cifra](plan/plan-31-segunda-onda-cifra.md) | Fechar a cifra em prosa nas quatro specs fixas restantes, com a spec do mantenedor primeiro | plan-29 | 🟢 Aprovada | — |
-| 4 | [plan-32-contrato-unico-leitura-integral](plan/plan-32-contrato-unico-leitura-integral.md) | Fazer o contrato único parar de declarar vãos e violações que já foram fechados | plan-29 | 🔴 A executar | — |
-| 5 | [plan-30-pagar-divida-aberta](plan/plan-30-pagar-divida-aberta.md) | Zerar a seção de achados abertos da spec de dívida conhecida | — | 🔴 A executar | specs/15-divida-conhecida.md · specs/01-gates-e-baseline.md |
-| 6 | [plan-11-remover-e2e-falso-verde](plan/plan-11-remover-e2e-falso-verde.md) | Remover o aparato de E2E que produz verde falso, deixando a capacidade declarada como adiada | — | 🔴 A executar | specs/specs/11-testes-e-cobertura.md · specs/specs/15-divida-conhecida.md |
-| 7 | [plan-05-integracao-continua](plan/plan-05-integracao-continua.md) | Rodar os gates num ambiente que não é a máquina de ninguém | — | 🔴 A executar | specs/16-integracao-continua.md · specs/02-enforcement-por-commit.md · specs/01-gates-e-baseline.md |
-| 8 | [plan-10-ciclo-atualizacao](plan/plan-10-ciclo-atualizacao.md) | Dar comando de atualização a quem só recebia aviso | plan-05 | 🔴 A executar | specs/13-instalacao-e-atualizacao.md |
+| 4 | [plan-32-contrato-unico-leitura-integral](plan/plan-32-contrato-unico-leitura-integral.md) | Fazer o contrato único parar de declarar vãos e violações que já foram fechados | plan-29 | 🟢 Aprovada | — |
+| 5 | [plan-33-marcadores-e-residuo-de-gates](plan/plan-33-marcadores-e-residuo-de-gates.md) | Resolver os dois marcadores de estado em desacordo e fechar a última spec que ainda roteia plans removidas | plan-32 | 🔴 A executar | — |
+| 6 | [plan-30-pagar-divida-aberta](plan/plan-30-pagar-divida-aberta.md) | Zerar a seção de achados abertos da spec de dívida conhecida | — | 🔴 A executar | specs/15-divida-conhecida.md · specs/01-gates-e-baseline.md |
+| 7 | [plan-11-remover-e2e-falso-verde](plan/plan-11-remover-e2e-falso-verde.md) | Remover o aparato de E2E que produz verde falso, deixando a capacidade declarada como adiada | — | 🔴 A executar | specs/specs/11-testes-e-cobertura.md · specs/specs/15-divida-conhecida.md |
+| 8 | [plan-05-integracao-continua](plan/plan-05-integracao-continua.md) | Rodar os gates num ambiente que não é a máquina de ninguém | — | 🔴 A executar | specs/16-integracao-continua.md · specs/02-enforcement-por-commit.md · specs/01-gates-e-baseline.md |
+| 9 | [plan-10-ciclo-atualizacao](plan/plan-10-ciclo-atualizacao.md) | Dar comando de atualização a quem só recebia aviso | plan-05 | 🔴 A executar | specs/13-instalacao-e-atualizacao.md |
 <!-- SARAK-INDICE:FILA:FIM -->
 
 > **A ordem da coluna `#` não é a ordem do número da plan** — e isso é a feature, não um erro. Numeração é

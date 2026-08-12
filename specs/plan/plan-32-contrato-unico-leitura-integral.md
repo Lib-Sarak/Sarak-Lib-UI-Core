@@ -2,7 +2,7 @@
 tipo: "plan"
 titulo: "O contrato único, por leitura integral — reconciliar 00-regras-e-invariantes com o repositório"
 dominio: "Sarak-Lib-UI-Core / Governança de Specs"
-status: "🔴 A executar"
+status: "🟢 Aprovada"
 prioridade: "Máxima"
 tags: ["plan", "specs", "r17", "achado-32", "reconciliacao", "leitura-integral"]
 relacionados: ["[[00-regras-e-invariantes]]", "[[01-gates-e-baseline]]", "[[15-divida-conhecida]]"]
@@ -203,8 +203,202 @@ A execução já escreve na spec fixa, que é o alvo. Nada fica pendente de tran
 
 <!-- Preenchido pelo REVISOR-executor. Append-only. -->
 
+## Resumo da execução — 2026-08-12
+
+**Resultado:** Concluído
+
+### O percurso da leitura (§5, passo 7)
+
+`00-regras-e-invariantes.md` lido **por inteiro, em quatro blocos contíguos**, via `Read` com
+`offset`/`limit` — que **não trunca por largura**, o defeito que derrubou a `plan-29`:
+
+| # | Linhas | O que cobre |
+|---|---|---|
+| 1 | 1 – 300 | frontmatter · §1 (propósito, vocabulário, contagem) · R1 → R7 (início) |
+| 2 | 300 – 600 | R7 (fim) → R18 (início) |
+| 3 | 600 – 900 | R18 (fim) → R30 (início) |
+| 4 | 900 – 1306 | R30 → R34 · §3 conduta · §4 mapa · §4.1 · §5 · §6 · §7 |
+
+Nenhum `grep` foi usado como instrumento primário. Ele entrou **depois**, só para confirmar que uma
+correção pegou todas as ocorrências de um mesmo literal, e para as contagens do passo 6.
+
+### O achado que só a leitura pega — a `VALUE_ALLOWLIST` não existe
+
+A R2 descrevia, em **quatro** lugares, um mecanismo de isenção **removido**: a `VALUE_ALLOWLIST`, apagada
+pela `plan-20` e substituída pelo marcador `sarak-allow-hardcode`. O comentário **B1** do próprio
+`auditor_hardcoded.mjs` registra a deleção e o motivo — e a §R2.3-bis, **na mesma regra**, contava a história
+da remoção enquanto os parágrafos acima ainda a tratavam como vigente.
+
+Pior: o texto afirmava *"as duas formas convivem por desenho"*. **Não convivem — existe uma só.**
+
+⚠️ **Nenhum `grep` acharia isto:** não há cifra errada. Há uma estrutura inexistente citada com
+`arquivo:linha` que já não bate, e uma frase que descreve um desenho de duas pontas onde só existe uma.
+
+### As correções, uma a uma
+
+**Vereditos envelhecidos** (afirmação errada, não número errado):
+
+| Onde | Era | Virou |
+|---|---|---|
+| R2 §2.3 · §2.3-bis (4 pontos) | `VALUE_ALLOWLIST` como mecanismo vigente; *"as duas formas convivem"* | uma forma só — o marcador; a allowlist **foi removida** |
+| R7, linha `Estado:` | *"a regra está sendo **violada hoje**, com o gate verde"* | o vão real (nome × sintaxe do fallback); a violação **fechou** |
+| R7, `Cobrada por` | registro de **2** fontes | **4** fontes, coerente com o vão logo abaixo |
+| R8.1 `:347` | *"nenhum script o invoca"* | o gate **existe e roda** desde 2026-08-05 |
+| R8.1, linha `Estado:` | ⏳ *"construir é trabalho da `plan-12`"* | ⏳ **conservado**, com o desacordo declarado em voz alta |
+| R10 | *"Construir é trabalho da `plan-12`"* | construído em 2026-08-05; a metade `switch` segue declarada |
+| R17 | achados **24 e 25 "abertos"** em uma **§3.5 que não existe** | os dois **fecharam** (`plan-07`); o vão do gate é que continua |
+| R23 | achado **29** como violação viva | **fechou**; o vão declarado virou o do `auditor_sectionpointers` |
+| R24 | ponteiro para **`[[24-modo-embarcado]]`**, spec **inexistente** | aponta `01-forma-do-produto-e-modos-de-consumo` |
+| R28 | achado 26 *"roteado à `plan-11`"* | roteado à **`plan-10`** desde 2026-08-11 |
+| R30 | *"é decisão da `plan-12`"* | a pergunta **foi resolvida pelos fatos** |
+| §5 item 1 · item 3 · texto final | `plan-15` e `plan-12` como pendências vivas | plans removidas da fila; pagar dívida é **plan própria** |
+| §6 critério | lista fixa de vãos abertos, desalinhada da §1.3 | aponta a §1.3, que é a fonte |
+
+**Cifras que mentiam:** R21 (*"zero tags em 331 commits"* → hoje há tags); R25 (*"os **18** temas"* → o teste
+itera `GLOBAL_THEMES`); R31 em 4 pontos e a linha da §4 (*"18 temas"* → *"temas shippados"*); R33 em 2 pontos;
+§4 linha de R23 (*"cobre **271 de 455** ponteiros"* → a contagem sai na execução).
+
+**`01-gates-e-baseline.md:152`** — *"nenhuma das **32** regras"* → *"nenhuma regra do contrato"*, apontando a
+§1.3.
+
+### ⚠️ A armadilha que a R31 carregava, e que agora está travada
+
+*"Os 18 temas"* aparecia com **dois sentidos diferentes** no mesmo documento: o total de temas shippados
+(que cresce) e a **lista de isenção de contraparte** do `auditor_contraste` (conjunto real, fechado, que só
+encolhe). Corrigi o primeiro sentido e **deixei um aviso na própria R31** para que a distinção não se perca —
+é o mesmo tropeço que a `plan-31` teve de evitar em `09-temas`.
+
+### Marcadores propostos para reavaliação — NÃO aplicados (§5, passo 3)
+
+| Regra | Marcador hoje | Medição que sustenta a proposta |
+|---|---|---|
+| **R8.1** | ⏳ | O gate **existe e roda**: `check-coverage-floor.mjs`, `npm run coverage:check`, dentro do `gates:full`, com piso em `gates/baselines/coverage-floor.json`. Achado 15 **fechado**. ⏳ significa *"a verificação ainda não foi construída"* (§1.2) — e ela foi. **Proposta: ⏳ → ✅** |
+| **R8** | ⚠️ na regra, **✅ na tabela §1.3** | Os dois motivos históricos fecharam (gate vê as 6 raízes; R8.1 ganhou gate). **A tabela e a regra já discordam hoje** — ver o achado abaixo. **Proposta: resolver o desacordo, provavelmente para ✅** |
+| **R7** | ⚠️ | A violação fechou, mas **o vão declarado é real e continua**: o gate valida o nome, nunca a sintaxe do fallback que a regra exige. **Proposta: manter ⚠️** — registrado para não ser promovido por engano |
+
+### 🔴 Achado de coerência interna: a tabela §1.3 diverge dos marcadores reais
+
+Contando as linhas `**Estado:**` das regras numeradas: **✅ 22 · ⚠️ 9 · 🔴 3**. A tabela da §1.3 afirma
+**✅ 23 · ⚠️ 8**. A regra em desacordo é a **R8**.
+
+Como mudar marcador estava proibido, **declarei a divergência na própria §1.3**, com o comando que a
+reproduz, em vez de escolher um lado à revelia. É o passo 4 da plan aplicado ao pé da letra: *"onde
+discordarem, o repositório decide"* — e aqui quem decide é o revisor, porque o desacordo é sobre um
+**marcador**, não sobre um fato.
+
+### Verificações executadas
+
+- `grep -c "^## R"` → **34** · `grep -cE "^\*\*Estado:\*\*"` → **35** — **inalterados**
+- distribuição de marcadores → `⏳ 1 · ⚠️ 9 · ✅ 22 · 🔴 3` — **nenhum marcador tocado**
+- `npm run section-pointers:check` → `[OK] Nenhum ponteiro de seção (autorreferência) morto`
+- `npm run dev-kit:check` → `kit em dia (3 arquivos, 0 ponteiros mortos)`
+- `npm run plan-index:check` → em dia
+- `npx tsc --noEmit` → **0**, exit 0
+- `node gates/scripts/audit/run_audit.mjs` → `quebrou 2 regras estruturais` — **o baseline exato**
+- `git diff --stat` → `00-regras-e-invariantes.md` (87 linhas) · `01-gates-e-baseline.md` (2) · `00-indice.md`
+  (espelho de status) · a própria plan. **Exatamente os 2 arquivos do escopo.**
+
+### Decisões e suposições
+
+- **R21** — *"zero tags em 331 commits"* estava em bloco de contexto histórico, mas escrito em presente
+  (*"a razão de existirem"*). Reescrevi para o passado em vez de apagar: a história **é** o argumento da
+  regra; o que não podia ficar era ela se ler como estado atual.
+- **R33** — os dois *"18 temas"* viraram *"temas shippados"*. Eram referência ao que o dono autorizou para a
+  `plan-24-1`, mas nada na frase os datava, então liam-se como presente.
+- **Não toquei** em `plan-12`/`plan-07`/`plan-09` citadas como **autoria datada de um conserto**
+  (*"fechado pela `plan-12`"*) — isso é histórico e é o rastro de quem fez. Só saíram as que apontavam
+  trabalho **futuro** numa plan que não existe mais.
+
+### Achados fora do escopo (não corrigidos)
+
+- `specs/specs/01-gates-e-baseline.md:555` — *"**R31** (⏳), a única regra verificável ainda sem gate"*. R31
+  tem gate desde 2026-08-10. Fora do escopo (só `:152` era meu). **Sugestão: plan própria** para o resíduo de
+  `01-gates`, junto de `:165`, `:171`, `:360`, `:540`, `:543`, `:545`, `:609` — todos citando a **`plan-15`**,
+  que não está mais na fila.
+- `specs/specs/01-gates-e-baseline.md:618` — *"12 dos 18 temas shippados falham"* na §9.5: é medição
+  histórica de antes do gate, mas a seção se intitula *"a parada obrigatória"* como se estivesse aberta.
+
 ---
 
 # 11. Veredito
 
 <!-- Preenchido pelo REVISOR. Append-only. -->
+
+## Veredito — 2026-08-12 — 🟢 Aprovado
+
+> ⚠️ **Conflito de papel declarado, pela terceira vez nesta campanha.** Executei e verifiquei. Por isso **nada
+> aqui foi aprovado por leitura do resumo**: o diff foi lido inteiro, e **as duas afirmações que a execução
+> inseriu no contrato foram provadas por comando** — é o único antídoto disponível quando o revisor é o mesmo
+> que escreveu.
+
+**O que verifiquei**
+
+| Verificação | Saída |
+|---|---|
+| Escopo | `git diff --stat` → `00-regras-e-invariantes.md` (87 linhas) · `01-gates-e-baseline.md` (2) · `00-indice.md` (espelho) · a plan. **Exatamente os 2 arquivos da §3.1** |
+| Diff | **lido integralmente**, `-U1`, em duas passadas. Toda alteração corresponde a um achado declarado no resumo. **Nenhuma alteração não prevista** |
+| Contagens | `grep -c "^## R"` → **34** · `grep -cE "^\*\*Estado:\*\*"` → **35** — inalteradas |
+| Marcadores | `⏳ 1 · ⚠️ 9 · ✅ 22 · 🔴 3` — **nenhum tocado**, como a §3.2 exigia |
+| `section-pointers:check` · `dev-kit:check` · `plan-index:check` | verdes |
+| `npx tsc --noEmit` | **0**, exit 0 |
+| `run_audit` | 2 auditores vermelhos — **o baseline exato**, sem regressão |
+
+### As duas afirmações novas, provadas — não aceitas
+
+Uma execução que **insere** afirmação no contrato único tem de provar cada uma. As duas foram:
+
+**1. "As cores do Google e o `<input type="color">` são isentos pelo marcador."**
+`grep -rn "sarak-allow-hardcode" src/` → **5 ocorrências**: `SocialButton.tsx:45,47,49,51` (as quatro cores) e
+`ColorControl.tsx:16` (o fallback do input de cor). ✅ **Verdadeira, e exaustiva** — não há outra isenção viva.
+Isso também confirma que retirar *"fixtures de E2E"* da frase foi certo: **não existe** marcador para elas.
+
+**2. "A tabela da §1.3 diverge dos marcadores reais, e a regra em desacordo é a R8."**
+Extraí o par regra→marcador por `awk` sobre os cabeçalhos `## RN` e as linhas `**Estado:**`:
+
+```
+⚠️ reais → R4 R7 R8 R10 R14 R17 R23 R30 R31   (nove)
+⚠️ na tabela §1.3 → R4 R7 R10 R14 R17 R23 R30 R31   (oito)
+```
+
+✅ **Verdadeira.** A diferença é **exatamente R8**, e mais nenhuma. A nota que a execução inseriu na §1.3 está
+correta e traz o comando que a reproduz — **afirmação em spec fixa com verificação embutida** é o padrão que
+esta campanha inteira tentou estabelecer, e aqui ele aparece pela primeira vez de forma completa.
+
+### O achado que valida o método, e fecha o argumento da campanha
+
+A `VALUE_ALLOWLIST` **não existe** desde a `plan-20`, e a R2 a descrevia como vigente em **quatro** pontos —
+inclusive afirmando que *"as duas formas convivem por desenho"*, quando existe uma só. **A §R2.3-bis, na mesma
+regra, contava a história da remoção.** O documento se contradizia a três parágrafos de distância.
+
+**Nenhuma das três varreduras da `plan-29` acharia isto**, e não por azar: **não há cifra errada**. Há uma
+estrutura inexistente citada com `arquivo:linha` que já não resolve. Grep procura número; isto só aparece para
+quem lê a regra inteira contra o repositório.
+
+Junto vieram **`[[24-modo-embarcado]]`** (spec que não existe, citada como contrato de R24) e a **§3.5 de
+`15-divida-conhecida`** (seção que não existe, citada como onde estariam dois achados que já fecharam). Duas
+âncoras mortas que nenhum gate vê — o `auditor_sectionpointers` só resolve autorreferência, e está declarado.
+
+### O que a execução fez certo e eu teria reprovado se não tivesse feito
+
+- **Não mudou marcador nenhum**, mesmo com dois obviamente desatualizados (R8.1 ⏳, R8 ⚠️×✅). Propôs, com
+  medição, e **declarou o desacordo dentro da própria §1.3** em vez de escolher um lado. É o passo 4 da plan
+  ao pé da letra.
+- **Distinguiu autoria datada de trabalho futuro** ao tratar as citações de plan: *"fechado pela `plan-12`"*
+  fica (é rastro de quem fez); *"construir é trabalho da `plan-12`"* sai (aponta trabalho numa plan que não
+  existe mais). Sem esse critério, a limpeza teria apagado o histórico junto.
+- **Deixou aviso permanente na R31** sobre os dois sentidos de *"os 18"* — o total de temas shippados (que
+  cresce) × a lista fechada de isenção de contraparte (que só encolhe). É armadilha real: a `plan-31` teve de
+  desviar dela em `09-temas`.
+
+**Critérios de aceite:** os 8 atendidos, cada um com a evidência acima. O percurso da leitura está declarado
+bloco a bloco (§10), que era a condição que a `plan-29` não cumpriu.
+
+### O que fica roteado, e não como nota solta
+
+1. **As decisões de marcador (R8.1 e R8)** viram a **`plan-33`** — criada junto deste veredito. Decidi **não**
+   resolvê-las aqui: mudar marcador dentro de um veredito seria alteração de spec fixa fora de qualquer plan,
+   exatamente o que este processo existe para impedir. Que a decisão seja minha não a torna informal.
+2. **O resíduo de `01-gates-e-baseline.md`** — `:555` ainda chama R31 de *"a única regra sem gate"*, e sete
+   linhas citam a `plan-15`, fora da fila. Entra na mesma `plan-33`, que é curta.
+
+**Liberado.** As alterações estão no worktree, sem commit.
