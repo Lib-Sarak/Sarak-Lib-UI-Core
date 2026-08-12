@@ -4,7 +4,6 @@ import { SarakButton } from '../../../components/atomic/Buttons/SarakButton';
 import { SarakIconButton } from '../../../components/atomic/Buttons/SarakIconButton';
 import { DiscoveredModule } from '../../../core/Discovery/types';
 import { SarakDesignState } from '../../../core/Provider/types';
-import { BREAKPOINT_DESKTOP } from '../../../core/Design/breakpoints';
 import { ShellUser } from './types';
 import { ShellSearchWidget } from './ShellSearchWidget';
 import { ShellUserWidget } from './ShellUserWidget';
@@ -111,7 +110,11 @@ export const TopbarNav: React.FC<TopbarNavProps> = ({
 
                     {isTopbar && (
                         <nav
-                            className={`hidden @min-[${BREAKPOINT_DESKTOP}px]:flex flex-1 items-center gap-1 overflow-x-auto custom-scrollbar-hide mx-4`}
+                            // O scanner do Tailwind v4 lê o arquivo como texto, então o breakpoint tem de
+                            // estar LITERAL na classe (mesmo valor de BREAKPOINT_DESKTOP) — não é valor de
+                            // tema, é sintaxe da ferramenta em build-time (07-responsividade-e-multidispositivo.md §2.1).
+                            // sarak-allow-hardcode: breakpoint de container query do Tailwind (plan-39), não valor de tema
+                            className="hidden @min-[1024px]:flex flex-1 items-center gap-1 overflow-x-auto custom-scrollbar-hide mx-4"
                             style={{
                                 justifyContent: discoveredModules.length > 6 ? 'flex-start' : 'center',
                             }}

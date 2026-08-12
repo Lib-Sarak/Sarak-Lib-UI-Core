@@ -36,6 +36,7 @@
         "plan-index": "node scripts/generate-plan-index.mjs",
         "plan-index:check": "node gates/scripts/contrato/check-plan-index-sync.mjs && node scripts/generate-plan-index.mjs --check",
         "deep-import:check": "node gates/scripts/contrato/check-no-deep-import.mjs",
+        "container-query:check": "node gates/scripts/contrato/check-container-query-literal.mjs",
         "section-pointers:check": "node gates/scripts/contrato/check-section-pointers.mjs",
         "gate-limits:check": "node gates/scripts/contrato/check-gate-limits.mjs",
         "coverage:check": "vitest run --coverage && node gates/scripts/release/check-coverage-floor.mjs",

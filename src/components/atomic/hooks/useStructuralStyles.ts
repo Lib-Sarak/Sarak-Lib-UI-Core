@@ -1,12 +1,6 @@
 import React from 'react';
 import { useSarakUIOptional } from '../../../core/Provider/SarakUIProvider';
-import { BREAKPOINT_TABLET, BREAKPOINT_DESKTOP } from '../../../core/Design/breakpoints';
-import {
-    RESPONSIVE_GRID_PRESETS,
-    RESPONSIVE_SPACING_PRESETS,
-    type ResponsiveGridPreset,
-    type ResponsiveSpacingPreset
-} from './useStructuralStyles.presets';
+import { RESPONSIVE_GRID_PRESETS, RESPONSIVE_SPACING_PRESETS, type ResponsiveGridPreset, type ResponsiveSpacingPreset } from './useStructuralStyles.presets';
 import { resolveGap } from './useStructuralStyles.gap';
 
 /**
@@ -36,10 +30,11 @@ export const useStructuralStyles = () => {
             };
         }
 
+        // Classes LITERAIS de propósito (plan-39) — o scanner do Tailwind lê o arquivo como texto.
         const gridStrategies: Record<string, string> = {
-            'col-12': `grid w-full grid-cols-1 @min-[${BREAKPOINT_TABLET}px]:grid-cols-12`,
+            'col-12': 'grid w-full grid-cols-1 @min-[768px]:grid-cols-12',
             'auto-fit': 'grid w-full grid-cols-[repeat(auto-fit,minmax(280px,1fr))]',
-            'masonry': `columns-1 @min-[${BREAKPOINT_TABLET}px]:columns-2 @min-[${BREAKPOINT_DESKTOP}px]:columns-3 w-full`
+            'masonry': 'columns-1 @min-[768px]:columns-2 @min-[1024px]:columns-3 w-full'
         };
 
         const hasCustomTemplate = !!templateColumns || !!templateAreas;
@@ -80,11 +75,12 @@ export const useStructuralStyles = () => {
         };
     };
 
-    // Empilha em coluna no mobile e vira linha a partir do breakpoint informado
-    // (variantes responsivas não são expressáveis via `style` inline puro).
-    const stackBreakpoints: Record<'md' | 'lg', number> = {
-        md: BREAKPOINT_TABLET,
-        lg: BREAKPOINT_DESKTOP
+    // Empilha em coluna no mobile e vira linha a partir do breakpoint informado. Mapa de
+    // classes LITERAIS, não de números (plan-39) — os dois valores entram mesmo que só `md`
+    // tenha consumidor hoje.
+    const stackBreakpointClasses: Record<'md' | 'lg', string> = {
+        md: 'flex flex-col @min-[768px]:flex-row',
+        lg: 'flex flex-col @min-[1024px]:flex-row'
     };
 
     const getResponsiveStackStyles = (
@@ -93,7 +89,7 @@ export const useStructuralStyles = () => {
     ) => {
         const gap = resolveGap(gapOverride, design?.layoutGap || 'var(--sarak-layout-gap-md, 16px)', 'SarakStack');
         return {
-            className: `flex flex-col @min-[${stackBreakpoints[breakpoint]}px]:flex-row`,
+            className: stackBreakpointClasses[breakpoint],
             style: { gap } as React.CSSProperties
         };
     };
@@ -226,7 +222,8 @@ export const useStructuralStyles = () => {
         };
 
         const alignClass = alignStrategies[align] || alignStrategies['space-between'];
-        const headerClass = `flex flex-col @min-[${BREAKPOINT_TABLET}px]:flex-row @min-[${BREAKPOINT_TABLET}px]:items-center w-full ${alignClass}`;
+        // `@min-[768px]:` literal de propósito (plan-39) — só `alignClass` continua dinâmico.
+        const headerClass = `flex flex-col @min-[768px]:flex-row @min-[768px]:items-center w-full ${alignClass}`;
 
         return {
             className: headerClass.trim(),

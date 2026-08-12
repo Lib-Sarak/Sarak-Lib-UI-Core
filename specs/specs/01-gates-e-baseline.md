@@ -72,6 +72,24 @@ Ele roda os 12 na ordem abaixo, cada um em processo próprio:
 | Limites de gate | `npm run gate-limits:check` | Todo gate declara, no cabeçalho, o que não vê | **R18** | ~0,3 s |
 | Tipos de token | `npm run token-types:check` | `design-token-ids.ts` commitado == gerado agora a partir do schema | **R4 · R29** | precisa do schema |
 | Sincronia plan × índice | roda no Anel 1, condicional | `status` do frontmatter de cada plan bate com a coluna do [[00-indice]] | — *(vão 12, fechado)* |
+| Container query literal | `npm run container-query:check` | Nenhum arquivo de produção monta classe `@min-[…]` por interpolação de template literal, **e** `sarak-base.css` restringe o scan do Tailwind (`source(none)` + `@source` explícito) | — *(plan-39)* | ~0,3 s |
+
+> ⚠️ **`container-query:check` (plan-39) — o que ele NÃO vê, declarado no próprio cabeçalho (R18):** é
+> **estático** — não constrói CSS. Prova só que o **nome** da classe está soletrado literal no arquivo; não
+> prova que a regra correspondente foi de fato **gerada** no `dist/sarak.css` publicado (isso exige rodar
+> `npm run build` e comparar, como fez a `plan-39` na entrega). Só detecta o padrão textual de abertura de
+> interpolação de template literal logo após o colchete — concatenação de string escaparia (nenhum caso
+> assim existe hoje, medido). É por **texto de linha, não por AST** — uma linha de comentário que reproduza o
+> mesmo padrão também é acusada, de propósito: é a mesma armadilha que já quebrou o build uma vez (comentário
+> textual também é varrido pelo scanner do Tailwind). Escopo: `src/**/*.{ts,tsx}`, exceto `__tests__/`, onde
+> a forma interpolada é o idioma correto (o teste companheiro afirma a igualdade contra ela, para pegar
+> deriva de constante). **Emenda §2.0, durante a execução:** o gate ganhou uma segunda checagem — confirma
+> que `src/styles/sarak-base.css` declara `source(none)` no `@import "tailwindcss"` e mantém pelo menos um
+> `@source` não vazio. Sem isso a detecção AUTOMÁTICA do Tailwind volta a varrer o repositório inteiro
+> (`.md` incluído, respeitando só `.gitignore`) — foi o que derrubou `npm run build` durante esta própria
+> plan: uma classe de container query inválida, citada em prosa em duas plans (`plan-35`, `plan-39`), virou
+> uma media query inválida e quebrou `build:css:scoped`. Essa checagem também é textual — não valida se o
+> glob do `@source` continua amplo o bastante para cobrir todo `.ts`/`.tsx` de produção.
 
 **Os três gates que não estão nesta tabela porque não são de contrato**, e as regras que cobram:
 
@@ -186,7 +204,7 @@ Registrado como o que é: **cobertura que existe e não é cobrada**. **Não cob
 | `guide:check` **(R17·R29)** | `npm run guide:check` | ✅ kit em dia (6 arquivos) |
 | `dev-kit:check` **(R17·R23·R29)** | `npm run dev-kit:check` | ✅ kit em dia (3 arquivos, **0 ponteiros mortos**) — não valida ponteiro de **seção**, que é o `auditor_sectionpointers` |
 | `deep-import:check` **(R27)** | `npm run deep-import:check` | ✅ **0** — `exports` só expõe a raiz e subcaminhos de CSS |
-| `gate-limits:check` **(R18)** | `npm run gate-limits:check` | ✅ **29/29** scripts declaram o que não veem. Eram 26 |
+| `gate-limits:check` **(R18)** | `npm run gate-limits:check` | ✅ **30/30** scripts declaram o que não veem *(medido 2026-08-12, após a `plan-39` acrescentar `check-container-query-literal.mjs`)*. Era 29 |
 | `token-types:check` **(R4·R29)** | `npm run token-types:check` | ✅ **422 tokens**, em dia |
 | `build-info:check` **(R29)** | `npm run build-info:check` | ✅ íntegro |
 | `coverage:check` **(R8.1)** | `npm run coverage:check` | ✅ **72,43% contra piso de 71,47%** — piso móvel: melhora regrava (só com `--write`), piora bloqueia |

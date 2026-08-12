@@ -4,6 +4,7 @@ import { describe, it, expect, vi } from 'vitest';
 import { TopbarNav } from '../TopbarNav';
 import '@testing-library/jest-dom';
 import { SarakUIProvider } from '../../../Provider/SarakUIProvider';
+import { BREAKPOINT_DESKTOP } from '../../../Design/breakpoints';
 
 const renderWithProvider = (ui: React.ReactElement) => render(<SarakUIProvider>{ui}</SarakUIProvider>);
 
@@ -82,5 +83,12 @@ describe('TopbarNav', () => {
     it('renderiza sem search widget se searchPos for hidden', () => {
         renderWithProvider(<TopbarNav {...mockProps} design={{ ...mockProps.design, searchPositionTopbar: 'hidden' }} />);
         expect(screen.queryByTestId('shell-search')).not.toBeInTheDocument();
+    });
+
+    it('a nav de módulos usa a classe de container query LITERAL — @min-[1024px]:flex, o MESMO número de BREAKPOINT_DESKTOP (plan-39)', () => {
+        const { container } = renderWithProvider(<TopbarNav {...mockProps} />);
+        const nav = container.querySelector('nav');
+        expect(nav).not.toBeNull();
+        expect(nav?.className).toContain(`@min-[${BREAKPOINT_DESKTOP}px]:flex`);
     });
 });

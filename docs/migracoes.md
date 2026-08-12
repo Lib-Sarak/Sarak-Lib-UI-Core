@@ -5,6 +5,47 @@ com o "antes" e o "depois" lado a lado. Uma entrada por mudança, mais recente p
 
 ---
 
+## A responsividade da Spec 40.3 estava desligada no pacote publicado — a nav da topbar, entre outros, volta a aparecer (plan-39)
+
+**Classificação: MAJOR** — nenhum export, prop, token ou assinatura mudou; o que muda é **comportamento
+default e visível**, sem opt-in, exatamente o mesmo critério que classificou a `4.0.0` ([[03-versionamento-e-release]]
+§3.1): *"mudar um comportamento default é MAJOR, mesmo mantendo a capacidade — quem dependia do default vê
+comportamento diferente sem alterar uma linha."*
+
+**O que estava quebrado.** O scanner do Tailwind v4 lê os arquivos como TEXTO — não avalia JavaScript. Onde o
+código montava a classe de container query por interpolação (`` `@min-[${BREAKPOINT_DESKTOP}px]:flex` ``), o
+texto do arquivo continha só a string literal `@min-[${BREAKPOINT_DESKTOP}px]:flex` — nunca uma classe
+válida —, então o Tailwind nunca gerou a regra CSS correspondente. O elemento recebia, em runtime, uma classe
+que apontava para uma regra inexistente no `dist/sarak.css` publicado. **11 das 19** classes de container
+query da lib estavam nessa situação.
+
+**Afeta você se** usa qualquer um destes, sem CSS próprio compensando o defeito:
+
+| Onde | O que estava quebrado | O que passa a funcionar |
+| --- | --- | --- |
+| `navigationStyle: 'topbar'` do cromo | a nav de módulos da topbar **nunca aparecia**, em largura nenhuma (`display:none` permanente) | a nav aparece a partir de 1024px, como sempre foi a intenção |
+| `SarakStack` (`getResponsiveStackStyles`) | nunca virava linha (`flex-row`) a partir do breakpoint | vira linha a partir de 768px (`md`) / 1024px (`lg`) |
+| Layout `col-12` (`SarakGrid`/`useStructuralStyles`) | ficava em 1 coluna em qualquer largura | vira 12 colunas a partir de 768px |
+| Layout `masonry` | ficava em 1 coluna em qualquer largura | 2 colunas a partir de 768px, 3 a partir de 1024px |
+| Cabeçalho de seção (`getHeaderStyles`) | não virava linha nem alinhava ao centro no desktop | vira linha e centraliza a partir de 768px |
+| `ShellContent` (padding/título do módulo ativo) | respiro e tamanho de título ficavam no valor de telefone em qualquer largura | crescem a partir de 1024px (`pt-12`, `text-5xl`) |
+| Layout `center` do Shell (`useShellLayoutStyles`) | padding lateral fixo em qualquer largura | cresce a partir de 640px e 1024px |
+
+**Se você já escreveu CSS próprio para compensar algum destes** (por exemplo, forçando a nav da topbar a
+aparecer, ou a `SarakStack` a virar linha, via seletor `!important` ou CSS mais específico que o seu), **remova
+essa compensação** — a partir desta versão a lib já faz isso sozinha, e o CSS duplicado pode brigar com o
+novo comportamento (ex.: layout de coluna dupla).
+
+**O que NÃO mudou.** Nenhum breakpoint numérico (640/768/1024/1280); nenhuma prop, export ou token; o
+mecanismo continua sendo container query (`@min-[Npx]:`, reagindo ao container, não ao viewport) — só a
+forma como o código escreve a classe (literal em vez de interpolada), para o scanner do Tailwind conseguir
+gerar a regra.
+
+**Gate anti-regressão:** `npm run container-query:check` (`gates/scripts/contrato/check-container-query-literal.mjs`)
+falha se um arquivo de produção voltar a montar `@min-[…]` por interpolação de template literal.
+
+---
+
 ## Persistência de tema tenant-aware e `strategy` funcional (ADR-009)
 
 **Afeta você se** roda **múltiplos tenants na mesma origem** (troca de conta/tenant em runtime, sem

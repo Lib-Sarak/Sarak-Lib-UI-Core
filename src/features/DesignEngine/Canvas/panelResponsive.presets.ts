@@ -1,5 +1,3 @@
-import { BREAKPOINT_TABLET, BREAKPOINT_DESKTOP } from '../../../core/Design/breakpoints';
-
 /**
  * Breakpoints do painel de customização como CONTAINER QUERY, não viewport (plan-35 —
  * fecha o "Tier B" de `specs/specs/06-painel-de-customizacao-e-preview.md` §6.2). A classe
@@ -11,9 +9,14 @@ import { BREAKPOINT_TABLET, BREAKPOINT_DESKTOP } from '../../../core/Design/brea
  * (`md:` = 768 = `BREAKPOINT_TABLET`, `lg:` = 1024 = `BREAKPOINT_DESKTOP`, `xl:` = 1280) —
  * só o MECANISMO mudou: agora mede o espaço real do container onde o painel está
  * embutido, nunca a largura da janela do navegador.
+ *
+ * As classes são escritas LITERAL de propósito (plan-39): o scanner do Tailwind v4 lê o
+ * arquivo como TEXTO — uma classe montada por interpolação de template literal nunca vira
+ * classe válida, e a regra correspondente nunca é gerada no CSS publicado. O teste companheiro
+ * afirma a igualdade contra a forma interpolada, para pegar deriva se a constante mudar.
  */
-export const CATALOG_GRID_2COL = `grid-cols-1 @min-[${BREAKPOINT_TABLET}px]:grid-cols-2`;
-export const CATALOG_GRID_3COL = `grid-cols-1 @min-[${BREAKPOINT_TABLET}px]:grid-cols-2 @min-[${BREAKPOINT_DESKTOP}px]:grid-cols-3`;
+export const CATALOG_GRID_2COL = 'grid-cols-1 @min-[768px]:grid-cols-2';
+export const CATALOG_GRID_3COL = 'grid-cols-1 @min-[768px]:grid-cols-2 @min-[1024px]:grid-cols-3';
 
 // 1280 = o antigo breakpoint de viewport `xl:` do Tailwind (mesmo valor de
 // `useStructuralStyles.presets.ts:10`, BP_XL — não importado de lá para não acoplar dois
