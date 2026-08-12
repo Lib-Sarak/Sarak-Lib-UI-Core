@@ -2,6 +2,7 @@ import React from 'react';
 import { motion } from 'framer-motion';
 import { TYPOGRAPHY_PRESETS } from '../../../../core/Design/presets/components/typography';
 import { ComponentPreset } from '../../../../core/Design/presets/components/cards';
+import { CATALOG_GRID_2COL } from '../panelResponsive.presets';
 
 import { SarakDesignState } from '../../../../core/Provider/types';
 
@@ -12,7 +13,8 @@ interface TypographyCatalogProps {
 
 export const TypographyCatalog: React.FC<TypographyCatalogProps> = ({ onApplyPreset }) => {
     return (
-        <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+        // Container query (plan-35): reage ao `@container` de `PresetsCatalog.tsx`.
+        <div className={`grid ${CATALOG_GRID_2COL} gap-6`}>
             {TYPOGRAPHY_PRESETS.map((preset, i) => (
                 <TypographyPresetPreview key={preset.id} preset={preset} index={i} onApply={() => onApplyPreset(preset.design, true)} />
             ))}

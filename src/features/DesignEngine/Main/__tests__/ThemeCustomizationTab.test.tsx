@@ -142,6 +142,23 @@ describe('ThemeCustomizationTab (Spec 44 — sem backend próprio)', () => {
         expect(fetchSpy).not.toHaveBeenCalled();
     });
 
+    it('a altura é relativa ao container-pai — nunca à viewport (plan-35, fecha 06-painel-de-customizacao-e-preview.md §6.2)', () => {
+        const { container } = render(<ThemeCustomizationTab />);
+
+        const root = container.firstElementChild as HTMLElement;
+        expect(root.className).not.toMatch(/\bh-screen\b/);
+        expect(root.className).not.toMatch(/\bmax-h-screen\b/);
+        expect(root.className).toMatch(/\bh-full\b/);
+        expect(root.className).toMatch(/\bmin-h-0\b/);
+    });
+
+    it('o canvas de preview tem `min-w-0` — sem isto a sidebar de largura mínima fixa o estoura (plan-35)', () => {
+        render(<ThemeCustomizationTab />);
+
+        const canvasWrapper = screen.getByTestId('preview-canvas').parentElement as HTMLElement;
+        expect(canvasWrapper.className).toMatch(/\bmin-w-0\b/);
+    });
+
     it('alterna o modo de visualização', () => {
         vi.mocked(useThemeEngineState).mockReturnValue({
             ...baseThemeEngineState,

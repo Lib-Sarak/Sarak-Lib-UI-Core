@@ -33,4 +33,18 @@ describe('PresetsCatalog', () => {
             expect(screen.getByRole('button', { name: label })).toBeInTheDocument();
         });
     }, 15000); // 5000 (default) não bastava sob `vitest --coverage` (instrumentação V8 + contenção de workers, mesma causa do PreviewCanvas.test.tsx, plan-12/R8.1)
+
+    it('carrega UMA fronteira @container que serve a aba Globais E os 4 sub-catálogos aninhados (plan-35, fecha 06-painel-de-customizacao-e-preview.md §6.2)', () => {
+        const { container } = render(<PresetsCatalog onApplyPreset={vi.fn()} currentMode="dark" />);
+
+        const containerBoundary = Array.from(container.querySelectorAll('div'))
+            .find((el) => el.className.split(' ').includes('@container'));
+        expect(containerBoundary).toBeTruthy();
+
+        const globalsGrid = container.querySelector('.grid') as HTMLElement;
+        expect(globalsGrid.className).not.toMatch(/\bmd:grid-cols-2\b/);
+        expect(globalsGrid.className).toMatch(/@min-\[768px\]:grid-cols-2/);
+        // A grade global mora DENTRO da fronteira de container — é dela que ela mede.
+        expect(containerBoundary?.contains(globalsGrid)).toBe(true);
+    });
 });

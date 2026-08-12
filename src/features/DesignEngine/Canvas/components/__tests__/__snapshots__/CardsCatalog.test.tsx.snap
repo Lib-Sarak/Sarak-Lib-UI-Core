@@ -80,7 +80,7 @@ exports[`CardsCatalog > renderiza a aba Curados por padrão e faz snapshot 1`] =
       </button>
     </div>
     <div
-      class="grid grid-cols-1 md:grid-cols-2 gap-6"
+      class="grid grid-cols-1 @min-[768px]:grid-cols-2 gap-6"
     >
       <button
         animate="[object Object]"

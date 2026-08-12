@@ -1,6 +1,7 @@
 import React from 'react';
 import { INPUT_PRESETS } from '../../../../core/Design/presets/components/inputs';
 import { InputPresetPreview } from './InputPresetPreview';
+import { CATALOG_GRID_3COL } from '../panelResponsive.presets';
 
 import { SarakDesignState } from '../../../../core/Provider/types';
 
@@ -11,7 +12,8 @@ interface InputsCatalogProps {
 
 export const InputsCatalog: React.FC<InputsCatalogProps> = ({ onApplyPreset, currentMode }) => {
     return (
-        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+        // Container query (plan-35): reage ao `@container` de `PresetsCatalog.tsx`.
+        <div className={`grid ${CATALOG_GRID_3COL} gap-6`}>
             {INPUT_PRESETS.map((preset, i) => (
                 <InputPresetPreview
                     key={preset.id}

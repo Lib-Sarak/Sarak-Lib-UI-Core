@@ -108,11 +108,20 @@ describe('MasterControlPanel', () => {
 
     it('chama resetToken ao clicar no botão de reset', () => {
         render(<MasterControlPanel />);
-        
+
         // Há um botão de reset por token
         const resetButtons = screen.getAllByTitle('Reset');
         fireEvent.click(resetButtons[0]);
 
         expect(mockResetToken).toHaveBeenCalledWith('bg-primary');
+    });
+
+    it('a tabela rola horizontalmente em vez de cortar em sidebar estreita (280px mínimo) — plan-35', () => {
+        const { container } = render(<MasterControlPanel />);
+
+        const table = container.querySelector('table') as HTMLElement;
+        const scrollWrapper = table.parentElement as HTMLElement;
+        expect(scrollWrapper.className).not.toMatch(/\boverflow-hidden\b/);
+        expect(scrollWrapper.className).toMatch(/\boverflow-x-auto\b/);
     });
 });

@@ -96,7 +96,12 @@ export const MasterControlPanel: React.FC = () => {
 
             {/* A Tabela / Planilha - Otimizada para Sidebar */}
             <div className="flex-1 overflow-y-auto p-2 custom-scrollbar">
-                <div className="w-full border border-white/5 rounded-xl overflow-hidden bg-white/[0.01]">
+                {/* `overflow-x-auto` (plan-35): a sidebar hospedeira tem mínimo de 280px, e
+                    `table-fixed` com larguras percentuais fixas não tinha colapso nenhum —
+                    conteúdo apertado saía CORTADO (`overflow-hidden`), não rolável. Trocar
+                    para scroll horizontal é o que garante o dado sempre acessível, mesmo
+                    quando a coluna de valor fica estreita demais para o controle nativo. */}
+                <div className="w-full border border-white/5 rounded-xl bg-white/[0.01] overflow-x-auto">
                     <table className="w-full text-left border-collapse table-fixed">
                         <thead>
                             <tr className="bg-white/5 border-b border-white/5">

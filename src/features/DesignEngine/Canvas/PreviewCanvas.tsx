@@ -11,6 +11,7 @@ import { useInspector } from './hooks/useInspector';
 import { useDeviceStyles } from './hooks/useDeviceStyles';
 import { usePreviewContextValue, useApplyPreset } from './hooks/useDesignOperations';
 import { PreviewSystemRenderer } from './components/PreviewSystemRenderer';
+import { PREVIEW_DUAL_VIEW_ROW } from './panelResponsive.presets';
 import { SarakUIOptions, SarakUIContextType } from '../../../core/Provider/types';
 import { SarakDesignState } from '../../../core/Provider/types';
 import { SarakTokenValue } from '../../../core/Design/types';
@@ -129,10 +130,14 @@ export const PreviewCanvas: React.FC<PreviewCanvasProps> = ({
     return (
         <DesignScope design={{ ...tokens, globalBackgroundImageUrl: undefined }} className="w-full h-full flex flex-col relative overflow-auto bg-[var(--color-theme-bg, #0a0a0c)] p-0 custom-scrollbar">
             <UIContext.Provider value={previewContextValue as SarakUIContextType}>
-                <div className="flex-1 w-full h-full flex flex-col gap-6 p-6 overflow-visible">
-                    
+                {/* `@container`: fronteira de medida do dual-view abaixo — o par lado a lado
+                    (Gêmeo Digital + catálogo) passa a reagir ao espaço REAL deste painel, não
+                    à largura da janela (plan-35, fecha 06-painel-de-customizacao-e-preview.md
+                    §6.2). */}
+                <div className="@container flex-1 w-full h-full flex flex-col gap-6 p-6 overflow-visible">
+
                     {/* Linha Superior: Previews Actuais (Restaurando flex-1 e min-h-0 para comportamento original) */}
-                    <div className={`flex-1 w-full min-h-0 flex gap-6 items-stretch overflow-visible ${isPreviewStacked ? 'flex-col items-center' : 'flex-col xl:flex-row justify-center'}`}>
+                    <div className={`flex-1 w-full min-h-0 flex gap-6 items-stretch overflow-visible ${isPreviewStacked ? 'flex-col items-center' : `flex-col ${PREVIEW_DUAL_VIEW_ROW} justify-center`}`}>
                         {isDualView ? (
                         <>
                             {/* Live Draft Preview (Gêmeo Digital / Preset 1) */}

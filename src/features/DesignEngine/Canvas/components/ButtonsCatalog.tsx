@@ -1,6 +1,7 @@
 import React, { useState } from 'react';
 import { BUTTON_PRESETS, BUTTON_STYLE_PRESETS } from '../../../../core/Design/presets/components/buttons';
 import { ButtonPresetPreview } from './ButtonPresetPreview';
+import { CATALOG_GRID_3COL } from '../panelResponsive.presets';
 import { Sparkles, MousePointer2 } from 'lucide-react';
 
 import { SarakDesignState } from '../../../../core/Provider/types';
@@ -33,7 +34,8 @@ export const ButtonsCatalog: React.FC<ButtonsCatalogProps> = ({ onApplyPreset, c
                 </button>
             </div>
 
-            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+            {/* Container query (plan-35): reage ao `@container` de `PresetsCatalog.tsx`. */}
+            <div className={`grid ${CATALOG_GRID_3COL} gap-6`}>
                 {presets.map((preset, i) => (
                     <ButtonPresetPreview
                         key={preset.id}

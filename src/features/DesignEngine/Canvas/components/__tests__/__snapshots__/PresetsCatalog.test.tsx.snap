@@ -95,10 +95,10 @@ exports[`PresetsCatalog > renderiza a aba Globais por padrão, independente de q
       </div>
     </div>
     <div
-      class="flex-1 overflow-y-auto custom-scrollbar p-6 bg-[radial-gradient(ellipse_at_top_right,rgba(var(--theme-primary-rgb),0.03)_0%,transparent_50%)]"
+      class="@container flex-1 overflow-y-auto custom-scrollbar p-6 bg-[radial-gradient(ellipse_at_top_right,rgba(var(--theme-primary-rgb),0.03)_0%,transparent_50%)]"
     >
       <div
-        class="grid grid-cols-1 md:grid-cols-2 gap-4"
+        class="grid grid-cols-1 @min-[768px]:grid-cols-2 gap-4"
       >
         <button
           animate="[object Object]"

@@ -2,6 +2,7 @@ import React, { useState } from 'react';
 import { motion } from 'framer-motion';
 import { CARD_PRESETS, CARD_TEXTURE_PRESETS, ComponentPreset } from '../../../../core/Design/presets/components/cards';
 import { DesignScope } from '../../../../core/Design/components/DesignScope';
+import { CATALOG_GRID_2COL } from '../panelResponsive.presets';
 import { Sparkles, Grid } from 'lucide-react';
 
 import { SarakDesignState } from '../../../../core/Provider/types';
@@ -34,7 +35,9 @@ export const CardsCatalog: React.FC<CardsCatalogProps> = ({ onApplyPreset }) => 
                 </button>
             </div>
 
-            <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+            {/* Container query (plan-35): reage ao espaço real do painel, herdado do
+                `@container` de `PresetsCatalog.tsx` — nunca à largura da janela. */}
+            <div className={`grid ${CATALOG_GRID_2COL} gap-6`}>
                 {presets.map((preset, i) => (
                     <CardPresetPreview key={preset.id} preset={preset} index={i} onApply={() => onApplyPreset(preset.design, true)} />
                 ))}

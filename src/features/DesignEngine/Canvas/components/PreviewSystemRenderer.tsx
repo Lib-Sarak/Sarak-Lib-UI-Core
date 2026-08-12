@@ -9,6 +9,14 @@ import { SarakUIContextType } from '../../../../core/Provider/types';
 import { SarakDesignState } from '../../../../core/Provider/types';
 import { SarakTokenValue } from '../../../../core/Design/types';
 
+// Largura de referência em que o mock de app foi pensado para caber sem cortar (mesma
+// referência do breakpoint do dual-view, `panelResponsive.presets.ts`) — abaixo dela o
+// preview reduz proporcionalmente, até o piso `MIN_SCALE`; acima dela nunca ultrapassa
+// `MAX_SCALE` (o teto que o código já usava para o modo single-view, 0.95).
+const SCALE_REFERENCE_WIDTH = 1280;
+const MIN_SCALE = 0.5;
+const MAX_SCALE = 0.95;
+
 export interface PreviewSystemRendererProps {
     useSystemDesign?: boolean;
     sarak: SarakUIContextType;
@@ -61,7 +69,27 @@ export const PreviewSystemRenderer: React.FC<PreviewSystemRendererProps> = ({
     const hasTexture = activeDesign.texture && activeDesign.texture !== 'none';
     const isMobile = previewDevice === 'smartphone';
 
-    const scaleFactor = isDualView ? 0.75 : 0.95;
+    // Escala pela largura REAL do container (plan-35), não mais uma constante assumindo
+    // viewport. `fallbackScale` é o valor de antes desta plan — usado até a primeira
+    // medição resolver, e para sempre em ambiente sem `ResizeObserver` (SSR, jsdom em
+    // teste): nenhum consumidor perde o número que já tinha.
+    const fallbackScale = isDualView ? 0.75 : 0.95;
+    const scaleContainerRef = React.useRef<HTMLDivElement>(null);
+    const [scaleFactor, setScaleFactor] = React.useState(fallbackScale);
+
+    React.useEffect(() => {
+        const node = scaleContainerRef.current;
+        if (!node || typeof ResizeObserver === 'undefined') return undefined;
+
+        const observer = new ResizeObserver((entries) => {
+            const width = entries[0]?.contentRect.width;
+            if (!width || width < 100) return;
+            setScaleFactor(Math.min(MAX_SCALE, Math.max(MIN_SCALE, width / SCALE_REFERENCE_WIDTH)));
+        });
+        observer.observe(node);
+        return () => observer.disconnect();
+    }, []);
+
     const widthPercent = `${(100 / scaleFactor).toFixed(2)}%`;
     const heightPercent = `${(100 / scaleFactor).toFixed(2)}%`;
 
@@ -73,6 +101,10 @@ export const PreviewSystemRenderer: React.FC<PreviewSystemRendererProps> = ({
                 data-sx-texture={activeDesign.texture}
             >
                 <div
+                    // `ref`: mede a caixa REAL do preview (este `inset-0` sempre preenche
+                    // exatamente o ancestral posicionado `DesignScope`) para o `scaleFactor`
+                    // acima — não a caixa já escalada abaixo, que seria circular.
+                    ref={scaleContainerRef}
                     className={`absolute inset-0 z-0 ${activeDesign.globalBackgroundImageUrl ? 'bg-transparent' : 'bg-[var(--sarak-bg-base)]'}`}
                     style={{ backgroundColor: activeDesign.globalBackgroundImageUrl ? 'transparent' : 'var(--sarak-bg-base)' }}
                 />

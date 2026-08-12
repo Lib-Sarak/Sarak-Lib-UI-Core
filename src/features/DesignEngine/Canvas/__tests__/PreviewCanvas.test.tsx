@@ -61,4 +61,38 @@ describe('PreviewCanvas - Refatoração Data-Driven', () => {
 
         expect(container).toMatchSnapshot();
     }, 30000); // 15000 não bastava sob `vitest --coverage` (instrumentação V8 + contenção de workers, plan-12/R8.1)
+
+    it('o dual-view reage ao CONTAINER (@min-[1280px]:flex-row), não mais à viewport (`xl:`) — plan-35, fecha 06-painel-de-customizacao-e-preview.md §6.2', () => {
+        const { container } = render(
+            <SarakUIProvider>
+                <PreviewCanvas
+                    previewDevice="desktop"
+                    previewLayoutId="test"
+                    activePreviewApp="dashboard"
+                    setActivePreviewApp={() => {}}
+                    previewAnimationStyle="none"
+                    previewEmojiSet="apple"
+                    config={{}}
+                    previewPrimaryColor="#000"
+                    mode="light"
+                    draftTokens={{ sidebarWidth: 250 }}
+                    onUpdateDraft={() => {}}
+                    sarak={{} as unknown as SarakUIContextType}
+                    isDualView={true}
+                    isPreviewStacked={false}
+                />
+            </SarakUIProvider>
+        );
+
+        const allDivs = Array.from(container.querySelectorAll('div'));
+
+        // A fronteira de medida (ancestral da linha do dual-view).
+        const containerBoundary = allDivs.find((el) => el.className.split(' ').includes('@container'));
+        expect(containerBoundary).toBeTruthy();
+
+        const dualViewRow = allDivs.find((el) => el.className.includes('items-stretch'));
+        expect(dualViewRow).toBeTruthy();
+        expect((dualViewRow as HTMLElement).className).not.toMatch(/\bxl:flex-row\b/);
+        expect((dualViewRow as HTMLElement).className).toMatch(/@min-\[1280px\]:flex-row/);
+    }, 30000);
 });

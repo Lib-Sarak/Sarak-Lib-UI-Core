@@ -720,10 +720,10 @@ exports[`PreviewCanvas - Refatoração Data-Driven > deve usar propriedades de e
 }
     </style>
     <div
-      class="flex-1 w-full h-full flex flex-col gap-6 p-6 overflow-visible"
+      class="@container flex-1 w-full h-full flex flex-col gap-6 p-6 overflow-visible"
     >
       <div
-        class="flex-1 w-full min-h-0 flex gap-6 items-stretch overflow-visible flex-col xl:flex-row justify-center"
+        class="flex-1 w-full min-h-0 flex gap-6 items-stretch overflow-visible flex-col @min-[1280px]:flex-row justify-center"
       >
         <div
           class="relative shrink-0 overflow-hidden bg-[var(--theme-surface)] transition-all duration-500 flex flex-col group min-h-[var(--sarak-engine-min-h-sm,300px)] max-w-full h-full rounded-[2rem] border border-white/10 shadow-[0_50px_100px_-20px_rgba(0,0,0,0.8)] resize"
@@ -2679,10 +2679,10 @@ exports[`PreviewCanvas - Refatoração Data-Driven > deve usar propriedades de e
               </div>
             </div>
             <div
-              class="flex-1 overflow-y-auto custom-scrollbar p-6 bg-[radial-gradient(ellipse_at_top_right,rgba(var(--theme-primary-rgb),0.03)_0%,transparent_50%)]"
+              class="@container flex-1 overflow-y-auto custom-scrollbar p-6 bg-[radial-gradient(ellipse_at_top_right,rgba(var(--theme-primary-rgb),0.03)_0%,transparent_50%)]"
             >
               <div
-                class="grid grid-cols-1 md:grid-cols-2 gap-4"
+                class="grid grid-cols-1 @min-[768px]:grid-cols-2 gap-4"
               >
                 <button
                   animate="[object Object]"

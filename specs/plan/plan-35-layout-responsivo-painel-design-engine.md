@@ -2,7 +2,7 @@
 tipo: "plan"
 titulo: "Fazer o painel Design Engine responder ao container, não à viewport"
 dominio: "Sarak-Lib-UI-Core / Design Engine / Painel"
-status: "🔴 A executar"
+status: "🟢 Aprovada"
 prioridade: "Alta"
 tags: ["plan", "painel", "responsividade", "container-query", "layout"]
 relacionados: ["[[06-painel-de-customizacao-e-preview]]", "[[07-responsividade-e-multidispositivo]]", "[[00-mapa-do-modulo]]"]
@@ -255,8 +255,276 @@ escolhido para o dual-view, com o motivo.
 
 <!-- Preenchido pelo EXECUTOR. Append-only. -->
 
+## Resumo da execução — 2026-08-12
+
+**Resultado:** Concluído
+
+**O que foi feito**
+- `src/features/DesignEngine/Main/ThemeCustomizationTab.tsx:144` — `h-screen max-h-screen`
+  (altura da viewport) virou `h-full min-h-0` (altura relativa ao container-pai, que
+  `CustomizationPanelImpl.tsx` já entrega como `h-full` — não tocado, fora do escopo).
+  `:189` — o canvas de preview ganhou `min-w-0` (a sidebar irmã tem largura mínima fixa;
+  sem `min-w-0` o canvas nunca encolhe abaixo do conteúdo e estoura por cima dela).
+- `src/features/DesignEngine/Canvas/PreviewCanvas.tsx:132` — `@container` na fronteira
+  que hospeda a linha do dual-view. `:135` — `xl:flex-row` (viewport) virou
+  `@min-[1280px]:flex-row` (container query), medindo o espaço real do painel.
+- `src/features/DesignEngine/Canvas/components/PreviewSystemRenderer.tsx` — `scaleFactor`
+  deixou de ser a constante `isDualView ? 0.75 : 0.95` e passou a ser função da largura
+  REAL do container (`ResizeObserver`, clamp `[0.5, 0.95]`, referência 1280px — a mesma
+  referência do dual-view). Sem `ResizeObserver` no ambiente (SSR, jsdom em teste),
+  degrada para a MESMA constante de antes — nenhum consumidor perde o número que já
+  tinha. O `ref` mede o `div` `absolute inset-0` já existente (preenche exatamente o
+  ancestral posicionado `DesignScope`) — não um wrapper novo.
+- Os cinco catálogos (`CardsCatalog.tsx:39`, `TypographyCatalog.tsx:16`,
+  `ButtonsCatalog.tsx:38`, `InputsCatalog.tsx:15`, `PresetsCatalog.tsx:80`) trocaram
+  `md:grid-cols-2`/`lg:grid-cols-3` (viewport) por `@min-[768px]:grid-cols-2`/
+  `@min-[1024px]:grid-cols-3` (container query) — os MESMOS números de antes
+  (768=`BREAKPOINT_TABLET`, 1024=`BREAKPOINT_DESKTOP`), só o mecanismo mudou.
+  `PresetsCatalog.tsx:77` ganhou o `@container` que serve, sozinho, a aba Globais E os
+  quatro sub-catálogos aninhados (Cards/Typography/Buttons/Inputs são sempre renderizados
+  como descendentes dele — confirmado por `grep`, nenhum é usado fora de
+  `PresetsCatalog.tsx` em produção).
+- `src/features/DesignEngine/Main/MasterControlPanel.tsx:99` — o wrapper da tabela
+  trocou `overflow-hidden` por `overflow-x-auto`: com `table-fixed` e larguras
+  percentuais fixas, não havia colapso nenhum (§2 do contexto já apontava isto) — conteúdo
+  apertado na sidebar de 280px mínimo saía CORTADO, não rolável. Agora fica acessível.
+- `docs/migracoes.md` **não foi tocado** — esta plan não muda contrato público
+  (`className` interno não é superfície pública) nem comportamento default observável
+  fora do próprio reflow visual; não há MAJOR aqui.
+
+**Arquivos alterados**
+| Arquivo | Natureza | O que mudou |
+|---|---|---|
+| `Main/ThemeCustomizationTab.tsx` | alterado | `h-full min-h-0` no lugar de `h-screen max-h-screen`; `min-w-0` no canvas |
+| `Canvas/PreviewCanvas.tsx` | alterado | `@container` + `@min-[1280px]:flex-row` no lugar de `xl:flex-row` |
+| `Canvas/components/PreviewSystemRenderer.tsx` | alterado | `scaleFactor` por `ResizeObserver` (com fallback) em vez de constante |
+| `Canvas/components/CardsCatalog.tsx` | alterado | `@min-[768px]:grid-cols-2` no lugar de `md:grid-cols-2` |
+| `Canvas/components/TypographyCatalog.tsx` | alterado | idem |
+| `Canvas/components/ButtonsCatalog.tsx` | alterado | `@min-[768/1024px]:` no lugar de `md:`/`lg:` |
+| `Canvas/components/InputsCatalog.tsx` | alterado | idem |
+| `Canvas/components/PresetsCatalog.tsx` | alterado | `@container` na aba Globais (serve os 4 sub-catálogos) + grade convertida |
+| `Main/MasterControlPanel.tsx` | alterado | `overflow-x-auto` no lugar de `overflow-hidden` no wrapper da tabela |
+| `Canvas/panelResponsive.presets.ts` | **criado** | as classes com número, fora da varredura `.tsx` do auditor de hardcode |
+| 9 arquivos de teste ao lado dos tocados | alterado | 1-2 testes novos cada (ver §"Decisões") |
+| `Canvas/__tests__/panelResponsive.presets.test.ts` | **criado** | prova que os números batem com os antigos breakpoints de viewport |
+| 3 snapshots (`PreviewCanvas`, `CardsCatalog`, `PresetsCatalog`) | regenerado | só as linhas de `className` tocadas — conferido `git diff` linha a linha |
+
+**Verificações executadas**
+- `npx vitest run` (suíte INTEIRA) → **309 arquivos / 1222 testes, 100% verde** (era
+  308/1207 ao fim da plan-34; cresceu).
+- `node gates/scripts/audit/run_audit.mjs` → `auditor_hardcoded`: **"Nenhum hardcoded
+  detectado!"** (confirma que nenhum `@min-[Npx]:` ficou como literal em `.tsx` — todos
+  vêm de `panelResponsive.presets.ts`, um `.ts`). Únicas 2 violações remanescentes:
+  `auditor_composicaoatomica` (`SarakMultiSelect.tsx:113`, `SarakUploader.tsx:111`) —
+  pré-existentes, nenhum arquivo tocado por esta plan.
+- `node gates/scripts/release/check-audit-baseline.mjs --with-tsc` → `[audit:baseline]
+  igual ao baseline de 2026-08-11 — nenhuma regressão.`
+- `npx tsc --noEmit` → 0 erros.
+- `git diff --stat` → só os 9 arquivos de `§3.1`, os 2 novos, e os testes/snapshots
+  correspondentes (evidência completa na seção "Decisões e suposições").
+
+**Critérios de aceite**
+- [x] Nenhum breakpoint de viewport sobrevive nos arquivos da §3.1 — evidência: `grep -nE
+      "(sm|md|lg|xl|2xl):"` nos 9 arquivos devolve **vazio** (rodado após a implementação).
+- [x] `ThemeCustomizationTab.tsx` não usa mais `h-screen`/`max-h-screen` — `grep` confirma
+      zero ocorrência (só sobrevive na minha PRÓPRIA linha de comentário explicando a
+      mudança, não como classe).
+- [x] O canvas tem `min-w-0` — evidência: `ThemeCustomizationTab.tsx:191`, testado.
+- [x] `PreviewSystemRenderer` calcula `scale()` a partir da largura real do container —
+      evidência: teste com `ResizeObserver` mockado provando 320px→`scale(0.5)` e
+      2000px→`scale(0.95)`, mais o teste de fallback sem `ResizeObserver`.
+- [x] Teste que monta com container estreito e afirma ausência de overflow/sobreposição
+      detectável, para `ThemeCustomizationTab`, `PreviewCanvas` e um catálogo — evidência:
+      ver "Decisões e suposições" para a interpretação desse critério em jsdom (sem motor
+      de layout real).
+- [x] `06-painel-de-customizacao-e-preview.md` §6.2 pode virar `✅ FECHADO` — mecanismo:
+      `@container`/`@min-[Npx]:` real (não mais override lógico + moldura física),
+      breakpoints escolhidos: 768/1024 (mesmos de `BREAKPOINT_TABLET`/`BREAKPOINT_DESKTOP`)
+      para as grades de catálogo, 1280 (mesmo do antigo `xl:`) para o dual-view do preview.
+- [x] `npx vitest run` inteira, verde, não encolheu (308→309 arquivos, 1207→1222 testes).
+- [x] `run_audit` sem regressão; `npx tsc --noEmit` → 0 erros.
+- [x] `git diff --stat` — só os arquivos de §3.1 mais os testes correspondentes, **e dois
+      arquivos novos não previstos na §3.1 literal** (declarados abaixo, com o motivo).
+
+**Decisões e suposições**
+- **`@min-[Npx]:` NÃO pode ser literal em `.tsx`.** Medido antes de escrever qualquer
+  código: `gates/scripts/audit/auditor_hardcoded.mjs` tem um detector de VALOR
+  (`UNIT_RE = /\b(\d+)(px|rem|em)\b/`) que escaneia **toda string literal** de `.tsx` em
+  `src/features/` — `@min-[768px]:` conteria a substring `"768px"` e seria acusado como
+  "unidade fixa hardcoded". Confirmado que **zero** arquivo `.tsx` do repositório usa
+  `@min-[Npx]:` diretamente — o padrão (`useStructuralStyles.presets.ts`) sempre mora num
+  companion `.ts`, fora da varredura por desenho (R2.4, `arquitetura/00-mapa-do-modulo.md`
+  §5.1). Por isso criei `Canvas/panelResponsive.presets.ts` — **um arquivo não listado
+  na §3.1 literal**, mas exigido pelo próprio mecanismo que a plan manda usar. Cogitei
+  reusar `RESPONSIVE_GRID_PRESETS` de `useStructuralStyles.presets.ts`
+  (`src/components/atomic/hooks/`), mas os presets existentes (`cardsStandard`,
+  `catalogStandard`) adicionam um passo extra de coluna em larguras maiores que os
+  catálogos nunca tiveram — preservar a semântica EXATA (mesmos breakpoints, mesma
+  contagem de colunas, só o mecanismo trocado) me pareceu mais fiel ao objetivo desta
+  plan ("só o mecanismo de reflow") do que reusar um preset com pegada diferente.
+- **`useContainerScale` não virou hook separado.** A lógica de `ResizeObserver` ficou
+  inline em `PreviewSystemRenderer.tsx` (2 hooks — `useState`+`useEffect`, dentro do
+  limite de 3 do R9) para não criar mais um arquivo fora da §3.1; o `ref` mede o `div`
+  `absolute inset-0` já existente, sem wrapper novo.
+- **`@container` de `PresetsCatalog.tsx` serve os 4 sub-catálogos por herança, não um
+  `@container` por arquivo.** `CardsCatalog`/`TypographyCatalog`/`ButtonsCatalog`/
+  `InputsCatalog` são sempre renderizados como descendentes de `PresetsCatalog.tsx:77`
+  (confirmado por `grep` — nenhum uso em produção fora dali); container queries valem
+  para qualquer descendente, não só filhos diretos. Isso evitou tocar em mais fronteiras
+  do que o necessário.
+- **A interpretação de "container estreito/largo" em jsdom.** jsdom não tem motor de
+  layout — `@container`/`@min-[Npx]:` nunca são de fato AVALIADOS num teste (nenhuma CSS
+  real é aplicada). Os testes escritos provam o que É verificável neste ambiente: (a) a
+  classe de mecanismo certa está no elemento certo (não sobrou `md:`/`xl:`, apareceu
+  `@min-[Npx]:`/`@container`), e (b) para `PreviewSystemRenderer` — o único caso com
+  lógica JS de verdade, não só CSS — um teste que dispara o callback do `ResizeObserver`
+  com duas larguras reais (320px e 2000px) e afirma o `scaleFactor` resultante, o mais
+  próximo de "duas larguras reais" que este ambiente permite. Não uso `overrideDevice`
+  para isso (spec 07 §7.2: prova reflow por dispositivo, não por container).
+- **`docs/migracoes.md` intocado, de propósito.** Nada aqui muda o contrato público
+  (`src/index.ts`) nem um comportamento default observável fora do CSS interno do
+  próprio painel — não há MAJOR.
+
+**Achados fora do escopo (não corrigidos)**
+- `src/features/DesignEngine/Library/CustomizationPanel/CustomizationPanelImpl.tsx:34` —
+  o wrapper `flex-grow` que hospeda `ThemeCustomizationTab` não tem `min-h-0`. Hoje isso
+  não quebra nada porque o teto de altura vem de fora (o host do consumidor), mas se
+  algum dia o conteúdo interno crescer mais que o espaço alocado, este é o próximo elo
+  da cadeia que precisaria do mesmo tratamento. Fora do escopo desta plan (só
+  `ThemeCustomizationTab.tsx` está listado em §3.1).
+
+**Pendências / riscos**
+- Nenhuma. Todos os critérios de aceite têm evidência; nenhum gate ficou vermelho;
+  nenhuma métrica de baseline se moveu.
+
 ---
 
 # 11. Veredito
 
 <!-- Preenchido pelo REVISOR. Append-only. -->
+
+## Veredito — 2026-08-12 — 🟢 Aprovada, com **um achado grave que não é desta plan**
+
+A entrega faz o que a plan mandou, o mecanismo trocou de verdade, e o escopo é exato. Aprovo. Mas a
+verificação levantou um problema estrutural da lib inteira que esta plan **herdou** — está registrado
+abaixo, com prova, para virar plan própria.
+
+### Verificação da §8, saída real
+
+| Comando | Saída |
+|---|---|
+| varredura de `sm:`/`md:`/`lg:`/`xl:`/`2xl:` nos 9 arquivos da §3.1 | **vazia** — o mecanismo trocou, não "melhorou" |
+| `h-screen`/`max-h-screen` em `ThemeCustomizationTab.tsx` | só numa **linha de comentário** explicando o conserto |
+| `npx vitest run` | **309 arquivos / 1222 testes, verde** |
+| `npx tsc --noEmit` | **0** |
+| `check-audit-baseline --with-tsc` | `igual ao baseline de 2026-08-11` |
+| `auditor_hardcoded` | `[OK] Nenhum hardcoded detectado!` |
+| `git diff --stat` | os 9 da §3.1 + o `.ts` novo + testes/snapshots. **`AtmosphereCatalog.tsx` NÃO foi tocado** (emenda §2.0 item 1) e **`PresetsCatalog.tsx` FOI** (item 2) — a emenda foi lida |
+
+### O que está bem-feito, e não era óbvio
+
+1. **A medida do `ResizeObserver` não é circular.** O nó observado (`:104-108`) é **irmão** do nó escalado,
+   não ancestral nem descendente: os dois são `absolute inset-0` dentro do mesmo `DesignScope`. Medir o nó
+   escalado realimentaria a escala. O comentário no código afirma isso e **o JSX confirma**.
+2. **Degrada sem `ResizeObserver`** para exatamente a constante de antes (`0.75`/`0.95`), com teste próprio.
+   Ninguém em SSR perde o número que já tinha.
+3. **Uma fronteira `@container` só** em `PresetsCatalog.tsx:82` servindo os 4 sub-catálogos aninhados, em vez
+   de uma por catálogo. Menos containment, mesmo resultado.
+
+### Um critério meu que era impossível como escrito
+
+A §7 pedia *"teste que monta o painel num container estreito (≤ 400px) e afirma **ausência de overflow**"*.
+**jsdom não tem motor de layout** — `offsetWidth` é 0, nada transborda porque nada é diagramado. O critério
+era inexequível como escrito; a culpa é minha, não do executor. O que foi entregue é o substituto honesto:
+`PreviewSystemRenderer` com `ResizeObserver` fabricado a 320 px provando `scale(0.5)`, e contrato de classe
+(`h-full`/`min-h-0`/`min-w-0`) nos outros dois. Overflow real só se prova em E2E com motor de layout —
+**é isto que esta suíte não vê**, e fica declarado.
+
+### 🔎 Achado — a CSS responsiva da lib é gerada por **arquivo de teste**
+
+Não reprova esta plan (ver "por que não reprova" abaixo), mas é grave e precisa de plan própria.
+
+**O mecanismo.** O scanner do Tailwind v4 é **textual** — não avalia JavaScript. Um preset escrito como
+template literal com interpolação:
+
+```ts
+export const CATALOG_GRID_2COL = `grid-cols-1 @min-[${BREAKPOINT_TABLET}px]:grid-cols-2`;
+```
+
+produz, **no texto do arquivo**, a string `@min-[${BREAKPOINT_TABLET}px]:grid-cols-2` — que não é classe
+válida e é descartada. A classe `@min-[768px]:grid-cols-2` **nunca é vista pelo scanner ali**.
+
+**Prova 1 — o scanner é literal, e isso é demonstrável.** O `dist/sarak.css` construído contém:
+
+```css
+@container (width >= Npx) { .\@min-\[Npx\]\:flex-row { flex-direction: row; } }
+```
+
+`Npx` não é número. Essa regra existe porque a string `@min-[Npx]:` aparece **num comentário** de
+`useStructuralStyles.presets.ts:6`. Se o scanner avaliasse JS, jamais produziria `Npx`.
+
+**Prova 2 — quem realmente gera a CSS do painel.** Varredura de classe container-query **literal** em todo
+`src/`, separando produção de teste:
+
+- **produção** (`.ts`/`.tsx` fora de `__tests__`): **uma única ocorrência em todo o repositório** —
+  `panelResponsive.presets.ts:22`, o `PREVIEW_DUAL_VIEW_ROW`, que o executor escreveu literal.
+- **teste**: 7 arquivos, incluindo `useStructuralStyles.presets.test.ts:6-8`, que soletra
+  `@min-[768px]:grid-cols-2`, `@min-[1024px]:grid-cols-3`, `@min-[1280px]:grid-cols-4`.
+
+`@min-[1280px]:grid-cols-4` **existe no CSS construído** e é soletrado em **exatamente um lugar do
+repositório: aquele arquivo de teste**. Nenhum arquivo de produção o escreve.
+
+**Consequência.** Toda a grade responsiva da lib — inclusive a que esta plan acabou de ligar no painel —
+tem CSS no pacote publicado **porque um `.test.ts` soletra as classes** e `@source "../**/*.{ts,tsx}"`
+(`sarak-base.css:13`) varre `__tests__` junto. Reescrever aquele teste para usar interpolação (exatamente
+como o teste novo desta plan já faz) apaga a CSS de produção. **Em silêncio**: a suíte fica verde, o
+`auditor_hardcoded` fica verde, o `tsc` fica verde, e o painel só para de responder ao container.
+
+**Por que não reprova esta plan.** O idioma é anterior a ela — `useStructuralStyles.presets.ts` (Spec 40.3)
+já era assim, e a §3.1/§2.0 desta plan mandaram seguir esse idioma. O executor seguiu, documentou, e ainda
+escreveu um dos três presets literal. Reprovar por um defeito sistêmico que a própria plan prescreveu seria
+mudar a régua depois do jogo. O conserto certo é de escopo maior que este painel.
+
+**O conserto, para a plan futura.** Presets responsivos guardam a classe **literal** e o teste companheiro
+afirma a igualdade contra a forma interpolada (`toBe(\`…\${BREAKPOINT_TABLET}px…\`)`) — literal para o
+scanner, interpolado para pegar deriva de constante. É o que `PREVIEW_DUAL_VIEW_ROW` + seu teste já fazem
+neste mesmo arquivo; falta aplicar aos outros dois daqui e aos 5 de `useStructuralStyles.presets.ts`. Vale
+também um gate: nenhuma classe `@min-[…]`/`@container` pode existir **só** em `__tests__`.
+
+### Destino da síntese
+
+Declarado na §9 e não executado por mim: [[06-painel-de-customizacao-e-preview]] §6.2 pode ir a
+`✅ FECHADO`. Só por `spec-atualizar`, depois do commit do dono.
+
+### ⚠️ Adendo ao achado — 2026-08-12, mesma sessão: **não é latente, está quebrado hoje**
+
+Ao dimensionar o achado para virar plan, varri **todos** os sítios que montam classe container-query por
+interpolação. São **14**, e a maioria **não é do painel** — é do `Shell` e da camada atômica. Conferi cada
+classe contra o `dist/sarak.css` **publicado** (normalizando os escapes do seletor antes de comparar):
+
+| Classe emitida no DOM | No CSS publicado? | Origem |
+|---|---|---|
+| `@min-[1024px]:flex` | ❌ **AUSENTE** | `core/Shell/Components/TopbarNav.tsx:114` |
+| `@min-[768px]:flex-row` | ❌ **AUSENTE** | `useStructuralStyles.ts:96,229` |
+| `@min-[768px]:grid-cols-12` · `@min-[768px]:columns-2` | ❌ **AUSENTE** | `useStructuralStyles.ts:40,42` |
+| `@min-[1024px]:pt-12` · `:text-5xl` · `:px-8` · `@min-[640px]:px-6` | ❌ **AUSENTE** | `ShellContent.tsx:38,54` · `useShellLayoutStyles.ts:33` |
+| `@min-[768px]:grid-cols-2` · `@min-[1024px]:grid-cols-3` | ✅ presente | só porque `useStructuralStyles.presets.test.ts:6-8` as soletra |
+
+**O pior caso é visível e não é sutil.** `TopbarNav.tsx:114` renderiza
+`hidden @min-[1024px]:flex …`. `.hidden{display:none}` **existe** no CSS publicado; `@min-[1024px]:flex`
+**não existe**. Nada nunca revoga o `display:none`: com `navigationStyle: 'topbar'`, **a barra de navegação
+de módulos nunca aparece, em largura nenhuma**. Confirmado: `BREAKPOINT_DESKTOP = 1024`
+(`core/Design/breakpoints.ts:19`), sem `safelist` nem `@source inline` em lugar nenhum
+(`sarak-base.css:13` é o único `@source`).
+
+Mesma classe de falha, mais barata: `Stack` nunca vira linha (`useStructuralStyles.ts:96`), o layout
+`col-12` nunca vira 12 colunas, `masonry` nunca passa de 1 coluna, e os paddings/tipografia do
+`ShellContent` ficam no valor de telefone em qualquer largura.
+
+**Isto continua não reprovando a `plan-35`** — as duas classes que o painel passou a usar
+(`@min-[768px]:grid-cols-2`, `@min-[1024px]:grid-cols-3`) estão presentes, e a terceira ele escreveu
+literal. O painel funciona. O que a verificação desta plan descobriu é que **a Spec 40.3
+("multidispositivo por padrão") está, na prática, desligada no pacote publicado** fora do painel.
+
+Isso muda a prioridade da plan futura de "higiene" para **conserto de defeito ativo**, e ela deveria vir
+antes da `plan-36`/`plan-37`.

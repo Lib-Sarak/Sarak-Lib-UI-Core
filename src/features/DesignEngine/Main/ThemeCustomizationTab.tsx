@@ -135,7 +135,13 @@ export const ThemeCustomizationTab: React.FC = () => {
     }, [groupedStructure, toast, setActivePillarId, setActiveSectionId]);
 
     return (
-        <div className="flex flex-1 h-screen max-h-screen bg-[var(--theme-bg)] overflow-hidden">
+        // Altura relativa ao container-pai (plan-35), não à viewport: `CustomizationPanel`
+        // (Library/CustomizationPanel/CustomizationPanelImpl.tsx) já entrega `h-full` até
+        // aqui — quem hospeda o painel precisa dar altura definida ao host (pré-requisito,
+        // não altura mágica). `min-h-0` é o que permite este flex item ENCOLHER dentro do
+        // espaço real em vez de sempre crescer para caber o conteúdo (a causa da
+        // sobreposição relatada: `h-screen` forçava a altura da JANELA, não do container).
+        <div className="flex flex-1 h-full min-h-0 bg-[var(--theme-bg)] overflow-hidden">
             {/* Sidebar de Configuração */}
             <div
                 className={`flex flex-col h-full max-h-full border-r border-[var(--theme-border)] bg-[var(--theme-card)] relative z-10 overflow-hidden shrink-0 min-w-[var(--sarak-design-engine-sidebar-min-w,280px)] max-w-[var(--sarak-design-engine-sidebar-max-w,600px)] ${isResizingEngine ? 'transition-none' : 'transition-all duration-300'}`}
@@ -186,7 +192,10 @@ export const ThemeCustomizationTab: React.FC = () => {
             </div>
 
             {/* Canvas de Preview */}
-            <div className="flex-1 relative bg-[var(--theme-bg)] flex flex-col">
+            {/* `min-w-0`: a sidebar irmã tem largura MÍNIMA fixa (280px) — sem isto, este
+                flex-1 nunca encolhe abaixo do conteúdo e estoura por cima da sidebar
+                (receita clássica de overflow em flexbox, plan-35). */}
+            <div className="flex-1 min-w-0 relative bg-[var(--theme-bg)] flex flex-col">
                 <PreviewCanvas
                     previewDevice={previewDevice}
                     activePreviewApp={activePreviewApp}

@@ -10,6 +10,7 @@ import { TypographyCatalog } from './TypographyCatalog';
 import { ButtonsCatalog } from './ButtonsCatalog';
 import { InputsCatalog } from './InputsCatalog';
 import { PresetCard } from './PresetCard';
+import { CATALOG_GRID_2COL } from '../panelResponsive.presets';
 
 import { SarakDesignState, SarakUIContextType } from '../../../../core/Provider/types';
 
@@ -74,9 +75,13 @@ export const PresetsCatalog: React.FC<PresetsCatalogProps> = ({
             </div>
 
             {/* Presets Body */}
-            <div className="flex-1 overflow-y-auto custom-scrollbar p-6 bg-[radial-gradient(ellipse_at_top_right,rgba(var(--theme-primary-rgb),0.03)_0%,transparent_50%)]">
+            {/* `@container` (plan-35): a fronteira de medida ÚNICA para as grades desta aba
+                E das quatro sub-catálogos (Cards/Typography/Buttons/Inputs) — todas
+                descendentes, todas reagem ao espaço real deste painel, nunca à janela
+                (fecha 06-painel-de-customizacao-e-preview.md §6.2). */}
+            <div className="@container flex-1 overflow-y-auto custom-scrollbar p-6 bg-[radial-gradient(ellipse_at_top_right,rgba(var(--theme-primary-rgb),0.03)_0%,transparent_50%)]">
                 {activeTab === 'globals' && (
-                    <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                    <div className={`grid ${CATALOG_GRID_2COL} gap-4`}>
                         {globalThemes.map((theme, i) => (
                             <PresetCard
                                 key={theme.id}

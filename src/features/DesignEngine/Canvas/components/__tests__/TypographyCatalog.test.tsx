@@ -14,4 +14,11 @@ describe('TypographyCatalog', () => {
         render(<TypographyCatalog onApplyPreset={vi.fn()} currentMode="dark" />);
         expect(screen.getAllByText('The quick brown fox jumps over the lazy dog')[0]).toBeInTheDocument();
     });
+
+    it('a grade reage a CONTAINER QUERY (@min-[768px]:), não mais a `md:` de viewport (plan-35)', () => {
+        const { container } = render(<TypographyCatalog onApplyPreset={vi.fn()} currentMode="dark" />);
+        const grid = container.querySelector('.grid') as HTMLElement;
+        expect(grid.className).not.toMatch(/\bmd:grid-cols-2\b/);
+        expect(grid.className).toMatch(/@min-\[768px\]:grid-cols-2/);
+    });
 });
