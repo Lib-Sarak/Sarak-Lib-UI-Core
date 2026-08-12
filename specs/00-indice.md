@@ -49,14 +49,9 @@ as duas, sempre, na mesma ação.**
 | 6 | [plan-21-pagar-o-manifesto-morto](plan/plan-21-pagar-o-manifesto-morto.md) | Pagar os 16 consumos de variavel que o runtime nunca emite | plan-20 | 🟢 Aprovada | specs/specs/01-gates-e-baseline.md · specs/specs/15-divida-conhecida.md · specs/arquitetura/04-contrato-de-tokens-e-paridade.md |
 | 7 | [plan-22-triar-a-fronteira-de-papel](plan/plan-22-triar-a-fronteira-de-papel.md) | Triar os 23 de R10 entre encapsulamento e divida real, fechar o SarakScrim e os 2 fantasmas restantes | plan-20 | 🟢 Aprovada | specs/specs/00-regras-e-invariantes.md · specs/specs/01-gates-e-baseline.md · specs/arquitetura/03-superficie-publica.md |
 | 8 | [plan-23-superficie-publica-da-major](plan/plan-23-superficie-publica-da-major.md) | Agrupar numa unica major as mudancas de superficie publica que a plan-22 deixou declaradas | plan-22 | 🟢 Aprovada | specs/arquitetura/03-superficie-publica.md · specs/specs/03-versionamento.md · specs/specs/01-gates-e-baseline.md |
-| 9 | [plan-24-aplicacao-de-temas](plan/plan-24-aplicacao-de-temas.md) | Ligar o gate de contraste da R31 e congelar o payload de tema como contrato | plan-23 | 🟢 Aprovada | specs/specs/09-temas-e-presets.md · specs/specs/00-regras-e-invariantes.md · specs/specs/01-gates-e-baseline.md |
-| 10 | [plan-24-1-fluxo-de-criacao-de-tema](plan/plan-24-1-fluxo-de-criacao-de-tema.md) | Fazer o motor honrar o valor escrito pelo autor e o agente criar tema com liberdade, sem homogeneizar | plan-24 | 🟢 Aprovada | specs/specs/09-temas-e-presets.md · specs/specs/00-regras-e-invariantes.md · specs/specs/01-gates-e-baseline.md |
-| 11 | [plan-05-integracao-continua](plan/plan-05-integracao-continua.md) | Rodar os gates num ambiente que não é a máquina de ninguém | — | 🔴 A executar | specs/16-integracao-continua.md · specs/02-enforcement-por-commit.md · specs/01-gates-e-baseline.md |
-| 12 | [plan-10-ciclo-atualizacao](plan/plan-10-ciclo-atualizacao.md) | Dar comando de atualização a quem só recebia aviso | plan-05 | 🔴 A executar | specs/13-instalacao-e-atualizacao.md |
-| 13 | [plan-11-e2e-no-pipeline](plan/plan-11-e2e-no-pipeline.md) | Parar de sair verde sem executar nada | plan-05 | 🔴 A executar | specs/11-testes-e-cobertura.md · specs/10-seguranca-e-acessibilidade.md · specs/16-integracao-continua.md |
-| 14 | [plan-25-teste-pratico-do-fluxo-de-tema](plan/plan-25-teste-pratico-do-fluxo-de-tema.md) | Testar o mecanismo de criacao de temas na pratica, produzindo 5 temas que ocupem regioes vazias do espaco de design | plan-24-1 | 🟢 Aprovada | specs/specs/09-temas-e-presets.md · specs/specs/15-divida-conhecida.md |
-| 15 | [plan-26-contraparte-de-modo](plan/plan-26-contraparte-de-modo.md) | Fazer a preferencia de modo do usuario sobreviver a troca de tema, com valores autorados em vez de derivados por faixa | plan-25 | 🟢 Aprovada | specs/specs/09-temas-e-presets.md · specs/specs/00-regras-e-invariantes.md |
-| 16 | [plan-27-tema-rastreavel](plan/plan-27-tema-rastreavel.md) | Fazer a troca de modo funcionar no consumidor real, expondo o tema efetivo e ligando o token mode ao resolvedor | plan-26 | 🟢 Aprovada | specs/specs/09-temas-e-presets.md |
+| 9 | [plan-05-integracao-continua](plan/plan-05-integracao-continua.md) | Rodar os gates num ambiente que não é a máquina de ninguém | — | 🔴 A executar | specs/16-integracao-continua.md · specs/02-enforcement-por-commit.md · specs/01-gates-e-baseline.md |
+| 10 | [plan-10-ciclo-atualizacao](plan/plan-10-ciclo-atualizacao.md) | Dar comando de atualização a quem só recebia aviso | plan-05 | 🔴 A executar | specs/13-instalacao-e-atualizacao.md |
+| 11 | [plan-11-e2e-no-pipeline](plan/plan-11-e2e-no-pipeline.md) | Parar de sair verde sem executar nada | plan-05 | 🔴 A executar | specs/11-testes-e-cobertura.md · specs/10-seguranca-e-acessibilidade.md · specs/16-integracao-continua.md |
 <!-- SARAK-INDICE:FILA:FIM -->
 
 > **A ordem da coluna `#` não é a ordem do número da plan** — e isso é a feature, não um erro. A `plan-03`
@@ -151,27 +146,20 @@ Toda plan declara, **desde o momento em que é escrita**, para onde seu conteúd
 
 # 4. Histórico — plans sintetizadas
 
-> **Como escrever:** ao concluir `/spec-atualizar`, mova a linha da §1 para cá, com a **data absoluta**
-> (`AAAA-MM-DD`) da síntese e a spec fixa efetivamente atualizada. **O arquivo da plan é movido para
-> `plan/executadas/`** *(convenção adotada em 2026-08-07, a pedido do dono — antes disso o arquivo
-> permanecia em `plan/`; as plans sintetizadas até aquela data foram movidas retroativamente)*. Continua
-> sendo rastro auditável, só muda de pasta — nunca é editado além do bloco `## Síntese` que o fecha. Esta
-> tabela é append-only: nada é editado nem removido.
+> 🔴 **Convenção trocada em 2026-08-11, por decisão do dono.** Até aqui a plan sintetizada era **movida**
+> para `plan/executadas/` e ganhava uma linha nesta tabela *(convenção de 2026-08-07)*. Agora ela é
+> **removida**: o conteúdo virou verdade consolidada na spec fixa, e o rastro de como se chegou lá vive no
+> Git — `git log --diff-filter=D -- specs/plan/` recupera qualquer uma.
+>
+> **Por que a tabela esvaziou junto.** As linhas antigas **linkavam para os arquivos**. Apagar os arquivos e
+> manter as linhas produziria ponteiro morto em spec, que a **R23** proíbe — e nenhum gate pegaria, porque o
+> `deadPointers.mjs` cobre o kit gerado, não este índice. Arquivo e linha saem **juntos**, sempre.
+>
+> ⚠️ **A seção fica, vazia e de propósito:** é aqui que voltaria o histórico se a convenção mudar de novo, e
+> a numeração das seções seguintes não se move. **Nada a escrever aqui ao concluir `/spec-atualizar`.**
 
 | Plan | Sintetizada em | Spec fixa atualizada |
 |---|---|---|
-| [plan-01-migrar-para-fluxo-sdd](plan/executadas/plan-01-migrar-para-fluxo-sdd.md) | 2026-08-07 | `00-contexto.md` · `specs/15-divida-conhecida.md` |
-| [plan-03-triagem-divida-conhecida](plan/executadas/plan-03-triagem-divida-conhecida.md) | 2026-08-07 | `specs/15-divida-conhecida.md` · `00-contexto.md` |
-| [plan-02-adequar-skills-locais](plan/executadas/plan-02-adequar-skills-locais.md) | 2026-08-07 | `00-contexto.md` §4.1 · `specs/00-regras-e-invariantes.md` §3.1 · `arquitetura/02-design-engine.md` |
-| [plan-04-alinhamento-erp](plan/executadas/plan-04-alinhamento-erp.md) | 2026-08-07 | `—` (exceção já aplicada em `00-contexto.md` §8) |
-| [plan-13-fechar-conjunto-de-regras](plan/executadas/plan-13-fechar-conjunto-de-regras.md) | 2026-08-07 | `specs/00-regras-e-invariantes.md` |
-| [plan-14-casa-dos-gates](plan/executadas/plan-14-casa-dos-gates.md) | 2026-08-07 | `specs/01-gates-e-baseline.md` · `specs/02-enforcement-por-commit.md` · `specs/00-regras-e-invariantes.md` §3.1 |
-| [plan-06-auditoria-cobertura-gates](plan/executadas/plan-06-auditoria-cobertura-gates.md) | 2026-08-07 | `specs/01-gates-e-baseline.md` §9 · `specs/15-divida-conhecida.md` · `specs/00-regras-e-invariantes.md` |
-| [plan-09-contrato-publico-2-0-0](plan/executadas/plan-09-contrato-publico-2-0-0.md) | 2026-08-07 | `arquitetura/03-superficie-publica.md` · `docs/migracoes.md` · `specs/15-divida-conhecida.md` · `specs/00-regras-e-invariantes.md` |
-| [plan-12-construcao-dos-gates](plan/executadas/plan-12-construcao-dos-gates.md) | 2026-08-07 | `specs/00-regras-e-invariantes.md` · `specs/01-gates-e-baseline.md` · `specs/02-enforcement-por-commit.md` · `specs/15-divida-conhecida.md` |
-| [plan-16-gate-composicao-atomica](plan/executadas/plan-16-gate-composicao-atomica.md) | 2026-08-07 | `specs/00-regras-e-invariantes.md` · `specs/01-gates-e-baseline.md` · `specs/02-enforcement-por-commit.md` |
-| [plan-08-achados-comportamento](plan/executadas/plan-08-achados-comportamento.md) | 2026-08-07 | `specs/06-painel-de-customizacao-e-preview.md` · `specs/07-responsividade-e-multidispositivo.md` · `specs/04-shell-e-discovery.md` |
-| [plan-07-quitacao-baseline](plan/executadas/plan-07-quitacao-baseline.md) | 2026-08-07 | `specs/01-gates-e-baseline.md` · `specs/arquitetura/04-contrato-de-tokens-e-paridade.md` · `specs/15-divida-conhecida.md` · `specs/11-testes-e-cobertura.md` · `specs/10-seguranca-e-acessibilidade.md` |
 
 ---
 
