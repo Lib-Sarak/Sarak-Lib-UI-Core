@@ -19,7 +19,7 @@ exports[`SarakCoreCard (Spec 42 — card classic genérico) > matches snapshot c
         
   </style>
   <div
-    class="flex w-full sarak-card bg-[var(--color-theme-card,#1e293b)] border-[var(--border-color,#334155)] group transition-all h-fit relative overflow-hidden"
+    class="@container flex w-full sarak-card bg-[var(--color-theme-card,#1e293b)] border-[var(--border-color,#334155)] group transition-all h-fit relative overflow-hidden"
     data-border-beam="0"
     data-geometric="0"
     data-spotlight="1"

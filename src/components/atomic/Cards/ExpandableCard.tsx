@@ -78,7 +78,12 @@ export const ExpandableCard: React.FC<ExpandableCardProps> = ({
                             animate={{ opacity: 1, backdropFilter: 'blur(var(--sarak-glass-blur, 12px))' }}
                             exit={{ opacity: 0, backdropFilter: 'blur(0px)' }}
                             transition={{ duration: 0.3 }}
-                            className="fixed inset-0 z-[99999] bg-theme-body flex"
+                            // plan-41: `@container` plantado aqui, não na raiz do card — o
+                            // conteúdo com `@min-[…]` (`bodyPadding`/`headerMargin`) vive
+                            // dentro do `createPortal` (renderiza em `document.body`, fora
+                            // da subárvore da raiz do card). Sem ancestral com
+                            // `container-type` DENTRO do portal, a classe nunca casava.
+                            className="@container fixed inset-0 z-[99999] bg-theme-body flex"
                             style={{ flexDirection: 'column' }}
                         >
                             <motion.div

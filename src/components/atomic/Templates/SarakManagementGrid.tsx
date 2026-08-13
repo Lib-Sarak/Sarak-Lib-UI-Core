@@ -83,8 +83,11 @@ export const SarakManagementGrid = <TItem extends Record<string, unknown> = Reco
         handleAction
     } = useManagementGrid(endpoint, groupBy, ghostGroups, getVal);
 
+    // plan-41: `@container` plantado na raiz — `headerLayout`/`gridLayout` abaixo usam
+    // classe `@min-[…]` (container query), que precisa de um ancestral com
+    // `container-type` para casar (achado real em consumidor, `plan-40`).
     return (
-        <div className={containerLayout.className} style={containerLayout.style}>
+        <div className={`@container ${containerLayout.className}`} style={containerLayout.style}>
             <AnimatePresence>
                 {activeModal && (
                     <div className="fixed inset-0 z-50 flex items-center justify-center bg-[var(--sarak-modal-overlay-color,rgba(0,0,0,0.5))] backdrop-blur-md" style={{ padding: 'var(--sarak-layout-gap-md,16px)' }}>

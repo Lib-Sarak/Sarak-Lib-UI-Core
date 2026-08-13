@@ -16,8 +16,11 @@ export const AuthSocialLogin: React.FC<AuthSocialLoginProps> = ({ socialConfig, 
 
     if (!socialConfig?.enabled) return null;
 
+    // plan-41: `@container` plantado na raiz — o grid de provedores abaixo usa
+    // `getGridStyles` (classe `@min-[…]`, container query), que precisa de um
+    // ancestral com `container-type` para casar.
     return (
-        <div className={getFlexStyles('column', 'flex-start', 'stretch', 'var(--sarak-layout-gap-lg,24px)').className} style={{ ...getFlexStyles('column', 'flex-start', 'stretch', 'var(--sarak-layout-gap-lg,24px)').style, marginTop: 'calc(var(--sarak-layout-gap-md,16px)*2)' }}>
+        <div className={`@container ${getFlexStyles('column', 'flex-start', 'stretch', 'var(--sarak-layout-gap-lg,24px)').className}`} style={{ ...getFlexStyles('column', 'flex-start', 'stretch', 'var(--sarak-layout-gap-lg,24px)').style, marginTop: 'calc(var(--sarak-layout-gap-md,16px)*2)' }}>
             <div className="relative flex items-center justify-center">
                 <div className="absolute inset-0 flex items-center">
                     <div className="w-full border-t border-white/5"></div>

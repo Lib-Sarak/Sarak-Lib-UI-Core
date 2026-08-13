@@ -80,8 +80,11 @@ export const SarakTable = <TData extends Record<string, unknown> = Record<string
         );
     }
 
+    // plan-41: `@container` plantado na raiz — `headerLayout` abaixo usa classe
+    // `@min-[…]` (container query), que precisa de um ancestral com `container-type`
+    // para casar (achado real em consumidor, `plan-40`).
     return (
-        <div className={containerLayout.className} style={containerLayout.style}>
+        <div className={`@container ${containerLayout.className}`} style={containerLayout.style}>
             {/* Header da Tabela */}
             <div className={headerLayout.className} style={headerLayout.style}>
                 <div>

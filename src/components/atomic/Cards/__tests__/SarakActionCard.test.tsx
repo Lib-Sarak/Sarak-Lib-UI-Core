@@ -73,6 +73,20 @@ describe('SarakActionCard (Spec 40 §2.5 — card genérico, sem domínio embuti
         expect(container.textContent).not.toContain('Modelo');
     });
 
+    // plan-41: o painel de detalhes (mapping.details) usa `getGridStyles`/`getFlexStyles`
+    // — classe `@min-[…]` (container query), que só ativa com um ancestral
+    // `container-type`. jsdom não avalia container query — prova só que a raiz do
+    // card PLANTA `@container` (a query casar é prova de browser real, plan-40).
+    it('planta @container na raiz — ancestral do painel de detalhes que usa container query', () => {
+        const { container } = render(
+            <SarakUIProvider config={{ mode: 'dark' }}>
+                <SarakActionCard item={item} mapping={mapping} />
+            </SarakUIProvider>
+        );
+
+        expect(container.querySelector('[class*="@container"]')).not.toBeNull();
+    });
+
     it('painel expansível renderiza os pares de mapping.details (rótulo/valor genéricos)', () => {
         render(
             <SarakUIProvider config={{ mode: 'dark' }}>

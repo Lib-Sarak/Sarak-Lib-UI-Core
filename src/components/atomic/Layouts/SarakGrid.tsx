@@ -54,13 +54,21 @@ export const SarakGrid: React.FC<SarakGridProps> = ({
 
     const structuralStyles = getGridStyles(resolvedColumns, templateAreas, gap);
 
+    // plan-41: `@min-[…]:grid-cols-N` é container query — precisa de um ANCESTRAL com
+    // `container-type` para medir. O próprio grid não pode ser o container de si mesmo
+    // (medido: `container-type` no MESMO elemento não faz a query dele casar). Sem
+    // `SarakShell`/painel acima (que já plantam `@container`), a classe nunca ativava —
+    // achado real em consumidor (`plan-40`). Este wrapper é o container; o consumidor
+    // continua recebendo `className`/`style`/`...props` no elemento do grid, como antes.
     return (
-        <Component
-            className={`${structuralStyles.className} ${className}`.trim()}
-            style={{ ...structuralStyles.style, ...style }}
-            {...props}
-        >
-            {children}
-        </Component>
+        <div className="@container w-full">
+            <Component
+                className={`${structuralStyles.className} ${className}`.trim()}
+                style={{ ...structuralStyles.style, ...style }}
+                {...props}
+            >
+                {children}
+            </Component>
+        </div>
     );
 };

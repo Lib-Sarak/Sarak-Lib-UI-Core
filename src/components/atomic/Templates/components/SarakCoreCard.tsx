@@ -87,10 +87,13 @@ export const SarakCoreCard = <TItem extends Record<string, unknown>>({ item, map
     const rootFlex = getFlexStyles('column', 'flex-start', 'stretch', '0');
 
     return (
-        <motion.div 
+        <motion.div
             initial={{ opacity: 0, y: 20 }}
             animate={{ opacity: 1, y: 0 }}
-            className={`${rootFlex.className} sarak-card bg-[var(--color-theme-card,#1e293b)] border-[var(--border-color,#334155)] group transition-all h-fit relative overflow-hidden`}
+            // plan-41: `@container` plantado aqui — o painel de detalhes abaixo usa
+            // `getGridStyles` (classe `@min-[…]`, container query), que precisa de um
+            // ancestral com `container-type` para casar.
+            className={`@container ${rootFlex.className} sarak-card bg-[var(--color-theme-card,#1e293b)] border-[var(--border-color,#334155)] group transition-all h-fit relative overflow-hidden`}
             style={{ 
                 ...rootFlex.style,
                 transitionDuration: 'var(--duration-normal, 0.3s)',

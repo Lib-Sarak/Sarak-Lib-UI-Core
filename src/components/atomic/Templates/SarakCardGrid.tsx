@@ -141,8 +141,11 @@ export const SarakCardGrid = <TData extends Record<string, unknown>>({ endpoint,
     const mainFilter = filters.find(f => f.type === 'TABS');
     const sideFilters = filters.filter(f => f.type === 'SELECT');
 
+    // plan-41: `@container` plantado na raiz — `headerRow` e `cardsGrid` abaixo usam
+    // classe `@min-[…]` (container query), que precisa de um ancestral com
+    // `container-type` para casar (achado real em consumidor, `plan-40`).
     return (
-        <div className={outerStack.className} style={outerStack.style}>
+        <div className={`@container ${outerStack.className}`} style={outerStack.style}>
             {/* Header & Filter Section Core */}
             <div className={headerBlockStack.className} style={headerBlockStack.style}>
                 <div className={`${headerRow.className} md:items-center justify-between`} style={headerRow.style}>

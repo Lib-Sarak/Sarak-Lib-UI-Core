@@ -59,10 +59,14 @@ export const SarakActionCard = <TItem extends Record<string, unknown>>({ item, m
     const clickScale = design.cardActionClickScale !== undefined ? Number(design.cardActionClickScale) : 0.96;
 
     return (
-        <motion.div 
+        <motion.div
             initial={{ opacity: 0, y: 15 }}
             animate={{ opacity: 1, y: 0 }}
-            className={`${layout.containerClass} sarak-card bg-[var(--color-theme-card,#1e293b)] border-[var(--border-color,#334155)] group transition-all relative overflow-hidden h-fit ${className}`}
+            // plan-41: `@container` plantado aqui porque o painel de detalhes abaixo usa
+            // `getGridStyles`/`getFlexStyles` com classe `@min-[…]` (container query) — sem
+            // ancestral com `container-type`, ela nunca casava fora do `SarakShell`/painel
+            // (achado real em consumidor, `plan-40`).
+            className={`@container ${layout.containerClass} sarak-card bg-[var(--color-theme-card,#1e293b)] border-[var(--border-color,#334155)] group transition-all relative overflow-hidden h-fit ${className}`}
             style={{ 
                 transitionDuration: 'var(--duration-normal, 0.3s)',
                 padding: 'var(--sarak-card-padding-md, 24px)'

@@ -54,45 +54,50 @@ export const SarakStats = <TData extends Record<string, unknown> = Record<string
 
     if (error) return null;
 
+    // plan-41: `statsGrid.className` traz `@min-[1024px]:grid-cols-4` (container query) —
+    // precisa de um ANCESTRAL com `container-type`, nunca do próprio elemento (medido em
+    // `plan-41`: sem isso a classe nunca casa, fora do `SarakShell`/painel).
     return (
-        <div className={statsGrid.className} style={statsGrid.style}>
-            {loading && !Object.keys(stats).length ? (
-                [...Array(4)].map((_, i) => (
-                    <div key={`skel-${i}`} className="bg-[var(--color-theme-card,#1e293b)] border-[var(--border-color,#334155)] animate-pulse rounded-[var(--sarak-card-radius,12px)]" style={{ height: 'calc(var(--sarak-layout-gap-md,16px) * 6)' }} />
-                ))
-            ) : (
-                keys.map((key, idx) => (
-                    <div
-                        key={key}
-                        className="bg-[var(--color-theme-card,#1e293b)] border-[var(--border-color,#334155)] hover:bg-white/[0.04] transition-all group rounded-[var(--sarak-card-radius,12px)]"
-                        style={{ padding: 'var(--sarak-layout-gap-md,16px)', transitionDuration: 'var(--duration-normal, 0.3s)' }}
-                    >
-                        <span className="text-2xs text-white/30 font-black uppercase tracking-widest block transition-colors group-hover:text-[var(--sarak-primary-color,#3b82f6)]" style={{ marginBottom: 'calc(var(--sarak-layout-gap-md,16px) / 6)' }}>
-                            {mapping ? mapping[key] : key.replace(/_/g, ' ')}
-                        </span>
-                        <div className="flex items-center justify-between">
-                            <motion.span 
-                                key={`${key}-${renderValue(key)}`}
-                                initial={{ opacity: 0.5, y: -5 }}
-                                animate={{ opacity: 1, y: 0 }}
-                                className="text-2xl font-black text-white tracking-tighter" 
-                                style={{ fontWeight: 'var(--sarak-h1-weight,700)' }}
-                            >
-                                {String(renderValue(key) || '')}
-                            </motion.span>
-                            {(() => {
-                                const levels = ['primary', 'secondary', 'accent'];
-                                const level = levels[idx % levels.length];
-                                return (
-                                    <div className="rounded-[var(--sarak-card-radius,12px)] transition-colors" style={{ padding: 'calc(var(--sarak-layout-gap-md,16px) / 3)', backgroundColor: `var(--sarak-primary-color-bg,rgba(59,130,246,0.1))`, transitionDuration: 'var(--duration-normal, 0.3s)' }}>
-                                        <Activity size={16} className="transition-colors" style={{ color: `var(--sarak-primary-color,#3b82f6)`, transitionDuration: 'var(--duration-normal, 0.3s)' }} />
-                                    </div>
-                                );
-                            })()}
+        <div className="@container w-full">
+            <div className={statsGrid.className} style={statsGrid.style}>
+                {loading && !Object.keys(stats).length ? (
+                    [...Array(4)].map((_, i) => (
+                        <div key={`skel-${i}`} className="bg-[var(--color-theme-card,#1e293b)] border-[var(--border-color,#334155)] animate-pulse rounded-[var(--sarak-card-radius,12px)]" style={{ height: 'calc(var(--sarak-layout-gap-md,16px) * 6)' }} />
+                    ))
+                ) : (
+                    keys.map((key, idx) => (
+                        <div
+                            key={key}
+                            className="bg-[var(--color-theme-card,#1e293b)] border-[var(--border-color,#334155)] hover:bg-white/[0.04] transition-all group rounded-[var(--sarak-card-radius,12px)]"
+                            style={{ padding: 'var(--sarak-layout-gap-md,16px)', transitionDuration: 'var(--duration-normal, 0.3s)' }}
+                        >
+                            <span className="text-2xs text-white/30 font-black uppercase tracking-widest block transition-colors group-hover:text-[var(--sarak-primary-color,#3b82f6)]" style={{ marginBottom: 'calc(var(--sarak-layout-gap-md,16px) / 6)' }}>
+                                {mapping ? mapping[key] : key.replace(/_/g, ' ')}
+                            </span>
+                            <div className="flex items-center justify-between">
+                                <motion.span
+                                    key={`${key}-${renderValue(key)}`}
+                                    initial={{ opacity: 0.5, y: -5 }}
+                                    animate={{ opacity: 1, y: 0 }}
+                                    className="text-2xl font-black text-white tracking-tighter"
+                                    style={{ fontWeight: 'var(--sarak-h1-weight,700)' }}
+                                >
+                                    {String(renderValue(key) || '')}
+                                </motion.span>
+                                {(() => {
+                                    const levels = ['primary', 'secondary', 'accent'];
+                                    const level = levels[idx % levels.length];
+                                    return (
+                                        <div className="rounded-[var(--sarak-card-radius,12px)] transition-colors" style={{ padding: 'calc(var(--sarak-layout-gap-md,16px) / 3)', backgroundColor: `var(--sarak-primary-color-bg,rgba(59,130,246,0.1))`, transitionDuration: 'var(--duration-normal, 0.3s)' }}>
+                                            <Activity size={16} className="transition-colors" style={{ color: `var(--sarak-primary-color,#3b82f6)`, transitionDuration: 'var(--duration-normal, 0.3s)' }} />
+                                        </div>
+                                    );
+                                })()}
+                            </div>
                         </div>
-                    </div>
-                ))
-            )}
+                    ))
+                )}
+            </div>
         </div>
     );
 };

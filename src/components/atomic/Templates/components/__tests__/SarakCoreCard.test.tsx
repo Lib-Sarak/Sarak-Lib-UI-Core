@@ -149,6 +149,15 @@ describe('SarakCoreCard (Spec 42 — card classic genérico)', () => {
         expect(screen.getByText('relatório')).toBeInTheDocument();
     });
 
+    // plan-41: o painel de detalhes (`mapping.details`) usa `getGridStyles` — classe
+    // `@min-[…]` (container query), que só ativa com um ancestral `container-type`.
+    // jsdom não avalia container query — prova só que a raiz PLANTA `@container` (a
+    // query casar é prova de browser real, plan-40).
+    it('planta @container na raiz — ancestral do painel de detalhes que usa container query', () => {
+        const { container } = renderCard();
+        expect(container.querySelector('[class*="@container"]')).not.toBeNull();
+    });
+
     it('delega para as variantes title/action/search sem renderizar o card classic', () => {
         const { container: title } = renderCard({ variant: 'title' });
         expect(title.textContent).not.toContain('Valor mensal');

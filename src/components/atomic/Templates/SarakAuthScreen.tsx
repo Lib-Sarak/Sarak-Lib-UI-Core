@@ -139,8 +139,11 @@ export const SarakAuthScreen: React.FC<SarakAuthScreenProps> = (props) => {
         if (!next) emit({ intent: 'backToPassword' });
     };
 
+    // plan-41: `@container` plantado na raiz — `AuthSocialLogin` (dentro de `AuthForm`)
+    // usa `getGridStyles`, cuja classe `@min-[…]` (container query) precisa de um
+    // ancestral com `container-type` para casar (achado real em consumidor, `plan-40`).
     return (
-        <div className="min-h-screen w-full flex bg-theme-body text-theme-text selection:bg-theme-primary/30 font-sans overflow-hidden">
+        <div className="@container min-h-screen w-full flex bg-theme-body text-theme-text selection:bg-theme-primary/30 font-sans overflow-hidden">
             <AuthHero branding={props.branding} />
             <AuthForm
                 branding={props.branding}

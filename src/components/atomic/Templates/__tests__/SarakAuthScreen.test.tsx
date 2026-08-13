@@ -111,4 +111,16 @@ describe('SarakAuthScreen (Spec 20 — canal declarativo onChange)', () => {
         renderWithProvider(<SarakAuthScreen error="Credenciais inválidas" />);
         expect(screen.getByText('Credenciais inválidas')).toBeInTheDocument();
     });
+
+    // plan-41: `AuthSocialLogin` (dentro de `AuthForm`) usa `getGridStyles` — classe
+    // `@min-[…]` (container query), que só ativa com um ancestral `container-type`.
+    // jsdom não avalia container query — prova só que a raiz PLANTA `@container` (a
+    // query casar é prova de browser real, plan-40).
+    it('planta @container na raiz — ancestral do grid de provedores sociais em AuthSocialLogin', () => {
+        const { container } = renderWithProvider(
+            <SarakAuthScreen socialConfig={{ enabled: true, display: 'full', providers: [{ id: 'google', variant: 'glass' }] }} />,
+        );
+
+        expect(container.querySelector('[class*="@container"]')).not.toBeNull();
+    });
 });

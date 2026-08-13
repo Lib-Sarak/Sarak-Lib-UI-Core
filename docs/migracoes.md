@@ -5,6 +5,64 @@ com o "antes" e o "depois" lado a lado. Uma entrada por mudança, mais recente p
 
 ---
 
+## Container query estrutural agora funciona FORA do `SarakShell` — 10 componentes ganham um `@container` próprio (plan-41)
+
+**Classificação: MAJOR** — comportamento default muda sem opt-in (mesmo critério da `4.0.0` e da entrada da
+`plan-39` logo abaixo: *"mudar um comportamento default é MAJOR, mesmo mantendo a capacidade — quem dependia
+do default vê comportamento diferente sem alterar uma linha."*), **e** dois componentes ganham um elemento a
+mais no DOM renderizado (ver a tabela).
+
+**O que estava quebrado.** A `plan-39` fez o CSS existir; a `plan-40`, medindo num consumidor real (o ERP
+Earendel), achou a metade que faltava: **container query sem um ancestral `container-type` nunca casa** — não
+cai para o comportamento de viewport, simplesmente nunca ativa, para sempre, em qualquer largura. A única
+peça da lib que planta esse ancestral é o `SarakShell` (o modo "host de módulos-plugin"). Quem usa o **modo
+kit de componentes** — `SarakAppChrome`, ou os componentes soltos, sem cromo nenhum — nunca tinha esse
+ancestral, e todo componente com classe `@min-[…]` ficava congelado no layout de celular, em qualquer largura.
+
+**Afeta você se** usa algum destes fora do `SarakShell` (sob `SarakAppChrome`, ou standalone):
+
+| Componente | O que estava quebrado | O que passa a funcionar |
+| --- | --- | --- |
+| `SarakGrid` (layout `col-12`/`masonry`) | grid travado em 1 coluna em qualquer largura | vira 12 colunas (ou 2/3 no masonry) a partir do breakpoint, como sempre foi a intenção |
+| `SarakCardGrid` | grid de cards e cabeçalho responsivo travados | grid e cabeçalho respondem à largura do container |
+| `SarakCatalogGrid` | idem | idem |
+| `SarakManagementGrid` | idem | idem |
+| `SarakStats` | grid de métricas travado em 1 coluna | vira 4 colunas a partir de 1024px |
+| `SarakTable` | cabeçalho não virava linha no desktop | vira linha e centraliza a partir de 768px |
+| `SarakActionCard` | painel de detalhes expansível travado em 1 coluna | vira 2 colunas a partir do breakpoint |
+| `ExpandableCard` | padding/margem do modo tela cheia travados no valor de celular | crescem a partir de 640px/1024px |
+| `SarakAuthScreen` (grid de login social) | grid de provedores travado em 1 coluna | vira 4 colunas no modo `compact` |
+
+**Se você já escreveu CSS próprio para forçar algum destes a virar grade/linha** (`!important` ou seletor mais
+específico), **remova a compensação** — o CSS duplicado pode brigar com o layout novo.
+
+**Mudança de DOM, só em dois componentes.** `SarakGrid` e `SarakStats` renderizavam um único elemento — o
+próprio grid — e uma container query não pode medir a si mesma (`container-type` precisa estar num
+ANCESTRAL, nunca no mesmo elemento que a consome; medido em `plan-41`). Os dois passaram a renderizar **um
+`<div>` a mais**, envolvendo o grid, só para plantar o container:
+
+```html
+<!-- ANTES -->
+<div class="grid ...">…</div>
+
+<!-- DEPOIS -->
+<div class="@container w-full">
+  <div class="grid ...">…</div>
+</div>
+```
+
+Todo `className`/`style`/`...props` que você passa para `<SarakGrid>` continua chegando no elemento do grid
+(o `<div>` de dentro), exatamente como antes — só a árvore do DOM ganhou um nó a mais. **Se você usa `ref`,
+seletor CSS (`document.querySelector`) ou snapshot de teste** esperando que o grid seja o elemento raiz
+retornado por `SarakGrid`/`SarakStats`, atualize para o novo nível. Os demais 8 componentes da tabela acima
+não ganharam elemento novo — o `@container` foi plantado numa raiz que já existia.
+
+**O que NÃO mudou.** Nenhum breakpoint numérico (640/768/1024/1280); nenhuma prop, export ou token; o
+mecanismo continua sendo container query — só passou a existir, em cada um dos 10 componentes, um ancestral
+que o estabelece.
+
+---
+
 ## Tema salvo pelo usuário final em runtime — uma porta de escrita nova (ADR-011, plan-38)
 
 **Classificação: MINOR** — capacidade nova retrocompatível: `ThemeEntry.name?`, `options.theme.onSave?` e

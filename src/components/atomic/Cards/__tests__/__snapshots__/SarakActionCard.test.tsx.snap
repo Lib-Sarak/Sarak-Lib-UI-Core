@@ -19,7 +19,7 @@ exports[`SarakActionCard (Spec 40 §2.5 — card genérico, sem domínio embutid
         
   </style>
   <div
-    class="mock-container sarak-card bg-[var(--color-theme-card,#1e293b)] border-[var(--border-color,#334155)] group transition-all relative overflow-hidden h-fit "
+    class="@container mock-container sarak-card bg-[var(--color-theme-card,#1e293b)] border-[var(--border-color,#334155)] group transition-all relative overflow-hidden h-fit "
     data-border-beam="0"
     data-geometric="0"
     data-spotlight="1"
