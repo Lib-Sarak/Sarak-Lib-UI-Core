@@ -1264,6 +1264,7 @@
     "tokenId": "tableZebraStriping",
     "label": "Listras Alternadas (Zebra)",
     "type": "boolean",
+    "importance": 55,
     "defaultValue": false,
     "cssVars": [
       "--sarak-table-zebra-striping"
@@ -1273,6 +1274,7 @@
     "tokenId": "tableBorderRadius",
     "label": "Arredondamento da Tabela",
     "type": "slider",
+    "importance": 70,
     "unit": "px",
     "constraints": {
       "min": 0,
@@ -1287,6 +1289,7 @@
     "tokenId": "inputPadding",
     "label": "Espaçamento Interno (Y)",
     "type": "slider",
+    "importance": 80,
     "unit": "px",
     "constraints": {
       "min": 0,
@@ -1301,6 +1304,7 @@
     "tokenId": "inputBorderType",
     "label": "Estilo da Borda",
     "type": "select",
+    "importance": 70,
     "options": [
       {
         "id": "solid",
@@ -1328,6 +1332,7 @@
     "tokenId": "inputBackdropBlur",
     "label": "Desfoque de Fundo (Blur)",
     "type": "slider",
+    "importance": 60,
     "unit": "px",
     "constraints": {
       "min": 0,
@@ -1342,6 +1347,7 @@
     "tokenId": "inputShadow",
     "label": "Sombra / Neumorphism",
     "type": "text",
+    "importance": 55,
     "defaultValue": "none",
     "cssVars": [
       "--sarak-input-shadow"
@@ -1351,6 +1357,7 @@
     "tokenId": "inputIconColor",
     "label": "Cor dos Ícones",
     "type": "color",
+    "importance": 70,
     "defaultValue": "rgba(255, 255, 255, 0.5)",
     "cssVars": [
       "--sarak-input-icon-color"
@@ -1360,6 +1367,7 @@
     "tokenId": "inputErrorColor",
     "label": "Cor de Erro",
     "type": "color",
+    "importance": 85,
     "defaultValue": "#ff4d4f",
     "cssVars": [
       "--sarak-input-error-color"
@@ -1369,6 +1377,7 @@
     "tokenId": "inputSuccessColor",
     "label": "Cor de Sucesso",
     "type": "color",
+    "importance": 80,
     "defaultValue": "#52c41a",
     "cssVars": [
       "--sarak-input-success-color"
@@ -1378,6 +1387,7 @@
     "tokenId": "iconButtonGlowBlurSm",
     "label": "Glow do Icon Button: Desfoque Pequeno",
     "type": "number",
+    "importance": 35,
     "defaultValue": 5,
     "cssVars": ["--sarak-icon-button-glow-blur-sm"]
   },
@@ -1385,6 +1395,7 @@
     "tokenId": "iconButtonGlowBlurMd",
     "label": "Glow do Icon Button: Desfoque Médio",
     "type": "number",
+    "importance": 40,
     "defaultValue": 8,
     "cssVars": ["--sarak-icon-button-glow-blur-md"]
   },
@@ -1392,6 +1403,7 @@
     "tokenId": "iconButtonGlowBlurLg",
     "label": "Glow do Icon Button: Desfoque Grande",
     "type": "number",
+    "importance": 45,
     "defaultValue": 12,
     "cssVars": ["--sarak-icon-button-glow-blur-lg"]
   },
@@ -1399,6 +1411,7 @@
     "tokenId": "iconButtonFrostedShadowOffsetY",
     "label": "Sombra Frosted do Icon Button: Offset Y",
     "type": "number",
+    "importance": 30,
     "defaultValue": 4,
     "cssVars": ["--sarak-icon-button-frosted-shadow-offset-y"]
   },
@@ -1406,6 +1419,7 @@
     "tokenId": "iconButtonFrostedShadowBlur",
     "label": "Sombra Frosted do Icon Button: Desfoque",
     "type": "number",
+    "importance": 35,
     "defaultValue": 16,
     "cssVars": ["--sarak-icon-button-frosted-shadow-blur"]
   },
@@ -1413,6 +1427,7 @@
     "tokenId": "themeDropdownMaxHeight",
     "label": "Altura Máxima do Dropdown de Temas",
     "type": "number",
+    "importance": 30,
     "defaultValue": 400,
     "cssVars": ["--sarak-theme-dropdown-max-height"]
   },
@@ -1420,6 +1435,7 @@
     "tokenId": "actionGlowShadowOffsetY",
     "label": "Sombra de Ação: Offset Y",
     "type": "number",
+    "importance": 30,
     "defaultValue": 10,
     "cssVars": ["--sarak-action-glow-shadow-offset-y"]
   },
@@ -1427,6 +1443,7 @@
     "tokenId": "actionGlowShadowBlur",
     "label": "Sombra de Ação: Desfoque",
     "type": "number",
+    "importance": 35,
     "defaultValue": 20,
     "cssVars": ["--sarak-action-glow-shadow-blur"]
   },
@@ -1434,6 +1451,7 @@
     "tokenId": "actionGlowShadowSpread",
     "label": "Sombra de Ação: Espalhamento",
     "type": "number",
+    "importance": 30,
     "defaultValue": 10,
     "cssVars": ["--sarak-action-glow-shadow-spread"]
   },
@@ -1441,6 +1459,7 @@
     "tokenId": "kanbanHeaderPaddingY",
     "label": "Kanban: Padding Vertical do Cabeçalho da Coluna",
     "type": "number",
+    "importance": 35,
     "defaultValue": 4,
     "cssVars": ["--sarak-kanban-header-padding-y"]
   },
@@ -1448,6 +1467,7 @@
     "tokenId": "kanbanHeaderTracking",
     "label": "Kanban: Tracking do Cabeçalho da Coluna",
     "type": "number",
+    "importance": 30,
     "defaultValue": 0.04,
     "cssVars": ["--sarak-kanban-header-tracking"]
   },
@@ -1455,6 +1475,7 @@
     "tokenId": "kanbanCardRadius",
     "label": "Kanban: Arredondamento do Card",
     "type": "number",
+    "importance": 45,
     "defaultValue": 8,
     "cssVars": ["--sarak-kanban-card-radius"]
   },
@@ -1462,6 +1483,7 @@
     "tokenId": "toastMinWidth",
     "label": "Toast: Largura Mínima",
     "type": "number",
+    "importance": 45,
     "defaultValue": 15,
     "cssVars": ["--sarak-toast-min-width"]
   },
@@ -1469,6 +1491,7 @@
     "tokenId": "toastMaxWidth",
     "label": "Toast: Largura Máxima",
     "type": "number",
+    "importance": 45,
     "defaultValue": 22.5,
     "cssVars": ["--sarak-toast-max-width"]
   },
@@ -1476,6 +1499,7 @@
     "tokenId": "toastAccentWidth",
     "label": "Toast: Largura da Borda de Destaque",
     "type": "number",
+    "importance": 35,
     "defaultValue": 4,
     "cssVars": ["--sarak-toast-accent-width"]
   },
@@ -1483,6 +1507,7 @@
     "tokenId": "contextMenuMinWidth",
     "label": "Context Menu: Largura Mínima",
     "type": "number",
+    "importance": 35,
     "defaultValue": 10,
     "cssVars": ["--sarak-context-menu-min-width"]
   },
@@ -1490,6 +1515,7 @@
     "tokenId": "multiSelectInputMinWidth",
     "label": "Multi-Select: Largura Mínima do Input Interno",
     "type": "number",
+    "importance": 30,
     "defaultValue": 6,
     "cssVars": ["--sarak-multi-select-input-min-width"]
   },
@@ -1497,6 +1523,7 @@
     "tokenId": "searchBackdropBlur",
     "label": "Search Palette: Desfoque do Backdrop",
     "type": "number",
+    "importance": 55,
     "defaultValue": 8,
     "cssVars": ["--sarak-search-backdrop-blur"]
   },
@@ -1504,6 +1531,7 @@
     "tokenId": "rangeActiveColor",
     "label": "Range Slider: Cor Ativa",
     "type": "color",
+    "importance": 75,
     "defaultValue": "var(--theme-primary)",
     "cssVars": ["--sarak-range-active-bg"]
   }

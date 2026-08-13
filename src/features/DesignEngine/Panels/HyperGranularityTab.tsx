@@ -7,8 +7,8 @@ import {
 } from 'lucide-react';
 
 import { useSarakUI } from '../../../core/Provider/SarakUIProvider';
-import { useDesignDraft } from '../hooks/useDesignDraft';
 import { MASTER_DESIGN_MAP } from '../../../core/Design/master-map';
+import { SarakDesignState } from '../../../core/Provider/types';
 import { SarakTokenValue, DesignToken } from '../../../core/Design/types';
 import { DynamicTokenControl } from '../components/DynamicTokenControl';
 import { CategoryLabel } from '../components/DesignControls';
@@ -34,14 +34,30 @@ const COMPONENT_ICONS: Record<string, React.ElementType> = {
 
 
 
+export interface HyperGranularityTabProps {
+    draft: SarakDesignState;
+    updateDraft: (id: string, value: SarakTokenValue) => void;
+    handleApplyToSystem: () => void;
+    resetComponent: (schemaIdOrSchemas: string | string[]) => void;
+    resetToken: (tokenId: string) => void;
+    toast: { type: 'success' | 'warning'; message: string } | null;
+}
+
 /**
  * HYPER GRANULARITY TAB (v12.0) - THE COMMAND CENTER
- * 
+ *
  * Agora 100% dinâmico e organizado por Pilares de Soberania.
+ *
+ * `draft`/`updateDraft`/`handleApplyToSystem`/`resetComponent`/`resetToken`/`toast` chegam
+ * por prop (plan-37, correção) — ANTES este componente instanciava a própria
+ * `useDesignDraft(sarak)`, em paralelo à de `ThemeCustomizationTab`: duas fontes de
+ * rascunho vivas ao mesmo tempo assim que o Command Center ficou alcançável. Segue o
+ * mesmo padrão que `MasterControlPanel` já usa (plan-36) — fonte única de rascunho.
  */
-export const HyperGranularityTab: React.FC = () => {
+export const HyperGranularityTab: React.FC<HyperGranularityTabProps> = ({
+    draft, updateDraft, handleApplyToSystem, resetComponent, resetToken, toast
+}) => {
     const sarak = useSarakUI();
-    const { draft, updateDraft, handleApplyToSystem, resetComponent, resetToken, toast } = useDesignDraft(sarak);
     const draftRecord = draft as Record<string, SarakTokenValue>;
     
     const [activePillar, setActivePillar] = useState<string>('core');

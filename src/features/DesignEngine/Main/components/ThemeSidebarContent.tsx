@@ -5,6 +5,7 @@ import { ThemePillarsList } from './ThemePillarsList';
 import { TokenControl } from './TokenControl';
 import { MasterControlPanel } from '../MasterControlPanel';
 import { TemplatesTab } from '../TemplatesTab';
+import { HyperGranularityTab } from '../../Panels/HyperGranularityTab';
 import type { SarakDesignState, SarakUIContextType } from '../../../../core/Provider/types';
 import type { ComponentSchema, DesignToken, SarakTokenValue } from '../../../../core/Design/types';
 import type { ThemePillar } from './ThemePillarsList';
@@ -22,9 +23,11 @@ interface ThemeSidebarContentProps {
     activeSectionId: string | null;
     setActiveSectionId: (id: string | null) => void;
     isComponentDirty: (id: string) => boolean;
-    resetComponent: (id: string) => void;
+    resetComponent: (schemaIdOrSchemas: string | string[]) => void;
     resetToken: (id: string) => void;
     handleApplyComponent: (id: string) => void;
+    handleApplyToSystem: () => void;
+    toast: { type: 'success' | 'warning'; message: string } | null;
     globalComponent: ComponentSchema | undefined;
     sarak: SarakUIContextType;
     pillars: ThemePillar[];
@@ -50,6 +53,8 @@ export const ThemeSidebarContent: React.FC<ThemeSidebarContentProps> = ({
     resetComponent,
     resetToken,
     handleApplyComponent,
+    handleApplyToSystem,
+    toast,
     globalComponent,
     sarak,
     pillars,
@@ -115,6 +120,17 @@ export const ThemeSidebarContent: React.FC<ThemeSidebarContentProps> = ({
                 ) : viewMode === 'catalog' ? (
                     <motion.div key="catalog" initial={{ opacity: 0 }} animate={{ opacity: 1 }} className="h-full">
                         <MasterControlPanel draft={draft} updateDraft={updateDraft} resetToken={resetToken} />
+                    </motion.div>
+                ) : viewMode === 'command-center' ? (
+                    <motion.div key="command-center" initial={{ opacity: 0 }} animate={{ opacity: 1 }} className="h-full">
+                        <HyperGranularityTab
+                            draft={draft}
+                            updateDraft={updateDraft}
+                            handleApplyToSystem={handleApplyToSystem}
+                            resetComponent={resetComponent}
+                            resetToken={resetToken}
+                            toast={toast}
+                        />
                     </motion.div>
                 ) : (
                     <motion.div key="templates" initial={{ opacity: 0 }} animate={{ opacity: 1 }} className="h-full">

@@ -1,11 +1,11 @@
 ---
 tipo: "adr"
 titulo: "Temas salvos pelo usuário em runtime — segunda porta de persistência"
-status: "🟢 Aceito"
+status: "🔴 Substituído"
 tags: ["adr", "persistencia", "temas", "design-engine", "painel"]
 relacionados: ["[[003-remocao-backend-proprio]]", "[[009-persistencia-tenant-aware]]"]
 substitui: ""
-substituido_por: ""
+substituido_por: "[[011-tema-salvo-por-uma-porta-de-escrita]]"
 ---
 
 # 1. Contexto e Problema

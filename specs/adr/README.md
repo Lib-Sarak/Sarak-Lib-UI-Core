@@ -49,8 +49,11 @@ Ponha a **data da decisão no corpo** do documento. Mantenha curto — uma a dua
 | [007](./007-distribuicao-por-git.md) | Distribuição por Git, sem registry npm | 🔴 Substituído por [008](./008-releases-com-tag-e-semver-em-git.md) |
 | [008](./008-releases-com-tag-e-semver-em-git.md) | Releases com tag e faixa semver em Git — sem registry | 🟢 Aceito |
 | [009](./009-persistencia-tenant-aware.md) | Persistência de tema tenant-aware e strategy configurável | 🟢 Aceito |
-| [010](./010-temas-salvos-pelo-usuario.md) | Temas salvos pelo usuário em runtime — segunda porta de persistência | 🟢 Aceito |
+| [010](./010-temas-salvos-pelo-usuario.md) | Temas salvos pelo usuário em runtime — segunda porta de persistência | 🔴 Substituído por [011](./011-tema-salvo-por-uma-porta-de-escrita.md) |
+| [011](./011-tema-salvo-por-uma-porta-de-escrita.md) | Tema salvo em runtime por UMA porta de escrita — a leitura já é `customThemes` | 🟢 Aceito |
 
 Comece pelo **001** — ele enquadra os outros três da mesma virada (002, 003, 004) e explica a regra de corte que os produziu.
 
 > **Sobre o 007 → 008:** o 008 substitui o 007 **numa única conclusão** — a de que atualização automática exigiria registry. Todo o resto do 007 (identidade de build, comando por gerenciador, aviso no `predev`, a armadilha do `baseCommit`) continua descrevendo o que vale hoje, e é por isso que ele segue sendo leitura obrigatória mesmo marcado como substituído. O protocolo desta pasta é binário de propósito: um ADR substituído **em qualquer parte** muda de status, e o ADR novo declara o recorte.
+
+> **Sobre o 010 → 011:** mesmo caso. O 011 substitui **só o recorte técnico** do 010 — as três portas (`onSaveTheme`/`onLoadThemes`/`onDeleteTheme`) viram **uma** (`options.theme.onSave`), e o tipo passa de `ThemePreset` (cujo `id` é união fechada dos temas embarcados, e por isso não aceita tema autorado em runtime) para `ThemeEntry`. O **objetivo** do 010 — usuário final salva tema sem deploy —, a coexistência com "Exportar JSON", o corte sem editar/renomear e a validação de fronteira **continuam vigentes**, e é por isso que o 010 segue sendo leitura obrigatória. Os dois se leem juntos.

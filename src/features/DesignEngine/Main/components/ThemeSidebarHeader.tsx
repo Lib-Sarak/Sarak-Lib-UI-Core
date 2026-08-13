@@ -1,11 +1,18 @@
 import React from 'react';
-import { Zap, Monitor, Tablet, Smartphone, Check, Search, Table, FileJson } from 'lucide-react';
+import { Zap, Monitor, Tablet, Smartphone, Check, Search, Table, FileJson, Command } from 'lucide-react';
 import { SarakButton } from '../../../../components/atomic/Buttons/SarakButton';
 import { SarakIconButton } from '../../../../components/atomic/Buttons/SarakIconButton';
 
+const VIEW_MODE_LABELS: Record<'preview' | 'catalog' | 'templates' | 'command-center', string> = {
+    preview: 'Preview',
+    catalog: 'Catálogo',
+    templates: 'Templates',
+    'command-center': 'Buscar token (avançado)'
+};
+
 interface ThemeSidebarHeaderProps {
-    viewMode: 'preview' | 'catalog' | 'templates';
-    setViewMode: (mode: 'preview' | 'catalog' | 'templates') => void;
+    viewMode: 'preview' | 'catalog' | 'templates' | 'command-center';
+    setViewMode: (mode: 'preview' | 'catalog' | 'templates' | 'command-center') => void;
     isDirty: boolean;
     setIsSaveModalOpen: (open: boolean) => void;
     previewDevice: 'desktop' | 'tablet' | 'smartphone';
@@ -41,13 +48,15 @@ export const ThemeSidebarHeader: React.FC<ThemeSidebarHeaderProps> = ({
                 </div>
                 <div className="flex items-center gap-2">
                     <div className="flex gap-1 p-0.5 bg-[var(--color-theme-card,#1e293b)] rounded-lg border border-[var(--theme-border)]">
-                        {(['preview', 'catalog', 'templates'] as const).map((m) => (
+                        {(['preview', 'catalog', 'templates', 'command-center'] as const).map((m) => (
                             <SarakIconButton
                                 key={m}
                                 onClick={() => setViewMode(m)}
                                 variant={viewMode === m ? 'primary' : 'ghost'}
                                 size="sm"
-                                icon={m === 'preview' ? <Monitor size={10} /> : m === 'catalog' ? <Table size={10} /> : <FileJson size={10} />}
+                                title={VIEW_MODE_LABELS[m]}
+                                aria-label={VIEW_MODE_LABELS[m]}
+                                icon={m === 'preview' ? <Monitor size={10} /> : m === 'catalog' ? <Table size={10} /> : m === 'templates' ? <FileJson size={10} /> : <Command size={10} />}
                             />
                         ))}
                     </div>
@@ -97,27 +106,36 @@ export const ThemeSidebarHeader: React.FC<ThemeSidebarHeaderProps> = ({
                     />
                 </div>
                 <div className="flex items-center justify-between">
-                    <label
-                        className="flex items-center gap-2 cursor-pointer group"
-                        onClick={(e) => {
-                            e.preventDefault();
-                            setIsEssentialMode(!isEssentialMode);
-                        }}
-                    >
-                        <div className={`w-6 h-3 rounded-full relative transition-all ${!isEssentialMode ? 'bg-[var(--theme-primary)]' : 'bg-[var(--theme-border)]'}`}>
+                    <label className="flex items-center gap-2 cursor-pointer group">
+                        <input
+                            type="checkbox"
+                            role="switch"
+                            className="sr-only"
+                            checked={isEssentialMode}
+                            onChange={() => setIsEssentialMode(!isEssentialMode)}
+                            aria-checked={isEssentialMode}
+                            aria-label={isEssentialMode ? 'Modo Essencial ativo — alternar para Avançado' : 'Modo Avançado ativo — alternar para Essencial'}
+                        />
+                        <div
+                            aria-hidden="true"
+                            className={`w-6 h-3 rounded-full relative transition-all ${!isEssentialMode ? 'bg-[var(--theme-primary)]' : 'bg-[var(--theme-border)]'}`}
+                        >
                             <div className={`absolute top-0.5 w-2 h-2 rounded-full bg-[var(--color-theme-title,#ffffff)] transition-all ${!isEssentialMode ? 'left-3.5' : 'left-0.5'}`} />
                         </div>
-                        <span className="text-[var(--sarak-type-scale3xs,9px)] font-black uppercase tracking-widest text-[var(--theme-muted)] group-hover:text-[var(--color-theme-title,#ffffff)]">Modo Avançado (Hyper-Granular)</span>
+                        <span className="text-[var(--sarak-type-scale3xs,9px)] font-black uppercase tracking-widest text-[var(--theme-muted)] group-hover:text-[var(--color-theme-title,#ffffff)]">{isEssentialMode ? 'Modo Essencial' : 'Modo Avançado'}</span>
                     </label>
 
-                    <label
-                        className="flex items-center gap-2 cursor-pointer group"
-                        onClick={(e) => {
-                            e.preventDefault();
-                            setIsPreviewStacked(!isPreviewStacked);
-                        }}
-                    >
-                        <div className={`w-6 h-3 rounded-full relative transition-all ${isPreviewStacked ? 'bg-[var(--theme-primary)]' : 'bg-[var(--theme-border)]'}`}>
+                    <label className="flex items-center gap-2 cursor-pointer group">
+                        <input
+                            type="checkbox"
+                            role="switch"
+                            className="sr-only"
+                            checked={isPreviewStacked}
+                            onChange={() => setIsPreviewStacked(!isPreviewStacked)}
+                            aria-checked={isPreviewStacked}
+                            aria-label={isPreviewStacked ? 'Empilhar Previews ativo — desativar' : 'Empilhar Previews inativo — ativar'}
+                        />
+                        <div aria-hidden="true" className={`w-6 h-3 rounded-full relative transition-all ${isPreviewStacked ? 'bg-[var(--theme-primary)]' : 'bg-[var(--theme-border)]'}`}>
                             <div className={`absolute top-0.5 w-2 h-2 rounded-full bg-[var(--color-theme-title,#ffffff)] transition-all ${isPreviewStacked ? 'left-3.5' : 'left-0.5'}`} />
                         </div>
                         <span className="text-[var(--sarak-type-scale3xs,9px)] font-black uppercase tracking-widest text-[var(--theme-muted)] group-hover:text-[var(--color-theme-title,#ffffff)]">Empilhar Previews</span>

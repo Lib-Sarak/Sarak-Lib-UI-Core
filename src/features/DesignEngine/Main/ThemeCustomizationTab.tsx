@@ -183,6 +183,8 @@ export const ThemeCustomizationTab: React.FC = () => {
                     resetComponent={resetComponent}
                     resetToken={resetToken}
                     handleApplyComponent={handleApplyComponent}
+                    handleApplyToSystem={handleApplyToSystemWrapper}
+                    toast={toast}
                     globalComponent={globalComponent}
                     sarak={sarak}
                     pillars={pillars}

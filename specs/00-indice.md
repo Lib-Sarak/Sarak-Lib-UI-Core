@@ -53,8 +53,8 @@ as duas, sempre, na mesma ação.**
 | 10 | [plan-34-persistencia-tema-tenant-aware](plan/plan-34-persistencia-tema-tenant-aware.md) | Um app multi-tenant na mesma origem não tem mais vazamento de tema entre tenants, e um consumidor com backend próprio pode fazê-lo vencer sobre o cache local | — | 🟢 Aprovada | specs/specs/09-temas-e-presets.md · specs/arquitetura/02-design-engine.md · docs/migracoes.md |
 | 11 | [plan-35-layout-responsivo-painel-design-engine](plan/plan-35-layout-responsivo-painel-design-engine.md) | O painel de customização se adapta ao espaço real do container onde está embutido, sem sobrepor colunas nem cortar texto, independentemente da largura da janela | — | 🟢 Aprovada | specs/specs/06-painel-de-customizacao-e-preview.md |
 | 12 | [plan-36-performance-rascunho-painel-design-engine](plan/plan-36-performance-rascunho-painel-design-engine.md) | Arrastar um slider ou digitar num controle do painel não recomputa o dicionário inteiro de tokens nem duplica estado de rascunho | plan-35 | 🟢 Aprovada | specs/specs/06-painel-de-customizacao-e-preview.md |
-| 13 | [plan-37-consolidar-modo-essencial-painel](plan/plan-37-consolidar-modo-essencial-painel.md) | O painel expõe dois modos claramente nomeados — Essencial e Avançado — e o Essencial cobre de fato os tokens de maior impacto visual, sem lacuna de dados | — | 🔴 A executar | specs/specs/06-painel-de-customizacao-e-preview.md |
-| 14 | [plan-38-salvar-tema-em-runtime](plan/plan-38-salvar-tema-em-runtime.md) | Um usuário final, sem acesso ao código do importador, cria um tema no painel, salva, e o tema aparece na lista a partir daí, sem redeploy — ⛔ PARADA em decisão do dono: o tipo `ThemePreset` que o ADR-010 manda reaproveitar tem `id` de união FECHADA e não cabe em tema autorado em runtime (ver §2.0) | plan-34 | ⛔ Bloqueada | specs/specs/09-temas-e-presets.md · specs/specs/06-painel-de-customizacao-e-preview.md |
+| 13 | [plan-37-consolidar-modo-essencial-painel](plan/plan-37-consolidar-modo-essencial-painel.md) | O painel expõe dois modos claramente nomeados — Essencial e Avançado — e o Essencial cobre de fato os tokens de maior impacto visual, sem lacuna de dados | — | 🟢 Aprovada | specs/specs/06-painel-de-customizacao-e-preview.md |
+| 14 | [plan-38-salvar-tema-em-runtime](plan/plan-38-salvar-tema-em-runtime.md) | Um usuário final, sem acesso ao código do importador, cria um tema no painel, salva, e o tema aparece na lista — sobrevivendo a reload quando o importador guarda e devolve, por UMA porta de escrita | plan-34 | 🔴 A executar | specs/specs/09-temas-e-presets.md · specs/specs/06-painel-de-customizacao-e-preview.md |
 | 15 | [plan-39-classes-de-container-query-que-nao-chegam-ao-css](plan/plan-39-classes-de-container-query-que-nao-chegam-ao-css.md) | Toda classe de container query que a lib coloca no DOM tem regra correspondente no CSS publicado, e um gate impede que volte a divergir | plan-35 | 🟢 Aprovada | specs/specs/07-responsividade-e-multidispositivo.md · specs/specs/01-gates-e-baseline.md |
 <!-- SARAK-INDICE:FILA:FIM -->
 
@@ -132,12 +132,16 @@ as duas, sempre, na mesma ação.**
 > corpo da plan, datada e com a medição, no padrão que a `plan-28` §2.0 e a `plan-30` §2.0 fixaram. **As
 > plans 34 e 37 passaram intactas** — todas as premissas confirmadas.
 >
-> ⛔ **A `plan-38` está BLOQUEADA numa decisão do dono**, não numa dependência de fila. O ADR-010 manda
-> reaproveitar o tipo `ThemePreset`, e ele tem `id: ThemePresetId` — **união fechada dos 23 ids que a lib
-> embarca**. Um tema salvo pelo usuário final tem id arbitrário e não cabe ali; e o shape que cabe
-> (`ThemeExportPayload`) mora em `features/`, que `core/` **não pode importar** (R1, gate pleno). As três
-> saídas e a recomendação estão na [`plan-38` §2.0](plan/plan-38-salvar-tema-em-runtime.md). **As plans 34–37
-> não dependem dela e seguem normalmente.**
+> 🟢 **A `plan-38` esteve bloqueada e foi DESBLOQUEADA em 2026-08-12** — e o desbloqueio começa por uma
+> correção minha. Eu havia afirmado que o `ThemePresetId` de união fechada impedia um tema de runtime de
+> entrar na lista; **medindo o caminho real, não impede**: `customThemes` é `unknown[]` e `allThemes` é
+> `ThemeEntry[]`, cujo `id` já é `string` aberto. O que sobrou é pequeno e verdadeiro — uma frase do ADR-010
+> manda reaproveitar `ThemePreset` e não compila; o alvo certo é o `ThemeEntry`, que já mora em `core/`.
+> O dono decidiu o recorte: **a lib sempre embarca os temas internos; o importador guarda só o tema aplicado
+> (já feito na `plan-34`) e os temas novos**, por **uma** porta de escrita (`options.theme.onSave`), sem porta
+> de leitura (é a prop `customThemes`) e sem porta de apagar. Falta escrever o **ADR-011** com esse recorte —
+> é pré-requisito de execução, e está declarado no passo 0 da §5. Detalhe e a medição que me corrigiu:
+> [`plan-38` §2.0](plan/plan-38-salvar-tema-em-runtime.md).
 
 ---
 

@@ -2,224 +2,217 @@
 tipo: "plan"
 titulo: "Permitir que o usuário final salve temas criados, sem depender de deploy"
 dominio: "Sarak-Lib-UI-Core / Design Engine / Painel / Persistência"
-status: "⛔ Bloqueada"
+status: "🔴 A executar"
 prioridade: "Média"
-tags: ["plan", "painel", "temas", "persistencia", "adr-010"]
+tags: ["plan", "painel", "temas", "persistencia", "adr-010", "adr-011"]
 relacionados: ["[[010-temas-salvos-pelo-usuario]]", "[[009-persistencia-tenant-aware]]", "[[09-temas-e-presets]]", "[[06-painel-de-customizacao-e-preview]]", "[[10-seguranca-e-acessibilidade]]"]
 depende_de: "plan-34"
 destino_sintese: "specs/specs/09-temas-e-presets.md · specs/specs/06-painel-de-customizacao-e-preview.md"
-objetivo: "Um usuário final, sem acesso ao código do importador, cria um tema no painel, salva, e o tema aparece na lista a partir daí, sem redeploy — ⛔ PARADA em decisão do dono: o tipo `ThemePreset` que o ADR-010 manda reaproveitar tem `id` de união FECHADA e não cabe em tema autorado em runtime (ver §2.0)"
+objetivo: "Um usuário final, sem acesso ao código do importador, cria um tema no painel, salva, e o tema aparece na lista — sobrevivendo a reload quando o importador guarda e devolve, por UMA porta de escrita"
 ---
 
 # 1. Objetivo
 
 Um usuário final do sistema importador — sem acesso ao repositório — cria um tema no painel de customização,
-clica em **Salvar**, e esse tema passa a aparecer na lista de temas disponíveis, sobrevivendo a reload, sem
-que ninguém precise mexer em código ou fazer deploy.
+clica em **Salvar**, e esse tema passa a aparecer na lista de temas disponíveis, sem que ninguém mexa em
+código ou faça deploy.
+
+**O recorte, decidido pelo dono em 2026-08-12 e detalhado na §2.0:** a lib **sempre** embarca os temas
+internos; o importador guarda **só** o tema aplicado (já resolvido pela `plan-34`) e **os temas novos que o
+usuário criar**. É isso, e nada mais.
 
 # 2. Contexto
 
-**Depende da `plan-34`** — reaproveita a chave tenant-aware que ela implementa; o backend do importador decide
-o escopo (por tenant, por usuário, ou os dois) usando o mesmo mecanismo.
+**Depende da `plan-34`** — o tema *aplicado* já persiste por lá (`persistence.onSave`/`onLoad`,
+tenant-aware). Esta plan trata só da **coleção** de temas criados.
 
-**Decisão já tomada em [[010-temas-salvos-pelo-usuario]]** — leia-a inteira antes de começar; ela é o
-contrato que esta plan implementa, não uma sugestão.
-
-O que a investigação já mediu, `arquivo:linha` — não refaça a leitura:
+O que a investigação mediu, `arquivo:linha` — **conferido de novo em 2026-08-12**, não refaça a leitura:
 
 - `src/features/DesignEngine/Main/components/SaveThemeModal.tsx` — hoje é **só exportação**: título
-  "Exportar Tema (JSON)", texto explícito (`:76-79`) *"a Sarak UI não tem backend próprio: 'salvar' um tema é
-  baixar um arquivo JSON"*. Este fluxo **fica intocado**.
-- `src/features/DesignEngine/Main/hooks/useThemePersistenceHandlers.ts:19-24,34-48` — `handleExportTheme` é o
-  único handler de persistência hoje; chama `buildThemeExportPayload` + `downloadThemeJson`
+  "Exportar Tema (JSON)", com o texto explícito de que *"a Sarak UI não tem backend próprio"*. Renderizado
+  por `ThemeCustomizationTab.tsx:226`. Este fluxo **fica intocado**.
+- `src/features/DesignEngine/Main/hooks/useThemePersistenceHandlers.ts` — `handleExportTheme` é o único
+  handler de persistência; chama `buildThemeExportPayload` + `downloadThemeJson`
   (`src/features/DesignEngine/Main/utils/exportTheme.ts`). Nenhuma chamada de rede.
-- `src/features/DesignEngine/Library/ThemeList.tsx:47-65` — recebe `layouts` (temas embutidos) e
-  `customThemes` (a prop de código) como duas listas separadas e as concatena (`allThemes`). **Não há
-  terceira fonte.**
-- O tipo `ThemePreset` (`src/core/Design/presets/themes/index.ts:48-53`) é o shape que **parecia** servir
-  tanto para os temas embutidos quanto para o que `buildThemeExportPayload` produz. **Não serve** — ver a
-  emenda §2.0.
+- **A lista viva de temas é `Main/TemplatesTab.tsx:22,73`** — lê `sarak.allThemes` e renderiza `name` e
+  `description` (com fallback `'Tema customizado.'`). É a aba que `ThemeSidebarContent.tsx:126` monta.
+  `Canvas/components/PresetsCatalog.tsx:46` lê a **mesma** `allThemes`.
+- `src/core/Provider/SarakUIProvider.tsx:118-120` — `allThemes = [...GLOBAL_THEMES, ...customThemes]`,
+  tipado `ThemeEntry[]`. **É o único ponto de junção da lista.** Quem entrar aqui aparece nas duas telas
+  acima de graça, sem seção nova.
 
-## 2.0 🔴 EMENDA — 2026-08-12: o tipo do ADR-010 NÃO é implementável como escrito
+## 2.0 🟢 EMENDA — 2026-08-12: o bloqueio era menor do que eu disse, e a decisão foi tomada
 
-Ao conferir esta plan contra o código **antes de liberá-la**, o revisor mediu o tipo que o
-[[010-temas-salvos-pelo-usuario]] §2 manda reaproveitar. Ele **não cabe** num tema salvo em runtime:
+Esta plan esteve **⛔ Bloqueada** por uma emenda minha que afirmava que o `ThemePresetId` de união fechada
+impedia um tema de runtime de entrar na lista. **Fui conferir o caminho real e ele não impede.** O registro
+fica aqui, e não apagado, pelo mesmo motivo das outras emendas: **corrigir a plan em silêncio é o defeito.**
 
-```ts
-export type ThemePresetId = (typeof THEME_PRESET_IDS)[number];   // união FECHADA dos 23 ids embarcados
+### O que eu disse errado
 
-export interface ThemePreset {
-    id: ThemePresetId;        // ← 🔴 aqui
-    name: string;
-    description: string;      // ← obrigatório
-    design: Record<string, unknown>;
-    contraparte?: Partial<SarakDesignState>;
-}
-```
+| O que a emenda anterior afirmava | O que a medição de 2026-08-12 responde |
+|---|---|
+| "o tema salvo não entra na lista porque `ThemePresetId` é união fechada" | a porta de entrada **já é aberta**: `customThemes` é `unknown[]` (`types.ts:229`) e `allThemes` é `ThemeEntry[]`, cujo `id` é **`string` puro** (`types.ts:34-38`) |
+| "o painel exige `ThemePreset`" | `PresetsCatalog.tsx:46` e `TemplatesTab.tsx:22` fazem **cast**, não constraint — a união fechada já é contornada no código de hoje |
+| "R1 impede: o shape certo mora em `features/`" | o shape certo é o **`ThemeEntry`**, que já mora em `src/core/Provider/types.ts`. A opção "A" da tabela antiga (*mover o shape para `core/`*) **já estava feita** |
+| "opção B: abrir `ThemePresetId`" | desnecessária. `ThemePresetId` descreve os **23 embarcados**, e o `auditor_presets` só audita esses — tema de runtime não encosta em gate nenhum |
 
-`src/core/Design/presets/themes/index.ts:46-53`.
+O que sobrou do achado é pequeno e verdadeiro: **uma frase do [[010-temas-salvos-pelo-usuario]] §2 manda
+reaproveitar `ThemePreset`, e seguir essa frase ao pé da letra não compila.** O alvo certo é `ThemeEntry`.
+Custo: zero tipo novo, zero MAJOR, zero conflito com R1.
 
-**Um tema criado pelo usuário final tem `id` arbitrário** (`slugifyThemeId` de um nome livre) — e
-`ThemePresetId` só aceita os 23 ids que a lib embarca. O ADR-010 diz *"reaproveita o tipo `ThemePreset` já
-existente (`{ id, name, description, design }`)… nenhum tipo novo é criado"*, e **isso confunde SHAPE com
-TIPO**: a [[09-temas-e-presets]] §2.1 item 4 afirma que *"o mesmo formato serve para os dois lados"* — e é
-verdade sobre o **formato**. O ADR leu formato como tipo.
+### A decisão do dono, 2026-08-12
 
-**A prova de que o código já sabia disso:** `buildThemeExportPayload` **não devolve `ThemePreset`** — devolve
-`ThemeExportPayload` (`src/features/DesignEngine/Main/utils/exportTheme.ts:4-8`), que é
-`{ id: string; name: string; design: SarakDesignState }`. O tipo separado existe **exatamente** porque o
-`ThemePresetId` fechado não serve para tema autorado.
+> *"A lib sempre terá os temas internos, e o importador irá salvar somente o tema aplicado e os novos temas
+> criados. O correto é que o importador escolha onde quer armazenar, seja em JSON ou tabela."*
 
-### ⚠️ E há uma segunda camada: R1, gate pleno
+Disso decorre o desenho, e ele é deliberadamente magro:
 
-O shape certo (`ThemeExportPayload`) mora em **`src/features/DesignEngine/`**. As três portas novas moram em
-**`src/core/Provider/types.ts`**. E **`src/core/` não importa `features/`** — é a **R1**, cobrada por
-`auditor_arquitetura.mjs` ([[00-regras-e-invariantes]] R1). Tipar as portas com `ThemeExportPayload` como ele
-está hoje **derruba o gate**.
+1. **UMA porta de escrita.** `options.theme.onSave` recebe o tema pronto. A lib entrega o JSON; o importador
+   grava onde quiser — arquivo, tabela, `localStorage`, o que for. A lib não pergunta e não sabe.
+2. **NENHUMA porta de leitura.** O caminho de volta já existe e chama-se **`customThemes`**: o importador
+   passa o array na montagem e o Provider funde com os embarcados. Um `onLoadThemes` seria uma segunda porta
+   fazendo o que uma prop já faz — duas fontes para a mesma lista, que é o tipo de duplicação que a R6
+   existe para impedir.
+3. **NENHUMA porta de apagar.** A lista pertence ao importador; a lib nunca remove o que não guardou.
+4. **`ThemeEntry` + um campo.** Hoje ele tem `id`, `design`, `contraparte`. Um tema salvo precisa de rótulo
+   para aparecer na lista, então entra **`name?: string`** — campo opcional em tipo existente, **aditivo,
+   MINOR**. `description` não entra: `TemplatesTab.tsx:80` já tem fallback.
+5. **Registro:** como o item 1 contraria a letra do ADR-010, o registro honesto é um **ADR-011** curto,
+   substituindo **uma** conclusão do 010 e mantendo o resto vigente — mesmo movimento do 008 sobre o 007.
 
-### 🔴 A decisão é do DONO, não do executor — e a plan está PARADA nela
+### O preço, dito na cara
 
-Três saídas, todas com custo. **Nenhuma é do executor**, porque todas mexem em contrato público e/ou num ADR
-aceito:
-
-| # | Saída | Custo |
-|---|---|---|
-| **A** | **Mover o shape para `core/`** — um tipo em `src/core/Design/presets/themes/` (ex.: `SavedTheme`, `{ id: string; name: string; description?: string; design }`), e `ThemeExportPayload` passa a ser um alias dele | Cria **um nome de tipo novo** no barril público (MINOR aditivo). Contraria a letra do ADR-010 (*"nenhum tipo novo"*), respeita o espírito (não inventa shape). Não quebra ninguém |
-| **B** | **Abrir `ThemePresetId`** para `string` (ou `ThemePresetId \| (string & {})`) | Toca o tipo dos **23 temas embarcados** e afrouxa a checagem que hoje pega id de tema inventado em tempo de compilação. É **MAJOR**, e paga um preço em outro lugar para resolver aqui |
-| **C** | **ADR novo (011)** que substitua o recorte de tipo do 010, mantendo o resto | O caminho mais correto pelo protocolo desta pasta (ADR é imutável; decisão nova = arquivo novo — [[adr/README]]). Custa um ADR e um ciclo |
-
-**Recomendação do revisor: A + C.** A saída **A** é a mais barata e não quebra nada; e como ela contraria a
-letra de um ADR aceito, o registro honesto é um **ADR-011** curto declarando o recorte corrigido —
-exatamente o que o protocolo desta pasta prescreve para "a decisão mudou em uma conclusão". Foi assim que o
-008 substituiu o 007 **numa única conclusão**, mantendo o resto do 007 vigente.
-
-> ⚠️ **Por que isto não é detalhe de implementação que o executor resolve:** ele teria de escolher entre
-> **quebrar a R1** (gate pleno, reprova sozinho), **quebrar o tipo público dos 23 temas** (MAJOR silencioso)
-> ou **contrariar o ADR** que o próprio prompt de execução manda não reabrir. Qualquer uma das três é
-> decisão de contrato — e a plan que empurra decisão de contrato para o executor é a plan que está errada.
-
-**Enquanto esta decisão não for tomada, a `plan-38` NÃO deve ser liberada para execução.** As plans 34–37
-não dependem dela e seguem normalmente.
+Com só a porta de escrita, o ida-e-volta é do importador: ele guarda e ele devolve em `customThemes`. **A
+lib não lembra de nada sozinha.** É o custo de não ter backend, e é o custo certo — a alternativa é a lib
+voltar a ter opinião sobre armazenamento, que foi exatamente o que o [[003-remocao-backend-proprio]]
+removeu.
 
 # 3. Escopo
 
 ## 3.1 Dentro
-- `src/core/Provider/types.ts` — adicionar `onSaveTheme`, `onLoadThemes`, `onDeleteTheme` a
-  `options.persistence`, exatamente como definidos em [[010-temas-salvos-pelo-usuario]] §2.
-- `src/features/DesignEngine/Main/components/SaveThemeModal.tsx` — ganha a ação **Salvar**, ao lado de
-  "Exportar JSON" (dois caminhos no mesmo modal, ou uma variante nova — a critério do executor, documentando
-  a escolha). "Salvar" só aparece/fica habilitada quando `onSaveTheme` está configurado.
-- `src/features/DesignEngine/Main/hooks/useThemePersistenceHandlers.ts` — `handleSaveTheme` novo, chamando
-  `onSaveTheme` com um `ThemePreset` montado a partir do rascunho atual (reaproveitar
-  `buildThemeExportPayload`/`resolveCompleteDesign` para garantir que o tema salvo também nasce **completo**,
-  igual ao export — [[09-temas-e-presets]] §4.5).
-- Hook novo (nome a critério do executor, ex. `useSavedThemes`) que busca a lista via `onLoadThemes` — ao
-  montar o painel ou ao abrir o seletor de temas, a critério do executor — com estado de carregamento e de
-  erro; erro **degrada silenciosamente** (a lista de temas salvos fica vazia, com aviso discreto), nunca
-  quebra o painel.
-- `src/features/DesignEngine/Library/ThemeList.tsx` (e/ou `Canvas/components/PresetsCatalog.tsx`, o que for
-  a fronteira real de onde a lista é montada) — ganha uma terceira seção ("Meus Temas" ou nome equivalente)
-  com o resultado de `onLoadThemes`, e uma ação de apagar (com confirmação) chamando `onDeleteTheme`.
-- **Cada tema vindo de `onLoadThemes` passa por `validateDesign`/`auditTokenContract` antes de ser
-  oferecido como aplicável** — é dado não-confiável, mesma fronteira de [[10-seguranca-e-acessibilidade]]
-  §2.1. Não é um caminho novo de aplicação de tema; é o caminho normal, alimentado por uma fonte nova.
-- Testes ao lado de cada arquivo tocado (R8): `handleSaveTheme` chama `onSaveTheme` com o payload certo;
-  sem a porta configurada, "Salvar" não aparece/fica desabilitada; apagar chama `onDeleteTheme` e remove da
-  lista local; erro em `onLoadThemes` não derruba o painel; tema recebido de `onLoadThemes` com chave/valor
-  fora do contrato é descartado com warn, igual a qualquer outro tema de origem externa.
+
+1. **`src/core/Provider/types.ts`**
+   - `ThemeEntry` ganha **`name?: string`**. Opcional — os temas embarcados já têm `name` pelo
+     `ThemePreset`, e a opcionalidade evita quebrar quem passa `customThemes` sem rótulo.
+   - `options.theme` ganha **`onSave?: (theme: ThemeEntry) => Promise<void> | void`**, com JSDoc dizendo o
+     contrato: quando é chamada, o que recebe, e que **guardar e devolver é do consumidor**.
+   - `SarakUIContextType` ganha **`saveTheme: (theme: ThemeEntry) => Promise<void>`** — é o que o painel
+     chama. ⛔ **Não** crie um bloco `options.themes` (plural): confunde com o `options.theme` que já existe.
+2. **`src/core/Provider/SarakUIProvider.tsx`** — estado de sessão para os temas salvos nesta montagem,
+   fundido em `allThemes` **depois** de `customThemes`. Sem isso o usuário salva e não vê nada até
+   recarregar. `saveTheme` acrescenta ao estado **e** chama `options.theme.onSave`. Salvar duas vezes o mesmo
+   `id` na mesma sessão **substitui**, não duplica.
+3. **`src/features/DesignEngine/Main/hooks/useThemePersistenceHandlers.ts`** — `handleSaveTheme` novo: monta
+   o tema **completo** reaproveitando `buildThemeExportPayload`/`resolveCompleteDesign` (mesma regra do
+   export — [[09-temas-e-presets]] §4.5), acrescenta o `name` que o usuário digitou, e chama
+   `sarak.saveTheme`. Erro segue o padrão de `handleExportTheme` (`showToast('warning', …)`).
+4. **`src/features/DesignEngine/Main/components/SaveThemeModal.tsx`** — ganha a ação **Salvar** ao lado de
+   "Exportar JSON". **Sem `options.theme.onSave` configurado, "Salvar" não aparece** e o modal fica
+   exatamente como é hoje. Nunca ofereça um Salvar que evapora no reload — é a mesma disciplina do
+   `strategy: 'remote'` sem porta ([[009-persistencia-tenant-aware]] §2.2): avisa e degrada, nunca perde em
+   silêncio.
+5. **Validação de fronteira** — o tema montado passa por `validateDesign` antes de entrar em `allThemes`,
+   como qualquer tema de origem externa ([[10-seguranca-e-acessibilidade]] §2.1). Vale também para o que
+   chega por `customThemes`, se já não valer hoje: **meça e relate**, não conserte de passagem.
+6. Testes ao lado de cada arquivo tocado (R8): `saveTheme` chama `options.theme.onSave` com o payload certo;
+   o tema aparece em `allThemes` **na mesma sessão**; salvar o mesmo `id` duas vezes substitui; sem a porta
+   configurada, "Salvar" não aparece; `onSave` que rejeita **não** derruba o painel nem some com o tema da
+   sessão; tema com chave fora do contrato é descartado com warn.
 
 ## 3.2 Fora
-- ⛔ **Editar ou renomear** um tema já salvo — fora deste corte, por decisão do ADR-010 §2.
-- ⛔ **Qualquer backend embarcado na lib.** Zero endpoint, zero `fetch` da lib para servidor próprio. As três
-  portas são sempre chamadas pelo consumidor.
-- ⛔ Mudar o fluxo de "Exportar JSON" existente — continua intocado, é o caminho do desenvolvedor.
-- ⛔ Layout/CSS do painel (`plan-35`), performance do rascunho (`plan-36`), modo essencial (`plan-37`) — não
-  misture escopos, mesmo que os arquivos se cruzem.
-- ⛔ Decidir **quem pode ver quais temas salvos** (permissão, compartilhamento entre usuários do mesmo
-  tenant) — é decisão do backend do importador; a lib só lista o que `onLoadThemes` devolver, sem opinião.
-- ⛔ `src/core/Provider/hooks/useDesignManager.ts` e os demais arquivos que a `plan-34` já toca — esta plan
-  não mexe na persistência do **design ativo**, só na coleção de **temas salvos**.
+
+- ⛔ **`onLoadThemes` e `onDeleteTheme`.** Foram descartados pela decisão da §2.0 — ler é `customThemes`,
+  apagar é do importador. Se você achar que faltam, **relate**: é achado, não escopo.
+- ⛔ **`src/features/DesignEngine/Library/ThemeList.tsx`.** A versão anterior desta plan mandava acrescentar
+  uma seção "Meus Temas" ali. **É código órfão** — medido em 2026-08-12: nenhum arquivo o importa além do
+  próprio teste. A lista viva é `TemplatesTab.tsx`, e ela lê `allThemes`, então **o tema salvo aparece
+  sozinho**. Não crie seção nova.
+- ⛔ **Qualquer backend embarcado na lib.** Zero endpoint, zero `fetch` para servidor próprio.
+- ⛔ **Editar ou renomear** tema já salvo — fora deste corte.
+- ⛔ Mudar o fluxo de "Exportar JSON" — continua intocado, é o caminho do desenvolvedor.
+- ⛔ Mexer em `ThemePresetId`, em `GLOBAL_THEMES` ou nos 23 temas embarcados. A união fechada continua
+  descrevendo **só** o que a lib embarca, e isso está certo.
+- ⛔ `src/core/Provider/hooks/useDesignManager.ts` e a persistência do **design ativo** — é a `plan-34`, já
+  aprovada. Esta plan não encosta lá.
+- ⛔ Decidir **quem vê quais temas** (permissão, compartilhamento) — é do backend do importador.
+- ⛔ Layout/CSS (`plan-35`), performance (`plan-36`), modo essencial (`plan-37`).
 
 # 4. Referências obrigatórias
 
 | Tipo | Referência | Por quê |
 |---|---|---|
-| ADR | `specs/adr/010-temas-salvos-pelo-usuario.md` | o contrato exato que esta plan implementa |
-| ADR | `specs/adr/009-persistencia-tenant-aware.md` | a chave tenant-aware que o backend do importador reaproveita |
-| Spec fixa | `specs/specs/09-temas-e-presets.md` §2 · §4.5 | o shape `ThemePreset` e a regra "tema exportado nasce completo" |
-| Spec fixa | `specs/specs/10-seguranca-e-acessibilidade.md` §2.1 | a fronteira `validateDesign` — tema de `onLoadThemes` é dado hostil, como qualquer outro |
-| Spec fixa | `specs/specs/00-regras-e-invariantes.md` R6 · R8 | contrato de valor; teste ao lado |
-| **Skill** | `padrao-escrita` · `padrao-typescript` | sempre |
-| **Skill** | `test-unitario` | todo conserto muda comportamento e leva teste |
-| Código | `SaveThemeModal.tsx`, `useThemePersistenceHandlers.ts`, `ThemeList.tsx`, `exportTheme.ts` | ler antes de editar |
+| ADR | `specs/adr/011-tema-salvo-por-uma-porta-de-escrita.md` | **o contrato desta plan** — uma porta, `ThemeEntry`, sem porta de leitura nem de apagar |
+| ADR | `specs/adr/010-temas-salvos-pelo-usuario.md` *(🔴 Substituído — leitura ainda obrigatória)* | o objetivo, a coexistência com "Exportar JSON", o corte de CRUD e a validação de fronteira **continuam vigentes**; só o recorte técnico foi substituído |
+| Spec fixa | `specs/specs/09-temas-e-presets.md` §2 · §4.5 | o formato do tema e "tema exportado nasce completo" |
+| Spec fixa | `specs/specs/10-seguranca-e-acessibilidade.md` §2.1 | tema de origem externa é dado não-confiável |
+| Spec fixa | `specs/specs/00-regras-e-invariantes.md` R6 · R8 · R33 | contrato de valor; teste ao lado; payload de tema é contrato público |
+| **Skill** | `padrao-escrita` · `padrao-typescript` · `test-unitario` | sempre |
+| Código | `SaveThemeModal.tsx`, `useThemePersistenceHandlers.ts`, `TemplatesTab.tsx`, `SarakUIProvider.tsx:118-120`, `exportTheme.ts` | ler antes de editar |
 
 # 5. Instruções de execução
 
-0. **Confirme que a decisão de tipo da emenda §2.0 está escrita nesta plan.** Se não estiver, **pare** — o
-   passo 1 é impossível de fazer certo sem ela.
-1. **Estender o tipo** (`types.ts`) com as três portas de [[010-temas-salvos-pelo-usuario]] §2, **usando o
-   tipo que a §2.0 fixar** — não `ThemePreset`, que tem `id` de união fechada e não cabe em tema autorado em
-   runtime. **Pronto quando** o tipo compila, `npm run audit` segue no baseline (**a R1 não pode acender**) e
-   o JSDoc de cada porta explica o contrato (o que recebe, o que devolve, quando é chamada).
-2. **`handleSaveTheme`** em `useThemePersistenceHandlers.ts` — monta o `ThemePreset` completo (reaproveitando
-   `buildThemeExportPayload`/`resolveCompleteDesign`) e chama `onSaveTheme`. Tratar erro com o mesmo padrão
-   de `handleExportTheme` (`showToast('warning', ...)`).
-3. **UI do botão "Salvar"** em `SaveThemeModal.tsx` — visível/habilitado só quando `onSaveTheme` existe.
-   Documentar a escolha de UI no resumo (modal único com duas ações, ou variante nova).
-4. **`useSavedThemes`** — busca `onLoadThemes()` (assíncrono), guarda `{ themes, isLoading, error }`. Erro
-   não propaga exceção — vira lista vazia + estado de erro consumível pela UI.
-5. **Validar cada tema recebido** antes de oferecê-lo como selecionável — mesma fronteira que já protege
-   `localStorage`/arquivo. **Pronto quando** um teste prova que um tema de `onLoadThemes` com chave inválida
-   é descartado com warn, sem quebrar a lista dos demais.
-6. **Seção "Meus Temas" em `ThemeList.tsx`** — junta `layouts` + `customThemes` + os temas de
-   `useSavedThemes`, cada fonte visualmente distinguível (a lib já distingue "Advanced"/"Base" hoje — seguir
-   o mesmo padrão de seção, não inventar um novo).
-7. **Apagar** — ação com confirmação, chama `onDeleteTheme(id)`, remove da lista local em caso de sucesso;
-   erro mantém o tema na lista e avisa.
-8. **Fechar.** Rodar, nesta ordem, e colar a saída real no resumo: `npx vitest run` (INTEIRA) ·
-   `node gates/scripts/audit/run_audit.mjs` ·
-   `node gates/scripts/release/check-audit-baseline.mjs --with-tsc` · `npx tsc --noEmit` · `git diff --stat`.
+0. **Leia o [[011-tema-salvo-por-uma-porta-de-escrita]] antes da §3** — ele é o contrato desta plan, e
+   substitui o recorte técnico do 010. Escrito em 2026-08-12; o pré-requisito está cumprido.
+1. **Estender os tipos** (`types.ts`): `ThemeEntry.name?`, `options.theme.onSave`, `SarakUIContextType.saveTheme`.
+   **Pronto quando** compila, `run_audit` segue no baseline e cada campo novo tem JSDoc de contrato.
+2. **`saveTheme` no Provider** — estado de sessão + fusão em `allThemes` **depois** de `customThemes` + chamada
+   a `options.theme.onSave`. **Pronto quando** um teste prova que o tema aparece em `allThemes` na mesma
+   sessão e que o mesmo `id` salvo duas vezes não duplica.
+3. **`handleSaveTheme`** — tema completo (`resolveCompleteDesign`), com `name`, validado, entregue a
+   `sarak.saveTheme`.
+4. **Botão "Salvar"** em `SaveThemeModal.tsx`, condicionado à porta. **Pronto quando** um teste prova que,
+   sem `options.theme.onSave`, o modal é idêntico ao de hoje.
+5. **Erro de `onSave`** — avisa por toast e **mantém** o tema na sessão. Perder o que o usuário acabou de
+   criar porque o backend dele caiu é o pior desfecho possível.
+6. **Fechar.** Nesta ordem, colando a saída real: `npx vitest run` (INTEIRA) ·
+   `node gates/scripts/audit/run_audit.mjs` · `node gates/scripts/release/check-audit-baseline.mjs --with-tsc` ·
+   `npx tsc --noEmit` · `npm run container-query:check` · `git diff --stat`.
+7. **`docs/migracoes.md`** — entrada nova. É **aditivo** (nada existente muda de comportamento sem opt-in),
+   então classifique por [[03-versionamento-e-release]] §3 e diga como o importador liga a porta.
 
 # 6. Prompt de execução
-
-> 🔴 **NÃO EMITA ESTE PROMPT AINDA.** A emenda §2.0 (2026-08-12) parou esta plan numa decisão de contrato
-> que é do dono: qual tipo as três portas usam. O prompt abaixo será completado com a saída escolhida
-> **antes** de a plan ser liberada. Emiti-lo como está manda o executor escolher entre quebrar a R1, quebrar
-> o tipo público dos 23 temas, ou contrariar o ADR-010.
 
 ```
 Leia specs/00-prompt-executor.md e execute specs/plan/plan-38-salvar-tema-em-runtime.md.
 
-Pré-requisito 1: a plan-34 tem de estar 🟢 Aprovada (reaproveita a chave tenant-aware).
-Pré-requisito 2: a decisão de tipo da emenda §2.0 tem de estar tomada e escrita na plan.
-                 LEIA A §2.0 ANTES DA §3 — o ADR-010 cita um tipo que não cabe.
+LEIA specs/adr/011-tema-salvo-por-uma-porta-de-escrita.md E a §2.0 ANTES DA §3.
+O ADR-011 é o contrato desta plan: ele substitui o recorte técnico do ADR-010 (que
+mandava três portas e o tipo `ThemePreset`). O tipo certo é `ThemeEntry`, que já existe
+em src/core/Provider/types.ts e cujo `id` já é `string` aberto. O 010 continua valendo
+no resto — objetivo, coexistência com "Exportar JSON", corte sem editar/renomear,
+validação de fronteira —, por isso ele é leitura obrigatória mesmo marcado Substituído.
 
-Contexto obrigatório antes de começar: specs/00-contexto.md, specs/00-knowledge.md,
-specs/adr/010-temas-salvos-pelo-usuario.md (O CONTRATO — não o reabra),
-specs/adr/009-persistencia-tenant-aware.md, specs/specs/09-temas-e-presets.md §2 e §4.5,
-specs/specs/10-seguranca-e-acessibilidade.md §2.1 (tema de origem externa é dado hostil),
-specs/specs/00-regras-e-invariantes.md R6 e R8.
-Skills a aplicar: padrao-escrita, padrao-typescript, test-unitario.
+Contexto obrigatório: specs/00-contexto.md, specs/00-knowledge.md,
+specs/adr/011-tema-salvo-por-uma-porta-de-escrita.md, specs/adr/010-temas-salvos-pelo-usuario.md,
+specs/specs/09-temas-e-presets.md §2 e §4.5,
+specs/specs/10-seguranca-e-acessibilidade.md §2.1,
+specs/specs/00-regras-e-invariantes.md R6, R8 e R33.
+Skills: padrao-escrita, padrao-typescript, test-unitario.
 
-O CONTRATO JÁ FOI DECIDIDO no ADR-010: onSaveTheme, onLoadThemes, onDeleteTheme,
-reaproveitando o tipo ThemePreset que já existe. CRUD é só criar+listar+apagar — SEM
-editar/renomear, é decisão explícita do ADR, não esquecimento.
+O DESENHO É DELIBERADAMENTE MAGRO — uma porta de escrita, e só:
+  · options.theme.onSave(theme) — a lib entrega o JSON, o importador grava ONDE QUISER.
+  · A leitura de volta JÁ EXISTE: é a prop `customThemes`. NÃO crie onLoadThemes.
+  · NÃO crie onDeleteTheme — a lista é do importador.
+  · ThemeEntry ganha `name?: string`. Nenhum tipo novo.
 
-Todo tema recebido de onLoadThemes é DADO NÃO-CONFIÁVEL — passa por validateDesign antes
-de ser oferecido como aplicável, exatamente como um tema de localStorage ou arquivo.
+DUAS ARMADILHAS MEDIDAS, não repita:
+  · src/features/DesignEngine/Library/ThemeList.tsx é CÓDIGO ÓRFÃO (só o próprio teste
+    o importa). NÃO acrescente seção nenhuma ali. A lista viva é Main/TemplatesTab.tsx,
+    que lê `sarak.allThemes` — quem entra em allThemes aparece sozinho.
+  · NÃO crie um bloco `options.themes` (plural) ao lado do `options.theme` que já existe.
 
 LINHAS VERMELHAS:
-  · Você NÃO cria backend, endpoint, fetch para servidor da lib. As três portas são
-    sempre chamadas pelo CONSUMIDOR.
-  · Você NÃO implementa editar/renomear tema salvo.
-  · Você NÃO mexe no fluxo de "Exportar JSON" existente — continua intocado.
-  · Você NÃO mexe em src/core/Provider/hooks/useDesignManager.ts nem nos arquivos da
-    plan-34 — esta plan é sobre a COLEÇÃO de temas salvos, não o design ativo.
-  · Você NÃO decide permissão/compartilhamento entre usuários — isso é do backend do
-    importador.
+  · Você NÃO cria backend, endpoint nem fetch da lib para servidor.
+  · Você NÃO mexe em ThemePresetId, GLOBAL_THEMES nem nos 23 temas embarcados.
+  · Você NÃO mexe no fluxo de "Exportar JSON" — continua intocado.
+  · Você NÃO mexe em useDesignManager.ts nem na persistência do design ATIVO (plan-34).
+  · Você NÃO implementa editar/renomear/apagar tema salvo.
+  · Sem a porta configurada, "Salvar" NÃO aparece. Nunca ofereça um Salvar que evapora.
 
-Todo conserto leva teste ao lado (R8), incluindo o teste de validação de tema recebido
-de onLoadThemes com dado fora do contrato.
+Se `onSave` rejeitar, avise por toast e MANTENHA o tema na sessão. Perder o que o
+usuário acabou de criar porque o backend dele caiu é o pior desfecho possível.
+
+Todo conserto leva teste ao lado (R8).
 
 Não commite. Ao terminar, escreva o resumo na própria plan e mova o status para
 🟠 Em revisão.
@@ -227,41 +220,50 @@ Não commite. Ao terminar, escreva o resumo na própria plan e mova o status par
 
 # 7. Critérios de aceite
 
-- [ ] `onSaveTheme`, `onLoadThemes`, `onDeleteTheme` existem no tipo, com JSDoc explicando o contrato.
-- [ ] "Salvar" só aparece/fica habilitada quando `onSaveTheme` está configurado; sem a porta, nada muda em
-      relação ao painel de hoje.
-- [ ] Tema salvo é **completo** (mesma regra do export — `resolveCompleteDesign`), não um subconjunto do
-      rascunho.
-- [ ] Tema recebido de `onLoadThemes` passa por `validateDesign`/`auditTokenContract` antes de ser oferecido
-      como selecionável — evidência: teste com payload fora do contrato sendo descartado com warn.
-- [ ] Erro em `onLoadThemes` não quebra o painel — lista vazia + estado de erro, nunca exceção não tratada.
-- [ ] `ThemeList` (ou onde a fronteira real estiver) mostra os temas salvos numa seção própria, ao lado de
-      `layouts`/`customThemes`.
-- [ ] Apagar chama `onDeleteTheme`, remove da lista em sucesso, mantém e avisa em erro.
-- [ ] "Exportar JSON" continua funcionando exatamente como antes — nenhum teste existente dele mudou de
-      expectativa.
+- [ ] `ThemeEntry.name?`, `options.theme.onSave` e `SarakUIContextType.saveTheme` existem, com JSDoc de
+      contrato. **Nenhum tipo novo** foi criado.
+- [ ] O tema salvo aparece em `allThemes` **na mesma sessão** — evidência: teste, não captura de tela.
+- [ ] Salvar o mesmo `id` duas vezes **substitui**, não duplica.
+- [ ] Sem `options.theme.onSave`, o `SaveThemeModal` é **idêntico** ao de hoje — nenhum teste existente dele
+      mudou de expectativa.
+- [ ] `onSave` que rejeita: toast de aviso, tema **permanece** na sessão, painel não quebra.
+- [ ] Tema montado passa por `validateDesign` antes de entrar na lista; payload fora do contrato é
+      descartado com warn.
+- [ ] Nenhum `onLoadThemes`/`onDeleteTheme` no diff. Nenhuma linha em `ThemeList.tsx`.
+- [ ] `docs/migracoes.md` com entrada nova, classificada.
 - [ ] `npx vitest run` inteira, verde, não encolheu.
-- [ ] `run_audit` sem regressão; `npx tsc --noEmit` → 0 erros.
-- [ ] `git diff --stat` — só os arquivos de §3.1 (mais os testes correspondentes).
+- [ ] `run_audit` sem regressão; `npx tsc --noEmit` → 0; `container-query:check` verde.
+- [ ] `git diff --stat` — só os arquivos da §3.1 (mais testes e `docs/`).
 
 # 8. Como verificar (uso do revisor)
 
 ```bash
 git diff --stat
 git diff
-grep -n "onSaveTheme\|onLoadThemes\|onDeleteTheme" src/core/Provider/types.ts
+
+# as portas — e a ausência das que foram descartadas
+grep -n "onSave\|saveTheme\|name?" src/core/Provider/types.ts
+grep -rn "onLoadThemes\|onDeleteTheme" src/          # tem de voltar VAZIO
+git diff --stat -- src/features/DesignEngine/Library/ThemeList.tsx   # tem de voltar VAZIO
+
 npx vitest run
 node gates/scripts/audit/run_audit.mjs
 node gates/scripts/release/check-audit-baseline.mjs --with-tsc
 npx tsc --noEmit
+npm run container-query:check
 ```
 
 **O que reprova, além do óbvio:**
-- tema de `onLoadThemes` sendo aplicado/listado **sem** passar por `validateDesign` — é a mesma classe de
-  furo que [[10-seguranca-e-acessibilidade]] existe para fechar, só que numa fonte nova;
-- "Exportar JSON" alterado de qualquer forma não pedida;
-- editar/renomear tema salvo implementado "já que estava mexendo ali" — é scope creep explícito contra o
-  ADR-010.
+- **"Salvar" visível sem a porta configurada** — é a promessa que evapora no reload, o defeito que esta plan
+  existe para não criar;
+- porta de leitura inventada (`onLoadThemes`) "para ficar simétrico" — a decisão da §2.0 é explícita;
+- seção nova em `ThemeList.tsx` — código órfão, medido;
+- tema entrando em `allThemes` **sem** `validateDesign`;
+- `docs/migracoes.md` sem entrada: a porta é pública, o importador precisa saber que ela existe.
+
+**O que esta verificação não vê:** que o importador realmente guardou e devolveu. O ciclo completo
+(salvar → recarregar → tema ainda lá) só se prova **no consumidor**, porque metade dele é código que não
+mora aqui. Registre isso no resumo em vez de fingir cobertura.
 
 # 9. Destino da síntese
 
@@ -269,11 +271,14 @@ npx tsc --noEmit
 
 **Texto pronto para transporte:**
 
-- `09-temas-e-presets.md` §4 (Ciclo de vida) ganha uma sexta fase — **Salvar em runtime** — ao lado de
-  Criar/Validar/Aplicar/Persistir/Exportar, com as três portas e o corte de CRUD.
-- `06-painel-de-customizacao-e-preview.md` ganha, na seção que documenta `SaveThemeModal`/`ThemeList`, a
-  distinção entre as duas ações ("Exportar" para dev, "Salvar" para usuário final) e a proveniência da lista
-  de "Meus Temas".
+- `09-temas-e-presets.md` §4 (Ciclo de vida) ganha uma sexta fase — **Salvar em runtime** — com a porta
+  única, a divisão "a lib embarca os internos / o importador guarda os criados", e a razão de não haver
+  porta de leitura (é `customThemes`).
+- `06-painel-de-customizacao-e-preview.md` ganha, onde documenta o `SaveThemeModal`, a distinção entre as
+  duas ações — **Exportar** para o desenvolvedor, **Salvar** para o usuário final — e a degradação quando a
+  porta não está configurada.
+- Registrar também o achado colateral: **`Library/ThemeList.tsx` é código órfão**, na mesma prateleira das
+  abas inalcançáveis já documentadas em `06-painel-de-customizacao-e-preview.md` §9.3.
 
 ---
 
