@@ -1,9 +1,10 @@
 import React from 'react';
-import { render, screen, fireEvent } from '@testing-library/react';
+import { render, screen, fireEvent, act } from '@testing-library/react';
 import '@testing-library/jest-dom';
 import { describe, it, expect, vi, beforeEach } from 'vitest';
 import { SarakUIProvider, useSarakUI, useSarakUIOptional } from '../SarakUIProvider';
 import { useDesignManager } from '../hooks/useDesignManager';
+import type { ThemeEntry } from '../types';
 
 // Mock dependências do SarakUIProvider
 vi.mock('../hooks/useRegistryManager', () => ({
@@ -218,5 +219,167 @@ describe('SarakUIProvider', () => {
         expect(screen.getByTestId('renders')).toHaveTextContent('3');
         expect(warn).toHaveBeenCalledTimes(1);
         warn.mockRestore();
+    });
+
+    describe('saveTheme — ADR-011 (uma porta de escrita, sem porta de leitura/apagar)', () => {
+        const ThemeSaveConsumer = () => {
+            const ui = useSarakUI();
+            const themeIds = (ui.allThemes as ThemeEntry[]).map((t) => t.id).join(',');
+            return (
+                <div>
+                    <span data-testid="theme-ids">{themeIds}</span>
+                    <button
+                        data-testid="btn-save-theme"
+                        onClick={() => {
+                            ui.saveTheme({ id: 'meu-tema', name: 'Meu Tema', design: { primaryColor: '#123456' } });
+                        }}
+                    >
+                        Salvar
+                    </button>
+                </div>
+            );
+        };
+
+        it('funde o tema salvo em allThemes na MESMA sessão, depois de customThemes', async () => {
+            render(
+                <SarakUIProvider>
+                    <ThemeSaveConsumer />
+                </SarakUIProvider>
+            );
+
+            expect(screen.getByTestId('theme-ids').textContent).not.toContain('meu-tema');
+
+            await act(async () => {
+                fireEvent.click(screen.getByTestId('btn-save-theme'));
+            });
+
+            expect(screen.getByTestId('theme-ids').textContent).toContain('meu-tema');
+        });
+
+        it('salvar o mesmo id duas vezes SUBSTITUI, nunca duplica', async () => {
+            render(
+                <SarakUIProvider>
+                    <ThemeSaveConsumer />
+                </SarakUIProvider>
+            );
+
+            await act(async () => {
+                fireEvent.click(screen.getByTestId('btn-save-theme'));
+            });
+            await act(async () => {
+                fireEvent.click(screen.getByTestId('btn-save-theme'));
+            });
+
+            const ids = (screen.getByTestId('theme-ids').textContent || '').split(',');
+            expect(ids.filter((id) => id === 'meu-tema')).toHaveLength(1);
+        });
+
+        it('chama options.theme.onSave com o ThemeEntry validado', async () => {
+            const onSave = vi.fn().mockResolvedValue(undefined);
+
+            render(
+                <SarakUIProvider options={{ theme: { onSave } }}>
+                    <ThemeSaveConsumer />
+                </SarakUIProvider>
+            );
+
+            await act(async () => {
+                fireEvent.click(screen.getByTestId('btn-save-theme'));
+            });
+
+            expect(onSave).toHaveBeenCalledWith(expect.objectContaining({
+                id: 'meu-tema',
+                name: 'Meu Tema',
+                design: expect.objectContaining({ primaryColor: '#123456' })
+            }));
+        });
+
+        it('onSave que rejeita NÃO remove o tema da sessão nem derruba o Provider — o erro propaga para quem chamou', async () => {
+            const onSave = vi.fn().mockRejectedValue(new Error('backend do consumidor fora do ar'));
+            let caught: unknown = null;
+
+            const RejectingConsumer = () => {
+                const ui = useSarakUI();
+                const themeIds = (ui.allThemes as ThemeEntry[]).map((t) => t.id).join(',');
+                return (
+                    <div>
+                        <span data-testid="theme-ids">{themeIds}</span>
+                        <button
+                            data-testid="btn-save-theme"
+                            onClick={() => {
+                                ui.saveTheme({ id: 'meu-tema', name: 'Meu Tema', design: { primaryColor: '#123456' } })
+                                    .catch((e) => { caught = e; });
+                            }}
+                        >
+                            Salvar
+                        </button>
+                    </div>
+                );
+            };
+
+            render(
+                <SarakUIProvider options={{ theme: { onSave } }}>
+                    <RejectingConsumer />
+                </SarakUIProvider>
+            );
+
+            await act(async () => {
+                fireEvent.click(screen.getByTestId('btn-save-theme'));
+            });
+
+            expect(caught).toBeInstanceOf(Error);
+            expect(screen.getByTestId('theme-ids').textContent).toContain('meu-tema');
+        });
+
+        it('sem options.theme.onSave configurado, saveTheme ainda funde o tema na sessão (a porta é opcional)', async () => {
+            render(
+                <SarakUIProvider>
+                    <ThemeSaveConsumer />
+                </SarakUIProvider>
+            );
+
+            await act(async () => {
+                fireEvent.click(screen.getByTestId('btn-save-theme'));
+            });
+
+            expect(screen.getByTestId('theme-ids').textContent).toContain('meu-tema');
+        });
+
+        it('descarta chave fora do contrato do tema com warn, na fronteira de validateDesign (10-seguranca §2.1)', async () => {
+            const warn = vi.spyOn(console, 'warn').mockImplementation(() => undefined);
+
+            const HostileThemeConsumer = () => {
+                const ui = useSarakUI();
+                const saved = (ui.allThemes as ThemeEntry[]).find((t) => t.id === 'tema-hostil');
+                const savedDesign = saved?.design as Record<string, unknown> | undefined;
+                return (
+                    <div>
+                        <span data-testid="chave-invalida-presente">{String(Boolean(savedDesign?.chaveInventada))}</span>
+                        <button
+                            data-testid="btn-save-hostile"
+                            onClick={() => {
+                                ui.saveTheme({ id: 'tema-hostil', name: 'Tema Hostil', design: { chaveInventada: 'x' } });
+                            }}
+                        >
+                            Salvar
+                        </button>
+                    </div>
+                );
+            };
+
+            render(
+                <SarakUIProvider>
+                    <HostileThemeConsumer />
+                </SarakUIProvider>
+            );
+
+            await act(async () => {
+                fireEvent.click(screen.getByTestId('btn-save-hostile'));
+            });
+
+            expect(screen.getByTestId('chave-invalida-presente')).toHaveTextContent('false');
+            expect(warn).toHaveBeenCalled();
+            warn.mockRestore();
+        });
     });
 });

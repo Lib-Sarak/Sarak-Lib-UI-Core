@@ -3409,7 +3409,7 @@
     },
     "SarakUIProvider": {
       "propsInterface": "SarakUIProviderProps",
-      "source": "src/core/Provider/types.ts",
+      "source": "src/core/Provider/providerProps.ts",
       "props": [
         {
           "name": "children",

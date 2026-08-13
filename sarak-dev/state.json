@@ -185,6 +185,10 @@
       "comando": "node gates/scripts/audit/auditor_composicaoatomica.mjs"
     },
     {
+      "nome": "npm run container-query:check",
+      "comando": "node gates/scripts/contrato/check-container-query-literal.mjs"
+    },
+    {
       "nome": "npm run coverage:check",
       "comando": "vitest run --coverage && node gates/scripts/release/check-coverage-floor.mjs"
     },
@@ -308,7 +312,8 @@
       "007-distribuicao-por-git.md",
       "008-releases-com-tag-e-semver-em-git.md",
       "009-persistencia-tenant-aware.md",
-      "010-temas-salvos-pelo-usuario.md"
+      "010-temas-salvos-pelo-usuario.md",
+      "011-tema-salvo-por-uma-porta-de-escrita.md"
     ],
     "arquitetura": [
       "00-mapa-do-modulo.md",

@@ -315,7 +315,7 @@ depois acrescente o fluxo — nunca deixe o próximo redescobrir.
 
 **Componentes públicos: 77** — é o número que o `barrel:check` cobra. A lista completa está em `state.json` → `componentes.publicos.nomes`.
 
-### B.3 Gates registrados (17)
+### B.3 Gates registrados (18)
 
 | Comando | O que roda |
 | --- | --- |
@@ -324,6 +324,7 @@ depois acrescente o fluxo — nunca deixe o próximo redescobrir.
 | `npm run build-info:check` | `node scripts/generate-build-info.mjs --check` |
 | `npm run catalog:check` | `node scripts/generate-component-catalog.mjs --check` |
 | `npm run composicao-atomica:check` | `node gates/scripts/audit/auditor_composicaoatomica.mjs` |
+| `npm run container-query:check` | `node gates/scripts/contrato/check-container-query-literal.mjs` |
 | `npm run coverage:check` | `vitest run --coverage && node gates/scripts/release/check-coverage-floor.mjs` |
 | `npm run deep-import:check` | `node gates/scripts/contrato/check-no-deep-import.mjs` |
 | `npm run dev-kit:check` | `node scripts/generate-dev-kit.mjs --check` |
@@ -368,7 +369,7 @@ Fonte: `gates/baselines/audit-baseline.json`. **Não edite à mão** — o núme
 
 ### B.5 A base de specs
 
-**ADR (10)** — decisões imutáveis: `001-tres-arquiteturas.md` · `002-remocao-motor-manifesto.md` · `003-remocao-backend-proprio.md` · `004-remocao-design-agent.md` · `005-modelo-modulos-plugin-e-apps-separados.md` · `006-zero-marca-soberania-host.md` · `007-distribuicao-por-git.md` · `008-releases-com-tag-e-semver-em-git.md` · `009-persistencia-tenant-aware.md` · `010-temas-salvos-pelo-usuario.md`
+**ADR (11)** — decisões imutáveis: `001-tres-arquiteturas.md` · `002-remocao-motor-manifesto.md` · `003-remocao-backend-proprio.md` · `004-remocao-design-agent.md` · `005-modelo-modulos-plugin-e-apps-separados.md` · `006-zero-marca-soberania-host.md` · `007-distribuicao-por-git.md` · `008-releases-com-tag-e-semver-em-git.md` · `009-persistencia-tenant-aware.md` · `010-temas-salvos-pelo-usuario.md` · `011-tema-salvo-por-uma-porta-de-escrita.md`
 
 **Arquitetura (6)** — visão macro viva: `00-mapa-do-modulo.md` · `01-forma-do-produto-e-modos-de-consumo.md` · `02-design-engine.md` · `03-superficie-publica.md` · `04-contrato-de-tokens-e-paridade.md` · `05-build-e-distribuicao.md`
 

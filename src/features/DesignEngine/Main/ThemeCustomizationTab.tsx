@@ -80,12 +80,13 @@ export const ThemeCustomizationTab: React.FC = () => {
         handleApplyToSystem();
     }, [handleApplyToSystem]);
 
-    const { handleExportTheme, handleApplyGlobalChanges } = useThemePersistenceHandlers({
+    const { handleExportTheme, handleSaveTheme, handleApplyGlobalChanges } = useThemePersistenceHandlers({
         draft,
         setCurrentThemeName,
         setIsSaveModalOpen, setIsSaving,
         showToast,
-        handleApplyToSystem: handleApplyToSystemWrapper
+        handleApplyToSystem: handleApplyToSystemWrapper,
+        saveTheme: sarak.saveTheme
     });
 
     const handleApplyFullTheme = useCallback((design: SarakDesignState & { systemName?: string }) => {
@@ -230,6 +231,7 @@ export const ThemeCustomizationTab: React.FC = () => {
                 themeName={currentThemeName}
                 onClose={() => setIsSaveModalOpen(false)}
                 onExport={handleExportTheme}
+                onSave={handleSaveTheme}
                 isSaving={isSaving}
             />
 

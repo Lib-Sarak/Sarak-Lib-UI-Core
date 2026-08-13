@@ -1,6 +1,6 @@
 import React, { useState } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
-import { FileJson, X } from 'lucide-react';
+import { FileJson, Save, X } from 'lucide-react';
 import { SarakInput } from '../../../../components/atomic/Inputs';
 import { useSarakUI } from '../../../../core/Provider/SarakUIProvider';
 import { useModalLayoutStyles } from '../../../../components/atomic/Modals/hooks/useModalLayoutStyles';
@@ -10,24 +10,33 @@ interface SaveThemeModalProps {
     themeName?: string;
     onClose: () => void;
     onExport: (name: string) => void;
+    /**
+     * Ação "Salvar" (ADR-011) — só chamada porque o botão só existe quando
+     * `options.theme.onSave` está configurado. Sem a porta, este prop é ignorado.
+     */
+    onSave?: (name: string) => void;
     isSaving?: boolean;
 }
 
 /**
- * Modal de EXPORTAÇÃO de tema (Spec 44 §2.4 — CustomizationPanel vira ferramenta
- * de autoria). Não existe mais "salvar no banco": o botão gera o JSON do tema
- * atual para o dev colar num arquivo do próprio repositório e passar via
- * `customThemes` no `SarakUIProvider`. Nada é enviado a nenhum servidor.
+ * Modal de tema do painel (ADR-011 substitui o recorte técnico do ADR-010):
+ * "Exportar JSON" é o caminho do DESENVOLVEDOR — sempre disponível, gera o JSON
+ * do tema atual para colar num arquivo do repo e passar via `customThemes`. Nada
+ * é enviado a nenhum servidor. "Salvar" é o caminho do USUÁRIO FINAL — só aparece
+ * quando `options.theme.onSave` está configurado; sem a porta, este modal é
+ * idêntico ao de antes do ADR-011.
  */
 export const SaveThemeModal: React.FC<SaveThemeModalProps> = ({
     isOpen,
     themeName,
     onClose,
     onExport,
+    onSave,
     isSaving = false
 }) => {
-    const { design } = useSarakUI();
+    const { design, options } = useSarakUI();
     const modalLayout = useModalLayoutStyles(design);
+    const canSaveToRuntime = typeof options?.theme?.onSave === 'function';
 
     const [name, setName] = useState('');
 
@@ -77,6 +86,12 @@ export const SaveThemeModal: React.FC<SaveThemeModalProps> = ({
                             JSON com o design atual. Cole-o num arquivo do seu repositório e passe
                             via <code>customThemes</code> no <code>SarakUIProvider</code>.
                         </p>
+                        {canSaveToRuntime && (
+                            <p className="text-xs text-[var(--theme-muted)] leading-relaxed">
+                                "Salvar" entrega este tema ao sistema que você está usando — ele decide
+                                onde guardar e devolve o tema na próxima vez que você abrir.
+                            </p>
+                        )}
                         <div className="flex flex-col gap-1.5">
                             <label className="text-[var(--sarak-type-scale2xs,10px)] font-bold text-[var(--color-theme-title,#ffffff)] uppercase tracking-widest">Nome do Tema</label>
                             <SarakInput
@@ -97,6 +112,16 @@ export const SaveThemeModal: React.FC<SaveThemeModalProps> = ({
                         >
                             Cancelar
                         </button>
+                        {canSaveToRuntime && (
+                            <button
+                                onClick={() => onSave?.(name)}
+                                disabled={isSaving || !name.trim()}
+                                className="flex items-center gap-2 px-6 py-2 bg-[var(--theme-primary)]/10 border border-[var(--theme-primary)] text-[var(--theme-primary)] rounded-lg font-bold text-sm hover:bg-[var(--theme-primary)]/20 transition-colors disabled:opacity-50"
+                            >
+                                <Save size={16} />
+                                {isSaving ? 'Salvando...' : 'Salvar'}
+                            </button>
+                        )}
                         <button
                             onClick={() => onExport(name)}
                             disabled={isSaving || !name.trim()}

@@ -2,7 +2,7 @@
 tipo: "plan"
 titulo: "Permitir que o usuário final salve temas criados, sem depender de deploy"
 dominio: "Sarak-Lib-UI-Core / Design Engine / Painel / Persistência"
-status: "🔴 A executar"
+status: "🟢 Aprovada"
 prioridade: "Média"
 tags: ["plan", "painel", "temas", "persistencia", "adr-010", "adr-011"]
 relacionados: ["[[010-temas-salvos-pelo-usuario]]", "[[009-persistencia-tenant-aware]]", "[[09-temas-e-presets]]", "[[06-painel-de-customizacao-e-preview]]", "[[10-seguranca-e-acessibilidade]]"]
@@ -286,8 +286,225 @@ mora aqui. Registre isso no resumo em vez de fingir cobertura.
 
 <!-- Preenchido pelo EXECUTOR. Append-only. -->
 
+## Resumo da execução — 2026-08-12
+
+**Resultado:** Concluído
+
+**O que foi feito**
+- `src/core/Provider/types.ts` — `ThemeEntry` ganhou `name?: string`; `SarakUIOptions.theme` ganhou
+  `onSave?: (theme: ThemeEntry) => Promise<void> | void`; `SarakUIContextType` ganhou
+  `saveTheme: (theme: ThemeEntry) => Promise<void>`. Os três com JSDoc de contrato. `SarakUIProviderProps`
+  foi movida para `src/core/Provider/providerProps.ts` (re-exportada de `types.ts`) — só para o arquivo não
+  estourar o teto de 250 linhas do `auditor_cleancode.mjs` (ver "Decisões e suposições").
+- `src/core/Provider/hooks/useThemeCollection.ts` (**novo**) — hook que centraliza `allThemes` (GLOBAL_THEMES
+  + `customThemes` + temas salvos na sessão) e `saveTheme`: valida `theme.design` com `validateDesign` antes
+  de fundir no estado de sessão, funde (substituindo entrada de mesmo `id`) e só então chama
+  `options.theme.onSave`, se configurado. Extraído de `SarakUIProvider.tsx` pelo mesmo motivo do item acima
+  (ver "Decisões e suposições").
+- `src/core/Provider/SarakUIProvider.tsx` — passou a consumir `useThemeCollection(customThemes, options)` em
+  vez de computar `allThemes` inline, e expõe `saveTheme` no `uiContextValue` (memoizado, com `saveTheme` na
+  lista de dependências).
+- `src/features/DesignEngine/Main/hooks/useThemePersistenceHandlers.ts` — `handleSaveTheme` novo: monta o
+  tema **completo** com `buildThemeExportPayload` (mesma regra do export, spec 09 §4.5), acrescenta o `name`
+  digitado pelo usuário e chama `saveTheme` (prop nova do hook). Erro: `console.error` + toast `'warning'`
+  ("... ele continua disponível nesta sessão"), sem fechar o modal — o usuário vê o aviso.
+- `src/features/DesignEngine/Main/components/SaveThemeModal.tsx` — ganhou a ação **"Salvar"**, renderizada
+  **só** quando `options.theme?.onSave` é uma função (lida via `useSarakUI()`); prop nova `onSave?: (name:
+  string) => void`. Um parágrafo extra (também condicionado à porta) explica a diferença entre "Salvar" e
+  "Exportar JSON". Sem a porta, o modal renderiza exatamente como antes (provado por teste — ver critérios).
+- `src/features/DesignEngine/Main/ThemeCustomizationTab.tsx` — fiação: passa `saveTheme: sarak.saveTheme`
+  para `useThemePersistenceHandlers` e `onSave={handleSaveTheme}` para `<SaveThemeModal>`. Não listado
+  literalmente na §3.1, mas é a fiação mínima e inevitável entre o hook (item acima) e o modal — sem ela a
+  porta nova ficaria inacessível pela UI.
+- `docs/migracoes.md` — entrada nova, classificada **MINOR** (capacidade nova retrocompatível — `03-versionamento-e-release.md`
+  §3), com o exemplo de como ligar `options.theme.onSave` e o que **não** existe (`onLoadThemes`,
+  `onDeleteTheme`, editar/renomear).
+
+**Arquivos alterados**
+| Arquivo | Natureza | O que mudou |
+|---|---|---|
+| `src/core/Provider/types.ts` | alterado | `ThemeEntry.name?`, `options.theme.onSave?`, `SarakUIContextType.saveTheme`; `SarakUIProviderProps` extraída |
+| `src/core/Provider/providerProps.ts` | criado | `SarakUIProviderProps`, movida de `types.ts` (R9 — teto de 250 linhas) |
+| `src/core/Provider/hooks/useThemeCollection.ts` | criado | `allThemes` (fusão) + `saveTheme` (porta única, ADR-011) |
+| `src/core/Provider/hooks/__tests__/useThemeCollection.test.ts` | criado | 7 casos: fusão, substituição por `id`, chamada a `onSave`, `onSave` opcional, `onSave` rejeitando mantém o tema, descarte de chave fora do contrato com warn |
+| `src/core/Provider/SarakUIProvider.tsx` | alterado | consome `useThemeCollection`; expõe `saveTheme` no contexto |
+| `src/core/Provider/__tests__/SarakUIProvider.test.tsx` | alterado | 6 casos novos (`describe('saveTheme — ADR-011...')`) cobrindo os mesmos critérios acima pela porta pública `useSarakUI()` |
+| `src/features/DesignEngine/Main/hooks/useThemePersistenceHandlers.ts` | alterado | `handleSaveTheme` novo; prop `saveTheme` nova na interface |
+| `src/features/DesignEngine/Main/hooks/__tests__/useThemePersistenceHandlers.test.ts` | alterado | 2 casos novos (`handleSaveTheme` sucesso e falha) + ajuste dos 2 existentes para a prop `saveTheme` nova |
+| `src/features/DesignEngine/Main/components/SaveThemeModal.tsx` | alterado | botão "Salvar" condicionado a `options.theme?.onSave`; prop `onSave?` nova |
+| `src/features/DesignEngine/Main/components/__tests__/SaveThemeModal.test.tsx` | alterado | 4 casos novos (`describe('ação "Salvar"...')`) |
+| `src/features/DesignEngine/Main/ThemeCustomizationTab.tsx` | alterado | fiação de `saveTheme`/`handleSaveTheme` (não listado em §3.1 — ver "Decisões e suposições") |
+| `docs/migracoes.md` | alterado | entrada nova (MINOR), com exemplo de `options.theme.onSave` |
+
+**Verificações executadas**
+- `npx vitest run` (suíte INTEIRA) → **314 arquivos de teste, 1297 testes, todos verdes** (baseline pré-execução: 313/1290 — cresceu, não encolheu).
+- `npx tsc --noEmit` → **0 erros**.
+- `node gates/scripts/audit/run_audit.mjs` → 2 achados pré-existentes (1 ghostvar `--x`, 2 ocorrências de `auditor_composicaoatomica` em `SarakMultiSelect`/`SarakUploader`, ambos já documentados na R7/R10 do `00-regras-e-invariantes.md` e no baseline) — **nenhum novo**.
+- `node gates/scripts/release/check-audit-baseline.mjs --with-tsc` → `"igual ao baseline de 2026-08-11 — nenhuma regressão."` (na primeira rodada, antes da extração de `useThemeCollection.ts`/`providerProps.ts`, este gate acusou regressão real — `auditor_cleancode.mjs.violacoes: 0 -> 2` — porque `SarakUIProvider.tsx` e `types.ts` passaram de 250 linhas; corrigido extraindo os dois arquivos citados acima, e a segunda rodada saiu limpa).
+- `npm run container-query:check` → `[OK]`.
+- `git diff --stat` — só os arquivos listados acima (mais `docs/`); `git diff --stat -- src/features/DesignEngine/Library/ThemeList.tsx` devolveu vazio; `grep -rn "onLoadThemes\|onDeleteTheme" src/` devolveu vazio.
+
+**Critérios de aceite**
+- [x] `ThemeEntry.name?`, `options.theme.onSave` e `SarakUIContextType.saveTheme` existem, com JSDoc de contrato. Nenhum tipo novo foi criado — evidência: `types.ts:32-42,171-183,226-231`.
+- [x] O tema salvo aparece em `allThemes` na mesma sessão — evidência: `useThemeCollection.test.ts` ("funde o tema salvo... na MESMA sessão") e `SarakUIProvider.test.tsx` ("funde o tema salvo em allThemes...").
+- [x] Salvar o mesmo `id` duas vezes substitui, não duplica — evidência: `useThemeCollection.test.ts` + `SarakUIProvider.test.tsx`, ambos com um caso dedicado.
+- [x] Sem `options.theme.onSave`, o `SaveThemeModal` é idêntico ao de hoje — evidência: `SaveThemeModal.test.tsx`, os 5 testes originais continuam intocados e passam sem alteração de expectativa; caso novo prova `queryByText('Salvar')` ausente sem a porta.
+- [x] `onSave` que rejeita: toast de aviso, tema permanece na sessão, painel não quebra — evidência: `useThemeCollection.test.ts` (erro propaga, tema permanece em `allThemes`), `SarakUIProvider.test.tsx` (idem, pela porta pública), `useThemePersistenceHandlers.test.ts` (`handleSaveTheme` captura o erro, mostra toast `'warning'`, NÃO fecha o modal).
+- [x] Tema montado passa por `validateDesign` antes de entrar na lista; payload fora do contrato é descartado com warn — evidência: `useThemeCollection.ts:31-34` chama `validateDesign`; teste "descarta chave fora do contrato... com warn" em `useThemeCollection.test.ts` e em `SarakUIProvider.test.tsx`.
+- [x] Nenhum `onLoadThemes`/`onDeleteTheme` no diff. Nenhuma linha em `ThemeList.tsx` — evidência: `grep` e `git diff --stat` vazios (ver "Verificações executadas").
+- [x] `docs/migracoes.md` com entrada nova, classificada — evidência: entrada "Tema salvo pelo usuário final em runtime..." no topo do arquivo, `Classificação: MINOR`.
+- [x] `npx vitest run` inteira, verde, não encolheu — evidência acima (313→314 arquivos, 1290→1297 testes).
+- [x] `run_audit` sem regressão; `npx tsc --noEmit` → 0; `container-query:check` verde — evidência acima.
+- [x] `git diff --stat` — só os arquivos da §3.1 (mais testes e `docs/`) — com a exceção declarada de `ThemeCustomizationTab.tsx` (ver "Decisões e suposições") e dos dois arquivos novos criados pela correção de R9.
+
+**Decisões e suposições**
+- **`ThemeCustomizationTab.tsx` foi tocado sem estar listado em §3.1.** A plan lista `types.ts`,
+  `SarakUIProvider.tsx`, `useThemePersistenceHandlers.ts` e `SaveThemeModal.tsx` como escopo, mas não
+  menciona o componente que os conecta. Sem essa fiação (`saveTheme: sarak.saveTheme` para o hook,
+  `onSave={handleSaveTheme}` para o modal), a porta nova ficaria implementada mas inacessível por qualquer
+  UI real — o próprio objetivo da plan ("um usuário final... clica em Salvar") não seria satisfeito. Tratado
+  como parte inseparável do item 4 do escopo ("Botão 'Salvar' em `SaveThemeModal.tsx`"), não como desvio.
+- **`SarakUIProviderProps` foi extraída para `providerProps.ts`, e `allThemes`/`saveTheme` para
+  `hooks/useThemeCollection.ts`.** Nenhum dos dois arquivos está listado em §3.1. Motivo: a primeira rodada
+  de verificação (regra §5 item 6 desta plan) mediu que os campos novos, com JSDoc de contrato, levaram
+  `SarakUIProvider.tsx` a 270 linhas e `types.ts` a 275 — acima do teto de 250 do `auditor_cleancode.mjs`
+  (R9), e `check-audit-baseline.mjs --with-tsc` confirmou como **regressão real** (`0 -> 2` violações). A
+  §3 item 7 do `00-prompt-executor.md` obriga a deixar o gate verde quando o baseline já era verde — e como
+  a causa é desta própria execução (não de outra plan), a correção é deste escopo, não um achado à parte.
+  Segui o padrão já usado neste mesmo arquivo (`payloadExtraKeys.ts`, citado em `types.ts:127-129`) e o
+  padrão já usado no restante do `SarakUIProvider.tsx` (toda peça de estado já vive num Hook Controlador
+  próprio — `useDesignManager`, `useBrandingManager`, `useSarakDrafting` etc.): extrair para um arquivo
+  companion, sem mudar nenhum comportamento. `useThemeCollection.ts`, por começar com `use`, ganhou teste
+  dedicado (R8) — o que também tornou a suíte mais fina (a lógica de fusão/substituição/validação é testada
+  isoladamente, sem depender do resto do `SarakUIProvider`).
+- **O `status: 🟡 Em execução` não foi commitado no frontmatter desta plan antes da primeira edição** — a
+  marcação ficou só na lista de tarefas interna desta execução, não no arquivo. Não teve efeito prático
+  (execução de ponta a ponta numa única conversa, sem interrupção), mas registro pela honestidade do relato
+  que a §5 exige.
+- **Texto do parágrafo extra em `SaveThemeModal.tsx`** ("Salvar entrega este tema ao sistema que você está
+  usando...") não foi pedido literalmente pela plan, mas atende à distinção que o item 4 da síntese (§9) pede
+  entre "Exportar" (desenvolvedor) e "Salvar" (usuário final) — e está condicionado à mesma porta do botão,
+  então não aparece nem muda nada para quem não configurar `options.theme.onSave`.
+
+**Achados fora do escopo (não corrigidos)**
+- Nenhum achado novo. Os dois já conhecidos e fora do escopo desta plan continuam registrados onde já
+  estavam: `SarakMultiSelect`/`SarakUploader` (R10, `00-regras-e-invariantes.md`) e o ghostvar `--x` (R7) —
+  nenhum dos dois foi tocado por esta execução, confirmado pelo `check-audit-baseline.mjs` não os apontar
+  como regressão.
+
+**Pendências / riscos**
+- **O ciclo completo (salvar → recarregar → tema ainda lá) não é provável só aqui**, como o próprio ADR-011
+  e a §8 da plan já avisam: a metade que falta — o importador realmente guardar o `ThemeEntry` recebido em
+  `options.theme.onSave` e devolvê-lo em `customThemes` no boot seguinte — é código que não mora neste
+  repositório. Os testes desta execução provam a metade de cá: o tema entra em `allThemes` na mesma sessão,
+  `onSave` recebe o payload validado, e uma falha do backend do consumidor não derruba nem apaga o tema da
+  sessão.
+- Nenhuma pendência técnica identificada nos critérios de aceite desta plan.
+
 ---
 
 # 11. Veredito
 
 <!-- Preenchido pelo REVISOR. Append-only. -->
+
+## Veredito — 2026-08-12 — 🟢 Aprovada
+
+O desenho magro do ADR-011 chegou inteiro no código, e o ponto mais delicado — **não perder o tema quando o
+backend do consumidor falha** — está resolvido pela ordem certa das operações, não por tratamento de erro.
+
+### O que importa mais, e está certo
+
+`hooks/useThemeCollection.ts:30-37` — `saveTheme` **funde no estado de sessão ANTES de chamar `onSave`**:
+
+```
+setSavedThemes((prev) => [...prev.filter((t) => t.id !== validatedTheme.id), validatedTheme]);
+await options?.theme?.onSave?.(validatedTheme);
+```
+
+Se `onSave` rejeitar, o tema **já está** em `allThemes` e continua lá. A ordem inversa teria sido a
+implementação óbvia e teria perdido o trabalho do usuário exatamente no caso que a §5 passo 5 nomeava como
+"o pior desfecho possível". E o `filter` por `id` antes do append resolve a substituição sem duplicar.
+
+O `handleSaveTheme` fecha o ciclo com honestidade: captura a rejeição, **não** relança, e o texto do toast
+diz a verdade — *"Erro ao salvar o tema — ele continua disponível nesta sessão."* O de sucesso também não
+promete o que a lib não controla: *"salvo — disponível nesta sessão."*
+
+### Os critérios, conferidos um a um
+
+| Critério | Evidência |
+|---|---|
+| `ThemeEntry.name?`, `options.theme.onSave`, `saveTheme` — **nenhum tipo novo** | os três em `types.ts`; nada além de campos em tipos existentes |
+| Ordem de fusão | `[...GLOBAL_THEMES, ...customThemes, ...savedThemes]` — salvo por último, aparece na sessão |
+| Mesmo `id` substitui | o `filter` do `setSavedThemes` |
+| Sem a porta, o modal é o de hoje | `SaveThemeModal.tsx:39` — `canSaveToRuntime` fecha **o botão E o texto explicativo** (`:89`, `:115`) |
+| `validateDesign` na fronteira | `useThemeCollection.ts:31-33`, antes de entrar em `allThemes` |
+| Nenhum `onLoadThemes`/`onDeleteTheme` | `grep -rn` em `src/` → **vazio** |
+| `ThemeList.tsx` intocado | `git diff --stat` do arquivo → **vazio** |
+| `docs/migracoes.md` | entrada nova, **MINOR**, com a justificativa aditiva correta |
+
+| Gate | Saída |
+|---|---|
+| `npx vitest run` | **314 arquivos / 1297 testes, verde** — eu media **313/1278** ao aprovar a `plan-37`, então **+19**, nenhum sumiu |
+| `npx tsc --noEmit` | **0** |
+| `check-audit-baseline --with-tsc` | igual ao baseline de 2026-08-11 |
+| `barrel:check` · `catalog:check` · `token-types:check` · `container-query:check` | **verdes** |
+| R9 | `types.ts` **241** · `SarakUIProvider.tsx` **245** · os dois novos 34 e 40 |
+
+### Os dois arquivos novos não declarados na §3.1
+
+`providerProps.ts` e `hooks/useThemeCollection.ts` **não são escopo novo — são R9**. Conferi: `types.ts`
+fechou em **241** e `SarakUIProvider.tsx` em **245**, os dois a poucas linhas do teto de 250. Sem as
+extrações, as edições desta plan os estouravam. E o `providerProps.ts` cita o precedente certo
+(`payloadExtraKeys.ts`, que existe e foi extraído pelo mesmo motivo).
+
+O que eu precisava checar, e está certo: **`SarakUIProviderProps` continua público**. `types.ts:241`
+reexporta (`export type { SarakUIProviderProps } from './providerProps'`), e `barrel:check` e
+`catalog:check` confirmam que a superfície pública não se moveu.
+
+### ⚠️ Não commite ainda: dois geradores pendentes
+
+`npm run guide:check` está **VERMELHO** — `sarak-ui/catalog.json`, `VERSION` e `START-HERE.md` defasados.
+Ele estava **verde** quando revisei a `plan-39`; ficou vermelho **por causa desta execução** (o kit do
+consumidor deriva o catálogo do fonte, e `SarakUIProviderProps` mudou de arquivo). Como `guide:check` roda
+dentro de `npm run build`, o build falha até isto ser regenerado.
+
+**Não reprovo por isso, e a razão é minha:** nem a §5 passo 6 nem a §8 desta plan listavam `guide:check` —
+listei `container-query:check` e esqueci este. O executor rodou exatamente o que eu mandei. O conserto é
+`npm run guide`, mecânico, sem autoria.
+
+Some-se o `npm run dev-kit`, pendente desde que **eu** criei o ADR-011 (o kit do mantenedor embute a
+contagem de ADRs e de gates).
+
+**Antes do commit, os dois:** `npm run guide` e `npm run dev-kit`.
+
+> **Lição para as próximas plans:** toda plan que mexe em **superfície pública** tem de listar `guide:check`
+> no fecho. Fica anotado para a próxima revisão da §8 padrão.
+
+### Uma observação, não um defeito
+
+`useThemeCollection.ts:37` — o `useCallback` de `saveTheme` depende de `[options?.theme?.onSave]`, e
+`saveTheme` entra no memo do contexto (`SarakUIProvider.tsx:184`). Um consumidor que escreva
+`options={{ theme: { onSave: (t) => api.save(t) } }}` **inline** cria função nova a cada render, o valor do
+contexto muda todo render, e todo consumidor rerenderiza.
+
+Depender da **função** e não do objeto `options` já foi a escolha certa e a mais estreita possível — com
+`onSave` estável (`useCallback` no consumidor, ou função de módulo), `saveTheme` é estável. E o memo do
+contexto já era sensível a prop inline por causa de `allThemes`/`customThemes`, com o aviso escrito em
+`SarakUIProvider.tsx:44-46`. Ou seja: **não é classe nova de problema, e a consequência é rerender, não
+chamada repetida ao backend** — diferente do achado da `plan-34`. Se um dia isto incomodar, o idioma de ref
+já está no bloco (`optionsRef`). Anotado, não cobrado.
+
+### O que esta revisão NÃO viu, declarado
+
+O ciclo completo — **salvar → recarregar → o tema ainda está lá** — não foi provado, e não podia ser: metade
+dele é código do importador, fora deste repositório. A suíte prova a metade de cá (funde, substitui, valida,
+entrega à porta, sobrevive à rejeição). O executor declarou isso no resumo, e a §8 já mandava declarar em vez
+de fingir cobertura. **A prova real é no consumidor**, e vale fazer antes de anunciar a capacidade.
+
+### Destino da síntese
+
+Declarado na §9, **não executado por mim**: `09-temas-e-presets.md` §4 ganha a sexta fase (Salvar em
+runtime) com a porta única e a razão de não haver porta de leitura;
+`06-painel-de-customizacao-e-preview.md` ganha a distinção Exportar (dev) × Salvar (usuário final) e a
+degradação sem porta. Registrar junto o achado colateral: **`Library/ThemeList.tsx` é código órfão**, na
+mesma prateleira das abas inalcançáveis da §9.3. Só por `spec-atualizar`, depois do commit do dono.

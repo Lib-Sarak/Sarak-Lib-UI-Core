@@ -1,4 +1,3 @@
-import { ReactNode } from 'react';
 import type { DesignTokenId, SarakDesignTokens } from './generated/design-token-ids';
 
 /**
@@ -33,6 +32,9 @@ export type SarakDesignState = SarakThemePayload & SarakRuntimeExtras;
 /** Entrada da lista unificada de temas (GLOBAL_THEMES + custom_themes do banco). */
 export interface ThemeEntry {
     id: string;
+    /** Rótulo exibido nas listas de tema. Os embarcados já o têm via `ThemePreset`;
+     *  um tema salvo em runtime (ADR-011) precisa dele para não cair no fallback. */
+    name?: string;
     design?: Record<string, unknown>;
     contraparte?: Partial<SarakDesignState>; // Bloco p/ o modo OPOSTO ao nativo (plan-26) — opcional no tipo (R33)
 }
@@ -167,6 +169,16 @@ export interface SarakUIOptions {
         defaultTheme?: string;
         defaultModuleId?: string;
         extraTokens?: Record<string, unknown>;
+        /**
+         * Porta ÚNICA de escrita para "salvar tema em runtime" (ADR-011, substitui as
+         * três portas do ADR-010): chamada por `sarak.saveTheme` DEPOIS de o tema já
+         * validado (`validateDesign`) entrar na sessão (`allThemes`). Recebe o
+         * `ThemeEntry` completo (`{ id, name, design }`); GUARDAR — arquivo, tabela,
+         * `localStorage`, o que for — e DEVOLVER no próximo boot via `customThemes` é
+         * inteiramente do consumidor. Não existe porta de leitura nem de apagar: a
+         * leitura já é a prop `customThemes`, e apagar é decisão de quem guarda.
+         */
+        onSave?: (theme: ThemeEntry) => Promise<void> | void;
     };
     /**
      * Marca/branding do sistema (Spec 44 — sem backend próprio): `initial` semeia
@@ -210,6 +222,11 @@ export interface SarakUIContextType {
     isHydrated: boolean;
     options: SarakUIOptions;
     allThemes: unknown[]; // Array unificado (Scripts + DB) para a interface
+    /** Salva um tema em runtime (ADR-011): valida (`validateDesign`), funde no
+     *  estado de SESSÃO — aparece em `allThemes` na mesma sessão, substituindo
+     *  entrada de mesmo `id` — e entrega a `options.theme.onSave`, se configurado.
+     *  Sem a porta, o tema entra na sessão mas não sobrevive a um reload. */
+    saveTheme: (theme: ThemeEntry) => Promise<void>;
     activeThemeId?: string; // Espelho CRU do prop do Provider — só setado no modo CONTROLADO (09-temas-e-presets §4.3)
     resolvedThemeId?: string; // O tema EFETIVAMENTE no ar (plan-27) — usar este p/ achar a contraparte, nunca activeThemeId cru
     setResolvedThemeId?: (id: string | undefined) => void; // Quem aplica um preset novo anuncia o id aqui (plan-27)
@@ -219,29 +236,6 @@ export interface SarakUIContextType {
     onMediaUpload?: (file: File) => Promise<string>;
 }
 
-export interface SarakUIProviderProps {
-    children: ReactNode;
-    discoveryEndpoints?: string[];
-    config?: SarakThemePayload;
-    token?: string | null;
-    userId?: string | null;
-    options?: SarakUIOptions;
-    customThemes?: unknown[]; // Temas em JSON definidos pelo consumidor no próprio código (Spec 44)
-    /** ID do tema ATIVO (controlado): sempre que setado, vence — reaplica a cada mudança. */
-    activeThemeId?: string;
-    /**
-     * ID do tema SEMENTE (não-controlado): só semeia o estado inicial (uma vez, no
-     * primeiro seed), nunca força reaplicação. Alternativa mais segura a
-     * `activeThemeId` para o caso comum "só quero começar neste tema" — não expõe o
-     * consumidor ao contrato de estabilidade de referência que `activeThemeId`
-     * exige de `customThemes` (Spec 43 §5.1/Spec 44 §2.1).
-     */
-    initialTheme?: string;
-    /**
-     * Callback "traga sua persistência" (Spec 44 §2.5): chamado a cada commit do
-     * design persistido (após localStorage), para o consumidor sincronizar no
-     * backend DELE, se quiser. A lib nunca faz essa chamada por conta própria.
-     */
-    onThemeChange?: (design: SarakThemePayload) => void;
-    onMediaUpload?: (file: File) => Promise<string>; // Adapter opcional para envio de mídias para Storage externo
-}
+// `SarakUIProviderProps` mora em `./providerProps.ts` — só para manter este
+// arquivo abaixo do limite de linhas do auditor de Clean Code (250).
+export type { SarakUIProviderProps } from './providerProps';

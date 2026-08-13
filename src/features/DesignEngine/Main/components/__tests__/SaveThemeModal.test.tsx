@@ -9,6 +9,11 @@ const customRender = (ui: React.ReactElement) => {
     return render(<SarakUIProvider>{ui}</SarakUIProvider>);
 };
 
+// ADR-011: o botão "Salvar" só existe com `options.theme.onSave` configurado.
+const customRenderWithSavePort = (ui: React.ReactElement, onSave = vi.fn()) => {
+    return render(<SarakUIProvider options={{ theme: { onSave } }}>{ui}</SarakUIProvider>);
+};
+
 vi.mock('framer-motion', () => ({
     motion: {
         div: ({ children, ...props }: any) => <div {...props}>{children}</div>
@@ -72,5 +77,36 @@ describe('SaveThemeModal (Spec 44 — exportar tema como JSON, sem backend)', ()
         const input = screen.getByPlaceholderText('Ex: Sarak Sovereign Customizado');
         fireEvent.change(input, { target: { value: '' } });
         expect(screen.getByText('Exportar JSON').closest('button')).toBeDisabled();
+    });
+
+    describe('ação "Salvar" (ADR-011) — condicionada à porta options.theme.onSave', () => {
+        it('NÃO renderiza "Salvar" sem options.theme.onSave configurado — modal idêntico ao de antes do ADR-011', () => {
+            customRender(<SaveThemeModal {...defaultProps} onSave={vi.fn()} />);
+            expect(screen.queryByText('Salvar')).not.toBeInTheDocument();
+        });
+
+        it('renderiza "Salvar" quando options.theme.onSave está configurado', () => {
+            customRenderWithSavePort(<SaveThemeModal {...defaultProps} onSave={vi.fn()} />);
+            expect(screen.getByText('Salvar')).toBeInTheDocument();
+        });
+
+        it('chama onSave com o nome editado ao clicar em "Salvar"', () => {
+            const onSave = vi.fn();
+            customRenderWithSavePort(<SaveThemeModal {...defaultProps} onSave={onSave} />, vi.fn());
+
+            const input = screen.getByPlaceholderText('Ex: Sarak Sovereign Customizado');
+            fireEvent.change(input, { target: { value: 'Tema Salvo' } });
+
+            fireEvent.click(screen.getByText('Salvar'));
+
+            expect(onSave).toHaveBeenCalledWith('Tema Salvo');
+        });
+
+        it('desabilita "Salvar" quando o nome está vazio', () => {
+            customRenderWithSavePort(<SaveThemeModal {...defaultProps} themeName="" onSave={vi.fn()} />);
+            const input = screen.getByPlaceholderText('Ex: Sarak Sovereign Customizado');
+            fireEvent.change(input, { target: { value: '' } });
+            expect(screen.getByText('Salvar').closest('button')).toBeDisabled();
+        });
     });
 });

@@ -1,7 +1,7 @@
 import { useCallback } from 'react';
 import { buildThemeExportPayload, downloadThemeJson } from '../utils/exportTheme';
 
-import type { SarakDesignState } from '../../../../core/Provider/types';
+import type { SarakDesignState, ThemeEntry } from '../../../../core/Provider/types';
 
 export interface UseThemePersistenceHandlersProps {
     draft: SarakDesignState;
@@ -14,21 +14,26 @@ export interface UseThemePersistenceHandlersProps {
     // ninguém emite nem renderiza era o `TS2322` de `ThemeCustomizationTab.tsx:86`.
     showToast: (type: 'success' | 'warning', message: string) => void;
     handleApplyToSystem: () => void;
+    /** Porta ÚNICA de "salvar em runtime" (ADR-011) — `sarak.saveTheme`. */
+    saveTheme: (theme: ThemeEntry) => Promise<void>;
 }
 
 /**
- * Handlers de "persistência" do Design Engine (Spec 44 — sem backend próprio):
- * "salvar um tema" É exportar um JSON (`buildThemeExportPayload`/`downloadThemeJson`)
- * que o dev cola num arquivo do próprio repo e passa via `customThemes`; "aplicar"
- * só comita o rascunho no design ativo (localStorage via `useDesignManager`) —
- * nenhuma das duas ações faz uma chamada de rede.
+ * Handlers de "persistência" do Design Engine: "exportar um tema" gera um JSON
+ * (`buildThemeExportPayload`/`downloadThemeJson`) que o dev cola num arquivo do
+ * próprio repo e passa via `customThemes` — é o caminho do DESENVOLVEDOR, sem
+ * chamada de rede. "Salvar um tema" (ADR-011) é o caminho do USUÁRIO FINAL: monta
+ * o mesmo payload completo e entrega a `sarak.saveTheme`, que funde na sessão e
+ * chama `options.theme.onSave`, se configurado. "Aplicar" só comita o rascunho no
+ * design ativo (localStorage via `useDesignManager`).
  */
 export function useThemePersistenceHandlers(props: UseThemePersistenceHandlersProps) {
     const {
         draft,
         setCurrentThemeName,
         setIsSaveModalOpen, setIsSaving,
-        showToast, handleApplyToSystem
+        showToast, handleApplyToSystem,
+        saveTheme
     } = props;
 
     const handleExportTheme = useCallback((name: string) => {
@@ -47,10 +52,26 @@ export function useThemePersistenceHandlers(props: UseThemePersistenceHandlersPr
         }
     }, [draft, showToast, setCurrentThemeName, setIsSaveModalOpen, setIsSaving]);
 
+    const handleSaveTheme = useCallback(async (name: string) => {
+        setIsSaving(true);
+        try {
+            const payload = buildThemeExportPayload(draft, name);
+            await saveTheme({ id: payload.id, name: payload.name, design: payload.design as unknown as Record<string, unknown> });
+            setCurrentThemeName(payload.name);
+            showToast('success', `Tema "${payload.name}" salvo — disponível nesta sessão.`);
+            setIsSaveModalOpen(false);
+        } catch (error) {
+            console.error(error);
+            showToast('warning', 'Erro ao salvar o tema — ele continua disponível nesta sessão.');
+        } finally {
+            setIsSaving(false);
+        }
+    }, [draft, saveTheme, showToast, setCurrentThemeName, setIsSaveModalOpen, setIsSaving]);
+
     const handleApplyGlobalChanges = useCallback(() => {
         handleApplyToSystem();
         showToast('success', 'Alterações aplicadas ao sistema.');
     }, [handleApplyToSystem, showToast]);
 
-    return { handleExportTheme, handleApplyGlobalChanges };
+    return { handleExportTheme, handleSaveTheme, handleApplyGlobalChanges };
 }

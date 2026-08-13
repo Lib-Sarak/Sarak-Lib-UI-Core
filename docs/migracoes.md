@@ -5,6 +5,45 @@ com o "antes" e o "depois" lado a lado. Uma entrada por mudança, mais recente p
 
 ---
 
+## Tema salvo pelo usuário final em runtime — uma porta de escrita nova (ADR-011, plan-38)
+
+**Classificação: MINOR** — capacidade nova retrocompatível: `ThemeEntry.name?`, `options.theme.onSave?` e
+`sarak.saveTheme` são todos **opcionais/aditivos**. Quem não configurar `options.theme.onSave` não vê
+nenhuma mudança de comportamento — o painel continua exatamente como era, só com "Exportar Tema (JSON)".
+
+**O que ganhou.** Até aqui, "salvar um tema" só existia como **exportar um arquivo JSON** — um fluxo de
+desenvolvedor, que exige colar o arquivo em `customThemes` e fazer deploy. Agora o painel também oferece
+**"Salvar"**, para o usuário final: o tema vai para `sarak.saveTheme`, entra na sessão (aparece em
+`allThemes`, então em `TemplatesTab`/`PresetsCatalog`, sem reload) e é entregue a `options.theme.onSave`,
+se você configurar essa porta.
+
+**Como ligar a porta.**
+
+```ts
+<SarakUIProvider
+  options={{
+    theme: {
+      onSave: async (theme) => {
+        // grave onde quiser: arquivo, tabela, localStorage — a lib não pergunta e não sabe.
+        await minhaApi.salvarTema(theme); // { id, name, design }
+      }
+    }
+  }}
+  customThemes={temasQueEuGuardei} // a LEITURA de volta é esta prop — não existe onLoadThemes
+>
+```
+
+**O que NÃO existe, de propósito** ([[011-tema-salvo-por-uma-porta-de-escrita]]): não há `onLoadThemes` — a
+leitura já é a prop `customThemes`, que você passa na montagem seguinte com o que guardou. Não há
+`onDeleteTheme` — a lista de temas salvos é sua, apagar é decisão de quem guarda. Não há editar/renomear um
+tema já salvo — apague e salve de novo.
+
+**Sem a porta configurada, o botão "Salvar" não aparece** — nunca um "Salvar" que evapora no reload.
+`design` passa por `validateDesign` antes de entrar em `allThemes`, a mesma fronteira de qualquer tema de
+origem externa ([[10-seguranca-e-acessibilidade]] §2.1).
+
+---
+
 ## A responsividade da Spec 40.3 estava desligada no pacote publicado — a nav da topbar, entre outros, volta a aparecer (plan-39)
 
 **Classificação: MAJOR** — nenhum export, prop, token ou assinatura mudou; o que muda é **comportamento

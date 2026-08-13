@@ -21,9 +21,9 @@ import { useSarakStylesheetGuard } from './hooks/useSarakStylesheetGuard';
 import { DesignInjector } from './components/DesignInjector';
 import { SarakScopeRoot } from './components/SarakScopeRoot';
 import { resolveSarakUIMode } from './scope';
+import { useThemeCollection } from './hooks/useThemeCollection';
 import { SovereignThemeInjector } from './components/SovereignThemeInjector';
 import { SarakBackgroundRenderer } from '../Design/components/SarakBackgroundRenderer';
-import { GLOBAL_THEMES } from '../Design/presets/themes/index';
 import { DeviceProvider, DEFAULT_DEVICE_BREAKPOINTS, DeviceBreakpoints } from './DeviceProvider';
 import { SarakToastProvider } from '../../components/atomic/Feedback/SarakToast';
 import { SarakOverlayProvider } from '../../components/atomic/Modals/SarakOverlayProvider';
@@ -114,10 +114,9 @@ export const SarakUIProvider: React.FC<SarakUIProviderProps> = ({
     // 1. Gerenciamento do Registro e Discovery
     const { registeredModules, isHydrated } = useRegistryManager(options);
 
-    // 1.5. Merge Temas Híbridos
-    const allThemes = useMemo<ThemeEntry[]>(() => {
-        return [...GLOBAL_THEMES, ...customThemes] as ThemeEntry[];
-    }, [customThemes]);
+    // 1.5. Temas: fusão (GLOBAL_THEMES + customThemes + salvos em runtime) e a
+    //      porta única de escrita (ADR-011 / plan-38) — ver useThemeCollection.
+    const { allThemes, saveTheme } = useThemeCollection(customThemes, options);
 
     // 2. Gerenciamento do Estado de Design e Persistência
     const { design, setDesign, applyConfig, applyFullConfig, persistDesign, isBackendLoaded, resolvedThemeId, setResolvedThemeId } = useDesignManager({
@@ -167,6 +166,7 @@ export const SarakUIProvider: React.FC<SarakUIProviderProps> = ({
         isHydrated,
         options,
         allThemes,
+        saveTheme,
         activeThemeId,
         resolvedThemeId,
         setResolvedThemeId,
@@ -181,7 +181,7 @@ export const SarakUIProvider: React.FC<SarakUIProviderProps> = ({
         drafting.setDraftDesign, drafting.smartApplyConfig,
         drafting.smartApplyFullConfig, applyConfig, applyFullConfig,
         persistDesign, registeredModules, isHydrated, options,
-        allThemes, activeThemeId, resolvedThemeId, setResolvedThemeId,
+        allThemes, saveTheme, activeThemeId, resolvedThemeId, setResolvedThemeId,
         token, branding, updateBranding, onMediaUpload
     ]);
 
