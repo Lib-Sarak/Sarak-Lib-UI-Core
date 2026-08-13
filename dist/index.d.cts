@@ -489,6 +489,38 @@ interface SarakDesignTokens {
 }
 
 /**
+ * Props públicas do `SarakUIProvider`. Extraído de `types.ts` só para manter
+ * aquele arquivo abaixo do teto de 250 linhas do auditor de Clean Code (R9) —
+ * mesmo motivo de `payloadExtraKeys.ts`, ver comentário lá.
+ */
+interface SarakUIProviderProps {
+    children: ReactNode;
+    discoveryEndpoints?: string[];
+    config?: SarakThemePayload;
+    token?: string | null;
+    userId?: string | null;
+    options?: SarakUIOptions;
+    customThemes?: unknown[];
+    /** ID do tema ATIVO (controlado): sempre que setado, vence — reaplica a cada mudança. */
+    activeThemeId?: string;
+    /**
+     * ID do tema SEMENTE (não-controlado): só semeia o estado inicial (uma vez, no
+     * primeiro seed), nunca força reaplicação. Alternativa mais segura a
+     * `activeThemeId` para o caso comum "só quero começar neste tema" — não expõe o
+     * consumidor ao contrato de estabilidade de referência que `activeThemeId`
+     * exige de `customThemes` (Spec 43 §5.1/Spec 44 §2.1).
+     */
+    initialTheme?: string;
+    /**
+     * Callback "traga sua persistência" (Spec 44 §2.5): chamado a cada commit do
+     * design persistido (após localStorage), para o consumidor sincronizar no
+     * backend DELE, se quiser. A lib nunca faz essa chamada por conta própria.
+     */
+    onThemeChange?: (design: SarakThemePayload) => void;
+    onMediaUpload?: (file: File) => Promise<string>;
+}
+
+/**
  * Contrato do Theme Payload com DOMÍNIO DE CHAVES FECHADO: somente design tokens
  * reais (SarakDesignTokens — gerado da SSOT MASTER_DESIGN_MAP, mesma fonte
  * validada pela paridade 1:1:1:1:1, agora com VALORES tipados por `token.type`)
@@ -514,6 +546,15 @@ interface SarakRuntimeExtras {
 }
 /** Estado de design REAL em runtime: o payload público + os extras de runtime. */
 type SarakDesignState = SarakThemePayload & SarakRuntimeExtras;
+/** Entrada da lista unificada de temas (GLOBAL_THEMES + custom_themes do banco). */
+interface ThemeEntry {
+    id: string;
+    /** Rótulo exibido nas listas de tema. Os embarcados já o têm via `ThemePreset`;
+     *  um tema salvo em runtime (ADR-011) precisa dele para não cair no fallback. */
+    name?: string;
+    design?: Record<string, unknown>;
+    contraparte?: Partial<SarakDesignState>;
+}
 /**
  * Campos presentes no payload que ainda NÃO foram modelados como design tokens
  * no schema (branding/sistema, estrutura consumida por useStructuralStyles e
@@ -630,6 +671,16 @@ interface SarakUIOptions {
         defaultTheme?: string;
         defaultModuleId?: string;
         extraTokens?: Record<string, unknown>;
+        /**
+         * Porta ÚNICA de escrita para "salvar tema em runtime" (ADR-011, substitui as
+         * três portas do ADR-010): chamada por `sarak.saveTheme` DEPOIS de o tema já
+         * validado (`validateDesign`) entrar na sessão (`allThemes`). Recebe o
+         * `ThemeEntry` completo (`{ id, name, design }`); GUARDAR — arquivo, tabela,
+         * `localStorage`, o que for — e DEVOLVER no próximo boot via `customThemes` é
+         * inteiramente do consumidor. Não existe porta de leitura nem de apagar: a
+         * leitura já é a prop `customThemes`, e apagar é decisão de quem guarda.
+         */
+        onSave?: (theme: ThemeEntry) => Promise<void> | void;
     };
     /**
      * Marca/branding do sistema (Spec 44 — sem backend próprio): `initial` semeia
@@ -671,38 +722,17 @@ interface SarakUIContextType {
     isHydrated: boolean;
     options: SarakUIOptions;
     allThemes: unknown[];
+    /** Salva um tema em runtime (ADR-011): valida (`validateDesign`), funde no
+     *  estado de SESSÃO — aparece em `allThemes` na mesma sessão, substituindo
+     *  entrada de mesmo `id` — e entrega a `options.theme.onSave`, se configurado.
+     *  Sem a porta, o tema entra na sessão mas não sobrevive a um reload. */
+    saveTheme: (theme: ThemeEntry) => Promise<void>;
     activeThemeId?: string;
     resolvedThemeId?: string;
     setResolvedThemeId?: (id: string | undefined) => void;
     token?: string | null;
     branding?: SarakBrandingState;
     updateBranding?: (partial: Partial<SarakBrandingState>) => Promise<void>;
-    onMediaUpload?: (file: File) => Promise<string>;
-}
-interface SarakUIProviderProps {
-    children: ReactNode;
-    discoveryEndpoints?: string[];
-    config?: SarakThemePayload;
-    token?: string | null;
-    userId?: string | null;
-    options?: SarakUIOptions;
-    customThemes?: unknown[];
-    /** ID do tema ATIVO (controlado): sempre que setado, vence — reaplica a cada mudança. */
-    activeThemeId?: string;
-    /**
-     * ID do tema SEMENTE (não-controlado): só semeia o estado inicial (uma vez, no
-     * primeiro seed), nunca força reaplicação. Alternativa mais segura a
-     * `activeThemeId` para o caso comum "só quero começar neste tema" — não expõe o
-     * consumidor ao contrato de estabilidade de referência que `activeThemeId`
-     * exige de `customThemes` (Spec 43 §5.1/Spec 44 §2.1).
-     */
-    initialTheme?: string;
-    /**
-     * Callback "traga sua persistência" (Spec 44 §2.5): chamado a cada commit do
-     * design persistido (após localStorage), para o consumidor sincronizar no
-     * backend DELE, se quiser. A lib nunca faz essa chamada por conta própria.
-     */
-    onThemeChange?: (design: SarakThemePayload) => void;
     onMediaUpload?: (file: File) => Promise<string>;
 }
 
