@@ -160,7 +160,45 @@ function App({ temasSalvos, estadoAplicado }: {
 }
 ```
 
-## 6. Modelagem de referência
+## 6. O primeiro paint
+
+Num navegador **sem cache** (primeira visita, ou depois de limpar dados do site), `'hybrid'` — o
+default, §5 — ainda depende de `onLoad` resolver: não há `localStorage` para o boot ler de forma
+síncrona. O tema padrão pinta primeiro, e o persistido entra alguns instantes depois, quando a
+resposta chega. **Isto não é bug, e a lib não tem como consertar sozinha:** para o primeiro paint
+já sair certo, o dado precisa existir **antes de o JS rodar** — e quem põe dado no documento antes
+do JS é quem **serve o documento**. A lib nunca serve documento nenhum (ADR-003).
+
+**Isto custa uma vez por navegador**, não uma vez por sessão: o `localStorage` que `'hybrid'` grava
+depois da primeira carga funciona como cache para todas as visitas seguintes daquele navegador.
+
+Três saídas, cada uma com o trade explícito:
+
+| Saída | O que ganha | O que custa |
+|---|---|---|
+| Injetar o design no HTML servido e passar em `config` | **Zero flash, zero espera** — o tema certo já está no primeiro paint | Exige que o **seu servidor** conheça o tema antes de responder a página. É o conserto de verdade, não uma correção de sintoma |
+| `options.persistence.strictBackendSync: true` | Zero flash — nunca pinta o tema errado | Troca o flash por **tela vazia** enquanto `onLoad` corre (`SarakUIProvider.tsx:189-190`) |
+| Aceitar o flash | Zero esforço | Uma troca de tema visível, **uma vez por navegador** |
+
+### A precedência — `config` × `localStorage` × semente
+
+Medida em `useDesignManager.ts:68` (a semente) e `:93-104` (a leitura inicial):
+
+```
+getSeedConfig()  =  { ...masterDefaults, ...temaDoCatálogo, ...config }   // config.ts:68
+
+localStorage tem valor?  →  { ...getSeedConfig(), ...JSON.parse(localStorage) }   // :100 — o CACHE vence
+localStorage vazio?      →  getSeedConfig()                                       // :103 — CONFIG vence
+```
+
+**Num navegador novo (sem cache), `config` manda no primeiro paint** — é a saída da primeira linha
+da tabela acima. Com cache presente, o `localStorage` vence o `config` injetado, e isso **está
+certo**: o cache costuma carregar o valor mais recente, e `onLoad` (quando configurado) corrige
+por cima se não for. Mas quem injeta `config` esperando que ele **sempre** vença — inclusive depois
+que o usuário já visitou o site antes — vê um comportamento que parece aleatório se não souber
+desta ordem.
+
+## 7. Modelagem de referência
 
 `docs/schema/postgres.sql` e `docs/schema/sqlite.sql` trazem o DDL comentado, nos dois dialetos.
 Ambos modelam a mesma decisão: **duas tabelas**, porque §1 já estabeleceu que são duas entidades —

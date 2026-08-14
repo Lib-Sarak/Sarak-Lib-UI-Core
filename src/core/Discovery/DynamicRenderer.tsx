@@ -7,7 +7,7 @@ import { useEndpointResolver } from './hooks/useEndpointResolver';
 import { ContractRenderer } from './components/ContractRenderer';
 import { SarakButton } from '../../components/atomic/Buttons/SarakButton';
 
-interface DynamicRendererProps {
+export interface DynamicRendererProps {
     contracts: VisualContract[];
     module?: DiscoveredModule; // Optional module context injection (v6.8)
 }

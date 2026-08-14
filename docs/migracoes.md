@@ -5,6 +5,67 @@ com o "antes" e o "depois" lado a lado. Uma entrada por mudança, mais recente p
 
 ---
 
+## 26 tipos usados em assinatura pública passam a ser importáveis pelo nome (plan-45)
+
+**Classificação: MINOR** — capacidade nova, aditiva: nenhum tipo mudou de forma, nenhum export
+existente mudou. Só ficou possível importar pelo **nome** tipos que as assinaturas públicas já
+usavam, mas que não estavam no bloco `export { … }` de `src/index.ts`.
+
+**O que estava quebrado.** `SarakThemePayload`, `SarakUIOptions`, `ThemeEntry` e outros 26 tipos
+apareciam em prop, retorno de hook ou membro de contexto **já públicos** — `SarakUIProvider`,
+`useSarakUI`, `SarakChartEngine`, `SarakShell`, `DesignScope`, entre outros — mas não podiam ser
+importados:
+
+```ts
+// ANTES — TS2459
+import type { SarakThemePayload } from '@sarak/lib-ui-core';
+// error TS2459: Module '"@sarak/lib-ui-core"' declares 'SarakThemePayload' locally,
+// but it is not exported.
+```
+
+Quem precisava tipar contra esses tipos tinha de derivar estruturalmente, contornando a lacuna:
+
+```ts
+// O CONTORNO que este release torna desnecessário — remova se você o escreveu
+type PropsDoProvider = ComponentProps<typeof SarakUIProvider>;
+type SarakThemePayload = NonNullable<PropsDoProvider['config']>;
+type ThemeEntry = Parameters<NonNullable<NonNullable<SarakUIOptions['theme']>['onSave']>>[0];
+```
+
+**O que passa a funcionar.**
+
+```ts
+// DEPOIS
+import type {
+  SarakThemePayload, SarakUIOptions, ThemeEntry, SarakUIContextType, SarakDesignState,
+  SarakUIProviderProps, SarakBrandingState, SarakShellProps, ShellUser,
+  DeviceProviderProps, DynamicRendererProps, DesignScopeProps,
+  DesignToken, TokenValueType, SarakTokenValue, SarakDesignTokens,
+  Accept, CatalogItem, FilterConfig, FlexDirection, Message, PdfSource,
+  PinnedOffsets, DateLocale, WeekStart, ChartDataItem,
+} from '@sarak/lib-ui-core';
+```
+
+**Se você contornou a lacuna** derivando um desses tipos estruturalmente
+(`ComponentProps<typeof SarakUIProvider>`, `Parameters<...>[0]`, etc.) — como o consumidor real que
+achou este defeito — **pode remover o contorno agora** e importar pelo nome direto. O tipo derivado
+e o importado pelo nome são a mesma forma; a troca é segura.
+
+**O que NÃO ganhou export.** Três tipos que só existem como detalhe de composição interna de outro
+tipo já público — nunca são, eles mesmos, o tipo direto de uma prop/parâmetro/retorno —
+permanecem inacessíveis pelo nome, de propósito: `ReactFlowProps` (alias local de
+`ComponentProps<typeof ReactFlow>` em `SarakFlowEngine`), `SarakRuntimeExtras` e
+`SarakThemePayloadExtras` (ambos compõem `SarakDesignState`/`SarakThemePayload` por interseção, e
+o próprio código os documenta como pendentes de reconciliação — não é vocabulário público). Motivo
+completo de cada um em `gates/allowlists/publicTypeExclusions.mjs`.
+
+**A garantia daqui para frente.** `npm run public-types:check` (novo, roda dentro de `npm run
+build`) compara todo tipo declarado em `dist/index.d.ts` contra o que está exportado — um tipo que
+apareça em assinatura pública e não seja exportado (nem esteja na allowlist com motivo) derruba o
+build.
+
+---
+
 ## `persistence.onSave` passa a receber o id do tema ativo — segundo parâmetro (plan-42)
 
 **Classificação: MINOR** — capacidade nova, aditiva: o segundo parâmetro é opcional e quem já implementa

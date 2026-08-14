@@ -168,6 +168,7 @@ export interface SarakUIOptions {
          *  JavaScript, argumento extra não declarado é ignorado. */
         onSave?: (design: SarakThemePayload, activeThemeId?: string) => Promise<void> | void;
         onLoad?: () => Promise<SarakThemePayload> | SarakThemePayload;
+        /** Segura os filhos até `onLoad` resolver — troca flash por tela vazia (ver "o primeiro paint" em `docs/persistencia-de-tema.md`). Default `false`. */
         strictBackendSync?: boolean;
         /** Sincroniza o tema entre abas/apps que compartilham a `storageKey`. Escuta `storage` e reaplica o design (validado) quando outra aba grava a mesma chave. Default `true`. */
         crossTabSync?: boolean;

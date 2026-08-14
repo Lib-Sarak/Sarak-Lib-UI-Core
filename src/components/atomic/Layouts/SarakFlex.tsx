@@ -4,7 +4,7 @@ import { useSarakDevice } from '../../../core/Provider/DeviceProvider';
 import { resolveResponsiveValue } from '../../../core/Design/resolveResponsiveValue';
 import type { ResponsiveValue } from '../../../core/Design/types';
 
-type FlexDirection = 'row' | 'column' | 'row-reverse' | 'column-reverse' | string;
+export type FlexDirection = 'row' | 'column' | 'row-reverse' | 'column-reverse' | string;
 
 export interface SarakFlexProps extends Omit<React.HTMLAttributes<HTMLDivElement>, 'children'> {
     children: React.ReactNode;

@@ -14,7 +14,7 @@ import { SarakButton } from '../Buttons';
 import { useStructuralStyles } from '../hooks/useStructuralStyles';
 import { twMerge } from 'tailwind-merge';
 
-interface CatalogItem {
+export interface CatalogItem {
     id: string;
     display_name: string;
     organization?: string;

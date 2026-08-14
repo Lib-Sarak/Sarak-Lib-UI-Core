@@ -20,7 +20,7 @@ import { SarakButton, SarakIconButton } from '../Buttons';
 import { SarakCoreCard } from './components/SarakCoreCard';
 import { useStructuralStyles } from '../hooks/useStructuralStyles';
 
-interface FilterConfig {
+export interface FilterConfig {
     id: string;
     label: string;
     type: 'TABS' | 'SELECT';

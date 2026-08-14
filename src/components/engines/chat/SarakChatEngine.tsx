@@ -8,7 +8,7 @@ import { useSarakUI } from '../../../core/Provider/SarakUIProvider';
 import { SarakInput } from '../../../components/atomic/Inputs/SarakInput';
 import { SarakIconButton } from '../../../components/atomic/Buttons/SarakIconButton';
 
-interface Message {
+export interface Message {
     id: string;
     role: 'user' | 'assistant' | 'system';
     content: string;

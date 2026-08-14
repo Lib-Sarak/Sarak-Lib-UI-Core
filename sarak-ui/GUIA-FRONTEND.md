@@ -445,7 +445,9 @@ const TEMAS = SARAK_REFERENCE_THEMES.map((tema) => ({
   exemplo de ligação completo estão em `docs/persistencia-de-tema.md`** — leia antes de desenhar a
   sua tabela: ele explica por que o estado aplicado e os temas criados são duas entidades diferentes,
   por que o JSON é opaco (guarde byte a byte) e por que os 23 temas embarcados nunca entram na sua
-  tabela.
+  tabela. **O tema padrão pinta antes do persistido, num navegador sem cache?** É o mesmo documento,
+  seção "O primeiro paint" — as três saídas (injetar `config` no HTML servido, `strictBackendSync`,
+  ou aceitar) e a precedência real entre `config`/`localStorage`/semente.
 - **Validação por construção:** todo tema (de arquivo, de `localStorage` ou exportado) é validado no
   load contra o schema de tokens: chave desconhecida ou valor de tipo errado vira `console.warn` e é
   **descartado**, nunca CSS cru. Se um ajuste seu "não pegou", o console diz por quê.
@@ -571,7 +573,7 @@ defeito da base é dívida que ninguém mais vai entender — e some na próxima
 
 > **Não edite esta seção à mão.** Ela é regenerada por `npm run guide` a partir do código-fonte da `@sarak/lib-ui-core` v5.0.0; o gate `guide:check` derruba o build se ficar defasada. A fonte de máquina equivalente é o `catalog.json` ao lado deste arquivo.
 
-Exportações do barril público: **248** nomes (componentes, tipos, hooks e helpers).
+Exportações do barril público: **273** nomes (componentes, tipos, hooks e helpers).
 
 ### A.1 Componentes públicos (83)
 

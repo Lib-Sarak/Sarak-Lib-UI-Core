@@ -79,7 +79,7 @@ export const useSarakDevice = (): DeviceType => {
     return override ?? detected;
 };
 
-interface DeviceProviderProps {
+export interface DeviceProviderProps {
     children: ReactNode;
     /** Se fornecido, sequestra o dispositivo (Gêmeo Digital / testes) e desliga a detecção real. */
     overrideDevice?: DeviceType;

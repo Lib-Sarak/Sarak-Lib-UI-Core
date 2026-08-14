@@ -4,7 +4,7 @@ import { DesignOverrideContext } from '../../Provider/SarakUIProvider';
 import { SarakBackgroundRenderer } from './SarakBackgroundRenderer';
 import type { SarakDesignState } from '../../Provider/types';
 
-interface DesignScopeProps {
+export interface DesignScopeProps {
     design: SarakDesignState;
     children: React.ReactNode;
     className?: string;

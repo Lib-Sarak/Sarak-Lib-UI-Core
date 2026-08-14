@@ -9,8 +9,22 @@
 export { default as SarakUIProvider, useSarakUI } from './core/Provider/SarakUIProvider';
 // Modo de consumo (Spec 24): `app` (default) vs `embedded` (ilha sobre front existente).
 export type { SarakUIMode } from './core/Provider/types';
+// plan-45: os tipos que as assinaturas públicas usam (props, retorno de `useSarakUI`,
+// membros de contexto) e que nunca chegaram ao barril — o consumidor tinha de
+// derivá-los estruturalmente (`ComponentProps<typeof SarakUIProvider>` etc.).
+export type {
+    SarakThemePayload,
+    SarakDesignState,
+    ThemeEntry,
+    SarakUIOptions,
+    SarakUIContextType,
+    SarakBrandingState,
+} from './core/Provider/types';
+export type { SarakUIProviderProps } from './core/Provider/providerProps';
+export type { SarakDesignTokens } from './core/Provider/generated/design-token-ids';
 export { SARAK_SCOPE_CLASS, SARAK_MODE_ATTRIBUTE } from './core/Provider/scope';
 export { DesignScope } from './core/Design/components/DesignScope';
+export type { DesignScopeProps } from './core/Design/components/DesignScope'; // plan-45
 export * from './components/atomic/Buttons/SarakButton';
 export * from './components/atomic/Buttons/SarakIconButton';
 export * from './components/atomic/Buttons/SocialButton';
@@ -18,12 +32,17 @@ export * from './components/atomic/Buttons/SocialButton';
 
 // Layout Components and Plug & Play UI
 export * from './core/Shell/SarakShell';
+export type { SarakShellProps, ShellUser } from './core/Shell/Components/types'; // plan-45
 // Multi-dispositivo (Spec 10/16 — L3 da Spec 40.1): DeviceProvider + useSarakDevice
 // (device atual) + SarakHidden (oculta por dispositivo) + o tipo ResponsiveValue<T>
 // (valor por breakpoint mob/tab/desk) que os tokens responsivos usam. API pública
 // e documentada para o consumidor compor multi-dispositivo sem CSS próprio.
 export * from './core/Provider/DeviceProvider';
 export type { ResponsiveValue } from './core/Design/types';
+// plan-45: descritor de token (retorno de `getAllDesignTokens`, exportado abaixo) e o
+// espaço de valores que um token pode assumir — apareciam em assinatura pública e
+// não podiam ser importados pelo nome.
+export type { TokenValueType, SarakTokenValue, DesignToken } from './core/Design/types';
 // Resolvedor puro `ResponsiveValue<T>` → device ativo (Spec 40.3 — L2): as primitivas de
 // layout o usam para aceitar valores por dispositivo; exposto para o consumidor resolver
 // valores responsivos no próprio código, sem duplicar a cascata mobile-first.
@@ -61,7 +80,7 @@ export * from './components/atomic/Cards/SarakTitleCard';
 // componente aqui, não herdada do barril de categoria. Trocar por `export *` faria a
 // superfície pública passar a depender do que `Layouts/index.ts` acrescentar no futuro.
 export { SarakFlex } from './components/atomic/Layouts/SarakFlex';
-export type { SarakFlexProps } from './components/atomic/Layouts/SarakFlex';
+export type { SarakFlexProps, FlexDirection } from './components/atomic/Layouts/SarakFlex'; // FlexDirection: plan-45
 export { SarakGrid } from './components/atomic/Layouts/SarakGrid';
 export type { SarakGridProps } from './components/atomic/Layouts/SarakGrid';
 export { SarakSplitPane } from './components/atomic/Layouts/SarakSplitPane';
@@ -94,6 +113,11 @@ export * from './components/atomic/Inputs/SarakMultiSelect';
 export * from './components/atomic/Inputs/SarakUploader';
 export * from './components/atomic/Inputs/SarakDatePicker';
 export * from './components/atomic/Inputs/SarakTimePicker';
+// plan-45: DatePicker/TimePicker aceitam locale e primeiro-dia-da-semana, mas os
+// tipos viviam em módulo interno e nunca chegaram ao barril.
+export type { DateLocale } from './components/atomic/Inputs/internal/CalendarPanel';
+export type { WeekStart } from './components/atomic/Inputs/internal/calendarGrid';
+export type { Accept } from './components/atomic/Inputs/SarakUploader'; // plan-45
 // RichText WYSIWYG blindado (Spec 11 / Onda 10) — contentEditable + sanitizeHtml.
 export * from './components/atomic/Inputs/SarakRichText';
 export * from './components/atomic/Templates';
@@ -103,8 +127,10 @@ export * from './components/atomic/UX';
 // Densidade de dados (Spec 12 / Onda 9): DataGrid (windowing), DataTable (colunar
 // avançado), Sparkline (micro-gráfico) e TreeView. Resolvíveis via manifesto.
 export * from './components/atomic/DataDisplay';
+export type { PinnedOffsets } from './components/atomic/DataDisplay/SarakDataTable/columnModel'; // plan-45
 // Renderizadores de mídia (Spec 15): Markdown (lazy) + Lightbox + PDFViewer (lazy, Onda 10).
 export * from './components/atomic/Media';
+export type { PdfSource } from './components/atomic/Media/SarakPDFViewer/usePdfDocument'; // plan-45
 // Motores de visualização, todos atrás de fronteira lazy (Spec 41 §2.4 / P26): as
 // libs pesadas (echarts/zrender/recharts, reactflow, react-syntax-highlighter) ficam
 // fora do grafo estático — quem não desenha gráfico, fluxo ou chat não paga por elas.
@@ -114,9 +140,14 @@ export * from './components/atomic/Media';
 export { SarakChartEngine, type SarakChartEngineProps } from './components/engines/charts';
 export { SarakChatEngine, type SarakChatEngineProps } from './components/engines/chat';
 export { SarakFlowEngine, type SarakFlowEngineProps } from './components/engines/flows';
+// plan-45: apareciam na assinatura de SarakChartEngineProps/SarakChatEngineProps
+// (ambos já públicos) e não podiam ser importados pelo nome.
+export type { ChartDataItem } from './components/engines/charts/SubEngines/builders/types';
+export type { Message } from './components/engines/chat/SarakChatEngine';
 
 // Discovery and Dynamic Rendering (Universal Bridge)
 export { default as DynamicRenderer } from './core/Discovery/DynamicRenderer';
+export type { DynamicRendererProps } from './core/Discovery/DynamicRenderer'; // plan-45
 export * from './core/Discovery/registry';
 export * from './core/Discovery/types';
 export { useModuleDiscovery } from './shared/hooks/useModuleDiscovery';
