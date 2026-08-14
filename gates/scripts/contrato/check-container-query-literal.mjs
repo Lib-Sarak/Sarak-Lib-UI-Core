@@ -16,6 +16,19 @@
 // `source(none)`, restringindo o scan ao `@source` explícito. Este gate cobra também
 // que essa restrição não seja removida sem querer.
 //
+// plan-44 — o OUTRO lado da mesma armadilha, e ele derrubou o build de verdade (não
+// só gerou classe morta): um `@min-[X]:<utilitário>` LITERAL — sem interpolação
+// nenhuma — em que `X` não é uma medida CSS válida (`SarakGrid.tsx:57` tinha
+// `@min-[…]:grid-cols-N`; `SarakGrid.test.tsx:12` tinha `@min-[…]:grid-cols-12`,
+// dentro de um COMENTÁRIO). O Tailwind aceitou os dois como candidato — são texto
+// literal, não interpolado — e gerou `@container (width >= …)`; o `lightningcss` do
+// `build:css:scoped` recusa essa media query e o build morre. O checador de
+// interpolação acima não via nenhum dos dois: nem `${` (não havia), nem estavam fora
+// de `__tests__/` (o segundo estava DENTRO). `findInvalidMeasureContainerQueries`
+// cobre esse buraco: varre TODO `src/**/*.{ts,tsx}` — **inclusive `__tests__/`**,
+// de propósito — atrás de `@min-[X]:<utilitário>` literal (sem `${`) cujo `X` não é
+// `número + unidade CSS`, comentário ou não.
+//
 // -------------------------------------------------------------------------
 // LIMITES DECLARADOS (R18) — o que este gate NÃO vê
 // -------------------------------------------------------------------------
@@ -24,23 +37,40 @@
 //    `dist/sarak.css` publicado. Essa prova exige rodar `npm run build` e comparar
 //    (é o que a §8 da plan-39 faz, e o que fica registrado no baseline de release).
 // 2. Só detecta o padrão TEXTUAL `@min-[${` (abertura de interpolação de template
-//    literal logo após o colchete). Uma classe montada por concatenação de string
+//    literal logo após o colchete) e o padrão TEXTUAL `@min-[X]:<utilitário>` com
+//    `X` fora de `número + unidade`. Uma classe montada por concatenação de string
 //    (`'@min-[' + N + 'px]:'`) ou por `String.raw` escaparia — nenhum caso assim
 //    existe hoje no repositório (medido, plan-39).
-// 3. Escopo: `src/**/*.{ts,tsx}`, exceto diretórios `__tests__/` — o mesmo idioma do
-//    teste companheiro (literal no código de produção, interpolado no teste para
-//    pegar deriva de constante) exige que o teste continue interpolando.
-// 4. É por TEXTO DE LINHA, não por AST — não distingue código de comentário. Uma
-//    linha de comentário que reproduza o padrão `@min-[${` também é acusada, de
-//    propósito: é a mesma armadilha que quebrou o build (comentário textual também é
-//    varrido pelo scanner do Tailwind). Descreva o mecanismo em prosa sem reproduzir
-//    o padrão literal.
-// 5. A checagem de `sarak-base.css` (emenda §2.0) é TEXTUAL — confere que a linha do
+// 3. Escopo DIFERENTE por checador, de propósito: a checagem de INTERPOLAÇÃO
+//    (`findInterpolatedContainerQueries`) exclui `__tests__/` — é o idioma do teste
+//    companheiro, que interpola por design para pegar deriva de constante, e
+//    interpolação nunca forma candidato real (é inerte para o build). A checagem de
+//    MEDIDA INVÁLIDA (`findInvalidMeasureContainerQueries`, plan-44) varre
+//    `__tests__/` TAMBÉM — foi exatamente um comentário dentro de `__tests__/` que
+//    a exclusão anterior deixou passar e quebrou o build. As duas nunca se
+//    sobrepõem: a checagem de medida IGNORA qualquer bracket que contenha `${`
+//    (delega para a de interpolação, ou aceita como idioma de teste).
+// 4. `findInvalidMeasureContainerQueries` não valida se `<utilitário>` é um nome de
+//    classe REAL do Tailwind — qualquer identificador (`[A-Za-z][\w-]*`) logo após
+//    `]:` conta como candidato. Falso positivo possível (`]:algumaPalavra` que não é
+//    utilitário nenhum) é aceito de propósito: o custo de reescrever um comentário é
+//    baixo, o custo de um miss é o build quebrar nos consumidores.
+// 5. É por TEXTO DE LINHA, não por AST — não distingue código de comentário, nos
+//    dois checadores. Uma linha de comentário que reproduza qualquer um dos dois
+//    padrões também é acusada, de propósito: é a mesma armadilha que quebrou o
+//    build (comentário textual também é varrido pelo scanner do Tailwind).
+//    Descreva o mecanismo em prosa sem reproduzir o padrão literal — os comentários
+//    de `SarakGrid.tsx`/`SarakGrid.test.tsx` (plan-44) mostram como.
+// 6. A checagem de `sarak-base.css` (emenda §2.0) é TEXTUAL — confere que a linha do
 //    `@import "tailwindcss"` contém `source(none)` e que existe pelo menos um
 //    `@source` não vazio no arquivo. Não valida se o glob do `@source` ainda é amplo
 //    o bastante para cobrir todo `.tsx`/`.ts` de produção — isso é responsabilidade
 //    de quem editar a linha, e o `container-query:check` (a varredura acima) continua
 //    sendo quem prova que a classe está soletrada.
+// 7. `findInvalidMeasureContainerQueries` fecha a família `@min-[X]:` com `X`
+//    inválido — a que já quebrou o build duas vezes. Não generaliza para outras
+//    variantes arbitrárias do Tailwind (`@max-[…]`, `data-[…]`, etc.); nenhuma delas
+//    tem precedente de quebra medido neste repositório até 2026-08-13.
 // -------------------------------------------------------------------------
 import fs from 'fs';
 import path from 'path';
@@ -78,6 +108,50 @@ export function findInterpolatedContainerQueries({ root = SRC, relativeTo = ROOT
   return problemas;
 }
 
+// plan-44 — walk que NÃO exclui __tests__/: ver LIMITES DECLARADOS item 3 do porquê.
+function walkAllSourceFiles(dir, out = []) {
+  for (const entry of fs.readdirSync(dir, { withFileTypes: true })) {
+    const full = path.join(dir, entry.name);
+    if (entry.isDirectory()) {
+      walkAllSourceFiles(full, out);
+    } else if (/\.(ts|tsx)$/.test(entry.name)) {
+      out.push(full);
+    }
+  }
+  return out;
+}
+
+const CANDIDATE_RE = /@min-\[([^\]]*)\]:([A-Za-z][\w-]*)/g;
+const VALID_MEASURE_RE = /^\d+(?:\.\d+)?(?:px|rem|em|ch|vh|vw|vmin|vmax|pt|pc|cm|mm|in|q)$/i;
+
+/** `X` de `@min-[X]:…` é uma medida CSS válida — número + unidade, nada mais. */
+export function isValidMeasure(value) {
+  return VALID_MEASURE_RE.test(value.trim());
+}
+
+/**
+ * plan-44 — `@min-[X]:<utilitário>` LITERAL (sem `${`) em que `X` não é uma medida
+ * válida. Diferente de `findInterpolatedContainerQueries`: varre `__tests__/`
+ * também (item 3 do LIMITES DECLARADOS) e ignora qualquer bracket com `${` (já
+ * coberto pelo outro checador, ou idioma aceito de teste).
+ */
+export function findInvalidMeasureContainerQueries({ root = SRC, relativeTo = ROOT } = {}) {
+  const problemas = [];
+  for (const file of walkAllSourceFiles(root)) {
+    const rel = path.relative(relativeTo, file).split(path.sep).join('/');
+    const lines = fs.readFileSync(file, 'utf8').split('\n');
+    lines.forEach((line, i) => {
+      for (const match of line.matchAll(CANDIDATE_RE)) {
+        const [, medida, utilitario] = match;
+        if (medida.includes('${')) continue;
+        if (isValidMeasure(medida)) continue;
+        problemas.push({ arquivo: rel, linha: i + 1, medida, utilitario });
+      }
+    });
+  }
+  return problemas;
+}
+
 /**
  * Emenda §2.0 — `sarak-base.css` tem de restringir o scan do Tailwind ao `@source`
  * explícito: a linha `@import "tailwindcss"` declara `source(none)`, e existe pelo
@@ -104,12 +178,13 @@ export function checkSourceRestriction({ file = SARAK_BASE_CSS } = {}) {
 }
 
 function main() {
-  console.log('--- check-container-query-literal (plan-39) ---');
+  console.log('--- check-container-query-literal (plan-39 + plan-44) ---');
   const problemas = findInterpolatedContainerQueries();
+  const problemasMedida = findInvalidMeasureContainerQueries();
   const problemasFonte = checkSourceRestriction();
 
-  if (problemas.length === 0 && problemasFonte.length === 0) {
-    console.log('[OK] Nenhuma classe de container query (@min-[…]) montada por interpolação em src/, e sarak-base.css restringe o scan do Tailwind (source(none) + @source explícito).');
+  if (problemas.length === 0 && problemasMedida.length === 0 && problemasFonte.length === 0) {
+    console.log('[OK] Nenhuma classe de container query (@min-[…]) montada por interpolação ou com medida inválida em src/ (comentário incluído), e sarak-base.css restringe o scan do Tailwind (source(none) + @source explícito).');
     process.exit(0);
   }
 
@@ -117,6 +192,12 @@ function main() {
     console.log(`[ERROR] ${problemas.length} classe(s) de container query montada(s) por interpolação — o scanner do Tailwind lê o arquivo como texto e nunca vê a forma interpolada:`);
     problemas.forEach((p) => console.log(`  - ${p.arquivo}:${p.linha}`));
     console.log('  Conserto: escreva a classe LITERAL; o teste companheiro afirma a igualdade contra a forma interpolada.');
+  }
+
+  if (problemasMedida.length > 0) {
+    console.log(`[ERROR] ${problemasMedida.length} classe(s) de container query com MEDIDA INVÁLIDA — literal, sem interpolação, e é exatamente o que já derrubou "npm run build" (SyntaxError: Invalid media query no lightningcss):`);
+    problemasMedida.forEach((p) => console.log(`  - ${p.arquivo}:${p.linha} — @min-[${p.medida}]:${p.utilitario}`));
+    console.log('  Conserto: ou use uma medida válida (número + unidade, ex. 768px), ou — se é só prosa explicando o padrão — separe o prefixo `@min-[`, a medida e `]:<utilitário>` em trechos de texto não contíguos, para não formar candidato.');
   }
 
   if (problemasFonte.length > 0) {

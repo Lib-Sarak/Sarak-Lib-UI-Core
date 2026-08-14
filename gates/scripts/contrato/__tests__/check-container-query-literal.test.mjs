@@ -7,7 +7,12 @@ import fs from 'fs';
 import os from 'os';
 import path from 'path';
 import { describe, expect, it, afterEach } from 'vitest';
-import { findInterpolatedContainerQueries, checkSourceRestriction } from '../check-container-query-literal.mjs';
+import {
+  findInterpolatedContainerQueries,
+  findInvalidMeasureContainerQueries,
+  isValidMeasure,
+  checkSourceRestriction,
+} from '../check-container-query-literal.mjs';
 
 const scratchDirs = [];
 
@@ -52,6 +57,60 @@ describe('findInterpolatedContainerQueries — plan-39', () => {
   });
 });
 
+describe('isValidMeasure — plan-44', () => {
+  it('aceita número + unidade CSS', () => {
+    expect(isValidMeasure('768px')).toBe(true);
+    expect(isValidMeasure('48rem')).toBe(true);
+    expect(isValidMeasure('1024')).toBe(false); // sem unidade — não é medida válida
+  });
+
+  it('rejeita placeholder e reticências', () => {
+    expect(isValidMeasure('…')).toBe(false);
+    expect(isValidMeasure('N')).toBe(false);
+    expect(isValidMeasure('Npx')).toBe(false);
+    expect(isValidMeasure('')).toBe(false);
+  });
+});
+
+describe('findInvalidMeasureContainerQueries — plan-44 (o defeito que derrubou o build)', () => {
+  it('PLANTADO: acusa @min-[…]:grid-cols-12 — o texto EXATO que quebrou o build (SarakGrid.test.tsx:12)', () => {
+    const root = makeFixture({
+      'Foo.tsx': '// @min-[…]:grid-cols-12\n',
+    });
+    const problemas = findInvalidMeasureContainerQueries({ root, relativeTo: root });
+    expect(problemas).toEqual([{ arquivo: 'Foo.tsx', linha: 1, medida: '…', utilitario: 'grid-cols-12' }]);
+  });
+
+  it('PLANTADO: acusa dentro de __tests__/ — é exatamente o buraco que deixou passar SarakGrid.test.tsx:12', () => {
+    const root = makeFixture({
+      '__tests__/Foo.test.tsx': '// @min-[…]:grid-cols-12\n',
+    });
+    const problemas = findInvalidMeasureContainerQueries({ root, relativeTo: root });
+    expect(problemas).toEqual([{ arquivo: '__tests__/Foo.test.tsx', linha: 1, medida: '…', utilitario: 'grid-cols-12' }]);
+  });
+
+  it('libera @min-[768px]:grid-cols-12 — medida válida', () => {
+    const root = makeFixture({
+      'Foo.tsx': "export const cls = '@min-[768px]:grid-cols-12';\n",
+    });
+    expect(findInvalidMeasureContainerQueries({ root, relativeTo: root })).toEqual([]);
+  });
+
+  it('libera @min-[…] SOZINHO, sem utilitário depois — não forma candidato', () => {
+    const root = makeFixture({
+      'Foo.tsx': '// container query: prefixo @min-[…] explicado aqui\n',
+    });
+    expect(findInvalidMeasureContainerQueries({ root, relativeTo: root })).toEqual([]);
+  });
+
+  it('ignora bracket interpolado (${...}) — delega para findInterpolatedContainerQueries / idioma de teste', () => {
+    const root = makeFixture({
+      'Foo.tsx': 'export const cls = `@min-[${BREAKPOINT_DESKTOP}px]:flex`;\n',
+    });
+    expect(findInvalidMeasureContainerQueries({ root, relativeTo: root })).toEqual([]);
+  });
+});
+
 describe('checkSourceRestriction — plan-39, emenda §2.0', () => {
   it('acusa @import "tailwindcss" SEM source(none) — a detecção automática volta a varrer o repo inteiro', () => {
     const root = makeFixture({
@@ -76,5 +135,15 @@ describe('checkSourceRestriction — plan-39, emenda §2.0', () => {
       'sarak-base.css': '@import "tailwindcss" source(none);\n@source "../**/*.{ts,tsx}";\n',
     });
     expect(checkSourceRestriction({ file: path.join(root, 'sarak-base.css') })).toEqual([]);
+  });
+});
+
+describe('check-container-query-literal — repositório real (plan-44)', () => {
+  it('nenhuma classe com medida inválida sobrou em src/, comentário incluído em __tests__/', () => {
+    expect(findInvalidMeasureContainerQueries()).toEqual([]);
+  });
+
+  it('nenhuma interpolação sobrou em src/ de produção', () => {
+    expect(findInterpolatedContainerQueries()).toEqual([]);
   });
 });

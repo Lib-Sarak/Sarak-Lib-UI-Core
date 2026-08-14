@@ -1,0 +1,39 @@
+@import "tailwindcss" source(none);
+/* plan-39, emenda §2.0: `source(none)` desliga a deteccao automatica de conteudo do
+   Tailwind v4 (que varre o repositorio INTEIRO, .md incluido, respeitando so
+   .gitignore) - sem ela, uma spec que cite a classe de uma container query em prosa
+   injeta regra no CSS publicado, ou derruba o build (foi o que aconteceu: um exemplo
+   de classe invalida, citado em duas plans, virou uma media query invalida e derrubou
+   build:css:scoped). O @source explicito abaixo continua sendo a UNICA fonte de
+   conteudo - nada muda para o glob ja existente. */
+@import "./_theme.css" layer(sarak-lib);
+@import "./_colors.css" layer(sarak-lib);
+@import "./_base.css" layer(sarak-lib);
+@import "./_atmosphere.css" layer(sarak-lib);
+@import "./_surfaces.css" layer(sarak-lib);
+@import "./_typography.css" layer(sarak-lib);
+@import "./_cards.css" layer(sarak-lib);
+@import "./_animations.css" layer(sarak-lib);
+@import "./_utilities.css" layer(sarak-lib);
+@import "./_performance.css" layer(sarak-lib);
+
+@source "../**/*.{ts,tsx}";
+
+/* =========================================
+   SARAK CORE ENGINE - MODULAR ORCHESTRATOR
+   Architecture: Sovereign Modular (v12.0)
+   ========================================= */
+
+
+
+/* --- OVERRIDES GLOBAIS DE PLUGINS --- */
+/* Forca o dropdown de idiomas do Google Translator (e de outros plugins) a abrir sempre para BAIXO quando estiver na Topbar */
+.sarak-language-override-wrapper.horizontal-variant .absolute {
+    top: 100% !important;
+    bottom: auto !important;
+    margin-top: 0.5rem !important;
+    margin-bottom: 0 !important;
+    right: 0 !important;
+    left: auto !important;
+    min-width: 180px !important;
+}
