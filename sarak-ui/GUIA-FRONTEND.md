@@ -441,7 +441,11 @@ const TEMAS = SARAK_REFERENCE_THEMES.map((tema) => ({
   completo — "salvar tema" **é** exportar e colar num arquivo do seu repositório.
 - **Persistência sem backend:** a seleção do usuário vai para `localStorage` sozinha. Quer guardar no
   seu backend? Use `options.persistence.onSave`/`onLoad` ou `onThemeChange` — a lib entrega o payload,
-  quem faz a chamada é você.
+  quem faz a chamada é você. **O formato do dado, o schema de referência (Postgres e SQLite) e um
+  exemplo de ligação completo estão em `docs/persistencia-de-tema.md`** — leia antes de desenhar a
+  sua tabela: ele explica por que o estado aplicado e os temas criados são duas entidades diferentes,
+  por que o JSON é opaco (guarde byte a byte) e por que os 23 temas embarcados nunca entram na sua
+  tabela.
 - **Validação por construção:** todo tema (de arquivo, de `localStorage` ou exportado) é validado no
   load contra o schema de tokens: chave desconhecida ou valor de tipo errado vira `console.warn` e é
   **descartado**, nunca CSS cru. Se um ajuste seu "não pegou", o console diz por quê.
@@ -718,6 +722,7 @@ Aprofundamento por tema, em `node_modules/@sarak/lib-ui-core/`:
 - `docs/extensibilidade-de-layout.md` — Extensibilidade de layout — imagens, animações e conteúdo custom (guia do consumidor)
 - `docs/identidade-do-host.md` — Identidade da página — o consumidor é o dono
 - `docs/migracoes.md` — Migrações (breaking changes do contrato público)
+- `docs/persistencia-de-tema.md` — Persistência de tema no seu backend — o contrato do dado (opcional)
 - `docs/temas-cromo-e-multidispositivo.md` — Temas completos, Cromo e Multi-dispositivo — guia do consumidor
 
 <!-- SARAK-KIT:APENDICE-GERADO:FIM -->

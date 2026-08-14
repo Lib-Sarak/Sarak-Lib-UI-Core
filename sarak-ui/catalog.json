@@ -6527,6 +6527,10 @@
       "title": "Migrações (breaking changes do contrato público)"
     },
     {
+      "file": "docs/persistencia-de-tema.md",
+      "title": "Persistência de tema no seu backend — o contrato do dado (opcional)"
+    },
+    {
       "file": "docs/temas-cromo-e-multidispositivo.md",
       "title": "Temas completos, Cromo e Multi-dispositivo — guia do consumidor"
     }
