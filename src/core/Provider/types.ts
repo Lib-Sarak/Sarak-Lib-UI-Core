@@ -159,7 +159,14 @@ export interface SarakUIOptions {
         storageKey?: string;
         /** Escopa a chave por tenant (ADR-009 §2.1): vira `${storageKey}::tenant:${tenantId}`. Opaco, não validado. */
         tenantId?: string;
-        onSave?: (design: SarakThemePayload) => Promise<void> | void;
+        /** `activeThemeId` (2º parâmetro, ADITIVO — plan-42): o id do tema EFETIVAMENTE
+         *  no ar (`resolvedThemeId`) no instante deste save. Vem preenchido sempre que a
+         *  sessão resolveu um tema (seed ou aplicado em runtime); vem `undefined` só
+         *  quando não há tema resolvido ainda. NÃO faz parte de `design` — é identidade,
+         *  não token; o payload continua sendo o mesmo objeto que o export de tema
+         *  produz. Quem já implementa `onSave(design)` continua funcionando: em
+         *  JavaScript, argumento extra não declarado é ignorado. */
+        onSave?: (design: SarakThemePayload, activeThemeId?: string) => Promise<void> | void;
         onLoad?: () => Promise<SarakThemePayload> | SarakThemePayload;
         strictBackendSync?: boolean;
         /** Sincroniza o tema entre abas/apps que compartilham a `storageKey`. Escuta `storage` e reaplica o design (validado) quando outra aba grava a mesma chave. Default `true`. */

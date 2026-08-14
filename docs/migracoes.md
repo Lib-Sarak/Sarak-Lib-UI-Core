@@ -5,6 +5,37 @@ com o "antes" e o "depois" lado a lado. Uma entrada por mudança, mais recente p
 
 ---
 
+## `persistence.onSave` passa a receber o id do tema ativo — segundo parâmetro (plan-42)
+
+**Classificação: MINOR** — capacidade nova, aditiva: o segundo parâmetro é opcional e quem já implementa
+`onSave(design)` continua compilando e sendo chamado exatamente como antes. Nenhum consumidor precisa mudar
+uma linha.
+
+**O que estava faltando.** `options.persistence.onSave` entregava só o design (`SarakThemePayload`) — o id
+do tema efetivamente ativo (`resolvedThemeId`) vivia só no contexto do Provider, fora do alcance de quem
+persiste. Quem guarda o tema salvo não tinha como registrar **qual tema** aquele design representa, nem como
+destacar o tema selecionado na própria interface — comparar tokens não é confiável, porque um ajuste manual
+de um único valor já quebra a comparação.
+
+**O que ganhou.** `onSave` agora recebe um segundo argumento, opcional: o id do tema ativo no instante do
+save. Vem preenchido sempre que a sessão resolveu um tema; vem `undefined` só quando não há nenhum tema
+resolvido.
+
+```ts
+persistence: {
+  onSave: async (design, activeThemeId) => {
+    await api.saveTheme({ design, activeThemeId }); // activeThemeId pode vir undefined
+  },
+}
+```
+
+**O que NÃO mudou.** O payload (`design`) continua sendo exatamente o mesmo objeto — o id não entra dentro
+dele, para não contaminar o arquivo que o export de tema produz. `onLoad` não mudou: o id serve a quem
+persiste, não à lib. `theme.onSave` (temas salvos em runtime, ADR-011) não mudou: já recebia `ThemeEntry`
+com `id` e `name`.
+
+---
+
 ## Container query estrutural agora funciona FORA do `SarakShell` — 10 componentes ganham um `@container` próprio (plan-41)
 
 **Classificação: MAJOR** — comportamento default muda sem opt-in (mesmo critério da `4.0.0` e da entrada da

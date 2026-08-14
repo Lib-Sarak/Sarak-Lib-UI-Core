@@ -113,3 +113,81 @@ describe('useDesignManager — persistência tenant-aware e strategy (ADR-009 / 
         expect(localStorage.getItem('no-tenant-key')).toBeTruthy();
     });
 });
+
+describe('useDesignManager — onSave recebe o id do tema ativo (plan-42)', () => {
+    beforeEach(() => {
+        localStorage.clear();
+    });
+
+    it('onSave recebe o id do tema ativo como SEGUNDO parâmetro', async () => {
+        const onSave = vi.fn();
+        const options: SarakUIOptions = { persistence: { storageKey: 'active-id-key', onSave } };
+        const { result } = renderHook(() => useDesignManager(baseProps(options)));
+
+        expect(result.current.resolvedThemeId).toBeTruthy();
+
+        await act(async () => {
+            await result.current.persistDesign({ ...result.current.design, primaryColor: '#777777' } as never);
+        });
+
+        expect(onSave).toHaveBeenCalledWith(
+            expect.objectContaining({ primaryColor: '#777777' }),
+            result.current.resolvedThemeId,
+        );
+    });
+
+    it('um consumidor que só declara onSave(design) — SEM o segundo parâmetro — continua compilando (tsc) e sendo chamado', async () => {
+        const received: SarakThemePayload[] = [];
+        // Assinatura de ANTES desta plan, de propósito: prova em tempo de compilação
+        // que o 2º parâmetro é aditivo — se não fosse, este arquivo não passaria no
+        // `tsc --noEmit`.
+        const onlyDesignOnSave = (design: SarakThemePayload): void => {
+            received.push(design);
+        };
+        const options: SarakUIOptions = { persistence: { storageKey: 'legacy-onsave-key', onSave: onlyDesignOnSave } };
+        const { result } = renderHook(() => useDesignManager(baseProps(options)));
+
+        await act(async () => {
+            await result.current.persistDesign({ ...result.current.design, primaryColor: '#999999' } as never);
+        });
+
+        expect(received).toHaveLength(1);
+        expect(received[0].primaryColor).toBe('#999999');
+    });
+
+    it('sem tema resolvido, o segundo parâmetro chega undefined — consumidor que só declara onSave(design) continua funcionando', async () => {
+        const onSave = vi.fn((_design: SarakThemePayload) => {});
+        const options: SarakUIOptions = { persistence: { storageKey: 'no-theme-key', onSave } };
+        const { result } = renderHook(() => useDesignManager(baseProps(options)));
+
+        act(() => {
+            result.current.setResolvedThemeId?.(undefined);
+        });
+
+        await act(async () => {
+            await result.current.persistDesign({ ...result.current.design, primaryColor: '#888888' } as never);
+        });
+
+        expect(onSave).toHaveBeenCalledWith(expect.objectContaining({ primaryColor: '#888888' }), undefined);
+    });
+
+    it('persistDesign NÃO muda de identidade quando o tema muda — a armadilha da plan-34 §11 (dependência instável em array de dependências)', () => {
+        const options: SarakUIOptions = { persistence: { storageKey: 'stable-identity-key' } };
+        const { result, rerender } = renderHook(
+            (props: { activeThemeId?: string }) => useDesignManager({ ...baseProps(options), activeThemeId: props.activeThemeId }),
+            { initialProps: { activeThemeId: undefined as string | undefined } },
+        );
+
+        const persistDesignBeforeThemeChange = result.current.persistDesign;
+
+        act(() => {
+            rerender({ activeThemeId: 'tema-a' });
+        });
+        act(() => {
+            rerender({ activeThemeId: 'tema-b' });
+        });
+
+        expect(result.current.resolvedThemeId).toBe('tema-b');
+        expect(result.current.persistDesign).toBe(persistDesignBeforeThemeChange);
+    });
+});

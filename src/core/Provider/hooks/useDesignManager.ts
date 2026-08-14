@@ -74,6 +74,14 @@ export const useDesignManager = (props: {
     // teto de estado por hook (R9) — sem isso são 5 useState/useEffect aqui.
     const [resolvedThemeId, setResolvedThemeId] = useResolvedThemeId(activeThemeId, resolveSeedThemeId);
 
+    // Espelho por ref (plan-42): `persistDesign` precisa do id do tema ativo no
+    // instante do save, mas NÃO pode depender dele — mesmo idioma de `optionsRef`
+    // acima. Pôr `resolvedThemeId` no array de dependências de `persistDesign`
+    // trocaria a identidade da função a cada troca de tema e refaria o efeito de
+    // persistência automática (:134), gravando de novo (a armadilha da plan-34 §11).
+    const resolvedThemeIdRef = useRef(resolvedThemeId);
+    resolvedThemeIdRef.current = resolvedThemeId;
+
     // Chave efetiva (ADR-009 §2.1) — fonte única, calculada ANTES da semente para
     // que a leitura síncrona do boot (abaixo) e todo o resto do hook consumam a
     // MESMA chave, nunca compondo `storageKey`/`tenantId` duas vezes.
@@ -116,7 +124,7 @@ export const useDesignManager = (props: {
                 localStorage.setItem(storageKey, JSON.stringify(config));
             }
             if (strategy !== 'local' && opt?.persistence?.onSave) {
-                await opt.persistence.onSave(config);
+                await opt.persistence.onSave(config, resolvedThemeIdRef.current);
             }
             onThemeChangeRef.current?.(config);
         } catch (e) {
