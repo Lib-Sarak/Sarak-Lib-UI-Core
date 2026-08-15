@@ -1,7 +1,17 @@
+import React from 'react';
 import { describe, it, expect } from 'vitest';
 import { render } from '@testing-library/react';
 import * as ComponentModule from '../SarakGrid';
 import { SarakGrid } from '../SarakGrid';
+import { UIContext } from '../../../../core/Provider/SarakUIProvider';
+import type { SarakUIContextType } from '../../../../core/Provider/types';
+
+const withColTwelveTheme: React.FC<{ children?: React.ReactNode }> = ({ children }) =>
+    React.createElement(
+        UIContext.Provider,
+        { value: ({ design: { layoutGridTemplate: 'col-12' } }) as unknown as SarakUIContextType },
+        children,
+    );
 
 describe('SarakGrid', () => {
     it('should be defined and export its contents without crashing', () => {
@@ -68,5 +78,43 @@ describe('SarakGrid', () => {
         expect(grid.style.gridTemplateColumns).toBe('1fr 2fr 1fr');
         expect(grid.className).not.toContain('grid-cols-[repeat(auto-fit');
         expect(grid.className).not.toContain('grid-cols-12');
+    });
+
+    // plan-49: `col-12` continua existindo como ESCOLHA de tema (não é mais o default,
+    // mas o consumidor pode declará-la). Sob ela, o SarakGrid não emite mais a forma
+    // QUEBRADA (12 trilhas sem span nenhum) — emite as classes de default de span por
+    // breakpoint. Prova só que as classes de span estão na malha; NÃO prova quantos
+    // pixels o filho ocupa nem que o span do filho vence o do pai — isso é medição em
+    // Chromium real (Passo 3 do resumo da plan-49), jsdom não resolve cascata CSS.
+    it('sob col-12 (escolha explícita de tema), emite o default de span por breakpoint — não mais a forma sem span nenhum', () => {
+        const { container } = render(
+            <SarakGrid>
+                <div>a</div>
+            </SarakGrid>,
+            { wrapper: withColTwelveTheme },
+        );
+
+        const wrapper = container.firstElementChild as HTMLElement;
+        const grid = wrapper.firstElementChild as HTMLElement;
+        expect(grid.className).toContain('grid-cols-12');
+        expect(grid.className).toContain('[:where(&)>*]:col-span-6');
+        expect(grid.className).toContain('[:where(&)>*]:col-span-4');
+        expect(grid.className).toContain('[:where(&)>*]:col-span-3');
+    });
+
+    // plan-49: um filho que declara o PRÓPRIO span continua com a classe intacta no DOM
+    // — o SarakGrid não intercepta nem remove classe de filho. NÃO prova que essa classe
+    // vence o default do pai na cascata (jsdom não resolve especificidade CSS real) —
+    // essa prova é a medição em Chromium do Passo 3.
+    it('sob col-12, um filho com col-span-6 PRÓPRIO mantém a própria classe intacta (a vitória em cascata é provada em Chromium, não aqui)', () => {
+        const { container } = render(
+            <SarakGrid>
+                <div className="col-span-6" data-testid="child-with-span">a</div>
+            </SarakGrid>,
+            { wrapper: withColTwelveTheme },
+        );
+
+        const child = container.querySelector('[data-testid="child-with-span"]') as HTMLElement;
+        expect(child.className).toContain('col-span-6');
     });
 });

@@ -707,3 +707,48 @@ emitida, navegador para o desenho. Não deixar o executor descobrir a impossibil
 ### Liberação
 
 Status espelhado no [[00-indice]] na mesma ação. **Pode commitar.**
+
+---
+
+## Nota pós-aprovação — 2026-08-15 — a aprovação SE MANTÉM, e foi insuficiente
+
+Poucas horas depois de eu aprovar, o dono reinstalou no ERP e **a tela não mudou**. Registro aqui porque
+veredito não se reescreve, e porque a lição não é sobre a execução — é sobre a minha escopagem.
+
+**A execução continua correta e aprovada.** Nada do que verifiquei acima deixou de ser verdade: o default
+mudou, os 5 temas mudaram, os testes provam o que dizem provar, os gates estão verdes, a medição em Chromium
+que eu reproduzi por aritmética está certa. **Não reprovo retroativamente, e o diff está pronto para commit.**
+
+**O que a tela provou é que a plan estava mal escopada — por mim.** Eu ofereci quatro saídas e tratei
+*"qual é o default"* como se fosse o problema. Não era. O problema é **o que `col-12` faz**, e ele continua
+fazendo: 12 trilhas, um filho por trilha, zero mecanismo de span. Mudar o default não conserta a opção
+quebrada — só muda quem cai nela por omissão.
+
+**A medição que fecha o argumento**, feita por mim no consumidor depois da reinstalação, com todas as
+hipóteses fáceis eliminadas primeiro (build instalado ✅, cache do Vite regerado ✅, seletor escapado presente
+em `sarak.css` e `sarak-scoped.css` ✅, 26 temas sem `col-12` ✅, guia anônima ✅):
+
+```
+GET http://127.0.0.1:3000/api/v1/conector/tema
+  → design.layoutGridTemplate = "col-12"   (425 chaves persistidas)
+  → activeThemeId = "erp-corporativo"
+```
+
+O valor está no **servidor** do consumidor — por isso guia anônima não muda nada. E ele chega por **três
+portas legítimas** que default nenhum alcança: tema persistido (o contrato que as plans 34/38/42/43
+construíram), **seleção do usuário no painel** (`"Colunas (12)"` é uma opção oferecida na UI) e tema
+customizado de qualquer importador.
+
+**A conclusão do dono, e ela está certa:** *"não podemos fazer gambiarras ou adaptações no importador,
+devemos corrigir"*. Eu havia proposto apagar o campo do banco dele — isso é remendo, não conserto, e ele
+recusou com razão. Enquanto `col-12` estiver quebrado, **o painel de Design oferece um botão que quebra a
+tela**.
+
+**Encaminhamento:** [`plan-49`](plan-49-col-12-continua-quebrado.md), na posição `#8` — conserta `col-12` em
+si (a **Saída A** que esta plan descreveu e não escolheu), com o registro do ERP **preservado como fixture**:
+a prova é a tela ficar certa sem tocar em um byte do consumidor.
+
+**Correção de método, para mim — a terceira desta leva:** quando o defeito é *"a opção X produz resultado
+ruim"*, **trocar o default não é uma saída válida** e não deve nem ser oferecida como opção na plan. Enquanto
+X existir no schema, ela chega por persistência e por escolha do usuário. As saídas legítimas são duas:
+**consertar X**, ou **removê-la do schema**.

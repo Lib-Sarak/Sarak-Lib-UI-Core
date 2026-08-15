@@ -3,7 +3,8 @@ import { describe, it, expect, beforeEach, afterEach } from 'vitest';
 import fs from 'node:fs';
 import os from 'node:os';
 import path from 'node:path';
-import { formatNotice, runCheckUpdate } from '../runCheckUpdate.mjs';
+import { runCheckUpdate } from '../runCheckUpdate.mjs';
+import { formatNotice } from '../formatNotice.mjs';
 
 let tmpDir;
 
@@ -112,6 +113,64 @@ describe('runCheckUpdate', () => {
         expect(result.message).toContain('Não consegui consultar');
         expect(result.message).toContain('network unreachable');
     });
+
+    // plan-50: o incidente real era exatamente isto — pacote em dia (upToDate true),
+    // cache do bundler órfão. Os dois sinais têm de aparecer JUNTOS, com rótulos
+    // DIFERENTES (`[sarak:check]` × `[sarak:check:cache]`) — nunca fundidos num só.
+    it('pacote em dia MAS cache do Vite órfão -> upToDate true, bundlerCache.stale true, mensagem com os DOIS rótulos', () => {
+        writeConsumer({ gitSpec: 'github:Lib-Sarak/Sarak-Lib-UI-Core', resolvedCommit: 'a'.repeat(40) });
+        fs.mkdirSync(path.join(tmpDir, 'node_modules', '@sarak', 'lib-ui-core', 'dist'), { recursive: true });
+        fs.writeFileSync(path.join(tmpDir, 'node_modules', '@sarak', 'lib-ui-core', 'dist', 'SarakChatEngine-NOVOHASH.js'), '');
+        fs.mkdirSync(path.join(tmpDir, 'node_modules', '.vite', 'deps'), { recursive: true });
+        fs.writeFileSync(
+            path.join(tmpDir, 'node_modules', '.vite', 'deps', '_metadata.json'),
+            JSON.stringify({ x: 'SarakChatEngine-VELHOHASH.js' }),
+        );
+
+        const result = runCheckUpdate({ rootDir: tmpDir, execGitLsRemote: () => 'a'.repeat(40) });
+
+        expect(result.upToDate).toBe(true);
+        expect(result.bundlerCache.stale).toBe(true);
+        expect(result.message).toContain('[sarak:check]');
+        expect(result.message).toContain('[sarak:check:cache]');
+        expect(result.message).toContain('SarakChatEngine-VELHOHASH.js');
+    });
+
+    // plan-50, CORREÇÃO — reproduz de ponta a ponta (via `runCheckUpdate`, não
+    // chamando `inspectViteDepsCache` direto) a topologia exata do achado que reprovou
+    // a rodada anterior: quem DECLARA a lib (`packages/ui-kit`, onde o `predev` roda o
+    // `check`) é IRMÃO de quem RODA o Vite (`modulos/propostas/web`, onde o cache
+    // vive) — os dois só compartilham a raiz do workspace, onde está o lockfile.
+    it('MONOREPO real: rodando de packages/ui-kit (onde o predev roda), acha o cache órfão em modulos/propostas/web (pacote IRMÃO) — a prova que a correção exige', () => {
+        const uiKit = writeConsumer({
+            gitSpec: 'github:Lib-Sarak/Sarak-Lib-UI-Core',
+            resolvedCommit: 'a'.repeat(40),
+            dir: 'packages/ui-kit',
+        });
+        fs.mkdirSync(path.join(uiKit, 'node_modules', '@sarak', 'lib-ui-core', 'dist'), { recursive: true });
+        fs.writeFileSync(path.join(uiKit, 'node_modules', '@sarak', 'lib-ui-core', 'dist', 'CustomizationPanelImpl-M3L3JTTG.js'), '');
+        fs.writeFileSync(path.join(uiKit, 'node_modules', '@sarak', 'lib-ui-core', 'dist', 'SarakChatEngine-HHOE6GZE.js'), '');
+
+        // O cache vive num pacote IRMÃO — modulos/propostas/web — não dentro nem acima
+        // de packages/ui-kit.
+        const propostasVite = path.join(tmpDir, 'modulos', 'propostas', 'web', 'node_modules', '.vite', 'deps');
+        fs.mkdirSync(propostasVite, { recursive: true });
+        fs.writeFileSync(
+            path.join(propostasVite, '_metadata.json'),
+            JSON.stringify({ x: 'CustomizationPanelImpl-ZLQMJDZU.js e SarakChatEngine-73V474Y4.js' }),
+        );
+
+        const result = runCheckUpdate({ rootDir: uiKit, execGitLsRemote: () => 'a'.repeat(40) });
+
+        expect(result.bundlerCache.stale).toBe(true);
+        expect(result.bundlerCache.staleRefs.sort()).toEqual(
+            ['CustomizationPanelImpl-ZLQMJDZU.js', 'SarakChatEngine-73V474Y4.js'].sort(),
+        );
+        expect(result.message).toContain('[sarak:check:cache]');
+        expect(result.message).toContain('CustomizationPanelImpl-ZLQMJDZU.js');
+        expect(result.message).toContain('SarakChatEngine-73V474Y4.js');
+        expect(result.message).toContain(propostasVite);
+    });
 });
 
 describe('formatNotice — o contrato de RUÍDO do aviso (Spec 51 — L1)', () => {
@@ -145,5 +204,25 @@ describe('formatNotice — o contrato de RUÍDO do aviso (Spec 51 — L1)', () =
         expect(aviso).toContain('aaaaaaa');
         expect(aviso).toContain('bbbbbbb');
         expect(aviso).toContain('npm uninstall @sarak/lib-ui-core');
+    });
+
+    // plan-50: a notícia do cache NÃO é silenciada só porque o pacote está em dia —
+    // é exatamente o cenário do incidente real, e o `--notify` do `predev` precisa
+    // falar sobre ele mesmo sem atualização de pacote pendente.
+    it('pacote EM DIA mas cache do Vite órfão -> NÃO fica em silêncio; avisa só sobre o cache', () => {
+        writeConsumer({ gitSpec: 'github:Lib-Sarak/Sarak-Lib-UI-Core', resolvedCommit: 'a'.repeat(40) });
+        fs.mkdirSync(path.join(tmpDir, 'node_modules', '@sarak', 'lib-ui-core', 'dist'), { recursive: true });
+        fs.writeFileSync(path.join(tmpDir, 'node_modules', '@sarak', 'lib-ui-core', 'dist', 'SarakChatEngine-NOVOHASH.js'), '');
+        fs.mkdirSync(path.join(tmpDir, 'node_modules', '.vite', 'deps'), { recursive: true });
+        fs.writeFileSync(
+            path.join(tmpDir, 'node_modules', '.vite', 'deps', '_metadata.json'),
+            JSON.stringify({ x: 'SarakChatEngine-VELHOHASH.js' }),
+        );
+
+        const aviso = formatNotice(runCheckUpdate({ rootDir: tmpDir, execGitLsRemote: remoto('a'.repeat(40)) }));
+
+        expect(aviso).not.toBeNull();
+        expect(aviso).toContain('cache do bundler');
+        expect(aviso).not.toContain('atualização disponível'); // não é o aviso de pacote — não confundir os dois
     });
 });

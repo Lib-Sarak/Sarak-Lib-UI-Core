@@ -5,6 +5,7 @@ import * as HookModule from '../useStructuralStyles';
 import { useStructuralStyles } from '../useStructuralStyles';
 import { UIContext } from '../../../../core/Provider/SarakUIProvider';
 import { BREAKPOINT_TABLET, BREAKPOINT_DESKTOP } from '../../../../core/Design/breakpoints';
+import { BP_XL } from '../useStructuralStyles.presets';
 import type { SarakUIContextType } from '../../../../core/Provider/types';
 
 const uiContextValue = (design: Record<string, unknown>): SarakUIContextType =>
@@ -40,13 +41,36 @@ describe('useStructuralStyles', () => {
             );
         });
 
-        it('getGridStyles: col-12 continua disponível como ESCOLHA de tema (explícita) e usa o MESMO número de BREAKPOINT_TABLET, escrito literal', () => {
+        // plan-49: `col-12` continua sendo 12 trilhas fixas, mas o filho SEM span próprio
+        // agora ganha um default por breakpoint (`col-span-N`), com os MESMOS números de
+        // BREAKPOINT_TABLET/DESKTOP/BP_XL, escritos literais — o número do breakpoint
+        // continua sendo o que a `plan-39` protege. Prova só a FORMA da classe emitida —
+        // não prova que o filho SEM span recebe o default nem que um filho COM span vence
+        // o pai (isso é resolução de especificidade em cascata CSS real; jsdom não
+        // implementa motor de layout nem cascata de stylesheet — medição real em
+        // Chromium, colada no resumo da plan-49).
+        it('getGridStyles: col-12 continua disponível como ESCOLHA de tema (explícita), com default de span por breakpoint, nos MESMOS números literais', () => {
             const wrapper: React.FC<{ children?: React.ReactNode }> = ({ children }) =>
                 React.createElement(UIContext.Provider, { value: uiContextValue({ layoutGridTemplate: 'col-12' }) }, children);
             const { result } = renderHook(() => useStructuralStyles(), { wrapper });
             expect(result.current.getGridStyles().className).toBe(
-                `grid w-full grid-cols-1 @min-[${BREAKPOINT_TABLET}px]:grid-cols-12`,
+                `grid w-full grid-cols-1 @min-[${BREAKPOINT_TABLET}px]:grid-cols-12 ` +
+                `@min-[${BREAKPOINT_TABLET}px]:[:where(&)>*]:col-span-6 ` +
+                `@min-[${BREAKPOINT_DESKTOP}px]:[:where(&)>*]:col-span-4 ` +
+                `@min-[${BP_XL}px]:[:where(&)>*]:col-span-3`,
             );
+        });
+
+        // plan-49: o default de span do `col-12` só se aplica quando `getGridStyles` NÃO
+        // recebe `templateColumns`/`templateAreas` (mesmo ramo `hasCustomTemplate` de
+        // sempre) — um consumidor que já controla o próprio grid de 12 colunas com
+        // `templateColumns` explícito continua recebendo só `'grid w-full'`, sem o
+        // default de span entrar no meio.
+        it('getGridStyles: com templateColumns explícito, o default de span do col-12 NÃO entra — a forma continua "grid w-full"', () => {
+            const wrapper: React.FC<{ children?: React.ReactNode }> = ({ children }) =>
+                React.createElement(UIContext.Provider, { value: uiContextValue({ layoutGridTemplate: 'col-12' }) }, children);
+            const { result } = renderHook(() => useStructuralStyles(), { wrapper });
+            expect(result.current.getGridStyles('repeat(12, minmax(0, 1fr))').className).toBe('grid w-full');
         });
 
         it('getGridStyles: masonry usa os MESMOS números de BREAKPOINT_TABLET/DESKTOP, escritos literais', () => {

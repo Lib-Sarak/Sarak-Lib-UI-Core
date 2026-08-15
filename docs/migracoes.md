@@ -5,6 +5,53 @@ com o "antes" e o "depois" lado a lado. Uma entrada por mudança, mais recente p
 
 ---
 
+## `layoutGridTemplate: 'col-12'` passa a funcionar — filho sem span ganha um default (plan-49)
+
+**Classificação: MAJOR** — muda o **comportamento visual** de uma opção que já existia e já era selecionável
+(schema, painel, tema persistido), sem tocar em nenhuma assinatura pública. A `plan-47` trocou o **default**
+zero-config de `'col-12'` para `'auto-fit'` — mas `col-12`, escolhido explicitamente (tema persistido, opção
+"Colunas (12)" no painel de Design, ou tema customizado do consumidor), continuava entregando **12 trilhas
+fixas com um filho por trilha**, porque a lib nunca ofereceu mecanismo de `span`. Um consumidor real (ERP
+Earendel) tinha `layoutGridTemplate: 'col-12'` **persistido**, reinstalou a `plan-47` e a tela **não mudou** —
+o default não alcança tema persistido nem seleção do usuário no painel. Esta plan conserta a opção em si.
+
+**O que mudou.** Filho que **não** declara span próprio agora ganha um default por breakpoint dentro de
+`col-12`: `col-span-6` a partir de 768px, `col-span-4` a partir de 1024px, `col-span-3` a partir de 1280px —
+`col-12` continua sendo, literalmente, um grid de 12 colunas (é o nome e o que o painel promete); o que muda é
+que ele deixa de exigir que o consumidor declare `span` para ter uma malha legível.
+
+**Antes × depois** (`<SarakGrid>` sob `layoutGridTemplate: 'col-12'`, 8 filhos, nenhum span — medido em
+Chromium real):
+
+| Largura do container | Antes | Depois |
+| --- | --- | --- |
+| 1280px | 12 trilhas de ~107px, 1 filho por trilha | **4 colunas** (`span 3` de 12) |
+| 1024px | 12 trilhas de ~85px, 1 filho por trilha | **3 colunas** (`span 4` de 12) |
+| 768px | 12 trilhas de ~64px, 1 filho por trilha | **2 colunas** (`span 6` de 12) |
+| 400px (celular) | 1 coluna | **1 coluna** (inalterado) |
+
+**Se você já controla o `span` dos próprios filhos**, nada muda para você: o span que você escreve **sempre
+vence** o default — provado em Chromium nas 4 larguras acima, um filho com `col-span-6` próprio permanece em
+`span 6 / span 6` mesmo onde o default da largura seria outro (ex.: `span 3` a 1280px). O mecanismo é um
+seletor de especificidade **zero** (`:where(&)>*`) no default — qualquer classe de span no próprio filho, por
+ter especificidade maior que zero, vence sempre, **não importa a ordem de geração do CSS**.
+
+**Como migrar.** Nada a fazer — a correção é automática assim que você atualizar a lib. Se você tinha
+`layoutGridTemplate: 'col-12'` persistido (tema salvo, seleção no painel, ou tema customizado) e a tela
+continuava quebrada mesmo depois da `plan-47`, **é exatamente este o conserto** — não é preciso limpar dado
+nem tocar em nada do seu lado.
+
+**O que NÃO mudou.**
+
+- `'auto-fit'` continua sendo o **default** zero-config (`plan-47`, intacta).
+- `'masonry'` não foi tocado.
+- `templateColumns` explícito continua ignorando qualquer estratégia de tema, `col-12` incluído.
+- Nenhum número de breakpoint mudou (`768`/`1024`/`1280` seguem os mesmos das outras 40+ classes da lib).
+- A parte "12 trilhas fixas" de `col-12` (`grid-cols-1 @min-[768px]:grid-cols-12`) não mudou — o que foi
+  **acrescentado** é só o default de `span` para quem não declara o próprio.
+
+---
+
 ## O grid zero-config deixa de ser 12 colunas fixas e passa a ser content-aware (plan-47)
 
 **Classificação: MAJOR** — muda um **comportamento default**, mesmo sem tocar em nenhuma assinatura pública:

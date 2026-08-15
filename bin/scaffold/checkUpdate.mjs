@@ -9,7 +9,8 @@
  *  - **`--notify`:** imprime SÓ quando há atualização a fazer e sai **sempre com 0**.
  *    É o modo do `predev` do consumidor: um aviso jamais pode derrubar o `dev` dele.
  */
-import { formatNotice, runCheckUpdate } from './checkUpdate/runCheckUpdate.mjs';
+import { runCheckUpdate } from './checkUpdate/runCheckUpdate.mjs';
+import { formatNotice } from './checkUpdate/formatNotice.mjs';
 
 export function runCheckCli({ argv = [], cwd = process.cwd() } = {}) {
     const notify = argv.includes('--notify');

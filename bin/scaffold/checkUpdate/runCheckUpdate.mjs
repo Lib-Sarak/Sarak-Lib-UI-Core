@@ -30,7 +30,7 @@ import { PKG_NAME, resolveConsumerContext } from './consumerContext.mjs';
 import { inspectLocalDependency, isLocalSpec } from './localDependency.mjs';
 import { compareByTag, defaultExecGitLsRemoteTags } from './tagComparison.mjs';
 import { gitUpdateCommand, localRefreshCommand } from '../packageManager.mjs';
-import { renderNotice } from './renderNotice.mjs';
+import { inspectViteDepsCache } from './bundlerCache.mjs';
 
 /**
  * Teto de espera da consulta remota. O `check` roda no `predev` do consumidor: o custo
@@ -169,6 +169,25 @@ const gitResult = (context, execGitLsRemote, execGitLsRemoteTags) => {
     };
 };
 
+/**
+ * plan-50: rótulo PRÓPRIO (`sarak:check:cache`), nunca `[sarak:check]` — misturar os
+ * dois sinais (pacote em disco × cache do bundler) no mesmo rótulo cria um terceiro
+ * veredito ambíguo, exatamente o que a plan proíbe. Só aparece quando `stale`; o
+ * `checked: false` nunca produz linha (ver LIMITES DECLARADOS de `bundlerCache.mjs`).
+ * Nomeia CADA `.vite/deps` com referência quebrada — no monorepo pode haver mais de um
+ * (um por app Vite do workspace).
+ */
+const bundlerCacheWarning = (bundlerCache) => {
+    if (!bundlerCache?.stale) return null;
+    const dirs = bundlerCache.cacheDirs.map((dir) => `                    ${dir}`).join('\n');
+    return (
+        `[sarak:check:cache] Aviso: ${bundlerCache.detail}\n` +
+        `${dirs}\n` +
+        `                    chunk(s) órfão(s): ${bundlerCache.staleRefs.join(', ')}\n` +
+        '                    Derrube o(s) dev server(s) acima, apague essa(s) pasta(s), PROVE que apagou (Test-Path ⇒ False) e suba de novo.'
+    );
+};
+
 export function runCheckUpdate({
     rootDir = process.cwd(),
     execGitLsRemote = defaultExecGitLsRemote,
@@ -181,45 +200,26 @@ export function runCheckUpdate({
         ? localResult(context, inspectLocalDependency(context))
         : gitResult(context, execGitLsRemote, execGitLsRemoteTags);
 
-    if (context.manager.ambiguous.length > 0) {
-        return {
-            ...result,
-            message: `${result.message}\n[sarak:check] Aviso: mais de um lockfile em ${context.manager.dir} (${context.manager.ambiguous.join(', ')}) — assumi "${context.manager.name}" (o mais recente). Um deles é resíduo.`,
-        };
-    }
-    return result;
-}
-
-/**
- * Modo `--notify` (o pedido do dono): a saída que o `predev` do consumidor imprime.
- * **Silêncio absoluto** quando está em dia, quando é link vivo, quando a verificação
- * não pôde ser feita (offline, sem git, sem lockfile) — qualquer coisa que não seja
- * "existe versão nova E há um comando a rodar". Devolve `null` para "não imprima nada".
- */
-export function formatNotice(result) {
-    if (!result || result.upToDate !== false) return null;
-
-    // Uma informação por linha: caminho do Windows é longo e estoura qualquer coluna.
-    const linhas =
-        result.mode === 'local'
-            ? [
-                  'A biblioteca em disco mudou desde a sua última instalação:',
-                  `  ${result.sourceDir}`,
-                  '',
-                  `  instalado: ${result.installedLabel}`,
-                  `  em disco:  ${result.remoteLabel}`,
-              ]
-            : [
-                  'Há uma versão nova da biblioteca.',
-                  '',
-                  `  instalado:   ${result.installedLabel}`,
-                  `  disponível:  ${result.remoteLabel}`,
-              ];
-
-    return renderNotice({
-        titulo: `@sarak/lib-ui-core — atualização disponível`,
-        linhas,
-        comando: result.command,
-        comandoValidado: result.commandValidated !== false,
+    // plan-50 correção: a busca do cache do bundler começa na raiz do WORKSPACE (o
+    // diretório do lockfile, achado subindo a árvore a partir de quem declara a lib),
+    // não em `rootDir` — no monorepo real, quem declara a lib nunca é quem roda o
+    // Vite, e o cache vive num pacote IRMÃO, não acima de `rootDir`.
+    const bundlerCache = inspectViteDepsCache({
+        rootDir,
+        installedDir: context.installedDir,
+        workspaceRoot: context.lockfile?.dir,
     });
+    const extras = [
+        context.manager.ambiguous.length > 0
+            ? `[sarak:check] Aviso: mais de um lockfile em ${context.manager.dir} (${context.manager.ambiguous.join(', ')}) — assumi "${context.manager.name}" (o mais recente). Um deles é resíduo.`
+            : null,
+        bundlerCacheWarning(bundlerCache),
+    ].filter(Boolean);
+
+    return {
+        ...result,
+        bundlerCache,
+        message: extras.length > 0 ? [result.message, ...extras].join('\n') : result.message,
+    };
 }
+

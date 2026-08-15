@@ -1,7 +1,17 @@
+import React from 'react';
 import { describe, it, expect } from 'vitest';
 import { render } from '@testing-library/react';
 import * as ComponentModule from '../SarakForm';
 import { SarakForm } from '../SarakForm';
+import { UIContext } from '../../../../core/Provider/SarakUIProvider';
+import type { SarakUIContextType } from '../../../../core/Provider/types';
+
+const withColTwelveTheme: React.FC<{ children?: React.ReactNode }> = ({ children }) =>
+    React.createElement(
+        UIContext.Provider,
+        { value: ({ design: { layoutGridTemplate: 'col-12' } }) as unknown as SarakUIContextType },
+        children,
+    );
 
 describe('SarakForm', () => {
     it('should be defined and export its contents without crashing', () => {
@@ -23,5 +33,19 @@ describe('SarakForm', () => {
         const grid = container.querySelector('[class*="@container"]')?.firstElementChild as HTMLElement;
         expect(grid.className).toContain('grid-cols-[repeat(auto-fit,minmax(280px,1fr))]');
         expect(grid.className).not.toContain('grid-cols-12');
+    });
+
+    // plan-49: sob `col-12` (escolha explícita de tema), o grid de campos não emite mais
+    // a forma SEM mecanismo de span — emite o default de span por breakpoint. Prova só a
+    // classe emitida; NÃO prova largura real (medição em Chromium no resumo da plan-49).
+    it('sob col-12 (escolha explícita de tema), o grid de campos emite o default de span — não mais a forma sem span nenhum', () => {
+        const { container } = render(
+            <SarakForm endpoint="/mock" mapping={{ name: 'Nome' }} mode="create" />,
+            { wrapper: withColTwelveTheme },
+        );
+
+        const grid = container.querySelector('[class*="@container"]')?.firstElementChild as HTMLElement;
+        expect(grid.className).toContain('grid-cols-12');
+        expect(grid.className).toContain('[:where(&)>*]:col-span-6');
     });
 });

@@ -27,3 +27,15 @@ export const RESPONSIVE_SPACING_PRESETS = {
 } as const;
 
 export type ResponsiveSpacingPreset = keyof typeof RESPONSIVE_SPACING_PRESETS;
+
+// Extraído de `useStructuralStyles.ts` (R9, teto de 250 linhas) — as estratégias literais que
+// `getGridStyles` escolhe por `layoutGridTemplate`.
+// plan-49: filho sem span próprio no `col-12` ganha um default por breakpoint (`col-span-N`).
+// `:where(&)` zera a especificidade do seletor do default — fica (0,0,0), abaixo de QUALQUER
+// classe (0,1,0) no filho, como `col-span-6` escrito por quem consome — que por isso sempre vence,
+// não importa a ordem de geração do CSS.
+export const GRID_LAYOUT_STRATEGIES: Record<string, string> = {
+    'col-12': 'grid w-full grid-cols-1 @min-[768px]:grid-cols-12 @min-[768px]:[:where(&)>*]:col-span-6 @min-[1024px]:[:where(&)>*]:col-span-4 @min-[1280px]:[:where(&)>*]:col-span-3',
+    'auto-fit': 'grid w-full grid-cols-[repeat(auto-fit,minmax(280px,1fr))]',
+    'masonry': 'columns-1 @min-[768px]:columns-2 @min-[1024px]:columns-3 w-full'
+};

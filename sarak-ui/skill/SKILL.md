@@ -275,10 +275,75 @@ atrás). Use `BUILD_INFO` só para `builtAt`/`libVersion`; para "estou atualizad
 público ficam lá com antes/depois.
 
 **Desenvolvimento local (`file:`/`npm link`) — não incorporado ao `init`:** trocar a dependência por
-`"@sarak/lib-ui-core": "file:../Sarak-Lib-UI-Core"` propaga mudanças sem reinstalar. **Trade-off:**
-NÃO reproduz o pacote publicado (aponta para o `dist/` local, sem passar pela allowlist de `files`) —
-nunca use este modo para validar uma instalação real ou testar atualização. Com `file:`, o npm
-**copia** o pacote para o store: depois de rebuildar a lib, reinstale para o consumidor ver.
+`"@sarak/lib-ui-core": "file:../Sarak-Lib-UI-Core"` propaga mudanças sem reinstalar, na TEORIA.
+**Trade-off:** NÃO reproduz o pacote publicado (aponta para o `dist/` local, sem passar pela allowlist
+de `files`) — nunca use este modo para validar uma instalação real ou testar atualização.
+
+### ⚠️ Rebuildou a lib e a tela não mudou — DUAS camadas de cache, nenhuma delas avisa
+
+Achado real (2026-08-14/15, três rodadas de investigação perdidas na LIB, que estava certa nas três):
+o pacote foi corrigido, os gates passaram, o artefato foi conferido — e a tela do consumidor **não
+mudou**. A causa não estava na lib; estava em duas camadas de cache **entre** o `dist/` e o navegador.
+Cobrir só uma repete o incidente.
+
+**1. O gerenciador de pacotes copia, não linka.** Com `pnpm`, `file:` é **cópia** para o store —
+rebuildar a lib não move um byte da cópia instalada sozinho.
+```bash
+pnpm install --force --filter <pacote-do-consumidor>   # OBRIGATÓRIO — sem --force o pnpm considera
+                                                          # o lockfile satisfeito e não recopia
+```
+`npm`/`yarn` num projeto simples costumam **linkar** (symlink direto para a fonte) — aí este passo nem
+é necessário. `sarak-ui check` diz `live`/`fresh`/`stale`, e é exatamente essa pergunta que ele responde.
+
+**2. O cache de pré-bundle do bundler** (Vite: `node_modules/.vite/`) **decide por lockfile + versão +
+config, nunca por conteúdo.** Com dependência local a `version` fica parada, o caminho `file:` é o
+mesmo e a config não muda — **a chave do cache nunca se move**, mesmo com o passo 1 já feito. O dev
+server continua servindo o build ANTERIOR, em silêncio: sem erro, sem aviso. Hard-refresh e guia
+anônima **não mudam nada** — o cache é do SERVIDOR de dev, não do navegador (testado).
+
+**O procedimento, NA ORDEM CERTA** (a ordem errada já produziu tela BRANCA com
+`504 Outdated Optimize Dep`, achado real):
+```bash
+# 1. DERRUBE o dev server PRIMEIRO. No Windows, um processo com os arquivos abertos IMPEDE a
+#    deleção — e esse erro pode ser ENGOLIDO por um -ErrorAction tolerante demais.
+#    (Ctrl+C no terminal do "npm run dev", ou mate o processo pela porta.)
+
+# 2. Apague o cache do bundler:
+rm -rf node_modules/.vite                          # bash/mac/linux
+Remove-Item -Recurse -Force node_modules/.vite      # PowerShell
+
+# 3. PROVE que apagou — não confie no código de saída do passo 2 ("pasta não existe" e
+#    "arquivo em uso" são erros DIFERENTES; um -ErrorAction genérico confunde os dois):
+Test-Path node_modules/.vite      # PowerShell — TEM de responder False antes de seguir
+[ ! -d node_modules/.vite ] && echo apagado   # bash
+
+# 4. Só ENTÃO suba o dev server de novo.
+npm run dev
+```
+Pular o passo 3 faz o passo 4 rodar sobre uma premissa que pode ser falsa — e o sintoma (tela
+idêntica, ou branca) não aponta para a causa.
+
+**`sarak-ui check` (e `--notify`) avisam sobre isto**, com um rótulo **separado**
+(`[sarak:check:cache]`, nunca misturado com o veredito do pacote): a partir da raiz do workspace (o
+diretório do lockfile, achado subindo a árvore de onde o comando roda), ele desce e varre TODO
+`node_modules/.vite/deps/` alcançável — não só o do diretório onde o comando roda — atrás de
+referência a um chunk content-hashed da lib que não existe mais no `dist/` instalado. É o que faz o
+aviso funcionar mesmo quando quem DECLARA a lib (onde o `predev` roda o `check`) e quem RODA o Vite
+(o app que de fato sobe o dev server) são pacotes **irmãos** no monorepo, não um dentro do outro —
+topologia comum e a que motivou esta seção. **Cobertura declarada, não prometida:** só Vite, só a
+pasta `.vite` (sem `cacheDir` customizado no `vite.config`); a busca desce a partir da raiz do
+workspace, nunca sobe — sem lockfile em lugar nenhum, cai no diretório onde o comando roda. Bundler
+diferente, ou cache num lugar não padrão: o aviso fica em silêncio — siga o procedimento manual acima
+de qualquer forma. **Silêncio nunca é "confirmado em dia"** — é só "nada de errado encontrado por
+este sinal".
+
+**Nenhum dos três mecanismos abaixo responde pelo outro — cada um responde uma pergunta diferente:**
+
+| Pergunta | Quem responde |
+|---|---|
+| "O pacote em disco está atualizado?" | `sarak-ui check` |
+| "Qual artefato está instalado?" | `dist/BUILD_INFO.json` (`builtAt`/`libVersion` — nunca "estou atualizado?", ver acima) |
+| "O bundler já notou a mudança?" | o procedimento acima — `sarak-ui check` ajuda (só Vite, cache padrão), não garante |
 
 **Tamanho do bundle — o que resolve e o que NÃO resolve (medido):** quando o `dist/` do consumidor
 parecer grande, **não** mexa em `manualChunks` — ele não reduz um byte, só decide em qual arquivo

@@ -4,7 +4,8 @@ import fs from 'node:fs';
 import os from 'node:os';
 import path from 'node:path';
 import { greatestTag, parseTag, parseTagRefs, parseVersion } from '../semverTags.mjs';
-import { formatNotice, runCheckUpdate } from '../runCheckUpdate.mjs';
+import { runCheckUpdate } from '../runCheckUpdate.mjs';
+import { formatNotice } from '../formatNotice.mjs';
 
 let tmpDir;
 

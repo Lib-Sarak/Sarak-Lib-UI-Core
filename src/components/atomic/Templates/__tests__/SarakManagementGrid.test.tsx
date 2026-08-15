@@ -1,6 +1,16 @@
+import React from 'react';
 import { describe, it, expect, vi } from 'vitest';
 import { render } from '@testing-library/react';
 import * as ComponentModule from '../SarakManagementGrid';
+import { UIContext } from '../../../../core/Provider/SarakUIProvider';
+import type { SarakUIContextType } from '../../../../core/Provider/types';
+
+const withColTwelveTheme: React.FC<{ children?: React.ReactNode }> = ({ children }) =>
+    React.createElement(
+        UIContext.Provider,
+        { value: ({ design: { layoutGridTemplate: 'col-12' } }) as unknown as SarakUIContextType },
+        children,
+    );
 
 // Isola o denso da rede — só interessa a montagem, não o dado (mesmo idioma de
 // SarakTable.responsive.test.tsx).
@@ -49,5 +59,19 @@ describe('SarakManagementGrid', () => {
         const grid = container.querySelector('[class*="@container"]')?.lastElementChild as HTMLElement;
         expect(grid.className).toContain('grid-cols-[repeat(auto-fit,minmax(280px,1fr))]');
         expect(grid.className).not.toContain('grid-cols-12');
+    });
+
+    // plan-49: sob `col-12` (escolha explícita de tema), o grid de grupos não emite mais
+    // a forma SEM mecanismo de span — emite o default de span por breakpoint. Prova só a
+    // classe emitida; NÃO prova largura real (medição em Chromium no resumo da plan-49).
+    it('sob col-12 (escolha explícita de tema), o grid de grupos emite o default de span — não mais a forma sem span nenhum', () => {
+        const { container } = render(
+            <SarakManagementGrid endpoint="/mock" groupBy="service" mapping={{ id: 'id', title: 'title', status: 'status', isActive: 'isActive' }} />,
+            { wrapper: withColTwelveTheme },
+        );
+
+        const grid = container.querySelector('[class*="@container"]')?.lastElementChild as HTMLElement;
+        expect(grid.className).toContain('grid-cols-12');
+        expect(grid.className).toContain('[:where(&)>*]:col-span-6');
     });
 });

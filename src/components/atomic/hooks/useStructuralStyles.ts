@@ -1,6 +1,6 @@
 import React from 'react';
 import { useSarakUIOptional } from '../../../core/Provider/SarakUIProvider';
-import { RESPONSIVE_GRID_PRESETS, RESPONSIVE_SPACING_PRESETS, type ResponsiveGridPreset, type ResponsiveSpacingPreset } from './useStructuralStyles.presets';
+import { RESPONSIVE_GRID_PRESETS, RESPONSIVE_SPACING_PRESETS, GRID_LAYOUT_STRATEGIES, type ResponsiveGridPreset, type ResponsiveSpacingPreset } from './useStructuralStyles.presets';
 import { resolveGap } from './useStructuralStyles.gap';
 
 /**
@@ -32,15 +32,8 @@ export const useStructuralStyles = () => {
             };
         }
 
-        // Classes LITERAIS de propósito (plan-39) — o scanner do Tailwind lê o arquivo como texto.
-        const gridStrategies: Record<string, string> = {
-            'col-12': 'grid w-full grid-cols-1 @min-[768px]:grid-cols-12',
-            'auto-fit': 'grid w-full grid-cols-[repeat(auto-fit,minmax(280px,1fr))]',
-            'masonry': 'columns-1 @min-[768px]:columns-2 @min-[1024px]:columns-3 w-full'
-        };
-
         const hasCustomTemplate = !!templateColumns || !!templateAreas;
-        const className = hasCustomTemplate ? 'grid w-full' : (gridStrategies[layoutType] || gridStrategies['auto-fit']);
+        const className = hasCustomTemplate ? 'grid w-full' : (GRID_LAYOUT_STRATEGIES[layoutType] || GRID_LAYOUT_STRATEGIES['auto-fit']);
 
         return {
             className,
