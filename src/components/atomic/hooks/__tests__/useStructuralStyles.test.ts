@@ -16,19 +16,34 @@ describe('useStructuralStyles', () => {
         // TODO: Escrever testes comportamentais para este hook
     });
 
-    it('renderiza sem SarakUIProvider, com o default de grid aplicado (col-12)', () => {
+    // plan-47: o default deixou de ser 'col-12' (12 trilhas de 1/12, sem mecanismo de
+    // span) — passou a ser 'auto-fit', content-aware, resolvido pelo próprio CSS Grid
+    // (sem depender de container query). Prova só a CLASSE emitida; não prova quantas
+    // colunas o browser desenha em cada largura — jsdom não tem motor de layout
+    // (medição real em Chromium, colada no resumo da plan-47).
+    it('renderiza sem SarakUIProvider, com o novo default de grid aplicado (auto-fit, não mais col-12)', () => {
         const Probe: React.FC = () => {
             const { getGridStyles } = useStructuralStyles();
             const { className } = getGridStyles();
             return React.createElement('span', { 'data-testid': 'grid-class' }, className);
         };
         expect(() => render(React.createElement(Probe))).not.toThrow();
-        expect(screen.getByTestId('grid-class')).toHaveTextContent('grid-cols-1');
+        expect(screen.getByTestId('grid-class')).toHaveTextContent('grid-cols-[repeat(auto-fit,minmax(280px,1fr))]');
+        expect(screen.getByTestId('grid-class')).not.toHaveTextContent('grid-cols-12');
     });
 
     describe('classes de container query são literais para o scanner do Tailwind (plan-39)', () => {
-        it('getGridStyles: col-12 usa o MESMO número de BREAKPOINT_TABLET, escrito literal', () => {
+        it('getGridStyles: SEM tema (default), usa auto-fit — plan-47, não mais col-12', () => {
             const { result } = renderHook(() => useStructuralStyles());
+            expect(result.current.getGridStyles().className).toBe(
+                'grid w-full grid-cols-[repeat(auto-fit,minmax(280px,1fr))]',
+            );
+        });
+
+        it('getGridStyles: col-12 continua disponível como ESCOLHA de tema (explícita) e usa o MESMO número de BREAKPOINT_TABLET, escrito literal', () => {
+            const wrapper: React.FC<{ children?: React.ReactNode }> = ({ children }) =>
+                React.createElement(UIContext.Provider, { value: uiContextValue({ layoutGridTemplate: 'col-12' }) }, children);
+            const { result } = renderHook(() => useStructuralStyles(), { wrapper });
             expect(result.current.getGridStyles().className).toBe(
                 `grid w-full grid-cols-1 @min-[${BREAKPOINT_TABLET}px]:grid-cols-12`,
             );

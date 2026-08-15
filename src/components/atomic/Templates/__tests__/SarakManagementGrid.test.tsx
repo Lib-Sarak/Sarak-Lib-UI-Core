@@ -36,4 +36,18 @@ describe('SarakManagementGrid', () => {
 
         expect(container.querySelector('[class*="@container"]')).not.toBeNull();
     });
+
+    // plan-47: `getGridStyles()` sem templateColumns/preset caía em `col-12` — cada
+    // grupo em 1/12 da largura. Prova só a CLASSE emitida no grid de grupos (não
+    // mais `grid-cols-12`, agora `auto-fit`); NÃO prova largura real de coluna —
+    // jsdom não tem motor de layout (medição real em Chromium, no resumo da plan-47).
+    it('o grid de grupos NÃO emite mais a forma quebrada (col-12) — emite auto-fit', () => {
+        const { container } = render(
+            <SarakManagementGrid endpoint="/mock" groupBy="service" mapping={{ id: 'id', title: 'title', status: 'status', isActive: 'isActive' }} />
+        );
+
+        const grid = container.querySelector('[class*="@container"]')?.lastElementChild as HTMLElement;
+        expect(grid.className).toContain('grid-cols-[repeat(auto-fit,minmax(280px,1fr))]');
+        expect(grid.className).not.toContain('grid-cols-12');
+    });
 });

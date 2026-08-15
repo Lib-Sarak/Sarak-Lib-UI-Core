@@ -353,7 +353,7 @@ export const ardosiaAoEntardecerTheme: ThemePreset = {
         statusGlowBlur: 8,
         breakpointTablet: 768,
         breakpointDesktop: 1024,
-        layoutGridTemplate: 'col-12',
+        layoutGridTemplate: 'auto-fit',
         globalSectionGap: 24,
         globalFlowDirection: 'column',
         globalFlowAlign: 'stretch',

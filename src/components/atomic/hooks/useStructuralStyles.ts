@@ -20,7 +20,9 @@ export const useStructuralStyles = () => {
         gapOverride?: string,
         responsivePreset?: ResponsiveGridPreset
     ) => {
-        const layoutType = (design?.layoutGridTemplate as string) || 'col-12';
+        // plan-47: default deixou de ser 'col-12' (12 trilhas sem span, 1 filho por
+        // trilha) — agora 'auto-fit', resolvido pelo CSS Grid em runtime.
+        const layoutType = (design?.layoutGridTemplate as string) || 'auto-fit';
         const gap = resolveGap(gapOverride, design?.globalSectionGap || design?.layoutGap || 'var(--sarak-layout-gap-md, 16px)', 'SarakGrid');
 
         if (responsivePreset) {
@@ -38,7 +40,7 @@ export const useStructuralStyles = () => {
         };
 
         const hasCustomTemplate = !!templateColumns || !!templateAreas;
-        const className = hasCustomTemplate ? 'grid w-full' : (gridStrategies[layoutType] || gridStrategies['col-12']);
+        const className = hasCustomTemplate ? 'grid w-full' : (gridStrategies[layoutType] || gridStrategies['auto-fit']);
 
         return {
             className,

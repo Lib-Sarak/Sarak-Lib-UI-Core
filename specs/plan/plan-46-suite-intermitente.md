@@ -60,6 +60,46 @@ fotografar depois que o acidente acabou.
 ⚠️ **Nada disso é diagnóstico.** Está aqui para poupar buscas, não para dirigir a conclusão. **O passo 1 é
 nomear o teste** — se a causa for outra, a tabela acima é irrelevante e você a ignora.
 
+## 2.4 🔧 MEDIÇÃO DO REVISOR — 2026-08-14: 26 execuções, zero reproduções
+
+O dono pediu que o revisor executasse esta plan. Ele fez o que cabe no papel dele — **passo 1 é medição, não
+código** — e parou antes do passo 3, que é conserto.
+
+**O laço, com a saída INTEIRA gravada em arquivo por execução:**
+
+| Condição | Execuções | Falhas |
+|---|---|---|
+| `npx vitest run > arquivo` (redirecionado) | **20** | **0** |
+| `npx vitest run \| tee \| grep` (canalizado) | **6** | **0** |
+| **Total controlado** | **26** | **0** |
+
+Todas fecharam em `1345 passed (1345)`.
+
+**A hipótese que foi testada e caiu.** As duas falhas observadas ocorreram em execuções **canalizadas**
+(`| tail`, `| grep`); as verdes de então eram redirecionadas. Canalizar muda o `stdout` do processo (sem
+TTY, buffer diferente, `SIGPIPE` possível), o que seria explicação plausível. **As 6 execuções canalizadas
+passaram** — a correlação não se sustenta.
+
+**O que isto significa, e o que não significa.** Não desmente a intermitência: com taxa da ordem de 15% —
+que é o que 2 falhas em ~13 execuções ad-hoc sugerem —, 26 verdes seguidas têm probabilidade ~1,5%. Baixa,
+mas o cálculo depende de uma taxa estimada de amostra pequena e não controlada. **A leitura honesta é que a
+taxa real é mais baixa do que as duas observações sugeriam**, não que o defeito não exista.
+
+**O passo 1 não foi cumprido: os dois testes seguem sem nome.** Sem nome, o passo 2 é impossível e o passo 3
+só tem uma saída — a segunda.
+
+## 2.5 🔧 DEFEITO DESTA PLAN, encontrado ao executá-la
+
+A §3.1 item 3 manda o executor **declarar a dívida em `15-divida-conhecida.md`**. O
+[[00-prompt-executor]] §7 item 3 proíbe: *"NUNCA crie nem edite outra spec… `specs/` são do revisor"*.
+
+É a **terceira vez** que o revisor escreve um passo que o contrato do executor proíbe — as outras foram a
+linha da tabela de gates nas plans 39 e 41. A declaração de dívida é **síntese**, e síntese é do revisor,
+por `spec-atualizar`, depois do commit do dono.
+
+O item 3 fica corrigido: o executor **registra a medição no resumo**; quem transporta para
+`15-divida-conhecida.md` é o revisor.
+
 # 3. Escopo
 
 ## 3.1 Dentro
@@ -77,8 +117,8 @@ nomear o teste** — se a causa for outra, a tabela acima é irrelevante e você
 3. **PASSO 3 — fechar**, e as duas saídas são aceitáveis:
    - **consertar**, com o teste provando o conserto (rodar em laço e mostrar N execuções verdes seguidas,
      com N declarado); **ou**
-   - **declarar como dívida** em [[15-divida-conhecida]] com a taxa medida, a caracterização do passo 2 e o
-     motivo de não consertar agora.
+   - **registrar no resumo** a taxa medida, a caracterização do passo 2 e o motivo de não consertar agora.
+     ⚠️ **O transporte para [[15-divida-conhecida]] é do REVISOR**, por `spec-atualizar` — ver a §2.5.
 4. Se o conserto tocar código de produção (não só teste), **isso é achado** — relate antes de mexer.
 
 ## 3.2 Fora

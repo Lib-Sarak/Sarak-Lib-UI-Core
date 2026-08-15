@@ -38,6 +38,25 @@ describe('SarakGrid — multidispositivo por padrão (Spec 40.3 — L2)', () => 
         );
         expect(screen.getByTestId('grid').style.gridTemplateColumns).toBe('1fr 1fr');
     });
+
+    // plan-47: sem `templateColumns` (caminho zero-config, o do defeito relatado), o
+    // SarakGrid não tem um ramo de JS que colapsa para 1 coluna no celular — quem
+    // resolve isso é o próprio CSS Grid (`auto-fit`/`minmax(280px,1fr)`), em
+    // runtime, pela largura do container. Este teste prova só que a CLASSE emitida
+    // no zero-config é a MESMA em qualquer dispositivo (não existe um ramo quebrado
+    // ou uma classe diferente por device aqui) — NÃO prova que o browser desenha 1
+    // coluna a 400px: jsdom não tem motor de layout. Essa prova é a medição real em
+    // Chromium, colada no resumo da plan-47.
+    it('sem templateColumns (zero-config), emite a MESMA classe content-aware em qualquer dispositivo — a resolução do nº de colunas é do CSS Grid, não de um ramo de JS', () => {
+        renderAt('smartphone', <SarakGrid data-testid="grid-mobile"><div>x</div></SarakGrid>);
+        renderAt('desktop', <SarakGrid data-testid="grid-desktop"><div>x</div></SarakGrid>);
+
+        const mobileClass = screen.getByTestId('grid-mobile').className;
+        const desktopClass = screen.getByTestId('grid-desktop').className;
+        expect(mobileClass).toBe(desktopClass);
+        expect(mobileClass).toContain('grid-cols-[repeat(auto-fit,minmax(280px,1fr))]');
+        expect(mobileClass).not.toContain('grid-cols-12');
+    });
 });
 
 describe('SarakFlex — wrap mobile-first por padrão (Spec 40.3 — L2)', () => {

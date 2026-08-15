@@ -5,6 +5,63 @@ com o "antes" e o "depois" lado a lado. Uma entrada por mudança, mais recente p
 
 ---
 
+## O grid zero-config deixa de ser 12 colunas fixas e passa a ser content-aware (plan-47)
+
+**Classificação: MAJOR** — muda um **comportamento default**, mesmo sem tocar em nenhuma assinatura pública:
+o token `layoutGridTemplate` (schema `structural` e os 5 temas embarcados) tinha `'col-12'` como valor
+default e passa a ter `'auto-fit'`. Quem monta `<SarakGrid>`, `<SarakManagementGrid>` ou `<SarakForm>` **sem**
+`templateColumns`/preset — o uso zero-config mais comum — vê a malha mudar na tela sem alterar uma linha de
+código.
+
+**O defeito que motivou a correção.** Sem `templateColumns`, o `col-12` entregava **doze trilhas de ~1/12 da
+largura, um filho por trilha** — a lib nunca ofereceu ao consumidor nenhuma forma de declarar `span`, então um
+grid de 12 colunas sem mecanismo de span virava, na prática, uma coluna estreita por filho. Reportado com a
+tela na mão: a aba Propostas do ERP Earendel virou sete colunas verticais, título truncado
+(`R…`, `C…`, `XTRE…`) e o texto "VER DETALHES" atravessando o card vizinho.
+
+**Antes × depois** (`<SarakGrid>` com 8 filhos, nenhuma prop — medido em Chromium real, não em jsdom):
+
+| Largura do container | Antes (`col-12`) | Depois (`auto-fit`) |
+| --- | --- | --- |
+| 1280px | 12 trilhas fixas — cada um dos 8 filhos ocupa exatamente **1 trilha de ~85px** (sem `span`) | **4 colunas** de 320px |
+| 1024px | idem, ~68px por trilha | **3 colunas** de ~341px |
+| 768px | 12 trilhas fixas, ~42px por trilha (`@min-[768px]:grid-cols-12` já casa **em** 768px) | **2 colunas** de 384px |
+| 400px (celular) | 1 coluna (abaixo de 768px, a container query não casa — fica na base `grid-cols-1`) | **1 coluna** (inalterado) |
+
+**Por quê.** `col-12` é um grid de 12 colunas fixas; sem `span`, cada filho ocupa exatamente 1 trilha — o
+sistema estava "pela metade" (ver [[07-responsividade-e-multidispositivo]] §6). `auto-fit`
+(`grid-cols-[repeat(auto-fit,minmax(280px,1fr))]`) é resolvido pelo próprio CSS Grid em runtime, pela largura
+disponível: cada filho recebe uma célula de no mínimo 280px, e o número de colunas se ajusta sozinho — sem
+depender de `templateColumns`, de `span` ou de container query.
+
+**Como migrar.**
+
+- **Você não precisa mudar nada** para sair do layout quebrado — a correção é automática assim que você
+  atualizar a lib.
+- **Se você queria literalmente 12 colunas fixas** (por exemplo, para compor com `gridColumn: 'span N'` no seu
+  próprio CSS), o valor `'col-12'` **continua existindo** como escolha explícita do token `layoutGridTemplate`
+  — defina-a no seu tema (`design.layoutGridTemplate = 'col-12'`) ou no Design Engine (campo "Template de Grid
+  Global"). Esteja ciente de que a lib **ainda não** oferece um mecanismo de `span` para o consumidor —
+  escolher `col-12` manualmente reproduz o mesmo problema que esta entrada corrige, a menos que você já
+  controle o `span` dos seus próprios filhos.
+- **Se você precisa de um número exato de colunas**, continue passando `templateColumns` explícito (string ou
+  `ResponsiveValue<string>`) — não é afetado por esta mudança, veja "O que NÃO mudou".
+
+**O que NÃO mudou.**
+
+- `SarakGrid`/`SarakManagementGrid`/`SarakForm` com `templateColumns` explícito **continuam** ignorando o
+  token de tema — o valor do consumidor sempre venceu e continua vencendo.
+- `SarakCardGrid`, `SarakCatalogGrid`, `SarakStats`, `SarakActionCard`, `SarakCoreCard`,
+  `AuthSocialLogin` — todos passam `responsivePreset` ou `templateColumns` próprios; não usam o token
+  `layoutGridTemplate` e não são afetados.
+- Nenhum número de breakpoint mudou (`640`/`768`/`1024`/`1280` seguem os mesmos).
+- O `@container` plantado pela `plan-41` continua no lugar — `auto-fit` nem depende dele (é CSS Grid puro,
+  sem container query), mas o wrapper não foi removido.
+- `'col-12'` e `'masonry'` continuam existindo como opções válidas do token `layoutGridTemplate` — só o
+  **default** mudou.
+
+---
+
 ## 26 tipos usados em assinatura pública passam a ser importáveis pelo nome (plan-45)
 
 **Classificação: MINOR** — capacidade nova, aditiva: nenhum tipo mudou de forma, nenhum export

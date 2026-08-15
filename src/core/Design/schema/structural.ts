@@ -55,7 +55,7 @@ export const StructuralSchema: ComponentSchema = {
                     { id: 'masonry', value: 'masonry', label: 'Masonry (Pinterest)' }
                 ]
             },
-            defaultValue: 'col-12',
+            defaultValue: 'auto-fit',
             cssVars: ['--sarak-layout-grid-template'],
             structuralConsumer: ['useStructuralStyles.getGridStyles']
         },
