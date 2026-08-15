@@ -289,7 +289,7 @@ depois acrescente o fluxo — nunca deixe o próximo redescobrir.
 
 ## Apêndice B — Estado deste repositório (GERADO)
 
-> **Não edite esta seção à mão.** Ela é regenerada por `npm run dev-kit` a partir do próprio repositório (`@sarak/lib-ui-core` v4.0.1); o gate `npm run dev-kit:check` derruba se ficar defasada. A fonte de máquina equivalente é o `state.json` ao lado deste arquivo.
+> **Não edite esta seção à mão.** Ela é regenerada por `npm run dev-kit` a partir do próprio repositório (`@sarak/lib-ui-core` v5.0.0); o gate `npm run dev-kit:check` derruba se ficar defasada. A fonte de máquina equivalente é o `state.json` ao lado deste arquivo.
 
 ### B.1 Design — as fontes que a paridade cruza
 
@@ -315,7 +315,7 @@ depois acrescente o fluxo — nunca deixe o próximo redescobrir.
 
 **Componentes públicos: 77** — é o número que o `barrel:check` cobra. A lista completa está em `state.json` → `componentes.publicos.nomes`.
 
-### B.3 Gates registrados (18)
+### B.3 Gates registrados (21)
 
 | Comando | O que roda |
 | --- | --- |
@@ -324,6 +324,7 @@ depois acrescente o fluxo — nunca deixe o próximo redescobrir.
 | `npm run build-info:check` | `node scripts/generate-build-info.mjs --check` |
 | `npm run catalog:check` | `node scripts/generate-component-catalog.mjs --check` |
 | `npm run composicao-atomica:check` | `node gates/scripts/audit/auditor_composicaoatomica.mjs` |
+| `npm run container-query-boundary:check` | `node gates/scripts/contrato/check-container-query-boundary.mjs` |
 | `npm run container-query:check` | `node gates/scripts/contrato/check-container-query-literal.mjs` |
 | `npm run coverage:check` | `vitest run --coverage && node gates/scripts/release/check-coverage-floor.mjs` |
 | `npm run deep-import:check` | `node gates/scripts/contrato/check-no-deep-import.mjs` |
@@ -332,7 +333,9 @@ depois acrescente o fluxo — nunca deixe o próximo redescobrir.
 | `npm run gates:full` | `npm run dev-kit:check && npm run build && npm run build-info:check && npm run package:check && npm run coverage:check` |
 | `npm run guide:check` | `node scripts/generate-consumer-kit.mjs --check` |
 | `npm run package:check` | `node gates/scripts/contrato/check-package-contents.mjs` |
+| `npm run persistence-doc:check` | `node gates/scripts/contrato/check-persistence-doc-identifiers.mjs` |
 | `npm run plan-index:check` | `node gates/scripts/contrato/check-plan-index-sync.mjs && node scripts/generate-plan-index.mjs --check` |
+| `npm run public-types:check` | `node gates/scripts/contrato/check-public-types-parity.mjs --check` |
 | `npm run release:check` | `node gates/scripts/release/check-release-tag.mjs` |
 | `npm run section-pointers:check` | `node gates/scripts/contrato/check-section-pointers.mjs` |
 | `npm run token-types:check` | `npx tsx scripts/generate-token-types.ts --check` |

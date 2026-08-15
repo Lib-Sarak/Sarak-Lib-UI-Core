@@ -3,7 +3,7 @@
   "schemaVersion": 1,
   "lib": {
     "name": "@sarak/lib-ui-core",
-    "version": "4.0.1"
+    "version": "5.0.0"
   },
   "design": {
     "schemaFiles": {
@@ -185,6 +185,10 @@
       "comando": "node gates/scripts/audit/auditor_composicaoatomica.mjs"
     },
     {
+      "nome": "npm run container-query-boundary:check",
+      "comando": "node gates/scripts/contrato/check-container-query-boundary.mjs"
+    },
+    {
       "nome": "npm run container-query:check",
       "comando": "node gates/scripts/contrato/check-container-query-literal.mjs"
     },
@@ -217,8 +221,16 @@
       "comando": "node gates/scripts/contrato/check-package-contents.mjs"
     },
     {
+      "nome": "npm run persistence-doc:check",
+      "comando": "node gates/scripts/contrato/check-persistence-doc-identifiers.mjs"
+    },
+    {
       "nome": "npm run plan-index:check",
       "comando": "node gates/scripts/contrato/check-plan-index-sync.mjs && node scripts/generate-plan-index.mjs --check"
+    },
+    {
+      "nome": "npm run public-types:check",
+      "comando": "node gates/scripts/contrato/check-public-types-parity.mjs --check"
     },
     {
       "nome": "npm run release:check",
@@ -347,6 +359,7 @@
     "extensibilidade-de-layout.md",
     "identidade-do-host.md",
     "migracoes.md",
+    "persistencia-de-tema.md",
     "temas-cromo-e-multidispositivo.md"
   ]
 }
