@@ -164,7 +164,13 @@ O caminho completo, em `useMediaLuminance.ts`:
 
 **A chave default é `'sarak-ui-design-v9.0'`** (`src/core/Provider/constants.ts:1`), sobrescrevível por `persistence.storageKey`.
 
+**A chave EFETIVA é composta** quando há `persistence.tenantId`: `` `${storageKey}::tenant:${tenantId}` ``, para que apps multi-tenant na mesma origem não vazem tema entre inquilinos ([[009-persistencia-tenant-aware]]). A composição tem **fonte única** — `resolveStorageKey` — e todo ponto de leitura, escrita e o filtro de `crossTabSync` a consomem; nenhum compõe a chave por conta própria. É o que impede compor `storageKey`+`tenantId` duas vezes por caminhos diferentes.
+
+**A ordem de resolução depende de `strategy`** (contrato do dado em [[09-temas-e-presets]] §4.4.1). O que muda aqui, no motor: com `'remote'`, o carregamento remoto **substitui** o design partindo da semente (`{ ...semente, ...remoto }`) em vez de fundir por cima do que veio do `localStorage` — é o que impede o cache local de vencer por acidente quando o consumidor declarou que a fonte de verdade é o backend dele. Com `'hybrid'` (default) a fusão é `{ ...anterior, ...remoto }`, e com `'local'` o `onLoad` é ignorado mesmo se fornecido.
+
 **Escrita:** `persistDesign` grava no `localStorage`, aguarda o `onSave` opcional do consumidor, e então chama `onThemeChange` (`useDesignManager:106`). Esta é a porta **"traga sua persistência"** — quem quiser sincronizar no backend *dele* usa o callback; a lib não fala com servidor nenhum.
+
+**O `onSave` recebe DOIS argumentos: o design e o `id` do tema ativo.** O id percorre `useResolvedThemeId` → `persistDesign` → porta, e viaja **por `ref`**, não por dependência do `useCallback`. A razão é concreta: incluí-lo nas dependências trocaria a identidade da função a cada troca de tema, refazendo o efeito de persistência automática e **regravando** — o design ficaria salvando a si mesmo em laço. Pela mesma razão o id não entra dentro do payload: o payload é o dicionário de tokens, e misturar identidade com valor obrigaria todo consumidor a filtrá-la antes de gravar.
 
 **Sincronização entre abas e apps:** `useDesignStorageSync` escuta o evento `storage` (`:73`), ativo por default (`crossTabSync !== false`). E ele **revalida antes de aplicar** — a sequência (`:50-71`) é: filtra pela chave certa, ignora remoção, faz no-op se o valor é o mesmo já conhecido (guarda anti-loop por ref), faz `JSON.parse` protegido com aviso se inválido, confere que é objeto e não array, **passa por `validateDesign`**, e só então chama `setDesign`.
 

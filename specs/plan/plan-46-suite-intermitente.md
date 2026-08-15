@@ -140,7 +140,7 @@ O item 3 fica corrigido: o executor **registra a medição no resumo**; quem tra
 | Spec fixa | `specs/specs/11-testes-e-cobertura.md` | o contrato da suíte — é onde a conclusão será sintetizada |
 | Spec fixa | `specs/specs/15-divida-conhecida.md` | o destino se a saída for "declarar", não "consertar" |
 | Spec fixa | `specs/specs/00-regras-e-invariantes.md` R8 | cobertura 1:1 — e o que ela vale quando não é determinística |
-| Plan | `specs/plan/plan-41-…md` §11 · `plan-45-…md` §11 | as duas observações, com data e números |
+| Git | `git log --diff-filter=D -- specs/plan/` — as plans **41** e **45** foram sintetizadas e removidas em 2026-08-15; os vereditos delas, com as duas observações de intermitência (data e números), vivem no histórico |
 | Código | `vitest.config.ts` | `pool: 'forks'`, e o comentário sobre `poolOptions` ignorado em silêncio |
 | **Skill** | `padrao-escrita` · `test-unitario` | sempre |
 

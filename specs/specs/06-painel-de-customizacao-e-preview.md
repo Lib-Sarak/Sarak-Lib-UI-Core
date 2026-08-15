@@ -63,6 +63,23 @@ cola que faz a folksonomia funcionar e é o único ponto que precisa de manuten�
 inventa um rótulo novo de categoria. Categoria não reconhecida cai em `'Geral'` (`:18`) — degrada, não
 quebra.
 
+## 2.1 Essencial × Avançado — os dois modos, e o dado que os separa
+
+O painel expõe **dois modos nomeados**, e a separação não é uma lista curada à mão: sai do mesmo campo que
+a folksonomia já usa.
+
+| Modo | O que mostra | Como é derivado |
+| --- | --- | --- |
+| **Essencial** | os tokens de maior impacto visual | `importance >= 80` no schema do token |
+| **Avançado** | o dicionário inteiro | sem filtro |
+
+O corte por `importance` é o que mantém o Essencial **honesto ao crescer**: token novo de alto impacto
+entra sozinho, sem ninguém lembrar de atualizar uma lista. E é o que impede o modo de virar uma seleção
+arbitrária que envelhece — o mesmo princípio da §2.
+
+**O Command Center tem entrada própria**, separada dos dois modos: é acesso direto por busca, não uma
+terceira curadoria.
+
 # 3. Controles polimórficos
 
 `TokenControl` (`Main/components/TokenControl.tsx`) e `DynamicTokenControl`
@@ -110,6 +127,20 @@ o usuário que clica num tema do catálogo espera que ele valha, não que fique 
 
 O mecanismo de drafting no motor está em [[02-design-engine]].
 
+## 4.1 O modelo de performance do rascunho
+
+Arrastar um slider dispara render a cada quadro. Três decisões mantêm isso barato, e as três são
+estruturais — não são otimização pontual:
+
+| Decisão | O que evita |
+| --- | --- |
+| **Uma única instância de `useDesignDraft`** no painel | duas instâncias significam dois estados de rascunho divergindo, e o dobro de render por interação |
+| **`getAllDesignTokens()` memoizado** | recomputar o dicionário **inteiro** de tokens a cada quadro do arraste |
+| **Debounce no commit do slider** | gravar/propagar em cada quadro, em vez de no valor final |
+
+> ⚠️ **Aninhar `DesignScope` duplica o custo.** Dois `DesignScope` na mesma árvore recomputam e reinjetam
+> o CSS duas vezes por mudança. É o padrão a não repetir — um escopo por árvore de preview.
+
 # 5. Exportar JSON — o substituto do "salvar no banco"
 
 `Main/utils/exportTheme.ts`:
@@ -137,6 +168,19 @@ painel  →  Exportar  →  <nome>.json  →  colar num arquivo .ts/.json do rep
 > `branding.onChange` — callbacks **dele**, chamados pela lib, apontando para o servidor **dele**
 > ([[10-seguranca-e-acessibilidade]] §3.5).
 
+## 5.1 Exportar × Salvar — duas ações, dois públicos
+
+O modal de salvamento expõe **duas** ações que parecem a mesma e não são:
+
+| Ação | Para quem | Onde o tema vai parar | Precisa de deploy? |
+| --- | --- | --- | --- |
+| **Exportar** | desenvolvedor | JSON baixado, colado no repo do consumidor, passado em `customThemes` | **sim** |
+| **Salvar** | usuário final | armazenamento do importador, via `options.theme.onSave` | **não** |
+
+**Salvar só aparece quando a porta está configurada.** Sem `onSave`, a ação não é renderizada — não há
+botão morto nem erro; o painel degrada para o ciclo de exportar. Contrato completo do dado em
+[[09-temas-e-presets]] §4.6.
+
 # 6. O Gêmeo Digital (preview)
 
 `src/features/DesignEngine/Canvas/`.
@@ -162,10 +206,23 @@ Duas metades, e as duas são necessárias:
 | **Dispositivo lógico** | `DeviceProvider overrideDevice={previewDevice}` — faz `useSarakDevice()` dentro do preview devolver o dispositivo simulado, então o reflow real acontece (cromo colapsa, tabela vira cards) | `Canvas/components/PreviewSystemRenderer.tsx:69,198` |
 | **Moldura física** | largura-alvo + moldura de aparelho: `desktop: 100%`, `tablet: 768px`, `smartphone: 375px`, com bordas/raio simulando o device | `Canvas/hooks/useDeviceStyles.ts:2-23` |
 
-**Limite declarado:** isto **não** é container query real — é override lógico + constraint de largura. O
-"Tier B" (container queries verdadeiras no Gêmeo Digital) nunca foi feito; está no backlog de
-[[07-responsividade-e-multidispositivo]] §8. Consequência: o preview prova o **reflow**, não a **detecção**
-(§7 daquela spec).
+**Limite declarado:** o preview prova o **reflow**, não a **detecção** ([[07-responsividade-e-multidispositivo]] §7).
+
+### 6.2.1 O painel se adapta ao CONTAINER, não à janela
+
+O painel é embutido pelo consumidor em largura arbitrária — dentro de uma aba, de um drawer, de um split.
+Por isso o layout dele **não** consulta o viewport: cada região do painel estabelece o próprio
+`@container` e as classes internas medem por container query (`@min-[Npx]:`), reagindo à largura
+**disponível**.
+
+É a camada 3 de [[07-responsividade-e-multidispositivo]] §6 aplicada ao próprio painel, e vale para o
+dual-view (controles + preview lado a lado): abaixo do limiar as duas colunas **empilham** em vez de se
+espremerem, e nenhum texto é cortado por falta de largura. A alternativa — media query de viewport —
+enxergaria a janela e erraria sempre que o painel não a ocupasse inteira.
+
+As quatro regras de operação dessa camada (container em ancestral, classe literal, comentário que não
+forma candidato, e default que não conserta opção) valem aqui integralmente — ver
+[[07-responsividade-e-multidispositivo]] §6.1.
 
 ## 6.3 Mocks modulares
 

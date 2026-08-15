@@ -208,6 +208,19 @@ isso por escrito (`:5-6`).
 Quem não moveu não recebe arquivo do nada; quem moveu não fica com um guia velho. A pasta
 `sarak-ui/` da raiz é a exceção: é conteúdo 100% gerado e é **sempre** sobrescrita (`:63-64`).
 
+## 6.1 O kit cobre ATUALIZAR, não só instalar
+
+O quarto movimento — **atualizar uma lib já instalada** — é onde o kit mais paga por si. A instalação
+falha ruidosamente quando dá errado; a atualização falha **em silêncio**: o pacote troca no disco, todo
+comando responde sucesso e a tela continua com o build anterior.
+
+Por isso o procedimento de atualização do kit cobre as **duas camadas de cache** entre o `dist/` e o
+navegador — store do gerenciador e pré-bundle do bundler —, na ordem correta e com a **prova da deleção**
+antes de subir o dev server. Detalhe completo em [[13-instalacao-e-atualizacao]] §9.1.
+
+É conteúdo do kit, e não apenas desta spec, exatamente pelo princípio da §2: quem precisa da informação é o
+consumidor, no momento em que ele atualiza — não alguém lendo a documentação do mantenedor depois.
+
 # 7. Integração com o resto do ciclo
 
 | Momento | Quem age | O que acontece com o kit |

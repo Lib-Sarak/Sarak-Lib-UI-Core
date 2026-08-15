@@ -378,6 +378,77 @@ já foi atualizada com sucesso, e derrubar o `sarak:update` por causa disso seri
 Se o gerenciador não tiver comando validado, o script degrada para uma linha que **explica o que
 fazer** e ainda assim roda o `refresh` (`packageJsonFields.mjs:37-40`).
 
+# 9.1 ⚠️ Atualizar o PACOTE não é atualizar o que o navegador executa
+
+Entre o `dist/` da lib e a tela do consumidor existem **duas camadas de cache em série**. Cobrir só a
+primeira é o modo de falha mais caro desta spec: todo comando responde sucesso, todo gate passa, e a tela
+continua com o build anterior — **sem erro, sem aviso, sem sintoma que aponte para a causa.**
+
+| # | Camada | Por que não se invalida sozinha | Como se resolve |
+| --- | --- | --- | --- |
+| 1 | **Store do gerenciador** — com `pnpm`, `file:` é **cópia**, não link (§6.1) | o lockfile continua satisfeito; nada manda recopiar | `pnpm install --force --filter <pacote>` |
+| 2 | **Pré-bundle do bundler** — Vite: `node_modules/.vite/deps/` | o Vite re-otimiza por **lockfile + versão + config**, nunca por conteúdo. Com dependência local a `version` fica parada, o caminho é o mesmo e a config não muda: **a chave do cache nunca se move** | derrubar o dev server, apagar a pasta, **provar** que apagou, subir |
+
+**Nenhum sinal existente responde a essa pergunta sozinho, e é importante saber por quê:**
+`sarak-ui check` compara o **pacote** e responde `live`/`fresh`/`stale` — corretamente; `BUILD_INFO.json`
+descreve o **artefato em disco** (§10); e recarregar, hard-refresh ou guia anônima **não alcançam**, porque
+o cache é do **servidor de desenvolvimento**, não do navegador.
+
+## O aviso automático
+
+`sarak-ui check` emite, com **rótulo próprio** (`[sarak:check:cache]`), um aviso quando encontra a segunda
+camada defasada. O sinal é de **conteúdo**, não de tempo: o cache referenciando, **por nome**, um chunk
+content-hashed que não existe mais no `dist/` instalado. Um heurístico por `mtime` foi descartado — ele
+dispararia em todo rebuild, inclusive nos que não mudaram nada.
+
+O rótulo é separado de propósito: fundir "o pacote está velho" e "o cache está velho" num único veredito
+criaria um terceiro sinal ambíguo. E a busca **desce a partir da raiz do workspace**, não do diretório
+corrente — num monorepo, o pacote que **declara** a lib normalmente não é o que **roda** o bundler.
+
+**O aviso nunca afirma "cache em dia".** Ele tem dois estados úteis: encontrou referência quebrada, ou não
+tinha o que comparar. Silêncio não é garantia — os limites do detector estão declarados no próprio código
+(R18) e resumidos em [[01-gates-e-baseline]].
+
+## O procedimento, na ordem — e a ordem importa
+
+1. **Derrube o dev server primeiro.** No Windows, um processo com os arquivos abertos **impede** a deleção.
+2. Apague o cache do bundler.
+3. **PROVE que apagou** — `Test-Path` ⇒ `False`, ou `[ ! -d … ]`. Não confie no código de saída do passo 2:
+   *"pasta não existe"* e *"arquivo em uso"* são erros **diferentes**, e um supressor de erro genérico os
+   confunde, transformando falha em sucesso aparente.
+4. Só então reinstale (camada 1) e suba o dev server.
+
+Pular o passo 1 produz tela **branca** com `504 (Outdated Optimize Dep)`; pular o passo 3 produz tela
+**idêntica** à anterior. Nenhum dos dois sintomas aponta para a causa.
+
+# 9.2 Verificação em consumidor real
+
+Depois de atualizar, o que confirma que chegou — em ordem de custo:
+
+| Pergunta | Como responder |
+| --- | --- |
+| O **pacote** está atualizado? | `sarak-ui check` |
+| O **navegador** está com esse pacote? | ausência de `[sarak:check:cache]`; na dúvida, §9.1 |
+| A mudança **aparece na tela**? | abrir a tela afetada, com dado real |
+
+A terceira é a única que fecha o ciclo, e **nenhuma verificação estática a substitui**: gates verdes e
+artefato conferido convivem perfeitamente com tela errada. Quando o consumidor persiste tema, some ainda a
+precedência de [[09-temas-e-presets]] §4.4.1 — **valor salvo vence default**, então mudança de default não
+aparece para quem já tinha o valor gravado.
+
+# 9.3 Persistir tema no seu backend — opcional
+
+Persistência é **do importador**; a lib não tem backend ([[003-remocao-backend-proprio]]). Para quem
+decidir persistir, a lib **publica os artefatos de referência** em vez de exigir engenharia reversa a
+partir dos tipos:
+
+- o **formato** do dado que atravessa as portas;
+- um **schema de referência em dois dialetos** (PostgreSQL e SQLite);
+- o **exemplo de ligação** das portas.
+
+São referência, não obrigação: nenhum deles é importado pela lib em runtime, e o consumidor que não
+persiste ignora a seção inteira. O contrato das portas está em [[09-temas-e-presets]] §4.4 e §4.6.
+
 # 10. ⚠️ A armadilha do `BUILD_INFO`
 
 `dist/BUILD_INFO.json` traz `baseCommit`, `builtAt` e `libVersion`. E o `baseCommit` é **sempre

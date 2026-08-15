@@ -147,6 +147,10 @@ agente descobre do jeito difícil se não estiverem escritos:
   `major`**; nenhum dos dois → `patch`. Prosa de JSDoc que entra e sai **não** conta como superfície.
 - **`npm version` exige árvore limpa** e aborta com *"Git working directory not clean"*. Aprovar um comando
   novo durante a execução pode sujar `.claude/settings.json`, que é versionado — commite antes.
+- **O `preversion` roda `gates:full`, e o `dev-kit:check` costuma ser o primeiro a barrar.** `sarak-dev/` é
+  **gerado** e carrega números recontados a cada geração; qualquer leva que mude contagem (testes, gates,
+  arquivos) o defasa. O conserto é `npm run dev-kit` + commit — **nunca** editar os arquivos à mão, que
+  morrem na próxima geração enquanto o gate volta a acusar.
 - **Ele publica sozinho:** `preversion` roda `gates:full`, `version` regenera `dist/` + `sarak-ui/` **no mesmo
   commit** (é o que o anel cobra) e `postversion` faz `git push --follow-tags`. Por isso a §7 o reserva ao usuário.
 
@@ -190,6 +194,7 @@ Detalhe completo em [`specs/03-versionamento-e-release.md`](specs/03-versionamen
 | Criar preset parcial | `specs/09-temas-e-presets` | skill local `ui-criar-preset` |
 | Auditar a base / validar um PR | `specs/01-gates-e-baseline` | skill local `ui-auditoria-modulo` |
 | Instalar a lib num consumidor | `specs/12` + `specs/13` | skill local `ui-integra-consumidor` |
+| **Atualizar** a lib num consumidor (≠ instalar) | `specs/13` §9.1 — as duas camadas de cache | skill local `ui-integra-consumidor` |
 | Mexer no Shell, rotas ou módulos-plugin | `specs/04-shell-e-discovery` | [[00-knowledge]] |
 | Mexer no cromo ou nos slots | `specs/05-cromo-e-slots` | [[00-knowledge]] |
 | Alterar a superfície pública (barril) | `arquitetura/03` + `specs/00-regras-e-invariantes` | [[00-knowledge]] |
@@ -322,11 +327,20 @@ Antes de escolher **como** fazer algo, leia **[[00-knowledge]]** — é o rotead
   vão o que cada gate não enxerga. **R18 nasceu daí** — todo gate declara, no próprio código, o que não vê.
 - **O ERP Earendel é o único consumidor** e está em desenvolvimento simultâneo, consumindo por **caminho
   local** (`file:`) — decisão do dono enquanto os dois repositórios são ajustados juntos; a migração para
-  `github:…#semver:` vem depois. **Alinhado em 2026-08-02** (plan-04 🟢): workspace com 13 projetos, lockfile
-  canônico, junctions manuais substituídas pelo elo do gerenciador e aviso de defasagem no `predev`.
-  ⚠️ **`file:` é cópia no store do pnpm, não link** — todo rebuild da lib exige
-  `pnpm install --force --filter @erp/ui-kit` no ERP para chegar lá. Medir a lib por um ERP não reinstalado é
-  medir o passado.
+  `github:…#semver:` vem depois. É um workspace pnpm com 13 projetos e lockfile canônico.
+- 🔴 **Entre o `dist/` da lib e a tela do consumidor existem DUAS camadas de cache, e as duas falham em
+  silêncio.** É a armadilha mais cara desta base — já custou três rodadas de investigação **na lib**, que
+  estava certa nas três. (1) `file:` no pnpm é **cópia no store, não link**: todo rebuild exige
+  `pnpm install --force --filter <pacote>`. (2) O **pré-bundle do bundler** (Vite: `node_modules/.vite/`)
+  re-otimiza por lockfile + versão + config, **nunca por conteúdo** — com dependência local nenhum dos três
+  muda, e o dev server segue servindo o build anterior. **Medir a lib por um consumidor não reinstalado, ou
+  com o cache do bundler quente, é medir o passado.** O `sarak-ui check` avisa da segunda camada com rótulo
+  próprio; o procedimento na ordem certa — inclusive **provar a deleção** — está em
+  [`specs/13-instalacao-e-atualizacao.md`](specs/13-instalacao-e-atualizacao.md) §9.1.
+- ⚠️ **Valor persistido vence default, por desenho.** Um consumidor que salvou tema não recebe mudança de
+  `defaultValue` de token nenhum — e o painel de Design oferece cada valor do schema como opção clicável.
+  Consequência para quem projeta token: **trocar o default não conserta um valor ruim; só muda quem cai
+  nele por omissão.** Detalhe em [`specs/09-temas-e-presets.md`](specs/09-temas-e-presets.md) §4.4.
 - **Migração em curso (2026-08-01):** este fluxo SDD substituiu o modelo de "campanha em três arquivos fixos"
   em `plan/`. Plans antigas foram sintetizadas nas specs fixas e removidas; o histórico está no git.
 

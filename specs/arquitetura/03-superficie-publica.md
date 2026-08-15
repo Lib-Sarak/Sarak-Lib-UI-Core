@@ -70,6 +70,22 @@ E ele derruba o build também no sentido inverso — **exclusão obsoleta** (`:7
 
 **Silêncio é proibido**: toda entrada carrega o porquê no próprio arquivo. E a lista se autolimpa — uma exclusão histórica (`SarakCardGridProps`) foi removida quando deixou de ser necessária, exatamente como o gate de exclusão obsoleta exige.
 
+## 4.2 O que o `barrel:check` NÃO cobre — e a regra que fecha o vão
+
+`barrel:check` deriva **componentes**. **Tipo não é componente**, e por isso ficava fora: era possível uma
+assinatura pública citar um tipo que o consumidor **não conseguia importar pelo nome** (`TS2459` —
+*"declares X locally, but it is not exported"*), obrigando-o a derivá-lo estruturalmente com
+`ComponentProps<typeof X>` ou `Parameters<…>[0]`.
+
+**A regra:** *tipo citado em assinatura pública é contrato público, e tem de ser importável pelo nome.*
+Se aparece como tipo de prop, de parâmetro ou de retorno em algo exportado, ele mesmo é exportado.
+
+Cobrada por `public-types:check` ([[01-gates-e-baseline]]). A exceção é estreita e nomeada uma a uma: tipo
+que só existe como **detalhe de composição interna** de outro tipo público — membro de interseção, alias
+local — não é vocabulário do consumidor e fica fora, com motivo escrito em
+`gates/allowlists/publicTypeExclusions.mjs`. Mesma disciplina da allowlist da §4.1: sem categoria genérica
+de dispensa.
+
 # 5. O catálogo gerado
 
 `npm run catalog` produz `docs/component-catalog.{json,md}` por AST, e `catalog:check` confere no build que o commitado bate com o gerado. Ele publica componentes, props reais, tokens de espaçamento semânticos e as CSS Variables públicas.

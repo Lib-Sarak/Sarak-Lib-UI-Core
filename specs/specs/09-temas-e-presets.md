@@ -238,6 +238,58 @@ outra aba/app da mesma origem grava a mesma chave.
 Providers independentes, mesma origem, mesma `storageKey` → trocar o tema numa aba repinta as outras.
 Ver [[005-modelo-modulos-plugin-e-apps-separados]].
 
+### 4.4.1 `strategy` e `tenantId` — quem vence quem
+
+`persistence.strategy` tem **três** valores, e é o que decide a origem do design ([[009-persistencia-tenant-aware]]):
+
+| `strategy` | `localStorage` | `onLoad` do consumidor | Resolução |
+| --- | --- | --- | --- |
+| `'local'` | grava e lê | **ignorado**, mesmo se fornecido | só o cache local |
+| `'hybrid'` *(default)* | grava e lê | chamado | funde **por cima** do que veio do cache: `{ ...local, ...remoto }` |
+| `'remote'` | **não grava** | chamado | **substitui**: `{ ...semente, ...remoto }` — impede o cache local de vencer por acidente |
+
+**O custo do `'hybrid'` no primeiro paint, que o integrador precisa conhecer antes de escolher:** o design
+sai da semente/`localStorage` de forma **síncrona**, e o `onLoad` chega **depois** — então há um instante com
+o tema do cache antes de o remoto vencer. Três saídas, e a escolha é do consumidor: aceitar o flash;
+injetar o tema no HTML servido, para o primeiro paint já nascer certo; ou usar `strictBackendSync`, que
+atrasa os `children` até o carregamento remoto terminar — trocando flash por espera.
+
+**`tenantId` compõe a chave efetiva** — `` `${storageKey}::tenant:${tenantId}` `` — para que apps
+multi-tenant na mesma origem não vazem tema entre inquilinos. A composição tem **fonte única**
+(`resolveStorageKey`): todo ponto de leitura, de escrita e o filtro de `crossTabSync` consomem essa função,
+nunca compõem a chave por conta própria.
+
+> ⚠️ **Consequência que governa o design de token, e não é óbvia: em `'hybrid'`, chave ausente na fonte
+> remota NÃO apaga a chave presente no cache local.** Para tirar um valor de circulação de fato, ele sai
+> das **duas** fontes. É a mesma assimetria que faz valor persistido vencer default —
+> ver [[07-responsividade-e-multidispositivo]] §6.1, regra 4.
+
+### 4.4.2 O que a porta de escrita entrega
+
+`onSave` recebe **duas** coisas: o conjunto de tokens **e o `id` do tema ativo**. O id viaja como
+**segundo parâmetro**, não dentro do payload — o payload é o dicionário de tokens e nada mais, e misturar
+identidade com valor obrigaria todo consumidor a filtrá-la antes de gravar. Sem isso, quem implementa
+`onSave` consegue guardar *quais tokens* estão aplicados, mas não *de qual tema eles vieram* — e não
+consegue restaurar a seleção no boot seguinte.
+
+**O formato do dado persistido não se descreve em prosa aqui**: a lib publica o artefato de referência
+(formato, schema em dois dialetos e exemplo de ligação) — ver [[13-instalacao-e-atualizacao]]. Persistir é
+**opcional**; a lib funciona inteira sem nenhuma das portas.
+
+**Invariante do dado:** *tema da lib é imutável.* Alterar um tema embarcado não existe como operação — o
+que existe é **criar um derivado**, que passa a viver no importador. É o que mantém o catálogo shippado
+igual em todos os consumidores e o que torna a atualização da lib segura.
+
+### 4.4.3 Valor oferecido no schema é contrato com o usuário final
+
+Persistência e painel formam **duas portas que nenhum default alcança**: o tema salvo vence o default por
+desenho (§4.4.1), e o painel oferece cada valor do schema como opção clicável ao usuário final.
+
+Daí a regra que governa qualquer mudança de token: **trocar o default não conserta um valor ruim — só muda
+quem cai nele por omissão.** Um valor que produz resultado quebrado ou é **consertado**, ou **sai do
+schema**. Deixá-lo de pé e desviar o default é o conserto que passa em todos os gates e continua quebrado
+na tela de quem já o tinha salvo.
+
 ## 4.5 Exportar — o substituto do "salvar no banco"
 
 `buildThemeExportPayload` (`exportTheme.ts:40-46`) exporta o conjunto **COMPLETO** de tokens, não o
@@ -249,7 +301,28 @@ portanto o consumidor que o cola em `customThemes` não herda o problema de "fal
 (`:49-63`) dispara o download no browser.
 
 O caminho ponta a ponta: **painel → exportar JSON → colar em arquivo `.ts`/`.json` do repo do consumidor
-→ passar em `customThemes`**. É este o ciclo inteiro; não existe outro.
+→ passar em `customThemes`**. Este é o ciclo do **desenvolvedor**, e exige deploy.
+
+## 4.6 Salvar em runtime — o ciclo do usuário final
+
+O usuário final cria um tema no painel e o salva **sem acesso ao código**, por **uma** porta de escrita:
+`options.theme.onSave` ([[011-tema-salvo-por-uma-porta-de-escrita]]).
+
+A divisão de responsabilidade é assimétrica de propósito:
+
+| | Quem guarda | Por quê |
+| --- | --- | --- |
+| Temas **internos** (o catálogo shippado) | a **lib**, sempre embarcados | são parte do artefato; o importador não os replica nem os versiona |
+| Temas **criados pelo usuário** | o **importador**, via `onSave` | a lib não tem backend ([[003-remocao-backend-proprio]]) |
+| Tema **aplicado** | o importador, via `persistence.onSave` (§4.4.2) | é seleção, não catálogo |
+
+**Não existe porta de leitura, e isso é decisão, não lacuna:** a leitura já é a prop `customThemes` — o
+importador devolve os temas salvos por ali, no boot. Uma segunda porta criaria duas fontes para o mesmo
+dado. **Também não existe porta de apagar**: remover tema é operação do importador sobre o próprio
+armazenamento, e a lib não a intermedia.
+
+**Degradação quando a porta não está configurada:** a ação de salvar não aparece. Não há erro, não há botão
+morto — o consumidor que não implementou `onSave` simplesmente continua com o ciclo de exportar (§4.5).
 
 # 5. O catálogo shippado — números DERIVADOS
 

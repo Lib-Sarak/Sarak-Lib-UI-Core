@@ -6,7 +6,7 @@ status: "🔴 A executar"
 prioridade: "Média"
 tags: ["plan", "layout", "tokens", "hardcode", "plan-47"]
 relacionados: ["[[07-responsividade-e-multidispositivo]]", "[[04-contrato-de-tokens-e-paridade]]", "[[01-gates-e-baseline]]"]
-depende_de: "plan-47"
+depende_de: ""
 destino_sintese: "specs/specs/07-responsividade-e-multidispositivo.md · specs/arquitetura/04-contrato-de-tokens-e-paridade.md"
 objetivo: "A largura mínima de célula que decide o layout de todo consumidor zero-config deixa de ser um literal invisível e passa a ser ajustável como qualquer outra decisão de layout"
 ---
@@ -83,7 +83,7 @@ uma opção para default de todos) sem passar por nenhuma das três fontes da pa
 
 | Tipo | Referência | Por quê |
 |---|---|---|
-| Plan | `specs/plan/plan-47-…md` — resumo **e** veredito | por que este número virou o que é, e a fórmula que mede o impacto de mudá-lo |
+| Spec fixa | `specs/specs/07-responsividade-e-multidispositivo.md` §5 e §6.1 | a `plan-47` foi **sintetizada e removida** (2026-08-15); a verdade dela vive aqui — a linha do `SarakGrid` sem `templateColumns` e as quatro regras da camada 3. O histórico: `git log --diff-filter=D -- specs/plan/` |
 | Spec fixa | `specs/arquitetura/04-contrato-de-tokens-e-paridade.md` | **obrigatória se** criar token: a paridade 1:1:1 não é opcional |
 | Spec fixa | `specs/specs/07-responsividade-e-multidispositivo.md` §1 · §6 | o contrato zero-config e a camada onde este número decide |
 | Spec fixa | `specs/specs/01-gates-e-baseline.md` | o vão do `auditor_hardcoded` (`.tsx` apenas) e como se declara vão |
@@ -135,8 +135,8 @@ Cada teste declara o que prova e o que **não** prova (jsdom não mede layout). 
 Leia specs/00-prompt-executor.md e execute
 specs/plan/plan-48-piso-do-grid-content-aware-e-um-numero-solto.md.
 
-Contexto obrigatório antes de começar: specs/00-contexto.md, specs/00-knowledge.md,
-specs/plan/plan-47-grid-default-coloca-cada-filho-em-um-doze-avos.md (resumo E veredito),
+specs/specs/07-responsividade-e-multidispositivo.md §5 e §6.1 (a plan-47 foi sintetizada e
+removida em 2026-08-15 — a verdade dela vive nessa spec),
 specs/arquitetura/04-contrato-de-tokens-e-paridade.md,
 specs/specs/07-responsividade-e-multidispositivo.md §1 e §2.1 e §6.
 Skills: padrao-escrita, padrao-typescript, test-unitario, e ui-novo-componente SE criar token.

@@ -41,140 +41,46 @@ as duas, sempre, na mesma ação.**
 <!-- SARAK-INDICE:FILA:INICIO -->
 | # | Plan | Objetivo | Depende de | Status | Destino |
 |---|---|---|---|---|---|
-| 1 | [plan-28-reconciliar-contexto](plan/plan-28-reconciliar-contexto.md) | Fazer a porta de entrada dos agentes descrever o repositório que existe | — | 🟢 Aprovada | — |
-| 2 | [plan-29-erradicar-cifra-em-prosa](plan/plan-29-erradicar-cifra-em-prosa.md) | Fazer as quatro specs fixas pararem de afirmar totais que já envelheceram | plan-28 | 🟢 Aprovada | — |
-| 3 | [plan-31-segunda-onda-cifra](plan/plan-31-segunda-onda-cifra.md) | Fechar a cifra em prosa nas quatro specs fixas restantes, com a spec do mantenedor primeiro | plan-29 | 🟢 Aprovada | — |
-| 4 | [plan-32-contrato-unico-leitura-integral](plan/plan-32-contrato-unico-leitura-integral.md) | Fazer o contrato único parar de declarar vãos e violações que já foram fechados | plan-29 | 🟢 Aprovada | — |
-| 5 | [plan-33-marcadores-e-residuo-de-gates](plan/plan-33-marcadores-e-residuo-de-gates.md) | Resolver os dois marcadores de estado em desacordo e fechar a última spec que ainda roteia plans removidas | plan-32 | 🟢 Aprovada | — |
-| 6 | [plan-30-pagar-divida-aberta](plan/plan-30-pagar-divida-aberta.md) | Corrigir os três achados de código que a medição confirmou vivos | — | 🟢 Aprovada | specs/15-divida-conhecida.md |
-| 7 | [plan-47-grid-default-coloca-cada-filho-em-um-doze-avos](plan/plan-47-grid-default-coloca-cada-filho-em-um-doze-avos.md) | Um consumidor que escreve `<SarakGrid>{cards}</SarakGrid>` — o uso zero-config canônico — recebe uma malha em que cada filho tem largura legível, e não 1/12 da tela | — | 🟢 Aprovada | specs/specs/07-responsividade-e-multidispositivo.md · specs/specs/15-divida-conhecida.md |
-| 8 | [plan-49-col-12-continua-quebrado](plan/plan-49-col-12-continua-quebrado.md) | `col-12` produz uma malha legível venha de onde vier — default, tema persistido ou seleção do usuário no painel — sem que nenhum consumidor precise limpar dado ou escrever CSS | plan-47 | 🟢 Aprovada | specs/specs/07-responsividade-e-multidispositivo.md · specs/specs/09-temas-e-presets.md |
-| 9 | [plan-50-atualizar-a-lib-nao-chega-ao-navegador](plan/plan-50-atualizar-a-lib-nao-chega-ao-navegador.md) | Quem atualiza a lib num consumidor com bundler vê a mudança na tela — hoje o pacote troca no disco e o navegador continua servindo o build anterior, sem aviso nenhum | — | 🟢 Aprovada | specs/specs/13-instalacao-e-atualizacao.md · specs/specs/12-kit-do-consumidor.md |
-| 10 | [plan-11-remover-e2e-falso-verde](plan/plan-11-remover-e2e-falso-verde.md) | Remover o aparato de E2E que produz verde falso, deixando a capacidade declarada como adiada | — | 🔴 A executar | specs/specs/11-testes-e-cobertura.md · specs/specs/15-divida-conhecida.md |
-| 11 | [plan-05-integracao-continua](plan/plan-05-integracao-continua.md) | Rodar os gates num ambiente que não é a máquina de ninguém | — | 🔴 A executar | specs/16-integracao-continua.md · specs/02-enforcement-por-commit.md · specs/01-gates-e-baseline.md |
-| 12 | [plan-10-ciclo-atualizacao](plan/plan-10-ciclo-atualizacao.md) | Dar comando de atualização a quem só recebia aviso | plan-05 | 🔴 A executar | specs/13-instalacao-e-atualizacao.md |
-| 13 | [plan-34-persistencia-tema-tenant-aware](plan/plan-34-persistencia-tema-tenant-aware.md) | Um app multi-tenant na mesma origem não tem mais vazamento de tema entre tenants, e um consumidor com backend próprio pode fazê-lo vencer sobre o cache local | — | 🟢 Aprovada | specs/specs/09-temas-e-presets.md · specs/arquitetura/02-design-engine.md · docs/migracoes.md |
-| 14 | [plan-35-layout-responsivo-painel-design-engine](plan/plan-35-layout-responsivo-painel-design-engine.md) | O painel de customização se adapta ao espaço real do container onde está embutido, sem sobrepor colunas nem cortar texto, independentemente da largura da janela | — | 🟢 Aprovada | specs/specs/06-painel-de-customizacao-e-preview.md |
-| 15 | [plan-36-performance-rascunho-painel-design-engine](plan/plan-36-performance-rascunho-painel-design-engine.md) | Arrastar um slider ou digitar num controle do painel não recomputa o dicionário inteiro de tokens nem duplica estado de rascunho | plan-35 | 🟢 Aprovada | specs/specs/06-painel-de-customizacao-e-preview.md |
-| 16 | [plan-37-consolidar-modo-essencial-painel](plan/plan-37-consolidar-modo-essencial-painel.md) | O painel expõe dois modos claramente nomeados — Essencial e Avançado — e o Essencial cobre de fato os tokens de maior impacto visual, sem lacuna de dados | — | 🟢 Aprovada | specs/specs/06-painel-de-customizacao-e-preview.md |
-| 17 | [plan-38-salvar-tema-em-runtime](plan/plan-38-salvar-tema-em-runtime.md) | Um usuário final, sem acesso ao código do importador, cria um tema no painel, salva, e o tema aparece na lista — sobrevivendo a reload quando o importador guarda e devolve, por UMA porta de escrita | plan-34 | 🟢 Aprovada | specs/specs/09-temas-e-presets.md · specs/specs/06-painel-de-customizacao-e-preview.md |
-| 18 | [plan-39-classes-de-container-query-que-nao-chegam-ao-css](plan/plan-39-classes-de-container-query-que-nao-chegam-ao-css.md) | Toda classe de container query que a lib coloca no DOM tem regra correspondente no CSS publicado, e um gate impede que volte a divergir | plan-35 | 🟢 Aprovada | specs/specs/07-responsividade-e-multidispositivo.md · specs/specs/01-gates-e-baseline.md |
-| 19 | [plan-40-teste-de-consumidor-erp](plan/plan-40-teste-de-consumidor-erp.md) | Rodar a leva 34–39 dentro do ERP Earendel e provar, na tela, que o conserto da responsividade chega ao consumidor e que a porta única de salvar tema se sustenta num sistema de quatro apps | plan-39 | 🟢 Aprovada | specs/specs/13-instalacao-e-atualizacao.md · specs/specs/15-divida-conhecida.md |
-| 20 | [plan-41-container-query-sem-container](plan/plan-41-container-query-sem-container.md) | Fora do SarakShell, a responsividade estrutural da lib passa a funcionar — hoje ela não liga, porque nenhum átomo estabelece o container que as próprias classes precisam para medir | plan-40 | 🟢 Aprovada | specs/specs/07-responsividade-e-multidispositivo.md · specs/specs/15-divida-conhecida.md |
-| 21 | [plan-42-onsave-carrega-o-tema-ativo](plan/plan-42-onsave-carrega-o-tema-ativo.md) | Quem implementa `persistence.onSave` consegue guardar qual tema está ativo — hoje recebe só o conjunto de tokens e não tem como saber de qual tema ele veio | — | 🟢 Aprovada | specs/specs/09-temas-e-presets.md · specs/arquitetura/02-design-engine.md |
-| 22 | [plan-43-artefatos-de-persistencia-de-tema](plan/plan-43-artefatos-de-persistencia-de-tema.md) | O importador que decidir persistir tema recebe da lib o formato do dado, um schema de referência em dois dialetos e o exemplo de ligação — em vez de ter que engenharia-reversa a partir dos tipos | plan-42 | 🟢 Aprovada | specs/specs/13-instalacao-e-atualizacao.md · specs/specs/09-temas-e-presets.md |
-| 23 | [plan-44-comentario-que-quebra-o-build](plan/plan-44-comentario-que-quebra-o-build.md) | `npm run build` volta a passar, e o gate passa a recusar nome de classe de container query com valor inválido — a causa que já derrubou o build duas vezes | — | 🟢 Aprovada | specs/specs/01-gates-e-baseline.md · specs/specs/07-responsividade-e-multidispositivo.md |
-| 24 | [plan-45-tipos-publicos-que-nao-sao-exportados](plan/plan-45-tipos-publicos-que-nao-sao-exportados.md) | O que é público na prática fica alcançável: os tipos usados em assinatura passam a ser importáveis pelo nome, e a alavanca do primeiro paint deixa de ser invisível | — | 🟢 Aprovada | specs/arquitetura/03-superficie-publica.md · specs/specs/01-gates-e-baseline.md |
-| 25 | [plan-46-suite-intermitente](plan/plan-46-suite-intermitente.md) | Saber QUAIS são os dois testes que falham de forma intermitente, e então consertá-los ou declará-los como dívida com número — hoje 'suíte verde' é probabilidade, não fato | — | 🔴 A executar | specs/specs/11-testes-e-cobertura.md · specs/specs/15-divida-conhecida.md |
-| 26 | [plan-48-piso-do-grid-content-aware-e-um-numero-solto](plan/plan-48-piso-do-grid-content-aware-e-um-numero-solto.md) | A largura mínima de célula que decide o layout de todo consumidor zero-config deixa de ser um literal invisível e passa a ser ajustável como qualquer outra decisão de layout | plan-47 | 🔴 A executar | specs/specs/07-responsividade-e-multidispositivo.md · specs/arquitetura/04-contrato-de-tokens-e-paridade.md |
+| 1 | [plan-48-piso-do-grid-content-aware-e-um-numero-solto](plan/plan-48-piso-do-grid-content-aware-e-um-numero-solto.md) | A largura mínima de célula que decide o layout de todo consumidor zero-config deixa de ser um literal invisível e passa a ser ajustável como qualquer outra decisão de layout | — | 🔴 A executar | specs/specs/07-responsividade-e-multidispositivo.md · specs/arquitetura/04-contrato-de-tokens-e-paridade.md |
+| 2 | [plan-46-suite-intermitente](plan/plan-46-suite-intermitente.md) | Saber QUAIS são os dois testes que falham de forma intermitente, e então consertá-los ou declará-los como dívida com número — hoje 'suíte verde' é probabilidade, não fato | — | 🔴 A executar | specs/specs/11-testes-e-cobertura.md · specs/specs/15-divida-conhecida.md |
+| 3 | [plan-11-remover-e2e-falso-verde](plan/plan-11-remover-e2e-falso-verde.md) | Remover o aparato de E2E que produz verde falso, deixando a capacidade declarada como adiada | — | 🔴 A executar | specs/specs/11-testes-e-cobertura.md · specs/specs/15-divida-conhecida.md |
+| 4 | [plan-05-integracao-continua](plan/plan-05-integracao-continua.md) | Rodar os gates num ambiente que não é a máquina de ninguém | — | 🔴 A executar | specs/16-integracao-continua.md · specs/02-enforcement-por-commit.md · specs/01-gates-e-baseline.md |
+| 5 | [plan-10-ciclo-atualizacao](plan/plan-10-ciclo-atualizacao.md) | Dar comando de atualização a quem só recebia aviso | plan-05 | 🔴 A executar | specs/13-instalacao-e-atualizacao.md |
 <!-- SARAK-INDICE:FILA:FIM -->
 
 > **A ordem da coluna `#` não é a ordem do número da plan** — e isso é a feature, não um erro. Numeração é
 > identidade; a coluna `#` é o plano.
 >
-> 🔴 **A `plan-47` entrou direto no `#7` em 2026-08-15, à frente das três `🔴` que já esperavam.** Ela é a
-> única da fila que é **defeito visível na tela do único consumidor**: o dono mandou o print da aba
-> Propostas do ERP com as propostas viradas em sete colunas verticais, título truncado e texto
-> atravessando o card vizinho. As que ela ultrapassa — `plan-11` (remover E2E de verde falso), `plan-05`
-> (CI) e `plan-10` (ciclo de atualização) — são higiene de processo, e nenhuma delas tem prazo.
+> 🔴 **A leva 28–50 foi SINTETIZADA e removida em 2026-08-15**, e o texto que explicava a ordem dela saiu
+> junto. Destino demonstrado, como manda [[00-contexto]] §5: as decisões viraram spec fixa (a camada 3 e
+> suas quatro regras em `07-responsividade`, o contrato de persistência em `09-temas-e-presets`, as duas
+> camadas de cache em `13-instalacao-e-atualizacao`, os gates novos em `01-gates-e-baseline`), e o rastro de
+> execução vive no Git — `git log --diff-filter=D -- specs/plan/` recupera qualquer uma. **Arquivo e prosa
+> saem juntos**: manter o texto apontando para plans removidas produziria ponteiro morto em spec, que a
+> **R23** proíbe (é a mesma razão pela qual a §4 esvaziou).
 >
-> **Ela não depende da `plan-46`, e a ordem entre as duas é deliberada.** A `plan-46` (`#22`) investiga a
-> suíte intermitente, e é tentador dizer que ela vem antes porque "sem suíte confiável não se aprova nada".
-> Mas a `plan-47` **não é aprovada por suíte**: o critério dela é medição em navegador real, porque jsdom
-> não avalia container query nem mede largura de coluna. As duas são disjuntas, e a que tem consumidor
-> olhando para uma tela quebrada vai primeiro. O passo 5 da `plan-47` já manda o executor relatar as duas
-> saídas se pegar a intermitência.
+> **A síntese de 2026-08-15 fechou TODAS as 21 aprovadas** — inclusive as quatro que dependiam de
+> `15-divida-conhecida.md`, a mais delicada da leva: cinco achados saíram da §3.1 para a §6 **com o motivo
+> de cada um** (três *corrigidos*, dois por *não se reproduzirem* — distinção que um "fechado" genérico
+> apagaria), dois achados novos foram numerados (**41** e **42**), e a spec passou a afirmar a **relação**
+> — todo número em exatamente uma seção — em vez de um total que envelhece no dia seguinte.
 >
-> **A `plan-48` nasceu do veredito da `plan-47` (2026-08-15) e foi para o FIM da fila, de propósito.** Ela é
-> resíduo, não defeito: o literal `280px` de `minmax(280px,1fr)` já existia, mas a `plan-47` o promoveu de
-> detalhe de uma opção a **o número que decide o layout de todo consumidor zero-config** — e ele não é token,
-> não é alcançável pelo consumidor e vive num vão já declarado do `auditor_hardcoded`. Nenhuma regra é
-> violada hoje, nada está quebrado na tela, e por isso ela não disputa posição com nada. Está aqui porque
-> resíduo relevante vira **plan registrada**, nunca nota solta num veredito ([[00-prompt-revisor]] §7.2).
+> **A fila é inteiramente de execução agora: `48 → 46 → 11 → 05 → 10`.** Nenhuma plan aguarda síntese.
+> `48 → 46 → 11 → 05 → 10`.**
 >
-> **A ordem de hoje é `28 → 29 → 31 → 32 → 30 → 11 → 05 → 10`: descrever certo → parar de envelhecer (três
-> ondas) → pagar a dívida medida → remover o verde falso → rodar fora da máquina de alguém.**
-> *(fixada em 2026-08-11; a `plan-31` entrou em 2026-08-12 no veredito de reprovação da 29, e a `plan-32` no
-> veredito de aprovação da correção 2.)*
+> **A `plan-48` está no `#4` da fila de execução.** É resíduo, não defeito: o literal `280px` do
+> `minmax(280px,1fr)` decide o layout de todo consumidor zero-config, não é token, não é alcançável pelo
+> consumidor e vive num vão declarado do `auditor_hardcoded`. Nada está quebrado na tela hoje — por isso ela
+> não disputa posição com nada.
 >
-> **A `plan-31` e a `plan-32` colam na 29** porque são a mesma classe, o mesmo executor e o mesmo tipo de
-> sessão — separá-las na fila só pagaria duas vezes o custo de entrar no assunto. Elas existem, em vez de a
-> 29 ter crescido, porque **ampliar uma plan no meio de uma correção é o erro que as três existem para
-> consertar.**
->
-> 🔴 **A `plan-32` é uma lição de escopagem, e vale lê-la antes de escrever a próxima plan de prosa.**
-> `00-regras-e-invariantes.md` esteve dentro da `plan-29` e **não fechou em três rodadas** — 1300 linhas e 35
-> vereditos de estado não cabem numa plan de cinco arquivos, e **não se auditam por varredura**: o defeito
-> pior daquele arquivo não tem cifra errada, tem *afirmação* errada, e só a leitura integral a vê. A regra
-> que ficou: **o objetivo de uma plan não pode ser mais largo que o método de fecho que ela declara.**
->
-> **A `plan-28` vem primeiro porque a porta de entrada está INSTRUINDO ERRADO.** `00-contexto.md` §2 afirma que
-> o `run_audit` "fecha em ZERO" e que "não há mais folga" — o repositório responde **exit 1 com 2 auditores
-> vermelhos**, e o baseline versionado é não-zero. Todo agente que começa hoje entra com a régua invertida, e
-> **cada hora que ela fica de pé custa uma investigação inteira** de regressão que não existe. É o cenário que
-> [`01-gates-e-baseline`](specs/01-gates-e-baseline.md) abre declarando que existe para impedir.
->
-> **A `plan-29` depende da 28** e generaliza o mesmo conserto às quatro specs fixas onde a cifra em prosa
-> sobreviveu. As duas são de prosa, só tocam `specs/`, e por isso são executadas pelo **revisor** — é o desvio
-> declarado em [[00-contexto]], na seção do ciclo SDD.
->
-> **A `plan-29` vem ANTES da `plan-11` de propósito.** As duas editam
-> [`11-testes-e-cobertura`](specs/11-testes-e-cobertura.md): a 29 faz a spec **parar de descrever um arquivo
-> deletado**; a 11 **remove** o aparato que sobrou e declara a ausência. Descrever corretamente o que existe é
-> pré-requisito de removê-lo com honestidade — na ordem inversa, a remoção seria escrita por cima de um texto
-> que já mente.
->
-> **A `plan-30` não depende de ninguém e pode ser puxada para a frente.** Ela é a única desta leva que toca
-> código, e carrega o achado **39** — o gerador de gabarito de tema emite arquivo que não compila, o que
-> **quebra o segundo passo do fluxo documentado de criação de tema**. Se criar tema for iminente, ela sobe
-> para o `#1`; a ordem da fila é do revisor e se muda trocando duas linhas aqui e rodando `npm run plan-index`.
+> **A `plan-46` (suíte intermitente) e a `plan-11` (E2E de verde falso) são a mesma família:** as duas
+> tratam de *prova que não prova*. A `46` mede a intermitência; a `11` remove o aparato que produz verde
+> falso. Nenhuma das duas depende da outra.
 >
 > **A `plan-05` (CI) segue no fim, por decisão do dono (2026-08-03).** Ela não depende de ninguém e poderia
-> rodar hoje — a escolha foi montar o pipeline **uma vez, completo**, em vez de acrescentar linhas a cada gate
-> novo. Custo aceito e registrado: até lá, toda prova continua dependendo da máquina de quem executa. A
-> `plan-10` depende dela.
->
-> 🔴 **A cadeia anterior (`13 → 14 → 06 → [07 · 08 · 09] → 12 → 15 → 05`) foi CONCLUÍDA e o texto que a
-> explicava saiu daqui em 2026-08-11.** Destino demonstrado, como manda [[00-contexto]] §5: **as decisões
-> viraram spec fixa** (a matriz de cobertura em `01-gates-e-baseline`, as regras em
-> `00-regras-e-invariantes`, os achados em `15-divida-conhecida`), e **o rastro de execução vive no Git** —
-> `git log --diff-filter=D -- specs/plan/` recupera qualquer uma das plans removidas. O texto antigo roteava
-> plans que não existem mais em nenhuma fila: era mapa de um caminho já andado.
->
-> **As posições `#10`–`#13` entraram em 2026-08-12**, a pedido do dono, a partir de três problemas relatados
-> em uso real: persistência de tema em app multi-tenant, e o painel Design Engine lento e quebrando o layout
-> fora de viewport cheia. As quatro **não dependem** da cadeia `11 → 05 → 10` nem entre si, exceto
-> `plan-36 → plan-35` (mesma área de arquivo, evita conflito de merge — não é dependência funcional). A
-> `plan-37` revelou, na investigação, que o "modo essencial" pedido **já existe** no código (mal rotulado, com
-> lacuna de dado) — é conserto, não construção do zero. A `plan-34` implementa um contrato já decidido em
-> [`adr/009-persistencia-tenant-aware`](adr/009-persistencia-tenant-aware.md).
->
-> **A posição `#14` entrou no mesmo dia**, um quarto pedido do dono chegado depois dos três primeiros: o
-> usuário final poder salvar um tema criado no painel, sem depender de deploy — hoje "salvar" só existe como
-> exportar JSON para o desenvolvedor colar em código. **Depende formalmente da `plan-34`** (reaproveita a
-> chave tenant-aware), e fica **depois** da `plan-35`/`plan-37` na fila por tocarem arquivos vizinhos do
-> painel (`SaveThemeModal.tsx`, `ThemeList.tsx`), mesmo sem dependência funcional entre elas. Implementa o
-> contrato de [`adr/010-temas-salvos-pelo-usuario`](adr/010-temas-salvos-pelo-usuario.md).
->
-> 🔧 **As plans 35, 36 e 38 foram EMENDADAS em 2026-08-12, antes de qualquer execução.** O revisor conferiu
-> cada `arquivo:linha` das cinco contra o código e achou premissa falsa em três — inclusive **um alvo que não
-> existe** (a `plan-36` mandava memoizar `computeColorVariants` em dois arquivos do painel; a função não
-> aparece em nenhum dos dois, e a duplicação real vem de dois `DesignScope` aninhados). Cada emenda está no
-> corpo da plan, datada e com a medição, no padrão que a `plan-28` §2.0 e a `plan-30` §2.0 fixaram. **As
-> plans 34 e 37 passaram intactas** — todas as premissas confirmadas.
->
-> 🟢 **A `plan-38` esteve bloqueada e foi DESBLOQUEADA em 2026-08-12** — e o desbloqueio começa por uma
-> correção minha. Eu havia afirmado que o `ThemePresetId` de união fechada impedia um tema de runtime de
-> entrar na lista; **medindo o caminho real, não impede**: `customThemes` é `unknown[]` e `allThemes` é
-> `ThemeEntry[]`, cujo `id` já é `string` aberto. O que sobrou é pequeno e verdadeiro — uma frase do ADR-010
-> manda reaproveitar `ThemePreset` e não compila; o alvo certo é o `ThemeEntry`, que já mora em `core/`.
-> O dono decidiu o recorte: **a lib sempre embarca os temas internos; o importador guarda só o tema aplicado
-> (já feito na `plan-34`) e os temas novos**, por **uma** porta de escrita (`options.theme.onSave`), sem porta
-> de leitura (é a prop `customThemes`) e sem porta de apagar. Falta escrever o **ADR-011** com esse recorte —
-> é pré-requisito de execução, e está declarado no passo 0 da §5. Detalhe e a medição que me corrigiu:
-> [`plan-38` §2.0](plan/plan-38-salvar-tema-em-runtime.md).
-
----
+> rodar hoje — a escolha foi montar o pipeline **uma vez, completo**, em vez de acrescentar linhas a cada
+> gate novo. Custo aceito e registrado: até lá, toda prova continua dependendo da máquina de quem executa.
+> A `plan-10` depende dela.
 
 # 2. Legenda de status
 

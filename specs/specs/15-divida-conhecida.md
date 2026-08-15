@@ -49,60 +49,46 @@ construção de gate fecharam 12 achados de código e 2 gates de "implementaçã
 achado novo. **32 numerados** (o 32 é novo) · **24 fechados** (§6) · **2 aceitos como característica** (§5) ·
 **3 em implementação posterior** (§4) · **3 abertos** (§3). Soma: 32.
 
+> 🔴 **Desde 2026-08-15 o estado não é mais declarado por cifra aqui, e isso é decisão.** Toda contagem
+> escrita em prosa acerta no dia em que é escrita e mente a partir do dia seguinte — foi o que aconteceu com
+> as duas linhas acima, e é a mesma armadilha que o achado **32** registra para `arquitetura/04`.
+>
+> **O que esta spec afirma agora é a RELAÇÃO, não o total:** *todo número emitido aparece em exatamente uma
+> das §3, §4, §5 ou §6* — nenhum some, nenhum aparece duas vezes, nenhum é reaproveitado. Quem quiser a
+> contagem a conta: `grep -cE "^\| [0-9]+ \|"` na seção que interessa. As duas linhas acima ficam como
+> **registro datado** de triagens que aconteceram, não como estado corrente.
+
 ---
 
 # 3. Achados ABERTOS — a dívida de verdade
 
-> **Reduzida de 14 para 3 em 2026-08-07** (síntese das plans 06/07/09/12): 12 achados fecharam por conserto de
-> código, e 1 achado novo (32) entrou, medido de passagem pela `plan-12`. O detalhe de cada fechamento está em
-> §6.
+> **Como esta seção se move, e por que ela não declara total.** Achado entra pelo próximo número livre e sai
+> quando fecha — por **conserto** ou por **não se reproduzir**, e os dois motivos são escritos com todas as
+> letras na §6, porque não são a mesma coisa. O histórico de cada movimento vive no `git` e no veredito da
+> plan que o causou; repeti-lo aqui transformaria a spec em changelog, que é o que a §1 diz que ela não é.
 >
-> **De 3 para 2 em 2026-08-08:** o achado **29** fechou a metade que faltava e saiu para a §6.
->
-> **De 2 para 1 em 2026-08-09:** o achado **32** fechou e saiu para a §6 — a prosa deixou de citar um total.
->
-> **De 1 para 4 em 2026-08-10:** o **17** fechou com a `plan-19` (o `playwright.config.ts` era órfão e foi
-> deletado) e **quatro achados novos foram numerados** — **33** a **36**. Eles vinham sendo carregados só em
-> relatório de plan desde a campanha de gates, o que contraria a §8: *"achado novo pega o próximo número
-> livre"*. **Dois deles já tinham sido reportados por mais de um executor como "pré-existente, fora do
-> escopo"** — que é exatamente o sintoma de achado sem número.
->
-> **Mais dois em 2026-08-10, da revisão da `plan-24`:** **37** (parêntese a mais no `SarakToast`) e **38**
-> (`--sarak-status-*-color-bg` consumida e nunca emitida). Ambos **medidos**, ambos com o gate calado.
-> **Um terceiro NÃO entrou:** a suíte emite 19× `Could not parse CSS stylesheet` e eu **não atribuí causa** —
-> pela §8, suspeita não vira linha aqui. *(O número caiu para 6 e depois 4 conforme o CSS emitido mudou, o que
-> descarta causa única estática — mas segue sem atribuição.)*
->
-> **E o 39 em 2026-08-11, da `plan-25`:** o gerador de gabarito de tema produz arquivo que **não faz parse**.
-> É o achado mais caro dos cinco, porque **quebra o segundo passo do fluxo documentado de criação de tema** —
-> e passou dois ciclos despercebido porque o aceite contava chaves em vez de validar valores.
->
-> **E o 40 em 2026-08-11**, achado **no console de um consumidor real** durante a validação da `plan-27`: a
-> lib injeta duas chaves e depois descarta as próprias chaves, em laço. **É o achado 34 voltando** — ele foi
-> aceito porque *"a exposição medida na base é zero"*, e a exposição deixou de ser zero. **Dívida aceita não
-> é dívida resolvida**; ela volta quando o contexto muda, e o registro é o que permite reconhecê-la.
->
-> ✅ **O 40 abriu e fechou no mesmo dia** e já saiu para a §6 — corrigido junto com a recalibragem da
-> `plan-25`, por despacho do dono. Restam **cinco** abertos.
+> ⚠️ **Dívida aceita não é dívida resolvida.** O achado **34** foi aceito porque *"a exposição medida na base
+> é zero"* — e voltou como **40** quando a exposição deixou de ser zero, achado no console de um consumidor
+> real. É a razão de os números fechados continuarem registrados: permitir reconhecer o reincidente.
 
 ## 3.1 Segurança e medição
 
-> O achado **17** fechou com a `plan-19` e saiu para a §6. A categoria voltou a encher no mesmo dia: **33** e
-> **35** entraram com a campanha de gates, **37** e **38** com a revisão da `plan-24`, **39** com a `plan-25`
-> e **40** com a `plan-27` — este último já **fechado** (§6). É a categoria de *gate que mede errado ou não
-> mede*, e as cinco linhas abaixo são todas disso.
+> **Esta categoria esvaziou e voltou a encher — é o comportamento esperado dela.** Os cinco achados que a
+> ocupavam (**33**, **35**, **37**, **38**, **39**) saíram para a §6 em 2026-08-15: três **corrigidos**, dois
+> por **não se reproduzirem** — e a distinção entre os dois motivos está registrada lá, porque "ninguém
+> consertou nada, a premissa é que estava errada" não é a mesma coisa que "foi consertado".
 >
-> ⚠️ **Três dos seis já numerados aqui (38, 39, 40) foram achados OLHANDO O CONSUMIDOR**, não a suíte. A base
-> tinha 1180 testes verdes e nenhum deles via qualquer um dos três. **Suíte verde não é produto correto** —
-> é o vão que a §4 desta spec existe para lembrar.
+> É a categoria de *gate que mede errado ou não mede*, e por isso ela **permanece mesmo vazia**: pelo
+> contrato da §8, é para cá que volta o próximo achado da classe.
+>
+> ⚠️ **Vários dos achados que passaram por aqui foram encontrados OLHANDO O CONSUMIDOR**, não a suíte — com a
+> base inteira verde e nenhum teste vendo nenhum deles. **Suíte verde não é produto correto**; é o vão que a
+> §4 desta spec existe para lembrar, e que a leva 47/49/50 reencontrou por caminho independente.
 
 | # | Achado | Onde | Regra | Destino |
 |---|---|---|---|---|
-| 33 | **Sem `.gitattributes` e com `core.autocrlf=true`**, qualquer `checkout`/`stash pop` reescreve `sarak-dev/` em CRLF; o gerador escreve LF e o `dev-kit:check` compara byte a byte ⇒ **falso "defasado"**. Foi reportado como "pré-existente, fora do escopo" por **dois** executores antes de a causa ser medida (`plan-18`) | raiz do repo · `scripts/generate-dev-kit.mjs` | **nenhuma** | **Corrigir** — `.gitattributes` com `eol=lf`, ou o checker normalizando antes de comparar |
-| 35 | **O detector de órfãs da `plan-20` perde entradas por ordem de propriedade.** O executor da `plan-21` mediu **27** com varredura própria contra as **24** do detector; as 3 a mais são `buttonHoverEffect`, `inputStyle`, `useTabularNums` | `gates/scripts/audit/auditor_ghostvars.mjs` | **R7** | **Corrigir** — o detector, não o manifesto |
-| 37 | **Parêntese a mais mata duas declarações do toast.** `var(--color-theme-card,#1e293b))` e `var(--sarak-text-main,#ffffff))` — CSS malformado é descartado pelo parser, então o toast fica **sem fundo e sem cor de texto próprios** e herda o que estiver atrás. Os dois nomes existem e **são emitidos**; o defeito é só a sintaxe. Nenhum gate olha a sintaxe de `var()` dentro de string | `src/components/atomic/Feedback/SarakToast.tsx:84-85` | **nenhuma** | **Corrigir** — 2 caracteres; e decidir se vale detector de `var()` desbalanceado |
-| 38 | **`--sarak-status-*-color-bg` é consumida e nunca emitida.** 5+ componentes usam `var(--sarak-status-error-color-bg, rgba(239,68,68,0.1))` como fundo de texto de status, mas `generateVariants` só existe em `primaryColor`, `secondaryColor`, `tertiaryColor` e `cardBackgroundColor` ⇒ **o fallback duro sempre vence, e o tema não controla esse fundo**. Medido na revisão da `plan-24`: o par texto-de-status reprova em **7/18** (erro) e **5/18** (sucesso) temas. O `auditor_ghostvars` **não pegou** — possível mesma raiz do achado **35** | `src/components/atomic/Templates/SarakForm.tsx:105-107` · `SarakTable.tsx:72` · `gates/scripts/audit/auditor_ghostvars.mjs` | **R7** | **Corrigir** — decidir entre emitir a variante ou trocar o nome consumido; **e** o detector, que é a metade de gate |
-| 39 | **`generate_theme_template.ts` gera arquivo que NÃO FAZ PARSE.** O **segundo comando** do workflow da skill `ui-criar-tema` emite `[object Object]` para os **40 de 422** tokens cujo `defaultValue` é um objeto `{mob,tab,desk}` — `designProps += \`${key}: ${value},\``, interpolação cega. Reproduzido pelo revisor: `TS1005: ',' expected` já na linha 75. **Sem reparo manual fora do fluxo, nenhum tema sai do papel.** Passou despercebido porque o aceite da `plan-24-1` contava **chaves** (422 ✓), nunca validou **valores** — régua do revisor, não falha do executor | `.agents/skills/ui-criar-tema/scripts/generate_theme_template.ts` | **nenhuma** | **Corrigir** — serializar objeto responsivo, ou achatar para o `desk` (a convenção que os 18 temas já usam). **E** um teste que compile a saída do gerador: contar chave não é validar |
+| 41 | **A derivação do nome do tema não trata dígito depois de hífen.** `themeId.replace(/-([a-z])/g, …)` só casa letra minúscula após o hífen, então `'tema-2-escuro'` vira `'tema-2Escuro'` — **identificador JS inválido**, e o arquivo gerado não compila. É a mesma classe do achado **39** (fechado): o gerador de tema emite o que não faz parse | `.agents/skills/ui-criar-tema/scripts/generate_theme_template.ts:30` | **nenhuma** | **Corrigir** — casar `[a-z0-9]`, e cobrir com um teste que compile a saída para um id com dígito |
+| 42 | **O consumidor não tem como declarar `span` num grid de 12 colunas.** `layoutGridTemplate: 'col-12'` funciona sem span desde a `plan-49` (o filho sem span recebe um default por breakpoint), mas **não existe `SarakGridItem` nem prop `span`** na superfície pública. Quem quiser o controle fino do grid de 12 colunas depende de escrever `col-span-*` do próprio bolso — o que funciona (o default do pai tem especificidade zero, `:where`), mas **não é contrato publicado**: não está no barril, no catálogo, nem em spec | `src/components/atomic/Layouts/SarakGrid.tsx` · `src/index.ts` | **nenhuma** | **Decidir** — publicar o contrato de span, ou declarar que `col-12` é para uso com classe própria do consumidor. Enquanto não decidir, é capacidade real e não documentada |
 
 ## 3.2 Violação de regra **já formada** que o gate agora vê, mas não corrige sozinho
 
@@ -145,7 +131,7 @@ regra (plan-06) → **só então** construir/ampliar as verificações.
 
 | # | O que falta | Onde | Regra que ele cobraria |
 |---|---|---|---|
-| 18 | **Medição de contraste WCAG AA.** ✅ **Medida em 2026-08-05 (`plan-12`, Lote C — parada obrigatória)**: **12 de 18 temas shippados falham** em pelo menos 1 dos 4 pares canônicos (texto/fundo), a maioria em `textColorMuted`, mas **4 falhas são de texto primário/secundário** — inclusive `minimalist-airy`, um dos dois `SARAK_REFERENCE_THEMES` que o consumidor clona como ponto de partida. Script de medição preservado fora do repositório (anexo da `plan-12`, reproduzido pelo revisor). **A construção do gate está parada**, aguardando o dono decidir: (1) todos os pares que os componentes realmente produzem — não só os 4 canônicos; (2) se `textColorMuted` é cobrado a 4,5:1 ou 3:1 (simulado: só resgata 1 dos 12); (3) o que fazer com os 19 pares em `rgba()`, pulados na medição | — | **R31** — AA garantido nos 18 temas shippados. Regra escrita, gate pendente de decisão de fronteira |
+| 18 | **Medição de contraste WCAG AA.** ✅ **O gate FOI construído** — `auditor_contraste` (`run_audit`) é a única trava da base que olha o **resultado** renderizado em vez da estrutura, e roda nos dois modos (claro e escuro), com **isenção nomeada** para os temas legados e exigência de contraparte para os não isentos ([[09-temas-e-presets]] §6.5). A descrição anterior desta linha — *"a construção está parada, aguardando o dono"*, com a cifra de temas reprovando — era anterior ao gate e envelheceu junto com ela; **a cifra corrente sai do próprio `run_audit`, nunca desta prosa**. O que **permanece** em implementação posterior é o alargamento da cobertura: os pares que os componentes de fato produzem (não só os 4 canônicos) e os pares em `rgba()`, hoje pulados por fundo não determinístico | `gates/scripts/audit/auditor_contraste.mjs` | **R31** — AA garantido nos temas shippados. Regra escrita, **gate existente**, cobertura ainda parcial e declarada |
 | 23 | **Gate de conteúdo sobre `sarak-ui/templates/`.** Medido: `kitFiles.mjs:16-22` não lista `templates/`; `tsconfig.json:20` é `include: ["src"]`; `check-package-contents.mjs` cobra **só presença** de 3 dos 5 itens — `componente-proprio.tsx` e `templates/ui-kit/` existem e **nada os cobra**. Template citando componente removido sai verde em tudo | `sarak-ui/templates/` | **R17**, cuja metade de prosa manual não tem gate. O achado 24 (fechado, §6) foi a prova de que já aconteceu |
 | 26 | **Automação que exercite um `install` de verdade.** Confirmado: **0 ocorrências** de `child_process`/`execSync` nos testes de `bin/scaffold/`. As provas de npm/pnpm/yarn foram feitas à mão, uma vez. Idem o `check --notify` do `predev` | — | Nenhuma regra escrita. Depende de CI (plan-05) e é o escopo da **plan-11** |
 
@@ -181,6 +167,11 @@ Registrados só para que a numeração não seja reaproveitada. O detalhe está 
 | 36 | **Fechado em 2026-08-10 (decisão do dono).** A "Regra de Ouro (Time Tracking)" saiu do `CLAUDE.md`: exigia a skill/MCP `time-tracking`, que não existe. Ficou no lugar um comentário com o motivo e um critério para regra nova naquele arquivo — verificável e com ferramenta existente, ou o lugar dela é uma spec |
 | 17 | **Fechado em 2026-08-10 (`plan-19`).** O conserto não foi ajustar o `testDir`: o `playwright.config.ts` era **arquivo órfão** — nenhum script o usava. O que roda é `playwright-ct.config.ts` (`testDir: './src'`), pelo `npm run test-ct`, e os 4 arquivos em `src/**/__e2e__/` são **component tests**, não E2E de navegador. O arquivo foi **deletado**; `npx playwright test` agora sai com **exit 1** e *"No tests found"* — falha alto em vez de passar em silêncio |
 | 32 | **Fechado em 2026-08-09.** `arquitetura/04-contrato-de-tokens-e-paridade.md:52` dizia `410/410/410` como estado resolvido; era 409 quando foi escrito e **422** hoje (a `plan-15` criou 13 tokens). O conserto não foi trocar o número: a linha **deixou de citar total**, porque total em prosa envelhece a cada token. A cifra vive em `sarak-dev/state.json` → `design.tokens` e é cobrada por `auditor_paridade.mjs`; a prosa afirma a **convergência**, não o valor |
+| 33 | **Fechado em 2026-08-12 (corrigido).** `.gitattributes` com `eol=lf` acabou com o falso "defasado" do `dev-kit:check` em `checkout`/`stash pop` sob `core.autocrlf=true` |
+| 35 | **Fechado em 2026-08-12 — NÃO SE REPRODUZ.** Ninguém consertou nada: a divergência 27×24 do detector de órfãs não se reproduziu na medição de 2026-08-12. A premissa do achado é que estava errada, e registrar isso como "corrigido" esconderia que o detector nunca foi alterado |
+| 37 | **Fechado em 2026-08-12 (corrigido).** Os dois parênteses a mais do `SarakToast` saíram; o toast voltou a controlar fundo e cor de texto pelo tema |
+| 38 | **Fechado em 2026-08-12 — NÃO SE REPRODUZ.** Mesma natureza do **35**: a emissão de `--sarak-status-*-color-bg` não se reproduziu como ausente na medição de 2026-08-12. Nada foi alterado no `generateVariants` |
+| 39 | **Fechado em 2026-08-12 (corrigido).** O gerador de gabarito de tema passou a serializar `defaultValue` objeto (`{mob,tab,desk}`) em vez de interpolar cego — a saída volta a compilar. O defeito irmão, de derivação de **nome**, continua aberto como achado **41** (§3.1) |
 | 29 | **As duas metades fecharam.** Gate: `check-section-pointers.mjs` (`plan-12`, 2026-08-05). Código: verificado fechado pelo revisor em **2026-08-08** — `scripts/dev-kit/renderDevAppendix.mjs` **não emite mais** `§5.1`, e `sarak-dev/GUIA-MANUTENCAO.md:308` regenerado aponta `§2` (paridade), o alvo correto. Medido rodando `npm run dev-kit` e recontando: **0 ocorrências** de `§5.1` no guia e no `state.json` |
 | 30 | **Não se reproduz** (verificado 2026-08-01). Dizia que `verify_presets.ts:16` apontava para um `arquitetura/04 §9` inexistente. O alvo existe e é o certo: `04-contrato-de-tokens-e-paridade.md:252` = `# 9. Anti-drift de tema e preset` — exatamente o assunto do script. A reescrita da base (plan-01) criou o §9 |
 | 31 | **Não se reproduz** (verificado 2026-08-01). Dizia que a ponte para `specs/` era SOFT. `CLAUDE.md:3` hoje aponta **duro** para `specs/00-contexto.md`, os dois prompts e o `00-indice`. `.agents/index.md` segue com 0 referências a `specs/`, mas a ponte não passa mais por ele |

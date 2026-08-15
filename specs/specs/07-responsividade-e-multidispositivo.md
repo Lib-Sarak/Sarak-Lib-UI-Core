@@ -141,6 +141,7 @@ Cada linha foi **conferida no código**, e cada uma tem teste identificado.
 | **`SarakAppChrome`** | **celular:** barra + hambúrguer + drawer acessível (`aria-expanded`, foco preso, ESC, scroll travado) · **tablet:** topbar compacta · **desktop:** sidebar OU topbar por `navigationStyle` | `SarakAppChrome.tsx:170-172`; mobile em `SarakAppChromeMobile.tsx` | `SarakAppChrome.viewport.test.tsx`, `SarakAppChromeMobile.test.tsx` |
 | **Slots do cromo** | migram, nunca desaparecem (sidebar→drawer, topbar→compacta, faixas full-width em todos) | `chrome/ChromeFrame.tsx:20-24` | `chrome/__tests__/` |
 | **`SarakGrid`** | `templateColumns` **string** vira **`1fr` no celular**; `ResponsiveValue` é resolvido no device | `SarakGrid.tsx:44-53` | `SarakGrid.test.tsx`, `SarakLayoutsResponsive.test.tsx` |
+| **`SarakGrid` SEM `templateColumns`** — o caminho zero-config, e o mais usado | delega à estratégia do Design Engine (`layoutGridTemplate`). O default `auto-fit` dá células de **no mínimo 280px**, e o número de colunas é resolvido pelo **próprio CSS Grid** em runtime — sem depender de container query. `col-12` dá **12 trilhas**, e o filho que não declara span recebe um default por breakpoint (§6.1) | `useStructuralStyles.presets.ts` (`GRID_LAYOUT_STRATEGIES`); `useStructuralStyles.ts:23,41` | `useStructuralStyles.test.ts`, `useStructuralStyles.presets.test.ts`, `SarakGrid.test.tsx` |
 | **`SarakFlex`** | `wrap` **liga por default** — itens quebram em linhas em vez de transbordar; `direction` aceita `ResponsiveValue` | `SarakFlex.tsx:16-21,46-48,58` | `SarakFlex.test.tsx`, `SarakLayoutsResponsive.test.tsx` |
 | **`SarakSplitPane`** | **celular:** painéis **empilham** em coluna full-width, **sem a divisória de arraste** (não faz sentido em touch estreito); tablet/desktop mantêm o split | `SarakSplitPane.tsx:18-21,32` | `SarakSplitPane.test.tsx` |
 | **`SarakDataTable`** | **celular:** colapsa para `SarakDataCards`; **opt-out explícito** `responsive={false}` | `SarakDataTableImpl.tsx:41-42,71,74,77` | `SarakDataTableImpl.test.tsx`, `SarakDataCards.test.tsx` |
@@ -185,6 +186,45 @@ A camada 3 é a razão de `@container` aparecer na raiz do Shell (`SarakShell.ts
 reagem à largura **disponível**, não à do viewport — é o que faz um card se comportar igual dentro de uma
 sidebar estreita e de uma página larga.
 
+## 6.1 As quatro regras de operação da camada 3
+
+A camada 3 tem quatro modos de falhar **em silêncio** — nos quatro, a classe está no DOM, todo gate passa
+verde e nada acontece na tela. Por isso são regras, não recomendações.
+
+**1. Quem emite container query é responsável por garantir o container.** Uma container query pergunta ao
+**ancestral** com `container-type`; sem ele a regra **nunca casa** — não há fallback para viewport, o
+elemento fica no valor base para sempre. E o elemento **nunca é container de si mesmo**: `container-type`
+no mesmo elemento da classe `@min-[…]` não faz a query dele casar. O container vai num **ancestral**.
+
+Por isso todo componente que consome `getGridStyles`/`getResponsiveStackStyles`/`getHeaderStyles`/
+`getResponsiveSpacingStyles` planta o seu próprio `@container`, em vez de depender de haver um `SarakShell`
+acima. Cobrado por `container-query-boundary:check`. Caso especial: componente que renderiza em
+`createPortal` planta o container na raiz **do portal**, não na raiz do componente — o portal escapa da
+subárvore no DOM real.
+
+**2. Nome de classe se escreve LITERAL.** O scanner do Tailwind lê o arquivo como **texto**: classe montada
+por interpolação de template literal nunca vira classe válida, e a regra correspondente **nunca é gerada**.
+A amarração com a constante do breakpoint mora no **teste**, que compara a forma literal contra a
+interpolada e pega a deriva. Cobrado por `container-query:check`.
+
+**3. Nunca soletre um nome de classe completo em comentário de código.** O scanner não distingue comentário
+de código: um nome de classe completo dentro de um comentário vira **candidato**, e um valor inválido no
+lugar da medida derruba `npm run build` com `SyntaxError: Invalid media query` no `lightningcss`. Cite só o
+prefixo, ou descreva sem formar candidato — mantendo prefixo, medida e utilitário em trechos separados por
+texto comum.
+
+**4. Trocar um default não conserta uma opção quebrada — só muda quem cai nela.** Enquanto o valor existir
+no schema, ele chega por **duas portas que nenhum default alcança**: o tema **persistido** (valor salvo
+vence default por desenho — ver [[09-temas-e-presets]]) e a **escolha do usuário no painel**. Um valor
+oferecido no schema é um contrato com o usuário final: ou ele **funciona**, ou sai do schema. É o que
+sustenta o default de span do `col-12` (§5) existir em vez de o `col-12` ter sido simplesmente abandonado.
+
+> **O que nenhum teste deste repositório pode provar.** `jsdom` não tem motor de layout e não resolve
+> cascata de stylesheet: não avalia container query, não mede largura de coluna e não decide especificidade.
+> Teste aqui prova **classe emitida** e **DOM**; o desenho se prova em **navegador real**, e o que o CSS
+> publicado contém se prova **lendo o artefato**. Todo teste da camada 3 declara, no próprio corpo, qual das
+> três coisas ele prova — confundir cobertura com prova é a origem comum dos quatro modos de falha acima.
+
 # 7. ⚠️ Armadilhas de validação (as duas que já custaram uma reprovação errada)
 
 ## 7.1 BUILD STALE não é bug de código
@@ -195,6 +235,12 @@ A reprovação do cromo mobile numa rodada do ciclo 40.x **não era bug**: o có
 
 **Regra derivada:** antes de acusar bug de responsividade num consumidor, **confirme qual build está
 instalado**. `dist/BUILD_INFO.json` existe exatamente para isso.
+
+**E depois faça a pergunta seguinte, que é onde a armadilha realmente mora:** *o build instalado é o que o
+**navegador executa**?* São coisas diferentes — entre o pacote em disco e a tela existe ainda o cache de
+pré-bundle do bundler, que não se invalida quando a lib é reconstruída na mesma versão. Confirmar só o
+pacote responde metade da pergunta e encerra a investigação no lugar errado. O procedimento das duas
+camadas, e o aviso que as cobre, estão em [[13-instalacao-e-atualizacao]].
 
 ## 7.2 Teste com `overrideDevice` NÃO exercita a detecção real
 

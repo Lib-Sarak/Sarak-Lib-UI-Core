@@ -72,7 +72,9 @@ Ele roda os 12 na ordem abaixo, cada um em processo próprio:
 | Limites de gate | `npm run gate-limits:check` | Todo gate declara, no cabeçalho, o que não vê | **R18** | ~0,3 s |
 | Tipos de token | `npm run token-types:check` | `design-token-ids.ts` commitado == gerado agora a partir do schema | **R4 · R29** | precisa do schema |
 | Sincronia plan × índice | roda no Anel 1, condicional | `status` do frontmatter de cada plan bate com a coluna do [[00-indice]] | — *(vão 12, fechado)* |
-| Container query literal | `npm run container-query:check` | Nenhum arquivo de produção monta classe `@min-[…]` por interpolação de template literal, **e** `sarak-base.css` restringe o scan do Tailwind (`source(none)` + `@source` explícito) | — *(plan-39)* | ~0,3 s |
+| Container query literal | `npm run container-query:check` | Nenhum arquivo de produção monta classe `@min-[…]` por interpolação de template literal, **e** `sarak-base.css` restringe o scan do Tailwind (`source(none)` + `@source` explícito), **e** todo nome de classe de container query tem medida **válida** | — *(plan-39 · endurecido pela plan-44)* | ~0,3 s |
+| Container garantido | `npm run container-query-boundary:check` | Arquivo de produção que **chama** `getGridStyles`/`getResponsiveStackStyles`/`getHeaderStyles`/`getResponsiveSpacingStyles` contém a classe `@container` em algum elemento — quem emite container query planta o container ([[07-responsividade-e-multidispositivo]] §6.1) | — *(plan-41)* | ~0,3 s |
+| Tipos públicos | `npm run public-types:check` | Todo tipo citado em assinatura pública é **importável pelo nome** a partir do barril — o `barrel:check` cobre componente, não tipo | — *(plan-45)* | ~1 s |
 
 > ⚠️ **`container-query:check` (plan-39) — o que ele NÃO vê, declarado no próprio cabeçalho (R18):** é
 > **estático** — não constrói CSS. Prova só que o **nome** da classe está soletrado literal no arquivo; não
@@ -90,6 +92,21 @@ Ele roda os 12 na ordem abaixo, cada um em processo próprio:
 > plan: uma classe de container query inválida, citada em prosa em duas plans (`plan-35`, `plan-39`), virou
 > uma media query inválida e quebrou `build:css:scoped`. Essa checagem também é textual — não valida se o
 > glob do `@source` continua amplo o bastante para cobrir todo `.ts`/`.tsx` de produção.
+
+> ⚠️ **`container-query-boundary:check` (plan-41) — o que ele NÃO vê:** é **textual e por arquivo** — prova
+> que a string `@container` existe **em algum lugar** do mesmo arquivo que chama um dos quatro produtores de
+> classe. **Não prova ancestralidade real em JSX**: um `@container` num elemento *irmão* passaria e
+> continuaria quebrado em runtime. Não prova que a query **casa** (isso é browser real). É
+> super-conservador em `getGridStyles` — marca até o caso `'auto-fit'`, que não usa container query, porque
+> a estratégia é resolvida em runtime pelo tema. E não enxerga composição **entre** arquivos: hoje todo
+> chamador se autossustenta, mas quem viesse a depender de um ancestral declarado em outro arquivo seria
+> acusado sem motivo.
+
+> ⚠️ **`public-types:check` (plan-45) — o que ele NÃO vê:** cobre tipo que aparece **diretamente** como tipo
+> de prop, parâmetro ou retorno público. Tipo que só existe como **detalhe de composição interna** de outro
+> tipo público (membro de interseção, alias local) fica fora de propósito — não é vocabulário do consumidor.
+> As exclusões são **nomeadas uma a uma**, com motivo, em `gates/allowlists/publicTypeExclusions.mjs`; o
+> gate não tem categoria genérica de dispensa.
 
 **Os três gates que não estão nesta tabela porque não são de contrato**, e as regras que cobram:
 
