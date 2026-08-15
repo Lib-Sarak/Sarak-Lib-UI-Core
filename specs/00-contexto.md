@@ -194,7 +194,7 @@ Detalhe completo em [`specs/03-versionamento-e-release.md`](specs/03-versionamen
 | Criar preset parcial | `specs/09-temas-e-presets` | skill local `ui-criar-preset` |
 | Auditar a base / validar um PR | `specs/01-gates-e-baseline` | skill local `ui-auditoria-modulo` |
 | Instalar a lib num consumidor | `specs/12` + `specs/13` | skill local `ui-integra-consumidor` |
-| **Atualizar** a lib num consumidor (≠ instalar) | `specs/13` §9.1 — as duas camadas de cache | skill local `ui-integra-consumidor` |
+| **Atualizar** a lib num consumidor (≠ instalar) | `specs/13-instalacao-e-atualizacao` — as duas camadas de cache entre o `dist/` e o navegador | skill local `ui-integra-consumidor` |
 | Mexer no Shell, rotas ou módulos-plugin | `specs/04-shell-e-discovery` | [[00-knowledge]] |
 | Mexer no cromo ou nos slots | `specs/05-cromo-e-slots` | [[00-knowledge]] |
 | Alterar a superfície pública (barril) | `arquitetura/03` + `specs/00-regras-e-invariantes` | [[00-knowledge]] |
