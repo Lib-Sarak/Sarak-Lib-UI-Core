@@ -54,8 +54,7 @@
         "preversion": "npm run gates:full",
         "version": "npm run guide && npm run build && npm run dev-kit && git add package.json package-lock.json dist sarak-ui sarak-dev",
         "postversion": "git push --follow-tags",
-        "prepublishOnly": "npm run build && npm run package:check",
-        "test-ct": "playwright test -c playwright-ct.config.ts"
+        "prepublishOnly": "npm run build && npm run package:check"
     },
     "exports": {
         ".": {
@@ -100,8 +99,6 @@
         "tailwindcss": ">=4.0.0"
     },
     "devDependencies": {
-        "@playwright/experimental-ct-react": "^1.60.0",
-        "@playwright/test": "^1.44.0",
         "@tailwindcss/vite": "^4.3.0",
         "@tanstack/react-virtual": "^3.14.3",
         "@testing-library/dom": "^10.4.1",
