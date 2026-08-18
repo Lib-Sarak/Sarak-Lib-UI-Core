@@ -159,16 +159,19 @@ npm version <major|minor|patch>
 | Gancho | Quando o npm roda | O que faz aqui |
 | --- | --- | --- |
 | `preversion` | ANTES do bump | `npm run gates:full` (build + `package:check` + suíte). **Falhou, não versiona.** |
-| `version` | DEPOIS do bump, ANTES do commit | `npm run guide && npm run build` e `git add` de `dist/` + `sarak-ui/` |
+| `version` | DEPOIS do bump, ANTES do commit | `npm run guide && npm run build && npm run dev-kit`, e `git add` de `dist/` + `sarak-ui/` + `sarak-dev/` — os **três** artefatos gerados que carimbam a `version` |
 | `postversion` | depois do commit e da tag | `git push --follow-tags` |
 
 Formato da tag: **`vX.Y.Z`**, anotada, criada pelo próprio `npm version`.
 
-> 🔴 **O gancho `version` regenera o kit do CONSUMIDOR e esquece o do MANTENEDOR — e isso deixa toda release
-> com o `dev-kit:check` vermelho** *(medido pelo revisor em 2026-08-18)*. Ele roda `npm run guide` e
-> `npm run build`, e faz `git add` de `dist/` + `sarak-ui/`; **não** roda `npm run dev-kit` nem adiciona
-> `sarak-dev/`. Como `sarak-dev/state.json` carimba a `version` do `package.json`, o artefato commitado na
-> tag fica sempre **um release atrás**:
+> ⚠️ **Os TRÊS kits entram na tag, e o terceiro custou uma correção para entrar.** O gancho regenera o kit
+> do consumidor (`guide`), o `dist/` (`build`) **e** o kit do mantenedor (`dev-kit`) — porque os três
+> carimbam a `version` do `package.json`. Deixar qualquer um de fora produz uma tag cujo artefato diz uma
+> versão diferente da que ela aponta.
+>
+> **O que acontece quando o `dev-kit` fica de fora — registro, para ninguém "simplificar" o gancho de volta.**
+> Até 2026-08-18 ele não estava ali, e o efeito era determinístico: `sarak-dev/state.json` entrava na tag
+> sempre **um release atrás**.
 >
 > | Tag | `package.json` | `sarak-dev/state.json` |
 > |---|---|---|
@@ -176,13 +179,10 @@ Formato da tag: **`vX.Y.Z`**, anotada, criada pelo próprio `npm version`.
 > | `v5.0.0` | 5.0.0 | **4.0.1** |
 > | `v6.0.0` | 6.0.0 | **5.0.0** |
 >
-> **Três tags, três defasagens — é determinístico, não azar.** E o efeito é circular: `preversion` roda
-> `gates:full`, cujo **primeiro** gate é o `dev-kit:check`, então **cada release é bloqueada pela anterior**
-> até alguém rodar `npm run dev-kit` à mão e commitar. O [[00-contexto]] §3.1 descreve esse bloqueio como
-> consequência de *"qualquer leva que mude contagem"*; a causa determinística é esta, e é do próprio ritual.
->
-> **Não é corrigido aqui** — o conserto é uma linha no `package.json`, e spec não altera código. Está na
-> `plan-51`, na fila do [[00-indice]].
+> **Três tags, três defasagens — e o efeito era circular:** `preversion` roda `gates:full`, cujo **primeiro**
+> gate é o `dev-kit:check`; uma release deixava a seguinte bloqueada até alguém rodar `npm run dev-kit` à mão.
+> É a razão de o [[00-contexto]] §3.1 avisar que esse gate *"é o primeiro a barrar"* — a causa determinística
+> era o próprio ritual, não a leva de trabalho.
 
 ## 6.1 O defeito estrutural que o gancho `version` corrige
 

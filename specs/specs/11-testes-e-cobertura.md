@@ -4,7 +4,7 @@ titulo: "Testes e cobertura — a regra 1:1, os gates-teste e as lacunas honesta
 dominio: "Sarak-Lib-UI-Core / Qualidade / Testes"
 status: "🟢 Vigente"
 prioridade: "Alta"
-tags: ["spec", "testes", "cobertura", "vitest", "playwright", "gates", "divida-tecnica"]
+tags: ["spec", "testes", "cobertura", "vitest", "gates", "divida-tecnica"]
 relacionados: ["[[00-regras-e-invariantes]]", "[[01-gates-e-baseline]]", "[[02-enforcement-por-commit]]", "[[04-shell-e-discovery]]", "[[10-seguranca-e-acessibilidade]]"]
 ---
 
@@ -85,6 +85,38 @@ mock de demonstração. É onde o bug de estado mora.
 Rodar pasta a dedo esconde snapshot de terceiro que quebrou. Isto não é preferência de estilo — **já custou
 uma spec aprovada com snapshot vermelho fora da pasta olhada** ([[01-gates-e-baseline]] §2.4).
 
+## 3.5 O que "suíte verde" significa — e o limite medido
+
+**A suíte fecha verde e não foi provada determinística.** Em 2026-08-13 e 2026-08-14 ela falhou duas vezes,
+sempre com a mesma assinatura — **1 arquivo, 2 testes** —, e as execuções seguintes passaram. **Os testes
+nunca foram nomeados**, porque a falha não voltou a se reproduzir sob medição controlada:
+
+| Amostra | Execuções | Falhas | Teto a 95% *(regra dos 3)* |
+| --- | --- | --- | --- |
+| Base onde o defeito foi **observado** | 26 | 0 | **11,5%** |
+| Base **posterior** | 20 | 0 | **15,0%** |
+
+> ⚠️ **As duas amostras não se somam.** Elas rodaram sobre bases de código **diferentes** — três commits e
+> +31 testes entre uma e outra. Agregá-las num `n=46` produziria um teto de 6,5%, mais otimista do que a
+> evidência sustenta, porque supõe que o defeito independe da base — que é justamente o que não se sabe.
+>
+> **Não está descartado — está sem nome.** Pode ser raro, ou pode ter morrido por acidente nas mudanças que
+> entraram no meio. Com os dados disponíveis, as duas leituras são igualmente defensáveis.
+
+**Consequência prática:** *"a suíte fechou verde"* é evidência forte, não prova de determinismo. Onde o
+aceite de uma plan depender disso, o número de execuções faz parte da evidência — uma execução é uma amostra.
+
+### O procedimento de captura — a parte que sobrevive a este caso
+
+> **Grave a saída INTEIRA em arquivo, a cada execução, ANTES de olhar qualquer coisa.**
+
+`tail` e `grep` **durante** uma execução que pode não se repetir destroem a única evidência que importa: o
+bloco `Failed Tests` do Vitest. Foi assim que a falha original se perdeu **duas vezes** — na segunda, quem
+investigava rodou de novo para capturar e a execução passou, apagando o rastro.
+
+Vale para qualquer laço de investigação, não só para este: **quem canaliza a saída fotografa depois do
+acidente.**
+
 # 4. Os gates-teste — teste que é gate de ARQUITETURA
 
 Categoria própria: não verificam comportamento de componente, verificam **invariante estrutural**. Todos
@@ -134,7 +166,7 @@ verificou cada arquivo antes de nomeá-lo.
 | `environment: 'jsdom'` | é biblioteca de UI; quase todo teste monta DOM |
 | `globals: true` | `describe`/`it`/`expect` sem import em nenhum arquivo de teste |
 | `pool: 'forks'` + `execArgv` | ver o quadro abaixo |
-| `exclude` de `__e2e__` e `*.spec.*` | **são Playwright, não Vitest** (§7) |
+| `exclude` de `__e2e__` e `*.spec.*` | herança do aparato Playwright, **removido em 2026-08-18** (§7). Os padrões ficaram: hoje **não casam nada**, e removê-los sem necessidade seria mexer em config de teste sem motivo |
 
 > ## ⚠️ As DUAS lições do OOM — nenhuma é sobre memória
 >
@@ -160,8 +192,7 @@ Onde a diferença mora:
 | Grupo | Roda em `vitest run`? |
 | --- | --- |
 | Testes de `src/`, `bin/`, `scripts/` (`*.test.*`) | ✅ sim — são a maior parte dos arquivos coletados |
-| `*.spec.ts(x)` (Playwright) | ❌ **excluídos** — são Playwright |
-| `**/__e2e__/**` | ❌ excluídos |
+| `*.spec.ts(x)` · `**/__e2e__/**` | ❌ excluídos — padrões **órfãos** desde a remoção do aparato (§7); não casam nenhum arquivo hoje |
 
 > A contagem de "arquivos" do Vitest não é comparável um-a-um com `find … -name "*.test.*"`: o Vitest conta
 > **arquivos coletados** dentro das raízes que ele varre, com o `exclude` aplicado. O ponto que importa é o
@@ -189,37 +220,47 @@ lib não injeta `Authorization`", [[10-seguranca-e-acessibilidade]] §3.1).
 **Estado hoje:** `auditor_coverage` cobre as seis raízes e reporta **0 órfãos**, de verdade — não mais
 "0 órfãos dentro de um recorte que deixava três arquivos de fora".
 
-# 7. E2E — o estado HONESTO
+# 7. E2E e regressão visual — NÃO EXISTEM nesta base
 
-**O que existe:**
+> **Não há teste de ponta a ponta nem de regressão visual neste repositório.** Não é lacuna a descobrir: é
+> estado declarado.
 
-| Peça | Estado |
-| --- | --- |
-| `playwright-ct.config.ts` + `npm run test-ct` | ✅ funciona — `testDir: './src'`, `testMatch: /.*\.spec\.tsx?$/`, snapshots em `./__snapshots__`, harness em `playwright/index.tsx` |
-| `src/features/DesignEngine/__e2e__/Boot.spec.tsx` | existe |
-| `src/features/DesignEngine/__e2e__/RealtimeInjection.spec.tsx` | existe |
-| `src/core/Provider/__e2e__/EmbeddedNoLeak.spec.tsx` | existe — **exige `npm run build` antes** |
-| `src/components/atomic/Templates/__tests__/Spec21.spec.tsx` | existe — é `.spec.tsx` **dentro de `__tests__/`**, então o Vitest o exclui e o CT o coleta |
+O aparato Playwright CT foi **removido em 2026-08-18** (decisão do dono, tomada duas vezes — 2026-08-10 e
+2026-08-11) por produzir **verde falso**: cobertura que existia no repositório e **não rodava em pipeline
+nenhum**. Saíram o **playwright-ct.config.ts**, o script **test-ct**, as duas dependências (`@playwright/test`,
+`@playwright/experimental-ct-react`), o harness da raiz, os 4 arquivos de `src/**/__e2e__/` e o
+**Spec21.spec.tsx** — 8 casos de regressão visual que dependiam do mesmo aparato — com seus 12 PNGs de
+referência, dos quais **4 já não correspondiam a teste nenhum**.
 
-**O que NÃO existe, e é o ponto:**
+**A suíte não perdeu um teste sequer**, e o motivo é mecânico: o `exclude` do Vitest (§5) nunca coletou
+nenhum deles.
 
-1. ❌ **Nada disso roda em pipeline automático.** Não no `build`, não em hook, não em CI — que não existe.
-   Todos são executados **à mão, quando alguém lembra**. Cobertura que existe e não é cobrada.
-2. ❌ **`playwright.config.ts` não existe mais.** Era arquivo órfão — apontava para `./e2e`, que nunca
-   existiu, e nenhum script do `package.json` o usava. Foi **deletado** pela `plan-19` (achado 17 em
-   [[15-divida-conhecida]] §6): `npx playwright test` com o config default hoje sai com `exit 1` e
-   *"No tests found"* — falha alto em vez de passar em silêncio. O que resta, e funciona, é
-   `playwright-ct.config.ts` via `npm run test-ct`, fora de automação (item 1 acima).
-3. ❌ **Nenhuma jornada de usuário ponta a ponta em browser real.** Os 4 `.spec` são component testing —
-   valiosos, mas não são "login → navega → troca tema → persiste".
+## 7.1 O que se perdeu, nomeado
 
-> **Registrado como LACUNA, não como plano concluído.** A spec antiga de cobertura
-> *(`05-cobertura-de-testes.md`, **removida** na reescrita da base — histórico no git)* listava
-> "Integração Playwright/Cypress" e "fluxos de painel em DOM real" como **próximo passo** — e ali estão,
-> ainda próximos. A diferença é que agora está escrito **por que** não avançou: sem CI, um E2E manual não
-> tem quem o execute.
->
-> CI é a **Fase A da Campanha 2** (decisão D9), e é ela que destrava isto.
+| Cobertura que existia | Onde vivia | Situação hoje |
+| --- | --- | --- |
+| Não-vazamento do modo embarcado medido em **CSS renderizado** (R24) | **EmbeddedNoLeak.spec.tsx** | **conferência manual** |
+| Boot do painel do Design Engine pintado num browser | **Boot.spec.tsx** | sem equivalente |
+| `var()` **resolvendo** de fato no motor de CSS | **RealtimeInjection.spec.tsx** | sem equivalente |
+| Regressão visual de 8 componentes | **Spec21.spec.tsx** | sem equivalente |
+
+**O denominador comum:** nenhum deles era substituível por `jsdom`, que **não resolve `var()` nem aplica
+cascata de stylesheet**. O que se perdeu foi a única prova de **CSS renderizado** que a base tinha.
+
+**Consequência para a R24:** a regra continua cobrada por `scopeCss.test.ts` e `EmbeddedMode.test.tsx`, mas
+os dois provam **estrutura** (seletor e classe corretos) — nenhum prova que o CSS **não vaza de fato**. É por
+isso que o marcador dela é **⚠️** em [[00-regras-e-invariantes]], e não ✅.
+
+## 7.2 A perda transversal: não há como medir browser
+
+Remover `@playwright/test` tirou do repositório **a única ferramenta capaz de medir comportamento em CSS e
+`var()` resolvidos num navegador real**. Isso alcança qualquer plan futura cujo critério de aceite dependa
+disso — as classes `@min-[…]` de container query são a família mais provável, e a própria
+[[07-responsividade-e-multidispositivo]] §6.1 avisa que *"o desenho se prova em navegador real"*.
+
+**Quem precisar medir em browser** reinstala a ferramenta pontualmente (`npm install --no-save
+@playwright/test` mais os browsers) ou espera a CI. **Não é regressão silenciosa** — está escrito aqui para
+ninguém descobrir no meio de um aceite.
 
 # 8. ✅ Cobertura percentual — ligada em 2026-08-05 (`plan-12`, R8.1), com piso móvel
 
@@ -252,7 +293,7 @@ biblioteca tem em lugar de um número solto:
 | --- | --- | --- |
 | 1 | ✅ **FECHADO em 2026-08-05** — `src/shared/`, `src/effects/`, `src/constants/` no escopo do gate (§6.1) | — |
 | 2 | ✅ **FECHADO em 2026-08-05** — cobertura % ligada, piso móvel (valor corrente em `gates/baselines/coverage-floor.json`, §8) | — |
-| 3 | **Nada de Playwright em automação** (§7). O `playwright.config.ts` órfão foi deletado (achado 17, [[15-divida-conhecida]] §6) — o que resta é `playwright-ct.config.ts` via `npm run test-ct`, executado à mão | destravado pela CI (`plan-05`, ainda não executada) |
+| 3 | ✅ **NÃO SE APLICA MAIS** — o aparato Playwright foi **removido** em 2026-08-18 (§7). Não há mais o que ligar a pipeline; o que existe é a **ausência declarada**, e o adiamento vive em [[15-divida-conhecida]] §4 | — |
 | 4 | **Nenhum gate de a11y** | [[10-seguranca-e-acessibilidade]] §5.1 |
 | 5 | ✅ **NÃO SE APLICA MAIS** — o `CustomizationPanel` deixou de ter abas inalcançáveis: os imports mortos **saíram** (2026-08-04, decisão do dono), não foram tornados alcançáveis. Não há mais aba para testar | [[06-painel-de-customizacao-e-preview]] §9.3 |
 | 6 | **Nenhum teste de detecção real por `resize`** com layout montado | [[07-responsividade-e-multidispositivo]] §8 item 5 |
@@ -300,7 +341,7 @@ Todos do jsdom, e nenhum indica problema:
 - [x] A regra 1:1 está descrita na forma **exata** que o auditor cobra, com as exclusões.
 - [x] Os gates-teste foram **verificados um a um** antes de listados — e o que não existe
       (`AuthCouplingGate`) aparece como ausente.
-- [x] A lacuna de E2E aparece **como lacuna**, incluindo o config morto apontando para `./e2e`.
+- [x] A ausência de E2E e de regressão visual aparece **declarada** (§7), com o que se perdeu nomeado item a item e a consequência para a R24.
 - [x] A cobertura percentual está descrita — *(atualizado 2026-08-07)* ligada em 2026-08-05, piso móvel
       (valor corrente em `gates/baselines/coverage-floor.json`), contra a afirmação sem medição da spec
       antiga.
@@ -314,8 +355,7 @@ Esta spec é verificada **executando-a**:
 | --- | --- |
 | `npx vitest run` | 100% verde — contagem corrente de arquivos/testes em [[01-gates-e-baseline]] §3 |
 | `node gates/scripts/audit/auditor_coverage.mjs` | `[OK] Todos os componentes possuem testes!` |
-| `npm run test-ct` | roda os 4 `.spec.tsx` (manual; `EmbeddedNoLeak` exige `npm run build` antes) |
 | `npm run coverage:check` | igual ou melhor que o piso corrente — a tabela datada de [[01-gates-e-baseline]] §3 tem o valor; §8 explica a mecânica |
 
-**A implementar (backlog, em ordem de valor):** (1) CI que execute suíte **e** Playwright (`plan-05`,
-ainda não executada); (2) teste de detecção real por `resize` com layout montado (§9 item 6).
+**A implementar (backlog, em ordem de valor):** (1) CI (`plan-05`, ainda não executada) — é ela que dá lugar a
+qualquer aparato de browser que volte; (2) teste de detecção real por `resize` com layout montado (§9 item 6).

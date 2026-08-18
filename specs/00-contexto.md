@@ -99,7 +99,8 @@ viola sem perceber:
 > Cada item aponta para a spec fixa em `arquitetura/` que o detalha. Esta seção é o índice, não o tratado.
 
 **Stack:** TypeScript + React `>=18` (peer) · Tailwind CSS `>=4` · build `tsup` (ESM + CJS + DTS) ·
-testes `vitest` + `playwright-ct` · gerenciador **npm** · distribuída por **git com tag**, sem registry
+testes `vitest` — **não há E2E nem regressão visual** ([[specs/11-testes-e-cobertura]] §7) · gerenciador
+**npm** · distribuída por **git com tag**, sem registry
 ([[adr/007-distribuicao-por-git]] · [[adr/008-releases-com-tag-e-semver-em-git]]). A versão vive em
 `package.json`; a linha publicada é `git tag`; e o **motivo de cada MAJOR** está em
 [`specs/03-versionamento-e-release.md`](specs/03-versionamento-e-release.md).
@@ -151,10 +152,10 @@ agente descobre do jeito difícil se não estiverem escritos:
   é **gerado** e carrega números recontados a cada geração; qualquer leva que mude contagem (testes, gates,
   arquivos) o defasa. O conserto é `npm run dev-kit` + commit — **nunca** editar os arquivos à mão, que
   morrem na próxima geração enquanto o gate volta a acusar.
-  > 🔴 **E há uma causa que não depende de leva nenhuma: o próprio ritual de release.** O gancho `version`
-  > regenera o kit do consumidor e o `dist/`, mas **não** o `sarak-dev/` — que carimba a `version`. Logo
-  > **toda tag sai com o kit do mantenedor um release atrás**, e a release seguinte já nasce bloqueada por
-  > ela. Medido em `v4.0.1`, `v5.0.0` e `v6.0.0`. Detalhe e conserto: [`specs/03-versionamento-e-release.md`](specs/03-versionamento-e-release.md) §6 · `plan-51`.
+  > ✅ **O ritual de release NÃO é mais uma dessas causas** *(desde 2026-08-18)*. O gancho `version` passou a
+  > regenerar os **três** kits que carimbam a `version` — consumidor, `dist/` e `sarak-dev/` — no mesmo commit
+  > da tag. Antes disso, toda tag saía com o kit do mantenedor um release atrás e a release seguinte nascia
+  > bloqueada por ela. Detalhe em [`specs/03-versionamento-e-release.md`](specs/03-versionamento-e-release.md) §6.
 - **Ele publica sozinho:** `preversion` roda `gates:full`, `version` regenera `dist/` + `sarak-ui/` **no mesmo
   commit** (é o que o anel cobra) e `postversion` faz `git push --follow-tags`. Por isso a §7 o reserva ao usuário.
 

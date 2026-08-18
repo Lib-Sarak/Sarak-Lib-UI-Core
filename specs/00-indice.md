@@ -41,12 +41,8 @@ as duas, sempre, na mesma ação.**
 <!-- SARAK-INDICE:FILA:INICIO -->
 | # | Plan | Objetivo | Depende de | Status | Destino |
 |---|---|---|---|---|---|
-| 1 | [plan-51-release-deixa-o-kit-do-mantenedor-para-tras](plan/plan-51-release-deixa-o-kit-do-mantenedor-para-tras.md) | O ritual de release passa a regenerar o kit do mantenedor junto com o resto, e deixa de emitir toda tag com o sarak-dev defasado | — | 🟢 Aprovada | specs/specs/03-versionamento-e-release.md · specs/specs/14-artefatos-do-mantenedor.md |
-| 2 | [plan-48-piso-do-grid-content-aware-e-um-numero-solto](plan/plan-48-piso-do-grid-content-aware-e-um-numero-solto.md) | A largura mínima de célula que decide o layout de todo consumidor zero-config deixa de ser um literal invisível e passa a ser ajustável como qualquer outra decisão de layout | — | 🟢 Aprovada | specs/specs/07-responsividade-e-multidispositivo.md · specs/arquitetura/04-contrato-de-tokens-e-paridade.md · specs/specs/01-gates-e-baseline.md |
-| 3 | [plan-46-suite-intermitente](plan/plan-46-suite-intermitente.md) | Saber QUAIS são os dois testes que falham de forma intermitente, e então consertá-los ou declará-los como dívida com número — hoje 'suíte verde' é probabilidade, não fato | — | 🟢 Aprovada | specs/specs/11-testes-e-cobertura.md · specs/specs/15-divida-conhecida.md |
-| 4 | [plan-11-remover-e2e-falso-verde](plan/plan-11-remover-e2e-falso-verde.md) | Remover o aparato de E2E que produz verde falso, deixando a capacidade declarada como adiada | — | 🟢 Aprovada | specs/specs/11-testes-e-cobertura.md · specs/specs/15-divida-conhecida.md |
-| 5 | [plan-05-integracao-continua](plan/plan-05-integracao-continua.md) | Montar o pipeline: rodar os gates num ambiente que não é a máquina de ninguém, e fechar o único gate gerado que nenhum hook cobra | — | 🔴 A executar | specs/specs/16-integracao-continua.md · specs/specs/02-enforcement-por-commit.md · specs/specs/01-gates-e-baseline.md · specs/specs/14-artefatos-do-mantenedor.md |
-| 6 | [plan-10-ciclo-atualizacao](plan/plan-10-ciclo-atualizacao.md) | Dar comando de atualização a quem só recebia aviso | plan-05 | 🔴 A executar | specs/specs/13-instalacao-e-atualizacao.md |
+| 1 | [plan-05-integracao-continua](plan/plan-05-integracao-continua.md) | Montar o pipeline: rodar os gates num ambiente que não é a máquina de ninguém, e fechar o único gate gerado que nenhum hook cobra | — | 🔴 A executar | specs/specs/16-integracao-continua.md · specs/specs/02-enforcement-por-commit.md · specs/specs/01-gates-e-baseline.md · specs/specs/14-artefatos-do-mantenedor.md |
+| 2 | [plan-10-ciclo-atualizacao](plan/plan-10-ciclo-atualizacao.md) | Dar comando de atualização a quem só recebia aviso | plan-05 | 🔴 A executar | specs/specs/13-instalacao-e-atualizacao.md |
 <!-- SARAK-INDICE:FILA:FIM -->
 
 > **A ordem da coluna `#` não é a ordem do número da plan** — e isso é a feature, não um erro. Numeração é
@@ -66,47 +62,24 @@ as duas, sempre, na mesma ação.**
 > apagaria), dois achados novos foram numerados (**41** e **42**), e a spec passou a afirmar a **relação**
 > — todo número em exatamente uma seção — em vez de um total que envelhece no dia seguinte.
 >
-> **A fila é `51 → 48 → 46 → 11 → 05 → 10`.** As **quatro primeiras estão 🟢 Aprovadas e aguardam síntese**
-> *(2026-08-18)*; restam **duas** de execução — a `05` e a `10`. Enquanto a síntese não rodar, elas ficam aqui — é o
-> §4 desta spec que as remove, e só depois de o conteúdo virar verdade consolidada na spec fixa.
+> ⚪ **As plans 51, 48, 46 e 11 foram SINTETIZADAS e REMOVIDAS em 2026-08-18.** Os arquivos saíram; a
+> verdade delas vive nas specs fixas, e o rastro de execução no Git — `git log --diff-filter=D -- specs/plan/`
+> recupera qualquer uma. **Esta tabela é o destino demonstrado** que a [[00-contexto]] §5 exige de toda
+> remoção:
 >
-> 🟢 **A `plan-51` abriu a fila por ser a única BLOQUEANTE, e foi APROVADA em 2026-08-18.** Ela passou na
-> frente das cinco por um motivo medido, não por prioridade declarada: o gancho `version` do `npm version`
-> não regenerava `sarak-dev/`, então **toda tag publicada levava o kit do mantenedor um release atrás** —
-> `v4.0.1` levou 4.0.0, `v5.0.0` levou 4.0.1, `v6.0.0` levou 5.0.0. Como `preversion` roda `gates:full` e o
-> **primeiro** gate dele é o `dev-kit:check`, **o repositório não emitia release nenhuma** até isso fechar;
-> foi assim que ela apareceu — `dev-kit:check` vermelho numa árvore limpa, no HEAD `33fdef0`. O conserto foi
-> uma linha no `package.json`, com a não-reincidência provada por reprodução direta (veredito em `plan/51` §11).
-> **Aguarda commit do dono e depois `/spec-atualizar`;** enquanto não for sintetizada, fica aqui.
+> | Plan | Onde a verdade dela está agora |
+> |---|---|
+> | **51** | [[03-versionamento-e-release]] §6 — o gancho `version` regenera os **três** kits · [[14-artefatos-do-mantenedor]] §5 |
+> | **48** | [[07-responsividade-e-multidispositivo]] §2.1 e §5 — o token `layoutGridMinCell` · [[04-contrato-de-tokens-e-paridade]] (paridade **423**, estruturais **18**) · [[01-gates-e-baseline]] §3 |
+> | **46** | [[11-testes-e-cobertura]] §3.5 — o que *"suíte verde"* significa, com os tetos **por base** · [[15-divida-conhecida]] achado **44** |
+> | **11** | [[11-testes-e-cobertura]] §7 — a ausência declarada · [[15-divida-conhecida]] achado **45** · **R24 → ⚠️** em [[00-regras-e-invariantes]] |
 >
-> 🟢 **A `plan-48` foi APROVADA em 2026-08-18.** O literal `280px` do `minmax(280px,1fr)` — que decidia o
-> layout de todo consumidor zero-config sem ser token, sem ser alcançável e dentro de um vão declarado do
-> `auditor_hardcoded` — virou o token **`layoutGridMinCell`**, nas três fontes da paridade (**422 → 423**), com
-> o valor chegando ao CSS por `style.gridTemplateColumns` (`var()` não funciona em valor arbitrário de classe
-> Tailwind). O default efetivo **continua 280px**, e o revisor reproduziu a medição em Chromium.
-> **Aguarda commit e `/spec-atualizar`** — e a síntese dela toca **três** specs, não duas: a
-> [[01-gates-e-baseline]] §3 entrou no destino no veredito, porque afirma `422/422/422` em quatro lugares.
+> **A fila de execução é `05 → 10`, e é tudo que resta.** A `plan-05` monta o pipeline (CI **e** o
+> `dev-kit:check` no `pre-commit`, decisão do dono de 2026-08-18); a `plan-10` depende dela.
 >
-> 🟢 **A `plan-46` foi APROVADA em 2026-08-18 — medindo, não consertando.** A intermitência **não foi
-> reproduzida em 46 execuções controladas** e segue **sem nome**, então a plan fechou pela saída que ela mesma
-> autorizava: declarar. ⚠️ **O veredito corrigiu o número:** as 46 são **duas amostras de bases diferentes** —
-> 26 na base onde o defeito foi visto (1345 testes) e 20 numa base posterior (1376). Os tetos honestos são
-> **11,5%** e **15%** por base, não os 6,5% do agrupamento. **Não está descartada — está sem nome**, e pode
-> tanto ser rara quanto ter morrido por acidente nas plans que entraram no meio.
->
-> 🟢 **A `plan-11` foi APROVADA em 2026-08-18.** O aparato Playwright saiu inteiro — config, script, as duas
-> deps, os 4 arquivos de `__e2e__/` e, por achado da execução, o harness `playwright/` mais o
-> `Spec21.spec.tsx` (8 testes de regressão visual que dependiam do mesmo aparato) e seus 12 PNGs, dos quais
-> **4 já eram órfãos**. A suíte **não encolheu** (317/1376) porque o Vitest nunca coletou nenhum deles.
-> ⚠️ **A síntese leva a R24 de ✅ para ⚠️** *(decisão do revisor no veredito)*: os dois gates que restam
-> rodam em jsdom e provam **estrutura**, não CSS renderizado — a prova de não-vazamento passou a ser
-> manual. E a base perdeu a **única ferramenta de medir comportamento em navegador real**, o que já foi
-> preciso duas vezes em três dias para fechar aceite.
->
-> **A `plan-05` (CI) segue no fim, por decisão do dono (2026-08-03).** Ela não depende de ninguém e poderia
-> rodar hoje — a escolha foi montar o pipeline **uma vez, completo**, em vez de acrescentar linhas a cada
-> gate novo. Custo aceito e registrado: até lá, toda prova continua dependendo da máquina de quem executa.
-> A `plan-10` depende dela.
+> **A `plan-05` deixou de ser "só CI".** Ela carrega agora a única defesa contra o `sarak-dev/` ser commitado
+> defasado — o `dev-kit:check` é o **único** artefato gerado sem hook, e a §5 passo 0 daquela plan registra a
+> armadilha medida: pô-lo no Anel 1 o faria pular justamente nos commits de spec, que são um dos defasadores.
 
 # 2. Legenda de status
 

@@ -71,10 +71,17 @@ Toda regra abre com um marcador. São quatro, e só quatro:
 > ruído com a mesma consequência do exagero contrário. Ele fez a `plan-15` mirar em alvos que já não
 > existiam, e manteve fechada uma porta (R15) que estava aberta.
 
+> 🔴 **R24 desceu de ✅ para ⚠️ em 2026-08-18** — e é a primeira vez que uma regra **perde** cobertura em vez
+> de ganhar. Nada mudou na conformidade nem no código do modo embarcado: o que saiu foi a **verificação**.
+> `EmbeddedNoLeak.spec.tsx` era a única que media não-vazamento em **CSS renderizado**, e foi removida com o
+> aparato de E2E, que produzia verde falso por não rodar em pipeline nenhum. Os dois gates que restam são
+> `jsdom` — provam o **seletor**, não o efeito. **O marcador descreve a cobertura, não a conformidade**, e é
+> por isso que ele desce mesmo com a regra intacta.
+
 | Estado | Quantas | Quais |
 | --- | --- | --- |
-| ✅ gate pleno | **23** | R1 · R2 · R3 · R5 · R6 · **R8** · R9 · R12 · R13 · R18 · R19 · R20 · R21 · R22 · R24 · R25 · R26 · R27 · R28 · **R29** · R32 · **R33** · **R34** |
-| ⚠️ escopo menor que a regra | **8** | R4 · R7 · R10 · R14 · R17 · R23 · R30 · **R31** |
+| ✅ gate pleno | **22** | R1 · R2 · R3 · R5 · R6 · **R8** · R9 · R12 · R13 · R18 · R19 · R20 · R21 · R22 · R25 · R26 · R27 · R28 · **R29** · R32 · **R33** · **R34** |
+| ⚠️ escopo menor que a regra | **9** | R4 · R7 · R10 · R14 · R17 · R23 · **R24** · R30 · **R31** |
 | ⏳ gate a construir | **0** | — *(a categoria fica; é para cá que volta a próxima regra fechada sem gate)* |
 | 🔴 conduta | **3** | R11 · R15 · R16 |
 
@@ -789,7 +796,7 @@ Metavariável (`<Categoria>`) e glob (`*`) são **ignorados de propósito** (`:4
 
 ## R24 — O CSS da lib não vaza no host em modo embarcado
 
-**Estado:** ✅ gate pleno, via suíte.
+**Estado:** ⚠️ **escopo menor que a regra** — os gates que restam provam a **estrutura** do seletor, não que o CSS deixa de vazar num navegador.
 
 **Enunciado.** No modo `embedded`, **todo** seletor da lib é confinado em `.sarak-scope`. O preflight do Tailwind e as regras de elemento (`h1..h6`, `button`, `input`, `body`, `:root`) não alcançam nada fora do escopo.
 
@@ -806,6 +813,10 @@ h1,h2 { margin: 0 }
 ```
 
 **Cobrada por:** dois gates de suíte — `src/core/Provider/__tests__/scopeCss.test.ts`, que exercita o transformador `scopeCss` de `scripts/build-scoped-css.mjs` inclusive nos casos que quebram um prefixador ingênuo (universal, âncora de documento, `:not()` aninhado, at-rules) e afirma que a classe de escopo do **build** é a mesma do **runtime**; e `EmbeddedMode.test.tsx`. Rodam em `npx vitest run` (Anel 3 do `pre-push`). O contrato do modo embarcado — o que é tocado e o que nunca é — está em [[01-forma-do-produto-e-modos-de-consumo]], na seção do eixo `app`/`embedded`.
+
+> ⚠️ **O vão, desde 2026-08-18: os dois gates rodam em `jsdom`, que não resolve `var()` nem aplica cascata de stylesheet.** Eles provam que o seletor sai confinado e que a classe de escopo do build é a do runtime — **não** provam que o CSS deixa de alcançar o host de fato. A única verificação que media isso em **CSS renderizado** era **EmbeddedNoLeak.spec.tsx**, removida com o aparato de E2E por produzir verde falso (não rodava em pipeline nenhum — [[11-testes-e-cobertura]] §7).
+>
+> **A prova de não-vazamento passou a ser conferência manual**, e a base não tem mais ferramenta para medir browser (§7.2 daquela spec). O adiamento é o item **45** de [[15-divida-conhecida]] §4, e depende da CI. **Conformidade não mudou; a cobertura, sim** — e é a cobertura que este marcador descreve.
 
 ---
 
@@ -876,7 +887,7 @@ R14 (barril completo) garante que o consumidor não **precise** de deep import; 
 | Existe versão nova e há comando a rodar | bloco destacado, **exit 0** | veredito, **exit 1** |
 | A verificação estourou | **silêncio, exit 0** | mensagem de falha, **exit 1** |
 
-**Cobrada por:** `bin/scaffold/checkUpdate/__tests__/checkUpdateCli.contract.test.mjs` (construído pela `plan-12`, 2026-08-05) — 8 casos, exercitando `runCheckCli` real (fixtures `file:`, sem rede) nos 4 quadrantes da tabela acima (normal/`--notify` × em dia/desatualizado/falhou), mais o caso de exceção lançada por `runCheckUpdate`. Roda em `npx vitest run` (Anel 3 do `pre-push`), mesma família de R6/R13/R24-26. `runCheckCli` está implementado e comentado em `bin/scaffold/checkUpdate.mjs:14-28` (`runCheckCli` engole qualquer exceção no modo notify em `:20-24`, decide o código em `:27`), e `formatNotice` devolve `null` para tudo que não seja "existe versão nova E há um comando" (`checkUpdate/runCheckUpdate.mjs:199-201`). ⚠️ O teste do CLI **não** cobre o achado 26 (automação de `install` real via `child_process`/`execSync`) — são contratos diferentes; 26 segue aberto, e desde 2026-08-11 está roteado à **`plan-10`** (ciclo de atualização), não à `plan-11`: nunca foi E2E, é ciclo de instalação.
+**Cobrada por:** `bin/scaffold/checkUpdate/__tests__/checkUpdateCli.contract.test.mjs` (construído pela `plan-12`, 2026-08-05) — 8 casos, exercitando `runCheckCli` real (fixtures `file:`, sem rede) nos 4 quadrantes da tabela acima (normal/`--notify` × em dia/desatualizado/falhou), mais o caso de exceção lançada por `runCheckUpdate`. Roda em `npx vitest run` (Anel 3 do `pre-push`), mesma família de R6/R13/R24-26. `runCheckCli` está implementado e comentado em `bin/scaffold/checkUpdate.mjs:14-28` (`runCheckCli` engole qualquer exceção no modo notify em `:20-24`, decide o código em `:27`), e `formatNotice` devolve `null` para tudo que não seja "existe versão nova E há um comando" (`checkUpdate/runCheckUpdate.mjs:199-201`). ⚠️ O teste do CLI **não** cobre o achado 26 (automação de `install` real via `child_process`/`execSync`) — são contratos diferentes; 26 segue aberto, e desde 2026-08-11 está roteado à **`plan-10`** (ciclo de atualização), e **não** ao E2E: nunca foi teste de ponta a ponta, é ciclo de instalação.
 
 > **Esta regra custou uma rodada inteira na `plan-04` por não existir escrita.** É o argumento mais curto a favor de escrever a regra antes de construir o gate. Contrato completo em [[13-instalacao-e-atualizacao]] §5.1.
 
@@ -1239,7 +1250,7 @@ e a correção é criar o token (R11 → Expansão), não remendar do lado de fo
 | R21 | Artefato mudou, exige tag | ✅ | `check-release-tag.mjs` (`pre-push`) | `npm run release:check` |
 | R22 | Zero segredo no staged | ✅ | `verificar_commit.py` (Anel 0) | `python gates/scripts/segredo/verificar_commit.py --raiz .` |
 | R23 | Zero ponteiro morto no gerado | ⚠️ | `dev-kit/deadPointers.mjs` (caminhos/comandos em `sarak-dev/`) **+** `auditor_sectionpointers.mjs` (`§N.N`) — este **só resolve autorreferência**; o número de ponteiros cross-documento ignorados sai na própria execução | `npm run dev-kit:check` · `npm run section-pointers:check` |
-| R24 | CSS não vaza no host | ✅ | `scopeCss.test.ts` · `EmbeddedMode.test.tsx` | `npx vitest run` |
+| R24 | CSS não vaza no host | ⚠️ | `scopeCss.test.ts` · `EmbeddedMode.test.tsx` — **jsdom: provam o seletor, não o CSS renderizado**; a prova em navegador saiu com o E2E (achado 45) | `npx vitest run` |
 | R25 | Temas shippados sem ruído | ✅ | `shippedThemesConsoleClean.test.ts` | `npx vitest run` |
 | R26 | Paridade de ícones | ✅ | `iconCatalogParity.test.ts` · `iconContract.test.tsx` | `npx vitest run` |
 | R27 | Zero deep import | ✅ | `check-no-deep-import.mjs` | `npm run deep-import:check` |

@@ -56,7 +56,7 @@ Ele roda os 12 na ordem abaixo, cada um em processo próprio:
 | 11 | `auditor_composicaoatomica.mjs` | R10 | AST: `<button>`/`<input>`/`<select>` cru fora da fronteira declarada de R10 |
 | 12 | `auditor_contraste.mjs` → `verify_contrast.ts` | R31 | Um `[FAIL]` por tema, com **cada par abaixo de 4,5:1** e a razão medida; a última linha traz reprovados **e pulados**. **Pulado ≠ aprovado** — é fundo não determinístico, declarado em vez de chutado |
 
-> ⚠️ **Relatório × FAIL.** O balde **deduzido** do `auditor_hardcoded` (ícones, `w-full`/`h-full`, alinhamento) é **relatório**: aparece na reconciliação, é contado, e **não reprova**. Só o líquido reprova. Já a linha final de `verify_parity` é relatório de contagem **bruta**; o número que importa para paridade é o das **três fontes**, que hoje batem em **422**. Ver [[04-contrato-de-tokens-e-paridade]] §2.
+> ⚠️ **Relatório × FAIL.** O balde **deduzido** do `auditor_hardcoded` (ícones, `w-full`/`h-full`, alinhamento) é **relatório**: aparece na reconciliação, é contado, e **não reprova**. Só o líquido reprova. Já a linha final de `verify_parity` é relatório de contagem **bruta**; o número que importa para paridade é o das **três fontes**, que hoje batem em **423**. Ver [[04-contrato-de-tokens-e-paridade]] §2.
 
 ## 2.2 Os gates de contrato
 
@@ -172,19 +172,18 @@ npx tsc --noEmit
 
 Isso não contradiz o `auditor_typescript` (R3) estar verde: um procura o **token** `any` na AST, o outro **compila**. São checagens diferentes.
 
-## 2.6 Playwright — existe, e está fora de tudo
+## 2.6 Playwright — REMOVIDO em 2026-08-18
 
-```
-npm run test-ct            # component testing  (playwright-ct.config.ts)
-```
+**Não existe mais aparato de browser neste repositório.** Saíram o config, o script `test-ct`, as duas
+dependências, o harness e os 5 arquivos de teste que dependiam deles.
 
-Mais os `__e2e__` de `src/core/Provider/` e `src/features/DesignEngine/` — coletados pelo mesmo
-`playwright-ct.config.ts` acima, **não** por um `playwright.config.ts`: esse arquivo era órfão e foi
-**deletado** pela `plan-19` (achado 17, [[15-divida-conhecida]] §6). **Nenhum dos dois roda em automação
-nenhuma** — nem no build, nem no hook, nem em CI (que não existe). São executados à mão, quando alguém
-lembra.
+O motivo é o que esta spec inteira defende: aquilo era **cobertura que existia e não era cobrada** — não
+rodava no build, nem em hook, nem em CI. Verde que ninguém executa é indistinguível de sucesso, e vale menos
+que vermelho declarado.
 
-Registrado como o que é: **cobertura que existe e não é cobrada**. **Não cobra regra nenhuma hoje** — ligá-lo ao pipeline é a `plan-11`, e **nenhuma regra do contrato depende dele** (a contagem de regras se lê em [[00-regras-e-invariantes]] §1.3, não aqui).
+**Consequência que não some com a remoção:** a base ficou **sem nenhuma forma de medir CSS renderizado**, e
+isso rebaixou a **R24** de ✅ para ⚠️. O adiamento está numerado (achado **45**, [[15-divida-conhecida]] §4) e
+depende da CI para voltar a existir com onde rodar. Detalhe em [[11-testes-e-cobertura]] §7.
 
 # 3. O BASELINE — recontado em 2026-08-05 (plans 12 e 16)
 
@@ -209,8 +208,8 @@ Registrado como o que é: **cobertura que existe e não é cobrada**. **Não cob
 | ↳ `auditor_coverage` (R8) | | ✅ **0** componentes sem teste |
 | ↳ `auditor_arquitetura` (R1) | | ✅ **0** quebras de hierarquia |
 | ↳ `auditor_cleancode` (R9) | | ✅ **0** violações |
-| ↳ `auditor_paridade` (R4) | | ✅ **422 / 422 / 422** — schema ↔ banco ↔ catálogo (13 arquivos). Era 409 |
-| ↳ `auditor_presets` (R5) | | ✅ gabarito vivo de **422 chaves**; **125 itens** auditados (**23 temas** + 102 presets), **0 órfãs**. Era 120 itens com 18 temas |
+| ↳ `auditor_paridade` (R4) | | ✅ **423 / 423 / 423** — schema ↔ banco ↔ catálogo (13 arquivos). Era 409 |
+| ↳ `auditor_presets` (R5) | | ✅ gabarito vivo de **423 chaves**; **125 itens** auditados (**23 temas** + 102 presets), **0 órfãs**. Era 120 itens com 18 temas |
 | ↳ `auditor_authcoupling` (R32) | | ✅ **0** — nasceu verde e continua |
 | ↳ `auditor_sectionpointers` (R23·R17) | | ✅ **0** ponteiros mortos — eram 27 |
 | ↳ `auditor_composicaoatomica` (R10) | | ❌ **2** — `SarakMultiSelect` e `SarakUploader`, ambas declaradas. Eram 47, e a fronteira deixou de ser por pasta (ver **R10**) |
@@ -222,10 +221,10 @@ Registrado como o que é: **cobertura que existe e não é cobrada**. **Não cob
 | `dev-kit:check` **(R17·R23·R29)** | `npm run dev-kit:check` | ✅ kit em dia (3 arquivos, **0 ponteiros mortos**) — não valida ponteiro de **seção**, que é o `auditor_sectionpointers` |
 | `deep-import:check` **(R27)** | `npm run deep-import:check` | ✅ **0** — `exports` só expõe a raiz e subcaminhos de CSS |
 | `gate-limits:check` **(R18)** | `npm run gate-limits:check` | ✅ **30/30** scripts declaram o que não veem *(medido 2026-08-12, após a `plan-39` acrescentar `check-container-query-literal.mjs`)*. Era 29 |
-| `token-types:check` **(R4·R29)** | `npm run token-types:check` | ✅ **422 tokens**, em dia |
+| `token-types:check` **(R4·R29)** | `npm run token-types:check` | ✅ **423 tokens**, em dia |
 | `build-info:check` **(R29)** | `npm run build-info:check` | ✅ íntegro |
 | `coverage:check` **(R8.1)** | `npm run coverage:check` | ✅ **72,43% contra piso de 71,47%** — piso móvel: melhora regrava (só com `--write`), piora bloqueia |
-| suíte **(R6·R13·R24·R25·R26·R28·R33·R34)** | `npx vitest run` | ✅ **304 arquivos / 1184 testes**, 100% verde. Era 289/1004 |
+| suíte **(R6·R13·R24·R25·R26·R28·R33·R34)** | `npx vitest run` | ✅ **317 arquivos / 1376 testes**, 100% verde |
 | `tsc` **(R30)** | `npx tsc --noEmit` | ✅ **0 erros**, produção e teste. Baseline em 0 ⇒ qualquer erro novo bloqueia |
 | `build` | `npm run build` | 4 gates + as etapas de compilação |
 | `package:check` **(R19)** | `npm run package:check` | exige `dist/` buildado |
