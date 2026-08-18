@@ -164,6 +164,26 @@ npm version <major|minor|patch>
 
 Formato da tag: **`vX.Y.Z`**, anotada, criada pelo próprio `npm version`.
 
+> 🔴 **O gancho `version` regenera o kit do CONSUMIDOR e esquece o do MANTENEDOR — e isso deixa toda release
+> com o `dev-kit:check` vermelho** *(medido pelo revisor em 2026-08-18)*. Ele roda `npm run guide` e
+> `npm run build`, e faz `git add` de `dist/` + `sarak-ui/`; **não** roda `npm run dev-kit` nem adiciona
+> `sarak-dev/`. Como `sarak-dev/state.json` carimba a `version` do `package.json`, o artefato commitado na
+> tag fica sempre **um release atrás**:
+>
+> | Tag | `package.json` | `sarak-dev/state.json` |
+> |---|---|---|
+> | `v4.0.1` | 4.0.1 | **4.0.0** |
+> | `v5.0.0` | 5.0.0 | **4.0.1** |
+> | `v6.0.0` | 6.0.0 | **5.0.0** |
+>
+> **Três tags, três defasagens — é determinístico, não azar.** E o efeito é circular: `preversion` roda
+> `gates:full`, cujo **primeiro** gate é o `dev-kit:check`, então **cada release é bloqueada pela anterior**
+> até alguém rodar `npm run dev-kit` à mão e commitar. O [[00-contexto]] §3.1 descreve esse bloqueio como
+> consequência de *"qualquer leva que mude contagem"*; a causa determinística é esta, e é do próprio ritual.
+>
+> **Não é corrigido aqui** — o conserto é uma linha no `package.json`, e spec não altera código. Está na
+> `plan-51`, na fila do [[00-indice]].
+
 ## 6.1 O defeito estrutural que o gancho `version` corrige
 
 No fluxo antigo o `dist/` era commitado **separado** do bump: a versão andava num commit e o artefato

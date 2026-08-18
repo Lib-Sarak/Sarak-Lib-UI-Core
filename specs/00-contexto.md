@@ -147,10 +147,14 @@ agente descobre do jeito difícil se não estiverem escritos:
   `major`**; nenhum dos dois → `patch`. Prosa de JSDoc que entra e sai **não** conta como superfície.
 - **`npm version` exige árvore limpa** e aborta com *"Git working directory not clean"*. Aprovar um comando
   novo durante a execução pode sujar `.claude/settings.json`, que é versionado — commite antes.
-- **O `preversion` roda `gates:full`, e o `dev-kit:check` costuma ser o primeiro a barrar.** `sarak-dev/` é
-  **gerado** e carrega números recontados a cada geração; qualquer leva que mude contagem (testes, gates,
+- **O `preversion` roda `gates:full`, e o `dev-kit:check` é o primeiro a barrar — quase sempre.** `sarak-dev/`
+  é **gerado** e carrega números recontados a cada geração; qualquer leva que mude contagem (testes, gates,
   arquivos) o defasa. O conserto é `npm run dev-kit` + commit — **nunca** editar os arquivos à mão, que
   morrem na próxima geração enquanto o gate volta a acusar.
+  > 🔴 **E há uma causa que não depende de leva nenhuma: o próprio ritual de release.** O gancho `version`
+  > regenera o kit do consumidor e o `dist/`, mas **não** o `sarak-dev/` — que carimba a `version`. Logo
+  > **toda tag sai com o kit do mantenedor um release atrás**, e a release seguinte já nasce bloqueada por
+  > ela. Medido em `v4.0.1`, `v5.0.0` e `v6.0.0`. Detalhe e conserto: [`specs/03-versionamento-e-release.md`](specs/03-versionamento-e-release.md) §6 · `plan-51`.
 - **Ele publica sozinho:** `preversion` roda `gates:full`, `version` regenera `dist/` + `sarak-ui/` **no mesmo
   commit** (é o que o anel cobra) e `postversion` faz `git push --follow-tags`. Por isso a §7 o reserva ao usuário.
 

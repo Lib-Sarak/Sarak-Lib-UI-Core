@@ -24,8 +24,17 @@ A `plan-47` (🟢 2026-08-15) trocou o default de `layoutGridTemplate` de `'col-
 emite:
 
 ```
-grid-cols-[repeat(auto-fit,minmax(280px,1fr))]      useStructuralStyles.ts:36
+'auto-fit': 'grid w-full grid-cols-[repeat(auto-fit,minmax(280px,1fr))]'
+                                            useStructuralStyles.presets.ts:39
 ```
+
+> 🔧 **Ponteiro reconciliado pelo revisor em 2026-08-18.** Esta plan foi escrita quando a estratégia morava
+> em `useStructuralStyles.ts:36`. As plans **49** e **50** extraíram as três estratégias para o companion
+> `useStructuralStyles.presets.ts` (mapa `GRID_LAYOUT_STRATEGIES`, R9 — teto de 250 linhas), e a `plan-49`
+> ainda acrescentou o default de span do `col-12` na linha vizinha. **O alvo é o mesmo número; mudou o
+> arquivo.** O objetivo e o escopo da plan **não mudaram** — o que mudaria, se ninguém corrigisse, é o
+> executor procurando num arquivo onde o literal não está mais, e a §8 conferindo com um `grep` que hoje
+> volta vazio.
 
 **O literal `280px` não é novo — o que é novo é o peso dele.** Até a `plan-47`, `auto-fit` era um caminho
 opcional que ninguém escolhia por default; a partir dela, esse número **decide quantas colunas todo
@@ -60,7 +69,10 @@ uma opção para default de todos) sem passar por nenhuma das três fontes da pa
 
 ## 3.1 Dentro
 
-1. **`src/components/atomic/hooks/useStructuralStyles.ts:36`** — a estratégia `auto-fit`.
+1. **`src/components/atomic/hooks/useStructuralStyles.presets.ts:39`** — a entrada `'auto-fit'` do mapa
+   `GRID_LAYOUT_STRATEGIES`, que é onde o literal vive desde as plans 49/50. Se a saída escolhida precisar
+   emitir o valor por `style` inline, `useStructuralStyles.ts:33-46` (`getGridStyles`) entra junto — é ele
+   que monta o objeto de estilo.
 2. **Se a saída escolhida for token novo:** `src/core/Design/schema/structural.ts` + as **três** fontes da
    paridade ([[04-contrato-de-tokens-e-paridade]]) + os temas que precisarem do valor. A skill
    `ui-novo-componente` é a dona deste procedimento — **aplique-a, não improvise a paridade**.
@@ -90,7 +102,7 @@ uma opção para default de todos) sem passar por nenhuma das três fontes da pa
 | Contexto | `specs/00-contexto.md` · `specs/00-knowledge.md` | sempre |
 | **Skill** | `ui-novo-componente` | **se criar token** — é ela que garante as três fontes e o alcance pelo barril |
 | **Skill** | `padrao-escrita` · `padrao-typescript` · `test-unitario` | sempre |
-| Código | `useStructuralStyles.ts:33-41` · `useStructuralStyles.presets.ts:1-14` (o vão declarado) | ler antes de editar |
+| Código | `useStructuralStyles.presets.ts:31-42` (onde o literal vive) · `:1-12` (o vão declarado no cabeçalho) · `useStructuralStyles.ts:33-46` (`getGridStyles`, quem consome) | ler antes de editar |
 
 # 5. Instruções de execução
 
@@ -142,7 +154,8 @@ specs/specs/07-responsividade-e-multidispositivo.md §1 e §2.1 e §6.
 Skills: padrao-escrita, padrao-typescript, test-unitario, e ui-novo-componente SE criar token.
 
 O PROBLEMA, em uma frase: o literal `280px` em
-`grid-cols-[repeat(auto-fit,minmax(280px,1fr))]` (useStructuralStyles.ts:36) decide,
+`grid-cols-[repeat(auto-fit,minmax(280px,1fr))]` (useStructuralStyles.presets.ts:39,
+no mapa GRID_LAYOUT_STRATEGIES) decide,
 desde a plan-47, quantas colunas TODO consumidor zero-config recebe — e não é token,
 não é alcançável pelo consumidor, e vive num vão declarado do auditor de hardcode
 (que só varre .tsx; ele está num .ts).
@@ -196,7 +209,7 @@ git diff --stat
 git diff
 
 # o literal continua existindo? virou constante? virou token?
-grep -n "minmax(280px" src/components/atomic/hooks/useStructuralStyles.ts
+grep -n "minmax(280px" src/components/atomic/hooks/useStructuralStyles.presets.ts
 grep -rn "280" src/components/atomic/hooks/ | grep -v __tests__
 
 # se criou token: as três fontes

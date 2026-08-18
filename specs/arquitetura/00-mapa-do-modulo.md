@@ -178,12 +178,12 @@ Não há gate cobrando isso, e o padrão observável é fraco: **kebab-case para
 
 | Pasta | O que é |
 | --- | --- |
-| `gates/` | **O que reprova** — os 8 auditores, os 3 `verify_*`, os `check-*` de contrato e de release, o gate de segredos, mais `baselines/` e `allowlists/`. Índice em `gates/README.md` |
-| `scripts/` | **O que escreve** — os geradores (catálogo, kit do consumidor, kit do mantenedor, CSS escopado, build info) e a biblioteca compartilhada `catalogAst.mjs` + `publicComponents.mjs` — 13 arquivos + `consumer-kit/` e `dev-kit/` |
+| `gates/` | **O que reprova** — os auditores (a lista viva é o array de `gates/scripts/audit/run_audit.mjs`, que o `check-audit-baseline.mjs` lê em vez de copiar), os `verify_*.ts` que eles delegam, os `check-*` de contrato e de release, o gate de segredos, mais `baselines/` e `allowlists/`. Índice em `gates/README.md` |
+| `scripts/` | **O que escreve** — os geradores (catálogo, kit do consumidor, kit do mantenedor, índice de plans, CSS escopado, build info, tipos de token) e a biblioteca compartilhada `catalogAst.mjs` + `publicComponents.mjs`, mais `consumer-kit/` e `dev-kit/` |
 | `bin/` | O CLI do consumidor: `sarak-ui.mjs` + `scaffold/` (init, check, refresh) |
 | `docs/` | O catálogo gerado (`component-catalog.{json,md}`) e os guias que viajam no pacote |
 | `sarak-ui/` | O kit do consumidor, **gerado** — guia, skill, templates, catálogo, carimbo de versão |
-| `.agents/skills/` | As 10 skills do mantenedor — **procedimento, não verificação**. Desde a `plan-14` não hospedam nenhum validador; sobra `ui-criar-tema/scripts/generate_theme_template.ts`, que é gerador |
+| `.agents/skills/` | As skills do mantenedor (`ls -d .agents/skills/*/` conta) — **procedimento, não verificação**. Desde a `plan-14` não hospedam nenhum validador; o que sobra em `ui-criar-tema/scripts/` são **geradores/solucionadores** (`generate_theme_template.ts`, `solve_theme_contrast.ts`), invocados sob decisão humana, nunca por gate |
 | `.githooks/` | Os dois **gatilhos** versionados (`pre-commit`, `pre-push`). Eles chamam `gates/scripts/…` — o gate não mora aqui |
 
 O build e o contrato do pacote estão em [[05-build-e-distribuicao]].

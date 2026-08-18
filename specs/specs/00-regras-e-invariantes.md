@@ -237,7 +237,7 @@ type ToastKind = 'success' | 'warning' | 'error';
 
 **Estado:** ⚠️ **escopo menor que a regra** — o **tipo gerado não é uma das três fontes** que este gate cruza, e um tipo gerado pode voltar a divergir sem que R4 o veja. A instância de deriva que esse vão deixou passar (achado 22) **fechou** — o gerador ganhou `--check` própria, que é R29 (ver abaixo) — mas o vão estrutural em si continua de pé: fechar a instância não fecha o vão.
 
-**Enunciado.** Uma chave de design só é **real** se existir simultaneamente no **Schema** (`src/core/Design/schema/*.ts` → `MASTER_DESIGN_MAP`), no **roteamento de persistência** (`catalog/theme_table_mapping.json`) e no **catálogo** (`catalog/partitions/*.json`). Fora disso, ela é inexistente.
+**Enunciado.** Uma chave de design só é **real** se existir simultaneamente no **Schema** (`src/core/Design/schema/*.ts` → `MASTER_DESIGN_MAP`), no **roteamento de persistência** (`src/core/Design/catalog/theme_table_mapping.json`) e no **catálogo** (`src/core/Design/catalog/partitions/*.json`). Fora disso, ela é inexistente.
 
 **Por quê.** Chave órfã é o defeito mais silencioso do módulo: existe no tipo, não existe no motor; o autor do tema preenche, e nada acontece. Sem a checagem cruzada não há como distinguir "token novo" de "erro de digitação".
 
@@ -749,7 +749,9 @@ CERTO    process.env.API_KEY   +   .env no .gitignore   +   .env.example version
 > fraude que a [[01-gates-e-baseline]] §6.1 proíbe. E o episódio é a melhor prova do desenho do gate: ele é
 > **em camadas** — o segundo padrão pegou o que o primeiro deixou passar.
 
-**Cobrada por:** `.githooks/pre-commit:17-27` → `python gates/scripts/segredo/verificar_commit.py --raiz .`. Varre **apenas o staged**, mascara o trecho encontrado antes de imprimir e sai com **1**, o que faz o hook bloquear. As listas vivem em `.githooks/config.json`, não no script (zero hardcoded): **12 padrões de segredo**, **15 globs de arquivo sensível** e **4 exceções** (`.env.example`, `.sample`, `.template`, `.dist`). O catálogo é derivado do canônico da skill `cyber-segredos`, e o `_fonte` do JSON manda mantê-los em sincronia.
+**Cobrada por:** `.githooks/pre-commit:17-27` → `python gates/scripts/segredo/verificar_commit.py --raiz .`. Varre **apenas o staged**, mascara o trecho encontrado antes de imprimir e sai com **1**, o que faz o hook bloquear. As listas vivem em `gates/scripts/segredo/config.json`, não no script (zero hardcoded): **12 padrões de segredo**, **15 globs de arquivo sensível** e **4 exceções** (`.env.example`, `.sample`, `.template`, `.dist`) — os três números reconferidos no JSON em 2026-08-18. O catálogo é derivado do canônico da skill `cyber-segredos`, e o `_fonte` do JSON manda mantê-los em sincronia.
+
+> 🔧 **Caminho corrigido em 2026-08-18.** Esta linha apontava para **.githooks/config.json**, que não existe: `.githooks/` só hospeda os dois gatilhos (`pre-commit`, `pre-push`). O JSON viajou junto com o script na `plan-14`, e é o mesmo movimento que a [[00-mapa-do-modulo]] §8 descreve — *"os gatilhos chamam `gates/scripts/…`; o gate não mora aqui"*. **As três contagens estavam certas; só o endereço estava errado** — e um endereço errado numa regra de segredo é o pior lugar para tê-lo, porque quem for reconferir a lista desiste antes de achá-la.
 
 > **Escopo declarado (R18):** este gate vê **só o commit atual**. O histórico **não** é escopo dele — é da skill `git-especialista-repositorio` / `/git1-auditar`. Um segredo que já está num commit anterior passa aqui em silêncio, e isso é por construção.
 
@@ -972,7 +974,7 @@ dentro do `npm run audit`, com teste próprio. **Baseline: `reprovados: 0` e `re
 gate mede **duas passadas**, o modo nativo do tema e a contraparte gerada.
 
 **A fronteira, decidida pelo dono e agora escrita:** **36 pares reais** texto/fundo, levantados cruzando
-`catalog/partitions` (categorias e `relatedTokens`), a `description` de cada token no schema e o código dos
+`src/core/Design/catalog/partitions` (categorias e `relatedTokens`), a `description` de cada token no schema e o código dos
 componentes — **não** "todo par possível". Limiar **4,5:1 em todos**, sem relaxamento: a WCAG só permite 3:1
 para texto grande (≥24px), e onde `textColorMuted` renderiza são 9–14px. Cor com alfa é **composta** sobre a
 cadeia de fundo (`efetiva = alfa × cor + (1 − alfa) × fundo`), não pulada.

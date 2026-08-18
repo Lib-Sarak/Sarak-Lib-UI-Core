@@ -157,6 +157,7 @@ morto — não uma coisa ou outra.
 | Pipeline | Roda `dev-kit:check`? | Por quê |
 | --- | --- | --- |
 | `npm run gates:full` (→ `preversion`) | **Sim**, primeiro | É barato e é o análogo do `guide:check` para dentro. Publicar uma versão com documentação de mantenedor apodrecida é o defeito que esta spec existe para impedir. |
+| `npm version` (gancho `version`) | 🔴 **NÃO — e é um defeito** | O gancho regenera o kit do **consumidor** (`npm run guide`) e o `dist/`, e faz `git add` de `dist/` + `sarak-ui/`. **`sarak-dev/` fica de fora.** Como o `state.json` carimba a `version`, toda tag publicada leva o kit do mantenedor **um release atrás** — medido em `v4.0.1`, `v5.0.0` e `v6.0.0` ([[03-versionamento-e-release]] §6). Efeito circular: o gate desta spec é o **primeiro** do `gates:full`, então **cada release é bloqueada pela anterior**. Conserto na `plan-51`. |
 | `npm run build` | **Não** | O `build` produz o **artefato publicado**, e `sarak-dev/` não é publicado. Acoplar um gate de documentação interna ao pipeline do tarball juntaria duas coisas sem relação — e faria a publicação depender de algo que o consumidor nunca recebe. |
 | `.githooks/pre-commit` | **Não** *(decisão em aberto)* | Não foi acrescentado nesta entrega para não mover o custo do commit sem medição. Fica registrado como opção. |
 

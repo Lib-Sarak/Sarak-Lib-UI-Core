@@ -7,7 +7,7 @@ prioridade: "Média"
 tags: ["plan", "cli", "atualizacao", "consumidor", "semver"]
 relacionados: ["[[13-instalacao-e-atualizacao]]", "[[adr/008-releases-com-tag-e-semver-em-git]]", "[[12-kit-do-consumidor]]"]
 depende_de: "plan-05"
-destino_sintese: "specs/13-instalacao-e-atualizacao.md"
+destino_sintese: "specs/specs/13-instalacao-e-atualizacao.md"
 objetivo: "Dar comando de atualização a quem só recebia aviso"
 ---
 
@@ -55,7 +55,7 @@ prática, ao subir um consumidor real de `3.0.0` para `4.0.0`: a faixa `^3.0.0` 
   `child_process`/`execSync` nos testes de `bin/scaffold/`. As provas de npm/pnpm/yarn foram feitas **à mão,
   uma vez** — e o `check --notify` do `predev` também. **Comando de atualização sem prova de execução real é
   exatamente o que a §3.2 proíbe**, então o achado pertence a esta plan por natureza.
-- `specs/13-instalacao-e-atualizacao.md` e `sarak-ui/GUIA-FRONTEND.md` §2.7.
+- `specs/specs/13-instalacao-e-atualizacao.md` e `sarak-ui/GUIA-FRONTEND.md` §2.7.
 
 ## 3.2 Fora
 - ⛔ **Comando não executado de verdade não entra.** Regra herdada e dura: o que não foi rodado num consumidor
@@ -68,11 +68,11 @@ prática, ao subir um consumidor real de `3.0.0` para `4.0.0`: a faixa `^3.0.0` 
 
 | Tipo | Referência | Por quê |
 |---|---|---|
-| Spec fixa | `specs/13-instalacao-e-atualizacao.md` | o contrato atual do `check` |
+| Spec fixa | `specs/specs/13-instalacao-e-atualizacao.md` | o contrato atual do `check` |
 | ADR | `adr/008-releases-com-tag-e-semver-em-git` | como `#semver:` resolve contra tags |
 | Código | `bin/scaffold/packageManager.mjs` | os comandos por gerenciador e a regra `validated` |
 | Código | `bin/scaffold/checkUpdate/tagComparison.mjs:54-59` | o defeito de faixa |
-| Spec fixa | `specs/12-kit-do-consumidor.md` | o `GUIA-FRONTEND` é gerado — editar a fonte |
+| Spec fixa | `specs/specs/12-kit-do-consumidor.md` | o `GUIA-FRONTEND` é gerado — editar a fonte |
 
 # 5. Instruções de execução
 
@@ -85,7 +85,8 @@ prática, ao subir um consumidor real de `3.0.0` para `4.0.0`: a faixa `^3.0.0` 
 4. **Provar em consumidor real, um por gerenciador** (npm, pnpm, yarn): dentro da faixa **e** atravessando um
    major, com a nota de migração aparecendo **antes** da confirmação.
 5. O que não puder ser provado entra como `validated: false`, com a degradação prevista.
-6. Atualizar `specs/13` e regenerar o `GUIA-FRONTEND.md` pelo gerador (`npm run guide`), nunca à mão.
+6. Atualizar `specs/specs/13-instalacao-e-atualizacao.md` e regenerar o `GUIA-FRONTEND.md` pelo gerador
+   (`npm run guide`), nunca à mão.
 
 # 6. Prompt de execução
 
@@ -109,7 +110,8 @@ Não commite. Ao terminar, escreva o resumo na própria plan.
 - [ ] `sarak-ui update` provado **nos 3 gerenciadores**, cada um efetivamente executado.
 - [ ] `sarak-ui update --latest` mostra os majors pulados **e** as notas de migração **antes** da confirmação.
 - [ ] Nada declarado como validado sem ter sido rodado.
-- [ ] `specs/13` atualizada; `GUIA-FRONTEND.md` regenerado pelo gerador (`guide:check` verde).
+- [ ] `specs/specs/13-instalacao-e-atualizacao.md` atualizada; `GUIA-FRONTEND.md` regenerado pelo
+      gerador (`guide:check` verde).
 - [ ] Teste automatizado do filtro de faixa (`~` × `^`).
 - [ ] Suíte verde.
 
@@ -123,7 +125,7 @@ Não commite. Ao terminar, escreva o resumo na própria plan.
 
 # 9. Destino da síntese
 
-**Destino:** `specs/13-instalacao-e-atualizacao.md`
+**Destino:** `specs/specs/13-instalacao-e-atualizacao.md`
 
 O `GUIA-FRONTEND.md` é **gerado** — não é destino de síntese, é consequência do gerador.
 

@@ -7,7 +7,7 @@ prioridade: "Alta"
 tags: ["plan", "ci", "gates", "automacao"]
 relacionados: ["[[01-gates-e-baseline]]", "[[02-enforcement-por-commit]]", "[[11-testes-e-cobertura]]"]
 depende_de: ""
-destino_sintese: "specs/16-integracao-continua.md · specs/02-enforcement-por-commit.md · specs/01-gates-e-baseline.md"
+destino_sintese: "specs/specs/16-integracao-continua.md · specs/specs/02-enforcement-por-commit.md · specs/specs/01-gates-e-baseline.md"
 objetivo: "Rodar os gates num ambiente que não é a máquina de ninguém"
 ---
 
@@ -49,9 +49,9 @@ Achado **26** entra aqui porque a CI é o único lugar onde cabe: **nenhum teste
 
 | Tipo | Referência | Por quê |
 |---|---|---|
-| Spec fixa | `specs/01-gates-e-baseline.md` | o baseline versionado e o que cada gate garante |
-| Spec fixa | `specs/02-enforcement-por-commit.md` | os anéis de `pre-commit`/`pre-push` que a CI complementa |
-| Spec fixa | `specs/13-instalacao-e-atualizacao.md` | o que o teste de `install` precisa provar |
+| Spec fixa | `specs/specs/01-gates-e-baseline.md` | o baseline versionado e o que cada gate garante |
+| Spec fixa | `specs/specs/02-enforcement-por-commit.md` | os anéis de `pre-commit`/`pre-push` que a CI complementa |
+| Spec fixa | `specs/specs/13-instalacao-e-atualizacao.md` | o que o teste de `install` precisa provar |
 | Código | `.githooks/pre-commit` · `pre-push` · `gates/scripts/release/check-audit-baseline.mjs` | o que já roda, para não duplicar |
 
 # 5. Instruções de execução
@@ -60,9 +60,11 @@ Achado **26** entra aqui porque a CI é o único lugar onde cabe: **nenhum teste
    **baseline versionado** (`gates/baselines/audit-baseline.json`), nunca a zero.
 
    > 🔧 **Os dois caminhos acima foram corrigidos em 2026-08-11 pelo revisor.** A plan citava
-   > `.githooks/audit-baseline.json` e `scripts/check-audit-baseline.mjs`, que a `plan-14` moveu para
+   > **.githooks/audit-baseline.json** e **scripts/check-audit-baseline.mjs**, que a `plan-14` moveu para
    > `gates/`. Ponteiro morto dentro de uma plan a executar manda o executor atrás de arquivo inexistente —
-   > o objetivo e o escopo da plan **não mudaram**.
+   > o objetivo e o escopo da plan **não mudaram**. *(Os dois nomes velhos vão em **negrito**, nunca em
+   > crase: é a convenção de [[14-artefatos-do-mantenedor]] §4.2 — caminho removido citado em crase é
+   > ponteiro morto para o verificador, mesmo quando o texto só o menciona como história.)*
 2. **Cobrar o `--no-verify`**: a CI roda o que o hook rodaria, então um push que burlou o anel local é
    reprovado no remoto. É o único lugar onde esse escape deixa de ser invisível.
 3. **Teste de `install` real** (achado 26) — matriz npm/pnpm/yarn, provando que a lib instala a partir de uma
@@ -70,8 +72,10 @@ Achado **26** entra aqui porque a CI é o único lugar onde cabe: **nenhum teste
    de verdade não entra.** O que não rodar na CI não é declarado como coberto.
 4. Garantir isolamento: a CI **não** pode depender de nada do `$HOME` do desenvolvedor. Se um teste hoje passa
    por causa do ambiente local, ele vai falhar aqui — isso é a feature, não um problema a contornar.
-5. Escrever `specs/16-integracao-continua.md`: o que roda, onde, com que gatilho, e **o que a CI NÃO cobre**.
-6. Atualizar `02-enforcement-por-commit.md` (a §9 deixa de ser "opção em aberto") e `01-gates-e-baseline.md`.
+5. Escrever `specs/specs/16-integracao-continua.md`: o que roda, onde, com que gatilho, e **o que a CI NÃO
+   cobre**.
+6. Atualizar `specs/specs/02-enforcement-por-commit.md` (a §9 deixa de ser "opção em aberto") e
+   `specs/specs/01-gates-e-baseline.md`.
 
 # 6. Prompt de execução
 
@@ -93,8 +97,9 @@ Não saia do escopo. Não commite. Ao terminar, escreva o resumo na própria pla
 - [ ] Um PR com teste quebrado é **reprovado pela automação** — provado com um teste quebrado de propósito.
 - [ ] `run_audit` na CI comparado ao baseline versionado; **não** a zero.
 - [ ] `install` real coberto para os 3 gerenciadores, cada um efetivamente executado.
-- [ ] `specs/16-integracao-continua.md` criado, declarando **o que a CI não cobre**.
-- [ ] `02-enforcement-por-commit.md` §9 atualizada; `01-gates-e-baseline.md` diz onde cada gate roda.
+- [ ] `specs/specs/16-integracao-continua.md` criado, declarando **o que a CI não cobre**.
+- [ ] `specs/specs/02-enforcement-por-commit.md` §9 atualizada; `specs/specs/01-gates-e-baseline.md` diz
+      onde cada gate roda.
 - [ ] Nenhum gate existente teve comportamento alterado.
 
 # 8. Como verificar
@@ -106,8 +111,8 @@ Não saia do escopo. Não commite. Ao terminar, escreva o resumo na própria pla
 
 # 9. Destino da síntese
 
-**Destino:** `specs/16-integracao-continua.md` (novo) · `specs/02-enforcement-por-commit.md` ·
-`specs/01-gates-e-baseline.md`
+**Destino:** `specs/specs/16-integracao-continua.md` (novo) · `specs/specs/02-enforcement-por-commit.md` ·
+`specs/specs/01-gates-e-baseline.md`
 
 ---
 

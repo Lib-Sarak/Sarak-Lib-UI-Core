@@ -287,7 +287,15 @@ Seja preciso aqui, porque o termo mudou de significado e ainda há skill do mant
 
 `verify_parity.ts` (invocado por `auditor_paridade.mjs`) cruza **exatamente três** conjuntos: Schema ↔ `theme_table_mapping` ↔ partições do catálogo. Ele valida nos dois sentidos (Schema→DB, Schema→Catálogo, e as duas inversas) e sai com 1 se qualquer token faltar em qualquer fonte.
 
-> Nota de localização: `verify_parity.ts` mora em `.agents/skills/ui-novo-componente/scripts/`, e `verify_presets.ts` em `gates/scripts/audit/`. Os dois auditores que os invocam vivem em `ui-auditoria-modulo`.
+> **Nota de localização — os quatro arquivos moram juntos, em `gates/scripts/audit/`:** `verify_parity.ts`,
+> `verify_presets.ts` e os dois auditores que os invocam (`auditor_paridade.mjs`, `auditor_presets.mjs`).
+>
+> 🔧 **Corrigido em 2026-08-18.** Esta nota dizia que `verify_parity.ts` morava em
+> **.agents/skills/ui-novo-componente/scripts/** e que os auditores viviam **na skill `ui-auditoria-modulo`**.
+> As duas metades eram falsas: aquele diretório **não existe**, e a `plan-14` (2026-08-02) moveu todo
+> validador para `gates/`. A própria [[00-mapa-do-modulo]] §8 já registrava o desfecho — *"desde a `plan-14`
+> as skills não hospedam nenhum validador"* — então **duas specs fixas se contradiziam**, e esta era a que
+> mentia. R4 sempre citou o caminho certo (`npx tsx gates/scripts/audit/verify_parity.ts`).
 
 ## 8.2 Verificado por outros gates — as camadas de ALCANCE
 
