@@ -310,6 +310,7 @@ interface SarakDesignTokens {
     layoutGapLg: number | ResponsiveValue<number>;
     layoutGapMd: number | ResponsiveValue<number>;
     layoutGapSm: number | ResponsiveValue<number>;
+    layoutGridMinCell: number;
     layoutGridTemplate: string;
     layoutPadding: number | ResponsiveValue<number>;
     layoutPreviewMaxH: number;
