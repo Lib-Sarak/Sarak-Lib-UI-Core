@@ -52,7 +52,7 @@
         "gates:full": "npm run dev-kit:check && npm run build && npm run build-info:check && npm run package:check && npm run coverage:check",
         "release:check": "node gates/scripts/release/check-release-tag.mjs",
         "preversion": "npm run gates:full",
-        "version": "npm run guide && npm run build && git add package.json package-lock.json dist sarak-ui",
+        "version": "npm run guide && npm run build && npm run dev-kit && git add package.json package-lock.json dist sarak-ui sarak-dev",
         "postversion": "git push --follow-tags",
         "prepublishOnly": "npm run build && npm run package:check",
         "test-ct": "playwright test -c playwright-ct.config.ts"
