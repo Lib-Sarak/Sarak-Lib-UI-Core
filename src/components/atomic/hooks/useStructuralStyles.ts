@@ -1,6 +1,6 @@
 import React from 'react';
 import { useSarakUIOptional } from '../../../core/Provider/SarakUIProvider';
-import { RESPONSIVE_GRID_PRESETS, RESPONSIVE_SPACING_PRESETS, GRID_LAYOUT_STRATEGIES, type ResponsiveGridPreset, type ResponsiveSpacingPreset } from './useStructuralStyles.presets';
+import { RESPONSIVE_GRID_PRESETS, RESPONSIVE_SPACING_PRESETS, GRID_LAYOUT_STRATEGIES, resolveAutoFitTemplateColumns, type ResponsiveGridPreset, type ResponsiveSpacingPreset } from './useStructuralStyles.presets';
 import { resolveGap } from './useStructuralStyles.gap';
 
 /**
@@ -35,12 +35,16 @@ export const useStructuralStyles = () => {
         const hasCustomTemplate = !!templateColumns || !!templateAreas;
         const className = hasCustomTemplate ? 'grid w-full' : (GRID_LAYOUT_STRATEGIES[layoutType] || GRID_LAYOUT_STRATEGIES['auto-fit']);
 
+        // plan-48: o piso de célula do auto-fit é token — ver resolveAutoFitTemplateColumns.
+        const gridMinCell = typeof design?.layoutGridMinCell === 'number' ? design.layoutGridMinCell : 280;
+        const autoFitTemplateColumns = resolveAutoFitTemplateColumns(layoutType, hasCustomTemplate, gridMinCell);
+
         return {
             className,
             style: {
                 gap,
                 columnGap: layoutType === 'masonry' && !hasCustomTemplate ? gap : undefined,
-                gridTemplateColumns: templateColumns,
+                gridTemplateColumns: templateColumns ?? autoFitTemplateColumns,
                 gridTemplateAreas: templateAreas
             } as React.CSSProperties
         };

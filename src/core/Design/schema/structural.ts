@@ -60,6 +60,19 @@ export const StructuralSchema: ComponentSchema = {
             structuralConsumer: ['useStructuralStyles.getGridStyles']
         },
         {
+            id: 'layoutGridMinCell',
+            label: 'Largura Mínima da Célula (Auto-fit)',
+            type: 'slider',
+            description: 'Largura mínima, em pixels, que cada célula assume no modo Auto-fit Responsivo antes de o grid quebrar para uma nova coluna — é o que decide quantas colunas cabem em cada largura de tela.',
+            axis: 'geometry',
+            unit: 'px',
+            constraints: { min: 160, max: 480, step: 8 },
+            defaultValue: 280,
+            legacyValue: 280,
+            cssVars: ['--sarak-layout-grid-min-cell'],
+            structuralConsumer: ['useStructuralStyles.getGridStyles']
+        },
+        {
             id: 'globalSectionGap',
             label: 'Espaçamento entre Seções',
             type: 'slider',

@@ -92,6 +92,40 @@
     "consumerHook": ["useStructuralStyles.getGridStyles"]
   },
   {
+    "tokenId": "layoutGridMinCell",
+    "name": "Largura Mínima da Célula (Auto-fit)",
+    "description": "Largura mínima, em pixels, que cada célula assume no modo Auto-fit Responsivo antes de o grid quebrar para uma nova coluna — decide quantas colunas cabem em cada largura de tela.",
+    "type": "number",
+    "importance": 75,
+    "categories": [
+      "estrutura",
+      "layout",
+      "grid"
+    ],
+    "tags": [
+      "grid",
+      "auto-fit",
+      "min-width"
+    ],
+    "databaseColumn": "structural",
+    "schemaOrigin": "structural.ts",
+    "digitalTwins": [
+      "SarakGrid"
+    ],
+    "cssVariables": [
+      "--sarak-layout-grid-min-cell"
+    ],
+    "allowedValues": {
+      "min": 160,
+      "max": 480,
+      "step": 8
+    },
+    "relatedTokens": [
+      "layoutGridTemplate"
+    ],
+    "consumerHook": ["useStructuralStyles.getGridStyles"]
+  },
+  {
     "tokenId": "globalSectionGap",
     "name": "Espaçamento entre Seções",
     "description": "Distância (gap) aplicada entre as seções e itens do grid macro global.",

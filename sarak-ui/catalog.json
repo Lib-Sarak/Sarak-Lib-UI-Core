@@ -4278,7 +4278,7 @@
   },
   "designTokens": {
     "note": "Chaves válidas de `design` num ThemePreset. Chave/valor fora do contrato é descartado com console.warn pelo Design Engine — nunca vira CSS cru.",
-    "count": 422,
+    "count": 423,
     "responsiveCapable": [
       "borderRadius",
       "borderRadiusLg",
@@ -5551,6 +5551,11 @@
         "id": "layoutGapSm",
         "type": "number | ResponsiveValue<number>",
         "responsive": true
+      },
+      {
+        "id": "layoutGridMinCell",
+        "type": "number",
+        "responsive": false
       },
       {
         "id": "layoutGridTemplate",

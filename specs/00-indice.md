@@ -42,7 +42,7 @@ as duas, sempre, na mesma ação.**
 | # | Plan | Objetivo | Depende de | Status | Destino |
 |---|---|---|---|---|---|
 | 1 | [plan-51-release-deixa-o-kit-do-mantenedor-para-tras](plan/plan-51-release-deixa-o-kit-do-mantenedor-para-tras.md) | O ritual de release passa a regenerar o kit do mantenedor junto com o resto, e deixa de emitir toda tag com o sarak-dev defasado | — | 🟢 Aprovada | specs/specs/03-versionamento-e-release.md · specs/specs/14-artefatos-do-mantenedor.md |
-| 2 | [plan-48-piso-do-grid-content-aware-e-um-numero-solto](plan/plan-48-piso-do-grid-content-aware-e-um-numero-solto.md) | A largura mínima de célula que decide o layout de todo consumidor zero-config deixa de ser um literal invisível e passa a ser ajustável como qualquer outra decisão de layout | — | 🔴 A executar | specs/specs/07-responsividade-e-multidispositivo.md · specs/arquitetura/04-contrato-de-tokens-e-paridade.md |
+| 2 | [plan-48-piso-do-grid-content-aware-e-um-numero-solto](plan/plan-48-piso-do-grid-content-aware-e-um-numero-solto.md) | A largura mínima de célula que decide o layout de todo consumidor zero-config deixa de ser um literal invisível e passa a ser ajustável como qualquer outra decisão de layout | — | 🟢 Aprovada | specs/specs/07-responsividade-e-multidispositivo.md · specs/arquitetura/04-contrato-de-tokens-e-paridade.md · specs/specs/01-gates-e-baseline.md |
 | 3 | [plan-46-suite-intermitente](plan/plan-46-suite-intermitente.md) | Saber QUAIS são os dois testes que falham de forma intermitente, e então consertá-los ou declará-los como dívida com número — hoje 'suíte verde' é probabilidade, não fato | — | 🔴 A executar | specs/specs/11-testes-e-cobertura.md · specs/specs/15-divida-conhecida.md |
 | 4 | [plan-11-remover-e2e-falso-verde](plan/plan-11-remover-e2e-falso-verde.md) | Remover o aparato de E2E que produz verde falso, deixando a capacidade declarada como adiada | — | 🔴 A executar | specs/specs/11-testes-e-cobertura.md · specs/specs/15-divida-conhecida.md |
 | 5 | [plan-05-integracao-continua](plan/plan-05-integracao-continua.md) | Rodar os gates num ambiente que não é a máquina de ninguém | — | 🔴 A executar | specs/specs/16-integracao-continua.md · specs/specs/02-enforcement-por-commit.md · specs/specs/01-gates-e-baseline.md |
@@ -66,7 +66,9 @@ as duas, sempre, na mesma ação.**
 > apagaria), dois achados novos foram numerados (**41** e **42**), e a spec passou a afirmar a **relação**
 > — todo número em exatamente uma seção — em vez de um total que envelhece no dia seguinte.
 >
-> **A fila é inteiramente de execução agora: `51 → 48 → 46 → 11 → 05 → 10`.** Nenhuma plan aguarda síntese.
+> **A fila é `51 → 48 → 46 → 11 → 05 → 10`.** As **duas primeiras estão 🟢 Aprovadas e aguardam síntese**
+> *(2026-08-18)*; as quatro seguintes são de execução. Enquanto a síntese não rodar, elas ficam aqui — é o
+> §4 desta spec que as remove, e só depois de o conteúdo virar verdade consolidada na spec fixa.
 >
 > 🟢 **A `plan-51` abriu a fila por ser a única BLOQUEANTE, e foi APROVADA em 2026-08-18.** Ela passou na
 > frente das cinco por um motivo medido, não por prioridade declarada: o gancho `version` do `npm version`
@@ -77,10 +79,13 @@ as duas, sempre, na mesma ação.**
 > uma linha no `package.json`, com a não-reincidência provada por reprodução direta (veredito em `plan/51` §11).
 > **Aguarda commit do dono e depois `/spec-atualizar`;** enquanto não for sintetizada, fica aqui.
 >
-> **A `plan-48` é a `#2`.** É resíduo, não defeito: o literal `280px` do `minmax(280px,1fr)` decide o layout
-> de todo consumidor zero-config, não é token, não é alcançável pelo consumidor e vive num vão declarado do
-> `auditor_hardcoded`. Nada está quebrado na tela hoje — ela vem cedo por ser barata e local, não por
-> urgência.
+> 🟢 **A `plan-48` foi APROVADA em 2026-08-18.** O literal `280px` do `minmax(280px,1fr)` — que decidia o
+> layout de todo consumidor zero-config sem ser token, sem ser alcançável e dentro de um vão declarado do
+> `auditor_hardcoded` — virou o token **`layoutGridMinCell`**, nas três fontes da paridade (**422 → 423**), com
+> o valor chegando ao CSS por `style.gridTemplateColumns` (`var()` não funciona em valor arbitrário de classe
+> Tailwind). O default efetivo **continua 280px**, e o revisor reproduziu a medição em Chromium.
+> **Aguarda commit e `/spec-atualizar`** — e a síntese dela toca **três** specs, não duas: a
+> [[01-gates-e-baseline]] §3 entrou no destino no veredito, porque afirma `422/422/422` em quatro lugares.
 >
 > **A `plan-46` (suíte intermitente) e a `plan-11` (E2E de verde falso) são a mesma família:** as duas
 > tratam de *prova que não prova*. A `46` mede a intermitência; a `11` remove o aparato que produz verde

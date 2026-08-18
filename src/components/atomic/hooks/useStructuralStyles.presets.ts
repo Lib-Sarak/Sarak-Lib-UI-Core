@@ -39,3 +39,14 @@ export const GRID_LAYOUT_STRATEGIES: Record<string, string> = {
     'auto-fit': 'grid w-full grid-cols-[repeat(auto-fit,minmax(280px,1fr))]',
     'masonry': 'columns-1 @min-[768px]:columns-2 @min-[1024px]:columns-3 w-full'
 };
+
+// plan-48: o piso de célula do auto-fit é o token `layoutGridMinCell`, não mais o `280px`
+// fixo embutido na classe acima — `var()` não funciona dentro de um valor arbitrário de
+// classe Tailwind (resolvido em build-time), então o valor chega ao CSS por `style`
+// inline (`gridTemplateColumns`), que sempre vence a classe na cascata.
+export const resolveAutoFitTemplateColumns = (
+    layoutType: string,
+    hasCustomTemplate: boolean,
+    gridMinCell: number
+): string | undefined =>
+    !hasCustomTemplate && layoutType === 'auto-fit' ? `repeat(auto-fit, minmax(${gridMinCell}px, 1fr))` : undefined;

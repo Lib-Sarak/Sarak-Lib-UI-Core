@@ -272,6 +272,17 @@ reconheça o limite**; se for "declarado", o limite já é o próprio registro.
 - `15-divida-conhecida.md` — a entrada, se o desfecho for declarar; e, se for consertar, o registro de que a
   intermitência existiu e por quanto tempo passou despercebida.
 
+> 🔗 **O desfecho desta plan DESTRAVA o achado 43** *(acrescentado pelo revisor em 2026-08-18)*. O piso de
+> cobertura está com **4,5 pontos de folga** (medido: `lines` 75,97% contra piso de 71,47%), e regravá-lo
+> **depende do que esta plan descobrir** — piso levantado a partir de uma suíte não-determinística bloqueia na
+> execução ruim. Se esta plan **consertar** a intermitência, uma medição basta; se **declarar** como dívida, o
+> piso tem de ser o **mínimo sobre N execuções**.
+>
+> **E há um dado desta medição que pertence ao passo 2 desta plan:** a cobertura **oscilou entre execuções com
+> a suíte 100% verde nas duas** — 76,02% (executor da `plan-51`) × 75,97% (revisor), no **mesmo commit**. Isso
+> é evidência independente de que algo varia por **ordem de execução**, e aponta para a mesma família dos três
+> estados mutáveis de módulo da §2.3. **Não é conclusão** — é pista, e vale medir junto ao caracterizar.
+
 ---
 
 # 10. Resumo da execução

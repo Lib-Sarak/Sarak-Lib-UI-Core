@@ -99,4 +99,58 @@ describe('useStructuralStyles', () => {
             );
         });
     });
+
+    // plan-48: o piso de célula do auto-fit (antes 280px fixo em GRID_LAYOUT_STRATEGIES)
+    // agora é o token `layoutGridMinCell`, que chega ao CSS por `style.gridTemplateColumns`
+    // — não por `var()` dentro da classe Tailwind (o valor arbitrário é resolvido em
+    // build-time e não aceita variável). Estes testes provam que a STRING emitida em
+    // `style` muda com o token; NÃO provam quantas colunas o browser desenha, nem que o
+    // `style` de fato vence a classe na cascata real — isso é CSS e foi medido em
+    // Chromium real (resumo da plan-48): com a MESMA classe (`minmax(280px,1fr)`) e um
+    // container de 900px, `style` ausente ou repetindo 280 dá 3 colunas de 300px; `style`
+    // com 400 dá 2 colunas de 450px — a inline style sempre vence.
+    describe('token layoutGridMinCell (plan-48) — o piso do grid auto-fit deixou de ser um literal fixo', () => {
+        it('SEM tema: o style.gridTemplateColumns resolve para o default (280px) — nenhuma mudança silenciosa de aparência', () => {
+            const { result } = renderHook(() => useStructuralStyles());
+            expect(result.current.getGridStyles().style.gridTemplateColumns).toBe(
+                'repeat(auto-fit, minmax(280px, 1fr))',
+            );
+        });
+
+        it('com layoutGridMinCell no tema, o style.gridTemplateColumns emitido muda para o valor do token', () => {
+            const wrapper: React.FC<{ children?: React.ReactNode }> = ({ children }) =>
+                React.createElement(UIContext.Provider, { value: uiContextValue({ layoutGridMinCell: 400 }) }, children);
+            const { result } = renderHook(() => useStructuralStyles(), { wrapper });
+            expect(result.current.getGridStyles().style.gridTemplateColumns).toBe(
+                'repeat(auto-fit, minmax(400px, 1fr))',
+            );
+        });
+
+        it('a CLASSE não muda com o token — só o style; a forma "grid-cols-[...280px...]" continua a mesma', () => {
+            const wrapper: React.FC<{ children?: React.ReactNode }> = ({ children }) =>
+                React.createElement(UIContext.Provider, { value: uiContextValue({ layoutGridMinCell: 400 }) }, children);
+            const { result } = renderHook(() => useStructuralStyles(), { wrapper });
+            expect(result.current.getGridStyles().className).toBe(
+                'grid w-full grid-cols-[repeat(auto-fit,minmax(280px,1fr))]',
+            );
+        });
+
+        it('com templateColumns explícito, o token NÃO entra — templateColumns sempre vence (hasCustomTemplate)', () => {
+            const wrapper: React.FC<{ children?: React.ReactNode }> = ({ children }) =>
+                React.createElement(UIContext.Provider, { value: uiContextValue({ layoutGridMinCell: 400 }) }, children);
+            const { result } = renderHook(() => useStructuralStyles(), { wrapper });
+            expect(result.current.getGridStyles('repeat(6, 1fr)').style.gridTemplateColumns).toBe('repeat(6, 1fr)');
+        });
+
+        it('em col-12/masonry, o token não se aplica — style.gridTemplateColumns continua ausente', () => {
+            const wrapper: React.FC<{ children?: React.ReactNode }> = ({ children }) =>
+                React.createElement(
+                    UIContext.Provider,
+                    { value: uiContextValue({ layoutGridTemplate: 'col-12', layoutGridMinCell: 400 }) },
+                    children,
+                );
+            const { result } = renderHook(() => useStructuralStyles(), { wrapper });
+            expect(result.current.getGridStyles().style.gridTemplateColumns).toBeUndefined();
+        });
+    });
 });
