@@ -520,3 +520,48 @@ conferi se sustentou. O executor ainda pegou e consertou uma violação de R9 de
 declarou um desvio de ritual que ninguém teria notado.
 
 **Nenhuma tag é devida:** `dist/` e `sarak-ui/` não foram tocados.
+
+> 🔴 **A frase acima ENVELHECEU no mesmo dia, e fica com a correção ao lado em vez de ser reescrita.**
+> Ela era verdadeira quando o veredito foi escrito — o `sarak-ui/` ainda não tinha sido regenerado. O
+> bloco de correção pós-aprovação abaixo o regenerou (`designTokens 422 → 423`), e `sarak-ui/` é um dos
+> `SIGNED_DIRS` do `check-release-tag.mjs`. **Desde o commit `6167361`, uma tag É devida** — nível
+> sugerido `minor` (nada saiu do barril; o token é aditivo). Verificado por mim rodando
+> `npm run release:check` depois do commit.
+
+## Adendo do revisor — 2026-08-18 — a lição está pela metade, e a metade que falta não tem hook
+
+O bloco acima está **certo e o conserto foi o correto**. Completo-o com o que medi depois, porque o executor
+só podia ver a metade que o bloqueou.
+
+**Uma mudança de schema defasa QUATRO artefatos gerados, não um:**
+
+| Artefato | Gate | Roda no Anel 1 do `pre-commit`? |
+|---|---|---|
+| `docs/component-catalog.*` | `catalog:check` | ✅ sim |
+| `sarak-ui/` (kit do consumidor) | `guide:check` | ✅ sim — **foi este que bloqueou o executor** |
+| `src/core/Provider/generated/design-token-ids.ts` | `token-types:check` | ✅ sim |
+| `sarak-dev/` (kit do mantenedor) | `dev-kit:check` | 🔴 **NÃO — nenhum hook o roda** |
+
+Medido: `grep -c "dev-kit" .githooks/pre-commit` → **0**. Ele só existe no `gates:full`, e por ele no
+`preversion` ([[14-artefatos-do-mantenedor]] §5, que registra a ausência no `pre-commit` como *"decisão em
+aberto"*).
+
+**A consequência prática, e é a razão deste adendo existir:** os três primeiros **se defendem sozinhos** — o
+commit é barrado até serem regenerados. O quarto **não**. Nesta execução o `sarak-dev/` ficou defasado
+(`422 → 423`) e **seria commitado em silêncio**; eu o regenerei ao conferir os gates no veredito, e por isso
+ele entrou no commit `6167361`. Se eu não tivesse rodado, a defasagem só apareceria no **próximo
+`npm version`** — bloqueando um release por um defeito nascido três plans antes.
+
+**É a mesma forma de falha que a `plan-51` acabou de consertar no gancho `version`, por um caminho
+independente:** artefato gerado que ninguém regenera, cobrado só no `preversion`, transformando release em
+refém de trabalho anterior. A `plan-51` fechou a porta do *ritual*; esta é a porta do *commit comum*.
+
+**Destino, que o bloco acima deixou à minha escolha:** vai para
+[[04-contrato-de-tokens-e-paridade]] — não para a `07-responsividade`. O motivo é de dono: a regra não é sobre
+layout, é sobre **o que criar um token obriga**, e aquela spec é a dona do contrato de token. O texto a
+transportar é a tabela dos quatro artefatos acima, com a coluna do hook — porque é a coluna que diz **qual
+deles vai te morder tarde**.
+
+**O que NÃO decido aqui:** se o `dev-kit:check` deve entrar no `pre-commit`. Isso é decisão do dono, tem custo
+de tempo por commit ([[02-enforcement-por-commit]] §3 mede cada anel) e é plan própria, não efeito colateral
+de um veredito.

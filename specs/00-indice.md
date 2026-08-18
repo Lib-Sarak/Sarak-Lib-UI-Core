@@ -43,7 +43,7 @@ as duas, sempre, na mesma ação.**
 |---|---|---|---|---|---|
 | 1 | [plan-51-release-deixa-o-kit-do-mantenedor-para-tras](plan/plan-51-release-deixa-o-kit-do-mantenedor-para-tras.md) | O ritual de release passa a regenerar o kit do mantenedor junto com o resto, e deixa de emitir toda tag com o sarak-dev defasado | — | 🟢 Aprovada | specs/specs/03-versionamento-e-release.md · specs/specs/14-artefatos-do-mantenedor.md |
 | 2 | [plan-48-piso-do-grid-content-aware-e-um-numero-solto](plan/plan-48-piso-do-grid-content-aware-e-um-numero-solto.md) | A largura mínima de célula que decide o layout de todo consumidor zero-config deixa de ser um literal invisível e passa a ser ajustável como qualquer outra decisão de layout | — | 🟢 Aprovada | specs/specs/07-responsividade-e-multidispositivo.md · specs/arquitetura/04-contrato-de-tokens-e-paridade.md · specs/specs/01-gates-e-baseline.md |
-| 3 | [plan-46-suite-intermitente](plan/plan-46-suite-intermitente.md) | Saber QUAIS são os dois testes que falham de forma intermitente, e então consertá-los ou declará-los como dívida com número — hoje 'suíte verde' é probabilidade, não fato | — | 🔴 A executar | specs/specs/11-testes-e-cobertura.md · specs/specs/15-divida-conhecida.md |
+| 3 | [plan-46-suite-intermitente](plan/plan-46-suite-intermitente.md) | Saber QUAIS são os dois testes que falham de forma intermitente, e então consertá-los ou declará-los como dívida com número — hoje 'suíte verde' é probabilidade, não fato | — | 🟢 Aprovada | specs/specs/11-testes-e-cobertura.md · specs/specs/15-divida-conhecida.md |
 | 4 | [plan-11-remover-e2e-falso-verde](plan/plan-11-remover-e2e-falso-verde.md) | Remover o aparato de E2E que produz verde falso, deixando a capacidade declarada como adiada | — | 🔴 A executar | specs/specs/11-testes-e-cobertura.md · specs/specs/15-divida-conhecida.md |
 | 5 | [plan-05-integracao-continua](plan/plan-05-integracao-continua.md) | Rodar os gates num ambiente que não é a máquina de ninguém | — | 🔴 A executar | specs/specs/16-integracao-continua.md · specs/specs/02-enforcement-por-commit.md · specs/specs/01-gates-e-baseline.md |
 | 6 | [plan-10-ciclo-atualizacao](plan/plan-10-ciclo-atualizacao.md) | Dar comando de atualização a quem só recebia aviso | plan-05 | 🔴 A executar | specs/specs/13-instalacao-e-atualizacao.md |
@@ -66,8 +66,8 @@ as duas, sempre, na mesma ação.**
 > apagaria), dois achados novos foram numerados (**41** e **42**), e a spec passou a afirmar a **relação**
 > — todo número em exatamente uma seção — em vez de um total que envelhece no dia seguinte.
 >
-> **A fila é `51 → 48 → 46 → 11 → 05 → 10`.** As **duas primeiras estão 🟢 Aprovadas e aguardam síntese**
-> *(2026-08-18)*; as quatro seguintes são de execução. Enquanto a síntese não rodar, elas ficam aqui — é o
+> **A fila é `51 → 48 → 46 → 11 → 05 → 10`.** As **três primeiras estão 🟢 Aprovadas e aguardam síntese**
+> *(2026-08-18)*; as três seguintes são de execução. Enquanto a síntese não rodar, elas ficam aqui — é o
 > §4 desta spec que as remove, e só depois de o conteúdo virar verdade consolidada na spec fixa.
 >
 > 🟢 **A `plan-51` abriu a fila por ser a única BLOQUEANTE, e foi APROVADA em 2026-08-18.** Ela passou na
@@ -87,9 +87,15 @@ as duas, sempre, na mesma ação.**
 > **Aguarda commit e `/spec-atualizar`** — e a síntese dela toca **três** specs, não duas: a
 > [[01-gates-e-baseline]] §3 entrou no destino no veredito, porque afirma `422/422/422` em quatro lugares.
 >
-> **A `plan-46` (suíte intermitente) e a `plan-11` (E2E de verde falso) são a mesma família:** as duas
-> tratam de *prova que não prova*. A `46` mede a intermitência; a `11` remove o aparato que produz verde
-> falso. Nenhuma das duas depende da outra.
+> 🟢 **A `plan-46` foi APROVADA em 2026-08-18 — medindo, não consertando.** A intermitência **não foi
+> reproduzida em 46 execuções controladas** e segue **sem nome**, então a plan fechou pela saída que ela mesma
+> autorizava: declarar. ⚠️ **O veredito corrigiu o número:** as 46 são **duas amostras de bases diferentes** —
+> 26 na base onde o defeito foi visto (1345 testes) e 20 numa base posterior (1376). Os tetos honestos são
+> **11,5%** e **15%** por base, não os 6,5% do agrupamento. **Não está descartada — está sem nome**, e pode
+> tanto ser rara quanto ter morrido por acidente nas plans que entraram no meio.
+>
+> **A `plan-11` (E2E de verde falso) é da mesma família:** as duas tratam de *prova que não prova*. A `46`
+> mediu a intermitência; a `11` remove o aparato que produz verde falso. Nenhuma depende da outra.
 >
 > **A `plan-05` (CI) segue no fim, por decisão do dono (2026-08-03).** Ela não depende de ninguém e poderia
 > rodar hoje — a escolha foi montar o pipeline **uma vez, completo**, em vez de acrescentar linhas a cada

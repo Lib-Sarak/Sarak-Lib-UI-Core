@@ -2,7 +2,7 @@
 tipo: "plan"
 titulo: "A suíte não é determinística — nomear os dois testes e fechar"
 dominio: "Sarak-Lib-UI-Core / Testes"
-status: "🔴 A executar"
+status: "🟢 Aprovada"
 prioridade: "Alta"
 tags: ["plan", "testes", "intermitencia", "flaky", "confiabilidade"]
 relacionados: ["[[11-testes-e-cobertura]]", "[[01-gates-e-baseline]]", "[[15-divida-conhecida]]"]
@@ -232,7 +232,7 @@ Não commite. Ao terminar, escreva o resumo na própria plan e mova o status par
 - [ ] A caracterização do passo 2 está respondida item a item (isolado / sem paralelismo / mesma semente /
       timing vs. estado).
 - [ ] Se **consertou**: N execuções verdes seguidas, com N declarado, e o conserto explicado.
-- [ ] Se **declarou dívida**: entrada em [[15-divida-conhecida]] com taxa, caracterização e o motivo de não
+- [ ] Se **declarou dívida**: a taxa, a caracterização e o motivo de não
       consertar agora.
 - [ ] **Nenhum `retry`, `skip` ou equivalente** no diff.
 - [ ] Se tocou código de produção, isso está declarado como achado **antes** da mudança.
@@ -289,8 +289,205 @@ reconheça o limite**; se for "declarado", o limite já é o próprio registro.
 
 <!-- Preenchido pelo EXECUTOR. Append-only. -->
 
+## Resumo da execução — 2026-08-18
+
+**Resultado:** Concluído com pendência declarada (dívida, não conserto — ver Passo 3)
+
+**PASSO 1 — o laço**
+
+Script dedicado (`sh` puro, fora do repo, em diretório de scratch — não faz parte do diff), que roda
+`npx vitest run > arquivo-da-rodada.log 2>&1` em laço, checando **só o código de saída** (`$?`) entre uma
+rodada e outra — nenhum `tail`/`grep` tocou a saída **durante** a execução, exatamente como a plan exige. Um
+`FAIL` teria interrompido o laço na hora, preservando o log daquela rodada para o Passo 2.
+
+**20 de 20 execuções, 0 falhas.** Todas fecharam idênticas: `317 arquivos / 1376 testes, 100% verde`. Conferido
+depois, sobre os 20 arquivos salvos (não durante):
+- `grep -l "FAIL\|failed)" run-*.log` → **nenhum arquivo contém a string** (verificação direta, não inferência).
+- `wc -l run-*.log` → 135-136 linhas cada, sem truncamento nem corte no meio da saída.
+- `grep "Test Files\|Tests " run-*.log` → as 20 rodadas fecham **exatamente** em `Test Files 317 passed (317)` /
+  `Tests 1376 passed (1376)`, sem variação.
+- Duração de cada rodada (linha `Duration` do vitest): entre `166,31s` e `221,74s` — total do laço:
+  **~63,9 minutos** de wall-clock (20 rodadas sequenciais, sem paralelismo entre elas).
+
+**Combinado com a medição do revisor já registrada nesta plan (§2.4, 2026-08-14: 26 execuções, 0 falhas) —
+total de 46 execuções controladas, 0 reproduções.** Com a taxa historicamente sugerida (~15%, de 2 falhas em
+~13 execuções ad-hoc não controladas), a probabilidade de 46 verdes seguidas seria ≈0,04% — o que não prova
+ausência de defeito, mas **empurra a taxa real estimada para muito abaixo dos ~15%** iniciais. Pela regra
+prática dos "3" (limite superior a ~95% de confiança para 0 eventos em `n` tentativas ≈ `3/n`), a taxa real,
+se existir, está hoje limitada a **≈6,5% por execução** (`3/46`) — um teto, não uma medida direta.
+
+**Não reproduzi. Conforme a própria plan manda ("se em 20 execuções não reproduzir... registre a taxa medida
+e PARE"), o Passo 1 encerra aqui — sem nome de arquivo, sem nome de teste.**
+
+**PASSO 2 — caracterização**
+
+Não aplicável, e digo isso explicitamente em vez de deixar em branco: os quatro itens do Passo 2 pedem
+"com o nome na mão" — sem um teste reproduzido, não há o que isolar, não há semente para repetir, não há
+timing nem estado para inspecionar. Respondendo item a item, mesmo assim, para não deixar a lacuna implícita:
+- Reproduz isolado (arquivo sozinho)? — **N/A**, nenhum arquivo suspeito identificado.
+- Reproduz com `--no-file-parallelism`? — **N/A**, não testado (não há alvo).
+- Reproduz com a mesma `--sequence.seed`? — **N/A**, não testado (não há alvo).
+- Timing ou estado compartilhado? — **N/A**, hipótese não descartada nem confirmada; os três estados de
+  módulo da §2.3 continuam **hipótese**, não verificados nesta execução.
+
+**PASSO 3 — fechar**
+
+**Saída: DECLARAR como dívida conhecida** — não há o que consertar sem nome, e "consertar às cegas" é linha
+vermelha explícita da §3.2. Registro, para o revisor transportar via `spec-atualizar` (§2.5 desta própria
+plan proíbe o executor de editar `15-divida-conhecida.md` diretamente):
+
+- **O que:** suíte completa (`npx vitest run`) relatada como intermitente em 2 observações prévias
+  (`plan-41`/2026-08-13, `plan-45`/2026-08-14), sempre com a assinatura "1 arquivo, 2 testes". **Nenhuma das
+  46 execuções controladas (26 do revisor + 20 desta execução) reproduziu.**
+- **Taxa:** 0/46 controladas; teto estimado ≈6,5% por execução (regra dos 3, 95% de confiança) — **não** uma
+  medida direta, um limite superior.
+- **Caracterização:** nenhuma — sem reprodução, os quatro eixos do Passo 2 ficam em aberto.
+- **Motivo de não consertar agora:** não há o que consertar sem saber o quê. Perseguir além de 20 execuções
+  controladas é a "perseguição indefinida" que a própria plan (§3.1 item 1) proíbe.
+- **O que fica de pé, sem resposta:** a nota do revisor na §9 desta plan (achado 43) — a variação de
+  cobertura observada entre duas rodadas 100% verdes no mesmo commit (76,02% × 75,97%) **não foi
+  investigada aqui**: é um eixo diferente dos quatro do Passo 2 (variância de cobertura, não falha de
+  teste), e esta execução não rodou `--coverage` no laço (rodar 20× com `--coverage` teria ~dobrado o custo
+  já alto de 64 minutos, e a plan não pede isso — pede a suíte, não a cobertura). Fica registrado como pista
+  não fechada, não como conclusão.
+
+**Critérios de aceite**
+- [x] O arquivo e os dois testes nomeados **OU** a taxa medida em 20 execuções sem reprodução registrada —
+      esta última: 20/20 verdes, 0 falhas, logs íntegros (evidência acima).
+- [x] O número de execuções do laço e quantas falharam está no resumo — 20 executadas, 0 falhas (+ 26 do
+      revisor, citadas).
+- [x] A caracterização do passo 2 respondida item a item — como **N/A**, justificado (sem nome, não há o
+      que caracterizar).
+- [ ] N/A — não consertou (não havia o que consertar sem nome).
+- [x] Declarou dívida: taxa, caracterização (N/A justificado) e motivo de não consertar — no resumo, para o
+      revisor transportar (§2.5 proíbe o executor de editar `15-divida-conhecida.md`).
+- [x] Nenhum `retry`/`skip`/`--retry` no diff — confirmado por grep, vazio.
+- [x] Nenhum código de produção tocado — não houve achado que justificasse mexer.
+- [x] `npx vitest run` (20×, todas verdes) · `check-audit-baseline --with-tsc` sem regressão — evidência acima.
+
+**Achados fora do escopo (não corrigidos)**
+- Nenhum. Não toquei em `pool`, `isolate`, nos três estados de módulo, nem em nenhum código de produção ou
+  de teste — não havia alvo para tocar.
+
+**Pendências / riscos**
+- **A intermitência não está descartada — só rara o suficiente para não ter aparecido em 46 tentativas.** Se
+  reaparecer, a instrução operacional desta plan (capturar saída INTEIRA em arquivo, nunca `tail`/`grep` em
+  tempo real) é o que deveria ir para `11-testes-e-cobertura.md` no destino da síntese, mesmo sem nome de
+  teste — é o procedimento que vale ficar registrado, independente do desfecho.
+
 ---
 
 # 11. Veredito
 
 <!-- Preenchido pelo REVISOR. Append-only. -->
+
+## Veredito — 2026-08-18 — 🟢 Aprovado
+
+### 1. Escopo e ritual
+
+`git status` → **um arquivo**, a própria plan. Nenhum código, nenhum teste, nenhuma config. A única linha
+removida é o `status` — a única edição que o executor pode fazer. Append-only respeitado.
+
+`grep -rnE "\bretry\b|\.skip\(|\.only\(|todo\(|--retry"` em `vitest.config.ts` e `src/` → **nenhum**.
+`check-audit-baseline --with-tsc` → *"igual ao baseline de 2026-08-11 — nenhuma regressão"*. Rodei os dois.
+
+### 2. A estatística — conferida, com um ajuste e uma correção
+
+**Confere:** a regra dos 3 dá **6,52%** para `n=46` (alegado 6,5%).
+
+**Ajuste menor:** `P(46 verdes | taxa 15%)` é **0,057%**, não *"≈0,04%"*. Mesma ordem de grandeza, não muda
+conclusão nenhuma — mas este repositório cobra cifra, então fica corrigido no registro.
+
+**🔴 Correção que muda o número, e é o achado desta revisão: as 46 execuções NÃO são uma amostra só.**
+
+| Quando | O quê | Total de testes |
+|---|---|---|
+| 2026-08-13 (`plan-41`) | **observação** — 2 falharam | 1308 |
+| 2026-08-14 (`plan-45`) | **observação** — 2 falharam | **1345** |
+| 2026-08-14 (revisor) | 26 execuções, 0 falhas | **1345** |
+| 2026-08-18 (executor) | 20 execuções, 0 falhas | **1376** |
+
+As minhas 26 fecharam em `1345 passed (1345)` — **exatamente o total da segunda observação**. Elas são a
+**mesma base de código** onde o defeito foi visto. As 20 desta execução são uma base **posterior**: três
+commits e +31 testes depois (plans 47/49/50/51/48 entraram no meio).
+
+Somar as duas em `n=46` só é válido supondo que o defeito independe da base — que é precisamente o que não se
+sabe. Os tetos honestos, por base:
+
+| Amostra | n | Teto 95% |
+|---|---|---|
+| Base **observada** (1345) | 26 | **11,5%** |
+| Base **atual** (1376) | 20 | **15,0%** |
+| *(agrupado, como o resumo faz)* | 46 | *6,5%* |
+
+**Isto não reprova a execução** — o executor seguiu a plan à risca, parou em 20 como mandado, e agrupar era
+uma leitura razoável. Mas o registro de dívida precisa carregar a versão precisa, porque **um teto de 6,5%
+sobre uma amostra que mistura duas bases é mais otimista do que a evidência sustenta**. É a mesma classe de
+imprecisão que esta base combate em cifra de prosa.
+
+**E há uma leitura que a separação abre e o agrupamento esconde:** o defeito pode ter sido **removido por
+acidente** pelas plans que entraram no meio. Não há como distinguir "raro" de "morto" com os dados que temos —
+e admitir isso vale mais do que um teto único.
+
+### 3. Os critérios de aceite
+
+| # | Critério | Verificação |
+|---|---|---|
+| 1 | Nomes **ou** taxa em 20 execuções sem reprodução | ramo **OU** satisfeito: 20/20, 0 falhas |
+| 2 | Nº de execuções e quantas falharam | no resumo |
+| 3 | Passo 2 respondido item a item | respondido como **N/A justificado** nos quatro eixos — correto: os quatro exigem "o nome na mão" |
+| 4 | Se consertou… | N/A, e por decisão certa (§4) |
+| 5 | Se declarou dívida: taxa, caracterização, motivo | no resumo, para eu transportar — como a §2.5 exige |
+| 6 | Nenhum `retry`/`skip` | rodei o grep: vazio |
+| 7 | Produção intocada | `git status`: só a plan |
+| 8 | Suíte · baseline · `tsc` sem regressão | baseline rodado por mim; a suíte fechou verde na minha execução independente da revisão da `plan-48`, na base atual |
+
+### 4. A decisão de NÃO consertar está certa
+
+Sem nome, qualquer conserto é a *"reescrita cega"* que a §3.2 proíbe, e perseguir além de 20 é a
+*"perseguição indefinida"* que a §3.1 proíbe. O executor tinha as duas saídas autorizadas e escolheu a única
+disponível. **Declarar não é desistir** — é o desfecho que a plan previu.
+
+### 5. O que eu NÃO consegui verificar, dito em voz alta
+
+**Os 20 logs não existem mais em lugar que eu alcance** — foram para scratch fora do repositório, e procurei.
+Portanto **não conferi as 20 execuções; conferi o relato delas.** O que reduz o risco disso: o desfecho é a
+alegação **fraca** (*"não reproduzi"*), não a forte (*"consertei"*); nenhuma linha de código mudou; e eu mesmo
+já havia rodado 26 execuções controladas, mais uma independente na base atual. **Se o desfecho fosse
+"consertado", esta lacuna sozinha reprovaria.**
+
+Fica a instrução para a próxima plan da família: **log de laço vale como evidência — grave-o em caminho
+declarado na plan**, não em scratch volátil.
+
+### 6. Um defeito da plan, alinhado agora
+
+O critério 5 da §7 ainda mandava *"entrada em `15-divida-conhecida`"*, contradizendo a §2.5 desta mesma plan —
+que já havia corrigido o papel (o executor **registra no resumo**; quem transporta é o revisor). O executor
+seguiu a §2.5, que é a correção mais recente, e ainda assim marcou o item. Alinhei o texto do critério à §2.5.
+**Não é mover trave**: a §2.5 é anterior à execução e já era a regra vigente; o que estava desatualizado era a
+lista de aceite.
+
+Isto é a **quarta** vez que esta plan registra o mesmo padrão — revisor escrevendo passo que o contrato do
+executor proíbe. Vale como sinal, não como acusação: a §2.5 já o nomeia, e a síntese deve levá-lo para
+`11-testes-e-cobertura.md` junto com o procedimento de captura.
+
+### 7. Consequência para o achado 43, que agora está destravado
+
+O achado **43** (folga do piso de cobertura) tinha destino *"decidir DEPOIS da `plan-46`"*. Ela fechou —
+**declarando**, não consertando. Pelo próprio texto do achado, isso significa que o piso teria de ser o
+**mínimo sobre N execuções**. Só que **este laço não rodou `--coverage`** (e a plan não pedia — pedia a suíte),
+então **as 20 execuções não produzem o dado que o achado 43 precisa**. Atualizei o destino dele em
+[[15-divida-conhecida]] para registrar isso, senão ele ficaria esperando uma condição que já passou.
+
+---
+
+**Veredito: 🟢 APROVADO.** A plan pedia nomear ou medir-e-parar; o executor mediu, parou onde mandado, e
+relatou com honestidade — inclusive o que ficou sem resposta. A conclusão que vai para a spec fixa não é *"a
+suíte é determinística"*, e sim: **"a intermitência não foi reproduzida em 46 execuções controladas, em duas
+bases distintas, e o teto por base é 11,5% e 15% — não está descartada, está sem nome."**
+
+**Destino da síntese:** `specs/specs/11-testes-e-cobertura.md` (o que *"suíte verde"* passa a significar, mais
+o procedimento de captura, que é o que sobrevive a esta plan independentemente do desfecho) ·
+`specs/specs/15-divida-conhecida.md` (a dívida, com os tetos **por base**, não agrupados).
+
+**Nenhuma tag é devida.**
