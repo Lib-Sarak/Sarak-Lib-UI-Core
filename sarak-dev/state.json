@@ -217,6 +217,14 @@
       "comando": "node scripts/generate-consumer-kit.mjs --check"
     },
     {
+      "nome": "npm run migration-anchor:check",
+      "comando": "node gates/scripts/contrato/check-migration-anchor.mjs"
+    },
+    {
+      "nome": "npm run minor-no-removal:check",
+      "comando": "node gates/scripts/contrato/check-minor-no-removal.mjs"
+    },
+    {
       "nome": "npm run package:check",
       "comando": "node gates/scripts/contrato/check-package-contents.mjs"
     },
