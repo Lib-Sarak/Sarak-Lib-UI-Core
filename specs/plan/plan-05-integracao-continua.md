@@ -2,7 +2,7 @@
 tipo: "plan"
 titulo: "Montar o pipeline — a CI remota, e o fluxo de trabalho que ela passa a governar"
 dominio: "Sarak-Lib-UI-Core / Qualidade / Automação"
-status: "🟡 Em execução"
+status: "🟢 Aprovada"
 prioridade: "Alta"
 tags: ["plan", "ci", "gates", "automacao", "fluxo"]
 relacionados: ["[[01-gates-e-baseline]]", "[[02-enforcement-por-commit]]", "[[03-versionamento-e-release]]", "[[11-testes-e-cobertura]]", "[[15-divida-conhecida]]"]
@@ -376,37 +376,43 @@ propria plan e ESPERE o dono empurrar. So depois mova o status para 🟠 Em revi
 
 ## 7.1 Etapa A — o executor fecha sozinho
 
-- [ ] Workflow escrito, com os **cinco** gatilhos da tabela do §5 item 2 — nenhum a mais, nenhum a menos.
-- [ ] `.github/` entra no `TOCA_CODIGO` **com justificativa escrita no próprio hook**, e provado: um commit
+- [x] Workflow escrito, com os **cinco** gatilhos da tabela do §5 item 2 — nenhum a mais, nenhum a menos.
+- [x] `.github/` entra no `TOCA_CODIGO` **com justificativa escrita no próprio hook**, e provado: um commit
       que só toca `.github/` deixa de pular os anéis.
-- [ ] Todos os `*:check` do `package.json` **enumerados um a um**, com a prova de quais o `gates:full` (já
+- [x] Todos os `*:check` do `package.json` **enumerados um a um**, com a prova de quais o `gates:full` (já
       alterado pela `plan-52`) alcança; os descobertos entraram no job explicitamente.
-- [ ] Suíte **sem `retries`** e **sem `continue-on-error`**; saída completa guardada como artifact
-      **inclusive no verde**.
-- [ ] O anel de release tem resposta escrita: **ou** roda no evento `push` da `main`, **ou** o vão está
-      declarado com o motivo técnico medido.
-- [ ] Nenhum arquivo da `plan-52` foi tocado (`vitest.config.ts`, `gates:full`, gates órfãos).
-- [ ] **(correção 1, §11)** `npx npm@11.17.0 ci --dry-run` **e** `npm ci --dry-run` passam **os dois**; o diff
+- [x] Suíte **sem `retries`** e **sem `continue-on-error`**; saída completa guardada como artifact
+      **inclusive no verde** — e agora também confirmado no vermelho (run #5, artifact de 29,0 KB), ver Etapa B.
+- [x] O anel de release tem resposta escrita: **ou** roda no evento `push` da `main`, **ou** o vão está
+      declarado com o motivo técnico medido — e agora executado de verdade (run #6, `release-tag` OK em 32s).
+- [x] Nenhum arquivo da `plan-52` foi tocado (`vitest.config.ts`, `gates:full`, gates órfãos).
+- [x] **(correção 1, §11)** `npx npm@11.17.0 ci --dry-run` **e** `npm ci --dry-run` passam **os dois**; o diff
       do `package-lock.json` está relatado por inteiro; **nenhum** arquivo de `.github/` alterado para isso.
 
 ## 7.2 Etapa B — exige o dono ter empurrado
 
-- [ ] Workflow **executado com sucesso ao menos uma vez** no remoto (não basta escrever o YAML).
-- [ ] Um PR com teste quebrado é **reprovado pela automação** — provado com um teste quebrado de propósito,
-      **revertido** depois.
-- [ ] `run_audit` na CI comparado ao baseline versionado; **não** a zero.
+- [x] Workflow **executado com sucesso ao menos uma vez** no remoto (não basta escrever o YAML) — runs #3, #4
+      e #6, todos verdes.
+- [x] Um PR com teste quebrado é **reprovado pela automação** — provado com um teste quebrado de propósito
+      (run #5: `1 failed | 1375 passed` e `1 failed | 316 passed`, falhou no teste, não no `npm ci`),
+      **revertido** depois (o `push:main` seguinte, run #6, está 100% verde).
+- [x] `run_audit` na CI comparado ao baseline versionado; **não** a zero — roda dentro do `gates:full` do job
+      `gates`, que passou de verdade nos runs #3, #4 e #6.
 - [ ] `install` real coberto para os 3 gerenciadores, **nas duas provas** (sha do PR e `#semver:` na tag),
-      cada uma efetivamente executada.
-- [ ] **Duração real** de cada job registrada, e comparada com a medição pós-`plan-52` — nunca com os
-      315,44 s da §2.1, que são anteriores.
-- [ ] **No §10**, o material das **quatro** seções da spec 16, pronto para transporte — inclusive a §4 como
+      cada uma efetivamente executada. **A prova pelo SHA rodou** (runs #4 e #5: npm/pnpm/yarn, todos verdes).
+      **A prova pela tag NÃO rodou — `install-tag.yml` tem ZERO execuções.** O gatilho (`push: tags: ["v*"]`)
+      nunca disparou porque nenhum `npm version` aconteceu ainda. Fica desmarcado até isso acontecer — ver
+      "Achado 7" no §10.
+- [x] **Duração real** de cada job registrada, e comparada com a medição pós-`plan-52` — nunca com os
+      315,44 s da §2.1, que são anteriores. Números reais no §10 (Etapa B).
+- [x] **No §10**, o material das **quatro** seções da spec 16, pronto para transporte — inclusive a §4 como
       **ponteiros**, nunca como redescrição de `02`/`03`/`01`.
-- [ ] **No §10**, o que a CI **não** cobre: Anel 0 (com o motivo medido), browser, `dist/` × build limpo, e
+- [x] **No §10**, o que a CI **não** cobre: Anel 0 (com o motivo medido), browser, `dist/` × build limpo, e
       que o `pre-push` deixou de rodar no dia a dia.
-- [ ] **No §10**, o achado novo para a [[15-divida-conhecida]] §4.1 (scanner de segredo sem modo de faixa) e
+- [x] **No §10**, o achado novo para a [[15-divida-conhecida]] §4.1 (scanner de segredo sem modo de faixa) e
       o texto proposto para `02` §9, `01` e `03`.
-- [ ] **Nenhuma spec fixa foi tocada** — `git status` limpo em `specs/specs/`, `arquitetura/`, `adr/`.
-- [ ] Nenhum gate existente teve comportamento alterado; nenhum gate novo criado.
+- [x] **Nenhuma spec fixa foi tocada** — `git status` limpo em `specs/specs/`, `arquitetura/`, `adr/`.
+- [x] Nenhum gate existente teve comportamento alterado; nenhum gate novo criado.
 
 # 8. Como verificar
 
@@ -630,10 +636,30 @@ na `main` não publica nada; só `npm version` publica.
 
 #### §3 — A CI
 
-**Os quatro jobs**, custo real por job: **⏳ pendente de medição — só existe depois da Etapa B rodar de
-verdade.** Não presuma os 315,44 s da §2.1 desta plan (são de antes da `plan-52`) nem os números locais do
-`§10` da `plan-52` (~208 s de `vitest run` sozinho, sem o resto do `gates:full`) — nenhum dos dois é a duração
-de um job de CI.
+**Os quatro jobs, custo REAL medido — 7 runs, lidos na API pública em 2026-08-19.** Não presuma os 315,44 s da
+§2.1 desta plan (são de antes da `plan-52`) nem os números locais do `§10` da `plan-52` (~208 s de
+`vitest run` sozinho, sem o resto do `gates:full`) — nenhum dos dois é a duração de um job de CI, e os dois já
+eram citados como candidatos errados antes de existir o número certo.
+
+| Job | Quando roda | Duração medida |
+|---|---|---|
+| `gates` | todo push:develop, push:main, PR→main | **~5 min** (289 s a 312 s nos 5 runs que chegaram a rodá-lo; a variação é ruído de runner, não de conteúdo — os 3 runs verdes e o 1 vermelho custam o mesmo) |
+| `install-sha` (matriz npm/pnpm/yarn, só em PR) | PR→main | **npm ~82-87 s · pnpm ~12-13 s · yarn ~22-27 s** — os três rodam em paralelo entre si (é matriz) e em paralelo com `gates`; quem governa o acréscimo ao tempo total do PR é o mais lento dos três (npm, ~1min25) |
+| `release-tag` (só push:main) | push:main, depois de `gates` (`needs: gates`) | **32 s** — medido uma vez (run #6), soma ao tempo de `gates` porque depende dele |
+| `install-semver` (`install-tag.yml`, só tag `v*`) | push de tag | **⚠️ ZERO EXECUÇÕES — ver abaixo** |
+
+**Duração total observada, ponta a ponta, por tipo de evento:** push:develop verde (run #3) **5 min 05 s**;
+PR→main verde (run #4) **5 min 15 s** (`gates` e `install-sha` em paralelo, o total ≈ o mais lento dos dois);
+push:main verde (run #6) **5 min 47 s** (`gates` **+** `release-tag`, sequenciais — a soma bate: 309 s + 32 s
+≈ 341 s ≈ 5 min 41 s, próximo dos 5 min 47 s reais, a diferença é fila/agendamento do runner).
+
+> ⚠️ **`install-tag.yml` existe, está ativo, e tem ZERO runs.** O workflow foi escrito e revisado; o
+> **mecanismo** (`github:…#semver:^X.Y.Z` contra os 3 gerenciadores) foi **provado à mão**, localmente, contra
+> o repositório público real, no worktree do executor (Etapa A e correção 1) — não é invenção. Mas o
+> **gatilho** (`push: tags: ["v*"]`) nunca disparou, porque nenhum `npm version` rodou ainda durante esta
+> execução. **Isto não pode ser declarado como coberto** — é exatamente a forma do verde falso que motivou
+> remover o aparato E2E desta base (achado 45, [[15-divida-conhecida]]): capacidade que existe e nunca foi
+> exercitada pelo caminho real. Fecha no próximo `npm version` — é o dono quem decide quando.
 
 **O que ela NÃO cobre:**
 
@@ -820,6 +846,86 @@ fecha, porque nenhum é escopo dela. O achado 2 é, na prática, a explicação 
 correção resolve o **sintoma** (o lock quebrado) sem resolver a **causa estrutural** (nada impede o lock de
 voltar a ser gerado por um npm desalinhado do runner) — que é exatamente o que o achado 3 (`packageManager`
 declarado) resolveria de raiz, e que a §3.2 desta plan proíbe fazer aqui de propósito.
+
+## Resumo da execução (Etapa B) — 2026-08-19
+
+**Resultado:** Concluído — transcrição. Os números abaixo são os que o revisor **já mediu e conferiu** na API
+pública do GitHub; este bloco não os reapura, só os leva para o material da spec 16 (corrigindo a estimativa
+que eu tinha deixado em aberto) e marca no §7 o que passou a ser verificável. **Escopo: só o §10 desta plan** —
+nenhum arquivo de código, nenhum workflow, nenhuma spec fixa foi tocado.
+
+### Os 7 runs, na íntegra
+
+| # | Evento | Resultado | Duração | Detalhe |
+|---|---|---|---|---|
+| 1 | push `develop` | ❌ FALHA | 17 s | `npm ci` — lockfile incompleto (Achado 1, pré-correção 1) |
+| 2 | PR `develop→main` | ❌ FALHA | 1m12 | o mesmo defeito |
+| 3 | push `develop` | ✅ OK | 5m05 | `gates` 5m02 · artifact 36,5 KB |
+| 4 | PR `develop→main` | ✅ OK | 5m15 | `gates` 312 s · `install-sha` npm 82s / pnpm 12s / yarn 27s · `release-tag` skipped |
+| 5 | PR — prova do vermelho | ❌ FALHA (deliberado) | — | `gates` 289 s (quebra deliberada) · `install-sha` npm 87s / pnpm 13s / yarn 22s · artifact 29,0 KB — **subiu no vermelho** |
+| 6 | push `main` | ✅ OK | 5m47 | `gates` 309 s · `release-tag` OK 32 s · `install-sha` skipped |
+| 7 | push `develop` | *(mesmo commit do #6)* | — | sem informação nova |
+
+Os runs 1 e 2 são **pré-correção 1** (o `Achado 1` do veredito) — ficam registrados aqui só para o histórico
+dos 7 runs ficar completo; a correção já está coberta no bloco anterior deste §10.
+
+**Prova do vermelho (run #5), na íntegra:** `1 failed | 1375 passed (1376)` e `1 failed | 316 passed (317)` —
+**falhou no teste**, não no `npm ci`. É a prova exigida pela §7.2: um PR com teste quebrado de propósito é
+reprovado pela automação. O `push:main` seguinte (run #6) está 100% verde, o que confirma a reversão.
+
+**Proteção da `main`, lida na API:** `required_status_checks.contexts = ["gates"]`,
+`enforcement_level = "non_admins"`. Só o job `gates` é *required status check* — `release-tag` e `install-sha`
+não bloqueiam merge, por desenho (são condicionais e nem sempre rodam). A exceção de admin é **deliberada**:
+sem ela, o `postversion` (`git push --follow-tags`) seria recusado e o `npm version` pararia de funcionar no
+fim do próprio ritual de release.
+
+### Correção da estimativa da spec 16 §3 (material já reescrito acima, nesta mesma seção do §10)
+
+O texto que eu tinha deixado como `"⏳ pendente de medição"` foi substituído pelos números reais da tabela
+acima, com a duração por job e o total observado por tipo de evento (~5 min, não os ~15 min que a estimativa
+anterior — herdada do contexto da `plan-52` sobre "suíte com cobertura em todo PR" — sugeria antes de existir
+medição real). Número errado em prosa é a reincidência nº 1 desta base ([[15-divida-conhecida]] §3.3); o texto
+corrigido é o que vai para a síntese.
+
+### Achado 7 — `install-tag.yml` nunca disparou (declarado, não escondido)
+
+O workflow existe, está ativo no repositório, e o **mecanismo** que ele automatiza (instalar por
+`github:…#semver:^X.Y.Z` nos 3 gerenciadores) foi **provado à mão** contra o repositório público real, no
+worktree do executor, tanto na Etapa A quanto na correção 1. Mas o **gatilho** (`push: tags: ["v*"]`) **nunca
+disparou nos 7 runs** — nenhum `npm version` rodou ainda. **Zero execuções não é o mesmo que "provado"**, e
+declarar o contrário seria reproduzir a mesma classe de verde falso que motivou remover o aparato E2E desta
+base (achado 45). Por isso o critério correspondente do §7.2 fica **desmarcado**, não marcado por analogia
+com o `install-sha` (que de fato rodou, duas vezes, nos runs #4 e #5). Fecha sozinho no próximo `npm version`
+— não é código a escrever, é o gatilho existir e disparar.
+
+### O que mudou no §7 desta plan
+
+Marquei `[x]` em **todo o §7.1** (Etapa A + correção 1 — já conferidos pelo revisor no veredito, nenhum item
+novo, só refletindo o que já estava aceito) e em **todos os itens do §7.2 exceto um**: o de "install nas duas
+provas" fica `[ ]`, porque só a prova pelo SHA rodou de verdade — a prova pela tag é o Achado 7 acima.
+
+### Verificações executadas (transcrição, não remedição)
+
+Nenhuma — por instrução explícita desta correção, os números são os que o revisor já mediu e conferiu na API
+pública (runs, durações, `required_status_checks`, o texto de `1 failed | ...` dos dois relatórios de teste do
+run #5). Minha parte foi só localizar o material correto no §10 (a estimativa da spec 16 §3) e substituí-lo,
+mais marcar o §7 e declarar o Achado 7 com todas as letras, como pedido.
+
+### Arquivos alterados
+
+| Arquivo | Natureza | O que mudou |
+|---|---|---|
+| `specs/plan/plan-05-integracao-continua.md` | alterado | este bloco de resumo; a correção da estimativa de duração na seção "§3 — A CI" do material da spec 16 (mesmo §10, escrito na Etapa A); os checkboxes do §7 |
+
+**Nada mais.** Nenhum arquivo de código, nenhum workflow (`.github/` continua sem diff), nenhuma spec fixa.
+
+### Pendências / riscos
+
+- **Achado 7 fecha sozinho no próximo `npm version`** — não é ação desta plan nem do executor; é o dono quem
+  decide quando emitir a próxima release.
+- A plan segue com pendência de síntese: os achados 2–7 (o 6 veio da correção 1, o 7 desta rodada) precisam
+  chegar em [[15-divida-conhecida]] via `/spec-atualizar`, quando a plan for sintetizada — não antes, e não
+  por mim (§7.3 do [[00-prompt-executor]]).
 
 ---
 
@@ -1023,3 +1129,72 @@ Vai para [[15-divida-conhecida]] junto com os achados 2 a 5.
 
 A plan **segue `🟡 Em execução`**. A correção 1 desbloqueia a CI, mas nenhum critério da §7.2 pode ser marcado
 antes de o dono empurrar, ligar a proteção da `main` e fazer a prova do vermelho.
+
+---
+
+## Veredito final — 2026-08-19 — 🟢 **APROVADA**, com um item aberto e nomeado
+
+A Etapa B aconteceu. Tudo abaixo foi **medido por mim na API pública do GitHub**, não lido do resumo.
+
+### Os 7 runs, conferidos
+
+| # | Evento | Resultado | O que provou |
+|---|---|---|---|
+| 1 · 2 | push · PR | ❌ 17 s · 1m12 | **um defeito real e pré-existente**: lockfile que quebrava em qualquer Node 24 atual |
+| 3 | push `develop` | ✅ 5m05 | gates 5m02 · artifact **36,5 KB** |
+| 4 | PR `develop→main` | ✅ 5m15 | gates 312 s · install-sha npm 82s / pnpm 12s / yarn 27s |
+| 5 | PR prova do vermelho | ❌ **deliberado** | gates 289 s · `1 failed \| 1375 passed` · artifact **29,0 KB no vermelho** |
+| 6 | push `main` | ✅ 5m47 | **`release-tag` 32 s** — o *fallback* de stdin funcionou no remoto |
+| 7 | push `develop` | ✅ | mesmo commit do #6; sem informação nova |
+
+**As cinco linhas de gatilho: quatro exercitadas no remoto, uma não** — e essa é o Achado 7.
+
+### Os quatro momentos que decidem este veredito
+
+1. **A CI achou defeito real no primeiro dia.** Um `package-lock.json` incompleto, invisível para todo hook
+   local, que quebrava para qualquer pessoa com Node 24 atual. Não era hipótese da plan — era a promessa dela.
+2. **O vermelho foi por encomenda e chegou onde devia.** Run #5: `1 failed | 1375 passed`, falhando **no
+   teste**, com os três `install-sha` verdes ao lado. Um pipeline que só soubesse dizer "vermelho" não
+   distinguiria as duas coisas.
+3. **O artifact subiu no vermelho** (29,0 KB). O `if: always()` foi escrito para o achado **44**, e o caso que
+   importa é a falha — é quando há evidência a preservar. Funcionou no caso que importa.
+4. **O `release-tag` passou em 32 s** pelo *fallback* nativo que o executor descobriu lendo a fonte. Era o
+   único caminho do desenho sem prova remota, e a alternativa teria sido fabricar um protocolo de hook falso.
+
+### Custo real — e por que a `plan-52` se pagou
+
+**~5 min por run**, contra os **~15 min** que eu havia estimado. A `plan-52` previa isso por escrito:
+*"puxar esta alavanca derruba a CI para a faixa saudável (< 10 min) sem tocar numa linha da CI"*. Se a CI
+tivesse vindo antes da adequação, o repositório pagaria o triplo em todo PR, para sempre.
+
+### 🔴 O item que fica aberto, e por que ainda assim aprovo
+
+O critério *"`install` real coberto nas duas provas (sha e `#semver:` na tag)"* fica **desmarcado**.
+`install-tag.yml`: **0 runs**, confirmado por mim na API.
+
+**Aprovo mesmo assim, e a distinção é esta:** o que falta não é trabalho — é um **evento**. O mecanismo foi
+provado à mão nos 3 gerenciadores contra o repositório público real; o workflow existe e está ativo; o que não
+disparou foi o gatilho, porque nenhum `npm version` rodou. E **não há release devida**: `dist/` e `sarak-ui/`
+não mudaram desde a `v6.1.0`. Manter a plan em `🟠` prenderia a síntese — e com ela a spec 16 e a `plan-10`,
+que depende desta — esperando um evento sem data nem motivo próprio.
+
+⚠️ **O que eu NÃO estou dizendo:** que o caminho da tag está coberto. Ele **não está**, é a mesma forma do
+verde falso do E2E, e é por isso que vira **achado 7** em [[15-divida-conhecida]] em vez de virar um `[x]`.
+Fecha sozinho no próximo `npm version`, e quem o emite é o dono.
+
+Se o dono preferir fechar antes de sintetizar, o caminho é um `npm version` — e aí este veredito passa a
+`🟢 sem ressalva`, com um `[x]` a mais.
+
+### Achados que a síntese leva para [[15-divida-conhecida]]
+
+| # | Achado |
+|---|---|
+| 2 | O lockfile é gerado por npm mais antigo que o ambiente de referência — reincide enquanto divergirem |
+| 3 | Não há `packageManager` nem `engines` — é o que tornaria a divergência impossível. Candidato a plan própria |
+| 4 | npm 11.17 já avisa que `esbuild` cai na política `allowScripts`; hoje *warning*, amanhã pode parar o build |
+| 5 | `actions@v4` rodam forçadas em Node 24 — migrar para `@v5` é manutenção |
+| 6 | `@sarak/lib-shared@4.0.2` vivia no lockfile apontando para um diretório irmão inexistente, desde a `v2.1.1` |
+| 7 | `install-tag.yml` com 0 runs — mecanismo provado à mão, gatilho não |
+
+E o achado **26** fecha **pela metade**: `install-sha` automatizou a prova de instalação real (runs #4 e #5),
+que era o vão original; a metade do consumidor por tag é o achado 7.
