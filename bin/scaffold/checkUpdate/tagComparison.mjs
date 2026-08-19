@@ -1,5 +1,7 @@
 /**
- * Comparação por TAG do `sarak-ui check` (ADR-008) — companion de `runCheckUpdate.mjs`.
+ * Comparação por TAG do `sarak-ui check`/`update` (ADR-008) — companion de
+ * `runCheckUpdate.mjs` e de `updatePlan.mjs` (plan-10, o comando que AGE em vez de só
+ * avisar).
  *
  * Existe separado porque o `runCheckUpdate` já carrega três modos (git por commit,
  * git por tag, `file:`/`link:`) e passaria do teto de linhas do padrão. A fronteira é
@@ -29,8 +31,12 @@ export const defaultExecGitLsRemoteTags = (url) =>
  * A versão que o consumidor de fato tem instalada — lida do `package.json` do pacote
  * em `node_modules`, não do lockfile. O lockfile guarda o COMMIT resolvido; quem
  * responde "que versão é esta?" é o artefato instalado.
+ *
+ * Exportada: `update`/`updatePlan.mjs` (plan-10) precisa da MESMA leitura para decidir
+ * quantos majors pula — uma segunda leitura divergiria em silêncio se algum dia os
+ * dois formatos discordassem.
  */
-const readInstalledVersion = (installedDir) => {
+export const readInstalledVersion = (installedDir) => {
     if (!installedDir) return null;
     try {
         return readJsonNoBom(path.join(installedDir, 'package.json')).version ?? null;
@@ -40,23 +46,45 @@ const readInstalledVersion = (installedDir) => {
 };
 
 /**
- * O MAJOR que a faixa do consumidor admite — `#semver:^1.2.3`, `~1.2.0` e `1.x` → `1`.
+ * A faixa que o consumidor admite — `#semver:^1.2.3` → `{ operador:'^', major:1, minor:2 }`;
+ * `#semver:~1.2.0` → `{ operador:'~', major:1, minor:2 }`.
  *
  * Existe para o aviso não virar ruído permanente: quem escreveu `^1.0.0` **não recebe**
  * um `v2.0.0` por `npm update`, então anunciá-lo seria mandar rodar um comando que não
  * resolve nada — e um aviso que nunca some é um aviso que se aprende a ignorar (é o
  * contrato de ruído da Spec 51).
  *
- * Limite declarado: só o MAJOR é lido. Uma faixa que não o fixa (`>=1.0.0`, `*`) devolve
- * `null` e nada é filtrado — trazer um resolvedor de faixa semver inteiro para dentro do
- * pacote custaria mais do que o caso marginal vale.
+ * ⚠️ **Correção de plan-10** (achado da própria plan, `tagComparison.mjs:54-59` do
+ * estado anterior): antes só o MAJOR era lido, então `~1.2.0` era tratado como
+ * `^1.2.0` — o consumidor recebia aviso de um `v1.9.0` que o `npm update` dele NUNCA
+ * entregaria, porque `~` só sobe PATCH. `^` continua filtrando só por MAJOR (é o que a
+ * faixa promete: qualquer minor/patch do major serve); `~` passa a filtrar por MAJOR
+ * **e** MINOR (só patch novo serve).
+ *
+ * Limite declarado, mantido: faixa que não fixa major (`>=1.0.0`, `*`) devolve `null` e
+ * nada é filtrado — trazer um resolvedor de faixa semver inteiro para dentro do pacote
+ * custaria mais do que o caso marginal vale.
  */
-const majorDaFaixa = (spec) => {
+export const faixaDoConsumidor = (spec) => {
     const fragmento = spec.includes('#') ? spec.slice(spec.indexOf('#') + 1) : '';
     if (!fragmento.startsWith('semver:')) return null;
-    const match = /^[\^~]?(\d+)\./.exec(fragmento.slice('semver:'.length).trim());
-    return match ? Number(match[1]) : null;
+    const match = /^(\^|~)?(\d+)\.(\d+)\./.exec(fragmento.slice('semver:'.length).trim());
+    if (!match) return null;
+    const [, operador = '^', major, minor] = match;
+    return { operador, major: Number(major), minor: Number(minor) };
 };
+
+/** Tags `vX.Y.Z` cruas que sobrevivem à faixa — `faixa === null` devolve a lista inteira. */
+export const filterTagsByFaixa = (tags, faixa) =>
+    tags.filter((tag) => {
+        if (faixa === null) return true;
+        const version = parseTag(tag);
+        if (version === null || version[0] !== faixa.major) return false;
+        return faixa.operador === '~' ? version[1] === faixa.minor : true;
+    });
+
+/** Rótulo humano da faixa — `(^1)` para quem escreveu `^`, `(~1.2)` para quem escreveu `~`. */
+export const rotuloFaixa = (faixa) => (faixa.operador === '~' ? `~${faixa.major}.${faixa.minor}` : `^${faixa.major}`);
 
 /**
  * @returns {object|null} `null` quando NÃO dá para decidir por tag: remoto sem nenhuma
@@ -75,19 +103,15 @@ export const compareByTag = ({ base, context, url, execGitLsRemoteTags }) => {
         return null;
     }
 
-    const major = majorDaFaixa(context.spec);
-    const candidatas = parseTagRefs(refs).filter((tag) => {
-        if (major === null) return true;
-        const version = parseTag(tag);
-        return version !== null && version[0] === major;
-    });
+    const faixa = faixaDoConsumidor(context.spec);
+    const candidatas = filterTagsByFaixa(parseTagRefs(refs), faixa);
 
     const maior = greatestTag(candidatas);
     if (!maior) return null;
 
     const instaladoLabel = `v${instalada.join('.')}`;
     if (compareVersions(maior.version, instalada) <= 0) {
-        const dentroDaFaixa = major === null ? '' : ` dentro da faixa do seu package.json (^${major})`;
+        const dentroDaFaixa = faixa === null ? '' : ` dentro da faixa do seu package.json (${rotuloFaixa(faixa)})`;
         return {
             ...base,
             upToDate: true,

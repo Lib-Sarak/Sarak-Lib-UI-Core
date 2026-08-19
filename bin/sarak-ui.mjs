@@ -4,20 +4,23 @@
  * Node puro (nenhuma dependência nova); todo o trabalho real vive em `bin/scaffold/`
  * (funções puras, testáveis sem spawnar este processo).
  *
- * Comandos (Spec 51 — L3): `init` (Spec 21/45) · `check` (Spec 39) · `refresh` (Spec 50).
- * Antes só existia `init`, e `check`/`refresh` viviam como CAMINHO DE ARQUIVO interno
- * (`bin/scaffold/checkUpdate.mjs`) copiado para o `package.json` do importador — o
- * consumidor decorava estrutura interna nossa, que qualquer refatoração quebraria em
- * silêncio. Os caminhos antigos seguem funcionando; esta é a superfície pública.
+ * Comandos (Spec 51 — L3, + `update` da plan-10): `init` (Spec 21/45) · `check`
+ * (Spec 39) · `refresh` (Spec 50) · `update` (plan-10 — o comando que AGE em vez de
+ * só avisar). Antes só existia `init`, e `check`/`refresh` viviam como CAMINHO DE
+ * ARQUIVO interno (`bin/scaffold/checkUpdate.mjs`) copiado para o `package.json` do
+ * importador — o consumidor decorava estrutura interna nossa, que qualquer
+ * refatoração quebraria em silêncio. Os caminhos antigos seguem funcionando; esta é a
+ * superfície pública.
  */
 import { runInit } from './scaffold/runInit.mjs';
 import { runCheckCli } from './scaffold/checkUpdate.mjs';
 import { runRefreshCli } from './scaffold/refreshKit.mjs';
+import { runUpdateCli } from './scaffold/runUpdate.mjs';
 
 const NUMERIC_FLAGS = new Set(['frontendPort']);
-const BOOLEAN_FLAGS = new Set(['force', 'yes', 'notify']);
+const BOOLEAN_FLAGS = new Set(['force', 'yes', 'notify', 'latest']);
 
-const COMMANDS = ['init', 'check', 'refresh'];
+const COMMANDS = ['init', 'check', 'refresh', 'update'];
 
 function toCamelCase(kebab) {
     return kebab.replace(/-([a-z])/g, (_, letter) => letter.toUpperCase());
@@ -61,6 +64,10 @@ Comandos:
             lockfile subindo a árvore) e em dependência local (file:/link:).
   refresh   Re-sincroniza o kit "sarak-ui/" e as cópias movidas para specs/ e
             .claude/skills/ depois de atualizar a lib.
+  update    Atualiza a lib DE VERDADE (não só avisa) e re-sincroniza o kit. Sem
+            "--latest", nunca atravessa um major. Com "--latest", mostra quantos
+            majors pula e as notas de docs/migracoes.md, pede confirmação, e só
+            então reescreve a faixa e atualiza.
 
 Opções de "init":
   --mode <app|embedded>              Modo de renderização (default: app)
@@ -72,6 +79,13 @@ Opções de "check":
   --notify                           Modo aviso: imprime SÓ se houver atualização e
                                      sai sempre com 0. É o que roda no "predev".
 
+Opções de "update":
+  --latest                           Atravessa o major: mostra o que quebra (notas de
+                                     migração) e pede confirmação antes de reescrever
+                                     a faixa no package.json.
+  --yes                              Confirma o "--latest" sem perguntar (só com
+                                     "--latest"; sozinho não faz nada sozinho).
+
 Globais:
   --help, -h                         Mostra esta ajuda e sai
 
@@ -79,9 +93,13 @@ Exemplos:
   npx @sarak/lib-ui-core init --yes
   npx @sarak/lib-ui-core check
   npx @sarak/lib-ui-core refresh
+  npx @sarak/lib-ui-core update
+  npx @sarak/lib-ui-core update --latest
 
 Sem terminal interativo (CI/agente/pipe) e sem "--yes" nem flags suficientes, o "init"
-falha com código de saída 1 (nunca sai em silêncio sem escrever nada).`;
+falha com código de saída 1 (nunca sai em silêncio sem escrever nada). O "update
+--latest" tem a MESMA regra: sem TTY e sem "--yes", falha em voz alta em vez de
+atravessar um major sem confirmação.`;
 
 async function runInitCommand(rest) {
     const flags = parseFlags(rest);
@@ -107,6 +125,12 @@ async function main() {
     }
 
     if (command === 'init') return runInitCommand(rest);
+    if (command === 'update') {
+        const cli = await runUpdateCli({ argv: rest });
+        if (cli.output) console.log(cli.output);
+        process.exitCode = cli.exitCode;
+        return;
+    }
 
     const cli = command === 'check' ? runCheckCli({ argv: rest }) : runRefreshCli({ argv: rest });
     if (cli.output) console.log(cli.output);
