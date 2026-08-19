@@ -59,7 +59,12 @@ fi
 # seção, §N.N) NASCE com dívida conhecida (vão nº 7) — por isso ele NÃO é
 # Anel 1 "verde ou nada": entrou no `run_audit.mjs` e é cobrado pelo Anel 2,
 # contra baseline, como os outros auditores com dívida tolerada.
-TOCA_CODIGO=$(echo "$STAGED" | grep -E '^(src/|scripts/|docs/|sarak-ui/|bin/|package\.json|\.githooks/|gates/)' | head -n 1)
+# `.github/` entrou em 2026-08-18 (plan-05): `.github/workflows/*.yml` é
+# CONFIGURAÇÃO EXECUTÁVEL — parente direto de `.githooks/`, que já estava na
+# lista. Sem esta linha, um commit que só mexesse no workflow da CI pularia os
+# Anéis 1 e 2 inteiros: a peça que valida todo o resto do pipeline seria a
+# única sem validação nenhuma.
+TOCA_CODIGO=$(echo "$STAGED" | grep -E '^(src/|scripts/|docs/|sarak-ui/|bin/|package\.json|\.githooks/|gates/|\.github/)' | head -n 1)
 # specs/ (exceto plan/, já coberto acima — POSIX ERE não tem negative
 # lookahead, por isso a lista explícita), .agents/skills/, sarak-dev/ são o
 # domínio do detector de ponteiro de seção e não tocam código — precisam
@@ -69,7 +74,7 @@ TOCA_DOC_COM_SECAO=$(echo "$STAGED" | grep -E '^(specs/specs/|specs/adr/|specs/a
 TOCA_TS=$(echo "$STAGED" | grep -E '\.tsx?$' | head -n 1)
 
 if [ -z "$TOCA_CODIGO" ] && [ -z "$TOCA_DOC_COM_SECAO" ]; then
-  echo "[Sarak] Anéis 1 e 2 PULADOS — o commit não toca src/, scripts/, docs/, sarak-ui/, bin/, package.json, .githooks/, gates/ nem specs/skills com ponteiro de seção."
+  echo "[Sarak] Anéis 1 e 2 PULADOS — o commit não toca src/, scripts/, docs/, sarak-ui/, bin/, package.json, .githooks/, gates/, .github/ nem specs/skills com ponteiro de seção."
   echo "[Sarak] Commit liberado."
   exit 0
 fi

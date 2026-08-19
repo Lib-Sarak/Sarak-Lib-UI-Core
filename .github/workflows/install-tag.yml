@@ -1,0 +1,64 @@
+name: Install (tag)
+
+# Só pode rodar aqui: antes da tag existir não há o que instalar por #semver:.
+# Responde a pergunta que install-sha (gates.yml) não responde — "o que acabei
+# de publicar realmente instala, pelo caminho que o consumidor de verdade usa?"
+# (plan-05, specs/plan/plan-05-integracao-continua.md §5 Etapa A item 7).
+on:
+    push:
+        tags: ["v*"]
+
+concurrency:
+    group: install-tag-${{ github.workflow }}-${{ github.ref }}
+    cancel-in-progress: true
+
+jobs:
+    install-semver:
+        runs-on: ubuntu-latest
+        strategy:
+            fail-fast: false
+            matrix:
+                manager: [npm, pnpm, yarn]
+        steps:
+            - name: Node 24
+              uses: actions/setup-node@v4
+              with:
+                  node-version: "24"
+
+            - name: Ativar ${{ matrix.manager }} via corepack (pnpm/yarn)
+              if: matrix.manager != 'npm'
+              run: corepack enable
+
+            # A tag empurrada (github.ref_name = "vX.Y.Z") vira o piso da faixa
+            # #semver:^X.Y.Z — resolve exatamente para ela (é a mais nova do major),
+            # que é como o ADR-008 recomenda que o consumidor declare a dependência.
+            - name: Instalar a lib por #semver: contra a tag recém-publicada
+              shell: bash
+              run: |
+                  set -euo pipefail
+                  TAG="${{ github.ref_name }}"
+                  VERSAO="${TAG#v}"
+                  mkdir -p /tmp/sarak-install-tag-${{ matrix.manager }}
+                  cd /tmp/sarak-install-tag-${{ matrix.manager }}
+                  npm init -y >/dev/null
+                  SPEC="github:Lib-Sarak/Sarak-Lib-UI-Core#semver:^${VERSAO}"
+                  case "${{ matrix.manager }}" in
+                    npm)  npm install "$SPEC" ;;
+                    pnpm) pnpm add "$SPEC" ;;
+                    yarn) yarn add "$SPEC" ;;
+                  esac
+                  test -f node_modules/@sarak/lib-ui-core/dist/index.cjs
+                  test -f node_modules/@sarak/lib-ui-core/dist/index.d.ts
+                  test -f node_modules/@sarak/lib-ui-core/dist/sarak.css
+                  test -f node_modules/@sarak/lib-ui-core/bin/sarak-ui.mjs
+                  INSTALADA=$(node -p "require('./node_modules/@sarak/lib-ui-core/package.json').version")
+                  echo "[install-tag:${{ matrix.manager }}] pedido ^${VERSAO}, resolveu ${INSTALADA}."
+                  test "$INSTALADA" = "$VERSAO"
+
+            - name: "sarak-ui check --notify dispara (achado 26 / spec 13 §5.1)"
+              shell: bash
+              run: |
+                  set -euo pipefail
+                  cd /tmp/sarak-install-tag-${{ matrix.manager }}
+                  node node_modules/@sarak/lib-ui-core/bin/sarak-ui.mjs check --notify
+                  echo "[install-tag:${{ matrix.manager }}] check --notify rodou e saiu com 0."

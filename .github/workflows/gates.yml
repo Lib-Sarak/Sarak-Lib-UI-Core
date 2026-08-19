@@ -1,0 +1,178 @@
+name: Gates
+
+# Gatilho da CI (plan-05, specs/plan/plan-05-integracao-continua.md §5, Etapa A item 2).
+# Cobre TRÊS das cinco linhas da tabela de gatilhos — as outras duas são:
+#   - push em feature/* = nada. Não listado abaixo de propósito: o pre-commit já cobriu,
+#     e sem gatilho aqui a ausência de cobrança é automática (não precisa de "if" negativo).
+#   - tag v* empurrada = install-tag.yml, workflow separado (evento diferente).
+on:
+    push:
+        branches: [develop, main]
+    pull_request:
+        branches: [main]
+
+# Push em sequência não deve empilhar run que já nasceu obsoleto.
+concurrency:
+    group: gates-${{ github.workflow }}-${{ github.ref }}
+    cancel-in-progress: true
+
+jobs:
+    # ---------------------------------------------------------------------
+    # GATES — roda em push:develop, push:main e pull_request:main (as três
+    # primeiras linhas da tabela que pedem "gates completo"). Na CI não
+    # existe "escopo por staged": tudo roda sempre, sem condição — é a UNIÃO
+    # dos anéis locais, nunca um subconjunto (spec 02 §3 só vale local).
+    # ---------------------------------------------------------------------
+    gates:
+        runs-on: ubuntu-latest
+        # ubuntu-latest, não matriz de SO: medido (plan-05), zero ocorrências de
+        # process.platform/win32/caminho de unidade fora de teste em src/, scripts/,
+        # gates/, bin/. Windows custa x2 e macOS x10 em minuto de runner, sem
+        # nenhuma superfície de plataforma a testar.
+        steps:
+            - name: Checkout
+              uses: actions/checkout@v4
+              with:
+                  # fetch-depth 0 (histórico + tags completos): o Anel de release
+                  # (job separado, abaixo) precisa da última tag e do log entre ela e
+                  # HEAD para sugerir o nível do bump. Um checkout raso não alcança.
+                  fetch-depth: 0
+
+            - name: Node 24 (o do dono, sem matriz)
+              uses: actions/setup-node@v4
+              with:
+                  node-version: "24"
+                  cache: "npm"
+
+            - name: npm ci (nunca npm install — respeita o lockfile e falha se ele divergir)
+              run: npm ci
+
+            # gates:full, pós-plan-52: dev-kit:check -> build (token-types, catalog,
+            # barrel, zero-brand, guide, deep-import, build:js, public-types, build:css,
+            # build:css:scoped) -> build-info:check -> package:check -> coverage:check
+            # (vitest run --coverage + check-coverage-floor) -> check-audit-baseline.mjs
+            # --with-tsc (run_audit + tsc) -> themes:diversity. Não reenumerado aqui em
+            # passos separados de propósito (plan-05 §5 item 5): reenumerar comandos em
+            # YAML é a próxima prosa a envelhecer. A saída inteira é capturada em
+            # arquivo (achado 44 — nunca tail/grep ao vivo) e sobe como artifact
+            # SEMPRE, inclusive no verde.
+            - name: npm run gates:full (com a saída inteira gravada em arquivo)
+              shell: bash
+              run: |
+                  set -o pipefail
+                  npm run gates:full 2>&1 | tee gates-full-output.log
+
+            - name: Saída completa do gates:full como artifact (sempre — achado 44)
+              if: always()
+              uses: actions/upload-artifact@v4
+              with:
+                  name: gates-full-output-${{ github.run_id }}-${{ github.run_attempt }}
+                  path: gates-full-output.log
+                  retention-days: 30
+
+            # Os CINCO *:check que o gates:full NÃO alcança — enumerados e provados um a
+            # um pelo executor (plan-05 §5 item 5), não presumidos do levantamento
+            # anterior à plan-52:
+            #   - plan-index:check   : nunca esteve na cadeia de build/gates:full: só o
+            #                          .githooks/pre-commit chama a METADE dele
+            #                          (check-plan-index-sync.mjs); a outra metade
+            #                          (generate-plan-index.mjs --check) não roda em
+            #                          hook nenhum — achado da plan-52, coberto aqui.
+            #   - gate-limits:check  : só roda no Anel 1 do pre-commit; gates:full não
+            #                          o chama em nenhum ponto da cadeia.
+            #   - container-query:check, container-query-boundary:check,
+            #     persistence-doc:check : os três órfãos que a plan-52 pôs no Anel 1 do
+            #                          pre-commit — não entraram no gates:full (a
+            #                          plan-52 só listava check-audit-baseline
+            #                          --with-tsc e themes:diversity para lá).
+            - name: Os 5 *:check que o gates:full não alcança
+              run: |
+                  npm run plan-index:check
+                  npm run gate-limits:check
+                  npm run container-query:check
+                  npm run container-query-boundary:check
+                  npm run persistence-doc:check
+
+    # ---------------------------------------------------------------------
+    # RELEASE-TAG — só existe no dia a dia porque o pre-push local SÓ age
+    # para refs/heads/main, e merge pelo botão do GitHub não roda hook
+    # nenhum (plan-05 §5 Etapa A item 3). Roda a MESMA verificação
+    # (check-release-tag.mjs) num lugar novo — não é gate novo.
+    # ---------------------------------------------------------------------
+    release-tag:
+        if: github.event_name == 'push' && github.ref == 'refs/heads/main'
+        runs-on: ubuntu-latest
+        needs: gates
+        steps:
+            - name: Checkout (histórico + tags completos)
+              uses: actions/checkout@v4
+              with:
+                  fetch-depth: 0
+
+            - name: Node 24
+              uses: actions/setup-node@v4
+              with:
+                  node-version: "24"
+                  cache: "npm"
+
+            - run: npm ci
+
+            # check-release-tag.mjs lê o stdin no FORMATO DE HOOK do git (protocolo
+            # pre-push). Sem stdin (readFileSync(0) estoura, capturado), o script cai
+            # no fallback documentado no próprio código: alvo = "HEAD" — exatamente o
+            # commit que este job está rodando. É o caminho HONESTO: não fabrica um
+            # protocolo de hook falso, usa o fallback que o script já tem para
+            # avaliação manual (o mesmo que "npm run release:check" usa localmente).
+            - name: check-release-tag.mjs sobre o HEAD deste push (fallback nativo, sem stdin)
+              run: node gates/scripts/release/check-release-tag.mjs < /dev/null
+
+    # ---------------------------------------------------------------------
+    # INSTALL PELO SHA — só em PR (develop -> main): regressão introduzida
+    # pela mudança em revisão, instalando o exato commit do PR. É a prova
+    # do achado 26 que responde "o que está sendo revisado instala?" — a
+    # prova por tag (install-tag.yml) responde outra pergunta e roda só em
+    # evento de tag.
+    # ---------------------------------------------------------------------
+    install-sha:
+        if: github.event_name == 'pull_request'
+        runs-on: ubuntu-latest
+        strategy:
+            fail-fast: false
+            matrix:
+                manager: [npm, pnpm, yarn]
+        steps:
+            - name: Node 24
+              uses: actions/setup-node@v4
+              with:
+                  node-version: "24"
+
+            - name: Ativar ${{ matrix.manager }} via corepack (pnpm/yarn)
+              if: matrix.manager != 'npm'
+              run: corepack enable
+
+            - name: Instalar a lib pelo SHA do PR num projeto escrátch
+              shell: bash
+              run: |
+                  set -euo pipefail
+                  mkdir -p /tmp/sarak-install-sha-${{ matrix.manager }}
+                  cd /tmp/sarak-install-sha-${{ matrix.manager }}
+                  npm init -y >/dev/null
+                  SPEC="github:Lib-Sarak/Sarak-Lib-UI-Core#${{ github.event.pull_request.head.sha }}"
+                  case "${{ matrix.manager }}" in
+                    npm)  npm install "$SPEC" ;;
+                    pnpm) pnpm add "$SPEC" ;;
+                    yarn) yarn add "$SPEC" ;;
+                  esac
+                  test -f node_modules/@sarak/lib-ui-core/dist/index.cjs
+                  test -f node_modules/@sarak/lib-ui-core/dist/index.d.ts
+                  test -f node_modules/@sarak/lib-ui-core/dist/sarak.css
+                  test -f node_modules/@sarak/lib-ui-core/bin/sarak-ui.mjs
+                  echo "[install-sha:${{ matrix.manager }}] instalado e os 4 artefatos publicados existem."
+
+            - name: "sarak-ui check --notify dispara (achado 26 / spec 13 §5.1)"
+              shell: bash
+              run: |
+                  set -euo pipefail
+                  cd /tmp/sarak-install-sha-${{ matrix.manager }}
+                  node node_modules/@sarak/lib-ui-core/bin/sarak-ui.mjs check --notify
+                  echo "[install-sha:${{ matrix.manager }}] check --notify rodou e saiu com 0 (o contrato de --notify: spec 13 §5.1)."

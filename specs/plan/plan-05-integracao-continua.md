@@ -2,7 +2,7 @@
 tipo: "plan"
 titulo: "Montar o pipeline — a CI remota, e o fluxo de trabalho que ela passa a governar"
 dominio: "Sarak-Lib-UI-Core / Qualidade / Automação"
-status: "🔴 A executar"
+status: "🟡 Em execução"
 prioridade: "Alta"
 tags: ["plan", "ci", "gates", "automacao", "fluxo"]
 relacionados: ["[[01-gates-e-baseline]]", "[[02-enforcement-por-commit]]", "[[03-versionamento-e-release]]", "[[11-testes-e-cobertura]]", "[[15-divida-conhecida]]"]
@@ -444,8 +444,309 @@ npm run audit                                    # local: baseline INALTERADO
 
 <!-- Preenchido pelo EXECUTOR. Append-only. -->
 
+## Resumo da execução — 2026-08-18
+
+**Resultado:** Concluído com pendências — **Etapa A fechada**; **Etapa B aguarda o dono** (§5, autoridade
+exclusiva dele: empurrar a branch, abrir o PR, ligar a proteção da `main`). Nenhum critério de §7.2 pode ser
+marcado nesta rodada — todos exigem execução remota real, que não aconteceu.
+
+### O que foi feito (Etapa A)
+
+**Dois workflows novos**, `.github/workflows/gates.yml` e `.github/workflows/install-tag.yml`, cobrindo as
+**cinco** linhas da tabela de gatilhos (§5 item 2) sem nenhuma a mais:
+
+| Evento | Arquivo · job | O que roda |
+|---|---|---|
+| push `feature/*` | *(nenhum trigger corresponde)* | nada — por omissão, não por `if` negativo |
+| push `develop` | `gates.yml` → job `gates` | `gates:full` + os 5 `*:check` órfãos |
+| PR `develop→main` | `gates.yml` → jobs `gates` + `install-sha` | idem + install pelo SHA, 3 gerenciadores |
+| push `main` (merge aceito) | `gates.yml` → jobs `gates` + `release-tag` | idem + `check-release-tag.mjs` sobre o HEAD |
+| tag `v*` empurrada | `install-tag.yml` → job `install-semver` | install por `#semver:`, 3 gerenciadores |
+
+**A enumeração dos `*:check`** (§5 item 5), feita lendo `package.json` e seguindo cada cadeia até a raiz —
+não presumida do levantamento pré-`plan-52`:
+
+| Script | Alcançado por `gates:full`? | Como |
+|---|---|---|
+| `token-types:check` · `catalog:check` · `barrel:check` · `zero-brand:check` · `guide:check` · `deep-import:check` · `public-types:check` | ✅ | via `npm run build` |
+| `build-info:check` · `package:check` · `coverage:check` | ✅ | diretos na cadeia |
+| `dev-kit:check` | ✅ | direto, primeiro |
+| `composicao-atomica:check` | ✅ | **é o mesmo arquivo** (`gates/scripts/audit/auditor_composicaoatomica.mjs`) que `check-audit-baseline.mjs --with-tsc` roda via `run_audit.mjs` |
+| `section-pointers:check` | ✅ | `auditor_sectionpointers.mjs` (em `run_audit.mjs`) é **wrapper fino confirmado** (`spawnSync`) sobre `check-section-pointers.mjs` — mesmo script, dois nomes |
+| `audit` (`run_audit.mjs`) · `audit:baseline` | ✅ (regra coberta, script não é o mesmo) | `check-audit-baseline.mjs` lê e roda o **mesmo array** de 12 auditores; a saída/orquestração é outra, a regra é a mesma |
+| **`plan-index:check`** | ❌ | nunca esteve na cadeia; só a METADE dele roda no `pre-commit` — achado da `plan-52`, coberto aqui pela primeira vez, inteiro |
+| **`gate-limits:check`** | ❌ | só no Anel 1 do `pre-commit`; `build`/`gates:full` não o chamam em ponto nenhum |
+| **`container-query:check`** | ❌ | `plan-52` só o pôs no Anel 1 do `pre-commit` |
+| **`container-query-boundary:check`** | ❌ | idem |
+| **`persistence-doc:check`** | ❌ | idem |
+
+Os **cinco** `❌` entram explicitamente no job `gates` (`.github/workflows/gates.yml:88-94`).
+
+**O anel de release** (§5 item 3, o achado mais sério da plan): `check-release-tag.mjs` lê `readFileSync(0)`
+(stdin) e, quando não há stdin, cai no fallback já existente no próprio código: `alvo = 'HEAD'`. Isso significa
+que, num job disparado por `push` em `main`, rodar `node gates/scripts/release/check-release-tag.mjs < /dev/null`
+avalia **exatamente o commit que acabou de ser empurrado** — sem fabricar o protocolo de stdin do hook do git.
+**Provado localmente, contra o HEAD real deste repositório:**
+
+```
+$ node gates/scripts/release/check-release-tag.mjs < /dev/null
+[release:check] OK — o artefato publicado é idêntico ao de v6.1.0 (4f274e0641ce). Nenhuma tag devida.
+exit=0
+```
+
+Não testei o lado que **bloqueia** (artefato mudado sem tag) porque isso exige um commit divergente de verdade
+— e o executor nunca commita. O bloqueio em si (a mesma função, `bloquear()`) já foi provado nos dois sentidos
+em [[02-enforcement-por-commit]] §11.1 (Prova 3a/3b, via o `pre-push` local); o que era **novo** aqui — o
+fallback sem stdin — foi provado agora, no sentido positivo.
+
+**`.github/` entrou no `TOCA_CODIGO`** (`.githooks/pre-commit`), com a justificativa escrita ao lado, no mesmo
+padrão das outras linhas do hook. **Só isso** foi tocado em `.githooks/` — nenhum anel, nenhuma outra linha.
+
+**Anel 0 NÃO foi levado para a CI** — confirmado lendo o código: `verificar_commit.py:94-95` chama
+`git diff --cached` sem parâmetro de faixa nem flag alternativa; num runner limpo não há nada em staging, e o
+scanner reportaria "nenhum segredo" sempre, mascarando ausência de cobertura como sucesso. Nenhuma linha de
+Anel 0 existe em `.github/workflows/`.
+
+### Verificações executadas
+
+- `python -c "import yaml; yaml.safe_load(...)"` nos dois workflows → **ambos parseiam sem erro**, jobs
+  listados corretos (`gates`, `release-tag`, `install-sha` em `gates.yml`; `install-semver` em `install-tag.yml`).
+- Todo `npm run <script>` citado nos workflows conferido contra `package.json` um a um (script de verificação
+  em Node) → **todos existem**. Os dois `node <caminho>` diretos (`check-release-tag.mjs`, `sarak-ui.mjs`)
+  conferidos com `ls` → **existem**.
+- `grep -inE "retr(y|ies)|continue-on-error" .github/workflows/*.yml` → **vazio** (nenhum dos dois).
+- **Prova do `.github/` no `TOCA_CODIGO`**: staged **só** os dois arquivos de `.github/workflows/`,
+  `sh .githooks/pre-commit` → **exit 0**, Anéis 1 e 2 rodaram por inteiro (antes desta mudança, imprimiria
+  "PULADOS"). Revertido (unstage) depois.
+- `git diff --stat vitest.config.ts package.json` → **vazio** — nada da `plan-52` foi tocado.
+- Zero ocorrências de `process.platform`/`win32`/caminho de unidade fora de `__tests__/` em `src/`, `scripts/`,
+  `gates/`, `bin/` — confirma que `ubuntu-latest` (sem matriz de SO) é seguro.
+- **Instalação real, contra o repositório público de verdade** (`https://github.com/Lib-Sarak/Sarak-Lib-UI-Core`,
+  confirmado público: `curl` em `api.github.com` → `200`), com os EXATOS comandos que os workflows rodam —
+  não simulação:
+  - `npm install "github:Lib-Sarak/Sarak-Lib-UI-Core#semver:^6.1.0"` → resolveu **6.1.0**, os 4 artefatos
+    (`dist/index.cjs`, `dist/index.d.ts`, `dist/sarak.css`, `bin/sarak-ui.mjs`) existem, `sarak-ui check --notify`
+    saiu com **0** e silencioso (em dia — exatamente o contrato de [[13-instalacao-e-atualizacao]] §5.1).
+  - `corepack pnpm add "github:...#semver:^6.1.0"` → mesma prova, **exit 0**, `Done in 30.2s`.
+  - `corepack yarn add "github:...#semver:^6.1.0"` → mesma prova, **exit 0**, `Done in 48.89s` (Yarn clássico).
+  - `npm install "github:...#1e67c58bc7c083ef0a6534b006ca8c8a2a2fe89b"` (o mecanismo do `install-sha`, contra
+    um commit real já empurrado — `origin/main`) → **exit 0**, `dist/` presente.
+  - ⚠️ **O que NÃO testei**: `pnpm`/`yarn` pelo mecanismo `#<sha>` especificamente (só testei `#semver:` nos
+    dois); e, na minha máquina local (Windows/Git Bash), `pnpm`/`yarn` só funcionaram com o prefixo
+    `corepack pnpm`/`corepack yarn` — sem ele, `command not found`. **O runner `ubuntu-latest` não tem essa
+    limitação**: `corepack enable` sozinho, no padrão documentado do GitHub Actions, põe `pnpm`/`yarn` no
+    `PATH` diretamente — é o padrão usado em milhares de workflows públicos —, mas isso **não foi provado
+    nesta máquina** e fica para a Etapa B confirmar. Se falhar, o conserto é trocar `pnpm add`/`yarn add` por
+    `corepack pnpm add`/`corepack yarn add` nos dois workflows — mudança de uma linha, não de desenho.
+- `npx vitest list --filesOnly` **não** foi re-rodado nesta plan (não a alterei); os números correntes da
+  suíte são os que a `plan-52` fechou (317/1376), sem mudança aqui.
+
+### Arquivos alterados
+
+| Arquivo | Natureza | O que mudou |
+|---|---|---|
+| `.github/workflows/gates.yml` | criado | job `gates` (o job de gates completo, nas 3 linhas de gatilho que o pedem) + job `release-tag` (só push:main) + job `install-sha` (só PR) |
+| `.github/workflows/install-tag.yml` | criado | job `install-semver`, só em push de tag `v*`, matriz npm/pnpm/yarn |
+| `.githooks/pre-commit` | alterado | `.github/` entrou no `TOCA_CODIGO` (1 linha de regex + comentário de justificativa); a linha de "PULADOS" ganhou `.github/` na lista impressa |
+
+**Nada de `specs/specs/`, `arquitetura/`, `adr/` tocado** — confirmado por `git status`.
+
+### Critérios de aceite
+
+**§7.1 — Etapa A (o executor fecha sozinho):**
+
+- [x] Workflow escrito, com os cinco gatilhos — nenhum a mais, nenhum a menos.
+- [x] `.github/` no `TOCA_CODIGO`, justificativa escrita no hook, provado com staged só-`.github/`.
+- [x] Todos os `*:check` enumerados um a um, com a prova de quais o `gates:full` (pós-`plan-52`) alcança; os
+      5 descobertos entraram explicitamente no job.
+- [x] Suíte sem `retries` nem `continue-on-error`; saída completa (`gates-full-output.log`, que inclui a saída
+      do `vitest run --coverage` dentro de `coverage:check`) sobe como artifact **sempre** (`if: always()`).
+- [x] Anel de release: resposta escrita — roda no evento `push` da `main` (job `release-tag`), usando o
+      fallback nativo do próprio script, **provado** localmente no sentido positivo.
+- [x] Nenhum arquivo da `plan-52` tocado (`vitest.config.ts`, `gates:full` do `package.json`, os gates órfãos)
+      — `git diff --stat` vazio nos dois primeiros; o terceiro não foi alterado (só referenciado no YAML).
+
+**§7.2 — Etapa B (exige o dono ter empurrado): nenhum marcável nesta rodada.** Ver "Pendências" abaixo.
+
+### Decisões e suposições
+
+- **Dois workflows, não um só.** `install-tag.yml` roda num evento (`push: tags`) completamente diferente dos
+  outros quatro (`push`/`pull_request` de branch) — um `if` dentro de um único workflow para distinguir "isto é
+  push de tag" exigiria reimplementar `on.push.tags` como condição de job em vez de gatilho, sem ganho nenhum.
+  A plan não proíbe múltiplos arquivos; só proíbe criar gate novo ou automatizar release — nenhum dos dois
+  aconteceu.
+- **`install-sha` e `release-tag` como jobs separados de `gates`, não passos dele.** Rodam em paralelo com
+  `gates` (exceto `release-tag`, que declara `needs: gates` de propósito: não vale a pena avaliar a tag de um
+  push cujos gates ainda nem se sabe se vão passar). `install-sha` não precisa esperar nada — roda em paralelo,
+  mais rápido para quem abriu o PR.
+- **`gates-full-output.log` via `tee` + `set -o pipefail`**, não uma captura separada da suíte. Rodar
+  `vitest run --coverage` de novo só para ter um log próprio duplicaria a suíte inteira (custo dobrado) pelo
+  mesmo conteúdo que já sai no `coverage:check` dentro do `gates:full`. `pipefail` garante que a falha real do
+  `npm run gates:full` não se perca atrás do exit-0 do `tee`.
+- **Corepack para pnpm/yarn**, não instalação de binário fixo. É o padrão suportado nativamente pelo
+  `setup-node` da Action oficial, e evita fixar uma versão de gerenciador que a lib não versiona.
+- **Não criei o achado de "faltando testar pnpm/yarn por `#sha`" como bloqueio.** É uma lacuna real da minha
+  verificação local (documentada acima), não um defeito do workflow — o mecanismo de resolução de spec `github:`
+  é o mesmo código do npm/pnpm/yarn para `#sha` e para `#semver:`; testei um lado em cada gerenciador.
+
+### O material para a spec 16 (nasce na síntese — eu NÃO crio nem edito spec fixa, §7.3 do [[00-prompt-executor]])
+
+#### §1 — Modelo de branches
+
+```
+feature/xyz  ──PR──►  develop  ──PR──►  main  ──npm version──►  tag vX.Y.Z
+```
+
+| Branch | Papel | Quem escreve |
+|---|---|---|
+| `main` | produção / código final. O dono não desenvolve mais nela | só merge de PR, e o push do release (pelo dono) |
+| `develop` | desenvolvimento — onde o trabalho do dia acontece | commit direto e push |
+
+**`develop` precisa nascer de novo** — confirmado nesta execução: `git log origin/main..origin/develop` = 0
+commits à frente; `git log origin/develop..origin/main` = **423** atrás. É ação do dono (Etapa B item 2), fora
+do worktree.
+
+**O consumidor nunca lê branch nenhuma.** Ele instala por `#semver:`, que o `npm` resolve contra **tags**
+(ADR-008). O modelo de branches é disciplina de trabalho — **produção, para quem instala, é a tag**. Dar merge
+na `main` não publica nada; só `npm version` publica.
+
+#### §2 — Tabela de gatilhos
+
+| Evento | O que roda | Onde |
+|---|---|---|
+| push `feature/*` | nada | — |
+| push `develop` | gates completo (build, os 4 gates encadeados, `package:check`, `coverage:check`, `check-audit-baseline --with-tsc`, `themes:diversity`, e os 5 `*:check` que `gates:full` não alcança: `plan-index`, `gate-limits`, `container-query`, `container-query-boundary`, `persistence-doc`) | `gates.yml` → job `gates` |
+| PR `develop→main` | gates completo + install pelo SHA do PR, 3 gerenciadores | `gates.yml` → jobs `gates` + `install-sha` |
+| push `main` (merge aceito) | gates completo + `check-release-tag.mjs` sobre o HEAD | `gates.yml` → jobs `gates` + `release-tag` |
+| tag `v*` empurrada | install por `#semver:` contra a tag, 3 gerenciadores | `install-tag.yml` → job `install-semver` |
+
+#### §3 — A CI
+
+**Os quatro jobs**, custo real por job: **⏳ pendente de medição — só existe depois da Etapa B rodar de
+verdade.** Não presuma os 315,44 s da §2.1 desta plan (são de antes da `plan-52`) nem os números locais do
+`§10` da `plan-52` (~208 s de `vitest run` sozinho, sem o resto do `gates:full`) — nenhum dos dois é a duração
+de um job de CI.
+
+**O que ela NÃO cobre:**
+
+| Vão | Motivo medido |
+|---|---|
+| **Anel 0 (segredos)** | `verificar_commit.py:94-95` lê só `git diff --cached`; no runner não há staging — reportaria "nenhum segredo" sempre, em silêncio. Achado novo, ver abaixo |
+| **CSS renderizado em browser real** | a suíte roda em `jsdom`; a CI não muda isso ([[11-testes-e-cobertura]] §7.2) |
+| **`dist/` commitado × build limpo** | não confere — seria gate novo, fora do escopo desta plan |
+| **O `pre-push` local deixa de rodar no dia a dia** | ele só age para `refs/heads/main`, e agora o dono empurra `develop` — a suíte local raramente dispara. **Não é perda**: a rede mudou de lugar, para os jobs `gates` (em push:develop, push:main, PR→main) |
+
+#### §4 — Ponteiros (nunca redescrição)
+
+- Anéis locais (pre-commit/pre-push), o que cada um cobra e custa → [[02-enforcement-por-commit]]
+- Ritual de release, ganchos do `npm version`, formato da tag → [[03-versionamento-e-release]]
+- Catálogo de gates, baseline versionado, matriz de cobertura → [[01-gates-e-baseline]]
+
+### Achado novo para [[15-divida-conhecida]] §4.1
+
+**Anel 0 (segredos) não tem modo de faixa.** `gates/scripts/segredo/verificar_commit.py:94-95` chama
+`git diff --cached --unified=0 --no-color` — hardcoded, sem flag para varrer um intervalo de commits
+(`origin/main...HEAD` ou similar). Isso o torna **inutilizável em qualquer pipeline remoto**: um runner limpo
+não tem nada em staging, e o scanner reportaria "0 achados" sempre — verde que não examinou nada, pior que
+ausência. Confirmado lendo o código (`main()`, `argparse`, sem opção de faixa). **Destino:** implementação
+posterior (§4 de [[15-divida-conhecida]], não dívida) — construir um modo `--faixa <base>..<head>` antes de
+qualquer plan que queira levar Anel 0 a um pipeline remoto. Enquanto isso não existir, o Anel 0 **continua só
+local**, e é isso que `.github/workflows/` desta plan reflete.
+
+### Texto proposto para as specs existentes
+
+- **`02-enforcement-por-commit.md` §9** — a "opção em aberto" morre: existe desde `<data do merge desta
+  plan>`, em `.github/workflows/gates.yml` (jobs `gates`/`release-tag`/`install-sha`) e `install-tag.yml`
+  (job `install-semver`). Acrescentar nota em §4.2: *"o `pre-push` local deixou de rodar no dia a dia — ele só
+  age para `refs/heads/main`, e o modelo de branches (plan-05) passou o trabalho diário para `develop`; a rede
+  da suíte completa mudou de lugar, para o job `gates` da CI, disparado em push:develop, push:main e PR→main."*
+- **`01-gates-e-baseline.md` §2.2** — a coluna "onde roda" de `plan-index:check`, `gate-limits:check`,
+  `container-query:check`, `container-query-boundary:check` e `persistence-doc:check` ganha `CI
+  (.github/workflows/gates.yml)`, além do que já tinham (Anel 1 do `pre-commit`, quando aplicável).
+- **`03-versionamento-e-release.md` §6** — o release passa a acontecer **sob o modelo de branches**: o dono
+  emite `npm version` a partir da `main`, e o `postversion` (`git push --follow-tags`) exige a **exceção de
+  administrador** na proteção de branch da `main` (Etapa B item 3 desta plan) — sem ela, o push do release é
+  recusado pela própria regra que a CI acabou de ganhar poder para impor.
+
+### Pendências / riscos
+
+- **Etapa B inteira está pendente — é a natureza da fronteira desta plan.** Nada aqui foi executado num
+  runner de verdade. Os itens que dependem disso (workflow "executado com sucesso ao menos uma vez", PR com
+  teste quebrado reprovado pela automação, `run_audit` comparado ao baseline **na CI**, install real nas duas
+  provas, duração real de cada job, `sarak-dev`/proteção de branch/`develop`) **não podem ser marcados** até o
+  dono: (1) recriar a `develop` a partir da `main`; (2) empurrar a branch com estes dois workflows e abrir o PR
+  para `develop` (que dispara `gates` pela primeira vez); (3) ligar a proteção da `main` com a exceção de
+  administrador, **depois** do primeiro run aparecer na lista de checks.
+- **`pnpm add`/`yarn add` sem prefixo `corepack`, no runner, é suposição informada, não prova** — ver a
+  seção de verificações acima. Primeiro sinal de problema na Etapa B: erro `command not found` no passo de
+  install; conserto é de uma linha por gerenciador.
+- **Nenhuma duração de job existe ainda** — §3 da spec 16 (acima) fica com o número em aberto até a Etapa B.
+- **`sarak-ui check --notify` foi provado localmente contra `#semver:`/`#sha` de commits JÁ publicados**, não
+  contra o SHA de um PR real (que ainda não existe). O mecanismo é o mesmo; o cenário exato do `install-sha`
+  só é exercitado quando existir um PR de verdade.
+
 ---
 
 # 11. Veredito
 
 <!-- Preenchido pelo REVISOR. Append-only. -->
+
+## Conferência da Etapa A — 2026-08-18 — ⏸️ **SEM VEREDITO** (a plan segue `🟡 Em execução`)
+
+**Isto não é aprovação, e não pode ser.** Os critérios da §7.2 exigem execução remota real; até o dono
+empurrar, não há o que marcar. O que segue é a conferência do que **já dá para conferir** — tudo remedido por
+mim no worktree.
+
+### Etapa A — o que eu verifiquei sozinho
+
+| Alegação | O que eu medi | |
+|---|---|---|
+| Dois workflows, as 5 linhas de gatilho, "nem uma a mais" | `push [develop, main]` · `pull_request [main]` · `push tags v*`. `feature/*` sem gatilho, por omissão | ✅ |
+| Sem `retries` / `continue-on-error` | `grep -niE` nos dois arquivos → **vazio** | ✅ |
+| Os 5 `*:check` órfãos entraram no job | conferi um a um contra o `gates:full` corrente: **os cinco estão mesmo fora dele** | ✅ |
+| `section-pointers` e `composicao-atomica` já cobertos | `auditor_sectionpointers.mjs:14-15` é `spawnSync` sobre `check-section-pointers.mjs` — **wrapper fino, confirmado na fonte**; e `composicao-atomica:check` aponta para o mesmo `.mjs` que o `run_audit` carrega | ✅ |
+| Todo `npm run X` do YAML existe | **7 de 7** conferidos contra o `package.json` | ✅ |
+| `.github/` no `TOCA_CODIGO` | **reproduzi**: staged só `.github/workflows/*.yml` → Anéis 1 e 2 rodaram por inteiro; no `HEAD` o regex não tem `.github/`, então imprimiria "PULADOS" | ✅ |
+| Nada da `plan-52` tocado | `git diff vitest.config.ts package.json` **vazio** | ✅ |
+| Nenhuma spec fixa tocada | `git status` limpo em `specs/specs`, `arquitetura`, `adr` | ✅ |
+| Gates | **15 de 15 verdes** (o `plan-index` divergia por status — espelhei o índice, que é meu) | ✅ |
+
+### O achado do anel de release está **certo**, e é o melhor da entrega
+
+A plan mandava verificar como alimentar o `check-release-tag.mjs` num job, e **declarar o vão se não houvesse
+caminho honesto**. O executor achou um caminho que já existia:
+
+```
+gates/scripts/release/check-release-tag.mjs:44
+   "Rodando à mão não há stdin — readFileSync(0) estoura e o fallback é o HEAD."
+:56  if (stdin.trim() === '') return 'HEAD';
+```
+
+Conferido na fonte. O job roda `… check-release-tag.mjs < /dev/null` e cai no fallback **documentado pelo
+próprio script** — o mesmo caminho do `npm run release:check` manual. Nada de protocolo de hook fabricado. É
+literalmente "o mesmo gate num lugar novo", que era a condição da §3.2.
+
+### Duas coisas boas de engenharia que passaram do pedido
+
+- **`set -o pipefail` antes do `tee`.** Sem isso o `tee` devolveria exit 0 e **um `gates:full` vermelho
+  passaria despercebido** — exatamente a classe de verde falso que esta plan existe para matar.
+- **O `install-tag` não se contenta com "instalou"**: ele assere `test "$INSTALADA" = "$VERSAO"`, provando que
+  `#semver:^X.Y.Z` resolve para a tag recém-publicada, e não para uma anterior.
+
+### Riscos declarados — nenhum bloqueia, os dois são da Etapa B
+
+1. **`corepack enable` sozinho põe `pnpm`/`yarn` no `PATH`?** Não foi provado nesta máquina (no Windows só
+   funcionou com o prefixo `corepack pnpm`). Declarado em vez de afirmado — correto. Se o job falhar, há
+   **duas** correções de uma linha: o prefixo que o executor propõe, **ou** `COREPACK_ENABLE_DOWNLOAD_PROMPT=0`
+   no `env`, se o que travar for o prompt de download do corepack num runner sem TTY.
+2. **`pnpm`/`yarn` por `#<sha>` não foram testados** — só por `#semver:`. O `#sha` foi provado no `npm`. Risco
+   pequeno (é o mesmo resolvedor de git), declarado, e a Etapa B o fecha de graça.
+
+### O que falta, e é do dono
+
+Nada aqui é trabalho de executor. A plan **fica `🟡`** até:
+
+1. recriar a `develop` a partir da `main` (423 commits atrás);
+2. empurrar a branch com os workflows e abrir o PR;
+3. ligar a proteção da `main` — *required status check* —, **com exceção para administrador**;
+4. o PR com teste quebrado de propósito, e a reversão.

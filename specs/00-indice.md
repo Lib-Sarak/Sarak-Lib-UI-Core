@@ -42,7 +42,7 @@ as duas, sempre, na mesma ação.**
 | # | Plan | Objetivo | Depende de | Status | Destino |
 |---|---|---|---|---|---|
 | 1 | [plan-52-correcao-pre-ci-cd](plan/plan-52-correcao-pre-ci-cd.md) | Pôr cada verificação no lugar certo e tirar da suíte a sobrecarga que a CI herdaria, para o pipeline nascer sobre uma base correta | — | 🟢 Aprovada | specs/specs/02-enforcement-por-commit.md · specs/specs/01-gates-e-baseline.md · specs/specs/11-testes-e-cobertura.md · specs/specs/14-artefatos-do-mantenedor.md · specs/specs/15-divida-conhecida.md |
-| 2 | [plan-05-integracao-continua](plan/plan-05-integracao-continua.md) | Montar o pipeline remoto e documentar o fluxo inteiro: que evento dispara o quê, em que branch, e o que continua sendo decisão humana | plan-52 | 🔴 A executar | specs/specs/16-integracao-continua.md · specs/specs/02-enforcement-por-commit.md · specs/specs/01-gates-e-baseline.md · specs/specs/03-versionamento-e-release.md · specs/specs/15-divida-conhecida.md |
+| 2 | [plan-05-integracao-continua](plan/plan-05-integracao-continua.md) | Montar o pipeline remoto e documentar o fluxo inteiro: que evento dispara o quê, em que branch, e o que continua sendo decisão humana | plan-52 | 🟡 Em execução | specs/specs/16-integracao-continua.md · specs/specs/02-enforcement-por-commit.md · specs/specs/01-gates-e-baseline.md · specs/specs/03-versionamento-e-release.md · specs/specs/15-divida-conhecida.md |
 | 3 | [plan-10-ciclo-atualizacao](plan/plan-10-ciclo-atualizacao.md) | Dar comando de atualização a quem só recebia aviso | plan-05 | 🔴 A executar | specs/specs/13-instalacao-e-atualizacao.md |
 <!-- SARAK-INDICE:FILA:FIM -->
 
